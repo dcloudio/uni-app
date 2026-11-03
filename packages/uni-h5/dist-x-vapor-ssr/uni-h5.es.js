@@ -1159,7 +1159,7 @@ function normalizeCustomEvent(name, domEvt, el, detail) {
     detail
   };
 }
-const passiveOptions$2 = /* @__PURE__ */ passive(true);
+const passiveOptions$1 = /* @__PURE__ */ passive(true);
 const states = [];
 let userInteract = 0;
 let inited = false;
@@ -1183,7 +1183,7 @@ function addInteractListener(vm = { userAction: false }) {
             !--userInteract && setUserAction(false);
           }, 0);
         },
-        passiveOptions$2
+        passiveOptions$1
       );
     });
     inited = true;
@@ -8960,105 +8960,16 @@ const indexVapor$4 = /* @__PURE__ */ defineBuiltInComponent({
     return result;
   }
 });
-const Refresher = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Refresher",
-  props: {
-    refreshState: {
-      type: String,
-      default: ""
-    },
-    refresherHeight: {
-      type: Number,
-      default: 0
-    },
-    refresherThreshold: {
-      type: Number,
-      default: 45
-    },
-    refresherDefaultStyle: {
-      type: String,
-      /**
-      * auto为内部值，蒸汽模式下用户未设置时使用该值
-      */
-      default: "auto"
-    },
-    refresherBackground: {
-      type: String,
-      default: "transparent"
-    }
-  },
-  setup(props2, { slots }) {
-    const rootRef = ref(null);
-    const rootStyle = computed(() => {
-      const style = { backgroundColor: props2.refresherBackground };
-      switch (props2.refreshState) {
-        case "pulling":
-          style.height = props2.refresherHeight + "px";
-          break;
-        case "refreshing":
-          style.height = props2.refresherThreshold + "px";
-          style.transition = "height 0.3s";
-          break;
-        case "":
-        case "refresherabort":
-        case "restore":
-          style.height = "0px";
-          style.transition = "height 0.3s";
-          break;
-      }
-      return style;
-    });
-    const refreshRotate = computed(() => {
-      const route = props2.refresherHeight / props2.refresherThreshold;
-      return (route > 1 ? 1 : route) * 360;
-    });
-    const refreshColor = computed(() => {
-      switch (props2.refresherDefaultStyle) {
-        case "black":
-        case "white":
-          return props2.refresherDefaultStyle;
-        case "auto":
-        default:
-          return void 0;
-      }
-    });
-    return () => {
-      return (() => {
-        createVNodeCache("e32a47e2");
-        return openBlock(), createBlock("div", {
-          ref: rootRef,
-          style: rootStyle.value,
-          class: "uni-scroll-view-refresher"
-        }, [props2.refresherDefaultStyle !== "none" ? (openBlock(), createBlock("div", {
-          key: 0,
-          class: "uni-scroll-view-refresh"
-        }, [(openBlock(), createBlock(Fragment, { key: 0 }, [props2.refreshState == "pulling" || props2.refreshState == "refreshing" ? (openBlock(), createBlock(_sfc_main$s, {
-          key: "refresh__loading",
-          class: "uni-scroll-view-refresh__loading",
-          paused: props2.refreshState == "pulling",
-          style: {
-            transform: props2.refreshState == "pulling" ? "rotate(" + refreshRotate.value + "deg)" : void 0,
-            color: refreshColor.value
-          }
-        })) : normalizeVNode(() => null)], 64))])) : normalizeVNode(() => null), props2.refresherDefaultStyle === "none" ? (openBlock(), createBlock("div", {
-          key: 2,
-          class: "uni-scroll-view-refresher-container",
-          style: { height: `${props2.refresherThreshold}px` }
-        }, [normalizeVNode(() => slots.default && slots.default())])) : normalizeVNode(() => null)], 512);
-      })();
-    };
-  }
-});
 class UniScrollViewElement extends UniViewElement {
   static [Symbol.hasInstance](value) {
     return this === UniScrollViewElement && value instanceof UniViewElement && value.hasAttribute("uni-scroll-view") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
 const SCROLL_END_DELAY = 100;
-const passiveOptions$1 = { passive: true };
+const passiveOptions = { passive: true };
 function onScrollend(element, listener) {
   if ("onscrollend" in element) {
-    element.addEventListener("scrollend", listener, passiveOptions$1);
+    element.addEventListener("scrollend", listener, passiveOptions);
     return () => {
       element.removeEventListener("scrollend", listener);
     };
@@ -9098,10 +9009,10 @@ function onScrollend(element, listener) {
       schedule();
     }
   };
-  element.addEventListener("touchstart", onTouchStart, passiveOptions$1);
-  element.addEventListener("touchend", onTouchEnd, passiveOptions$1);
-  element.addEventListener("touchcancel", onTouchEnd, passiveOptions$1);
-  element.addEventListener("scroll", onScroll, passiveOptions$1);
+  element.addEventListener("touchstart", onTouchStart, passiveOptions);
+  element.addEventListener("touchend", onTouchEnd, passiveOptions);
+  element.addEventListener("touchcancel", onTouchEnd, passiveOptions);
+  element.addEventListener("scroll", onScroll, passiveOptions);
   return () => {
     element.removeEventListener("touchstart", onTouchStart);
     element.removeEventListener("touchend", onTouchEnd);
@@ -9113,530 +9024,207 @@ function onScrollend(element, listener) {
     waitingForTouchEnd = false;
   };
 }
-const passiveOptions = /* @__PURE__ */ passive(true);
 const props$5 = {
-  direction: {
-    type: [String],
-    default: "vertical"
-  },
-  scrollX: {
-    type: [Boolean, String],
-    default: false
-  },
-  scrollY: {
-    type: [Boolean, String],
-    default: false
-  },
-  showScrollbar: {
-    type: [Boolean, String],
-    default: true
-  },
-  upperThreshold: {
-    type: [Number, String],
-    default: 50
-  },
-  lowerThreshold: {
-    type: [Number, String],
-    default: 50
-  },
-  scrollTop: {
-    type: [Number, String],
-    default: 0
-  },
-  scrollLeft: {
-    type: [Number, String],
-    default: 0
-  },
-  scrollIntoView: {
-    type: String,
-    default: ""
-  },
-  scrollWithAnimation: {
-    type: [Boolean, String],
-    default: false
-  },
-  enableBackToTop: {
-    type: [Boolean, String],
-    default: false
-  },
-  refresherEnabled: {
-    type: [Boolean, String],
-    default: false
-  },
-  refresherThreshold: {
-    type: Number,
-    default: 45
-  },
-  refresherDefaultStyle: {
-    type: String,
-    /**
-     * auto为内部值，蒸汽模式下用户未设置时使用该值
-     */
-    default: "auto"
-  },
-  refresherBackground: {
-    type: String,
-    default: "transparent"
-  },
-  refresherTriggered: {
-    type: [Boolean, String],
-    default: false
-  }
+  direction: { type: String, default: "vertical" },
+  showScrollbar: { type: [Boolean, String], default: true },
+  upperThreshold: { type: [Number, String], default: 50 },
+  lowerThreshold: { type: [Number, String], default: 50 },
+  scrollTop: { type: [Number, String], default: 0 },
+  scrollLeft: { type: [Number, String], default: 0 },
+  scrollIntoView: { type: String, default: "" },
+  scrollWithAnimation: { type: [Boolean, String], default: false }
 };
-const emits = [
-  "scroll",
-  "scrollend",
-  "scrolltoupper",
-  "scrolltolower",
-  "refresherrefresh",
-  "refresherrestore",
-  "refresherpulling",
-  "refresherabort",
-  "update:refresherTriggered"
-];
+const emits = ["scroll", "scrollend", "scrolltoupper", "scrolltolower"];
+function threshold(value) {
+  const number = Number(value);
+  return isNaN(number) ? 50 : number;
+}
 function useScrollView(props2, { emit: emit2, expose }) {
   const rootRef = ref(null);
-  const main = ref(null);
-  const wrap = ref(null);
-  const content = ref(null);
   const trigger = useCustomEvent(rootRef, emit2);
-  const { state, scrollTopNumber, scrollLeftNumber } = useScrollViewState(props2);
-  const { realScrollX, realScrollY, _scrollLeftChanged, _scrollTopChanged } = useScrollViewLoader(
-    props2,
-    state,
-    scrollTopNumber,
-    scrollLeftNumber,
-    trigger,
-    rootRef,
-    main,
-    content,
-    emit2
+  const scrollX = computed(
+    () => props2.direction === "horizontal" || props2.direction === "all"
   );
-  const mainStyle = computed(() => {
-    let style = "";
-    realScrollX.value ? style += "overflow-x:auto;" : style += "overflow-x:hidden;";
-    realScrollY.value ? style += "overflow-y:auto;" : style += "overflow-y:hidden;";
-    return style;
-  });
-  const scrollBarClassName = computed(() => {
-    let className = "uni-scroll-view";
-    if (props2.showScrollbar === false) {
-      className += " uni-scroll-view-scrollbar-hidden";
-    }
-    return className;
-  });
-  expose({
-    // 自动化测试需要暴露main从而获取scrollLeft
-    $getMain() {
-      return main.value;
-    }
-  });
-  return {
-    rootRef,
-    main,
-    wrap,
-    content,
-    state,
-    mainStyle,
-    scrollBarClassName,
-    _scrollLeftChanged,
-    _scrollTopChanged
-  };
-}
-function useScrollViewState(props2) {
-  const scrollTopNumber = computed(() => {
-    return Number(props2.scrollTop) || 0;
-  });
-  const scrollLeftNumber = computed(() => {
-    return Number(props2.scrollLeft) || 0;
-  });
-  const state = reactive({
-    lastScrollTop: scrollTopNumber.value,
-    lastScrollLeft: scrollLeftNumber.value,
-    lastScrollToUpperTime: 0,
-    lastScrollToLowerTime: 0,
-    refresherHeight: 0,
-    refreshState: ""
-  });
-  return {
-    state,
-    scrollTopNumber,
-    scrollLeftNumber
-  };
-}
-function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content, emit2) {
-  let beforeRefreshing = false;
-  let toUpperNumber = 0;
-  let triggerAbort = false;
-  let __transitionEnd = () => {
-  };
-  const realScrollX = computed(() => {
-    if (props2.direction === "horizontal" || props2.direction === "all") {
-      return true;
-    }
-    return false;
-  });
-  const realScrollY = computed(() => {
-    if (props2.direction === "vertical" || props2.direction === "all") {
-      return true;
-    }
-    return false;
-  });
-  const upperThresholdNumber = computed(() => {
-    let val = Number(props2.upperThreshold);
-    return isNaN(val) ? 50 : val;
-  });
-  const lowerThresholdNumber = computed(() => {
-    let val = Number(props2.lowerThreshold);
-    return isNaN(val) ? 50 : val;
-  });
-  function scrollTo(scrollToValue, direction2) {
-    const container = main.value;
-    let transformValue = 0;
-    let transform = "";
-    scrollToValue < 0 ? scrollToValue = 0 : direction2 === "x" && scrollToValue > container.scrollWidth - container.offsetWidth ? scrollToValue = container.scrollWidth - container.offsetWidth : direction2 === "y" && scrollToValue > container.scrollHeight - container.offsetHeight && (scrollToValue = container.scrollHeight - container.offsetHeight);
-    direction2 === "x" ? transformValue = container.scrollLeft - scrollToValue : direction2 === "y" && (transformValue = container.scrollTop - scrollToValue);
-    if (transformValue === 0)
-      return;
-    let _content = content.value;
-    _content.style.transition = "transform .3s ease-out";
-    _content.style.webkitTransition = "-webkit-transform .3s ease-out";
-    if (direction2 === "x") {
-      transform = "translateX(" + transformValue + "px) translateZ(0)";
-    } else {
-      direction2 === "y" && (transform = "translateY(" + transformValue + "px) translateZ(0)");
-    }
-    _content.removeEventListener("transitionend", __transitionEnd);
-    _content.removeEventListener("webkitTransitionEnd", __transitionEnd);
-    __transitionEnd = () => _transitionEnd(scrollToValue, direction2);
-    _content.addEventListener("transitionend", __transitionEnd);
-    _content.addEventListener("webkitTransitionEnd", __transitionEnd);
-    if (direction2 === "x") {
-      container.style.overflowX = "hidden";
-    } else if (direction2 === "y") {
-      container.style.overflowY = "hidden";
-    }
-    _content.style.transform = transform;
-    _content.style.webkitTransform = transform;
-  }
-  function _handleScroll($event) {
-    const target = $event.target;
-    trigger("scroll", $event, {
-      scrollLeft: target.scrollLeft,
-      scrollTop: target.scrollTop,
-      scrollHeight: target.scrollHeight,
-      scrollWidth: target.scrollWidth,
-      deltaX: state.lastScrollLeft - target.scrollLeft,
-      deltaY: state.lastScrollTop - target.scrollTop
-    });
-    if (realScrollY.value) {
-      if (target.scrollTop <= upperThresholdNumber.value && state.lastScrollTop - target.scrollTop > 0 && $event.timeStamp - state.lastScrollToUpperTime > 200) {
-        trigger("scrolltoupper", $event, {
-          direction: "top"
-        });
-        state.lastScrollToUpperTime = $event.timeStamp;
-      }
-      if (target.scrollTop + target.offsetHeight + lowerThresholdNumber.value >= target.scrollHeight && state.lastScrollTop - target.scrollTop < 0 && $event.timeStamp - state.lastScrollToLowerTime > 200) {
-        trigger("scrolltolower", $event, {
-          direction: "bottom"
-        });
-        state.lastScrollToLowerTime = $event.timeStamp;
-      }
-    }
-    if (realScrollX.value) {
-      if (target.scrollLeft <= upperThresholdNumber.value && state.lastScrollLeft - target.scrollLeft > 0 && $event.timeStamp - state.lastScrollToUpperTime > 200) {
-        trigger("scrolltoupper", $event, {
-          direction: "left"
-        });
-        state.lastScrollToUpperTime = $event.timeStamp;
-      }
-      if (target.scrollLeft + target.offsetWidth + lowerThresholdNumber.value >= target.scrollWidth && state.lastScrollLeft - target.scrollLeft < 0 && $event.timeStamp - state.lastScrollToLowerTime > 200) {
-        trigger("scrolltolower", $event, {
-          direction: "right"
-        });
-        state.lastScrollToLowerTime = $event.timeStamp;
-      }
-    }
-    state.lastScrollTop = target.scrollTop;
-    state.lastScrollLeft = target.scrollLeft;
-  }
-  function _handleScrollEnd($event) {
-    const target = $event.target;
-    trigger("scrollend", $event, {
-      scrollLeft: target.scrollLeft,
-      scrollTop: target.scrollTop,
-      scrollHeight: target.scrollHeight,
-      scrollWidth: target.scrollWidth,
-      deltaX: state.lastScrollLeft - target.scrollLeft,
-      deltaY: state.lastScrollTop - target.scrollTop
-    });
-  }
-  function _scrollTopChanged(val) {
-    if (realScrollY.value) {
-      {
-        if (props2.scrollWithAnimation) {
-          scrollTo(val, "y");
-        } else {
-          main.value.scrollTop = val;
-        }
-      }
-    }
-  }
-  function _scrollLeftChanged(val) {
-    if (realScrollX.value) {
-      {
-        if (props2.scrollWithAnimation) {
-          scrollTo(val, "x");
-        } else {
-          main.value.scrollLeft = val;
-        }
-      }
-    }
-  }
-  function _scrollIntoViewChanged(val) {
-    if (val) {
-      if (!/^[_a-zA-Z][-_a-zA-Z0-9:]*$/.test(val)) {
-        console.error(`id error: scroll-into-view=${val}`);
-        return;
-      }
-      let element = rootRef.value.querySelector("#" + val);
-      if (element) {
-        let mainRect = main.value.getBoundingClientRect();
-        let elRect = element.getBoundingClientRect();
-        if (realScrollX.value) {
-          let left = elRect.left - mainRect.left;
-          let scrollLeft = main.value.scrollLeft;
-          let x = scrollLeft + left;
-          if (props2.scrollWithAnimation) {
-            scrollTo(x, "x");
-          } else {
-            main.value.scrollLeft = x;
-          }
-        }
-        if (realScrollY.value) {
-          let top = elRect.top - mainRect.top;
-          let scrollTop = main.value.scrollTop;
-          let y = scrollTop + top;
-          if (props2.scrollWithAnimation) {
-            scrollTo(y, "y");
-          } else {
-            main.value.scrollTop = y;
-          }
-        }
-      }
-    }
-  }
-  function _transitionEnd(val, direction2) {
-    content.value.style.transition = "";
-    content.value.style.webkitTransition = "";
-    content.value.style.transform = "";
-    content.value.style.webkitTransform = "";
-    let _main = main.value;
-    if (direction2 === "x") {
-      _main.style.overflowX = realScrollX.value ? "auto" : "hidden";
-      _main.scrollLeft = val;
-    } else if (direction2 === "y") {
-      _main.style.overflowY = realScrollY.value ? "auto" : "hidden";
-      _main.scrollTop = val;
-    }
-    content.value.removeEventListener("transitionend", __transitionEnd);
-    content.value.removeEventListener("webkitTransitionEnd", __transitionEnd);
-  }
-  function _setRefreshState(_state) {
-    if (!props2.refresherEnabled)
-      return;
-    switch (_state) {
-      case "refreshing":
-        state.refresherHeight = props2.refresherThreshold;
-        if (!beforeRefreshing) {
-          beforeRefreshing = true;
-          trigger("refresherpulling", {}, {
-            deltaY: state.refresherHeight,
-            dy: state.refresherHeight
-          });
-          trigger("refresherrefresh", {}, {
-            dy: touchEnd.y - touchStart.y
-          });
-          emit2("update:refresherTriggered", true);
-        }
-        break;
-      case "restore":
-      case "refresherabort":
-        beforeRefreshing = false;
-        state.refresherHeight = toUpperNumber = 0;
-        if (_state === "restore") {
-          triggerAbort = false;
-          trigger("refresherrestore", {}, {
-            dy: touchEnd.y - touchStart.y
-          });
-        }
-        if (_state === "refresherabort" && triggerAbort) {
-          triggerAbort = false;
-          trigger("refresherabort", {}, {
-            dy: touchEnd.y - touchStart.y
-          });
-        }
-        break;
-    }
-    state.refreshState = _state;
-  }
-  let touchStart = {
-    x: 0,
-    y: 0
-  };
-  let touchEnd = {
-    x: 0,
-    y: props2.refresherThreshold
-  };
-  onMounted(() => {
-    nextTick(() => {
-      _scrollTopChanged(scrollTopNumber.value);
-      _scrollLeftChanged(scrollLeftNumber.value);
-    });
-    _scrollIntoViewChanged(props2.scrollIntoView);
-    let __handleScroll = function(event) {
-      event.preventDefault();
-      event.stopPropagation();
-      _handleScroll(event);
-    };
-    let needStop = null;
-    let __handleTouchMove = function(event) {
-      if (touchStart === null)
-        return;
-      let x = event.touches[0].pageX;
-      let y = event.touches[0].pageY;
-      let _main = main.value;
-      if (Math.abs(x - touchStart.x) > Math.abs(y - touchStart.y)) {
-        if (realScrollX.value) {
-          if (_main.scrollLeft === 0 && x > touchStart.x) {
-            needStop = false;
-            return;
-          } else if (_main.scrollWidth === _main.offsetWidth + _main.scrollLeft && x < touchStart.x) {
-            needStop = false;
-            return;
-          }
-          needStop = true;
-        } else {
-          needStop = false;
-        }
-      } else {
-        if (realScrollY.value) {
-          if (_main.scrollTop === 0 && y > touchStart.y) {
-            needStop = false;
-            if (props2.refresherEnabled && event.cancelable !== false)
-              event.preventDefault();
-          } else if (_main.scrollHeight === _main.offsetHeight + _main.scrollTop && y < touchStart.y) {
-            needStop = false;
-            return;
-          } else {
-            needStop = true;
-          }
-        } else {
-          needStop = false;
-        }
-      }
-      if (needStop) {
-        event.stopPropagation();
-      }
-      if (_main.scrollTop === 0 && event.touches.length === 1) {
-        _setRefreshState("pulling");
-      }
-      if (props2.refresherEnabled && state.refreshState === "pulling") {
-        const dy = y - touchStart.y;
-        if (toUpperNumber === 0) {
-          toUpperNumber = y;
-        }
-        if (!beforeRefreshing) {
-          state.refresherHeight = y - toUpperNumber;
-          if (state.refresherHeight > 0) {
-            triggerAbort = true;
-            trigger("refresherpulling", event, {
-              deltaY: dy,
-              dy
-            });
-          }
-        } else {
-          state.refresherHeight = dy + props2.refresherThreshold;
-          triggerAbort = false;
-        }
-      }
-    };
-    let __handleTouchStart = function(event) {
-      if (event.touches.length === 1) {
-        touchStart = {
-          x: event.touches[0].pageX,
-          y: event.touches[0].pageY
-        };
-      }
-    };
-    let __handleTouchEnd = function(event) {
-      touchEnd = {
-        x: event.changedTouches[0].pageX,
-        y: event.changedTouches[0].pageY
-      };
-      if (state.refresherHeight >= props2.refresherThreshold) {
-        _setRefreshState("refreshing");
-      } else {
-        _setRefreshState("refresherabort");
-      }
-      touchStart = {
-        x: 0,
-        y: 0
-      };
-      touchEnd = {
-        x: 0,
-        y: props2.refresherThreshold
-      };
-    };
-    main.value.addEventListener(
-      "touchstart",
-      __handleTouchStart,
-      passiveOptions
+  const scrollY = computed(
+    () => props2.direction === "vertical" || props2.direction === "all"
+  );
+  const rootStyle = computed(
+    () => `overflow-x:${scrollX.value ? "auto" : "hidden"};overflow-y:${scrollY.value ? "auto" : "hidden"};`
+  );
+  const scrollBarClassName = computed(
+    () => props2.showScrollbar === false ? "uni-scroll-view-scrollbar-hidden" : ""
+  );
+  let lastScrollTop = 0;
+  let lastScrollLeft = 0;
+  let lastUpperTime = 0;
+  let lastLowerTime = 0;
+  function scrollTo(options) {
+    var _a;
+    (_a = rootRef.value) == null ? void 0 : _a.scrollTo(
+      Object.assign(options, {
+        behavior: props2.scrollWithAnimation ? "smooth" : "instant"
+      })
     );
-    main.value.addEventListener("touchmove", __handleTouchMove, passive(false));
-    main.value.addEventListener("scroll", __handleScroll, passive(false));
-    main.value.addEventListener("touchend", __handleTouchEnd, passiveOptions);
-    const removeScrollendListener = onScrollend(main.value, _handleScrollEnd);
-    onBeforeUnmount(() => {
-      main.value.removeEventListener("touchstart", __handleTouchStart);
-      main.value.removeEventListener("touchmove", __handleTouchMove);
-      main.value.removeEventListener("scroll", __handleScroll);
-      main.value.removeEventListener("touchend", __handleTouchEnd);
-      removeScrollendListener();
+  }
+  function scrollIntoView(id2) {
+    const root = rootRef.value;
+    if (!root || !id2)
+      return;
+    if (!/^[_a-zA-Z][-_a-zA-Z0-9:]*$/.test(id2)) {
+      console.error(`id error: scroll-into-view=${id2}`);
+      return;
+    }
+    const element = root.querySelector(`[id="${id2}"]`);
+    if (!element)
+      return;
+    const rootRect = root.getBoundingClientRect();
+    const rect = element.getBoundingClientRect();
+    const options = {};
+    if (scrollX.value) {
+      options.left = root.scrollLeft + rect.left - rootRect.left - root.clientLeft;
+    }
+    if (scrollY.value) {
+      options.top = root.scrollTop + rect.top - rootRect.top - root.clientTop;
+    }
+    if (options.left !== void 0 || options.top !== void 0)
+      scrollTo(options);
+  }
+  function detail(root) {
+    return {
+      scrollLeft: root.scrollLeft,
+      scrollTop: root.scrollTop,
+      scrollHeight: root.scrollHeight,
+      scrollWidth: root.scrollWidth,
+      deltaX: lastScrollLeft - root.scrollLeft,
+      deltaY: lastScrollTop - root.scrollTop
+    };
+  }
+  function checkBoundary(event, position, previous, size, total, upper, lower) {
+    if (position <= threshold(props2.upperThreshold) && position < previous && event.timeStamp - lastUpperTime > 200) {
+      trigger("scrolltoupper", event, { direction: upper });
+      lastUpperTime = event.timeStamp;
+    }
+    if (position + size + threshold(props2.lowerThreshold) >= total && position > previous && event.timeStamp - lastLowerTime > 200) {
+      trigger("scrolltolower", event, { direction: lower });
+      lastLowerTime = event.timeStamp;
+    }
+  }
+  function handleScroll(event) {
+    const root = rootRef.value;
+    if (event.target !== root)
+      return;
+    event.stopPropagation();
+    trigger("scroll", event, detail(root));
+    if (scrollY.value) {
+      checkBoundary(
+        event,
+        root.scrollTop,
+        lastScrollTop,
+        root.clientHeight,
+        root.scrollHeight,
+        "top",
+        "bottom"
+      );
+    }
+    if (scrollX.value) {
+      checkBoundary(
+        event,
+        root.scrollLeft,
+        lastScrollLeft,
+        root.clientWidth,
+        root.scrollWidth,
+        "left",
+        "right"
+      );
+    }
+    lastScrollTop = root.scrollTop;
+    lastScrollLeft = root.scrollLeft;
+  }
+  function handleScrollEnd(event) {
+    if (event.target === rootRef.value) {
+      trigger("scrollend", event, detail(rootRef.value));
+    }
+  }
+  let touchStart = null;
+  function handleTouchStart(event) {
+    touchStart = event.touches.length === 1 ? { x: event.touches[0].pageX, y: event.touches[0].pageY } : null;
+  }
+  function handleTouchMove(event) {
+    if (!touchStart || event.touches.length !== 1)
+      return;
+    const root = rootRef.value;
+    const dx = event.touches[0].pageX - touchStart.x;
+    const dy = event.touches[0].pageY - touchStart.y;
+    const horizontal = Math.abs(dx) > Math.abs(dy);
+    if (horizontal ? !scrollX.value : !scrollY.value)
+      return;
+    const position = horizontal ? root.scrollLeft : root.scrollTop;
+    const max = horizontal ? root.scrollWidth - root.clientWidth : root.scrollHeight - root.clientHeight;
+    const delta = horizontal ? dx : dy;
+    if (delta > 0 && position > 0 || delta < 0 && position < max) {
+      event.stopPropagation();
+    }
+  }
+  function handleTouchEnd() {
+    touchStart = null;
+  }
+  let removeListeners;
+  onMounted(() => {
+    const root = rootRef.value;
+    const passive2 = { passive: true };
+    root.addEventListener("scroll", handleScroll, passive2);
+    root.addEventListener("touchstart", handleTouchStart, passive2);
+    root.addEventListener("touchmove", handleTouchMove, passive2);
+    root.addEventListener("touchend", handleTouchEnd, passive2);
+    root.addEventListener("touchcancel", handleTouchEnd, passive2);
+    const removeScrollend = onScrollend(root, handleScrollEnd);
+    removeListeners = () => {
+      root.removeEventListener("scroll", handleScroll);
+      root.removeEventListener("touchstart", handleTouchStart);
+      root.removeEventListener("touchmove", handleTouchMove);
+      root.removeEventListener("touchend", handleTouchEnd);
+      root.removeEventListener("touchcancel", handleTouchEnd);
+      removeScrollend();
+    };
+    nextTick(() => {
+      if (!rootRef.value)
+        return;
+      const options = {};
+      if (scrollX.value)
+        options.left = Number(props2.scrollLeft) || 0;
+      if (scrollY.value)
+        options.top = Number(props2.scrollTop) || 0;
+      if (options.left !== void 0 || options.top !== void 0)
+        scrollTo(options);
+      scrollIntoView(props2.scrollIntoView);
     });
   });
+  onBeforeUnmount(() => removeListeners == null ? void 0 : removeListeners());
   onActivated(() => {
-    realScrollY.value && (main.value.scrollTop = state.lastScrollTop);
-    realScrollX.value && (main.value.scrollLeft = state.lastScrollLeft);
-  });
-  watch(scrollTopNumber, (val) => {
-    _scrollTopChanged(val);
-  });
-  watch(scrollLeftNumber, (val) => {
-    _scrollLeftChanged(val);
+    var _a;
+    const options = { behavior: "instant" };
+    if (scrollX.value)
+      options.left = lastScrollLeft;
+    if (scrollY.value)
+      options.top = lastScrollTop;
+    (_a = rootRef.value) == null ? void 0 : _a.scrollTo(options);
   });
   watch(
-    () => props2.scrollIntoView,
-    (val) => {
-      _scrollIntoViewChanged(val);
-    }
+    () => [props2.scrollTop, props2.scrollLeft],
+    ([top, left], [previousTop, previousLeft]) => {
+      const options = {};
+      if (scrollY.value && top !== previousTop)
+        options.top = Number(top) || 0;
+      if (scrollX.value && left !== previousLeft)
+        options.left = Number(left) || 0;
+      if (options.left !== void 0 || options.top !== void 0)
+        scrollTo(options);
+    },
+    { flush: "post" }
   );
-  watch(
-    () => props2.refresherTriggered,
-    (val) => {
-      if (val === true) {
-        _setRefreshState("refreshing");
-      } else if (val === false) {
-        _setRefreshState("restore");
-      }
-    }
-  );
-  return {
-    realScrollX,
-    realScrollY,
-    _scrollTopChanged,
-    _scrollLeftChanged
-  };
+  watch(() => props2.scrollIntoView, scrollIntoView, { flush: "post" });
+  expose({ $getMain: () => rootRef.value });
+  return { rootRef, rootStyle, scrollBarClassName };
 }
 const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
@@ -9647,33 +9235,15 @@ const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
     class: UniScrollViewElement
   },
   setup(props2, context) {
-    const { rootRef, main, wrap, content, state, mainStyle, scrollBarClassName, _scrollLeftChanged, _scrollTopChanged } = useScrollView(props2, context);
+    const { rootRef, rootStyle, scrollBarClassName } = useScrollView(props2, context);
     const { slots } = context;
     const root = (openBlock(), createBlock("div", {
       "uni-scroll-view": "",
       "uni-view": "",
-      ref: rootRef
-    }, [createVNode("div", {
-      ref: wrap,
-      class: "uni-scroll-view"
-    }, [createVNode("div", {
-      ref: main,
-      style: mainStyle.value,
+      ref: rootRef,
+      style: rootStyle.value,
       class: scrollBarClassName.value
-    }, [props2.refresherEnabled ? (openBlock(), createBlock(Refresher, {
-      key: 0,
-      refreshState: state.refreshState,
-      refresherHeight: state.refresherHeight,
-      refresherThreshold: props2.refresherThreshold,
-      refresherDefaultStyle: props2.refresherDefaultStyle,
-      refresherBackground: props2.refresherBackground
-    }, {
-      default: withCtx(() => [props2.refresherDefaultStyle == "none" ? (openBlock(), createBlock(Fragment, { key: 0 }, [normalizeVNode(() => slots.refresher && slots.refresher())], 64)) : normalizeVNode(() => null)]),
-      _: 2
-    }, 1024)) : normalizeVNode(() => null), createVNode("div", {
-      ref: content,
-      class: "uni-scroll-view-content"
-    }, [normalizeVNode(() => slots.default && slots.default())], 512)], 512)], 512)], 512));
+    }, [normalizeVNode(() => slots.default && slots.default())], 512));
     return root;
   }
 });

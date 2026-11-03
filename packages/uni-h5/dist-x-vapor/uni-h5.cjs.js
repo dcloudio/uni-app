@@ -225,7 +225,7 @@ const canvasProps = {
     default: false
   }
 };
-const _t0$f = Vue.template("<canvas uni-canvas class=uni-canvas-canvas>", 3);
+const _t0$e = Vue.template("<canvas uni-canvas class=uni-canvas-canvas>", 3);
 const indexVapor$a = /* @__PURE__ */ defineBuiltInComponent({
   name: "Canvas",
   props: canvasProps,
@@ -235,7 +235,7 @@ const indexVapor$a = /* @__PURE__ */ defineBuiltInComponent({
   },
   setup() {
     const root = (() => {
-      const _n0 = _t0$f();
+      const _n0 = _t0$e();
       return _n0;
     })();
     return root;
@@ -2112,11 +2112,11 @@ function setNodes(anchor, ...values) {
 function createNodes(...values) {
   return resolveValues(values);
 }
-const _t0$e = Vue.template("<input tabindex=-1>");
-const _t1$4 = Vue.template("<input>");
-const _t2$3 = Vue.template("<form action novalidate class=uni-input-form> ");
-const _t3$3 = Vue.template("<div uni-input uni-view><div class=uni-input-wrapper> <div> </div>", 1);
-const _t4$3 = Vue.template("<div>", 1);
+const _t0$d = Vue.template("<input tabindex=-1>");
+const _t1$3 = Vue.template("<input>");
+const _t2$2 = Vue.template("<form action novalidate class=uni-input-form> ");
+const _t3$2 = Vue.template("<div uni-input uni-view><div class=uni-input-wrapper> <div> </div>", 1);
+const _t4$2 = Vue.template("<div>", 1);
 const Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
   props: props$8,
@@ -2130,7 +2130,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
     const renderInput = () => (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
       const _n0 = Vue.createIf(() => props2.disabled && fixDisabledColor, () => {
-        const _n2 = _t0$e();
+        const _n2 = _t0$d();
         Vue.setBlockKey(_n2, "disabled-input");
         Vue.on(
           _n2,
@@ -2151,7 +2151,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         });
         return _n2;
       }, () => {
-        const _n4 = _t1$4();
+        const _n4 = _t1$3();
         Vue.setBlockKey(_n4, "input");
         Vue.on(_n4, "input", Vue.withModifiers(onInput, ["stop"]));
         Vue.on(_n4, "keyup", onKeyUpEnter);
@@ -2175,13 +2175,13 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
     })();
     const root = (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
-      const _n8 = _t3$3();
+      const _n8 = _t3$2();
       const _n7 = Vue.child(_n8);
       const _n0 = Vue.child(_n7, true);
       const _n1 = Vue.next(_n0);
       setNodes(_n0, () => props2.selectionClass && (() => {
         const _setTemplateRef2 = Vue.createTemplateRefSetter();
-        const _n02 = _t4$3();
+        const _n02 = _t4$2();
         Vue.renderEffect(() => {
           Vue.setDynamicProps(_n02, [scopedAttrsState.attrs, {
             class: ["uni-field-selection-probe", props2.selectionClass],
@@ -2201,7 +2201,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       }]));
       Vue.setInsertionState(_n7, 2);
       Vue.createIf(() => props2.confirmType === "search", () => {
-        const _n4 = _t2$3();
+        const _n4 = _t2$2();
         Vue.on(_n4, "submit", (event) => event.preventDefault());
         const _x4 = Vue.txt(_n4);
         setNodes(_x4, () => renderInput());
@@ -2254,7 +2254,7 @@ function useResizeSensorReset(rootRef) {
     lastElementChild.scrollTop = 1e5;
   };
 }
-const _t0$d = Vue.template("<div uni-resize-sensor><div><div></div></div><div><div>", 1);
+const _t0$c = Vue.template("<div uni-resize-sensor><div><div></div></div><div><div>", 1);
 const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
   name: "ResizeSensor",
   props: resizeSensorProps,
@@ -2263,7 +2263,7 @@ const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
     const { rootRef, update } = useResizeSensor(props2, emit2);
     const root = (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
-      const _n2 = _t0$d();
+      const _n2 = _t0$c();
       const _n0 = Vue.child(_n2);
       const _n1 = Vue.next(_n0);
       Vue.on(_n0, "scroll", update);
@@ -2424,11 +2424,11 @@ function useTextarea(props2, { emit: emit2, expose }) {
     onKeyUpEnter
   };
 }
-const _t0$c = Vue.template("<textarea tabindex=-1>");
-const _t1$3 = Vue.template("<textarea>");
-const _t2$2 = Vue.template("<form action class=uni-input-form> ");
-const _t3$2 = Vue.template("<div uni-textarea uni-view><div class=uni-textarea-wrapper> <div> </div><div class=uni-textarea-line> </div><div> </div>", 1);
-const _t4$2 = Vue.template("<div>", 1);
+const _t0$b = Vue.template("<textarea tabindex=-1>");
+const _t1$2 = Vue.template("<textarea>");
+const _t2$1 = Vue.template("<form action class=uni-input-form> ");
+const _t3$1 = Vue.template("<div uni-textarea uni-view><div class=uni-textarea-wrapper> <div> </div><div class=uni-textarea-line> </div><div> </div>", 1);
+const _t4$1 = Vue.template("<div>", 1);
 const indexVapor$9 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$7,
@@ -2442,7 +2442,7 @@ const indexVapor$9 = /* @__PURE__ */ defineBuiltInComponent({
     const renderTextarea = () => (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
       const _n0 = Vue.createIf(() => props2.disabled && fixDisabledColor, () => {
-        const _n2 = _t0$c();
+        const _n2 = _t0$b();
         Vue.setBlockKey(_n2, "disabled-textarea");
         Vue.on(
           _n2,
@@ -2468,7 +2468,7 @@ const indexVapor$9 = /* @__PURE__ */ defineBuiltInComponent({
         });
         return _n2;
       }, () => {
-        const _n4 = _t1$3();
+        const _n4 = _t1$2();
         Vue.setBlockKey(_n4, "textarea");
         Vue.on(_n4, "keydown", onKeyDownEnter);
         Vue.on(_n4, "keyup", onKeyUpEnter);
@@ -2497,7 +2497,7 @@ const indexVapor$9 = /* @__PURE__ */ defineBuiltInComponent({
     })();
     const root = (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
-      const _n12 = _t3$2();
+      const _n12 = _t3$1();
       const _n11 = Vue.child(_n12);
       const _n0 = Vue.child(_n11, true);
       const _n1 = Vue.next(_n0);
@@ -2506,7 +2506,7 @@ const indexVapor$9 = /* @__PURE__ */ defineBuiltInComponent({
       const _n3 = Vue.child(_n5, true);
       setNodes(_n0, () => props2.selectionClass && (() => {
         const _setTemplateRef2 = Vue.createTemplateRefSetter();
-        const _n02 = _t4$2();
+        const _n02 = _t4$1();
         Vue.renderEffect(() => {
           Vue.setDynamicProps(_n02, [scopedAttrsState.attrs, {
             class: ["uni-field-selection-probe", props2.selectionClass],
@@ -2521,7 +2521,7 @@ const indexVapor$9 = /* @__PURE__ */ defineBuiltInComponent({
       const _x1 = Vue.txt(_n1);
       setNodes(_x1, () => props2.placeholder);
       setNodes(_n3, () => valueCompute.value.map((item) => (() => {
-        const _n52 = _t4$2();
+        const _n52 = _t4$1();
         Vue.setInsertionState(_n52);
         Vue.createIf(() => item.trim(), () => {
           const _n22 = createNodes(() => item);
@@ -2548,7 +2548,7 @@ const indexVapor$9 = /* @__PURE__ */ defineBuiltInComponent({
       });
       Vue.setInsertionState(_n11, 4);
       Vue.createIf(() => props2.confirmType === "search", () => {
-        const _n8 = _t2$2();
+        const _n8 = _t2$1();
         Vue.on(_n8, "submit", (event) => event.preventDefault());
         const _x8 = Vue.txt(_n8);
         setNodes(_x8, () => renderTextarea());
@@ -6477,7 +6477,7 @@ function useEditor(props2, emit2) {
   useKeyboard(props2, rootRef);
   return rootRef;
 }
-const _t0$b = Vue.template("<div uni-editor uni-view class=ql-container>", 1);
+const _t0$a = Vue.template("<div uni-editor uni-view class=ql-container>", 1);
 class UniEditorElement extends UniViewElement {
   static [Symbol.hasInstance](value) {
     return this === UniEditorElement && value instanceof UniViewElement && value.hasAttribute("uni-editor") || Function.prototype[Symbol.hasInstance].call(this, value);
@@ -6496,7 +6496,7 @@ const indexVapor$8 = /* @__PURE__ */ defineBuiltInComponent({
     const rootRef = useEditor(props2);
     const root = (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
-      const _n0 = _t0$b();
+      const _n0 = _t0$a();
       Vue.renderEffect(() => {
         Vue.setProp(_n0, "id", props2.id);
         _setTemplateRef(_n0, rootRef);
@@ -6567,7 +6567,7 @@ const iconProps = {
 function useIcon(props2) {
   return Vue.computed(() => ICONS[props2.type]);
 }
-const _t0$a = Vue.template("<div uni-icon uni-view> ", 1);
+const _t0$9 = Vue.template("<div uni-icon uni-view> ", 1);
 class UniIconElement extends UniViewElement {
   static [Symbol.hasInstance](value) {
     return this === UniIconElement && value instanceof UniViewElement && value.hasAttribute("uni-icon") || Function.prototype[Symbol.hasInstance].call(this, value);
@@ -6584,7 +6584,7 @@ const indexVapor$7 = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2) {
     const path = useIcon(props2);
     const root = (() => {
-      const _n0 = _t0$a();
+      const _n0 = _t0$9();
       const _x0 = Vue.txt(_n0);
       setNodes(_x0, () => path.value && path.value.d && createSvgIconVNode(path.value.d, props2.color || path.value.c, rpx2px(props2.size)));
       return _n0;
@@ -6778,7 +6778,7 @@ function useMovableAreaState(props2, rootRef) {
     }
   };
 }
-const _t0$9 = Vue.template("<div><!> ", 1);
+const _t0$8 = Vue.template("<div><!> ", 1);
 class UniMovableAreaElement extends UniViewElement {
   static [Symbol.hasInstance](value) {
     return this === UniMovableAreaElement && value instanceof UniViewElement && value.hasAttribute("uni-movable-area") || Function.prototype[Symbol.hasInstance].call(this, value);
@@ -6798,7 +6798,7 @@ const indexVapor$6 = /* @__PURE__ */ defineBuiltInComponent({
     const movableViewItems = renderChildren();
     const root = (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
-      const _n3 = _t0$9();
+      const _n3 = _t0$8();
       const _n2 = Vue.child(_n3);
       const _n1 = Vue.next(_n2, true);
       Vue.renderEffect(() => Vue.setDynamicProps(_n3, [
@@ -7776,7 +7776,7 @@ function useMovableViewState(props2, trigger, rootRef) {
     setParent
   };
 }
-const _t0$8 = Vue.template("<div uni-movable-view uni-view><!> ", 1);
+const _t0$7 = Vue.template("<div uni-movable-view uni-view><!> ", 1);
 class UniMovableViewElement extends UniViewElement {
   static [Symbol.hasInstance](value) {
     return this === UniMovableViewElement && value instanceof UniViewElement && value.hasAttribute("uni-movable-view") || Function.prototype[Symbol.hasInstance].call(this, value);
@@ -7795,7 +7795,7 @@ const indexVapor$5 = /* @__PURE__ */ defineBuiltInComponent({
     const { rootRef, setParent } = useMovableView(props2, emit2);
     const root = (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
-      const _n3 = _t0$8();
+      const _n3 = _t0$7();
       const _n2 = Vue.child(_n3);
       const _n1 = Vue.next(_n2, true);
       Vue.setInsertionState(_n3, _n2);
@@ -8203,145 +8203,6 @@ const indexVapor$4 = /* @__PURE__ */ defineBuiltInComponent({
     return result;
   }
 });
-const _t0$7 = Vue.template('<svg fill=#2BD009 class=uni-scroll-view-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none>', false, 1);
-const _t1$2 = Vue.template('<svg class=uni-scroll-view-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle cx=50 cy=50 r=20 fill=none style="color: #2bd009" stroke-width=3>', false, 1);
-const _t2$1 = Vue.template("<div class=uni-scroll-view-refresh-inner>");
-const _t3$1 = Vue.template("<div class=uni-scroll-view-refresh>");
-const _t4$1 = Vue.template("<div class=uni-scroll-view-refresher-container> ");
-const _t5 = Vue.template("<div class=uni-scroll-view-refresher>", 1);
-const Refresher = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Refresher",
-  props: {
-    refreshState: {
-      type: String,
-      default: ""
-    },
-    refresherHeight: {
-      type: Number,
-      default: 0
-    },
-    refresherThreshold: {
-      type: Number,
-      default: 45
-    },
-    refresherDefaultStyle: {
-      type: String,
-      /**
-      * auto为内部值，蒸汽模式下用户未设置时使用该值
-      */
-      default: "auto"
-    },
-    refresherBackground: {
-      type: String,
-      default: "transparent"
-    }
-  },
-  setup(props2, { slots }) {
-    const rootRef = Vue.ref(null);
-    const rootStyle = Vue.computed(() => {
-      const style = { backgroundColor: props2.refresherBackground };
-      switch (props2.refreshState) {
-        case "pulling":
-          style.height = props2.refresherHeight + "px";
-          break;
-        case "refreshing":
-          style.height = props2.refresherThreshold + "px";
-          style.transition = "height 0.3s";
-          break;
-        case "":
-        case "refresherabort":
-        case "restore":
-          style.height = "0px";
-          style.transition = "height 0.3s";
-          break;
-      }
-      return style;
-    });
-    const refreshRotate = Vue.computed(() => {
-      const route = props2.refresherHeight / props2.refresherThreshold;
-      return (route > 1 ? 1 : route) * 360;
-    });
-    const refreshColor = Vue.computed(() => {
-      switch (props2.refresherDefaultStyle) {
-        case "black":
-        case "white":
-          return props2.refresherDefaultStyle;
-        case "auto":
-        default:
-          return void 0;
-      }
-    });
-    return () => {
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n29 = _t5();
-        Vue.renderEffect(() => Vue.setStyle(_n29, rootStyle.value));
-        Vue.setInsertionState(_n29);
-        Vue.createIf(() => props2.refresherDefaultStyle !== "none", () => {
-          const _n21 = _t3$1();
-          Vue.setInsertionState(_n21);
-          Vue.createIf(() => true, () => {
-            const _n4 = Vue.createIf(() => props2.refreshState == "pulling" || props2.refreshState == "refreshing", () => {
-              const _n6 = createComponent(_sfc_main$s, {
-                class: "uni-scroll-view-refresh__loading",
-                paused: () => props2.refreshState == "pulling",
-                style: () => ({
-                  transform: props2.refreshState == "pulling" ? "rotate(" + refreshRotate.value + "deg)" : void 0,
-                  color: refreshColor.value
-                })
-              });
-              Vue.setBlockKey(_n6, "refresh__loading");
-              return _n6;
-            }, () => {
-              const _n8 = createNodes(null);
-              return _n8;
-            }, 265);
-            return _n4;
-          }, () => {
-            const _n20 = _t2$1();
-            Vue.setInsertionState(_n20);
-            Vue.createIf(() => props2.refreshState == "pulling", () => {
-              const _n12 = _t0$7();
-              Vue.setBlockKey(_n12, "refresh__icon");
-              Vue.renderEffect(() => Vue.setAttr(_n12, "style", { transform: "rotate(" + refreshRotate.value + "deg)" }, true));
-              return _n12;
-            }, () => {
-              const _n14 = createNodes(null);
-              return _n14;
-            }, 777);
-            Vue.setInsertionState(_n20, 1);
-            Vue.createIf(() => props2.refreshState == "refreshing", () => {
-              const _n17 = _t1$2();
-              Vue.setBlockKey(_n17, "refresh__spinner");
-              return _n17;
-            }, () => {
-              const _n19 = createNodes(null);
-              return _n19;
-            }, 1033);
-            return _n20;
-          }, 518);
-          return _n21;
-        }, () => {
-          const _n23 = createNodes(null);
-          return _n23;
-        }, 1289);
-        Vue.setInsertionState(_n29, 1);
-        Vue.createIf(() => props2.refresherDefaultStyle === "none", () => {
-          const _n26 = _t4$1();
-          const _x26 = Vue.txt(_n26);
-          setNodes(_x26, () => slots.default && slots.default());
-          Vue.renderEffect(() => Vue.setStyle(_n26, { height: `${props2.refresherThreshold}px` }));
-          return _n26;
-        }, () => {
-          const _n28 = createNodes(null);
-          return _n28;
-        }, 1545);
-        Vue.renderEffect(() => _setTemplateRef(_n29, rootRef));
-        return _n29;
-      })();
-    };
-  }
-});
 const _UniScrollViewElement = class _UniScrollViewElement extends UniViewElement {
   static [Symbol.hasInstance](value) {
     return this === _UniScrollViewElement && value instanceof UniViewElement && value.hasAttribute("uni-scroll-view") || Function.prototype[Symbol.hasInstance].call(this, value);
@@ -8350,356 +8211,79 @@ const _UniScrollViewElement = class _UniScrollViewElement extends UniViewElement
 _UniScrollViewElement.__uniElement = {};
 let UniScrollViewElement = _UniScrollViewElement;
 const props$5 = {
-  direction: {
-    type: [String],
-    default: "vertical"
-  },
-  scrollX: {
-    type: [Boolean, String],
-    default: false
-  },
-  scrollY: {
-    type: [Boolean, String],
-    default: false
-  },
-  showScrollbar: {
-    type: [Boolean, String],
-    default: true
-  },
-  upperThreshold: {
-    type: [Number, String],
-    default: 50
-  },
-  lowerThreshold: {
-    type: [Number, String],
-    default: 50
-  },
-  scrollTop: {
-    type: [Number, String],
-    default: 0
-  },
-  scrollLeft: {
-    type: [Number, String],
-    default: 0
-  },
-  scrollIntoView: {
-    type: String,
-    default: ""
-  },
-  scrollWithAnimation: {
-    type: [Boolean, String],
-    default: false
-  },
-  enableBackToTop: {
-    type: [Boolean, String],
-    default: false
-  },
-  refresherEnabled: {
-    type: [Boolean, String],
-    default: false
-  },
-  refresherThreshold: {
-    type: Number,
-    default: 45
-  },
-  refresherDefaultStyle: {
-    type: String,
-    /**
-     * auto为内部值，蒸汽模式下用户未设置时使用该值
-     */
-    default: "auto"
-  },
-  refresherBackground: {
-    type: String,
-    default: "transparent"
-  },
-  refresherTriggered: {
-    type: [Boolean, String],
-    default: false
-  }
+  direction: { type: String, default: "vertical" },
+  showScrollbar: { type: [Boolean, String], default: true },
+  upperThreshold: { type: [Number, String], default: 50 },
+  lowerThreshold: { type: [Number, String], default: 50 },
+  scrollTop: { type: [Number, String], default: 0 },
+  scrollLeft: { type: [Number, String], default: 0 },
+  scrollIntoView: { type: String, default: "" },
+  scrollWithAnimation: { type: [Boolean, String], default: false }
 };
-const emits = [
-  "scroll",
-  "scrollend",
-  "scrolltoupper",
-  "scrolltolower",
-  "refresherrefresh",
-  "refresherrestore",
-  "refresherpulling",
-  "refresherabort",
-  "update:refresherTriggered"
-];
+const emits = ["scroll", "scrollend", "scrolltoupper", "scrolltolower"];
 function useScrollView(props2, { emit: emit2, expose }) {
   const rootRef = Vue.ref(null);
-  const main = Vue.ref(null);
-  const wrap = Vue.ref(null);
-  const content = Vue.ref(null);
-  const trigger = useCustomEvent(rootRef, emit2);
-  const { state, scrollTopNumber, scrollLeftNumber } = useScrollViewState(props2);
-  const { realScrollX, realScrollY, _scrollLeftChanged, _scrollTopChanged } = useScrollViewLoader(
-    props2,
-    state,
-    scrollTopNumber,
-    scrollLeftNumber,
-    trigger,
-    rootRef,
-    main,
-    content,
-    emit2
+  const scrollX = Vue.computed(
+    () => props2.direction === "horizontal" || props2.direction === "all"
   );
-  const mainStyle = Vue.computed(() => {
-    let style = "";
-    realScrollX.value ? style += "overflow-x:auto;" : style += "overflow-x:hidden;";
-    realScrollY.value ? style += "overflow-y:auto;" : style += "overflow-y:hidden;";
-    return style;
-  });
-  const scrollBarClassName = Vue.computed(() => {
-    let className = "uni-scroll-view";
-    if (props2.showScrollbar === false) {
-      className += " uni-scroll-view-scrollbar-hidden";
-    }
-    return className;
-  });
-  expose({
-    // 自动化测试需要暴露main从而获取scrollLeft
-    $getMain() {
-      return main.value;
-    }
-  });
-  return {
-    rootRef,
-    main,
-    wrap,
-    content,
-    state,
-    mainStyle,
-    scrollBarClassName,
-    _scrollLeftChanged,
-    _scrollTopChanged
-  };
-}
-function useScrollViewState(props2) {
-  const scrollTopNumber = Vue.computed(() => {
-    return Number(props2.scrollTop) || 0;
-  });
-  const scrollLeftNumber = Vue.computed(() => {
-    return Number(props2.scrollLeft) || 0;
-  });
-  const state = Vue.reactive({
-    lastScrollTop: scrollTopNumber.value,
-    lastScrollLeft: scrollLeftNumber.value,
-    lastScrollToUpperTime: 0,
-    lastScrollToLowerTime: 0,
-    refresherHeight: 0,
-    refreshState: ""
-  });
-  return {
-    state,
-    scrollTopNumber,
-    scrollLeftNumber
-  };
-}
-function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content, emit2) {
-  let beforeRefreshing = false;
-  let triggerAbort = false;
-  let __transitionEnd = () => {
-  };
-  const realScrollX = Vue.computed(() => {
-    if (props2.direction === "horizontal" || props2.direction === "all") {
-      return true;
-    }
-    return false;
-  });
-  const realScrollY = Vue.computed(() => {
-    if (props2.direction === "vertical" || props2.direction === "all") {
-      return true;
-    }
-    return false;
-  });
-  Vue.computed(() => {
-    let val = Number(props2.upperThreshold);
-    return isNaN(val) ? 50 : val;
-  });
-  Vue.computed(() => {
-    let val = Number(props2.lowerThreshold);
-    return isNaN(val) ? 50 : val;
-  });
-  function scrollTo(scrollToValue, direction) {
-    const container = main.value;
-    let transformValue = 0;
-    let transform = "";
-    scrollToValue < 0 ? scrollToValue = 0 : direction === "x" && scrollToValue > container.scrollWidth - container.offsetWidth ? scrollToValue = container.scrollWidth - container.offsetWidth : direction === "y" && scrollToValue > container.scrollHeight - container.offsetHeight && (scrollToValue = container.scrollHeight - container.offsetHeight);
-    direction === "x" ? transformValue = container.scrollLeft - scrollToValue : direction === "y" && (transformValue = container.scrollTop - scrollToValue);
-    if (transformValue === 0)
+  const scrollY = Vue.computed(
+    () => props2.direction === "vertical" || props2.direction === "all"
+  );
+  const rootStyle = Vue.computed(
+    () => `overflow-x:${scrollX.value ? "auto" : "hidden"};overflow-y:${scrollY.value ? "auto" : "hidden"};`
+  );
+  const scrollBarClassName = Vue.computed(
+    () => props2.showScrollbar === false ? "uni-scroll-view-scrollbar-hidden" : ""
+  );
+  function scrollTo(options) {
+    var _a;
+    (_a = rootRef.value) == null ? void 0 : _a.scrollTo(
+      Object.assign(options, {
+        behavior: props2.scrollWithAnimation ? "smooth" : "instant"
+      })
+    );
+  }
+  function scrollIntoView(id2) {
+    const root = rootRef.value;
+    if (!root || !id2)
       return;
-    let _content = content.value;
-    _content.style.transition = "transform .3s ease-out";
-    _content.style.webkitTransition = "-webkit-transform .3s ease-out";
-    if (direction === "x") {
-      transform = "translateX(" + transformValue + "px) translateZ(0)";
-    } else {
-      direction === "y" && (transform = "translateY(" + transformValue + "px) translateZ(0)");
-    }
-    _content.removeEventListener("transitionend", __transitionEnd);
-    _content.removeEventListener("webkitTransitionEnd", __transitionEnd);
-    __transitionEnd = () => _transitionEnd(scrollToValue, direction);
-    _content.addEventListener("transitionend", __transitionEnd);
-    _content.addEventListener("webkitTransitionEnd", __transitionEnd);
-    if (direction === "x") {
-      container.style.overflowX = "hidden";
-    } else if (direction === "y") {
-      container.style.overflowY = "hidden";
-    }
-    _content.style.transform = transform;
-    _content.style.webkitTransform = transform;
-  }
-  function _scrollTopChanged(val) {
-    if (realScrollY.value) {
-      {
-        if (props2.scrollWithAnimation) {
-          scrollTo(val, "y");
-        } else {
-          main.value.scrollTop = val;
-        }
-      }
-    }
-  }
-  function _scrollLeftChanged(val) {
-    if (realScrollX.value) {
-      {
-        if (props2.scrollWithAnimation) {
-          scrollTo(val, "x");
-        } else {
-          main.value.scrollLeft = val;
-        }
-      }
-    }
-  }
-  function _scrollIntoViewChanged(val) {
-    if (val) {
-      if (!/^[_a-zA-Z][-_a-zA-Z0-9:]*$/.test(val)) {
-        console.error(`id error: scroll-into-view=${val}`);
-        return;
-      }
-      let element = rootRef.value.querySelector("#" + val);
-      if (element) {
-        let mainRect = main.value.getBoundingClientRect();
-        let elRect = element.getBoundingClientRect();
-        if (realScrollX.value) {
-          let left = elRect.left - mainRect.left;
-          let scrollLeft = main.value.scrollLeft;
-          let x = scrollLeft + left;
-          if (props2.scrollWithAnimation) {
-            scrollTo(x, "x");
-          } else {
-            main.value.scrollLeft = x;
-          }
-        }
-        if (realScrollY.value) {
-          let top = elRect.top - mainRect.top;
-          let scrollTop = main.value.scrollTop;
-          let y = scrollTop + top;
-          if (props2.scrollWithAnimation) {
-            scrollTo(y, "y");
-          } else {
-            main.value.scrollTop = y;
-          }
-        }
-      }
-    }
-  }
-  function _transitionEnd(val, direction) {
-    content.value.style.transition = "";
-    content.value.style.webkitTransition = "";
-    content.value.style.transform = "";
-    content.value.style.webkitTransform = "";
-    let _main = main.value;
-    if (direction === "x") {
-      _main.style.overflowX = realScrollX.value ? "auto" : "hidden";
-      _main.scrollLeft = val;
-    } else if (direction === "y") {
-      _main.style.overflowY = realScrollY.value ? "auto" : "hidden";
-      _main.scrollTop = val;
-    }
-    content.value.removeEventListener("transitionend", __transitionEnd);
-    content.value.removeEventListener("webkitTransitionEnd", __transitionEnd);
-  }
-  function _setRefreshState(_state) {
-    if (!props2.refresherEnabled)
+    if (!/^[_a-zA-Z][-_a-zA-Z0-9:]*$/.test(id2)) {
+      console.error(`id error: scroll-into-view=${id2}`);
       return;
-    switch (_state) {
-      case "refreshing":
-        state.refresherHeight = props2.refresherThreshold;
-        if (!beforeRefreshing) {
-          beforeRefreshing = true;
-          trigger("refresherpulling", {}, {
-            deltaY: state.refresherHeight,
-            dy: state.refresherHeight
-          });
-          trigger("refresherrefresh", {}, {
-            dy: touchEnd.y - touchStart.y
-          });
-          emit2("update:refresherTriggered", true);
-        }
-        break;
-      case "restore":
-      case "refresherabort":
-        beforeRefreshing = false;
-        state.refresherHeight = 0;
-        if (_state === "restore") {
-          triggerAbort = false;
-          trigger("refresherrestore", {}, {
-            dy: touchEnd.y - touchStart.y
-          });
-        }
-        if (_state === "refresherabort" && triggerAbort) {
-          triggerAbort = false;
-          trigger("refresherabort", {}, {
-            dy: touchEnd.y - touchStart.y
-          });
-        }
-        break;
     }
-    state.refreshState = _state;
+    const element = root.querySelector(`[id="${id2}"]`);
+    if (!element)
+      return;
+    const rootRect = root.getBoundingClientRect();
+    const rect = element.getBoundingClientRect();
+    const options = {};
+    if (scrollX.value) {
+      options.left = root.scrollLeft + rect.left - rootRect.left - root.clientLeft;
+    }
+    if (scrollY.value) {
+      options.top = root.scrollTop + rect.top - rootRect.top - root.clientTop;
+    }
+    if (options.left !== void 0 || options.top !== void 0)
+      scrollTo(options);
   }
-  let touchStart = {
-    x: 0,
-    y: 0
-  };
-  let touchEnd = {
-    x: 0,
-    y: props2.refresherThreshold
-  };
-  Vue.watch(scrollTopNumber, (val) => {
-    _scrollTopChanged(val);
-  });
-  Vue.watch(scrollLeftNumber, (val) => {
-    _scrollLeftChanged(val);
-  });
   Vue.watch(
-    () => props2.scrollIntoView,
-    (val) => {
-      _scrollIntoViewChanged(val);
-    }
+    () => [props2.scrollTop, props2.scrollLeft],
+    ([top, left], [previousTop, previousLeft]) => {
+      const options = {};
+      if (scrollY.value && top !== previousTop)
+        options.top = Number(top) || 0;
+      if (scrollX.value && left !== previousLeft)
+        options.left = Number(left) || 0;
+      if (options.left !== void 0 || options.top !== void 0)
+        scrollTo(options);
+    },
+    { flush: "post" }
   );
-  Vue.watch(
-    () => props2.refresherTriggered,
-    (val) => {
-      if (val === true) {
-        _setRefreshState("refreshing");
-      } else if (val === false) {
-        _setRefreshState("restore");
-      }
-    }
-  );
-  return {
-    realScrollX,
-    realScrollY,
-    _scrollTopChanged,
-    _scrollLeftChanged
-  };
+  Vue.watch(() => props2.scrollIntoView, scrollIntoView, { flush: "post" });
+  expose({ $getMain: () => rootRef.value });
+  return { rootRef, rootStyle, scrollBarClassName };
 }
-const _t0$6 = Vue.template("<div uni-scroll-view uni-view><div class=uni-scroll-view><div><!><div class=uni-scroll-view-content> ", 1);
+const _t0$6 = Vue.template("<div uni-scroll-view uni-view> ", 1);
 const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
   props: props$5,
@@ -8709,51 +8293,19 @@ const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
     class: UniScrollViewElement
   },
   setup(props2, context) {
-    const { rootRef, main, wrap, content, state, mainStyle, scrollBarClassName, _scrollLeftChanged, _scrollTopChanged } = useScrollView(props2, context);
+    const { rootRef, rootStyle, scrollBarClassName } = useScrollView(props2, context);
     const { slots } = context;
     const root = (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
-      const _n14 = _t0$6();
-      const _n13 = Vue.child(_n14);
-      const _n12 = Vue.child(_n13);
-      const _n11 = Vue.child(_n12);
-      const _n10 = Vue.next(_n11);
+      const _n0 = _t0$6();
+      const _x0 = Vue.txt(_n0);
+      setNodes(_x0, () => slots.default && slots.default());
       Vue.renderEffect(() => {
-        Vue.setStyle(_n12, mainStyle.value);
-        Vue.setClass(_n12, scrollBarClassName.value);
+        Vue.setStyle(_n0, rootStyle.value);
+        Vue.setClass(_n0, scrollBarClassName.value);
+        _setTemplateRef(_n0, rootRef);
       });
-      Vue.setInsertionState(_n12, _n11);
-      Vue.createIf(() => props2.refresherEnabled, () => {
-        const _n7 = createComponent(Refresher, {
-          refreshState: () => state.refreshState,
-          refresherHeight: () => state.refresherHeight,
-          refresherThreshold: () => props2.refresherThreshold,
-          refresherDefaultStyle: () => props2.refresherDefaultStyle,
-          refresherBackground: () => props2.refresherBackground
-        }, Vue.extend(() => {
-          const _n2 = Vue.createIf(() => props2.refresherDefaultStyle == "none", () => {
-            const _n4 = createNodes(() => slots.refresher && slots.refresher());
-            return _n4;
-          }, () => {
-            const _n6 = createNodes(null);
-            return _n6;
-          }, 394);
-          return _n2;
-        }, { _: 1 }));
-        return _n7;
-      }, () => {
-        const _n9 = createNodes(null);
-        return _n9;
-      }, 521);
-      const _x10 = Vue.txt(_n10);
-      setNodes(_x10, () => slots.default && slots.default());
-      Vue.renderEffect(() => {
-        _setTemplateRef(_n10, content);
-        _setTemplateRef(_n12, main);
-        _setTemplateRef(_n13, wrap);
-        _setTemplateRef(_n14, rootRef);
-      });
-      return _n14;
+      return _n0;
     })();
     return root;
   }

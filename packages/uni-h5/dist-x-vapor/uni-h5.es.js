@@ -218,7 +218,7 @@ const canvasProps = {
     default: false
   }
 };
-const _t0$h = template("<canvas uni-canvas class=uni-canvas-canvas>", 3);
+const _t0$g = template("<canvas uni-canvas class=uni-canvas-canvas>", 3);
 const indexVapor$8 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Canvas",
   props: canvasProps,
@@ -228,7 +228,7 @@ const indexVapor$8 = /* @__PURE__ */ defineBuiltInComponent({
   },
   setup() {
     const root = (() => {
-      const _n0 = _t0$h();
+      const _n0 = _t0$g();
       return _n0;
     })();
     initCanvasElement(root);
@@ -1011,7 +1011,7 @@ const ViewJSBridge = /* @__PURE__ */ extend(
 );
 const LONGPRESS_TIMEOUT = 350;
 const LONGPRESS_THRESHOLD = 10;
-const passiveOptions$4 = /* @__PURE__ */ passive(true);
+const passiveOptions$3 = /* @__PURE__ */ passive(true);
 let longPressTimer;
 function clearLongPressTimer() {
   if (longPressTimer) {
@@ -1055,10 +1055,10 @@ function touchmove(evt) {
   }
 }
 function initLongPress() {
-  window.addEventListener("touchstart", touchstart, passiveOptions$4);
-  window.addEventListener("touchmove", touchmove, passiveOptions$4);
-  window.addEventListener("touchend", clearLongPressTimer, passiveOptions$4);
-  window.addEventListener("touchcancel", clearLongPressTimer, passiveOptions$4);
+  window.addEventListener("touchstart", touchstart, passiveOptions$3);
+  window.addEventListener("touchmove", touchmove, passiveOptions$3);
+  window.addEventListener("touchend", clearLongPressTimer, passiveOptions$3);
+  window.addEventListener("touchcancel", clearLongPressTimer, passiveOptions$3);
 }
 function checkValue$1(value, defaultValue) {
   const newValue = Number(value);
@@ -2493,7 +2493,7 @@ function normalizeCustomEvent(name, domEvt, el, detail) {
     detail
   };
 }
-const passiveOptions$3 = /* @__PURE__ */ passive(true);
+const passiveOptions$2 = /* @__PURE__ */ passive(true);
 const states = [];
 let userInteract = 0;
 let inited = false;
@@ -2517,7 +2517,7 @@ function addInteractListener(vm = { userAction: false }) {
             !--userInteract && setUserAction(false);
           }, 0);
         },
-        passiveOptions$3
+        passiveOptions$2
       );
     });
     inited = true;
@@ -3351,11 +3351,11 @@ function setNodes(anchor, ...values) {
 function createNodes(...values) {
   return resolveValues(values);
 }
-const _t0$g = template("<input tabindex=-1>");
-const _t1$5 = template("<input>");
-const _t2$4 = template("<form action novalidate class=uni-input-form> ");
-const _t3$4 = template("<div uni-input uni-view><div class=uni-input-wrapper> <div> </div>", 1);
-const _t4$4 = template("<div>", 1);
+const _t0$f = template("<input tabindex=-1>");
+const _t1$4 = template("<input>");
+const _t2$3 = template("<form action novalidate class=uni-input-form> ");
+const _t3$3 = template("<div uni-input uni-view><div class=uni-input-wrapper> <div> </div>", 1);
+const _t4$3 = template("<div>", 1);
 const __syscom_0$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
   props: props$9,
@@ -3369,7 +3369,7 @@ const __syscom_0$2 = /* @__PURE__ */ defineBuiltInComponent({
     const renderInput = () => (() => {
       const _setTemplateRef = createTemplateRefSetter();
       const _n0 = createIf(() => props2.disabled && fixDisabledColor, () => {
-        const _n2 = _t0$g();
+        const _n2 = _t0$f();
         setBlockKey(_n2, "disabled-input");
         on$1(
           _n2,
@@ -3390,7 +3390,7 @@ const __syscom_0$2 = /* @__PURE__ */ defineBuiltInComponent({
         });
         return _n2;
       }, () => {
-        const _n4 = _t1$5();
+        const _n4 = _t1$4();
         setBlockKey(_n4, "input");
         on$1(_n4, "input", withModifiers(onInput, ["stop"]));
         on$1(_n4, "keyup", onKeyUpEnter);
@@ -3414,13 +3414,13 @@ const __syscom_0$2 = /* @__PURE__ */ defineBuiltInComponent({
     })();
     const root = (() => {
       const _setTemplateRef = createTemplateRefSetter();
-      const _n8 = _t3$4();
+      const _n8 = _t3$3();
       const _n7 = child(_n8);
       const _n0 = child(_n7, true);
       const _n1 = next(_n0);
       setNodes(_n0, () => props2.selectionClass && (() => {
         const _setTemplateRef2 = createTemplateRefSetter();
-        const _n02 = _t4$4();
+        const _n02 = _t4$3();
         renderEffect(() => {
           setDynamicProps(_n02, [scopedAttrsState.attrs, {
             class: ["uni-field-selection-probe", props2.selectionClass],
@@ -3440,7 +3440,7 @@ const __syscom_0$2 = /* @__PURE__ */ defineBuiltInComponent({
       }]));
       setInsertionState(_n7, 2);
       createIf(() => props2.confirmType === "search", () => {
-        const _n4 = _t2$4();
+        const _n4 = _t2$3();
         on$1(_n4, "submit", (event) => event.preventDefault());
         const _x4 = txt(_n4);
         setNodes(_x4, () => renderInput());
@@ -3509,7 +3509,7 @@ function useResizeSensorLifecycle(rootRef, props2, update, reset) {
     }
   });
 }
-const _t0$f = template("<div uni-resize-sensor><div><div></div></div><div><div>", 1);
+const _t0$e = template("<div uni-resize-sensor><div><div></div></div><div><div>", 1);
 const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
   name: "ResizeSensor",
   props: resizeSensorProps,
@@ -3518,7 +3518,7 @@ const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
     const { rootRef, update } = useResizeSensor(props2, emit2);
     const root = (() => {
       const _setTemplateRef = createTemplateRefSetter();
-      const _n2 = _t0$f();
+      const _n2 = _t0$e();
       const _n0 = child(_n2);
       const _n1 = next(_n0);
       on$1(_n0, "scroll", update);
@@ -3688,11 +3688,11 @@ function useTextarea(props2, { emit: emit2, expose }) {
     onKeyUpEnter
   };
 }
-const _t0$e = template("<textarea tabindex=-1>");
-const _t1$4 = template("<textarea>");
-const _t2$3 = template("<form action class=uni-input-form> ");
-const _t3$3 = template("<div uni-textarea uni-view><div class=uni-textarea-wrapper> <div> </div><div class=uni-textarea-line> </div><div> </div>", 1);
-const _t4$3 = template("<div>", 1);
+const _t0$d = template("<textarea tabindex=-1>");
+const _t1$3 = template("<textarea>");
+const _t2$2 = template("<form action class=uni-input-form> ");
+const _t3$2 = template("<div uni-textarea uni-view><div class=uni-textarea-wrapper> <div> </div><div class=uni-textarea-line> </div><div> </div>", 1);
+const _t4$2 = template("<div>", 1);
 const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$8,
@@ -3706,7 +3706,7 @@ const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
     const renderTextarea = () => (() => {
       const _setTemplateRef = createTemplateRefSetter();
       const _n0 = createIf(() => props2.disabled && fixDisabledColor, () => {
-        const _n2 = _t0$e();
+        const _n2 = _t0$d();
         setBlockKey(_n2, "disabled-textarea");
         on$1(
           _n2,
@@ -3732,7 +3732,7 @@ const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
         });
         return _n2;
       }, () => {
-        const _n4 = _t1$4();
+        const _n4 = _t1$3();
         setBlockKey(_n4, "textarea");
         on$1(_n4, "keydown", onKeyDownEnter);
         on$1(_n4, "keyup", onKeyUpEnter);
@@ -3761,7 +3761,7 @@ const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
     })();
     const root = (() => {
       const _setTemplateRef = createTemplateRefSetter();
-      const _n12 = _t3$3();
+      const _n12 = _t3$2();
       const _n11 = child(_n12);
       const _n0 = child(_n11, true);
       const _n1 = next(_n0);
@@ -3770,7 +3770,7 @@ const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
       const _n3 = child(_n5, true);
       setNodes(_n0, () => props2.selectionClass && (() => {
         const _setTemplateRef2 = createTemplateRefSetter();
-        const _n02 = _t4$3();
+        const _n02 = _t4$2();
         renderEffect(() => {
           setDynamicProps(_n02, [scopedAttrsState.attrs, {
             class: ["uni-field-selection-probe", props2.selectionClass],
@@ -3785,7 +3785,7 @@ const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
       const _x1 = txt(_n1);
       setNodes(_x1, () => props2.placeholder);
       setNodes(_n3, () => valueCompute.value.map((item) => (() => {
-        const _n52 = _t4$3();
+        const _n52 = _t4$2();
         setInsertionState(_n52);
         createIf(() => item.trim(), () => {
           const _n22 = createNodes(() => item);
@@ -3812,7 +3812,7 @@ const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
       });
       setInsertionState(_n11, 4);
       createIf(() => props2.confirmType === "search", () => {
-        const _n8 = _t2$3();
+        const _n8 = _t2$2();
         on$1(_n8, "submit", (event) => event.preventDefault());
         const _x8 = txt(_n8);
         setNodes(_x8, () => renderTextarea());
@@ -8255,10 +8255,10 @@ const initIntersectionObserverPolyfill = function() {
     return records;
   };
   IntersectionObserver2.prototype._initThresholds = function(opt_threshold) {
-    var threshold = opt_threshold || [0];
-    if (!Array.isArray(threshold))
-      threshold = [threshold];
-    return threshold.sort().filter(function(t12, i, a) {
+    var threshold2 = opt_threshold || [0];
+    if (!Array.isArray(threshold2))
+      threshold2 = [threshold2];
+    return threshold2.sort().filter(function(t12, i, a) {
       if (typeof t12 != "number" || isNaN(t12) || t12 < 0 || t12 > 1) {
         throw new Error(
           "threshold must be a number between 0 and 1 inclusively"
@@ -8504,8 +8504,8 @@ const initIntersectionObserverPolyfill = function() {
     if (oldRatio === newRatio)
       return;
     for (var i = 0; i < this.thresholds.length; i++) {
-      var threshold = this.thresholds[i];
-      if (threshold == oldRatio || threshold == newRatio || threshold < oldRatio !== threshold < newRatio) {
+      var threshold2 = this.thresholds[i];
+      if (threshold2 == oldRatio || threshold2 == newRatio || threshold2 < oldRatio !== threshold2 < newRatio) {
         return true;
       }
     }
@@ -10409,7 +10409,7 @@ const supportsPassive = /* @__PURE__ */ (() => {
   }
   return supportsPassive2;
 })();
-const passiveOptions$2 = supportsPassive ? {
+const passiveOptions$1 = supportsPassive ? {
   passive: false
 } : false;
 let curScrollListener;
@@ -10422,7 +10422,7 @@ function initPageScrollListener(instance2, pageMeta) {
     return document.addEventListener(
       "touchmove",
       disableScrollListener,
-      passiveOptions$2
+      passiveOptions$1
     );
   }
   const { onPageScroll, onReachBottom } = instance2;
@@ -14298,7 +14298,7 @@ function useEditor(props2, emit2) {
   useKeyboard$1(props2, rootRef);
   return rootRef;
 }
-const _t0$d = template("<div uni-editor uni-view class=ql-container>", 1);
+const _t0$c = template("<div uni-editor uni-view class=ql-container>", 1);
 class UniEditorElement extends UniViewElement {
   static [Symbol.hasInstance](value) {
     return this === UniEditorElement && value instanceof UniViewElement && value.hasAttribute("uni-editor") || Function.prototype[Symbol.hasInstance].call(this, value);
@@ -14317,7 +14317,7 @@ const indexVapor$7 = /* @__PURE__ */ defineBuiltInComponent({
     const rootRef = useEditor(props2, emit2);
     const root = (() => {
       const _setTemplateRef = createTemplateRefSetter();
-      const _n0 = _t0$d();
+      const _n0 = _t0$c();
       renderEffect(() => {
         setProp(_n0, "id", props2.id);
         _setTemplateRef(_n0, rootRef);
@@ -14388,7 +14388,7 @@ const iconProps = {
 function useIcon(props2) {
   return computed(() => ICONS[props2.type]);
 }
-const _t0$c = template("<div uni-icon uni-view> ", 1);
+const _t0$b = template("<div uni-icon uni-view> ", 1);
 class UniIconElement extends UniViewElement {
   static [Symbol.hasInstance](value) {
     return this === UniIconElement && value instanceof UniViewElement && value.hasAttribute("uni-icon") || Function.prototype[Symbol.hasInstance].call(this, value);
@@ -14405,7 +14405,7 @@ const indexVapor$6 = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2) {
     const path = useIcon(props2);
     const root = (() => {
-      const _n0 = _t0$c();
+      const _n0 = _t0$b();
       const _x0 = txt(_n0);
       setNodes(_x0, () => path.value && path.value.d && createSvgIconVNode(path.value.d, props2.color || path.value.c, rpx2px(props2.size)));
       return _n0;
@@ -14603,7 +14603,7 @@ function useMovableAreaState(props2, rootRef) {
     }
   };
 }
-const _t0$b = template("<div><!> ", 1);
+const _t0$a = template("<div><!> ", 1);
 class UniMovableAreaElement extends UniViewElement {
   static [Symbol.hasInstance](value) {
     return this === UniMovableAreaElement && value instanceof UniViewElement && value.hasAttribute("uni-movable-area") || Function.prototype[Symbol.hasInstance].call(this, value);
@@ -14623,7 +14623,7 @@ const indexVapor$5 = /* @__PURE__ */ defineBuiltInComponent({
     const movableViewItems = renderChildren();
     const root = (() => {
       const _setTemplateRef = createTemplateRefSetter();
-      const _n3 = _t0$b();
+      const _n3 = _t0$a();
       const _n2 = child(_n3);
       const _n1 = next(_n2, true);
       renderEffect(() => setDynamicProps(_n3, [
@@ -15782,7 +15782,7 @@ function useMovableViewState(props2, trigger, rootRef) {
     setParent
   };
 }
-const _t0$a = template("<div uni-movable-view uni-view><!> ", 1);
+const _t0$9 = template("<div uni-movable-view uni-view><!> ", 1);
 class UniMovableViewElement extends UniViewElement {
   static [Symbol.hasInstance](value) {
     return this === UniMovableViewElement && value instanceof UniViewElement && value.hasAttribute("uni-movable-view") || Function.prototype[Symbol.hasInstance].call(this, value);
@@ -15801,7 +15801,7 @@ const indexVapor$4 = /* @__PURE__ */ defineBuiltInComponent({
     const { rootRef, setParent } = useMovableView(props2, emit2);
     const root = (() => {
       const _setTemplateRef = createTemplateRefSetter();
-      const _n3 = _t0$a();
+      const _n3 = _t0$9();
       const _n2 = child(_n3);
       const _n1 = next(_n2, true);
       setInsertionState(_n3, _n2);
@@ -16209,145 +16209,6 @@ const indexVapor$3 = /* @__PURE__ */ defineBuiltInComponent({
     return result;
   }
 });
-const _t0$9 = template('<svg fill=#2BD009 class=uni-scroll-view-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none>', false, 1);
-const _t1$3 = template('<svg class=uni-scroll-view-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle cx=50 cy=50 r=20 fill=none style="color: #2bd009" stroke-width=3>', false, 1);
-const _t2$2 = template("<div class=uni-scroll-view-refresh-inner>");
-const _t3$2 = template("<div class=uni-scroll-view-refresh>");
-const _t4$2 = template("<div class=uni-scroll-view-refresher-container> ");
-const _t5 = template("<div class=uni-scroll-view-refresher>", 1);
-const Refresher = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Refresher",
-  props: {
-    refreshState: {
-      type: String,
-      default: ""
-    },
-    refresherHeight: {
-      type: Number,
-      default: 0
-    },
-    refresherThreshold: {
-      type: Number,
-      default: 45
-    },
-    refresherDefaultStyle: {
-      type: String,
-      /**
-      * auto为内部值，蒸汽模式下用户未设置时使用该值
-      */
-      default: "auto"
-    },
-    refresherBackground: {
-      type: String,
-      default: "transparent"
-    }
-  },
-  setup(props2, { slots }) {
-    const rootRef = ref(null);
-    const rootStyle = computed(() => {
-      const style = { backgroundColor: props2.refresherBackground };
-      switch (props2.refreshState) {
-        case "pulling":
-          style.height = props2.refresherHeight + "px";
-          break;
-        case "refreshing":
-          style.height = props2.refresherThreshold + "px";
-          style.transition = "height 0.3s";
-          break;
-        case "":
-        case "refresherabort":
-        case "restore":
-          style.height = "0px";
-          style.transition = "height 0.3s";
-          break;
-      }
-      return style;
-    });
-    const refreshRotate = computed(() => {
-      const route = props2.refresherHeight / props2.refresherThreshold;
-      return (route > 1 ? 1 : route) * 360;
-    });
-    const refreshColor = computed(() => {
-      switch (props2.refresherDefaultStyle) {
-        case "black":
-        case "white":
-          return props2.refresherDefaultStyle;
-        case "auto":
-        default:
-          return void 0;
-      }
-    });
-    return () => {
-      return (() => {
-        const _setTemplateRef = createTemplateRefSetter();
-        const _n29 = _t5();
-        renderEffect(() => setStyle(_n29, rootStyle.value));
-        setInsertionState(_n29);
-        createIf(() => props2.refresherDefaultStyle !== "none", () => {
-          const _n21 = _t3$2();
-          setInsertionState(_n21);
-          createIf(() => true, () => {
-            const _n4 = createIf(() => props2.refreshState == "pulling" || props2.refreshState == "refreshing", () => {
-              const _n6 = createComponent(_sfc_main$C, {
-                class: "uni-scroll-view-refresh__loading",
-                paused: () => props2.refreshState == "pulling",
-                style: () => ({
-                  transform: props2.refreshState == "pulling" ? "rotate(" + refreshRotate.value + "deg)" : void 0,
-                  color: refreshColor.value
-                })
-              });
-              setBlockKey(_n6, "refresh__loading");
-              return _n6;
-            }, () => {
-              const _n8 = createNodes(null);
-              return _n8;
-            }, 265);
-            return _n4;
-          }, () => {
-            const _n20 = _t2$2();
-            setInsertionState(_n20);
-            createIf(() => props2.refreshState == "pulling", () => {
-              const _n12 = _t0$9();
-              setBlockKey(_n12, "refresh__icon");
-              renderEffect(() => setAttr(_n12, "style", { transform: "rotate(" + refreshRotate.value + "deg)" }, true));
-              return _n12;
-            }, () => {
-              const _n14 = createNodes(null);
-              return _n14;
-            }, 777);
-            setInsertionState(_n20, 1);
-            createIf(() => props2.refreshState == "refreshing", () => {
-              const _n17 = _t1$3();
-              setBlockKey(_n17, "refresh__spinner");
-              return _n17;
-            }, () => {
-              const _n19 = createNodes(null);
-              return _n19;
-            }, 1033);
-            return _n20;
-          }, 518);
-          return _n21;
-        }, () => {
-          const _n23 = createNodes(null);
-          return _n23;
-        }, 1289);
-        setInsertionState(_n29, 1);
-        createIf(() => props2.refresherDefaultStyle === "none", () => {
-          const _n26 = _t4$2();
-          const _x26 = txt(_n26);
-          setNodes(_x26, () => slots.default && slots.default());
-          renderEffect(() => setStyle(_n26, { height: `${props2.refresherThreshold}px` }));
-          return _n26;
-        }, () => {
-          const _n28 = createNodes(null);
-          return _n28;
-        }, 1545);
-        renderEffect(() => _setTemplateRef(_n29, rootRef));
-        return _n29;
-      })();
-    };
-  }
-});
 const _UniScrollViewElement = class _UniScrollViewElement extends UniViewElement {
   static [Symbol.hasInstance](value) {
     return this === _UniScrollViewElement && value instanceof UniViewElement && value.hasAttribute("uni-scroll-view") || Function.prototype[Symbol.hasInstance].call(this, value);
@@ -16355,26 +16216,17 @@ const _UniScrollViewElement = class _UniScrollViewElement extends UniViewElement
 };
 _UniScrollViewElement.__uniElement = {};
 let UniScrollViewElement = _UniScrollViewElement;
-function initScrollViewElement(root, scrollLeftChanged, scrollTopChanged) {
-  const main = root.firstElementChild.firstElementChild;
-  Object.defineProperties(root, {
-    // ListView/Waterflow 复用此宿主时覆盖逻辑名称，滚动属性和方法仍保持本组件的绑定。
-    uniTagName: { value: "SCROLL-VIEW", configurable: true },
-    scrollHeight: { get: () => main.scrollHeight },
-    scrollWidth: { get: () => main.scrollWidth },
-    // 属性赋值保留方向限制和 scrollWithAnimation；原生方法仍直接操作内部容器。
-    scrollLeft: { get: () => main.scrollLeft, set: scrollLeftChanged },
-    scrollTop: { get: () => main.scrollTop, set: scrollTopChanged },
-    // 容器固定，方法只绑定一次，并保留取出方法后独立调用的能力。
-    scrollTo: { value: main.scrollTo.bind(main) },
-    scrollBy: { value: main.scrollBy.bind(main) }
+function initScrollViewElement(root) {
+  Object.defineProperty(root, "uniTagName", {
+    value: "SCROLL-VIEW",
+    configurable: true
   });
 }
 const SCROLL_END_DELAY = 100;
-const passiveOptions$1 = { passive: true };
+const passiveOptions = { passive: true };
 function onScrollend(element, listener2) {
   if ("onscrollend" in element) {
-    element.addEventListener("scrollend", listener2, passiveOptions$1);
+    element.addEventListener("scrollend", listener2, passiveOptions);
     return () => {
       element.removeEventListener("scrollend", listener2);
     };
@@ -16414,10 +16266,10 @@ function onScrollend(element, listener2) {
       schedule();
     }
   };
-  element.addEventListener("touchstart", onTouchStart, passiveOptions$1);
-  element.addEventListener("touchend", onTouchEnd, passiveOptions$1);
-  element.addEventListener("touchcancel", onTouchEnd, passiveOptions$1);
-  element.addEventListener("scroll", onScroll, passiveOptions$1);
+  element.addEventListener("touchstart", onTouchStart, passiveOptions);
+  element.addEventListener("touchend", onTouchEnd, passiveOptions);
+  element.addEventListener("touchcancel", onTouchEnd, passiveOptions);
+  element.addEventListener("scroll", onScroll, passiveOptions);
   return () => {
     element.removeEventListener("touchstart", onTouchStart);
     element.removeEventListener("touchend", onTouchEnd);
@@ -16429,532 +16281,209 @@ function onScrollend(element, listener2) {
     waitingForTouchEnd = false;
   };
 }
-const passiveOptions = /* @__PURE__ */ passive(true);
 const props$6 = {
-  direction: {
-    type: [String],
-    default: "vertical"
-  },
-  scrollX: {
-    type: [Boolean, String],
-    default: false
-  },
-  scrollY: {
-    type: [Boolean, String],
-    default: false
-  },
-  showScrollbar: {
-    type: [Boolean, String],
-    default: true
-  },
-  upperThreshold: {
-    type: [Number, String],
-    default: 50
-  },
-  lowerThreshold: {
-    type: [Number, String],
-    default: 50
-  },
-  scrollTop: {
-    type: [Number, String],
-    default: 0
-  },
-  scrollLeft: {
-    type: [Number, String],
-    default: 0
-  },
-  scrollIntoView: {
-    type: String,
-    default: ""
-  },
-  scrollWithAnimation: {
-    type: [Boolean, String],
-    default: false
-  },
-  enableBackToTop: {
-    type: [Boolean, String],
-    default: false
-  },
-  refresherEnabled: {
-    type: [Boolean, String],
-    default: false
-  },
-  refresherThreshold: {
-    type: Number,
-    default: 45
-  },
-  refresherDefaultStyle: {
-    type: String,
-    /**
-     * auto为内部值，蒸汽模式下用户未设置时使用该值
-     */
-    default: "auto"
-  },
-  refresherBackground: {
-    type: String,
-    default: "transparent"
-  },
-  refresherTriggered: {
-    type: [Boolean, String],
-    default: false
-  }
+  direction: { type: String, default: "vertical" },
+  showScrollbar: { type: [Boolean, String], default: true },
+  upperThreshold: { type: [Number, String], default: 50 },
+  lowerThreshold: { type: [Number, String], default: 50 },
+  scrollTop: { type: [Number, String], default: 0 },
+  scrollLeft: { type: [Number, String], default: 0 },
+  scrollIntoView: { type: String, default: "" },
+  scrollWithAnimation: { type: [Boolean, String], default: false }
 };
-const emits = [
-  "scroll",
-  "scrollend",
-  "scrolltoupper",
-  "scrolltolower",
-  "refresherrefresh",
-  "refresherrestore",
-  "refresherpulling",
-  "refresherabort",
-  "update:refresherTriggered"
-];
+const emits = ["scroll", "scrollend", "scrolltoupper", "scrolltolower"];
+function threshold(value) {
+  const number = Number(value);
+  return isNaN(number) ? 50 : number;
+}
 function useScrollView(props2, { emit: emit2, expose }) {
   const rootRef = ref(null);
-  const main = ref(null);
-  const wrap = ref(null);
-  const content = ref(null);
   const trigger = useCustomEvent(rootRef, emit2);
-  const { state, scrollTopNumber, scrollLeftNumber } = useScrollViewState(props2);
-  const { realScrollX, realScrollY, _scrollLeftChanged, _scrollTopChanged } = useScrollViewLoader(
-    props2,
-    state,
-    scrollTopNumber,
-    scrollLeftNumber,
-    trigger,
-    rootRef,
-    main,
-    content,
-    emit2
+  const scrollX = computed(
+    () => props2.direction === "horizontal" || props2.direction === "all"
   );
-  const mainStyle = computed(() => {
-    let style = "";
-    realScrollX.value ? style += "overflow-x:auto;" : style += "overflow-x:hidden;";
-    realScrollY.value ? style += "overflow-y:auto;" : style += "overflow-y:hidden;";
-    return style;
-  });
-  const scrollBarClassName = computed(() => {
-    let className = "uni-scroll-view";
-    if (props2.showScrollbar === false) {
-      className += " uni-scroll-view-scrollbar-hidden";
-    }
-    return className;
-  });
-  expose({
-    // 自动化测试需要暴露main从而获取scrollLeft
-    $getMain() {
-      return main.value;
-    }
-  });
-  return {
-    rootRef,
-    main,
-    wrap,
-    content,
-    state,
-    mainStyle,
-    scrollBarClassName,
-    _scrollLeftChanged,
-    _scrollTopChanged
-  };
-}
-function useScrollViewState(props2) {
-  const scrollTopNumber = computed(() => {
-    return Number(props2.scrollTop) || 0;
-  });
-  const scrollLeftNumber = computed(() => {
-    return Number(props2.scrollLeft) || 0;
-  });
-  const state = reactive({
-    lastScrollTop: scrollTopNumber.value,
-    lastScrollLeft: scrollLeftNumber.value,
-    lastScrollToUpperTime: 0,
-    lastScrollToLowerTime: 0,
-    refresherHeight: 0,
-    refreshState: ""
-  });
-  return {
-    state,
-    scrollTopNumber,
-    scrollLeftNumber
-  };
-}
-function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content, emit2) {
-  let beforeRefreshing = false;
-  let toUpperNumber = 0;
-  let triggerAbort = false;
-  let __transitionEnd = () => {
-  };
-  const realScrollX = computed(() => {
-    if (props2.direction === "horizontal" || props2.direction === "all") {
-      return true;
-    }
-    return false;
-  });
-  const realScrollY = computed(() => {
-    if (props2.direction === "vertical" || props2.direction === "all") {
-      return true;
-    }
-    return false;
-  });
-  const upperThresholdNumber = computed(() => {
-    let val = Number(props2.upperThreshold);
-    return isNaN(val) ? 50 : val;
-  });
-  const lowerThresholdNumber = computed(() => {
-    let val = Number(props2.lowerThreshold);
-    return isNaN(val) ? 50 : val;
-  });
-  function scrollTo2(scrollToValue, direction2) {
-    const container = main.value;
-    let transformValue = 0;
-    let transform = "";
-    scrollToValue < 0 ? scrollToValue = 0 : direction2 === "x" && scrollToValue > container.scrollWidth - container.offsetWidth ? scrollToValue = container.scrollWidth - container.offsetWidth : direction2 === "y" && scrollToValue > container.scrollHeight - container.offsetHeight && (scrollToValue = container.scrollHeight - container.offsetHeight);
-    direction2 === "x" ? transformValue = container.scrollLeft - scrollToValue : direction2 === "y" && (transformValue = container.scrollTop - scrollToValue);
-    if (transformValue === 0)
-      return;
-    let _content = content.value;
-    _content.style.transition = "transform .3s ease-out";
-    _content.style.webkitTransition = "-webkit-transform .3s ease-out";
-    if (direction2 === "x") {
-      transform = "translateX(" + transformValue + "px) translateZ(0)";
-    } else {
-      direction2 === "y" && (transform = "translateY(" + transformValue + "px) translateZ(0)");
-    }
-    _content.removeEventListener("transitionend", __transitionEnd);
-    _content.removeEventListener("webkitTransitionEnd", __transitionEnd);
-    __transitionEnd = () => _transitionEnd(scrollToValue, direction2);
-    _content.addEventListener("transitionend", __transitionEnd);
-    _content.addEventListener("webkitTransitionEnd", __transitionEnd);
-    if (direction2 === "x") {
-      container.style.overflowX = "hidden";
-    } else if (direction2 === "y") {
-      container.style.overflowY = "hidden";
-    }
-    _content.style.transform = transform;
-    _content.style.webkitTransform = transform;
-  }
-  function _handleScroll($event) {
-    const target = $event.target;
-    trigger("scroll", $event, {
-      scrollLeft: target.scrollLeft,
-      scrollTop: target.scrollTop,
-      scrollHeight: target.scrollHeight,
-      scrollWidth: target.scrollWidth,
-      deltaX: state.lastScrollLeft - target.scrollLeft,
-      deltaY: state.lastScrollTop - target.scrollTop
-    });
-    if (realScrollY.value) {
-      if (target.scrollTop <= upperThresholdNumber.value && state.lastScrollTop - target.scrollTop > 0 && $event.timeStamp - state.lastScrollToUpperTime > 200) {
-        trigger("scrolltoupper", $event, {
-          direction: "top"
-        });
-        state.lastScrollToUpperTime = $event.timeStamp;
-      }
-      if (target.scrollTop + target.offsetHeight + lowerThresholdNumber.value >= target.scrollHeight && state.lastScrollTop - target.scrollTop < 0 && $event.timeStamp - state.lastScrollToLowerTime > 200) {
-        trigger("scrolltolower", $event, {
-          direction: "bottom"
-        });
-        state.lastScrollToLowerTime = $event.timeStamp;
-      }
-    }
-    if (realScrollX.value) {
-      if (target.scrollLeft <= upperThresholdNumber.value && state.lastScrollLeft - target.scrollLeft > 0 && $event.timeStamp - state.lastScrollToUpperTime > 200) {
-        trigger("scrolltoupper", $event, {
-          direction: "left"
-        });
-        state.lastScrollToUpperTime = $event.timeStamp;
-      }
-      if (target.scrollLeft + target.offsetWidth + lowerThresholdNumber.value >= target.scrollWidth && state.lastScrollLeft - target.scrollLeft < 0 && $event.timeStamp - state.lastScrollToLowerTime > 200) {
-        trigger("scrolltolower", $event, {
-          direction: "right"
-        });
-        state.lastScrollToLowerTime = $event.timeStamp;
-      }
-    }
-    state.lastScrollTop = target.scrollTop;
-    state.lastScrollLeft = target.scrollLeft;
-  }
-  function _handleScrollEnd($event) {
-    const target = $event.target;
-    trigger("scrollend", $event, {
-      scrollLeft: target.scrollLeft,
-      scrollTop: target.scrollTop,
-      scrollHeight: target.scrollHeight,
-      scrollWidth: target.scrollWidth,
-      deltaX: state.lastScrollLeft - target.scrollLeft,
-      deltaY: state.lastScrollTop - target.scrollTop
-    });
-  }
-  function _scrollTopChanged(val) {
-    if (realScrollY.value) {
-      {
-        if (props2.scrollWithAnimation) {
-          scrollTo2(val, "y");
-        } else {
-          main.value.scrollTop = val;
-        }
-      }
-    }
-  }
-  function _scrollLeftChanged(val) {
-    if (realScrollX.value) {
-      {
-        if (props2.scrollWithAnimation) {
-          scrollTo2(val, "x");
-        } else {
-          main.value.scrollLeft = val;
-        }
-      }
-    }
-  }
-  function _scrollIntoViewChanged(val) {
-    if (val) {
-      if (!/^[_a-zA-Z][-_a-zA-Z0-9:]*$/.test(val)) {
-        console.error(`id error: scroll-into-view=${val}`);
-        return;
-      }
-      let element = rootRef.value.querySelector("#" + val);
-      if (element) {
-        let mainRect = main.value.getBoundingClientRect();
-        let elRect = element.getBoundingClientRect();
-        if (realScrollX.value) {
-          let left = elRect.left - mainRect.left;
-          let scrollLeft = main.value.scrollLeft;
-          let x = scrollLeft + left;
-          if (props2.scrollWithAnimation) {
-            scrollTo2(x, "x");
-          } else {
-            main.value.scrollLeft = x;
-          }
-        }
-        if (realScrollY.value) {
-          let top = elRect.top - mainRect.top;
-          let scrollTop = main.value.scrollTop;
-          let y = scrollTop + top;
-          if (props2.scrollWithAnimation) {
-            scrollTo2(y, "y");
-          } else {
-            main.value.scrollTop = y;
-          }
-        }
-      }
-    }
-  }
-  function _transitionEnd(val, direction2) {
-    content.value.style.transition = "";
-    content.value.style.webkitTransition = "";
-    content.value.style.transform = "";
-    content.value.style.webkitTransform = "";
-    let _main = main.value;
-    if (direction2 === "x") {
-      _main.style.overflowX = realScrollX.value ? "auto" : "hidden";
-      _main.scrollLeft = val;
-    } else if (direction2 === "y") {
-      _main.style.overflowY = realScrollY.value ? "auto" : "hidden";
-      _main.scrollTop = val;
-    }
-    content.value.removeEventListener("transitionend", __transitionEnd);
-    content.value.removeEventListener("webkitTransitionEnd", __transitionEnd);
-  }
-  function _setRefreshState(_state) {
-    if (!props2.refresherEnabled)
-      return;
-    switch (_state) {
-      case "refreshing":
-        state.refresherHeight = props2.refresherThreshold;
-        if (!beforeRefreshing) {
-          beforeRefreshing = true;
-          trigger("refresherpulling", {}, {
-            deltaY: state.refresherHeight,
-            dy: state.refresherHeight
-          });
-          trigger("refresherrefresh", {}, {
-            dy: touchEnd.y - touchStart.y
-          });
-          emit2("update:refresherTriggered", true);
-        }
-        break;
-      case "restore":
-      case "refresherabort":
-        beforeRefreshing = false;
-        state.refresherHeight = toUpperNumber = 0;
-        if (_state === "restore") {
-          triggerAbort = false;
-          trigger("refresherrestore", {}, {
-            dy: touchEnd.y - touchStart.y
-          });
-        }
-        if (_state === "refresherabort" && triggerAbort) {
-          triggerAbort = false;
-          trigger("refresherabort", {}, {
-            dy: touchEnd.y - touchStart.y
-          });
-        }
-        break;
-    }
-    state.refreshState = _state;
-  }
-  let touchStart = {
-    x: 0,
-    y: 0
-  };
-  let touchEnd = {
-    x: 0,
-    y: props2.refresherThreshold
-  };
-  onMounted(() => {
-    nextTick(() => {
-      _scrollTopChanged(scrollTopNumber.value);
-      _scrollLeftChanged(scrollLeftNumber.value);
-    });
-    _scrollIntoViewChanged(props2.scrollIntoView);
-    let __handleScroll = function(event) {
-      event.preventDefault();
-      event.stopPropagation();
-      _handleScroll(event);
-    };
-    let needStop = null;
-    let __handleTouchMove = function(event) {
-      if (touchStart === null)
-        return;
-      let x = event.touches[0].pageX;
-      let y = event.touches[0].pageY;
-      let _main = main.value;
-      if (Math.abs(x - touchStart.x) > Math.abs(y - touchStart.y)) {
-        if (realScrollX.value) {
-          if (_main.scrollLeft === 0 && x > touchStart.x) {
-            needStop = false;
-            return;
-          } else if (_main.scrollWidth === _main.offsetWidth + _main.scrollLeft && x < touchStart.x) {
-            needStop = false;
-            return;
-          }
-          needStop = true;
-        } else {
-          needStop = false;
-        }
-      } else {
-        if (realScrollY.value) {
-          if (_main.scrollTop === 0 && y > touchStart.y) {
-            needStop = false;
-            if (props2.refresherEnabled && event.cancelable !== false)
-              event.preventDefault();
-          } else if (_main.scrollHeight === _main.offsetHeight + _main.scrollTop && y < touchStart.y) {
-            needStop = false;
-            return;
-          } else {
-            needStop = true;
-          }
-        } else {
-          needStop = false;
-        }
-      }
-      if (needStop) {
-        event.stopPropagation();
-      }
-      if (_main.scrollTop === 0 && event.touches.length === 1) {
-        _setRefreshState("pulling");
-      }
-      if (props2.refresherEnabled && state.refreshState === "pulling") {
-        const dy = y - touchStart.y;
-        if (toUpperNumber === 0) {
-          toUpperNumber = y;
-        }
-        if (!beforeRefreshing) {
-          state.refresherHeight = y - toUpperNumber;
-          if (state.refresherHeight > 0) {
-            triggerAbort = true;
-            trigger("refresherpulling", event, {
-              deltaY: dy,
-              dy
-            });
-          }
-        } else {
-          state.refresherHeight = dy + props2.refresherThreshold;
-          triggerAbort = false;
-        }
-      }
-    };
-    let __handleTouchStart = function(event) {
-      if (event.touches.length === 1) {
-        touchStart = {
-          x: event.touches[0].pageX,
-          y: event.touches[0].pageY
-        };
-      }
-    };
-    let __handleTouchEnd = function(event) {
-      touchEnd = {
-        x: event.changedTouches[0].pageX,
-        y: event.changedTouches[0].pageY
-      };
-      if (state.refresherHeight >= props2.refresherThreshold) {
-        _setRefreshState("refreshing");
-      } else {
-        _setRefreshState("refresherabort");
-      }
-      touchStart = {
-        x: 0,
-        y: 0
-      };
-      touchEnd = {
-        x: 0,
-        y: props2.refresherThreshold
-      };
-    };
-    main.value.addEventListener(
-      "touchstart",
-      __handleTouchStart,
-      passiveOptions
+  const scrollY = computed(
+    () => props2.direction === "vertical" || props2.direction === "all"
+  );
+  const rootStyle = computed(
+    () => `overflow-x:${scrollX.value ? "auto" : "hidden"};overflow-y:${scrollY.value ? "auto" : "hidden"};`
+  );
+  const scrollBarClassName = computed(
+    () => props2.showScrollbar === false ? "uni-scroll-view-scrollbar-hidden" : ""
+  );
+  let lastScrollTop = 0;
+  let lastScrollLeft = 0;
+  let lastUpperTime = 0;
+  let lastLowerTime = 0;
+  function scrollTo2(options) {
+    var _a;
+    (_a = rootRef.value) == null ? void 0 : _a.scrollTo(
+      Object.assign(options, {
+        behavior: props2.scrollWithAnimation ? "smooth" : "instant"
+      })
     );
-    main.value.addEventListener("touchmove", __handleTouchMove, passive(false));
-    main.value.addEventListener("scroll", __handleScroll, passive(false));
-    main.value.addEventListener("touchend", __handleTouchEnd, passiveOptions);
-    const removeScrollendListener = onScrollend(main.value, _handleScrollEnd);
-    onBeforeUnmount(() => {
-      main.value.removeEventListener("touchstart", __handleTouchStart);
-      main.value.removeEventListener("touchmove", __handleTouchMove);
-      main.value.removeEventListener("scroll", __handleScroll);
-      main.value.removeEventListener("touchend", __handleTouchEnd);
-      removeScrollendListener();
+  }
+  function scrollIntoView(id2) {
+    const root = rootRef.value;
+    if (!root || !id2)
+      return;
+    if (!/^[_a-zA-Z][-_a-zA-Z0-9:]*$/.test(id2)) {
+      console.error(`id error: scroll-into-view=${id2}`);
+      return;
+    }
+    const element = root.querySelector(`[id="${id2}"]`);
+    if (!element)
+      return;
+    const rootRect = root.getBoundingClientRect();
+    const rect = element.getBoundingClientRect();
+    const options = {};
+    if (scrollX.value) {
+      options.left = root.scrollLeft + rect.left - rootRect.left - root.clientLeft;
+    }
+    if (scrollY.value) {
+      options.top = root.scrollTop + rect.top - rootRect.top - root.clientTop;
+    }
+    if (options.left !== void 0 || options.top !== void 0)
+      scrollTo2(options);
+  }
+  function detail(root) {
+    return {
+      scrollLeft: root.scrollLeft,
+      scrollTop: root.scrollTop,
+      scrollHeight: root.scrollHeight,
+      scrollWidth: root.scrollWidth,
+      deltaX: lastScrollLeft - root.scrollLeft,
+      deltaY: lastScrollTop - root.scrollTop
+    };
+  }
+  function checkBoundary(event, position, previous, size, total, upper, lower) {
+    if (position <= threshold(props2.upperThreshold) && position < previous && event.timeStamp - lastUpperTime > 200) {
+      trigger("scrolltoupper", event, { direction: upper });
+      lastUpperTime = event.timeStamp;
+    }
+    if (position + size + threshold(props2.lowerThreshold) >= total && position > previous && event.timeStamp - lastLowerTime > 200) {
+      trigger("scrolltolower", event, { direction: lower });
+      lastLowerTime = event.timeStamp;
+    }
+  }
+  function handleScroll(event) {
+    const root = rootRef.value;
+    if (event.target !== root)
+      return;
+    event.stopPropagation();
+    trigger("scroll", event, detail(root));
+    if (scrollY.value) {
+      checkBoundary(
+        event,
+        root.scrollTop,
+        lastScrollTop,
+        root.clientHeight,
+        root.scrollHeight,
+        "top",
+        "bottom"
+      );
+    }
+    if (scrollX.value) {
+      checkBoundary(
+        event,
+        root.scrollLeft,
+        lastScrollLeft,
+        root.clientWidth,
+        root.scrollWidth,
+        "left",
+        "right"
+      );
+    }
+    lastScrollTop = root.scrollTop;
+    lastScrollLeft = root.scrollLeft;
+  }
+  function handleScrollEnd(event) {
+    if (event.target === rootRef.value) {
+      trigger("scrollend", event, detail(rootRef.value));
+    }
+  }
+  let touchStart = null;
+  function handleTouchStart(event) {
+    touchStart = event.touches.length === 1 ? { x: event.touches[0].pageX, y: event.touches[0].pageY } : null;
+  }
+  function handleTouchMove(event) {
+    if (!touchStart || event.touches.length !== 1)
+      return;
+    const root = rootRef.value;
+    const dx = event.touches[0].pageX - touchStart.x;
+    const dy = event.touches[0].pageY - touchStart.y;
+    const horizontal = Math.abs(dx) > Math.abs(dy);
+    if (horizontal ? !scrollX.value : !scrollY.value)
+      return;
+    const position = horizontal ? root.scrollLeft : root.scrollTop;
+    const max = horizontal ? root.scrollWidth - root.clientWidth : root.scrollHeight - root.clientHeight;
+    const delta = horizontal ? dx : dy;
+    if (delta > 0 && position > 0 || delta < 0 && position < max) {
+      event.stopPropagation();
+    }
+  }
+  function handleTouchEnd() {
+    touchStart = null;
+  }
+  let removeListeners;
+  onMounted(() => {
+    const root = rootRef.value;
+    const passive2 = { passive: true };
+    root.addEventListener("scroll", handleScroll, passive2);
+    root.addEventListener("touchstart", handleTouchStart, passive2);
+    root.addEventListener("touchmove", handleTouchMove, passive2);
+    root.addEventListener("touchend", handleTouchEnd, passive2);
+    root.addEventListener("touchcancel", handleTouchEnd, passive2);
+    const removeScrollend = onScrollend(root, handleScrollEnd);
+    removeListeners = () => {
+      root.removeEventListener("scroll", handleScroll);
+      root.removeEventListener("touchstart", handleTouchStart);
+      root.removeEventListener("touchmove", handleTouchMove);
+      root.removeEventListener("touchend", handleTouchEnd);
+      root.removeEventListener("touchcancel", handleTouchEnd);
+      removeScrollend();
+    };
+    nextTick(() => {
+      if (!rootRef.value)
+        return;
+      const options = {};
+      if (scrollX.value)
+        options.left = Number(props2.scrollLeft) || 0;
+      if (scrollY.value)
+        options.top = Number(props2.scrollTop) || 0;
+      if (options.left !== void 0 || options.top !== void 0)
+        scrollTo2(options);
+      scrollIntoView(props2.scrollIntoView);
     });
   });
+  onBeforeUnmount(() => removeListeners == null ? void 0 : removeListeners());
   onActivated(() => {
-    realScrollY.value && (main.value.scrollTop = state.lastScrollTop);
-    realScrollX.value && (main.value.scrollLeft = state.lastScrollLeft);
-  });
-  watch(scrollTopNumber, (val) => {
-    _scrollTopChanged(val);
-  });
-  watch(scrollLeftNumber, (val) => {
-    _scrollLeftChanged(val);
+    var _a;
+    const options = { behavior: "instant" };
+    if (scrollX.value)
+      options.left = lastScrollLeft;
+    if (scrollY.value)
+      options.top = lastScrollTop;
+    (_a = rootRef.value) == null ? void 0 : _a.scrollTo(options);
   });
   watch(
-    () => props2.scrollIntoView,
-    (val) => {
-      _scrollIntoViewChanged(val);
-    }
+    () => [props2.scrollTop, props2.scrollLeft],
+    ([top, left], [previousTop, previousLeft]) => {
+      const options = {};
+      if (scrollY.value && top !== previousTop)
+        options.top = Number(top) || 0;
+      if (scrollX.value && left !== previousLeft)
+        options.left = Number(left) || 0;
+      if (options.left !== void 0 || options.top !== void 0)
+        scrollTo2(options);
+    },
+    { flush: "post" }
   );
-  watch(
-    () => props2.refresherTriggered,
-    (val) => {
-      if (val === true) {
-        _setRefreshState("refreshing");
-      } else if (val === false) {
-        _setRefreshState("restore");
-      }
-    }
-  );
-  return {
-    realScrollX,
-    realScrollY,
-    _scrollTopChanged,
-    _scrollLeftChanged
-  };
+  watch(() => props2.scrollIntoView, scrollIntoView, { flush: "post" });
+  expose({ $getMain: () => rootRef.value });
+  return { rootRef, rootStyle, scrollBarClassName };
 }
-const _t0$8 = template("<div uni-scroll-view uni-view><div class=uni-scroll-view><div><!><div class=uni-scroll-view-content> ", 1);
+const _t0$8 = template("<div uni-scroll-view uni-view> ", 1);
 const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
   props: props$6,
@@ -16964,53 +16493,21 @@ const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
     class: UniScrollViewElement
   },
   setup(props2, context) {
-    const { rootRef, main, wrap, content, state, mainStyle, scrollBarClassName, _scrollLeftChanged, _scrollTopChanged } = useScrollView(props2, context);
+    const { rootRef, rootStyle, scrollBarClassName } = useScrollView(props2, context);
     const { slots } = context;
     const root = (() => {
       const _setTemplateRef = createTemplateRefSetter();
-      const _n14 = _t0$8();
-      const _n13 = child(_n14);
-      const _n12 = child(_n13);
-      const _n11 = child(_n12);
-      const _n10 = next(_n11);
+      const _n0 = _t0$8();
+      const _x0 = txt(_n0);
+      setNodes(_x0, () => slots.default && slots.default());
       renderEffect(() => {
-        setStyle(_n12, mainStyle.value);
-        setClass(_n12, scrollBarClassName.value);
+        setStyle(_n0, rootStyle.value);
+        setClass(_n0, scrollBarClassName.value);
+        _setTemplateRef(_n0, rootRef);
       });
-      setInsertionState(_n12, _n11);
-      createIf(() => props2.refresherEnabled, () => {
-        const _n7 = createComponent(Refresher, {
-          refreshState: () => state.refreshState,
-          refresherHeight: () => state.refresherHeight,
-          refresherThreshold: () => props2.refresherThreshold,
-          refresherDefaultStyle: () => props2.refresherDefaultStyle,
-          refresherBackground: () => props2.refresherBackground
-        }, extend$1(() => {
-          const _n2 = createIf(() => props2.refresherDefaultStyle == "none", () => {
-            const _n4 = createNodes(() => slots.refresher && slots.refresher());
-            return _n4;
-          }, () => {
-            const _n6 = createNodes(null);
-            return _n6;
-          }, 394);
-          return _n2;
-        }, { _: 1 }));
-        return _n7;
-      }, () => {
-        const _n9 = createNodes(null);
-        return _n9;
-      }, 521);
-      const _x10 = txt(_n10);
-      setNodes(_x10, () => slots.default && slots.default());
-      renderEffect(() => {
-        _setTemplateRef(_n10, content);
-        _setTemplateRef(_n12, main);
-        _setTemplateRef(_n13, wrap);
-        _setTemplateRef(_n14, rootRef);
-      });
-      return _n14;
+      return _n0;
     })();
-    initScrollViewElement(root, _scrollLeftChanged, _scrollTopChanged);
+    initScrollViewElement(root);
     return root;
   }
 });
