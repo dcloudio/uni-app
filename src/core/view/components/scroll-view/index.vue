@@ -81,6 +81,7 @@
 <script>
 import scroller from 'uni-mixins/scroller/index'
 import { supportsPassive } from 'uni-shared'
+import { onScrollend } from 'uni-helpers/scrollend'
 import {
   initScrollBounce,
   disableScrollBounce
@@ -330,6 +331,7 @@ export default {
     this.$refs.main.addEventListener('touchmove', this.__handleTouchMove, passive(false))
     this.$refs.main.addEventListener('scroll', this.__handleScroll, passive(false))
     this.$refs.main.addEventListener('touchend', this.__handleTouchEnd, passiveOptions)
+    this.__removeScrollendListener = onScrollend(this.$refs.main, this._handleScrollEnd)
     initScrollBounce()
   },
   activated () {
@@ -338,6 +340,7 @@ export default {
     this.scrollX && (this.$refs.main.scrollLeft = this.lastScrollLeft)
   },
   beforeDestroy () {
+    this.__removeScrollendListener()
     this.$refs.main.removeEventListener(
       'touchstart',
       this.__handleTouchStart,
@@ -510,6 +513,17 @@ export default {
       }
       this.lastScrollTop = target.scrollTop
       this.lastScrollLeft = target.scrollLeft
+    },
+    _handleScrollEnd: function ($event) {
+      const target = $event.target
+      this.$trigger('scrollend', $event, {
+        scrollLeft: target.scrollLeft,
+        scrollTop: target.scrollTop,
+        scrollHeight: target.scrollHeight,
+        scrollWidth: target.scrollWidth,
+        deltaX: this.lastScrollLeft - target.scrollLeft,
+        deltaY: this.lastScrollTop - target.scrollTop
+      })
     },
     _scrollTopChanged: function (val) {
       if (this.scrollY) {
