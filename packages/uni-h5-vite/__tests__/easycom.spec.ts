@@ -222,12 +222,14 @@ describe('h5 easycom', () => {
         `const n0 = _createAssetComponent("${name}")`,
         `${inputDir}/pages/index/index.uvue?vue&type=template`
       )
+      expect(
+        buildInCssSet.has('@dcloudio/uni-h5/style/vapor/scroll-view.css')
+      ).toBe(true)
       for (const style of [
-        '@dcloudio/uni-h5/style/vapor/scroll-view.css',
         '@dcloudio/uni-components/style/refresher.css',
         '@dcloudio/uni-components/style-x-vapor/loading.css',
       ]) {
-        expect(buildInCssSet.has(style)).toBe(true)
+        expect(buildInCssSet.has(style)).toBe(false)
       }
       expect(
         buildInCssSet.has('@dcloudio/uni-components/style/scroll-view.css')

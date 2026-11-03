@@ -29,7 +29,7 @@ describe('Web Vapor 独立组件样式', () => {
     expect(code).toContain('img:where([uni-image])')
   })
 
-  test.each(['input', 'textarea', 'scroll-view', 'video'])(
+  test.each(['input', 'textarea', 'video'])(
     '%s 独立样式保留旧实现的内部规则，不再依赖旧 CSS',
     (name) => {
       const oldFile =
@@ -53,6 +53,18 @@ describe('Web Vapor 独立组件样式', () => {
       })
     }
   )
+
+  test('单层 scroll-view 只保留滚动条样式，不覆盖宿主尺寸和 flex 布局', () => {
+    const code = read('vapor/scroll-view.css')
+    postcss.parse(code).walkRules((rule) => {
+      if (rule.selector.includes('::')) return
+      rule.walkDecls((decl) => {
+        expect(decl.prop).not.toMatch(
+          /^((min-|max-)?(width|height)$|display$|flex-|align-|justify-)/
+        )
+      })
+    })
+  })
 
   test.each(['input', 'textarea'])(
     '%s 保留选区、placeholder 和暗色样式',

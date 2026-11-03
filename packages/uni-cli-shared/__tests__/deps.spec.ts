@@ -1,11 +1,7 @@
 import { API_DEPS_CSS, COMPONENT_DEPS_CSS } from '../src/deps'
 
 describe('API 样式依赖', () => {
-  const scrollViewCss = [
-    '@dcloudio/uni-h5/style/vapor/scroll-view.css',
-    '@dcloudio/uni-components/style/refresher.css',
-    '@dcloudio/uni-components/style-x-vapor/loading.css',
-  ]
+  const scrollViewCss = ['@dcloudio/uni-h5/style/vapor/scroll-view.css']
   const originalEnv = {
     UNI_APP_X: process.env.UNI_APP_X,
     UNI_APP_X_DOM2: process.env.UNI_APP_X_DOM2,
@@ -35,10 +31,7 @@ describe('API 样式依赖', () => {
       const vaporDeps = API_DEPS_CSS(true)
       expect(COMPONENT_DEPS_CSS(true)).toEqual({
         ...vdomComponentDeps,
-        'scroll-view': [
-          ...vdomComponentDeps['scroll-view'],
-          '@dcloudio/uni-components/style-x-vapor/loading.css',
-        ],
+        'scroll-view': [],
         'picker-view-column': [
           ...vdomComponentDeps['picker-view-column'],
           ...scrollViewCss,

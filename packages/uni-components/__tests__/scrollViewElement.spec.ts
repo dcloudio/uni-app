@@ -4,8 +4,8 @@ jest.mock('../src/vue/web-vapor-elements', () => ({
   UniViewElement: class {},
 }))
 
-test('ListView/Waterflow 覆盖宿主身份时保留 ScrollView 的滚动绑定', () => {
-  const main = {
+test('单层宿主仅扩展逻辑名称，保留原生滚动属性和方法', () => {
+  const native = {
     scrollLeft: 3,
     scrollTop: 4,
     scrollHeight: 800,
@@ -17,10 +17,8 @@ test('ListView/Waterflow 覆盖宿主身份时保留 ScrollView 的滚动绑定'
       return this
     }),
   }
-  const root: any = { firstElementChild: { firstElementChild: main } }
-  const left = jest.fn()
-  const top = jest.fn()
-  initScrollViewElement(root, left, top)
+  const root = Object.create(native)
+  initScrollViewElement(root)
   expect(root.uniTagName).toBe('SCROLL-VIEW')
   Object.defineProperty(root, 'uniTagName', { value: 'LIST-VIEW' })
   expect(root.uniTagName).toBe('LIST-VIEW')
@@ -30,9 +28,16 @@ test('ListView/Waterflow 覆盖宿主身份时保留 ScrollView 的滚动绑定'
   expect(root.scrollTop).toBe(4)
   root.scrollLeft = 12
   root.scrollTop = 24
-  expect(left).toHaveBeenCalledWith(12)
-  expect(top).toHaveBeenCalledWith(24)
-  const { scrollTo, scrollBy } = root
-  expect(scrollTo({ top: 8 })).toBe(main)
-  expect(scrollBy({ left: 2 })).toBe(main)
+  expect(root.scrollLeft).toBe(12)
+  expect(root.scrollTop).toBe(24)
+  expect(native.scrollLeft).toBe(3)
+  expect(native.scrollTop).toBe(4)
+  expect(Object.getOwnPropertyDescriptor(root, 'scrollHeight')).toBeUndefined()
+  expect(Object.getOwnPropertyDescriptor(root, 'scrollWidth')).toBeUndefined()
+  expect(Object.getOwnPropertyDescriptor(root, 'scrollTo')).toBeUndefined()
+  expect(Object.getOwnPropertyDescriptor(root, 'scrollBy')).toBeUndefined()
+  expect(root.scrollTo).toBe(native.scrollTo)
+  expect(root.scrollBy).toBe(native.scrollBy)
+  expect(root.scrollTo({ top: 8 })).toBe(root)
+  expect(root.scrollBy({ left: 2 })).toBe(root)
 })

@@ -57,12 +57,12 @@ describe('h5 API 样式注入', () => {
           path.join(inputDir, 'main.js')
         )
         const styles = combine ? [...buildInCssSet].join('\n') : code
+        expect(styles).toContain('@dcloudio/uni-h5/style/vapor/scroll-view.css')
         for (const style of [
-          '@dcloudio/uni-h5/style/vapor/scroll-view.css',
           '@dcloudio/uni-components/style/refresher.css',
           '@dcloudio/uni-components/style-x-vapor/loading.css',
         ]) {
-          expect(styles).toContain(style)
+          expect(styles).not.toContain(style)
         }
         expect(styles).not.toContain(
           '@dcloudio/uni-components/style/scroll-view.css'

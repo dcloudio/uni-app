@@ -39,13 +39,9 @@ function componentCss(name: string, isWebVapor: boolean) {
 }
 
 // 框架内部的 ScrollView 已在框架构建时编译，用户项目的 Easycom 不会再次扫描。
-// Web Vapor 的外层组件或 API 需显式声明其完整样式及刷新依赖，避免发行裁剪时漏载。
+// Web Vapor 的外层组件或 API 需显式声明其样式，避免发行裁剪时漏载。
 function webVaporScrollViewCss() {
-  return [
-    componentCss('scroll-view', true),
-    REFRESHER_CSS,
-    componentCss('loading', true),
-  ]
+  return [componentCss('scroll-view', true)]
 }
 
 export const API_DEPS_CSS = (isX: boolean) => {
@@ -106,10 +102,6 @@ export const API_DEPS_CSS = (isX: boolean) => {
 export const COMPONENT_DEPS_CSS = (isX: boolean) => {
   const isWebVapor = isX && isUniAppXWebVapor()
   const scrollViewCss = isWebVapor ? webVaporScrollViewCss() : []
-  // Refresher 在 Vapor 中直接使用 Loading，不能依赖页面另外引用 <loading> 才加载样式。
-  const loadingCss = isWebVapor
-    ? [X_VAPOR_BASE_COMPONENTS_STYLE_PATH + 'loading.css']
-    : []
   return {
     canvas: [RESIZE_SENSOR_CSS],
     image: [RESIZE_SENSOR_CSS],
@@ -125,7 +117,7 @@ export const COMPONENT_DEPS_CSS = (isX: boolean) => {
       componentCss('picker-view-column', isWebVapor),
       ...scrollViewCss,
     ],
-    'scroll-view': [REFRESHER_CSS, ...loadingCss],
+    'scroll-view': isWebVapor ? [] : [REFRESHER_CSS],
     'list-view': [
       RESIZE_SENSOR_CSS,
       ...(isWebVapor ? scrollViewCss : [REFRESHER_CSS]),

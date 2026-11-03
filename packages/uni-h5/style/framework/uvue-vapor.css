@@ -247,16 +247,6 @@ uni-app uni-top-window .uni-top-window {
   flex-direction: column;
 }
 
-/* 透传scroll-view的flex-direction样式 */
-uni-app div:where([uni-scroll-view]) {
-  width: auto;
-  /* 保留旧宿主的字体继承，不套用基础 view 的字体默认值。 */
-  font-size: inherit;
-  text-align: inherit;
-  /* 滚动由内部容器负责，外层保持旧宿主的可见溢出，不继承基础 view 的裁剪。 */
-  overflow: visible;
-}
-
 /* 默认色放在组件根节点，支持通过 caret-color 和 CSS 变量覆盖。 */
 div:where([uni-input]),
 div:where([uni-textarea]) {
