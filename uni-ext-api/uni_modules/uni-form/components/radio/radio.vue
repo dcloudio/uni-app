@@ -176,7 +176,8 @@
      */
     value?: string;
     /**
-     * 单选框图标的类名
+     * 单选框图标区域的公共类名
+     * @deprecated 已废弃，请使用 radioClass 和 radioActiveClass
      * @uniPlatform {
        "app": {
          "ios": {
@@ -209,7 +210,7 @@
      */
     iconClass?: string.ClassString;
     /**
-     * 单选框的类名
+     * 单选框未选中的类名
      * @uniPlatform {
        "app": {
          "ios": {

@@ -29770,7 +29770,6 @@ function createSetBlockKey(element, value, node) {
 function buildProps(node, context, isComponent, isDynamicComponent, getEffectOrder) {
 	const props = node.props;
 	const isSlot = node.tagType === 2;
-	const isDom2Slot = isSlot && !!context.options.platform;
 	if (props.length === 0) return [false, []];
 	const dynamicArgs = [];
 	const dynamicExpr = [];
@@ -29800,7 +29799,7 @@ function buildProps(node, context, isComponent, isDynamicComponent, getEffectOrd
 		if (prop.type === 7 && !prop.arg) {
 			if (prop.name === "bind") {
 				if (prop.exp) {
-					const objectLiteralProps = isSlot && !isDom2Slot ? void 0 : isComponent ? resolveComponentObjectLiteralBindProps(prop.exp, context, props, prop) : resolveNativeObjectLiteralBindProps(prop.exp, context, props, prop);
+					const objectLiteralProps = isSlot ? void 0 : isComponent ? resolveComponentObjectLiteralBindProps(prop.exp, context, props, prop) : resolveNativeObjectLiteralBindProps(prop.exp, context, props, prop);
 					if (objectLiteralProps) {
 						if (isComponent) pushStaticObjectLiteralProps(objectLiteralProps);
 						else {
@@ -29823,7 +29822,7 @@ function buildProps(node, context, isComponent, isDynamicComponent, getEffectOrd
 				continue;
 			} else if (prop.name === "on") {
 				if (prop.exp) {
-					const objectLiteralProps = isComponent && (!isSlot || isDom2Slot) ? resolveComponentObjectLiteralOnProps(prop.exp, context, props, prop) : void 0;
+					const objectLiteralProps = isComponent && !isSlot ? resolveComponentObjectLiteralOnProps(prop.exp, context, props, prop) : void 0;
 					if (objectLiteralProps) pushStaticObjectLiteralProps(objectLiteralProps);
 					else if (isComponent || mergesListeners(node, context)) {
 						dynamicExpr.push(prop.exp);
@@ -29853,10 +29852,10 @@ function buildProps(node, context, isComponent, isDynamicComponent, getEffectOrd
 			dynamicExpr.push(result.key);
 			if (!result.handler) dynamicExpr.push(result.value);
 			if (deferListeners) listenerResults.push(result);
-			else if (isSlot && !isDom2Slot && result.handler && !result.key.isStatic) {
+			else if (isSlot && result.handler && !result.key.isStatic) {
 				pushMergeArg();
 				dynamicArgs.push([resolveDirectiveResult(result)]);
-			} else if (isComponent && (!isSlot || isDom2Slot) && !result.key.isStatic) {
+			} else if (isComponent && !isSlot && !result.key.isStatic) {
 				pushMergeArg();
 				dynamicArgs.push(extend(resolveDirectiveResult(result), { kind: 1 }));
 			} else results.push(result);

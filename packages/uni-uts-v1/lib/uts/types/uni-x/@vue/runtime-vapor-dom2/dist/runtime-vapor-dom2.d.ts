@@ -53,7 +53,7 @@ type BlockFn = (...args: any[]) => void;
 type RawProps = Record<string, unknown> & {
   $?: DynamicPropsSource[];
 };
-type DynamicPropsSource = (() => Record<string, unknown>) | Record<string, unknown>;
+type DynamicPropsSource = (() => Record<string, unknown> | null | undefined) | Record<string, unknown>;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/componentSlots.d.ts
 type RawSlots = Record<string, VaporSlot> & {
@@ -76,6 +76,9 @@ type DynamicSlot = {
 type DynamicSlotFn = () => DynamicSlot | DynamicSlot[];
 export type DynamicSlotSource = StaticSlots | DynamicSlotFn;
 export declare function withSharedDataVaporCtx(fn: (...args: any[]) => any, type?: "string"): BlockFn;
+export declare function mergeSharedDataSlotProps(...sources: (Record<string, any> | null | undefined)[]): Record<string, any>;
+export declare function guardSharedDataSlotProps(props: Record<string, any> | null | undefined);
+export declare function normalizeSharedDataSlotProps(result: Record<string, any> | null): Record<string, any> | null;
 export declare function createSharedDataSlot(name?: string | (() => string), rawProps?: LooseRawProps | null, setSharedDataSlotProps?: ((data: UniSharedData) => void) | null, fallback?: VaporSlot | null, flags?: number): void;
 export declare function createSharedDataScopedSlot<S extends UniSharedData>(sharedDataVFor: UniSharedDataVFor<S>, fn: VaporScopedSlot<S>): VaporScopedSlot<S>;
 //#endregion
@@ -371,6 +374,7 @@ export declare function setSharedData<S extends UniSharedData, V>(sharedData: S,
  * 后续验证稳定后，可考虑将 value 类型扩展到其他 UniSharedData，统一管理 sharedData dispose。
  */
 export declare function setSharedDataScoped<S extends UniSharedData, V extends UniSharedDataVFor<any> | null | undefined>(sharedData: S, key: string, value: V): V;
+export declare function normalizeExternalClasses(classes: unknown): string;
 export declare function setSharedDataDynamicProps<S extends UniSharedData>(sharedData: S, key: string, value: any[], root?: boolean): UniSharedDataJSONObject;
 export declare function setSharedDataDynamicEvents<S extends UniSharedData>(sharedData: S, key: string, events: Record<string, (...args: any[]) => any>): UniSharedDataJSONObject;
 export declare function setSharedDataClass<S extends UniSharedData, V>(sharedData: S, key: string, value: V): string[];

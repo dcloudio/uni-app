@@ -166,7 +166,8 @@
      */
     value?: string;
     /**
-     * 复选框选中图标的类名
+     * 复选框图标区域的公共类名
+     * @deprecated 已废弃，请使用 checkboxClass 和 checkboxActiveClass
      * @uniPlatform {
        "app": {
          "ios": {
