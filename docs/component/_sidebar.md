@@ -79,6 +79,7 @@
   * [~~uni-combox | 组合框~~](./uni-ui-x/uni-combox.md)
   * [uni-data-picker | 级联选择器](./uni-ui-x/uni-data-picker.md)
   * [uni-data-checkbox | 枚举类平铺型选择器](./uni-ui-x/uni-data-checkbox.md)
+  * [uni-data-vertical-marquee | 上下滚动文字](./uni-ui-x/uni-data-vertical-marquee.md)
   * [uni-drag-cell | 可拖拽排序](./uni-ui-x/uni-drag-cell.md)
   * [uni-expandable-text | 可折叠文本](./uni-ui-x/uni-expandable-text.md)
   * [uni-fab-button | 悬浮按钮](./uni-ui-x/uni-fab-button.md)
