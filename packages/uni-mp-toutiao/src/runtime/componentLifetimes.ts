@@ -18,12 +18,18 @@ import {
 import {
   $createComponent,
   $destroyComponent,
+  findVmByVueId,
   initComponentInstance,
   initMocks,
   initRefs,
   initVueIds,
 } from '@dcloudio/uni-mp-core'
 import { ON_READY } from '@dcloudio/uni-shared'
+
+export const instances: Record<
+  string,
+  ComponentPublicInstance | MPComponentInstance
+> = Object.create(null)
 
 const fixAttached = __PLATFORM__ === 'mp-toutiao'
 
@@ -55,6 +61,18 @@ export function initLifetimes({
     const mpType = isPage(mpInstance) ? 'page' : 'component'
     if (mpType === 'page' && !mpInstance.route && mpInstance.__route__) {
       mpInstance.route = mpInstance.__route__
+    }
+
+    // 抖音的关联事件晚于 setup，先沿用现有规则查找父实例。
+    if (__PLATFORM__ === 'mp-toutiao' && mpType === 'component') {
+      const pageVm = instances[mpInstance.__webviewId__ + '_0'] as
+        | ComponentPublicInstance
+        | undefined
+      if (pageVm) {
+        relationOptions.parent = relationOptions.vuePid
+          ? findVmByVueId(pageVm, relationOptions.vuePid)
+          : pageVm
+      }
     }
 
     const props = findPropsData(properties, mpType === 'page')
