@@ -1040,6 +1040,7 @@ Component = function (options) {
 };
 
 // @ts-expect-error
+const instances = Object.create(null);
 // 基础库 2.0 以上 attached 顺序错乱，按照 created 顺序强制纠正
 const components = [];
 function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
@@ -1058,6 +1059,15 @@ function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
         const mpType = isPage(mpInstance) ? 'page' : 'component';
         if (mpType === 'page' && !mpInstance.route && mpInstance.__route__) {
             mpInstance.route = mpInstance.__route__;
+        }
+        // 抖音的关联事件晚于 setup，先沿用现有规则查找父实例。
+        if (mpType === 'component') {
+            const pageVm = instances[mpInstance.__webviewId__ + '_0'];
+            if (pageVm) {
+                relationOptions.parent = relationOptions.vuePid
+                    ? findVmByVueId(pageVm, relationOptions.vuePid)
+                    : pageVm;
+            }
         }
         const props = findPropsData(properties, mpType === 'page');
         this.$vm = $createComponent({
@@ -1154,7 +1164,6 @@ const mocks = [
 function isPage(mpInstance) {
     return (mpInstance.__nodeId__ === 0 || mpInstance.__nodeid__ === 0);
 }
-const instances = Object.create(null);
 function initRelation(mpInstance, detail) {
     var _a, _b, _c;
     // 头条 triggerEvent 后，接收事件时机特别晚，已经到了 ready 之后
@@ -1219,7 +1228,10 @@ function handleLink({ detail: { vuePid, nodeId, webviewId, pageVm }, }) {
     //   vm.$.parent = parentVm.$
     // }
     if (__VUE_OPTIONS_API__ && parentVm) {
-        parentVm.$children.push(vm);
+        const children = parentVm.$children;
+        if (children.indexOf(vm) === -1) {
+            children.push(vm);
+        }
     }
     vm.$callCreatedHook();
     // TODO 字节小程序父子组件关系建立的较晚，导致 inject 和 provide 初始化变慢
