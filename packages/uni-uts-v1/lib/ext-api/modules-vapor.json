@@ -1140,6 +1140,43 @@
     "easycom": [],
     "customElements": []
   },
+  "uni-hinge": {
+    "uni": {
+      "getHingeStatus": {
+        "name": "getHingeStatus",
+        "app": {
+          "js": false,
+          "x-js": false,
+          "kotlin": false,
+          "swift": "dom2",
+          "arkts": false
+        }
+      },
+      "onHingeChange": {
+        "name": "onHingeChange",
+        "app": {
+          "js": false,
+          "x-js": false,
+          "kotlin": false,
+          "swift": "dom2",
+          "arkts": false
+        }
+      },
+      "offHingeChange": {
+        "name": "offHingeChange",
+        "app": {
+          "js": false,
+          "x-js": false,
+          "kotlin": false,
+          "swift": "dom2",
+          "arkts": false
+        }
+      }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
+  },
   "uni-install-wgt": {
     "uni": {
       "installWgt": {
