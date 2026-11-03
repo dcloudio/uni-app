@@ -285,7 +285,11 @@ export function initEnv(
     if (manifestJson['uni-app-x']?.['styleIsolationVersion'] == 2) {
       process.env.UNI_APP_STYLE_ISOLATION_VERSION = '2'
     }
-    if (isUniAppXVapor() && process.env.UNI_PLATFORM === 'app-harmony') {
+    if (
+      isUniAppXVapor() &&
+      process.env.UNI_PLATFORM === 'app-harmony' &&
+      !process.env.UNI_APP_X_HARMONY_SCRIPT_ENGINE
+    ) {
       process.env.UNI_APP_X_HARMONY_SCRIPT_ENGINE =
         resolveUniAppXHarmonyScriptEngine(manifestJson)
     }
