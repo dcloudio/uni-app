@@ -210,7 +210,7 @@ defineOptions中配置externalClasses，从HBuilderX5.0起支持。
 
 ##### externalClasses 属性值的兼容性说明 @external-classes-compatibility
 
-HBuilderX 5.35+，组件使用者传入的外部样式类属性值，在组件内获取时由字符串数组调整为空格分隔的字符串。
+HBuilderX 5.36+，组件使用者传入的外部样式类属性值，在组件内获取时由字符串数组调整为空格分隔的字符串。
 
 直接使用该属性值进行 class 绑定不受影响，多个类名仍可使用 `:class="xxxClass"` 绑定，也可与组件内部类名通过数组绑定，例如 `:class="['inner-class', xxxClass]"`。
 
