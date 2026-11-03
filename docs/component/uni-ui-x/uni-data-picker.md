@@ -12,7 +12,7 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-data-pick
 
 :::
 
-
+通过本地数据或 datacom 数据的级联选择组件，支持单列和多列级联选择，列数没有限制，如果屏幕显示不全，顶部tab区域会左右滚动。
 
 ## uni-data-picker 级联选择器
 
@@ -353,6 +353,9 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-data-pick
 
 
 
+### 兼容性 <Help />
+Web: 5.33; Android: 5.33; iOS: 5.33; HarmonyOS: 5.33
+
 
 ### 属性 
 | 名称 | 类型 |
@@ -669,8 +672,11 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-data-pick
 
 :::
 
+通过本地数据或 datacom 数据的级联选择组件，支持单列和多列级联选择，列数没有限制，如果屏幕显示不全，顶部tab区域会左右滚动。
 
 
+### 兼容性 <Help />
+Web: 5.33; Android: 5.33; iOS: 5.33; HarmonyOS: 5.33
 
 
 ### 属性 
