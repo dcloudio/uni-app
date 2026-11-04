@@ -254,4 +254,77 @@ describe('ordinary subpackage dependency chunks', () => {
     modules[pageB] = 'export const other = 2'
     expect((await build()).names).toContain('pkgA/utils/value.js')
   })
+  test('keeps assets imported by main vendor modules in main', async () => {
+    modules[pageA] = `export { logo } from './node_modules/image-lib/index.js'`
+    modules[
+      'node_modules/image-lib/index.js'
+    ] = `import image from './logo.png'; export function logo() { return image }`
+    modules[
+      'node_modules/image-lib/logo.png'
+    ] = `export default '/static/logo.png'`
+    const { names } = await build()
+    expect(names).toContain('common/vendor.js')
+    expect(names).toContain('common/assets.js')
+    expect(names).not.toContain('pkgA/common/assets.js')
+  })
+
+  test('keeps transitive project helpers of main vendor modules in main', async () => {
+    modules[pageA] = `export { logo } from './node_modules/image-lib/index.js'`
+    modules[
+      'node_modules/image-lib/index.js'
+    ] = `import { image } from '../../utils/image.js'; export function logo() { return image() }`
+    modules[
+      'utils/image.js'
+    ] = `import logo from './logo.png'; export function image() { return logo }`
+    modules['utils/logo.png'] = `export default '/static/logo.png'`
+    const { names } = await build()
+    expect(names).toContain('common/vendor.js')
+    expect(names).toContain('utils/image.js')
+    expect(names).toContain('common/assets.js')
+    expect(names).not.toContain('pkgA/utils/image.js')
+  })
+
+  test('keeps dependencies of external vendor modules in main', async () => {
+    modules[pageA] = `export { read } from '../external-lib/index.js'`
+    modules[
+      '../external-lib/index.js'
+    ] = `import value from './value.json'; export function read() { return value }`
+    modules[
+      '../external-lib/value.json'
+    ] = `import { value } from '../${path.basename(
+      inputDir
+    )}/utils/value.ts'; export default { value }`
+    const { names } = await build()
+    expect(names).toContain('common/vendor.js')
+    expect(names).toContain('utils/value.js')
+  })
+
+  test('retains dependencies in a subpackage-local vendor chunk', async () => {
+    modules[pageA] = `export { logo } from './pkgA/page.js'`
+    modules[
+      'pkgA/page.js'
+    ] = `export { logo } from './node_modules/image-lib/index.js'`
+    modules[
+      'pkgA/node_modules/image-lib/index.js'
+    ] = `import image from './logo.png'; export function logo() { return image }`
+    modules[
+      'pkgA/node_modules/image-lib/logo.png'
+    ] = `export default '/static/logo.png'`
+    const { names } = await build()
+    expect(names).toContain('pkgA/common/vendor.js')
+    expect(names).toContain('pkgA/common/assets.js')
+    expect(names).not.toContain('common/assets.js')
+  })
+  test('does not pin dependencies of erased npm re-export modules to main', async () => {
+    modules[pageA] = `export { logo } from './node_modules/image-lib/index.js'`
+    modules[
+      'node_modules/image-lib/index.js'
+    ] = `export { default as logo } from './logo.png'`
+    modules[
+      'node_modules/image-lib/logo.png'
+    ] = `export default '/static/logo.png'`
+    const { names } = await build()
+    expect(names).toContain('pkgA/common/assets.js')
+    expect(names).not.toContain('common/vendor.js')
+  })
 })

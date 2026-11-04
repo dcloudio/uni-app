@@ -18,7 +18,8 @@ import { parseIndependentRoot } from './independentUtils'
 export function resolveSingleSubpackage(
   id: string,
   getModuleInfo: GetModuleInfo,
-  inputDir: string
+  inputDir: string,
+  resolveVendorChunk: (id: string) => string | undefined
 ): string | undefined {
   const pending = new Set([id])
   let packageRoot: string | undefined
@@ -52,12 +53,27 @@ export function resolveSingleSubpackage(
         : getSubPackageRootByFilename(filename, inputDir)
       boundary = true
     }
+    const info = getModuleInfo(current)
+    // Erased re-export modules have no output chunk, so they cannot pin a
+    // dependency to vendor. Dynamic facades and retained code still can.
+    if (
+      !boundary &&
+      info &&
+      (info.isIncluded !== false ||
+        info.isEntry ||
+        info.dynamicImporters.length)
+    ) {
+      const vendorChunk = resolveVendorChunk(current)
+      if (vendorChunk) {
+        root = getSubPackageRootByFilename(vendorChunk, inputDir)
+        boundary = true
+      }
+    }
     if (boundary) {
       if (!root || (packageRoot && packageRoot !== root)) return
       packageRoot = root
       continue
     }
-    const info = getModuleInfo(current)
     if (!info || info.isEntry) return
     const importers = [...info.importers, ...info.dynamicImporters]
     if (!importers.length) return

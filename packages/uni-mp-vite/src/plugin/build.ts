@@ -256,8 +256,8 @@ function createMoveToVendorChunkFn(): GetManualChunk | undefined {
   if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
     return undefined
   }
-  const cache = new Map<string, boolean>()
   const inputDir = normalizePath(process.env.UNI_INPUT_DIR)
+  const resolveVendorChunk = createResolveVendorChunkFn(inputDir)
   return (id, { getModuleInfo }) => {
     const independentRoot = parseIndependentRoot(id)
     const idWithoutIndependentRoot = independentRoot
@@ -286,7 +286,9 @@ function createMoveToVendorChunkFn(): GetManualChunk | undefined {
     }
     const subpackageRoot =
       !independentRoot && optimizeSubpackages
-        ? resolveSingleSubpackage(id, getModuleInfo, inputDir)
+        ? resolveSingleSubpackage(id, getModuleInfo, inputDir, (importer) =>
+            resolveVendorChunk(importer, getModuleInfo)
+          )
         : undefined
     // 处理资源文件
     if (DEFAULT_ASSETS_RE.test(filename)) {
@@ -331,8 +333,33 @@ function createMoveToVendorChunkFn(): GetManualChunk | undefined {
         debugChunk(chunkName, normalizedId)
         return chunkName
       }
+    }
+    const vendorChunk = resolveVendorChunk(id, getModuleInfo)
+    if (vendorChunk) {
+      const chunkName = independentRoot
+        ? resolveIndependentCommonChunkName(independentRoot, 'vendor')
+        : vendorChunk
+      debugChunk(chunkName, id)
+      return chunkName
+    }
+  }
+}
+
+// Share the forced vendor placement policy with dependency ownership analysis.
+// A consumer that is emitted in main pins its dependencies there, regardless
+// of which page originally imported that consumer.
+function createResolveVendorChunkFn(inputDir: string) {
+  const cache = new Map<string, boolean>()
+  return (id: string, getModuleInfo: GetModuleInfo): string | undefined => {
+    const normalizedId = normalizePath(id)
+    const filename = normalizedId.split('?')[0]
+    if (DEFAULT_ASSETS_RE.test(filename)) return
+    if (EXTNAME_JS_RE.test(filename)) {
+      if (filename.startsWith(inputDir) && !filename.includes('node_modules')) {
+        return
+      }
       const { hasOptimizationSubPackages, subPackages } = getSubPackages()
-      // 处理子包引用的 node_modules 中的文件
+      // Preserve the existing placement of subpackage-local npm dependencies.
       if (
         hasOptimizationSubPackages &&
         subPackages.length &&
@@ -341,9 +368,7 @@ function createMoveToVendorChunkFn(): GetManualChunk | undefined {
         !filename.startsWith(inputDir + '/node_modules')
       ) {
         const moduleInfo = getModuleInfo(id)
-        if (!moduleInfo || !moduleInfo.importers.length) {
-          return
-        }
+        if (!moduleInfo || !moduleInfo.importers.length) return
         const matchSubPackages = new Set(
           subPackages.filter((subPackagePath) =>
             moduleInfo.importers.some((importer) =>
@@ -355,22 +380,16 @@ function createMoveToVendorChunkFn(): GetManualChunk | undefined {
           return `${matchSubPackages.values().next().value}common/vendor`
         }
       }
-      // 非项目内的 js 资源，均打包到 vendor
-      debugChunk('common/vendor', normalizedId)
       return 'common/vendor'
     }
     if (
       isVueJs(normalizedId) ||
       (normalizedId.includes('node_modules') &&
         !isCSSRequest(normalizedId) &&
-        // 使用原始路径，格式化的可能找不到模块信息 https://github.com/dcloudio/uni-app/issues/3425
+        // Keep the original ID for module graph lookups (e.g. query suffixes).
         staticImportedByEntry(id, getModuleInfo, cache))
     ) {
-      const chunkName = independentRoot
-        ? resolveIndependentCommonChunkName(independentRoot, 'vendor')
-        : 'common/vendor'
-      debugChunk(chunkName, id)
-      return chunkName
+      return 'common/vendor'
     }
   }
 }
