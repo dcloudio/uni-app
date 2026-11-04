@@ -22,7 +22,9 @@
         :style="{ width: '100%', transform: `translateX(${thumbTranslateX}%)` }">
         <view flatten
           <!-- #ifdef WEB -->
-          tabIndex="0" role="slider" :aria-valuenow="currentValue" :aria-valuemin="min" :aria-valuemax="max"
+          :tabindex="props.disabled ? -1 : 0" role="slider" :aria-disabled="props.disabled" aria-orientation="horizontal"
+          :aria-valuenow="currentValue" :aria-valuemin="Number.isFinite(props.min) ? props.min : 0" :aria-valuemax="effectiveMax"
+          @keydown="handleKeyDown" @keyup="handleKeyUp" @blur="handleThumbBlur" @click="handleThumbClick"
           <!-- #endif -->
           ref="thumbRef" class="slider-handle"
           :class="props.thumbClass"
@@ -419,12 +421,14 @@
   let activePointerId = -1
   let pointerTarget : HTMLElement | null = null
   let pointerClientX = 0
+  let pointerStartFocus : Element | null = null
 
   function releasePointerCapture() {
     const target = pointerTarget
     const pointerId = activePointerId
     activePointerId = -1
     pointerTarget = null
+    pointerStartFocus = null
     if (target != null && target.hasPointerCapture(pointerId)) {
       target.releasePointerCapture(pointerId)
     }
@@ -659,13 +663,29 @@
   // #endif
 
   // #ifdef WEB
+  function focusThumb() {
+    if (props.disabled) return
+    const element = thumbRef.value as HTMLElement | null
+    if (element != null && element.ownerDocument.activeElement !== element) element.focus({ preventScroll: true })
+  }
+
+  function handleThumbClick(e : MouseEvent) {
+    // label 和辅助技术的 click 没有 pointer 流程；指针点击已在拖动处理中完成聚焦。
+    if (e.detail == 0) focusThumb()
+  }
+
   function finishPointerInteraction(clientX : number) {
     if (props.disabled) {
       resetInteractionState()
       return
     }
     // 松开可能早于待执行的 rAF，先应用最终位置再派发 change。
-    if (_activeStatus != -1) renderVisuals(calculateValue(clientX))
+    if (_activeStatus != -1) {
+      const element = thumbRef.value as HTMLElement | null
+      // 手势期间焦点已转给其他控件时，不在松开时将焦点抢回。
+      if (element != null && element.ownerDocument.activeElement === pointerStartFocus) focusThumb()
+      renderVisuals(calculateValue(clientX))
+    }
     const value = currentValue.value
     const changed = lastValue !== value
     // 先结束本轮交互，避免 change 回调内开始的新交互被旧清理覆盖。
@@ -726,6 +746,8 @@
     touchStartY = e.clientY
     _activeStatus = e.pointerType == 'mouse' ? 1 : 0
     activePointerId = e.pointerId
+    const thumbEl = thumbRef.value as HTMLElement | null
+    pointerStartFocus = thumbEl?.ownerDocument.activeElement ?? null
     pointerTarget = e.currentTarget as HTMLElement
     // 捕获后即使指针移出轨道也能继续拖动，无需给 window 添加监听。
     pointerTarget.setPointerCapture(e.pointerId)
@@ -740,6 +762,7 @@
 
     if (e.pointerType == 'mouse') {
       e.preventDefault()
+      focusThumb()
       renderVisuals(calculateValue(e.clientX))
     }
   }
@@ -755,41 +778,68 @@
   function handlePointerCancel(e : PointerEvent) {
     if (e.pointerId == activePointerId) resetInteractionState()
   }
-  // 键盘事件处理
-  function handleKeyDown(e : KeyboardEvent) {
-    if (props.disabled == true) {
-      return
-    }
+  const sliderKeys = ['ArrowLeft', 'ArrowDown', 'ArrowRight', 'ArrowUp', 'Home', 'End', 'PageUp', 'PageDown']
+  const pressedSliderKeys = new Set<string>()
 
+  function handleThumbBlur() {
+    pressedSliderKeys.clear()
+    resetInteractionState()
+  }
+
+  function getKeyboardDecimalPlaces(value : number) : number {
+    const parts = value.toString().split('e')
+    const fraction = parts[0].split('.')[1] ?? ''
+    return Math.max(0, fraction.length - Number(parts[1] ?? '0'))
+  }
+
+  function ownsKeyboardEvent(e : KeyboardEvent) : boolean {
+    const element = thumbRef.value as HTMLElement | null
+    // 只处理滑块本体持有焦点时的按键，不接管其他控件、输入法或组合快捷键。
+    return !props.disabled && element != null && e.target === element && e.currentTarget === element &&
+      element.ownerDocument.activeElement === element && !e.defaultPrevented && !e.isComposing &&
+      !e.altKey && !e.ctrlKey && !e.metaKey && sliderKeys.includes(e.key)
+  }
+
+  function handleKeyUp(e : KeyboardEvent) {
+    const handled = pressedSliderKeys.delete(e.key)
+    const element = thumbRef.value as HTMLElement | null
+    // 与实际接管的 keydown 配对，避免修饰键松开顺序改变按键归属。
+    if (handled && element != null && e.target === element && e.currentTarget === element) e.stopPropagation()
+  }
+
+  function handleKeyDown(e : KeyboardEvent) {
+    if (!ownsKeyboardEvent(e)) return
+    pressedSliderKeys.add(e.key)
+    // 包含边界值未变化的情况，避免祖先 swiper 等组件再次响应同一按键。
+    e.preventDefault()
+    e.stopPropagation()
+    if (isDragging.value || !Number.isFinite(props.step) || props.step <= 0) return
+
+    const min = Number.isFinite(props.min) ? props.min : 0
     let newValue = currentValue.value
 
     if (e.key == 'ArrowLeft' || e.key == 'ArrowDown') {
       newValue -= props.step
-      e.preventDefault()
     } else if (e.key == 'ArrowRight' || e.key == 'ArrowUp') {
       newValue += props.step
-      e.preventDefault()
+    } else if (e.key == 'PageUp') {
+      newValue += props.step * 10
+    } else if (e.key == 'PageDown') {
+      newValue -= props.step * 10
     } else if (e.key == 'Home') {
-      newValue = props.min
-      e.preventDefault()
+      newValue = min
     } else if (e.key == 'End') {
-      newValue = props.max
-      e.preventDefault()
-    } else {
-      return
+      newValue = effectiveMax.value
     }
 
-    // 应用步进精度处理
-    newValue = applyStepPrecision(newValue)
-    const min = Number.isFinite(props.min) ? props.min : 0
-    const max = Number.isFinite(props.max) ? props.max : min
-    newValue = max > min ? Math.max(min, Math.min(newValue, effectiveMax.value)) : min
-
-    // 键盘操作频率低，直接调用
-    requestAnimationFrame(() => {
-      renderVisuals(newValue)
-      emit('change', new UniSliderChangeEvent(currentValue.value))
-    })
+    // 键盘步进相对 min 对齐；同步提交，连续按键不会覆盖，失焦后也没有遗留帧。
+    newValue = min + Math.round((newValue - min) / props.step) * props.step
+    const precision = Math.min(100, Math.max(getKeyboardDecimalPlaces(min), getKeyboardDecimalPlaces(props.step)))
+    newValue = parseFloat(newValue.toFixed(precision))
+    newValue = Math.max(min, Math.min(newValue, effectiveMax.value))
+    if (newValue === currentValue.value) return
+    renderVisuals(newValue)
+    emit('change', new UniSliderChangeEvent(currentValue.value))
   }
   // #endif
 
@@ -832,6 +882,10 @@
       watch(() : boolean => props.disabled, (disabled : boolean) => {
         if (disabled) {
           resetInteractionState()
+          // #ifdef WEB
+          const element = thumbRef.value as HTMLElement | null
+          if (element != null && element.ownerDocument.activeElement === element) element.blur()
+          // #endif
         }
       })
     })
@@ -868,10 +922,6 @@
     // #ifdef WEB
     // 监听窗口resize
     window.addEventListener('resize', handleResize)
-    const handleEl = handleRef.value
-    if (handleEl != null) {
-      handleEl.addEventListener('keydown', handleKeyDown)
-    }
     // #endif
   })
 
@@ -964,6 +1014,13 @@
     cursor: grab;
     /* #endif */
   }
+
+  /* #ifdef WEB */
+  .slider-handle:focus-visible {
+    outline: 2px solid #007aff;
+    outline-offset: 2px;
+  }
+  /* #endif */
 
   @media (prefers-color-scheme: dark) {
     .slider-track-bg {

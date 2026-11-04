@@ -9745,12 +9745,12 @@ const _sfc_main$l = /* @__PURE__ */ defineComponent$2({
   __vapor: true,
   setup(__props, { emit: __emit }) {
     const props2 = __props;
-    class UniCustomEvent3 {
+    class UniCustomEvent2 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniCheckboxGroupChangeEvent extends UniCustomEvent3 {
+    class UniCheckboxGroupChangeEvent extends UniCustomEvent2 {
       constructor(value) {
         super("change", { value });
       }
@@ -9982,17 +9982,17 @@ const _sfc_main$j = /* @__PURE__ */ defineComponent$2({
   __vapor: true,
   setup(__props, { expose: __expose, emit: __emit }) {
     const props2 = __props;
-    class UniCustomEvent3 {
+    class UniCustomEvent2 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniFormSubmitEvent extends UniCustomEvent3 {
+    class UniFormSubmitEvent extends UniCustomEvent2 {
       constructor(value) {
         super("submit", { value });
       }
     }
-    class UniFormResetEvent extends UniCustomEvent3 {
+    class UniFormResetEvent extends UniCustomEvent2 {
       constructor() {
         super("reset", {});
       }
@@ -11134,26 +11134,26 @@ const _sfc_main$c = /* @__PURE__ */ defineComponent$2({
     const multiSelectorChangeEventName = `${baseEventName}_multiSelector_change`;
     const timeChangeEventName = `${baseEventName}_time_change`;
     const columnChangeEventName = `${baseEventName}_column_change`;
-    class UniCustomEvent3 {
+    class UniCustomEvent2 {
       constructor(type, options) {
         this.detail = options.detail;
       }
     }
-    class UniPickerCancelEvent extends UniCustomEvent3 {
+    class UniPickerCancelEvent extends UniCustomEvent2 {
       constructor() {
         super("cancel", {
           detail: {}
         });
       }
     }
-    class UniPickerChangeEvent extends UniCustomEvent3 {
+    class UniPickerChangeEvent extends UniCustomEvent2 {
       constructor(value) {
         super("change", {
           detail: { value }
         });
       }
     }
-    class UniPickerColumnChangeEvent extends UniCustomEvent3 {
+    class UniPickerColumnChangeEvent extends UniCustomEvent2 {
       constructor(column, value) {
         super("columnchange", {
           detail: { value, column }
@@ -11431,12 +11431,12 @@ const _sfc_main$b = /* @__PURE__ */ defineComponent$2({
   __vapor: true,
   setup(__props, { emit: __emit }) {
     const props2 = __props;
-    class UniCustomEvent3 {
+    class UniCustomEvent2 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniPickerViewChangeEvent extends UniCustomEvent3 {
+    class UniPickerViewChangeEvent extends UniCustomEvent2 {
       constructor(value) {
         super("change", { value });
       }
@@ -11704,12 +11704,12 @@ const _sfc_main$9 = /* @__PURE__ */ defineComponent$2({
   __vapor: true,
   setup(__props, { emit: __emit }) {
     const props2 = __props;
-    class UniCustomEvent3 {
+    class UniCustomEvent2 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniProgressActiveendEvent extends UniCustomEvent3 {
+    class UniProgressActiveendEvent extends UniCustomEvent2 {
       constructor(type, curPercent) {
         super(type, { curPercent });
       }
@@ -12021,12 +12021,12 @@ const _sfc_main$7 = /* @__PURE__ */ defineComponent$2({
   emits: ["change"],
   __vapor: true,
   setup(__props, { emit: __emit }) {
-    class UniCustomEvent3 {
+    class UniCustomEvent2 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniRadioGroupChangeEvent extends UniCustomEvent3 {
+    class UniRadioGroupChangeEvent extends UniCustomEvent2 {
       constructor(value) {
         super("change", { value });
       }
@@ -12086,16 +12086,6 @@ _sfc_main$7.setup = (props2, ctx) => {
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-form/components/radio-group/radio-group.vue");
   return _sfc_setup$7 ? _sfc_setup$7(props2, ctx) : void 0;
 };
-let UniCustomEvent$1 = class UniCustomEvent {
-  constructor(type, detail) {
-    this.detail = detail;
-  }
-};
-class UniSliderChangeEvent extends UniCustomEvent$1 {
-  constructor(value) {
-    super("change", { value });
-  }
-}
 class UniSliderElement extends UniViewElement {
   constructor() {
     super(...arguments);
@@ -12146,7 +12136,6 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
   emits: ["change", "changing"],
   __vapor: true,
   setup(__props, { expose: __expose, emit: __emit }) {
-    const emit2 = __emit;
     const attrs = useAttrs$1();
     const id2 = attrs.id ?? "";
     let unregisterLabelTarget = null;
@@ -12154,7 +12143,7 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
     ref(null);
     const backgroundRef = ref(null);
     const fillRef = ref(null);
-    const handleRef = ref(null);
+    ref(null);
     const thumbRef = ref(null);
     function setColor(element, color) {
       if (element == null)
@@ -12187,8 +12176,7 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
     const initialValue = props2.value;
     const currentValue = ref(props2.value);
     const isDragging = ref(false);
-    let cachedDecimalPlaces = -1;
-    let cachedStep = props2.step;
+    props2.step;
     const thumbTranslateX = ref(0);
     const trackActiveScaleX = ref(0);
     const effectiveMax = computed(() => {
@@ -12216,29 +12204,6 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
       currentValue.value;
       releasePointerCapture();
     }
-    function getDecimalPlaces(num) {
-      if (num == 0)
-        return 0;
-      if (cachedStep !== num || cachedDecimalPlaces == -1) {
-        const str = num.toString();
-        const decimalIndex = str.indexOf(".");
-        if (decimalIndex == -1)
-          cachedDecimalPlaces = 0;
-        cachedDecimalPlaces = str.length - decimalIndex - 1;
-      }
-      return cachedDecimalPlaces;
-    }
-    function applyStepPrecision(value) {
-      let result = value;
-      if (props2.step > 0) {
-        result = Math.round(result / props2.step) * props2.step;
-        const decimalPlaces = getDecimalPlaces(props2.step);
-        if (decimalPlaces > 0) {
-          result = parseFloat(result.toFixed(decimalPlaces));
-        }
-      }
-      return result;
-    }
     function applyVisualPosition(percentage, fillScale) {
       thumbTranslateX.value = percentage * 100;
       trackActiveScaleX.value = fillScale;
@@ -12252,35 +12217,6 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
       const percentage = range > 0 ? (clampedValue - min) / range : 0;
       const fillScale = percentage - 1e-3;
       applyVisualPosition(percentage, fillScale);
-    }
-    function handleKeyDown(e2) {
-      if (props2.disabled == true) {
-        return;
-      }
-      let newValue = currentValue.value;
-      if (e2.key == "ArrowLeft" || e2.key == "ArrowDown") {
-        newValue -= props2.step;
-        e2.preventDefault();
-      } else if (e2.key == "ArrowRight" || e2.key == "ArrowUp") {
-        newValue += props2.step;
-        e2.preventDefault();
-      } else if (e2.key == "Home") {
-        newValue = props2.min;
-        e2.preventDefault();
-      } else if (e2.key == "End") {
-        newValue = props2.max;
-        e2.preventDefault();
-      } else {
-        return;
-      }
-      newValue = applyStepPrecision(newValue);
-      const min = Number.isFinite(props2.min) ? props2.min : 0;
-      const max = Number.isFinite(props2.max) ? props2.max : min;
-      newValue = max > min ? Math.max(min, Math.min(newValue, effectiveMax.value)) : min;
-      requestAnimationFrame(() => {
-        renderVisuals(newValue);
-        emit2("change", new UniSliderChangeEvent(currentValue.value));
-      });
     }
     function handleResize() {
       renderVisuals(currentValue.value);
@@ -12312,6 +12248,9 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
         watch(() => props2.disabled, (disabled) => {
           if (disabled) {
             resetInteractionState();
+            const element = thumbRef.value;
+            if (element != null && element.ownerDocument.activeElement === element)
+              element.blur();
           }
         });
       });
@@ -12343,10 +12282,6 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
         unregisterLabelTarget = registerLabelTarget(id2, target);
       }
       window.addEventListener("resize", handleResize);
-      const handleEl = handleRef.value;
-      if (handleEl != null) {
-        handleEl.addEventListener("keydown", handleKeyDown);
-      }
     });
     onUnmounted(() => {
       const formCtx = inject(FORM_KEY, null);
@@ -12377,7 +12312,7 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
       _push(`<div${ssrRenderAttrs(mergeProps({
         "uni-view": "",
         class: "container"
-      }, _attrs))}><div uni-view class="slider-track"><div uni-view class="${ssrRenderClass([props2.trackClass, "slider-track-bg"])}"><div uni-view class="${ssrRenderClass([props2.trackActiveClass, "slider-track-fill"])}" style="${ssrRenderStyle({ transform: `scaleX(${unref(trackActiveScaleX)})` })}"></div></div><div uni-view style="${ssrRenderStyle([{ "overflow": "visible", "align-self": "flex-start", "z-index": "2" }, { width: "100%", transform: `translateX(${unref(thumbTranslateX)}%)` }])}"><div uni-view tabIndex="0" role="slider"${ssrRenderAttr("aria-valuenow", unref(currentValue))}${ssrRenderAttr("aria-valuemin", __props.min)}${ssrRenderAttr("aria-valuemax", __props.max)} class="${ssrRenderClass([props2.thumbClass, "slider-handle"])}" style="${ssrRenderStyle({ transform: `translateX(-${unref(thumbTranslateX)}%)` })}"></div></div></div>`);
+      }, _attrs))}><div uni-view class="slider-track"><div uni-view class="${ssrRenderClass([props2.trackClass, "slider-track-bg"])}"><div uni-view class="${ssrRenderClass([props2.trackActiveClass, "slider-track-fill"])}" style="${ssrRenderStyle({ transform: `scaleX(${unref(trackActiveScaleX)})` })}"></div></div><div uni-view style="${ssrRenderStyle([{ "overflow": "visible", "align-self": "flex-start", "z-index": "2" }, { width: "100%", transform: `translateX(${unref(thumbTranslateX)}%)` }])}"><div uni-view${ssrRenderAttr("tabindex", props2.disabled ? -1 : 0)} role="slider"${ssrRenderAttr("aria-disabled", props2.disabled)} aria-orientation="horizontal"${ssrRenderAttr("aria-valuenow", unref(currentValue))}${ssrRenderAttr("aria-valuemin", Number.isFinite(props2.min) ? props2.min : 0)}${ssrRenderAttr("aria-valuemax", unref(effectiveMax))} class="${ssrRenderClass([props2.thumbClass, "slider-handle"])}" style="${ssrRenderStyle({ transform: `translateX(-${unref(thumbTranslateX)}%)` })}"></div></div></div>`);
       if (props2.showValue) {
         _push(`<span uni-text flatten style="${ssrRenderStyle({ "width": "35px", "color": "#888", "font-size": "14px", "align-self": "center", "margin-left": "5px", "white-space": "nowrap" })}">${ssrInterpolate(unref(currentValue), true)}</span>`);
       } else {
@@ -12608,13 +12543,13 @@ _sfc_main$4.setup = (props2, ctx) => {
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-list-view/components/sticky-section/sticky-section.vue");
   return _sfc_setup$4 ? _sfc_setup$4(props2, ctx) : void 0;
 };
-class UniCustomEvent2 {
+class UniCustomEvent {
   constructor(type, detail) {
     this.type = type;
     this.detail = detail;
   }
 }
-class UniSwiperChangeEvent extends UniCustomEvent2 {
+class UniSwiperChangeEvent extends UniCustomEvent {
   constructor(current, source, currentItemId) {
     const detail = { current, source };
     if (currentItemId != null) {
@@ -12623,12 +12558,12 @@ class UniSwiperChangeEvent extends UniCustomEvent2 {
     super("change", detail);
   }
 }
-class UniSwiperTransitionEvent extends UniCustomEvent2 {
+class UniSwiperTransitionEvent extends UniCustomEvent {
   constructor(dx, dy) {
     super("transition", { dx, dy });
   }
 }
-class UniSwiperAnimationFinishEvent extends UniCustomEvent2 {
+class UniSwiperAnimationFinishEvent extends UniCustomEvent {
   constructor(current, source, currentItemId) {
     const detail = { current, source };
     if (currentItemId != null) {

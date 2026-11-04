@@ -19823,7 +19823,7 @@ const _UniSliderElement = class _UniSliderElement extends UniViewElement {
 _UniSliderElement.__uniElement = { vm: true };
 let UniSliderElement = _UniSliderElement;
 const t0$g = template('<span uni-text style="width: 35px;color: #888;font-size: 14px;align-self: center;margin-left: 5px;white-space: nowrap;"> ');
-const t1$a = template("<div uni-slider uni-view class=container><div uni-view class=slider-track><div uni-view><div uni-view></div></div><div uni-view><div uni-view tabIndex=0 role=slider></div></div></div>", 1);
+const t1$a = template("<div uni-slider uni-view class=container><div uni-view class=slider-track><div uni-view><div uni-view></div></div><div uni-view><div uni-view role=slider aria-orientation=horizontal></div></div></div>", 1);
 const _uniSliderElement = { value: "SLIDER" };
 const TOUCH_THRESHOLD = 4;
 const _sfc_main$g = /* @__PURE__ */ defineVaporComponent({
@@ -19921,11 +19921,13 @@ const _sfc_main$g = /* @__PURE__ */ defineVaporComponent({
     let activePointerId = -1;
     let pointerTarget = null;
     let pointerClientX = 0;
+    let pointerStartFocus = null;
     function releasePointerCapture() {
       const target = pointerTarget;
       const pointerId = activePointerId;
       activePointerId = -1;
       pointerTarget = null;
+      pointerStartFocus = null;
       if (target != null && target.hasPointerCapture(pointerId)) {
         target.releasePointerCapture(pointerId);
       }
@@ -19999,13 +20001,28 @@ const _sfc_main$g = /* @__PURE__ */ defineVaporComponent({
       newValue = Math.max(min, Math.min(newValue, effectiveMax.value));
       return newValue;
     }
+    function focusThumb() {
+      if (props2.disabled)
+        return;
+      const element = thumbRef.value;
+      if (element != null && element.ownerDocument.activeElement !== element)
+        element.focus({ preventScroll: true });
+    }
+    function handleThumbClick(e2) {
+      if (e2.detail == 0)
+        focusThumb();
+    }
     function finishPointerInteraction(clientX) {
       if (props2.disabled) {
         resetInteractionState();
         return;
       }
-      if (_activeStatus != -1)
+      if (_activeStatus != -1) {
+        const element = thumbRef.value;
+        if (element != null && element.ownerDocument.activeElement === pointerStartFocus)
+          focusThumb();
         renderVisuals(calculateValue(clientX));
+      }
       const value = currentValue.value;
       const changed = lastValue !== value;
       resetInteractionState();
@@ -20063,6 +20080,8 @@ const _sfc_main$g = /* @__PURE__ */ defineVaporComponent({
       touchStartY = e2.clientY;
       _activeStatus = e2.pointerType == "mouse" ? 1 : 0;
       activePointerId = e2.pointerId;
+      const thumbEl = thumbRef.value;
+      pointerStartFocus = (thumbEl == null ? void 0 : thumbEl.ownerDocument.activeElement) ?? null;
       pointerTarget = e2.currentTarget;
       pointerTarget.setPointerCapture(e2.pointerId);
       const containerEl = containerRef.value;
@@ -20073,6 +20092,7 @@ const _sfc_main$g = /* @__PURE__ */ defineVaporComponent({
       }
       if (e2.pointerType == "mouse") {
         e2.preventDefault();
+        focusThumb();
         renderVisuals(calculateValue(e2.clientX));
       }
     }
@@ -20086,34 +20106,58 @@ const _sfc_main$g = /* @__PURE__ */ defineVaporComponent({
       if (e2.pointerId == activePointerId)
         resetInteractionState();
     }
+    const sliderKeys = ["ArrowLeft", "ArrowDown", "ArrowRight", "ArrowUp", "Home", "End", "PageUp", "PageDown"];
+    const pressedSliderKeys = /* @__PURE__ */ new Set();
+    function handleThumbBlur() {
+      pressedSliderKeys.clear();
+      resetInteractionState();
+    }
+    function getKeyboardDecimalPlaces(value) {
+      const parts = value.toString().split("e");
+      const fraction = parts[0].split(".")[1] ?? "";
+      return Math.max(0, fraction.length - Number(parts[1] ?? "0"));
+    }
+    function ownsKeyboardEvent(e2) {
+      const element = thumbRef.value;
+      return !props2.disabled && element != null && e2.target === element && e2.currentTarget === element && element.ownerDocument.activeElement === element && !e2.defaultPrevented && !e2.isComposing && !e2.altKey && !e2.ctrlKey && !e2.metaKey && sliderKeys.includes(e2.key);
+    }
+    function handleKeyUp(e2) {
+      const handled = pressedSliderKeys.delete(e2.key);
+      const element = thumbRef.value;
+      if (handled && element != null && e2.target === element && e2.currentTarget === element)
+        e2.stopPropagation();
+    }
     function handleKeyDown(e2) {
-      if (props2.disabled == true) {
+      if (!ownsKeyboardEvent(e2))
         return;
-      }
+      pressedSliderKeys.add(e2.key);
+      e2.preventDefault();
+      e2.stopPropagation();
+      if (isDragging.value || !Number.isFinite(props2.step) || props2.step <= 0)
+        return;
+      const min = Number.isFinite(props2.min) ? props2.min : 0;
       let newValue = currentValue.value;
       if (e2.key == "ArrowLeft" || e2.key == "ArrowDown") {
         newValue -= props2.step;
-        e2.preventDefault();
       } else if (e2.key == "ArrowRight" || e2.key == "ArrowUp") {
         newValue += props2.step;
-        e2.preventDefault();
+      } else if (e2.key == "PageUp") {
+        newValue += props2.step * 10;
+      } else if (e2.key == "PageDown") {
+        newValue -= props2.step * 10;
       } else if (e2.key == "Home") {
-        newValue = props2.min;
-        e2.preventDefault();
+        newValue = min;
       } else if (e2.key == "End") {
-        newValue = props2.max;
-        e2.preventDefault();
-      } else {
-        return;
+        newValue = effectiveMax.value;
       }
-      newValue = applyStepPrecision(newValue);
-      const min = Number.isFinite(props2.min) ? props2.min : 0;
-      const max = Number.isFinite(props2.max) ? props2.max : min;
-      newValue = max > min ? Math.max(min, Math.min(newValue, effectiveMax.value)) : min;
-      requestAnimationFrame(() => {
-        renderVisuals(newValue);
-        emit2("change", new UniSliderChangeEvent(currentValue.value));
-      });
+      newValue = min + Math.round((newValue - min) / props2.step) * props2.step;
+      const precision = Math.min(100, Math.max(getKeyboardDecimalPlaces(min), getKeyboardDecimalPlaces(props2.step)));
+      newValue = parseFloat(newValue.toFixed(precision));
+      newValue = Math.max(min, Math.min(newValue, effectiveMax.value));
+      if (newValue === currentValue.value)
+        return;
+      renderVisuals(newValue);
+      emit2("change", new UniSliderChangeEvent(currentValue.value));
     }
     function handleResize() {
       trackWidth = 0;
@@ -20147,6 +20191,9 @@ const _sfc_main$g = /* @__PURE__ */ defineVaporComponent({
         watch(() => props2.disabled, (disabled) => {
           if (disabled) {
             resetInteractionState();
+            const element = thumbRef.value;
+            if (element != null && element.ownerDocument.activeElement === element)
+              element.blur();
           }
         });
       });
@@ -20178,10 +20225,6 @@ const _sfc_main$g = /* @__PURE__ */ defineVaporComponent({
         unregisterLabelTarget = registerLabelTarget(id2, target);
       }
       window.addEventListener("resize", handleResize);
-      const handleEl = handleRef.value;
-      if (handleEl != null) {
-        handleEl.addEventListener("keydown", handleKeyDown);
-      }
     });
     onUnmounted(() => {
       const formCtx = inject(FORM_KEY, null);
@@ -20217,6 +20260,10 @@ const _sfc_main$g = /* @__PURE__ */ defineVaporComponent({
     initUniElement(n0, _uniSliderElement);
     setStaticTemplateRef(n1, fillRef, null, "fillRef");
     setStaticTemplateRef(n2, backgroundRef, null, "backgroundRef");
+    on$1(n3, "keydown", handleKeyDown);
+    on$1(n3, "keyup", handleKeyUp);
+    on$1(n3, "blur", handleThumbBlur);
+    on$1(n3, "click", handleThumbClick);
     setStaticTemplateRef(n3, thumbRef, null, "thumbRef");
     setStaticTemplateRef(n4, handleRef, null, "handleRef");
     on$1(n5, "pointerdown", handlePointerDown);
@@ -20228,13 +20275,16 @@ const _sfc_main$g = /* @__PURE__ */ defineVaporComponent({
     renderEffect(() => {
       const _props = props2;
       const _thumbTranslateX = unref(thumbTranslateX);
+      const _props_disabled = _props.disabled;
       setClass(n2, ["slider-track-bg", _props.trackClass]);
       setClass(n1, ["slider-track-fill", _props.trackActiveClass]);
       setStyle(n1, { transform: `scaleX(${unref(trackActiveScaleX)})` });
       setStyle(n4, ["overflow: visible; align-self: flex-start;z-index: 2;", { width: "100%", transform: `translateX(${_thumbTranslateX}%)` }]);
+      setProp(n3, "tabindex", _props_disabled ? -1 : 0);
+      setAttr(n3, "aria-disabled", _props_disabled);
       setAttr(n3, "aria-valuenow", unref(currentValue));
-      setAttr(n3, "aria-valuemin", __props.min);
-      setAttr(n3, "aria-valuemax", __props.max);
+      setAttr(n3, "aria-valuemin", Number.isFinite(_props.min) ? _props.min : 0);
+      setAttr(n3, "aria-valuemax", unref(effectiveMax));
       setClass(n3, ["slider-handle", _props.thumbClass]);
       setStyle(n3, { transform: `translateX(-${_thumbTranslateX}%)` });
     });
