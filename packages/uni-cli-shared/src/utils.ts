@@ -342,12 +342,14 @@ export function getEscaper(
 
 export function getHarmonyRuntimePackageName(
   isX: boolean,
-  isDom2: boolean
+  isVapor: boolean
 ): string {
   if (!isX) {
     return '@dcloudio/uni-app-runtime'
-  } else if (!isDom2) {
+  } else if (!isVapor) {
     return '@dcloudio/uni-app-x-runtime'
+  } else if (process.env.UNI_APP_X_HARMONY_SCRIPT_ENGINE === 'jsvm') {
+    return '@dcloudio/uni-app-x-vapor-runtime-jsvm'
   } else {
     return '@dcloudio/uni-app-x-vapor-runtime'
   }

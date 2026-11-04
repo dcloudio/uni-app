@@ -1,14 +1,46 @@
 export function getHarmonyRuntimePackageName(
   isX: boolean,
-  isDom2: boolean
+  isVapor: boolean
 ): string {
   if (!isX) {
     return '@dcloudio/uni-app-runtime'
-  } else if (!isDom2) {
+  } else if (!isVapor) {
     return '@dcloudio/uni-app-x-runtime'
+  } else if (process.env.UNI_APP_X_HARMONY_SCRIPT_ENGINE === 'jsvm') {
+    return '@dcloudio/uni-app-x-vapor-runtime-jsvm'
   } else {
     return '@dcloudio/uni-app-x-vapor-runtime'
   }
+}
+function resolveConfigFileSuffix(isX: boolean, isVapor: boolean) {
+  let suffix = ''
+  if (isVapor) {
+    suffix = '-vapor'
+    if (process.env.UNI_APP_X_HARMONY_SCRIPT_ENGINE === 'jsvm') {
+      suffix += '-jsvm'
+    }
+  } else if (isX) {
+    suffix = '-x'
+  }
+  return suffix
+}
+function resolveExternalModuleExportsConfigPath(
+  isX: boolean,
+  isVapor: boolean
+) {
+  return `../../lib/arkts/external-module-exports${resolveConfigFileSuffix(
+    isX,
+    isVapor
+  )}.json`
+}
+function resolveInternalModuleExportsConfigPath(
+  isX: boolean,
+  isVapor: boolean
+) {
+  return `../../lib/arkts/internal-module-exports${resolveConfigFileSuffix(
+    isX,
+    isVapor
+  )}.json`
 }
 
 function tryRequire(file: string) {
@@ -430,16 +462,14 @@ export function getArkTSAutoImports(
     runtimeExports.push(['UniVueElement'])
   }
 
-  const externalModuleExportsPath = isVapor
-    ? '../../lib/arkts/external-module-exports-dom2.json'
-    : isX
-    ? '../../lib/arkts/external-module-exports-x.json'
-    : '../../lib/arkts/external-module-exports.json'
-  const internalModuleExportsPath = isVapor
-    ? '../../lib/arkts/internal-module-exports-dom2.json'
-    : isX
-    ? '../../lib/arkts/internal-module-exports-x.json'
-    : '../../lib/arkts/internal-module-exports.json'
+  const externalModuleExportsPath = resolveExternalModuleExportsConfigPath(
+    isX,
+    isVapor
+  )
+  const internalModuleExportsPath = resolveInternalModuleExportsConfigPath(
+    isX,
+    isVapor
+  )
   /**
    * uni-video、uni-canvas、uni-chooseLocation等内置component、api。uni_module目录下包含
    */
