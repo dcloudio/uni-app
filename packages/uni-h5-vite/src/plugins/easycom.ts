@@ -2,9 +2,14 @@ import fs from 'fs-extra'
 import path from 'path'
 import type { Plugin } from 'vite'
 import { type FilterPattern, createFilter } from '@rollup/pluginutils'
+import { walk } from 'estree-walker'
 import { camelize, capitalize } from '@vue/shared'
 
-import { COMPONENT_PREFIX, isWebBuiltInComponent } from '@dcloudio/uni-shared'
+import {
+  COMPONENT_PREFIX,
+  isDom2WebVueComponentTag,
+  isWebBuiltInComponent,
+} from '@dcloudio/uni-shared'
 import {
   BASE_COMPONENTS_STYLE_PATH,
   COMPONENT_DEPS_CSS,
@@ -15,14 +20,26 @@ import {
   buildInCssSet,
   genResolveEasycomCode,
   isCombineBuiltInCss,
+  isUniAppXWebVapor,
   matchEasycom,
   normalizePath,
   parseVueRequest,
+  resolveWebVaporComponentStyle,
 } from '@dcloudio/uni-cli-shared'
 
 const H5_COMPONENTS_PATH = '@dcloudio/uni-h5'
-
+const VAPOR_EASYCOM_IMPORT =
+  "import { createComponent as __createEasycomComponent } from 'vue';"
 const xBaseComponents = ['slider', 'switch', 'loading', 'page-container']
+// Vapor 未支持组件仅用带 uni-view 的节点显示提示，无需独立 CSS，也不能回退加载旧宿主 CSS。
+// 已接入组件的样式优先于此名单；非 Vapor 仍按原路径加载。
+const vaporPlaceholderComponents = new Set([
+  'ad-content-page',
+  'ad-draw',
+  'camera',
+  'live-player',
+  'live-pusher',
+])
 const baseComponents = [
   // 'audio',
   'button',
@@ -63,6 +80,10 @@ const baseComponents = [
 interface UniEasycomPluginOptions {
   include?: FilterPattern
   exclude?: FilterPattern
+  // 框架构建不经过用户项目的环境初始化，需要显式传入编译模式。
+  vapor?: boolean
+  // 仅框架构建使用：未接入的组件保留按名解析，不生成缺失的静态导入。
+  excludeBuiltInComponents?: string[]
 }
 
 let componentDepsCss: ReturnType<typeof COMPONENT_DEPS_CSS>
@@ -74,6 +95,17 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
   const isDevX =
     process.env.UNI_HX_VERSION_DEV === 'true' &&
     process.env.UNI_APP_X === 'true'
+  const isWebVapor = options.vapor ?? isUniAppXWebVapor()
+  const excludedComponents = new Set(options.excludeBuiltInComponents)
+  const isBuiltInComponent = (name: string) => {
+    name = name.replace(COMPONENT_PREFIX, '')
+    return (
+      !excludedComponents.has(name) &&
+      (isWebVapor
+        ? isDom2WebVueComponentTag(name)
+        : isWebBuiltInComponent(name))
+    )
+  }
   return {
     name: 'uni:h5-easycom',
     configResolved(config) {
@@ -87,11 +119,29 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
       if (!EXTNAME_VUE_TEMPLATE.includes(path.extname(filename))) {
         return
       }
-      if (!code.includes('_resolveComponent')) {
+      if (
+        !code.includes('_resolveComponent') &&
+        !(isWebVapor && code.includes('_createAssetComponent'))
+      ) {
         return
       }
       let i = 0
       const importDeclarations: string[] = []
+      if (isWebVapor && code.includes('_createAssetComponent')) {
+        const transformed = replaceVaporAssetComponents(
+          code,
+          this.parse(code),
+          isDevX,
+          isBuiltInComponent
+        )
+        if (transformed !== code) {
+          code = transformed
+          importDeclarations.push(VAPOR_EASYCOM_IMPORT)
+        }
+      }
+      if (!code.includes('_resolveComponent')) {
+        return
+      }
       code = code.replace(
         /_resolveComponent\("(.+?)"(, true)?\)/g,
         (str, name) => {
@@ -145,13 +195,13 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
               }
             }
             function buildInComponent() {
-              if (isWebBuiltInComponent(name)) {
+              if (isBuiltInComponent(name)) {
                 name = name.replace(COMPONENT_PREFIX, '')
                 const local = `__syscom_${i++}`
                 if (needCombineBuiltInCss) {
                   // 发行模式下，应该将内置组件css输出到入口css中
-                  resolveBuiltInCssImport(name).forEach((cssImport) =>
-                    buildInCssSet.add(cssImport)
+                  resolveBuiltInCssImport(name, isWebVapor).forEach(
+                    (cssImport) => buildInCssSet.add(cssImport)
                   )
                   return addImportDeclaration(
                     importDeclarations,
@@ -163,7 +213,8 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
                 return addBuiltInImportDeclaration(
                   importDeclarations,
                   local,
-                  name
+                  name,
+                  isWebVapor
                 )
               }
             }
@@ -182,15 +233,67 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
   }
 }
 
-function resolveBuiltInCssImport(name: string) {
+// 只处理真实调用，并移除 createAssetComponent 独有的尾部参数。
+function replaceVaporAssetComponents(
+  code: string,
+  ast: Parameters<typeof walk>[0],
+  isDevX: boolean,
+  isBuiltInComponent: (name: string) => boolean
+) {
+  const edits: [number, number, string][] = []
+  walk(ast, {
+    enter(node) {
+      const call = node as any
+      if (
+        call.type === 'CallExpression' &&
+        call.callee.type === 'Identifier' &&
+        call.callee.name === '_createAssetComponent' &&
+        call.arguments[0]?.type === 'Literal' &&
+        typeof call.arguments[0].value === 'string'
+      ) {
+        const first = call.arguments[0]
+        const name = first.value as string
+        const easycomName =
+          isDevX && name.startsWith('v-uni-') ? name.slice(6) : name
+        if (
+          !name.startsWith('_') &&
+          (isBuiltInComponent(name) || matchEasycom(easycomName))
+        ) {
+          edits.push([
+            call.start,
+            first.end,
+            `__createEasycomComponent(_resolveComponent(${code.slice(
+              first.start,
+              first.end
+            )})`,
+          ])
+          if (call.arguments.length > 5) {
+            edits.push([call.arguments[4].end, call.end - 1, ''])
+          }
+        }
+      }
+    },
+  })
+  for (const [start, end, replacement] of edits.sort((a, b) => b[0] - a[0])) {
+    code = code.slice(0, start) + replacement + code.slice(end)
+  }
+  return code
+}
+
+function resolveBuiltInCssImport(name: string, isWebVapor: boolean) {
   const cssImports: string[] = []
-  const isX = process.env.UNI_APP_X === 'true'
-  if (isX && xBaseComponents.includes(name)) {
-    cssImports.push(X_BASE_COMPONENTS_STYLE_PATH + name + '.css')
-  } else if (baseComponents.includes(name)) {
-    cssImports.push(BASE_COMPONENTS_STYLE_PATH + name + '.css')
-  } else {
-    cssImports.push(H5_COMPONENTS_STYLE_PATH + name + '.css')
+  const vaporStyle = isWebVapor && resolveWebVaporComponentStyle(name)
+  if (vaporStyle) {
+    cssImports.push(vaporStyle)
+  } else if (!isWebVapor || !vaporPlaceholderComponents.has(name)) {
+    const isX = process.env.UNI_APP_X === 'true'
+    if (isX && xBaseComponents.includes(name)) {
+      cssImports.push(X_BASE_COMPONENTS_STYLE_PATH + name + '.css')
+    } else if (baseComponents.includes(name)) {
+      cssImports.push(BASE_COMPONENTS_STYLE_PATH + name + '.css')
+    } else {
+      cssImports.push(H5_COMPONENTS_STYLE_PATH + name + '.css')
+    }
   }
 
   const deps = componentDepsCss[name as keyof typeof componentDepsCss]
@@ -201,9 +304,10 @@ function resolveBuiltInCssImport(name: string) {
 function addBuiltInImportDeclaration(
   importDeclarations: string[],
   local: string,
-  name: string
+  name: string,
+  isWebVapor: boolean
 ) {
-  resolveBuiltInCssImport(name).forEach((cssImport) =>
+  resolveBuiltInCssImport(name, isWebVapor).forEach((cssImport) =>
     importDeclarations.push(`import '${cssImport}';`)
   )
   return addImportDeclaration(

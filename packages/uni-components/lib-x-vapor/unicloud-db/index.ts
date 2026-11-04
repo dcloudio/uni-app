@@ -1,123 +1,123 @@
-type SuccessCallback<T> = (res : T | null) => void | null
-type FailCallback = (err : any | null) => void | null
+type SuccessCallback<T> = (res: T | null) => void | null
+type FailCallback = (err: any | null) => void | null
 type CompleteCallback = () => void | null
 
 export type MixinDatacomPaginationType = {
-  current : number,
-  size : number,
-  count : number
+  current: number
+  size: number
+  count: number
 }
 
 export type MixinDatacomGetOptions = {
-  collection ?: UTSJSONObject,
-  field ?: string,
-  orderBy ?: string,
-  where ?: any,
-  pageData ?: string,
-  pageCurrent ?: number,
-  pageSize ?: number,
-  getCount ?: boolean,
-  getTree ?: any,
-  getTreePath ?: UTSJSONObject,
-  startWith ?: string,
-  limitLevel ?: number,
-  groupBy ?: string,
-  groupField ?: string,
-  distinct ?: boolean,
-  pageIndistinct ?: boolean,
-  foreignKey ?: string,
-  loadtime ?: string,
-  manual ?: boolean
+  collection?: UTSJSONObject
+  field?: string
+  orderBy?: string
+  where?: any
+  pageData?: string
+  pageCurrent?: number
+  pageSize?: number
+  getCount?: boolean
+  getTree?: any
+  getTreePath?: UTSJSONObject
+  startWith?: string
+  limitLevel?: number
+  groupBy?: string
+  groupField?: string
+  distinct?: boolean
+  pageIndistinct?: boolean
+  foreignKey?: string
+  loadtime?: string
+  manual?: boolean
 }
 
 export type MixinDatacomEasyGetOptions = {
-  success ?: SuccessCallback<UniCloudDBGetResult>,
-  fail ?: FailCallback,
-  complete ?: CompleteCallback,
+  success?: SuccessCallback<UniCloudDBGetResult>
+  fail?: FailCallback
+  complete?: CompleteCallback
 }
 
 export const mixinDatacom = defineMixin({
   props: {
     localdata: {
       type: Array as PropType<Array<UTSJSONObject>>,
-      default: [] as Array<UTSJSONObject>
+      default: [] as Array<UTSJSONObject>,
     },
     collection: {
       type: Object,
-      default: ''
+      default: '',
     },
     field: {
       type: String,
-      default: ''
+      default: '',
     },
     orderby: {
       type: String,
-      default: ''
+      default: '',
     },
     where: {
       type: Object,
-      default: ''
+      default: '',
     },
     pageData: {
       type: String,
-      default: 'add'
+      default: 'add',
     },
     pageCurrent: {
       type: Number,
-      default: 1
+      default: 1,
     },
     pageSize: {
       type: Number,
-      default: 20
+      default: 20,
     },
     getcount: {
       type: Boolean,
-      default: false
+      default: false,
     },
     gettree: {
       type: Object,
-      default: ''
+      default: '',
     },
     gettreepath: {
       type: Boolean,
-      default: false
+      default: false,
     },
     startwith: {
       type: String,
-      default: ''
+      default: '',
     },
     limitlevel: {
       type: Number,
-      default: 10
+      default: 10,
     },
     groupby: {
       type: String,
-      default: ''
+      default: '',
     },
     groupField: {
       type: String,
-      default: ''
+      default: '',
     },
     distinct: {
       type: Boolean,
-      default: false
+      default: false,
     },
     pageIndistinct: {
       type: Boolean,
-      default: false
+      default: false,
     },
     foreignKey: {
       type: String,
-      default: ''
+      default: '',
     },
     loadtime: {
       type: String,
-      default: 'auto'
+      default: 'auto',
     },
     manual: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
@@ -136,10 +136,21 @@ export const mixinDatacom = defineMixin({
     this.mixinDatacomPage.current = this.pageCurrent
     this.mixinDatacomPage.size = this.pageSize
 
-    const PROPS_NAME = ['', '', 'collection', 'field', 'getcount', 'orderby', 'where', 'groupby', 'groupField', 'distinct']
+    const PROPS_NAME = [
+      '',
+      '',
+      'collection',
+      'field',
+      'getcount',
+      'orderby',
+      'where',
+      'groupby',
+      'groupField',
+      'distinct',
+    ]
 
     this.$watch(
-      () : any => [
+      (): any => [
         this.pageCurrent,
         this.pageSize,
         this.collection,
@@ -149,16 +160,16 @@ export const mixinDatacom = defineMixin({
         this.where,
         this.groupby,
         this.groupField,
-        this.distinct
+        this.distinct,
       ],
-      (newValue : Array<any>, oldValue : Array<any>) => {
+      (newValue: Array<any>, oldValue: Array<any>) => {
         this.mixinDatacomPage.size = this.pageSize
         if (newValue[0] !== oldValue[0]) {
           this.mixinDatacomPage.current = this.pageCurrent
         }
 
         let needReset = false
-        let changed : Array<string> = []
+        let changed: Array<string> = []
         for (let i = 2; i < newValue.length; i++) {
           if (newValue[i] !== oldValue[i]) {
             needReset = true
@@ -174,9 +185,8 @@ export const mixinDatacom = defineMixin({
     // props发生变化时被调用，在组件中覆盖此方法
     // 非 pageCurrent，pageSize 改变时 needReset=true,需要重置数据
     // changed，发生变化的属性名，类型为Array，例如 ['collection', 'action']
-    onMixinDatacomPropsChange(_ : boolean, changed : Array<string>) {
-    },
-    mixinDatacomEasyGet(options ?: MixinDatacomEasyGetOptions | null) {
+    onMixinDatacomPropsChange(_: boolean, changed: Array<string>) {},
+    mixinDatacomEasyGet(options?: MixinDatacomEasyGetOptions | null) {
       if (this.mixinDatacomLoading) {
         return
       }
@@ -184,52 +194,69 @@ export const mixinDatacom = defineMixin({
       this.mixinDatacomLoading = true
       this.mixinDatacomError = null
 
-      this.mixinDatacomGet(null).then((res : UniCloudDBGetResult) => {
-        const data = res.data
-        const count = res.count
+      this.mixinDatacomGet(null)
+        .then((res: UniCloudDBGetResult) => {
+          const data = res.data
+          const count = res.count
 
-        if (this.getcount && count != null) {
-          this.mixinDatacomPage.count = count
-        }
+          if (this.getcount && count != null) {
+            this.mixinDatacomPage.count = count
+          }
 
-        this.mixinDatacomHasMore = !((count != null) ? (this.mixinDatacomPage.current * this.mixinDatacomPage.size >= count) : (data.length < this.pageSize))
-        this.mixinDatacomResData = data
+          this.mixinDatacomHasMore = !(count != null
+            ? this.mixinDatacomPage.current * this.mixinDatacomPage.size >=
+              count
+            : data.length < this.pageSize)
+          this.mixinDatacomResData = data
 
-        options?.success?.(res)
-      }).catch((err : any | null) => {
-        this.mixinDatacomError = err as UniCloudError
-        options?.fail?.(err)
-      }).then(() => {
-        this.mixinDatacomLoading = false
-        options?.complete?.()
-      }, () => {
-        this.mixinDatacomLoading = false
-        options?.complete?.()
-      })
+          options?.success?.(res)
+        })
+        .catch((err: any | null) => {
+          this.mixinDatacomError = err as UniCloudError
+          options?.fail?.(err)
+        })
+        .then(
+          () => {
+            this.mixinDatacomLoading = false
+            options?.complete?.()
+          },
+          () => {
+            this.mixinDatacomLoading = false
+            options?.complete?.()
+          }
+        )
     },
-    mixinDatacomGet(options: MixinDatacomGetOptions | null) : Promise<UniCloudDBGetResult> {
+    mixinDatacomGet(
+      options: MixinDatacomGetOptions | null
+    ): Promise<UniCloudDBGetResult> {
       let db = uniCloud.databaseForJQL()
 
-      let collection = Array.isArray(this.collection) ? db.collection(...(this.collection as Array<any>)) : db.collection(this.collection)
+      let collection = Array.isArray(this.collection)
+        ? db.collection(...(this.collection as Array<any>))
+        : db.collection(this.collection)
 
-      let filter : UniCloudDBFilter | null = null
+      let filter: UniCloudDBFilter | null = null
       if (this.foreignKey.length > 0) {
         filter = collection.foreignKey(this.foreignKey)
       }
 
-      const where : any = options?.where ?? this.where
+      const where: any = options?.where ?? this.where
       if (typeof where == 'string') {
         const whereString = where as string
         if (whereString.length > 0) {
-          filter = (filter != null) ? filter.where(where) : collection.where(where)
+          filter =
+            filter != null ? filter.where(where) : collection.where(where)
         }
       } else {
-        filter = (filter != null) ? filter.where(where) : collection.where(where)
+        filter = filter != null ? filter.where(where) : collection.where(where)
       }
 
-      let query : UniCloudDBQuery | null = null
+      let query: UniCloudDBQuery | null = null
       if (this.field.length > 0) {
-        query = (filter != null) ? filter.field(this.field) : collection.field(this.field)
+        query =
+          filter != null
+            ? filter.field(this.field)
+            : collection.field(this.field)
       }
       if (this.groupby.length > 0) {
         if (query != null) {
@@ -273,14 +300,14 @@ export const mixinDatacom = defineMixin({
       const getOptions = {} as UTSJSONObject
       const treeOptions = {
         limitLevel: this.limitlevel,
-        startWith: this.startwith
+        startWith: this.startwith,
       }
-      const getCount : boolean = options?.getCount ?? this.getcount
+      const getCount: boolean = options?.getCount ?? this.getcount
       if (this.getcount == true) {
         getOptions['getCount'] = getCount
       }
 
-      const getTree : any = options?.getTree ?? this.gettree
+      const getTree: any = options?.getTree ?? this.gettree
       if (typeof getTree == 'string') {
         const getTreeString = getTree as string
         if (getTreeString.length > 0) {
@@ -303,6 +330,6 @@ export const mixinDatacom = defineMixin({
       }
 
       return query.get(getOptions)
-    }
-  }
+    },
+  },
 })

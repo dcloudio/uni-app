@@ -1,0 +1,6 @@
+import App from './App.uvue'
+import { createVaporApp as createSSRApp } from 'vue'
+
+export function createApp() {
+  return { app: createSSRApp(App) }
+}

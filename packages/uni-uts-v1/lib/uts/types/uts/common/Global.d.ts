@@ -6,21 +6,18 @@
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.9",
                "uniUtsPlugin": "3.9",
                "unixUtsPlugin": "3.9"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -54,14 +51,12 @@ declare var NaN: number;
                "unixUtsPlugin": "x"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -94,21 +89,18 @@ declare type RequestAnimationFrameCallback = (timestamp: number) => void
   {
     "app": {
       "android": {
-        "osVer": "5.0",
         "uniVer": "√",
         "uniUtsPlugin": "x",
         "unixVer": "x",
         "unixUtsPlugin": "x"
       },
       "ios": {
-        "osVer": "x",
         "uniVer": "x",
         "unixVer": "x",
         "uniUtsPlugin": "x",
         "unixUtsPlugin": "x"
       },
       "harmony": {
-          "osVer": "5.0.0",
           "uniVer": "√",
           "unixVer": "x",
           "uniUtsPlugin": "√",
@@ -141,21 +133,18 @@ declare function eval(x: string): any;
   {
     "app": {
       "android": {
-        "osVer": "5.0",
         "uniVer": "√",
         "uniUtsPlugin": "3.91",
         "unixVer": "3.91",
         "unixUtsPlugin": "3.91"
       },
       "ios": {
-        "osVer": "12.0",
         "uniVer": "√",
         "uniUtsPlugin": "4.11",
         "unixVer": "4.11",
         "unixUtsPlugin": "4.11"
       },
       "harmony": {
-          "osVer": "5.0.0",
           "uniVer": "√",
           "unixVer": "4.61",
           "uniUtsPlugin": "√",
@@ -187,21 +176,18 @@ declare function parseInt(string: string, radix?: number): number;
   {
     "app": {
       "android": {
-        "osVer": "5.0",
         "uniVer": "√",
         "uniUtsPlugin": "3.91",
         "unixVer": "3.91",
         "unixUtsPlugin": "3.91"
       },
       "ios": {
-        "osVer": "12.0",
         "uniVer": "√",
         "uniUtsPlugin": "4.11",
         "unixVer": "4.11",
         "unixUtsPlugin": "4.11"
       },
       "harmony": {
-          "osVer": "5.0.0",
           "uniVer": "√",
           "unixVer": "4.61",
           "uniUtsPlugin": "√",
@@ -233,21 +219,18 @@ declare function parseFloat(string: string): number;
   {
     "app": {
       "android": {
-        "osVer": "5.0",
         "uniVer": "√",
         "uniUtsPlugin": "3.91",
         "unixVer": "3.91",
         "unixUtsPlugin": "3.91"
       },
       "ios": {
-        "osVer": "12.0",
         "uniVer": "√",
         "uniUtsPlugin": "4.11",
         "unixVer": "4.11",
         "unixUtsPlugin": "4.11"
       },
       "harmony": {
-          "osVer": "5.0.0",
           "uniVer": "√",
           "unixVer": "4.61",
           "uniUtsPlugin": "√",
@@ -279,21 +262,18 @@ declare function isNaN(number: number): boolean;
   {
     "app": {
       "android": {
-        "osVer": "5.0",
         "uniVer": "√",
         "uniUtsPlugin": "3.91",
         "unixVer": "3.91",
         "unixUtsPlugin": "3.91"
       },
       "ios": {
-        "osVer": "12.0",
         "uniVer": "√",
         "uniUtsPlugin": "4.11",
         "unixVer": "4.11",
         "unixUtsPlugin": "4.11"
       },
       "harmony": {
-          "osVer": "5.0.0",
           "uniVer": "√",
           "unixVer": "4.61",
           "uniUtsPlugin": "√",
@@ -325,21 +305,18 @@ declare function isFinite(number: number): boolean;
   {
     "app": {
       "android": {
-        "osVer": "5.0",
         "uniVer": "√",
         "uniUtsPlugin": "3.91",
         "unixVer": "3.91",
         "unixUtsPlugin": "3.91"
       },
       "ios": {
-        "osVer": "12.0",
         "uniVer": "√",
         "uniUtsPlugin": "4.11",
         "unixVer": "4.11",
         "unixUtsPlugin": "4.11"
       },
       "harmony": {
-          "osVer": "5.0.0",
           "uniVer": "√",
           "unixVer": "4.61",
           "uniUtsPlugin": "√",
@@ -371,21 +348,18 @@ declare function decodeURI(encodedURI: string): string | null;
   {
     "app": {
       "android": {
-        "osVer": "5.0",
         "uniVer": "√",
         "uniUtsPlugin": "3.91",
         "unixVer": "3.91",
         "unixUtsPlugin": "3.91"
       },
       "ios": {
-        "osVer": "12.0",
         "uniVer": "√",
         "uniUtsPlugin": "4.11",
         "unixVer": "4.11",
         "unixUtsPlugin": "4.11"
       },
       "harmony": {
-          "osVer": "5.0.0",
           "uniVer": "√",
           "unixVer": "4.61",
           "uniUtsPlugin": "√",
@@ -417,21 +391,18 @@ declare function decodeURIComponent(encodedURIComponent: string): string | null;
   {
     "app": {
       "android": {
-        "osVer": "5.0",
         "uniVer": "√",
         "uniUtsPlugin": "3.91",
         "unixVer": "3.91",
         "unixUtsPlugin": "3.91"
       },
       "ios": {
-        "osVer": "12.0",
         "uniVer": "√",
         "uniUtsPlugin": "4.11",
         "unixVer": "4.11",
         "unixUtsPlugin": "4.11"
       },
       "harmony": {
-          "osVer": "5.0.0",
           "uniVer": "√",
           "unixVer": "4.61",
           "uniUtsPlugin": "√",
@@ -463,21 +434,18 @@ declare function encodeURI(uri: string): string | null;
   {
     "app": {
       "android": {
-        "osVer": "5.0",
         "uniVer": "√",
         "uniUtsPlugin": "3.91",
         "unixVer": "3.91",
         "unixUtsPlugin": "3.91"
       },
       "ios": {
-        "osVer": "12.0",
         "uniVer": "√",
         "uniUtsPlugin": "4.11",
         "unixVer": "4.11",
         "unixUtsPlugin": "4.11"
       },
       "harmony": {
-          "osVer": "5.0.0",
           "uniVer": "√",
           "unixVer": "4.61",
           "uniUtsPlugin": "√",
@@ -509,21 +477,18 @@ declare function encodeURIComponent(uriComponent: string): string | null;
   {
     "app": {
       "android": {
-        "osVer": "5.0",
         "uniVer": "√",
         "uniUtsPlugin": "4.25",
         "unixVer": "4.25",
         "unixUtsPlugin": "4.25"
       },
       "ios": {
-        "osVer": "12.0",
         "uniVer": "4.61",
         "uniUtsPlugin": "4.61",
         "unixVer": "4.61",
         "unixUtsPlugin": "4.61"
       },
       "harmony": {
-          "osVer": "5.0.0",
           "uniVer": "√",
           "unixVer": "x",
           "uniUtsPlugin": "x",
@@ -548,21 +513,18 @@ declare function atob(encodedData: string): string
   {
     "app": {
       "android": {
-        "osVer": "5.0",
         "uniVer": "√",
         "uniUtsPlugin": "4.25",
         "unixVer": "4.25",
         "unixUtsPlugin": "4.25"
       },
       "ios": {
-        "osVer": "12.0",
         "uniVer": "4.61",
         "uniUtsPlugin": "4.61",
         "unixVer": "4.61",
         "unixUtsPlugin": "4.61"
       },
       "harmony": {
-          "osVer": "5.0.0",
           "uniVer": "√",
           "unixVer": "x",
           "uniUtsPlugin": "x",
@@ -584,21 +546,18 @@ declare function btoa(stringToEncode: string): string
   {
     "app": {
       "android": {
-        "osVer": "5.0",
         "uniVer": "x",
         "uniUtsPlugin": "x",
         "unixVer": "4.25",
         "unixUtsPlugin": "4.25"
       },
       "ios": {
-        "osVer": "12.0",
         "uniVer": "x",
         "uniUtsPlugin": "x",
         "unixVer": "4.25",
         "unixUtsPlugin": "x"
       },
       "harmony": {
-        "osVer": "5.0.0",
         "uniVer": "x",
         "unixVer": "4.61"
       }
@@ -625,21 +584,18 @@ declare function requestAnimationFrame(callback: RequestAnimationFrameCallback):
   {
     "app": {
       "android": {
-        "osVer": "5.0",
         "uniVer": "x",
         "uniUtsPlugin": "x",
         "unixVer": "4.25",
         "unixUtsPlugin": "4.25"
       },
       "ios": {
-        "osVer": "12.0",
         "uniVer": "x",
         "uniUtsPlugin": "x",
         "unixVer": "4.25",
         "unixUtsPlugin": "x"
       },
       "harmony": {
-        "osVer": "5.0.0",
         "uniVer": "x",
         "unixVer": "4.61"
       }

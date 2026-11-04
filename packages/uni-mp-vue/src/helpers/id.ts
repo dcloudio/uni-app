@@ -1,3 +1,5 @@
+import { VIRTUAL_HOST_ID } from '@dcloudio/uni-shared'
+
 function hasIdProp(_ctx: any): boolean {
   return (
     _ctx.$.propsOptions &&
@@ -8,10 +10,10 @@ function hasIdProp(_ctx: any): boolean {
 
 function getVirtualHostId(_ctx: any): string {
   // #if _X_
-  return _ctx.virtualHostId
+  return _ctx[VIRTUAL_HOST_ID]
   // #endif
   // #if !_X_
-  return _ctx.$scope.virtualHostId
+  return _ctx.$scope[VIRTUAL_HOST_ID]
   // #endif
 }
 

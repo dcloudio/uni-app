@@ -18,6 +18,24 @@ async function objectifierRule(input: string, options = {}) {
 }
 
 describe('uvue-styler: normalize', () => {
+  test.each([
+    { dom2: false, keepUnitPx: false },
+    { dom2: false, keepUnitPx: true },
+    { dom2: true, keepUnitPx: false },
+    { dom2: true, keepUnitPx: true },
+  ])('行高长度保留单位 %j', async (options) => {
+    const { json, messages } = await objectifierRule(
+      '.foo { line-height: 16px; } .bar { line-height: 2em; } .baz { line-height: 1.5; }',
+      options
+    )
+    expect(json).toEqual({
+      foo: { '': { lineHeight: '16px' } },
+      bar: { '': { lineHeight: '2em' } },
+      baz: { '': { lineHeight: 1.5 } },
+    })
+    expect(messages).toHaveLength(0)
+  })
+
   test('basic', async () => {
     const { json, messages } = await objectifierRule(`.foo{
 color: #FF0000;
@@ -1307,7 +1325,7 @@ flexBasis: fill;
     })
     expect(messages.length).toEqual(2)
     expect(messages[0].text).toBe(
-      'ERROR: property value `abc` is not supported for `line-height` (supported values are: `number`|`pixel`|`normal`)'
+      'ERROR: property value `abc` is not supported for `line-height` (supported values are: `number`|`pixel`|`em`|`normal`)'
     )
     expect(messages[1].text).toBe(
       'ERROR: property value `abc` is not supported for `flex-basis` (supported values are: `number`|`pixel`|`percent`|`auto`)'
@@ -1571,4 +1589,37 @@ flexBasis: fill;
       ),
     ])
   })
+
+  test.each(['app-android', 'app-ios', 'app-harmony'])(
+    'animation names preserve case with normalized keywords on %s',
+    async (platform) => {
+      const { json, messages } = await objectifierRule(
+        `
+.shorthand {
+  animation: areaPeopleEditFadeIn 1S LINEAR INFINITE ALTERNATE FORWARDS, FadeIn 200MS FORWARDS;
+}
+.longhand {
+  animation-name: areaPeopleEditFadeIn, FadeIn, fadein, NONE;
+  animation-duration: 1S, 200MS;
+  animation-iteration-count: INFINITE, 2;
+}
+`,
+        { dom2: true, platform }
+      )
+      expect(messages).toHaveLength(0)
+      expect(json.shorthand['']).toMatchObject({
+        animationName: 'areaPeopleEditFadeIn,FadeIn',
+        animationDuration: '1s,200ms',
+        animationTimingFunction: 'linear,ease',
+        animationIterationCount: 'infinite,1',
+        animationDirection: 'alternate,normal',
+        animationFillMode: 'forwards,forwards',
+      })
+      expect(json.longhand['']).toEqual({
+        animationName: 'areaPeopleEditFadeIn,FadeIn,fadein,none',
+        animationDuration: '1s,200ms',
+        animationIterationCount: 'infinite,2',
+      })
+    }
+  )
 })

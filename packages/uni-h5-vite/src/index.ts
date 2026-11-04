@@ -10,6 +10,7 @@ import {
   isAppVue,
   isEnableConsole,
   isNormalCompileTarget,
+  isUniAppXWebVapor,
   isVueSfcFile,
   resolveUTSCompiler,
   uniAppXStandardScriptPlugin,
@@ -21,6 +22,7 @@ import {
   uniJavaScriptWorkersPlugin,
   uniUTSUVueJavaScriptPlugin,
   uniUasmPlugin,
+  uniWebVaporElementPlugin,
   uniWorkersPlugin,
 } from '@dcloudio/uni-cli-shared'
 import * as vueCompilerDom from '@vue/compiler-dom'
@@ -41,6 +43,7 @@ import { uniSSRPlugin } from './plugins/ssr'
 import { uniPostSourceMapPlugin } from './plugins/sourcemap'
 import { uniCustomElementPlugin } from './plugins/customElement'
 import { uniApiPlugin } from './plugins/api'
+import { uniMouseToTouchPlugin } from './plugins/mouseToTouch'
 import { rewriteCompilerSfcParse } from './utils/polyfill'
 
 if (
@@ -75,8 +78,10 @@ export default () => {
               rewriteRootDir: undefined,
             },
           }),
+          ...(isUniAppXWebVapor() ? [uniWebVaporElementPlugin()] : []),
           resolveUTSCompiler().uts2js({
             platform: 'web',
+            dom2: isUniAppXWebVapor(),
             excludeStandardTypeScript: true,
             inputDir: process.env.UNI_INPUT_DIR,
             version: process.env.UNI_COMPILER_VERSION,
@@ -126,6 +131,7 @@ export default () => {
     uniRenderjsPlugin(),
     ...(h5BasicSslPlugin ? [h5BasicSslPlugin] : []),
     uniH5Plugin(),
+    uniMouseToTouchPlugin(),
     ...(process.env.UNI_COMPILE_TARGET === 'uni_modules'
       ? [uniEncryptUniModulesAssetsPlugin(), uniEncryptUniModulesPlugin()]
       : []),

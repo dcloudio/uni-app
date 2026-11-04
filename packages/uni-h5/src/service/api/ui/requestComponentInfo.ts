@@ -1,4 +1,11 @@
 import type { ComponentPublicInstance, VNode } from 'vue'
+//#if _X_VAPOR_
+import {
+  type VaporComponentInstance,
+  querySelectorAllInComponent,
+  querySelectorInComponent,
+} from 'vue'
+//#endif
 import { isArray } from '@vue/shared'
 import { createUniDOMStringMap, getCustomDataset } from '@dcloudio/uni-shared'
 import { getWindowOffset } from '@dcloudio/uni-core'
@@ -50,11 +57,15 @@ function getNodeInfo(
   const info: SelectorQueryNodeInfo = {}
   const { top, topWindowHeight } = getWindowOffset()
   if (fields.node) {
+    //#if _X_VAPOR_
+    info.node = el
+    //#else
     // TODO
     const tagName = el.tagName.split('-')[1] || el.tagName
     if (tagName) {
       info.node = el.querySelector(tagName)
     }
+    //#endif
   }
   if (fields.id) {
     info.id = el.id
@@ -85,6 +96,13 @@ function getNodeInfo(
     })
   }
   if (fields.scrollOffset) {
+    //#if _X_VAPOR_
+    // Vapor 元素直接提供滚动属性，不依赖旧组件内部的 DOM 层级。
+    info.scrollLeft = el.scrollLeft
+    info.scrollTop = el.scrollTop
+    info.scrollHeight = el.scrollHeight
+    info.scrollWidth = el.scrollWidth
+    //#else
     if (
       (!__X__ && el.tagName === 'UNI-SCROLL-VIEW') ||
       (__X__ && el.tagName === 'SCROLL-VIEW')
@@ -100,6 +118,7 @@ function getNodeInfo(
       info.scrollHeight = 0
       info.scrollWidth = 0
     }
+    //#endif
   }
   if (isArray(fields.computedStyle)) {
     const style = getComputedStyle(el)
@@ -329,6 +348,16 @@ function getNodesInfo(
   single: boolean,
   fields: NodeField
 ): SelectorQueryNodeInfo | SelectorQueryNodeInfo[] | null {
+  //#if _X_VAPOR_
+  const instance = (component || pageVm).$ as unknown as VaporComponentInstance
+  if (single) {
+    const node = querySelectorInComponent(instance, selector)
+    return node ? getNodeInfo(node as HTMLElement, fields) : null
+  }
+  return querySelectorAllInComponent(instance, selector).map((node) =>
+    getNodeInfo(node as HTMLElement, fields)
+  )
+  //#else
   const selfElement = findElm(component, pageVm)
   const parentElement = selfElement.parentElement
   if (!parentElement) {
@@ -374,6 +403,7 @@ function getNodesInfo(
     }
     return infos
   }
+  //#endif
 }
 
 export function requestComponentInfo(

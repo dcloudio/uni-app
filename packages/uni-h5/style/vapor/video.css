@@ -1,0 +1,364 @@
+/* Vapor 独立组件样式；基础节点及根节点重置由 uvue-vapor.css 提供。 */
+.uni-video-container {
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  object-position: inherit;
+}
+
+.uni-video-container.uni-video-type-fullscreen {
+  position: fixed;
+  z-index: 999;
+}
+
+.uni-video-video {
+  width: 100%;
+  height: 100%;
+  object-position: inherit;
+}
+
+.uni-video-cover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(1, 1, 1, 0.5);
+  z-index: 1;
+}
+
+.uni-video-slots {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.uni-video-cover-play-button {
+  width: 75px;
+  height: 75px;
+  line-height: 75px;
+  font-size: 56px;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+}
+
+.uni-video-cover-play-button::after {
+  content: '\ea24';
+}
+
+.uni-video-cover-duration {
+  color: #fff;
+  font-size: 16px;
+  line-height: 1;
+  margin-top: 10px;
+}
+
+.uni-video-bar {
+  height: 44px;
+  /* background-color: rgba(0, 0, 0, 0.5); */
+  background-image: linear-gradient(-180deg, transparent, rgba(0, 0, 0, 0.5));
+  overflow: hidden;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  display: flex;
+  align-items: center;
+  align-items: center;
+  padding: 0 16px;
+  z-index: 0;
+  /* 解决全屏后被 video 遮挡的问题 */
+  transform: translate3d(0, 0, 0);
+}
+
+.uni-video-bar.uni-video-bar-full {
+  left: 0;
+}
+
+.uni-video-video-fullscreen .uni-video-bar {
+  padding-bottom: 8px;
+}
+
+.uni-video-controls {
+  display: flex;
+  flex-grow: 1;
+  margin: 0 8.5px;
+  align-items: center;
+}
+
+.uni-video-control-button {
+  width: 17px;
+  height: 17px;
+  font-size: 16px;
+  line-height: 17px;
+  padding: 0px 16px 0px 0px;
+  margin-left: -6px;
+  margin-right: -6px;
+  box-sizing: content-box;
+  cursor: pointer;
+}
+
+.uni-video-control-button::after {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 100%;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.uni-video-control-button.uni-video-control-button-play::after {
+  content: '\ea24';
+}
+
+.uni-video-control-button.uni-video-control-button-pause::after {
+  content: '\ea25';
+}
+
+.uni-video-current-time,
+.uni-video-duration {
+  height: 15px;
+  line-height: 15px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.uni-video-progress-container {
+  flex-grow: 2;
+  position: relative;
+}
+
+.uni-video-progress {
+  /* 高度与 uni-video-progress-progressing 配套调整 */
+  height: 4px;
+  margin: 21px 12px;
+  border-radius: 20px;
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.uni-video-progress.uni-video-progress-progressing {
+  height: 8px;
+}
+
+.uni-video-progress .uni-video-progress-played {
+  background-color: #fff;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+}
+
+.uni-video-progress-played,
+.uni-video-progress-buffered {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.uni-video-progress-buffered {
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+  /* transition: width 0.1s; */
+}
+
+.uni-video-ball {
+  /* 宽高与 uni-video-ball-progressing 配套调整 */
+  width: 8px;
+  height: 8px;
+  padding: 14px;
+  position: absolute;
+  box-sizing: content-box;
+  left: 0%;
+  margin-left: -16px;
+}
+
+.uni-video-ball.uni-video-ball-progressing {
+  width: 16px;
+  height: 16px;
+}
+
+.uni-video-inner {
+  width: 100%;
+  height: 100%;
+  background-color: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0px 0px 2px #ccc;
+}
+
+.uni-video-danmu-button {
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  font-size: 24px;
+  white-space: nowrap;
+  border-radius: 5px;
+  margin: 0 2px;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.uni-video-danmu-button::after {
+  content: '\ea26';
+}
+
+.uni-video-danmu-button.uni-video-danmu-button-active::after {
+  content: '\ea27';
+}
+
+.uni-video-fullscreen {
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.5);
+  box-sizing: content-box;
+  cursor: pointer;
+}
+
+.uni-video-fullscreen::after {
+  content: '\ea29';
+}
+
+.uni-video-fullscreen.uni-video-type-fullscreen::after {
+  content: '\ea28';
+}
+
+.uni-video-danmu {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  margin-top: 14px;
+  margin-bottom: 44px;
+  font-size: 14px;
+  line-height: 14px;
+  overflow: visible;
+}
+
+.uni-video-danmu-item {
+  line-height: 1;
+  position: absolute;
+  color: #ffffff;
+  white-space: nowrap;
+  left: 100%;
+  transform: translatex(0);
+  transition-property: left, transform;
+  transition-duration: 3s;
+  transition-timing-function: linear;
+}
+
+.uni-video-toast {
+  pointer-events: none;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0.6);
+  color: #000000;
+  display: none;
+}
+
+.uni-video-toast.uni-video-toast-progress {
+  display: block;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 24px;
+  line-height: 18px;
+  padding: 6px;
+}
+
+.uni-video-toast.uni-video-toast-progress .uni-video-toast-title-current-time {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+@font-face {
+  font-family: 'uni-video-icon';
+  src: url(data:font/woff2;base64,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)
+    format('woff2');
+}
+
+.uni-video-icon {
+  /* 解决自定义全局字体会覆盖按钮的问题 */
+  font-family: 'uni-video-icon' !important;
+  text-align: center;
+}
+
+.uni-video-loading {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+}
+
+.uni-video-toast-container {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 22%;
+  min-width: 100px;
+  max-width: 200px;
+  height: 30px;
+  max-height: 30px;
+  min-height: 6px;
+  background-color: rgba(0, 0, 0, 0.4);
+  box-shadow: 0px 0px 2px #ccc;
+  margin: 5px auto 0;
+  border-radius: 30px;
+  overflow: hidden;
+  transition-property: height;
+  transition-duration: 0.2s;
+  transition-timing-function: ease-in-out;
+  opacity: 0.6;
+}
+
+.uni-video-toast-container.uni-video-toast-container-thin {
+  height: 6px;
+}
+
+.uni-video-toast-container-thin .uni-video-toast-icon {
+  display: none;
+}
+
+.uni-video-toast-icon {
+  font-size: 20px;
+  position: absolute;
+  left: 10px;
+  color: #222;
+  z-index: 1;
+}
+
+.uni-video-toast-draw {
+  height: 100%;
+  background-color: #fff;
+}
+
+/* 覆盖 video 的 poster 背景 */
+uni-app .uni-video-cover {
+  background-color: unset;
+}
+
+/* 插槽容器不接收指针事件，内部业务节点仍须能够交互。 */
+:is(.uni-video-slots *) {
+  pointer-events: auto;
+}

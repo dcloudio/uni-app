@@ -57,6 +57,55 @@ export const initI18nAppMsgsOnce = /*#__PURE__*/ once(() => {
     )
   }
 })
+export const initI18nAppVmMsgsOnce = /*#__PURE__*/ once(() => {
+  const name = 'uni.appVm.'
+  const keys = ['methodWarning']
+  if (__UNI_FEATURE_I18N_EN__) {
+    useI18n().add(
+      LOCALE_EN,
+      normalizeMessages(name, keys, [
+        'Method "{methodName}" should not be called directly on UniApp. Use "{methodCall}" instead.',
+      ]),
+      false
+    )
+  }
+  if (__UNI_FEATURE_I18N_ES__) {
+    useI18n().add(
+      LOCALE_ES,
+      normalizeMessages(name, keys, [
+        'El método "{methodName}" no debe llamarse directamente en UniApp. Use "{methodCall}" en su lugar.',
+      ]),
+      false
+    )
+  }
+  if (__UNI_FEATURE_I18N_FR__) {
+    useI18n().add(
+      LOCALE_FR,
+      normalizeMessages(name, keys, [
+        'La méthode "{methodName}" ne doit pas être appelée directement sur UniApp. Utilisez "{methodCall}" à la place.',
+      ]),
+      false
+    )
+  }
+  if (__UNI_FEATURE_I18N_ZH_HANS__) {
+    useI18n().add(
+      LOCALE_ZH_HANS,
+      normalizeMessages(name, keys, [
+        '不应直接通过 UniApp 调用方法“{methodName}”，请改用“{methodCall}”。',
+      ]),
+      false
+    )
+  }
+  if (__UNI_FEATURE_I18N_ZH_HANT__) {
+    useI18n().add(
+      LOCALE_ZH_HANT,
+      normalizeMessages(name, keys, [
+        '不應直接透過 UniApp 呼叫方法「{methodName}」，請改用「{methodCall}」。',
+      ]),
+      false
+    )
+  }
+})
 export const initI18nAsyncMsgsOnce = /*#__PURE__*/ once(() => {
   const name = 'uni.async.'
   const keys = ['error']

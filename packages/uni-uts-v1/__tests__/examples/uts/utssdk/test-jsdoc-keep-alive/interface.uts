@@ -1,0 +1,28 @@
+type Hello = () => string;
+export type HelloAlias = Hello;
+export type Factory = () => BA;
+
+export interface Base { /**@UTSJS.keepAlive*/ inherited(): string; }
+
+export interface BA extends Base {
+    /**
+     * 保持回调有效。
+     * @UTSJS.keepAlive
+     */
+    hello: () => string;
+    /** @UTSJS.keepAlive */
+    method(): string;
+    /** @UTSJS.keepAlive */
+    alias: HelloAlias;
+    /** @UTSJS.keepAlive */
+    self: Factory;
+    ordinary(): string;
+    /** @UTSJS.keepAliveExtra */
+    nearMatch(): string;
+    // @UTSJS.keepAlive
+    lineComment(): string;
+    /* @UTSJS.keepAlive */
+    blockComment(): string;
+    /** @UTSJS.keepAlive */
+    label: string;
+}

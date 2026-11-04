@@ -2,21 +2,18 @@
      @uniPlatform {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "√",
           "uniUtsPlugin": "3.9+",
           "unixVer": "3.9+",
           "unixUtsPlugin": "3.9+"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "√",
           "uniUtsPlugin": "4.31",
           "unixVer": "4.11",
           "unixUtsPlugin": "4.31"
         },
         "harmony": {
-            "osVer": "5.0.0",
             "uniVer": "√",
             "uniUtsPlugin": "√",
             "unixVer": "4.61"
@@ -43,21 +40,18 @@ interface PromiseSettledResult<T> {
      @uniPlatform {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "√",
           "uniUtsPlugin": "3.9+",
           "unixVer": "3.9+",
           "unixUtsPlugin": "3.9+"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "√",
           "uniUtsPlugin": "4.31",
           "unixVer": "4.11",
           "unixUtsPlugin": "4.31"
         },
         "harmony": {
-            "osVer": "5.0.0",
             "uniVer": "√",
             "uniUtsPlugin": "√",
             "unixVer": "4.61"
@@ -74,21 +68,18 @@ interface PromiseFulfilledResult<T>
      @uniPlatform {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "√",
           "uniUtsPlugin": "3.9+",
           "unixVer": "3.9+",
           "unixUtsPlugin": "3.9+"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "√",
           "uniUtsPlugin": "4.31",
           "unixVer": "4.11",
           "unixUtsPlugin": "4.31"
         },
         "harmony": {
-            "osVer": "5.0.0",
             "uniVer": "√",
             "uniUtsPlugin": "√",
             "unixVer": "4.61"
@@ -116,21 +107,18 @@ interface PromiseRejectedResult
      @uniPlatform {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "√",
           "uniUtsPlugin": "3.9+",
           "unixVer": "3.9+",
           "unixUtsPlugin": "3.9+"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "√",
           "uniUtsPlugin": "4.31",
           "unixVer": "4.11",
           "unixUtsPlugin": "4.31"
         },
         "harmony": {
-            "osVer": "5.0.0",
             "uniVer": "√",
             "uniUtsPlugin": "√",
             "unixVer": "4.61"
@@ -157,21 +145,18 @@ declare class Promise<T> {
      @uniPlatform {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "√",
           "uniUtsPlugin": "3.9+",
           "unixVer": "3.9+",
           "unixUtsPlugin": "3.9+"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "√",
           "uniUtsPlugin": "4.31",
           "unixVer": "4.11",
           "unixUtsPlugin": "4.31"
         },
         "harmony": {
-            "osVer": "5.0.0",
             "uniVer": "√",
             "uniUtsPlugin": "√",
             "unixVer": "4.61"
@@ -203,21 +188,18 @@ declare class Promise<T> {
      @uniPlatform {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "√",
           "uniUtsPlugin": "3.9+",
           "unixVer": "3.9+",
           "unixUtsPlugin": "3.9+"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "√",
           "uniUtsPlugin": "4.31",
           "unixVer": "4.11",
           "unixUtsPlugin": "4.31"
         },
         "harmony": {
-            "osVer": "5.0.0",
             "uniVer": "√",
             "uniUtsPlugin": "√",
             "unixVer": "4.61"
@@ -244,21 +226,18 @@ declare class Promise<T> {
      @uniPlatform {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "√",
           "uniUtsPlugin": "3.9+",
           "unixVer": "3.9+",
           "unixUtsPlugin": "3.9+"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "√",
           "uniUtsPlugin": "4.31",
           "unixVer": "4.11",
           "unixUtsPlugin": "4.31"
         },
         "harmony": {
-            "osVer": "5.0.0",
             "uniVer": "√",
             "uniUtsPlugin": "√",
             "unixVer": "4.61"
@@ -287,21 +266,18 @@ declare class Promise<T> {
      @uniPlatform {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "√",
           "uniUtsPlugin": "3.9+",
           "unixVer": "3.9+",
           "unixUtsPlugin": "3.9+"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "√",
           "uniUtsPlugin": "4.31",
           "unixVer": "4.11",
           "unixUtsPlugin": "4.31"
         },
         "harmony": {
-            "osVer": "5.0.0",
             "uniVer": "√",
             "uniUtsPlugin": "√",
             "unixVer": "4.61"
@@ -330,21 +306,18 @@ declare class Promise<T> {
      @uniPlatform {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "√",
           "uniUtsPlugin": "3.9+",
           "unixVer": "3.9+",
           "unixUtsPlugin": "3.9+"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "√",
           "uniUtsPlugin": "4.31",
           "unixVer": "4.11",
           "unixUtsPlugin": "4.31"
         },
         "harmony": {
-            "osVer": "5.0.0",
             "uniVer": "√",
             "uniUtsPlugin": "√",
             "unixVer": "4.61"
@@ -376,21 +349,18 @@ declare class Promise<T> {
      @uniPlatform {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "√",
           "uniUtsPlugin": "3.9+",
           "unixVer": "3.9+",
           "unixUtsPlugin": "3.9+"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "√",
           "uniUtsPlugin": "4.31",
           "unixVer": "4.11",
           "unixUtsPlugin": "4.31"
         },
         "harmony": {
-            "osVer": "5.0.0",
             "uniVer": "√",
             "uniUtsPlugin": "√",
             "unixVer": "4.61"
@@ -422,21 +392,18 @@ declare class Promise<T> {
      @uniPlatform {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "√",
           "uniUtsPlugin": "3.9+",
           "unixVer": "3.9+",
           "unixUtsPlugin": "3.9+"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "√",
           "uniUtsPlugin": "4.31",
           "unixVer": "4.11",
           "unixUtsPlugin": "4.31"
         },
         "harmony": {
-            "osVer": "5.0.0",
             "uniVer": "√",
             "uniUtsPlugin": "√",
             "unixVer": "4.61"
@@ -466,21 +433,18 @@ declare class Promise<T> {
      @uniPlatform {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "√",
           "uniUtsPlugin": "3.9+",
           "unixVer": "3.9+",
           "unixUtsPlugin": "3.9+"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "√",
           "uniUtsPlugin": "4.31",
           "unixVer": "4.11",
           "unixUtsPlugin": "4.31"
         },
         "harmony": {
-            "osVer": "5.0.0",
             "uniVer": "√",
             "uniUtsPlugin": "√",
             "unixVer": "4.61"
@@ -508,21 +472,18 @@ declare class Promise<T> {
      @uniPlatform {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "√",
           "uniUtsPlugin": "3.9+",
           "unixVer": "3.9+",
           "unixUtsPlugin": "3.9+"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "√",
           "uniUtsPlugin": "4.31",
           "unixVer": "4.11",
           "unixUtsPlugin": "4.31"
         },
         "harmony": {
-            "osVer": "5.0.0",
             "uniVer": "√",
             "uniUtsPlugin": "√",
             "unixVer": "4.61"
@@ -550,21 +511,18 @@ declare class Promise<T> {
      @uniPlatform {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "√",
           "uniUtsPlugin": "3.9+",
           "unixVer": "3.9+",
           "unixUtsPlugin": "3.9+"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "√",
           "uniUtsPlugin": "4.31",
           "unixVer": "4.11",
           "unixUtsPlugin": "4.31"
         },
         "harmony": {
-            "osVer": "5.0.0",
             "uniVer": "√",
             "uniUtsPlugin": "√",
             "unixVer": "4.61"
@@ -592,21 +550,18 @@ declare class Promise<T> {
      @uniPlatform {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "√",
           "uniUtsPlugin": "3.9+",
           "unixVer": "3.9+",
           "unixUtsPlugin": "3.9+"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "√",
           "uniUtsPlugin": "4.31",
           "unixVer": "4.11",
           "unixUtsPlugin": "4.31"
         },
         "harmony": {
-            "osVer": "5.0.0",
             "uniVer": "√",
             "uniUtsPlugin": "√",
             "unixVer": "4.61"
@@ -634,21 +589,18 @@ declare class Promise<T> {
      @uniPlatform {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "√",
           "uniUtsPlugin": "3.9+",
           "unixVer": "3.9+",
           "unixUtsPlugin": "3.9+"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "√",
           "uniUtsPlugin": "4.31",
           "unixVer": "4.11",
           "unixUtsPlugin": "4.31"
         },
         "harmony": {
-            "osVer": "5.0.0",
             "uniVer": "√",
             "uniUtsPlugin": "√",
             "unixVer": "4.61"
@@ -676,21 +628,18 @@ declare class Promise<T> {
      @uniPlatform {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "√",
           "uniUtsPlugin": "3.9+",
           "unixVer": "3.9+",
           "unixUtsPlugin": "3.9+"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "√",
           "uniUtsPlugin": "4.31",
           "unixVer": "4.11",
           "unixUtsPlugin": "4.31"
         },
         "harmony": {
-            "osVer": "5.0.0",
             "uniVer": "√",
             "uniUtsPlugin": "√",
             "unixVer": "4.61"
@@ -717,21 +666,18 @@ declare class Promise<T> {
      @uniPlatform {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "√",
           "uniUtsPlugin": "3.9+",
           "unixVer": "3.9+",
           "unixUtsPlugin": "3.9+"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "√",
           "uniUtsPlugin": "4.31",
           "unixVer": "4.11",
           "unixUtsPlugin": "4.31"
         },
         "harmony": {
-            "osVer": "5.0.0",
             "uniVer": "√",
             "uniUtsPlugin": "√",
             "unixVer": "4.61"
@@ -759,21 +705,18 @@ declare class Promise<T> {
      @uniPlatform {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "√",
           "uniUtsPlugin": "3.9+",
           "unixVer": "3.9+",
           "unixUtsPlugin": "3.9+"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "√",
           "uniUtsPlugin": "4.31",
           "unixVer": "4.11",
           "unixUtsPlugin": "4.31"
         },
         "harmony": {
-            "osVer": "5.0.0",
             "uniVer": "√",
             "uniUtsPlugin": "√",
             "unixVer": "4.61"
@@ -801,21 +744,18 @@ declare class Promise<T> {
      @uniPlatform {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "√",
           "uniUtsPlugin": "3.9+",
           "unixVer": "3.9+",
           "unixUtsPlugin": "3.9+"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "√",
           "uniUtsPlugin": "4.31",
           "unixVer": "4.11",
           "unixUtsPlugin": "4.31"
         },
         "harmony": {
-            "osVer": "5.0.0",
             "uniVer": "√",
             "uniUtsPlugin": "√",
             "unixVer": "4.61"
@@ -843,21 +783,18 @@ declare class Promise<T> {
      @uniPlatform {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "√",
           "uniUtsPlugin": "3.9+",
           "unixVer": "3.9+",
           "unixUtsPlugin": "3.9+"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "√",
           "uniUtsPlugin": "4.31",
           "unixVer": "4.11",
           "unixUtsPlugin": "4.31"
         },
         "harmony": {
-            "osVer": "5.0.0",
             "uniVer": "√",
             "uniUtsPlugin": "√",
             "unixVer": "4.61"
@@ -885,21 +822,18 @@ declare class Promise<T> {
      @uniPlatform {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "√",
           "uniUtsPlugin": "3.9+",
           "unixVer": "3.9+",
           "unixUtsPlugin": "3.9+"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "√",
           "uniUtsPlugin": "4.31",
           "unixVer": "4.11",
           "unixUtsPlugin": "4.31"
         },
         "harmony": {
-            "osVer": "5.0.0",
             "uniVer": "√",
             "uniUtsPlugin": "√",
             "unixVer": "4.61"
@@ -927,21 +861,18 @@ declare class Promise<T> {
      @uniPlatform {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "√",
           "uniUtsPlugin": "3.9+",
           "unixVer": "3.9+",
           "unixUtsPlugin": "3.9+"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "√",
           "uniUtsPlugin": "4.31",
           "unixVer": "4.11",
           "unixUtsPlugin": "4.31"
         },
         "harmony": {
-            "osVer": "5.0.0",
             "uniVer": "√",
             "uniUtsPlugin": "√",
             "unixVer": "4.61"
@@ -969,21 +900,18 @@ declare class Promise<T> {
      @uniPlatform {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "√",
           "uniUtsPlugin": "3.9+",
           "unixVer": "3.9+",
           "unixUtsPlugin": "3.9+"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "√",
           "uniUtsPlugin": "4.31",
           "unixVer": "4.11",
           "unixUtsPlugin": "4.31"
         },
         "harmony": {
-            "osVer": "5.0.0",
             "uniVer": "√",
             "uniUtsPlugin": "√",
             "unixVer": "4.61"
@@ -1011,21 +939,18 @@ declare class Promise<T> {
      @uniPlatform {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "√",
           "uniUtsPlugin": "3.9+",
           "unixVer": "3.9+",
           "unixUtsPlugin": "3.9+"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "√",
           "uniUtsPlugin": "4.31",
           "unixVer": "4.11",
           "unixUtsPlugin": "4.31"
         },
         "harmony": {
-            "osVer": "5.0.0",
             "uniVer": "√",
             "uniUtsPlugin": "√",
             "unixVer": "4.61"

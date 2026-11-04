@@ -24,7 +24,7 @@
 	<!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 	import uniPreviewImageItem from "../uni-previewImageItem/uni-previewImageItem.vue"
 
 	const props = defineProps({

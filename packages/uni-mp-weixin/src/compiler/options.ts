@@ -21,6 +21,7 @@ import {
 } from '@dcloudio/uni-mp-vite'
 import { transformAd } from './transforms/transformAd'
 import { transformLoading } from '../x/compiler/transforms/transformLoading'
+import { transformWaterflow } from '../x/compiler/transforms/transformWaterflow'
 
 import source from './project.config.json'
 
@@ -75,6 +76,10 @@ const nodeTransforms: NodeTransform[] = [
   transformAd,
   transformTeleport,
 ]
+
+if (process.env.UNI_APP_X_VAPOR === 'true') {
+  nodeTransforms.push(transformWaterflow)
+}
 if (process.env.UNI_APP_X === 'true') {
   nodeTransforms.push(
     transformMPBuiltInTag,

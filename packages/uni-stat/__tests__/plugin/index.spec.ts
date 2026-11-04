@@ -22,10 +22,16 @@ const mockedParseManifestJsonOnce = parseManifestJsonOnce as jest.Mock
 describe('plugin/index', () => {
   const originalUniAppX = process.env.UNI_APP_X
   const originalUniAppXDom2 = process.env.UNI_APP_X_DOM2
+  const originalUniUtsPlatform = process.env.UNI_UTS_PLATFORM
 
   afterEach(() => {
     process.env.UNI_APP_X = originalUniAppX
     process.env.UNI_APP_X_DOM2 = originalUniAppXDom2
+    if (originalUniUtsPlatform === undefined) {
+      Reflect.deleteProperty(process.env, 'UNI_UTS_PLATFORM')
+    } else {
+      process.env.UNI_UTS_PLATFORM = originalUniUtsPlatform
+    }
     mockedParseManifestJsonOnce.mockReset()
   })
 
@@ -123,6 +129,66 @@ describe('plugin/index', () => {
         uniStatistics: { enable: true },
       })
       expect(isUniAppXVaporCompile(platform)).toBe(false)
+      expect(shouldBootstrapVaporRuntime('/project', platform)).toBe(false)
+    }
+  )
+
+  test.each(['app-android', 'app-ios', 'app-harmony'] as const)(
+    'uni-app x %s 可覆盖根配置单独开启 Vapor bridge',
+    (platform) => {
+      process.env.UNI_APP_X = 'true'
+      process.env.UNI_APP_X_DOM2 = 'true'
+      process.env.UNI_UTS_PLATFORM = platform
+      mockedParseManifestJsonOnce.mockReturnValue({
+        uniStatistics: { enable: false },
+        [platform]: { uniStatistics: { enable: true } },
+      })
+      expect(shouldBootstrapVaporRuntime('/project', 'app')).toBe(true)
+    }
+  )
+
+  test.each(['app-android', 'app-ios', 'app-harmony'] as const)(
+    'uni-app x %s 可覆盖根配置单独关闭 Vapor bridge',
+    (platform) => {
+      process.env.UNI_APP_X = 'true'
+      process.env.UNI_APP_X_DOM2 = 'true'
+      process.env.UNI_UTS_PLATFORM = platform
+      mockedParseManifestJsonOnce.mockReturnValue({
+        uniStatistics: { enable: true },
+        [platform]: { uniStatistics: { enable: false } },
+      })
+      expect(shouldBootstrapVaporRuntime('/project', 'app')).toBe(false)
+    }
+  )
+
+  test.each([
+    ['web', 'web'],
+    ['mp-weixin', 'mp-weixin'],
+  ])(
+    'uni-app x %s 可覆盖根配置单独开启 Vapor bridge',
+    (platform, manifestKey) => {
+      process.env.UNI_APP_X = 'true'
+      Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
+      mockedParseManifestJsonOnce.mockReturnValue({
+        uniStatistics: { enable: false },
+        [manifestKey]: { uniStatistics: { enable: true } },
+      })
+      expect(shouldBootstrapVaporRuntime('/project', platform)).toBe(true)
+    }
+  )
+
+  test.each([
+    ['web', 'web'],
+    ['mp-weixin', 'mp-weixin'],
+  ])(
+    'uni-app x %s 可覆盖根配置单独关闭 Vapor bridge',
+    (platform, manifestKey) => {
+      process.env.UNI_APP_X = 'true'
+      Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
+      mockedParseManifestJsonOnce.mockReturnValue({
+        uniStatistics: { enable: true },
+        [manifestKey]: { uniStatistics: { enable: false } },
+      })
       expect(shouldBootstrapVaporRuntime('/project', platform)).toBe(false)
     }
   )

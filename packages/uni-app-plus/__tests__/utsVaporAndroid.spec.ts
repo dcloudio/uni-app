@@ -11,8 +11,13 @@ const invokeAsync = jest.fn()
 
 describe('utsVaporAndroid', () => {
   const originalNativeChannel = (globalThis as any).nativeChannel
+  let finalizationRegistryRegister: jest.SpyInstance
 
   beforeAll(() => {
+    // 避免 GC 回调在测试结束后访问已恢复的原生通道。
+    finalizationRegistryRegister = jest
+      .spyOn(FinalizationRegistry.prototype, 'register')
+      .mockImplementation(() => {})
     ;(globalThis as any).nativeChannel = {
       invokeSync,
       invokeAsync,
@@ -25,6 +30,7 @@ describe('utsVaporAndroid', () => {
   })
 
   afterAll(() => {
+    finalizationRegistryRegister.mockRestore()
     if (originalNativeChannel !== undefined) {
       ;(globalThis as any).nativeChannel = originalNativeChannel
     }

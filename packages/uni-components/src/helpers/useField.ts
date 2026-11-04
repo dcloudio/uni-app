@@ -23,7 +23,11 @@ import {
   useKeyboard,
 } from './useKeyboard'
 import { useScopedAttrs } from './useScopedAttrs'
+//#if _X_VAPOR_
+import { useVaporFormField } from './form-vapor'
+//#else
 import { useFormField } from './useFormField'
+//#endif
 
 function getSelectedTextRange(
   _: unknown,
@@ -270,7 +274,11 @@ function useBase(
   )
   watch(
     () => state.maxlength,
-    (val) => (state.value = state.value.slice(0, val)),
+    (val) => {
+      if (val >= 0) {
+        state.value = state.value.slice(0, val)
+      }
+    },
     {
       immediate: __X__ ? true : false,
     }
@@ -431,7 +439,7 @@ function useEvent(
       state.focus &&
       state.selectionStart > -1 &&
       state.selectionEnd > -1 &&
-      field.type !== 'number'
+      typeof field.selectionStart === 'number'
     ) {
       field.selectionStart = state.selectionStart
       field.selectionEnd = state.selectionEnd
@@ -445,7 +453,7 @@ function useEvent(
       state.selectionStart < 0 &&
       state.selectionEnd < 0 &&
       state.cursor > -1 &&
-      field.type !== 'number'
+      typeof field.selectionStart === 'number'
     ) {
       field.selectionEnd = field.selectionStart = state.cursor
     }
@@ -543,7 +551,11 @@ export function useField(
   useAutoFocus(props, fieldRef)
   useKeyboard(props, fieldRef, trigger)
   const { state: scopedAttrsState } = useScopedAttrs()
+  //#if _X_VAPOR_
+  useVaporFormField(props, state)
+  //#else
   useFormField('name', state)
+  //#endif
   useEvent(fieldRef, state, props, trigger, triggerInput, beforeInput)
 
   // Safari 14 以上修正禁用状态颜色

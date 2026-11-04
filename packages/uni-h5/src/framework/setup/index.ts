@@ -22,6 +22,10 @@ import {
   createComponent,
   //#endif
   getCurrentInstance,
+  //#if _X_VAPOR_ && !_NODE_JS_
+  // @ts-expect-error Web Vapor 专用编译辅助函数
+  initUniPageHooks,
+  //#endif
   nextTick,
   onBeforeActivate,
   onBeforeDeactivate,
@@ -62,7 +66,11 @@ import {
   subscribeViewMethod,
   unsubscribeViewMethod,
 } from '@dcloudio/uni-core'
+//#if _X_VAPOR_
+import LayoutComponent from '../components/layout/index-vapor.vue'
+//#else
 import { LayoutComponent } from '../..'
+//#endif
 import { initApp } from './app'
 import {
   getPage$BasePage,
@@ -119,6 +127,12 @@ function wrapperComponentSetup(
     if (oldSetup) {
       return oldSetup(props, ctx)
     }
+    //#if _X_VAPOR_ && !_NODE_JS_
+    // 无脚本页面没有编译器注入的入口，也需初始化可见状态；此时模板尚未执行。
+    if (type === 'page') {
+      initUniPageHooks()
+    }
+    //#endif
   }
   if (__X__ && (type === 'page' || type === 'window')) {
     // 只要不是手动设置隔离样式的组件，全部设置为 app-shared
@@ -168,6 +182,15 @@ export function setupPage(comp: any, path: string) {
   return setupComponent(comp, {
     type: 'page',
     clone: true, // 页面组件可能会被其他地方手动引用，比如 windows 等，需要 clone 一份新的作为页面组件
+    //#if _X_VAPOR_
+    before(comp) {
+      // 路由传入的 query 供 props/onLoad/options 接收，不自动作为根 DOM 属性。
+      // query 键名可能不是合法的 DOM 属性名（如 ?1=1），自动透传会触发
+      // InvalidCharacterError，中断页面渲染并可能导致白屏；参数本身仍完整保留。
+      // 仅修改路由页面副本，同一文件作为普通组件使用时保留原有 attrs 继承行为。
+      comp.inheritAttrs = false
+    },
+    //#endif
     init: initPage,
     setup(instance) {
       // instance.root = instance // 组件 root 指向页面

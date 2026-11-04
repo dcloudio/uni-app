@@ -49,10 +49,11 @@ const BUILT_IN_TAG_NAMES = [
     'location-picker',
     'location-view',
 ];
-const BUILT_IN_TAGS = BUILT_IN_TAG_NAMES.map((tag) => 'uni-' + tag);
-const H5_BUILT_IN_TAG_NAMES = BUILT_IN_TAG_NAMES.filter((tag) => tag !== 'audio');
-const H5_BUILT_IN_TAGS = H5_BUILT_IN_TAG_NAMES.map((tag) => 'uni-' + tag);
-const TAGS = [
+// 这些纯初始化在未使用组件名单时应被移除，避免公共工具导入带入无关运行时代码。
+const BUILT_IN_TAGS = /*#__PURE__*/ BUILT_IN_TAG_NAMES.map((tag) => 'uni-' + tag);
+const H5_BUILT_IN_TAG_NAMES = /*#__PURE__*/ BUILT_IN_TAG_NAMES.filter((tag) => tag !== 'audio');
+const H5_BUILT_IN_TAGS = /*#__PURE__*/ H5_BUILT_IN_TAG_NAMES.map((tag) => 'uni-' + tag);
+const TAGS = /*#__PURE__*/ [
     'app',
     'layout',
     'content',
@@ -157,7 +158,7 @@ const UVUE_BUILT_IN_TAGS = [
     // 'radio',
     // 'radio-group',
 ];
-const UVUE_WEB_BUILT_IN_TAGS = [
+const UVUE_WEB_BUILT_IN_TAGS = /*#__PURE__*/ [
     'page-container',
     'list-view',
     'list-item',
@@ -166,8 +167,10 @@ const UVUE_WEB_BUILT_IN_TAGS = [
     'cloud-db-element',
     'loading-element',
     'loading',
+    'flow-item',
+    'waterflow',
 ].map((tag) => 'uni-' + tag);
-const UVUE_MP_BUILT_IN_TAGS = [
+const UVUE_MP_BUILT_IN_TAGS = /*#__PURE__*/ [
     'list-view',
     'list-item',
     'sticky-section',
@@ -182,11 +185,11 @@ const UVUE_IOS_BUILT_IN_TAGS = [
     'form',
     'switch',
 ];
-const UVUE_HARMONY_BUILT_IN_TAGS = [
+const UVUE_HARMONY_BUILT_IN_TAGS = /*#__PURE__*/ (() => [
     // TODO 列出完整列表
     ...BUILT_IN_TAG_NAMES,
     'volume-panel',
-];
+])();
 const NVUE_U_BUILT_IN_TAGS = [
     'u-text',
     'u-image',
@@ -200,7 +203,7 @@ const NVUE_U_BUILT_IN_TAGS = [
     'u-rich-text',
 ];
 const UVUE_WEB_BUILT_IN_CUSTOM_ELEMENTS = ['match-media'];
-const UNI_UI_CONFLICT_TAGS = ['list-item'].map((tag) => 'uni-' + tag);
+const UNI_UI_CONFLICT_TAGS = /*#__PURE__*/ ['list-item'].map((tag) => 'uni-' + tag);
 function isBuiltInComponent(tag) {
     if (UNI_UI_CONFLICT_TAGS.indexOf(tag) !== -1) {
         return false;
@@ -294,10 +297,10 @@ function isAppUVueBuiltInEasyComponent(tag) {
     return UVUE_BUILT_IN_EASY_COMPONENTS.includes(tag);
 }
 // 主要是指前端实现的组件列表
-const UVUE_CUSTOM_COMPONENTS = [
+const UVUE_CUSTOM_COMPONENTS = /*#__PURE__*/ (() => [
     ...NVUE_CUSTOM_COMPONENTS,
     ...UVUE_BUILT_IN_EASY_COMPONENTS,
-];
+])();
 function isAppUVueNativeTag(tag) {
     // 前端实现的内置组件都会注册一个根组件
     if (tag.startsWith('uni-') && tag.endsWith('-element')) {
@@ -504,10 +507,17 @@ const ON_APP_ENTER_BACKGROUND = 'onAppEnterBackground';
 const ON_WEB_INVOKE_APP_SERVICE = 'onWebInvokeAppService';
 const ON_WXS_INVOKE_CALL_METHOD = 'onWxsInvokeCallMethod';
 // mergeVirtualHostAttributes
-const VIRTUAL_HOST_STYLE = 'virtualHostStyle';
-const VIRTUAL_HOST_CLASS = 'virtualHostClass';
-const VIRTUAL_HOST_HIDDEN = 'virtualHostHidden';
-const VIRTUAL_HOST_ID = 'virtualHostId';
+/**
+ * 微信纯数据字段Bug
+ * 字母顺序较纯数据字段靠后的字段传入undefined会触发告警
+ * uni-app存在一个纯数据字段uP（后续再看要不要把uP调整成zz或者_开头）
+ * Setting data field "virtualHostStyle" to undefined is invalid.
+ * 现在用a替换virtualHost开头的字段，避免触发微信纯数据字段告警
+ */
+const VIRTUAL_HOST_STYLE = 'ahs';
+const VIRTUAL_HOST_CLASS = 'ahc';
+const VIRTUAL_HOST_HIDDEN = 'ahh';
+const VIRTUAL_HOST_ID = 'ahid';
 // mini program css variables
 const UNI_STATUS_BAR_HEIGHT = 'u_s_b_h';
 const UNI_SAFE_AREA_INSET_BOTTOM = 'u_s_a_i_b';
@@ -1492,10 +1502,173 @@ const initCustomDatasetOnce = /*#__PURE__*/ once((isBuiltInElement) => {
     };
 });
 function getCustomDataset(el) {
-    return shared.extend({}, el.dataset, el.__uniDataset);
+    const dataset = el.dataset;
+    const target = el;
+    // Vapor 原生宿主只有一份 Map 数据，直接供事件读取，并让查询按条目复制，
+    // 避免对象展开丢失 get/set 等保留键。非 Vapor 的旧 uni-* Custom Element 仍走原缓存合并。
+    if (target.$uniDataset === dataset) {
+        return dataset;
+    }
+    return shared.extend({}, dataset, target.__uniDataset);
 }
 
-const unitRE = new RegExp(`"[^"]+"|'[^']+'|url\\([^)]+\\)|(\\d*\\.?\\d+)[r|u]px`, 'g');
+class UniDOMStringMap extends Map {
+    constructor(options) {
+        super();
+        this._options = options;
+    }
+    get(key) {
+        const normalizedKey = normalizeDatasetKey(String(key));
+        return super.has(normalizedKey) ? super.get(normalizedKey) : null;
+    }
+    set(key, value) {
+        var _a, _b;
+        const normalizedKey = normalizeDatasetKey(String(key));
+        super.set(normalizedKey, value);
+        (_b = (_a = this._options) === null || _a === void 0 ? void 0 : _a.onSet) === null || _b === void 0 ? void 0 : _b.call(_a, normalizedKey, value);
+        return this;
+    }
+    has(key) {
+        return super.has(normalizeDatasetKey(String(key)));
+    }
+    delete(key) {
+        var _a, _b;
+        const normalizedKey = normalizeDatasetKey(String(key));
+        const deleted = super.delete(normalizedKey);
+        if (deleted) {
+            (_b = (_a = this._options) === null || _a === void 0 ? void 0 : _a.onDelete) === null || _b === void 0 ? void 0 : _b.call(_a, normalizedKey);
+        }
+        return deleted;
+    }
+    clear() {
+        const keys = Array.from(super.keys());
+        super.clear();
+        keys.forEach((key) => { var _a, _b; return (_b = (_a = this._options) === null || _a === void 0 ? void 0 : _a.onDelete) === null || _b === void 0 ? void 0 : _b.call(_a, key); });
+    }
+}
+function normalizeDatasetKey(key) {
+    const normalizedKey = key.replace(/[A-Z]/g, (char) => char.toLowerCase());
+    if (normalizedKey.indexOf('data-') !== 0) {
+        return key;
+    }
+    return normalizedKey
+        .slice(5)
+        .replace(/-([a-z])/g, (_, char) => char.toUpperCase());
+}
+function normalizeDatasetAttrName(key) {
+    return ('data-' +
+        normalizeDatasetKey(key).replace(/[A-Z]/g, (char) => {
+            return '-' + char.toLowerCase();
+        }));
+}
+function isReservedDatasetKey(target, key) {
+    return key in target;
+}
+function setDatasetValue(dataset, key, value) {
+    Map.prototype.set.call(dataset, normalizeDatasetKey(String(key)), value);
+}
+function initDataset(dataset, source) {
+    if (!source) {
+        return;
+    }
+    if (source instanceof Map) {
+        source.forEach((value, key) => setDatasetValue(dataset, key, value));
+        return;
+    }
+    Object.keys(source).forEach((key) => setDatasetValue(dataset, key, source[key]));
+}
+function createUniDOMStringMap(source, options) {
+    const target = new UniDOMStringMap(options);
+    initDataset(target, source);
+    return new Proxy(target, {
+        get(target, key, receiver) {
+            if (typeof key === 'string') {
+                if (!isReservedDatasetKey(target, key)) {
+                    return target.has(key) ? target.get(key) : null;
+                }
+            }
+            const value = Reflect.get(target, key, target);
+            if (typeof value === 'function') {
+                return (...args) => {
+                    const result = value.apply(target, args);
+                    return result === target ? receiver : result;
+                };
+            }
+            return value;
+        },
+        set(target, key, value, receiver) {
+            if (typeof key === 'string' && !isReservedDatasetKey(target, key)) {
+                target.set(key, value);
+                return true;
+            }
+            return Reflect.set(target, key, value, receiver);
+        },
+        deleteProperty(target, key) {
+            if (typeof key === 'string' &&
+                !isReservedDatasetKey(target, key) &&
+                target.has(key)) {
+                return target.delete(key);
+            }
+            return Reflect.deleteProperty(target, key);
+        },
+        has(target, key) {
+            if (typeof key === 'string' && target.has(key)) {
+                return true;
+            }
+            return Reflect.has(target, key);
+        },
+        ownKeys(target) {
+            return Array.from(target.keys()).filter((key) => !isReservedDatasetKey(target, key));
+        },
+        getOwnPropertyDescriptor(target, key) {
+            if (typeof key === 'string' &&
+                !isReservedDatasetKey(target, key) &&
+                target.has(key)) {
+                return {
+                    configurable: true,
+                    enumerable: true,
+                    value: target.get(key),
+                    writable: true,
+                };
+            }
+            return Reflect.getOwnPropertyDescriptor(target, key);
+        },
+    });
+}
+
+const installed = /*#__PURE__*/ new WeakSet();
+// 仅安装 dataset getter，原生属性 API 不参与业务数据维护。
+function initVaporDataset(window) {
+    const realm = window;
+    const prototype = realm.HTMLElement.prototype;
+    if (installed.has(prototype))
+        return;
+    installed.add(prototype);
+    const nativeDataset = Object.getOwnPropertyDescriptor(prototype, 'dataset');
+    for (const [Host, marker] of [
+        [realm.HTMLDivElement, 'uni-view'],
+        [realm.HTMLSpanElement, 'uni-text'],
+        [realm.HTMLImageElement, 'uni-image'],
+        [realm.HTMLCanvasElement, 'uni-canvas'],
+    ]) {
+        if (Object.getOwnPropertyDescriptor(Host.prototype, 'dataset'))
+            continue;
+        Object.defineProperty(Host.prototype, 'dataset', {
+            configurable: true,
+            enumerable: nativeDataset.enumerable,
+            get() {
+                if (!this.hasAttribute(marker))
+                    return nativeDataset.get.call(this);
+                const data = this.$uniDataset;
+                return data instanceof Map
+                    ? data
+                    : (this.$uniDataset = createUniDOMStringMap(data));
+            },
+        });
+    }
+}
+
+const unitRE = /*#__PURE__*/ new RegExp(`"[^"]+"|'[^']+'|url\\([^)]+\\)|(\\d*\\.?\\d+)[r|u]px`, 'g');
 function toFixed(number, precision) {
     const multiplier = Math.pow(10, precision + 1);
     const wholeNumber = Math.floor(number * multiplier);
@@ -1616,6 +1789,23 @@ function scrollTo(scrollTop, duration, isH5) {
         });
     };
     scrollTo(duration);
+}
+
+// Web 样式转换沿用 createRpx2Unit 默认的 rem 比例和五位精度。
+// 跳过字符串、URL、自定义属性名及 var() 引用（含非 ASCII 和 CSS 转义），
+// 直接替换以保留 cssText 的重复声明与回退值，不解析或重建样式对象。
+const rpxRE = /"[^"]+"|'[^']+'|url\([^)]+\)|--(?:[\w-]|[^\x00-\x7f]|\\(?:[\da-fA-F]{1,6}(?:\r\n|[ \t\r\n\f])?|[^\r\n\f]))+|(\d*\.?\d+)[ru]px/g;
+const hasRpxRE = /[ru]px/;
+function normalizeRpx(value) {
+    if (!hasRpxRE.test(value))
+        return value;
+    return value.replace(rpxRE, (match, number) => {
+        if (!number)
+            return match;
+        const whole = Math.floor(parseFloat(number) * (10 / 320) * 1000000);
+        const result = (Math.round(whole / 10) * 10) / 1000000;
+        return result === 0 ? '0' : `${result}rem`;
+    });
 }
 
 const encode = encodeURIComponent;
@@ -2417,62 +2607,66 @@ const invokeCreateErrorHandler = once((app, createErrorHandler) => {
     return createErrorHandler(app);
 });
 
-const E = function () {
-    // Keep this empty so it's easier to inherit from
-    // (via https://github.com/lipsmack from https://github.com/scottcorgan/tiny-emitter/issues/3)
-};
-E.prototype = {
-    _id: 1,
-    on: function (name, callback, ctx) {
-        var e = this.e || (this.e = {});
-        (e[name] || (e[name] = [])).push({
-            fn: callback,
-            ctx: ctx,
-            _id: this._id,
-        });
-        return this._id++;
-    },
-    once: function (name, callback, ctx) {
-        var self = this;
-        function listener() {
-            self.off(name, listener);
-            callback.apply(ctx, arguments);
-        }
-        listener._ = callback;
-        return this.on(name, listener, ctx);
-    },
-    emit: function (name) {
-        var data = [].slice.call(arguments, 1);
-        var evtArr = ((this.e || (this.e = {}))[name] || []).slice();
-        var i = 0;
-        var len = evtArr.length;
-        for (i; i < len; i++) {
-            evtArr[i].fn.apply(evtArr[i].ctx, data);
-        }
-        return this;
-    },
-    off: function (name, event) {
-        var e = this.e || (this.e = {});
-        var evts = e[name];
-        var liveEvents = [];
-        if (evts && event) {
-            for (var i = evts.length - 1; i >= 0; i--) {
-                if (evts[i].fn === event ||
-                    evts[i].fn._ === event ||
-                    evts[i]._id === event) {
-                    evts.splice(i, 1);
-                    break;
-                }
+// 构造函数及原型作为整体初始化，未使用 Emitter 时可完整移除。
+const E = /*#__PURE__*/ (() => {
+    const E = function () {
+        // Keep this empty so it's easier to inherit from
+        // (via https://github.com/lipsmack from https://github.com/scottcorgan/tiny-emitter/issues/3)
+    };
+    E.prototype = {
+        _id: 1,
+        on: function (name, callback, ctx) {
+            var e = this.e || (this.e = {});
+            (e[name] || (e[name] = [])).push({
+                fn: callback,
+                ctx: ctx,
+                _id: this._id,
+            });
+            return this._id++;
+        },
+        once: function (name, callback, ctx) {
+            var self = this;
+            function listener() {
+                self.off(name, listener);
+                callback.apply(ctx, arguments);
             }
-            liveEvents = evts;
-        }
-        // Remove event from queue to prevent memory leak
-        // Suggested by https://github.com/lazd
-        // Ref: https://github.com/scottcorgan/tiny-emitter/commit/c6ebfaa9bc973b33d110a84a307742b7cf94c953#commitcomment-5024910
-        liveEvents.length ? (e[name] = liveEvents) : delete e[name];
-        return this;
-    },
-};
+            listener._ = callback;
+            return this.on(name, listener, ctx);
+        },
+        emit: function (name) {
+            var data = [].slice.call(arguments, 1);
+            var evtArr = ((this.e || (this.e = {}))[name] || []).slice();
+            var i = 0;
+            var len = evtArr.length;
+            for (i; i < len; i++) {
+                evtArr[i].fn.apply(evtArr[i].ctx, data);
+            }
+            return this;
+        },
+        off: function (name, event) {
+            var e = this.e || (this.e = {});
+            var evts = e[name];
+            var liveEvents = [];
+            if (evts && event) {
+                for (var i = evts.length - 1; i >= 0; i--) {
+                    if (evts[i].fn === event ||
+                        evts[i].fn._ === event ||
+                        evts[i]._id === event) {
+                        evts.splice(i, 1);
+                        break;
+                    }
+                }
+                liveEvents = evts;
+            }
+            // Remove event from queue to prevent memory leak
+            // Suggested by https://github.com/lazd
+            // Ref: https://github.com/scottcorgan/tiny-emitter/commit/c6ebfaa9bc973b33d110a84a307742b7cf94c953#commitcomment-5024910
+            liveEvents.length ? (e[name] = liveEvents) : delete e[name];
+            return this;
+        },
+    };
+    return E;
+})();
 var E$1 = E;
 
 const borderStyles = {
@@ -2565,7 +2759,80 @@ const UVUE_VAPOR_APP_EASYCOMS = [
     'video',
     'flow-item',
     'waterflow',
-    'web-view'
+    'web-view',
+];
+const UVUE_VAPOR_WEB_EASYCOMS = [
+    'ad',
+    'ad-content-page',
+    'ad-draw',
+    'button',
+    'camera',
+    'canvas',
+    'checkbox',
+    'checkbox-group',
+    'editor',
+    'flow-item',
+    'form',
+    'icon',
+    'input',
+    'label',
+    'list-item',
+    'list-view',
+    'live-player',
+    'live-pusher',
+    'loading',
+    'map',
+    'match-media',
+    'movable-area',
+    'movable-view',
+    'navigator',
+    'page-container',
+    'picker',
+    'picker-view',
+    'picker-view-column',
+    'progress',
+    'radio',
+    'radio-group',
+    'resize-sensor',
+    'rich-text',
+    'scroll-view',
+    'slider',
+    'sticky-header',
+    'sticky-section',
+    'swiper',
+    'swiper-item',
+    'switch',
+    'textarea',
+    'video',
+    'waterflow',
+    'web-view',
+];
+const UVUE_VAPOR_WEB_STYLE_COMPONENTS = [
+    'button',
+    'checkbox',
+    'checkbox-group',
+    'flow-item',
+    'form',
+    'label',
+    'list-item',
+    'list-view',
+    'loading',
+    'match-media',
+    'navigator',
+    'page-container',
+    'picker',
+    'picker-view',
+    'picker-view-column',
+    'progress',
+    'radio',
+    'radio-group',
+    'slider',
+    'sticky-header',
+    'sticky-section',
+    'swiper',
+    'swiper-item',
+    'switch',
+    'waterflow',
 ];
 
 const APP_NATIVE_TAGS = [
@@ -2598,132 +2865,73 @@ function isDom2VueComponentTag(tag) {
 function isDom2AppVueComponentTag(tag) {
     return UVUE_VAPOR_APP_EASYCOMS.includes(tag);
 }
+function isDom2WebVueComponentTag(tag) {
+    return UVUE_VAPOR_WEB_EASYCOMS.includes(tag);
+}
+function hasWebVaporComponentStyle(tag) {
+    return UVUE_VAPOR_WEB_STYLE_COMPONENTS.includes(tag);
+}
 function isDom2AppUserVueComponentTag(tag) {
     return !isDom2AppNativeTag(tag) && !isDom2VueComponentTag(tag);
 }
 
-class UniDOMStringMap extends Map {
-    constructor(options) {
-        super();
-        this._options = options;
-    }
-    get(key) {
-        const normalizedKey = normalizeDatasetKey(String(key));
-        return super.has(normalizedKey) ? super.get(normalizedKey) : null;
-    }
-    set(key, value) {
-        var _a, _b;
-        const normalizedKey = normalizeDatasetKey(String(key));
-        super.set(normalizedKey, value);
-        (_b = (_a = this._options) === null || _a === void 0 ? void 0 : _a.onSet) === null || _b === void 0 ? void 0 : _b.call(_a, normalizedKey, value);
-        return this;
-    }
-    has(key) {
-        return super.has(normalizeDatasetKey(String(key)));
-    }
-    delete(key) {
-        var _a, _b;
-        const normalizedKey = normalizeDatasetKey(String(key));
-        const deleted = super.delete(normalizedKey);
-        if (deleted) {
-            (_b = (_a = this._options) === null || _a === void 0 ? void 0 : _a.onDelete) === null || _b === void 0 ? void 0 : _b.call(_a, normalizedKey);
-        }
-        return deleted;
-    }
-    clear() {
-        const keys = Array.from(super.keys());
-        super.clear();
-        keys.forEach((key) => { var _a, _b; return (_b = (_a = this._options) === null || _a === void 0 ? void 0 : _a.onDelete) === null || _b === void 0 ? void 0 : _b.call(_a, key); });
-    }
+const uniElementPageMap = new WeakMap();
+function setUniElementPage(pageElement, page) {
+    uniElementPageMap.set(pageElement, page);
 }
-function normalizeDatasetKey(key) {
-    const normalizedKey = key.replace(/[A-Z]/g, (char) => char.toLowerCase());
-    if (normalizedKey.indexOf('data-') !== 0) {
-        return key;
+function getUniElementPage(element) {
+    var _a;
+    const pageElement = element.closest('uni-page');
+    return pageElement
+        ? (_a = uniElementPageMap.get(pageElement)) !== null && _a !== void 0 ? _a : null
+        : null;
+}
+
+// class 沿用 Vue 标准解析；dom2 的 style 需要对象，供 sharedData 逐项转换原生样式，
+// 因此字符串不能像 Vue normalizeStyle 一样原样返回。Map 转换保留已发布的兼容行为。
+// 普通对象（包括 UTSJSONObject）直接返回，旧值快照由 setSharedDataStyle 按需保存。
+function normalizeVaporStyle(value) {
+    if (typeof value === 'string') {
+        return shared.parseStringStyle(value);
     }
-    return normalizedKey
-        .slice(5)
-        .replace(/-([a-z])/g, (_, char) => char.toUpperCase());
-}
-function normalizeDatasetAttrName(key) {
-    return ('data-' +
-        normalizeDatasetKey(key).replace(/[A-Z]/g, (char) => {
-            return '-' + char.toLowerCase();
-        }));
-}
-function isReservedDatasetKey(target, key) {
-    return key in target;
-}
-function setDatasetValue(dataset, key, value) {
-    Map.prototype.set.call(dataset, normalizeDatasetKey(String(key)), value);
-}
-function initDataset(dataset, source) {
-    if (!source) {
+    if (value === null || typeof value !== 'object') {
         return;
     }
-    if (source instanceof Map) {
-        source.forEach((value, key) => setDatasetValue(dataset, key, value));
-        return;
-    }
-    Object.keys(source).forEach((key) => setDatasetValue(dataset, key, source[key]));
-}
-function createUniDOMStringMap(source, options) {
-    const target = new UniDOMStringMap(options);
-    initDataset(target, source);
-    return new Proxy(target, {
-        get(target, key, receiver) {
-            if (typeof key === 'string') {
-                if (!isReservedDatasetKey(target, key)) {
-                    return target.has(key) ? target.get(key) : null;
+    if (shared.isArray(value)) {
+        const res = {};
+        for (let i = 0; i < value.length; i++) {
+            const item = value[i];
+            const normalized = shared.isString(item)
+                ? shared.parseStringStyle(item)
+                : normalizeVaporStyle(item);
+            if (normalized) {
+                for (const key in normalized) {
+                    res[key] = normalized[key];
                 }
             }
-            const value = Reflect.get(target, key, target);
-            if (typeof value === 'function') {
-                return (...args) => {
-                    const result = value.apply(target, args);
-                    return result === target ? receiver : result;
-                };
-            }
-            return value;
-        },
-        set(target, key, value, receiver) {
-            if (typeof key === 'string' && !isReservedDatasetKey(target, key)) {
-                target.set(key, value);
-                return true;
-            }
-            return Reflect.set(target, key, value, receiver);
-        },
-        deleteProperty(target, key) {
-            if (typeof key === 'string' &&
-                !isReservedDatasetKey(target, key) &&
-                target.has(key)) {
-                return target.delete(key);
-            }
-            return Reflect.deleteProperty(target, key);
-        },
-        has(target, key) {
-            if (typeof key === 'string' && target.has(key)) {
-                return true;
-            }
-            return Reflect.has(target, key);
-        },
-        ownKeys(target) {
-            return Array.from(target.keys()).filter((key) => !isReservedDatasetKey(target, key));
-        },
-        getOwnPropertyDescriptor(target, key) {
-            if (typeof key === 'string' &&
-                !isReservedDatasetKey(target, key) &&
-                target.has(key)) {
-                return {
-                    configurable: true,
-                    enumerable: true,
-                    value: target.get(key),
-                    writable: true,
-                };
-            }
-            return Reflect.getOwnPropertyDescriptor(target, key);
-        },
-    });
+        }
+        return res;
+    }
+    else if (value instanceof Map) {
+        const res = {};
+        value.forEach((value, key) => {
+            res[key] = value;
+        });
+        return res;
+    }
+    return value;
+}
+function normalizeVaporProps(props) {
+    if (!props)
+        return null;
+    const { class: klass, style } = props;
+    if (klass && !shared.isString(klass)) {
+        props.class = shared.normalizeClass(klass);
+    }
+    if (style) {
+        props.style = normalizeVaporStyle(style);
+    }
+    return props;
 }
 
 const uniElementPageMap = new WeakMap();
@@ -2928,7 +3136,9 @@ exports.getLen = getLen;
 exports.getPartClass = getPartClass;
 exports.getUniElementPage = getUniElementPage;
 exports.getValueByDataPath = getValueByDataPath;
+exports.hasWebVaporComponentStyle = hasWebVaporComponentStyle;
 exports.initCustomDatasetOnce = initCustomDatasetOnce;
+exports.initVaporDataset = initVaporDataset;
 exports.invokeArrayFns = invokeArrayFns;
 exports.invokeArrayFnsWithResults = invokeArrayFnsWithResults;
 exports.invokeCreateErrorHandler = invokeCreateErrorHandler;
@@ -2947,6 +3157,7 @@ exports.isDom2AppNativeTag = isDom2AppNativeTag;
 exports.isDom2AppUserVueComponentTag = isDom2AppUserVueComponentTag;
 exports.isDom2AppVueComponentTag = isDom2AppVueComponentTag;
 exports.isDom2VueComponentTag = isDom2VueComponentTag;
+exports.isDom2WebVueComponentTag = isDom2WebVueComponentTag;
 exports.isGloballyAllowed = isGloballyAllowed;
 exports.isH5CustomElement = isH5CustomElement;
 exports.isH5NativeTag = isH5NativeTag;
@@ -2965,11 +3176,14 @@ exports.normalizeDatasetAttrName = normalizeDatasetAttrName;
 exports.normalizeDatasetKey = normalizeDatasetKey;
 exports.normalizeEventType = normalizeEventType;
 exports.normalizeProps = normalizeProps;
+exports.normalizeRpx = normalizeRpx;
 exports.normalizeStyle = normalizeStyle;
 exports.normalizeStyles = normalizeStyles;
 exports.normalizeTabBarStyles = normalizeTabBarStyles;
 exports.normalizeTarget = normalizeTarget;
 exports.normalizeTitleColor = normalizeTitleColor;
+exports.normalizeVaporProps = normalizeVaporProps;
+exports.normalizeVaporStyle = normalizeVaporStyle;
 exports.onCreateVueApp = onCreateVueApp;
 exports.once = once;
 exports.parseEventName = parseEventName;

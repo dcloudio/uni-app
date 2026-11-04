@@ -22,6 +22,6 @@ export function uniH5Plugin(): UniVitePlugin {
     },
     configureServer: createConfigureServer(),
     handleHotUpdate: createHandleHotUpdate(),
-    transformIndexHtml: createTransformIndexHtml(),
+    transformIndexHtml: createTransformIndexHtml(configOptions),
   }
 }

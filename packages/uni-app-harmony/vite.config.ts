@@ -75,6 +75,7 @@ export default defineConfig({
     __IMPORT_META_ENV_BASE_URL__: JSON.stringify(''),
     'process.env.NODE_ENV': JSON.stringify('production'),
     __X__: false,
+    __VAPOR__: false,
     __PLUS__: false,
     'plus.os.name': "'HarmonyOS'",
     'plus.os.version': "''",

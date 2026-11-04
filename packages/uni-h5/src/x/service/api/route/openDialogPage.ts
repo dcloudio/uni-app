@@ -20,6 +20,10 @@ import {
 import { closePreSystemDialogPage } from './utils'
 import type { UTSJSONObject } from '@dcloudio/uni-shared'
 import { markRaw } from 'vue'
+//#if _X_VAPOR_
+import UniPickerPage from '@/uni_modules/uni-form/pages/picker/picker.vue'
+import { registerSystemRoute } from '../../../framework/route'
+//#endif
 
 export const openDialogPage = (
   options: OpenDialogPageOptions
@@ -31,6 +35,12 @@ export const openDialogPage = (
 
   let { path, query } = parseUrl(options.url)
   path = normalizeRoute(path)
+  //#if _X_VAPOR_
+  // Picker 没有独立 API 包装，在首次打开弹层时注册共用页面，不向 App 组件注入 Web 框架依赖。
+  if (path === 'uni:picker') {
+    registerSystemRoute(path, UniPickerPage)
+  }
+  //#endif
   const normalizeUrl = createNormalizeUrl('navigateTo')
   const errMsg = normalizeUrl(options.url, {})
   if (errMsg) {

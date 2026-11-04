@@ -69,27 +69,31 @@ describe('uts2js standard TypeScript routing', () => {
     }
   )
 
-  test('excludes standard TypeScript without enabling DOM2 transforms', () => {
-    const runtimeUts2js = jest.fn((_options: Record<string, any>) => [])
-    globalThis.uts2js = runtimeUts2js
+  test.each(['web', 'mp-weixin'] as const)(
+    '%s excludes standard TypeScript without enabling DOM2 transforms',
+    (platform) => {
+      const runtimeUts2js = jest.fn((_options: Record<string, any>) => [])
+      globalThis.uts2js = runtimeUts2js
 
-    uts2js({
-      excludeStandardTypeScript: true,
-      platform: 'web',
-      inputDir: '/project/src',
-      version: 'test',
-      modules: {},
-      scriptMacros,
-    })
+      uts2js({
+        excludeStandardTypeScript: true,
+        platform,
+        inputDir: '/project/src',
+        version: 'test',
+        modules: {},
+        scriptMacros,
+      })
 
-    const options = runtimeUts2js.mock.calls[0][0]
-    const filter = createFilter(undefined, options.exclude)
+      const options = runtimeUts2js.mock.calls[0][0]
+      const filter = createFilter(undefined, options.exclude)
 
-    expect(filter('/project/src/utils.ts')).toBe(false)
-    expect(options.jsonImportMode).toBe('uts')
-    expect(options.dom2).toBeUndefined()
-    expect(options.excludeStandardTypeScript).toBeUndefined()
-  })
+      expect(filter('/project/src/utils.ts')).toBe(false)
+      expect(options.jsonImportMode).toBe('uts')
+      expect(options.dom2).toBeUndefined()
+      expect(options.transformTypeScriptAsUTS).toBeUndefined()
+      expect(options.excludeStandardTypeScript).toBeUndefined()
+    }
+  )
 
   test('passes the shared worker transformer to the runtime compiler', () => {
     const runtimeUts2js = jest.fn((_options: Record<string, any>) => [])

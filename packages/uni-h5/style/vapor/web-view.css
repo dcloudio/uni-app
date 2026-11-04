@@ -1,0 +1,6 @@
+/* Vapor 使用 div 作为宿主，内部 iframe 保持占满容器。 */
+uni-app div:where([uni-web-view]) > iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}

@@ -261,13 +261,18 @@ export declare const H5_BUILT_IN_TAG_NAMES: string[];
 
 export declare const H5_BUILT_IN_TAGS: string[];
 
+export declare function hasWebVaporComponentStyle(tag: string): boolean;
+
 declare interface HTMLElementWithDataset extends HTMLElement {
     __uniDataset?: Record<string, any>;
+    $uniDataset?: Readonly<Record<string, string>> | Map<string, any>;
 }
 
 export declare const I18N_JSON_DELIMITERS: [string, string];
 
 export declare const initCustomDatasetOnce: (isBuiltInElement?: ((el: HTMLElement) => boolean) | undefined) => void;
+
+export declare function initVaporDataset(window: Window): void;
 
 /**
  * nodeId
@@ -326,6 +331,8 @@ export declare function isDom2AppUserVueComponentTag(tag: string): boolean;
 export declare function isDom2AppVueComponentTag(tag: string): boolean;
 
 export declare function isDom2VueComponentTag(tag: string): boolean;
+
+export declare function isDom2WebVueComponentTag(tag: string): boolean;
 
 export declare const isGloballyAllowed: (key: string) => boolean;
 
@@ -418,6 +425,8 @@ export declare function normalizeEventType(type: string, options?: AddEventListe
 
 export declare function normalizeProps(props: Record<string, any> | null): Record<string, any> | null;
 
+export declare function normalizeRpx(value: string): string;
+
 export declare function normalizeStyle(value: unknown): NormalizedStyle | string | undefined;
 
 export declare function normalizeStyles<T extends object>(pageStyle: T, themeConfig?: UniApp.ThemeJson, mode?: UniApp.ThemeMode): T;
@@ -432,6 +441,10 @@ export declare function normalizeTarget(el: HTMLElement): {
 };
 
 export declare function normalizeTitleColor(titleColor: string): "#000000" | "#ffffff";
+
+export declare function normalizeVaporProps(props: Record<string, any> | null): Record<string, any> | null;
+
+export declare function normalizeVaporStyle(value: unknown): NormalizedStyle | undefined;
 
 export declare interface NVue {
     config: NVueConfigAPI;
@@ -1121,13 +1134,20 @@ export declare const UVUE_WEB_BUILT_IN_CUSTOM_ELEMENTS: string[];
 
 export declare const UVUE_WEB_BUILT_IN_TAGS: string[];
 
-export declare const VIRTUAL_HOST_CLASS = "virtualHostClass";
+export declare const VIRTUAL_HOST_CLASS = "ahc";
 
-export declare const VIRTUAL_HOST_HIDDEN = "virtualHostHidden";
+export declare const VIRTUAL_HOST_HIDDEN = "ahh";
 
-export declare const VIRTUAL_HOST_ID = "virtualHostId";
+export declare const VIRTUAL_HOST_ID = "ahid";
 
-export declare const VIRTUAL_HOST_STYLE = "virtualHostStyle";
+/**
+ * 微信纯数据字段Bug
+ * 字母顺序较纯数据字段靠后的字段传入undefined会触发告警
+ * uni-app存在一个纯数据字段uP（后续再看要不要把uP调整成zz或者_开头）
+ * Setting data field "virtualHostStyle" to undefined is invalid.
+ * 现在用a替换virtualHost开头的字段，避免触发微信纯数据字段告警
+ */
+export declare const VIRTUAL_HOST_STYLE = "ahs";
 
 declare interface Vue_2 {
     createApp: typeof createApp;

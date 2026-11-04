@@ -21,7 +21,7 @@ audio,
 camera,
 canvas,
 checkbox-group,
-/* #ifndef MP-ALIPAY */ 
+/* #ifndef MP-ALIPAY */
 button,
 checkbox,
 picker-view,
@@ -44,8 +44,6 @@ live-player,
 live-pusher,
 map,
 match-media,
-movable-area,
-movable-view,
 navigation-bar,
 navigator,
 open-data,
@@ -66,6 +64,25 @@ unicloud-db,
 view,
 web-view {
   position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  flex-grow: 0;
+  flex-basis: auto;
+  align-items: stretch;
+  align-content: stretch;
+  justify-content: flex-start;
+  min-height: 0px;
+  min-width: 0px;
+  border-width: medium;
+}
+
+/**
+ * 不设置position样式
+ */
+movable-area,
+movable-view {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;

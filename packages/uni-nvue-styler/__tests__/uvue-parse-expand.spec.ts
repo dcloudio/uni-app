@@ -1,6 +1,7 @@
 import { expand } from '../src/expand/index'
 // import { expand } from '../dist/uni-nvue-styler.es'
 import type { Declaration } from 'postcss'
+import { parse } from '../src'
 
 const processDeclaration = expand({ type: 'uvue' }).Declaration as (
   decl: Declaration
@@ -706,3 +707,149 @@ describe('expand background', () => {
     ])
   })
 })
+
+describe('dom2 gap', () => {
+  const processor = expand({ type: 'uvue', dom2: true }).Declaration as (
+    decl: Declaration
+  ) => void
+
+  test.each(['8px', '12rpx', '5%', '0', '-0px', '.0000001'])(
+    'expands one value: %s',
+    (value) => {
+      expect(
+        normalizeStyle('gap', value, processor).map(({ prop, value }) => [
+          prop,
+          value,
+        ])
+      ).toEqual([
+        ['row-gap', value],
+        ['column-gap', value],
+      ])
+    }
+  )
+
+  test('expands mixed values and preserves importance', () => {
+    const declarations = normalizeStyle('gap', '8px 12% !important', processor)
+    expect(
+      declarations.map(({ prop, value, important }) => [prop, value, important])
+    ).toEqual([
+      ['row-gap', '8px', true],
+      ['column-gap', '12%', true],
+    ])
+  })
+
+  test.each([
+    'normal',
+    'auto',
+    '-1px',
+    '8px -1%',
+    '8px normal',
+    '1px 2px 3px',
+    '1em',
+  ])('rejects the whole invalid shorthand: %s', (value) => {
+    expect(normalizeStyle('gap', value, processor)).toEqual([])
+  })
+
+  test('preserves functions when splitting values', () => {
+    expect(
+      normalizeStyle('gap', 'calc(8px + 2%) 12rpx', processor).map(
+        ({ prop, value }) => [prop, value]
+      )
+    ).toEqual([
+      ['row-gap', 'calc(8px + 2%)'],
+      ['column-gap', '12rpx'],
+    ])
+    expect(
+      normalizeStyle('gap', 'var(--spacing, 8px 12px)', processor).map(
+        ({ prop, value }) => [prop, value]
+      )
+    ).toEqual([
+      ['row-gap', 'var(--spacing, 8px 12px)'],
+      ['column-gap', 'var(--spacing, 8px 12px)'],
+    ])
+  })
+
+  test.each(['row-gap', 'column-gap'])(
+    'validates %s without changing other lengths',
+    async (property) => {
+      const result = await parse(`.foo { ${property}: -1px; width: -1px; }`, {
+        type: 'uvue',
+        dom2: true,
+        platform: 'app-android',
+      })
+      expect(result.code).not.toContain(
+        property.replace(/-([a-z])/g, (_, c) => c.toUpperCase())
+      )
+      expect(result.messages).toHaveLength(1)
+    }
+  )
+})
+
+test('normalizes dom2 gap values before runtime shorthand expansion', () => {
+  const processor = expand({ type: 'uvue', dom2: true }).Declaration as (
+    decl: Declaration
+  ) => void
+  expect(
+    normalizeStyle('gap', 'CALC(8px + 2%) 12rpx', processor).map(
+      ({ prop, value }) => [prop, value]
+    )
+  ).toEqual([
+    ['row-gap', 'calc(8px + 2%)'],
+    ['column-gap', '12rpx'],
+  ])
+})
+
+describe('dom2 gap number syntax', () => {
+  const processor = expand({ type: 'uvue', dom2: true }).Declaration as (
+    decl: Declaration
+  ) => void
+  test.each([
+    '+-0px',
+    '-+0px',
+    '++1px',
+    '1e+px',
+    '1e--2px',
+    '1e999px',
+    '-1e2px',
+    '1.e2px',
+  ])('rejects invalid numeric tokens: %s', (value) => {
+    expect(normalizeStyle('gap', value, processor)).toEqual([])
+  })
+})
+
+test.each([
+  { type: 'uvue' as const },
+  { type: 'nvue' as const },
+  { type: 'nvue' as const, dom2: true },
+])('does not expand gap outside uvue dom2: %s', (options) => {
+  const processor = expand(options).Declaration as (decl: Declaration) => void
+  expect(
+    normalizeStyle('gap', '8px 12%', processor).map(({ prop, value }) => [
+      prop,
+      value,
+    ])
+  ).toEqual([['gap', '8px 12%']])
+})
+
+test.each(['app-android', 'app-ios', 'app-harmony'])(
+  'limits caret-color support to DOM2 on %s',
+  async (platform) => {
+    const options = { type: 'uvue' as const, platform }
+    const supported = await parse('.foo { caret-color: red; }', {
+      ...options,
+      dom2: true,
+    })
+    expect(supported.messages).toHaveLength(0)
+    expect(supported.code).toContain('caretColor')
+    const unsupported = await parse('.foo { caret-color: red; }', options)
+    expect(unsupported.messages).toHaveLength(1)
+    for (const value of ['auto', 'inherit', 'currentColor']) {
+      const invalid = await parse(`.foo { caret-color: ${value}; }`, {
+        ...options,
+        dom2: true,
+      })
+      expect(invalid.messages).toHaveLength(1)
+      expect(invalid.code).not.toContain('caretColor')
+    }
+  }
+)

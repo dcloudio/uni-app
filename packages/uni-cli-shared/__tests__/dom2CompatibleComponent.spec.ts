@@ -4,7 +4,7 @@ import fs from 'fs-extra'
 
 import { initEasycoms, matchEasycom } from '../src/easycom'
 import { M } from '../src/messages'
-import { resolveUTSAppModule } from '../src/uts'
+import { resolveUTSAppJsEntry, resolveUTSAppModule } from '../src/uts'
 import { normalizePath } from '../src/utils'
 
 describe('dom2 compatible component', () => {
@@ -14,6 +14,7 @@ describe('dom2 compatible component', () => {
     UNI_COMPILE_TARGET: process.env.UNI_COMPILE_TARGET,
     UNI_INPUT_DIR: process.env.UNI_INPUT_DIR,
     UNI_UTS_PLATFORM: process.env.UNI_UTS_PLATFORM,
+    UNI_APP_X_UVUE_SCRIPT_ENGINE: process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE,
   }
   let inputDir = ''
 
@@ -100,5 +101,47 @@ describe('dom2 compatible component', () => {
           'uni_modules/uts-button/utssdk/app-android/index.vue'
         )
     )
+  })
+
+  test('resolves app-js entries in uts, ts, js order', () => {
+    process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE = 'js'
+    const appJsDir = path.join(
+      inputDir,
+      'uni_modules/test-plugin/utssdk/app-js'
+    )
+    fs.outputFileSync(path.join(appJsDir, 'index.js'), '')
+    fs.outputFileSync(path.join(appJsDir, 'index.ts'), '')
+
+    expect(resolveUTSAppJsEntry(appJsDir)).toBe(path.join(appJsDir, 'index.ts'))
+    expect(
+      resolveUTSAppModule(
+        'app-android',
+        path.join(inputDir, 'uni_modules/test-plugin'),
+        inputDir
+      )
+    ).toBe(path.join(appJsDir, 'index.ts'))
+
+    fs.outputFileSync(path.join(appJsDir, 'index.uts'), '')
+    expect(resolveUTSAppJsEntry(appJsDir)).toBe(
+      path.join(appJsDir, 'index.uts')
+    )
+    expect(
+      resolveUTSAppModule(
+        'app-android',
+        path.join(inputDir, 'uni_modules/test-plugin'),
+        inputDir
+      )
+    ).toBe(path.join(appJsDir, 'index.uts'))
+
+    fs.removeSync(path.join(appJsDir, 'index.ts'))
+    fs.removeSync(path.join(appJsDir, 'index.uts'))
+    expect(resolveUTSAppJsEntry(appJsDir)).toBe(path.join(appJsDir, 'index.js'))
+    expect(
+      resolveUTSAppModule(
+        'app-android',
+        path.join(inputDir, 'uni_modules/test-plugin'),
+        inputDir
+      )
+    ).toBe(path.join(appJsDir, 'index.js'))
   })
 })

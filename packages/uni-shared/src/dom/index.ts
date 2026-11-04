@@ -1,6 +1,7 @@
 import { isString } from '@vue/shared'
 import { getCustomDataset } from './customDataset'
 export { initCustomDatasetOnce, getCustomDataset } from './customDataset'
+export { initVaporDataset } from './vaporDataset'
 
 export * from './style'
 

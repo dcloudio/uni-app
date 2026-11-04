@@ -1,5 +1,5 @@
 /**
-  * @vue/shared v3.6.0-rc.9
+  * @vue/shared v3.6.0-rc.14
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -234,6 +234,8 @@ const ShapeFlags = {
 	"256": "COMPONENT_SHOULD_KEEP_ALIVE",
 	"COMPONENT_KEPT_ALIVE": 512,
 	"512": "COMPONENT_KEPT_ALIVE",
+	"SLOT_FALLBACK": 1024,
+	"1024": "SLOT_FALLBACK",
 	"COMPONENT": 6,
 	"6": "COMPONENT"
 };
@@ -361,9 +363,7 @@ const SVG_TAGS = "svg,animate,animateMotion,animateTransform,circle,clipPath,col
 const MATH_TAGS = "annotation,annotation-xml,maction,maligngroup,malignmark,math,menclose,merror,mfenced,mfrac,mfraction,mglyph,mi,mlabeledtr,mlongdiv,mmultiscripts,mn,mo,mover,mpadded,mphantom,mprescripts,mroot,mrow,ms,mscarries,mscarry,msgroup,msline,mspace,msqrt,msrow,mstack,mstyle,msub,msubsup,msup,mtable,mtd,mtext,mtr,munder,munderover,none,semantics";
 const VOID_TAGS = "area,base,br,col,embed,hr,img,input,link,meta,param,source,track,wbr";
 const FORMATTING_TAGS = "a,b,big,code,em,font,i,nobr,s,small,strike,strong,tt,u";
-const ALWAYS_CLOSE_TAGS = "title,style,script,noscript,template,object,table,button,textarea,select,iframe,fieldset";
-const INLINE_TAGS = "a,abbr,acronym,b,bdi,bdo,big,br,button,canvas,cite,code,data,datalist,del,dfn,em,embed,i,iframe,img,input,ins,kbd,label,map,mark,meter,noscript,object,output,picture,progress,q,ruby,s,samp,script,select,small,span,strong,sub,sup,svg,textarea,time,u,tt,var,video";
-const BLOCK_TAGS = "address,article,aside,blockquote,dd,details,dialog,div,dl,dt,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,hr,li,main,menu,nav,ol,p,pre,section,table,ul";
+const ALWAYS_CLOSE_TAGS = "title,style,script,noscript,template,object,table,button,textarea,select,iframe,fieldset,form,foreignObject,desc,mi,mo,mn,ms,mtext,annotation-xml";
 /**
 * Compiler only.
 * Do NOT use in runtime code paths unless behind `!!(process.env.NODE_ENV !== 'production')` flag.
@@ -394,16 +394,6 @@ const isFormattingTag = /*@__PURE__*/ makeMap(FORMATTING_TAGS);
 * Do NOT use in runtime code paths unless behind `!!(process.env.NODE_ENV !== 'production')` flag.
 */
 const isAlwaysCloseTag = /*@__PURE__*/ makeMap(ALWAYS_CLOSE_TAGS);
-/**
-* Compiler only.
-* Do NOT use in runtime code paths unless behind `!!(process.env.NODE_ENV !== 'production')` flag.
-*/
-const isInlineTag = /*@__PURE__*/ makeMap(INLINE_TAGS);
-/**
-* Compiler only.
-* Do NOT use in runtime code paths unless behind `!!(process.env.NODE_ENV !== 'production')` flag.
-*/
-const isBlockTag = /*@__PURE__*/ makeMap(BLOCK_TAGS);
 //#endregion
 //#region packages/shared/src/domAttrConfig.ts
 /**
@@ -415,9 +405,10 @@ const isBlockTag = /*@__PURE__*/ makeMap(BLOCK_TAGS);
 * - ismap -> isMap
 * - nomodule -> noModule
 * - novalidate -> noValidate
+* - playsinline -> playsInline
 * - readonly -> readOnly
 */
-const specialBooleanAttrs = `itemscope,allowfullscreen,formnovalidate,ismap,nomodule,novalidate,readonly`;
+const specialBooleanAttrs = `itemscope,allowfullscreen,formnovalidate,ismap,nomodule,novalidate,playsinline,readonly`;
 const isSpecialBooleanAttr = /*@__PURE__*/ makeMap(specialBooleanAttrs);
 /**
 * The full list is needed during SSR to produce the correct initial markup.
@@ -732,7 +723,9 @@ const VaporBlockShape = {
 	"SINGLE_ROOT": 1,
 	"1": "SINGLE_ROOT",
 	"MULTI_ROOT": 2,
-	"2": "MULTI_ROOT"
+	"2": "MULTI_ROOT",
+	"ELSE_IF": 3,
+	"3": "ELSE_IF"
 };
 /**
 * Bit layout for vapor `createIf` flags.
@@ -771,8 +764,11 @@ const TemplateFlags = {
 	"ROOT": 1,
 	"1": "ROOT",
 	"STATIC": 2,
-	"2": "STATIC"
+	"2": "STATIC",
+	"UNI_PAGE_SCOPE": 256,
+	"256": "UNI_PAGE_SCOPE"
 };
+const UNI_APP_SCOPE_ID = "data-v-212d40c7";
 /**
 * Flags used by vapor slot outlets, shared between the compiler and the
 * runtime.
@@ -784,16 +780,24 @@ const VaporSlotFlags = {
 	"2": "ONCE",
 	"FORWARDED": 4,
 	"4": "FORWARDED",
-	"SHARED_FALLBACK": 8,
-	"8": "SHARED_FALLBACK",
 	"TEXT_MODE": 256,
 	"256": "TEXT_MODE"
 };
 function isForwardedSlot(flags) {
-	return !!(flags & 12);
+	return !!(flags & 4);
 }
-function slotInheritsFallback(flags) {
-	return isForwardedSlot(flags) && !(flags & 8);
+/**
+* The data of the comment a vapor server render opens the branch of a `v-if`
+* chain with, `<!--[1-->`: the digits are the branch's position in the chain,
+* and `<!--]-->` closes it like a fragment.
+*/
+function isVaporBranchStart(data) {
+	if (data.length < 2 || data.charCodeAt(0) !== 91) return false;
+	for (let i = 1; i < data.length; i++) {
+		const c = data.charCodeAt(i);
+		if (c < 48 || c > 57) return false;
+	}
+	return true;
 }
 function slotNotifiesBoundary(flags) {
 	return isForwardedSlot(flags) && !(flags & 2);
@@ -815,7 +819,18 @@ const VaporDynamicComponentFlags = {
 	"NS_SVG": 8,
 	"8": "NS_SVG",
 	"NS_MATHML": 16,
-	"16": "NS_MATHML"
+	"16": "NS_MATHML",
+	"SLOT_SINGLE_ROOT": 32,
+	"32": "SLOT_SINGLE_ROOT"
+};
+/**
+* `isSingleRoot` of a component creation call for the single root of a slot
+* body (`true` marks the single root of a component template). See
+* resolveFallthroughOwner in runtime-vapor.
+*/
+const VaporSingleRoot = {
+	"SLOT": 2,
+	"2": "SLOT"
 };
 //#endregion
-export { EMPTY_ARR, EMPTY_OBJ, NO, NOOP, Namespaces, PatchFlagNames, PatchFlags, ShapeFlags, SlotFlags, TemplateFlags, VaporBlockShape, VaporDynamicComponentFlags, VaporIfFlags, VaporSlotFlags, VaporSlotStability, VaporVForFlags, YES, camelize, canSetValueDirectly, capitalize, cssVarNameEscapeSymbolsRE, def, escapeHtml, escapeHtmlComment, extend, genCacheKey, genPropsAccessExp, generateCodeFrame, getEscapedCssVarName, getGlobalThis, getModifierPropName, getSequence, hasChanged, hasOwn, hyphenate, includeBooleanAttr, invokeArrayFns, isAlwaysCloseTag, isArray, isBlockTag, isBooleanAttr, isBuiltInDirective, isBuiltInTag, isDate, isFormattingTag, isForwardedSlot, isFunction, isGloballyAllowed, isGloballyWhitelisted, isHTMLTag, isInlineTag, isIntegerKey, isKnownHtmlAttr, isKnownMathMLAttr, isKnownSvgAttr, isMap, isMathMLTag, isModelListener, isNativeOn, isObject, isOn, isPlainObject, isPromise, isRegExp, isRenderableAttrValue, isReservedProp, isSSRSafeAttrName, isSVGTag, isSet, isSpecialBooleanAttr, isString, isSymbol, isVoidTag, looseEqual, looseIndexOf, looseToNumber, makeMap, normalizeClass, normalizeCssVarValue, normalizeProps, normalizeStyle, normalizeUniText, objectToString, parseStringStyle, propsToAttrMap, remove, shouldSetAsAttr, slotFlagsText, slotInheritsFallback, slotNotifiesBoundary, stringifyStyle, toDisplayString, toHandlerKey, toNumber, toRawType, toTypeString };
+export { EMPTY_ARR, EMPTY_OBJ, NO, NOOP, Namespaces, PatchFlagNames, PatchFlags, ShapeFlags, SlotFlags, TemplateFlags, UNI_APP_SCOPE_ID, VaporBlockShape, VaporDynamicComponentFlags, VaporIfFlags, VaporSingleRoot, VaporSlotFlags, VaporSlotStability, VaporVForFlags, YES, camelize, canSetValueDirectly, capitalize, cssVarNameEscapeSymbolsRE, def, escapeHtml, escapeHtmlComment, extend, genCacheKey, genPropsAccessExp, generateCodeFrame, getEscapedCssVarName, getGlobalThis, getModifierPropName, getSequence, hasChanged, hasOwn, hyphenate, includeBooleanAttr, invokeArrayFns, isAlwaysCloseTag, isArray, isBooleanAttr, isBuiltInDirective, isBuiltInTag, isDate, isFormattingTag, isForwardedSlot, isFunction, isGloballyAllowed, isGloballyWhitelisted, isHTMLTag, isIntegerKey, isKnownHtmlAttr, isKnownMathMLAttr, isKnownSvgAttr, isMap, isMathMLTag, isModelListener, isNativeOn, isObject, isOn, isPlainObject, isPromise, isRegExp, isRenderableAttrValue, isReservedProp, isSSRSafeAttrName, isSVGTag, isSet, isSpecialBooleanAttr, isString, isSymbol, isVaporBranchStart, isVoidTag, looseEqual, looseIndexOf, looseToNumber, makeMap, normalizeClass, normalizeCssVarValue, normalizeProps, normalizeStyle, normalizeUniText, objectToString, parseStringStyle, propsToAttrMap, remove, shouldSetAsAttr, slotFlagsText, slotNotifiesBoundary, stringifyStyle, toDisplayString, toHandlerKey, toNumber, toRawType, toTypeString };

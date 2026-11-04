@@ -9,21 +9,18 @@ interface BooleanConstructor {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
            "harmony": {
-              "osVer": "5.0.0",
               "uniVer": "√",
               "unixVer": "4.61",
               "uniUtsPlugin": "√",
@@ -49,21 +46,18 @@ interface BooleanConstructor {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",

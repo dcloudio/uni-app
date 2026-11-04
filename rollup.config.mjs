@@ -33,7 +33,7 @@ const configs = []
 
 let buildOptions = require(resolve(`build.json`))
 
-function normalizeOutput(file, output = {}) {
+function normalizeOutput (file, output = {}) {
   return Object.assign(
     {
       file,
@@ -76,7 +76,7 @@ buildOptions.forEach((buildOption) => {
 
 export default configs
 
-function resolveTsconfigJson() {
+function resolveTsconfigJson () {
   const tsconfigJsonPath = resolve('tsconfig.json')
   if (
     fs.existsSync(tsconfigJsonPath)
@@ -88,7 +88,7 @@ function resolveTsconfigJson() {
   return path.resolve(__dirname, 'tsconfig.json')
 }
 
-function parseExternal(external) {
+function parseExternal (external) {
   const parsed = external === false
     ? []
     : Array.isArray(external)
@@ -108,7 +108,7 @@ function parseExternal(external) {
   })
 }
 
-function createConfig(entryFile, output, buildOption) {
+function createConfig (entryFile, output, buildOption) {
   const shouldEmitDeclarations = process.env.TYPES != null && !hasTSChecked
   const tsOptions = {
     check: !process.env.TRANSPILE_ONLY &&
@@ -145,7 +145,7 @@ function createConfig(entryFile, output, buildOption) {
     }
   }
   if (isX && !isX_VAPOR && buildOption.replacements) {
-    if (buildOption.replacements.__X_VAPOR__ === 'true') {
+    if (buildOption.replacements.__VAPOR__ === 'true') {
       isX_VAPOR = true
     }
   }
@@ -191,7 +191,7 @@ function createConfig(entryFile, output, buildOption) {
     const replacements = buildOption.replaceAfterBundled
     plugins.push({
       name: 'replace-after-bundled',
-      generateBundle(_options, bundles) {
+      generateBundle (_options, bundles) {
         Object.keys(bundles).forEach((name) => {
           const bundle = bundles[name]
           if (!bundle.code) {
@@ -222,7 +222,7 @@ function createConfig(entryFile, output, buildOption) {
     const importReplacements = buildOption.importReplacements
     plugins.push({
       name: 'replace-import',
-      transform(code, id) {
+      transform (code, id) {
         if (!id.endsWith('.js')) {
           return
         }
@@ -311,7 +311,7 @@ function createConfig(entryFile, output, buildOption) {
     }
     plugins.push({
       name: 'replace-text',
-      transform(code, id) {
+      transform (code, id) {
         if (!id.endsWith('.js')) {
           return
         }
@@ -364,7 +364,7 @@ function createConfig(entryFile, output, buildOption) {
       buildOption.treeshake === false
         ? false
         : {
-          moduleSideEffects(id) {
+          moduleSideEffects (id) {
             if (id.endsWith('polyfill.ts')) {
               console.log('[WARN]:sideEffects[' + id + ']')
               return true
@@ -375,7 +375,7 @@ function createConfig(entryFile, output, buildOption) {
   }
 }
 
-function normalizeTerserOptions(options) {
+function normalizeTerserOptions (options) {
   if (!options || typeof options !== 'object') {
     return {}
   }
@@ -393,11 +393,11 @@ function normalizeTerserOptions(options) {
   return normalized
 }
 
-function createAliasPlugin(buildOption) {
+function createAliasPlugin (buildOption) {
   return alias(buildOption.alias || {})
 }
 
-function createReplacePlugin(buildOption, format) {
+function createReplacePlugin (buildOption, format) {
   const replacements = {
     __DEV__: `(process.env.NODE_ENV !== 'production')`,
     __TEST__: false,

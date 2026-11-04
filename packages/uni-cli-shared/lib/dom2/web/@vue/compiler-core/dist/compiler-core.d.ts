@@ -262,6 +262,7 @@ export interface CommentNode extends Node {
   content: string;
 }
 export interface AttributeNode extends Node {
+  __uniTemplate?: true;
   type: NodeTypes.ATTRIBUTE;
   name: string;
   nameLoc: SourceLocation;
@@ -773,6 +774,7 @@ export type BindingMetadata = {
 } & {
   __isScriptSetup?: boolean;
   __propsAliases?: Record<string, string>;
+  __uniStyleIsolation?: string | null;
 };
 interface SharedTransformCodegenOptions {
   /**
@@ -950,7 +952,9 @@ export interface CodegenOptions extends SharedTransformCodegenOptions {
    */
   runtimeGlobalName?: string;
 }
-export type CompilerOptions = ParserOptions & TransformOptions & CodegenOptions;
+export type CompilerOptions = ParserOptions & TransformOptions & CodegenOptions & {
+  vapor?: boolean;
+};
 //#endregion
 //#region temp/packages/compiler-core/src/codegen.d.ts
 /**

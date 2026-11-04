@@ -1,6 +1,6 @@
 import { ComputedGetter, ComputedGetter as ComputedGetter$1, ComputedRef, ComputedSetter, CustomRefFactory, DebuggerEvent, DebuggerEvent as DebuggerEvent$1, DebuggerEventExtraInfo, DebuggerOptions, DebuggerOptions as DebuggerOptions$1, DeepReadonly, EffectScheduler, EffectScope, MaybeRef, MaybeRefOrGetter, OnCleanup, Raw, Reactive, ReactiveEffect, ReactiveEffect as ReactiveEffect$1, ReactiveEffectOptions, ReactiveEffectRunner, ReactiveFlags, ReactiveMarker, Ref, Ref as Ref$1, ShallowReactive, ShallowRef, ShallowRef as ShallowRef$1, ShallowUnwrapRef, ShallowUnwrapRef as ShallowUnwrapRef$1, ToRef, ToRefs, TrackOpTypes, TriggerOpTypes, UnwrapNestedRefs, UnwrapNestedRefs as UnwrapNestedRefs$1, UnwrapRef, WatchCallback, WatchCallback as WatchCallback$1, WatchEffect, WatchEffect as WatchEffect$1, WatchErrorCodes, WatchHandle, WatchHandle as WatchHandle$1, WatchSource, WatchSource as WatchSource$1, WatchStopHandle, WritableComputedOptions, WritableComputedOptions as WritableComputedOptions$1, WritableComputedRef, computed as computed$1, customRef, effect, effectScope, getCurrentScope, getCurrentWatcher, isProxy, isReactive, isReadonly, isRef, isShallow, markRaw, onScopeDispose, onWatcherCleanup, proxyRefs, reactive, reactive as reactive$1, readonly, ref as ref$1, shallowReactive, shallowReadonly, shallowRef, stop, toRaw, toRef, toRefs, toValue, triggerRef, unref } from "@vue/reactivity";
-import { IfAny, IsKeyValues, LooseRequired, OverloadParameters, Prettify, UnionToIntersection, camelize, capitalize, toDisplayString, toHandlerKey } from "@vue/shared";
-import { normalizeClass, normalizeProps, normalizeStyle } from "@dcloudio/uni-shared";
+import { IfAny, IsKeyValues, LooseRequired, OverloadParameters, Prettify, UnionToIntersection, camelize, capitalize, normalizeClass, toDisplayString, toHandlerKey } from "@vue/shared";
+import { normalizeVaporProps as normalizeProps, normalizeVaporStyle as normalizeStyle } from "@dcloudio/uni-shared";
 //#region temp/packages/runtime-core/src/apiComputed.d.ts
 export declare const computed: typeof computed$1;
 //#endregion
@@ -57,8 +57,9 @@ export interface SchedulerJob extends Function {
   /**
    * Attached by renderer.ts when setting up a component's render effect
    * Used to obtain component information when reporting max recursive updates.
+   * Also set on watcher jobs: null marks a watcher without an owner component.
    */
-  i?: GenericComponentInstance;
+  i?: GenericComponentInstance | null;
 }
 type SchedulerJobs = SchedulerJob | SchedulerJob[];
 export declare function nextTick(): Promise<void>;
@@ -522,6 +523,8 @@ export interface SuspenseProps {
    */
   suspensible?: boolean;
 }
+export declare let isSuspenseEnabled: boolean;
+export declare function withSuspenseEnabled<T>(value: T): T;
 declare const SuspenseImpl: {
   name: string;
   __isSuspense: boolean;
@@ -618,6 +621,8 @@ export interface TransitionElement {
 }
 export declare function useTransitionState(): TransitionState;
 export declare const BaseTransitionPropsValidators: Record<string, any>;
+export declare let isTransitionEnabled: boolean;
+export declare function withTransitionEnabled<T>(value: T): T;
 export declare const BaseTransition: {
   new (): {
     $props: BaseTransitionProps<any>;
@@ -730,6 +735,8 @@ export interface KeepAliveContext extends ComponentRenderContext {
   getCachedComponent: (vnode: VNode) => VNode;
   getStorageContainer: () => RendererElement;
 }
+export declare let isKeepAliveEnabled: boolean;
+export declare function withKeepAliveEnabled<T>(value: T): T;
 export declare const KeepAlive: {
   __isKeepAlive: true;
   new (): {
@@ -1806,20 +1813,10 @@ export declare function toHandlers(obj: Record<string, any>, preserveCaseIfNeces
 //#endregion
 //#region temp/packages/runtime-core/src/helpers/renderSlot.d.ts
 /**
- * Marks a compiler-generated slot fallback as VDOM-rendered so the vapor
- * interop fallback chain renders it through the VDOM renderer. Internal to
- * vapor interop.
- */
-declare const vdomSlotFallbackKey: unique symbol;
-type SlotFallback = {
-  (): VNodeArrayChildren;
-  [vdomSlotFallbackKey]?: boolean;
-};
-/**
  * Compiler runtime helper for rendering `<slot/>`
  * @private
  */
-export declare function renderSlot(slots: Slots, name: string, props?: Data | null, fallback?: SlotFallback, noSlotted?: boolean, branchKey?: PropertyKey): VNode;
+export declare function renderSlot(slots: Slots, name: string, props?: Data | null, fallback?: () => VNodeArrayChildren, noSlotted?: boolean, branchKey?: PropertyKey): VNode;
 //#endregion
 //#region temp/packages/runtime-core/src/helpers/createSlots.d.ts
 type SSRSlot = (...args: any[]) => VNode[] | undefined;
@@ -1837,6 +1834,14 @@ export declare function createSlots(slots: Record<string, SSRSlot>, dynamicSlots
 //#region temp/packages/runtime-core/src/helpers/withMemo.d.ts
 export declare function withMemo(memo: any[], render: () => VNode<any, any>, cache: any[], index: number): VNode<any, any>;
 export declare function isMemoSame(cached: VNode, memo: any[]): boolean;
+//#endregion
+//#region temp/packages/runtime-core/src/vaporInteropState.d.ts
+/**
+ * Set by `vaporInteropPlugin`. Stays false in apps that never import the
+ * plugin, so bundlers drop the vapor-in-vdom branches of the renderer.
+ */
+export declare let isVaporInteropEnabled: boolean;
+export declare function setVaporInteropEnabled(): void;
 //#endregion
 //#region temp/packages/runtime-core/src/compat/globalConfig.d.ts
 export type LegacyConfig = {

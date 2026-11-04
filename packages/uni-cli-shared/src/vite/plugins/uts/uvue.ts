@@ -13,6 +13,7 @@ import {
   isUniAppXAppPlatform,
   isUniAppXStandardScriptSupported,
   isUniAppXVapor,
+  isUniAppXWebVapor,
 } from '../../../x'
 
 const SCRIPT_OPEN_TAG_RE = /<script([^>]*)>/gi
@@ -73,6 +74,8 @@ export function uniUTSUVueJavaScriptPlugin(
 ): Plugin {
   process.env.UNI_UTS_USING_ROLLUP = 'true'
   const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+  // Web 由 plugin-vue 根据有效 setup 决定模式，避免空 setup 被额外的 vapor 标记强制生效。
+  const addVaporToSetup = isDom2 && !isUniAppXWebVapor()
   const standardScriptSupported = isUniAppXStandardScriptSupported()
   const platform = process.env.UNI_UTS_PLATFORM || process.env.UNI_PLATFORM
   const isAppDom2 = isDom2 && isUniAppXAppPlatform(platform)
@@ -149,7 +152,7 @@ export function uniUTSUVueJavaScriptPlugin(
         const transformed = new MagicString(code)
         let changed = false
         for (const script of scriptTags) {
-          const addVapor = isDom2 && script.setup && !script.vapor
+          const addVapor = addVaporToSetup && script.setup && !script.vapor
           if (script.langAttr) {
             if (addVapor) {
               const langText = code.slice(

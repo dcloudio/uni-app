@@ -1,4 +1,4 @@
-import fsExtra from 'fs-extra'
+import path from 'path'
 import { hasOwn, isArray, isPlainObject } from '@vue/shared'
 import type { Plugin } from 'vite'
 import type { ElementNode } from '@vue/compiler-core'
@@ -12,12 +12,14 @@ import {
   isBuiltInComponent,
   isDom2AppUserVueComponentTag,
   isDom2VueComponentTag,
+  isDom2WebVueComponentTag,
 } from '@dcloudio/uni-shared'
 import {
   EXTNAME_VUE_RE,
   type UniVitePlugin,
   createResolveStaticAsset,
   createUniVueTransformAssetUrls,
+  createVueCompilerFs,
   getBaseNodeTransforms,
   getUniAppXVaporScriptLang,
   initVueTemplateCompilerExtraOptions,
@@ -28,12 +30,12 @@ import {
   isUniPageFile,
   matchEasycom,
   normalizePath,
-  preJs,
   requireUniHelpers,
   resolveAppVue,
   resolveUniTypeScript,
   uniPostcssExternalPlugin,
   uniPostcssScopedPlugin,
+  windowsCacheSet,
 } from '@dcloudio/uni-cli-shared'
 import type { ViteLegacyOptions, VitePluginUniResolvedOptions } from '..'
 import { createNVueCompiler } from '../utils'
@@ -90,7 +92,7 @@ export function initPluginVueOptions(
   }
   // 解析 scoped 中 deep 等特殊语法
   styleOptions.postcssPlugins.push(uniPostcssScopedPlugin())
-  // 解析 :external() 语法，dom2 + 小程序平台下提升外部类选择器权重
+  // 小程序平台下处理 externalClasses 的样式隔离与优先级
   if (
     process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2' &&
     process.env.UNI_APP_X === 'true'
@@ -136,6 +138,21 @@ export function initPluginVueOptions(
   if (isUniAppXWebVapor()) {
     const features = vueOptions.features || (vueOptions.features = {})
     ;(features as typeof features & { vapor?: boolean }).vapor = true
+    features.componentIdGenerator = createAppComponentIdGenerator(
+      options.inputDir,
+      features.componentIdGenerator
+    )
+    Object.assign(compilerOptions, {
+      isUniPage(filename: string) {
+        // 自定义窗口同样接收 App 样式，名单随配置更新，不能读取首次解析的旧配置。
+        return (
+          isUniPageFile(filename, options.inputDir) ||
+          windowsCacheSet.has(
+            normalizePath(path.relative(options.inputDir, filename))
+          )
+        )
+      },
+    })
     // plugin-vue 的 compiler 是完整 SFC compiler；显式传入 Web Vapor 定制版，
     // 避免从项目根目录解析到标准 Vue compiler-sfc。
     vueOptions.compiler = require('vue/compiler-sfc')
@@ -286,25 +303,7 @@ export function initPluginVueOptions(
   })
 
   if (!vueOptions.script.fs) {
-    function resolveFile(file: string) {
-      if (file.startsWith('@/')) {
-        file = file.replace('@/', normalizePath(process.env.UNI_INPUT_DIR))
-      }
-      return file
-    }
-    vueOptions.script.fs = {
-      fileExists(file) {
-        return fsExtra.existsSync(resolveFile(file))
-      },
-      readFile(file) {
-        const filename = resolveFile(file)
-        // 需要走条件编译
-        return preJs(fsExtra.readFileSync(filename, 'utf-8'), filename)
-      },
-      realpath(file) {
-        return resolveFile(file)
-      },
-    }
+    vueOptions.script.fs = createVueCompilerFs()
   }
 
   if (isX) {
@@ -369,8 +368,7 @@ export function initPluginVueOptions(
             descriptor.scriptSetup?.lang ||
             descriptor.script?.lang ||
             defaultLang
-          // App DOM2 会为代码生成强制设置 plugin-vue 的 isProduction，
-          // 因此提示元信息必须依据真实运行模式生成。
+          // 语言提示元信息仅用于开发模式，发行时不生成。
           ;(
             descriptor as SFCDescriptor & {
               __uniAppXVaporSfcMeta?: {
@@ -425,6 +423,14 @@ export function initPluginVueOptions(
     }
   }
 
+  if (isUniAppXWebVapor()) {
+    // Web Vapor 内置组件与项目 Easycom 均应优先于同名 setup 绑定。
+    ;(compilerOptions as any).isEasyComponent = (tag: string) => {
+      const name = tag.startsWith('v-uni-') ? tag.slice(6) : tag
+      return isDom2WebVueComponentTag(name) || !!matchEasycom(name)
+    }
+  }
+
   return vueOptions
 }
 
@@ -458,4 +464,35 @@ export function initPluginViteLegacyOptions(
   const viteLegacyOptions =
     options.viteLegacyOptions || (options.viteLegacyOptions = {})
   return viteLegacyOptions
+}
+
+type ComponentIdGenerator = NonNullable<
+  VueOptions['features']
+>['componentIdGenerator']
+
+// 仅固定根 App 的 ID；其他组件保留 plugin-vue 的默认策略及开发者配置。
+function createAppComponentIdGenerator(
+  inputDir: string,
+  generator: ComponentIdGenerator
+): Exclude<ComponentIdGenerator, string | undefined> {
+  const appFilename = normalizePath(
+    path.relative(
+      process.env.VITE_ROOT_DIR || process.cwd(),
+      resolveAppVue(inputDir)
+    )
+  )
+  const { UNI_APP_SCOPE_ID } = require('@dcloudio/compiler-vapor-web')
+  const appId = UNI_APP_SCOPE_ID.slice(7)
+  return (filename, source, isProduction, getHash) => {
+    if (filename === appFilename) return appId
+    if (typeof generator === 'function') {
+      return generator(filename, source, isProduction, getHash)
+    }
+    return getHash(
+      filename +
+        (generator === 'filepath-source' || (!generator && isProduction)
+          ? source
+          : '')
+    )
+  }
 }

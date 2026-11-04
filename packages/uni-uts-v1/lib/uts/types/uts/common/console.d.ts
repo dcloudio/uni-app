@@ -7,21 +7,18 @@ interface Console {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -48,21 +45,18 @@ interface Console {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -89,21 +83,18 @@ interface Console {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -130,21 +121,18 @@ interface Console {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -172,21 +160,18 @@ interface Console {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "uniUtsPlugin": "√",
                "unixVer": "4.11",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -213,21 +198,18 @@ interface Console {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -255,21 +237,18 @@ interface Console {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -297,21 +276,18 @@ interface Console {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "uniUtsPlugin": "√",
                "unixVer": "4.11",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -338,21 +314,18 @@ interface Console {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -379,21 +352,18 @@ interface Console {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -420,21 +390,18 @@ interface Console {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -462,21 +429,18 @@ interface Console {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "uniUtsPlugin": "√",
                "unixVer": "4.11",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -504,14 +468,12 @@ interface Console {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
@@ -538,21 +500,18 @@ interface Console {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -579,21 +538,18 @@ interface Console {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -621,21 +577,18 @@ interface Console {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -662,21 +615,18 @@ interface Console {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -703,21 +653,18 @@ interface Console {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -744,21 +691,18 @@ interface Console {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -786,14 +730,12 @@ interface Console {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "√",

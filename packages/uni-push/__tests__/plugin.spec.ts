@@ -72,7 +72,9 @@ async function getPushPlugin(inputDir: string) {
 
 function resolveMpRuntimePath() {
   return normalizePath(
-    resolveBuiltIn(path.join('@dcloudio/uni-push', 'dist/uni-push.mp.es.js'))
+    resolveBuiltIn(
+      path.posix.join('@dcloudio/uni-push', 'dist/uni-push.mp.es.js')
+    )
   )
 }
 

@@ -1,0 +1,27 @@
+import { BA } from '../interface.uts';
+
+class A implements BA {
+    label: string = 'label';
+    hello(): string { return 'world'; }
+    method(): string { return 'method'; }
+    alias(): string { return 'alias'; }
+    self(): BA { return this; }
+    inherited(): string { return 'inherited'; }
+    ordinary(): string { return 'ordinary'; }
+    nearMatch(): string { return 'nearMatch'; }
+    lineComment(): string { return 'lineComment'; }
+    blockComment(): string { return 'blockComment'; }
+    world(): string { return 'hello'; }
+}
+
+export function test(): BA {
+    return new A();
+}
+
+import { JSExport } from 'JavaScriptCore';
+export interface ExportedBA extends JSExport {
+    /** @UTSJS.keepAlive */
+    ping(): string;
+    /** @UTSJS.keepAlive */
+    pong: () => string;
+}

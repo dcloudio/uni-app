@@ -52,7 +52,9 @@ export * from '../../../service/api/network/uploadFile'
 export * from '../../../service/api/network/socket'
 
 export * from '../../../service/api/location/getLocation'
-export * from '../../../service/api/location/openLocation'
+//#if !_X_VAPOR_
+export { openLocation } from '../../../service/api/location/openLocation'
+//#endif
 export * from '../../../service/api/location/locationChange'
 
 export * from '../../../service/api/route/navigateBack'

@@ -26,7 +26,9 @@ export const UVUE_CLASS_NAME_PREFIX = 'Gen'
 export const ENTRY_FILENAME = () => {
   const entryFileName = resolveMainUtsName()
   return process.env.UNI_APP_X_TSC === 'true'
-    ? `${entryFileName}.ts`
+    ? entryFileName.endsWith('.ts')
+      ? entryFileName
+      : `${entryFileName}.ts`
     : entryFileName
 }
 

@@ -27,7 +27,9 @@ function resolveUniPushPath(
   } else if (isOffline) {
     file = 'dist/uni-push.plus.es.js'
   }
-  return normalizePath(resolveBuiltIn(path.join('@dcloudio/uni-push', file)))
+  return normalizePath(
+    resolveBuiltIn(path.posix.join('@dcloudio/uni-push', file))
+  )
 }
 
 export default () => [

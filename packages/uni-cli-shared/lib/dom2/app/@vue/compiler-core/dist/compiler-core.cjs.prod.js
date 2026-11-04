@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-core v3.6.0-rc.9
+  * @vue/compiler-core v3.6.0-rc.14
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -1842,7 +1842,7 @@ const errorMessages = {
 	[41]: `v-model is missing expression.`,
 	[42]: `v-model value must be a valid JavaScript member expression.`,
 	[43]: `v-model cannot be used on v-for or v-slot scope variables because they are not writable.`,
-	[44]: `v-model cannot be used on a prop, because local prop bindings are not writable.\nUse a v-bind binding combined with a v-on listener that emits update:x event instead.`,
+	[44]: `v-model cannot be used on a prop, because local prop bindings are not writable.\nUse a v-bind binding combined with a v-on listener that emits update:x event instead.\nFor props declared with defineModel(), assign the returned ref to a variable and use v-model on that variable.`,
 	[45]: `v-model cannot be used on a const binding because it is not writable.`,
 	[46]: `Error parsing JavaScript expression: `,
 	[47]: `<KeepAlive> expects exactly one child component.`,
@@ -2127,6 +2127,13 @@ const validFirstIdentCharRE = /[A-Za-z_$\xA0-\uFFFF]/;
 const validIdentCharRE = /[\.\?\w$\xA0-\uFFFF]/;
 const whitespaceRE = /\s+[.[]\s*|\s*[.[]\s+/g;
 const getExpSource = (exp) => exp.type === 4 ? exp.content : exp.loc.source;
+const asciiIdentifierRE = /^[A-Za-z_$][\w$]*$/;
+const isReservedWord = /*@__PURE__*/ (0, _vue_shared.makeMap)("await,break,case,catch,class,const,continue,debugger,default,delete,do,else,enum,export,extends,false,finally,for,function,if,implements,import,in,instanceof,interface,let,new,null,package,private,protected,public,return,static,super,switch,this,throw,true,try,typeof,undefined,var,void,while,with,yield");
+const isUnparsedIdentifier = (exp) => {
+	if (exp.ast !== null) return false;
+	const content = getExpSource(exp);
+	return asciiIdentifierRE.test(content) && !isReservedWord(content);
+};
 /**
 * Simple lexer to check if an expression is a member expression. This is
 * lax and only checks validity at the root level (i.e. does not validate exps
@@ -2184,6 +2191,7 @@ const isMemberExpressionBrowser = (exp) => {
 	return !currentOpenBracketCount && !currentOpenParensCount;
 };
 const isMemberExpressionNode = (exp, context) => {
+	if (isUnparsedIdentifier(exp)) return true;
 	try {
 		let ret = exp.ast || (0, _babel_parser.parseExpression)(getExpSource(exp), { plugins: context.expressionPlugins ? [...context.expressionPlugins, "typescript"] : ["typescript"] });
 		ret = unwrapTSNode(ret);
@@ -2196,6 +2204,7 @@ const isMemberExpression = isMemberExpressionNode;
 const fnExpRE = /^\s*(?:async\s*)?(?:\([^)]*?\)|[\w$_]+)\s*(?::[^=]+)?=>|^\s*(?:async\s+)?function(?:\s+[\w$]+)?\s*\(/;
 const isFnExpressionBrowser = (exp) => fnExpRE.test(getExpSource(exp));
 const isFnExpressionNode = (exp, context) => {
+	if (isUnparsedIdentifier(exp)) return false;
 	try {
 		let ret = exp.ast || (0, _babel_parser.parseExpression)(getExpSource(exp), { plugins: context.expressionPlugins ? [...context.expressionPlugins, "typescript"] : ["typescript"] });
 		if (ret.type === "Program") {
@@ -4248,7 +4257,11 @@ const transformFor = createStructuralDirectiveTransform("for", (node, dir, conte
 					]),
 					createCompoundExpression([
 						`if (_cached && _cached.el`,
-						...keyExp ? [` && _cached.key === `, keyExp] : [],
+						...keyExp ? [
+							` && _cached.key === (`,
+							keyExp,
+							`)`
+						] : [],
 						` && ${context.helperString(IS_MEMO_SAME)}(_cached, _memo)) return _cached`
 					]),
 					createCompoundExpression([`const _item = `, childBlock]),

@@ -1,0 +1,30 @@
+uni-textarea,
+div:where([uni-textarea]) {
+  background-color: #ffffff;
+}
+
+.uni-textarea-placeholder {
+  color: #757575;
+}
+
+@layer uni-field-selection {
+  :where(.uni-field-selection-probe) {
+    background-color: var(--uni-selection-probe-background-color);
+  }
+}
+
+.uni-textarea-textarea.uni-field-selection[data-uni-selection]::selection {
+  background-color: var(--uni-selection-background-color);
+}
+
+@media (prefers-color-scheme: dark) {
+  uni-textarea {
+    color: #ffffff;
+    background-color: #3b3b3b;
+  }
+
+  div:where([uni-textarea]) {
+    color: #ffffff;
+    background-color: #3b3b3b;
+  }
+}

@@ -128,8 +128,8 @@ describe('mp-alipay: styleIsolation 2.0', () => {
       },
     })
     expect(templateCode.match(/class="[^"]*"/g)).toEqual([
-      "class=\"{{uV.c(('foo') + ' ' + (virtualHostClass || ''),3)}}\"",
-      "class=\"{{uV.c(('bar') + ' ' + (virtualHostClass || ''),3)}}\"",
+      "class=\"{{uV.c(('foo') + ' ' + (ahc || ''),3)}}\"",
+      "class=\"{{uV.c(('bar') + ' ' + (ahc || ''),3)}}\"",
     ])
   })
 

@@ -1,0 +1,922 @@
+<template>
+	<!-- #ifdef WEB -->
+	<view ref="containerRef" class="uni-picker__container" :class="['uni-picker-theme--'+theme, {'uni-picker__container--desktop': isDesktop}]">
+		<view class="uni-picker__mask" :class="{'picker__ani-show': show, 'picker__mask--dark': theme == 'dark'}" @click="close"></view>
+		<view class="uni-picker__inner-box" :class="[show?'picker__ani-box-show':'','inner-box--'+theme, {'uni-picker__inner-box--desktop': isDesktop}]" :style="popupStyle.content">
+			<scroll-view v-if="isSelect" ref="selectRef" class="uni-picker__select" direction="vertical" :show-scrollbar="true">
+				<text v-for="(item, selectorIdx) in range" :key="selectorIdx" class="uni-picker__select-item" :class="{'uni-picker__select-item--selected': eventValue[0] == selectorIdx}" @click="selectItem(selectorIdx)">{{rangeKey ? item[rangeKey] : item}}</text>
+			</scroll-view>
+			<template v-else>
+	<!-- #endif -->
+	<!-- #ifndef WEB -->
+	<view class="uni-picker__container" :class="['uni-picker-theme--'+theme]">
+		<view class="uni-picker__mask" :class="{'picker__ani-show': show, 'picker__mask--dark': theme == 'dark'}" @click="close"></view>
+		<view class="uni-picker__inner-box" :class="[show?'picker__ani-box-show':'','inner-box--'+theme]">
+	<!-- #endif -->
+			<view class="uni-picker__header-btn" :class="['header-btn--'+theme]" @click.stop>
+				<text class="uni-picker__header-btn-cancel" :class="['header-btn-cannel--'+theme]" @click="close">{{ cancelText }}</text>
+				<text class="uni-picker__header-btn-ok" @click="confirm">{{ confirmText }}</text>
+			</view>
+			<view class="uni-picker__view">
+				<picker-view style="flex:1" @change="handleChange" :mask-top-style="maskTopStyle" :mask-bottom-style="maskBottomStyle" :indicatorStyle="indicatorStyle" :value="value">
+					<template v-if="mode == 'selector'">
+						<picker-view-column>
+							<template v-for="(item,selectorIdx) in range" :key="selectorIdx">
+								<text class="uni-picker__view-item" :class="['view-item--'+theme]" flatten>{{rangeKey ? item[rangeKey] : item}}</text>
+							</template>
+						</picker-view-column>
+					</template>
+					<template v-if="mode == 'multiSelector'">
+						<template v-for="(item,multiIdx) in range" :key="multiIdx">
+							<picker-view-column>
+								<template v-for="(column,colIdx) in item" :key="colIdx">
+									<text class="uni-picker__view-item" :class="['view-item--'+theme]" flatten>{{rangeKey ? column[rangeKey] : column}}</text>
+								</template>
+							</picker-view-column>
+						</template>
+					</template>
+					<template v-if="mode == 'time'">
+						<picker-view-column>
+							<text v-for="(h,hIdx) in hours" :key="h" class="uni-picker__view-item" :class="['view-item--'+theme]" flatten>{{h}}</text>
+						</picker-view-column>
+						<picker-view-column>
+							<text v-for="(m,mIdx) in minutes" :key="m" class="uni-picker__view-item" :class="['view-item--'+theme]" flatten>{{m}}</text>
+						</picker-view-column>
+					</template>
+					<template v-if="mode == 'date'">
+						<picker-view-column>
+							<text v-for="year in years" :key="year" class="uni-picker__view-item" :class="['view-item--'+theme]" flatten>{{year}}{{yearText}}</text>
+						</picker-view-column>
+						<picker-view-column v-if="fields != 'year'">
+							<text v-for="month in monthsText" :key="month" class="uni-picker__view-item" :class="['view-item--'+theme]" flatten>{{formatSingle(month)}}{{monthText}}</text>
+						</picker-view-column>
+						<picker-view-column v-if="fields == 'day'">
+							<text v-for="day in days" :key="day" class="uni-picker__view-item" :class="['view-item--'+theme]" flatten>{{formatSingle(day)}}{{dayText}}</text>
+						</picker-view-column>
+					</template>
+				</picker-view>
+			</view>
+			<!-- #ifdef WEB -->
+			</template>
+			<!-- #endif -->
+		</view>
+	</view>
+</template>
+
+<script setup lang="ts">
+	// #ifdef WEB
+	import { getPickerPopupStyle, PickerPopover } from '../../components/picker/popup.ts'
+	// #endif
+	type SelectedData = {
+		year: number,
+		month: number,
+		day: number
+	}
+
+	const show = ref(false)
+	const readyEventName = ref('')
+	const optionsEventName = ref('')
+	const cancelEventName = ref('')
+	const selectorChangeEventName = ref('')
+	const multiSelectorChangeEventName = ref('')
+	const timeChangeEventName = ref('')
+	const columnChangeEventName = ref('')
+	const mode = ref('selector')
+	const range = ref<any[]>([])
+	const rangeKey = ref('')
+	const value = ref<number[]>([])
+	const eventValue = ref<number[]>([])
+	const prevMultiValue = ref<number[]>([])
+	const selected = reactive<SelectedData>({
+		year: new Date().getFullYear(),
+		month: new Date().getMonth() + 1,
+		day: new Date().getDate()
+	})
+	const years = ref<number[]>([])
+	const months = ref<number[]>(Array.from({ length: 12 }, (_, i) => i + 1))
+	const days = ref<number[]>([])
+	const hours = ref<string[]>([])
+	const minutes = ref<string[]>([])
+	const fields = ref('day')
+	const start = ref<string[]>([])
+	const end = ref<string[]>([])
+	const yearRange = ref<number[]>([])
+	const monthRange = ref<number[]>([])
+	const dayRange = ref<number[]>([])
+	const timer = ref(0)
+	const theme = ref('light')
+	const maskTopStyle = ref("background-image: linear-gradient(to bottom, rgba(255,255,255,1), rgba(255, 255, 255, 0));")
+	const maskBottomStyle = ref("background-image: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255, 255, 255, 1));")
+	const i18nText = {
+		"en": {
+			"cancel": "Cancel",
+			"confirm": "OK",
+			"year": "",
+			"month": "",
+			"day": "",
+			"months": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", 'Aug', "Sept", "Oct", "Nov", "Dec"]
+		},
+		"es": {
+			"cancel": "Cancelar",
+			"confirm": "Aceptar",
+			"year": "",
+			"month": "",
+			"day": "",
+			"months": ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
+		},
+		"fr": {
+			"cancel": "Annuler",
+			"confirm": "Valider",
+			"year": "",
+			"month": "",
+			"day": "",
+			"months": ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Aoû", "Sep", "Oct", "Nov", "Déc"]
+		},
+		"zh-Hans": {
+			"cancel": "取消",
+			"confirm": "确定",
+			"year": "年",
+			"month": "月",
+			"day": "日",
+			"months": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
+		},
+		"zh-Hant": {
+			"cancel": "取消",
+			"confirm": "確定",
+			"year": "年",
+			"month": "月",
+			"day": "日",
+			"months": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
+		}
+	}
+	const language = ref('zh-Hans')
+
+	const instance = getCurrentInstance()
+
+	// #ifdef WEB
+	const popover = ref<PickerPopover | null>(null)
+	const selectorType = ref('select')
+	const windowWidth = ref(0)
+	const windowHeight = ref(0)
+	const containerRef = ref<HTMLElement | null>(null)
+	const selectRef = ref<UniScrollViewElement | null>(null)
+	let layoutFrame: number | null = null
+	let closing = false
+	const isDesktop = computed(() => windowWidth.value >= 500 && windowHeight.value >= 500)
+	const isSelect = computed(() => isDesktop.value && mode.value == 'selector' && selectorType.value == 'select')
+	const popupStyle = computed(() => {
+		if (!isDesktop.value) return { content: {} }
+		const contentHeight = isSelect.value ? Math.min(300, range.value.length * 34 + 12) : 300
+		return getPickerPopupStyle(popover.value, windowWidth.value, windowHeight.value, contentHeight)
+	})
+
+	const updateLayout = () => {
+		windowWidth.value = window.innerWidth
+		windowHeight.value = window.innerHeight
+		uni.$emit(`${optionsEventName.value}_layout`)
+	}
+
+	const scheduleLayout = () => {
+		if (layoutFrame != null) return
+		layoutFrame = window.requestAnimationFrame(() => {
+			layoutFrame = null
+			updateLayout()
+		})
+	}
+
+	const handleScroll = (event: Event) => {
+		// 弹层内部滚动不改变触发元素的位置，无需重新测量锚点。
+		if (event.target instanceof Node && containerRef.value?.contains(event.target)) return
+		scheduleLayout()
+	}
+
+	const selectItem = (index: number) => {
+		eventValue.value = [index]
+		confirm()
+	}
+
+	// 切换展示方式时保留尚未确认的选择，并将列表滚动到当前选中项。
+	watch(isSelect, (select) => {
+		if (!select) value.value = eventValue.value.slice()
+	})
+	watch(() => [isSelect.value, eventValue.value[0], range.value.length, show.value], () => {
+		if (isSelect.value && show.value) {
+			nextTick(() => selectRef.value?.scrollTo(0, Math.max(0, eventValue.value[0] ?? 0) * 34))
+		}
+	})
+	// #endif
+
+	// computed
+	const selectedDate = computed((): string => {
+		const { year, month, day } = selected
+		switch (fields.value) {
+			case 'year':
+				return `${year}`
+			case 'month':
+				return `${year}-${formatSingle(month)}`
+			case 'day':
+				return `${year}-${formatSingle(month)}-${formatSingle(day)}`
+			default:
+				return `${year}-${formatSingle(month)}-${formatSingle(day)}`
+		}
+	})
+
+	const indicatorStyle = computed(() => {
+		const color = theme.value == 'dark' ? 'rgba(255,255,255,0.05)' : '#F5F5F5'
+		return `height:50px;background:rgba(255,255,255,0);border-top:1px ${color} solid;border-bottom:1px ${color} solid;`
+	})
+
+	const cancelText = computed((): string => {
+		return i18nHandle('cancel', '取消') as string
+	})
+
+	const confirmText = computed((): string => {
+		return i18nHandle('confirm', '确定') as string
+	})
+
+	const yearText = computed((): string => {
+		return i18nHandle('year', '年') as string
+	})
+
+	const monthText = computed((): string => {
+		return i18nHandle('month', '月') as string
+	})
+
+	const dayText = computed((): string => {
+		return i18nHandle('day', '日') as string
+	})
+
+	const monthsText = computed((): string[] => {
+		let monthsList = months.value
+		let i18months = i18nHandle('months', i18nText['zh-Hans']['months']) as string[]
+		let arr: string[] = []
+		monthsList.forEach(v => {
+			let index = v - 1
+			arr.push(i18months[index].toString().padStart(2, '0'))
+		})
+		return arr
+	})
+
+	// methods
+	const switchTheme = (themeValue: string) => {
+		if (themeValue == 'light') {
+			maskTopStyle.value = "background-image: linear-gradient(to bottom, rgba(255,255,255,1), rgba(255, 255, 255, 0));"
+			maskBottomStyle.value = "background-image: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255, 255, 255, 1));"
+		} else {
+			maskTopStyle.value = "background-image: linear-gradient(to bottom, rgba(35, 35, 35, 1), rgba(35, 35, 35, 0));"
+			maskBottomStyle.value = "background-image: linear-gradient(to bottom, rgba(35, 35, 35, 0), rgba(35, 35, 35, 1));"
+		}
+	}
+
+	const confirm = () => {
+		// #ifdef WEB
+		if (closing) return
+		// #endif
+		const val = eventValue.value
+		const modeValue = mode.value
+		switch (modeValue) {
+			case 'selector':
+				uni.$emit(selectorChangeEventName.value, val[0])
+				break
+			case 'multiSelector':
+				uni.$emit(multiSelectorChangeEventName.value, val)
+				break
+			case 'time':
+				const h = hours.value[val[0]]
+				const m = minutes.value[val[1]]
+				uni.$emit(timeChangeEventName.value, `${h}:${m}`)
+				break
+			case 'date':
+				uni.$emit(timeChangeEventName.value, selectedDate.value)
+				break
+		}
+		closeDialog()
+	}
+
+	const close = () => {
+		// #ifdef WEB
+		if (closing) return
+		// #endif
+		uni.$emit(cancelEventName.value)
+		closeDialog()
+	}
+
+	const closeDialog = () => {
+		// #ifdef WEB
+		closing = true
+		// #endif
+		show.value = false
+		clearTimeout(timer.value)
+		timer.value = setTimeout(() => {
+			const dialogPages = instance?.proxy?.$page
+			uni.closeDialogPage({
+				dialogPage: dialogPages
+			})
+		}, 250)
+	}
+
+	const handleChange = (e: UniPickerViewChangeEvent) => {
+		const val = e.detail.value
+		if (mode.value == 'date') {
+			let yIdx = val[0]
+			let mIdx = val[1] ?? 0
+			let dIdx = val[2] ?? 0
+
+			yIdx = Math.max(yearRange.value[0], Math.min(yearRange.value[1], yIdx))
+			const currentYear = years.value[yIdx]
+
+			let sy = parseInt(start.value[0])
+			let sm = parseInt(start.value[1])
+			let ey = parseInt(end.value[0])
+			let em = parseInt(end.value[1])
+
+			if (currentYear == sy || currentYear == ey) {
+				let newMonths = getMonths(currentYear)
+				if (months.value.length !== newMonths.length) {
+					calculateRanges()
+					const originalMonth = months.value[mIdx]
+					mIdx = newMonths.findIndex(month => month === originalMonth)
+					mIdx = Math.max(0, mIdx)
+					months.value = newMonths
+				}
+			} else {
+				if (months.value.length != 12) {
+					const nowMonth = months.value[mIdx]
+					months.value = getMonths(currentYear)
+					calculateRanges()
+					mIdx = nowMonth - 1
+				}
+			}
+
+			// 防止月份索引超出范围
+			mIdx = Math.max(0, Math.min(mIdx, months.value.length - 1))
+			const monthsValue = months.value[mIdx]
+
+			if ((currentYear == sy && monthsValue == sm) || (currentYear == ey && monthsValue == em)) {
+				let newDays = getDays(currentYear, monthsValue)
+				if (days.value.length != newDays.length) {
+					calculateRanges()
+					let dayIdx = newDays.length - 1
+					if (currentYear == sy && monthsValue == sm) {
+						dIdx = Math.max(0, dIdx - dayIdx)
+					}
+					if (currentYear == ey && monthsValue == em) {
+						dIdx = Math.max(0, dayIdx)
+					}
+					days.value = newDays
+				}
+			} else {
+				const nowDay = days.value[dIdx]
+				days.value = getDays(currentYear, monthsValue)
+				calculateRanges()
+				dIdx = days.value.findIndex(day => day === nowDay)
+				dIdx = Math.max(0, dIdx)
+			}
+
+			// 如果索引超出可选范围，就重置为第一个数据
+			if (dIdx >= days.value.length) { 
+			  dIdx = 0
+			}
+
+			selected.year = years.value[yIdx]
+			selected.month = months.value[mIdx]
+			selected.day = days.value[dIdx]
+			const indices = fields.value == 'year' ? [yIdx] : (fields.value == 'month' ? [yIdx, mIdx] : [yIdx, mIdx, dIdx])
+			value.value = indices
+			eventValue.value = indices.slice()
+		} else if (mode.value == 'time') {
+			let h_idx = val[0]
+			let m_idx = val[1]
+
+			let h = parseInt(hours.value[h_idx])
+			let m = parseInt(minutes.value[m_idx])
+			let sh = parseInt(start.value[0])
+			let eh = parseInt(end.value[0])
+
+			const adjusted = adjustTime(h, m)
+			h = adjusted.h
+			m = adjusted.m
+
+			const hStr = h.toString().padStart(2, '0')
+			const mStr = m.toString().padStart(2, '0')
+			const newHIdx = hours.value.findIndex(e => e == hStr)
+			let newMIdx = minutes.value.findIndex(e => e == mStr)
+
+			if (h == sh || h == eh) {
+				const newMinutes = getMinutes(h)
+				if (minutes.value.length !== newMinutes.length) {
+					const originalMinute = minutes.value[newMIdx]
+					newMIdx = newMinutes.findIndex(m => m === originalMinute)
+					newMIdx = Math.max(0, newMIdx)
+					minutes.value = newMinutes
+				}
+			} else {
+				if (minutes.value.length != 60) {
+					const nowMinutes = minutes.value[newMIdx]
+					minutes.value = getMinutes(h)
+					newMIdx = parseInt(nowMinutes)
+				}
+			}
+
+			const indices = [newHIdx, newMIdx]
+			value.value = indices
+			eventValue.value = indices.slice()
+		} else if (mode.value == 'multiSelector') {
+			const newValue = val
+			const oldValue = prevMultiValue.value
+			newValue.forEach((v, column) => {
+				if (oldValue[column] !== v) {
+					uni.$emit(columnChangeEventName.value, column, v)
+				}
+			})
+			prevMultiValue.value = [...newValue]
+			eventValue.value = [...newValue]
+		} else {
+			eventValue.value = val
+		}
+	}
+
+	const calculateRanges = () => {
+		const startYear = parseInt(start.value[0])
+		const endYear = parseInt(end.value[0])
+		yearRange.value = [
+			years.value.findIndex(y => y >= startYear),
+			years.value.findIndex(y => y >= endYear)
+		]
+
+		const startMonth = parseInt(start.value[1])
+		const endMonth = parseInt(end.value[1])
+		monthRange.value = [startMonth - 1, endMonth - 1]
+
+		const startDay = parseInt(start.value[2])
+		const endDay = parseInt(end.value[2])
+		dayRange.value = [startDay - 1, endDay - 1]
+	}
+
+	const getYears = () => {
+		const startYear = parseInt(start.value[0] || '1970')
+		const endYear = parseInt(end.value[0] || '2099')
+		return Array.from({ length: endYear - startYear + 1 }, (_, i) => startYear + i)
+	}
+
+	const getMonths = (year: number) => {
+		let startMonth = 1
+		let endMonth = 12
+
+		if (year == parseInt(start.value[0])) {
+			startMonth = parseInt(start.value[1]) ?? 1
+		}
+		if (year == parseInt(end.value[0])) {
+			endMonth = parseInt(end.value[1]) ?? 12
+		}
+		return Array.from({ length: endMonth - startMonth + 1 }, (_, i) => startMonth + i)
+	}
+
+	const getDays = (currentYear: number, currentMonth: number) => {
+		let startDay = 1
+		let endDay = new Date(currentYear, currentMonth, 0).getDate()
+
+		if (currentYear == parseInt(start.value[0]) && currentMonth == parseInt(start.value[1])) {
+			startDay = parseInt(start.value[2]) || 1
+		}
+		if (currentYear == parseInt(end.value[0]) && currentMonth == parseInt(end.value[1])) {
+			endDay = Math.min(endDay, parseInt(end.value[2]) || endDay)
+		}
+
+		return Array.from({ length: endDay - startDay + 1 }, (_, i) => startDay + i)
+	}
+
+	const updateDateColumns = () => {
+		years.value = getYears()
+		months.value = getMonths(selected.year)
+		days.value = getDays(selected.year, selected.month)
+	}
+
+	const getHours = () => {
+		const sH = parseInt(start.value[0] || '1')
+		const eH = parseInt(end.value[0] || '12')
+		return Array.from({ length: eH - sH + 1 }, (_, i) => String(sH + i).padStart(2, '0'))
+	}
+
+	const getMinutes = (hour: number) => {
+		let startMinute = 0
+		let endMinute = 59
+
+		if (hour == parseInt(start.value[0])) {
+			startMinute = parseInt(start.value[1]) ?? 1
+		}
+		if (hour == parseInt(end.value[0])) {
+			endMinute = parseInt(end.value[1]) ?? 12
+		}
+		return Array.from({ length: endMinute - startMinute + 1 }, (_, i) => String(startMinute + i).padStart(2, '0'))
+	}
+
+	const updateTimeColumns = (hour?: number) => {
+		hours.value = getHours()
+		let minuteHour = hour
+		if (minuteHour == null || isNaN(minuteHour)) {
+			minuteHour = parseInt(hours.value[0] || '00')
+		}
+		minutes.value = getMinutes(minuteHour)
+	}
+
+	const adjustTime = (h: number, m: number): { h: number, m: number } => {
+		if (!start.value?.length || !end.value?.length) return { h, m }
+
+		const startHour = parseInt(start.value[0])
+		const startMinute = parseInt(start.value[1])
+		const endHour = parseInt(end.value[0])
+		const endMinute = parseInt(end.value[1])
+
+		const current = h * 60 + m
+		const startTotal = startHour * 60 + startMinute
+		const endTotal = endHour * 60 + endMinute
+
+		if (current < startTotal) {
+			return { h: startHour, m: startMinute }
+		} else if (current > endTotal) {
+			return { h: endHour, m: endMinute }
+		} else {
+			if (h == startHour && m < startMinute) return { h, m: startMinute }
+			if (h == endHour && m > endMinute) return { h, m: endMinute }
+			return { h, m }
+		}
+	}
+
+	const initTimeValue = (timeValue: string[]) => {
+		let h = parseInt(timeValue[0])
+		let m = parseInt(timeValue[1])
+		const adjusted = adjustTime(h, m)
+		const hStr = adjusted.h.toString().padStart(2, '0')
+		const mStr = adjusted.m.toString().padStart(2, '0')
+		return [
+			hours.value.findIndex(e => e == hStr),
+			minutes.value.findIndex(e => e == mStr)
+		]
+	}
+
+	const formatSingle = (num: number): string => {
+		return num.toString().padStart(2, '0')
+	}
+
+	const i18nHandle = (key: string, defaultVal: any): any => {
+		if (language.value.startsWith('en')) {
+			return i18nText['en'][key] as string
+		}
+		if (language.value.startsWith('es')) {
+			return i18nText['es'][key] as string
+		}
+		if (language.value.startsWith('fr')) {
+			return i18nText['fr'][key] as string
+		}
+		if (language.value.startsWith('zh-Hans')) {
+			return i18nText['zh-Hans'][key] as string
+		}
+		if (language.value.startsWith('zh-Hant')) {
+			return i18nText['zh-Hant'][key] as string
+		}
+		return defaultVal
+	}
+
+	const initLanguageAndTheme = () => {
+		const appBaseInfo = uni.getAppBaseInfo()
+
+		// #ifdef WEB
+		language.value = uni.getLocale()
+		theme.value = appBaseInfo.hostTheme == 'dark' ? 'dark' : 'light'
+		// #endif
+
+		// #ifdef APP
+		const systemInfo = uni.getDeviceInfo()
+		const appLanguage = appBaseInfo.appLanguage
+		const osLanguage = systemInfo.osLanguage
+		if (appLanguage != null) {
+			language.value = appLanguage
+		} else if (osLanguage != null) {
+			language.value = osLanguage
+		}
+		const osTheme = systemInfo.osTheme
+		const appTheme = appBaseInfo.appTheme
+		if (appTheme != null && appTheme != 'auto') {
+			theme.value = appTheme
+		} else if (osTheme != null) {
+			theme.value = osTheme
+		}
+		// #endif
+	}
+
+	onLoad((options) => {
+		readyEventName.value = options['readyEventName']!
+		optionsEventName.value = options['optionsEventName']!
+		cancelEventName.value = options['cancelEventName']!
+		selectorChangeEventName.value = options['selectorChangeEventName']!
+		multiSelectorChangeEventName.value = options['multiSelectorChangeEventName']!
+		timeChangeEventName.value = options['timeChangeEventName']!
+		columnChangeEventName.value = options['columnChangeEventName']!
+
+		uni.$on(optionsEventName.value, (data: UTSJSONObject) => {
+			// #ifdef WEB
+			if (data['layoutOnly'] == true) {
+				popover.value = data['popover'] as PickerPopover | null
+				return
+			}
+			if (data['selectorType'] != null) {
+				selectorType.value = data['selectorType'] as string
+				popover.value = data['popover'] as PickerPopover | null
+			}
+			// #endif
+			if (data['mode'] != null) {
+				mode.value = data['mode']
+			}
+			if (data['range'] != null) {
+				range.value = data['range']
+			}
+			if (data['rangeKey'] != null) {
+				rangeKey.value = data['rangeKey']
+			}
+			if (data['selectorValue'] != null) {
+				value.value = [data['selectorValue']]
+			}
+			if (data['multiSelectorValue'] != null) {
+				value.value.length = 0
+				const multiSelectorValue = data['multiSelectorValue']
+				const len = range.value.length
+				let arr = Array.from({ length: len }, () => 0)
+				arr.forEach((_, index) => {
+					let val = multiSelectorValue[index] ?? 0
+					value.value.push(val)
+				})
+				prevMultiValue.value = value.value.slice()
+			}
+			if (data['timeValue'] != null) {
+				const timeVal = data['timeValue']
+				start.value = data['start'] as string[]
+				end.value = data['end'] as string[]
+				const timeHour = parseInt((timeVal as string[])[0])
+				const timeMinute = parseInt((timeVal as string[])[1])
+				const adjusted = adjustTime(timeHour, timeMinute)
+				updateTimeColumns(adjusted.h)
+				value.value = initTimeValue(timeVal)
+			}
+
+			if (data['dateValue'] != null) {
+				const dateValue = data['dateValue']
+				const year = dateValue[0]
+				const month = dateValue[1]
+				const day = dateValue[2]
+				fields.value = data['fields'] as string
+				start.value = (data['start'] ?? ['1970', '01', '01']) as string[]
+				end.value = (data['end'] ?? ['2099', '12', '31']) as string[]
+
+				selected.year = parseInt(year) ?? new Date().getFullYear()
+				selected.month = parseInt(month) ?? 1
+				selected.day = parseInt(day) ?? 1
+
+				selected.year = Math.max(
+					parseInt(start.value[0]),
+					Math.min(parseInt(end.value[0]), selected.year)
+				)
+				selected.month = Math.max(1, Math.min(12, selected.month))
+				selected.day = Math.max(1, Math.min(
+					new Date(selected.year, selected.month, 0).getDate(),
+					selected.day
+				))
+
+				updateDateColumns()
+
+				const yIdx = years.value.findIndex(y => y == selected.year)
+				const mIdx = months.value.findIndex(m => m == selected.month)
+				const dIdx = days.value.findIndex(d => d == selected.day)
+
+				switch (fields.value) {
+					case 'year':
+						value.value = [yIdx]
+						break
+					case 'month':
+						value.value = [yIdx, mIdx]
+						break
+					case 'day':
+						value.value = [yIdx, mIdx, dIdx]
+						break
+				}
+			}
+			eventValue.value = value.value
+			calculateRanges()
+		})
+
+		// #ifdef WEB
+		updateLayout()
+		window.addEventListener('resize', scheduleLayout)
+		document.addEventListener('scroll', handleScroll, true)
+		// #endif
+
+		uni.$emit(readyEventName.value)
+
+		initLanguageAndTheme()
+		switchTheme(theme.value)
+
+		// #ifdef WEB
+		uni.onHostThemeChange((res) => {
+			theme.value = res.hostTheme == 'dark' ? 'dark' : 'light'
+			switchTheme(theme.value)
+		})
+		// #endif
+
+		// #ifdef APP
+		uni.onAppThemeChange((res: AppThemeChangeResult) => {
+			theme.value = res.appTheme
+			switchTheme(theme.value)
+		})
+		uni.onOsThemeChange((res: OsThemeChangeResult) => {
+			theme.value = res.osTheme
+			switchTheme(theme.value)
+		})
+		// #endif
+	})
+
+	onReady(() => {
+		show.value = true
+	})
+
+	onUnload(() => {
+		// #ifdef WEB
+		window.removeEventListener('resize', scheduleLayout)
+		document.removeEventListener('scroll', handleScroll, true)
+		if (layoutFrame != null) {
+			window.cancelAnimationFrame(layoutFrame)
+			layoutFrame = null
+		}
+		// #endif
+		uni.$off(optionsEventName.value, null)
+		if (timer.value) {
+			clearTimeout(timer.value)
+		}
+	})
+</script>
+
+<style>
+	.uni-picker__container {
+		flex: 1;
+	}
+
+	.uni-picker__mask {
+		flex: 1;
+		background-color: rgba(0, 0, 0, .3);
+		opacity: 0;
+		transition-property: opacity;
+		transition-duration: 0.3s;
+	}
+
+	.picker__mask--dark {
+		background-color: rgba(0, 0, 0, .6);
+	}
+
+	.picker__ani-show {
+		opacity: 1;
+	}
+
+	.uni-picker__inner-box {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		height: 300px;
+		transform: translateY(100%);
+		transition-property: transform;
+		transition-duration: 0.2s;
+	}
+
+	.picker__ani-box-show {
+		transform: translateY(0%);
+	}
+
+	.uni-picker__header-btn {
+		flex-direction: row;
+		justify-content: space-between;
+		border-bottom: 1px #f7f7f7 solid;
+	}
+
+	.uni-picker__header-btn-cancel {
+		font-size: 14px;
+		padding: 15px;
+		background-color: transparent;
+	}
+
+	.uni-picker__header-btn-ok {
+		font-size: 14px;
+		padding: 15px;
+		color: #007aff;
+	}
+
+	.uni-picker__view {
+		position: relative;
+		flex: 1;
+	}
+
+	.uni-picker__view-item {
+		width: 100%;
+		text-align: center;
+		height: 50px;
+		line-height: 50px;
+	}
+
+	.inner-box--light {
+		background-color: #fff;
+	}
+
+	.header-btn-cannel--light {
+		color: #000;
+	}
+
+	.inner-box--dark {
+		background-color: #232323;
+	}
+
+	.header-btn-cannel--dark {
+		color: rgba(255, 255, 255, .8);
+	}
+
+	.view-item--dark {
+		color: rgba(255, 255, 255, .8);
+	}
+
+	.header-btn--dark {
+		border-color: rgba(255, 255, 255, .05);
+	}
+	/* #ifdef WEB */
+	.uni-picker__mask {
+		/* 建立滚动容器，通过 CSS 阻止遮罩上的滚动传递到背景页面。 */
+		overflow: auto;
+		overscroll-behavior: none;
+		touch-action: none;
+	}
+
+	.uni-picker__container--desktop .uni-picker__mask {
+		background-color: transparent;
+	}
+
+	.uni-picker__inner-box--desktop {
+		transform: none;
+		opacity: 0;
+		border-radius: 5px;
+		box-shadow: 0 0 20px 5px rgba(0, 0, 0, .3);
+		transition-property: opacity;
+	}
+
+	.uni-picker__inner-box--desktop.picker__ani-box-show {
+		transform: none;
+		opacity: 1;
+	}
+
+	.uni-picker__inner-box--desktop .uni-picker__header-btn {
+		flex-shrink: 0;
+	}
+
+	.uni-picker__inner-box--desktop .uni-picker__view {
+		min-height: 0;
+		overflow: hidden;
+		border-radius: 0 0 5px 5px;
+	}
+
+	.uni-picker__select {
+		height: 100%;
+		box-sizing: border-box;
+		padding: 6px 0;
+		border-radius: 5px;
+		overscroll-behavior: contain;
+	}
+
+	.uni-picker__select .uni-scroll-view {
+		overscroll-behavior: contain;
+	}
+
+	.uni-picker__select-item {
+		flex-shrink: 0;
+		height: 34px;
+		line-height: 34px;
+		padding: 0 10px;
+		text-align: center;
+		color: #555;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
+		cursor: pointer;
+	}
+
+	.uni-picker__select-item:hover {
+		background-color: #f6f6f6;
+	}
+
+	.uni-picker-theme--dark .uni-picker__select-item {
+		color: rgba(255, 255, 255, .8);
+	}
+
+	.uni-picker-theme--dark .uni-picker__select-item:hover {
+		background-color: rgba(255, 255, 255, .1);
+	}
+
+	.uni-picker__select-item.uni-picker__select-item--selected {
+		color: #007aff;
+	}
+	/* #endif */
+</style>

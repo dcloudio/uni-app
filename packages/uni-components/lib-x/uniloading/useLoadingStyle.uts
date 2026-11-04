@@ -1,10 +1,8 @@
 import { type Ref, onMounted, onUnmounted, watchEffect, ref } from 'vue'
 
 
-
 export type _Element = UniElement
 type _ResizeObserver = UniResizeObserver
-
 
 export function useLoadingStyle(targetElement : Ref<_Element | null>, bold : Ref<boolean>) {
   const loadingSize = ref('16px')
@@ -29,8 +27,6 @@ export function useLoadingStyle(targetElement : Ref<_Element | null>, bold : Ref
   const setupObserver = (cb : (el : _Element) => void) => {
     const el = targetElement.value as _Element
     if (!el) return
-
-
     observer!.observe(el)
   }
 

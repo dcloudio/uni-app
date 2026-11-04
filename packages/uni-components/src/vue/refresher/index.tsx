@@ -1,5 +1,6 @@
 import { computed, ref } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
+import Loading from '../loading'
 
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Refresher',
@@ -18,7 +19,10 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     },
     refresherDefaultStyle: {
       type: String,
-      default: 'black',
+      /**
+       * auto为内部值，蒸汽模式下用户未设置时使用该值
+       */
+      default: __VAPOR__ ? 'auto' : 'black',
     },
     refresherBackground: {
       type: String,
@@ -54,58 +58,86 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       const route = props.refresherHeight / props.refresherThreshold
       return (route > 1 ? 1 : route) * 360
     })
+    const refreshColor = computed(() => {
+      switch (props.refresherDefaultStyle) {
+        case 'black':
+        case 'white':
+          return props.refresherDefaultStyle
+        case 'auto':
+        default:
+          return undefined
+      }
+    })
     return () => {
-      const { refreshState, refresherDefaultStyle, refresherThreshold } = props
+      // Vapor 仅执行一次 render closure，JSX 直接读取 props，避免解构后丢失响应式依赖。
       return (
         <div
           ref={rootRef}
           style={rootStyle.value}
           class="uni-scroll-view-refresher"
         >
-          {refresherDefaultStyle !== 'none' ? (
+          {props.refresherDefaultStyle !== 'none' ? (
             <div class="uni-scroll-view-refresh">
-              <div class="uni-scroll-view-refresh-inner">
-                {refreshState == 'pulling' ? (
-                  <svg
-                    key="refresh__icon"
+              {__VAPOR__ ? (
+                props.refreshState == 'pulling' ||
+                props.refreshState == 'refreshing' ? (
+                  <Loading
+                    key="refresh__loading"
+                    class="uni-scroll-view-refresh__loading"
+                    paused={props.refreshState == 'pulling'}
                     style={{
-                      transform: 'rotate(' + refreshRotate.value + 'deg)',
+                      transform:
+                        props.refreshState == 'pulling'
+                          ? 'rotate(' + refreshRotate.value + 'deg)'
+                          : undefined,
+                      color: refreshColor.value,
                     }}
-                    fill="#2BD009"
-                    class="uni-scroll-view-refresh__icon"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" />
-                    <path d="M0 0h24v24H0z" fill="none" />
-                  </svg>
-                ) : null}
-                {refreshState == 'refreshing' ? (
-                  <svg
-                    key="refresh__spinner"
-                    class="uni-scroll-view-refresh__spinner"
-                    width="24"
-                    height="24"
-                    viewBox="25 25 50 50"
-                  >
-                    <circle
-                      cx="50"
-                      cy="50"
-                      r="20"
-                      fill="none"
-                      style="color: #2bd009"
-                      stroke-width="3"
-                    />
-                  </svg>
-                ) : null}
-              </div>
+                  />
+                ) : null
+              ) : (
+                <div class="uni-scroll-view-refresh-inner">
+                  {props.refreshState == 'pulling' ? (
+                    <svg
+                      key="refresh__icon"
+                      style={{
+                        transform: 'rotate(' + refreshRotate.value + 'deg)',
+                      }}
+                      fill="#2BD009"
+                      class="uni-scroll-view-refresh__icon"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" />
+                      <path d="M0 0h24v24H0z" fill="none" />
+                    </svg>
+                  ) : null}
+                  {props.refreshState == 'refreshing' ? (
+                    <svg
+                      key="refresh__spinner"
+                      class="uni-scroll-view-refresh__spinner"
+                      width="24"
+                      height="24"
+                      viewBox="25 25 50 50"
+                    >
+                      <circle
+                        cx="50"
+                        cy="50"
+                        r="20"
+                        fill="none"
+                        style="color: #2bd009"
+                        stroke-width="3"
+                      />
+                    </svg>
+                  ) : null}
+                </div>
+              )}
             </div>
           ) : null}
-          {refresherDefaultStyle === 'none' ? (
+          {props.refresherDefaultStyle === 'none' ? (
             <div
               class="uni-scroll-view-refresher-container"
-              style={{ height: `${refresherThreshold}px` }}
+              style={{ height: `${props.refresherThreshold}px` }}
             >
               {slots.default && slots.default()}
             </div>

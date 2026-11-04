@@ -17,6 +17,7 @@ import { genBabelExpr } from '../codegen'
 import type { TransformContext } from '../transform'
 import { GEN_UNI_ELEMENT_ID } from '../runtimeHelpers'
 import { rewriteExpression } from './utils'
+import { VIRTUAL_HOST_ID } from '@dcloudio/uni-shared'
 
 export function isIdBinding({ arg, exp }: DirectiveNode) {
   return arg && arg.type === NodeTypes.SIMPLE_EXPRESSION && arg.content === 'id'
@@ -54,7 +55,7 @@ export function rewriteId(
       isX && process.env.UNI_PLATFORM === 'mp-alipay'
         ? logicalExpression(
             '||',
-            identifier('_ctx.$scope.props.virtualHostId'),
+            identifier(`_ctx.$scope.props.${VIRTUAL_HOST_ID}`),
             stringLiteral('')
           )
         : stringLiteral('')

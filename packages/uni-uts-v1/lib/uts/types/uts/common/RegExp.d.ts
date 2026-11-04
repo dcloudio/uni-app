@@ -15,21 +15,18 @@ interface RegExp {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -67,7 +64,6 @@ interface RegExp {
                 "unixVer": "x"
             },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -105,7 +101,6 @@ interface RegExp {
                 "unixVer": "x"
             },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -143,7 +138,6 @@ interface RegExp {
                 "unixVer": "x"
             },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -181,7 +175,6 @@ interface RegExp {
                 "unixVer": "x"
             },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -211,21 +204,18 @@ interface RegExp {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -255,21 +245,18 @@ interface RegExp {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -297,21 +284,18 @@ interface RegExp {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -339,21 +323,18 @@ interface RegExp {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -381,21 +362,18 @@ interface RegExp {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -423,21 +401,18 @@ interface RegExp {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -464,21 +439,18 @@ interface RegExp {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -510,21 +482,18 @@ interface RegExpConstructor {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -553,21 +522,18 @@ interface RegExpConstructor {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"

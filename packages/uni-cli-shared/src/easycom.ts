@@ -336,6 +336,7 @@ function initAutoScanEasycom(
       if (
         has_uts_sdk_dir &&
         process.env.UNI_UTS_PLATFORM &&
+        process.env.UNI_UTS_PLATFORM !== 'web' &&
         isBuiltInComponent(name)
       ) {
         // dev下，如果是内置组件，且存在utssdk目录，则判断utssdk下是否存在当前平台，如果不存在，则跳过

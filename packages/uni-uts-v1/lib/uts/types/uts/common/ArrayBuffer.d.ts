@@ -10,14 +10,12 @@ interface ArrayBuffer {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
@@ -51,14 +49,12 @@ interface ArrayBuffer {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
@@ -82,22 +78,20 @@ interface ArrayBuffer {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "x",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "x",
                 "uniVer": "x",
                 "uniUtsPlugin": "x",
                 "unixVer": "x",
                 "unixUtsPlugin": "x"
               },
             "harmony": {
-               "uniVer": "√",
-               "unixVer": "4.61"
+               "uniVer": "x",
+               "unixVer": "x"
             }
         },
         "web": {
@@ -114,22 +108,20 @@ interface ArrayBuffer {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "x",
                 "uniVer": "x",
                 "uniUtsPlugin": "x",
                 "unixVer": "x",
                 "unixUtsPlugin": "x"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "x",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "x",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "uniVer": "√",
-               "unixVer": "4.61"
+               "uniVer": "x",
+               "unixVer": "x"
             }
         },
         "web": {
@@ -149,21 +141,18 @@ interface ArrayBufferConstructor {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "√",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "x",
                "uniVer": "√",
                "unixVer": "4.61"
             }
@@ -183,14 +172,12 @@ interface ArrayBufferConstructor {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "√",
@@ -215,22 +202,20 @@ interface ArrayBufferConstructor {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "x",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "x",
                 "uniVer": "x",
                 "uniUtsPlugin": "x",
                 "unixVer": "x",
                 "unixUtsPlugin": "x"
               },
             "harmony": {
-               "uniVer": "√",
-               "unixVer": "4.61"
+               "uniVer": "x",
+               "unixVer": "x"
             }
         },
         "web": {
@@ -248,22 +233,20 @@ interface ArrayBufferConstructor {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "x",
                 "uniVer": "x",
                 "uniUtsPlugin": "",
                 "unixVer": "x",
                 "unixUtsPlugin": "x"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "x",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "x",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "uniVer": "√",
-               "unixVer": "4.61"
+               "uniVer": "x",
+               "unixVer": "x"
             }
         },
         "web": {

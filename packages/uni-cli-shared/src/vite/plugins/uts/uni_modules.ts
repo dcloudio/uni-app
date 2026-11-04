@@ -16,6 +16,7 @@ import {
   isUniHelpers,
   parseKotlinPackageWithPluginId,
   parseSwiftModuleWithPluginId,
+  resolveUTSAppJsEntry,
   resolveUTSAppModule,
   resolveUTSCompiler,
   resolveUTSCompilerVersion,
@@ -267,6 +268,10 @@ export function getCurrentCompiledUTSProviders() {
 
 let uniExtApiCompiler = async (providerOnly: boolean = false) => {}
 let nonTreeShakingUniModulesCompiler = async () => {}
+let utsPluginsCompiler = async (
+  plugins: string[],
+  pluginContext?: PluginContext
+) => {}
 
 function emptyCacheDir(platform: 'app-android' | 'app-ios' | 'app-harmony') {
   const uvueOutputDir = uvueOutDir(platform)
@@ -647,6 +652,21 @@ export function uniUTSAppUniModulesPlugin(
     })
   }
 
+  utsPluginsCompiler = async (plugins, pluginContext) => {
+    for (const plugin of plugins) {
+      const pluginDir = normalizePath(path.resolve(uniModulesDir, plugin))
+      let compile = utsModuleCaches.get(pluginDir)
+      if (!compile) {
+        compile = once(() => compilePlugin(pluginDir, pluginContext))
+        utsModuleCaches.set(pluginDir, compile)
+      }
+      const result = await compile()
+      if (result) {
+        handleCompileResult(result, pluginContext)
+      }
+    }
+  }
+
   uniExtApiCompiler = async (providerOnly: boolean = false) => {
     // 此方法为兜底方法，确保uni_modules中的所有插件都会编译，目前仅用于编译provider
     // 获取 provider 扩展(编译所有uni)
@@ -658,11 +678,7 @@ export function uniUTSAppUniModulesPlugin(
       const pluginDir = path.resolve(inputDir, 'uni_modules', plugin.plugin)
       // 如果是 app-js 环境
       if (isUniAppXJsEngine()) {
-        if (
-          fs.existsSync(
-            path.resolve(pluginDir, 'utssdk', 'app-js', 'index.uts')
-          )
-        ) {
+        if (resolveUTSAppJsEntry(path.resolve(pluginDir, 'utssdk', 'app-js'))) {
           continue
         }
       }
@@ -673,9 +689,7 @@ export function uniUTSAppUniModulesPlugin(
           !fs.existsSync(
             path.resolve(pluginDir, 'utssdk', 'app-harmony', 'index.uts')
           ) ||
-          fs.existsSync(
-            path.resolve(pluginDir, 'utssdk', 'app-js', 'index.uts')
-          )
+          resolveUTSAppJsEntry(path.resolve(pluginDir, 'utssdk', 'app-js'))
         ) {
           continue
         }
@@ -702,6 +716,27 @@ export function uniUTSAppUniModulesPlugin(
     for (const plugin of nonTreeShakingUniModules) {
       const pluginDir = path.resolve(inputDir, 'uni_modules', plugin)
       await compilePlugin(pluginDir)
+    }
+  }
+
+  const deferBuildCleanup =
+    isX &&
+    process.env.UNI_UTS_PLATFORM === 'app-harmony' &&
+    isNormalCompileTarget()
+
+  const cleanupBuild = async () => {
+    utsModuleCaches.clear()
+    changedFiles.clear()
+    if (process.env.NODE_ENV !== 'development' || !isNormalCompileTarget()) {
+      if (uniXKotlinCompiler) {
+        await uniXKotlinCompiler.close()
+      }
+      if (uniXSwiftCompiler) {
+        await uniXSwiftCompiler.close()
+      }
+      if (uniXArkTSCompiler) {
+        await uniXArkTSCompiler.close()
+      }
     }
   }
 
@@ -735,8 +770,12 @@ export function uniUTSAppUniModulesPlugin(
         options.x !== true
       )
       if (module) {
-        // app-js 会直接返回 index.uts 路径，不需要 uts-proxy
-        if (module.endsWith('.uts')) {
+        // app-js 的脚本入口直接交给对应的 Vite 编译器；仅组件目录等虚拟入口需要 uts-proxy。
+        if (
+          module.endsWith('.uts') ||
+          module.endsWith('.ts') ||
+          module.endsWith('.js')
+        ) {
           return module
         }
         // prefix the polyfill id with \0 to tell other plugins not to try to load or transform it
@@ -749,18 +788,13 @@ export function uniUTSAppUniModulesPlugin(
       }
     },
     async buildEnd() {
-      utsModuleCaches.clear()
-      changedFiles.clear()
-      if (process.env.NODE_ENV !== 'development' || !isNormalCompileTarget()) {
-        if (uniXKotlinCompiler) {
-          await uniXKotlinCompiler.close()
-        }
-        if (uniXSwiftCompiler) {
-          await uniXSwiftCompiler.close()
-        }
-        if (uniXArkTSCompiler) {
-          await uniXArkTSCompiler.close()
-        }
+      if (!deferBuildCleanup) {
+        await cleanupBuild()
+      }
+    },
+    async closeBundle() {
+      if (deferBuildCleanup) {
+        await cleanupBuild()
       }
     },
     watchChange(fileName, change) {
@@ -820,6 +854,13 @@ export function uniUTSAppUniModulesPlugin(
       }
     },
   }
+}
+
+export async function buildUTSPlugins(
+  plugins: string[],
+  pluginContext?: PluginContext
+) {
+  await utsPluginsCompiler(plugins, pluginContext)
 }
 
 export async function buildUniExtApis(providerOnly: boolean = false) {

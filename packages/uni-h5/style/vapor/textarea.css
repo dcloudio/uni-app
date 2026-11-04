@@ -1,0 +1,105 @@
+/* Vapor 独立组件样式；基础节点及根节点重置由 uvue-vapor.css 提供。 */
+.uni-textarea-wrapper,
+.uni-textarea-placeholder,
+.uni-textarea-line,
+.uni-textarea-compute,
+.uni-textarea-textarea {
+  outline: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  text-decoration: inherit;
+}
+.uni-textarea-wrapper {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: inherit;
+  overflow-y: hidden;
+}
+.uni-textarea-placeholder,
+.uni-textarea-line,
+.uni-textarea-compute,
+.uni-textarea-textarea {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  white-space: inherit;
+  word-break: inherit;
+}
+.uni-textarea-placeholder {
+  color: grey;
+  overflow: hidden;
+}
+.uni-textarea-line,
+.uni-textarea-compute {
+  visibility: hidden;
+  height: auto;
+}
+.uni-textarea-line {
+  width: 1em;
+}
+.uni-textarea-compute-auto-height {
+  /* 解决全输入符号设置auto-height不会自动增加高度 */
+  overflow-wrap: break-word;
+}
+.uni-textarea-textarea {
+  resize: none;
+  background: none;
+  color: inherit;
+  opacity: 1;
+  font: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  text-align: inherit;
+  text-indent: inherit;
+  text-transform: inherit;
+  text-shadow: inherit;
+}
+/* 用于解决 iOS textarea 内部默认边距 */
+.uni-textarea-textarea-fix-margin {
+  width: auto;
+  right: 0;
+  margin: 0 -3px;
+}
+.uni-textarea-textarea:disabled {
+  /* 用于重置iOS14以下禁用状态文字颜色 */
+  -webkit-text-fill-color: currentcolor;
+}
+
+div:where([uni-textarea]) {
+  background-color: #ffffff;
+}
+
+.uni-textarea-placeholder {
+  color: #757575;
+}
+
+@layer uni-field-selection {
+  :where(.uni-field-selection-probe) {
+    background-color: var(--uni-selection-probe-background-color);
+  }
+}
+
+.uni-textarea-textarea.uni-field-selection[data-uni-selection]::selection {
+  background-color: var(--uni-selection-background-color);
+}
+
+@media (prefers-color-scheme: dark) {
+  div:where([uni-textarea]) {
+    color: #ffffff;
+    background-color: #3b3b3b;
+  }
+}
+
+/* 内部原生输入框继承组件外部设置的光标样式。 */
+uni-app .uni-textarea-textarea {
+  caret-color: inherit;
+}
+
+uni-app .uni-textarea-textarea:disabled {
+  cursor: inherit;
+}

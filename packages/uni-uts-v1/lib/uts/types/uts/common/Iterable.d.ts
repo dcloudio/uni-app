@@ -3,21 +3,18 @@
      @uniPlatform {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "x",
           "uniUtsPlugin": "4.41",
           "unixVer": "4.41",
           "unixUtsPlugin": "4.41"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "x",
           "uniUtsPlugin": "4.41",
           "unixVer": "x",
           "unixUtsPlugin": "4.41"
         },
         "harmony": {
-            "osVer": "5.0.0",
             "uniVer": "√",
             "uniUtsPlugin": "x",
             "unixVer": "4.61"
@@ -39,21 +36,18 @@ type UTSIteratorResult<T> = {
      @uniPlatform {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "x",
           "uniUtsPlugin": "4.41",
           "unixVer": "4.41",
           "unixUtsPlugin": "4.41"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "x",
           "uniUtsPlugin": "4.41",
           "unixVer": "x",
           "unixUtsPlugin": "4.41"
         },
         "harmony": {
-            "osVer": "5.0.0",
             "uniVer": "√",
             "uniUtsPlugin": "x",
             "unixVer": "4.61"
@@ -75,21 +69,18 @@ type UTSIterator<T> = {
      @uniPlatform {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "x",
           "uniUtsPlugin": "4.41",
           "unixVer": "4.41",
           "unixUtsPlugin": "4.41"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "x",
           "uniUtsPlugin": "4.41",
           "unixVer": "x",
           "unixUtsPlugin": "4.41"
         },
         "harmony": {
-            "osVer": "5.0.0",
             "uniVer": "x",
             "uniUtsPlugin": "x",
             "unixVer": "x"
@@ -110,21 +101,18 @@ interface UTSValueIterable<T> {
      @uniPlatform {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "x",
           "uniUtsPlugin": "4.41",
           "unixVer": "4.41",
           "unixUtsPlugin": "4.41"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "x",
           "uniUtsPlugin": "4.41",
           "unixVer": "x",
           "unixUtsPlugin": "4.41"
         },
         "harmony": {
-            "osVer": "5.0.0",
             "uniVer": "x",
             "uniUtsPlugin": "x",
             "unixVer": "x"

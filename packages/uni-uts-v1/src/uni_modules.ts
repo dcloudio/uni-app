@@ -441,6 +441,14 @@ async function syncUniModulesFile(
   const src = path.resolve(pluginDir, relativeFileName)
   if (rename) {
     const extname = path.extname(relativeFileName)
+    if (extname === '.ts') {
+      // 原生编译链同步 TS 依赖时同样需要条件编译，但保持 .ts 后缀不重复追加。
+      return writeFile(
+        src,
+        path.resolve(outputPluginDir, relativeFileName),
+        preprocessor
+      )
+    }
     if (['.uts', '.json', '.vue', '.uvue'].includes(extname)) {
       // test.uts => test.uts.ts
       // test.json => test.json.ts

@@ -24,6 +24,10 @@ type DramaCallback = (result: any) => void
 type DramaSuccessCallback = (result: any) => void
 type DramaFailCallback = (error: any) => void
 type DramaCompleteCallback = (result: any) => void
+type DramaPagedMethod =
+  | 'getRecommendedList'
+  | 'getCollectionList'
+  | 'getHistoryList'
 
 interface DramaResolvedCallbacks {
   success?: DramaSuccessCallback
@@ -164,6 +168,70 @@ function normalizeDramaListOptions(options?: unknown): Record<string, any> {
         'order should be "default" | "reverse" | 0 | 1'
       )
     }
+  }
+  return data
+}
+
+/** 规范推荐、收藏和观看记录的分页参数。 */
+function normalizeDramaPagedOptions(
+  options: unknown,
+  method: DramaPagedMethod
+): Record<string, any> {
+  if (options !== undefined && !isObject(options)) {
+    throw createInvalidParamError(`${method} options should be an object`)
+  }
+  const data = stripDramaCallbackKeys(
+    Object.assign({}, (options || {}) as Record<string, any>)
+  )
+  data.page = data.page === undefined ? 1 : data.page
+  data.pageSize = data.pageSize === undefined ? 20 : data.pageSize
+  if (!Number.isInteger(data.page) || data.page < 1) {
+    throw createInvalidParamError('page should be a positive integer')
+  }
+  if (!Number.isInteger(data.pageSize) || data.pageSize < 1) {
+    throw createInvalidParamError('pageSize should be a positive integer')
+  }
+  return data
+}
+
+/** 规范搜索参数并统一兼容字段。 */
+function normalizeDramaSearchOptions(options?: unknown): Record<string, any> {
+  if (options === undefined || !isObject(options)) {
+    throw createInvalidParamError('search options should be an object')
+  }
+  const data = stripDramaCallbackKeys(
+    Object.assign({}, options as Record<string, any>)
+  )
+  const searchWord =
+    data.searchWord !== undefined
+      ? data.searchWord
+      : data.keyword !== undefined
+      ? data.keyword
+      : data.keyWord !== undefined
+      ? data.keyWord
+      : data.query
+  if (typeof searchWord !== 'string' || searchWord.trim() === '') {
+    throw createInvalidParamError('searchWord is required')
+  }
+  data.searchWord = searchWord
+  delete data.keyword
+  delete data.keyWord
+  delete data.query
+
+  const isFuzzy = data.isFuzzy !== undefined ? data.isFuzzy : data.fuzzy
+  if (isFuzzy !== undefined && typeof isFuzzy !== 'boolean') {
+    throw createInvalidParamError('isFuzzy should be a boolean')
+  }
+  data.isFuzzy = isFuzzy === undefined ? true : isFuzzy
+  delete data.fuzzy
+
+  data.page = data.page === undefined ? 1 : data.page
+  data.pageSize = data.pageSize === undefined ? 20 : data.pageSize
+  if (!Number.isInteger(data.page) || data.page < 1) {
+    throw createInvalidParamError('page should be a positive integer')
+  }
+  if (!Number.isInteger(data.pageSize) || data.pageSize < 1) {
+    throw createInvalidParamError('pageSize should be a positive integer')
   }
   return data
 }
@@ -327,7 +395,7 @@ class DramaAd implements DramaAdContext {
 
   /** 执行原生异步方法，返回原始 Promise（不在此处触发业务回调）。 */
   private _invoke(
-    method: 'getList' | 'getInfo' | 'open',
+    method: 'getList' | 'getInfo' | 'open' | DramaPagedMethod | 'search',
     options: Record<string, any>
   ): Promise<any> {
     if (this._destroyed) {
@@ -427,6 +495,68 @@ class DramaAd implements DramaAdContext {
     return this._settle(this._invoke('getList', params), callbacks)
   }
 
+  /** 获取推荐短剧列表。 */
+  getRecommendedList(
+    options?: unknown,
+    successCallback?: DramaSuccessCallback,
+    failCallback?: DramaFailCallback
+  ): Promise<any> {
+    return this._getPagedList(
+      'getRecommendedList',
+      options,
+      successCallback,
+      failCallback
+    )
+  }
+
+  /** 获取用户收藏短剧列表。 */
+  getCollectionList(
+    options?: unknown,
+    successCallback?: DramaSuccessCallback,
+    failCallback?: DramaFailCallback
+  ): Promise<any> {
+    return this._getPagedList(
+      'getCollectionList',
+      options,
+      successCallback,
+      failCallback
+    )
+  }
+
+  /** 获取用户观看记录列表。 */
+  getHistoryList(
+    options?: unknown,
+    successCallback?: DramaSuccessCallback,
+    failCallback?: DramaFailCallback
+  ): Promise<any> {
+    return this._getPagedList(
+      'getHistoryList',
+      options,
+      successCallback,
+      failCallback
+    )
+  }
+
+  /** 搜索短剧。 */
+  search(
+    options?: unknown,
+    successCallback?: DramaSuccessCallback,
+    failCallback?: DramaFailCallback
+  ): Promise<any> {
+    const callbacks = resolveDramaCallbacks(
+      options,
+      successCallback,
+      failCallback
+    )
+    let params: Record<string, any>
+    try {
+      params = normalizeDramaSearchOptions(options)
+    } catch (error) {
+      return this._settle(Promise.reject(normalizeDramaError(error)), callbacks)
+    }
+    return this._settle(this._invoke('search', params), callbacks)
+  }
+
   /** 查询指定短剧信息。 */
   getInfo(
     options?: unknown,
@@ -445,6 +575,26 @@ class DramaAd implements DramaAdContext {
       return this._settle(Promise.reject(normalizeDramaError(error)), callbacks)
     }
     return this._settle(this._invoke('getInfo', params), callbacks)
+  }
+
+  private _getPagedList(
+    method: DramaPagedMethod,
+    options: unknown,
+    successCallback?: DramaSuccessCallback,
+    failCallback?: DramaFailCallback
+  ): Promise<any> {
+    const callbacks = resolveDramaCallbacks(
+      options,
+      successCallback,
+      failCallback
+    )
+    let params: Record<string, any>
+    try {
+      params = normalizeDramaPagedOptions(options, method)
+    } catch (error) {
+      return this._settle(Promise.reject(normalizeDramaError(error)), callbacks)
+    }
+    return this._settle(this._invoke(method, params), callbacks)
   }
 
   /** 打开短剧播放详情页。 */

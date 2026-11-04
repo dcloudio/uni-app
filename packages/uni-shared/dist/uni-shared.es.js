@@ -47,10 +47,11 @@ const BUILT_IN_TAG_NAMES = [
     'location-picker',
     'location-view',
 ];
-const BUILT_IN_TAGS = BUILT_IN_TAG_NAMES.map((tag) => 'uni-' + tag);
-const H5_BUILT_IN_TAG_NAMES = BUILT_IN_TAG_NAMES.filter((tag) => tag !== 'audio');
-const H5_BUILT_IN_TAGS = H5_BUILT_IN_TAG_NAMES.map((tag) => 'uni-' + tag);
-const TAGS = [
+// 这些纯初始化在未使用组件名单时应被移除，避免公共工具导入带入无关运行时代码。
+const BUILT_IN_TAGS = /*#__PURE__*/ BUILT_IN_TAG_NAMES.map((tag) => 'uni-' + tag);
+const H5_BUILT_IN_TAG_NAMES = /*#__PURE__*/ BUILT_IN_TAG_NAMES.filter((tag) => tag !== 'audio');
+const H5_BUILT_IN_TAGS = /*#__PURE__*/ H5_BUILT_IN_TAG_NAMES.map((tag) => 'uni-' + tag);
+const TAGS = /*#__PURE__*/ [
     'app',
     'layout',
     'content',
@@ -155,7 +156,7 @@ const UVUE_BUILT_IN_TAGS = [
     // 'radio',
     // 'radio-group',
 ];
-const UVUE_WEB_BUILT_IN_TAGS = [
+const UVUE_WEB_BUILT_IN_TAGS = /*#__PURE__*/ [
     'page-container',
     'list-view',
     'list-item',
@@ -164,8 +165,10 @@ const UVUE_WEB_BUILT_IN_TAGS = [
     'cloud-db-element',
     'loading-element',
     'loading',
+    'flow-item',
+    'waterflow',
 ].map((tag) => 'uni-' + tag);
-const UVUE_MP_BUILT_IN_TAGS = [
+const UVUE_MP_BUILT_IN_TAGS = /*#__PURE__*/ [
     'list-view',
     'list-item',
     'sticky-section',
@@ -180,11 +183,11 @@ const UVUE_IOS_BUILT_IN_TAGS = [
     'form',
     'switch',
 ];
-const UVUE_HARMONY_BUILT_IN_TAGS = [
+const UVUE_HARMONY_BUILT_IN_TAGS = /*#__PURE__*/ (() => [
     // TODO 列出完整列表
     ...BUILT_IN_TAG_NAMES,
     'volume-panel',
-];
+])();
 const NVUE_U_BUILT_IN_TAGS = [
     'u-text',
     'u-image',
@@ -198,7 +201,7 @@ const NVUE_U_BUILT_IN_TAGS = [
     'u-rich-text',
 ];
 const UVUE_WEB_BUILT_IN_CUSTOM_ELEMENTS = ['match-media'];
-const UNI_UI_CONFLICT_TAGS = ['list-item'].map((tag) => 'uni-' + tag);
+const UNI_UI_CONFLICT_TAGS = /*#__PURE__*/ ['list-item'].map((tag) => 'uni-' + tag);
 function isBuiltInComponent(tag) {
     if (UNI_UI_CONFLICT_TAGS.indexOf(tag) !== -1) {
         return false;
@@ -292,10 +295,10 @@ function isAppUVueBuiltInEasyComponent(tag) {
     return UVUE_BUILT_IN_EASY_COMPONENTS.includes(tag);
 }
 // 主要是指前端实现的组件列表
-const UVUE_CUSTOM_COMPONENTS = [
+const UVUE_CUSTOM_COMPONENTS = /*#__PURE__*/ (() => [
     ...NVUE_CUSTOM_COMPONENTS,
     ...UVUE_BUILT_IN_EASY_COMPONENTS,
-];
+])();
 function isAppUVueNativeTag(tag) {
     // 前端实现的内置组件都会注册一个根组件
     if (tag.startsWith('uni-') && tag.endsWith('-element')) {
@@ -502,10 +505,17 @@ const ON_APP_ENTER_BACKGROUND = 'onAppEnterBackground';
 const ON_WEB_INVOKE_APP_SERVICE = 'onWebInvokeAppService';
 const ON_WXS_INVOKE_CALL_METHOD = 'onWxsInvokeCallMethod';
 // mergeVirtualHostAttributes
-const VIRTUAL_HOST_STYLE = 'virtualHostStyle';
-const VIRTUAL_HOST_CLASS = 'virtualHostClass';
-const VIRTUAL_HOST_HIDDEN = 'virtualHostHidden';
-const VIRTUAL_HOST_ID = 'virtualHostId';
+/**
+ * 微信纯数据字段Bug
+ * 字母顺序较纯数据字段靠后的字段传入undefined会触发告警
+ * uni-app存在一个纯数据字段uP（后续再看要不要把uP调整成zz或者_开头）
+ * Setting data field "virtualHostStyle" to undefined is invalid.
+ * 现在用a替换virtualHost开头的字段，避免触发微信纯数据字段告警
+ */
+const VIRTUAL_HOST_STYLE = 'ahs';
+const VIRTUAL_HOST_CLASS = 'ahc';
+const VIRTUAL_HOST_HIDDEN = 'ahh';
+const VIRTUAL_HOST_ID = 'ahid';
 // mini program css variables
 const UNI_STATUS_BAR_HEIGHT = 'u_s_b_h';
 const UNI_SAFE_AREA_INSET_BOTTOM = 'u_s_a_i_b';
@@ -1490,10 +1500,173 @@ const initCustomDatasetOnce = /*#__PURE__*/ once((isBuiltInElement) => {
     };
 });
 function getCustomDataset(el) {
-    return extend({}, el.dataset, el.__uniDataset);
+    const dataset = el.dataset;
+    const target = el;
+    // Vapor 原生宿主只有一份 Map 数据，直接供事件读取，并让查询按条目复制，
+    // 避免对象展开丢失 get/set 等保留键。非 Vapor 的旧 uni-* Custom Element 仍走原缓存合并。
+    if (target.$uniDataset === dataset) {
+        return dataset;
+    }
+    return extend({}, dataset, target.__uniDataset);
 }
 
-const unitRE = new RegExp(`"[^"]+"|'[^']+'|url\\([^)]+\\)|(\\d*\\.?\\d+)[r|u]px`, 'g');
+class UniDOMStringMap extends Map {
+    constructor(options) {
+        super();
+        this._options = options;
+    }
+    get(key) {
+        const normalizedKey = normalizeDatasetKey(String(key));
+        return super.has(normalizedKey) ? super.get(normalizedKey) : null;
+    }
+    set(key, value) {
+        var _a, _b;
+        const normalizedKey = normalizeDatasetKey(String(key));
+        super.set(normalizedKey, value);
+        (_b = (_a = this._options) === null || _a === void 0 ? void 0 : _a.onSet) === null || _b === void 0 ? void 0 : _b.call(_a, normalizedKey, value);
+        return this;
+    }
+    has(key) {
+        return super.has(normalizeDatasetKey(String(key)));
+    }
+    delete(key) {
+        var _a, _b;
+        const normalizedKey = normalizeDatasetKey(String(key));
+        const deleted = super.delete(normalizedKey);
+        if (deleted) {
+            (_b = (_a = this._options) === null || _a === void 0 ? void 0 : _a.onDelete) === null || _b === void 0 ? void 0 : _b.call(_a, normalizedKey);
+        }
+        return deleted;
+    }
+    clear() {
+        const keys = Array.from(super.keys());
+        super.clear();
+        keys.forEach((key) => { var _a, _b; return (_b = (_a = this._options) === null || _a === void 0 ? void 0 : _a.onDelete) === null || _b === void 0 ? void 0 : _b.call(_a, key); });
+    }
+}
+function normalizeDatasetKey(key) {
+    const normalizedKey = key.replace(/[A-Z]/g, (char) => char.toLowerCase());
+    if (normalizedKey.indexOf('data-') !== 0) {
+        return key;
+    }
+    return normalizedKey
+        .slice(5)
+        .replace(/-([a-z])/g, (_, char) => char.toUpperCase());
+}
+function normalizeDatasetAttrName(key) {
+    return ('data-' +
+        normalizeDatasetKey(key).replace(/[A-Z]/g, (char) => {
+            return '-' + char.toLowerCase();
+        }));
+}
+function isReservedDatasetKey(target, key) {
+    return key in target;
+}
+function setDatasetValue(dataset, key, value) {
+    Map.prototype.set.call(dataset, normalizeDatasetKey(String(key)), value);
+}
+function initDataset(dataset, source) {
+    if (!source) {
+        return;
+    }
+    if (source instanceof Map) {
+        source.forEach((value, key) => setDatasetValue(dataset, key, value));
+        return;
+    }
+    Object.keys(source).forEach((key) => setDatasetValue(dataset, key, source[key]));
+}
+function createUniDOMStringMap(source, options) {
+    const target = new UniDOMStringMap(options);
+    initDataset(target, source);
+    return new Proxy(target, {
+        get(target, key, receiver) {
+            if (typeof key === 'string') {
+                if (!isReservedDatasetKey(target, key)) {
+                    return target.has(key) ? target.get(key) : null;
+                }
+            }
+            const value = Reflect.get(target, key, target);
+            if (typeof value === 'function') {
+                return (...args) => {
+                    const result = value.apply(target, args);
+                    return result === target ? receiver : result;
+                };
+            }
+            return value;
+        },
+        set(target, key, value, receiver) {
+            if (typeof key === 'string' && !isReservedDatasetKey(target, key)) {
+                target.set(key, value);
+                return true;
+            }
+            return Reflect.set(target, key, value, receiver);
+        },
+        deleteProperty(target, key) {
+            if (typeof key === 'string' &&
+                !isReservedDatasetKey(target, key) &&
+                target.has(key)) {
+                return target.delete(key);
+            }
+            return Reflect.deleteProperty(target, key);
+        },
+        has(target, key) {
+            if (typeof key === 'string' && target.has(key)) {
+                return true;
+            }
+            return Reflect.has(target, key);
+        },
+        ownKeys(target) {
+            return Array.from(target.keys()).filter((key) => !isReservedDatasetKey(target, key));
+        },
+        getOwnPropertyDescriptor(target, key) {
+            if (typeof key === 'string' &&
+                !isReservedDatasetKey(target, key) &&
+                target.has(key)) {
+                return {
+                    configurable: true,
+                    enumerable: true,
+                    value: target.get(key),
+                    writable: true,
+                };
+            }
+            return Reflect.getOwnPropertyDescriptor(target, key);
+        },
+    });
+}
+
+const installed = /*#__PURE__*/ new WeakSet();
+// 仅安装 dataset getter，原生属性 API 不参与业务数据维护。
+function initVaporDataset(window) {
+    const realm = window;
+    const prototype = realm.HTMLElement.prototype;
+    if (installed.has(prototype))
+        return;
+    installed.add(prototype);
+    const nativeDataset = Object.getOwnPropertyDescriptor(prototype, 'dataset');
+    for (const [Host, marker] of [
+        [realm.HTMLDivElement, 'uni-view'],
+        [realm.HTMLSpanElement, 'uni-text'],
+        [realm.HTMLImageElement, 'uni-image'],
+        [realm.HTMLCanvasElement, 'uni-canvas'],
+    ]) {
+        if (Object.getOwnPropertyDescriptor(Host.prototype, 'dataset'))
+            continue;
+        Object.defineProperty(Host.prototype, 'dataset', {
+            configurable: true,
+            enumerable: nativeDataset.enumerable,
+            get() {
+                if (!this.hasAttribute(marker))
+                    return nativeDataset.get.call(this);
+                const data = this.$uniDataset;
+                return data instanceof Map
+                    ? data
+                    : (this.$uniDataset = createUniDOMStringMap(data));
+            },
+        });
+    }
+}
+
+const unitRE = /*#__PURE__*/ new RegExp(`"[^"]+"|'[^']+'|url\\([^)]+\\)|(\\d*\\.?\\d+)[r|u]px`, 'g');
 function toFixed(number, precision) {
     const multiplier = Math.pow(10, precision + 1);
     const wholeNumber = Math.floor(number * multiplier);
@@ -1614,6 +1787,23 @@ function scrollTo(scrollTop, duration, isH5) {
         });
     };
     scrollTo(duration);
+}
+
+// Web 样式转换沿用 createRpx2Unit 默认的 rem 比例和五位精度。
+// 跳过字符串、URL、自定义属性名及 var() 引用（含非 ASCII 和 CSS 转义），
+// 直接替换以保留 cssText 的重复声明与回退值，不解析或重建样式对象。
+const rpxRE = /"[^"]+"|'[^']+'|url\([^)]+\)|--(?:[\w-]|[^\x00-\x7f]|\\(?:[\da-fA-F]{1,6}(?:\r\n|[ \t\r\n\f])?|[^\r\n\f]))+|(\d*\.?\d+)[ru]px/g;
+const hasRpxRE = /[ru]px/;
+function normalizeRpx(value) {
+    if (!hasRpxRE.test(value))
+        return value;
+    return value.replace(rpxRE, (match, number) => {
+        if (!number)
+            return match;
+        const whole = Math.floor(parseFloat(number) * (10 / 320) * 1000000);
+        const result = (Math.round(whole / 10) * 10) / 1000000;
+        return result === 0 ? '0' : `${result}rem`;
+    });
 }
 
 const encode = encodeURIComponent;
@@ -2415,62 +2605,66 @@ const invokeCreateErrorHandler = once((app, createErrorHandler) => {
     return createErrorHandler(app);
 });
 
-const E = function () {
-    // Keep this empty so it's easier to inherit from
-    // (via https://github.com/lipsmack from https://github.com/scottcorgan/tiny-emitter/issues/3)
-};
-E.prototype = {
-    _id: 1,
-    on: function (name, callback, ctx) {
-        var e = this.e || (this.e = {});
-        (e[name] || (e[name] = [])).push({
-            fn: callback,
-            ctx: ctx,
-            _id: this._id,
-        });
-        return this._id++;
-    },
-    once: function (name, callback, ctx) {
-        var self = this;
-        function listener() {
-            self.off(name, listener);
-            callback.apply(ctx, arguments);
-        }
-        listener._ = callback;
-        return this.on(name, listener, ctx);
-    },
-    emit: function (name) {
-        var data = [].slice.call(arguments, 1);
-        var evtArr = ((this.e || (this.e = {}))[name] || []).slice();
-        var i = 0;
-        var len = evtArr.length;
-        for (i; i < len; i++) {
-            evtArr[i].fn.apply(evtArr[i].ctx, data);
-        }
-        return this;
-    },
-    off: function (name, event) {
-        var e = this.e || (this.e = {});
-        var evts = e[name];
-        var liveEvents = [];
-        if (evts && event) {
-            for (var i = evts.length - 1; i >= 0; i--) {
-                if (evts[i].fn === event ||
-                    evts[i].fn._ === event ||
-                    evts[i]._id === event) {
-                    evts.splice(i, 1);
-                    break;
-                }
+// 构造函数及原型作为整体初始化，未使用 Emitter 时可完整移除。
+const E = /*#__PURE__*/ (() => {
+    const E = function () {
+        // Keep this empty so it's easier to inherit from
+        // (via https://github.com/lipsmack from https://github.com/scottcorgan/tiny-emitter/issues/3)
+    };
+    E.prototype = {
+        _id: 1,
+        on: function (name, callback, ctx) {
+            var e = this.e || (this.e = {});
+            (e[name] || (e[name] = [])).push({
+                fn: callback,
+                ctx: ctx,
+                _id: this._id,
+            });
+            return this._id++;
+        },
+        once: function (name, callback, ctx) {
+            var self = this;
+            function listener() {
+                self.off(name, listener);
+                callback.apply(ctx, arguments);
             }
-            liveEvents = evts;
-        }
-        // Remove event from queue to prevent memory leak
-        // Suggested by https://github.com/lazd
-        // Ref: https://github.com/scottcorgan/tiny-emitter/commit/c6ebfaa9bc973b33d110a84a307742b7cf94c953#commitcomment-5024910
-        liveEvents.length ? (e[name] = liveEvents) : delete e[name];
-        return this;
-    },
-};
+            listener._ = callback;
+            return this.on(name, listener, ctx);
+        },
+        emit: function (name) {
+            var data = [].slice.call(arguments, 1);
+            var evtArr = ((this.e || (this.e = {}))[name] || []).slice();
+            var i = 0;
+            var len = evtArr.length;
+            for (i; i < len; i++) {
+                evtArr[i].fn.apply(evtArr[i].ctx, data);
+            }
+            return this;
+        },
+        off: function (name, event) {
+            var e = this.e || (this.e = {});
+            var evts = e[name];
+            var liveEvents = [];
+            if (evts && event) {
+                for (var i = evts.length - 1; i >= 0; i--) {
+                    if (evts[i].fn === event ||
+                        evts[i].fn._ === event ||
+                        evts[i]._id === event) {
+                        evts.splice(i, 1);
+                        break;
+                    }
+                }
+                liveEvents = evts;
+            }
+            // Remove event from queue to prevent memory leak
+            // Suggested by https://github.com/lazd
+            // Ref: https://github.com/scottcorgan/tiny-emitter/commit/c6ebfaa9bc973b33d110a84a307742b7cf94c953#commitcomment-5024910
+            liveEvents.length ? (e[name] = liveEvents) : delete e[name];
+            return this;
+        },
+    };
+    return E;
+})();
 var E$1 = E;
 
 const borderStyles = {
@@ -2563,7 +2757,80 @@ const UVUE_VAPOR_APP_EASYCOMS = [
     'video',
     'flow-item',
     'waterflow',
-    'web-view'
+    'web-view',
+];
+const UVUE_VAPOR_WEB_EASYCOMS = [
+    'ad',
+    'ad-content-page',
+    'ad-draw',
+    'button',
+    'camera',
+    'canvas',
+    'checkbox',
+    'checkbox-group',
+    'editor',
+    'flow-item',
+    'form',
+    'icon',
+    'input',
+    'label',
+    'list-item',
+    'list-view',
+    'live-player',
+    'live-pusher',
+    'loading',
+    'map',
+    'match-media',
+    'movable-area',
+    'movable-view',
+    'navigator',
+    'page-container',
+    'picker',
+    'picker-view',
+    'picker-view-column',
+    'progress',
+    'radio',
+    'radio-group',
+    'resize-sensor',
+    'rich-text',
+    'scroll-view',
+    'slider',
+    'sticky-header',
+    'sticky-section',
+    'swiper',
+    'swiper-item',
+    'switch',
+    'textarea',
+    'video',
+    'waterflow',
+    'web-view',
+];
+const UVUE_VAPOR_WEB_STYLE_COMPONENTS = [
+    'button',
+    'checkbox',
+    'checkbox-group',
+    'flow-item',
+    'form',
+    'label',
+    'list-item',
+    'list-view',
+    'loading',
+    'match-media',
+    'navigator',
+    'page-container',
+    'picker',
+    'picker-view',
+    'picker-view-column',
+    'progress',
+    'radio',
+    'radio-group',
+    'slider',
+    'sticky-header',
+    'sticky-section',
+    'swiper',
+    'swiper-item',
+    'switch',
+    'waterflow',
 ];
 
 const APP_NATIVE_TAGS = [
@@ -2596,132 +2863,14 @@ function isDom2VueComponentTag(tag) {
 function isDom2AppVueComponentTag(tag) {
     return UVUE_VAPOR_APP_EASYCOMS.includes(tag);
 }
+function isDom2WebVueComponentTag(tag) {
+    return UVUE_VAPOR_WEB_EASYCOMS.includes(tag);
+}
+function hasWebVaporComponentStyle(tag) {
+    return UVUE_VAPOR_WEB_STYLE_COMPONENTS.includes(tag);
+}
 function isDom2AppUserVueComponentTag(tag) {
     return !isDom2AppNativeTag(tag) && !isDom2VueComponentTag(tag);
-}
-
-class UniDOMStringMap extends Map {
-    constructor(options) {
-        super();
-        this._options = options;
-    }
-    get(key) {
-        const normalizedKey = normalizeDatasetKey(String(key));
-        return super.has(normalizedKey) ? super.get(normalizedKey) : null;
-    }
-    set(key, value) {
-        var _a, _b;
-        const normalizedKey = normalizeDatasetKey(String(key));
-        super.set(normalizedKey, value);
-        (_b = (_a = this._options) === null || _a === void 0 ? void 0 : _a.onSet) === null || _b === void 0 ? void 0 : _b.call(_a, normalizedKey, value);
-        return this;
-    }
-    has(key) {
-        return super.has(normalizeDatasetKey(String(key)));
-    }
-    delete(key) {
-        var _a, _b;
-        const normalizedKey = normalizeDatasetKey(String(key));
-        const deleted = super.delete(normalizedKey);
-        if (deleted) {
-            (_b = (_a = this._options) === null || _a === void 0 ? void 0 : _a.onDelete) === null || _b === void 0 ? void 0 : _b.call(_a, normalizedKey);
-        }
-        return deleted;
-    }
-    clear() {
-        const keys = Array.from(super.keys());
-        super.clear();
-        keys.forEach((key) => { var _a, _b; return (_b = (_a = this._options) === null || _a === void 0 ? void 0 : _a.onDelete) === null || _b === void 0 ? void 0 : _b.call(_a, key); });
-    }
-}
-function normalizeDatasetKey(key) {
-    const normalizedKey = key.replace(/[A-Z]/g, (char) => char.toLowerCase());
-    if (normalizedKey.indexOf('data-') !== 0) {
-        return key;
-    }
-    return normalizedKey
-        .slice(5)
-        .replace(/-([a-z])/g, (_, char) => char.toUpperCase());
-}
-function normalizeDatasetAttrName(key) {
-    return ('data-' +
-        normalizeDatasetKey(key).replace(/[A-Z]/g, (char) => {
-            return '-' + char.toLowerCase();
-        }));
-}
-function isReservedDatasetKey(target, key) {
-    return key in target;
-}
-function setDatasetValue(dataset, key, value) {
-    Map.prototype.set.call(dataset, normalizeDatasetKey(String(key)), value);
-}
-function initDataset(dataset, source) {
-    if (!source) {
-        return;
-    }
-    if (source instanceof Map) {
-        source.forEach((value, key) => setDatasetValue(dataset, key, value));
-        return;
-    }
-    Object.keys(source).forEach((key) => setDatasetValue(dataset, key, source[key]));
-}
-function createUniDOMStringMap(source, options) {
-    const target = new UniDOMStringMap(options);
-    initDataset(target, source);
-    return new Proxy(target, {
-        get(target, key, receiver) {
-            if (typeof key === 'string') {
-                if (!isReservedDatasetKey(target, key)) {
-                    return target.has(key) ? target.get(key) : null;
-                }
-            }
-            const value = Reflect.get(target, key, target);
-            if (typeof value === 'function') {
-                return (...args) => {
-                    const result = value.apply(target, args);
-                    return result === target ? receiver : result;
-                };
-            }
-            return value;
-        },
-        set(target, key, value, receiver) {
-            if (typeof key === 'string' && !isReservedDatasetKey(target, key)) {
-                target.set(key, value);
-                return true;
-            }
-            return Reflect.set(target, key, value, receiver);
-        },
-        deleteProperty(target, key) {
-            if (typeof key === 'string' &&
-                !isReservedDatasetKey(target, key) &&
-                target.has(key)) {
-                return target.delete(key);
-            }
-            return Reflect.deleteProperty(target, key);
-        },
-        has(target, key) {
-            if (typeof key === 'string' && target.has(key)) {
-                return true;
-            }
-            return Reflect.has(target, key);
-        },
-        ownKeys(target) {
-            return Array.from(target.keys()).filter((key) => !isReservedDatasetKey(target, key));
-        },
-        getOwnPropertyDescriptor(target, key) {
-            if (typeof key === 'string' &&
-                !isReservedDatasetKey(target, key) &&
-                target.has(key)) {
-                return {
-                    configurable: true,
-                    enumerable: true,
-                    value: target.get(key),
-                    writable: true,
-                };
-            }
-            return Reflect.getOwnPropertyDescriptor(target, key);
-        },
-    });
 }
 
 const uniElementPageMap = new WeakMap();
@@ -2734,6 +2883,53 @@ function getUniElementPage(element) {
     return pageElement
         ? (_a = uniElementPageMap.get(pageElement)) !== null && _a !== void 0 ? _a : null
         : null;
+}
+
+// class 沿用 Vue 标准解析；dom2 的 style 需要对象，供 sharedData 逐项转换原生样式，
+// 因此字符串不能像 Vue normalizeStyle 一样原样返回。Map 转换保留已发布的兼容行为。
+// 普通对象（包括 UTSJSONObject）直接返回，旧值快照由 setSharedDataStyle 按需保存。
+function normalizeVaporStyle(value) {
+    if (typeof value === 'string') {
+        return parseStringStyle(value);
+    }
+    if (value === null || typeof value !== 'object') {
+        return;
+    }
+    if (isArray(value)) {
+        const res = {};
+        for (let i = 0; i < value.length; i++) {
+            const item = value[i];
+            const normalized = isString(item)
+                ? parseStringStyle(item)
+                : normalizeVaporStyle(item);
+            if (normalized) {
+                for (const key in normalized) {
+                    res[key] = normalized[key];
+                }
+            }
+        }
+        return res;
+    }
+    else if (value instanceof Map) {
+        const res = {};
+        value.forEach((value, key) => {
+            res[key] = value;
+        });
+        return res;
+    }
+    return value;
+}
+function normalizeVaporProps(props) {
+    if (!props)
+        return null;
+    const { class: klass, style } = props;
+    if (klass && !isString(klass)) {
+        props.class = normalizeClass$1(klass);
+    }
+    if (style) {
+        props.style = normalizeVaporStyle(style);
+    }
+    return props;
 }
 
 function getEnvLocale() {
@@ -2764,4 +2960,4 @@ const GLOBALS_ALLOWED = 'Infinity,undefined,NaN,isFinite,isNaN,parseFloat,parseI
     'uni';
 const isGloballyAllowed = /*#__PURE__*/ makeMap(GLOBALS_ALLOWED);
 
-export { ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_CREATE, ACTION_TYPE_EVENT, ACTION_TYPE_INSERT, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_REMOVE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ATTR_CHANGE_PREFIX, ATTR_CLASS, ATTR_INNER_HTML, ATTR_STYLE, ATTR_TEXT_CONTENT, ATTR_V_OWNER_ID, ATTR_V_RENDERJS, ATTR_V_SHOW, BACKGROUND_COLOR, BUILT_IN_TAGS, BUILT_IN_TAG_NAMES, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, DATA_RE, E$1 as Emitter, EventChannel, EventModifierFlags, H5_BUILT_IN_TAGS, H5_BUILT_IN_TAG_NAMES, I18N_JSON_DELIMITERS, JSON_PROTOCOL, LINEFEED, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, NAVBAR_HEIGHT, NODE_TYPE_COMMENT, NODE_TYPE_ELEMENT, NODE_TYPE_PAGE, NODE_TYPE_TEXT, NVUE_BUILT_IN_TAGS, NVUE_U_BUILT_IN_TAGS, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, ON_ADD_TO_FAVORITES, ON_APP_ENTER_BACKGROUND, ON_APP_ENTER_FOREGROUND, ON_BACK_PRESS, ON_COPY_URL, ON_ERROR, ON_EXIT, ON_HIDE, ON_HOST_THEME_CHANGE, ON_INIT, ON_KEYBOARD_HEIGHT_CHANGE, ON_LAST_PAGE_BACK_PRESS, ON_LAUNCH, ON_LIVE_MOUNT, ON_LOAD, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_PAGE_NOT_FOUND, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_REACH_BOTTOM_DISTANCE, ON_READY, ON_RESIZE, ON_SAVE_EXIT_STATE, ON_SHARE_APP_MESSAGE, ON_SHARE_CHAT, ON_SHARE_TIMELINE, ON_SHOW, ON_TAB_ITEM_TAP, ON_THEME_CHANGE, ON_TITLE_CLICK, ON_UNHANDLE_REJECTION, ON_UNLOAD, ON_UPLOAD_DOUYIN_VIDEO, ON_WEB_INVOKE_APP_SERVICE, ON_WXS_INVOKE_CALL_METHOD, PLUS_RE, PRIMARY_COLOR, RENDERJS_MODULES, RESPONSIVE_MIN_WIDTH, SCHEME_RE, SELECTED_COLOR, SLOT_DEFAULT_NAME, TABBAR_HEIGHT, TAGS, UNI_AD_PLUGINS, UNI_SAFE_AREA_INSET_BOTTOM, UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR_STORE, UNI_SSR_TITLE, UNI_STATUS_BAR_HEIGHT, UNI_STORAGE_LOCALE, UNI_UI_CONFLICT_TAGS, UTS, UTSJSONObject, UTSValueIterable, UVUE_BUILT_IN_TAGS, UVUE_HARMONY_BUILT_IN_TAGS, UVUE_IOS_BUILT_IN_TAGS, UVUE_MP_BUILT_IN_TAGS, UVUE_WEB_BUILT_IN_CUSTOM_ELEMENTS, UVUE_WEB_BUILT_IN_TAGS, UniBaseNode, UniCommentNode, UniDOMStringMap, UniElement, UniError, UniEvent, UniInputElement, UniLifecycleHooks, UniNode, UniTextAreaElement, UniTextNode, VIRTUAL_HOST_CLASS, VIRTUAL_HOST_HIDDEN, VIRTUAL_HOST_ID, VIRTUAL_HOST_STYLE, WEB_INVOKE_APPSERVICE, WXS_MODULES, WXS_PROTOCOL, addFont, addLeadingSlash, batchGetPartClass, borderStyles, cache, cacheStringFunction, callOptions, createIsCustomElement, createRpx2Unit, createUniDOMStringMap, createUniEvent, customizeEvent, debounce, decode, decodedQuery, defaultMiniProgramRpx2Unit, defaultNVueRpx2Unit, defaultRpx2Unit, dynamicSlotName, forcePatchProp, formatDateTime, formatLog, getCustomDataset, getEnvLocale, getGlobal, getLen, getPartClass, getUniElementPage, getValueByDataPath, initCustomDatasetOnce, invokeArrayFns, invokeArrayFnsWithResults, invokeCreateErrorHandler, invokeCreateVueAppHook, isAppHarmonyUVueNativeTag, isAppIOSUVueNativeTag, isAppNVueNativeTag, isAppNativeTag, isAppUVueBuiltInEasyComponent, isAppUVueNativeTag, isAppVoidTag, isBuiltInComponent, isComponentInternalInstance, isComponentTag, isDom2AppNativeTag, isDom2AppUserVueComponentTag, isDom2AppVueComponentTag, isDom2VueComponentTag, isGloballyAllowed, isH5CustomElement, isH5NativeTag, isIntegerKey, isMPBuiltInComponent, isMiniProgramNativeTag, isMiniProgramUVueNativeTag, isRootHook, isRootImmediateHook, isUniLifecycleHook, isUniXElement, isWebBuiltInComponent, normalizeClass, normalizeDataset, normalizeDatasetAttrName, normalizeDatasetKey, normalizeEventType, normalizeProps, normalizeStyle, normalizeStyles, normalizeTabBarStyles, normalizeTarget, normalizeTitleColor, onCreateVueApp, once, parseEventName, parseNVueDataset, parseQuery, parseUrl, passive, plusReady, removeLeadingSlash, resolveComponentInstance, resolveOwnerEl, resolveOwnerVm, sanitise, scrollTo, setUniElementPage, sortObject, stringifyQuery, updateElementStyle };
+export { ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_CREATE, ACTION_TYPE_EVENT, ACTION_TYPE_INSERT, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_REMOVE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ATTR_CHANGE_PREFIX, ATTR_CLASS, ATTR_INNER_HTML, ATTR_STYLE, ATTR_TEXT_CONTENT, ATTR_V_OWNER_ID, ATTR_V_RENDERJS, ATTR_V_SHOW, BACKGROUND_COLOR, BUILT_IN_TAGS, BUILT_IN_TAG_NAMES, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, DATA_RE, E$1 as Emitter, EventChannel, EventModifierFlags, H5_BUILT_IN_TAGS, H5_BUILT_IN_TAG_NAMES, I18N_JSON_DELIMITERS, JSON_PROTOCOL, LINEFEED, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, NAVBAR_HEIGHT, NODE_TYPE_COMMENT, NODE_TYPE_ELEMENT, NODE_TYPE_PAGE, NODE_TYPE_TEXT, NVUE_BUILT_IN_TAGS, NVUE_U_BUILT_IN_TAGS, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, ON_ADD_TO_FAVORITES, ON_APP_ENTER_BACKGROUND, ON_APP_ENTER_FOREGROUND, ON_BACK_PRESS, ON_COPY_URL, ON_ERROR, ON_EXIT, ON_HIDE, ON_HOST_THEME_CHANGE, ON_INIT, ON_KEYBOARD_HEIGHT_CHANGE, ON_LAST_PAGE_BACK_PRESS, ON_LAUNCH, ON_LIVE_MOUNT, ON_LOAD, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_PAGE_NOT_FOUND, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_REACH_BOTTOM_DISTANCE, ON_READY, ON_RESIZE, ON_SAVE_EXIT_STATE, ON_SHARE_APP_MESSAGE, ON_SHARE_CHAT, ON_SHARE_TIMELINE, ON_SHOW, ON_TAB_ITEM_TAP, ON_THEME_CHANGE, ON_TITLE_CLICK, ON_UNHANDLE_REJECTION, ON_UNLOAD, ON_UPLOAD_DOUYIN_VIDEO, ON_WEB_INVOKE_APP_SERVICE, ON_WXS_INVOKE_CALL_METHOD, PLUS_RE, PRIMARY_COLOR, RENDERJS_MODULES, RESPONSIVE_MIN_WIDTH, SCHEME_RE, SELECTED_COLOR, SLOT_DEFAULT_NAME, TABBAR_HEIGHT, TAGS, UNI_AD_PLUGINS, UNI_SAFE_AREA_INSET_BOTTOM, UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR_STORE, UNI_SSR_TITLE, UNI_STATUS_BAR_HEIGHT, UNI_STORAGE_LOCALE, UNI_UI_CONFLICT_TAGS, UTS, UTSJSONObject, UTSValueIterable, UVUE_BUILT_IN_TAGS, UVUE_HARMONY_BUILT_IN_TAGS, UVUE_IOS_BUILT_IN_TAGS, UVUE_MP_BUILT_IN_TAGS, UVUE_WEB_BUILT_IN_CUSTOM_ELEMENTS, UVUE_WEB_BUILT_IN_TAGS, UniBaseNode, UniCommentNode, UniDOMStringMap, UniElement, UniError, UniEvent, UniInputElement, UniLifecycleHooks, UniNode, UniTextAreaElement, UniTextNode, VIRTUAL_HOST_CLASS, VIRTUAL_HOST_HIDDEN, VIRTUAL_HOST_ID, VIRTUAL_HOST_STYLE, WEB_INVOKE_APPSERVICE, WXS_MODULES, WXS_PROTOCOL, addFont, addLeadingSlash, batchGetPartClass, borderStyles, cache, cacheStringFunction, callOptions, createIsCustomElement, createRpx2Unit, createUniDOMStringMap, createUniEvent, customizeEvent, debounce, decode, decodedQuery, defaultMiniProgramRpx2Unit, defaultNVueRpx2Unit, defaultRpx2Unit, dynamicSlotName, forcePatchProp, formatDateTime, formatLog, getCustomDataset, getEnvLocale, getGlobal, getLen, getPartClass, getUniElementPage, getValueByDataPath, hasWebVaporComponentStyle, initCustomDatasetOnce, initVaporDataset, invokeArrayFns, invokeArrayFnsWithResults, invokeCreateErrorHandler, invokeCreateVueAppHook, isAppHarmonyUVueNativeTag, isAppIOSUVueNativeTag, isAppNVueNativeTag, isAppNativeTag, isAppUVueBuiltInEasyComponent, isAppUVueNativeTag, isAppVoidTag, isBuiltInComponent, isComponentInternalInstance, isComponentTag, isDom2AppNativeTag, isDom2AppUserVueComponentTag, isDom2AppVueComponentTag, isDom2VueComponentTag, isDom2WebVueComponentTag, isGloballyAllowed, isH5CustomElement, isH5NativeTag, isIntegerKey, isMPBuiltInComponent, isMiniProgramNativeTag, isMiniProgramUVueNativeTag, isRootHook, isRootImmediateHook, isUniLifecycleHook, isUniXElement, isWebBuiltInComponent, normalizeClass, normalizeDataset, normalizeDatasetAttrName, normalizeDatasetKey, normalizeEventType, normalizeProps, normalizeRpx, normalizeStyle, normalizeStyles, normalizeTabBarStyles, normalizeTarget, normalizeTitleColor, normalizeVaporProps, normalizeVaporStyle, onCreateVueApp, once, parseEventName, parseNVueDataset, parseQuery, parseUrl, passive, plusReady, removeLeadingSlash, resolveComponentInstance, resolveOwnerEl, resolveOwnerVm, sanitise, scrollTo, setUniElementPage, sortObject, stringifyQuery, updateElementStyle };

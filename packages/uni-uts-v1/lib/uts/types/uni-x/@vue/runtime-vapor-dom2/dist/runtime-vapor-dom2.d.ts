@@ -53,7 +53,7 @@ type BlockFn = (...args: any[]) => void;
 type RawProps = Record<string, unknown> & {
   $?: DynamicPropsSource[];
 };
-type DynamicPropsSource = (() => Record<string, unknown>) | Record<string, unknown>;
+type DynamicPropsSource = (() => Record<string, unknown> | null | undefined) | Record<string, unknown>;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/componentSlots.d.ts
 type RawSlots = Record<string, VaporSlot> & {
@@ -76,6 +76,9 @@ type DynamicSlot = {
 type DynamicSlotFn = () => DynamicSlot | DynamicSlot[];
 export type DynamicSlotSource = StaticSlots | DynamicSlotFn;
 export declare function withSharedDataVaporCtx(fn: (...args: any[]) => any, type?: "string"): BlockFn;
+export declare function mergeSharedDataSlotProps(...sources: (Record<string, any> | null | undefined)[]): Record<string, any>;
+export declare function guardSharedDataSlotProps(props: Record<string, any> | null | undefined);
+export declare function normalizeSharedDataSlotProps(result: Record<string, any> | null): Record<string, any> | null;
 export declare function createSharedDataSlot(name?: string | (() => string), rawProps?: LooseRawProps | null, setSharedDataSlotProps?: ((data: UniSharedData) => void) | null, fallback?: VaporSlot | null, flags?: number): void;
 export declare function createSharedDataScopedSlot<S extends UniSharedData>(sharedDataVFor: UniSharedDataVFor<S>, fn: VaporScopedSlot<S>): VaporScopedSlot<S>;
 //#endregion
@@ -275,9 +278,12 @@ export declare function unmountPage(pageInstance: ComponentPublicInstance): void
 //#region temp/packages/runtime-vapor-dom2/src/apiCreateIf.d.ts
 export declare function createSharedDataIf(condition: () => any, b1: () => void, b2?: (() => void) | null, flags?: number): void;
 //#endregion
+//#region temp/packages/runtime-vapor-dom2/src/apiCreateIfChain.d.ts
+export declare function createSharedDataIfChain(select: () => number, blocks: BlockFn[], branchFlags: number[] | null, flags: number): void;
+//#endregion
 //#region temp/packages/runtime-vapor-dom2/src/apiCreateFor.d.ts
 type ItemOf<S> = S extends readonly (infer T)[] ? T : S extends Reactive<readonly (infer T)[]> ? T : S extends Set<infer T> ? T : S extends Map<infer K, infer V> ? [K, V] : S extends string ? string : S extends number ? number : S extends Record<any, infer V> ? V : S extends Iterable<infer T> ? T : any;
-type KeyOf<S> = S extends Record<any, any> ? string : number;
+type KeyOf<S> = S extends readonly unknown[] | Iterable<unknown> ? number : S extends Record<any, any> ? string : number;
 type IndexOfKey<K> = K extends string ? number : undefined;
 interface SharedDataForHandle {
   resetListeners?: (() => void)[];
@@ -352,8 +358,11 @@ type UseComputedStyleOptions = {
 };
 export declare function useComputedStyle(options: UseComputedStyleOptions): Map<string, any | null>;
 //#endregion
+//#region temp/packages/runtime-vapor-dom2/src/helpers/useCssVars.d.ts
+export declare function useSharedDataCssVars(getter: (ctx: any) => Record<string, unknown>): void;
+//#endregion
 //#region temp/packages/runtime-vapor-dom2/src/renderEffect.d.ts
-export declare function renderSharedDataEffect(fn: () => void, noLifecycle?: boolean): void;
+export declare function renderSharedDataEffect(fn: () => unknown, noLifecycle?: boolean): void;
 export declare function nextSharedDataTick(fn: () => void): Promise<void>;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/sharedData/index.d.ts
@@ -365,6 +374,7 @@ export declare function setSharedData<S extends UniSharedData, V>(sharedData: S,
  * 后续验证稳定后，可考虑将 value 类型扩展到其他 UniSharedData，统一管理 sharedData dispose。
  */
 export declare function setSharedDataScoped<S extends UniSharedData, V extends UniSharedDataVFor<any> | null | undefined>(sharedData: S, key: string, value: V): V;
+export declare function normalizeExternalClasses(classes: unknown): string;
 export declare function setSharedDataDynamicProps<S extends UniSharedData>(sharedData: S, key: string, value: any[], root?: boolean): UniSharedDataJSONObject;
 export declare function setSharedDataDynamicEvents<S extends UniSharedData>(sharedData: S, key: string, events: Record<string, (...args: any[]) => any>): UniSharedDataJSONObject;
 export declare function setSharedDataClass<S extends UniSharedData, V>(sharedData: S, key: string, value: V): string[];
@@ -544,6 +554,7 @@ declare global {
 export declare function createElementDynamicSlot(name: string, fn: VaporSlot): DynamicSlot;
 export declare function createElementForSlots<Source extends UniSharedData>(rawSource: UniSharedDataVFor<Source>, getSlot: (item: ItemOf<Source>, key: KeyOf<Source>, index: number) => UniElementDynamicSlot): UniElementDynamicSlotVector;
 export declare function createElementIf(page: UniPage, condition: () => any, b1: BlockFn, b2?: BlockFn | null, once?: boolean): Block;
+export declare function createElementIfChain(page: UniPage, select: () => number, blocks: BlockFn[], branchFlags: number[] | null, flags: number): Block;
 export declare function setElementText(el: UniElement | UniText | null, value: string): void;
 export declare function setElementHtml(el: UniElement, value: string): void;
 export declare function setElementAttr(el: UniElement, key: string, value: any): void;
@@ -571,6 +582,7 @@ export declare function getElementInsertionParent(): UniElement | null;
 export declare function onElement(node: UniElement, event: string, fn: (event: UniEvent) => void, options?: AddEventListenerOptions & {
   effect?: boolean;
   stop?: boolean;
+  prevent?: boolean;
 }): void;
 export declare function onElementRef(node: UniElement | VaporSharedDataComponentInstance<any>, fn: Function): void;
 export declare function createElementDynamicSlotVector(slots: any | null): any | null;
@@ -603,6 +615,7 @@ export declare function createNativeViewRecycleFor<Source extends UniSharedData>
 export declare class NativeViewRecycleContext {}
 export declare function createNativeViewRecycleContext(): NativeViewRecycleContext;
 export declare function createNativeViewIf(page: UniPage, condition: () => any, b1: BlockFn, b2?: BlockFn | null, once?: boolean): Block;
+export declare function createNativeViewIfChain(page: UniPage, select: () => number, blocks: BlockFn[], branchFlags: number[] | null, flags: number): Block;
 export declare function setNativeViewAttr(el: UniNativeBaseView, key: string, value: any): void;
 export declare function setNativeViewInsertionState(parent: UniNativeBaseView, anchor?: UniNativeBaseView | 0 | null): void;
 export declare function getNativeViewInsertionParent(): UniNativeBaseView | null;

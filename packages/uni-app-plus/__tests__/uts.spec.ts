@@ -65,6 +65,10 @@ const uniElementText = new WeakMap<object, string>()
 const uniElementAttributes = new WeakMap<object, Map<string, unknown>>()
 
 function applyTestPreset(preset: any) {
+  // 避免 GC 回调在测试结束后访问已恢复的原生通道。
+  const finalizationRegistryRegister = jest
+    .spyOn(FinalizationRegistry.prototype, 'register')
+    .mockImplementation(() => {})
   const originalVapor = (globalThis as any).__VAPOR__
   const originalVaporPlatform = (globalThis as any).__VAPOR_PLATFORM__
   const originalX = (globalThis as any).__X__
@@ -132,6 +136,7 @@ function applyTestPreset(preset: any) {
     }
   }
   return () => {
+    finalizationRegistryRegister.mockRestore()
     ;(globalThis as any).__VAPOR__ = originalVapor
     ;(globalThis as any).__VAPOR_PLATFORM__ = originalVaporPlatform
     ;(globalThis as any).__X__ = originalX

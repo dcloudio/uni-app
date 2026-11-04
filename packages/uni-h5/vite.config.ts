@@ -20,9 +20,16 @@ import {
   stripOptions,
   uniPrePlugin,
   uniUVueTypeScriptPlugin,
+  uniWebVaporElementPlugin,
 } from '@dcloudio/uni-cli-shared'
 import { uniEasycomPlugin } from '@dcloudio/uni-h5-vite/dist/plugins/easycom'
-import { isH5CustomElement, isH5NativeTag } from '@dcloudio/uni-shared'
+import { getPreUVueContext } from '@dcloudio/uni-cli-shared/dist/preprocess/context'
+import {
+  TAGS,
+  isDom2WebVueComponentTag,
+  isH5CustomElement,
+  isH5NativeTag,
+} from '@dcloudio/uni-shared'
 import { genApiJson } from './api'
 import {
   replacePagePaths,
@@ -30,6 +37,10 @@ import {
   syncPagesFile,
   uts2ts,
 } from '../../scripts/ext-api'
+import { webVaporComponentStylesPlugin } from '../../scripts/webVaporComponents'
+import { resolveWebVaporComponents } from '../../scripts/webVaporComponentConfig'
+import { checkWebVaporVNodes } from '../../scripts/checkWebVaporVNodes'
+import { createFrameworkTemplateCompiler } from '../../scripts/frameworkBuild'
 
 function resolve(file: string) {
   return path.resolve(__dirname, file)
@@ -51,6 +62,10 @@ const vue: typeof VuePlugin = vuePluginModule.default || vuePluginModule
 let systemPagePaths: Record<string, string> = {}
 if (isX) {
   initPreContext('web', {}, 'web', true)
+  if (isX_VAPOR) {
+    // 样式提取与模板、脚本编译共用完整上下文，框架构建开关直接确定 Vapor 宏。
+    Object.assign(getPreUVueContext(), { H5: true, VUE3_VAPOR: true })
+  }
 
   const apiDirs: string[] = []
   if (process.env.UNI_APP_EXT_API_DIR) {
@@ -113,14 +128,22 @@ if (FORMAT === 'es') {
   })
 }
 
+// TAGS 是未注册 Custom Element 的框架结构标签，Vapor 可直接编入模板。
+// 仅调整框架构建，真正的组件宿主和非 Vapor 模式保持原路径。
+function realIsH5NativeTag(tag: string) {
+  return (isX_VAPOR && TAGS.includes(tag)) || isH5NativeTag(tag)
+}
+
 function realIsH5CustomElement(tag: string) {
-  return isH5CustomElement(tag, isX)
+  return !(isX_VAPOR && TAGS.includes(tag)) && isH5CustomElement(tag, isX)
 }
 
 let prePlugin: any
 if (isX) {
-  // 仅给vue,uts.ts增加条件编译
-  prePlugin = uniPrePlugin({} as any, { include: ['**/*.vue', '**/*.uts.ts'] })
+  // 仅给 vue、uni-ext-api 下的 ts 以及 uts.ts 增加条件编译
+  prePlugin = uniPrePlugin({} as any, {
+    include: ['**/*.vue', '**/uni-ext-api/uni_modules/**/*.ts', '**/*.uts.ts'],
+  })
   prePlugin.enforce = 'pre'
 }
 const autoImportOptions = initAutoImportOptions('web', {})
@@ -128,6 +151,37 @@ autoImportOptions.imports = autoImportOptions.imports!.filter(
   (item: any) => item.from !== '@dcloudio/uni-cloud'
 )
 autoImportOptions.include = ['**/uni-ext-api/uni_modules/**']
+const extApiPlugin = isX ? uniExtApi() : undefined
+if (isX_VAPOR && extApiPlugin) {
+  // Web Vapor 内置组件的元素基类必须优先从 uni-components 导入，避免 CJS 框架构建自引用 uni-h5。
+  extApiPlugin.enforce = 'pre'
+}
+// 编译只读取已同步副本，CI 没有外部组件仓库时也使用同一份配置。
+const vaporComponentsDir = resolve('../../uni-ext-api/uni_modules')
+// 同步的系统页面固定为 <模块>/pages/<页面>/<页面>.vue。
+function isVaporSystemPage(filename: string) {
+  return /^[^/]+\/pages\/([^/]+)\/\1\.vue$/.test(
+    normalizePath(path.relative(vaporComponentsDir, filename))
+  )
+}
+const vaporComponents = isX_VAPOR
+  ? resolveWebVaporComponents(vaporComponentsDir)
+  : undefined
+const excludedVaporComponents = vaporComponents
+  ? [
+      ...[...resolveWebVaporComponents(vaporComponentsDir, true).keys()].filter(
+        // 这三个组件暂由旧 TSX 编译为 Vapor，新 UVue 版本仍保持排除。
+        (name) =>
+          !vaporComponents.has(name) &&
+          !['button', 'input', 'textarea'].includes(name)
+      ),
+      // TODO 仅框架构建排除尚未适配的 list-view 系列，项目内 easycom 开发不受影响。
+      'list-view',
+      'list-item',
+      'sticky-section',
+      'sticky-header',
+    ]
+  : undefined
 
 export default defineConfig(async () => {
   // Vue JSX Vapor 插件为 ESM，仅在 Web Vapor 构建中动态加载；普通 H5 继续使用 VDOM JSX 插件。
@@ -149,7 +203,7 @@ export default defineConfig(async () => {
       __APP_VIEW__: false,
       __NODE_JS__: FORMAT === 'cjs' || isX_VAPOR_SSR_BUILD,
       __X__: isX,
-      __X_VAPOR__: isX_VAPOR,
+      __VAPOR__: isX_VAPOR,
       HTMLElement:
         FORMAT === 'cjs' || isX_VAPOR_SSR_BUILD ? 'Object' : 'HTMLElement',
     },
@@ -171,7 +225,7 @@ export default defineConfig(async () => {
           find: '@dcloudio/uni-components',
           replacement: resolve(
             isX_VAPOR
-              ? '../uni-components/src/index-vapor.ts'
+              ? './src/x/view/components/uni-components-vapor.ts'
               : '../uni-components/src/index.ts'
           ),
         },
@@ -190,8 +244,14 @@ export default defineConfig(async () => {
         ? [
             uniUVueTypeScriptPlugin(),
             prePlugin,
+            ...(isX_VAPOR
+              ? [
+                  webVaporComponentStylesPlugin(vaporComponentsDir),
+                  ...(!isX_VAPOR_SSR_BUILD ? [uniWebVaporElementPlugin()] : []),
+                ]
+              : []),
             AutoImport(autoImportOptions),
-            uniExtApi(),
+            extApiPlugin!,
             uts2ts({ target: 'uni-h5', platform: 'web' }),
           ]
         : []),
@@ -201,19 +261,64 @@ export default defineConfig(async () => {
           ? {
               compiler: require('vue/compiler-sfc'),
               features: { vapor: true },
+              script: {
+                extraOptions: ({ filename }: { filename: string }) => ({
+                  componentType: isVaporSystemPage(filename)
+                    ? 'page'
+                    : 'component',
+                }),
+              } as any,
             }
           : {}),
         template: {
+          ...(isX_VAPOR && !isX_VAPOR_SSR_BUILD
+            ? {
+                compiler: createFrameworkTemplateCompiler(
+                  require('@dcloudio/compiler-vapor-web'),
+                  path.resolve(__dirname, '../..')
+                ),
+              }
+            : {}),
           compilerOptions: {
-            isNativeTag: isH5NativeTag,
+            isNativeTag: realIsH5NativeTag,
             isCustomElement: realIsH5CustomElement,
+            ...(isX_VAPOR
+              ? {
+                  // 系统页面默认接收 App 样式。
+                  // 直接识别已同步副本，不依赖构建机是否配置了外部源码目录。
+                  isUniPage: isVaporSystemPage,
+                  // 框架构建不经过项目配置，需要自行识别内置组件。
+                  isEasyComponent: (tag: string) => {
+                    const name = tag.startsWith('v-uni-') ? tag.slice(6) : tag
+                    return (
+                      !excludedVaporComponents?.includes(name) &&
+                      isDom2WebVueComponentTag(name)
+                    )
+                  },
+                }
+              : {}),
           },
         },
       }),
       jsxPlugin,
       // 需要支持uni-chooseLocation等内置页面编译
-      ...(isX ? [uniEasycomPlugin({ exclude: UNI_EASYCOM_EXCLUDE })] : []),
+      ...(isX
+        ? [
+            uniEasycomPlugin({
+              exclude: UNI_EASYCOM_EXCLUDE,
+              // 框架中的 lang="uts" 已在前面转为 ts，再由 plugin-vue 编译模板。
+              // 此处显式传入框架模式，不依赖用户项目初始化的 Vapor 环境变量。
+              vapor: isX_VAPOR,
+              ...(isX_VAPOR
+                ? {
+                    excludeBuiltInComponents: excludedVaporComponents,
+                  }
+                : {}),
+            }),
+          ]
+        : []),
       ...(isX ? [replacePagePaths(systemPagePaths)] : []),
+      ...(isX_VAPOR && !isX_VAPOR_SSR_BUILD ? [checkWebVaporVNodes()] : []),
     ],
     esbuild: {
       // 模块阶段只剥离 TypeScript，不做语法降级；最终产物由 build.target 统一处理。
@@ -221,7 +326,7 @@ export default defineConfig(async () => {
     },
     build: {
       ssr: isX_VAPOR_SSR_BUILD
-        ? path.resolve(__dirname, 'src/index.ts')
+        ? path.resolve(__dirname, 'src/index-vapor.ts')
         : false,
       cssCodeSplit: true,
       target: 'modules', // keep import.meta...
@@ -230,7 +335,10 @@ export default defineConfig(async () => {
       lib: isX_VAPOR_SSR_BUILD
         ? undefined
         : {
-            entry: path.resolve(__dirname, 'src/index.ts'),
+            entry: path.resolve(
+              __dirname,
+              isX_VAPOR ? 'src/index-vapor.ts' : 'src/index.ts'
+            ),
             formats: [FORMAT],
           },
       assetsDir: '.',
@@ -305,8 +413,13 @@ function uniExtApi() {
           'defineSyncApi',
           'defineAsyncApi',
         ],
-        // TODO 整理autoImport规则或改为全局变量，目前下面的部分仅服务于match-media
-        '@dcloudio/uni-components': ['UniViewElementImpl', 'UniViewElement'],
+        // TODO 整理 autoImport 规则或改为全局变量，Web Vapor 外部组件的元素基类必须从 uni-components 导入，避免框架构建自引用 uni-h5。
+        '@dcloudio/uni-components': [
+          'UniTextElement',
+          'UniTextElementImpl',
+          'UniViewElementImpl',
+          'UniViewElement',
+        ],
         '@dcloudio/uni-app': ['onResize'],
       },
     ],

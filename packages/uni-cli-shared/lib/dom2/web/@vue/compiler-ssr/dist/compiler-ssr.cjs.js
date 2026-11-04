@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-ssr v3.6.0-rc.9
+  * @vue/compiler-ssr v3.6.0-rc.14
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -12,6 +12,7 @@ let _vue_shared = require("@vue/shared");
 //#region packages/compiler-ssr/src/runtimeHelpers.ts
 const SSR_INTERPOLATE = Symbol(`ssrInterpolate`);
 const SSR_RENDER_VNODE = Symbol(`ssrRenderVNode`);
+const SSR_RENDER_DYNAMIC_COMPONENT = Symbol(`ssrRenderDynamicComponent`);
 const SSR_RENDER_COMPONENT = Symbol(`ssrRenderComponent`);
 const SSR_RENDER_SLOT = Symbol(`ssrRenderSlot`);
 const SSR_RENDER_SLOT_INNER = Symbol(`ssrRenderSlotInner`);
@@ -32,6 +33,7 @@ const SSR_GET_DIRECTIVE_PROPS = Symbol(`ssrGetDirectiveProps`);
 const ssrHelpers = {
 	[SSR_INTERPOLATE]: `ssrInterpolate`,
 	[SSR_RENDER_VNODE]: `ssrRenderVNode`,
+	[SSR_RENDER_DYNAMIC_COMPONENT]: `ssrRenderDynamicComponent`,
 	[SSR_RENDER_COMPONENT]: `ssrRenderComponent`,
 	[SSR_RENDER_SLOT]: `ssrRenderSlot`,
 	[SSR_RENDER_SLOT_INNER]: `ssrRenderSlotInner`,
@@ -55,21 +57,46 @@ const ssrHelpers = {
 //#region packages/compiler-ssr/src/transforms/ssrVIf.ts
 const ssrTransformIf = (0, _vue_compiler_dom.createStructuralDirectiveTransform)(/^(?:if|else|else-if)$/, _vue_compiler_dom.processIf);
 function ssrProcessIf(node, context, disableNestedFragments = false, disableComment = false) {
-	const [rootBranch] = node.branches;
-	const ifStatement = (0, _vue_compiler_dom.createIfStatement)(rootBranch.condition, processIfBranch(rootBranch, context, disableNestedFragments));
+	const { branches } = node;
+	const ranged = !!context.options.vapor && hasLookalikeBranches(branches);
+	const [rootBranch] = branches;
+	const ifStatement = (0, _vue_compiler_dom.createIfStatement)(rootBranch.condition, processIfBranch(rootBranch, context, disableNestedFragments, ranged && 0));
 	context.pushStatement(ifStatement);
 	let currentIf = ifStatement;
-	for (let i = 1; i < node.branches.length; i++) {
-		const branch = node.branches[i];
-		const branchBlockStatement = processIfBranch(branch, context, disableNestedFragments);
+	for (let i = 1; i < branches.length; i++) {
+		const branch = branches[i];
+		const branchBlockStatement = processIfBranch(branch, context, disableNestedFragments, ranged && i);
 		if (branch.condition) currentIf = currentIf.alternate = (0, _vue_compiler_dom.createIfStatement)(branch.condition, branchBlockStatement);
 		else currentIf.alternate = branchBlockStatement;
 	}
-	if (!currentIf.alternate && !disableComment) currentIf.alternate = (0, _vue_compiler_dom.createBlockStatement)([(0, _vue_compiler_dom.createCallExpression)(`_push`, ["`<!---->`"])]);
+	if (!currentIf.alternate && (!disableComment || context.options.vapor)) currentIf.alternate = (0, _vue_compiler_dom.createBlockStatement)([(0, _vue_compiler_dom.createCallExpression)(`_push`, ["`<!---->`"])]);
 }
-function processIfBranch(branch, context, disableNestedFragments = false) {
+function processIfBranch(branch, context, disableNestedFragments = false, index = false) {
+	if (index !== false) {
+		const childContext = createChildContext(context);
+		childContext.pushStringPart(`<!--[${index}-->`);
+		processChildren(branch, childContext);
+		childContext.pushStringPart(`<!--]-->`);
+		return (0, _vue_compiler_dom.createBlockStatement)(childContext.body);
+	}
 	const { children } = branch;
 	return processChildrenAsStatement(branch, context, !disableNestedFragments && (children.length !== 1 || children[0].type !== 1) && !(children.length === 1 && children[0].type === 11));
+}
+/**
+* Whether two branches of a chain could start with the same node. Branches
+* that each render one plain element, all of different tags, are told apart
+* by the tag.
+*/
+function hasLookalikeBranches(branches) {
+	if (branches.length < 2) return false;
+	const tags = /* @__PURE__ */ new Set();
+	for (const { children } of branches) {
+		const nodes = children.filter((child) => child.type !== 3);
+		const root = nodes.length === 1 ? nodes[0] : void 0;
+		if (!root || root.type !== 1 || root.tagType !== 0 || tags.has(root.tag)) return true;
+		tags.add(root.tag);
+	}
+	return false;
 }
 //#endregion
 //#region packages/compiler-ssr/src/transforms/ssrVFor.ts
@@ -81,52 +108,6 @@ function ssrProcessFor(node, context, disableNestedFragments = false) {
 	if (!disableNestedFragments) context.pushStringPart(`<!--[-->`);
 	context.pushStatement((0, _vue_compiler_dom.createCallExpression)(context.helper(SSR_RENDER_LIST), [node.source, renderLoop]));
 	if (!disableNestedFragments) context.pushStringPart(`<!--]-->`);
-}
-//#endregion
-//#region packages/compiler-ssr/src/transforms/ssrTransformSlotOutlet.ts
-const ssrTransformSlotOutlet = (node, context) => {
-	if ((0, _vue_compiler_dom.isSlotOutlet)(node)) {
-		const { slotName, slotProps } = (0, _vue_compiler_dom.processSlotOutlet)(node, context);
-		const args = [
-			`_ctx.$slots`,
-			slotName,
-			slotProps || `{}`,
-			`null`,
-			`_push`,
-			`_parent`
-		];
-		if (context.scopeId && context.slotted !== false) args.push(`"${context.scopeId}-s"`);
-		let method = SSR_RENDER_SLOT;
-		let parent = context.parent;
-		if (parent) {
-			const children = parent.children;
-			if (parent.type === 10) parent = context.grandParent;
-			let componentType;
-			if (parent.type === 1 && parent.tagType === 1 && ((componentType = (0, _vue_compiler_dom.resolveComponentType)(parent, context, true)) === _vue_compiler_dom.TRANSITION || componentType === _vue_compiler_dom.TRANSITION_GROUP) && children.filter((c) => c.type === 1).length === 1) {
-				method = SSR_RENDER_SLOT_INNER;
-				if (!(context.scopeId && context.slotted !== false)) args.push("null");
-				args.push("true");
-			}
-		}
-		if (node.__uniTextSlot) {
-			if (args.length === 6) args.push("null");
-			args.push("true");
-		}
-		node.ssrCodegenNode = (0, _vue_compiler_dom.createCallExpression)(context.helper(method), args);
-	}
-};
-function ssrProcessSlotOutlet(node, context) {
-	const renderCall = node.ssrCodegenNode;
-	if (node.children.length) {
-		const fallbackRenderFn = (0, _vue_compiler_dom.createFunctionExpression)([]);
-		fallbackRenderFn.body = processChildrenAsStatement(node, context);
-		renderCall.arguments[3] = fallbackRenderFn;
-	}
-	if (context.withSlotScopeId) {
-		const slotScopeId = renderCall.arguments[6];
-		renderCall.arguments[6] = slotScopeId ? `${slotScopeId} + _scopeId` : `_scopeId`;
-	}
-	context.pushStatement(node.ssrCodegenNode);
 }
 //#endregion
 //#region packages/compiler-ssr/src/errors.ts
@@ -193,7 +174,7 @@ function ssrProcessSuspense(node, context) {
 	const { slotsExp, wipSlots } = wipEntry;
 	for (let i = 0; i < wipSlots.length; i++) {
 		const slot = wipSlots[i];
-		slot.fn.body = processChildrenAsStatement(slot, context);
+		slot.fn.body = processChildrenAsStatement(slot, context, !!context.options.vapor);
 	}
 	context.pushStatement((0, _vue_compiler_dom.createCallExpression)(context.helper(SSR_RENDER_SUSPENSE), [`_push`, slotsExp]));
 }
@@ -371,6 +352,7 @@ function ssrTransformTransitionGroup(node, context) {
 }
 function ssrProcessTransitionGroup(node, context) {
 	const entry = wipMap$2.get(node);
+	const disableNestedFragments = !context.options.vapor;
 	if (entry) {
 		const { tag, propsExp, scopeId } = entry;
 		if (tag.type === 7) {
@@ -389,7 +371,7 @@ function ssrProcessTransitionGroup(node, context) {
 				* be patched using the same key map) so we need to account for that here
 				* by disabling nested fragment wrappers from being generated.
 				*/
-				true,
+				disableNestedFragments,
 				/**
 				* TransitionGroup filters out comment children at runtime and thus
 				* doesn't expect comments to be present during hydration. We need to
@@ -406,10 +388,10 @@ function ssrProcessTransitionGroup(node, context) {
 			if (propsExp) context.pushStringPart(propsExp);
 			if (scopeId) context.pushStringPart(` ${scopeId}`);
 			context.pushStringPart(`>`);
-			processChildren(node, context, false, true, true);
+			processChildren(node, context, false, disableNestedFragments, true);
 			context.pushStringPart(`</${tag.value.content}>`);
 		}
-	} else processChildren(node, context, true, true, true);
+	} else processChildren(node, context, true, disableNestedFragments, true);
 }
 //#endregion
 //#region packages/compiler-ssr/src/transforms/ssrTransformTransition.ts
@@ -475,7 +457,14 @@ const ssrTransformComponent = (node, context) => {
 			return fn;
 		};
 		const slots = node.children.length ? (0, _vue_compiler_dom.buildSlots)(node, context, buildSSRSlotFn).slots : `null`;
-		if (typeof component !== "string") node.ssrCodegenNode = (0, _vue_compiler_dom.createCallExpression)(context.helper(SSR_RENDER_VNODE), [
+		if (typeof component !== "string" && rawOptionsMap.get(context.root).vapor) node.ssrCodegenNode = (0, _vue_compiler_dom.createCallExpression)(context.helper(SSR_RENDER_DYNAMIC_COMPONENT), [
+			`_push`,
+			component,
+			propsExp,
+			slots,
+			`_parent`
+		]);
+		else if (typeof component !== "string") node.ssrCodegenNode = (0, _vue_compiler_dom.createCallExpression)(context.helper(SSR_RENDER_VNODE), [
 			`_push`,
 			(0, _vue_compiler_dom.createCallExpression)(context.helper(_vue_compiler_dom.CREATE_VNODE), [
 				component,
@@ -588,6 +577,52 @@ function clone(v) {
 		for (const key in v) res[key] = clone(v[key]);
 		return res;
 	} else return v;
+}
+//#endregion
+//#region packages/compiler-ssr/src/transforms/ssrTransformSlotOutlet.ts
+const ssrTransformSlotOutlet = (node, context) => {
+	if ((0, _vue_compiler_dom.isSlotOutlet)(node)) {
+		const { slotName, slotProps } = (0, _vue_compiler_dom.processSlotOutlet)(node, context);
+		const args = [
+			`_ctx.$slots`,
+			slotName,
+			slotProps || `{}`,
+			`null`,
+			`_push`,
+			`_parent`
+		];
+		if (context.scopeId && context.slotted !== false) args.push(`"${context.scopeId}-s"`);
+		let method = SSR_RENDER_SLOT;
+		let parent = context.parent;
+		if (parent && !rawOptionsMap.get(context.root).vapor) {
+			const children = parent.children;
+			if (parent.type === 10) parent = context.grandParent;
+			let componentType;
+			if (parent.type === 1 && parent.tagType === 1 && ((componentType = (0, _vue_compiler_dom.resolveComponentType)(parent, context, true)) === _vue_compiler_dom.TRANSITION || componentType === _vue_compiler_dom.TRANSITION_GROUP) && children.filter((c) => c.type === 1).length === 1) {
+				method = SSR_RENDER_SLOT_INNER;
+				if (!(context.scopeId && context.slotted !== false)) args.push("null");
+				args.push("true");
+			}
+		}
+		if (node.__uniTextSlot) {
+			if (args.length === 6) args.push("null");
+			args.push("true");
+		}
+		node.ssrCodegenNode = (0, _vue_compiler_dom.createCallExpression)(context.helper(method), args);
+	}
+};
+function ssrProcessSlotOutlet(node, context) {
+	const renderCall = node.ssrCodegenNode;
+	if (node.children.length) {
+		const fallbackRenderFn = (0, _vue_compiler_dom.createFunctionExpression)([]);
+		fallbackRenderFn.body = processChildrenAsStatement(node, context);
+		renderCall.arguments[3] = fallbackRenderFn;
+	}
+	if (context.withSlotScopeId) {
+		const slotScopeId = renderCall.arguments[6];
+		renderCall.arguments[6] = slotScopeId ? `${slotScopeId} + _scopeId` : `_scopeId`;
+	}
+	context.pushStatement(node.ssrCodegenNode);
 }
 //#endregion
 //#region packages/compiler-ssr/src/ssrCodegenTransform.ts

@@ -1,0 +1,30 @@
+uni-input,
+div:where([uni-input]) {
+  background-color: #ffffff;
+}
+
+.uni-input-placeholder {
+  color: #757575;
+}
+
+@layer uni-field-selection {
+  :where(.uni-field-selection-probe) {
+    background-color: var(--uni-selection-probe-background-color);
+  }
+}
+
+.uni-input-input.uni-field-selection[data-uni-selection]::selection {
+  background-color: var(--uni-selection-background-color);
+}
+
+@media (prefers-color-scheme: dark) {
+  uni-input {
+    color: #ffffff;
+    background-color: #3b3b3b;
+  }
+
+  div:where([uni-input]) {
+    color: #ffffff;
+    background-color: #3b3b3b;
+  }
+}

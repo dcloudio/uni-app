@@ -1,7 +1,9 @@
 import fs from 'fs-extra'
 import path from 'path'
+import { isUtf8 } from 'node:buffer'
 import { parse } from '@vue/compiler-sfc'
 import { sync } from 'fast-glob'
+import { format, resolveConfig } from 'prettier'
 
 function resolve(file: string) {
   return path.resolve(__dirname, file)
@@ -44,6 +46,7 @@ function createPreContext(
   return { ...preContext, ...context }
 }
 
+// Web Vapor 从 uni-ext-api 编译 Loading；这里仍负责旧 Web 和两种 MP 的副本，不能随 Vapor 迁移删除。
 const syncTargets: SyncTarget[] = [
   {
     path: path.resolve(uniComponentsPath, './lib-x/uniloading'),
@@ -73,27 +76,85 @@ const components = [
   },
 ]
 
-export function syncExtComponentFile(apiDirs: string[]) {
+export function parseSfc(code: string, filename: string) {
+  return parse(code, { filename })
+}
+
+export function removeSfcStyles(code: string) {
+  return normalizeTrailingNewline(
+    code.replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '')
+  )
+}
+
+export function normalizeTrailingNewline(code: string) {
+  const newline = code.includes('\r\n') ? '\r\n' : '\n'
+  return code.replace(/(?:\r?\n)+$/, newline)
+}
+
+export function syncExtApiDir(sourceDir: string, outputDir: string) {
+  if (fs.existsSync(outputDir)) {
+    fs.emptyDirSync(outputDir)
+  }
+  fs.copySync(sourceDir, outputDir)
+  sync('**/*.uts', { absolute: true, cwd: outputDir }).forEach((file) => {
+    fs.renameSync(file, file + '.ts')
+  })
+  sync('**/*.{vue,uvue}', { absolute: true, cwd: outputDir }).forEach(
+    (file) => {
+      const newFile = file.replace(/\.uvue$/, '.vue')
+      if (newFile !== file) fs.renameSync(file, newFile)
+      const content = fs.readFileSync(newFile, 'utf8')
+      const normalized = content
+        .replace(/\r\n/g, '\n')
+        .replace(/\.uvue(['"])/g, '.vue$1')
+      if (normalized !== content) fs.writeFileSync(newFile, normalized)
+    }
+  )
+
+  // SFC 已在上方处理；其他文本只处理普通文件，避免新逻辑写入软链接目标。
+  sync(
+    '**/*.{ts,tsx,js,jsx,mjs,cjs,json,jsonc,md,css,scss,sass,less,html,ets,kt,kts,java,swift,c,cpp,h,hpp,xml,plist}',
+    { absolute: true, cwd: outputDir, followSymbolicLinks: false }
+  ).forEach((file) => {
+    const bytes = fs.readFileSync(file)
+    // 跳过二进制、非 UTF-8 及二进制 plist，保留原始内容。
+    if (
+      bytes.includes(0) ||
+      !isUtf8(bytes) ||
+      (file.endsWith('.plist') &&
+        bytes.subarray(0, 8).toString() === 'bplist00')
+    )
+      return
+    const content = bytes.toString('utf8')
+    const normalized = content.replace(/\r\n/g, '\n')
+    if (normalized !== content) fs.writeFileSync(file, normalized)
+  })
+}
+
+export function syncExtComponentFile(
+  apiDirs: string[],
+  targets: SyncTarget[] = syncTargets
+) {
   try {
     const { preprocess } = require('../packages/uni-preprocess')
     apiDirs.forEach((apiDir) => {
       components.forEach((component) => {
         const componentDir = `uni-${component.originName}`
-        sync(path.join(apiDir, `./${componentDir}/package.json`)).forEach(
-          (packageJsonPath) => {
-            const componentsDir = path.resolve(packageJsonPath, '../components')
-            syncComponent(
-              componentsDir,
-              component,
-              preprocess,
-              syncTargets
-            )
-          }
-        )
+        sync(`${componentDir}/package.json`, {
+          cwd: apiDir,
+          absolute: true,
+        }).forEach((packageJsonPath) => {
+          const componentsDir = path.resolve(packageJsonPath, '../components')
+          syncComponent(componentsDir, component, preprocess, targets)
+        })
       })
     })
   } catch (error) {
-    console.error('[syncExtComponentFile] sync ext component file error:', error)
+    console.error(
+      '[syncExtComponentFile] sync ext component file error:',
+      error
+    )
+    throw error
   }
 }
 
@@ -112,7 +173,10 @@ function syncComponent(
   )
     ? path.join(componentsDir, component.originName)
     : componentsDir
-  const files = sync(path.join(componentRoot, '**/*'), { onlyFiles: true })
+  // glob 模式固定使用正斜杠，文件路径交给 cwd 和 path.resolve 处理。
+  const files = sync('**/*', { cwd: componentRoot, onlyFiles: true }).map(
+    (file) => path.resolve(componentRoot, file)
+  )
   const originComponentPath = ['.vue', '.uvue']
     .map((ext) => path.join(componentRoot, `${component.originName}${ext}`))
     .find((filePath) => files.includes(filePath))
@@ -121,7 +185,7 @@ function syncComponent(
     files.forEach((filePath) => {
       const relativePath = path.relative(componentRoot, filePath)
       const { dir, name, ext } = path.parse(relativePath)
-      const code = fs.readFileSync(filePath, 'utf8')
+      const code = fs.readFileSync(filePath, 'utf8').replace(/\r\n/g, '\n')
       // MP 使用 UniElement 类型，与 APP 的辅助文件实现相同。
       const preprocessContext =
         name === 'useLoadingStyle' && target.context.MP
@@ -144,9 +208,7 @@ function syncComponent(
           dir,
           `${targetName}.vue`
         )
-        const { descriptor, errors } = parse(targetCode, {
-          filename: filePath,
-        })
+        const { descriptor, errors } = parseSfc(targetCode, filePath)
         if (errors.length) {
           console.error(
             `[syncExtComponentFile] parse ${filePath} error:`,
@@ -162,10 +224,7 @@ function syncComponent(
               descriptor.styles.map((style) => style.content).join('\n')
             )
           )
-          fs.outputFileSync(
-            targetFilePath,
-            removeStyles(targetCode)
-          )
+          fs.outputFileSync(targetFilePath, removeSfcStyles(targetCode))
         } else {
           fs.outputFileSync(targetFilePath, targetCode)
         }
@@ -173,9 +232,20 @@ function syncComponent(
       }
 
       if (ext === '.ts' || ext === '.js' || ext === '.uts') {
+        const targetFilePath = path.resolve(
+          target.path,
+          dir,
+          `${name}.${target.scriptLang}`
+        )
         fs.outputFileSync(
-          path.resolve(target.path, dir, `${name}.${target.scriptLang}`),
-          preprocessedCode
+          targetFilePath,
+          target.scriptLang === 'ts'
+            ? format(preprocessedCode, {
+                ...resolveConfig.sync(targetFilePath),
+                filepath: targetFilePath,
+                endOfLine: 'lf',
+              })
+            : preprocessedCode
         )
       }
     })
@@ -190,15 +260,4 @@ function normalizeScriptLang(code: string, scriptLang: ScriptLang) {
       : `${attrs} lang="${scriptLang}"`
     return `<script${normalizedAttrs}>`
   })
-}
-
-function removeStyles(code: string) {
-  return normalizeTrailingNewline(
-    code.replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '')
-  )
-}
-
-function normalizeTrailingNewline(code: string) {
-  const newline = code.includes('\r\n') ? '\r\n' : '\n'
-  return code.replace(/(?:\r?\n)+$/, newline)
 }

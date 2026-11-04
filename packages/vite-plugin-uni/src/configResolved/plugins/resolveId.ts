@@ -85,8 +85,9 @@ export function uniResolveIdPlugin(
         return
       }
       if (BUILT_IN_MODULES[id as BuiltInModulesKey]) {
+        // 模块 ID 必须使用正斜杠，否则 Windows 会绕过 module-alias 的包名前缀匹配。
         return (resolveCache[id] = resolveBuiltIn(
-          path.join(id, BUILT_IN_MODULES[id as BuiltInModulesKey])
+          path.posix.join(id, BUILT_IN_MODULES[id as BuiltInModulesKey])
         ))
       }
       if (process.env.UNI_PLATFORM !== 'app') {

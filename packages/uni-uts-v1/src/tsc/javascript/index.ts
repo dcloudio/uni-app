@@ -22,6 +22,7 @@ type ResolvedUasmLoad =
 interface UTS2JavaScriptOptions extends Omit<RPT2Options, 'transformers'> {
   dom2?: boolean
   excludeStandardTypeScript?: boolean
+  transformTypeScriptAsUTS?: boolean
   jsonImportMode?: 'uts'
   platform: 'app-android' | 'app-ios' | 'app-harmony' | 'mp-weixin' | 'web'
   inputDir: string

@@ -28,7 +28,9 @@
     "@vue/server-renderer": "catalog:",
     "@vue/shared": "catalog:",
     "debug": "catalog:",
+    "estree-walker": "catalog:",
     "fs-extra": "catalog:",
+    "hammer-touchemulator": "0.0.2",
     "mime": "catalog:",
     "module-alias": "catalog:"
   },

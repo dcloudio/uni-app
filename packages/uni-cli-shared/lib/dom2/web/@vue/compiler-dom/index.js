@@ -1,7 +1,7 @@
 'use strict'
 
-module.exports = require(
-  process.env.NODE_ENV === 'production'
-    ? './dist/compiler-dom.cjs.prod.js'
-    : './dist/compiler-dom.cjs.js'
-)
+if (process.env.NODE_ENV === 'production') {
+  module.exports = require('./dist/compiler-dom.cjs.prod.js')
+} else {
+  module.exports = require('./dist/compiler-dom.cjs.js')
+}

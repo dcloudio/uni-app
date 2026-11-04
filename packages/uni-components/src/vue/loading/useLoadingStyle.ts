@@ -32,7 +32,6 @@ export function useLoadingStyle(
     observer = new ResizeObserver((entries) => {
       cb(el)
     })
-
     observer!.observe(el)
   }
 

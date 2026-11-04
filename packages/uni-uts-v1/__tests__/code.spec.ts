@@ -5,6 +5,7 @@ import {
   type GenProxyCodeOptions,
   genProxyCode,
   genProxyCodeV2,
+  parseInterfaceTypes,
   prepareProxyCodeAndFillOptions,
 } from '../src/code'
 import { ERR_MSG_PLACEHOLDER } from '../src/utils'
@@ -539,6 +540,241 @@ describe('code', () => {
       'export const UniCanvasElementImpl = /*#__PURE__*/ initUTSElementProxyClass'
     )
   })
+
+  describe.each([undefined, 'true'] as const)(
+    'interface alias return values in iOS (DOM2: %s)',
+    (dom2) => {
+      async function prepareInterfaceAliasProxy(
+        overrides: Partial<GenProxyCodeOptions> = {}
+      ) {
+        const module = resolve(
+          __dirname,
+          'examples/uts/utssdk/test-interface-alias'
+        )
+        const options = createGenProxyCodeOptions({
+          platform: 'app-ios',
+          ...overrides,
+        })
+        const decls = await withUniAppXEnv(
+          { x: 'true', dom2, platform: 'app-ios' },
+          () => prepareProxyCodeAndFillOptions(module, options)
+        )
+        return { module, options, decls }
+      }
+
+      test('only collects exported aliases from interface.uts', async () => {
+        const module = resolve(
+          __dirname,
+          'examples/uts/utssdk/test-interface-alias'
+        )
+        const types = await parseInterfaceTypes(
+          module,
+          createGenProxyCodeOptions({ platform: 'app-ios' })
+        )
+        expect(Object.keys(types.alias).sort()).toEqual(
+          [
+            'PushChannelManager',
+            'NestedPushChannelManager',
+            'ListedManager',
+            'SharedJSExportManagerAlias',
+            'SecondaryManagerAlias',
+            'CycleA',
+            'CycleB',
+          ].sort()
+        )
+      })
+
+      test('excludes private aliases from module and platform metadata', async () => {
+        const { options } = await prepareInterfaceAliasProxy({
+          androidPreprocessor: async (code) => code,
+          iosPreprocessor: async (code) => code,
+        })
+        for (const meta of [
+          options.meta!,
+          options.meta!.android!,
+          options.meta!.ios!,
+        ]) {
+          expect(meta.types).toMatchObject({
+            ChannelManager: 'interface',
+            PushChannelManager: 'typealias',
+            ListedManager: 'typealias',
+            SharedJSExportManagerAlias: 'typealias',
+          })
+          for (const name of [
+            'ForwardManager',
+            'InternalManager',
+            'UnusedManager',
+            'PrivateGeneric',
+            'InternalJSExportParent',
+            'InternalJSExportManager',
+          ]) {
+            expect(meta.types).not.toHaveProperty(name)
+            expect(meta.typeParams).not.toContain(name)
+          }
+        }
+      })
+
+      test('uses one canonical proxy for cross-file, forward, and local aliases', async () => {
+        const { module, options, decls } = await prepareInterfaceAliasProxy()
+        for (const method of [
+          'getChannelManager',
+          'getPushChannelManager',
+          'getNestedPushChannelManager',
+          'getListedManager',
+          'getPlatformManager',
+          'getNullableManager',
+          'getManager',
+        ]) {
+          expect(
+            decls.find(
+              (decl) =>
+                decl.type === 'FunctionDeclaration' && decl.method === method
+            )
+          ).toMatchObject({
+            return: { type: 'interface', options: 'ChannelManager' },
+          })
+        }
+        expect(
+          decls.find(
+            (decl) => decl.type === 'Class' && decl.cls === 'ManagerFactory'
+          )
+        ).toMatchObject({
+          options: {
+            methods: {
+              getManagerByJs: {
+                return: { type: 'interface', options: 'ChannelManager' },
+              },
+            },
+          },
+        })
+        const code = await genProxyCode(module, decls, options)
+        expect(
+          code.match(/registerUTSInterface\('ChannelManagerOptions'/g)
+        ).toHaveLength(1)
+        expect(code).toContain(
+          'return: {"type":"interface","options":"ChannelManagerOptions"}'
+        )
+        expect(code).not.toContain(
+          "registerUTSInterface('PushChannelManagerOptions'"
+        )
+        expect(options.meta!.types.PushChannelManager).toBe('typealias')
+      })
+
+      test('registers interface aliases returned by other interfaces', async () => {
+        const { decls } = await prepareInterfaceAliasProxy()
+        expect(
+          decls.find(
+            (decl) =>
+              decl.type === 'InterfaceDeclaration' &&
+              decl.cls === 'ChannelManager'
+          )
+        ).toMatchObject({
+          options: {
+            methods: {
+              selfByJs: {
+                return: { type: 'interface', options: 'ChannelManager' },
+              },
+              getSecondaryByJs: {
+                return: { type: 'interface', options: 'SecondaryManager' },
+              },
+            },
+          },
+        })
+        expect(
+          decls.some(
+            (decl) =>
+              decl.type === 'InterfaceDeclaration' &&
+              decl.cls === 'SecondaryManager'
+          )
+        ).toBe(true)
+      })
+
+      test('preserves JSExport alias returns and stops at cyclic aliases', async () => {
+        const { decls } = await prepareInterfaceAliasProxy()
+        for (const method of [
+          'getExportedManagerAlias',
+          'getNestedExportedManagerAlias',
+          'getChildExportedManagerAlias',
+          'getSharedJSExportManagerAlias',
+          'getCyclicManager',
+        ]) {
+          expect(
+            decls.find(
+              (decl) =>
+                decl.type === 'FunctionDeclaration' && decl.method === method
+            )
+          ).toHaveProperty('return', undefined)
+        }
+        expect(
+          decls.find(
+            (decl) =>
+              decl.type === 'FunctionDeclaration' &&
+              decl.method === 'getExportedManager'
+          )
+        ).toMatchObject({
+          return: { type: 'interface', options: 'ExportedManager' },
+        })
+      })
+    }
+  )
+
+  describe.each([undefined, 'true'] as const)(
+    'interface JSDoc keepAlive in iOS (DOM2: %s)',
+    (dom2) => {
+      test('uses interface tags for methods and callable properties without class decorators', async () => {
+        const module = resolve(
+          __dirname,
+          'examples/uts/utssdk/test-jsdoc-keep-alive'
+        )
+        const options = createGenProxyCodeOptions({ platform: 'app-ios' })
+        const decls = await withUniAppXEnv(
+          { x: 'true', dom2, platform: 'app-ios' },
+          () => prepareProxyCodeAndFillOptions(module, options)
+        )
+        const iface = decls.find(
+          (decl) => decl.type === 'InterfaceDeclaration' && decl.cls === 'BA'
+        )
+        expect(iface).toMatchObject({
+          options: {
+            methods: {
+              helloByJs: { keepAlive: true, params: [] },
+              methodByJs: { keepAlive: true },
+              aliasByJs: { keepAlive: true },
+              selfByJs: {
+                keepAlive: true,
+                return: { type: 'interface', options: 'BA' },
+              },
+              inheritedByJs: { keepAlive: true },
+              ordinaryByJs: { keepAlive: false },
+              nearMatchByJs: { keepAlive: false },
+              lineCommentByJs: { keepAlive: false },
+              blockCommentByJs: { keepAlive: false },
+            },
+            props: ['label'],
+          },
+        })
+        expect(
+          decls.find(
+            (decl) => decl.type === 'Class' && decl.cls === 'ExportedBA'
+          )
+        ).toMatchObject({
+          options: {
+            methods: {
+              pingByJs: { keepAlive: true },
+              pongByJs: { keepAlive: true },
+            },
+          },
+        })
+        const code = await genProxyCode(module, decls, options)
+        expect(code).toContain('"helloByJs":{"async":false,"keepAlive":true')
+        expect(code).toContain(
+          '"ordinaryByJs":{"async":false,"keepAlive":false'
+        )
+        expect(code).not.toContain('worldByJs')
+        expect(options.meta!.types).not.toHaveProperty('Hello')
+      })
+    }
+  )
 
   defineGenProxyCodeV2Tests()
 })

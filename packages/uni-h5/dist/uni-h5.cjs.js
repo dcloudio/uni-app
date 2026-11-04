@@ -1,10 +1,4 @@
 "use strict";
-var __defProp = Object.defineProperty;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField = (obj, key, value) => {
-  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
 Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 const vue = require("vue");
 const shared = require("@vue/shared");
@@ -328,6 +322,37 @@ function get$pageByPage(page) {
 function isBuiltInElement(target) {
   return target.tagName.indexOf("UNI-") === 0;
 }
+function createSvgIcon(path, color = "#000", size = 27, stroke = false) {
+  const pathProps = {
+    d: path,
+    fill: stroke ? "none" : color
+  };
+  if (stroke) {
+    pathProps.stroke = color;
+    pathProps.strokeWidth = 2;
+    pathProps.strokeLinecap = "round";
+  }
+  return vue.createVNode(
+    "svg",
+    {
+      width: size,
+      height: size,
+      viewBox: "0 0 32 32"
+    },
+    [
+      vue.createVNode("path", pathProps, null, 8, [
+        "d",
+        "fill",
+        "stroke",
+        "strokeWidth",
+        "strokeLinecap"
+      ])
+    ],
+    8,
+    ["width", "height"]
+  );
+}
+const createSvgIconVNode = createSvgIcon;
 const ICON_PATH_CANCEL = "M20.928 10.176l-4.928 4.928-4.928-4.928-0.896 0.896 4.928 4.928-4.928 4.928 0.896 0.896 4.928-4.928 4.928 4.928 0.896-0.896-4.928-4.928 4.928-4.928-0.896-0.896zM16 2.080q-3.776 0-7.040 1.888-3.136 1.856-4.992 4.992-1.888 3.264-1.888 7.040t1.888 7.040q1.856 3.136 4.992 4.992 3.264 1.888 7.040 1.888t7.040-1.888q3.136-1.856 4.992-4.992 1.888-3.264 1.888-7.040t-1.888-7.040q-1.856-3.136-4.992-4.992-3.264-1.888-7.040-1.888zM16 28.64q-3.424 0-6.4-1.728-2.848-1.664-4.512-4.512-1.728-2.976-1.728-6.4t1.728-6.4q1.664-2.848 4.512-4.512 2.976-1.728 6.4-1.728t6.4 1.728q2.848 1.664 4.512 4.512 1.728 2.976 1.728 6.4t-1.728 6.4q-1.664 2.848-4.512 4.512-2.976 1.728-6.4 1.728z";
 const ICON_PATH_CLEAR = "M16 0q-4.352 0-8.064 2.176-3.616 2.144-5.76 5.76-2.176 3.712-2.176 8.064t2.176 8.064q2.144 3.616 5.76 5.76 3.712 2.176 8.064 2.176t8.064-2.176q3.616-2.144 5.76-5.76 2.176-3.712 2.176-8.064t-2.176-8.064q-2.144-3.616-5.76-5.76-3.712-2.176-8.064-2.176zM22.688 21.408q0.32 0.32 0.304 0.752t-0.336 0.736-0.752 0.304-0.752-0.32l-5.184-5.376-5.376 5.184q-0.32 0.32-0.752 0.304t-0.736-0.336-0.304-0.752 0.32-0.752l5.376-5.184-5.184-5.376q-0.32-0.32-0.304-0.752t0.336-0.752 0.752-0.304 0.752 0.336l5.184 5.376 5.376-5.184q0.32-0.32 0.752-0.304t0.752 0.336 0.304 0.752-0.336 0.752l-5.376 5.184 5.184 5.376z";
 const ICON_PATH_DOWNLOAD = "M15.808 1.696q-3.776 0-7.072 1.984-3.2 1.888-5.088 5.152-1.952 3.392-1.952 7.36 0 3.776 1.952 7.072 1.888 3.2 5.088 5.088 3.296 1.952 7.072 1.952 3.968 0 7.36-1.952 3.264-1.888 5.152-5.088 1.984-3.296 1.984-7.072 0-4-1.984-7.36-1.888-3.264-5.152-5.152-3.36-1.984-7.36-1.984zM20.864 18.592l-3.776 4.928q-0.448 0.576-1.088 0.576t-1.088-0.576l-3.776-4.928q-0.448-0.576-0.24-0.992t0.944-0.416h2.976v-8.928q0-0.256 0.176-0.432t0.4-0.176h1.216q0.224 0 0.4 0.176t0.176 0.432v8.928h2.976q0.736 0 0.944 0.416t-0.24 0.992z";
@@ -337,32 +362,8 @@ const ICON_PATH_SUCCESS_NO_CIRCLE = "M1.952 18.080q-0.32-0.352-0.416-0.88t0.128-
 const ICON_PATH_SUCCESS = "M15.808 0.16q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM24.832 11.328l-11.264 11.104q-0.032 0.032-0.112 0.032t-0.112-0.032l-5.216-5.376q-0.096-0.128 0-0.288l0.704-0.96q0.032-0.064 0.112-0.064t0.112 0.032l4.256 3.264q0.064 0.032 0.144 0.032t0.112-0.032l10.336-8.608q0.064-0.064 0.144-0.064t0.112 0.064l0.672 0.672q0.128 0.128 0 0.224z";
 const ICON_PATH_WAITING = "M15.84 0.096q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM23.008 21.92l-0.512 0.896q-0.096 0.128-0.224 0.064l-8-3.808q-0.096-0.064-0.16-0.128-0.128-0.096-0.128-0.288l0.512-12.096q0-0.064 0.048-0.112t0.112-0.048h1.376q0.064 0 0.112 0.048t0.048 0.112l0.448 10.848 6.304 4.256q0.064 0.064 0.080 0.128t-0.016 0.128z";
 const ICON_PATH_WARN = "M15.808 0.16q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM15.136 8.672h1.728q0.128 0 0.224 0.096t0.096 0.256l-0.384 10.24q0 0.064-0.048 0.112t-0.112 0.048h-1.248q-0.096 0-0.144-0.048t-0.048-0.112l-0.384-10.24q0-0.16 0.096-0.256t0.224-0.096zM16 23.328q-0.48 0-0.832-0.352t-0.352-0.848 0.352-0.848 0.832-0.352 0.832 0.352 0.352 0.848-0.352 0.848-0.832 0.352z";
-const ICON_PATH_BACK = "M21.781 7.844l-9.063 8.594 9.063 8.594q0.25 0.25 0.25 0.609t-0.25 0.578q-0.25 0.25-0.578 0.25t-0.578-0.25l-9.625-9.125q-0.156-0.125-0.203-0.297t-0.047-0.359q0-0.156 0.047-0.328t0.203-0.297l9.625-9.125q0.25-0.25 0.578-0.25t0.578 0.25q0.25 0.219 0.25 0.578t-0.25 0.578z";
+const ICON_PATH_BACK = "M20 25L11 16L20 7";
 const ICON_PATH_CLOSE = "M17.25 16.156l7.375-7.313q0.281-0.281 0.281-0.641t-0.281-0.641q-0.25-0.25-0.625-0.25t-0.625 0.25l-7.375 7.344-7.313-7.344q-0.25-0.25-0.625-0.25t-0.625 0.25q-0.281 0.25-0.281 0.625t0.281 0.625l7.313 7.344-7.375 7.344q-0.281 0.25-0.281 0.625t0.281 0.625q0.125 0.125 0.281 0.188t0.344 0.063q0.156 0 0.328-0.063t0.297-0.188l7.375-7.344 7.375 7.406q0.125 0.156 0.297 0.219t0.328 0.063q0.188 0 0.344-0.078t0.281-0.203q0.281-0.25 0.281-0.609t-0.281-0.641l-7.375-7.406z";
-function createSvgIconVNode(path, color = "#000", size = 27) {
-  return vue.createVNode(
-    "svg",
-    {
-      width: size,
-      height: size,
-      viewBox: "0 0 32 32"
-    },
-    [
-      vue.createVNode(
-        "path",
-        {
-          d: path,
-          fill: color
-        },
-        null,
-        8,
-        ["d", "fill"]
-      )
-    ],
-    8,
-    ["width", "height"]
-  );
-}
 function useCurrentPageId() {
   {
     const { $pageInstance } = vue.getCurrentInstance();
@@ -502,7 +503,7 @@ function findUniTarget(target) {
   return target;
 }
 function createNativeEvent(evt, htmlElement = false) {
-  const { type, timeStamp, target, currentTarget } = evt;
+  const { target, currentTarget } = evt;
   let realTarget, realCurrentTarget;
   {
     realTarget = uniShared.normalizeTarget(
@@ -510,6 +511,7 @@ function createNativeEvent(evt, htmlElement = false) {
     );
     realCurrentTarget = uniShared.normalizeTarget(currentTarget);
   }
+  const { type, timeStamp } = evt;
   const event = {
     type,
     timeStamp,
@@ -613,6 +615,9 @@ function defineGlobalData(app, defaultGlobalData) {
       options.globalData = newGlobalData;
     }
   });
+}
+function createUnsupportedRender$1(name) {
+  return () => (vue.openBlock(), vue.createElementBlock("uni-" + name, null, name + " is unsupported"));
 }
 function converPx(value) {
   if (/^-?\d+[ur]px$/i.test(value)) {
@@ -725,6 +730,8 @@ const animation = {
     startAnimation(this);
   }
 };
+const defineRuntimeComponent = vue.defineComponent;
+const createUnsupportedRender = createUnsupportedRender$1;
 const defineBuiltInComponent = (options) => {
   options.__reserved = true;
   const { props: props2, mixins } = options;
@@ -739,13 +746,13 @@ const defineSystemComponent = (options) => {
     MODE: 3
     // 标记为vue3
   };
-  return vue.defineComponent(options);
+  return defineRuntimeComponent(options);
 };
 const defineUnsupportedComponent = (name) => {
   return defineBuiltInComponent({
     name: shared.capitalize(shared.camelize(name)),
     setup() {
-      return () => (vue.openBlock(), vue.createElementBlock("uni-" + name, null, name + " is unsupported"));
+      return createUnsupportedRender(name);
     }
   });
 };
@@ -2275,37 +2282,24 @@ const inflateRaw = (...args) => {
 };
 const deflateRaw = (...args) => {
 };
-const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
-  name: "ResizeSensor",
-  props: {
-    initial: {
-      type: Boolean,
-      default: false
-    }
-  },
-  emits: ["resize"],
-  setup(props2, {
-    emit: emit2
-  }) {
-    const rootRef = vue.ref(null);
-    const reset = useResizeSensorReset(rootRef);
-    const update = useResizeSensorUpdate(rootRef, emit2, reset);
-    return () => vue.createVNode("uni-resize-sensor", {
-      "ref": rootRef,
-      "onAnimationstartOnce": update
-    }, [vue.createVNode("div", {
-      "onScroll": update
-    }, [vue.createVNode("div", null, null)], 40, ["onScroll"]), vue.createVNode("div", {
-      "onScroll": update
-    }, [vue.createVNode("div", null, null)], 40, ["onScroll"])], 40, ["onAnimationstartOnce"]);
+const resizeSensorProps = {
+  initial: {
+    type: Boolean,
+    default: false
   }
-});
+};
+function useResizeSensor(props2, emit2) {
+  const rootRef = vue.ref(null);
+  const reset = useResizeSensorReset(rootRef);
+  const update = useResizeSensorUpdate(rootRef, emit2, reset);
+  return { rootRef, update };
+}
 function useResizeSensorUpdate(rootRef, emit2, reset) {
-  const size = vue.reactive({
-    width: -1,
-    height: -1
-  });
-  vue.watch(() => shared.extend({}, size), (value) => emit2("resize", value));
+  const size = vue.reactive({ width: -1, height: -1 });
+  vue.watch(
+    () => shared.extend({}, size),
+    (value) => emit2("resize", value)
+  );
   return () => {
     const rootEl = rootRef.value;
     if (!rootEl)
@@ -2318,16 +2312,34 @@ function useResizeSensorUpdate(rootRef, emit2, reset) {
 }
 function useResizeSensorReset(rootRef) {
   return () => {
-    const {
-      firstElementChild,
-      lastElementChild
-    } = rootRef.value;
+    const { firstElementChild, lastElementChild } = rootRef.value;
     firstElementChild.scrollLeft = 1e5;
     firstElementChild.scrollTop = 1e5;
     lastElementChild.scrollLeft = 1e5;
     lastElementChild.scrollTop = 1e5;
   };
 }
+const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
+  name: "ResizeSensor",
+  props: resizeSensorProps,
+  emits: ["resize"],
+  setup(props2, {
+    emit: emit2
+  }) {
+    const {
+      rootRef,
+      update
+    } = useResizeSensor(props2, emit2);
+    return () => vue.createVNode("uni-resize-sensor", {
+      "ref": rootRef,
+      "onAnimationstartOnce": update
+    }, [vue.createVNode("div", {
+      "onScroll": update
+    }, [vue.createVNode("div", null, null)], 40, ["onScroll"]), vue.createVNode("div", {
+      "onScroll": update
+    }, [vue.createVNode("div", null, null)], 40, ["onScroll"])], 40, ["onAnimationstartOnce"]);
+  }
+});
 const pixelRatio = 1;
 function wrapper(canvas, hidpi = true) {
   const pixel_ratio = hidpi ? pixelRatio : 1;
@@ -2361,7 +2373,7 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-const props$q = {
+const props$n = {
   canvasId: {
     type: String,
     default: ""
@@ -2381,7 +2393,7 @@ const index$z = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$q,
+  props: props$n,
   computed: {
     id() {
       return this.canvasId;
@@ -2846,7 +2858,7 @@ function useMethods(props2, canvasRef, actionsWaiting) {
   });
 }
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$p = {
+const props$m = {
   name: {
     type: String,
     default: ""
@@ -2854,7 +2866,7 @@ const props$p = {
 };
 const index$y = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$p,
+  props: props$m,
   emits: ["change"],
   setup(props2, {
     emit: emit2,
@@ -2906,7 +2918,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const props$o = {
+const props$l = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -2955,7 +2967,7 @@ const props$o = {
 };
 const index$x = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
-  props: props$o,
+  props: props$l,
   setup(props2, {
     slots
   }) {
@@ -3056,7 +3068,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$n = {
+const props$k = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -3267,7 +3279,7 @@ function useQuill(props2, rootRef, trigger) {
   useContextInfo();
   useSubscribe();
 }
-const props$m = /* @__PURE__ */ shared.extend({}, props$n, {
+const editorProps = /* @__PURE__ */ shared.extend({}, props$k, {
   id: {
     type: String,
     default: ""
@@ -3297,16 +3309,28 @@ const props$m = /* @__PURE__ */ shared.extend({}, props$n, {
     default: false
   }
 });
+const editorEmit = [
+  "ready",
+  "focus",
+  "blur",
+  "input",
+  "statuschange",
+  ...emit$1
+];
+function useEditor(props2, emit2) {
+  const rootRef = vue.ref(null);
+  useQuill(props2);
+  useKeyboard$1(props2, rootRef);
+  return rootRef;
+}
 const index$w = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
-  props: props$m,
-  emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
+  props: editorProps,
+  emits: editorEmit,
   setup(props2, {
     emit: emit2
   }) {
-    const rootRef = vue.ref(null);
-    useQuill(props2);
-    useKeyboard$1(props2, rootRef);
+    const rootRef = useEditor(props2);
     return () => {
       return vue.createVNode("uni-editor", {
         "ref": rootRef,
@@ -3358,37 +3382,38 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
+const iconProps = {
+  type: {
+    type: String,
+    required: true,
+    default: ""
+  },
+  size: {
+    type: [String, Number],
+    default: 23
+  },
+  color: {
+    type: String,
+    default: ""
+  }
+};
+function useIcon(props2) {
+  return vue.computed(() => ICONS[props2.type]);
+}
 const index$v = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
-  props: {
-    type: {
-      type: String,
-      required: true,
-      default: ""
-    },
-    size: {
-      type: [String, Number],
-      default: 23
-    },
-    color: {
-      type: String,
-      default: ""
-    }
-  },
+  props: iconProps,
   setup(props2) {
     const rootRef = vue.ref(null);
-    const path = vue.computed(() => ICONS[props2.type]);
+    const path = useIcon(props2);
     return () => {
-      const {
-        value
-      } = path;
       return vue.createVNode("uni-icon", {
         "ref": rootRef
-      }, [value && value.d && createSvgIconVNode(value.d, props2.color || value.c, rpx2px(props2.size))], 512);
+      }, [path.value && path.value.d && createSvgIconVNode(path.value.d, props2.color || path.value.c, rpx2px(props2.size))], 512);
     };
   }
 });
-const props$l = {
+const props$j = {
   src: {
     type: String,
     default: ""
@@ -3427,7 +3452,7 @@ const IMAGE_MODES = {
 };
 const index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
-  props: props$l,
+  props: props$j,
   setup(props2, {
     emit: emit2
   }) {
@@ -3590,6 +3615,88 @@ function useImageSize(rootRef, props2, state) {
     resetSize
   };
 }
+const selectionProperty = "--uni-selection-background-color";
+const selectionAttribute = "data-uni-selection";
+const probeBackgroundProperty = "--uni-selection-probe-background-color";
+const fieldSelectionProps = {
+  selectionClass: {
+    type: String,
+    default: ""
+  }
+};
+const fieldSelectionProbeStyle = "display: none !important;";
+function clearSelection(field) {
+  field.style.removeProperty(selectionProperty);
+  field.removeAttribute(selectionAttribute);
+}
+function resolveSelectionColor(probe) {
+  const color = getComputedStyle(probe).backgroundColor;
+  if (color === "transparent" || color.replace(/\s/g, "") === "rgba(0,0,0,0)") {
+    probe.style.setProperty(probeBackgroundProperty, "#000000");
+    try {
+      return getComputedStyle(probe).backgroundColor === color ? color : "";
+    } finally {
+      probe.style.removeProperty(probeBackgroundProperty);
+    }
+  }
+  return color;
+}
+function updateSelection(field, color) {
+  if (!color) {
+    clearSelection(field);
+    return;
+  }
+  if (field.style.getPropertyValue(selectionProperty) !== color) {
+    field.style.setProperty(selectionProperty, color);
+  }
+  if (!field.hasAttribute(selectionAttribute)) {
+    field.setAttribute(selectionAttribute, "");
+  }
+}
+function observeSelection(probe, field) {
+  let refreshFrame = null;
+  function refreshSelection() {
+    refreshFrame = null;
+    if (!field.isConnected || field.ownerDocument.activeElement !== field) {
+      return;
+    }
+    updateSelection(field, resolveSelectionColor(probe));
+    refreshFrame = requestAnimationFrame(refreshSelection);
+  }
+  function startRefresh() {
+    if (refreshFrame === null) {
+      refreshSelection();
+    }
+  }
+  function stopRefresh() {
+    if (refreshFrame !== null) {
+      cancelAnimationFrame(refreshFrame);
+      refreshFrame = null;
+    }
+  }
+  field.addEventListener("focus", startRefresh);
+  field.addEventListener("blur", stopRefresh);
+  startRefresh();
+  return () => {
+    field.removeEventListener("focus", startRefresh);
+    field.removeEventListener("blur", stopRefresh);
+    stopRefresh();
+    clearSelection(field);
+  };
+}
+function useFieldSelection(props2, fieldRef) {
+  const selectionRef = vue.ref(null);
+  vue.watch(
+    [() => props2.selectionClass, fieldRef, selectionRef],
+    ([className, field, probe], _, onCleanup) => {
+      if (className && field && probe) {
+        onCleanup(observeSelection(probe, field));
+      }
+    },
+    { immediate: true, flush: "post" }
+  );
+  return selectionRef;
+}
 function throttle(fn, wait) {
   let last = 0;
   let timeout;
@@ -3703,7 +3810,7 @@ const INPUT_MODES = [
   "email",
   "url"
 ];
-const props$k = /* @__PURE__ */ shared.extend(
+const props$i = /* @__PURE__ */ shared.extend(
   {},
   {
     name: {
@@ -3793,7 +3900,7 @@ const props$k = /* @__PURE__ */ shared.extend(
       default: ""
     }
   },
-  props$n
+  props$k
 );
 const emit = [
   "input",
@@ -3848,7 +3955,11 @@ function useBase(props2, rootRef, emit2) {
   );
   vue.watch(
     () => state.maxlength,
-    (val) => state.value = state.value.slice(0, val),
+    (val) => {
+      if (val >= 0) {
+        state.value = state.value.slice(0, val);
+      }
+    },
     {
       immediate: false
     }
@@ -3933,14 +4044,14 @@ function useAutoFocus(props2, fieldRef) {
 function useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput) {
   function checkSelection() {
     const field = fieldRef.value;
-    if (field && state.focus && state.selectionStart > -1 && state.selectionEnd > -1 && field.type !== "number") {
+    if (field && state.focus && state.selectionStart > -1 && state.selectionEnd > -1 && typeof field.selectionStart === "number") {
       field.selectionStart = state.selectionStart;
       field.selectionEnd = state.selectionEnd;
     }
   }
   function checkCursor() {
     const field = fieldRef.value;
-    if (field && state.focus && state.selectionStart < 0 && state.selectionEnd < 0 && state.cursor > -1 && field.type !== "number") {
+    if (field && state.focus && state.selectionStart < 0 && state.selectionEnd < 0 && state.cursor > -1 && typeof field.selectionStart === "number") {
       field.selectionEnd = field.selectionStart = state.cursor;
     }
   }
@@ -4069,164 +4180,248 @@ function resolveDigitDecimalPoint(event, cache, state, input, resetCache) {
     }
   }
 }
-const props$j = /* @__PURE__ */ shared.extend({}, props$k, {
-  placeholderClass: {
-    type: String,
-    default: "input-placeholder"
+const webSelectionProps$1 = fieldSelectionProps;
+const props$h = /* @__PURE__ */ shared.extend(
+  {},
+  props$i,
+  {
+    placeholderClass: {
+      type: String,
+      default: "input-placeholder"
+    },
+    textContentType: {
+      type: String,
+      default: ""
+    }
   },
-  textContentType: {
-    type: String,
-    default: ""
-  }
-});
+  webSelectionProps$1
+);
 function isPaste(event) {
   return event.inputType === "insertFromPaste";
 }
 function useCache(props2, type) {
   if (type.value === "number") {
     const value = typeof props2.modelValue === "undefined" ? props2.value : props2.modelValue;
-    const cache = vue.ref(typeof value !== "undefined" && value !== null ? value.toLocaleString() : "");
-    vue.watch(() => props2.modelValue, (value2) => {
-      cache.value = typeof value2 !== "undefined" && value2 !== null ? value2.toLocaleString() : "";
-    });
-    vue.watch(() => props2.value, (value2) => {
-      cache.value = typeof value2 !== "undefined" && value2 !== null ? value2.toLocaleString() : "";
-    });
+    const cache = vue.ref(
+      typeof value !== "undefined" && value !== null ? value.toLocaleString() : ""
+    );
+    vue.watch(
+      () => props2.modelValue,
+      (value2) => {
+        cache.value = typeof value2 !== "undefined" && value2 !== null ? value2.toLocaleString() : "";
+      }
+    );
+    vue.watch(
+      () => props2.value,
+      (value2) => {
+        cache.value = typeof value2 !== "undefined" && value2 !== null ? value2.toLocaleString() : "";
+      }
+    );
     return cache;
   } else {
     return vue.ref("");
   }
 }
-const Input = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Input",
-  props: props$j,
-  emits: ["confirm", ...emit],
-  setup(props2, {
-    emit: emit2,
-    expose
-  }) {
-    const INPUT_TYPES = ["text", "number", "idcard", "digit", "password", "tel"];
-    const AUTOCOMPLETES = ["off", "one-time-code"];
-    const type = vue.computed(() => {
-      let type2 = "";
-      switch (props2.type) {
-        case "text":
-          type2 = "text";
-          if (props2.confirmType === "search") {
-            type2 = "search";
-          }
-          break;
-        case "idcard":
-          type2 = "text";
-          break;
-        case "digit":
-          type2 = "number";
-          break;
-        case "none":
-          type2 = "text";
-          break;
-        default:
-          type2 = INPUT_TYPES.includes(props2.type) ? props2.type : "text";
-          break;
-      }
-      return props2.password ? "password" : type2;
-    });
-    const autocomplete = vue.computed(() => {
-      const camelizeIndex = AUTOCOMPLETES.indexOf(props2.textContentType);
-      const kebabCaseIndex = AUTOCOMPLETES.indexOf(shared.hyphenate(props2.textContentType));
-      const index2 = camelizeIndex !== -1 ? camelizeIndex : kebabCaseIndex !== -1 ? kebabCaseIndex : 0;
-      return AUTOCOMPLETES[index2];
-    });
-    const inputmode = vue.computed(() => {
-      if (props2.inputmode !== void 0) {
-        return props2.inputmode;
-      }
-      if (INPUT_MODES.includes(props2.type)) {
-        return props2.type;
-      }
-      let inputmodeMap = {};
-      {
-        inputmodeMap = {
-          idcard: "text"
-        };
-      }
-      return inputmodeMap[props2.type];
-    });
-    let cache = useCache(props2, type);
-    let resetCache = {
-      fn: null
-    };
-    const rootRef = vue.ref(null);
-    const {
-      fieldRef,
-      state,
-      scopedAttrsState,
-      fixDisabledColor,
-      trigger
-    } = useField(props2, rootRef, emit2, (event, state2) => {
-      const input = event.target;
-      if (type.value === "number") {
-        if (resetCache.fn) {
-          input.removeEventListener("blur", resetCache.fn);
-          resetCache.fn = null;
+const emits$2 = ["confirm", ...emit];
+function useInput(props2, { emit: emit2, expose }) {
+  const INPUT_TYPES = [
+    "text",
+    "number",
+    "idcard",
+    "digit",
+    "password",
+    "tel",
+    "search",
+    "email"
+  ];
+  const AUTOCOMPLETES = ["off", "one-time-code"];
+  const type = vue.computed(() => {
+    let type2 = "";
+    switch (props2.type) {
+      case "text":
+        type2 = "text";
+        if (props2.confirmType === "search") {
+          type2 = "search";
         }
-        if (input.validity && !input.validity.valid) {
-          if ((!cache.value || !input.value) && event.data === "-" || cache.value[0] === "-" && event.inputType === "deleteContentBackward") {
-            cache.value = "-";
-            state2.value = "";
-            resetCache.fn = () => {
-              cache.value = input.value = "";
-            };
-            input.addEventListener("blur", resetCache.fn);
-            return false;
-          }
-          const res = resolveDigitDecimalPoint(event, cache, state2, input, resetCache);
-          if (typeof res === "boolean")
-            return res;
-          cache.value = state2.value = input.value = cache.value === "-" ? "" : cache.value;
-          return false;
-        } else {
-          const res = resolveDigitDecimalPoint(event, cache, state2, input, resetCache);
-          if (typeof res === "boolean")
-            return res;
-          cache.value = input.value;
-        }
-        if (state2.maxlength > 0 && input.value.length > state2.maxlength && !isPaste(event)) {
-          input.value = cache.value = state2.value;
+        break;
+      case "idcard":
+        type2 = "text";
+        break;
+      case "digit":
+        type2 = "number";
+        break;
+      case "none":
+        type2 = "text";
+        break;
+      default:
+        type2 = INPUT_TYPES.includes(props2.type) ? props2.type : "text";
+        break;
+    }
+    return props2.password ? "password" : type2;
+  });
+  const autocomplete = vue.computed(() => {
+    const camelizeIndex = AUTOCOMPLETES.indexOf(props2.textContentType);
+    const kebabCaseIndex = AUTOCOMPLETES.indexOf(
+      shared.hyphenate(props2.textContentType)
+    );
+    const index2 = camelizeIndex !== -1 ? camelizeIndex : kebabCaseIndex !== -1 ? kebabCaseIndex : 0;
+    return AUTOCOMPLETES[index2];
+  });
+  const inputmode = vue.computed(() => {
+    if (props2.inputmode !== void 0) {
+      return props2.inputmode;
+    }
+    if (INPUT_MODES.includes(props2.type)) {
+      return props2.type;
+    }
+    let inputmodeMap = {};
+    {
+      inputmodeMap = {
+        idcard: "text"
+      };
+    }
+    return inputmodeMap[props2.type];
+  });
+  let cache = useCache(props2, type);
+  let resetCache = { fn: null };
+  const rootRef = vue.ref(null);
+  const { fieldRef, state, scopedAttrsState, fixDisabledColor, trigger } = useField(props2, rootRef, emit2, (event, state2) => {
+    const input = event.target;
+    if (type.value === "number") {
+      if (resetCache.fn) {
+        input.removeEventListener("blur", resetCache.fn);
+        resetCache.fn = null;
+      }
+      if (input.validity && !input.validity.valid) {
+        if ((!cache.value || !input.value) && event.data === "-" || cache.value[0] === "-" && event.inputType === "deleteContentBackward") {
+          cache.value = "-";
+          state2.value = "";
+          resetCache.fn = () => {
+            cache.value = input.value = "";
+          };
+          input.addEventListener("blur", resetCache.fn);
           return false;
         }
+        const res = resolveDigitDecimalPoint(
+          event,
+          cache,
+          state2,
+          input,
+          resetCache
+        );
+        if (typeof res === "boolean")
+          return res;
+        cache.value = state2.value = input.value = cache.value === "-" ? "" : cache.value;
+        return false;
+      } else {
+        const res = resolveDigitDecimalPoint(
+          event,
+          cache,
+          state2,
+          input,
+          resetCache
+        );
+        if (typeof res === "boolean")
+          return res;
+        cache.value = input.value;
       }
-    });
-    vue.watch(() => state.value, (value) => {
+      if (state2.maxlength > 0 && input.value.length > state2.maxlength && !isPaste(event)) {
+        input.value = cache.value = state2.value;
+        return false;
+      }
+    }
+  });
+  const selectionRef = useFieldSelection(props2, fieldRef);
+  vue.watch(
+    () => state.value,
+    (value) => {
       if (props2.type === "number" && !(cache.value === "-" && value === "")) {
         cache.value = value.toString();
       }
-    });
-    vue.watch(() => props2.maxlength, (length) => {
+    }
+  );
+  vue.watch(
+    () => props2.maxlength,
+    (length) => {
       length = parseInt(length, 10);
-      const realValue = state.value.slice(0, length);
-      realValue !== state.value && (state.value = realValue);
-    });
-    const NUMBER_TYPES = ["number", "digit"];
-    const step = vue.computed(() => NUMBER_TYPES.includes(props2.type) ? props2.step : "");
-    function onKeyUpEnter(event) {
-      if (event.key !== "Enter") {
+      if (!(length >= 0)) {
         return;
       }
-      const input = event.target;
-      event.stopPropagation();
-      trigger("confirm", event, {
-        value: input.value
-      });
-      !props2.confirmHold && input.blur();
+      const realValue = state.value.slice(0, length);
+      realValue !== state.value && (state.value = realValue);
     }
-    expose({
-      $triggerInput: (detail) => {
-        emit2("update:modelValue", detail.value);
-        emit2("update:value", detail.value);
-        state.value = detail.value;
-      }
+  );
+  const NUMBER_TYPES = ["number", "digit"];
+  const step = vue.computed(
+    () => NUMBER_TYPES.includes(props2.type) ? props2.step : ""
+  );
+  function onKeyUpEnter(event) {
+    if (event.key !== "Enter") {
+      return;
+    }
+    const input = event.target;
+    event.stopPropagation();
+    trigger("confirm", event, {
+      value: input.value
     });
+    !props2.confirmHold && input.blur();
+  }
+  expose({
+    $triggerInput: (detail) => {
+      emit2("update:modelValue", detail.value);
+      emit2("update:value", detail.value);
+      state.value = detail.value;
+    }
+  });
+  function onInput(event) {
+    const value = event.target.value.toString();
+    if (type.value === "number" && state.maxlength > 0 && value.length > state.maxlength) {
+      if (isPaste(event)) {
+        state.value = value.slice(0, state.maxlength);
+      }
+      return;
+    }
+    if (value.length === 0 && event.inputType === "insertText" && event.data === ".") {
+      return;
+    }
+    state.value = value;
+  }
+  return {
+    rootRef,
+    fieldRef,
+    state,
+    scopedAttrsState,
+    selectionRef,
+    fixDisabledColor,
+    type,
+    autocomplete,
+    inputmode,
+    cache,
+    step,
+    onKeyUpEnter,
+    onInput
+  };
+}
+const Input = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Input",
+  props: props$h,
+  emits: emits$2,
+  setup(props2, context) {
+    const {
+      rootRef,
+      fieldRef,
+      state,
+      scopedAttrsState,
+      selectionRef,
+      fixDisabledColor,
+      type,
+      autocomplete,
+      inputmode,
+      cache,
+      step,
+      onKeyUpEnter,
+      onInput
+    } = useInput(props2, context);
     return () => {
       let inputNode = props2.disabled && fixDisabledColor ? vue.createVNode("input", {
         "key": "disabled-input",
@@ -4237,58 +4432,59 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "type": type.value,
         "maxlength": state.maxlength,
         "step": step.value,
-        "class": "uni-input-input",
+        "class": props2.selectionClass ? "uni-input-input uni-field-selection" : "uni-input-input",
         "style": props2.cursorColor ? {
           caretColor: props2.cursorColor
         } : {},
         "inputmode": inputmode.value,
         "onFocus": (event) => event.target.blur()
-      }, null, 44, ["value", "readonly", "type", "maxlength", "step", "inputmode", "onFocus"]) : vue.createVNode("input", {
+      }, null, 46, ["value", "readonly", "type", "maxlength", "step", "inputmode", "onFocus"]) : vue.createVNode("input", {
         "key": "input",
         "ref": fieldRef,
         "value": state.value,
-        "onInput": vue.withModifiers((event) => {
-          const value = event.target.value.toString();
-          if (type.value === "number" && state.maxlength > 0 && value.length > state.maxlength) {
-            if (isPaste(event)) {
-              state.value = value.slice(0, state.maxlength);
-            }
-            return;
-          }
-          if (value.length === 0 && event.inputType === "insertText" && event.data === ".") {
-            return;
-          }
-          state.value = value;
-        }, ["stop"]),
+        "onInput": vue.withModifiers(onInput, ["stop"]),
         "disabled": !!props2.disabled,
         "type": type.value,
         "maxlength": state.maxlength,
         "step": step.value,
         "enterkeyhint": props2.confirmType,
         "pattern": props2.type === "number" ? "[0-9]*" : void 0,
-        "class": "uni-input-input",
+        "class": props2.selectionClass ? "uni-input-input uni-field-selection" : "uni-input-input",
         "style": props2.cursorColor ? {
           caretColor: props2.cursorColor
         } : {},
         "autocomplete": autocomplete.value,
         "onKeyup": onKeyUpEnter,
         "inputmode": inputmode.value
-      }, null, 44, ["value", "onInput", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup", "inputmode"]);
+      }, null, 46, ["value", "onInput", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup", "inputmode"]);
       return vue.createVNode("uni-input", {
         "ref": rootRef
       }, [vue.createVNode("div", {
         "class": "uni-input-wrapper"
-      }, [vue.withDirectives(vue.createVNode("div", vue.mergeProps(scopedAttrsState.attrs, {
+      }, [props2.selectionClass && vue.createVNode("div", vue.mergeProps({
+        "ref": selectionRef
+      }, scopedAttrsState.attrs, {
+        "class": ["uni-field-selection-probe", props2.selectionClass],
+        "aria-hidden": "true",
+        "style": fieldSelectionProbeStyle
+      }), null, 16), vue.withDirectives(vue.createVNode("div", vue.mergeProps(scopedAttrsState.attrs, {
         "style": props2.placeholderStyle,
         "class": ["uni-input-placeholder", props2.placeholderClass]
       }), [props2.placeholder], 16), [[vue.vShow, !(state.value.length || cache.value === "-" || cache.value.includes("."))]]), props2.confirmType === "search" ? vue.createVNode("form", {
         "action": "",
+        "novalidate": true,
         "onSubmit": (event) => event.preventDefault(),
         "class": "uni-input-form"
-      }, [inputNode], 40, ["onSubmit"]) : inputNode])], 512);
+      }, [inputNode], 40, ["novalidate", "onSubmit"]) : inputNode])], 512);
     };
   }
 });
+const movableAreaProps = {
+  scaleArea: {
+    type: Boolean,
+    default: false
+  }
+};
 function entries(obj) {
   return Object.keys(obj).map((key) => [key, obj[key]]);
 }
@@ -4346,81 +4542,74 @@ function flatVNode(nodes) {
   }
   return array;
 }
-const movableAreaProps = {
-  scaleArea: {
-    type: Boolean,
-    default: false
-  }
-};
-const index$t = /* @__PURE__ */ defineBuiltInComponent({
-  inheritAttrs: false,
-  name: "MovableArea",
-  props: movableAreaProps,
-  setup(props2, {
-    slots
-  }) {
-    const rootRef = vue.ref(null);
-    const _isMounted = vue.ref(false);
-    let {
-      setContexts,
-      events: movableAreaEvents
-    } = useMovableAreaState(props2, rootRef);
-    const {
-      $listeners,
-      $attrs,
-      $excludeAttrs
-    } = useAttrs();
-    const _listeners = $listeners.value;
-    let events = ["onTouchstart", "onTouchmove", "onTouchend"];
-    events.forEach((event) => {
-      let existing = _listeners[event];
-      let ours = movableAreaEvents[`_${event}`];
-      _listeners[event] = existing ? [].concat(existing, ours) : ours;
-    });
-    let movableViewItems = [];
-    const originMovableViewContexts = [];
-    function updateMovableViewContexts() {
-      const contexts = [];
-      for (let index2 = 0; index2 < movableViewItems.length; index2++) {
-        let movableViewItem = movableViewItems[index2];
-        {
-          movableViewItem = movableViewItem.el;
-        }
-        const movableViewContext = originMovableViewContexts.find((context) => movableViewItem === context.rootRef.value);
-        if (movableViewContext) {
-          contexts.push(vue.markRaw(movableViewContext));
-        }
-      }
-      setContexts(contexts);
-    }
-    const addMovableViewContext = (movableViewContext) => {
-      originMovableViewContexts.push(movableViewContext);
-      updateMovableViewContexts();
-    };
-    const removeMovableViewContext = (movableViewContext) => {
-      const index2 = originMovableViewContexts.indexOf(movableViewContext);
-      if (index2 >= 0) {
-        originMovableViewContexts.splice(index2, 1);
-        updateMovableViewContexts();
-      }
-    };
-    vue.provide("_isMounted", _isMounted);
-    vue.provide("movableAreaRootRef", rootRef);
-    vue.provide("addMovableViewContext", addMovableViewContext);
-    vue.provide("removeMovableViewContext", removeMovableViewContext);
-    return () => {
-      const defaultSlots = slots.default && slots.default();
+function useMovableAreaChildren$1(rootRef, slots, setContexts) {
+  let movableViewItems = [];
+  const originMovableViewContexts = [];
+  function updateMovableViewContexts() {
+    const contexts = [];
+    for (let index2 = 0; index2 < movableViewItems.length; index2++) {
+      let movableViewItem = movableViewItems[index2];
       {
-        movableViewItems = flatVNode(defaultSlots);
+        movableViewItem = movableViewItem.el;
       }
-      return vue.createVNode("uni-movable-area", vue.mergeProps({
-        "ref": rootRef
-      }, $attrs.value, $excludeAttrs.value, _listeners), [vue.createVNode(ResizeSensor, {
-        "onResize": movableAreaEvents._resize
-      }, null, 8, ["onResize"]), movableViewItems], 16);
-    };
+      const movableViewContext = originMovableViewContexts.find(
+        (context) => movableViewItem === context.rootRef.value
+      );
+      if (movableViewContext) {
+        contexts.push(vue.markRaw(movableViewContext));
+      }
+    }
+    setContexts(contexts);
   }
-});
+  const addMovableViewContext = (movableViewContext) => {
+    originMovableViewContexts.push(movableViewContext);
+    updateMovableViewContexts();
+  };
+  const removeMovableViewContext = (movableViewContext) => {
+    const index2 = originMovableViewContexts.indexOf(movableViewContext);
+    if (index2 >= 0) {
+      originMovableViewContexts.splice(index2, 1);
+      updateMovableViewContexts();
+    }
+  };
+  vue.provide("addMovableViewContext", addMovableViewContext);
+  vue.provide("removeMovableViewContext", removeMovableViewContext);
+  return () => {
+    const defaultSlots = slots.default && slots.default();
+    {
+      movableViewItems = flatVNode(defaultSlots);
+    }
+    return movableViewItems;
+  };
+}
+const useMovableAreaChildren = useMovableAreaChildren$1;
+function useMovableArea(props2, slots) {
+  const rootRef = vue.ref(null);
+  const _isMounted = vue.ref(false);
+  let { setContexts, events: movableAreaEvents } = useMovableAreaState(
+    props2,
+    rootRef
+  );
+  const { $listeners, $attrs, $excludeAttrs } = useAttrs();
+  const _listeners = $listeners.value;
+  let events = ["onTouchstart", "onTouchmove", "onTouchend"];
+  events.forEach((event) => {
+    let existing = _listeners[event];
+    let ours = movableAreaEvents[`_${event}`];
+    _listeners[event] = existing ? [].concat(existing, ours) : ours;
+  });
+  const renderChildren = useMovableAreaChildren(rootRef, slots, setContexts);
+  vue.provide("_isMounted", _isMounted);
+  vue.provide("movableAreaRootRef", rootRef);
+  return {
+    rootRef,
+    renderChildren,
+    movableAreaEvents,
+    $attrs,
+    $excludeAttrs,
+    _listeners
+  };
+}
 function calc(e2) {
   return Math.sqrt(e2.x * e2.x + e2.y * e2.y);
 }
@@ -4553,6 +4742,31 @@ function useMovableAreaState(props2, rootRef) {
     }
   };
 }
+const index$t = /* @__PURE__ */ defineBuiltInComponent({
+  inheritAttrs: false,
+  name: "MovableArea",
+  props: movableAreaProps,
+  setup(props2, {
+    slots
+  }) {
+    const {
+      rootRef,
+      renderChildren,
+      movableAreaEvents,
+      $attrs,
+      $excludeAttrs,
+      _listeners
+    } = useMovableArea(props2, slots);
+    return () => {
+      const movableViewItems = renderChildren();
+      return vue.createVNode("uni-movable-area", vue.mergeProps({
+        "ref": rootRef
+      }, $attrs.value, $excludeAttrs.value, _listeners), [vue.createVNode(ResizeSensor, {
+        "onResize": movableAreaEvents._resize
+      }, null, 8, ["onResize"]), movableViewItems], 16);
+    };
+  }
+});
 function e(e2, t2, n) {
   return e2 > t2 - n && e2 < t2 + n;
 }
@@ -4900,28 +5114,12 @@ const movableViewProps = {
 function v(a, b) {
   return +((1e3 * a - 1e3 * b) / 1e3).toFixed(1);
 }
-const index$s = /* @__PURE__ */ defineBuiltInComponent({
-  name: "MovableView",
-  props: movableViewProps,
-  emits: ["change", "scale"],
-  setup(props2, {
-    slots,
-    emit: emit2
-  }) {
-    const rootRef = vue.ref(null);
-    const trigger = useCustomEvent(rootRef, emit2);
-    const {
-      setParent
-    } = useMovableViewState(props2, trigger, rootRef);
-    return () => {
-      return vue.createVNode("uni-movable-view", {
-        "ref": rootRef
-      }, [vue.createVNode(ResizeSensor, {
-        "onResize": setParent
-      }, null, 8, ["onResize"]), slots.default && slots.default()], 512);
-    };
-  }
-});
+function useMovableView(props2, emit2) {
+  const rootRef = vue.ref(null);
+  const trigger = useCustomEvent(rootRef, emit2);
+  const { setParent } = useMovableViewState(props2, trigger, rootRef);
+  return { rootRef, setParent };
+}
 let requesting = false;
 function _requestAnimationFrame(e2) {
   if (!requesting) {
@@ -4965,7 +5163,9 @@ function g(friction, execute, endCallback) {
       let isDone = friction2.done();
       if (!isDone) {
         if (!record2.cancelled) {
-          record2.id = requestAnimationFrame(fn.bind(null, record2, friction2, execute2, endCallback2));
+          record2.id = requestAnimationFrame(
+            fn.bind(null, record2, friction2, execute2, endCallback2)
+          );
         }
       }
       if (isDone && endCallback2) {
@@ -5044,23 +5244,37 @@ function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, ma
     let val = Number(props2.damping);
     return isNaN(val) ? 20 : val;
   });
-  const xMove = vue.computed(() => props2.direction === "all" || props2.direction === "horizontal");
-  const yMove = vue.computed(() => props2.direction === "all" || props2.direction === "vertical");
+  const xMove = vue.computed(
+    () => props2.direction === "all" || props2.direction === "horizontal"
+  );
+  const yMove = vue.computed(
+    () => props2.direction === "all" || props2.direction === "vertical"
+  );
   const xSync = vue.ref(_getPx(props2.x));
   const ySync = vue.ref(_getPx(props2.y));
-  vue.watch(() => props2.x, (val) => {
-    xSync.value = _getPx(val);
-  });
-  vue.watch(() => props2.y, (val) => {
-    ySync.value = _getPx(val);
-  });
+  vue.watch(
+    () => props2.x,
+    (val) => {
+      xSync.value = _getPx(val);
+    }
+  );
+  vue.watch(
+    () => props2.y,
+    (val) => {
+      ySync.value = _getPx(val);
+    }
+  );
   vue.watch(xSync, (val) => {
     _setX(val);
   });
   vue.watch(ySync, (val) => {
     _setY(val);
   });
-  const _STD = new STD(1, 9 * Math.pow(dampingNumber.value, 2) / 40, dampingNumber.value);
+  const _STD = new STD(
+    1,
+    9 * Math.pow(dampingNumber.value, 2) / 40,
+    dampingNumber.value
+  );
   function _getLimitXY(x, y) {
     let outOfBounds = false;
     if (x > maxX.value) {
@@ -5117,15 +5331,19 @@ function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, ma
     _STD._springY._endPosition = _translateY.value;
     _STD._springScale._endPosition = _scale.value;
     _STD.setEnd(x, y, scale, 1);
-    _SFA = g(_STD, function() {
-      let data = _STD.x();
-      let x2 = data.x;
-      let y2 = data.y;
-      let scale2 = data.scale;
-      _setTransform(x2, y2, scale2, source, r, o);
-    }, function() {
-      _SFA.cancel();
-    });
+    _SFA = g(
+      _STD,
+      function() {
+        let data = _STD.x();
+        let x2 = data.x;
+        let y2 = data.y;
+        let scale2 = data.scale;
+        _setTransform(x2, y2, scale2, source, r, o);
+      },
+      function() {
+        _SFA.cancel();
+      }
+    );
   }
   function _setTransform(x, y, scale, source = "", r, o) {
     if (!(x !== null && x.toString() !== "NaN" && typeof x === "number")) {
@@ -5185,7 +5403,11 @@ function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, ma
         if (_SFA) {
           _SFA.cancel();
         }
-        _animationTo(val + _scaleOffset.x, ySync.value + _scaleOffset.y, _scale.value);
+        _animationTo(
+          val + _scaleOffset.x,
+          ySync.value + _scaleOffset.y,
+          _scale.value
+        );
       }
     }
     return val;
@@ -5198,7 +5420,11 @@ function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, ma
         if (_SFA) {
           _SFA.cancel();
         }
-        _animationTo(xSync.value + _scaleOffset.x, val + _scaleOffset.y, _scale.value);
+        _animationTo(
+          xSync.value + _scaleOffset.x,
+          val + _scaleOffset.y,
+          _scale.value
+        );
       }
     }
     return val;
@@ -5236,9 +5462,12 @@ function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScal
   vue.watch(scaleMaxNumber, () => {
     _setScaleMinOrMax();
   });
-  vue.watch(() => props2.scaleValue, (val) => {
-    scaleValueSync.value = Number(val) || 0;
-  });
+  vue.watch(
+    () => props2.scaleValue,
+    (val) => {
+      scaleValueSync.value = Number(val) || 0;
+    }
+  );
   const {
     _updateBoundary,
     _updateOffset,
@@ -5261,7 +5490,22 @@ function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScal
     xSync,
     ySync,
     _STD
-  } = useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, maxY, minX, minY, _translateX, _translateY, _SFA, _FA, _adjustScale, trigger);
+  } = useMovableViewTransform(
+    rootRef,
+    props2,
+    _scaleOffset,
+    _scale,
+    maxX,
+    maxY,
+    minX,
+    minY,
+    _translateX,
+    _translateY,
+    _SFA,
+    _FA,
+    _adjustScale,
+    trigger
+  );
   function _updateScale(scale, animat) {
     if (props2.scale) {
       scale = _adjustScale(scale);
@@ -5348,10 +5592,16 @@ function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScal
 }
 function useMovableViewState(props2, trigger, rootRef) {
   const _isMounted = vue.inject("_isMounted", vue.ref(false));
-  vue.inject("addMovableViewContext", () => {
-  });
-  vue.inject("removeMovableViewContext", () => {
-  });
+  vue.inject(
+    "addMovableViewContext",
+    () => {
+    }
+  );
+  vue.inject(
+    "removeMovableViewContext",
+    () => {
+    }
+  );
   let _scale = vue.ref(1);
   let _oldScale = vue.ref(1);
   let _isScaling = vue.ref(false);
@@ -5364,9 +5614,12 @@ function useMovableViewState(props2, trigger, rootRef) {
     return isNaN(val) || val <= 0 ? 2 : val;
   });
   new Friction(1, frictionNumber.value);
-  vue.watch(() => props2.disabled, () => {
-    __handleTouchStart();
-  });
+  vue.watch(
+    () => props2.disabled,
+    () => {
+      __handleTouchStart();
+    }
+  );
   const {
     // scale
     _updateOldScale,
@@ -5393,7 +5646,18 @@ function useMovableViewState(props2, trigger, rootRef) {
     xSync,
     ySync,
     _STD
-  } = useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScaling, _translateX, _translateY, _SFA, _FA);
+  } = useMovableViewInit(
+    props2,
+    rootRef,
+    trigger,
+    _scale,
+    _oldScale,
+    _isScaling,
+    _translateX,
+    _translateY,
+    _SFA,
+    _FA
+  );
   function __handleTouchStart() {
     if (!_isScaling.value) {
       if (!props2.disabled) {
@@ -5417,7 +5681,10 @@ function useMovableViewState(props2, trigger, rootRef) {
     _updateOffset();
     _updateWH(scale);
     _updateBoundary();
-    let limitXY = _getLimitXY(xSync.value + _scaleOffset.x, ySync.value + _scaleOffset.y);
+    let limitXY = _getLimitXY(
+      xSync.value + _scaleOffset.x,
+      ySync.value + _scaleOffset.y
+    );
     let x = limitXY.x;
     let y = limitXY.y;
     _setTransform(x, y, scale, "", true);
@@ -5427,6 +5694,27 @@ function useMovableViewState(props2, trigger, rootRef) {
     setParent
   };
 }
+const index$s = /* @__PURE__ */ defineBuiltInComponent({
+  name: "MovableView",
+  props: movableViewProps,
+  emits: ["change", "scale"],
+  setup(props2, {
+    slots,
+    emit: emit2
+  }) {
+    const {
+      rootRef,
+      setParent
+    } = useMovableView(props2, emit2);
+    return () => {
+      return vue.createVNode("uni-movable-view", {
+        "ref": rootRef
+      }, [vue.createVNode(ResizeSensor, {
+        "onResize": setParent
+      }, null, 8, ["onResize"]), slots.default && slots.default()], 512);
+    };
+  }
+});
 const OPEN_TYPES = [
   "navigate",
   "redirect",
@@ -5961,7 +6249,7 @@ function _activeAnimation(state, props2) {
   }
 }
 const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$i = {
+const props$g = {
   name: {
     type: String,
     default: ""
@@ -5969,7 +6257,7 @@ const props$i = {
 };
 const index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
-  props: props$i,
+  props: props$g,
   // emits: ['change'],
   setup(props2, {
     emit: emit2,
@@ -6038,7 +6326,7 @@ function useProvideRadioGroup(props2, trigger) {
   }
   return fields2;
 }
-const props$h = {
+const props$f = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -6082,7 +6370,7 @@ const props$h = {
 };
 const index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
-  props: props$h,
+  props: props$f,
   setup(props2, {
     slots
   }) {
@@ -6191,6 +6479,115 @@ function useRadioInject(radioChecked, radioValue, reset) {
     field
   };
 }
+function removeDOCTYPE(html) {
+  return html.replace(/<\?xml.*\?>\n/, "").replace(/<!doctype.*>\n/, "").replace(/<!DOCTYPE.*>\n/, "");
+}
+function parseAttrs(attrs) {
+  return attrs.reduce(function(pre, attr2) {
+    let value = attr2.value;
+    const name = attr2.name;
+    if (value.match(/ /) && ["style", "src"].indexOf(name) === -1) {
+      value = value.split(" ");
+    }
+    if (pre[name]) {
+      if (Array.isArray(pre[name])) {
+        pre[name].push(value);
+      } else {
+        pre[name] = [pre[name], value];
+      }
+    } else {
+      pre[name] = value;
+    }
+    return pre;
+  }, {});
+}
+function parseHtml(html) {
+  html = removeDOCTYPE(html);
+  const stacks = [];
+  const results = {
+    node: "root",
+    children: []
+  };
+  HTMLParser(html, {
+    start: function(tag, attrs, unary) {
+      const node = {
+        name: tag
+      };
+      if (attrs.length !== 0) {
+        node.attrs = parseAttrs(attrs);
+      }
+      if (unary) {
+        const parent = stacks[0] || results;
+        if (!parent.children) {
+          parent.children = [];
+        }
+        parent.children.push(node);
+      } else {
+        stacks.unshift(node);
+      }
+    },
+    end: function(tag) {
+      const node = stacks.shift();
+      if (node.name !== tag)
+        console.error("invalid state: mismatch end tag");
+      if (stacks.length === 0) {
+        results.children.push(node);
+      } else {
+        const parent = stacks[0];
+        if (!parent.children) {
+          parent.children = [];
+        }
+        parent.children.push(node);
+      }
+    },
+    chars: function(text) {
+      const node = {
+        type: "text",
+        text
+      };
+      if (stacks.length === 0) {
+        results.children.push(node);
+      } else {
+        const parent = stacks[0];
+        if (!parent.children) {
+          parent.children = [];
+        }
+        parent.children.push(node);
+      }
+    },
+    comment: function(text) {
+      const node = {
+        node: "comment",
+        text
+      };
+      const parent = stacks[0];
+      if (parent) {
+        if (!parent.children) {
+          parent.children = [];
+        }
+        parent.children.push(node);
+      }
+    }
+  });
+  return results.children;
+}
+const props$e = {
+  nodes: {
+    type: [Array, String],
+    default: function() {
+      return [];
+    }
+  },
+  /** @deprecated 请使用 user-select */
+  selectable: {
+    type: [Boolean, String],
+    default: false
+  },
+  userSelect: {
+    type: [Boolean, String],
+    default: false
+  }
+};
 const TAGS = {
   a: "",
   abbr: "",
@@ -6352,148 +6749,98 @@ const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
     }
   });
 };
-function removeDOCTYPE(html) {
-  return html.replace(/<\?xml.*\?>\n/, "").replace(/<!doctype.*>\n/, "").replace(/<!DOCTYPE.*>\n/, "");
-}
-function parseAttrs(attrs) {
-  return attrs.reduce(function(pre, attr2) {
-    let value = attr2.value;
-    const name = attr2.name;
-    if (value.match(/ /) && ["style", "src"].indexOf(name) === -1) {
-      value = value.split(" ");
+function renderRichText(props2, rootRef, triggerItemClick) {
+  const vm = vue.getCurrentInstance();
+  const scopeId = vm && vm.vnode.scopeId || "";
+  const vnode = vue.shallowRef([]);
+  function renderVNode() {
+    let nodeList = props2.nodes;
+    if (shared.isString(nodeList)) {
+      nodeList = parseHtml(props2.nodes);
     }
-    if (pre[name]) {
-      if (Array.isArray(pre[name])) {
-        pre[name].push(value);
-      } else {
-        pre[name] = [pre[name], value];
-      }
-    } else {
-      pre[name] = value;
-    }
-    return pre;
-  }, {});
-}
-function parseHtml(html) {
-  html = removeDOCTYPE(html);
-  const stacks = [];
-  const results = {
-    node: "root",
-    children: []
-  };
-  HTMLParser(html, {
-    start: function(tag, attrs, unary) {
-      const node = {
-        name: tag
-      };
-      if (attrs.length !== 0) {
-        node.attrs = parseAttrs(attrs);
-      }
-      if (unary) {
-        const parent = stacks[0] || results;
-        if (!parent.children) {
-          parent.children = [];
-        }
-        parent.children.push(node);
-      } else {
-        stacks.unshift(node);
-      }
-    },
-    end: function(tag) {
-      const node = stacks.shift();
-      if (node.name !== tag)
-        console.error("invalid state: mismatch end tag");
-      if (stacks.length === 0) {
-        results.children.push(node);
-      } else {
-        const parent = stacks[0];
-        if (!parent.children) {
-          parent.children = [];
-        }
-        parent.children.push(node);
-      }
-    },
-    chars: function(text) {
-      const node = {
-        type: "text",
-        text
-      };
-      if (stacks.length === 0) {
-        results.children.push(node);
-      } else {
-        const parent = stacks[0];
-        if (!parent.children) {
-          parent.children = [];
-        }
-        parent.children.push(node);
-      }
-    },
-    comment: function(text) {
-      const node = {
-        node: "comment",
-        text
-      };
-      const parent = stacks[0];
-      if (parent) {
-        if (!parent.children) {
-          parent.children = [];
-        }
-        parent.children.push(node);
-      }
-    }
-  });
-  return results.children;
-}
-const props$g = {
-  nodes: {
-    type: [Array, String],
-    default: function() {
-      return [];
-    }
-  },
-  /** @deprecated 请使用 user-select */
-  selectable: {
-    type: [Boolean, String],
-    default: false
-  },
-  userSelect: {
-    type: [Boolean, String],
-    default: false
+    vnode.value = nodeList2VNode(scopeId, triggerItemClick, nodeList);
   }
-};
+  vue.watch(() => props2.nodes, renderVNode, { immediate: true, deep: true });
+  return () => vue.h(
+    "uni-rich-text",
+    {
+      ref: rootRef,
+      selectable: props2.userSelect || props2.selectable ? true : null
+    },
+    vue.h("div", {}, vnode.value)
+  );
+}
 const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
     MODE: 3
   },
-  props: props$g,
+  props: props$e,
   emits: ["itemclick"],
   setup(props2, {
     emit: emit2
   }) {
-    const vm = vue.getCurrentInstance();
-    const scopeId = vm && vm.vnode.scopeId || "";
     const rootRef = vue.ref(null);
-    const _vnode = vue.shallowRef([]);
     const trigger = useCustomEvent(rootRef, emit2);
     function triggerItemClick(e2, detail = {}) {
       trigger("itemclick", e2, detail);
     }
-    function renderVNode() {
-      let nodeList = props2.nodes;
-      if (shared.isString(nodeList)) {
-        nodeList = parseHtml(props2.nodes);
-      }
-      _vnode.value = nodeList2VNode(scopeId, triggerItemClick, nodeList);
+    const result = renderRichText(props2, rootRef, triggerItemClick);
+    return result;
+  }
+});
+class UniVueElement extends Object {
+}
+class UniLoadingElement extends UniVueElement {
+}
+function useLoadingStyle(targetElement, bold) {
+  const loadingSize = vue.ref("16px");
+  const loadingBorderWidth = vue.ref("1px");
+  vue.ref("8px");
+  return {
+    width: loadingSize,
+    height: loadingSize,
+    borderWidth: loadingBorderWidth
+    // borderRadius: loadingBorderRadius,
+  };
+}
+const _sfc_main$6 = /* @__PURE__ */ vue.defineComponent({
+  ...{
+    name: "loading",
+    styleIsolation: "app-and-page",
+    // @ts-ignore
+    rootElement: {
+      name: "uni-loading-element",
+      class: UniLoadingElement
     }
-    vue.watch(() => props2.nodes, renderVNode, {
-      immediate: true,
-      deep: true
-    });
-    return () => vue.h("uni-rich-text", {
-      ref: rootRef,
-      selectable: props2.userSelect || props2.selectable ? true : null
-    }, vue.h("div", {}, _vnode.value));
+  },
+  __name: "index-x",
+  props: {
+    paused: { type: Boolean, default: false },
+    bold: { type: Boolean, default: false },
+    iosSpinner: { type: Boolean, default: false }
+  },
+  setup(__props) {
+    const props2 = __props;
+    const LoadingRef = vue.ref(null);
+    const loadingStyle = vue.reactive(useLoadingStyle(LoadingRef, vue.computed(() => props2.bold)));
+    return (_ctx, _cache) => {
+      const _component_view = vue.resolveComponent("view");
+      return vue.openBlock(), vue.createBlock(vue.unref(UniLoadingElement), {
+        class: "default __uni_loading_container__",
+        ref_key: "LoadingRef",
+        ref: LoadingRef,
+        style: { "display": "flex" }
+      }, {
+        default: vue.withCtx(() => [
+          vue.createVNode(_component_view, {
+            class: vue.normalizeClass(["__uni-loading__ __loading-4-3__", { "__uni-loading__paused": props2.paused }]),
+            style: vue.normalizeStyle(loadingStyle)
+          }, null, 8, ["class", "style"])
+        ]),
+        _: 1
+      }, 512);
+    };
   }
 });
 const Refresher = /* @__PURE__ */ defineBuiltInComponent({
@@ -6513,6 +6860,9 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
     },
     refresherDefaultStyle: {
       type: String,
+      /**
+       * auto为内部值，蒸汽模式下用户未设置时使用该值
+       */
       default: "black"
     },
     refresherBackground: {
@@ -6549,21 +6899,26 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
       const route = props2.refresherHeight / props2.refresherThreshold;
       return (route > 1 ? 1 : route) * 360;
     });
+    vue.computed(() => {
+      switch (props2.refresherDefaultStyle) {
+        case "black":
+        case "white":
+          return props2.refresherDefaultStyle;
+        case "auto":
+        default:
+          return void 0;
+      }
+    });
     return () => {
-      const {
-        refreshState,
-        refresherDefaultStyle,
-        refresherThreshold
-      } = props2;
       return vue.createVNode("div", {
         "ref": rootRef,
         "style": rootStyle.value,
         "class": "uni-scroll-view-refresher"
-      }, [refresherDefaultStyle !== "none" ? vue.createVNode("div", {
+      }, [props2.refresherDefaultStyle !== "none" ? vue.createVNode("div", {
         "class": "uni-scroll-view-refresh"
       }, [vue.createVNode("div", {
         "class": "uni-scroll-view-refresh-inner"
-      }, [refreshState == "pulling" ? vue.createVNode("svg", {
+      }, [props2.refreshState == "pulling" ? vue.createVNode("svg", {
         "key": "refresh__icon",
         "style": {
           transform: "rotate(" + refreshRotate.value + "deg)"
@@ -6578,7 +6933,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
       }, null), vue.createVNode("path", {
         "d": "M0 0h24v24H0z",
         "fill": "none"
-      }, null)], 4) : null, refreshState == "refreshing" ? vue.createVNode("svg", {
+      }, null)], 4) : null, props2.refreshState == "refreshing" ? vue.createVNode("svg", {
         "key": "refresh__spinner",
         "class": "uni-scroll-view-refresh__spinner",
         "width": "24",
@@ -6591,16 +6946,16 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
         "fill": "none",
         "style": "color: #2bd009",
         "stroke-width": "3"
-      }, null)]) : null])]) : null, refresherDefaultStyle === "none" ? vue.createVNode("div", {
+      }, null)]) : null])]) : null, props2.refresherDefaultStyle === "none" ? vue.createVNode("div", {
         "class": "uni-scroll-view-refresher-container",
         "style": {
-          height: `${refresherThreshold}px`
+          height: `${props2.refresherThreshold}px`
         }
       }, [slots.default && slots.default()]) : null], 4);
     };
   }
 });
-const props$f = {
+const props$d = {
   direction: {
     type: [String],
     default: "vertical"
@@ -6655,6 +7010,9 @@ const props$f = {
   },
   refresherDefaultStyle: {
     type: String,
+    /**
+     * auto为内部值，蒸汽模式下用户未设置时使用该值
+     */
     default: "black"
   },
   refresherBackground: {
@@ -6666,88 +7024,66 @@ const props$f = {
     default: false
   }
 };
-const index$m = /* @__PURE__ */ defineBuiltInComponent({
-  name: "ScrollView",
-  compatConfig: {
-    MODE: 3
-  },
-  props: props$f,
-  emits: ["scroll", "scrollend", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort", "update:refresherTriggered"],
-  setup(props2, {
-    emit: emit2,
-    slots,
-    expose
-  }) {
-    const rootRef = vue.ref(null);
-    const main = vue.ref(null);
-    const wrap = vue.ref(null);
-    const content = vue.ref(null);
-    const trigger = useCustomEvent(rootRef, emit2);
-    const {
-      state,
-      scrollTopNumber,
-      scrollLeftNumber
-    } = useScrollViewState(props2);
-    const {
-      realScrollX,
-      realScrollY,
-      _scrollLeftChanged,
-      _scrollTopChanged
-    } = useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content, emit2);
-    const mainStyle = vue.computed(() => {
-      let style = "";
-      realScrollX.value ? style += "overflow-x:auto;" : style += "overflow-x:hidden;";
-      realScrollY.value ? style += "overflow-y:auto;" : style += "overflow-y:hidden;";
-      return style;
-    });
-    const scrollBarClassName = vue.computed(() => {
-      let className = "uni-scroll-view";
-      if (props2.showScrollbar === false) {
-        className += " uni-scroll-view-scrollbar-hidden";
-      }
-      return className;
-    });
-    expose({
-      // 自动化测试需要暴露main从而获取scrollLeft
-      $getMain() {
-        return main.value;
-      }
-    });
-    return () => {
-      const {
-        refresherEnabled,
-        refresherBackground,
-        refresherDefaultStyle,
-        refresherThreshold
-      } = props2;
-      const {
-        refresherHeight,
-        refreshState
-      } = state;
-      return vue.createVNode("uni-scroll-view", {
-        "ref": rootRef
-      }, [vue.createVNode("div", {
-        "ref": wrap,
-        "class": "uni-scroll-view"
-      }, [vue.createVNode("div", {
-        "ref": main,
-        "style": mainStyle.value,
-        "class": scrollBarClassName.value
-      }, [refresherEnabled ? vue.createVNode(Refresher, {
-        "refreshState": refreshState,
-        "refresherHeight": refresherHeight,
-        "refresherThreshold": refresherThreshold,
-        "refresherDefaultStyle": refresherDefaultStyle,
-        "refresherBackground": refresherBackground
-      }, {
-        default: () => [refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null]
-      }, 8, ["refreshState", "refresherHeight", "refresherThreshold", "refresherDefaultStyle", "refresherBackground"]) : null, vue.createVNode("div", {
-        "ref": content,
-        "class": "uni-scroll-view-content"
-      }, [slots.default && slots.default()], 512)], 6)], 512)], 512);
-    };
-  }
-});
+const emits$1 = [
+  "scroll",
+  "scrollend",
+  "scrolltoupper",
+  "scrolltolower",
+  "refresherrefresh",
+  "refresherrestore",
+  "refresherpulling",
+  "refresherabort",
+  "update:refresherTriggered"
+];
+function useScrollView(props2, { emit: emit2, expose }) {
+  const rootRef = vue.ref(null);
+  const main = vue.ref(null);
+  const wrap = vue.ref(null);
+  const content = vue.ref(null);
+  const trigger = useCustomEvent(rootRef, emit2);
+  const { state, scrollTopNumber, scrollLeftNumber } = useScrollViewState(props2);
+  const { realScrollX, realScrollY, _scrollLeftChanged, _scrollTopChanged } = useScrollViewLoader(
+    props2,
+    state,
+    scrollTopNumber,
+    scrollLeftNumber,
+    trigger,
+    rootRef,
+    main,
+    content,
+    emit2
+  );
+  const mainStyle = vue.computed(() => {
+    let style = "";
+    realScrollX.value ? style += "overflow-x:auto;" : style += "overflow-x:hidden;";
+    realScrollY.value ? style += "overflow-y:auto;" : style += "overflow-y:hidden;";
+    return style;
+  });
+  const scrollBarClassName = vue.computed(() => {
+    let className = "uni-scroll-view";
+    if (props2.showScrollbar === false) {
+      className += " uni-scroll-view-scrollbar-hidden";
+    }
+    return className;
+  });
+  expose({
+    // 自动化测试需要暴露main从而获取scrollLeft
+    $getMain() {
+      return main.value;
+    }
+  });
+  return {
+    rootRef,
+    main,
+    wrap,
+    content,
+    state,
+    mainStyle,
+    scrollBarClassName,
+    _scrollLeftChanged,
+    _scrollTopChanged
+  };
+}
 function useScrollViewState(props2) {
   const scrollTopNumber = vue.computed(() => {
     return Number(props2.scrollTop) || 0;
@@ -6940,16 +7276,22 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
   vue.watch(scrollLeftNumber, (val) => {
     _scrollLeftChanged(val);
   });
-  vue.watch(() => props2.scrollIntoView, (val) => {
-    _scrollIntoViewChanged(val);
-  });
-  vue.watch(() => props2.refresherTriggered, (val) => {
-    if (val === true) {
-      _setRefreshState("refreshing");
-    } else if (val === false) {
-      _setRefreshState("restore");
+  vue.watch(
+    () => props2.scrollIntoView,
+    (val) => {
+      _scrollIntoViewChanged(val);
     }
-  });
+  );
+  vue.watch(
+    () => props2.refresherTriggered,
+    (val) => {
+      if (val === true) {
+        _setRefreshState("refreshing");
+      } else if (val === false) {
+        _setRefreshState("restore");
+      }
+    }
+  );
   return {
     realScrollX,
     realScrollY,
@@ -6957,13 +7299,70 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
     _scrollLeftChanged
   };
 }
+const index$m = /* @__PURE__ */ defineBuiltInComponent({
+  name: "ScrollView",
+  compatConfig: {
+    MODE: 3
+  },
+  props: props$d,
+  emits: emits$1,
+  setup(props2, context) {
+    const {
+      rootRef,
+      main,
+      wrap,
+      content,
+      state,
+      mainStyle,
+      scrollBarClassName,
+      _scrollLeftChanged,
+      _scrollTopChanged
+    } = useScrollView(props2, context);
+    const {
+      slots
+    } = context;
+    return () => {
+      const {
+        refresherEnabled,
+        refresherBackground,
+        refresherDefaultStyle,
+        refresherThreshold
+      } = props2;
+      const {
+        refresherHeight,
+        refreshState
+      } = state;
+      return vue.createVNode("uni-scroll-view", {
+        "ref": rootRef
+      }, [vue.createVNode("div", {
+        "ref": wrap,
+        "class": "uni-scroll-view"
+      }, [vue.createVNode("div", {
+        "ref": main,
+        "style": mainStyle.value,
+        "class": scrollBarClassName.value
+      }, [refresherEnabled ? vue.createVNode(Refresher, {
+        "refreshState": refreshState,
+        "refresherHeight": refresherHeight,
+        "refresherThreshold": refresherThreshold,
+        "refresherDefaultStyle": refresherDefaultStyle,
+        "refresherBackground": refresherBackground
+      }, {
+        default: () => [refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null]
+      }, 8, ["refreshState", "refresherHeight", "refresherThreshold", "refresherDefaultStyle", "refresherBackground"]) : null, vue.createVNode("div", {
+        "ref": content,
+        "class": "uni-scroll-view-content"
+      }, [slots.default && slots.default()], 512)], 6)], 512)], 512);
+    };
+  }
+});
 function createBackgroundColorStyle(color) {
   return color ? { backgroundColor: color } : void 0;
 }
 function withBackgroundColor(style, color) {
   return color ? Object.assign(style, { backgroundColor: color }) : style;
 }
-const props$e = {
+const props$c = {
   name: {
     type: String,
     default: ""
@@ -7014,7 +7413,7 @@ const props$e = {
 };
 const index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
-  props: props$e,
+  props: props$c,
   emits: ["changing", "change"],
   setup(props2, {
     emit: emit2
@@ -7187,7 +7586,7 @@ function lerp(min, max, t2) {
   t2 = Math.min(1, Math.max(0, t2));
   return min * (1 - t2) + max * t2;
 }
-const props$d = {
+const props$b = {
   indicatorDots: {
     type: [Boolean, String],
     default: false
@@ -7582,7 +7981,7 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
 }
 const index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "Swiper",
-  props: props$d,
+  props: props$b,
   emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
   setup(props2, {
     slots,
@@ -7805,7 +8204,7 @@ const useSwiperNavigation = (rootRef, props2, state, onSwiperDotClick, swiperCon
   }
   return createNavigationTsx;
 };
-const props$c = {
+const props$a = {
   itemId: {
     type: String,
     default: ""
@@ -7813,7 +8212,7 @@ const props$c = {
 };
 const index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "SwiperItem",
-  props: props$c,
+  props: props$a,
   setup(props2, {
     slots
   }) {
@@ -7830,7 +8229,7 @@ const index$j = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$b = {
+const props$9 = {
   name: {
     type: String,
     default: ""
@@ -7858,7 +8257,7 @@ const props$b = {
 };
 const index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
-  props: props$b,
+  props: props$9,
   emits: ["change"],
   setup(props2, {
     emit: emit2
@@ -8025,47 +8424,44 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$a = /* @__PURE__ */ shared.extend({}, props$k, {
-  placeholderClass: {
-    type: String,
-    default: "input-placeholder"
-  },
-  autoHeight: {
-    type: [Boolean, String],
-    default: false
-  },
-  confirmType: {
-    type: String,
-    default: "return",
-    validator(val) {
-      return ConfirmTypes.concat("return").includes(val);
+const webSelectionProps = fieldSelectionProps;
+const props$8 = /* @__PURE__ */ shared.extend(
+  {},
+  props$i,
+  {
+    placeholderClass: {
+      type: String,
+      default: "input-placeholder"
+    },
+    autoHeight: {
+      type: [Boolean, String],
+      default: false
+    },
+    confirmType: {
+      type: String,
+      default: "return",
+      validator(val) {
+        return ConfirmTypes.concat("return").includes(val);
+      }
     }
-  }
-});
+  },
+  webSelectionProps
+);
 let fixMargin = false;
 const ConfirmTypes = ["done", "go", "next", "search", "send"];
-const index$g = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Textarea",
-  props: props$a,
-  emits: ["confirm", "change", "linechange", ...emit],
-  setup(props2, {
-    emit: emit2,
-    expose
-  }) {
-    const rootRef = vue.ref(null);
-    const wrapperRef = vue.ref(null);
-    const {
-      fieldRef,
-      state,
-      scopedAttrsState,
-      fixDisabledColor,
-      trigger
-    } = useField(props2, rootRef, emit2);
-    const valueCompute = vue.computed(() => state.value.split(uniShared.LINEFEED));
-    const isDone = vue.computed(() => ConfirmTypes.includes(props2.confirmType));
-    const heightRef = vue.ref(0);
-    const lineRef = vue.ref(null);
-    vue.watch(() => heightRef.value, (height) => {
+const emits = ["confirm", "change", "linechange", ...emit];
+function useTextarea(props2, { emit: emit2, expose }) {
+  const rootRef = vue.ref(null);
+  const wrapperRef = vue.ref(null);
+  const { fieldRef, state, scopedAttrsState, fixDisabledColor, trigger } = useField(props2, rootRef, emit2);
+  const selectionRef = useFieldSelection(props2, fieldRef);
+  const valueCompute = vue.computed(() => state.value.split(uniShared.LINEFEED));
+  const isDone = vue.computed(() => ConfirmTypes.includes(props2.confirmType));
+  const heightRef = vue.ref(0);
+  const lineRef = vue.ref(null);
+  vue.watch(
+    () => heightRef.value,
+    (height) => {
       const el = rootRef.value;
       const lineEl = lineRef.value;
       const wrapper2 = wrapperRef.value;
@@ -8082,44 +8478,79 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
       if (props2.autoHeight) {
         wrapper2.style.height = height + "px";
       }
+    }
+  );
+  function onResize({ height }) {
+    heightRef.value = height;
+  }
+  function onChange(event) {
+  }
+  function confirm(event) {
+    trigger("confirm", event, {
+      value: state.value
     });
-    function onResize({
-      height
-    }) {
-      heightRef.value = height;
+  }
+  function onKeyDownEnter(event) {
+    if (event.key !== "Enter") {
+      return;
     }
-    function onChange(event) {
+    if (isDone.value) {
+      event.preventDefault();
     }
-    function confirm(event) {
-      trigger("confirm", event, {
-        value: state.value
-      });
+  }
+  function onKeyUpEnter(event) {
+    if (event.key !== "Enter") {
+      return;
     }
-    function onKeyDownEnter(event) {
-      if (event.key !== "Enter") {
-        return;
-      }
-      if (isDone.value) {
-        event.preventDefault();
-      }
+    if (isDone.value) {
+      confirm(event);
+      const textarea = event.target;
+      !props2.confirmHold && textarea.blur();
     }
-    function onKeyUpEnter(event) {
-      if (event.key !== "Enter") {
-        return;
-      }
-      if (isDone.value) {
-        confirm(event);
-        const textarea = event.target;
-        !props2.confirmHold && textarea.blur();
-      }
+  }
+  expose({
+    $triggerInput: (detail) => {
+      emit2("update:modelValue", detail.value);
+      emit2("update:value", detail.value);
+      state.value = detail.value;
     }
-    expose({
-      $triggerInput: (detail) => {
-        emit2("update:modelValue", detail.value);
-        emit2("update:value", detail.value);
-        state.value = detail.value;
-      }
-    });
+  });
+  return {
+    rootRef,
+    wrapperRef,
+    fieldRef,
+    state,
+    scopedAttrsState,
+    selectionRef,
+    fixDisabledColor,
+    valueCompute,
+    lineRef,
+    onResize,
+    onChange,
+    onKeyDownEnter,
+    onKeyUpEnter
+  };
+}
+const index$g = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Textarea",
+  props: props$8,
+  emits,
+  setup(props2, context) {
+    const {
+      rootRef,
+      wrapperRef,
+      fieldRef,
+      state,
+      scopedAttrsState,
+      selectionRef,
+      fixDisabledColor,
+      valueCompute,
+      lineRef,
+      onResize,
+      onChange,
+      onKeyDownEnter,
+      onKeyUpEnter
+    } = useTextarea(props2, context);
     return () => {
       let textareaNode = props2.disabled && fixDisabledColor ? vue.createVNode("textarea", {
         "key": "disabled-textarea",
@@ -8130,6 +8561,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
         "maxlength": state.maxlength,
         "class": {
           "uni-textarea-textarea": true,
+          "uni-field-selection": !!props2.selectionClass,
           "uni-textarea-textarea-fix-margin": fixMargin
         },
         "style": {
@@ -8150,6 +8582,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
         "inputmode": props2.inputmode,
         "class": {
           "uni-textarea-textarea": true,
+          "uni-field-selection": !!props2.selectionClass,
           "uni-textarea-textarea-fix-margin": fixMargin
         },
         "style": {
@@ -8169,7 +8602,13 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
       }, [vue.createVNode("div", {
         "ref": wrapperRef,
         "class": "uni-textarea-wrapper"
-      }, [vue.withDirectives(vue.createVNode("div", vue.mergeProps(scopedAttrsState.attrs, {
+      }, [props2.selectionClass && vue.createVNode("div", vue.mergeProps({
+        "ref": selectionRef
+      }, scopedAttrsState.attrs, {
+        "class": ["uni-field-selection-probe", props2.selectionClass],
+        "aria-hidden": "true",
+        "style": fieldSelectionProbeStyle
+      }), null, 16), vue.withDirectives(vue.createVNode("div", vue.mergeProps(scopedAttrsState.attrs, {
         "style": props2.placeholderStyle,
         "class": ["uni-textarea-placeholder", props2.placeholderClass]
       }), [props2.placeholder], 16), [[vue.vShow, !state.value.length]]), vue.createVNode("div", {
@@ -9181,7 +9620,7 @@ function useProgressing(videoState, gestureState, controlsState, autoHideEnd, au
   });
   return progressing;
 }
-const props$9 = {
+const videoProps = {
   id: {
     type: String,
     default: ""
@@ -9269,84 +9708,90 @@ const props$9 = {
     default: true
   }
 };
-const index$c = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Video",
-  props: props$9,
-  emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
-  setup(props2, {
-    emit: emit2,
-    attrs,
-    slots
-  }) {
-    const rootRef = vue.ref(null);
-    const containerRef = vue.ref(null);
-    const trigger = useCustomEvent(rootRef, emit2);
-    const {
-      state: userActionState
-    } = useUserAction();
-    const {
-      $attrs: videoAttrs
-    } = useAttrs({
-      excludeListeners: true
-    });
-    initI18nVideoMsgsOnce();
-    const {
-      videoRef,
-      state: videoState,
+const videoEmits = ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"];
+function useVideoComponent(props2, {
+  emit: emit2,
+  attrs,
+  slots
+}) {
+  const rootRef = vue.ref(null);
+  const containerRef = vue.ref(null);
+  const trigger = useCustomEvent(rootRef, emit2);
+  const {
+    state: userActionState
+  } = useUserAction();
+  const {
+    $attrs: videoAttrs
+  } = useAttrs({
+    excludeListeners: true
+  });
+  initI18nVideoMsgsOnce();
+  const {
+    videoRef,
+    state: videoState,
+    play,
+    pause,
+    stop,
+    seek,
+    playbackRate,
+    toggle,
+    onDurationChange,
+    onLoadedMetadata,
+    onProgress,
+    onWaiting,
+    onVideoError,
+    onPlay,
+    onPause,
+    onEnded,
+    onTimeUpdate
+  } = useVideo(props2, attrs, trigger);
+  const {
+    state: danmuState,
+    danmuRef,
+    updateDanmu,
+    toggleDanmu,
+    sendDanmu
+  } = useDanmu(props2, videoState);
+  const {
+    state: fullscreenState,
+    onFullscreenChange,
+    emitFullscreenChange,
+    toggleFullscreen,
+    requestFullScreen,
+    exitFullScreen
+  } = useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef);
+  const {
+    state: gestureState,
+    onTouchstart,
+    onTouchend,
+    onTouchmove
+  } = useGesture(props2, videoState, videoRef, fullscreenState);
+  const {
+    state: controlsState,
+    progressRef,
+    ballRef,
+    clickProgress,
+    toggleControls,
+    autoHideEnd,
+    autoHideStart
+  } = useControls(props2, videoState, seek);
+  useContext();
+  const progressing = useProgressing(videoState, gestureState, controlsState);
+  return {
+    rootRef,
+    toggleControls,
+    methods: {
       play,
       pause,
       stop,
       seek,
+      sendDanmu,
       playbackRate,
-      toggle,
-      onDurationChange,
-      onLoadedMetadata,
-      onProgress,
-      onWaiting,
-      onVideoError,
-      onPlay,
-      onPause,
-      onEnded,
-      onTimeUpdate
-    } = useVideo(props2, attrs, trigger);
-    const {
-      state: danmuState,
-      danmuRef,
-      updateDanmu,
-      toggleDanmu,
-      sendDanmu
-    } = useDanmu(props2, videoState);
-    const {
-      state: fullscreenState,
-      onFullscreenChange,
-      emitFullscreenChange,
-      toggleFullscreen,
       requestFullScreen,
       exitFullScreen
-    } = useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef);
-    const {
-      state: gestureState,
-      onTouchstart,
-      onTouchend,
-      onTouchmove
-    } = useGesture(props2, videoState, videoRef, fullscreenState);
-    const {
-      state: controlsState,
-      progressRef,
-      ballRef,
-      clickProgress,
-      toggleControls,
-      autoHideEnd,
-      autoHideStart
-    } = useControls(props2, videoState, seek);
-    useContext();
-    const progressing = useProgressing(videoState, gestureState, controlsState);
-    return () => {
-      return vue.createVNode("uni-video", {
-        "ref": rootRef,
-        "id": props2.id,
-        "onClick": toggleControls
-      }, [vue.createVNode("div", {
+    },
+    render: () => {
+      return vue.createVNode("div", {
         "ref": containerRef,
         "class": "uni-video-container",
         "onTouchstart": onTouchstart,
@@ -9491,8 +9936,26 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-toast-title-current-time"
       }, [formatTime(gestureState.currentTimeNew)]), " / ", formatTime(videoState.currentDuration)])], 2), vue.createVNode("div", {
         "class": "uni-video-slots"
-      }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])], 8, ["id", "onClick"]);
-    };
+      }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"]);
+    }
+  };
+}
+const index$c = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Video",
+  props: videoProps,
+  emits: videoEmits,
+  setup(props2, context) {
+    const {
+      rootRef,
+      toggleControls,
+      methods,
+      render
+    } = useVideoComponent(props2, context);
+    return () => vue.createVNode("uni-video", {
+      "ref": rootRef,
+      "id": props2.id,
+      "onClick": toggleControls
+    }, [render()], 8, ["id", "onClick"]);
   }
 });
 const onWebInvokeAppService = ({ name, arg }) => {
@@ -9519,7 +9982,7 @@ const onWebInvokeAppService = ({ name, arg }) => {
   }
 };
 const Invoke = /* @__PURE__ */ uniShared.once(() => UniServiceJSBridge.on(uniShared.ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService));
-const props$8 = {
+const props$7 = {
   src: {
     type: String,
     default: ""
@@ -9532,7 +9995,7 @@ const props$8 = {
 const index$b = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
-  props: props$8,
+  props: props$7,
   emits: ["load"],
   setup(props2, {
     emit: emit2
@@ -9613,7 +10076,7 @@ const getIsAMap = () => {
 const getIsBMap = () => {
   return getMapInfo().type === "BMapGL";
 };
-const props$7 = {
+const props$6 = {
   id: {
     type: [Number, String],
     default: ""
@@ -9696,7 +10159,7 @@ function useMarkerLabelStyle(id2) {
 }
 const MapMarker = /* @__PURE__ */ defineSystemComponent({
   name: "MapMarker",
-  props: props$7,
+  props: props$6,
   setup(props2) {
     const id2 = String(!isNaN(Number(props2.id)) ? props2.id : "");
     const onMapReady = vue.inject("onMapReady");
@@ -10060,7 +10523,7 @@ function hexToRgba(hex) {
     a: (`0x100${sa}` - 65536) / 255
   };
 }
-const props$6 = {
+const props$5 = {
   points: {
     type: Array,
     require: true
@@ -10106,7 +10569,7 @@ const props$6 = {
 };
 const MapPolyline = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolyline",
-  props: props$6,
+  props: props$5,
   setup(props2) {
     const onMapReady = vue.inject("onMapReady");
     let polyline;
@@ -10194,7 +10657,7 @@ const MapPolyline = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$5 = {
+const props$4 = {
   latitude: {
     type: [Number, String],
     require: true
@@ -10226,7 +10689,7 @@ const props$5 = {
 };
 const MapCircle = /* @__PURE__ */ defineSystemComponent({
   name: "MapCircle",
-  props: props$5,
+  props: props$4,
   setup(props2) {
     const onMapReady = vue.inject("onMapReady");
     let circle;
@@ -10301,7 +10764,7 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$4 = {
+const props$3 = {
   id: {
     type: [Number, String],
     default: ""
@@ -10325,7 +10788,7 @@ const props$4 = {
 };
 const MapControl = /* @__PURE__ */ defineSystemComponent({
   name: "MapControl",
-  props: props$4,
+  props: props$3,
   setup(props2) {
     const imgPath = vue.computed(() => getRealPath(props2.iconPath));
     const positionStyle = vue.computed(() => {
@@ -10379,7 +10842,7 @@ const MapLocation = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$3 = {
+const props$2 = {
   // 边框虚线，腾讯地图支持，google 高德 地图不支持，默认值为[0, 0] 为实线，非 [0, 0] 为虚线，H5 端无法像微信小程序一样控制虚线的间隔像素大小
   dashArray: {
     type: Array,
@@ -10413,7 +10876,7 @@ const props$3 = {
 };
 const MapPolygon = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolygon",
-  props: props$3,
+  props: props$2,
   setup(props2) {
     let polygonIns;
     const onMapReady = vue.inject("onMapReady");
@@ -10503,7 +10966,7 @@ const MapPolygon = /* @__PURE__ */ defineSystemComponent({
     return () => null;
   }
 });
-const props$2 = {
+const mapProps = {
   id: {
     type: String,
     default: ""
@@ -10594,7 +11057,11 @@ function getMapPosition(maps, latitude, longitude) {
   } else if (getIsAMap()) {
     return getAMapPosition(maps, latitude, longitude);
   } else {
-    return getGoogleOrQQMapPosition(maps, latitude, longitude);
+    return getGoogleOrQQMapPosition(
+      maps,
+      latitude,
+      longitude
+    );
   }
 }
 function getLat(latLng) {
@@ -10639,19 +11106,26 @@ function useMap(props2, rootRef, emit2) {
   function removeMapChidlContext(context) {
     delete contexts[context.id];
   }
-  vue.watch([() => props2.latitude, () => props2.longitude], ([latitudeVlaue, longitudeVlaue]) => {
-    const latitude = Number(latitudeVlaue);
-    const longitude = Number(longitudeVlaue);
-    if (latitude !== state.latitude || longitude !== state.longitude) {
-      state.latitude = latitude;
-      state.longitude = longitude;
+  vue.watch(
+    [() => props2.latitude, () => props2.longitude],
+    ([latitudeVlaue, longitudeVlaue]) => {
+      const latitude = Number(latitudeVlaue);
+      const longitude = Number(longitudeVlaue);
+      if (latitude !== state.latitude || longitude !== state.longitude) {
+        state.latitude = latitude;
+        state.longitude = longitude;
+      }
     }
-  });
-  vue.watch(() => props2.includePoints, (points) => {
-    state.includePoints = getPoints(points);
-  }, {
-    deep: true
-  });
+  );
+  vue.watch(
+    () => props2.includePoints,
+    (points) => {
+      state.includePoints = getPoints(points);
+    },
+    {
+      deep: true
+    }
+  );
   function updateBounds() {
     if (getIsAMap()) {
       const points = [];
@@ -10664,11 +11138,11 @@ function useMap(props2, rootRef, emit2) {
       ;
     else {
       const bounds = new maps.LatLngBounds();
-      state.includePoints.forEach(({
-        latitude,
-        longitude
-      }) => {
-        const latLng = new maps.LatLng(latitude, longitude);
+      state.includePoints.forEach(({ latitude, longitude }) => {
+        const latLng = new maps.LatLng(
+          latitude,
+          longitude
+        );
         bounds.extend(latLng);
       });
       map.fitBounds(bounds);
@@ -10676,94 +11150,98 @@ function useMap(props2, rootRef, emit2) {
   }
   try {
     const id2 = useContextInfo();
-    useSubscribe((type, data = {}) => {
-      switch (type) {
-        case "getCenterLocation":
-          onMapReady(() => {
-            const center = map.getCenter();
-            uniShared.callOptions(data, {
-              latitude: getLat(center),
-              longitude: getLng(center),
-              errMsg: `${type}:ok`
-            });
-          });
-          break;
-        case "moveToLocation":
-          {
-            let latitude = Number(data.latitude);
-            let longitude = Number(data.longitude);
-            if (!latitude || !longitude) {
-              const context = contexts[CONTEXT_ID];
-              if (context) {
-                latitude = context.state.latitude;
-                longitude = context.state.longitude;
-              }
-            }
-            if (latitude && longitude) {
-              state.latitude = latitude;
-              state.longitude = longitude;
-              if (map)
-                ;
-              onMapReady(() => {
-                uniShared.callOptions(data, `${type}:ok`);
+    useSubscribe(
+      (type, data = {}) => {
+        switch (type) {
+          case "getCenterLocation":
+            onMapReady(() => {
+              const center = map.getCenter();
+              uniShared.callOptions(data, {
+                latitude: getLat(center),
+                longitude: getLng(center),
+                errMsg: `${type}:ok`
               });
-            } else {
-              uniShared.callOptions(data, `${type}:fail`);
-            }
-          }
-          break;
-        case "translateMarker":
-          onMapReady(() => {
-            const context = contexts[data.markerId];
-            if (context) {
-              try {
-                context.translate(data);
-              } catch (error) {
-                uniShared.callOptions(data, `${type}:fail ${error.message}`);
+            });
+            break;
+          case "moveToLocation":
+            {
+              let latitude = Number(data.latitude);
+              let longitude = Number(data.longitude);
+              if (!latitude || !longitude) {
+                const context = contexts[CONTEXT_ID];
+                if (context) {
+                  latitude = context.state.latitude;
+                  longitude = context.state.longitude;
+                }
               }
-              uniShared.callOptions(data, `${type}:ok`);
-            } else {
-              uniShared.callOptions(data, `${type}:fail not found`);
+              if (latitude && longitude) {
+                state.latitude = latitude;
+                state.longitude = longitude;
+                if (map)
+                  ;
+                onMapReady(() => {
+                  uniShared.callOptions(data, `${type}:ok`);
+                });
+              } else {
+                uniShared.callOptions(data, `${type}:fail`);
+              }
             }
-          });
-          break;
-        case "includePoints":
-          state.includePoints = getPoints(data.includePoints);
-          if (isBoundsReady || getIsAMap()) {
-            updateBounds();
-          }
-          onBoundsReady(() => {
-            uniShared.callOptions(data, `${type}:ok`);
-          });
-          break;
-        case "getRegion":
-          onBoundsReady(() => {
-            const latLngBounds = map.getBounds();
-            const southwest = latLngBounds.getSouthWest();
-            const northeast = latLngBounds.getNorthEast();
-            uniShared.callOptions(data, {
-              southwest: {
-                latitude: getLat(southwest),
-                longitude: getLng(southwest)
-              },
-              northeast: {
-                latitude: getLat(northeast),
-                longitude: getLng(northeast)
-              },
-              errMsg: `${type}:ok`
+            break;
+          case "translateMarker":
+            onMapReady(() => {
+              const context = contexts[data.markerId];
+              if (context) {
+                try {
+                  context.translate(data);
+                } catch (error) {
+                  uniShared.callOptions(data, `${type}:fail ${error.message}`);
+                }
+                uniShared.callOptions(data, `${type}:ok`);
+              } else {
+                uniShared.callOptions(data, `${type}:fail not found`);
+              }
             });
-          });
-          break;
-        case "getScale":
-          onMapReady(() => {
-            uniShared.callOptions(data, {
-              scale: map.getZoom(),
-              errMsg: `${type}:ok`
+            break;
+          case "includePoints":
+            state.includePoints = getPoints(data.includePoints);
+            if (isBoundsReady || getIsAMap()) {
+              updateBounds();
+            }
+            onBoundsReady(() => {
+              uniShared.callOptions(data, `${type}:ok`);
             });
-          });
-          break;
-      }
-    }, id2, true);
+            break;
+          case "getRegion":
+            onBoundsReady(() => {
+              const latLngBounds = map.getBounds();
+              const southwest = latLngBounds.getSouthWest();
+              const northeast = latLngBounds.getNorthEast();
+              uniShared.callOptions(data, {
+                southwest: {
+                  latitude: getLat(southwest),
+                  longitude: getLng(southwest)
+                },
+                northeast: {
+                  latitude: getLat(northeast),
+                  longitude: getLng(northeast)
+                },
+                errMsg: `${type}:ok`
+              });
+            });
+            break;
+          case "getScale":
+            onMapReady(() => {
+              uniShared.callOptions(data, {
+                scale: map.getZoom(),
+                errMsg: `${type}:ok`
+              });
+            });
+            break;
+        }
+      },
+      id2,
+      true
+    );
   } catch (error) {
   }
   vue.provide("onMapReady", onMapReady);
@@ -10775,10 +11253,23 @@ function useMap(props2, rootRef, emit2) {
     trigger
   };
 }
+const mapEmits = [
+  "markertap",
+  "labeltap",
+  "callouttap",
+  "controltap",
+  "regionchange",
+  "tap",
+  "click",
+  "updated",
+  "update:scale",
+  "update:latitude",
+  "update:longitude"
+];
 const index$a = /* @__PURE__ */ defineBuiltInComponent({
   name: "Map",
-  props: props$2,
-  emits: ["markertap", "labeltap", "callouttap", "controltap", "regionchange", "tap", "click", "updated", "update:scale", "update:latitude", "update:longitude"],
+  props: mapProps,
+  emits: mapEmits,
   setup(props2, {
     emit: emit2,
     slots
@@ -11743,10 +12234,10 @@ function usePickerForm(_resetFormData, _getFormData) {
 }
 const _AdConfig = class _AdConfig {
   constructor() {
-    __publicField(this, "_adConfig", null);
-    __publicField(this, "_isLoading", false);
-    __publicField(this, "_callbacks", []);
-    __publicField(this, "_configLast", 0);
+    this._adConfig = null;
+    this._isLoading = false;
+    this._callbacks = [];
+    this._configLast = 0;
   }
   static get instance() {
     if (!_AdConfig._instance) {
@@ -11795,10 +12286,7 @@ const _AdConfig = class _AdConfig {
   }
   _doCallback(adpid, success, fail) {
     _AdConfig.IS++;
-    var {
-      a,
-      b
-    } = this._adConfig;
+    var { a, b } = this._adConfig;
     const adData = a[adpid];
     if (adData) {
       success(b, Array.isArray(adData) ? adData : [adData]);
@@ -11829,19 +12317,12 @@ const _AdConfig = class _AdConfig {
           this._adConfig = data;
           this._configLast = Date.now();
           this._setConfig(data);
-          this._callbacks.forEach(({
-            adpid: adpid2,
-            success,
-            fail
-          }) => {
+          this._callbacks.forEach(({ adpid: adpid2, success, fail }) => {
             this._doCallback(adpid2, success, fail);
           });
         } else {
           this._callbacks.forEach((i) => {
-            i.fail({
-              errCode: rd.ret,
-              errMsg: rd.msg
-            });
+            i.fail({ errCode: rd.ret, errMsg: rd.msg });
           });
         }
         this._callbacks = [];
@@ -11868,26 +12349,23 @@ const _AdConfig = class _AdConfig {
     if (!navigator.cookieEnabled || !window.localStorage) {
       return null;
     }
-    localStorage.setItem(_AdConfig.KEY, JSON.stringify({
-      last: Date.now(),
-      data
-    }));
+    localStorage.setItem(
+      _AdConfig.KEY,
+      JSON.stringify({
+        last: Date.now(),
+        data
+      })
+    );
   }
 };
-__publicField(_AdConfig, "IC", 0);
-__publicField(_AdConfig, "IS", 0);
-// 生产环境地址
-// private static readonly URL: string = 'https://hac1.dcloud.net.cn/ah5'
-// 生产环境地址v2
-__publicField(_AdConfig, "URL", "https://hac1.dcloud.net.cn/ah5v2");
-// 测试环境地址
-// private static readonly URL: string = 'http://t-ac1.dcloud.net.cn/ah5'
-// private static readonly URL: string = 'http://t-ac1.dcloud.net.cn/ah5v2'
-__publicField(_AdConfig, "KEY", "uni_app_ad_config");
-__publicField(_AdConfig, "CACHE_TIME", 1e3 * 60 * 10);
-__publicField(_AdConfig, "ERROR_INVALID_ADPID", {
+_AdConfig.IC = 0;
+_AdConfig.IS = 0;
+_AdConfig.URL = "https://hac1.dcloud.net.cn/ah5v2";
+_AdConfig.KEY = "uni_app_ad_config";
+_AdConfig.CACHE_TIME = 1e3 * 60 * 10;
+_AdConfig.ERROR_INVALID_ADPID = {
   "-5002": "invalid adpid"
-});
+};
 let AdConfig = _AdConfig;
 const _AdReport = class _AdReport {
   static get instance() {
@@ -11906,10 +12384,12 @@ const _AdReport = class _AdReport {
     this._setConfig(this._guid);
   }
   get(data) {
-    this._process(Object.assign(data, {
-      d: location.hostname,
-      i: this._guid
-    }));
+    this._process(
+      Object.assign(data, {
+        d: location.hostname,
+        i: this._guid
+      })
+    );
   }
   _process(data) {
     uni.request({
@@ -11944,14 +12424,17 @@ const _AdReport = class _AdReport {
     if (!navigator.cookieEnabled || !window.localStorage) {
       return null;
     }
-    localStorage.setItem(_AdReport.KEY, JSON.stringify({
-      last: Date.now(),
-      guid
-    }));
+    localStorage.setItem(
+      _AdReport.KEY,
+      JSON.stringify({
+        last: Date.now(),
+        guid
+      })
+    );
   }
 };
-__publicField(_AdReport, "URL", "https://has1.dcloud.net.cn/ahl");
-__publicField(_AdReport, "KEY", "uni_app_ad_guid");
+_AdReport.URL = "https://has1.dcloud.net.cn/ahl";
+_AdReport.KEY = "uni_app_ad_guid";
 let AdReport = _AdReport;
 class AdScript {
   static get instance() {
@@ -11999,18 +12482,14 @@ class AdScript {
     }
     ads.onload = () => {
       this._cache[provider] = 1;
-      this._callback[provider].forEach(({
-        success
-      }) => {
+      this._callback[provider].forEach(({ success }) => {
         success();
       });
       this._callback[provider].length = 0;
     };
     ads.onerror = (err) => {
       this._cache[provider] = void 0;
-      this._callback[provider].forEach(({
-        fail
-      }) => {
+      this._callback[provider].forEach(({ fail }) => {
         fail(err);
       });
       this._callback[provider].length = 0;
@@ -12026,12 +12505,12 @@ const AD_PROVIDER = {
 };
 class AdRender {
   constructor(props2, trigger, rootRef, options) {
-    __publicField(this, "_pi", 0);
-    __publicField(this, "_pl", []);
-    __publicField(this, "_b", {});
-    __publicField(this, "_checkTimerCount", 0);
-    __publicField(this, "_currentChannel", null);
-    __publicField(this, "_tuiaData", null);
+    this._pi = 0;
+    this._pl = [];
+    this._b = {};
+    this._checkTimerCount = 0;
+    this._currentChannel = null;
+    this._tuiaData = null;
     this._checkTimer = null;
     this._adpid = props2.adpid;
     this._adpidWidescreen = props2.adpidWidescreen;
@@ -12054,13 +12533,17 @@ class AdRender {
   load(adpid) {
     this._currentAdpid = adpid || (this.isWidescreen ? this._adpidWidescreen : this._adpid);
     this._reset();
-    AdConfig.instance.get(this._currentAdpid, (b, a) => {
-      this._b = b;
-      this._pl = a;
-      this._renderAd();
-    }, (err) => {
-      this._trigger("error", {}, err);
-    });
+    AdConfig.instance.get(
+      this._currentAdpid,
+      (b, a) => {
+        this._b = b;
+        this._pl = a;
+        this._renderAd();
+      },
+      (err) => {
+        this._trigger("error", {}, err);
+      }
+    );
   }
   dispose() {
     this._clearCheckTimer();
@@ -12089,27 +12572,29 @@ class AdRender {
     this._createView(id2);
     if (providerId === AD_PROVIDER.GDT) {
       window.TencentGDT = window.TencentGDT || [];
-      AdScript.instance.load({
-        provider: providerId,
-        script
-      }, () => {
-        this._renderGdt(id2, data);
-      }, (err) => {
-        this._trigger("error", {}, err);
-        this._renderNext();
-      });
+      AdScript.instance.load(
+        { provider: providerId, script },
+        () => {
+          this._renderGdt(id2, data);
+        },
+        (err) => {
+          this._trigger("error", {}, err);
+          this._renderNext();
+        }
+      );
       return;
     }
     if (providerId === AD_PROVIDER.TUIA) {
-      AdScript.instance.load({
-        provider: providerId,
-        script
-      }, () => {
-        this._renderTuiaMaterial(id2, data);
-      }, (err) => {
-        this._trigger("error", {}, err);
-        this._renderNext();
-      });
+      AdScript.instance.load(
+        { provider: providerId, script },
+        () => {
+          this._renderTuiaMaterial(id2, data);
+        },
+        (err) => {
+          this._trigger("error", {}, err);
+          this._renderNext();
+        }
+      );
       return;
     }
     this._renderNext();
@@ -12136,9 +12621,11 @@ class AdRender {
           window.TencentGDT.NATIVE.renderAd(res[0], id2);
           this._trigger("load", {}, {});
         } else {
-          this._trigger("error", {}, res || {
-            errMsg: "No advertisement"
-          });
+          this._trigger(
+            "error",
+            {},
+            res || { errMsg: "No advertisement" }
+          );
           this._renderNext();
         }
       }
@@ -12148,9 +12635,7 @@ class AdRender {
   _renderTuiaMaterial(id2, data) {
     const adView = document.getElementById(id2);
     if (!adView) {
-      this._trigger("error", {}, {
-        errMsg: "Invalid ad container"
-      });
+      this._trigger("error", {}, { errMsg: "Invalid ad container" });
       this._renderNext();
       return;
     }
@@ -12162,6 +12647,9 @@ class AdRender {
       this._trigger("load", {}, {});
       return;
     }
+    this._renderTuiaDefaultMaterial(adView, data);
+  }
+  _renderTuiaDefaultMaterial(adView, data) {
     this._setCustomTuiaVisible(false);
     const materialSrc = this._getRandomTuiaMaterial(data == null ? void 0 : data.imgs, data == null ? void 0 : data.img);
     if (!materialSrc) {
@@ -12174,9 +12662,7 @@ class AdRender {
     const img = document.createElement("img");
     img.src = materialSrc;
     img.onerror = () => {
-      this._trigger("error", {}, {
-        errMsg: "Tuia material load fail"
-      });
+      this._trigger("error", {}, { errMsg: "Tuia material load fail" });
       this._renderNext();
     };
     img.alt = "ad";
@@ -12210,9 +12696,7 @@ class AdRender {
     this._setCustomTuiaVisible(false);
     const tuia = window.TuiaSDKLite;
     if (!tuia || typeof tuia.execute !== "function") {
-      this._trigger("error", {}, {
-        errMsg: "Invalid TuiaSDKLite"
-      });
+      this._trigger("error", {}, { errMsg: "Invalid TuiaSDKLite" });
       this._renderNext();
       return;
     }
@@ -12226,9 +12710,11 @@ class AdRender {
         this._trigger("load", {}, res || {});
       },
       fail: (err) => {
-        this._trigger("error", {}, err || {
-          errMsg: "TuiaSDKLite execute fail"
-        });
+        this._trigger(
+          "error",
+          {},
+          err || { errMsg: "TuiaSDKLite execute fail" }
+        );
         this._renderNext();
       }
     });
@@ -12241,9 +12727,7 @@ class AdRender {
     this._rootRef.value.append(adView);
     const scriptPath = provider.s || provider.script;
     if (!scriptPath || typeof scriptPath !== "string") {
-      this._trigger("error", {}, {
-        errMsg: "Invalid provider script"
-      });
+      this._trigger("error", {}, { errMsg: "Invalid provider script" });
       this._renderNext();
       return;
     }
@@ -12331,48 +12815,64 @@ class AdRender {
   }
 }
 const DEFAULT_WIDESCREEN_WIDTH = 750;
+const adProps = {
+  adpid: {
+    type: String,
+    default: ""
+  },
+  adpidWidescreen: {
+    type: String,
+    default: ""
+  },
+  widescreenWidth: {
+    type: Number,
+    default: DEFAULT_WIDESCREEN_WIDTH
+  }
+};
+function useAd(props2, emit2, hasCustomTuiaMaterial) {
+  const rootRef = vue.ref(null);
+  const customTuiaVisible = vue.ref(
+    false
+  );
+  const { $excludeAttrs, $listeners } = useAttrs({
+    excludeListeners: true
+  });
+  const trigger = useCustomEvent(rootRef, emit2);
+  const ad = new AdRender(props2, trigger, rootRef, {
+    hasCustomTuiaMaterial,
+    setCustomTuiaVisible: (visible, onRendered) => {
+      customTuiaVisible.value = visible;
+    }
+  });
+  vue.watch(
+    () => props2.adpid,
+    (val) => {
+      ad.load(val);
+    }
+  );
+  vue.watch(
+    () => props2.adpidWidescreen,
+    (val) => {
+      ad.load(val);
+    }
+  );
+  return { rootRef, customTuiaVisible, $excludeAttrs, $listeners, ad };
+}
 const index$6 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "Ad",
-  props: {
-    adpid: {
-      type: String,
-      default: ""
-    },
-    adpidWidescreen: {
-      type: String,
-      default: ""
-    },
-    widescreenWidth: {
-      type: Number,
-      default: DEFAULT_WIDESCREEN_WIDTH
-    }
-  },
+  props: adProps,
   setup(props2, {
     emit: emit2,
     slots
   }) {
-    const rootRef = vue.ref(null);
-    const customTuiaVisible = vue.ref(false);
     const {
+      rootRef,
+      customTuiaVisible,
       $excludeAttrs,
-      $listeners
-    } = useAttrs({
-      excludeListeners: true
-    });
-    const trigger = useCustomEvent(rootRef, emit2);
-    const ad = new AdRender(props2, trigger, rootRef, {
-      hasCustomTuiaMaterial: () => Boolean(slots.default && slots.default().length),
-      setCustomTuiaVisible: (visible) => {
-        customTuiaVisible.value = visible;
-      }
-    });
-    vue.watch(() => props2.adpid, (val) => {
-      ad.load(val);
-    });
-    vue.watch(() => props2.adpidWidescreen, (val) => {
-      ad.load(val);
-    });
+      $listeners,
+      ad
+    } = useAd(props2, emit2, () => Boolean(slots.default && slots.default().length));
     return () => {
       const {
         adpid,
@@ -13730,7 +14230,7 @@ const _hoisted_3$1 = {
   height: "26",
   viewBox: "0 0 32 32"
 };
-const _hoisted_4$1 = ["d", "fill"];
+const _hoisted_4$1 = ["d", "stroke"];
 const _hoisted_5$1 = ["badge-text", "onClick"];
 const _hoisted_6$1 = ["width", "height"];
 const _hoisted_7$1 = ["d", "fill"];
@@ -13781,6 +14281,7 @@ const _sfc_main$2 = /* @__PURE__ */ vue.defineComponent({
     const hasPages = __UNI_FEATURE_PAGES__;
     const hasButtons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__;
     const hasSearchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__;
+    const isXVapor = false;
     const ICON_PATHS = {
       none: "",
       forward: "M11 7.844q-0.25-0.219-0.25-0.578t0.25-0.578q0.219-0.25 0.563-0.25t0.563 0.25l9.656 9.125q0.125 0.125 0.188 0.297t0.063 0.328q0 0.188-0.063 0.359t-0.188 0.297l-9.656 9.125q-0.219 0.25-0.563 0.25t-0.563-0.25q-0.25-0.219-0.25-0.578t0.25-0.609l9.063-8.594-9.063-8.594z",
@@ -13982,7 +14483,10 @@ const _sfc_main$2 = /* @__PURE__ */ vue.defineComponent({
               (vue.openBlock(), vue.createElementBlock("svg", _hoisted_3$1, [
                 vue.createElementVNode("path", {
                   d: vue.unref(ICON_PATH_BACK),
-                  fill: vue.unref(navigationBar).type === "transparent" ? "#fff" : vue.unref(navigationBar).titleColor
+                  fill: "none",
+                  stroke: vue.unref(navigationBar).type === "transparent" ? "#fff" : vue.unref(navigationBar).titleColor,
+                  "stroke-width": "2",
+                  "stroke-linecap": "round"
                 }, null, 8, _hoisted_4$1)
               ]))
             ])) : vue.createCommentVNode("", true),
@@ -14015,7 +14519,10 @@ const _sfc_main$2 = /* @__PURE__ */ vue.defineComponent({
                   (vue.openBlock(), vue.createElementBlock("svg", _hoisted_9, [
                     vue.createElementVNode("path", {
                       d: ICON_PATHS.select,
-                      fill: "#000"
+                      fill: "none",
+                      stroke: "#000",
+                      "stroke-width": "2",
+                      "stroke-linecap": "round"
                     }, null, 8, _hoisted_10)
                   ]))
                 ], 4)) : (vue.openBlock(), vue.createElementBlock("i", {
@@ -14035,11 +14542,14 @@ const _sfc_main$2 = /* @__PURE__ */ vue.defineComponent({
                 opacity: vue.unref(navigationBar).type === "transparent" ? 0 : 1
               })
             }, [
-              vue.unref(navigationBar).loading ? (vue.openBlock(), vue.createElementBlock("i", _hoisted_13)) : vue.unref(navigationBar).titleImage ? (vue.openBlock(), vue.createElementBlock("img", {
+              !vue.unref(isXVapor) && vue.unref(navigationBar).loading ? (vue.openBlock(), vue.createElementBlock("i", _hoisted_13)) : vue.unref(isXVapor) && vue.unref(navigationBar).loading ? (vue.openBlock(), vue.createBlock(vue.unref(_sfc_main$6), {
                 key: 1,
+                style: { "display": "inline-block", "width": "20px", "height": "20px", "margin-top": "7px" }
+              })) : vue.unref(navigationBar).titleImage ? (vue.openBlock(), vue.createElementBlock("img", {
+                key: 2,
                 src: vue.unref(navigationBar).titleImage,
                 class: "uni-page-head__title_image"
-              }, null, 8, _hoisted_14)) : (vue.openBlock(), vue.createElementBlock(vue.Fragment, { key: 2 }, [
+              }, null, 8, _hoisted_14)) : (vue.openBlock(), vue.createElementBlock(vue.Fragment, { key: 3 }, [
                 vue.createTextVNode(vue.toDisplayString(vue.unref(navigationBar).titleText), 1)
               ], 64))
             ], 4)

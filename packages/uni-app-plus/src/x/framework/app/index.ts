@@ -1,7 +1,10 @@
 import type { App, ComponentPublicInstance } from 'vue'
 import { extend } from '@vue/shared'
 import { formatLog } from '@dcloudio/uni-shared'
-import { defineGlobalData } from '@dcloudio/uni-core'
+import {
+  defineGlobalData,
+  initUniAppVmMethodWarnings,
+} from '@dcloudio/uni-core'
 
 import { initEntry } from './initEntry'
 // import { initTabBar } from './initTabBar'
@@ -70,6 +73,7 @@ function initAppVm(appVm: ComponentPublicInstance) {
 export function initUniApp(uniApp: UniApp) {
   uniApp.vm = appCtx
   uniApp.$vm = appCtx
+  initUniAppVmMethodWarnings(uniApp)
   Object.defineProperty(uniApp, 'globalData', {
     get: () => {
       return appCtx!.globalData || {}

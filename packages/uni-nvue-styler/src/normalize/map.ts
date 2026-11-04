@@ -30,6 +30,8 @@ import { normalizeFlexFlow } from './flexFlow'
 import { animationNormalizeFactoryMap } from './animation'
 import { normalizeBackdropFilter } from './backdropFilter'
 import { createNormalizeDom2Calc } from './calc'
+import { normalizeGap } from './gap'
+import { createNormalizeCornerRadius } from './borderRadius'
 
 // transition-property 不读 css.json
 // 从 property.ts 中移动到 map 里，避免循环依赖
@@ -199,8 +201,19 @@ const uvueNormalizeMap: Record<string, Normalize> = {
   transitionTimingFunction: normalizeTimingFunction,
 }
 
+const dom2NormalizeMap: Record<string, Normalize> = {
+  rowGap: normalizeGap,
+  columnGap: normalizeGap,
+}
+
+const cornerRadiusProperties = new Set([
+  'borderTopLeftRadius',
+  'borderTopRightRadius',
+  'borderBottomLeftRadius',
+  'borderBottomRightRadius',
+])
+
 const restrictionMap: Partial<Record<Restriction, Normalize>> = {
-  [Restriction.LENGTH]: normalizeLength,
   [Restriction.PERCENTAGE]: normalizePercent,
   [Restriction.NUMBER]: normalizeNumber,
   [Restriction.NUMBER_0_1]: normalizeNumber,
@@ -212,6 +225,32 @@ const restrictionMap: Partial<Record<Restriction, Normalize>> = {
   [Restriction.GRADIENT]: normalizeGradient,
   [Restriction.URL]: normalizeUrl,
 }
+type NormalizeFactory = (
+  property: Property,
+  options: NormalizeOptions
+) => Normalize
+
+function createLengthNormalizeFactory(
+  extraUnits: readonly string[] = []
+): NormalizeFactory {
+  return (property, options) =>
+    normalizeLengthWithOptions({
+      // 同时支持数值和长度时保留单位，以区分倍数与绝对长度
+      removePx:
+        !options.keepUnitPx &&
+        !property.restrictions?.includes(Restriction.NUMBER),
+      property: property.name,
+      extraUnits,
+    })
+}
+
+const restrictionNormalizeFactoryMap: Partial<
+  Record<Restriction, NormalizeFactory>
+> = {
+  [Restriction.LENGTH]: createLengthNormalizeFactory(),
+  [Restriction.LINE_HEIGHT_LENGTH]: createLengthNormalizeFactory(['em']),
+}
+
 // @font-face下不支持的属性
 const invalidFontFaceProperties = ['fontWeight', 'fontStyle', 'fontVariant']
 
@@ -238,7 +277,8 @@ function getUVueNormalizeMap(options: NormalizeOptions) {
     const prop = camelize(property.name)
     let normalize: Normalize
     const dom2NormalizeFactory = dom2 && animationNormalizeFactoryMap[prop]
-    const customNormalize = uvueNormalizeMap[prop]
+    const customNormalize =
+      (dom2 && dom2NormalizeMap[prop]) || uvueNormalizeMap[prop]
     if (dom2NormalizeFactory) {
       normalize = dom2NormalizeFactory(property)
     } else if (customNormalize) {
@@ -265,10 +305,13 @@ function getUVueNormalizeMap(options: NormalizeOptions) {
         normalize = createCombinedNormalize([normalizeFlexFlow, normalize])
       }
     }
-    result[prop] = normalizePlatform(
-      dom2 ? createNormalizeDom2Calc(normalize, prop) : normalize,
-      property.uniPlatform
-    )
+    if (dom2) {
+      normalize = createNormalizeDom2Calc(normalize, prop)
+    }
+    if (cornerRadiusProperties.has(prop)) {
+      normalize = createNormalizeCornerRadius(normalize)
+    }
+    result[prop] = normalizePlatform(normalize, property.uniPlatform)
   }
   return result
 }
@@ -278,17 +321,11 @@ function getNormalizes(property: Property, options: NormalizeOptions) {
   const normalizes: Normalize[] = []
   const restrictions = property.restrictions || []
   restrictions.forEach((restriction) => {
-    let normalize = restrictionMap[restriction]
+    const factory = restrictionNormalizeFactoryMap[restriction]
+    const normalize = factory
+      ? factory(property, options)
+      : restrictionMap[restriction]
     if (normalize) {
-      if (restriction === Restriction.LENGTH) {
-        // 如果同时有number和length，例如line-height: 1.5, line-height: 16px，则不能移除px
-        normalize = normalizeLengthWithOptions({
-          removePx: options.keepUnitPx
-            ? false
-            : !restrictions.includes(Restriction.NUMBER),
-          property: property.name,
-        })
-      }
       normalizes.push(normalize)
     }
   })

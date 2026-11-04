@@ -39,7 +39,7 @@ catalog:
   'adm-zip': 0.5.16
   'autoprefixer': 10.4.20
   'chokidar': 3.6.0
-  'cypress': 10.11.0
+  'cypress': 15.21.1
   'debug': 4.3.7
   'semver': 7.6.3
   'esbuild': 0.20.2

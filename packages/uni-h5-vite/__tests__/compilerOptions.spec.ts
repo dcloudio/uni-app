@@ -36,9 +36,18 @@ describe('h5 compiler options', () => {
     const { transformPageHead } =
       require('../src/plugin/transforms/transformPageHead') as typeof import('../src/plugin/transforms/transformPageHead')
 
-    expect(compilerOptions.nodeTransforms).toContain(transformMatchMedia)
+    expect(compilerOptions.nodeTransforms).not.toContain(transformMatchMedia)
     expect(compilerOptions.nodeTransforms).not.toContain(transformCustomElement)
     expect(compilerOptions.ssrPreTagTransforms).toContain(transformPageHead)
+    expect(compilerOptions.isCustomElement('match-media')).toBe(false)
+
+    const { compile } = require('@vue/compiler-dom')
+    const { code } = compile('<match-media :min-width="600" />', {
+      ...compilerOptions,
+      mode: 'module',
+    })
+    expect(code).toContain('_resolveComponent("match-media")')
+    expect(code).not.toContain('uni-match-media')
   })
 
   test('非 Vapor uni-app x 保持 custom element 转换', () => {
@@ -53,6 +62,23 @@ describe('h5 compiler options', () => {
 
     expect(compilerOptions.nodeTransforms).not.toContain(transformMatchMedia)
     expect(compilerOptions.nodeTransforms).toContain(transformCustomElement)
+    expect(compilerOptions.isCustomElement('match-media')).toBe(true)
+
+    const { compile } = require('@vue/compiler-dom')
+    expect(compile('<match-media />', compilerOptions).code).toContain(
+      '$UniCustomElement$match-media'
+    )
+  })
+
+  test('非 uni-app x 保持 match-media 标签转换', () => {
+    delete process.env.UNI_APP_X
+    delete process.env.UNI_APP_X_DOM2
+    delete process.env.UNI_APP_X_VAPOR
+    const { compilerOptions } = require('../src/plugin/uni')
+    const { compile } = require('@vue/compiler-dom')
+    expect(compile('<match-media />', compilerOptions).code).toContain(
+      'uni-match-media'
+    )
   })
 
   test('SSR 在处理 page-meta 时提前转换 head', () => {

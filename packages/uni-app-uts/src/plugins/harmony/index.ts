@@ -83,8 +83,11 @@ export function init() {
         ]),
     resolveUTSCompiler().uts2js({
       dom2: isDom2,
-      // VDOM 的 TS 依赖仍按 UTS 编译，仅 DOM2 交给标准 TS 编译链。
+      // VDOM 的 TS 依赖仍进入 uts2js 插件，是否应用 UTS 转换由编译器区分。
       excludeStandardTypeScript: isDom2,
+      // 仅内部非 DOM2 扩展 API 构建保留辅助模块改名前的 UTS 语义。
+      transformTypeScriptAsUTS:
+        !isDom2 && process.env.UNI_COMPILE_TARGET === 'ext-api',
       platform: 'app-harmony',
       inputDir: process.env.UNI_INPUT_DIR,
       version: process.env.UNI_COMPILER_VERSION,

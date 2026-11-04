@@ -1,3 +1,6 @@
+/// <reference types="@dcloudio/types/uni-app/uni/base/MapContext" />
+
+// 先加载地图声明，确保其全局类型扩展在补充 UniNamespace 前完成合并。
 // 临时覆盖 HBuilderX.PageURIString , HBuilderX.ColorString
 declare namespace HBuilderX {
   type PageURIString = string

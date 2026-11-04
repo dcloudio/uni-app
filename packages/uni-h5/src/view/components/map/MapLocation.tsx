@@ -3,7 +3,14 @@ import {
   defineSystemComponent,
   type useCustomEvent,
 } from '@dcloudio/uni-components'
-//#if !_NODE_JS_
+//#if !_NODE_JS_ && _X_VAPOR_
+import { getLocation } from '../../../service/api/location/getLocation'
+import {
+  offCompassChange,
+  onCompassChange,
+} from '../../../service/api/device/compass'
+//#endif
+//#if !_NODE_JS_ && !_X_VAPOR_
 import {
   getLocation,
   offCompassChange,

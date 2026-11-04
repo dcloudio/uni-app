@@ -6,21 +6,18 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -29,7 +26,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -47,21 +43,18 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -70,7 +63,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -88,21 +80,18 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -111,7 +100,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -129,21 +117,18 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "4.71",
                "uniUtsPlugin": "4.71",
                "unixUtsPlugin": "4.71"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -152,7 +137,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -170,21 +154,18 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "4.71",
                "uniUtsPlugin": "4.71",
                "unixUtsPlugin": "4.71"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -193,7 +174,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -211,21 +191,18 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "4.71",
                "uniUtsPlugin": "4.71",
                "unixUtsPlugin": "4.71"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -234,7 +211,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -252,21 +228,18 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "4.71",
                "uniUtsPlugin": "4.71",
                "unixUtsPlugin": "4.71"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -275,7 +248,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -293,21 +265,18 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -316,7 +285,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -335,21 +303,18 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -358,7 +323,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -376,21 +340,18 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "4.71",
                "uniUtsPlugin": "4.71",
                "unixUtsPlugin": "4.71"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -399,7 +360,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -418,21 +378,18 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -441,7 +398,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -460,21 +416,18 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "4.71",
                "uniUtsPlugin": "4.71",
                "unixUtsPlugin": "4.71"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -483,7 +436,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -502,21 +454,18 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -525,7 +474,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -544,21 +492,18 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "4.71",
                "uniUtsPlugin": "4.71",
                "unixUtsPlugin": "4.71"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -567,7 +512,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -586,21 +530,18 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -609,7 +550,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -628,21 +568,18 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "4.71",
                "uniUtsPlugin": "4.71",
                "unixUtsPlugin": "4.71"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -651,7 +588,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -670,21 +606,18 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -693,7 +626,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -712,21 +644,18 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "4.71",
                "uniUtsPlugin": "4.71",
                "unixUtsPlugin": "4.71"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -735,7 +664,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -754,21 +682,18 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -777,7 +702,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -796,21 +720,18 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "4.71",
                "uniUtsPlugin": "4.71",
                "unixUtsPlugin": "4.71"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -819,7 +740,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -838,21 +758,18 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -861,7 +778,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -880,21 +796,18 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "4.71",
                "uniUtsPlugin": "4.71",
                "unixUtsPlugin": "4.71"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -903,7 +816,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -921,21 +833,18 @@ interface Date {
      @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/date.html#getMilliseconds
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -944,7 +853,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -963,21 +871,18 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "4.71",
                "uniUtsPlugin": "4.71",
                "unixUtsPlugin": "4.71"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -986,7 +891,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -1005,21 +909,18 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "4.71",
                "uniUtsPlugin": "4.71",
                "unixUtsPlugin": "4.71"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -1028,7 +929,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -1048,21 +948,18 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -1071,7 +968,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -1091,21 +987,18 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -1114,7 +1007,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -1134,21 +1026,18 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "4.71",
                "uniUtsPlugin": "4.71",
                "unixUtsPlugin": "4.71"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -1157,7 +1046,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -1177,21 +1065,18 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -1200,7 +1085,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -1219,21 +1103,18 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "4.71",
                "uniUtsPlugin": "4.71",
                "unixUtsPlugin": "4.71"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -1242,7 +1123,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -1261,21 +1141,18 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -1284,7 +1161,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -1304,21 +1180,18 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "4.71",
                "uniUtsPlugin": "4.71",
                "unixUtsPlugin": "4.71"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -1327,7 +1200,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -1346,21 +1218,18 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -1369,7 +1238,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -1389,21 +1257,18 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "4.71",
                "uniUtsPlugin": "4.71",
                "unixUtsPlugin": "4.71"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -1412,7 +1277,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -1431,21 +1295,18 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -1454,7 +1315,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -1473,21 +1333,18 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "4.71",
                "uniUtsPlugin": "4.71",
                "unixUtsPlugin": "4.71"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -1496,7 +1353,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -1516,21 +1372,18 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -1539,7 +1392,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -1559,21 +1411,18 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "4.71",
                "uniUtsPlugin": "4.71",
                "unixUtsPlugin": "4.71"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -1582,7 +1431,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -1601,21 +1449,18 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -1624,7 +1469,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -1643,21 +1487,18 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "4.71",
                "uniUtsPlugin": "4.71",
                "unixUtsPlugin": "x"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -1666,7 +1507,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -1683,21 +1523,18 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "4.71",
                "uniUtsPlugin": "4.71",
                "unixUtsPlugin": "4.71"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -1706,7 +1543,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -1723,21 +1559,18 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "4.4",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "4.11",
                "unixUtsPlugin": "4.11"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -1746,7 +1579,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -1763,21 +1595,18 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "4.4",
                "uniVer": "x",
                "unixVer": "4.11",
                "uniUtsPlugin": "4.11",
                "unixUtsPlugin": "4.11"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -1786,7 +1615,6 @@ interface Date {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -1807,21 +1635,18 @@ interface DateConstructor {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -1830,7 +1655,6 @@ interface DateConstructor {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -1848,21 +1672,18 @@ interface DateConstructor {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -1871,7 +1692,6 @@ interface DateConstructor {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -1896,21 +1716,18 @@ interface DateConstructor {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -1919,7 +1736,6 @@ interface DateConstructor {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -1942,21 +1758,18 @@ interface DateConstructor {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -1965,7 +1778,6 @@ interface DateConstructor {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -1992,21 +1804,18 @@ interface DateConstructor {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "4.71",
                "uniUtsPlugin": "4.71",
                "unixUtsPlugin": "4.71"
             },ss
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -2015,7 +1824,6 @@ interface DateConstructor {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }
@@ -2033,21 +1841,18 @@ interface DateConstructor {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -2056,7 +1861,6 @@ interface DateConstructor {
         },
         "mp": {
           "weixin": {
-            "osVer": "√",
             "uniVer": "√",
             "unixVer": "4.41"
           }

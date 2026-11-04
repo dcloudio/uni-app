@@ -102,6 +102,8 @@ export function initEnv(
   type: 'unknown' | 'dev' | 'build',
   options: CliOptions
 ) {
+  // 默认隐藏浏览器数据过期提示，保留用户显式设置的值
+  process.env.BROWSERSLIST_IGNORE_OLD_DATA ??= 'true'
   if (initialized) {
     return
   }
@@ -283,9 +285,16 @@ export function initEnv(
     if (manifestJson['uni-app-x']?.['styleIsolationVersion'] == 2) {
       process.env.UNI_APP_STYLE_ISOLATION_VERSION = '2'
     }
-    if (isUniAppXVapor() && process.env.UNI_PLATFORM === 'app-harmony') {
+    if (
+      isUniAppXVapor() &&
+      process.env.UNI_PLATFORM === 'app-harmony' &&
+      !process.env.UNI_APP_X_HARMONY_SCRIPT_ENGINE
+    ) {
       process.env.UNI_APP_X_HARMONY_SCRIPT_ENGINE =
         resolveUniAppXHarmonyScriptEngine(manifestJson)
+    }
+    if (process.env.UNI_APP_X_HARMONY_SCRIPT_ENGINE === 'jsvm') {
+      process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE = 'js'
     }
   } catch (e) {}
 
@@ -362,7 +371,12 @@ export function initEnv(
     process.env.UNI_APP_X === 'true'
   )
   const isX = isUniAppX()
-  const renderMode = isX ? (isUniAppXVapor() ? '蒸汽模式' : 'VDOM模式') : ''
+  const renderMode =
+    isX && !process.env.UNI_PLATFORM.startsWith('mp-')
+      ? isUniAppXVapor()
+        ? '蒸汽模式'
+        : 'VDOM模式'
+      : ''
   console.log(
     M['app.compiler.version'].replace(
       '{version}',
@@ -396,6 +410,14 @@ export function initEnv(
       M['vapor.default.script.lang'].replace(
         '{lang}',
         getUniAppXVaporScriptLang(process.env.UNI_INPUT_DIR)
+      )
+    )
+  }
+  if (isUniAppXVapor() && process.env.UNI_APP_X_HARMONY_SCRIPT_ENGINE) {
+    console.log(
+      M['vapor.script.engine'].replace(
+        '{engine}',
+        process.env.UNI_APP_X_HARMONY_SCRIPT_ENGINE
       )
     )
   }

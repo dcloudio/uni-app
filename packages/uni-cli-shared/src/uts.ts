@@ -15,10 +15,16 @@ import {
 } from './utils'
 import { M } from './messages'
 
-import { type Injects, parseUniExtApis } from './uni_modules'
+import {
+  type Injects,
+  parseUniExtApis,
+  resolveUTSAppJsEntry,
+} from './uni_modules'
 import type { EasycomMatcher } from './easycom'
 import { preUVueJs } from './preprocess'
 import { isUniAppXJsEngine } from './x'
+
+export { resolveUTSAppJsEntry } from './uni_modules'
 
 function once<T extends (...args: any[]) => any>(
   fn: T,
@@ -58,8 +64,10 @@ export function resolveUTSAppModule(
       if (isUniAppXJsEngine()) {
         // js engine
         if (parentDir === 'uni_modules') {
-          const appJsIndex = path.resolve(id, basedir, 'app-js', 'index.uts')
-          if (fs.existsSync(appJsIndex)) {
+          const appJsIndex = resolveUTSAppJsEntry(
+            path.resolve(id, basedir, 'app-js')
+          )
+          if (appJsIndex) {
             return appJsIndex
           }
         }
@@ -67,7 +75,7 @@ export function resolveUTSAppModule(
       /**
        * 鸿蒙平台解析优先级
        * 1. utssdk/app-harmony/index.uts (native)
-       * 2. utssdk/app-js/index.uts (js)
+       * 2. utssdk/app-js/index.uts/index.ts/index.js (js)
        * 3. utssdk/index.uts (native)
        */
       if (process.env.UNI_UTS_PLATFORM === 'app-harmony') {
@@ -79,8 +87,10 @@ export function resolveUTSAppModule(
             'app-harmony',
             'index.uts'
           )
-          const appJsIndex = path.resolve(id, basedir, 'app-js', 'index.uts')
-          if (!fs.existsSync(appHarmonyIndex) && fs.existsSync(appJsIndex)) {
+          const appJsIndex = resolveUTSAppJsEntry(
+            path.resolve(id, basedir, 'app-js')
+          )
+          if (!fs.existsSync(appHarmonyIndex) && appJsIndex) {
             return appJsIndex
           }
         }

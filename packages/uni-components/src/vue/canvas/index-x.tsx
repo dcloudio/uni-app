@@ -1,13 +1,7 @@
 import { onMounted, ref } from 'vue'
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
 import { UniElement } from '../../helpers/UniElement'
-
-const props = {
-  disableScroll: {
-    type: [Boolean, String],
-    default: false,
-  },
-}
+import { canvasProps } from './props-x'
 
 export class UniCanvasElement extends UniElement {
   get width() {
@@ -49,7 +43,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   compatConfig: {
     MODE: 3,
   },
-  props,
+  props: canvasProps,
   //#if _X_ && !_NODE_JS_
   rootElement: {
     name: 'uni-canvas',

@@ -2,7 +2,6 @@ import { updateStyle } from '@dcloudio/uni-core'
 import { extend, isArray } from '@vue/shared'
 import { setupPage } from '../../framework/setup'
 //#if _X_VAPOR_
-import { useRoute } from 'vue-router'
 import { createVaporPageRouteComponent } from '../../framework/components/page/route-vapor'
 //#else
 import { renderPage } from './utils'
@@ -27,9 +26,7 @@ export function registerSystemRoute(
   const __uniPage = setupPage(page)
   let routeComponent: any
   //#if _X_VAPOR_
-  routeComponent = createVaporPageRouteComponent(__uniPage, () => {
-    return useRoute().query
-  })
+  routeComponent = createVaporPageRouteComponent(__uniPage)
   routeComponent.mpType = 'page'
   //#else
   routeComponent = {

@@ -4258,7 +4258,8 @@ function toExternalClasses(classes) {
   return trimmed ? trimmed.split(/\s+/).map((item) => "^" + item) : [];
 }
 function normalizeExternalClasses(classes) {
-  return toExternalClasses(normalizeClass(classes));
+  const normalized = normalizeClass(classes);
+  return normalized ? "^" + normalized.replace(/\s+/g, " ^") : "";
 }
 function normalizeInheritAttrsValue(instance, key, value) {
   if (__X_STYLE_ISOLATION__) {
@@ -9280,7 +9281,7 @@ const CLASS_AND_STYLES = {
   }
 };
 function transformAttr(el, key, value, instance) {
-  if (!value) {
+  if (!value && value !== "") {
     return [key, value];
   }
   const opts = CLASS_AND_STYLES[el.tagName.toLowerCase()];
@@ -9288,7 +9289,7 @@ function transformAttr(el, key, value, instance) {
     const camelized = camelize(key);
     if (opts["class"].indexOf(camelized) > -1) {
       const classStyle = parseClassList(
-        Array.isArray(value) ? value : [value],
+        Array.isArray(value) ? value : value.split(/\s+/),
         instance,
         el
       );
@@ -9299,7 +9300,7 @@ function transformAttr(el, key, value, instance) {
       }
       return [camelized, classStyle];
     }
-    if (opts["style"].indexOf(camelized) > -1) {
+    if (value && opts["style"].indexOf(camelized) > -1) {
       if (isString(value)) {
         const sytle = parseStringStyle(camelize(value));
         return [camelized, sytle];

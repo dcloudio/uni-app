@@ -216,6 +216,7 @@ export declare enum ShapeFlags {
   SUSPENSE = 128,
   COMPONENT_SHOULD_KEEP_ALIVE = 256,
   COMPONENT_KEPT_ALIVE = 512,
+  SLOT_FALLBACK = 1024,
   COMPONENT = 6
 }
 //#endregion
@@ -293,16 +294,6 @@ export declare const isFormattingTag: (key: string) => boolean;
  * Do NOT use in runtime code paths unless behind `__DEV__` flag.
  */
 export declare const isAlwaysCloseTag: (key: string) => boolean;
-/**
- * Compiler only.
- * Do NOT use in runtime code paths unless behind `__DEV__` flag.
- */
-export declare const isInlineTag: (key: string) => boolean;
-/**
- * Compiler only.
- * Do NOT use in runtime code paths unless behind `__DEV__` flag.
- */
-export declare const isBlockTag: (key: string) => boolean;
 //#endregion
 //#region temp/packages/shared/src/domAttrConfig.d.ts
 export declare const isSpecialBooleanAttr: (key: string) => boolean;
@@ -437,7 +428,12 @@ export declare enum VaporVForFlags {
 export declare enum VaporBlockShape {
   EMPTY = 0,
   SINGLE_ROOT = 1,
-  MULTI_ROOT = 2
+  MULTI_ROOT = 2,
+  /**
+   * A `createIf` false branch that is the `v-else-if` rest of the chain: a
+   * nested `createIf` that renders the chain's later branches.
+   */
+  ELSE_IF = 3
 }
 /**
  * Bit layout for vapor `createIf` flags.
@@ -458,6 +454,10 @@ export declare enum VaporIfFlags {
   /**
    * Documents the packed true/false branch shape bits. Runtime decode shifts
    * to the selected branch first, then masks with 0b11 for one VaporBlockShape.
+   *
+   * `createIfChain` splits the same bits across two arguments: each branch
+   * flags entry holds that branch's shape with `TRUE_NO_SCOPE`, the chain
+   * flags hold `ONCE`, `SLOT_ROOT` and the keyed index.
    */
   BLOCK_SHAPE = 15,
   /**
@@ -500,11 +500,15 @@ export declare enum TemplateFlags {
 export declare enum VaporSlotFlags {
   NO_SLOTTED = 1,
   ONCE = 2,
-  FORWARDED = 4,
-  SHARED_FALLBACK = 8
+  FORWARDED = 4
 }
 export declare function isForwardedSlot(flags: number): boolean;
-export declare function slotInheritsFallback(flags: number): boolean;
+/**
+ * The data of the comment a vapor server render opens the branch of a `v-if`
+ * chain with, `<!--[1-->`: the digits are the branch's position in the chain,
+ * and `<!--]-->` closes it like a fragment.
+ */
+export declare function isVaporBranchStart(data: string): boolean;
 export declare function slotNotifiesBoundary(flags: number): boolean;
 /**
  * Per-slot-function metadata attached by the compiler as `fn._`.
@@ -519,6 +523,15 @@ export declare enum VaporDynamicComponentFlags {
   DOM2_FLATTEN_TRUE = 65536,
   DOM2_FLATTEN_FALSE = 131072,
   NS_SVG = 8,
-  NS_MATHML = 16
+  NS_MATHML = 16,
+  SLOT_SINGLE_ROOT = 32
+}
+/**
+ * `isSingleRoot` of a component creation call for the single root of a slot
+ * body (`true` marks the single root of a component template). See
+ * resolveFallthroughOwner in runtime-vapor.
+ */
+export declare enum VaporSingleRoot {
+  SLOT = 2
 }
 //#endregion

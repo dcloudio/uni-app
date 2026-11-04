@@ -19,11 +19,12 @@ function resolveAllUniModules(): string[] {
   })
 }
 
-export async function buildWorkers() {
+export async function buildWorkers(): Promise<string[]> {
   const workers = getWorkers()
   if (!Object.keys(workers).length) {
-    return
+    return []
   }
+  const uniModules = new Set<string>()
   const rootDir = uvueOutDir('app-harmony')
   const { bundleArkTS, parseUTSSyntaxError } = resolveUTSCompiler()
   for (const workPath in workers) {
@@ -38,5 +39,7 @@ export async function buildWorkers() {
     if (result && result.error) {
       throw parseUTSSyntaxError(result.error, process.env.UNI_INPUT_DIR)
     }
+    result?.uni_modules?.forEach((plugin) => uniModules.add(plugin))
   }
+  return [...uniModules]
 }

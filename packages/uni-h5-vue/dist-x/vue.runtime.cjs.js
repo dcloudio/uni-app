@@ -5583,11 +5583,8 @@ function toExternalClasses(classes) {
   return trimmed ? trimmed.split(/\s+/).map((item) => "^" + item) : [];
 }
 function normalizeExternalClasses(classes) {
-  const res = toExternalClasses(uniShared.normalizeClass(classes));
-  if (process.env.UNI_APP_X_NEW_STYLE_ISOLATION) {
-    return res.flatMap((item) => [item, item + "-external"]);
-  }
-  return res;
+  const normalized = uniShared.normalizeClass(classes);
+  return normalized ? "^" + normalized.replace(/\s+/g, " ^") : "";
 }
 function normalizeInheritAttrsValue(instance, key, value) {
   if (process.env.UNI_APP_X_NEW_STYLE_ISOLATION && !instance.type.__reserved) {

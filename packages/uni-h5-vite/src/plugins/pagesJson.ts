@@ -5,6 +5,7 @@ import {
   type FEATURE_DEFINES,
   H5_FRAMEWORK_STYLE_PATH,
   MANIFEST_JSON_JS,
+  X_VAPOR_BASE_COMPONENTS_STYLE_PATH,
   checkPagesJson,
   defineUniPagesJsonPlugin,
   getWorkers,
@@ -16,6 +17,7 @@ import {
   normalizePagesRoute,
   parseManifestJsonOnce,
   preUVueJson,
+  resolveWebVaporComponentStyle,
 } from '@dcloudio/uni-cli-shared'
 import { isSSR } from '../utils'
 
@@ -93,12 +95,9 @@ function generatePagesJsonCode(
   const pageComponentImport = isWebVapor
     ? 'createVaporPageRouteComponent'
     : 'PageComponent'
-  const vueRouterImport = isWebVapor
-    ? "import { useRoute } from 'vue-router'\n"
-    : ''
   return `
 import { ${vueImports} } from 'vue'
-${vueRouterImport}import { ${pageComponentImport}, useI18n, setupWindow, setupPage } from '@dcloudio/uni-h5'
+import { ${pageComponentImport}, useI18n, setupWindow, setupPage } from '@dcloudio/uni-h5'
 import { appId, appName, appVersion, appVersionCode, debug, networkTimeout, router, async, sdkConfigs, qqMapKey, googleMapKey, aMapKey, bMapKey, aMapSecurityJsCode, aMapServiceHost, ${vueType}, locale, fallbackLocale, darkmode, themeConfig } from './${MANIFEST_JSON_JS}'
 const locales = import.meta.glob('./locale/*.json', { eager: true })
 ${importLayoutComponentsCode}
@@ -162,6 +161,10 @@ function generateCssCode(config: ResolvedConfig) {
   }
   if (define.__UNI_FEATURE_NAVIGATIONBAR__) {
     cssFiles.push(H5_FRAMEWORK_STYLE_PATH + 'pageHead.css')
+    if (isUniAppXWebVapor()) {
+      // 导航栏内部直接使用 Loading，发行摇树时也必须保留其样式。
+      cssFiles.push(X_VAPOR_BASE_COMPONENTS_STYLE_PATH + 'loading.css')
+    }
   }
   if (define.__UNI_FEATURE_TABBAR__) {
     cssFiles.push(H5_FRAMEWORK_STYLE_PATH + 'tabBar.css')
@@ -183,7 +186,11 @@ function generateCssCode(config: ResolvedConfig) {
     cssFiles.push(H5_FRAMEWORK_STYLE_PATH + 'pageRefresh.css')
   }
   if (define.__UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__) {
-    cssFiles.push(BASE_COMPONENTS_STYLE_PATH + 'input.css')
+    cssFiles.push(
+      isUniAppXWebVapor()
+        ? resolveWebVaporComponentStyle('input')!
+        : BASE_COMPONENTS_STYLE_PATH + 'input.css'
+    )
   }
   const enableTreeShaking = isEnableTreeShaking(
     parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
@@ -306,7 +313,7 @@ function generatePageRoute(
   if (isWebVapor) {
     return `{
   path:'/${isEntry ? '' : path}',${alias}
-  component:createVaporPageRouteComponent(${pageComponent},()=>useRoute().query),
+  component:createVaporPageRouteComponent(${pageComponent}),
   loader: ${pageComponent}Loader,
   meta: ${JSON.stringify(meta)}
 }`

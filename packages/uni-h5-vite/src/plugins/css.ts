@@ -3,6 +3,7 @@ import path from 'path'
 import { type Plugin, type ResolvedConfig, normalizePath } from 'vite'
 
 import {
+  H5_COMPONENTS_STYLE_PATH,
   H5_FRAMEWORK_STYLE_PATH,
   buildInCssSet,
   createEncryptCssUrlReplacer,
@@ -69,6 +70,14 @@ export function uniCssPlugin(): Plugin {
     },
     transform(code, id) {
       id = normalizePath(id)
+      const fieldStyle = resolveH5FieldStyle(id)
+      if (fieldStyle) {
+        this.addWatchFile(fieldStyle)
+        return {
+          code: code + '\n' + fs.readFileSync(fieldStyle, 'utf8'),
+          map: { mappings: '' },
+        }
+      }
       if (
         id.endsWith(H5_FRAMEWORK_STYLE_PATH + 'shadow.css') &&
         process.env.NODE_ENV !== 'development'
@@ -188,8 +197,26 @@ function toPublicPath(filename: string, config: ResolvedConfig) {
 
 function generateBuiltInCssCode(cssImports: string[]) {
   return cssImports
-    .map((cssImport) => fs.readFileSync(resolveBuiltIn(cssImport), 'utf8'))
+    .map((cssImport) => {
+      const code = fs.readFileSync(resolveBuiltIn(cssImport), 'utf8')
+      const fieldStyle = resolveH5FieldStyle(cssImport)
+      return fieldStyle
+        ? code + '\n' + fs.readFileSync(fieldStyle, 'utf8')
+        : code
+    })
     .join('\n')
+}
+
+function resolveH5FieldStyle(id: string) {
+  // Vite's load hook has already converted raw and URL requests to JavaScript.
+  if (/(?:\?|&)(?:raw|url)(?:&|$)/.test(id)) {
+    return
+  }
+  const match =
+    /(?:^|\/)uni-components\/style\/+(input|textarea)\.css(?:[?#].*)?$/.exec(id)
+  if (match) {
+    return resolveBuiltIn(H5_COMPONENTS_STYLE_PATH + match[1] + '.css')
+  }
 }
 
 /**

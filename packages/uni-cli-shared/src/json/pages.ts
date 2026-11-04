@@ -16,6 +16,8 @@ import { initTheme, normalizeThemeConfigOnce } from './theme'
 import { getPlatformManifestJsonOnce } from './manifest'
 
 export const pagesCacheSet: Set<string> = new Set()
+// 窗口名单随 pages.json 一起更新，不并入页面名单，避免影响路由等现有页面判定。
+export const windowsCacheSet: Set<string> = new Set()
 
 export function isUniPageFile(
   file: string,
@@ -158,6 +160,13 @@ export function normalizePagesJson(
   // 缓存页面列表
   pagesCacheSet.clear()
   pagesJson.pages.forEach((page) => pagesCacheSet.add(page.path))
+  windowsCacheSet.clear()
+  for (const name of ['topWindow', 'leftWindow', 'rightWindow'] as const) {
+    const window = pagesJson[name]
+    if (window?.path) {
+      windowsCacheSet.add(normalizePath(path.normalize(window.path)))
+    }
+  }
 
   const manifestJsonPlatform = getPlatformManifestJsonOnce()
   if (!manifestJsonPlatform.darkmode) {

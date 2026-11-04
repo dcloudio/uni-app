@@ -115,7 +115,7 @@ class NodesRefImpl implements NodesRef {
   /**
    * fields({node:true})
    */
-  node(_callback: (result: any) => void): SelectorQuery {
+  node(callback?: (result: any) => void): SelectorQuery {
     this._selectorQuery._push(
       this._selector,
       this._component,
@@ -123,7 +123,7 @@ class NodesRefImpl implements NodesRef {
       {
         node: true,
       } as NodeField,
-      _callback
+      callback ?? null
     )
     return this._selectorQuery
   }
@@ -144,22 +144,18 @@ class SelectorQueryImpl implements SelectorQuery {
     if (__VAPOR__) {
       // @ts-expect-error
       this._component?.$nativePage?.waitNativeRender(() => {
-        requestComponentInfoVapor(
-          this._component,
-          this._queue,
-          (res: Array<any>) => {
-            const queueCbs = this._queueCb
-            res.forEach((info: NodeInfo, _index) => {
-              const queueCb = queueCbs[_index]
-              if (isFunction(queueCb)) {
-                queueCb!(info)
-              }
-            })
-            if (callback && isFunction(callback)) {
-              callback(res)
+        requestComponentInfoVapor(this._queue, (res: Array<any>) => {
+          const queueCbs = this._queueCb
+          res.forEach((info: NodeInfo, _index) => {
+            const queueCb = queueCbs[_index]
+            if (isFunction(queueCb)) {
+              queueCb!(info)
             }
+          })
+          if (callback && isFunction(callback)) {
+            callback(res)
           }
-        )
+        })
       })
     }
     if (!__VAPOR__) {
@@ -538,30 +534,25 @@ function requestComponentInfo(
 
 /**
  * requestComponentInfoVapor
- * @param vueComponent
  * @param queue
  * @param callback
  */
 function requestComponentInfoVapor(
-  vueComponent: ComponentPublicInstance | null,
   queue: Array<SelectorQueryRequest>,
   callback: any
 ) {
-  const result: Array<any> = []
-  if (vueComponent != null) {
-    // 执行待查询 queue
-    queue.forEach((item: SelectorQueryRequest) => {
-      const queryResult = QuerySelectorHelperVapor.queryElement(
-        vueComponent,
-        item.selector,
-        !item.single,
-        item.fields
-      )
-      if (queryResult != null) {
-        result.push(queryResult)
-      }
-    })
-  }
+  const result = queue.map((item) =>
+    item.component
+      ? QuerySelectorHelperVapor.queryElement(
+          item.component,
+          item.selector,
+          !item.single,
+          item.fields
+        )
+      : item.single
+      ? null
+      : []
+  )
   callback(result)
 }
 

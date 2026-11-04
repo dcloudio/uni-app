@@ -20,8 +20,8 @@ import type { VitePluginUniResolvedOptions } from '..'
 function resolveUTSModuleProxyFile(id: string, importer: string) {
   const file = resolveUTSAppModule(process.env.UNI_UTS_PLATFORM, id, importer)
   if (file) {
-    // app-js 会返回完整路径，不需要 uts-proxy
-    if (file.endsWith('.uts')) {
+    // app-js 脚本入口直接交给对应的 Vite 编译器，不需要 uts-proxy。
+    if (file.endsWith('.uts') || file.endsWith('.ts') || file.endsWith('.js')) {
       return file
     }
     return file + '?uts-proxy'

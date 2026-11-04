@@ -4,21 +4,18 @@ interface DataView {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -37,21 +34,18 @@ interface DataView {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -70,21 +64,18 @@ interface DataView {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -107,21 +98,18 @@ interface DataView {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -144,21 +132,18 @@ interface DataView {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -180,21 +165,18 @@ interface DataView {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -217,21 +199,18 @@ interface DataView {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -254,21 +233,18 @@ interface DataView {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -290,21 +266,18 @@ interface DataView {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -327,21 +300,18 @@ interface DataView {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -364,21 +334,18 @@ interface DataView {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -402,21 +369,18 @@ interface DataView {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -440,21 +404,18 @@ interface DataView {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -477,21 +438,18 @@ interface DataView {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -515,21 +473,18 @@ interface DataView {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -553,21 +508,18 @@ interface DataView {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -590,21 +542,18 @@ interface DataView {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -628,21 +577,18 @@ interface DataView {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -666,21 +612,18 @@ interface DataView {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -707,21 +650,18 @@ interface DataViewConstructor {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",

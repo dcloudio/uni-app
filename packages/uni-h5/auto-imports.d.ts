@@ -6,6 +6,8 @@
 // biome-ignore lint: disable
 export {}
 declare global {
+  const UniTextElement: typeof import('@dcloudio/uni-components')['UniTextElement']
+  const UniTextElementImpl: typeof import('@dcloudio/uni-components')['UniTextElementImpl']
   const UniViewElement: typeof import('@dcloudio/uni-components')['UniViewElement']
   const UniViewElementImpl: typeof import('@dcloudio/uni-components')['UniViewElementImpl']
   const defineAsyncApi: typeof import('../uni-api')['defineAsyncApi']

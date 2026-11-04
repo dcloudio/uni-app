@@ -1,0 +1,8 @@
+/* 根节点直接承载滚动和内容布局，尺寸及 flex 属性由使用方设置。 */
+.uni-scroll-view-scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
+
+.uni-scroll-view-scrollbar-hidden {
+  scrollbar-width: none;
+}

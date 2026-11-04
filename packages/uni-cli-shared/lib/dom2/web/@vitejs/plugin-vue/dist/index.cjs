@@ -165,29 +165,12 @@ function createRollupError(id, error) {
 }
 //#endregion
 //#region src/utils/vapor.ts
-/**
-* Resolve the effective Vapor mode for an SFC handled by this plugin.
-*
-* `descriptor.vapor` is the per-file opt-in marker. `features.vapor` is the
-* plugin-level force switch for SFCs that can be forced into Vapor mode.
-*/
 function isVaporMode(descriptor, options) {
-	if (descriptor.vapor) return true;
-	if (options.features?.vapor) return canForceVaporMode(descriptor);
-	return false;
-}
-/**
-* `features.vapor` can force template-only SFCs, `<script setup>` SFCs, and
-* non-`.vue` transformed SFCs into Vapor mode. It cannot force `.vue` SFCs
-* with only a normal `<script>` because Vapor SFC support requires
-* `<script setup>`.
-*/
-function canForceVaporMode(descriptor) {
-	if (descriptor.filename.endsWith(".vue")) {
-		if (descriptor.scriptSetup) return true;
-		if (descriptor.script) return false;
+	if (options.features?.vapor) {
+		if (/\.u?vue$/.test(descriptor.filename) && descriptor.script && !descriptor.scriptSetup) throw new Error(`${descriptor.filename}: Web Vapor 不支持仅使用普通 <script> 的组件，请改用 <script setup>。`);
+		return true;
 	}
-	return true;
+	return !!descriptor.vapor;
 }
 //#endregion
 //#region src/template.ts
@@ -1526,7 +1509,7 @@ async function genScriptCode(descriptor, options, pluginContext, ssr, customElem
 		const src = script.src || descriptor.filename;
 		const langFallback = script.src && node_path.default.extname(src).slice(1) || "js";
 		const attrsQuery = attrsToQuery(script.attrs, langFallback);
-		const query = `?vue&type=script${script.src ? `&src=true` : ``}${attrsQuery}`;
+		const query = `?vue&type=script${script.src ? `&src=true` : ``}${isVaporMode(descriptor, options) && script.attrs.vapor !== true ? "&vapor=true" : ""}${attrsQuery}`;
 		const request = JSON.stringify(src + query);
 		scriptCode = `import _sfc_main from ${request}\nexport * from ${request}`;
 	}

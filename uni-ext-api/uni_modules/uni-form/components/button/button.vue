@@ -1,0 +1,970 @@
+<template>
+  <!-- App 单 class 按属性顺序覆盖，plain 放在基础文字类之后。 -->
+  <view
+    v-if="loading && !disabled"
+    class="uni-button"
+    :class="classes(
+      [buttonType == 'default', 'uni-button-type-default_view'],
+      [buttonType == 'primary', 'uni-button-type-primary_view'],
+      [buttonType == 'warn', 'uni-button-type-warn_view'],
+      [type != null, 'uni-button-has-type', 'uni-button-no-type'],
+      [disabled, 'uni-button-disabled'],
+      [size == 'mini', 'uni-button-size-mini'],
+      [enableTransition, 'transition-enabled'],
+      [buttonType == 'default', 'uni-button-type-default_text'],
+      [buttonType == 'primary', 'uni-button-type-primary_text'],
+      [buttonType == 'warn', 'uni-button-type-warn_text'],
+      [plain && loading, 'uni-button-text-plain'],
+      [plain, 'uni-button-view-plain'],
+      [size == 'mini', 'uni-button-text-size-mini'],
+      [size == 'default', 'uni-button-text-size-default']
+    )"
+    style="display: flex;justify-content: center;flex-direction: row;align-items: center"
+    :hover-class="disabled ? 'none' : hoverClasses"
+    :hover-start-time="hoverStartTime"
+    :hover-stay-time="hoverStayTime"
+    :hover-stop-propagation="hoverStopPropagation"
+    <!-- #ifdef WEB -->
+    ref="loadingRootRef"
+    :tabindex="disabled ? -1 : 0"
+    role="button"
+    :aria-disabled="disabled"
+    @keydown="handleKeydown"
+    @keyup="handleKeyup"
+    @blur="handleBlur"
+    <!-- #endif -->
+    @click="handleTap"
+  >
+    <loading
+      class="uni-button-loading-icon"
+      :class="classes(
+        [buttonType == 'default', 'uni-loading-default'],
+        [plain && buttonType == 'primary', 'uni-loading-plain-primary'],
+        [plain && buttonType == 'warn', 'uni-loading-plain-warn'],
+        loadingClass || 'uni-button-loading-color-inherit'
+      )"
+      <!-- #ifdef APP -->
+      :style="loadingIconStyle"
+      <!-- #endif -->
+      <!-- #ifdef APP-IOS -->
+      :ios-spinner="iosLoadingSnow"
+      <!-- #endif -->
+    ></loading>
+    <text ref="textRef" class="uni-button-loading-text" :style="loadingTextStyle" :class="loadingTextClass || ''">
+      <slot></slot>
+    </text>
+  </view>
+  <text
+    v-else
+    ref="textRef"
+    class="uni-button uni-button-text"
+    :class="classes(
+      [buttonType == 'default', 'uni-button-type-default_view'],
+      [buttonType == 'primary', 'uni-button-type-primary_view'],
+      [buttonType == 'warn', 'uni-button-type-warn_view'],
+      [type != null, 'uni-button-has-type', 'uni-button-no-type'],
+      [disabled, 'uni-button-disabled'],
+      [size == 'mini', 'uni-button-size-mini'],
+      [enableTransition, 'transition-enabled'],
+      [buttonType == 'default', 'uni-button-type-default_text'],
+      [buttonType == 'primary', 'uni-button-type-primary_text'],
+      [buttonType == 'warn', 'uni-button-type-warn_text'],
+      [plain && loading, 'uni-button-text-plain'],
+      [plain, 'uni-button-view-plain'],
+      [size == 'mini', 'uni-button-text-size-mini'],
+      [size == 'default', 'uni-button-text-size-default']
+    )"
+    :hover-class="disabled ? 'none' : hoverClasses"
+    :hover-start-time="hoverStartTime"
+    :hover-stay-time="hoverStayTime"
+    :hover-stop-propagation="hoverStopPropagation"
+    <!-- #ifdef WEB -->
+    :tabindex="disabled ? -1 : 0"
+    role="button"
+    :aria-disabled="disabled"
+    @keydown="handleKeydown"
+    @keyup="handleKeyup"
+    @blur="handleBlur"
+    <!-- #endif -->
+    @click="handleTap"
+  >
+    <slot></slot>
+  </text>
+</template>
+
+<script lang="ts" setup>
+  // #ifdef WEB
+  import { createSpaceKeyHandlers } from '../common.ts'
+  // #endif
+  import { FORM_KEY, classes } from '../common.ts'
+  import { UniButtonElement } from './global.ts'
+  import { FormContext } from '../types.ts'
+
+  const DEFAULT_BUTTON_HOVER_CLASS_NAME = 'button-hover'
+
+  type ButtonSize = 'default' | 'mini'
+  type ButtonType = 'default' | 'primary' | 'warn'
+  type FormType = 'submit' | 'reset'
+
+  const emit = defineEmits<{
+    click : [event: UniPointerEvent]
+  }>()
+
+  interface ButtonProps {
+    /**
+     * 是否禁用
+     * @uniPlatform {
+       "app": {
+         "ios": {
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
+        "harmony": {
+           "unixVaporVer": "5.0"
+         }
+       }
+     }
+     */
+    disabled ?: boolean;
+    /**
+     * 按钮类型
+     * @uniPlatform {
+       "app": {
+         "ios": {
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
+        "harmony": {
+           "unixVaporVer": "5.0"
+         }
+       }
+     }
+     */
+    type ?: ButtonType;
+    /**
+     * 按钮大小
+     * @uniPlatform {
+       "app": {
+         "ios": {
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
+        "harmony": {
+           "unixVaporVer": "5.0"
+         }
+       }
+     }
+     */
+    size ?: ButtonSize;
+    /**
+     * 按钮是否镂空，背景色透明
+     * @uniPlatform {
+       "app": {
+         "ios": {
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
+        "harmony": {
+           "unixVaporVer": "5.0"
+         }
+       }
+     }
+     */
+    plain ?: boolean;
+    /**
+     * loading 图标的类名
+     * @uniPlatform {
+       "app": {
+         "ios": {
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
+        "harmony": {
+           "unixVaporVer": "5.0"
+         }
+       },
+       "web": {
+         "uniVer": "x",
+         "unixVer": "x"
+       },
+       "mp": {
+         "weixin": {
+           "hostVer": "x",
+           "uniVer": "x",
+           "unixVer": "x"
+         },
+         "alipay": {
+           "hostVer": "x",
+           "uniVer": "x",
+           "unixVer": "x"
+         }
+       }
+     }
+     */
+    loadingClass ?: string.ClassString;
+    /**
+     * loading 文案的类名
+     * @uniPlatform {
+       "app": {
+         "ios": {
+           "unixVaporVer": "5.21"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
+        "harmony": {
+           "unixVaporVer": "5.21"
+         }
+       },
+       "web": {
+         "uniVer": "x",
+         "unixVer": "x"
+       },
+       "mp": {
+         "weixin": {
+           "hostVer": "x",
+           "uniVer": "x",
+           "unixVer": "x"
+         },
+         "alipay": {
+           "hostVer": "x",
+           "uniVer": "x",
+           "unixVer": "x"
+         }
+       }
+     }
+     */
+    loadingTextClass ?: string.ClassString;
+    /**
+     * 指定按下去的样式类。当 hover-class="none" 时，没有点击态效果
+     * @uniPlatform {
+       "app": {
+         "ios": {
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
+        "harmony": {
+           "unixVaporVer": "5.0"
+         }
+       },
+       "web": {
+         "uniVer": "x",
+         "unixVer": "√"
+       },
+       "mp": {
+         "weixin": {
+           "hostVer": "x",
+           "uniVer": "x",
+           "unixVer": "√"
+         },
+         "alipay": {
+           "hostVer": "x",
+           "uniVer": "x",
+           "unixVer": "√"
+         }
+       }
+     }
+     */
+    hoverClass ?: string.ClassString;
+    /**
+     * 按住后多久出现点击态，单位毫秒
+     * @uniPlatform {
+       "app": {
+         "ios": {
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
+        "harmony": {
+           "unixVaporVer": "5.0"
+         }
+       }
+     }
+     */
+    hoverStartTime ?: number;
+    /**
+     * 手指松开后点击态保留时间，单位毫秒
+     * @uniPlatform {
+       "app": {
+         "ios": {
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
+        "harmony": {
+           "unixVaporVer": "5.0"
+         }
+       }
+     }
+     */
+    hoverStayTime ?: number;
+    /**
+     * 指定是否阻止本节点的祖先节点出现点击态
+     * @uniPlatform {
+       "app": {
+         "ios": {
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
+        "harmony": {
+           "unixVaporVer": "5.0"
+         }
+       }
+     }
+     */
+    hoverStopPropagation ?: boolean;
+    /**
+     * 名称前是否带 loading 图标
+     * @uniPlatform {
+       "app": {
+         "ios": {
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
+        "harmony": {
+           "unixVaporVer": "5.0"
+         }
+       }
+     }
+     */
+    loading ?: boolean;
+    /**
+     * 用于 form 组件，点击分别会触发 form 组件的 submit/reset 事件
+     * @uniPlatform {
+       "app": {
+         "ios": {
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
+        "harmony": {
+           "unixVaporVer": "5.0"
+         }
+       }
+     }
+     */
+    formType ?: FormType;
+    /**
+     * 开放能力
+     * @uniPlatform {
+       "app": {
+         "ios": {
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
+        "harmony": {
+           "unixVaporVer": "5.0"
+         }
+       }
+     }
+     */
+    openType ?: string;
+    /**
+     * iOS 雪花加载效果
+     * @uniPlatform {
+       "app": {
+         "ios": {
+           "unixVaporVer": "5.11"
+         }
+       }
+     }
+     */
+    iosLoadingSnow ?: boolean;
+  }
+
+  const props = withDefaults(defineProps<ButtonProps>(), {
+    disabled: false,
+    size: 'default',
+    plain: false,
+    hoverStartTime: 20,
+    hoverStayTime: 70,
+    hoverStopPropagation: false,
+    loading: false,
+    openType: '',
+    iosLoadingSnow: false
+  })
+
+  // #ifdef WEB
+  const { handleKeydown: handleSpaceKeydown, handleKeyup, handleBlur } = createSpaceKeyHandlers(() => props.disabled)
+
+  function handleKeydown(event: KeyboardEvent) {
+    if (event.key !== 'Enter') {
+      handleSpaceKeydown(event)
+      return
+    }
+    if (event.target !== event.currentTarget || event.defaultPrevented ||
+        event.altKey || event.ctrlKey || event.metaKey) {
+      return
+    }
+    event.preventDefault()
+    if (!props.disabled && !event.repeat) {
+      event.currentTarget?.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+    }
+  }
+
+  const loadingRootRef = ref<HTMLElement | null>(null)
+  watch(() => props.loading && !props.disabled, (_loading, wasLoading) => {
+    const element = wasLoading ? loadingRootRef.value : textRef.value
+    if (element == null || document.activeElement !== element) {
+      return
+    }
+    // Switching loading state replaces the root; retain focus without stealing it from another control.
+    handleBlur()
+    nextTick(() => {
+      if (!props.disabled && document.activeElement === document.body) {
+        const element = props.loading && !props.disabled ? loadingRootRef.value : textRef.value
+        if (element instanceof HTMLElement) {
+          element.focus()
+        }
+      }
+    })
+  })
+  // #endif
+
+  defineOptions({
+    name: 'button',
+    // @ts-ignore
+    rootElement: {
+      class: UniButtonElement
+    },
+    externalClasses: ['hover-class', 'loading-class', 'loading-text-class']
+  })
+
+  const textRef = ref<UniTextElement | null>(null)
+
+  const buttonType = computed(() : ButtonType => {
+    return props.type == null ? 'default' : props.type
+  })
+
+  // #ifdef APP
+  const textStyle = useComputedStyle({
+		properties: ['font-size', 'color', 'line-height', 'font-weight', 'text-align'],
+		filterProperties: false
+	})
+
+  // App 不支持颜色继承，传入解析后的颜色；color 同时用于 iOS 雪花图标。
+  const loadingIconStyle = computed(() => {
+    const style = {}
+    if (props.loadingClass == null) {
+      const color = textStyle.get('color')
+      if (color != null) {
+        style['color'] = color
+        style['border-color'] = color
+      }
+    }
+    return style
+  })
+
+  const loadingTextStyle = computed(() => {
+    if (props.loadingTextClass == null) {
+      return textStyle
+    }
+    const style = {}
+    textStyle.forEach((value, key) => {
+      if (key != 'color') {
+        style[key] = value
+      }
+    })
+    return style
+  })
+  // #endif
+  // #ifndef APP
+  // Web 没有 useComputedStyle，使用 CSS inherit 传递根元素的文字样式。
+  const loadingTextStyle = computed(() => {
+    let style = 'font-size:inherit;line-height:inherit;font-weight:inherit;text-align:inherit;'
+    if (props.loadingTextClass == null) {
+      style += 'color:inherit;'
+    }
+    return style
+  })
+  // #endif
+
+  const formCtx = inject<FormContext | null>(FORM_KEY, null)
+
+  const enableTransition = ref(false)
+  onMounted(() => {
+    enableTransition.value = true
+  })
+
+  const hoverClasses = computed(() => {
+    let isDefaultHoverClass = false
+
+    if (props.hoverClass != null) {
+      const hoverClass = `${props.hoverClass}`.replace(/^\^+/, '')
+      if (hoverClass == '' || hoverClass == 'none') {
+        return 'none'
+      }
+      if (hoverClass != DEFAULT_BUTTON_HOVER_CLASS_NAME) {
+        return `${props.hoverClass}`
+      }
+      isDefaultHoverClass = true
+    }
+
+    const classes : Array<string> = []
+    if (!props.plain) {
+      switch (buttonType.value) {
+        case 'default':
+          classes.push('uni-button-view_default_hover')
+          break;
+        case 'primary':
+          classes.push('uni-button-view_primary_hover')
+          break;
+        case 'warn':
+          classes.push('uni-button-view_warn_hover')
+          break;
+      }
+    } else {
+      switch (buttonType.value) {
+        case 'default':
+          classes.push('uni-button-view_plain_default_hover')
+          break;
+        case 'primary':
+          classes.push('uni-button-view_plain_primary_hover')
+          break;
+        case 'warn':
+          classes.push('uni-button-view_plain_warn_hover')
+          break;
+      }
+    }
+
+    // 如果开发者外部传入的 hoverClass 也为 button-hover，默认的 button-hover 效果也要生效
+    if (isDefaultHoverClass) {
+      classes.push(`${props.hoverClass}`)
+    }
+
+    return classes.join(' ')
+  })
+
+  const checkFormAndSubmitOrReset = () => {
+    if (props.formType != 'submit' && props.formType != 'reset') {
+      return
+    }
+    if (formCtx == null) {
+      return
+    }
+    if (props.formType == 'submit') {
+      formCtx.submit()
+    } else if (props.formType == 'reset') {
+      formCtx.reset()
+    }
+  }
+
+  // #ifndef WEB
+  function checkOpenType() {
+    switch (props.openType) {
+      case 'agreePrivacyAuthorization':
+        uni.agreePrivacyAuthorization()
+        break;
+    }
+  }
+  // #endif
+
+  const handleTap = (event : UniPointerEvent) => {
+    if (props.disabled) {
+      return
+    }
+
+    emit('click', event)
+    checkFormAndSubmitOrReset()
+    // #ifndef WEB
+    checkOpenType()
+    // #endif
+  }
+
+  defineExpose({
+    getValue() {
+      if (textRef.value == null) {
+        return ''
+      }
+      return textRef.value.value
+    },
+    isLoading() {
+      return props.loading && !props.disabled
+    }
+  })
+</script>
+
+<style>
+  .uni-button {
+    position: relative;
+    box-sizing: border-box;
+    border-radius: 5px;
+    border-style: solid;
+    border-width: 0.5px;
+    border-color: rgba(0, 0, 0, 0.2);
+    padding: 0 14px;
+    overflow: hidden;
+  }
+
+  .uni-button-text {
+    text-align: center;
+    padding: 0 14px;
+  }
+
+  /* #ifdef WEB && VUE3_VAPOR */
+  /*
+   * Web 的 loading 文本会继承按钮根节点的对齐方式，所以根节点需要默认居中。
+   * App 未收到外部对齐样式时，会保留内部文本已有的居中样式，无需这条补充规则。
+   *
+   * uni-app 保留原来只对应用内部生效的范围，div 只匹配 loading 状态的根节点。
+   * class 放在 :where() 内，让开发者的 .custom { text-align: right } 能覆盖这里的默认居中。
+   * 若直接写成 .uni-button，按钮样式后加载时就可能把 .custom 的右对齐覆盖掉。
+   */
+  uni-app div:where(.uni-button) {
+    text-align: center;
+    /* 以下两项保持迁移前的显示行为，与文字居中无关。 */
+    unicode-bidi: normal;
+    align-content: normal;
+  }
+  /* #endif */
+
+  .uni-button-loading-icon {
+    width: 14px;
+    height: 14px;
+    border-color: #ffffff;
+  }
+
+  .uni-loading-default {
+    border-color: #000000;
+  }
+
+  .uni-loading-plain-primary {
+    border-color: #007aff;
+  }
+
+  .uni-loading-plain-warn {
+    border-color: #e64340;
+  }
+
+  /* #ifdef WEB */
+  .uni-button-loading-icon.uni-button-loading-color-inherit {
+    color: inherit;
+    border-color: currentColor;
+  }
+  /* #endif */
+
+  .uni-button-loading-text {
+    margin-left: 8px;
+    text-align: center;
+    /* #ifdef WEB */
+    /* 允许文案收缩到图标旁的剩余宽度，使长文本自动换行。 */
+    flex-shrink: 1;
+    /* #endif */
+  }
+
+  .uni-button-text-size-mini {
+    font-size: 13px;
+    padding-top: 7.5px;
+    padding-bottom: 7.5px;
+  }
+
+  .uni-button-text-size-default {
+    font-size: 18px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .uni-button.uni-button-disabled {
+    border-color: rgba(0, 0, 0, 0.2);
+  }
+
+  .uni-button-disabled {
+    pointer-events: none;
+  }
+
+  .uni-button-disabled.uni-button-type-default_view {
+    color: rgba(0, 0, 0, .3);
+    background-color: #f7f7f7;
+  }
+
+  .uni-button-disabled.uni-button-type-primary_view {
+    color: rgba(255, 255, 255, .6);
+    background-color: rgba(0, 122, 255, .6);
+  }
+
+  .uni-button-disabled.uni-button-type-warn_view {
+    color: rgba(255, 255, 255, .6);
+    background-color: #ec8b89;
+  }
+
+  .uni-button-text-plain {
+    color: #000000;
+  }
+
+  .uni-button-disabled.uni-button-text-plain {
+    background-color: transparent;
+    color: rgba(0, 0, 0, .2);
+    border-color: rgba(0, 0, 0, .2);
+  }
+
+  .uni-button-disabled.uni-button-view-plain {
+    background-color: transparent;
+    color: rgba(0, 0, 0, .2);
+    border-color: rgba(0, 0, 0, .2);
+  }
+
+  .uni-button-type-default_view {
+    background-color: #f8f8f8;
+  }
+
+  .uni-button-type-primary_view {
+    background-color: #007aff;
+  }
+
+  .uni-button-type-warn_view {
+    background-color: #e64340;
+  }
+
+  .uni-button-type-default_text {
+    color: #000000;
+  }
+
+  .uni-button-type-primary_text {
+    color: #ffffff;
+  }
+
+  .uni-button-type-warn_text {
+    color: #ffffff;
+  }
+
+  .uni-button-view-plain {
+    color: #353535;
+    border-width: 1px;
+    border-color: #353535;
+    background-color: transparent;
+  }
+
+  .uni-button.uni-button-view-plain.uni-button-has-type {
+    background-color: transparent;
+  }
+
+  .uni-button.uni-button-view-plain.uni-button-has-type.uni-button-type-default_view {
+    border-color: #353535;
+  }
+
+  .uni-button.uni-button-view-plain.uni-button-has-type.uni-button-type-default_text {
+    color: #353535;
+  }
+
+  .uni-button.uni-button-view-plain.uni-button-has-type.uni-button-type-primary_view {
+    border-color: #007aff;
+  }
+
+  .uni-button.uni-button-view-plain.uni-button-has-type.uni-button-type-primary_text {
+    color: #007aff;
+  }
+
+  .uni-button-text-plain.uni-button-type-primary_text {
+    color: #007aff;
+  }
+
+  .uni-button.uni-button-view-plain.uni-button-has-type.uni-button-type-warn_view {
+    border-color: #e64340;
+  }
+
+  .uni-button.uni-button-view-plain.uni-button-has-type.uni-button-type-warn_text {
+    color: #e64340;
+  }
+
+  .uni-button-text-plain.uni-button-type-warn_text {
+    color: #e64340;
+  }
+
+  .uni-button.uni-button-disabled.uni-button-view-plain {
+    background-color: transparent;
+    color: rgba(0, 0, 0, .2);
+    border-color: rgba(0, 0, 0, .2);
+  }
+
+  .uni-button.uni-button-disabled.uni-button-view-plain.uni-button-no-type {
+    background-color: #f7f7f7;
+  }
+
+  .button-hover {
+    color: rgba(0, 0, 0, 0.6);
+    background-color: #dedede;
+  }
+  .transition-enabled.button-hover {
+    transition: background-color 0.1s, color 0.1s;
+  }
+
+  .uni-button-view_primary_hover {
+    color: rgba(255, 255, 255, 0.6);
+    background-color: #0062cc;
+  }
+  .transition-enabled.uni-button-view_primary_hover {
+    transition: background-color 0.1s, color 0.1s;
+  }
+
+  .uni-button-view_default_hover {
+    color: rgba(0, 0, 0, 0.6);
+    background-color: #dedede;
+  }
+  .transition-enabled.uni-button-view_default_hover {
+    transition: background-color 0.1s, color 0.1s;
+  }
+
+  .uni-button-view_warn_hover {
+    color: rgba(255, 255, 255, 0.6);
+    background-color: #ce3c39;
+  }
+  .transition-enabled.uni-button-view_warn_hover {
+    transition: background-color 0.1s, color 0.1s;
+  }
+
+  .uni-button-view_plain_hover {
+    color: rgba(53, 53, 53, 0.6);
+    border-color: rgba(53, 53, 53, 0.6);
+    background-color: transparent;
+  }
+  .transition-enabled.uni-button-view_plain_hover {
+    transition: background-color 0.1s, color 0.1s, border-color 0.1s;
+  }
+
+  .uni-button-view_plain_primary_hover {
+    color: rgba(0, 122, 255, 0.6);
+    border-color: rgba(0, 122, 255, 0.6);
+    background-color: transparent;
+  }
+  .transition-enabled.uni-button-view_plain_primary_hover {
+    transition: background-color 0.1s, color 0.1s, border-color 0.1s;
+  }
+
+  .uni-button-view_plain_default_hover {
+    color: rgba(53, 53, 53, 0.6);
+    border-color: rgba(53, 53, 53, 0.6);
+    background-color: transparent;
+  }
+  .transition-enabled.uni-button-view_plain_default_hover {
+    transition: background-color 0.1s, color 0.1s, border-color 0.1s;
+  }
+
+  .uni-button-view_plain_warn_hover {
+    color: rgba(230, 67, 64, 0.6);
+    border-color: rgba(230, 67, 64, 0.6);
+    background-color: transparent;
+  }
+  .transition-enabled.uni-button-view_plain_warn_hover {
+    transition: background-color 0.1s, color 0.1s, border-color 0.1s;
+  }
+
+  /* #ifdef WEB */
+  /* Web 的组合选择器需要覆盖 plain 普通态的颜色和边框。 */
+  .uni-button.uni-button-view-plain.uni-button-type-primary_view.uni-button-view_plain_primary_hover {
+    color: rgba(0, 122, 255, 0.6);
+    border-color: rgba(0, 122, 255, 0.6);
+    background-color: transparent;
+  }
+
+  .uni-button.uni-button-view-plain.uni-button-type-default_view.uni-button-view_plain_default_hover {
+    color: rgba(53, 53, 53, 0.6);
+    border-color: rgba(53, 53, 53, 0.6);
+    background-color: transparent;
+  }
+
+  .uni-button.uni-button-view-plain.uni-button-type-warn_view.uni-button-view_plain_warn_hover {
+    color: rgba(230, 67, 64, 0.6);
+    border-color: rgba(230, 67, 64, 0.6);
+    background-color: transparent;
+  }
+
+  /* #endif */
+
+  .uni-button.uni-button-disabled.uni-button-view-plain.uni-button-has-type {
+    background-color: transparent;
+    color: rgba(0, 0, 0, .2);
+    border-color: rgba(0, 0, 0, .2);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .uni-button-type-default_view {
+      background-color: #343434;
+    }
+
+    .uni-button-type-default_text {
+      color: #d6d6d6;
+    }
+
+    .button-hover,
+    .uni-button-view_default_hover {
+      color: #d6d6d6;
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .uni-button-disabled.uni-button-type-default_view {
+      background-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .uni-button-disabled.uni-button-type-default_text {
+      color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* 保持普通 plain 的优先级，使外部自定义颜色和背景仍可覆盖。 */
+    .uni-button-view-plain {
+      color: #353535;
+      background-color: transparent;
+    }
+
+    .uni-button.uni-button-view-plain.uni-button-has-type.uni-button-type-default_view {
+      border-color: #d6d6d6;
+      background-color: transparent;
+    }
+
+    .uni-button.uni-button-view-plain.uni-button-has-type.uni-button-type-default_text {
+      color: #d6d6d6;
+    }
+
+    .uni-button-view-plain.uni-button-has-type.uni-button-view_plain_default_hover {
+      color: rgba(150, 150, 150, 0.6);
+      border-color: rgba(150, 150, 150, 0.6);
+      background-color: rgba(50, 50, 50, 0.2);
+    }
+
+    /* #ifdef WEB */
+    /* 仅显式 type="default" 的 plain 按钮使用暗色按下态。 */
+    .uni-button.uni-button-view-plain.uni-button-has-type.uni-button-type-default_view.uni-button-view_plain_default_hover {
+      color: rgba(150, 150, 150, 0.6);
+      border-color: rgba(150, 150, 150, 0.6);
+      background-color: rgba(50, 50, 50, 0.2);
+    }
+    /* #endif */
+
+    /* 与内置 button 保持一致：暗色 plain 仅显式 default/primary 使用白色禁用边框和文字。 */
+    .uni-button.uni-button-disabled.uni-button-view-plain.uni-button-has-type.uni-button-type-default_view,
+    .uni-button.uni-button-disabled.uni-button-view-plain.uni-button-has-type.uni-button-type-primary_view {
+      color: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.2);
+      background-color: transparent;
+    }
+
+    .uni-button.uni-button-disabled.uni-button-view-plain.uni-button-has-type.uni-button-type-default_view {
+      background-color: rgba(255, 255, 255, .08);
+    }
+
+    .uni-button.uni-button-disabled.uni-button-view-plain.uni-button-no-type {
+      color: rgba(255, 255, 255, .2);
+      background-color: rgba(255, 255, 255, .08);
+    }
+  }
+</style>

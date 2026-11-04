@@ -17,6 +17,18 @@
  */
 // eslint-disable-next-line no-unused-vars
 module.exports = (on, config) => {
-  // `on` is used to hook into various events Cypress emits
-  // `config` is the resolved Cypress config
+  on('before:browser:launch', (browser, launchOptions) => {
+    if (process.platform === 'win32' && process.env.CI === 'true' && browser.name === 'chrome') {
+      // 仅在 Windows CI 禁用 Chrome GPU 加速，并记录实际启动配置。
+      if (!launchOptions.args.includes('--disable-gpu')) {
+        launchOptions.args.push('--disable-gpu')
+      }
+      console.log('[Cypress Chrome]', JSON.stringify({
+        version: browser.version,
+        path: browser.path,
+        args: launchOptions.args,
+      }))
+    }
+    return launchOptions
+  })
 }

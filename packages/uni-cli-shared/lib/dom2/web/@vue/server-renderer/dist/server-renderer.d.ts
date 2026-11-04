@@ -1,4 +1,4 @@
-import { App, Component, ComponentInternalInstance, ComponentPublicInstance, Directive, Slots, VNode } from "@vue/runtime-dom";
+import { App, Component, ComponentInternalInstance, ComponentPublicInstance, Directive, Slots, VNode, VNodeTypes } from "@vue/runtime-dom";
 import { Readable, Writable } from "node:stream";
 import { includeBooleanAttr as ssrIncludeBooleanAttr } from "@vue/shared";
 //#region temp/packages/server-renderer/src/render.d.ts
@@ -13,6 +13,7 @@ export type SSRContext = {
   teleports?: Record<string, string>;
 };
 export declare function renderVNode(push: PushFn, vnode: VNode, parentComponent: ComponentInternalInstance, slotScopeId?: string): void;
+export declare function renderDynamicComponent(push: PushFn, type: VNodeTypes, props: Props | null, slots: Record<string, any> | null, parentComponent: ComponentInternalInstance, slotScopeId?: string): void;
 //#endregion
 //#region temp/packages/server-renderer/src/renderToString.d.ts
 export declare function renderToString(input: App | VNode, context?: SSRContext): Promise<string>;
@@ -73,4 +74,4 @@ export declare function ssrGetDynamicModelProps(existingProps: any | undefined, 
   value: any;
 } | null;
 //#endregion
-export { ssrIncludeBooleanAttr, renderVNode as ssrRenderVNode };
+export { ssrIncludeBooleanAttr, renderDynamicComponent as ssrRenderDynamicComponent, renderVNode as ssrRenderVNode };

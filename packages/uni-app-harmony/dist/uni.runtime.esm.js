@@ -10409,6 +10409,19 @@ class SelectorQuery {
     }
     in(component) {
         this._component = resolveComponentInstance(component);
+        /**
+         * 如下逻辑用于处理下述场景
+         * 在B页面延迟1s调用createSelectQuery不传context，调用in方法传入当前实例。在1s内从B页面返回A页面
+         * 等createSelectorQuery执行时，context已经不再是B页面的实例，而是A页面的实例
+         * 但是this._component仍然是B页面的实例，两者无法对应导致findElem报错
+         * web端findElem仅依赖component实例，不会报错
+         */
+        if (this._component && this._component.$root) {
+            const root = resolveComponentInstance(this._component.$root);
+            if (root) {
+                this._page = root;
+            }
+        }
         return this;
     }
     select(selector) {
@@ -10940,8 +10953,10 @@ function createAnimationProtocol(animationTypes) {
     };
 }
 let navigatorLock;
+let navigatorLockId = 0;
 function beforeRoute() {
     navigatorLock = '';
+    navigatorLockId++;
 }
 function createRouteOptions(type) {
     return {
@@ -11015,6 +11030,13 @@ function createNormalizeUrl(type, options = {}) {
         // enableNavigatorLock 临时开关（不对外开放），避免该功能上线后，有部分情况异常，可以让开发者临时关闭 lock 功能
         if (!options.skipNavigatorLock && __uniConfig.ready) {
             navigatorLock = url;
+            const lockId = ++navigatorLockId;
+            options.onNavigatorLock?.(() => {
+                // 只允许释放本次调用持有的 lock，避免迟到的异步回调清除后续路由的 lock
+                if (lockId === navigatorLockId) {
+                    beforeRoute();
+                }
+            });
         }
     };
 }

@@ -30,6 +30,9 @@ jest.mock('@dcloudio/uni-cli-shared', () => {
     parseUniExtApiNamespacesOnce: () => ({}),
     resolveUTSCompiler: () => ({ uts2js: mockUts2js }),
     uniDecryptUniModulesPlugin: plugin('decrypt'),
+    uniUniModulesExtApiPlugin: plugin('ext-api'),
+    uniEncryptUniModulesAssetsPlugin: plugin('encrypt-assets'),
+    uniEncryptUniModulesPlugin: plugin('encrypt'),
     uniEasycomPlugin: plugin('easycom'),
     uniHBuilderXConsolePlugin: plugin('console'),
     uniSharedDataPlugin: plugin('shared-data'),
@@ -74,6 +77,7 @@ jest.mock('../../src/plugins/utils', () => ({
 
 describe('harmony plugin init', () => {
   const originalEnv = {
+    UNI_COMPILE_TARGET: process.env.UNI_COMPILE_TARGET,
     UNI_APP_X_DOM2: process.env.UNI_APP_X_DOM2,
     UNI_APP_X_DOM2_DYNAMIC: process.env.UNI_APP_X_DOM2_DYNAMIC,
     UNI_APP_X_CACHE_DIR: process.env.UNI_APP_X_CACHE_DIR,
@@ -137,6 +141,24 @@ describe('harmony plugin init', () => {
 
     expect(plugins.map((plugin: { name: string }) => plugin.name)).toContain(
       'vapor-script'
+    )
+  })
+
+  test.each([
+    [undefined, false, false],
+    ['ext-api', false, true],
+    ['ext-api', true, false],
+    ['uni_modules', false, false],
+    [undefined, true, false],
+  ])('TS 按 UTS 转换仅限内部非 DOM2：%s / %s', (target, dom2, expected) => {
+    if (target === undefined) {
+      Reflect.deleteProperty(process.env, 'UNI_COMPILE_TARGET')
+    } else {
+      process.env.UNI_COMPILE_TARGET = target as any
+    }
+    initPlugins(false, dom2 as boolean)
+    expect(mockUts2js).toHaveBeenCalledWith(
+      expect.objectContaining({ transformTypeScriptAsUTS: expected })
     )
   })
 

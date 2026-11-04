@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "skipLibCheck": true,
+    "types": [],
+    "lib": ["ESNext", "DOM"]
+  },
+  "files": [
+    "main.uts",
+    "../../../lib/uts/types/uts/common/UTSJSONObject.d.ts",
+    "../../../lib/tsconfig/global.d.ts",
+    "../../../lib/tsconfig/shim-uni.d.ts"
+  ]
+}

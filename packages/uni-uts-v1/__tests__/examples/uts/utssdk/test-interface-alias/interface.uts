@@ -1,0 +1,36 @@
+import { JSExport } from 'JavaScriptCore';
+
+export interface ChannelManager {
+  setPushChannel(channelId: string): void;
+  self(): PushChannelManager;
+  getSecondary(): SecondaryManagerAlias;
+}
+
+export type PushChannelManager = ForwardManager;
+type ForwardManager = InternalManager;
+type InternalManager = ChannelManager;
+export type NestedPushChannelManager = PushChannelManager;
+
+type ListedManager = ChannelManager;
+export { ListedManager };
+
+type UnusedManager = ChannelManager;
+type PrivateGeneric<T> = Array<T>;
+
+export interface SharedJSExportManager extends JSExport {
+  getValue(): string;
+}
+type InternalJSExportParent = SharedJSExportManager;
+export interface SharedChildJSExportManager extends InternalJSExportParent {
+  getChildValue(): string;
+}
+type InternalJSExportManager = SharedChildJSExportManager;
+export type SharedJSExportManagerAlias = InternalJSExportManager;
+
+export interface SecondaryManager {
+  getValue(): string;
+}
+export type SecondaryManagerAlias = SecondaryManager;
+
+export type CycleA = CycleB;
+export type CycleB = CycleA;

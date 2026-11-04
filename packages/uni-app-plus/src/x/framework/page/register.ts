@@ -30,7 +30,13 @@ import { getPageManager } from '../app/app'
 import { ON_POP_GESTURE } from '../../constants'
 import { getAppThemeFallbackOS, normalizePageStyles } from '../theme'
 import { invokePageReadyHooks } from '../../api/route/performance'
-import { homeDialogPages, homeSystemDialogPages } from './dialogPage'
+import {
+  homeDialogPages,
+  homeSystemDialogPages,
+  isDialogPageNavigatorLockCanceled,
+  registerDialogPagePendingMount,
+  shouldTriggerDialogPageParentShow,
+} from './dialogPage'
 // #if _VAPOR_
 import {
   getCurrentDevToolsPage,
@@ -478,8 +484,8 @@ export function registerDialogPage(
         url,
         pageStyle
       )
-  if (onCreated) {
-    onCreated(nativePage)
+  if ((dialogPage as any).__nativePageId == null) {
+    ;(dialogPage as any).__nativePageId = nativePage.pageId
   }
   routeOptions.meta.id = parseInt(nativePage.pageId)
   if (__DEV__) {
@@ -500,69 +506,104 @@ export function registerDialogPage(
     // TODO ThemeMode
     'light'
   )
+  let pageComponentPublicInstance: ComponentPublicInstance | undefined
+  let nativePageUnloaded = false
+  let pageUnloadHookInvoked = false
+  function invokePageUnloadHook() {
+    if (
+      nativePageUnloaded &&
+      pageComponentPublicInstance &&
+      !pageUnloadHookInvoked
+    ) {
+      pageUnloadHookInvoked = true
+      invokeHook(pageComponentPublicInstance, ON_UNLOAD)
+    }
+  }
+  nativePage.addPageEventListener(ON_POP_GESTURE, function (e) {
+    closeDialogPage({ dialogPage })
+  })
+  nativePage.addPageEventListener(ON_UNLOAD, (_) => {
+    nativePageUnloaded = true
+    invokePageUnloadHook()
+    if (shouldTriggerDialogPageParentShow(dialogPage)) {
+      // 此时 systemDialog 已在数组中移除，故需要初始化 1
+      dialogPageTriggerParentShow(
+        dialogPage,
+        isSystemDialogPage(dialogPage) ? 1 : 0,
+        true
+      )
+    }
+  })
+  if (onCreated) {
+    onCreated(nativePage)
+  }
   function fn() {
-    createVuePage(id, route, query, pageInstance, {}, nativePage).then(
-      (pageComponentPublicInstance) => {
-        // 由于 iOS 调用 show 时机差异，暂不使用页面 onShow 事件
-        // nativePage.addPageEventListener(ON_SHOW, (_) => {
-        //   invokeHook(page, ON_SHOW)
-        // })
-        nativePage.addPageEventListener(ON_POP_GESTURE, function (e) {
-          closeDialogPage({ dialogPage })
-        })
-        nativePage.addPageEventListener(ON_UNLOAD, (_) => {
-          invokeHook(pageComponentPublicInstance, ON_UNLOAD)
-          // 此时 systemDialog 已在数组中移除，故需要初始化 1
-          dialogPageTriggerParentShow(
-            dialogPage,
-            isSystemDialogPage(dialogPage) ? 1 : 0
-          )
-        })
-        nativePage.addPageEventListener(ON_READY, (_) => {
-          invokePageOnReady(pageComponentPublicInstance)
-        })
-
-        nativePage.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
-          invokeHook(pageComponentPublicInstance, ON_PAGE_SCROLL, arg)
-        })
-
-        nativePage.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
-          invokeHook(pageComponentPublicInstance, ON_PULL_DOWN_REFRESH)
-        })
-
-        nativePage.addPageEventListener(ON_REACH_BOTTOM, (_) => {
-          invokeHook(pageComponentPublicInstance, ON_REACH_BOTTOM)
-        })
-
-        nativePage.addPageEventListener(ON_RESIZE, (arg: any) => {
-          const args: OnResizeOptions = {
-            deviceOrientation: arg.deviceOrientation,
-            size: {
-              windowWidth: arg.size.windowWidth,
-              windowHeight: arg.size.windowHeight,
-              screenWidth: arg.size.screenWidth,
-              screenHeight: arg.size.screenHeight,
-            },
-          }
-          invokeHook(pageComponentPublicInstance, ON_RESIZE, args)
-        })
-        nativePage.startRender()
-        // #if _VAPOR_
-        if (
-          typeof __UNI_X_DEVTOOLS__ !== 'undefined' &&
-          __UNI_X_DEVTOOLS__ &&
-          hasDevToolsPageChangedListener() &&
-          !isSystemDialogPage(dialogPage) &&
-          getCurrentDevToolsPage() === dialogPage
-        ) {
-          notifyDevToolsPageChanged()
-        }
-        // #endif
+    if (isDialogPageNavigatorLockCanceled(dialogPage)) {
+      return
+    }
+    createVuePage(
+      id,
+      route,
+      query,
+      pageInstance,
+      {},
+      nativePage,
+      () => !isDialogPageNavigatorLockCanceled(dialogPage)
+    ).then((pageVm) => {
+      pageComponentPublicInstance = pageVm
+      invokePageUnloadHook()
+      if (isDialogPageNavigatorLockCanceled(dialogPage)) {
+        return
       }
-    )
+      // 由于 iOS 调用 show 时机差异，暂不使用页面 onShow 事件
+      // nativePage.addPageEventListener(ON_SHOW, (_) => {
+      //   invokeHook(page, ON_SHOW)
+      // })
+      nativePage.addPageEventListener(ON_READY, (_) => {
+        invokePageOnReady(pageVm)
+      })
+
+      nativePage.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
+        invokeHook(pageVm, ON_PAGE_SCROLL, arg)
+      })
+
+      nativePage.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
+        invokeHook(pageVm, ON_PULL_DOWN_REFRESH)
+      })
+
+      nativePage.addPageEventListener(ON_REACH_BOTTOM, (_) => {
+        invokeHook(pageVm, ON_REACH_BOTTOM)
+      })
+
+      nativePage.addPageEventListener(ON_RESIZE, (arg: any) => {
+        const args: OnResizeOptions = {
+          deviceOrientation: arg.deviceOrientation,
+          size: {
+            windowWidth: arg.size.windowWidth,
+            windowHeight: arg.size.windowHeight,
+            screenWidth: arg.size.screenWidth,
+            screenHeight: arg.size.screenHeight,
+          },
+        }
+        invokeHook(pageVm, ON_RESIZE, args)
+      })
+      nativePage.startRender()
+      // #if _VAPOR_
+      if (
+        typeof __UNI_X_DEVTOOLS__ !== 'undefined' &&
+        __UNI_X_DEVTOOLS__ &&
+        hasDevToolsPageChangedListener() &&
+        !isSystemDialogPage(dialogPage) &&
+        getCurrentDevToolsPage() === dialogPage
+      ) {
+        notifyDevToolsPageChanged()
+      }
+      // #endif
+    })
   }
   if (delay) {
-    setTimeout(fn, delay)
+    const timer = setTimeout(fn, delay)
+    registerDialogPagePendingMount(dialogPage, () => clearTimeout(timer))
   } else {
     fn()
   }
@@ -575,13 +616,17 @@ function createVuePage(
   __pageQuery: Record<string, any>,
   __pageInstance: Page.PageInstance['$page'],
   pageOptions: PageNodeOptions,
-  nativePage: IPage
+  nativePage: IPage,
+  shouldMount: () => boolean = () => true
 ): { then(fn: (page: ComponentPublicInstance) => void): void } {
   const pageNode = nativePage.document.body
   const app = getVueApp()
   const component = pagesMap.get(__pagePath)!()
-  const mountPage = (component: VuePageComponent) =>
-    app.mountPage(
+  const mountPage = (component: VuePageComponent) => {
+    if (!shouldMount()) {
+      return
+    }
+    return app.mountPage(
       component,
       extend(
         {
@@ -594,17 +639,30 @@ function createVuePage(
       ),
       pageNode as unknown as UniNode
     )
+  }
   if (isPromise(component)) {
-    return component
+    const mountedPage = component
       .then((component) => mountPage(component))
       .catch((err) => {
         console.error(err)
         throw err
       })
+    return {
+      then(fn: (page: ComponentPublicInstance) => void) {
+        mountedPage.then((page) => {
+          if (page) {
+            fn(page)
+          }
+        })
+      },
+    }
   }
   return {
     then(fn: (page: ComponentPublicInstance) => void) {
-      return fn(mountPage(component))
+      const page = mountPage(component)
+      if (page) {
+        return fn(page)
+      }
     },
   }
 }

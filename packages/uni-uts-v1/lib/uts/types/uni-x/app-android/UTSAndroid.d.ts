@@ -37,16 +37,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "4.4",
                "uniVer": "x",
                "unixVer": "3.90",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "√",
-               "unixUtsPlugin": "3.90"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "unixUtsPlugin": "3.90",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -60,16 +56,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "4.4",
                "uniVer": "x",
                "unixVer": "3.90",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "√",
-               "unixUtsPlugin": "3.90"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "unixUtsPlugin": "3.90",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -84,16 +76,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "4.4",
                "uniVer": "x",
                "unixVer": "3.90",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "√",
-               "unixUtsPlugin": "3.90"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "unixUtsPlugin": "3.90",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -107,16 +95,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "4.4",
                "uniVer": "x",
                "unixVer": "3.90",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "√",
-               "unixUtsPlugin": "3.90"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "3.90",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -131,16 +115,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "4.4",
                "uniVer": "x",
                "unixVer": "3.90",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "√",
-               "unixUtsPlugin": "3.90"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "3.90",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -154,16 +134,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "4.4",
                "uniVer": "x",
                "unixVer": "3.90",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "√",
-               "unixUtsPlugin": "3.90"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "unixUtsPlugin": "3.90",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -178,16 +154,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "4.4",
                "uniVer": "x",
                "unixVer": "3.90",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "√",
-               "unixUtsPlugin": "3.90"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "unixUtsPlugin": "3.90",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -202,16 +174,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "4.4",
                "uniVer": "x",
                "unixVer": "3.90",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "√",
-               "unixUtsPlugin": "3.90"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "3.90",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -226,16 +194,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "4.4",
                "uniVer": "x",
                "unixVer": "3.90",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "√",
-               "unixUtsPlugin": "3.90"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "3.90",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -249,16 +213,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "4.4",
                "uniVer": "x",
                "unixVer": "3.90",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "√",
-               "unixUtsPlugin": "3.90"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "3.90",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -272,16 +232,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "4.4",
                "uniVer": "x",
                "unixVer": "3.90",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "√",
-               "unixUtsPlugin": "3.90"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "3.90",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -295,16 +251,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "4.4",
                "uniVer": "x",
                "unixVer": "3.90",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "√",
-               "unixUtsPlugin": "3.90"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "unixUtsPlugin": "3.90",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -319,16 +271,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "4.4",
                "uniVer": "x",
                "unixVer": "3.90",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "√",
-               "unixUtsPlugin": "3.90"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "3.90",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -342,16 +290,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "4.4",
                "uniVer": "x",
                "unixVer": "3.90",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "√",
-               "unixUtsPlugin": "3.90"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "3.90",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -366,16 +310,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "4.4",
                "uniVer": "x",
                "unixVer": "3.90",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "√",
-               "unixUtsPlugin": "3.90"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "3.90",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -390,16 +330,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "4.4",
                "uniVer": "x",
                "unixVer": "3.90",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "√",
-               "unixUtsPlugin": "3.90"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "3.90",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -413,16 +349,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "4.4",
                "uniVer": "x",
                "unixVer": "4.0",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "4.0",
-               "unixUtsPlugin": "4.0"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.0",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -438,16 +370,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "4.4",
                "uniVer": "x",
                "unixVer": "3.90",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "√",
-               "unixUtsPlugin": "3.90"
-            },
-            "ios": {
-               "osVer": "9.0",
-               "uniVer": "√",
-               "unixVer": "x"
+               "unixUtsPlugin": "3.90",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -463,16 +391,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "4.4",
                "uniVer": "x",
                "unixVer": "4.0",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "4.0",
-               "unixUtsPlugin": "4.0"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "unixUtsPlugin": "4.0",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -487,16 +411,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "4.4",
                "uniVer": "x",
                "unixVer": "4.65",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "4.65",
-               "unixUtsPlugin": "4.65"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "unixUtsPlugin": "4.65",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -511,16 +431,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "4.4",
                "uniVer": "x",
                "unixVer": "3.99",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "√",
-               "unixUtsPlugin": "3.99"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "unixUtsPlugin": "3.99",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -534,16 +450,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "4.4",
                "uniVer": "x",
                "unixVer": "3.90",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "√",
-               "unixUtsPlugin": "3.90"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "unixUtsPlugin": "3.90",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -564,16 +476,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "4.4",
                "uniVer": "x",
                "unixVer": "3.90",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "√",
-               "unixUtsPlugin": "3.90"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "unixUtsPlugin": "3.90",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -589,16 +497,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "4.4",
                "uniVer": "x",
                "unixVer": "3.90",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "√",
-               "unixUtsPlugin": "3.90"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "3.90",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -613,16 +517,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "4.4",
                "uniVer": "x",
                "unixVer": "3.90",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "√",
-               "unixUtsPlugin": "3.90"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "unixUtsPlugin": "3.90",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -636,16 +536,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "4.4",
                "uniVer": "x",
                "unixVer": "3.90",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "√",
-               "unixUtsPlugin": "3.90"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "3.90",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -659,16 +555,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "4.4",
                "uniVer": "x",
                "unixVer": "3.90",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "√",
-               "unixUtsPlugin": "3.90"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "3.90",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -682,16 +574,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5",
                "uniVer": "x",
                "unixVer": "3.90",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "√",
-               "unixUtsPlugin": "3.90"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "3.90",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -705,21 +593,52 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "4.4",
                "uniVer": "x",
                "unixVer": "3.90",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "√",
-               "unixUtsPlugin": "3.90"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "3.90",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
    */
   getAppVersion() : UTSJSONObject;
+
+  /**
+     获取当前手机端运行环境的 uni 编译规则版本号
+     @internal
+     @return 编译规则版本号
+     @uniPlatform {
+        "app": {
+            "android": {
+               "uniVer": "x",
+               "unixVer": "x",
+               "unixVaporVer": "5.32",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x",
+               "unixVaporUtsPlugin": "5.32"
+            },
+            "ios": {
+               "uniVer": "x",
+               "unixVer": "x",
+               "unixVaporVer": "5.32",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x",
+               "unixVaporUtsPlugin": "5.32"
+            },
+            "harmony": {
+               "uniVer": "x",
+               "unixVer": "x",
+               "unixVaporVer": "5.32",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x",
+               "unixVaporUtsPlugin": "5.32"
+            }
+        }
+     }
+   */
+  getUniCompilerRuleVersion() : number;
 
 
   /**
@@ -729,16 +648,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "4.4",
                "uniVer": "x",
                "unixVer": "3.90",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "√",
-               "unixUtsPlugin": "3.90"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "3.90",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -753,16 +668,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "4.4",
                "uniVer": "x",
                "unixVer": "3.90",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "√",
-               "unixUtsPlugin": "3.90"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "unixUtsPlugin": "3.90",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -778,16 +689,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "4.4",
                "uniVer": "x",
                "unixVer": "3.90",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "√",
-               "unixUtsPlugin": "3.90"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "unixUtsPlugin": "3.90",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -804,16 +711,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5",
                "uniVer": "x",
                "unixVer": "3.90",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "√",
-               "unixUtsPlugin": "3.90"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "unixUtsPlugin": "3.90",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -830,16 +733,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5",
                "uniVer": "x",
                "unixVer": "3.90",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "√",
-               "unixUtsPlugin": "3.90"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "unixUtsPlugin": "3.90",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -855,16 +754,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5",
                "uniVer": "x",
                "unixVer": "3.90",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "√",
-               "unixUtsPlugin": "3.90"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "unixUtsPlugin": "3.90",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -880,16 +775,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "4.4",
                "uniVer": "x",
                "unixVer": "3.90",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "√",
-               "unixUtsPlugin": "3.90"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "unixUtsPlugin": "3.90",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -911,16 +802,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "4.4",
                "uniVer": "x",
                "unixVer": "3.90",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "√",
-               "unixUtsPlugin": "3.90"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "unixUtsPlugin": "3.90",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -937,16 +824,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "4.4",
                "uniVer": "x",
                "unixVer": "3.90",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "√",
-               "unixUtsPlugin": "3.90"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "unixUtsPlugin": "3.90",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -965,16 +848,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "4.4",
                "uniVer": "x",
                "unixVer": "3.90",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "√",
-               "unixUtsPlugin": "3.90"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "unixUtsPlugin": "3.90",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -994,16 +873,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "4.4",
                "uniVer": "x",
                "unixVer": "3.95",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "3.95",
-               "unixUtsPlugin": "3.95"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "unixUtsPlugin": "3.95",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1021,16 +896,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "4.4",
                "uniVer": "x",
                "unixVer": "3.95",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "3.95",
-               "unixUtsPlugin": "3.95"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "unixUtsPlugin": "3.95",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1048,12 +919,12 @@ interface UTSAndroid {
    * @uniPlatform {
    *    "app": {
    *        "android": {
-   *  		     "uniVer": "x",
-   *           "unixVer": "5.21"
-   *        },
-   *        "ios": {
    *           "uniVer": "x",
-   *           "unixVer": "x"
+   *           "unixVer": "5.21",
+               "unixVaporVer":"x",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "5.21",
+               "unixVaporUtsPlugin": "5.21"
    *        }
    *    }
    * }
@@ -1071,16 +942,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "4.4",
                "uniVer": "x",
                "unixVer": "3.90",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "√",
-               "unixUtsPlugin": "3.90"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "unixUtsPlugin": "3.90",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1099,16 +966,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "4.4",
                "uniVer": "x",
                "unixVer": "3.99",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "3.99",
-               "unixUtsPlugin": "3.99"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "unixUtsPlugin": "3.99",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1128,16 +991,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.14",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "4.14",
-               "unixUtsPlugin": "4.14"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "unixUtsPlugin": "4.14",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1158,16 +1017,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "4.18",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1184,16 +1039,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "4.18",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1209,16 +1060,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "4.18",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1234,16 +1081,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "4.18",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1251,21 +1094,38 @@ interface UTSAndroid {
   offActivityCallback(callback : IUniActivityCallback) : void;
 
   /**
+     释放导出到 JavaScript 的原生实例对象在桥接层中的引用。
+
+     调用此方法前，应先执行对象自身的资源清理逻辑。
+     @param obj 要释放的原生实例对象
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#destroyinstance
+     @uniPlatform {
+        "app": {
+            "android": {
+               "uniVer": "x",
+               "unixVer": "x",
+               "unixVaporVer":"x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "5.25",
+               "unixVaporUtsPlugin": "5.25"
+            }
+        }
+     }
+   */
+  destroyInstance(obj : any) : void;
+
+  /**
      获取app主题
      @return {string} 值域为 dark | light | auto
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "4.18",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1279,16 +1139,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "4.18",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1303,16 +1159,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "4.18",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1326,16 +1178,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "4.18",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1350,16 +1198,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "4.18",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1373,16 +1217,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "4.18",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1395,16 +1235,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.23",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "4.23",
-               "unixUtsPlugin": "4.23"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "unixUtsPlugin": "4.23",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1418,16 +1254,12 @@ interface UTSAndroid {
       @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.02",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "4.02",
-               "unixUtsPlugin": "4.02"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "unixUtsPlugin": "4.02",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1441,16 +1273,12 @@ interface UTSAndroid {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.02",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "4.02",
-               "unixUtsPlugin": "4.02"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "unixUtsPlugin": "4.02",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }

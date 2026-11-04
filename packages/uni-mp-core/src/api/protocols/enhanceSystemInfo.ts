@@ -1,6 +1,10 @@
 import { extend } from '@vue/shared'
 import { getLocale } from '../locale'
 
+declare const my: {
+  SDKVersion: string
+}
+
 const UUID_KEY = '__DC_STAT_UUID'
 let deviceId: string
 interface Global {

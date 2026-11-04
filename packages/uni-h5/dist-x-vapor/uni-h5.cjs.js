@@ -27,6 +27,353 @@ realGlobal.UTS = uniShared.UTS;
 realGlobal.UTSJSONObject = uniShared.UTSJSONObject;
 realGlobal.UTSValueIterable = uniShared.UTSValueIterable;
 realGlobal.UniError = uniShared.UniError;
+function defineComponent(options) {
+  const setup = options.setup;
+  if (setup) {
+    options.setup = (props2, context) => {
+      const result = setup(props2, context);
+      return typeof result === "function" ? result() : result;
+    };
+  }
+  return Vue.defineVaporComponent(options);
+}
+function createUnsupportedRender$1(name) {
+  const element = Vue.createPlainElement("div", null, null, true);
+  element.setAttribute("uni-" + name, "");
+  element.setAttribute("uni-view", "");
+  element.textContent = name + " is unsupported";
+  return element;
+}
+function converPx(value) {
+  if (/^-?\d+[ur]px$/i.test(value)) {
+    return value.replace(/(^-?\d+)[ur]px$/i, (text, num) => {
+      return `${uni.upx2px(parseFloat(num))}px`;
+    });
+  } else if (/^-?[\d\.]+$/.test(value)) {
+    return `${value}px`;
+  }
+  return value || "";
+}
+function converType(type) {
+  return type.replace(/[A-Z]/g, (text) => {
+    return `-${text.toLowerCase()}`;
+  }).replace("webkit", "-webkit");
+}
+function getStyle(action) {
+  const animateTypes1 = [
+    "matrix",
+    "matrix3d",
+    "scale",
+    "scale3d",
+    "rotate3d",
+    "skew",
+    "translate",
+    "translate3d"
+  ];
+  const animateTypes2 = [
+    "scaleX",
+    "scaleY",
+    "scaleZ",
+    "rotate",
+    "rotateX",
+    "rotateY",
+    "rotateZ",
+    "skewX",
+    "skewY",
+    "translateX",
+    "translateY",
+    "translateZ"
+  ];
+  const animateTypes3 = ["opacity", "background-color"];
+  const animateTypes4 = ["width", "height", "left", "right", "top", "bottom"];
+  const animates = action.animates;
+  const option = action.option;
+  const transition = option.transition;
+  const style = {};
+  const transform = [];
+  animates.forEach((animate) => {
+    let type = animate.type;
+    let args = [...animate.args];
+    if (animateTypes1.concat(animateTypes2).includes(type)) {
+      if (type.startsWith("rotate") || type.startsWith("skew")) {
+        args = args.map((value) => parseFloat(value) + "deg");
+      } else if (type.startsWith("translate")) {
+        args = args.map(converPx);
+      }
+      if (animateTypes2.indexOf(type) >= 0) {
+        args.length = 1;
+      }
+      transform.push(`${type}(${args.join(",")})`);
+    } else if (animateTypes3.concat(animateTypes4).includes(args[0])) {
+      type = args[0];
+      const value = args[1];
+      style[type] = animateTypes4.includes(type) ? converPx(value) : value;
+    }
+  });
+  style.transform = style.webkitTransform = transform.join(" ");
+  style.transition = style.webkitTransition = Object.keys(style).map(
+    (type) => `${converType(type)} ${transition.duration}ms ${transition.timingFunction} ${transition.delay}ms`
+  ).join(",");
+  style.transformOrigin = style.webkitTransformOrigin = option.transformOrigin;
+  return style;
+}
+function startAnimation(context) {
+  const animation2 = context.animation;
+  if (!animation2 || !animation2.actions || !animation2.actions.length) {
+    return;
+  }
+  let index2 = 0;
+  const actions = animation2.actions;
+  const length = animation2.actions.length;
+  function animate() {
+    const action = actions[index2];
+    const transition = action.option.transition;
+    const style = getStyle(action);
+    Object.keys(style).forEach((key) => {
+      context.$el.style[key] = style[key];
+    });
+    index2 += 1;
+    if (index2 < length) {
+      setTimeout(animate, transition.duration + transition.delay);
+    }
+  }
+  setTimeout(() => {
+    animate();
+  }, 0);
+}
+const animation = {
+  props: ["animation"],
+  watch: {
+    animation: {
+      deep: true,
+      handler() {
+        startAnimation(this);
+      }
+    }
+  },
+  mounted() {
+    startAnimation(this);
+  }
+};
+const defineRuntimeComponent = defineComponent;
+const createUnsupportedRender = createUnsupportedRender$1;
+const defineBuiltInComponent = (options) => {
+  options.__reserved = true;
+  const { props: props2, mixins } = options;
+  if (!props2 || !props2.animation) {
+    (mixins || (options.mixins = [])).push(animation);
+  }
+  return defineSystemComponent(options);
+};
+const defineSystemComponent = (options) => {
+  options.__reserved = true;
+  options.compatConfig = {
+    MODE: 3
+    // 标记为vue3
+  };
+  return defineRuntimeComponent(options);
+};
+const defineUnsupportedComponent = (name) => {
+  return defineBuiltInComponent({
+    name: shared.capitalize(shared.camelize(name)),
+    setup() {
+      return createUnsupportedRender(name);
+    }
+  });
+};
+let UniElement$1 = class UniElement extends Object {
+  getPage() {
+    return uniShared.getUniElementPage(this);
+  }
+  get uniPage() {
+    return this.getPage();
+  }
+  getBoundingClientRectAsync(callback) {
+    var _a, _b;
+    if (callback) {
+      const domRect = this.getBoundingClientRect();
+      try {
+        (_a = callback.success) == null ? void 0 : _a.call(callback, domRect);
+      } catch (error) {
+        console.error(error);
+      }
+      try {
+        (_b = callback.complete) == null ? void 0 : _b.call(callback, domRect);
+      } catch (error) {
+        console.error(error);
+      }
+      return;
+    }
+    return new Promise((resolve, reject) => {
+      const domRect = this.getBoundingClientRect();
+      resolve(domRect);
+    });
+  }
+};
+const UniElement2 = UniElement$1;
+const _UniCanvasElement = class _UniCanvasElement extends UniElement2 {
+  static [Symbol.hasInstance](value) {
+    const el = value;
+    return this === _UniCanvasElement && (el == null ? void 0 : el.nodeType) === 1 && el.localName === "canvas" && el.hasAttribute("uni-canvas") || Function.prototype[Symbol.hasInstance].call(this, value);
+  }
+};
+_UniCanvasElement.__uniElement = {};
+let UniCanvasElement = _UniCanvasElement;
+const canvasProps = {
+  disableScroll: {
+    type: [Boolean, String],
+    default: false
+  }
+};
+const _t0$e = Vue.template("<canvas uni-canvas class=uni-canvas-canvas>", 3);
+const indexVapor$a = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Canvas",
+  props: canvasProps,
+  rootElement: {
+    name: "uni-canvas",
+    class: UniCanvasElement
+  },
+  setup() {
+    const root = (() => {
+      const _n0 = _t0$e();
+      return _n0;
+    })();
+    return root;
+  }
+});
+const selectionProperty = "--uni-selection-background-color";
+const selectionAttribute = "data-uni-selection";
+const probeBackgroundProperty = "--uni-selection-probe-background-color";
+const fieldSelectionProps = {
+  selectionClass: {
+    type: String,
+    default: ""
+  }
+};
+const fieldSelectionProbeStyle = "display: none !important;";
+function clearSelection(field) {
+  field.style.removeProperty(selectionProperty);
+  field.removeAttribute(selectionAttribute);
+}
+function resolveSelectionColor(probe) {
+  const color = getComputedStyle(probe).backgroundColor;
+  if (color === "transparent" || color.replace(/\s/g, "") === "rgba(0,0,0,0)") {
+    probe.style.setProperty(probeBackgroundProperty, "#000000");
+    try {
+      return getComputedStyle(probe).backgroundColor === color ? color : "";
+    } finally {
+      probe.style.removeProperty(probeBackgroundProperty);
+    }
+  }
+  return color;
+}
+function updateSelection(field, color) {
+  if (!color) {
+    clearSelection(field);
+    return;
+  }
+  if (field.style.getPropertyValue(selectionProperty) !== color) {
+    field.style.setProperty(selectionProperty, color);
+  }
+  if (!field.hasAttribute(selectionAttribute)) {
+    field.setAttribute(selectionAttribute, "");
+  }
+}
+function observeSelection(probe, field) {
+  let refreshFrame = null;
+  function refreshSelection() {
+    refreshFrame = null;
+    if (!field.isConnected || field.ownerDocument.activeElement !== field) {
+      return;
+    }
+    updateSelection(field, resolveSelectionColor(probe));
+    refreshFrame = requestAnimationFrame(refreshSelection);
+  }
+  function startRefresh() {
+    if (refreshFrame === null) {
+      refreshSelection();
+    }
+  }
+  function stopRefresh() {
+    if (refreshFrame !== null) {
+      cancelAnimationFrame(refreshFrame);
+      refreshFrame = null;
+    }
+  }
+  field.addEventListener("focus", startRefresh);
+  field.addEventListener("blur", stopRefresh);
+  startRefresh();
+  return () => {
+    field.removeEventListener("focus", startRefresh);
+    field.removeEventListener("blur", stopRefresh);
+    stopRefresh();
+    clearSelection(field);
+  };
+}
+function useFieldSelection(props2, fieldRef) {
+  const selectionRef = Vue.ref(null);
+  Vue.watch(
+    [() => props2.selectionClass, fieldRef, selectionRef],
+    ([className, field, probe], _, onCleanup) => {
+      if (className && field && probe) {
+        onCleanup(observeSelection(probe, field));
+      }
+    },
+    { immediate: true, flush: "post" }
+  );
+  return selectionRef;
+}
+const nativeHasInstance = Function.prototype[Symbol.hasInstance];
+function isUniNativeElement(value, tag, marker) {
+  const el = value;
+  return (el == null ? void 0 : el.nodeType) === 1 && el.localName === tag && el.hasAttribute(marker);
+}
+const NativeUniElement = UniElement2;
+class UniViewElement extends NativeUniElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniViewElement && isUniNativeElement(value, "div", "uni-view") || nativeHasInstance.call(this, value);
+  }
+}
+class UniTextElement extends NativeUniElement {
+  // Web 直接读取 DOM 文字，不缓存、不触发布局；不提供会删除 Vue 子节点的 setter。
+  // 类上保留 getter，供 Button 等复合 Element 的 super.value 复用。
+  get value() {
+    return this.textContent ?? "";
+  }
+  static [Symbol.hasInstance](value) {
+    return this === UniTextElement && isUniNativeElement(value, "span", "uni-text") || nativeHasInstance.call(this, value);
+  }
+}
+class UniImageElement extends NativeUniElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniImageElement && isUniNativeElement(value, "img", "uni-image") || nativeHasInstance.call(this, value);
+  }
+}
+const _UniInputElement = class _UniInputElement extends UniViewElement {
+  static [Symbol.hasInstance](value) {
+    return this === _UniInputElement && value instanceof UniViewElement && value.hasAttribute("uni-input") || Function.prototype[Symbol.hasInstance].call(this, value);
+  }
+  focus(options) {
+    var _a;
+    (_a = this.querySelector("input")) == null ? void 0 : _a.focus(options);
+  }
+  get value() {
+    return this.querySelector("input").value;
+  }
+  set value(value) {
+    this.querySelector("input").value = value;
+  }
+};
+_UniInputElement.__uniElement = {};
+let UniInputElement = _UniInputElement;
+const descriptors$1 = {
+  uniTagName: { value: "INPUT" },
+  focus: Object.getOwnPropertyDescriptor(UniInputElement.prototype, "focus"),
+  value: Object.getOwnPropertyDescriptor(UniInputElement.prototype, "value")
+};
+function initInputElement(root) {
+  Object.defineProperties(root, descriptors$1);
+}
 const isEnableLocale = /* @__PURE__ */ uniShared.once(
   () => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
 );
@@ -112,6 +459,55 @@ function normalizeMessages(module2, keys, values) {
     return res;
   }, {});
 }
+const initI18nAppVmMsgsOnce = /* @__PURE__ */ uniShared.once(() => {
+  const name = "uni.appVm.";
+  const keys = ["methodWarning"];
+  if (__UNI_FEATURE_I18N_EN__) {
+    useI18n().add(
+      uniI18n.LOCALE_EN,
+      normalizeMessages(name, keys, [
+        'Method "{methodName}" should not be called directly on UniApp. Use "{methodCall}" instead.'
+      ]),
+      false
+    );
+  }
+  if (__UNI_FEATURE_I18N_ES__) {
+    useI18n().add(
+      uniI18n.LOCALE_ES,
+      normalizeMessages(name, keys, [
+        'El método "{methodName}" no debe llamarse directamente en UniApp. Use "{methodCall}" en su lugar.'
+      ]),
+      false
+    );
+  }
+  if (__UNI_FEATURE_I18N_FR__) {
+    useI18n().add(
+      uniI18n.LOCALE_FR,
+      normalizeMessages(name, keys, [
+        'La méthode "{methodName}" ne doit pas être appelée directement sur UniApp. Utilisez "{methodCall}" à la place.'
+      ]),
+      false
+    );
+  }
+  if (__UNI_FEATURE_I18N_ZH_HANS__) {
+    useI18n().add(
+      uniI18n.LOCALE_ZH_HANS,
+      normalizeMessages(name, keys, [
+        "不应直接通过 UniApp 调用方法“{methodName}”，请改用“{methodCall}”。"
+      ]),
+      false
+    );
+  }
+  if (__UNI_FEATURE_I18N_ZH_HANT__) {
+    useI18n().add(
+      uniI18n.LOCALE_ZH_HANT,
+      normalizeMessages(name, keys, [
+        "不應直接透過 UniApp 呼叫方法「{methodName}」，請改用「{methodCall}」。"
+      ]),
+      false
+    );
+  }
+});
 const initI18nAsyncMsgsOnce = /* @__PURE__ */ uniShared.once(() => {
   const name = "uni.async.";
   const keys = ["error"];
@@ -153,45 +549,6 @@ const initI18nAsyncMsgsOnce = /* @__PURE__ */ uniShared.once(() => {
     useI18n().add(
       uniI18n.LOCALE_ZH_HANT,
       normalizeMessages(name, keys, ["連接服務器超時，點擊屏幕重試"]),
-      false
-    );
-  }
-});
-const initI18nPickerMsgsOnce = /* @__PURE__ */ uniShared.once(() => {
-  const name = "uni.picker.";
-  const keys = ["done", "cancel"];
-  if (__UNI_FEATURE_I18N_EN__) {
-    useI18n().add(
-      uniI18n.LOCALE_EN,
-      normalizeMessages(name, keys, ["Done", "Cancel"]),
-      false
-    );
-  }
-  if (__UNI_FEATURE_I18N_ES__) {
-    useI18n().add(
-      uniI18n.LOCALE_ES,
-      normalizeMessages(name, keys, ["OK", "Cancelar"]),
-      false
-    );
-  }
-  if (__UNI_FEATURE_I18N_FR__) {
-    useI18n().add(
-      uniI18n.LOCALE_FR,
-      normalizeMessages(name, keys, ["OK", "Annuler"]),
-      false
-    );
-  }
-  if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    useI18n().add(
-      uniI18n.LOCALE_ZH_HANS,
-      normalizeMessages(name, keys, ["完成", "取消"]),
-      false
-    );
-  }
-  if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    useI18n().add(
-      uniI18n.LOCALE_ZH_HANT,
-      normalizeMessages(name, keys, ["完成", "取消"]),
       false
     );
   }
@@ -496,13 +853,6 @@ var safeAreaInsets = {
 };
 var out = safeAreaInsets;
 const safeAreaInsets$1 = /* @__PURE__ */ getDefaultExportFromCjs(out);
-const onEventPrevent = /* @__PURE__ */ Vue.withModifiers(() => {
-}, ["prevent"]);
-const onEventStop = /* @__PURE__ */ Vue.withModifiers(
-  (_event) => {
-  },
-  ["stop"]
-);
 function updateCssVar(cssVars) {
   const style = document.documentElement.style;
   Object.keys(cssVars).forEach((name) => {
@@ -531,6 +881,24 @@ function rpx2pxWithReplace(str) {
 function get$pageByPage(page) {
   return page.vm.$basePage;
 }
+let svgIcon = () => {
+  svgIcon = Vue.template('<svg viewBox="0 0 32 32"><path></path></svg>', 0, 1);
+  return svgIcon();
+};
+function createSvgIcon(path, color = "#000", size = 27, stroke = false) {
+  const svg = svgIcon();
+  Vue.setAttr(svg, "width", size, true);
+  Vue.setAttr(svg, "height", size, true);
+  Vue.setAttr(svg.firstChild, "d", path, true);
+  Vue.setAttr(svg.firstChild, "fill", stroke ? "none" : color, true);
+  if (stroke) {
+    Vue.setAttr(svg.firstChild, "stroke", color, true);
+    Vue.setAttr(svg.firstChild, "stroke-width", 2, true);
+    Vue.setAttr(svg.firstChild, "stroke-linecap", "round", true);
+  }
+  return svg;
+}
+const createSvgIconVNode = createSvgIcon;
 const ICON_PATH_CANCEL = "M20.928 10.176l-4.928 4.928-4.928-4.928-0.896 0.896 4.928 4.928-4.928 4.928 0.896 0.896 4.928-4.928 4.928 4.928 0.896-0.896-4.928-4.928 4.928-4.928-0.896-0.896zM16 2.080q-3.776 0-7.040 1.888-3.136 1.856-4.992 4.992-1.888 3.264-1.888 7.040t1.888 7.040q1.856 3.136 4.992 4.992 3.264 1.888 7.040 1.888t7.040-1.888q3.136-1.856 4.992-4.992 1.888-3.264 1.888-7.040t-1.888-7.040q-1.856-3.136-4.992-4.992-3.264-1.888-7.040-1.888zM16 28.64q-3.424 0-6.4-1.728-2.848-1.664-4.512-4.512-1.728-2.976-1.728-6.4t1.728-6.4q1.664-2.848 4.512-4.512 2.976-1.728 6.4-1.728t6.4 1.728q2.848 1.664 4.512 4.512 1.728 2.976 1.728 6.4t-1.728 6.4q-1.664 2.848-4.512 4.512-2.976 1.728-6.4 1.728z";
 const ICON_PATH_CLEAR = "M16 0q-4.352 0-8.064 2.176-3.616 2.144-5.76 5.76-2.176 3.712-2.176 8.064t2.176 8.064q2.144 3.616 5.76 5.76 3.712 2.176 8.064 2.176t8.064-2.176q3.616-2.144 5.76-5.76 2.176-3.712 2.176-8.064t-2.176-8.064q-2.144-3.616-5.76-5.76-3.712-2.176-8.064-2.176zM22.688 21.408q0.32 0.32 0.304 0.752t-0.336 0.736-0.752 0.304-0.752-0.32l-5.184-5.376-5.376 5.184q-0.32 0.32-0.752 0.304t-0.736-0.336-0.304-0.752 0.32-0.752l5.376-5.184-5.184-5.376q-0.32-0.32-0.304-0.752t0.336-0.752 0.752-0.304 0.752 0.336l5.184 5.376 5.376-5.184q0.32-0.32 0.752-0.304t0.752 0.336 0.304 0.752-0.336 0.752l-5.376 5.184 5.184 5.376z";
 const ICON_PATH_DOWNLOAD = "M15.808 1.696q-3.776 0-7.072 1.984-3.2 1.888-5.088 5.152-1.952 3.392-1.952 7.36 0 3.776 1.952 7.072 1.888 3.2 5.088 5.088 3.296 1.952 7.072 1.952 3.968 0 7.36-1.952 3.264-1.888 5.152-5.088 1.984-3.296 1.984-7.072 0-4-1.984-7.36-1.888-3.264-5.152-5.152-3.36-1.984-7.36-1.984zM20.864 18.592l-3.776 4.928q-0.448 0.576-1.088 0.576t-1.088-0.576l-3.776-4.928q-0.448-0.576-0.24-0.992t0.944-0.416h2.976v-8.928q0-0.256 0.176-0.432t0.4-0.176h1.216q0.224 0 0.4 0.176t0.176 0.432v8.928h2.976q0.736 0 0.944 0.416t-0.24 0.992z";
@@ -540,32 +908,8 @@ const ICON_PATH_SUCCESS_NO_CIRCLE = "M1.952 18.080q-0.32-0.352-0.416-0.88t0.128-
 const ICON_PATH_SUCCESS = "M15.808 0.16q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM24.832 11.328l-11.264 11.104q-0.032 0.032-0.112 0.032t-0.112-0.032l-5.216-5.376q-0.096-0.128 0-0.288l0.704-0.96q0.032-0.064 0.112-0.064t0.112 0.032l4.256 3.264q0.064 0.032 0.144 0.032t0.112-0.032l10.336-8.608q0.064-0.064 0.144-0.064t0.112 0.064l0.672 0.672q0.128 0.128 0 0.224z";
 const ICON_PATH_WAITING = "M15.84 0.096q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM23.008 21.92l-0.512 0.896q-0.096 0.128-0.224 0.064l-8-3.808q-0.096-0.064-0.16-0.128-0.128-0.096-0.128-0.288l0.512-12.096q0-0.064 0.048-0.112t0.112-0.048h1.376q0.064 0 0.112 0.048t0.048 0.112l0.448 10.848 6.304 4.256q0.064 0.064 0.080 0.128t-0.016 0.128z";
 const ICON_PATH_WARN = "M15.808 0.16q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM15.136 8.672h1.728q0.128 0 0.224 0.096t0.096 0.256l-0.384 10.24q0 0.064-0.048 0.112t-0.112 0.048h-1.248q-0.096 0-0.144-0.048t-0.048-0.112l-0.384-10.24q0-0.16 0.096-0.256t0.224-0.096zM16 23.328q-0.48 0-0.832-0.352t-0.352-0.848 0.352-0.848 0.832-0.352 0.832 0.352 0.352 0.848-0.352 0.848-0.832 0.352z";
-const ICON_PATH_BACK = "M21.781 7.844l-9.063 8.594 9.063 8.594q0.25 0.25 0.25 0.609t-0.25 0.578q-0.25 0.25-0.578 0.25t-0.578-0.25l-9.625-9.125q-0.156-0.125-0.203-0.297t-0.047-0.359q0-0.156 0.047-0.328t0.203-0.297l9.625-9.125q0.25-0.25 0.578-0.25t0.578 0.25q0.25 0.219 0.25 0.578t-0.25 0.578z";
+const ICON_PATH_BACK = "M20 25L11 16L20 7";
 const ICON_PATH_CLOSE = "M17.25 16.156l7.375-7.313q0.281-0.281 0.281-0.641t-0.281-0.641q-0.25-0.25-0.625-0.25t-0.625 0.25l-7.375 7.344-7.313-7.344q-0.25-0.25-0.625-0.25t-0.625 0.25q-0.281 0.25-0.281 0.625t0.281 0.625l7.313 7.344-7.375 7.344q-0.281 0.25-0.281 0.625t0.281 0.625q0.125 0.125 0.281 0.188t0.344 0.063q0.156 0 0.328-0.063t0.297-0.188l7.375-7.344 7.375 7.406q0.125 0.156 0.297 0.219t0.328 0.063q0.188 0 0.344-0.078t0.281-0.203q0.281-0.25 0.281-0.609t-0.281-0.641l-7.375-7.406z";
-function createSvgIconVNode(path, color = "#000", size = 27) {
-  return Vue.createVNode(
-    "svg",
-    {
-      width: size,
-      height: size,
-      viewBox: "0 0 32 32"
-    },
-    [
-      Vue.createVNode(
-        "path",
-        {
-          d: path,
-          fill: color
-        },
-        null,
-        8,
-        ["d", "fill"]
-      )
-    ],
-    8,
-    ["width", "height"]
-  );
-}
 function useCurrentPageId() {
   {
     const { $pageInstance } = Vue.getCurrentInstance();
@@ -710,31 +1054,6 @@ function getRouteOptions(path, alias = false) {
   }
   return __uniRoutes.find((route) => route.path === path);
 }
-const SYSTEM_DIALOG_PAGE_PATH_STARTER = "uni:";
-function isSystemDialogPage(page) {
-  return page.route.startsWith(SYSTEM_DIALOG_PAGE_PATH_STARTER);
-}
-function getSystemDialogPages(parentPage) {
-  if (!parentPage)
-    return [];
-  return parentPage.$getSystemDialogPages();
-}
-function invokeNewDialogPageHook(page, hook) {
-  const currentPage = getCurrentPage();
-  let shouldInvoke = false;
-  if (!currentPage) {
-    shouldInvoke = true;
-  } else {
-    if (isSystemDialogPage(page)) {
-      const systemDialogPages = getSystemDialogPages(currentPage);
-      shouldInvoke = systemDialogPages.includes(page);
-    } else {
-      const dialogPages = currentPage.getDialogPages();
-      shouldInvoke = dialogPages.includes(page);
-    }
-  }
-  shouldInvoke && invokeHook(page.vm, hook);
-}
 function getPageInstanceByChild(child) {
   var _a;
   let pageInstance = child;
@@ -756,6 +1075,148 @@ function isNormalDialogPageInstance(vm) {
 function isSystemDialogPageInstance(vm) {
   return vm.attrs["data-type"] === SYSTEM_DIALOG_TAG;
 }
+function warnUniAppVmMethod(methodName) {
+  initI18nAppVmMsgsOnce();
+  const methodCall = `getApp().vm?.${methodName}()`;
+  Vue.warn(
+    useI18n().t("uni.appVm.methodWarning", {
+      methodName,
+      methodCall
+    })
+  );
+}
+function createInitUniAppVmMethodWarnings() {
+  const VM_METHOD_WARNING_GETTER = Symbol.for(
+    "uni-app.vm-method-warning-getter"
+  );
+  const UNI_APP_METHODS = /* @__PURE__ */ new Set([
+    "$vm",
+    "globalData",
+    "getAndroidApplication",
+    "getHarmonyAbility",
+    "restart",
+    "vm"
+  ]);
+  function getMethodSources(vm) {
+    var _a;
+    const instance = vm.$;
+    if (instance.exposed) {
+      return [instance.exposed];
+    }
+    return [
+      instance.ctx,
+      ((_a = instance.setupState) == null ? void 0 : _a.__isScriptSetup) ? void 0 : instance.setupState
+    ];
+  }
+  function getVmMethodNames(vm) {
+    const methodNames = /* @__PURE__ */ new Set();
+    getMethodSources(vm).forEach((source) => {
+      if (!source) {
+        return;
+      }
+      Object.getOwnPropertyNames(source).forEach((name) => {
+        const descriptor = Object.getOwnPropertyDescriptor(source, name);
+        if (typeof Vue.unref(descriptor == null ? void 0 : descriptor.value) === "function") {
+          methodNames.add(name);
+        }
+      });
+    });
+    return methodNames;
+  }
+  function createWarningGetter(methodName, getter) {
+    const warningGetter = function() {
+      warnUniAppVmMethod(methodName);
+      return Reflect.apply(getter, this, []);
+    };
+    Object.defineProperty(warningGetter, VM_METHOD_WARNING_GETTER, {
+      value: { methodName }
+    });
+    return warningGetter;
+  }
+  function findPropertyDescriptor(target, methodName) {
+    try {
+      let owner = target;
+      while (owner) {
+        const descriptor = Object.getOwnPropertyDescriptor(owner, methodName);
+        if (descriptor) {
+          return { descriptor, own: owner === target };
+        }
+        owner = Object.getPrototypeOf(owner);
+      }
+    } catch {
+      return;
+    }
+  }
+  function defineProperty(target, methodName, descriptor) {
+    try {
+      Object.defineProperty(target, methodName, descriptor);
+    } catch {
+    }
+  }
+  function wrapAccessor(uniApp, methodName, descriptor, own) {
+    var _a;
+    const getter = descriptor.get;
+    if (!getter || ((_a = getter[VM_METHOD_WARNING_GETTER]) == null ? void 0 : _a.methodName) === methodName || own && !descriptor.configurable) {
+      return;
+    }
+    defineProperty(uniApp, methodName, {
+      configurable: own ? descriptor.configurable : true,
+      enumerable: descriptor.enumerable,
+      get: createWarningGetter(methodName, getter),
+      set: descriptor.set
+    });
+  }
+  function wrapDataProperty(uniApp, methodName, value, descriptor, own = false) {
+    if (own && !(descriptor == null ? void 0 : descriptor.configurable)) {
+      return;
+    }
+    let currentValue = value;
+    defineProperty(uniApp, methodName, {
+      configurable: own ? descriptor == null ? void 0 : descriptor.configurable : true,
+      enumerable: (descriptor == null ? void 0 : descriptor.enumerable) ?? false,
+      get: createWarningGetter(methodName, () => currentValue),
+      set: (descriptor == null ? void 0 : descriptor.writable) === false ? void 0 : (value2) => {
+        currentValue = value2;
+      }
+    });
+  }
+  function wrapUniAppMethod(uniApp, methodName, wrapMissingProperty = false) {
+    if (UNI_APP_METHODS.has(methodName)) {
+      return;
+    }
+    const property = findPropertyDescriptor(uniApp, methodName);
+    if (property) {
+      const { descriptor, own } = property;
+      if (descriptor.get) {
+        wrapAccessor(uniApp, methodName, descriptor, own);
+      } else if (typeof descriptor.value === "function") {
+        wrapDataProperty(uniApp, methodName, descriptor.value, descriptor, own);
+      }
+      return;
+    }
+    let method;
+    try {
+      method = uniApp[methodName];
+    } catch {
+      return;
+    }
+    if (typeof method === "function" || wrapMissingProperty) {
+      wrapDataProperty(uniApp, methodName, method);
+    }
+  }
+  return function initUniAppVmMethodWarnings2(uniApp) {
+    if (!uniApp.vm) {
+      return /* @__PURE__ */ new Set();
+    }
+    const methodNames = getVmMethodNames(uniApp.vm);
+    UNI_APP_METHODS.forEach((methodName) => methodNames.delete(methodName));
+    methodNames.forEach((methodName) => {
+      wrapUniAppMethod(uniApp, methodName, false);
+    });
+    return methodNames;
+  };
+}
+const initUniAppVmMethodWarnings = process.env.NODE_ENV !== "production" ? createInitUniAppVmMethodWarnings() : () => /* @__PURE__ */ new Set();
 const invokeOnCallback = (name, res) => UniServiceJSBridge.emit("api." + name, res);
 let invokeViewMethodId = 1;
 function publishViewMethodName(pageId) {
@@ -826,148 +1287,34 @@ function defineGlobalData(app, defaultGlobalData) {
     }
   });
 }
-function converPx(value) {
-  if (/^-?\d+[ur]px$/i.test(value)) {
-    return value.replace(/(^-?\d+)[ur]px$/i, (text, num) => {
-      return `${uni.upx2px(parseFloat(num))}px`;
-    });
-  } else if (/^-?[\d\.]+$/.test(value)) {
-    return `${value}px`;
-  }
-  return value || "";
-}
-function converType(type) {
-  return type.replace(/[A-Z]/g, (text) => {
-    return `-${text.toLowerCase()}`;
-  }).replace("webkit", "-webkit");
-}
-function getStyle(action) {
-  const animateTypes1 = [
-    "matrix",
-    "matrix3d",
-    "scale",
-    "scale3d",
-    "rotate3d",
-    "skew",
-    "translate",
-    "translate3d"
-  ];
-  const animateTypes2 = [
-    "scaleX",
-    "scaleY",
-    "scaleZ",
-    "rotate",
-    "rotateX",
-    "rotateY",
-    "rotateZ",
-    "skewX",
-    "skewY",
-    "translateX",
-    "translateY",
-    "translateZ"
-  ];
-  const animateTypes3 = ["opacity", "background-color"];
-  const animateTypes4 = ["width", "height", "left", "right", "top", "bottom"];
-  const animates = action.animates;
-  const option = action.option;
-  const transition = option.transition;
-  const style = {};
-  const transform = [];
-  animates.forEach((animate) => {
-    let type = animate.type;
-    let args = [...animate.args];
-    if (animateTypes1.concat(animateTypes2).includes(type)) {
-      if (type.startsWith("rotate") || type.startsWith("skew")) {
-        args = args.map((value) => parseFloat(value) + "deg");
-      } else if (type.startsWith("translate")) {
-        args = args.map(converPx);
-      }
-      if (animateTypes2.indexOf(type) >= 0) {
-        args.length = 1;
-      }
-      transform.push(`${type}(${args.join(",")})`);
-    } else if (animateTypes3.concat(animateTypes4).includes(args[0])) {
-      type = args[0];
-      const value = args[1];
-      style[type] = animateTypes4.includes(type) ? converPx(value) : value;
-    }
-  });
-  style.transform = style.webkitTransform = transform.join(" ");
-  style.transition = style.webkitTransition = Object.keys(style).map(
-    (type) => `${converType(type)} ${transition.duration}ms ${transition.timingFunction} ${transition.delay}ms`
-  ).join(",");
-  style.transformOrigin = style.webkitTransformOrigin = option.transformOrigin;
-  return style;
-}
-function startAnimation(context) {
-  const animation2 = context.animation;
-  if (!animation2 || !animation2.actions || !animation2.actions.length) {
-    return;
-  }
-  let index2 = 0;
-  const actions = animation2.actions;
-  const length = animation2.actions.length;
-  function animate() {
-    const action = actions[index2];
-    const transition = action.option.transition;
-    const style = getStyle(action);
-    Object.keys(style).forEach((key) => {
-      context.$el.style[key] = style[key];
-    });
-    index2 += 1;
-    if (index2 < length) {
-      setTimeout(animate, transition.duration + transition.delay);
-    }
-  }
-  setTimeout(() => {
-    animate();
-  }, 0);
-}
-const animation = {
-  props: ["animation"],
-  watch: {
-    animation: {
-      deep: true,
-      handler() {
-        startAnimation(this);
-      }
-    }
-  },
-  mounted() {
-    startAnimation(this);
-  }
-};
-const defineBuiltInComponent = (options) => {
-  options.__reserved = true;
-  const { props: props2, mixins } = options;
-  if (!props2 || !props2.animation) {
-    (mixins || (options.mixins = [])).push(animation);
-  }
-  return defineSystemComponent(options);
-};
-const defineSystemComponent = (options) => {
-  options.__reserved = true;
-  options.compatConfig = {
-    MODE: 3
-    // 标记为vue3
-  };
-  const setup = options.setup;
-  if (setup) {
-    options.setup = (props2, context) => {
-      const result = setup(props2, context);
-      return typeof result === "function" ? result() : result;
+function throttle(fn, wait) {
+  let last = 0;
+  let timeout;
+  let waitCallback;
+  const newFn = function(...arg) {
+    const now = Date.now();
+    clearTimeout(timeout);
+    waitCallback = () => {
+      waitCallback = null;
+      last = now;
+      fn.apply(this, arg);
     };
-  }
-  return Vue.defineVaporComponent(options);
-};
-const defineUnsupportedComponent = (name) => {
-  return defineBuiltInComponent({
-    name: shared.capitalize(shared.camelize(name)),
-    setup() {
-      return () => (Vue.openBlock(), Vue.createElementBlock("uni-" + name, null, name + " is unsupported"));
+    if (now - last < wait) {
+      timeout = setTimeout(waitCallback, wait - (now - last));
+      return;
     }
-  });
-};
+    waitCallback();
+  };
+  newFn.cancel = function() {
+    clearTimeout(timeout);
+    waitCallback = null;
+  };
+  newFn.flush = function() {
+    clearTimeout(timeout);
+    waitCallback && waitCallback();
+  };
+  return newFn;
+}
 function withWebEvent(fn) {
   return fn.__wwe = true, fn;
 }
@@ -988,192 +1335,655 @@ function normalizeCustomEvent(name, domEvt, el, detail) {
     detail
   };
 }
-function useHover(props2) {
-  const hovering = Vue.ref(false);
-  let hoverTouch = false;
-  let hoverStartTimer;
-  let hoverStayTimer;
-  function hoverReset() {
-    requestAnimationFrame(() => {
-      clearTimeout(hoverStayTimer);
-      hoverStayTimer = setTimeout(() => {
-        hovering.value = false;
-      }, parseInt(props2.hoverStayTime));
-    });
-  }
-  function onTouchstartPassive(evt) {
-    if (evt.touches.length > 1) {
-      return;
-    }
-    handleHoverStart(evt);
-  }
-  function onMousedown(evt) {
-    if (hoverTouch) {
-      return;
-    }
-    handleHoverStart(evt);
-    window.addEventListener("mouseup", handlePCHoverEnd);
-  }
-  function handleHoverStart(evt) {
-    if (evt._hoverPropagationStopped) {
-      return;
-    }
-    if (!props2.hoverClass || props2.hoverClass === "none" || props2.disabled) {
-      return;
-    }
-    if (props2.hoverStopPropagation) {
-      evt._hoverPropagationStopped = true;
-    }
-    hoverTouch = true;
-    hoverStartTimer = setTimeout(() => {
-      hovering.value = true;
-      if (!hoverTouch) {
-        hoverReset();
-      }
-    }, parseInt(props2.hoverStartTime));
-  }
-  function onTouchend() {
-    handleHoverEnd();
-  }
-  function onMouseup() {
-    if (!hoverTouch) {
-      return;
-    }
-    handlePCHoverEnd();
-  }
-  function handleHoverEnd() {
-    hoverTouch = false;
-    if (hovering.value) {
-      hoverReset();
-    }
-  }
-  function handlePCHoverEnd() {
-    handleHoverEnd();
-    window.removeEventListener("mouseup", handlePCHoverEnd);
-  }
-  function onTouchcancel() {
-    hoverTouch = false;
-    hovering.value = false;
-    clearTimeout(hoverStartTimer);
-  }
+function useUserAction() {
+  const state = Vue.reactive({
+    /**
+     * 是否用户激活
+     */
+    userAction: false
+  });
   return {
-    hovering,
-    binding: {
-      onTouchstartPassive: withWebEvent(onTouchstartPassive),
-      onMousedown: withWebEvent(onMousedown),
-      onTouchend: withWebEvent(onTouchend),
-      onMouseup: withWebEvent(onMouseup),
-      onTouchcancel: withWebEvent(onTouchcancel)
-    }
+    state
   };
 }
-function useBooleanAttr(props2, keys) {
-  if (shared.isString(keys)) {
-    keys = [keys];
-  }
-  return keys.reduce((res, key) => {
-    if (props2[key]) {
-      res[key] = true;
-    }
-    return res;
-  }, /* @__PURE__ */ Object.create(null));
+let resetTimer;
+function iosHideKeyboard() {
 }
-const rpx2Unit = uniShared.createRpx2Unit(
-  uniShared.defaultRpx2Unit.unit,
-  uniShared.defaultRpx2Unit.unitRatio,
-  uniShared.defaultRpx2Unit.unitPrecision
-);
-function transformRpx(value) {
-  if (/(-?(?:\d+\.)?\d+)[ur]px/gi.test(value)) {
-    return value.replace(/(-?(?:\d+\.)?\d+)[ur]px/gi, (text, num) => {
-      return rpx2Unit(num + "rpx");
+const props$a = {
+  cursorSpacing: {
+    type: [Number, String],
+    default: 0
+  },
+  showConfirmBar: {
+    type: [Boolean, String],
+    default: "auto"
+  },
+  adjustPosition: {
+    type: [Boolean, String],
+    default: true
+  },
+  autoBlur: {
+    type: [Boolean, String],
+    default: false
+  }
+};
+const emit$1 = ["keyboardheightchange"];
+function useKeyboard(props2, elRef, trigger) {
+  function initKeyboard(el) {
+    const isApple = Vue.computed(
+      () => String(navigator.vendor).indexOf("Apple") === 0
+    );
+    el.addEventListener("focus", () => {
+      clearTimeout(resetTimer);
+      document.addEventListener("click", iosHideKeyboard, false);
+    });
+    const onKeyboardHide = () => {
+      document.removeEventListener("click", iosHideKeyboard, false);
+      if (isApple.value) {
+        document.documentElement.scrollTo(
+          document.documentElement.scrollLeft,
+          document.documentElement.scrollTop
+        );
+      }
+    };
+    el.addEventListener("blur", () => {
+      if (isApple.value) {
+        el.blur();
+      }
+      onKeyboardHide();
     });
   }
-  return value;
+  Vue.watch(
+    () => elRef.value,
+    (el) => el && initKeyboard(el)
+  );
 }
-class UniElement extends Object {
-  constructor() {
-    super();
-    this._props = {};
-    this.__isUniElement = true;
+function useScopedAttrs() {
+  const state = Vue.reactive({
+    attrs: {}
+  });
+  return {
+    state
+  };
+}
+function useVaporFormField(props2, state) {
+  const form = Vue.inject("UNI_FORM_CTX", null);
+  if (!form)
+    return;
+  const initialValue = state.value;
+  const getValue = () => state.value;
+  const reset = () => {
+    state.value = initialValue;
+  };
+  Vue.watch(
+    () => props2.name,
+    (name, oldName) => {
+      if (oldName)
+        form.unregisterField(oldName);
+      if (name)
+        form.registerField({ name, getValue, reset });
+    },
+    { immediate: true, flush: "sync" }
+  );
+}
+function getSelectedTextRange(_, resolve) {
+  const activeElement = document.activeElement;
+  if (!activeElement) {
+    return resolve({});
   }
-  attachVmProps(props2) {
-    this._props = props2;
+  const data = {};
+  if (["input", "textarea"].includes(activeElement.tagName.toLowerCase())) {
+    data.start = activeElement.selectionStart;
+    data.end = activeElement.selectionEnd;
   }
-  getAttribute(qualifiedName) {
-    const name = shared.camelize(qualifiedName);
-    const attr2 = name in this._props ? this._props[name] + "" : super.getAttribute(qualifiedName);
-    return attr2 === void 0 ? null : attr2;
+  resolve(data);
+}
+const UniViewJSBridgeSubscribe = function() {
+  registerViewMethod(
+    getCurrentPageId(),
+    "getSelectedTextRange",
+    getSelectedTextRange
+  );
+};
+function getValueString(value, type, maxlength) {
+  if (type === "number" && isNaN(Number(value))) {
+    value = "";
   }
-  getPage() {
-    return uniShared.getUniElementPage(this);
+  const valueStr = value === null || value === void 0 ? "" : String(value);
+  if (maxlength == void 0) {
+    return valueStr;
   }
-  get uniPage() {
-    return this.getPage();
-  }
-  get dataset() {
-    if (!this.__uniDatasetMap) {
-      this.__uniDatasetMap = uniShared.createUniDOMStringMap(
-        this.__uniDataset || {}
-      );
+  return valueStr.slice(0, maxlength);
+}
+const INPUT_MODES = [
+  "none",
+  "text",
+  "decimal",
+  "numeric",
+  "tel",
+  "search",
+  "email",
+  "url"
+];
+const props$9 = /* @__PURE__ */ shared.extend(
+  {},
+  {
+    name: {
+      type: String,
+      default: ""
+    },
+    modelValue: {
+      type: [String, Number]
+    },
+    value: {
+      type: [String, Number]
+    },
+    disabled: {
+      type: [Boolean, String],
+      default: false
+    },
+    /**
+     * 已废弃属性，用于历史兼容
+     */
+    autoFocus: {
+      type: [Boolean, String],
+      default: false
+    },
+    focus: {
+      type: [Boolean, String],
+      default: false
+    },
+    cursor: {
+      type: [Number, String],
+      default: -1
+    },
+    selectionStart: {
+      type: [Number, String],
+      default: -1
+    },
+    selectionEnd: {
+      type: [Number, String],
+      default: -1
+    },
+    type: {
+      type: String,
+      default: "text"
+    },
+    password: {
+      type: [Boolean, String],
+      default: false
+    },
+    placeholder: {
+      type: String,
+      default: ""
+    },
+    placeholderStyle: {
+      type: String,
+      default: ""
+    },
+    placeholderClass: {
+      type: String,
+      default: ""
+    },
+    maxlength: {
+      type: [Number, String],
+      default: Infinity
+    },
+    confirmType: {
+      type: String,
+      default: "done"
+    },
+    confirmHold: {
+      type: Boolean,
+      default: false
+    },
+    ignoreCompositionEvent: {
+      type: Boolean,
+      default: true
+    },
+    step: {
+      type: String,
+      default: "0.000000000000000001"
+    },
+    inputmode: {
+      type: String,
+      default: void 0,
+      validator: (value) => !!~INPUT_MODES.indexOf(value)
+    },
+    cursorColor: {
+      type: String,
+      default: ""
     }
-    return this.__uniDatasetMap;
-  }
-  setAttribute(qualifiedName, value) {
-    super.setAttribute(qualifiedName, value);
-    if (qualifiedName.startsWith("data-") && this.__uniDatasetMap) {
-      this.__uniDatasetMap.set(qualifiedName, value);
+  },
+  props$a
+);
+const emit = [
+  "input",
+  "focus",
+  "blur",
+  "update:value",
+  "update:modelValue",
+  "update:focus",
+  "compositionstart",
+  "compositionupdate",
+  "compositionend",
+  ...emit$1
+];
+function useBase(props2, rootRef, emit2) {
+  const fieldRef = Vue.ref(null);
+  const trigger = useCustomEvent(rootRef, emit2);
+  const selectionStart = Vue.computed(() => {
+    const selectionStart2 = Number(props2.selectionStart);
+    return isNaN(selectionStart2) ? -1 : selectionStart2;
+  });
+  const selectionEnd = Vue.computed(() => {
+    const selectionEnd2 = Number(props2.selectionEnd);
+    return isNaN(selectionEnd2) ? -1 : selectionEnd2;
+  });
+  const cursor = Vue.computed(() => {
+    const cursor2 = Number(props2.cursor);
+    return isNaN(cursor2) ? -1 : cursor2;
+  });
+  const maxlength = Vue.computed(() => {
+    var maxlength2 = Number(props2.maxlength);
+    {
+      return isNaN(maxlength2) || maxlength2 < 0 ? Infinity : Math.floor(maxlength2);
     }
+  });
+  let value = "";
+  {
+    const modelValueString = getValueString(
+      props2.modelValue,
+      props2.type,
+      maxlength.value
+    );
+    const valueString = getValueString(props2.value, props2.type, maxlength.value);
+    value = props2.modelValue !== void 0 ? modelValueString !== null && modelValueString !== void 0 ? modelValueString : valueString : valueString;
   }
-  removeAttribute(qualifiedName) {
-    super.removeAttribute(qualifiedName);
-    if (qualifiedName.startsWith("data-") && this.__uniDatasetMap) {
-      this.__uniDatasetMap.delete(qualifiedName);
-    }
-  }
-  getBoundingClientRectAsync(callback) {
-    var _a, _b;
-    if (callback) {
-      const domRect = this.getBoundingClientRect();
-      try {
-        (_a = callback.success) == null ? void 0 : _a.call(callback, domRect);
-      } catch (error) {
-        console.error(error);
+  const state = Vue.reactive({
+    value,
+    valueOrigin: value,
+    maxlength,
+    focus: props2.focus,
+    composing: false,
+    selectionStart,
+    selectionEnd,
+    cursor
+  });
+  Vue.watch(
+    () => state.focus,
+    (val) => emit2("update:focus", val)
+  );
+  Vue.watch(
+    () => state.maxlength,
+    (val) => {
+      if (val >= 0) {
+        state.value = state.value.slice(0, val);
       }
-      try {
-        (_b = callback.complete) == null ? void 0 : _b.call(callback, domRect);
-      } catch (error) {
-        console.error(error);
+    },
+    {
+      immediate: true
+    }
+  );
+  return {
+    fieldRef,
+    state,
+    trigger
+  };
+}
+function useValueSync(props2, state, emit2, trigger, fieldRef) {
+  let valueChangeFn = null;
+  {
+    valueChangeFn = throttle((val) => {
+      state.value = getValueString(val, props2.type, state.maxlength);
+    }, 100);
+  }
+  Vue.watch(() => props2.modelValue, valueChangeFn);
+  Vue.watch(() => props2.value, valueChangeFn);
+  const triggerInputFn = throttle((event, detail) => {
+    valueChangeFn.cancel();
+    emit2("update:modelValue", detail.value);
+    emit2("update:value", detail.value);
+    trigger("input", event, detail);
+  }, 100);
+  const triggerInput = (event, detail, force) => {
+    valueChangeFn.cancel();
+    detail.value;
+    triggerInputFn(event, detail);
+    if (force) {
+      triggerInputFn.flush();
+    }
+  };
+  return {
+    trigger,
+    triggerInput
+  };
+}
+function useAutoFocus(props2, fieldRef) {
+  useUserAction();
+  const needFocus = Vue.computed(() => props2.autoFocus || props2.focus);
+  function focus() {
+    if (!needFocus.value) {
+      return;
+    }
+    const field = fieldRef.value;
+    if (!field || false) {
+      setTimeout(focus, 100);
+      return;
+    }
+    {
+      field.focus();
+    }
+  }
+  function blur() {
+    const field = fieldRef.value;
+    if (field) {
+      field.blur();
+    }
+  }
+  Vue.watch(
+    () => props2.focus,
+    (value) => {
+      if (value) {
+        focus();
+      } else {
+        blur();
+      }
+    }
+  );
+}
+function useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput) {
+  function checkSelection() {
+    const field = fieldRef.value;
+    if (field && state.focus && state.selectionStart > -1 && state.selectionEnd > -1 && typeof field.selectionStart === "number") {
+      field.selectionStart = state.selectionStart;
+      field.selectionEnd = state.selectionEnd;
+    }
+  }
+  function checkCursor() {
+    const field = fieldRef.value;
+    if (field && state.focus && state.selectionStart < 0 && state.selectionEnd < 0 && state.cursor > -1 && typeof field.selectionStart === "number") {
+      field.selectionEnd = field.selectionStart = state.cursor;
+    }
+  }
+  function getFieldSelectionEnd(field) {
+    if (field.type === "number") {
+      return null;
+    } else {
+      return field.selectionEnd;
+    }
+  }
+  function initField() {
+    const field = fieldRef.value;
+    if (!field)
+      return;
+    const onFocus = function(event) {
+      state.focus = true;
+      trigger("focus", event, {
+        value: state.value
+      });
+      checkSelection();
+      checkCursor();
+    };
+    const onInput = function(event, force) {
+      event.stopPropagation();
+      if (shared.isFunction(beforeInput) && beforeInput(event, state) === false) {
+        return;
+      }
+      state.value = field.value;
+      if (!state.composing || !props2.ignoreCompositionEvent) {
+        triggerInput(
+          event,
+          {
+            value: field.value,
+            cursor: getFieldSelectionEnd(field)
+          },
+          force
+        );
+      }
+    };
+    const onBlur = function(event) {
+      if (state.composing) {
+        state.composing = false;
+        onInput(event, true);
+      }
+      state.focus = false;
+      trigger("blur", event, {
+        value: state.value,
+        cursor: getFieldSelectionEnd(event.target)
+      });
+    };
+    field.addEventListener("change", (event) => event.stopPropagation());
+    field.addEventListener("focus", onFocus);
+    field.addEventListener("blur", onBlur);
+    field.addEventListener("input", onInput);
+    field.addEventListener("compositionstart", (event) => {
+      event.stopPropagation();
+      state.composing = true;
+      _onComposition(event);
+    });
+    field.addEventListener("compositionend", (event) => {
+      event.stopPropagation();
+      if (state.composing) {
+        state.composing = false;
+        onInput(event);
+      }
+      _onComposition(event);
+    });
+    field.addEventListener("compositionupdate", _onComposition);
+    function _onComposition(event) {
+      if (!props2.ignoreCompositionEvent) {
+        trigger(event.type, event, {
+          value: event.data
+        });
+      }
+    }
+  }
+  Vue.watch([() => state.selectionStart, () => state.selectionEnd], checkSelection);
+  Vue.watch(() => state.cursor, checkCursor);
+  Vue.watch(() => fieldRef.value, initField);
+}
+function useField(props2, rootRef, emit2, beforeInput) {
+  UniViewJSBridgeSubscribe();
+  const { fieldRef, state, trigger } = useBase(props2, rootRef, emit2);
+  const { triggerInput } = useValueSync(props2, state, emit2, trigger);
+  useAutoFocus(props2, fieldRef);
+  useKeyboard(props2, fieldRef);
+  const { state: scopedAttrsState } = useScopedAttrs();
+  useVaporFormField(props2, state);
+  useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput);
+  const fixDisabledColor = false;
+  return {
+    fieldRef,
+    state,
+    scopedAttrsState,
+    fixDisabledColor,
+    trigger
+  };
+}
+uniShared.once(() => {
+});
+const webSelectionProps$1 = fieldSelectionProps;
+const props$8 = /* @__PURE__ */ shared.extend(
+  {},
+  props$9,
+  {
+    placeholderClass: {
+      type: String,
+      default: "input-placeholder"
+    },
+    textContentType: {
+      type: String,
+      default: ""
+    }
+  },
+  webSelectionProps$1
+);
+function isPaste(event) {
+  return event.inputType === "insertFromPaste";
+}
+function useCache(props2, type) {
+  if (type.value === "number") {
+    const value = typeof props2.modelValue === "undefined" ? props2.value : props2.modelValue;
+    const cache = Vue.ref(
+      typeof value !== "undefined" && value !== null ? value.toLocaleString() : ""
+    );
+    Vue.watch(
+      () => props2.modelValue,
+      (value2) => {
+        cache.value = typeof value2 !== "undefined" && value2 !== null ? value2.toLocaleString() : "";
+      }
+    );
+    Vue.watch(
+      () => props2.value,
+      (value2) => {
+        cache.value = typeof value2 !== "undefined" && value2 !== null ? value2.toLocaleString() : "";
+      }
+    );
+    return cache;
+  } else {
+    return Vue.ref("");
+  }
+}
+const emits$2 = ["confirm", ...emit];
+function useInput(props2, { emit: emit2, expose }) {
+  const INPUT_TYPES = [
+    "text",
+    "number",
+    "idcard",
+    "digit",
+    "password",
+    "tel",
+    "search",
+    "email"
+  ];
+  const AUTOCOMPLETES = ["off", "one-time-code"];
+  const type = Vue.computed(() => {
+    let type2 = "";
+    switch (props2.type) {
+      case "text":
+        type2 = "text";
+        if (props2.confirmType === "search") {
+          type2 = "search";
+        }
+        break;
+      case "idcard":
+        type2 = "text";
+        break;
+      case "digit":
+        type2 = "number";
+        break;
+      case "none":
+        type2 = "text";
+        break;
+      default:
+        type2 = INPUT_TYPES.includes(props2.type) ? props2.type : "text";
+        break;
+    }
+    return props2.password ? "password" : type2;
+  });
+  const autocomplete = Vue.computed(() => {
+    const camelizeIndex = AUTOCOMPLETES.indexOf(props2.textContentType);
+    const kebabCaseIndex = AUTOCOMPLETES.indexOf(
+      shared.hyphenate(props2.textContentType)
+    );
+    const index2 = camelizeIndex !== -1 ? camelizeIndex : kebabCaseIndex !== -1 ? kebabCaseIndex : 0;
+    return AUTOCOMPLETES[index2];
+  });
+  const inputmode = Vue.computed(() => {
+    if (props2.inputmode !== void 0) {
+      return props2.inputmode;
+    }
+    if (INPUT_MODES.includes(props2.type)) {
+      return props2.type;
+    }
+    let inputmodeMap = {};
+    {
+      inputmodeMap = {
+        number: "numeric",
+        digit: "decimal",
+        idcard: "text"
+      };
+    }
+    return inputmodeMap[props2.type];
+  });
+  let cache = useCache(props2, type);
+  const rootRef = Vue.ref(null);
+  const { fieldRef, state, scopedAttrsState, fixDisabledColor, trigger } = useField(props2, rootRef, emit2, (event, state2) => {
+    {
+      return;
+    }
+  });
+  const selectionRef = useFieldSelection(props2, fieldRef);
+  Vue.watch(
+    () => state.value,
+    (value) => {
+      if (props2.type === "number" && !(cache.value === "-" && value === "")) {
+        cache.value = value.toString();
+      }
+    }
+  );
+  Vue.watch(
+    () => props2.maxlength,
+    (length) => {
+      length = parseInt(length, 10);
+      if (!(length >= 0)) {
+        return;
+      }
+      const realValue = state.value.slice(0, length);
+      realValue !== state.value && (state.value = realValue);
+    }
+  );
+  const NUMBER_TYPES = ["number", "digit"];
+  const step = Vue.computed(
+    () => NUMBER_TYPES.includes(props2.type) ? props2.step : ""
+  );
+  function onKeyUpEnter(event) {
+    if (event.key !== "Enter") {
+      return;
+    }
+    const input = event.target;
+    event.stopPropagation();
+    trigger("confirm", event, {
+      value: input.value
+    });
+    !props2.confirmHold && input.blur();
+  }
+  expose({
+    $triggerInput: (detail) => {
+      emit2("update:modelValue", detail.value);
+      emit2("update:value", detail.value);
+      state.value = detail.value;
+    }
+  });
+  function onInput(event) {
+    const value = event.target.value.toString();
+    if (type.value === "number" && state.maxlength > 0 && value.length > state.maxlength) {
+      if (isPaste(event)) {
+        state.value = value.slice(0, state.maxlength);
       }
       return;
     }
-    return new Promise((resolve, reject) => {
-      const domRect = this.getBoundingClientRect();
-      resolve(domRect);
-    });
-  }
-  get style() {
-    const originalStyle = super.style;
-    if (originalStyle.__patchRpx__) {
-      return originalStyle;
+    if (value.length === 0 && event.inputType === "insertText" && event.data === ".") {
+      return;
     }
-    originalStyle.__patchRpx__ = true;
-    const originalSetProperty = originalStyle.setProperty.bind(originalStyle);
-    super.style.setProperty = function(property, value, priority) {
-      return originalSetProperty(
-        property,
-        value ? transformRpx(value + "") : value,
-        priority || void 0
-      );
-    };
-    return super.style;
+    state.value = value;
   }
-  get tagName() {
-    return super.tagName.replace(/^UNI-/, "");
-  }
-  get nodeName() {
-    return super.nodeName.replace(/^UNI-/, "");
-  }
+  return {
+    rootRef,
+    fieldRef,
+    state,
+    scopedAttrsState,
+    selectionRef,
+    fixDisabledColor,
+    type,
+    autocomplete,
+    inputmode,
+    cache,
+    step,
+    onKeyUpEnter,
+    onInput
+  };
 }
 const createComponent = (type, ...args) => {
   if (type === Vue.Fragment) {
@@ -1212,9 +2022,6 @@ function createProxyComponent(type, normalizeNode2) {
     return proxy;
   }
   return type;
-}
-function isBlock(val) {
-  return val instanceof Node || Array.isArray(val) || Vue__namespace.isVaporComponent(val) || Vue__namespace.isFragment(val);
 }
 function createFragment(nodes, anchor = document.createTextNode("")) {
   const frag = new Vue__namespace.VaporFragment(nodes);
@@ -1305,512 +2112,515 @@ function setNodes(anchor, ...values) {
 function createNodes(...values) {
   return resolveValues(values);
 }
-function normalizeVaporSlots(slots) {
-  if (typeof slots === "function") {
-    return { name: "default", fn: slots };
-  } else if (Object.prototype.toString.call(slots) === "[object Object]" && !isBlock(slots)) {
-    return Object.entries(slots).map(([name, fn]) => ({ name, fn }));
-  } else {
-    return {
-      name: "default",
-      fn: () => createNodes(slots)
-    };
-  }
-}
-const _t0$n = Vue.template("<span> ");
-const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-const index$x = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Form",
-  emits: ["submit", "reset"],
-  setup(_props, { slots, emit: emit2 }) {
-    const rootRef = Vue.ref(null);
-    provideForm(useCustomEvent(rootRef, emit2));
-    return () => (() => {
+const _t0$d = Vue.template("<input tabindex=-1>");
+const _t1$3 = Vue.template("<input>");
+const _t2$2 = Vue.template("<form action novalidate class=uni-input-form> ");
+const _t3$2 = Vue.template("<div uni-input uni-view><div class=uni-input-wrapper> <div> </div>", 1);
+const _t4$2 = Vue.template("<div>", 1);
+const Input = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Input",
+  props: props$8,
+  emits: emits$2,
+  rootElement: {
+    name: "uni-input",
+    class: UniInputElement
+  },
+  setup(props2, context) {
+    const { rootRef, fieldRef, state, scopedAttrsState, selectionRef, fixDisabledColor, type, autocomplete, inputmode, cache, step, onKeyUpEnter, onInput } = useInput(props2, context);
+    const renderInput = () => (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
-      const _n1 = Vue.createPlainElement("uni-form", null, () => {
-        const _n0 = _t0$n();
-        const _x0 = Vue.txt(_n0);
-        setNodes(_x0, () => slots.default && slots.default());
-        return _n0;
-      }, true);
-      Vue.renderEffect(() => _setTemplateRef(_n1, rootRef));
-      return _n1;
+      const _n0 = Vue.createIf(() => props2.disabled && fixDisabledColor, () => {
+        const _n2 = _t0$d();
+        Vue.setBlockKey(_n2, "disabled-input");
+        Vue.on(
+          _n2,
+          // fix: 禁止 readonly 状态获取焦点
+          "focus",
+          (event) => event.target.blur()
+        );
+        Vue.renderEffect(() => {
+          Vue.setValue(_n2, state.value);
+          Vue.setProp(_n2, "readonly", !!props2.disabled);
+          Vue.setProp(_n2, "type", type.value);
+          Vue.setProp(_n2, "maxlength", state.maxlength);
+          Vue.setProp(_n2, "step", step.value);
+          Vue.setClass(_n2, props2.selectionClass ? "uni-input-input uni-field-selection" : "uni-input-input");
+          Vue.setStyle(_n2, props2.cursorColor ? { caretColor: props2.cursorColor } : {});
+          Vue.setProp(_n2, "inputmode", inputmode.value);
+          _setTemplateRef(_n2, fieldRef);
+        });
+        return _n2;
+      }, () => {
+        const _n4 = _t1$3();
+        Vue.setBlockKey(_n4, "input");
+        Vue.on(_n4, "input", Vue.withModifiers(onInput, ["stop"]));
+        Vue.on(_n4, "keyup", onKeyUpEnter);
+        Vue.renderEffect(() => {
+          Vue.setValue(_n4, state.value);
+          Vue.setProp(_n4, "disabled", !!props2.disabled);
+          Vue.setProp(_n4, "type", type.value);
+          Vue.setProp(_n4, "maxlength", state.maxlength);
+          Vue.setProp(_n4, "step", step.value);
+          Vue.setProp(_n4, "enterkeyhint", props2.confirmType);
+          Vue.setProp(_n4, "pattern", props2.type === "number" ? "[0-9]*" : void 0);
+          Vue.setClass(_n4, props2.selectionClass ? "uni-input-input uni-field-selection" : "uni-input-input");
+          Vue.setStyle(_n4, props2.cursorColor ? { caretColor: props2.cursorColor } : {});
+          Vue.setProp(_n4, "autocomplete", autocomplete.value);
+          Vue.setProp(_n4, "inputmode", inputmode.value);
+          _setTemplateRef(_n4, fieldRef);
+        });
+        return _n4;
+      }, 261);
+      return _n0;
     })();
+    const root = (() => {
+      const _setTemplateRef = Vue.createTemplateRefSetter();
+      const _n8 = _t3$2();
+      const _n7 = Vue.child(_n8);
+      const _n0 = Vue.child(_n7, true);
+      const _n1 = Vue.next(_n0);
+      setNodes(_n0, () => props2.selectionClass && (() => {
+        const _setTemplateRef2 = Vue.createTemplateRefSetter();
+        const _n02 = _t4$2();
+        Vue.renderEffect(() => {
+          Vue.setDynamicProps(_n02, [scopedAttrsState.attrs, {
+            class: ["uni-field-selection-probe", props2.selectionClass],
+            "aria-hidden": "true",
+            style: fieldSelectionProbeStyle
+          }]);
+          _setTemplateRef2(_n02, selectionRef);
+        });
+        return _n02;
+      })());
+      Vue.applyVShow(_n1, () => !(state.value.length || cache.value === "-" || cache.value.includes(".")));
+      const _x1 = Vue.txt(_n1);
+      setNodes(_x1, () => props2.placeholder);
+      Vue.renderEffect(() => Vue.setDynamicProps(_n1, [scopedAttrsState.attrs, {
+        style: props2.placeholderStyle,
+        class: ["uni-input-placeholder", props2.placeholderClass]
+      }]));
+      Vue.setInsertionState(_n7, 2);
+      Vue.createIf(() => props2.confirmType === "search", () => {
+        const _n4 = _t2$2();
+        Vue.on(_n4, "submit", (event) => event.preventDefault());
+        const _x4 = Vue.txt(_n4);
+        setNodes(_x4, () => renderInput());
+        return _n4;
+      }, () => {
+        const _n6 = createNodes(() => renderInput());
+        return _n6;
+      }, 265);
+      Vue.renderEffect(() => _setTemplateRef(_n8, rootRef));
+      return _n8;
+    })();
+    initInputElement(root);
+    return root;
   }
 });
-function provideForm(trigger) {
-  const fields2 = [];
-  Vue.provide(uniFormKey, {
-    addField(field) {
-      fields2.push(field);
-    },
-    removeField(field) {
-      fields2.splice(fields2.indexOf(field), 1);
-    },
-    submit(evt) {
-      trigger("submit", evt, { value: fields2.reduce((res, field) => {
-        if (field.submit) {
-          const [name, value] = field.submit();
-          name && (res[name] = value);
-        }
-        return res;
-      }, /* @__PURE__ */ Object.create(null)) });
-    },
-    reset(evt) {
-      fields2.forEach((field) => field.reset && field.reset());
-      trigger("reset", evt);
-    }
-  });
-  return fields2;
-}
-const labelProps = {
-  for: {
-    type: String,
-    default: ""
-  }
-};
-const uniLabelKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniLabel" : "ul");
-function useProvideLabel() {
-  const handlers = [];
-  Vue.provide(uniLabelKey, {
-    addHandler(handler) {
-      handlers.push(handler);
-    },
-    removeHandler(handler) {
-      handlers.splice(handlers.indexOf(handler), 1);
-    }
-  });
-  return handlers;
-}
-const index$w = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Label",
-  props: labelProps,
-  setup(props2, { slots }) {
-    const rootRef = Vue.ref(null);
-    const pageId = useCurrentPageId();
-    const handlers = useProvideLabel();
-    const pointer = Vue.computed(() => props2.for || slots.default && slots.default.length);
-    const _onClick = withWebEvent(($event) => {
-      const EventTarget = $event.target;
-      let stopPropagation = /^uni-(checkbox|radio|switch)-/.test(EventTarget.className);
-      if (!stopPropagation) {
-        stopPropagation = /^uni-(checkbox|radio|switch|button)$|^(svg|path)$/i.test(EventTarget.tagName);
-      }
-      if (stopPropagation) {
-        return;
-      }
-      if (props2.for) {
-        UniViewJSBridge.emit("uni-label-click-" + pageId + "-" + props2.for, $event, true);
-      } else {
-        handlers.length && handlers[0]($event, true);
-      }
-    });
-    return () => (() => {
-      const _setTemplateRef = Vue.createTemplateRefSetter();
-      const _n1 = Vue.createPlainElement("uni-label", {
-        class: () => ({ "uni-label-pointer": pointer }),
-        onClick: () => _onClick
-      }, Vue.extend(() => {
-        const _n0 = createNodes(() => slots.default && slots.default());
-        return _n0;
-      }, { _: 1 }), true);
-      Vue.renderEffect(() => _setTemplateRef(_n1, rootRef));
-      return _n1;
-    })();
-  }
-});
-const buttonProps = {
-  id: {
-    type: String,
-    default: ""
-  },
-  hoverClass: {
-    type: String,
-    default: "button-hover"
-  },
-  hoverStartTime: {
-    type: [Number, String],
-    default: 20
-  },
-  hoverStayTime: {
-    type: [Number, String],
-    default: 70
-  },
-  hoverStopPropagation: {
+const resizeSensorProps = {
+  initial: {
     type: Boolean,
     default: false
-  },
-  disabled: {
-    type: [Boolean, String],
-    default: false
-  },
-  formType: {
-    type: String,
-    default: ""
-  },
-  openType: {
-    type: String,
-    default: ""
-  },
-  loading: {
-    type: [Boolean, String],
-    default: false
-  },
-  plain: {
-    type: [Boolean, String],
-    default: false
   }
 };
-const index$v = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Button",
-  props: buttonProps,
-  setup(props2, { slots }) {
-    const rootRef = Vue.ref(null);
-    const uniForm = Vue.inject(uniFormKey, false);
-    const { hovering, binding } = useHover(props2);
-    const onClick = withWebEvent((e2, isLabelClick) => {
-      if (props2.disabled) {
-        return e2.stopImmediatePropagation();
-      }
-      if (isLabelClick) {
-        rootRef.value.click();
-      }
-      const formType = props2.formType;
-      if (formType) {
-        if (!uniForm) {
-          return;
-        }
-        if (formType === "submit") {
-          uniForm.submit(e2);
-        } else if (formType === "reset") {
-          uniForm.reset(e2);
-        }
-        return;
-      }
-    });
-    const uniLabel = Vue.inject(uniLabelKey, false);
-    if (uniLabel) {
-      uniLabel.addHandler(onClick);
-    }
-    return () => {
-      const hoverClass = props2.hoverClass;
-      const booleanAttrs = useBooleanAttr(props2, "disabled");
-      const loadingAttrs = useBooleanAttr(props2, "loading");
-      const plainAttrs = useBooleanAttr(props2, "plain");
-      const hasHoverClass = hoverClass && hoverClass !== "none";
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n1 = Vue.createPlainElement("uni-button", {
-          onClick: () => onClick,
-          id: () => props2.id,
-          class: () => hasHoverClass && hovering.value ? hoverClass : "",
-          $: [
-            () => hasHoverClass && binding,
-            () => booleanAttrs,
-            () => loadingAttrs,
-            () => plainAttrs
-          ]
-        }, Vue.extend(() => {
-          const _n0 = createNodes(() => slots.default && slots.default());
-          return _n0;
-        }, { _: 1 }), true);
-        Vue.renderEffect(() => _setTemplateRef(_n1, rootRef));
-        return _n1;
-      })();
-    };
-  }
-});
-const _t0$m = Vue.template("<canvas class=uni-canvas-canvas>");
-const props$q = { disableScroll: {
-  type: [Boolean, String],
-  default: false
-} };
-const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
-  inheritAttrs: true,
-  name: "Canvas",
-  compatConfig: { MODE: 3 },
-  props: props$q,
-  setup(props2, {}) {
-    const rootRef = Vue.ref(null);
-    const canvas = Vue.ref(null);
-    return () => {
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n1 = Vue.createPlainElement("uni-canvas", null, () => {
-          const _n0 = _t0$m();
-          Vue.renderEffect(() => _setTemplateRef(_n0, canvas));
-          return _n0;
-        }, true);
-        Vue.renderEffect(() => _setTemplateRef(_n1, rootRef));
-        return _n1;
-      })();
-    };
-  }
-});
-const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$p = { name: {
-  type: String,
-  default: ""
-} };
-const index$u = /* @__PURE__ */ defineBuiltInComponent({
-  name: "CheckboxGroup",
-  props: props$p,
-  emits: ["change"],
-  setup(props2, { emit: emit2, slots }) {
-    const rootRef = Vue.ref(null);
-    const trigger = useCustomEvent(rootRef, emit2);
-    useProvideCheckGroup(props2, trigger);
-    return () => {
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n1 = Vue.createPlainElement("uni-checkbox-group", null, Vue.extend(() => {
-          const _n0 = createNodes(() => slots.default && slots.default());
-          return _n0;
-        }, { _: 1 }), true);
-        Vue.renderEffect(() => _setTemplateRef(_n1, rootRef));
-        return _n1;
-      })();
-    };
-  }
-});
-function useProvideCheckGroup(props2, trigger) {
-  const fields2 = [];
-  const getFieldsValue = () => fields2.reduce((res, field) => {
-    if (field.value.checkboxChecked) {
-      res.push(field.value.value);
-    }
-    return res;
-  }, new Array());
-  Vue.provide(uniCheckGroupKey, {
-    addField(field) {
-      fields2.push(field);
-    },
-    removeField(field) {
-      fields2.splice(fields2.indexOf(field), 1);
-    },
-    checkboxChange($event) {
-      trigger("change", $event, { value: getFieldsValue() });
-    }
-  });
-  const uniForm = Vue.inject(uniFormKey, false);
-  if (uniForm) {
-    uniForm.addField({ submit: () => {
-      let data = ["", null];
-      if (props2.name !== "") {
-        data[0] = props2.name;
-        data[1] = getFieldsValue();
-      }
-      return data;
-    } });
-  }
-  return getFieldsValue;
+function useResizeSensor(props2, emit2) {
+  const rootRef = Vue.ref(null);
+  const reset = useResizeSensorReset(rootRef);
+  const update = useResizeSensorUpdate(rootRef, emit2, reset);
+  return { rootRef, update };
 }
-const _t0$l = Vue.template("<div class=uni-checkbox-wrapper><div></div> ");
-const props$o = {
-  checked: {
-    type: [Boolean, String],
-    default: false
-  },
-  id: {
-    type: String,
-    default: ""
-  },
-  disabled: {
-    type: [Boolean, String],
-    default: false
-  },
-  value: {
-    type: String,
-    default: ""
-  },
-  color: {
-    type: String,
-    default: "#007aff"
-  },
-  backgroundColor: {
-    type: String,
-    default: ""
-  },
-  borderColor: {
-    type: String,
-    default: ""
-  },
-  activeBackgroundColor: {
-    type: String,
-    default: ""
-  },
-  activeBorderColor: {
-    type: String,
-    default: ""
-  },
-  iconColor: {
-    type: String,
-    default: ""
-  },
-  // 图标颜色,同color,优先级大于iconColor
-  foreColor: {
-    type: String,
-    default: ""
-  }
-};
-const index$t = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Checkbox",
-  props: props$o,
-  setup(props2, { slots }) {
-    const rootRef = Vue.ref(null);
-    const checkboxChecked = Vue.ref(props2.checked);
-    const checkboxCheckedBool = Vue.computed(() => {
-      return checkboxChecked.value === "true" || checkboxChecked.value === true;
-    });
-    const checkboxValue = Vue.ref(props2.value);
-    function getCheckBoxStyle(checked) {
-      if (props2.disabled) {
-        return {};
-      }
-      const style = {};
-      if (checked) {
-        if (props2.activeBorderColor)
-          style.borderColor = props2.activeBorderColor;
-        if (props2.activeBackgroundColor)
-          style.backgroundColor = props2.activeBackgroundColor;
-      } else {
-        if (props2.borderColor)
-          style.borderColor = props2.borderColor;
-        if (props2.backgroundColor)
-          style.backgroundColor = props2.backgroundColor;
-      }
-      return style;
-    }
-    const checkboxStyle = Vue.computed(() => {
-      return getCheckBoxStyle(checkboxCheckedBool.value);
-    });
-    Vue.watch([() => props2.checked, () => props2.value], ([newChecked, newModelValue]) => {
-      checkboxChecked.value = newChecked;
-      checkboxValue.value = newModelValue;
-    });
-    const reset = () => {
-      checkboxChecked.value = false;
-    };
-    const { uniCheckGroup, uniLabel } = useCheckboxInject(checkboxChecked, checkboxValue, reset);
-    const _onClick = ($event) => {
-      if (props2.disabled) {
-        return;
-      }
-      checkboxChecked.value = !checkboxChecked.value;
-      uniCheckGroup && uniCheckGroup.checkboxChange($event);
-      $event.stopPropagation();
-    };
-    if (!!uniLabel) {
-      uniLabel.addHandler(_onClick);
-    }
-    return () => {
-      const booleanAttrs = useBooleanAttr(props2, "disabled");
-      let realCheckValue;
-      realCheckValue = checkboxChecked.value;
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n8 = Vue.createPlainElement("uni-checkbox", { $: [() => booleanAttrs, {
-          id: () => props2.id,
-          onClick: () => _onClick
-        }] }, () => {
-          const _n7 = _t0$l();
-          const _n5 = Vue.child(_n7);
-          const _n6 = Vue.next(_n5, true);
-          Vue.renderEffect(() => {
-            Vue.setStyle(_n7, { "--HOVER-BD-COLOR": props2.activeBorderColor });
-            Vue.setClassName(_n5, props2.disabled ? 1 : 0, " uni-checkbox-input-disabled", "uni-checkbox-input");
-            Vue.setStyle(_n5, checkboxStyle.value);
-          });
-          Vue.setInsertionState(_n5);
-          Vue.createIf(() => realCheckValue, () => {
-            const _n2 = createNodes(() => createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "currentColor" : props2.foreColor || props2.iconColor || props2.color, 22));
-            return _n2;
-          }, () => {
-            const _n4 = createNodes("");
-            return _n4;
-          }, 266);
-          setNodes(_n6, () => slots.default && slots.default());
-          return _n7;
-        }, true);
-        Vue.renderEffect(() => _setTemplateRef(_n8, rootRef));
-        return _n8;
-      })();
-    };
-  }
-});
-function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
-  const field = Vue.computed(() => ({
-    checkboxChecked: Boolean(checkboxChecked.value),
-    value: checkboxValue.value
-  }));
-  const formField = { reset };
-  const uniCheckGroup = Vue.inject(uniCheckGroupKey, false);
-  if (!!uniCheckGroup) {
-    uniCheckGroup.addField(field);
-  }
-  const uniForm = Vue.inject(uniFormKey, false);
-  if (!!uniForm) {
-    uniForm.addField(formField);
-  }
-  const uniLabel = Vue.inject(uniLabelKey, false);
-  return {
-    uniCheckGroup,
-    uniForm,
-    uniLabel
+function useResizeSensorUpdate(rootRef, emit2, reset) {
+  const size = Vue.reactive({ width: -1, height: -1 });
+  Vue.watch(
+    () => shared.extend({}, size),
+    (value) => emit2("resize", value)
+  );
+  return () => {
+    const rootEl = rootRef.value;
+    if (!rootEl)
+      return;
+    const rect = rootEl.getBoundingClientRect();
+    size.width = rect.width;
+    size.height = rect.height;
+    reset();
   };
 }
-let resetTimer;
-function iosHideKeyboard() {
+function useResizeSensorReset(rootRef) {
+  return () => {
+    const { firstElementChild, lastElementChild } = rootRef.value;
+    firstElementChild.scrollLeft = 1e5;
+    firstElementChild.scrollTop = 1e5;
+    lastElementChild.scrollLeft = 1e5;
+    lastElementChild.scrollTop = 1e5;
+  };
 }
-const props$n = {
-  cursorSpacing: {
-    type: [Number, String],
-    default: 0
-  },
-  showConfirmBar: {
-    type: [Boolean, String],
-    default: "auto"
-  },
-  adjustPosition: {
-    type: [Boolean, String],
-    default: true
-  },
-  autoBlur: {
-    type: [Boolean, String],
-    default: false
+const _t0$c = Vue.template("<div uni-resize-sensor><div><div></div></div><div><div>", 1);
+const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
+  name: "ResizeSensor",
+  props: resizeSensorProps,
+  emits: ["resize"],
+  setup(props2, { emit: emit2 }) {
+    const { rootRef, update } = useResizeSensor(props2, emit2);
+    const root = (() => {
+      const _setTemplateRef = Vue.createTemplateRefSetter();
+      const _n2 = _t0$c();
+      const _n0 = Vue.child(_n2);
+      const _n1 = Vue.next(_n0);
+      Vue.on(_n0, "scroll", update);
+      Vue.on(_n1, "scroll", update);
+      Vue.renderEffect(() => _setTemplateRef(_n2, rootRef));
+      return _n2;
+    })();
+    return root;
+  }
+});
+const _UniTextareaElement = class _UniTextareaElement extends UniViewElement {
+  static [Symbol.hasInstance](value) {
+    return this === _UniTextareaElement && value instanceof UniViewElement && value.hasAttribute("uni-textarea") || Function.prototype[Symbol.hasInstance].call(this, value);
+  }
+  focus(options) {
+    var _a;
+    (_a = this.querySelector("textarea")) == null ? void 0 : _a.focus(options);
   }
 };
-const emit$1 = ["keyboardheightchange"];
-function useKeyboard$1(props2, elRef, trigger) {
-  function initKeyboard(el) {
-    const isApple = Vue.computed(
-      () => String(navigator.vendor).indexOf("Apple") === 0
-    );
-    el.addEventListener("focus", () => {
-      clearTimeout(resetTimer);
-      document.addEventListener("click", iosHideKeyboard, false);
-    });
-    const onKeyboardHide = () => {
-      document.removeEventListener("click", iosHideKeyboard, false);
-      if (isApple.value) {
-        document.documentElement.scrollTo(
-          document.documentElement.scrollLeft,
-          document.documentElement.scrollTop
-        );
+_UniTextareaElement.__uniElement = {};
+let UniTextareaElement = _UniTextareaElement;
+const descriptors = {
+  uniTagName: { value: "TEXTAREA" },
+  focus: Object.getOwnPropertyDescriptor(
+    UniTextareaElement.prototype,
+    "focus"
+  )
+};
+function setValue(value) {
+  this.querySelector("textarea").value = value;
+}
+function initTextareaElement(root, state) {
+  Object.defineProperties(root, descriptors);
+  Object.defineProperty(root, "value", {
+    get: () => state.value,
+    set: setValue
+  });
+}
+const webSelectionProps = fieldSelectionProps;
+const props$7 = /* @__PURE__ */ shared.extend(
+  {},
+  props$9,
+  {
+    placeholderClass: {
+      type: String,
+      default: "input-placeholder"
+    },
+    autoHeight: {
+      type: [Boolean, String],
+      default: false
+    },
+    confirmType: {
+      type: String,
+      default: "return",
+      validator(val) {
+        return ConfirmTypes.concat("return").includes(val);
       }
-    };
-    el.addEventListener("blur", () => {
-      if (isApple.value) {
-        el.blur();
+    }
+  },
+  webSelectionProps
+);
+const ConfirmTypes = ["done", "go", "next", "search", "send"];
+const emits$1 = ["confirm", "change", "linechange", ...emit];
+function useTextarea(props2, { emit: emit2, expose }) {
+  const rootRef = Vue.ref(null);
+  const wrapperRef = Vue.ref(null);
+  const { fieldRef, state, scopedAttrsState, fixDisabledColor, trigger } = useField(props2, rootRef, emit2);
+  const selectionRef = useFieldSelection(props2, fieldRef);
+  const valueCompute = Vue.computed(() => state.value.split(uniShared.LINEFEED));
+  const isDone = Vue.computed(() => ConfirmTypes.includes(props2.confirmType));
+  const heightRef = Vue.ref(0);
+  const lineRef = Vue.ref(null);
+  Vue.watch(
+    () => heightRef.value,
+    (height) => {
+      const el = rootRef.value;
+      const lineEl = lineRef.value;
+      const wrapper = wrapperRef.value;
+      let lineHeight = parseFloat(getComputedStyle(el).lineHeight);
+      if (isNaN(lineHeight)) {
+        lineHeight = lineEl.offsetHeight;
       }
-      onKeyboardHide();
+      var lineCount = Math.round(height / lineHeight);
+      trigger("linechange", {}, {
+        height,
+        heightRpx: 750 / window.innerWidth * height,
+        lineCount
+      });
+      if (props2.autoHeight) {
+        wrapper.style.height = height + "px";
+      }
+    }
+  );
+  Vue.watch(
+    () => props2.autoHeight,
+    (autoHeight) => {
+      const wrapper = wrapperRef.value;
+      if (autoHeight) {
+        wrapper.style.height = heightRef.value + "px";
+      } else {
+        wrapper.style.height = "";
+      }
+    }
+  );
+  function onResize2({ height }) {
+    heightRef.value = height;
+  }
+  function onChange2(event) {
+    {
+      trigger("change", event, {
+        value: state.value
+      });
+    }
+  }
+  function confirm(event) {
+    trigger("confirm", event, {
+      value: state.value
     });
   }
-  Vue.watch(
-    () => elRef.value,
-    (el) => el && initKeyboard(el)
-  );
+  function onKeyDownEnter(event) {
+    if (event.key !== "Enter") {
+      return;
+    }
+    if (isDone.value) {
+      event.preventDefault();
+    }
+  }
+  function onKeyUpEnter(event) {
+    if (event.key !== "Enter") {
+      return;
+    }
+    if (isDone.value) {
+      confirm(event);
+      const textarea = event.target;
+      !props2.confirmHold && textarea.blur();
+    }
+  }
+  expose({
+    $triggerInput: (detail) => {
+      emit2("update:modelValue", detail.value);
+      emit2("update:value", detail.value);
+      state.value = detail.value;
+    }
+  });
+  return {
+    rootRef,
+    wrapperRef,
+    fieldRef,
+    state,
+    scopedAttrsState,
+    selectionRef,
+    fixDisabledColor,
+    valueCompute,
+    lineRef,
+    onResize: onResize2,
+    onChange: onChange2,
+    onKeyDownEnter,
+    onKeyUpEnter
+  };
 }
+const _t0$b = Vue.template("<textarea tabindex=-1>");
+const _t1$2 = Vue.template("<textarea>");
+const _t2$1 = Vue.template("<form action class=uni-input-form> ");
+const _t3$1 = Vue.template("<div uni-textarea uni-view><div class=uni-textarea-wrapper> <div> </div><div class=uni-textarea-line> </div><div> </div>", 1);
+const _t4$1 = Vue.template("<div>", 1);
+const indexVapor$9 = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Textarea",
+  props: props$7,
+  emits: emits$1,
+  rootElement: {
+    name: "uni-textarea",
+    class: UniTextareaElement
+  },
+  setup(props2, context) {
+    const { rootRef, wrapperRef, fieldRef, state, scopedAttrsState, selectionRef, fixDisabledColor, valueCompute, lineRef, onResize: onResize2, onChange: onChange2, onKeyDownEnter, onKeyUpEnter } = useTextarea(props2, context);
+    const renderTextarea = () => (() => {
+      const _setTemplateRef = Vue.createTemplateRefSetter();
+      const _n0 = Vue.createIf(() => props2.disabled && fixDisabledColor, () => {
+        const _n2 = _t0$b();
+        Vue.setBlockKey(_n2, "disabled-textarea");
+        Vue.on(
+          _n2,
+          // fix: 禁止 readonly 状态获取焦点
+          "focus",
+          (event) => event.target.blur()
+        );
+        Vue.renderEffect(() => {
+          Vue.setValue(_n2, state.value);
+          Vue.setProp(_n2, "readonly", !!props2.disabled);
+          Vue.setProp(_n2, "maxlength", state.maxlength);
+          Vue.setClassName(_n2, 1 | (!!props2.selectionClass ? 2 : 0) | 0, [
+            " uni-textarea-textarea",
+            " uni-field-selection",
+            " uni-textarea-textarea-fix-margin"
+          ]);
+          Vue.setStyle(_n2, {
+            overflowY: props2.autoHeight ? "hidden" : "auto",
+            /* eslint-disable no-restricted-syntax */
+            ...props2.cursorColor && { caretColor: props2.cursorColor }
+          });
+          _setTemplateRef(_n2, fieldRef);
+        });
+        return _n2;
+      }, () => {
+        const _n4 = _t1$2();
+        Vue.setBlockKey(_n4, "textarea");
+        Vue.on(_n4, "keydown", onKeyDownEnter);
+        Vue.on(_n4, "keyup", onKeyUpEnter);
+        Vue.on(_n4, "change", onChange2);
+        Vue.renderEffect(() => {
+          Vue.setValue(_n4, state.value);
+          Vue.setProp(_n4, "disabled", !!props2.disabled);
+          Vue.setProp(_n4, "maxlength", state.maxlength);
+          Vue.setProp(_n4, "enterkeyhint", props2.confirmType);
+          Vue.setProp(_n4, "inputmode", props2.inputmode);
+          Vue.setClassName(_n4, 1 | (!!props2.selectionClass ? 2 : 0) | 0, [
+            " uni-textarea-textarea",
+            " uni-field-selection",
+            " uni-textarea-textarea-fix-margin"
+          ]);
+          Vue.setStyle(_n4, {
+            overflowY: props2.autoHeight ? "hidden" : "auto",
+            /* eslint-disable no-restricted-syntax */
+            ...props2.cursorColor && { caretColor: props2.cursorColor }
+          });
+          _setTemplateRef(_n4, fieldRef);
+        });
+        return _n4;
+      }, 261);
+      return _n0;
+    })();
+    const root = (() => {
+      const _setTemplateRef = Vue.createTemplateRefSetter();
+      const _n12 = _t3$1();
+      const _n11 = Vue.child(_n12);
+      const _n0 = Vue.child(_n11, true);
+      const _n1 = Vue.next(_n0);
+      const _n2 = Vue.next(_n1);
+      const _n5 = Vue.next(_n2);
+      const _n3 = Vue.child(_n5, true);
+      setNodes(_n0, () => props2.selectionClass && (() => {
+        const _setTemplateRef2 = Vue.createTemplateRefSetter();
+        const _n02 = _t4$1();
+        Vue.renderEffect(() => {
+          Vue.setDynamicProps(_n02, [scopedAttrsState.attrs, {
+            class: ["uni-field-selection-probe", props2.selectionClass],
+            "aria-hidden": "true",
+            style: fieldSelectionProbeStyle
+          }]);
+          _setTemplateRef2(_n02, selectionRef);
+        });
+        return _n02;
+      })());
+      Vue.applyVShow(_n1, () => !state.value.length);
+      const _x1 = Vue.txt(_n1);
+      setNodes(_x1, () => props2.placeholder);
+      setNodes(_n3, () => valueCompute.value.map((item) => (() => {
+        const _n52 = _t4$1();
+        Vue.setInsertionState(_n52);
+        Vue.createIf(() => item.trim(), () => {
+          const _n22 = createNodes(() => item);
+          return _n22;
+        }, () => {
+          const _n42 = createNodes(".");
+          return _n42;
+        }, 266);
+        return _n52;
+      })()));
+      Vue.renderEffect(() => {
+        Vue.setAttr(_n12, "auto-height", props2.autoHeight);
+        Vue.setDynamicProps(_n1, [scopedAttrsState.attrs, {
+          style: props2.placeholderStyle,
+          class: ["uni-textarea-placeholder", props2.placeholderClass]
+        }]);
+        _setTemplateRef(_n2, lineRef);
+        Vue.setClassName(_n5, 1 | (props2.autoHeight ? 2 : 0), [" uni-textarea-compute", " uni-textarea-compute-auto-height"]);
+      });
+      Vue.setInsertionState(_n5, 1);
+      createComponent(ResizeSensor, {
+        initial: true,
+        onResize: () => onResize2
+      });
+      Vue.setInsertionState(_n11, 4);
+      Vue.createIf(() => props2.confirmType === "search", () => {
+        const _n8 = _t2$1();
+        Vue.on(_n8, "submit", (event) => event.preventDefault());
+        const _x8 = Vue.txt(_n8);
+        setNodes(_x8, () => renderTextarea());
+        return _n8;
+      }, () => {
+        const _n10 = createNodes(() => renderTextarea());
+        return _n10;
+      }, 265);
+      Vue.renderEffect(() => {
+        _setTemplateRef(_n11, wrapperRef);
+        _setTemplateRef(_n12, rootRef);
+      });
+      return _n12;
+    })();
+    initTextareaElement(root, state);
+    return root;
+  }
+});
+function useSubscribe(callback, name, multiple, pageId) {
+  const instance = Vue.getCurrentInstance();
+  instance.proxy;
+  pageId = pageId == null ? useCurrentPageId() : pageId;
+}
+let index$6 = 0;
+function useContextInfo(_id) {
+  useCurrentPageId();
+  const instance = Vue.getCurrentInstance();
+  const vm = instance.proxy;
+  const type = vm.$options.name.toLowerCase();
+  const id2 = vm.id || `context${index$6++}`;
+  return `${type}.${id2}`;
+}
+function entries(obj) {
+  return Object.keys(obj).map((key) => [key, obj[key]]);
+}
+const DEFAULT_EXCLUDE_KEYS = ["class", "style"];
+const LISTENER_PREFIX = /^on[A-Z]+/;
+const useAttrs = (params = {}) => {
+  const { excludeListeners = false, excludeKeys = [] } = params;
+  const instance = Vue.getCurrentInstance();
+  const attrs2 = Vue.shallowRef({});
+  const listeners = Vue.shallowRef({});
+  const excludeAttrs = Vue.shallowRef({});
+  const allExcludeKeys = excludeKeys.concat(DEFAULT_EXCLUDE_KEYS);
+  instance.attrs = Vue.reactive(instance.attrs);
+  Vue.watchEffect(() => {
+    const res = entries(instance.attrs).reduce(
+      (acc, [key, val]) => {
+        if (allExcludeKeys.includes(key)) {
+          acc.exclude[key] = val;
+        } else if (LISTENER_PREFIX.test(key)) {
+          if (!excludeListeners) {
+            acc.attrs[key] = val;
+          }
+          acc.listeners[key] = val;
+        } else {
+          acc.attrs[key] = val;
+        }
+        return acc;
+      },
+      {
+        exclude: {},
+        attrs: {},
+        listeners: {}
+      }
+    );
+    attrs2.value = res.attrs;
+    listeners.value = res.listeners;
+    excludeAttrs.value = res.exclude;
+  });
+  return { $attrs: attrs2, $listeners: listeners, $excludeAttrs: excludeAttrs };
+};
 const pageMetaKey = PolySymbol(process.env.NODE_ENV !== "production" ? "UniPageMeta" : "upm");
 function usePageMeta() {
   return Vue.inject(pageMetaKey);
@@ -2005,9 +2815,9 @@ function assertType(value, type) {
   let valid;
   const expectedType = getType(type);
   if (isSimpleType(expectedType)) {
-    const t11 = typeof value;
-    valid = t11 === expectedType.toLowerCase();
-    if (!valid && t11 === "object") {
+    const t12 = typeof value;
+    valid = t12 === expectedType.toLowerCase();
+    if (!valid && t12 === "object") {
       valid = value instanceof type;
     }
   } else if (expectedType === "Object") {
@@ -2812,8 +3622,14 @@ const API_SWITCH_TAB = "switchTab";
 const API_PRELOAD_PAGE = "preloadPage";
 const API_UN_PRELOAD_PAGE = "unPreloadPage";
 let navigatorLock;
+let navigatorLockId = 0;
+function beforeRoute() {
+  navigatorLock = "";
+  navigatorLockId++;
+}
 function createNormalizeUrl(type, options = {}) {
   return function normalizeUrl(url, params) {
+    var _a;
     if (!url) {
       return `Missing required args: "url"`;
     }
@@ -2856,6 +3672,12 @@ function createNormalizeUrl(type, options = {}) {
     }
     if (!options.skipNavigatorLock && __uniConfig.ready) {
       navigatorLock = url;
+      const lockId = ++navigatorLockId;
+      (_a = options.onNavigatorLock) == null ? void 0 : _a.call(options, () => {
+        if (lockId === navigatorLockId) {
+          beforeRoute();
+        }
+      });
     }
   };
 }
@@ -3454,7 +4276,7 @@ function initPublicPage(route) {
 }
 function initPage(vm) {
   let route;
-  route = vueRouter.useRoute();
+  route = usePageRoute();
   const page = initPublicPage(route);
   const routeMeta = route.meta;
   Object.defineProperty(page, "eventChannel", {
@@ -3566,8 +4388,840 @@ function getRealPath(filePath) {
   }
   return filePath;
 }
-const t0$7 = Vue.template("<div class=uni-async-loading><i class=uni-loading>", 3);
-const _sfc_main$9 = /* @__PURE__ */ Vue.defineVaporComponent({
+const t0$w = Vue.template("<img>");
+const t1$d = Vue.template("<div class=uni-tabbar__mid>");
+const t2$4 = Vue.template("<div class=uni-tabbar__iconfont> ");
+const t3$4 = Vue.template("<div>");
+const t4$2 = Vue.template("<div class=uni-tabbar__label> ");
+const t5$2 = Vue.template("<div> ");
+const t6$1 = Vue.template("<div class=uni-tabbar__item><!><div class=uni-tabbar__bd></div>");
+const t7$1 = Vue.template("<uni-tabbar><div class=uni-tabbar><div class=uni-tabbar-border></div></div><div class=uni-placeholder>", 1);
+const DEFAULT_BG_COLOR = "#f7f7fa";
+const BLUR_EFFECT_COLOR_DARK = "rgb(0, 0, 0, 0.8)";
+const BLUR_EFFECT_COLOR_LIGHT = "rgb(250, 250, 250, 0.8)";
+const _sfc_main$w = /* @__PURE__ */ Vue.defineVaporComponent({
+  ...{
+    name: "TabBar",
+    __reserved: true,
+    compatConfig: { MODE: 3 }
+  },
+  __name: "tabBar",
+  setup(__props) {
+    const hasMidButton = __UNI_FEATURE_TABBAR_MIDBUTTON__;
+    const _middleButton = {
+      width: "50px",
+      height: "50px",
+      iconWidth: "24px"
+    };
+    const visibleList = Vue.ref([]);
+    const tabBar = useTabBar();
+    useVisibleList(tabBar, visibleList);
+    useTabBarCssVar(tabBar);
+    const onSwitchTab = useSwitchTab(vueRouter.useRoute(), tabBar, visibleList);
+    const { style, borderStyle, placeholderStyle } = useTabBarStyle(tabBar);
+    function useTabBarCssVar(tabBar2) {
+      Vue.watch(
+        () => tabBar2.shown,
+        (value) => {
+          updatePageCssVar({
+            "--window-bottom": normalizeWindowBottom(
+              value ? parseInt(tabBar2.height) : 0
+            )
+          });
+        }
+      );
+    }
+    function useVisibleList(tabBar2, visibleList2) {
+      const internalMidButton = Vue.ref(
+        shared.extend({ type: "midButton" }, tabBar2.midButton)
+      );
+      function setVisibleList() {
+        let tempList = [];
+        tempList = tabBar2.list.filter((item) => item.visible !== false);
+        if (hasMidButton && tabBar2.midButton) {
+          internalMidButton.value = shared.extend(
+            {},
+            _middleButton,
+            internalMidButton.value,
+            tabBar2.midButton
+          );
+          tempList = tempList.filter((item) => !isMidButton(item));
+          if (tempList.length % 2 === 0) {
+            tempList.splice(
+              Math.floor(tempList.length / 2),
+              0,
+              internalMidButton.value
+            );
+          }
+        }
+        visibleList2.value = tempList;
+      }
+      Vue.watchEffect(setVisibleList);
+    }
+    function useSwitchTab(route, tabBar2, visibleList2) {
+      Vue.watchEffect(() => {
+        const meta = route.meta;
+        if (meta.isTabBar) {
+          const pagePath = meta.route;
+          const index2 = visibleList2.value.findIndex(
+            (item) => item.pagePath === pagePath
+          );
+          tabBar2.selectedIndex = index2;
+        }
+      });
+      return (tabBarItem, index2) => {
+        const { type } = tabBarItem;
+        if (hasMidButton && type === "midButton") {
+          return UniServiceJSBridge.invokeOnCallback(
+            API_ON_TAB_BAR_MID_BUTTON_TAP
+          );
+        }
+        const { pagePath, text } = tabBarItem;
+        let url = uniShared.addLeadingSlash(pagePath);
+        if (url === __uniRoutes[0].alias) {
+          url = "/";
+        }
+        if (route.path !== url) {
+          uni.switchTab({ from: "tabBar", url, tabBarText: text });
+        } else {
+          invokeHook("onTabItemTap", {
+            index: index2,
+            text,
+            pagePath
+          });
+        }
+      };
+    }
+    const BLUR_EFFECT_COLORS = {
+      dark: BLUR_EFFECT_COLOR_DARK,
+      light: BLUR_EFFECT_COLOR_LIGHT,
+      extralight: BLUR_EFFECT_COLOR_LIGHT
+    };
+    const BORDER_COLORS = {
+      white: "rgba(255, 255, 255, 0.33)",
+      black: "rgba(0, 0, 0, 0.33)"
+    };
+    function useTabBarStyle(tabBar2) {
+      const style2 = Vue.computed(() => {
+        let backgroundColor = tabBar2.backgroundColor;
+        const blurEffect = tabBar2.blurEffect;
+        if (!backgroundColor) {
+          if (blurEffect && blurEffect !== "none") {
+            backgroundColor = BLUR_EFFECT_COLORS[blurEffect];
+          }
+        }
+        return {
+          backgroundColor: backgroundColor || DEFAULT_BG_COLOR,
+          backdropFilter: blurEffect !== "none" ? "blur(10px)" : blurEffect
+        };
+      });
+      const borderStyle2 = Vue.computed(() => {
+        const { borderStyle: borderStyle3, borderColor } = tabBar2;
+        if (borderColor && shared.isString(borderColor)) {
+          return {
+            backgroundColor: borderColor
+          };
+        }
+        return {
+          backgroundColor: BORDER_COLORS[borderStyle3] || BORDER_COLORS["black"]
+        };
+      });
+      const placeholderStyle2 = Vue.computed(() => {
+        return {
+          height: tabBar2.height
+        };
+      });
+      return {
+        style: style2,
+        borderStyle: borderStyle2,
+        placeholderStyle: placeholderStyle2
+      };
+    }
+    function isMidButton(item) {
+      return item.type === "midButton";
+    }
+    function isRenderedMidButton(item) {
+      return hasMidButton && isMidButton(item);
+    }
+    function getMidButton(item) {
+      return item;
+    }
+    function getItemStyle(item) {
+      if (!isRenderedMidButton(item)) {
+        return;
+      }
+      return {
+        flex: "0 0 " + item.width,
+        position: "relative"
+      };
+    }
+    function getMidButtonStyle(item) {
+      const { width, height, backgroundImage } = getMidButton(item);
+      return {
+        width,
+        height,
+        backgroundImage: backgroundImage ? "url('" + getRealPath(backgroundImage) + "')" : "none"
+      };
+    }
+    function isSelected(index2) {
+      return tabBar.selectedIndex === index2;
+    }
+    function getTextColor(index2) {
+      return isSelected(index2) ? tabBar.selectedColor : tabBar.color;
+    }
+    function getIconPath(item, index2) {
+      return (isSelected(index2) ? item.selectedIconPath || item.iconPath : item.iconPath) || "";
+    }
+    function getIconfontText(item, index2) {
+      if (!item.iconfont) {
+        return;
+      }
+      return isSelected(index2) ? item.iconfont.selectedText || item.iconfont.text : item.iconfont.text;
+    }
+    function getIconfontColor(item, index2) {
+      if (!item.iconfont) {
+        return;
+      }
+      return isSelected(index2) ? item.iconfont.selectedColor || item.iconfont.color : item.iconfont.color;
+    }
+    function getIconClass(item) {
+      return "uni-tabbar__icon" + (item.text ? " uni-tabbar__icon__diff" : "");
+    }
+    function getIconStyle() {
+      return { width: tabBar.iconWidth, height: tabBar.iconWidth };
+    }
+    function getIconfontStyle(item, index2) {
+      var _a;
+      return {
+        fontSize: ((_a = item.iconfont) == null ? void 0 : _a.fontSize) || tabBar.iconWidth,
+        color: getIconfontColor(item, index2) || BLUR_EFFECT_COLOR_DARK
+      };
+    }
+    function getLabelStyle(item, index2) {
+      return {
+        color: getTextColor(index2),
+        fontSize: tabBar.fontSize,
+        lineHeight: !item.iconPath ? 1.8 : "normal",
+        marginTop: !item.iconPath ? "inherit" : tabBar.spacing
+      };
+    }
+    const n31 = t7$1();
+    const n29 = Vue.child(n31);
+    const n0 = Vue.child(n29);
+    const n30 = Vue.next(n29);
+    Vue.renderEffect(() => {
+      Vue.setClass(n31, "uni-tabbar-" + Vue.unref(tabBar).position);
+      Vue.setStyle(n29, Vue.unref(style));
+      Vue.setStyle(n0, Vue.unref(borderStyle));
+    });
+    Vue.setInsertionState(n29, 1);
+    Vue.createFor(
+      () => visibleList.value,
+      (_for_item0, _for_key0) => {
+        const n28 = t6$1();
+        const n27 = Vue.child(n28);
+        const n26 = Vue.next(n27);
+        Vue.renderEffect(() => Vue.setStyle(n28, getItemStyle(_for_item0.value)));
+        Vue.setInsertionState(n28, n27);
+        Vue.createIf(() => isRenderedMidButton(_for_item0.value), () => {
+          const n8 = t1$d();
+          Vue.renderEffect(() => Vue.setStyle(n8, getMidButtonStyle(_for_item0.value)));
+          Vue.setInsertionState(n8);
+          Vue.createIf(() => getIconPath(_for_item0.value, _for_key0.value), () => {
+            const n7 = t0$w();
+            Vue.renderEffect(() => {
+              Vue.setStyle(n7, {
+                width: getMidButton(_for_item0.value).iconWidth,
+                height: getMidButton(_for_item0.value).iconWidth
+              });
+              Vue.setProp(n7, "src", Vue.unref(getRealPath)(getIconPath(_for_item0.value, _for_key0.value)));
+            });
+            return n7;
+          });
+          return n8;
+        });
+        Vue.renderEffect(() => Vue.setStyle(n26, { height: Vue.unref(tabBar).height }));
+        Vue.setInsertionState(n26);
+        Vue.createIf(
+          () => getIconfontText(_for_item0.value, _for_key0.value),
+          () => {
+            const n14 = t3$4();
+            Vue.renderEffect(() => {
+              Vue.setClass(n14, getIconClass(_for_item0.value));
+              Vue.setStyle(n14, getIconStyle());
+            });
+            Vue.setInsertionState(n14);
+            Vue.createIf(() => _for_item0.value.type !== "midButton", () => {
+              const n13 = t2$4();
+              const x13 = Vue.txt(n13);
+              Vue.renderEffect(() => {
+                const _item = _for_item0.value;
+                const _index = _for_key0.value;
+                Vue.setStyle(n13, getIconfontStyle(_item, _index));
+                Vue.setText(x13, Vue.toDisplayString(getIconfontText(_item, _index)));
+              });
+              return n13;
+            });
+            return n14;
+          },
+          () => Vue.createIf(() => getIconPath(_for_item0.value, _for_key0.value), () => {
+            const n19 = t3$4();
+            Vue.renderEffect(() => {
+              Vue.setClass(n19, getIconClass(_for_item0.value));
+              Vue.setStyle(n19, getIconStyle());
+            });
+            Vue.setInsertionState(n19);
+            Vue.createIf(() => _for_item0.value.type !== "midButton", () => {
+              const n18 = t0$w();
+              Vue.renderEffect(() => Vue.setProp(n18, "src", Vue.unref(getRealPath)(getIconPath(_for_item0.value, _for_key0.value))));
+              return n18;
+            });
+            return n19;
+          }),
+          1037
+          /* TRUE_SINGLE_ROOT, FALSE_ELSE_IF, KEYED_INDEX_3 */
+        );
+        Vue.setInsertionState(n26, 1);
+        Vue.createIf(() => _for_item0.value.text, () => {
+          const n22 = t4$2();
+          const x22 = Vue.txt(n22);
+          Vue.renderEffect(() => {
+            const _item = _for_item0.value;
+            Vue.setStyle(n22, getLabelStyle(_item, _for_key0.value));
+            Vue.setText(x22, Vue.toDisplayString(_item.text));
+          });
+          return n22;
+        });
+        Vue.setInsertionState(n26, 2);
+        Vue.createIf(() => _for_item0.value.redDot, () => {
+          const n25 = t5$2();
+          const x25 = Vue.txt(n25);
+          Vue.renderEffect(() => {
+            const _item_badge = _for_item0.value.badge;
+            Vue.setClass(n25, [
+              "uni-tabbar__reddot",
+              _item_badge ? "uni-tabbar__badge" : ""
+            ]);
+            Vue.setText(x25, Vue.toDisplayString(_item_badge));
+          });
+          return n25;
+        });
+        Vue.on(n28, "click", () => Vue.unref(onSwitchTab)(_for_item0.value, _for_key0.value));
+        return n28;
+      },
+      (item, index2) => isRenderedMidButton(item) ? "midButton" : index2,
+      8
+      /* IS_SINGLE_NODE */
+    );
+    Vue.renderEffect(() => Vue.setStyle(n30, Vue.unref(placeholderStyle)));
+    return n31;
+  }
+});
+const t0$v = Vue.template("<uni-top-window><div class=uni-top-window></div><div class=uni-top-window--placeholder>");
+const t1$c = Vue.template("<div class=uni-mask>");
+const t2$3 = Vue.template("<uni-left-window><!><div class=uni-left-window>");
+const t3$3 = Vue.template("<uni-right-window><!><div class=uni-right-window>");
+const t4$1 = Vue.template("<uni-layout><!><uni-content><uni-main></uni-main>");
+const t5$1 = Vue.template("<uni-app>", 1);
+const _sfc_main$v = /* @__PURE__ */ Vue.defineVaporComponent({
+  ...{
+    name: "Layout",
+    __reserved: true,
+    compatConfig: { MODE: 3 }
+  },
+  __name: "index-vapor",
+  setup(__props) {
+    const hasPages = __UNI_FEATURE_PAGES__;
+    const hasResponsive = __UNI_FEATURE_RESPONSIVE__;
+    const hasTopWindow = __UNI_FEATURE_TOPWINDOW__;
+    const hasLeftWindow = __UNI_FEATURE_LEFTWINDOW__;
+    const hasRightWindow = __UNI_FEATURE_RIGHTWINDOW__;
+    const hasTabBar = __UNI_FEATURE_TABBAR__;
+    const rootRef = Vue.ref(null);
+    const firstPageComponent = !hasPages && __uniRoutes[0].component;
+    const keepAliveRoute = hasPages ? useKeepAliveRoute() : void 0;
+    const routeKey = keepAliveRoute == null ? void 0 : keepAliveRoute.routeKey;
+    const isTabBar = keepAliveRoute == null ? void 0 : keepAliveRoute.isTabBar;
+    const routeCache2 = keepAliveRoute == null ? void 0 : keepAliveRoute.routeCache;
+    const route = hasPages ? vueRouter.useRoute() : void 0;
+    const { layoutState, windowState } = useState();
+    useMaxWidth(layoutState, rootRef);
+    const topWindow = hasTopWindow && useTopWindow(layoutState);
+    const leftWindow = hasLeftWindow && useLeftWindow(layoutState);
+    const rightWindow = hasRightWindow && useRightWindow(layoutState);
+    const TopWindow = topWindow && topWindow.component;
+    const LeftWindow = leftWindow && leftWindow.component;
+    const RightWindow = rightWindow && rightWindow.component;
+    const topWindowRef = topWindow && topWindow.windowRef;
+    const leftWindowRef = leftWindow && leftWindow.windowRef;
+    const rightWindowRef = rightWindow && rightWindow.windowRef;
+    const showTabBar = hasTabBar && useShowTabBar();
+    const clazz = useAppClass(showTabBar);
+    function useAppClass(showTabBar2) {
+      const showMaxWidth = Vue.ref(false);
+      return Vue.computed(() => {
+        return {
+          "uni-app--showtabbar": showTabBar2 && showTabBar2.value,
+          "uni-app--maxwidth": showMaxWidth.value
+        };
+      });
+    }
+    function initMediaQuery(minWidth, callback) {
+      {
+        return false;
+      }
+    }
+    function useMaxWidth(layoutState2, rootRef2) {
+      const route2 = usePageRoute();
+      function checkMaxWidth() {
+        const windowWidth = document.body.clientWidth;
+        const pages = getCurrentBasePages();
+        let meta = {};
+        if (pages.length > 0) {
+          const curPage = pages[pages.length - 1];
+          meta = getPage$BasePage(curPage).meta;
+        } else {
+          const routeOptions = getRouteOptions(route2.path, true);
+          if (routeOptions) {
+            meta = routeOptions.meta;
+          }
+        }
+        const maxWidth = parseInt(
+          String(
+            (shared.hasOwn(meta, "maxWidth") ? meta.maxWidth : __uniConfig.globalStyle.maxWidth) || Number.MAX_SAFE_INTEGER
+          )
+        );
+        let showMaxWidth = false;
+        if (windowWidth > maxWidth) {
+          showMaxWidth = true;
+        } else {
+          showMaxWidth = false;
+        }
+        if (showMaxWidth && maxWidth) {
+          layoutState2.marginWidth = (windowWidth - maxWidth) / 2;
+          Vue.nextTick(() => {
+            const rootEl = rootRef2.value;
+            if (rootEl) {
+              rootEl.setAttribute(
+                "style",
+                "max-width:" + maxWidth + "px;margin:0 auto;"
+              );
+            }
+          });
+        } else {
+          layoutState2.marginWidth = 0;
+          Vue.nextTick(() => {
+            const rootEl = rootRef2.value;
+            if (rootEl) {
+              rootEl.removeAttribute("style");
+            }
+          });
+        }
+      }
+      Vue.watch([() => route2.path], checkMaxWidth);
+    }
+    function useState() {
+      const route2 = usePageRoute();
+      if (!hasResponsive) {
+        const layoutState3 = Vue.reactive({
+          marginWidth: 0,
+          leftWindowWidth: 0,
+          rightWindowWidth: 0
+        });
+        Vue.watch(
+          () => layoutState3.marginWidth,
+          (value) => updateCssVar({ "--window-margin": value + "px" })
+        );
+        Vue.watch(
+          () => layoutState3.leftWindowWidth + layoutState3.marginWidth,
+          (value) => {
+            updateCssVar({ "--window-left": value + "px" });
+          }
+        );
+        Vue.watch(
+          () => layoutState3.rightWindowWidth + layoutState3.marginWidth,
+          (value) => {
+            updateCssVar({ "--window-right": value + "px" });
+          }
+        );
+        return {
+          layoutState: layoutState3,
+          windowState: Vue.computed(() => ({}))
+        };
+      }
+      const topWindowMediaQuery = Vue.ref(false);
+      const leftWindowMediaQuery = Vue.ref(false);
+      const rightWindowMediaQuery = Vue.ref(false);
+      const showTopWindow = Vue.computed(
+        () => hasTopWindow && route2.meta.topWindow !== false && topWindowMediaQuery.value
+      );
+      const showLeftWindow = Vue.computed(
+        () => hasLeftWindow && route2.meta.leftWindow !== false && leftWindowMediaQuery.value
+      );
+      const showRightWindow = Vue.computed(
+        () => hasRightWindow && route2.meta.rightWindow !== false && rightWindowMediaQuery.value
+      );
+      const layoutState2 = Vue.reactive({
+        topWindowMediaQuery,
+        showTopWindow,
+        apiShowTopWindow: false,
+        leftWindowMediaQuery,
+        showLeftWindow,
+        apiShowLeftWindow: false,
+        rightWindowMediaQuery,
+        showRightWindow,
+        apiShowRightWindow: false,
+        topWindowHeight: 0,
+        marginWidth: 0,
+        leftWindowWidth: 0,
+        rightWindowWidth: 0,
+        navigationBarTitleText: "",
+        topWindowStyle: {},
+        leftWindowStyle: {},
+        rightWindowStyle: {}
+      });
+      const props2 = [
+        "topWindow",
+        "leftWindow",
+        "rightWindow"
+      ];
+      props2.forEach((prop) => {
+        var _a;
+        const matchMedia = (_a = __uniConfig[prop]) == null ? void 0 : _a.matchMedia;
+        if (matchMedia && shared.hasOwn(matchMedia, "minWidth")) {
+          matchMedia.minWidth;
+        }
+        const matches = initMediaQuery();
+        layoutState2[`${prop}MediaQuery`] = matches;
+      });
+      Vue.watch(
+        () => layoutState2.topWindowHeight,
+        (value) => updateCssVar({ "--top-window-height": value + "px" })
+      );
+      Vue.watch(
+        () => layoutState2.marginWidth,
+        (value) => updateCssVar({ "--window-margin": value + "px" })
+      );
+      Vue.watch(
+        () => layoutState2.leftWindowWidth + layoutState2.marginWidth,
+        (value) => {
+          updateCssVar({ "--window-left": value + "px" });
+        }
+      );
+      Vue.watch(
+        () => layoutState2.rightWindowWidth + layoutState2.marginWidth,
+        (value) => {
+          updateCssVar({ "--window-right": value + "px" });
+        }
+      );
+      UniServiceJSBridge.on(uniShared.ON_NAVIGATION_BAR_CHANGE, (navigationBar) => {
+        layoutState2.navigationBarTitleText = navigationBar.titleText;
+      });
+      const windowState2 = Vue.computed(() => ({
+        matchTopWindow: layoutState2.topWindowMediaQuery,
+        showTopWindow: layoutState2.showTopWindow || layoutState2.apiShowTopWindow,
+        matchLeftWindow: layoutState2.leftWindowMediaQuery,
+        showLeftWindow: layoutState2.showLeftWindow || layoutState2.apiShowLeftWindow,
+        matchRightWindow: layoutState2.rightWindowMediaQuery,
+        showRightWindow: layoutState2.showRightWindow || layoutState2.apiShowRightWindow
+      }));
+      return {
+        layoutState: layoutState2,
+        windowState: windowState2
+      };
+    }
+    function useShowTabBar() {
+      const route2 = usePageRoute();
+      const tabBar = useTabBar();
+      const showTabBar2 = Vue.computed(() => route2.meta.isTabBar && tabBar.shown);
+      return showTabBar2;
+    }
+    function useTopWindow(layoutState2) {
+      const { component, style } = __uniConfig.topWindow;
+      const windowRef = Vue.ref(null);
+      function updateWindow() {
+        const instance = windowRef.value;
+        if (!instance) {
+          return;
+        }
+        const el = instance.$el;
+        if (!el) {
+          return;
+        }
+        const uniTopWindowStyleEl = el.parentElement;
+        if (!uniTopWindowStyleEl) {
+          return;
+        }
+        const height = uniTopWindowStyleEl.getBoundingClientRect().height;
+        layoutState2.topWindowHeight = height;
+      }
+      Vue.watch(
+        () => windowRef.value,
+        () => {
+          updateWindow();
+        }
+      );
+      Vue.watch(
+        () => layoutState2.showTopWindow || layoutState2.apiShowTopWindow,
+        () => Vue.nextTick(updateWindow)
+      );
+      Vue.watch(
+        () => layoutState2.topWindowStyle,
+        () => Vue.nextTick(updateWindow)
+      );
+      layoutState2.topWindowStyle = style;
+      return {
+        component,
+        windowRef
+      };
+    }
+    function useLeftWindow(layoutState2) {
+      const { component, style } = __uniConfig.leftWindow;
+      const windowRef = Vue.ref(null);
+      function updateWindow() {
+        const instance = windowRef.value;
+        if (!instance) {
+          return;
+        }
+        const el = instance.$el;
+        if (!el) {
+          return;
+        }
+        const uniLeftWindowStyleEl = el.parentElement && el.parentElement.parentElement;
+        if (!uniLeftWindowStyleEl) {
+          return;
+        }
+        const width = uniLeftWindowStyleEl.getBoundingClientRect().width;
+        layoutState2.leftWindowWidth = width;
+      }
+      Vue.watch(
+        () => windowRef.value,
+        () => {
+          updateWindow();
+        }
+      );
+      Vue.watch(
+        () => layoutState2.showLeftWindow || layoutState2.apiShowLeftWindow,
+        () => Vue.nextTick(updateWindow)
+      );
+      Vue.watch(
+        () => layoutState2.leftWindowStyle,
+        () => Vue.nextTick(updateWindow)
+      );
+      layoutState2.leftWindowStyle = style;
+      return {
+        component,
+        windowRef
+      };
+    }
+    function useRightWindow(layoutState2) {
+      const { component, style } = __uniConfig.rightWindow;
+      const windowRef = Vue.ref(null);
+      function updateWindow() {
+        const instance = windowRef.value;
+        if (!instance) {
+          return;
+        }
+        const el = instance.$el;
+        if (!el) {
+          return;
+        }
+        const uniRightWindowStyleEl = el.parentElement && el.parentElement.parentElement;
+        if (!uniRightWindowStyleEl) {
+          return;
+        }
+        const width = uniRightWindowStyleEl.getBoundingClientRect().width;
+        layoutState2.rightWindowWidth = width;
+      }
+      Vue.watch(
+        () => windowRef.value,
+        () => {
+          updateWindow();
+        }
+      );
+      Vue.watch(
+        () => layoutState2.showRightWindow || layoutState2.apiShowRightWindow,
+        () => Vue.nextTick(updateWindow)
+      );
+      Vue.watch(
+        () => layoutState2.rightWindowStyle,
+        () => Vue.nextTick(updateWindow)
+      );
+      layoutState2.rightWindowStyle = style;
+      return {
+        component,
+        windowRef
+      };
+    }
+    const n49 = t5$1();
+    Vue.renderEffect(() => Vue.setClass(n49, Vue.unref(clazz)));
+    Vue.setInsertionState(n49);
+    Vue.createIf(
+      () => Vue.unref(hasResponsive),
+      () => {
+        const n36 = t4$1();
+        const n35 = Vue.child(n36);
+        const n34 = Vue.next(n35);
+        const n15 = Vue.child(n34);
+        Vue.renderEffect(() => {
+          const _layoutState = Vue.unref(layoutState);
+          Vue.setClassName(n36, (Vue.unref(hasTopWindow) && _layoutState.showTopWindow ? 1 : 0) | (Vue.unref(hasLeftWindow) && _layoutState.showLeftWindow ? 2 : 0) | (Vue.unref(hasRightWindow) && _layoutState.showRightWindow ? 4 : 0), [" uni-app--showtopwindow", " uni-app--showleftwindow", " uni-app--showrightwindow"]);
+        });
+        Vue.setInsertionState(n36, n35);
+        Vue.createIf(() => Vue.unref(hasTopWindow) && Vue.unref(TopWindow), () => {
+          const n7 = t0$v();
+          const n5 = Vue.child(n7);
+          const n6 = Vue.next(n5);
+          Vue.renderEffect(() => Vue.setStyle(n5, Vue.unref(layoutState).topWindowStyle));
+          Vue.setInsertionState(n5);
+          const n4 = Vue.withComponentId("7b5159a7", () => Vue.createDynamicComponent(() => Vue.unref(TopWindow), {
+            "navigation-bar-title-text": () => Vue.unref(layoutState).navigationBarTitleText,
+            $: [
+              () => Vue.unref(windowState)
+            ]
+          }));
+          Vue.setStaticTemplateRef(n4, topWindowRef, null, "topWindowRef");
+          Vue.applyVShow(n7, () => Vue.unref(layoutState).showTopWindow || Vue.unref(layoutState).apiShowTopWindow);
+          Vue.renderEffect(() => Vue.setStyle(n6, { height: Vue.unref(layoutState).topWindowHeight + "px" }));
+          return n7;
+        });
+        Vue.setInsertionState(n15);
+        Vue.createIf(
+          () => {
+            var _a;
+            return Vue.unref(hasPages) && ((_a = Vue.unref(route)) == null ? void 0 : _a.meta.route);
+          },
+          () => {
+            const n12 = Vue.withComponentId("2251cd94", () => Vue.createComponent(Vue.unref(vueRouter.VaporRouterView), { type: () => Vue.unref(isTabBar) ? "tabBar" : "" }, (_slotProps0) => {
+              const n11 = Vue.withComponentId("2251bf54", () => Vue.createComponent(
+                Vue.VaporKeepAlive,
+                {
+                  "match-by": "key",
+                  cache: () => Vue.unref(routeCache2)
+                },
+                Vue.extend(() => {
+                  const n10 = Vue.withComponentId("2251bdde", () => Vue.createDynamicComponent(() => _slotProps0.Component, null, null, 5, () => Vue.unref(routeKey)));
+                  return n10;
+                }, {
+                  _: 1
+                  /* NON_STABLE */
+                }),
+                2
+                /* SLOT */
+              ));
+              return n11;
+            }));
+            return n12;
+          },
+          () => Vue.createIf(() => !Vue.unref(hasPages), () => {
+            const n14 = Vue.withComponentId("2251b652", () => Vue.createDynamicComponent(() => Vue.unref(firstPageComponent)));
+            return n14;
+          }),
+          525
+          /* TRUE_SINGLE_ROOT, FALSE_ELSE_IF, KEYED_INDEX_1 */
+        );
+        Vue.setInsertionState(n34, 1);
+        Vue.createIf(() => Vue.unref(hasLeftWindow) && Vue.unref(LeftWindow), () => {
+          const n24 = t2$3();
+          const n23 = Vue.child(n24);
+          const n22 = Vue.next(n23);
+          Vue.renderEffect(() => {
+            const _layoutState = Vue.unref(layoutState);
+            Vue.setAttr(n24, "data-show", _layoutState.apiShowLeftWindow || void 0);
+            Vue.setStyle(n24, _layoutState.leftWindowStyle);
+          });
+          Vue.setInsertionState(n24, n23);
+          Vue.createIf(() => Vue.unref(layoutState).apiShowLeftWindow, () => {
+            const n20 = t1$c();
+            Vue.on(n20, "click", () => Vue.unref(layoutState).apiShowLeftWindow = false);
+            return n20;
+          });
+          Vue.setInsertionState(n22);
+          const n21 = Vue.withComponentId("2250de56", () => Vue.createDynamicComponent(() => Vue.unref(LeftWindow), { $: [
+            () => Vue.unref(windowState)
+          ] }));
+          Vue.setStaticTemplateRef(n21, leftWindowRef, null, "leftWindowRef");
+          Vue.applyVShow(n24, () => Vue.unref(layoutState).showLeftWindow || Vue.unref(layoutState).apiShowLeftWindow);
+          return n24;
+        });
+        Vue.setInsertionState(n34, 2);
+        Vue.createIf(() => Vue.unref(hasRightWindow) && Vue.unref(RightWindow), () => {
+          const n33 = t3$3();
+          const n32 = Vue.child(n33);
+          const n31 = Vue.next(n32);
+          Vue.renderEffect(() => {
+            const _layoutState = Vue.unref(layoutState);
+            Vue.setAttr(n33, "data-show", _layoutState.apiShowRightWindow || void 0);
+            Vue.setStyle(n33, _layoutState.rightWindowStyle);
+          });
+          Vue.setInsertionState(n33, n32);
+          Vue.createIf(() => Vue.unref(layoutState).apiShowRightWindow, () => {
+            const n29 = t1$c();
+            Vue.on(n29, "click", () => Vue.unref(layoutState).apiShowRightWindow = false);
+            return n29;
+          });
+          Vue.setInsertionState(n31);
+          const n30 = Vue.withComponentId("22500414", () => Vue.createDynamicComponent(() => Vue.unref(RightWindow), { $: [
+            () => Vue.unref(windowState)
+          ] }));
+          Vue.setStaticTemplateRef(n30, rightWindowRef, null, "rightWindowRef");
+          Vue.applyVShow(n33, () => Vue.unref(layoutState).showRightWindow || Vue.unref(layoutState).apiShowRightWindow);
+          return n33;
+        });
+        return n36;
+      },
+      () => {
+        const n38 = Vue.createIf(
+          () => {
+            var _a;
+            return Vue.unref(hasPages) && ((_a = Vue.unref(route)) == null ? void 0 : _a.meta.route);
+          },
+          () => {
+            const n42 = Vue.withComponentId("224ff418", () => Vue.createComponent(Vue.unref(vueRouter.VaporRouterView), { type: () => Vue.unref(isTabBar) ? "tabBar" : "" }, (_slotProps0) => {
+              const n41 = Vue.withComponentId("224fe654", () => Vue.createComponent(
+                Vue.VaporKeepAlive,
+                {
+                  "match-by": "key",
+                  cache: () => Vue.unref(routeCache2)
+                },
+                Vue.extend(() => {
+                  const n40 = Vue.withComponentId("224fe510", () => Vue.createDynamicComponent(() => _slotProps0.Component, null, null, 5, () => Vue.unref(routeKey)));
+                  return n40;
+                }, {
+                  _: 1
+                  /* NON_STABLE */
+                }),
+                2
+                /* SLOT */
+              ));
+              return n41;
+            }));
+            return n42;
+          },
+          () => Vue.createIf(() => !Vue.unref(hasPages), () => {
+            const n44 = Vue.withComponentId("224fdd9c", () => Vue.createDynamicComponent(() => Vue.unref(firstPageComponent)));
+            return n44;
+          }),
+          2317
+          /* TRUE_SINGLE_ROOT, FALSE_ELSE_IF, KEYED_INDEX_8 */
+        );
+        return n38;
+      },
+      2057
+      /* TRUE_SINGLE_ROOT, FALSE_MULTI_ROOT, KEYED_INDEX_7 */
+    );
+    Vue.setInsertionState(n49, 1);
+    Vue.createIf(() => Vue.unref(hasTabBar), () => {
+      const n48 = Vue.withComponentId("224fd694", () => Vue.createComponent(_sfc_main$w));
+      Vue.applyVShow(n48, () => Vue.unref(showTabBar));
+      return n48;
+    });
+    Vue.setStaticTemplateRef(n49, rootRef, null, "rootRef");
+    return n49;
+  }
+});
+const t0$u = Vue.template("<div class=uni-async-loading><i class=uni-loading>", 3);
+const _sfc_main$u = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "AsyncLoading",
     __reserved: true,
@@ -3575,12 +5229,12 @@ const _sfc_main$9 = /* @__PURE__ */ Vue.defineVaporComponent({
   },
   __name: "asyncLoading",
   setup(__props) {
-    const n0 = t0$7();
+    const n0 = t0$u();
     return n0;
   }
 });
-const t0$6 = Vue.template("<div class=uni-async-error> ", 1);
-const _sfc_main$8 = /* @__PURE__ */ Vue.defineVaporComponent({
+const t0$t = Vue.template("<div class=uni-async-error> ", 1);
+const _sfc_main$t = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "AsyncError",
     __reserved: true,
@@ -3590,19 +5244,20 @@ const _sfc_main$8 = /* @__PURE__ */ Vue.defineVaporComponent({
   props: ["error"],
   setup(__props) {
     initI18nAsyncMsgsOnce();
-    const { t: t11 } = useI18n();
+    const { t: t12 } = useI18n();
     function reload() {
       window.location.reload();
     }
-    const n0 = t0$6();
+    const n0 = t0$t();
     const x0 = Vue.txt(n0);
     Vue.on(n0, "click", reload);
-    Vue.renderEffect(() => Vue.setText(x0, Vue.toDisplayString(Vue.unref(t11)("uni.async.error"))));
+    Vue.renderEffect(() => Vue.setText(x0, Vue.toDisplayString(Vue.unref(t12)("uni.async.error"))));
     return n0;
   }
 });
 let appVm;
 let $uniApp;
+let uniAppVmMethodNames = /* @__PURE__ */ new Set();
 {
   class UniAppImpl {
     get vm() {
@@ -3621,7 +5276,16 @@ let $uniApp;
       return null;
     }
   }
-  $uniApp = new UniAppImpl();
+  const uniApp = new UniAppImpl();
+  $uniApp = process.env.NODE_ENV !== "production" ? new Proxy(uniApp, {
+    get(target, key, receiver) {
+      const value = Reflect.get(target, key, receiver);
+      if (typeof key === "string" && value === void 0 && uniAppVmMethodNames.has(key)) {
+        warnUniAppVmMethod(key);
+      }
+      return value;
+    }
+  }) : uniApp;
 }
 function getApp$1() {
   {
@@ -3630,17 +5294,23 @@ function getApp$1() {
 }
 function initApp$1(vm) {
   appVm = vm;
+  if (process.env.NODE_ENV !== "production") {
+    const initVmMethodWarnings = () => {
+      uniAppVmMethodNames = initUniAppVmMethodWarnings($uniApp);
+    };
+    Vue.onServerPrefetch(initVmMethodWarnings);
+  }
   Object.defineProperty(appVm.$.ctx, "$children", {
     get() {
       return getCurrentBasePages().map((page) => page.$vm);
     }
   });
   const app = appVm.$.appContext.app;
-  if (!app.component(_sfc_main$9.name)) {
-    app.component(_sfc_main$9.name, _sfc_main$9);
+  if (!app.component(_sfc_main$u.name)) {
+    app.component(_sfc_main$u.name, _sfc_main$u);
   }
-  if (!app.component(_sfc_main$8.name)) {
-    app.component(_sfc_main$8.name, _sfc_main$8);
+  if (!app.component(_sfc_main$t.name)) {
+    app.component(_sfc_main$t.name, _sfc_main$t);
   }
   initAppVm(appVm);
   defineGlobalData(appVm);
@@ -3699,6 +5369,9 @@ function setupPage(comp, path) {
     type: "page",
     clone: true,
     // 页面组件可能会被其他地方手动引用，比如 windows 等，需要 clone 一份新的作为页面组件
+    before(comp2) {
+      comp2.inheritAttrs = false;
+    },
     init: initPage,
     setup(instance) {
       instance.$pageInstance = instance;
@@ -3741,7 +5414,7 @@ function setupApp(comp) {
       comp2.mpType = "app";
       const { setup } = comp2;
       const render = () => {
-        return Vue.createComponent(_sfc_main, null, null, true);
+        return Vue.createComponent(_sfc_main$v, null, null, true);
       };
       comp2.setup = (props2, ctx) => {
         const res = setup && setup(props2, ctx);
@@ -3785,6 +5458,53 @@ function useBackgroundColorContent(pageMeta) {
   onThemeChange(update);
   Vue.watchEffect(update);
 }
+const _UniLoadingElement = class _UniLoadingElement extends UniViewElement {
+};
+_UniLoadingElement.__uniElement = {};
+let UniLoadingElement = _UniLoadingElement;
+function useLoadingStyle(targetElement, bold) {
+  const loadingSize = Vue.ref("16px");
+  const loadingBorderWidth = Vue.ref("1px");
+  Vue.ref("8px");
+  return {
+    width: loadingSize,
+    height: loadingSize,
+    borderWidth: loadingBorderWidth
+    // borderRadius: loadingBorderRadius,
+  };
+}
+const t0$s = Vue.template('<div uni-loading uni-view data-v-212d40c7 class="default __uni_loading_container__" style="display: flex;"><div uni-view data-v-212d40c7>', 257);
+const _uniLoadingElement = { value: "LOADING" };
+const _sfc_main$s = /* @__PURE__ */ Vue.defineVaporComponent({
+  ...{
+    name: "loading",
+    styleIsolation: "app-and-page",
+    // @ts-ignore
+    rootElement: {
+      class: /* @__PURE__ */ Vue.initUniElementType(UniLoadingElement, "loading")
+    }
+  },
+  __name: "loading",
+  props: {
+    paused: { type: Boolean, default: false },
+    bold: { type: Boolean, default: false },
+    iosSpinner: { type: Boolean, default: false }
+  },
+  setup(__props) {
+    const props2 = __props;
+    const LoadingRef = Vue.ref(null);
+    const loadingStyle = Vue.reactive(useLoadingStyle(LoadingRef, Vue.computed(() => props2.bold)));
+    const n0 = t0$s();
+    const n1 = Vue.child(n0);
+    Vue.initUniElement(n0, _uniLoadingElement);
+    Vue.setStaticTemplateRef(n0, LoadingRef, null, "LoadingRef");
+    Vue.renderEffect(() => {
+      Vue.setClassName(n1, props2.paused ? 1 : 0, " __uni-loading__paused", "__uni-loading__ __loading-4-3__");
+      Vue.setStyle(n1, loadingStyle);
+    });
+    return n0;
+  }
+});
 function hexToRgba(hex) {
   if (!hex) {
     return {
@@ -3829,18 +5549,19 @@ function usePageHeadTransparent(headRef, {
 }) {
   Vue.computed(() => hexToRgba(backgroundColor));
 }
-const t0$5 = Vue.template('<div class=uni-page-head-btn><svg width=26 height=26 viewBox="0 0 32 32"><path>');
-const t1$3 = Vue.template('<svg viewBox="0 0 32 32"><path>', 0, 1);
-const t2$2 = Vue.template('<span><i class=uni-btn-icon></i><svg width=14 height=14 viewBox="0 0 32 32"><path fill=#000>');
+const t0$r = Vue.template('<div class=uni-page-head-btn><svg width=26 height=26 viewBox="0 0 32 32"><path fill=none stroke-width=2 stroke-linecap=round>');
+const t1$b = Vue.template('<svg viewBox="0 0 32 32"><path>', 0, 1);
+const t2$2 = Vue.template('<span><i class=uni-btn-icon></i><svg width=14 height=14 viewBox="0 0 32 32"><path fill=none stroke=#000 stroke-width=2 stroke-linecap=round>');
 const t3$2 = Vue.template("<i class=uni-btn-icon></i>");
-const t4$2 = Vue.template("<div>");
-const t5$1 = Vue.template("<i class=uni-loading></i>", 2);
-const t6$1 = Vue.template("<img class=uni-page-head__title_image>");
-const t7$1 = Vue.template(" ");
-const t8$1 = Vue.template("<div class=uni-page-head-bd><div class=uni-page-head__title></div>");
+const t4 = Vue.template("<div>");
+const t5 = Vue.template("<i class=uni-loading></i>", 2);
+const t6 = Vue.template("<img class=uni-page-head__title_image>");
+const t7 = Vue.template(" ");
+const t8 = Vue.template("<div class=uni-page-head-bd><div class=uni-page-head__title></div>");
 const t9 = Vue.template('<div class=uni-page-head-search><div><div class=uni-page-head-search-icon><svg width=20 height=20 viewBox="0 0 32 32"><path></div></div>');
-const t10 = Vue.template("<div><div class=uni-page-head-hd></div><!><div class=uni-page-head-ft></div></div>");
-const _sfc_main$7 = /* @__PURE__ */ Vue.defineVaporComponent({
+const t10 = Vue.template('<span><i class=uni-btn-icon></i><svg width=14 height=14 viewBox="0 0 32 32"><path fill=#000>');
+const t11 = Vue.template("<uni-page-head><div><div class=uni-page-head-hd></div><!><div class=uni-page-head-ft></div></div>", 1);
+const _sfc_main$r = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "PageHead",
     __reserved: true,
@@ -3851,6 +5572,7 @@ const _sfc_main$7 = /* @__PURE__ */ Vue.defineVaporComponent({
     const hasPages = __UNI_FEATURE_PAGES__;
     const hasButtons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__;
     const hasSearchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__;
+    const isXVapor = true;
     const ICON_PATHS = {
       none: "",
       forward: "M11 7.844q-0.25-0.219-0.25-0.578t0.25-0.578q0.219-0.25 0.563-0.25t0.563 0.25l9.656 9.125q0.125 0.125 0.188 0.297t0.063 0.328q0 0.188-0.063 0.359t-0.188 0.297l-9.656 9.125q-0.219 0.25-0.563 0.25t-0.563-0.25q-0.25-0.219-0.25-0.578t0.25-0.609l9.063-8.594-9.063-8.594z",
@@ -4033,19 +5755,19 @@ const _sfc_main$7 = /* @__PURE__ */ Vue.defineVaporComponent({
       };
       return { focus, text, composing, onFocus, onBlur, onInput, onConfirm };
     }
-    const n64 = Vue.createPlainElement("uni-page-head", { "uni-page-head-type": () => Vue.unref(navigationBar).type || "default" }, null, true);
-    const n60 = t10();
-    Vue.insert(n60, n64);
-    const n19 = Vue.child(n60);
-    const n59 = Vue.next(n19);
-    const n58 = Vue.next(n59);
+    const n66 = t11();
+    const n62 = Vue.child(n66);
+    const n19 = Vue.child(n62);
+    const n61 = Vue.next(n19);
+    const n60 = Vue.next(n61);
     Vue.renderEffect(() => {
-      Vue.setClass(n60, Vue.unref(clazz));
-      Vue.setStyle(n60, Vue.unref(style));
+      Vue.setAttr(n66, "uni-page-head-type", Vue.unref(navigationBar).type || "default");
+      Vue.setClass(n62, Vue.unref(clazz));
+      Vue.setStyle(n62, Vue.unref(style));
     });
     Vue.setInsertionState(n19);
     Vue.createIf(() => Vue.unref(hasPages) && !Vue.unref(pageMeta).isQuit, () => {
-      const n3 = t0$5();
+      const n3 = t0$r();
       const n2 = Vue.child(Vue.child(n3));
       Vue.on(n3, "click", onPageHeadBackButton);
       Vue.renderEffect(() => {
@@ -4053,7 +5775,7 @@ const _sfc_main$7 = /* @__PURE__ */ Vue.defineVaporComponent({
         Vue.setAttr(n2, "d", Vue.unref(ICON_PATH_BACK), true);
         Vue.setAttr(
           n2,
-          "fill",
+          "stroke",
           _navigationBar.type === "transparent" ? "#fff" : _navigationBar.titleColor,
           true
         );
@@ -4065,7 +5787,7 @@ const _sfc_main$7 = /* @__PURE__ */ Vue.defineVaporComponent({
       const n6 = Vue.createFor(
         () => Vue.unref(buttons).left,
         (_for_item0, _for_key0) => {
-          const n18 = t4$2();
+          const n18 = t4();
           Vue.renderEffect(() => {
             const _button = _for_item0.value;
             Vue.setClass(n18, _button.btnClass);
@@ -4076,7 +5798,7 @@ const _sfc_main$7 = /* @__PURE__ */ Vue.defineVaporComponent({
           Vue.createIf(
             () => _for_item0.value.btnIconPath,
             () => {
-              const n11 = t1$3();
+              const n11 = t1$b();
               const n10 = Vue.child(n11);
               Vue.renderEffect(() => {
                 const _button = _for_item0.value;
@@ -4115,8 +5837,8 @@ const _sfc_main$7 = /* @__PURE__ */ Vue.defineVaporComponent({
               773
               /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_2 */
             ),
-            517
-            /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_1 */
+            525
+            /* TRUE_SINGLE_ROOT, FALSE_ELSE_IF, KEYED_INDEX_1 */
           );
           Vue.on(n18, "click", (e2) => _for_item0.value.onClick(e2));
           return n18;
@@ -4127,98 +5849,107 @@ const _sfc_main$7 = /* @__PURE__ */ Vue.defineVaporComponent({
       );
       return n6;
     });
-    Vue.setInsertionState(n60, n59);
+    Vue.setInsertionState(n62, n61);
     Vue.createIf(
       () => !Vue.unref(hasSearchInput) || !Vue.unref(navigationBar).searchInput,
       () => {
-        const n30 = t8$1();
-        const n29 = Vue.child(n30);
+        const n32 = t8();
+        const n31 = Vue.child(n32);
         Vue.renderEffect(() => {
           const _navigationBar = Vue.unref(navigationBar);
-          Vue.setStyle(n29, {
+          Vue.setStyle(n31, {
             fontSize: _navigationBar.titleSize,
             opacity: _navigationBar.type === "transparent" ? 0 : 1
           });
         });
-        Vue.setInsertionState(n29);
+        Vue.setInsertionState(n31);
         Vue.createIf(
-          () => Vue.unref(navigationBar).loading,
+          () => !Vue.unref(isXVapor) && Vue.unref(navigationBar).loading,
           () => {
-            const n24 = t5$1();
+            const n24 = t5();
             return n24;
           },
           () => Vue.createIf(
-            () => Vue.unref(navigationBar).titleImage,
+            () => Vue.unref(isXVapor) && Vue.unref(navigationBar).loading,
             () => {
-              const n26 = t6$1();
-              Vue.renderEffect(() => Vue.setProp(n26, "src", Vue.unref(navigationBar).titleImage));
+              const n26 = Vue.withComponentId("96682308", () => Vue.createComponent(Vue.unref(_sfc_main$s), { style: { "display": "inline-block", "width": "20px", "height": "20px", "margin-top": "7px" } }));
               return n26;
             },
-            () => {
-              const n28 = t7$1();
-              Vue.renderEffect(() => Vue.setText(n28, Vue.toDisplayString(Vue.unref(navigationBar).titleText)));
-              return n28;
-            },
-            1545
-            /* TRUE_SINGLE_ROOT, FALSE_MULTI_ROOT, KEYED_INDEX_5 */
+            () => Vue.createIf(
+              () => Vue.unref(navigationBar).titleImage,
+              () => {
+                const n28 = t6();
+                Vue.renderEffect(() => Vue.setProp(n28, "src", Vue.unref(navigationBar).titleImage));
+                return n28;
+              },
+              () => {
+                const n30 = t7();
+                Vue.renderEffect(() => Vue.setText(n30, Vue.toDisplayString(Vue.unref(navigationBar).titleText)));
+                return n30;
+              },
+              1801
+              /* TRUE_SINGLE_ROOT, FALSE_MULTI_ROOT, KEYED_INDEX_6 */
+            ),
+            1549
+            /* TRUE_SINGLE_ROOT, FALSE_ELSE_IF, KEYED_INDEX_5 */
           ),
-          1285
-          /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_4 */
+          1293
+          /* TRUE_SINGLE_ROOT, FALSE_ELSE_IF, KEYED_INDEX_4 */
         );
-        return n30;
+        return n32;
       },
       () => {
-        const n42 = t9();
-        const n36 = Vue.child(n42);
-        const n32 = Vue.child(Vue.child(Vue.child(n36)));
+        const n44 = t9();
+        const n38 = Vue.child(n44);
+        const n34 = Vue.child(Vue.child(Vue.child(n38)));
         Vue.renderEffect(() => {
           const _navigationBar = Vue.unref(navigationBar);
           const _navigationBar_searchInput = _navigationBar.searchInput;
-          Vue.setStyle(n42, {
+          Vue.setStyle(n44, {
             borderRadius: _navigationBar_searchInput.borderRadius,
             backgroundColor: _navigationBar_searchInput.backgroundColor
           });
-          Vue.setStyle(n36, { color: _navigationBar_searchInput.placeholderColor });
-          Vue.setClass(n36, [
+          Vue.setStyle(n38, { color: _navigationBar_searchInput.placeholderColor });
+          Vue.setClass(n38, [
             "uni-page-head-search-placeholder",
             `uni-page-head-search-placeholder-${Vue.unref(searchFocus) || Vue.unref(searchText) ? "left" : _navigationBar_searchInput.align}`
           ]);
-          Vue.setAttr(n32, "d", Vue.unref(ICON_PATH_SEARCH), true);
-          Vue.setAttr(n32, "fill", _navigationBar_searchInput.placeholderColor, true);
+          Vue.setAttr(n34, "d", Vue.unref(ICON_PATH_SEARCH), true);
+          Vue.setAttr(n34, "fill", _navigationBar_searchInput.placeholderColor, true);
         });
-        Vue.setInsertionState(n36, 1);
+        Vue.setInsertionState(n38, 1);
         Vue.createIf(
           () => !(Vue.unref(searchText) || Vue.unref(searchComposing)),
           () => {
-            const n35 = t7$1();
-            Vue.renderEffect(() => Vue.setText(n35, Vue.toDisplayString(Vue.unref(navigationBar).searchInput.placeholder)));
-            return n35;
+            const n37 = t7();
+            Vue.renderEffect(() => Vue.setText(n37, Vue.toDisplayString(Vue.unref(navigationBar).searchInput.placeholder)));
+            return n37;
           },
           null,
           2
           /* TRUE_MULTI_ROOT */
         );
-        Vue.setInsertionState(n42, 1);
+        Vue.setInsertionState(n44, 1);
         Vue.createIf(
           () => Vue.unref(navigationBar).searchInput.disabled,
           () => {
             const _on_click = ($event) => Vue.unref(searchOnClick) && Vue.unref(searchOnClick)($event);
-            const n39 = Vue.createComponent(Vue.unref(Input), {
+            const n41 = Vue.withComponentId("96671b3c", () => Vue.createComponent(Vue.unref(Input), {
               disabled: true,
               style: () => ({ color: Vue.unref(navigationBar).searchInput.color }),
               "placeholder-style": () => "color: " + Vue.unref(navigationBar).searchInput.placeholderColor,
               class: "uni-page-head-search-input",
               "confirm-type": "search",
               onClick: () => _on_click
-            });
-            return n39;
+            }));
+            return n41;
           },
           () => {
             const _on_focus = ($event) => Vue.unref(searchOnFocus) && Vue.unref(searchOnFocus)($event);
             const _on_blur = ($event) => Vue.unref(searchOnBlur) && Vue.unref(searchOnBlur)($event);
             const _on_input = ($event) => Vue.unref(searchOnInput) && Vue.unref(searchOnInput)($event);
             const _on_confirm = ($event) => Vue.unref(searchOnConfirm) && Vue.unref(searchOnConfirm)($event);
-            const n41 = Vue.createComponent(Vue.unref(Input), {
+            const n43 = Vue.withComponentId("96665f1e", () => Vue.createComponent(Vue.unref(Input), {
               focus: () => Vue.unref(navigationBar).searchInput.autoFocus,
               style: () => ({ color: Vue.unref(navigationBar).searchInput.color }),
               "placeholder-style": () => "color: " + Vue.unref(navigationBar).searchInput.placeholderColor,
@@ -4228,105 +5959,104 @@ const _sfc_main$7 = /* @__PURE__ */ Vue.defineVaporComponent({
               onBlur: () => _on_blur,
               onInput: () => _on_input,
               onConfirm: () => _on_confirm
-            });
-            return n41;
+            }));
+            return n43;
           },
-          2309
-          /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_8 */
+          2565
+          /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_9 */
         );
-        return n42;
+        return n44;
       },
-      1797
-      /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_6 */
+      2053
+      /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_7 */
     );
-    Vue.setInsertionState(n58);
+    Vue.setInsertionState(n60);
     Vue.createIf(() => Vue.unref(hasButtons) && Vue.unref(buttons), () => {
-      const n45 = Vue.createFor(
+      const n47 = Vue.createFor(
         () => Vue.unref(buttons).right,
         (_for_item0, _for_key0) => {
-          const n57 = t4$2();
+          const n59 = t4();
           Vue.renderEffect(() => {
             const _button = _for_item0.value;
-            Vue.setClass(n57, _button.btnClass);
-            Vue.setStyle(n57, _button.btnStyle);
-            Vue.setAttr(n57, "badge-text", _button.badgeText);
+            Vue.setClass(n59, _button.btnClass);
+            Vue.setStyle(n59, _button.btnStyle);
+            Vue.setAttr(n59, "badge-text", _button.badgeText);
           });
-          Vue.setInsertionState(n57);
+          Vue.setInsertionState(n59);
           Vue.createIf(
             () => _for_item0.value.btnIconPath,
             () => {
-              const n50 = t1$3();
-              const n49 = Vue.child(n50);
+              const n52 = t1$b();
+              const n51 = Vue.child(n52);
               Vue.renderEffect(() => {
                 const _button = _for_item0.value;
                 const _button_iconStyle = _button.iconStyle;
                 const _getSvgSize_button_iconStyle_fontSize = getSvgSize(_button_iconStyle.fontSize);
-                Vue.setAttr(n50, "width", _getSvgSize_button_iconStyle_fontSize, true);
-                Vue.setAttr(n50, "height", _getSvgSize_button_iconStyle_fontSize, true);
-                Vue.setAttr(n49, "d", _button.btnIconPath, true);
-                Vue.setAttr(n49, "fill", getSvgColor(_button_iconStyle.color), true);
+                Vue.setAttr(n52, "width", _getSvgSize_button_iconStyle_fontSize, true);
+                Vue.setAttr(n52, "height", _getSvgSize_button_iconStyle_fontSize, true);
+                Vue.setAttr(n51, "d", _button.btnIconPath, true);
+                Vue.setAttr(n51, "fill", getSvgColor(_button_iconStyle.color), true);
               });
-              return n50;
+              return n52;
             },
             () => Vue.createIf(
               () => _for_item0.value.btnSelect,
               () => {
-                const n54 = t2$2();
-                const n52 = Vue.child(n54);
-                const n53 = Vue.child(Vue.next(n52));
-                Vue.renderEffect(() => {
-                  const _button = _for_item0.value;
-                  Vue.setStyle(n54, _button.iconStyle);
-                  Vue.setHtml(n52, _button.btnText);
-                  Vue.setAttr(n53, "d", ICON_PATHS.select, true);
-                });
-                return n54;
-              },
-              () => {
-                const n56 = t3$2();
+                const n56 = t10();
+                const n54 = Vue.child(n56);
+                const n55 = Vue.child(Vue.next(n54));
                 Vue.renderEffect(() => {
                   const _button = _for_item0.value;
                   Vue.setStyle(n56, _button.iconStyle);
-                  Vue.setHtml(n56, _button.btnText);
+                  Vue.setHtml(n54, _button.btnText);
+                  Vue.setAttr(n55, "d", ICON_PATHS.select, true);
                 });
                 return n56;
               },
-              2821
-              /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_10 */
+              () => {
+                const n58 = t3$2();
+                Vue.renderEffect(() => {
+                  const _button = _for_item0.value;
+                  Vue.setStyle(n58, _button.iconStyle);
+                  Vue.setHtml(n58, _button.btnText);
+                });
+                return n58;
+              },
+              3077
+              /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_11 */
             ),
-            2565
-            /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_9 */
+            2829
+            /* TRUE_SINGLE_ROOT, FALSE_ELSE_IF, KEYED_INDEX_10 */
           );
-          Vue.on(n57, "click", (e2) => _for_item0.value.onClick(e2));
-          return n57;
+          Vue.on(n59, "click", (e2) => _for_item0.value.onClick(e2));
+          return n59;
         },
         (button, index2) => index2,
         8
         /* IS_SINGLE_NODE */
       );
-      return n45;
+      return n47;
     });
-    Vue.setStaticTemplateRef(n60, headRef, null, "headRef");
-    Vue.setInsertionState(n64, 1);
+    Vue.setStaticTemplateRef(n62, headRef, null, "headRef");
+    Vue.setInsertionState(n66, 1);
     Vue.createIf(() => Vue.unref(navigationBar).type !== "transparent" && Vue.unref(navigationBar).type !== "float", () => {
-      const n63 = t4$2();
-      Vue.renderEffect(() => Vue.setClassName(n63, 1 | (Vue.unref(navigationBar).titlePenetrate ? 2 : 0), [" uni-placeholder", " uni-placeholder-titlePenetrate"]));
-      return n63;
+      const n65 = t4();
+      Vue.renderEffect(() => Vue.setClassName(n65, 1 | (Vue.unref(navigationBar).titlePenetrate ? 2 : 0), [" uni-placeholder", " uni-placeholder-titlePenetrate"]));
+      return n65;
     });
-    return n64;
+    return n66;
   }
 });
-const t0$4 = Vue.template('<div class=uni-page-refresh><div class=uni-page-refresh-inner><svg class=uni-page-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none></svg><svg class=uni-page-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle class=uni-page-refresh__path cx=50 cy=50 r=20 fill=none stroke-width=4 stroke-miterlimit=10>');
-const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
+const t0$q = Vue.template('<uni-page-refresh><div class=uni-page-refresh><div class=uni-page-refresh-inner><svg class=uni-page-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none></svg><svg class=uni-page-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle class=uni-page-refresh__path cx=50 cy=50 r=20 fill=none stroke-width=4 stroke-miterlimit=10>', 1);
+const _sfc_main$q = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{ name: "PageRefresh" },
   __name: "component",
   setup(__props) {
     const { pullToRefresh } = usePageMeta();
     const offset = pullToRefresh.offset;
     const color = pullToRefresh.color;
-    const n3 = Vue.createPlainElement("uni-page-refresh", null, null, true);
-    const n2 = t0$4();
-    Vue.insert(n2, n3);
+    const n3 = t0$q();
+    const n2 = Vue.child(n3);
     const n0 = Vue.child(Vue.child(n2));
     const n1 = Vue.child(Vue.next(n0));
     Vue.renderEffect(() => {
@@ -4338,7 +6068,8 @@ const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
     return n3;
   }
 });
-const _sfc_main$5 = /* @__PURE__ */ Vue.defineVaporComponent({
+const t0$p = Vue.template("<uni-page-wrapper><uni-page-body>");
+const _sfc_main$p = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "PageBody",
     __reserved: true,
@@ -4369,27 +6100,26 @@ const _sfc_main$5 = /* @__PURE__ */ Vue.defineVaporComponent({
       }
     }
     const n0 = Vue.createIf(() => Vue.unref(hasPullDownRefresh) && !!Vue.unref(pageMeta) && (Vue.unref(isX) || !!Vue.unref(pageMeta).enablePullDownRefresh), () => {
-      const n2 = Vue.createComponent(_sfc_main$6);
+      const n2 = Vue.withComponentId("2d14e6de", () => Vue.createComponent(_sfc_main$q));
       Vue.setStaticTemplateRef(n2, refreshRef, null, "refreshRef");
       return n2;
     });
-    const n8 = Vue.createPlainElement("uni-page-wrapper", { $: [
-      () => pageRefresh.value
-    ] });
-    Vue.setInsertionState(n8);
-    const n4 = Vue.createPlainElement("uni-page-body");
+    const n8 = t0$p();
+    const n4 = Vue.child(n8);
+    Vue.renderEffect(() => Vue.setDynamicProps(n8, [pageRefresh.value]));
     Vue.setInsertionState(n4);
     Vue.createSlot();
     Vue.setInsertionState(n8, 1);
     Vue.createIf(() => Vue.unref(isX), () => {
-      const n7 = Vue.createComponent(Vue.unref(ResizeSensor), { onResize: () => resize });
+      const n7 = Vue.withComponentId("3b76aa59", () => Vue.createComponent(Vue.unref(ResizeSensor), { onResize: () => resize }));
       return n7;
     });
     Vue.setStaticTemplateRef(n8, wrapperRef, null, "wrapperRef");
     return [n0, n8];
   }
 });
-const _sfc_main$4 = /* @__PURE__ */ Vue.defineVaporComponent({
+const t0$o = Vue.template("<uni-page>", 1);
+const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "Page",
     __reserved: true,
@@ -4406,7 +6136,7 @@ const _sfc_main$4 = /* @__PURE__ */ Vue.defineVaporComponent({
     const attrs2 = currentInstance.attrs;
     const routeComponent = currentInstance.type;
     const pageComponent = routeComponent.__uniPageComponent;
-    const pageProps = routeComponent.__uniGetPageProps();
+    const pageProps = usePageRoute().query;
     useDocumentTitle(pageMeta);
     currentInstance.$dialogPages = Vue.ref([]);
     currentInstance.$systemDialogPages = Vue.ref([]);
@@ -4491,41 +6221,42 @@ const _sfc_main$4 = /* @__PURE__ */ Vue.defineVaporComponent({
         }
       }
     }
-    const n8 = Vue.createPlainElement("uni-page", {
-      "data-page": () => Vue.unref(pageMeta).route,
-      style: () => pageStyle
-    }, null, true);
+    const n8 = t0$o();
+    Vue.renderEffect(() => {
+      Vue.setAttr(n8, "data-page", Vue.unref(pageMeta).route);
+      Vue.setStyle(n8, pageStyle);
+    });
     Vue.setInsertionState(n8);
     Vue.createIf(() => Vue.unref(hasNavigationBar) && Vue.unref(navigationBar).style !== "custom", () => {
-      const n2 = Vue.createComponent(_sfc_main$7);
+      const n2 = Vue.withComponentId("6ae207a0", () => Vue.createComponent(_sfc_main$r));
       return n2;
     });
     Vue.setInsertionState(n8, 1);
-    Vue.createComponent(_sfc_main$5, null, Vue.extend(() => {
-      const n3 = Vue.createDynamicComponent(
+    Vue.withComponentId("f15f11c4", () => Vue.createComponent(_sfc_main$p, null, Vue.extend(() => {
+      const n3 = Vue.withComponentId("f15f1178", () => Vue.createDynamicComponent(
         () => Vue.unref(pageComponent),
         { $: [
           () => Vue.unref(pageProps)
         ] },
         null,
-        4
-        /* SLOT_ROOT */
-      );
+        36
+        /* SLOT_SINGLE_ROOT, SLOT_ROOT */
+      ));
       Vue.setStaticTemplateRef(n3, "page");
       return n3;
     }, {
       _: 1
       /* NON_STABLE */
-    }));
+    })));
     Vue.setInsertionState(n8, 2);
     Vue.createFor(
       () => getDialogPages(),
       (_for_item0) => {
-        const n7 = Vue.createDynamicComponent(() => _for_item0.value.component, {
+        const n7 = Vue.withComponentId("f15f0a40-" + _for_item0.value.route, () => Vue.createDynamicComponent(() => _for_item0.value.component, {
           style: () => dialogPageStyle,
           "data-type": () => _for_item0.value.type,
           route: () => _for_item0.value.route
-        });
+        }));
         return n7;
       },
       (dialogPage) => dialogPage.route,
@@ -4535,10 +6266,9 @@ const _sfc_main$4 = /* @__PURE__ */ Vue.defineVaporComponent({
     return n8;
   }
 });
-function createVaporPageRouteComponent(pageComponent, getPageProps) {
-  return Object.assign({}, _sfc_main$4, {
-    __uniPageComponent: pageComponent,
-    __uniGetPageProps: getPageProps
+function createVaporPageRouteComponent(pageComponent) {
+  return Object.assign({}, _sfc_main$o, {
+    __uniPageComponent: pageComponent
   });
 }
 var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
@@ -4703,7 +6433,7 @@ function useQuill(props2, rootRef, trigger) {
   useContextInfo();
   useSubscribe();
 }
-const props$m = /* @__PURE__ */ shared.extend({}, props$n, {
+const editorProps = /* @__PURE__ */ shared.extend({}, props$a, {
   id: {
     type: String,
     default: ""
@@ -4733,32 +6463,48 @@ const props$m = /* @__PURE__ */ shared.extend({}, props$n, {
     default: false
   }
 });
-const index$s = /* @__PURE__ */ defineBuiltInComponent({
+const editorEmit = [
+  "ready",
+  "focus",
+  "blur",
+  "input",
+  "statuschange",
+  ...emit$1
+];
+function useEditor(props2, emit2) {
+  const rootRef = Vue.ref(null);
+  useQuill(props2);
+  useKeyboard(props2, rootRef);
+  return rootRef;
+}
+const _t0$a = Vue.template("<div uni-editor uni-view class=ql-container>", 1);
+class UniEditorElement extends UniViewElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniEditorElement && value instanceof UniViewElement && value.hasAttribute("uni-editor") || Function.prototype[Symbol.hasInstance].call(this, value);
+  }
+}
+const uniTagName$8 = { value: "EDITOR" };
+const indexVapor$8 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
-  props: props$m,
-  emit: [
-    "ready",
-    "focus",
-    "blur",
-    "input",
-    "statuschange",
-    ...emit$1
-  ],
+  props: editorProps,
+  emits: editorEmit,
+  rootElement: {
+    name: "uni-editor",
+    class: UniEditorElement
+  },
   setup(props2, { emit: emit2 }) {
-    const rootRef = Vue.ref(null);
-    useQuill(props2);
-    useKeyboard$1(props2, rootRef);
-    return () => {
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n0 = Vue.createPlainElement("uni-editor", {
-          id: () => props2.id,
-          class: "ql-container"
-        }, null, true);
-        Vue.renderEffect(() => _setTemplateRef(_n0, rootRef));
-        return _n0;
-      })();
-    };
+    const rootRef = useEditor(props2);
+    const root = (() => {
+      const _setTemplateRef = Vue.createTemplateRefSetter();
+      const _n0 = _t0$a();
+      Vue.renderEffect(() => {
+        Vue.setProp(_n0, "id", props2.id);
+        _setTemplateRef(_n0, rootRef);
+      });
+      return _n0;
+    })();
+    Object.defineProperty(root, "uniTagName", uniTagName$8);
+    return root;
   }
 });
 const INFO_COLOR = "#10aeff";
@@ -4803,888 +6549,103 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-const index$r = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Icon",
-  props: {
-    type: {
-      type: String,
-      required: true,
-      default: ""
-    },
-    size: {
-      type: [String, Number],
-      default: 23
-    },
-    color: {
-      type: String,
-      default: ""
-    }
-  },
-  setup(props2) {
-    const rootRef = Vue.ref(null);
-    const path = Vue.computed(() => ICONS[props2.type]);
-    return () => {
-      const { value } = path;
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n1 = Vue.createPlainElement("uni-icon", null, Vue.extend(() => {
-          const _n0 = createNodes(() => value && value.d && createSvgIconVNode(value.d, props2.color || value.c, rpx2px(props2.size)));
-          return _n0;
-        }, { _: 1 }), true);
-        Vue.renderEffect(() => _setTemplateRef(_n1, rootRef));
-        return _n1;
-      })();
-    };
-  }
-});
-function throttle(fn, wait) {
-  let last = 0;
-  let timeout;
-  let waitCallback;
-  const newFn = function(...arg) {
-    const now = Date.now();
-    clearTimeout(timeout);
-    waitCallback = () => {
-      waitCallback = null;
-      last = now;
-      fn.apply(this, arg);
-    };
-    if (now - last < wait) {
-      timeout = setTimeout(waitCallback, wait - (now - last));
-      return;
-    }
-    waitCallback();
-  };
-  newFn.cancel = function() {
-    clearTimeout(timeout);
-    waitCallback = null;
-  };
-  newFn.flush = function() {
-    clearTimeout(timeout);
-    waitCallback && waitCallback();
-  };
-  return newFn;
-}
-function useUserAction() {
-  const state = Vue.reactive({
-    /**
-     * 是否用户激活
-     */
-    userAction: false
-  });
-  return {
-    state
-  };
-}
-function useScopedAttrs() {
-  const state = Vue.reactive({
-    attrs: {}
-  });
-  return {
-    state
-  };
-}
-function useFormField(nameKey, value) {
-  const uniForm = Vue.inject(
-    uniFormKey,
-    false
-    // remove warning
-  );
-  if (!uniForm) {
-    return;
-  }
-  const instance = Vue.getCurrentInstance();
-  const ctx = {
-    submit() {
-      const proxy = instance.proxy;
-      return [
-        proxy[nameKey],
-        shared.isString(value) ? proxy[value] : value.value
-      ];
-    },
-    reset() {
-      if (shared.isString(value)) {
-        instance.proxy[value] = "";
-      } else {
-        value.value = "";
-      }
-    }
-  };
-  uniForm.addField(ctx);
-}
-function getSelectedTextRange(_, resolve) {
-  const activeElement = document.activeElement;
-  if (!activeElement) {
-    return resolve({});
-  }
-  const data = {};
-  if (["input", "textarea"].includes(activeElement.tagName.toLowerCase())) {
-    data.start = activeElement.selectionStart;
-    data.end = activeElement.selectionEnd;
-  }
-  resolve(data);
-}
-const UniViewJSBridgeSubscribe = function() {
-  registerViewMethod(
-    getCurrentPageId(),
-    "getSelectedTextRange",
-    getSelectedTextRange
-  );
-};
-function getValueString(value, type, maxlength) {
-  if (type === "number" && isNaN(Number(value))) {
-    value = "";
-  }
-  const valueStr = value === null || value === void 0 ? "" : String(value);
-  if (maxlength == void 0) {
-    return valueStr;
-  }
-  return valueStr.slice(0, maxlength);
-}
-const INPUT_MODES = [
-  "none",
-  "text",
-  "decimal",
-  "numeric",
-  "tel",
-  "search",
-  "email",
-  "url"
-];
-const props$l = /* @__PURE__ */ shared.extend(
-  {},
-  {
-    name: {
-      type: String,
-      default: ""
-    },
-    modelValue: {
-      type: [String, Number]
-    },
-    value: {
-      type: [String, Number]
-    },
-    disabled: {
-      type: [Boolean, String],
-      default: false
-    },
-    /**
-     * 已废弃属性，用于历史兼容
-     */
-    autoFocus: {
-      type: [Boolean, String],
-      default: false
-    },
-    focus: {
-      type: [Boolean, String],
-      default: false
-    },
-    cursor: {
-      type: [Number, String],
-      default: -1
-    },
-    selectionStart: {
-      type: [Number, String],
-      default: -1
-    },
-    selectionEnd: {
-      type: [Number, String],
-      default: -1
-    },
-    type: {
-      type: String,
-      default: "text"
-    },
-    password: {
-      type: [Boolean, String],
-      default: false
-    },
-    placeholder: {
-      type: String,
-      default: ""
-    },
-    placeholderStyle: {
-      type: String,
-      default: ""
-    },
-    placeholderClass: {
-      type: String,
-      default: ""
-    },
-    maxlength: {
-      type: [Number, String],
-      default: Infinity
-    },
-    confirmType: {
-      type: String,
-      default: "done"
-    },
-    confirmHold: {
-      type: Boolean,
-      default: false
-    },
-    ignoreCompositionEvent: {
-      type: Boolean,
-      default: true
-    },
-    step: {
-      type: String,
-      default: "0.000000000000000001"
-    },
-    inputmode: {
-      type: String,
-      default: void 0,
-      validator: (value) => !!~INPUT_MODES.indexOf(value)
-    },
-    cursorColor: {
-      type: String,
-      default: ""
-    }
-  },
-  props$n
-);
-const emit = [
-  "input",
-  "focus",
-  "blur",
-  "update:value",
-  "update:modelValue",
-  "update:focus",
-  "compositionstart",
-  "compositionupdate",
-  "compositionend",
-  ...emit$1
-];
-function useBase(props2, rootRef, emit2) {
-  const fieldRef = Vue.ref(null);
-  const trigger = useCustomEvent(rootRef, emit2);
-  const selectionStart = Vue.computed(() => {
-    const selectionStart2 = Number(props2.selectionStart);
-    return isNaN(selectionStart2) ? -1 : selectionStart2;
-  });
-  const selectionEnd = Vue.computed(() => {
-    const selectionEnd2 = Number(props2.selectionEnd);
-    return isNaN(selectionEnd2) ? -1 : selectionEnd2;
-  });
-  const cursor = Vue.computed(() => {
-    const cursor2 = Number(props2.cursor);
-    return isNaN(cursor2) ? -1 : cursor2;
-  });
-  const maxlength = Vue.computed(() => {
-    var maxlength2 = Number(props2.maxlength);
-    {
-      return isNaN(maxlength2) || maxlength2 < 0 ? Infinity : Math.floor(maxlength2);
-    }
-  });
-  let value = "";
-  {
-    const modelValueString = getValueString(
-      props2.modelValue,
-      props2.type,
-      maxlength.value
-    );
-    const valueString = getValueString(props2.value, props2.type, maxlength.value);
-    value = props2.modelValue !== void 0 ? modelValueString !== null && modelValueString !== void 0 ? modelValueString : valueString : valueString;
-  }
-  const state = Vue.reactive({
-    value,
-    valueOrigin: value,
-    maxlength,
-    focus: props2.focus,
-    composing: false,
-    selectionStart,
-    selectionEnd,
-    cursor
-  });
-  Vue.watch(
-    () => state.focus,
-    (val) => emit2("update:focus", val)
-  );
-  Vue.watch(
-    () => state.maxlength,
-    (val) => state.value = state.value.slice(0, val),
-    {
-      immediate: true
-    }
-  );
-  return {
-    fieldRef,
-    state,
-    trigger
-  };
-}
-function useValueSync(props2, state, emit2, trigger, fieldRef) {
-  let valueChangeFn = null;
-  {
-    valueChangeFn = throttle((val) => {
-      state.value = getValueString(val, props2.type, state.maxlength);
-    }, 100);
-  }
-  Vue.watch(() => props2.modelValue, valueChangeFn);
-  Vue.watch(() => props2.value, valueChangeFn);
-  const triggerInputFn = throttle((event, detail) => {
-    valueChangeFn.cancel();
-    emit2("update:modelValue", detail.value);
-    emit2("update:value", detail.value);
-    trigger("input", event, detail);
-  }, 100);
-  const triggerInput = (event, detail, force) => {
-    valueChangeFn.cancel();
-    detail.value;
-    triggerInputFn(event, detail);
-    if (force) {
-      triggerInputFn.flush();
-    }
-  };
-  return {
-    trigger,
-    triggerInput
-  };
-}
-function useAutoFocus(props2, fieldRef) {
-  useUserAction();
-  const needFocus = Vue.computed(() => props2.autoFocus || props2.focus);
-  function focus() {
-    if (!needFocus.value) {
-      return;
-    }
-    const field = fieldRef.value;
-    if (!field || false) {
-      setTimeout(focus, 100);
-      return;
-    }
-    {
-      field.focus();
-    }
-  }
-  function blur() {
-    const field = fieldRef.value;
-    if (field) {
-      field.blur();
-    }
-  }
-  Vue.watch(
-    () => props2.focus,
-    (value) => {
-      if (value) {
-        focus();
-      } else {
-        blur();
-      }
-    }
-  );
-}
-function useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput) {
-  function checkSelection() {
-    const field = fieldRef.value;
-    if (field && state.focus && state.selectionStart > -1 && state.selectionEnd > -1 && field.type !== "number") {
-      field.selectionStart = state.selectionStart;
-      field.selectionEnd = state.selectionEnd;
-    }
-  }
-  function checkCursor() {
-    const field = fieldRef.value;
-    if (field && state.focus && state.selectionStart < 0 && state.selectionEnd < 0 && state.cursor > -1 && field.type !== "number") {
-      field.selectionEnd = field.selectionStart = state.cursor;
-    }
-  }
-  function getFieldSelectionEnd(field) {
-    if (field.type === "number") {
-      return null;
-    } else {
-      return field.selectionEnd;
-    }
-  }
-  function initField() {
-    const field = fieldRef.value;
-    if (!field)
-      return;
-    const onFocus = function(event) {
-      state.focus = true;
-      trigger("focus", event, {
-        value: state.value
-      });
-      checkSelection();
-      checkCursor();
-    };
-    const onInput = function(event, force) {
-      event.stopPropagation();
-      if (shared.isFunction(beforeInput) && beforeInput(event, state) === false) {
-        return;
-      }
-      state.value = field.value;
-      if (!state.composing || !props2.ignoreCompositionEvent) {
-        triggerInput(
-          event,
-          {
-            value: field.value,
-            cursor: getFieldSelectionEnd(field)
-          },
-          force
-        );
-      }
-    };
-    const onBlur = function(event) {
-      if (state.composing) {
-        state.composing = false;
-        onInput(event, true);
-      }
-      state.focus = false;
-      trigger("blur", event, {
-        value: state.value,
-        cursor: getFieldSelectionEnd(event.target)
-      });
-    };
-    field.addEventListener("change", (event) => event.stopPropagation());
-    field.addEventListener("focus", onFocus);
-    field.addEventListener("blur", onBlur);
-    field.addEventListener("input", onInput);
-    field.addEventListener("compositionstart", (event) => {
-      event.stopPropagation();
-      state.composing = true;
-      _onComposition(event);
-    });
-    field.addEventListener("compositionend", (event) => {
-      event.stopPropagation();
-      if (state.composing) {
-        state.composing = false;
-        onInput(event);
-      }
-      _onComposition(event);
-    });
-    field.addEventListener("compositionupdate", _onComposition);
-    function _onComposition(event) {
-      if (!props2.ignoreCompositionEvent) {
-        trigger(event.type, event, {
-          value: event.data
-        });
-      }
-    }
-  }
-  Vue.watch([() => state.selectionStart, () => state.selectionEnd], checkSelection);
-  Vue.watch(() => state.cursor, checkCursor);
-  Vue.watch(() => fieldRef.value, initField);
-}
-function useField(props2, rootRef, emit2, beforeInput) {
-  UniViewJSBridgeSubscribe();
-  const { fieldRef, state, trigger } = useBase(props2, rootRef, emit2);
-  const { triggerInput } = useValueSync(props2, state, emit2, trigger);
-  useAutoFocus(props2, fieldRef);
-  useKeyboard$1(props2, fieldRef);
-  const { state: scopedAttrsState } = useScopedAttrs();
-  useFormField("name", state);
-  useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput);
-  const fixDisabledColor = false;
-  return {
-    fieldRef,
-    state,
-    scopedAttrsState,
-    fixDisabledColor,
-    trigger
-  };
-}
-uniShared.once(() => {
-});
-const _t0$k = Vue.template("<input tabindex=-1 class=uni-input-input>", 1);
-const _t1$b = Vue.template("<input class=uni-input-input>", 1);
-const _t2$5 = Vue.template("<form action class=uni-input-form> ");
-const _t3$5 = Vue.template("<div class=uni-input-wrapper><div> </div>");
-const props$k = /* @__PURE__ */ shared.extend({}, props$l, {
-  placeholderClass: {
+const iconProps = {
+  type: {
     type: String,
-    default: "input-placeholder"
+    required: true,
+    default: ""
   },
-  textContentType: {
+  size: {
+    type: [String, Number],
+    default: 23
+  },
+  color: {
     type: String,
     default: ""
   }
-});
-function isPaste(event) {
-  return event.inputType === "insertFromPaste";
-}
-function useCache(props2, type) {
-  if (type.value === "number") {
-    const value = typeof props2.modelValue === "undefined" ? props2.value : props2.modelValue;
-    const cache = Vue.ref(typeof value !== "undefined" && value !== null ? value.toLocaleString() : "");
-    Vue.watch(() => props2.modelValue, (value2) => {
-      cache.value = typeof value2 !== "undefined" && value2 !== null ? value2.toLocaleString() : "";
-    });
-    Vue.watch(() => props2.value, (value2) => {
-      cache.value = typeof value2 !== "undefined" && value2 !== null ? value2.toLocaleString() : "";
-    });
-    return cache;
-  } else {
-    return Vue.ref("");
-  }
-}
-const Input = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Input",
-  props: props$k,
-  emits: ["confirm", ...emit],
-  setup(props2, { emit: emit2, expose }) {
-    const INPUT_TYPES = [
-      "text",
-      "number",
-      "idcard",
-      "digit",
-      "password",
-      "tel"
-    ];
-    const AUTOCOMPLETES = ["off", "one-time-code"];
-    const type = Vue.computed(() => {
-      let type2 = "";
-      switch (props2.type) {
-        case "text":
-          type2 = "text";
-          if (props2.confirmType === "search") {
-            type2 = "search";
-          }
-          break;
-        case "idcard":
-          type2 = "text";
-          break;
-        case "digit":
-          type2 = "number";
-          break;
-        case "none":
-          type2 = "text";
-          break;
-        default:
-          type2 = INPUT_TYPES.includes(props2.type) ? props2.type : "text";
-          break;
-      }
-      return props2.password ? "password" : type2;
-    });
-    const autocomplete = Vue.computed(() => {
-      const camelizeIndex = AUTOCOMPLETES.indexOf(props2.textContentType);
-      const kebabCaseIndex = AUTOCOMPLETES.indexOf(shared.hyphenate(props2.textContentType));
-      const index2 = camelizeIndex !== -1 ? camelizeIndex : kebabCaseIndex !== -1 ? kebabCaseIndex : 0;
-      return AUTOCOMPLETES[index2];
-    });
-    const inputmode = Vue.computed(() => {
-      if (props2.inputmode !== void 0) {
-        return props2.inputmode;
-      }
-      if (INPUT_MODES.includes(props2.type)) {
-        return props2.type;
-      }
-      let inputmodeMap = {};
-      {
-        inputmodeMap = {
-          number: "numeric",
-          digit: "decimal",
-          idcard: "text"
-        };
-      }
-      return inputmodeMap[props2.type];
-    });
-    let cache = useCache(props2, type);
-    const rootRef = Vue.ref(null);
-    const { fieldRef, state, scopedAttrsState, fixDisabledColor, trigger } = useField(props2, rootRef, emit2, (event, state2) => {
-      {
-        return;
-      }
-    });
-    Vue.watch(() => state.value, (value) => {
-      if (props2.type === "number" && !(cache.value === "-" && value === "")) {
-        cache.value = value.toString();
-      }
-    });
-    Vue.watch(() => props2.maxlength, (length) => {
-      length = parseInt(length, 10);
-      const realValue = state.value.slice(0, length);
-      realValue !== state.value && (state.value = realValue);
-    });
-    const NUMBER_TYPES = ["number", "digit"];
-    const step = Vue.computed(() => NUMBER_TYPES.includes(props2.type) ? props2.step : "");
-    function onKeyUpEnter(event) {
-      if (event.key !== "Enter") {
-        return;
-      }
-      const input = event.target;
-      event.stopPropagation();
-      trigger("confirm", event, { value: input.value });
-      !props2.confirmHold && input.blur();
-    }
-    expose({ $triggerInput: (detail) => {
-      emit2("update:modelValue", detail.value);
-      emit2("update:value", detail.value);
-      state.value = detail.value;
-    } });
-    return () => {
-      let inputNode = props2.disabled && fixDisabledColor ? (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n0 = _t0$k();
-        Vue.setBlockKey(_n0, "disabled-input");
-        Vue.on(
-          _n0,
-          // fix: 禁止 readonly 状态获取焦点
-          "focus",
-          (event) => event.target.blur()
-        );
-        Vue.renderEffect(() => {
-          Vue.setValue(_n0, state.value);
-          Vue.setProp(_n0, "readonly", !!props2.disabled);
-          Vue.setProp(_n0, "type", type.value);
-          Vue.setProp(_n0, "maxlength", state.maxlength);
-          Vue.setProp(_n0, "step", step.value);
-          Vue.setStyle(_n0, props2.cursorColor ? { caretColor: props2.cursorColor } : {});
-          Vue.setProp(_n0, "inputmode", inputmode.value);
-          _setTemplateRef(_n0, fieldRef);
-        });
-        return _n0;
-      })() : (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n0 = _t1$b();
-        Vue.setBlockKey(_n0, "input");
-        Vue.on(_n0, "input", Vue.withModifiers((event) => {
-          const value = event.target.value.toString();
-          if (type.value === "number" && state.maxlength > 0 && value.length > state.maxlength) {
-            if (isPaste(event)) {
-              state.value = value.slice(0, state.maxlength);
-            }
-            return;
-          }
-          if (value.length === 0 && event.inputType === "insertText" && event.data === ".") {
-            return;
-          }
-          state.value = value;
-        }, ["stop"]));
-        Vue.on(_n0, "keyup", onKeyUpEnter);
-        Vue.renderEffect(() => {
-          Vue.setValue(_n0, state.value);
-          Vue.setProp(_n0, "disabled", !!props2.disabled);
-          Vue.setProp(_n0, "type", type.value);
-          Vue.setProp(_n0, "maxlength", state.maxlength);
-          Vue.setProp(_n0, "step", step.value);
-          Vue.setProp(_n0, "enterkeyhint", props2.confirmType);
-          Vue.setProp(_n0, "pattern", props2.type === "number" ? "[0-9]*" : void 0);
-          Vue.setStyle(_n0, props2.cursorColor ? { caretColor: props2.cursorColor } : {});
-          Vue.setProp(_n0, "autocomplete", autocomplete.value);
-          Vue.setProp(_n0, "inputmode", inputmode.value);
-          _setTemplateRef(_n0, fieldRef);
-        });
-        return _n0;
-      })();
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n7 = Vue.createPlainElement("uni-input", null, () => {
-          const _n6 = _t3$5();
-          const _n0 = Vue.child(_n6);
-          Vue.applyVShow(_n0, () => !(state.value.length || cache.value === "-" || cache.value.includes(".")));
-          const _x0 = Vue.txt(_n0);
-          setNodes(_x0, () => props2.placeholder);
-          Vue.renderEffect(() => Vue.setDynamicProps(_n0, [scopedAttrsState.attrs, {
-            style: props2.placeholderStyle,
-            class: ["uni-input-placeholder", props2.placeholderClass]
-          }]));
-          Vue.setInsertionState(_n6, 1);
-          Vue.createIf(() => props2.confirmType === "search", () => {
-            const _n3 = _t2$5();
-            Vue.on(_n3, "submit", (event) => event.preventDefault());
-            const _x3 = Vue.txt(_n3);
-            setNodes(_x3, () => inputNode);
-            return _n3;
-          }, () => {
-            const _n5 = createNodes(() => inputNode);
-            return _n5;
-          }, 265);
-          return _n6;
-        }, true);
-        Vue.renderEffect(() => _setTemplateRef(_n7, rootRef));
-        return _n7;
-      })();
-    };
-  }
-});
-function entries(obj) {
-  return Object.keys(obj).map((key) => [key, obj[key]]);
-}
-const DEFAULT_EXCLUDE_KEYS = ["class", "style"];
-const LISTENER_PREFIX = /^on[A-Z]+/;
-const useAttrs = (params = {}) => {
-  const { excludeListeners = false, excludeKeys = [] } = params;
-  const instance = Vue.getCurrentInstance();
-  const attrs2 = Vue.shallowRef({});
-  const listeners = Vue.shallowRef({});
-  const excludeAttrs = Vue.shallowRef({});
-  const allExcludeKeys = excludeKeys.concat(DEFAULT_EXCLUDE_KEYS);
-  instance.attrs = Vue.reactive(instance.attrs);
-  Vue.watchEffect(() => {
-    const res = entries(instance.attrs).reduce(
-      (acc, [key, val]) => {
-        if (allExcludeKeys.includes(key)) {
-          acc.exclude[key] = val;
-        } else if (LISTENER_PREFIX.test(key)) {
-          if (!excludeListeners) {
-            acc.attrs[key] = val;
-          }
-          acc.listeners[key] = val;
-        } else {
-          acc.attrs[key] = val;
-        }
-        return acc;
-      },
-      {
-        exclude: {},
-        attrs: {},
-        listeners: {}
-      }
-    );
-    attrs2.value = res.attrs;
-    listeners.value = res.listeners;
-    excludeAttrs.value = res.exclude;
-  });
-  return { $attrs: attrs2, $listeners: listeners, $excludeAttrs: excludeAttrs };
 };
-const _t0$j = Vue.template("<div><div></div></div>");
-const _t1$a = Vue.template("<div><div>");
-const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
-  name: "ResizeSensor",
-  props: { initial: {
-    type: Boolean,
-    default: false
-  } },
-  emits: ["resize"],
-  setup(props2, { emit: emit2 }) {
-    const rootRef = Vue.ref(null);
-    const reset = useResizeSensorReset(rootRef);
-    const update = useResizeSensorUpdate(rootRef, emit2, reset);
-    return () => (() => {
-      const _setTemplateRef = Vue.createTemplateRefSetter();
-      const _n2 = Vue.createPlainElement("uni-resize-sensor", { onAnimationstartOnce: () => update }, () => {
-        const _n0 = _t0$j();
-        const _n1 = _t1$a();
-        Vue.on(_n0, "scroll", update);
-        Vue.on(_n1, "scroll", update);
-        return [_n0, _n1];
-      }, true);
-      Vue.renderEffect(() => _setTemplateRef(_n2, rootRef));
-      return _n2;
+function useIcon(props2) {
+  return Vue.computed(() => ICONS[props2.type]);
+}
+const _t0$9 = Vue.template("<div uni-icon uni-view> ", 1);
+class UniIconElement extends UniViewElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniIconElement && value instanceof UniViewElement && value.hasAttribute("uni-icon") || Function.prototype[Symbol.hasInstance].call(this, value);
+  }
+}
+const uniTagName$7 = { value: "ICON" };
+const indexVapor$7 = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Icon",
+  props: iconProps,
+  rootElement: {
+    name: "uni-icon",
+    class: UniIconElement
+  },
+  setup(props2) {
+    const path = useIcon(props2);
+    const root = (() => {
+      const _n0 = _t0$9();
+      const _x0 = Vue.txt(_n0);
+      setNodes(_x0, () => path.value && path.value.d && createSvgIconVNode(path.value.d, props2.color || path.value.c, rpx2px(props2.size)));
+      return _n0;
     })();
+    Object.defineProperty(root, "uniTagName", uniTagName$7);
+    return root;
   }
 });
-function useResizeSensorUpdate(rootRef, emit2, reset) {
-  const size = Vue.reactive({
-    width: -1,
-    height: -1
-  });
-  Vue.watch(() => shared.extend({}, size), (value) => emit2("resize", value));
-  return () => {
-    const rootEl = rootRef.value;
-    if (!rootEl)
-      return;
-    const rect = rootEl.getBoundingClientRect();
-    size.width = rect.width;
-    size.height = rect.height;
-    reset();
-  };
-}
-function useResizeSensorReset(rootRef) {
-  return () => {
-    const { firstElementChild, lastElementChild } = rootRef.value;
-    firstElementChild.scrollLeft = 1e5;
-    firstElementChild.scrollTop = 1e5;
-    lastElementChild.scrollLeft = 1e5;
-    lastElementChild.scrollTop = 1e5;
-  };
-}
-function flatVNode(nodes) {
-  const array = [];
-  if (shared.isArray(nodes)) {
-    nodes.forEach((vnode) => {
-      if (Vue.isVNode(vnode)) {
-        if (vnode.type === Vue.Fragment) {
-          array.push(...flatVNode(vnode.children));
-        } else {
-          array.push(vnode);
-        }
-      } else if (shared.isArray(vnode)) {
-        array.push(...flatVNode(vnode));
-      }
-    });
-  }
-  return array;
-}
 const movableAreaProps = {
   scaleArea: {
     type: Boolean,
     default: false
   }
 };
-const index$q = /* @__PURE__ */ defineBuiltInComponent({
-  inheritAttrs: false,
-  name: "MovableArea",
-  props: movableAreaProps,
-  setup(props2, { slots }) {
-    const rootRef = Vue.ref(null);
-    const _isMounted = Vue.ref(false);
-    let { setContexts, events: movableAreaEvents } = useMovableAreaState(props2, rootRef);
-    const { $listeners, $attrs, $excludeAttrs } = useAttrs();
-    const _listeners = $listeners.value;
-    let events = [
-      "onTouchstart",
-      "onTouchmove",
-      "onTouchend"
-    ];
-    events.forEach((event) => {
-      let existing = _listeners[event];
-      let ours = movableAreaEvents[`_${event}`];
-      _listeners[event] = existing ? [].concat(existing, ours) : ours;
-    });
-    let movableViewItems = [];
-    const originMovableViewContexts = [];
-    function updateMovableViewContexts() {
-      const contexts = [];
-      for (let index2 = 0; index2 < movableViewItems.length; index2++) {
-        let movableViewItem = movableViewItems[index2];
-        {
-          movableViewItem = movableViewItem.el;
-        }
-        const movableViewContext = originMovableViewContexts.find((context) => movableViewItem === context.rootRef.value);
-        if (movableViewContext) {
-          contexts.push(Vue.markRaw(movableViewContext));
-        }
-      }
-      setContexts(contexts);
+function useMovableAreaChildren$1(rootRef, slots, setContexts) {
+  const contexts = [];
+  setContexts(contexts);
+  const add = (context) => {
+    var _a;
+    if (((_a = context.rootRef.value) == null ? void 0 : _a.parentElement) === rootRef.value) {
+      contexts.push(Vue.markRaw(context));
     }
-    const addMovableViewContext = (movableViewContext) => {
-      originMovableViewContexts.push(movableViewContext);
-      updateMovableViewContexts();
-    };
-    const removeMovableViewContext = (movableViewContext) => {
-      const index2 = originMovableViewContexts.indexOf(movableViewContext);
-      if (index2 >= 0) {
-        originMovableViewContexts.splice(index2, 1);
-        updateMovableViewContexts();
-      }
-    };
-    Vue.provide("_isMounted", _isMounted);
-    Vue.provide("movableAreaRootRef", rootRef);
-    Vue.provide("addMovableViewContext", addMovableViewContext);
-    Vue.provide("removeMovableViewContext", removeMovableViewContext);
-    return () => {
-      const defaultSlots = slots.default && slots.default();
-      {
-        movableViewItems = flatVNode(defaultSlots);
-      }
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n2 = Vue.createPlainElement("uni-movable-area", { $: [
-          () => $attrs.value,
-          () => $excludeAttrs.value,
-          () => _listeners
-        ] }, () => {
-          const _n0 = createComponent(ResizeSensor, { onResize: () => movableAreaEvents._resize });
-          const _n1 = createNodes(() => movableViewItems);
-          return [_n0, _n1];
-        }, true);
-        Vue.renderEffect(() => _setTemplateRef(_n2, rootRef));
-        return _n2;
-      })();
-    };
-  }
-});
+  };
+  const remove = (context) => {
+    const index2 = contexts.indexOf(context);
+    if (index2 >= 0) {
+      contexts.splice(index2, 1);
+    }
+  };
+  Vue.provide("addMovableViewContext", add);
+  Vue.provide("removeMovableViewContext", remove);
+  return () => slots.default && slots.default();
+}
+const useMovableAreaChildren = useMovableAreaChildren$1;
+function useMovableArea(props2, slots) {
+  const rootRef = Vue.ref(null);
+  const _isMounted = Vue.ref(false);
+  let { setContexts, events: movableAreaEvents } = useMovableAreaState(
+    props2,
+    rootRef
+  );
+  const { $listeners, $attrs, $excludeAttrs } = useAttrs();
+  const _listeners = $listeners.value;
+  let events = ["onTouchstart", "onTouchmove", "onTouchend"];
+  events.forEach((event) => {
+    let existing = _listeners[event];
+    let ours = movableAreaEvents[`_${event}`];
+    _listeners[event] = existing ? [].concat(existing, ours) : ours;
+  });
+  const renderChildren = useMovableAreaChildren(rootRef, slots, setContexts);
+  Vue.provide("_isMounted", _isMounted);
+  Vue.provide("movableAreaRootRef", rootRef);
+  return {
+    rootRef,
+    renderChildren,
+    movableAreaEvents,
+    $attrs,
+    $excludeAttrs,
+    _listeners
+  };
+}
 function calc(e2) {
   return Math.sqrt(e2.x * e2.x + e2.y * e2.y);
 }
@@ -5727,8 +6688,8 @@ function useMovableAreaState(props2, rootRef) {
     }
     return get(target);
   }
-  const _onTouchstart = withWebEvent((t11) => {
-    let i = t11.touches;
+  const _onTouchstart = withWebEvent((t12) => {
+    let i = t12.touches;
     if (i) {
       if (i.length > 1) {
         let r = {
@@ -5746,11 +6707,11 @@ function useMovableAreaState(props2, rootRef) {
       }
     }
   });
-  const _onTouchmove = withWebEvent((t11) => {
-    let n = t11.touches;
+  const _onTouchmove = withWebEvent((t12) => {
+    let n = t12.touches;
     if (n) {
       if (n.length > 1) {
-        t11.preventDefault();
+        t12.preventDefault();
         let i = {
           x: n[1].pageX - n[0].pageX,
           y: n[1].pageY - n[0].pageY
@@ -5765,8 +6726,8 @@ function useMovableAreaState(props2, rootRef) {
     }
   });
   const _onTouchend = withWebEvent((e2) => {
-    let t11 = e2.touches;
-    if (!(t11 && t11.length)) {
+    let t12 = e2.touches;
+    if (!(t12 && t12.length)) {
       if (e2.changedTouches) {
         gapV.x = 0;
         gapV.y = 0;
@@ -5817,15 +6778,57 @@ function useMovableAreaState(props2, rootRef) {
     }
   };
 }
-function e(e2, t11, n) {
-  return e2 > t11 - n && e2 < t11 + n;
+const _t0$8 = Vue.template("<div><!> ", 1);
+class UniMovableAreaElement extends UniViewElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniMovableAreaElement && value instanceof UniViewElement && value.hasAttribute("uni-movable-area") || Function.prototype[Symbol.hasInstance].call(this, value);
+  }
 }
-function t(t11, n) {
-  return e(t11, 0, n);
+const uniTagName$6 = { value: "MOVABLE-AREA" };
+const indexVapor$6 = /* @__PURE__ */ defineBuiltInComponent({
+  inheritAttrs: false,
+  name: "MovableArea",
+  props: movableAreaProps,
+  rootElement: {
+    name: "uni-movable-area",
+    class: UniMovableAreaElement
+  },
+  setup(props2, { slots }) {
+    const { rootRef, renderChildren, movableAreaEvents, $attrs, $excludeAttrs, _listeners } = useMovableArea(props2, slots);
+    const movableViewItems = renderChildren();
+    const root = (() => {
+      const _setTemplateRef = Vue.createTemplateRefSetter();
+      const _n3 = _t0$8();
+      const _n2 = Vue.child(_n3);
+      const _n1 = Vue.next(_n2, true);
+      Vue.renderEffect(() => Vue.setDynamicProps(_n3, [
+        {
+          "uni-movable-area": "",
+          "uni-view": ""
+        },
+        $attrs.value,
+        $excludeAttrs.value,
+        _listeners
+      ]));
+      Vue.setInsertionState(_n3, _n2);
+      createComponent(ResizeSensor, { onResize: () => movableAreaEvents._resize });
+      setNodes(_n1, () => movableViewItems);
+      Vue.renderEffect(() => _setTemplateRef(_n3, rootRef));
+      return _n3;
+    })();
+    Object.defineProperty(root, "uniTagName", uniTagName$6);
+    return root;
+  }
+});
+function e(e2, t12, n) {
+  return e2 > t12 - n && e2 < t12 + n;
 }
-function Friction(e2, t11) {
+function t(t12, n) {
+  return e(t12, 0, n);
+}
+function Friction(e2, t12) {
   this._m = e2;
-  this._f = 1e3 * t11;
+  this._f = 1e3 * t12;
   this._startTime = 0;
   this._v = 0;
 }
@@ -5843,16 +6846,16 @@ Friction.prototype.setS = function(x, y) {
   this._x_s = x;
   this._y_s = y;
 };
-Friction.prototype.s = function(t11) {
-  if (void 0 === t11) {
-    t11 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
+Friction.prototype.s = function(t12) {
+  if (void 0 === t12) {
+    t12 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
   }
-  if (t11 > this._t) {
-    t11 = this._t;
-    this._lastDt = t11;
+  if (t12 > this._t) {
+    t12 = this._t;
+    this._lastDt = t12;
   }
-  let x = this._x_v * t11 + 0.5 * this._x_a * Math.pow(t11, 2) + this._x_s;
-  let y = this._y_v * t11 + 0.5 * this._y_a * Math.pow(t11, 2) + this._y_s;
+  let x = this._x_v * t12 + 0.5 * this._x_a * Math.pow(t12, 2) + this._x_s;
+  let y = this._y_v * t12 + 0.5 * this._y_a * Math.pow(t12, 2) + this._y_s;
   if (this._x_a > 0 && x < this._endPositionX || this._x_a < 0 && x > this._endPositionX) {
     x = this._endPositionX;
   }
@@ -5864,16 +6867,16 @@ Friction.prototype.s = function(t11) {
     y
   };
 };
-Friction.prototype.ds = function(t11) {
-  if (void 0 === t11) {
-    t11 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
+Friction.prototype.ds = function(t12) {
+  if (void 0 === t12) {
+    t12 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
   }
-  if (t11 > this._t) {
-    t11 = this._t;
+  if (t12 > this._t) {
+    t12 = this._t;
   }
   return {
-    dx: this._x_v + this._x_a * t11,
-    dy: this._y_v + this._y_a * t11
+    dx: this._x_v + this._x_a * t12,
+    dy: this._y_v + this._y_a * t12
   };
 };
 Friction.prototype.delta = function() {
@@ -5886,9 +6889,9 @@ Friction.prototype.dt = function() {
   return -this._x_v / this._x_a;
 };
 Friction.prototype.done = function() {
-  const t11 = e(this.s().x, this._endPositionX) || e(this.s().y, this._endPositionY) || this._lastDt === this._t;
+  const t12 = e(this.s().x, this._endPositionX) || e(this.s().y, this._endPositionY) || this._lastDt === this._t;
   this._lastDt = null;
-  return t11;
+  return t12;
 };
 Friction.prototype.setEnd = function(x, y) {
   this._endPositionX = x;
@@ -5906,7 +6909,7 @@ function Spring(m, k, c) {
   this._endPosition = 0;
   this._startTime = 0;
 }
-Spring.prototype._solve = function(e2, t11) {
+Spring.prototype._solve = function(e2, t12) {
   const n = this._c;
   const i = this._m;
   const r = this._k;
@@ -5914,70 +6917,70 @@ Spring.prototype._solve = function(e2, t11) {
   if (o === 0) {
     const a = -n / (2 * i);
     const s = e2;
-    const l = t11 / (a * e2);
+    const l = t12 / (a * e2);
     return {
       x: function(e3) {
         return (s + l * e3) * Math.pow(Math.E, a * e3);
       },
       dx: function(e3) {
-        const t12 = Math.pow(Math.E, a * e3);
-        return a * (s + l * e3) * t12 + l * t12;
+        const t13 = Math.pow(Math.E, a * e3);
+        return a * (s + l * e3) * t13 + l * t13;
       }
     };
   }
   if (o > 0) {
     const c = (-n - Math.sqrt(o)) / (2 * i);
     const u = (-n + Math.sqrt(o)) / (2 * i);
-    const d = (t11 - c * e2) / (u - c);
+    const d = (t12 - c * e2) / (u - c);
     const h = e2 - d;
     return {
       x: function(e3) {
-        let t12;
+        let t13;
         let n2;
         if (e3 === this._t) {
-          t12 = this._powER1T;
+          t13 = this._powER1T;
           n2 = this._powER2T;
         }
         this._t = e3;
-        if (!t12) {
-          t12 = this._powER1T = Math.pow(Math.E, c * e3);
+        if (!t13) {
+          t13 = this._powER1T = Math.pow(Math.E, c * e3);
         }
         if (!n2) {
           n2 = this._powER2T = Math.pow(Math.E, u * e3);
         }
-        return h * t12 + d * n2;
+        return h * t13 + d * n2;
       },
       dx: function(e3) {
-        let t12;
+        let t13;
         let n2;
         if (e3 === this._t) {
-          t12 = this._powER1T;
+          t13 = this._powER1T;
           n2 = this._powER2T;
         }
         this._t = e3;
-        if (!t12) {
-          t12 = this._powER1T = Math.pow(Math.E, c * e3);
+        if (!t13) {
+          t13 = this._powER1T = Math.pow(Math.E, c * e3);
         }
         if (!n2) {
           n2 = this._powER2T = Math.pow(Math.E, u * e3);
         }
-        return h * c * t12 + d * u * n2;
+        return h * c * t13 + d * u * n2;
       }
     };
   }
   const p2 = Math.sqrt(4 * i * r - n * n) / (2 * i);
   const f2 = -n / 2 * i;
   const v2 = e2;
-  const g2 = (t11 - f2 * e2) / p2;
+  const g2 = (t12 - f2 * e2) / p2;
   return {
     x: function(e3) {
       return Math.pow(Math.E, f2 * e3) * (v2 * Math.cos(p2 * e3) + g2 * Math.sin(p2 * e3));
     },
     dx: function(e3) {
-      const t12 = Math.pow(Math.E, f2 * e3);
+      const t13 = Math.pow(Math.E, f2 * e3);
       const n2 = Math.cos(p2 * e3);
       const i2 = Math.sin(p2 * e3);
-      return t12 * (g2 * p2 * n2 - v2 * p2 * i2) + f2 * t12 * (g2 * i2 + v2 * n2);
+      return t13 * (g2 * p2 * n2 - v2 * p2 * i2) + f2 * t13 * (g2 * i2 + v2 * n2);
     }
   };
 };
@@ -6038,9 +7041,9 @@ Spring.prototype.done = function(n) {
   }
   return e(this.x(), this._endPosition, 0.1) && t(this.dx(), 0.1);
 };
-Spring.prototype.reconfigure = function(m, t11, c) {
+Spring.prototype.reconfigure = function(m, t12, c) {
   this._m = m;
-  this._k = t11;
+  this._k = t12;
   this._c = c;
   if (!this.done()) {
     this._solution = this._solve(this.x() - this._endPosition, this.dx());
@@ -6054,11 +7057,11 @@ Spring.prototype.damping = function() {
   return this._c;
 };
 Spring.prototype.configuration = function() {
-  function e2(e3, t12) {
-    e3.reconfigure(1, t12, e3.damping());
+  function e2(e3, t13) {
+    e3.reconfigure(1, t13, e3.damping());
   }
-  function t11(e3, t12) {
-    e3.reconfigure(1, e3.springConstant(), t12);
+  function t12(e3, t13) {
+    e3.reconfigure(1, e3.springConstant(), t13);
   }
   return [
     {
@@ -6071,22 +7074,22 @@ Spring.prototype.configuration = function() {
     {
       label: "Damping",
       read: this.damping.bind(this),
-      write: t11.bind(this, this),
+      write: t12.bind(this, this),
       min: 1,
       max: 500
     }
   ];
 };
-function STD(e2, t11, n) {
-  this._springX = new Spring(e2, t11, n);
-  this._springY = new Spring(e2, t11, n);
-  this._springScale = new Spring(e2, t11, n);
+function STD(e2, t12, n) {
+  this._springX = new Spring(e2, t12, n);
+  this._springY = new Spring(e2, t12, n);
+  this._springScale = new Spring(e2, t12, n);
   this._startTime = 0;
 }
-STD.prototype.setEnd = function(e2, t11, n, i) {
+STD.prototype.setEnd = function(e2, t12, n, i) {
   const r = (/* @__PURE__ */ new Date()).getTime();
   this._springX.setEnd(e2, i, r);
-  this._springY.setEnd(t11, i, r);
+  this._springY.setEnd(t12, i, r);
   this._springScale.setEnd(n, i, r);
   this._startTime = r;
 };
@@ -6102,10 +7105,10 @@ STD.prototype.done = function() {
   const e2 = (/* @__PURE__ */ new Date()).getTime();
   return this._springX.done(e2) && this._springY.done(e2) && this._springScale.done(e2);
 };
-STD.prototype.reconfigure = function(e2, t11, n) {
-  this._springX.reconfigure(e2, t11, n);
-  this._springY.reconfigure(e2, t11, n);
-  this._springScale.reconfigure(e2, t11, n);
+STD.prototype.reconfigure = function(e2, t12, n) {
+  this._springX.reconfigure(e2, t12, n);
+  this._springY.reconfigure(e2, t12, n);
+  this._springScale.reconfigure(e2, t12, n);
 };
 const movableViewProps = {
   direction: {
@@ -6164,51 +7167,55 @@ const movableViewProps = {
 function v(a, b) {
   return +((1e3 * a - 1e3 * b) / 1e3).toFixed(1);
 }
-const index$p = /* @__PURE__ */ defineBuiltInComponent({
-  name: "MovableView",
-  props: movableViewProps,
-  emits: ["change", "scale"],
-  setup(props2, { slots, emit: emit2 }) {
-    const rootRef = Vue.ref(null);
-    const trigger = useCustomEvent(rootRef, emit2);
-    const { setParent } = useMovableViewState(props2, trigger, rootRef);
-    return () => {
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n2 = Vue.createPlainElement("uni-movable-view", null, () => {
-          const _n0 = createComponent(ResizeSensor, { onResize: () => setParent });
-          const _n1 = createNodes(() => slots.default && slots.default());
-          return [_n0, _n1];
-        }, true);
-        Vue.renderEffect(() => _setTemplateRef(_n2, rootRef));
-        return _n2;
-      })();
-    };
+function useMovableViewFrame() {
+  let frame;
+  let pending;
+  function run() {
+    const callback = pending;
+    frame = void 0;
+    pending = void 0;
+    callback == null ? void 0 : callback();
   }
-});
-let requesting = false;
-function _requestAnimationFrame(e2) {
-  if (!requesting) {
-    requesting = true;
-    requestAnimationFrame(function() {
-      e2();
-      requesting = false;
-    });
+  function cancel() {
+    if (frame !== void 0)
+      cancelAnimationFrame(frame);
+    frame = void 0;
+    pending = void 0;
   }
+  function flush() {
+    if (frame !== void 0)
+      cancelAnimationFrame(frame);
+    run();
+  }
+  return {
+    request(callback) {
+      pending = callback;
+      if (frame === void 0)
+        frame = requestAnimationFrame(run);
+    },
+    flush,
+    cancel
+  };
 }
-function p(t11, n) {
-  if (t11 === n) {
+function useMovableView(props2, emit2) {
+  const rootRef = Vue.ref(null);
+  const trigger = useCustomEvent(rootRef, emit2);
+  const { setParent } = useMovableViewState(props2, trigger, rootRef);
+  return { rootRef, setParent };
+}
+function p(t12, n) {
+  if (t12 === n) {
     return 0;
   }
-  let i = t11.offsetLeft;
-  return t11.offsetParent ? i += p(t11.offsetParent, n) : 0;
+  let i = t12.offsetLeft;
+  return t12.offsetParent ? i += p(t12.offsetParent, n) : 0;
 }
-function f(t11, n) {
-  if (t11 === n) {
+function f(t12, n) {
+  if (t12 === n) {
     return 0;
   }
-  let i = t11.offsetTop;
-  return t11.offsetParent ? i += f(t11.offsetParent, n) : 0;
+  let i = t12.offsetTop;
+  return t12.offsetParent ? i += f(t12.offsetParent, n) : 0;
 }
 function g(friction, execute, endCallback) {
   let record = {
@@ -6229,7 +7236,9 @@ function g(friction, execute, endCallback) {
       let isDone = friction2.done();
       if (!isDone) {
         if (!record2.cancelled) {
-          record2.id = requestAnimationFrame(fn.bind(null, record2, friction2, execute2, endCallback2));
+          record2.id = requestAnimationFrame(
+            fn.bind(null, record2, friction2, execute2, endCallback2)
+          );
         }
       }
       if (isDone && endCallback2) {
@@ -6304,27 +7313,42 @@ function useMovableViewLayout(rootRef, _scale, _adjustScale) {
   };
 }
 function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, maxY, minX, minY, _translateX, _translateY, _SFA, _FA, _adjustScale, trigger) {
+  const frame = useMovableViewFrame();
   const dampingNumber = Vue.computed(() => {
     let val = Number(props2.damping);
     return isNaN(val) ? 20 : val;
   });
-  const xMove = Vue.computed(() => props2.direction === "all" || props2.direction === "horizontal");
-  const yMove = Vue.computed(() => props2.direction === "all" || props2.direction === "vertical");
+  const xMove = Vue.computed(
+    () => props2.direction === "all" || props2.direction === "horizontal"
+  );
+  const yMove = Vue.computed(
+    () => props2.direction === "all" || props2.direction === "vertical"
+  );
   const xSync = Vue.ref(_getPx(props2.x));
   const ySync = Vue.ref(_getPx(props2.y));
-  Vue.watch(() => props2.x, (val) => {
-    xSync.value = _getPx(val);
-  });
-  Vue.watch(() => props2.y, (val) => {
-    ySync.value = _getPx(val);
-  });
+  Vue.watch(
+    () => props2.x,
+    (val) => {
+      xSync.value = _getPx(val);
+    }
+  );
+  Vue.watch(
+    () => props2.y,
+    (val) => {
+      ySync.value = _getPx(val);
+    }
+  );
   Vue.watch(xSync, (val) => {
     _setX(val);
   });
   Vue.watch(ySync, (val) => {
     _setY(val);
   });
-  const _STD = new STD(1, 9 * Math.pow(dampingNumber.value, 2) / 40, dampingNumber.value);
+  const _STD = new STD(
+    1,
+    9 * Math.pow(dampingNumber.value, 2) / 40,
+    dampingNumber.value
+  );
   function _getLimitXY(x, y) {
     let outOfBounds = false;
     if (x > maxX.value) {
@@ -6352,6 +7376,7 @@ function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, ma
     };
   }
   function FAandSFACancel() {
+    frame.cancel();
     if (_SFA) {
       _SFA.cancel();
     }
@@ -6381,15 +7406,19 @@ function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, ma
     _STD._springY._endPosition = _translateY.value;
     _STD._springScale._endPosition = _scale.value;
     _STD.setEnd(x, y, scale, 1);
-    _SFA = g(_STD, function() {
-      let data = _STD.x();
-      let x2 = data.x;
-      let y2 = data.y;
-      let scale2 = data.scale;
-      _setTransform(x2, y2, scale2, source, r, o);
-    }, function() {
-      _SFA.cancel();
-    });
+    _SFA = g(
+      _STD,
+      function() {
+        let data = _STD.x();
+        let x2 = data.x;
+        let y2 = data.y;
+        let scale2 = data.scale;
+        _setTransform(x2, y2, scale2, source, r, o);
+      },
+      function() {
+        _SFA.cancel();
+      }
+    );
   }
   function _setTransform(x, y, scale, source = "", r, o) {
     if (!(x !== null && x.toString() !== "NaN" && typeof x === "number")) {
@@ -6449,7 +7478,11 @@ function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, ma
         if (_SFA) {
           _SFA.cancel();
         }
-        _animationTo(val + _scaleOffset.x, ySync.value + _scaleOffset.y, _scale.value);
+        _animationTo(
+          val + _scaleOffset.x,
+          ySync.value + _scaleOffset.y,
+          _scale.value
+        );
       }
     }
     return val;
@@ -6462,12 +7495,17 @@ function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, ma
         if (_SFA) {
           _SFA.cancel();
         }
-        _animationTo(xSync.value + _scaleOffset.x, val + _scaleOffset.y, _scale.value);
+        _animationTo(
+          xSync.value + _scaleOffset.x,
+          val + _scaleOffset.y,
+          _scale.value
+        );
       }
     }
     return val;
   }
   return {
+    frame,
     FAandSFACancel,
     _getLimitXY,
     _animationTo,
@@ -6500,11 +7538,52 @@ function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScal
   Vue.watch(scaleMaxNumber, () => {
     _setScaleMinOrMax();
   });
-  Vue.watch(() => props2.scaleValue, (val) => {
-    scaleValueSync.value = Number(val) || 0;
-  });
-  const { _updateBoundary, _updateOffset, _updateWH, _scaleOffset, minX, minY, maxX, maxY } = useMovableViewLayout(rootRef, _scale, _adjustScale);
-  const { FAandSFACancel, _getLimitXY, _animationTo, _setTransform, _revise, dampingNumber, xMove, yMove, xSync, ySync, _STD } = useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, maxY, minX, minY, _translateX, _translateY, _SFA, _FA, _adjustScale, trigger);
+  Vue.watch(
+    () => props2.scaleValue,
+    (val) => {
+      scaleValueSync.value = Number(val) || 0;
+    }
+  );
+  const {
+    _updateBoundary,
+    _updateOffset,
+    _updateWH,
+    _scaleOffset,
+    minX,
+    minY,
+    maxX,
+    maxY
+  } = useMovableViewLayout(rootRef, _scale, _adjustScale);
+  const {
+    frame,
+    FAandSFACancel,
+    _getLimitXY,
+    _animationTo,
+    _setTransform,
+    _revise,
+    dampingNumber,
+    xMove,
+    yMove,
+    xSync,
+    ySync,
+    _STD
+  } = useMovableViewTransform(
+    rootRef,
+    props2,
+    _scaleOffset,
+    _scale,
+    maxX,
+    maxY,
+    minX,
+    minY,
+    _translateX,
+    _translateY,
+    _SFA,
+    _FA,
+    _adjustScale,
+    trigger
+  );
+  const _requestAnimationFrame2 = frame.request;
   function _updateScale(scale, animat) {
     if (props2.scale) {
       scale = _adjustScale(scale);
@@ -6516,7 +7595,7 @@ function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScal
       if (animat) {
         _animationTo(x, y, scale, "", true, true);
       } else {
-        _requestAnimationFrame(function() {
+        _requestAnimationFrame2(function() {
           _setTransform(x, y, scale, "", true, true);
         });
       }
@@ -6550,6 +7629,7 @@ function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScal
     return scale;
   }
   function _endScale() {
+    frame.flush();
     _isScaling.value = false;
     _updateOldScale(_scale.value);
   }
@@ -6566,6 +7646,7 @@ function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScal
     _endScale,
     _setScale,
     scaleValueSync,
+    frame,
     // layout
     _updateBoundary,
     _updateOffset,
@@ -6591,10 +7672,16 @@ function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScal
 }
 function useMovableViewState(props2, trigger, rootRef) {
   const _isMounted = Vue.inject("_isMounted", Vue.ref(false));
-  Vue.inject("addMovableViewContext", () => {
-  });
-  Vue.inject("removeMovableViewContext", () => {
-  });
+  Vue.inject(
+    "addMovableViewContext",
+    () => {
+    }
+  );
+  Vue.inject(
+    "removeMovableViewContext",
+    () => {
+    }
+  );
   let _scale = Vue.ref(1);
   let _oldScale = Vue.ref(1);
   let _isScaling = Vue.ref(false);
@@ -6607,10 +7694,52 @@ function useMovableViewState(props2, trigger, rootRef) {
     return isNaN(val) || val <= 0 ? 2 : val;
   });
   new Friction(1, frictionNumber.value);
-  Vue.watch(() => props2.disabled, () => {
-    __handleTouchStart();
-  });
-  const { _updateOldScale, _endScale, _setScale, scaleValueSync, _updateBoundary, _updateOffset, _updateWH, _scaleOffset, minX, minY, maxX, maxY, FAandSFACancel, _getLimitXY, _setTransform, _revise, dampingNumber, xMove, yMove, xSync, ySync, _STD } = useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScaling, _translateX, _translateY, _SFA, _FA);
+  Vue.watch(
+    () => props2.disabled,
+    () => {
+      __handleTouchStart();
+    }
+  );
+  const {
+    // scale
+    _updateOldScale,
+    _endScale,
+    _setScale,
+    scaleValueSync,
+    frame,
+    // layout
+    _updateBoundary,
+    _updateOffset,
+    _updateWH,
+    _scaleOffset,
+    minX,
+    minY,
+    maxX,
+    maxY,
+    // transform
+    FAandSFACancel,
+    _getLimitXY,
+    _setTransform,
+    _revise,
+    dampingNumber,
+    xMove,
+    yMove,
+    xSync,
+    ySync,
+    _STD
+  } = useMovableViewInit(
+    props2,
+    rootRef,
+    trigger,
+    _scale,
+    _oldScale,
+    _isScaling,
+    _translateX,
+    _translateY,
+    _SFA,
+    _FA
+  );
+  frame.request;
   function __handleTouchStart() {
     if (!_isScaling.value) {
       if (!props2.disabled) {
@@ -6634,892 +7763,51 @@ function useMovableViewState(props2, trigger, rootRef) {
     _updateOffset();
     _updateWH(scale);
     _updateBoundary();
-    let limitXY = _getLimitXY(xSync.value + _scaleOffset.x, ySync.value + _scaleOffset.y);
+    let limitXY = _getLimitXY(
+      xSync.value + _scaleOffset.x,
+      ySync.value + _scaleOffset.y
+    );
     let x = limitXY.x;
     let y = limitXY.y;
     _setTransform(x, y, scale, "", true);
     _updateOldScale(scale);
   }
-  return { setParent };
-}
-const OPEN_TYPES = [
-  "navigate",
-  "redirect",
-  "switchTab",
-  "reLaunch",
-  "navigateBack"
-];
-const ANIMATION_IN = [
-  "slide-in-right",
-  "slide-in-left",
-  "slide-in-top",
-  "slide-in-bottom",
-  "fade-in",
-  "zoom-out",
-  "zoom-fade-out",
-  "pop-in",
-  "none"
-];
-const ANIMATION_OUT = [
-  "slide-out-right",
-  "slide-out-left",
-  "slide-out-top",
-  "slide-out-bottom",
-  "fade-out",
-  "zoom-in",
-  "zoom-fade-in",
-  "pop-out",
-  "none"
-];
-const navigatorProps = {
-  hoverClass: {
-    type: String,
-    default: "navigator-hover"
-  },
-  url: {
-    type: String,
-    default: ""
-  },
-  openType: {
-    type: String,
-    default: "navigate",
-    validator(value) {
-      return Boolean(~OPEN_TYPES.indexOf(value));
-    }
-  },
-  delta: {
-    type: Number,
-    default: 1
-  },
-  hoverStartTime: {
-    type: [Number, String],
-    default: 50
-  },
-  hoverStayTime: {
-    type: [Number, String],
-    default: 600
-  },
-  exists: {
-    type: String,
-    default: ""
-  },
-  hoverStopPropagation: {
-    type: Boolean,
-    default: false
-  },
-  animationType: {
-    type: String,
-    default: "",
-    validator(value) {
-      return !value || ANIMATION_IN.concat(ANIMATION_OUT).includes(value);
-    }
-  },
-  animationDuration: {
-    type: [String, Number],
-    default: 300
-  }
-};
-function createNavigatorOnClick(props2) {
-  return () => {
-    if (props2.openType !== "navigateBack" && !props2.url) {
-      console.error(
-        "<navigator/> should have url attribute when using navigateTo, redirectTo, reLaunch or switchTab"
-      );
-      return;
-    }
-    const animationDuration = parseInt(props2.animationDuration);
-    const onFail = (error) => {
-      console.error(error.errMsg);
-    };
-    switch (props2.openType) {
-      case "navigate":
-        uni.navigateTo({
-          url: props2.url,
-          animationType: props2.animationType || "pop-in",
-          animationDuration,
-          fail: onFail
-        });
-        break;
-      case "redirect":
-        uni.redirectTo({
-          url: props2.url,
-          exists: props2.exists,
-          fail: onFail
-        });
-        break;
-      case "switchTab":
-        uni.switchTab({
-          url: props2.url,
-          fail: onFail
-        });
-        break;
-      case "reLaunch":
-        uni.reLaunch({
-          url: props2.url,
-          fail: onFail
-        });
-        break;
-      case "navigateBack":
-        uni.navigateBack({
-          delta: props2.delta,
-          animationType: props2.animationType || "pop-out",
-          animationDuration,
-          fail: onFail
-        });
-        break;
-    }
-  };
-}
-const _t0$i = Vue.template("<a class=navigator-wrap> ", 1);
-const index$o = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Navigator",
-  inheritAttrs: false,
-  compatConfig: { MODE: 3 },
-  props: /* @__PURE__ */ shared.extend({}, navigatorProps, { renderLink: {
-    type: Boolean,
-    default: true
-  } }),
-  setup(props2, { slots }) {
-    const rootRef = Vue.ref(null);
-    const vm = Vue.getCurrentInstance();
-    const __scopeId = vm && vm.vnode.scopeId || "";
-    const { hovering, binding } = useHover(props2);
-    const onClick = createNavigatorOnClick(props2);
-    return () => {
-      const { hoverClass, url } = props2;
-      const hasHoverClass = props2.hoverClass && props2.hoverClass !== "none";
-      const innerNode = props2.renderLink ? (() => {
-        const _n0 = _t0$i();
-        Vue.on(_n0, "click", onEventPrevent);
-        Vue.on(_n0, "mousedown", onEventPrevent);
-        const _x0 = Vue.txt(_n0);
-        setNodes(_x0, () => slots.default && slots.default());
-        Vue.renderEffect(() => Vue.setProp(_n0, "href", url));
-        return _n0;
-      })() : slots.default && slots.default();
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n0 = Vue.createPlainElement("uni-navigator", {
-          class: () => hasHoverClass && hovering.value ? hoverClass : "",
-          $: [
-            () => hasHoverClass && binding,
-            () => vm ? vm.attrs : {},
-            () => ({ [__scopeId]: "" }),
-            { onClick: () => onClick }
-          ]
-        }, { $: [() => normalizeVaporSlots(innerNode)] }, true);
-        Vue.renderEffect(() => _setTemplateRef(_n0, rootRef));
-        return _n0;
-      })();
-    };
-  }
-});
-const pickerViewProps = {
-  value: {
-    type: Array,
-    default() {
-      return [];
-    },
-    validator: function(val) {
-      return shared.isArray(val) && val.filter((val2) => typeof val2 === "number").length === val.length;
-    }
-  },
-  indicatorStyle: {
-    type: String,
-    default: ""
-  },
-  indicatorClass: {
-    type: String,
-    default: ""
-  },
-  maskStyle: {
-    type: String,
-    default: ""
-  },
-  maskClass: {
-    type: String,
-    default: ""
-  }
-};
-const _t0$h = Vue.template("<div class=uni-picker-view-wrapper> ");
-function useState$1(props2) {
-  const value = Vue.reactive([...props2.value]);
-  const state = Vue.reactive({
-    value,
-    height: 34
-  });
-  Vue.watch(() => props2.value, (val, oldVal) => {
-    {
-      state.value.length = val.length;
-      val.forEach((val2, index2) => {
-        if (val2 !== state.value[index2]) {
-          state.value.splice(index2, 1, val2);
-        }
-      });
-    }
-  });
-  return state;
-}
-const PickerView = /* @__PURE__ */ defineBuiltInComponent({
-  name: "PickerView",
-  props: pickerViewProps,
-  emits: [
-    "change",
-    "pickstart",
-    "pickend",
-    "update:value"
-  ],
-  setup(props2, { slots, emit: emit2 }) {
-    const rootRef = Vue.ref(null);
-    const wrapperRef = Vue.ref(null);
-    const trigger = useCustomEvent(rootRef, emit2);
-    const state = useState$1(props2);
-    const resizeSensorRef = Vue.ref(null);
-    let ColumnsPreRef = Vue.ref([]);
-    let columnsRef = Vue.ref([]);
-    function getItemIndex(vnode) {
-      let columnVNodes = columnsRef.value;
-      {
-        columnVNodes = columnVNodes.filter((vnode2) => vnode2.type !== Vue.Comment);
-      }
-      let index2 = columnVNodes.indexOf(vnode);
-      return index2 !== -1 ? index2 : ColumnsPreRef.value.indexOf(vnode);
-    }
-    const getPickerViewColumn = function(columnInstance) {
-      const ref2 = Vue.computed({
-        get() {
-          const index2 = getItemIndex(columnInstance.vnode);
-          return state.value[index2] || 0;
-        },
-        set(current) {
-          const index2 = getItemIndex(columnInstance.vnode);
-          if (index2 < 0) {
-            return;
-          }
-          const oldCurrent = state.value[index2];
-          if (oldCurrent !== current) {
-            state.value[index2] = current;
-            const value = state.value.map((val) => val);
-            emit2("update:value", value);
-            trigger("change", {}, { value });
-          }
-        }
-      });
-      return ref2;
-    };
-    Vue.provide("getPickerViewColumn", getPickerViewColumn);
-    Vue.provide("pickerViewProps", props2);
-    Vue.provide("pickerViewState", state);
-    return () => {
-      const defaultSlots = slots.default && slots.default();
-      {
-        const vnode = flatVNode(defaultSlots);
-        ColumnsPreRef.value = vnode;
-        Vue.nextTick(() => {
-          columnsRef.value = vnode;
-        });
-      }
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n2 = Vue.createPlainElement("uni-picker-view", null, () => {
-          const _n0 = createComponent(ResizeSensor, { onResize: () => ({ height }) => state.height = height });
-          const _n1 = _t0$h();
-          const _x1 = Vue.txt(_n1);
-          setNodes(_x1, () => defaultSlots);
-          Vue.renderEffect(() => {
-            _setTemplateRef(_n0, resizeSensorRef);
-            _setTemplateRef(_n1, wrapperRef);
-          });
-          return [_n0, _n1];
-        }, true);
-        Vue.renderEffect(() => _setTemplateRef(_n2, rootRef));
-        return _n2;
-      })();
-    };
-  }
-});
-const _t0$g = Vue.template("<div class=uni-picker-view-group><div></div><div></div><div> ");
-const PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
-  name: "PickerViewColumn",
-  setup(props2, { slots, emit: emit2 }) {
-    const rootRef = Vue.ref(null);
-    const contentRef = Vue.ref(null);
-    const getPickerViewColumn = Vue.inject("getPickerViewColumn");
-    const instance = Vue.getCurrentInstance();
-    const currentRef = getPickerViewColumn ? getPickerViewColumn(instance) : Vue.ref(0);
-    const pickerViewProps2 = Vue.inject("pickerViewProps");
-    const pickerViewState = Vue.inject("pickerViewState");
-    const indicatorHeight = Vue.ref(34);
-    const resizeSensorRef = Vue.ref(null);
-    const maskSize = Vue.computed(() => (pickerViewState.height - indicatorHeight.value) / 2);
-    const { state: scopedAttrsState } = useScopedAttrs();
-    let scroller;
-    const state = Vue.reactive({
-      current: currentRef.value,
-      length: 0
-    });
-    function updatesScroller() {
-    }
-    Vue.watch(() => currentRef.value, (current) => {
-      if (current !== state.current) {
-        state.current = current;
-      }
-    });
-    Vue.watch(() => state.current, (current) => currentRef.value = current);
-    Vue.watch([
-      () => indicatorHeight.value,
-      () => state.length,
-      () => pickerViewState.height
-    ], updatesScroller);
-    let oldDeltaY = 0;
-    function handleWheel(event) {
-      const deltaY = oldDeltaY + event.deltaY;
-      if (Math.abs(deltaY) > 10) {
-        oldDeltaY = 0;
-        let current = Math.min(state.current + (deltaY < 0 ? -1 : 1), state.length - 1);
-        state.current = current = Math.max(current, 0);
-        scroller.scrollTo(current * indicatorHeight.value);
-      } else {
-        oldDeltaY = deltaY;
-      }
-      event.preventDefault();
-    }
-    function handleTap({ clientY }) {
-      const el = rootRef.value;
-      if (!scroller.isScrolling()) {
-        const rect = el.getBoundingClientRect();
-        const r = clientY - rect.top - pickerViewState.height / 2;
-        const o = indicatorHeight.value / 2;
-        if (!(Math.abs(r) <= o)) {
-          const a = Math.ceil((Math.abs(r) - o) / indicatorHeight.value);
-          const s = r < 0 ? -a : a;
-          let current = Math.min(state.current + s, state.length - 1);
-          state.current = current = Math.max(current, 0);
-          scroller.scrollTo(current * indicatorHeight.value);
-        }
-      }
-    }
-    return () => {
-      const defaultSlots = slots.default && slots.default();
-      {
-        state.length = flatVNode(defaultSlots).length;
-      }
-      const padding = `${maskSize.value}px 0`;
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n5 = Vue.createPlainElement("uni-picker-view-column", null, () => {
-          const _n0 = _t0$g();
-          const _n1 = Vue.child(_n0);
-          const _n3 = Vue.next(_n1);
-          const _n4 = Vue.next(_n3);
-          Vue.on(_n0, "wheel", handleWheel);
-          Vue.on(_n0, "click", handleTap);
-          Vue.renderEffect(() => {
-            Vue.setDynamicProps(_n1, [scopedAttrsState.attrs, {
-              class: ["uni-picker-view-mask", pickerViewProps2.maskClass],
-              style: `background-size: 100% ${maskSize.value}px;${pickerViewProps2.maskStyle}`
-            }]);
-            Vue.setDynamicProps(_n3, [scopedAttrsState.attrs, {
-              class: ["uni-picker-view-indicator", pickerViewProps2.indicatorClass],
-              style: pickerViewProps2.indicatorStyle
-            }]);
-          });
-          Vue.setInsertionState(_n3);
-          const _n2 = createComponent(ResizeSensor, { onResize: () => ({ height }) => indicatorHeight.value = height });
-          Vue.setClass(_n4, ["uni-picker-view-content"]);
-          const _x4 = Vue.txt(_n4);
-          setNodes(_x4, () => defaultSlots);
-          Vue.renderEffect(() => {
-            _setTemplateRef(_n2, resizeSensorRef);
-            Vue.setStyle(_n4, {
-              padding,
-              "--picker-view-column-indicator-height": `${indicatorHeight.value}px`
-            });
-            _setTemplateRef(_n4, contentRef);
-          });
-          return _n0;
-        }, true);
-        Vue.renderEffect(() => _setTemplateRef(_n5, rootRef));
-        return _n5;
-      })();
-    };
-  }
-});
-const FONT_SIZE = 16;
-const PROGRESS_VALUES = {
-  activeColor: uniShared.PRIMARY_COLOR,
-  backgroundColor: "#EBEBEB",
-  activeMode: "backwards"
-};
-const progressProps = {
-  percent: {
-    type: [Number, String],
-    default: 0,
-    validator(value) {
-      return !isNaN(parseFloat(value));
-    }
-  },
-  fontSize: {
-    type: [String, Number],
-    default: FONT_SIZE
-  },
-  showInfo: {
-    type: [Boolean, String],
-    default: false
-  },
-  strokeWidth: {
-    type: [Number, String],
-    default: 6,
-    validator(value) {
-      return !isNaN(parseFloat(value));
-    }
-  },
-  color: {
-    type: String,
-    default: PROGRESS_VALUES.activeColor
-  },
-  activeColor: {
-    type: String,
-    default: PROGRESS_VALUES.activeColor
-  },
-  backgroundColor: {
-    type: String,
-    default: PROGRESS_VALUES.backgroundColor
-  },
-  active: {
-    type: [Boolean, String],
-    default: false
-  },
-  activeMode: {
-    type: String,
-    default: PROGRESS_VALUES.activeMode
-  },
-  duration: {
-    type: [Number, String],
-    default: 30,
-    validator(value) {
-      return !isNaN(parseFloat(value));
-    }
-  },
-  borderRadius: {
-    type: [Number, String],
-    default: 0
-  }
-};
-const _t0$f = Vue.template("<div class=uni-progress-bar><div class=uni-progress-inner-bar></div></div>");
-const _t1$9 = Vue.template("<p class=uni-progress-info> ");
-const index$n = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Progress",
-  props: progressProps,
-  setup(props2) {
-    const rootRef = Vue.ref(null);
-    const state = useProgressState(props2);
-    _activeAnimation(state, props2);
-    Vue.watch(() => state.realPercent, (newValue, oldValue) => {
-      state.strokeTimer && clearInterval(state.strokeTimer);
-      state.lastPercent = oldValue || 0;
-      _activeAnimation(state, props2);
-    });
-    return () => {
-      const { showInfo } = props2;
-      const { outerBarStyle, innerBarStyle, currentPercent } = state;
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n7 = Vue.createPlainElement("uni-progress", { class: "uni-progress" }, () => {
-          const _n1 = _t0$f();
-          const _n0 = Vue.child(_n1);
-          Vue.renderEffect(() => {
-            Vue.setStyle(_n1, outerBarStyle);
-            Vue.setStyle(_n0, innerBarStyle);
-          });
-          const _n2 = Vue.createIf(() => showInfo, () => {
-            const _n4 = _t1$9();
-            const _x4 = Vue.txt(_n4);
-            setNodes(_x4, () => currentPercent + "%");
-            return _n4;
-          }, () => {
-            const _n6 = createNodes("");
-            return _n6;
-          }, 265);
-          return [_n1, _n2];
-        }, true);
-        Vue.renderEffect(() => _setTemplateRef(_n7, rootRef));
-        return _n7;
-      })();
-    };
-  }
-});
-function useProgressState(props2) {
-  const currentPercent = Vue.ref(0);
-  const outerBarStyle = Vue.computed(() => `background-color: ${props2.backgroundColor}; height: ${rpx2px(props2.strokeWidth)}px;`);
-  const innerBarStyle = Vue.computed(() => {
-    const backgroundColor = props2.color !== PROGRESS_VALUES.activeColor && props2.activeColor === PROGRESS_VALUES.activeColor ? props2.color : props2.activeColor;
-    return `width: ${currentPercent.value}%;background-color: ${backgroundColor}`;
-  });
-  const realPercent = Vue.computed(() => {
-    if (typeof props2.percent === "string" && !/^-?\d*\.?\d*$/.test(props2.percent)) {
-      return 0;
-    }
-    let realValue = parseFloat(props2.percent);
-    if (Number.isNaN(realValue) || realValue < 0) {
-      realValue = 0;
-    } else if (realValue > 100) {
-      realValue = 100;
-    }
-    return realValue;
-  });
-  const state = Vue.reactive({
-    outerBarStyle,
-    innerBarStyle,
-    realPercent,
-    currentPercent,
-    strokeTimer: 0,
-    lastPercent: 0
-  });
-  return state;
-}
-function _activeAnimation(state, props2) {
-  if (props2.active) {
-    state.currentPercent = props2.activeMode === PROGRESS_VALUES.activeMode ? 0 : state.lastPercent;
-    state.strokeTimer = setInterval(() => {
-      if (state.currentPercent + 1 > state.realPercent) {
-        state.currentPercent = state.realPercent;
-        state.strokeTimer && clearInterval(state.strokeTimer);
-      } else {
-        state.currentPercent += 1;
-      }
-    }, parseFloat(props2.duration));
-  } else {
-    state.currentPercent = state.realPercent;
-  }
-}
-const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$j = { name: {
-  type: String,
-  default: ""
-} };
-const index$m = /* @__PURE__ */ defineBuiltInComponent({
-  name: "RadioGroup",
-  props: props$j,
-  // emits: ['change'],
-  setup(props2, { emit: emit2, slots }) {
-    const rootRef = Vue.ref(null);
-    const trigger = useCustomEvent(rootRef, emit2);
-    useProvideRadioGroup(props2, trigger);
-    return () => {
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n1 = Vue.createPlainElement("uni-radio-group", null, Vue.extend(() => {
-          const _n0 = createNodes(() => slots.default && slots.default());
-          return _n0;
-        }, { _: 1 }), true);
-        Vue.renderEffect(() => _setTemplateRef(_n1, rootRef));
-        return _n1;
-      })();
-    };
-  }
-});
-function useProvideRadioGroup(props2, trigger) {
-  const fields2 = [];
-  const getFieldsValue = () => {
-    var _a;
-    return (_a = fields2.find((field) => field.value.radioChecked)) == null ? void 0 : _a.value.value;
-  };
-  Vue.provide(uniRadioGroupKey, {
-    addField(field) {
-      fields2.push(field);
-    },
-    removeField(field) {
-      fields2.splice(fields2.indexOf(field), 1);
-    },
-    radioChange($event, field) {
-      const index2 = fields2.indexOf(field);
-      _resetRadioGroupValue(index2);
-      trigger("change", $event, { value: getFieldsValue() });
-    }
-  });
-  const uniForm = Vue.inject(uniFormKey, false);
-  const formField = { submit: () => {
-    let data = ["", null];
-    if (props2.name !== "") {
-      data[0] = props2.name;
-      data[1] = getFieldsValue();
-    }
-    return data;
-  } };
-  if (uniForm) {
-    uniForm.addField(formField);
-  }
-  function setFieldChecked(field, radioChecked) {
-    field.value = {
-      radioChecked,
-      value: field.value.value
-    };
-  }
-  function _resetRadioGroupValue(key, change) {
-    fields2.forEach((value, index2) => {
-      if (index2 === key) {
-        return;
-      }
-      {
-        setFieldChecked(fields2[index2], false);
-      }
-    });
-  }
-  return fields2;
-}
-const _t0$e = Vue.template("<div></div>");
-const props$i = {
-  checked: {
-    type: [Boolean, String],
-    default: false
-  },
-  id: {
-    type: String,
-    default: ""
-  },
-  disabled: {
-    type: [Boolean, String],
-    default: false
-  },
-  value: {
-    type: String,
-    default: ""
-  },
-  color: {
-    type: String,
-    default: ""
-  },
-  backgroundColor: {
-    type: String,
-    default: ""
-  },
-  borderColor: {
-    type: String,
-    default: ""
-  },
-  activeBackgroundColor: {
-    type: String,
-    default: ""
-  },
-  activeBorderColor: {
-    type: String,
-    default: ""
-  },
-  iconColor: {
-    type: String,
-    default: ""
-  },
-  // 图标颜色,同color,优先级大于iconColor
-  foreColor: {
-    type: String,
-    default: ""
-  }
-};
-const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Radio",
-  props: props$i,
-  setup(props2, { slots }) {
-    const rootRef = Vue.ref(null);
-    const radioChecked = Vue.ref(props2.checked);
-    const radioValue = Vue.ref(props2.value);
-    function getRadioStyle(checked) {
-      if (props2.disabled) {
-        return;
-      }
-      const style = {};
-      if (checked) {
-        const backgroundColor = props2.activeBackgroundColor || props2.color;
-        if (backgroundColor) {
-          style.backgroundColor = backgroundColor;
-          style.borderColor = props2.activeBorderColor || backgroundColor;
-        } else if (props2.activeBorderColor) {
-          style.borderColor = props2.activeBorderColor;
-        }
-      } else {
-        if (props2.borderColor)
-          style.borderColor = props2.borderColor;
-        if (props2.backgroundColor)
-          style.backgroundColor = props2.backgroundColor;
-      }
-      return style.borderColor || style.backgroundColor ? style : void 0;
-    }
-    Vue.watch([() => props2.checked, () => props2.value], ([newChecked, newModelValue]) => {
-      radioChecked.value = newChecked;
-      radioValue.value = newModelValue;
-    });
-    const reset = () => {
-      radioChecked.value = false;
-    };
-    const { uniCheckGroup, uniLabel, field } = useRadioInject(radioChecked, radioValue, reset);
-    const _onClick = ($event) => {
-      if (props2.disabled || radioChecked.value) {
-        return;
-      }
-      radioChecked.value = true;
-      uniCheckGroup && uniCheckGroup.radioChange($event, field);
-      $event.stopPropagation();
-    };
-    if (!!uniLabel) {
-      uniLabel.addHandler(_onClick);
-    }
-    return () => {
-      const booleanAttrs = useBooleanAttr(props2, "disabled");
-      let realCheckValue;
-      realCheckValue = radioChecked.value;
-      const radioStyle = getRadioStyle(realCheckValue);
-      const hoverBorderColor = realCheckValue ? radioStyle == null ? void 0 : radioStyle.borderColor : props2.activeBorderColor;
-      const hoverStyle = hoverBorderColor ? { "--HOVER-BD-COLOR": hoverBorderColor } : void 0;
-      const iconColor = props2.foreColor || props2.iconColor || "currentColor";
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n7 = Vue.createPlainElement("uni-radio", { $: [() => booleanAttrs, {
-          onClick: () => _onClick,
-          id: () => props2.id,
-          class: "uni-radio-wrapper",
-          style: () => hoverStyle
-        }] }, () => {
-          const _n5 = _t0$e();
-          Vue.renderEffect(() => {
-            Vue.setClassName(_n5, (realCheckValue ? 1 : 0) | (props2.disabled ? 2 : 0), [" uni-radio-input-checked", " uni-radio-input-disabled"], "uni-radio-input");
-            Vue.setStyle(_n5, radioStyle);
-          });
-          Vue.setInsertionState(_n5);
-          Vue.createIf(() => realCheckValue, () => {
-            const _n2 = createNodes(() => createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "currentColor" : iconColor, 18));
-            return _n2;
-          }, () => {
-            const _n4 = createNodes("");
-            return _n4;
-          }, 266);
-          const _n6 = createNodes(() => slots.default && slots.default());
-          return [_n5, _n6];
-        }, true);
-        Vue.renderEffect(() => _setTemplateRef(_n7, rootRef));
-        return _n7;
-      })();
-    };
-  }
-});
-function useRadioInject(radioChecked, radioValue, reset) {
-  const field = Vue.computed({
-    get: () => ({
-      radioChecked: Boolean(radioChecked.value),
-      value: radioValue.value
-    }),
-    set: ({ radioChecked: checked }) => {
-      radioChecked.value = checked;
-    }
-  });
-  const formField = { reset };
-  const uniCheckGroup = Vue.inject(uniRadioGroupKey, false);
-  if (!!uniCheckGroup) {
-    uniCheckGroup.addField(field);
-  }
-  const uniForm = Vue.inject(uniFormKey, false);
-  if (!!uniForm) {
-    uniForm.addField(formField);
-  }
-  const uniLabel = Vue.inject(uniLabelKey, false);
   return {
-    uniCheckGroup,
-    uniForm,
-    uniLabel,
-    field
+    setParent
   };
 }
-const CHARS = {
-  amp: "&",
-  gt: ">",
-  lt: "<",
-  nbsp: " ",
-  quot: '"',
-  apos: "'",
-  ldquo: "“",
-  rdquo: "”",
-  yen: "￥",
-  radic: "√",
-  lceil: "⌈",
-  rceil: "⌉",
-  lfloor: "⌊",
-  rfloor: "⌋",
-  hellip: "…"
-};
-function decodeEntities(htmlString) {
-  return htmlString.replace(
-    /&(([a-zA-Z]+)|(#x{0,1}[\da-zA-Z]+));/gi,
-    function(match, stage) {
-      if (shared.hasOwn(CHARS, stage) && CHARS[stage]) {
-        return CHARS[stage];
-      }
-      if (/^#[0-9]{1,4}$/.test(stage)) {
-        return String.fromCharCode(stage.slice(1));
-      }
-      if (/^#x[0-9a-f]{1,4}$/i.test(stage)) {
-        return String.fromCharCode(Number("0" + stage.slice(1)));
-      }
-      return match;
-    }
-  );
-}
-function processClickEvent(node, triggerItemClick) {
-  if (node.name && ["a", "img"].includes(node.name) && triggerItemClick) {
-    return {
-      onClickCapture: (e2) => {
-        if (node.name === "a") {
-          triggerItemClick(e2, { href: (node.attrs || {}).href });
-        } else {
-          triggerItemClick(e2, { src: (node.attrs || {}).src });
-        }
-        e2.stopPropagation();
-        e2.preventDefault();
-        e2.returnValue = false;
-      }
-    };
+const _t0$7 = Vue.template("<div uni-movable-view uni-view><!> ", 1);
+class UniMovableViewElement extends UniViewElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniMovableViewElement && value instanceof UniViewElement && value.hasAttribute("uni-movable-view") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-function normalizeValue(tagName, name, value) {
-  if (tagName === "img" && name === "src" && shared.isString(value)) {
-    return getRealPath(value);
+const uniTagName$5 = { value: "MOVABLE-VIEW" };
+const indexVapor$5 = /* @__PURE__ */ defineBuiltInComponent({
+  name: "MovableView",
+  props: movableViewProps,
+  emits: ["change", "scale"],
+  rootElement: {
+    name: "uni-movable-view",
+    class: UniMovableViewElement
+  },
+  setup(props2, { slots, emit: emit2 }) {
+    const { rootRef, setParent } = useMovableView(props2, emit2);
+    const root = (() => {
+      const _setTemplateRef = Vue.createTemplateRefSetter();
+      const _n3 = _t0$7();
+      const _n2 = Vue.child(_n3);
+      const _n1 = Vue.next(_n2, true);
+      Vue.setInsertionState(_n3, _n2);
+      createComponent(ResizeSensor, { onResize: () => setParent });
+      setNodes(_n1, () => slots.default && slots.default());
+      Vue.renderEffect(() => _setTemplateRef(_n3, rootRef));
+      return _n3;
+    })();
+    Object.defineProperty(root, "uniTagName", uniTagName$5);
+    return root;
   }
-  return value;
-}
-function normalizeAttrs(tagName, attrs2) {
-  if (!shared.isPlainObject(attrs2))
-    return;
-  const normalizedAttrs = {};
-  Object.keys(attrs2).forEach((name) => {
-    normalizedAttrs[name] = normalizeValue(tagName, name, attrs2[name]);
-  });
-  return normalizedAttrs;
-}
-const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
-  if (!nodeList || Array.isArray(nodeList) && !nodeList.length)
-    return [];
-  return nodeList.map((node) => {
-    if (!shared.isPlainObject(node)) {
-      return;
-    }
-    if ((!shared.hasOwn(node, "type") || node.type === "text") && shared.isString(node.text) && node.text !== "")
-      return Vue.createTextVNode(decodeEntities(node.text || ""));
-    if (!shared.hasOwn(node, "type") || node.type === "node") {
-      if (!shared.isString(node.name) || !node.name) {
-        return;
-      }
-      const tagName = node.name.toLowerCase();
-      const nodeProps = shared.extend(
-        { [scopeId]: "" },
-        processClickEvent(node, triggerItemClick),
-        normalizeAttrs(tagName, node.attrs)
-      );
-      return Vue.h(
-        node.name,
-        nodeProps,
-        nodeList2VNode(scopeId, triggerItemClick, node.children)
-      );
-    }
-  });
-};
+});
 function removeDOCTYPE(html) {
   return html.replace(/<\?xml.*\?>\n/, "").replace(/<!doctype.*>\n/, "").replace(/<!DOCTYPE.*>\n/, "");
 }
@@ -7612,7 +7900,7 @@ function parseHtml(html) {
   });
   return results.children;
 }
-const props$h = {
+const props$6 = {
   nodes: {
     type: [Array, String],
     default: function() {
@@ -7629,2407 +7917,2042 @@ const props$h = {
     default: false
   }
 };
-const index$l = /* @__PURE__ */ defineBuiltInComponent({
+const CHARS = {
+  amp: "&",
+  gt: ">",
+  lt: "<",
+  nbsp: " ",
+  quot: '"',
+  apos: "'",
+  ldquo: "“",
+  rdquo: "”",
+  yen: "￥",
+  radic: "√",
+  lceil: "⌈",
+  rceil: "⌉",
+  lfloor: "⌊",
+  rfloor: "⌋",
+  hellip: "…"
+};
+function decodeEntities(htmlString) {
+  return htmlString.replace(
+    /&(([a-zA-Z]+)|(#x{0,1}[\da-zA-Z]+));/gi,
+    function(match, stage) {
+      if (shared.hasOwn(CHARS, stage) && CHARS[stage]) {
+        return CHARS[stage];
+      }
+      if (/^#[0-9]{1,4}$/.test(stage)) {
+        return String.fromCharCode(stage.slice(1));
+      }
+      if (/^#x[0-9a-f]{1,4}$/i.test(stage)) {
+        return String.fromCharCode(Number("0" + stage.slice(1)));
+      }
+      return match;
+    }
+  );
+}
+function processClickEvent(node, triggerItemClick) {
+  if (node.name && ["a", "img"].includes(node.name) && triggerItemClick) {
+    return {
+      onClickCapture: (e2) => {
+        if (node.name === "a") {
+          triggerItemClick(e2, { href: (node.attrs || {}).href });
+        } else {
+          triggerItemClick(e2, { src: (node.attrs || {}).src });
+        }
+        e2.stopPropagation();
+        e2.preventDefault();
+        e2.returnValue = false;
+      }
+    };
+  }
+}
+function normalizeValue(tagName, name, value) {
+  if (tagName === "img" && name === "src" && shared.isString(value)) {
+    return getRealPath(value);
+  }
+  return value;
+}
+function normalizeAttrs(tagName, attrs2) {
+  if (!shared.isPlainObject(attrs2))
+    return;
+  const normalizedAttrs = {};
+  Object.keys(attrs2).forEach((name) => {
+    normalizedAttrs[name] = normalizeValue(tagName, name, attrs2[name]);
+  });
+  return normalizedAttrs;
+}
+function nodeType(node) {
+  if (!shared.isPlainObject(node))
+    return "";
+  if ((!shared.hasOwn(node, "type") || node.type === "text") && shared.isString(node.text) && node.text !== "") {
+    return "#text";
+  }
+  return (!shared.hasOwn(node, "type") || node.type === "node") && shared.isString(node.name) && node.name ? node.name : "";
+}
+function hasContent(attrs2) {
+  return attrs2 && (attrs2.innerHTML != null || attrs2.textContent != null || attrs2[".innerHTML"] != null || attrs2[".textContent"] != null);
+}
+function nodeKey(node) {
+  if (!shared.isPlainObject(node == null ? void 0 : node.attrs))
+    return;
+  const key = node.attrs.key;
+  if (key == null || node.type === "text")
+    return;
+  if (!shared.hasOwn(node, "type") && shared.isString(node.text) && node.text !== "")
+    return;
+  return key;
+}
+function nodeList2Block(source, scopeId, triggerItemClick, namespace = () => shared.Namespaces.HTML) {
+  let previous = [];
+  let hadUnkeyed = false;
+  let renderedTypes;
+  const unkeyedTypes = /* @__PURE__ */ new WeakMap();
+  function unkeyedType(node) {
+    if (!shared.isPlainObject(node))
+      return "";
+    let type = unkeyedTypes.get(node);
+    if (!type)
+      unkeyedTypes.set(node, type = Vue.computed(() => nodeType(node)));
+    return type.value;
+  }
+  const keyedSource = Vue.computed(() => {
+    var _a;
+    const nodes = source() || [];
+    if (!nodes.length) {
+      previous = [];
+      hadUnkeyed = false;
+      renderedTypes = void 0;
+      return { nodes, keys: [] };
+    }
+    let hasUnkeyed = false;
+    const next = Array.from(nodes, (node) => {
+      const key = nodeKey(node);
+      if (key == null)
+        hasUnkeyed = true;
+      return {
+        key,
+        // 显式 key 的标签更新由节点分支处理，不订阅整个列表。
+        type: key != null ? hadUnkeyed ? nodeType(Vue.toRaw(node)) : "" : unkeyedType(node),
+        id: key
+      };
+    });
+    const same = (old, entry) => old.key === entry.key && ((renderedTypes == null ? void 0 : renderedTypes.get(old.id)) ?? old.type) === entry.type;
+    let start = 0;
+    let oldEnd = previous.length - 1;
+    let newEnd = next.length - 1;
+    while (start <= oldEnd && start <= newEnd && same(previous[start], next[start])) {
+      next[start].id = previous[start].id;
+      start++;
+    }
+    while (start <= oldEnd && start <= newEnd && same(previous[oldEnd], next[newEnd])) {
+      next[newEnd--].id = previous[oldEnd--].id;
+    }
+    let unkeyed;
+    for (let i = oldEnd; i >= start; i--) {
+      const entry = previous[i];
+      if (entry.key != null)
+        continue;
+      const pool = unkeyed || (unkeyed = /* @__PURE__ */ new Map());
+      let ids = pool.get(entry.type);
+      if (!ids)
+        pool.set(entry.type, ids = []);
+      ids.push(entry.id);
+    }
+    for (let i = start; i <= newEnd; i++) {
+      const entry = next[i];
+      if (entry.key == null)
+        entry.id = ((_a = unkeyed == null ? void 0 : unkeyed.get(entry.type)) == null ? void 0 : _a.pop()) ?? Symbol();
+    }
+    const keys = [];
+    let nextRenderedTypes;
+    for (const entry of next) {
+      keys.push(entry.id);
+      if (entry.key != null) {
+        const types = nextRenderedTypes || (nextRenderedTypes = /* @__PURE__ */ new Map());
+        types.set(entry.id, (renderedTypes == null ? void 0 : renderedTypes.get(entry.id)) ?? entry.type);
+      }
+    }
+    renderedTypes = nextRenderedTypes;
+    previous = next;
+    hadUnkeyed = hasUnkeyed;
+    return { nodes, keys };
+  });
+  return Vue.createFor(
+    () => keyedSource.value.nodes,
+    (item) => Vue.createKeyedFragment(
+      () => {
+        const type = nodeType(item.value);
+        const key = nodeKey(item.value);
+        if (key != null)
+          renderedTypes.set(key, type);
+        return type + ":" + namespace();
+      },
+      () => {
+        const name = nodeType(item.value);
+        if (!name)
+          return [];
+        if (name === "#text") {
+          const text = Vue.createTextNode();
+          Vue.renderEffect(() => Vue.setText(text, decodeEntities(item.value.text)));
+          return text;
+        }
+        const ns = name === "svg" ? shared.Namespaces.SVG : name === "math" ? shared.Namespaces.MATH_ML : namespace();
+        const element = Vue.createPlainElement(name, null, null, false, false, ns);
+        let childScope;
+        let children;
+        Vue.renderEffect(() => {
+          var _a;
+          const node = item.value;
+          const attrs2 = normalizeAttrs(name.toLowerCase(), node.attrs);
+          const content = hasContent(attrs2);
+          if (content && childScope) {
+            childScope.stop();
+            Vue.remove(children, element);
+            children = void 0;
+            childScope = void 0;
+          }
+          Vue.setDynamicProps(
+            element,
+            [
+              shared.extend(
+                scopeId ? { [scopeId]: "" } : {},
+                processClickEvent(node, triggerItemClick),
+                attrs2
+              )
+            ],
+            void 0,
+            ns === shared.Namespaces.SVG
+          );
+          if (!content && !childScope && ((_a = node.children) == null ? void 0 : _a.length)) {
+            childScope = Vue.effectScope();
+            children = childScope.run(
+              () => nodeList2Block(
+                () => item.value.children || [],
+                scopeId,
+                triggerItemClick,
+                () => {
+                  var _a2, _b;
+                  return ns === shared.Namespaces.SVG && name === "foreignObject" || ns === shared.Namespaces.MATH_ML && name === "annotation-xml" && ((_b = (_a2 = item.value.attrs) == null ? void 0 : _a2.encoding) == null ? void 0 : _b.includes("html")) ? shared.Namespaces.HTML : ns;
+                }
+              )
+            );
+            Vue.insert(children, element);
+          }
+        });
+        if (element.tagName === "SELECT")
+          Vue.syncSelectValue(element);
+        return element;
+      }
+    ),
+    (_node, index2) => keyedSource.value.keys[index2]
+  );
+}
+function renderRichText(props2, rootRef, triggerItemClick) {
+  const vm = Vue.getCurrentInstance();
+  const nodes = Vue.computed(
+    () => shared.isString(props2.nodes) ? parseHtml(props2.nodes) : props2.nodes
+  );
+  const root = Vue.createPlainElement(
+    "div",
+    {
+      selectable: () => props2.userSelect || props2.selectable ? true : null
+    },
+    {
+      default: () => Vue.createPlainElement("div", null, {
+        default: () => (
+          // 与 VDOM vnode.scopeId 对应，保留调用方的作用域样式。
+          nodeList2Block(
+            () => nodes.value,
+            vm.scopeId || "",
+            triggerItemClick
+          )
+        )
+      })
+    },
+    true
+  );
+  root.setAttribute("uni-rich-text", "");
+  root.setAttribute("uni-view", "");
+  rootRef.value = root;
+  return root;
+}
+class UniRichTextElement extends UniViewElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniRichTextElement && value instanceof UniViewElement && value.hasAttribute("uni-rich-text") || Function.prototype[Symbol.hasInstance].call(this, value);
+  }
+}
+const uniTagName$4 = { value: "RICH-TEXT" };
+const indexVapor$4 = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: { MODE: 3 },
-  props: props$h,
+  props: props$6,
   emits: ["itemclick"],
+  rootElement: {
+    name: "uni-rich-text",
+    class: UniRichTextElement
+  },
   setup(props2, { emit: emit2 }) {
-    const vm = Vue.getCurrentInstance();
-    const scopeId = vm && vm.vnode.scopeId || "";
     const rootRef = Vue.ref(null);
-    const _vnode = Vue.shallowRef([]);
     const trigger = useCustomEvent(rootRef, emit2);
     function triggerItemClick(e2, detail = {}) {
       trigger("itemclick", e2, detail);
     }
-    function renderVNode() {
-      let nodeList = props2.nodes;
-      if (shared.isString(nodeList)) {
-        nodeList = parseHtml(props2.nodes);
-      }
-      _vnode.value = nodeList2VNode(scopeId, triggerItemClick, nodeList);
-    }
-    Vue.watch(() => props2.nodes, renderVNode, {
-      immediate: true,
-      deep: true
-    });
-    return () => Vue.h("uni-rich-text", {
-      ref: rootRef,
-      selectable: props2.userSelect || props2.selectable ? true : null
-    }, Vue.h("div", {}, _vnode.value));
+    const result = renderRichText(props2, rootRef, triggerItemClick);
+    Object.defineProperty(result, "uniTagName", uniTagName$4);
+    return result;
   }
 });
-const _t0$d = Vue.template('<svg fill=#2BD009 class=uni-scroll-view-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none>', false, 1);
-const _t1$8 = Vue.template('<svg class=uni-scroll-view-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle cx=50 cy=50 r=20 fill=none style="color: #2bd009" stroke-width=3>', false, 1);
-const _t2$4 = Vue.template("<div class=uni-scroll-view-refresh><div class=uni-scroll-view-refresh-inner></div>");
-const _t3$4 = Vue.template("<div class=uni-scroll-view-refresher-container> ");
-const _t4$3 = Vue.template("<div class=uni-scroll-view-refresher>", 1);
-const Refresher = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Refresher",
-  props: {
-    refreshState: {
-      type: String,
-      default: ""
-    },
-    refresherHeight: {
-      type: Number,
-      default: 0
-    },
-    refresherThreshold: {
-      type: Number,
-      default: 45
-    },
-    refresherDefaultStyle: {
-      type: String,
-      default: "black"
-    },
-    refresherBackground: {
-      type: String,
-      default: "transparent"
-    }
-  },
-  setup(props2, { slots }) {
-    const rootRef = Vue.ref(null);
-    const rootStyle = Vue.computed(() => {
-      const style = { backgroundColor: props2.refresherBackground };
-      switch (props2.refreshState) {
-        case "pulling":
-          style.height = props2.refresherHeight + "px";
-          break;
-        case "refreshing":
-          style.height = props2.refresherThreshold + "px";
-          style.transition = "height 0.3s";
-          break;
-        case "":
-        case "refresherabort":
-        case "restore":
-          style.height = "0px";
-          style.transition = "height 0.3s";
-          break;
-      }
-      return style;
-    });
-    const refreshRotate = Vue.computed(() => {
-      const route = props2.refresherHeight / props2.refresherThreshold;
-      return (route > 1 ? 1 : route) * 360;
-    });
-    return () => {
-      const { refreshState, refresherDefaultStyle, refresherThreshold } = props2;
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n21 = _t4$3();
-        Vue.renderEffect(() => Vue.setStyle(_n21, rootStyle.value));
-        Vue.setInsertionState(_n21);
-        Vue.createIf(() => refresherDefaultStyle !== "none", () => {
-          const _n13 = _t2$4();
-          const _n12 = Vue.child(_n13);
-          Vue.setInsertionState(_n12);
-          Vue.createIf(() => refreshState == "pulling", () => {
-            const _n4 = _t0$d();
-            Vue.setBlockKey(_n4, "refresh__icon");
-            Vue.renderEffect(() => Vue.setAttr(_n4, "style", { transform: "rotate(" + refreshRotate.value + "deg)" }, true));
-            return _n4;
-          }, () => {
-            const _n6 = createNodes(null);
-            return _n6;
-          }, 265);
-          Vue.setInsertionState(_n12, 1);
-          Vue.createIf(() => refreshState == "refreshing", () => {
-            const _n9 = _t1$8();
-            Vue.setBlockKey(_n9, "refresh__spinner");
-            return _n9;
-          }, () => {
-            const _n11 = createNodes(null);
-            return _n11;
-          }, 521);
-          return _n13;
-        }, () => {
-          const _n15 = createNodes(null);
-          return _n15;
-        }, 777);
-        Vue.setInsertionState(_n21, 1);
-        Vue.createIf(() => refresherDefaultStyle === "none", () => {
-          const _n18 = _t3$4();
-          const _x18 = Vue.txt(_n18);
-          setNodes(_x18, () => slots.default && slots.default());
-          Vue.renderEffect(() => Vue.setStyle(_n18, { height: `${refresherThreshold}px` }));
-          return _n18;
-        }, () => {
-          const _n20 = createNodes(null);
-          return _n20;
-        }, 1033);
-        Vue.renderEffect(() => _setTemplateRef(_n21, rootRef));
-        return _n21;
-      })();
-    };
-  }
-});
-const _t0$c = Vue.template("<div class=uni-scroll-view><div><!><div class=uni-scroll-view-content> ");
-const props$g = {
-  direction: {
-    type: [String],
-    default: "vertical"
-  },
-  scrollX: {
-    type: [Boolean, String],
-    default: false
-  },
-  scrollY: {
-    type: [Boolean, String],
-    default: false
-  },
-  showScrollbar: {
-    type: [Boolean, String],
-    default: true
-  },
-  upperThreshold: {
-    type: [Number, String],
-    default: 50
-  },
-  lowerThreshold: {
-    type: [Number, String],
-    default: 50
-  },
-  scrollTop: {
-    type: [Number, String],
-    default: 0
-  },
-  scrollLeft: {
-    type: [Number, String],
-    default: 0
-  },
-  scrollIntoView: {
-    type: String,
-    default: ""
-  },
-  scrollWithAnimation: {
-    type: [Boolean, String],
-    default: false
-  },
-  enableBackToTop: {
-    type: [Boolean, String],
-    default: false
-  },
-  refresherEnabled: {
-    type: [Boolean, String],
-    default: false
-  },
-  refresherThreshold: {
-    type: Number,
-    default: 45
-  },
-  refresherDefaultStyle: {
-    type: String,
-    default: "black"
-  },
-  refresherBackground: {
-    type: String,
-    default: "transparent"
-  },
-  refresherTriggered: {
-    type: [Boolean, String],
-    default: false
+const _UniScrollViewElement = class _UniScrollViewElement extends UniViewElement {
+  static [Symbol.hasInstance](value) {
+    return this === _UniScrollViewElement && value instanceof UniViewElement && value.hasAttribute("uni-scroll-view") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 };
-const index$k = /* @__PURE__ */ defineBuiltInComponent({
+_UniScrollViewElement.__uniElement = {};
+let UniScrollViewElement = _UniScrollViewElement;
+const props$5 = {
+  direction: { type: String, default: "vertical" },
+  showScrollbar: { type: [Boolean, String], default: true },
+  upperThreshold: { type: [Number, String], default: 50 },
+  lowerThreshold: { type: [Number, String], default: 50 },
+  scrollTop: { type: [Number, String], default: 0 },
+  scrollLeft: { type: [Number, String], default: 0 },
+  scrollIntoView: { type: String, default: "" },
+  scrollWithAnimation: { type: [Boolean, String], default: false }
+};
+const emits = ["scroll", "scrollend", "scrolltoupper", "scrolltolower"];
+function useScrollView(props2, { emit: emit2, expose }) {
+  const rootRef = Vue.ref(null);
+  const scrollX = Vue.computed(
+    () => props2.direction === "horizontal" || props2.direction === "all"
+  );
+  const scrollY = Vue.computed(
+    () => props2.direction === "vertical" || props2.direction === "all"
+  );
+  const rootStyle = Vue.computed(
+    () => `overflow-x:${scrollX.value ? "auto" : "hidden"};overflow-y:${scrollY.value ? "auto" : "hidden"};`
+  );
+  const scrollBarClassName = Vue.computed(
+    () => props2.showScrollbar === false ? "uni-scroll-view-scrollbar-hidden" : ""
+  );
+  function scrollTo(options) {
+    var _a;
+    (_a = rootRef.value) == null ? void 0 : _a.scrollTo(
+      Object.assign(options, {
+        behavior: props2.scrollWithAnimation ? "smooth" : "instant"
+      })
+    );
+  }
+  function scrollIntoView(id2) {
+    const root = rootRef.value;
+    if (!root || !id2)
+      return;
+    if (!/^[_a-zA-Z][-_a-zA-Z0-9:]*$/.test(id2)) {
+      console.error(`id error: scroll-into-view=${id2}`);
+      return;
+    }
+    const element = root.querySelector(`[id="${id2}"]`);
+    if (!element)
+      return;
+    const rootRect = root.getBoundingClientRect();
+    const rect = element.getBoundingClientRect();
+    const options = {};
+    if (scrollX.value) {
+      options.left = root.scrollLeft + rect.left - rootRect.left - root.clientLeft;
+    }
+    if (scrollY.value) {
+      options.top = root.scrollTop + rect.top - rootRect.top - root.clientTop;
+    }
+    if (options.left !== void 0 || options.top !== void 0)
+      scrollTo(options);
+  }
+  Vue.watch(
+    () => [props2.scrollTop, props2.scrollLeft],
+    ([top, left], [previousTop, previousLeft]) => {
+      const options = {};
+      if (scrollY.value && top !== previousTop)
+        options.top = Number(top) || 0;
+      if (scrollX.value && left !== previousLeft)
+        options.left = Number(left) || 0;
+      if (options.left !== void 0 || options.top !== void 0)
+        scrollTo(options);
+    },
+    { flush: "post" }
+  );
+  Vue.watch(() => props2.scrollIntoView, scrollIntoView, { flush: "post" });
+  expose({ $getMain: () => rootRef.value });
+  return { rootRef, rootStyle, scrollBarClassName };
+}
+const _t0$6 = Vue.template("<div uni-scroll-view uni-view> ", 1);
+const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
-  compatConfig: { MODE: 3 },
-  props: props$g,
-  emits: [
-    "scroll",
-    "scrollend",
-    "scrolltoupper",
-    "scrolltolower",
-    "refresherrefresh",
-    "refresherrestore",
-    "refresherpulling",
-    "refresherabort",
-    "update:refresherTriggered"
-  ],
-  setup(props2, { emit: emit2, slots, expose }) {
-    const rootRef = Vue.ref(null);
-    const main = Vue.ref(null);
-    const wrap = Vue.ref(null);
-    const content = Vue.ref(null);
-    const trigger = useCustomEvent(rootRef, emit2);
-    const { state, scrollTopNumber, scrollLeftNumber } = useScrollViewState(props2);
-    const { realScrollX, realScrollY, _scrollLeftChanged, _scrollTopChanged } = useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content, emit2);
-    const mainStyle = Vue.computed(() => {
-      let style = "";
-      realScrollX.value ? style += "overflow-x:auto;" : style += "overflow-x:hidden;";
-      realScrollY.value ? style += "overflow-y:auto;" : style += "overflow-y:hidden;";
-      return style;
-    });
-    const scrollBarClassName = Vue.computed(() => {
-      let className = "uni-scroll-view";
-      if (props2.showScrollbar === false) {
-        className += " uni-scroll-view-scrollbar-hidden";
-      }
-      return className;
-    });
-    expose({
-      // 自动化测试需要暴露main从而获取scrollLeft
-      $getMain() {
-        return main.value;
-      }
-    });
-    return () => {
-      const { refresherEnabled, refresherBackground, refresherDefaultStyle, refresherThreshold } = props2;
-      const { refresherHeight, refreshState } = state;
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n14 = Vue.createPlainElement("uni-scroll-view", null, () => {
-          const _n13 = _t0$c();
-          const _n12 = Vue.child(_n13);
-          const _n11 = Vue.child(_n12);
-          const _n10 = Vue.next(_n11);
-          Vue.renderEffect(() => {
-            Vue.setStyle(_n12, mainStyle.value);
-            Vue.setClass(_n12, scrollBarClassName.value);
-          });
-          Vue.setInsertionState(_n12, _n11);
-          Vue.createIf(() => refresherEnabled, () => {
-            const _n7 = createComponent(Refresher, {
-              refreshState: () => refreshState,
-              refresherHeight: () => refresherHeight,
-              refresherThreshold: () => refresherThreshold,
-              refresherDefaultStyle: () => refresherDefaultStyle,
-              refresherBackground: () => refresherBackground
-            }, Vue.extend(() => {
-              const _n2 = Vue.createIf(() => refresherDefaultStyle == "none", () => {
-                const _n4 = createNodes(() => slots.refresher && slots.refresher());
-                return _n4;
-              }, () => {
-                const _n6 = createNodes(null);
-                return _n6;
-              }, 394);
-              return _n2;
-            }, { _: 1 }));
-            return _n7;
-          }, () => {
-            const _n9 = createNodes(null);
-            return _n9;
-          }, 521);
-          const _x10 = Vue.txt(_n10);
-          setNodes(_x10, () => slots.default && slots.default());
-          Vue.renderEffect(() => {
-            _setTemplateRef(_n10, content);
-            _setTemplateRef(_n12, main);
-            _setTemplateRef(_n13, wrap);
-          });
-          return _n13;
-        }, true);
-        Vue.renderEffect(() => _setTemplateRef(_n14, rootRef));
-        return _n14;
-      })();
-    };
-  }
-});
-function useScrollViewState(props2) {
-  const scrollTopNumber = Vue.computed(() => {
-    return Number(props2.scrollTop) || 0;
-  });
-  const scrollLeftNumber = Vue.computed(() => {
-    return Number(props2.scrollLeft) || 0;
-  });
-  const state = Vue.reactive({
-    lastScrollTop: scrollTopNumber.value,
-    lastScrollLeft: scrollLeftNumber.value,
-    lastScrollToUpperTime: 0,
-    lastScrollToLowerTime: 0,
-    refresherHeight: 0,
-    refreshState: ""
-  });
-  return {
-    state,
-    scrollTopNumber,
-    scrollLeftNumber
-  };
-}
-function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content, emit2) {
-  let beforeRefreshing = false;
-  let triggerAbort = false;
-  let __transitionEnd = () => {
-  };
-  const realScrollX = Vue.computed(() => {
-    if (props2.direction === "horizontal" || props2.direction === "all") {
-      return true;
-    }
-    return false;
-  });
-  const realScrollY = Vue.computed(() => {
-    if (props2.direction === "vertical" || props2.direction === "all") {
-      return true;
-    }
-    return false;
-  });
-  Vue.computed(() => {
-    let val = Number(props2.upperThreshold);
-    return isNaN(val) ? 50 : val;
-  });
-  Vue.computed(() => {
-    let val = Number(props2.lowerThreshold);
-    return isNaN(val) ? 50 : val;
-  });
-  function scrollTo(scrollToValue, direction) {
-    const container = main.value;
-    let transformValue = 0;
-    let transform = "";
-    scrollToValue < 0 ? scrollToValue = 0 : direction === "x" && scrollToValue > container.scrollWidth - container.offsetWidth ? scrollToValue = container.scrollWidth - container.offsetWidth : direction === "y" && scrollToValue > container.scrollHeight - container.offsetHeight && (scrollToValue = container.scrollHeight - container.offsetHeight);
-    direction === "x" ? transformValue = container.scrollLeft - scrollToValue : direction === "y" && (transformValue = container.scrollTop - scrollToValue);
-    if (transformValue === 0)
-      return;
-    let _content = content.value;
-    _content.style.transition = "transform .3s ease-out";
-    _content.style.webkitTransition = "-webkit-transform .3s ease-out";
-    if (direction === "x") {
-      transform = "translateX(" + transformValue + "px) translateZ(0)";
-    } else {
-      direction === "y" && (transform = "translateY(" + transformValue + "px) translateZ(0)");
-    }
-    _content.removeEventListener("transitionend", __transitionEnd);
-    _content.removeEventListener("webkitTransitionEnd", __transitionEnd);
-    __transitionEnd = () => _transitionEnd(scrollToValue, direction);
-    _content.addEventListener("transitionend", __transitionEnd);
-    _content.addEventListener("webkitTransitionEnd", __transitionEnd);
-    if (direction === "x") {
-      container.style.overflowX = "hidden";
-    } else if (direction === "y") {
-      container.style.overflowY = "hidden";
-    }
-    _content.style.transform = transform;
-    _content.style.webkitTransform = transform;
-  }
-  function _scrollTopChanged(val) {
-    if (realScrollY.value) {
-      {
-        if (props2.scrollWithAnimation) {
-          scrollTo(val, "y");
-        } else {
-          main.value.scrollTop = val;
-        }
-      }
-    }
-  }
-  function _scrollLeftChanged(val) {
-    if (realScrollX.value) {
-      {
-        if (props2.scrollWithAnimation) {
-          scrollTo(val, "x");
-        } else {
-          main.value.scrollLeft = val;
-        }
-      }
-    }
-  }
-  function _scrollIntoViewChanged(val) {
-    if (val) {
-      if (!/^[_a-zA-Z][-_a-zA-Z0-9:]*$/.test(val)) {
-        console.error(`id error: scroll-into-view=${val}`);
-        return;
-      }
-      let element = rootRef.value.querySelector("#" + val);
-      if (element) {
-        let mainRect = main.value.getBoundingClientRect();
-        let elRect = element.getBoundingClientRect();
-        if (realScrollX.value) {
-          let left = elRect.left - mainRect.left;
-          let scrollLeft = main.value.scrollLeft;
-          let x = scrollLeft + left;
-          if (props2.scrollWithAnimation) {
-            scrollTo(x, "x");
-          } else {
-            main.value.scrollLeft = x;
-          }
-        }
-        if (realScrollY.value) {
-          let top = elRect.top - mainRect.top;
-          let scrollTop = main.value.scrollTop;
-          let y = scrollTop + top;
-          if (props2.scrollWithAnimation) {
-            scrollTo(y, "y");
-          } else {
-            main.value.scrollTop = y;
-          }
-        }
-      }
-    }
-  }
-  function _transitionEnd(val, direction) {
-    content.value.style.transition = "";
-    content.value.style.webkitTransition = "";
-    content.value.style.transform = "";
-    content.value.style.webkitTransform = "";
-    let _main = main.value;
-    if (direction === "x") {
-      _main.style.overflowX = realScrollX.value ? "auto" : "hidden";
-      _main.scrollLeft = val;
-    } else if (direction === "y") {
-      _main.style.overflowY = realScrollY.value ? "auto" : "hidden";
-      _main.scrollTop = val;
-    }
-    content.value.removeEventListener("transitionend", __transitionEnd);
-    content.value.removeEventListener("webkitTransitionEnd", __transitionEnd);
-  }
-  function _setRefreshState(_state) {
-    if (!props2.refresherEnabled)
-      return;
-    switch (_state) {
-      case "refreshing":
-        state.refresherHeight = props2.refresherThreshold;
-        if (!beforeRefreshing) {
-          beforeRefreshing = true;
-          trigger("refresherpulling", {}, {
-            deltaY: state.refresherHeight,
-            dy: state.refresherHeight
-          });
-          trigger("refresherrefresh", {}, { dy: touchEnd.y - touchStart.y });
-          emit2("update:refresherTriggered", true);
-        }
-        break;
-      case "restore":
-      case "refresherabort":
-        beforeRefreshing = false;
-        state.refresherHeight = 0;
-        if (_state === "restore") {
-          triggerAbort = false;
-          trigger("refresherrestore", {}, { dy: touchEnd.y - touchStart.y });
-        }
-        if (_state === "refresherabort" && triggerAbort) {
-          triggerAbort = false;
-          trigger("refresherabort", {}, { dy: touchEnd.y - touchStart.y });
-        }
-        break;
-    }
-    state.refreshState = _state;
-  }
-  let touchStart = {
-    x: 0,
-    y: 0
-  };
-  let touchEnd = {
-    x: 0,
-    y: props2.refresherThreshold
-  };
-  Vue.watch(scrollTopNumber, (val) => {
-    _scrollTopChanged(val);
-  });
-  Vue.watch(scrollLeftNumber, (val) => {
-    _scrollLeftChanged(val);
-  });
-  Vue.watch(() => props2.scrollIntoView, (val) => {
-    _scrollIntoViewChanged(val);
-  });
-  Vue.watch(() => props2.refresherTriggered, (val) => {
-    if (val === true) {
-      _setRefreshState("refreshing");
-    } else if (val === false) {
-      _setRefreshState("restore");
-    }
-  });
-  return {
-    realScrollX,
-    realScrollY,
-    _scrollTopChanged,
-    _scrollLeftChanged
-  };
-}
-function createBackgroundColorStyle(color) {
-  return color ? { backgroundColor: color } : void 0;
-}
-function withBackgroundColor(style, color) {
-  return color ? Object.assign(style, { backgroundColor: color }) : style;
-}
-const _t0$b = Vue.template("<div class=uni-slider-wrapper><div class=uni-slider-input><div class=uni-slider-track><div class=uni-slider-track-value></div></div><div class=uni-slider-thumb-track><div class=uni-slider-thumb-value></div></div><input class=uni-slider-browser-input-range type=range></div><span class=uni-slider-value>");
-const SLIDER_BLOCK_SIZE_MIN_VALUE = 12;
-const SLIDER_BLOCK_SIZE_MAX_VALUE = 28;
-const props$f = {
-  name: {
-    type: String,
-    default: ""
+  props: props$5,
+  emits,
+  rootElement: {
+    name: "uni-scroll-view",
+    class: UniScrollViewElement
   },
-  min: {
-    type: [Number, String],
-    default: 0
-  },
-  max: {
-    type: [Number, String],
-    default: 100
-  },
-  value: {
-    type: [Number, String],
-    default: 0
-  },
-  step: {
-    type: [Number, String],
-    default: 1
-  },
-  disabled: {
-    type: [Boolean, String],
-    default: false
-  },
-  color: { type: String },
-  backgroundColor: { type: String },
-  // 优先级高于 activeColor
-  activeBackgroundColor: { type: String },
-  activeColor: { type: String },
-  selectedColor: { type: String },
-  blockColor: { type: String },
-  // 优先级高于blockColor
-  foreColor: { type: String },
-  valueColor: { type: String },
-  blockSize: {
-    type: [Number, String],
-    default: 28
-  },
-  showValue: {
-    type: [Boolean, String],
-    default: false
-  }
-};
-const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Slider",
-  props: props$f,
-  emits: ["changing", "change"],
-  setup(props2, { emit: emit2 }) {
-    const sliderRef = Vue.ref(null);
-    const sliderValueRef = Vue.ref(null);
-    let uniSliderElement;
-    Vue.watch(() => props2.value, (val) => {
-      uniSliderElement.value = Number(val);
-    });
-    const trigger = useCustomEvent(sliderRef, emit2);
-    const state = useSliderState(props2);
-    const { _onInput, _onChange } = useSliderLoader(props2, sliderRef, trigger);
-    return () => {
-      const { setTrackBgColor, setActiveColor, setThumbStyle, thumbTrackStyle, setValueStyle } = state;
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n7 = Vue.createPlainElement("uni-slider", null, () => {
-          const _n6 = _t0$b();
-          let _p0 = Vue.child(_n6);
-          const _n1 = Vue.child(_p0);
-          const _n0 = Vue.child(_n1);
-          const _n3 = Vue.next(_n1);
-          const _n2 = Vue.child(_n3);
-          const _n4 = Vue.next(_n3);
-          const _n5 = Vue.next(_p0);
-          Vue.on(_n4, "input", withWebEvent(_onInput));
-          Vue.on(_n4, "change", withWebEvent(_onChange));
-          Vue.applyVShow(_n5, () => props2.showValue);
-          Vue.renderEffect(() => {
-            Vue.setStyle(_n1, setTrackBgColor());
-            Vue.setStyle(_n0, setActiveColor());
-            Vue.setStyle(_n3, thumbTrackStyle());
-            Vue.setStyle(_n2, setThumbStyle());
-            Vue.setProp(_n4, "min", props2.min);
-            Vue.setProp(_n4, "max", props2.max);
-            Vue.setProp(_n4, "step", props2.step);
-            Vue.setValue(_n4, props2.value);
-            Vue.setStyle(_n5, setValueStyle());
-            _setTemplateRef(_n5, sliderValueRef);
-          });
-          return _n6;
-        }, true);
-        Vue.renderEffect(() => _setTemplateRef(_n7, sliderRef));
-        return _n7;
-      })();
-    };
-  }
-});
-function useSliderState(props2) {
-  const _getBgColor = () => {
-    const backgroundColor = props2.backgroundColor;
-    const color = props2.color;
-    if (backgroundColor && backgroundColor !== "#e9e9e9") {
-      return backgroundColor;
-    }
-    if (color && color !== "#007aff")
-      return color;
-    return backgroundColor || color;
-  };
-  const _getActiveColor = () => {
-    const activeColor = props2.activeBackgroundColor || props2.activeColor;
-    const selectedColor = props2.selectedColor;
-    if (activeColor && activeColor !== "#007aff")
-      return activeColor;
-    if (selectedColor && selectedColor !== "#e9e9e9") {
-      return selectedColor;
-    }
-    return activeColor || selectedColor;
-  };
-  const _getBlockColor = () => {
-    return props2.foreColor || props2.blockColor;
-  };
-  const _getBlockSizeString = () => {
-    const blockSize = Math.min(Math.max(Number(props2.blockSize), SLIDER_BLOCK_SIZE_MIN_VALUE), SLIDER_BLOCK_SIZE_MAX_VALUE);
-    return blockSize + "px";
-  };
-  return {
-    setTrackBgColor: () => createBackgroundColorStyle(_getBgColor()),
-    setActiveColor: () => createBackgroundColorStyle(_getActiveColor()),
-    thumbTrackStyle: () => ({ marginRight: _getBlockSizeString() }),
-    setThumbStyle: () => withBackgroundColor({
-      width: _getBlockSizeString(),
-      height: _getBlockSizeString()
-    }, _getBlockColor()),
-    setValueStyle: () => props2.valueColor ? { color: props2.valueColor } : void 0
-  };
-}
-function useSliderLoader(props2, sliderRef, trigger) {
-  const _onInput = (event) => {
-    if (props2.disabled) {
-      return;
-    }
-    const valueNumber = Number(event.target.value);
-    sliderRef.value.updateValue(valueNumber);
-    trigger("changing", event, { value: valueNumber });
-  };
-  const _onChange = (event) => {
-    if (props2.disabled) {
-      return;
-    }
-    const valueNumber = Number(event.target.value);
-    sliderRef.value.updateValue(valueNumber);
-    trigger("change", event, { value: valueNumber });
-  };
-  const uniForm = Vue.inject(uniFormKey, false);
-  if (!!uniForm) {
-    const field = {
-      reset: () => {
-        sliderRef.value.reset();
-      },
-      submit: () => {
-        const data = ["", null];
-        const value = sliderRef.value.value;
-        if (props2.name !== "") {
-          data[0] = props2.name;
-          data[1] = value;
-        }
-        return data;
-      }
-    };
-    uniForm.addField(field);
-  }
-  return {
-    _onInput,
-    _onChange
-  };
-}
-const _t0$a = Vue.template("<div class=uni-swiper-wrapper><div class=uni-swiper-slides><div class=uni-swiper-slide-frame> </div></div> ");
-const _t1$7 = Vue.template("<div> ", 1);
-const _t2$3 = Vue.template("<div>", 1);
-const _t3$3 = Vue.template("<div> ");
-const props$e = {
-  indicatorDots: {
-    type: [Boolean, String],
-    default: false
-  },
-  vertical: {
-    type: [Boolean, String],
-    default: false
-  },
-  autoplay: {
-    type: [Boolean, String],
-    default: false
-  },
-  circular: {
-    type: [Boolean, String],
-    default: false
-  },
-  interval: {
-    type: [Number, String],
-    default: 5e3
-  },
-  duration: {
-    type: [Number, String],
-    default: 500
-  },
-  current: {
-    type: [Number, String],
-    default: 0
-  },
-  indicatorColor: {
-    type: String,
-    default: ""
-  },
-  indicatorActiveColor: {
-    type: String,
-    default: ""
-  },
-  previousMargin: {
-    type: String,
-    default: ""
-  },
-  nextMargin: {
-    type: String,
-    default: ""
-  },
-  currentItemId: {
-    type: String,
-    default: ""
-  },
-  skipHiddenItemLayout: {
-    type: [Boolean, String],
-    default: false
-  },
-  displayMultipleItems: {
-    type: [Number, String],
-    default: 1
-  },
-  disableTouch: {
-    type: [Boolean, String],
-    default: false
-  },
-  navigation: {
-    type: [Boolean, String],
-    default: false
-  },
-  navigationColor: {
-    type: String,
-    default: "#fff"
-  },
-  navigationActiveColor: {
-    type: String,
-    default: "rgba(53, 53, 53, 0.6)"
-  }
-};
-function useState(props2) {
-  const interval = Vue.computed(() => {
-    const interval2 = Number(props2.interval);
-    return isNaN(interval2) ? 5e3 : interval2;
-  });
-  const duration = Vue.computed(() => {
-    const duration2 = Number(props2.duration);
-    return isNaN(duration2) ? 500 : duration2;
-  });
-  const displayMultipleItems = Vue.computed(() => {
-    const displayMultipleItems2 = Math.round(props2.displayMultipleItems);
-    return isNaN(displayMultipleItems2) ? 1 : displayMultipleItems2;
-  });
-  const state = Vue.reactive({
-    interval,
-    duration,
-    displayMultipleItems,
-    current: Math.round(props2.current) || 0,
-    currentItemId: props2.currentItemId,
-    userTracking: false
-  });
-  return state;
-}
-function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger) {
-  function cancelSchedule() {
-    if (timer) {
-      clearTimeout(timer);
-      timer = null;
-    }
-  }
-  let timer = null;
-  let invalid = true;
-  let viewportPosition = 0;
-  let viewportMoveRatio = 1;
-  let animating = null;
-  let requestedAnimation = false;
-  let contentTrackViewport = 0;
-  let transitionStart;
-  let currentChangeSource = "";
-  const swiperEnabled = Vue.computed(() => swiperContexts.value.length > state.displayMultipleItems);
-  const circularEnabled = Vue.computed(() => props2.circular && swiperEnabled.value);
-  function checkCircularLayout(index2) {
-    if (!invalid) {
-      for (let items = swiperContexts.value, n = items.length, i = index2 + state.displayMultipleItems, r = 0; r < n; r++) {
-        const item = items[r];
-        const s = Math.floor(index2 / n) * n + r;
-        const l = s + n;
-        const c = s - n;
-        const u = Math.max(index2 - (s + 1), s - i, 0);
-        const d = Math.max(index2 - (l + 1), l - i, 0);
-        const h = Math.max(index2 - (c + 1), c - i, 0);
-        const p2 = Math.min(u, d, h);
-        const position = [
-          s,
-          l,
-          c
-        ][[
-          u,
-          d,
-          h
-        ].indexOf(p2)];
-        item.updatePosition(position, props2.vertical);
-      }
-    }
-  }
-  function updateViewport(index2) {
-    if (!(Math.floor(2 * viewportPosition) === Math.floor(2 * index2) && Math.ceil(2 * viewportPosition) === Math.ceil(2 * index2))) {
-      if (circularEnabled.value) {
-        checkCircularLayout(index2);
-      }
-    }
-    const x = props2.vertical ? "0" : 100 * -index2 * viewportMoveRatio + "%";
-    const y = props2.vertical ? 100 * -index2 * viewportMoveRatio + "%" : "0";
-    const transform = "translate(" + x + ", " + y + ") translateZ(0)";
-    const slideFrame = slideFrameRef.value;
-    if (slideFrame) {
-      slideFrame.style.webkitTransform = transform;
-      slideFrame.style.transform = transform;
-    }
-    viewportPosition = index2;
-    if (!transitionStart) {
-      if (index2 % 1 === 0) {
-        return;
-      }
-      transitionStart = index2;
-    }
-    index2 -= Math.floor(transitionStart);
-    const items = swiperContexts.value;
-    if (index2 <= -(items.length - 1)) {
-      index2 += items.length;
-    } else if (index2 >= items.length) {
-      index2 -= items.length;
-    }
-    index2 = transitionStart % 1 > 0.5 || transitionStart < 0 ? index2 - 1 : index2;
-    trigger("transition", {}, {
-      dx: props2.vertical ? 0 : index2 * slideFrame.offsetWidth,
-      dy: props2.vertical ? index2 * slideFrame.offsetHeight : 0
-    });
-  }
-  function endViewportAnimation() {
-    if (animating) {
-      updateViewport(animating.toPos);
-      animating = null;
-    }
-  }
-  function normalizeCurrentValue(current) {
-    const length = swiperContexts.value.length;
-    if (!length) {
-      return -1;
-    }
-    const index2 = (Math.round(current) % length + length) % length;
-    if (circularEnabled.value) {
-      if (length <= state.displayMultipleItems) {
-        return 0;
-      }
-    } else if (index2 > length - state.displayMultipleItems) {
-      return length - state.displayMultipleItems;
-    }
-    return index2;
-  }
-  function cancelViewportAnimation() {
-    animating = null;
-  }
-  function animateFrameFuncProto() {
-    if (!animating) {
-      requestedAnimation = false;
-      return;
-    }
-    const _animating = animating;
-    const toPos = _animating.toPos;
-    const acc = _animating.acc;
-    const endTime = _animating.endTime;
-    const source = _animating.source;
-    const time = endTime - Date.now();
-    if (time <= 0) {
-      updateViewport(toPos);
-      animating = null;
-      requestedAnimation = false;
-      transitionStart = null;
-      const item = swiperContexts.value[state.current];
-      if (item) {
-        const currentItemId = item.getItemId();
-        trigger("animationfinish", {}, {
-          current: state.current,
-          currentItemId,
-          source
-        });
-      }
-      return;
-    }
-    const s = acc * time * time / 2;
-    const l = toPos + s;
-    updateViewport(l);
-    requestAnimationFrame(animateFrameFuncProto);
-  }
-  function animateViewport(current, source, n) {
-    cancelViewportAnimation();
-    const duration = state.duration;
-    const length = swiperContexts.value.length;
-    let position = viewportPosition;
-    if (circularEnabled.value) {
-      if (n < 0) {
-        for (; position < current; ) {
-          position += length;
-        }
-        for (; position - length > current; ) {
-          position -= length;
-        }
-      } else if (n > 0) {
-        for (; position > current; ) {
-          position -= length;
-        }
-        for (; position + length < current; ) {
-          position += length;
-        }
-        if (position + length - current < current - position) {
-          position += length;
-        }
-      } else {
-        for (; position + length < current; ) {
-          position += length;
-        }
-        for (; position - length > current; ) {
-          position -= length;
-        }
-        if (position + length - current < current - position) {
-          position += length;
-        }
-      }
-    } else if (source === "click") {
-      current = current + state.displayMultipleItems - 1 < length ? current : 0;
-    }
-    animating = {
-      toPos: current,
-      acc: 2 * (position - current) / (duration * duration),
-      endTime: Date.now() + duration,
-      source
-    };
-    if (!requestedAnimation) {
-      requestedAnimation = true;
-      requestAnimationFrame(animateFrameFuncProto);
-    }
-  }
-  function scheduleAutoplay() {
-    cancelSchedule();
-    const items = swiperContexts.value;
-    const callback = function() {
-      timer = null;
-      currentChangeSource = "autoplay";
-      if (circularEnabled.value) {
-        state.current = normalizeCurrentValue(state.current + 1);
-      } else {
-        state.current = state.current + state.displayMultipleItems < items.length ? state.current + 1 : 0;
-      }
-      animateViewport(state.current, "autoplay", circularEnabled.value ? 1 : 0);
-      timer = setTimeout(callback, state.interval);
-    };
-    if (!(invalid || items.length <= state.displayMultipleItems)) {
-      timer = setTimeout(callback, state.interval);
-    }
-  }
-  function resetLayout() {
-    cancelSchedule();
-    endViewportAnimation();
-    const items = swiperContexts.value;
-    for (let i = 0; i < items.length; i++) {
-      items[i].updatePosition(i, props2.vertical);
-    }
-    viewportMoveRatio = 1;
-    const slideFrameEl = slideFrameRef.value;
-    if (state.displayMultipleItems === 1 && items.length) {
-      const itemRect = items[0].getBoundingClientRect();
-      const slideFrameRect = slideFrameEl.getBoundingClientRect();
-      viewportMoveRatio = itemRect.width / slideFrameRect.width;
-      if (!(viewportMoveRatio > 0 && viewportMoveRatio < 1)) {
-        viewportMoveRatio = 1;
-      }
-    }
-    const position = viewportPosition;
-    viewportPosition = -2;
-    const current = state.current;
-    if (current >= 0) {
-      invalid = false;
-      if (state.userTracking) {
-        updateViewport(position + current - contentTrackViewport);
-        contentTrackViewport = current;
-      } else {
-        updateViewport(current);
-        if (props2.autoplay) {
-          scheduleAutoplay();
-        }
-      }
-    } else {
-      invalid = true;
-      updateViewport(-state.displayMultipleItems - 1);
-    }
-  }
-  Vue.watch([
-    () => props2.current,
-    () => props2.currentItemId,
-    () => [...swiperContexts.value]
-  ], () => {
-    let current = -1;
-    if (props2.currentItemId) {
-      for (let i = 0, items = swiperContexts.value; i < items.length; i++) {
-        const itemId = items[i].getItemId();
-        if (itemId === props2.currentItemId) {
-          current = i;
-          break;
-        }
-      }
-    }
-    if (current < 0) {
-      current = Math.round(props2.current) || 0;
-    }
-    current = current < 0 ? 0 : current;
-    if (state.current !== current) {
-      currentChangeSource = "";
-      state.current = current;
-    }
-  });
-  Vue.watch([
-    () => props2.vertical,
-    () => circularEnabled.value,
-    () => state.displayMultipleItems,
-    () => [...swiperContexts.value]
-  ], resetLayout);
-  Vue.watch(() => state.interval, () => {
-    if (timer) {
-      cancelSchedule();
-      scheduleAutoplay();
-    }
-  });
-  function currentChanged(current, history) {
-    const source = currentChangeSource;
-    currentChangeSource = "";
-    const items = swiperContexts.value;
-    if (!source) {
-      const length = items.length;
-      animateViewport(current, "", circularEnabled.value && history + (length - current) % length > length / 2 ? 1 : 0);
-    }
-    const item = items[current];
-    if (item) {
-      const currentItemId = state.currentItemId = item.getItemId();
-      trigger("change", {}, {
-        current: state.current,
-        currentItemId,
-        source
+  setup(props2, context) {
+    const { rootRef, rootStyle, scrollBarClassName } = useScrollView(props2, context);
+    const { slots } = context;
+    const root = (() => {
+      const _setTemplateRef = Vue.createTemplateRefSetter();
+      const _n0 = _t0$6();
+      const _x0 = Vue.txt(_n0);
+      setNodes(_x0, () => slots.default && slots.default());
+      Vue.renderEffect(() => {
+        Vue.setStyle(_n0, rootStyle.value);
+        Vue.setClass(_n0, scrollBarClassName.value);
+        _setTemplateRef(_n0, rootRef);
       });
-    }
+      return _n0;
+    })();
+    return root;
   }
-  Vue.watch(() => state.current, (val, oldVal) => {
-    currentChanged(val, oldVal);
-    emit2("update:current", val);
-  });
-  Vue.watch(() => state.currentItemId, (val) => {
-    emit2("update:currentItemId", val);
-  });
-  function inintAutoplay(enable) {
-    if (enable) {
-      scheduleAutoplay();
-    } else {
-      cancelSchedule();
-    }
-  }
-  Vue.watch(() => props2.autoplay && !state.userTracking, inintAutoplay);
-  inintAutoplay(props2.autoplay && !state.userTracking);
-  function onSwiperDotClick(index2) {
-    animateViewport(state.current = index2, currentChangeSource = "click", circularEnabled.value ? 1 : 0);
-  }
-  return {
-    onSwiperDotClick,
-    circularEnabled,
-    swiperEnabled
-  };
+});
+const FORM_KEY = "UNI_FORM_CTX";
+const LABEL_KEY = "UNI_LABEL_CTX";
+const RADIO_GROUP_KEY = "UNI_RADIO_GROUP_CTX";
+const CHECKBOX_GROUP_KEY = "UNI_CHECKBOX_GROUP_CTX";
+const PICKER_VIEW_KEY = "UNI_PICKER_VIEW_CTX";
+const labelTargets = /* @__PURE__ */ new Map();
+function findLabelTarget(id2) {
+  if (id2.length === 0)
+    return null;
+  const targets = labelTargets.get(id2);
+  if (targets == null || targets.length === 0)
+    return null;
+  return targets[targets.length - 1];
 }
-const index$j = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Swiper",
-  props: props$e,
-  emits: [
-    "change",
-    "transition",
-    "animationfinish",
-    "update:current",
-    "update:currentItemId"
-  ],
-  setup(props2, { slots, emit: emit2 }) {
-    const rootRef = Vue.ref(null);
-    const trigger = useCustomEvent(rootRef, emit2);
-    const slidesWrapperRef = Vue.ref(null);
-    const slideFrameRef = Vue.ref(null);
-    const state = useState(props2);
-    const slidesStyle = Vue.computed(() => {
-      let style = {};
-      if (props2.nextMargin || props2.previousMargin) {
-        style = props2.vertical ? {
-          left: 0,
-          right: 0,
-          top: rpx2px(props2.previousMargin, true),
-          bottom: rpx2px(props2.nextMargin, true)
-        } : {
-          top: 0,
-          bottom: 0,
-          left: rpx2px(props2.previousMargin, true),
-          right: rpx2px(props2.nextMargin, true)
-        };
+function toStringOrEmpty(val) {
+  if (val == null) {
+    return "";
+  }
+  return val + "";
+}
+function classes(...classList) {
+  return classList.map((className) => {
+    if (Array.isArray(className)) {
+      const classNames = className;
+      const condition = classNames[0];
+      const truthy = classNames[1];
+      const falsy = classNames.length > 2 ? classNames[2] : "";
+      return (condition ? truthy : falsy) ?? "";
+    }
+    return className ?? "";
+  });
+}
+function createSpaceKeyHandlers(isDisabled) {
+  let spacePressed = false;
+  function handleKeydown(event) {
+    if (event.key !== " " || event.target !== event.currentTarget || event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) {
+      return;
+    }
+    event.preventDefault();
+    if (!event.repeat) {
+      spacePressed = !isDisabled();
+    }
+  }
+  function handleKeyup(event) {
+    var _a;
+    if (event.key !== " " || event.target !== event.currentTarget) {
+      return;
+    }
+    const shouldActivate = spacePressed;
+    spacePressed = false;
+    if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) {
+      return;
+    }
+    event.preventDefault();
+    if (shouldActivate && !isDisabled()) {
+      (_a = event.currentTarget) == null ? void 0 : _a.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+    }
+  }
+  function handleBlur() {
+    spacePressed = false;
+  }
+  return { handleKeydown, handleKeyup, handleBlur };
+}
+const _UniButtonElement = class _UniButtonElement extends UniTextElement {
+  constructor() {
+    super(...arguments);
+    this.tagName = "BUTTON";
+    this.nodeName = "BUTTON";
+    this._value = "";
+  }
+  get value() {
+    var _a, _b;
+    if ((_a = this.vm) == null ? void 0 : _a.isLoading()) {
+      return ((_b = this.vm) == null ? void 0 : _b.getValue()) ?? this._value;
+    }
+    return super.value ?? this._value;
+  }
+};
+_UniButtonElement.__uniElement = { vm: true, init() {
+  Object.defineProperty(this, "_value", { value: "", writable: true, enumerable: true, configurable: true });
+} };
+let UniButtonElement = _UniButtonElement;
+const t0$n = Vue.template('<div uni-button uni-view style="display: flex;justify-content: center;flex-direction: row;align-items: center" role=button><!><span uni-text>', 1);
+const t1$a = Vue.template("<span uni-button uni-text role=button>", 1);
+const _uniButtonElement = { value: "BUTTON" };
+const DEFAULT_BUTTON_HOVER_CLASS_NAME = "button-hover";
+const _sfc_main$n = /* @__PURE__ */ Vue.defineVaporComponent({
+  ...{
+    name: "button",
+    // @ts-ignore
+    rootElement: {
+      class: /* @__PURE__ */ Vue.initUniElementType(UniButtonElement, "button")
+    },
+    externalClasses: ["hover-class", "loading-class", "loading-text-class"]
+  },
+  __name: "button",
+  props: {
+    disabled: { type: Boolean, default: false },
+    type: { type: String },
+    size: { default: "default", type: String },
+    plain: { type: Boolean, default: false },
+    loadingClass: { type: null },
+    loadingTextClass: { type: null },
+    hoverClass: { type: null },
+    hoverStartTime: { default: 20, type: Number },
+    hoverStayTime: { default: 70, type: Number },
+    hoverStopPropagation: { type: Boolean, default: false },
+    loading: { type: Boolean, default: false },
+    formType: { type: String },
+    openType: { default: "", type: String },
+    iosLoadingSnow: { type: Boolean, default: false }
+  },
+  emits: ["click"],
+  setup(__props, { expose: __expose, emit: __emit }) {
+    const emit2 = __emit;
+    const props2 = __props;
+    const { handleKeydown: handleSpaceKeydown, handleKeyup, handleBlur } = createSpaceKeyHandlers(() => props2.disabled);
+    function handleKeydown(event) {
+      var _a;
+      if (event.key !== "Enter") {
+        handleSpaceKeydown(event);
+        return;
+      }
+      if (event.target !== event.currentTarget || event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) {
+        return;
+      }
+      event.preventDefault();
+      if (!props2.disabled && !event.repeat) {
+        (_a = event.currentTarget) == null ? void 0 : _a.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+      }
+    }
+    const loadingRootRef = Vue.ref(null);
+    Vue.watch(() => props2.loading && !props2.disabled, (_loading, wasLoading) => {
+      const element = wasLoading ? loadingRootRef.value : textRef.value;
+      if (element == null || document.activeElement !== element) {
+        return;
+      }
+      handleBlur();
+      Vue.nextTick(() => {
+        if (!props2.disabled && document.activeElement === document.body) {
+          const element2 = props2.loading && !props2.disabled ? loadingRootRef.value : textRef.value;
+          if (element2 instanceof Object) {
+            element2.focus();
+          }
+        }
+      });
+    });
+    const textRef = Vue.ref(null);
+    const buttonType = Vue.computed(() => {
+      return props2.type == null ? "default" : props2.type;
+    });
+    const loadingTextStyle = Vue.computed(() => {
+      let style = "font-size:inherit;line-height:inherit;font-weight:inherit;text-align:inherit;";
+      if (props2.loadingTextClass == null) {
+        style += "color:inherit;";
       }
       return style;
     });
-    const slideFrameStyle = Vue.computed(() => {
-      const value = Math.abs(100 / state.displayMultipleItems) + "%";
-      return {
-        width: props2.vertical ? "100%" : value,
-        height: !props2.vertical ? "100%" : value
-      };
+    const formCtx = Vue.inject(FORM_KEY, null);
+    const enableTransition = Vue.ref(false);
+    const hoverClasses = Vue.computed(() => {
+      let isDefaultHoverClass = false;
+      if (props2.hoverClass != null) {
+        const hoverClass = `${props2.hoverClass}`.replace(/^\^+/, "");
+        if (hoverClass == "" || hoverClass == "none") {
+          return "none";
+        }
+        if (hoverClass != DEFAULT_BUTTON_HOVER_CLASS_NAME) {
+          return `${props2.hoverClass}`;
+        }
+        isDefaultHoverClass = true;
+      }
+      const classes2 = [];
+      if (!props2.plain) {
+        switch (buttonType.value) {
+          case "default":
+            classes2.push("uni-button-view_default_hover");
+            break;
+          case "primary":
+            classes2.push("uni-button-view_primary_hover");
+            break;
+          case "warn":
+            classes2.push("uni-button-view_warn_hover");
+            break;
+        }
+      } else {
+        switch (buttonType.value) {
+          case "default":
+            classes2.push("uni-button-view_plain_default_hover");
+            break;
+          case "primary":
+            classes2.push("uni-button-view_plain_primary_hover");
+            break;
+          case "warn":
+            classes2.push("uni-button-view_plain_warn_hover");
+            break;
+        }
+      }
+      if (isDefaultHoverClass) {
+        classes2.push(`${props2.hoverClass}`);
+      }
+      return classes2.join(" ");
     });
-    let swiperItems = [];
-    const originSwiperContexts = [];
-    const swiperContexts = Vue.ref([]);
-    function updateSwiperContexts() {
-      const contexts = [];
-      for (let index2 = 0; index2 < swiperItems.length; index2++) {
-        let swiperItem = swiperItems[index2];
-        if (!(swiperItem instanceof Element)) {
-          swiperItem = swiperItem.el;
-        }
-        const swiperContext = originSwiperContexts.find((context) => swiperItem === context.rootRef.value);
-        if (swiperContext) {
-          contexts.push(Vue.markRaw(swiperContext));
-        }
+    const checkFormAndSubmitOrReset = () => {
+      if (props2.formType != "submit" && props2.formType != "reset") {
+        return;
       }
-      swiperContexts.value = contexts;
-    }
-    const addSwiperContext = function(swiperContext) {
-      originSwiperContexts.push(swiperContext);
-      updateSwiperContexts();
-    };
-    Vue.provide("addSwiperContext", addSwiperContext);
-    const removeSwiperContext = function(swiperContext) {
-      const index2 = originSwiperContexts.indexOf(swiperContext);
-      if (index2 >= 0) {
-        originSwiperContexts.splice(index2, 1);
-        updateSwiperContexts();
+      if (formCtx == null) {
+        return;
+      }
+      if (props2.formType == "submit") {
+        formCtx.submit();
+      } else if (props2.formType == "reset") {
+        formCtx.reset();
       }
     };
-    Vue.provide("removeSwiperContext", removeSwiperContext);
-    const { onSwiperDotClick, circularEnabled, swiperEnabled } = useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger);
-    let createNavigationTsx = () => null;
-    {
-      createNavigationTsx = useSwiperNavigation(rootRef, props2, state, onSwiperDotClick, swiperContexts, circularEnabled, swiperEnabled);
-    }
-    return () => {
-      const defaultSlots = slots.default && slots.default();
-      {
-        swiperItems = flatVNode(defaultSlots);
-      }
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n4 = Vue.createPlainElement("uni-swiper", null, () => {
-          const _n3 = _t0$a();
-          const _n1 = Vue.child(_n3);
-          const _n0 = Vue.child(_n1);
-          const _n2 = Vue.next(_n1, true);
-          const _x0 = Vue.txt(_n0);
-          setNodes(_x0, () => defaultSlots);
-          setNodes(_n2, () => props2.indicatorDots && (() => {
-            const _n02 = _t1$7();
-            const _x02 = Vue.txt(_n02);
-            setNodes(_x02, () => swiperContexts.value.map((_, index2, array) => (() => {
-              const _n03 = _t2$3();
-              Vue.on(_n03, "click", () => onSwiperDotClick(index2));
-              Vue.renderEffect(() => {
-                Vue.setClassName(_n03, 1 | (index2 < state.current + state.displayMultipleItems && index2 >= state.current || index2 < state.current + state.displayMultipleItems - array.length ? 2 : 0), [" uni-swiper-dot", " uni-swiper-dot-active"]);
-                Vue.setStyle(_n03, { background: index2 === state.current ? props2.indicatorActiveColor : props2.indicatorColor });
-              });
-              return _n03;
-            })()));
-            Vue.renderEffect(() => Vue.setClass(_n02, ["uni-swiper-dots", props2.vertical ? "uni-swiper-dots-vertical" : "uni-swiper-dots-horizontal"]));
-            return _n02;
-          })(), () => createNavigationTsx());
-          Vue.renderEffect(() => {
-            Vue.setStyle(_n1, slidesStyle.value);
-            Vue.setStyle(_n0, slideFrameStyle.value);
-            _setTemplateRef(_n0, slideFrameRef);
-            _setTemplateRef(_n3, slidesWrapperRef);
-          });
-          return _n3;
-        }, true);
-        Vue.renderEffect(() => _setTemplateRef(_n4, rootRef));
-        return _n4;
-      })();
-    };
-  }
-});
-const useSwiperNavigation = (rootRef, props2, state, onSwiperDotClick, swiperContext, circularEnabled, swiperEnabled) => {
-  let isNavigationAuto = false;
-  let prevDisabled = false;
-  let nextDisabled = false;
-  let hideNavigation = Vue.ref(false);
-  Vue.watchEffect(() => {
-    isNavigationAuto = props2.navigation === "auto";
-    hideNavigation.value = props2.navigation !== true || isNavigationAuto;
-    swiperAddMouseEvent();
-  });
-  Vue.watchEffect(() => {
-    const swiperItemLength = swiperContext.value.length;
-    const notCircular = !circularEnabled.value;
-    prevDisabled = state.current === 0 && notCircular;
-    nextDisabled = state.current === swiperItemLength - 1 && notCircular || notCircular && state.current + state.displayMultipleItems >= swiperItemLength;
-    if (!swiperEnabled.value) {
-      prevDisabled = true;
-      nextDisabled = true;
-      isNavigationAuto && (hideNavigation.value = true);
-    }
-  });
-  function navigationHover(event, type) {
-    const target = event.currentTarget;
-    if (!target)
-      return;
-    target.style.backgroundColor = type === "over" ? props2.navigationActiveColor : "";
-  }
-  const navigationAttr = {
-    onMouseover: (event) => navigationHover(event, "over"),
-    onMouseout: (event) => navigationHover(event, "out")
-  };
-  function navigationClick($event, type, disabled) {
-    $event.stopPropagation();
-    if (disabled)
-      return;
-    const swiperItemLength = swiperContext.value.length;
-    let _current = state.current;
-    switch (type) {
-      case "prev":
-        _current--;
-        if (_current < 0 && circularEnabled.value) {
-          _current = swiperItemLength - 1;
-        }
-        break;
-      case "next":
-        _current++;
-        if (_current >= swiperItemLength && circularEnabled.value) {
-          _current = 0;
-        }
-        break;
-    }
-    onSwiperDotClick(_current);
-  }
-  const createNavigationSVG = () => createSvgIconVNode(ICON_PATH_BACK, props2.navigationColor, 26);
-  let setHideNavigationTimer;
-  const _mousemove = (e2) => {
-    clearTimeout(setHideNavigationTimer);
-    const { clientX, clientY } = e2;
-    const { left, right, top, bottom, width, height } = rootRef.value.getBoundingClientRect();
-    let hide = false;
-    if (props2.vertical) {
-      hide = !(clientY - top < height / 3 || bottom - clientY < height / 3);
-    } else {
-      hide = !(clientX - left < width / 3 || right - clientX < width / 3);
-    }
-    if (hide) {
-      return setHideNavigationTimer = setTimeout(() => {
-        hideNavigation.value = hide;
-      }, 300);
-    }
-    hideNavigation.value = hide;
-  };
-  const _mouseleave = () => {
-    hideNavigation.value = true;
-  };
-  function swiperAddMouseEvent() {
-    if (rootRef.value) {
-      rootRef.value.removeEventListener("mousemove", _mousemove);
-      rootRef.value.removeEventListener("mouseleave", _mouseleave);
-      if (isNavigationAuto) {
-        rootRef.value.addEventListener("mousemove", _mousemove);
-        rootRef.value.addEventListener("mouseleave", _mouseleave);
-      }
-    }
-  }
-  function createNavigationTsx() {
-    const navigationClass = {
-      "uni-swiper-navigation-hide": hideNavigation.value,
-      "uni-swiper-navigation-vertical": props2.vertical
-    };
-    if (props2.navigation) {
-      return (() => {
-        const _n0 = _t3$3();
-        const _n1 = _t3$3();
-        Vue.on(_n0, "click", (e2) => navigationClick(e2, "prev", prevDisabled));
-        const _x0 = Vue.txt(_n0);
-        setNodes(_x0, () => createNavigationSVG());
-        Vue.on(_n1, "click", (e2) => navigationClick(e2, "next", nextDisabled));
-        const _x1 = Vue.txt(_n1);
-        setNodes(_x1, () => createNavigationSVG());
-        Vue.renderEffect(() => {
-          Vue.setDynamicProps(_n0, [{ class: ["uni-swiper-navigation uni-swiper-navigation-prev", shared.extend({ "uni-swiper-navigation-disabled": prevDisabled }, navigationClass)] }, navigationAttr]);
-          Vue.setDynamicProps(_n1, [{ class: ["uni-swiper-navigation uni-swiper-navigation-next", shared.extend({ "uni-swiper-navigation-disabled": nextDisabled }, navigationClass)] }, navigationAttr]);
-        });
-        return [_n0, _n1];
-      })();
-    }
-    return null;
-  }
-  return createNavigationTsx;
-};
-const props$d = { itemId: {
-  type: String,
-  default: ""
-} };
-const index$i = /* @__PURE__ */ defineBuiltInComponent({
-  name: "SwiperItem",
-  props: props$d,
-  setup(props2, { slots }) {
-    const rootRef = Vue.ref(null);
-    return () => {
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n1 = Vue.createPlainElement("uni-swiper-item", { style: {
-          position: "absolute",
-          width: "100%",
-          height: "100%"
-        } }, Vue.extend(() => {
-          const _n0 = createNodes(() => slots.default && slots.default());
-          return _n0;
-        }, { _: 1 }), true);
-        Vue.renderEffect(() => _setTemplateRef(_n1, rootRef));
-        return _n1;
-      })();
-    };
-  }
-});
-const _t0$9 = Vue.template("<div class=uni-switch-wrapper><div><div></div></div><div class=uni-checkbox-input>");
-const props$c = {
-  name: {
-    type: String,
-    default: ""
-  },
-  checked: {
-    type: [Boolean, String],
-    default: false
-  },
-  type: {
-    type: String,
-    default: "switch"
-  },
-  id: {
-    type: String,
-    default: ""
-  },
-  disabled: {
-    type: [Boolean, String],
-    default: false
-  },
-  color: {
-    type: String,
-    default: ""
-  },
-  backgroundColor: {
-    type: String,
-    default: ""
-  },
-  activeBackgroundColor: {
-    type: String,
-    default: ""
-  },
-  foreColor: {
-    type: String,
-    default: ""
-  },
-  activeForeColor: {
-    type: String,
-    default: ""
-  }
-};
-const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Switch",
-  props: props$c,
-  emits: ["change"],
-  setup(props2, { emit: emit2 }) {
-    const rootRef = Vue.ref(null);
-    const switchChecked = Vue.ref(props2.checked);
-    const uniLabel = useSwitchInject(rootRef, props2, switchChecked);
-    const trigger = useCustomEvent(rootRef, emit2);
-    Vue.watch(() => props2.checked, (val) => {
-      switchChecked.value = val;
-    });
-    const _onClick = ($event) => {
+    const handleTap = (event) => {
       if (props2.disabled) {
         return;
       }
-      switchChecked.value = !switchChecked.value;
-      trigger("change", $event, { value: switchChecked.value });
+      emit2("click", event);
+      checkFormAndSubmitOrReset();
     };
-    if (!!uniLabel) {
-      uniLabel.addHandler(_onClick);
-    }
-    let checkedCache = Vue.ref(switchChecked.value);
-    Vue.watch(() => switchChecked.value, (val) => {
-      checkedCache.value = val;
-    });
-    return () => {
-      const { activeBackgroundColor, activeForeColor, backgroundColor, color, foreColor, type } = props2;
-      const booleanAttrs = useBooleanAttr(props2, "disabled");
-      const fixColor = activeBackgroundColor || color;
-      const bgColor = switchChecked.value ? fixColor : backgroundColor;
-      const switchInputStyle = bgColor ? {
-        backgroundColor: bgColor,
-        borderColor: bgColor
-      } : void 0;
-      const fgColor = switchChecked.value ? activeForeColor : foreColor;
-      const thumbStyle = fgColor ? { backgroundColor: fgColor } : void 0;
-      let realCheckValue;
-      realCheckValue = checkedCache.value;
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n9 = Vue.createPlainElement("uni-switch", {
-          id: () => props2.id,
-          $: [() => booleanAttrs, { onClick: () => _onClick }]
-        }, () => {
-          const _n8 = _t0$9();
-          const _n0 = Vue.child(_n8);
-          const _n1 = Vue.child(_n0);
-          const _n2 = Vue.next(_n0);
-          Vue.applyVShow(_n0, () => type === "switch");
-          Vue.applyVShow(_n2, () => type === "checkbox");
-          Vue.renderEffect(() => {
-            Vue.setClass(_n0, ["uni-switch-input", [switchChecked.value ? "uni-switch-input-checked" : ""]]);
-            Vue.setStyle(_n0, switchInputStyle);
-            Vue.setClass(_n1, ["uni-switch-thumb", [switchChecked.value ? "uni-switch-thumb-checked" : ""]]);
-            Vue.setStyle(_n1, thumbStyle);
-          });
-          Vue.setInsertionState(_n2);
-          Vue.createIf(() => realCheckValue, () => {
-            const _n5 = createNodes(() => createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.foreColor || props2.color || "currentColor", 22));
-            return _n5;
-          }, () => {
-            const _n7 = createNodes("");
-            return _n7;
-          }, 266);
-          return _n8;
-        }, true);
-        Vue.renderEffect(() => _setTemplateRef(_n9, rootRef));
-        return _n9;
-      })();
-    };
-  }
-});
-function useSwitchInject(rootRef, props2, switchChecked) {
-  const initialCheckedValue = props2.checked;
-  const uniForm = Vue.inject(uniFormKey, false);
-  const uniLabel = Vue.inject(uniLabelKey, false);
-  const formField = {
-    submit: () => {
-      const data = ["", null];
-      if (props2.name) {
-        data[0] = props2.name;
-        data[1] = rootRef.value.checked;
-      }
-      return data;
-    },
-    reset: () => {
-      switchChecked.value = initialCheckedValue;
-    }
-  };
-  if (!!uniForm) {
-    uniForm.addField(formField);
-  }
-  return uniLabel;
-}
-const _t0$8 = Vue.template("<textarea tabindex=-1>", 1);
-const _t1$6 = Vue.template("<textarea>", 1);
-const _t2$2 = Vue.template("<form action class=uni-input-form> ");
-const _t3$2 = Vue.template("<div class=uni-textarea-wrapper><div> </div><div class=uni-textarea-line> </div><div> </div>");
-const _t4$2 = Vue.template("<div>", 1);
-const props$b = /* @__PURE__ */ shared.extend({}, props$l, {
-  placeholderClass: {
-    type: String,
-    default: "input-placeholder"
-  },
-  autoHeight: {
-    type: [Boolean, String],
-    default: false
-  },
-  confirmType: {
-    type: String,
-    default: "return",
-    validator(val) {
-      return ConfirmTypes.concat("return").includes(val);
-    }
-  }
-});
-const ConfirmTypes = [
-  "done",
-  "go",
-  "next",
-  "search",
-  "send"
-];
-const index$h = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Textarea",
-  props: props$b,
-  emits: [
-    "confirm",
-    "change",
-    "linechange",
-    ...emit
-  ],
-  setup(props2, { emit: emit2, expose }) {
-    const rootRef = Vue.ref(null);
-    const wrapperRef = Vue.ref(null);
-    const { fieldRef, state, scopedAttrsState, fixDisabledColor, trigger } = useField(props2, rootRef, emit2);
-    const valueCompute = Vue.computed(() => state.value.split(uniShared.LINEFEED));
-    const isDone = Vue.computed(() => ConfirmTypes.includes(props2.confirmType));
-    const heightRef = Vue.ref(0);
-    const lineRef = Vue.ref(null);
-    Vue.watch(() => heightRef.value, (height) => {
-      const el = rootRef.value;
-      const lineEl = lineRef.value;
-      const wrapper = wrapperRef.value;
-      let lineHeight = parseFloat(getComputedStyle(el).lineHeight);
-      if (isNaN(lineHeight)) {
-        lineHeight = lineEl.offsetHeight;
-      }
-      var lineCount = Math.round(height / lineHeight);
-      trigger("linechange", {}, {
-        height,
-        heightRpx: 750 / window.innerWidth * height,
-        lineCount
-      });
-      if (props2.autoHeight) {
-        wrapper.style.height = height + "px";
+    __expose({
+      getValue() {
+        if (textRef.value == null) {
+          return "";
+        }
+        return textRef.value.value;
+      },
+      isLoading() {
+        return props2.loading && !props2.disabled;
       }
     });
-    Vue.watch(() => props2.autoHeight, (autoHeight) => {
-      const wrapper = wrapperRef.value;
-      if (autoHeight) {
-        wrapper.style.height = heightRef.value + "px";
-      } else {
-        wrapper.style.height = "";
-      }
-    });
-    function onResize({ height }) {
-      heightRef.value = height;
-    }
-    function onChange2(event) {
-      {
-        trigger("change", event, { value: state.value });
-      }
-    }
-    function confirm(event) {
-      trigger("confirm", event, { value: state.value });
-    }
-    function onKeyDownEnter(event) {
-      if (event.key !== "Enter") {
-        return;
-      }
-      if (isDone.value) {
-        event.preventDefault();
-      }
-    }
-    function onKeyUpEnter(event) {
-      if (event.key !== "Enter") {
-        return;
-      }
-      if (isDone.value) {
-        confirm(event);
-        const textarea = event.target;
-        !props2.confirmHold && textarea.blur();
-      }
-    }
-    expose({ $triggerInput: (detail) => {
-      emit2("update:modelValue", detail.value);
-      emit2("update:value", detail.value);
-      state.value = detail.value;
-    } });
-    return () => {
-      let textareaNode = props2.disabled && fixDisabledColor ? (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n0 = _t0$8();
-        Vue.setBlockKey(_n0, "disabled-textarea");
-        Vue.on(
-          _n0,
-          // fix: 禁止 readonly 状态获取焦点
-          "focus",
-          (event) => event.target.blur()
+    const _component_loading = _sfc_main$s;
+    const n0 = Vue.createIf(
+      () => __props.loading && !__props.disabled,
+      () => {
+        const n2 = t0$n();
+        const n6 = Vue.child(n2);
+        const n5 = Vue.next(n6);
+        Vue.initUniElement(n2, _uniButtonElement);
+        Vue.renderEffect(() => {
+          const _disabled = __props.disabled;
+          const _buttonType = Vue.unref(buttonType);
+          const _size = __props.size;
+          const _plain = __props.plain;
+          Vue.setHover(n2, _disabled ? "none" : Vue.unref(hoverClasses), __props.hoverStopPropagation, __props.hoverStartTime, __props.hoverStayTime, "");
+          Vue.setClass(n2, ["uni-button", Vue.unref(classes)(
+            [_buttonType == "default", "uni-button-type-default_view"],
+            [_buttonType == "primary", "uni-button-type-primary_view"],
+            [_buttonType == "warn", "uni-button-type-warn_view"],
+            [__props.type != null, "uni-button-has-type", "uni-button-no-type"],
+            [_disabled, "uni-button-disabled"],
+            [_size == "mini", "uni-button-size-mini"],
+            [Vue.unref(enableTransition), "transition-enabled"],
+            [_buttonType == "default", "uni-button-type-default_text"],
+            [_buttonType == "primary", "uni-button-type-primary_text"],
+            [_buttonType == "warn", "uni-button-type-warn_text"],
+            [_plain && __props.loading, "uni-button-text-plain"],
+            [_plain, "uni-button-view-plain"],
+            [_size == "mini", "uni-button-text-size-mini"],
+            [_size == "default", "uni-button-text-size-default"]
+          )]);
+          Vue.setProp(n2, "tabindex", _disabled ? -1 : 0);
+          Vue.setAttr(n2, "aria-disabled", _disabled);
+        });
+        Vue.setInsertionState(n2, n6);
+        Vue.withComponentId("0ed9fc4b", () => Vue.createComponentWithFallback(_component_loading, { class: () => ["uni-button-loading-icon", Vue.unref(classes)(
+          [Vue.unref(buttonType) == "default", "uni-loading-default"],
+          [__props.plain && Vue.unref(buttonType) == "primary", "uni-loading-plain-primary"],
+          [__props.plain && Vue.unref(buttonType) == "warn", "uni-loading-plain-warn"],
+          __props.loadingClass || "uni-button-loading-color-inherit"
+        )] }));
+        Vue.renderEffect(() => {
+          Vue.setClass(n5, ["uni-button-loading-text", __props.loadingTextClass || ""]);
+          Vue.setStyle(n5, Vue.unref(loadingTextStyle));
+        });
+        Vue.setInsertionState(n5);
+        Vue.createSlot(
+          "default",
+          null,
+          null,
+          256
+          /* TEXT_MODE */
         );
+        Vue.setStaticTemplateRef(n5, textRef, null, "textRef");
+        Vue.on(n2, "keydown", handleKeydown);
+        Vue.on(n2, "keyup", (e2) => Vue.unref(handleKeyup)(e2));
+        Vue.on(n2, "blur", (e2) => Vue.unref(handleBlur)(e2));
+        Vue.on(n2, "click", handleTap);
+        Vue.setStaticTemplateRef(n2, loadingRootRef, null, "loadingRootRef");
+        return n2;
+      },
+      () => {
+        const n8 = t1$a();
+        Vue.initUniElement(n8, _uniButtonElement);
         Vue.renderEffect(() => {
-          Vue.setValue(_n0, state.value);
-          Vue.setProp(_n0, "readonly", !!props2.disabled);
-          Vue.setProp(_n0, "maxlength", state.maxlength);
-          Vue.setClassName(_n0, 1 | 0, [" uni-textarea-textarea", " uni-textarea-textarea-fix-margin"]);
-          Vue.setStyle(_n0, {
-            overflowY: props2.autoHeight ? "hidden" : "auto",
-            /* eslint-disable no-restricted-syntax */
-            ...props2.cursorColor && { caretColor: props2.cursorColor }
-          });
-          _setTemplateRef(_n0, fieldRef);
+          const _disabled = __props.disabled;
+          const _buttonType = Vue.unref(buttonType);
+          const _size = __props.size;
+          const _plain = __props.plain;
+          Vue.setHover(n8, _disabled ? "none" : Vue.unref(hoverClasses), __props.hoverStopPropagation, __props.hoverStartTime, __props.hoverStayTime, "");
+          Vue.setClass(n8, ["uni-button uni-button-text", Vue.unref(classes)(
+            [_buttonType == "default", "uni-button-type-default_view"],
+            [_buttonType == "primary", "uni-button-type-primary_view"],
+            [_buttonType == "warn", "uni-button-type-warn_view"],
+            [__props.type != null, "uni-button-has-type", "uni-button-no-type"],
+            [_disabled, "uni-button-disabled"],
+            [_size == "mini", "uni-button-size-mini"],
+            [Vue.unref(enableTransition), "transition-enabled"],
+            [_buttonType == "default", "uni-button-type-default_text"],
+            [_buttonType == "primary", "uni-button-type-primary_text"],
+            [_buttonType == "warn", "uni-button-type-warn_text"],
+            [_plain && __props.loading, "uni-button-text-plain"],
+            [_plain, "uni-button-view-plain"],
+            [_size == "mini", "uni-button-text-size-mini"],
+            [_size == "default", "uni-button-text-size-default"]
+          )]);
+          Vue.setProp(n8, "tabindex", _disabled ? -1 : 0);
+          Vue.setAttr(n8, "aria-disabled", _disabled);
         });
-        return _n0;
-      })() : (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n0 = _t1$6();
-        Vue.setBlockKey(_n0, "textarea");
-        Vue.on(_n0, "keydown", onKeyDownEnter);
-        Vue.on(_n0, "keyup", onKeyUpEnter);
-        Vue.on(_n0, "change", onChange2);
-        Vue.renderEffect(() => {
-          Vue.setValue(_n0, state.value);
-          Vue.setProp(_n0, "disabled", !!props2.disabled);
-          Vue.setProp(_n0, "maxlength", state.maxlength);
-          Vue.setProp(_n0, "enterkeyhint", props2.confirmType);
-          Vue.setProp(_n0, "inputmode", props2.inputmode);
-          Vue.setClassName(_n0, 1 | 0, [" uni-textarea-textarea", " uni-textarea-textarea-fix-margin"]);
-          Vue.setStyle(_n0, {
-            overflowY: props2.autoHeight ? "hidden" : "auto",
-            /* eslint-disable no-restricted-syntax */
-            ...props2.cursorColor && { caretColor: props2.cursorColor }
-          });
-          _setTemplateRef(_n0, fieldRef);
-        });
-        return _n0;
-      })();
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n11 = Vue.createPlainElement("uni-textarea", { "auto-height": () => props2.autoHeight }, () => {
-          const _n10 = _t3$2();
-          const _n0 = Vue.child(_n10);
-          const _n1 = Vue.next(_n0);
-          const _n4 = Vue.next(_n1);
-          const _n2 = Vue.child(_n4, true);
-          Vue.applyVShow(_n0, () => !state.value.length);
-          const _x0 = Vue.txt(_n0);
-          setNodes(_x0, () => props2.placeholder);
-          setNodes(_n2, () => valueCompute.value.map((item) => (() => {
-            const _n52 = _t4$2();
-            Vue.setInsertionState(_n52);
-            Vue.createIf(() => item.trim(), () => {
-              const _n22 = createNodes(() => item);
-              return _n22;
-            }, () => {
-              const _n42 = createNodes(".");
-              return _n42;
-            }, 266);
-            return _n52;
-          })()));
-          Vue.renderEffect(() => {
-            Vue.setDynamicProps(_n0, [scopedAttrsState.attrs, {
-              style: props2.placeholderStyle,
-              class: ["uni-textarea-placeholder", props2.placeholderClass]
-            }]);
-            _setTemplateRef(_n1, lineRef);
-            Vue.setClassName(_n4, 1 | (props2.autoHeight ? 2 : 0), [" uni-textarea-compute", " uni-textarea-compute-auto-height"]);
-          });
-          Vue.setInsertionState(_n4, 1);
-          createComponent(ResizeSensor, {
-            initial: true,
-            onResize: () => onResize
-          });
-          Vue.setInsertionState(_n10, 3);
-          Vue.createIf(() => props2.confirmType === "search", () => {
-            const _n7 = _t2$2();
-            Vue.on(_n7, "submit", () => false);
-            const _x7 = Vue.txt(_n7);
-            setNodes(_x7, () => textareaNode);
-            return _n7;
-          }, () => {
-            const _n9 = createNodes(() => textareaNode);
-            return _n9;
-          }, 265);
-          Vue.renderEffect(() => _setTemplateRef(_n10, wrapperRef));
-          return _n10;
-        }, true);
-        Vue.renderEffect(() => _setTemplateRef(_n11, rootRef));
-        return _n11;
-      })();
-    };
+        Vue.setInsertionState(n8);
+        Vue.createSlot(
+          "default",
+          null,
+          null,
+          256
+          /* TEXT_MODE */
+        );
+        Vue.on(n8, "keydown", handleKeydown);
+        Vue.on(n8, "keyup", (e2) => Vue.unref(handleKeyup)(e2));
+        Vue.on(n8, "blur", (e2) => Vue.unref(handleBlur)(e2));
+        Vue.on(n8, "click", handleTap);
+        Vue.setStaticTemplateRef(n8, textRef, null, "textRef");
+        return n8;
+      },
+      261
+      /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_0 */
+    );
+    return n0;
   }
 });
-const _t0$7 = Vue.template("<div class=uni-list-view-visible> ", 1);
-const _t1$5 = Vue.template("<div><!><div class=uni-list-view-content><div></div> <div></div></div></div>");
-function isHTMlElement(node) {
-  return !!(node && node.nodeType === 1);
-}
-function getChildren(root) {
-  const children = [];
-  if (root) {
-    walk(root, children);
+const _UniCheckboxElement = class _UniCheckboxElement extends UniViewElement {
+  constructor() {
+    super(...arguments);
+    this.tagName = "CHECKBOX";
+    this.nodeName = "CHECKBOX";
+    this._checked = false;
   }
-  return children;
-}
-const ChildType = [
-  "ListItem",
-  "StickySection",
-  "StickyHeader"
-];
-function walk(vnode, children) {
-  if (vnode.component && vnode.component.type && vnode.component.type.name && ChildType.includes(vnode.component.type.name)) {
-    children.push(vnode);
-  } else if (vnode.component) {
-    walk(vnode.component.subTree, children);
-  } else if (vnode.shapeFlag & 16) {
-    const vnodes = vnode.children;
-    for (let i = 0; i < vnodes.length; i++) {
-      walk(vnodes[i], children);
+  get checked() {
+    var _a;
+    return ((_a = this.vm) == null ? void 0 : _a.getCheckboxChecked()) ?? this._checked;
+  }
+  set checked(val) {
+    var _a;
+    if (this._checked == val) {
+      return;
     }
-  }
-}
-function traverseListView(visibleVNode, callback) {
-  const children = getChildren(visibleVNode);
-  for (let i = 0; i < children.length; i++) {
-    const child = children[i];
-    callback(child);
-  }
-}
-function traverseStickySection(stickySectionVNode, callback) {
-  const children = getChildren(stickySectionVNode.component.subTree);
-  for (let i = 0; i < children.length; i++) {
-    const child = children[i];
-    callback(child);
-  }
-}
-const props$a = {
-  direction: {
-    type: String,
-    default: "vertical",
-    validator: (val) => {
-      return [
-        "none",
-        "vertical",
-        "horizontal"
-      ].includes(val);
-    }
-  },
-  showScrollbar: {
-    type: [Boolean, String],
-    default: true
-  },
-  upperThreshold: {
-    type: [Number, String],
-    default: 50
-  },
-  lowerThreshold: {
-    type: [Number, String],
-    default: 50
-  },
-  scrollTop: {
-    type: [Number, String],
-    default: 0
-  },
-  scrollLeft: {
-    type: [Number, String],
-    default: 0
-  },
-  scrollIntoView: {
-    type: String,
-    default: ""
-  },
-  scrollWithAnimation: {
-    type: [Boolean, String],
-    default: false
-  },
-  refresherEnabled: {
-    type: [Boolean, String],
-    default: false
-  },
-  refresherThreshold: {
-    type: Number,
-    default: 45
-  },
-  refresherDefaultStyle: {
-    type: String,
-    default: "black"
-  },
-  refresherBackground: {
-    type: String,
-    default: "transparent"
-  },
-  refresherTriggered: {
-    type: [Boolean, String],
-    default: false
+    this._checked = val;
+    (_a = this.vm) == null ? void 0 : _a.setCheckboxChecked(val);
   }
 };
-const index$g = /* @__PURE__ */ defineBuiltInComponent({
-  name: "ListView",
-  props: props$a,
-  emits: [
-    "scroll",
-    "scrolltoupper",
-    "scrolltolower",
-    "refresherrefresh",
-    "refresherrestore",
-    "refresherpulling",
-    "refresherabort",
-    "update:refresherTriggered"
-  ],
-  setup(props2, { slots, emit: emit2 }) {
-    const rootRef = Vue.ref(null);
-    const containerRef = Vue.ref(null);
-    const visibleRef = Vue.ref(null);
-    const { isVertical, state } = useListViewState(props2);
-    Vue.provide("__listViewIsVertical", isVertical);
-    Vue.provide("__listViewDefaultItemSize", state.defaultItemSize);
-    Vue.provide("__listViewDefaultHeaderSize", state.defaultHeaderSize);
-    const rearrangeDebounce = uniShared.debounce(() => {
-      Vue.nextTick(() => {
-        _rearrange();
-      });
-    }, 5, {
-      clearTimeout,
-      setTimeout
-    });
-    const childStatus = [];
-    Vue.provide("__listViewRegisterItem", (status) => {
-      childStatus.push(status);
-      rearrangeDebounce();
-    });
-    Vue.provide("__listViewUnregisterItem", (status) => {
-      const index2 = childStatus.indexOf(status);
-      childStatus.splice(index2, 1);
-      rearrangeDebounce();
-    });
-    Vue.watch(() => {
-      return state.defaultHeaderSize;
-    }, (value) => {
-      rearrangeDebounce();
-    });
-    Vue.watch(() => {
-      return state.defaultItemSize;
-    }, () => {
-      childStatus.forEach((status) => {
-        if (status.cachedSizeUpdated) {
-          return;
-        }
-        status.cachedSize = state.defaultItemSize;
-      });
-      rearrangeDebounce();
-    });
-    const trigger = useCustomEvent(rootRef, emit2);
-    handleTouchEvent(isVertical, containerRef, props2, state, trigger, emit2);
-    function resetContainerSize() {
-      const containerEl = containerRef.value;
-      state.containerSize = isVertical.value ? containerEl.clientHeight : containerEl.clientWidth;
-      rearrangeDebounce();
-    }
-    Vue.watch(isVertical, () => {
-      resetContainerSize();
-    });
-    Vue.computed(() => {
-      const val = Number(props2.upperThreshold);
-      return isNaN(val) ? 50 : val;
-    });
-    Vue.computed(() => {
-      const val = Number(props2.lowerThreshold);
-      return isNaN(val) ? 50 : val;
-    });
-    const scrollTopNumber = Vue.computed(() => {
-      return Number(props2.scrollTop) || 0;
-    });
-    const scrollLeftNumber = Vue.computed(() => {
-      return Number(props2.scrollLeft) || 0;
-    });
-    Vue.watch(scrollTopNumber, (val) => {
-      if (containerRef.value) {
-        containerRef.value.scrollTop = val;
+_UniCheckboxElement.__uniElement = { vm: true, init() {
+  Object.defineProperty(this, "_checked", { value: false, writable: true, enumerable: true, configurable: true });
+} };
+let UniCheckboxElement = _UniCheckboxElement;
+const t0$m = Vue.template('<svg class=uni-checkbox-svg viewBox="0 0 32 32"><path fill=currentColor>', 0, 1);
+const t1$9 = Vue.template("<div uni-checkbox uni-view role=checkbox>", 1);
+const t2$1 = Vue.template("<span uni-text>");
+const t3$1 = Vue.template("<div uni-checkbox uni-view class=uni-checkbox role=checkbox><div uni-view></div>", 1);
+const _uniCheckboxElement = { value: "CHECKBOX" };
+const iconPath$1 = "M1.952 18.080q-0.32-0.352-0.416-0.88t0.128-0.976l0.16-0.352q0.224-0.416 0.64-0.528t0.8 0.176l6.496 4.704q0.384 0.288 0.912 0.272t0.88-0.336l17.312-14.272q0.352-0.288 0.848-0.256t0.848 0.352l-0.416-0.416q0.32 0.352 0.32 0.816t-0.32 0.816l-18.656 18.912q-0.32 0.352-0.8 0.352t-0.8-0.32l-7.936-8.064z";
+const _sfc_main$m = /* @__PURE__ */ Vue.defineVaporComponent({
+  ...{
+    name: "checkbox",
+    // @ts-ignore
+    rootElement: {
+      class: /* @__PURE__ */ Vue.initUniElementType(UniCheckboxElement, "checkbox")
+    },
+    externalClasses: ["icon-class", "checkbox-class", "checkbox-active-class"]
+  },
+  __name: "checkbox",
+  props: {
+    color: { default: "", type: String },
+    disabled: { type: Boolean, default: false },
+    checked: { type: Boolean, default: false },
+    value: { default: "", type: String },
+    iconClass: { default: "", type: null },
+    checkboxClass: { default: "", type: null },
+    checkboxActiveClass: { default: "", type: null }
+  },
+  setup(__props, { expose: __expose }) {
+    var _a, _b;
+    const props2 = __props;
+    const { handleKeydown, handleKeyup, handleBlur } = createSpaceKeyHandlers(() => props2.disabled);
+    const attrs2 = Vue.useAttrs();
+    attrs2.id;
+    const slots = Vue.useSlots();
+    const isStringSlot = ((_a = slots["default"]) == null ? void 0 : _a["returnType"]) == "string";
+    const hasDefaultSlot = slots["default"] != null;
+    (_b = Vue.getCurrentInstance()) == null ? void 0 : _b.proxy;
+    const isChecked = Vue.ref(props2.checked);
+    const activeStyle = Vue.computed(() => {
+      if (isChecked.value && !props2.disabled && props2.color) {
+        return { color: props2.color };
       }
+      return {};
     });
-    Vue.watch(scrollLeftNumber, (val) => {
-      if (containerRef.value) {
-        containerRef.value.scrollLeft = val;
-      }
-    });
-    Vue.watch(() => props2.scrollIntoView, (val) => {
-      _scrollIntoViewChanged(val);
-    });
-    function _scrollIntoViewChanged(val) {
-      if (val) {
-        if (!/^[_a-zA-Z][-_a-zA-Z0-9:]*$/.test(val)) {
-          console.error(`id error: scroll-into-view=${val}`);
-          return;
-        }
-        let element = containerRef.value.querySelector("#" + val);
-        if (element) {
-          let mainRect = containerRef.value.getBoundingClientRect();
-          let elRect = element.getBoundingClientRect();
-          if (!isVertical.value) {
-            let left = elRect.left - mainRect.left;
-            let scrollLeft = containerRef.value.scrollLeft;
-            let x = scrollLeft + left;
-            containerRef.value.scrollLeft = x;
-          }
-          if (isVertical.value) {
-            let top = elRect.top - mainRect.top;
-            let scrollTop = containerRef.value.scrollTop;
-            let y = scrollTop + top;
-            containerRef.value.scrollTop = y;
-          }
-        }
-      }
-    }
-    function onResize() {
-      childStatus.forEach((status) => {
-        status.cachedSizeUpdated = false;
-      });
-      resetContainerSize();
-    }
-    function _rearrange() {
-      rearrange(visibleVNode, containerRef, isVertical, state);
-    }
-    const containerStyle = Vue.computed(() => {
-      return `${props2.direction === "none" ? "overflow: hidden;" : props2.direction === "all" ? "overflow: auto;" : isVertical.value ? "overflow: hidden auto;" : "overflow: auto hidden;"}scroll-behavior: ${props2.scrollWithAnimation ? "smooth" : "auto"};`;
-    });
-    const visibleStyle = Vue.computed(() => {
-      return `${isVertical.value ? "width" : "height"}: 100%;`;
-    });
-    const placeholderHeadStyle = Vue.computed(() => {
-      return `${isVertical.value ? "height" : "width"}: ${state.headPlaceholderSize}px;`;
-    });
-    const placeholderTailStyle = Vue.computed(() => {
-      return `${isVertical.value ? "height" : "width"}: ${state.tailPlaceholderSize}px;`;
-    });
-    let visibleVNode = null;
-    return () => {
-      const { refresherEnabled, refresherBackground, refresherDefaultStyle, refresherThreshold } = props2;
-      const { refresherHeight, refreshState } = state;
-      const defaultSlot = slots.default && slots.default();
-      visibleVNode = (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n0 = _t0$7();
-        const _x0 = Vue.txt(_n0);
-        setNodes(_x0, () => defaultSlot);
-        Vue.renderEffect(() => {
-          Vue.setStyle(_n0, visibleStyle.value);
-          _setTemplateRef(_n0, visibleRef);
-        });
-        return _n0;
-      })();
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n16 = Vue.createPlainElement("uni-list-view", { class: "uni-list-view" }, () => {
-          const _n14 = _t1$5();
-          const _n13 = Vue.child(_n14);
-          const _n10 = Vue.child(Vue.next(_n13));
-          const _n11 = Vue.next(_n10, true);
-          const _n12 = Vue.next(_n11);
-          Vue.renderEffect(() => {
-            Vue.setClass(_n14, `uni-list-view-container ${props2.showScrollbar === false ? "uni-list-view-scrollbar-hidden" : ""}`);
-            Vue.setStyle(_n14, containerStyle.value);
-          });
-          Vue.setInsertionState(_n14, _n13);
-          Vue.createIf(() => refresherEnabled, () => {
-            const _n7 = createComponent(Refresher, {
-              refreshState: () => refreshState,
-              refresherHeight: () => refresherHeight,
-              refresherThreshold: () => refresherThreshold,
-              refresherDefaultStyle: () => refresherDefaultStyle,
-              refresherBackground: () => refresherBackground
-            }, Vue.extend(() => {
-              const _n2 = Vue.createIf(() => refresherDefaultStyle == "none", () => {
-                const _n4 = createNodes(() => slots.refresher && slots.refresher());
-                return _n4;
-              }, () => {
-                const _n6 = createNodes(null);
-                return _n6;
-              }, 394);
-              return _n2;
-            }, { _: 1 }));
-            return _n7;
-          }, () => {
-            const _n9 = createNodes(null);
-            return _n9;
-          }, 521);
-          setNodes(_n11, () => visibleVNode);
-          Vue.renderEffect(() => {
-            Vue.setStyle(_n10, placeholderHeadStyle.value);
-            Vue.setStyle(_n12, placeholderTailStyle.value);
-            _setTemplateRef(_n14, containerRef);
-          });
-          const _n15 = createComponent(ResizeSensor, {
-            initial: true,
-            onResize: () => onResize
-          });
-          return [_n14, _n15];
-        }, true);
-        Vue.renderEffect(() => _setTemplateRef(_n16, rootRef));
-        return _n16;
-      })();
-    };
-  }
-});
-function useListViewState(props2) {
-  const isVertical = Vue.computed(() => {
-    return props2.direction !== "horizontal";
-  });
-  const state = Vue.reactive({
-    defaultItemSize: 40,
-    defaultItemSizeUpdated: false,
-    defaultHeaderSize: 40,
-    defaultHeaderSizeUpdated: false,
-    totalSize: 0,
-    headPlaceholderSize: 0,
-    tailPlaceholderSize: 0,
-    visibleSize: 0,
-    containerSize: 0,
-    cacheScreenCount: 10,
-    loadScreenThreshold: 8,
-    refresherHeight: 0,
-    refreshState: "",
-    lastRenderOffsetMin: 0,
-    lastRenderOffsetMax: 0
-  });
-  return {
-    state,
-    isVertical
-  };
-}
-function rearrange(visibleVNode, containerRef, isVertical, state) {
-  if (!visibleVNode) {
-    return;
-  }
-  const containerEl = containerRef.value;
-  if (!containerEl) {
-    return;
-  }
-  const offset = isVertical.value ? containerEl.scrollTop : containerEl.scrollLeft;
-  const offsetMin = Math.max(offset - state.containerSize * state.cacheScreenCount, 0);
-  const offsetMax = Math.max(offset + state.containerSize * (state.cacheScreenCount + 1), offsetMin + 1);
-  state.lastRenderOffsetMin = offsetMin;
-  state.lastRenderOffsetMax = offsetMax;
-  let tempTotalSize = 0;
-  let tempVisibleSize = 0;
-  let tempHeadPlaceholderSize = 0;
-  let tempTailPlaceholderSize = 0;
-  let start = false, end = false;
-  function callback(child) {
-    var _a, _b, _c;
-    const childType = (_a = child.component) == null ? void 0 : _a.type.name;
-    const status = (_c = (_b = child.component) == null ? void 0 : _b.exposed) == null ? void 0 : _c.__listViewChildStatus;
-    if (childType === "StickySection") {
-      const { headSize, tailSize, headPlaceholderSize, tailPlaceholderSize } = status;
-      tempTotalSize += headSize.value;
-      let tempTailPlaceholderSizeOfSection = 0;
-      let tempHeadPlaceholderSizeOfSection = 0;
-      traverseStickySection(child, (child2) => {
-        var _a2, _b2, _c2;
-        const childType2 = (_a2 = child2.component) == null ? void 0 : _a2.type.name;
-        const status2 = (_c2 = (_b2 = child2.component) == null ? void 0 : _b2.exposed) == null ? void 0 : _c2.__listViewChildStatus;
-        if (childType2 === "StickyHeader") {
-          const { cachedSize, cachedSizeUpdated } = status2;
-          if (cachedSizeUpdated && cachedSize > 0 && !state.defaultHeaderSizeUpdated) {
-            state.defaultHeaderSize = cachedSize;
-            state.defaultHeaderSizeUpdated = true;
-          }
-          tempTotalSize += cachedSize || state.defaultHeaderSize;
-          tempVisibleSize += cachedSize;
-        } else if (childType2 === "ListItem") {
-          const { cachedSize, cachedSizeUpdated } = status2;
-          if (cachedSizeUpdated && cachedSize > 0 && !state.defaultItemSizeUpdated) {
-            state.defaultItemSize = cachedSize;
-            state.defaultItemSizeUpdated = true;
-          }
-          const itemSize = cachedSize || state.defaultItemSize;
-          tempTotalSize += itemSize;
-          if (!start && tempTotalSize > offsetMin) {
-            start = true;
-          }
-          if (start && !end) {
-            tempVisibleSize += itemSize;
-            status2.visible.value = true;
-          } else if (start && end) {
-            status2.visible.value = false;
-            tempTailPlaceholderSizeOfSection += itemSize;
-          } else {
-            status2.visible.value = false;
-            tempHeadPlaceholderSizeOfSection += itemSize;
-          }
-          if (!end && tempTotalSize >= offsetMax) {
-            end = true;
-          }
-        }
-      });
-      tempVisibleSize += tempHeadPlaceholderSizeOfSection + tempTailPlaceholderSizeOfSection;
-      tempTotalSize += tailSize.value;
-      headPlaceholderSize.value = tempHeadPlaceholderSizeOfSection;
-      tailPlaceholderSize.value = tempTailPlaceholderSizeOfSection;
-    } else if (childType === "ListItem") {
-      const { cachedSize, cachedSizeUpdated } = status;
-      if (cachedSizeUpdated && cachedSize > 0 && !state.defaultItemSizeUpdated) {
-        state.defaultItemSize = cachedSize;
-        state.defaultItemSizeUpdated = true;
-      }
-      const itemSize = cachedSize || state.defaultItemSize;
-      tempTotalSize += itemSize;
-      if (!start && tempTotalSize > offsetMin) {
-        start = true;
-      }
-      if (!start) {
-        tempHeadPlaceholderSize += itemSize;
-      } else if (start && end) {
-        tempTailPlaceholderSize += itemSize;
-      }
-      if (start && !end) {
-        tempVisibleSize += itemSize;
-        status.visible.value = true;
-      } else {
-        status.visible.value = false;
-      }
-      if (!end && tempTotalSize >= offsetMax) {
-        end = true;
-      }
-    } else if (childType === "StickyHeader") {
-      const { cachedSize, cachedSizeUpdated } = status;
-      if (cachedSizeUpdated && cachedSize > 0 && !state.defaultHeaderSizeUpdated) {
-        state.defaultHeaderSize = cachedSize;
-        state.defaultHeaderSizeUpdated = true;
-      }
-      tempTotalSize += cachedSize || state.defaultHeaderSize;
-      tempVisibleSize += cachedSize;
-    }
-  }
-  traverseListView(visibleVNode, callback);
-  state.totalSize = tempTotalSize;
-  state.visibleSize = tempVisibleSize;
-  state.headPlaceholderSize = tempHeadPlaceholderSize;
-  state.tailPlaceholderSize = tempTailPlaceholderSize;
-}
-function handleTouchEvent(isVertical, containerRef, props2, state, trigger, emit2) {
-  let beforeRefreshing = false;
-  let triggerAbort = false;
-  let touchStart = {
-    x: 0,
-    y: 0
-  };
-  let touchEnd = {
-    x: 0,
-    y: props2.refresherThreshold
-  };
-  function _setRefreshState(_state) {
-    if (!props2.refresherEnabled)
-      return;
-    switch (_state) {
-      case "refreshing":
-        state.refresherHeight = props2.refresherThreshold;
-        if (!beforeRefreshing) {
-          beforeRefreshing = true;
-          trigger("refresherpulling", {}, {
-            deltaY: state.refresherHeight,
-            dy: state.refresherHeight
-          });
-          trigger("refresherrefresh", {}, { dy: touchEnd.y - touchStart.y });
-          emit2("update:refresherTriggered", true);
-        }
-        break;
-      case "restore":
-      case "refresherabort":
-        beforeRefreshing = false;
-        state.refresherHeight = 0;
-        if (_state === "restore") {
-          triggerAbort = false;
-          trigger("refresherrestore", {}, { dy: touchEnd.y - touchStart.y });
-        }
-        if (_state === "refresherabort" && triggerAbort) {
-          triggerAbort = false;
-          trigger("refresherabort", {}, { dy: touchEnd.y - touchStart.y });
-        }
-        break;
-    }
-    state.refreshState = _state;
-  }
-  Vue.watch(() => props2.refresherTriggered, (val) => {
-    if (val === true) {
-      _setRefreshState("refreshing");
-    } else if (val === false) {
-      _setRefreshState("restore");
-    }
-  });
-}
-function getSize(isVertical, el) {
-  var style = window.getComputedStyle(el);
-  if (isVertical) {
-    return parseFloat(style.marginTop) + el.getBoundingClientRect().height + parseFloat(style.marginBottom);
-  } else {
-    return parseFloat(style.marginLeft) + el.getBoundingClientRect().width + parseFloat(style.marginRight);
-  }
-}
-const index$f = /* @__PURE__ */ defineBuiltInComponent({
-  name: "ListItem",
-  props: {},
-  setup(props2, { slots, expose, attrs: attrs2 }) {
-    if (attrs2.slot === "refresher") {
-      return () => {
-        return (() => {
-          const _n1 = Vue.createPlainElement("uni-list-item", null, Vue.extend(() => {
-            const _n0 = createNodes(() => slots.default && slots.default());
-            return _n0;
-          }, { _: 1 }), true);
-          return _n1;
-        })();
-      };
-    }
-    const rootRef = Vue.ref(null);
-    const isVertical = Vue.inject("__listViewIsVertical");
-    const visible = Vue.ref(false);
-    const status = {
-      type: "ListItem",
-      visible,
-      cachedSize: Vue.inject("__listViewDefaultItemSize"),
-      cachedSizeUpdated: false
-    };
-    expose({ __listViewChildStatus: status });
-    Vue.inject("__listViewRegisterItem");
-    Vue.inject("__listViewUnregisterItem");
-    function updateSize() {
-      if (!visible.value || status.cachedSizeUpdated) {
+    const group = Vue.inject(CHECKBOX_GROUP_KEY, null);
+    Vue.inject(LABEL_KEY, null);
+    const setChecked = (checked, syncGroup) => {
+      if (isChecked.value == checked) {
         return;
       }
-      const rootNode = rootRef.value;
-      if (isHTMlElement(rootNode)) {
-        const size = getSize(isVertical.value, rootNode);
-        if (isNaN(size)) {
-          return;
-        }
-        status.cachedSize = getSize(isVertical.value, rootNode);
-        status.cachedSizeUpdated = true;
+      isChecked.value = checked;
+      if (group != null) {
+        group.toggle(toStringOrEmpty(props2.value), checked, false);
+      }
+    };
+    Vue.watch(() => props2.checked, (value) => {
+      setChecked(value);
+    });
+    const handleTap = () => {
+      if (props2.disabled) {
+        return;
+      }
+      isChecked.value = !isChecked.value;
+      if (group != null) {
+        group.toggle(toStringOrEmpty(props2.value), isChecked.value, true);
+      }
+    };
+    __expose({
+      getCheckboxChecked: () => {
+        return isChecked.value;
+      },
+      setCheckboxChecked: (checked) => {
+        setChecked(checked);
+      }
+    });
+    const n0 = Vue.createIf(
+      () => !hasDefaultSlot,
+      () => {
+        const n2 = t1$9();
+        Vue.initUniElement(n2, _uniCheckboxElement);
+        Vue.renderEffect(() => {
+          const _disabled = __props.disabled;
+          const _isChecked = Vue.unref(isChecked);
+          Vue.setClass(n2, ["uni-checkbox-view uni-checkbox-icon", Vue.unref(classes)(
+            [_disabled, "uni-checkbox-disabled"],
+            [!_disabled && _isChecked, __props.checkboxActiveClass],
+            [!_disabled && !_isChecked, __props.checkboxClass],
+            [!_disabled, __props.iconClass]
+          )]);
+          Vue.setStyle(n2, Vue.unref(activeStyle));
+          Vue.setProp(n2, "tabindex", _disabled ? -1 : 0);
+          Vue.setAttr(n2, "aria-checked", _isChecked);
+          Vue.setAttr(n2, "aria-disabled", _disabled);
+        });
+        Vue.setInsertionState(n2);
+        Vue.createIf(() => Vue.unref(isChecked), () => {
+          const n6 = t0$m();
+          const n5 = Vue.child(n6);
+          Vue.setAttr(n5, "d", iconPath$1, true);
+          return n6;
+        });
+        Vue.on(n2, "keydown", (e2) => Vue.unref(handleKeydown)(e2));
+        Vue.on(n2, "keyup", (e2) => Vue.unref(handleKeyup)(e2));
+        Vue.on(n2, "blur", (e2) => Vue.unref(handleBlur)(e2));
+        Vue.on(n2, "click", Vue.withModifiers(handleTap, ["stop"]));
+        return n2;
+      },
+      () => {
+        const n8 = t3$1();
+        const n13 = Vue.child(n8);
+        Vue.initUniElement(n8, _uniCheckboxElement);
+        Vue.renderEffect(() => {
+          const _disabled = __props.disabled;
+          const _isChecked = Vue.unref(isChecked);
+          Vue.setProp(n8, "tabindex", _disabled ? -1 : 0);
+          Vue.setAttr(n8, "aria-checked", _isChecked);
+          Vue.setAttr(n8, "aria-disabled", _disabled);
+          Vue.setClass(n13, ["uni-checkbox-view uni-checkbox-icon", Vue.unref(classes)(
+            [_disabled, "uni-checkbox-disabled"],
+            [!_disabled && _isChecked, __props.checkboxActiveClass],
+            [!_disabled && !_isChecked, __props.checkboxClass],
+            [!_disabled, __props.iconClass]
+          )]);
+          Vue.setStyle(n13, Vue.unref(activeStyle));
+        });
+        Vue.setInsertionState(n13);
+        Vue.createIf(() => Vue.unref(isChecked), () => {
+          const n12 = t0$m();
+          const n11 = Vue.child(n12);
+          Vue.setAttr(n11, "d", iconPath$1, true);
+          return n12;
+        });
+        Vue.setInsertionState(n8, 1);
+        Vue.createIf(
+          () => isStringSlot,
+          () => {
+            const n17 = t2$1();
+            Vue.setInsertionState(n17);
+            Vue.createSlot(
+              "default",
+              null,
+              null,
+              256
+              /* TEXT_MODE */
+            );
+            return n17;
+          },
+          () => {
+            const n19 = Vue.createSlot();
+            return n19;
+          },
+          1029
+          /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_3 */
+        );
+        Vue.on(n8, "keydown", (e2) => Vue.unref(handleKeydown)(e2));
+        Vue.on(n8, "keyup", (e2) => Vue.unref(handleKeyup)(e2));
+        Vue.on(n8, "blur", (e2) => Vue.unref(handleBlur)(e2));
+        Vue.on(n8, "click", Vue.withModifiers(handleTap, ["stop"]));
+        return n8;
+      },
+      517
+      /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_1 */
+    );
+    return n0;
+  }
+});
+const _UniCheckboxGroupElement = class _UniCheckboxGroupElement extends UniViewElement {
+};
+_UniCheckboxGroupElement.__uniElement = {};
+let UniCheckboxGroupElement = _UniCheckboxGroupElement;
+const t0$l = Vue.template("<div uni-checkbox-group uni-view>", 1);
+const _uniCheckboxGroupElement = { value: "CHECKBOX-GROUP" };
+const _sfc_main$l = /* @__PURE__ */ Vue.defineVaporComponent({
+  ...{
+    name: "checkbox-group",
+    // @ts-ignore
+    rootElement: {
+      class: /* @__PURE__ */ Vue.initUniElementType(UniCheckboxGroupElement, "checkbox-group")
+    }
+  },
+  __name: "checkbox-group",
+  props: {
+    name: { default: "", type: String }
+  },
+  emits: ["change"],
+  setup(__props, { emit: __emit }) {
+    const props2 = __props;
+    class UniCustomEvent3 {
+      constructor(type, detail) {
+        this.detail = detail;
       }
     }
-    Vue.watch(visible, (value) => {
-      Vue.nextTick(() => {
-        updateSize();
-      });
-    });
-    return () => {
-      if (!visible.value) {
-        return null;
+    class UniCheckboxGroupChangeEvent extends UniCustomEvent3 {
+      constructor(value) {
+        super("change", { value });
       }
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n1 = Vue.createPlainElement("uni-list-item", null, Vue.extend(() => {
-          const _n0 = createNodes(() => slots.default && slots.default());
-          return _n0;
-        }, { _: 1 }), true);
-        Vue.renderEffect(() => _setTemplateRef(_n1, rootRef));
-        return _n1;
-      })();
+    }
+    const emit2 = __emit;
+    const selectedValues = Vue.ref([]);
+    const initialSelected = Vue.ref([]);
+    const childSetters = /* @__PURE__ */ new Map();
+    let elementOrderCounter = 0;
+    const elementOrderMap = /* @__PURE__ */ new Map();
+    const ensureIncluded = (value) => {
+      if (selectedValues.value.indexOf(value) == -1) {
+        selectedValues.value.push(value);
+      }
     };
+    const ensureExcluded = (value) => {
+      const i = selectedValues.value.indexOf(value);
+      if (i != -1) {
+        selectedValues.value.splice(i, 1);
+      }
+    };
+    const updateSelection2 = (value, checked) => {
+      if (checked) {
+        ensureIncluded(value);
+      } else {
+        ensureExcluded(value);
+      }
+    };
+    const dispatchEvent = () => {
+      const sortedValues = selectedValues.value.slice().sort((a, b) => {
+        const orderA = elementOrderMap.get(a) ?? 0;
+        const orderB = elementOrderMap.get(b) ?? 0;
+        return orderA - orderB;
+      });
+      emit2("change", new UniCheckboxGroupChangeEvent(sortedValues));
+    };
+    const ctx = {
+      register: (value, checked, setChecked) => {
+        childSetters.set(value, setChecked);
+        elementOrderMap.set(value, elementOrderCounter++);
+        updateSelection2(value, checked);
+        if (initialSelected.value.indexOf(value) == -1 && checked) {
+          initialSelected.value.push(value);
+        }
+      },
+      unregister: (value) => {
+        ensureExcluded(value);
+        childSetters.delete(value);
+        elementOrderMap.delete(value);
+      },
+      toggle: (value, checked, emitChange) => {
+        updateSelection2(value, checked);
+        if (emitChange) {
+          dispatchEvent();
+        }
+      },
+      isChecked: (value) => {
+        return selectedValues.value.indexOf(value) != -1;
+      },
+      name: props2.name
+    };
+    Vue.provide(CHECKBOX_GROUP_KEY, ctx);
+    Vue.inject(FORM_KEY, null);
+    const n0 = t0$l();
+    Vue.initUniElement(n0, _uniCheckboxGroupElement);
+    Vue.setInsertionState(n0);
+    Vue.createSlot();
+    return n0;
   }
 });
-const index$e = /* @__PURE__ */ defineBuiltInComponent({
-  name: "StickySection",
-  props: { padding: {
-    type: Array,
-    default: [
-      0,
-      0,
-      0,
-      0
-    ]
-  } },
-  setup(props2, { slots, expose }) {
-    const rootRef = Vue.ref(null);
-    const isVertical = Vue.inject("__listViewIsVertical");
-    const headPlaceholderSize = Vue.ref(0);
-    const tailPlaceholderSize = Vue.ref(0);
-    const style = Vue.computed(() => {
-      const padding = props2.padding;
-      const paddingTop = padding[0];
-      const paddingRight = padding[1];
-      const paddingBottom = padding[2];
-      const paddingLeft = padding[3];
-      return {
-        paddingTop: (isVertical.value ? paddingTop + headPlaceholderSize.value : paddingTop) + "px",
-        paddingRight: (isVertical.value ? paddingRight : paddingRight + tailPlaceholderSize.value) + "px",
-        paddingBottom: (isVertical.value ? paddingBottom + tailPlaceholderSize.value : paddingBottom) + "px",
-        paddingLeft: (isVertical.value ? paddingLeft : paddingLeft + headPlaceholderSize.value) + "px"
+const _UniFlowItemElement = class _UniFlowItemElement extends UniViewElement {
+};
+_UniFlowItemElement.__uniElement = {};
+let UniFlowItemElement = _UniFlowItemElement;
+const _UniWaterflowElement = class _UniWaterflowElement extends UniScrollViewElement {
+};
+_UniWaterflowElement.__uniElement = {};
+let UniWaterflowElement = _UniWaterflowElement;
+const t0$k = Vue.template('<div uni-flow-item uni-view class=uni-flow-item style="position: absolute; top: 0; left: 0; width: 0px">', 1);
+const _uniFlowItemElement = { value: "FLOW-ITEM" };
+const _sfc_main$k = /* @__PURE__ */ Vue.defineVaporComponent({
+  ...{
+    name: "flow-item",
+    rootElement: {
+      class: /* @__PURE__ */ Vue.initUniElementType(UniFlowItemElement, "flow-item")
+    }
+  },
+  __name: "flow-item",
+  props: {
+    itemKey: { type: [String, Number], required: true },
+    itemHeight: { type: Number, default: 0 }
+  },
+  setup(__props, { expose: __expose }) {
+    const props2 = __props;
+    const waterflow = Vue.inject("__uni_recycle_waterflow");
+    const element = Vue.ref(null);
+    const itemKeyRef = Vue.computed(() => String(props2.itemKey));
+    let registeredKey;
+    let recycled = false;
+    const item = {
+      size: -1,
+      updateItemOffset(x, y) {
+        if (element.value)
+          element.value.style.translate = `${x}px ${y}px`;
+      },
+      updateItemCrossAxisSize(width) {
+        if (element.value)
+          element.value.style.width = `${width}px`;
+      }
+    };
+    const recycleHooks = /* @__PURE__ */ new Map([
+      ["brc", [recycle]],
+      ["ru", [reuse]]
+    ]);
+    Vue.provide("__uni_recycle_state_key_ref", itemKeyRef);
+    Vue.provide("__uni_recycle_hooks", recycleHooks);
+    const observer = new UniResizeObserver(() => measure());
+    function unregister() {
+      if (registeredKey !== void 0 && waterflow.itemInstanceMap.get(registeredKey) === item) {
+        waterflow.itemInstanceMap.delete(registeredKey);
+      }
+      registeredKey = void 0;
+    }
+    function measure() {
+      if (recycled || !element.value || !element.value.isConnected)
+        return;
+      const key = String(props2.itemKey);
+      if (registeredKey !== key) {
+        unregister();
+        registeredKey = key;
+        waterflow.itemInstanceMap.set(key, item);
+      }
+      item.updateItemCrossAxisSize(waterflow.getItemCrossAxisSize());
+      item.updateItemOffset(...waterflow.getItemOffset(key));
+      const rect = element.value.getBoundingClientRect();
+      if (rect.width > 0) {
+        item.size = rect.height;
+        waterflow.updateItemSize(key, item.size);
+      }
+    }
+    function recycle() {
+      recycled = true;
+      observer.disconnect();
+      unregister();
+    }
+    function reuse() {
+      recycled = false;
+      Vue.nextTick(() => {
+        if (recycled || !element.value)
+          return;
+        observer.observe(element.value);
+        measure();
+      });
+    }
+    Vue.watch(
+      () => props2.itemKey,
+      () => measure(),
+      { flush: "post" }
+    );
+    __expose({ recycleHooks });
+    const n0 = t0$k();
+    Vue.initUniElement(n0, _uniFlowItemElement);
+    Vue.setInsertionState(n0);
+    Vue.createSlot();
+    Vue.setStaticTemplateRef(n0, element, null, "element");
+    return n0;
+  }
+});
+const _UniFormElement = class _UniFormElement extends UniViewElement {
+};
+_UniFormElement.__uniElement = {};
+let UniFormElement = _UniFormElement;
+const t0$j = Vue.template("<div uni-form uni-view class=uni-form>", 1);
+const _uniFormElement = { value: "FORM" };
+const _sfc_main$j = /* @__PURE__ */ Vue.defineVaporComponent({
+  ...{
+    name: "form",
+    // @ts-ignore
+    rootElement: {
+      class: /* @__PURE__ */ Vue.initUniElementType(UniFormElement, "form")
+    }
+  },
+  __name: "form",
+  props: {
+    disabled: { type: Boolean, default: false }
+  },
+  emits: ["submit", "reset"],
+  setup(__props, { expose: __expose, emit: __emit }) {
+    const props2 = __props;
+    class UniCustomEvent3 {
+      constructor(type, detail) {
+        this.detail = detail;
+      }
+    }
+    class UniFormSubmitEvent extends UniCustomEvent3 {
+      constructor(value) {
+        super("submit", { value });
+      }
+    }
+    class UniFormResetEvent extends UniCustomEvent3 {
+      constructor() {
+        super("reset", {});
+      }
+    }
+    const emit2 = __emit;
+    const fields = /* @__PURE__ */ new Map();
+    function registerField(field) {
+      if (!field.name) {
+        return;
+      }
+      fields.set(field.name, field);
+    }
+    function unregisterField(name) {
+      if (!name) {
+        return;
+      }
+      fields.delete(name);
+    }
+    function submit() {
+      if (props2.disabled) {
+        return;
+      }
+      const data = {};
+      fields.forEach((field, name) => {
+        data[name] = field.getValue();
+      });
+      emit2("submit", new UniFormSubmitEvent(data));
+    }
+    function reset() {
+      if (props2.disabled) {
+        return;
+      }
+      fields.forEach((field) => {
+        field.reset && field.reset();
+      });
+      emit2("reset", new UniFormResetEvent());
+    }
+    const ctx = { registerField, unregisterField, submit, reset };
+    Vue.provide(FORM_KEY, ctx);
+    __expose({ submit, reset });
+    const n0 = t0$j();
+    Vue.initUniElement(n0, _uniFormElement);
+    Vue.setInsertionState(n0);
+    Vue.createSlot();
+    return n0;
+  }
+});
+const _UniLabelElement = class _UniLabelElement extends UniViewElement {
+};
+_UniLabelElement.__uniElement = {};
+let UniLabelElement = _UniLabelElement;
+const t0$i = Vue.template("<div uni-label uni-view class=uni-label>", 1);
+const _uniLabelElement = { value: "LABEL" };
+const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
+  ...{
+    name: "label",
+    // @ts-ignore
+    rootElement: {
+      class: /* @__PURE__ */ Vue.initUniElementType(UniLabelElement, "label")
+    }
+  },
+  __name: "label",
+  props: {
+    disabled: { type: Boolean, default: false },
+    for: { default: "", type: String }
+  },
+  setup(__props) {
+    const props2 = __props;
+    const { handleKeydown, handleKeyup, handleBlur } = createSpaceKeyHandlers(() => props2.disabled);
+    const children = [];
+    function register(child) {
+      if (child.id && child.id.length > 0) {
+        const idx = children.findIndex((c) => c.id === child.id);
+        if (idx !== -1) {
+          children[idx] = child;
+          return;
+        }
+      }
+      children.push(child);
+    }
+    function unregister(id2) {
+      if (!id2)
+        return;
+      const idx = children.findIndex((c) => c.id === id2);
+      if (idx !== -1) {
+        children.splice(idx, 1);
+      }
+    }
+    const ctx = { register, unregister };
+    Vue.provide(LABEL_KEY, ctx);
+    function findTarget() {
+      if (props2.for && props2.for.length > 0) {
+        const byId = children.find((c) => c.id === props2.for);
+        if (byId)
+          return byId;
+        const byScopeId = findLabelTarget(props2.for);
+        if (byScopeId)
+          return byScopeId;
+      }
+      if (children.length === 0)
+        return null;
+      return children[0];
+    }
+    const handleTap = (event) => {
+      var _a;
+      const eventTarget = event.target;
+      const element = (eventTarget == null ? void 0 : eventTarget.nodeType) === 1 ? eventTarget : eventTarget == null ? void 0 : eventTarget.parentElement;
+      if (element == null ? void 0 : element.closest("uni-button, [uni-button], .uni-button")) {
+        return;
+      }
+      const classList = ((_a = event.target) == null ? void 0 : _a.classList) ? event.target.classList : [];
+      for (let i = 0; i < classList.length; i++) {
+        if (/^uni-(checkbox|radio|switch)/.test(classList[i])) {
+          return;
+        }
+      }
+      if (props2.disabled) {
+        return;
+      }
+      const target = findTarget();
+      if (target == null)
+        return;
+      if (target.getDisabled && target.getDisabled())
+        return;
+      target.activate(event);
+    };
+    const n0 = t0$i();
+    Vue.initUniElement(n0, _uniLabelElement);
+    Vue.renderEffect(() => {
+      const _disabled = __props.disabled;
+      Vue.setProp(n0, "tabindex", _disabled ? -1 : 0);
+      Vue.setAttr(n0, "aria-disabled", _disabled);
+    });
+    Vue.setInsertionState(n0);
+    Vue.createSlot();
+    Vue.on(n0, "keydown", (e2) => Vue.unref(handleKeydown)(e2));
+    Vue.on(n0, "keyup", (e2) => Vue.unref(handleKeyup)(e2));
+    Vue.on(n0, "blur", (e2) => Vue.unref(handleBlur)(e2));
+    Vue.on(n0, "click", handleTap);
+    return n0;
+  }
+});
+const _UniListItemElement = class _UniListItemElement extends UniViewElement {
+};
+_UniListItemElement.__uniElement = {};
+let UniListItemElement = _UniListItemElement;
+const _UniStickySectionElement = class _UniStickySectionElement extends UniViewElement {
+};
+_UniStickySectionElement.__uniElement = {};
+let UniStickySectionElement = _UniStickySectionElement;
+const _UniStickyHeaderElement = class _UniStickyHeaderElement extends UniViewElement {
+};
+_UniStickyHeaderElement.__uniElement = {};
+let UniStickyHeaderElement = _UniStickyHeaderElement;
+const _UniListViewElement = class _UniListViewElement extends UniScrollViewElement {
+};
+_UniListViewElement.__uniElement = {};
+let UniListViewElement = _UniListViewElement;
+const t0$h = Vue.template('<div uni-list-item uni-view class=uni-list-item style="position: absolute; top: 0; left: 0; width: 100%">', 1);
+const _uniListItemElement = { value: "LIST-ITEM" };
+const _sfc_main$h = /* @__PURE__ */ Vue.defineVaporComponent({
+  ...{
+    name: "list-item",
+    rootElement: {
+      class: /* @__PURE__ */ Vue.initUniElementType(UniListItemElement, "list-item")
+    }
+  },
+  __name: "list-item",
+  props: {
+    itemKey: { type: [String, Number], required: true }
+  },
+  setup(__props, { expose: __expose }) {
+    const props2 = __props;
+    const container = Vue.inject("__uni_recycle_container");
+    const sectionId = Vue.inject("__uni_recycle_section_id", 0);
+    const element = Vue.ref(null);
+    const itemKeyRef = Vue.computed(() => `${sectionId}:${props2.itemKey}`);
+    let registeredKey;
+    let recycled = false;
+    const item = {
+      size: -1,
+      updateItemOffset(offset) {
+        if (element.value)
+          element.value.style.translate = `0 ${offset}px`;
+      }
+    };
+    const recycleHooks = /* @__PURE__ */ new Map([
+      ["brc", [recycle]],
+      ["ru", [reuse]]
+    ]);
+    Vue.provide("__uni_recycle_state_key_ref", itemKeyRef);
+    Vue.provide("__uni_recycle_hooks", recycleHooks);
+    const observer = new ResizeObserver(() => measure());
+    function unregister() {
+      if (registeredKey !== void 0 && container.store.itemInstanceMap.get(registeredKey) === item) {
+        container.store.itemInstanceMap.delete(registeredKey);
+      }
+      registeredKey = void 0;
+    }
+    function measure() {
+      if (recycled || !element.value || !element.value.isConnected)
+        return;
+      const key = String(props2.itemKey);
+      if (registeredKey !== key) {
+        unregister();
+        registeredKey = key;
+        container.store.itemInstanceMap.set(key, item);
+      }
+      item.updateItemOffset(container.getItemOffset(key));
+      item.size = element.value.getBoundingClientRect().height;
+      container.updateItemSize(key, item.size);
+    }
+    function recycle() {
+      recycled = true;
+      observer.disconnect();
+      unregister();
+    }
+    function reuse() {
+      recycled = false;
+      Vue.nextTick(() => {
+        if (recycled || !element.value)
+          return;
+        observer.observe(element.value);
+        measure();
+      });
+    }
+    Vue.watch(
+      () => props2.itemKey,
+      () => measure(),
+      { flush: "post" }
+    );
+    __expose({ recycleHooks });
+    const n0 = t0$h();
+    Vue.initUniElement(n0, _uniListItemElement);
+    Vue.setInsertionState(n0);
+    Vue.createSlot();
+    Vue.setStaticTemplateRef(n0, element, null, "element");
+    return n0;
+  }
+});
+class RecycleListItemDataStore {
+  constructor() {
+    this.list = [];
+    this.keyItemMap = /* @__PURE__ */ new Map();
+    this.itemInstanceMap = /* @__PURE__ */ new Map();
+    this.defaultItemSize = 150;
+  }
+  realItemSize(item) {
+    return item.size < 0 ? this.defaultItemSize : item.size;
+  }
+  get contentSize() {
+    const last = this.list[this.list.length - 1];
+    return last ? last.offset + this.realItemSize(last) : 0;
+  }
+  updateKeyList(keys) {
+    const oldItems = this.keyItemMap;
+    this.keyItemMap = /* @__PURE__ */ new Map();
+    this.list = keys.map((key, index2) => {
+      const instance = this.itemInstanceMap.get(key);
+      const item = oldItems.get(key) || {
+        key,
+        index: index2,
+        size: instance ? instance.size : -1,
+        offset: 0
       };
+      item.index = index2;
+      this.keyItemMap.set(key, item);
+      return item;
     });
-    const headSize = Vue.computed(() => {
-      return isVertical ? props2.padding[0] : props2.padding[3];
+    this.rebuildItemOffsetsFrom(0);
+  }
+  rebuildItemOffsetsFrom(start) {
+    for (let i = start; i < this.list.length; i++) {
+      const previous = this.list[i - 1];
+      this.list[i].offset = previous ? previous.offset + this.realItemSize(previous) : 0;
+    }
+  }
+  updateItemOffset(baseOffset) {
+    this.itemInstanceMap.forEach((instance, key) => {
+      const item = this.keyItemMap.get(key);
+      if (item)
+        instance.updateItemOffset(item.offset + baseOffset);
     });
-    const tailSize = Vue.computed(() => {
-      return isVertical ? props2.padding[2] : props2.padding[1];
+  }
+  getRenderRange(min, max) {
+    let low = 0;
+    let high = this.list.length;
+    while (low < high) {
+      const mid = low + high >>> 1;
+      const item = this.list[mid];
+      if (item.offset + this.realItemSize(item) < min)
+        low = mid + 1;
+      else
+        high = mid;
+    }
+    const start = low;
+    high = this.list.length;
+    while (low < high) {
+      const mid = low + high >>> 1;
+      if (this.list[mid].offset <= max)
+        low = mid + 1;
+      else
+        high = mid;
+    }
+    return [start, low - start];
+  }
+}
+const t0$g = Vue.template("<div uni-view></div>");
+const t1$8 = Vue.template('<div uni-view style="position: relative; overflow: visible; overflow-anchor: none"><div uni-view style="width: 1px; flex-shrink: 0;"></div></div>');
+const _uniListViewElement = { value: "LIST-VIEW" };
+const _sfc_main$g = /* @__PURE__ */ Vue.defineVaporComponent({
+  ...{
+    name: "list-view",
+    rootElement: {
+      class: /* @__PURE__ */ Vue.initUniElementType(UniListViewElement, "list-view")
+    }
+  },
+  __name: "list-view",
+  props: {
+    scrollIntoView: { type: String, default: "" },
+    scrollAnchoring: { type: [Boolean, String], default: false },
+    initialScrollBottom: { type: [Boolean, String], default: false }
+  },
+  setup(__props, { expose: __expose }) {
+    const props2 = __props;
+    Vue.useAttrs();
+    const scrollElement = Vue.ref(null);
+    const headerElement = Vue.ref(null);
+    const bodyElement = Vue.ref(null);
+    const placeholderElement = Vue.ref(null);
+    const renderRange = Vue.ref([0, 0]);
+    const store = new RecycleListItemDataStore();
+    const sectionMap = /* @__PURE__ */ new Map();
+    const idKeyMap = /* @__PURE__ */ new Map();
+    let keys = [];
+    let listIds = [];
+    let size = 0;
+    let headerSize = 0;
+    let realScrollOffset = 0;
+    let scrollOffset = 0;
+    let fastScrollOffset = 0;
+    let lastScrollTimestamp = 0;
+    let lastScrollOffset = 0;
+    let cachedSizeStart = 200;
+    let cachedSizeEnd = 200;
+    let scrolling = false;
+    let scrollEndTimer;
+    let queued = false;
+    let destroyed = false;
+    let listDataStatus = 0;
+    let maintainInitialScrollBottom = true;
+    let anchorKey;
+    let anchorOffset = 0;
+    let scrollTarget;
+    let pendingScrollId = props2.scrollIntoView;
+    let targetOffset = -1;
+    let itemSizeChangedCompensation = 0;
+    let sizeChangeAnchorKey;
+    let sizeChangeAnchorOffset = 0;
+    Vue.provide("__uni_recycle_view_instance", Vue.getCurrentInstance());
+    Vue.provide("__uni_recycle_state_map", /* @__PURE__ */ new Map());
+    Vue.provide("__uni_recycle_list", {
+      sectionMap,
+      queueLayout,
+      syncDefaultItemSize
     });
-    const status = {
-      type: "StickySection",
-      headSize,
-      tailSize,
-      headPlaceholderSize,
-      tailPlaceholderSize
-    };
-    expose({ __listViewChildStatus: status });
-    return () => {
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n1 = Vue.createPlainElement("uni-sticky-section", { style: () => style.value }, Vue.extend(() => {
-          const _n0 = createNodes(() => {
-            var _a;
-            return (_a = slots.default) == null ? void 0 : _a.call(slots);
-          });
-          return _n0;
-        }, { _: 1 }), true);
-        Vue.renderEffect(() => _setTemplateRef(_n1, rootRef));
-        return _n1;
-      })();
-    };
+    Vue.provide("__uni_recycle_container", {
+      store,
+      updateItemSize,
+      getItemOffset
+    });
+    function updateIdKeyMap() {
+      if (listIds.length !== keys.length)
+        return;
+      idKeyMap.clear();
+      listIds.forEach((id2, index2) => {
+        if (id2 && keys[index2])
+          idKeyMap.set(id2, keys[index2]);
+      });
+    }
+    function updateList(newList) {
+      if (listDataStatus === 0 && newList.length)
+        listDataStatus = 1;
+      else if (listDataStatus === 1)
+        listDataStatus = 2;
+      keys = newList;
+      store.updateKeyList(newList);
+      updateIdKeyMap();
+      queueLayout();
+    }
+    function updateListIds(ids) {
+      listIds = ids;
+      updateIdKeyMap();
+      queueLayout();
+    }
+    function updateRenderInfo(start, length) {
+      if (renderRange.value[0] !== start || renderRange.value[1] !== length) {
+        renderRange.value = [start, length];
+      }
+    }
+    function getItemOffset(key) {
+      const item = store.keyItemMap.get(key);
+      return item ? item.offset + fastScrollOffset - itemSizeChangedCompensation : -1;
+    }
+    function updateItemSize(key, height) {
+      const item = store.keyItemMap.get(key);
+      if (!item || item.size === height)
+        return;
+      item.size = height;
+      store.rebuildItemOffsetsFrom(item.index + 1);
+      if (scrolling && !scrollTarget && sizeChangeAnchorKey) {
+        const anchor = store.keyItemMap.get(sizeChangeAnchorKey);
+        if (anchor)
+          itemSizeChangedCompensation = anchor.offset - sizeChangeAnchorOffset;
+      }
+      queueLayout();
+    }
+    function syncDefaultItemSize(height) {
+      if (height > 0)
+        sectionMap.forEach((section) => section.applyDefaultItemSize(height));
+    }
+    function queueLayout() {
+      if (queued || destroyed)
+        return;
+      queued = true;
+      Vue.nextTick(() => {
+        queued = false;
+        if (scrollElement.value)
+          updateRenderList();
+      });
+    }
+    function linkSection() {
+      const sections = Array.from(sectionMap.values()).filter(
+        (section) => section.element && section.element.isConnected
+      );
+      sections.sort(
+        (a, b) => a.element.compareDocumentPosition(b.element) & 4 ? -1 : 1
+      );
+      let offsetTop = 0;
+      sections.forEach((section) => {
+        section.offsetTop = offsetTop;
+        offsetTop += section.placeholderSize;
+      });
+      return sections;
+    }
+    function resolveScrollTarget(sections) {
+      if (!pendingScrollId)
+        return;
+      const key = idKeyMap.get(pendingScrollId);
+      if (key !== void 0)
+        scrollTarget = { key };
+      else {
+        for (const section of sections) {
+          const sectionKey = section.resolveKeyById(pendingScrollId);
+          if (sectionKey !== void 0) {
+            scrollTarget = { key: sectionKey, section };
+            break;
+          }
+          if (section.element.id === pendingScrollId || section.headerElement && section.headerElement.id === pendingScrollId) {
+            scrollTarget = { key: "", section };
+            break;
+          }
+        }
+      }
+      if (scrollTarget) {
+        pendingScrollId = "";
+        maintainInitialScrollBottom = false;
+        cachedSizeStart = 0;
+        targetOffset = -1;
+      }
+    }
+    function scrollToOffset(offset) {
+      const element = scrollElement.value;
+      element.scrollTo(0, offset);
+      realScrollOffset = element.scrollTop;
+      scrollOffset = realScrollOffset;
+      fastScrollOffset = 0;
+    }
+    function updateRenderList() {
+      const element = scrollElement.value;
+      const sections = linkSection();
+      if (placeholderElement.value)
+        placeholderElement.value.style.height = `${sections.length ? 0 : store.contentSize}px`;
+      resolveScrollTarget(sections);
+      if (scrollTarget) {
+        const { key, section } = scrollTarget;
+        const item = store.keyItemMap.get(key);
+        const offset = section ? section.offsetTop + (key ? section.getItemOffset(key) : 0) : item ? item.offset : -1;
+        if (offset >= 0 && targetOffset !== offset + headerSize) {
+          targetOffset = offset + headerSize;
+          scrollToOffset(
+            targetOffset
+          );
+        }
+      } else if (!sections.length && !scrolling) {
+        if (props2.initialScrollBottom && maintainInitialScrollBottom && listDataStatus === 1) {
+          scrollToOffset(
+            Math.max(element.scrollHeight, headerSize + store.contentSize) - size
+          );
+        } else if (props2.scrollAnchoring && anchorKey) {
+          const anchor = store.keyItemMap.get(anchorKey);
+          if (anchor) {
+            scrollToOffset(realScrollOffset + anchor.offset - anchorOffset);
+            anchorOffset = anchor.offset;
+          } else
+            anchorKey = void 0;
+        }
+      }
+      const min = Math.max(
+        0,
+        scrollOffset - headerSize - cachedSizeStart + itemSizeChangedCompensation + 0.2
+      );
+      const max = scrollOffset - headerSize + size + cachedSizeEnd + itemSizeChangedCompensation - 0.2;
+      store.updateItemOffset(fastScrollOffset - itemSizeChangedCompensation);
+      updateRenderInfo(...store.getRenderRange(min, max));
+      for (const section of sections) {
+        section.onScrollContextUpdate({
+          containerSize: size,
+          headerSize,
+          renderStartOffset: min + headerSize,
+          renderEndOffset: max + headerSize
+        });
+      }
+      if (!scrolling)
+        updateScrollAnchorItem();
+    }
+    function updateScrollAnchorItem() {
+      anchorKey = void 0;
+      if (!props2.scrollAnchoring || realScrollOffset <= 0 || sectionMap.size)
+        return;
+      const offset = realScrollOffset - headerSize;
+      const [index2] = store.getRenderRange(offset, offset);
+      const item = store.list[index2];
+      if (item) {
+        anchorKey = item.key;
+        anchorOffset = item.offset;
+      }
+    }
+    function onScroll(e2) {
+      const element = scrollElement.value;
+      const offset = Math.max(0, e2.detail.scrollTop);
+      if (offset < element.scrollHeight - size - 0.2 && Math.abs(offset - realScrollOffset) > 0.2)
+        maintainInitialScrollBottom = false;
+      if (!scrolling) {
+        scrolling = true;
+        anchorKey = void 0;
+        const item = store.list[renderRange.value[0] + renderRange.value[1] - 1];
+        sizeChangeAnchorKey = item && item.key;
+        sizeChangeAnchorOffset = item ? item.offset : 0;
+      }
+      if (offset === 0 || offset >= store.contentSize - size)
+        itemSizeChangedCompensation = 0;
+      if (offset + itemSizeChangedCompensation < 0) {
+        itemSizeChangedCompensation = 0;
+        scrollToOffset(0);
+        return;
+      }
+      const timestamp = Date.now();
+      const elapsed = timestamp - lastScrollTimestamp;
+      const delta = offset - lastScrollOffset;
+      realScrollOffset = offset;
+      cachedSizeStart = scrollTarget ? 0 : 200;
+      cachedSizeEnd = 200;
+      const fast = sectionMap.size === 0 && !scrollTarget && lastScrollTimestamp > 0 && elapsed > 0 && Math.abs(delta / elapsed) > 15 && offset > 1 && offset < element.scrollHeight - size - 1;
+      if (fast) {
+        if (delta > 0)
+          cachedSizeStart = 0;
+        else
+          cachedSizeEnd = 0;
+        scrollOffset += Math.sign(delta) * Math.min(Math.abs(delta), 120);
+        fastScrollOffset = offset - scrollOffset;
+      } else {
+        scrollOffset = offset;
+        fastScrollOffset = 0;
+      }
+      lastScrollOffset = offset;
+      lastScrollTimestamp = timestamp;
+      updateRenderList();
+      clearTimeout(scrollEndTimer);
+      scrollEndTimer = setTimeout(onScrollEnd, 150);
+    }
+    function onScrollEnd() {
+      clearTimeout(scrollEndTimer);
+      if (!scrolling)
+        return;
+      scrolling = false;
+      if (itemSizeChangedCompensation)
+        scrollToOffset(realScrollOffset + itemSizeChangedCompensation);
+      itemSizeChangedCompensation = 0;
+      sizeChangeAnchorKey = void 0;
+      scrollOffset = realScrollOffset;
+      fastScrollOffset = 0;
+      lastScrollTimestamp = 0;
+      updateRenderList();
+      scrollTarget = void 0;
+      cachedSizeStart = 200;
+      cachedSizeEnd = 200;
+      updateScrollAnchorItem();
+    }
+    new ResizeObserver((entries2) => {
+      for (const entry of entries2) {
+        if (entry.target === scrollElement.value)
+          size = entry.contentRect.height;
+        else if (entry.target === headerElement.value)
+          headerSize = entry.borderBoxSize[0].blockSize;
+      }
+      queueLayout();
+    });
+    new MutationObserver(queueLayout);
+    Vue.watch(
+      () => props2.scrollIntoView,
+      (id2) => {
+        pendingScrollId = id2;
+        scrollTarget = void 0;
+        queueLayout();
+      }
+    );
+    Vue.watch(() => props2.scrollAnchoring, updateScrollAnchorItem);
+    Vue.watch(() => props2.initialScrollBottom, queueLayout);
+    __expose({ renderRange, updateList, updateListIds, updateRenderInfo });
+    const n9 = Vue.withComponentId("34459316", () => Vue.createComponent(__syscom_0, { onScroll: () => onScroll }, {
+      "refresher": Vue.extend(() => {
+        const n7 = Vue.createSlot(
+          "refresher",
+          null,
+          null,
+          4
+          /* FORWARDED */
+        );
+        return n7;
+      }, {
+        _: 1
+        /* NON_STABLE */
+      }),
+      "default": () => {
+        const n1 = t0$g();
+        Vue.setInsertionState(n1);
+        Vue.createSlot("header");
+        const n4 = t1$8();
+        const n2 = Vue.child(n4);
+        Vue.setStaticTemplateRef(n1, headerElement, null, "headerElement");
+        Vue.setStaticTemplateRef(n2, placeholderElement, null, "placeholderElement");
+        Vue.setInsertionState(n4, 1);
+        Vue.createSlot();
+        const n6 = t0$g();
+        Vue.setStaticTemplateRef(n4, bodyElement, null, "bodyElement");
+        Vue.setInsertionState(n6);
+        Vue.createSlot("footer");
+        return [n1, n4, n6];
+      }
+    }, true));
+    Vue.setStaticTemplateRef(n9, scrollElement, null, "scrollElement");
+    const _uniListViewRoot = Vue.getBlockFirstNode(n9);
+    if (_uniListViewRoot && _uniListViewRoot.nodeType === 1) {
+      _uniListViewRoot.setAttribute("uni-list-view", "");
+      Vue.initUniElement(_uniListViewRoot, _uniListViewElement);
+    }
+    return n9;
   }
 });
-const index$d = /* @__PURE__ */ defineBuiltInComponent({
-  name: "StickyHeader",
-  props: { padding: {
-    type: Array,
-    default: [
-      0,
-      0,
-      0,
-      0
-    ]
-  } },
-  setup(props2, { slots, expose }) {
-    const rootRef = Vue.ref(null);
-    Vue.inject("__listViewIsVertical");
-    const style = Vue.computed(() => {
-      return {
-        paddingTop: props2.padding[0] + "px",
-        paddingRight: props2.padding[1] + "px",
-        paddingBottom: props2.padding[2] + "px",
-        paddingLeft: props2.padding[3] + "px",
-        top: 0 - props2.padding[0] + "px"
-      };
-    });
-    const status = {
-      type: "StickyHeader",
-      cachedSize: Vue.inject("__listViewDefaultHeaderSize"),
-      cachedSizeUpdated: false
-    };
-    expose({ __listViewChildStatus: status });
-    return () => {
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n1 = Vue.createPlainElement("uni-sticky-header", { style: () => style.value }, Vue.extend(() => {
-          const _n0 = createNodes(() => {
-            var _a;
-            return (_a = slots.default) == null ? void 0 : _a.call(slots);
-          });
-          return _n0;
-        }, { _: 1 }), true);
-        Vue.renderEffect(() => _setTemplateRef(_n1, rootRef));
-        return _n1;
-      })();
-    };
-  }
-});
+const _UniMatchMediaElement = class _UniMatchMediaElement extends UniViewElement {
+};
+_UniMatchMediaElement.__uniElement = {};
+let UniMatchMediaElement = _UniMatchMediaElement;
 const createLifeCycleHook = (lifecycle, flag = 0) => (hook, target = Vue.getCurrentInstance()) => {
   if (Vue.isInSSRComponentSetup)
     return;
   Vue.injectHook(lifecycle, hook, target);
 };
-const onBackPress = /* @__PURE__ */ createLifeCycleHook(
-  uniShared.ON_BACK_PRESS,
+const onResize = /* @__PURE__ */ createLifeCycleHook(
+  uniShared.ON_RESIZE,
   2
   /* HookFlags.PAGE */
 );
-class UniPageContainerElement extends UniElement {
+const t0$f = Vue.template("<div uni-match-media uni-view>", 1);
+const _uniMatchMediaElement = { value: "MATCH-MEDIA" };
+const _sfc_main$f = /* @__PURE__ */ Vue.defineVaporComponent({
+  ...{
+    name: "match-media",
+    // @ts-ignore
+    rootElement: {
+      class: /* @__PURE__ */ Vue.initUniElementType(UniMatchMediaElement, "match-media")
+    }
+  },
+  __name: "match-media",
+  props: {
+    orientation: { type: String },
+    width: { default: "", type: [String, Number] },
+    minWidth: { default: "", type: [String, Number] },
+    maxWidth: { default: "", type: [String, Number] },
+    height: { default: "", type: [String, Number] },
+    minHeight: { default: "", type: [String, Number] },
+    maxHeight: { default: "", type: [String, Number] }
+  },
+  setup(__props) {
+    const RE_MQ_FEATURE = /^(min|max)?([A-Z]?[a-z]+)(?:([A-Z])([a-z]+))?$/;
+    const props2 = __props;
+    const show = Vue.ref(false);
+    show.value = isValid(getExpressions(), {
+      width: uni.getWindowInfo().windowWidth,
+      height: uni.getWindowInfo().windowHeight,
+      orientation: uni.getDeviceInfo().deviceOrientation
+    });
+    onResize((res) => {
+      const expressions = getExpressions();
+      show.value = isValid(expressions, {
+        width: res.size.windowWidth,
+        height: res.size.windowHeight,
+        orientation: res.deviceOrientation
+      });
+    });
+    Vue.watch(props2, () => {
+      const expressions = getExpressions();
+      const { windowWidth, windowHeight } = uni.getWindowInfo();
+      show.value = isValid(expressions, {
+        width: windowWidth,
+        height: windowHeight,
+        orientation: uni.getDeviceInfo().deviceOrientation
+      });
+    });
+    function getExpressions() {
+      const expressions = [];
+      Object.keys(props2).forEach((key) => {
+        const value = props2[key];
+        const feature = key.match(RE_MQ_FEATURE);
+        if (value != null && feature != null && feature.length > 0) {
+          expressions.push({
+            modifier: feature[1] != null ? feature[1] : "",
+            feature: feature[2] != null ? feature[2].toLowerCase() : "",
+            value
+          });
+        }
+      });
+      return expressions;
+    }
+    function isValid(expressions, values) {
+      return expressions.every((expression) => {
+        switch (expression.feature) {
+          case "orientation":
+            return props2.orientation != null ? values.orientation === props2.orientation : true;
+        }
+        if (expression.value === "") {
+          return true;
+        }
+        const expressionValue = values[expression.feature];
+        switch (expression.modifier) {
+          case "min":
+            return parseFloat(expression.value) <= expressionValue;
+          case "max":
+            return parseFloat(expression.value) >= expressionValue;
+          default:
+            return parseFloat(expression.value) === expressionValue;
+        }
+      });
+    }
+    const n0 = t0$f();
+    Vue.initUniElement(n0, _uniMatchMediaElement);
+    Vue.setInsertionState(n0);
+    Vue.createSlot();
+    Vue.applyVShow(n0, () => Vue.unref(show));
+    return n0;
+  }
+});
+const _UniNavigatorElement = class _UniNavigatorElement extends UniViewElement {
+};
+_UniNavigatorElement.__uniElement = {};
+let UniNavigatorElement = _UniNavigatorElement;
+const t0$e = Vue.template("<span uni-navigator uni-text>", 1);
+const t1$7 = Vue.template("<div uni-navigator uni-view>", 1);
+const _uniNavigatorElement = { value: "NAVIGATOR" };
+const _sfc_main$e = /* @__PURE__ */ Vue.defineVaporComponent({
+  ...{
+    name: "navigator",
+    // @ts-ignore
+    rootElement: {
+      class: /* @__PURE__ */ Vue.initUniElementType(UniNavigatorElement, "navigator")
+    }
+  },
+  __name: "navigator",
+  props: {
+    openType: { default: "navigate", type: String },
+    url: { default: "", type: String },
+    animationType: { default: "", type: String },
+    animationDuration: { default: 300, type: Number },
+    delta: { default: 1, type: Number }
+  },
+  setup(__props) {
+    var _a;
+    const props2 = __props;
+    const slots = Vue.useSlots();
+    const isStringSlot = ((_a = slots["default"]) == null ? void 0 : _a["returnType"]) === "string";
+    const handleTap = () => {
+      const url = props2.url;
+      const openType = props2.openType;
+      const onFail = (res) => {
+        console.error(res.errMsg);
+      };
+      switch (openType) {
+        case "navigate":
+          uni.navigateTo({
+            url,
+            animationType: props2.animationType || "pop-in",
+            animationDuration: props2.animationDuration,
+            fail: onFail
+          });
+          break;
+        case "navigateBack":
+          uni.navigateBack({
+            delta: props2.delta,
+            animationType: props2.animationType || "pop-out",
+            animationDuration: props2.animationDuration,
+            fail: onFail
+          });
+          break;
+        case "redirect":
+          uni.redirectTo({
+            url,
+            fail: onFail
+          });
+          break;
+        case "reLaunch":
+          uni.reLaunch({
+            url,
+            fail: onFail
+          });
+          break;
+        case "switchTab":
+          uni.switchTab({
+            url,
+            fail: onFail
+          });
+          break;
+        default:
+          console.log("<navigator/> openType attribute invalid");
+          break;
+      }
+    };
+    const n0 = Vue.createIf(
+      () => isStringSlot,
+      () => {
+        const n2 = t0$e();
+        Vue.initUniElement(n2, _uniNavigatorElement);
+        Vue.setInsertionState(n2);
+        Vue.createSlot(
+          "default",
+          null,
+          null,
+          256
+          /* TEXT_MODE */
+        );
+        Vue.on(n2, "click", handleTap);
+        return n2;
+      },
+      () => {
+        const n5 = t1$7();
+        Vue.initUniElement(n5, _uniNavigatorElement);
+        Vue.setInsertionState(n5);
+        Vue.createSlot();
+        Vue.on(n5, "click", handleTap);
+        return n5;
+      },
+      261
+      /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_0 */
+    );
+    return n0;
+  }
+});
+class UniVueElement extends Object {
 }
-const t0$3 = Vue.template("<div uni-view class=uni-page-container-overlay>");
-const t1$2 = Vue.template("<div uni-view>");
+const _UniPageContainerElement = class _UniPageContainerElement extends UniVueElement {
+};
+_UniPageContainerElement.__uniElement = {};
+let UniPageContainerElement = _UniPageContainerElement;
+const t0$d = Vue.template("<div uni-view class=uni-page-container-overlay>");
+const t1$6 = Vue.template("<div uni-view>");
 const MAX_SLIDER_DISTANCE = 100;
 const MIN_SLIDER_VELOCITY = 0.3;
-const _sfc_main$3 = /* @__PURE__ */ Vue.defineVaporComponent({
+const _sfc_main$d = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "page-container",
     rootElement: {
-      name: "uni-page-container",
       class: UniPageContainerElement
     }
   },
-  __name: "index",
+  __name: "page-container",
   props: {
     show: { type: Boolean, default: false },
     duration: { default: 300, type: Number },
@@ -10045,135 +9968,198 @@ const _sfc_main$3 = /* @__PURE__ */ Vue.defineVaporComponent({
   __multiRoot: true,
   setup(__props, { emit: __emit }) {
     const props2 = __props;
-    const emits = __emit;
+    const emits2 = __emit;
     const showPageContainer = Vue.ref(false);
     const isAnimating = Vue.ref(false);
     const transitionTimer = Vue.ref(null);
     const isEntered = Vue.ref(false);
+    const transitionType = Vue.ref(null);
+    let transitionVersion = 0;
     let touchStartX = 0;
     let touchStartY = 0;
     let touchStartTime = 0;
     let isDragging = false;
     const translateValue = Vue.ref(0);
+    const isSlideClosing = Vue.ref(false);
+    const isSlideLeaving = Vue.ref(false);
     const overlayStyleMap = Vue.computed(() => {
-      const styleObj = {
+      const styleMap = {
         "z-index": props2.zIndex,
         "transition-duration": props2.duration + "ms"
       };
       if (isEntered.value) {
-        styleObj["opacity"] = "1";
-        styleObj["pointer-events"] = "auto";
+        styleMap["opacity"] = "1";
+        styleMap["pointer-events"] = "auto";
       }
-      return styleObj;
+      return styleMap;
     });
     const innerStyleMap = Vue.computed(() => {
-      const styleObj = {
+      const styleMap = {
         "z-index": props2.zIndex + 1,
         "transition-duration": props2.duration + "ms"
       };
-      if (translateValue.value != 0 && isDragging) {
+      if (translateValue.value != 0 && (isDragging || isSlideClosing.value)) {
         let transformValue = "";
-        switch (props2.position) {
-          case "bottom":
-          case "top":
-            transformValue = `translateY(${translateValue.value}px)`;
-            break;
-          case "left":
-          case "right":
-            transformValue = `translateX(${translateValue.value}px)`;
-            break;
+        if (isSlideLeaving.value) {
+          switch (props2.position) {
+            case "bottom":
+              transformValue = "translateY(100%)";
+              break;
+            case "top":
+              transformValue = "translateY(-100%)";
+              break;
+            case "left":
+              transformValue = "translateX(-100%)";
+              break;
+            case "right":
+              transformValue = "translateX(100%)";
+              break;
+          }
+        } else {
+          switch (props2.position) {
+            case "bottom":
+            case "top":
+              transformValue = `translateY(${translateValue.value}px)`;
+              break;
+            case "left":
+            case "right":
+              transformValue = `translateX(${translateValue.value}px)`;
+              break;
+          }
         }
         if (transformValue != "") {
-          styleObj["transform"] = transformValue;
-          styleObj["transition"] = "none";
+          styleMap["transform"] = transformValue;
+          styleMap["transition"] = isDragging ? "none" : `transform ${props2.duration}ms ease`;
         }
       } else if (translateValue.value != 0 && !isDragging) {
-        styleObj["transition"] = `transform ${props2.duration}ms ease`;
+        styleMap["transition"] = `transform ${props2.duration}ms ease`;
       }
-      return styleObj;
+      return styleMap;
     });
     const popupClasses = Vue.computed(() => {
-      const classes = [];
+      const classes2 = [];
       if (props2.position != null) {
-        classes.push(`uni-page-container-popup-${props2.position}`);
+        classes2.push(`uni-page-container-popup-${props2.position}`);
       }
       if (props2.round) {
-        classes.push("uni-page-container-popup-round");
+        classes2.push("uni-page-container-popup-round");
       }
       if (isEntered.value) {
-        classes.push("uni-page-container-popup-enter");
+        classes2.push("uni-page-container-popup-enter");
       }
-      return classes;
+      return classes2;
     });
+    function resetDragState() {
+      isDragging = false;
+      isSlideClosing.value = false;
+      isSlideLeaving.value = false;
+      translateValue.value = 0;
+    }
     function clearTransitionTimer() {
       if (transitionTimer.value != null) {
         clearTimeout(transitionTimer.value);
         transitionTimer.value = null;
       }
     }
-    function onAnimationEnd(type) {
+    function cancelTransition() {
+      transitionVersion++;
+      clearTransitionTimer();
+      isAnimating.value = false;
+      transitionType.value = null;
+    }
+    function onAnimationEnd(type, version) {
+      if (version != transitionVersion || transitionType.value != type) {
+        return;
+      }
       isAnimating.value = false;
       clearTransitionTimer();
+      transitionType.value = null;
       if (type == "enter") {
-        emits("afterenter");
+        emits2("afterenter");
       } else if (type == "leave") {
         showPageContainer.value = false;
-        emits("afterleave");
+        isEntered.value = false;
+        resetDragState();
+        emits2("afterleave");
       }
     }
-    function listenTransitionEnd(type) {
+    function listenTransitionEnd(type, version) {
       clearTransitionTimer();
       transitionTimer.value = setTimeout(() => {
-        onAnimationEnd(type);
+        onAnimationEnd(type, version);
       }, props2.duration);
     }
-    function resetDragState() {
-      isDragging = false;
-      translateValue.value = 0;
+    function closeContainer() {
+      if (!showPageContainer.value || transitionType.value == "leave") {
+        return;
+      }
+      if (transitionType.value == "enter") {
+        cancelTransition();
+      }
+      emits2("beforeleave");
+      isAnimating.value = true;
+      transitionType.value = "leave";
+      transitionVersion++;
+      const version = transitionVersion;
+      Vue.nextTick(() => {
+        if (version != transitionVersion || transitionType.value != "leave") {
+          return;
+        }
+        isEntered.value = false;
+        emits2("leave");
+        listenTransitionEnd("leave", version);
+      });
     }
     function openContainer() {
-      emits("beforeenter");
+      if (transitionType.value == "enter" && showPageContainer.value) {
+        return;
+      }
+      if (transitionType.value == "leave") {
+        cancelTransition();
+      }
+      emits2("beforeenter");
       showPageContainer.value = true;
       isEntered.value = false;
+      isAnimating.value = true;
+      transitionType.value = "enter";
+      transitionVersion++;
+      const version = transitionVersion;
       resetDragState();
       Vue.nextTick(() => {
-        emits("enter");
-        isAnimating.value = true;
+        if (version != transitionVersion || transitionType.value != "enter") {
+          return;
+        }
+        emits2("enter");
         requestAnimationFrame(() => {
+          if (version != transitionVersion || transitionType.value != "enter") {
+            return;
+          }
           requestAnimationFrame(() => {
+            if (version != transitionVersion || transitionType.value != "enter") {
+              return;
+            }
+            if (!props2.show) {
+              closeContainer();
+              return;
+            }
             isEntered.value = true;
-            listenTransitionEnd("enter");
+            listenTransitionEnd("enter", version);
           });
         });
       });
     }
-    function closeContainer() {
-      if (isAnimating.value) {
-        return;
+    Vue.watch(() => props2.show, (newVal) => {
+      if (newVal && (!showPageContainer.value || transitionType.value == "leave")) {
+        openContainer();
+      } else if (!newVal && showPageContainer.value && transitionType.value != "leave") {
+        closeContainer();
       }
-      emits("beforeleave");
-      isAnimating.value = true;
-      Vue.nextTick(() => {
-        isEntered.value = false;
-        emits("leave");
-        listenTransitionEnd("leave");
-      });
-    }
-    Vue.watch(
-      () => props2.show,
-      (newVal) => {
-        if (newVal && !showPageContainer.value) {
-          openContainer();
-        } else if (!newVal && showPageContainer.value) {
-          closeContainer();
-        }
-      }
-    );
+    });
     function onClickOverlay(event) {
       if (isAnimating.value) {
         return;
       }
-      emits("clickoverlay", event);
+      emits2("clickoverlay", event);
       Vue.nextTick(() => {
         closeContainer();
       });
@@ -10243,7 +10229,8 @@ const _sfc_main$3 = /* @__PURE__ */ Vue.defineVaporComponent({
       if (isDragging) {
         const deltaTime = Date.now() - touchStartTime;
         const velocity = Math.abs(translateValue.value) / deltaTime;
-        if (Math.abs(translateValue.value) > MAX_SLIDER_DISTANCE || velocity > MIN_SLIDER_VELOCITY) {
+        const shouldClose = Math.abs(translateValue.value) > MAX_SLIDER_DISTANCE || velocity > MIN_SLIDER_VELOCITY;
+        if (shouldClose) {
           resetDragState();
           closeContainer();
         } else {
@@ -10259,26 +10246,19 @@ const _sfc_main$3 = /* @__PURE__ */ Vue.defineVaporComponent({
         resetDragState();
       }
     }
-    onBackPress(() => {
-      if (showPageContainer.value) {
-        closeContainer();
-        return true;
-      }
-      return false;
-    });
-    const n0 = Vue.createIf(() => __props.overlay && showPageContainer.value, () => {
-      const n2 = t0$3();
+    const n0 = Vue.createIf(() => __props.overlay && Vue.unref(showPageContainer), () => {
+      const n2 = t0$d();
       Vue.on(n2, "click", onClickOverlay);
       Vue.on(n2, "touchmove", Vue.withModifiers(() => {
       }, ["prevent", "stop"]));
-      Vue.renderEffect(() => Vue.setStyle(n2, [overlayStyleMap.value, __props.overlayStyle]));
+      Vue.renderEffect(() => Vue.setStyle(n2, [Vue.unref(overlayStyleMap), __props.overlayStyle]));
       return n2;
     });
-    const n3 = Vue.createIf(() => showPageContainer.value, () => {
-      const n6 = t1$2();
+    const n3 = Vue.createIf(() => Vue.unref(showPageContainer), () => {
+      const n6 = t1$6();
       Vue.renderEffect(() => {
-        Vue.setClass(n6, ["uni-page-container-popup", popupClasses.value]);
-        Vue.setStyle(n6, [innerStyleMap.value, __props.customStyle]);
+        Vue.setClass(n6, ["uni-page-container-popup", Vue.unref(popupClasses)]);
+        Vue.setStyle(n6, [Vue.unref(innerStyleMap), __props.customStyle]);
       });
       Vue.setInsertionState(n6);
       Vue.createSlot();
@@ -10291,348 +10271,2504 @@ const _sfc_main$3 = /* @__PURE__ */ Vue.defineVaporComponent({
     return [n0, n3];
   }
 });
-class UniVueElement extends Object {
-}
-class UniLoadingElement extends UniVueElement {
-}
-function useLoadingStyle(targetElement, bold) {
-  const loadingSize = Vue.ref("16px");
-  const loadingBorderWidth = Vue.ref("1px");
-  Vue.ref("8px");
-  return {
-    width: loadingSize,
-    height: loadingSize,
-    borderWidth: loadingBorderWidth
-    // borderRadius: loadingBorderRadius,
-  };
-}
-const t0$2 = Vue.template("<div uni-view>");
-const _sfc_main$2 = /* @__PURE__ */ Vue.defineVaporComponent({
+const _UniPickerElement = class _UniPickerElement extends UniViewElement {
+  constructor() {
+    super(...arguments);
+    this.tagName = "PICKER";
+    this.nodeName = "PICKER";
+    this._value = "";
+  }
+  get value() {
+    var _a;
+    return ((_a = this.vm) == null ? void 0 : _a.getPickerValue()) ?? this._value;
+  }
+  set value(val) {
+    var _a;
+    this._value = val;
+    (_a = this.vm) == null ? void 0 : _a.setPickerValue(val);
+  }
+};
+_UniPickerElement.__uniElement = { vm: true, init() {
+  Object.defineProperty(this, "_value", { value: "", writable: true, enumerable: true, configurable: true });
+} };
+let UniPickerElement = _UniPickerElement;
+const t0$c = Vue.template("<div uni-picker uni-view>", 1);
+const _uniPickerElement = { value: "PICKER" };
+const OPEN_LOCK_DURATION = 300;
+const _sfc_main$c = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
-    name: "loading",
-    styleIsolation: "app-and-page",
+    name: "picker",
     // @ts-ignore
     rootElement: {
-      name: "uni-loading-element",
-      class: UniLoadingElement
+      class: /* @__PURE__ */ Vue.initUniElementType(UniPickerElement, "picker")
     }
   },
-  __name: "index-x",
+  __name: "picker",
   props: {
-    paused: { type: Boolean, default: false },
-    bold: { type: Boolean, default: false },
-    iosSpinner: { type: Boolean, default: false }
+    disabled: { type: Boolean, default: false },
+    mode: { default: "selector", type: String },
+    selectorType: { default: "", type: String },
+    range: { default: [], type: Array },
+    rangeKey: { default: "", type: String },
+    value: { default: "", type: [Number, String, Array] },
+    start: { default: "", type: String },
+    end: { default: "", type: String },
+    fields: { default: "day", type: String },
+    name: { default: "", type: String }
   },
-  setup(__props) {
+  emits: ["change", "columnchange", "cancel"],
+  setup(__props, { expose: __expose, emit: __emit }) {
+    var _a;
+    const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`;
+    const baseEventName = `uni_picker_${uuid}`;
+    const readyEventName = `${baseEventName}_ready`;
+    const optionsEventName = `${baseEventName}_options`;
+    const selectorChangeEventName = `${baseEventName}_selector_change`;
+    const cancelEventName = `${baseEventName}_cancel_change`;
+    const multiSelectorChangeEventName = `${baseEventName}_multiSelector_change`;
+    const timeChangeEventName = `${baseEventName}_time_change`;
+    const columnChangeEventName = `${baseEventName}_column_change`;
     const props2 = __props;
-    const LoadingRef = Vue.ref(null);
-    const loadingStyle = Vue.reactive(useLoadingStyle(LoadingRef, Vue.computed(() => props2.bold)));
-    const n1 = Vue.createPlainElement("uni-loading-element", {
-      class: "default __uni_loading_container__",
-      style: "display: flex;"
-    }, null, true);
-    const n0 = t0$2();
-    Vue.insert(n0, n1);
-    Vue.setStaticTemplateRef(n1, LoadingRef, null, "LoadingRef");
-    Vue.renderEffect(() => {
-      Vue.setClassName(n0, props2.paused ? 1 : 0, " __uni-loading__paused", "__uni-loading__ __loading-4-3__");
-      Vue.setStyle(n0, loadingStyle);
+    Vue.inject(FORM_KEY, null);
+    Vue.inject(LABEL_KEY, null);
+    const attrs2 = Vue.useAttrs();
+    attrs2.id;
+    (_a = Vue.getCurrentInstance()) == null ? void 0 : _a.proxy;
+    const innerValue = Vue.ref(props2.value);
+    Vue.ref("");
+    const isOpening = Vue.ref(false);
+    Vue.watch(() => props2.value, (value) => {
+      innerValue.value = value;
+      if (props2.mode == "multiSelector") {
+        uni.$emit(optionsEventName, {
+          range: props2.range,
+          rangeKey: props2.rangeKey,
+          multiSelectorValue: value ?? []
+        });
+      }
+    }, { deep: true });
+    function handleClick() {
+      if (props2.disabled) {
+        return;
+      }
+      if (isOpening.value) {
+        return;
+      }
+      isOpening.value = true;
+      uni.openDialogPage({
+        url: `uni:picker?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&cancelEventName=${cancelEventName}&selectorChangeEventName=${selectorChangeEventName}&multiSelectorChangeEventName=${multiSelectorChangeEventName}&timeChangeEventName=${timeChangeEventName}&columnChangeEventName=${columnChangeEventName}`,
+        success() {
+          setTimeout(() => {
+            isOpening.value = false;
+          }, OPEN_LOCK_DURATION);
+        },
+        fail() {
+          isOpening.value = false;
+          uni.$off(readyEventName);
+          uni.$off(optionsEventName);
+        }
+      });
+    }
+    __expose({
+      getPickerValue: () => {
+        return innerValue.value;
+      },
+      setPickerValue: (value) => {
+        innerValue.value = value;
+      }
     });
-    return n1;
+    const n0 = t0$c();
+    Vue.initUniElement(n0, _uniPickerElement);
+    Vue.setInsertionState(n0);
+    Vue.createSlot();
+    Vue.on(n0, "click", handleClick);
+    return n0;
   }
 });
-function useSubscribe(callback, name, multiple, pageId) {
-  const instance = Vue.getCurrentInstance();
-  instance.proxy;
-  pageId = pageId == null ? useCurrentPageId() : pageId;
-}
-let index$c = 0;
-function useContextInfo(_id) {
-  useCurrentPageId();
-  const instance = Vue.getCurrentInstance();
-  const vm = instance.proxy;
-  const type = vm.$options.name.toLowerCase();
-  const id2 = vm.id || `context${index$c++}`;
-  return `${type}.${id2}`;
-}
-function injectLifecycleHook(name, hook, publicThis, instance) {
-  if (shared.isFunction(hook)) {
-    Vue.injectHook(name, hook.bind(publicThis), instance);
-  }
-}
-function initHooks(options, instance, publicThis) {
-  const mpType = options.mpType || publicThis.$mpType;
-  if (!mpType || mpType === "component" || // instance.renderer 标识页面是否作为组件渲染
-  mpType === "page" && instance.renderer === "component") {
-    return;
-  }
-  Object.keys(options).forEach((name) => {
-    if (uniShared.isUniLifecycleHook(name, options[name], false)) {
-      const hooks = options[name];
-      if (shared.isArray(hooks)) {
-        hooks.forEach(
-          (hook) => injectLifecycleHook(name, hook, publicThis, instance)
-        );
-      } else {
-        injectLifecycleHook(name, hooks, publicThis, instance);
+const _UniPickerViewElement = class _UniPickerViewElement extends UniViewElement {
+};
+_UniPickerViewElement.__uniElement = {};
+let UniPickerViewElement = _UniPickerViewElement;
+const t0$b = Vue.template("<div uni-picker-view uni-view class=uni-picker-view>", 1);
+const _uniPickerViewElement = { value: "PICKER-VIEW" };
+const _sfc_main$b = /* @__PURE__ */ Vue.defineVaporComponent({
+  ...{
+    name: "picker-view",
+    // @ts-ignore
+    rootElement: {
+      class: /* @__PURE__ */ Vue.initUniElementType(UniPickerViewElement, "picker-view")
+    },
+    externalClasses: ["mask-class", "indicator-class"]
+  },
+  __name: "picker-view",
+  props: {
+    indicatorStyle: { default: "", type: String },
+    indicatorClass: { default: "", type: null },
+    maskClass: { default: "", type: null },
+    maskTopStyle: { default: "", type: String },
+    maskBottomStyle: { default: "", type: String },
+    name: { default: "", type: String },
+    value: { default: () => [], type: Array }
+  },
+  emits: ["change"],
+  setup(__props, { emit: __emit }) {
+    const props2 = __props;
+    class UniCustomEvent3 {
+      constructor(type, detail) {
+        this.detail = detail;
       }
     }
-  });
-  if (mpType === "page") {
-    instance.__isVisible = true;
-    try {
-      let query;
-      query = instance.__pageQuery;
-      const scriptLang = instance.type.__scriptLang;
-      const isUTS = !scriptLang || scriptLang === "uts";
-      if (true) {
-        query = isUTS ? new uniShared.UTSJSONObject(uniShared.decodedQuery(query)) : uniShared.decodedQuery(query);
+    class UniPickerViewChangeEvent extends UniCustomEvent3 {
+      constructor(value) {
+        super("change", { value });
       }
-      if (false)
-        ;
-      invokeHook(publicThis, uniShared.ON_LOAD, query);
-      if (!instance.vapor) {
-        delete instance.attrs.__pageQuery;
+    }
+    const emit2 = __emit;
+    function parseIndicatorHeight(styleStr) {
+      const re = /height\s*:\s*(\d+)px/i;
+      const m = re.exec(styleStr);
+      if (m && m.length > 1) {
+        const n = parseInt(m[1]);
+        if (!isNaN(n) && n > 0)
+          return n;
       }
-      const $basePage = true ? publicThis.$basePage : publicThis.$page;
-      if (true) {
-        if (($basePage == null ? void 0 : $basePage.openType) !== "preloadPage") {
-          if (isDialogPageInstance(getPageInstanceByChild(instance))) {
-            invokeNewDialogPageHook(publicThis.$page, uniShared.ON_SHOW);
+      return 50;
+    }
+    const itemHeight = Vue.computed(() => parseIndicatorHeight(props2.indicatorStyle));
+    const pickViewRef = Vue.ref(null);
+    const offsetHeight = Vue.ref(100);
+    const containerPaddingPx = Vue.computed(() => (offsetHeight.value - itemHeight.value) / 2 + "px");
+    const maskTopInlineStyle = Vue.computed(() => props2.maskTopStyle ? props2.maskTopStyle : {});
+    const maskBottomInlineStyle = Vue.computed(() => props2.maskBottomStyle ? props2.maskBottomStyle : {});
+    const indicatorInlineStyle = Vue.computed(() => props2.indicatorStyle ? props2.indicatorStyle : {});
+    const innerValue = Vue.ref([]);
+    const columns = [];
+    function normalizeValue2(value) {
+      return columns.map((_, i) => value[i] ?? 0);
+    }
+    function syncFromProp(indexes) {
+      innerValue.value = indexes;
+      setTimeout(() => {
+        for (let i = 0; i < columns.length; i++) {
+          const api2 = columns[i];
+          const index2 = indexes[i];
+          api2.setScrollTop(index2);
+        }
+      }, 30);
+    }
+    Vue.watch(() => props2.value, (newValue) => {
+      syncFromProp(normalizeValue2(newValue));
+    }, { deep: true });
+    function registerColumn(api2) {
+      columns.push(api2);
+      const idx = columns.length - 1;
+      return idx;
+    }
+    function unregisterColumn(api2) {
+      const i = columns.indexOf(api2);
+      if (i >= 0) {
+        columns.splice(i, 1);
+      }
+    }
+    function onColumnIndexChange(col, index2) {
+      const curr = innerValue.value.slice();
+      if (curr[col] !== index2) {
+        curr[col] = index2;
+        innerValue.value = curr;
+        emit2("change", new UniPickerViewChangeEvent(curr));
+      }
+    }
+    Vue.provide(PICKER_VIEW_KEY, {
+      itemHeight: () => itemHeight.value,
+      containerPaddingPx: () => containerPaddingPx.value,
+      maskClass: () => props2.maskClass,
+      indicatorClass: () => props2.indicatorClass,
+      maskTopStyle: () => maskTopInlineStyle.value,
+      maskBottomStyle: () => maskBottomInlineStyle.value,
+      indicatorStyle: () => indicatorInlineStyle.value,
+      registerColumn,
+      unregisterColumn,
+      onColumnIndexChange
+    });
+    Vue.inject(FORM_KEY, null);
+    const n0 = t0$b();
+    Vue.initUniElement(n0, _uniPickerViewElement);
+    Vue.setInsertionState(n0);
+    Vue.createSlot();
+    Vue.setStaticTemplateRef(n0, pickViewRef, null, "pickViewRef");
+    return n0;
+  }
+});
+const _UniPickerViewColumnElement = class _UniPickerViewColumnElement extends UniViewElement {
+};
+_UniPickerViewColumnElement.__uniElement = {};
+let UniPickerViewColumnElement = _UniPickerViewColumnElement;
+const t0$a = Vue.template("<div uni-view>");
+const t1$5 = Vue.template("<div uni-picker-view-column uni-view class=picker-view-column tabindex=0><!><div uni-view></div><div uni-view></div><div uni-view>", 1);
+const _uniPickerViewColumnElement = { value: "PICKER-VIEW-COLUMN" };
+const EPSILON = 1;
+const _sfc_main$a = /* @__PURE__ */ Vue.defineVaporComponent({
+  ...{
+    name: "picker-view-column",
+    // @ts-ignore
+    rootElement: {
+      class: /* @__PURE__ */ Vue.initUniElementType(UniPickerViewColumnElement, "picker-view-column")
+    }
+  },
+  __name: "picker-view-column",
+  setup(__props) {
+    const ctx = Vue.inject(PICKER_VIEW_KEY);
+    const itemHeight = Vue.computed(() => ctx ? ctx.itemHeight() : 50);
+    const containerPaddingPx = Vue.computed(() => ctx ? ctx.containerPaddingPx() : "50%");
+    const maskClass = Vue.computed(() => ctx ? ctx.maskClass() : "");
+    const indicatorClass = Vue.computed(() => ctx ? ctx.indicatorClass() : "");
+    const maskTopInlineStyle = Vue.computed(() => ctx ? ctx.maskTopStyle() : {});
+    const maskBottomInlineStyle = Vue.computed(() => ctx ? ctx.maskBottomStyle() : {});
+    const indicatorInlineStyle = Vue.computed(() => ctx ? ctx.indicatorStyle() : {});
+    const selectedIndex = Vue.ref(0);
+    const isScrolling = Vue.ref(false);
+    const scrollViewRef = Vue.ref(null);
+    const rootRef = Vue.ref(null);
+    const contentRef = Vue.ref(null);
+    const scrollWithAnimation = Vue.ref(false);
+    let keyboardTargetIndex = null;
+    function clearKeyboardTarget() {
+      keyboardTargetIndex = null;
+    }
+    function handleKeydown(event) {
+      var _a;
+      if (event.target !== event.currentTarget || event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || event.key !== "ArrowUp" && event.key !== "ArrowDown") {
+        return;
+      }
+      event.preventDefault();
+      const itemCount = ((_a = contentRef.value) == null ? void 0 : _a.children.length) ?? 0;
+      if (itemCount === 0 || scrollViewRef.value == null) {
+        return;
+      }
+      const step = event.key === "ArrowUp" ? -1 : 1;
+      const targetIndex = Math.max(0, Math.min(itemCount - 1, selectedIndex.value + step));
+      if (targetIndex === selectedIndex.value) {
+        return;
+      }
+      keyboardTargetIndex = targetIndex;
+      setScrollTop(targetIndex);
+      ctx == null ? void 0 : ctx.onColumnIndexChange(columnIndex, targetIndex);
+    }
+    let isAdjusting = false;
+    let columnIndex = -1;
+    function setScrollTop(idx) {
+      var _a;
+      if (idx < 0) {
+        idx = 0;
+      }
+      if (keyboardTargetIndex != null && keyboardTargetIndex !== idx) {
+        clearKeyboardTarget();
+      }
+      selectedIndex.value = idx;
+      const scrollTop = Math.max(0, idx * itemHeight.value);
+      (_a = scrollViewRef.value) == null ? void 0 : _a.scrollTo(0, scrollTop);
+    }
+    function onScroll() {
+      if (!isScrolling.value) {
+        isScrolling.value = true;
+      }
+    }
+    function onScrollEnd(e2) {
+      var _a;
+      isScrolling.value = false;
+      if (isAdjusting) {
+        return;
+      }
+      const top = Math.max(e2.detail.scrollTop, 0);
+      if (keyboardTargetIndex != null) {
+        const itemCount = ((_a = contentRef.value) == null ? void 0 : _a.children.length) ?? 0;
+        if (keyboardTargetIndex < itemCount) {
+          if (Math.abs(top - keyboardTargetIndex * itemHeight.value) > EPSILON) {
+            setScrollTop(keyboardTargetIndex);
           } else {
-            invokeHook(publicThis, uniShared.ON_SHOW);
+            clearKeyboardTarget();
+          }
+          return;
+        }
+        clearKeyboardTarget();
+      }
+      const idx = Math.round(top / itemHeight.value);
+      const valueChanged = selectedIndex.value !== idx;
+      if (Math.abs(top - idx * itemHeight.value) > EPSILON) {
+        isAdjusting = true;
+        setScrollTop(idx);
+        setTimeout(() => {
+          isAdjusting = false;
+        }, 0);
+      } else {
+        selectedIndex.value = idx;
+      }
+      if (valueChanged) {
+        ctx == null ? void 0 : ctx.onColumnIndexChange(columnIndex, idx);
+      }
+    }
+    function handleClick(e2) {
+      var _a, _b;
+      if (!rootRef.value || !scrollViewRef.value || isScrolling.value) {
+        return;
+      }
+      const { top, height } = rootRef.value.getBoundingClientRect();
+      const y = e2.clientY - top;
+      let containerPadding = 0;
+      const paddingStr = containerPaddingPx.value;
+      if (paddingStr.includes("%")) {
+        containerPadding = parseFloat(paddingStr) / 100 * height;
+      } else {
+        containerPadding = parseFloat(paddingStr);
+      }
+      const currentScrollTop = scrollViewRef.value.scrollTop;
+      const actualY = y + currentScrollTop - containerPadding;
+      const targetIndex = Math.floor(actualY / itemHeight.value);
+      const itemCount = (_b = (_a = contentRef.value) == null ? void 0 : _a.children) == null ? void 0 : _b.length;
+      const isIndexValid = targetIndex >= 0 && (itemCount ? targetIndex < itemCount : true);
+      if (isIndexValid && targetIndex !== selectedIndex.value) {
+        setScrollTop(targetIndex);
+        ctx == null ? void 0 : ctx.onColumnIndexChange(columnIndex, targetIndex);
+      }
+    }
+    const n0 = t1$5();
+    const n7 = Vue.child(n0);
+    const n4 = Vue.next(n7);
+    const n5 = Vue.next(n4);
+    const n6 = Vue.next(n5);
+    Vue.initUniElement(n0, _uniPickerViewColumnElement);
+    Vue.setInsertionState(n0, n7);
+    const n3 = Vue.withComponentId("8e57cce2", () => Vue.createComponent(__syscom_0, {
+      class: "picker-view-scroll",
+      direction: "vertical",
+      "show-scrollbar": false,
+      "scroll-with-animation": () => Vue.unref(scrollWithAnimation),
+      onScrollend: () => onScrollEnd,
+      onScroll: () => onScroll
+    }, () => {
+      const n2 = t0$a();
+      Vue.renderEffect(() => {
+        const _containerPaddingPx = Vue.unref(containerPaddingPx);
+        Vue.setStyle(n2, { "padding-top": _containerPaddingPx, "padding-bottom": _containerPaddingPx });
+      });
+      Vue.setInsertionState(n2);
+      Vue.createSlot();
+      Vue.setStaticTemplateRef(n2, contentRef, null, "contentRef");
+      return n2;
+    }));
+    Vue.setStaticTemplateRef(n3, scrollViewRef, null, "scrollViewRef");
+    Vue.on(n0, "keydown", handleKeydown);
+    Vue.on(n0, "mousedown", clearKeyboardTarget);
+    Vue.on(n0, "touchstart", clearKeyboardTarget);
+    Vue.on(n0, "wheel", clearKeyboardTarget);
+    Vue.on(n0, "click", handleClick);
+    Vue.setStaticTemplateRef(n0, rootRef, null, "rootRef");
+    Vue.renderEffect(() => {
+      const _maskClass = Vue.unref(maskClass);
+      Vue.setClass(n4, ["uni-picker-view-mask uni-picker-view-mask-top", _maskClass]);
+      Vue.setStyle(n4, Vue.unref(maskTopInlineStyle));
+      Vue.setClass(n5, ["uni-picker-view-indicator", Vue.unref(indicatorClass)]);
+      Vue.setStyle(n5, Vue.unref(indicatorInlineStyle));
+      Vue.setClass(n6, ["uni-picker-view-mask uni-picker-view-mask-bottom", _maskClass]);
+      Vue.setStyle(n6, Vue.unref(maskBottomInlineStyle));
+    });
+    return n0;
+  }
+});
+const _UniProgressElement = class _UniProgressElement extends UniViewElement {
+};
+_UniProgressElement.__uniElement = {};
+let UniProgressElement = _UniProgressElement;
+const t0$9 = Vue.template("<span uni-text class=uni-progress-value> ");
+const t1$4 = Vue.template("<div uni-progress uni-view class=uni-progress><div uni-view class=uni-progress-background><div uni-view class=uni-progress-fill></div></div>", 1);
+const _uniProgressElement = { value: "PROGRESS" };
+const _sfc_main$9 = /* @__PURE__ */ Vue.defineVaporComponent({
+  ...{
+    name: "progress",
+    // @ts-ignore
+    rootElement: {
+      class: /* @__PURE__ */ Vue.initUniElementType(UniProgressElement, "progress")
+    }
+  },
+  __name: "progress",
+  props: {
+    duration: { default: 30, type: Number },
+    percent: { default: 0, type: Number },
+    active: { type: Boolean, default: false },
+    activeMode: { default: "backwards", type: String },
+    backgroundColor: { default: "#ebebeb", type: String },
+    strokeWidth: { default: 3, type: Number },
+    activeColor: { default: "#007aff", type: String },
+    showInfo: { type: Boolean, default: false },
+    borderRadius: { default: 0, type: Number },
+    fontSize: { default: 12, type: Number }
+  },
+  emits: ["activeend"],
+  setup(__props, { emit: __emit }) {
+    const props2 = __props;
+    class UniCustomEvent3 {
+      constructor(type, detail) {
+        this.detail = detail;
+      }
+    }
+    class UniProgressActiveendEvent extends UniCustomEvent3 {
+      constructor(type, curPercent) {
+        super(type, { curPercent });
+      }
+    }
+    const emit2 = __emit;
+    const fillRef = Vue.ref(null);
+    let _timerId = 0;
+    let _rafId = 0;
+    let _lastPercent = 0;
+    let _startPercent = 0;
+    let _targetPercent = 0;
+    let _startTime = 0;
+    const percentText = Vue.ref("0%");
+    const backgroundStyle = Vue.computed(() => {
+      return {
+        "background-color": props2.backgroundColor,
+        "height": props2.strokeWidth + "px",
+        "border-radius": props2.borderRadius + "px"
+      };
+    });
+    const foregroundStyle = Vue.computed(() => {
+      return {
+        "background-color": props2.activeColor
+      };
+    });
+    const fontStyle = Vue.computed(() => {
+      return {
+        "font-size": props2.fontSize + "px"
+      };
+    });
+    Vue.watch(() => props2.percent, () => {
+      _animate();
+    });
+    function renderVisuals(percent) {
+      percentText.value = Math.round(percent) + "%";
+      let scale = percent / 100;
+      if (scale > 0 && scale < 1e-3) {
+        scale = 1e-3;
+      }
+      const fillEl = fillRef.value;
+      if (fillEl != null) {
+        fillEl.style.setProperty("transform", `scaleX(${scale})`);
+      }
+    }
+    function _animate() {
+      const final_percent = Math.max(0, Math.min(100, props2.percent));
+      if (!props2.active) {
+        renderVisuals(final_percent);
+        return;
+      }
+      clearTimer();
+      _startPercent = props2.activeMode == "forwards" ? _lastPercent : 0;
+      _targetPercent = final_percent;
+      _startTime = Date.now();
+      renderVisuals(_startPercent);
+      function animateFrame() {
+        const currentTime = Date.now();
+        const elapsed = currentTime - _startTime;
+        const totalDuration = props2.duration * Math.abs(_targetPercent - _startPercent);
+        if (elapsed >= totalDuration) {
+          renderVisuals(_targetPercent);
+          emit2("activeend", new UniProgressActiveendEvent("activeend", _targetPercent));
+          _lastPercent = _targetPercent;
+          _rafId = 0;
+        } else {
+          const progress = elapsed / totalDuration;
+          const currentPercent = _startPercent + (_targetPercent - _startPercent) * progress;
+          renderVisuals(currentPercent);
+          _rafId = requestAnimationFrame(animateFrame);
+        }
+      }
+      _rafId = requestAnimationFrame(animateFrame);
+    }
+    function clearTimer() {
+      clearInterval(_timerId);
+      if (_rafId != 0) {
+        cancelAnimationFrame(_rafId);
+        _rafId = 0;
+      }
+    }
+    const n0 = t1$4();
+    const n2 = Vue.child(n0);
+    const n1 = Vue.child(n2);
+    Vue.initUniElement(n0, _uniProgressElement);
+    Vue.setStaticTemplateRef(n1, fillRef, null, "fillRef");
+    Vue.renderEffect(() => {
+      Vue.setStyle(n2, Vue.unref(backgroundStyle));
+      Vue.setStyle(n1, Vue.unref(foregroundStyle));
+    });
+    Vue.setInsertionState(n0, 1);
+    Vue.createIf(() => __props.showInfo, () => {
+      const n5 = t0$9();
+      const x5 = Vue.txt(n5);
+      Vue.renderEffect(() => {
+        Vue.setStyle(n5, Vue.unref(fontStyle));
+        Vue.setText(x5, Vue.normalizeUniText(Vue.toDisplayString(Vue.unref(percentText))));
+      });
+      return n5;
+    });
+    return n0;
+  }
+});
+const _UniRadioElement = class _UniRadioElement extends UniViewElement {
+  constructor() {
+    super(...arguments);
+    this.tagName = "RADIO";
+    this.nodeName = "RADIO";
+    this._checked = false;
+  }
+  get checked() {
+    var _a;
+    return ((_a = this.vm) == null ? void 0 : _a.getRadioChecked()) ?? this._checked;
+  }
+  set checked(val) {
+    var _a;
+    this._checked = val;
+    (_a = this.vm) == null ? void 0 : _a.setRadioChecked(val);
+  }
+};
+_UniRadioElement.__uniElement = { vm: true, init() {
+  Object.defineProperty(this, "_checked", { value: false, writable: true, enumerable: true, configurable: true });
+} };
+let UniRadioElement = _UniRadioElement;
+const t0$8 = Vue.template('<svg class=uni-radio-svg viewBox="0 0 32 32"><path fill=currentColor>', 0, 1);
+const t1$3 = Vue.template("<div uni-radio uni-view role=radio>", 1);
+const t2 = Vue.template("<span uni-text>");
+const t3 = Vue.template("<div uni-radio uni-view class=uni-radio role=radio><div uni-view></div>", 1);
+const _uniRadioElement = { value: "RADIO" };
+const iconPath = "M1.952 18.080q-0.32-0.352-0.416-0.88t0.128-0.976l0.16-0.352q0.224-0.416 0.64-0.528t0.8 0.176l6.496 4.704q0.384 0.288 0.912 0.272t0.88-0.336l17.312-14.272q0.352-0.288 0.848-0.256t0.848 0.352l-0.416-0.416q0.32 0.352 0.32 0.816t-0.32 0.816l-18.656 18.912q-0.32 0.352-0.8 0.352t-0.8-0.32l-7.936-8.064z";
+const _sfc_main$8 = /* @__PURE__ */ Vue.defineVaporComponent({
+  ...{
+    name: "radio",
+    // @ts-ignore
+    rootElement: {
+      class: /* @__PURE__ */ Vue.initUniElementType(UniRadioElement, "radio")
+    },
+    externalClasses: ["icon-class", "radio-class", "radio-active-class"]
+  },
+  __name: "radio",
+  props: {
+    color: { default: "", type: String },
+    disabled: { type: Boolean, default: false },
+    checked: { type: Boolean, default: false },
+    value: { default: "", type: String },
+    iconClass: { default: "", type: null },
+    radioClass: { default: "", type: null },
+    radioActiveClass: { default: "", type: null }
+  },
+  setup(__props, { expose: __expose }) {
+    var _a, _b;
+    const props2 = __props;
+    const { handleKeydown, handleKeyup, handleBlur } = createSpaceKeyHandlers(() => props2.disabled);
+    const attrs2 = Vue.useAttrs();
+    attrs2.id;
+    const slots = Vue.useSlots();
+    const isStringSlot = ((_a = slots["default"]) == null ? void 0 : _a["returnType"]) == "string";
+    const hasDefaultSlot = slots["default"] != null;
+    (_b = Vue.getCurrentInstance()) == null ? void 0 : _b.proxy;
+    const isChecked = Vue.ref(false);
+    const activeStyle = Vue.computed(() => {
+      if (isChecked.value && !props2.disabled && props2.color) {
+        return {
+          "background-color": props2.color,
+          "border-color": props2.color
+        };
+      }
+      return {};
+    });
+    const groupCtx = Vue.inject(RADIO_GROUP_KEY, null);
+    Vue.inject(LABEL_KEY, null);
+    const setChecked = (checked, syncGroup) => {
+      if (syncGroup && groupCtx != null) {
+        const value = toStringOrEmpty(props2.value);
+        if (checked) {
+          groupCtx.setSelectedValue(value);
+        } else if (groupCtx.selectedValue.value == value) {
+          groupCtx.setSelectedValue(null);
+        }
+        return;
+      }
+      isChecked.value = checked;
+    };
+    if (groupCtx != null) {
+      Vue.watch(() => groupCtx.selectedValue.value, (val) => {
+        setChecked(val == toStringOrEmpty(props2.value), false);
+      }, { immediate: true });
+      Vue.watch(() => props2.checked, (value) => {
+        setChecked(value, true);
+      });
+    } else {
+      Vue.watch(() => props2.checked, (value) => {
+        setChecked(value, false);
+      }, { immediate: true });
+    }
+    const handleTap = () => {
+      if (props2.disabled || isChecked.value) {
+        return;
+      }
+      if (groupCtx != null) {
+        groupCtx.change(toStringOrEmpty(props2.value));
+      } else {
+        setChecked(true, false);
+      }
+    };
+    __expose({
+      getRadioChecked: () => {
+        return isChecked.value;
+      },
+      setRadioChecked: (checked) => {
+        setChecked(checked, true);
+      }
+    });
+    const n0 = Vue.createIf(
+      () => !hasDefaultSlot,
+      () => {
+        const n2 = t1$3();
+        Vue.initUniElement(n2, _uniRadioElement);
+        Vue.renderEffect(() => {
+          const _disabled = __props.disabled;
+          const _isChecked = Vue.unref(isChecked);
+          Vue.setClass(n2, ["uni-radio-view uni-radio-icon", Vue.unref(classes)(
+            [_disabled, "uni-radio-disabled"],
+            [!_disabled && _isChecked, "uni-radio-active"],
+            [!_disabled && _isChecked, __props.radioActiveClass],
+            [!_disabled && !_isChecked, __props.radioClass],
+            [!_disabled, __props.iconClass]
+          )]);
+          Vue.setStyle(n2, Vue.unref(activeStyle));
+          Vue.setProp(n2, "tabindex", _disabled ? -1 : 0);
+          Vue.setAttr(n2, "aria-checked", _isChecked);
+          Vue.setAttr(n2, "aria-disabled", _disabled);
+        });
+        Vue.setInsertionState(n2);
+        Vue.createIf(() => Vue.unref(isChecked), () => {
+          const n6 = t0$8();
+          const n5 = Vue.child(n6);
+          Vue.setAttr(n5, "d", iconPath, true);
+          return n6;
+        });
+        Vue.on(n2, "keydown", (e2) => Vue.unref(handleKeydown)(e2));
+        Vue.on(n2, "keyup", (e2) => Vue.unref(handleKeyup)(e2));
+        Vue.on(n2, "blur", (e2) => Vue.unref(handleBlur)(e2));
+        Vue.on(n2, "click", Vue.withModifiers(handleTap, ["stop"]));
+        return n2;
+      },
+      () => {
+        const n8 = t3();
+        const n13 = Vue.child(n8);
+        Vue.initUniElement(n8, _uniRadioElement);
+        Vue.renderEffect(() => {
+          const _disabled = __props.disabled;
+          const _isChecked = Vue.unref(isChecked);
+          Vue.setProp(n8, "tabindex", _disabled ? -1 : 0);
+          Vue.setAttr(n8, "aria-checked", _isChecked);
+          Vue.setAttr(n8, "aria-disabled", _disabled);
+          Vue.setClass(n13, ["uni-radio-view uni-radio-icon", Vue.unref(classes)(
+            [_disabled, "uni-radio-disabled"],
+            [!_disabled && _isChecked, "uni-radio-active"],
+            [!_disabled && _isChecked, __props.radioActiveClass],
+            [!_disabled && !_isChecked, __props.radioClass],
+            [!_disabled, __props.iconClass]
+          )]);
+          Vue.setStyle(n13, Vue.unref(activeStyle));
+        });
+        Vue.setInsertionState(n13);
+        Vue.createIf(() => Vue.unref(isChecked), () => {
+          const n12 = t0$8();
+          const n11 = Vue.child(n12);
+          Vue.setAttr(n11, "d", iconPath, true);
+          return n12;
+        });
+        Vue.setInsertionState(n8, 1);
+        Vue.createIf(
+          () => isStringSlot,
+          () => {
+            const n17 = t2();
+            Vue.setInsertionState(n17);
+            Vue.createSlot(
+              "default",
+              null,
+              null,
+              256
+              /* TEXT_MODE */
+            );
+            return n17;
+          },
+          () => {
+            const n19 = Vue.createSlot();
+            return n19;
+          },
+          1029
+          /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_3 */
+        );
+        Vue.on(n8, "keydown", (e2) => Vue.unref(handleKeydown)(e2));
+        Vue.on(n8, "keyup", (e2) => Vue.unref(handleKeyup)(e2));
+        Vue.on(n8, "blur", (e2) => Vue.unref(handleBlur)(e2));
+        Vue.on(n8, "click", Vue.withModifiers(handleTap, ["stop"]));
+        return n8;
+      },
+      517
+      /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_1 */
+    );
+    return n0;
+  }
+});
+const _UniRadioGroupElement = class _UniRadioGroupElement extends UniViewElement {
+};
+_UniRadioGroupElement.__uniElement = {};
+let UniRadioGroupElement = _UniRadioGroupElement;
+const t0$7 = Vue.template("<div uni-radio-group uni-view role=radiogroup>", 1);
+const _uniRadioGroupElement = { value: "RADIO-GROUP" };
+const _sfc_main$7 = /* @__PURE__ */ Vue.defineVaporComponent({
+  ...{
+    name: "radio-group",
+    // @ts-ignore
+    rootElement: {
+      class: /* @__PURE__ */ Vue.initUniElementType(UniRadioGroupElement, "radio-group")
+    }
+  },
+  __name: "radio-group",
+  props: {
+    name: { default: "", type: String }
+  },
+  emits: ["change"],
+  setup(__props, { emit: __emit }) {
+    class UniCustomEvent3 {
+      constructor(type, detail) {
+        this.detail = detail;
+      }
+    }
+    class UniRadioGroupChangeEvent extends UniCustomEvent3 {
+      constructor(value) {
+        super("change", { value });
+      }
+    }
+    const emit2 = __emit;
+    const selectedValue = Vue.ref(null);
+    Vue.ref(null);
+    function setSelectedValue(val) {
+      if (selectedValue.value == val) {
+        return;
+      }
+      selectedValue.value = val;
+    }
+    function change(val) {
+      setSelectedValue(val);
+      emit2("change", new UniRadioGroupChangeEvent(val));
+    }
+    function handleKeydown(event) {
+      const direction = event.key === "ArrowUp" || event.key === "ArrowLeft" ? -1 : event.key === "ArrowDown" || event.key === "ArrowRight" ? 1 : 0;
+      if (direction === 0 || event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) {
+        return;
+      }
+      const target = event.target;
+      const group = event.currentTarget;
+      if (!(target instanceof Object) || !(group instanceof Object) || !target.matches('[role="radio"]') || target.closest('[role="radiogroup"]') !== group) {
+        return;
+      }
+      const radios = Array.from(group.querySelectorAll('[role="radio"]')).filter(
+        (radio) => radio.getAttribute("aria-disabled") !== "true" && radio.closest('[role="radiogroup"]') === group
+      );
+      const index2 = radios.indexOf(target);
+      if (index2 < 0) {
+        return;
+      }
+      event.preventDefault();
+      const next = radios[(index2 + direction + radios.length) % radios.length];
+      if (next !== target) {
+        next.focus();
+        next.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+      }
+    }
+    const ctx = {
+      selectedValue,
+      change,
+      setSelectedValue
+    };
+    Vue.provide(RADIO_GROUP_KEY, ctx);
+    Vue.inject(FORM_KEY, null);
+    const n0 = t0$7();
+    Vue.initUniElement(n0, _uniRadioGroupElement);
+    Vue.setInsertionState(n0);
+    Vue.createSlot();
+    Vue.on(n0, "keydown", handleKeydown);
+    return n0;
+  }
+});
+let UniCustomEvent$1 = class UniCustomEvent {
+  constructor(type, detail) {
+    this.detail = detail;
+  }
+};
+class UniSliderChangeEvent extends UniCustomEvent$1 {
+  constructor(value) {
+    super("change", { value });
+  }
+}
+const _UniSliderElement = class _UniSliderElement extends UniViewElement {
+  constructor() {
+    super(...arguments);
+    this.tagName = "SLIDER";
+    this.nodeName = "SLIDER";
+  }
+  get value() {
+    var _a;
+    return (_a = this.vm) == null ? void 0 : _a.getCurrentValue();
+  }
+  set value(val) {
+    var _a;
+    if (this.value === val) {
+      return;
+    }
+    (_a = this.vm) == null ? void 0 : _a.renderVisuals(val);
+  }
+};
+_UniSliderElement.__uniElement = { vm: true };
+let UniSliderElement = _UniSliderElement;
+const t0$6 = Vue.template('<span uni-text style="width: 35px;color: #888;font-size: 14px;align-self: center;margin-left: 5px;white-space: nowrap;"> ');
+const t1$2 = Vue.template("<div uni-slider uni-view class=container><div uni-view class=slider-track><div uni-view><div uni-view></div></div><div uni-view><div uni-view role=slider aria-orientation=horizontal></div></div></div>", 1);
+const _uniSliderElement = { value: "SLIDER" };
+const TOUCH_THRESHOLD = 4;
+const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
+  ...{
+    name: "slider",
+    externalClasses: ["track-class", "track-active-class", "thumb-class"],
+    rootElement: {
+      name: "uni-slider-element",
+      class: /* @__PURE__ */ Vue.initUniElementType(UniSliderElement, "slider")
+    }
+  },
+  __name: "slider",
+  props: {
+    name: { default: "", type: String },
+    min: { default: 0, type: Number },
+    max: { default: 100, type: Number },
+    step: { default: 1, type: Number },
+    value: { default: 0, type: Number },
+    disabled: { type: Boolean, default: false },
+    showValue: { type: Boolean, default: false },
+    activeColor: { default: "", type: null },
+    activeBackgroundColor: { default: "", type: null },
+    backgroundColor: { default: "", type: null },
+    blockSize: { default: null, type: [Number, null] },
+    blockColor: { default: "", type: null },
+    foreColor: { default: "", type: null },
+    trackClass: { default: "", type: null },
+    trackActiveClass: { default: "", type: null },
+    thumbClass: { default: "", type: null }
+  },
+  emits: ["change", "changing"],
+  setup(__props, { expose: __expose, emit: __emit }) {
+    const emit2 = __emit;
+    const attrs2 = Vue.useAttrs();
+    attrs2.id ?? "";
+    const props2 = __props;
+    const containerRef = Vue.ref(null);
+    const backgroundRef = Vue.ref(null);
+    const fillRef = Vue.ref(null);
+    const handleRef = Vue.ref(null);
+    const thumbRef = Vue.ref(null);
+    function setColor(element, color) {
+      if (element == null)
+        return;
+      if (color.length > 0) {
+        element.style.setProperty("background-color", color);
+      } else {
+        element.style.removeProperty("background-color");
+      }
+    }
+    Vue.watchEffect(() => {
+      setColor(backgroundRef.value, props2.backgroundColor);
+      setColor(fillRef.value, props2.activeBackgroundColor.length > 0 ? props2.activeBackgroundColor : props2.activeColor);
+      setColor(thumbRef.value, props2.foreColor.length > 0 ? props2.foreColor : props2.blockColor);
+      const blockSize = props2.blockSize;
+      const thumbEl = thumbRef.value;
+      if (thumbEl != null) {
+        if (blockSize != null && !isNaN(blockSize)) {
+          const size = Math.min(Math.max(blockSize, 12), 28);
+          thumbEl.style.setProperty("width", size + "px");
+          thumbEl.style.setProperty("height", size + "px");
+          thumbEl.style.setProperty("border-radius", size / 2 + "px");
+        } else {
+          thumbEl.style.removeProperty("width");
+          thumbEl.style.removeProperty("height");
+          thumbEl.style.removeProperty("border-radius");
+        }
+      }
+    });
+    props2.value;
+    const currentValue = Vue.ref(props2.value);
+    const isDragging = Vue.ref(false);
+    let trackWidth = 0;
+    let trackLeft = 0;
+    let rafId = 0;
+    let ticking = false;
+    let cachedDecimalPlaces = -1;
+    let cachedStep = props2.step;
+    let lastValue = 0;
+    const thumbTranslateX = Vue.ref(0);
+    const trackActiveScaleX = Vue.ref(0);
+    const effectiveMax = Vue.computed(() => {
+      const min = Number.isFinite(props2.min) ? props2.min : 0;
+      const max = Number.isFinite(props2.max) ? props2.max : min;
+      const step = props2.step;
+      const range = max - min;
+      if (!Number.isFinite(step) || step <= 0 || range <= 0)
+        return min;
+      return min + Math.floor(range / step) * step;
+    });
+    let _activeStatus = 0;
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let activePointerId = -1;
+    let pointerTarget = null;
+    let pointerClientX = 0;
+    let pointerStartFocus = null;
+    function releasePointerCapture() {
+      const target = pointerTarget;
+      const pointerId = activePointerId;
+      activePointerId = -1;
+      pointerTarget = null;
+      pointerStartFocus = null;
+      if (target != null && target.hasPointerCapture(pointerId)) {
+        target.releasePointerCapture(pointerId);
+      }
+    }
+    function resetInteractionState() {
+      if (rafId != 0) {
+        cancelAnimationFrame(rafId);
+        rafId = 0;
+      }
+      ticking = false;
+      isDragging.value = false;
+      lastValue = currentValue.value;
+      releasePointerCapture();
+    }
+    function lerp(start, end, t12) {
+      const clampedT = Math.max(0, Math.min(1, t12));
+      return start * (1 - clampedT) + end * clampedT;
+    }
+    function getDecimalPlaces(num) {
+      if (num == 0)
+        return 0;
+      if (cachedStep !== num || cachedDecimalPlaces == -1) {
+        const str = num.toString();
+        const decimalIndex = str.indexOf(".");
+        if (decimalIndex == -1)
+          cachedDecimalPlaces = 0;
+        cachedDecimalPlaces = str.length - decimalIndex - 1;
+      }
+      return cachedDecimalPlaces;
+    }
+    function applyStepPrecision(value) {
+      let result = value;
+      if (props2.step > 0) {
+        result = Math.round(result / props2.step) * props2.step;
+        const decimalPlaces = getDecimalPlaces(props2.step);
+        if (decimalPlaces > 0) {
+          result = parseFloat(result.toFixed(decimalPlaces));
+        }
+      }
+      return result;
+    }
+    function applyVisualPosition(percentage, fillScale) {
+      thumbTranslateX.value = percentage * 100;
+      trackActiveScaleX.value = fillScale;
+    }
+    function renderVisuals(newValue) {
+      const min = Number.isFinite(props2.min) ? props2.min : 0;
+      const max = Number.isFinite(effectiveMax.value) ? effectiveMax.value : min;
+      const clampedValue = Number.isFinite(newValue) ? Math.max(min, Math.min(newValue, max)) : min;
+      currentValue.value = clampedValue;
+      const range = max - min;
+      const percentage = range > 0 ? (clampedValue - min) / range : 0;
+      const fillScale = percentage - 1e-3;
+      applyVisualPosition(percentage, fillScale);
+    }
+    function calculateValue(clientX) {
+      if (trackWidth <= 0) {
+        return currentValue.value;
+      }
+      const containerWidth = trackWidth;
+      const containerLeft = trackLeft;
+      const min = Number.isFinite(props2.min) ? props2.min : 0;
+      const max = Number.isFinite(props2.max) ? props2.max : min;
+      if (max <= min)
+        return min;
+      let currentX = clientX - containerLeft;
+      currentX = Math.max(0, Math.min(currentX, containerWidth));
+      const ratio = currentX / containerWidth;
+      let newValue = lerp(min, max, ratio);
+      newValue = applyStepPrecision(newValue);
+      newValue = Math.max(min, Math.min(newValue, effectiveMax.value));
+      return newValue;
+    }
+    function focusThumb() {
+      if (props2.disabled)
+        return;
+      const element = thumbRef.value;
+      if (element != null && element.ownerDocument.activeElement !== element)
+        element.focus({ preventScroll: true });
+    }
+    function handleThumbClick(e2) {
+      if (e2.detail == 0)
+        focusThumb();
+    }
+    function finishPointerInteraction(clientX) {
+      if (props2.disabled) {
+        resetInteractionState();
+        return;
+      }
+      if (_activeStatus != -1) {
+        const element = thumbRef.value;
+        if (element != null && element.ownerDocument.activeElement === pointerStartFocus)
+          focusThumb();
+        renderVisuals(calculateValue(clientX));
+      }
+      const value = currentValue.value;
+      const changed = lastValue !== value;
+      resetInteractionState();
+      if (changed)
+        emit2("change", new UniSliderChangeEvent(value));
+    }
+    function handlePointerMove(e2) {
+      if (e2.pointerId != activePointerId || props2.disabled == true) {
+        return;
+      }
+      if (e2.pointerType == "mouse" && (e2.buttons & 1) == 0) {
+        finishPointerInteraction(e2.clientX);
+        return;
+      }
+      if (_activeStatus == 0) {
+        const deltaX = Math.abs(e2.clientX - touchStartX);
+        const deltaY = Math.abs(e2.clientY - touchStartY);
+        if (deltaX <= TOUCH_THRESHOLD && deltaY <= TOUCH_THRESHOLD)
+          return;
+        _activeStatus = deltaX > deltaY ? 1 : -1;
+      }
+      if (_activeStatus != 1)
+        return;
+      if (e2.cancelable) {
+        e2.preventDefault();
+      }
+      e2.stopPropagation();
+      pointerClientX = e2.clientX;
+      if (ticking == false) {
+        ticking = true;
+        const pointerId = activePointerId;
+        const frameId = requestAnimationFrame(() => {
+          if (rafId != frameId)
+            return;
+          rafId = 0;
+          ticking = false;
+          if (activePointerId != pointerId || props2.disabled)
+            return;
+          const newValue = calculateValue(pointerClientX);
+          if (newValue === currentValue.value)
+            return;
+          renderVisuals(newValue);
+          emit2("changing", new UniSliderChangeEvent(currentValue.value));
+        });
+        rafId = frameId;
+      }
+    }
+    function handlePointerDown(e2) {
+      if (props2.disabled == true || activePointerId != -1 || !e2.isPrimary || e2.button != 0) {
+        return;
+      }
+      lastValue = currentValue.value;
+      isDragging.value = true;
+      touchStartX = e2.clientX;
+      touchStartY = e2.clientY;
+      _activeStatus = e2.pointerType == "mouse" ? 1 : 0;
+      activePointerId = e2.pointerId;
+      const thumbEl = thumbRef.value;
+      pointerStartFocus = (thumbEl == null ? void 0 : thumbEl.ownerDocument.activeElement) ?? null;
+      pointerTarget = e2.currentTarget;
+      pointerTarget.setPointerCapture(e2.pointerId);
+      const containerEl = containerRef.value;
+      if (containerEl != null) {
+        const rect = containerEl.getBoundingClientRect();
+        trackLeft = rect.left;
+        trackWidth = rect.width;
+      }
+      if (e2.pointerType == "mouse") {
+        e2.preventDefault();
+        focusThumb();
+        renderVisuals(calculateValue(e2.clientX));
+      }
+    }
+    function handlePointerUp(e2) {
+      if (e2.pointerId != activePointerId || e2.button != 0) {
+        return;
+      }
+      finishPointerInteraction(e2.clientX);
+    }
+    function handlePointerCancel(e2) {
+      if (e2.pointerId == activePointerId)
+        resetInteractionState();
+    }
+    const sliderKeys = ["ArrowLeft", "ArrowDown", "ArrowRight", "ArrowUp", "Home", "End", "PageUp", "PageDown"];
+    const pressedSliderKeys = /* @__PURE__ */ new Set();
+    function handleThumbBlur() {
+      pressedSliderKeys.clear();
+      resetInteractionState();
+    }
+    function getKeyboardDecimalPlaces(value) {
+      const parts = value.toString().split("e");
+      const fraction = parts[0].split(".")[1] ?? "";
+      return Math.max(0, fraction.length - Number(parts[1] ?? "0"));
+    }
+    function ownsKeyboardEvent(e2) {
+      const element = thumbRef.value;
+      return !props2.disabled && element != null && e2.target === element && e2.currentTarget === element && element.ownerDocument.activeElement === element && !e2.defaultPrevented && !e2.isComposing && !e2.altKey && !e2.ctrlKey && !e2.metaKey && sliderKeys.includes(e2.key);
+    }
+    function handleKeyUp(e2) {
+      const handled = pressedSliderKeys.delete(e2.key);
+      const element = thumbRef.value;
+      if (handled && element != null && e2.target === element && e2.currentTarget === element)
+        e2.stopPropagation();
+    }
+    function handleKeyDown(e2) {
+      if (!ownsKeyboardEvent(e2))
+        return;
+      pressedSliderKeys.add(e2.key);
+      e2.preventDefault();
+      e2.stopPropagation();
+      if (isDragging.value || !Number.isFinite(props2.step) || props2.step <= 0)
+        return;
+      const min = Number.isFinite(props2.min) ? props2.min : 0;
+      let newValue = currentValue.value;
+      if (e2.key == "ArrowLeft" || e2.key == "ArrowDown") {
+        newValue -= props2.step;
+      } else if (e2.key == "ArrowRight" || e2.key == "ArrowUp") {
+        newValue += props2.step;
+      } else if (e2.key == "PageUp") {
+        newValue += props2.step * 10;
+      } else if (e2.key == "PageDown") {
+        newValue -= props2.step * 10;
+      } else if (e2.key == "Home") {
+        newValue = min;
+      } else if (e2.key == "End") {
+        newValue = effectiveMax.value;
+      }
+      newValue = min + Math.round((newValue - min) / props2.step) * props2.step;
+      const precision = Math.min(100, Math.max(getKeyboardDecimalPlaces(min), getKeyboardDecimalPlaces(props2.step)));
+      newValue = parseFloat(newValue.toFixed(precision));
+      newValue = Math.max(min, Math.min(newValue, effectiveMax.value));
+      if (newValue === currentValue.value)
+        return;
+      renderVisuals(newValue);
+      emit2("change", new UniSliderChangeEvent(currentValue.value));
+    }
+    renderVisuals(currentValue.value);
+    __expose({
+      renderVisuals,
+      getCurrentValue: () => currentValue.value
+    });
+    const n0 = t1$2();
+    const n5 = Vue.child(n0);
+    const n2 = Vue.child(n5);
+    const n1 = Vue.child(n2);
+    const n4 = Vue.next(n2);
+    const n3 = Vue.child(n4);
+    Vue.initUniElement(n0, _uniSliderElement);
+    Vue.setStaticTemplateRef(n1, fillRef, null, "fillRef");
+    Vue.setStaticTemplateRef(n2, backgroundRef, null, "backgroundRef");
+    Vue.on(n3, "keydown", handleKeyDown);
+    Vue.on(n3, "keyup", handleKeyUp);
+    Vue.on(n3, "blur", handleThumbBlur);
+    Vue.on(n3, "click", handleThumbClick);
+    Vue.setStaticTemplateRef(n3, thumbRef, null, "thumbRef");
+    Vue.setStaticTemplateRef(n4, handleRef, null, "handleRef");
+    Vue.on(n5, "pointerdown", handlePointerDown);
+    Vue.on(n5, "pointermove", handlePointerMove);
+    Vue.on(n5, "pointerup", handlePointerUp);
+    Vue.on(n5, "pointercancel", handlePointerCancel);
+    Vue.on(n5, "lostpointercapture", handlePointerCancel);
+    Vue.setStaticTemplateRef(n5, containerRef, null, "containerRef");
+    Vue.renderEffect(() => {
+      const _props = props2;
+      const _thumbTranslateX = Vue.unref(thumbTranslateX);
+      const _props_disabled = _props.disabled;
+      Vue.setClass(n2, ["slider-track-bg", _props.trackClass]);
+      Vue.setClass(n1, ["slider-track-fill", _props.trackActiveClass]);
+      Vue.setStyle(n1, { transform: `scaleX(${Vue.unref(trackActiveScaleX)})` });
+      Vue.setStyle(n4, ["overflow: visible; align-self: flex-start;z-index: 2;", { width: "100%", transform: `translateX(${_thumbTranslateX}%)` }]);
+      Vue.setProp(n3, "tabindex", _props_disabled ? -1 : 0);
+      Vue.setAttr(n3, "aria-disabled", _props_disabled);
+      Vue.setAttr(n3, "aria-valuenow", Vue.unref(currentValue));
+      Vue.setAttr(n3, "aria-valuemin", Number.isFinite(_props.min) ? _props.min : 0);
+      Vue.setAttr(n3, "aria-valuemax", Vue.unref(effectiveMax));
+      Vue.setClass(n3, ["slider-handle", _props.thumbClass]);
+      Vue.setStyle(n3, { transform: `translateX(-${_thumbTranslateX}%)` });
+    });
+    Vue.setInsertionState(n0, 1);
+    Vue.createIf(() => props2.showValue, () => {
+      const n8 = t0$6();
+      const x8 = Vue.txt(n8);
+      Vue.renderEffect(() => Vue.setText(x8, Vue.normalizeUniText(Vue.toDisplayString(Vue.unref(currentValue)))));
+      return n8;
+    });
+    return n0;
+  }
+});
+const t0$5 = Vue.template('<div uni-sticky-header uni-view class=uni-sticky-header style="position: sticky; top: 0; width: 100%; z-index: 1">', 1);
+const _uniStickyHeaderElement = { value: "STICKY-HEADER" };
+const _sfc_main$5 = /* @__PURE__ */ Vue.defineVaporComponent({
+  ...{
+    name: "sticky-header",
+    rootElement: {
+      class: /* @__PURE__ */ Vue.initUniElementType(UniStickyHeaderElement, "sticky-header")
+    }
+  },
+  __name: "sticky-header",
+  setup(__props) {
+    const element = Vue.ref(null);
+    const { section, updateHeaderSize } = Vue.inject("__uni_recycle_section");
+    new UniResizeObserver((entries2) => {
+      if (element.value && element.value.isConnected) {
+        updateHeaderSize(entries2[entries2.length - 1].borderBoxSize[0].blockSize);
+      }
+    });
+    const n0 = t0$5();
+    Vue.initUniElement(n0, _uniStickyHeaderElement);
+    Vue.setInsertionState(n0);
+    Vue.createSlot();
+    Vue.setStaticTemplateRef(n0, element, null, "element");
+    return n0;
+  }
+});
+const t0$4 = Vue.template('<div uni-sticky-section uni-view class=uni-sticky-section style="position: relative; overflow: visible"><!><div uni-view style="width: 1px; flex-shrink: 0;">', 1);
+const _uniStickySectionElement = { value: "STICKY-SECTION" };
+const _sfc_main$4 = /* @__PURE__ */ Vue.defineVaporComponent({
+  ...{
+    name: "sticky-section",
+    rootElement: {
+      class: /* @__PURE__ */ Vue.initUniElementType(UniStickySectionElement, "sticky-section")
+    }
+  },
+  __name: "sticky-section",
+  props: {
+    preload: { type: Boolean, default: false }
+  },
+  setup(__props, { expose: __expose }) {
+    const props2 = __props;
+    const instance = Vue.getCurrentInstance();
+    const sectionId = instance.uid;
+    const listView = Vue.inject("__uni_recycle_list");
+    const element = Vue.ref(null);
+    const placeholderElement = Vue.ref(null);
+    const renderRange = Vue.ref([0, 0]);
+    const store = new RecycleListItemDataStore();
+    const idKeyMap = /* @__PURE__ */ new Map();
+    let keys = [];
+    let listIds = [];
+    let hasSyncedDefaultItemSize = false;
+    const section = {
+      element: null,
+      headerElement: null,
+      headerSize: 0,
+      placeholderSize: 0,
+      offsetTop: 0,
+      resolveKeyById: (id2) => idKeyMap.get(id2),
+      getItemOffset,
+      onScrollContextUpdate,
+      applyDefaultItemSize
+    };
+    listView.sectionMap.set(sectionId, section);
+    Vue.provide("__uni_recycle_view_instance", instance);
+    Vue.provide("__uni_recycle_section_id", sectionId);
+    Vue.provide("__uni_recycle_section", { section, updateHeaderSize });
+    Vue.provide("__uni_recycle_container", {
+      store,
+      updateItemSize,
+      getItemOffset
+    });
+    function updateIdKeyMap() {
+      if (listIds.length !== keys.length)
+        return;
+      idKeyMap.clear();
+      listIds.forEach((id2, index2) => {
+        if (id2 && keys[index2])
+          idKeyMap.set(id2, keys[index2]);
+      });
+    }
+    function updateList(newList) {
+      keys = newList;
+      store.updateKeyList(newList);
+      updateIdKeyMap();
+      updatePlaceholderSize();
+    }
+    function updateListIds(ids) {
+      listIds = ids;
+      updateIdKeyMap();
+      listView.queueLayout();
+    }
+    function updateRenderInfo(start, length) {
+      store.updateItemOffset(section.headerSize);
+      if (renderRange.value[0] !== start || renderRange.value[1] !== length) {
+        renderRange.value = [start, length];
+      }
+    }
+    function updatePlaceholderSize() {
+      section.placeholderSize = section.headerSize + store.contentSize;
+      if (placeholderElement.value)
+        placeholderElement.value.style.height = `${store.contentSize}px`;
+      listView.queueLayout();
+    }
+    function updateHeaderSize(height) {
+      if (section.headerSize === height)
+        return;
+      section.headerSize = height;
+      updatePlaceholderSize();
+    }
+    function applyDefaultItemSize(height) {
+      hasSyncedDefaultItemSize = true;
+      store.defaultItemSize = height;
+      store.rebuildItemOffsetsFrom(0);
+      updatePlaceholderSize();
+    }
+    function updateItemSize(key, height) {
+      const item = store.keyItemMap.get(key);
+      if (!item || item.size === height)
+        return;
+      const wasUnknown = item.size < 0;
+      item.size = height;
+      if (!hasSyncedDefaultItemSize && wasUnknown && height > 0) {
+        listView.syncDefaultItemSize(height);
+      } else {
+        store.rebuildItemOffsetsFrom(item.index + 1);
+        updatePlaceholderSize();
+      }
+    }
+    function getItemOffset(key) {
+      const item = store.keyItemMap.get(key);
+      return item ? item.offset + section.headerSize : -1;
+    }
+    function onScrollContextUpdate(context) {
+      if (!section.element || context.containerSize === 0)
+        return;
+      const top = context.headerSize + section.offsetTop;
+      const bottom = top + section.placeholderSize;
+      if (!keys.length || !props2.preload && (bottom < context.renderStartOffset || top > context.renderEndOffset)) {
+        updateRenderInfo(0, 0);
+        return;
+      }
+      let min = Math.max(0, context.renderStartOffset - top - section.headerSize);
+      let max = Math.max(0, context.renderEndOffset - top - section.headerSize);
+      if (props2.preload) {
+        const contentHeight = store.contentSize;
+        min = Math.min(min, contentHeight);
+        max = Math.min(max, contentHeight);
+        let remaining = Math.min(contentHeight, context.containerSize) - (max - min);
+        if (remaining > 0) {
+          const prepend = Math.min(remaining, min);
+          min -= prepend;
+          remaining -= prepend;
+          max = Math.min(contentHeight, max + remaining);
+        }
+      }
+      if (max <= min)
+        updateRenderInfo(0, 0);
+      else
+        updateRenderInfo(...store.getRenderRange(min, max));
+    }
+    Vue.watch(
+      () => props2.preload,
+      () => listView.queueLayout()
+    );
+    __expose({ renderRange, updateList, updateListIds, updateRenderInfo });
+    const n0 = t0$4();
+    const n3 = Vue.child(n0);
+    const n2 = Vue.next(n3);
+    Vue.initUniElement(n0, _uniStickySectionElement);
+    Vue.setInsertionState(n0, n3);
+    Vue.createSlot();
+    Vue.setStaticTemplateRef(n2, placeholderElement, null, "placeholderElement");
+    Vue.setStaticTemplateRef(n0, element, null, "element");
+    return n0;
+  }
+});
+class UniCustomEvent2 {
+  constructor(type, detail) {
+    this.type = type;
+    this.detail = detail;
+  }
+}
+class UniSwiperChangeEvent extends UniCustomEvent2 {
+  constructor(current, source, currentItemId) {
+    const detail = { current, source };
+    if (currentItemId != null) {
+      detail.currentItemId = currentItemId;
+    }
+    super("change", detail);
+  }
+}
+class UniSwiperTransitionEvent extends UniCustomEvent2 {
+  constructor(dx, dy) {
+    super("transition", { dx, dy });
+  }
+}
+class UniSwiperAnimationFinishEvent extends UniCustomEvent2 {
+  constructor(current, source, currentItemId) {
+    const detail = { current, source };
+    if (currentItemId != null) {
+      detail.currentItemId = currentItemId;
+    }
+    super("animationfinish", detail);
+  }
+}
+function parsePxRpx(margin) {
+  if (margin.length == 0) {
+    return 0;
+  }
+  if (margin.endsWith("px")) {
+    return parseFloat(margin);
+  }
+  if (margin.endsWith("rpx")) {
+    return parseFloat(margin) * (750 / uni.getWindowInfo().windowWidth);
+  }
+  return 0;
+}
+const _UniSwiperElement = class _UniSwiperElement extends UniViewElement {
+};
+_UniSwiperElement.__uniElement = {};
+let UniSwiperElement = _UniSwiperElement;
+const t0$3 = Vue.template("<div uni-view>");
+const t1$1 = Vue.template("<div uni-swiper uni-view class=uni-swiper-wrapper><div uni-view></div><div uni-view>", 1);
+const _uniSwiperElement = { value: "SWIPER" };
+const DIRECTION_LOCK_THRESHOLD = 5;
+const _sfc_main$3 = /* @__PURE__ */ Vue.defineVaporComponent({
+  ...{
+    name: "swiper",
+    rootElement: {
+      class: /* @__PURE__ */ Vue.initUniElementType(UniSwiperElement, "swiper")
+    },
+    externalClasses: ["indicator-class", "indicator-active-class"]
+  },
+  __name: "swiper",
+  props: {
+    vertical: { type: [Boolean, String], default: false },
+    current: { type: Number },
+    circular: { type: [Boolean, String], default: false },
+    autoplay: { type: [Boolean, String], default: false },
+    interval: { default: 3e3, type: Number },
+    duration: { default: 500, type: Number },
+    easingFunction: { default: "default", type: String },
+    previousMargin: { default: "0px", type: String },
+    nextMargin: { default: "0px", type: String },
+    disableTouch: { type: [Boolean, String], default: false },
+    disableBounce: { type: [Boolean, String], default: false },
+    indicatorDots: { type: [Boolean, String], default: false },
+    indicatorClass: { default: "", type: null },
+    indicatorActiveClass: { default: "", type: null },
+    indicatorStyle: { default: "", type: String },
+    indicatorActiveStyle: { default: "", type: String },
+    autoHeight: { type: [Boolean, String], default: false },
+    currentItemId: { type: String }
+  },
+  emits: ["change", "transition", "animationfinish"],
+  setup(__props, { emit: __emit }) {
+    const props2 = __props;
+    const emit2 = __emit;
+    const wrapper = Vue.ref(null);
+    const currentIndex = Vue.ref(0);
+    const sliderCount = Vue.ref(0);
+    const animating = Vue.ref(false);
+    const autoPlayTimer = Vue.ref(0);
+    let translate_value = 0;
+    let touchStartX = 0, touchStartY = 0, touchStartTime = 0, dragging = false, touchMoving = false, activeTouchId = -1, touchStartTranslate = 0, gestureStartTranslate = 0, prevMargin = parsePxRpx(props2.previousMargin), nextMargin = parsePxRpx(props2.nextMargin), sliderItemSize = 0, firstSliderPosition = "start", lastSliderPosition = "end", maxTranslate = 0, minTranslate = 0, animationFrameId = 0, animationStartTranslate = 0, animationTargetTranslate = 0, lastAnimationTranslate = 0, animationStartTime = 0, animationSource = "", sequenceStartTranslate = 0, touchDirectionLocked = false, touchDirection = "", touchInterruptedAnimation = false;
+    const slots = Vue.useSlots();
+    const hasCustomIndicator = Vue.computed(() => {
+      return slots["indicator"] != null;
+    });
+    Vue.computed(() => {
+      return (prevMargin > 0 || nextMargin > 0) && sliderCount.value > 2;
+    });
+    const mergeStyle = (isActive) => {
+      let style = props2.indicatorStyle;
+      if (isActive && props2.indicatorActiveStyle.length > 0) {
+        style = style.length > 0 ? style + "; " + props2.indicatorActiveStyle : props2.indicatorActiveStyle;
+      }
+      return style;
+    };
+    function findTouchByIdentifier(touches, identifier) {
+      for (let i = 0; i < touches.length; i++) {
+        const touch = touches[i];
+        if (touch.identifier == identifier) {
+          return touch;
+        }
+      }
+      return null;
+    }
+    function getStartTouch(e2) {
+      if (e2.changedTouches.length > 0) {
+        return e2.changedTouches[0];
+      }
+      if (e2.touches.length > 0) {
+        return e2.touches[0];
+      }
+      return null;
+    }
+    function getActiveTouch(e2) {
+      if (activeTouchId < 0) {
+        return null;
+      }
+      let touch = findTouchByIdentifier(e2.changedTouches, activeTouchId);
+      if (touch != null) {
+        return touch;
+      }
+      return findTouchByIdentifier(e2.touches, activeTouchId);
+    }
+    function handoffActiveTouch(touch) {
+      activeTouchId = touch.identifier;
+      touchStartX = touch.pageX;
+      touchStartY = touch.pageY;
+      touchStartTranslate = translate_value;
+    }
+    function stopAnimationFrame() {
+      if (animationFrameId > 0) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = 0;
+      }
+    }
+    function getEasingProgress(progress) {
+      if (props2.easingFunction === "linear") {
+        return progress;
+      }
+      return 1 - Math.pow(1 - progress, 2);
+    }
+    function dispatchTransitionEvent(offset) {
+      const accumulatedDx = props2.vertical ? 0 : -offset;
+      const accumulatedDy = props2.vertical ? -offset : 0;
+      emit2("transition", new UniSwiperTransitionEvent(accumulatedDx, accumulatedDy));
+    }
+    function getInterruptedTranslate() {
+      if (!isSupportCircular()) {
+        return lastAnimationTranslate;
+      }
+      const stableMinTranslate = -(sliderCount.value - 1) * sliderItemSize;
+      if (lastAnimationTranslate <= 0 && lastAnimationTranslate >= stableMinTranslate) {
+        return lastAnimationTranslate;
+      }
+      return -(currentIndex.value * sliderItemSize);
+    }
+    function animateSlide() {
+      if (!animating.value) {
+        stopAnimationFrame();
+        return;
+      }
+      const now = Date.now();
+      const elapsed = now - animationStartTime;
+      let timeProgress = elapsed / props2.duration;
+      if (timeProgress >= 1) {
+        timeProgress = 1;
+        translate_value = animationTargetTranslate;
+        lastAnimationTranslate = animationTargetTranslate;
+        dispatchTransitionEvent(animationTargetTranslate - sequenceStartTranslate);
+        emit2("animationfinish", new UniSwiperAnimationFinishEvent(currentIndex.value, animationSource, getItemIdByIndex(currentIndex.value)));
+        animating.value = false;
+        stopAnimationFrame();
+        resetSlidersPosition();
+        Vue.nextTick(() => {
+        });
+        sequenceStartTranslate = translate_value;
+        animationSource = "";
+        return;
+      }
+      const easedProgress = getEasingProgress(timeProgress);
+      const currentAnimationTranslate = animationStartTranslate + (animationTargetTranslate - animationStartTranslate) * easedProgress;
+      translate_value = currentAnimationTranslate;
+      lastAnimationTranslate = currentAnimationTranslate;
+      const totalTranslateChange = currentAnimationTranslate - sequenceStartTranslate;
+      dispatchTransitionEvent(totalTranslateChange);
+      animationFrameId = requestAnimationFrame(animateSlide);
+    }
+    function isStartToEndSlide(targetIndex, direction) {
+      return currentIndex.value == 0 && targetIndex == sliderCount.value - 1 && direction == -1;
+    }
+    function isEndToStartSlide(targetIndex, direction) {
+      return currentIndex.value == sliderCount.value - 1 && targetIndex == 0 && direction == 1;
+    }
+    function isSupportCircular() {
+      return props2.circular && (sliderCount.value > 2 || sliderCount.value == 2 && prevMargin == 0 && nextMargin == 0);
+    }
+    let resetSlidersPosition = () => {
+    };
+    function adjustSliderPosition(targetIndex, direction) {
+      if (!isSupportCircular())
+        return;
+      return;
+    }
+    resetSlidersPosition = () => {
+      return;
+    };
+    function getItemIdByIndex(index2) {
+      return null;
+    }
+    function slideTo(targetIndex, source, direction) {
+      if (targetIndex < 0 || targetIndex >= sliderCount.value)
+        return;
+      if (animating.value || dragging) {
+        animating.value = false;
+        stopAnimationFrame();
+        dragging = false;
+        touchMoving = false;
+        touchDirectionLocked = false;
+        touchDirection = "";
+        touchInterruptedAnimation = false;
+        if (isSupportCircular()) {
+          firstSliderPosition = "start";
+          lastSliderPosition = "end";
+        }
+        translate_value = getInterruptedTranslate();
+      }
+      stopAnimationFrame();
+      const oldTranslate = translate_value;
+      adjustSliderPosition();
+      const translateDelta = translate_value - oldTranslate;
+      sequenceStartTranslate += translateDelta;
+      animationStartTranslate = translate_value;
+      lastAnimationTranslate = animationStartTranslate;
+      animationStartTime = Date.now();
+      animationSource = source;
+      if (props2.circular && isStartToEndSlide(targetIndex, direction)) {
+        animationTargetTranslate = 1 * sliderItemSize;
+      } else if (props2.circular && isEndToStartSlide(targetIndex, direction)) {
+        animationTargetTranslate = sliderCount.value * sliderItemSize * -1;
+      } else {
+        animationTargetTranslate = targetIndex * sliderItemSize * -1;
+      }
+      if (targetIndex != currentIndex.value) {
+        currentIndex.value = targetIndex;
+        emit2("change", new UniSwiperChangeEvent(targetIndex, source, getItemIdByIndex()));
+      }
+      animating.value = true;
+      animationFrameId = requestAnimationFrame(animateSlide);
+    }
+    function startAutoPlay() {
+      if (!props2.autoplay || sliderCount.value <= 1)
+        return;
+      autoPlayTimer.value = setInterval(() => {
+        const next = currentIndex.value == sliderCount.value - 1 ? 0 : currentIndex.value + 1;
+        slideTo(next, "autoplay", 1);
+      }, props2.interval);
+    }
+    function stopAutoPlay() {
+      if (autoPlayTimer.value > 0) {
+        clearInterval(autoPlayTimer.value);
+        autoPlayTimer.value = 0;
+      }
+    }
+    const handleIndicatorClick = (index2) => {
+      const direction = getSlideDirection(index2);
+      slideTo(index2, "click", direction);
+    };
+    function getTouchMoveMaxTranslate() {
+      if (isSupportCircular() && lastSliderPosition == "start") {
+        return sliderItemSize;
+      }
+      return maxTranslate;
+    }
+    function getTouchMoveMinTranslate() {
+      if (isSupportCircular() && firstSliderPosition == "end") {
+        return -(sliderCount.value * sliderItemSize);
+      }
+      return minTranslate;
+    }
+    function fixIndex(index2) {
+      if (index2 < 0) {
+        return props2.circular ? sliderCount.value - 1 : 0;
+      } else if (index2 >= sliderCount.value) {
+        return props2.circular ? 0 : sliderCount.value - 1;
+      }
+      return index2;
+    }
+    function getSlideDirection(targetIndex) {
+      const count = sliderCount.value;
+      const current = currentIndex.value;
+      if (count <= 1 || targetIndex == current) {
+        return 1;
+      }
+      if (!props2.circular) {
+        return targetIndex > current ? 1 : -1;
+      }
+      const forward = (targetIndex - current + count) % count;
+      const backward = (current - targetIndex + count) % count;
+      return forward <= backward ? 1 : -1;
+    }
+    const onTouchStart = (e2) => {
+      if (props2.disableTouch)
+        return;
+      e2.stopPropagation();
+      const startTouch = getStartTouch(e2);
+      if (startTouch == null)
+        return;
+      if (dragging && activeTouchId >= 0 && findTouchByIdentifier(e2.touches, activeTouchId) != null) {
+        return;
+      }
+      stopAutoPlay();
+      const wasAnimating = animating.value;
+      touchInterruptedAnimation = wasAnimating;
+      if (animating.value) {
+        animating.value = false;
+        stopAnimationFrame();
+        if (isSupportCircular()) {
+          firstSliderPosition = "start";
+          lastSliderPosition = "end";
+        }
+        translate_value = getInterruptedTranslate();
+      }
+      const oldTranslate = translate_value;
+      resetSlidersPosition();
+      const translateDelta = translate_value - oldTranslate;
+      handoffActiveTouch(startTouch);
+      touchStartTime = Date.now();
+      gestureStartTranslate = translate_value;
+      dragging = true;
+      touchMoving = false;
+      touchDirectionLocked = false;
+      touchDirection = "";
+      if (!wasAnimating) {
+        sequenceStartTranslate = translate_value;
+        startTouch.pageX;
+        startTouch.pageY;
+      } else {
+        sequenceStartTranslate += translateDelta;
+      }
+    };
+    const onTouchMove = (e2) => {
+      if (props2.disableTouch)
+        return;
+      e2.stopPropagation();
+      if (!dragging)
+        return;
+      const t12 = getActiveTouch(e2);
+      if (t12 == null)
+        return;
+      touchMoving = true;
+      const dx = t12.pageX - touchStartX;
+      const dy = t12.pageY - touchStartY;
+      const delta = props2.vertical ? dy : dx;
+      const currentTranslate = touchStartTranslate + delta;
+      const overallDelta = currentTranslate - touchStartTranslate;
+      const overallDirection = overallDelta > 0 ? -1 : 1;
+      const absDx = Math.abs(dx);
+      const absDy = Math.abs(dy);
+      if (!touchDirectionLocked) {
+        const totalDistance = Math.sqrt(dx * dx + dy * dy);
+        if (totalDistance >= DIRECTION_LOCK_THRESHOLD) {
+          const angle = Math.atan2(absDy, absDx) * 180 / Math.PI;
+          if (!props2.vertical) {
+            if (angle < 30) {
+              touchDirection = "horizontal";
+            } else if (angle > 45) {
+              touchDirection = "vertical";
+            } else {
+              touchDirection = "vertical";
+            }
+          } else {
+            if (angle > 60) {
+              touchDirection = "vertical";
+            } else if (angle < 45) {
+              touchDirection = "horizontal";
+            } else {
+              touchDirection = "horizontal";
+            }
+          }
+          touchDirectionLocked = true;
+        }
+      }
+      if (touchDirectionLocked) {
+        if (!props2.vertical) {
+          if (touchDirection === "horizontal") {
+            e2.preventDefault();
+          } else {
+            return;
+          }
+        } else {
+          if (touchDirection === "vertical") {
+            const canSwipe = isSupportCircular() || delta > 0 && currentIndex.value > 0 || delta < 0 && currentIndex.value < sliderCount.value - 1;
+            if (!canSwipe) {
+              return;
+            }
+          } else {
+            return;
+          }
+        }
+      } else {
+        return;
+      }
+      if (isSupportCircular()) {
+        const visualIndex = Math.round(-touchStartTranslate / sliderItemSize);
+        fixIndex(visualIndex + overallDirection);
+        adjustSliderPosition();
+      }
+      const touchMoveMaxTranslate = getTouchMoveMaxTranslate();
+      const touchMoveMinTranslate = getTouchMoveMinTranslate();
+      const atBoundary = !props2.circular && props2.disableBounce && sliderCount.value > 0 && (currentTranslate > maxTranslate && delta > 0 || currentTranslate < minTranslate && delta < 0);
+      if (!atBoundary) {
+        e2.preventDefault();
+      }
+      if (delta != 0) {
+        const totalTranslateChange = currentTranslate - sequenceStartTranslate;
+        dispatchTransitionEvent(totalTranslateChange);
+      }
+      if (props2.disableBounce) {
+        if (currentTranslate > touchMoveMaxTranslate) {
+          translate_value = touchMoveMaxTranslate;
+          return;
+        }
+        if (currentTranslate < touchMoveMinTranslate) {
+          translate_value = touchMoveMinTranslate;
+          return;
+        }
+      } else {
+        if (currentTranslate > touchMoveMaxTranslate) {
+          const overScroll = currentTranslate - touchMoveMaxTranslate;
+          translate_value = touchMoveMaxTranslate + overScroll * 0.3;
+          return;
+        }
+        if (currentTranslate < touchMoveMinTranslate) {
+          const overScroll = currentTranslate - touchMoveMinTranslate;
+          translate_value = touchMoveMinTranslate + overScroll * 0.3;
+          return;
+        }
+      }
+      translate_value = currentTranslate;
+    };
+    const onTouchEnd = (e2) => {
+      if (props2.disableTouch)
+        return;
+      e2.stopPropagation();
+      if (!dragging)
+        return;
+      const activeChangedTouch = activeTouchId >= 0 ? findTouchByIdentifier(e2.changedTouches, activeTouchId) : null;
+      if (activeChangedTouch == null) {
+        return;
+      }
+      if (e2.touches.length > 0) {
+        handoffActiveTouch(e2.touches[0]);
+        return;
+      }
+      dragging = false;
+      activeTouchId = -1;
+      if (!touchMoving) {
+        if (touchInterruptedAnimation) {
+          slideTo(currentIndex.value, "touch", 0);
+        }
+        touchMoving = false;
+        startAutoPlay();
+        return;
+      }
+      touchMoving = false;
+      if (!touchDirectionLocked) {
+        if (touchInterruptedAnimation) {
+          slideTo(currentIndex.value, "touch", 0);
+        }
+        startAutoPlay();
+        return;
+      }
+      const isDirectionMatched = !props2.vertical && touchDirection === "horizontal" || props2.vertical && touchDirection === "vertical";
+      if (!isDirectionMatched) {
+        if (touchInterruptedAnimation) {
+          slideTo(currentIndex.value, "touch", 0);
+        }
+        startAutoPlay();
+        return;
+      }
+      const dt = Date.now() - touchStartTime;
+      const totalDelta = translate_value - gestureStartTranslate;
+      const abs = Math.abs(totalDelta);
+      const source = "touch";
+      const direction = totalDelta < 0 ? 1 : totalDelta > 0 ? -1 : 0;
+      const shouldChange = dt < 300 && abs > 30 || abs > 100;
+      if (!shouldChange) {
+        slideTo(currentIndex.value, source, direction);
+        return;
+      }
+      let nextIndex = currentIndex.value;
+      if (isSupportCircular()) {
+        if (totalDelta > 0) {
+          nextIndex = (currentIndex.value - 1 + sliderCount.value) % sliderCount.value;
+        } else if (totalDelta < 0) {
+          nextIndex = (currentIndex.value + 1) % sliderCount.value;
+        }
+      } else {
+        if (!props2.disableBounce && (translate_value > maxTranslate || translate_value < minTranslate)) {
+          if (translate_value > maxTranslate) {
+            nextIndex = 0;
+          } else if (translate_value < minTranslate) {
+            nextIndex = sliderCount.value - 1;
+          }
+        } else {
+          if (totalDelta > 0 && currentIndex.value > 0) {
+            nextIndex = currentIndex.value - 1;
+          } else if (totalDelta < 0 && currentIndex.value < sliderCount.value - 1) {
+            nextIndex = currentIndex.value + 1;
           }
         }
       }
-    } catch (e2) {
-      console.error(e2.message + uniShared.LINEFEED + e2.stack);
-    }
-  }
-}
-function applyOptions(options, instance, publicThis) {
-  initHooks(options, instance, publicThis);
-}
-function set(target, key, val) {
-  return target[key] = val;
-}
-function $callMethod(method, ...args) {
-  const fn = this[method];
-  if (fn) {
-    return fn(...args);
-  }
-  console.error(`method ${method} not found`);
-  return null;
-}
-function createErrorHandler(app) {
-  const userErrorHandler = app.config.errorHandler;
-  return function errorHandler(err, instance, info) {
-    if (userErrorHandler) {
-      userErrorHandler(err, instance, info);
-    }
-    const appInstance = app._instance;
-    if (!appInstance || !appInstance.proxy) {
-      throw err;
-    }
-    if (appInstance[uniShared.ON_ERROR]) {
-      {
-        invokeHook(appInstance.proxy, uniShared.ON_ERROR, err);
-      }
-    } else {
-      Vue.logError(err, info, instance == null ? void 0 : instance.$, false);
-    }
-  };
-}
-function mergeAsArray(to, from) {
-  return to ? [...new Set([].concat(to, from))] : from;
-}
-function initOptionMergeStrategies(optionMergeStrategies) {
-  uniShared.UniLifecycleHooks.forEach((name) => {
-    optionMergeStrategies[name] = mergeAsArray;
-  });
-}
-let realAtob;
-const b64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-const b64re = /^(?:[A-Za-z\d+/]{4})*?(?:[A-Za-z\d+/]{2}(?:==)?|[A-Za-z\d+/]{3}=?)?$/;
-if (typeof atob !== "function") {
-  realAtob = function(str) {
-    str = String(str).replace(/[\t\n\f\r ]+/g, "");
-    if (!b64re.test(str)) {
-      throw new Error(
-        "Failed to execute 'atob' on 'Window': The string to be decoded is not correctly encoded."
+      slideTo(nextIndex, source, direction);
+      startAutoPlay();
+    };
+    const handleSwiperItemMounted = () => {
+      Vue.nextTick(() => {
+      });
+    };
+    const handleSwiperItemUnMounted = () => {
+      Vue.nextTick(() => {
+      });
+    };
+    Vue.provide("handleSwiperItemMounted", handleSwiperItemMounted);
+    Vue.provide("handleSwiperItemUnMounted", handleSwiperItemUnMounted);
+    Vue.provide("autoHeight", props2.autoHeight);
+    const n0 = t1$1();
+    const n2 = Vue.child(n0);
+    const n9 = Vue.next(n2);
+    Vue.initUniElement(n0, _uniSwiperElement);
+    Vue.renderEffect(() => Vue.setClass(n2, ["uni-swiper-container", __props.vertical ? "uni-swiper-container_vertical" : "uni-swiper-container_horizontal"]));
+    Vue.setInsertionState(n2);
+    Vue.createSlot();
+    Vue.renderEffect(() => Vue.setClass(n9, [
+      "uni-swiper-indicator",
+      __props.vertical ? "uni-swiper-indicator_vertical" : "uni-swiper-indicator_horizontal"
+    ]));
+    Vue.setInsertionState(n9);
+    Vue.createSlot("indicator");
+    Vue.setInsertionState(n9, 1);
+    Vue.createIf(() => __props.indicatorDots && !Vue.unref(hasCustomIndicator), () => {
+      const n6 = Vue.createFor(
+        () => Vue.unref(sliderCount),
+        (_for_item0) => {
+          const n8 = t0$3();
+          Vue.on(n8, "touchstart", (e2) => {
+            e2.stopPropagation();
+          });
+          Vue.on(n8, "touchmove", (e2) => {
+            e2.stopPropagation();
+            e2.preventDefault();
+          });
+          Vue.on(n8, "touchend", (e2) => {
+            e2.stopPropagation();
+          });
+          Vue.on(n8, "touchcancel", (e2) => {
+            e2.stopPropagation();
+          });
+          Vue.on(n8, "click", () => handleIndicatorClick(_for_item0.value - 1));
+          Vue.renderEffect(() => {
+            const _currentIndex = Vue.unref(currentIndex);
+            const _i = _for_item0.value;
+            Vue.setClass(n8, ["uni-swiper-indicator-item", [
+              __props.indicatorClass,
+              { active: _currentIndex == _i - 1 },
+              { [__props.indicatorActiveClass]: _currentIndex == _i - 1 }
+            ]]);
+            Vue.setStyle(n8, mergeStyle(_currentIndex == _i - 1));
+          });
+          return n8;
+        },
+        (i) => i,
+        8
+        /* IS_SINGLE_NODE */
       );
-    }
-    str += "==".slice(2 - (str.length & 3));
-    var bitmap;
-    var result = "";
-    var r1;
-    var r2;
-    var i = 0;
-    for (; i < str.length; ) {
-      bitmap = b64.indexOf(str.charAt(i++)) << 18 | b64.indexOf(str.charAt(i++)) << 12 | (r1 = b64.indexOf(str.charAt(i++))) << 6 | (r2 = b64.indexOf(str.charAt(i++)));
-      result += r1 === 64 ? String.fromCharCode(bitmap >> 16 & 255) : r2 === 64 ? String.fromCharCode(bitmap >> 16 & 255, bitmap >> 8 & 255) : String.fromCharCode(
-        bitmap >> 16 & 255,
-        bitmap >> 8 & 255,
-        bitmap & 255
-      );
-    }
-    return result;
-  };
-} else {
-  realAtob = atob;
-}
-function b64DecodeUnicode(str) {
-  return decodeURIComponent(
-    realAtob(str).split("").map(function(c) {
-      return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join("")
-  );
-}
-function getCurrentUserInfo() {
-  const token = uni.getStorageSync("uni_id_token") || "";
-  const tokenArr = token.split(".");
-  if (!token || tokenArr.length !== 3) {
-    return {
-      uid: null,
-      role: [],
-      permission: [],
-      tokenExpired: 0
-    };
+      return n6;
+    });
+    Vue.on(n0, "touchstart", onTouchStart);
+    Vue.on(n0, "touchmove", onTouchMove);
+    Vue.on(n0, "touchend", onTouchEnd);
+    Vue.on(n0, "touchcancel", onTouchEnd);
+    Vue.setStaticTemplateRef(n0, wrapper, null, "wrapper");
+    return n0;
   }
-  let userInfo;
-  try {
-    userInfo = JSON.parse(b64DecodeUnicode(tokenArr[1]));
-  } catch (error) {
-    throw new Error("获取当前用户信息出错，详细错误信息为：" + error.message);
-  }
-  userInfo.tokenExpired = userInfo.exp * 1e3;
-  delete userInfo.exp;
-  delete userInfo.iat;
-  return userInfo;
-}
-function uniIdMixin(globalProperties) {
-  globalProperties.uniIDHasRole = function(roleId) {
-    const { role } = getCurrentUserInfo();
-    return role.indexOf(roleId) > -1;
-  };
-  globalProperties.uniIDHasPermission = function(permissionId) {
-    const { permission } = getCurrentUserInfo();
-    return this.uniIDHasRole("admin") || permission.indexOf(permissionId) > -1;
-  };
-  globalProperties.uniIDTokenValid = function() {
-    const { tokenExpired } = getCurrentUserInfo();
-    return tokenExpired > Date.now();
-  };
-}
-function initApp(app) {
-  const appConfig = app.config;
-  appConfig.errorHandler = uniShared.invokeCreateErrorHandler(app, createErrorHandler);
-  initOptionMergeStrategies(appConfig.optionMergeStrategies);
-  const globalProperties = appConfig.globalProperties;
-  {
-    if (__UNI_FEATURE_UNI_CLOUD__) {
-      uniIdMixin(globalProperties);
-    }
-  }
-  {
-    globalProperties.$set = set;
-    globalProperties.$applyOptions = applyOptions;
-    globalProperties.$callMethod = $callMethod;
-  }
-  {
-    uniShared.invokeCreateVueAppHook(app);
-  }
-}
-function initRouter(app) {
-  const router2 = vueRouter.createRouter(createRouterOptions());
-  setRouterInstance(router2);
-  router2.beforeEach((to, from) => {
-    if (to && from && to.meta.isTabBar && from.meta.isTabBar) {
-      saveTabBarScrollPosition(from.meta.tabBarIndex);
-    }
-  });
-  app.router = router2;
-  app.use(router2);
-}
-let positionStore = /* @__PURE__ */ Object.create(null);
-function getTabBarScrollPosition(id2) {
-  return positionStore[id2];
-}
-function saveTabBarScrollPosition(id2) {
-  if (typeof window !== "undefined") {
-    positionStore[id2] = {
-      left: window.pageXOffset,
-      top: window.pageYOffset
-    };
-  }
-}
-const scrollBehavior = (to, from, savedPosition) => {
-  if (savedPosition) {
-    return savedPosition;
-  } else {
-    if (to && from && to.meta.isTabBar && from.meta.isTabBar) {
-      const position = getTabBarScrollPosition(to.meta.tabBarIndex);
-      if (position) {
-        return position;
-      }
-    }
-    return {
-      left: 0,
-      top: 0
-    };
+});
+const _UniSwiperItemElement = class _UniSwiperItemElement extends UniViewElement {
+  constructor() {
+    super(...arguments);
+    this.itemId = null;
   }
 };
-function createRouterOptions() {
-  return {
-    history: initHistory(),
-    strict: !!__uniConfig.router.strict,
-    routes: __uniRoutes,
-    scrollBehavior
-  };
-}
-function initHistory() {
-  let { routerBase } = __uniConfig.router;
-  if (routerBase === "/") {
-    routerBase = "";
-  }
-  {
-    return vueRouter.createMemoryHistory(routerBase);
-  }
-}
-const index$b = {
-  install(app) {
-    initApp(app);
-    if (!app.config.warnHandler) {
-      app.config.warnHandler = warnHandler;
+_UniSwiperItemElement.__uniElement = { init() {
+  Object.defineProperty(this, "itemId", { value: null, writable: true, enumerable: true, configurable: true });
+} };
+let UniSwiperItemElement = _UniSwiperItemElement;
+const t0$2 = Vue.template("<div uni-view class=uni-swiper-item-content>");
+const t1 = Vue.template('<div uni-swiper-item uni-view class=uni-swiper-item style="position: absolute; visibility: hidden;">', 1);
+const _uniSwiperItemElement = { value: "SWIPER-ITEM" };
+const _sfc_main$2 = /* @__PURE__ */ Vue.defineVaporComponent({
+  ...{
+    name: "swiper-item",
+    rootElement: {
+      class: /* @__PURE__ */ Vue.initUniElementType(UniSwiperItemElement, "swiper-item")
     }
-    if (__UNI_FEATURE_PAGES__) {
-      initRouter(app);
-    }
+  },
+  __name: "swiper-item",
+  props: {
+    itemId: { default: null, type: String }
+  },
+  setup(__props) {
+    const swiperItem = Vue.ref(null);
+    const autoHeight = Vue.inject("autoHeight", false);
+    Vue.inject("handleSwiperItemMounted");
+    Vue.inject("handleSwiperItemUnMounted");
+    const n0 = t1();
+    Vue.initUniElement(n0, _uniSwiperItemElement);
+    Vue.setInsertionState(n0);
+    Vue.createIf(
+      () => Vue.unref(autoHeight),
+      () => {
+        const n4 = t0$2();
+        Vue.setInsertionState(n4);
+        Vue.createSlot();
+        return n4;
+      },
+      () => {
+        const n6 = Vue.createSlot();
+        return n6;
+      },
+      261
+      /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_0 */
+    );
+    Vue.setStaticTemplateRef(n0, swiperItem, null, "swiperItem");
+    return n0;
+  }
+});
+const _UniSwitchElement = class _UniSwitchElement extends UniViewElement {
+  constructor() {
+    super(...arguments);
+    this.tagName = "SWITCH";
+    this.nodeName = "SWITCH";
+    this._checked = false;
+  }
+  get checked() {
+    var _a;
+    return ((_a = this.vm) == null ? void 0 : _a.getSwitchChecked()) ?? this._checked;
+  }
+  set checked(val) {
+    var _a;
+    this._checked = val;
+    (_a = this.vm) == null ? void 0 : _a.setSwitchChecked(val);
   }
 };
-function warnHandler(msg, instance, trace) {
-  if (instance) {
-    const internalInstance = "$" in instance ? instance.$ : instance;
-    const name = internalInstance.type.name;
-    if ("PageMetaHead" === name) {
-      return;
+_UniSwitchElement.__uniElement = { vm: true, init() {
+  Object.defineProperty(this, "_checked", { value: false, writable: true, enumerable: true, configurable: true });
+} };
+let UniSwitchElement = _UniSwitchElement;
+const t0$1 = Vue.template("<div uni-switch uni-view role=switch><div uni-view>", 1);
+const _uniSwitchElement = { value: "SWITCH" };
+const _sfc_main$1 = /* @__PURE__ */ Vue.defineVaporComponent({
+  ...{
+    name: "switch",
+    // @ts-ignore
+    rootElement: {
+      class: /* @__PURE__ */ Vue.initUniElementType(UniSwitchElement, "switch")
+    },
+    externalClasses: ["thumb-class", "thumb-active-class", "switch-active-class"]
+  },
+  __name: "switch",
+  props: {
+    color: { default: "", type: String },
+    disabled: { type: Boolean, default: false },
+    checked: { type: Boolean, default: false },
+    name: { default: "", type: String },
+    thumbClass: { default: "", type: null },
+    thumbActiveClass: { default: "", type: null },
+    switchActiveClass: { default: "", type: null }
+  },
+  emits: ["change"],
+  setup(__props, { expose: __expose, emit: __emit }) {
+    var _a;
+    const props2 = __props;
+    const { handleKeydown, handleKeyup, handleBlur } = createSpaceKeyHandlers(() => props2.disabled);
+    const attrs2 = Vue.useAttrs();
+    attrs2.id;
+    (_a = Vue.getCurrentInstance()) == null ? void 0 : _a.proxy;
+    class UniCustomEvent3 {
+      constructor(type, detail) {
+        this.detail = detail;
+      }
     }
-    const parent = internalInstance.parent;
-    if (parent && parent.type.name === "PageMeta") {
-      return;
+    class UniSwitchChangeEvent extends UniCustomEvent3 {
+      constructor(value) {
+        super("change", { value });
+      }
     }
+    const emit2 = __emit;
+    Vue.inject(FORM_KEY, null);
+    Vue.inject(LABEL_KEY, null);
+    const isChecked = Vue.ref(props2.checked);
+    const activeStyle = Vue.computed(() => {
+      if (isChecked.value && props2.color) {
+        return { "background-color": props2.color };
+      }
+      return {};
+    });
+    Vue.ref(false);
+    const enableTransition = Vue.ref(false);
+    const setChecked = (checked) => {
+      isChecked.value = checked;
+    };
+    Vue.watch(() => props2.checked, (value) => {
+      setChecked(value);
+    });
+    const handleTap = () => {
+      if (props2.disabled) {
+        return;
+      }
+      setChecked(!isChecked.value);
+      emit2("change", new UniSwitchChangeEvent(isChecked.value));
+    };
+    __expose({
+      getSwitchChecked: () => {
+        return isChecked.value;
+      },
+      setSwitchChecked: (checked) => {
+        setChecked(checked);
+      }
+    });
+    const n0 = t0$1();
+    const n1 = Vue.child(n0);
+    Vue.initUniElement(n0, _uniSwitchElement);
+    Vue.on(n0, "keydown", (e2) => Vue.unref(handleKeydown)(e2));
+    Vue.on(n0, "keyup", (e2) => Vue.unref(handleKeyup)(e2));
+    Vue.on(n0, "blur", (e2) => Vue.unref(handleBlur)(e2));
+    Vue.on(n0, "click", Vue.withModifiers(handleTap, ["stop"]));
+    Vue.renderEffect(() => {
+      const _classes = Vue.unref(classes);
+      const _enableTransition = Vue.unref(enableTransition);
+      const _disabled = __props.disabled;
+      const _isChecked = Vue.unref(isChecked);
+      Vue.setClass(n0, ["uni-switch", _classes(
+        [_enableTransition, "transition-enabled"],
+        [_disabled, "uni-switch-disabled"],
+        [_isChecked, "uni-switch-active"],
+        [_isChecked, __props.switchActiveClass]
+      )]);
+      Vue.setStyle(n0, Vue.unref(activeStyle));
+      Vue.setProp(n0, "tabindex", _disabled ? -1 : 0);
+      Vue.setAttr(n0, "aria-checked", _isChecked);
+      Vue.setAttr(n0, "aria-disabled", _disabled);
+      Vue.setClass(n1, ["uni-switch-thumb", _classes(
+        [_enableTransition, "thumb-transition-enabled"],
+        [_isChecked, "uni-switch-active-thumb"],
+        [_isChecked, __props.thumbActiveClass, __props.thumbClass]
+      )]);
+    });
+    return n0;
   }
-  const warnArgs = [`[Vue warn]: ${msg}`];
-  if (trace.length) {
-    warnArgs.push(`
-`, trace);
+});
+const t0 = Vue.template('<div uni-view style="position: relative; overflow-anchor: none"><!><div uni-view style="width: 1px; flex-shrink: 0;"></div></div>');
+const _uniWaterflowElement = { value: "WATERFLOW" };
+const _sfc_main = /* @__PURE__ */ Vue.defineVaporComponent({
+  ...{
+    name: "waterflow",
+    rootElement: {
+      class: /* @__PURE__ */ Vue.initUniElementType(UniWaterflowElement, "waterflow")
+    }
+  },
+  __name: "waterflow",
+  props: {
+    crossAxisCount: { type: [Number, String], default: 2 },
+    mainAxisGap: { type: [Number, String], default: 0 },
+    crossAxisGap: { type: [Number, String], default: 0 },
+    maxCrossAxisExtent: { type: [Number, String], default: 0 },
+    scrollIntoView: { type: String, default: "" }
+  },
+  setup(__props, { expose: __expose }) {
+    const props2 = __props;
+    const attrs2 = Vue.useAttrs();
+    const realCrossAxisCount = Vue.computed(
+      () => parseInt(String(props2.crossAxisCount))
+    );
+    const realMainAxisGap = Vue.computed(() => parseFloat(String(props2.mainAxisGap)));
+    const realCrossAxisGap = Vue.computed(() => parseFloat(String(props2.crossAxisGap)));
+    const realMaxCrossAxisExtent = Vue.computed(
+      () => parseFloat(String(props2.maxCrossAxisExtent))
+    );
+    const scrollElement = Vue.ref(null);
+    const placeholderElement = Vue.ref(null);
+    const renderRange = Vue.ref([0, 0]);
+    let list = [];
+    let keyItemMap = /* @__PURE__ */ new Map();
+    const itemInstanceMap = /* @__PURE__ */ new Map();
+    const idKeyMap = /* @__PURE__ */ new Map();
+    let listIds = [];
+    let size = 0;
+    let containerCrossAxisSize = 0;
+    let itemCrossAxisSize = 0;
+    let layoutCrossAxisCount = 2;
+    let placeholderSize = 0;
+    let scrollOffset = 0;
+    let cachedSizeStart = 200;
+    let queued = false;
+    let destroyed = false;
+    let pendingScrollId = props2.scrollIntoView;
+    let scrollingToItemKey;
+    let scrollingToItemOffset = -1;
+    let scrollingToItemTimestamp = 0;
+    let scrollEndTimer;
+    Vue.provide("__uni_recycle_view_instance", Vue.getCurrentInstance());
+    Vue.provide("__uni_recycle_state_map", /* @__PURE__ */ new Map());
+    Vue.provide("__uni_recycle_waterflow", {
+      itemInstanceMap,
+      updateItemSize,
+      getItemOffset,
+      getItemCrossAxisSize: () => itemCrossAxisSize
+    });
+    function updateIdKeyMap() {
+      if (listIds.length !== list.length)
+        return;
+      idKeyMap.clear();
+      listIds.forEach((id2, index2) => {
+        if (id2 && list[index2].key)
+          idKeyMap.set(id2, list[index2].key);
+      });
+    }
+    function updateList(keys) {
+      const oldItems = keyItemMap;
+      keyItemMap = /* @__PURE__ */ new Map();
+      list = keys.map((key, index2) => {
+        const instance = itemInstanceMap.get(key);
+        const item = oldItems.get(key) || {
+          key,
+          index: index2,
+          size: instance ? instance.size : -1,
+          offsetX: 0,
+          offsetY: 0,
+          maxEndOffset: 0
+        };
+        item.index = index2;
+        keyItemMap.set(key, item);
+        return item;
+      });
+      rebuildItemOffsetsFrom(0);
+      updateIdKeyMap();
+      queueLayout();
+    }
+    function updateListIds(ids) {
+      listIds = ids;
+      updateIdKeyMap();
+      queueLayout();
+    }
+    function updateRenderInfo(start, length) {
+      if (renderRange.value[0] !== start || renderRange.value[1] !== length) {
+        renderRange.value = [start, length];
+      }
+    }
+    function realItemSize(item) {
+      return item.size < 0 ? 150 : item.size;
+    }
+    function rebuildItemOffsetsFrom(start) {
+      const columns = new Array(layoutCrossAxisCount).fill(0);
+      const mainGap = realMainAxisGap.value;
+      const crossGap = realCrossAxisGap.value;
+      for (let i = 0; i < start; i++) {
+        const item = list[i];
+        const column = itemCrossAxisSize + crossGap > 0 ? Math.min(
+          layoutCrossAxisCount - 1,
+          Math.round(item.offsetX / (itemCrossAxisSize + crossGap))
+        ) : 0;
+        columns[column] = Math.max(
+          columns[column],
+          item.offsetY + realItemSize(item) + mainGap
+        );
+      }
+      let maxEnd = start > 0 ? list[start - 1].maxEndOffset : 0;
+      for (let i = start; i < list.length; i++) {
+        const item = list[i];
+        let column = 0;
+        for (let c = 1; c < columns.length; c++) {
+          if (columns[c] < columns[column])
+            column = c;
+        }
+        item.offsetX = column * (itemCrossAxisSize + crossGap);
+        item.offsetY = columns[column];
+        const end = item.offsetY + realItemSize(item);
+        item.maxEndOffset = maxEnd = Math.max(maxEnd, end);
+        columns[column] = end + mainGap;
+      }
+      placeholderSize = Math.max(0, Math.max(...columns) - mainGap);
+    }
+    function updateCrossAxisMetrics() {
+      const gap = realCrossAxisGap.value;
+      const extent = realMaxCrossAxisExtent.value;
+      layoutCrossAxisCount = extent > 0 && containerCrossAxisSize > 0 ? Math.max(1, Math.ceil(containerCrossAxisSize / (extent + gap))) : Math.max(1, realCrossAxisCount.value);
+      const width = Math.max(
+        0,
+        (containerCrossAxisSize - gap * (layoutCrossAxisCount - 1)) / layoutCrossAxisCount
+      );
+      if (width !== itemCrossAxisSize) {
+        itemCrossAxisSize = width;
+        list.forEach((item) => {
+          item.size = -1;
+        });
+        itemInstanceMap.forEach((item) => item.updateItemCrossAxisSize(width));
+      }
+      rebuildItemOffsetsFrom(0);
+      queueLayout();
+    }
+    function updateItemSize(key, height) {
+      const item = keyItemMap.get(key);
+      if (!item || item.size === height)
+        return;
+      item.size = height;
+      rebuildItemOffsetsFrom(item.index);
+      queueLayout();
+    }
+    function getItemOffset(key) {
+      const item = keyItemMap.get(key);
+      return item ? [item.offsetX, item.offsetY] : [-1, -1];
+    }
+    function queueLayout() {
+      if (queued || destroyed)
+        return;
+      queued = true;
+      Vue.nextTick(() => {
+        queued = false;
+        if (scrollElement.value)
+          updateRenderList();
+      });
+    }
+    function updateRenderList() {
+      if (placeholderElement.value)
+        placeholderElement.value.style.height = `${placeholderSize}px`;
+      if (pendingScrollId) {
+        const key = idKeyMap.get(pendingScrollId);
+        if (key !== void 0) {
+          pendingScrollId = "";
+          scrollingToItemKey = key;
+          scrollingToItemOffset = -1;
+          scrollingToItemTimestamp = Date.now();
+          cachedSizeStart = 0;
+        }
+      }
+      if (scrollingToItemKey !== void 0) {
+        const item = keyItemMap.get(scrollingToItemKey);
+        if (item && item.offsetY !== scrollingToItemOffset) {
+          scrollingToItemOffset = item.offsetY;
+          const animation2 = attrs2["scroll-with-animation"];
+          const animated = (animation2 === "" || animation2 === true || animation2 === "true") && Date.now() - scrollingToItemTimestamp < 300;
+          scrollElement.value.scrollTo({
+            top: item.offsetY,
+            behavior: animated ? "smooth" : "instant"
+          });
+          if (!animated)
+            scrollOffset = scrollElement.value.scrollTop;
+        }
+      }
+      itemInstanceMap.forEach((instance, key) => {
+        const item = keyItemMap.get(key);
+        if (item)
+          instance.updateItemOffset(item.offsetX, item.offsetY);
+      });
+      const min = Math.max(0, scrollOffset - cachedSizeStart + 0.2);
+      const max = scrollOffset + size + 200 - 0.2;
+      let low = 0;
+      let high = list.length;
+      while (low < high) {
+        const mid = low + high >>> 1;
+        if (list[mid].maxEndOffset < min)
+          low = mid + 1;
+        else
+          high = mid;
+      }
+      const start = low;
+      high = list.length;
+      while (low < high) {
+        const mid = low + high >>> 1;
+        if (list[mid].offsetY <= max)
+          low = mid + 1;
+        else
+          high = mid;
+      }
+      updateRenderInfo(start, low - start);
+    }
+    function onScroll() {
+      scrollOffset = Math.max(0, scrollElement.value.scrollTop);
+      updateRenderList();
+      clearTimeout(scrollEndTimer);
+      scrollEndTimer = setTimeout(onScrollEnd, 150);
+    }
+    function onScrollEnd() {
+      clearTimeout(scrollEndTimer);
+      updateRenderList();
+      scrollingToItemKey = void 0;
+      cachedSizeStart = 200;
+    }
+    new ResizeObserver((entries2) => {
+      const entry = entries2[entries2.length - 1];
+      size = entry.contentRect.height;
+      if (containerCrossAxisSize !== entry.contentRect.width) {
+        containerCrossAxisSize = entry.contentRect.width;
+        updateCrossAxisMetrics();
+      } else
+        queueLayout();
+    });
+    Vue.watch(
+      [
+        realCrossAxisCount,
+        realMainAxisGap,
+        realCrossAxisGap,
+        realMaxCrossAxisExtent
+      ],
+      updateCrossAxisMetrics
+    );
+    Vue.watch(
+      () => props2.scrollIntoView,
+      (id2) => {
+        pendingScrollId = id2;
+        scrollingToItemKey = void 0;
+        queueLayout();
+      }
+    );
+    __expose({ renderRange, updateList, updateListIds, updateRenderInfo });
+    const n7 = Vue.withComponentId("2edab972", () => Vue.createComponent(__syscom_0, {
+      onScroll: () => onScroll,
+      onScrollend: () => onScrollEnd
+    }, {
+      "refresher": Vue.extend(() => {
+        const n4 = Vue.createSlot(
+          "refresher",
+          null,
+          null,
+          4
+          /* FORWARDED */
+        );
+        return n4;
+      }, {
+        _: 1
+        /* NON_STABLE */
+      }),
+      "default": () => {
+        const n3 = t0();
+        const n2 = Vue.child(n3);
+        const n1 = Vue.next(n2);
+        Vue.setInsertionState(n3, n2);
+        Vue.createSlot();
+        Vue.setStaticTemplateRef(n1, placeholderElement, null, "placeholderElement");
+        const n6 = Vue.createSlot("load-more");
+        return [n3, n6];
+      }
+    }, true));
+    Vue.setStaticTemplateRef(n7, scrollElement, null, "scrollElement");
+    const _uniWaterflowRoot = Vue.getBlockFirstNode(n7);
+    if (_uniWaterflowRoot && _uniWaterflowRoot.nodeType === 1) {
+      _uniWaterflowRoot.setAttribute("uni-waterflow", "");
+      Vue.initUniElement(_uniWaterflowRoot, _uniWaterflowElement);
+    }
+    return n7;
   }
-  console.warn(...warnArgs);
-}
-const _t0$6 = Vue.template('<text class="uni-video-icon uni-video-toast-icon">', false, 1);
-const _t1$4 = Vue.template("<div><!><div class=uni-video-toast-draw></div>");
-const _t2$1 = Vue.template('<div class=uni-video-container><video></video><div class="uni-video-bar uni-video-bar-full"><div class=uni-video-controls><div></div><div class=uni-video-current-time> </div><div class=uni-video-progress-container><div><div class=uni-video-progress-buffered></div><div class=uni-video-progress-played></div><div><div class=uni-video-inner></div></div></div></div><div class=uni-video-duration> </div></div><div></div><div></div></div><div style="z-index: 0;" class=uni-video-danmu></div> <div class=uni-video-loading></div><div><div class=uni-video-toast-title><span class=uni-video-toast-title-current-time> </span> </div></div><div class=uni-video-slots> ');
-const _t3$1 = Vue.template('<div class=uni-video-cover><div class="uni-video-cover-play-button uni-video-icon"></div>', 1);
-const _t4$1 = Vue.template('<text class="uni-video-icon uni-video-toast-icon">', 1, 1);
+});
+const _t0$5 = Vue.template('<text class="uni-video-icon uni-video-toast-icon">', false, 1);
+const _t1$1 = Vue.template("<div><!><div class=uni-video-toast-draw></div>");
+const _t2 = Vue.template('<div class=uni-video-container><video></video><div class="uni-video-bar uni-video-bar-full"><div class=uni-video-controls><div></div><div class=uni-video-current-time> </div><div class=uni-video-progress-container><div><div class=uni-video-progress-buffered></div><div class=uni-video-progress-played></div><div><div class=uni-video-inner></div></div></div></div><div class=uni-video-duration> </div></div><div></div><div></div></div><div style="z-index: 0;" class=uni-video-danmu></div> <div class=uni-video-loading></div><div><div class=uni-video-toast-title><span class=uni-video-toast-title-current-time> </span> </div></div><div class=uni-video-slots> ', 1);
+const _t3 = Vue.template('<div class=uni-video-cover><div class="uni-video-cover-play-button uni-video-icon"></div>', 1);
+const _t4 = Vue.template('<text class="uni-video-icon uni-video-toast-icon">', 1, 1);
 function formatTime(val) {
   val = val > 0 && val < Infinity ? val : 0;
   const h = Math.floor(val / 3600);
@@ -11160,7 +13296,7 @@ function useProgressing(videoState, gestureState, controlsState, autoHideEnd, au
   });
   return progressing;
 }
-const props$9 = {
+const videoProps = {
   id: {
     type: String,
     default: ""
@@ -11248,202 +13384,239 @@ const props$9 = {
     default: true
   }
 };
-const index$a = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Video",
-  props: props$9,
-  emits: [
-    "fullscreenchange",
-    "progress",
-    "loadedmetadata",
-    "waiting",
-    "error",
-    "play",
-    "pause",
-    "ended",
-    "timeupdate"
-  ],
-  setup(props2, { emit: emit2, attrs: attrs2, slots }) {
-    const rootRef = Vue.ref(null);
-    const containerRef = Vue.ref(null);
-    const trigger = useCustomEvent(rootRef, emit2);
-    const { state: userActionState } = useUserAction();
-    const { $attrs: videoAttrs } = useAttrs({ excludeListeners: true });
-    initI18nVideoMsgsOnce();
-    const { videoRef, state: videoState, play, pause, stop, seek, playbackRate, toggle, onDurationChange, onLoadedMetadata, onProgress, onWaiting, onVideoError, onPlay, onPause, onEnded, onTimeUpdate } = useVideo(props2, attrs2, trigger);
-    const { state: danmuState, danmuRef, updateDanmu, toggleDanmu, sendDanmu } = useDanmu(props2, videoState);
-    const { state: fullscreenState, onFullscreenChange, emitFullscreenChange, toggleFullscreen, requestFullScreen, exitFullScreen } = useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef);
-    const { state: gestureState, onTouchstart, onTouchend, onTouchmove } = useGesture(props2, videoState, videoRef, fullscreenState);
-    const { state: controlsState, progressRef, ballRef, clickProgress, toggleControls, autoHideEnd, autoHideStart } = useControls(props2, videoState, seek);
-    useContext();
-    const progressing = useProgressing(videoState, gestureState, controlsState);
-    return () => {
+const videoEmits = [
+  "fullscreenchange",
+  "progress",
+  "loadedmetadata",
+  "waiting",
+  "error",
+  "play",
+  "pause",
+  "ended",
+  "timeupdate"
+];
+function useVideoComponent(props2, { emit: emit2, attrs: attrs2, slots }) {
+  const rootRef = Vue.ref(null);
+  const containerRef = Vue.ref(null);
+  const trigger = useCustomEvent(rootRef, emit2);
+  const { state: userActionState } = useUserAction();
+  const { $attrs: videoAttrs } = useAttrs({ excludeListeners: true });
+  initI18nVideoMsgsOnce();
+  const { videoRef, state: videoState, play, pause, stop, seek, playbackRate, toggle, onDurationChange, onLoadedMetadata, onProgress, onWaiting, onVideoError, onPlay, onPause, onEnded, onTimeUpdate } = useVideo(props2, attrs2, trigger);
+  const { state: danmuState, danmuRef, updateDanmu, toggleDanmu, sendDanmu } = useDanmu(props2, videoState);
+  const { state: fullscreenState, onFullscreenChange, emitFullscreenChange, toggleFullscreen, requestFullScreen, exitFullScreen } = useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef);
+  const { state: gestureState, onTouchstart, onTouchend, onTouchmove } = useGesture(props2, videoState, videoRef, fullscreenState);
+  const { state: controlsState, progressRef, ballRef, clickProgress, toggleControls, autoHideEnd, autoHideStart } = useControls(props2, videoState, seek);
+  useContext();
+  const progressing = useProgressing(videoState, gestureState, controlsState);
+  return {
+    rootRef,
+    toggleControls,
+    methods: {
+      play,
+      pause,
+      stop,
+      seek,
+      sendDanmu,
+      playbackRate,
+      requestFullScreen,
+      exitFullScreen
+    },
+    render: () => {
       return (() => {
         const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n32 = Vue.createPlainElement("uni-video", {
-          id: () => props2.id,
-          onClick: () => toggleControls
-        }, () => {
-          const _n0 = _t2$1();
-          const _n1 = Vue.child(_n0);
-          const _n2 = Vue.next(_n1);
-          let _p0 = Vue.child(_n2);
-          const _n3 = Vue.child(_p0);
-          const _n4 = Vue.next(_n3);
-          const _n5 = Vue.next(_n4);
-          const _n9 = Vue.child(_n5);
-          const _n6 = Vue.child(_n9);
-          const _n7 = Vue.next(_n6);
-          const _n8 = Vue.next(_n7);
-          const _n10 = Vue.next(_n5);
-          const _n11 = Vue.next(_p0);
-          const _n12 = Vue.next(_n11);
-          const _n13 = Vue.next(_n2);
-          const _n14 = Vue.next(_n13, true);
-          const _n27 = Vue.next(_n14);
-          const _n30 = Vue.next(_n27);
-          const _n28 = Vue.child(Vue.child(_n30));
-          const _n29 = Vue.next(_n28, true);
-          const _n31 = Vue.next(_n30);
-          Vue.on(_n0, "touchstart", onTouchstart);
-          Vue.on(_n0, "touchend", onTouchend);
-          Vue.on(_n0, "touchmove", onTouchmove);
-          Vue.on(
-            _n0,
-            // @ts-expect-error
-            "fullscreenchange",
-            Vue.withModifiers(onFullscreenChange, ["stop"])
-          );
-          Vue.on(_n0, "webkitfullscreenchange", Vue.withModifiers(($event) => onFullscreenChange($event, true), ["stop"]));
-          Vue.on(_n1, "durationchange", onDurationChange);
-          Vue.on(_n1, "loadedmetadata", onLoadedMetadata);
-          Vue.on(_n1, "progress", onProgress);
-          Vue.on(_n1, "waiting", onWaiting);
-          Vue.on(_n1, "error", onVideoError);
-          Vue.on(_n1, "play", onPlay);
-          Vue.on(_n1, "pause", onPause);
-          Vue.on(_n1, "ended", onEnded);
-          Vue.on(_n1, "timeupdate", (event) => {
-            onTimeUpdate(event);
-            updateDanmu(event);
-          });
-          Vue.on(_n1, "webkitbeginfullscreen", () => emitFullscreenChange(true));
-          Vue.on(_n1, "x5videoenterfullscreen", () => emitFullscreenChange(true));
-          Vue.on(_n1, "webkitendfullscreen", () => emitFullscreenChange(false));
-          Vue.on(_n1, "x5videoexitfullscreen", () => emitFullscreenChange(false));
-          Vue.applyVShow(_n2, () => controlsState.controlsShow);
-          Vue.on(_n2, "click", Vue.withModifiers(() => {
+        const _n0 = _t2();
+        const _n1 = Vue.child(_n0);
+        const _n2 = Vue.next(_n1);
+        let _p0 = Vue.child(_n2);
+        const _n3 = Vue.child(_p0);
+        const _n4 = Vue.next(_n3);
+        const _n5 = Vue.next(_n4);
+        const _n9 = Vue.child(_n5);
+        const _n6 = Vue.child(_n9);
+        const _n7 = Vue.next(_n6);
+        const _n8 = Vue.next(_n7);
+        const _n10 = Vue.next(_n5);
+        const _n11 = Vue.next(_p0);
+        const _n12 = Vue.next(_n11);
+        const _n13 = Vue.next(_n2);
+        const _n14 = Vue.next(_n13, true);
+        const _n27 = Vue.next(_n14);
+        const _n30 = Vue.next(_n27);
+        const _n28 = Vue.child(Vue.child(_n30));
+        const _n29 = Vue.next(_n28, true);
+        const _n31 = Vue.next(_n30);
+        Vue.on(_n0, "touchstart", onTouchstart);
+        Vue.on(_n0, "touchend", onTouchend);
+        Vue.on(_n0, "touchmove", onTouchmove);
+        Vue.on(
+          _n0,
+          // @ts-expect-error
+          "fullscreenchange",
+          Vue.withModifiers(onFullscreenChange, ["stop"])
+        );
+        Vue.on(_n0, "webkitfullscreenchange", Vue.withModifiers(($event) => onFullscreenChange($event, true), ["stop"]));
+        Vue.on(_n1, "durationchange", onDurationChange);
+        Vue.on(_n1, "loadedmetadata", onLoadedMetadata);
+        Vue.on(_n1, "progress", onProgress);
+        Vue.on(_n1, "waiting", onWaiting);
+        Vue.on(_n1, "error", onVideoError);
+        Vue.on(_n1, "play", onPlay);
+        Vue.on(_n1, "pause", onPause);
+        Vue.on(_n1, "ended", onEnded);
+        Vue.on(_n1, "timeupdate", (event) => {
+          onTimeUpdate(event);
+          updateDanmu(event);
+        });
+        Vue.on(_n1, "webkitbeginfullscreen", () => emitFullscreenChange(true));
+        Vue.on(_n1, "x5videoenterfullscreen", () => emitFullscreenChange(true));
+        Vue.on(_n1, "webkitendfullscreen", () => emitFullscreenChange(false));
+        Vue.on(_n1, "x5videoexitfullscreen", () => emitFullscreenChange(false));
+        Vue.applyVShow(_n2, () => controlsState.controlsShow);
+        Vue.on(_n2, "click", Vue.withModifiers(() => {
+        }, ["stop"]));
+        Vue.applyVShow(_n3, () => props2.showPlayBtn);
+        Vue.on(_n3, "click", Vue.withModifiers(toggle, ["stop"]));
+        Vue.applyVShow(_n4, () => props2.showProgress);
+        const _x4 = Vue.txt(_n4);
+        setNodes(_x4, () => formatTime(videoState.currentTime));
+        Vue.on(_n5, "click", Vue.withModifiers(clickProgress, ["stop"]));
+        Vue.applyVShow(_n5, () => props2.showProgress);
+        Vue.applyVShow(_n10, () => props2.showProgress);
+        const _x10 = Vue.txt(_n10);
+        setNodes(_x10, () => formatTime(videoState.currentDuration));
+        Vue.applyVShow(_n11, () => props2.danmuBtn);
+        Vue.on(_n11, "click", Vue.withModifiers(toggleDanmu, ["stop"]));
+        Vue.applyVShow(_n12, () => props2.showFullscreenBtn);
+        Vue.on(_n12, "click", Vue.withModifiers(() => toggleFullscreen(!fullscreenState.fullscreen), ["stop"]));
+        Vue.applyVShow(_n13, () => videoState.start && danmuState.enable);
+        setNodes(_n14, () => controlsState.centerPlayBtnShow && (() => {
+          const _n02 = _t3();
+          const _n16 = Vue.child(_n02);
+          Vue.on(_n02, "click", Vue.withModifiers(() => {
           }, ["stop"]));
-          Vue.applyVShow(_n3, () => props2.showPlayBtn);
-          Vue.on(_n3, "click", Vue.withModifiers(toggle, ["stop"]));
-          Vue.applyVShow(_n4, () => props2.showProgress);
-          const _x4 = Vue.txt(_n4);
-          setNodes(_x4, () => formatTime(videoState.currentTime));
-          Vue.on(_n5, "click", Vue.withModifiers(clickProgress, ["stop"]));
-          Vue.applyVShow(_n5, () => props2.showProgress);
-          Vue.applyVShow(_n10, () => props2.showProgress);
-          const _x10 = Vue.txt(_n10);
-          setNodes(_x10, () => formatTime(videoState.currentDuration));
-          Vue.applyVShow(_n11, () => props2.danmuBtn);
-          Vue.on(_n11, "click", Vue.withModifiers(toggleDanmu, ["stop"]));
-          Vue.applyVShow(_n12, () => props2.showFullscreenBtn);
-          Vue.on(_n12, "click", Vue.withModifiers(() => toggleFullscreen(!fullscreenState.fullscreen), ["stop"]));
-          Vue.applyVShow(_n13, () => videoState.start && danmuState.enable);
-          setNodes(_n14, () => controlsState.centerPlayBtnShow && (() => {
-            const _n02 = _t3$1();
-            const _n16 = Vue.child(_n02);
-            Vue.on(_n02, "click", Vue.withModifiers(() => {
-            }, ["stop"]));
-            Vue.on(_n16, "click", Vue.withModifiers(play, ["stop"]));
-            return _n02;
-          })());
-          Vue.renderEffect(() => {
-            Vue.setDynamicProps(_n1, [
-              {
-                style: { "object-fit": props2.objectFit },
-                muted: !!props2.muted,
-                loop: !!props2.loop,
-                src: videoState.src,
-                poster: props2.poster,
-                autoplay: !!props2.autoplay
+          Vue.on(_n16, "click", Vue.withModifiers(play, ["stop"]));
+          return _n02;
+        })());
+        Vue.renderEffect(() => {
+          Vue.setDynamicProps(_n1, [
+            {
+              style: { "object-fit": props2.objectFit },
+              muted: !!props2.muted,
+              loop: !!props2.loop,
+              src: videoState.src,
+              poster: props2.poster,
+              autoplay: !!props2.autoplay
+            },
+            videoAttrs.value,
+            {
+              class: {
+                "uni-video-video": true,
+                "uni-video-video-fullscreen": fullscreenState.fullscreen
               },
-              videoAttrs.value,
-              {
-                class: {
-                  "uni-video-video": true,
-                  "uni-video-video-fullscreen": fullscreenState.fullscreen
-                },
-                "webkit-playsinline": true,
-                playsinline: true
-              }
-            ]);
-            _setTemplateRef(_n1, videoRef);
-            Vue.setClassName(_n3, 1 | 2 | (!videoState.playing ? 4 : 0) | (videoState.playing ? 8 : 0), [
-              " uni-video-icon",
-              " uni-video-control-button",
-              " uni-video-control-button-play",
-              " uni-video-control-button-pause"
-            ]);
-            Vue.setClassName(_n9, 1 | (progressing.value ? 2 : 0), [" uni-video-progress", " uni-video-progress-progressing"]);
-            Vue.setStyle(_n6, {
-              width: videoState.buffered - videoState.progress + "%",
-              left: videoState.progress + "%"
-            });
-            Vue.setStyle(_n7, { width: videoState.progress + "%" });
-            Vue.setStyle(_n8, { left: videoState.progress + "%" });
-            Vue.setClassName(_n8, 1 | (progressing.value ? 2 : 0), [" uni-video-ball", " uni-video-ball-progressing"]);
-            _setTemplateRef(_n8, ballRef);
-            _setTemplateRef(_n5, progressRef);
-            Vue.setClassName(_n11, 1 | 2 | (danmuState.enable ? 4 : 0), [
-              " uni-video-icon",
-              " uni-video-danmu-button",
-              " uni-video-danmu-button-active"
-            ]);
-            Vue.setClassName(_n12, 1 | 2 | (fullscreenState.fullscreen ? 4 : 0), [
-              " uni-video-icon",
-              " uni-video-fullscreen",
-              " uni-video-type-fullscreen"
-            ]);
-            _setTemplateRef(_n13, danmuRef);
+              "webkit-playsinline": true,
+              playsinline: true
+            }
+          ]);
+          _setTemplateRef(_n1, videoRef);
+          Vue.setClassName(_n3, 1 | 2 | (!videoState.playing ? 4 : 0) | (videoState.playing ? 8 : 0), [
+            " uni-video-icon",
+            " uni-video-control-button",
+            " uni-video-control-button-play",
+            " uni-video-control-button-pause"
+          ]);
+          Vue.setClassName(_n9, 1 | (progressing.value ? 2 : 0), [" uni-video-progress", " uni-video-progress-progressing"]);
+          Vue.setStyle(_n6, {
+            width: videoState.buffered - videoState.progress + "%",
+            left: videoState.progress + "%"
           });
-          Vue.setInsertionState(_n27);
-          Vue.createIf(() => gestureState.gestureType === "volume", () => {
-            const _n24 = _t1$4();
-            const _n23 = Vue.child(_n24);
-            const _n22 = Vue.next(_n23);
-            Vue.renderEffect(() => Vue.setClassName(_n24, 1 | (gestureState.toastThin ? 2 : 0), [" uni-video-toast-container", " uni-video-toast-container-thin"]));
-            Vue.setInsertionState(_n24, _n23);
-            Vue.createIf(() => !gestureState.toastThin && gestureState.volumeNew > 0 && gestureState.gestureType === "volume", () => {
-              const _n19 = _t0$6();
-              return _n19;
-            }, () => {
-              const _n21 = createNodes(() => !gestureState.toastThin && (() => {
-                const _n02 = _t4$1();
-                return _n02;
-              })());
-              return _n21;
-            }, 265);
-            Vue.setStyle(_n24, { marginTop: `5px` });
-            Vue.renderEffect(() => Vue.setStyle(_n22, { width: `${gestureState.volumeNew * 100}%` }));
-            return _n24;
+          Vue.setStyle(_n7, { width: videoState.progress + "%" });
+          Vue.setStyle(_n8, { left: videoState.progress + "%" });
+          Vue.setClassName(_n8, 1 | (progressing.value ? 2 : 0), [" uni-video-ball", " uni-video-ball-progressing"]);
+          _setTemplateRef(_n8, ballRef);
+          _setTemplateRef(_n5, progressRef);
+          Vue.setClassName(_n11, 1 | 2 | (danmuState.enable ? 4 : 0), [
+            " uni-video-icon",
+            " uni-video-danmu-button",
+            " uni-video-danmu-button-active"
+          ]);
+          Vue.setClassName(_n12, 1 | 2 | (fullscreenState.fullscreen ? 4 : 0), [
+            " uni-video-icon",
+            " uni-video-fullscreen",
+            " uni-video-type-fullscreen"
+          ]);
+          _setTemplateRef(_n13, danmuRef);
+        });
+        Vue.setInsertionState(_n27);
+        Vue.createIf(() => gestureState.gestureType === "volume", () => {
+          const _n24 = _t1$1();
+          const _n23 = Vue.child(_n24);
+          const _n22 = Vue.next(_n23);
+          Vue.renderEffect(() => Vue.setClassName(_n24, 1 | (gestureState.toastThin ? 2 : 0), [" uni-video-toast-container", " uni-video-toast-container-thin"]));
+          Vue.setInsertionState(_n24, _n23);
+          Vue.createIf(() => !gestureState.toastThin && gestureState.volumeNew > 0 && gestureState.gestureType === "volume", () => {
+            const _n19 = _t0$5();
+            return _n19;
           }, () => {
-            const _n26 = createNodes(null);
-            return _n26;
-          }, 521);
-          const _x28 = Vue.txt(_n28);
-          setNodes(_x28, () => formatTime(gestureState.currentTimeNew));
-          setNodes(_n29, " / ", () => formatTime(videoState.currentDuration));
-          const _x31 = Vue.txt(_n31);
-          setNodes(_x31, () => slots.default && slots.default());
-          Vue.renderEffect(() => {
-            Vue.setClassName(_n30, 1 | (progressing.value ? 2 : 0), [" uni-video-toast", " uni-video-toast-progress"]);
-            _setTemplateRef(_n0, containerRef);
-          });
-          return _n0;
-        }, true);
-        Vue.renderEffect(() => _setTemplateRef(_n32, rootRef));
-        return _n32;
+            const _n21 = createNodes(() => !gestureState.toastThin && (() => {
+              const _n02 = _t4();
+              return _n02;
+            })());
+            return _n21;
+          }, 265);
+          Vue.setStyle(_n24, { marginTop: `5px` });
+          Vue.renderEffect(() => Vue.setStyle(_n22, { width: `${gestureState.volumeNew * 100}%` }));
+          return _n24;
+        }, () => {
+          const _n26 = createNodes(null);
+          return _n26;
+        }, 521);
+        const _x28 = Vue.txt(_n28);
+        setNodes(_x28, () => formatTime(gestureState.currentTimeNew));
+        setNodes(_n29, " / ", () => formatTime(videoState.currentDuration));
+        const _x31 = Vue.txt(_n31);
+        setNodes(_x31, () => slots.default && slots.default());
+        Vue.renderEffect(() => {
+          Vue.setClassName(_n30, 1 | (progressing.value ? 2 : 0), [" uni-video-toast", " uni-video-toast-progress"]);
+          _setTemplateRef(_n0, containerRef);
+        });
+        return _n0;
       })();
-    };
+    }
+  };
+}
+const _t0$4 = Vue.template("<div uni-video uni-view> ", 1);
+class UniVideoElement extends UniViewElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniVideoElement && value instanceof UniViewElement && value.hasAttribute("uni-video") || Function.prototype[Symbol.hasInstance].call(this, value);
+  }
+}
+const uniTagName$3 = { value: "VIDEO" };
+const indexVapor$3 = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Video",
+  props: videoProps,
+  emits: videoEmits,
+  rootElement: {
+    name: "uni-video",
+    class: UniVideoElement
+  },
+  setup(props2, context) {
+    const { rootRef, toggleControls, methods, render } = useVideoComponent(props2, context);
+    const root = (() => {
+      const _setTemplateRef = Vue.createTemplateRefSetter();
+      const _n0 = _t0$4();
+      Vue.on(_n0, "click", toggleControls);
+      const _x0 = Vue.txt(_n0);
+      setNodes(_x0, () => render());
+      Vue.renderEffect(() => {
+        Vue.setProp(_n0, "id", props2.id);
+        _setTemplateRef(_n0, rootRef);
+      });
+      return _n0;
+    })();
+    Object.assign(root, methods);
+    Object.defineProperty(root, "uniTagName", uniTagName$3);
+    return root;
   }
 });
 const onWebInvokeAppService = ({ name, arg }) => {
@@ -11469,32 +13642,61 @@ const onWebInvokeAppService = ({ name, arg }) => {
     }
   }
 };
-const Invoke = /* @__PURE__ */ uniShared.once(() => UniServiceJSBridge.on(uniShared.ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService));
-const props$8 = { src: {
-  type: String,
-  default: ""
-} };
-const indexX = /* @__PURE__ */ defineBuiltInComponent({
+const Invoke = /* @__PURE__ */ uniShared.once(
+  () => UniServiceJSBridge.on(uniShared.ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService)
+);
+const webViewProps = {
+  src: {
+    type: String,
+    default: ""
+  }
+};
+function useWebView(props2, emit2) {
+  Invoke();
+  const rootRef = Vue.ref(null);
+  Vue.ref(null);
+  const { $attrs, $excludeAttrs, $listeners } = useAttrs({
+    excludeListeners: true
+  });
+  return { rootRef, $listeners, $excludeAttrs };
+}
+const _t0$3 = Vue.template("<div>", 1);
+class UniWebViewElement extends UniViewElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniWebViewElement && value instanceof UniViewElement && value.hasAttribute("uni-web-view") || Function.prototype[Symbol.hasInstance].call(this, value);
+  }
+}
+const uniTagName$2 = { value: "WEB-VIEW" };
+const indexVapor$2 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
-  props: props$8,
+  props: webViewProps,
   emits: ["load"],
+  rootElement: {
+    name: "uni-web-view",
+    class: UniWebViewElement
+  },
   setup(props2, { emit: emit2 }) {
-    Invoke();
-    const rootRef = Vue.ref(null);
-    Vue.ref(null);
-    const { $attrs, $excludeAttrs, $listeners } = useAttrs({ excludeListeners: true });
-    return () => {
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n0 = Vue.createPlainElement("uni-web-view", {
-          class: "uni-webview",
-          $: [() => $listeners.value, () => $excludeAttrs.value]
-        }, null, true);
-        Vue.renderEffect(() => _setTemplateRef(_n0, rootRef));
-        return _n0;
-      })();
-    };
+    const { rootRef, $listeners, $excludeAttrs } = useWebView();
+    const root = (() => {
+      const _setTemplateRef = Vue.createTemplateRefSetter();
+      const _n0 = _t0$3();
+      Vue.renderEffect(() => {
+        Vue.setDynamicProps(_n0, [
+          {
+            "uni-web-view": "",
+            "uni-view": "",
+            class: "uni-webview"
+          },
+          $listeners.value,
+          $excludeAttrs.value
+        ]);
+        _setTemplateRef(_n0, rootRef);
+      });
+      return _n0;
+    })();
+    Object.defineProperty(root, "uniTagName", uniTagName$2);
+    return root;
   }
 });
 const ICON_PATH_ORIGIN = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIQAAACECAMAAABmmnOVAAAC01BMVEUAAAAAef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef96quGStdqStdpbnujMzMzCyM7Gyc7Ky83MzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMwAef8GfP0yjfNWnOp0qOKKsdyYt9mju9aZt9mMstx1qeJYnekyjvIIfP0qivVmouaWttnMzMyat9lppOUujPQKffxhoOfNzc3Y2Njh4eHp6enu7u7y8vL19fXv7+/i4uLZ2dnOzs6auNgOf/sKff15quHR0dHx8fH9/f3////j4+N6quFdn+iywdPb29vw8PD+/v7c3NyywtLa2tr29vbS0tLd3d38/Pzf39/o6Ojc7f+q0v+HwP9rsf9dqv9Hnv9Vpv/q6urj8P+Vx/9Am/8Pgf8Iff/z8/OAvP95uf/n5+c5l//V6f+52v+y1//7+/vt7e0rkP/09PTQ0NDq9P8Whf+cy//W1tbe3t7A3v/m5ubs7OxOov/r6+vk5OQiaPjKAAAAknRSTlMACBZ9oB71/jiqywJBZATT6hBukRXv+zDCAVrkDIf4JbQsTb7eVeJLbwfa8Rh4G/OlPS/6/kxQ9/xdmZudoJxNVhng7B6wtWdzAtQOipcF1329wS44doK/BAkyP1pvgZOsrbnGXArAg34G2IsD1eMRe7bi7k5YnqFT9V0csyPedQyYD3p/Fje+hDpskq/MwpRBC6yKp2MAAAQdSURBVHja7Zn1exMxGIAPHbrhDsPdneHuNtzd3d3dIbjLh93o2o4i7TpgG1Jk0g0mMNwd/gTa5rq129reHnK5e/bk/TFNk/dJ7r5894XjGAwGg8GgTZasCpDIll1+hxw5vXLJLpEboTx5ZXbIhyzkl9fB28cqUaCgrBKFkI3CcjoUKYolihWXUSI7EihRUjaHXF52CVRKLoe8eZIdUOkyMknkRw6UlcehYAFHiXK+skgURk6Ul8OhQjFnCVRRBolKqRxQ5SzUHaqgNGSj7VCmalqJnDkoS5RF6ZCbroNvufQkUD6qEuXTdUA+3hQdqiEXVKfnUKOmK4latalJ1EEuoZZ6162HJ9x/4OChw0eOHj12/MTJU6dxG7XUu751tjNnz4ET5y9ctLZTSr0beKFLl89bpuUDrqgC1RqNWqsKuqqzNFw7e51S6u3tc+OmZUJ9kCHY6ECwOkRvab51iUrqXej2HYDQsHBjWgx3Ae7dppB6N2wEcF9jdMGDUIDGTaR2aNoM9FqjG7QmaN5CWgc/gIePjG559BigpZQOrYB/4jBfRGRUtDkmJjY6KjLCofkpD62lc2gDfMpWPIuLdwyV8XEpHgaddBZ+wBuSFcwJqSN2ovmZ/dfnOvCTxqGtwzq8SEjv4EhISn48eWgnhUP7DvDSvgzxrs6vV6+FLiro2EkCic4QKkzwJsH1KYreCp0eQhfyDl1B/w4P/xa5JVJ4U03QjbRD9x7wXlgH5IE3wmMBHXoSlugFAcI6f/AkkSi8q6HQm6xDn77wEQ8djTwSj3tqAMguRTe4ikeOQyJ4YV+KfkQl+oNW5GbY4gWOWgbwJ+kwAD6Fi90MK2ZsrIeBBCUGwRXbqJ+/iJMQliIEBhOU6AJhtlG/IpHE2bqrYQg5h6HA4yQiRqwEfkGCdTCMmMRw+IbPDCQaHCsCYAQxiZHw3TbmD/ESOHgHwShiEqPhp/gggYkSztIxxCRawy/bmEniJaJtfwiEscQkxkFgRqJESqQwwHhiEuMBp3Vm8RK/cZoHEzKXhCK2QxEPpiJe0YlKCFaKCNv/cYBNUsBRPlkJSc0U+dM7E9H0ThGJbgZT/iR7yj+VqMS06Qr4+OFm2JdCxIa8lugzkJs5K6MfxAaYPUcBpYG5khZJEkUUSb7DPCnKRfPBXj6M8FwuegoLpCgXcQszVjhbJFUJUee2hBhLoYTIcYtB57KY+opSMdVqwatSlZVj05aV//CwJLMX2DluaUcwhXm4ali2XOoLjxUrPV26zFtF4f5p0Gp310+z13BUWNvbehEXona6iAtX/zVZmtfN4WixfsNky4S6gCCVVq3RPLdfSfpv3MRRZfPoLc6Xs/5bt3EyMGzE9h07/Xft2t15z6i9+zgGg8FgMBgMBoPBYDAYDAYj8/APG67Rie8pUDsAAAAASUVORK5CYII=";
@@ -11551,7 +13753,7 @@ const getIsAMap = () => {
 const getIsBMap = () => {
   return getMapInfo().type === "BMapGL";
 };
-const props$7 = {
+const props$4 = {
   id: {
     type: [Number, String],
     default: ""
@@ -11634,7 +13836,7 @@ function useMarkerLabelStyle(id2) {
 }
 const MapMarker = /* @__PURE__ */ defineSystemComponent({
   name: "MapMarker",
-  props: props$7,
+  props: props$4,
   setup(props2) {
     const id2 = String(!isNaN(Number(props2.id)) ? props2.id : "");
     const onMapReady = Vue.inject("onMapReady");
@@ -11955,12 +14157,10 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
       };
       addMapChidlContext(context);
     }
-    return () => {
-      return null;
-    };
+    return [];
   }
 });
-const props$6 = {
+const props$3 = {
   points: {
     type: Array,
     require: true
@@ -12006,7 +14206,7 @@ const props$6 = {
 };
 const MapPolyline = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolyline",
-  props: props$6,
+  props: props$3,
   setup(props2) {
     const onMapReady = Vue.inject("onMapReady");
     let polyline;
@@ -12079,12 +14279,10 @@ const MapPolyline = /* @__PURE__ */ defineSystemComponent({
       addPolyline(props2);
       Vue.watch(props2, updatePolyline);
     });
-    return () => {
-      return null;
-    };
+    return [];
   }
 });
-const props$5 = {
+const props$2 = {
   latitude: {
     type: [Number, String],
     require: true
@@ -12116,7 +14314,7 @@ const props$5 = {
 };
 const MapCircle = /* @__PURE__ */ defineSystemComponent({
   name: "MapCircle",
-  props: props$5,
+  props: props$2,
   setup(props2) {
     const onMapReady = Vue.inject("onMapReady");
     let circle;
@@ -12176,13 +14374,11 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
       addCircle(props2);
       Vue.watch(props2, updateCircle);
     });
-    return () => {
-      return null;
-    };
+    return [];
   }
 });
-const _t0$5 = Vue.template("<div class=uni-map-control><img class=uni-map-control-icon>", 1);
-const props$4 = {
+const _t0$2 = Vue.template("<div class=uni-map-control><img class=uni-map-control-icon>", 1);
+const props$1 = {
   id: {
     type: [Number, String],
     default: ""
@@ -12206,7 +14402,7 @@ const props$4 = {
 };
 const MapControl = /* @__PURE__ */ defineSystemComponent({
   name: "MapControl",
-  props: props$4,
+  props: props$1,
   setup(props2) {
     const imgPath = Vue.computed(() => getRealPath(props2.iconPath));
     const positionStyle = Vue.computed(() => {
@@ -12226,7 +14422,7 @@ const MapControl = /* @__PURE__ */ defineSystemComponent({
     };
     return () => {
       return (() => {
-        const _n1 = _t0$5();
+        const _n1 = _t0$2();
         const _n0 = Vue.child(_n1);
         Vue.on(_n0, "click", handleClick);
         Vue.renderEffect(() => {
@@ -12264,7 +14460,7 @@ const MapLocation = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$3 = {
+const props = {
   // 边框虚线，腾讯地图支持，google 高德 地图不支持，默认值为[0, 0] 为实线，非 [0, 0] 为虚线，H5 端无法像微信小程序一样控制虚线的间隔像素大小
   dashArray: {
     type: Array,
@@ -12298,7 +14494,7 @@ const props$3 = {
 };
 const MapPolygon = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolygon",
-  props: props$3,
+  props,
   setup(props2) {
     let polygonIns;
     const onMapReady = Vue.inject("onMapReady");
@@ -12365,12 +14561,10 @@ const MapPolygon = /* @__PURE__ */ defineSystemComponent({
       drawPolygon();
       Vue.watch(props2, drawPolygon);
     });
-    return () => null;
+    return [];
   }
 });
-const _t0$4 = Vue.template('<div style="width: 100%; height: 100%; position: relative; overflow: hidden"></div>');
-const _t1$3 = Vue.template('<div style="position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"> ');
-const props$2 = {
+const mapProps = {
   id: {
     type: String,
     default: ""
@@ -12461,7 +14655,11 @@ function getMapPosition(maps, latitude, longitude) {
   } else if (getIsAMap()) {
     return getAMapPosition(maps, latitude, longitude);
   } else {
-    return getGoogleOrQQMapPosition(maps, latitude, longitude);
+    return getGoogleOrQQMapPosition(
+      maps,
+      latitude,
+      longitude
+    );
   }
 }
 function getLat(latLng) {
@@ -12506,17 +14704,26 @@ function useMap(props2, rootRef, emit2) {
   function removeMapChidlContext(context) {
     delete contexts[context.id];
   }
-  Vue.watch([() => props2.latitude, () => props2.longitude], ([latitudeVlaue, longitudeVlaue]) => {
-    const latitude = Number(latitudeVlaue);
-    const longitude = Number(longitudeVlaue);
-    if (latitude !== state.latitude || longitude !== state.longitude) {
-      state.latitude = latitude;
-      state.longitude = longitude;
+  Vue.watch(
+    [() => props2.latitude, () => props2.longitude],
+    ([latitudeVlaue, longitudeVlaue]) => {
+      const latitude = Number(latitudeVlaue);
+      const longitude = Number(longitudeVlaue);
+      if (latitude !== state.latitude || longitude !== state.longitude) {
+        state.latitude = latitude;
+        state.longitude = longitude;
+      }
     }
-  });
-  Vue.watch(() => props2.includePoints, (points) => {
-    state.includePoints = getPoints(points);
-  }, { deep: true });
+  );
+  Vue.watch(
+    () => props2.includePoints,
+    (points) => {
+      state.includePoints = getPoints(points);
+    },
+    {
+      deep: true
+    }
+  );
   function updateBounds() {
     if (getIsAMap()) {
       const points = [];
@@ -12530,7 +14737,10 @@ function useMap(props2, rootRef, emit2) {
     else {
       const bounds = new maps.LatLngBounds();
       state.includePoints.forEach(({ latitude, longitude }) => {
-        const latLng = new maps.LatLng(latitude, longitude);
+        const latLng = new maps.LatLng(
+          latitude,
+          longitude
+        );
         bounds.extend(latLng);
       });
       map.fitBounds(bounds);
@@ -12538,94 +14748,98 @@ function useMap(props2, rootRef, emit2) {
   }
   try {
     const id2 = useContextInfo();
-    useSubscribe((type, data = {}) => {
-      switch (type) {
-        case "getCenterLocation":
-          onMapReady(() => {
-            const center = map.getCenter();
-            uniShared.callOptions(data, {
-              latitude: getLat(center),
-              longitude: getLng(center),
-              errMsg: `${type}:ok`
-            });
-          });
-          break;
-        case "moveToLocation":
-          {
-            let latitude = Number(data.latitude);
-            let longitude = Number(data.longitude);
-            if (!latitude || !longitude) {
-              const context = contexts[CONTEXT_ID];
-              if (context) {
-                latitude = context.state.latitude;
-                longitude = context.state.longitude;
-              }
-            }
-            if (latitude && longitude) {
-              state.latitude = latitude;
-              state.longitude = longitude;
-              if (map)
-                ;
-              onMapReady(() => {
-                uniShared.callOptions(data, `${type}:ok`);
+    useSubscribe(
+      (type, data = {}) => {
+        switch (type) {
+          case "getCenterLocation":
+            onMapReady(() => {
+              const center = map.getCenter();
+              uniShared.callOptions(data, {
+                latitude: getLat(center),
+                longitude: getLng(center),
+                errMsg: `${type}:ok`
               });
-            } else {
-              uniShared.callOptions(data, `${type}:fail`);
-            }
-          }
-          break;
-        case "translateMarker":
-          onMapReady(() => {
-            const context = contexts[data.markerId];
-            if (context) {
-              try {
-                context.translate(data);
-              } catch (error) {
-                uniShared.callOptions(data, `${type}:fail ${error.message}`);
+            });
+            break;
+          case "moveToLocation":
+            {
+              let latitude = Number(data.latitude);
+              let longitude = Number(data.longitude);
+              if (!latitude || !longitude) {
+                const context = contexts[CONTEXT_ID];
+                if (context) {
+                  latitude = context.state.latitude;
+                  longitude = context.state.longitude;
+                }
               }
-              uniShared.callOptions(data, `${type}:ok`);
-            } else {
-              uniShared.callOptions(data, `${type}:fail not found`);
+              if (latitude && longitude) {
+                state.latitude = latitude;
+                state.longitude = longitude;
+                if (map)
+                  ;
+                onMapReady(() => {
+                  uniShared.callOptions(data, `${type}:ok`);
+                });
+              } else {
+                uniShared.callOptions(data, `${type}:fail`);
+              }
             }
-          });
-          break;
-        case "includePoints":
-          state.includePoints = getPoints(data.includePoints);
-          if (isBoundsReady || getIsAMap()) {
-            updateBounds();
-          }
-          onBoundsReady(() => {
-            uniShared.callOptions(data, `${type}:ok`);
-          });
-          break;
-        case "getRegion":
-          onBoundsReady(() => {
-            const latLngBounds = map.getBounds();
-            const southwest = latLngBounds.getSouthWest();
-            const northeast = latLngBounds.getNorthEast();
-            uniShared.callOptions(data, {
-              southwest: {
-                latitude: getLat(southwest),
-                longitude: getLng(southwest)
-              },
-              northeast: {
-                latitude: getLat(northeast),
-                longitude: getLng(northeast)
-              },
-              errMsg: `${type}:ok`
+            break;
+          case "translateMarker":
+            onMapReady(() => {
+              const context = contexts[data.markerId];
+              if (context) {
+                try {
+                  context.translate(data);
+                } catch (error) {
+                  uniShared.callOptions(data, `${type}:fail ${error.message}`);
+                }
+                uniShared.callOptions(data, `${type}:ok`);
+              } else {
+                uniShared.callOptions(data, `${type}:fail not found`);
+              }
             });
-          });
-          break;
-        case "getScale":
-          onMapReady(() => {
-            uniShared.callOptions(data, {
-              scale: map.getZoom(),
-              errMsg: `${type}:ok`
+            break;
+          case "includePoints":
+            state.includePoints = getPoints(data.includePoints);
+            if (isBoundsReady || getIsAMap()) {
+              updateBounds();
+            }
+            onBoundsReady(() => {
+              uniShared.callOptions(data, `${type}:ok`);
             });
-          });
-          break;
-      }
-    }, id2, true);
+            break;
+          case "getRegion":
+            onBoundsReady(() => {
+              const latLngBounds = map.getBounds();
+              const southwest = latLngBounds.getSouthWest();
+              const northeast = latLngBounds.getNorthEast();
+              uniShared.callOptions(data, {
+                southwest: {
+                  latitude: getLat(southwest),
+                  longitude: getLng(southwest)
+                },
+                northeast: {
+                  latitude: getLat(northeast),
+                  longitude: getLng(northeast)
+                },
+                errMsg: `${type}:ok`
+              });
+            });
+            break;
+          case "getScale":
+            onMapReady(() => {
+              uniShared.callOptions(data, {
+                scale: map.getZoom(),
+                errMsg: `${type}:ok`
+              });
+            });
+            break;
+        }
+      },
+      id2,
+      true
+    );
   } catch (error) {
   }
   Vue.provide("onMapReady", onMapReady);
@@ -12637,1084 +14851,78 @@ function useMap(props2, rootRef, emit2) {
     trigger
   };
 }
-const index$9 = /* @__PURE__ */ defineBuiltInComponent({
+const mapEmits = [
+  "markertap",
+  "labeltap",
+  "callouttap",
+  "controltap",
+  "regionchange",
+  "tap",
+  "click",
+  "updated",
+  "update:scale",
+  "update:latitude",
+  "update:longitude"
+];
+const _t0$1 = Vue.template('<div uni-map uni-view><div style="width: 100%; height: 100%; position: relative; overflow: hidden"></div> <div style="position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"> ', 1);
+class UniMapElement extends UniViewElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniMapElement && value instanceof UniViewElement && value.hasAttribute("uni-map") || Function.prototype[Symbol.hasInstance].call(this, value);
+  }
+}
+const uniTagName$1 = { value: "MAP" };
+const indexVapor$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Map",
-  props: props$2,
-  emits: [
-    "markertap",
-    "labeltap",
-    "callouttap",
-    "controltap",
-    "regionchange",
-    "tap",
-    "click",
-    "updated",
-    "update:scale",
-    "update:latitude",
-    "update:longitude"
-  ],
+  props: mapProps,
+  emits: mapEmits,
+  rootElement: {
+    name: "uni-map",
+    class: UniMapElement
+  },
   setup(props2, { emit: emit2, slots }) {
     const rootRef = Vue.ref(null);
     const { mapRef, trigger } = useMap(props2, rootRef, emit2);
-    return () => {
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n8 = Vue.createPlainElement("uni-map", { id: () => props2.id }, () => {
-          const _n0 = _t0$4();
-          const _n7 = _t1$3();
-          const _n1 = createNodes(() => props2.markers.map((item) => (() => {
-            const _n02 = Vue.createKeyedFragment(() => item.id, () => {
-              const _n2 = createComponent(MapMarker, { $: [() => item] }, null, true);
-              return _n2;
-            });
-            return _n02;
-          })()), () => props2.polyline.map((item) => (() => {
-            const _n02 = createComponent(MapPolyline, { $: [() => item] }, null, true);
-            return _n02;
-          })()), () => props2.circles.map((item) => (() => {
-            const _n02 = createComponent(MapCircle, { $: [() => item] }, null, true);
-            return _n02;
-          })()), () => props2.controls.map((item) => (() => {
-            const _n02 = createComponent(MapControl, { $: [() => item, { trigger: () => trigger }] }, null, true);
-            return _n02;
-          })()), () => props2.showLocation && (() => {
-            const _n02 = createComponent(MapLocation, null, null, true);
-            return _n02;
-          })(), () => props2.polygons.map((item) => (() => {
-            const _n02 = createComponent(MapPolygon, { $: [() => item] }, null, true);
-            return _n02;
-          })()));
-          const _x7 = Vue.txt(_n7);
-          setNodes(_x7, () => slots.default && slots.default());
-          Vue.renderEffect(() => _setTemplateRef(_n0, mapRef));
-          return [
-            _n0,
-            _n1,
-            _n7
-          ];
-        }, true);
-        Vue.renderEffect(() => _setTemplateRef(_n8, rootRef));
-        return _n8;
-      })();
-    };
-  }
-});
-const _t0$3 = Vue.template("<div class=uni-cover-view> ");
-const props$1 = { scrollTop: {
-  type: [String, Number],
-  default: 0
-} };
-const index$8 = /* @__PURE__ */ defineBuiltInComponent({
-  name: "CoverView",
-  compatConfig: { MODE: 3 },
-  props: props$1,
-  setup(props2, { slots }) {
-    const root = Vue.ref(null);
-    const content = Vue.ref(null);
-    Vue.watch(() => props2.scrollTop, (val) => {
-      setScrollTop(val);
-    });
-    function setScrollTop(val) {
-      let _content = content.value;
-      if (getComputedStyle(_content).overflowY === "scroll") {
-        _content.scrollTop = _upx2pxNum(val);
-      }
-    }
-    function _upx2pxNum(val) {
-      let _val = String(val);
-      if (/\d+[ur]px$/i.test(_val)) {
-        _val.replace(/\d+[ur]px$/i, (text) => {
-          return String(uni.upx2px(parseFloat(text)));
+    const root = (() => {
+      const _setTemplateRef = Vue.createTemplateRefSetter();
+      const _n3 = _t0$1();
+      const _n0 = Vue.child(_n3);
+      const _n1 = Vue.next(_n0, true);
+      const _n2 = Vue.next(_n1);
+      setNodes(_n1, () => props2.markers.map((item) => (() => {
+        const _n02 = Vue.createKeyedFragment(() => item.id, () => {
+          const _n22 = createComponent(MapMarker, { $: [() => item] }, null, true);
+          return _n22;
         });
-      }
-      return parseFloat(_val) || 0;
-    }
-    return () => {
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n1 = Vue.createPlainElement("uni-cover-view", { "scroll-top": () => props2.scrollTop }, () => {
-          const _n0 = _t0$3();
-          const _x0 = Vue.txt(_n0);
-          setNodes(_x0, () => slots.default && slots.default());
-          Vue.renderEffect(() => _setTemplateRef(_n0, content));
-          return _n0;
-        }, true);
-        Vue.renderEffect(() => _setTemplateRef(_n1, root));
-        return _n1;
-      })();
-    };
-  }
-});
-const _t0$2 = Vue.template("<img>");
-const _t1$2 = Vue.template("<div class=uni-cover-image>");
-const index$7 = /* @__PURE__ */ defineBuiltInComponent({
-  name: "CoverImage",
-  compatConfig: { MODE: 3 },
-  props: { src: {
-    type: String,
-    default: ""
-  } },
-  emits: ["load", "error"],
-  setup(props2, { emit: emit2 }) {
-    const root = Vue.ref(null);
-    const trigger = useCustomEvent(root, emit2);
-    function load($event) {
-      trigger("load", $event);
-    }
-    function error($event) {
-      trigger("error", $event);
-    }
-    return () => {
-      const { src } = props2;
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n6 = Vue.createPlainElement("uni-cover-image", { src: () => src }, () => {
-          const _n5 = _t1$2();
-          Vue.setInsertionState(_n5);
-          Vue.createIf(() => src, () => {
-            const _n2 = _t0$2();
-            Vue.on(_n2, "load", load);
-            Vue.on(_n2, "error", error);
-            Vue.renderEffect(() => Vue.setProp(_n2, "src", getRealPath(src)));
-            return _n2;
-          }, () => {
-            const _n4 = createNodes(null);
-            return _n4;
-          }, 265);
-          return _n5;
-        }, true);
-        Vue.renderEffect(() => _setTemplateRef(_n6, root));
-        return _n6;
-      })();
-    };
-  }
-});
-const POPUP_EDGE = 6;
-function usePopupStyle(props2, triangleColor = "#fcfcfd") {
-  const popupWidth = Vue.ref(0);
-  const popupHeight = Vue.ref(0);
-  const isDesktop = Vue.computed(
-    () => popupWidth.value >= 500 && popupHeight.value >= 500
-  );
-  const popupStyle = Vue.computed(() => {
-    const style = {
-      content: {
-        transform: "",
-        left: "",
-        top: "",
-        bottom: ""
-      },
-      triangle: {
-        left: "",
-        top: "",
-        bottom: "",
-        "border-width": "",
-        "border-color": ""
-      }
-    };
-    const contentStyle = style.content;
-    const triangleStyle = style.triangle;
-    const popover = props2.popover;
-    function getNumber(value) {
-      try {
-        const number = Number(value);
-        return Number.isFinite(number) ? number : 0;
-      } catch {
-        return 0;
-      }
-    }
-    if (isDesktop.value && popover) {
-      const popoverLeft = Math.max(0, getNumber(popover.left));
-      const width = getNumber(popover.width);
-      const popoverWidth = width > 0 ? width : 300;
-      const popoverTop = Math.max(0, getNumber(popover.top));
-      const popoverHeight = Math.max(0, getNumber(popover.height));
-      const center = popoverLeft + popoverWidth / 2;
-      const contentLeft = Math.max(
-        POPUP_EDGE,
-        Math.min(
-          popupWidth.value - popoverWidth - POPUP_EDGE,
-          center - popoverWidth / 2
-        )
-      );
-      shared.extend(triangleStyle, {
-        position: "absolute",
-        width: "0",
-        height: "0",
-        "margin-left": "-6px",
-        "border-style": "solid"
+        return _n02;
+      })()), () => props2.polyline.map((item) => (() => {
+        const _n02 = createComponent(MapPolyline, { $: [() => item] }, null, true);
+        return _n02;
+      })()), () => props2.circles.map((item) => (() => {
+        const _n02 = createComponent(MapCircle, { $: [() => item] }, null, true);
+        return _n02;
+      })()), () => props2.controls.map((item) => (() => {
+        const _n02 = createComponent(MapControl, { $: [() => item, { trigger: () => trigger }] }, null, true);
+        return _n02;
+      })()), () => props2.showLocation && (() => {
+        const _n02 = createComponent(MapLocation, null, null, true);
+        return _n02;
+      })(), () => props2.polygons.map((item) => (() => {
+        const _n02 = createComponent(MapPolygon, { $: [() => item] }, null, true);
+        return _n02;
+      })()));
+      const _x2 = Vue.txt(_n2);
+      setNodes(_x2, () => slots.default && slots.default());
+      Vue.renderEffect(() => {
+        Vue.setProp(_n3, "id", props2.id);
+        _setTemplateRef(_n0, mapRef);
+        _setTemplateRef(_n3, rootRef);
       });
-      contentStyle.transform = "none !important";
-      contentStyle.left = `${contentLeft}px`;
-      if (width > 0) {
-        contentStyle.width = `${popoverWidth}px`;
-      }
-      const triangleLeft = Math.max(
-        12,
-        Math.min(popoverWidth - 12, center - contentLeft)
-      );
-      triangleStyle.left = `${triangleLeft}px`;
-      const vcl = popupHeight.value / 2;
-      if (popoverTop + popoverHeight - vcl > vcl - popoverTop) {
-        contentStyle.top = "auto";
-        contentStyle.bottom = `${Math.max(
-          POPUP_EDGE,
-          popupHeight.value - popoverTop + POPUP_EDGE
-        )}px`;
-        triangleStyle.bottom = "-6px";
-        triangleStyle["border-width"] = "6px 6px 0 6px";
-        triangleStyle["border-color"] = `${triangleColor} transparent transparent transparent`;
-      } else {
-        contentStyle.top = `${Math.max(
-          POPUP_EDGE,
-          popoverTop + popoverHeight + POPUP_EDGE
-        )}px`;
-        triangleStyle.top = "-6px";
-        triangleStyle["border-width"] = "0 6px 6px 6px";
-        triangleStyle["border-color"] = `transparent transparent ${triangleColor} transparent`;
-      }
-    }
-    return style;
-  });
-  return {
-    isDesktop,
-    popupStyle
-  };
-}
-function useKeyboard() {
-  const key = Vue.ref("");
-  const disable = Vue.ref(false);
-  return {
-    key,
-    disable
-  };
-}
-const _t0$1 = Vue.template('<div class="uni-mask uni-picker-mask">');
-const _t1$1 = Vue.template('<div><div class=uni-picker-header><div class="uni-picker-action uni-picker-action-cancel"> </div><div class="uni-picker-action uni-picker-action-confirm"> </div></div><!><div class=uni-picker-select> </div><div></div>');
-const _t2 = Vue.template("<div>");
-const _t3 = Vue.template("<div> </div>");
-const _t4 = Vue.template("<div class=uni-picker-system><input tabindex=-1>");
-const _t5 = Vue.template("<div class=uni-picker-item>", 1);
-const _t6 = Vue.template("<div>", 1);
-function getDefaultStartValue(props2) {
-  if (props2.mode === mode.TIME) {
-    return "00:00";
-  }
-  if (props2.mode === mode.DATE) {
-    const year = (/* @__PURE__ */ new Date()).getFullYear() - 150;
-    switch (props2.fields) {
-      case fields.YEAR:
-        return year.toString();
-      case fields.MONTH:
-        return year + "-01";
-      default:
-        return year + "-01-01";
-    }
-  }
-  return "";
-}
-function getDefaultEndValue(props2) {
-  if (props2.mode === mode.TIME) {
-    return "23:59";
-  }
-  if (props2.mode === mode.DATE) {
-    const year = (/* @__PURE__ */ new Date()).getFullYear() + 150;
-    switch (props2.fields) {
-      case fields.YEAR:
-        return year.toString();
-      case fields.MONTH:
-        return year + "-12";
-      default:
-        return year + "-12-31";
-    }
-  }
-  return "";
-}
-function getDateValueArray(props2, state, valueStr, defaultValue) {
-  const splitStr = props2.mode === mode.DATE ? "-" : ":";
-  const array = props2.mode === mode.DATE ? state.dateArray : state.timeArray;
-  let max;
-  if (props2.mode === mode.TIME) {
-    max = 2;
-  } else {
-    switch (props2.fields) {
-      case fields.YEAR:
-        max = 1;
-        break;
-      case fields.MONTH:
-        max = 2;
-        break;
-      default:
-        max = 3;
-        break;
-    }
-  }
-  const inputArray = String(valueStr).split(splitStr);
-  let value = [];
-  for (let i = 0; i < max; i++) {
-    const val = inputArray[i];
-    value.push(array[i].indexOf(val));
-  }
-  if (value.indexOf(-1) >= 0) {
-    value = defaultValue ? getDateValueArray(props2, state, defaultValue) : value.map(() => 0);
-  }
-  return value;
-}
-const mode = {
-  SELECTOR: "selector",
-  MULTISELECTOR: "multiSelector",
-  TIME: "time",
-  DATE: "date"
-};
-const fields = {
-  YEAR: "year",
-  MONTH: "month",
-  DAY: "day"
-};
-const selectorType = {
-  PICKER: "picker",
-  SELECT: "select"
-};
-const props = {
-  name: {
-    type: String,
-    default: ""
-  },
-  range: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  rangeKey: {
-    type: String,
-    default: ""
-  },
-  value: {
-    type: [
-      Number,
-      String,
-      Array
-    ],
-    default: 0
-  },
-  mode: {
-    type: String,
-    default: mode.SELECTOR,
-    validator(val) {
-      return Object.values(mode).includes(val);
-    }
-  },
-  fields: {
-    type: String,
-    default: ""
-  },
-  start: {
-    type: String,
-    default: (props2) => {
-      return getDefaultStartValue(props2);
-    }
-  },
-  end: {
-    type: String,
-    default: (props2) => {
-      return getDefaultEndValue(props2);
-    }
-  },
-  disabled: {
-    type: [Boolean, String],
-    default: false
-  },
-  selectorType: {
-    type: String,
-    default: ""
-  }
-};
-const index$6 = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Picker",
-  compatConfig: { MODE: 3 },
-  props,
-  emits: [
-    "change",
-    "cancel",
-    "columnchange"
-  ],
-  setup(props2, { emit: emit2, slots }) {
-    initI18nPickerMsgsOnce();
-    const { t: t11 } = useI18n();
-    const rootRef = Vue.ref(null);
-    const pickerRef = Vue.ref(null);
-    const selectRef = Vue.ref(null);
-    const inputRef = Vue.ref(null);
-    const pickerRender = Vue.ref(false);
-    const { state, rangeArray } = usePickerState(props2);
-    const trigger = useCustomEvent(rootRef, emit2);
-    const { system, selectorTypeComputed, _show, _l10nColumn, _l10nItem, _input, _fixInputPosition, _pickerViewChange, _cancel, _change, _resetFormData, _getFormData, _createTime, _createDate, _setValueSync } = usePickerMethods(props2, state, trigger, rootRef, pickerRef, selectRef, inputRef);
-    usePickerWatch(state, _cancel, _change);
-    usePickerForm(_resetFormData, _getFormData);
-    _createTime();
-    _createDate();
-    _setValueSync();
-    const popup = usePopupStyle(state, "var(--uni-picker-arrow-color, #fcfcfd)");
-    Vue.watchEffect(() => {
-      state.isDesktop = popup.isDesktop.value;
-      state.popupStyle = popup.popupStyle.value;
-    });
-    return () => {
-      const { visible, contentVisible, valueArray, popupStyle, valueSync } = state;
-      const { rangeKey, mode: mode2, start, end } = props2;
-      const booleanAttrs = useBooleanAttr(props2, "disabled");
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n31 = Vue.createPlainElement("uni-picker", { $: [() => booleanAttrs, { onClick: () => withWebEvent(_show) }] }, () => {
-          const _n0 = Vue.createIf(() => pickerRender.value, () => {
-            const _n2 = _t2();
-            Vue.on(_n2, "wheel", onEventPrevent);
-            Vue.on(_n2, "touchmove", onEventPrevent);
-            Vue.renderEffect(() => Vue.setClass(_n2, ["uni-picker-container", `uni-${mode2}-${selectorTypeComputed.value}`]));
-            Vue.setInsertionState(_n2);
-            createComponent(Vue.Transition, {
-              name: "uni-fade",
-              persisted: true
-            }, () => {
-              const _n3 = _t0$1();
-              Vue.applyVShow(_n3, () => visible);
-              Vue.on(_n3, "click", withWebEvent(_cancel));
-              Vue.on(_n3, "mousemove", _fixInputPosition);
-              return _n3;
-            });
-            Vue.setInsertionState(_n2, 1);
-            Vue.createIf(() => !system.value, () => {
-              const _n19 = _t1$1();
-              const _n7 = Vue.child(_n19);
-              const _n8 = Vue.child(_n7);
-              const _n9 = Vue.next(_n8);
-              const _n18 = Vue.next(_n7);
-              const _n16 = Vue.next(_n18);
-              const _n17 = Vue.next(_n16);
-              Vue.on(_n7, "click", onEventStop);
-              Vue.on(_n8, "click", withWebEvent(_cancel));
-              const _x8 = Vue.txt(_n8);
-              setNodes(_x8, () => t11("uni.picker.cancel"));
-              Vue.on(_n9, "click", _change);
-              const _x9 = Vue.txt(_n9);
-              setNodes(_x9, () => t11("uni.picker.done"));
-              Vue.renderEffect(() => {
-                Vue.setClassName(_n19, visible ? 1 : 0, "uni-picker-toggle", "", "uni-picker-custom");
-                Vue.setStyle(_n19, popupStyle.content);
-              });
-              Vue.setInsertionState(_n19, _n18);
-              Vue.createIf(() => contentVisible, () => {
-                const _n13 = createComponent(PickerView, {
-                  value: () => _l10nColumn(valueArray),
-                  class: "uni-picker-content",
-                  onChange: () => _pickerViewChange
-                }, Vue.extend(() => {
-                  const _n12 = createNodes(() => Vue.renderList(_l10nColumn(rangeArray.value), (rangeItem, index0) => (() => {
-                    const _n02 = Vue.createKeyedFragment(() => index0, () => {
-                      const _n3 = createComponent(PickerViewColumn, null, Vue.extend(() => {
-                        const _n22 = createNodes(() => Vue.renderList(rangeItem, (item, index2) => (() => {
-                          const _n03 = Vue.createKeyedFragment(() => index2, () => {
-                            const _n72 = _t5();
-                            Vue.setInsertionState(_n72);
-                            Vue.createIf(() => typeof item === "object", () => {
-                              const _n42 = createNodes(() => item[rangeKey] || "");
-                              return _n42;
-                            }, () => {
-                              const _n6 = createNodes(() => _l10nItem(item, index0));
-                              return _n6;
-                            }, 266);
-                            return _n72;
-                          });
-                          return _n03;
-                        })()));
-                        return _n22;
-                      }, { _: 1 }), true);
-                      return _n3;
-                    });
-                    return _n02;
-                  })()));
-                  return _n12;
-                }, { _: 1 }));
-                return _n13;
-              }, () => {
-                const _n15 = createNodes(null);
-                return _n15;
-              }, 265);
-              Vue.on(_n16, "wheel", onEventStop);
-              Vue.on(_n16, "touchmove", onEventStop);
-              const _x16 = Vue.txt(_n16);
-              setNodes(_x16, () => Vue.renderList(rangeArray.value[0], (item, index2) => (() => {
-                const _n02 = Vue.createKeyedFragment(() => index2, () => {
-                  const _n22 = _t6();
-                  Vue.on(_n22, "click", () => {
-                    valueArray[0] = index2;
-                    _change();
-                  });
-                  Vue.renderEffect(() => Vue.setClassName(_n22, valueArray[0] === index2 ? 1 : 0, " selected", "uni-picker-item"));
-                  Vue.setInsertionState(_n22);
-                  Vue.createIf(() => typeof item === "object", () => {
-                    const _n52 = createNodes(() => item[rangeKey] || "");
-                    return _n52;
-                  }, () => {
-                    const _n72 = createNodes(() => item);
-                    return _n72;
-                  }, 266);
-                  return _n22;
-                });
-                return _n02;
-              })()));
-              Vue.renderEffect(() => {
-                _setTemplateRef(_n16, selectRef);
-                Vue.setStyle(_n17, popupStyle.triangle);
-              });
-              return _n19;
-            }, () => {
-              const _n21 = createNodes(null);
-              return _n21;
-            }, 521);
-            Vue.renderEffect(() => _setTemplateRef(_n2, pickerRef));
-            return _n2;
-          }, () => {
-            const _n23 = createNodes(null);
-            return _n23;
-          }, 777);
-          const _n24 = _t3();
-          const _x24 = Vue.txt(_n24);
-          setNodes(_x24, () => slots.default && slots.default());
-          const _n25 = Vue.createIf(() => system.value, () => {
-            const _n27 = _t4();
-            const _n28 = Vue.child(_n27);
-            Vue.on(_n27, "mousemove", withWebEvent(_fixInputPosition));
-            Vue.on(_n28, "change", ($event) => {
-              _input($event);
-              onEventStop($event);
-            });
-            Vue.renderEffect(() => {
-              Vue.setClass(_n28, ["uni-picker-system_input", system.value]);
-              Vue.setValue(_n28, valueSync);
-              Vue.setProp(_n28, "type", mode2);
-              Vue.setProp(_n28, "min", start);
-              Vue.setProp(_n28, "max", end);
-              _setTemplateRef(_n28, inputRef);
-            });
-            return _n27;
-          }, () => {
-            const _n30 = createNodes(null);
-            return _n30;
-          }, 1033);
-          return [
-            _n0,
-            _n24,
-            _n25
-          ];
-        }, true);
-        Vue.renderEffect(() => _setTemplateRef(_n31, rootRef));
-        return _n31;
-      })();
-    };
+      return _n3;
+    })();
+    Object.defineProperty(root, "uniTagName", uniTagName$1);
+    return root;
   }
 });
-function usePickerState(props2) {
-  const state = Vue.reactive({
-    valueSync: void 0,
-    visible: false,
-    contentVisible: false,
-    popover: null,
-    valueChangeSource: "",
-    timeArray: [],
-    dateArray: [],
-    valueArray: [],
-    oldValueArray: [],
-    isDesktop: false,
-    popupStyle: {
-      content: {},
-      triangle: {}
-    }
-  });
-  const rangeArray = Vue.computed(() => {
-    let val = props2.range;
-    switch (props2.mode) {
-      case mode.SELECTOR:
-        return [val];
-      case mode.MULTISELECTOR:
-        return val;
-      case mode.TIME:
-        return state.timeArray;
-      case mode.DATE: {
-        const dateArray = state.dateArray;
-        switch (props2.fields) {
-          case fields.YEAR:
-            return [dateArray[0]];
-          case fields.MONTH:
-            return [dateArray[0], dateArray[1]];
-          default:
-            return [
-              dateArray[0],
-              dateArray[1],
-              dateArray[2]
-            ];
-        }
-      }
-    }
-    return [];
-  });
-  return {
-    state,
-    rangeArray
-  };
-}
-function useIsiPad() {
-  const isiPad = Vue.ref(false);
-  return isiPad;
-}
-function useSystem() {
-  const _system = Vue.ref("");
-  return _system;
-}
-let __contentVisibleDelay;
-function usePickerMethods(props2, state, trigger, rootRef, pickerRef, selectRef, inputRef) {
-  const isiPad = useIsiPad();
-  const _system = useSystem();
-  const selectorTypeComputed = Vue.computed(() => {
-    const type = props2.selectorType;
-    if (Object.values(selectorType).includes(type)) {
-      return type;
-    }
-    return isiPad.value ? selectorType.PICKER : selectorType.SELECT;
-  });
-  const system = Vue.computed(() => {
-    if (props2.mode === mode.DATE && !Object.values(fields).includes(props2.fields) && state.isDesktop) {
-      return _system.value;
-    }
-    return "";
-  });
-  const startArray = Vue.computed(() => {
-    return getDateValueArray(props2, state, props2.start, getDefaultStartValue(props2));
-  });
-  const endArray = Vue.computed(() => {
-    return getDateValueArray(props2, state, props2.end, getDefaultEndValue(props2));
-  });
-  function _show(event) {
-    if (props2.disabled) {
-      return;
-    }
-    state.valueChangeSource = "";
-    let $picker = pickerRef.value;
-    let _currentTarget = event.currentTarget;
-    $picker.remove();
-    (document.querySelector("uni-app") || document.body).appendChild($picker);
-    $picker.style.display = "block";
-    const rect = _currentTarget.getBoundingClientRect();
-    state.popover = {
-      top: rect.top,
-      left: rect.left,
-      width: rect.width,
-      height: rect.height
-    };
-    setTimeout(() => {
-      state.visible = true;
-    }, 20);
-  }
-  function _getFormData() {
-    return {
-      value: state.valueSync,
-      key: props2.name
-    };
-  }
-  function _resetFormData() {
-    switch (props2.mode) {
-      case mode.SELECTOR:
-        state.valueSync = 0;
-        break;
-      case mode.MULTISELECTOR:
-        state.valueSync = props2.value.map((val) => 0);
-        break;
-      case mode.DATE:
-      case mode.TIME:
-        state.valueSync = "";
-        break;
-    }
-  }
-  function _createTime() {
-    let hours = [];
-    let minutes = [];
-    for (let i = 0; i < 24; i++) {
-      hours.push((i < 10 ? "0" : "") + i);
-    }
-    for (let i = 0; i < 60; i++) {
-      minutes.push((i < 10 ? "0" : "") + i);
-    }
-    state.timeArray.push(hours, minutes);
-  }
-  function getYearStartEnd() {
-    let year = (/* @__PURE__ */ new Date()).getFullYear();
-    let start = year - 150;
-    let end = year + 150;
-    if (props2.start) {
-      const _year = new Date(props2.start).getFullYear();
-      if (!isNaN(_year) && _year < start) {
-        start = _year;
-      }
-    }
-    if (props2.end) {
-      const _year = new Date(props2.end).getFullYear();
-      if (!isNaN(_year) && _year > end) {
-        end = _year;
-      }
-    }
-    return {
-      start,
-      end
-    };
-  }
-  function _createDate() {
-    let years = [];
-    const year = getYearStartEnd();
-    for (let i = year.start, end = year.end; i <= end; i++) {
-      years.push(String(i));
-    }
-    let months = [];
-    for (let i = 1; i <= 12; i++) {
-      months.push((i < 10 ? "0" : "") + i);
-    }
-    let days = [];
-    for (let i = 1; i <= 31; i++) {
-      days.push((i < 10 ? "0" : "") + i);
-    }
-    state.dateArray.push(years, months, days);
-  }
-  function _getTimeValue(val) {
-    return val[0] * 60 + val[1];
-  }
-  function _getDateValue(val) {
-    const DAY = 31;
-    return val[0] * DAY * 12 + (val[1] || 0) * DAY + (val[2] || 0);
-  }
-  function _cloneArray(val1, val2) {
-    for (let i = 0; i < val1.length && i < val2.length; i++) {
-      val1[i] = val2[i];
-    }
-  }
-  function _setValueSync() {
-    let val = props2.value;
-    switch (props2.mode) {
-      case mode.MULTISELECTOR:
-        {
-          if (!shared.isArray(val)) {
-            val = state.valueArray;
-          }
-          if (!shared.isArray(state.valueSync)) {
-            state.valueSync = [];
-          }
-          const length = state.valueSync.length = Math.max(val.length, props2.range.length);
-          for (let index2 = 0; index2 < length; index2++) {
-            const val0 = Number(val[index2]);
-            const val1 = Number(state.valueSync[index2]);
-            const val2 = isNaN(val0) ? isNaN(val1) ? 0 : val1 : val0;
-            const maxVal = props2.range[index2] ? props2.range[index2].length - 1 : 0;
-            state.valueSync.splice(index2, 1, val2 < 0 || val2 > maxVal ? 0 : val2);
-          }
-        }
-        break;
-      case mode.TIME:
-      case mode.DATE:
-        state.valueSync = String(val);
-        break;
-      default: {
-        const valueSync = Number(val);
-        state.valueSync = valueSync < 0 ? 0 : valueSync;
-        break;
-      }
-    }
-  }
-  function _setValueArray() {
-    let val = state.valueSync;
-    let valueArray;
-    switch (props2.mode) {
-      case mode.MULTISELECTOR:
-        valueArray = [...val];
-        break;
-      case mode.TIME:
-        valueArray = getDateValueArray(props2, state, val, uniShared.formatDateTime({ mode: mode.TIME }));
-        break;
-      case mode.DATE:
-        valueArray = getDateValueArray(props2, state, val, uniShared.formatDateTime({ mode: mode.DATE }));
-        break;
-      default:
-        valueArray = [val];
-        break;
-    }
-    state.oldValueArray = [...valueArray];
-    state.valueArray = [...valueArray];
-  }
-  function _getValue() {
-    let val = state.valueArray;
-    switch (props2.mode) {
-      case mode.SELECTOR:
-        return val[0];
-      case mode.MULTISELECTOR:
-        return val.map((val2) => val2);
-      case mode.TIME:
-        return state.valueArray.map((val2, i) => state.timeArray[i][val2]).join(":");
-      case mode.DATE:
-        return state.valueArray.map((val2, i) => state.dateArray[i][val2]).join("-");
-    }
-  }
-  function _change() {
-    _close();
-    state.valueChangeSource = "click";
-    const value = _getValue();
-    state.valueSync = shared.isArray(value) ? value.map((val) => val) : value;
-    trigger("change", {}, { value });
-  }
-  function _cancel($event) {
-    if (system.value === "firefox" && $event) {
-      const { top, left, width, height } = state.popover;
-      const { pageX, pageY } = $event;
-      if (pageX > left && pageX < left + width && pageY > top && pageY < top + height) {
-        return;
-      }
-    }
-    _close();
-    trigger("cancel", {}, {});
-  }
-  function _close() {
-    state.visible = false;
-    setTimeout(() => {
-      let $picker = pickerRef.value;
-      $picker.remove();
-      rootRef.value.prepend($picker);
-      $picker.style.display = "none";
-    }, 260);
-  }
-  function _select() {
-    if (props2.mode === mode.SELECTOR && selectorTypeComputed.value === selectorType.SELECT) {
-      selectRef.value.scrollTop = state.valueArray[0] * 34;
-    }
-  }
-  function _input($event) {
-    const EventTarget = $event.target;
-    state.valueSync = EventTarget.value;
-    Vue.nextTick(() => {
-      _change();
-    });
-  }
-  function _fixInputPosition($event) {
-    if (system.value === "chrome") {
-      const rect = rootRef.value.getBoundingClientRect();
-      const fontSize = 32;
-      inputRef.value.style.left = `${$event.clientX - rect.left - fontSize * 1.5}px`;
-      inputRef.value.style.top = `${$event.clientY - rect.top - fontSize * 0.5}px`;
-    }
-  }
-  function _pickerViewChange(event) {
-    state.valueArray = _l10nColumn(event.detail.value, true);
-  }
-  function _l10nColumn(array, normalize) {
-    const { getLocale: getLocale2 } = useI18n();
-    if (props2.mode === mode.DATE) {
-      const locale = getLocale2();
-      if (!locale.startsWith("zh")) {
-        switch (props2.fields) {
-          case fields.YEAR:
-            return array;
-          case fields.MONTH:
-            return [array[1], array[0]];
-          default:
-            switch (locale) {
-              case "es":
-              case "fr":
-                return [
-                  array[2],
-                  array[1],
-                  array[0]
-                ];
-              default:
-                return normalize ? [
-                  array[2],
-                  array[0],
-                  array[1]
-                ] : [
-                  array[1],
-                  array[2],
-                  array[0]
-                ];
-            }
-        }
-      }
-    }
-    return array;
-  }
-  function _l10nItem(item, index2) {
-    const { getLocale: getLocale2 } = useI18n();
-    if (props2.mode === mode.DATE) {
-      const locale = getLocale2();
-      if (locale.startsWith("zh")) {
-        const array = [
-          "年",
-          "月",
-          "日"
-        ];
-        return item + array[index2];
-      } else if (props2.fields !== fields.YEAR && index2 === (props2.fields !== fields.MONTH && (locale === "es" || locale === "fr") ? 1 : 0)) {
-        let array;
-        switch (locale) {
-          case "es":
-            array = [
-              "enero",
-              "febrero",
-              "marzo",
-              "abril",
-              "mayo",
-              "junio",
-              "​​julio",
-              "agosto",
-              "septiembre",
-              "octubre",
-              "noviembre",
-              "diciembre"
-            ];
-            break;
-          case "fr":
-            array = [
-              "janvier",
-              "février",
-              "mars",
-              "avril",
-              "mai",
-              "juin",
-              "juillet",
-              "août",
-              "septembre",
-              "octobre",
-              "novembre",
-              "décembre"
-            ];
-            break;
-          default:
-            array = [
-              "January",
-              "February",
-              "March",
-              "April",
-              "May",
-              "June",
-              "July",
-              "August",
-              "September",
-              "October",
-              "November",
-              "December"
-            ];
-            break;
-        }
-        return array[Number(item) - 1];
-      }
-    }
-    return item;
-  }
-  Vue.watch(() => state.visible, (val) => {
-    if (val) {
-      clearTimeout(__contentVisibleDelay);
-      state.contentVisible = val;
-      _select();
-    } else {
-      __contentVisibleDelay = setTimeout(() => {
-        state.contentVisible = val;
-      }, 300);
-    }
-  });
-  Vue.watch([
-    () => props2.mode,
-    () => props2.value,
-    () => props2.range
-  ], _setValueSync, { deep: true });
-  Vue.watch(() => state.valueSync, _setValueArray, { deep: true });
-  Vue.watch(() => state.valueArray, (val) => {
-    if (props2.mode === mode.TIME || props2.mode === mode.DATE) {
-      const getValue = props2.mode === mode.TIME ? _getTimeValue : _getDateValue;
-      const valueArray = state.valueArray;
-      const _startArray = startArray.value;
-      const _endArray = endArray.value;
-      if (props2.mode === mode.DATE) {
-        const dateArray = state.dateArray;
-        const max = dateArray[2].length;
-        const day = Number(dateArray[2][valueArray[2]]) || 1;
-        const realDay = (/* @__PURE__ */ new Date(`${dateArray[0][valueArray[0]]}/${dateArray[1][valueArray[1]]}/${day}`)).getDate();
-        if (realDay < day) {
-          valueArray[2] -= realDay + max - day;
-        }
-      }
-      if (getValue(valueArray) < getValue(_startArray)) {
-        _cloneArray(valueArray, _startArray);
-      } else if (getValue(valueArray) > getValue(_endArray)) {
-        _cloneArray(valueArray, _endArray);
-      }
-    }
-    val.forEach((value, column) => {
-      if (value !== state.oldValueArray[column]) {
-        state.oldValueArray[column] = value;
-        if (props2.mode === mode.MULTISELECTOR) {
-          trigger("columnchange", {}, {
-            column,
-            value
-          });
-        }
-      }
-    });
-  });
-  return {
-    selectorTypeComputed,
-    system,
-    _show,
-    _cancel,
-    _change,
-    _l10nColumn,
-    _l10nItem,
-    _input,
-    _resetFormData,
-    _getFormData,
-    _createTime,
-    _createDate,
-    _setValueSync,
-    _fixInputPosition,
-    _pickerViewChange
-  };
-}
-function usePickerWatch(state, _cancel, _change) {
-  const { key, disable } = useKeyboard();
-  Vue.watchEffect(() => {
-    disable.value = !state.visible;
-  });
-  Vue.watch(key, (value) => {
-    if (value === "esc") {
-      _cancel();
-    } else if (value === "enter") {
-      _change();
-    }
-  });
-}
-function usePickerForm(_resetFormData, _getFormData) {
-  const uniForm = Vue.inject(uniFormKey, false);
-  if (uniForm) {
-    const field = {
-      reset: _resetFormData,
-      submit: () => {
-        const data = ["", null];
-        const { key, value } = _getFormData();
-        if (key !== "") {
-          data[0] = key;
-          data[1] = value;
-        }
-        return data;
-      }
-    };
-    uniForm.addField(field);
-  }
-}
-const _t0 = Vue.template("<div class=uni-ad-container></div>");
-const _t1 = Vue.template("<div class=uni-ad-custom-material> ");
 const _AdConfig = class _AdConfig {
   constructor() {
     this._adConfig = null;
@@ -13805,10 +15013,7 @@ const _AdConfig = class _AdConfig {
           });
         } else {
           this._callbacks.forEach((i) => {
-            i.fail({
-              errCode: rd.ret,
-              errMsg: rd.msg
-            });
+            i.fail({ errCode: rd.ret, errMsg: rd.msg });
           });
         }
         this._callbacks = [];
@@ -13835,10 +15040,13 @@ const _AdConfig = class _AdConfig {
     if (!navigator.cookieEnabled || !window.localStorage) {
       return null;
     }
-    localStorage.setItem(_AdConfig.KEY, JSON.stringify({
-      last: Date.now(),
-      data
-    }));
+    localStorage.setItem(
+      _AdConfig.KEY,
+      JSON.stringify({
+        last: Date.now(),
+        data
+      })
+    );
   }
 };
 _AdConfig.IC = 0;
@@ -13846,7 +15054,9 @@ _AdConfig.IS = 0;
 _AdConfig.URL = "https://hac1.dcloud.net.cn/ah5v2";
 _AdConfig.KEY = "uni_app_ad_config";
 _AdConfig.CACHE_TIME = 1e3 * 60 * 10;
-_AdConfig.ERROR_INVALID_ADPID = { "-5002": "invalid adpid" };
+_AdConfig.ERROR_INVALID_ADPID = {
+  "-5002": "invalid adpid"
+};
 let AdConfig = _AdConfig;
 const _AdReport = class _AdReport {
   static get instance() {
@@ -13865,10 +15075,12 @@ const _AdReport = class _AdReport {
     this._setConfig(this._guid);
   }
   get(data) {
-    this._process(Object.assign(data, {
-      d: location.hostname,
-      i: this._guid
-    }));
+    this._process(
+      Object.assign(data, {
+        d: location.hostname,
+        i: this._guid
+      })
+    );
   }
   _process(data) {
     uni.request({
@@ -13903,10 +15115,13 @@ const _AdReport = class _AdReport {
     if (!navigator.cookieEnabled || !window.localStorage) {
       return null;
     }
-    localStorage.setItem(_AdReport.KEY, JSON.stringify({
-      last: Date.now(),
-      guid
-    }));
+    localStorage.setItem(
+      _AdReport.KEY,
+      JSON.stringify({
+        last: Date.now(),
+        guid
+      })
+    );
   }
 };
 _AdReport.URL = "https://has1.dcloud.net.cn/ahl";
@@ -14009,13 +15224,17 @@ class AdRender {
   load(adpid) {
     this._currentAdpid = adpid || (this.isWidescreen ? this._adpidWidescreen : this._adpid);
     this._reset();
-    AdConfig.instance.get(this._currentAdpid, (b, a) => {
-      this._b = b;
-      this._pl = a;
-      this._renderAd();
-    }, (err) => {
-      this._trigger("error", {}, err);
-    });
+    AdConfig.instance.get(
+      this._currentAdpid,
+      (b, a) => {
+        this._b = b;
+        this._pl = a;
+        this._renderAd();
+      },
+      (err) => {
+        this._trigger("error", {}, err);
+      }
+    );
   }
   dispose() {
     this._clearCheckTimer();
@@ -14044,27 +15263,29 @@ class AdRender {
     this._createView(id2);
     if (providerId === AD_PROVIDER.GDT) {
       window.TencentGDT = window.TencentGDT || [];
-      AdScript.instance.load({
-        provider: providerId,
-        script
-      }, () => {
-        this._renderGdt(id2, data);
-      }, (err) => {
-        this._trigger("error", {}, err);
-        this._renderNext();
-      });
+      AdScript.instance.load(
+        { provider: providerId, script },
+        () => {
+          this._renderGdt(id2, data);
+        },
+        (err) => {
+          this._trigger("error", {}, err);
+          this._renderNext();
+        }
+      );
       return;
     }
     if (providerId === AD_PROVIDER.TUIA) {
-      AdScript.instance.load({
-        provider: providerId,
-        script
-      }, () => {
-        this._renderTuiaMaterial(id2, data);
-      }, (err) => {
-        this._trigger("error", {}, err);
-        this._renderNext();
-      });
+      AdScript.instance.load(
+        { provider: providerId, script },
+        () => {
+          this._renderTuiaMaterial(id2, data);
+        },
+        (err) => {
+          this._trigger("error", {}, err);
+          this._renderNext();
+        }
+      );
       return;
     }
     this._renderNext();
@@ -14091,7 +15312,11 @@ class AdRender {
           window.TencentGDT.NATIVE.renderAd(res[0], id2);
           this._trigger("load", {}, {});
         } else {
-          this._trigger("error", {}, res || { errMsg: "No advertisement" });
+          this._trigger(
+            "error",
+            {},
+            res || { errMsg: "No advertisement" }
+          );
           this._renderNext();
         }
       }
@@ -14108,15 +15333,29 @@ class AdRender {
     this._tuiaData = data;
     if (this._hasCustomTuiaMaterial()) {
       adView.innerHTML = "";
-      this._setCustomTuiaVisible(true);
-      this.report(40, this._currentChannel || void 0);
-      this._trigger("load", {}, {});
+      let resolved = false;
+      this._setCustomTuiaVisible(true, (hasContent2) => {
+        if (resolved)
+          return;
+        resolved = true;
+        if (hasContent2) {
+          this.report(40, this._currentChannel || void 0);
+          this._trigger("load", {}, {});
+        } else {
+          this._renderTuiaDefaultMaterial(adView, data);
+        }
+      });
       return;
     }
+    this._renderTuiaDefaultMaterial(adView, data);
+  }
+  _renderTuiaDefaultMaterial(adView, data) {
     this._setCustomTuiaVisible(false);
     const materialSrc = this._getRandomTuiaMaterial(data == null ? void 0 : data.imgs, data == null ? void 0 : data.img);
     if (!materialSrc) {
-      this._trigger("error", {}, { errMsg: "Invalid tuia material imgs/img" });
+      this._trigger("error", {}, {
+        errMsg: "Invalid tuia material imgs/img"
+      });
       this._renderNext();
       return;
     }
@@ -14171,7 +15410,11 @@ class AdRender {
         this._trigger("load", {}, res || {});
       },
       fail: (err) => {
-        this._trigger("error", {}, err || { errMsg: "TuiaSDKLite execute fail" });
+        this._trigger(
+          "error",
+          {},
+          err || { errMsg: "TuiaSDKLite execute fail" }
+        );
         this._renderNext();
       }
     });
@@ -14213,11 +15456,11 @@ class AdRender {
     if (!this._rootRef.value) {
       return false;
     }
-    var hasContent = this._rootRef.value.children.length > 0 && this._rootRef.value.clientHeight > 40;
-    if (hasContent) {
+    var hasContent2 = this._rootRef.value.children.length > 0 && this._rootRef.value.clientHeight > 40;
+    if (hasContent2) {
       this.report(40, this._currentChannel || void 0);
     }
-    return hasContent;
+    return hasContent2;
   }
   _startCheckTimer() {
     this._clearCheckTimer();
@@ -14272,78 +15515,342 @@ class AdRender {
   }
 }
 const DEFAULT_WIDESCREEN_WIDTH = 750;
-const index$5 = /* @__PURE__ */ defineBuiltInComponent({
+const adProps = {
+  adpid: {
+    type: String,
+    default: ""
+  },
+  adpidWidescreen: {
+    type: String,
+    default: ""
+  },
+  widescreenWidth: {
+    type: Number,
+    default: DEFAULT_WIDESCREEN_WIDTH
+  }
+};
+function useAd(props2, emit2, hasCustomTuiaMaterial) {
+  const rootRef = Vue.ref(null);
+  const customTuiaVisible = Vue.ref(
+    false
+  );
+  const { $excludeAttrs, $listeners } = useAttrs({
+    excludeListeners: true
+  });
+  const trigger = useCustomEvent(rootRef, emit2);
+  const ad = new AdRender(props2, trigger, rootRef, {
+    hasCustomTuiaMaterial,
+    setCustomTuiaVisible: (visible, onRendered) => {
+      customTuiaVisible.value = visible ? onRendered : false;
+    }
+  });
+  Vue.watch(
+    () => props2.adpid,
+    (val) => {
+      ad.load(val);
+    }
+  );
+  Vue.watch(
+    () => props2.adpidWidescreen,
+    (val) => {
+      ad.load(val);
+    }
+  );
+  return { rootRef, customTuiaVisible, $excludeAttrs, $listeners, ad };
+}
+const _t0 = Vue.template("<div class=uni-ad-custom-material> ");
+const _t1 = Vue.template("<div><div class=uni-ad-container></div>", 1);
+const uniTagName = { value: "AD" };
+const indexVapor = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "Ad",
-  props: {
-    adpid: {
-      type: String,
-      default: ""
-    },
-    adpidWidescreen: {
-      type: String,
-      default: ""
-    },
-    widescreenWidth: {
-      type: Number,
-      default: DEFAULT_WIDESCREEN_WIDTH
-    }
-  },
+  props: adProps,
   setup(props2, { emit: emit2, slots }) {
-    const rootRef = Vue.ref(null);
-    const customTuiaVisible = Vue.ref(false);
-    const { $excludeAttrs, $listeners } = useAttrs({ excludeListeners: true });
-    const trigger = useCustomEvent(rootRef, emit2);
-    const ad = new AdRender(props2, trigger, rootRef, {
-      hasCustomTuiaMaterial: () => Boolean(slots.default && slots.default().length),
-      setCustomTuiaVisible: (visible) => {
-        customTuiaVisible.value = visible;
+    const { rootRef, customTuiaVisible, $excludeAttrs, $listeners, ad } = useAd(
+      props2,
+      emit2,
+      // Vapor 插槽会直接创建节点，只判断是否声明，不为探测而提前执行插槽。
+      () => Boolean(slots.default)
+    );
+    let pendingMaterial;
+    const confirmMaterial = () => {
+      const pending = pendingMaterial;
+      pendingMaterial = void 0;
+      if (pending && rootRef.value && customTuiaVisible.value === pending.onRendered) {
+        pending.onRendered(pending.hasContent);
       }
-    });
-    Vue.watch(() => props2.adpid, (val) => {
-      ad.load(val);
-    });
-    Vue.watch(() => props2.adpidWidescreen, (val) => {
-      ad.load(val);
-    });
-    return () => {
-      const { adpid, adpidWidescreen, widescreenWidth } = props2;
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n6 = Vue.createPlainElement("uni-ad", { $: [
-          () => $listeners.value,
-          () => $excludeAttrs.value,
-          {
-            adpid: () => adpid,
-            adpidWidescreen: () => adpidWidescreen,
-            widescreenWidth: () => widescreenWidth
-          }
-        ] }, () => {
-          const _n0 = _t0();
-          Vue.on(_n0, "click", () => ad.report(41));
-          Vue.renderEffect(() => _setTemplateRef(_n0, rootRef));
-          const _n1 = Vue.createIf(() => customTuiaVisible.value && slots.default, () => {
-            const _n3 = _t1();
-            Vue.on(_n3, "click", () => ad.renderTuiaFromCustomMaterial());
-            const _x3 = Vue.txt(_n3);
-            setNodes(_x3, () => slots.default());
-            return _n3;
-          }, () => {
-            const _n5 = createNodes(null);
-            return _n5;
-          }, 265);
-          return [_n0, _n1];
-        });
-        return _n6;
-      })();
     };
+    const renderCustomMaterial = () => {
+      var _a;
+      const onRendered = customTuiaVisible.value;
+      if (typeof onRendered !== "function")
+        return null;
+      const content = (_a = slots.default) == null ? void 0 : _a.call(slots);
+      pendingMaterial = {
+        onRendered,
+        hasContent: Boolean(content) && (!Array.isArray(content) || content.length > 0)
+      };
+      Vue.queuePostFlushCb(confirmMaterial);
+      return content;
+    };
+    const root = (() => {
+      const _setTemplateRef = Vue.createTemplateRefSetter();
+      const _n6 = _t1();
+      const _n0 = Vue.child(_n6);
+      Vue.on(_n0, "click", () => ad.report(41));
+      Vue.renderEffect(() => {
+        Vue.setDynamicProps(_n6, [
+          {
+            "uni-ad": "",
+            "uni-view": ""
+          },
+          $listeners.value,
+          $excludeAttrs.value,
+          {
+            adpid: props2.adpid,
+            adpidWidescreen: props2.adpidWidescreen,
+            widescreenWidth: props2.widescreenWidth
+          }
+        ]);
+        _setTemplateRef(_n0, rootRef);
+      });
+      Vue.setInsertionState(_n6, 1);
+      Vue.createIf(() => customTuiaVisible.value, () => {
+        const _n3 = _t0();
+        Vue.on(_n3, "click", () => ad.renderTuiaFromCustomMaterial());
+        const _x3 = Vue.txt(_n3);
+        setNodes(_x3, () => renderCustomMaterial());
+        return _n3;
+      }, () => {
+        const _n5 = createNodes(null);
+        return _n5;
+      }, 265);
+      return _n6;
+    })();
+    Object.defineProperty(root, "uniTagName", uniTagName);
+    return root;
   }
 });
-const index$4 = /* @__PURE__ */ defineUnsupportedComponent("ad-content-page");
-const index$3 = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
-const index$2 = /* @__PURE__ */ defineUnsupportedComponent("camera");
-const index$1 = /* @__PURE__ */ defineUnsupportedComponent("live-player");
-const index = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
+const index$5 = /* @__PURE__ */ defineUnsupportedComponent("ad-content-page");
+const index$4 = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
+const index$3 = /* @__PURE__ */ defineUnsupportedComponent("camera");
+const index$2 = /* @__PURE__ */ defineUnsupportedComponent("live-player");
+const index$1 = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
+function set(target, key, val) {
+  return target[key] = val;
+}
+function $callMethod(method, ...args) {
+  const fn = this[method];
+  if (fn) {
+    return fn(...args);
+  }
+  console.error(`method ${method} not found`);
+  return null;
+}
+function createErrorHandler(app) {
+  const userErrorHandler = app.config.errorHandler;
+  return function errorHandler(err, instance, info) {
+    if (userErrorHandler) {
+      userErrorHandler(err, instance, info);
+    }
+    const appInstance = app._instance;
+    if (!appInstance || !appInstance.proxy) {
+      throw err;
+    }
+    if (appInstance[uniShared.ON_ERROR]) {
+      {
+        invokeHook(appInstance.proxy, uniShared.ON_ERROR, err);
+      }
+    } else {
+      Vue.logError(err, info, instance == null ? void 0 : instance.$, false);
+    }
+  };
+}
+function mergeAsArray(to, from) {
+  return to ? [...new Set([].concat(to, from))] : from;
+}
+function initOptionMergeStrategies(optionMergeStrategies) {
+  uniShared.UniLifecycleHooks.forEach((name) => {
+    optionMergeStrategies[name] = mergeAsArray;
+  });
+}
+let realAtob;
+const b64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+const b64re = /^(?:[A-Za-z\d+/]{4})*?(?:[A-Za-z\d+/]{2}(?:==)?|[A-Za-z\d+/]{3}=?)?$/;
+if (typeof atob !== "function") {
+  realAtob = function(str) {
+    str = String(str).replace(/[\t\n\f\r ]+/g, "");
+    if (!b64re.test(str)) {
+      throw new Error(
+        "Failed to execute 'atob' on 'Window': The string to be decoded is not correctly encoded."
+      );
+    }
+    str += "==".slice(2 - (str.length & 3));
+    var bitmap;
+    var result = "";
+    var r1;
+    var r2;
+    var i = 0;
+    for (; i < str.length; ) {
+      bitmap = b64.indexOf(str.charAt(i++)) << 18 | b64.indexOf(str.charAt(i++)) << 12 | (r1 = b64.indexOf(str.charAt(i++))) << 6 | (r2 = b64.indexOf(str.charAt(i++)));
+      result += r1 === 64 ? String.fromCharCode(bitmap >> 16 & 255) : r2 === 64 ? String.fromCharCode(bitmap >> 16 & 255, bitmap >> 8 & 255) : String.fromCharCode(
+        bitmap >> 16 & 255,
+        bitmap >> 8 & 255,
+        bitmap & 255
+      );
+    }
+    return result;
+  };
+} else {
+  realAtob = atob;
+}
+function b64DecodeUnicode(str) {
+  return decodeURIComponent(
+    realAtob(str).split("").map(function(c) {
+      return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join("")
+  );
+}
+function getCurrentUserInfo() {
+  const token = uni.getStorageSync("uni_id_token") || "";
+  const tokenArr = token.split(".");
+  if (!token || tokenArr.length !== 3) {
+    return {
+      uid: null,
+      role: [],
+      permission: [],
+      tokenExpired: 0
+    };
+  }
+  let userInfo;
+  try {
+    userInfo = JSON.parse(b64DecodeUnicode(tokenArr[1]));
+  } catch (error) {
+    throw new Error("获取当前用户信息出错，详细错误信息为：" + error.message);
+  }
+  userInfo.tokenExpired = userInfo.exp * 1e3;
+  delete userInfo.exp;
+  delete userInfo.iat;
+  return userInfo;
+}
+function uniIdMixin(globalProperties) {
+  globalProperties.uniIDHasRole = function(roleId) {
+    const { role } = getCurrentUserInfo();
+    return role.indexOf(roleId) > -1;
+  };
+  globalProperties.uniIDHasPermission = function(permissionId) {
+    const { permission } = getCurrentUserInfo();
+    return this.uniIDHasRole("admin") || permission.indexOf(permissionId) > -1;
+  };
+  globalProperties.uniIDTokenValid = function() {
+    const { tokenExpired } = getCurrentUserInfo();
+    return tokenExpired > Date.now();
+  };
+}
+function initApp(app) {
+  const appConfig = app.config;
+  appConfig.errorHandler = uniShared.invokeCreateErrorHandler(app, createErrorHandler);
+  initOptionMergeStrategies(appConfig.optionMergeStrategies);
+  const globalProperties = appConfig.globalProperties;
+  {
+    if (__UNI_FEATURE_UNI_CLOUD__) {
+      uniIdMixin(globalProperties);
+    }
+  }
+  {
+    globalProperties.$set = set;
+    globalProperties.$callMethod = $callMethod;
+  }
+  {
+    uniShared.invokeCreateVueAppHook(app);
+  }
+}
+function initRouter(app) {
+  const router2 = vueRouter.createRouter(createRouterOptions());
+  setRouterInstance(router2);
+  router2.beforeEach((to, from) => {
+    if (to && from && to.meta.isTabBar && from.meta.isTabBar) {
+      saveTabBarScrollPosition(from.meta.tabBarIndex);
+    }
+  });
+  app.router = router2;
+  app.use(router2);
+}
+let positionStore = /* @__PURE__ */ Object.create(null);
+function getTabBarScrollPosition(id2) {
+  return positionStore[id2];
+}
+function saveTabBarScrollPosition(id2) {
+  if (typeof window !== "undefined") {
+    positionStore[id2] = {
+      left: window.pageXOffset,
+      top: window.pageYOffset
+    };
+  }
+}
+const scrollBehavior = (to, from, savedPosition) => {
+  if (savedPosition) {
+    return savedPosition;
+  } else {
+    if (to && from && to.meta.isTabBar && from.meta.isTabBar) {
+      const position = getTabBarScrollPosition(to.meta.tabBarIndex);
+      if (position) {
+        return position;
+      }
+    }
+    return {
+      left: 0,
+      top: 0
+    };
+  }
+};
+function createRouterOptions() {
+  return {
+    history: initHistory(),
+    strict: !!__uniConfig.router.strict,
+    routes: __uniRoutes,
+    scrollBehavior
+  };
+}
+function initHistory() {
+  let { routerBase } = __uniConfig.router;
+  if (routerBase === "/") {
+    routerBase = "";
+  }
+  {
+    return vueRouter.createMemoryHistory(routerBase);
+  }
+}
+const index = {
+  install(app) {
+    initApp(app);
+    if (!app.config.warnHandler) {
+      app.config.warnHandler = warnHandler;
+    }
+    if (__UNI_FEATURE_PAGES__) {
+      initRouter(app);
+    }
+  }
+};
+function warnHandler(msg, instance, trace) {
+  if (instance) {
+    const internalInstance = "$" in instance ? instance.$ : instance;
+    const name = internalInstance.type.name;
+    if ("PageMetaHead" === name) {
+      return;
+    }
+    const parent = internalInstance.parent;
+    if (parent && parent.type.name === "PageMeta") {
+      return;
+    }
+  }
+  const warnArgs = [`[Vue warn]: ${msg}`];
+  if (trace.length) {
+    warnArgs.push(`
+`, trace);
+  }
+  console.warn(...warnArgs);
+}
 const UniViewJSBridge$1 = /* @__PURE__ */ shared.extend(ViewJSBridge, {
   publishHandler(event, args, pageId) {
     UniServiceJSBridge.subscribeHandler(event, args, pageId);
@@ -14984,819 +16491,6 @@ const UniServiceJSBridge$1 = /* @__PURE__ */ shared.extend(ServiceJSBridge, {
     UniViewJSBridge.subscribeHandler(event, args, pageId);
   }
 });
-const t0$1 = Vue.template("<img>");
-const t1$1 = Vue.template("<div class=uni-tabbar__mid>");
-const t2$1 = Vue.template("<div class=uni-tabbar__iconfont> ");
-const t3$1 = Vue.template("<div>");
-const t4$1 = Vue.template("<div class=uni-tabbar__label> ");
-const t5 = Vue.template("<div> ");
-const t6 = Vue.template("<div class=uni-tabbar__item><!><div class=uni-tabbar__bd></div>");
-const t7 = Vue.template("<div class=uni-tabbar><div class=uni-tabbar-border></div></div>");
-const t8 = Vue.template("<div class=uni-placeholder>");
-const DEFAULT_BG_COLOR = "#f7f7fa";
-const BLUR_EFFECT_COLOR_DARK = "rgb(0, 0, 0, 0.8)";
-const BLUR_EFFECT_COLOR_LIGHT = "rgb(250, 250, 250, 0.8)";
-const _sfc_main$1 = /* @__PURE__ */ Vue.defineVaporComponent({
-  ...{
-    name: "TabBar",
-    __reserved: true,
-    compatConfig: { MODE: 3 }
-  },
-  __name: "tabBar",
-  setup(__props) {
-    const hasMidButton = __UNI_FEATURE_TABBAR_MIDBUTTON__;
-    const _middleButton = {
-      width: "50px",
-      height: "50px",
-      iconWidth: "24px"
-    };
-    const visibleList = Vue.ref([]);
-    const tabBar = useTabBar();
-    useVisibleList(tabBar, visibleList);
-    useTabBarCssVar(tabBar);
-    const onSwitchTab = useSwitchTab(vueRouter.useRoute(), tabBar, visibleList);
-    const { style, borderStyle, placeholderStyle } = useTabBarStyle(tabBar);
-    function useTabBarCssVar(tabBar2) {
-      Vue.watch(
-        () => tabBar2.shown,
-        (value) => {
-          updatePageCssVar({
-            "--window-bottom": normalizeWindowBottom(
-              value ? parseInt(tabBar2.height) : 0
-            )
-          });
-        }
-      );
-    }
-    function useVisibleList(tabBar2, visibleList2) {
-      const internalMidButton = Vue.ref(
-        shared.extend({ type: "midButton" }, tabBar2.midButton)
-      );
-      function setVisibleList() {
-        let tempList = [];
-        tempList = tabBar2.list.filter((item) => item.visible !== false);
-        if (hasMidButton && tabBar2.midButton) {
-          internalMidButton.value = shared.extend(
-            {},
-            _middleButton,
-            internalMidButton.value,
-            tabBar2.midButton
-          );
-          tempList = tempList.filter((item) => !isMidButton(item));
-          if (tempList.length % 2 === 0) {
-            tempList.splice(
-              Math.floor(tempList.length / 2),
-              0,
-              internalMidButton.value
-            );
-          }
-        }
-        visibleList2.value = tempList;
-      }
-      Vue.watchEffect(setVisibleList);
-    }
-    function useSwitchTab(route, tabBar2, visibleList2) {
-      Vue.watchEffect(() => {
-        const meta = route.meta;
-        if (meta.isTabBar) {
-          const pagePath = meta.route;
-          const index2 = visibleList2.value.findIndex(
-            (item) => item.pagePath === pagePath
-          );
-          tabBar2.selectedIndex = index2;
-        }
-      });
-      return (tabBarItem, index2) => {
-        const { type } = tabBarItem;
-        if (hasMidButton && type === "midButton") {
-          return UniServiceJSBridge.invokeOnCallback(
-            API_ON_TAB_BAR_MID_BUTTON_TAP
-          );
-        }
-        const { pagePath, text } = tabBarItem;
-        let url = uniShared.addLeadingSlash(pagePath);
-        if (url === __uniRoutes[0].alias) {
-          url = "/";
-        }
-        if (route.path !== url) {
-          uni.switchTab({ from: "tabBar", url, tabBarText: text });
-        } else {
-          invokeHook("onTabItemTap", {
-            index: index2,
-            text,
-            pagePath
-          });
-        }
-      };
-    }
-    const BLUR_EFFECT_COLORS = {
-      dark: BLUR_EFFECT_COLOR_DARK,
-      light: BLUR_EFFECT_COLOR_LIGHT,
-      extralight: BLUR_EFFECT_COLOR_LIGHT
-    };
-    const BORDER_COLORS = {
-      white: "rgba(255, 255, 255, 0.33)",
-      black: "rgba(0, 0, 0, 0.33)"
-    };
-    function useTabBarStyle(tabBar2) {
-      const style2 = Vue.computed(() => {
-        let backgroundColor = tabBar2.backgroundColor;
-        const blurEffect = tabBar2.blurEffect;
-        if (!backgroundColor) {
-          if (blurEffect && blurEffect !== "none") {
-            backgroundColor = BLUR_EFFECT_COLORS[blurEffect];
-          }
-        }
-        return {
-          backgroundColor: backgroundColor || DEFAULT_BG_COLOR,
-          backdropFilter: blurEffect !== "none" ? "blur(10px)" : blurEffect
-        };
-      });
-      const borderStyle2 = Vue.computed(() => {
-        const { borderStyle: borderStyle3, borderColor } = tabBar2;
-        if (borderColor && shared.isString(borderColor)) {
-          return {
-            backgroundColor: borderColor
-          };
-        }
-        return {
-          backgroundColor: BORDER_COLORS[borderStyle3] || BORDER_COLORS["black"]
-        };
-      });
-      const placeholderStyle2 = Vue.computed(() => {
-        return {
-          height: tabBar2.height
-        };
-      });
-      return {
-        style: style2,
-        borderStyle: borderStyle2,
-        placeholderStyle: placeholderStyle2
-      };
-    }
-    function isMidButton(item) {
-      return item.type === "midButton";
-    }
-    function isRenderedMidButton(item) {
-      return hasMidButton && isMidButton(item);
-    }
-    function getMidButton(item) {
-      return item;
-    }
-    function getItemStyle(item) {
-      if (!isRenderedMidButton(item)) {
-        return;
-      }
-      return {
-        flex: "0 0 " + item.width,
-        position: "relative"
-      };
-    }
-    function getMidButtonStyle(item) {
-      const { width, height, backgroundImage } = getMidButton(item);
-      return {
-        width,
-        height,
-        backgroundImage: backgroundImage ? "url('" + getRealPath(backgroundImage) + "')" : "none"
-      };
-    }
-    function isSelected(index2) {
-      return tabBar.selectedIndex === index2;
-    }
-    function getTextColor(index2) {
-      return isSelected(index2) ? tabBar.selectedColor : tabBar.color;
-    }
-    function getIconPath(item, index2) {
-      return (isSelected(index2) ? item.selectedIconPath || item.iconPath : item.iconPath) || "";
-    }
-    function getIconfontText(item, index2) {
-      if (!item.iconfont) {
-        return;
-      }
-      return isSelected(index2) ? item.iconfont.selectedText || item.iconfont.text : item.iconfont.text;
-    }
-    function getIconfontColor(item, index2) {
-      if (!item.iconfont) {
-        return;
-      }
-      return isSelected(index2) ? item.iconfont.selectedColor || item.iconfont.color : item.iconfont.color;
-    }
-    function getIconClass(item) {
-      return "uni-tabbar__icon" + (item.text ? " uni-tabbar__icon__diff" : "");
-    }
-    function getIconStyle() {
-      return { width: tabBar.iconWidth, height: tabBar.iconWidth };
-    }
-    function getIconfontStyle(item, index2) {
-      var _a;
-      return {
-        fontSize: ((_a = item.iconfont) == null ? void 0 : _a.fontSize) || tabBar.iconWidth,
-        color: getIconfontColor(item, index2) || BLUR_EFFECT_COLOR_DARK
-      };
-    }
-    function getLabelStyle(item, index2) {
-      return {
-        color: getTextColor(index2),
-        fontSize: tabBar.fontSize,
-        lineHeight: !item.iconPath ? 1.8 : "normal",
-        marginTop: !item.iconPath ? "inherit" : tabBar.spacing
-      };
-    }
-    const n31 = Vue.createPlainElement("uni-tabbar", { class: () => "uni-tabbar-" + Vue.unref(tabBar).position }, null, true);
-    const n29 = t7();
-    Vue.insert(n29, n31);
-    const n0 = Vue.child(n29);
-    Vue.renderEffect(() => {
-      Vue.setStyle(n29, Vue.unref(style));
-      Vue.setStyle(n0, Vue.unref(borderStyle));
-    });
-    Vue.setInsertionState(n29, 1);
-    Vue.createFor(
-      () => visibleList.value,
-      (_for_item0, _for_key0) => {
-        const n28 = t6();
-        const n27 = Vue.child(n28);
-        const n26 = Vue.next(n27);
-        Vue.renderEffect(() => Vue.setStyle(n28, getItemStyle(_for_item0.value)));
-        Vue.setInsertionState(n28, n27);
-        Vue.createIf(() => isRenderedMidButton(_for_item0.value), () => {
-          const n8 = t1$1();
-          Vue.renderEffect(() => Vue.setStyle(n8, getMidButtonStyle(_for_item0.value)));
-          Vue.setInsertionState(n8);
-          Vue.createIf(() => getIconPath(_for_item0.value, _for_key0.value), () => {
-            const n7 = t0$1();
-            Vue.renderEffect(() => {
-              Vue.setStyle(n7, {
-                width: getMidButton(_for_item0.value).iconWidth,
-                height: getMidButton(_for_item0.value).iconWidth
-              });
-              Vue.setProp(n7, "src", Vue.unref(getRealPath)(getIconPath(_for_item0.value, _for_key0.value)));
-            });
-            return n7;
-          });
-          return n8;
-        });
-        Vue.renderEffect(() => Vue.setStyle(n26, { height: Vue.unref(tabBar).height }));
-        Vue.setInsertionState(n26);
-        Vue.createIf(
-          () => getIconfontText(_for_item0.value, _for_key0.value),
-          () => {
-            const n14 = t3$1();
-            Vue.renderEffect(() => {
-              Vue.setClass(n14, getIconClass(_for_item0.value));
-              Vue.setStyle(n14, getIconStyle());
-            });
-            Vue.setInsertionState(n14);
-            Vue.createIf(() => _for_item0.value.type !== "midButton", () => {
-              const n13 = t2$1();
-              const x13 = Vue.txt(n13);
-              Vue.renderEffect(() => {
-                const _item = _for_item0.value;
-                const _index = _for_key0.value;
-                Vue.setStyle(n13, getIconfontStyle(_item, _index));
-                Vue.setText(x13, Vue.toDisplayString(getIconfontText(_item, _index)));
-              });
-              return n13;
-            });
-            return n14;
-          },
-          () => Vue.createIf(() => getIconPath(_for_item0.value, _for_key0.value), () => {
-            const n19 = t3$1();
-            Vue.renderEffect(() => {
-              Vue.setClass(n19, getIconClass(_for_item0.value));
-              Vue.setStyle(n19, getIconStyle());
-            });
-            Vue.setInsertionState(n19);
-            Vue.createIf(() => _for_item0.value.type !== "midButton", () => {
-              const n18 = t0$1();
-              Vue.renderEffect(() => Vue.setProp(n18, "src", Vue.unref(getRealPath)(getIconPath(_for_item0.value, _for_key0.value))));
-              return n18;
-            });
-            return n19;
-          }),
-          1029
-          /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_3 */
-        );
-        Vue.setInsertionState(n26, 1);
-        Vue.createIf(() => _for_item0.value.text, () => {
-          const n22 = t4$1();
-          const x22 = Vue.txt(n22);
-          Vue.renderEffect(() => {
-            const _item = _for_item0.value;
-            Vue.setStyle(n22, getLabelStyle(_item, _for_key0.value));
-            Vue.setText(x22, Vue.toDisplayString(_item.text));
-          });
-          return n22;
-        });
-        Vue.setInsertionState(n26, 2);
-        Vue.createIf(() => _for_item0.value.redDot, () => {
-          const n25 = t5();
-          const x25 = Vue.txt(n25);
-          Vue.renderEffect(() => {
-            const _item_badge = _for_item0.value.badge;
-            Vue.setClass(n25, [
-              "uni-tabbar__reddot",
-              _item_badge ? "uni-tabbar__badge" : ""
-            ]);
-            Vue.setText(x25, Vue.toDisplayString(_item_badge));
-          });
-          return n25;
-        });
-        Vue.on(n28, "click", () => Vue.unref(onSwitchTab)(_for_item0.value, _for_key0.value));
-        return n28;
-      },
-      (item, index2) => isRenderedMidButton(item) ? "midButton" : index2,
-      8
-      /* IS_SINGLE_NODE */
-    );
-    const n30 = t8();
-    Vue.insert(n30, n31);
-    Vue.renderEffect(() => Vue.setStyle(n30, Vue.unref(placeholderStyle)));
-    return n31;
-  }
-});
-const t0 = Vue.template("<div class=uni-top-window></div>");
-const t1 = Vue.template("<div class=uni-top-window--placeholder>");
-const t2 = Vue.template("<div class=uni-mask>");
-const t3 = Vue.template("<div class=uni-left-window>");
-const t4 = Vue.template("<div class=uni-right-window>");
-const _sfc_main = /* @__PURE__ */ Vue.defineVaporComponent({
-  ...{
-    name: "Layout",
-    __reserved: true,
-    compatConfig: { MODE: 3 }
-  },
-  __name: "index-vapor",
-  setup(__props) {
-    const hasPages = __UNI_FEATURE_PAGES__;
-    const hasResponsive = __UNI_FEATURE_RESPONSIVE__;
-    const hasTopWindow = __UNI_FEATURE_TOPWINDOW__;
-    const hasLeftWindow = __UNI_FEATURE_LEFTWINDOW__;
-    const hasRightWindow = __UNI_FEATURE_RIGHTWINDOW__;
-    const hasTabBar = __UNI_FEATURE_TABBAR__;
-    const rootRef = Vue.ref(null);
-    const firstPageComponent = !hasPages && __uniRoutes[0].component;
-    const keepAliveRoute = hasPages ? useKeepAliveRoute() : void 0;
-    const routeKey = keepAliveRoute == null ? void 0 : keepAliveRoute.routeKey;
-    const isTabBar = keepAliveRoute == null ? void 0 : keepAliveRoute.isTabBar;
-    const routeCache2 = keepAliveRoute == null ? void 0 : keepAliveRoute.routeCache;
-    const route = hasPages ? vueRouter.useRoute() : void 0;
-    const { layoutState, windowState } = useState2();
-    useMaxWidth(layoutState, rootRef);
-    const topWindow = hasTopWindow && useTopWindow(layoutState);
-    const leftWindow = hasLeftWindow && useLeftWindow(layoutState);
-    const rightWindow = hasRightWindow && useRightWindow(layoutState);
-    const TopWindow = topWindow && topWindow.component;
-    const LeftWindow = leftWindow && leftWindow.component;
-    const RightWindow = rightWindow && rightWindow.component;
-    const topWindowRef = topWindow && topWindow.windowRef;
-    const leftWindowRef = leftWindow && leftWindow.windowRef;
-    const rightWindowRef = rightWindow && rightWindow.windowRef;
-    const showTabBar = hasTabBar && useShowTabBar();
-    const clazz = useAppClass(showTabBar);
-    function useAppClass(showTabBar2) {
-      const showMaxWidth = Vue.ref(false);
-      return Vue.computed(() => {
-        return {
-          "uni-app--showtabbar": showTabBar2 && showTabBar2.value,
-          "uni-app--maxwidth": showMaxWidth.value
-        };
-      });
-    }
-    function initMediaQuery(minWidth, callback) {
-      {
-        return false;
-      }
-    }
-    function useMaxWidth(layoutState2, rootRef2) {
-      const route2 = usePageRoute();
-      function checkMaxWidth() {
-        const windowWidth = document.body.clientWidth;
-        const pages = getCurrentBasePages();
-        let meta = {};
-        if (pages.length > 0) {
-          const curPage = pages[pages.length - 1];
-          meta = getPage$BasePage(curPage).meta;
-        } else {
-          const routeOptions = getRouteOptions(route2.path, true);
-          if (routeOptions) {
-            meta = routeOptions.meta;
-          }
-        }
-        const maxWidth = parseInt(
-          String(
-            (shared.hasOwn(meta, "maxWidth") ? meta.maxWidth : __uniConfig.globalStyle.maxWidth) || Number.MAX_SAFE_INTEGER
-          )
-        );
-        let showMaxWidth = false;
-        if (windowWidth > maxWidth) {
-          showMaxWidth = true;
-        } else {
-          showMaxWidth = false;
-        }
-        if (showMaxWidth && maxWidth) {
-          layoutState2.marginWidth = (windowWidth - maxWidth) / 2;
-          Vue.nextTick(() => {
-            const rootEl = rootRef2.value;
-            if (rootEl) {
-              rootEl.setAttribute(
-                "style",
-                "max-width:" + maxWidth + "px;margin:0 auto;"
-              );
-            }
-          });
-        } else {
-          layoutState2.marginWidth = 0;
-          Vue.nextTick(() => {
-            const rootEl = rootRef2.value;
-            if (rootEl) {
-              rootEl.removeAttribute("style");
-            }
-          });
-        }
-      }
-      Vue.watch([() => route2.path], checkMaxWidth);
-    }
-    function useState2() {
-      const route2 = usePageRoute();
-      if (!hasResponsive) {
-        const layoutState3 = Vue.reactive({
-          marginWidth: 0,
-          leftWindowWidth: 0,
-          rightWindowWidth: 0
-        });
-        Vue.watch(
-          () => layoutState3.marginWidth,
-          (value) => updateCssVar({ "--window-margin": value + "px" })
-        );
-        Vue.watch(
-          () => layoutState3.leftWindowWidth + layoutState3.marginWidth,
-          (value) => {
-            updateCssVar({ "--window-left": value + "px" });
-          }
-        );
-        Vue.watch(
-          () => layoutState3.rightWindowWidth + layoutState3.marginWidth,
-          (value) => {
-            updateCssVar({ "--window-right": value + "px" });
-          }
-        );
-        return {
-          layoutState: layoutState3,
-          windowState: Vue.computed(() => ({}))
-        };
-      }
-      const topWindowMediaQuery = Vue.ref(false);
-      const leftWindowMediaQuery = Vue.ref(false);
-      const rightWindowMediaQuery = Vue.ref(false);
-      const showTopWindow = Vue.computed(
-        () => hasTopWindow && route2.meta.topWindow !== false && topWindowMediaQuery.value
-      );
-      const showLeftWindow = Vue.computed(
-        () => hasLeftWindow && route2.meta.leftWindow !== false && leftWindowMediaQuery.value
-      );
-      const showRightWindow = Vue.computed(
-        () => hasRightWindow && route2.meta.rightWindow !== false && rightWindowMediaQuery.value
-      );
-      const layoutState2 = Vue.reactive({
-        topWindowMediaQuery,
-        showTopWindow,
-        apiShowTopWindow: false,
-        leftWindowMediaQuery,
-        showLeftWindow,
-        apiShowLeftWindow: false,
-        rightWindowMediaQuery,
-        showRightWindow,
-        apiShowRightWindow: false,
-        topWindowHeight: 0,
-        marginWidth: 0,
-        leftWindowWidth: 0,
-        rightWindowWidth: 0,
-        navigationBarTitleText: "",
-        topWindowStyle: {},
-        leftWindowStyle: {},
-        rightWindowStyle: {}
-      });
-      const props2 = [
-        "topWindow",
-        "leftWindow",
-        "rightWindow"
-      ];
-      props2.forEach((prop) => {
-        var _a;
-        const matchMedia = (_a = __uniConfig[prop]) == null ? void 0 : _a.matchMedia;
-        if (matchMedia && shared.hasOwn(matchMedia, "minWidth")) {
-          matchMedia.minWidth;
-        }
-        const matches = initMediaQuery();
-        layoutState2[`${prop}MediaQuery`] = matches;
-      });
-      Vue.watch(
-        () => layoutState2.topWindowHeight,
-        (value) => updateCssVar({ "--top-window-height": value + "px" })
-      );
-      Vue.watch(
-        () => layoutState2.marginWidth,
-        (value) => updateCssVar({ "--window-margin": value + "px" })
-      );
-      Vue.watch(
-        () => layoutState2.leftWindowWidth + layoutState2.marginWidth,
-        (value) => {
-          updateCssVar({ "--window-left": value + "px" });
-        }
-      );
-      Vue.watch(
-        () => layoutState2.rightWindowWidth + layoutState2.marginWidth,
-        (value) => {
-          updateCssVar({ "--window-right": value + "px" });
-        }
-      );
-      UniServiceJSBridge.on(uniShared.ON_NAVIGATION_BAR_CHANGE, (navigationBar) => {
-        layoutState2.navigationBarTitleText = navigationBar.titleText;
-      });
-      const windowState2 = Vue.computed(() => ({
-        matchTopWindow: layoutState2.topWindowMediaQuery,
-        showTopWindow: layoutState2.showTopWindow || layoutState2.apiShowTopWindow,
-        matchLeftWindow: layoutState2.leftWindowMediaQuery,
-        showLeftWindow: layoutState2.showLeftWindow || layoutState2.apiShowLeftWindow,
-        matchRightWindow: layoutState2.rightWindowMediaQuery,
-        showRightWindow: layoutState2.showRightWindow || layoutState2.apiShowRightWindow
-      }));
-      return {
-        layoutState: layoutState2,
-        windowState: windowState2
-      };
-    }
-    function useShowTabBar() {
-      const route2 = usePageRoute();
-      const tabBar = useTabBar();
-      const showTabBar2 = Vue.computed(() => route2.meta.isTabBar && tabBar.shown);
-      return showTabBar2;
-    }
-    function useTopWindow(layoutState2) {
-      const { component, style } = __uniConfig.topWindow;
-      const windowRef = Vue.ref(null);
-      function updateWindow() {
-        const instance = windowRef.value;
-        if (!instance || !instance.$) {
-          return;
-        }
-        const el = uniShared.resolveOwnerEl(instance.$);
-        if (!el) {
-          return;
-        }
-        const uniTopWindowStyleEl = el.parentElement;
-        if (!uniTopWindowStyleEl) {
-          return;
-        }
-        const height = uniTopWindowStyleEl.getBoundingClientRect().height;
-        layoutState2.topWindowHeight = height;
-      }
-      Vue.watch(
-        () => windowRef.value,
-        () => {
-          updateWindow();
-        }
-      );
-      Vue.watch(
-        () => layoutState2.showTopWindow || layoutState2.apiShowTopWindow,
-        () => Vue.nextTick(updateWindow)
-      );
-      Vue.watch(
-        () => layoutState2.topWindowStyle,
-        () => Vue.nextTick(updateWindow)
-      );
-      layoutState2.topWindowStyle = style;
-      return {
-        component,
-        windowRef
-      };
-    }
-    function useLeftWindow(layoutState2) {
-      const { component, style } = __uniConfig.leftWindow;
-      const windowRef = Vue.ref(null);
-      function updateWindow() {
-        const instance = windowRef.value;
-        if (!instance || !instance.$) {
-          return;
-        }
-        const el = uniShared.resolveOwnerEl(instance.$);
-        if (!el) {
-          return;
-        }
-        const uniLeftWindowStyleEl = el.parentElement && el.parentElement.parentElement;
-        if (!uniLeftWindowStyleEl) {
-          return;
-        }
-        const width = uniLeftWindowStyleEl.getBoundingClientRect().width;
-        layoutState2.leftWindowWidth = width;
-      }
-      Vue.watch(
-        () => windowRef.value,
-        () => {
-          updateWindow();
-        }
-      );
-      Vue.watch(
-        () => layoutState2.showLeftWindow || layoutState2.apiShowLeftWindow,
-        () => Vue.nextTick(updateWindow)
-      );
-      Vue.watch(
-        () => layoutState2.leftWindowStyle,
-        () => Vue.nextTick(updateWindow)
-      );
-      layoutState2.leftWindowStyle = style;
-      return {
-        component,
-        windowRef
-      };
-    }
-    function useRightWindow(layoutState2) {
-      const { component, style } = __uniConfig.rightWindow;
-      const windowRef = Vue.ref(null);
-      function updateWindow() {
-        const instance = windowRef.value;
-        if (!instance || !instance.$) {
-          return;
-        }
-        const el = uniShared.resolveOwnerEl(instance.$);
-        if (!el) {
-          return;
-        }
-        const uniRightWindowStyleEl = el.parentElement && el.parentElement.parentElement;
-        if (!uniRightWindowStyleEl) {
-          return;
-        }
-        const width = uniRightWindowStyleEl.getBoundingClientRect().width;
-        layoutState2.rightWindowWidth = width;
-      }
-      Vue.watch(
-        () => windowRef.value,
-        () => {
-          updateWindow();
-        }
-      );
-      Vue.watch(
-        () => layoutState2.showRightWindow || layoutState2.apiShowRightWindow,
-        () => Vue.nextTick(updateWindow)
-      );
-      Vue.watch(
-        () => layoutState2.rightWindowStyle,
-        () => Vue.nextTick(updateWindow)
-      );
-      layoutState2.rightWindowStyle = style;
-      return {
-        component,
-        windowRef
-      };
-    }
-    const n46 = Vue.createPlainElement("uni-app", { class: () => Vue.unref(clazz) }, null, true);
-    Vue.setInsertionState(n46);
-    Vue.createIf(
-      () => Vue.unref(hasResponsive),
-      () => {
-        const n33 = Vue.createPlainElement("uni-layout", { class: () => ({
-          "uni-app--showtopwindow": Vue.unref(hasTopWindow) && Vue.unref(layoutState).showTopWindow,
-          "uni-app--showleftwindow": Vue.unref(hasLeftWindow) && Vue.unref(layoutState).showLeftWindow,
-          "uni-app--showrightwindow": Vue.unref(hasRightWindow) && Vue.unref(layoutState).showRightWindow
-        }) });
-        Vue.setInsertionState(n33);
-        Vue.createIf(() => Vue.unref(hasTopWindow) && Vue.unref(TopWindow), () => {
-          const n7 = Vue.createPlainElement("uni-top-window");
-          const n5 = t0();
-          Vue.insert(n5, n7);
-          Vue.renderEffect(() => Vue.setStyle(n5, Vue.unref(layoutState).topWindowStyle));
-          Vue.setInsertionState(n5);
-          const n4 = Vue.createDynamicComponent(() => Vue.unref(TopWindow), {
-            "navigation-bar-title-text": () => Vue.unref(layoutState).navigationBarTitleText,
-            $: [
-              () => Vue.unref(windowState)
-            ]
-          });
-          const n6 = t1();
-          Vue.insert(n6, n7);
-          Vue.setStaticTemplateRef(n4, topWindowRef, null, "topWindowRef");
-          Vue.applyVShow(n7, () => Vue.unref(layoutState).showTopWindow || Vue.unref(layoutState).apiShowTopWindow);
-          Vue.renderEffect(() => Vue.setStyle(n6, { height: Vue.unref(layoutState).topWindowHeight + "px" }));
-          return n7;
-        });
-        Vue.setInsertionState(n33, 1);
-        const n32 = Vue.createPlainElement("uni-content");
-        Vue.setInsertionState(n32);
-        const n15 = Vue.createPlainElement("uni-main");
-        Vue.setInsertionState(n15);
-        Vue.createIf(
-          () => {
-            var _a;
-            return Vue.unref(hasPages) && ((_a = Vue.unref(route)) == null ? void 0 : _a.meta.route);
-          },
-          () => {
-            const n12 = Vue.createComponent(Vue.VaporKeepAlive, {
-              "match-by": "key",
-              cache: () => Vue.unref(routeCache2)
-            }, () => {
-              const n10 = Vue.createKeyedFragment(() => Vue.unref(routeKey), () => {
-                const n11 = Vue.createComponent(Vue.unref(vueRouter.VaporRouterView), { type: () => Vue.unref(isTabBar) ? "tabBar" : "" });
-                return n11;
-              });
-              return n10;
-            });
-            return n12;
-          },
-          () => Vue.createIf(() => !Vue.unref(hasPages), () => {
-            const n14 = Vue.createDynamicComponent(() => Vue.unref(firstPageComponent));
-            return n14;
-          }),
-          517
-          /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_1 */
-        );
-        Vue.setInsertionState(n32, 1);
-        Vue.createIf(() => Vue.unref(hasLeftWindow) && Vue.unref(LeftWindow), () => {
-          const n23 = Vue.createPlainElement("uni-left-window", {
-            "data-show": () => Vue.unref(layoutState).apiShowLeftWindow || void 0,
-            style: () => Vue.unref(layoutState).leftWindowStyle
-          });
-          Vue.setInsertionState(n23);
-          Vue.createIf(() => Vue.unref(layoutState).apiShowLeftWindow, () => {
-            const n20 = t2();
-            Vue.on(n20, "click", () => Vue.unref(layoutState).apiShowLeftWindow = false);
-            return n20;
-          });
-          const n22 = t3();
-          Vue.insert(n22, n23);
-          Vue.setInsertionState(n22);
-          const n21 = Vue.createDynamicComponent(() => Vue.unref(LeftWindow), { $: [
-            () => Vue.unref(windowState)
-          ] });
-          Vue.setStaticTemplateRef(n21, leftWindowRef, null, "leftWindowRef");
-          Vue.applyVShow(n23, () => Vue.unref(layoutState).showLeftWindow || Vue.unref(layoutState).apiShowLeftWindow);
-          return n23;
-        });
-        Vue.setInsertionState(n32, 2);
-        Vue.createIf(() => Vue.unref(hasRightWindow) && Vue.unref(RightWindow), () => {
-          const n31 = Vue.createPlainElement("uni-right-window", {
-            "data-show": () => Vue.unref(layoutState).apiShowRightWindow || void 0,
-            style: () => Vue.unref(layoutState).rightWindowStyle
-          });
-          Vue.setInsertionState(n31);
-          Vue.createIf(() => Vue.unref(layoutState).apiShowRightWindow, () => {
-            const n28 = t2();
-            Vue.on(n28, "click", () => Vue.unref(layoutState).apiShowRightWindow = false);
-            return n28;
-          });
-          const n30 = t4();
-          Vue.insert(n30, n31);
-          Vue.setInsertionState(n30);
-          const n29 = Vue.createDynamicComponent(() => Vue.unref(RightWindow), { $: [
-            () => Vue.unref(windowState)
-          ] });
-          Vue.setStaticTemplateRef(n29, rightWindowRef, null, "rightWindowRef");
-          Vue.applyVShow(n31, () => Vue.unref(layoutState).showRightWindow || Vue.unref(layoutState).apiShowRightWindow);
-          return n31;
-        });
-        return n33;
-      },
-      () => {
-        const n35 = Vue.createIf(
-          () => {
-            var _a;
-            return Vue.unref(hasPages) && ((_a = Vue.unref(route)) == null ? void 0 : _a.meta.route);
-          },
-          () => {
-            const n39 = Vue.createComponent(Vue.VaporKeepAlive, {
-              "match-by": "key",
-              cache: () => Vue.unref(routeCache2)
-            }, () => {
-              const n37 = Vue.createKeyedFragment(() => Vue.unref(routeKey), () => {
-                const n38 = Vue.createComponent(Vue.unref(vueRouter.VaporRouterView), { type: () => Vue.unref(isTabBar) ? "tabBar" : "" });
-                return n38;
-              });
-              return n37;
-            });
-            return n39;
-          },
-          () => Vue.createIf(() => !Vue.unref(hasPages), () => {
-            const n41 = Vue.createDynamicComponent(() => Vue.unref(firstPageComponent));
-            return n41;
-          }),
-          2309
-          /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_8 */
-        );
-        return n35;
-      },
-      2053
-      /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_7 */
-    );
-    Vue.setInsertionState(n46, 1);
-    Vue.createIf(() => Vue.unref(hasTabBar), () => {
-      const n45 = Vue.createComponent(_sfc_main$1);
-      Vue.applyVShow(n45, () => Vue.unref(showTabBar));
-      return n45;
-    });
-    Vue.setStaticTemplateRef(n46, rootRef, null, "rootRef");
-    return n46;
-  }
-});
 Object.defineProperty(exports, "UTS", {
   enumerable: true,
   get: () => uniShared.UTS
@@ -15813,55 +16507,120 @@ Object.defineProperty(exports, "UniError", {
   enumerable: true,
   get: () => uniShared.UniError
 });
-exports.Ad = index$5;
-exports.AdContentPage = index$4;
-exports.AdDraw = index$3;
-exports.AsyncErrorComponent = _sfc_main$8;
-exports.AsyncLoadingComponent = _sfc_main$9;
-exports.Button = index$v;
-exports.Camera = index$2;
-exports.Canvas = indexX$4;
-exports.Checkbox = index$t;
-exports.CheckboxGroup = index$u;
-exports.CoverImage = index$7;
-exports.CoverView = index$8;
-exports.Editor = index$s;
-exports.Form = index$x;
-exports.Icon = index$r;
+exports.Ad = indexVapor;
+exports.AdContentPage = index$5;
+exports.AdDraw = index$4;
+exports.AsyncErrorComponent = _sfc_main$t;
+exports.AsyncLoadingComponent = _sfc_main$u;
+exports.Button = _sfc_main$n;
+exports.Camera = index$3;
+exports.Canvas = indexVapor$a;
+exports.Checkbox = _sfc_main$m;
+exports.CheckboxGroup = _sfc_main$l;
+exports.Editor = indexVapor$8;
+exports.FlowItem = _sfc_main$k;
+exports.Form = _sfc_main$j;
+exports.Icon = indexVapor$7;
 exports.Input = Input;
-exports.Label = index$w;
-exports.LayoutComponent = _sfc_main;
-exports.ListItem = index$f;
-exports.ListView = index$g;
-exports.LivePlayer = index$1;
-exports.LivePusher = index;
-exports.Loading = _sfc_main$2;
-exports.Map = index$9;
-exports.MovableArea = index$q;
-exports.MovableView = index$p;
-exports.Navigator = index$o;
-exports.PageComponent = _sfc_main$4;
-exports.PageContainer = _sfc_main$3;
-exports.Picker = index$6;
-exports.PickerView = PickerView;
-exports.PickerViewColumn = PickerViewColumn;
-exports.Progress = index$n;
-exports.Radio = indexX$3;
-exports.RadioGroup = index$m;
+exports.Label = _sfc_main$i;
+exports.LayoutComponent = _sfc_main$v;
+exports.ListItem = _sfc_main$h;
+exports.ListView = _sfc_main$g;
+exports.LivePlayer = index$2;
+exports.LivePusher = index$1;
+exports.Loading = _sfc_main$s;
+exports.Map = indexVapor$1;
+exports.MatchMedia = _sfc_main$f;
+exports.MovableArea = indexVapor$6;
+exports.MovableView = indexVapor$5;
+exports.Navigator = _sfc_main$e;
+exports.PageComponent = _sfc_main$o;
+exports.PageContainer = _sfc_main$d;
+exports.Picker = _sfc_main$c;
+exports.PickerView = _sfc_main$b;
+exports.PickerViewColumn = _sfc_main$a;
+exports.Progress = _sfc_main$9;
+exports.Radio = _sfc_main$8;
+exports.RadioGroup = _sfc_main$7;
 exports.ResizeSensor = ResizeSensor;
-exports.RichText = index$l;
-exports.ScrollView = index$k;
-exports.Slider = indexX$2;
-exports.StickyHeader = index$d;
-exports.StickySection = index$e;
-exports.Swiper = index$j;
-exports.SwiperItem = index$i;
-exports.Switch = indexX$1;
-exports.Textarea = index$h;
+exports.RichText = indexVapor$4;
+exports.ScrollView = __syscom_0;
+exports.Slider = _sfc_main$6;
+exports.StickyHeader = _sfc_main$5;
+exports.StickySection = _sfc_main$4;
+exports.Swiper = _sfc_main$3;
+exports.SwiperItem = _sfc_main$2;
+exports.Switch = _sfc_main$1;
+exports.Textarea = indexVapor$9;
+exports.UniButtonElement = UniButtonElement;
+exports.UniButtonElementImpl = UniButtonElement;
+exports.UniCanvasElement = UniCanvasElement;
+exports.UniCanvasElementImpl = UniCanvasElement;
+exports.UniCheckboxElement = UniCheckboxElement;
+exports.UniCheckboxElementImpl = UniCheckboxElement;
+exports.UniCheckboxGroupElement = UniCheckboxGroupElement;
+exports.UniCheckboxGroupElementImpl = UniCheckboxGroupElement;
+exports.UniEditorElement = UniEditorElement;
+exports.UniEditorElementImpl = UniEditorElement;
+exports.UniElement = UniElement2;
+exports.UniElementImpl = UniElement2;
+exports.UniFormElement = UniFormElement;
+exports.UniFormElementImpl = UniFormElement;
+exports.UniIconElement = UniIconElement;
+exports.UniIconElementImpl = UniIconElement;
+exports.UniImageElement = UniImageElement;
+exports.UniImageElementImpl = UniImageElement;
+exports.UniInputElement = UniInputElement;
+exports.UniInputElementImpl = UniInputElement;
+exports.UniLabelElement = UniLabelElement;
+exports.UniLabelElementImpl = UniLabelElement;
+exports.UniLoadingElement = UniLoadingElement;
+exports.UniLoadingElementImpl = UniLoadingElement;
+exports.UniMatchMediaElement = UniMatchMediaElement;
+exports.UniMatchMediaElementImpl = UniMatchMediaElement;
+exports.UniMovableAreaElement = UniMovableAreaElement;
+exports.UniMovableAreaElementImpl = UniMovableAreaElement;
+exports.UniMovableViewElement = UniMovableViewElement;
+exports.UniMovableViewElementImpl = UniMovableViewElement;
+exports.UniNavigatorElement = UniNavigatorElement;
+exports.UniNavigatorElementImpl = UniNavigatorElement;
+exports.UniPageContainerElement = UniPageContainerElement;
+exports.UniPageContainerElementImpl = UniPageContainerElement;
+exports.UniPickerElement = UniPickerElement;
+exports.UniPickerElementImpl = UniPickerElement;
+exports.UniPickerViewColumnElement = UniPickerViewColumnElement;
+exports.UniPickerViewColumnElementImpl = UniPickerViewColumnElement;
+exports.UniPickerViewElement = UniPickerViewElement;
+exports.UniPickerViewElementImpl = UniPickerViewElement;
+exports.UniProgressElement = UniProgressElement;
+exports.UniProgressElementImpl = UniProgressElement;
+exports.UniRadioElement = UniRadioElement;
+exports.UniRadioElementImpl = UniRadioElement;
+exports.UniRadioGroupElement = UniRadioGroupElement;
+exports.UniRadioGroupElementImpl = UniRadioGroupElement;
+exports.UniRichTextElement = UniRichTextElement;
+exports.UniRichTextElementImpl = UniRichTextElement;
+exports.UniScrollViewElement = UniScrollViewElement;
+exports.UniScrollViewElementImpl = UniScrollViewElement;
 exports.UniServiceJSBridge = UniServiceJSBridge$1;
+exports.UniSliderElement = UniSliderElement;
+exports.UniSliderElementImpl = UniSliderElement;
+exports.UniSwiperElement = UniSwiperElement;
+exports.UniSwiperElementImpl = UniSwiperElement;
+exports.UniSwiperItemElement = UniSwiperItemElement;
+exports.UniSwiperItemElementImpl = UniSwiperItemElement;
+exports.UniSwitchElement = UniSwitchElement;
+exports.UniSwitchElementImpl = UniSwitchElement;
+exports.UniTextElement = UniTextElement;
+exports.UniTextElementImpl = UniTextElement;
+exports.UniTextareaElement = UniTextareaElement;
+exports.UniTextareaElementImpl = UniTextareaElement;
+exports.UniViewElement = UniViewElement;
+exports.UniViewElementImpl = UniViewElement;
 exports.UniViewJSBridge = UniViewJSBridge$1;
-exports.Video = index$a;
-exports.WebView = indexX;
+exports.Video = indexVapor$3;
+exports.Waterflow = _sfc_main;
+exports.WebView = indexVapor$2;
 exports.clearStorage = clearStorage;
 exports.clearStorageSync = clearStorageSync;
 exports.createVaporPageRouteComponent = createVaporPageRouteComponent;
@@ -15875,7 +16634,7 @@ exports.getStorageInfo = getStorageInfo;
 exports.getStorageInfoSync = getStorageInfoSync;
 exports.getStorageSync = getStorageSync;
 exports.getSystemInfoSync = getSystemInfoSync;
-exports.plugin = index$b;
+exports.plugin = index;
 exports.removeStorage = removeStorage;
 exports.removeStorageSync = removeStorageSync;
 exports.request = request;

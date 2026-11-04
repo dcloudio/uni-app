@@ -1,4 +1,4 @@
-import { isRootHook, normalizeClass, getValueByDataPath, isUniLifecycleHook, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, createUniDOMStringMap, normalizeStyle as normalizeStyle$1, dynamicSlotName, getPartClass } from '@dcloudio/uni-shared';
+import { isRootHook, normalizeClass, getValueByDataPath, isUniLifecycleHook, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, createUniDOMStringMap, normalizeStyle as normalizeStyle$1, dynamicSlotName, getPartClass, VIRTUAL_HOST_ID } from '@dcloudio/uni-shared';
 import { NOOP, extend, isSymbol, isObject, def, hasChanged, isFunction, isArray, isPromise, camelize, capitalize, EMPTY_OBJ, remove, toHandlerKey, hasOwn, hyphenate, isReservedProp, toRawType, isString, normalizeClass as normalizeClass$1, normalizeStyle, isOn, toTypeString, isMap, isIntegerKey, isSet, isPlainObject, makeMap, invokeArrayFns, isBuiltInDirective, looseToNumber, NO, EMPTY_ARR, isModelListener, toNumber, toDisplayString } from '@vue/shared';
 export { EMPTY_OBJ, camelize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
 
@@ -3503,7 +3503,18 @@ function toExternalClasses(classes, sourceIsPage) {
   }) : [];
 }
 function normalizeExternalClasses(classes, sourceIsPage) {
-  return toExternalClasses(normalizeClass(classes), sourceIsPage);
+  const normalized = normalizeClass(classes);
+  if (!normalized)
+    return "";
+  const names = normalized.split(/\s+/);
+  let result = "";
+  for (let i = 0; i < names.length; i++) {
+    const name = names[i];
+    if (i)
+      result += " ";
+    result += name.startsWith("~") ? name : sourceIsPage ? "~" + name.replace(/^\^+/, "") : "^" + name;
+  }
+  return result;
 }
 function normalizeInheritAttrsValue(instance, key, value, sourceIsPage) {
   if (__X_STYLE_ISOLATION__ && __X_STYLE_ISOLATION_UP_ARROW__ && !instance.type.__reserved) {
@@ -4709,6 +4720,15 @@ function setResult(result, k, v) {
 function hasComponentEffect(instance) {
   return queue.includes(instance.update);
 }
+const pendingMPInstances = /* @__PURE__ */ new Set();
+function nextTickMP(fn) {
+  const promise = nextTick$1().then(
+    () => Promise.all(
+      Array.from(pendingMPInstances, (instance) => nextTick(instance))
+    )
+  ).then(NOOP);
+  return fn ? promise.then(this ? fn.bind(this) : fn) : promise;
+}
 function flushCallbacks(instance) {
   const ctx = instance.ctx;
   const callbacks = ctx.__next_tick_callbacks;
@@ -4831,8 +4851,12 @@ function patch(instance, data, oldData) {
       ctx.__next_tick_pending = true;
       mpInstance.setData(diffData, () => {
         ctx.__next_tick_pending = false;
+        pendingMPInstances.delete(instance);
         flushCallbacks(instance);
       });
+      if (ctx.__next_tick_pending) {
+        pendingMPInstances.add(instance);
+      }
       flushPreFlushCbs();
     } else {
       flushCallbacks(instance);
@@ -6823,7 +6847,7 @@ function hasIdProp(_ctx) {
         'id' in _ctx.$.propsOptions[0]);
 }
 function getVirtualHostId(_ctx) {
-    return _ctx.virtualHostId;
+    return _ctx[VIRTUAL_HOST_ID];
 }
 function hasVirtualHostId(_ctx) {
     return !!getVirtualHostId(_ctx);
@@ -6896,4 +6920,4 @@ function createApp(rootComponent, rootProps = null) {
 }
 const createSSRApp = createApp;
 
-export { EffectScope, Fragment, ReactiveEffect, Text, UniElement, UniElement as UniElementImpl, c, callWithAsyncErrorHandling, callWithErrorHandling, computed, createApp, createPropsRestProxy, createSSRApp, createVNode, createVueApp, customRef, d, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, destroyUniElements, devtoolsComponentAdded, devtoolsComponentRemoved, devtoolsComponentUpdated, diff, e, effect, effectScope, f, findComponentPropsData, findUniElement, gei, getCurrentInstance, getCurrentScope, getExposeProxy, guardReactiveProps, h, hasInjectionContext, hasQueueJob, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, isShallow, j, logError, m, markRaw, mergeDefaults, mergeModels, mergeProps, mpc, n, nextTick$1 as nextTick, o, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, p, patch, provide, proxyRefs, pruneComponentPropsCache, pruneUniElements, pvhc, queuePostFlushCb, r, reactive, readonly, ref, registerCustomElement, resolveComponent, resolveDirective, resolveFilter, s, sei, ses, setCurrentRenderingInstance, setTemplateRef, setupDevtoolsPlugin, shallowReactive, shallowReadonly, shallowRef, sr, stop, t, toHandlers, toRaw, toRef, toRefs, toValue, triggerRef, unref, updateProps, useAttrs, useCssModule, useCssVars, useModel, useSSRContext, useSlots, version, w, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };
+export { EffectScope, Fragment, ReactiveEffect, Text, UniElement, UniElement as UniElementImpl, c, callWithAsyncErrorHandling, callWithErrorHandling, computed, createApp, createPropsRestProxy, createSSRApp, createVNode, createVueApp, customRef, d, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, destroyUniElements, devtoolsComponentAdded, devtoolsComponentRemoved, devtoolsComponentUpdated, diff, e, effect, effectScope, f, findComponentPropsData, findUniElement, gei, getCurrentInstance, getCurrentScope, getExposeProxy, guardReactiveProps, h, hasInjectionContext, hasQueueJob, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, isShallow, j, logError, m, markRaw, mergeDefaults, mergeModels, mergeProps, mpc, n, nextTickMP as nextTick, o, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, p, patch, provide, proxyRefs, pruneComponentPropsCache, pruneUniElements, pvhc, queuePostFlushCb, r, reactive, readonly, ref, registerCustomElement, resolveComponent, resolveDirective, resolveFilter, s, sei, ses, setCurrentRenderingInstance, setTemplateRef, setupDevtoolsPlugin, shallowReactive, shallowReadonly, shallowRef, sr, stop, t, toHandlers, toRaw, toRef, toRefs, toValue, triggerRef, unref, updateProps, useAttrs, useCssModule, useCssVars, useModel, useSSRContext, useSlots, version, w, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };

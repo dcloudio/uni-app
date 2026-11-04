@@ -37,6 +37,12 @@
     0 1px 4px rgba(0, 0, 0, 0.117647);
 }
 
+.uni-scroll-view-refresh > .uni-scroll-view-refresh__loading {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
 .uni-scroll-view-refresh__spinner {
   transform-origin: center center;
   animation: uni-scroll-view-refresh-rotate 2s linear infinite;

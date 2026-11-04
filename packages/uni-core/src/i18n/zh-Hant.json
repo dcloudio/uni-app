@@ -1,5 +1,6 @@
 {
   "uni.app.quit": "再按一次退出應用",
+  "uni.appVm.methodWarning": "不應直接透過 UniApp 呼叫方法「{methodName}」，請改用「{methodCall}」。",
   "uni.async.error": "連接服務器超時，點擊屏幕重試",
   "uni.showActionSheet.cancel": "取消",
   "uni.showToast.unpaired": "請注意 showToast 與 hideToast 必須配對使用",

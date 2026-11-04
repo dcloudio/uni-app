@@ -1,6 +1,5 @@
-import { extend, hasOwn, isPlainObject, isString } from '@vue/shared'
+import { hasOwn, isPlainObject, isString } from '@vue/shared'
 import { getRealPath } from '@dcloudio/uni-platform'
-import { type VNode, createTextVNode, h } from 'vue'
 
 export const TAGS = {
   a: '',
@@ -105,7 +104,7 @@ export function decodeEntities(htmlString: string) {
   )
 }
 
-interface Node {
+export interface Node {
   type: string
   text?: string
   name?: string
@@ -113,7 +112,7 @@ interface Node {
   children?: Node[]
 }
 
-function processClickEvent(node: Node, triggerItemClick: Function) {
+export function processClickEvent(node: Node, triggerItemClick: Function) {
   if (node.name && ['a', 'img'].includes(node.name) && triggerItemClick) {
     return {
       onClickCapture: (e: Event) => {
@@ -142,7 +141,7 @@ function normalizeValue(tagName: string, name: string, value: unknown) {
   return value
 }
 
-function normalizeAttrs(tagName: string, attrs?: Data) {
+export function normalizeAttrs(tagName: string, attrs?: Data) {
   if (!isPlainObject(attrs)) return
   const tagAttrs = TAGS[tagName as keyof typeof TAGS] || []
   const normalizedAttrs: Data = {}
@@ -161,46 +160,4 @@ function normalizeAttrs(tagName: string, attrs?: Data) {
     //#endif
   })
   return normalizedAttrs
-}
-
-export const nodeList2VNode = /*#__PURE__*/ (
-  scopeId: string,
-  triggerItemClick: Function,
-  nodeList?: Node[]
-): Array<VNode | undefined> => {
-  if (!nodeList || (Array.isArray(nodeList) && !nodeList.length)) return []
-
-  return nodeList.map((node) => {
-    if (!isPlainObject(node)) {
-      return
-    }
-    // 存在 node.text 且 type 为空或为 'text' 时当作 text 节点处理
-    if (
-      (!hasOwn(node, 'type') || node.type === 'text') &&
-      isString(node.text) &&
-      node.text !== ''
-    )
-      return createTextVNode(decodeEntities(node.text || ''))
-    if (!hasOwn(node, 'type') || node.type === 'node') {
-      if (!isString(node.name) || !node.name) {
-        return
-      }
-      const tagName = node.name.toLowerCase()
-      //#if !_X_
-      if (!hasOwn(TAGS, tagName)) {
-        return
-      }
-      //#endif
-      const nodeProps = extend(
-        { [scopeId]: '' },
-        processClickEvent(node, triggerItemClick),
-        normalizeAttrs(tagName, node.attrs)
-      )
-      return h(
-        node.name,
-        nodeProps,
-        nodeList2VNode(scopeId, triggerItemClick, node.children)
-      )
-    }
-  })
 }

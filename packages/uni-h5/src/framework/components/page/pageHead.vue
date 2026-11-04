@@ -10,11 +10,14 @@
           <svg width="26" height="26" viewBox="0 0 32 32">
             <path
               :d="ICON_PATH_BACK"
-              :fill="
+              fill="none"
+              :stroke="
                 navigationBar.type === 'transparent'
                   ? '#fff'
                   : navigationBar.titleColor
               "
+              stroke-width="2"
+              stroke-linecap="round"
             />
           </svg>
         </div>
@@ -41,7 +44,13 @@
             <span v-else-if="button.btnSelect" :style="button.iconStyle">
               <i class="uni-btn-icon" v-html="button.btnText" />
               <svg width="14" height="14" viewBox="0 0 32 32">
-                <path :d="ICON_PATHS.select" fill="#000" />
+                <path
+                  :d="ICON_PATHS.select"
+                  fill="none"
+                  stroke="#000"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
               </svg>
             </span>
             <i
@@ -64,7 +73,8 @@
             opacity: navigationBar.type === 'transparent' ? 0 : 1,
           }"
         >
-          <i v-if="navigationBar.loading" class="uni-loading" />
+          <i v-if="!isXVapor && navigationBar.loading" class="uni-loading" />
+          <Loading v-else-if="isXVapor && navigationBar.loading" style="display: inline-block; width: 20px; height: 20px; margin-top: 7px;"></Loading>
           <img
             v-else-if="navigationBar.titleImage"
             :src="navigationBar.titleImage"
@@ -183,6 +193,7 @@
 import { computed, onBeforeMount, ref } from 'vue'
 import { extend, isArray } from '@vue/shared'
 import { Input } from '@dcloudio/uni-components'
+import Loading from '../../../../../uni-components/src/vue/loading'
 import { getRealPath } from '@dcloudio/uni-platform'
 import {
   ICON_PATH_BACK,
@@ -214,6 +225,7 @@ defineOptions({
 const hasPages = __UNI_FEATURE_PAGES__
 const hasButtons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__
 const hasSearchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__
+const isXVapor = __VAPOR__
 
 const ICON_PATHS = {
   none: '',

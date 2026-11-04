@@ -45,16 +45,21 @@ describe('h5 pages.json page route', () => {
     })
   })
 
-  function transform(vapor: boolean, ssr = false) {
+  function transform(vapor: boolean, ssr = false, navigationBuild = false) {
     if (vapor) {
       process.env.UNI_APP_X_DOM2 = 'true'
       process.env.UNI_APP_X_VAPOR = 'true'
     }
     const plugin = uniPagesJsonPlugin() as any
     plugin.configResolved({
-      command: 'serve',
-      define: {},
-      isProduction: false,
+      command: navigationBuild ? 'build' : 'serve',
+      define: navigationBuild
+        ? {
+            __UNI_FEATURE_NAVIGATIONBAR__: true,
+            __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__: true,
+          }
+        : {},
+      isProduction: navigationBuild,
     })
     return plugin.transform.call(
       {},
@@ -67,9 +72,35 @@ describe('h5 pages.json page route', () => {
     ).code as string
   }
 
+  test.each([false, true])(
+    '导航栏发行构建按模式加载 Loading 样式（Vapor=%s）',
+    (vapor) => {
+      const code = transform(vapor, false, true)
+      expect(
+        code.includes(
+          "import '@dcloudio/uni-components/style-x-vapor/loading.css'"
+        )
+      ).toBe(vapor)
+      expect(code).not.toContain(
+        "import '@dcloudio/uni-components/style-x/loading.css'"
+      )
+      expect(
+        code.includes("import '@dcloudio/uni-h5/style/vapor/input.css'")
+      ).toBe(vapor)
+      expect(
+        code.includes("import '@dcloudio/uni-components/style/input.css'")
+      ).toBe(!vapor)
+    }
+  )
+
   test('Web VDOM 保持原有 VNode 页面包装', () => {
     const code = transform(false)
 
+    expect(code).toContain("import '@dcloudio/uni-components/style/swiper.css'")
+    expect(code).toContain(
+      "import '@dcloudio/uni-components/style/swiper-item.css'"
+    )
+    expect(code).not.toContain('style-x-vapor/swiper')
     expect(code).not.toContain(
       "import '@dcloudio/uni-h5/style/framework/uvue-vapor.css'"
     )
@@ -101,6 +132,18 @@ describe('h5 pages.json page route', () => {
     const code = transform(true)
 
     expect(code).toContain(
+      "import '@dcloudio/uni-components/style-x-vapor/swiper.css'"
+    )
+    expect(code).toContain(
+      "import '@dcloudio/uni-components/style-x-vapor/swiper-item.css'"
+    )
+    expect(code).not.toContain(
+      "import '@dcloudio/uni-components/style/swiper.css'"
+    )
+    expect(code).not.toContain(
+      "import '@dcloudio/uni-components/style/swiper-item.css'"
+    )
+    expect(code).toContain(
       "import '@dcloudio/uni-h5/style/framework/uvue-vapor.css'"
     )
     expect(code).not.toContain(
@@ -127,9 +170,9 @@ describe('h5 pages.json page route', () => {
     expect(code).toContain(
       `import { createVaporPageRouteComponent, useI18n, setupWindow, setupPage } from '@dcloudio/uni-h5'`
     )
-    expect(code).toContain("import { useRoute } from 'vue-router'")
+    expect(code).not.toContain('useRoute')
     expect(code).toContain(
-      'component:createVaporPageRouteComponent(PagesIndexIndex,()=>useRoute().query)'
+      'component:createVaporPageRouteComponent(PagesIndexIndex)'
     )
     expect(code).not.toContain('.$route')
     expect(code).not.toContain('function renderPage(component,props)')
@@ -150,9 +193,9 @@ describe('h5 pages.json page route', () => {
     expect(code).toContain(
       'return createVNode(resolveComponent(async.loading))'
     )
-    expect(code).toContain("import { useRoute } from 'vue-router'")
+    expect(code).not.toContain('useRoute')
     expect(code).toContain(
-      'component:createVaporPageRouteComponent(PagesIndexIndex,()=>useRoute().query)'
+      'component:createVaporPageRouteComponent(PagesIndexIndex)'
     )
     expect(code).not.toContain('.$route')
   })

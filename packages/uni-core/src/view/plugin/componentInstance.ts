@@ -78,7 +78,12 @@ export function $nne(
 }
 
 function findUniTarget(target: HTMLElement): HTMLElement {
-  while (!isBuiltInElement(target)) {
+  while (
+    //#if _X_VAPOR_
+    target &&
+    //#endif
+    !isBuiltInElement(target)
+  ) {
     target = target.parentElement as HTMLElement
   }
   return target
@@ -88,7 +93,7 @@ export function createNativeEvent(
   evt: Event | TouchEvent,
   htmlElement: boolean = false
 ) {
-  const { type, timeStamp, target, currentTarget } = evt
+  const { target, currentTarget } = evt
   let realTarget, realCurrentTarget
   if (__X__) {
     realTarget = htmlElement
@@ -103,6 +108,11 @@ export function createNativeEvent(
     )
     realCurrentTarget = normalizeTarget(currentTarget as HTMLElement)
   }
+  //#if _X_VAPOR_
+  // Vapor 不创建旧事件快照，仅在访问空 detail 时分配对象。
+  let detail: Record<string, unknown> | undefined
+  //#else
+  const { type, timeStamp } = evt
   const event = {
     type,
     timeStamp,
@@ -129,22 +139,36 @@ export function createNativeEvent(
 
   if (__PLATFORM__ === 'h5') {
     if (__X__) {
+      //#endif
       return new Proxy(evt, {
         get(target, key) {
+          //#if _X_VAPOR_
+          if (key === 'target') return realTarget
+          // 委托分发会移动 currentTarget，需保留当前处理器对应的宿主。
+          if (key === 'currentTarget') return realCurrentTarget
+          if (key === 'detail') {
+            // image 包装器会后写入尺寸，不能在创建 Proxy 时固定 detail。
+            const value = (target as CustomEvent).detail
+            return isPlainObject(value) ? value : detail || (detail = {})
+          }
+          //#else
           if (key in event) {
             return event[key]
           }
+          //#endif
           const value = target[key]
           // 处理方法调用，保持正确的 this 上下文
           return isFunction(value) ? value.bind(target) : value
         },
       })
+      //#if !_X_VAPOR_
     } else {
       wrapperEvent(event, evt)
     }
   }
 
   return event
+  //#endif
 }
 
 function wrapperEvent(event: Record<string, any>, evt: Event | TouchEvent) {

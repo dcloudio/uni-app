@@ -1,0 +1,120 @@
+/* Vapor 独立组件样式；基础节点及根节点重置由 uvue-vapor.css 提供。 */
+.uni-input-wrapper,
+.uni-input-placeholder,
+.uni-input-form,
+.uni-input-input {
+  outline: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  text-decoration: inherit;
+}
+
+.uni-input-wrapper,
+.uni-input-form {
+  display: flex;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.uni-input-placeholder,
+.uni-input-input {
+  width: 100%;
+}
+
+.uni-input-placeholder {
+  position: absolute;
+  top: auto !important;
+  left: 0;
+  color: gray;
+  overflow: hidden;
+  text-overflow: clip;
+  white-space: pre;
+  word-break: keep-all;
+  pointer-events: none;
+  line-height: inherit;
+}
+
+.uni-input-input {
+  position: relative;
+  display: block;
+  height: 100%;
+  background: none;
+  color: inherit;
+  opacity: 1;
+  font: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  text-align: inherit;
+  text-indent: inherit;
+  text-transform: inherit;
+  text-shadow: inherit;
+}
+
+.uni-input-input[type='search']::-webkit-search-cancel-button,
+.uni-input-input[type='search']::-webkit-search-decoration {
+  display: none;
+}
+
+.uni-input-input::-webkit-outer-spin-button,
+.uni-input-input::-webkit-inner-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+.uni-input-input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+.uni-input-input:disabled {
+  /* 用于重置iOS14以下禁用状态文字颜色 */
+  -webkit-text-fill-color: currentcolor;
+}
+
+div:where([uni-input]) {
+  background-color: #ffffff;
+}
+
+.uni-input-placeholder {
+  color: #757575;
+}
+
+@layer uni-field-selection {
+  :where(.uni-field-selection-probe) {
+    background-color: var(--uni-selection-probe-background-color);
+  }
+}
+
+.uni-input-input.uni-field-selection[data-uni-selection]::selection {
+  background-color: var(--uni-selection-background-color);
+}
+
+@media (prefers-color-scheme: dark) {
+  div:where([uni-input]) {
+    color: #ffffff;
+    background-color: #3b3b3b;
+  }
+}
+
+/* Vapor 输入框内部布局；根节点重置仍由 uvue-vapor.css 维护。 */
+uni-app div:where([uni-input]) > .uni-input-wrapper {
+  height: auto;
+  flex: 1;
+}
+
+uni-app div:where([uni-input]) > .uni-input-wrapper > .uni-input-input {
+  height: auto;
+  flex: 1;
+}
+
+/* 内部原生输入框继承组件外部设置的光标样式。 */
+uni-app .uni-input-input {
+  caret-color: inherit;
+}
+
+uni-app .uni-input-input:disabled {
+  cursor: inherit;
+}

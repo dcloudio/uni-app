@@ -562,8 +562,13 @@ export default /*#__PURE__*/ defineSystemComponent({
       onUnmounted(() => removeMapChidlContext(context))
     }
     onUnmounted(removeMarker)
+    //#if _X_VAPOR_
+    // 覆盖物由地图 SDK 绘制，Vapor 使用空 Block，不创建 DOM。
+    return []
+    //#else
     return () => {
       return null
     }
+    //#endif
   },
 })

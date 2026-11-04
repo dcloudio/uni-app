@@ -91,6 +91,7 @@
     "fs-extra": "catalog:",
     "isbinaryfile": "catalog:",
     "jest": "^29.3.1",
+    "jsdom": "^16.7.0",
     "jsonc-parser": "catalog:",
     "lint-staged": "^10.5.3",
     "minimist": "^1.2.5",

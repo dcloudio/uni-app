@@ -1,23 +1,27 @@
+import { ref, watch, watchEffect } from 'vue'
+import type { Component } from 'vue'
+//#if _X_VAPOR_
+import { createVaporApp } from 'vue'
+//#else
 import {
-  type Component,
   createApp,
   createBlock,
   createVNode,
   defineComponent,
   openBlock,
-  ref,
-  watch,
-  watchEffect,
 } from 'vue'
+//#endif
 
 import { useKeyboard } from '../../../../helpers/useKeyboard'
 
+//#if !_X_VAPOR_
 export const VNODE_MASK = /*#__PURE__*/ createVNode(
   'div',
   { class: 'uni-mask' },
   null,
   -1 /* HOISTED */
 )
+//#endif
 
 export function createRootApp(
   component: Component,
@@ -27,6 +31,11 @@ export function createRootApp(
   rootState.onClose = (...args: any[]) => (
     (rootState.visible = false), callback.apply(null, args)
   )
+  //#if _X_VAPOR_
+  return createVaporApp(component as any, {
+    $: [() => rootState],
+  })
+  //#else
   return createApp(
     defineComponent({
       setup() {
@@ -37,6 +46,7 @@ export function createRootApp(
       },
     })
   )
+  //#endif
 }
 
 export function ensureRoot(id: string) {

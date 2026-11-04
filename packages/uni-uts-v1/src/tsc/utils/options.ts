@@ -44,7 +44,10 @@ function createTsConfigPaths(
     'vue-i18n': [path.resolve(cliVitePath, 'node_modules/vue-i18n')],
     ...virtualPaths,
   }
-  if (process.env.UNI_APP_X_DOM2 === 'true') {
+  if (
+    process.env.UNI_APP_X_DOM2 === 'true' &&
+    process.env.UNI_UTS_PLATFORM !== 'web'
+  ) {
     const uniXTypesDir = path.resolve(__dirname, '../../../lib/uts/types/uni-x')
     return {
       '@vue/shared': [
@@ -178,6 +181,33 @@ export function createBasicUtsOptions(
       },
       typeRoots: [path.resolve(__dirname, '../../../lib/tsconfig/types')],
     })
+  }
+  if (isWeb && process.env.UNI_APP_X_DOM2 === 'true') {
+    // Web Vapor 使用对应运行时的完整类型，不复用旧版 Vue 或 App DOM2 类型。
+    const webTypesDir = path.resolve(
+      __dirname,
+      '../../../lib/uts/types/uni-x/web'
+    )
+    const paths = options.tsconfigOverride.compilerOptions.paths
+    for (const name of [
+      'shared',
+      'reactivity',
+      'runtime-core',
+      'runtime-dom',
+      'runtime-vapor',
+    ]) {
+      paths['@vue/' + name] = [
+        path.resolve(webTypesDir, '@vue', name, 'dist', name + '.d.ts'),
+      ]
+    }
+    paths['@dcloudio/runtime-vapor-web'] = [
+      path.resolve(
+        webTypesDir,
+        '@dcloudio/runtime-vapor-web/dist/runtime-vapor-web.d.ts'
+      ),
+    ]
+    paths.vue = [path.resolve(webTypesDir, 'vue/dist/vue.d.ts')]
+    paths.csstype = [path.resolve(webTypesDir, 'csstype/index.d.ts')]
   }
   return options
 }

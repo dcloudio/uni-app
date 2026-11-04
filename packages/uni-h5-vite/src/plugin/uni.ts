@@ -21,7 +21,8 @@ function realIsH5CustomElement(tag: string) {
   // TODO isH5CustomElement目前被多个平台引用，重构比较麻烦
   if (
     process.env.UNI_APP_X === 'true' &&
-    UVUE_WEB_BUILT_IN_CUSTOM_ELEMENTS.includes(tag)
+    UVUE_WEB_BUILT_IN_CUSTOM_ELEMENTS.includes(tag) &&
+    !isUniAppXWebVapor()
   ) {
     return true
   }
@@ -37,8 +38,9 @@ const nodeTransforms = [
 ]
 
 if (process.env.UNI_APP_X === 'true') {
+  // uni-app x 的 Vapor 使用 UVue 组件，非 Vapor 使用注册的 Custom Element。
+  nodeTransforms.splice(nodeTransforms.indexOf(transformMatchMedia), 1)
   if (!isUniAppXWebVapor()) {
-    nodeTransforms.splice(nodeTransforms.indexOf(transformMatchMedia), 1)
     nodeTransforms.push(transformCustomElement)
   }
   if (process.env.UNI_UTS_PLATFORM === 'web') {

@@ -6,16 +6,12 @@ interface UTSAndroidHookProxy {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
-               "unixVer": "x",
+               "unixVer": "3.97",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "3.97",
-               "unixUtsPlugin": "3.97"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "unixUtsPlugin": "3.97",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }

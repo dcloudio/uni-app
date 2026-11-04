@@ -143,6 +143,7 @@ export interface SFCScriptCompileOptions {
    * Force to use of Vapor mode.
    */
   vapor?: boolean;
+  componentType?: "app" | "page" | "component";
 }
 interface ImportBinding {
   isType: boolean;
@@ -357,6 +358,7 @@ type BindingMetadata$2 = {
 } & {
   __isScriptSetup?: boolean;
   __propsAliases?: Record<string, string>;
+  __uniStyleIsolation?: string | null;
 };
 //#endregion
 //#region temp/packages/compiler-sfc/src/script/context.d.ts
