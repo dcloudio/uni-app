@@ -1,5 +1,5 @@
 {
-  "@dcloudio/uni-app-x-vapor-runtime": [
+  "@dcloudio/uni-app-x-vapor-runtime-jsvm": [
     [
       "$Emit"
     ],
@@ -529,12 +529,6 @@
       "CreateCanvasContextAsyncSuccessCallback"
     ],
     [
-      "CreateEditorContextAsync"
-    ],
-    [
-      "CreateEditorContextAsyncOptions"
-    ],
-    [
       "CreateInnerAudioContext"
     ],
     [
@@ -590,9 +584,6 @@
     ],
     [
       "DownloadTask"
-    ],
-    [
-      "EditorContext"
     ],
     [
       "EntriesResult"
@@ -1247,9 +1238,6 @@
     ],
     [
       "IStopGyroscopeFail"
-    ],
-    [
-      "IUniEditorElement"
     ],
     [
       "IVibrateLongFail"
@@ -2735,48 +2723,6 @@
     ],
     [
       "UniCanvasElement"
-    ],
-    [
-      "UniEditorElement"
-    ],
-    [
-      "UniEditorElementGetContentsOptions"
-    ],
-    [
-      "UniEditorElementGetContentsOptionsRes"
-    ],
-    [
-      "UniEditorElementGetSelectionTextOptions"
-    ],
-    [
-      "UniEditorElementGetSelectionTextOptionsRes"
-    ],
-    [
-      "UniEditorElementInsertImageOptions"
-    ],
-    [
-      "UniEditorElementInsertLinkOptions"
-    ],
-    [
-      "UniEditorElementInsertMentionOptions"
-    ],
-    [
-      "UniEditorElementInsertTextOptions"
-    ],
-    [
-      "UniEditorElementOptions"
-    ],
-    [
-      "UniEditorElementOptionsCompleteRes"
-    ],
-    [
-      "UniEditorElementOptionsFailRes"
-    ],
-    [
-      "UniEditorElementOptionsSuccessRes"
-    ],
-    [
-      "UniEditorElementSetContentsOptions"
     ],
     [
       "UniInputElement"
