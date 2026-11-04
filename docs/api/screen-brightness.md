@@ -6,7 +6,7 @@
 > issues: https://issues.dcloud.net.cn/?mid=api.device.screenBrightness.getScreenBrightness
 
 
-> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-screenBrightness
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-screenbrightness
 
 :::
 
@@ -61,7 +61,7 @@
 > issues: https://issues.dcloud.net.cn/?mid=api.device.screenBrightness.setScreenBrightness
 
 
-> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-screenBrightness
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-screenbrightness
 
 :::
 
@@ -111,7 +111,7 @@
 > issues: https://issues.dcloud.net.cn/?mid=api.device.screenBrightness.setKeepScreenOn
 
 
-> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-screenBrightness
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-screenbrightness
 
 :::
 
