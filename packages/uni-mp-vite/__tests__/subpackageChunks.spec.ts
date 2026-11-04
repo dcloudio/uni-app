@@ -327,4 +327,63 @@ describe('ordinary subpackage dependency chunks', () => {
     expect(names).toContain('pkgA/common/assets.js')
     expect(names).not.toContain('common/vendor.js')
   })
+  test.each([
+    'data.json',
+    'package.json',
+    'page-meta.json',
+    'pages.json',
+    'manifest.json',
+  ])(
+    'keeps shared %s out of relocated subpackage helpers',
+    async (filename) => {
+      modules[
+        'main.ts'
+      ] += `import data from './${filename}'; globalThis.mainData = data;`
+      modules[
+        'utils/value.ts'
+      ] = `import data from '../${filename}'; export const value = () => data.value;`
+      modules[filename] = `const data = { value: 42 }; export default data;`
+      const { chunks, names } = await build()
+      expect(names).toContain('pkgA/utils/value.js')
+      expect(names).toContain('common/vendor.js')
+      expect(chunks.find((c) => c.fileName === 'app.js')?.imports).toContain(
+        'common/vendor.js'
+      )
+      expect(
+        chunks.find((c) => c.fileName === 'pkgA/utils/value.js')?.imports
+      ).toContain('common/vendor.js')
+    }
+  )
+
+  test('does not include JSON files that are not runtime imports', async () => {
+    modules['package.json'] = `export default { private: true }`
+    modules['page-meta.json'] = `export default { title: 'Example' }`
+    const { chunks } = await build()
+    const ids = chunks.flatMap((chunk) => Object.keys(chunk.modules))
+    expect(ids).not.toContain(path.join(inputDir, 'package.json'))
+    expect(ids).not.toContain(path.join(inputDir, 'page-meta.json'))
+  })
+
+  test('keeps JSON shared by two subpackages in main', async () => {
+    modules[
+      'utils/value.ts'
+    ] = `import data from '../data.json'; export const value = () => data.value;`
+    modules[
+      pageB
+    ] = `import data from './data.json'; export const value = () => data.value;`
+    modules['data.json'] = `const data = { value: 42 }; export default data;`
+    const { names } = await build()
+    expect(names).toContain('common/vendor.js')
+    expect(names).not.toContain('pkgA/common/vendor.js')
+  })
+
+  test('places private JSON in its consuming subpackage', async () => {
+    modules[
+      'utils/value.ts'
+    ] = `import data from '../data.json'; export const value = () => data.value;`
+    modules['data.json'] = `const data = { value: 42 }; export default data;`
+    const { names } = await build()
+    expect(names).toContain('pkgA/common/vendor.js')
+    expect(names).not.toContain('common/vendor.js')
+  })
 })

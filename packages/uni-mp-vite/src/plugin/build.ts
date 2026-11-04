@@ -300,6 +300,17 @@ function createMoveToVendorChunkFn(): GetManualChunk | undefined {
       debugChunk(chunkName, normalizedId)
       return chunkName
     }
+    // JSON must receive an explicit assignment. Otherwise Rollup can absorb
+    // shared data into a relocated helper and create main -> subpackage imports.
+    // Framework config uses pages-json-js / manifest-json-js virtual IDs; real
+    // JSON imports use the same ownership rules regardless of their basename.
+    if (optimizeSubpackages && filename.endsWith('.json')) {
+      return independentRoot
+        ? resolveIndependentCommonChunkName(independentRoot, 'vendor')
+        : subpackageRoot
+        ? `${subpackageRoot}/common/vendor`
+        : 'common/vendor'
+    }
     // 处理项目内的js,ts文件
     if (EXTNAME_JS_RE.test(filename)) {
       if (filename.startsWith(inputDir) && !filename.includes('node_modules')) {
