@@ -1,10 +1,10 @@
 import { BaseCodegenResult, BindingMetadata, BindingMetadata as BindingMetadata$1, CompilerError, CompilerError as CompilerError$1, CompilerOptions, CompilerOptions as CompilerOptions$1, ParserOptions, RawSourceMap, RootNode, SourceLocation, extractIdentifiers, generateCodeFrame, isInDestructureAssignment, isStaticProperty, walkIdentifiers } from "@vue/compiler-core";
+import { CallExpression, Expression, Node, ObjectPattern, Program, Statement, TSCallSignatureDeclaration, TSFunctionType, TSMethodSignature, TSModuleDeclaration, TSPropertySignature, TSType } from "@babel/types";
 import { ParserPlugin, parse as babelParse } from "@babel/parser";
 import "source-map-js";
 import "lru-cache";
 import { LazyResult, Result } from "postcss";
 import MagicString, { default as MagicString$1 } from "magic-string";
-import { CallExpression, Expression, Node, ObjectPattern, Program, Statement, TSCallSignatureDeclaration, TSFunctionType, TSMethodSignature, TSModuleDeclaration, TSPropertySignature, TSType } from "@babel/types";
 import "@vue/shared";
 import TS from "typescript";
 //#region temp/packages/compiler-sfc/src/template/transformAssetUrl.d.ts
@@ -26,6 +26,7 @@ export interface AssetURLOptions {
 //#endregion
 //#region temp/packages/compiler-sfc/src/compileTemplate.d.ts
 export interface TemplateCompiler {
+  resolvePseudoElements?(setup: Program, script: Program | null): string[];
   compile(source: string | RootNode, options: CompilerOptions$1): BaseCodegenResult;
   parse(template: string, options: ParserOptions): RootNode;
 }

@@ -355,6 +355,8 @@ type UseComputedStyleOptions = {
    * @default true
    */
   filterProperties?: boolean | null;
+  /** 查询根节点对应的伪元素样式；须在 setup 顶层直接调用，同名仅一次，名称须为字面量。 */
+  pseudoElement?: "::selection";
 };
 export declare function useComputedStyle(options: UseComputedStyleOptions): Map<string, any | null>;
 //#endregion
@@ -558,6 +560,7 @@ export declare function createElementIfChain(page: UniPage, select: () => number
 export declare function setElementText(el: UniElement | UniText | null, value: string): void;
 export declare function setElementHtml(el: UniElement, value: string): void;
 export declare function setElementAttr(el: UniElement, key: string, value: any): void;
+export declare function bindElementPseudoElement(component: UniSharedDataComponent, el: UniElement, pseudoElement: string): void;
 export declare function setElementClass(component: UniSharedDataComponent, el: UniElement, value: any): void;
 export declare function setElementHoverClass(component: UniSharedDataComponent, el: UniElement, value: any): void;
 export declare function setElementStyle(component: UniSharedDataComponent, el: UniElement, value: UniElementStyles): void;

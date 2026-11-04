@@ -14,6 +14,7 @@ import { COMBINATORS_RE, SIMPLE_SELECTOR_RE } from './utils'
 interface ObjectifierOptions {
   trim: boolean
   simpleSelectorOnly?: boolean
+  dom2?: boolean
   parseMessages: Message[]
   visitor?: (
     node: Declaration,
@@ -132,18 +133,33 @@ function transformSelector(
   context: ObjectifierContext,
   options: ObjectifierOptions
 ) {
-  if (options.simpleSelectorOnly) {
+  let pseudoElement = ''
+  if (options.dom2) {
+    const pseudoIndex = selector.indexOf('::')
+    if (pseudoIndex !== -1) {
+      const hostSelector = selector.slice(0, pseudoIndex)
+      pseudoElement = selector.slice(pseudoIndex)
+      if (
+        pseudoElement !== '::selection' ||
+        (hostSelector && !SIMPLE_SELECTOR_RE.test(hostSelector))
+      ) {
+        throw new Error(`Unsupported pseudo-element selector: ${selector}`)
+      }
+      selector = hostSelector
+    }
+  }
+  if (options.simpleSelectorOnly && !pseudoElement) {
     if (!SIMPLE_SELECTOR_RE.test(selector)) {
       context.warn(node, `Invalid selector "${selector}".`)
       return
     }
   }
   const res = selector.match(COMBINATORS_RE)
-  if (!res) {
+  if (!res && !pseudoElement) {
     return
   }
-  let parentSelector = res[1]
-  let curSelector = res[2].substring(1)
+  let parentSelector = res ? res[1] : ''
+  let curSelector = res ? res[2].substring(1) : ''
   // .a.b => a.b
   const dotIndex = curSelector.indexOf('.')
   if (dotIndex > -1) {
@@ -160,14 +176,20 @@ function transformSelector(
       delete body[name]
     })
   }
+  parentSelector += pseudoElement
   transition(curSelector, body, context)
   if (!Object.keys(body).length) {
     return
   }
-  result = (result[curSelector] || (result[curSelector] = {})) as Record<
-    string,
-    unknown
-  >
+  if (!hasOwn(result, curSelector)) {
+    Object.defineProperty(result, curSelector, {
+      value: {},
+      enumerable: true,
+      writable: true,
+      configurable: true,
+    })
+  }
+  result = result[curSelector] as Record<string, unknown>
 
   if (result[parentSelector]) {
     // clone

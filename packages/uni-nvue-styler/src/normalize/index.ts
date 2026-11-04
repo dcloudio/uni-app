@@ -49,6 +49,10 @@ function createRuleProcessor(opts: NormalizeOptions = {}) {
             selector = selector.replace(/:deep\(([^)]+)\)/g, '$1')
           }
         }
+        // DOM2 的伪元素由选择器转换入口校验，声明仍走原有规范化流程。
+        if (opts.dom2 && selector.includes('::')) {
+          return selector
+        }
         // 移除组合符周围的空格，合并多个空格
         selector = selector
           .replace(/\s*([\+\~\>])\s*/g, '$1')

@@ -15694,6 +15694,8 @@ function compileScript(sfc, options) {
 	}
 	if (scriptSetupLang && !isJSOrTS) return scriptSetup;
 	const ctx = new ScriptCompileContext(sfc, options);
+	const pseudoElements = options.templateOptions?.compiler?.resolvePseudoElements?.(ctx.scriptSetupAst, ctx.scriptAst);
+	if (pseudoElements?.length && !options.inlineTemplate) ctx.error("Pseudo-element useComputedStyle requires inline template compilation.", ctx.scriptSetupAst);
 	const scriptBindings = Object.create(null);
 	const setupBindings = Object.create(null);
 	let defaultExport;
@@ -16056,6 +16058,7 @@ function compileScript(sfc, options) {
 				inline: true,
 				isTS: ctx.isTS,
 				bindingMetadata: ctx.bindingMetadata,
+				...pseudoElements?.length ? { pseudoElements } : {},
 				isWatch: options.isWatch
 			}
 		});
