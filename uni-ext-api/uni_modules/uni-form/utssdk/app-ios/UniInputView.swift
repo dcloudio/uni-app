@@ -102,10 +102,11 @@ public class UniInputView : UITextField {
     }
 
     public func setWritingDirectionRTL(_ isRTL: Bool) {
+        let currentTextAlignment = textAlignment
         semanticContentAttribute = isRTL ? .forceRightToLeft : .forceLeftToRight
 
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.alignment = textAlignment
+        paragraphStyle.alignment = currentTextAlignment
         paragraphStyle.baseWritingDirection = isRTL ? .rightToLeft : .leftToRight
         var attributes = defaultTextAttributes
         attributes[.paragraphStyle] = paragraphStyle
@@ -114,6 +115,11 @@ public class UniInputView : UITextField {
         if let range = textRange(from: beginningOfDocument, to: endOfDocument) {
             setBaseWritingDirection(isRTL ? .rightToLeft : .leftToRight, for: range)
         }
+
+        // On iOS 18, updating writing-direction attributes may reset an
+        // explicitly configured alignment. Keep direction and alignment
+        // independent so editing and non-editing states render consistently.
+        textAlignment = currentTextAlignment
     }
 
     public func caretBottomOffset() -> CGFloat {
