@@ -18,6 +18,9 @@ import type { VBindAttrsEventDirectiveNode } from './vOn'
 const V_BIND_ATTRS = '$attrs'
 
 export const transformVBindAttrs: NodeTransform = (node, context) => {
+  if (context.inVPre) {
+    return
+  }
   // 仅在 uni-app-x 微信/支付宝小程序下兜底处理原生节点的 v-bind="$attrs"，
   // 这样可以避免误伤 uni-app 以及 uni-app-x 的其他平台。
   if (!supportVBindAttrs(context) || !isPlainElementNode(node)) {
