@@ -169,22 +169,22 @@ uni-combox 组合框组件。
 
 
 ### 属性 
-| 名称 | 类型 | 描述 |
-| :- | :- | :- |
-| options | string\[\] | 候选字符串数组 |
-| modelValue | string | 当前值，支持 v-model 双向绑定 |
-| placeholder | string | 占位文字 |
-| disabled | boolean | 是否禁用 |
-| arrowClass | string([string.ClassString](/uts/data-type.md#ide-string)) | 右侧箭头自定义样式类 |
-| fieldClass | string([string.ClassString](/uts/data-type.md#ide-string)) | 非弹出区域自定义样式类 |
-| optionsViewClass | string([string.ClassString](/uts/data-type.md#ide-string)) | 候选浮层外层自定义样式类 |
-| optionsContentClass | string([string.ClassString](/uts/data-type.md#ide-string)) | 候选浮层内容自定义样式类 |
-| optionTextClass | string([string.ClassString](/uts/data-type.md#ide-string)) | 候选项文字自定义样式类 |
-| optionTextHighlightClass | string([string.ClassString](/uts/data-type.md#ide-string)) | 候选项高亮自定义样式类 |
-| optionRowHighlightClass | string([string.ClassString](/uts/data-type.md#ide-string)) | 候选项高亮行自定义样式类 |
-| resultTextClass | string([string.ClassString](/uts/data-type.md#ide-string)) | 单选模式结果文字自定义样式类 |
-| @selectchange | Function | 从候选项选中时触发，参数为选中的值，类型为 string |
-| @update:modelValue | Event | 值更新时触发，参数为当前值，类型为 string |
+| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| options | string\[\] | "() : string\[] => \[] as string\[]" | Web: 5.31; 微信小程序: 5.31; 支付宝小程序: 5.31; Android: 5.31; iOS(VDOM): x; iOS(Vapor): 5.31; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.31 | 候选字符串数组 |
+| modelValue | string | "" | Web: 5.31; 微信小程序: 5.31; 支付宝小程序: 5.31; Android: 5.31; iOS(VDOM): x; iOS(Vapor): 5.31; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.31 | 当前值，支持 v-model 双向绑定 |
+| placeholder | string | "" | Web: 5.31; 微信小程序: 5.31; 支付宝小程序: 5.31; Android: 5.31; iOS(VDOM): x; iOS(Vapor): 5.31; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.31 | 占位文字 |
+| disabled | boolean | false | Web: 5.31; 微信小程序: 5.31; 支付宝小程序: 5.31; Android: 5.31; iOS(VDOM): x; iOS(Vapor): 5.31; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.31 | 是否禁用 |
+| arrowClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.31; 微信小程序: 5.31; 支付宝小程序: 5.31; Android: 5.31; iOS(VDOM): x; iOS(Vapor): 5.31; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.31 | 右侧箭头自定义样式类 |
+| fieldClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" |   | 非弹出区域自定义样式类 |
+| optionsViewClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.31; 微信小程序: 5.31; 支付宝小程序: 5.31; Android: 5.31; iOS(VDOM): x; iOS(Vapor): 5.31; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.31 | 候选浮层外层自定义样式类 |
+| optionsContentClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" |   | 候选浮层内容自定义样式类 |
+| optionTextClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.31; 微信小程序: 5.31; 支付宝小程序: 5.31; Android: 5.31; iOS(VDOM): x; iOS(Vapor): 5.31; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.31 | 候选项文字自定义样式类 |
+| optionTextHighlightClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.31; 微信小程序: 5.31; 支付宝小程序: 5.31; Android: 5.31; iOS(VDOM): x; iOS(Vapor): 5.31; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.31 | 候选项高亮自定义样式类 |
+| optionRowHighlightClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" |   | 候选项高亮行自定义样式类 |
+| resultTextClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.31; 微信小程序: 5.31; 支付宝小程序: 5.31; Android: 5.31; iOS(VDOM): x; iOS(Vapor): 5.31; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.31 | 单选模式结果文字自定义样式类 |
+| @selectchange | Function |   |   | 从候选项选中时触发，参数为选中的值，类型为 string |
+| @update:modelValue | Event |   |   | 值更新时触发，参数为当前值，类型为 string |
 
 <!-- UTSCOMJSON.uni-combox.fileFormates -->
 

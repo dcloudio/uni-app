@@ -339,22 +339,22 @@ Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 
 
 
 ### 属性 
-| 名称 | 类型 | 描述 |
-| :- | :- | :- |
-| value | object \| null | \[已废弃] 旧版表单数据属性，推荐使用 modelValue |
-| modelValue | object \| null | 表单数据，支持 v-model 双向绑定 |
-| model | object \| null | \[已废弃] 旧版表单数据属性，优先级高于 modelValue |
-| rules | object | DB Schema 风格校验规则，键为字段路径 |
-| schema | any | Standard Schema 兼容对象，例如由 Valibot、Zod 等校验库创建 |
-| errShowType | string | 校验错误提示方式 |
-| validateTrigger | UniFormTrigger | 默认校验触发时机 |
-| labelPosition | string | 标签位置 |
-| labelWidth | string \| number | 单行横排布局的标签宽度，数字按 px 处理 |
-| labelAlign | string | 标签文字对齐方式 |
-| border | boolean | 是否显示字段分隔线 |
-| @validate | Function | 校验结果变化时触发；通过时参数为 null，未通过时为错误对象或错误数组 |
-| @submit | Function | \[已废弃] 调用 submit 方法时触发，推荐使用 validate 方法 |
-| @update:modelValue | Event | 表单数据更新时触发，参数为更新后的表单数据 |
+| 名称 | 类型 | 默认值 | 描述 |
+| :- | :- | :- | :- |
+| value | object \| null | null | \[已废弃] 旧版表单数据属性，推荐使用 modelValue |
+| modelValue | object \| null | null | 表单数据，支持 v-model 双向绑定 |
+| model | object \| null | null | \[已废弃] 旧版表单数据属性，优先级高于 modelValue |
+| rules | object | "() : UniFormRules => ({})" | DB Schema 风格校验规则，键为字段路径 |
+| schema | any | null | Standard Schema 兼容对象，例如由 Valibot、Zod 等校验库创建 |
+| errShowType | string | "toast" | 校验错误提示方式 |
+| validateTrigger | UniFormTrigger | "'submit' as UniFormTrigger" | 默认校验触发时机 |
+| labelPosition | string | "left" | 标签位置 |
+| labelWidth | string \| number | "" | 单行横排布局的标签宽度，数字按 px 处理 |
+| labelAlign | string | "left" | 标签文字对齐方式 |
+| border | boolean | false | 是否显示字段分隔线 |
+| @validate | Function |   | 校验结果变化时触发；通过时参数为 null，未通过时为错误对象或错误数组 |
+| @submit | Function |   | \[已废弃] 调用 submit 方法时触发，推荐使用 validate 方法 |
+| @update:modelValue | Event |   | 表单数据更新时触发，参数为更新后的表单数据 |
 
 #### errShowType 的属性描述
 
@@ -737,25 +737,25 @@ Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 
 
 
 ### 属性 
-| 名称 | 类型 | 描述 |
-| :- | :- | :- |
-| name | UniFormPath | 表单字段路径，支持点号路径、数组下标路径和路径数组；参与表单校验时必填 |
-| rules | UniFormRule\[] \| null | 当前字段的 DB Schema 风格校验规则，覆盖表单中同名字段的规则 |
-| required | boolean | 是否显示红色必填标记；字段是否必填由 rules 决定 |
-| label | string | 标签文字 |
-| description | string | 标签下方的说明文字 |
-| showArrow | boolean | 是否在单行横排布局的行尾显示向右箭头 |
-| labelWidth | string \| number | 当前项的标签宽度，数字按 px 处理；不设置时跟随表单 |
-| labelAlign | string | 当前项的标签文字对齐方式；不设置时跟随表单 |
-| labelPosition | string | 当前项的标签位置；不设置时跟随表单 |
-| validateTrigger | UniFormTrigger | 当前字段的校验触发时机；不设置时跟随表单 |
-| errorMessage | string \| boolean | 覆盖组件内部错误信息；传入 false 时不显示错误文字 |
-| labelClass | string([string.ClassString](/uts/data-type.md#ide-string)) | 标签文字的自定义样式类 |
-| descriptionClass | string([string.ClassString](/uts/data-type.md#ide-string)) | 标签辅助说明的自定义样式类 |
-| requiredClass | string([string.ClassString](/uts/data-type.md#ide-string)) | 必填标记的自定义样式类 |
-| contentClass | string([string.ClassString](/uts/data-type.md#ide-string)) | 单行横排布局中控件区域的自定义样式类，顶部布局不使用 |
-| errorMessageClass | string([string.ClassString](/uts/data-type.md#ide-string)) | 控件下方错误文字的自定义样式类 |
-| errorClass | string([string.ClassString](/uts/data-type.md#ide-string)) | toast 错误提示方式下表单项错误边框的自定义样式类 |
+| 名称 | 类型 | 默认值 | 描述 |
+| :- | :- | :- | :- |
+| name | UniFormPath | "" | 表单字段路径，支持点号路径、数组下标路径和路径数组；参与表单校验时必填 |
+| rules | UniFormRule\[] \| null | null | 当前字段的 DB Schema 风格校验规则，覆盖表单中同名字段的规则 |
+| required | boolean | false | 是否显示红色必填标记；字段是否必填由 rules 决定 |
+| label | string | "" | 标签文字 |
+| description | string | "" | 标签下方的说明文字 |
+| showArrow | boolean | false | 是否在单行横排布局的行尾显示向右箭头 |
+| labelWidth | string \| number | "" | 当前项的标签宽度，数字按 px 处理；不设置时跟随表单 |
+| labelAlign | string | "" | 当前项的标签文字对齐方式；不设置时跟随表单 |
+| labelPosition | string | "" | 当前项的标签位置；不设置时跟随表单 |
+| validateTrigger | UniFormTrigger |   | 当前字段的校验触发时机；不设置时跟随表单 |
+| errorMessage | string \| boolean | "" | 覆盖组件内部错误信息；传入 false 时不显示错误文字 |
+| labelClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 标签文字的自定义样式类 |
+| descriptionClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 标签辅助说明的自定义样式类 |
+| requiredClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 必填标记的自定义样式类 |
+| contentClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 单行横排布局中控件区域的自定义样式类，顶部布局不使用 |
+| errorMessageClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 控件下方错误文字的自定义样式类 |
+| errorClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | toast 错误提示方式下表单项错误边框的自定义样式类 |
 
 #### labelAlign 的属性描述
 

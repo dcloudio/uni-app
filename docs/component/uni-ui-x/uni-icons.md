@@ -92,9 +92,9 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-icons-x
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 描述 |
-| :- | :- | :- | :- |
-| type | IconsType | "" | 图标名称，取值范围见 icons.ts 导出的 IconsType，未传入或取值不存在时不显示图标 |
+| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| type | IconsType | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS(VDOM): 5.07; iOS(Vapor): 5.21; HarmonyOS(VDOM): 5.07; HarmonyOS(Vapor): 5.21 | 图标名称，取值范围见 icons.ts 导出的 IconsType，未传入或取值不存在时不显示图标 |
 
 #### type 的属性描述
 

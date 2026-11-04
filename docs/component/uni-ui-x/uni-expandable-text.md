@@ -108,18 +108,18 @@ Web(Vapor): 5.41; 微信小程序: 5.33; 支付宝小程序: 5.33; Android(Vapor
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 描述 |
-| :- | :- | :- | :- |
-| text | string | "" | 要显示的文本内容。 |
-| lines | number | 1 | 折叠状态下最多显示的行数。 |
-| inline | boolean | false | 是否以内联方式显示触发器。 |
-| expandText | string | "根据应用语言，中文下为\"全文\"" | 展开状态下显示的文字，不传时根据应用语言使用默认文案。 |
-| collapseText | string | "根据应用语言，中文下为\"收起\"" | 收起状态下显示的文字，不传时根据应用语言使用默认文案。 |
-| textClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 正文的 externalClass。 |
-| triggerClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 展开/收起触发器的 externalClass。 |
-| showCollapse | boolean | true | 是否在展开状态下显示收起触发器。 |
-| @change | Event |   | 展开或收起状态发生变化时触发 |
-| @update:expanded | Event |   | 展开状态的双向绑定更新事件，用于 v-model:expanded |
+| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| text | string | "" | Web(Vapor): x; 微信小程序: 5.33; 支付宝小程序: 5.33; Android(Vapor): 5.31; iOS(Vapor): 5.31; HarmonyOS(Vapor): 5.31 | 要显示的文本内容。 |
+| lines | number | 1 | Web(Vapor): x; 微信小程序: 5.33; 支付宝小程序: 5.33; Android(Vapor): 5.31; iOS(Vapor): 5.31; HarmonyOS(Vapor): 5.31 | 折叠状态下最多显示的行数。 |
+| inline | boolean | false | Web(Vapor): x; 微信小程序: 5.33; 支付宝小程序: 5.33; Android(Vapor): 5.31; iOS(Vapor): 5.31; HarmonyOS(Vapor): 5.31 | 是否以内联方式显示触发器。 |
+| expandText | string | "根据应用语言，中文下为\"全文\"" | Web(Vapor): x; 微信小程序: 5.33; 支付宝小程序: 5.33; Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x | 展开状态下显示的文字，不传时根据应用语言使用默认文案。 |
+| collapseText | string | "根据应用语言，中文下为\"收起\"" | Web(Vapor): x; 微信小程序: 5.33; 支付宝小程序: 5.33; Android(Vapor): 5.31; iOS(Vapor): 5.31; HarmonyOS(Vapor): 5.31 | 收起状态下显示的文字，不传时根据应用语言使用默认文案。 |
+| textClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web(Vapor): x; 微信小程序: 5.33; 支付宝小程序: 5.33; Android(Vapor): 5.31; iOS(Vapor): 5.31; HarmonyOS(Vapor): 5.31 | 正文的 externalClass。 |
+| triggerClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web(Vapor): x; 微信小程序: 5.33; 支付宝小程序: 5.33; Android(Vapor): 5.31; iOS(Vapor): 5.31; HarmonyOS(Vapor): 5.31 | 展开/收起触发器的 externalClass。 |
+| showCollapse | boolean | true | Web(Vapor): x; 微信小程序: 5.33; 支付宝小程序: 5.33; Android(Vapor): 5.31; iOS(Vapor): 5.31; HarmonyOS(Vapor): 5.31 | 是否在展开状态下显示收起触发器。 |
+| @change | Event |   |   | 展开或收起状态发生变化时触发 |
+| @update:expanded | Event |   |   | 展开状态的双向绑定更新事件，用于 v-model:expanded |
 
 <!-- UTSCOMJSON.uni-expandable-text.fileFormates -->
 
