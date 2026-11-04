@@ -29,6 +29,7 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import type { GetManualChunk, GetModuleInfo, PreRenderedChunk } from 'rollup'
 import {
+  getSubPackageRootByFilename,
   getSubPackages,
   isUniComponentUrl,
   isUniPageUrl,
@@ -45,6 +46,8 @@ import {
   parseIndependentRoot,
   withoutIndependentRoot,
 } from '../plugins/independentUtils'
+
+import { resolveSingleSubpackage } from '../plugins/subpackageChunks'
 
 const debugChunk = debug('uni:chunk')
 
@@ -270,10 +273,27 @@ function createMoveToVendorChunkFn(): GetManualChunk | undefined {
       debugChunk(chunkName, normalizedId)
       return chunkName
     }
+    const optimizeSubpackages =
+      isUniAppX() && getSubPackages().hasOptimizationSubPackages
+    // Do not force tree-shaken type-only modules into empty manual chunks.
+    const moduleInfo = optimizeSubpackages ? getModuleInfo(id) : null
+    if (
+      moduleInfo?.isIncluded === false &&
+      !moduleInfo.isEntry &&
+      !moduleInfo.dynamicImporters.length
+    ) {
+      return
+    }
+    const subpackageRoot =
+      !independentRoot && optimizeSubpackages
+        ? resolveSingleSubpackage(id, getModuleInfo, inputDir)
+        : undefined
     // 处理资源文件
     if (DEFAULT_ASSETS_RE.test(filename)) {
       const chunkName = independentRoot
         ? resolveIndependentCommonChunkName(independentRoot, 'assets')
+        : subpackageRoot
+        ? `${subpackageRoot}/common/assets`
         : 'common/assets'
       debugChunk(chunkName, normalizedId)
       return chunkName
@@ -295,6 +315,8 @@ function createMoveToVendorChunkFn(): GetManualChunk | undefined {
         ) {
           const normalizedChunkFileName = independentRoot
             ? resolveIndependentCommonChunkName(independentRoot, chunkFileName)
+            : subpackageRoot && !chunkFileName.startsWith(subpackageRoot + '/')
+            ? `${subpackageRoot}/${chunkFileName}`
             : chunkFileName
           debugChunk(normalizedChunkFileName, normalizedId)
           return normalizedChunkFileName
@@ -464,6 +486,13 @@ function createChunkFileNames(
           resolveIndependentCommonChunkName(independentRoot, chunkFileName) +
           '.js'
         )
+      }
+      // A dynamic JS facade must keep the package selected by manualChunks.
+      if (
+        !isMiniProgramEntry &&
+        getSubPackageRootByFilename(chunk.name, inputDir)
+      ) {
+        return chunk.name + '.js'
       }
       if (componentPackageRoot) {
         return (
