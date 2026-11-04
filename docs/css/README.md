@@ -102,9 +102,9 @@ web和小程序平台虽然默认是flex布局，但通过高权重的样式写`
 
 ### 页面级滚动@pagescroll
 
-uni-app x 页面默认均可滚动，除非配置了disablescroll。[详见](../page.md#disablescroll)
+uni-app x 的Web、小程序及App蒸汽模式（HBuilder 5.12+）页面默认可滚动，App VDOM模式页面默认不可滚动。[详见](../page.md#disablescroll)
 
-仅App平台vdom模式下页面不可滚动。
+在支持的平台和版本中，可在pages.json的页面style中配置`disableScroll: true`禁用页面滚动，具体支持范围见[配置项兼容性](../collocation/pagesjson.md#pagesoptionspage-style)。
 
 ## 样式不继承@stylenoextends
 

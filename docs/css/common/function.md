@@ -710,12 +710,12 @@ calc() 函数允许在声明 CSS 属性值时执行计算。
 
 ### 示例 
  示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/CSS/function/calc.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/CSS/function/calc.uvue) 
->
-> 该 API 不支持 Web，请运行 hello uni-app x 到 App 平台体验 
+::: preview https://hellouniappx.dcloud.net.cn/web/#/pages/CSS/function/calc/
 
-::: preview
 > appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/CSS/function/calc
-```uvue
+
+>示例
+```vue
 <template>
   <view ref="pageRef" class="page">
     <view class="calc-style-test">
@@ -1222,6 +1222,7 @@ calc() 函数允许在声明 CSS 属性值时执行计算。
 </style>
 
 ```
+
 :::
 
 **注意：**

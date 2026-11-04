@@ -2115,6 +2115,8 @@ export default {
 
 
 
+##### 参见
+- [Reference](https://v3.cn.vuejs.org/api/built-in-components.html#keep-alive)
 
 
 ### \<Transition> @transition
@@ -2179,6 +2181,8 @@ export default {
 
 
 
+##### 参见
+- [Reference](https://v3.cn.vuejs.org/api/built-in-components.html#transition)
 
 
 
@@ -2239,6 +2243,8 @@ export default {
 
 
 
+##### 参见
+- [Reference](https://v3.cn.vuejs.org/api/built-in-components.html#transition-group)
 
 
 
@@ -2431,6 +2437,8 @@ export default {
 
 
 
+##### 参见
+- [Reference](https://v3.vuejs.org/api/built-in-components.html#teleport)
 
 
 ## 特殊元素 @special-elements
@@ -2644,6 +2652,8 @@ export default {
 
 
 
+##### 参见
+- [Reference](https://cn.vuejs.org/api/built-in-special-elements.html#template)
 
 
 
@@ -2724,6 +2734,8 @@ export default {
 
 
 
+##### 参见
+- [Reference](https://cn.vuejs.org/api/built-in-special-elements.html#slot)
 
 
 ### \<component> @component
@@ -2850,6 +2862,8 @@ export default {
 
 
 
+##### 参见
+- [Reference](https://cn.vuejs.org/api/built-in-special-elements.html#component)
 
 
 ## 特殊 Attributes @special-attributes
