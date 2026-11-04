@@ -7838,6 +7838,7 @@ const index$k = /* @__PURE__ */ defineBuiltInComponent({
   props: props$g,
   emits: [
     "scroll",
+    "scrollend",
     "scrolltoupper",
     "scrolltolower",
     "refresherrefresh",

@@ -557,7 +557,7 @@ const ViewJSBridge = /* @__PURE__ */ extend(
 );
 const LONGPRESS_TIMEOUT = 350;
 const LONGPRESS_THRESHOLD = 10;
-const passiveOptions$3 = /* @__PURE__ */ passive(true);
+const passiveOptions$4 = /* @__PURE__ */ passive(true);
 let longPressTimer;
 function clearLongPressTimer() {
   if (longPressTimer) {
@@ -601,10 +601,10 @@ function touchmove(evt) {
   }
 }
 function initLongPress() {
-  window.addEventListener("touchstart", touchstart, passiveOptions$3);
-  window.addEventListener("touchmove", touchmove, passiveOptions$3);
-  window.addEventListener("touchend", clearLongPressTimer, passiveOptions$3);
-  window.addEventListener("touchcancel", clearLongPressTimer, passiveOptions$3);
+  window.addEventListener("touchstart", touchstart, passiveOptions$4);
+  window.addEventListener("touchmove", touchmove, passiveOptions$4);
+  window.addEventListener("touchend", clearLongPressTimer, passiveOptions$4);
+  window.addEventListener("touchcancel", clearLongPressTimer, passiveOptions$4);
 }
 function checkValue$1(value, defaultValue) {
   const newValue = Number(value);
@@ -9345,7 +9345,7 @@ const supportsPassive = /* @__PURE__ */ (() => {
   }
   return supportsPassive2;
 })();
-const passiveOptions$2 = supportsPassive ? {
+const passiveOptions$3 = supportsPassive ? {
   passive: false
 } : false;
 let curScrollListener;
@@ -9358,7 +9358,7 @@ function initPageScrollListener(instance2, pageMeta) {
     return document.addEventListener(
       "touchmove",
       disableScrollListener,
-      passiveOptions$2
+      passiveOptions$3
     );
   }
   const { onPageScroll, onReachBottom } = instance2;
@@ -12541,7 +12541,7 @@ function throttle(fn, wait) {
   };
   return newFn;
 }
-const passiveOptions$1 = /* @__PURE__ */ passive(true);
+const passiveOptions$2 = /* @__PURE__ */ passive(true);
 const states = [];
 let userInteract = 0;
 let inited = false;
@@ -12565,7 +12565,7 @@ function addInteractListener(vm = { userAction: false }) {
             !--userInteract && setUserAction(false);
           }, 0);
         },
-        passiveOptions$1
+        passiveOptions$2
       );
     });
     inited = true;
@@ -16722,6 +16722,65 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
     }, h("div", {}, _vnode.value));
   }
 });
+const SCROLL_END_DELAY = 100;
+const passiveOptions$1 = { passive: true };
+function onScrollend(element, listener2) {
+  if ("onscrollend" in element) {
+    element.addEventListener("scrollend", listener2, passiveOptions$1);
+    return () => {
+      element.removeEventListener("scrollend", listener2);
+    };
+  }
+  const activeTouches = /* @__PURE__ */ new Set();
+  let lastScrollEvent = null;
+  let waitingForTouchEnd = false;
+  const schedule = debounce(
+    () => {
+      if (activeTouches.size > 0) {
+        waitingForTouchEnd = true;
+      } else if (lastScrollEvent !== null) {
+        const event = lastScrollEvent;
+        lastScrollEvent = null;
+        listener2(event);
+      }
+    },
+    SCROLL_END_DELAY,
+    { setTimeout, clearTimeout }
+  );
+  const onScroll = (event) => {
+    waitingForTouchEnd = false;
+    lastScrollEvent = event;
+    schedule();
+  };
+  const onTouchStart = (event) => {
+    for (let i = 0; i < event.changedTouches.length; i++) {
+      activeTouches.add(event.changedTouches[i].identifier);
+    }
+  };
+  const onTouchEnd = (event) => {
+    for (let i = 0; i < event.changedTouches.length; i++) {
+      activeTouches.delete(event.changedTouches[i].identifier);
+    }
+    if (activeTouches.size === 0 && waitingForTouchEnd) {
+      waitingForTouchEnd = false;
+      schedule();
+    }
+  };
+  element.addEventListener("touchstart", onTouchStart, passiveOptions$1);
+  element.addEventListener("touchend", onTouchEnd, passiveOptions$1);
+  element.addEventListener("touchcancel", onTouchEnd, passiveOptions$1);
+  element.addEventListener("scroll", onScroll, passiveOptions$1);
+  return () => {
+    element.removeEventListener("touchstart", onTouchStart);
+    element.removeEventListener("touchend", onTouchEnd);
+    element.removeEventListener("touchcancel", onTouchEnd);
+    element.removeEventListener("scroll", onScroll);
+    schedule.cancel();
+    activeTouches.clear();
+    lastScrollEvent = null;
+    waitingForTouchEnd = false;
+  };
+}
 const _t0$f = template('<svg fill=#2BD009 class=uni-scroll-view-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none>', false, 1);
 const _t1$a = template('<svg class=uni-scroll-view-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle cx=50 cy=50 r=20 fill=none style="color: #2bd009" stroke-width=3>', false, 1);
 const _t2$5 = template("<div class=uni-scroll-view-refresh><div class=uni-scroll-view-refresh-inner></div>");
@@ -16903,6 +16962,7 @@ const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
   props: props$i,
   emits: [
     "scroll",
+    "scrollend",
     "scrolltoupper",
     "scrolltolower",
     "refresherrefresh",
@@ -17137,6 +17197,17 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
     state2.lastScrollTop = target.scrollTop;
     state2.lastScrollLeft = target.scrollLeft;
   }
+  function _handleScrollEnd($event) {
+    const target = $event.target;
+    trigger("scrollend", $event, {
+      scrollLeft: target.scrollLeft,
+      scrollTop: target.scrollTop,
+      scrollHeight: target.scrollHeight,
+      scrollWidth: target.scrollWidth,
+      deltaX: state2.lastScrollLeft - target.scrollLeft,
+      deltaY: state2.lastScrollTop - target.scrollTop
+    });
+  }
   function _scrollTopChanged(val) {
     if (realScrollY.value) {
       {
@@ -17352,11 +17423,13 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
     main.value.addEventListener("touchmove", __handleTouchMove, passive(false));
     main.value.addEventListener("scroll", __handleScroll, passive(false));
     main.value.addEventListener("touchend", __handleTouchEnd, passiveOptions);
+    const removeScrollendListener = onScrollend(main.value, _handleScrollEnd);
     onBeforeUnmount(() => {
       main.value.removeEventListener("touchstart", __handleTouchStart);
       main.value.removeEventListener("touchmove", __handleTouchMove);
       main.value.removeEventListener("scroll", __handleScroll);
       main.value.removeEventListener("touchend", __handleTouchEnd);
+      removeScrollendListener();
     });
   });
   onActivated(() => {

@@ -6672,7 +6672,7 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
     MODE: 3
   },
   props: props$f,
-  emits: ["scroll", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort", "update:refresherTriggered"],
+  emits: ["scroll", "scrollend", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort", "update:refresherTriggered"],
   setup(props2, {
     emit: emit2,
     slots,

@@ -562,7 +562,7 @@ const ViewJSBridge = /* @__PURE__ */ extend(
 );
 const LONGPRESS_TIMEOUT = 350;
 const LONGPRESS_THRESHOLD = 10;
-const passiveOptions$3 = /* @__PURE__ */ passive(true);
+const passiveOptions$4 = /* @__PURE__ */ passive(true);
 let longPressTimer;
 function clearLongPressTimer() {
   if (longPressTimer) {
@@ -606,10 +606,10 @@ function touchmove(evt) {
   }
 }
 function initLongPress() {
-  window.addEventListener("touchstart", touchstart, passiveOptions$3);
-  window.addEventListener("touchmove", touchmove, passiveOptions$3);
-  window.addEventListener("touchend", clearLongPressTimer, passiveOptions$3);
-  window.addEventListener("touchcancel", clearLongPressTimer, passiveOptions$3);
+  window.addEventListener("touchstart", touchstart, passiveOptions$4);
+  window.addEventListener("touchmove", touchmove, passiveOptions$4);
+  window.addEventListener("touchend", clearLongPressTimer, passiveOptions$4);
+  window.addEventListener("touchcancel", clearLongPressTimer, passiveOptions$4);
 }
 function checkValue$1(value, defaultValue) {
   const newValue = Number(value);
@@ -9191,7 +9191,7 @@ const supportsPassive = /* @__PURE__ */ (() => {
   }
   return supportsPassive2;
 })();
-const passiveOptions$2 = supportsPassive ? {
+const passiveOptions$3 = supportsPassive ? {
   passive: false
 } : false;
 let curScrollListener;
@@ -9204,7 +9204,7 @@ function initPageScrollListener(instance2, pageMeta) {
     return document.addEventListener(
       "touchmove",
       disableScrollListener,
-      passiveOptions$2
+      passiveOptions$3
     );
   }
   const { onPageScroll, onReachBottom } = instance2;
@@ -12657,7 +12657,7 @@ function throttle(fn, wait) {
   };
   return newFn;
 }
-const passiveOptions$1 = /* @__PURE__ */ passive(true);
+const passiveOptions$2 = /* @__PURE__ */ passive(true);
 const states = [];
 let userInteract = 0;
 let inited = false;
@@ -12681,7 +12681,7 @@ function addInteractListener(vm = { userAction: false }) {
             !--userInteract && setUserAction(false);
           }, 0);
         },
-        passiveOptions$1
+        passiveOptions$2
       );
     });
     inited = true;
@@ -16779,6 +16779,65 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
     }, h("div", {}, _vnode.value));
   }
 });
+const SCROLL_END_DELAY = 100;
+const passiveOptions$1 = { passive: true };
+function onScrollend(element, listener2) {
+  if ("onscrollend" in element) {
+    element.addEventListener("scrollend", listener2, passiveOptions$1);
+    return () => {
+      element.removeEventListener("scrollend", listener2);
+    };
+  }
+  const activeTouches = /* @__PURE__ */ new Set();
+  let lastScrollEvent = null;
+  let waitingForTouchEnd = false;
+  const schedule = debounce(
+    () => {
+      if (activeTouches.size > 0) {
+        waitingForTouchEnd = true;
+      } else if (lastScrollEvent !== null) {
+        const event = lastScrollEvent;
+        lastScrollEvent = null;
+        listener2(event);
+      }
+    },
+    SCROLL_END_DELAY,
+    { setTimeout, clearTimeout }
+  );
+  const onScroll = (event) => {
+    waitingForTouchEnd = false;
+    lastScrollEvent = event;
+    schedule();
+  };
+  const onTouchStart = (event) => {
+    for (let i = 0; i < event.changedTouches.length; i++) {
+      activeTouches.add(event.changedTouches[i].identifier);
+    }
+  };
+  const onTouchEnd = (event) => {
+    for (let i = 0; i < event.changedTouches.length; i++) {
+      activeTouches.delete(event.changedTouches[i].identifier);
+    }
+    if (activeTouches.size === 0 && waitingForTouchEnd) {
+      waitingForTouchEnd = false;
+      schedule();
+    }
+  };
+  element.addEventListener("touchstart", onTouchStart, passiveOptions$1);
+  element.addEventListener("touchend", onTouchEnd, passiveOptions$1);
+  element.addEventListener("touchcancel", onTouchEnd, passiveOptions$1);
+  element.addEventListener("scroll", onScroll, passiveOptions$1);
+  return () => {
+    element.removeEventListener("touchstart", onTouchStart);
+    element.removeEventListener("touchend", onTouchEnd);
+    element.removeEventListener("touchcancel", onTouchEnd);
+    element.removeEventListener("scroll", onScroll);
+    schedule.cancel();
+    activeTouches.clear();
+    lastScrollEvent = null;
+    waitingForTouchEnd = false;
+  };
+}
 const Refresher = /* @__PURE__ */ defineBuiltInComponent({
   name: "Refresher",
   props: {
@@ -16958,7 +17017,7 @@ const __syscom_3$1 = /* @__PURE__ */ defineBuiltInComponent({
     MODE: 3
   },
   props: props$i,
-  emits: ["scroll", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort", "update:refresherTriggered"],
+  emits: ["scroll", "scrollend", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort", "update:refresherTriggered"],
   rootElement: {
     name: "uni-scroll-view",
     class: UniScrollViewElement
@@ -17197,6 +17256,17 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
     state2.lastScrollTop = target.scrollTop;
     state2.lastScrollLeft = target.scrollLeft;
   }
+  function _handleScrollEnd($event) {
+    const target = $event.target;
+    trigger("scrollend", $event, {
+      scrollLeft: target.scrollLeft,
+      scrollTop: target.scrollTop,
+      scrollHeight: target.scrollHeight,
+      scrollWidth: target.scrollWidth,
+      deltaX: state2.lastScrollLeft - target.scrollLeft,
+      deltaY: state2.lastScrollTop - target.scrollTop
+    });
+  }
   function _scrollTopChanged(val) {
     if (realScrollY.value) {
       {
@@ -17418,11 +17488,13 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
     main.value.addEventListener("touchmove", __handleTouchMove, passive(false));
     main.value.addEventListener("scroll", __handleScroll, passive(false));
     main.value.addEventListener("touchend", __handleTouchEnd, passiveOptions);
+    const removeScrollendListener = onScrollend(main.value, _handleScrollEnd);
     onBeforeUnmount(() => {
       main.value.removeEventListener("touchstart", __handleTouchStart);
       main.value.removeEventListener("touchmove", __handleTouchMove);
       main.value.removeEventListener("scroll", __handleScroll);
       main.value.removeEventListener("touchend", __handleTouchEnd);
+      removeScrollendListener();
     });
   });
   onActivated(() => {
