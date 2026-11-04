@@ -39,7 +39,7 @@
 | bounces | boolean \| string | true | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 控制是否回弹效果 |
 | android-overscroll | boolean \| string | false | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS: x; HarmonyOS: x | Android平台是否开启弹簧回弹效果，开启后默认下拉刷新使用圆弧loading样式（推动页面内容），否则默认下拉刷新使用Android系统悬浮圆环样式（不推动页面内容） |
 | android-scrollbar-draggable | boolean \| string | false | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.26; iOS: x; HarmonyOS: x | Android 平台是否允许拖动滚动条以快速定位滚动内容，默认值为 false，当前暂仅支持竖向滚动  |
-| android-refresher-color | string([string.ColorString](/uts/data-type.md#ide-string)) |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.25; iOS: x; HarmonyOS: x | 设置 Android 平台 scroll-view 默认下拉刷新样式的前景颜色，优先级高于 refresher-default-style  |
+| android-refresher-color | string([string.ColorString](/uts/data-type.md#ide-string)) |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.33; iOS: x; HarmonyOS: x | 设置 Android 平台 scroll-view 默认下拉刷新样式的前景颜色，优先级高于 refresher-default-style  |
 | upper-threshold | number | 50 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 距顶部/左边多远时（单位px），触发 scrolltoupper 事件 |
 | lower-threshold | number | 50 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 距底部/右边多远时（单位px），触发 scrolltolower 事件 |
 | scroll-top | number | 0 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 设置竖向滚动条位置 |
