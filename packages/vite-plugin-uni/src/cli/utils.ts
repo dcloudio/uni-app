@@ -293,6 +293,9 @@ export function initEnv(
       process.env.UNI_APP_X_HARMONY_SCRIPT_ENGINE =
         resolveUniAppXHarmonyScriptEngine(manifestJson)
     }
+    if (process.env.UNI_APP_X_HARMONY_SCRIPT_ENGINE === 'jsvm') {
+      process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE = 'js'
+    }
   } catch (e) {}
 
   if (!process.env.UNI_APP_X_TSC_DIR) {
