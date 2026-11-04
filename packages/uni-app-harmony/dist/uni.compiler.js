@@ -172,7 +172,7 @@ var ExternalModulesX = [
 	}
 ];
 
-var ExternalModulesDom2 = [
+var ExternalModulesVapor = [
 	{
 		type: "extapi",
 		plugin: "uni-facialVerify",
@@ -304,7 +304,7 @@ const isX = process.env.UNI_APP_X === 'true';
 const isDom2 = process.env.UNI_APP_X_DOM2 === 'true';
 // TODO next仓库只需要设置一个external modules列表，apis由框架编译步骤同步过来
 const StandaloneExtApis = isDom2
-    ? ExternalModulesDom2
+    ? ExternalModulesVapor
     : isX
         ? ExternalModulesX
         : ExternalModules;
