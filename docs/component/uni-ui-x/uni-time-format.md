@@ -65,10 +65,10 @@ Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 描述 |
-| :- | :- | :- | :- |
-| timestamp | number |   | 需要格式化的时间戳，支持秒级（10 位）或毫秒级（13 位），秒级会自动换算成毫秒 |
-| format | string | "datetime" | 输出格式。"datetime" 输出 YYYY-MM-DD HH:mm；"date" 输出 YYYY-MM-DD；"time" 输出 HH:mm:ss；"relative" 输出相对时间（刚刚 / N 分钟前 / N 小时前 / 昨天 HH:mm / 完整日期） |
+| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| timestamp | number |   | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | 需要格式化的时间戳，支持秒级（10 位）或毫秒级（13 位），秒级会自动换算成毫秒 |
+| format | string | "datetime" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | 输出格式。"datetime" 输出 YYYY-MM-DD HH:mm；"date" 输出 YYYY-MM-DD；"time" 输出 HH:mm:ss；"relative" 输出相对时间（刚刚 / N 分钟前 / N 小时前 / 昨天 HH:mm / 完整日期） |
 
 <!-- UTSCOMJSON.uni-time-format.fileFormates -->
 

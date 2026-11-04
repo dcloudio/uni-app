@@ -59,12 +59,12 @@ Web: 5.07; 微信小程序: 5.08; 支付宝小程序: 5.31; Android: 5.07; iOS: 
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 描述 |
-| :- | :- | :- | :- |
-| text | string | "" | badge 的内容。为 "0" 时不显示 badge；为空字符串时显示圆点；有文字则显示文字 |
-| badgeStyle | string | "" | badge 的内联样式，用于覆盖内置 style |
-| badgeClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | badge 的样式类，用于覆盖内置 class |
-| alwaysWrapWithContent | boolean | false | 当有 slot 内容时，即使 text 为 "0" 也保留包裹层（badge-wrap），避免多个子 slot 时 flex 方向错乱 |
+| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| text | string | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | badge 的内容。为 "0" 时不显示 badge；为空字符串时显示圆点；有文字则显示文字 |
+| badgeStyle | string | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | badge 的内联样式，用于覆盖内置 style |
+| badgeClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | badge 的样式类，用于覆盖内置 class |
+| alwaysWrapWithContent | boolean | false | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | 当有 slot 内容时，即使 text 为 "0" 也保留包裹层（badge-wrap），避免多个子 slot 时 flex 方向错乱 |
 
 <!-- UTSCOMJSON.uni-badge-view.fileFormates -->
 

@@ -88,14 +88,14 @@ Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 描述 |
-| :- | :- | :- | :- |
-| hideDefaultBack | boolean | false | 是否隐藏默认的返回箭头。为 true 时需要通过 left 插槽自定义返回按钮 |
-| title | string | "" | 导航栏中间显示的标题文字，若使用 mid 插槽则该属性无效 |
-| navigationBarTextStyle | String as PropType\<"white" \| "black" \| ""> | "" | 导航栏前景色（文字和返回箭头颜色）。非小程序端未传入时会自动读取 pageStyle 的 navigationBarTextStyle |
-| leftClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 左侧区域的自定义样式类 |
-| midClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 中间区域的自定义样式类 |
-| rightClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 右侧区域的自定义样式类 |
+| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| hideDefaultBack | boolean | false | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | 是否隐藏默认的返回箭头。为 true 时需要通过 left 插槽自定义返回按钮 |
+| title | string | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | 导航栏中间显示的标题文字，若使用 mid 插槽则该属性无效 |
+| navigationBarTextStyle | String as PropType\<"white" \| "black" \| ""> | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | 导航栏前景色（文字和返回箭头颜色）。非小程序端未传入时会自动读取 pageStyle 的 navigationBarTextStyle |
+| leftClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | 左侧区域的自定义样式类 |
+| midClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | 中间区域的自定义样式类 |
+| rightClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | 右侧区域的自定义样式类 |
 
 <!-- UTSCOMJSON.uni-nav-bar.fileFormates -->
 

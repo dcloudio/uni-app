@@ -39,10 +39,10 @@ Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 描述 |
-| :- | :- | :- | :- |
-| plusClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 加号图标的自定义样式类，用于调整加号颜色、尺寸等样式 |
-| @click | Event |   | 点击事件，参数为事件对象，类型为 UniPointerEvent |
+| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| plusClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | 加号图标的自定义样式类，用于调整加号颜色、尺寸等样式 |
+| @click | Event |   |   | 点击事件，参数为事件对象，类型为 UniPointerEvent |
 
 <!-- UTSCOMJSON.uni-fab-button.fileFormates -->
 
