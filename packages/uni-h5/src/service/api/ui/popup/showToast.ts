@@ -84,6 +84,15 @@ function createToast(
   controller.token++
   if (!controller.state) {
     controller.state = reactive(extend({}, args, { visible: false }))
+    if (controller === pageToast) {
+      // 首次创建页面弹层时同步注册，避免显示前卸载页面漏掉清理。
+      // 不在模块顶层注册，让未使用 Toast 的项目可以裁剪其状态和清理逻辑。
+      onPageUnload((pageId) => {
+        if (pageToast.pageId === pageId && pageToast.type === 'onShowToast') {
+          hidePopup('onHideToast', pageToast)
+        }
+      })
+    }
     // 异步执行，避免干扰 getCurrentInstance
     nextTick(() => {
       watchVisible(controller)
@@ -204,9 +213,3 @@ function hidePopup(
     }
   }, 10)
 }
-
-onPageUnload((pageId) => {
-  if (pageToast.pageId === pageId && pageToast.type === 'onShowToast') {
-    hidePopup('onHideToast', pageToast)
-  }
-})

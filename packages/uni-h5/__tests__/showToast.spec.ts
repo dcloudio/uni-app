@@ -66,6 +66,34 @@ describe('web toast controllers', () => {
     ;(global as any).UniServiceJSBridge = bridge
   })
 
+  test('导入模块、隐藏或仅显示应用级 Toast 不注册页面卸载回调', async () => {
+    expect(mockOnPageUnload).not.toHaveBeenCalled()
+    api.hideToast({ allType: true })
+    api.hideLoading(undefined)
+    api.showToast({ title: 'app', position: 'top' })
+    await flush()
+    expect(mockOnPageUnload).not.toHaveBeenCalled()
+  })
+
+  test('首次创建页面弹层同步注册，Loading 与 Toast 切换不重复注册', async () => {
+    api.showLoading({ title: 'loading' })
+    expect(mockOnPageUnload).toHaveBeenCalledTimes(1)
+    const unload = mockOnPageUnload.mock.calls[0][0]
+    unload(1)
+    await flush()
+    expect(mockRoots.get('u-a-t')!.visible).toBe(true)
+    api.hideLoading(undefined)
+    api.showToast({ title: 'page' })
+    expect(mockOnPageUnload).toHaveBeenCalledTimes(1)
+    unload(1)
+    await flush()
+    expect(mockRoots.get('u-a-t')!.visible).toBe(false)
+    api.showToast({ title: 'next' })
+    await flush()
+    expect(mockOnPageUnload).toHaveBeenCalledTimes(1)
+    expect(mockRoots.get('u-a-t')!.visible).toBe(true)
+  })
+
   test('reuses one application toast across positions and restarts duration', async () => {
     api.showToast({ title: 'first', position: 'top', duration: 100 })
     await flush()
