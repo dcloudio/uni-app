@@ -251,6 +251,41 @@ function isVueJs(id: string) {
 
 const chunkFileNameBlackList = ['main', 'pages.json', 'manifest.json']
 
+function resolveDataChunkType(filename: string, optimize: boolean) {
+  if (DEFAULT_ASSETS_RE.test(filename)) return 'assets'
+  if (optimize && filename.endsWith('.json')) return 'json'
+}
+
+// Page and component scripts must match their companion JSON filenames.
+function avoidEntryFilename(name: string) {
+  while (hasJsonFile(name)) name += '-helper'
+  return name
+}
+
+type ManualChunkApi = Parameters<GetManualChunk>[1]
+
+// uni-app x JSON modules can import runtime helpers (e.g. UTSJSONObject).
+// Keep their vendor dependencies with the data, so loading JSON never has to
+// initialize an unrelated vendor module that consumes that JSON first.
+function collectJsonDependencies({
+  getModuleIds,
+  getModuleInfo,
+}: ManualChunkApi) {
+  const dependencies = new Set<string>()
+  for (const id of getModuleIds()) {
+    if (resolveDataChunkType(id.split('?')[0], true) !== 'json') continue
+    const info = getModuleInfo(id)
+    if (!info?.isIncluded) continue
+    for (const imported of info.importedIds) dependencies.add(imported)
+  }
+  for (const id of dependencies) {
+    for (const imported of getModuleInfo(id)?.importedIds || []) {
+      dependencies.add(imported)
+    }
+  }
+  return dependencies
+}
+
 function createMoveToVendorChunkFn(): GetManualChunk | undefined {
   // 云端编译时，不拆分文件
   if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
@@ -258,7 +293,9 @@ function createMoveToVendorChunkFn(): GetManualChunk | undefined {
   }
   const inputDir = normalizePath(process.env.UNI_INPUT_DIR)
   const resolveVendorChunk = createResolveVendorChunkFn(inputDir)
-  return (id, { getModuleInfo }) => {
+  const jsonDependencies = new WeakMap<ManualChunkApi, Set<string>>()
+  return (id, api) => {
+    const { getModuleInfo } = api
     const independentRoot = parseIndependentRoot(id)
     const idWithoutIndependentRoot = independentRoot
       ? withoutIndependentRoot(id)
@@ -287,29 +324,16 @@ function createMoveToVendorChunkFn(): GetManualChunk | undefined {
     const subpackageRoot =
       !independentRoot && optimizeSubpackages
         ? resolveSingleSubpackage(id, getModuleInfo, inputDir, (importer) =>
-            resolveVendorChunk(importer, getModuleInfo)
+            resolveVendorChunk(importer, getModuleInfo, true)
           )
         : undefined
-    // 处理资源文件
-    if (DEFAULT_ASSETS_RE.test(filename)) {
-      const chunkName = independentRoot
-        ? resolveIndependentCommonChunkName(independentRoot, 'assets')
-        : subpackageRoot
-        ? `${subpackageRoot}/common/assets`
-        : 'common/assets'
+    const dataChunk = resolveDataChunkType(filename, optimizeSubpackages)
+    if (dataChunk) {
+      const root = independentRoot || subpackageRoot
+      const name = (root ? root + '/' : '') + 'common/' + dataChunk
+      const chunkName = optimizeSubpackages ? avoidEntryFilename(name) : name
       debugChunk(chunkName, normalizedId)
       return chunkName
-    }
-    // JSON must receive an explicit assignment. Otherwise Rollup can absorb
-    // shared data into a relocated helper and create main -> subpackage imports.
-    // Framework config uses pages-json-js / manifest-json-js virtual IDs; real
-    // JSON imports use the same ownership rules regardless of their basename.
-    if (optimizeSubpackages && filename.endsWith('.json')) {
-      return independentRoot
-        ? resolveIndependentCommonChunkName(independentRoot, 'vendor')
-        : subpackageRoot
-        ? `${subpackageRoot}/common/vendor`
-        : 'common/vendor'
     }
     // 处理项目内的js,ts文件
     if (EXTNAME_JS_RE.test(filename)) {
@@ -326,30 +350,41 @@ function createMoveToVendorChunkFn(): GetManualChunk | undefined {
           !chunkFileNameBlackList.includes(chunkFileName) &&
           !hasJsonFile(chunkFileName) // 无同名的page,component
         ) {
-          const normalizedChunkFileName = independentRoot
+          let normalizedChunkFileName = independentRoot
             ? resolveIndependentCommonChunkName(independentRoot, chunkFileName)
             : subpackageRoot && !chunkFileName.startsWith(subpackageRoot + '/')
             ? `${subpackageRoot}/${chunkFileName}`
             : chunkFileName
+          if (subpackageRoot && normalizedChunkFileName !== chunkFileName) {
+            normalizedChunkFileName = avoidEntryFilename(
+              normalizedChunkFileName
+            )
+          }
           debugChunk(normalizedChunkFileName, normalizedId)
           return normalizedChunkFileName
         }
         return
       }
-      if (independentRoot) {
-        const chunkName = resolveIndependentCommonChunkName(
-          independentRoot,
-          'vendor'
-        )
-        debugChunk(chunkName, normalizedId)
-        return chunkName
-      }
     }
-    const vendorChunk = resolveVendorChunk(id, getModuleInfo)
+    const vendorChunk =
+      independentRoot && EXTNAME_JS_RE.test(filename)
+        ? 'common/vendor'
+        : resolveVendorChunk(id, getModuleInfo, optimizeSubpackages)
     if (vendorChunk) {
-      const chunkName = independentRoot
+      let chunkName = independentRoot
         ? resolveIndependentCommonChunkName(independentRoot, 'vendor')
         : vendorChunk
+      if (optimizeSubpackages) {
+        // Rollup supplies a fresh API for each output, including watch rebuilds.
+        let dependencies = jsonDependencies.get(api)
+        if (!dependencies) {
+          dependencies = collectJsonDependencies(api)
+          jsonDependencies.set(api, dependencies)
+        }
+        if (dependencies.has(id)) {
+          chunkName = avoidEntryFilename(chunkName.replace(/vendor$/, 'json'))
+        }
+      }
       debugChunk(chunkName, id)
       return chunkName
     }
@@ -361,10 +396,14 @@ function createMoveToVendorChunkFn(): GetManualChunk | undefined {
 // of which page originally imported that consumer.
 function createResolveVendorChunkFn(inputDir: string) {
   const cache = new Map<string, boolean>()
-  return (id: string, getModuleInfo: GetModuleInfo): string | undefined => {
+  return (
+    id: string,
+    getModuleInfo: GetModuleInfo,
+    optimize: boolean
+  ): string | undefined => {
     const normalizedId = normalizePath(id)
     const filename = normalizedId.split('?')[0]
-    if (DEFAULT_ASSETS_RE.test(filename)) return
+    if (resolveDataChunkType(filename, optimize)) return
     if (EXTNAME_JS_RE.test(filename)) {
       if (filename.startsWith(inputDir) && !filename.includes('node_modules')) {
         return

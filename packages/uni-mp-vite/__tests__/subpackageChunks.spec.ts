@@ -1,9 +1,12 @@
+import { execFileSync } from 'child_process'
 import fs from 'fs'
 import os from 'os'
 import path from 'path'
 import { type OutputChunk, type RollupOptions, rollup } from 'rollup'
 import {
+  addMiniProgramComponentJson,
   addMiniProgramComponentPackageRoot,
+  addMiniProgramPageJson,
   parseManifestJsonOnce,
   resetMiniProgramJsonFiles,
 } from '@dcloudio/uni-cli-shared'
@@ -345,13 +348,13 @@ describe('ordinary subpackage dependency chunks', () => {
       modules[filename] = `const data = { value: 42 }; export default data;`
       const { chunks, names } = await build()
       expect(names).toContain('pkgA/utils/value.js')
-      expect(names).toContain('common/vendor.js')
+      expect(names).toContain('common/json.js')
       expect(chunks.find((c) => c.fileName === 'app.js')?.imports).toContain(
-        'common/vendor.js'
+        'common/json.js'
       )
       expect(
         chunks.find((c) => c.fileName === 'pkgA/utils/value.js')?.imports
-      ).toContain('common/vendor.js')
+      ).toContain('common/json.js')
     }
   )
 
@@ -373,8 +376,8 @@ describe('ordinary subpackage dependency chunks', () => {
     ] = `import data from './data.json'; export const value = () => data.value;`
     modules['data.json'] = `const data = { value: 42 }; export default data;`
     const { names } = await build()
-    expect(names).toContain('common/vendor.js')
-    expect(names).not.toContain('pkgA/common/vendor.js')
+    expect(names).toContain('common/json.js')
+    expect(names).not.toContain('pkgA/common/json.js')
   })
 
   test('places private JSON in its consuming subpackage', async () => {
@@ -383,7 +386,84 @@ describe('ordinary subpackage dependency chunks', () => {
     ] = `import data from '../data.json'; export const value = () => data.value;`
     modules['data.json'] = `const data = { value: 42 }; export default data;`
     const { names } = await build()
-    expect(names).toContain('pkgA/common/vendor.js')
-    expect(names).not.toContain('common/vendor.js')
+    expect(names).toContain('pkgA/common/json.js')
+    expect(names).not.toContain('common/json.js')
   })
+  test.each([false, true])(
+    'initializes vendor consumers of JSON (runtime import: %s)',
+    async (usesRuntime) => {
+      modules['main.ts'] +=
+        "export { answer } from './node_modules/lib/index.js'"
+      modules['node_modules/lib/index.js'] =
+        "import { value } from '../../utils/helper.ts'; export const answer = value + 1"
+      modules['utils/helper.ts'] =
+        "import data from '../data.json'; export const value = data.value"
+      modules['data.json'] = usesRuntime
+        ? "import { UTSJSONObject } from './node_modules/runtime/index.js'; export default new UTSJSONObject({ value: 41 })"
+        : 'export default { value: 41 }'
+      modules['node_modules/runtime/index.js'] =
+        'export class UTSJSONObject { constructor(obj) { Object.assign(this, obj) } }'
+      const { chunks } = await build()
+      for (const chunk of chunks) {
+        const file = path.join(inputDir, chunk.fileName)
+        fs.mkdirSync(path.dirname(file), { recursive: true })
+        fs.writeFileSync(file, chunk.code)
+      }
+      expect(
+        execFileSync(process.execPath, ['-p', "require('./app.js').answer"], {
+          cwd: inputDir,
+          encoding: 'utf8',
+        }).trim()
+      ).toBe('42')
+    }
+  )
+
+  test('keeps a page named common/json at its configured path', async () => {
+    const name = 'pkgA/common/json'
+    const entry = virtualPagePath(name + '.vue')
+    addMiniProgramPageJson(name, {})
+    modules[pageA] += `; export const load = () => import(${JSON.stringify(
+      entry
+    )})`
+    modules[entry] = "export const label = 'entry'"
+    modules['utils/value.ts'] =
+      "import data from '../data.json'; export const value = data.value"
+    modules['data.json'] = 'export default {value: 42}'
+    const { chunks } = await build()
+    expect(chunks.find((c) => c.facadeModuleId === entry)?.fileName).toBe(
+      name + '.js'
+    )
+    expect(
+      chunks.find((c) => path.join(inputDir, 'data.json') in c.modules)
+        ?.fileName
+    ).toBe(name + '-helper.js')
+  })
+
+  test.each(['page', 'component'])(
+    'preserves the %s script when a relocated helper has the same name',
+    async (kind) => {
+      const name = 'pkgA/utils/value'
+      const entry =
+        kind === 'page'
+          ? virtualPagePath(name + '.vue')
+          : virtualComponentPath(name + '.vue')
+      if (kind === 'page') addMiniProgramPageJson(name, {})
+      else addMiniProgramComponentJson(name, { component: true })
+      modules[pageA] += `; export const load = () => import(${JSON.stringify(
+        entry
+      )})`
+      modules[entry] = "export const label = 'entry'"
+      const { chunks } = await build()
+      expect(chunks.find((c) => c.facadeModuleId === entry)?.fileName).toBe(
+        name + '.js'
+      )
+      const helper = chunks.find(
+        (c) => path.join(inputDir, 'utils/value.ts') in c.modules
+      )!
+      expect(helper.fileName).toBe(name + '-helper.js')
+      expect(chunks.find((c) => c.facadeModuleId === pageA)?.imports).toContain(
+        helper.fileName
+      )
+    }
+  )
 })
