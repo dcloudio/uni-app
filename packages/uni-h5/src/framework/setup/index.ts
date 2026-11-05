@@ -233,7 +233,10 @@ export function setupPage(comp: any, path: string) {
         return query
       }
       const pageMeta = usePageMeta()
-      updateCurPageCssVar(pageMeta)
+      // 弹窗和父页共享 document，窗口偏移仍由普通页面维护。
+      if (!__X__ || !isDialogPageInstance(getPageInstanceByChild(instance))) {
+        updateCurPageCssVar(pageMeta)
+      }
       // 动态监听子组件 onReachBottom, onPageScroll的hook，从而初始化pageScroll逻辑
       instance.onReachBottom = reactive([])
       instance.onPageScroll = reactive([])

@@ -334,14 +334,15 @@ export function onPageShow(
   instance: ComponentInternalInstance,
   pageMeta: UniApp.PageRouteMeta
 ) {
+  const isDialogPage =
+    __X__ && isDialogPageInstance(getPageInstanceByChild(instance))
   updateCurPageBodyScopeId(instance)
   updateBodyScopeId(instance)
-  updateCurPageCssVar(pageMeta)
   updateCurPageAttrs(pageMeta)
-  if (__X__ && isDialogPageInstance(getPageInstanceByChild(instance))) {
-    return
+  if (!isDialogPage) {
+    updateCurPageCssVar(pageMeta)
+    initPageScrollListener(instance, pageMeta)
   }
-  initPageScrollListener(instance, pageMeta)
 }
 
 export function onPageReady(instance: ComponentInternalInstance) {
