@@ -17,7 +17,8 @@
       [plain && loading, 'uni-button-text-plain'],
       [plain, 'uni-button-view-plain'],
       [size == 'mini', 'uni-button-text-size-mini'],
-      [size == 'default', 'uni-button-text-size-default']
+      [size == 'default', 'uni-button-text-size-default'],
+      keyboardHoverClass
     )"
     style="display: flex;justify-content: center;flex-direction: row;align-items: center"
     :hover-class="disabled ? 'none' : hoverClasses"
@@ -72,7 +73,8 @@
       [plain && loading, 'uni-button-text-plain'],
       [plain, 'uni-button-view-plain'],
       [size == 'mini', 'uni-button-text-size-mini'],
-      [size == 'default', 'uni-button-text-size-default']
+      [size == 'default', 'uni-button-text-size-default'],
+      keyboardHoverClass
     )"
     :hover-class="disabled ? 'none' : hoverClasses"
     :hover-start-time="hoverStartTime"
@@ -406,15 +408,20 @@
   })
 
   // #ifdef WEB
-  const { handleKeydown: handleSpaceKeydown, handleKeyup, handleBlur } = createSpaceKeyHandlers(() => props.disabled)
+  const spaceKeys = createSpaceKeyHandlers(() => props.disabled)
+  const pressedKeys = reactive(new Set<string>())
+  const keyboardHoverClass = computed(() =>
+    pressedKeys.size > 0 && !props.disabled && hoverClasses.value !== 'none' ? hoverClasses.value : ''
+  )
 
   function handleKeydown(event: KeyboardEvent) {
-    if (event.key !== 'Enter') {
-      handleSpaceKeydown(event)
-      return
-    }
-    if (event.target !== event.currentTarget || event.defaultPrevented ||
-        event.altKey || event.ctrlKey || event.metaKey) {
+    const key = event.key
+    if ((key !== 'Enter' && key !== ' ') || event.target !== event.currentTarget ||
+        event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return
+
+    if (!props.disabled && !event.repeat) pressedKeys.add(key)
+    if (key === ' ') {
+      spaceKeys.handleKeydown(event)
       return
     }
     event.preventDefault()
@@ -422,6 +429,18 @@
       event.currentTarget?.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
     }
   }
+
+  function handleKeyup(event: KeyboardEvent) {
+    if (event.target === event.currentTarget) pressedKeys.delete(event.key)
+    spaceKeys.handleKeyup(event)
+  }
+
+  function handleBlur() {
+    spaceKeys.handleBlur()
+    pressedKeys.clear()
+  }
+
+  watch(() => props.disabled, disabled => { if (disabled) handleBlur() })
 
   const loadingRootRef = ref<HTMLElement | null>(null)
   watch(() => props.loading && !props.disabled, (_loading, wasLoading) => {
@@ -440,6 +459,10 @@
       }
     })
   })
+  // #endif
+
+  // #ifndef WEB
+  const keyboardHoverClass = ''
   // #endif
 
   defineOptions({

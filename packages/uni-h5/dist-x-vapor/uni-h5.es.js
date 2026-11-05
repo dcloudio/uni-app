@@ -16366,14 +16366,20 @@ const _sfc_main$x = /* @__PURE__ */ defineVaporComponent({
   setup(__props, { expose: __expose, emit: __emit }) {
     const emit2 = __emit;
     const props2 = __props;
-    const { handleKeydown: handleSpaceKeydown, handleKeyup, handleBlur } = createSpaceKeyHandlers(() => props2.disabled);
+    const spaceKeys = createSpaceKeyHandlers(() => props2.disabled);
+    const pressedKeys = reactive(/* @__PURE__ */ new Set());
+    const keyboardHoverClass = computed(
+      () => pressedKeys.size > 0 && !props2.disabled && hoverClasses.value !== "none" ? hoverClasses.value : ""
+    );
     function handleKeydown(event) {
       var _a;
-      if (event.key !== "Enter") {
-        handleSpaceKeydown(event);
+      const key = event.key;
+      if (key !== "Enter" && key !== " " || event.target !== event.currentTarget || event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey)
         return;
-      }
-      if (event.target !== event.currentTarget || event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) {
+      if (!props2.disabled && !event.repeat)
+        pressedKeys.add(key);
+      if (key === " ") {
+        spaceKeys.handleKeydown(event);
         return;
       }
       event.preventDefault();
@@ -16381,6 +16387,19 @@ const _sfc_main$x = /* @__PURE__ */ defineVaporComponent({
         (_a = event.currentTarget) == null ? void 0 : _a.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
       }
     }
+    function handleKeyup(event) {
+      if (event.target === event.currentTarget)
+        pressedKeys.delete(event.key);
+      spaceKeys.handleKeyup(event);
+    }
+    function handleBlur() {
+      spaceKeys.handleBlur();
+      pressedKeys.clear();
+    }
+    watch(() => props2.disabled, (disabled) => {
+      if (disabled)
+        handleBlur();
+    });
     const loadingRootRef = ref(null);
     watch(() => props2.loading && !props2.disabled, (_loading, wasLoading) => {
       const element = wasLoading ? loadingRootRef.value : textRef.value;
@@ -16515,13 +16534,14 @@ const _sfc_main$x = /* @__PURE__ */ defineVaporComponent({
             [_plain && __props.loading, "uni-button-text-plain"],
             [_plain, "uni-button-view-plain"],
             [_size == "mini", "uni-button-text-size-mini"],
-            [_size == "default", "uni-button-text-size-default"]
+            [_size == "default", "uni-button-text-size-default"],
+            unref(keyboardHoverClass)
           )]);
           setProp(n2, "tabindex", _disabled ? -1 : 0);
           setAttr(n2, "aria-disabled", _disabled);
         });
         setInsertionState(n2, n6);
-        withComponentId("0ed9fc4b", () => createComponentWithFallback(_component_loading, { class: () => ["uni-button-loading-icon", unref(classes)(
+        withComponentId("0ed9fc8f", () => createComponentWithFallback(_component_loading, { class: () => ["uni-button-loading-icon", unref(classes)(
           [unref(buttonType) == "default", "uni-loading-default"],
           [__props.plain && unref(buttonType) == "primary", "uni-loading-plain-primary"],
           [__props.plain && unref(buttonType) == "warn", "uni-loading-plain-warn"],
@@ -16541,8 +16561,8 @@ const _sfc_main$x = /* @__PURE__ */ defineVaporComponent({
         );
         setStaticTemplateRef(n5, textRef, null, "textRef");
         on$1(n2, "keydown", handleKeydown);
-        on$1(n2, "keyup", (e2) => unref(handleKeyup)(e2));
-        on$1(n2, "blur", (e2) => unref(handleBlur)(e2));
+        on$1(n2, "keyup", handleKeyup);
+        on$1(n2, "blur", handleBlur);
         on$1(n2, "click", handleTap);
         setStaticTemplateRef(n2, loadingRootRef, null, "loadingRootRef");
         return n2;
@@ -16570,7 +16590,8 @@ const _sfc_main$x = /* @__PURE__ */ defineVaporComponent({
             [_plain && __props.loading, "uni-button-text-plain"],
             [_plain, "uni-button-view-plain"],
             [_size == "mini", "uni-button-text-size-mini"],
-            [_size == "default", "uni-button-text-size-default"]
+            [_size == "default", "uni-button-text-size-default"],
+            unref(keyboardHoverClass)
           )]);
           setProp(n8, "tabindex", _disabled ? -1 : 0);
           setAttr(n8, "aria-disabled", _disabled);
@@ -16584,8 +16605,8 @@ const _sfc_main$x = /* @__PURE__ */ defineVaporComponent({
           /* TEXT_MODE */
         );
         on$1(n8, "keydown", handleKeydown);
-        on$1(n8, "keyup", (e2) => unref(handleKeyup)(e2));
-        on$1(n8, "blur", (e2) => unref(handleBlur)(e2));
+        on$1(n8, "keyup", handleKeyup);
+        on$1(n8, "blur", handleBlur);
         on$1(n8, "click", handleTap);
         setStaticTemplateRef(n8, textRef, null, "textRef");
         return n8;

@@ -9036,37 +9036,6 @@ function classes(...classList) {
     return className ?? "";
   });
 }
-function createSpaceKeyHandlers(isDisabled) {
-  let spacePressed = false;
-  function handleKeydown(event) {
-    if (event.key !== " " || event.target !== event.currentTarget || event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) {
-      return;
-    }
-    event.preventDefault();
-    if (!event.repeat) {
-      spacePressed = !isDisabled();
-    }
-  }
-  function handleKeyup(event) {
-    var _a;
-    if (event.key !== " " || event.target !== event.currentTarget) {
-      return;
-    }
-    const shouldActivate = spacePressed;
-    spacePressed = false;
-    if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) {
-      return;
-    }
-    event.preventDefault();
-    if (shouldActivate && !isDisabled()) {
-      (_a = event.currentTarget) == null ? void 0 : _a.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
-    }
-  }
-  function handleBlur() {
-    spacePressed = false;
-  }
-  return { handleKeydown, handleKeyup, handleBlur };
-}
 class UniButtonElement extends UniTextElement {
   constructor() {
     super(...arguments);
@@ -9114,7 +9083,17 @@ const _sfc_main$n = /* @__PURE__ */ defineComponent$2({
   __vapor: true,
   setup(__props, { expose: __expose, emit: __emit }) {
     const props2 = __props;
-    const { handleKeydown: handleSpaceKeydown, handleKeyup, handleBlur } = createSpaceKeyHandlers(() => props2.disabled);
+    const pressedKeys = reactive(/* @__PURE__ */ new Set());
+    const keyboardHoverClass = computed(
+      () => pressedKeys.size > 0 && !props2.disabled && hoverClasses.value !== "none" ? hoverClasses.value : ""
+    );
+    function handleBlur() {
+      pressedKeys.clear();
+    }
+    watch(() => props2.disabled, (disabled) => {
+      if (disabled)
+        handleBlur();
+    });
     const loadingRootRef = ref(null);
     watch(() => props2.loading && !props2.disabled, (_loading, wasLoading) => {
       const element = wasLoading ? loadingRootRef.value : textRef.value;
@@ -9147,7 +9126,7 @@ const _sfc_main$n = /* @__PURE__ */ defineComponent$2({
     onMounted(() => {
       enableTransition.value = true;
     });
-    computed(() => {
+    const hoverClasses = computed(() => {
       let isDefaultHoverClass = false;
       if (props2.hoverClass != null) {
         const hoverClass = `${props2.hoverClass}`.replace(/^\^+/, "");
@@ -9219,7 +9198,8 @@ const _sfc_main$n = /* @__PURE__ */ defineComponent$2({
             [__props.plain && __props.loading, "uni-button-text-plain"],
             [__props.plain, "uni-button-view-plain"],
             [__props.size == "mini", "uni-button-text-size-mini"],
-            [__props.size == "default", "uni-button-text-size-default"]
+            [__props.size == "default", "uni-button-text-size-default"],
+            unref(keyboardHoverClass)
           )],
           style: { "display": "flex", "justify-content": "center", "flex-direction": "row", "align-items": "center" },
           ref_key: "loadingRootRef",
@@ -9258,7 +9238,8 @@ const _sfc_main$n = /* @__PURE__ */ defineComponent$2({
             [__props.plain && __props.loading, "uni-button-text-plain"],
             [__props.plain, "uni-button-view-plain"],
             [__props.size == "mini", "uni-button-text-size-mini"],
-            [__props.size == "default", "uni-button-text-size-default"]
+            [__props.size == "default", "uni-button-text-size-default"],
+            unref(keyboardHoverClass)
           )],
           tabindex: __props.disabled ? -1 : 0,
           role: "button",
