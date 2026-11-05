@@ -447,8 +447,9 @@ export function setupApp(comp: any) {
 }
 
 function onResize() {
+  // 宽高与 getSystemInfoSync 同源，仅获取窗口信息，避免无关的设备、应用信息收集。
   const { windowWidth, windowHeight, screenWidth, screenHeight } =
-    uni.getSystemInfoSync()
+    uni.getWindowInfo()
   const landscape = Math.abs(Number(window.orientation)) === 90
   const deviceOrientation = landscape ? 'landscape' : 'portrait'
   UniServiceJSBridge.emit(ON_RESIZE, {
