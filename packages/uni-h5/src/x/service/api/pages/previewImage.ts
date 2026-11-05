@@ -1,6 +1,8 @@
 import { once } from '@dcloudio/uni-shared'
 import UniPreviewImagePage from '@/uni_modules/uni-previewImage/pages/previewImage/previewImage.vue'
+//#if !_X_VAPOR_
 import UniPreviewImageNonVapor from '@/uni_modules/uni-previewImage/components/uni-previewImageNonVapor/uni-previewImageNonVapor.vue'
+//#endif
 import UniPreviewImageItem from '@/uni_modules/uni-previewImage/components/uni-previewImageItem/uni-previewImageItem.vue'
 import {
   closePreviewImage as closePreviewImageApi,
@@ -33,11 +35,16 @@ function mergeComponentStyles(
 }
 
 const registerPreviewImageOnce = /* @__PURE__ */ once(() => {
-  // dist-x 会把每个 SFC 的 CSS 挂到各自的 styles 上，而系统页面注册只处理根组件样式。
-  // script setup 的局部组件保存在渲染函数闭包中，注册时无法遍历，因此需要显式合并两层子组件样式。
+  // 每个 SFC 的 CSS 挂在各自的 styles 上，系统路由仅安装页面样式，需显式合并子组件样式。
+  // Vapor 模板不使用 NonVapor 子组件，编译时排除其导入和样式，避免保留整套旧实现。
   mergeComponentStyles(
     UniPreviewImagePage as ComponentWithStyles,
-    [UniPreviewImageNonVapor, UniPreviewImageItem] as ComponentWithStyles[]
+    [
+      //#if !_X_VAPOR_
+      UniPreviewImageNonVapor,
+      //#endif
+      UniPreviewImageItem,
+    ] as ComponentWithStyles[]
   )
   registerSystemRoute('uni:previewImage', UniPreviewImagePage)
 })

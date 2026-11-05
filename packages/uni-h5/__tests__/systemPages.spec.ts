@@ -54,9 +54,16 @@ describe('Web Vapor 系统页面接入', () => {
     }
   )
 
-  test('openLocation 先注册页面，保留参数校验、格式化和回调', async () => {
+  test.each([
+    [undefined, undefined],
+    [['.page {}'], undefined],
+    [undefined, ['.back-circle {}']],
+    [['.page {}'], ['.back-circle {}']],
+  ])('openLocation 合并样式：%j / %j', async (pageStyles, arrowStyles) => {
     const events: string[] = []
-    const page = {}
+    const page = { styles: pageStyles }
+    const backArrow = { styles: arrowStyles }
+    const expectedStyles = [...(pageStyles || []), ...(arrowStyles || [])]
     const api = jest.fn((args) => {
       events.push('open')
       args.success({})
@@ -78,18 +85,25 @@ describe('Web Vapor 系统页面接入', () => {
         '@/uni_modules/uni-openLocation/pages/openLocation/openLocation.vue': {
           default: page,
         },
+        '@/uni_modules/uni-openLocation/pages/openLocation/uni-back-arrow-circle.vue':
+          {
+            default: backArrow,
+          },
         '@/uni_modules/uni-openLocation': { openLocation: api },
         '@dcloudio/uni-api': { ...helper, ...protocol },
         '../../../framework/route': {
           registerSystemRoute: (route: string, component: unknown) => {
             expect(route).toBe('uni:openLocation')
             expect(component).toBe(page)
+            expect(page.styles).toEqual(expectedStyles)
             events.push('register')
           },
         },
         '@vue/shared': jest.requireActual('@vue/shared'),
       }
     )
+    expect(page.styles).toBe(pageStyles)
+    expect(events).toEqual([])
     const params = { latitude: 0, longitude: 0, scale: 12.9 }
     await expect(exports.openLocation(params)).resolves.toMatchObject({
       errMsg: 'openLocation:ok',
@@ -100,7 +114,11 @@ describe('Web Vapor 系统页面接入', () => {
       scale: 12,
     })
     expect(params).toEqual({ latitude: 0, longitude: 0, scale: 12.9 })
+    const mergedStyles = page.styles
     await exports.openLocation({ latitude: 1, longitude: 2 })
+    expect(page.styles).toBe(mergedStyles)
+    expect(page.styles).toEqual(expectedStyles)
+    expect(backArrow.styles).toBe(arrowStyles)
     expect(api.mock.calls[1][0].scale).toBe(18)
     expect(events).toEqual(['register', 'open', 'open'])
     const fail = jest.fn()
@@ -114,6 +132,82 @@ describe('Web Vapor 系统页面接入', () => {
       exports.openLocation({ latitude: 1, longitude: 2 })
     ).rejects.toMatchObject({ errMsg: 'openLocation:fail cancelled' })
   })
+
+  test.each([
+    [false, false],
+    [false, true],
+    [true, false],
+    [true, true],
+  ])(
+    '预览图片按模式合并样式且只注册一次：Vapor=%s，先关闭=%s',
+    async (vapor, closeFirst) => {
+      const page = { styles: ['.page {}'] }
+      const item = { styles: ['.item {}'] }
+      const legacy = { styles: ['.legacy {}'] }
+      const expected = vapor
+        ? ['.page {}', '.item {}']
+        : ['.page {}', '.legacy {}', '.item {}']
+      const registered = jest.fn((route, component) => {
+        expect(route).toBe('uni:previewImage')
+        expect(component).toBe(page)
+        expect(page.styles).toEqual(expected)
+      })
+      const preview = jest.fn()
+      const close = jest.fn()
+      const exports = evaluate(
+        await frameworkSource(
+          'packages/uni-h5/src/x/service/api/pages/previewImage.ts',
+          vapor
+        ),
+        {
+          '@dcloudio/uni-shared': jest.requireActual('../../uni-shared/src'),
+          '@vue/shared': jest.requireActual('@vue/shared'),
+          '@/uni_modules/uni-previewImage/pages/previewImage/previewImage.vue':
+            {
+              default: page,
+            },
+          '@/uni_modules/uni-previewImage/components/uni-previewImageItem/uni-previewImageItem.vue':
+            {
+              default: item,
+            },
+          // Vapor 不提供旧组件模块：残留导入会直接使测试失败。
+          ...(!vapor
+            ? {
+                '@/uni_modules/uni-previewImage/components/uni-previewImageNonVapor/uni-previewImageNonVapor.vue':
+                  {
+                    default: legacy,
+                  },
+              }
+            : {}),
+          '@/uni_modules/uni-previewImage': {
+            previewImage: preview,
+            closePreviewImage: close,
+          },
+          '@dcloudio/uni-api': {
+            API_PREVIEW_IMAGE: 'previewImage',
+            defineAsyncApi:
+              (_name: string, handler: Function) => (args: object) =>
+                handler(args, { resolve: jest.fn(), reject: jest.fn() }),
+          },
+          '../../../framework/route': { registerSystemRoute: registered },
+        }
+      )
+      expect(registered).not.toHaveBeenCalled()
+      expect(page.styles).toEqual(['.page {}'])
+      if (closeFirst) exports.closePreviewImage()
+      exports.previewImage({ urls: ['test.png'] })
+      const merged = page.styles
+      exports.closePreviewImage()
+      exports.previewImage({ urls: ['test.png'] })
+      expect(registered).toHaveBeenCalledTimes(1)
+      expect(page.styles).toBe(merged)
+      expect(page.styles).toEqual(expected)
+      expect(item.styles).toEqual(['.item {}'])
+      expect(legacy.styles).toEqual(['.legacy {}'])
+      expect(preview).toHaveBeenCalledTimes(2)
+      expect(close).toHaveBeenCalledTimes(closeFirst ? 2 : 1)
+    }
+  )
 
   test.each([false, true])(
     'Picker 在校验路由前按需注册，非 Vapor 不变：%s',
