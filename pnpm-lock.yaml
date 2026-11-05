@@ -1032,9 +1032,6 @@ importers:
       '@dcloudio/uni-components':
         specifier: workspace:*
         version: link:../uni-components
-      '@dcloudio/uni-uts-v1':
-        specifier: workspace:*
-        version: link:../uni-uts-v1
       '@dcloudio/vite-plugin-uni':
         specifier: workspace:*
         version: link:../vite-plugin-uni

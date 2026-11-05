@@ -12,7 +12,6 @@
   "devDependencies": {
     "@dcloudio/uni-cli-shared": "workspace:*",
     "@dcloudio/uni-components": "workspace:*",
-    "@dcloudio/uni-uts-v1": "workspace:*",
     "@dcloudio/vite-plugin-uni": "workspace:*"
   }
 }

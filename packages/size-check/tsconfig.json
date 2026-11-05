@@ -1,7 +1,0 @@
-{
-  "extends": "../uni-uts-v1/lib/tsconfig/tsconfig.json",
-  "compilerOptions": {
-    "lib": ["esnext", "dom"]
-  },
-  "include": ["vapor/**/*.ts", "vapor/**/*.uvue"]
-}

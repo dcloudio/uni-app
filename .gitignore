@@ -1,6 +1,5 @@
 packages/playground/*/dist
 packages/size-check/dist
-packages/size-check/dist-vapor
 packages/uni-app-vite/dist
 packages/uni-cli-shared/dist
 packages/uni-h5-vite/dist
