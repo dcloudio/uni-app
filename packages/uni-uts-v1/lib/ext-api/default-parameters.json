@@ -409,9 +409,6 @@
   "uni-keyboard": {
     "hideKeyboard": [
       "null"
-    ],
-    "offKeyboardAnimationChange": [
-      "null"
     ]
   },
   "uni-location": {
