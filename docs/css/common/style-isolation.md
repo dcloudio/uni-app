@@ -81,6 +81,7 @@ VDOM 模式，考虑到向下兼容问题，目前没有废弃老版样式隔离
 
 - isolated：表示隔离，不受外部影响
 	* 配置为isolated的页面，不能引用全局class，页面中出现与全局class中同名的class，也不会和全局class合并。
+	* App.uvue 中的 `page` 选择器也不会作用于配置为 `isolated` 的页面，其中定义的 CSS 变量无法通过该页面向子元素传递。[详见下文](#page-css-variables)。
 	* 配置为isolated的组件，不能引用全局class、不能引用父页面或父组件的class。全局、页面或父组件的class中出现与组件同名的class，也不会合并。
 - app：表示允许全局class影响
 	* 配置为app的页面，可以引用全局class，页面中出现与全局class中同名的class，会和全局class合并，优先级：页面 > 全局。
@@ -264,3 +265,21 @@ defineOptions({
 再次提醒，以上介绍的styleIsolation、external-class等内容，均属于样式隔离策略2.0的内容。VDOM 模式的应用未开启 `manifest.json->uni-app-x->styleIsolationVersion: "2"` 是不会生效的。
 
 默认策略下，父组件的样式不会影响子组件。但在web下子组件的根节点依然可能会受父组件的影响，所以需要尽可能避免在子组件的根节点加父组件的样式。
+
+### page 选择器与 CSS 变量继承 @page-css-variables
+
+在 App.uvue 中通过 `page` 选择器定义的 CSS 变量，需要先作用于页面节点，再由页面内的子元素继承。例如：
+
+```vue
+<style>
+page {
+  --app-text-color: red;
+}
+</style>
+```
+
+如果页面配置了 `styleIsolation: 'isolated'`，上述 `page` 规则不会作用于当前页面。页面及其内部组件没有另行定义 `--app-text-color` 时，使用 `var(--app-text-color)` 就无法获取该变量；如果指定了回退值，则使用回退值。变量定义在 `@media` 中时也遵循相同规则。
+
+即使内部组件配置了 `styleIsolation: 'app-and-page'`，也不会改变所在页面的隔离策略。组件可以引用全局和页面的 class，但这不会使 App.uvue 中的 `page` 规则重新作用于该页面，因此无法恢复从页面继承的变量。这属于符合隔离语义的行为。
+
+如果需要使用 App.uvue 中 `page` 选择器定义的变量，可以将页面的 `styleIsolation` 设置为 `app`（页面默认值）。如果需要保留页面隔离，则可以在当前页面或组件内部定义所需变量。CSS 变量的用法详见 [自定义 CSS 变量](./function.md#customvar)。
