@@ -112,15 +112,17 @@ export function transformUniElementClasses(code: string, id: string) {
     const typeParameters = node.typeParameters
       ? code.slice(node.typeParameters.start!, node.typeParameters.end!)
       : ''
+    // 静态字段降级后会变成类外赋值，阻止未使用的 Element 类被摇树删除。
+    // getter 避免这项副作用；运行时按类型缓存初始化器，仅在准备类型时读取元信息。
     output.appendLeft(
       node.body.end! - 1,
-      `\nstatic __uniElement${typed ? ': any' : ''} = {${
+      `\nstatic get __uniElement()${typed ? ': any' : ''} { return {${
         usesVm ? 'vm: true,' : ''
       }${
         init
           ? `init${typeParameters}(${typed ? 'this: any' : ''}) {${init}}`
           : ''
-      }};\n`
+      }}; }\n`
     )
     changed = true
   })

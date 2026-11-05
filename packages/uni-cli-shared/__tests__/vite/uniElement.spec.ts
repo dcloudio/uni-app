@@ -1,4 +1,6 @@
 import ts from 'typescript'
+import { transformSync } from 'esbuild'
+import { rollup } from 'rollup'
 import {
   transformUniElementClasses,
   uniWebVaporElementPlugin,
@@ -70,10 +72,79 @@ test.each([
 ])('转换不依赖操作系统和模块目录：%s', (id) => {
   const code = 'export class UniFormElement extends UniViewElementImpl {}'
   const first = transformUniElementClasses(code, id)!
-  expect(first.code).toContain('static __uniElement')
+  expect(first.code).toContain('static get __uniElement()')
   expect(transformUniElementClasses(first.code, id)).toBeUndefined()
   expect(first.map.sources).toHaveLength(1)
 })
+
+test.each(['esbuild', 'typescript'])(
+  '%s 降级后可裁剪未使用的 Element，保留使用中的元信息及原有静态副作用',
+  async (compiler) => {
+    const source = transformUniElementClasses(
+      `
+      class UniViewElementImpl {}
+      export class UniUnusedElement extends UniViewElementImpl { unused = [] }
+      export class UniUsedElement<T = number> extends UniViewElementImpl {
+        values = [] as T[]
+        get value() { return this.vm?.value }
+      }
+      export class UniEffectElement extends UniViewElementImpl {
+        static effect = globalThis.recordEffect()
+      }
+      `,
+      '/elements.ts'
+    )!.code
+    const code =
+      compiler === 'esbuild'
+        ? transformSync(source, {
+            loader: 'ts',
+            target: 'es2015',
+            tsconfigRaw: {
+              compilerOptions: { useDefineForClassFields: false },
+            },
+          }).code
+        : ts.transpileModule(source, {
+            compilerOptions: {
+              target: ts.ScriptTarget.ES2015,
+              module: ts.ModuleKind.ESNext,
+              useDefineForClassFields: false,
+            },
+          }).outputText
+    // 模拟项目消费已降级的框架产物：不能仅检查未降级源码是否能摇树。
+    const bundle = await rollup({
+      input: 'entry',
+      plugins: [
+        {
+          name: 'element-fixture',
+          resolveId: (id) => id,
+          load: (id) =>
+            id === 'entry' ? `export { UniUsedElement } from 'elements'` : code,
+        },
+      ],
+    })
+    try {
+      const { output } = await bundle.generate({ format: 'cjs' })
+      const result = output[0].code
+      expect(result).not.toContain('UniUnusedElement')
+      expect(result).not.toContain('unused')
+      expect(result).toContain('recordEffect')
+      const exports: any = {}
+      const recordEffect = jest.fn()
+      new Function('exports', 'globalThis', result)(exports, { recordEffect })
+      expect(recordEffect).toHaveBeenCalledTimes(1)
+      const metadata = exports.UniUsedElement.__uniElement
+      expect(metadata.vm).toBe(true)
+      const a = {},
+        b = {}
+      metadata.init.call(a)
+      metadata.init.call(b)
+      expect(a).toEqual({ values: [] })
+      expect((a as any).values).not.toBe((b as any).values)
+    } finally {
+      await bundle.close()
+    }
+  }
+)
 
 test.each([
   'constructor(value) { super(); this.value = value }',
