@@ -24,13 +24,16 @@ export class UniInputElement extends UniViewElement {
   }
 }
 
-// 仅安装明确的公开成员，描述符按类型共享；不捕获组件状态，也不复制旧类的属性拦截。
+// 当前公开根是外层 div，需将 focus/value 转发到内部 input；描述符按类型共享。
 // 每次访问当前 input，兼容 disabled 修复分支、搜索表单等场景替换内部节点。
-const descriptors: PropertyDescriptorMap = {
+// 若将来根节点直接使用原生 input，应移除 focus/value 转发及其描述符安装，使用原生能力；
+// uniTagName 和 instanceof 的逻辑身份适配需按新的根结构处理，不能随转发逻辑一起删除。
+// 整体标记这段无副作用的初始化，避免类原型读取阻止未使用的组件被裁剪。
+const descriptors: PropertyDescriptorMap = /*#__PURE__*/ (() => ({
   uniTagName: { value: 'INPUT' },
   focus: Object.getOwnPropertyDescriptor(UniInputElement.prototype, 'focus')!,
   value: Object.getOwnPropertyDescriptor(UniInputElement.prototype, 'value')!,
-}
+}))()
 
 export function initInputElement(root: object) {
   Object.defineProperties(root, descriptors)

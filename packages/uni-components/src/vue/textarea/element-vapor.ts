@@ -18,13 +18,14 @@ export class UniTextareaElement extends UniViewElement {
   }
 }
 
-const descriptors: PropertyDescriptorMap = {
+// 整体标记这段无副作用的初始化，避免类原型读取阻止未使用的组件被裁剪。
+const descriptors: PropertyDescriptorMap = /*#__PURE__*/ (() => ({
   uniTagName: { value: 'TEXTAREA' },
   focus: Object.getOwnPropertyDescriptor(
     UniTextareaElement.prototype,
     'focus'
   )!,
-}
+}))()
 
 function setValue(this: HTMLElement, value: string) {
   this.querySelector('textarea')!.value = value
