@@ -440,6 +440,20 @@
     pressedKeys.clear()
   }
 
+  // The focused button can miss keyup when the window loses focus.
+  watch(() => pressedKeys.size > 0, (pressed, _, onCleanup) => {
+    if (!pressed) return
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') handleBlur()
+    }
+    window.addEventListener('blur', handleBlur)
+    document.addEventListener('visibilitychange', onVisibilityChange)
+    onCleanup(() => {
+      window.removeEventListener('blur', handleBlur)
+      document.removeEventListener('visibilitychange', onVisibilityChange)
+    })
+  }, { flush: 'sync' })
+
   watch(() => props.disabled, disabled => { if (disabled) handleBlur() })
 
   const loadingRootRef = ref<HTMLElement | null>(null)

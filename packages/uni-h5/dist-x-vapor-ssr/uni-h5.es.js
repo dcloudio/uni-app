@@ -9090,6 +9090,20 @@ const _sfc_main$n = /* @__PURE__ */ defineComponent$2({
     function handleBlur() {
       pressedKeys.clear();
     }
+    watch(() => pressedKeys.size > 0, (pressed, _, onCleanup) => {
+      if (!pressed)
+        return;
+      const onVisibilityChange = () => {
+        if (document.visibilityState === "hidden")
+          handleBlur();
+      };
+      window.addEventListener("blur", handleBlur);
+      document.addEventListener("visibilitychange", onVisibilityChange);
+      onCleanup(() => {
+        window.removeEventListener("blur", handleBlur);
+        document.removeEventListener("visibilitychange", onVisibilityChange);
+      });
+    }, { flush: "sync" });
     watch(() => props2.disabled, (disabled) => {
       if (disabled)
         handleBlur();

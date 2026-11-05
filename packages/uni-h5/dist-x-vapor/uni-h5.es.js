@@ -16396,6 +16396,20 @@ const _sfc_main$x = /* @__PURE__ */ defineVaporComponent({
       spaceKeys.handleBlur();
       pressedKeys.clear();
     }
+    watch(() => pressedKeys.size > 0, (pressed, _, onCleanup) => {
+      if (!pressed)
+        return;
+      const onVisibilityChange2 = () => {
+        if (document.visibilityState === "hidden")
+          handleBlur();
+      };
+      window.addEventListener("blur", handleBlur);
+      document.addEventListener("visibilitychange", onVisibilityChange2);
+      onCleanup(() => {
+        window.removeEventListener("blur", handleBlur);
+        document.removeEventListener("visibilitychange", onVisibilityChange2);
+      });
+    }, { flush: "sync" });
     watch(() => props2.disabled, (disabled) => {
       if (disabled)
         handleBlur();
