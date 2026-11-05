@@ -1,0 +1,10 @@
+{
+  "pages": [
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "Web Vapor"
+      }
+    }
+  ]
+}

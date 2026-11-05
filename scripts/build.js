@@ -168,6 +168,35 @@ async function build (target) {
       }
     )
     await sleep(500)
+    if (target === 'size-check') {
+      const vaporOutDir = path.resolve(pkgDir, 'dist-vapor')
+      await fs.remove(vaporOutDir)
+      // 独立进程走 Web Vapor 项目发行链，避免与 VDOM 共用环境和模块别名。
+      await execa(
+        process.execPath,
+        [
+          path.resolve(rootDir, 'packages/vite-plugin-uni/bin/uni.js'),
+          'build',
+          '--platform', 'h5',
+          '--config', path.resolve(pkgDir, 'vite.vapor.config.ts'),
+        ],
+        {
+          stdio: 'inherit',
+          env: Object.assign({}, process.env, env, {
+            UNI_INPUT_DIR: path.resolve(pkgDir, 'vapor'),
+            VITE_ROOT_DIR: path.resolve(pkgDir, 'vapor'),
+            UNI_OUTPUT_DIR: vaporOutDir,
+          }),
+          cwd: pkgDir,
+        }
+      )
+      // 防止 CLI 提前退出却返回成功，导致体积报告漏掉 Vapor 或使用上次产物。
+      for (const filename of ['size-check.es.js', 'style.css']) {
+        if (!(await fs.stat(path.join(vaporOutDir, filename))).size) {
+          throw new Error(`Web Vapor 体积基准产物为空：${filename}`)
+        }
+      }
+    }
     if (target === 'uni-h5') {
       await execa(
         'vite',

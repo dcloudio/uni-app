@@ -1,0 +1,7 @@
+<script setup lang="ts">
+import { onLaunch } from '@dcloudio/uni-app'
+
+onLaunch(() => {
+  console.log('Web Vapor 体积基准')
+})
+</script>
