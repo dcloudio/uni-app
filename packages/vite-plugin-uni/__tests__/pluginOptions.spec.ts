@@ -440,7 +440,9 @@ describe('initPluginVueOptions', () => {
     pagesCacheSet.add('pages/index/index')
     const helpers = jest
       .spyOn(require('../../uni-cli-shared/src/utils'), 'requireUniHelpers')
-      .mockReturnValue({})
+      .mockImplementation(() => {
+        throw new Error('Web 编译不应依赖 HBuilderX 插件')
+      })
     try {
       const vueOptions = initPluginVueOptions(
         { inputDir } as any,
@@ -463,6 +465,13 @@ describe('initPluginVueOptions', () => {
         extraOptions({ filename: path.join(inputDir, 'windows/top.uvue') })
           .componentType
       ).toBe('component')
+      expect(
+        extraOptions({ filename: path.join(inputDir, 'App.uvue') })
+      ).toEqual({ componentType: 'app' })
+      expect(vueOptions.template!.compilerOptions).not.toHaveProperty(
+        'extraOptions'
+      )
+      expect(helpers).not.toHaveBeenCalled()
     } finally {
       helpers.mockRestore()
       pagesCacheSet.clear()
@@ -488,6 +497,41 @@ describe('initPluginVueOptions', () => {
     )
     expect(vueOptions.features!.componentIdGenerator).toBe(componentIdGenerator)
     expect(vueOptions.template!.compilerOptions).not.toHaveProperty('isUniPage')
+  })
+
+  test('App Vapor 保留 SharedData 和模板扩展配置', () => {
+    process.env.UNI_APP_X = 'true'
+    process.env.UNI_APP_X_DOM2 = 'true'
+    process.env.UNI_APP_X_VAPOR = 'true'
+    process.env.UNI_PLATFORM = 'app'
+    process.env.UNI_UTS_PLATFORM = 'app-android'
+    process.env.UNI_INPUT_DIR = inputDir
+    const helper = {}
+    const helpers = jest
+      .spyOn(require('../../uni-cli-shared/src/utils'), 'requireUniHelpers')
+      .mockReturnValue(helper)
+    try {
+      const options = initPluginVueOptions(
+        { inputDir, platform: 'app' } as any,
+        initPluginUniOptions([])
+      )
+      expect(
+        (options.script as any).extraOptions({
+          filename: path.join(inputDir, 'App.uvue'),
+        })
+      ).toEqual({
+        componentType: 'app',
+        isWatch: process.env.NODE_ENV === 'development',
+        dynamicSharedData: process.env.UNI_APP_X_DOM2_DYNAMIC === 'true',
+        helper,
+      })
+      expect(helpers).toHaveBeenCalledTimes(1)
+      expect(
+        typeof (options.template!.compilerOptions as any).extraOptions
+      ).toBe('function')
+    } finally {
+      helpers.mockRestore()
+    }
   })
 
   test.each(['topWindow', 'leftWindow', 'rightWindow'])(
