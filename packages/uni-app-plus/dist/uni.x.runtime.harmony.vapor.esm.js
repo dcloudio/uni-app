@@ -2647,6 +2647,9 @@ function registerPage(_ref, onCreated) {
   var id2 = genWebviewId();
   var routeOptions = initRouteOptions(path, openType);
   var pageStyle = parsePageStyle(routeOptions);
+  if (!pageStyle.get("backgroundColorContent") && pageStyle.get("backgroundColor")) {
+    pageStyle.set("backgroundColorContent", pageStyle.get("backgroundColor"));
+  }
   if (openType === "reLaunch") {
     pageStyle.set("disableSwipeBack", true);
   }

@@ -29940,7 +29940,7 @@ class ShowActionSheetSuccessImpl {
     this.tapIndex = tapIndex;
   }
 }
-class ShowActionSheetFailImpl extends UniError {
+class ShowActionSheetFailImpl extends UniError$1 {
   constructor(errMsg = "showActionSheet:fail cancel", errCode = 4) {
     super();
     this.errMsg = errMsg;
@@ -31217,7 +31217,7 @@ const _style_0$4 = `
 
 `;
 const UniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["styles", [_style_0$4]]]);
-class ChooseLocationFailImpl extends UniError {
+class ChooseLocationFailImpl extends UniError$1 {
   constructor(errMsg = "chooseLocation:fail cancel", errCode = 1) {
     super();
     this.errCode = errCode;
@@ -31648,7 +31648,7 @@ class ShowModalSuccessImpl {
     this.confirm = confirm;
   }
 }
-class ShowModalFailImpl extends UniError {
+class ShowModalFailImpl extends UniError$1 {
   constructor(errMsg = "showModal:fail cancel", errCode = 4) {
     super();
     this.errMsg = errMsg;
@@ -31660,7 +31660,7 @@ class HideModalSuccessImpl {
     this.errMsg = errMsg;
   }
 }
-class HideModalFailImpl extends UniError {
+class HideModalFailImpl extends UniError$1 {
   constructor(errMsg = "hideModal:fail cancel", errCode = 4) {
     super();
     this.errMsg = errMsg;
@@ -31873,7 +31873,7 @@ class ShowLoadingSuccessImpl {
     this.errMsg = errMsg;
   }
 }
-class ShowLoadingFailImpl extends UniError {
+class ShowLoadingFailImpl extends UniError$1 {
   constructor(errMsg = "showLoading:fail cancel", errCode = 4) {
     super();
     this.errMsg = errMsg;
@@ -31885,7 +31885,7 @@ class HideLoadingSuccessImpl {
     this.errMsg = errMsg;
   }
 }
-class HideLoadingFailImpl extends UniError {
+class HideLoadingFailImpl extends UniError$1 {
   constructor(errMsg = "hideLoading:fail cancel", errCode = 4) {
     super();
     this.errMsg = errMsg;
@@ -32275,7 +32275,7 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
           },
           fail() {
             var _a;
-            (_a = longPressAction.fail) == null ? void 0 : _a.call(longPressAction, new UniError("uni-previewImage", 1101001, "user cancel"));
+            (_a = longPressAction.fail) == null ? void 0 : _a.call(longPressAction, new UniError$1("uni-previewImage", 1101001, "user cancel"));
             uni.$emit("__UNIPREVIEWLONGPRESS", { type: "fail", tapIndex: -1, index: -1 });
           }
         });
@@ -33223,7 +33223,7 @@ const PreviewImageUniErrors = /* @__PURE__ */ new Map([
    */
   [1101010, "unexpect error:please check previewImage.uvue is in pages.json"]
 ]);
-class PreviewImageErrorImpl extends UniError {
+class PreviewImageErrorImpl extends UniError$1 {
   constructor(errCode, uniErrorSubject) {
     super();
     this.errSubject = uniErrorSubject;

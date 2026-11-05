@@ -27,125 +27,10 @@ function createUnsupportedRender$1(name) {
   element.textContent = name + " is unsupported";
   return element;
 }
-function converPx(value) {
-  if (/^-?\d+[ur]px$/i.test(value)) {
-    return value.replace(/(^-?\d+)[ur]px$/i, (text2, num) => {
-      return `${uni.upx2px(parseFloat(num))}px`;
-    });
-  } else if (/^-?[\d\.]+$/.test(value)) {
-    return `${value}px`;
-  }
-  return value || "";
-}
-function converType(type) {
-  return type.replace(/[A-Z]/g, (text2) => {
-    return `-${text2.toLowerCase()}`;
-  }).replace("webkit", "-webkit");
-}
-function getStyle(action) {
-  const animateTypes1 = [
-    "matrix",
-    "matrix3d",
-    "scale",
-    "scale3d",
-    "rotate3d",
-    "skew",
-    "translate",
-    "translate3d"
-  ];
-  const animateTypes2 = [
-    "scaleX",
-    "scaleY",
-    "scaleZ",
-    "rotate",
-    "rotateX",
-    "rotateY",
-    "rotateZ",
-    "skewX",
-    "skewY",
-    "translateX",
-    "translateY",
-    "translateZ"
-  ];
-  const animateTypes3 = ["opacity", "background-color"];
-  const animateTypes4 = ["width", "height", "left", "right", "top", "bottom"];
-  const animates = action.animates;
-  const option = action.option;
-  const transition = option.transition;
-  const style = {};
-  const transform = [];
-  animates.forEach((animate) => {
-    let type = animate.type;
-    let args = [...animate.args];
-    if (animateTypes1.concat(animateTypes2).includes(type)) {
-      if (type.startsWith("rotate") || type.startsWith("skew")) {
-        args = args.map((value) => parseFloat(value) + "deg");
-      } else if (type.startsWith("translate")) {
-        args = args.map(converPx);
-      }
-      if (animateTypes2.indexOf(type) >= 0) {
-        args.length = 1;
-      }
-      transform.push(`${type}(${args.join(",")})`);
-    } else if (animateTypes3.concat(animateTypes4).includes(args[0])) {
-      type = args[0];
-      const value = args[1];
-      style[type] = animateTypes4.includes(type) ? converPx(value) : value;
-    }
-  });
-  style.transform = style.webkitTransform = transform.join(" ");
-  style.transition = style.webkitTransition = Object.keys(style).map(
-    (type) => `${converType(type)} ${transition.duration}ms ${transition.timingFunction} ${transition.delay}ms`
-  ).join(",");
-  style.transformOrigin = style.webkitTransformOrigin = option.transformOrigin;
-  return style;
-}
-function startAnimation(context) {
-  const animation2 = context.animation;
-  if (!animation2 || !animation2.actions || !animation2.actions.length) {
-    return;
-  }
-  let index2 = 0;
-  const actions = animation2.actions;
-  const length = animation2.actions.length;
-  function animate() {
-    const action = actions[index2];
-    const transition = action.option.transition;
-    const style = getStyle(action);
-    Object.keys(style).forEach((key) => {
-      context.$el.style[key] = style[key];
-    });
-    index2 += 1;
-    if (index2 < length) {
-      setTimeout(animate, transition.duration + transition.delay);
-    }
-  }
-  setTimeout(() => {
-    animate();
-  }, 0);
-}
-const animation = {
-  props: ["animation"],
-  watch: {
-    animation: {
-      deep: true,
-      handler() {
-        startAnimation(this);
-      }
-    }
-  },
-  mounted() {
-    startAnimation(this);
-  }
-};
 const defineRuntimeComponent = defineComponent;
 const createUnsupportedRender = createUnsupportedRender$1;
 const defineBuiltInComponent = (options) => {
   options.__reserved = true;
-  const { props: props2, mixins } = options;
-  if (!props2 || !props2.animation) {
-    (mixins || (options.mixins = [])).push(animation);
-  }
   return defineSystemComponent(options);
 };
 const defineSystemComponent = (options) => {
@@ -7925,13 +7810,13 @@ const FRONT_COLORS = ["#ffffff", "#000000"];
 const API_SET_NAVIGATION_BAR_COLOR = "setNavigationBarColor";
 const SetNavigationBarColorOptions = {
   formatArgs: {
-    animation(animation2, params) {
-      if (!animation2) {
-        animation2 = { duration: 0, timingFunc: "linear" };
+    animation(animation, params) {
+      if (!animation) {
+        animation = { duration: 0, timingFunc: "linear" };
       }
       params.animation = {
-        duration: animation2.duration || 0,
-        timingFunc: animation2.timingFunc || "linear"
+        duration: animation.duration || 0,
+        timingFunc: animation.timingFunc || "linear"
       };
     }
   }
@@ -21859,8 +21744,8 @@ const _sfc_main$9 = /* @__PURE__ */ defineVaporComponent({
         const item = keyItemMap.get(scrollingToItemKey);
         if (item && item.offsetY !== scrollingToItemOffset) {
           scrollingToItemOffset = item.offsetY;
-          const animation2 = attrs2["scroll-with-animation"];
-          const animated = (animation2 === "" || animation2 === true || animation2 === "true") && Date.now() - scrollingToItemTimestamp < 300;
+          const animation = attrs2["scroll-with-animation"];
+          const animated = (animation === "" || animation === true || animation === "true") && Date.now() - scrollingToItemTimestamp < 300;
           scrollElement.value.scrollTo({
             top: item.offsetY,
             behavior: animated ? "smooth" : "instant"
@@ -28391,8 +28276,8 @@ function setNavigationBar(pageMeta, type, args, resolve, reject) {
   const { navigationBar } = pageMeta;
   switch (type) {
     case API_SET_NAVIGATION_BAR_COLOR:
-      const { frontColor, backgroundColor, animation: animation2 } = args;
-      const { duration, timingFunc } = animation2;
+      const { frontColor, backgroundColor, animation } = args;
+      const { duration, timingFunc } = animation;
       if (frontColor) {
         navigationBar.titleColor = frontColor === "#000000" ? "#000000" : "#ffffff";
       }
@@ -30477,7 +30362,7 @@ class ShowActionSheetSuccessImpl {
     this.tapIndex = tapIndex;
   }
 }
-class ShowActionSheetFailImpl extends UniError {
+class ShowActionSheetFailImpl extends UniError$1 {
   constructor(errMsg = "showActionSheet:fail cancel", errCode = 4) {
     super();
     this.errMsg = errMsg;
@@ -31693,7 +31578,7 @@ const _style_0$6 = `
 
 `;
 const UniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["styles", [_style_0$6]]]);
-class ChooseLocationFailImpl extends UniError {
+class ChooseLocationFailImpl extends UniError$1 {
   constructor(errMsg = "chooseLocation:fail cancel", errCode = 1) {
     super();
     this.errCode = errCode;
@@ -32091,7 +31976,7 @@ class ShowModalSuccessImpl {
     this.confirm = confirm;
   }
 }
-class ShowModalFailImpl extends UniError {
+class ShowModalFailImpl extends UniError$1 {
   constructor(errMsg = "showModal:fail cancel", errCode = 4) {
     super();
     this.errMsg = errMsg;
@@ -32103,7 +31988,7 @@ class HideModalSuccessImpl {
     this.errMsg = errMsg;
   }
 }
-class HideModalFailImpl extends UniError {
+class HideModalFailImpl extends UniError$1 {
   constructor(errMsg = "hideModal:fail cancel", errCode = 4) {
     super();
     this.errMsg = errMsg;
@@ -32306,7 +32191,7 @@ class ShowLoadingSuccessImpl {
     this.errMsg = errMsg;
   }
 }
-class ShowLoadingFailImpl extends UniError {
+class ShowLoadingFailImpl extends UniError$1 {
   constructor(errMsg = "showLoading:fail cancel", errCode = 4) {
     super();
     this.errMsg = errMsg;
@@ -32318,7 +32203,7 @@ class HideLoadingSuccessImpl {
     this.errMsg = errMsg;
   }
 }
-class HideLoadingFailImpl extends UniError {
+class HideLoadingFailImpl extends UniError$1 {
   constructor(errMsg = "hideLoading:fail cancel", errCode = 4) {
     super();
     this.errMsg = errMsg;
@@ -32711,7 +32596,7 @@ const _sfc_main$3 = /* @__PURE__ */ defineVaporComponent({
           },
           fail() {
             var _a;
-            (_a = longPressAction.fail) == null ? void 0 : _a.call(longPressAction, new UniError("uni-previewImage", 1101001, "user cancel"));
+            (_a = longPressAction.fail) == null ? void 0 : _a.call(longPressAction, new UniError$1("uni-previewImage", 1101001, "user cancel"));
             uni.$emit("__UNIPREVIEWLONGPRESS", { type: "fail", tapIndex: -1, index: -1 });
           }
         });
@@ -33725,7 +33610,7 @@ const PreviewImageUniErrors = /* @__PURE__ */ new Map([
    */
   [1101010, "unexpect error:please check previewImage.uvue is in pages.json"]
 ]);
-class PreviewImageErrorImpl extends UniError {
+class PreviewImageErrorImpl extends UniError$1 {
   constructor(errCode, uniErrorSubject) {
     super();
     this.errSubject = uniErrorSubject;
@@ -34149,7 +34034,7 @@ const UniErrors = /* @__PURE__ */ new Map([
    */
   [4, "internal error"]
 ]);
-class OpenLocationFailImpl extends UniError {
+class OpenLocationFailImpl extends UniError$1 {
   constructor(errCode) {
     super();
     this.errSubject = UniErrorSubject;
