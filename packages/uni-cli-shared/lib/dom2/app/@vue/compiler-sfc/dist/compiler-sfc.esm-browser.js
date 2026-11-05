@@ -44710,7 +44710,7 @@ const MACROS = [
 * normal `<script>` + `<script setup>` if both are present.
 */
 function compileScript(sfc, options) {
-	var _options$templateOpti;
+	var _options$templateOpti, _options$templateOpti2, _options$templateOpti3;
 	if (!options.id) warnOnce("compileScript now requires passing the `id` option.\nUpgrade your vite or vue-loader version for compatibility with the latest experimental proposals.");
 	const { script, scriptSetup, source, filename } = sfc;
 	const hoistStatic = options.hoistStatic !== false && !script;
@@ -44732,6 +44732,8 @@ function compileScript(sfc, options) {
 	}
 	if (scriptSetupLang && !isJSOrTS) return scriptSetup;
 	const ctx = new ScriptCompileContext(sfc, options);
+	const pseudoElements = (_options$templateOpti2 = options.templateOptions) === null || _options$templateOpti2 === void 0 || (_options$templateOpti2 = _options$templateOpti2.compiler) === null || _options$templateOpti2 === void 0 || (_options$templateOpti3 = _options$templateOpti2.resolvePseudoElements) === null || _options$templateOpti3 === void 0 ? void 0 : _options$templateOpti3.call(_options$templateOpti2, ctx.scriptSetupAst, ctx.scriptAst);
+	if ((pseudoElements === null || pseudoElements === void 0 ? void 0 : pseudoElements.length) && !options.inlineTemplate) ctx.error("Pseudo-element useComputedStyle requires inline template compilation.", ctx.scriptSetupAst);
 	const scriptBindings = Object.create(null);
 	const setupBindings = Object.create(null);
 	let defaultExport;
@@ -44803,10 +44805,10 @@ function compileScript(sfc, options) {
 		if (!sfc.template) return;
 		while (ctx.bindingMetadata[cssModuleHelper] || inlineMode && sfc.styles.some((style) => style.module === cssModuleHelper)) cssModuleHelper += "_";
 		for (const style of sfc.styles) {
-			var _options$templateOpti2;
+			var _options$templateOpti4;
 			if (!style.module) continue;
 			const name = style.module === true ? `$style` : style.module;
-			if (!isSimpleIdentifier(name) || ctx.bindingMetadata[name] || inlineMode && sfc.template.ast && !sfc.template.lang && !((_options$templateOpti2 = options.templateOptions) === null || _options$templateOpti2 === void 0 ? void 0 : _options$templateOpti2.preprocessLang) && !isUsedInTemplate(name, sfc, options.templateOptions)) continue;
+			if (!isSimpleIdentifier(name) || ctx.bindingMetadata[name] || inlineMode && sfc.template.ast && !sfc.template.lang && !((_options$templateOpti4 = options.templateOptions) === null || _options$templateOpti4 === void 0 ? void 0 : _options$templateOpti4.preprocessLang) && !isUsedInTemplate(name, sfc, options.templateOptions)) continue;
 			if (inlineMode) {
 				if (name === "__props" || name === "_useCssModule" || name[0] === "_" && ctx.helperImports.has(name.slice(1))) continue;
 				try {
@@ -45086,12 +45088,11 @@ function compileScript(sfc, options) {
 			isProd: options.isProd,
 			ssrCssVars: sfc.cssVars,
 			vapor,
-			compilerOptions: _objectSpread2(_objectSpread2({ dynamicSharedData: options.dynamicSharedData }, options.templateOptions && options.templateOptions.compilerOptions), {}, {
+			compilerOptions: _objectSpread2(_objectSpread2(_objectSpread2({ dynamicSharedData: options.dynamicSharedData }, options.templateOptions && options.templateOptions.compilerOptions), {}, {
 				inline: true,
 				isTS: ctx.isTS,
-				bindingMetadata: ctx.bindingMetadata,
-				isWatch: options.isWatch
-			})
+				bindingMetadata: ctx.bindingMetadata
+			}, (pseudoElements === null || pseudoElements === void 0 ? void 0 : pseudoElements.length) ? { pseudoElements } : {}), {}, { isWatch: options.isWatch })
 		}));
 		if (ast && ast.hash) templateHash = ast.hash;
 		templateMap = map;
@@ -45120,8 +45121,8 @@ function compileScript(sfc, options) {
 	if (options.className) {
 		const componentType = options.componentType;
 		if (componentType === "page" || componentType === "component") {
-			var _options$templateOpti3, _compilerOptions$scri, _options$templateOpti4;
-			const hasScriptCpp = ((_compilerOptions$scri = (((_options$templateOpti3 = options.templateOptions) === null || _options$templateOpti3 === void 0 ? void 0 : _options$templateOpti3.compilerOptions) || {}).scriptCppBlocks) === null || _compilerOptions$scri === void 0 ? void 0 : _compilerOptions$scri.length) > 0;
+			var _options$templateOpti5, _compilerOptions$scri, _options$templateOpti6;
+			const hasScriptCpp = ((_compilerOptions$scri = (((_options$templateOpti5 = options.templateOptions) === null || _options$templateOpti5 === void 0 ? void 0 : _options$templateOpti5.compilerOptions) || {}).scriptCppBlocks) === null || _compilerOptions$scri === void 0 ? void 0 : _compilerOptions$scri.length) > 0;
 			const optionsProps = [];
 			if (hasScriptCpp) optionsProps.push("scriptCpp: true");
 			const optionsCode = optionsProps.length ? `, { ${optionsProps.join(", ")} }` : "";
@@ -45140,7 +45141,7 @@ function compileScript(sfc, options) {
 			if (options.dynamicSharedData) runtimeOptions += `\n  __dynamicSharedData: true,`;
 			if (options.isWatch && templateHash) runtimeOptions += `\n  __hash: "${templateHash}",`;
 			runtimeOptions += `\n  __className,`;
-			runtimeOptions += `\n  __filename: '${((_options$templateOpti4 = options.templateOptions) === null || _options$templateOpti4 === void 0 ? void 0 : _options$templateOpti4.compilerOptions).relativeFilename || ""}',`;
+			runtimeOptions += `\n  __filename: '${((_options$templateOpti6 = options.templateOptions) === null || _options$templateOpti6 === void 0 ? void 0 : _options$templateOpti6.compilerOptions).relativeFilename || ""}',`;
 		}
 	}
 	if (!ctx.hasDefaultExportName && filename && filename !== "anonymous.vue") {
@@ -45152,8 +45153,8 @@ function compileScript(sfc, options) {
 	const emitsDecl = genRuntimeEmits(ctx);
 	if (emitsDecl) runtimeOptions += `\n  emits: ${emitsDecl},`;
 	if (vapor && !ssr && sfc.template && !sfc.template.src && sfc.template.ast) {
-		var _options$templateOpti5;
-		if (isMultiRoot(sfc.template.ast, (_options$templateOpti5 = options.templateOptions) === null || _options$templateOpti5 === void 0 ? void 0 : _options$templateOpti5.compilerOptions)) runtimeOptions += `\n  __multiRoot: true,`;
+		var _options$templateOpti7;
+		if (isMultiRoot(sfc.template.ast, (_options$templateOpti7 = options.templateOptions) === null || _options$templateOpti7 === void 0 ? void 0 : _options$templateOpti7.compilerOptions)) runtimeOptions += `\n  __multiRoot: true,`;
 	}
 	let definedOptions = "";
 	if (ctx.optionsRuntimeDecl) definedOptions = scriptSetup.content.slice(ctx.optionsRuntimeDecl.start, ctx.optionsRuntimeDecl.end).trim();
@@ -45176,8 +45177,8 @@ function compileScript(sfc, options) {
 		}
 	}
 	if (ctx.helperImports.size > 0) {
-		var _options$templateOpti6;
-		const runtimeModuleName = (_options$templateOpti6 = options.templateOptions) === null || _options$templateOpti6 === void 0 || (_options$templateOpti6 = _options$templateOpti6.compilerOptions) === null || _options$templateOpti6 === void 0 ? void 0 : _options$templateOpti6.runtimeModuleName;
+		var _options$templateOpti8;
+		const runtimeModuleName = (_options$templateOpti8 = options.templateOptions) === null || _options$templateOpti8 === void 0 || (_options$templateOpti8 = _options$templateOpti8.compilerOptions) === null || _options$templateOpti8 === void 0 ? void 0 : _options$templateOpti8.runtimeModuleName;
 		const importSrc = runtimeModuleName ? JSON.stringify(runtimeModuleName) : `'vue'`;
 		ctx.s.prepend(`import { ${[...ctx.helperImports].map((h) => `${h} as ${h === "useCssModule" ? cssModuleHelper : `_${h}`}`).join(", ")} } from ${importSrc}\n`);
 	}
