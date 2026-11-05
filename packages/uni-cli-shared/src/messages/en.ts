@@ -5,7 +5,7 @@ export default {
   'view.render.compiler.target.nativecode': 'nativecode',
   'vapor.default.script.lang':
     'Default script lang for current uvue/vue files: {lang}',
-  'vapor.script.engine': 'Current script engine: {engine}',
+  'harmony.vapor.script.runtime': 'Current runtime: {runtime}',
   'style.isolation.version': 'Style isolation version: {version}',
   'style.isolation.version.upgrade':
     'Style isolation version: {version}. Upgrading to 2.0 is recommended.',
@@ -31,8 +31,8 @@ export default {
     'DONE  Restart required. Changing independent subpackage roots requires restarting to take effect.',
   'dev.watching.vapor.render.target':
     'vapor-render-target in manifest.json was changed to {manifestTarget}, but the running console is still {runtimeTarget}.',
-  'harmony.vapor.script.engine':
-    'Invalid Harmony script engine ({engine}) specified, using default.',
+  'harmony.vapor.script.runtime.invalid':
+    'Invalid Harmony runtime ({runtime}) specified, using default runtime: {defaultRuntime}.',
   'build.failed': 'DONE  Build failed.',
   'compiler.build.failed': 'Build failed with errors.',
   'stat.warn.appid':
