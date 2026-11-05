@@ -984,7 +984,8 @@ class EventBus {
         this.$emitter.emit(name, ...args);
     }
 }
-const eventBus = new EventBus();
+// 构造时仅创建内部 Emitter；未使用事件 API 时可裁剪，使用时仍同步创建共享实例。
+const eventBus = /*#__PURE__*/ new EventBus();
 const $on = defineSyncApi(API_ON, (name, callback) => {
     const id = eventBus.on(name, callback);
     {

@@ -1370,7 +1370,7 @@ class EventBus {
     this.$emitter.emit(name, ...args);
   }
 }
-var eventBus = new EventBus();
+var eventBus = /* @__PURE__ */ new EventBus();
 var $on = /* @__PURE__ */ defineSyncApi(API_ON, (name, callback) => {
   var id2 = eventBus.on(name, callback);
   {

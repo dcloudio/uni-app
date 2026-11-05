@@ -307,6 +307,8 @@ function initApp(app) {
     //   * 目前在 errorHandler 中，会调用 app.$callHook(ON_ERROR, err)，所以上一步需要将 uni.onError 存储到 app 的 hooks 中
     // - 部分平台（目前主要是小程序）开发阶段 uni-console 会调用 uni.onError 注册监听
     appConfig.errorHandler = invokeCreateErrorHandler(app, createErrorHandler);
+    // Web Vapor 客户端不合并 Options API/mixin，页面生命周期由独立入口初始化。
+    // 服务端仍保留标准渲染流程所需的合并策略。
     initOptionMergeStrategies(appConfig.optionMergeStrategies);
     const globalProperties = appConfig.globalProperties;
     {
