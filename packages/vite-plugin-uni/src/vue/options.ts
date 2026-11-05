@@ -106,6 +106,7 @@ export function initPluginVueOptions(
     templateOptions.compilerOptions || (templateOptions.compilerOptions = {})
 
   const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+  const isWebVapor = isUniAppXWebVapor()
 
   ;(compilerOptions as any).isX = process.env.UNI_APP_X === 'true'
   ;(compilerOptions as any).dom2 = isDom2
@@ -135,7 +136,7 @@ export function initPluginVueOptions(
   if (compiler) {
     templateOptions.compiler = compiler
   }
-  if (isUniAppXWebVapor()) {
+  if (isWebVapor) {
     const features = vueOptions.features || (vueOptions.features = {})
     ;(features as typeof features & { vapor?: boolean }).vapor = true
     features.componentIdGenerator = createAppComponentIdGenerator(
@@ -399,10 +400,16 @@ export function initPluginVueOptions(
         descriptor: SFCDescriptor
       ) => {
         return {
-          isWatch: process.env.NODE_ENV === 'development',
-          // TODO 目前使用全局开关，后续可能是页面级别的开关？
-          dynamicSharedData: process.env.UNI_APP_X_DOM2_DYNAMIC === 'true',
-          helper: requireUniHelpers(),
+          // Web 只需要组件类型，不使用 App 的 SharedData，也不依赖 HBuilderX 插件。
+          ...(isWebVapor
+            ? {}
+            : {
+                isWatch: process.env.NODE_ENV === 'development',
+                // TODO 目前使用全局开关，后续可能是页面级别的开关？
+                dynamicSharedData:
+                  process.env.UNI_APP_X_DOM2_DYNAMIC === 'true',
+                helper: requireUniHelpers(),
+              }),
           componentType: isUniPageFile(descriptor.filename)
             ? 'page'
             : isAppVue(descriptor.filename)
@@ -410,10 +417,12 @@ export function initPluginVueOptions(
             : 'component',
         }
       }
-      ;(vueOptions.template.compilerOptions as any).extraOptions = (
-        descriptor: SFCDescriptor
-      ) => {
-        return initVueTemplateCompilerExtraOptions(descriptor)
+      if (!isWebVapor) {
+        ;(vueOptions.template.compilerOptions as any).extraOptions = (
+          descriptor: SFCDescriptor
+        ) => {
+          return initVueTemplateCompilerExtraOptions(descriptor)
+        }
       }
     } else {
       // 如果是 easyComponent 组件，则不需要从setup中导入组件且不支持 self 引用
@@ -423,7 +432,7 @@ export function initPluginVueOptions(
     }
   }
 
-  if (isUniAppXWebVapor()) {
+  if (isWebVapor) {
     // Web Vapor 内置组件与项目 Easycom 均应优先于同名 setup 绑定。
     ;(compilerOptions as any).isEasyComponent = (tag: string) => {
       const name = tag.startsWith('v-uni-') ? tag.slice(6) : tag
