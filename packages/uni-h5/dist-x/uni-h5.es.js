@@ -6,7 +6,7 @@ var __publicField = (obj, key, value) => {
 };
 import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, passive, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, getUniElementPage, createUniDOMStringMap, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, stringifyQuery as stringifyQuery$1, decodedQuery, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, setUniElementPage, ON_UNLOAD, SCHEME_RE, DATA_RE, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, LINEFEED, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, addFont, scrollTo, formatDateTime, onCreateVueApp, RESPONSIVE_MIN_WIDTH } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2, onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
-import { withModifiers, createVNode, getCurrentInstance, warn, unref, ref, openBlock, createElementBlock, defineComponent, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, isReactive, markRaw, watchEffect, nextTick, createElementVNode, toDisplayString, onBeforeMount, onServerPrefetch, onBeforeActivate, onBeforeDeactivate, createBlock, onActivated, normalizeClass, normalizeStyle, createCommentVNode, Fragment, renderList, createTextVNode, renderSlot, withCtx, withDirectives, vShow, shallowRef, isVNode, Comment, h, isInSSRComponentSetup, logError, createApp, Transition, effectScope, KeepAlive, resolveDynamicComponent } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, warn, unref, ref, openBlock, createElementBlock, defineComponent, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, isReactive, markRaw, watchEffect, nextTick, createElementVNode, toDisplayString, onBeforeMount, onServerPrefetch, onBeforeActivate, onBeforeDeactivate, createBlock, onActivated, normalizeStyle, Fragment, renderSlot, withCtx, renderList, withDirectives, vShow, shallowRef, isVNode, Comment, createTextVNode, h, normalizeClass, isInSSRComponentSetup, createCommentVNode, logError, createApp, Transition, effectScope, KeepAlive, resolveDynamicComponent } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate } from "@vue/shared";
 import { useRoute, isNavigationFailure, useRouter, createRouter, createWebHistory, createWebHashHistory, RouterView } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -9993,12 +9993,12 @@ function revokeObjectURL(url) {
   URL.revokeObjectURL(url);
   delete files[url];
 }
-const _hoisted_1$3 = { class: "uni-async-loading" };
-const _hoisted_2$3 = /* @__PURE__ */ createElementVNode("i", { class: "uni-loading" }, null, -1);
-const _hoisted_3$3 = [
-  _hoisted_2$3
+const _hoisted_1$1 = { class: "uni-async-loading" };
+const _hoisted_2$1 = /* @__PURE__ */ createElementVNode("i", { class: "uni-loading" }, null, -1);
+const _hoisted_3$1 = [
+  _hoisted_2$1
 ];
-const _sfc_main$e = /* @__PURE__ */ defineComponent({
+const _sfc_main$b = /* @__PURE__ */ defineComponent({
   ...{
     name: "AsyncLoading",
     __reserved: true,
@@ -10007,11 +10007,11 @@ const _sfc_main$e = /* @__PURE__ */ defineComponent({
   __name: "asyncLoading",
   setup(__props) {
     return (_ctx, _cache) => {
-      return openBlock(), createElementBlock("div", _hoisted_1$3, _hoisted_3$3);
+      return openBlock(), createElementBlock("div", _hoisted_1$1, _hoisted_3$1);
     };
   }
 });
-const _sfc_main$d = /* @__PURE__ */ defineComponent({
+const _sfc_main$a = /* @__PURE__ */ defineComponent({
   ...{
     name: "AsyncError",
     __reserved: true,
@@ -10085,11 +10085,11 @@ function initApp$1(vm) {
     }
   });
   const app = appVm.$.appContext.app;
-  if (!app.component(_sfc_main$e.name)) {
-    app.component(_sfc_main$e.name, _sfc_main$e);
+  if (!app.component(_sfc_main$b.name)) {
+    app.component(_sfc_main$b.name, _sfc_main$b);
   }
-  if (!app.component(_sfc_main$d.name)) {
-    app.component(_sfc_main$d.name, _sfc_main$d);
+  if (!app.component(_sfc_main$a.name)) {
+    app.component(_sfc_main$a.name, _sfc_main$a);
   }
   initAppVm(appVm);
   defineGlobalData(appVm);
@@ -10422,93 +10422,6 @@ function useBackgroundColorContent(pageMeta) {
   watchEffect(update);
   onActivated(update);
 }
-class UniVueElement extends HTMLElement {
-}
-class UniLoadingElement extends UniVueElement {
-}
-function useLoadingStyle(targetElement, bold) {
-  const loadingSize = ref("16px");
-  const loadingBorderWidth = ref("1px");
-  const loadingBorderRadius = ref("8px");
-  let observer = null;
-  const calculateLoadingWidth = (element, bold2) => {
-    const { width, height } = element.getBoundingClientRect();
-    const coefficient = bold2 ? 2 : 1;
-    const minSide = Math.min(width, height);
-    const calculatedWidth = minSide / 16 * coefficient;
-    loadingSize.value = `${minSide}px`;
-    loadingBorderWidth.value = `${calculatedWidth}px`;
-    loadingBorderRadius.value = `${minSide / 2}px`;
-  };
-  const setupObserver = (cb) => {
-    const el = targetElement.value;
-    if (!el)
-      return;
-    observer = new ResizeObserver((entries2) => {
-      cb(el);
-    });
-    observer.observe(el);
-  };
-  onMounted(() => {
-    setupObserver((el) => {
-      calculateLoadingWidth(el, bold.value);
-    });
-    watchEffect(() => {
-      const _bold = bold.value;
-      const el = targetElement.value;
-      if (el !== null) {
-        calculateLoadingWidth(el, _bold);
-      }
-    });
-  });
-  onUnmounted(() => {
-    if (observer) {
-      observer.disconnect();
-    }
-  });
-  return {
-    width: loadingSize,
-    height: loadingSize,
-    borderWidth: loadingBorderWidth
-    // borderRadius: loadingBorderRadius,
-  };
-}
-const _sfc_main$c = /* @__PURE__ */ defineComponent({
-  ...{
-    name: "loading",
-    styleIsolation: "app-and-page",
-    // @ts-ignore
-    rootElement: {
-      name: "uni-loading-element",
-      class: UniLoadingElement
-    }
-  },
-  __name: "index-x",
-  props: {
-    paused: { type: Boolean, default: false },
-    bold: { type: Boolean, default: false },
-    iosSpinner: { type: Boolean, default: false }
-  },
-  setup(__props) {
-    const props2 = __props;
-    const LoadingRef = ref(null);
-    const loadingStyle = reactive(useLoadingStyle(LoadingRef, computed(() => props2.bold)));
-    return (_ctx, _cache) => {
-      const _component_view = __syscom_3;
-      return openBlock(), createElementBlock("uni-loading-element", {
-        class: "default __uni_loading_container__",
-        ref_key: "LoadingRef",
-        ref: LoadingRef,
-        style: { "display": "flex" }
-      }, [
-        createVNode(_component_view, {
-          class: normalizeClass(["__uni-loading__ __loading-4-3__", { "__uni-loading__paused": props2.paused }]),
-          style: normalizeStyle(loadingStyle)
-        }, null, 8, ["class", "style"])
-      ], 512);
-    };
-  }
-});
 function hexToRgba(hex) {
   if (!hex) {
     return {
@@ -10606,76 +10519,20 @@ function usePageHeadTransparent(headRef, {
     });
   });
 }
-const _hoisted_1$2 = ["uni-page-head-type"];
-const _hoisted_2$2 = { class: "uni-page-head-hd" };
-const _hoisted_3$2 = {
-  width: "26",
-  height: "26",
-  viewBox: "0 0 32 32"
+const ICON_PATHS = {
+  none: "",
+  forward: "M11 7.844q-0.25-0.219-0.25-0.578t0.25-0.578q0.219-0.25 0.563-0.25t0.563 0.25l9.656 9.125q0.125 0.125 0.188 0.297t0.063 0.328q0 0.188-0.063 0.359t-0.188 0.297l-9.656 9.125q-0.219 0.25-0.563 0.25t-0.563-0.25q-0.25-0.219-0.25-0.578t0.25-0.609l9.063-8.594-9.063-8.594z",
+  back: ICON_PATH_BACK,
+  select: ICON_PATH_BACK,
+  share: "M26.563 24.844q0 0.125-0.109 0.234t-0.234 0.109h-17.938q-0.125 0-0.219-0.109t-0.094-0.234v-13.25q0-0.156 0.094-0.25t0.219-0.094h5.5v-1.531h-6q-0.531 0-0.906 0.391t-0.375 0.922v14.375q0 0.531 0.375 0.922t0.906 0.391h18.969q0.531 0 0.891-0.391t0.359-0.953v-5.156h-1.438v4.625zM29.813 10.969l-5.125-5.375-1.031 1.094 3.438 3.594-3.719 0.031q-2.313 0.188-4.344 1.125t-3.578 2.422-2.5 3.453-1.109 4.188l-0.031 0.25h1.469v-0.219q0.156-1.875 1-3.594t2.25-3.063 3.234-2.125 3.828-0.906l0.188-0.031 3.313-0.031-3.438 3.625 1.031 1.063 5.125-5.375-0.031-0.063 0.031-0.063z",
+  favorite: "M27.594 13.375q-0.063-0.188-0.219-0.313t-0.344-0.156l-7.094-0.969-3.219-6.406q-0.094-0.188-0.25-0.281t-0.375-0.094q-0.188 0-0.344 0.094t-0.25 0.281l-3.125 6.438-7.094 1.094q-0.188 0.031-0.344 0.156t-0.219 0.313q-0.031 0.188 0.016 0.375t0.172 0.313l5.156 4.969-1.156 7.063q-0.031 0.188 0.047 0.375t0.234 0.313q0.094 0.063 0.188 0.094t0.219 0.031q0.063 0 0.141-0.031t0.172-0.063l6.313-3.375 6.375 3.313q0.063 0.031 0.141 0.047t0.172 0.016q0.188 0 0.344-0.094t0.25-0.281q0.063-0.094 0.078-0.234t-0.016-0.234q0-0.031 0-0.063l-1.25-6.938 5.094-5.031q0.156-0.156 0.203-0.344t-0.016-0.375zM11.469 19.063q0.031-0.188-0.016-0.344t-0.172-0.281l-4.406-4.25 6.063-0.906q0.156-0.031 0.297-0.125t0.203-0.25l2.688-5.531 2.75 5.5q0.063 0.156 0.203 0.25t0.297 0.125l6.094 0.844-4.375 4.281q-0.125 0.125-0.172 0.297t-0.016 0.328l1.063 6.031-5.438-2.813q-0.156-0.094-0.328-0.078t-0.297 0.078l-5.438 2.875 1-6.031z",
+  home: "M23.719 16.5q-0.313 0-0.531 0.219t-0.219 0.5v7.063q0 0.219-0.172 0.391t-0.391 0.172h-12.344q-0.25 0-0.422-0.172t-0.172-0.391v-7.063q0-0.281-0.219-0.5t-0.531-0.219q-0.281 0-0.516 0.219t-0.234 0.5v7.063q0.031 0.844 0.625 1.453t1.438 0.609h12.375q0.844 0 1.453-0.609t0.609-1.453v-7.063q0-0.125-0.063-0.266t-0.156-0.234q-0.094-0.125-0.234-0.172t-0.297-0.047zM26.5 14.875l-8.813-8.813q-0.313-0.313-0.688-0.453t-0.781-0.141-0.781 0.141-0.656 0.422l-8.813 8.844q-0.188 0.219-0.188 0.516t0.219 0.484q0.094 0.125 0.234 0.172t0.297 0.047q0.125 0 0.25-0.047t0.25-0.141l8.781-8.781q0.156-0.156 0.406-0.156t0.406 0.156l8.813 8.781q0.219 0.188 0.516 0.188t0.516-0.219q0.188-0.188 0.203-0.484t-0.172-0.516z",
+  menu: "M8.938 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM16.188 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM23.469 18.313q0.844 0 1.453-0.609t0.609-1.453-0.609-1.453-1.453-0.609q-0.875 0-1.484 0.609t-0.609 1.453 0.609 1.453 1.484 0.609z",
+  close: ICON_PATH_CLOSE
 };
-const _hoisted_4$1 = ["d", "stroke"];
-const _hoisted_5$1 = ["badge-text", "onClick"];
-const _hoisted_6$1 = ["width", "height"];
-const _hoisted_7$1 = ["d", "fill"];
-const _hoisted_8 = ["innerHTML"];
-const _hoisted_9 = {
-  width: "14",
-  height: "14",
-  viewBox: "0 0 32 32"
-};
-const _hoisted_10 = ["d"];
-const _hoisted_11 = ["innerHTML"];
-const _hoisted_12 = {
-  key: 0,
-  class: "uni-page-head-bd"
-};
-const _hoisted_13 = {
-  key: 0,
-  class: "uni-loading"
-};
-const _hoisted_14 = ["src"];
-const _hoisted_15 = { class: "uni-page-head-search-icon" };
-const _hoisted_16 = {
-  width: "20",
-  height: "20",
-  viewBox: "0 0 32 32"
-};
-const _hoisted_17 = ["d", "fill"];
-const _hoisted_18 = { class: "uni-page-head-ft" };
-const _hoisted_19 = ["badge-text", "onClick"];
-const _hoisted_20 = ["width", "height"];
-const _hoisted_21 = ["d", "fill"];
-const _hoisted_22 = ["innerHTML"];
-const _hoisted_23 = {
-  width: "14",
-  height: "14",
-  viewBox: "0 0 32 32"
-};
-const _hoisted_24 = ["d"];
-const _hoisted_25 = ["innerHTML"];
-const _sfc_main$b = /* @__PURE__ */ defineComponent({
-  ...{
-    name: "PageHead",
-    __reserved: true,
-    compatConfig: { MODE: 3 }
-  },
-  __name: "pageHead",
-  setup(__props) {
-    const hasPages = __UNI_FEATURE_PAGES__;
-    const hasButtons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__;
-    const hasSearchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__;
-    const isXVapor = false;
-    const ICON_PATHS = {
-      none: "",
-      forward: "M11 7.844q-0.25-0.219-0.25-0.578t0.25-0.578q0.219-0.25 0.563-0.25t0.563 0.25l9.656 9.125q0.125 0.125 0.188 0.297t0.063 0.328q0 0.188-0.063 0.359t-0.188 0.297l-9.656 9.125q-0.219 0.25-0.563 0.25t-0.563-0.25q-0.25-0.219-0.25-0.578t0.25-0.609l9.063-8.594-9.063-8.594z",
-      back: ICON_PATH_BACK,
-      select: ICON_PATH_BACK,
-      share: "M26.563 24.844q0 0.125-0.109 0.234t-0.234 0.109h-17.938q-0.125 0-0.219-0.109t-0.094-0.234v-13.25q0-0.156 0.094-0.25t0.219-0.094h5.5v-1.531h-6q-0.531 0-0.906 0.391t-0.375 0.922v14.375q0 0.531 0.375 0.922t0.906 0.391h18.969q0.531 0 0.891-0.391t0.359-0.953v-5.156h-1.438v4.625zM29.813 10.969l-5.125-5.375-1.031 1.094 3.438 3.594-3.719 0.031q-2.313 0.188-4.344 1.125t-3.578 2.422-2.5 3.453-1.109 4.188l-0.031 0.25h1.469v-0.219q0.156-1.875 1-3.594t2.25-3.063 3.234-2.125 3.828-0.906l0.188-0.031 3.313-0.031-3.438 3.625 1.031 1.063 5.125-5.375-0.031-0.063 0.031-0.063z",
-      favorite: "M27.594 13.375q-0.063-0.188-0.219-0.313t-0.344-0.156l-7.094-0.969-3.219-6.406q-0.094-0.188-0.25-0.281t-0.375-0.094q-0.188 0-0.344 0.094t-0.25 0.281l-3.125 6.438-7.094 1.094q-0.188 0.031-0.344 0.156t-0.219 0.313q-0.031 0.188 0.016 0.375t0.172 0.313l5.156 4.969-1.156 7.063q-0.031 0.188 0.047 0.375t0.234 0.313q0.094 0.063 0.188 0.094t0.219 0.031q0.063 0 0.141-0.031t0.172-0.063l6.313-3.375 6.375 3.313q0.063 0.031 0.141 0.047t0.172 0.016q0.188 0 0.344-0.094t0.25-0.281q0.063-0.094 0.078-0.234t-0.016-0.234q0-0.031 0-0.063l-1.25-6.938 5.094-5.031q0.156-0.156 0.203-0.344t-0.016-0.375zM11.469 19.063q0.031-0.188-0.016-0.344t-0.172-0.281l-4.406-4.25 6.063-0.906q0.156-0.031 0.297-0.125t0.203-0.25l2.688-5.531 2.75 5.5q0.063 0.156 0.203 0.25t0.297 0.125l6.094 0.844-4.375 4.281q-0.125 0.125-0.172 0.297t-0.016 0.328l1.063 6.031-5.438-2.813q-0.156-0.094-0.328-0.078t-0.297 0.078l-5.438 2.875 1-6.031z",
-      home: "M23.719 16.5q-0.313 0-0.531 0.219t-0.219 0.5v7.063q0 0.219-0.172 0.391t-0.391 0.172h-12.344q-0.25 0-0.422-0.172t-0.172-0.391v-7.063q0-0.281-0.219-0.5t-0.531-0.219q-0.281 0-0.516 0.219t-0.234 0.5v7.063q0.031 0.844 0.625 1.453t1.438 0.609h12.375q0.844 0 1.453-0.609t0.609-1.453v-7.063q0-0.125-0.063-0.266t-0.156-0.234q-0.094-0.125-0.234-0.172t-0.297-0.047zM26.5 14.875l-8.813-8.813q-0.313-0.313-0.688-0.453t-0.781-0.141-0.781 0.141-0.656 0.422l-8.813 8.844q-0.188 0.219-0.188 0.516t0.219 0.484q0.094 0.125 0.234 0.172t0.297 0.047q0.125 0 0.25-0.047t0.25-0.141l8.781-8.781q0.156-0.156 0.406-0.156t0.406 0.156l8.813 8.781q0.219 0.188 0.516 0.188t0.516-0.219q0.188-0.188 0.203-0.484t-0.172-0.516z",
-      menu: "M8.938 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM16.188 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM23.469 18.313q0.844 0 1.453-0.609t0.609-1.453-0.609-1.453-1.453-0.609q-0.875 0-1.484 0.609t-0.609 1.453 0.609 1.453 1.484 0.609z",
-      close: ICON_PATH_CLOSE
-    };
+const PageHead = /* @__PURE__ */ defineSystemComponent({
+  name: "PageHead",
+  setup() {
     const headRef = ref(null);
     const pageMeta = usePageMeta();
     const navigationBar = useTheme(pageMeta.navigationBar, () => {
@@ -10683,376 +10540,377 @@ const _sfc_main$b = /* @__PURE__ */ defineComponent({
       navigationBar.backgroundColor = _navigationBar.backgroundColor;
       navigationBar.titleColor = _navigationBar.titleColor;
     });
-    const { clazz, style } = usePageHead(navigationBar);
-    const buttons = hasButtons && usePageHeadButtons(pageMeta);
-    const searchInput = hasSearchInput && navigationBar.searchInput && usePageHeadSearchInput(pageMeta);
-    const searchFocus = searchInput && searchInput.focus;
-    const searchText = searchInput && searchInput.text;
-    const searchComposing = searchInput && searchInput.composing;
-    const searchOnClick = searchInput && searchInput.onClick;
-    const searchOnFocus = searchInput && searchInput.onFocus;
-    const searchOnBlur = searchInput && searchInput.onBlur;
-    const searchOnInput = searchInput && searchInput.onInput;
-    const searchOnConfirm = searchInput && searchInput.onConfirm;
+    const {
+      clazz,
+      style
+    } = usePageHead(navigationBar);
+    const buttons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ && usePageHeadButtons(pageMeta);
+    const searchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ && navigationBar.searchInput && usePageHeadSearchInput(pageMeta);
     __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" && usePageHeadTransparent(headRef, pageMeta);
-    function getSvgSize(size) {
-      return size == null ? 27 : size;
-    }
-    function getSvgColor(color) {
-      return color == null ? "#000" : color;
-    }
-    function onPageHeadBackButton() {
-      if (getCurrentPages().length === 1) {
-        uni.reLaunch({
-          url: "/"
-        });
-      } else {
-        uni.navigateBack({
-          from: "backbutton",
-          success() {
-          }
-          // 传入空方法，避免返回Promise，因为onBackPress可能导致fail
-        });
-      }
-    }
-    function usePageHead(navigationBar2) {
-      const clazz2 = computed(() => {
-        const { type, titlePenetrate, shadowColorType } = navigationBar2;
-        const clazz3 = {
-          "uni-page-head": true,
-          "uni-page-head-transparent": type === "transparent",
-          "uni-page-head-titlePenetrate": titlePenetrate === "YES",
-          "uni-page-head-shadow": !!shadowColorType
-        };
-        if (shadowColorType) {
-          clazz3[`uni-page-head-shadow-${shadowColorType}`] = true;
+    return () => {
+      const backButtonTsx = __UNI_FEATURE_PAGES__ ? createBackButtonTsx(navigationBar, pageMeta.isQuit) : null;
+      const leftButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.left, true) : [];
+      const rightButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.right) : [];
+      const type = navigationBar.type || "default";
+      const placeholderTsx = type !== "transparent" && type !== "float" && createVNode("div", {
+        "class": {
+          "uni-placeholder": true,
+          "uni-placeholder-titlePenetrate": navigationBar.titlePenetrate
         }
-        return clazz3;
-      });
-      const style2 = computed(() => {
-        const backgroundColor = __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar2.type === "transparent" ? usePageHeadTransparentBackgroundColor(navigationBar2.backgroundColor) : navigationBar2.backgroundColor;
-        return {
-          backgroundColor,
-          color: navigationBar2.titleColor,
-          transitionDuration: navigationBar2.duration,
-          transitionTimingFunction: navigationBar2.timingFunc
-        };
-      });
-      return { clazz: clazz2, style: style2 };
-    }
-    function usePageHeadButtons({ id: id2, navigationBar: navigationBar2 }) {
-      const left = [];
-      const right = [];
-      const { buttons: buttons2 } = navigationBar2;
-      if (isArray(buttons2)) {
-        const { type } = navigationBar2;
-        const isTransparent = type === "transparent";
-        const fonts = /* @__PURE__ */ Object.create(null);
-        buttons2.forEach((btn, index2) => {
-          if (btn.fontSrc && !btn.fontFamily) {
-            const fontSrc = getRealPath(btn.fontSrc);
-            let fontFamily = fonts[fontSrc];
-            if (!fontFamily) {
-              fontFamily = `font${Date.now()}`;
-              fonts[fontSrc] = fontFamily;
-              onBeforeMount(
-                () => updateStyle(
-                  "uni-btn-" + fontFamily,
-                  `@font-face{font-family: "${fontFamily}";src: url("${fontSrc}") format("truetype")}`
-                )
-              );
-            }
-            btn.fontFamily = fontFamily;
-          }
-          const pageHeadBtn = usePageHeadButton(id2, index2, btn, isTransparent);
-          if (btn.float === "left") {
-            left.push(pageHeadBtn);
-          } else {
-            right.push(pageHeadBtn);
-          }
-        });
-      }
-      return { left, right };
-    }
-    function usePageHeadButton(pageId, index2, btn, isTransparent) {
-      const iconStyle = {
-        color: btn.color,
-        fontSize: btn.fontSize,
-        fontWeight: btn.fontWeight
-      };
-      if (btn.fontFamily) {
-        iconStyle.fontFamily = btn.fontFamily;
-      }
-      return new Proxy(
-        {
-          btnClass: {
-            "uni-page-head-btn": true,
-            "uni-page-head-btn-red-dot": !!(btn.redDot || btn.badgeText),
-            "uni-page-head-btn-select": !!btn.select
-          },
-          btnStyle: {
-            backgroundColor: isTransparent ? btn.background : "transparent",
-            width: btn.width
-          },
-          btnText: "",
-          btnIconPath: ICON_PATHS[btn.type],
-          badgeText: btn.badgeText,
-          iconStyle,
-          onClick() {
-            invokeHook(pageId, ON_NAVIGATION_BAR_BUTTON_TAP, extend({ index: index2 }, btn));
-          },
-          btnSelect: btn.select
-        },
-        {
-          get(target, key, receiver) {
-            if (["btnText"].includes(key)) {
-              return btn.fontSrc && btn.fontFamily ? btn.text.replace("\\u", "&#x") : btn.text;
-            } else {
-              return Reflect.get(target, key, receiver);
-            }
-          }
-        }
-      );
-    }
-    function usePageHeadSearchInput({
-      id: id2,
-      navigationBar: { searchInput: searchInput2 }
-    }) {
-      const focus = ref(false);
-      const text2 = ref("");
-      const composing = ref(false);
-      const { disabled } = searchInput2;
-      if (disabled) {
-        const onClick = () => {
-          invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED);
-        };
-        return { focus, text: text2, composing, onClick };
-      }
-      const onFocus = () => {
-        focus.value = true;
-        invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
-          focus: true
-        });
-      };
-      const onBlur = () => {
-        focus.value = false;
-        invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
-          focus: false
-        });
-      };
-      const onInput = (evt) => {
-        text2.value = evt.detail.value;
-        invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, {
-          text: text2.value
-        });
-      };
-      const onConfirm = (evt) => {
-        invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, {
-          text: text2.value
-        });
-      };
-      return { focus, text: text2, composing, onFocus, onBlur, onInput, onConfirm };
-    }
-    return (_ctx, _cache) => {
-      return openBlock(), createElementBlock("uni-page-head", {
-        "uni-page-head-type": unref(navigationBar).type || "default"
-      }, [
-        createElementVNode("div", {
-          ref_key: "headRef",
-          ref: headRef,
-          class: normalizeClass(unref(clazz)),
-          style: normalizeStyle(unref(style))
-        }, [
-          createElementVNode("div", _hoisted_2$2, [
-            unref(hasPages) && !unref(pageMeta).isQuit ? (openBlock(), createElementBlock("div", {
-              key: 0,
-              class: "uni-page-head-btn",
-              onClick: onPageHeadBackButton
-            }, [
-              (openBlock(), createElementBlock("svg", _hoisted_3$2, [
-                createElementVNode("path", {
-                  d: unref(ICON_PATH_BACK),
-                  fill: "none",
-                  stroke: unref(navigationBar).type === "transparent" ? "#fff" : unref(navigationBar).titleColor,
-                  "stroke-width": "2",
-                  "stroke-linecap": "round"
-                }, null, 8, _hoisted_4$1)
-              ]))
-            ])) : createCommentVNode("", true),
-            unref(hasButtons) && unref(buttons) ? (openBlock(true), createElementBlock(Fragment, { key: 1 }, renderList(unref(buttons).left, (button, index2) => {
-              return openBlock(), createElementBlock("div", {
-                key: index2,
-                class: normalizeClass(button.btnClass),
-                style: normalizeStyle(button.btnStyle),
-                "badge-text": button.badgeText,
-                onClick: button.onClick
-              }, [
-                button.btnIconPath ? (openBlock(), createElementBlock("svg", {
-                  key: 0,
-                  width: getSvgSize(button.iconStyle.fontSize),
-                  height: getSvgSize(button.iconStyle.fontSize),
-                  viewBox: "0 0 32 32"
-                }, [
-                  createElementVNode("path", {
-                    d: button.btnIconPath,
-                    fill: getSvgColor(button.iconStyle.color)
-                  }, null, 8, _hoisted_7$1)
-                ], 8, _hoisted_6$1)) : button.btnSelect ? (openBlock(), createElementBlock("span", {
-                  key: 1,
-                  style: normalizeStyle(button.iconStyle)
-                }, [
-                  createElementVNode("i", {
-                    class: "uni-btn-icon",
-                    innerHTML: button.btnText
-                  }, null, 8, _hoisted_8),
-                  (openBlock(), createElementBlock("svg", _hoisted_9, [
-                    createElementVNode("path", {
-                      d: ICON_PATHS.select,
-                      fill: "none",
-                      stroke: "#000",
-                      "stroke-width": "2",
-                      "stroke-linecap": "round"
-                    }, null, 8, _hoisted_10)
-                  ]))
-                ], 4)) : (openBlock(), createElementBlock("i", {
-                  key: 2,
-                  class: "uni-btn-icon",
-                  style: normalizeStyle(button.iconStyle),
-                  innerHTML: button.btnText
-                }, null, 12, _hoisted_11))
-              ], 14, _hoisted_5$1);
-            }), 128)) : createCommentVNode("", true)
-          ]),
-          !unref(hasSearchInput) || !unref(navigationBar).searchInput ? (openBlock(), createElementBlock("div", _hoisted_12, [
-            createElementVNode("div", {
-              class: "uni-page-head__title",
-              style: normalizeStyle({
-                fontSize: unref(navigationBar).titleSize,
-                opacity: unref(navigationBar).type === "transparent" ? 0 : 1
-              })
-            }, [
-              !unref(isXVapor) && unref(navigationBar).loading ? (openBlock(), createElementBlock("i", _hoisted_13)) : unref(isXVapor) && unref(navigationBar).loading ? (openBlock(), createBlock(unref(_sfc_main$c), {
-                key: 1,
-                style: { "display": "inline-block", "width": "20px", "height": "20px", "margin-top": "7px" }
-              })) : unref(navigationBar).titleImage ? (openBlock(), createElementBlock("img", {
-                key: 2,
-                src: unref(navigationBar).titleImage,
-                class: "uni-page-head__title_image"
-              }, null, 8, _hoisted_14)) : (openBlock(), createElementBlock(Fragment, { key: 3 }, [
-                createTextVNode(toDisplayString(unref(navigationBar).titleText), 1)
-              ], 64))
-            ], 4)
-          ])) : (openBlock(), createElementBlock("div", {
-            key: 1,
-            class: "uni-page-head-search",
-            style: normalizeStyle({
-              borderRadius: unref(navigationBar).searchInput.borderRadius,
-              backgroundColor: unref(navigationBar).searchInput.backgroundColor
-            })
-          }, [
-            createElementVNode("div", {
-              style: normalizeStyle({ color: unref(navigationBar).searchInput.placeholderColor }),
-              class: normalizeClass([
-                "uni-page-head-search-placeholder",
-                `uni-page-head-search-placeholder-${unref(searchFocus) || unref(searchText) ? "left" : unref(navigationBar).searchInput.align}`
-              ])
-            }, [
-              createElementVNode("div", _hoisted_15, [
-                (openBlock(), createElementBlock("svg", _hoisted_16, [
-                  createElementVNode("path", {
-                    d: unref(ICON_PATH_SEARCH),
-                    fill: unref(navigationBar).searchInput.placeholderColor
-                  }, null, 8, _hoisted_17)
-                ]))
-              ]),
-              !(unref(searchText) || unref(searchComposing)) ? (openBlock(), createElementBlock(Fragment, { key: 0 }, [
-                createTextVNode(toDisplayString(unref(navigationBar).searchInput.placeholder), 1)
-              ], 64)) : createCommentVNode("", true)
-            ], 6),
-            unref(navigationBar).searchInput.disabled ? (openBlock(), createBlock(unref(__syscom_3$2), {
-              key: 0,
-              disabled: true,
-              style: normalizeStyle({ color: unref(navigationBar).searchInput.color }),
-              "placeholder-style": "color: " + unref(navigationBar).searchInput.placeholderColor,
-              class: "uni-page-head-search-input",
-              "confirm-type": "search",
-              onClick: _cache[0] || (_cache[0] = ($event) => unref(searchOnClick) && unref(searchOnClick)($event))
-            }, null, 8, ["style", "placeholder-style"])) : (openBlock(), createBlock(unref(__syscom_3$2), {
-              key: 1,
-              focus: unref(navigationBar).searchInput.autoFocus,
-              style: normalizeStyle({ color: unref(navigationBar).searchInput.color }),
-              "placeholder-style": "color: " + unref(navigationBar).searchInput.placeholderColor,
-              class: "uni-page-head-search-input",
-              "confirm-type": "search",
-              onFocus: _cache[1] || (_cache[1] = ($event) => unref(searchOnFocus) && unref(searchOnFocus)($event)),
-              onBlur: _cache[2] || (_cache[2] = ($event) => unref(searchOnBlur) && unref(searchOnBlur)($event)),
-              onInput: _cache[3] || (_cache[3] = ($event) => unref(searchOnInput) && unref(searchOnInput)($event)),
-              onConfirm: _cache[4] || (_cache[4] = ($event) => unref(searchOnConfirm) && unref(searchOnConfirm)($event))
-            }, null, 8, ["focus", "style", "placeholder-style"]))
-          ], 4)),
-          createElementVNode("div", _hoisted_18, [
-            unref(hasButtons) && unref(buttons) ? (openBlock(true), createElementBlock(Fragment, { key: 0 }, renderList(unref(buttons).right, (button, index2) => {
-              return openBlock(), createElementBlock("div", {
-                key: index2,
-                class: normalizeClass(button.btnClass),
-                style: normalizeStyle(button.btnStyle),
-                "badge-text": button.badgeText,
-                onClick: button.onClick
-              }, [
-                button.btnIconPath ? (openBlock(), createElementBlock("svg", {
-                  key: 0,
-                  width: getSvgSize(button.iconStyle.fontSize),
-                  height: getSvgSize(button.iconStyle.fontSize),
-                  viewBox: "0 0 32 32"
-                }, [
-                  createElementVNode("path", {
-                    d: button.btnIconPath,
-                    fill: getSvgColor(button.iconStyle.color)
-                  }, null, 8, _hoisted_21)
-                ], 8, _hoisted_20)) : button.btnSelect ? (openBlock(), createElementBlock("span", {
-                  key: 1,
-                  style: normalizeStyle(button.iconStyle)
-                }, [
-                  createElementVNode("i", {
-                    class: "uni-btn-icon",
-                    innerHTML: button.btnText
-                  }, null, 8, _hoisted_22),
-                  (openBlock(), createElementBlock("svg", _hoisted_23, [
-                    createElementVNode("path", {
-                      d: ICON_PATHS.select,
-                      fill: "#000"
-                    }, null, 8, _hoisted_24)
-                  ]))
-                ], 4)) : (openBlock(), createElementBlock("i", {
-                  key: 2,
-                  class: "uni-btn-icon",
-                  style: normalizeStyle(button.iconStyle),
-                  innerHTML: button.btnText
-                }, null, 12, _hoisted_25))
-              ], 14, _hoisted_19);
-            }), 128)) : createCommentVNode("", true)
-          ])
-        ], 6),
-        unref(navigationBar).type !== "transparent" && unref(navigationBar).type !== "float" ? (openBlock(), createElementBlock("div", {
-          key: 0,
-          class: normalizeClass({
-            "uni-placeholder": true,
-            "uni-placeholder-titlePenetrate": unref(navigationBar).titlePenetrate
-          })
-        }, null, 2)) : createCommentVNode("", true)
-      ], 8, _hoisted_1$2);
+      }, null, 2);
+      return createVNode("uni-page-head", {
+        "uni-page-head-type": type
+      }, [createVNode("div", {
+        "ref": headRef,
+        "class": clazz.value,
+        "style": style.value
+      }, [createVNode("div", {
+        "class": "uni-page-head-hd"
+      }, [backButtonTsx, ...leftButtonsTsx]), createPageHeadBdTsx(navigationBar, searchInput), createVNode("div", {
+        "class": "uni-page-head-ft"
+      }, [...rightButtonsTsx])], 6), placeholderTsx], 8, ["uni-page-head-type"]);
     };
   }
 });
-const _hoisted_1$1 = { class: "uni-page-refresh-inner" };
-const _hoisted_2$1 = ["fill"];
-const _hoisted_3$1 = /* @__PURE__ */ createElementVNode("path", { d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" }, null, -1);
+function createBackButtonTsx(navigationBar, isQuit) {
+  if (!isQuit) {
+    return createVNode("div", {
+      "class": "uni-page-head-btn",
+      "onClick": onPageHeadBackButton
+    }, [createVNode("svg", {
+      "width": "26",
+      "height": "26",
+      "viewBox": "0 0 32 32"
+    }, [createVNode("path", {
+      "d": ICON_PATH_BACK,
+      "fill": "none",
+      "stroke": navigationBar.type === "transparent" ? "#fff" : navigationBar.titleColor,
+      "stroke-width": "2",
+      "stroke-linecap": "round"
+    }, null, 8, ["d", "stroke"])])], 8, ["onClick"]);
+  }
+}
+function createButtonsTsx(btns, left = false) {
+  return btns.map(({
+    onClick,
+    btnClass,
+    btnStyle,
+    btnText,
+    btnIconPath,
+    badgeText,
+    iconStyle,
+    btnSelect
+  }, index2) => {
+    return createVNode("div", {
+      "key": index2,
+      "class": btnClass,
+      "style": btnStyle,
+      "onClick": onClick,
+      "badge-text": badgeText
+    }, [btnIconPath ? createSvgIconVNode(btnIconPath, iconStyle.color, iconStyle.fontSize) : btnSelect ? createVNode("span", {
+      "style": iconStyle
+    }, [createVNode("i", {
+      "class": "uni-btn-icon",
+      "innerHTML": btnText
+    }, null, 8, ["innerHTML"]), left ? createVNode("svg", {
+      "width": "14",
+      "height": "14",
+      "viewBox": "0 0 32 32"
+    }, [createVNode("path", {
+      "d": ICON_PATHS.select,
+      "fill": "none",
+      "stroke": "#000",
+      "stroke-width": "2",
+      "stroke-linecap": "round"
+    }, null, 8, ["d"])]) : createSvgIconVNode(ICON_PATHS.select, "#000", 14)], 4) : createVNode("i", {
+      "class": "uni-btn-icon",
+      "style": iconStyle,
+      "innerHTML": btnText
+    }, null, 12, ["innerHTML"])], 14, ["onClick", "badge-text"]);
+  });
+}
+function createPageHeadBdTsx(navigationBar, searchInput) {
+  if (__UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__) {
+    if (navigationBar.searchInput) {
+      return createPageHeadSearchInputTsx(navigationBar, searchInput);
+    }
+  }
+  return createPageHeadTitleTextTsx(navigationBar);
+}
+function createPageHeadTitleTextTsx({
+  type,
+  loading,
+  titleSize,
+  titleText,
+  titleImage
+}) {
+  return createVNode("div", {
+    "key": "title",
+    "class": "uni-page-head-bd"
+  }, [createVNode("div", {
+    "style": {
+      fontSize: titleSize,
+      opacity: type === "transparent" ? 0 : 1
+    },
+    "class": "uni-page-head__title"
+  }, [loading ? createVNode("i", {
+    "class": "uni-loading"
+  }, null) : titleImage ? createVNode("img", {
+    "src": titleImage,
+    "class": "uni-page-head__title_image"
+  }, null, 8, ["src"]) : titleText], 4)]);
+}
+function createPageHeadSearchInputTsx(navigationBar, {
+  text: text2,
+  focus,
+  composing,
+  onBlur,
+  onFocus,
+  onInput,
+  onConfirm,
+  onClick
+} = {}) {
+  const {
+    color,
+    align: align2,
+    autoFocus,
+    disabled,
+    borderRadius,
+    backgroundColor,
+    placeholder,
+    placeholderColor
+  } = navigationBar.searchInput;
+  const searchStyle = {
+    borderRadius,
+    backgroundColor
+  };
+  const placeholderClass = ["uni-page-head-search-placeholder", `uni-page-head-search-placeholder-${(focus == null ? void 0 : focus.value) || (text2 == null ? void 0 : text2.value) ? "left" : align2}`];
+  return createVNode("div", {
+    "key": "search",
+    "class": "uni-page-head-search",
+    "style": searchStyle
+  }, [createVNode("div", {
+    "style": {
+      color: placeholderColor
+    },
+    "class": placeholderClass
+  }, [createVNode("div", {
+    "class": "uni-page-head-search-icon"
+  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), (text2 == null ? void 0 : text2.value) || (composing == null ? void 0 : composing.value) ? "" : placeholder], 6), disabled ? createVNode(__syscom_3$2, {
+    "key": "disabled",
+    "disabled": true,
+    "style": {
+      color
+    },
+    "placeholder-style": "color: " + placeholderColor,
+    "class": "uni-page-head-search-input",
+    "confirm-type": "search",
+    "onClick": onClick
+  }, null, 8, ["style", "placeholder-style", "onClick"]) : createVNode(__syscom_3$2, {
+    "key": "enabled",
+    "focus": autoFocus,
+    "style": {
+      color
+    },
+    "placeholder-style": "color: " + placeholderColor,
+    "class": "uni-page-head-search-input",
+    "confirm-type": "search",
+    "onFocus": onFocus,
+    "onBlur": onBlur,
+    "onInput": onInput,
+    "onConfirm": onConfirm
+  }, null, 8, ["focus", "style", "placeholder-style", "onFocus", "onBlur", "onInput", "onConfirm"])], 4);
+}
+function onPageHeadBackButton() {
+  if (getCurrentPages().length === 1) {
+    uni.reLaunch({
+      url: "/"
+    });
+  } else {
+    uni.navigateBack({
+      from: "backbutton",
+      success() {
+      }
+      // 传入空方法，避免返回Promise，因为onBackPress可能导致fail
+    });
+  }
+}
+function usePageHead(navigationBar) {
+  const clazz = computed(() => {
+    const {
+      type,
+      titlePenetrate,
+      shadowColorType
+    } = navigationBar;
+    const clazz2 = {
+      "uni-page-head": true,
+      "uni-page-head-transparent": type === "transparent",
+      "uni-page-head-titlePenetrate": titlePenetrate === "YES",
+      "uni-page-head-shadow": !!shadowColorType
+    };
+    if (shadowColorType) {
+      clazz2[`uni-page-head-shadow-${shadowColorType}`] = true;
+    }
+    return clazz2;
+  });
+  const style = computed(() => {
+    const backgroundColor = __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" ? usePageHeadTransparentBackgroundColor(navigationBar.backgroundColor) : navigationBar.backgroundColor;
+    return {
+      backgroundColor,
+      color: navigationBar.titleColor,
+      transitionDuration: navigationBar.duration,
+      transitionTimingFunction: navigationBar.timingFunc
+    };
+  });
+  return {
+    clazz,
+    style
+  };
+}
+function usePageHeadButtons({
+  id: id2,
+  navigationBar
+}) {
+  const left = [];
+  const right = [];
+  const {
+    buttons
+  } = navigationBar;
+  if (isArray(buttons)) {
+    const {
+      type
+    } = navigationBar;
+    const isTransparent = type === "transparent";
+    const fonts = /* @__PURE__ */ Object.create(null);
+    buttons.forEach((btn, index2) => {
+      if (btn.fontSrc && !btn.fontFamily) {
+        const fontSrc = getRealPath(btn.fontSrc);
+        let fontFamily = fonts[fontSrc];
+        if (!fontFamily) {
+          fontFamily = `font${Date.now()}`;
+          fonts[fontSrc] = fontFamily;
+          onBeforeMount(() => updateStyle("uni-btn-" + fontFamily, `@font-face{font-family: "${fontFamily}";src: url("${fontSrc}") format("truetype")}`));
+        }
+        btn.fontFamily = fontFamily;
+      }
+      const pageHeadBtn = usePageHeadButton(id2, index2, btn, isTransparent);
+      if (btn.float === "left") {
+        left.push(pageHeadBtn);
+      } else {
+        right.push(pageHeadBtn);
+      }
+    });
+  }
+  return {
+    left,
+    right
+  };
+}
+function usePageHeadButton(pageId, index2, btn, isTransparent) {
+  const iconStyle = {
+    color: btn.color,
+    fontSize: btn.fontSize,
+    fontWeight: btn.fontWeight
+  };
+  if (btn.fontFamily) {
+    iconStyle.fontFamily = btn.fontFamily;
+  }
+  return new Proxy({
+    btnClass: {
+      // 类似这样的大量重复的字符串，会在gzip时压缩大小，无需在代码层考虑优化相同字符串
+      "uni-page-head-btn": true,
+      "uni-page-head-btn-red-dot": !!(btn.redDot || btn.badgeText),
+      "uni-page-head-btn-select": !!btn.select
+    },
+    btnStyle: {
+      backgroundColor: isTransparent ? btn.background : "transparent",
+      width: btn.width
+    },
+    btnText: "",
+    btnIconPath: ICON_PATHS[btn.type],
+    badgeText: btn.badgeText,
+    iconStyle,
+    onClick() {
+      invokeHook(pageId, ON_NAVIGATION_BAR_BUTTON_TAP, extend({
+        index: index2
+      }, btn));
+    },
+    btnSelect: btn.select
+  }, {
+    get(target, key, receiver) {
+      if (["btnText"].includes(key)) {
+        return btn.fontSrc && btn.fontFamily ? btn.text.replace("\\u", "&#x") : btn.text;
+      } else {
+        return Reflect.get(target, key, receiver);
+      }
+    }
+  });
+}
+function usePageHeadSearchInput({
+  id: id2,
+  navigationBar: {
+    searchInput
+  }
+}) {
+  const focus = ref(false);
+  const text2 = ref("");
+  const composing = ref(false);
+  const {
+    disabled
+  } = searchInput;
+  if (disabled) {
+    const onClick = () => {
+      invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED);
+    };
+    return {
+      focus,
+      text: text2,
+      composing,
+      onClick
+    };
+  }
+  const onFocus = () => {
+    focus.value = true;
+    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
+      focus: true
+    });
+  };
+  const onBlur = () => {
+    focus.value = false;
+    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
+      focus: false
+    });
+  };
+  const onInput = (evt) => {
+    text2.value = evt.detail.value;
+    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, {
+      text: text2.value
+    });
+  };
+  const onConfirm = (evt) => {
+    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, {
+      text: text2.value
+    });
+  };
+  return {
+    focus,
+    text: text2,
+    composing,
+    onFocus,
+    onBlur,
+    onInput,
+    onConfirm
+  };
+}
+const _hoisted_1 = { class: "uni-page-refresh-inner" };
+const _hoisted_2 = ["fill"];
+const _hoisted_3 = /* @__PURE__ */ createElementVNode("path", { d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" }, null, -1);
 const _hoisted_4 = /* @__PURE__ */ createElementVNode("path", {
   d: "M0 0h24v24H0z",
   fill: "none"
 }, null, -1);
 const _hoisted_5 = [
-  _hoisted_3$1,
+  _hoisted_3,
   _hoisted_4
 ];
 const _hoisted_6 = {
@@ -11062,7 +10920,7 @@ const _hoisted_6 = {
   viewBox: "25 25 50 50"
 };
 const _hoisted_7 = ["stroke"];
-const _sfc_main$a = /* @__PURE__ */ defineComponent({
+const _sfc_main$9 = /* @__PURE__ */ defineComponent({
   ...{ name: "PageRefresh" },
   __name: "component",
   setup(__props) {
@@ -11075,14 +10933,14 @@ const _sfc_main$a = /* @__PURE__ */ defineComponent({
           style: normalizeStyle({ "margin-top": unref(offset) + "px" }),
           class: "uni-page-refresh"
         }, [
-          createElementVNode("div", _hoisted_1$1, [
+          createElementVNode("div", _hoisted_1, [
             (openBlock(), createElementBlock("svg", {
               fill: unref(color),
               class: "uni-page-refresh__icon",
               width: "24",
               height: "24",
               viewBox: "0 0 24 24"
-            }, _hoisted_5, 8, _hoisted_2$1)),
+            }, _hoisted_5, 8, _hoisted_2)),
             (openBlock(), createElementBlock("svg", _hoisted_6, [
               createElementVNode("circle", {
                 stroke: unref(color),
@@ -11356,32 +11214,28 @@ function usePageRefresh(refreshRef) {
     onTouchcancel: onTouchend
   };
 }
-const _sfc_main$9 = /* @__PURE__ */ defineComponent({
-  ...{
-    name: "PageBody",
-    __reserved: true,
-    compatConfig: { MODE: 3 }
-  },
-  __name: "pageBody",
-  setup(__props) {
-    const isX = true;
-    const hasPullDownRefresh = __UNI_FEATURE_PULL_DOWN_REFRESH__;
-    const pageMeta = hasPullDownRefresh ? usePageMeta() : null;
-    const refreshRef = ref(null);
+const PageBody = /* @__PURE__ */ defineSystemComponent({
+  name: "PageBody",
+  setup(props2, ctx) {
+    const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ && usePageMeta();
+    const refreshRef = __UNI_FEATURE_PULL_DOWN_REFRESH__ && ref(null);
     const wrapperRef = ref(null);
-    const _pageRefresh = hasPullDownRefresh && pageMeta && (pageMeta.enablePullDownRefresh || isX) ? usePageRefresh(refreshRef) : null;
+    const _pageRefresh = __UNI_FEATURE_PULL_DOWN_REFRESH__ && (pageMeta.enablePullDownRefresh || true) ? usePageRefresh(refreshRef) : null;
     const pageRefresh = ref(null);
-    watch(
-      () => pageMeta == null ? void 0 : pageMeta.enablePullDownRefresh,
-      () => {
-        pageRefresh.value = (pageMeta == null ? void 0 : pageMeta.enablePullDownRefresh) ? _pageRefresh : null;
-      },
-      {
-        immediate: true
-      }
-    );
-    function resize() {
-      const { top, left, right, bottom } = getSafeAreaInsets(wrapperRef.value);
+    watch(() => {
+      return pageMeta.enablePullDownRefresh;
+    }, () => {
+      pageRefresh.value = pageMeta.enablePullDownRefresh ? _pageRefresh : null;
+    }, {
+      immediate: true
+    });
+    function _resize() {
+      const {
+        top,
+        left,
+        right,
+        bottom
+      } = getSafeAreaInsets(wrapperRef.value);
       const vars = {
         "--uni-safe-area-inset-top": `${top}px`,
         "--uni-safe-area-inset-left": `${left}px`,
@@ -11392,29 +11246,22 @@ const _sfc_main$9 = /* @__PURE__ */ defineComponent({
         wrapperRef.value.style.setProperty(key, vars[key]);
       }
     }
-    return (_ctx, _cache) => {
-      return openBlock(), createElementBlock(Fragment, null, [
-        unref(hasPullDownRefresh) && !!unref(pageMeta) && (unref(isX) || !!unref(pageMeta).enablePullDownRefresh) ? (openBlock(), createBlock(_sfc_main$a, {
-          key: 0,
-          ref_key: "refreshRef",
-          ref: refreshRef
-        }, null, 512)) : createCommentVNode("", true),
-        createElementVNode("uni-page-wrapper", mergeProps({
-          ref_key: "wrapperRef",
-          ref: wrapperRef
-        }, pageRefresh.value), [
-          createElementVNode("uni-page-body", null, [
-            renderSlot(_ctx.$slots, "default")
-          ]),
-          unref(isX) ? (openBlock(), createBlock(unref(ResizeSensor), {
-            key: 0,
-            onResize: resize
-          })) : createCommentVNode("", true)
-        ], 16)
-      ], 64);
+    return () => {
+      const pageRefreshTsx = __UNI_FEATURE_PULL_DOWN_REFRESH__ && createPageRefreshTsx(refreshRef);
+      const pageResizeSensor = createVNode(ResizeSensor, {
+        "onResize": _resize
+      }, null, 8, ["onResize"]);
+      return createVNode(Fragment, null, [pageRefreshTsx, createVNode("uni-page-wrapper", mergeProps({
+        "ref": wrapperRef
+      }, pageRefresh.value), [createVNode("uni-page-body", null, [renderSlot(ctx.slots, "default")]), pageResizeSensor], 16)]);
     };
   }
 });
+function createPageRefreshTsx(refreshRef, pageMeta) {
+  return createVNode(_sfc_main$9, {
+    "ref": refreshRef
+  }, null, 512);
+}
 const PageComponent = /* @__PURE__ */ defineSystemComponent({
   name: "Page",
   setup(_props, ctx) {
@@ -11472,7 +11319,7 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
         style: pageStyle
       },
       __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [
-        createVNode(_sfc_main$b),
+        createVNode(PageHead),
         createPageBodyVNode(ctx),
         createDialogPageVNode(
           currentInstance.$dialogPages,
@@ -11509,7 +11356,7 @@ function assignDialogPage(ctx, parentInstance, currentInstance) {
 }
 function createPageBodyVNode(ctx) {
   return openBlock(), createBlock(
-    _sfc_main$9,
+    PageBody,
     { key: 0 },
     {
       default: withCtx(() => [renderSlot(ctx.slots, "page")]),
@@ -17408,6 +17255,93 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
     return result;
   }
 });
+class UniVueElement extends HTMLElement {
+}
+class UniLoadingElement extends UniVueElement {
+}
+function useLoadingStyle(targetElement, bold) {
+  const loadingSize = ref("16px");
+  const loadingBorderWidth = ref("1px");
+  const loadingBorderRadius = ref("8px");
+  let observer = null;
+  const calculateLoadingWidth = (element, bold2) => {
+    const { width, height } = element.getBoundingClientRect();
+    const coefficient = bold2 ? 2 : 1;
+    const minSide = Math.min(width, height);
+    const calculatedWidth = minSide / 16 * coefficient;
+    loadingSize.value = `${minSide}px`;
+    loadingBorderWidth.value = `${calculatedWidth}px`;
+    loadingBorderRadius.value = `${minSide / 2}px`;
+  };
+  const setupObserver = (cb) => {
+    const el = targetElement.value;
+    if (!el)
+      return;
+    observer = new ResizeObserver((entries2) => {
+      cb(el);
+    });
+    observer.observe(el);
+  };
+  onMounted(() => {
+    setupObserver((el) => {
+      calculateLoadingWidth(el, bold.value);
+    });
+    watchEffect(() => {
+      const _bold = bold.value;
+      const el = targetElement.value;
+      if (el !== null) {
+        calculateLoadingWidth(el, _bold);
+      }
+    });
+  });
+  onUnmounted(() => {
+    if (observer) {
+      observer.disconnect();
+    }
+  });
+  return {
+    width: loadingSize,
+    height: loadingSize,
+    borderWidth: loadingBorderWidth
+    // borderRadius: loadingBorderRadius,
+  };
+}
+const _sfc_main$8 = /* @__PURE__ */ defineComponent({
+  ...{
+    name: "loading",
+    styleIsolation: "app-and-page",
+    // @ts-ignore
+    rootElement: {
+      name: "uni-loading-element",
+      class: UniLoadingElement
+    }
+  },
+  __name: "index-x",
+  props: {
+    paused: { type: Boolean, default: false },
+    bold: { type: Boolean, default: false },
+    iosSpinner: { type: Boolean, default: false }
+  },
+  setup(__props) {
+    const props2 = __props;
+    const LoadingRef = ref(null);
+    const loadingStyle = reactive(useLoadingStyle(LoadingRef, computed(() => props2.bold)));
+    return (_ctx, _cache) => {
+      const _component_view = __syscom_3;
+      return openBlock(), createElementBlock("uni-loading-element", {
+        class: "default __uni_loading_container__",
+        ref_key: "LoadingRef",
+        ref: LoadingRef,
+        style: { "display": "flex" }
+      }, [
+        createVNode(_component_view, {
+          class: normalizeClass(["__uni-loading__ __loading-4-3__", { "__uni-loading__paused": props2.paused }]),
+          style: normalizeStyle(loadingStyle)
+        }, null, 8, ["class", "style"])
+      ], 512);
+    };
+  }
+});
 const Refresher = /* @__PURE__ */ defineBuiltInComponent({
   name: "Refresher",
   props: {
@@ -20752,7 +20686,7 @@ class UniPageContainerElement extends UniElement2 {
 }
 const MAX_SLIDER_DISTANCE = 100;
 const MIN_SLIDER_VELOCITY = 0.3;
-const _sfc_main$8 = /* @__PURE__ */ defineComponent({
+const _sfc_main$7 = /* @__PURE__ */ defineComponent({
   ...{
     name: "page-container",
     rootElement: {
@@ -29639,7 +29573,7 @@ function triggerFailCallback(options, errMsg) {
   (_a = options.fail) == null ? void 0 : _a.call(options, failOptions);
   (_b = options.complete) == null ? void 0 : _b.call(options, failOptions);
 }
-const _sfc_main$7 = /* @__PURE__ */ defineComponent({
+const _sfc_main$6 = /* @__PURE__ */ defineComponent({
   __name: "actionSheet",
   setup(__props) {
     const pageInstance = getCurrentInstance().proxy;
@@ -29997,7 +29931,7 @@ const _export_sfc = (sfc, props2) => {
   }
   return target;
 };
-const UniActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main$7, [["styles", [_style_0$5]]]);
+const UniActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["styles", [_style_0$5]]]);
 class ShowActionSheetSuccessImpl {
   constructor(tapIndex, errMsg = "showActionSheet:ok") {
     this.errMsg = errMsg;
@@ -30088,7 +30022,7 @@ const showActionSheet = /* @__PURE__ */ defineAsyncApi(
     );
   }
 );
-const _sfc_main$6 = /* @__PURE__ */ defineComponent({
+const _sfc_main$5 = /* @__PURE__ */ defineComponent({
   __name: "chooseLocation",
   setup(__props) {
     const defaultPoi = {
@@ -30678,7 +30612,7 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
       const _component_text = __syscom_2$1;
       const _component_view = __syscom_3;
       const _component_input = __syscom_3$2;
-      const _component_loading = _sfc_main$c;
+      const _component_loading = _sfc_main$8;
       const _component_scroll_view = __syscom_3$1;
       return openBlock(), createBlock(_component_view, {
         class: normalizeClass(["uni-choose-location", darkClassCom.value])
@@ -31267,7 +31201,7 @@ const _style_0$4 = `
   /* 暗黑模式样式结束 */
 
 `;
-const UniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["styles", [_style_0$4]]]);
+const UniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["styles", [_style_0$4]]]);
 class ChooseLocationFailImpl extends UniError {
   constructor(errMsg = "chooseLocation:fail cancel", errCode = 1) {
     super();
@@ -31330,7 +31264,7 @@ const chooseLocation = /* @__PURE__ */ defineAsyncApi(
     );
   }
 );
-const _sfc_main$5 = /* @__PURE__ */ defineComponent({
+const _sfc_main$4 = /* @__PURE__ */ defineComponent({
   __name: "uniModal",
   setup(__props) {
     const theme = ref("light");
@@ -31690,7 +31624,7 @@ const _sfc_main$5 = /* @__PURE__ */ defineComponent({
   }
 });
 const _style_0$3 = "\n	/**\n	 * 透明背景\n	 */\n.uni-modal-mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		align-items: center;\n		background-color: rgba(0, 0, 0, 0.55);\n\n		transition-property: opacity;\n}\n.uni-modal-mask--hide {\n		transition-duration: 0s;\n		opacity: 0;\n}\n.uni-modal-mask--show {\n		transition-duration: 0.1s;\n		opacity: 1;\n}\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-modal-dialog {\n		width: 80%;\n		max-width: 90%;\n		max-height: 90%;\n		background-color: #ffffff;\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 16px;\n		opacity: 0;\n		transform: scale(0.9);\n\n		transition-duration: 0.1s;\n		transition-property: opacity, transform;\n}\n@media screen and (min-width: 768px) {\n.uni-modal-dialog {\n			max-width: 556px;\n}\n}\n.uni-modal-dialog.uni-modal-dialog--show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-modal-dialog.uni-modal--dark {\n		background-color: #272727;\n}\n.uni-modal-dialog__inner {\n		width: 100%;\n		height: 100%;\n		background-color: #ffffff;\n		border-radius: 8px;\n}\n.uni-modal-dialog__inner.uni-modal--dark {\n		background-color: #272727;\n}\n.uni-modal-dialog__title__container {\n		padding: 33px 24px 18px;\n}\n.uni-modal-dialog__title {\n		font-size: 17px;\n		font-weight: 600;\n		text-align: center;\n		text-overflow: ellipsis;\n\n		lines: 2;\n\n		line-height: 22px;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 2;\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n.uni-modal-dialog__title.uni-modal--dark {\n		color: #cfcfcf;\n}\n.uni-modal-dialog__body {\n		justify-content: center;\n		align-items: center;\n		padding: 0 22px;\n		margin-bottom: 13px;\n}\n.uni-modal-dialog__body.no-title {\n		margin-top: -10px;\n		margin-bottom: 20px;\n}\n.uni-modal-dialog__scroll {\n		max-height: 192px;\n		margin: 2px;\n		width: 100%;\n}\n.uni-modal-dialog__message {\n		font-size: 17px;\n		font-weight: normal;\n		text-align: center;\n		color: #7f7f7f;\n		line-height: 1.5em;\n		width: 100%;\n		padding-bottom: 10px;\n}\n.uni-modal-dialog__textarea {\n		font-size: 17px;\n		background-color: #f6f6f6;\n		color: #000000;\n		width: 96%;\n		padding: 5px;\n		margin-top: 2px;\n		margin-bottom: 7px;\n		max-height: 192px;\n\n		word-break: break-word;\n}\n.uni-modal-dialog__textarea.uni-modal--dark {\n		background-color: #3d3d3d;\n		color: #cfcfcf;\n}\n.uni-modal-dialog__textarea-placeholder {\n		color: #808080;\n}\n.uni-modal-dialog__divider {\n		width: 100%;\n		height: 1px;\n		transform: scaleY(0.5);\n		background-color: #e3e3e3;\n}\n.uni-modal-dialog__divider.uni-modal--dark {\n		background-color: #303030;\n}\n.uni-modal-dialog__actions {\n		display: flex;\n		width: 100%;\n		height: 56px;\n		flex-direction: row;\n		overflow: hidden;\n}\n.uni-modal-dialog__action {\n		width: 50%;\n		justify-content: center;\n		flex-grow: 1;\n}\n.uni-modal-dialog__action--cancel{\n		padding: 0 4px 0 10px;\n}\n.uni-modal-dialog__action--confirm{\n		padding: 0 10px 0 4px;\n}\n.uni-modal-dialog__action--hover {\n		background-color: #efefef;\n}\n.uni-modal-dialog__action--hover-dark {\n		background-color: #414141;\n}\n.uni-modal-dialog__action-text {\n		color: #000000;\n		letter-spacing: 1px;\n		font-size: 17px;\n		text-align: center;\n\n		lines: 1;\n\n		overflow: hidden;\n		text-overflow: ellipsis;\n		white-space: nowrap;\n		font-weight: 600;\n}\n.uni-modal-dialog__action-text--confirm {\n		color: #4A5E86;\n}\n.uni-modal-dialog__split {\n		width: 1px;\n		height: 100%;\n		transform: scaleX(0.5);\n		background-color: #e3e3e3;\n}\n.uni-modal-dialog__split.uni-modal--dark {\n		background-color: #303030;\n}\n.uni-textarea-wrapper {\n		min-height: 18px !important;\n}\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
-const UniModalPage = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["styles", [_style_0$3]]]);
+const UniModalPage = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["styles", [_style_0$3]]]);
 class ShowModalSuccessImpl {
   constructor(cancel, confirm, content = null, errMsg = "showModal:ok") {
     this.errMsg = errMsg;
@@ -31844,7 +31778,7 @@ const showModal = /* @__PURE__ */ defineAsyncApi(
     );
   }
 );
-const _sfc_main$4 = /* @__PURE__ */ defineComponent({
+const _sfc_main$3 = /* @__PURE__ */ defineComponent({
   __name: "showLoading",
   setup(__props) {
     const readyEventName = ref("");
@@ -31882,7 +31816,7 @@ const _sfc_main$4 = /* @__PURE__ */ defineComponent({
       uni.$off(failEventName.value, null);
     });
     return (_ctx, _cache) => {
-      const _component_loading = _sfc_main$c;
+      const _component_loading = _sfc_main$8;
       const _component_text = __syscom_2$1;
       const _component_view = __syscom_3;
       return openBlock(), createBlock(_component_view, {
@@ -31917,7 +31851,7 @@ const _sfc_main$4 = /* @__PURE__ */ defineComponent({
   }
 });
 const _style_0$2 = "\n	/**\n	 * 透明背景\n	 */\n.uni-loading-mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		align-items: center;\n		background-color: rgba(0, 0, 0, 0);\n		transition-duration: 0.1s;\n		transition-property: opacity;\n		opacity: 0;\n}\n.uni-loading-mask--show {\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-loading-dialog {\n		display: flex;\n		justify-content: center;\n		align-items: center;\n		min-width: 136px;\n\n\n\n\n		max-width: 80%;\n\n		height: 136px;\n		padding: 10px;\n		background-color: rgba(76, 76, 76, 0.95);\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 10px;\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity, transform;\n}\n.uni-loading-dialog.uni-loading-dialog--show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-loading-dialog__spinner {\n		width: 36px;\n		height: 36px;\n		border-color: white;\n}\n.uni-loading-dialog__title {\n		margin-top: 14px;\n		color: white;\n		font-size: 16px;\n		lines: 1;\n		text-align: center;\n		text-overflow: ellipsis;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 1;\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n";
-const UniLoadingPage = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["styles", [_style_0$2]]]);
+const UniLoadingPage = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["styles", [_style_0$2]]]);
 class ShowLoadingSuccessImpl {
   constructor(errMsg = "showLoading:ok") {
     this.errMsg = errMsg;
@@ -32173,7 +32107,7 @@ const SCALE_BOUNDARY_BUFFER = 2;
 const MIN_SCALE = 1;
 const MAX_SCALE = 3;
 const ANIMATION_DURATION = 200;
-const _sfc_main$3 = /* @__PURE__ */ defineComponent({
+const _sfc_main$2 = /* @__PURE__ */ defineComponent({
   __name: "uni-previewImageItem",
   props: {
     src: {
@@ -32931,7 +32865,7 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent({
     return (_ctx, _cache) => {
       const _component_image = __syscom_0$2;
       const _component_view = __syscom_3;
-      const _component_loading = _sfc_main$c;
+      const _component_loading = _sfc_main$8;
       return openBlock(), createBlock(_component_view, {
         style: { "flex": "1" },
         class: "uni-preview-image-item-background"
@@ -32989,8 +32923,8 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent({
   }
 });
 const _style_0$1 = "\n.uni-preview-image-item {\n		width: 100%;\n		height: 100%;\n		transition-property: transform;\n		transition-duration: 0ms;\n}\n.uni-preview-image-patch {\n		width: 100%;\n		height: 100%;\n		background-color: transparent;\n		position: absolute;\n}\n.uni-preview-image-loading {\n		position: absolute;\n		top: 0;\n		bottom: 0;\n		left: 0;\n		right: 0;\n		pointer-events: none;\n}\n.uni-preview-image-item-background {\n		background-color: black;\n		overflow: hidden;\n}\n.uni-preview-image-tips-retry {\n		color: blue;\n		font-size: 18px;\n		margin-top: 16px;\n		text-decoration-line: underline;\n}\n.uni-preview-image-tips-error {\n		font-size: 18px;\n		color: red;\n}\n";
-const UniPreviewImageItem = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["styles", [_style_0$1]]]);
-const _sfc_main$2 = /* @__PURE__ */ defineComponent({
+const UniPreviewImageItem = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["styles", [_style_0$1]]]);
+const _sfc_main$1 = /* @__PURE__ */ defineComponent({
   __name: "uni-previewImageNonVapor",
   props: {
     urls: {
@@ -33137,8 +33071,8 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
   }
 });
 const _style_0 = "\n.uni-preview-image-swiper {\n		overflow: hidden;\n}\n.uni-preview-image-swiper-item {\n		background-color: black;\n		overflow: hidden;\n}\n.uni-preview-image-default-indicator {\n		width: 9px;\n		height: 9px;\n		border-style: solid;\n		border-radius: 9px;\n		margin: 2px 3px;\n		border-width: .1px;\n		border-color: #AAAAAA;\n}\n.uni-preview-image-default-indicator-default {\n		background-color: #AAAAAA;\n}\n.uni-preview-image-default-indicator-active {\n		background-color: #ffffff;\n}\n.uni-preview-image-default-indicator-layout {\n		bottom: var(--uni-safe-area-inset-bottom);\n		margin-bottom: 8px;\n		flex-direction: row;\n		position: absolute;\n		left: 0px;\n		right: 0px;\n		justify-content: center;\n}\n.uni-preview-image-number-indicator-layout {\n		position: absolute;\n		left: 0;\n		right: 0;\n		top: var(--uni-safe-area-inset-top);\n		margin-top: 8px;\n}\n.uni-preview-image-number-indicator {\n		color: white;\n		font-size: 16px;\n		margin: auto;\n		padding: 8px 20px;\n		background-color: rgba(0, 0, 0, .3);\n		line-height: 1;\n		border-radius: 32px;\n}\n";
-const UniPreviewImageNonVapor = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["styles", [_style_0]]]);
-const _sfc_main$1 = /* @__PURE__ */ defineComponent({
+const UniPreviewImageNonVapor = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["styles", [_style_0]]]);
+const _sfc_main = /* @__PURE__ */ defineComponent({
   __name: "previewImage",
   setup(__props) {
     const urls = ref(null);
@@ -33363,10 +33297,10 @@ function mergeComponentStyles(page, components) {
 }
 const registerPreviewImageOnce = /* @__PURE__ */ once(() => {
   mergeComponentStyles(
-    _sfc_main$1,
+    _sfc_main,
     [UniPreviewImageNonVapor, UniPreviewImageItem]
   );
-  registerSystemRoute("uni:previewImage", _sfc_main$1);
+  registerSystemRoute("uni:previewImage", _sfc_main);
 });
 const closePreviewImage = () => {
   registerPreviewImageOnce();
@@ -33674,33 +33608,25 @@ const UniServiceJSBridge$1 = /* @__PURE__ */ extend(ServiceJSBridge, {
     UniViewJSBridge.subscribeHandler(event, args, pageId);
   }
 });
-const _hoisted_1 = ["onClick"];
-const _hoisted_2 = ["src"];
-const _hoisted_3 = ["src"];
 const UNI_TABBAR_ICON_FONT = "UniTabbarIconFont";
-const DEFAULT_BG_COLOR = "#f7f7fa";
-const BLUR_EFFECT_COLOR_DARK = "rgb(0, 0, 0, 0.8)";
-const BLUR_EFFECT_COLOR_LIGHT = "rgb(250, 250, 250, 0.8)";
-const _sfc_main = /* @__PURE__ */ defineComponent({
-  ...{
-    name: "TabBar",
-    __reserved: true,
-    compatConfig: { MODE: 3 }
-  },
-  __name: "tabBar",
-  setup(__props) {
-    const hasMidButton = __UNI_FEATURE_TABBAR_MIDBUTTON__;
-    const _middleButton = {
-      width: "50px",
-      height: "50px",
-      iconWidth: "24px"
-    };
+const _middleButton = {
+  width: "50px",
+  height: "50px",
+  iconWidth: "24px"
+};
+const TabBar = /* @__PURE__ */ defineSystemComponent({
+  name: "TabBar",
+  setup() {
     const visibleList = ref([]);
     const tabBar = useTabBar();
     useVisibleList(tabBar, visibleList);
     useTabBarCssVar(tabBar);
     const onSwitchTab = useSwitchTab(useRoute(), tabBar, visibleList);
-    const { style, borderStyle, placeholderStyle } = useTabBarStyle(tabBar);
+    const {
+      style,
+      borderStyle,
+      placeholderStyle
+    } = useTabBarStyle(tabBar);
     onMounted(() => {
       if (tabBar.iconfontSrc) {
         loadFontFace({
@@ -33709,273 +33635,281 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
         });
       }
     });
-    function useTabBarCssVar(tabBar2) {
-      watch(
-        () => tabBar2.shown,
-        (value) => {
-          updatePageCssVar({
-            "--window-bottom": normalizeWindowBottom(
-              value ? parseInt(tabBar2.height) : 0
-            )
-          });
-        }
-      );
-    }
-    function useVisibleList(tabBar2, visibleList2) {
-      const internalMidButton = ref(
-        extend({ type: "midButton" }, tabBar2.midButton)
-      );
-      function setVisibleList() {
-        let tempList = [];
-        tempList = tabBar2.list.filter((item) => item.visible !== false);
-        if (hasMidButton && tabBar2.midButton) {
-          internalMidButton.value = extend(
-            {},
-            _middleButton,
-            internalMidButton.value,
-            tabBar2.midButton
-          );
-          tempList = tempList.filter((item) => !isMidButton(item));
-          if (tempList.length % 2 === 0) {
-            tempList.splice(
-              Math.floor(tempList.length / 2),
-              0,
-              internalMidButton.value
-            );
-          }
-        }
-        visibleList2.value = tempList;
-      }
-      watchEffect(setVisibleList);
-    }
-    function useSwitchTab(route, tabBar2, visibleList2) {
-      watchEffect(() => {
-        const meta = route.meta;
-        if (meta.isTabBar) {
-          const pagePath = meta.route;
-          const index2 = visibleList2.value.findIndex(
-            (item) => item.pagePath === pagePath
-          );
-          tabBar2.selectedIndex = index2;
-        }
-      });
-      return (tabBarItem, index2) => {
-        const { type } = tabBarItem;
-        if (hasMidButton && type === "midButton") {
-          return UniServiceJSBridge.invokeOnCallback(
-            API_ON_TAB_BAR_MID_BUTTON_TAP
-          );
-        }
-        const { pagePath, text: text2 } = tabBarItem;
-        let url = addLeadingSlash(pagePath);
-        if (url === __uniRoutes[0].alias) {
-          url = "/";
-        }
-        if (route.path !== url) {
-          uni.switchTab({ from: "tabBar", url, tabBarText: text2 });
-        } else {
-          invokeHook("onTabItemTap", {
-            index: index2,
-            text: text2,
-            pagePath
-          });
-        }
-      };
-    }
-    const BLUR_EFFECT_COLORS = {
-      dark: BLUR_EFFECT_COLOR_DARK,
-      light: BLUR_EFFECT_COLOR_LIGHT,
-      extralight: BLUR_EFFECT_COLOR_LIGHT
-    };
-    const BORDER_COLORS = {
-      white: "rgba(255, 255, 255, 0.33)",
-      black: "rgba(0, 0, 0, 0.33)"
-    };
-    function useTabBarStyle(tabBar2) {
-      const style2 = computed(() => {
-        let backgroundColor = tabBar2.backgroundColor;
-        const blurEffect = tabBar2.blurEffect;
-        if (!backgroundColor) {
-          if (cssBackdropFilter && blurEffect && blurEffect !== "none") {
-            backgroundColor = BLUR_EFFECT_COLORS[blurEffect];
-          }
-        }
-        return {
-          backgroundColor: backgroundColor || DEFAULT_BG_COLOR,
-          backdropFilter: blurEffect !== "none" ? "blur(10px)" : blurEffect
-        };
-      });
-      const borderStyle2 = computed(() => {
-        const { borderStyle: borderStyle3, borderColor } = tabBar2;
-        if (borderColor && isString(borderColor)) {
-          return {
-            backgroundColor: borderColor
-          };
-        }
-        return {
-          backgroundColor: BORDER_COLORS[borderStyle3] || BORDER_COLORS["black"]
-        };
-      });
-      const placeholderStyle2 = computed(() => {
-        return {
-          height: tabBar2.height
-        };
-      });
-      return {
-        style: style2,
-        borderStyle: borderStyle2,
-        placeholderStyle: placeholderStyle2
-      };
-    }
-    function isMidButton(item) {
-      return item.type === "midButton";
-    }
-    function isRenderedMidButton(item) {
-      return hasMidButton && isMidButton(item);
-    }
-    function getMidButton(item) {
-      return item;
-    }
-    function getItemStyle(item) {
-      if (!isRenderedMidButton(item)) {
-        return;
-      }
-      return {
-        flex: "0 0 " + item.width,
-        position: "relative"
-      };
-    }
-    function getMidButtonStyle(item) {
-      const { width, height, backgroundImage } = getMidButton(item);
-      return {
-        width,
-        height,
-        backgroundImage: backgroundImage ? "url('" + getRealPath(backgroundImage) + "')" : "none"
-      };
-    }
-    function isSelected(index2) {
-      return tabBar.selectedIndex === index2;
-    }
-    function getTextColor(index2) {
-      return isSelected(index2) ? tabBar.selectedColor : tabBar.color;
-    }
-    function getIconPath(item, index2) {
-      return (isSelected(index2) ? item.selectedIconPath || item.iconPath : item.iconPath) || "";
-    }
-    function getIconfontText(item, index2) {
-      if (!item.iconfont) {
-        return;
-      }
-      return isSelected(index2) ? item.iconfont.selectedText || item.iconfont.text : item.iconfont.text;
-    }
-    function getIconfontColor(item, index2) {
-      if (!item.iconfont) {
-        return;
-      }
-      return isSelected(index2) ? item.iconfont.selectedColor || item.iconfont.color : item.iconfont.color;
-    }
-    function getIconClass(item) {
-      return "uni-tabbar__icon" + (item.text ? " uni-tabbar__icon__diff" : "");
-    }
-    function getIconStyle() {
-      return { width: tabBar.iconWidth, height: tabBar.iconWidth };
-    }
-    function getIconfontStyle(item, index2) {
-      var _a;
-      return {
-        fontSize: ((_a = item.iconfont) == null ? void 0 : _a.fontSize) || tabBar.iconWidth,
-        color: getIconfontColor(item, index2) || BLUR_EFFECT_COLOR_DARK
-      };
-    }
-    function getLabelStyle(item, index2) {
-      return {
-        color: getTextColor(index2),
-        fontSize: tabBar.fontSize,
-        lineHeight: !item.iconPath ? 1.8 : "normal",
-        marginTop: !item.iconPath ? "inherit" : tabBar.spacing
-      };
-    }
-    return (_ctx, _cache) => {
-      return openBlock(), createElementBlock("uni-tabbar", {
-        class: normalizeClass("uni-tabbar-" + unref(tabBar).position)
-      }, [
-        createElementVNode("div", {
-          class: "uni-tabbar",
-          style: normalizeStyle(unref(style))
-        }, [
-          createElementVNode("div", {
-            class: "uni-tabbar-border",
-            style: normalizeStyle(unref(borderStyle))
-          }, null, 4),
-          (openBlock(true), createElementBlock(Fragment, null, renderList(visibleList.value, (item, index2) => {
-            return openBlock(), createElementBlock("div", {
-              key: isRenderedMidButton(item) ? "midButton" : index2,
-              class: "uni-tabbar__item",
-              style: normalizeStyle(getItemStyle(item)),
-              onClick: ($event) => unref(onSwitchTab)(item, index2)
-            }, [
-              isRenderedMidButton(item) ? (openBlock(), createElementBlock("div", {
-                key: 0,
-                class: "uni-tabbar__mid",
-                style: normalizeStyle(getMidButtonStyle(item))
-              }, [
-                getIconPath(item, index2) ? (openBlock(), createElementBlock("img", {
-                  key: 0,
-                  style: normalizeStyle({
-                    width: getMidButton(item).iconWidth,
-                    height: getMidButton(item).iconWidth
-                  }),
-                  src: unref(getRealPath)(getIconPath(item, index2))
-                }, null, 12, _hoisted_2)) : createCommentVNode("", true)
-              ], 4)) : createCommentVNode("", true),
-              createElementVNode("div", {
-                class: "uni-tabbar__bd",
-                style: normalizeStyle({ height: unref(tabBar).height })
-              }, [
-                getIconfontText(item, index2) ? (openBlock(), createElementBlock("div", {
-                  key: 0,
-                  class: normalizeClass(getIconClass(item)),
-                  style: normalizeStyle(getIconStyle())
-                }, [
-                  item.type !== "midButton" ? (openBlock(), createElementBlock("div", {
-                    key: 0,
-                    class: "uni-tabbar__iconfont",
-                    style: normalizeStyle(getIconfontStyle(item, index2))
-                  }, toDisplayString(getIconfontText(item, index2)), 5)) : createCommentVNode("", true)
-                ], 6)) : getIconPath(item, index2) ? (openBlock(), createElementBlock("div", {
-                  key: 1,
-                  class: normalizeClass(getIconClass(item)),
-                  style: normalizeStyle(getIconStyle())
-                }, [
-                  item.type !== "midButton" ? (openBlock(), createElementBlock("img", {
-                    key: 0,
-                    src: unref(getRealPath)(getIconPath(item, index2))
-                  }, null, 8, _hoisted_3)) : createCommentVNode("", true)
-                ], 6)) : createCommentVNode("", true),
-                item.text ? (openBlock(), createElementBlock("div", {
-                  key: 2,
-                  class: "uni-tabbar__label",
-                  style: normalizeStyle(getLabelStyle(item, index2))
-                }, toDisplayString(item.text), 5)) : createCommentVNode("", true),
-                item.redDot ? (openBlock(), createElementBlock("div", {
-                  key: 3,
-                  class: normalizeClass([
-                    "uni-tabbar__reddot",
-                    item.badge ? "uni-tabbar__badge" : ""
-                  ])
-                }, toDisplayString(item.badge), 3)) : createCommentVNode("", true)
-              ], 4)
-            ], 12, _hoisted_1);
-          }), 128))
-        ], 4),
-        createElementVNode("div", {
-          class: "uni-placeholder",
-          style: normalizeStyle(unref(placeholderStyle))
-        }, null, 4)
-      ], 2);
+    return () => {
+      const tabBarItemsTsx = createTabBarItemsTsx(tabBar, onSwitchTab, visibleList);
+      return createVNode("uni-tabbar", {
+        "class": "uni-tabbar-" + tabBar.position
+      }, [createVNode("div", {
+        "class": "uni-tabbar",
+        "style": style.value
+      }, [createVNode("div", {
+        "class": "uni-tabbar-border",
+        "style": borderStyle.value
+      }, null, 4), tabBarItemsTsx], 4), createVNode("div", {
+        "class": "uni-placeholder",
+        "style": placeholderStyle.value
+      }, null, 4)], 2);
     };
   }
 });
+function useTabBarCssVar(tabBar) {
+  watch(() => tabBar.shown, (value) => {
+    updatePageCssVar({
+      "--window-bottom": normalizeWindowBottom(value ? parseInt(tabBar.height) : 0)
+    });
+  });
+}
+function useVisibleList(tabBar, visibleList) {
+  const internalMidButton = ref(extend({
+    type: "midButton"
+  }, tabBar.midButton));
+  function setVisibleList() {
+    let tempList = [];
+    tempList = tabBar.list.filter((item) => item.visible !== false);
+    if (__UNI_FEATURE_TABBAR_MIDBUTTON__ && tabBar.midButton) {
+      internalMidButton.value = extend({}, _middleButton, internalMidButton.value, tabBar.midButton);
+      tempList = tempList.filter((item) => !isMidButton(item));
+      if (tempList.length % 2 === 0) {
+        tempList.splice(Math.floor(tempList.length / 2), 0, internalMidButton.value);
+      }
+    }
+    visibleList.value = tempList;
+  }
+  watchEffect(setVisibleList);
+}
+function useSwitchTab(route, tabBar, visibleList) {
+  watchEffect(() => {
+    const meta = route.meta;
+    if (meta.isTabBar) {
+      const pagePath = meta.route;
+      const index2 = visibleList.value.findIndex((item) => item.pagePath === pagePath);
+      tabBar.selectedIndex = index2;
+    }
+  });
+  return (tabBarItem, index2) => {
+    const {
+      type
+    } = tabBarItem;
+    return () => {
+      if (__UNI_FEATURE_TABBAR_MIDBUTTON__ && type === "midButton") {
+        return UniServiceJSBridge.invokeOnCallback(API_ON_TAB_BAR_MID_BUTTON_TAP);
+      }
+      const {
+        pagePath,
+        text: text2
+      } = tabBarItem;
+      let url = addLeadingSlash(pagePath);
+      if (url === __uniRoutes[0].alias) {
+        url = "/";
+      }
+      if (route.path !== url) {
+        uni.switchTab({
+          from: "tabBar",
+          url,
+          tabBarText: text2
+        });
+      } else {
+        invokeHook("onTabItemTap", {
+          index: index2,
+          text: text2,
+          pagePath
+        });
+      }
+    };
+  };
+}
+const DEFAULT_BG_COLOR = "#f7f7fa";
+const BLUR_EFFECT_COLOR_DARK = "rgb(0, 0, 0, 0.8)";
+const BLUR_EFFECT_COLOR_LIGHT = "rgb(250, 250, 250, 0.8)";
+const BLUR_EFFECT_COLORS = {
+  dark: BLUR_EFFECT_COLOR_DARK,
+  light: BLUR_EFFECT_COLOR_LIGHT,
+  extralight: BLUR_EFFECT_COLOR_LIGHT
+};
+const BORDER_COLORS = {
+  white: "rgba(255, 255, 255, 0.33)",
+  black: "rgba(0, 0, 0, 0.33)"
+};
+function useTabBarStyle(tabBar) {
+  const style = computed(() => {
+    let backgroundColor = tabBar.backgroundColor;
+    const blurEffect = tabBar.blurEffect;
+    if (!backgroundColor) {
+      if (cssBackdropFilter && blurEffect && blurEffect !== "none") {
+        backgroundColor = BLUR_EFFECT_COLORS[blurEffect];
+      }
+    }
+    return {
+      backgroundColor: backgroundColor || DEFAULT_BG_COLOR,
+      backdropFilter: blurEffect !== "none" ? "blur(10px)" : blurEffect
+    };
+  });
+  const borderStyle = computed(() => {
+    const {
+      borderStyle: borderStyle2,
+      borderColor
+    } = tabBar;
+    if (borderColor && isString(borderColor)) {
+      return {
+        backgroundColor: borderColor
+      };
+    }
+    return {
+      backgroundColor: BORDER_COLORS[borderStyle2] || BORDER_COLORS["black"]
+    };
+  });
+  const placeholderStyle = computed(() => {
+    return {
+      height: tabBar.height
+    };
+  });
+  return {
+    style,
+    borderStyle,
+    placeholderStyle
+  };
+}
+function isMidButton(item) {
+  return item.type === "midButton";
+}
+function createTabBarItemsTsx(tabBar, onSwitchTab, visibleList) {
+  const {
+    selectedIndex,
+    selectedColor,
+    color
+  } = tabBar;
+  return visibleList.value.map((item, index2) => {
+    const selected = selectedIndex === index2;
+    const textColor = selected ? selectedColor : color;
+    const iconPath = (selected ? item.selectedIconPath || item.iconPath : item.iconPath) || "";
+    const iconfontText = item.iconfont ? selected ? item.iconfont.selectedText || item.iconfont.text : item.iconfont.text : void 0;
+    const iconfontColor = item.iconfont ? selected ? item.iconfont.selectedColor || item.iconfont.color : item.iconfont.color : void 0;
+    if (!__UNI_FEATURE_TABBAR_MIDBUTTON__) {
+      return createTabBarItemTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar, index2, onSwitchTab);
+    }
+    return isMidButton(item) ? createTabBarMidButtonTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar, index2, onSwitchTab) : createTabBarItemTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar, index2, onSwitchTab);
+  });
+}
+function createTabBarItemTsx(color, iconPath, iconfontText, iconfontColor, tabBarItem, tabBar, index2, onSwitchTab) {
+  return createVNode("div", {
+    "key": index2,
+    "class": "uni-tabbar__item",
+    "onClick": onSwitchTab(tabBarItem, index2)
+  }, [createTabBarItemBdTsx(color, iconPath || "", iconfontText, iconfontColor, tabBarItem, tabBar)], 8, ["onClick"]);
+}
+function createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, tabBarItem, tabBar) {
+  const {
+    height
+  } = tabBar;
+  return createVNode("div", {
+    "class": "uni-tabbar__bd",
+    "style": {
+      height
+    }
+  }, [iconfontText ? createTabBarItemIconfontTsx(iconfontText, iconfontColor || BLUR_EFFECT_COLOR_DARK, tabBarItem, tabBar) : iconPath && createTabBarItemIconTsx(iconPath, tabBarItem, tabBar), tabBarItem.text && createTabBarItemTextTsx(color, tabBarItem, tabBar), tabBarItem.redDot && createTabBarItemRedDotTsx(tabBarItem.badge)], 4);
+}
+function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar) {
+  const {
+    type,
+    text: text2
+  } = tabBarItem;
+  const {
+    iconWidth
+  } = tabBar;
+  const clazz = "uni-tabbar__icon" + (text2 ? " uni-tabbar__icon__diff" : "");
+  const style = {
+    width: iconWidth,
+    height: iconWidth
+  };
+  return createVNode("div", {
+    "class": clazz,
+    "style": style
+  }, [type !== "midButton" && createVNode("img", {
+    "src": getRealPath(iconPath)
+  }, null, 8, ["src"])], 6);
+}
+function createTabBarItemIconfontTsx(iconfontText, iconfontColor, tabBarItem, tabBar) {
+  var _a;
+  const {
+    type,
+    text: text2
+  } = tabBarItem;
+  const {
+    iconWidth
+  } = tabBar;
+  const clazz = "uni-tabbar__icon" + (text2 ? " uni-tabbar__icon__diff" : "");
+  const style = {
+    width: iconWidth,
+    height: iconWidth
+  };
+  const iconfontStyle = {
+    fontSize: ((_a = tabBarItem.iconfont) == null ? void 0 : _a.fontSize) || iconWidth,
+    color: iconfontColor
+  };
+  return createVNode("div", {
+    "class": clazz,
+    "style": style
+  }, [type !== "midButton" && createVNode("div", {
+    "class": "uni-tabbar__iconfont",
+    "style": iconfontStyle
+  }, [iconfontText], 4)], 6);
+}
+function createTabBarItemTextTsx(color, tabBarItem, tabBar) {
+  const {
+    iconPath,
+    text: text2
+  } = tabBarItem;
+  const {
+    fontSize,
+    spacing
+  } = tabBar;
+  const style = {
+    color,
+    fontSize,
+    lineHeight: !iconPath ? 1.8 : "normal",
+    marginTop: !iconPath ? "inherit" : spacing
+  };
+  return createVNode("div", {
+    "class": "uni-tabbar__label",
+    "style": style
+  }, [text2], 4);
+}
+function createTabBarItemRedDotTsx(badge) {
+  const clazz = "uni-tabbar__reddot" + (badge ? " uni-tabbar__badge" : "");
+  return createVNode("div", {
+    "class": clazz
+  }, [badge], 2);
+}
+function createTabBarMidButtonTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar, index2, onSwitchTab) {
+  const {
+    width,
+    height,
+    backgroundImage,
+    iconWidth
+  } = midButton;
+  return createVNode("div", {
+    "key": "midButton",
+    "class": "uni-tabbar__item",
+    "style": {
+      flex: "0 0 " + width,
+      position: "relative"
+    },
+    "onClick": onSwitchTab(midButton, index2)
+  }, [createVNode("div", {
+    "class": "uni-tabbar__mid",
+    "style": {
+      width,
+      height,
+      backgroundImage: backgroundImage ? "url('" + getRealPath(backgroundImage) + "')" : "none"
+    }
+  }, [iconPath && createVNode("img", {
+    "style": {
+      width: iconWidth,
+      height: iconWidth
+    },
+    "src": getRealPath(iconPath)
+  }, null, 12, ["src"])], 4), createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar)], 12, ["onClick"]);
+}
 const DEFAULT_CSS_VAR_VALUE = "0px";
 const LayoutComponent = /* @__PURE__ */ defineSystemComponent({
   name: "Layout",
@@ -34203,7 +34137,7 @@ function useShowTabBar(emit2) {
   return showTabBar2;
 }
 function createTabBarTsx(showTabBar2) {
-  return withDirectives(createVNode(_sfc_main, null, null, 512), [[vShow, showTabBar2.value]]);
+  return withDirectives(createVNode(TabBar, null, null, 512), [[vShow, showTabBar2.value]]);
 }
 function createPageVNode() {
   return createVNode(__uniRoutes[0].component);
@@ -34392,8 +34326,8 @@ export {
   index$5 as Ad,
   index$4 as AdContentPage,
   index$3 as AdDraw,
-  _sfc_main$d as AsyncErrorComponent,
-  _sfc_main$e as AsyncLoadingComponent,
+  _sfc_main$a as AsyncErrorComponent,
+  _sfc_main$b as AsyncLoadingComponent,
   index$r as Button,
   index$2 as Camera,
   indexX$4 as Canvas,
@@ -34412,14 +34346,14 @@ export {
   index$h as ListView,
   index$1 as LivePlayer,
   index as LivePusher,
-  _sfc_main$c as Loading,
+  _sfc_main$8 as Loading,
   __syscom_0 as Map,
   MatchMedia,
   MovableArea,
   MovableView,
   index$l as Navigator,
   PageComponent,
-  _sfc_main$8 as PageContainer,
+  _sfc_main$7 as PageContainer,
   index$6 as Picker,
   PickerView,
   PickerViewColumn,

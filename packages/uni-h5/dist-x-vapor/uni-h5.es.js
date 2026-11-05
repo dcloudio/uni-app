@@ -1,7 +1,7 @@
 import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, getUniElementPage, initVaporDataset, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, LINEFEED, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, createUniDOMStringMap, parseUrl, stringifyQuery as stringifyQuery$1, decodedQuery, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, setUniElementPage, ON_UNLOAD, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, RESPONSIVE_MIN_WIDTH, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, scrollTo, onCreateVueApp } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2, onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import * as Vue from "vue";
-import { defineVaporComponent, createPlainElement, template, ref, watch, withModifiers, setAttr, getCurrentInstance, warn, unref, reactive, onMounted, onBeforeUnmount, computed, inject, onBeforeMount, nextTick, Fragment, EffectScope, createTemplateRefSetter, child, next, renderEffect, setDynamicProps, applyVShow, txt, setInsertionState, createIf, on as on$1, setBlockKey, setValue as setValue$1, setProp, setClass, setStyle, onActivated, setClassName, shallowRef, watchEffect, provide, injectHook, isReactive, markRaw, querySelectorInComponent, querySelectorAllInComponent, createFor, setText, toDisplayString, withComponentId, createDynamicComponent, setStaticTemplateRef, createComponent as createComponent$1, VaporKeepAlive, extend as extend$1, onServerPrefetch, initUniPageHooks, onBeforeActivate, onBeforeDeactivate, onUnmounted, initUniElementType, initUniElement, setHtml, createSlot, toRaw, createKeyedFragment, createTextNode, remove as remove$1, effectScope, insert, syncSelectValue, setHover, createComponentWithFallback, useAttrs as useAttrs$1, useSlots, getBlockFirstNode, isInSSRComponentSetup, normalizeUniText, queuePostFlushCb, logError, setUniPageHooksInitializer, setRealPathResolver, setNativeEventNormalizer, createVaporApp, VaporTransition, nthChild, withImageEventDetail, setImageMode, setImageSrc } from "vue";
+import { defineVaporComponent, createPlainElement, template, ref, watch, withModifiers, setAttr, getCurrentInstance, warn, unref, reactive, onMounted, onBeforeUnmount, computed, inject, onBeforeMount, nextTick, Fragment, EffectScope, createTemplateRefSetter, child, next, renderEffect, setDynamicProps, applyVShow, txt, setInsertionState, createIf, on as on$1, setBlockKey, setValue as setValue$1, setProp, setClass, setStyle, onActivated, setClassName, shallowRef, watchEffect, provide, injectHook, isReactive, markRaw, querySelectorInComponent, querySelectorAllInComponent, createFor, extend as extend$1, VaporKeepAlive, createDynamicComponent, setText, toDisplayString, onServerPrefetch, initUniPageHooks, onBeforeActivate, onBeforeDeactivate, createComponent as createComponent$1, onUnmounted, initUniElementType, initUniElement, setStaticTemplateRef, setHtml, createSlot, toRaw, createKeyedFragment, createTextNode, remove as remove$1, effectScope, insert, syncSelectValue, setHover, withComponentId, createComponentWithFallback, useAttrs as useAttrs$1, useSlots, getBlockFirstNode, isInSSRComponentSetup, normalizeUniText, queuePostFlushCb, logError, setUniPageHooksInitializer, setRealPathResolver, setNativeEventNormalizer, createVaporApp, VaporTransition, nthChild, withImageEventDetail, setImageMode, setImageSrc } from "vue";
 import { capitalize, camelize, isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, hyphenate, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, EMPTY_OBJ, Namespaces } from "@vue/shared";
 import { useRoute, isNavigationFailure, VaporRouterView, useRouter, createRouter, createWebHistory, createWebHashHistory } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -218,7 +218,7 @@ const canvasProps = {
     default: false
   }
 };
-const _t0$g = template("<canvas uni-canvas class=uni-canvas-canvas>", 3);
+const _t0$j = template("<canvas uni-canvas class=uni-canvas-canvas>", 3);
 const indexVapor$8 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Canvas",
   props: canvasProps,
@@ -228,7 +228,7 @@ const indexVapor$8 = /* @__PURE__ */ defineBuiltInComponent({
   },
   setup() {
     const root = (() => {
-      const _n0 = _t0$g();
+      const _n0 = _t0$j();
       return _n0;
     })();
     initCanvasElement(root);
@@ -3351,11 +3351,11 @@ function setNodes(anchor, ...values) {
 function createNodes(...values) {
   return resolveValues(values);
 }
-const _t0$f = template("<input tabindex=-1>");
-const _t1$4 = template("<input>");
-const _t2$3 = template("<form action novalidate class=uni-input-form> ");
-const _t3$3 = template("<div uni-input uni-view><div class=uni-input-wrapper> <div> </div>", 1);
-const _t4$3 = template("<div>", 1);
+const _t0$i = template("<input tabindex=-1>");
+const _t1$7 = template("<input>");
+const _t2$6 = template("<form action novalidate class=uni-input-form> ");
+const _t3$6 = template("<div uni-input uni-view><div class=uni-input-wrapper> <div> </div>", 1);
+const _t4$6 = template("<div>", 1);
 const __syscom_0$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
   props: props$9,
@@ -3369,7 +3369,7 @@ const __syscom_0$2 = /* @__PURE__ */ defineBuiltInComponent({
     const renderInput = () => (() => {
       const _setTemplateRef = createTemplateRefSetter();
       const _n0 = createIf(() => props2.disabled && fixDisabledColor, () => {
-        const _n2 = _t0$f();
+        const _n2 = _t0$i();
         setBlockKey(_n2, "disabled-input");
         on$1(
           _n2,
@@ -3390,7 +3390,7 @@ const __syscom_0$2 = /* @__PURE__ */ defineBuiltInComponent({
         });
         return _n2;
       }, () => {
-        const _n4 = _t1$4();
+        const _n4 = _t1$7();
         setBlockKey(_n4, "input");
         on$1(_n4, "input", withModifiers(onInput, ["stop"]));
         on$1(_n4, "keyup", onKeyUpEnter);
@@ -3414,13 +3414,13 @@ const __syscom_0$2 = /* @__PURE__ */ defineBuiltInComponent({
     })();
     const root = (() => {
       const _setTemplateRef = createTemplateRefSetter();
-      const _n8 = _t3$3();
+      const _n8 = _t3$6();
       const _n7 = child(_n8);
       const _n0 = child(_n7, true);
       const _n1 = next(_n0);
       setNodes(_n0, () => props2.selectionClass && (() => {
         const _setTemplateRef2 = createTemplateRefSetter();
-        const _n02 = _t4$3();
+        const _n02 = _t4$6();
         renderEffect(() => {
           setDynamicProps(_n02, [scopedAttrsState.attrs, {
             class: ["uni-field-selection-probe", props2.selectionClass],
@@ -3440,7 +3440,7 @@ const __syscom_0$2 = /* @__PURE__ */ defineBuiltInComponent({
       }]));
       setInsertionState(_n7, 2);
       createIf(() => props2.confirmType === "search", () => {
-        const _n4 = _t2$3();
+        const _n4 = _t2$6();
         on$1(_n4, "submit", (event) => event.preventDefault());
         const _x4 = txt(_n4);
         setNodes(_x4, () => renderInput());
@@ -3509,7 +3509,7 @@ function useResizeSensorLifecycle(rootRef, props2, update, reset) {
     }
   });
 }
-const _t0$e = template("<div uni-resize-sensor><div><div></div></div><div><div>", 1);
+const _t0$h = template("<div uni-resize-sensor><div><div></div></div><div><div>", 1);
 const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
   name: "ResizeSensor",
   props: resizeSensorProps,
@@ -3518,7 +3518,7 @@ const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
     const { rootRef, update } = useResizeSensor(props2, emit2);
     const root = (() => {
       const _setTemplateRef = createTemplateRefSetter();
-      const _n2 = _t0$e();
+      const _n2 = _t0$h();
       const _n0 = child(_n2);
       const _n1 = next(_n0);
       on$1(_n0, "scroll", update);
@@ -3688,11 +3688,11 @@ function useTextarea(props2, { emit: emit2, expose }) {
     onKeyUpEnter
   };
 }
-const _t0$d = template("<textarea tabindex=-1>");
-const _t1$3 = template("<textarea>");
-const _t2$2 = template("<form action class=uni-input-form> ");
-const _t3$2 = template("<div uni-textarea uni-view><div class=uni-textarea-wrapper> <div> </div><div class=uni-textarea-line> </div><div> </div>", 1);
-const _t4$2 = template("<div>", 1);
+const _t0$g = template("<textarea tabindex=-1>");
+const _t1$6 = template("<textarea>");
+const _t2$5 = template("<form action class=uni-input-form> ");
+const _t3$5 = template("<div uni-textarea uni-view><div class=uni-textarea-wrapper> <div> </div><div class=uni-textarea-line> </div><div> </div>", 1);
+const _t4$5 = template("<div>", 1);
 const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$8,
@@ -3706,7 +3706,7 @@ const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
     const renderTextarea = () => (() => {
       const _setTemplateRef = createTemplateRefSetter();
       const _n0 = createIf(() => props2.disabled && fixDisabledColor, () => {
-        const _n2 = _t0$d();
+        const _n2 = _t0$g();
         setBlockKey(_n2, "disabled-textarea");
         on$1(
           _n2,
@@ -3732,7 +3732,7 @@ const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
         });
         return _n2;
       }, () => {
-        const _n4 = _t1$3();
+        const _n4 = _t1$6();
         setBlockKey(_n4, "textarea");
         on$1(_n4, "keydown", onKeyDownEnter);
         on$1(_n4, "keyup", onKeyUpEnter);
@@ -3761,7 +3761,7 @@ const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
     })();
     const root = (() => {
       const _setTemplateRef = createTemplateRefSetter();
-      const _n12 = _t3$2();
+      const _n12 = _t3$5();
       const _n11 = child(_n12);
       const _n0 = child(_n11, true);
       const _n1 = next(_n0);
@@ -3770,7 +3770,7 @@ const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
       const _n3 = child(_n5, true);
       setNodes(_n0, () => props2.selectionClass && (() => {
         const _setTemplateRef2 = createTemplateRefSetter();
-        const _n02 = _t4$2();
+        const _n02 = _t4$5();
         renderEffect(() => {
           setDynamicProps(_n02, [scopedAttrsState.attrs, {
             class: ["uni-field-selection-probe", props2.selectionClass],
@@ -3785,7 +3785,7 @@ const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
       const _x1 = txt(_n1);
       setNodes(_x1, () => props2.placeholder);
       setNodes(_n3, () => valueCompute.value.map((item) => (() => {
-        const _n52 = _t4$2();
+        const _n52 = _t4$5();
         setInsertionState(_n52);
         createIf(() => item.trim(), () => {
           const _n22 = createNodes(() => item);
@@ -3812,7 +3812,7 @@ const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
       });
       setInsertionState(_n11, 4);
       createIf(() => props2.confirmType === "search", () => {
-        const _n8 = _t2$2();
+        const _n8 = _t2$5();
         on$1(_n8, "submit", (event) => event.preventDefault());
         const _x8 = txt(_n8);
         setNodes(_x8, () => renderTextarea());
@@ -4336,9 +4336,9 @@ function assertType(value, type) {
   let valid;
   const expectedType = getType(type);
   if (isSimpleType(expectedType)) {
-    const t12 = typeof value;
-    valid = t12 === expectedType.toLowerCase();
-    if (!valid && t12 === "object") {
+    const t8 = typeof value;
+    valid = t8 === expectedType.toLowerCase();
+    if (!valid && t8 === "object") {
       valid = value instanceof type;
     }
   } else if (expectedType === "Object") {
@@ -5586,39 +5586,39 @@ const predefinedColor = {
 };
 function checkColor(e2) {
   e2 = e2 || "#000000";
-  let t12 = null;
-  if ((t12 = /^#([0-9|A-F|a-f]{6})$/.exec(e2)) != null) {
-    const n = parseInt(t12[1].slice(0, 2), 16);
-    const o = parseInt(t12[1].slice(2, 4), 16);
-    const r = parseInt(t12[1].slice(4), 16);
+  let t8 = null;
+  if ((t8 = /^#([0-9|A-F|a-f]{6})$/.exec(e2)) != null) {
+    const n = parseInt(t8[1].slice(0, 2), 16);
+    const o = parseInt(t8[1].slice(2, 4), 16);
+    const r = parseInt(t8[1].slice(4), 16);
     return [n, o, r, 255];
   }
-  if ((t12 = /^#([0-9|A-F|a-f]{3})$/.exec(e2)) != null) {
-    let n = t12[1].slice(0, 1);
-    let o = t12[1].slice(1, 2);
-    let r = t12[1].slice(2, 3);
+  if ((t8 = /^#([0-9|A-F|a-f]{3})$/.exec(e2)) != null) {
+    let n = t8[1].slice(0, 1);
+    let o = t8[1].slice(1, 2);
+    let r = t8[1].slice(2, 3);
     n = parseInt(n + n, 16);
     o = parseInt(o + o, 16);
     r = parseInt(r + r, 16);
     return [n, o, r, 255];
   }
-  if ((t12 = /^rgb\((.+)\)$/.exec(e2)) != null) {
-    return t12[1].split(",").map(function(e22) {
+  if ((t8 = /^rgb\((.+)\)$/.exec(e2)) != null) {
+    return t8[1].split(",").map(function(e22) {
       return Math.min(255, parseInt(e22.trim()));
     }).concat(255);
   }
-  if ((t12 = /^rgba\((.+)\)$/.exec(e2)) != null) {
-    return t12[1].split(",").map(function(e22, t22) {
+  if ((t8 = /^rgba\((.+)\)$/.exec(e2)) != null) {
+    return t8[1].split(",").map(function(e22, t22) {
       return t22 === 3 ? Math.floor(255 * parseFloat(e22.trim())) : Math.min(255, parseInt(e22.trim()));
     });
   }
   var i = e2.toLowerCase();
   if (hasOwn(predefinedColor, i)) {
-    t12 = /^#([0-9|A-F|a-f]{6,8})$/.exec(predefinedColor[i]);
-    const n = parseInt(t12[1].slice(0, 2), 16);
-    const o = parseInt(t12[1].slice(2, 4), 16);
-    const r = parseInt(t12[1].slice(4, 6), 16);
-    let a = parseInt(t12[1].slice(6, 8), 16);
+    t8 = /^#([0-9|A-F|a-f]{6,8})$/.exec(predefinedColor[i]);
+    const n = parseInt(t8[1].slice(0, 2), 16);
+    const o = parseInt(t8[1].slice(2, 4), 16);
+    const r = parseInt(t8[1].slice(4, 6), 16);
+    let a = parseInt(t8[1].slice(6, 8), 16);
     a = a >= 0 ? a : 255;
     return [n, o, r, a];
   }
@@ -7252,8 +7252,8 @@ const SetClipboardDataOptions = {
   beforeSuccess(res, params) {
     if (!params.showToast)
       return;
-    const { t: t12 } = useI18n();
-    const title = t12("uni.setClipboardData.success");
+    const { t: t8 } = useI18n();
+    const title = t8("uni.setClipboardData.success");
     if (title) {
       uni.showToast({
         title,
@@ -8258,13 +8258,13 @@ const initIntersectionObserverPolyfill = function() {
     var threshold2 = opt_threshold || [0];
     if (!Array.isArray(threshold2))
       threshold2 = [threshold2];
-    return threshold2.sort().filter(function(t12, i, a) {
-      if (typeof t12 != "number" || isNaN(t12) || t12 < 0 || t12 > 1) {
+    return threshold2.sort().filter(function(t8, i, a) {
+      if (typeof t8 != "number" || isNaN(t8) || t8 < 0 || t8 > 1) {
         throw new Error(
           "threshold must be a number between 0 and 1 inclusively"
         );
       }
-      return t12 !== a[i - 1];
+      return t8 !== a[i - 1];
     });
   };
   IntersectionObserver2.prototype._parseRootMargin = function(opt_rootMargin) {
@@ -10608,8 +10608,8 @@ function getNodeInfo(el, fields) {
   }
   if (isArray(fields.properties)) {
     fields.properties.forEach((prop) => {
-      prop = prop.replace(/-([a-z])/g, function(e2, t12) {
-        return t12.toUpperCase();
+      prop = prop.replace(/-([a-z])/g, function(e2, t8) {
+        return t8.toUpperCase();
       });
     });
   }
@@ -10821,32 +10821,36 @@ const loadFontFace = /* @__PURE__ */ defineAsyncApi(
   },
   LoadFontFaceProtocol
 );
-const t0$G = template("<img>");
-const t1$l = template("<div class=uni-tabbar__mid>");
-const t2$b = template("<div class=uni-tabbar__iconfont> ");
-const t3$8 = template("<div>");
-const t4$5 = template("<div class=uni-tabbar__label> ");
-const t5$4 = template("<div> ");
-const t6$3 = template("<div class=uni-tabbar__item><!><div class=uni-tabbar__bd></div>");
-const t7$2 = template("<uni-tabbar><div class=uni-tabbar><div class=uni-tabbar-border></div></div><div class=uni-placeholder>", 1);
+const _t0$f = template("<div class=uni-tabbar><div class=uni-tabbar-border></div> </div>");
+const _t1$5 = template("<div class=uni-placeholder>");
+const _t2$4 = template("<div class=uni-tabbar__iconfont> ");
+const _t3$4 = template("<div>");
+const _t4$4 = template("<img>");
+const _t5$1 = template("<div class=uni-tabbar__label> ");
+const _t6$1 = template("<div> ");
+const _t7$1 = template("<div class=uni-tabbar__item> <div class=uni-tabbar__bd>", 1);
+const _t8$1 = template("<div class=uni-tabbar__mid>", 1);
 const UNI_TABBAR_ICON_FONT = "UniTabbarIconFont";
+const _middleButton = {
+  width: "50px",
+  height: "50px",
+  iconWidth: "24px"
+};
 const DEFAULT_BG_COLOR = "#f7f7fa";
 const BLUR_EFFECT_COLOR_DARK = "rgb(0, 0, 0, 0.8)";
 const BLUR_EFFECT_COLOR_LIGHT = "rgb(250, 250, 250, 0.8)";
-const _sfc_main$G = /* @__PURE__ */ defineVaporComponent({
-  ...{
-    name: "TabBar",
-    __reserved: true,
-    compatConfig: { MODE: 3 }
-  },
-  __name: "tabBar",
-  setup(__props) {
-    const hasMidButton = __UNI_FEATURE_TABBAR_MIDBUTTON__;
-    const _middleButton = {
-      width: "50px",
-      height: "50px",
-      iconWidth: "24px"
-    };
+const BLUR_EFFECT_COLORS = {
+  dark: BLUR_EFFECT_COLOR_DARK,
+  light: BLUR_EFFECT_COLOR_LIGHT,
+  extralight: BLUR_EFFECT_COLOR_LIGHT
+};
+const BORDER_COLORS = {
+  white: "rgba(255, 255, 255, 0.33)",
+  black: "rgba(0, 0, 0, 0.33)"
+};
+const TabBar = /* @__PURE__ */ defineSystemComponent({
+  name: "TabBar",
+  setup() {
     const visibleList = ref([]);
     const tabBar = useTabBar();
     useVisibleList(tabBar, visibleList);
@@ -10861,150 +10865,6 @@ const _sfc_main$G = /* @__PURE__ */ defineVaporComponent({
         });
       }
     });
-    function useTabBarCssVar(tabBar2) {
-      watch(
-        () => tabBar2.shown,
-        (value) => {
-          updatePageCssVar({
-            "--window-bottom": normalizeWindowBottom(
-              value ? parseInt(tabBar2.height) : 0
-            )
-          });
-        }
-      );
-    }
-    function useVisibleList(tabBar2, visibleList2) {
-      const internalMidButton = ref(
-        extend({ type: "midButton" }, tabBar2.midButton)
-      );
-      function setVisibleList() {
-        let tempList = [];
-        tempList = tabBar2.list.filter((item) => item.visible !== false);
-        if (hasMidButton && tabBar2.midButton) {
-          internalMidButton.value = extend(
-            {},
-            _middleButton,
-            internalMidButton.value,
-            tabBar2.midButton
-          );
-          tempList = tempList.filter((item) => !isMidButton(item));
-          if (tempList.length % 2 === 0) {
-            tempList.splice(
-              Math.floor(tempList.length / 2),
-              0,
-              internalMidButton.value
-            );
-          }
-        }
-        visibleList2.value = tempList;
-      }
-      watchEffect(setVisibleList);
-    }
-    function useSwitchTab(route, tabBar2, visibleList2) {
-      watchEffect(() => {
-        const meta = route.meta;
-        if (meta.isTabBar) {
-          const pagePath = meta.route;
-          const index2 = visibleList2.value.findIndex(
-            (item) => item.pagePath === pagePath
-          );
-          tabBar2.selectedIndex = index2;
-        }
-      });
-      return (tabBarItem, index2) => {
-        const { type } = tabBarItem;
-        if (hasMidButton && type === "midButton") {
-          return UniServiceJSBridge.invokeOnCallback(
-            API_ON_TAB_BAR_MID_BUTTON_TAP
-          );
-        }
-        const { pagePath, text: text2 } = tabBarItem;
-        let url = addLeadingSlash(pagePath);
-        if (url === __uniRoutes[0].alias) {
-          url = "/";
-        }
-        if (route.path !== url) {
-          uni.switchTab({ from: "tabBar", url, tabBarText: text2 });
-        } else {
-          invokeHook("onTabItemTap", {
-            index: index2,
-            text: text2,
-            pagePath
-          });
-        }
-      };
-    }
-    const BLUR_EFFECT_COLORS = {
-      dark: BLUR_EFFECT_COLOR_DARK,
-      light: BLUR_EFFECT_COLOR_LIGHT,
-      extralight: BLUR_EFFECT_COLOR_LIGHT
-    };
-    const BORDER_COLORS = {
-      white: "rgba(255, 255, 255, 0.33)",
-      black: "rgba(0, 0, 0, 0.33)"
-    };
-    function useTabBarStyle(tabBar2) {
-      const style2 = computed(() => {
-        let backgroundColor = tabBar2.backgroundColor;
-        const blurEffect = tabBar2.blurEffect;
-        if (!backgroundColor) {
-          if (cssBackdropFilter && blurEffect && blurEffect !== "none") {
-            backgroundColor = BLUR_EFFECT_COLORS[blurEffect];
-          }
-        }
-        return {
-          backgroundColor: backgroundColor || DEFAULT_BG_COLOR,
-          backdropFilter: blurEffect !== "none" ? "blur(10px)" : blurEffect
-        };
-      });
-      const borderStyle2 = computed(() => {
-        const { borderStyle: borderStyle3, borderColor } = tabBar2;
-        if (borderColor && isString(borderColor)) {
-          return {
-            backgroundColor: borderColor
-          };
-        }
-        return {
-          backgroundColor: BORDER_COLORS[borderStyle3] || BORDER_COLORS["black"]
-        };
-      });
-      const placeholderStyle2 = computed(() => {
-        return {
-          height: tabBar2.height
-        };
-      });
-      return {
-        style: style2,
-        borderStyle: borderStyle2,
-        placeholderStyle: placeholderStyle2
-      };
-    }
-    function isMidButton(item) {
-      return item.type === "midButton";
-    }
-    function isRenderedMidButton(item) {
-      return hasMidButton && isMidButton(item);
-    }
-    function getMidButton(item) {
-      return item;
-    }
-    function getItemStyle(item) {
-      if (!isRenderedMidButton(item)) {
-        return;
-      }
-      return {
-        flex: "0 0 " + item.width,
-        position: "relative"
-      };
-    }
-    function getMidButtonStyle(item) {
-      const { width, height, backgroundImage } = getMidButton(item);
-      return {
-        width,
-        height,
-        backgroundImage: backgroundImage ? "url('" + getRealPath(backgroundImage) + "')" : "none"
-      };
-    }
     function isSelected(index2) {
       return tabBar.selectedIndex === index2;
     }
@@ -11026,11 +10886,11 @@ const _sfc_main$G = /* @__PURE__ */ defineVaporComponent({
       }
       return isSelected(index2) ? item.iconfont.selectedColor || item.iconfont.color : item.iconfont.color;
     }
-    function getIconClass(item) {
-      return "uni-tabbar__icon" + (item.text ? " uni-tabbar__icon__diff" : "");
-    }
     function getIconStyle() {
-      return { width: tabBar.iconWidth, height: tabBar.iconWidth };
+      return {
+        width: tabBar.iconWidth,
+        height: tabBar.iconWidth
+      };
     }
     function getIconfontStyle(item, index2) {
       var _a;
@@ -11047,118 +10907,232 @@ const _sfc_main$G = /* @__PURE__ */ defineVaporComponent({
         marginTop: !item.iconPath ? "inherit" : tabBar.spacing
       };
     }
-    const n31 = t7$2();
-    const n29 = child(n31);
-    const n0 = child(n29);
-    const n30 = next(n29);
-    renderEffect(() => {
-      setClass(n31, "uni-tabbar-" + unref(tabBar).position);
-      setStyle(n29, unref(style));
-      setStyle(n0, unref(borderStyle));
-    });
-    setInsertionState(n29, 1);
-    createFor(
-      () => visibleList.value,
-      (_for_item0, _for_key0) => {
-        const n28 = t6$3();
-        const n27 = child(n28);
-        const n26 = next(n27);
-        renderEffect(() => setStyle(n28, getItemStyle(_for_item0.value)));
-        setInsertionState(n28, n27);
-        createIf(() => isRenderedMidButton(_for_item0.value), () => {
-          const n8 = t1$l();
-          renderEffect(() => setStyle(n8, getMidButtonStyle(_for_item0.value)));
-          setInsertionState(n8);
-          createIf(() => getIconPath(_for_item0.value, _for_key0.value), () => {
-            const n7 = t0$G();
-            renderEffect(() => {
-              setStyle(n7, {
-                width: getMidButton(_for_item0.value).iconWidth,
-                height: getMidButton(_for_item0.value).iconWidth
-              });
-              setProp(n7, "src", unref(getRealPath)(getIconPath(_for_item0.value, _for_key0.value)));
+    return () => (() => {
+      const _n4 = createPlainElement("uni-tabbar", { class: () => "uni-tabbar-" + tabBar.position }, () => {
+        const _n2 = _t0$f();
+        const _n0 = child(_n2);
+        const _n1 = next(_n0, true);
+        const _n3 = _t1$5();
+        setNodes(_n1, () => createFor(() => visibleList.value, (item, index2) => (() => {
+          const _n02 = _t7$1();
+          const _n12 = child(_n02, true);
+          const _n29 = next(_n12);
+          on$1(_n02, "click", ($event) => onSwitchTab(item.value, index2.value));
+          setNodes(_n12, () => __UNI_FEATURE_TABBAR_MIDBUTTON__ && (() => {
+            const _n03 = createIf(() => isMidButton(item.value), () => {
+              const _n7 = _t8$1();
+              renderEffect(() => setStyle(_n7, getMidButtonStyle(item.value)));
+              setInsertionState(_n7);
+              createIf(() => getIconPath(item.value, index2.value), () => {
+                const _n42 = _t4$4();
+                renderEffect(() => {
+                  setStyle(_n42, {
+                    width: getMidButton(item.value).iconWidth,
+                    height: getMidButton(item.value).iconWidth
+                  });
+                  setProp(_n42, "src", getRealPath(getIconPath(item.value, index2.value)));
+                });
+                return _n42;
+              }, () => {
+                const _n6 = createNodes(null);
+                return _n6;
+              }, 265);
+              return _n7;
             });
-            return n7;
-          });
-          return n8;
-        });
-        renderEffect(() => setStyle(n26, { height: unref(tabBar).height }));
-        setInsertionState(n26);
-        createIf(
-          () => getIconfontText(_for_item0.value, _for_key0.value),
-          () => {
-            const n14 = t3$8();
-            renderEffect(() => {
-              setClass(n14, getIconClass(_for_item0.value));
-              setStyle(n14, getIconStyle());
-            });
-            setInsertionState(n14);
-            createIf(() => _for_item0.value.type !== "midButton", () => {
-              const n13 = t2$b();
-              const x13 = txt(n13);
-              renderEffect(() => {
-                const _item = _for_item0.value;
-                const _index = _for_key0.value;
-                setStyle(n13, getIconfontStyle(_item, _index));
-                setText(x13, toDisplayString(getIconfontText(_item, _index)));
-              });
-              return n13;
-            });
-            return n14;
-          },
-          () => createIf(() => getIconPath(_for_item0.value, _for_key0.value), () => {
-            const n19 = t3$8();
-            renderEffect(() => {
-              setClass(n19, getIconClass(_for_item0.value));
-              setStyle(n19, getIconStyle());
-            });
-            setInsertionState(n19);
-            createIf(() => _for_item0.value.type !== "midButton", () => {
-              const n18 = t0$G();
-              renderEffect(() => setProp(n18, "src", unref(getRealPath)(getIconPath(_for_item0.value, _for_key0.value))));
-              return n18;
-            });
-            return n19;
-          }),
-          1037
-          /* TRUE_SINGLE_ROOT, FALSE_ELSE_IF, KEYED_INDEX_3 */
-        );
-        setInsertionState(n26, 1);
-        createIf(() => _for_item0.value.text, () => {
-          const n22 = t4$5();
-          const x22 = txt(n22);
+            return _n03;
+          })());
           renderEffect(() => {
-            const _item = _for_item0.value;
-            setStyle(n22, getLabelStyle(_item, _for_key0.value));
-            setText(x22, toDisplayString(_item.text));
+            setStyle(_n02, getItemStyle(item.value));
+            setStyle(_n29, { height: tabBar.height });
           });
-          return n22;
+          setInsertionState(_n29);
+          createIf(() => getIconfontText(item.value, index2.value), () => {
+            const _n9 = _t3$4();
+            renderEffect(() => {
+              setClass(_n9, getIconClass(item.value));
+              setStyle(_n9, getIconStyle());
+            });
+            setInsertionState(_n9);
+            createIf(() => item.value.type !== "midButton", () => {
+              const _n6 = _t2$4();
+              const _x6 = txt(_n6);
+              setNodes(_x6, () => getIconfontText(item.value, index2.value));
+              renderEffect(() => setStyle(_n6, getIconfontStyle(item.value, index2.value)));
+              return _n6;
+            }, () => {
+              const _n8 = createNodes(null);
+              return _n8;
+            }, 265);
+            return _n9;
+          }, () => createIf(() => getIconPath(item.value, index2.value), () => {
+            const _n16 = _t3$4();
+            renderEffect(() => {
+              setClass(_n16, getIconClass(item.value));
+              setStyle(_n16, getIconStyle());
+            });
+            setInsertionState(_n16);
+            createIf(() => item.value.type !== "midButton", () => {
+              const _n13 = _t4$4();
+              renderEffect(() => setProp(_n13, "src", getRealPath(getIconPath(item.value, index2.value))));
+              return _n13;
+            }, () => {
+              const _n15 = createNodes(null);
+              return _n15;
+            }, 777);
+            return _n16;
+          }, () => {
+            const _n18 = createNodes(null);
+            return _n18;
+          }, 1025), 517);
+          setInsertionState(_n29, 1);
+          createIf(() => item.value.text, () => {
+            const _n21 = _t5$1();
+            const _x21 = txt(_n21);
+            setNodes(_x21, () => item.value.text);
+            renderEffect(() => setStyle(_n21, getLabelStyle(item.value, index2.value)));
+            return _n21;
+          }, () => {
+            const _n23 = createNodes(null);
+            return _n23;
+          }, 1289);
+          setInsertionState(_n29, 2);
+          createIf(() => item.value.redDot, () => {
+            const _n26 = _t6$1();
+            const _x26 = txt(_n26);
+            setNodes(_x26, () => item.value.badge);
+            renderEffect(() => setClass(_n26, ["uni-tabbar__reddot", item.value.badge ? "uni-tabbar__badge" : ""]));
+            return _n26;
+          }, () => {
+            const _n28 = createNodes(null);
+            return _n28;
+          }, 1545);
+          return _n02;
+        })(), (item, index2) => isRenderedMidButton(item) ? "midButton" : index2, 8));
+        renderEffect(() => {
+          setStyle(_n2, style.value);
+          setStyle(_n0, borderStyle.value);
+          setStyle(_n3, placeholderStyle.value);
         });
-        setInsertionState(n26, 2);
-        createIf(() => _for_item0.value.redDot, () => {
-          const n25 = t5$4();
-          const x25 = txt(n25);
-          renderEffect(() => {
-            const _item_badge = _for_item0.value.badge;
-            setClass(n25, [
-              "uni-tabbar__reddot",
-              _item_badge ? "uni-tabbar__badge" : ""
-            ]);
-            setText(x25, toDisplayString(_item_badge));
-          });
-          return n25;
-        });
-        on$1(n28, "click", () => unref(onSwitchTab)(_for_item0.value, _for_key0.value));
-        return n28;
-      },
-      (item, index2) => isRenderedMidButton(item) ? "midButton" : index2,
-      8
-      /* IS_SINGLE_NODE */
-    );
-    renderEffect(() => setStyle(n30, unref(placeholderStyle)));
-    return n31;
+        return [_n2, _n3];
+      }, true);
+      return _n4;
+    })();
   }
 });
+function useTabBarCssVar(tabBar) {
+  watch(() => tabBar.shown, (value) => {
+    updatePageCssVar({ "--window-bottom": normalizeWindowBottom(value ? parseInt(tabBar.height) : 0) });
+  });
+}
+function useVisibleList(tabBar, visibleList) {
+  const internalMidButton = __UNI_FEATURE_TABBAR_MIDBUTTON__ ? ref(extend({ type: "midButton" }, tabBar.midButton)) : void 0;
+  function setVisibleList() {
+    let tempList = [];
+    tempList = tabBar.list.filter((item) => item.visible !== false);
+    if (__UNI_FEATURE_TABBAR_MIDBUTTON__ && tabBar.midButton) {
+      internalMidButton.value = extend({}, _middleButton, internalMidButton.value, tabBar.midButton);
+      tempList = tempList.filter((item) => !isMidButton(item));
+      if (tempList.length % 2 === 0) {
+        tempList.splice(Math.floor(tempList.length / 2), 0, internalMidButton.value);
+      }
+    }
+    visibleList.value = tempList;
+  }
+  watchEffect(setVisibleList);
+}
+function useSwitchTab(route, tabBar, visibleList) {
+  watchEffect(() => {
+    const meta = route.meta;
+    if (meta.isTabBar) {
+      const pagePath = meta.route;
+      const index2 = visibleList.value.findIndex((item) => item.pagePath === pagePath);
+      tabBar.selectedIndex = index2;
+    }
+  });
+  return (tabBarItem, index2) => {
+    const { type } = tabBarItem;
+    if (__UNI_FEATURE_TABBAR_MIDBUTTON__ && type === "midButton") {
+      return UniServiceJSBridge.invokeOnCallback(API_ON_TAB_BAR_MID_BUTTON_TAP);
+    }
+    const { pagePath, text: text2 } = tabBarItem;
+    let url = addLeadingSlash(pagePath);
+    if (url === __uniRoutes[0].alias) {
+      url = "/";
+    }
+    if (route.path !== url) {
+      uni.switchTab({
+        from: "tabBar",
+        url,
+        tabBarText: text2
+      });
+    } else {
+      invokeHook("onTabItemTap", {
+        index: index2,
+        text: text2,
+        pagePath
+      });
+    }
+  };
+}
+function useTabBarStyle(tabBar) {
+  const style = computed(() => {
+    let backgroundColor = tabBar.backgroundColor;
+    const blurEffect = tabBar.blurEffect;
+    if (!backgroundColor) {
+      if (cssBackdropFilter && blurEffect && blurEffect !== "none") {
+        backgroundColor = BLUR_EFFECT_COLORS[blurEffect];
+      }
+    }
+    return {
+      backgroundColor: backgroundColor || DEFAULT_BG_COLOR,
+      backdropFilter: blurEffect !== "none" ? "blur(10px)" : blurEffect
+    };
+  });
+  const borderStyle = computed(() => {
+    const { borderStyle: borderStyle2, borderColor } = tabBar;
+    if (borderColor && isString(borderColor)) {
+      return { backgroundColor: borderColor };
+    }
+    return { backgroundColor: BORDER_COLORS[borderStyle2] || BORDER_COLORS["black"] };
+  });
+  const placeholderStyle = computed(() => {
+    return { height: tabBar.height };
+  });
+  return {
+    style,
+    borderStyle,
+    placeholderStyle
+  };
+}
+function isMidButton(item) {
+  return item.type === "midButton";
+}
+function isRenderedMidButton(item) {
+  return __UNI_FEATURE_TABBAR_MIDBUTTON__ && isMidButton(item);
+}
+function getMidButton(item) {
+  return item;
+}
+function getItemStyle(item) {
+  if (!isRenderedMidButton(item)) {
+    return;
+  }
+  return {
+    flex: "0 0 " + item.width,
+    position: "relative"
+  };
+}
+function getMidButtonStyle(item) {
+  const { width, height, backgroundImage } = getMidButton(item);
+  return {
+    width,
+    height,
+    backgroundImage: backgroundImage ? "url('" + getRealPath(backgroundImage) + "')" : "none"
+  };
+}
+function getIconClass(item) {
+  return "uni-tabbar__icon" + (item.text ? " uni-tabbar__icon__diff" : "");
+}
 let globalLayoutState;
 function getLayoutState() {
   return globalLayoutState;
@@ -11166,539 +11140,420 @@ function getLayoutState() {
 function setLayoutState(state) {
   globalLayoutState = state;
 }
-const t0$F = template("<uni-top-window><div class=uni-top-window></div><div class=uni-top-window--placeholder>");
-const t1$k = template("<div class=uni-mask>");
-const t2$a = template("<uni-left-window><!><div class=uni-left-window>");
-const t3$7 = template("<uni-right-window><!><div class=uni-right-window>");
-const t4$4 = template("<uni-layout><!><uni-content><uni-main></uni-main>");
-const t5$3 = template("<uni-app>", 1);
-const _sfc_main$F = /* @__PURE__ */ defineVaporComponent({
-  ...{
-    name: "Layout",
-    __reserved: true,
-    compatConfig: { MODE: 3 }
-  },
-  __name: "index-vapor",
-  setup(__props) {
-    const DEFAULT_CSS_VAR_VALUE = "0px";
-    const hasPages = __UNI_FEATURE_PAGES__;
-    const hasResponsive = __UNI_FEATURE_RESPONSIVE__;
-    const hasTopWindow = __UNI_FEATURE_TOPWINDOW__;
-    const hasLeftWindow = __UNI_FEATURE_LEFTWINDOW__;
-    const hasRightWindow = __UNI_FEATURE_RIGHTWINDOW__;
-    const hasTabBar = __UNI_FEATURE_TABBAR__;
+const _t0$e = template("<div class=uni-top-window></div>");
+const _t1$4 = template("<div class=uni-top-window--placeholder>");
+const _t2$3 = template("<div class=uni-mask>");
+const _t3$3 = template("<div class=uni-left-window>");
+const _t4$3 = template("<div class=uni-right-window>");
+const DEFAULT_CSS_VAR_VALUE = "0px";
+const LayoutComponent = /* @__PURE__ */ defineSystemComponent({
+  name: "Layout",
+  setup() {
     const rootRef = ref(null);
     initCssVar();
-    const firstPageComponent = !hasPages && __uniRoutes[0].component;
-    const keepAliveRoute = hasPages ? useKeepAliveRoute() : void 0;
+    const FirstPageComponent = !__UNI_FEATURE_PAGES__ && __uniRoutes[0].component;
+    const keepAliveRoute = __UNI_FEATURE_PAGES__ ? useKeepAliveRoute() : void 0;
     const routeKey = keepAliveRoute == null ? void 0 : keepAliveRoute.routeKey;
     const isTabBar = keepAliveRoute == null ? void 0 : keepAliveRoute.isTabBar;
     const routeCache2 = keepAliveRoute == null ? void 0 : keepAliveRoute.routeCache;
-    const route = hasPages ? useRoute() : void 0;
+    const route = __UNI_FEATURE_PAGES__ ? useRoute() : void 0;
     const { layoutState, windowState } = useState();
     useMaxWidth(layoutState, rootRef);
-    const topWindow = hasTopWindow && useTopWindow(layoutState);
-    const leftWindow = hasLeftWindow && useLeftWindow(layoutState);
-    const rightWindow = hasRightWindow && useRightWindow(layoutState);
+    const topWindow = __UNI_FEATURE_TOPWINDOW__ && useTopWindow(layoutState);
+    const leftWindow = __UNI_FEATURE_LEFTWINDOW__ && useLeftWindow(layoutState);
+    const rightWindow = __UNI_FEATURE_RIGHTWINDOW__ && useRightWindow(layoutState);
     const TopWindow = topWindow && topWindow.component;
     const LeftWindow = leftWindow && leftWindow.component;
     const RightWindow = rightWindow && rightWindow.component;
     const topWindowRef = topWindow && topWindow.windowRef;
     const leftWindowRef = leftWindow && leftWindow.windowRef;
     const rightWindowRef = rightWindow && rightWindow.windowRef;
-    const showTabBar2 = hasTabBar && useShowTabBar();
+    const showTabBar2 = __UNI_FEATURE_TABBAR__ && useShowTabBar();
     const clazz = useAppClass(showTabBar2);
     setLayoutState(layoutState);
-    function useAppClass(showTabBar22) {
-      const showMaxWidth = ref(false);
-      return computed(() => {
-        return {
-          "uni-app--showtabbar": showTabBar22 && showTabBar22.value,
-          "uni-app--maxwidth": showMaxWidth.value
-        };
-      });
-    }
-    function initCssVar() {
-      updateCssVar({
-        "--status-bar-height": DEFAULT_CSS_VAR_VALUE,
-        "--top-window-height": DEFAULT_CSS_VAR_VALUE,
-        "--window-left": DEFAULT_CSS_VAR_VALUE,
-        "--window-right": DEFAULT_CSS_VAR_VALUE,
-        "--window-margin": DEFAULT_CSS_VAR_VALUE,
-        "--tab-bar-height": DEFAULT_CSS_VAR_VALUE
-      });
-    }
-    function initMediaQuery(minWidth, callback) {
-      const mediaQueryList = window.matchMedia("(min-width: " + minWidth + "px)");
-      if (mediaQueryList.addEventListener) {
-        mediaQueryList.addEventListener("change", callback);
-      } else {
-        mediaQueryList.addListener(callback);
-      }
-      return mediaQueryList.matches;
-    }
-    function useMaxWidth(layoutState2, rootRef2) {
-      const route2 = usePageRoute();
-      function checkMaxWidth2() {
-        const windowWidth = document.body.clientWidth;
-        const pages = getCurrentBasePages();
-        let meta = {};
-        if (pages.length > 0) {
-          const curPage = pages[pages.length - 1];
-          meta = getPage$BasePage(curPage).meta;
-        } else {
-          const routeOptions = getRouteOptions(route2.path, true);
-          if (routeOptions) {
-            meta = routeOptions.meta;
-          }
-        }
-        const maxWidth2 = parseInt(
-          String(
-            (hasOwn(meta, "maxWidth") ? meta.maxWidth : __uniConfig.globalStyle.maxWidth) || Number.MAX_SAFE_INTEGER
-          )
-        );
-        let showMaxWidth = false;
-        if (windowWidth > maxWidth2) {
-          showMaxWidth = true;
-        } else {
-          showMaxWidth = false;
-        }
-        if (showMaxWidth && maxWidth2) {
-          layoutState2.marginWidth = (windowWidth - maxWidth2) / 2;
-          nextTick(() => {
-            const rootEl = rootRef2.value;
-            if (rootEl) {
-              rootEl.setAttribute(
-                "style",
-                "max-width:" + maxWidth2 + "px;margin:0 auto;"
-              );
-            }
+    function renderPage() {
+      if (__UNI_FEATURE_PAGES__) {
+        return (() => {
+          const _n0 = createIf(() => route == null ? void 0 : route.meta.route, () => {
+            const _n2 = createComponent(VaporRouterView, { type: () => unref(isTabBar) ? "tabBar" : "" }, (slotProps) => (() => {
+              const _n02 = createComponent(VaporKeepAlive, {
+                "match-by": "key",
+                cache: () => unref(routeCache2)
+              }, () => createDynamicComponent(() => slotProps.Component, null, null, 5, () => unref(routeKey)), true);
+              return _n02;
+            })(), true);
+            return _n2;
           });
-        } else {
-          layoutState2.marginWidth = 0;
-          nextTick(() => {
-            const rootEl = rootRef2.value;
-            if (rootEl) {
-              rootEl.removeAttribute("style");
-            }
-          });
-        }
+          return _n0;
+        })();
       }
-      watch([() => route2.path], checkMaxWidth2);
-      onMounted(() => {
-        checkMaxWidth2();
-        window.addEventListener("resize", checkMaxWidth2);
-      });
+      return (() => {
+        const _n0 = createComponent(FirstPageComponent, null, null, true);
+        return _n0;
+      })();
     }
-    function useState() {
-      const route2 = usePageRoute();
-      if (!hasResponsive) {
-        const layoutState3 = reactive({
-          marginWidth: 0,
-          leftWindowWidth: 0,
-          rightWindowWidth: 0
-        });
-        watch(
-          () => layoutState3.marginWidth,
-          (value) => updateCssVar({ "--window-margin": value + "px" })
-        );
-        watch(
-          () => layoutState3.leftWindowWidth + layoutState3.marginWidth,
-          (value) => {
-            updateCssVar({ "--window-left": value + "px" });
-          }
-        );
-        watch(
-          () => layoutState3.rightWindowWidth + layoutState3.marginWidth,
-          (value) => {
-            updateCssVar({ "--window-right": value + "px" });
-          }
-        );
-        return {
-          layoutState: layoutState3,
-          windowState: computed(() => ({}))
-        };
+    function renderLayout() {
+      if (__UNI_FEATURE_RESPONSIVE__) {
+        return (() => {
+          const _n6 = createPlainElement("uni-layout", { class: () => ({
+            "uni-app--showtopwindow": __UNI_FEATURE_TOPWINDOW__ && layoutState.showTopWindow,
+            "uni-app--showleftwindow": __UNI_FEATURE_LEFTWINDOW__ && layoutState.showLeftWindow,
+            "uni-app--showrightwindow": __UNI_FEATURE_RIGHTWINDOW__ && layoutState.showRightWindow
+          }) }, () => {
+            const _n0 = createNodes(() => __UNI_FEATURE_TOPWINDOW__ && TopWindow && (() => {
+              const _setTemplateRef = createTemplateRefSetter();
+              const _n02 = createPlainElement("uni-top-window", null, () => {
+                const _n2 = _t0$e();
+                renderEffect(() => setStyle(_n2, layoutState.topWindowStyle));
+                setInsertionState(_n2);
+                const _n1 = createComponent(TopWindow, {
+                  "navigation-bar-title-text": () => layoutState.navigationBarTitleText,
+                  $: [() => windowState.value]
+                });
+                const _n3 = _t1$4();
+                renderEffect(() => {
+                  _setTemplateRef(_n1, topWindowRef);
+                  setStyle(_n3, { height: layoutState.topWindowHeight + "px" });
+                });
+                return [_n2, _n3];
+              }, true);
+              applyVShow(_n02, () => layoutState.showTopWindow || layoutState.apiShowTopWindow);
+              return _n02;
+            })());
+            const _n5 = createPlainElement("uni-content", null, () => {
+              const _n2 = createPlainElement("uni-main", null, extend$1(() => {
+                const _n1 = createNodes(() => renderPage());
+                return _n1;
+              }, { _: 1 }));
+              const _n3 = createNodes(() => __UNI_FEATURE_LEFTWINDOW__ && LeftWindow && (() => {
+                const _setTemplateRef = createTemplateRefSetter();
+                const _n02 = createPlainElement("uni-left-window", {
+                  "data-show": () => layoutState.apiShowLeftWindow || void 0,
+                  style: () => layoutState.leftWindowStyle
+                }, () => {
+                  const _n1 = createIf(() => layoutState.apiShowLeftWindow, () => {
+                    const _n32 = _t2$3();
+                    on$1(_n32, "click", () => layoutState.apiShowLeftWindow = false);
+                    return _n32;
+                  }, () => {
+                    const _n52 = createNodes(null);
+                    return _n52;
+                  }, 265);
+                  const _n7 = _t3$3();
+                  setInsertionState(_n7);
+                  const _n62 = createComponent(LeftWindow, { $: [() => windowState.value] });
+                  renderEffect(() => _setTemplateRef(_n62, leftWindowRef));
+                  return [_n1, _n7];
+                }, true);
+                applyVShow(_n02, () => layoutState.showLeftWindow || layoutState.apiShowLeftWindow);
+                return _n02;
+              })(), () => __UNI_FEATURE_RIGHTWINDOW__ && RightWindow && (() => {
+                const _setTemplateRef = createTemplateRefSetter();
+                const _n02 = createPlainElement("uni-right-window", {
+                  "data-show": () => layoutState.apiShowRightWindow || void 0,
+                  style: () => layoutState.rightWindowStyle
+                }, () => {
+                  const _n1 = createIf(() => layoutState.apiShowRightWindow, () => {
+                    const _n32 = _t2$3();
+                    on$1(_n32, "click", () => layoutState.apiShowRightWindow = false);
+                    return _n32;
+                  }, () => {
+                    const _n52 = createNodes(null);
+                    return _n52;
+                  }, 265);
+                  const _n7 = _t4$3();
+                  setInsertionState(_n7);
+                  const _n62 = createComponent(RightWindow, { $: [() => windowState.value] });
+                  renderEffect(() => _setTemplateRef(_n62, rightWindowRef));
+                  return [_n1, _n7];
+                }, true);
+                applyVShow(_n02, () => layoutState.showRightWindow || layoutState.apiShowRightWindow);
+                return _n02;
+              })());
+              return [_n2, _n3];
+            });
+            return [_n0, _n5];
+          }, true);
+          return _n6;
+        })();
       }
-      const topWindowMediaQuery = ref(false);
-      const leftWindowMediaQuery = ref(false);
-      const rightWindowMediaQuery = ref(false);
-      const showTopWindow2 = computed(
-        () => hasTopWindow && route2.meta.topWindow !== false && topWindowMediaQuery.value
-      );
-      const showLeftWindow2 = computed(
-        () => hasLeftWindow && route2.meta.leftWindow !== false && leftWindowMediaQuery.value
-      );
-      const showRightWindow2 = computed(
-        () => hasRightWindow && route2.meta.rightWindow !== false && rightWindowMediaQuery.value
-      );
-      const layoutState2 = reactive({
-        topWindowMediaQuery,
-        showTopWindow: showTopWindow2,
-        apiShowTopWindow: false,
-        leftWindowMediaQuery,
-        showLeftWindow: showLeftWindow2,
-        apiShowLeftWindow: false,
-        rightWindowMediaQuery,
-        showRightWindow: showRightWindow2,
-        apiShowRightWindow: false,
-        topWindowHeight: 0,
-        marginWidth: 0,
-        leftWindowWidth: 0,
-        rightWindowWidth: 0,
-        navigationBarTitleText: "",
-        topWindowStyle: {},
-        leftWindowStyle: {},
-        rightWindowStyle: {}
-      });
-      const props2 = [
-        "topWindow",
-        "leftWindow",
-        "rightWindow"
-      ];
-      props2.forEach((prop) => {
-        var _a;
-        const matchMedia = (_a = __uniConfig[prop]) == null ? void 0 : _a.matchMedia;
-        let topWindowMinWidth = RESPONSIVE_MIN_WIDTH;
-        if (matchMedia && hasOwn(matchMedia, "minWidth")) {
-          const minWidth = matchMedia.minWidth;
-          topWindowMinWidth = checkMinWidth(minWidth) ? minWidth : topWindowMinWidth;
-        }
-        const matches = initMediaQuery(topWindowMinWidth, (ev) => {
-          layoutState2[`${prop}MediaQuery`] = ev.matches;
-        });
-        layoutState2[`${prop}MediaQuery`] = matches;
-      });
-      watch(
-        () => layoutState2.topWindowHeight,
-        (value) => updateCssVar({ "--top-window-height": value + "px" })
-      );
-      watch(
-        () => layoutState2.marginWidth,
-        (value) => updateCssVar({ "--window-margin": value + "px" })
-      );
-      watch(
-        () => layoutState2.leftWindowWidth + layoutState2.marginWidth,
-        (value) => {
-          updateCssVar({ "--window-left": value + "px" });
-        }
-      );
-      watch(
-        () => layoutState2.rightWindowWidth + layoutState2.marginWidth,
-        (value) => {
-          updateCssVar({ "--window-right": value + "px" });
-        }
-      );
-      UniServiceJSBridge.on(ON_NAVIGATION_BAR_CHANGE, (navigationBar) => {
-        layoutState2.navigationBarTitleText = navigationBar.titleText;
-      });
-      const windowState2 = computed(() => ({
-        matchTopWindow: layoutState2.topWindowMediaQuery,
-        showTopWindow: layoutState2.showTopWindow || layoutState2.apiShowTopWindow,
-        matchLeftWindow: layoutState2.leftWindowMediaQuery,
-        showLeftWindow: layoutState2.showLeftWindow || layoutState2.apiShowLeftWindow,
-        matchRightWindow: layoutState2.rightWindowMediaQuery,
-        showRightWindow: layoutState2.showRightWindow || layoutState2.apiShowRightWindow
-      }));
-      return {
-        layoutState: layoutState2,
-        windowState: windowState2
-      };
+      return renderPage();
     }
-    function useShowTabBar() {
-      const route2 = usePageRoute();
-      const tabBar = useTabBar();
-      const showTabBar22 = computed(() => route2.meta.isTabBar && tabBar.shown);
-      updateCssVar({
-        "--tab-bar-height": tabBar.height
-      });
-      return showTabBar22;
-    }
-    function useTopWindow(layoutState2) {
-      const { component, style } = __uniConfig.topWindow;
-      const windowRef = ref(null);
-      function updateWindow() {
-        const instance2 = windowRef.value;
-        if (!instance2) {
-          return;
-        }
-        const el = instance2.$el;
-        if (!el) {
-          return;
-        }
-        const uniTopWindowStyleEl = el.parentElement;
-        if (!uniTopWindowStyleEl) {
-          return;
-        }
-        const height = uniTopWindowStyleEl.getBoundingClientRect().height;
-        layoutState2.topWindowHeight = height;
-      }
-      watch(
-        () => windowRef.value,
-        () => {
-          updateWindow();
-        }
-      );
-      watch(
-        () => layoutState2.showTopWindow || layoutState2.apiShowTopWindow,
-        () => nextTick(updateWindow)
-      );
-      watch(
-        () => layoutState2.topWindowStyle,
-        () => nextTick(updateWindow)
-      );
-      layoutState2.topWindowStyle = style;
-      return {
-        component,
-        windowRef
-      };
-    }
-    function useLeftWindow(layoutState2) {
-      const { component, style } = __uniConfig.leftWindow;
-      const windowRef = ref(null);
-      function updateWindow() {
-        const instance2 = windowRef.value;
-        if (!instance2) {
-          return;
-        }
-        const el = instance2.$el;
-        if (!el) {
-          return;
-        }
-        const uniLeftWindowStyleEl = el.parentElement && el.parentElement.parentElement;
-        if (!uniLeftWindowStyleEl) {
-          return;
-        }
-        const width = uniLeftWindowStyleEl.getBoundingClientRect().width;
-        layoutState2.leftWindowWidth = width;
-      }
-      watch(
-        () => windowRef.value,
-        () => {
-          updateWindow();
-        }
-      );
-      watch(
-        () => layoutState2.showLeftWindow || layoutState2.apiShowLeftWindow,
-        () => nextTick(updateWindow)
-      );
-      watch(
-        () => layoutState2.leftWindowStyle,
-        () => nextTick(updateWindow)
-      );
-      layoutState2.leftWindowStyle = style;
-      return {
-        component,
-        windowRef
-      };
-    }
-    function useRightWindow(layoutState2) {
-      const { component, style } = __uniConfig.rightWindow;
-      const windowRef = ref(null);
-      function updateWindow() {
-        const instance2 = windowRef.value;
-        if (!instance2) {
-          return;
-        }
-        const el = instance2.$el;
-        if (!el) {
-          return;
-        }
-        const uniRightWindowStyleEl = el.parentElement && el.parentElement.parentElement;
-        if (!uniRightWindowStyleEl) {
-          return;
-        }
-        const width = uniRightWindowStyleEl.getBoundingClientRect().width;
-        layoutState2.rightWindowWidth = width;
-      }
-      watch(
-        () => windowRef.value,
-        () => {
-          updateWindow();
-        }
-      );
-      watch(
-        () => layoutState2.showRightWindow || layoutState2.apiShowRightWindow,
-        () => nextTick(updateWindow)
-      );
-      watch(
-        () => layoutState2.rightWindowStyle,
-        () => nextTick(updateWindow)
-      );
-      layoutState2.rightWindowStyle = style;
-      return {
-        component,
-        windowRef
-      };
-    }
-    const n49 = t5$3();
-    renderEffect(() => setClass(n49, unref(clazz)));
-    setInsertionState(n49);
-    createIf(
-      () => unref(hasResponsive),
-      () => {
-        const n36 = t4$4();
-        const n35 = child(n36);
-        const n34 = next(n35);
-        const n15 = child(n34);
-        renderEffect(() => {
-          const _layoutState = unref(layoutState);
-          setClassName(n36, (unref(hasTopWindow) && _layoutState.showTopWindow ? 1 : 0) | (unref(hasLeftWindow) && _layoutState.showLeftWindow ? 2 : 0) | (unref(hasRightWindow) && _layoutState.showRightWindow ? 4 : 0), [" uni-app--showtopwindow", " uni-app--showleftwindow", " uni-app--showrightwindow"]);
-        });
-        setInsertionState(n36, n35);
-        createIf(() => unref(hasTopWindow) && unref(TopWindow), () => {
-          const n7 = t0$F();
-          const n5 = child(n7);
-          const n6 = next(n5);
-          renderEffect(() => setStyle(n5, unref(layoutState).topWindowStyle));
-          setInsertionState(n5);
-          const n4 = withComponentId("7b5159a7", () => createDynamicComponent(() => unref(TopWindow), {
-            "navigation-bar-title-text": () => unref(layoutState).navigationBarTitleText,
-            $: [
-              () => unref(windowState)
-            ]
-          }));
-          setStaticTemplateRef(n4, topWindowRef, null, "topWindowRef");
-          applyVShow(n7, () => unref(layoutState).showTopWindow || unref(layoutState).apiShowTopWindow);
-          renderEffect(() => setStyle(n6, { height: unref(layoutState).topWindowHeight + "px" }));
-          return n7;
-        });
-        setInsertionState(n15);
-        createIf(
-          () => {
-            var _a;
-            return unref(hasPages) && ((_a = unref(route)) == null ? void 0 : _a.meta.route);
-          },
-          () => {
-            const n12 = withComponentId("2251cd94", () => createComponent$1(unref(VaporRouterView), { type: () => unref(isTabBar) ? "tabBar" : "" }, (_slotProps0) => {
-              const n11 = withComponentId("2251bf54", () => createComponent$1(
-                VaporKeepAlive,
-                {
-                  "match-by": "key",
-                  cache: () => unref(routeCache2)
-                },
-                extend$1(() => {
-                  const n10 = withComponentId("2251bdde", () => createDynamicComponent(() => _slotProps0.Component, null, null, 5, () => unref(routeKey)));
-                  return n10;
-                }, {
-                  _: 1
-                  /* NON_STABLE */
-                }),
-                2
-                /* SLOT */
-              ));
-              return n11;
-            }));
-            return n12;
-          },
-          () => createIf(() => !unref(hasPages), () => {
-            const n14 = withComponentId("2251b652", () => createDynamicComponent(() => unref(firstPageComponent)));
-            return n14;
-          }),
-          525
-          /* TRUE_SINGLE_ROOT, FALSE_ELSE_IF, KEYED_INDEX_1 */
-        );
-        setInsertionState(n34, 1);
-        createIf(() => unref(hasLeftWindow) && unref(LeftWindow), () => {
-          const n24 = t2$a();
-          const n23 = child(n24);
-          const n22 = next(n23);
-          renderEffect(() => {
-            const _layoutState = unref(layoutState);
-            setAttr(n24, "data-show", _layoutState.apiShowLeftWindow || void 0);
-            setStyle(n24, _layoutState.leftWindowStyle);
-          });
-          setInsertionState(n24, n23);
-          createIf(() => unref(layoutState).apiShowLeftWindow, () => {
-            const n20 = t1$k();
-            on$1(n20, "click", () => unref(layoutState).apiShowLeftWindow = false);
-            return n20;
-          });
-          setInsertionState(n22);
-          const n21 = withComponentId("2250de56", () => createDynamicComponent(() => unref(LeftWindow), { $: [
-            () => unref(windowState)
-          ] }));
-          setStaticTemplateRef(n21, leftWindowRef, null, "leftWindowRef");
-          applyVShow(n24, () => unref(layoutState).showLeftWindow || unref(layoutState).apiShowLeftWindow);
-          return n24;
-        });
-        setInsertionState(n34, 2);
-        createIf(() => unref(hasRightWindow) && unref(RightWindow), () => {
-          const n33 = t3$7();
-          const n32 = child(n33);
-          const n31 = next(n32);
-          renderEffect(() => {
-            const _layoutState = unref(layoutState);
-            setAttr(n33, "data-show", _layoutState.apiShowRightWindow || void 0);
-            setStyle(n33, _layoutState.rightWindowStyle);
-          });
-          setInsertionState(n33, n32);
-          createIf(() => unref(layoutState).apiShowRightWindow, () => {
-            const n29 = t1$k();
-            on$1(n29, "click", () => unref(layoutState).apiShowRightWindow = false);
-            return n29;
-          });
-          setInsertionState(n31);
-          const n30 = withComponentId("22500414", () => createDynamicComponent(() => unref(RightWindow), { $: [
-            () => unref(windowState)
-          ] }));
-          setStaticTemplateRef(n30, rightWindowRef, null, "rightWindowRef");
-          applyVShow(n33, () => unref(layoutState).showRightWindow || unref(layoutState).apiShowRightWindow);
-          return n33;
-        });
-        return n36;
-      },
-      () => {
-        const n38 = createIf(
-          () => {
-            var _a;
-            return unref(hasPages) && ((_a = unref(route)) == null ? void 0 : _a.meta.route);
-          },
-          () => {
-            const n42 = withComponentId("224ff418", () => createComponent$1(unref(VaporRouterView), { type: () => unref(isTabBar) ? "tabBar" : "" }, (_slotProps0) => {
-              const n41 = withComponentId("224fe654", () => createComponent$1(
-                VaporKeepAlive,
-                {
-                  "match-by": "key",
-                  cache: () => unref(routeCache2)
-                },
-                extend$1(() => {
-                  const n40 = withComponentId("224fe510", () => createDynamicComponent(() => _slotProps0.Component, null, null, 5, () => unref(routeKey)));
-                  return n40;
-                }, {
-                  _: 1
-                  /* NON_STABLE */
-                }),
-                2
-                /* SLOT */
-              ));
-              return n41;
-            }));
-            return n42;
-          },
-          () => createIf(() => !unref(hasPages), () => {
-            const n44 = withComponentId("224fdd9c", () => createDynamicComponent(() => unref(firstPageComponent)));
-            return n44;
-          }),
-          2317
-          /* TRUE_SINGLE_ROOT, FALSE_ELSE_IF, KEYED_INDEX_8 */
-        );
-        return n38;
-      },
-      2057
-      /* TRUE_SINGLE_ROOT, FALSE_MULTI_ROOT, KEYED_INDEX_7 */
-    );
-    setInsertionState(n49, 1);
-    createIf(() => unref(hasTabBar), () => {
-      const n48 = withComponentId("224fd694", () => createComponent$1(_sfc_main$G));
-      applyVShow(n48, () => unref(showTabBar2));
-      return n48;
-    });
-    setStaticTemplateRef(n49, rootRef, null, "rootRef");
-    return n49;
+    return () => (() => {
+      const _setTemplateRef = createTemplateRefSetter();
+      const _n2 = createPlainElement("uni-app", { class: () => clazz.value }, extend$1(() => {
+        const _n0 = createNodes(() => renderLayout(), () => __UNI_FEATURE_TABBAR__ && (() => {
+          const _n02 = createComponent(TabBar, null, null, true);
+          applyVShow(_n02, () => unref(showTabBar2));
+          return _n02;
+        })());
+        return _n0;
+      }, { _: 1 }), true);
+      renderEffect(() => _setTemplateRef(_n2, rootRef));
+      return _n2;
+    })();
   }
 });
-const t0$E = template("<div class=uni-async-loading><i class=uni-loading>", 3);
-const _sfc_main$E = /* @__PURE__ */ defineVaporComponent({
+function useAppClass(showTabBar2) {
+  const showMaxWidth = ref(false);
+  return computed(() => {
+    return {
+      "uni-app--showtabbar": showTabBar2 && showTabBar2.value,
+      "uni-app--maxwidth": showMaxWidth.value
+    };
+  });
+}
+function initCssVar() {
+  updateCssVar({
+    "--status-bar-height": DEFAULT_CSS_VAR_VALUE,
+    "--top-window-height": DEFAULT_CSS_VAR_VALUE,
+    "--window-left": DEFAULT_CSS_VAR_VALUE,
+    "--window-right": DEFAULT_CSS_VAR_VALUE,
+    "--window-margin": DEFAULT_CSS_VAR_VALUE,
+    "--tab-bar-height": DEFAULT_CSS_VAR_VALUE
+  });
+}
+function initMediaQuery(minWidth, callback) {
+  const mediaQueryList = window.matchMedia("(min-width: " + minWidth + "px)");
+  if (mediaQueryList.addEventListener) {
+    mediaQueryList.addEventListener("change", callback);
+  } else {
+    mediaQueryList.addListener(callback);
+  }
+  return mediaQueryList.matches;
+}
+function useMaxWidth(layoutState, rootRef) {
+  const route = usePageRoute();
+  function checkMaxWidth2() {
+    const windowWidth = document.body.clientWidth;
+    const pages = getCurrentBasePages();
+    let meta = {};
+    if (pages.length > 0) {
+      const curPage = pages[pages.length - 1];
+      meta = getPage$BasePage(curPage).meta;
+    } else {
+      const routeOptions = getRouteOptions(route.path, true);
+      if (routeOptions) {
+        meta = routeOptions.meta;
+      }
+    }
+    const maxWidth2 = parseInt(String((hasOwn(meta, "maxWidth") ? meta.maxWidth : __uniConfig.globalStyle.maxWidth) || Number.MAX_SAFE_INTEGER));
+    let showMaxWidth = false;
+    if (windowWidth > maxWidth2) {
+      showMaxWidth = true;
+    } else {
+      showMaxWidth = false;
+    }
+    if (showMaxWidth && maxWidth2) {
+      layoutState.marginWidth = (windowWidth - maxWidth2) / 2;
+      nextTick(() => {
+        const rootEl = rootRef.value;
+        if (rootEl) {
+          rootEl.setAttribute("style", "max-width:" + maxWidth2 + "px;margin:0 auto;");
+        }
+      });
+    } else {
+      layoutState.marginWidth = 0;
+      nextTick(() => {
+        const rootEl = rootRef.value;
+        if (rootEl) {
+          rootEl.removeAttribute("style");
+        }
+      });
+    }
+  }
+  watch([() => route.path], checkMaxWidth2);
+  onMounted(() => {
+    checkMaxWidth2();
+    window.addEventListener("resize", checkMaxWidth2);
+  });
+}
+function useState() {
+  const route = usePageRoute();
+  if (!__UNI_FEATURE_RESPONSIVE__) {
+    const layoutState2 = reactive({
+      marginWidth: 0,
+      leftWindowWidth: 0,
+      rightWindowWidth: 0
+    });
+    watch(() => layoutState2.marginWidth, (value) => updateCssVar({ "--window-margin": value + "px" }));
+    watch(() => layoutState2.leftWindowWidth + layoutState2.marginWidth, (value) => {
+      updateCssVar({ "--window-left": value + "px" });
+    });
+    watch(() => layoutState2.rightWindowWidth + layoutState2.marginWidth, (value) => {
+      updateCssVar({ "--window-right": value + "px" });
+    });
+    return {
+      layoutState: layoutState2,
+      windowState: computed(() => ({}))
+    };
+  }
+  const topWindowMediaQuery = ref(false);
+  const leftWindowMediaQuery = ref(false);
+  const rightWindowMediaQuery = ref(false);
+  const showTopWindow2 = computed(() => __UNI_FEATURE_TOPWINDOW__ && route.meta.topWindow !== false && topWindowMediaQuery.value);
+  const showLeftWindow2 = computed(() => __UNI_FEATURE_LEFTWINDOW__ && route.meta.leftWindow !== false && leftWindowMediaQuery.value);
+  const showRightWindow2 = computed(() => __UNI_FEATURE_RIGHTWINDOW__ && route.meta.rightWindow !== false && rightWindowMediaQuery.value);
+  const layoutState = reactive({
+    topWindowMediaQuery,
+    showTopWindow: showTopWindow2,
+    apiShowTopWindow: false,
+    leftWindowMediaQuery,
+    showLeftWindow: showLeftWindow2,
+    apiShowLeftWindow: false,
+    rightWindowMediaQuery,
+    showRightWindow: showRightWindow2,
+    apiShowRightWindow: false,
+    topWindowHeight: 0,
+    marginWidth: 0,
+    leftWindowWidth: 0,
+    rightWindowWidth: 0,
+    navigationBarTitleText: "",
+    topWindowStyle: {},
+    leftWindowStyle: {},
+    rightWindowStyle: {}
+  });
+  const props2 = [
+    "topWindow",
+    "leftWindow",
+    "rightWindow"
+  ];
+  props2.forEach((prop) => {
+    var _a;
+    const matchMedia = (_a = __uniConfig[prop]) == null ? void 0 : _a.matchMedia;
+    let topWindowMinWidth = RESPONSIVE_MIN_WIDTH;
+    if (matchMedia && hasOwn(matchMedia, "minWidth")) {
+      const minWidth = matchMedia.minWidth;
+      topWindowMinWidth = checkMinWidth(minWidth) ? minWidth : topWindowMinWidth;
+    }
+    const matches = initMediaQuery(topWindowMinWidth, (ev) => {
+      layoutState[`${prop}MediaQuery`] = ev.matches;
+    });
+    layoutState[`${prop}MediaQuery`] = matches;
+  });
+  watch(() => layoutState.topWindowHeight, (value) => updateCssVar({ "--top-window-height": value + "px" }));
+  watch(() => layoutState.marginWidth, (value) => updateCssVar({ "--window-margin": value + "px" }));
+  watch(() => layoutState.leftWindowWidth + layoutState.marginWidth, (value) => {
+    updateCssVar({ "--window-left": value + "px" });
+  });
+  watch(() => layoutState.rightWindowWidth + layoutState.marginWidth, (value) => {
+    updateCssVar({ "--window-right": value + "px" });
+  });
+  UniServiceJSBridge.on(ON_NAVIGATION_BAR_CHANGE, (navigationBar) => {
+    layoutState.navigationBarTitleText = navigationBar.titleText;
+  });
+  const windowState = computed(() => ({
+    matchTopWindow: layoutState.topWindowMediaQuery,
+    showTopWindow: layoutState.showTopWindow || layoutState.apiShowTopWindow,
+    matchLeftWindow: layoutState.leftWindowMediaQuery,
+    showLeftWindow: layoutState.showLeftWindow || layoutState.apiShowLeftWindow,
+    matchRightWindow: layoutState.rightWindowMediaQuery,
+    showRightWindow: layoutState.showRightWindow || layoutState.apiShowRightWindow
+  }));
+  return {
+    layoutState,
+    windowState
+  };
+}
+function useShowTabBar() {
+  const route = usePageRoute();
+  const tabBar = useTabBar();
+  const showTabBar2 = computed(() => route.meta.isTabBar && tabBar.shown);
+  updateCssVar({ "--tab-bar-height": tabBar.height });
+  return showTabBar2;
+}
+function useTopWindow(layoutState) {
+  const { component, style } = __uniConfig.topWindow;
+  const windowRef = ref(null);
+  function updateWindow() {
+    const instance2 = windowRef.value;
+    if (!instance2) {
+      return;
+    }
+    const el = instance2.$el;
+    if (!el) {
+      return;
+    }
+    const uniTopWindowStyleEl = el.parentElement;
+    if (!uniTopWindowStyleEl) {
+      return;
+    }
+    const height = uniTopWindowStyleEl.getBoundingClientRect().height;
+    layoutState.topWindowHeight = height;
+  }
+  watch(() => windowRef.value, () => {
+    updateWindow();
+  });
+  watch(() => layoutState.showTopWindow || layoutState.apiShowTopWindow, () => nextTick(updateWindow));
+  watch(() => layoutState.topWindowStyle, () => nextTick(updateWindow));
+  layoutState.topWindowStyle = style;
+  return {
+    component,
+    windowRef
+  };
+}
+function useLeftWindow(layoutState) {
+  const { component, style } = __uniConfig.leftWindow;
+  const windowRef = ref(null);
+  function updateWindow() {
+    const instance2 = windowRef.value;
+    if (!instance2) {
+      return;
+    }
+    const el = instance2.$el;
+    if (!el) {
+      return;
+    }
+    const uniLeftWindowStyleEl = el.parentElement && el.parentElement.parentElement;
+    if (!uniLeftWindowStyleEl) {
+      return;
+    }
+    const width = uniLeftWindowStyleEl.getBoundingClientRect().width;
+    layoutState.leftWindowWidth = width;
+  }
+  watch(() => windowRef.value, () => {
+    updateWindow();
+  });
+  watch(() => layoutState.showLeftWindow || layoutState.apiShowLeftWindow, () => nextTick(updateWindow));
+  watch(() => layoutState.leftWindowStyle, () => nextTick(updateWindow));
+  layoutState.leftWindowStyle = style;
+  return {
+    component,
+    windowRef
+  };
+}
+function useRightWindow(layoutState) {
+  const { component, style } = __uniConfig.rightWindow;
+  const windowRef = ref(null);
+  function updateWindow() {
+    const instance2 = windowRef.value;
+    if (!instance2) {
+      return;
+    }
+    const el = instance2.$el;
+    if (!el) {
+      return;
+    }
+    const uniRightWindowStyleEl = el.parentElement && el.parentElement.parentElement;
+    if (!uniRightWindowStyleEl) {
+      return;
+    }
+    const width = uniRightWindowStyleEl.getBoundingClientRect().width;
+    layoutState.rightWindowWidth = width;
+  }
+  watch(() => windowRef.value, () => {
+    updateWindow();
+  });
+  watch(() => layoutState.showRightWindow || layoutState.apiShowRightWindow, () => nextTick(updateWindow));
+  watch(() => layoutState.rightWindowStyle, () => nextTick(updateWindow));
+  layoutState.rightWindowStyle = style;
+  return {
+    component,
+    windowRef
+  };
+}
+const t0$B = template("<div class=uni-async-loading><i class=uni-loading>", 3);
+const _sfc_main$B = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "AsyncLoading",
     __reserved: true,
@@ -11706,12 +11561,12 @@ const _sfc_main$E = /* @__PURE__ */ defineVaporComponent({
   },
   __name: "asyncLoading",
   setup(__props) {
-    const n0 = t0$E();
+    const n0 = t0$B();
     return n0;
   }
 });
-const t0$D = template("<div class=uni-async-error> ", 1);
-const _sfc_main$D = /* @__PURE__ */ defineVaporComponent({
+const t0$A = template("<div class=uni-async-error> ", 1);
+const _sfc_main$A = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "AsyncError",
     __reserved: true,
@@ -11721,14 +11576,14 @@ const _sfc_main$D = /* @__PURE__ */ defineVaporComponent({
   props: ["error"],
   setup(__props) {
     initI18nAsyncMsgsOnce();
-    const { t: t12 } = useI18n();
+    const { t: t8 } = useI18n();
     function reload() {
       window.location.reload();
     }
-    const n0 = t0$D();
+    const n0 = t0$A();
     const x0 = txt(n0);
     on$1(n0, "click", reload);
-    renderEffect(() => setText(x0, toDisplayString(unref(t12)("uni.async.error"))));
+    renderEffect(() => setText(x0, toDisplayString(unref(t8)("uni.async.error"))));
     return n0;
   }
 });
@@ -11784,11 +11639,11 @@ function initApp$1(vm) {
     }
   });
   const app = appVm.$.appContext.app;
-  if (!app.component(_sfc_main$E.name)) {
-    app.component(_sfc_main$E.name, _sfc_main$E);
+  if (!app.component(_sfc_main$B.name)) {
+    app.component(_sfc_main$B.name, _sfc_main$B);
   }
-  if (!app.component(_sfc_main$D.name)) {
-    app.component(_sfc_main$D.name, _sfc_main$D);
+  if (!app.component(_sfc_main$A.name)) {
+    app.component(_sfc_main$A.name, _sfc_main$A);
   }
   initAppVm(appVm);
   defineGlobalData(appVm);
@@ -12021,7 +11876,7 @@ function setupApp(comp) {
       comp2.mpType = "app";
       const { setup } = comp2;
       const render = () => {
-        return createComponent$1(_sfc_main$F, null, null, true);
+        return createComponent$1(LayoutComponent, null, null, true);
       };
       comp2.setup = (props2, ctx) => {
         const res = setup && setup(props2, ctx);
@@ -12182,9 +12037,9 @@ function useLoadingStyle(targetElement, bold) {
     // borderRadius: loadingBorderRadius,
   };
 }
-const t0$C = template('<div uni-loading uni-view data-v-212d40c7 class="default __uni_loading_container__" style="display: flex;"><div uni-view data-v-212d40c7>', 257);
+const t0$z = template('<div uni-loading uni-view data-v-212d40c7 class="default __uni_loading_container__" style="display: flex;"><div uni-view data-v-212d40c7>', 257);
 const _uniLoadingElement = { value: "LOADING" };
-const _sfc_main$C = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$z = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "loading",
     styleIsolation: "app-and-page",
@@ -12203,7 +12058,7 @@ const _sfc_main$C = /* @__PURE__ */ defineVaporComponent({
     const props2 = __props;
     const LoadingRef = ref(null);
     const loadingStyle = reactive(useLoadingStyle(LoadingRef, computed(() => props2.bold)));
-    const n0 = t0$C();
+    const n0 = t0$z();
     const n1 = child(n0);
     initUniElement(n0, _uniLoadingElement);
     setStaticTemplateRef(n0, LoadingRef, null, "LoadingRef");
@@ -12311,41 +12166,30 @@ function usePageHeadTransparent(headRef, {
     });
   });
 }
-const t0$B = template('<div class=uni-page-head-btn><svg width=26 height=26 viewBox="0 0 32 32"><path fill=none stroke-width=2 stroke-linecap=round>');
-const t1$j = template('<svg viewBox="0 0 32 32"><path>', 0, 1);
-const t2$9 = template('<span><i class=uni-btn-icon></i><svg width=14 height=14 viewBox="0 0 32 32"><path fill=none stroke=#000 stroke-width=2 stroke-linecap=round>');
-const t3$6 = template("<i class=uni-btn-icon></i>");
-const t4$3 = template("<div>");
-const t5$2 = template("<i class=uni-loading></i>", 2);
-const t6$2 = template("<img class=uni-page-head__title_image>");
-const t7$1 = template(" ");
-const t8 = template("<div class=uni-page-head-bd><div class=uni-page-head__title></div>");
-const t9 = template('<div class=uni-page-head-search><div><div class=uni-page-head-search-icon><svg width=20 height=20 viewBox="0 0 32 32"><path></div></div>');
-const t10 = template('<span><i class=uni-btn-icon></i><svg width=14 height=14 viewBox="0 0 32 32"><path fill=#000>');
-const t11 = template("<uni-page-head><div><div class=uni-page-head-hd></div><!><div class=uni-page-head-ft></div></div>", 1);
-const _sfc_main$B = /* @__PURE__ */ defineVaporComponent({
-  ...{
-    name: "PageHead",
-    __reserved: true,
-    compatConfig: { MODE: 3 }
-  },
-  __name: "pageHead",
-  setup(__props) {
-    const hasPages = __UNI_FEATURE_PAGES__;
-    const hasButtons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__;
-    const hasSearchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__;
-    const isXVapor = true;
-    const ICON_PATHS = {
-      none: "",
-      forward: "M11 7.844q-0.25-0.219-0.25-0.578t0.25-0.578q0.219-0.25 0.563-0.25t0.563 0.25l9.656 9.125q0.125 0.125 0.188 0.297t0.063 0.328q0 0.188-0.063 0.359t-0.188 0.297l-9.656 9.125q-0.219 0.25-0.563 0.25t-0.563-0.25q-0.25-0.219-0.25-0.578t0.25-0.609l9.063-8.594-9.063-8.594z",
-      back: ICON_PATH_BACK,
-      select: ICON_PATH_BACK,
-      share: "M26.563 24.844q0 0.125-0.109 0.234t-0.234 0.109h-17.938q-0.125 0-0.219-0.109t-0.094-0.234v-13.25q0-0.156 0.094-0.25t0.219-0.094h5.5v-1.531h-6q-0.531 0-0.906 0.391t-0.375 0.922v14.375q0 0.531 0.375 0.922t0.906 0.391h18.969q0.531 0 0.891-0.391t0.359-0.953v-5.156h-1.438v4.625zM29.813 10.969l-5.125-5.375-1.031 1.094 3.438 3.594-3.719 0.031q-2.313 0.188-4.344 1.125t-3.578 2.422-2.5 3.453-1.109 4.188l-0.031 0.25h1.469v-0.219q0.156-1.875 1-3.594t2.25-3.063 3.234-2.125 3.828-0.906l0.188-0.031 3.313-0.031-3.438 3.625 1.031 1.063 5.125-5.375-0.031-0.063 0.031-0.063z",
-      favorite: "M27.594 13.375q-0.063-0.188-0.219-0.313t-0.344-0.156l-7.094-0.969-3.219-6.406q-0.094-0.188-0.25-0.281t-0.375-0.094q-0.188 0-0.344 0.094t-0.25 0.281l-3.125 6.438-7.094 1.094q-0.188 0.031-0.344 0.156t-0.219 0.313q-0.031 0.188 0.016 0.375t0.172 0.313l5.156 4.969-1.156 7.063q-0.031 0.188 0.047 0.375t0.234 0.313q0.094 0.063 0.188 0.094t0.219 0.031q0.063 0 0.141-0.031t0.172-0.063l6.313-3.375 6.375 3.313q0.063 0.031 0.141 0.047t0.172 0.016q0.188 0 0.344-0.094t0.25-0.281q0.063-0.094 0.078-0.234t-0.016-0.234q0-0.031 0-0.063l-1.25-6.938 5.094-5.031q0.156-0.156 0.203-0.344t-0.016-0.375zM11.469 19.063q0.031-0.188-0.016-0.344t-0.172-0.281l-4.406-4.25 6.063-0.906q0.156-0.031 0.297-0.125t0.203-0.25l2.688-5.531 2.75 5.5q0.063 0.156 0.203 0.25t0.297 0.125l6.094 0.844-4.375 4.281q-0.125 0.125-0.172 0.297t-0.016 0.328l1.063 6.031-5.438-2.813q-0.156-0.094-0.328-0.078t-0.297 0.078l-5.438 2.875 1-6.031z",
-      home: "M23.719 16.5q-0.313 0-0.531 0.219t-0.219 0.5v7.063q0 0.219-0.172 0.391t-0.391 0.172h-12.344q-0.25 0-0.422-0.172t-0.172-0.391v-7.063q0-0.281-0.219-0.5t-0.531-0.219q-0.281 0-0.516 0.219t-0.234 0.5v7.063q0.031 0.844 0.625 1.453t1.438 0.609h12.375q0.844 0 1.453-0.609t0.609-1.453v-7.063q0-0.125-0.063-0.266t-0.156-0.234q-0.094-0.125-0.234-0.172t-0.297-0.047zM26.5 14.875l-8.813-8.813q-0.313-0.313-0.688-0.453t-0.781-0.141-0.781 0.141-0.656 0.422l-8.813 8.844q-0.188 0.219-0.188 0.516t0.219 0.484q0.094 0.125 0.234 0.172t0.297 0.047q0.125 0 0.25-0.047t0.25-0.141l8.781-8.781q0.156-0.156 0.406-0.156t0.406 0.156l8.813 8.781q0.219 0.188 0.516 0.188t0.516-0.219q0.188-0.188 0.203-0.484t-0.172-0.516z",
-      menu: "M8.938 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM16.188 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM23.469 18.313q0.844 0 1.453-0.609t0.609-1.453-0.609-1.453-1.453-0.609q-0.875 0-1.484 0.609t-0.609 1.453 0.609 1.453 1.484 0.609z",
-      close: ICON_PATH_CLOSE
-    };
+const _t0$d = template("<img class=uni-page-head__title_image>");
+const _t1$3 = template("<div class=uni-page-head-bd><div class=uni-page-head__title>", 1);
+const _t2$2 = template('<div class=uni-page-head-search><div><div class=uni-page-head-search-icon><svg width=20 height=20 viewBox="0 0 32 32"><path></div> </div>', 1);
+const _t3$2 = template("<div><div class=uni-page-head-hd> </div> <div class=uni-page-head-ft> </div></div>");
+const _t4$2 = template('<div class=uni-page-head-btn><svg width=26 height=26 viewBox="0 0 32 32"><path fill=none stroke-width=2 stroke-linecap=round>', 1);
+const _t5 = template('<svg viewBox="0 0 32 32"><path>', false, 1);
+const _t6 = template('<span><i class=uni-btn-icon></i><svg width=14 height=14 viewBox="0 0 32 32"><path fill=none stroke=#000 stroke-width=2 stroke-linecap=round>');
+const _t7 = template("<i class=uni-btn-icon>");
+const _t8 = template("<div>", 1);
+const _t9 = template('<span><i class=uni-btn-icon></i><svg width=14 height=14 viewBox="0 0 32 32"><path fill=#000>');
+const ICON_PATHS = {
+  none: "",
+  forward: "M11 7.844q-0.25-0.219-0.25-0.578t0.25-0.578q0.219-0.25 0.563-0.25t0.563 0.25l9.656 9.125q0.125 0.125 0.188 0.297t0.063 0.328q0 0.188-0.063 0.359t-0.188 0.297l-9.656 9.125q-0.219 0.25-0.563 0.25t-0.563-0.25q-0.25-0.219-0.25-0.578t0.25-0.609l9.063-8.594-9.063-8.594z",
+  back: ICON_PATH_BACK,
+  select: ICON_PATH_BACK,
+  share: "M26.563 24.844q0 0.125-0.109 0.234t-0.234 0.109h-17.938q-0.125 0-0.219-0.109t-0.094-0.234v-13.25q0-0.156 0.094-0.25t0.219-0.094h5.5v-1.531h-6q-0.531 0-0.906 0.391t-0.375 0.922v14.375q0 0.531 0.375 0.922t0.906 0.391h18.969q0.531 0 0.891-0.391t0.359-0.953v-5.156h-1.438v4.625zM29.813 10.969l-5.125-5.375-1.031 1.094 3.438 3.594-3.719 0.031q-2.313 0.188-4.344 1.125t-3.578 2.422-2.5 3.453-1.109 4.188l-0.031 0.25h1.469v-0.219q0.156-1.875 1-3.594t2.25-3.063 3.234-2.125 3.828-0.906l0.188-0.031 3.313-0.031-3.438 3.625 1.031 1.063 5.125-5.375-0.031-0.063 0.031-0.063z",
+  favorite: "M27.594 13.375q-0.063-0.188-0.219-0.313t-0.344-0.156l-7.094-0.969-3.219-6.406q-0.094-0.188-0.25-0.281t-0.375-0.094q-0.188 0-0.344 0.094t-0.25 0.281l-3.125 6.438-7.094 1.094q-0.188 0.031-0.344 0.156t-0.219 0.313q-0.031 0.188 0.016 0.375t0.172 0.313l5.156 4.969-1.156 7.063q-0.031 0.188 0.047 0.375t0.234 0.313q0.094 0.063 0.188 0.094t0.219 0.031q0.063 0 0.141-0.031t0.172-0.063l6.313-3.375 6.375 3.313q0.063 0.031 0.141 0.047t0.172 0.016q0.188 0 0.344-0.094t0.25-0.281q0.063-0.094 0.078-0.234t-0.016-0.234q0-0.031 0-0.063l-1.25-6.938 5.094-5.031q0.156-0.156 0.203-0.344t-0.016-0.375zM11.469 19.063q0.031-0.188-0.016-0.344t-0.172-0.281l-4.406-4.25 6.063-0.906q0.156-0.031 0.297-0.125t0.203-0.25l2.688-5.531 2.75 5.5q0.063 0.156 0.203 0.25t0.297 0.125l6.094 0.844-4.375 4.281q-0.125 0.125-0.172 0.297t-0.016 0.328l1.063 6.031-5.438-2.813q-0.156-0.094-0.328-0.078t-0.297 0.078l-5.438 2.875 1-6.031z",
+  home: "M23.719 16.5q-0.313 0-0.531 0.219t-0.219 0.5v7.063q0 0.219-0.172 0.391t-0.391 0.172h-12.344q-0.25 0-0.422-0.172t-0.172-0.391v-7.063q0-0.281-0.219-0.5t-0.531-0.219q-0.281 0-0.516 0.219t-0.234 0.5v7.063q0.031 0.844 0.625 1.453t1.438 0.609h12.375q0.844 0 1.453-0.609t0.609-1.453v-7.063q0-0.125-0.063-0.266t-0.156-0.234q-0.094-0.125-0.234-0.172t-0.297-0.047zM26.5 14.875l-8.813-8.813q-0.313-0.313-0.688-0.453t-0.781-0.141-0.781 0.141-0.656 0.422l-8.813 8.844q-0.188 0.219-0.188 0.516t0.219 0.484q0.094 0.125 0.234 0.172t0.297 0.047q0.125 0 0.25-0.047t0.25-0.141l8.781-8.781q0.156-0.156 0.406-0.156t0.406 0.156l8.813 8.781q0.219 0.188 0.516 0.188t0.516-0.219q0.188-0.188 0.203-0.484t-0.172-0.516z",
+  menu: "M8.938 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM16.188 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM23.469 18.313q0.844 0 1.453-0.609t0.609-1.453-0.609-1.453-1.453-0.609q-0.875 0-1.484 0.609t-0.609 1.453 0.609 1.453 1.484 0.609z",
+  close: ICON_PATH_CLOSE
+};
+const PageHead = /* @__PURE__ */ defineSystemComponent({
+  name: "PageHead",
+  setup() {
     const headRef = ref(null);
     const pageMeta = usePageMeta();
     const navigationBar = useTheme(pageMeta.navigationBar, () => {
@@ -12354,8 +12198,8 @@ const _sfc_main$B = /* @__PURE__ */ defineVaporComponent({
       navigationBar.titleColor = _navigationBar.titleColor;
     });
     const { clazz, style } = usePageHead(navigationBar);
-    const buttons = hasButtons && usePageHeadButtons(pageMeta);
-    const searchInput = hasSearchInput && navigationBar.searchInput && usePageHeadSearchInput(pageMeta);
+    const buttons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ && usePageHeadButtons(pageMeta);
+    const searchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ && navigationBar.searchInput && usePageHeadSearchInput(pageMeta);
     const searchFocus = searchInput && searchInput.focus;
     const searchText = searchInput && searchInput.text;
     const searchComposing = searchInput && searchInput.composing;
@@ -12365,465 +12209,362 @@ const _sfc_main$B = /* @__PURE__ */ defineVaporComponent({
     const searchOnInput = searchInput && searchInput.onInput;
     const searchOnConfirm = searchInput && searchInput.onConfirm;
     __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" && usePageHeadTransparent(headRef, pageMeta);
-    function getSvgSize(size) {
-      return size == null ? 27 : size;
+    function renderTitle() {
+      return (() => {
+        const _n8 = _t1$3();
+        const _n7 = child(_n8);
+        renderEffect(() => setStyle(_n7, {
+          fontSize: navigationBar.titleSize,
+          opacity: navigationBar.type === "transparent" ? 0 : 1
+        }));
+        setInsertionState(_n7);
+        createIf(() => navigationBar.loading, () => {
+          const _n2 = createComponent(_sfc_main$z, { style: "display: inline-block; width: 20px; height: 20px; margin-top: 7px;" });
+          return _n2;
+        }, () => createIf(() => navigationBar.titleImage, () => {
+          const _n4 = _t0$d();
+          renderEffect(() => setProp(_n4, "src", navigationBar.titleImage));
+          return _n4;
+        }, () => {
+          const _n6 = createNodes(() => navigationBar.titleText);
+          return _n6;
+        }, 513), 261);
+        return _n8;
+      })();
     }
-    function getSvgColor(color) {
-      return color == null ? "#000" : color;
-    }
-    function onPageHeadBackButton() {
-      if (getCurrentPages().length === 1) {
-        uni.reLaunch({
-          url: "/"
-        });
-      } else {
-        uni.navigateBack({
-          from: "backbutton",
-          success() {
-          }
-          // 传入空方法，避免返回Promise，因为onBackPress可能导致fail
-        });
-      }
-    }
-    function usePageHead(navigationBar2) {
-      const clazz2 = computed(() => {
-        const { type, titlePenetrate, shadowColorType } = navigationBar2;
-        const clazz3 = {
-          "uni-page-head": true,
-          "uni-page-head-transparent": type === "transparent",
-          "uni-page-head-titlePenetrate": titlePenetrate === "YES",
-          "uni-page-head-shadow": !!shadowColorType
-        };
-        if (shadowColorType) {
-          clazz3[`uni-page-head-shadow-${shadowColorType}`] = true;
-        }
-        return clazz3;
-      });
-      const style2 = computed(() => {
-        const backgroundColor = __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar2.type === "transparent" ? usePageHeadTransparentBackgroundColor(navigationBar2.backgroundColor) : navigationBar2.backgroundColor;
-        return {
-          backgroundColor,
-          color: navigationBar2.titleColor,
-          transitionDuration: navigationBar2.duration,
-          transitionTimingFunction: navigationBar2.timingFunc
-        };
-      });
-      return { clazz: clazz2, style: style2 };
-    }
-    function usePageHeadButtons({ id: id2, navigationBar: navigationBar2 }) {
-      const left = [];
-      const right = [];
-      const { buttons: buttons2 } = navigationBar2;
-      if (isArray(buttons2)) {
-        const { type } = navigationBar2;
-        const isTransparent = type === "transparent";
-        const fonts = /* @__PURE__ */ Object.create(null);
-        buttons2.forEach((btn, index2) => {
-          if (btn.fontSrc && !btn.fontFamily) {
-            const fontSrc = getRealPath(btn.fontSrc);
-            let fontFamily = fonts[fontSrc];
-            if (!fontFamily) {
-              fontFamily = `font${Date.now()}`;
-              fonts[fontSrc] = fontFamily;
-              onBeforeMount(
-                () => updateStyle(
-                  "uni-btn-" + fontFamily,
-                  `@font-face{font-family: "${fontFamily}";src: url("${fontSrc}") format("truetype")}`
-                )
-              );
-            }
-            btn.fontFamily = fontFamily;
-          }
-          const pageHeadBtn = usePageHeadButton(id2, index2, btn, isTransparent);
-          if (btn.float === "left") {
-            left.push(pageHeadBtn);
-          } else {
-            right.push(pageHeadBtn);
-          }
-        });
-      }
-      return { left, right };
-    }
-    function usePageHeadButton(pageId, index2, btn, isTransparent) {
-      const iconStyle = {
-        color: btn.color,
-        fontSize: btn.fontSize,
-        fontWeight: btn.fontWeight
-      };
-      if (btn.fontFamily) {
-        iconStyle.fontFamily = btn.fontFamily;
-      }
-      return new Proxy(
-        {
-          btnClass: {
-            "uni-page-head-btn": true,
-            "uni-page-head-btn-red-dot": !!(btn.redDot || btn.badgeText),
-            "uni-page-head-btn-select": !!btn.select
-          },
-          btnStyle: {
-            backgroundColor: isTransparent ? btn.background : "transparent",
-            width: btn.width
-          },
-          btnText: "",
-          btnIconPath: ICON_PATHS[btn.type],
-          badgeText: btn.badgeText,
-          iconStyle,
-          onClick() {
-            invokeHook(pageId, ON_NAVIGATION_BAR_BUTTON_TAP, extend({ index: index2 }, btn));
-          },
-          btnSelect: btn.select
-        },
-        {
-          get(target, key, receiver) {
-            if (["btnText"].includes(key)) {
-              return btn.fontSrc && btn.fontFamily ? btn.text.replace("\\u", "&#x") : btn.text;
-            } else {
-              return Reflect.get(target, key, receiver);
-            }
-          }
-        }
-      );
-    }
-    function usePageHeadSearchInput({
-      id: id2,
-      navigationBar: { searchInput: searchInput2 }
-    }) {
-      const focus = ref(false);
-      const text2 = ref("");
-      const composing = ref(false);
-      const { disabled } = searchInput2;
-      if (disabled) {
-        const onClick = () => {
-          invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED);
-        };
-        return { focus, text: text2, composing, onClick };
-      }
-      const onFocus = () => {
-        focus.value = true;
-        invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
-          focus: true
-        });
-      };
-      const onBlur = () => {
-        focus.value = false;
-        invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
-          focus: false
-        });
-      };
-      const onInput = (evt) => {
-        text2.value = evt.detail.value;
-        invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, {
-          text: text2.value
-        });
-      };
-      const onConfirm = (evt) => {
-        invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, {
-          text: text2.value
-        });
-      };
-      return { focus, text: text2, composing, onFocus, onBlur, onInput, onConfirm };
-    }
-    const n66 = t11();
-    const n62 = child(n66);
-    const n19 = child(n62);
-    const n61 = next(n19);
-    const n60 = next(n61);
-    renderEffect(() => {
-      setAttr(n66, "uni-page-head-type", unref(navigationBar).type || "default");
-      setClass(n62, unref(clazz));
-      setStyle(n62, unref(style));
-    });
-    setInsertionState(n19);
-    createIf(() => unref(hasPages) && !unref(pageMeta).isQuit, () => {
-      const n3 = t0$B();
-      const n2 = child(child(n3));
-      on$1(n3, "click", onPageHeadBackButton);
-      renderEffect(() => {
-        const _navigationBar = unref(navigationBar);
-        setAttr(n2, "d", unref(ICON_PATH_BACK), true);
-        setAttr(
-          n2,
-          "stroke",
-          _navigationBar.type === "transparent" ? "#fff" : _navigationBar.titleColor,
-          true
-        );
-      });
-      return n3;
-    });
-    setInsertionState(n19, 1);
-    createIf(() => unref(hasButtons) && unref(buttons), () => {
-      const n6 = createFor(
-        () => unref(buttons).left,
-        (_for_item0, _for_key0) => {
-          const n18 = t4$3();
+    function renderTitleOrSearch() {
+      if (__UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__) {
+        return navigationBar.searchInput ? (() => {
+          const _n8 = _t2$2();
+          const _n2 = child(_n8);
+          let _p0 = child(_n2);
+          const _n0 = child(child(_p0));
+          const _n1 = next(_p0, true);
+          setNodes(_n1, () => !(unref(searchText) || unref(searchComposing)) && (() => {
+            const _n02 = createNodes(() => navigationBar.searchInput.placeholder);
+            return _n02;
+          })());
           renderEffect(() => {
-            const _button = _for_item0.value;
-            setClass(n18, _button.btnClass);
-            setStyle(n18, _button.btnStyle);
-            setAttr(n18, "badge-text", _button.badgeText);
+            setStyle(_n8, {
+              borderRadius: navigationBar.searchInput.borderRadius,
+              backgroundColor: navigationBar.searchInput.backgroundColor
+            });
+            setStyle(_n2, { color: navigationBar.searchInput.placeholderColor });
+            setClass(_n2, ["uni-page-head-search-placeholder", `uni-page-head-search-placeholder-${unref(searchFocus) || unref(searchText) ? "left" : navigationBar.searchInput.align}`]);
+            setAttr(_n0, "d", ICON_PATH_SEARCH, true);
+            setAttr(_n0, "fill", navigationBar.searchInput.placeholderColor, true);
           });
-          setInsertionState(n18);
-          createIf(
-            () => _for_item0.value.btnIconPath,
-            () => {
-              const n11 = t1$j();
-              const n10 = child(n11);
-              renderEffect(() => {
-                const _button = _for_item0.value;
-                const _button_iconStyle = _button.iconStyle;
-                const _getSvgSize_button_iconStyle_fontSize = getSvgSize(_button_iconStyle.fontSize);
-                setAttr(n11, "width", _getSvgSize_button_iconStyle_fontSize, true);
-                setAttr(n11, "height", _getSvgSize_button_iconStyle_fontSize, true);
-                setAttr(n10, "d", _button.btnIconPath, true);
-                setAttr(n10, "fill", getSvgColor(_button_iconStyle.color), true);
-              });
-              return n11;
-            },
-            () => createIf(
-              () => _for_item0.value.btnSelect,
-              () => {
-                const n15 = t2$9();
-                const n13 = child(n15);
-                const n14 = child(next(n13));
-                renderEffect(() => {
-                  const _button = _for_item0.value;
-                  setStyle(n15, _button.iconStyle);
-                  setHtml(n13, _button.btnText);
-                  setAttr(n14, "d", ICON_PATHS.select, true);
-                });
-                return n15;
-              },
-              () => {
-                const n17 = t3$6();
-                renderEffect(() => {
-                  const _button = _for_item0.value;
-                  setStyle(n17, _button.iconStyle);
-                  setHtml(n17, _button.btnText);
-                });
-                return n17;
-              },
-              773
-              /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_2 */
-            ),
-            525
-            /* TRUE_SINGLE_ROOT, FALSE_ELSE_IF, KEYED_INDEX_1 */
-          );
-          on$1(n18, "click", (e2) => _for_item0.value.onClick(e2));
-          return n18;
-        },
-        (button, index2) => index2,
-        8
-        /* IS_SINGLE_NODE */
-      );
-      return n6;
-    });
-    setInsertionState(n62, n61);
-    createIf(
-      () => !unref(hasSearchInput) || !unref(navigationBar).searchInput,
-      () => {
-        const n32 = t8();
-        const n31 = child(n32);
-        renderEffect(() => {
-          const _navigationBar = unref(navigationBar);
-          setStyle(n31, {
-            fontSize: _navigationBar.titleSize,
-            opacity: _navigationBar.type === "transparent" ? 0 : 1
-          });
-        });
-        setInsertionState(n31);
-        createIf(
-          () => !unref(isXVapor) && unref(navigationBar).loading,
-          () => {
-            const n24 = t5$2();
-            return n24;
-          },
-          () => createIf(
-            () => unref(isXVapor) && unref(navigationBar).loading,
-            () => {
-              const n26 = withComponentId("96682308", () => createComponent$1(unref(_sfc_main$C), { style: { "display": "inline-block", "width": "20px", "height": "20px", "margin-top": "7px" } }));
-              return n26;
-            },
-            () => createIf(
-              () => unref(navigationBar).titleImage,
-              () => {
-                const n28 = t6$2();
-                renderEffect(() => setProp(n28, "src", unref(navigationBar).titleImage));
-                return n28;
-              },
-              () => {
-                const n30 = t7$1();
-                renderEffect(() => setText(n30, toDisplayString(unref(navigationBar).titleText)));
-                return n30;
-              },
-              1801
-              /* TRUE_SINGLE_ROOT, FALSE_MULTI_ROOT, KEYED_INDEX_6 */
-            ),
-            1549
-            /* TRUE_SINGLE_ROOT, FALSE_ELSE_IF, KEYED_INDEX_5 */
-          ),
-          1293
-          /* TRUE_SINGLE_ROOT, FALSE_ELSE_IF, KEYED_INDEX_4 */
-        );
-        return n32;
-      },
-      () => {
-        const n44 = t9();
-        const n38 = child(n44);
-        const n34 = child(child(child(n38)));
-        renderEffect(() => {
-          const _navigationBar = unref(navigationBar);
-          const _navigationBar_searchInput = _navigationBar.searchInput;
-          setStyle(n44, {
-            borderRadius: _navigationBar_searchInput.borderRadius,
-            backgroundColor: _navigationBar_searchInput.backgroundColor
-          });
-          setStyle(n38, { color: _navigationBar_searchInput.placeholderColor });
-          setClass(n38, [
-            "uni-page-head-search-placeholder",
-            `uni-page-head-search-placeholder-${unref(searchFocus) || unref(searchText) ? "left" : _navigationBar_searchInput.align}`
-          ]);
-          setAttr(n34, "d", unref(ICON_PATH_SEARCH), true);
-          setAttr(n34, "fill", _navigationBar_searchInput.placeholderColor, true);
-        });
-        setInsertionState(n38, 1);
-        createIf(
-          () => !(unref(searchText) || unref(searchComposing)),
-          () => {
-            const n37 = t7$1();
-            renderEffect(() => setText(n37, toDisplayString(unref(navigationBar).searchInput.placeholder)));
-            return n37;
-          },
-          null,
-          2
-          /* TRUE_MULTI_ROOT */
-        );
-        setInsertionState(n44, 1);
-        createIf(
-          () => unref(navigationBar).searchInput.disabled,
-          () => {
-            const _on_click = ($event) => unref(searchOnClick) && unref(searchOnClick)($event);
-            const n41 = withComponentId("96671b3c", () => createComponent$1(unref(__syscom_0$2), {
+          setInsertionState(_n8, 1);
+          createIf(() => navigationBar.searchInput.disabled, () => {
+            const _n5 = createComponent(__syscom_0$2, {
               disabled: true,
-              style: () => ({ color: unref(navigationBar).searchInput.color }),
-              "placeholder-style": () => "color: " + unref(navigationBar).searchInput.placeholderColor,
+              style: () => ({ color: navigationBar.searchInput.color }),
+              "placeholder-style": () => "color: " + navigationBar.searchInput.placeholderColor,
               class: "uni-page-head-search-input",
               "confirm-type": "search",
-              onClick: () => _on_click
-            }));
-            return n41;
-          },
-          () => {
-            const _on_focus = ($event) => unref(searchOnFocus) && unref(searchOnFocus)($event);
-            const _on_blur = ($event) => unref(searchOnBlur) && unref(searchOnBlur)($event);
-            const _on_input = ($event) => unref(searchOnInput) && unref(searchOnInput)($event);
-            const _on_confirm = ($event) => unref(searchOnConfirm) && unref(searchOnConfirm)($event);
-            const n43 = withComponentId("96665f1e", () => createComponent$1(unref(__syscom_0$2), {
-              focus: () => unref(navigationBar).searchInput.autoFocus,
-              style: () => ({ color: unref(navigationBar).searchInput.color }),
-              "placeholder-style": () => "color: " + unref(navigationBar).searchInput.placeholderColor,
+              onClick: () => searchOnClick
+            });
+            return _n5;
+          }, () => {
+            const _n7 = createComponent(__syscom_0$2, {
+              focus: () => navigationBar.searchInput.autoFocus,
+              style: () => ({ color: navigationBar.searchInput.color }),
+              "placeholder-style": () => "color: " + navigationBar.searchInput.placeholderColor,
               class: "uni-page-head-search-input",
               "confirm-type": "search",
-              onFocus: () => _on_focus,
-              onBlur: () => _on_blur,
-              onInput: () => _on_input,
-              onConfirm: () => _on_confirm
-            }));
-            return n43;
-          },
-          2565
-          /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_9 */
-        );
-        return n44;
-      },
-      2053
-      /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_7 */
-    );
-    setInsertionState(n60);
-    createIf(() => unref(hasButtons) && unref(buttons), () => {
-      const n47 = createFor(
-        () => unref(buttons).right,
-        (_for_item0, _for_key0) => {
-          const n59 = t4$3();
+              onConfirm: () => searchOnConfirm,
+              onInput: () => searchOnInput,
+              onBlur: () => searchOnBlur,
+              onFocus: () => searchOnFocus
+            });
+            return _n7;
+          }, 261);
+          return _n8;
+        })() : renderTitle();
+      }
+      return renderTitle();
+    }
+    return () => (() => {
+      const _setTemplateRef = createTemplateRefSetter();
+      const _n5 = createPlainElement("uni-page-head", { "uni-page-head-type": () => navigationBar.type || "default" }, () => {
+        const _n3 = _t3$2();
+        const _n0 = child(_n3);
+        const _n1 = next(_n0, true);
+        const _n2 = next(_n1);
+        const _x0 = txt(_n0);
+        setNodes(_x0, () => __UNI_FEATURE_PAGES__ && !pageMeta.isQuit && (() => {
+          const _n02 = _t4$2();
+          const _n12 = child(child(_n02));
+          on$1(_n02, "click", onPageHeadBackButton);
           renderEffect(() => {
-            const _button = _for_item0.value;
-            setClass(n59, _button.btnClass);
-            setStyle(n59, _button.btnStyle);
-            setAttr(n59, "badge-text", _button.badgeText);
+            setAttr(_n12, "d", ICON_PATH_BACK, true);
+            setAttr(_n12, "stroke", navigationBar.type === "transparent" ? "#fff" : navigationBar.titleColor, true);
           });
-          setInsertionState(n59);
-          createIf(
-            () => _for_item0.value.btnIconPath,
-            () => {
-              const n52 = t1$j();
-              const n51 = child(n52);
+          return _n02;
+        })(), () => __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ && buttons && (() => {
+          const _n02 = createNodes(() => createFor(() => buttons.left, (button) => (() => {
+            const _n03 = _t8();
+            on$1(_n03, "click", button.value.onClick);
+            renderEffect(() => {
+              setClass(_n03, button.value.btnClass);
+              setStyle(_n03, button.value.btnStyle);
+              setAttr(_n03, "badge-text", button.value.badgeText);
+            });
+            setInsertionState(_n03);
+            createIf(() => button.value.btnIconPath, () => {
+              const _n42 = _t5();
+              const _n32 = child(_n42);
               renderEffect(() => {
-                const _button = _for_item0.value;
-                const _button_iconStyle = _button.iconStyle;
-                const _getSvgSize_button_iconStyle_fontSize = getSvgSize(_button_iconStyle.fontSize);
-                setAttr(n52, "width", _getSvgSize_button_iconStyle_fontSize, true);
-                setAttr(n52, "height", _getSvgSize_button_iconStyle_fontSize, true);
-                setAttr(n51, "d", _button.btnIconPath, true);
-                setAttr(n51, "fill", getSvgColor(_button_iconStyle.color), true);
+                setAttr(_n42, "width", getSvgSize(button.value.iconStyle.fontSize), true);
+                setAttr(_n42, "height", getSvgSize(button.value.iconStyle.fontSize), true);
+                setAttr(_n32, "d", button.value.btnIconPath, true);
+                setAttr(_n32, "fill", getSvgColor(button.value.iconStyle.color), true);
               });
-              return n52;
-            },
-            () => createIf(
-              () => _for_item0.value.btnSelect,
-              () => {
-                const n56 = t10();
-                const n54 = child(n56);
-                const n55 = child(next(n54));
-                renderEffect(() => {
-                  const _button = _for_item0.value;
-                  setStyle(n56, _button.iconStyle);
-                  setHtml(n54, _button.btnText);
-                  setAttr(n55, "d", ICON_PATHS.select, true);
-                });
-                return n56;
-              },
-              () => {
-                const n58 = t3$6();
-                renderEffect(() => {
-                  const _button = _for_item0.value;
-                  setStyle(n58, _button.iconStyle);
-                  setHtml(n58, _button.btnText);
-                });
-                return n58;
-              },
-              3077
-              /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_11 */
-            ),
-            2829
-            /* TRUE_SINGLE_ROOT, FALSE_ELSE_IF, KEYED_INDEX_10 */
-          );
-          on$1(n59, "click", (e2) => _for_item0.value.onClick(e2));
-          return n59;
-        },
-        (button, index2) => index2,
-        8
-        /* IS_SINGLE_NODE */
-      );
-      return n47;
-    });
-    setStaticTemplateRef(n62, headRef, null, "headRef");
-    setInsertionState(n66, 1);
-    createIf(() => unref(navigationBar).type !== "transparent" && unref(navigationBar).type !== "float", () => {
-      const n65 = t4$3();
-      renderEffect(() => setClassName(n65, 1 | (unref(navigationBar).titlePenetrate ? 2 : 0), [" uni-placeholder", " uni-placeholder-titlePenetrate"]));
-      return n65;
-    });
-    return n66;
+              return _n42;
+            }, () => createIf(() => button.value.btnSelect, () => {
+              const _n8 = _t6();
+              const _n6 = child(_n8);
+              const _n7 = child(next(_n6));
+              renderEffect(() => {
+                setStyle(_n8, button.value.iconStyle);
+                setHtml(_n6, button.value.btnText);
+                setAttr(_n7, "d", ICON_PATHS.select, true);
+              });
+              return _n8;
+            }, () => {
+              const _n10 = _t7();
+              renderEffect(() => {
+                setStyle(_n10, button.value.iconStyle);
+                setHtml(_n10, button.value.btnText);
+              });
+              return _n10;
+            }, 513), 261);
+            return _n03;
+          })(), (button, index2) => index2, 8));
+          return _n02;
+        })());
+        setNodes(_n1, () => renderTitleOrSearch());
+        const _x2 = txt(_n2);
+        setNodes(_x2, () => __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ && buttons && (() => {
+          const _n02 = createNodes(() => createFor(() => buttons.right, (button) => (() => {
+            const _n03 = _t8();
+            on$1(_n03, "click", button.value.onClick);
+            renderEffect(() => {
+              setClass(_n03, button.value.btnClass);
+              setStyle(_n03, button.value.btnStyle);
+              setAttr(_n03, "badge-text", button.value.badgeText);
+            });
+            setInsertionState(_n03);
+            createIf(() => button.value.btnIconPath, () => {
+              const _n42 = _t5();
+              const _n32 = child(_n42);
+              renderEffect(() => {
+                setAttr(_n42, "width", getSvgSize(button.value.iconStyle.fontSize), true);
+                setAttr(_n42, "height", getSvgSize(button.value.iconStyle.fontSize), true);
+                setAttr(_n32, "d", button.value.btnIconPath, true);
+                setAttr(_n32, "fill", getSvgColor(button.value.iconStyle.color), true);
+              });
+              return _n42;
+            }, () => createIf(() => button.value.btnSelect, () => {
+              const _n8 = _t9();
+              const _n6 = child(_n8);
+              const _n7 = child(next(_n6));
+              renderEffect(() => {
+                setStyle(_n8, button.value.iconStyle);
+                setHtml(_n6, button.value.btnText);
+                setAttr(_n7, "d", ICON_PATHS.select, true);
+              });
+              return _n8;
+            }, () => {
+              const _n10 = _t7();
+              renderEffect(() => {
+                setStyle(_n10, button.value.iconStyle);
+                setHtml(_n10, button.value.btnText);
+              });
+              return _n10;
+            }, 513), 261);
+            return _n03;
+          })(), (button, index2) => index2, 8));
+          return _n02;
+        })());
+        const _n4 = createNodes(() => navigationBar.type !== "transparent" && navigationBar.type !== "float" && (() => {
+          const _n02 = _t8();
+          renderEffect(() => setClassName(_n02, 1 | (navigationBar.titlePenetrate ? 2 : 0), [" uni-placeholder", " uni-placeholder-titlePenetrate"]));
+          return _n02;
+        })());
+        renderEffect(() => {
+          setClass(_n3, clazz.value);
+          setStyle(_n3, style.value);
+          _setTemplateRef(_n3, headRef);
+        });
+        return [_n3, _n4];
+      }, true);
+      return _n5;
+    })();
   }
 });
-const t0$A = template('<uni-page-refresh><div class=uni-page-refresh><div class=uni-page-refresh-inner><svg class=uni-page-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none></svg><svg class=uni-page-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle class=uni-page-refresh__path cx=50 cy=50 r=20 fill=none stroke-width=4 stroke-miterlimit=10>', 1);
-const _sfc_main$A = /* @__PURE__ */ defineVaporComponent({
+function getSvgSize(size) {
+  return size == null ? 27 : size;
+}
+function getSvgColor(color) {
+  return color == null ? "#000" : color;
+}
+function onPageHeadBackButton() {
+  if (getCurrentPages().length === 1) {
+    uni.reLaunch({ url: "/" });
+  } else {
+    uni.navigateBack({
+      from: "backbutton",
+      success() {
+      }
+    });
+  }
+}
+function usePageHead(navigationBar) {
+  const clazz = computed(() => {
+    const { type, titlePenetrate, shadowColorType } = navigationBar;
+    const clazz2 = {
+      "uni-page-head": true,
+      "uni-page-head-transparent": type === "transparent",
+      "uni-page-head-titlePenetrate": titlePenetrate === "YES",
+      "uni-page-head-shadow": !!shadowColorType
+    };
+    if (shadowColorType) {
+      clazz2[`uni-page-head-shadow-${shadowColorType}`] = true;
+    }
+    return clazz2;
+  });
+  const style = computed(() => {
+    const backgroundColor = __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" ? usePageHeadTransparentBackgroundColor(navigationBar.backgroundColor) : navigationBar.backgroundColor;
+    return {
+      backgroundColor,
+      color: navigationBar.titleColor,
+      transitionDuration: navigationBar.duration,
+      transitionTimingFunction: navigationBar.timingFunc
+    };
+  });
+  return {
+    clazz,
+    style
+  };
+}
+function usePageHeadButtons({ id: id2, navigationBar }) {
+  const left = [];
+  const right = [];
+  const { buttons } = navigationBar;
+  if (isArray(buttons)) {
+    const { type } = navigationBar;
+    const isTransparent = type === "transparent";
+    const fonts = /* @__PURE__ */ Object.create(null);
+    buttons.forEach((btn, index2) => {
+      if (btn.fontSrc && !btn.fontFamily) {
+        const fontSrc = getRealPath(btn.fontSrc);
+        let fontFamily = fonts[fontSrc];
+        if (!fontFamily) {
+          fontFamily = `font${Date.now()}`;
+          fonts[fontSrc] = fontFamily;
+          onBeforeMount(() => updateStyle("uni-btn-" + fontFamily, `@font-face{font-family: "${fontFamily}";src: url("${fontSrc}") format("truetype")}`));
+        }
+        btn.fontFamily = fontFamily;
+      }
+      const pageHeadBtn = usePageHeadButton(id2, index2, btn, isTransparent);
+      if (btn.float === "left") {
+        left.push(pageHeadBtn);
+      } else {
+        right.push(pageHeadBtn);
+      }
+    });
+  }
+  return {
+    left,
+    right
+  };
+}
+function usePageHeadButton(pageId, index2, btn, isTransparent) {
+  const iconStyle = {
+    color: btn.color,
+    fontSize: btn.fontSize,
+    fontWeight: btn.fontWeight
+  };
+  if (btn.fontFamily) {
+    iconStyle.fontFamily = btn.fontFamily;
+  }
+  return new Proxy({
+    btnClass: {
+      "uni-page-head-btn": true,
+      "uni-page-head-btn-red-dot": !!(btn.redDot || btn.badgeText),
+      "uni-page-head-btn-select": !!btn.select
+    },
+    btnStyle: {
+      backgroundColor: isTransparent ? btn.background : "transparent",
+      width: btn.width
+    },
+    btnText: "",
+    btnIconPath: ICON_PATHS[btn.type],
+    badgeText: btn.badgeText,
+    iconStyle,
+    onClick() {
+      invokeHook(pageId, ON_NAVIGATION_BAR_BUTTON_TAP, extend({ index: index2 }, btn));
+    },
+    btnSelect: btn.select
+  }, { get(target, key, receiver) {
+    if (["btnText"].includes(key)) {
+      return btn.fontSrc && btn.fontFamily ? btn.text.replace("\\u", "&#x") : btn.text;
+    } else {
+      return Reflect.get(target, key, receiver);
+    }
+  } });
+}
+function usePageHeadSearchInput({ id: id2, navigationBar: { searchInput } }) {
+  const focus = ref(false);
+  const text2 = ref("");
+  const composing = ref(false);
+  const { disabled } = searchInput;
+  if (disabled) {
+    const onClick = () => {
+      invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED);
+    };
+    return {
+      focus,
+      text: text2,
+      composing,
+      onClick
+    };
+  }
+  const onFocus = () => {
+    focus.value = true;
+    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, { focus: true });
+  };
+  const onBlur = () => {
+    focus.value = false;
+    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, { focus: false });
+  };
+  const onInput = (evt) => {
+    text2.value = evt.detail.value;
+    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, { text: text2.value });
+  };
+  const onConfirm = (evt) => {
+    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, { text: text2.value });
+  };
+  return {
+    focus,
+    text: text2,
+    composing,
+    onFocus,
+    onBlur,
+    onInput,
+    onConfirm
+  };
+}
+const t0$y = template('<uni-page-refresh><div class=uni-page-refresh><div class=uni-page-refresh-inner><svg class=uni-page-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none></svg><svg class=uni-page-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle class=uni-page-refresh__path cx=50 cy=50 r=20 fill=none stroke-width=4 stroke-miterlimit=10>', 1);
+const _sfc_main$y = /* @__PURE__ */ defineVaporComponent({
   ...{ name: "PageRefresh" },
   __name: "component",
   setup(__props) {
     const { pullToRefresh } = usePageMeta();
     const offset = pullToRefresh.offset;
     const color = pullToRefresh.color;
-    const n3 = t0$A();
+    const n3 = t0$y();
     const n2 = child(n3);
     const n0 = child(child(n2));
     const n1 = child(next(n0));
@@ -13091,32 +12832,17 @@ function usePageRefresh(refreshRef) {
     onTouchcancel: onTouchend
   };
 }
-const t0$z = template("<uni-page-wrapper><uni-page-body>");
-const _sfc_main$z = /* @__PURE__ */ defineVaporComponent({
-  ...{
-    name: "PageBody",
-    __reserved: true,
-    compatConfig: { MODE: 3 }
-  },
-  __name: "pageBody",
-  __multiRoot: true,
-  setup(__props) {
-    const isX = true;
-    const hasPullDownRefresh = __UNI_FEATURE_PULL_DOWN_REFRESH__;
-    const pageMeta = hasPullDownRefresh ? usePageMeta() : null;
+const PageBody = /* @__PURE__ */ defineSystemComponent({
+  name: "PageBody",
+  setup() {
+    const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ ? usePageMeta() : null;
     const refreshRef = ref(null);
     const wrapperRef = ref(null);
-    const _pageRefresh = hasPullDownRefresh && pageMeta && (pageMeta.enablePullDownRefresh || isX) ? usePageRefresh(refreshRef) : null;
+    const _pageRefresh = __UNI_FEATURE_PULL_DOWN_REFRESH__ && pageMeta && (pageMeta.enablePullDownRefresh || true) ? usePageRefresh(refreshRef) : null;
     const pageRefresh = ref(null);
-    watch(
-      () => pageMeta == null ? void 0 : pageMeta.enablePullDownRefresh,
-      () => {
-        pageRefresh.value = (pageMeta == null ? void 0 : pageMeta.enablePullDownRefresh) ? _pageRefresh : null;
-      },
-      {
-        immediate: true
-      }
-    );
+    watch(() => pageMeta == null ? void 0 : pageMeta.enablePullDownRefresh, () => {
+      pageRefresh.value = (pageMeta == null ? void 0 : pageMeta.enablePullDownRefresh) ? _pageRefresh : null;
+    }, { immediate: true });
     function resize() {
       const { top, left, right, bottom } = getSafeAreaInsets(wrapperRef.value);
       const vars = {
@@ -13129,57 +12855,50 @@ const _sfc_main$z = /* @__PURE__ */ defineVaporComponent({
         wrapperRef.value.style.setProperty(key, vars[key]);
       }
     }
-    const n0 = createIf(() => unref(hasPullDownRefresh) && !!unref(pageMeta) && (unref(isX) || !!unref(pageMeta).enablePullDownRefresh), () => {
-      const n2 = withComponentId("2d14e6de", () => createComponent$1(_sfc_main$A));
-      setStaticTemplateRef(n2, refreshRef, null, "refreshRef");
-      return n2;
-    });
-    const n8 = t0$z();
-    const n4 = child(n8);
-    renderEffect(() => setDynamicProps(n8, [pageRefresh.value]));
-    setInsertionState(n4);
-    createSlot();
-    setInsertionState(n8, 1);
-    createIf(() => unref(isX), () => {
-      const n7 = withComponentId("3b76aa59", () => createComponent$1(unref(ResizeSensor), { onResize: () => resize }));
-      return n7;
-    });
-    setStaticTemplateRef(n8, wrapperRef, null, "wrapperRef");
-    return [n0, n8];
+    return () => (() => {
+      const _setTemplateRef = createTemplateRefSetter();
+      const _n0 = createNodes(() => __UNI_FEATURE_PULL_DOWN_REFRESH__ && !!pageMeta && true && (() => {
+        const _setTemplateRef2 = createTemplateRefSetter();
+        const _n02 = createComponent(_sfc_main$y, null, null, true);
+        renderEffect(() => _setTemplateRef2(_n02, refreshRef));
+        return _n02;
+      })());
+      const _n4 = createPlainElement("uni-page-wrapper", { $: [() => pageRefresh.value] }, () => {
+        const _n2 = createPlainElement("uni-page-body", null, extend$1(() => {
+          const _n1 = createSlot("default", null, null, 4);
+          return _n1;
+        }, { _: 1 }));
+        const _n3 = createNodes(() => (() => {
+          const _n02 = createComponent(ResizeSensor, { onResize: () => resize }, null, true);
+          return _n02;
+        })());
+        return [_n2, _n3];
+      });
+      renderEffect(() => _setTemplateRef(_n4, wrapperRef));
+      return [_n0, _n4];
+    })();
   }
 });
-const t0$y = template("<uni-page>", 1);
-const _sfc_main$y = /* @__PURE__ */ defineVaporComponent({
-  ...{
-    name: "Page",
-    __reserved: true,
-    compatConfig: { MODE: 3 }
-  },
-  __name: "index-vapor",
-  setup(__props) {
+const PageComponent = /* @__PURE__ */ defineSystemComponent({
+  name: "Page",
+  setup() {
     var _a;
-    const hasNavigationBar = __UNI_FEATURE_NAVIGATIONBAR__;
     const pageStyle = {};
     let pageMeta = providePageMeta(getStateId());
     const navigationBar = pageMeta.navigationBar;
     const currentInstance = getCurrentInstance();
     const attrs2 = currentInstance.attrs;
     const routeComponent = currentInstance.type;
-    const pageComponent = routeComponent.__uniPageComponent;
+    const PageComponent2 = routeComponent.__uniPageComponent;
     const pageProps = usePageRoute().query;
     useDocumentTitle(pageMeta);
     currentInstance.$dialogPages = ref([]);
     currentInstance.$systemDialogPages = ref([]);
     if (isDialogPageInstance(currentInstance)) {
       pageMeta.route = attrs2.route;
-      const routePageMeta = (_a = __uniRoutes.find(
-        (route) => route.path === pageMeta.route.split("?")[0]
-      )) == null ? void 0 : _a.meta;
+      const routePageMeta = (_a = __uniRoutes.find((route) => route.path === pageMeta.route.split("?")[0])) == null ? void 0 : _a.meta;
       if (routePageMeta) {
-        routePageMeta.navigationBar = Object.assign(
-          navigationBar,
-          routePageMeta.navigationBar
-        );
+        routePageMeta.navigationBar = Object.assign(navigationBar, routePageMeta.navigationBar);
         pageMeta = Object.assign(pageMeta, routePageMeta);
       }
       pageMeta.id = createDialogPageId();
@@ -13202,16 +12921,13 @@ const _sfc_main$y = /* @__PURE__ */ defineVaporComponent({
       provide("parentInstance", currentInstance);
     }
     function getDialogPages() {
-      const pages = [
-        ...currentInstance.$dialogPages.value.map((page) => ({
-          page,
-          type: DIALOG_TAG
-        })),
-        ...currentInstance.$systemDialogPages.value.map((page) => ({
-          page,
-          type: SYSTEM_DIALOG_TAG
-        }))
-      ];
+      const pages = [...currentInstance.$dialogPages.value.map((page) => ({
+        page,
+        type: DIALOG_TAG
+      })), ...currentInstance.$systemDialogPages.value.map((page) => ({
+        page,
+        type: SYSTEM_DIALOG_TAG
+      }))];
       pages.sort((a, b) => {
         var _a2, _b, _c, _d;
         const aId = ((_b = (_a2 = a.page.vm) == null ? void 0 : _a2.$basePage) == null ? void 0 : _b.id) || Number.MAX_SAFE_INTEGER;
@@ -13251,53 +12967,41 @@ const _sfc_main$y = /* @__PURE__ */ defineVaporComponent({
         }
       }
     }
-    const n8 = t0$y();
-    renderEffect(() => {
-      setAttr(n8, "data-page", unref(pageMeta).route);
-      setStyle(n8, pageStyle);
-    });
-    setInsertionState(n8);
-    createIf(() => unref(hasNavigationBar) && unref(navigationBar).style !== "custom", () => {
-      const n2 = withComponentId("6ae207a0", () => createComponent$1(_sfc_main$B));
-      return n2;
-    });
-    setInsertionState(n8, 1);
-    withComponentId("f15f11c4", () => createComponent$1(_sfc_main$z, null, extend$1(() => {
-      const n3 = withComponentId("f15f1178", () => createDynamicComponent(
-        () => unref(pageComponent),
-        { $: [
-          () => unref(pageProps)
-        ] },
-        null,
-        36
-        /* SLOT_SINGLE_ROOT, SLOT_ROOT */
-      ));
-      setStaticTemplateRef(n3, "page");
-      return n3;
-    }, {
-      _: 1
-      /* NON_STABLE */
-    })));
-    setInsertionState(n8, 2);
-    createFor(
-      () => getDialogPages(),
-      (_for_item0) => {
-        const n7 = withComponentId("f15f0a40-" + _for_item0.value.route, () => createDynamicComponent(() => _for_item0.value.component, {
+    return () => (() => {
+      const _setTemplateRef = createTemplateRefSetter();
+      const _n4 = createPlainElement("uni-page", {
+        "data-page": () => pageMeta.route,
+        style: () => pageStyle
+      }, () => {
+        const _n0 = createNodes(() => __UNI_FEATURE_NAVIGATIONBAR__ && (() => {
+          const _n02 = createIf(() => navigationBar.style !== "custom", () => {
+            const _n22 = createComponent(PageHead, null, null, true);
+            return _n22;
+          });
+          return _n02;
+        })());
+        const _n2 = createComponent(PageBody, null, () => {
+          const _n1 = createComponent(PageComponent2, { $: [() => pageProps] });
+          _setTemplateRef(_n1, "page");
+          return _n1;
+        });
+        const _n3 = createNodes(() => createFor(() => getDialogPages(), (dialogPage) => createDynamicComponent(() => dialogPage.value.component, {
           style: () => dialogPageStyle,
-          "data-type": () => _for_item0.value.type,
-          route: () => _for_item0.value.route
-        }));
-        return n7;
-      },
-      (dialogPage) => dialogPage.route,
-      18
-      /* IS_COMPONENT, IS_FRAGMENT */
-    );
-    return n8;
+          "data-type": () => dialogPage.value.type,
+          route: () => dialogPage.value.route
+        }), (dialogPage) => dialogPage.route, 18));
+        return [
+          _n0,
+          _n2,
+          _n3
+        ];
+      }, true);
+      return _n4;
+    })();
   }
 });
 function createVaporPageRouteComponent(pageComponent) {
-  return Object.assign({}, _sfc_main$y, {
+  return Object.assign({}, PageComponent, {
     __uniPageComponent: pageComponent
   });
 }
@@ -14513,8 +14217,8 @@ function useMovableAreaState(props2, rootRef) {
     }
     return get(target);
   }
-  const _onTouchstart = withWebEvent((t12) => {
-    let i = t12.touches;
+  const _onTouchstart = withWebEvent((t8) => {
+    let i = t8.touches;
     if (i) {
       if (i.length > 1) {
         let r = {
@@ -14532,11 +14236,11 @@ function useMovableAreaState(props2, rootRef) {
       }
     }
   });
-  const _onTouchmove = withWebEvent((t12) => {
-    let n = t12.touches;
+  const _onTouchmove = withWebEvent((t8) => {
+    let n = t8.touches;
     if (n) {
       if (n.length > 1) {
-        t12.preventDefault();
+        t8.preventDefault();
         let i = {
           x: n[1].pageX - n[0].pageX,
           y: n[1].pageY - n[0].pageY
@@ -14551,8 +14255,8 @@ function useMovableAreaState(props2, rootRef) {
     }
   });
   const _onTouchend = withWebEvent((e2) => {
-    let t12 = e2.touches;
-    if (!(t12 && t12.length)) {
+    let t8 = e2.touches;
+    if (!(t8 && t8.length)) {
       if (e2.changedTouches) {
         gapV.x = 0;
         gapV.y = 0;
@@ -14645,20 +14349,20 @@ const indexVapor$5 = /* @__PURE__ */ defineBuiltInComponent({
     return root;
   }
 });
-function e(e2, t12, n) {
-  return e2 > t12 - n && e2 < t12 + n;
+function e(e2, t8, n) {
+  return e2 > t8 - n && e2 < t8 + n;
 }
-function t(t12, n) {
-  return e(t12, 0, n);
+function t(t8, n) {
+  return e(t8, 0, n);
 }
 function Decline() {
 }
 Decline.prototype.x = function(e2) {
   return Math.sqrt(e2);
 };
-function Friction$1(e2, t12) {
+function Friction$1(e2, t8) {
   this._m = e2;
-  this._f = 1e3 * t12;
+  this._f = 1e3 * t8;
   this._startTime = 0;
   this._v = 0;
 }
@@ -14676,16 +14380,16 @@ Friction$1.prototype.setS = function(x, y) {
   this._x_s = x;
   this._y_s = y;
 };
-Friction$1.prototype.s = function(t12) {
-  if (void 0 === t12) {
-    t12 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
+Friction$1.prototype.s = function(t8) {
+  if (void 0 === t8) {
+    t8 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
   }
-  if (t12 > this._t) {
-    t12 = this._t;
-    this._lastDt = t12;
+  if (t8 > this._t) {
+    t8 = this._t;
+    this._lastDt = t8;
   }
-  let x = this._x_v * t12 + 0.5 * this._x_a * Math.pow(t12, 2) + this._x_s;
-  let y = this._y_v * t12 + 0.5 * this._y_a * Math.pow(t12, 2) + this._y_s;
+  let x = this._x_v * t8 + 0.5 * this._x_a * Math.pow(t8, 2) + this._x_s;
+  let y = this._y_v * t8 + 0.5 * this._y_a * Math.pow(t8, 2) + this._y_s;
   if (this._x_a > 0 && x < this._endPositionX || this._x_a < 0 && x > this._endPositionX) {
     x = this._endPositionX;
   }
@@ -14697,16 +14401,16 @@ Friction$1.prototype.s = function(t12) {
     y
   };
 };
-Friction$1.prototype.ds = function(t12) {
-  if (void 0 === t12) {
-    t12 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
+Friction$1.prototype.ds = function(t8) {
+  if (void 0 === t8) {
+    t8 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
   }
-  if (t12 > this._t) {
-    t12 = this._t;
+  if (t8 > this._t) {
+    t8 = this._t;
   }
   return {
-    dx: this._x_v + this._x_a * t12,
-    dy: this._y_v + this._y_a * t12
+    dx: this._x_v + this._x_a * t8,
+    dy: this._y_v + this._y_a * t8
   };
 };
 Friction$1.prototype.delta = function() {
@@ -14719,9 +14423,9 @@ Friction$1.prototype.dt = function() {
   return -this._x_v / this._x_a;
 };
 Friction$1.prototype.done = function() {
-  const t12 = e(this.s().x, this._endPositionX) || e(this.s().y, this._endPositionY) || this._lastDt === this._t;
+  const t8 = e(this.s().x, this._endPositionX) || e(this.s().y, this._endPositionY) || this._lastDt === this._t;
   this._lastDt = null;
-  return t12;
+  return t8;
 };
 Friction$1.prototype.setEnd = function(x, y) {
   this._endPositionX = x;
@@ -14739,7 +14443,7 @@ function Spring(m, k, c) {
   this._endPosition = 0;
   this._startTime = 0;
 }
-Spring.prototype._solve = function(e2, t12) {
+Spring.prototype._solve = function(e2, t8) {
   const n = this._c;
   const i = this._m;
   const r = this._k;
@@ -14747,70 +14451,70 @@ Spring.prototype._solve = function(e2, t12) {
   if (o === 0) {
     const a = -n / (2 * i);
     const s = e2;
-    const l = t12 / (a * e2);
+    const l = t8 / (a * e2);
     return {
       x: function(e3) {
         return (s + l * e3) * Math.pow(Math.E, a * e3);
       },
       dx: function(e3) {
-        const t13 = Math.pow(Math.E, a * e3);
-        return a * (s + l * e3) * t13 + l * t13;
+        const t9 = Math.pow(Math.E, a * e3);
+        return a * (s + l * e3) * t9 + l * t9;
       }
     };
   }
   if (o > 0) {
     const c = (-n - Math.sqrt(o)) / (2 * i);
     const u = (-n + Math.sqrt(o)) / (2 * i);
-    const d = (t12 - c * e2) / (u - c);
+    const d = (t8 - c * e2) / (u - c);
     const h = e2 - d;
     return {
       x: function(e3) {
-        let t13;
+        let t9;
         let n2;
         if (e3 === this._t) {
-          t13 = this._powER1T;
+          t9 = this._powER1T;
           n2 = this._powER2T;
         }
         this._t = e3;
-        if (!t13) {
-          t13 = this._powER1T = Math.pow(Math.E, c * e3);
+        if (!t9) {
+          t9 = this._powER1T = Math.pow(Math.E, c * e3);
         }
         if (!n2) {
           n2 = this._powER2T = Math.pow(Math.E, u * e3);
         }
-        return h * t13 + d * n2;
+        return h * t9 + d * n2;
       },
       dx: function(e3) {
-        let t13;
+        let t9;
         let n2;
         if (e3 === this._t) {
-          t13 = this._powER1T;
+          t9 = this._powER1T;
           n2 = this._powER2T;
         }
         this._t = e3;
-        if (!t13) {
-          t13 = this._powER1T = Math.pow(Math.E, c * e3);
+        if (!t9) {
+          t9 = this._powER1T = Math.pow(Math.E, c * e3);
         }
         if (!n2) {
           n2 = this._powER2T = Math.pow(Math.E, u * e3);
         }
-        return h * c * t13 + d * u * n2;
+        return h * c * t9 + d * u * n2;
       }
     };
   }
   const p2 = Math.sqrt(4 * i * r - n * n) / (2 * i);
   const f2 = -n / 2 * i;
   const v2 = e2;
-  const g2 = (t12 - f2 * e2) / p2;
+  const g2 = (t8 - f2 * e2) / p2;
   return {
     x: function(e3) {
       return Math.pow(Math.E, f2 * e3) * (v2 * Math.cos(p2 * e3) + g2 * Math.sin(p2 * e3));
     },
     dx: function(e3) {
-      const t13 = Math.pow(Math.E, f2 * e3);
+      const t9 = Math.pow(Math.E, f2 * e3);
       const n2 = Math.cos(p2 * e3);
       const i2 = Math.sin(p2 * e3);
-      return t13 * (g2 * p2 * n2 - v2 * p2 * i2) + f2 * t13 * (g2 * i2 + v2 * n2);
+      return t9 * (g2 * p2 * n2 - v2 * p2 * i2) + f2 * t9 * (g2 * i2 + v2 * n2);
     }
   };
 };
@@ -14871,9 +14575,9 @@ Spring.prototype.done = function(n) {
   }
   return e(this.x(), this._endPosition, 0.1) && t(this.dx(), 0.1);
 };
-Spring.prototype.reconfigure = function(m, t12, c) {
+Spring.prototype.reconfigure = function(m, t8, c) {
   this._m = m;
-  this._k = t12;
+  this._k = t8;
   this._c = c;
   if (!this.done()) {
     this._solution = this._solve(this.x() - this._endPosition, this.dx());
@@ -14887,11 +14591,11 @@ Spring.prototype.damping = function() {
   return this._c;
 };
 Spring.prototype.configuration = function() {
-  function e2(e3, t13) {
-    e3.reconfigure(1, t13, e3.damping());
+  function e2(e3, t9) {
+    e3.reconfigure(1, t9, e3.damping());
   }
-  function t12(e3, t13) {
-    e3.reconfigure(1, e3.springConstant(), t13);
+  function t8(e3, t9) {
+    e3.reconfigure(1, e3.springConstant(), t9);
   }
   return [
     {
@@ -14904,22 +14608,22 @@ Spring.prototype.configuration = function() {
     {
       label: "Damping",
       read: this.damping.bind(this),
-      write: t12.bind(this, this),
+      write: t8.bind(this, this),
       min: 1,
       max: 500
     }
   ];
 };
-function STD(e2, t12, n) {
-  this._springX = new Spring(e2, t12, n);
-  this._springY = new Spring(e2, t12, n);
-  this._springScale = new Spring(e2, t12, n);
+function STD(e2, t8, n) {
+  this._springX = new Spring(e2, t8, n);
+  this._springY = new Spring(e2, t8, n);
+  this._springScale = new Spring(e2, t8, n);
   this._startTime = 0;
 }
-STD.prototype.setEnd = function(e2, t12, n, i) {
+STD.prototype.setEnd = function(e2, t8, n, i) {
   const r = (/* @__PURE__ */ new Date()).getTime();
   this._springX.setEnd(e2, i, r);
-  this._springY.setEnd(t12, i, r);
+  this._springY.setEnd(t8, i, r);
   this._springScale.setEnd(n, i, r);
   this._startTime = r;
 };
@@ -14935,10 +14639,10 @@ STD.prototype.done = function() {
   const e2 = (/* @__PURE__ */ new Date()).getTime();
   return this._springX.done(e2) && this._springY.done(e2) && this._springScale.done(e2);
 };
-STD.prototype.reconfigure = function(e2, t12, n) {
-  this._springX.reconfigure(e2, t12, n);
-  this._springY.reconfigure(e2, t12, n);
-  this._springScale.reconfigure(e2, t12, n);
+STD.prototype.reconfigure = function(e2, t8, n) {
+  this._springX.reconfigure(e2, t8, n);
+  this._springY.reconfigure(e2, t8, n);
+  this._springScale.reconfigure(e2, t8, n);
 };
 const movableViewProps = {
   direction: {
@@ -15034,19 +14738,19 @@ function useMovableView(props2, emit2) {
   const { setParent } = useMovableViewState(props2, trigger, rootRef);
   return { rootRef, setParent };
 }
-function p(t12, n) {
-  if (t12 === n) {
+function p(t8, n) {
+  if (t8 === n) {
     return 0;
   }
-  let i = t12.offsetLeft;
-  return t12.offsetParent ? i += p(t12.offsetParent, n) : 0;
+  let i = t8.offsetLeft;
+  return t8.offsetParent ? i += p(t8.offsetParent, n) : 0;
 }
-function f(t12, n) {
-  if (t12 === n) {
+function f(t8, n) {
+  if (t8 === n) {
     return 0;
   }
-  let i = t12.offsetTop;
-  return t12.offsetParent ? i += f(t12.offsetParent, n) : 0;
+  let i = t8.offsetTop;
+  return t8.offsetParent ? i += f(t8.offsetParent, n) : 0;
 }
 function g(friction, execute, endCallback) {
   let record = {
@@ -15710,9 +15414,9 @@ function useMovableViewState(props2, trigger, rootRef) {
         _FA = g(
           _friction,
           function() {
-            let t12 = _friction.s();
-            let x2 = t12.x;
-            let y2 = t12.y;
+            let t8 = _friction.s();
+            let x2 = t8.x;
+            let y2 = t8.y;
             _setTransform(x2, y2, _scale.value, "friction");
           },
           function() {
@@ -16783,7 +16487,7 @@ const _sfc_main$x = /* @__PURE__ */ defineVaporComponent({
         return props2.loading && !props2.disabled;
       }
     });
-    const _component_loading = _sfc_main$C;
+    const _component_loading = _sfc_main$z;
     const n0 = createIf(
       () => __props.loading && !__props.disabled,
       () => {
@@ -19942,8 +19646,8 @@ const _sfc_main$g = /* @__PURE__ */ defineVaporComponent({
       lastValue = currentValue.value;
       releasePointerCapture();
     }
-    function lerp(start, end, t12) {
-      const clampedT = Math.max(0, Math.min(1, t12));
+    function lerp(start, end, t8) {
+      const clampedT = Math.max(0, Math.min(1, t8));
       return start * (1 - clampedT) + end * clampedT;
     }
     function getDecimalPlaces(num) {
@@ -21366,12 +21070,12 @@ const _sfc_main$d = /* @__PURE__ */ defineVaporComponent({
       e2.stopPropagation();
       if (!dragging)
         return;
-      const t12 = getActiveTouch(e2);
-      if (t12 == null)
+      const t8 = getActiveTouch(e2);
+      if (t8 == null)
         return;
       touchMoving = true;
-      const dx = t12.pageX - touchStartX;
-      const dy = t12.pageY - touchStartY;
+      const dx = t8.pageX - touchStartX;
+      const dy = t8.pageY - touchStartY;
       const delta = props2.vertical ? dy : dx;
       const currentTranslate = touchStartTranslate + delta;
       const overallDelta = currentTranslate - touchStartTranslate;
@@ -27079,13 +26783,13 @@ const getClipboardData = /* @__PURE__ */ defineAsyncApi(
   API_GET_CLIPBOARD_DATA,
   async (_, { resolve, reject }) => {
     initI18nGetClipboardDataMsgsOnce();
-    const { t: t12 } = useI18n();
+    const { t: t8 } = useI18n();
     try {
       const data = await navigator.clipboard.readText();
       resolve({ data });
     } catch (error) {
       _getClipboardData(resolve, () => {
-        reject(`${error} ${t12("uni.getClipboardData.fail")}`);
+        reject(`${error} ${t8("uni.getClipboardData.fail")}`);
       });
     }
   }
@@ -27529,7 +27233,7 @@ const chooseFile = /* @__PURE__ */ defineAsyncApi(
     extension
   }, { resolve, reject }) => {
     initI18nChooseFileMsgsOnce();
-    const { t: t12 } = useI18n();
+    const { t: t8 } = useI18n();
     if (fileInput) {
       document.body.removeChild(fileInput);
       fileInput = null;
@@ -27572,7 +27276,7 @@ const chooseFile = /* @__PURE__ */ defineAsyncApi(
     });
     fileInput.click();
     if (!getInteractStatus()) {
-      console.warn(t12("uni.chooseFile.notUserActivation"));
+      console.warn(t8("uni.chooseFile.notUserActivation"));
     }
   },
   ChooseFileProtocol,
@@ -27588,7 +27292,7 @@ const chooseImage = /* @__PURE__ */ defineAsyncApi(
     extension
   }, { resolve, reject }) => {
     initI18nChooseFileMsgsOnce();
-    const { t: t12 } = useI18n();
+    const { t: t8 } = useI18n();
     if (imageInput) {
       document.body.removeChild(imageInput);
       imageInput = null;
@@ -27631,7 +27335,7 @@ const chooseImage = /* @__PURE__ */ defineAsyncApi(
     });
     imageInput.click();
     if (!getInteractStatus()) {
-      console.warn(t12("uni.chooseFile.notUserActivation"));
+      console.warn(t8("uni.chooseFile.notUserActivation"));
     }
   },
   ChooseImageProtocol,
@@ -27642,7 +27346,7 @@ const chooseVideo = /* @__PURE__ */ defineAsyncApi(
   API_CHOOSE_VIDEO,
   ({ sourceType, extension }, { resolve, reject }) => {
     initI18nChooseFileMsgsOnce();
-    const { t: t12 } = useI18n();
+    const { t: t8 } = useI18n();
     if (videoInput) {
       document.body.removeChild(videoInput);
       videoInput = null;
@@ -27700,7 +27404,7 @@ const chooseVideo = /* @__PURE__ */ defineAsyncApi(
     });
     videoInput.click();
     if (!getInteractStatus()) {
-      console.warn(t12("uni.chooseFile.notUserActivation"));
+      console.warn(t8("uni.chooseFile.notUserActivation"));
     }
   },
   ChooseVideoProtocol,
@@ -28585,15 +28289,15 @@ const hideToast = /* @__PURE__ */ defineAsyncApi(
   HideToastOptions
 );
 function hidePopup(type, controller) {
-  const { t: t12 } = useI18n();
+  const { t: t8 } = useI18n();
   if (!controller.type) {
     return;
   }
   let warnMsg = "";
   if (type === "onHideToast" && controller.type !== "onShowToast") {
-    warnMsg = t12("uni.showToast.unpaired");
+    warnMsg = t8("uni.showToast.unpaired");
   } else if (type === "onHideLoading" && controller.type !== "onShowLoading") {
-    warnMsg = t12("uni.showLoading.unpaired");
+    warnMsg = t8("uni.showLoading.unpaired");
   }
   if (warnMsg) {
     return console.warn(warnMsg);
@@ -31386,7 +31090,7 @@ const _sfc_main$7 = /* @__PURE__ */ defineVaporComponent({
     });
     initUniPageHooks();
     const _component_input = __syscom_0$2;
-    const _component_loading = _sfc_main$C;
+    const _component_loading = _sfc_main$z;
     const _component_scroll_view = __syscom_1;
     const n51 = t7();
     const n6 = child(n51);
@@ -32501,7 +32205,7 @@ const _sfc_main$5 = /* @__PURE__ */ defineVaporComponent({
       setClassName(n4, _showAnim ? 1 : 0, " uni-loading-dialog--show", "uni-loading-dialog");
     });
     setInsertionState(n4);
-    withComponentId("9a8ccad6", () => createComponent$1(_sfc_main$C, {
+    withComponentId("9a8ccad6", () => createComponent$1(_sfc_main$z, {
       class: "uni-loading-dialog__spinner",
       "ios-spinner": () => iosSpinner.value
     }));
@@ -32704,16 +32408,16 @@ class Friction {
     this.endPosition = { x, y };
   }
   // 计算并返回物体在时间 t 时的位置
-  positionAtTime(t12) {
-    if (t12 == null) {
-      t12 = (Date.now() - this.startTime) / 1e3;
+  positionAtTime(t8) {
+    if (t8 == null) {
+      t8 = (Date.now() - this.startTime) / 1e3;
     }
-    if (t12 > this.totalTimeToStop) {
-      t12 = this.totalTimeToStop;
-      this.lastTimeElapsed = t12;
+    if (t8 > this.totalTimeToStop) {
+      t8 = this.totalTimeToStop;
+      this.lastTimeElapsed = t8;
     }
-    var x = this.velocity.x * t12 + 0.5 * this.acceleration.x * t12 * t12 + this.startPosition.x;
-    var y = this.velocity.y * t12 + 0.5 * this.acceleration.y * t12 * t12 + this.startPosition.y;
+    var x = this.velocity.x * t8 + 0.5 * this.acceleration.x * t8 * t8 + this.startPosition.x;
+    var y = this.velocity.y * t8 + 0.5 * this.acceleration.y * t8 * t8 + this.startPosition.y;
     if (this.acceleration.x > 0 && x < this.endPosition.x || this.acceleration.x < 0 && x > this.endPosition.x) {
       x = this.endPosition.x;
     }
@@ -32723,16 +32427,16 @@ class Friction {
     return { x, y };
   }
   // 计算并返回物体在时间 t 时的速度
-  velocityAtTime(t12) {
-    if (t12 == null) {
-      t12 = (Date.now() - this.startTime) / 1e3;
+  velocityAtTime(t8) {
+    if (t8 == null) {
+      t8 = (Date.now() - this.startTime) / 1e3;
     }
-    if (t12 > this.totalTimeToStop) {
-      t12 = this.totalTimeToStop;
+    if (t8 > this.totalTimeToStop) {
+      t8 = this.totalTimeToStop;
     }
     return {
-      dx: this.velocity.x + this.acceleration.x * t12,
-      dy: this.velocity.y + this.acceleration.y * t12
+      dx: this.velocity.x + this.acceleration.x * t8,
+      dy: this.velocity.y + this.acceleration.y * t8
     };
   }
   // 计算物体停止前的位移量（这里的方法名可能不准确，因为 delta 通常表示变化量）
@@ -33530,7 +33234,7 @@ const _sfc_main$4 = /* @__PURE__ */ defineVaporComponent({
       }, 100);
       e2.stopPropagation();
     };
-    const _component_loading = _sfc_main$C;
+    const _component_loading = _sfc_main$z;
     const n10 = t2$2();
     const n0 = child(n10);
     const n1 = next(n0);
@@ -34890,8 +34594,8 @@ export {
   indexVapor as Ad,
   index$5 as AdContentPage,
   index$4 as AdDraw,
-  _sfc_main$D as AsyncErrorComponent,
-  _sfc_main$E as AsyncLoadingComponent,
+  _sfc_main$A as AsyncErrorComponent,
+  _sfc_main$B as AsyncLoadingComponent,
   _sfc_main$x as Button,
   index$3 as Camera,
   indexVapor$8 as Canvas,
@@ -34903,18 +34607,18 @@ export {
   indexVapor$6 as Icon,
   __syscom_0$2 as Input,
   _sfc_main$s as Label,
-  _sfc_main$F as LayoutComponent,
+  LayoutComponent,
   _sfc_main$r as ListItem,
   _sfc_main$q as ListView,
   index$2 as LivePlayer,
   index$1 as LivePusher,
-  _sfc_main$C as Loading,
+  _sfc_main$z as Loading,
   __syscom_0 as Map,
   _sfc_main$p as MatchMedia,
   indexVapor$5 as MovableArea,
   indexVapor$4 as MovableView,
   _sfc_main$o as Navigator,
-  _sfc_main$y as PageComponent,
+  PageComponent,
   _sfc_main$n as PageContainer,
   _sfc_main$m as Picker,
   _sfc_main$l as PickerView,

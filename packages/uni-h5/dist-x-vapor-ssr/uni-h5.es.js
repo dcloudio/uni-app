@@ -1,11 +1,11 @@
 import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, getUniElementPage, once, getEnvLocale, I18N_JSON_DELIMITERS, Emitter, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, normalizeTarget, passive, LINEFEED, parseQuery, NAVBAR_HEIGHT, parseUrl, decodedQuery, removeLeadingSlash, stringifyQuery as stringifyQuery$1, EventChannel, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, UNI_SSR_TITLE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, PRIMARY_COLOR, debounce, ON_RESIZE, ON_WEB_INVOKE_APP_SERVICE, callOptions, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2 } from "@dcloudio/uni-shared";
-import { defineVaporComponent, createPlainElement, openBlock, createBlock, ref, watch, setAttr, template, getCurrentInstance, warn, unref, reactive, onMounted, onBeforeUnmount, computed, inject, onBeforeMount, nextTick, isVNode, createElementBlock, Fragment, createElementVNode, Comment, Text, cloneVNode, renderList, createVNode, defineComponent as defineComponent$2, mergeProps, withDirectives, vShow, onActivated, shallowRef, watchEffect, provide, isReactive, useSSRContext, resolveDynamicComponent, withCtx, KeepAlive, onServerPrefetch, ssrContextKey, onUnmounted, markRaw, toRaw, createFor, createKeyedFragment, createTextNode, renderEffect, setText, remove, setDynamicProps, effectScope, insert, syncSelectValue, useAttrs as useAttrs$1, useSlots, renderSlot, isInSSRComponentSetup, injectHook, queuePostFlushCb, logError } from "vue";
+import { defineVaporComponent, createPlainElement, openBlock, createBlock, ref, watch, setAttr, template, getCurrentInstance, warn, unref, reactive, onMounted, onBeforeUnmount, computed, inject, onBeforeMount, nextTick, isVNode, createElementBlock, Fragment, createElementVNode, Comment, Text, cloneVNode, renderList, createVNode, defineComponent as defineComponent$2, mergeProps, withDirectives, vShow, onActivated, shallowRef, watchEffect, provide, isReactive, createFor, createCommentVNode, VaporKeepAlive, createDynamicComponent, useSSRContext, onServerPrefetch, ssrContextKey, onUnmounted, useSlots, renderSlot, withCtx, markRaw, toRaw, createKeyedFragment, createTextNode, renderEffect, setText, remove, setDynamicProps, effectScope, insert, syncSelectValue, useAttrs as useAttrs$1, isInSSRComponentSetup, injectHook, queuePostFlushCb, logError } from "vue";
 import { capitalize, camelize, isArray, isString, extend, isFunction, hyphenate, hasOwn, isPlainObject, isObject, toRawType, makeMap as makeMap$1, isPromise, EMPTY_OBJ, Namespaces } from "@vue/shared";
 import { useRoute, isNavigationFailure, VaporRouterView, useRouter, createRouter, createMemoryHistory } from "vue-router";
-import { ssrRenderAttrs, ssrRenderStyle, ssrRenderList, ssrRenderAttr, ssrRenderClass, ssrInterpolate, ssrRenderDynamicComponent, ssrRenderComponent, ssrRenderSlot } from "vue/server-renderer";
-import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
+import { ssrRenderAttrs, ssrInterpolate, ssrRenderComponent, ssrRenderClass, ssrRenderStyle, ssrRenderAttr, ssrRenderSlot, ssrRenderList } from "vue/server-renderer";
 import safeAreaInsets from "safe-area-insets";
+import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 const realGlobal = getGlobal();
 realGlobal.UTS = UTS$1;
 realGlobal.UTSJSONObject = UTSJSONObject;
@@ -207,7 +207,7 @@ const canvasProps = {
     default: false
   }
 };
-const _hoisted_1$5 = {
+const _hoisted_1$7 = {
   "uni-canvas": "",
   class: "uni-canvas-canvas"
 };
@@ -219,7 +219,7 @@ const indexVapor$a = /* @__PURE__ */ defineBuiltInComponent({
     class: UniCanvasElement
   },
   setup() {
-    const root = (openBlock(), createBlock("canvas", _hoisted_1$5));
+    const root = (openBlock(), createBlock("canvas", _hoisted_1$7));
     return root;
   }
 });
@@ -1925,7 +1925,7 @@ defineComponent(
   },
   { props: ["in"] }
 );
-const _hoisted_1$4 = { class: "uni-input-wrapper" };
+const _hoisted_1$6 = { class: "uni-input-wrapper" };
 const Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
   props: props$8,
@@ -1967,7 +1967,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       "uni-input": "",
       "uni-view": "",
       ref: rootRef
-    }, [createVNode("div", _hoisted_1$4, [
+    }, [createVNode("div", _hoisted_1$6, [
       normalizeVNode(() => props2.selectionClass && (openBlock(), createBlock("div", mergeProps({ ref: selectionRef }, scopedAttrsState.attrs, {
         class: ["uni-field-selection-probe", props2.selectionClass],
         "aria-hidden": "true",
@@ -4362,25 +4362,26 @@ const loadFontFace = /* @__PURE__ */ defineAsyncApi(
   LoadFontFaceProtocol
 );
 const UNI_TABBAR_ICON_FONT = "UniTabbarIconFont";
+const _middleButton = {
+  width: "50px",
+  height: "50px",
+  iconWidth: "24px"
+};
 const DEFAULT_BG_COLOR = "#f7f7fa";
 const BLUR_EFFECT_COLOR_DARK = "rgb(0, 0, 0, 0.8)";
 const BLUR_EFFECT_COLOR_LIGHT = "rgb(250, 250, 250, 0.8)";
-const _sfc_main$w = /* @__PURE__ */ defineComponent$2({
-  ...{
-    name: "TabBar",
-    __reserved: true,
-    compatConfig: { MODE: 3 }
-  },
-  __name: "tabBar",
-  __ssrInlineRender: true,
-  __vapor: true,
-  setup(__props) {
-    const hasMidButton = __UNI_FEATURE_TABBAR_MIDBUTTON__;
-    const _middleButton = {
-      width: "50px",
-      height: "50px",
-      iconWidth: "24px"
-    };
+const BLUR_EFFECT_COLORS = {
+  dark: BLUR_EFFECT_COLOR_DARK,
+  light: BLUR_EFFECT_COLOR_LIGHT,
+  extralight: BLUR_EFFECT_COLOR_LIGHT
+};
+const BORDER_COLORS = {
+  white: "rgba(255, 255, 255, 0.33)",
+  black: "rgba(0, 0, 0, 0.33)"
+};
+const TabBar = /* @__PURE__ */ defineSystemComponent({
+  name: "TabBar",
+  setup() {
     const visibleList = ref([]);
     const tabBar = useTabBar();
     useVisibleList(tabBar, visibleList);
@@ -4395,150 +4396,6 @@ const _sfc_main$w = /* @__PURE__ */ defineComponent$2({
         });
       }
     });
-    function useTabBarCssVar(tabBar2) {
-      watch(
-        () => tabBar2.shown,
-        (value) => {
-          updatePageCssVar({
-            "--window-bottom": normalizeWindowBottom(
-              value ? parseInt(tabBar2.height) : 0
-            )
-          });
-        }
-      );
-    }
-    function useVisibleList(tabBar2, visibleList2) {
-      const internalMidButton = ref(
-        extend({ type: "midButton" }, tabBar2.midButton)
-      );
-      function setVisibleList() {
-        let tempList = [];
-        tempList = tabBar2.list.filter((item) => item.visible !== false);
-        if (hasMidButton && tabBar2.midButton) {
-          internalMidButton.value = extend(
-            {},
-            _middleButton,
-            internalMidButton.value,
-            tabBar2.midButton
-          );
-          tempList = tempList.filter((item) => !isMidButton(item));
-          if (tempList.length % 2 === 0) {
-            tempList.splice(
-              Math.floor(tempList.length / 2),
-              0,
-              internalMidButton.value
-            );
-          }
-        }
-        visibleList2.value = tempList;
-      }
-      watchEffect(setVisibleList);
-    }
-    function useSwitchTab(route, tabBar2, visibleList2) {
-      watchEffect(() => {
-        const meta = route.meta;
-        if (meta.isTabBar) {
-          const pagePath = meta.route;
-          const index2 = visibleList2.value.findIndex(
-            (item) => item.pagePath === pagePath
-          );
-          tabBar2.selectedIndex = index2;
-        }
-      });
-      return (tabBarItem, index2) => {
-        const { type } = tabBarItem;
-        if (hasMidButton && type === "midButton") {
-          return UniServiceJSBridge.invokeOnCallback(
-            API_ON_TAB_BAR_MID_BUTTON_TAP
-          );
-        }
-        const { pagePath, text: text2 } = tabBarItem;
-        let url = addLeadingSlash(pagePath);
-        if (url === __uniRoutes[0].alias) {
-          url = "/";
-        }
-        if (route.path !== url) {
-          uni.switchTab({ from: "tabBar", url, tabBarText: text2 });
-        } else {
-          invokeHook("onTabItemTap", {
-            index: index2,
-            text: text2,
-            pagePath
-          });
-        }
-      };
-    }
-    const BLUR_EFFECT_COLORS = {
-      dark: BLUR_EFFECT_COLOR_DARK,
-      light: BLUR_EFFECT_COLOR_LIGHT,
-      extralight: BLUR_EFFECT_COLOR_LIGHT
-    };
-    const BORDER_COLORS = {
-      white: "rgba(255, 255, 255, 0.33)",
-      black: "rgba(0, 0, 0, 0.33)"
-    };
-    function useTabBarStyle(tabBar2) {
-      const style2 = computed(() => {
-        let backgroundColor = tabBar2.backgroundColor;
-        const blurEffect = tabBar2.blurEffect;
-        if (!backgroundColor) {
-          if (blurEffect && blurEffect !== "none") {
-            backgroundColor = BLUR_EFFECT_COLORS[blurEffect];
-          }
-        }
-        return {
-          backgroundColor: backgroundColor || DEFAULT_BG_COLOR,
-          backdropFilter: blurEffect !== "none" ? "blur(10px)" : blurEffect
-        };
-      });
-      const borderStyle2 = computed(() => {
-        const { borderStyle: borderStyle3, borderColor } = tabBar2;
-        if (borderColor && isString(borderColor)) {
-          return {
-            backgroundColor: borderColor
-          };
-        }
-        return {
-          backgroundColor: BORDER_COLORS[borderStyle3] || BORDER_COLORS["black"]
-        };
-      });
-      const placeholderStyle2 = computed(() => {
-        return {
-          height: tabBar2.height
-        };
-      });
-      return {
-        style: style2,
-        borderStyle: borderStyle2,
-        placeholderStyle: placeholderStyle2
-      };
-    }
-    function isMidButton(item) {
-      return item.type === "midButton";
-    }
-    function isRenderedMidButton(item) {
-      return hasMidButton && isMidButton(item);
-    }
-    function getMidButton(item) {
-      return item;
-    }
-    function getItemStyle(item) {
-      if (!isRenderedMidButton(item)) {
-        return;
-      }
-      return {
-        flex: "0 0 " + item.width,
-        position: "relative"
-      };
-    }
-    function getMidButtonStyle(item) {
-      const { width, height, backgroundImage } = getMidButton(item);
-      return {
-        width,
-        height,
-        backgroundImage: backgroundImage ? "url('" + getRealPath(backgroundImage) + "')" : "none"
-      };
-    }
     function isSelected(index2) {
       return tabBar.selectedIndex === index2;
     }
@@ -4560,11 +4417,11 @@ const _sfc_main$w = /* @__PURE__ */ defineComponent$2({
       }
       return isSelected(index2) ? item.iconfont.selectedColor || item.iconfont.color : item.iconfont.color;
     }
-    function getIconClass(item) {
-      return "uni-tabbar__icon" + (item.text ? " uni-tabbar__icon__diff" : "");
-    }
     function getIconStyle() {
-      return { width: tabBar.iconWidth, height: tabBar.iconWidth };
+      return {
+        width: tabBar.iconWidth,
+        height: tabBar.iconWidth
+      };
     }
     function getIconfontStyle(item, index2) {
       var _a;
@@ -4581,554 +4438,502 @@ const _sfc_main$w = /* @__PURE__ */ defineComponent$2({
         marginTop: !item.iconPath ? "inherit" : tabBar.spacing
       };
     }
-    return (_ctx, _push, _parent, _attrs) => {
-      _push(`<uni-tabbar${ssrRenderAttrs(mergeProps({
-        class: "uni-tabbar-" + unref(tabBar).position
-      }, _attrs), "uni-tabbar")}><div class="uni-tabbar" style="${ssrRenderStyle(unref(style))}"><div class="uni-tabbar-border" style="${ssrRenderStyle(unref(borderStyle))}"></div><!--[-->`);
-      ssrRenderList(visibleList.value, (item, index2) => {
-        _push(`<div class="uni-tabbar__item" style="${ssrRenderStyle(getItemStyle(item))}">`);
-        if (isRenderedMidButton(item)) {
-          _push(`<div class="uni-tabbar__mid" style="${ssrRenderStyle(getMidButtonStyle(item))}">`);
-          if (getIconPath(item, index2)) {
-            _push(`<img style="${ssrRenderStyle({
-              width: getMidButton(item).iconWidth,
-              height: getMidButton(item).iconWidth
-            })}"${ssrRenderAttr("src", unref(getRealPath)(getIconPath(item, index2)))}>`);
-          } else {
-            _push(`<!---->`);
-          }
-          _push(`</div>`);
-        } else {
-          _push(`<!---->`);
-        }
-        _push(`<div class="uni-tabbar__bd" style="${ssrRenderStyle({ height: unref(tabBar).height })}">`);
-        if (getIconfontText(item, index2)) {
-          _push(`<!--[0--><div class="${ssrRenderClass(getIconClass(item))}" style="${ssrRenderStyle(getIconStyle())}">`);
-          if (item.type !== "midButton") {
-            _push(`<div class="uni-tabbar__iconfont" style="${ssrRenderStyle(getIconfontStyle(item, index2))}">${ssrInterpolate(getIconfontText(item, index2))}</div>`);
-          } else {
-            _push(`<!---->`);
-          }
-          _push(`</div><!--]-->`);
-        } else if (getIconPath(item, index2)) {
-          _push(`<!--[1--><div class="${ssrRenderClass(getIconClass(item))}" style="${ssrRenderStyle(getIconStyle())}">`);
-          if (item.type !== "midButton") {
-            _push(`<img${ssrRenderAttr("src", unref(getRealPath)(getIconPath(item, index2)))}>`);
-          } else {
-            _push(`<!---->`);
-          }
-          _push(`</div><!--]-->`);
-        } else {
-          _push(`<!---->`);
-        }
-        if (item.text) {
-          _push(`<div class="uni-tabbar__label" style="${ssrRenderStyle(getLabelStyle(item, index2))}">${ssrInterpolate(item.text)}</div>`);
-        } else {
-          _push(`<!---->`);
-        }
-        if (item.redDot) {
-          _push(`<div class="${ssrRenderClass([
-            "uni-tabbar__reddot",
-            item.badge ? "uni-tabbar__badge" : ""
-          ])}">${ssrInterpolate(item.badge)}</div>`);
-        } else {
-          _push(`<!---->`);
-        }
-        _push(`</div></div>`);
-      });
-      _push(`<!--]--></div><div class="uni-placeholder" style="${ssrRenderStyle(unref(placeholderStyle))}"></div></uni-tabbar>`);
-    };
+    return () => (openBlock(), createBlock("uni-tabbar", { class: "uni-tabbar-" + tabBar.position }, [createVNode("div", {
+      class: "uni-tabbar",
+      style: style.value
+    }, [createVNode("div", {
+      class: "uni-tabbar-border",
+      style: borderStyle.value
+    }), normalizeVNode(() => createFor(() => visibleList.value, (item, index2) => (openBlock(), createBlock("div", {
+      class: "uni-tabbar__item",
+      style: getItemStyle(item.value)
+    }, [normalizeVNode(() => __UNI_FEATURE_TABBAR_MIDBUTTON__ && (isMidButton(item.value) ? (openBlock(), createBlock("div", {
+      key: 0,
+      class: "uni-tabbar__mid",
+      style: getMidButtonStyle(item.value)
+    }, [getIconPath(item.value, index2.value) ? (openBlock(), createBlock("img", {
+      key: 0,
+      style: {
+        width: getMidButton(item.value).iconWidth,
+        height: getMidButton(item.value).iconWidth
+      },
+      src: getRealPath(getIconPath(item.value, index2.value))
+    })) : normalizeVNode(() => null)])) : createCommentVNode("", true))), createVNode("div", {
+      class: "uni-tabbar__bd",
+      style: { height: tabBar.height }
+    }, [
+      getIconfontText(item.value, index2.value) ? (openBlock(), createBlock("div", {
+        key: 0,
+        class: getIconClass(item.value),
+        style: getIconStyle()
+      }, [item.value.type !== "midButton" ? (openBlock(), createBlock("div", {
+        key: 0,
+        class: "uni-tabbar__iconfont",
+        style: getIconfontStyle(item.value, index2.value)
+      }, [normalizeVNode(() => getIconfontText(item.value, index2.value))])) : normalizeVNode(() => null)])) : (openBlock(), createBlock(Fragment, { key: 1 }, [getIconPath(item.value, index2.value) ? (openBlock(), createBlock("div", {
+        key: 0,
+        class: getIconClass(item.value),
+        style: getIconStyle()
+      }, [item.value.type !== "midButton" ? (openBlock(), createBlock("img", {
+        key: 0,
+        src: getRealPath(getIconPath(item.value, index2.value))
+      })) : normalizeVNode(() => null)])) : normalizeVNode(() => null)], 64)),
+      item.value.text ? (openBlock(), createBlock("div", {
+        key: 2,
+        class: "uni-tabbar__label",
+        style: getLabelStyle(item.value, index2.value)
+      }, [normalizeVNode(() => item.value.text)])) : normalizeVNode(() => null),
+      item.value.redDot ? (openBlock(), createBlock("div", {
+        key: 4,
+        class: ["uni-tabbar__reddot", item.value.badge ? "uni-tabbar__badge" : ""]
+      }, [normalizeVNode(() => item.value.badge)])) : normalizeVNode(() => null)
+    ])])), (item, index2) => isRenderedMidButton(item) ? "midButton" : index2, 8))]), createVNode("div", {
+      class: "uni-placeholder",
+      style: placeholderStyle.value
+    })]));
   }
 });
-const _sfc_setup$w = _sfc_main$w.setup;
-_sfc_main$w.setup = (props2, ctx) => {
-  const ssrContext = useSSRContext();
-  (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("src/framework/components/layout/tabBar.vue");
-  return _sfc_setup$w ? _sfc_setup$w(props2, ctx) : void 0;
-};
-const _sfc_main$v = /* @__PURE__ */ defineComponent$2({
-  ...{
-    name: "Layout",
-    __reserved: true,
-    compatConfig: { MODE: 3 }
-  },
-  __name: "index-vapor",
-  __ssrInlineRender: true,
-  __vapor: true,
-  setup(__props) {
-    const hasPages = __UNI_FEATURE_PAGES__;
-    const hasResponsive = __UNI_FEATURE_RESPONSIVE__;
-    const hasTopWindow = __UNI_FEATURE_TOPWINDOW__;
-    const hasLeftWindow = __UNI_FEATURE_LEFTWINDOW__;
-    const hasRightWindow = __UNI_FEATURE_RIGHTWINDOW__;
-    const hasTabBar = __UNI_FEATURE_TABBAR__;
+function useTabBarCssVar(tabBar) {
+  watch(() => tabBar.shown, (value) => {
+    updatePageCssVar({ "--window-bottom": normalizeWindowBottom(value ? parseInt(tabBar.height) : 0) });
+  });
+}
+function useVisibleList(tabBar, visibleList) {
+  const internalMidButton = __UNI_FEATURE_TABBAR_MIDBUTTON__ ? ref(extend({ type: "midButton" }, tabBar.midButton)) : void 0;
+  function setVisibleList() {
+    let tempList = [];
+    tempList = tabBar.list.filter((item) => item.visible !== false);
+    if (__UNI_FEATURE_TABBAR_MIDBUTTON__ && tabBar.midButton) {
+      internalMidButton.value = extend({}, _middleButton, internalMidButton.value, tabBar.midButton);
+      tempList = tempList.filter((item) => !isMidButton(item));
+      if (tempList.length % 2 === 0) {
+        tempList.splice(Math.floor(tempList.length / 2), 0, internalMidButton.value);
+      }
+    }
+    visibleList.value = tempList;
+  }
+  watchEffect(setVisibleList);
+}
+function useSwitchTab(route, tabBar, visibleList) {
+  watchEffect(() => {
+    const meta = route.meta;
+    if (meta.isTabBar) {
+      const pagePath = meta.route;
+      const index2 = visibleList.value.findIndex((item) => item.pagePath === pagePath);
+      tabBar.selectedIndex = index2;
+    }
+  });
+  return (tabBarItem, index2) => {
+    const { type } = tabBarItem;
+    if (__UNI_FEATURE_TABBAR_MIDBUTTON__ && type === "midButton") {
+      return UniServiceJSBridge.invokeOnCallback(API_ON_TAB_BAR_MID_BUTTON_TAP);
+    }
+    const { pagePath, text: text2 } = tabBarItem;
+    let url = addLeadingSlash(pagePath);
+    if (url === __uniRoutes[0].alias) {
+      url = "/";
+    }
+    if (route.path !== url) {
+      uni.switchTab({
+        from: "tabBar",
+        url,
+        tabBarText: text2
+      });
+    } else {
+      invokeHook("onTabItemTap", {
+        index: index2,
+        text: text2,
+        pagePath
+      });
+    }
+  };
+}
+function useTabBarStyle(tabBar) {
+  const style = computed(() => {
+    let backgroundColor = tabBar.backgroundColor;
+    const blurEffect = tabBar.blurEffect;
+    if (!backgroundColor) {
+      if (blurEffect && blurEffect !== "none") {
+        backgroundColor = BLUR_EFFECT_COLORS[blurEffect];
+      }
+    }
+    return {
+      backgroundColor: backgroundColor || DEFAULT_BG_COLOR,
+      backdropFilter: blurEffect !== "none" ? "blur(10px)" : blurEffect
+    };
+  });
+  const borderStyle = computed(() => {
+    const { borderStyle: borderStyle2, borderColor } = tabBar;
+    if (borderColor && isString(borderColor)) {
+      return { backgroundColor: borderColor };
+    }
+    return { backgroundColor: BORDER_COLORS[borderStyle2] || BORDER_COLORS["black"] };
+  });
+  const placeholderStyle = computed(() => {
+    return { height: tabBar.height };
+  });
+  return {
+    style,
+    borderStyle,
+    placeholderStyle
+  };
+}
+function isMidButton(item) {
+  return item.type === "midButton";
+}
+function isRenderedMidButton(item) {
+  return __UNI_FEATURE_TABBAR_MIDBUTTON__ && isMidButton(item);
+}
+function getMidButton(item) {
+  return item;
+}
+function getItemStyle(item) {
+  if (!isRenderedMidButton(item)) {
+    return;
+  }
+  return {
+    flex: "0 0 " + item.width,
+    position: "relative"
+  };
+}
+function getMidButtonStyle(item) {
+  const { width, height, backgroundImage } = getMidButton(item);
+  return {
+    width,
+    height,
+    backgroundImage: backgroundImage ? "url('" + getRealPath(backgroundImage) + "')" : "none"
+  };
+}
+function getIconClass(item) {
+  return "uni-tabbar__icon" + (item.text ? " uni-tabbar__icon__diff" : "");
+}
+const _hoisted_1$5 = { class: "uni-left-window" };
+const _hoisted_2$2 = { class: "uni-right-window" };
+const _hoisted_3$2 = { key: 5 };
+const LayoutComponent = /* @__PURE__ */ defineSystemComponent({
+  name: "Layout",
+  setup() {
     const rootRef = ref(null);
-    const firstPageComponent = !hasPages && __uniRoutes[0].component;
-    const keepAliveRoute = hasPages ? useKeepAliveRoute() : void 0;
+    const FirstPageComponent = !__UNI_FEATURE_PAGES__ && __uniRoutes[0].component;
+    const keepAliveRoute = __UNI_FEATURE_PAGES__ ? useKeepAliveRoute() : void 0;
     const routeKey = keepAliveRoute == null ? void 0 : keepAliveRoute.routeKey;
     const isTabBar = keepAliveRoute == null ? void 0 : keepAliveRoute.isTabBar;
     const routeCache2 = keepAliveRoute == null ? void 0 : keepAliveRoute.routeCache;
-    const route = hasPages ? useRoute() : void 0;
+    const route = __UNI_FEATURE_PAGES__ ? useRoute() : void 0;
     const { layoutState, windowState } = useState();
     useMaxWidth(layoutState, rootRef);
-    const topWindow = hasTopWindow && useTopWindow(layoutState);
-    const leftWindow = hasLeftWindow && useLeftWindow(layoutState);
-    const rightWindow = hasRightWindow && useRightWindow(layoutState);
+    const topWindow = __UNI_FEATURE_TOPWINDOW__ && useTopWindow(layoutState);
+    const leftWindow = __UNI_FEATURE_LEFTWINDOW__ && useLeftWindow(layoutState);
+    const rightWindow = __UNI_FEATURE_RIGHTWINDOW__ && useRightWindow(layoutState);
     const TopWindow = topWindow && topWindow.component;
     const LeftWindow = leftWindow && leftWindow.component;
     const RightWindow = rightWindow && rightWindow.component;
     const topWindowRef = topWindow && topWindow.windowRef;
     const leftWindowRef = leftWindow && leftWindow.windowRef;
     const rightWindowRef = rightWindow && rightWindow.windowRef;
-    const showTabBar = hasTabBar && useShowTabBar();
+    const showTabBar = __UNI_FEATURE_TABBAR__ && useShowTabBar();
     const clazz = useAppClass(showTabBar);
-    function useAppClass(showTabBar2) {
-      const showMaxWidth = ref(false);
-      return computed(() => {
-        return {
-          "uni-app--showtabbar": showTabBar2 && showTabBar2.value,
-          "uni-app--maxwidth": showMaxWidth.value
-        };
-      });
-    }
-    function initMediaQuery(minWidth, callback) {
-      {
-        return false;
+    function renderPage() {
+      if (__UNI_FEATURE_PAGES__) {
+        return (route == null ? void 0 : route.meta.route) ? (openBlock(), createBlock(VaporRouterView, {
+          key: 1,
+          type: unref(isTabBar) ? "tabBar" : ""
+        }, { default: (slotProps) => (openBlock(), createBlock(VaporKeepAlive, {
+          "match-by": "key",
+          cache: unref(routeCache2)
+        }, {
+          // 在 KeepAlive 内读取 RouterView 的惰性 Block，直接保留动态组件的缓存边界。
+          default: () => createDynamicComponent(() => slotProps.Component, null, null, 5, () => unref(routeKey))
+        }, 1024)) }, 1024)) : createCommentVNode("", true);
       }
+      return openBlock(), createBlock(FirstPageComponent);
     }
-    function useMaxWidth(layoutState2, rootRef2) {
-      const route2 = usePageRoute();
-      function checkMaxWidth() {
-        const windowWidth = document.body.clientWidth;
-        const pages = getCurrentBasePages();
-        let meta = {};
-        if (pages.length > 0) {
-          const curPage = pages[pages.length - 1];
-          meta = getPage$BasePage(curPage).meta;
-        } else {
-          const routeOptions = getRouteOptions(route2.path, true);
-          if (routeOptions) {
-            meta = routeOptions.meta;
+    function renderLayout() {
+      if (__UNI_FEATURE_RESPONSIVE__) {
+        return openBlock(), createBlock("uni-layout", {
+          key: 2,
+          class: {
+            "uni-app--showtopwindow": __UNI_FEATURE_TOPWINDOW__ && layoutState.showTopWindow,
+            "uni-app--showleftwindow": __UNI_FEATURE_LEFTWINDOW__ && layoutState.showLeftWindow,
+            "uni-app--showrightwindow": __UNI_FEATURE_RIGHTWINDOW__ && layoutState.showRightWindow
           }
-        }
-        const maxWidth = parseInt(
-          String(
-            (hasOwn(meta, "maxWidth") ? meta.maxWidth : __uniConfig.globalStyle.maxWidth) || Number.MAX_SAFE_INTEGER
-          )
-        );
-        let showMaxWidth = false;
-        if (windowWidth > maxWidth) {
-          showMaxWidth = true;
-        } else {
-          showMaxWidth = false;
-        }
-        if (showMaxWidth && maxWidth) {
-          layoutState2.marginWidth = (windowWidth - maxWidth) / 2;
-          nextTick(() => {
-            const rootEl = rootRef2.value;
-            if (rootEl) {
-              rootEl.setAttribute(
-                "style",
-                "max-width:" + maxWidth + "px;margin:0 auto;"
-              );
-            }
-          });
-        } else {
-          layoutState2.marginWidth = 0;
-          nextTick(() => {
-            const rootEl = rootRef2.value;
-            if (rootEl) {
-              rootEl.removeAttribute("style");
-            }
-          });
-        }
+        }, [normalizeVNode(() => __UNI_FEATURE_TOPWINDOW__ && TopWindow && withDirectives((openBlock(), createBlock("uni-top-window", _hoisted_3$2, [createVNode("div", {
+          class: "uni-top-window",
+          style: layoutState.topWindowStyle
+        }, [createVNode(TopWindow, mergeProps({
+          ref: topWindowRef,
+          "navigation-bar-title-text": layoutState.navigationBarTitleText
+        }, windowState.value), null, 16)]), createVNode("div", {
+          class: "uni-top-window--placeholder",
+          style: { height: layoutState.topWindowHeight + "px" }
+        })])), [[vShow, layoutState.showTopWindow || layoutState.apiShowTopWindow]])), createVNode("uni-content", null, [
+          createVNode("uni-main", null, [normalizeVNode(() => renderPage())]),
+          normalizeVNode(() => __UNI_FEATURE_LEFTWINDOW__ && LeftWindow && withDirectives((openBlock(), createBlock("uni-left-window", {
+            key: 3,
+            "data-show": layoutState.apiShowLeftWindow || void 0,
+            style: layoutState.leftWindowStyle
+          }, [layoutState.apiShowLeftWindow ? (openBlock(), createBlock("div", {
+            key: 0,
+            class: "uni-mask"
+          })) : normalizeVNode(() => null), createVNode("div", _hoisted_1$5, [createVNode(LeftWindow, mergeProps({ ref: leftWindowRef }, windowState.value), null, 16)])])), [[vShow, layoutState.showLeftWindow || layoutState.apiShowLeftWindow]])),
+          normalizeVNode(() => __UNI_FEATURE_RIGHTWINDOW__ && RightWindow && withDirectives((openBlock(), createBlock("uni-right-window", {
+            key: 4,
+            "data-show": layoutState.apiShowRightWindow || void 0,
+            style: layoutState.rightWindowStyle
+          }, [layoutState.apiShowRightWindow ? (openBlock(), createBlock("div", {
+            key: 0,
+            class: "uni-mask"
+          })) : normalizeVNode(() => null), createVNode("div", _hoisted_2$2, [createVNode(RightWindow, mergeProps({ ref: rightWindowRef }, windowState.value), null, 16)])])), [[vShow, layoutState.showRightWindow || layoutState.apiShowRightWindow]]))
+        ])]);
       }
-      watch([() => route2.path], checkMaxWidth);
-      onMounted(() => {
-        checkMaxWidth();
-        window.addEventListener("resize", checkMaxWidth);
-      });
+      return renderPage();
     }
-    function useState() {
-      const route2 = usePageRoute();
-      if (!hasResponsive) {
-        const layoutState3 = reactive({
-          marginWidth: 0,
-          leftWindowWidth: 0,
-          rightWindowWidth: 0
-        });
-        watch(
-          () => layoutState3.marginWidth,
-          (value) => updateCssVar({ "--window-margin": value + "px" })
-        );
-        watch(
-          () => layoutState3.leftWindowWidth + layoutState3.marginWidth,
-          (value) => {
-            updateCssVar({ "--window-left": value + "px" });
-          }
-        );
-        watch(
-          () => layoutState3.rightWindowWidth + layoutState3.marginWidth,
-          (value) => {
-            updateCssVar({ "--window-right": value + "px" });
-          }
-        );
-        return {
-          layoutState: layoutState3,
-          windowState: computed(() => ({}))
-        };
-      }
-      const topWindowMediaQuery = ref(false);
-      const leftWindowMediaQuery = ref(false);
-      const rightWindowMediaQuery = ref(false);
-      const showTopWindow = computed(
-        () => hasTopWindow && route2.meta.topWindow !== false && topWindowMediaQuery.value
-      );
-      const showLeftWindow = computed(
-        () => hasLeftWindow && route2.meta.leftWindow !== false && leftWindowMediaQuery.value
-      );
-      const showRightWindow = computed(
-        () => hasRightWindow && route2.meta.rightWindow !== false && rightWindowMediaQuery.value
-      );
-      const layoutState2 = reactive({
-        topWindowMediaQuery,
-        showTopWindow,
-        apiShowTopWindow: false,
-        leftWindowMediaQuery,
-        showLeftWindow,
-        apiShowLeftWindow: false,
-        rightWindowMediaQuery,
-        showRightWindow,
-        apiShowRightWindow: false,
-        topWindowHeight: 0,
-        marginWidth: 0,
-        leftWindowWidth: 0,
-        rightWindowWidth: 0,
-        navigationBarTitleText: "",
-        topWindowStyle: {},
-        leftWindowStyle: {},
-        rightWindowStyle: {}
-      });
-      const props2 = [
-        "topWindow",
-        "leftWindow",
-        "rightWindow"
-      ];
-      props2.forEach((prop) => {
-        var _a;
-        const matchMedia = (_a = __uniConfig[prop]) == null ? void 0 : _a.matchMedia;
-        if (matchMedia && hasOwn(matchMedia, "minWidth")) {
-          matchMedia.minWidth;
-        }
-        const matches = initMediaQuery();
-        layoutState2[`${prop}MediaQuery`] = matches;
-      });
-      watch(
-        () => layoutState2.topWindowHeight,
-        (value) => updateCssVar({ "--top-window-height": value + "px" })
-      );
-      watch(
-        () => layoutState2.marginWidth,
-        (value) => updateCssVar({ "--window-margin": value + "px" })
-      );
-      watch(
-        () => layoutState2.leftWindowWidth + layoutState2.marginWidth,
-        (value) => {
-          updateCssVar({ "--window-left": value + "px" });
-        }
-      );
-      watch(
-        () => layoutState2.rightWindowWidth + layoutState2.marginWidth,
-        (value) => {
-          updateCssVar({ "--window-right": value + "px" });
-        }
-      );
-      UniServiceJSBridge.on(ON_NAVIGATION_BAR_CHANGE, (navigationBar) => {
-        layoutState2.navigationBarTitleText = navigationBar.titleText;
-      });
-      const windowState2 = computed(() => ({
-        matchTopWindow: layoutState2.topWindowMediaQuery,
-        showTopWindow: layoutState2.showTopWindow || layoutState2.apiShowTopWindow,
-        matchLeftWindow: layoutState2.leftWindowMediaQuery,
-        showLeftWindow: layoutState2.showLeftWindow || layoutState2.apiShowLeftWindow,
-        matchRightWindow: layoutState2.rightWindowMediaQuery,
-        showRightWindow: layoutState2.showRightWindow || layoutState2.apiShowRightWindow
-      }));
-      return {
-        layoutState: layoutState2,
-        windowState: windowState2
-      };
-    }
-    function useShowTabBar() {
-      const route2 = usePageRoute();
-      const tabBar = useTabBar();
-      const showTabBar2 = computed(() => route2.meta.isTabBar && tabBar.shown);
-      return showTabBar2;
-    }
-    function useTopWindow(layoutState2) {
-      const { component, style } = __uniConfig.topWindow;
-      const windowRef = ref(null);
-      function updateWindow() {
-        const instance = windowRef.value;
-        if (!instance) {
-          return;
-        }
-        const el = instance.$el;
-        if (!el) {
-          return;
-        }
-        const uniTopWindowStyleEl = el.parentElement;
-        if (!uniTopWindowStyleEl) {
-          return;
-        }
-        const height = uniTopWindowStyleEl.getBoundingClientRect().height;
-        layoutState2.topWindowHeight = height;
-      }
-      watch(
-        () => windowRef.value,
-        () => {
-          updateWindow();
-        }
-      );
-      watch(
-        () => layoutState2.showTopWindow || layoutState2.apiShowTopWindow,
-        () => nextTick(updateWindow)
-      );
-      watch(
-        () => layoutState2.topWindowStyle,
-        () => nextTick(updateWindow)
-      );
-      layoutState2.topWindowStyle = style;
-      return {
-        component,
-        windowRef
-      };
-    }
-    function useLeftWindow(layoutState2) {
-      const { component, style } = __uniConfig.leftWindow;
-      const windowRef = ref(null);
-      function updateWindow() {
-        const instance = windowRef.value;
-        if (!instance) {
-          return;
-        }
-        const el = instance.$el;
-        if (!el) {
-          return;
-        }
-        const uniLeftWindowStyleEl = el.parentElement && el.parentElement.parentElement;
-        if (!uniLeftWindowStyleEl) {
-          return;
-        }
-        const width = uniLeftWindowStyleEl.getBoundingClientRect().width;
-        layoutState2.leftWindowWidth = width;
-      }
-      watch(
-        () => windowRef.value,
-        () => {
-          updateWindow();
-        }
-      );
-      watch(
-        () => layoutState2.showLeftWindow || layoutState2.apiShowLeftWindow,
-        () => nextTick(updateWindow)
-      );
-      watch(
-        () => layoutState2.leftWindowStyle,
-        () => nextTick(updateWindow)
-      );
-      layoutState2.leftWindowStyle = style;
-      return {
-        component,
-        windowRef
-      };
-    }
-    function useRightWindow(layoutState2) {
-      const { component, style } = __uniConfig.rightWindow;
-      const windowRef = ref(null);
-      function updateWindow() {
-        const instance = windowRef.value;
-        if (!instance) {
-          return;
-        }
-        const el = instance.$el;
-        if (!el) {
-          return;
-        }
-        const uniRightWindowStyleEl = el.parentElement && el.parentElement.parentElement;
-        if (!uniRightWindowStyleEl) {
-          return;
-        }
-        const width = uniRightWindowStyleEl.getBoundingClientRect().width;
-        layoutState2.rightWindowWidth = width;
-      }
-      watch(
-        () => windowRef.value,
-        () => {
-          updateWindow();
-        }
-      );
-      watch(
-        () => layoutState2.showRightWindow || layoutState2.apiShowRightWindow,
-        () => nextTick(updateWindow)
-      );
-      watch(
-        () => layoutState2.rightWindowStyle,
-        () => nextTick(updateWindow)
-      );
-      layoutState2.rightWindowStyle = style;
-      return {
-        component,
-        windowRef
-      };
-    }
-    return (_ctx, _push, _parent, _attrs) => {
-      var _a, _b;
-      _push(`<uni-app${ssrRenderAttrs(mergeProps({
-        ref_key: "rootRef",
-        ref: rootRef,
-        class: unref(clazz)
-      }, _attrs), "uni-app")}>`);
-      if (unref(hasResponsive)) {
-        _push(`<!--[0--><uni-layout class="${ssrRenderClass({
-          "uni-app--showtopwindow": unref(hasTopWindow) && unref(layoutState).showTopWindow,
-          "uni-app--showleftwindow": unref(hasLeftWindow) && unref(layoutState).showLeftWindow,
-          "uni-app--showrightwindow": unref(hasRightWindow) && unref(layoutState).showRightWindow
-        })}">`);
-        if (unref(hasTopWindow) && unref(TopWindow)) {
-          _push(`<uni-top-window style="${ssrRenderStyle(unref(layoutState).showTopWindow || unref(layoutState).apiShowTopWindow ? null : { display: "none" })}"><div class="uni-top-window" style="${ssrRenderStyle(unref(layoutState).topWindowStyle)}">`);
-          ssrRenderDynamicComponent(_push, resolveDynamicComponent(unref(TopWindow)), mergeProps({
-            ref_key: "topWindowRef",
-            ref: topWindowRef,
-            "navigation-bar-title-text": unref(layoutState).navigationBarTitleText
-          }, unref(windowState)), null, _parent);
-          _push(`</div><div class="uni-top-window--placeholder" style="${ssrRenderStyle({ height: unref(layoutState).topWindowHeight + "px" })}"></div></uni-top-window>`);
-        } else {
-          _push(`<!---->`);
-        }
-        _push(`<uni-content><uni-main>`);
-        if (unref(hasPages) && ((_a = unref(route)) == null ? void 0 : _a.meta.route)) {
-          _push(`<!--[0-->`);
-          _push(ssrRenderComponent(unref(VaporRouterView), {
-            type: unref(isTabBar) ? "tabBar" : ""
-          }, {
-            default: withCtx(({ Component }, _push2, _parent2, _scopeId) => {
-              if (_push2) {
-                _push2(``);
-                ssrRenderDynamicComponent(_push2, resolveDynamicComponent(Component), { key: unref(routeKey) }, null, _parent2, _scopeId);
-              } else {
-                return [
-                  (openBlock(), createBlock(KeepAlive, {
-                    "match-by": "key",
-                    cache: unref(routeCache2)
-                  }, [
-                    (openBlock(), createBlock(resolveDynamicComponent(Component), { key: unref(routeKey) }))
-                  ], 1032, ["cache"]))
-                ];
-              }
-            }),
-            _: 1
-          }, _parent));
-          _push(`<!--]-->`);
-        } else if (!unref(hasPages)) {
-          _push(`<!--[1-->`);
-          ssrRenderDynamicComponent(_push, resolveDynamicComponent(unref(firstPageComponent)), null, null, _parent);
-          _push(`<!--]-->`);
-        } else {
-          _push(`<!---->`);
-        }
-        _push(`</uni-main>`);
-        if (unref(hasLeftWindow) && unref(LeftWindow)) {
-          _push(`<uni-left-window${ssrRenderAttr("data-show", unref(layoutState).apiShowLeftWindow || void 0)} style="${ssrRenderStyle([
-            unref(layoutState).leftWindowStyle,
-            unref(layoutState).showLeftWindow || unref(layoutState).apiShowLeftWindow ? null : { display: "none" }
-          ])}">`);
-          if (unref(layoutState).apiShowLeftWindow) {
-            _push(`<div class="uni-mask"></div>`);
-          } else {
-            _push(`<!---->`);
-          }
-          _push(`<div class="uni-left-window">`);
-          ssrRenderDynamicComponent(_push, resolveDynamicComponent(unref(LeftWindow)), mergeProps({
-            ref_key: "leftWindowRef",
-            ref: leftWindowRef
-          }, unref(windowState)), null, _parent);
-          _push(`</div></uni-left-window>`);
-        } else {
-          _push(`<!---->`);
-        }
-        if (unref(hasRightWindow) && unref(RightWindow)) {
-          _push(`<uni-right-window${ssrRenderAttr("data-show", unref(layoutState).apiShowRightWindow || void 0)} style="${ssrRenderStyle([
-            unref(layoutState).rightWindowStyle,
-            unref(layoutState).showRightWindow || unref(layoutState).apiShowRightWindow ? null : { display: "none" }
-          ])}">`);
-          if (unref(layoutState).apiShowRightWindow) {
-            _push(`<div class="uni-mask"></div>`);
-          } else {
-            _push(`<!---->`);
-          }
-          _push(`<div class="uni-right-window">`);
-          ssrRenderDynamicComponent(_push, resolveDynamicComponent(unref(RightWindow)), mergeProps({
-            ref_key: "rightWindowRef",
-            ref: rightWindowRef
-          }, unref(windowState)), null, _parent);
-          _push(`</div></uni-right-window>`);
-        } else {
-          _push(`<!---->`);
-        }
-        _push(`</uni-content></uni-layout><!--]-->`);
-      } else {
-        _push(`<!--[1-->`);
-        if (unref(hasPages) && ((_b = unref(route)) == null ? void 0 : _b.meta.route)) {
-          _push(`<!--[0-->`);
-          _push(ssrRenderComponent(unref(VaporRouterView), {
-            type: unref(isTabBar) ? "tabBar" : ""
-          }, {
-            default: withCtx(({ Component }, _push2, _parent2, _scopeId) => {
-              if (_push2) {
-                _push2(``);
-                ssrRenderDynamicComponent(_push2, resolveDynamicComponent(Component), { key: unref(routeKey) }, null, _parent2, _scopeId);
-              } else {
-                return [
-                  (openBlock(), createBlock(KeepAlive, {
-                    "match-by": "key",
-                    cache: unref(routeCache2)
-                  }, [
-                    (openBlock(), createBlock(resolveDynamicComponent(Component), { key: unref(routeKey) }))
-                  ], 1032, ["cache"]))
-                ];
-              }
-            }),
-            _: 1
-          }, _parent));
-          _push(`<!--]-->`);
-        } else if (!unref(hasPages)) {
-          _push(`<!--[1-->`);
-          ssrRenderDynamicComponent(_push, resolveDynamicComponent(unref(firstPageComponent)), null, null, _parent);
-          _push(`<!--]-->`);
-        } else {
-          _push(`<!---->`);
-        }
-        _push(`<!--]-->`);
-      }
-      if (unref(hasTabBar)) {
-        _push(ssrRenderComponent(_sfc_main$w, {
-          style: unref(showTabBar) ? null : { display: "none" }
-        }, null, _parent));
-      } else {
-        _push(`<!---->`);
-      }
-      _push(`</uni-app>`);
-    };
+    return () => (openBlock(), createBlock("uni-app", {
+      ref: rootRef,
+      class: clazz.value
+    }, [normalizeVNode(() => renderLayout()), normalizeVNode(() => __UNI_FEATURE_TABBAR__ && withDirectives((openBlock(), createBlock(TabBar, null, null, 512)), [[vShow, unref(showTabBar)]]))], 512));
   }
 });
-const _sfc_setup$v = _sfc_main$v.setup;
-_sfc_main$v.setup = (props2, ctx) => {
-  const ssrContext = useSSRContext();
-  (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("src/framework/components/layout/index-vapor.vue");
-  return _sfc_setup$v ? _sfc_setup$v(props2, ctx) : void 0;
-};
-const _sfc_main$u = /* @__PURE__ */ defineComponent$2({
+function useAppClass(showTabBar) {
+  const showMaxWidth = ref(false);
+  return computed(() => {
+    return {
+      "uni-app--showtabbar": showTabBar && showTabBar.value,
+      "uni-app--maxwidth": showMaxWidth.value
+    };
+  });
+}
+function initMediaQuery(minWidth, callback) {
+  {
+    return false;
+  }
+}
+function useMaxWidth(layoutState, rootRef) {
+  const route = usePageRoute();
+  function checkMaxWidth() {
+    const windowWidth = document.body.clientWidth;
+    const pages = getCurrentBasePages();
+    let meta = {};
+    if (pages.length > 0) {
+      const curPage = pages[pages.length - 1];
+      meta = getPage$BasePage(curPage).meta;
+    } else {
+      const routeOptions = getRouteOptions(route.path, true);
+      if (routeOptions) {
+        meta = routeOptions.meta;
+      }
+    }
+    const maxWidth = parseInt(String((hasOwn(meta, "maxWidth") ? meta.maxWidth : __uniConfig.globalStyle.maxWidth) || Number.MAX_SAFE_INTEGER));
+    let showMaxWidth = false;
+    if (windowWidth > maxWidth) {
+      showMaxWidth = true;
+    } else {
+      showMaxWidth = false;
+    }
+    if (showMaxWidth && maxWidth) {
+      layoutState.marginWidth = (windowWidth - maxWidth) / 2;
+      nextTick(() => {
+        const rootEl = rootRef.value;
+        if (rootEl) {
+          rootEl.setAttribute("style", "max-width:" + maxWidth + "px;margin:0 auto;");
+        }
+      });
+    } else {
+      layoutState.marginWidth = 0;
+      nextTick(() => {
+        const rootEl = rootRef.value;
+        if (rootEl) {
+          rootEl.removeAttribute("style");
+        }
+      });
+    }
+  }
+  watch([() => route.path], checkMaxWidth);
+  onMounted(() => {
+    checkMaxWidth();
+    window.addEventListener("resize", checkMaxWidth);
+  });
+}
+function useState() {
+  const route = usePageRoute();
+  if (!__UNI_FEATURE_RESPONSIVE__) {
+    const layoutState2 = reactive({
+      marginWidth: 0,
+      leftWindowWidth: 0,
+      rightWindowWidth: 0
+    });
+    watch(() => layoutState2.marginWidth, (value) => updateCssVar({ "--window-margin": value + "px" }));
+    watch(() => layoutState2.leftWindowWidth + layoutState2.marginWidth, (value) => {
+      updateCssVar({ "--window-left": value + "px" });
+    });
+    watch(() => layoutState2.rightWindowWidth + layoutState2.marginWidth, (value) => {
+      updateCssVar({ "--window-right": value + "px" });
+    });
+    return {
+      layoutState: layoutState2,
+      windowState: computed(() => ({}))
+    };
+  }
+  const topWindowMediaQuery = ref(false);
+  const leftWindowMediaQuery = ref(false);
+  const rightWindowMediaQuery = ref(false);
+  const showTopWindow = computed(() => __UNI_FEATURE_TOPWINDOW__ && route.meta.topWindow !== false && topWindowMediaQuery.value);
+  const showLeftWindow = computed(() => __UNI_FEATURE_LEFTWINDOW__ && route.meta.leftWindow !== false && leftWindowMediaQuery.value);
+  const showRightWindow = computed(() => __UNI_FEATURE_RIGHTWINDOW__ && route.meta.rightWindow !== false && rightWindowMediaQuery.value);
+  const layoutState = reactive({
+    topWindowMediaQuery,
+    showTopWindow,
+    apiShowTopWindow: false,
+    leftWindowMediaQuery,
+    showLeftWindow,
+    apiShowLeftWindow: false,
+    rightWindowMediaQuery,
+    showRightWindow,
+    apiShowRightWindow: false,
+    topWindowHeight: 0,
+    marginWidth: 0,
+    leftWindowWidth: 0,
+    rightWindowWidth: 0,
+    navigationBarTitleText: "",
+    topWindowStyle: {},
+    leftWindowStyle: {},
+    rightWindowStyle: {}
+  });
+  const props2 = [
+    "topWindow",
+    "leftWindow",
+    "rightWindow"
+  ];
+  props2.forEach((prop) => {
+    var _a;
+    const matchMedia = (_a = __uniConfig[prop]) == null ? void 0 : _a.matchMedia;
+    if (matchMedia && hasOwn(matchMedia, "minWidth")) {
+      matchMedia.minWidth;
+    }
+    const matches = initMediaQuery();
+    layoutState[`${prop}MediaQuery`] = matches;
+  });
+  watch(() => layoutState.topWindowHeight, (value) => updateCssVar({ "--top-window-height": value + "px" }));
+  watch(() => layoutState.marginWidth, (value) => updateCssVar({ "--window-margin": value + "px" }));
+  watch(() => layoutState.leftWindowWidth + layoutState.marginWidth, (value) => {
+    updateCssVar({ "--window-left": value + "px" });
+  });
+  watch(() => layoutState.rightWindowWidth + layoutState.marginWidth, (value) => {
+    updateCssVar({ "--window-right": value + "px" });
+  });
+  UniServiceJSBridge.on(ON_NAVIGATION_BAR_CHANGE, (navigationBar) => {
+    layoutState.navigationBarTitleText = navigationBar.titleText;
+  });
+  const windowState = computed(() => ({
+    matchTopWindow: layoutState.topWindowMediaQuery,
+    showTopWindow: layoutState.showTopWindow || layoutState.apiShowTopWindow,
+    matchLeftWindow: layoutState.leftWindowMediaQuery,
+    showLeftWindow: layoutState.showLeftWindow || layoutState.apiShowLeftWindow,
+    matchRightWindow: layoutState.rightWindowMediaQuery,
+    showRightWindow: layoutState.showRightWindow || layoutState.apiShowRightWindow
+  }));
+  return {
+    layoutState,
+    windowState
+  };
+}
+function useShowTabBar() {
+  const route = usePageRoute();
+  const tabBar = useTabBar();
+  const showTabBar = computed(() => route.meta.isTabBar && tabBar.shown);
+  return showTabBar;
+}
+function useTopWindow(layoutState) {
+  const { component, style } = __uniConfig.topWindow;
+  const windowRef = ref(null);
+  function updateWindow() {
+    const instance = windowRef.value;
+    if (!instance) {
+      return;
+    }
+    const el = instance.$el;
+    if (!el) {
+      return;
+    }
+    const uniTopWindowStyleEl = el.parentElement;
+    if (!uniTopWindowStyleEl) {
+      return;
+    }
+    const height = uniTopWindowStyleEl.getBoundingClientRect().height;
+    layoutState.topWindowHeight = height;
+  }
+  watch(() => windowRef.value, () => {
+    updateWindow();
+  });
+  watch(() => layoutState.showTopWindow || layoutState.apiShowTopWindow, () => nextTick(updateWindow));
+  watch(() => layoutState.topWindowStyle, () => nextTick(updateWindow));
+  layoutState.topWindowStyle = style;
+  return {
+    component,
+    windowRef
+  };
+}
+function useLeftWindow(layoutState) {
+  const { component, style } = __uniConfig.leftWindow;
+  const windowRef = ref(null);
+  function updateWindow() {
+    const instance = windowRef.value;
+    if (!instance) {
+      return;
+    }
+    const el = instance.$el;
+    if (!el) {
+      return;
+    }
+    const uniLeftWindowStyleEl = el.parentElement && el.parentElement.parentElement;
+    if (!uniLeftWindowStyleEl) {
+      return;
+    }
+    const width = uniLeftWindowStyleEl.getBoundingClientRect().width;
+    layoutState.leftWindowWidth = width;
+  }
+  watch(() => windowRef.value, () => {
+    updateWindow();
+  });
+  watch(() => layoutState.showLeftWindow || layoutState.apiShowLeftWindow, () => nextTick(updateWindow));
+  watch(() => layoutState.leftWindowStyle, () => nextTick(updateWindow));
+  layoutState.leftWindowStyle = style;
+  return {
+    component,
+    windowRef
+  };
+}
+function useRightWindow(layoutState) {
+  const { component, style } = __uniConfig.rightWindow;
+  const windowRef = ref(null);
+  function updateWindow() {
+    const instance = windowRef.value;
+    if (!instance) {
+      return;
+    }
+    const el = instance.$el;
+    if (!el) {
+      return;
+    }
+    const uniRightWindowStyleEl = el.parentElement && el.parentElement.parentElement;
+    if (!uniRightWindowStyleEl) {
+      return;
+    }
+    const width = uniRightWindowStyleEl.getBoundingClientRect().width;
+    layoutState.rightWindowWidth = width;
+  }
+  watch(() => windowRef.value, () => {
+    updateWindow();
+  });
+  watch(() => layoutState.showRightWindow || layoutState.apiShowRightWindow, () => nextTick(updateWindow));
+  watch(() => layoutState.rightWindowStyle, () => nextTick(updateWindow));
+  layoutState.rightWindowStyle = style;
+  return {
+    component,
+    windowRef
+  };
+}
+const _sfc_main$r = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "AsyncLoading",
     __reserved: true,
@@ -5143,13 +4948,13 @@ const _sfc_main$u = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$u = _sfc_main$u.setup;
-_sfc_main$u.setup = (props2, ctx) => {
+const _sfc_setup$r = _sfc_main$r.setup;
+_sfc_main$r.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("src/framework/components/async-loading/asyncLoading.vue");
-  return _sfc_setup$u ? _sfc_setup$u(props2, ctx) : void 0;
+  return _sfc_setup$r ? _sfc_setup$r(props2, ctx) : void 0;
 };
-const _sfc_main$t = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$q = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "AsyncError",
     __reserved: true,
@@ -5167,11 +4972,11 @@ const _sfc_main$t = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$t = _sfc_main$t.setup;
-_sfc_main$t.setup = (props2, ctx) => {
+const _sfc_setup$q = _sfc_main$q.setup;
+_sfc_main$q.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("src/framework/components/async-error/asyncError.vue");
-  return _sfc_setup$t ? _sfc_setup$t(props2, ctx) : void 0;
+  return _sfc_setup$q ? _sfc_setup$q(props2, ctx) : void 0;
 };
 let appVm;
 let $uniApp;
@@ -5225,11 +5030,11 @@ function initApp$1(vm) {
     }
   });
   const app = appVm.$.appContext.app;
-  if (!app.component(_sfc_main$u.name)) {
-    app.component(_sfc_main$u.name, _sfc_main$u);
+  if (!app.component(_sfc_main$r.name)) {
+    app.component(_sfc_main$r.name, _sfc_main$r);
   }
-  if (!app.component(_sfc_main$t.name)) {
-    app.component(_sfc_main$t.name, _sfc_main$t);
+  if (!app.component(_sfc_main$q.name)) {
+    app.component(_sfc_main$q.name, _sfc_main$q);
   }
   initAppVm(appVm);
   defineGlobalData(appVm);
@@ -5342,7 +5147,7 @@ function setupApp(comp) {
         return isFunction(res) ? EMPTY_OBJ : res;
       };
       comp2.ssrRender = (_ctx, push, parent) => {
-        push(ssrRenderComponent(_sfc_main$v, null, null, parent));
+        push(ssrRenderComponent(LayoutComponent, null, null, parent));
       };
     }
   });
@@ -5429,7 +5234,7 @@ function useLoadingStyle(targetElement, bold) {
     // borderRadius: loadingBorderRadius,
   };
 }
-const _sfc_main$s = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$p = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "loading",
     styleIsolation: "app-and-page",
@@ -5461,11 +5266,11 @@ const _sfc_main$s = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$s = _sfc_main$s.setup;
-_sfc_main$s.setup = (props2, ctx) => {
+const _sfc_setup$p = _sfc_main$p.setup;
+_sfc_main$p.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-loading/components/loading/loading.vue");
-  return _sfc_setup$s ? _sfc_setup$s(props2, ctx) : void 0;
+  return _sfc_setup$p ? _sfc_setup$p(props2, ctx) : void 0;
 };
 function hexToRgba(hex) {
   if (!hex) {
@@ -5564,31 +5369,45 @@ function usePageHeadTransparent(headRef, {
     });
   });
 }
-const _sfc_main$r = /* @__PURE__ */ defineComponent$2({
-  ...{
-    name: "PageHead",
-    __reserved: true,
-    compatConfig: { MODE: 3 }
-  },
-  __name: "pageHead",
-  __ssrInlineRender: true,
-  __vapor: true,
-  setup(__props) {
-    const hasPages = __UNI_FEATURE_PAGES__;
-    const hasButtons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__;
-    const hasSearchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__;
-    const isXVapor = true;
-    const ICON_PATHS = {
-      none: "",
-      forward: "M11 7.844q-0.25-0.219-0.25-0.578t0.25-0.578q0.219-0.25 0.563-0.25t0.563 0.25l9.656 9.125q0.125 0.125 0.188 0.297t0.063 0.328q0 0.188-0.063 0.359t-0.188 0.297l-9.656 9.125q-0.219 0.25-0.563 0.25t-0.563-0.25q-0.25-0.219-0.25-0.578t0.25-0.609l9.063-8.594-9.063-8.594z",
-      back: ICON_PATH_BACK,
-      select: ICON_PATH_BACK,
-      share: "M26.563 24.844q0 0.125-0.109 0.234t-0.234 0.109h-17.938q-0.125 0-0.219-0.109t-0.094-0.234v-13.25q0-0.156 0.094-0.25t0.219-0.094h5.5v-1.531h-6q-0.531 0-0.906 0.391t-0.375 0.922v14.375q0 0.531 0.375 0.922t0.906 0.391h18.969q0.531 0 0.891-0.391t0.359-0.953v-5.156h-1.438v4.625zM29.813 10.969l-5.125-5.375-1.031 1.094 3.438 3.594-3.719 0.031q-2.313 0.188-4.344 1.125t-3.578 2.422-2.5 3.453-1.109 4.188l-0.031 0.25h1.469v-0.219q0.156-1.875 1-3.594t2.25-3.063 3.234-2.125 3.828-0.906l0.188-0.031 3.313-0.031-3.438 3.625 1.031 1.063 5.125-5.375-0.031-0.063 0.031-0.063z",
-      favorite: "M27.594 13.375q-0.063-0.188-0.219-0.313t-0.344-0.156l-7.094-0.969-3.219-6.406q-0.094-0.188-0.25-0.281t-0.375-0.094q-0.188 0-0.344 0.094t-0.25 0.281l-3.125 6.438-7.094 1.094q-0.188 0.031-0.344 0.156t-0.219 0.313q-0.031 0.188 0.016 0.375t0.172 0.313l5.156 4.969-1.156 7.063q-0.031 0.188 0.047 0.375t0.234 0.313q0.094 0.063 0.188 0.094t0.219 0.031q0.063 0 0.141-0.031t0.172-0.063l6.313-3.375 6.375 3.313q0.063 0.031 0.141 0.047t0.172 0.016q0.188 0 0.344-0.094t0.25-0.281q0.063-0.094 0.078-0.234t-0.016-0.234q0-0.031 0-0.063l-1.25-6.938 5.094-5.031q0.156-0.156 0.203-0.344t-0.016-0.375zM11.469 19.063q0.031-0.188-0.016-0.344t-0.172-0.281l-4.406-4.25 6.063-0.906q0.156-0.031 0.297-0.125t0.203-0.25l2.688-5.531 2.75 5.5q0.063 0.156 0.203 0.25t0.297 0.125l6.094 0.844-4.375 4.281q-0.125 0.125-0.172 0.297t-0.016 0.328l1.063 6.031-5.438-2.813q-0.156-0.094-0.328-0.078t-0.297 0.078l-5.438 2.875 1-6.031z",
-      home: "M23.719 16.5q-0.313 0-0.531 0.219t-0.219 0.5v7.063q0 0.219-0.172 0.391t-0.391 0.172h-12.344q-0.25 0-0.422-0.172t-0.172-0.391v-7.063q0-0.281-0.219-0.5t-0.531-0.219q-0.281 0-0.516 0.219t-0.234 0.5v7.063q0.031 0.844 0.625 1.453t1.438 0.609h12.375q0.844 0 1.453-0.609t0.609-1.453v-7.063q0-0.125-0.063-0.266t-0.156-0.234q-0.094-0.125-0.234-0.172t-0.297-0.047zM26.5 14.875l-8.813-8.813q-0.313-0.313-0.688-0.453t-0.781-0.141-0.781 0.141-0.656 0.422l-8.813 8.844q-0.188 0.219-0.188 0.516t0.219 0.484q0.094 0.125 0.234 0.172t0.297 0.047q0.125 0 0.25-0.047t0.25-0.141l8.781-8.781q0.156-0.156 0.406-0.156t0.406 0.156l8.813 8.781q0.219 0.188 0.516 0.188t0.516-0.219q0.188-0.188 0.203-0.484t-0.172-0.516z",
-      menu: "M8.938 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM16.188 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM23.469 18.313q0.844 0 1.453-0.609t0.609-1.453-0.609-1.453-1.453-0.609q-0.875 0-1.484 0.609t-0.609 1.453 0.609 1.453 1.484 0.609z",
-      close: ICON_PATH_CLOSE
-    };
+const _hoisted_1$4 = { class: "uni-page-head-bd" };
+const _hoisted_2$1 = { class: "uni-page-head-search-icon" };
+const _hoisted_3$1 = {
+  width: "20",
+  height: "20",
+  viewBox: "0 0 32 32"
+};
+const _hoisted_4$1 = { class: "uni-page-head-btn" };
+const _hoisted_5$1 = {
+  width: "26",
+  height: "26",
+  viewBox: "0 0 32 32"
+};
+const _hoisted_6$1 = {
+  width: "14",
+  height: "14",
+  viewBox: "0 0 32 32"
+};
+const _hoisted_7$1 = {
+  width: "14",
+  height: "14",
+  viewBox: "0 0 32 32"
+};
+const _hoisted_8$1 = { class: "uni-page-head-hd" };
+const _hoisted_9$1 = { class: "uni-page-head-ft" };
+const ICON_PATHS = {
+  none: "",
+  forward: "M11 7.844q-0.25-0.219-0.25-0.578t0.25-0.578q0.219-0.25 0.563-0.25t0.563 0.25l9.656 9.125q0.125 0.125 0.188 0.297t0.063 0.328q0 0.188-0.063 0.359t-0.188 0.297l-9.656 9.125q-0.219 0.25-0.563 0.25t-0.563-0.25q-0.25-0.219-0.25-0.578t0.25-0.609l9.063-8.594-9.063-8.594z",
+  back: ICON_PATH_BACK,
+  select: ICON_PATH_BACK,
+  share: "M26.563 24.844q0 0.125-0.109 0.234t-0.234 0.109h-17.938q-0.125 0-0.219-0.109t-0.094-0.234v-13.25q0-0.156 0.094-0.25t0.219-0.094h5.5v-1.531h-6q-0.531 0-0.906 0.391t-0.375 0.922v14.375q0 0.531 0.375 0.922t0.906 0.391h18.969q0.531 0 0.891-0.391t0.359-0.953v-5.156h-1.438v4.625zM29.813 10.969l-5.125-5.375-1.031 1.094 3.438 3.594-3.719 0.031q-2.313 0.188-4.344 1.125t-3.578 2.422-2.5 3.453-1.109 4.188l-0.031 0.25h1.469v-0.219q0.156-1.875 1-3.594t2.25-3.063 3.234-2.125 3.828-0.906l0.188-0.031 3.313-0.031-3.438 3.625 1.031 1.063 5.125-5.375-0.031-0.063 0.031-0.063z",
+  favorite: "M27.594 13.375q-0.063-0.188-0.219-0.313t-0.344-0.156l-7.094-0.969-3.219-6.406q-0.094-0.188-0.25-0.281t-0.375-0.094q-0.188 0-0.344 0.094t-0.25 0.281l-3.125 6.438-7.094 1.094q-0.188 0.031-0.344 0.156t-0.219 0.313q-0.031 0.188 0.016 0.375t0.172 0.313l5.156 4.969-1.156 7.063q-0.031 0.188 0.047 0.375t0.234 0.313q0.094 0.063 0.188 0.094t0.219 0.031q0.063 0 0.141-0.031t0.172-0.063l6.313-3.375 6.375 3.313q0.063 0.031 0.141 0.047t0.172 0.016q0.188 0 0.344-0.094t0.25-0.281q0.063-0.094 0.078-0.234t-0.016-0.234q0-0.031 0-0.063l-1.25-6.938 5.094-5.031q0.156-0.156 0.203-0.344t-0.016-0.375zM11.469 19.063q0.031-0.188-0.016-0.344t-0.172-0.281l-4.406-4.25 6.063-0.906q0.156-0.031 0.297-0.125t0.203-0.25l2.688-5.531 2.75 5.5q0.063 0.156 0.203 0.25t0.297 0.125l6.094 0.844-4.375 4.281q-0.125 0.125-0.172 0.297t-0.016 0.328l1.063 6.031-5.438-2.813q-0.156-0.094-0.328-0.078t-0.297 0.078l-5.438 2.875 1-6.031z",
+  home: "M23.719 16.5q-0.313 0-0.531 0.219t-0.219 0.5v7.063q0 0.219-0.172 0.391t-0.391 0.172h-12.344q-0.25 0-0.422-0.172t-0.172-0.391v-7.063q0-0.281-0.219-0.5t-0.531-0.219q-0.281 0-0.516 0.219t-0.234 0.5v7.063q0.031 0.844 0.625 1.453t1.438 0.609h12.375q0.844 0 1.453-0.609t0.609-1.453v-7.063q0-0.125-0.063-0.266t-0.156-0.234q-0.094-0.125-0.234-0.172t-0.297-0.047zM26.5 14.875l-8.813-8.813q-0.313-0.313-0.688-0.453t-0.781-0.141-0.781 0.141-0.656 0.422l-8.813 8.844q-0.188 0.219-0.188 0.516t0.219 0.484q0.094 0.125 0.234 0.172t0.297 0.047q0.125 0 0.25-0.047t0.25-0.141l8.781-8.781q0.156-0.156 0.406-0.156t0.406 0.156l8.813 8.781q0.219 0.188 0.516 0.188t0.516-0.219q0.188-0.188 0.203-0.484t-0.172-0.516z",
+  menu: "M8.938 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM16.188 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM23.469 18.313q0.844 0 1.453-0.609t0.609-1.453-0.609-1.453-1.453-0.609q-0.875 0-1.484 0.609t-0.609 1.453 0.609 1.453 1.484 0.609z",
+  close: ICON_PATH_CLOSE
+};
+const PageHead = /* @__PURE__ */ defineSystemComponent({
+  name: "PageHead",
+  setup() {
     const headRef = ref(null);
     const pageMeta = usePageMeta();
     const navigationBar = useTheme(pageMeta.navigationBar, () => {
@@ -5597,288 +5416,284 @@ const _sfc_main$r = /* @__PURE__ */ defineComponent$2({
       navigationBar.titleColor = _navigationBar.titleColor;
     });
     const { clazz, style } = usePageHead(navigationBar);
-    const buttons = hasButtons && usePageHeadButtons(pageMeta);
-    const searchInput = hasSearchInput && navigationBar.searchInput && usePageHeadSearchInput(pageMeta);
+    const buttons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ && usePageHeadButtons(pageMeta);
+    const searchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ && navigationBar.searchInput && usePageHeadSearchInput(pageMeta);
     const searchFocus = searchInput && searchInput.focus;
     const searchText = searchInput && searchInput.text;
     const searchComposing = searchInput && searchInput.composing;
-    const searchOnClick = searchInput && searchInput.onClick;
-    const searchOnFocus = searchInput && searchInput.onFocus;
-    const searchOnBlur = searchInput && searchInput.onBlur;
-    const searchOnInput = searchInput && searchInput.onInput;
-    const searchOnConfirm = searchInput && searchInput.onConfirm;
+    searchInput && searchInput.onClick;
+    searchInput && searchInput.onFocus;
+    searchInput && searchInput.onBlur;
+    searchInput && searchInput.onInput;
+    searchInput && searchInput.onConfirm;
     __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" && usePageHeadTransparent(headRef, pageMeta);
-    function getSvgSize(size) {
-      return size == null ? 27 : size;
-    }
-    function getSvgColor(color) {
-      return color == null ? "#000" : color;
-    }
-    function usePageHead(navigationBar2) {
-      const clazz2 = computed(() => {
-        const { type, titlePenetrate, shadowColorType } = navigationBar2;
-        const clazz3 = {
-          "uni-page-head": true,
-          "uni-page-head-transparent": type === "transparent",
-          "uni-page-head-titlePenetrate": titlePenetrate === "YES",
-          "uni-page-head-shadow": !!shadowColorType
-        };
-        if (shadowColorType) {
-          clazz3[`uni-page-head-shadow-${shadowColorType}`] = true;
+    function renderTitle() {
+      return openBlock(), createBlock("div", _hoisted_1$4, [createVNode("div", {
+        class: "uni-page-head__title",
+        style: {
+          fontSize: navigationBar.titleSize,
+          opacity: navigationBar.type === "transparent" ? 0 : 1
         }
-        return clazz3;
-      });
-      const style2 = computed(() => {
-        const backgroundColor = __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar2.type === "transparent" ? usePageHeadTransparentBackgroundColor(navigationBar2.backgroundColor) : navigationBar2.backgroundColor;
-        return {
-          backgroundColor,
-          color: navigationBar2.titleColor,
-          transitionDuration: navigationBar2.duration,
-          transitionTimingFunction: navigationBar2.timingFunc
-        };
-      });
-      return { clazz: clazz2, style: style2 };
+      }, [navigationBar.loading ? (openBlock(), createBlock(_sfc_main$p, {
+        key: 0,
+        style: "display: inline-block; width: 20px; height: 20px; margin-top: 7px;"
+      })) : (openBlock(), createBlock(Fragment, { key: 1 }, [navigationBar.titleImage ? (openBlock(), createBlock("img", {
+        key: 0,
+        src: navigationBar.titleImage,
+        class: "uni-page-head__title_image"
+      })) : (openBlock(), createBlock(Fragment, { key: 1 }, [normalizeVNode(() => navigationBar.titleText)], 64))], 64))])]);
     }
-    function usePageHeadButtons({ id: id2, navigationBar: navigationBar2 }) {
-      const left = [];
-      const right = [];
-      const { buttons: buttons2 } = navigationBar2;
-      if (isArray(buttons2)) {
-        const { type } = navigationBar2;
-        const isTransparent = type === "transparent";
-        const fonts = /* @__PURE__ */ Object.create(null);
-        buttons2.forEach((btn, index2) => {
-          if (btn.fontSrc && !btn.fontFamily) {
-            const fontSrc = getRealPath(btn.fontSrc);
-            let fontFamily = fonts[fontSrc];
-            if (!fontFamily) {
-              fontFamily = `font${Date.now()}`;
-              fonts[fontSrc] = fontFamily;
-              onBeforeMount(
-                () => updateStyle(
-                  "uni-btn-" + fontFamily,
-                  `@font-face{font-family: "${fontFamily}";src: url("${fontSrc}") format("truetype")}`
-                )
-              );
-            }
-            btn.fontFamily = fontFamily;
+    function renderTitleOrSearch() {
+      if (__UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__) {
+        return navigationBar.searchInput ? (openBlock(), createBlock("div", {
+          key: 1,
+          class: "uni-page-head-search",
+          style: {
+            borderRadius: navigationBar.searchInput.borderRadius,
+            backgroundColor: navigationBar.searchInput.backgroundColor
           }
-          const pageHeadBtn = usePageHeadButton(id2, index2, btn, isTransparent);
-          if (btn.float === "left") {
-            left.push(pageHeadBtn);
-          } else {
-            right.push(pageHeadBtn);
-          }
-        });
+        }, [createVNode("div", {
+          style: { color: navigationBar.searchInput.placeholderColor },
+          class: ["uni-page-head-search-placeholder", `uni-page-head-search-placeholder-${unref(searchFocus) || unref(searchText) ? "left" : navigationBar.searchInput.align}`]
+        }, [createVNode("div", _hoisted_2$1, [(openBlock(), createBlock("svg", _hoisted_3$1, [createVNode("path", {
+          d: ICON_PATH_SEARCH,
+          fill: navigationBar.searchInput.placeholderColor
+        })]))]), normalizeVNode(() => !(unref(searchText) || unref(searchComposing)) && (openBlock(), createBlock(Fragment, { key: 2 }, [normalizeVNode(() => navigationBar.searchInput.placeholder)], 64)))]), navigationBar.searchInput.disabled ? (openBlock(), createBlock(Input, {
+          key: 0,
+          disabled: true,
+          style: { color: navigationBar.searchInput.color },
+          "placeholder-style": "color: " + navigationBar.searchInput.placeholderColor,
+          class: "uni-page-head-search-input",
+          "confirm-type": "search"
+        })) : (openBlock(), createBlock(Input, {
+          key: 1,
+          focus: navigationBar.searchInput.autoFocus,
+          style: { color: navigationBar.searchInput.color },
+          "placeholder-style": "color: " + navigationBar.searchInput.placeholderColor,
+          class: "uni-page-head-search-input",
+          "confirm-type": "search"
+        }))])) : renderTitle();
       }
-      return { left, right };
+      return renderTitle();
     }
-    function usePageHeadButton(pageId, index2, btn, isTransparent) {
-      const iconStyle = {
-        color: btn.color,
-        fontSize: btn.fontSize,
-        fontWeight: btn.fontWeight
-      };
-      if (btn.fontFamily) {
-        iconStyle.fontFamily = btn.fontFamily;
-      }
-      return new Proxy(
-        {
-          btnClass: {
-            "uni-page-head-btn": true,
-            "uni-page-head-btn-red-dot": !!(btn.redDot || btn.badgeText),
-            "uni-page-head-btn-select": !!btn.select
-          },
-          btnStyle: {
-            backgroundColor: isTransparent ? btn.background : "transparent",
-            width: btn.width
-          },
-          btnText: "",
-          btnIconPath: ICON_PATHS[btn.type],
-          badgeText: btn.badgeText,
-          iconStyle,
-          onClick() {
-            invokeHook(pageId, ON_NAVIGATION_BAR_BUTTON_TAP, extend({ index: index2 }, btn));
-          },
-          btnSelect: btn.select
-        },
-        {
-          get(target, key, receiver) {
-            if (["btnText"].includes(key)) {
-              return btn.fontSrc && btn.fontFamily ? btn.text.replace("\\u", "&#x") : btn.text;
-            } else {
-              return Reflect.get(target, key, receiver);
-            }
-          }
-        }
-      );
-    }
-    function usePageHeadSearchInput({
-      id: id2,
-      navigationBar: { searchInput: searchInput2 }
-    }) {
-      const focus = ref(false);
-      const text2 = ref("");
-      const composing = ref(false);
-      const { disabled } = searchInput2;
-      if (disabled) {
-        const onClick = () => {
-          invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED);
-        };
-        return { focus, text: text2, composing, onClick };
-      }
-      const onFocus = () => {
-        focus.value = true;
-        invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
-          focus: true
-        });
-      };
-      const onBlur = () => {
-        focus.value = false;
-        invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
-          focus: false
-        });
-      };
-      const onInput = (evt) => {
-        text2.value = evt.detail.value;
-        invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, {
-          text: text2.value
-        });
-      };
-      const onConfirm = (evt) => {
-        invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, {
-          text: text2.value
-        });
-      };
-      return { focus, text: text2, composing, onFocus, onBlur, onInput, onConfirm };
-    }
-    return (_ctx, _push, _parent, _attrs) => {
-      _push(`<uni-page-head${ssrRenderAttrs(mergeProps({
-        "uni-page-head-type": unref(navigationBar).type || "default"
-      }, _attrs), "uni-page-head")}><div class="${ssrRenderClass(unref(clazz))}" style="${ssrRenderStyle(unref(style))}"><div class="uni-page-head-hd">`);
-      if (unref(hasPages) && !unref(pageMeta).isQuit) {
-        _push(`<div class="uni-page-head-btn"><svg width="26" height="26" viewBox="0 0 32 32"><path${ssrRenderAttr("d", unref(ICON_PATH_BACK))} fill="none"${ssrRenderAttr(
-          "stroke",
-          unref(navigationBar).type === "transparent" ? "#fff" : unref(navigationBar).titleColor
-        )} stroke-width="2" stroke-linecap="round"></path></svg></div>`);
-      } else {
-        _push(`<!---->`);
-      }
-      if (unref(hasButtons) && unref(buttons)) {
-        _push(`<!--[-->`);
-        ssrRenderList(unref(buttons).left, (button, index2) => {
-          _push(`<div class="${ssrRenderClass(button.btnClass)}" style="${ssrRenderStyle(button.btnStyle)}"${ssrRenderAttr("badge-text", button.badgeText)}>`);
-          if (button.btnIconPath) {
-            _push(`<svg${ssrRenderAttr("width", getSvgSize(button.iconStyle.fontSize))}${ssrRenderAttr("height", getSvgSize(button.iconStyle.fontSize))} viewBox="0 0 32 32"><path${ssrRenderAttr("d", button.btnIconPath)}${ssrRenderAttr("fill", getSvgColor(button.iconStyle.color))}></path></svg>`);
-          } else if (button.btnSelect) {
-            _push(`<span style="${ssrRenderStyle(button.iconStyle)}"><i class="uni-btn-icon">${button.btnText ?? ""}</i><svg width="14" height="14" viewBox="0 0 32 32"><path${ssrRenderAttr("d", ICON_PATHS.select)} fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"></path></svg></span>`);
-          } else {
-            _push(`<i class="uni-btn-icon" style="${ssrRenderStyle(button.iconStyle)}">${button.btnText ?? ""}</i>`);
-          }
-          _push(`</div>`);
-        });
-        _push(`<!--]-->`);
-      } else {
-        _push(`<!---->`);
-      }
-      _push(`</div>`);
-      if (!unref(hasSearchInput) || !unref(navigationBar).searchInput) {
-        _push(`<!--[0--><div class="uni-page-head-bd"><div class="uni-page-head__title" style="${ssrRenderStyle({
-          fontSize: unref(navigationBar).titleSize,
-          opacity: unref(navigationBar).type === "transparent" ? 0 : 1
-        })}">`);
-        if (!unref(isXVapor) && unref(navigationBar).loading) {
-          _push(`<!--[0--><i class="uni-loading"></i><!--]-->`);
-        } else if (unref(isXVapor) && unref(navigationBar).loading) {
-          _push(`<!--[1-->`);
-          _push(ssrRenderComponent(unref(_sfc_main$s), { style: { "display": "inline-block", "width": "20px", "height": "20px", "margin-top": "7px" } }, null, _parent));
-          _push(`<!--]-->`);
-        } else if (unref(navigationBar).titleImage) {
-          _push(`<!--[2--><img${ssrRenderAttr("src", unref(navigationBar).titleImage)} class="uni-page-head__title_image"><!--]-->`);
-        } else {
-          _push(`<!--[3-->${ssrInterpolate(unref(navigationBar).titleText)}<!--]-->`);
-        }
-        _push(`</div></div><!--]-->`);
-      } else {
-        _push(`<!--[1--><div class="uni-page-head-search" style="${ssrRenderStyle({
-          borderRadius: unref(navigationBar).searchInput.borderRadius,
-          backgroundColor: unref(navigationBar).searchInput.backgroundColor
-        })}"><div style="${ssrRenderStyle({ color: unref(navigationBar).searchInput.placeholderColor })}" class="${ssrRenderClass([
-          "uni-page-head-search-placeholder",
-          `uni-page-head-search-placeholder-${unref(searchFocus) || unref(searchText) ? "left" : unref(navigationBar).searchInput.align}`
-        ])}"><div class="uni-page-head-search-icon"><svg width="20" height="20" viewBox="0 0 32 32"><path${ssrRenderAttr("d", unref(ICON_PATH_SEARCH))}${ssrRenderAttr("fill", unref(navigationBar).searchInput.placeholderColor)}></path></svg></div>`);
-        if (!(unref(searchText) || unref(searchComposing))) {
-          _push(`<!--[-->${ssrInterpolate(unref(navigationBar).searchInput.placeholder)}<!--]-->`);
-        } else {
-          _push(`<!---->`);
-        }
-        _push(`</div>`);
-        if (unref(navigationBar).searchInput.disabled) {
-          _push(`<!--[0-->`);
-          _push(ssrRenderComponent(unref(Input), {
-            disabled: true,
-            style: { color: unref(navigationBar).searchInput.color },
-            "placeholder-style": "color: " + unref(navigationBar).searchInput.placeholderColor,
-            class: "uni-page-head-search-input",
-            "confirm-type": "search",
-            onClick: ($event) => unref(searchOnClick) && unref(searchOnClick)($event)
-          }, null, _parent));
-          _push(`<!--]-->`);
-        } else {
-          _push(`<!--[1-->`);
-          _push(ssrRenderComponent(unref(Input), {
-            focus: unref(navigationBar).searchInput.autoFocus,
-            style: { color: unref(navigationBar).searchInput.color },
-            "placeholder-style": "color: " + unref(navigationBar).searchInput.placeholderColor,
-            class: "uni-page-head-search-input",
-            "confirm-type": "search",
-            onFocus: ($event) => unref(searchOnFocus) && unref(searchOnFocus)($event),
-            onBlur: ($event) => unref(searchOnBlur) && unref(searchOnBlur)($event),
-            onInput: ($event) => unref(searchOnInput) && unref(searchOnInput)($event),
-            onConfirm: ($event) => unref(searchOnConfirm) && unref(searchOnConfirm)($event)
-          }, null, _parent));
-          _push(`<!--]-->`);
-        }
-        _push(`</div><!--]-->`);
-      }
-      _push(`<div class="uni-page-head-ft">`);
-      if (unref(hasButtons) && unref(buttons)) {
-        _push(`<!--[-->`);
-        ssrRenderList(unref(buttons).right, (button, index2) => {
-          _push(`<div class="${ssrRenderClass(button.btnClass)}" style="${ssrRenderStyle(button.btnStyle)}"${ssrRenderAttr("badge-text", button.badgeText)}>`);
-          if (button.btnIconPath) {
-            _push(`<svg${ssrRenderAttr("width", getSvgSize(button.iconStyle.fontSize))}${ssrRenderAttr("height", getSvgSize(button.iconStyle.fontSize))} viewBox="0 0 32 32"><path${ssrRenderAttr("d", button.btnIconPath)}${ssrRenderAttr("fill", getSvgColor(button.iconStyle.color))}></path></svg>`);
-          } else if (button.btnSelect) {
-            _push(`<span style="${ssrRenderStyle(button.iconStyle)}"><i class="uni-btn-icon">${button.btnText ?? ""}</i><svg width="14" height="14" viewBox="0 0 32 32"><path${ssrRenderAttr("d", ICON_PATHS.select)} fill="#000"></path></svg></span>`);
-          } else {
-            _push(`<i class="uni-btn-icon" style="${ssrRenderStyle(button.iconStyle)}">${button.btnText ?? ""}</i>`);
-          }
-          _push(`</div>`);
-        });
-        _push(`<!--]-->`);
-      } else {
-        _push(`<!---->`);
-      }
-      _push(`</div></div>`);
-      if (unref(navigationBar).type !== "transparent" && unref(navigationBar).type !== "float") {
-        _push(`<div class="${ssrRenderClass({
-          "uni-placeholder": true,
-          "uni-placeholder-titlePenetrate": unref(navigationBar).titlePenetrate
-        })}"></div>`);
-      } else {
-        _push(`<!---->`);
-      }
-      _push(`</uni-page-head>`);
-    };
+    return () => (openBlock(), createBlock("uni-page-head", { "uni-page-head-type": navigationBar.type || "default" }, [createVNode("div", {
+      ref: headRef,
+      class: clazz.value,
+      style: style.value
+    }, [
+      createVNode("div", _hoisted_8$1, [normalizeVNode(() => __UNI_FEATURE_PAGES__ && !pageMeta.isQuit && (openBlock(), createBlock("div", _hoisted_4$1, [(openBlock(), createBlock("svg", _hoisted_5$1, [createVNode("path", {
+        d: ICON_PATH_BACK,
+        fill: "none",
+        stroke: navigationBar.type === "transparent" ? "#fff" : navigationBar.titleColor,
+        "stroke-width": "2",
+        "stroke-linecap": "round"
+      })]))]))), normalizeVNode(() => __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ && buttons && (openBlock(), createBlock(Fragment, null, [normalizeVNode(() => createFor(() => buttons.left, (button) => (openBlock(), createBlock("div", {
+        class: button.value.btnClass,
+        style: button.value.btnStyle,
+        "badge-text": button.value.badgeText
+      }, [button.value.btnIconPath ? (openBlock(), createBlock("svg", {
+        key: 0,
+        width: getSvgSize(button.value.iconStyle.fontSize),
+        height: getSvgSize(button.value.iconStyle.fontSize),
+        viewBox: "0 0 32 32"
+      }, [createVNode("path", {
+        d: button.value.btnIconPath,
+        fill: getSvgColor(button.value.iconStyle.color)
+      })])) : (openBlock(), createBlock(Fragment, { key: 1 }, [button.value.btnSelect ? (openBlock(), createBlock("span", {
+        key: 0,
+        style: button.value.iconStyle
+      }, [createVNode("i", {
+        class: "uni-btn-icon",
+        innerHTML: button.value.btnText
+      }), (openBlock(), createBlock("svg", _hoisted_6$1, [createVNode("path", {
+        d: ICON_PATHS.select,
+        fill: "none",
+        stroke: "#000",
+        "stroke-width": "2",
+        "stroke-linecap": "round"
+      })]))])) : (openBlock(), createBlock("i", {
+        key: 1,
+        class: "uni-btn-icon",
+        style: button.value.iconStyle,
+        innerHTML: button.value.btnText
+      }))], 64))])), (button, index2) => index2, 8))], 64)))]),
+      normalizeVNode(() => renderTitleOrSearch()),
+      createVNode("div", _hoisted_9$1, [normalizeVNode(() => __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ && buttons && (openBlock(), createBlock(Fragment, null, [normalizeVNode(() => createFor(() => buttons.right, (button) => (openBlock(), createBlock("div", {
+        class: button.value.btnClass,
+        style: button.value.btnStyle,
+        "badge-text": button.value.badgeText
+      }, [button.value.btnIconPath ? (openBlock(), createBlock("svg", {
+        key: 0,
+        width: getSvgSize(button.value.iconStyle.fontSize),
+        height: getSvgSize(button.value.iconStyle.fontSize),
+        viewBox: "0 0 32 32"
+      }, [createVNode("path", {
+        d: button.value.btnIconPath,
+        fill: getSvgColor(button.value.iconStyle.color)
+      })])) : (openBlock(), createBlock(Fragment, { key: 1 }, [button.value.btnSelect ? (openBlock(), createBlock("span", {
+        key: 0,
+        style: button.value.iconStyle
+      }, [createVNode("i", {
+        class: "uni-btn-icon",
+        innerHTML: button.value.btnText
+      }), (openBlock(), createBlock("svg", _hoisted_7$1, [createVNode("path", {
+        d: ICON_PATHS.select,
+        fill: "#000"
+      })]))])) : (openBlock(), createBlock("i", {
+        key: 1,
+        class: "uni-btn-icon",
+        style: button.value.iconStyle,
+        innerHTML: button.value.btnText
+      }))], 64))])), (button, index2) => index2, 8))], 64)))])
+    ], 512), normalizeVNode(() => navigationBar.type !== "transparent" && navigationBar.type !== "float" && (openBlock(), createBlock("div", { class: {
+      "uni-placeholder": true,
+      "uni-placeholder-titlePenetrate": navigationBar.titlePenetrate
+    } })))]));
   }
 });
-const _sfc_setup$r = _sfc_main$r.setup;
-_sfc_main$r.setup = (props2, ctx) => {
-  const ssrContext = useSSRContext();
-  (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("src/framework/components/page/pageHead.vue");
-  return _sfc_setup$r ? _sfc_setup$r(props2, ctx) : void 0;
-};
-const _sfc_main$q = /* @__PURE__ */ defineComponent$2({
+function getSvgSize(size) {
+  return size == null ? 27 : size;
+}
+function getSvgColor(color) {
+  return color == null ? "#000" : color;
+}
+function usePageHead(navigationBar) {
+  const clazz = computed(() => {
+    const { type, titlePenetrate, shadowColorType } = navigationBar;
+    const clazz2 = {
+      "uni-page-head": true,
+      "uni-page-head-transparent": type === "transparent",
+      "uni-page-head-titlePenetrate": titlePenetrate === "YES",
+      "uni-page-head-shadow": !!shadowColorType
+    };
+    if (shadowColorType) {
+      clazz2[`uni-page-head-shadow-${shadowColorType}`] = true;
+    }
+    return clazz2;
+  });
+  const style = computed(() => {
+    const backgroundColor = __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" ? usePageHeadTransparentBackgroundColor(navigationBar.backgroundColor) : navigationBar.backgroundColor;
+    return {
+      backgroundColor,
+      color: navigationBar.titleColor,
+      transitionDuration: navigationBar.duration,
+      transitionTimingFunction: navigationBar.timingFunc
+    };
+  });
+  return {
+    clazz,
+    style
+  };
+}
+function usePageHeadButtons({ id: id2, navigationBar }) {
+  const left = [];
+  const right = [];
+  const { buttons } = navigationBar;
+  if (isArray(buttons)) {
+    const { type } = navigationBar;
+    const isTransparent = type === "transparent";
+    const fonts = /* @__PURE__ */ Object.create(null);
+    buttons.forEach((btn, index2) => {
+      if (btn.fontSrc && !btn.fontFamily) {
+        const fontSrc = getRealPath(btn.fontSrc);
+        let fontFamily = fonts[fontSrc];
+        if (!fontFamily) {
+          fontFamily = `font${Date.now()}`;
+          fonts[fontSrc] = fontFamily;
+          onBeforeMount(() => updateStyle("uni-btn-" + fontFamily, `@font-face{font-family: "${fontFamily}";src: url("${fontSrc}") format("truetype")}`));
+        }
+        btn.fontFamily = fontFamily;
+      }
+      const pageHeadBtn = usePageHeadButton(id2, index2, btn, isTransparent);
+      if (btn.float === "left") {
+        left.push(pageHeadBtn);
+      } else {
+        right.push(pageHeadBtn);
+      }
+    });
+  }
+  return {
+    left,
+    right
+  };
+}
+function usePageHeadButton(pageId, index2, btn, isTransparent) {
+  const iconStyle = {
+    color: btn.color,
+    fontSize: btn.fontSize,
+    fontWeight: btn.fontWeight
+  };
+  if (btn.fontFamily) {
+    iconStyle.fontFamily = btn.fontFamily;
+  }
+  return new Proxy({
+    btnClass: {
+      "uni-page-head-btn": true,
+      "uni-page-head-btn-red-dot": !!(btn.redDot || btn.badgeText),
+      "uni-page-head-btn-select": !!btn.select
+    },
+    btnStyle: {
+      backgroundColor: isTransparent ? btn.background : "transparent",
+      width: btn.width
+    },
+    btnText: "",
+    btnIconPath: ICON_PATHS[btn.type],
+    badgeText: btn.badgeText,
+    iconStyle,
+    onClick() {
+      invokeHook(pageId, ON_NAVIGATION_BAR_BUTTON_TAP, extend({ index: index2 }, btn));
+    },
+    btnSelect: btn.select
+  }, { get(target, key, receiver) {
+    if (["btnText"].includes(key)) {
+      return btn.fontSrc && btn.fontFamily ? btn.text.replace("\\u", "&#x") : btn.text;
+    } else {
+      return Reflect.get(target, key, receiver);
+    }
+  } });
+}
+function usePageHeadSearchInput({ id: id2, navigationBar: { searchInput } }) {
+  const focus = ref(false);
+  const text2 = ref("");
+  const composing = ref(false);
+  const { disabled } = searchInput;
+  if (disabled) {
+    const onClick = () => {
+      invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED);
+    };
+    return {
+      focus,
+      text: text2,
+      composing,
+      onClick
+    };
+  }
+  const onFocus = () => {
+    focus.value = true;
+    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, { focus: true });
+  };
+  const onBlur = () => {
+    focus.value = false;
+    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, { focus: false });
+  };
+  const onInput = (evt) => {
+    text2.value = evt.detail.value;
+    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, { text: text2.value });
+  };
+  const onConfirm = (evt) => {
+    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, { text: text2.value });
+  };
+  return {
+    focus,
+    text: text2,
+    composing,
+    onFocus,
+    onBlur,
+    onInput,
+    onConfirm
+  };
+}
+const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
   ...{ name: "PageRefresh" },
   __name: "component",
   __ssrInlineRender: true,
@@ -5892,107 +5707,49 @@ const _sfc_main$q = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$q = _sfc_main$q.setup;
-_sfc_main$q.setup = (props2, ctx) => {
+const _sfc_setup$o = _sfc_main$o.setup;
+_sfc_main$o.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("src/framework/components/page/page-refresh/component.vue");
-  return _sfc_setup$q ? _sfc_setup$q(props2, ctx) : void 0;
+  return _sfc_setup$o ? _sfc_setup$o(props2, ctx) : void 0;
 };
-const _sfc_main$p = /* @__PURE__ */ defineComponent$2({
-  ...{
-    name: "PageBody",
-    __reserved: true,
-    compatConfig: { MODE: 3 }
-  },
-  __name: "pageBody",
-  __ssrInlineRender: true,
-  __vapor: true,
-  setup(__props) {
-    const isX = true;
-    const hasPullDownRefresh = __UNI_FEATURE_PULL_DOWN_REFRESH__;
-    const pageMeta = hasPullDownRefresh ? usePageMeta() : null;
+const PageBody = /* @__PURE__ */ defineSystemComponent({
+  name: "PageBody",
+  setup() {
+    const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ ? usePageMeta() : null;
     const refreshRef = ref(null);
     const wrapperRef = ref(null);
     const _pageRefresh = null;
     const pageRefresh = ref(null);
-    watch(
-      () => pageMeta == null ? void 0 : pageMeta.enablePullDownRefresh,
-      () => {
-        pageRefresh.value = (pageMeta == null ? void 0 : pageMeta.enablePullDownRefresh) ? _pageRefresh : null;
-      },
-      {
-        immediate: true
-      }
-    );
-    function resize() {
-      {
-        return;
-      }
-    }
-    return (_ctx, _push, _parent, _attrs) => {
-      _push(`<!--[-->`);
-      if (unref(hasPullDownRefresh) && !!unref(pageMeta) && (unref(isX) || !!unref(pageMeta).enablePullDownRefresh)) {
-        _push(ssrRenderComponent(_sfc_main$q, {
-          ref_key: "refreshRef",
-          ref: refreshRef
-        }, null, _parent));
-      } else {
-        _push(`<!---->`);
-      }
-      _push(`<uni-page-wrapper${ssrRenderAttrs(mergeProps({
-        ref_key: "wrapperRef",
-        ref: wrapperRef
-      }, pageRefresh.value), "uni-page-wrapper")}><uni-page-body>`);
-      ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent);
-      _push(`</uni-page-body>`);
-      if (unref(isX)) {
-        _push(ssrRenderComponent(unref(ResizeSensor), { onResize: resize }, null, _parent));
-      } else {
-        _push(`<!---->`);
-      }
-      _push(`</uni-page-wrapper><!--]-->`);
-    };
+    watch(() => pageMeta == null ? void 0 : pageMeta.enablePullDownRefresh, () => {
+      pageRefresh.value = (pageMeta == null ? void 0 : pageMeta.enablePullDownRefresh) ? _pageRefresh : null;
+    }, { immediate: true });
+    return () => (() => {
+      const _slots = useSlots();
+      return openBlock(), createBlock(Fragment, null, [normalizeVNode(() => __UNI_FEATURE_PULL_DOWN_REFRESH__ && !!pageMeta && true && (openBlock(), createBlock(_sfc_main$o, { ref: refreshRef }, null, 512))), createVNode("uni-page-wrapper", mergeProps({ ref: wrapperRef }, pageRefresh.value), [createVNode("uni-page-body", null, [renderSlot(_slots, "default")]), normalizeVNode(() => (openBlock(), createBlock(ResizeSensor)))], 16)], 64);
+    })();
   }
 });
-const _sfc_setup$p = _sfc_main$p.setup;
-_sfc_main$p.setup = (props2, ctx) => {
-  const ssrContext = useSSRContext();
-  (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("src/framework/components/page/pageBody.vue");
-  return _sfc_setup$p ? _sfc_setup$p(props2, ctx) : void 0;
-};
-const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
-  ...{
-    name: "Page",
-    __reserved: true,
-    compatConfig: { MODE: 3 }
-  },
-  __name: "index-vapor",
-  __ssrInlineRender: true,
-  __vapor: true,
-  setup(__props) {
+const PageComponent = /* @__PURE__ */ defineSystemComponent({
+  name: "Page",
+  setup() {
     var _a;
-    const hasNavigationBar = __UNI_FEATURE_NAVIGATIONBAR__;
     const pageStyle = {};
     let pageMeta = providePageMeta(getStateId());
     const navigationBar = pageMeta.navigationBar;
     const currentInstance = getCurrentInstance();
     const attrs = currentInstance.attrs;
     const routeComponent = currentInstance.type;
-    const pageComponent = routeComponent.__uniPageComponent;
+    const PageComponent2 = routeComponent.__uniPageComponent;
     const pageProps = usePageRoute().query;
     useDocumentTitle(pageMeta);
     currentInstance.$dialogPages = ref([]);
     currentInstance.$systemDialogPages = ref([]);
     if (isDialogPageInstance(currentInstance)) {
       pageMeta.route = attrs.route;
-      const routePageMeta = (_a = __uniRoutes.find(
-        (route) => route.path === pageMeta.route.split("?")[0]
-      )) == null ? void 0 : _a.meta;
+      const routePageMeta = (_a = __uniRoutes.find((route) => route.path === pageMeta.route.split("?")[0])) == null ? void 0 : _a.meta;
       if (routePageMeta) {
-        routePageMeta.navigationBar = Object.assign(
-          navigationBar,
-          routePageMeta.navigationBar
-        );
+        routePageMeta.navigationBar = Object.assign(navigationBar, routePageMeta.navigationBar);
         pageMeta = Object.assign(pageMeta, routePageMeta);
       }
       pageMeta.id = createDialogPageId();
@@ -6015,16 +5772,13 @@ const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
       provide("parentInstance", currentInstance);
     }
     function getDialogPages() {
-      const pages = [
-        ...currentInstance.$dialogPages.value.map((page) => ({
-          page,
-          type: DIALOG_TAG
-        })),
-        ...currentInstance.$systemDialogPages.value.map((page) => ({
-          page,
-          type: SYSTEM_DIALOG_TAG
-        }))
-      ];
+      const pages = [...currentInstance.$dialogPages.value.map((page) => ({
+        page,
+        type: DIALOG_TAG
+      })), ...currentInstance.$systemDialogPages.value.map((page) => ({
+        page,
+        type: SYSTEM_DIALOG_TAG
+      }))];
       pages.sort((a, b) => {
         var _a2, _b, _c, _d;
         const aId = ((_b = (_a2 = a.page.vm) == null ? void 0 : _a2.$basePage) == null ? void 0 : _b.id) || Number.MAX_SAFE_INTEGER;
@@ -6064,49 +5818,25 @@ const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
         }
       }
     }
-    return (_ctx, _push, _parent, _attrs) => {
-      _push(`<uni-page${ssrRenderAttrs(mergeProps({
-        "data-page": unref(pageMeta).route,
-        style: pageStyle
-      }, _attrs), "uni-page")}>`);
-      if (unref(hasNavigationBar) && unref(navigationBar).style !== "custom") {
-        _push(ssrRenderComponent(_sfc_main$r, null, null, _parent));
-      } else {
-        _push(`<!---->`);
-      }
-      _push(ssrRenderComponent(_sfc_main$p, null, {
-        default: withCtx((_, _push2, _parent2, _scopeId) => {
-          if (_push2) {
-            ssrRenderDynamicComponent(_push2, resolveDynamicComponent(unref(pageComponent)), mergeProps(unref(pageProps), { ref: "page" }), null, _parent2, _scopeId);
-          } else {
-            return [
-              (openBlock(), createBlock(resolveDynamicComponent(unref(pageComponent)), mergeProps(unref(pageProps), { ref: "page" }), null, 16))
-            ];
-          }
-        }),
+    return () => (openBlock(), createBlock("uni-page", {
+      "data-page": pageMeta.route,
+      style: pageStyle
+    }, [
+      normalizeVNode(() => __UNI_FEATURE_NAVIGATIONBAR__ && (navigationBar.style !== "custom" ? (openBlock(), createBlock(PageHead, { key: 0 })) : createCommentVNode("", true))),
+      createVNode(PageBody, null, {
+        default: withCtx(() => [createVNode(PageComponent2, mergeProps(pageProps, { ref: "page" }), null, 16)]),
         _: 1
-      }, _parent));
-      _push(`<!--[-->`);
-      ssrRenderList(getDialogPages(), (dialogPage) => {
-        ssrRenderDynamicComponent(_push, resolveDynamicComponent(dialogPage.component), {
-          key: dialogPage.route,
-          style: dialogPageStyle,
-          "data-type": dialogPage.type,
-          route: dialogPage.route
-        }, null, _parent);
-      });
-      _push(`<!--]--></uni-page>`);
-    };
+      }),
+      normalizeVNode(() => createFor(() => getDialogPages(), (dialogPage) => createDynamicComponent(() => dialogPage.value.component, {
+        style: () => dialogPageStyle,
+        "data-type": () => dialogPage.value.type,
+        route: () => dialogPage.value.route
+      }), (dialogPage) => dialogPage.route, 18))
+    ]));
   }
 });
-const _sfc_setup$o = _sfc_main$o.setup;
-_sfc_main$o.setup = (props2, ctx) => {
-  const ssrContext = useSSRContext();
-  (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("src/framework/components/page/index-vapor.vue");
-  return _sfc_setup$o ? _sfc_setup$o(props2, ctx) : void 0;
-};
 function createVaporPageRouteComponent(pageComponent) {
-  return Object.assign({}, _sfc_main$o, {
+  return Object.assign({}, PageComponent, {
     __uniPageComponent: pageComponent
   });
 }
@@ -18138,8 +17868,8 @@ export {
   indexVapor as Ad,
   index$5 as AdContentPage,
   index$4 as AdDraw,
-  _sfc_main$t as AsyncErrorComponent,
-  _sfc_main$u as AsyncLoadingComponent,
+  _sfc_main$q as AsyncErrorComponent,
+  _sfc_main$r as AsyncLoadingComponent,
   _sfc_main$n as Button,
   index$3 as Camera,
   indexVapor$a as Canvas,
@@ -18151,18 +17881,18 @@ export {
   indexVapor$7 as Icon,
   Input,
   _sfc_main$i as Label,
-  _sfc_main$v as LayoutComponent,
+  LayoutComponent,
   _sfc_main$h as ListItem,
   _sfc_main$g as ListView,
   index$2 as LivePlayer,
   index$1 as LivePusher,
-  _sfc_main$s as Loading,
+  _sfc_main$p as Loading,
   indexVapor$1 as Map,
   _sfc_main$f as MatchMedia,
   indexVapor$6 as MovableArea,
   indexVapor$5 as MovableView,
   _sfc_main$e as Navigator,
-  _sfc_main$o as PageComponent,
+  PageComponent,
   _sfc_main$d as PageContainer,
   _sfc_main$c as Picker,
   _sfc_main$b as PickerView,
