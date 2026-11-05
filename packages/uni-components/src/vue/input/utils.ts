@@ -4,6 +4,24 @@ import type { State } from '../../helpers/useField'
 
 type ResetCache = { fn: (() => void) | null }
 
+// number.value 不接受尾随小数点或未完成的指数；只写入截断范围内合法的前缀。
+export function truncateInputNumber(
+  value: string,
+  maxlength: number,
+  previous = ''
+) {
+  if (!Number.isFinite(maxlength)) return value
+  if (maxlength === 0 || !value) return ''
+  const prefix = value
+    .slice(0, maxlength)
+    .match(/^-?(?:\d+(?:\.\d+)?|\.\d+)(?:[eE][+-]?\d+)?/)?.[0]
+  if (prefix) return prefix
+  return previous.length <= maxlength &&
+    /^-?(?:\d+(?:\.\d+)?|\.\d+)(?:[eE][+-]?\d+)?$/.test(previous)
+    ? previous
+    : ''
+}
+
 const resolveDigitDecimalPointDeleteContentBackward = once(() => {
   //#if !_NODE_JS_
   if (__PLATFORM__ === 'app') {

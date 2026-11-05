@@ -29,7 +29,7 @@ describe('Web Vapor 独立组件样式', () => {
     expect(code).toContain('img:where([uni-image])')
   })
 
-  test.each(['input', 'textarea', 'video'])(
+  test.each(['textarea', 'video'])(
     '%s 独立样式保留旧实现的内部规则，不再依赖旧 CSS',
     (name) => {
       const oldFile =
@@ -66,16 +66,31 @@ describe('Web Vapor 独立组件样式', () => {
     })
   })
 
-  test.each(['input', 'textarea'])(
-    '%s 保留选区、placeholder 和暗色样式',
-    (name) => {
-      const code = read(`vapor/${name}.css`)
-      expect(code).toContain('@layer uni-field-selection')
-      expect(code).toContain('[data-uni-selection]::selection')
-      expect(code).toContain('@media (prefers-color-scheme: dark)')
-      expect(code).toContain('color: #757575')
-      expect(code).toContain('caret-color: inherit')
-      expect(code).toContain('cursor: inherit')
+  test.each(['textarea'])('%s 保留选区、placeholder 和暗色样式', (name) => {
+    const code = read(`vapor/${name}.css`)
+    expect(code).toContain('@layer uni-field-selection')
+    expect(code).toContain('[data-uni-selection]::selection')
+    expect(code).toContain('@media (prefers-color-scheme: dark)')
+    expect(code).toContain('color: #757575')
+    expect(code).toContain('caret-color: inherit')
+    expect(code).toContain('cursor: inherit')
+  })
+
+  test('Input 使用原生宿主及伪元素，不保留内部布局或测量节点样式', () => {
+    const code = read('vapor/input.css')
+    expect(code).toContain('input:where([uni-input])::placeholder')
+    expect(code).toContain('@layer uni-input-placeholder-class')
+    expect(code).toContain('color: #757575')
+    expect(code).toContain('font: inherit')
+    expect(code).not.toContain('--uni-input-placeholder-font')
+    expect(code).toContain('@media (prefers-color-scheme: dark)')
+    expect(code).toContain("[type='search']::-webkit-search-cancel-button")
+    for (const old of [
+      '.uni-input-wrapper',
+      '.uni-input-form',
+      '.uni-field-selection-probe',
+    ]) {
+      expect(code).not.toContain(old)
     }
-  )
+  })
 })

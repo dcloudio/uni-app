@@ -62,6 +62,7 @@ interface ElementConstructors {
   HTMLSpanElement: { prototype: HTMLElement }
   HTMLImageElement: { prototype: HTMLElement }
   HTMLCanvasElement: { prototype: HTMLElement }
+  HTMLInputElement: { prototype: HTMLElement }
 }
 
 // 只从 Vapor 浏览器入口调用；不触碰逐节点创建路径，dataset 单独按 uni 契约适配。
@@ -95,6 +96,9 @@ export function installWebVaporElements(realm?: Window) {
               break
             case 'canvas':
               marker = 'uni-canvas'
+              break
+            case 'input':
+              marker = 'uni-input'
               break
           }
           if (marker && el.hasAttribute(marker)) return true
@@ -136,6 +140,7 @@ export function installWebVaporElements(realm?: Window) {
     [hosts.HTMLSpanElement, 'uni-text', 'TEXT'],
     [hosts.HTMLImageElement, 'uni-image', 'IMAGE'],
     [hosts.HTMLCanvasElement, 'uni-canvas', 'CANVAS'],
+    [hosts.HTMLInputElement, 'uni-input', 'INPUT'],
   ] as const) {
     const prototype = Host.prototype
     if (!('uniTagName' in prototype)) {

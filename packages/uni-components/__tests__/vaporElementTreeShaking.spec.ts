@@ -29,12 +29,17 @@ test.each(['input', 'textarea'])(
               const type = name === 'input' ? 'Input' : 'Textarea'
               // 框架组件会将类型和初始化函数传给组件工厂；即使组件最终被裁剪，
               // Rollup 也不能据此推断工厂不会修改类原型。
+              // Input 已使用原生根，无需安装转发描述符；Textarea 仍保留初始化。
               return `${code}
                 export const component = /* @__PURE__ */ globalThis.defineComponent({
                   rootElement: { class: Uni${type}Element },
-                  setup: init${type}Element
+                  setup: ${
+                    name === 'input' ? '() => {}' : 'initTextareaElement'
+                  }
                 })`
             }
+            if (id === '../../helpers/UniElement')
+              return 'export class UniElement {}'
             if (id === '../web-vapor-elements')
               return 'export class UniViewElement {}'
           },
