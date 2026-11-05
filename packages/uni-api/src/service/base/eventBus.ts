@@ -38,7 +38,8 @@ export class EventBus {
   }
 }
 
-const eventBus = new EventBus()
+// 构造时仅创建内部 Emitter；未使用事件 API 时可裁剪，使用时仍同步创建共享实例。
+const eventBus = /*#__PURE__*/ new EventBus()
 export const $on = defineSyncApi<API_TYPE_ON>(
   API_ON,
   (name, callback): EventStopHandler | number => {
