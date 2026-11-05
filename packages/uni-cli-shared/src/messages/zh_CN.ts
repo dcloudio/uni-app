@@ -4,7 +4,7 @@ export default {
   'view.render.compiler.target.bytecode': '字节码',
   'view.render.compiler.target.nativecode': '机器码',
   'vapor.default.script.lang': '当前 uvue/vue 文件默认 script lang：{lang}',
-  'harmony.vapor.script.runtime': '当前运行环境：{runtime}',
+  'harmony.vapor.script.runtime': '当前页面脚本运行环境：{runtime}',
   'style.isolation.version':
     '当前样式隔离策略：{version}。详见：https://doc.dcloud.net.cn/uni-app-x/css/common/style-isolation.html',
   'style.isolation.version.upgrade':
@@ -29,7 +29,7 @@ export default {
   'dev.watching.vapor.render.target':
     'manifest.json 中更改了视图层编译目标为{manifestTarget}，但注意运行控制台还是{runtimeTarget}。',
   'harmony.vapor.script.runtime.invalid':
-    '指定的鸿蒙运行环境无效（{runtime}），使用默认运行环境：{defaultRuntime}。',
+    '指定的页面脚本运行环境无效（{runtime}），使用默认运行环境：{defaultRuntime}。',
   'dev.watching.restart.script.engine':
     'DONE  Restart required. 脚本引擎变化需要重新运行才能生效。',
   'build.failed': 'DONE  Build failed.',
