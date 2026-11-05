@@ -415,8 +415,8 @@ export function initEnv(
   }
   if (isUniAppXVapor() && process.env.UNI_APP_X_HARMONY_SCRIPT_ENGINE) {
     console.log(
-      M['vapor.script.engine'].replace(
-        '{engine}',
+      M['harmony.vapor.script.runtime'].replace(
+        '{runtime}',
         process.env.UNI_APP_X_HARMONY_SCRIPT_ENGINE
       )
     )

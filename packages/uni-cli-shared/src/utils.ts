@@ -368,10 +368,9 @@ export function resolveUniAppXHarmonyScriptEngine(
       return harmonyScriptEngine
     default:
       console.warn(
-        M['harmony.vapor.script.engine'].replace(
-          '{engine}',
-          harmonyScriptEngine
-        )
+        M['harmony.vapor.script.runtime.invalid']
+          .replace('{runtime}', harmonyScriptEngine)
+          .replace('{defaultRuntime}', defaultUniAppXHarmonyScriptEngine)
       )
       return defaultUniAppXHarmonyScriptEngine
   }
