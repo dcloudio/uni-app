@@ -63,7 +63,6 @@ uni-ui x 没有写死的颜色和文字:
 | uni-badge-view			| [数字角标](https://ext.dcloud.net.cn/plugin?name=uni-badge-view)				|
 | uni-collapse				| [折叠面板](https://ext.dcloud.net.cn/plugin?name=uni-collapse-x)				|
 | uni-combobox				| [组合框](https://ext.dcloud.net.cn/plugin?name=uni-combobox)						|
-| uni-combox-x				| [已废弃组合框](https://ext.dcloud.net.cn/plugin?name=uni-combox-x)					|
 | uni-data-checkbox		| [数据选择器](https://ext.dcloud.net.cn/plugin?name=uni-data-checkbox-x)	|
 | uni-forms						| [表单](https://ext.dcloud.net.cn/plugin?name=uni-forms-x)								|
 | uni-data-vertical-marquee | [上下滚动文字组件](https://ext.dcloud.net.cn/plugin?name=uni-data-v-marquee) |
@@ -91,54 +90,54 @@ uni-app x 新提供了 uni-ui x，它是组合式的，且支持样式隔离策�
 
 uni-ui 无法直接升级 uni-ui x，组件名称、用法都有变化。
 
-但升级时，老版 uni-ui 组件在 uni-app x 下的平替方案是什么，可以在这里说明功能映射关系：
+但升级时，老版 uni-ui 组件在 uni-app x 下的平替方案是什么，在这里说明功能映射关系：
 
 |uni-ui组件						|中文名称								|在uni-app x下的方案																	|
 |--										|--											|--																									|
-|uni-badge						|数字角标								|改用[uni-badge-view](https://ext.dcloud.net.cn/plugin?name=uni-badge-view)	|
-|uni-calendar					|日历										|见hello uni-app x里的模板中的日历页面								|
+|uni-badge						|数字角标								|改用新版[uni-badge-view](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/uni-badge-view.html)	|
+|uni-calendar					|日历										|见hello uni-app x里的模板中的[日历页面](https://gitcode.com/dcloud/hello-uni-app-x/blob/alpha/pages/template/calendar-vapor/calendar-vapor.uvue)								|
 |uni-card							|卡片										|无																									|
-|uni-collapse					|折叠面板								|改用[uni-collapse](https://ext.dcloud.net.cn/plugin?name=uni-collapse-x)		|
-|uni-combox						|组合框									|改用[uni-combobox](https://ext.dcloud.net.cn/plugin?name=uni-combobox)																										|
+|uni-collapse					|折叠面板								|改用新版[uni-collapse](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/uni-collapse.html)		|
+|uni-combox						|组合框									|改用新版[uni-combobox](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/uni-combobox.html)																										|
 |uni-countdown				|倒计时									|无																									|
-|uni-data-checkbox		|数据选择器							|改用[uni-data-checkbox](https://ext.dcloud.net.cn/plugin?name=uni-data-checkbox-x)	|
-|uni-data-picker			|数据驱动的picker选择器	|组件本身支持uni-app x vdom														|
-|uni-dateformat				|日期格式化							|改用[uni-time-format](https://ext.dcloud.net.cn/plugin?name=uni-time-format)	|
+|uni-data-checkbox		|数据选择器							|改用新版[uni-data-checkbox](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/uni-data-checkbox.html)	|
+|uni-data-picker			|数据驱动的picker选择器		|改用新版[uni-data-picker](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/uni-data-picker.html)	|
+|uni-dateformat				|日期格式化							|改用新版[uni-time-format](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/uni-time-format.html)	|
 |uni-datetime-picker	|日期选择器							|内置组件picker支持mode=date													|
 |uni-drawer						|抽屉										|改用内置组件page-container													|
-|uni-easyinput				|增强输入框							|改用[uni-easyinput](https://ext.dcloud.net.cn/plugin?name=uni-easyinput)														|
-|uni-fab							|悬浮按钮								|改用[uni-fab-button](https://ext.dcloud.net.cn/plugin?name=uni-fab-button)									|
+|uni-easyinput				|增强输入框							|改用内置input组件														|
+|uni-fab							|悬浮按钮								|改用新版[uni-fab-button](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/uni-fab-button.html)									|
 |uni-fav							|收藏按钮								|无																									|
-|uni-file-picker			|文件选择上传						|无																									|
-|uni-forms						|表单										|改用[uni-forms](https://ext.dcloud.net.cn/plugin?name=uni-forms-x)|
+|uni-file-picker			|文件选择上传						|参考[uni-drag-cell](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/uni-drag-cell.html)的九宫格图片选择示例|
+|uni-forms						|表单										|改用新版[uni-forms](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/uni-forms.html) |
 |uni-goods-nav				|商品导航								|无																									|
 |uni-grid							|宫格										|无																									|
 |uni-group						|分组										|无																									|
-|uni-icons						|图标										|改用[uni-icons](https://ext.dcloud.net.cn/plugin?name=uni-icons-x)										|
-|uni-indexed-list			|索引列表								|改用[uni-index-bar](https://ext.dcloud.net.cn/plugin?name=uni-index-bar)																	|
-|uni-link							|超链接									|改用[uni-link](https://ext.dcloud.net.cn/plugin?name=uni-link-x)																		|
-|uni-list							|列表										|使用内置组件list																		|
+|uni-icons						|图标										|改用新版[uni-icons](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/uni-icons.html)										|
+|uni-indexed-list			|索引列表								|改用新版[uni-index-bar](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/uni-index-bar.html)																	|
+|uni-link							|超链接									|改用新版[uni-link](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/uni-link.html)																		|
+|uni-list							|列表										|使用内置组件list-view																|
 |uni-load-more				|加载更多								|使用内置组件loading																	|
-|uni-nav-bar					|自定义导航栏						|改用[uni-nav-bar](https://ext.dcloud.net.cn/plugin?name=uni-nav-bar-x)																		|
-|uni-notice-bar				|通告栏									|无																									|
-|uni-number-box				|数字输入框							|改用[uni-number-box](https://ext.dcloud.net.cn/plugin?name=uni-number-box-x)																|
+|uni-nav-bar					|自定义导航栏						|改用新版[uni-nav-bar](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/uni-nav-bar.html)																		|
+|uni-notice-bar				|通告栏									|改用新版[uni-data-vertical-marquee](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/uni-data-vertical-marquee.html) ，示例页面有公告示例 |																									|
+|uni-number-box				|数字输入框							|改用新版[uni-number-box](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/uni-number-box.html)																|
 |uni-pagination				|分页器									|无																									|
 |uni-popup						|弹出层									|改用内置组件page-container													|
-|uni-rate							|评分										|改用[uni-rate](https://ext.dcloud.net.cn/plugin?name=uni-rate-x)																				|
-|uni-row							|布局-行									|无																									|
+|uni-rate							|评分										|改用新版[uni-rate](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/uni-rate.html)																				|
+|uni-row							|布局-行									|使用 flex-direction: row																|
 |uni-search-bar				|搜索栏									|无																									|
-|uni-segmented-control|分段器									|无																									|
+|uni-segmented-control|分段器									|改用[uni-data-checkbox](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/uni-data-checkbox.html)的type='button'|
 |uni-steps						|步骤条									|无																									|
-|uni-swipe-action			|滑动操作								|参考hello uni-app x模板中可左滑删除长列表示例				|
+|uni-swipe-action			|滑动操作								|参考hello uni-app x模板中[可左滑删除长列表示例](https://gitcode.com/dcloud/hello-uni-app-x/blob/alpha/pages/template/list-delete-swipe-batch/list-delete-swipe-batch.uvue)				|
 |uni-swiper-dot				|轮播图指示点						|改用内置组件swiper，通过externalClass控制指示点样式	|
-|uni-table						|表格										|推荐使用rich-text或web-view中的table。																									|
-|uni-tag							|标签										|无																									|
+|uni-table						|表格										|改用rich-text中的table。或web-view中的table。																				|
+|uni-tag							|标签										|改用[uni-data-checkbox](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/uni-data-checkbox.html)的type='tag'。如需拖动则另行参考[drag-cell组件](https://gitcode.com/dcloud/hello-uni-app-x/blob/alpha/pages/uni-ui/drag-cell/drag-cell.uvue)				|
 |uni-title						|章节标题								|无																									|
 |uni-transition				|过渡动画								|无																									|
 
 标记为`无`的，大多比较简单，让AI直接写相关UI比下载学习一个组件更合适。
 
-uni-ui x 也新增一些 uni-ui 没有的复杂组件，比如：uni-drag-cell、uni-refresh-box、
+如果通过AI将之前的老代码迁移到新的组件体系，建议把[uni-ui x](https://gitcode.com/dcloud/uni-ui-x/tree/alpha)的仓库拉到本地，读取本地的组件源码、README、示例页面。这样比联网查阅不同组件文档效果要更好。
 
 ## 交流群
 
