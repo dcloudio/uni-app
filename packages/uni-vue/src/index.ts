@@ -28,7 +28,11 @@ export function initApp(app: App) {
   // - 部分平台（目前主要是小程序）开发阶段 uni-console 会调用 uni.onError 注册监听
   appConfig.errorHandler = invokeCreateErrorHandler(app, createErrorHandler)
 
+  //#if !_X_VAPOR_ || _NODE_JS_
+  // Web Vapor 客户端不合并 Options API/mixin，页面生命周期由独立入口初始化。
+  // 服务端仍保留标准渲染流程所需的合并策略。
   initOptionMergeStrategies(appConfig.optionMergeStrategies)
+  //#endif
 
   const globalProperties = appConfig.globalProperties
   if (__PLATFORM__ === 'h5') {

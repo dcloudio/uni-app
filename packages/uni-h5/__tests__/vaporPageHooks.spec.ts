@@ -46,6 +46,7 @@ describe('Web Vapor 页面生命周期框架接入', () => {
       for (const vapor of [false, true]) {
         const setUniPageHooksInitializer = jest.fn()
         const initHooks = jest.fn()
+        const initOptionMergeStrategies = jest.fn()
         const { initApp } = await load(
           'packages/uni-vue/src/index.ts',
           vapor,
@@ -58,7 +59,7 @@ describe('Web Vapor 页面生命周期框架接入', () => {
             './componentOptions': { applyOptions },
             './componentOptions/hooks': { initHooks },
             './componentInstance': {},
-            './appConfig': { initOptionMergeStrategies: () => {} },
+            './appConfig': { initOptionMergeStrategies },
             './uni-id-mixin': {},
             './reactivity': {},
           },
@@ -73,6 +74,14 @@ describe('Web Vapor 页面生命周期框架接入', () => {
           config: { globalProperties: {}, optionMergeStrategies: {} },
         }
         initApp(app)
+        expect(initOptionMergeStrategies).toHaveBeenCalledTimes(
+          vapor && !ssr ? 0 : 1
+        )
+        if (!vapor || ssr) {
+          expect(initOptionMergeStrategies).toHaveBeenCalledWith(
+            app.config.optionMergeStrategies
+          )
+        }
         expect((app.config.globalProperties as any).$applyOptions).toBe(
           !vapor && optionsApi ? applyOptions : undefined
         )
