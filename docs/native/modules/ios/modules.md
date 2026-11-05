@@ -42,8 +42,8 @@
 | uni-payment-alipay | uni-payment-alipay-index.swift <br> uni-payment-index.swift | AlipaySDK.xcframework |c++ <br> z <br> SystemConfiguration <br> CoreTelephony <br> QuartzCore <br> CoreText <br> CoreGraphics <br> CFNetwork <br> CoreMotion |
 | uni-payment-wxpay | uni-payment-wxpay-index.swift <br> uni-payment-index.swift | libWeChatSDK.a | CoreGraphics.framework <br> WebKit.framework <br> Security.framework |
 | uni-virtualPayment | uni-virtualPayment-index.swift <br> uni-virtualPayment-ProductService.swift <br> uni-virtualPayment-PurchaseService.swift <br> uni-virtualPayment-Types.swift <br> uni-virtualPayment-UniProduct.swift <br> uni-virtualPayment-UniPurchase.swift <br> uni-virtualPayment-UniStoreKit+Closure.swift <br> uni-virtualPayment-UniStoreKit.swift | | StoreKit |
-| uni-getLocation-system | ~~uni-getLocation-system-index.swift~~ <br> ~~uni-getLocation-index.swift~~ <br>(4.61+使用) <br> uni-location-index.swift <br> uni-location-system-index <br> | | |
-| uni-getLocation-tencent | ~~uni-getLocation-tencent-index.swift~~ <br> ~~uni-getLocation-index.swift~~ <br> (4.61+使用) <br> uni-location-tencent-index.swift <br> uni-location-index.swift | TencentLBS.framework | libz.1.2.5.tbd |
+| uni-location-system | ~~uni-location-system-index.swift~~ <br> ~~uni-location-index.swift~~ <br>(4.61+使用) <br> uni-location-index.swift <br> uni-location-system-index <br> | | |
+| uni-location-tencent | ~~uni-location-tencent-index.swift~~ <br> ~~uni-location-index.swift~~ <br> (4.61+使用) <br> uni-location-tencent-index.swift <br> uni-location-index.swift | TencentLBS.framework | libz.1.2.5.tbd |
 | ~~uni-video~~(5.08之前使用) | ~~uni-video-index.swift~~ | ~~DCUniVideo.xcframework~~、~~IJKMediaFrameworkWithSSL.xcframework~~、~~UniDCSVProgressHUD.xcframework~~ | |
 | uni-video(5.08+) | uni-video-index.swift <br> uni-video-VideoPlayer-Core-UniVideoPlayerActor.swift <br> uni-video-VideoPlayer-Managers-BrightnessHandler.swift <br> uni-video-VideoPlayer-Managers-CacheManager.swift <br> uni-video-VideoPlayer-Managers-DRMContentKeyDelegate.swift <br> uni-video-VideoPlayer-Managers-DRMManager.swift <br> uni-video-VideoPlayer-Managers-GestureManager.swift <br> uni-video-VideoPlayer-Managers-LocalM3U8Handler.swift <br> uni-video-VideoPlayer-Managers-PIPManager.swift <br> uni-video-VideoPlayer-Managers-UniVideoPlayerManager.swift <br> uni-video-VideoPlayer-Managers-VolumeHandler.swift <br> uni-video-VideoPlayer-Models-UniVideoPlayerConfiguration.swift <br> uni-video-VideoPlayer-Models-UniVideoPlayerEvent.swift <br> uni-video-VideoPlayer-Models-UniVideoPlayerState.swift <br> uni-video-VideoPlayer-Protocols-M3U8ResourceLoaderDelegate.swift <br> uni-video-VideoPlayer-Protocols-UniVideoPlayerDelegate.swift <br> uni-video-VideoPlayer-UniVideoPlayerInstance.swift <br> uni-video-VideoPlayer-UniVideoPlayerView.swift | KTVHTTPCache.xcframework | |
 | uni-push | uni-push-index.swift | GTCommonSDK.xcframework <br> GTSDK.xcframework <br> ZXSDK.framework | c++ <br> resolv <br> z <br> sqlite3 <br> MobileCoreServices <br> Security <br> SystemConfiguration <br> CoreTelephony <br> AVFoundation <br> UserNotifications <br> AdSupport |
@@ -307,24 +307,24 @@
 }
 ```  
 
-`uni-getLocation-systemy`模块需要添加如下配置
+`uni-location-system`模块需要添加如下配置
   ```
 {
 	"providers": [{
 		"name":"system",
 		"service":"location",
-		"class":"UTSSDKModulesDCloudUniGetLocationSystemUniLocationSystemProviderImpl"
+		"class":"UTSSDKModulesDCloudUniLocationSystemUniLocationSystemProviderImpl"
 	}]
 }
 ``` 
 
-`uni-getLocation-tencent`模块需要添加如下配置
+`uni-location-tencent`模块需要添加如下配置
   ```
 {
 	"providers": [{
 		"name":"tencent",
 		"service":"location",
-		"class":"UTSSDKModulesDCloudUniGetLocationTencentUniLocationTencentProviderImpl"
+		"class":"UTSSDKModulesDCloudUniLocationTencentUniLocationTencentProviderImpl"
 	}]
 }
 ``` 
@@ -575,7 +575,7 @@ xcodebuild -create-xcframework -framework 真机路径/DCloudUTSExtAPI.framework
 </dict>
 ```
 
-## uni-getLocation-system
+## uni-location-system
 ### 添加依赖库以及资源文件
 | 依赖库 |
 |---|
@@ -599,7 +599,7 @@ xcodebuild -create-xcframework -framework 真机路径/DCloudUTSExtAPI.framework
 ```
 ![](https://web-ext-storage.dcloud.net.cn/native/doc/iOS/location_permission.png)
 
-## uni-getLocation-tencent
+## uni-location-tencent
 ### 添加依赖库以及资源文件
 | 依赖库 |
 |---|
