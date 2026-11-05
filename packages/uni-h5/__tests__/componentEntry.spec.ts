@@ -22,6 +22,53 @@ async function compileEntry(file: string, vapor: boolean, node: boolean) {
 }
 
 describe('Web 框架组件入口', () => {
+  test.each([false, true])(
+    '仅 VDOM 注入 animation mixin，保留已有配置（Vapor=%s）',
+    async (vapor) => {
+      const code = await compileEntry(
+        '../uni-components/src/helpers/component.ts',
+        vapor,
+        true
+      )
+      const animation = { mounted: jest.fn() }
+      const load = jest.fn((id: string) => {
+        if (id === './animation') return { default: animation }
+        if (id === './component-vapor' || id === './component-vdom') {
+          return { defineComponent: (options: unknown) => options }
+        }
+        if (id === '@vue/shared') return {}
+        throw new Error(`意外依赖：${id}`)
+      })
+      const exports: any = {}
+      new Function(
+        'require',
+        'exports',
+        '__X__',
+        '__NODE_JS__',
+        ts.transpileModule(code, {
+          compilerOptions: { module: ts.ModuleKind.CommonJS },
+        }).outputText
+      )(load, exports, true, true)
+      const existingMixin = {}
+      for (const props of [undefined, {}, { animation: Object }]) {
+        const options = { props, mixins: [existingMixin] }
+        expect(exports.defineBuiltInComponent(options)).toBe(options)
+        expect(options.mixins).toEqual(
+          !vapor && !props?.animation
+            ? [existingMixin, animation]
+            : [existingMixin]
+        )
+      }
+      const options: any = {}
+      exports.defineBuiltInComponent(options)
+      expect(options.mixins).toEqual(vapor ? undefined : [animation])
+      const system: any = {}
+      exports.defineSystemComponent(system)
+      expect(system.mixins).toBeUndefined()
+      expect(load.mock.calls.some(([id]) => id === './animation')).toBe(!vapor)
+    }
+  )
+
   test('Vapor 窗口直接读取公开根元素，不再使用 VNode 查找', () => {
     const layout = fs.readFileSync(
       path.join(root, 'src/framework/components/layout/index-vapor.tsx'),

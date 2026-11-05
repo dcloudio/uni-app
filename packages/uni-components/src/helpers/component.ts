@@ -8,7 +8,9 @@ import * as vapor from './component-vapor'
 import * as vdom from './component-vdom'
 //#endif
 import { camelize, capitalize } from '@vue/shared'
+//#if !_X_VAPOR_
 import animation from './animation'
+//#endif
 
 // prettier-ignore
 const defineRuntimeComponent =
@@ -35,13 +37,14 @@ export const defineBuiltInComponent = ((options: any) => {
   // 标记为保留组件，这样框架其他地方可以据此来识别，比如 onLoad 等生命周期的注入会忽略系统保留组件
   options.__reserved = true
   // TODO 可能会补充特殊标记
+  //#if !_X_VAPOR_
+  // Vapor 不执行 Options API mixin，不注入这份仅供 VDOM 使用的 animation 实现。
   const { props, mixins } = options
   // 补充内置组件animation
   if (!props || !props.animation) {
     ;(mixins || (options.mixins = [])).push(animation)
   }
   // Vapor 的 rootElement 仅供 ref 返回根元素，不注册 Custom Element。
-  //#if !_X_VAPOR_
   if (__X__ && !__NODE_JS__) {
     // 目前仅对x开放，注册自定义元素，如uni-slider
     // SSR的cjs环境下不支持customElements
