@@ -17708,7 +17708,7 @@ function setupApp(comp) {
   });
 }
 function onResize() {
-  const { windowWidth, windowHeight, screenWidth, screenHeight } = uni.getSystemInfoSync();
+  const { windowWidth, windowHeight, screenWidth, screenHeight } = uni.getWindowInfo();
   const landscape = Math.abs(Number(window.orientation)) === 90;
   const deviceOrientation = landscape ? "landscape" : "portrait";
   UniServiceJSBridge.emit(ON_RESIZE, {

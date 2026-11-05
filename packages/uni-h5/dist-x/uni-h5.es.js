@@ -10326,7 +10326,7 @@ function setupApp(comp) {
   });
 }
 function onResize$1() {
-  const { windowWidth, windowHeight, screenWidth, screenHeight } = uni.getSystemInfoSync();
+  const { windowWidth, windowHeight, screenWidth, screenHeight } = uni.getWindowInfo();
   const landscape = Math.abs(Number(window.orientation)) === 90;
   const deviceOrientation = landscape ? "landscape" : "portrait";
   UniServiceJSBridge.emit(ON_RESIZE, {
@@ -29952,17 +29952,31 @@ const showActionSheet$1 = (options) => {
   const optionsEventName = `${baseEventName}_options`;
   const successEventName = `${baseEventName}_success`;
   const failEventName = `${baseEventName}_fail`;
+  let completed = false;
+  const finish = () => {
+    if (completed)
+      return false;
+    completed = true;
+    uni.$off(readyEventName);
+    uni.$off(successEventName);
+    uni.$off(failEventName);
+    return true;
+  };
   uni.$on(readyEventName, () => {
     uni.$emit(optionsEventName, JSON.parse(JSON.stringify(options)));
   });
   uni.$on(successEventName, (index2) => {
     var _a, _b;
+    if (!finish())
+      return;
     const res = new ShowActionSheetSuccessImpl(index2);
     (_a = options.success) == null ? void 0 : _a.call(options, res);
     (_b = options.complete) == null ? void 0 : _b.call(options, res);
   });
   uni.$on(failEventName, () => {
     var _a, _b;
+    if (!finish())
+      return;
     const res = new ShowActionSheetFailImpl();
     (_a = options.fail) == null ? void 0 : _a.call(options, res);
     (_b = options.complete) == null ? void 0 : _b.call(options, res);
@@ -29972,12 +29986,11 @@ const showActionSheet$1 = (options) => {
     animationType: "none",
     fail(err) {
       var _a, _b;
+      if (!finish())
+        return;
       const res = new ShowActionSheetFailImpl(`showActionSheet failed, ${err.errMsg}`);
       (_a = options.fail) == null ? void 0 : _a.call(options, res);
       (_b = options.complete) == null ? void 0 : _b.call(options, res);
-      uni.$off(readyEventName);
-      uni.$off(successEventName);
-      uni.$off(failEventName);
     }
   });
 };
@@ -31653,52 +31666,53 @@ class HideModalFailImpl extends UniError {
   }
 }
 const showModal$1 = (options) => {
-  var _a, _b;
   const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`;
   const baseEventName = `uni_modal_${uuid}`;
   const readyEventName = `${baseEventName}_ready`;
   const optionsEventName = `${baseEventName}_options`;
   const successEventName = `${baseEventName}_success`;
   const failEventName = `${baseEventName}_fail`;
+  let failed = false;
+  const fail = (res) => {
+    var _a, _b;
+    if (failed)
+      return;
+    failed = true;
+    uni.$off(readyEventName);
+    uni.$off(successEventName);
+    uni.$off(failEventName);
+    (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, res);
+    (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, res);
+  };
   uni.$on(readyEventName, () => {
     uni.$emit(optionsEventName, options != null ? JSON.parse(JSON.stringify(options)) : {});
   });
   uni.$on(successEventName, (inputParamStr) => {
-    var _a2, _b2;
+    var _a, _b;
     const inputParam = JSON.parse(inputParamStr);
-    const res2 = new ShowModalSuccessImpl(
+    const res = new ShowModalSuccessImpl(
       inputParam["cancel"],
       inputParam["confirm"],
       inputParam["content"]
     );
-    (_a2 = options == null ? void 0 : options.success) == null ? void 0 : _a2.call(options, res2);
-    (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res2);
+    (_a = options == null ? void 0 : options.success) == null ? void 0 : _a.call(options, res);
+    (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, res);
   });
   uni.$on(failEventName, () => {
-    var _a2, _b2;
-    const res2 = new ShowModalFailImpl();
-    (_a2 = options == null ? void 0 : options.fail) == null ? void 0 : _a2.call(options, res2);
-    (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res2);
+    fail(new ShowModalFailImpl());
   });
   const openRet = uni.openDialogPage({
     url: `uni:uniModal?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
     animationType: "none",
     fail(err) {
-      var _a2, _b2;
-      const res2 = new ShowModalFailImpl(`showModal failed, ${err.errMsg}`);
-      (_a2 = options == null ? void 0 : options.fail) == null ? void 0 : _a2.call(options, res2);
-      (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res2);
-      uni.$off(readyEventName);
-      uni.$off(successEventName);
-      uni.$off(failEventName);
+      const res = new ShowModalFailImpl(`showModal failed, ${err.errMsg}`);
+      fail(res);
     }
   });
   if (openRet != null) {
     return openRet;
   }
-  const res = new ShowModalFailImpl();
-  (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, res);
-  (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, res);
+  fail(new ShowModalFailImpl());
   return null;
 };
 const SYSTEM_DIALOG_MODAL_PAGE_PATH = "uni:uniModal";
@@ -31877,47 +31891,48 @@ class HideLoadingFailImpl extends UniError {
   }
 }
 const showLoading$1 = (options) => {
-  var _a, _b;
   const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`;
   const baseEventName = `uni_loading_${uuid}`;
   const readyEventName = `${baseEventName}_ready`;
   const optionsEventName = `${baseEventName}_options`;
   const successEventName = `${baseEventName}_success`;
   const failEventName = `${baseEventName}_fail`;
+  let failed = false;
+  const fail = (res) => {
+    var _a, _b;
+    if (failed)
+      return;
+    failed = true;
+    uni.$off(readyEventName);
+    uni.$off(successEventName);
+    uni.$off(failEventName);
+    (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, res);
+    (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, res);
+  };
   uni.$on(readyEventName, () => {
     uni.$emit(optionsEventName, options != null ? JSON.parse(JSON.stringify(options)) : {});
   });
   uni.$on(successEventName, (_) => {
-    var _a2, _b2;
-    const res2 = new ShowLoadingSuccessImpl();
-    (_a2 = options == null ? void 0 : options.success) == null ? void 0 : _a2.call(options, res2);
-    (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res2);
+    var _a, _b;
+    const res = new ShowLoadingSuccessImpl();
+    (_a = options == null ? void 0 : options.success) == null ? void 0 : _a.call(options, res);
+    (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, res);
   });
   uni.$on(failEventName, () => {
-    var _a2, _b2;
-    const res2 = new ShowLoadingFailImpl();
-    (_a2 = options == null ? void 0 : options.fail) == null ? void 0 : _a2.call(options, res2);
-    (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res2);
+    fail(new ShowLoadingFailImpl());
   });
   const openRet = uni.openDialogPage({
     url: `uni:showLoading?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
     animationType: "none",
     fail(err) {
-      var _a2, _b2;
-      const res2 = new ShowLoadingFailImpl(`showLoading failed, ${err.errMsg}`);
-      (_a2 = options == null ? void 0 : options.fail) == null ? void 0 : _a2.call(options, res2);
-      (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res2);
-      uni.$off(readyEventName);
-      uni.$off(successEventName);
-      uni.$off(failEventName);
+      const res = new ShowLoadingFailImpl(`showLoading failed, ${err.errMsg}`);
+      fail(res);
     }
   });
   if (openRet != null) {
     return openRet;
   }
-  const res = new ShowLoadingFailImpl();
-  (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, res);
-  (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, res);
+  fail(new ShowLoadingFailImpl());
   return null;
 };
 const SYSTEM_DIALOG_LOADING_PAGE_PATH = "uni:showLoading";
@@ -33298,7 +33313,10 @@ function mergeComponentStyles(page, components) {
 const registerPreviewImageOnce = /* @__PURE__ */ once(() => {
   mergeComponentStyles(
     _sfc_main,
-    [UniPreviewImageNonVapor, UniPreviewImageItem]
+    [
+      UniPreviewImageNonVapor,
+      UniPreviewImageItem
+    ]
   );
   registerSystemRoute("uni:previewImage", _sfc_main);
 });
