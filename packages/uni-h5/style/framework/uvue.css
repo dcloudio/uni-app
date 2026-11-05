@@ -12,8 +12,6 @@ uni-app uni-page-body {
   height: 100%;
   overflow: visible;
   position: relative;
-  min-height: min-content;
-  box-sizing: border-box;
 }
 
 uni-app uni-page-body,
@@ -26,6 +24,22 @@ uni-app uni-right-window {
 uni-app uni-left-window .uni-left-window,
 uni-app uni-right-window .uni-right-window {
   height: 100%;
+}
+
+uni-app.uni-app--showtabbar uni-page-body::after {
+  content: '';
+  display: block;
+  width: 100%;
+  height: var(--tab-bar-height);
+  height: calc(var(--tab-bar-height) + constant(safe-area-inset-bottom));
+  height: calc(var(--tab-bar-height) + env(safe-area-inset-bottom));
+  min-height: var(--tab-bar-height);
+  min-height: calc(var(--tab-bar-height) + constant(safe-area-inset-bottom));
+  min-height: calc(var(--tab-bar-height) + env(safe-area-inset-bottom));
+}
+
+uni-app.uni-app--showtabbar uni-page-wrapper::after {
+  display: none;
 }
 
 uni-app uni-text,
