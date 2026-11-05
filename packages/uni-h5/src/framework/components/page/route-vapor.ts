@@ -1,6 +1,6 @@
 import type { Component } from 'vue'
 
-import PageComponent from './index-vapor.vue'
+import PageComponent from './index-vapor'
 
 export type VaporPageRouteComponent = Component & {
   __uniPageComponent: Component
