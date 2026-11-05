@@ -346,11 +346,11 @@ class UniInputElement extends UniViewElement {
     this.querySelector("input").value = value;
   }
 }
-const descriptors$1 = {
+const descriptors$1 = /* @__PURE__ */ (() => ({
   uniTagName: { value: "INPUT" },
   focus: Object.getOwnPropertyDescriptor(UniInputElement.prototype, "focus"),
   value: Object.getOwnPropertyDescriptor(UniInputElement.prototype, "value")
-};
+}))();
 function initInputElement(root) {
   Object.defineProperties(root, descriptors$1);
 }
@@ -2066,13 +2066,13 @@ class UniTextareaElement extends UniViewElement {
     (_a = this.querySelector("textarea")) == null ? void 0 : _a.focus(options);
   }
 }
-const descriptors = {
+const descriptors = /* @__PURE__ */ (() => ({
   uniTagName: { value: "TEXTAREA" },
   focus: Object.getOwnPropertyDescriptor(
     UniTextareaElement.prototype,
     "focus"
   )
-};
+}))();
 function setValue(value) {
   this.querySelector("textarea").value = value;
 }
