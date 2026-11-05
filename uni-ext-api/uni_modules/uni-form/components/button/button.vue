@@ -1,48 +1,41 @@
 <template>
-  <!-- App 单 class 按属性顺序覆盖，plain 放在基础文字类之后。 -->
   <view
     v-if="loading && !disabled"
     class="uni-button"
-    :class="classes(
-      [buttonType == 'default', 'uni-button-type-default_view'],
-      [buttonType == 'primary', 'uni-button-type-primary_view'],
-      [buttonType == 'warn', 'uni-button-type-warn_view'],
-      [type != null, 'uni-button-has-type', 'uni-button-no-type'],
-      [disabled, 'uni-button-disabled'],
-      [size == 'mini', 'uni-button-size-mini'],
-      [enableTransition, 'transition-enabled'],
-      [buttonType == 'default', 'uni-button-type-default_text'],
-      [buttonType == 'primary', 'uni-button-type-primary_text'],
-      [buttonType == 'warn', 'uni-button-type-warn_text'],
-      [plain && loading, 'uni-button-text-plain'],
-      [plain, 'uni-button-view-plain'],
-      [size == 'mini', 'uni-button-text-size-mini'],
-      [size == 'default', 'uni-button-text-size-default']
-    )"
-    style="display: flex;justify-content: center;flex-direction: row;align-items: center"
+    :class="{
+      'uni-button-type-default_view': buttonType == 'default',
+      'uni-button-type-primary_view': buttonType == 'primary',
+      'uni-button-type-warn_view': buttonType == 'warn',
+      'uni-button-view-plain': plain,
+      'uni-button-has-type': type != null,
+      'uni-button-no-type': type == null,
+      'uni-button-disabled': disabled,
+      'uni-button-size-mini': size == 'mini',
+      'transition-enabled': enableTransition,
+      'uni-button-type-default_text': buttonType == 'default',
+      'uni-button-type-primary_text': buttonType == 'primary',
+      'uni-button-type-warn_text': buttonType == 'warn',
+      'uni-button-text-plain': plain && loading,
+      'uni-button-text-size-mini': size == 'mini',
+      'uni-button-text-size-default': size == 'default'
+    }"
+    style="justify-content: center;flex-direction: row;align-items: center"
     :hover-class="disabled ? 'none' : hoverClasses"
     :hover-start-time="hoverStartTime"
     :hover-stay-time="hoverStayTime"
     :hover-stop-propagation="hoverStopPropagation"
-    <!-- #ifdef WEB -->
-    ref="loadingRootRef"
-    :tabindex="disabled ? -1 : 0"
-    role="button"
-    :aria-disabled="disabled"
-    @keydown="handleKeydown"
-    @keyup="handleKeyup"
-    @blur="handleBlur"
-    <!-- #endif -->
     @click="handleTap"
   >
     <loading
-      class="uni-button-loading-icon"
-      :class="classes(
-        [buttonType == 'default', 'uni-loading-default'],
-        [plain && buttonType == 'primary', 'uni-loading-plain-primary'],
-        [plain && buttonType == 'warn', 'uni-loading-plain-warn'],
-        loadingClass || 'uni-button-loading-color-inherit'
-      )"
+      class="uni-loading"
+      :class="[
+        {
+          'uni-loading-default': buttonType == 'default',
+          'uni-loading-plain-primary': plain && buttonType == 'primary',
+          'uni-loading-plain-warn': plain && buttonType == 'warn'
+        },
+        loadingClass || ''
+      ]"
       <!-- #ifdef APP -->
       :style="loadingIconStyle"
       <!-- #endif -->
@@ -58,47 +51,37 @@
     v-else
     ref="textRef"
     class="uni-button uni-button-text"
-    :class="classes(
-      [buttonType == 'default', 'uni-button-type-default_view'],
-      [buttonType == 'primary', 'uni-button-type-primary_view'],
-      [buttonType == 'warn', 'uni-button-type-warn_view'],
-      [type != null, 'uni-button-has-type', 'uni-button-no-type'],
-      [disabled, 'uni-button-disabled'],
-      [size == 'mini', 'uni-button-size-mini'],
-      [enableTransition, 'transition-enabled'],
-      [buttonType == 'default', 'uni-button-type-default_text'],
-      [buttonType == 'primary', 'uni-button-type-primary_text'],
-      [buttonType == 'warn', 'uni-button-type-warn_text'],
-      [plain && loading, 'uni-button-text-plain'],
-      [plain, 'uni-button-view-plain'],
-      [size == 'mini', 'uni-button-text-size-mini'],
-      [size == 'default', 'uni-button-text-size-default']
-    )"
+    :class="{
+      'uni-button-type-default_view': buttonType == 'default',
+      'uni-button-type-primary_view': buttonType == 'primary',
+      'uni-button-type-warn_view': buttonType == 'warn',
+      'uni-button-view-plain': plain,
+      'uni-button-has-type': type != null,
+      'uni-button-no-type': type == null,
+      'uni-button-disabled': disabled,
+      'uni-button-size-mini': size == 'mini',
+      'transition-enabled': enableTransition,
+      'uni-button-type-default_text': buttonType == 'default',
+      'uni-button-type-primary_text': buttonType == 'primary',
+      'uni-button-type-warn_text': buttonType == 'warn',
+      'uni-button-text-plain': plain && loading,
+      'uni-button-text-size-mini': size == 'mini',
+      'uni-button-text-size-default': size == 'default'
+    }"
     :hover-class="disabled ? 'none' : hoverClasses"
     :hover-start-time="hoverStartTime"
     :hover-stay-time="hoverStayTime"
     :hover-stop-propagation="hoverStopPropagation"
-    <!-- #ifdef WEB -->
-    :tabindex="disabled ? -1 : 0"
-    role="button"
-    :aria-disabled="disabled"
-    @keydown="handleKeydown"
-    @keyup="handleKeyup"
-    @blur="handleBlur"
-    <!-- #endif -->
     @click="handleTap"
   >
     <slot></slot>
   </text>
 </template>
 
-<script lang="ts" setup>
-  // #ifdef WEB
-  import { createSpaceKeyHandlers } from '../common.ts'
-  // #endif
-  import { FORM_KEY, classes } from '../common.ts'
-  import { UniButtonElement } from './global.ts'
-  import { FormContext } from '../types.ts'
+<script lang="uts" setup>
+  import { FORM_KEY } from '../common.uts'
+  import { UniButtonElement } from './global.uts'
+  import { FormContext } from '../types.uts'
 
   const DEFAULT_BUTTON_HOVER_CLASS_NAME = 'button-hover'
 
@@ -405,43 +388,6 @@
     iosLoadingSnow: false
   })
 
-  // #ifdef WEB
-  const { handleKeydown: handleSpaceKeydown, handleKeyup, handleBlur } = createSpaceKeyHandlers(() => props.disabled)
-
-  function handleKeydown(event: KeyboardEvent) {
-    if (event.key !== 'Enter') {
-      handleSpaceKeydown(event)
-      return
-    }
-    if (event.target !== event.currentTarget || event.defaultPrevented ||
-        event.altKey || event.ctrlKey || event.metaKey) {
-      return
-    }
-    event.preventDefault()
-    if (!props.disabled && !event.repeat) {
-      event.currentTarget?.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
-    }
-  }
-
-  const loadingRootRef = ref<HTMLElement | null>(null)
-  watch(() => props.loading && !props.disabled, (_loading, wasLoading) => {
-    const element = wasLoading ? loadingRootRef.value : textRef.value
-    if (element == null || document.activeElement !== element) {
-      return
-    }
-    // Switching loading state replaces the root; retain focus without stealing it from another control.
-    handleBlur()
-    nextTick(() => {
-      if (!props.disabled && document.activeElement === document.body) {
-        const element = props.loading && !props.disabled ? loadingRootRef.value : textRef.value
-        if (element instanceof HTMLElement) {
-          element.focus()
-        }
-      }
-    })
-  })
-  // #endif
-
   defineOptions({
     name: 'button',
     // @ts-ignore
@@ -457,48 +403,36 @@
     return props.type == null ? 'default' : props.type
   })
 
-  // #ifdef APP
   const textStyle = useComputedStyle({
 		properties: ['font-size', 'color', 'line-height', 'font-weight', 'text-align'],
 		filterProperties: false
 	})
 
   // App 不支持颜色继承，传入解析后的颜色；color 同时用于 iOS 雪花图标。
-  const loadingIconStyle = computed(() => {
-    const style = {}
+  const loadingIconStyle = computed(() : Map<string, any> => {
+    const style = new Map<string, any>()
     if (props.loadingClass == null) {
       const color = textStyle.get('color')
       if (color != null) {
-        style['color'] = color
-        style['border-color'] = color
+        style.set('color', color)
+        style.set('border-color', color)
       }
     }
     return style
   })
 
-  const loadingTextStyle = computed(() => {
+  const loadingTextStyle = computed(() : Map<string, any> => {
     if (props.loadingTextClass == null) {
       return textStyle
     }
-    const style = {}
+    const style = new Map<string, any>()
     textStyle.forEach((value, key) => {
       if (key != 'color') {
-        style[key] = value
+        style.set(key, value)
       }
     })
     return style
   })
-  // #endif
-  // #ifndef APP
-  // Web 没有 useComputedStyle，使用 CSS inherit 传递根元素的文字样式。
-  const loadingTextStyle = computed(() => {
-    let style = 'font-size:inherit;line-height:inherit;font-weight:inherit;text-align:inherit;'
-    if (props.loadingTextClass == null) {
-      style += 'color:inherit;'
-    }
-    return style
-  })
-  // #endif
 
   const formCtx = inject<FormContext | null>(FORM_KEY, null)
 
@@ -570,7 +504,6 @@
     }
   }
 
-  // #ifndef WEB
   function checkOpenType() {
     switch (props.openType) {
       case 'agreePrivacyAuthorization':
@@ -578,7 +511,6 @@
         break;
     }
   }
-  // #endif
 
   const handleTap = (event : UniPointerEvent) => {
     if (props.disabled) {
@@ -587,9 +519,7 @@
 
     emit('click', event)
     checkFormAndSubmitOrReset()
-    // #ifndef WEB
     checkOpenType()
-    // #endif
   }
 
   defineExpose({
@@ -622,24 +552,7 @@
     padding: 0 14px;
   }
 
-  /* #ifdef WEB && VUE3_VAPOR */
-  /*
-   * Web 的 loading 文本会继承按钮根节点的对齐方式，所以根节点需要默认居中。
-   * App 未收到外部对齐样式时，会保留内部文本已有的居中样式，无需这条补充规则。
-   *
-   * uni-app 保留原来只对应用内部生效的范围，div 只匹配 loading 状态的根节点。
-   * class 放在 :where() 内，让开发者的 .custom { text-align: right } 能覆盖这里的默认居中。
-   * 若直接写成 .uni-button，按钮样式后加载时就可能把 .custom 的右对齐覆盖掉。
-   */
-  uni-app div:where(.uni-button) {
-    text-align: center;
-    /* 以下两项保持迁移前的显示行为，与文字居中无关。 */
-    unicode-bidi: normal;
-    align-content: normal;
-  }
-  /* #endif */
-
-  .uni-button-loading-icon {
+  .uni-loading {
     width: 14px;
     height: 14px;
     border-color: #ffffff;
@@ -657,20 +570,9 @@
     border-color: #e64340;
   }
 
-  /* #ifdef WEB */
-  .uni-button-loading-icon.uni-button-loading-color-inherit {
-    color: inherit;
-    border-color: currentColor;
-  }
-  /* #endif */
-
   .uni-button-loading-text {
     margin-left: 8px;
     text-align: center;
-    /* #ifdef WEB */
-    /* 允许文案收缩到图标旁的剩余宽度，使长文本自动换行。 */
-    flex-shrink: 1;
-    /* #endif */
   }
 
   .uni-button-text-size-mini {
@@ -699,12 +601,10 @@
   }
 
   .uni-button-disabled.uni-button-type-primary_view {
-    color: rgba(255, 255, 255, .6);
     background-color: rgba(0, 122, 255, .6);
   }
 
   .uni-button-disabled.uni-button-type-warn_view {
-    color: rgba(255, 255, 255, .6);
     background-color: #ec8b89;
   }
 
@@ -749,7 +649,6 @@
   }
 
   .uni-button-view-plain {
-    color: #353535;
     border-width: 1px;
     border-color: #353535;
     background-color: transparent;
@@ -804,9 +703,10 @@
   .button-hover {
     color: rgba(0, 0, 0, 0.6);
     background-color: #dedede;
+    opacity: 0.8;
   }
   .transition-enabled.button-hover {
-    transition: background-color 0.1s, color 0.1s;
+    transition: background-color 0.1s, color 0.1s, opacity 0.1s;
   }
 
   .uni-button-view_primary_hover {
@@ -869,28 +769,6 @@
     transition: background-color 0.1s, color 0.1s, border-color 0.1s;
   }
 
-  /* #ifdef WEB */
-  /* Web 的组合选择器需要覆盖 plain 普通态的颜色和边框。 */
-  .uni-button.uni-button-view-plain.uni-button-type-primary_view.uni-button-view_plain_primary_hover {
-    color: rgba(0, 122, 255, 0.6);
-    border-color: rgba(0, 122, 255, 0.6);
-    background-color: transparent;
-  }
-
-  .uni-button.uni-button-view-plain.uni-button-type-default_view.uni-button-view_plain_default_hover {
-    color: rgba(53, 53, 53, 0.6);
-    border-color: rgba(53, 53, 53, 0.6);
-    background-color: transparent;
-  }
-
-  .uni-button.uni-button-view-plain.uni-button-type-warn_view.uni-button-view_plain_warn_hover {
-    color: rgba(230, 67, 64, 0.6);
-    border-color: rgba(230, 67, 64, 0.6);
-    background-color: transparent;
-  }
-
-  /* #endif */
-
   .uni-button.uni-button-disabled.uni-button-view-plain.uni-button-has-type {
     background-color: transparent;
     color: rgba(0, 0, 0, .2);
@@ -920,46 +798,31 @@
       color: rgba(255, 255, 255, 0.2);
     }
 
-    /* 保持普通 plain 的优先级，使外部自定义颜色和背景仍可覆盖。 */
-    .uni-button-view-plain {
+    .uni-button.uni-button-view-plain.uni-button-type-default_text {
       color: #353535;
-      background-color: transparent;
     }
 
     .uni-button.uni-button-view-plain.uni-button-has-type.uni-button-type-default_view {
-      border-color: #d6d6d6;
+      border-color: #353535;
       background-color: transparent;
     }
 
     .uni-button.uni-button-view-plain.uni-button-has-type.uni-button-type-default_text {
-      color: #d6d6d6;
+      color: #353535;
     }
 
-    .uni-button-view-plain.uni-button-has-type.uni-button-view_plain_default_hover {
+    .button-hover.uni-button-view-plain,
+    .uni-button-view_plain_default_hover {
       color: rgba(150, 150, 150, 0.6);
       border-color: rgba(150, 150, 150, 0.6);
       background-color: rgba(50, 50, 50, 0.2);
     }
 
-    /* #ifdef WEB */
-    /* 仅显式 type="default" 的 plain 按钮使用暗色按下态。 */
-    .uni-button.uni-button-view-plain.uni-button-has-type.uni-button-type-default_view.uni-button-view_plain_default_hover {
-      color: rgba(150, 150, 150, 0.6);
-      border-color: rgba(150, 150, 150, 0.6);
-      background-color: rgba(50, 50, 50, 0.2);
-    }
-    /* #endif */
-
-    /* 与内置 button 保持一致：暗色 plain 仅显式 default/primary 使用白色禁用边框和文字。 */
-    .uni-button.uni-button-disabled.uni-button-view-plain.uni-button-has-type.uni-button-type-default_view,
-    .uni-button.uni-button-disabled.uni-button-view-plain.uni-button-has-type.uni-button-type-primary_view {
+    .uni-button.uni-button-disabled.uni-button-view-plain,
+    .uni-button.uni-button-disabled.uni-button-view-plain.uni-button-has-type {
       color: rgba(255, 255, 255, 0.2);
       border-color: rgba(255, 255, 255, 0.2);
       background-color: transparent;
-    }
-
-    .uni-button.uni-button-disabled.uni-button-view-plain.uni-button-has-type.uni-button-type-default_view {
-      background-color: rgba(255, 255, 255, .08);
     }
 
     .uni-button.uni-button-disabled.uni-button-view-plain.uni-button-no-type {

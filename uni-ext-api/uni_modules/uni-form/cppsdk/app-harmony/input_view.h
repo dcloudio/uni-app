@@ -38,7 +38,6 @@ public:
   void updateTextAlign(const std::string &value);
   void updateDirection(const std::string &value);
   void updateCursorColor(const std::string &value);
-  void updateSelectionColor(const std::string &value);
   void updateHoldKeyboard(bool hold_keyboard);
   void handlePageTouchEndFocus(int touch_end_version);
   void updateFocus(bool focus);
@@ -102,7 +101,6 @@ private:
   std::string text_align_;
   std::string direction_;
   std::string cursor_color_;
-  std::string selection_color_;
 };
 
 } // namespace uniappx::form

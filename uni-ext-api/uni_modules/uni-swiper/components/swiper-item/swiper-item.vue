@@ -1,16 +1,20 @@
 <template>
-	<view class="uni-swiper-item" style="position: absolute; visibility: hidden;" ref="swiperItem">
-		<view v-if="autoHeight" class="uni-swiper-item-content">
+	<view class="uni-swiper-item w-100 h-100 overflow-hidden" style="position: absolute; visibility: hidden;" ref="swiperItem">
+		<view v-if="autoHeight" class="uni-swiper-item-content w-100 flex-column" :class="
+					autoHeight
+						? 'h-auto flex-grow-0 flex-shrink-0'
+						: 'flex-1 h-100'
+				">
 			<slot></slot>
 		</view>
 		<slot v-else></slot>
 	</view>
 </template>
 
-<script setup lang="ts">
+<script setup lang="uts">
 import {
 	UniSwiperItemElement,
-} from "./index.ts";
+} from "./index.uts";
 
 defineOptions({
 	name: 'swiper-item',
@@ -61,17 +65,17 @@ onUnmounted(() => {
 </script>
 
 <style>
-.uni-swiper-item {
-	width: 100%;
-	height: 100%;
-	overflow: hidden;
+@import url('../styles/common.css');
+
+.flex-grow-0 {
+	flex-grow: 0;
 }
 
-.uni-swiper-item-content {
-	width: 100%;
-	height: auto;
-	flex-direction: column;
-	flex-grow: 0;
+.flex-shrink-0 {
 	flex-shrink: 0;
+}
+
+.flex-1 {
+	flex: 1;
 }
 </style>

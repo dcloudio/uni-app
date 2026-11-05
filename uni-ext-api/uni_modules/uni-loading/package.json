@@ -39,14 +39,11 @@
 		"components": {
 		  "app-android": true,
 		  "app-ios": true,
-		  "web": "dom2",
+		  "web": true,
       "mp-weixin": true
 		},
 		"dependencies": [
-			"uni-framework",
-			"uni-getDeviceInfo",
-			"uni-getAppBaseInfo",
-			"uni-theme"
+			"uni-framework"
 		],
 		"encrypt": [],
 		"platforms": {

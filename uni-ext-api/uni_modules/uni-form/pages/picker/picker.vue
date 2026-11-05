@@ -1,18 +1,7 @@
 <template>
-	<!-- #ifdef WEB -->
-	<view ref="containerRef" class="uni-picker__container" :class="['uni-picker-theme--'+theme, {'uni-picker__container--desktop': isDesktop}]">
-		<view class="uni-picker__mask" :class="{'picker__ani-show': show, 'picker__mask--dark': theme == 'dark'}" @click="close"></view>
-		<view class="uni-picker__inner-box" :class="[show?'picker__ani-box-show':'','inner-box--'+theme, {'uni-picker__inner-box--desktop': isDesktop}]" :style="popupStyle.content">
-			<scroll-view v-if="isSelect" ref="selectRef" class="uni-picker__select" direction="vertical" :show-scrollbar="true">
-				<text v-for="(item, selectorIdx) in range" :key="selectorIdx" class="uni-picker__select-item" :class="{'uni-picker__select-item--selected': eventValue[0] == selectorIdx}" @click="selectItem(selectorIdx)">{{rangeKey ? item[rangeKey] : item}}</text>
-			</scroll-view>
-			<template v-else>
-	<!-- #endif -->
-	<!-- #ifndef WEB -->
 	<view class="uni-picker__container" :class="['uni-picker-theme--'+theme]">
-		<view class="uni-picker__mask" :class="{'picker__ani-show': show, 'picker__mask--dark': theme == 'dark'}" @click="close"></view>
+		<view class="uni-picker__mask" :class="{'picker__ani-show': show}" @click="close"></view>
 		<view class="uni-picker__inner-box" :class="[show?'picker__ani-box-show':'','inner-box--'+theme]">
-	<!-- #endif -->
 			<view class="uni-picker__header-btn" :class="['header-btn--'+theme]" @click.stop>
 				<text class="uni-picker__header-btn-cancel" :class="['header-btn-cannel--'+theme]" @click="close">{{ cancelText }}</text>
 				<text class="uni-picker__header-btn-ok" @click="confirm">{{ confirmText }}</text>
@@ -56,17 +45,11 @@
 					</template>
 				</picker-view>
 			</view>
-			<!-- #ifdef WEB -->
-			</template>
-			<!-- #endif -->
 		</view>
 	</view>
 </template>
 
-<script setup lang="ts">
-	// #ifdef WEB
-	import { getPickerPopupStyle, PickerPopover } from '../../components/picker/popup.ts'
-	// #endif
+<script setup lang="uts">
 	type SelectedData = {
 		year: number,
 		month: number,
@@ -153,59 +136,6 @@
 
 	const instance = getCurrentInstance()
 
-	// #ifdef WEB
-	const popover = ref<PickerPopover | null>(null)
-	const selectorType = ref('select')
-	const windowWidth = ref(0)
-	const windowHeight = ref(0)
-	const containerRef = ref<HTMLElement | null>(null)
-	const selectRef = ref<UniScrollViewElement | null>(null)
-	let layoutFrame: number | null = null
-	let closing = false
-	const isDesktop = computed(() => windowWidth.value >= 500 && windowHeight.value >= 500)
-	const isSelect = computed(() => isDesktop.value && mode.value == 'selector' && selectorType.value == 'select')
-	const popupStyle = computed(() => {
-		if (!isDesktop.value) return { content: {} }
-		const contentHeight = isSelect.value ? Math.min(300, range.value.length * 34 + 12) : 300
-		return getPickerPopupStyle(popover.value, windowWidth.value, windowHeight.value, contentHeight)
-	})
-
-	const updateLayout = () => {
-		windowWidth.value = window.innerWidth
-		windowHeight.value = window.innerHeight
-		uni.$emit(`${optionsEventName.value}_layout`)
-	}
-
-	const scheduleLayout = () => {
-		if (layoutFrame != null) return
-		layoutFrame = window.requestAnimationFrame(() => {
-			layoutFrame = null
-			updateLayout()
-		})
-	}
-
-	const handleScroll = (event: Event) => {
-		// 弹层内部滚动不改变触发元素的位置，无需重新测量锚点。
-		if (event.target instanceof Node && containerRef.value?.contains(event.target)) return
-		scheduleLayout()
-	}
-
-	const selectItem = (index: number) => {
-		eventValue.value = [index]
-		confirm()
-	}
-
-	// 切换展示方式时保留尚未确认的选择，并将列表滚动到当前选中项。
-	watch(isSelect, (select) => {
-		if (!select) value.value = eventValue.value.slice()
-	})
-	watch(() => [isSelect.value, eventValue.value[0], range.value.length, show.value], () => {
-		if (isSelect.value && show.value) {
-			nextTick(() => selectRef.value?.scrollTo(0, Math.max(0, eventValue.value[0] ?? 0) * 34))
-		}
-	})
-	// #endif
-
 	// computed
 	const selectedDate = computed((): string => {
 		const { year, month, day } = selected
@@ -222,7 +152,7 @@
 	})
 
 	const indicatorStyle = computed(() => {
-		const color = theme.value == 'dark' ? 'rgba(255,255,255,0.05)' : '#F5F5F5'
+		const color = theme.value == 'dark' ? '#3B3B3B' : '#F5F5F5'
 		return `height:50px;background:rgba(255,255,255,0);border-top:1px ${color} solid;border-bottom:1px ${color} solid;`
 	})
 
@@ -263,15 +193,12 @@
 			maskTopStyle.value = "background-image: linear-gradient(to bottom, rgba(255,255,255,1), rgba(255, 255, 255, 0));"
 			maskBottomStyle.value = "background-image: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255, 255, 255, 1));"
 		} else {
-			maskTopStyle.value = "background-image: linear-gradient(to bottom, rgba(35, 35, 35, 1), rgba(35, 35, 35, 0));"
-			maskBottomStyle.value = "background-image: linear-gradient(to bottom, rgba(35, 35, 35, 0), rgba(35, 35, 35, 1));"
+			maskTopStyle.value = "background-image: linear-gradient(to bottom, rgba(44, 44, 43, 1), rgba(44, 44, 43, 0));"
+			maskBottomStyle.value = "background-image: linear-gradient(to bottom, rgba(44, 44, 43, 0), rgba(44, 44, 43, 1));"
 		}
 	}
 
 	const confirm = () => {
-		// #ifdef WEB
-		if (closing) return
-		// #endif
 		const val = eventValue.value
 		const modeValue = mode.value
 		switch (modeValue) {
@@ -294,17 +221,11 @@
 	}
 
 	const close = () => {
-		// #ifdef WEB
-		if (closing) return
-		// #endif
 		uni.$emit(cancelEventName.value)
 		closeDialog()
 	}
 
 	const closeDialog = () => {
-		// #ifdef WEB
-		closing = true
-		// #endif
 		show.value = false
 		clearTimeout(timer.value)
 		timer.value = setTimeout(() => {
@@ -578,33 +499,6 @@
 		return defaultVal
 	}
 
-	const initLanguageAndTheme = () => {
-		const appBaseInfo = uni.getAppBaseInfo()
-
-		// #ifdef WEB
-		language.value = uni.getLocale()
-		theme.value = appBaseInfo.hostTheme == 'dark' ? 'dark' : 'light'
-		// #endif
-
-		// #ifdef APP
-		const systemInfo = uni.getDeviceInfo()
-		const appLanguage = appBaseInfo.appLanguage
-		const osLanguage = systemInfo.osLanguage
-		if (appLanguage != null) {
-			language.value = appLanguage
-		} else if (osLanguage != null) {
-			language.value = osLanguage
-		}
-		const osTheme = systemInfo.osTheme
-		const appTheme = appBaseInfo.appTheme
-		if (appTheme != null && appTheme != 'auto') {
-			theme.value = appTheme
-		} else if (osTheme != null) {
-			theme.value = osTheme
-		}
-		// #endif
-	}
-
 	onLoad((options) => {
 		readyEventName.value = options['readyEventName']!
 		optionsEventName.value = options['optionsEventName']!
@@ -615,16 +509,6 @@
 		columnChangeEventName.value = options['columnChangeEventName']!
 
 		uni.$on(optionsEventName.value, (data: UTSJSONObject) => {
-			// #ifdef WEB
-			if (data['layoutOnly'] == true) {
-				popover.value = data['popover'] as PickerPopover | null
-				return
-			}
-			if (data['selectorType'] != null) {
-				selectorType.value = data['selectorType'] as string
-				popover.value = data['popover'] as PickerPopover | null
-			}
-			// #endif
 			if (data['mode'] != null) {
 				mode.value = data['mode']
 			}
@@ -704,25 +588,28 @@
 			calculateRanges()
 		})
 
-		// #ifdef WEB
-		updateLayout()
-		window.addEventListener('resize', scheduleLayout)
-		document.addEventListener('scroll', handleScroll, true)
-		// #endif
-
 		uni.$emit(readyEventName.value)
 
-		initLanguageAndTheme()
+		const systemInfo = uni.getDeviceInfo()
+		const appBaseInfo = uni.getAppBaseInfo()
+		const appLanguage = appBaseInfo.appLanguage
+		const osLanguage = systemInfo.osLanguage
+
+		if (appLanguage != null) {
+			language.value = appLanguage
+		} else if (osLanguage != null) {
+			language.value = osLanguage
+		}
+
+		const osTheme = systemInfo.osTheme
+		const appTheme = appBaseInfo.appTheme
+		if (appTheme != null && appTheme != 'auto') {
+			theme.value = appTheme
+		} else if (osTheme != null) {
+			theme.value = osTheme
+		}
 		switchTheme(theme.value)
 
-		// #ifdef WEB
-		uni.onHostThemeChange((res) => {
-			theme.value = res.hostTheme == 'dark' ? 'dark' : 'light'
-			switchTheme(theme.value)
-		})
-		// #endif
-
-		// #ifdef APP
 		uni.onAppThemeChange((res: AppThemeChangeResult) => {
 			theme.value = res.appTheme
 			switchTheme(theme.value)
@@ -731,7 +618,6 @@
 			theme.value = res.osTheme
 			switchTheme(theme.value)
 		})
-		// #endif
 	})
 
 	onReady(() => {
@@ -739,14 +625,6 @@
 	})
 
 	onUnload(() => {
-		// #ifdef WEB
-		window.removeEventListener('resize', scheduleLayout)
-		document.removeEventListener('scroll', handleScroll, true)
-		if (layoutFrame != null) {
-			window.cancelAnimationFrame(layoutFrame)
-			layoutFrame = null
-		}
-		// #endif
 		uni.$off(optionsEventName.value, null)
 		if (timer.value) {
 			clearTimeout(timer.value)
@@ -765,10 +643,6 @@
 		opacity: 0;
 		transition-property: opacity;
 		transition-duration: 0.3s;
-	}
-
-	.picker__mask--dark {
-		background-color: rgba(0, 0, 0, .6);
 	}
 
 	.picker__ani-show {
@@ -829,94 +703,18 @@
 	}
 
 	.inner-box--dark {
-		background-color: #232323;
+		background-color: #2C2C2B;
 	}
 
 	.header-btn-cannel--dark {
-		color: rgba(255, 255, 255, .8);
+		color: #fff;
 	}
 
 	.view-item--dark {
-		color: rgba(255, 255, 255, .8);
+		color: #fff;
 	}
 
 	.header-btn--dark {
-		border-color: rgba(255, 255, 255, .05);
+		border-color: #3B3B3B;
 	}
-	/* #ifdef WEB */
-	.uni-picker__mask {
-		/* 建立滚动容器，通过 CSS 阻止遮罩上的滚动传递到背景页面。 */
-		overflow: auto;
-		overscroll-behavior: none;
-		touch-action: none;
-	}
-
-	.uni-picker__container--desktop .uni-picker__mask {
-		background-color: transparent;
-	}
-
-	.uni-picker__inner-box--desktop {
-		transform: none;
-		opacity: 0;
-		border-radius: 5px;
-		box-shadow: 0 0 20px 5px rgba(0, 0, 0, .3);
-		transition-property: opacity;
-	}
-
-	.uni-picker__inner-box--desktop.picker__ani-box-show {
-		transform: none;
-		opacity: 1;
-	}
-
-	.uni-picker__inner-box--desktop .uni-picker__header-btn {
-		flex-shrink: 0;
-	}
-
-	.uni-picker__inner-box--desktop .uni-picker__view {
-		min-height: 0;
-		overflow: hidden;
-		border-radius: 0 0 5px 5px;
-	}
-
-	.uni-picker__select {
-		height: 100%;
-		box-sizing: border-box;
-		padding: 6px 0;
-		border-radius: 5px;
-		overscroll-behavior: contain;
-	}
-
-	.uni-picker__select .uni-scroll-view {
-		overscroll-behavior: contain;
-	}
-
-	.uni-picker__select-item {
-		flex-shrink: 0;
-		height: 34px;
-		line-height: 34px;
-		padding: 0 10px;
-		text-align: center;
-		color: #555;
-		white-space: nowrap;
-		text-overflow: ellipsis;
-		overflow: hidden;
-		cursor: pointer;
-	}
-
-	.uni-picker__select-item:hover {
-		background-color: #f6f6f6;
-	}
-
-	.uni-picker-theme--dark .uni-picker__select-item {
-		color: rgba(255, 255, 255, .8);
-	}
-
-	.uni-picker-theme--dark .uni-picker__select-item:hover {
-		background-color: rgba(255, 255, 255, .1);
-	}
-
-	.uni-picker__select-item.uni-picker__select-item--selected {
-		color: #007aff;
-	}
-	/* #endif */
 </style>

@@ -30348,9 +30348,7 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
           page_size: size
         }).then((res) => {
           var _a, _b;
-          let poisData;
-          const data = (_b = (_a = res["result"]) == null ? void 0 : _a["result"]) == null ? void 0 : _b["data"];
-          poisData = Array.isArray(data) ? data : null;
+          let poisData = (_b = (_a = res.getJSON("result")) == null ? void 0 : _a.getJSON("result")) == null ? void 0 : _b.getArray("data");
           poiHandle(poisData);
           searchLoading.value = false;
         }).catch((err) => {
@@ -30370,9 +30368,7 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
           }
         }).then((res) => {
           var _a, _b;
-          let poisData;
-          const data = (_b = (_a = res["result"]) == null ? void 0 : _a["result"]) == null ? void 0 : _b["pois"];
-          poisData = Array.isArray(data) ? data : null;
+          let poisData = (_b = (_a = res.getJSON("result")) == null ? void 0 : _a.getJSON("result")) == null ? void 0 : _b.getArray("pois");
           poiHandle(poisData);
           if (pois.value.length > 0 && index2 == 1) {
             let poi = pois.value[0];
@@ -30959,7 +30955,7 @@ const _style_0$4 = `
     font-family: UniChooseLocationFontFamily;
     
 
-    src: url('data:font/woff2;base64,d09GMgABAAAAAATwAAsAAAAAChQAAAShAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHFQGYACDMgqFNIUSATYCJAMUCwwABCAFhksHUhsiCVFUTqJkPyRJN0gphHle0lZmMBAqAAAAACgAAIiH//b73z4zc+93q6a4V/FQzLtZglKIP5I8UgKLeB8SMovh3zOTpqneQCeFfEh7gtLN7WB9gv9gMAH77adpO+DnpyLMUNYCq5HdpxxQ+u7nCtpM74f7Ga98H3DxbOWYFZTF84GP+6qtUvzaDpDP9R7gGaZ7Vuv0ZQQ6rTPgHJ1vv+DhZi0JHnG5k0GRHzetruHK1igDSGiX19J9i3gHoaQ3nAt4m7x9/LU52kmqzD3JycuzDv4bcesQQv4nAco/RBMCrk6okLF8Yrq4P2y5aZRFliE6u0JnDoLVz9olqdnUJDaznm/8/w8ILk3W6f3DI8mKIGqupJtwB8XlxnEDConmDIVM84xCobXBeyySitZ3ogM/iUuAm94mCVkeOKJ7D5lMKIyTqyiCCjOMj09iWXyIppMJKi60atVK9ySrB+TGWDbCMFGKImk6LTEncdiVJCYoT9NGxakQuXL3ahiezKJ0UXT1hjUAjGBiKhxZE1sF2RoLc8GaVetWikS9XCFrGirK3QWPucxi1C4OnzI3uj9yILaP3JtDHo+djJyIHkvjkCvtMhhhGAsDRwTimKYIIolzVOFG2kVYlvmTKCr/vFMSFhD8wMi40WXRbmGQOCw4PH5ubahnQs/4wQmDm8i+ob4J/eMHEHdfv7YHDPsff7YffeXtcru7Vrs7uzyrOz2eztWerk43ZFw8l3fvZ6K3IHlx2+bZJWGivKy0YtW6tvnQntGFaJkqXZGSokhTlvOk4J3pLZCW8dKVKQpFijIdLZOB98g9IEPLlWnEkK4qQ2Wi9/2J8nI0TTVflYaWS7e+474HRetFIx9AtB7NFAexQAAL4pm8deBt/3ed6zJ4cbgfwwN4EM1cC651aAbeFPnDuRnoWvDPdBeszUSD/a+E+cVxzbYBF5YuLt1duuNsYh+XPHlsstxVUt3MDXFN3AJus0NYn9BjtMkdP8k2wWqdYJu03WfGzJxZVsa72+6+R30Cb+zA8U775DjYPnGSAwpOsFgmBGDr+MkmeXAE+H9t9ApRQBD5W/q+CJFnUH6yiEVGU5CHP67f8WFD/P321H1tBwW02lv/Er6c8+OQWnJ+StJ0Yc+yYpG0dFUHJmHlc8/oFZf5wVT8dhyD7u3GNgQqTGHK5iIkbVYhmyJHFVwcVLrcgNqURui0ZNnBXYacAkSUDsy6DBC2+wpJbyxBtj12oQruDlRG472o7sJ9hE7n4+PxusymE5NMtVCHuScsaTkp/yTynezEMPe05bYWy2m+fr/zOtpw+iBdQp0HG213/VDua9OieAYuiC8oUT6exXV7/V4vCgszR1xejEJgrM7sqJXnYpHdGMMKux7kOY8jTGSkJkgH5TpBJVosUREivne2JgzGemSLia2RWJTNRfPnapEVnHxYBK0I48j6Nihyf5CsH5wNJDYDvhvUQpJ2VfMG7VRnT3tXTygYFGYswl2YSPAiDFV3L3NISzwrVoR2xjDqVSiVPN96WXxLuX+Zuu7xqkiRo0QVtfoBl77wZVF8jGOp02W+TfpA9jbfSnny2WU1AAAAAA==') format('woff2');
+    src: url('data:font/ttf;charset=utf-8;base64,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') format('truetype');
 }
 .uni-choose-location-icons {
     font-family: "UniChooseLocationFontFamily";
@@ -31609,8 +31605,7 @@ const _sfc_main$5 = /* @__PURE__ */ defineComponent({
                       }, null, 8, ["modelValue", "class", "auto-height", "placeholder"])) : content.value.length > 0 ? (openBlock(), createBlock(_component_scroll_view, {
                         key: 1,
                         class: "uni-modal-dialog__scroll",
-                        "show-scrollbar": false,
-                        bounces: false,
+                        "show-scrollbar": "true",
                         style: normalizeStyle({ maxHeight: maxScrollHeight.value })
                       }, {
                         default: withCtx(() => [
@@ -32324,7 +32319,7 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent({
           },
           fail() {
             var _a;
-            (_a = longPressAction.fail) == null ? void 0 : _a.call(longPressAction, new UniError("uni-previewImage", 1101001, "user cancel"));
+            (_a = longPressAction.fail) == null ? void 0 : _a.call(longPressAction, new PreviewImageErrorImpl(1101001, UniErrorPreviewImage));
             uni.$emit("__UNIPREVIEWLONGPRESS", { type: "fail", tapIndex: -1, index: -1 });
           }
         });
@@ -33245,7 +33240,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const UniErrorPreviewImage = "uni-previewImage";
+const UniErrorPreviewImage$1 = "uni-previewImage";
 const PreviewImageUniErrors = /* @__PURE__ */ new Map([
   /**
    * 用户取消
@@ -33272,18 +33267,18 @@ const PreviewImageUniErrors = /* @__PURE__ */ new Map([
    */
   [1101010, "unexpect error:please check previewImage.uvue is in pages.json"]
 ]);
-class PreviewImageErrorImpl extends UniError {
+let PreviewImageErrorImpl$1 = class PreviewImageErrorImpl2 extends UniError {
   constructor(errCode, uniErrorSubject) {
     super();
     this.errSubject = uniErrorSubject;
     this.errCode = errCode;
     this.errMsg = PreviewImageUniErrors.get(errCode) ?? "";
   }
-}
+};
 function __previewImage(option) {
   var _a, _b;
   if (option.urls.length == 0) {
-    let error = new PreviewImageErrorImpl(1001, UniErrorPreviewImage);
+    let error = new PreviewImageErrorImpl$1(1001, UniErrorPreviewImage$1);
     (_a = option.fail) == null ? void 0 : _a.call(option, error);
     (_b = option.complete) == null ? void 0 : _b.call(option, error);
     return;
@@ -33314,7 +33309,7 @@ function __previewImage(option) {
         (_b2 = (_a2 = option.longPressActions) == null ? void 0 : _a2.success) == null ? void 0 : _b2.call(_a2, success);
         (_d = (_c = option.longPressActions) == null ? void 0 : _c.complete) == null ? void 0 : _d.call(_c, success);
       } else {
-        var fail = new PreviewImageErrorImpl(1101001, UniErrorPreviewImage);
+        var fail = new PreviewImageErrorImpl$1(1101001, UniErrorPreviewImage$1);
         (_f = (_e = option.longPressActions) == null ? void 0 : _e.fail) == null ? void 0 : _f.call(_e, fail);
         (_h = (_g = option.longPressActions) == null ? void 0 : _g.complete) == null ? void 0 : _h.call(_g, fail);
       }
@@ -33325,13 +33320,13 @@ function __previewImage(option) {
     animationType: "fade-in",
     success(_) {
       var _a2, _b2;
-      let success = { errMsg: "ok", "errSubject": UniErrorPreviewImage };
+      let success = { errMsg: "ok", "errSubject": UniErrorPreviewImage$1 };
       (_a2 = option.success) == null ? void 0 : _a2.call(option, success);
       (_b2 = option.complete) == null ? void 0 : _b2.call(option, success);
     },
     fail(_) {
       var _a2, _b2;
-      let error = new PreviewImageErrorImpl(1101010, UniErrorPreviewImage);
+      let error = new PreviewImageErrorImpl$1(1101010, UniErrorPreviewImage$1);
       (_a2 = option.fail) == null ? void 0 : _a2.call(option, error);
       (_b2 = option.complete) == null ? void 0 : _b2.call(option, error);
     }

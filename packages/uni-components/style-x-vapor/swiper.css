@@ -1,35 +1,20 @@
-.uni-swiper-wrapper {
-  position: relative;
-  width: 100%;
+@import url('../styles/common.css');
 
+.uni-swiper-wrapper {
   display: block;
   height: 150px;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
 }
-
 .uni-swiper-wrapper::-webkit-scrollbar {
   display: none;
 }
-
-.uni-swiper-container {
-  position: absolute;
-
-  overflow: visible;
-}
-
-.uni-swiper-container_horizontal {
-  height: 100%;
-}
-
-.uni-swiper-container_vertical {
-  width: 100%;
+.uni-swiper-wrapper {
+  /* IE and Edge */
+  -ms-overflow-style: none;
+  /* Firefox */
+  scrollbar-width: none;
 }
 
 .uni-swiper-indicator {
-  position: absolute;
-  justify-content: center;
-  align-items: center;
   z-index: 10;
   background-color: transparent;
   bottom: 0px;
@@ -37,13 +22,11 @@
 }
 
 .uni-swiper-indicator_horizontal {
-  flex-direction: row;
   left: 0px;
   height: 40px;
 }
 
 .uni-swiper-indicator_vertical {
-  flex-direction: column;
   top: 0px;
   width: 40px;
 }

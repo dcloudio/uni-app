@@ -13,11 +13,9 @@
     </view>
 </template>
 
-<script setup lang="ts">
+<script setup lang="uts">
     import { UniPageContainerElement } from './global'
-    // #ifndef WEB
     import { pageContainerManager } from './manager'
-    // #endif
 
     defineOptions({
         name: 'page-container',
@@ -210,9 +208,7 @@
     const isAnimating = ref(false)
     const transitionTimer = ref<number | null>(null)
     const isEntered = ref(false)
-    // #ifndef WEB
     const instanceId = ref<number>(0)
-    // #endif
     type TransitionType = 'enter' | 'leave'
     const transitionType = ref<TransitionType | null>(null)
     // 每次切换递增，令已经排队的 RAF/定时器失效，避免旧动画覆盖新状态。
@@ -234,43 +230,21 @@
     const isSlideLeaving = ref<boolean>(false)
 
     const overlayStyleMap = computed(() => {
-        // #ifdef VUE3-VAPOR
-        const styleMap = {
-            'z-index': props.zIndex,
-            'transition-duration': props.duration + 'ms',
-        }
-        // #endif
-        // #ifndef VUE3-VAPOR
         const styleMap = new Map<string, string>([
             ['z-index', props.zIndex],
             ['transition-duration', props.duration + 'ms'],
         ])
-        // #endif
         if (isEntered.value) {
-            // #ifdef VUE3-VAPOR
-            styleMap['opacity'] = '1'
-            styleMap['pointer-events'] = 'auto'
-            // #endif
-            // #ifndef VUE3-VAPOR
             styleMap.set('opacity', '1').set('pointer-events', 'auto')
-            // #endif
         }
         return styleMap
     })
 
     const innerStyleMap = computed(() => {
-        // #ifdef VUE3-VAPOR
-        const styleMap = {
-            'z-index': props.zIndex + 1,
-            'transition-duration': props.duration + 'ms',
-        }
-        // #endif
-        // #ifndef VUE3-VAPOR
         const styleMap = new Map<string, string>([
             ['z-index', props.zIndex + 1],
             ['transition-duration', props.duration + 'ms'],
         ])
-        // #endif
         // 滑动拖动时的 transform
         if (translateValue.value != 0 && (isDragging || isSlideClosing.value)) {
             let transformValue = ''
@@ -302,27 +276,16 @@
                 }
             }
             if (transformValue != '') {
-                // #ifdef VUE3-VAPOR
-                styleMap['transform'] = transformValue
-                styleMap['transition'] = isDragging ? 'none' : `transform ${props.duration}ms ease`
-                // #endif
-                // #ifndef VUE3-VAPOR
                 styleMap.set('transform', transformValue)
                 if (isDragging) {
                     styleMap.set('transition', 'none')
                 } else {
                     styleMap.set('transition', `transform ${props.duration}ms ease`)
                 }
-                // #endif
             }
         } else if (translateValue.value != 0 && !isDragging) {
             // 回弹动画
-            // #ifdef VUE3-VAPOR
-            styleMap['transition'] = `transform ${props.duration}ms ease`
-            // #endif
-            // #ifndef VUE3-VAPOR
             styleMap.set('transition', `transform ${props.duration}ms ease`)
-            // #endif
         }
         return styleMap
     })
@@ -378,9 +341,7 @@
         } else if (type == 'leave') {
             showPageContainer.value = false
             isEntered.value = false
-            // #ifndef WEB
             instanceId.value = 0
-            // #endif
             resetDragState()
             emits('afterleave')
         }
@@ -425,10 +386,8 @@
         }
         // #endif
 
-        // #ifndef WEB
         pageContainerManager.unregister(instanceId.value)
         instanceId.value = 0
-        // #endif
         emits('beforeleave')
         isAnimating.value = true
         transitionType.value = 'leave'
@@ -465,11 +424,9 @@
         updateSwipeBack(true)
         // #endif
 
-        // #ifndef WEB
         if (instanceId.value == 0) {
             instanceId.value = pageContainerManager.register()
         }
-        // #endif
         // 重置拖动状态
         resetDragState()
         nextTick(() => {
@@ -497,7 +454,6 @@
         })
     }
 
-    // #ifndef WEB
     function closeContainerFromSlide() {
         if (!showPageContainer.value || transitionType.value != null) {
             return
@@ -538,7 +494,6 @@
             })
         })
     }
-    // #endif
 
     watch(() : boolean => props.show, (newVal : boolean) => {
         if (newVal && (!showPageContainer.value || transitionType.value == 'leave')) {
@@ -575,9 +530,6 @@
     function onTouchMove(e : UniTouchEvent) {
         // 如果不是滑动关闭模式，阻止事件冒泡（防止滚动穿透），但允许容器内部滚动
         if (!props.closeOnSlideDown) {
-            // #ifdef WEB
-            e.preventDefault()
-            // #endif
             e.stopPropagation()
             return
         }
@@ -645,13 +597,7 @@
 
             // 判断是否应该关闭：拖动距离超过 100px 或拖动速度较快
             if (shouldClose) {
-                // #ifdef WEB
-                resetDragState()
-                closeContainer()
-                // #endif
-                // #ifndef WEB
                 closeContainerFromSlide()
-                // #endif
             } else {
                 // 回弹
                 resetDragState()
@@ -670,7 +616,6 @@
         }
     }
 
-    // #ifndef WEB
     onBackPress(() => {
         if (showPageContainer.value && pageContainerManager.isTop(instanceId.value)) {
             closeContainer()
@@ -678,23 +623,8 @@
         }
         return false
     })
-    // #endif
-
-    // #ifdef WEB
-    function onKeydown(event : KeyboardEvent) {
-        if (
-            showPageContainer.value &&
-            (event.key == 'Escape' || event.key == 'Esc')
-        ) {
-            closeContainer()
-        }
-    }
-    // #endif
 
     onMounted(() => {
-        // #ifdef WEB
-        document.addEventListener('keydown', onKeydown)
-        // #endif
         if (props.show) {
             openContainer()
         }
@@ -702,16 +632,11 @@
 
     // 组件卸载前清理
     onBeforeUnmount(() => {
-        // #ifdef WEB
-        document.removeEventListener('keydown', onKeydown)
-        // #endif
         transitionVersion++
         clearTransitionTimer()
-        // #ifndef WEB
         if (instanceId.value > 0) {
             pageContainerManager.unregister(instanceId.value)
         }
-        // #endif
     })
 </script>
 
@@ -727,41 +652,24 @@
 
     .uni-page-container-overlay {
         background-color: rgba(0, 0, 0, 0.7);
-        position: fixed;
-        transition-property: opacity;
-        transition-timing-function: ease;
-        opacity: 0;
-        pointer-events: none;
-        /* #ifdef WEB */
-        height: calc(100% - var(--top-window-height, 0px));
-        left: var(--window-left, 0px);
-        top: var(--top-window-height, 0px);
-        width: calc(100% - var(--window-left, 0px) - var(--window-right, 0px));
-        /* #endif */
-        /* #ifndef WEB */
         height: 100%;
         left: 0;
+        position: fixed;
         top: 0;
+        transition-property: opacity;
+        transition-timing-function: ease;
         width: 100%;
-        /* #endif */
+        opacity: 0;
+        pointer-events: none;
     }
 
     .uni-page-container-popup-right {
-        transform: translateX(100%);
-        /* #ifdef WEB */
-        left: var(--window-left, 0px);
-        right: var(--window-right, 0px);
-        top: var(--top-window-height, 0px);
-        height: calc(100% - var(--top-window-height, 0px));
-        width: calc(100% - var(--window-left, 0px) - var(--window-right, 0px));
-        /* #endif */
-        /* #ifndef WEB */
         left: 0;
         right: 0;
         top: 0;
         height: 100%;
         width: 100%;
-        /* #endif */
+        transform: translateX(100%);
     }
 
     .uni-page-container-popup-right.uni-page-container-popup-enter {
@@ -769,21 +677,12 @@
     }
 
     .uni-page-container-popup-left {
-        transform: translateX(-100%);
-        /* #ifdef WEB */
-        left: var(--window-left, 0px);
-        right: var(--window-right, 0px);
-        top: var(--top-window-height, 0px);
-        height: calc(100% - var(--top-window-height, 0px));
-        width: calc(100% - var(--window-left, 0px) - var(--window-right, 0px));
-        /* #endif */
-        /* #ifndef WEB */
         left: 0;
         right: 0;
         top: 0;
         height: 100%;
         width: 100%;
-        /* #endif */
+        transform: translateX(-100%);
     }
 
     .uni-page-container-popup-left.uni-page-container-popup-enter {
@@ -792,15 +691,9 @@
 
     .uni-page-container-popup-bottom {
         bottom: 0;
-        transform: translateY(100%);
-        /* #ifdef WEB */
-        left: var(--window-left, 0px);
-        width: calc(100% - var(--window-left, 0px) - var(--window-right, 0px));
-        /* #endif */
-        /* #ifndef WEB */
         left: 0;
         width: 100%;
-        /* #endif */
+        transform: translateY(100%);
     }
 
     .uni-page-container-popup-bottom.uni-page-container-popup-enter {
@@ -812,17 +705,10 @@
     }
 
     .uni-page-container-popup-top {
-        transform: translateY(-100%);
-        /* #ifdef WEB */
-        left: var(--window-left, 0px);
-        top: var(--top-window-height, 0px);
-        width: calc(100% - var(--window-left, 0px) - var(--window-right, 0px));
-        /* #endif */
-        /* #ifndef WEB */
         left: 0;
         top: 0;
         width: 100%;
-        /* #endif */
+        transform: translateY(-100%);
     }
 
     .uni-page-container-popup-top.uni-page-container-popup-enter {
@@ -834,23 +720,15 @@
     }
 
     .uni-page-container-popup-center {
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
         transform: scale(0.98);
         transform-origin: center;
         transition-property: opacity, transform;
         transition-timing-function: ease;
         opacity: 0;
-        /* #ifdef WEB */
-        top: var(--top-window-height, 0px);
-        left: var(--window-left, 0px);
-        width: calc(100% - var(--window-left, 0px) - var(--window-right, 0px));
-        height: calc(100% - var(--top-window-height, 0px));
-        /* #endif */
-        /* #ifndef WEB */
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        /* #endif */
     }
 
     .uni-page-container-popup-center.uni-page-container-popup-enter {

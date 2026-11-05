@@ -51,7 +51,6 @@ export function InputBuilder(options: UniInputOptions) {
 		.enabled(options.enabled)
 		.maxLength(options.maxLength)
 		.caretColor(options.caretColor)
-		.selectedBackgroundColor(options.selectedBackgroundColor)
 		.caretPosition(options.caretPosition)
 		.fontSize(options.fontSize)
 		.fontColor(options.color)

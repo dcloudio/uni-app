@@ -1,0 +1,25 @@
+.uni-input-wrapper {
+  /* 暗黑适配：表单默认背景色（开发者用 class/style 可覆盖，页面样式优先级更高） */
+  background-color: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  .uni-input-wrapper {
+    background-color: #3b3b3b;
+  }
+}
+
+.uni-input-container {
+  width: 100%;
+}
+
+.uni-input-placeholder {
+  font-size: var(--uni-input-placeholder-font-size, 16px);
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 0;
+  right: 0;
+  color: #757575;
+  white-space: nowrap;
+}

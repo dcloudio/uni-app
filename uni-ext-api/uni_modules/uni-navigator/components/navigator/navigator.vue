@@ -7,8 +7,8 @@
   </view>
 </template>
 
-<script lang="ts" setup>
-  import { UniNavigatorElement } from './global.ts'
+<script lang="uts" setup>
+  import { UniNavigatorElement } from './global.uts'
 
   type OpenType = 'navigate' | 'navigateBack' | 'redirect' | 'reLaunch' | 'switchTab'
 

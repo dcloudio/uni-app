@@ -1,86 +1,17 @@
 <template>
-  <!-- #ifdef WEB -->
-  <!-- Web 端没有内置图标字体，选中状态使用内联 SVG 绘制对勾 -->
-  <view
-    v-if="!hasDefaultSlot"
-    class="uni-checkbox-view uni-checkbox-icon"
-    :class="classes(
-      [disabled, 'uni-checkbox-disabled'],
-      [!disabled && isChecked, checkboxActiveClass],
-      [!disabled && !isChecked, checkboxClass],
-      [!disabled, iconClass]
-    )"
-    :style="activeStyle"
-    :tabindex="disabled ? -1 : 0"
-    @keydown="handleKeydown"
-    @keyup="handleKeyup"
-    @blur="handleBlur"
-    role="checkbox"
-    :aria-checked="isChecked"
-    :aria-disabled="disabled"
-    @click.stop="handleTap"
-  >
-    <svg v-if="isChecked" class="uni-checkbox-svg" viewBox="0 0 32 32">
-      <path :d="iconPath" fill="currentColor"></path>
-    </svg>
-  </view>
-  <!-- #endif -->
-  <!-- #ifndef WEB -->
   <text
     v-if="!hasDefaultSlot"
     class="uni-checkbox-view uni-checkbox-icon"
-    :class="classes(
-      [disabled, 'uni-checkbox-disabled'],
-      [!disabled && isChecked, checkboxActiveClass],
-      [!disabled && !isChecked, checkboxClass],
-      [!disabled, iconClass]
-    )"
-    :style="activeStyle"
+    :class="disabled ? 'uni-checkbox-disabled' : [isChecked ? checkboxActiveClass : checkboxClass, iconClass]"
     @click.stop="handleTap"
   >
     {{ isChecked ? fontUnicode : '' }}
   </text>
-  <!-- #endif -->
-  <view v-else class="uni-checkbox"
-    <!-- #ifdef WEB -->
-    :tabindex="disabled ? -1 : 0"
-    @keydown="handleKeydown"
-    @keyup="handleKeyup"
-    @blur="handleBlur"
-    role="checkbox"
-    :aria-checked="isChecked"
-    :aria-disabled="disabled"
-    <!-- #endif -->
-    @click.stop="handleTap"
-  >
-    <!-- #ifdef WEB -->
-    <view
-      class="uni-checkbox-view uni-checkbox-icon"
-      :class="classes(
-        [disabled, 'uni-checkbox-disabled'],
-        [!disabled && isChecked, checkboxActiveClass],
-        [!disabled && !isChecked, checkboxClass],
-        [!disabled, iconClass]
-      )"
-      :style="activeStyle"
-    >
-      <svg v-if="isChecked" class="uni-checkbox-svg" viewBox="0 0 32 32">
-        <path :d="iconPath" fill="currentColor"></path>
-      </svg>
-    </view>
-    <!-- #endif -->
-    <!-- #ifndef WEB -->
+  <view v-else class="uni-checkbox" @click.stop="handleTap">
     <text
       class="uni-checkbox-view uni-checkbox-icon"
-      :class="classes(
-        [disabled, 'uni-checkbox-disabled'],
-        [!disabled && isChecked, checkboxActiveClass],
-        [!disabled && !isChecked, checkboxClass],
-        [!disabled, iconClass]
-      )"
-      :style="activeStyle"
+      :class="disabled ? 'uni-checkbox-disabled' : [isChecked ? checkboxActiveClass : checkboxClass, iconClass]"
     >{{ isChecked ? fontUnicode : '' }}</text>
-    <!-- #endif -->
     <text v-if="isStringSlot">
       <slot></slot>
     </text>
@@ -88,32 +19,12 @@
   </view>
 </template>
 
-<script lang="ts" setup>
-  // #ifdef WEB
-  import { createSpaceKeyHandlers } from '../common.ts'
-  // #endif
-  import { CHECKBOX_GROUP_KEY, FORM_KEY, LABEL_KEY, dispatchLabelClick, registerLabelTarget, classes, toStringOrEmpty } from '../common.ts'
-  import { UniCheckboxElement } from './global.ts'
-  import { ActivatableChild, LabelContext, CheckboxGroupContext } from '../types.ts'
+<script lang="uts" setup>
+  import { CHECKBOX_GROUP_KEY, FORM_KEY, LABEL_KEY, dispatchLabelClick, registerLabelTarget, toStringOrEmpty } from '../common.uts'
+  import { UniCheckboxElement } from './global.uts'
+  import { ActivatableChild, LabelContext, CheckboxGroupContext } from '../types.uts'
 
   interface CheckboxProps {
-    /**
-     * checkbox 的颜色，同css的color
-     * @uniPlatform {
-       "app": {
-         "ios": {
-           "unixVaporVer": "5.34"
-         },
-         "android": {
-           "unixVaporVer": "5.34"
-         },
-         "harmony": {
-           "unixVaporVer": "5.34"
-         }
-       }
-     }
-     */
-    color?: string;
     /**
      * 是否禁用
      * @uniPlatform {
@@ -268,7 +179,6 @@
   }
 
   const props = withDefaults(defineProps<CheckboxProps>(), {
-    color: '',
     disabled: false,
     checked: false,
     value: '',
@@ -276,10 +186,6 @@
     checkboxClass: '',
     checkboxActiveClass: ''
   })
-
-  // #ifdef WEB
-  const { handleKeydown, handleKeyup, handleBlur } = createSpaceKeyHandlers(() => props.disabled)
-  // #endif
 
   defineOptions({
     name: 'checkbox',
@@ -301,19 +207,8 @@
 
   const isChecked = ref(props.checked)
 
-  const activeStyle = computed(() => {
-    if (isChecked.value && !props.disabled && props.color) {
-      return { color: props.color }
-    }
-    return {}
-  })
-
   // TODO 需编译器修复
   const fontUnicode = '\ueA08'
-
-  // #ifdef WEB
-  const iconPath = 'M1.952 18.080q-0.32-0.352-0.416-0.88t0.128-0.976l0.16-0.352q0.224-0.416 0.64-0.528t0.8 0.176l6.496 4.704q0.384 0.288 0.912 0.272t0.88-0.336l17.312-14.272q0.352-0.288 0.848-0.256t0.848 0.352l-0.416-0.416q0.32 0.352 0.32 0.816t-0.32 0.816l-18.656 18.912q-0.32 0.352-0.8 0.352t-0.8-0.32l-7.936-8.064z'
-  // #endif
 
   const group = inject<CheckboxGroupContext | null>(CHECKBOX_GROUP_KEY, null)
   const labelCtx = inject<LabelContext | null>(LABEL_KEY, null)
@@ -347,14 +242,12 @@
     }
     // Register with enclosing label if any
     const target: ActivatableChild = {
-        id: id || toStringOrEmpty(props.value),
-        activate: (event: UniPointerEvent) => {
-          const element = proxy?.$el
-          if (element != null) {
-            dispatchLabelClick(element, event)
-          }
-        },
-        getDisabled: () => props.disabled
+      id: id || toStringOrEmpty(props.value),
+      activate: (event: UniPointerEvent) => {
+        const element = proxy?.$el
+        if (element != null) dispatchLabelClick(element, event)
+      },
+      getDisabled: () => props.disabled
     }
     if (labelCtx != null) {
       labelCtx.register(target)
@@ -407,10 +300,6 @@
     border: 1px solid #d1d1d1;
     background-color: #ffffff;
     border-radius: 3px;
-    /* #ifdef WEB */
-    /* Web 蒸汽模式下 text 的 display 默认为 block，需设为 flex 使图标居中。 */
-    display: flex;
-    /* #endif */
     align-items: center;
     justify-content: center;
     margin-right: 5px;
@@ -425,13 +314,6 @@
     color: #007aff;
     font-family: uni-icon;
   }
-
-  /* #ifdef WEB */
-  .uni-checkbox-svg {
-    width: 16px;
-    height: 16px;
-  }
-  /* #endif */
 
   .uni-checkbox-disabled {
     background-color: #e1e1e1;

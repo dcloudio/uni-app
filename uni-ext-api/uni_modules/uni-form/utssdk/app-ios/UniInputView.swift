@@ -9,42 +9,9 @@ import UIKit
 
 public class UniInputView : UITextField {
 
-    private var editorCursorColor: UIColor?
-    private var editorSelectionColor: UIColor?
-    private var appliedEditorTint: UIColor?
-    private var hasAppliedEditorTint = false
-
     public func setEditorCursorColor(_ color: UIColor?) {
-        editorCursorColor = color
-        updateEditorTint()
-    }
-
-    public func setEditorSelectionColor(_ color: UIColor?) {
-        editorSelectionColor = color
-        updateEditorTint()
-    }
-
-    override open var selectedTextRange: UITextRange? {
-        didSet { updateEditorTint() }
-    }
-
-    override open func layoutSubviews() {
-        super.layoutSubviews()
-        updateEditorTint()
-    }
-
-    public func updateEditorTint() {
-        // UIKit derives selection highlights and handles from tintColor.
-        // Its native highlight opacity is retained. A collapsed selection
-        // restores the independently configured insertion-caret color.
-        let isSelecting = selectedTextRange.map { !$0.isEmpty } ?? false
-        let color = isSelecting ? (editorSelectionColor ?? editorCursorColor) : editorCursorColor
-        guard !hasAppliedEditorTint || appliedEditorTint != color else { return }
-        hasAppliedEditorTint = true
-        appliedEditorTint = color
         tintColor = color
     }
-
     
     public var padding = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     public var holdKeyboardEnabled = false
@@ -102,10 +69,11 @@ public class UniInputView : UITextField {
     }
 
     public func setWritingDirectionRTL(_ isRTL: Bool) {
+        let currentTextAlignment = textAlignment
         semanticContentAttribute = isRTL ? .forceRightToLeft : .forceLeftToRight
 
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.alignment = textAlignment
+        paragraphStyle.alignment = currentTextAlignment
         paragraphStyle.baseWritingDirection = isRTL ? .rightToLeft : .leftToRight
         var attributes = defaultTextAttributes
         attributes[.paragraphStyle] = paragraphStyle
@@ -114,6 +82,11 @@ public class UniInputView : UITextField {
         if let range = textRange(from: beginningOfDocument, to: endOfDocument) {
             setBaseWritingDirection(isRTL ? .rightToLeft : .leftToRight, for: range)
         }
+
+        // On iOS 18, updating writing-direction attributes may reset an
+        // explicitly configured alignment. Keep direction and alignment
+        // independent so editing and non-editing states render consistently.
+        textAlignment = currentTextAlignment
     }
 
     public func caretBottomOffset() -> CGFloat {

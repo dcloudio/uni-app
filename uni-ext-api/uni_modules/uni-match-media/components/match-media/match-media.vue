@@ -4,8 +4,8 @@
   </view>
 </template>
 
-<script setup lang="ts">
-  import { UniMatchMediaElement } from './global.ts'
+<script setup lang="uts">
+  import { UniMatchMediaElement } from './global.uts'
 
   const RE_MQ_FEATURE = /^(min|max)?([A-Z]?[a-z]+)(?:([A-Z])([a-z]+))?$/
 

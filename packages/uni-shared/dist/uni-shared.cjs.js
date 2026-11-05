@@ -2934,18 +2934,6 @@ function normalizeVaporProps(props) {
     return props;
 }
 
-const uniElementPageMap = new WeakMap();
-function setUniElementPage(pageElement, page) {
-    uniElementPageMap.set(pageElement, page);
-}
-function getUniElementPage(element) {
-    var _a;
-    const pageElement = element.closest('uni-page');
-    return pageElement
-        ? (_a = uniElementPageMap.get(pageElement)) !== null && _a !== void 0 ? _a : null
-        : null;
-}
-
 function getEnvLocale() {
     const { env } = process;
     const lang = env.LC_ALL || env.LC_MESSAGES || env.LANG || env.LANGUAGE;

@@ -7,7 +7,7 @@ const ts = require(require.resolve('typescript', {
   paths: [path.dirname(require.resolve('@typescript-eslint/parser'))],
 }))
 
-const filename = path.join(__dirname, '../components/editor-color.ts')
+const filename = path.join(__dirname, '../components/editor-color.uts')
 const code = ts.transpileModule(fs.readFileSync(filename, 'utf8'), {
   compilerOptions: { module: ts.ModuleKind.CommonJS },
 }).outputText

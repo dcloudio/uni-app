@@ -34,8 +34,7 @@
     "components": {
       "app-android": "dom2",
       "app-harmony": true,
-      "app-ios": true,
-      "web": "dom2"
+      "app-ios": true
     },
     "dependencies": [
       "uni-framework"

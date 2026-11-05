@@ -1,18 +1,13 @@
 <template>
-  <view
-    <!-- #ifdef WEB -->
-    role="radiogroup"
-    @keydown="handleKeydown"
-    <!-- #endif -->
-  >
+  <view>
     <slot></slot>
   </view>
 </template>
 
-<script lang="ts" setup>
-  import { FORM_KEY, RADIO_GROUP_KEY, toStringOrEmpty } from '../common.ts'
-  import { UniRadioGroupElement } from './global.ts'
-  import { FormContext } from '../types.ts'
+<script lang="uts" setup>
+  import { FORM_KEY, RADIO_GROUP_KEY, toStringOrEmpty } from '../common.uts'
+  import { UniRadioGroupElement } from './global.uts'
+  import { FormContext } from '../types.uts'
 
   interface RadioGroupContext {
     selectedValue : Ref<string | null>
@@ -91,36 +86,6 @@
     setSelectedValue(val)
     emit('change', new UniRadioGroupChangeEvent(val))
   }
-
-  // #ifdef WEB
-  function handleKeydown(event: KeyboardEvent) {
-    const direction = event.key === 'ArrowUp' || event.key === 'ArrowLeft' ? -1
-      : event.key === 'ArrowDown' || event.key === 'ArrowRight' ? 1 : 0
-    if (direction === 0 || event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) {
-      return
-    }
-    const target = event.target
-    const group = event.currentTarget
-    // Slotted controls and nested groups handle their own keyboard events.
-    if (!(target instanceof HTMLElement) || !(group instanceof HTMLElement) ||
-        !target.matches('[role="radio"]') || target.closest('[role="radiogroup"]') !== group) {
-      return
-    }
-    const radios = Array.from(group.querySelectorAll<HTMLElement>('[role="radio"]')).filter(radio =>
-      radio.getAttribute('aria-disabled') !== 'true' && radio.closest('[role="radiogroup"]') === group
-    )
-    const index = radios.indexOf(target)
-    if (index < 0) {
-      return
-    }
-    event.preventDefault()
-    const next = radios[(index + direction + radios.length) % radios.length]
-    if (next !== target) {
-      next.focus()
-      next.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
-    }
-  }
-  // #endif
 
   const ctx : RadioGroupContext = {
     selectedValue: selectedValue,

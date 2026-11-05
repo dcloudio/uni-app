@@ -1,10 +1,10 @@
 <template>
   <!-- #ifndef VUE3-VAPOR -->
-  <uni-editor-element :class="['container', themeClass]" ref="rootEl">
+  <uni-editor-element class="container" ref="rootEl">
   <!-- #endif -->
   <!-- #ifdef VUE3-VAPOR -->
   <!-- 外层需要 view 包裹，否则 getElementById 获取到的是 UniWebViewElement -->
-  <view :class="['container', themeClass]">
+  <view class="container">
   <!-- #endif -->
     <web-view ref="webviewElement" src="/uni_modules/uni-editor/static/editor.html" :bounces="false"
     :verticalScrollBarAccess="false" :horizontalScrollBarAccess="false" :webview-styles="{progress: false}" @message="onMessage"
@@ -16,7 +16,7 @@
   </uni-editor-element>
   <!-- #endif -->
 </template>
-<script setup lang="ts">
+<script setup lang="uts">
   /**
    * 富文本编辑器，可以对图片、文字进行编辑。
    * @uniPlatform {
@@ -32,6 +32,7 @@
    *       "unixVaporVer": "5.11"
    *     },
    *     "harmony": {
+   *       "osVer": "√",
    *       "uniVer": "4.23",
    *       "unixVer": "5.08",
    *       "unixVaporVer": "5.08"
@@ -40,9 +41,9 @@
    * }
    */
 
-  import { UniEditorBlurEvent, UniEditorFocusEvent, UniEditorInputEvent, UniEditorStatusChangeEvent, UniEditorStatusChangeEventDetail } from './global.ts'
+  import { UniEditorBlurEvent, UniEditorFocusEvent, UniEditorInputEvent, UniEditorStatusChangeEvent, UniEditorStatusChangeEventDetail } from './global.uts'
   // #ifdef VUE3-VAPOR
-  import { UniEditorElement } from './global.ts'
+  import { UniEditorElement } from './global.uts'
   // #endif
   // #ifndef VUE3-VAPOR
   import { UniEditorElement, NativeEditor } from '@/uni_modules/uni-editor'
@@ -55,24 +56,6 @@
   // #endif
   const instance = getCurrentInstance();
   const eventSeed = `${instance?.uid ?? `${Date.now()}-${Math.floor(Math.random() * 1000000)}`}`;
-
-  const themeClass = ref('')
-  const effectiveTheme = ref('light')
-
-  // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
-  const appBaseInfo = uni.getAppBaseInfo()
-  const deviceInfo = uni.getDeviceInfo()
-  const configuredAppTheme = appBaseInfo.appTheme ?? 'auto'
-  effectiveTheme.value = configuredAppTheme == 'auto' ? (deviceInfo.osTheme ?? 'light') : configuredAppTheme
-  themeClass.value = `uni-editor-${effectiveTheme.value}`
-  const appThemeChangeId = uni.onAppThemeChange((result: AppThemeChangeResult) => {
-    effectiveTheme.value = result.appTheme
-    themeClass.value = `uni-editor-${effectiveTheme.value}`
-  })
-  onUnmounted(() => {
-    uni.offAppThemeChange(appThemeChangeId)
-  })
-  // #endif
 
   // #ifdef VUE3-VAPOR
   // 不依赖form组件内部的变量，因editor组件是可选且依赖可选的webview组件
@@ -114,6 +97,7 @@
      *       "unixVaporVer": "5.11"
      *     },
      *     "harmony": {
+     *       "osVer": "√",
      *       "uniVer": "4.23",
      *       "unixVer": "5.08",
      *       "unixVaporVer": "5.08"
@@ -138,6 +122,7 @@
      *       "unixVaporVer": "5.11"
      *     },
      *     "harmony": {
+     *       "osVer": "√",
      *       "uniVer": "4.23",
      *       "unixVer": "5.08",
      *       "unixVaporVer": "5.08"
@@ -162,6 +147,7 @@
      *       "unixVaporVer": "5.11"
      *     },
      *     "harmony": {
+     *       "osVer": "√",
      *       "uniVer": "4.23",
      *       "unixVer": "5.08",
      *       "unixVaporVer": "5.08"
@@ -186,6 +172,7 @@
      *       "unixVaporVer": "5.11"
      *     },
      *     "harmony": {
+     *       "osVer": "√",
      *       "uniVer": "4.23",
      *       "unixVer": "5.08",
      *       "unixVaporVer": "5.08"
@@ -210,6 +197,7 @@
      *       "unixVaporVer": "5.11"
      *     },
      *     "harmony": {
+     *       "osVer": "√",
      *       "uniVer": "4.23",
      *       "unixVer": "5.08",
      *       "unixVaporVer": "5.08"
@@ -235,6 +223,7 @@
      *       "unixVaporVer": "5.11"
      *     },
      *     "harmony": {
+     *       "osVer": "√",
      *       "uniVer": "x",
      *       "unixVer": "5.08",
      *       "unixVaporVer": "5.08"
@@ -283,20 +272,6 @@
   let isReady = false
   let callbackId = 0
   const callbackMap = new Map<number, UTSJSONObject>()
-  const computedStyle = useComputedStyle({
-    properties: ['caret-color', 'color'],
-    filterProperties: true
-  } as UseComputedStyleOptions)
-  const computedCaretColor = computed<string | null>(() => computedStyle.get('caret-color')?.toString() ?? null)
-  const computedTextColor = computed<string | null>(() => computedStyle.get('color')?.toString() ?? null)
-  const caretColor = computed<string>(() => {
-    const value = computedCaretColor.value
-    return value == null || value.length == 0 || value == 'auto' ? '#3393E2' : value
-  })
-  const textColor = computed<string>(() => {
-    const value = computedTextColor.value
-    return value == null || value.length == 0 || value == 'auto' ? (effectiveTheme.value == 'dark' ? '#FFFFFF' : '#000000') : value
-  })
 
   // #ifdef VUE3-VAPOR
   let formValue = ''
@@ -306,25 +281,6 @@
   function LOG(...args : string[]) {
     // 此处供开发时调试
     // console.log(`${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} [Editor LOG]`, ...args)
-  }
-
-  /**
-   * 执行 JS 代码。安卓 VDOM 要求方法定义在调用之前。
-   */
-  function evalJS(js : string) {
-    if (webviewElement.value == null) {
-      LOG('WebView element not ready')
-      return
-    }
-    LOG('Eval JS:', js)
-    webviewElement.value!.evalJS(js)
-  }
-
-  function updateEditorStyle() {
-    if (isReady) {
-      evalJS(`editorSetCaretColor(${JSON.stringify(caretColor.value)})`)
-      evalJS(`editorSetTextColor(${JSON.stringify(textColor.value)})`)
-    }
   }
 
   /**
@@ -340,12 +296,10 @@
   function handleCallback(cbId : number, result : UTSJSONObject) {
     let callbacks = callbackMap.get(cbId)
     // #ifdef APP-ANDROID
-    // #ifndef VUE3-VAPOR
     // TODO 安卓 map bug
     if (callbacks == null) {
       callbacks = callbackMap.get(cbId.toInt())
     }
-    // #endif
     // #endif
     if (callbacks == null) {
       LOG('Callback not found for id:', cbId.toString())
@@ -406,7 +360,6 @@
       case 'ready':
         // 编辑器初始化完成
         isReady = true
-        updateEditorStyle()
         emit('ready')
         break
 
@@ -501,6 +454,18 @@
     }
   }
 
+  /**
+   * 执行 JS 代码
+   */
+  function evalJS(js : string) {
+    if (webviewElement.value == null) {
+      LOG('WebView element not ready')
+      return
+    }
+    LOG('Eval JS:', js)
+    webviewElement.value!.evalJS(js)
+  }
+
   // #ifdef VUE3-VAPOR
   /**
    * 同步表单value到editor
@@ -510,7 +475,7 @@
       return
     }
     const syncCallbackId = generateCallbackId()
-    const syncOptions: UTSJSONObject = {}
+    const syncOptions = new UTSJSONObject()
     syncOptions['success'] = (res : UTSJSONObject) => {
       updateFormValue(res['html'] as string | null)
     }
@@ -541,9 +506,7 @@
       showImgToolbar: props.showImgToolbar,
       showImgResize: props.showImgResize,
       readOnly: props.readOnly,
-      type: props.type,
-      caretColor: caretColor.value,
-      textColor: textColor.value
+      type: props.type
     }
 
     evalJS(`editorInit(${JSON.stringify(config)})`)
@@ -655,7 +618,7 @@
     }
     const cbId = _cbId ?? generateCallbackId()
     callbackMap.set(cbId, options)
-    const params: UTSJSONObject = {}
+    const params = new UTSJSONObject()
 
     params['id'] = options?.id ?? null
     params['name'] = options?.name ?? null
@@ -819,7 +782,7 @@
         getValue: () => formValue,
         reset: () => {
           updateFormValue('')
-          clear({})
+          clear(new UTSJSONObject())
         }
       })
     }
@@ -853,9 +816,6 @@
       evalJS(`editorSetPlaceholder({placeholder: '${escapeString(newVal)}'})`)
     }
   })
-
-  watch(caretColor, updateEditorStyle)
-  watch(textColor, updateEditorStyle)
 
   // #ifndef VUE3-VAPOR
   const __UNIEDITOR_FORMAT_EVENT_NAME__ = createEditorEventName('format', eventSeed)
@@ -951,21 +911,5 @@
     height: 100%;
     overflow: hidden;
     min-height: 200px;
-    color: #000000;
-    caret-color: #3393E2;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    .container {
-      color: #FFFFFF;
-    }
-  }
-
-  .uni-editor-light {
-    color: #000000;
-  }
-
-  .uni-editor-dark {
-    color: #FFFFFF;
   }
 </style>

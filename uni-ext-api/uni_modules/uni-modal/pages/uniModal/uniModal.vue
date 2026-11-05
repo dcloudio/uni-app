@@ -39,8 +39,7 @@
 						@keyboardheightchange="onInputKeyboardChange" :auto-height="isAutoHeight"
 						:placeholder="placeholderText" />
 
-					<scroll-view v-else-if="content.length > 0" class="uni-modal-dialog__scroll"
-						:show-scrollbar="false" :bounces="false"
+					<scroll-view v-else-if="content.length > 0" class="uni-modal-dialog__scroll" show-scrollbar="true"
 						:style="{ maxHeight: maxScrollHeight }">
 						<text class="uni-modal-dialog__message">
 							{{ content }}

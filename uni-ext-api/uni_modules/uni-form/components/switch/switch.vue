@@ -1,61 +1,35 @@
 <template>
   <view
     class="uni-switch"
-    :class="classes(
-      [enableTransition, 'transition-enabled'],
-      [disabled, 'uni-switch-disabled'],
-      [isChecked, 'uni-switch-active'],
-      [isChecked, switchActiveClass]
-    )"
-    :style="activeStyle"
-    <!-- #ifdef WEB -->
-    :tabindex="disabled ? -1 : 0"
-    @keydown="handleKeydown"
-    @keyup="handleKeyup"
-    @blur="handleBlur"
-    role="switch"
-    :aria-checked="isChecked"
-    :aria-disabled="disabled"
-    <!-- #endif -->
+    :class="[
+      {
+        'transition-enabled': enableTransition,
+        'uni-switch-disabled': disabled,
+        'uni-switch-active': isChecked
+      },
+      isChecked ? switchActiveClass : ''
+    ]"
     @click.stop="handleTap"
   >
     <view
       class="uni-switch-thumb"
-      :class="classes(
-        [enableTransition, 'thumb-transition-enabled'],
-        [isChecked, 'uni-switch-active-thumb'],
-        [isChecked, thumbActiveClass, thumbClass]
-      )"
+      :class="[
+        {
+          'thumb-transition-enabled': enableTransition,
+          'uni-switch-active-thumb': isChecked
+        },
+        isChecked ? thumbActiveClass : thumbClass
+      ]"
     ></view>
   </view>
 </template>
 
-<script lang="ts" setup>
-  // #ifdef WEB
-  import { createSpaceKeyHandlers } from '../common.ts'
-  // #endif
-  import { FORM_KEY, LABEL_KEY, dispatchLabelClick, registerLabelTarget, classes } from '../common.ts'
-  import { UniSwitchElement } from './global.ts'
-  import { ActivatableChild, FormContext, LabelContext } from '../types.ts'
+<script lang="uts" setup>
+  import { FORM_KEY, LABEL_KEY, dispatchLabelClick, registerLabelTarget } from '../common.uts'
+  import { UniSwitchElement } from './global.uts'
+  import { ActivatableChild, FormContext, LabelContext } from '../types.uts'
 
   interface SwitchProps {
-    /**
-     * switch 的颜色，同css的color
-     * @uniPlatform {
-       "app": {
-         "ios": {
-           "unixVaporVer": "5.34"
-         },
-         "android": {
-           "unixVaporVer": "5.34"
-         },
-         "harmony": {
-           "unixVaporVer": "5.34"
-         }
-       }
-     }
-     */
-    color?: string;
     /**
      * 是否禁用
      * @uniPlatform {
@@ -209,7 +183,6 @@
   }
 
   const props = withDefaults(defineProps<SwitchProps>(), {
-    color: '',
     disabled: false,
     checked: false,
     name: '',
@@ -217,10 +190,6 @@
     thumbActiveClass: '',
     switchActiveClass: ''
   })
-
-  // #ifdef WEB
-  const { handleKeydown, handleKeyup, handleBlur } = createSpaceKeyHandlers(() => props.disabled)
-  // #endif
 
   defineOptions({
     name: 'switch',
@@ -265,12 +234,6 @@
   let unregisterLabelTarget: (() => void) | null = null
 
   const isChecked = ref(props.checked)
-  const activeStyle = computed(() => {
-    if (isChecked.value && props.color) {
-      return { 'background-color': props.color }
-    }
-    return {}
-  })
   const initialChecked = ref(false)
   const enableTransition = ref(false)
 
@@ -294,14 +257,12 @@
     }
     // register with label if available
     const target: ActivatableChild = {
-        id: id || props.name,
-        activate: (event: UniPointerEvent) => {
-          const element = proxy?.$el
-          if (element != null) {
-            dispatchLabelClick(element, event)
-          }
-        },
-        getDisabled: () => props.disabled
+      id: id || props.name,
+      activate: (event: UniPointerEvent) => {
+        const element = proxy?.$el
+        if (element != null) dispatchLabelClick(element, event)
+      },
+      getDisabled: () => props.disabled
     }
     if (labelCtx != null) {
       labelCtx.register(target)

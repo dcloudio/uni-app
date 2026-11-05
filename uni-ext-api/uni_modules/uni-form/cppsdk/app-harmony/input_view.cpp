@@ -685,9 +685,6 @@ void NativeInputView::ensureInputNode() {
   if (!cursor_color_.empty()) {
     updateCursorColor(cursor_color_);
   }
-  if (!selection_color_.empty()) {
-    updateSelectionColor(selection_color_);
-  }
   applyRequestedSelection();
   // Configure the TextInput while it is detached. Binding first makes every
   // setAttribute call invalidate the live render tree, which is especially
@@ -814,11 +811,6 @@ void NativeInputView::setColorAttribute(ArkUI_NodeAttributeType type,
 
   uint32_t argb = 0;
   if (!parseCssColor(value, argb)) return;
-  if (type == NODE_TEXT_INPUT_SELECTED_BACKGROUND_COLOR &&
-      (argb >> 24) == 0xFF) {
-    // Match ArkTS selectedBackgroundColor: opaque colors use 20% opacity.
-    argb = (argb & 0x00FFFFFFu) | 0x33000000u;
-  }
   ArkUI_NumberValue values[] = {{.u32 = argb}};
   ArkUI_AttributeItem item = {values, 1};
   UniAppX_ArkUIModuleInterface->setAttribute(input_node_, type, &item);
@@ -1067,16 +1059,6 @@ void NativeInputView::updateCursorColor(const std::string &value) {
     resetAttribute(NODE_TEXT_INPUT_CARET_COLOR);
   } else {
     setColorAttribute(NODE_TEXT_INPUT_CARET_COLOR, value);
-  }
-}
-
-void NativeInputView::updateSelectionColor(const std::string &value) {
-  selection_color_ = value;
-  ensureInputNode();
-  if (value.empty()) {
-    resetAttribute(NODE_TEXT_INPUT_SELECTED_BACKGROUND_COLOR);
-  } else {
-    setColorAttribute(NODE_TEXT_INPUT_SELECTED_BACKGROUND_COLOR, value);
   }
 }
 

@@ -27,13 +27,7 @@
   <!-- #endif -->
   <!-- #endif -->
 
-  <!-- #ifdef WEB && VUE3-VAPOR -->
-  <view class="default __uni_loading_container__" ref="LoadingRef" style="display: flex;">
-    <view class="__uni-loading__ __loading-4-3__" :class="{ '__uni-loading__paused': props.paused }" :style="loadingStyle"></view>
-  </view>
-  <!-- #endif -->
-
-  <!-- #ifdef MP || (WEB && !VUE3-VAPOR) -->
+  <!-- #ifdef WEB || MP -->
   <uni-loading-element class="default __uni_loading_container__" ref="LoadingRef" style="display: flex;">
     <view class="__uni-loading__ __loading-4-3__" :class="{ '__uni-loading__paused': props.paused }" :style="loadingStyle"></view>
   </uni-loading-element>
@@ -45,7 +39,7 @@
   namespace="uniappx::loading"></script>
 <!-- #endif -->
 
-<script setup lang="ts">
+<script setup lang="uts">
 // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
 import { UniLoadingElement } from "@/uni_modules/uni-loading";
 // #endif
@@ -116,28 +110,10 @@ defineOptions({
   styleIsolation: 'app-and-page',
   // @ts-ignore
   rootElement: {
-    // #ifndef WEB && VUE3-VAPOR
     name: 'uni-loading-element',
-    // #endif
     class: UniLoadingElement
   }
 });
-
-// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
-const deviceInfo = uni.getDeviceInfo()
-const appBaseInfo = uni.getAppBaseInfo()
-const configuredAppTheme = appBaseInfo.appTheme ?? 'auto'
-const effectiveTheme = ref<string>(configuredAppTheme == 'auto' ? (deviceInfo.osTheme ?? 'light') : configuredAppTheme)
-const appThemeChangeId = uni.onAppThemeChange((result: AppThemeChangeResult) => {
-  effectiveTheme.value = result.appTheme
-})
-const defaultLoadingColor = computed<string>(() => {
-  return effectiveTheme.value == 'dark' ? '#FFFFFFFF' : '#000000FF'
-})
-onUnmounted(() => {
-  uni.offAppThemeChange(appThemeChangeId)
-})
-// #endif
 
 // #ifdef WEB
 const LoadingRef = ref<HTMLElement | null>(null)
@@ -178,7 +154,7 @@ const style = useComputedStyle({
 
 // #ifdef VUE3-VAPOR && APP-HARMONY
 function rgba2argb(color: string | null): string | null {
-  if (color != null && color.startsWith('#') && color.length == 9) {
+  if (color !== null && color.startsWith('#') && color.length == 9) {
     // 将 #RRGGBBAA 转换为 #AARRGGBB
     const alpha = color.substring(7, 9)  // AA
     const rgb = color.substring(1, 7)    // RRGGBB
@@ -190,12 +166,6 @@ function rgba2argb(color: string | null): string | null {
 
 // border-color 会被解为四个方向的值，取 top 值（哪个方向都一样）vapor 模式下需要转换为 argb 格式
 const borderColor = computed<string | null>(() => style.get('border-color')?.toString() ?? style.get('border-top-color')?.toString())
-// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
-const resolvedBorderColor = computed<string | null>(() => {
-  const value = borderColor.value
-  return value != null && value.length > 0 ? value : null
-})
-// #endif
 // ios 增加ios-spinner = true, color 优先级 > border-color, 两个css style 均生效
 const color = computed<string | null>(() => style.get('color')?.toString())
 const timingFunction = computed<string | null>(() => style.get('animation-timing-function')?.toString())
@@ -212,7 +182,7 @@ function getPage(): UniPage {
 }
 
 watchEffect(() => {
-  loadingColor.value = rgba2argb(resolvedBorderColor.value ?? defaultLoadingColor.value) ?? defaultLoadingColor.value
+  loadingColor.value = rgba2argb(borderColor.value) ?? '#FF000000'
   loadingBold.value = props.bold == true
 })
 
@@ -254,16 +224,16 @@ const loadingState = reactive<LoadingState>({
 })
 
 watchEffect(() => {
-  let colorValue = resolvedBorderColor.value
+  let colorValue = borderColor.value
 	// #ifdef APP-IOS
-	if (color?.value != null && color.value.length > 0 && props.iosSpinner == true) {
+	if (color?.value != null && props.iosSpinner == true) {
 		colorValue = color.value
 	}
 	// #endif
 
-  if (colorValue == null) {
-    colorValue = defaultLoadingColor.value
-  }
+  // #ifdef VUE3-VAPOR && APP-HARMONY
+  colorValue = rgba2argb(colorValue)
+  // #endif
   const width = props.bold ? 'thick' : 'medium'
   loadingState.nativeLoading?.updateStyle(
     colorValue,
@@ -297,7 +267,8 @@ onUnmounted(() => {
 })
 // #endif
 
-// #ifdef APP-HARMONY && !VUE3-VAPOR
+// #ifdef APP-HARMONY
+// #ifndef VUE3-VAPOR
 type LoadingState = { nativeLoading : NativeLoading | null }
 const loadingState = reactive<LoadingState>({
   nativeLoading: null
@@ -305,7 +276,7 @@ const loadingState = reactive<LoadingState>({
 
 watchEffect(() => {
   const width = props.bold ? 'thick' : 'medium'
-  loadingState.nativeLoading?.updateStyle(resolvedBorderColor.value ?? defaultLoadingColor.value, width)
+  loadingState.nativeLoading?.updateStyle(borderColor.value, width)
 })
 
 watchEffect(() => {
@@ -318,9 +289,8 @@ const onviewinit = (e : UniNativeViewInitEvent) => {
 
 onUnmounted(() => {
   loadingState.nativeLoading?.destroy()
-  // 置空引用，避免组件卸载后仍有待执行的 watchEffect 调用到已销毁的原生对象
-  loadingState.nativeLoading = null
 })
+// #endif
 // #endif
 // #endif
 </script>
@@ -373,14 +343,6 @@ onUnmounted(() => {
 
   100% {
     transform: rotate(360deg);
-  }
-}
-/* #endif */
-
-/* #ifdef WEB || MP || VUE3-VAPOR */
-@media (prefers-color-scheme: dark) {
-  .default {
-    color: #fff;
   }
 }
 /* #endif */

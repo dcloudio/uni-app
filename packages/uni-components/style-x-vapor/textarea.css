@@ -1,0 +1,26 @@
+.uni-textarea-wrapper {
+  width: 300px;
+
+  /* 暗黑适配：表单默认背景色（开发者用 class/style 可覆盖，页面样式优先级更高） */
+  background-color: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  .uni-textarea-wrapper {
+    background-color: #3b3b3b;
+  }
+}
+
+.uni-textarea-container {
+  height: 100%;
+}
+
+.uni-textarea-placeholder {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: #757575;
+  font-size: var(--uni-textarea-placeholder-font-size, 16px);
+}

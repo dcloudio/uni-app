@@ -1,29 +1,16 @@
 <template>
-  <view
-    <!-- #ifdef WEB -->
-    :tabindex="disabled ? -1 : 0"
-    @keydown="handleKeydown"
-    @keyup="handleKeyup"
-    @blur="handleBlur"
-    class="uni-label"
-    :aria-disabled="disabled"
-    <!-- #endif -->
-    @click="handleTap"
-  >
+  <view @click="handleTap">
     <slot></slot>
   </view>
 </template>
 
-<script lang="ts" setup>
-  // #ifdef WEB
-  import { createSpaceKeyHandlers } from '../common.ts'
-  // #endif
+<script lang="uts" setup>
   // Label that supports internal form controls (checkbox/radio/switch)
   // via provide/inject registration. Clicking the label will activate
   // the first registered control, or the one matching `for` if provided.
-  import { LABEL_KEY, findLabelTarget } from '../common.ts'
-  import { UniLabelElement } from './global.ts'
-  import { ActivatableChild, LabelContext } from '../types.ts'
+  import { LABEL_KEY, findLabelTarget } from '../common.uts'
+  import { UniLabelElement } from './global.uts'
+  import { ActivatableChild, LabelContext } from '../types.uts'
 
   interface LabelProps {
     /**
@@ -66,10 +53,6 @@
     disabled: false,
     for: ''
   })
-
-  // #ifdef WEB
-  const { handleKeydown, handleKeyup, handleBlur } = createSpaceKeyHandlers(() => props.disabled)
-  // #endif
 
   defineOptions({
     name: 'label',
@@ -119,22 +102,10 @@
   }
 
   const handleTap = (event: UniPointerEvent) => {
-    // #ifdef WEB
-    // Web 通过 DOM 祖先识别按钮：旧宿主使用 uni-button 标签，Vapor 使用同名属性，新 UVue 使用同名根类。
-    // 按钮已处理自身点击，跳过 Label 联动以免激活其他控件，同时保留业务事件冒泡。
-    // Node、Element 和 closest 仅用于 Web，App 保持原有处理流程。
-    const eventTarget = event.target as Node | null
-    const element = eventTarget?.nodeType === 1
-      ? eventTarget as Element
-      : eventTarget?.parentElement
-    if (element?.closest('uni-button, [uni-button], .uni-button')) {
-      return
-    }
-    // #endif
     const classList: string[] = event.target?.classList ? event.target.classList : []
-    // 索引遍历同时兼容 App 的数组和 Web 的 DOMTokenList，避免额外转换。
-    for (let i = 0; i < classList.length; i++) {
-      if (/^uni-(checkbox|radio|switch)/.test(classList[i])) {
+    if (classList.length > 0) {
+      const shouldStopPagination = classList.some((cls) => /^uni-(checkbox|radio|switch)/.test(cls))
+      if (shouldStopPagination) {
         return
       }
     }

@@ -7,8 +7,8 @@
   </view>
 </template>
 
-<script lang="ts" setup>
-  import { UniProgressElement } from './global.ts'
+<script lang="uts" setup>
+  import { UniProgressElement } from './global.uts'
 
   type ActiveModeType = 'backwards' | 'forwards'
 
@@ -244,24 +244,24 @@
 
   const percentText = ref('0%')
 
-  const backgroundStyle = computed(() => {
-    return {
-      'background-color': props.backgroundColor,
-      'height': props.strokeWidth + 'px',
-      'border-radius': props.borderRadius + 'px'
-    }
+  const backgroundStyle = computed<Map<string, string>>(() => {
+    return new Map<string, string>([
+      ['background-color', props.backgroundColor],
+      ['height', props.strokeWidth + 'px'],
+      ['border-radius', props.borderRadius + 'px']
+    ])
   })
 
-  const foregroundStyle = computed(() => {
-    return {
-      'background-color': props.activeColor
-    }
+  const foregroundStyle = computed<Map<string, string>>(() => {
+    return new Map<string, string>([
+      ['background-color', props.activeColor]
+    ])
   })
 
-  const fontStyle = computed(() => {
-    return {
-      'font-size': props.fontSize + 'px'
-    }
+  const fontStyle = computed<Map<string, string>>(() => {
+    return new Map<string, string>([
+      ['font-size', props.fontSize + 'px']
+    ])
   })
 
   watch(() => props.percent, () => {
