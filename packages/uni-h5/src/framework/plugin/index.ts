@@ -21,7 +21,10 @@ export default {
     //#endif
 
     initApp(app)
+    //#if !_X_VAPOR_
+    // Vapor 使用上面的原生事件归一化入口，不安装旧 $nne/$gcd 及 WXS/renderjs 支持。
     initViewPlugin(app)
+    //#endif
     initServicePlugin(app)
 
     if (!app.config.warnHandler) {

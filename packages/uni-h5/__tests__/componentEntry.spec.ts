@@ -22,6 +22,66 @@ async function compileEntry(file: string, vapor: boolean, node: boolean) {
 }
 
 describe('Web 框架组件入口', () => {
+  test.each([
+    [false, false],
+    [false, true],
+    [true, false],
+    [true, true],
+  ])(
+    'Vapor 跳过旧视图插件，保留原生事件入口（Vapor=%s，Node=%s）',
+    async (vapor, node) => {
+      const code = await compileEntry(
+        'src/framework/plugin/index.ts',
+        vapor,
+        node
+      )
+      const initApp = jest.fn()
+      const initViewPlugin = jest.fn()
+      const initServicePlugin = jest.fn()
+      const setNativeEventNormalizer = jest.fn()
+      const normalizeVaporNativeEvent = jest.fn()
+      const imports: Record<string, any> = {
+        vue: { setRealPathResolver: jest.fn(), setNativeEventNormalizer },
+        '@dcloudio/uni-core': {
+          initViewPlugin,
+          initServicePlugin,
+          normalizeVaporNativeEvent,
+        },
+        '@dcloudio/uni-vue': { initApp },
+        '../../platform': { getRealPath: jest.fn() },
+        './router': { initRouter: jest.fn() },
+      }
+      const exports: any = {}
+      new Function(
+        'require',
+        'exports',
+        '__UNI_FEATURE_PAGES__',
+        ts.transpileModule(code, {
+          compilerOptions: { module: ts.ModuleKind.CommonJS },
+        }).outputText
+      )(
+        (id: string) => {
+          if (!(id in imports)) throw new Error(`意外依赖：${id}`)
+          return imports[id]
+        },
+        exports,
+        false
+      )
+      const app = { config: {} }
+      exports.default.install(app)
+      expect(initApp).toHaveBeenCalledWith(app)
+      expect(initServicePlugin).toHaveBeenCalledWith(app)
+      expect(initViewPlugin).toHaveBeenCalledTimes(vapor ? 0 : 1)
+      if (vapor && !node) {
+        expect(setNativeEventNormalizer).toHaveBeenCalledWith(
+          normalizeVaporNativeEvent
+        )
+      } else {
+        expect(setNativeEventNormalizer).not.toHaveBeenCalled()
+      }
+    }
+  )
+
   test.each([false, true])(
     '仅 VDOM 注入 animation mixin，保留已有配置（Vapor=%s）',
     async (vapor) => {
