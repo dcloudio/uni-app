@@ -1,8 +1,4 @@
-::: warning 注意事项
-
-使用前，需先按[蓝牙-通用](./bluetooth-general.md)中的流程初始化适配器并发现目标设备。建立连接后，先发现服务和特征值，再进行读写或开启通知；断开连接后需重新连接并重新发现服务与特征值。
-
-:::
+> HBuilder5.36及以上版本app-android/app-ios平台uni-app x项目内置支持蓝牙功能，HBuilder5.36以下版本需下载插件：[uni-bluetooth](https://ext.dcloud.net.cn/plugin?id=30539)
 
 ## 模块介绍
 
@@ -43,6 +39,12 @@ GATT 还区分 **客户端（Client）** 和 **服务端（Server）**：客户�
 本文负责连接与数据通信，[蓝牙-通用](./bluetooth-general.md)负责适配器管理与设备发现。各接口及参数的支持范围以对应的兼容性表为准。
 
 ## 使用流程
+
+::: warning 注意事项
+
+使用前，需先按[蓝牙-通用](./bluetooth-general.md)中的流程初始化适配器并发现目标设备。建立连接后，先发现服务和特征值，再进行读写或开启通知；断开连接后需重新连接并重新发现服务与特征值。
+
+:::
 
 <img class="zooming" src="../static/bluetooth-le-central-flow.svg" alt="BLE 中心设备流程：连接设备、发现服务和特征值、按属性收发数据并清理连接" width="400">
 
