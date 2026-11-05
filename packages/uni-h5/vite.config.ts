@@ -151,6 +151,9 @@ autoImportOptions.imports = autoImportOptions.imports!.filter(
   (item: any) => item.from !== '@dcloudio/uni-cloud'
 )
 autoImportOptions.include = ['**/uni-ext-api/uni_modules/**']
+// 内置 UTS 代码静态引用全局 UniError 的同一实现，避免裁剪后残留全局读取。
+// 复用后置自动导入：TypeScript 去掉 implements 后才能正确识别这类继承声明。
+autoImportOptions.imports!.push({ '@dcloudio/uni-shared': ['UniError'] })
 const extApiPlugin = isX ? uniExtApi() : undefined
 if (isX_VAPOR && extApiPlugin) {
   // Web Vapor 内置组件的元素基类必须优先从 uni-components 导入，避免 CJS 框架构建自引用 uni-h5。
