@@ -2,7 +2,6 @@ import fs from 'fs'
 import path from 'path'
 import ts from 'typescript'
 import jscc from 'rollup-plugin-jscc'
-import { compileScript, parse } from '@vue/compiler-sfc'
 import { usePageRoute } from '../src/framework/setup/provide/page'
 
 const mockUseRoute = jest.fn()
@@ -21,16 +20,20 @@ describe('Vapor 页面查询参数', () => {
   beforeAll(async () => {
     const filename = path.resolve(
       __dirname,
-      '../src/framework/components/page/index-vapor.vue'
+      '../src/framework/components/page/index-vapor.tsx'
     )
-    const { descriptor } = parse(fs.readFileSync(filename, 'utf8'), {
-      filename,
-    })
-    const script = compileScript(descriptor, { id: 'vapor-page-query' })
-    const code = ts.transpileModule(script.content, {
-      compilerOptions: { module: ts.ModuleKind.CommonJS },
+    const code = ts.transpileModule(fs.readFileSync(filename, 'utf8'), {
+      fileName: filename,
+      compilerOptions: {
+        module: ts.ModuleKind.CommonJS,
+        jsx: ts.JsxEmit.React,
+      },
     }).outputText
+    let pageProps: unknown
     const imports = {
+      '@dcloudio/uni-components': {
+        defineSystemComponent: (options: unknown) => options,
+      },
       vue: {
         defineComponent: (options: unknown) => options,
         getCurrentInstance: () => ({
@@ -42,7 +45,11 @@ describe('Vapor 页面查询参数', () => {
       },
       '../../setup/provide': {
         providePageMeta: () => ({ navigationBar: {} }),
-        usePageRoute,
+        usePageRoute: () => {
+          const route = usePageRoute()
+          pageProps = route.query
+          return route
+        },
       },
       '../../../helpers/useDocumentTitle': { useDocumentTitle: () => {} },
       '../../../helpers/useBackgroundColorContent': {
@@ -52,8 +59,8 @@ describe('Vapor 页面查询参数', () => {
       '@dcloudio/uni-core': { isDialogPageInstance: () => false },
       '@dcloudio/uni-shared': {},
       '../../setup/page': {},
-      './pageHead.vue': {},
-      './pageBody.vue': {},
+      './pageHead-vapor': {},
+      './pageBody-vapor': {},
     }
     const exports = {} as any
     new Function('require', 'exports', '__UNI_FEATURE_NAVIGATIONBAR__', code)(
@@ -64,7 +71,10 @@ describe('Vapor 页面查询参数', () => {
       exports,
       false
     )
-    setup = () => exports.default.setup({}, { expose: () => {} })
+    setup = () => {
+      exports.default.setup()
+      return { pageProps }
+    }
 
     // 同时执行实际页面初始化，避免只验证外层 Page 而遗漏 Router 注入。
     for (const vapor of [true, false]) {

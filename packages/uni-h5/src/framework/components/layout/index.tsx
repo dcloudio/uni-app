@@ -36,7 +36,7 @@ import {
 import { checkMinWidth } from '../../../helpers/dom'
 import { hasOwn } from '@vue/shared'
 
-import TabBar from './tabBar.vue'
+import TabBar from './tabBar'
 import { type LayoutState, setLayoutState } from './state'
 import { usePageRoute } from '../../setup/provide'
 

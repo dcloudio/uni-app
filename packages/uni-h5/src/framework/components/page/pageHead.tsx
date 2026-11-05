@@ -1,204 +1,12 @@
-<template>
-  <uni-page-head :uni-page-head-type="navigationBar.type || 'default'">
-    <div ref="headRef" :class="clazz" :style="style">
-      <div class="uni-page-head-hd">
-        <div
-          v-if="hasPages && !pageMeta.isQuit"
-          class="uni-page-head-btn"
-          @click="onPageHeadBackButton"
-        >
-          <svg width="26" height="26" viewBox="0 0 32 32">
-            <path
-              :d="ICON_PATH_BACK"
-              fill="none"
-              :stroke="
-                navigationBar.type === 'transparent'
-                  ? '#fff'
-                  : navigationBar.titleColor
-              "
-              stroke-width="2"
-              stroke-linecap="round"
-            />
-          </svg>
-        </div>
-        <template v-if="hasButtons && buttons">
-          <div
-            v-for="(button, index) in buttons.left"
-            :key="index"
-            :class="button.btnClass"
-            :style="button.btnStyle"
-            :badge-text="button.badgeText"
-            @click="button.onClick"
-          >
-            <svg
-              v-if="button.btnIconPath"
-              :width="getSvgSize(button.iconStyle.fontSize)"
-              :height="getSvgSize(button.iconStyle.fontSize)"
-              viewBox="0 0 32 32"
-            >
-              <path
-                :d="button.btnIconPath"
-                :fill="getSvgColor(button.iconStyle.color)"
-              />
-            </svg>
-            <span v-else-if="button.btnSelect" :style="button.iconStyle">
-              <i class="uni-btn-icon" v-html="button.btnText" />
-              <svg width="14" height="14" viewBox="0 0 32 32">
-                <path
-                  :d="ICON_PATHS.select"
-                  fill="none"
-                  stroke="#000"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                />
-              </svg>
-            </span>
-            <i
-              v-else
-              class="uni-btn-icon"
-              :style="button.iconStyle"
-              v-html="button.btnText"
-            />
-          </div>
-        </template>
-      </div>
-      <div
-        v-if="!hasSearchInput || !navigationBar.searchInput"
-        class="uni-page-head-bd"
-      >
-        <div
-          class="uni-page-head__title"
-          :style="{
-            fontSize: navigationBar.titleSize,
-            opacity: navigationBar.type === 'transparent' ? 0 : 1,
-          }"
-        >
-          <i v-if="!isXVapor && navigationBar.loading" class="uni-loading" />
-          <Loading v-else-if="isXVapor && navigationBar.loading" style="display: inline-block; width: 20px; height: 20px; margin-top: 7px;"></Loading>
-          <img
-            v-else-if="navigationBar.titleImage"
-            :src="navigationBar.titleImage"
-            class="uni-page-head__title_image"
-          />
-          <template v-else>{{ navigationBar.titleText }}</template>
-        </div>
-      </div>
-      <div
-        v-else
-        class="uni-page-head-search"
-        :style="{
-          borderRadius: navigationBar.searchInput.borderRadius,
-          backgroundColor: navigationBar.searchInput.backgroundColor,
-        }"
-      >
-        <div
-          :style="{ color: navigationBar.searchInput.placeholderColor }"
-          :class="[
-            'uni-page-head-search-placeholder',
-            `uni-page-head-search-placeholder-${
-              searchFocus || searchText
-                ? 'left'
-                : navigationBar.searchInput.align
-            }`,
-          ]"
-        >
-          <div class="uni-page-head-search-icon">
-            <svg width="20" height="20" viewBox="0 0 32 32">
-              <path
-                :d="ICON_PATH_SEARCH"
-                :fill="navigationBar.searchInput.placeholderColor"
-              />
-            </svg>
-          </div>
-          <template v-if="!(searchText || searchComposing)">
-            {{ navigationBar.searchInput.placeholder }}
-          </template>
-        </div>
-        <Input
-          v-if="navigationBar.searchInput.disabled"
-          :disabled="true"
-          :style="{ color: navigationBar.searchInput.color }"
-          :placeholder-style="
-            'color: ' + navigationBar.searchInput.placeholderColor
-          "
-          class="uni-page-head-search-input"
-          confirm-type="search"
-          @click="searchOnClick && searchOnClick($event)"
-        />
-        <Input
-          v-else
-          :focus="navigationBar.searchInput.autoFocus"
-          :style="{ color: navigationBar.searchInput.color }"
-          :placeholder-style="
-            'color: ' + navigationBar.searchInput.placeholderColor
-          "
-          class="uni-page-head-search-input"
-          confirm-type="search"
-          @focus="searchOnFocus && searchOnFocus($event)"
-          @blur="searchOnBlur && searchOnBlur($event)"
-          @input="searchOnInput && searchOnInput($event)"
-          @confirm="searchOnConfirm && searchOnConfirm($event)"
-        />
-      </div>
-      <div class="uni-page-head-ft">
-        <template v-if="hasButtons && buttons">
-          <div
-            v-for="(button, index) in buttons.right"
-            :key="index"
-            :class="button.btnClass"
-            :style="button.btnStyle"
-            :badge-text="button.badgeText"
-            @click="button.onClick"
-          >
-            <svg
-              v-if="button.btnIconPath"
-              :width="getSvgSize(button.iconStyle.fontSize)"
-              :height="getSvgSize(button.iconStyle.fontSize)"
-              viewBox="0 0 32 32"
-            >
-              <path
-                :d="button.btnIconPath"
-                :fill="getSvgColor(button.iconStyle.color)"
-              />
-            </svg>
-            <span v-else-if="button.btnSelect" :style="button.iconStyle">
-              <i class="uni-btn-icon" v-html="button.btnText" />
-              <svg width="14" height="14" viewBox="0 0 32 32">
-                <path :d="ICON_PATHS.select" fill="#000" />
-              </svg>
-            </span>
-            <i
-              v-else
-              class="uni-btn-icon"
-              :style="button.iconStyle"
-              v-html="button.btnText"
-            />
-          </div>
-        </template>
-      </div>
-    </div>
-    <div
-      v-if="
-        navigationBar.type !== 'transparent' && navigationBar.type !== 'float'
-      "
-      :class="{
-        'uni-placeholder': true,
-        'uni-placeholder-titlePenetrate': navigationBar.titlePenetrate,
-      }"
-    />
-  </uni-page-head>
-</template>
-
-<script setup lang="ts">
 import { computed, onBeforeMount, ref } from 'vue'
 import { extend, isArray } from '@vue/shared'
-import { Input } from '@dcloudio/uni-components'
-import Loading from '../../../../../uni-components/src/vue/loading'
+import { Input, defineSystemComponent } from '@dcloudio/uni-components'
 import { getRealPath } from '@dcloudio/uni-platform'
 import {
   ICON_PATH_BACK,
   ICON_PATH_CLOSE,
   ICON_PATH_SEARCH,
+  createSvgIconVNode,
   invokeHook,
   updateStyle,
 } from '@dcloudio/uni-core'
@@ -216,17 +24,6 @@ import {
 } from './transparent'
 import { parseTheme, useTheme } from '../../../helpers/theme'
 
-defineOptions({
-  name: 'PageHead',
-  __reserved: true,
-  compatConfig: { MODE: 3 },
-})
-
-const hasPages = __UNI_FEATURE_PAGES__
-const hasButtons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__
-const hasSearchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__
-const isXVapor = __VAPOR__
-
 const ICON_PATHS = {
   none: '',
   forward:
@@ -242,37 +39,247 @@ const ICON_PATHS = {
   close: ICON_PATH_CLOSE,
 }
 
-const headRef = ref(null)
-const pageMeta = usePageMeta()
-const navigationBar = useTheme(pageMeta.navigationBar, () => {
-  const _navigationBar = parseTheme(pageMeta.navigationBar)
-  navigationBar.backgroundColor = _navigationBar.backgroundColor
-  navigationBar.titleColor = _navigationBar.titleColor
+export default /*#__PURE__*/ defineSystemComponent({
+  name: 'PageHead',
+  setup() {
+    const headRef = ref(null)
+    const pageMeta = usePageMeta()
+    const navigationBar = useTheme(pageMeta.navigationBar, () => {
+      const _navigationBar = parseTheme(pageMeta.navigationBar)
+      navigationBar.backgroundColor = _navigationBar.backgroundColor
+      navigationBar.titleColor = _navigationBar.titleColor
+    })
+    const { clazz, style } = usePageHead(navigationBar)
+
+    const buttons = (__UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ &&
+      usePageHeadButtons(pageMeta)) as PageHeadButtons
+
+    const searchInput = (__UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ &&
+      navigationBar.searchInput &&
+      usePageHeadSearchInput(pageMeta)) as PageHeadSearchInput
+
+    __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ &&
+      navigationBar.type === 'transparent' &&
+      usePageHeadTransparent(headRef, pageMeta)
+
+    return () => {
+      // 单页面无需back按钮
+      const backButtonTsx = __UNI_FEATURE_PAGES__
+        ? createBackButtonTsx(navigationBar, pageMeta.isQuit)
+        : null
+      const leftButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__
+        ? createButtonsTsx(buttons.left, true)
+        : []
+      const rightButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__
+        ? createButtonsTsx(buttons.right)
+        : []
+      const type = navigationBar.type || 'default'
+      const placeholderTsx = type !== 'transparent' && type !== 'float' && (
+        <div
+          class={{
+            'uni-placeholder': true,
+            'uni-placeholder-titlePenetrate': navigationBar.titlePenetrate,
+          }}
+        ></div>
+      )
+      return (
+        <uni-page-head uni-page-head-type={type}>
+          <div ref={headRef} class={clazz.value} style={style.value}>
+            <div class="uni-page-head-hd">
+              {backButtonTsx}
+              {...leftButtonsTsx}
+            </div>
+            {createPageHeadBdTsx(navigationBar, searchInput)}
+            <div class="uni-page-head-ft">{...rightButtonsTsx}</div>
+          </div>
+          {placeholderTsx}
+        </uni-page-head>
+      )
+    }
+  },
 })
-const { clazz, style } = usePageHead(navigationBar)
-const buttons = (hasButtons && usePageHeadButtons(pageMeta)) as PageHeadButtons
-const searchInput = (hasSearchInput &&
-  navigationBar.searchInput &&
-  usePageHeadSearchInput(pageMeta)) as PageHeadSearchInput
-const searchFocus = searchInput && searchInput.focus
-const searchText = searchInput && searchInput.text
-const searchComposing = searchInput && searchInput.composing
-const searchOnClick = searchInput && searchInput.onClick
-const searchOnFocus = searchInput && searchInput.onFocus
-const searchOnBlur = searchInput && searchInput.onBlur
-const searchOnInput = searchInput && searchInput.onInput
-const searchOnConfirm = searchInput && searchInput.onConfirm
 
-__UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ &&
-  navigationBar.type === 'transparent' &&
-  usePageHeadTransparent(headRef, pageMeta)
-
-function getSvgSize(size?: number) {
-  return size == null ? 27 : size
+function createBackButtonTsx(
+  navigationBar: UniApp.PageNavigationBar,
+  isQuit?: Boolean
+) {
+  if (!isQuit) {
+    return (
+      <div class="uni-page-head-btn" onClick={onPageHeadBackButton}>
+        <svg width="26" height="26" viewBox="0 0 32 32">
+          <path
+            d={ICON_PATH_BACK}
+            fill="none"
+            stroke={
+              navigationBar.type === 'transparent'
+                ? '#fff'
+                : navigationBar.titleColor
+            }
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+        </svg>
+      </div>
+    )
+  }
 }
 
-function getSvgColor(color?: string) {
-  return color == null ? '#000' : color
+function createButtonsTsx(btns: PageHeadButton[], left = false) {
+  return btns.map(
+    (
+      {
+        onClick,
+        btnClass,
+        btnStyle,
+        btnText,
+        btnIconPath,
+        badgeText,
+        iconStyle,
+        btnSelect,
+      },
+      index
+    ) => {
+      return (
+        <div
+          key={index}
+          class={btnClass}
+          style={btnStyle}
+          onClick={onClick}
+          badge-text={badgeText}
+        >
+          {btnIconPath ? (
+            createSvgIconVNode(btnIconPath, iconStyle.color, iconStyle.fontSize)
+          ) : btnSelect ? (
+            <span style={iconStyle}>
+              <i class="uni-btn-icon" v-html={btnText} />
+              {left ? (
+                <svg width="14" height="14" viewBox="0 0 32 32">
+                  <path
+                    d={ICON_PATHS.select}
+                    fill="none"
+                    stroke="#000"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              ) : (
+                createSvgIconVNode(ICON_PATHS.select, '#000', 14)
+              )}
+            </span>
+          ) : (
+            <i class="uni-btn-icon" style={iconStyle} v-html={btnText} />
+          )}
+        </div>
+      )
+    }
+  )
+}
+
+function createPageHeadBdTsx(
+  navigationBar: UniApp.PageNavigationBar,
+  searchInput: PageHeadSearchInput
+) {
+  if (__UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__) {
+    if (navigationBar.searchInput) {
+      return createPageHeadSearchInputTsx(navigationBar, searchInput)
+    }
+  }
+  return createPageHeadTitleTextTsx(navigationBar)
+}
+
+// 保留 SFC 的分支身份，标题/搜索及禁用/启用输入框切换时不复用不同分支的节点。
+function createPageHeadTitleTextTsx({
+  type,
+  loading,
+  titleSize,
+  titleText,
+  titleImage,
+}: UniApp.PageNavigationBar) {
+  return (
+    <div key="title" class="uni-page-head-bd">
+      <div
+        style={{ fontSize: titleSize, opacity: type === 'transparent' ? 0 : 1 }}
+        class="uni-page-head__title"
+      >
+        {loading ? (
+          <i class="uni-loading" />
+        ) : titleImage ? (
+          <img src={titleImage} class="uni-page-head__title_image" />
+        ) : (
+          titleText
+        )}
+      </div>
+    </div>
+  )
+}
+
+function createPageHeadSearchInputTsx(
+  navigationBar: UniApp.PageNavigationBar,
+  {
+    text,
+    focus,
+    composing,
+    onBlur,
+    onFocus,
+    onInput,
+    onConfirm,
+    onClick,
+  }: Partial<PageHeadSearchInput> = {}
+) {
+  const {
+    color,
+    align,
+    autoFocus,
+    disabled,
+    borderRadius,
+    backgroundColor,
+    placeholder,
+    placeholderColor,
+  } = navigationBar.searchInput!
+  const searchStyle = {
+    borderRadius,
+    backgroundColor,
+  }
+  const placeholderClass = [
+    'uni-page-head-search-placeholder',
+    `uni-page-head-search-placeholder-${
+      focus?.value || text?.value ? 'left' : align
+    }`,
+  ]
+  return (
+    <div key="search" class="uni-page-head-search" style={searchStyle}>
+      <div style={{ color: placeholderColor }} class={placeholderClass}>
+        <div class="uni-page-head-search-icon">
+          {createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)}
+        </div>
+        {text?.value || composing?.value ? '' : placeholder}
+      </div>
+      {disabled ? (
+        <Input
+          key="disabled"
+          disabled={true}
+          style={{ color }}
+          placeholder-style={'color: ' + placeholderColor}
+          class="uni-page-head-search-input"
+          confirm-type="search"
+          onClick={onClick}
+        />
+      ) : (
+        <Input
+          key="enabled"
+          focus={autoFocus}
+          style={{ color }}
+          placeholder-style={'color: ' + placeholderColor}
+          class="uni-page-head-search-input"
+          confirm-type="search"
+          onFocus={onFocus}
+          onBlur={onBlur}
+          onInput={onInput}
+          onConfirm={onConfirm}
+        />
+      )}
+    </div>
+  )
 }
 
 function onPageHeadBackButton() {
@@ -315,7 +322,10 @@ function usePageHead(navigationBar: UniApp.PageNavigationBar) {
       transitionTimingFunction: navigationBar.timingFunc,
     }
   })
-  return { clazz, style }
+  return {
+    clazz,
+    style,
+  }
 }
 
 type PageHeadButton = ReturnType<typeof usePageHeadButton>
@@ -373,6 +383,7 @@ function usePageHeadButton(
   return new Proxy(
     {
       btnClass: {
+        // 类似这样的大量重复的字符串，会在gzip时压缩大小，无需在代码层考虑优化相同字符串
         'uni-page-head-btn': true,
         'uni-page-head-btn-red-dot': !!(btn.redDot || btn.badgeText),
         'uni-page-head-btn-select': !!btn.select,
@@ -418,7 +429,12 @@ function usePageHeadSearchInput({
     const onClick = () => {
       invokeHook(id!, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED)
     }
-    return { focus, text, composing, onClick }
+    return {
+      focus,
+      text,
+      composing,
+      onClick,
+    }
   }
   const onFocus = () => {
     focus.value = true
@@ -443,6 +459,13 @@ function usePageHeadSearchInput({
       text: text.value,
     })
   }
-  return { focus, text, composing, onFocus, onBlur, onInput, onConfirm }
+  return {
+    focus,
+    text,
+    composing,
+    onFocus,
+    onBlur,
+    onInput,
+    onConfirm,
+  }
 }
-</script>

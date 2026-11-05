@@ -188,7 +188,7 @@ describe('Web Vapor 页面生命周期框架接入', () => {
             getPageProxyId: () => 1,
             subscribeViewMethod: () => {},
           },
-          '../components/layout/index-vapor.vue': {},
+          '../components/layout/index-vapor': {},
           '../..': {},
           './app': {},
           './page': {

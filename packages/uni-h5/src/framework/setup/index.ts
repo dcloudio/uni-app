@@ -67,7 +67,7 @@ import {
   unsubscribeViewMethod,
 } from '@dcloudio/uni-core'
 //#if _X_VAPOR_
-import LayoutComponent from '../components/layout/index-vapor.vue'
+import LayoutComponent from '../components/layout/index-vapor'
 //#else
 import { LayoutComponent } from '../..'
 //#endif

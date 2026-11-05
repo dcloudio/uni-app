@@ -3,14 +3,13 @@ import path from 'path'
 import { execFileSync } from 'child_process'
 import ts from 'typescript'
 import jscc from 'rollup-plugin-jscc'
-import { compileScript, compileTemplate, parse } from '@vue/compiler-sfc'
+import { compileFrameworkTsx } from './utils/frameworkTsx'
 import {
   H5_BUILT_IN_TAGS,
   TAGS,
   isH5CustomElement,
   isH5NativeTag,
 } from '../../uni-shared/src/tags'
-import { preprocess } from '../../uni-preprocess'
 
 const root = path.resolve(__dirname, '..')
 
@@ -25,7 +24,7 @@ async function compileEntry(file: string, vapor: boolean, node: boolean) {
 describe('Web 框架组件入口', () => {
   test('Vapor 窗口直接读取公开根元素，不再使用 VNode 查找', () => {
     const layout = fs.readFileSync(
-      path.join(root, 'src/framework/components/layout/index-vapor.vue'),
+      path.join(root, 'src/framework/components/layout/index-vapor.tsx'),
       'utf8'
     )
     expect(layout).not.toContain('resolveOwnerEl')
@@ -35,25 +34,9 @@ describe('Web 框架组件入口', () => {
   })
 
   test.each([false, true])('PageHead 静态绑定 Input（Vapor=%s）', (vapor) => {
-    const filename = path.join(
-      root,
-      'src/framework/components/page/pageHead.vue'
-    )
-    const source = preprocess(fs.readFileSync(filename, 'utf8'), {
-      type: 'js',
-      context: { WEB: true, VUE3_VAPOR: vapor },
-    }).code
-    const { descriptor } = parse(source, { filename })
-    const script = compileScript(descriptor, { id: 'page-head' })
-    expect(script.bindings?.Input).toBeDefined()
-    const template = compileTemplate({
-      source: descriptor.template!.content,
-      filename,
-      id: 'page-head',
-      compilerOptions: { bindingMetadata: script.bindings },
-    })
-    expect(template.errors).toEqual([])
-    expect(template.code).not.toMatch(/resolveComponent\(["']Input["']\)/)
+    const code = compileFrameworkTsx('page/pageHead', vapor)
+    expect(code).toMatch(/import\s*\{[^}]*\bInput\b/)
+    expect(code).not.toMatch(/resolveComponent\(["']Input["']\)/)
   })
 
   test.each([false, true])(
@@ -80,7 +63,7 @@ describe('Web 框架组件入口', () => {
         node
       )
       expect(setup).not.toContain("from '../..'")
-      expect(setup).toContain("from '../components/layout/index-vapor.vue'")
+      expect(setup).toContain("from '../components/layout/index-vapor'")
     }
   )
 
@@ -263,38 +246,5 @@ describe('框架构建的结构标签分类', () => {
     }
   })
 
-  test('Vapor 响应式与普通布局均缓存页面，不缓存 RouterView', () => {
-    const filename = path.join(
-      root,
-      'src/framework/components/layout/index-vapor.vue'
-    )
-    const { descriptor } = parse(fs.readFileSync(filename, 'utf8'), {
-      filename,
-    })
-    const nodes: any[] = [...descriptor.template!.ast!.children]
-    let routerViews = 0
-    while (nodes.length) {
-      const node = nodes.pop()!
-      if (node.tag === 'RouterView') {
-        routerViews++
-        expect(node.props.some((prop: any) => prop.name === 'slot')).toBe(true)
-        const keepAlive = node.children.find(
-          (child: any) => child.tag === 'KeepAlive'
-        )
-        expect(keepAlive).toBeDefined()
-        const page = keepAlive.children.find(
-          (child: any) => child.tag === 'component'
-        )
-        expect(page).toBeDefined()
-        expect(
-          page.props.some(
-            (prop: any) =>
-              prop.arg?.content === 'key' && prop.exp?.content === 'routeKey'
-          )
-        ).toBe(true)
-      }
-      if (node.children) nodes.push(...node.children)
-    }
-    expect(routerViews).toBe(2)
-  })
+  // 页面缓存与路由切换由 frameworkTsx.spec.ts 使用真实 Vapor runtime 验证。
 })
