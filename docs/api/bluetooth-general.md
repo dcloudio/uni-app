@@ -1,8 +1,4 @@
-::: warning 注意事项
-
-使用蓝牙能力前，需先调用 [uni.openBluetoothAdapter](#openbluetoothadapter) 初始化蓝牙适配器，并确认初始化成功。调用 [uni.closeBluetoothAdapter](#closebluetoothadapter) 或应用进程结束后，再次使用时需重新初始化。监听类接口可提前注册。
-
-:::
+> HBuilder5.36及以上版本app-android/app-ios平台uni-app x项目内置支持蓝牙功能，HBuilder5.36以下版本需下载插件：[uni-bluetooth](https://ext.dcloud.net.cn/plugin?id=30539)
 
 ## 模块介绍
 
@@ -17,6 +13,12 @@
 
 
 ## 使用流程
+
+::: warning 注意事项
+
+使用蓝牙能力前，需先调用 [uni.openBluetoothAdapter](#openbluetoothadapter) 初始化蓝牙适配器，并确认初始化成功。调用 [uni.closeBluetoothAdapter](#closebluetoothadapter) 或应用进程结束后，再次使用时需重新初始化。监听类接口可提前注册。
+
+:::
 
 <img class="zooming" src="../static/bluetooth-general-flow.svg" alt="蓝牙通用接口使用流程：注册监听、初始化、扫描发现设备、停止扫描、连接通信及清理资源" width="400">
 
