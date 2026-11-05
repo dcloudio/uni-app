@@ -21,7 +21,7 @@ uni-app x 中不再支持plus和weex的API。
 - plus.runtime.openURL [插件市场](https://ext.dcloud.net.cn/plugin?id=17828)
 - plus.runtime.openWeb [uni-link](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/uni-link.html)
 - plus.runtime.showPrivacyDialog 请自行调用dialogPage，弹出自己的uvue页面。
-- plus.runtime.agreePrivacy、plus.runtime.disagreePrivacy 改用 [button组件](../component/button.md)的opentype="agreePrivacyAuthorization"
+- plus.runtime.agreePrivacy 改用 [button组件](../component/button.md)的`open-type="agreePrivacyAuthorization"`。
 - plus.runtime.launcher、plus.runtime.arguments 改用[app.uvue](../collocation/app.md)中onLaunch、onShow生命周期中的options参数
 - plus.io、plus.zip 改用 [uni.getFileSystemManager](./get-file-system-manager.md) 中有一批文件和压缩相关的api。
 - plus.navigator 中控制顶部状态栏和底部导航栏的方法，改在 pages.json 的 [pageStyle](../collocation/pagesjson.md#pagesoptionspage-style) 中控制，也可以在 UniPage 的 [setStyle](./unipage.md#unipage-methods) 方法中控制。
