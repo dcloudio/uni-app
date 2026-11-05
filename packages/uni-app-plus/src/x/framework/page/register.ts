@@ -225,6 +225,13 @@ export function registerPage(
   const id = genWebviewId()
   const routeOptions = initRouteOptions(path, openType)
   const pageStyle = parsePageStyle(routeOptions)
+  if (
+    __VAPOR__ &&
+    !pageStyle.get('backgroundColorContent') &&
+    pageStyle.get('backgroundColor')
+  ) {
+    pageStyle.set('backgroundColorContent', pageStyle.get('backgroundColor'))
+  }
   if (openType === 'reLaunch') {
     pageStyle.set('disableSwipeBack', true)
   }
