@@ -16,7 +16,7 @@ uni-app x 中不再支持plus和weex的API。
 
 - plus.runtime.quit 改用 [uni.exit](./exit.md)
 - plus.runtime.install 分拆成为2个API [uni.installApk](./install-apk.md) 和 [uni.installWgt](./install-wgt.md)
-- plus.runtime.restart 改用 [getApp().restart](./get-app.md#appmethods)
+- plus.runtime.restart 改用 [getApp().restart](./get-app.md#restart)
 - plus.runtime.setBadgeNumber 改用 [uni.setAppBadgeNumber](./uni-push.md#setappbadgenumber)
 - plus.runtime.openURL [插件市场](https://ext.dcloud.net.cn/plugin?id=17828)
 - plus.runtime.openWeb [uni-link](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/uni-link.html)
