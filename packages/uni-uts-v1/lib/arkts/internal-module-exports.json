@@ -1285,9 +1285,6 @@
       "OffHostThemeChange"
     ],
     [
-      "OffKeyboardAnimationChange"
-    ],
-    [
       "OffKeyboardHeightChange"
     ],
     [
@@ -1352,15 +1349,6 @@
     ],
     [
       "OnHostThemeChangeCallbackResult"
-    ],
-    [
-      "OnKeyboardAnimationChange"
-    ],
-    [
-      "OnKeyboardAnimationChangeCallback"
-    ],
-    [
-      "OnKeyboardAnimationChangeCallbackResult"
     ],
     [
       "OnKeyboardHeightChange"
