@@ -26144,6 +26144,13 @@ function createToast(controller, args, type, pageId) {
   controller.token++;
   if (!controller.state) {
     controller.state = reactive(extend({}, args, { visible: false }));
+    if (controller === pageToast) {
+      onPageUnload((pageId2) => {
+        if (pageToast.pageId === pageId2 && pageToast.type === "onShowToast") {
+          hidePopup("onHideToast", pageToast);
+        }
+      });
+    }
     nextTick(() => {
       watchVisible(controller);
       if (controller === pageToast) {
@@ -26225,11 +26232,6 @@ function hidePopup(type, controller) {
     }
   }, 10);
 }
-onPageUnload((pageId) => {
-  if (pageToast.pageId === pageId && pageToast.type === "onShowToast") {
-    hidePopup("onHideToast", pageToast);
-  }
-});
 const POPUP_EDGE = 6;
 function usePopupStyle(props2, triangleColor = "#fcfcfd") {
   const popupWidth = ref(0);
