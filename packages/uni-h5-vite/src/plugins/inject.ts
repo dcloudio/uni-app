@@ -10,9 +10,13 @@ import {
   buildInCssSet,
   isCombineBuiltInCss,
   isEnableTreeShaking,
+  isUniAppXWebVapor,
+  normalizePath,
   parseManifestJsonOnce,
+  resolveBuiltIn,
   uniViteInjectPlugin,
 } from '@dcloudio/uni-cli-shared'
+import { ownerModuleName, resolveFrameworkDistDir } from '../utils'
 
 const apiJson = require(path.resolve(
   __dirname,
@@ -39,10 +43,14 @@ const uniInjectPluginOptions: Partial<InjectOptions> = {
 
 export function uniInjectPlugin(): Plugin {
   let resolvedConfig: ResolvedConfig
+  let vaporFrameworkId: string | undefined
 
   const apiDepsCss = API_DEPS_CSS(process.env.UNI_APP_X === 'true')
 
-  const callback: InjectOptions['callback'] = function (imports, mod) {
+  const callback: InjectOptions['callback'] = function (imports, mod, id) {
+    // 编译开发者项目时，框架产物的内部调用还未摇树，不能据此全量引入样式。
+    // 仍保留 API 的静态导入；样式由项目调用的入口 API 按依赖表收集。
+    if (vaporFrameworkId && normalizePath(id) === vaporFrameworkId) return
     const styles =
       mod[0] === '@dcloudio/uni-h5' &&
       apiDepsCss[mod[1] as keyof typeof apiDepsCss]
@@ -67,6 +75,16 @@ export function uniInjectPlugin(): Plugin {
     enforce: 'post',
     configResolved(config) {
       resolvedConfig = config
+      vaporFrameworkId = isUniAppXWebVapor()
+        ? normalizePath(
+            resolveBuiltIn(
+              path.posix.join(
+                ownerModuleName,
+                resolveFrameworkDistDir() + '/uni-h5.es.js'
+              )
+            )
+          )
+        : undefined
       const enableTreeShaking = isEnableTreeShaking(
         parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
       )

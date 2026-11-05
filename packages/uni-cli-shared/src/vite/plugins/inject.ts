@@ -37,7 +37,7 @@ type Injectment = string | [string, string]
 export interface InjectOptions {
   enforce?: 'pre' | 'post'
   sourceMap?: boolean
-  callback?: (imports: Map<any, any>, mod: [string, string]) => void
+  callback?: (imports: Map<any, any>, mod: [string, string], id: string) => void
   include?: FilterPattern
   exclude?: FilterPattern
   [str: string]: Injectment | FilterPattern | Boolean | Function | undefined
@@ -172,7 +172,7 @@ export function uniViteInjectPlugin(
                 hash,
                 `import { ${mod[1]} as ${importLocalName} } from '${mod[0]}';`
               )
-              callback && callback(newImports, mod)
+              callback && callback(newImports, mod, id)
             }
           }
 

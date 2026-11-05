@@ -180,9 +180,9 @@ describe('h5 easycom', () => {
           expect(styles).not.toContain(vapor ? legacyStyle : vaporStyle)
         }
         if (name === 'web-view') {
-          expect(styles).toContain(
-            '@dcloudio/uni-components/style/resize-sensor.css'
-          )
+          expect(
+            styles.includes('@dcloudio/uni-components/style/resize-sensor.css')
+          ).toBe(!vapor)
         }
       }
     }
@@ -226,6 +226,7 @@ describe('h5 easycom', () => {
         buildInCssSet.has('@dcloudio/uni-h5/style/vapor/scroll-view.css')
       ).toBe(true)
       for (const style of [
+        '@dcloudio/uni-components/style/resize-sensor.css',
         '@dcloudio/uni-components/style/refresher.css',
         '@dcloudio/uni-components/style-x-vapor/loading.css',
       ]) {

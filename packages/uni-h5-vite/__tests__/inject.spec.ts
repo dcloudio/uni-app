@@ -3,6 +3,8 @@ import os from 'os'
 import path from 'path'
 import { buildInCssSet } from '@dcloudio/uni-cli-shared'
 import { uniInjectPlugin } from '../src/plugins/inject'
+import * as resolve from '../../uni-cli-shared/src/resolve'
+import * as utils from '../../uni-cli-shared/src/utils'
 
 const { parseAst } = require('rollup/parseAst')
 
@@ -31,6 +33,7 @@ describe('h5 API 样式注入', () => {
   })
 
   afterEach(() => {
+    jest.restoreAllMocks()
     Object.entries(originalEnv).forEach(([name, value]) => {
       if (value === undefined) delete process.env[name]
       else process.env[name] = value
@@ -40,36 +43,119 @@ describe('h5 API 样式注入', () => {
     fs.removeSync(inputDir)
   })
 
-  test.each(['showModal', 'showActionSheet', 'chooseLocation'])(
-    '发行仅调用 %s 时也加载内部 ScrollView 的完整样式',
-    (name) => {
-      process.env.UNI_APP_X_DOM2 = 'true'
-      for (const combine of [false, true]) {
-        buildInCssSet.clear()
-        const plugin = uniInjectPlugin() as any
-        plugin.configResolved({
-          command: 'build',
-          build: { cssCodeSplit: combine },
-        })
+  test.each([
+    '/workspace/[demo]/uni-h5/dist-x-vapor/uni-h5.es.js',
+    'C:\\workspace\\[demo]\\uni-h5\\dist-x-vapor\\uni-h5.es.js',
+    '\\\\server\\share\\[demo]\\uni-h5\\dist-x-vapor\\uni-h5.es.js',
+  ])('仅排除当前 Vapor 框架的 CSS 收集，不跳过 API 注入：%s', (frameworkId) => {
+    process.env.UNI_APP_X_DOM2 = 'true'
+    jest.replaceProperty(utils, 'isWindows', frameworkId.includes('\\'))
+    jest.spyOn(resolve, 'resolveBuiltIn').mockReturnValue(frameworkId)
+    for (const combine of [false, true]) {
+      buildInCssSet.clear()
+      const plugin = uniInjectPlugin() as any
+      plugin.configResolved({
+        command: 'build',
+        build: { cssCodeSplit: combine },
+      })
+      expect(resolve.resolveBuiltIn).toHaveBeenLastCalledWith(
+        '@dcloudio/uni-h5/dist-x-vapor/uni-h5.es.js'
+      )
+      const transformed = plugin.transform.call(
+        { parse: parseAst },
+        'uni.showToast({}); uni.showActionSheet({});',
+        frameworkId.replace(/\\/g, '/')
+      )
+      expect(transformed.code).toContain('showToast as')
+      expect(transformed.code).toContain('showActionSheet as')
+      expect(transformed.code).not.toContain('.css')
+      expect(buildInCssSet.size).toBe(0)
+      // 用户文件和第三方依赖中的调用仍需收集，不能按 node_modules 等目录整体排除。
+      for (const id of [
+        path.join(inputDir, 'main.js'),
+        '/node_modules/plugin/index.js',
+      ]) {
         const { code } = plugin.transform.call(
           { parse: parseAst },
-          `uni.${name}({});`,
-          path.join(inputDir, 'main.js')
+          'uni.showToast({});',
+          id
         )
         const styles = combine ? [...buildInCssSet].join('\n') : code
-        expect(styles).toContain('@dcloudio/uni-h5/style/vapor/scroll-view.css')
-        for (const style of [
-          '@dcloudio/uni-components/style/refresher.css',
-          '@dcloudio/uni-components/style-x-vapor/loading.css',
-        ]) {
-          expect(styles).not.toContain(style)
-        }
-        expect(styles).not.toContain(
-          '@dcloudio/uni-components/style/scroll-view.css'
-        )
+        expect(styles).toContain('@dcloudio/uni-h5/style/api/toast.css')
       }
     }
+  })
+
+  test.each([false, true])(
+    'VDOM 保留框架内部 CSS 收集（合并=%s）',
+    (combine) => {
+      delete process.env.UNI_APP_X_DOM2
+      const plugin = uniInjectPlugin() as any
+      plugin.configResolved({
+        command: 'build',
+        build: { cssCodeSplit: combine },
+      })
+      const { code } = plugin.transform.call(
+        { parse: parseAst },
+        'uni.showToast({});',
+        '/node_modules/@dcloudio/uni-h5/dist-x/uni-h5.es.js'
+      )
+      const styles = combine ? [...buildInCssSet].join('\n') : code
+      expect(styles).toContain('@dcloudio/uni-h5/style/api/toast.css')
+    }
   )
+
+  test.each([
+    ['setClipboardData', ['@dcloudio/uni-h5/style/api/toast.css']],
+    ['showActionSheet', []],
+    ['openLocation', ['@dcloudio/uni-h5/style/map.css']],
+    [
+      'previewImage',
+      [
+        '@dcloudio/uni-components/style-x-vapor/swiper.css',
+        '@dcloudio/uni-components/style-x-vapor/swiper-item.css',
+        '@dcloudio/uni-components/style-x-vapor/loading.css',
+      ],
+    ],
+    [
+      'showModal',
+      [
+        '@dcloudio/uni-h5/style/vapor/textarea.css',
+        '@dcloudio/uni-h5/style/vapor/scroll-view.css',
+      ],
+    ],
+    [
+      'chooseLocation',
+      [
+        '@dcloudio/uni-h5/style/vapor/input.css',
+        '@dcloudio/uni-h5/style/map.css',
+        '@dcloudio/uni-h5/style/vapor/scroll-view.css',
+        '@dcloudio/uni-components/style-x-vapor/loading.css',
+      ],
+    ],
+    ['showLoading', ['@dcloudio/uni-components/style-x-vapor/loading.css']],
+  ] as const)('Vapor 调用 %s 时仅加载实际依赖', (name, expectedStyles) => {
+    process.env.UNI_APP_X_DOM2 = 'true'
+    for (const combine of [false, true]) {
+      buildInCssSet.clear()
+      const plugin = uniInjectPlugin() as any
+      plugin.configResolved({
+        command: 'build',
+        build: { cssCodeSplit: combine },
+      })
+      const { code } = plugin.transform.call(
+        { parse: parseAst },
+        `uni.${name}({});`,
+        path.join(inputDir, 'main.js')
+      )
+      const styles = combine
+        ? [...buildInCssSet]
+        : [...code.matchAll(/import ['"]([^'"]+\.css)['"]/g)].map(
+            (match) => match[1]
+          )
+      expect(styles).toEqual(expectedStyles)
+    }
+  })
 
   test.each([
     [false, false],
