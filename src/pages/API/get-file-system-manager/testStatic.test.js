@@ -1,9 +1,9 @@
-const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const platformInfo = (process.env.uniTestPlatformInfo || '').toLocaleLowerCase()
 const isIOS = platformInfo.startsWith('ios')
 const isAndroid = platformInfo.startsWith('android')
 const isHarmony = platformInfo.startsWith('harmony')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
-const isApp = isAndroid || isIOS || isHarmony && !isAppWebView
+const isApp = (isAndroid || isIOS || isHarmony) && !isAppWebView
 
 const PAGE_PATH = '/pages/API/get-file-system-manager/testStatic'
 
@@ -25,6 +25,8 @@ describe('ExtApi-FileManagerTest-aboutStatic', () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor('text');
     await page.waitFor(600);
+    // 准备 copyFile 目标目录（USER_DATA_PATH/filemanager）并清理历史产物
+    await page.callMethod('prepare');
   });
 
   it('testAccessFile', async () => {
@@ -64,6 +66,18 @@ describe('ExtApi-FileManagerTest-aboutStatic', () => {
     expect(isSuccess).toEqual(true)
   });
 
+
+  it('testReadFile', async () => {
+    await setPageData({
+      logAble: false,
+      isSuccess: false,
+    })
+    const testReadFile = await page.$('#testReadFile')
+    await testReadFile.tap()
+    await page.waitFor(300);
+    const isSuccess = await page.data('data.isSuccess')
+    expect(isSuccess).toEqual(true)
+  });
 
   it('testReadDir', async () => {
     await setPageData({

@@ -1,6 +1,5 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
-const isWeb = platformInfo.startsWith('web')
 const isHarmony = platformInfo.startsWith('harmony')
 
 describe('component-native-scroll-view', () => {
@@ -81,13 +80,15 @@ describe('component-native-scroll-view', () => {
     expect(await page.data('data.isScrolltoupperTest')).toBe('scrolltoupper:Success-top')
   })
 
-  if(!isWeb && !isMP){
-    it('Event scrollend-滚动结束时触发仅App端支持',async()=>{
+  if(!isMP){
+    it('Event scrollend-滚动结束时触发',async()=>{
       if(isHarmony) {
         // 鸿蒙scrollEnd触发比较慢
         await page.waitFor(500)
       }
       const endDetail = await page.data('data.scrollEndDetailTest')
+      expect(endDetail).not.toBeNull()
+      expect(await page.data('data.isScrollendTest')).toBe('scrollend:Success')
       expect(endDetail.scrollLeft).toBe(0)
       expect(endDetail.scrollTop).toBe(0)
       expect(endDetail.deltaY).toBe(0)

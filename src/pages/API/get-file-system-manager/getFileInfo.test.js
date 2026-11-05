@@ -3,15 +3,20 @@ const {
   isApp,
   unsupportedTest,
   setPageData
-} = require('./file-system-manager-test-utils.js')
+} = require('./fsm-test-utils.js')
 
 const PAGE_PATH = '/pages/API/get-file-system-manager/getFileInfo'
 
-// 测试文件内容为 "hello"（5 字节），摘要为标准测试向量
-const HELLO_SIZE = 5
-const HELLO_MD5 = '5d41402abc4b2a76b9719d911017c592'
-const HELLO_SHA1 = 'aaf4c61ddcc5e8a2dabede0f3b482cd9aea9434d'
-const HELLO_SHA256 = '2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824'
+// 默认测试文件内容为"测试getFileInfo API的写入功能。"（39 字节），摘要由 node crypto 预计算
+const DEFAULT_TEXT = '测试getFileInfo API的写入功能。'
+const DEFAULT_SIZE = 39
+const DEFAULT_MD5 = '9b2ca6fae36bb2b0a45316ecfc5b8207'
+const DEFAULT_SHA1 = '62616a9179bfebadbf3db0b8e668bae09f5321db'
+const DEFAULT_SHA256 = '4b5dbf8cd66528eb422acd2ddb782d8feee505225985e70362eaf34c905756e0'
+// 含转义符与空白字符的测试内容（212 字节，含 \n、\t、\r\n、反斜杠、引号、全角/不间断空格、Emoji）
+const ESCAPE_TEXT = '测试getFileInfo API的写入功能。\n\t制表符行\n回车换行：\r\n下一行\n反斜杠：\\ 双引号：" 单引号：\'\n空格：[  ] 全角：[　] 不间断：[\u00A0] Emoji：[🚀] 混合：中文English123!@#'
+const ESCAPE_TEXT_SIZE = 212
+const ESCAPE_TEXT_SHA256 = '7db1e8a1e0e5284695a7ccbe722c5e8cb19b8351d426bf5dbb085409ab804e03'
 // 长文本测试内容（185 字节），摘要在用例中断言
 const TEARDROP_TEXT = 'If you were a teardrop;In my eye,For fear of losing you,I would never cry.And if the golden sun,Should cease to shine its light,Just one smile from you,Would make my whole world bright.'
 
@@ -40,31 +45,43 @@ describe('ExtApi-FileManagerTest-getFileInfo', () => {
 
   it('calculates MD5 for known text', async () => {
     await callMethodAndWait('getFileInfoTest', 'md5')
-    expect(await page.data('data.getFileInfoSize')).toEqual(HELLO_SIZE)
-    expect(await page.data('data.getFileInfoDigest')).toEqual(HELLO_MD5)
+    expect(await page.data('data.getFileInfoSize')).toEqual(DEFAULT_SIZE)
+    expect(await page.data('data.getFileInfoDigest')).toEqual(DEFAULT_MD5)
   })
 
   it('calculates SHA-1 for known text', async () => {
     await callMethodAndWait('getFileInfoTest', 'sha1')
-    expect(await page.data('data.getFileInfoSize')).toEqual(HELLO_SIZE)
-    expect(await page.data('data.getFileInfoDigest')).toEqual(HELLO_SHA1)
+    expect(await page.data('data.getFileInfoSize')).toEqual(DEFAULT_SIZE)
+    expect(await page.data('data.getFileInfoDigest')).toEqual(DEFAULT_SHA1)
   })
 
   it('calculates SHA-256 for known text', async () => {
     await callMethodAndWait('getFileInfoTest', 'sha256')
-    expect(await page.data('data.getFileInfoSize')).toEqual(HELLO_SIZE)
-    expect(await page.data('data.getFileInfoDigest')).toEqual(HELLO_SHA256)
+    expect(await page.data('data.getFileInfoSize')).toEqual(DEFAULT_SIZE)
+    expect(await page.data('data.getFileInfoDigest')).toEqual(DEFAULT_SHA256)
+  })
+
+  it('calculates SHA-256 for content with escape and whitespace characters', async () => {
+    // 转义符与空白字符 round-trip：\n、\t、\r\n、反斜杠、引号、全角空格、Emoji，按 utf-8 计 195 字节
+    await setPageData(page, { writeFileContent: ESCAPE_TEXT })
+    await callMethodAndWait('createTestFile')
+    await callMethodAndWait('getFileInfoTest', 'sha256')
+    expect(await page.data('data.getFileInfoSize')).toEqual(ESCAPE_TEXT_SIZE)
+    expect(await page.data('data.getFileInfoDigest')).toEqual(ESCAPE_TEXT_SHA256)
+    // 恢复默认测试文件内容
+    await setPageData(page, { writeFileContent: DEFAULT_TEXT })
+    await callMethodAndWait('createTestFile')
   })
 
   it('calculates SHA-256 for UTF-8 content', async () => {
-    // 临时替换测试文件内容为中文（15 个汉字 + 1 个中文标点，UTF-8 共 45 字节）
-    await setPageData(page, { writeFileContent: '我爱北京天安门，天安门前太阳升' })
+    // 临时替换测试文件内容为专用文本
+    await setPageData(page, { writeFileContent: DEFAULT_TEXT })
     await callMethodAndWait('createTestFile')
     await callMethodAndWait('getFileInfoTest', 'sha256')
-    expect(await page.data('data.getFileInfoSize')).toEqual(45)
-    expect(await page.data('data.getFileInfoDigest')).toEqual('c4f4ac01374323d79cc521b58e2c581d4ee0159df8466c9df4c5c41253972451')
+    expect(await page.data('data.getFileInfoSize')).toEqual(DEFAULT_SIZE)
+    expect(await page.data('data.getFileInfoDigest')).toEqual(DEFAULT_SHA256)
     // 恢复默认测试文件内容
-    await setPageData(page, { writeFileContent: 'hello' })
+    await setPageData(page, { writeFileContent: DEFAULT_TEXT })
     await callMethodAndWait('createTestFile')
   })
 
@@ -79,7 +96,7 @@ describe('ExtApi-FileManagerTest-getFileInfo', () => {
     expect(await page.data('data.getFileInfoSize')).toEqual(78)
     expect(await page.data('data.getFileInfoDigest')).toEqual('b6ce525dbe8a0a211835c20becb79daf8d6d27e57b0f649753d7b8db59edf424')
     // 恢复默认测试文件内容与编码
-    await setPageData(page, { writeFileContent: 'hello', writeFileEncoding: 'utf-8' })
+    await setPageData(page, { writeFileContent: DEFAULT_TEXT, writeFileEncoding: 'utf-8' })
     await callMethodAndWait('createTestFile')
   })
 
@@ -90,14 +107,21 @@ describe('ExtApi-FileManagerTest-getFileInfo', () => {
     expect(await page.data('data.getFileInfoSize')).toEqual(185)
     expect(await page.data('data.getFileInfoDigest')).toEqual('c28194b445e0df60b9ec1e83bec79ff5e9a2b16c57ac150675dff2f794e9019d')
     // 恢复默认测试文件内容
-    await setPageData(page, { writeFileContent: 'hello' })
+    await setPageData(page, { writeFileContent: DEFAULT_TEXT })
     await callMethodAndWait('createTestFile')
   })
 
   it('returns an empty digest when digestAlgorithm is none', async () => {
     await callMethodAndWait('getFileInfoTest', 'none')
-    expect(await page.data('data.getFileInfoSize')).toEqual(HELLO_SIZE)
+    expect(await page.data('data.getFileInfoSize')).toEqual(DEFAULT_SIZE)
     expect(await page.data('data.getFileInfoDigest')).toEqual('')
+  })
+
+  it('uses the platform default digest when digestAlgorithm is omitted', async () => {
+    // 不传 digestAlgorithm：使用平台默认算法计算摘要（区别于 none 的空摘要）
+    await callMethodAndWait('getFileInfoTest', '')
+    expect(await page.data('data.getFileInfoSize')).toEqual(DEFAULT_SIZE)
+    expect((await page.data('data.getFileInfoDigest')).length).toBeGreaterThan(0)
   })
 
   it('rejects an invalid digest algorithm', async () => {
@@ -106,14 +130,14 @@ describe('ExtApi-FileManagerTest-getFileInfo', () => {
   })
 
   it('returns the expected UTF-8 size and SHA-1', async () => {
-    // 临时替换测试文件内容为中文（15 个汉字 + 1 个中文标点，UTF-8 共 45 字节）
-    await setPageData(page, { writeFileContent: '我爱北京天安门，天安门前太阳升' })
+    // 临时替换测试文件内容为专用文本
+    await setPageData(page, { writeFileContent: DEFAULT_TEXT })
     await callMethodAndWait('createTestFile')
     await callMethodAndWait('getFileInfoTest', 'sha1')
-    expect(await page.data('data.getFileInfoSize')).toEqual(45)
-    expect(await page.data('data.getFileInfoDigest')).toEqual('2ae9c7672ff6c1e7c7e6a0bb4e74a6f06b39350b')
+    expect(await page.data('data.getFileInfoSize')).toEqual(DEFAULT_SIZE)
+    expect(await page.data('data.getFileInfoDigest')).toEqual(DEFAULT_SHA1)
     // 恢复默认测试文件内容
-    await setPageData(page, { writeFileContent: 'hello' })
+    await setPageData(page, { writeFileContent: DEFAULT_TEXT })
     await callMethodAndWait('createTestFile')
   })
 
@@ -131,7 +155,7 @@ describe('ExtApi-FileManagerTest-getFileInfo', () => {
     await callMethodAndWait('readFileTest')
     expect(await page.data('data.readFileRet')).toEqual('GbAtywwibr7mDCeJDFxkxwx8AFAxAg4I4PYJH4pS7lIpAg3lKQqrGQzKFS9VdAIRMljOUrsMyFA8fImHDNgEDdzSAnceBAVxDFU8KLr0')
     // 恢复默认测试文件内容与编码
-    await setPageData(page, { writeFileContent: 'hello', writeFileEncoding: 'utf-8', readFileEncoding: 'utf-8' })
+    await setPageData(page, { writeFileContent: DEFAULT_TEXT, writeFileEncoding: 'utf-8', readFileEncoding: 'utf-8' })
     await callMethodAndWait('createTestFile')
   })
 

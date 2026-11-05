@@ -1,44 +1,44 @@
 <template>
   <view class="open-location-page">
     <page-head :title="title"></page-head>
-    <view class="uni-common-mt">
-      <view class="uni-list">
-        <view class="uni-list-cell">
-          <view class="uni-list-cell-left">
-            <view class="uni-label">经度</view>
+    <view class="mt-15">
+      <view class="bg-list-fff pos-relative d-flex flex-dir-column border-b-1-solid-c8c7cc-dark-3a3a3c">
+        <view class="pos-relative d-flex flex-dir-row justify-between items-center">
+          <view class="p-0-15">
+            <view class="w-105">经度</view>
           </view>
-          <view class="uni-list-cell-db">
-            <text class="readonly-text">{{ longitude }}</text>
-          </view>
-        </view>
-        <view class="uni-list-cell">
-          <view class="uni-list-cell-left">
-            <view class="uni-label">纬度</view>
-          </view>
-          <view class="uni-list-cell-db">
-            <text class="readonly-text">{{ latitude }}</text>
+          <view class="flex-1 vapor-color-text-333">
+            <text class="fs-14 lh-22 pt-10 pb-10 readonly-text">{{ longitude }}</text>
           </view>
         </view>
-        <view class="uni-list-cell">
-          <view class="uni-list-cell-left">
-            <view class="uni-label">位置名称</view>
+        <view class="pos-relative d-flex flex-dir-row justify-between items-center">
+          <view class="p-0-15">
+            <view class="w-105">纬度</view>
           </view>
-          <view class="uni-list-cell-db">
-            <text class="readonly-text">{{ name }}</text>
+          <view class="flex-1 vapor-color-text-333">
+            <text class="fs-14 lh-22 pt-10 pb-10 readonly-text">{{ latitude }}</text>
           </view>
         </view>
-        <view class="uni-list-cell">
-          <view class="uni-list-cell-left">
-            <view class="uni-label">详细位置</view>
+        <view class="pos-relative d-flex flex-dir-row justify-between items-center">
+          <view class="p-0-15">
+            <view class="w-105">位置名称</view>
           </view>
-          <view class="uni-list-cell-db">
-            <text class="readonly-text">{{ address }}</text>
+          <view class="flex-1 vapor-color-text-333">
+            <text class="fs-14 lh-22 pt-10 pb-10 readonly-text">{{ name }}</text>
+          </view>
+        </view>
+        <view class="pos-relative d-flex flex-dir-row justify-between items-center">
+          <view class="p-0-15">
+            <view class="w-105">详细位置</view>
+          </view>
+          <view class="flex-1 vapor-color-text-333">
+            <text class="fs-14 lh-22 pt-10 pb-10 readonly-text">{{ address }}</text>
           </view>
         </view>
       </view>
-      <view class="uni-padding-wrap">
-        <view class="tips"><text class="tips-text">注意：需要正确配置地图服务商的Key才能正常显示位置</text></view>
-        <view class="uni-btn-v uni-common-mt">
+      <view class="p-0-15">
+        <view class="mt-15 opacity-0_8"><text class="fs-12">注意：需要正确配置地图服务商的Key才能正常显示位置</text></view>
+        <view class="p-5-0 mt-15">
           <button type="primary" @click="openLocation">查看位置</button>
         </view>
       </view>
@@ -125,23 +125,6 @@
 
   .readonly-text {
     color: var(--open-location-hint-color, #999999);
-    font-size: 14px;
-    line-height: 22px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-  }
-
-  .uni-list-cell-left {
-    padding: 0 15px;
-  }
-
-  .tips {
-    margin-top: 15px;
-    opacity: 0.8;
-  }
-
-  .tips-text {
-    font-size: 12px;
   }
 
   @media (prefers-color-scheme: dark) {

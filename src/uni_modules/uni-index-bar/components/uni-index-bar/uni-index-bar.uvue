@@ -7,7 +7,13 @@
 	<!-- #endif -->
 	<!-- #ifndef MP-ALIPAY -->
 	<text class="index-text" ref="indexTextRef" v-bind="$attrs" @touchstart="onTouchStart" @touchmove.stop.prevent="onTouchMove"
-		@touchend="onTouchEnd">{{ indexs }}</text>
+		@touchend="onTouchEnd"
+
+		<!-- #ifdef WEB -->
+		@click="onIndexClick"
+		<!-- #endif -->
+
+		>{{ indexs }}</text>
 	<!-- #endif -->
 	<!-- indicator with arrow -->
 	<view v-show="touching" class="indicator" :class="indicatorViewClass" :style="indicatorStyle">
@@ -324,11 +330,6 @@
 		// #ifdef APP
 		e.preventDefault()
 		// #endif
-		// #ifdef WEB
-		if (e.cancelable) {
-			e.preventDefault()
-		}
-		// #endif
 		const touch = e.touches[0]
 		const idx = getIndexFromY(touch.clientY)
 		const newIndex = cachedIndexList[idx]
@@ -342,6 +343,48 @@
 	const onTouchEnd = (_e : UniTouchEvent) => {
 		touching.value = false
 	}
+
+	// #ifdef WEB
+	// Web 端点击索引字母直接跳转；App/小程序端由 touch 事件处理
+	const onIndexClick = (e : PointerEvent) => {
+		updateLayout()
+		const idx = getIndexFromY(e.clientY)
+		emit('select', cachedIndexList[idx])
+	}
+
+	// Web 端：测量浏览器垂直滚动条宽度，动态调整 right 值，避免与滚动条重叠
+	const getScrollbarWidth = () : number => {
+		const outer = document.createElement('div')
+		outer.style.visibility = 'hidden'
+		outer.style.overflow = 'scroll'
+		outer.style.width = '100px'
+		outer.style.position = 'absolute'
+		outer.style.top = '-9999px'
+		document.body!.appendChild(outer)
+		const width = outer.offsetWidth - outer.clientWidth
+		document.body!.removeChild(outer)
+		return width
+	}
+
+	const updateIndexTextRight = () => {
+		const el = indexTextRef.value
+		if (el == null) return
+		const scrollbarWidth = getScrollbarWidth()
+		const offset = 3 + (scrollbarWidth > 0 ? scrollbarWidth : 0)
+		el.style.setProperty('right', `${offset}px`)
+	}
+
+	onMounted(() => {
+		nextTick(() => {
+			updateIndexTextRight()
+		})
+		window.addEventListener('resize', updateIndexTextRight)
+	})
+
+	onUnmounted(() => {
+		window.removeEventListener('resize', updateIndexTextRight)
+	})
+	// #endif
 </script>
 
 <style>

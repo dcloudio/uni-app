@@ -2,30 +2,30 @@
   <!-- #ifdef APP -->
   <text>查看getFileInfo各摘要算法(digestAlgorithm)的测试日志</text>
   <button size="mini" @click="log=''">清空日志</button>
-  <scroll-view style="max-height: 300px;">
-    <text style="margin: 2px; padding: 2px; border: 1px solid #000000;">{{ log }}</text>
+  <scroll-view class="max-h-300">
+    <text class="u-p-2 m-2 border-width-1 border-style-solid border-color-000">{{ log }}</text>
   </scroll-view>
 
-  <scroll-view style="flex: 1;">
+  <scroll-view class="flex-1">
   <!-- #endif -->
-    <button class="btnstyle" type="primary" @tap="createTestFile"
+    <button class="m-4" type="primary" @tap="createTestFile"
       id="btn-create-test-file">创建测试文件(内容:{{ data.writeFileContent }})</button>
-    <button class="btnstyle" type="primary" @tap="getFileInfoTest('md5')"
+    <button class="m-4" type="primary" @tap="getFileInfoTest('md5')"
       id="btn-get-file-info-md5">getFileInfo(digestAlgorithm: md5)</button>
-    <button class="btnstyle" type="primary" @tap="getFileInfoTest('sha1')"
+    <button class="m-4" type="primary" @tap="getFileInfoTest('sha1')"
       id="btn-get-file-info-sha1">getFileInfo(digestAlgorithm: sha1)</button>
-    <button class="btnstyle" type="primary" @tap="getFileInfoTest('sha256')"
+    <button class="m-4" type="primary" @tap="getFileInfoTest('sha256')"
       id="btn-get-file-info-sha256">getFileInfo(digestAlgorithm: sha256)</button>
-    <button class="btnstyle" type="primary" @tap="getFileInfoTest('none')"
+    <button class="m-4" type="primary" @tap="getFileInfoTest('none')"
       id="btn-get-file-info-none">getFileInfo(digestAlgorithm: none)</button>
-    <button class="btnstyle" type="primary" @tap="getFileInfoTest()"
+    <button class="m-4" type="primary" @tap="getFileInfoTest('')"
       id="btn-get-file-info-default">getFileInfo(不传digestAlgorithm)</button>
-    <button class="btnstyle" type="primary" @tap="getFileInfoTest('unsupported-digest')"
+    <button class="m-4" type="primary" @tap="getFileInfoTest('unsupported-digest')"
       id="btn-get-file-info-invalid">getFileInfo(无效算法)</button>
-    <button class="btnstyle" type="primary" @tap="readFileTest"
+    <button class="m-4" type="primary" @tap="readFileTest"
       id="btn-read-file">readFile(编码:{{ data.readFileEncoding }})</button>
     <!-- #ifdef APP -->
-    <button class="btnstyle" type="primary" @tap="getFileInfoByContent"
+    <button class="m-4" type="primary" @tap="getFileInfoByContent"
       id="btn-get-file-info-content">getFileInfo(content://)</button>
     <!-- #endif -->
   <!-- #ifdef APP -->
@@ -55,7 +55,7 @@
      */
     logAble: true,
     writeFilePath: 'getFileInfo-hello.txt',
-    writeFileContent: 'hello',
+    writeFileContent: '测试getFileInfo API的写入功能。',
     writeFileEncoding: 'utf-8',
     readFileEncoding: 'utf-8',
     readFileRet: '',
@@ -95,10 +95,10 @@
   }
 
   // 获取文件信息并计算摘要，digestAlgorithm 可为 md5 / sha1 / sha256 / none；不传时使用平台默认算法
-  function getFileInfoTest(algorithm ?: string) {
+  function getFileInfoTest(algorithm : string) {
     const fileManager = uni.getFileSystemManager()
     data.done = false
-    data.getFileInfoAlgorithm = algorithm ?? ''
+    data.getFileInfoAlgorithm = algorithm
     data.getFileInfoSize = -1
     data.getFileInfoDigest = ''
     const options : GetFileInfoOptions = {
@@ -122,7 +122,8 @@
         data.done = true
       }
     }
-    if (algorithm != null) {
+    // 空字符串表示不传 digestAlgorithm，使用平台默认算法（区别于 none：none 明确不计算摘要）
+    if (algorithm != null && algorithm != '') {
       options.digestAlgorithm = algorithm
     }
     fileManager.getFileInfo(options)
@@ -197,9 +198,3 @@
     // #endif
   })
 </script>
-
-<style>
-  .btnstyle {
-    margin: 4px;
-  }
-</style>

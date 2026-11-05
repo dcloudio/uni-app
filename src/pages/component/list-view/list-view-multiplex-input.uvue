@@ -1,8 +1,8 @@
 <template>
-  <list-view id="listview" class="list-view-page" style="flex: 1;" show-scrollbar=false @scrolltolower="onScrollTolower">
-    <list-item v-for="index in data.item_count" :key="index" class="item" @click="itemClick(index)">
-      <text class="text">item---<text class="text" @click.stop="childTextClick(index)">----{{index}}</text></text>
-      <input class="item-input" :placeholder="index + ''"
+  <list-view id="listview" class="flex-1" show-scrollbar=false @scrolltolower="onScrollTolower">
+    <list-item v-for="index in data.item_count" :key="index" class="u-p-15 m-0-0-5-0 bg-list-fff radius-5" @click="itemClick(index)">
+      <text class="color-text-000">item---<text class="color-text-000" @click.stop="childTextClick(index)">----{{index}}</text></text>
+      <input class="border-width-1 border-style-solid item-input border-color-border-000" :placeholder="index + ''"
         :value="index ==1 ? `第一个` :index " />
     </list-item>
   </list-view>
@@ -50,27 +50,9 @@ defineExpose({
 </script>
 
 <style>
-  .item {
-    padding: 15px;
-    margin: 0 0 5px 0;
-    background-color: var(--list-background-color, #fff);
-    border-radius: 5px;
-  }
-
   .item-input {
-    border-width: 1px;
-    border-style: solid;
-    border-color: var(--border-color, #000000);
     /* #ifdef VUE3-VAPOR */
     color: var(--text-color, #000000);
     /* #endif */
-  }
-
-  .button_item {
-    width: 200px;
-  }
-
-  .text {
-    color: var(--text-color, #000000);
   }
 </style>

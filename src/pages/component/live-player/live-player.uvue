@@ -1,50 +1,50 @@
 <template>
-  <view class="uni-flex-item">
-    <live-player id="live-player" class="live-player" :src="src" :autoplay="autoplay" :muted="muted"
+  <view class="flex-1">
+    <live-player id="live-player" class="live-player w-full" :src="src" :autoplay="autoplay" :muted="muted"
       :object-fit="objectFit" :background-mute="backgroundMute" :sound-mode="soundMode" :orientation="orientation"
       @statechange="statechange" @fullscreenchange="fullscreenchange" @error="error">
     </live-player>
-    <scroll-view id="live-player-scroll-view" class="uni-padding-wrap uni-common-mt uni-flex-item">
-      <view class="uni-title">
-        <text class="uni-title-text">API示例</text>
+    <scroll-view id="live-player-scroll-view" class="p-0-15 mt-15 flex-1">
+      <view class="p-10-0 color-text-333">
+        <text class="fs-15 fw-bold color-text-333">API示例</text>
       </View>
-      <view class="uni-btn-v">
+      <view class="p-5-0">
         <button type="primary" @click="play" :disabled="playState">播放</button>
       </view>
-      <view class="uni-btn-v">
+      <view class="p-5-0">
         <button type="primary" @click="pause" :disabled="!playState">暂停</button>
       </view>
-      <view class="uni-btn-v">
+      <view class="p-5-0">
         <button type="primary" @click="resume" :disabled="initState || playState || stopState">恢复</button>
       </view>
-      <view class="uni-btn-v">
+      <view class="p-5-0">
         <button type="primary" @click="stop" :disabled="!playState">停止</button>
       </view>
-      <view class="uni-btn-v">
+      <view class="p-5-0">
         <button type="primary" @click="mute" :disabled="!playState">静音</button>
       </view>
-      <view class="uni-btn-v">
+      <view class="p-5-0">
         <button type="primary" @click="requestFullScreen" :disabled="!playState">进入全屏</button>
       </view>
-      <view class="uni-btn-v">
+      <view class="p-5-0">
         <button type="primary" @click="exitFullScreen" :disabled="!playState">退出全屏</button>
       </view>
-      <view class="uni-title">
-        <text class="uni-title-text">属性示例</text>
+      <view class="p-10-0 color-text-333">
+        <text class="fs-15 fw-bold color-text-333">属性示例</text>
       </view>
-      <input class="input margin-10" type="string" placeholder="设置播放地址" @confirm="onSrcComfirm"></input>
+      <input class="m-10 h-40 background-fff p-8-13" type="string" placeholder="设置播放地址" @confirm="onSrcComfirm"></input>
       <boolean-data title="设置是否自动播放" :value="autoplay" @change="onAutoplayChange"></boolean-data>
       <boolean-data title="设置是否静音" :value="muted" @change="onMutedChange"></boolean-data>
       <boolean-data title="设置进入后台时是否静音" :value="backgroundMute" @change="onBackgroundMuteChange"></boolean-data>
-      <enum-data title="设置填充模式" :items="objectFitItemTypes" @change="onObjectFitChange"></enum-data>
-      <enum-data title="设置声音输出方式" :items="soundModeItemTypes" @change="onSoundModeChange"></enum-data>
-      <enum-data title="设置画面方向" :items="orientationItemTypes" @change="onOrientationChange"></enum-data>
+      <enum-data-checkbox title="设置填充模式" :items="objectFitItemTypes" @change="onObjectFitChange"></enum-data-checkbox>
+      <enum-data-checkbox title="设置声音输出方式" :items="soundModeItemTypes" @change="onSoundModeChange"></enum-data-checkbox>
+      <enum-data-checkbox title="设置画面方向" :items="orientationItemTypes" @change="onOrientationChange"></enum-data-checkbox>
     </scroll-view>
   </view>
 </template>
 
 <script setup lang="ts">
-  import { ItemType } from '@/components/enum-data/enum-data-types';
+  import { ItemType } from '@/components/enum-data-checkbox/enum-data-checkbox-types';
 
   const context = ref(null as LivePlayerContext | null);
   const src = ref("");
@@ -243,13 +243,6 @@
 
 <style>
   .live-player {
-    width: 100%;
     height: 40%;
-  }
-
-  .input {
-    height: 40px;
-    background: #FFF;
-    padding: 8px 13px;
   }
 </style>

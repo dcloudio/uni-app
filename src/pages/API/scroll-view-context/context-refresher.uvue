@@ -1,0 +1,12 @@
+<template>
+  <view id="refresher-content" class="refresher"><text>Refresher / Two Level</text></view>
+</template>
+<style>
+  .refresher {
+    height: 220px;
+    width: 100%;
+    background-color: #b7eed6;
+    align-items: center;
+    justify-content: center;
+  }
+</style>

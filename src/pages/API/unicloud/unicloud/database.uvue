@@ -1,8 +1,7 @@
 <template>
-  <view>
     <page-head :title="title"></page-head>
-    <view class="uni-padding-wrap uni-common-mt">
-      <view class="uni-btn-v uni-common-mt">
+    <view class="p-0-15 mt-15">
+      <view class="p-5-0 mt-15">
         <button type="primary" @click="dbAdd">新增单条数据</button>
         <button type="primary" @click="dbBatchAdd">新增多条数据</button>
         <button type="primary" @click="dbUpdate">更新数据</button>
@@ -14,7 +13,6 @@
         <button type="primary" @click="dbMultiSend">合并查询查询</button>
       </view>
     </view>
-  </view>
 </template>
 
 <script setup lang="ts">
@@ -337,6 +335,3 @@
     dbMultiSend
   })
 </script>
-
-<style>
-</style>

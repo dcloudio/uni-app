@@ -1,46 +1,44 @@
 <template>
-  <view class="page">
     <!-- #ifndef MP-ALIPAY -->
-    <uni-back-arrow-circle class="back" arrow-class="arrow"></uni-back-arrow-circle>
+    <uni-back-arrow-circle :auto-back="true" class="back arrow"></uni-back-arrow-circle>
     <!-- #endif -->
-    <swiper class="swiper" :current="current" :circular="index != 0" :vertical="true" @change="onSwiperChange"
+    <swiper class="w-full swiper h-full" :current="current" :circular="index != 0" :vertical="true" @change="onSwiperChange"
       @transition="onTransition" <!-- #ifdef MP-ALIPAY -->
       @animationfinish="onSwiperAnimationfinish"
       <!-- #endif -->
       >
-      <swiper-item class="swiper-item" v-for="(item,i) in visibleList" :key="i">
-        <video @click="changeState(i)" ref="video" class="video-box" :id="'video-'+i"
+      <swiper-item class="w-full h-full" v-for="(item,i) in visibleList" :key="i">
+        <video @click="changeState(i)" ref="video" class="w-full h-full" :id="'video-'+i"
           @loadstart="onLoadstart(i)" :src="item.src" :poster="item.poster_src" :autoplay="false"
           :show-progress="false" :show-fullscreen-btn="false" :show-play-btn="false"
           :show-center-play-btn="false" :loop="true" <!-- #ifdef MP-ALIPAY -->
           object-fit="contain"
           <!-- #endif -->
           @play="onPlay(i)" @pause="onPause(i)" :http-cache="true"></video>
-        <view class="video-cover" @click="changeState(i)">
-          <image v-if="stateList[i] === 'pause'" class="play-btn" src="/static/template/swiper-vertical-video/play.png"
+        <view class="w-full pos-absolute justify-center items-center video-cover h-full content-center" @click="changeState(i)">
+          <image v-if="stateList[i] === 'pause'" class="w-40 h-40" src="/static/template/swiper-vertical-video/play.png"
             mode="widthFix"></image>
         </view>
-        <view class="video-info" v-if="showDebugInfo">
-          <text class="video-info-text">容器：第 {{i}} 个</text>
-          <text class="video-info-text">内容：{{item.content}}</text>
+        <view class="pos-absolute bottom-0 u-p-15" v-if="showDebugInfo">
+          <text class="fs-14 u-color-red lh-20">容器：第 {{i}} 个</text>
+          <text class="fs-14 u-color-red lh-20">内容：{{item.content}}</text>
         </view>
         <!-- 评论按钮 -->
-        <view class="comment-btn" @click="openCommentPanel">
-          <view class="comment-icon">
-            <text class="comment-icon-text">💬</text>
+        <view class="pos-absolute flex-dir-column items-center z-index-10 comment-btn" @click="openCommentPanel">
+          <view class="w-40 h-40 radius-20 bg-black-a30 justify-center items-center">
+            <text class="fs-20">💬</text>
           </view>
-          <text class="comment-count">{{commentCount}}</text>
+          <text class="fs-12 color-fff text-center">{{commentCount}}</text>
         </view>
       </swiper-item>
     </swiper>
-    <view class="debug-info" v-if="showDebugInfo">
-      <text class="status-text">debug-info 播放状态:</text>
-      <text class="status-text" v-for="(value,index) in stateList">第{{index+1}}个:{{ value }}</text>
+    <view class="pos-fixed w-full debug-info top-15" v-if="showDebugInfo">
+      <text class="u-color-red u-p-15">debug-info 播放状态:</text>
+      <text class="u-color-red u-p-15" v-for="(value,index) in stateList">第{{index+1}}个:{{ value }}</text>
     </view>
 
     <!-- 评论面板 -->
     <comment-panel :show="showCommentPanel" @close="closeCommentPanel" @countChange="onCommentCountChange"></comment-panel>
-  </view>
 </template>
 <script setup lang="ts">
   /**
@@ -322,65 +320,14 @@ defineExpose({
       background-color: #000000;
     }
 
-  .page {
-    flex: 1;
-  }
-
-  .swiper,
-  .swiper-item,
-  .video-box,
-  .video-cover {
-    width: 100%;
-    height: 100%;
-  }
-
-
-  /* #ifndef MP-ALIPAY */
-  .video-box {
-    width: 100%;
-  }
-  /* #endif */
-
   /* #ifdef MP-ALIPAY */
   .swiper {
     height: 100vh;
   }
   /* #endif */
 
-  .video-cover {
-    position: absolute;
-    justify-content: center;
-    align-items: center;
-    align-content: center;
-  }
-
-  .play-btn {
-    width: 40px;
-    height: 40px;
-  }
-
-  .video-info {
-    position: absolute;
-    bottom: 0;
-    padding: 15px;
-  }
-
-  .video-info-text {
-    font-size: 14px;
-    color: red;
-    line-height: 20px;
-  }
-
   .debug-info {
-    position: fixed;
-    top: 15px;
-    width: 100%;
     background-color: rgba(255, 255, 255, 0.3);
-  }
-
-  .status-text {
-    color: red;
-    padding: 15px;
   }
 
   .back{
@@ -396,36 +343,12 @@ defineExpose({
 
   /* uni-back-arrow-circle组件 自定义样式 */
   .arrow {
-    border-left-color: #FFFFFF !important;
-    border-bottom-color: #FFFFFF !important;
+    --back-arrow-color: #FFFFFF;
   }
 
   /* 评论按钮 */
   .comment-btn {
-    position: absolute;
     right: 15px;
     bottom: 80px;
-    flex-direction: column;
-    align-items: center;
-    z-index: 10;
-  }
-
-  .comment-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 20px;
-    background-color: rgba(0, 0, 0, 0.3);
-    justify-content: center;
-    align-items: center;
-  }
-
-  .comment-icon-text {
-    font-size: 20px;
-  }
-
-  .comment-count {
-    font-size: 12px;
-    color: #ffffff;
-    text-align: center;
   }
 </style>

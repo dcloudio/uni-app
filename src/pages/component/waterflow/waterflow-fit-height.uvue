@@ -1,19 +1,19 @@
 <template>
-  <view class="waterflow-page" style="flex: 1;">
-    <waterflow v-if="isShow" style="flex: 1;" cross-axis-gap="5" main-axis-gap="5">
+  <view class="waterflow-page flex-1">
+    <waterflow v-if="isShow" class="flex-1" cross-axis-gap="5" main-axis-gap="5">
       <flow-item v-for="(item, index) in list" :key="index" @click="itemClick(item['author_name'] as string | null)">
-        <view class="item">
-          <image class="img" :fade-show="true" :src="item['cover']" mode="widthFix"></image>
-          <text class="name">{{ item['author_name'] }}</text>
-          <text class="title">{{ item['title'] }}</text>
-          <text class="time">{{ item['published_at'] }}</text>
+        <view class="w-full radius-8 bg-list-fff">
+          <image class="w-full radius-5" :fade-show="true" :src="item['cover']" mode="widthFix"></image>
+          <text class="fs-18 fw-bold m-10">{{ item['author_name'] }}</text>
+          <text class="fs-14 m-0-10 color-waterflow-secondary-808080">{{ item['title'] }}</text>
+          <text class="fs-14 m-10 color-waterflow-secondary-808080">{{ item['published_at'] }}</text>
         </view>
       </flow-item>
       <!-- 测试验证issues 20342 问题 开始 -->
       <flow-item slot="refresher" id="refresher" type=2>
       	<text>自定义加载</text>
       </flow-item>
-      <flow-item slot="load-more" id="loadmore" type=6 class="load-more-box">
+      <flow-item slot="load-more" id="loadmore" type=6 class="justify-center items-center flex-dir-row h-45 w-full border-style-solid load-more-box">
         <text>加载更多</text>
       </flow-item>
       <!-- 测试验证issues 20342 问题 结束-->
@@ -77,42 +77,11 @@
 </script>
 
 <style>
-  .item {
-    width: 100%;
-    border-radius: 8px;
-    background-color: var(--list-background-color, #ffffff);
-  }
-
-  .img {
-    width: 100%;
-    border-radius: 5px;
-  }
-
-  .name {
-    font-size: 18px;
-    font-weight: bold;
-    margin: 10px;
-  }
-
-  .title {
-    font-size: 14px;
-    margin: 0 10px;
+  .color-waterflow-secondary-808080 {
     color: var(--waterflow-secondary-color, gray);
-  }
-
-  .time {
-    font-size: 14px;
-    color: var(--waterflow-secondary-color, gray);
-    margin: 10px;
   }
 
   .load-more-box {
-    justify-content: center;
-    align-items: center;
-    flex-direction: row;
-    height: 45px;
-    width: 100%;
-    border-style: solid;
     border-color: var(--border-color, rgba(0, 0, 0, 0.06));
   }
 

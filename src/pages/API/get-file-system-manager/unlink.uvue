@@ -1,0 +1,220 @@
+<template>
+  <!-- #ifdef APP -->
+  <page-intro content="演示 FileSystemManager.unlink / unlinkSync：删除文件，删除成功后自动校验文件已不存在；包内 static 资源为只读，删除不影响原文件。"></page-intro>
+  <scroll-view class="flex-1">
+  <!-- #endif -->
+    <view class="p-8 flex-dir-column">
+      <view class="p-8 border-1-solid-e0e0e0 radius-4 flex-dir-column m-4-0">
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">根目录</text>
+          <enum-data-checkbox
+            class="flex-1"
+            :model-value="data.rootKey"
+            :items="rootOptions"
+            mode="default"
+            :show-toast="false"
+            @change="onRootChange"
+          />
+        </view>
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">文件路径</text>
+          <input class="flex-1 border-1-solid-d0d0d0 radius-4 p-4-8 fs-13 h-32" v-model="data.filePath" placeholder="相对根目录的路径" />
+        </view>
+      </view>
+      <view class="flex-dir-row flex-wrap-wrap m-4-0">
+        <button class="m-4" type="primary" @tap="unlink" id="btn-unlink">unlink 删除文件</button>
+        <button class="m-4" type="primary" @tap="unlinkSync" id="btn-unlink-sync">unlinkSync 删除文件</button>
+        <button class="m-4" type="warn" @tap="demoFail" id="btn-unlink-fail">演示失败（文件不存在）</button>
+        <button class="m-4" type="primary" @tap="demoStatic" id="btn-unlink-static">删除包内 static 资源</button>
+      </view>
+      <view class="p-8 border-1-solid-e0e0e0 radius-4 flex-dir-column m-4-0-12-0">
+        <text class="fw-bold fs-14 m-2-0 color-333">执行结果：{{ data.lastResult == '' ? '等待执行' : (data.lastResult == 'success' ? '成功' : '失败') }}</text>
+        <text class="fs-13 m-2-0 color-666">目标路径：{{ data.rootPath }}{{ data.filePath }}</text>
+        <text class="fs-13 m-2-0 color-666" v-if="data.lastResult == 'success' && data.staticMode == false">文件存在性校验：{{ data.existsRet ? '仍存在' : '已删除' }}</text>
+        <text class="fs-13 m-2-0 color-666" v-if="data.lastResult == 'success' && data.staticMode">包内资源存在性校验：{{ data.existsRet ? '仍存在（只读）' : '已不存在' }}</text>
+        <text class="fs-13 m-2-0 color-e64340" v-if="data.lastResult == 'fail'">errCode：{{ data.lastFailError.errCode }}；errMsg：{{ data.lastFailError.errMsg }}</text>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="ts">
+  import { createEnumItems } from '@/components/enum-data-checkbox/enum-data-checkbox-types'
+  const rootOptions = createEnumItems(['usr', 'cache', 'sandbox'])
+
+  import { getFsmRootPath, ensureFsmDirSync, ensureFsmFileSync, removeFsmPathSync, removeFsmDirSync, createFsmMockError } from './fsm-utils'
+
+  type DataType = {
+    rootKey : string
+    rootPath : string
+    filePath : string
+    staticMode : boolean
+    existsRet : boolean
+    done : boolean
+    lastResult : string
+    lastFailError : UniError
+  }
+
+  const data = reactive({
+    rootKey: 'usr',
+    rootPath: getFsmRootPath('usr'),
+    filePath: 'fsm-unlink-demo/1.txt',
+    staticMode: false,
+    existsRet: false,
+    done: false,
+    lastResult: '',
+    lastFailError: createFsmMockError(),
+  } as DataType)
+
+  function onRootChange(value : string) {
+    data.rootKey = value
+    data.rootPath = getFsmRootPath(data.rootKey)
+  }
+
+  function targetPath(path : string) : string {
+    return `${data.rootPath}${path ?? data.filePath}`
+  }
+
+  function resetResult() {
+    data.done = false
+    data.lastResult = ''
+    data.staticMode = false
+  }
+
+  function applyFail(res : IUniError) {
+    data.lastResult = 'fail'
+    data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+  }
+
+  function exists(path : string) : void {
+    const fileManager = uni.getFileSystemManager()
+    try {
+      fileManager.accessSync(targetPath(path))
+      data.existsRet = true
+    } catch (e) {
+      try {
+        // 兼容绝对路径（如包内资源）：按原样路径再判断一次
+        fileManager.accessSync(path != null ? path : targetPath(path))
+        data.existsRet = true
+      } catch (e2) {
+        data.existsRet = false
+      }
+    }
+  }
+
+  function prepare() : void {
+    const demoDir = `${data.rootPath}fsm-unlink-demo`
+    ensureFsmDirSync(demoDir)
+    ensureFsmFileSync(`${demoDir}/1.txt`, '测试unlink API的写入功能。\n\t制表符缩进行\n回车换行：\r\n下一行\n反斜杠 \\ 双引号 " 单引号 \'\n空格[  ]全角空格[　]不间断空格[ ]\n混合内容：中文English123!@#')
+    data.done = true
+  }
+
+  function cleanup() : void {
+    removeFsmDirSync(`${data.rootPath}fsm-unlink-demo`)
+    data.done = true
+  }
+
+  function unlink() : void {
+    resetResult()
+    // 自愈：重建默认演示文件，保证重复点击始终成功
+    if (data.filePath == 'fsm-unlink-demo/1.txt') {
+      ensureFsmDirSync(`${data.rootPath}fsm-unlink-demo`)
+      ensureFsmFileSync(`${data.rootPath}fsm-unlink-demo/1.txt`, '测试unlink API的写入功能。\n\t制表符缩进行\n回车换行：\r\n下一行\n反斜杠 \\ 双引号 " 单引号 \'\n空格[  ]全角空格[　]不间断空格[ ]\n混合内容：中文English123!@#')
+    }
+    const fileManager = uni.getFileSystemManager()
+    const options : UnLinkOptions = {
+      filePath: targetPath(data.filePath),
+      success: (_ : FileManagerSuccessResult) => {
+        data.lastResult = 'success'
+        exists(data.filePath)
+      },
+      fail: (res : IUniError) => {
+        applyFail(res)
+      },
+      complete: (_ : any) => {
+        data.done = true
+      }
+    }
+    fileManager.unlink(options)
+  }
+
+  function unlinkSync() : void {
+    resetResult()
+    // 自愈：重建默认演示文件，保证重复点击始终成功
+    if (data.filePath == 'fsm-unlink-demo/1.txt') {
+      ensureFsmDirSync(`${data.rootPath}fsm-unlink-demo`)
+      ensureFsmFileSync(`${data.rootPath}fsm-unlink-demo/1.txt`, '测试unlink API的写入功能。\n\t制表符缩进行\n回车换行：\r\n下一行\n反斜杠 \\ 双引号 " 单引号 \'\n空格[  ]全角空格[　]不间断空格[ ]\n混合内容：中文English123!@#')
+    }
+    try {
+      uni.getFileSystemManager().unlinkSync(targetPath(data.filePath))
+      data.lastResult = 'success'
+      exists(data.filePath)
+    } catch (e) {
+      data.lastResult = 'fail'
+      data.lastFailError = new UniError('uni-file-manager', 0, `${e}`)
+    }
+    data.done = true
+  }
+
+  // 一键演示失败场景：删除不存在的文件，预期 errCode 1300002（演示后自动恢复参数）
+  function demoFail() : void {
+    resetResult()
+    const prevPath = data.filePath
+    const missingPath = 'fsm-unlink-demo/missing.txt'
+    data.filePath = missingPath
+    const fileManager = uni.getFileSystemManager()
+    const options : UnLinkOptions = {
+      filePath: `${data.rootPath}${missingPath}`,
+      success: (_ : FileManagerSuccessResult) => {
+        data.lastResult = 'success'
+      },
+      fail: (res : IUniError) => {
+        applyFail(res)
+      },
+      complete: (_ : any) => {
+        data.filePath = prevPath
+        data.done = true
+      }
+    }
+    fileManager.unlink(options)
+  }
+
+  // 包内 static 资源只读：删除后重新校验资源仍然存在
+  function demoStatic() : void {
+    resetResult()
+    data.staticMode = true
+    const fileManager = uni.getFileSystemManager()
+    const options : UnLinkOptions = {
+      filePath: '/static/test-image/logo.ico',
+      success: (_ : FileManagerSuccessResult) => {
+        data.lastResult = 'success'
+        exists('/static/test-image/logo.ico')
+      },
+      fail: (res : IUniError) => {
+        applyFail(res)
+        exists('/static/test-image/logo.ico')
+      },
+      complete: (_ : any) => {
+        data.done = true
+      }
+    }
+    fileManager.unlink(options)
+  }
+
+  onReady(() => {
+    prepare()
+  })
+
+  defineExpose({
+    data,
+    prepare,
+    cleanup,
+    exists,
+    unlink,
+    unlinkSync,
+    demoFail,
+    demoStatic
+  })
+</script>

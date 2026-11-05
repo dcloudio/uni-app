@@ -1,0 +1,236 @@
+<template>
+  <!-- #ifdef APP -->
+  <page-intro content="演示 FileSystemManager.write / writeSync：通过文件描述符写入文本，展示 bytesWritten 与写入后的文件内容。"></page-intro>
+  <scroll-view class="flex-1">
+  <!-- #endif -->
+    <view class="p-8 flex-dir-column">
+      <view class="p-8 border-1-solid-e0e0e0 radius-4 flex-dir-column m-4-0">
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">根目录</text>
+          <enum-data-checkbox
+            class="flex-1"
+            :model-value="data.rootKey"
+            :items="rootOptions"
+            mode="default"
+            :show-toast="false"
+            @change="onRootChange"
+          />
+        </view>
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">写入数据</text>
+          <textarea class="flex-1 border-1-solid-d0d0d0 radius-4 p-4-8 fs-13 h-104" v-model="data.writeData" :maxlength="-1" placeholder="要写入的文本" />
+        </view>
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">写入位置</text>
+          <input class="flex-1 border-1-solid-d0d0d0 radius-4 p-4-8 fs-13 h-32" v-model="data.positionText" type="number" placeholder="position，默认 0" />
+        </view>
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333"></text>
+          <text class="flex-1 fs-12 color-999">position 为写入起始字节偏移；异步演示以 w+ 打开（写入前清空文件），同步演示以 r+ 打开（从该位置覆盖已有内容）</text>
+        </view>
+      </view>
+      <view class="flex-dir-row flex-wrap-wrap m-4-0">
+        <button class="m-4" type="primary" @tap="write" id="btn-write">write 写入（w+）</button>
+        <button class="m-4" type="primary" @tap="writeSync" id="btn-write-sync">writeSync 写入（r+）</button>
+        <button class="m-4" type="warn" @tap="demoFail" id="btn-write-fail">演示失败（无效描述符）</button>
+      </view>
+      <view class="p-8 border-1-solid-e0e0e0 radius-4 flex-dir-column m-4-0-12-0">
+        <text class="fw-bold fs-14 m-2-0 color-333">执行结果：{{ data.lastResult == '' ? '等待执行' : (data.lastResult == 'success' ? '成功' : '失败') }}</text>
+        <text class="fs-13 m-2-0 color-666">目标路径：{{ data.rootPath }}{{ data.filePath }}</text>
+        <text class="fs-13 m-2-0 color-666" v-if="data.lastResult == 'success'">bytesWritten：{{ data.bytesWritten }}；文件内容（utf-8）：{{ data.readRet }}</text>
+        <text class="fs-13 m-2-0 color-e64340" v-if="data.lastResult == 'fail'">errCode：{{ data.lastFailError.errCode }}；errMsg：{{ data.lastFailError.errMsg }}</text>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="ts">
+  import { createEnumItems } from '@/components/enum-data-checkbox/enum-data-checkbox-types'
+  const rootOptions = createEnumItems(['usr', 'cache', 'sandbox'])
+
+  import { getFsmRootPath, ensureFsmDirSync, ensureFsmFileSync, removeFsmPathSync, removeFsmDirSync, parseIntSafe, createFsmMockError } from './fsm-utils'
+
+  type DataType = {
+    rootKey : string
+    rootPath : string
+    filePath : string
+    writeData : string
+    positionText : string
+    bytesWritten : number
+    readRet : string
+    existsRet : boolean
+    done : boolean
+    lastResult : string
+    lastFailError : UniError
+  }
+
+  const data = reactive({
+    rootKey: 'usr',
+    rootPath: getFsmRootPath('usr'),
+    filePath: 'fsm-write-demo/1.txt',
+    writeData: '测试write API的写入功能。\n\t制表符缩进行\n回车换行：\r\n下一行\n反斜杠 \\ 双引号 " 单引号 \'\n空格[  ]全角空格[　]不间断空格[ ]\n混合内容：中文English123!@#',
+    positionText: '0',
+    bytesWritten: 0,
+    readRet: '',
+    existsRet: false,
+    done: false,
+    lastResult: '',
+    lastFailError: createFsmMockError(),
+  } as DataType)
+
+  function onRootChange(value : string) {
+    data.rootKey = value
+    data.rootPath = getFsmRootPath(data.rootKey)
+  }
+
+  function targetPath(path : string) : string {
+    return `${data.rootPath}${path ?? data.filePath}`
+  }
+
+  function resetResult() {
+    data.done = false
+    data.lastResult = ''
+    data.bytesWritten = 0
+    data.readRet = ''
+  }
+
+  function applyFail(res : IUniError) {
+    data.lastResult = 'fail'
+    data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+  }
+
+  function applySyncFail(e : any) {
+    data.lastResult = 'fail'
+    data.lastFailError = new UniError('uni-file-manager', 0, `${e}`)
+  }
+
+  function exists(path : string) : void {
+    try {
+      uni.getFileSystemManager().accessSync(targetPath(path))
+      data.existsRet = true
+    } catch (e) {
+      data.existsRet = false
+    }
+  }
+
+  function prepare() : void {
+    const demoDir = `${data.rootPath}fsm-write-demo`
+    ensureFsmDirSync(demoDir)
+    ensureFsmFileSync(`${demoDir}/1.txt`, '0123456789')
+    data.done = true
+  }
+
+  function cleanup() : void {
+    removeFsmDirSync(`${data.rootPath}fsm-write-demo`)
+    data.done = true
+  }
+
+  function readBackText() : void {
+    try {
+      const content = uni.getFileSystemManager().readFileSync(targetPath(data.filePath), 'utf-8')
+      data.readRet = (content as string).toString()
+    } catch (e) {
+      data.readRet = `read back fail: ${e}`
+    }
+  }
+
+  // 异步写入：w+ 方式打开（清空内容）后写入
+  function write() : void {
+    resetResult()
+    // 自愈：确保默认演示目录存在，保证任意时刻重复点击都能成功
+    if (data.filePath == 'fsm-write-demo/1.txt') {
+      ensureFsmDirSync(`${data.rootPath}fsm-write-demo`)
+    }
+    const fileManager = uni.getFileSystemManager()
+    try {
+      const fd = fileManager.openSync({ filePath: targetPath(data.filePath), flag: 'w+' } as OpenFileSyncOptions)
+      const options : WriteOptions = {
+        fd: fd,
+        data: data.writeData,
+        encoding: 'utf-8',
+        position: parseIntSafe(data.positionText),
+        success: (res : WriteResult) => {
+          data.bytesWritten = res.bytesWritten
+          data.lastResult = 'success'
+          try {
+            fileManager.closeSync({ fd: fd } as CloseSyncOptions)
+          } catch (e) {
+            // 关闭失败不影响演示结果
+          }
+          readBackText()
+        },
+        fail: (res : IUniError) => {
+          applyFail(res)
+        },
+        complete: (_ : any) => {
+          data.done = true
+        }
+      }
+      fileManager.write(options)
+    } catch (e) {
+      applySyncFail(e)
+      data.done = true
+    }
+  }
+
+  // 同步写入：r+ 方式打开（保留内容）后写入指定位置
+  function writeSync() : void {
+    resetResult()
+    // 自愈：重建默认演示文件，保证重复点击演示结果一致
+    if (data.filePath == 'fsm-write-demo/1.txt') {
+      ensureFsmDirSync(`${data.rootPath}fsm-write-demo`)
+      ensureFsmFileSync(`${data.rootPath}fsm-write-demo/1.txt`, '0123456789')
+    }
+    const fileManager = uni.getFileSystemManager()
+    try {
+      const fd = fileManager.openSync({ filePath: targetPath(data.filePath), flag: 'r+' } as OpenFileSyncOptions)
+      const ret = fileManager.writeSync({ fd: fd, data: data.writeData, encoding: 'utf-8', position: parseIntSafe(data.positionText) } as WriteSyncOptions)
+      data.bytesWritten = ret.bytesWritten
+      fileManager.closeSync({ fd: fd } as CloseSyncOptions)
+      data.lastResult = 'success'
+      readBackText()
+    } catch (e) {
+      applySyncFail(e)
+    }
+    data.done = true
+  }
+
+  // 一键演示失败场景：使用无效描述符写入
+  function demoFail() : void {
+    resetResult()
+    const fileManager = uni.getFileSystemManager()
+    const options : WriteOptions = {
+      fd: '-1',
+      data: data.writeData,
+      encoding: 'utf-8',
+      success: (res : WriteResult) => {
+        data.bytesWritten = res.bytesWritten
+        data.lastResult = 'success'
+      },
+      fail: (res : IUniError) => {
+        applyFail(res)
+      },
+      complete: (_ : any) => {
+        data.done = true
+      }
+    }
+    fileManager.write(options)
+  }
+
+  onReady(() => {
+    prepare()
+  })
+
+  defineExpose({
+    data,
+    prepare,
+    cleanup,
+    exists,
+    write,
+    writeSync,
+    demoFail
+  })
+</script>
+

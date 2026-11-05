@@ -49,32 +49,26 @@ export interface Uni {
      *    "baidu": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "toutiao": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "lark": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "qq": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "kuaishou": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "jd": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    }
      *  }
      * }
@@ -128,32 +122,26 @@ export interface Uni {
      *    "baidu": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "toutiao": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "lark": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "qq": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "kuaishou": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "jd": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    }
      *  }
      * }

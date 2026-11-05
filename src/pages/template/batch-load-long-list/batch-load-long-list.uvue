@@ -1,19 +1,17 @@
 <template>
-  <view class="page">
-    <view class="tips"><text class="tips-text">list-view组件虽然在渲染层有recycle机制，但长列表的vnode/Element太多也会造成初始化卡顿。
+    <view class="m-10 radius-5 u-p-10 bg-list-fff"><text class="color-text-333">list-view组件虽然在渲染层有recycle机制，但长列表的vnode/Element太多也会造成初始化卡顿。
     本示例有2000条数据，通过分批创建列表项，减少初始化卡顿。并通过闲时创建机制避免影响列表滚动等UI操作</text></view>
-    <list-view class="list" :refresher-enabled="true" :refresher-triggered="refresherTriggered" @scroll="onScroll"
+    <list-view class="flex-1 bg-page-f8f8f8" :refresher-enabled="true" :refresher-triggered="refresherTriggered" @scroll="onScroll"
       @scrolltolower="onScrollToLower" @refresherrefresh="onRefresh" @refresherpulling="onRefresherPulling" @refresherrestore="onRefresherRestore">
       <list-item v-for="(item, index) in list" :key="index + '_' + item.id">
-        <view class="item">
-          <view><text class="item-name">{{ item.name }}</text></view>
-          <view><text class="item-info">{{
+        <view class="m-5-10 u-p-10 radius-5 bg-list-fff">
+          <view><text class="color-text-333">{{ item.name }}</text></view>
+          <view><text class="fs-12 color-999">{{
               item.info
             }}</text></view>
         </view>
       </list-item>
     </list-view>
-  </view>
 </template>
 
 <script setup lang="ts">
@@ -178,41 +176,3 @@
     init();
   });
 </script>
-
-<style>
-	.page {
-		flex: 1;
-	}
-
-	.list {
-		flex: 1;
-		background-color: var(--background-color, #f8f8f8);
-	}
-
-  .tips {
-    margin: 10px;
-    border-radius: 5px;
-    padding: 10px;
-    background-color: var(--list-background-color, #ffffff);
-  }
-
-  .tips-text {
-    color: var(--text-color, #333333);
-  }
-
-  .item {
-    margin: 5px 10px;
-    padding: 10px;
-    border-radius: 5px;
-    background-color: var(--list-background-color, #ffffff);
-  }
-
-  .item-name {
-    color: var(--text-color, #333333);
-  }
-
-  .item-info {
-    font-size: 12px;
-    color: #999999;
-  }
-</style>

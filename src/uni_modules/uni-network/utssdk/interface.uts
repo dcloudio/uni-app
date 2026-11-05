@@ -28,44 +28,30 @@ export type RequestOptions<T> = {
         },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "4.41"
       *    },
       *    "alipay": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "5.31"
       *    },
       *    "baidu": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    }
       *  },
         "web": {
@@ -100,44 +86,30 @@ export type RequestOptions<T> = {
         },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "4.41"
       *    },
       *    "alipay": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "5.31"
       *    },
       *    "baidu": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    }
       *  },
         "web": {
@@ -171,44 +143,30 @@ export type RequestOptions<T> = {
         },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "4.41"
       *    },
       *    "alipay": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "5.31"
       *    },
       *    "baidu": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    }
       *  },
         "web": {
@@ -242,44 +200,30 @@ export type RequestOptions<T> = {
         },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "4.41"
       *    },
       *    "alipay": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "5.31"
       *    },
       *    "baidu": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    }
       *  },
         "web": {
@@ -308,44 +252,30 @@ export type RequestOptions<T> = {
          },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "4.41"
       *    },
       *    "alipay": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "5.31"
       *    },
       *    "baidu": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    }
       *  }
       }
@@ -378,7 +308,6 @@ export type RequestOptions<T> = {
          },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "√"
       *    },
@@ -390,32 +319,26 @@ export type RequestOptions<T> = {
       *    "baidu": {
       *        "hostVer": "x",
       *        "uniVer": "x",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
       *        "hostVer": "x",
       *        "uniVer": "x",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
       *        "hostVer": "x",
       *        "uniVer": "x",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
       *        "hostVer": "x",
       *        "uniVer": "x",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
       *        "hostVer": "x",
       *        "uniVer": "x",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
       *        "hostVer": "x",
       *        "uniVer": "x",
-      *        "unixVer": "x"
       *    }
       *  },
       *  "web": {
@@ -521,44 +444,30 @@ export type RequestOptions<T> = {
         },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "4.41"
       *    },
       *    "alipay": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "5.31"
       *    },
       *    "baidu": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    }
       *  },
         "web": {
@@ -591,44 +500,30 @@ export type RequestOptions<T> = {
         },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "4.41"
       *    },
       *    "alipay": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "5.31"
       *    },
       *    "baidu": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    }
       *  },
         "web": {
@@ -663,44 +558,30 @@ export type RequestOptions<T> = {
      *   },
      *   "mp": {
      *     "weixin": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
      *         "unixVer": "4.41"
      *     },
      *     "alipay": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
      *         "unixVer": "5.31"
      *     },
      *     "baidu": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
-     *         "unixVer": "x"
      *     },
      *     "toutiao": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
-     *         "unixVer": "x"
      *     },
      *     "lark": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
-     *         "unixVer": "x"
      *     },
      *     "qq": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
-     *         "unixVer": "x"
      *     },
      *     "kuaishou": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
-     *         "unixVer": "x"
      *     },
      *     "jd": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
-     *         "unixVer": "x"
      *     }
      *   },
      *   "web": {
@@ -734,12 +615,10 @@ export type RequestOptions<T> = {
      *   },
      *   "mp": {
      *     "weixin": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
      *         "unixVer": "4.41"
      *     },
      *     "alipay": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
      *         "unixVer": "5.31"
      *     },
@@ -775,12 +654,10 @@ export type RequestOptions<T> = {
      *   },
      *   "mp": {
      *     "weixin": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
      *         "unixVer": "4.41"
      *     },
      *     "alipay": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
      *         "unixVer": "5.31"
      *     },
@@ -816,12 +693,10 @@ export type RequestOptions<T> = {
      *   },
      *   "mp": {
      *     "weixin": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
      *         "unixVer": "4.41"
      *     },
      *     "alipay": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
      *         "unixVer": "5.31"
      *     },
@@ -860,44 +735,30 @@ export type RequestSuccess<T> = {
         },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "4.41"
       *    },
       *    "alipay": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "5.31"
       *    },
       *    "baidu": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    }
       *  },
         "web": {
@@ -930,44 +791,30 @@ export type RequestSuccess<T> = {
         },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "4.41"
       *    },
       *    "alipay": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "5.31"
       *    },
       *    "baidu": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    }
       *  },
         "web": {
@@ -1000,44 +847,30 @@ export type RequestSuccess<T> = {
         },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "4.41"
       *    },
       *    "alipay": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "5.31"
       *    },
       *    "baidu": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    }
       *  },
         "web": {
@@ -1189,44 +1022,30 @@ export type RequestTaskOnChunkReceivedListenerResult = {
     *   },
     *   "mp": {
     *     "weixin": {
-    *         "hostVer": "√",
     *         "uniVer": "√",
     *         "unixVer": "4.41"
     *     },
     *     "alipay": {
-    *         "hostVer": "√",
     *         "uniVer": "√",
     *         "unixVer": "5.31"
     *     },
     *     "baidu": {
-    *         "hostVer": "√",
     *         "uniVer": "√",
-    *         "unixVer": "x"
     *     },
     *     "toutiao": {
-    *         "hostVer": "√",
     *         "uniVer": "√",
-    *         "unixVer": "x"
     *     },
     *     "lark": {
-    *         "hostVer": "√",
     *         "uniVer": "√",
-    *         "unixVer": "x"
     *     },
     *     "qq": {
-    *         "hostVer": "√",
     *         "uniVer": "√",
-    *         "unixVer": "x"
     *     },
     *     "kuaishou": {
-    *         "hostVer": "√",
     *         "uniVer": "√",
-    *         "unixVer": "x"
     *     },
     *     "jd": {
-    *         "hostVer": "√",
     *         "uniVer": "√",
-    *         "unixVer": "x"
     *     }
     *   },
     *   "web": {
@@ -1267,44 +1086,30 @@ export type RequestTaskOnHeadersReceivedListenerResult = {
     *   },
     *   "mp": {
     *     "weixin": {
-    *         "hostVer": "√",
     *         "uniVer": "√",
     *         "unixVer": "4.41"
     *     },
     *     "alipay": {
-    *         "hostVer": "√",
     *         "uniVer": "√",
     *         "unixVer": "5.31"
     *     },
     *     "baidu": {
-    *         "hostVer": "√",
     *         "uniVer": "√",
-    *         "unixVer": "x"
     *     },
     *     "toutiao": {
-    *         "hostVer": "√",
     *         "uniVer": "√",
-    *         "unixVer": "x"
     *     },
     *     "lark": {
-    *         "hostVer": "√",
     *         "uniVer": "√",
-    *         "unixVer": "x"
     *     },
     *     "qq": {
-    *         "hostVer": "√",
     *         "uniVer": "√",
-    *         "unixVer": "x"
     *     },
     *     "kuaishou": {
-    *         "hostVer": "√",
     *         "uniVer": "√",
-    *         "unixVer": "x"
     *     },
     *     "jd": {
-    *         "hostVer": "√",
     *         "uniVer": "√",
-    *         "unixVer": "x"
     *     }
     *   },
     *   "web": {
@@ -1337,44 +1142,30 @@ export type RequestTaskOnHeadersReceivedListenerResult = {
     *   },
     *   "mp": {
     *     "weixin": {
-    *         "hostVer": "√",
     *         "uniVer": "√",
     *         "unixVer": "4.41"
     *     },
     *     "alipay": {
-    *         "hostVer": "√",
     *         "uniVer": "√",
     *         "unixVer": "5.31"
     *     },
     *     "baidu": {
-    *         "hostVer": "√",
     *         "uniVer": "√",
-    *         "unixVer": "x"
     *     },
     *     "toutiao": {
-    *         "hostVer": "√",
     *         "uniVer": "√",
-    *         "unixVer": "x"
     *     },
     *     "lark": {
-    *         "hostVer": "√",
     *         "uniVer": "√",
-    *         "unixVer": "x"
     *     },
     *     "qq": {
-    *         "hostVer": "√",
     *         "uniVer": "√",
-    *         "unixVer": "x"
     *     },
     *     "kuaishou": {
-    *         "hostVer": "√",
     *         "uniVer": "√",
-    *         "unixVer": "x"
     *     },
     *     "jd": {
-    *         "hostVer": "√",
     *         "uniVer": "√",
-    *         "unixVer": "x"
     *     }
     *   },
     *   "web": {
@@ -1407,44 +1198,30 @@ export type RequestTaskOnHeadersReceivedListenerResult = {
     *   },
     *   "mp": {
     *     "weixin": {
-    *         "hostVer": "√",
     *         "uniVer": "√",
     *         "unixVer": "4.41"
     *     },
     *     "alipay": {
-    *         "hostVer": "√",
     *         "uniVer": "√",
     *         "unixVer": "5.31"
     *     },
     *     "baidu": {
-    *         "hostVer": "√",
     *         "uniVer": "√",
-    *         "unixVer": "x"
     *     },
     *     "toutiao": {
-    *         "hostVer": "√",
     *         "uniVer": "√",
-    *         "unixVer": "x"
     *     },
     *     "lark": {
-    *         "hostVer": "√",
     *         "uniVer": "√",
-    *         "unixVer": "x"
     *     },
     *     "qq": {
-    *         "hostVer": "√",
     *         "uniVer": "√",
-    *         "unixVer": "x"
     *     },
     *     "kuaishou": {
-    *         "hostVer": "√",
     *         "uniVer": "√",
-    *         "unixVer": "x"
     *     },
     *     "jd": {
-    *         "hostVer": "√",
     *         "uniVer": "√",
-    *         "unixVer": "x"
     *     }
     *   },
     *   "web": {
@@ -1487,44 +1264,30 @@ export interface RequestTask {
         },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "4.41"
       *    },
       *    "alipay": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "5.31"
       *    },
       *    "baidu": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    }
       *  },
         "web": {
@@ -1570,44 +1333,30 @@ export interface RequestTask {
      *   },
      *   "mp": {
      *     "weixin": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
      *         "unixVer": "4.41"
      *     },
      *     "alipay": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
      *         "unixVer": "5.31"
      *     },
      *     "baidu": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
-     *         "unixVer": "x"
      *     },
      *     "toutiao": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
-     *         "unixVer": "x"
      *     },
      *     "lark": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
-     *         "unixVer": "x"
      *     },
      *     "qq": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
-     *         "unixVer": "x"
      *     },
      *     "kuaishou": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
-     *         "unixVer": "x"
      *     },
      *     "jd": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
-     *         "unixVer": "x"
      *     }
      *   },
      *   "web": {
@@ -1645,44 +1394,30 @@ export interface RequestTask {
      *   },
      *   "mp": {
      *     "weixin": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
      *         "unixVer": "4.41"
      *     },
      *     "alipay": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
      *         "unixVer": "5.31"
      *     },
      *     "baidu": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
-     *         "unixVer": "x"
      *     },
      *     "toutiao": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
-     *         "unixVer": "x"
      *     },
      *     "lark": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
-     *         "unixVer": "x"
      *     },
      *     "qq": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
-     *         "unixVer": "x"
      *     },
      *     "kuaishou": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
-     *         "unixVer": "x"
      *     },
      *     "jd": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
-     *         "unixVer": "x"
      *     }
      *   },
       *   "web": {
@@ -1719,44 +1454,30 @@ export interface RequestTask {
      *   },
      *   "mp": {
      *     "weixin": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
      *         "unixVer": "4.41"
      *     },
      *     "alipay": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
      *         "unixVer": "5.31"
      *     },
      *     "baidu": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
-     *         "unixVer": "x"
      *     },
      *     "toutiao": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
-     *         "unixVer": "x"
      *     },
      *     "lark": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
-     *         "unixVer": "x"
      *     },
      *     "qq": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
-     *         "unixVer": "x"
      *     },
      *     "kuaishou": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
-     *         "unixVer": "x"
      *     },
      *     "jd": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
-     *         "unixVer": "x"
      *     }
      *   },
      *   "web": {
@@ -1794,44 +1515,30 @@ export interface RequestTask {
      *   },
      *   "mp": {
      *     "weixin": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
      *         "unixVer": "4.41"
      *     },
      *     "alipay": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
      *         "unixVer": "5.31"
      *     },
      *     "baidu": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
-     *         "unixVer": "x"
      *     },
      *     "toutiao": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
-     *         "unixVer": "x"
      *     },
      *     "lark": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
-     *         "unixVer": "x"
      *     },
      *     "qq": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
-     *         "unixVer": "x"
      *     },
      *     "kuaishou": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
-     *         "unixVer": "x"
      *     },
      *     "jd": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
-     *         "unixVer": "x"
      *     }
      *   },
      *   "web": {
@@ -1872,44 +1579,30 @@ export type UploadFileOptionFiles = {
         },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "4.41"
       *    },
       *    "alipay": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "5.31"
       *    },
       *    "baidu": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    }
       *  },
         "web": {
@@ -1942,44 +1635,30 @@ export type UploadFileOptionFiles = {
         },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "4.41"
       *    },
       *    "alipay": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "5.31"
       *    },
       *    "baidu": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    }
       *  },
         "web": {
@@ -2011,44 +1690,30 @@ export type UploadFileOptionFiles = {
         },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "4.41"
       *    },
       *    "alipay": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "5.31"
       *    },
       *    "baidu": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    }
       *  },
         "web": {
@@ -2083,44 +1748,30 @@ export type UploadFileSuccess = {
         },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "4.41"
       *    },
       *    "alipay": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "5.31"
       *    },
       *    "baidu": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    }
       *  },
         "web": {
@@ -2153,44 +1804,30 @@ export type UploadFileSuccess = {
         },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "4.41"
       *    },
       *    "alipay": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "5.31"
       *    },
       *    "baidu": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    }
       *  },
         "web": {
@@ -2235,44 +1872,30 @@ export type UploadFileOptions = {
         },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "4.41"
       *    },
       *    "alipay": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "5.31"
       *    },
       *    "baidu": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    }
       *  },
         "web": {
@@ -2306,44 +1929,30 @@ export type UploadFileOptions = {
         },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "4.41"
       *    },
       *    "alipay": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "5.31"
       *    },
       *    "baidu": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    }
       *  },
         "web": {
@@ -2377,44 +1986,30 @@ export type UploadFileOptions = {
         },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "4.41"
       *    },
       *    "alipay": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "5.31"
       *    },
       *    "baidu": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    }
       *  },
         "web": {
@@ -2448,44 +2043,30 @@ export type UploadFileOptions = {
         },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "4.41"
       *    },
       *    "alipay": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "5.31"
       *    },
       *    "baidu": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    }
       *  },
         "web": {
@@ -2519,44 +2100,30 @@ export type UploadFileOptions = {
         },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "4.41"
       *    },
       *    "alipay": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "5.31"
       *    },
       *    "baidu": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    }
       *  },
         "web": {
@@ -2590,44 +2157,30 @@ export type UploadFileOptions = {
         },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "4.41"
       *    },
       *    "alipay": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "5.31"
       *    },
       *    "baidu": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    }
       *  },
         "web": {
@@ -2661,44 +2214,30 @@ export type UploadFileOptions = {
         },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "4.41"
       *    },
       *    "alipay": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "5.31"
       *    },
       *    "baidu": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    }
       *  },
         "web": {
@@ -2733,12 +2272,10 @@ export type UploadFileOptions = {
      *   },
      *   "mp": {
      *     "weixin": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
      *         "unixVer": "4.41"
      *     },
      *     "alipay": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
      *         "unixVer": "5.31"
      *     },
@@ -2775,12 +2312,10 @@ export type UploadFileOptions = {
      *   },
      *   "mp": {
      *     "weixin": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
      *         "unixVer": "4.41"
      *     },
      *     "alipay": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
      *         "unixVer": "5.31"
      *     },
@@ -2817,12 +2352,10 @@ export type UploadFileOptions = {
      *   },
      *   "mp": {
      *     "weixin": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
      *         "unixVer": "4.41"
      *     },
      *     "alipay": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
      *         "unixVer": "5.31"
      *     },
@@ -2859,44 +2392,30 @@ export type OnProgressUpdateResult = {
         },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "4.41"
       *    },
       *    "alipay": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "5.31"
       *    },
       *    "baidu": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    }
       *  },
         "web": {
@@ -2929,44 +2448,30 @@ export type OnProgressUpdateResult = {
         },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "4.41"
       *    },
       *    "alipay": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "5.31"
       *    },
       *    "baidu": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    }
       *  },
         "web": {
@@ -2999,44 +2504,30 @@ export type OnProgressUpdateResult = {
         },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "4.41"
       *    },
       *    "alipay": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "5.31"
       *    },
       *    "baidu": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    }
       *  },
         "web": {
@@ -3076,44 +2567,30 @@ export interface UploadTask {
         },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "4.41"
       *    },
       *    "alipay": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "5.31"
       *    },
       *    "baidu": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    }
       *  },
         "web": {
@@ -3157,44 +2634,30 @@ export interface UploadTask {
         },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "4.41"
       *    },
       *    "alipay": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "5.31"
       *    },
       *    "baidu": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    }
       *  },
         "web": {
@@ -3241,44 +2704,30 @@ export type DownloadFileSuccess = {
         },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "4.41"
       *    },
       *    "alipay": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "5.31"
       *    },
       *    "baidu": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    }
       *  },
         "web": {
@@ -3311,44 +2760,30 @@ export type DownloadFileSuccess = {
         },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "4.41"
       *    },
       *    "alipay": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "5.31"
       *    },
       *    "baidu": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    }
       *  },
         "web": {
@@ -3393,44 +2828,30 @@ export type DownloadFileOptions = {
         },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "4.41"
       *    },
       *    "alipay": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "5.31"
       *    },
       *    "baidu": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    }
       *  },
         "web": {
@@ -3459,44 +2880,30 @@ export type DownloadFileOptions = {
         },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "4.41"
       *    },
       *    "alipay": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "5.31"
       *    },
       *    "baidu": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    }
       *  }
       }
@@ -3531,44 +2938,30 @@ export type DownloadFileOptions = {
         },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "4.41"
       *    },
       *    "alipay": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "5.31"
       *    },
       *    "baidu": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    }
       *  },
         "web": {
@@ -3602,44 +2995,30 @@ export type DownloadFileOptions = {
         },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "4.41"
       *    },
       *    "alipay": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "5.31"
       *    },
       *    "baidu": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    }
       *  },
         "web": {
@@ -3674,12 +3053,10 @@ export type DownloadFileOptions = {
      *   },
      *   "mp": {
      *     "weixin": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
      *         "unixVer": "4.41"
      *     },
      *     "alipay": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
      *         "unixVer": "5.31"
      *     },
@@ -3716,12 +3093,10 @@ export type DownloadFileOptions = {
      *   },
      *   "mp": {
      *     "weixin": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
      *         "unixVer": "4.41"
      *     },
      *     "alipay": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
      *         "unixVer": "5.31"
      *     },
@@ -3758,12 +3133,10 @@ export type DownloadFileOptions = {
      *   },
      *   "mp": {
      *     "weixin": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
      *         "unixVer": "4.41"
      *     },
      *     "alipay": {
-     *         "hostVer": "√",
      *         "uniVer": "√",
      *         "unixVer": "5.31"
      *     },
@@ -3800,44 +3173,30 @@ export type OnProgressDownloadResult = {
         },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "4.41"
       *    },
       *    "alipay": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "5.31"
       *    },
       *    "baidu": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    }
       *  },
         "web": {
@@ -3870,44 +3229,30 @@ export type OnProgressDownloadResult = {
         },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "4.41"
       *    },
       *    "alipay": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "5.31"
       *    },
       *    "baidu": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    }
       *  },
         "web": {
@@ -3940,44 +3285,30 @@ export type OnProgressDownloadResult = {
         },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "4.41"
       *    },
       *    "alipay": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "5.31"
       *    },
       *    "baidu": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    }
       *  },
         "web": {
@@ -4016,44 +3347,30 @@ export interface DownloadTask {
           },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "4.41"
       *    },
       *    "alipay": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "5.31"
       *    },
       *    "baidu": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    }
       *  },
           "web": {
@@ -4097,44 +3414,30 @@ export interface DownloadTask {
           },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "4.41"
       *    },
       *    "alipay": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "5.31"
       *    },
       *    "baidu": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    }
       *  },
           "web": {
@@ -4199,7 +3502,6 @@ export type Certificate = {
      * 服务器端证书（客户端需要对服务器端证书做校验时需要配置此项，格式要求请参考下面的证书格式说明，注意 iOS 平台服务器端证书只支持 .cer 类型的证书。HarmonyOS Next 不支持）
      *
      * @uniPlatform {
-      {
         "app": {
           "android": {
             "uniVer": "3.2.7",
@@ -4317,44 +3619,30 @@ export interface Uni {
         },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "4.41"
       *    },
       *    "alipay": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "5.31"
       *    },
       *    "baidu": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    }
       *  },
         "web": {
@@ -4418,44 +3706,30 @@ export interface Uni {
         },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "4.41"
       *    },
       *    "alipay": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "5.31"
       *    },
       *    "baidu": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    }
       *  },
         "web": {
@@ -4505,44 +3779,30 @@ export interface Uni {
         },
       *  "mp": {
       *    "weixin": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "4.41"
       *    },
       *    "alipay": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
       *        "unixVer": "5.31"
       *    },
       *    "baidu": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "toutiao": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "lark": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "qq": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "kuaishou": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    },
       *    "jd": {
-      *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
       *    }
       *  },
         "web": {

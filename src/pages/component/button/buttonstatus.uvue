@@ -1,78 +1,76 @@
 <template>
-    <view style="padding: 8px;">
       <!--type-->
-      <button class="margin-10 btn" :disabled="disabled_boolean">
+      <button class="m-10 btn" :disabled="disabled_boolean">
         type-default
       </button>
-      <button class="margin-10 btn" :disabled="disabled_boolean" type="primary">
+      <button class="m-10 btn" :disabled="disabled_boolean" type="primary">
         type-primary
       </button>
-      <button class="margin-10 btn" :disabled="disabled_boolean" type="warn">
+      <button class="m-10 btn" :disabled="disabled_boolean" type="warn">
         type-warn
       </button>
       <!--size-->
-      <button class="margin-10 btn" :disabled="disabled_boolean">
+      <button class="m-10 btn" :disabled="disabled_boolean">
         size-default
       </button>
-      <button class="margin-10 btn" :disabled="disabled_boolean" size="mini">
+      <button class="m-10 btn" :disabled="disabled_boolean" size="mini">
         size-mini
       </button>
       <!--plain-->
-      <button class="margin-10 btn" :disabled="disabled_boolean" :plain="true">
+      <button class="m-10 btn" :disabled="disabled_boolean" :plain="true">
         plain=true
       </button>
-      <button class="margin-10 btn" :disabled="disabled_boolean" type="primary" :plain="true">
+      <button class="m-10 btn" :disabled="disabled_boolean" type="primary" :plain="true">
         plain=true type=primary
       </button>
-      <button class="margin-10 btn" :disabled="disabled_boolean" type="warn" :plain="true">
+      <button class="m-10 btn" :disabled="disabled_boolean" type="warn" :plain="true">
         plain=true type=warn
       </button>
-      <button class="margin-10 btn" :disabled="disabled_boolean">
+      <button class="m-10 btn" :disabled="disabled_boolean">
         plain-false
       </button>
 
-      <button id="test-button-hover-class" class="margin-10 test-hover-class" :disabled="disabled_boolean" hover-class="button-hover" :hover-stay-time="5000">hover-class button-hover</button>
-      <button class="margin-10 btn custom-btn" :disabled="disabled_boolean" hover-class="is-hover">
+      <button id="test-button-hover-class" class="m-10 test-hover-class" :disabled="disabled_boolean" hover-class="button-hover" :hover-stay-time="5000">hover-class button-hover</button>
+      <button class="m-10 btn radius-5 custom-btn border-width-0_5" :disabled="disabled_boolean" hover-class="is-hover">
         custom-btn
       </button>
-      <button class="margin-10 btn custom-btn" :disabled="disabled_boolean" plain hover-class="is-hover">
+      <button class="m-10 btn radius-5 custom-btn border-width-0_5" :disabled="disabled_boolean" plain hover-class="is-hover">
         custom-btn
       </button>
-      <button class="margin-10 btn" style="font-size: 15px;color: red;" type="warn" :plain="true" :disabled="disabled_boolean">
+      <button class="m-10 btn" style="font-size: 15px;color: red;" type="warn" :plain="true" :disabled="disabled_boolean">
         custom-btn-plain-warn
       </button>
-      <button class="margin-10" type="primary" :disabled="disabled_boolean" hover-class="none">hover-class none</button>
+      <button class="m-10" type="primary" :disabled="disabled_boolean" hover-class="none">hover-class none</button>
 
-      <button class="margin-10" type="primary" :disabled="disabled_boolean">uni-app x</button>
-      <button id="changeDisabledButton" class="margin-10" type="primary" @click="change_disabled_boolean">修改disabled为{{!disabled_boolean}}</button>
+      <button class="m-10" type="primary" :disabled="disabled_boolean">uni-app x</button>
+      <button id="changeDisabledButton" class="m-10" type="primary" @click="change_disabled_boolean">修改disabled为{{!disabled_boolean}}</button>
       <!--disable-->
-      <button class="margin-10 btn">
+      <button class="m-10 btn">
         disable-false
       </button>
-      <button class="margin-10 btn" :disabled="true">
+      <button class="m-10 btn" :disabled="true">
         disable-true
       </button>
 
-      <button class="margin-10 btn" :disabled="disabled_boolean">
+      <button class="m-10 btn" :disabled="disabled_boolean">
         uni-app x，是下一代 uni-app，是一个跨平台应用开发引擎。
       </button>
 
       <!-- #ifdef VUE3-VAPOR && !MP -->
-      <button class="margin-10 loading-class" :disabled="disabled_boolean" loading loading-class="custom-loading">
+      <button class="m-10 loading-class" :disabled="disabled_boolean" loading loading-class="custom-loading">
         自定义 loading 状态
       </button>
 
-      <button class="margin-10" :disabled="disabled_boolean" loading>
+      <button class="m-10" :disabled="disabled_boolean" loading>
         测试长文本换行测试长文本换行测试长文本换行测试长文本换行
       </button>
       <!-- #endif -->
 
       <!-- #ifdef VUE3-VAPOR && APP-IOS -->
-      <button class="margin-10" :disabled="disabled_boolean" loading ios-loading-snow>
+      <button class="m-10" :disabled="disabled_boolean" loading ios-loading-snow>
         iOS 雪花加载
       </button>
       <!-- #endif -->
-    </view>
 </template>
 
 <script setup lang="ts">
@@ -143,12 +141,14 @@
 </script>
 
 <style>
+  page {
+    padding: 8px;
+  }
+
   .custom-btn {
     color: #ffffff;
     background-color: #1AAD19;
     border-color: #1AAD19;
-    border-radius: 5px;
-    border-width: 0.5px;
     height: 53px;
   }
 

@@ -1,23 +1,17 @@
 <template>
-	<!-- #ifdef APP -->
-	<scroll-view style="flex: 1;padding: 6px;">
-	<!-- #endif -->
-		<text class="uni-h3">内存告警监听 uni.onMemoryWarning</text>
-		<text class="margin-v notice">注意：内存不足时，系统可能直接结束应用或 activity，不一定会先触发本告警。</text>
-		<text class="margin-v">当前状态：{{ state.status }}</text>
-		<text class="margin-v">主动占用内存：{{ state.reservedMB }}MB</text>
-		<button class="margin-v" @tap="startListen">开始监听</button>
-		<button class="margin-v" @tap="stopListen">停止监听</button>
-		<button class="margin-v" @tap="addMemoryPressure">增加 32MB 内存占用</button>
-		<button class="margin-v" @tap="releaseMemory">释放已占用内存</button>
+  <text class="fs-20 fw-bold m-8-0">内存告警监听 uni.onMemoryWarning</text>
+  <text class="m-5-0 color-500 fs-14 font-italic">注意：内存不足时，系统可能直接结束应用或 activity，不一定会先触发本告警。</text>
+  <text class="m-5-0">当前状态：{{ state.status }}</text>
+  <text class="m-5-0">主动占用内存：{{ state.reservedMB }}MB</text>
+  <button class="m-5-0" @tap="startListen">开始监听</button>
+  <button class="m-5-0" @tap="stopListen">停止监听</button>
+  <button class="m-5-0" @tap="addMemoryPressure">增加 32MB 内存占用</button>
+  <button class="m-5-0" @tap="releaseMemory">释放已占用内存</button>
 
-		<text class="uni-h4">最近事件：</text>
-		<view class="log-list">
-			<text class="log-item" v-for="(item, index) in state.records" :key="index">{{ item }}</text>
-		</view>
-	<!-- #ifdef APP -->
-	</scroll-view>
-	<!-- #endif -->
+  <text class="fw-bold m-8-0">最近事件：</text>
+  <view class="u-p-10 border-1-solid-ccc mt-8">
+    <text class="fs-14 m-4-0" v-for="(item, index) in state.records" :key="index">{{ item }}</text>
+  </view>
 </template>
 
 <script setup lang="ts">
@@ -163,24 +157,7 @@
 </script>
 
 <style>
-.margin-v {
-  margin: 5px 0;
-}
-
-.notice {
-  color: #550000;
-	font-size: 14px;
-	font-style: italic;
-}
-
-.log-list {
-  margin-top: 8px;
-  padding: 10px;
-  border: 1px solid #ccc;
-}
-
-.log-item {
-  font-size: 14px;
-  margin: 4px 0;
+page {
+  padding: 6px;
 }
 </style>

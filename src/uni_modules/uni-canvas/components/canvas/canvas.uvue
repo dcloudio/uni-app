@@ -2,7 +2,7 @@
   <native-view class="uni-canvas" @init="onNativeViewInit"></native-view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { UniNativeCanvas, UniCanvasElement } from "@/uni_modules/uni-canvas-dom2";
 
   defineOptions({

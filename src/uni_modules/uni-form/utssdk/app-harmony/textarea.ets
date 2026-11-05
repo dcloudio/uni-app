@@ -50,6 +50,7 @@ export function TextareaBuilder(options: UniTextareaOptions) {
 		.enabled(options.enabled)
 		.maxLength(options.maxLength)
 		.caretColor(options.caretColor)
+		.selectedBackgroundColor(options.selectedBackgroundColor)
 		.barState(options.autoHeight ? BarState.Off : BarState.Auto)
 		.fontSize(options.fontSize)
 		.fontColor(options.color)

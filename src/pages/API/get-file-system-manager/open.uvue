@@ -1,0 +1,296 @@
+<template>
+  <!-- #ifdef APP -->
+  <page-intro content="演示 FileSystemManager.open / openSync：按 flag（r/r+/w/w+/a/a+）打开文件获取文件描述符，并演示 a+ 模式下指定 position 写入的边界行为。"></page-intro>
+  <scroll-view class="flex-1">
+  <!-- #endif -->
+    <view class="p-8 flex-dir-column">
+      <view class="p-8 border-1-solid-e0e0e0 radius-4 flex-dir-column m-4-0">
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">根目录</text>
+          <enum-data-checkbox
+            class="flex-1"
+            :model-value="data.rootKey"
+            :items="rootOptions"
+            mode="default"
+            :show-toast="false"
+            @change="onRootChange"
+          />
+        </view>
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">文件路径</text>
+          <input class="flex-1 border-1-solid-d0d0d0 radius-4 p-4-8 fs-13 h-32" v-model="data.filePath" placeholder="相对根目录的路径" />
+        </view>
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">打开方式</text>
+          <enum-data-checkbox
+            class="flex-1"
+            :model-value="data.flag"
+            :items="flagOptions"
+            mode="default"
+            :show-toast="false"
+            @change="onFlagChange"
+          />
+        </view>
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333"></text>
+          <text class="flex-1 fs-12 color-999">{{ getFlagTip() }}</text>
+        </view>
+      </view>
+      <view class="flex-dir-row flex-wrap-wrap m-4-0">
+        <button class="m-4" type="primary" @tap="open" id="btn-open">open 打开文件</button>
+        <button class="m-4" type="primary" @tap="openSync" id="btn-open-sync">openSync 打开文件</button>
+        <button class="m-4" type="primary" @tap="flagWriteDemo" id="btn-open-flag-write">a+ 边界写演示</button>
+        <button class="m-4" type="primary" @tap="flagWriteLongDemo" id="btn-open-flag-write-long">a+ 超长字符串写演示</button>
+        <button class="m-4" type="warn" @tap="demoFail" id="btn-open-fail">演示失败（r 打开不存在的文件）</button>
+      </view>
+      <view class="p-8 border-1-solid-e0e0e0 radius-4 flex-dir-column m-4-0-12-0">
+        <text class="fw-bold fs-14 m-2-0 color-333">执行结果：{{ data.lastResult == '' ? '等待执行' : (data.lastResult == 'success' ? '成功' : '失败') }}</text>
+        <text class="fs-13 m-2-0 color-666">目标路径：{{ data.rootPath }}{{ data.filePath }}</text>
+        <text class="fs-13 m-2-0 color-666" v-if="data.lastResult == 'success' && data.flagWriteRet == false">文件描述符 fd：{{ data.fd }}</text>
+        <text class="fs-13 m-2-0 color-666" v-if="data.flagWriteRet">a+ 边界写入校验：{{ data.lastResult == 'success' ? '通过' : '未通过' }}</text>
+        <text class="fs-13 m-2-0 color-e64340" v-if="data.lastResult == 'fail'">errCode：{{ data.lastFailError.errCode }}；errMsg：{{ data.lastFailError.errMsg }}</text>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="ts">
+  import { createEnumItems } from '@/components/enum-data-checkbox/enum-data-checkbox-types'
+  const rootOptions = createEnumItems(['usr', 'cache', 'sandbox'])
+  const flagOptions = computed(() => createEnumItems(flags))
+
+  import { getFsmRootPath, ensureFsmDirSync, ensureFsmFileSync, removeFsmPathSync, removeFsmDirSync, createFsmMockError } from './fsm-utils'
+
+  type DataType = {
+    rootKey : string
+    rootPath : string
+    filePath : string
+    flag : string
+    fd : string
+    flagWriteRet : boolean
+    existsRet : boolean
+    done : boolean
+    lastResult : string
+    lastFailError : UniError
+  }
+
+  const data = reactive({
+    rootKey: 'usr',
+    rootPath: getFsmRootPath('usr'),
+    filePath: 'fsm-open-demo/1.txt',
+    flag: 'r',
+    fd: '',
+    flagWriteRet: false,
+    existsRet: false,
+    done: false,
+    lastResult: '',
+    lastFailError: createFsmMockError(),
+  } as DataType)
+
+  const flags = ['r', 'r+', 'w', 'w+', 'a', 'a+']
+
+  function onRootChange(value : string) {
+    data.rootKey = value
+    data.rootPath = getFsmRootPath(data.rootKey)
+  }
+
+  function onFlagChange(value : string) {
+    data.flag = value
+  }
+
+  // 按当前选中 flag 展示打开方式语义
+  function getFlagTip() : string {
+    if (data.flag == 'r') {
+      return 'r：只读打开，文件必须已存在'
+    }
+    if (data.flag == 'r+') {
+      return 'r+：读写打开，文件必须已存在，写入从头覆盖'
+    }
+    if (data.flag == 'w') {
+      return 'w：只写打开，文件清空（不存在则创建）'
+    }
+    if (data.flag == 'w+') {
+      return 'w+：读写打开，文件清空（不存在则创建）'
+    }
+    if (data.flag == 'a') {
+      return 'a：只写追加，写入始终追加到文件尾'
+    }
+    return 'a+：读写追加，写入追加到文件尾（指定 position 存在边界行为，可点击下方按钮演示）'
+  }
+
+  function targetPath(path : string) : string {
+    return `${data.rootPath}${path ?? data.filePath}`
+  }
+
+  function resetResult() {
+    data.done = false
+    data.lastResult = ''
+    data.fd = ''
+    data.flagWriteRet = false
+  }
+
+  function applyFail(res : IUniError) {
+    data.lastResult = 'fail'
+    data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+  }
+
+  function exists(path : string) : void {
+    try {
+      uni.getFileSystemManager().accessSync(targetPath(path))
+      data.existsRet = true
+    } catch (e) {
+      data.existsRet = false
+    }
+  }
+
+  function prepare() : void {
+    const demoDir = `${data.rootPath}fsm-open-demo`
+    ensureFsmDirSync(demoDir)
+    ensureFsmFileSync(`${demoDir}/1.txt`, 'aaa')
+    data.done = true
+  }
+
+  function cleanup() : void {
+    removeFsmDirSync(`${data.rootPath}fsm-open-demo`)
+    data.done = true
+  }
+
+  function openCore(sync : boolean) {
+    resetResult()
+    // 自愈：默认演示文件不存在时重建，保证任意时刻重复点击都能成功
+    if (data.filePath == 'fsm-open-demo/1.txt') {
+      ensureFsmDirSync(`${data.rootPath}fsm-open-demo`)
+      ensureFsmFileSync(`${data.rootPath}fsm-open-demo/1.txt`, 'aaa')
+    }
+    const fileManager = uni.getFileSystemManager()
+    if (sync) {
+      try {
+        data.fd = fileManager.openSync({ filePath: targetPath(data.filePath), flag: data.flag } as OpenFileSyncOptions)
+        data.lastResult = 'success'
+      } catch (e) {
+        data.lastResult = 'fail'
+        data.lastFailError = new UniError('uni-file-manager', 0, `${e}`)
+      }
+      data.done = true
+      return
+    }
+    const options : OpenFileOptions = {
+      filePath: targetPath(data.filePath),
+      flag: data.flag,
+      success: (res : OpenFileSuccessResult) => {
+        data.fd = res.fd
+        data.lastResult = 'success'
+      },
+      fail: (res : IUniError) => {
+        applyFail(res)
+      },
+      complete: (_ : any) => {
+        data.done = true
+      }
+    }
+    fileManager.open(options)
+  }
+
+  function open() : void {
+    openCore(false)
+  }
+
+  function openSync() : void {
+    openCore(true)
+  }
+
+
+  // a+ 模式指定 position 写入边界演示（position 超出当前文件长度）
+  function flagWriteCore(writeData : string) {
+    resetResult()
+    data.flagWriteRet = false
+    // 自愈：默认演示文件不存在时重建，保证任意时刻重复点击都能成功
+    if (data.filePath == 'fsm-open-demo/1.txt') {
+      ensureFsmDirSync(`${data.rootPath}fsm-open-demo`)
+      ensureFsmFileSync(`${data.rootPath}fsm-open-demo/1.txt`, 'aaa')
+    }
+    const fileManager = uni.getFileSystemManager()
+    const options : OpenFileOptions = {
+      filePath: targetPath(data.filePath),
+      flag: 'a+',
+      success: (res : OpenFileSuccessResult) => {
+        const writeOptions : WriteOptions = {
+          fd: res.fd,
+          data: writeData,
+          position: 10,
+          success: (_ : WriteResult) => {
+            data.flagWriteRet = true
+            data.lastResult = 'success'
+            data.done = true
+          },
+          fail: (err : IUniError) => {
+            applyFail(err)
+            data.done = true
+          }
+        }
+        fileManager.write(writeOptions)
+      },
+      fail: (res : IUniError) => {
+        applyFail(res)
+        data.done = true
+      }
+    }
+    fileManager.open(options)
+  }
+
+  function flagWriteDemo() : void {
+    data.filePath = 'fsm-open-demo/1.txt'
+    flagWriteCore('appended')
+  }
+
+  function flagWriteLongDemo() : void {
+    data.filePath = 'fsm-open-demo/1.txt'
+    flagWriteCore('appended long strings.appended long strings.appended long strings.appended long strings.appended long strings.')
+  }
+
+  // 一键演示失败场景：r 方式打开不存在的文件，预期 errCode 1300002（演示后自动恢复参数）
+  function demoFail() : void {
+    resetResult()
+    const prevFlag = data.flag
+    const prevPath = data.filePath
+    data.flag = 'r'
+    data.filePath = 'fsm-open-demo/missing.txt'
+    const fileManager = uni.getFileSystemManager()
+    const options : OpenFileOptions = {
+      filePath: `${data.rootPath}fsm-open-demo/missing.txt`,
+      flag: 'r',
+      success: (res : OpenFileSuccessResult) => {
+        data.fd = res.fd
+        data.lastResult = 'success'
+      },
+      fail: (res : IUniError) => {
+        applyFail(res)
+      },
+      complete: (_ : any) => {
+        data.flag = prevFlag
+        data.filePath = prevPath
+        data.done = true
+      }
+    }
+    fileManager.open(options)
+  }
+
+  onReady(() => {
+    prepare()
+  })
+
+  defineExpose({
+    data,
+    prepare,
+    cleanup,
+    exists,
+    open,
+    openSync,
+    flagWriteDemo,
+    flagWriteLongDemo,
+    demoFail
+  })
+</script>
+

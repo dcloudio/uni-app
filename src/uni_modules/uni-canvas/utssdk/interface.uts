@@ -39,44 +39,36 @@ export interface CanvasContext {
      *  },
      *  "mp":{
      *    "weixin": {
-     *      "hostVer": "√",
      *      "uniVer": "√",
      *      "unixVer": "4.41"
      *    },
      *    "alipay": {
-     *      "hostVer": "√",
      *      "uniVer": "√",
      *      "unixVer": "5.31"
      *    },
      *    "baidu": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "toutiao": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "lark": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "qq": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "kuaishou": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "jd": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    }
      *  }
      * }
@@ -109,44 +101,36 @@ export interface CanvasContext {
      *  },
      *  "mp":{
      *    "weixin": {
-     *      "hostVer": "√",
      *      "uniVer": "√",
      *      "unixVer": "4.41"
      *    },
      *    "alipay": {
-     *      "hostVer": "√",
      *      "uniVer": "√",
      *      "unixVer": "5.31"
      *    },
      *    "baidu": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "toutiao": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "lark": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "qq": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "kuaishou": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "jd": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    }
      *  }
      * }
@@ -178,44 +162,36 @@ export interface CanvasContext {
      *  },
      *  "mp":{
      *    "weixin": {
-     *      "hostVer": "√",
      *      "uniVer": "√",
      *      "unixVer": "4.41"
      *    },
      *    "alipay": {
-     *      "hostVer": "√",
      *      "uniVer": "√",
      *      "unixVer": "5.31"
      *    },
      *    "baidu": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "toutiao": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "lark": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "qq": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "kuaishou": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "jd": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    }
      *  }
      * }
@@ -247,44 +223,36 @@ export interface CanvasContext {
      *  },
      *  "mp":{
      *    "weixin": {
-     *      "hostVer": "√",
      *      "uniVer": "√",
      *      "unixVer": "4.41"
      *    },
      *    "alipay": {
-     *      "hostVer": "√",
      *      "uniVer": "√",
      *      "unixVer": "5.31"
      *    },
      *    "baidu": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "toutiao": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "lark": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "qq": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "kuaishou": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "jd": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    }
      *  }
      * }
@@ -316,44 +284,36 @@ export interface CanvasContext {
      *  },
      *  "mp":{
      *    "weixin": {
-     *      "hostVer": "√",
      *      "uniVer": "√",
      *      "unixVer": "4.41"
      *    },
      *    "alipay": {
-     *      "hostVer": "√",
      *      "uniVer": "√",
      *      "unixVer": "5.31"
      *    },
      *    "baidu": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "toutiao": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "lark": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "qq": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "kuaishou": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "jd": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    }
      *  }
      * }
@@ -385,44 +345,36 @@ export interface CanvasContext {
      *  },
      *  "mp":{
      *    "weixin": {
-     *      "hostVer": "√",
      *      "uniVer": "√",
      *      "unixVer": "4.41"
      *    },
      *    "alipay": {
-     *      "hostVer": "√",
      *      "uniVer": "√",
      *      "unixVer": "5.31"
      *    },
      *    "baidu": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "toutiao": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "lark": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "qq": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "kuaishou": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "jd": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    }
      *  }
      * }
@@ -454,44 +406,36 @@ export interface CanvasContext {
      *   },
      *  "mp":{
      *    "weixin": {
-     *      "hostVer": "√",
      *      "uniVer": "√",
      *      "unixVer": "4.41"
      *    },
      *    "alipay": {
-     *      "hostVer": "√",
      *      "uniVer": "√",
      *      "unixVer": "5.31"
      *    },
      *    "baidu": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "toutiao": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "lark": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "qq": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "kuaishou": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "jd": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    }
      *  }
      * }
@@ -523,44 +467,36 @@ export interface CanvasContext {
      *   },
      *  "mp":{
      *    "weixin": {
-     *      "hostVer": "√",
      *      "uniVer": "√",
      *      "unixVer": "4.41"
      *    },
      *    "alipay": {
-     *      "hostVer": "√",
      *      "uniVer": "√",
      *      "unixVer": "5.31"
      *    },
      *    "baidu": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "toutiao": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "lark": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "qq": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "kuaishou": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "jd": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    }
      *  }
      * }
@@ -598,44 +534,36 @@ export interface CanvasContext extends JSExport {
    *  },
    *  "mp":{
    *    "weixin": {
-   *      "hostVer": "√",
    *      "uniVer": "√",
    *      "unixVer": "4.41"
    *    },
    *    "alipay": {
-   *      "hostVer": "√",
    *      "uniVer": "√",
    *      "unixVer": "5.31"
    *    },
    *    "baidu": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "kuaishou": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    }
    *  }
    * }
@@ -667,44 +595,36 @@ export interface CanvasContext extends JSExport {
    *  },
    *  "mp":{
    *    "weixin": {
-   *      "hostVer": "√",
    *      "uniVer": "√",
    *      "unixVer": "4.41"
    *    },
    *    "alipay": {
-   *      "hostVer": "√",
    *      "uniVer": "√",
    *      "unixVer": "5.31"
    *    },
    *    "baidu": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "kuaishou": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    }
    *  }
    * }
@@ -736,44 +656,36 @@ export interface CanvasContext extends JSExport {
    *  },
    *  "mp":{
    *    "weixin": {
-   *      "hostVer": "√",
    *      "uniVer": "√",
    *      "unixVer": "4.41"
    *    },
    *    "alipay": {
-   *      "hostVer": "√",
    *      "uniVer": "√",
    *      "unixVer": "5.31"
    *    },
    *    "baidu": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "kuaishou": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    }
    *  }
    * }
@@ -805,44 +717,36 @@ export interface CanvasContext extends JSExport {
    *  },
    *  "mp":{
    *    "weixin": {
-   *      "hostVer": "√",
    *      "uniVer": "√",
    *      "unixVer": "4.41"
    *    },
    *    "alipay": {
-   *      "hostVer": "√",
    *      "uniVer": "√",
    *      "unixVer": "5.31"
    *    },
    *    "baidu": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "kuaishou": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    }
    *  }
    * }
@@ -874,44 +778,36 @@ export interface CanvasContext extends JSExport {
    *  },
    *  "mp":{
    *    "weixin": {
-   *      "hostVer": "√",
    *      "uniVer": "√",
    *      "unixVer": "4.41"
    *    },
    *    "alipay": {
-   *      "hostVer": "√",
    *      "uniVer": "√",
    *      "unixVer": "5.31"
    *    },
    *    "baidu": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "kuaishou": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    }
    *  }
    * }
@@ -943,44 +839,36 @@ export interface CanvasContext extends JSExport {
    *   },
    *  "mp":{
    *    "weixin": {
-   *      "hostVer": "√",
    *      "uniVer": "√",
    *      "unixVer": "4.41"
    *    },
    *    "alipay": {
-   *      "hostVer": "√",
    *      "uniVer": "√",
    *      "unixVer": "5.31"
    *    },
    *    "baidu": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "kuaishou": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    }
    *  }
    * }
@@ -1010,44 +898,36 @@ export interface CanvasContext extends JSExport {
    *   },
    *  "mp":{
    *    "weixin": {
-   *      "hostVer": "√",
    *      "uniVer": "√",
    *      "unixVer": "4.41"
    *    },
    *    "alipay": {
-   *      "hostVer": "√",
    *      "uniVer": "√",
    *      "unixVer": "5.31"
    *    },
    *    "baidu": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "kuaishou": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    }
    *  }
    * }
@@ -1080,13 +960,11 @@ export type CreateCanvasContextAsyncOptions = {
 },
     *  "mp": {
     *    "weixin": {
-    *      "hostVer": "√",
     *      "uniVer": "√",
     *      "unixVer": "4.41"
     *
 },
     *    "alipay": {
-    *      "hostVer": "√",
     *      "uniVer": "√",
     *      "unixVer": "5.31"
     *
@@ -1094,37 +972,31 @@ export type CreateCanvasContextAsyncOptions = {
     *    "baidu": {
     *      "hostVer": "x",
     *      "uniVer": "x",
-    *      "unixVer": "x"
     *
 },
     *    "toutiao": {
     *      "hostVer": "x",
     *      "uniVer": "x",
-    *      "unixVer": "x"
     *
 },
     *    "lark": {
     *      "hostVer": "x",
     *      "uniVer": "x",
-    *      "unixVer": "x"
     *
 },
     *    "qq": {
     *      "hostVer": "x",
     *      "uniVer": "x",
-    *      "unixVer": "x"
     *
 },
     *    "kuaishou": {
     *      "hostVer": "x",
     *      "uniVer": "x",
-    *      "unixVer": "x"
     *
 },
     *    "jd": {
     *      "hostVer": "x",
     *      "uniVer": "x",
-    *      "unixVer": "x"
     *
 }
     *
@@ -1153,44 +1025,36 @@ export type CreateCanvasContextAsyncOptions = {
      *  },
    *  "mp":{
    *    "weixin": {
-   *      "hostVer": "√",
    *      "uniVer": "√",
    *      "unixVer": "4.41"
    *    },
    *    "alipay": {
-   *      "hostVer": "√",
    *      "uniVer": "√",
    *      "unixVer": "5.31"
    *    },
    *    "baidu": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "kuaishou": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    }
    *  }
      * }
@@ -1217,44 +1081,36 @@ export type CreateCanvasContextAsyncOptions = {
      *  },
    *  "mp":{
    *    "weixin": {
-   *      "hostVer": "√",
    *      "uniVer": "√",
    *      "unixVer": "4.41"
    *    },
    *    "alipay": {
-   *      "hostVer": "√",
    *      "uniVer": "√",
    *      "unixVer": "5.31"
    *    },
    *    "baidu": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "kuaishou": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    }
    *  }
      * }
@@ -1281,44 +1137,36 @@ export type CreateCanvasContextAsyncOptions = {
      *  },
    *  "mp":{
    *    "weixin": {
-   *      "hostVer": "√",
    *      "uniVer": "√",
    *      "unixVer": "4.41"
    *    },
    *    "alipay": {
-   *      "hostVer": "√",
    *      "uniVer": "√",
    *      "unixVer": "5.31"
    *    },
    *    "baidu": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "kuaishou": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    }
    *  }
      * }
@@ -1345,44 +1193,36 @@ export type CreateCanvasContextAsyncOptions = {
      *  },
    *  "mp":{
    *    "weixin": {
-   *      "hostVer": "√",
    *      "uniVer": "√",
    *      "unixVer": "4.41"
    *    },
    *    "alipay": {
-   *      "hostVer": "√",
    *      "uniVer": "√",
    *      "unixVer": "5.31"
    *    },
    *    "baidu": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "kuaishou": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    }
    *  }
      * }
@@ -1421,44 +1261,36 @@ export interface Uni {
      *  },
      *  "mp":{
      *    "weixin": {
-     *      "hostVer": "√",
      *      "uniVer": "√",
      *      "unixVer": "4.41"
      *    },
      *    "alipay": {
-     *      "hostVer": "√",
      *      "uniVer": "√",
      *      "unixVer": "5.31"
      *    },
      *    "baidu": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "toutiao": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "lark": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "qq": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "kuaishou": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "jd": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    }
      *  }
      * }

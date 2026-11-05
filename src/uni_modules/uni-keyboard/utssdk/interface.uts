@@ -74,7 +74,6 @@ export type OnKeyboardHeightChangeCallbackResult = {
 // 	 * @uniPlatform {
 // 	 *    "app": {
 // 	 *      "ios": {
-// 	*        "osVer": "12.0",
 // 	*        "uniVer": "√",
 // 	*        "unixVer": "4.61"
 // 	*      }
@@ -87,7 +86,6 @@ export type OnKeyboardHeightChangeCallbackResult = {
 // 	 * @uniPlatform {
 // 	 *    "app": {
 // 	 *      "ios": {
-// 	*        "osVer": "12.0",
 // 	*        "uniVer": "√",
 // 	*        "unixVer": "4.61"
 // 	*      }
@@ -100,6 +98,26 @@ export type OnKeyboardHeightChangeCallbackResult = {
 // export type GetSelectedTextRangeFail = {
 
 // }
+
+/**
+ * uni.onKeyboardAnimationChange参数定义
+ */
+export type OnKeyboardAnimationChangeCallback = (res : OnKeyboardAnimationChangeCallbackResult) => void
+
+export type OnKeyboardAnimationChangeCallbackResult = {
+	/**
+	 * 当前键盘高度，单位 px
+	 */
+	height : number,
+	/**
+	 * 键盘动画状态
+	 */
+	state : 'start' | 'running' | 'end'
+}
+
+export type OnKeyboardAnimationChange = (callback : OnKeyboardAnimationChangeCallback) => void;
+
+export type OffKeyboardAnimationChange = (callback ?: OnKeyboardAnimationChangeCallback | null) => void;
 
 export interface Uni {
 	/**
@@ -126,44 +144,30 @@ export interface Uni {
 	 *  },
 	 *  "mp": {
 	 *    "weixin": {
-	 *        "hostVer": "√",
 	 *        "uniVer": "√",
 	 *        "unixVer": "4.41"
 	 *    },
 	 *    "alipay": {
-	 *        "hostVer": "√",
 	 *        "uniVer": "√",
 	 *        "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
-	 *        "hostVer": "√",
 	 *        "uniVer": "√",
-	 *        "unixVer": "x"
 	 *    },
 	 *    "toutiao": {
-	 *        "hostVer": "√",
 	 *        "uniVer": "√",
-	 *        "unixVer": "x"
 	 *    },
 	 *    "lark": {
-	 *        "hostVer": "√",
 	 *        "uniVer": "√",
-	 *        "unixVer": "x"
 	 *    },
 	 *    "qq": {
-	 *        "hostVer": "√",
 	 *        "uniVer": "√",
-	 *        "unixVer": "x"
 	 *    },
 	 *    "kuaishou": {
-	 *        "hostVer": "√",
 	 *        "uniVer": "√",
-	 *        "unixVer": "x"
 	 *    },
 	 *    "jd": {
-	 *        "hostVer": "√",
 	 *        "uniVer": "√",
-	 *        "unixVer": "x"
 	 *    }
 	 *  },
 	 *  "web": {
@@ -203,39 +207,26 @@ export interface Uni {
 	 *        "unixVer": "4.41"
 	 *    },
 	 *    "alipay": {
-	 *        "hostVer": "√",
 	 *        "uniVer": "√",
 	 *        "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
-	 *        "hostVer": "√",
 	 *        "uniVer": "√",
-	 *        "unixVer": "x"
 	 *    },
 	 *    "toutiao": {
-	 *        "hostVer": "√",
 	 *        "uniVer": "√",
-	 *        "unixVer": "x"
 	 *    },
 	 *    "lark": {
-	 *        "hostVer": "√",
 	 *        "uniVer": "√",
-	 *        "unixVer": "x"
 	 *    },
 	 *    "qq": {
-	 *        "hostVer": "√",
 	 *        "uniVer": "√",
-	 *        "unixVer": "x"
 	 *    },
 	 *    "kuaishou": {
-	 *        "hostVer": "√",
 	 *        "uniVer": "√",
-	 *        "unixVer": "x"
 	 *    },
 	 *    "jd": {
-	 *        "hostVer": "√",
 	 *        "uniVer": "√",
-	 *        "unixVer": "x"
 	 *    }
 	 *  },
 	 *  "web": {
@@ -274,39 +265,26 @@ export interface Uni {
 	 *        "unixVer": "4.41"
 	 *    },
 	 *    "alipay": {
-	 *        "hostVer": "√",
 	 *        "uniVer": "√",
 	 *        "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
-	 *        "hostVer": "√",
 	 *        "uniVer": "√",
-	 *        "unixVer": "x"
 	 *    },
 	 *    "toutiao": {
-	 *        "hostVer": "√",
 	 *        "uniVer": "√",
-	 *        "unixVer": "x"
 	 *    },
 	 *    "lark": {
-	 *        "hostVer": "√",
 	 *        "uniVer": "√",
-	 *        "unixVer": "x"
 	 *    },
 	 *    "qq": {
-	 *        "hostVer": "√",
 	 *        "uniVer": "√",
-	 *        "unixVer": "x"
 	 *    },
 	 *    "kuaishou": {
-	 *        "hostVer": "√",
 	 *        "uniVer": "√",
-	 *        "unixVer": "x"
 	 *    },
 	 *    "jd": {
-	 *        "hostVer": "√",
 	 *        "uniVer": "√",
-	 *        "unixVer": "x"
 	 *    }
 	 *  },
 	 *  "web": {
@@ -316,6 +294,29 @@ export interface Uni {
 	 * }
 	 */
 	offKeyboardHeightChange(id ?: number | null): void
+	/**
+	 * 监听键盘弹出或收起时动画的进度变化事件
+	 * @uniPlatform {
+	 *    "app": {
+	 *      "android": { "unixVer": "5.41" },
+	 *      "ios": { "unixVer": "5.41" },
+	 *      "harmony": { "unixVer": "5.41"}
+	 *    }
+	 * }
+	 */
+	onKeyboardAnimationChange: OnKeyboardAnimationChange
+
+	/**
+	 * 移除键盘动画进度变化事件的监听函数
+	 * @uniPlatform {
+	 *    "app": {
+	 *      "android": { "unixVer": "5.41" },
+	 *      "ios": { "unixVer": "5.41" },
+	 *      "harmony": { "unixVer": "5.41"}
+	 *    }
+	 * }
+	 */
+	offKeyboardAnimationChange: OffKeyboardAnimationChange
 
 	// getSelectedTextRange(options : GetSelectedTextRangeOptions): void
 }
@@ -325,5 +326,6 @@ export type HideKeyboard = (options ?: HideKeyboardOptions | null) => void;
 export type OnKeyboardHeightChange = (callback: OnKeyboardHeightChangeCallback) => number;
 
 export type OffKeyboardHeightChange = (id ?: number | null) => void;
+
 
 // export type GetSelectedTextRange = (options : GetSelectedTextRangeOptions) => void;

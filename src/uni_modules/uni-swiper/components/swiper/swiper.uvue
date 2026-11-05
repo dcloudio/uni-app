@@ -1,22 +1,22 @@
 <template>
 	<view
 		ref="wrapper"
-		class="uni-swiper-wrapper relative w-100"
+		class="uni-swiper-wrapper"
 		@touchstart="onTouchStart"
 		@touchmove="onTouchMove"
 		@touchend="onTouchEnd"
 		@touchcancel="onTouchEnd">
 		<view
-			class="uni-swiper-container overflow-visible relative"
-			:class="vertical ? 'w-100' : 'h-100'">
+			class="uni-swiper-container"
+			:class="vertical ? 'uni-swiper-container_vertical' : 'uni-swiper-container_horizontal'">
 			<slot></slot>
 		</view>
 		<view
-			class="uni-swiper-indicator absolute justify-center align-center"
+			class="uni-swiper-indicator"
 			:class="
 				vertical
-					? 'uni-swiper-indicator_vertical flex-column'
-					: 'uni-swiper-indicator_horizontal flex-row'
+					? 'uni-swiper-indicator_vertical'
+					: 'uni-swiper-indicator_horizontal'
 			">
 			<slot name="indicator"></slot>
 			<template v-if="indicatorDots && !hasCustomIndicator">
@@ -41,13 +41,13 @@
 	</view>
 </template>
 
-<script setup lang="uts">
-import { UniSwiperChangeEventDetail, UniSwiperChangeEvent, UniSwiperTransitionEventDetail, UniSwiperTransitionEvent,  UniSwiperAnimationFinishEvent, ContainerSize } from './types.uts'
-import { parsePxRpx, getDirection } from './utils.uts'
+<script setup lang="ts">
+import { UniSwiperChangeEventDetail, UniSwiperChangeEvent, UniSwiperTransitionEventDetail, UniSwiperTransitionEvent,  UniSwiperAnimationFinishEvent, ContainerSize } from './types.ts'
+import { parsePxRpx, getDirection } from './utils.ts'
 
 import {
 	UniSwiperElement,
-} from "./index.uts";
+} from "./index.ts";
 
 defineOptions({
 	name: 'swiper',
@@ -1700,31 +1700,48 @@ onBeforeUnmount(() => {
 </script>
 
 <style>
-@import url('../styles/common.css');
-
-/* #ifdef APP */
 .uni-swiper-wrapper {
+	position: relative;
+	width: 100%;
+	/* #ifdef APP */
 	height: 150px;
-}
-/* #endif */
-
-/* #ifdef WEB */
-.uni-swiper-wrapper {
+	/* #endif */
+	/* #ifdef WEB */
 	display: block;
 	height: 150px;
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+	/* #endif */
 }
+
+/* #ifdef WEB */
 .uni-swiper-wrapper::-webkit-scrollbar {
 	display: none;
 }
-.uni-swiper-wrapper {
-	/* IE and Edge */
-	-ms-overflow-style: none;
-	/* Firefox */
-	scrollbar-width: none;
-}
 /* #endif */
 
+.uni-swiper-container {
+	/* #ifdef WEB */
+	position: absolute;
+	/* #endif */
+	/* #ifndef WEB */
+	position: relative;
+	/* #endif */
+	overflow: visible;
+}
+
+.uni-swiper-container_horizontal {
+	height: 100%;
+}
+
+.uni-swiper-container_vertical {
+	width: 100%;
+}
+
 .uni-swiper-indicator {
+	position: absolute;
+	justify-content: center;
+	align-items: center;
 	z-index: 10;
 	background-color: transparent;
 	bottom: 0px;
@@ -1735,11 +1752,13 @@ onBeforeUnmount(() => {
 }
 
 .uni-swiper-indicator_horizontal {
+	flex-direction: row;
 	left: 0px;
 	height: 40px;
 }
 
 .uni-swiper-indicator_vertical {
+	flex-direction: column;
 	top: 0px;
 	width: 40px;
 }

@@ -1,17 +1,17 @@
 <template>
   <!-- #ifdef APP -->
-  <scroll-view style="flex:1;" v-if="isShow">
+  <scroll-view class="flex-1" v-if="isShow">
   <!-- #endif -->
     <!-- #ifdef MP-ALIPAY -->
-    <view class="transition-transform" id="transition-transform" @transitionend="onEnd">
-      <image style="width: 100%; height: 100%" src="/static/test-image/logo.png"></image>
+    <view class="transition-transform transition-property-transform" id="transition-transform" @transitionend="onEnd">
+      <image class="w-full h-full" src="/static/test-image/logo.png"></image>
     </view>
     <!-- #endif -->
     <!-- #ifndef MP-ALIPAY -->
-    <image class="transition-transform" id="transition-transform" @transitionend="onEnd" src="/static/test-image/logo.png"></image>
+    <image class="transition-transform transition-property-transform" id="transition-transform" @transitionend="onEnd" src="/static/test-image/logo.png"></image>
     <!-- #endif -->
-    <text class="adjust">对图片设置transform进行旋转，在旋转完成的transitionend事件后，继续旋转</text>
-    <button class="adjust" @click="switchBtn">{{buttonValue}}</button>
+    <text class="m-10">对图片设置transform进行旋转，在旋转完成的transitionend事件后，继续旋转</text>
+    <button class="m-10" @click="switchBtn">{{buttonValue}}</button>
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
@@ -83,16 +83,11 @@ defineExpose({
 </script>
 
 <style>
-  .adjust {
-    margin: 10px;
-  }
-
   .transition-transform {
     width: 192px;
     height: 192px;
     margin: 16px auto;
     /* border-radius: 50%; */
-    transition-property: transform;
     transition-timing-function: linear;
     transform: rotate(0deg);
   }

@@ -11,7 +11,7 @@
     "uniui",
     "数字角标",
     "徽章"
-  ],
+],
   "repository": "https://gitcode.com/dcloud/uni-ui-x",
   "engines": {
     "HBuilderX": "^5.08",

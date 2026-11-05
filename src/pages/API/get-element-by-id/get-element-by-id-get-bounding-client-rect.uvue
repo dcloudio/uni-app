@@ -1,10 +1,10 @@
 <template>
-  <view class="container">
-    <view id="node1" class="node node1">
+  <view class="flex-1">
+    <view id="node1" class="bg-white node node1">
       这里是 transfrom 之后的节点
     </view>
 
-    <view id="node2" class="node node2">
+    <view id="node2" class="bg-white node">
       这里是没有 transfrom 的节点
     </view>
 
@@ -54,13 +54,8 @@
 </script>
 
 <style>
-  .container {
-    flex: 1;
-  }
-
   .node {
     margin: 20rpx;
-    background-color: white;
     padding: 40rpx;
     border-radius: 10rpx;
   }

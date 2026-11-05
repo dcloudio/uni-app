@@ -565,32 +565,6 @@ class Scanner {
     }
     
     
-    private static func currentUIOrientation() -> UIDeviceOrientation {
-        let deviceOrientation = { () -> UIDeviceOrientation in
-            switch UIApplication.shared.statusBarOrientation {
-                case .landscapeLeft:
-                    return .landscapeRight
-                case .landscapeRight:
-                    return .landscapeLeft
-                case .portraitUpsideDown:
-                    return .portraitUpsideDown
-                case .portrait, .unknown:
-                    return .portrait
-                @unknown default:
-                    return .portrait
-            }
-        }
-        
-        guard Thread.isMainThread else {
-            var currentOrientation: UIDeviceOrientation = .portrait
-            DispatchQueue.main.sync {
-                currentOrientation = deviceOrientation()
-            }
-            return currentOrientation
-        }
-        return deviceOrientation()
-    }
-    
     // 根据设备方向和相机位置确定图像方向
     public static func imageOrientation(
         fromDevicePosition devicePosition: AVCaptureDevice.Position = .back

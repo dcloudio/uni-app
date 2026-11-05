@@ -1,47 +1,40 @@
 <template>
-	<!-- #ifdef APP -->
-	<scroll-view style="flex: 1;padding: 6px;">
-	<!-- #endif -->
-		<text class="uni-h2">陀螺仪 API</text>
-		<text class="margin-v">演示 `uni.startGyroscope`、`uni.stopGyroscope`、`uni.onGyroscopeChange`、`uni.offGyroscopeChange` 的完整用法。</text>
-		<text class="margin-v">`x / y / z` 表示各轴角速度。</text>
+		<text class="fs-24 fw-bold border-b-1-solid-ccc m-8-0">陀螺仪 API</text>
+		<text class="m-5-0">演示 `uni.startGyroscope`、`uni.stopGyroscope`、`uni.onGyroscopeChange`、`uni.offGyroscopeChange` 的完整用法。</text>
+		<text class="m-5-0">`x / y / z` 表示各轴角速度。</text>
 
-		<text class="uni-h3">实时状态</text>
-		<view class="log-list">
-			<text class="log-item" v-for="item in statusItems" :key="item.label">{{ item.label }}：{{ item.value }}</text>
-			<text class="log-item" v-for="item in axisItems" :key="item.label">{{ item.label }}：{{ item.value }}</text>
+		<text class="fs-20 fw-bold m-8-0">实时状态</text>
+		<view class="m-5-0 u-p-10 border-1-solid-ccc d-flex flex-dir-column">
+			<text class="fs-14 m-4-0" v-for="item in statusItems" :key="item.label">{{ item.label }}：{{ item.value }}</text>
+			<text class="fs-14 m-4-0" v-for="item in axisItems" :key="item.label">{{ item.label }}：{{ item.value }}</text>
 		</view>
 
-		<text class="uni-h3">调用结果</text>
-		<view class="log-list">
-			<text class="log-item" v-for="item in resultItems" :key="item.label">{{ item.label }}：{{ item.value }}</text>
+		<text class="fs-20 fw-bold m-8-0">调用结果</text>
+		<view class="m-5-0 u-p-10 border-1-solid-ccc d-flex flex-dir-column">
+			<text class="fs-14 m-4-0" v-for="item in resultItems" :key="item.label">{{ item.label }}：{{ item.value }}</text>
 		</view>
 
-		<text class="uni-h3">开始 / 停止</text>
-		<text class="margin-v">先注册监听函数，再按不同 interval 启动；停止后会继续保留已绑定监听，直到显式 off。</text>
-		<radio-group class="option-group" @change="handleIntervalChange">
-			<view class="option-item" v-for="item in intervalOptions" :key="item.value">
-				<view class="option-content">
-					<radio :value="item.value" :checked="activeInterval == item.value" />
-					<text class="option-text">{{ item.label }}</text>
-				</view>
-			</view>
-		</radio-group>
-		<button id="btn-start-gyroscope" class="margin-v" type="primary" @tap="startListening">开始监听</button>
-		<button id="btn-stop-gyroscope" class="margin-v" @tap="stopListening">停止监听</button>
-		<button id="btn-bind-primary-listener" class="margin-v" @tap="registerSingleListener">绑定主监听</button>
-		<button id="btn-bind-extra-listener" class="margin-v" @tap="registerExtraListener">再绑一个监听</button>
-		<button id="btn-remove-primary-listener" class="margin-v" @tap="removeSingleListener">off 指定监听</button>
-		<button id="btn-remove-all-listeners" class="margin-v" @tap="removeAllListeners">off 全部监听</button>
-		<button id="btn-open-panorama" class="margin-v" @tap="navigateToPanorama">跳转全景示例</button>
+		<text class="fs-20 fw-bold m-8-0">开始 / 停止</text>
+		<text class="m-5-0">先注册监听函数，再按不同 interval 启动；停止后会继续保留已绑定监听，直到显式 off。</text>
+		<enum-data-checkbox
+		  :model-value="activeInterval"
+		  :items="intervalOptions"
+		  mode="default"
+		  :show-toast="false"
+		  @change="handleIntervalChange"
+		/>
+		<button id="btn-start-gyroscope" class="m-5-0" type="primary" @tap="startListening">开始监听</button>
+		<button id="btn-stop-gyroscope" class="m-5-0" @tap="stopListening">停止监听</button>
+		<button id="btn-bind-primary-listener" class="m-5-0" @tap="registerSingleListener">绑定主监听</button>
+		<button id="btn-bind-extra-listener" class="m-5-0" @tap="registerExtraListener">再绑一个监听</button>
+		<button id="btn-remove-primary-listener" class="m-5-0" @tap="removeSingleListener">off 指定监听</button>
+		<button id="btn-remove-all-listeners" class="m-5-0" @tap="removeAllListeners">off 全部监听</button>
+		<button id="btn-open-panorama" class="m-5-0" @tap="navigateToPanorama">跳转全景示例</button>
 
-		<text class="uni-h3">监听日志</text>
-		<view class="log-list">
-			<text class="log-item" v-for="item in logItems" :key="item">{{ item }}</text>
+		<text class="fs-20 fw-bold m-8-0">监听日志</text>
+		<view class="m-5-0 u-p-10 border-1-solid-ccc d-flex flex-dir-column">
+			<text class="fs-14 m-4-0" v-for="item in logItems" :key="item">{{ item }}</text>
 		</view>
-	<!-- #ifdef APP -->
-	</scroll-view>
-	<!-- #endif -->
 </template>
 
 <script setup lang="ts">
@@ -153,8 +146,8 @@
 		updateResult('selectInterval', '已切换', interval)
 	}
 
-	function handleIntervalChange(event : UniRadioGroupChangeEvent) : void {
-		selectInterval(event.detail.value as GyroscopeInterval)
+	function handleIntervalChange(value : GyroscopeInterval) : void {
+		selectInterval(value as GyroscopeInterval)
 	}
 
 	function registerSingleListener() : void {
@@ -230,72 +223,7 @@
 </script>
 
 <style>
-	.margin-v {
-		margin: 5px 0;
-	}
-
-	.notice {
-		color: #550000;
-		font-size: 14px;
-		font-style: italic;
-	}
-
-	.option-group {
-		margin: 5px 0;
-		display: flex;
-		flex-direction: row;
-		flex-wrap: wrap;
-	}
-
-	.option-item {
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		margin-top: 8px;
-		margin-right: 18px;
-	}
-
-	.option-content {
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-	}
-
-	.option-text {
-		font-size: 14px;
-	}
-
-	.error-list {
-		margin: 5px 0;
-		display: flex;
-		flex-direction: column;
-	}
-
-	.error-item {
-		margin: 5px 0;
-		display: flex;
-		flex-direction: row;
-		flex-wrap: wrap;
-	}
-
-	.error-text {
-		font-size: 14px;
-	}
-
-	.mini-button {
-		margin-top: 5px;
-	}
-
-	.log-list {
-		margin: 5px 0;
-		padding: 10px;
-		border: 1px solid #ccc;
-		display: flex;
-		flex-direction: column;
-	}
-
-	.log-item {
-		font-size: 14px;
-		margin: 4px 0;
-	}
+page {
+  padding: 6px;
+}
 </style>

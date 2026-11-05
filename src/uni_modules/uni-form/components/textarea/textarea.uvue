@@ -5,10 +5,12 @@
 		<view class="uni-textarea-container">
 			<text class="uni-textarea-placeholder" v-if="showPlaceholder" :class="placeholderClass"
 				:style="placeholderStyle">{{props.placeholder}}</text>
-			<native-view :style="androidTextareaNativeViewStyle" @init="onViewInit" @input="onInput" @focus="onFocus"
+			<native-view style="height: 100%; width: 100%;" @init="onViewInit" @input="onInput" @focus="onFocus"
 				@blur="onBlur" @keyboardheightchange="onKeyboardHeightChange" @change="onChange"
 				@linechange="onLineChange" @confirm="onConfirm"></native-view>
 		</view>
+		<!-- 选区颜色探针：读取 selection-class 的 background-color -->
+		<SelectionStyle v-if="props.selectionClass != ''" :class="props.selectionClass" @change="onSelectionColorChange" />
 	</view>
 	<!-- #endif -->
 	<!-- #ifndef APP-ANDROID -->
@@ -25,6 +27,9 @@
 			<native-view style="height: 100%; width: 100%;" @init="onViewInit"></native-view>
 			<!-- #endif -->
 		</view>
+		<!-- #ifdef APP-IOS || APP-HARMONY -->
+		<SelectionStyle v-if="props.selectionClass != ''" :class="props.selectionClass" @change="onSelectionColorChange" />
+		<!-- #endif -->
 	</view>
 	<!-- #endif -->
 	<!-- #endif -->
@@ -32,7 +37,13 @@
 	<textarea />
 	<!-- #endif -->
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
+	// #ifdef APP-IOS || APP-HARMONY || APP-ANDROID
+	import SelectionStyle from "../selection-style.uvue"
+	// #endif
+	// #ifdef APP-IOS || APP-HARMONY
+	import { resolveEditorCaretColor, useEditorColor } from "../editor-color.ts"
+	// #endif
 	import {
 		NativeTextareaView,
 		// #ifdef APP-ANDROID
@@ -46,8 +57,11 @@
 		// #endif
 	} from "@/uni_modules/uni-form";
 	// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
-	import { hasRecentEditorTouch, markEditorTouchStart } from "../common.uts"
+	import { hasRecentEditorTouch, markEditorTouchStart } from "../common.ts"
 	// #endif
+	import { LABEL_KEY, dispatchLabelClick, registerLabelTarget } from "../common.ts"
+	import { ActivatableChild, LabelContext } from "../types.ts"
+	import { useFormThemeIsDark, resolveFormTokens, FormThemeTokens } from "../theme.ts"
 
 	const keyboardHeight = ref(0)
 	const isFocusing = ref(false)
@@ -55,6 +69,10 @@
 	const adjustPosition = computed(() => Boolean(props.adjustPosition))
 
 	const proxy = getCurrentInstance()?.proxy
+	const attrs = useAttrs()
+	const id = attrs.id
+	const labelCtx = inject<LabelContext | null>(LABEL_KEY, null)
+	let unregisterLabelTarget: (() => void) | null = null
 	// #ifdef APP-HARMONY
 	// 通过变量持有 UniTextareaElement 实例，避免被回收，待框架调整 $el 实现后可尝试移除
 	let textareaElement : UniTextareaElement | null = null
@@ -84,10 +102,13 @@
 
 	const style = useComputedStyle({
 		properties: [
-			'font-size', 'color', 'line-height', 'letter-spacing', 'font-weight', 'font-style', 'font-family', 'text-align',
+			'font-size', 'color',
+			'caret-color',
+			'line-height', 'letter-spacing', 'font-weight', 'font-style', 'font-family', 'text-align',
 			'direction',
+			'min-height', 'max-height',
 			// #ifndef APP-ANDROID
-			'height', 'min-height', 'max-height',
+			'height',
 			// #endif
 			// #ifdef APP-HARMONY || APP-IOS
 			'padding-top', 'padding-right', 'padding-bottom', 'padding-left'
@@ -95,6 +116,19 @@
 		],
 		filterProperties: true
 	})
+	// #ifdef APP-IOS || APP-HARMONY
+	const valueColor = useEditorColor(style)
+	// #endif
+
+	// #ifdef APP-ANDROID
+	// 暗黑默认值：开发者未设置 color（useComputedStyle 读到 null）时，使用主题默认色
+	const isDarkTheme = useFormThemeIsDark()
+	const formThemeTokens = computed(() : FormThemeTokens => resolveFormTokens(isDarkTheme.value))
+	const resolvedTextColor = computed(() : string => {
+		const styleColor = style.get('color')
+		return (styleColor == null || styleColor == '') ? formThemeTokens.value.inputText : styleColor
+	})
+	// #endif
 
 	const rpx2px = (value : string) : string => {
 		if (value == null) return ''
@@ -149,13 +183,14 @@
 
 	const placeholderStyle = computed(() => {
 		let styleText = ''
+		// Explicitly reset the variable when the component font-size is removed.
+		let placeholderFontSize = '16px'
 		let styleFontSize = style.get('font-size')
 		if (typeof styleFontSize == 'string') {
 			styleFontSize = rpx2px(styleFontSize)
 			if (styleFontSize.endsWith('px')) {
 				// TODO: 该方案存在 placeholder 先显示默认大小，如果开发者给组件设置了 font-size, 再更新为设置的字体大小问题
-				// TODO: 该方案会导致开发者设置的组件大小对 placeholder 的字体大小影响高于 placeholder-class 中设置的字体大小
-				styleText += `font-size:${parseInt(styleFontSize)}px;`
+				placeholderFontSize = `${parseInt(styleFontSize)}px`
 			}
 		}
 		const styleDirection = style.get('direction')
@@ -165,7 +200,7 @@
 		// #ifdef APP-IOS || APP-HARMONY
 		styleText += textareaPaddingStyle.value
 		// #endif
-		return `${styleText}${props.placeholderStyle}`
+		return `--uni-textarea-placeholder-font-size:${placeholderFontSize};${styleText}${props.placeholderStyle}`
 	})
 
 	defineOptions({
@@ -181,8 +216,17 @@
 			class: UniTextareaElement
 			// #endif
 		},
-		externalClasses: ['placeholder-class']
+		externalClasses: [
+			'placeholder-class',
+			'selection-class',
+		]
 	})
+
+	interface ModelModifiers {
+		lazy ?: boolean;
+		number ?: boolean;
+		trim ?: boolean;
+	}
 
 	interface TextareaProps {
 		/**
@@ -215,6 +259,7 @@
 	 }
 	 */
 		value ?: string;
+		valueModifiers ?: ModelModifiers;
 		/**
 	 * @uniPlatform {
 	   "app": {
@@ -261,6 +306,8 @@
 	 }
 	 */
 		placeholderClass ?: string.ClassString;
+		/** Background color of the native text selection (选区背景色样式类). */
+		selectionClass ?: string.ClassString;
 		/**
 	 * @uniPlatform {
 	   "app": {
@@ -399,6 +446,7 @@
 		placeholder: '',
 		placeholderStyle: '',
 		placeholderClass: '',
+		selectionClass: '',
 		maxlength: -1,
 		cursorSpacing: 0,
 		cursorColor: '',
@@ -436,10 +484,6 @@
 		}
 	}
 
-	const androidTextareaNativeViewStyle = computed(() => {
-		return isAndroidTextareaAutoHeight() ? 'width: 100%;' : 'height: 100%; width: 100%;'
-	})
-
 	function syncAndroidTextareaAutoHeightStyle() {
 		const wrapper = textareaWrapperRef.value
 		if (wrapper == null) return
@@ -473,6 +517,23 @@
 
 	// #endif
 
+	// #ifdef APP-IOS || APP-HARMONY
+	const caretColor = computed(() => {
+		return resolveEditorCaretColor(style.get('caret-color'), props.cursorColor)
+	})
+	// #endif
+
+	// #ifdef APP-IOS || APP-HARMONY || APP-ANDROID
+	const selectionColor = ref('')
+	function onSelectionColorChange(color: string) {
+		selectionColor.value = color
+		textareaView?.updateSelectionColor(color)
+	}
+	watch(() => props.selectionClass, value => {
+		if (value == '') onSelectionColorChange('')
+	})
+	// #endif
+
 	const emit = defineEmits<{
 		(e : 'update:value', value : string) : void
 		(e : 'input', value : UniInputEvent) : void
@@ -487,7 +548,9 @@
 	// #ifdef APP-ANDROID
 	function syncAndroidTextareaStyleProps() {
 		textareaView?.updateFontSize(rpx2px(style.get('font-size')))
-		textareaView?.updateColor(style.get('color'))
+		textareaView?.updateColor(resolvedTextColor.value)
+		textareaView?.updateCursorColor(resolvedCursorColor.value)
+		textareaView?.updateSelectionColor(selectionColor.value)
 		textareaView?.updateLineHeight(rpx2px(style.get('line-height')))
 		textareaView?.updateLetterSpacing(rpx2px(style.get('letter-spacing')))
 		textareaView?.updateFontWeight(style.get('font-weight'))
@@ -517,6 +580,19 @@
 	const initialValue = ref<string>(getInitValue())
 	const textareaValue = ref<string>(initialValue.value)
 
+	function emitModelValueOnInput(value : string) {
+		if (props.valueModifiers?.lazy != true) {
+			emit('update:value', value)
+		}
+	}
+
+	function emitModelValueOnChange(value : string) {
+		if (props.valueModifiers?.lazy == true) {
+			textareaValue.value = value
+			emit('update:value', value)
+		}
+	}
+
 	const showPlaceholder = ref<boolean>(initialValue.value == '' && props.placeholder != '')
 
 	// #ifdef APP-ANDROID
@@ -534,7 +610,7 @@
 	watch(() => style.get('font-size'), (value : string) => {
 		textareaView?.updateFontSize(rpx2px(value))
 	})
-	watch(() => style.get('color'), (value : string) => {
+	watch(resolvedTextColor, (value : string) => {
 		textareaView?.updateColor(value)
 	})
 	watch(() => style.get('line-height'), (value : string) => {
@@ -574,7 +650,15 @@
 	watch(() => props.cursorSpacing, (newValue : number) => {
 		textareaView?.updateCursorSpacing(newValue)
 	})
-	watch(() => props.cursorColor, (newValue : string) => {
+	// 光标色：优先 cursor-color 属性；未设置时取 CSS caret-color（支持 css 变量控制），都没有则跟原生默认
+	const resolvedCursorColor = computed(() : string => {
+		if (props.cursorColor != '') {
+			return props.cursorColor
+		}
+		const caretColor = style.get('caret-color')
+		return caretColor == null ? '' : caretColor
+	})
+	watch(resolvedCursorColor, (newValue : string) => {
 		textareaView?.updateCursorColor(newValue)
 	})
 
@@ -597,6 +681,14 @@
 
 	watch(() => androidTextareaHeightStyle.get('height'), () => {
 		rememberAndroidTextareaHeightIfNeeded()
+	})
+
+	watch(() => style.get('min-height'), (value : string) => {
+		textareaView?.updateMinHeight(rpx2px(value))
+	})
+
+	watch(() => style.get('max-height'), (value : string) => {
+		textareaView?.updateMaxHeight(rpx2px(value))
 	})
 
 	watch(() => props.cursor, (newValue : number) => {
@@ -678,10 +770,12 @@
 				case 'maxlength':
 					textareaView.updateMaxLength(getMaxLength(props.maxlength))
 					break
+				// #ifndef APP-IOS || APP-HARMONY
 				case 'cursor-color':
 				case 'cursorColor':
 					textareaView.updateCursorColor(props.cursorColor)
 					break
+				// #endif
 				case 'cursor-spacing':
 				case 'cursorSpacing':
 					textareaView.updateCursorSpacing(props.cursorSpacing)
@@ -693,15 +787,22 @@
 					break
 			}
 		}
+		// #ifdef APP-IOS || APP-HARMONY
+		textareaView.updateColor(valueColor.value)
+		textareaView.updateCursorColor(caretColor.value)
+		textareaView.updateSelectionColor(selectionColor.value)
+		// #endif
 		let updatePadding = false
 		style.forEach((value, key) => {
 			switch (key) {
 				case 'font-size':
 					textareaView.updateFontSize(typeof value == 'string' ? rpx2px(value) : undefined)
 					break
+				// #ifdef APP-ANDROID
 				case 'color':
 					textareaView.updateColor(value as string)
 					break
+				// #endif
 				case 'line-height':
 					textareaView.updateLineHeight(rpx2px(value as string))
 					break
@@ -731,14 +832,10 @@
 					// #endif
 					break
 				case 'min-height':
-					// #ifndef APP-ANDROID
 					textareaView.updateMinHeight(rpx2px(value as string))
-					// #endif
 					break
 				case 'max-height':
-					// #ifndef APP-ANDROID
 					textareaView.updateMaxHeight(rpx2px(value as string))
-					// #endif
 					break
 				case 'padding-top':
 				case 'padding-right':
@@ -802,7 +899,7 @@
 		const newValue = e.detail.value ?? ""
 		if (newValue !== textareaValue.value) {
 			textareaValue.value = newValue
-			emit('update:value', newValue)
+			emitModelValueOnInput(newValue)
 			emit('input', e)
 		}
 	}
@@ -824,6 +921,7 @@
 	}
 
 	function onChange(e : UniNativeViewEvent) {
+		emitModelValueOnChange(e.detail.value ?? textareaValue.value)
 		emit('change', e)
 	}
 
@@ -844,7 +942,7 @@
 		const newValue = e.detail.value;
 		if (newValue !== textareaValue.value) {
 			textareaValue.value = e.detail.value;
-			emit('update:value', newValue)
+			emitModelValueOnInput(newValue)
 			emit('input', e)
 		}
 	}
@@ -866,6 +964,7 @@
 	}
 
 	function onChange(e : UniNativeViewEvent) {
+		emitModelValueOnChange(e.detail.value ?? textareaValue.value)
 		emit('change', e)
 	}
 
@@ -882,7 +981,7 @@
 		const newValue = e.detail.value
 		if (newValue !== textareaValue.value) {
 			textareaValue.value = newValue;
-			emit('update:value', newValue)
+			emitModelValueOnInput(newValue)
 			emit('input', e)
 		}
 	}
@@ -903,6 +1002,7 @@
 	}
 
 	function onChange(e : UniInputChangeEvent) {
+		emitModelValueOnChange(e.detail.value)
 		emit('change', e)
 	}
 
@@ -916,7 +1016,7 @@
 	// #endif
 
 	const handleTouchStart = () => {
-		// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
+		// #ifdef APP-ANDROID || APP-HARMONY
 		markEditorTouchStart()
 		// #endif
 		isTouching = true
@@ -931,7 +1031,7 @@
 	}
 
 	onMounted(() => {
-		// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
+		// #ifdef APP-ANDROID || APP-HARMONY
 		pageTouchEndId = proxy?.$page.onTouchEnd(() => {
 			const recentEditorTouch = hasRecentEditorTouch()
 			// #ifdef APP-ANDROID
@@ -939,7 +1039,7 @@
 				textareaView?.handlePageTouchEndFocus()
 			}
 			// #endif
-			// #ifndef APP-ANDROID
+			// #ifdef APP-HARMONY
 			if (!isTouching && !recentEditorTouch) {
 				textareaView?.handlePageTouchEndFocus()
 			}
@@ -965,9 +1065,11 @@
 		watch(() => style.get('font-size'), (value : string) => {
 			textareaView?.updateFontSize(rpx2px(value))
 		})
-		watch(() => style.get('color'), (value : string) => {
+		// #ifdef APP-IOS || APP-HARMONY
+		watch(() => valueColor.value, (value : string) => {
 			textareaView?.updateColor(value)
 		})
+		// #endif
 		watch(() => style.get('line-height'), (value : string) => {
 			textareaView?.updateLineHeight(rpx2px(value))
 		})
@@ -1031,9 +1133,11 @@
 		watch(() => props.cursorSpacing, (newValue : number) => {
 			textareaView?.updateCursorSpacing(newValue)
 		})
-		watch(() => props.cursorColor, (newValue : string) => {
+		// #ifdef APP-IOS || APP-HARMONY
+		watch(() => caretColor.value, (newValue : string) => {
 			textareaView?.updateCursorColor(newValue)
 		})
+		// #endif
 
 		watch(() => props.focus, (newValue : boolean) => {
 			textareaView?.updateFocus(newValue)
@@ -1073,6 +1177,16 @@
 		// #endif
 
 		const formCtx = inject<TextareaInFormContext | null>(FORM_KEY, null)
+		const target: ActivatableChild = {
+			id: id,
+			activate: (event: UniPointerEvent) => {
+				const element = proxy?.$el
+				if (element != null) dispatchLabelClick(element, event)
+			},
+			getDisabled: () => props.disabled === true || props.disabled === 'true'
+		}
+		if (labelCtx != null) labelCtx.register(target)
+		if (id != null && id.length > 0) unregisterLabelTarget = registerLabelTarget(id, target)
 		if (formCtx && props.name) {
 			formCtx.registerField({
 				name: props.name,
@@ -1109,13 +1223,16 @@
 		// #ifdef APP-HARMONY
 		textareaElement = null
 		// #endif
-		// #ifndef APP-IOS
+		// #ifdef APP-ANDROID || APP-HARMONY
 		if (pageTouchEndId != null) {
 			proxy?.$page.offTouchEnd(pageTouchEndId)
 		}
 		// #endif
 
 		const formCtx = inject<{ unregisterField : (name : string) => void } | null>(FORM_KEY, null)
+		if (labelCtx != null) labelCtx.unregister(id)
+		unregisterLabelTarget?.()
+		unregisterLabelTarget = null
 		if (formCtx && props.name) {
 			formCtx.unregisterField(props.name)
 		}
@@ -1129,6 +1246,14 @@
 		/* #ifdef APP-ANDROID */
 		height: 150px;
 		/* #endif */
+		/* 暗黑适配：表单默认背景色（开发者用 class/style 可覆盖，页面样式优先级更高） */
+		background-color: #ffffff;
+	}
+
+	@media (prefers-color-scheme: dark) {
+		.uni-textarea-wrapper {
+			background-color: #3b3b3b;
+		}
 	}
 
 	.uni-textarea-container {
@@ -1141,7 +1266,7 @@
 		position: absolute;
 		top: 0;
 		left: 0;
-		color: #999999;
-		font-size: 16px;
+		color: #757575;
+		font-size: var(--uni-textarea-placeholder-font-size, 16px);
 	}
 </style>

@@ -1,22 +1,20 @@
 <template>
-  <view style="flex-direction: column;">
     <!-- #ifndef MP -->
     <fps />
     <!-- #endif -->
 
     <!-- 控制按钮区域 -->
-    <view style="padding: 2px;flex-direction: row;flex-wrap: wrap;align-items: center;">
-      <button @click="toggleAll" size="mini" style="margin: 2px;">{{ sharedChecked ? '取消' : '全选' }}</button>
+    <view class="u-p-2 flex-dir-row flex-wrap-wrap items-center">
+      <button @click="toggleAll" size="mini" class="m-2">{{ sharedChecked ? '取消' : '全选' }}</button>
     </view>
 
     <!-- 100个label+checkbox组合 -->
-    <checkbox-group style="flex-direction: row;flex-wrap: wrap;padding: 2px;" @change="onGroupChange">
-      <label v-for="index in 100" :key="index" style="width: 12%;margin: 4rpx;padding: 1px;align-items: center;flex-direction: column;">
-        <text style="font-size: 9px;color: #666;margin-bottom: 2px;">{{ index }}</text>
+    <checkbox-group class="flex-dir-row flex-wrap-wrap u-p-2" @change="onGroupChange">
+      <label class="m-4rpx items-center flex-dir-column" v-for="index in 100" :key="index" style="width: 12%;padding: 1px;">
+        <text class="fs-9 color-666 mb-2">{{ index }}</text>
         <checkbox :value="index.toString()" :checked="sharedChecked" />
       </label>
     </checkbox-group>
-  </view>
 </template>
 
 <script setup lang="ts">
@@ -31,6 +29,3 @@
     console.log('checkbox-group change:', e.detail.value)
   }
 </script>
-
-<style>
-</style>

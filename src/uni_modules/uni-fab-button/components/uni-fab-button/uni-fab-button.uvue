@@ -1,7 +1,13 @@
 <template>
-	<view style="align-items: center; justify-content: center;" class="fab" @click="handleClick">
+	<view style="align-items: center; justify-content: center;" class="fab" :class="plusClass.length > 0 ? 'fab-custom-plus' : ''" @click="handleClick">
+		<!-- #ifdef WEB || MP -->
+		<!-- 保留自定义样式的承载节点，竖线由伪元素绘制 -->
+		<view v-if="plusClass.length > 0" class="plus" :class="plusClass" style="position: absolute;"></view>
+		<!-- #endif -->
+		<!-- #ifdef APP -->
 		<view flatten class="plus" :class="plusClass" style="position: absolute;"></view>
 		<view flatten class="plus" :class="plusClass" style="position: absolute;transform: rotate(90deg);"></view>
+		<!-- #endif -->
 	</view>
 </template>
 <script lang="ts" setup>
@@ -131,7 +137,7 @@
 </script>
 <style>
 	.fab {
-		position: relative; 
+		position: relative;
 		width: 44px;
 		height: 44px;
 		background-color: #007AFF;
@@ -149,4 +155,46 @@
 		height: 2px;
 	}
 
+	/* #ifdef WEB || MP */
+	.plus {
+		/* 竖线旋转后超出横线尺寸，需覆盖uni-view默认的裁剪样式 */
+		overflow: visible;
+	}
+
+	.fab::before,
+	.fab::after {
+		content: '';
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		width: 40%;
+		height: 2px;
+		background-color: white;
+		border-radius: 2px;
+		transform: translate(-50%, -50%);
+		pointer-events: none;
+	}
+
+	.fab::after {
+		transform: translate(-50%, -50%) rotate(90deg);
+	}
+
+	.fab-custom-plus::before,
+	.fab-custom-plus::after {
+		content: none;
+	}
+
+	.plus::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		background-color: inherit;
+		border-radius: inherit;
+		transform: rotate(90deg);
+		pointer-events: none;
+	}
+	/* #endif */
 </style>

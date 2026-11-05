@@ -1,63 +1,61 @@
 <template>
-    <view>
       <page-head title="navigate"></page-head>
       <page-intro content="本页演示页面路由：展示 onLoad/onShow/onReady 等生命周期时间戳；通过按钮跳转新页、返回、redirect 等，可传递参数。"></page-intro>
       <!-- #ifdef APP && !VUE3-VAPOR -->
       <boolean-data :value="false" title="是否启用共享元素动画" @change="onChange"></boolean-data>
       <share-element :share-key="data.shareElementKey">
-        <image style="width: 250px; height: 176px;" src="/static/shuijiao.jpg" mode="scaleToFill"></image>
+        <image class="w-250 h-176" src="/static/shuijiao.jpg" mode="scaleToFill"></image>
       </share-element>
-      <text style="font-size: 13px;" >注意：开启共享元素动画后仅支持slide-in-right和fade-in动画效果</text>
+      <text class="fs-13" >注意：开启共享元素动画后仅支持slide-in-right和fade-in动画效果</text>
       <!-- #endif -->
       <!-- #ifndef APP && !VUE3-VAPOR -->
-      <image style="width: 250px; height: 176px;" src="/static/shuijiao.jpg" mode="scaleToFill"></image>
+      <image class="w-250 h-176" src="/static/shuijiao.jpg" mode="scaleToFill"></image>
       <!-- #endif -->
-      <view class="uni-padding-wrap uni-common-mt uni-common-mb">
-        <view class="direction-row">
+      <view class="p-0-15 mt-15 mb-15">
+        <view class="flex-dir-row">
           <text class="label">onLoad触发时间戳:</text>
           <text>{{ data.onLoadTime }}</text>
         </view>
-        <view class="direction-row">
+        <view class="flex-dir-row">
           <text class="label">onShow触发时间戳:</text>
           <text>{{ data.onShowTime }}</text>
         </view>
-        <view class="direction-row">
+        <view class="flex-dir-row">
           <text class="label">onReady触发时间戳:</text>
           <text>{{ data.onReadyTime }}</text>
         </view>
-        <view class="direction-row">
+        <view class="flex-dir-row">
           <text class="label">onHide触发时间戳:</text>
           <text>{{ data.onHideTime }}</text>
         </view>
-        <view class="direction-row">
+        <view class="flex-dir-row">
           <text class="label">onBackPress触发时间戳:</text>
           <text>见控制台</text>
         </view>
-        <view class="direction-row">
+        <view class="flex-dir-row">
           <text class="label">onUnload触发时间戳:</text>
           <text>见控制台</text>
         </view>
-        <view class="uni-btn-v">
-          <button @tap="navigateTo" class="uni-btn">
+        <view class="p-5-0">
+          <button @tap="navigateTo" class="mt-10">
             跳转新页面，并传递数据
           </button>
-          <button @tap="navigateBack" class="uni-btn">返回上一页</button>
-          <button @tap="redirectTo" class="uni-btn">在当前页面打开</button>
-          <button @tap="switchTab" class="uni-btn">切换到模板选项卡</button>
-          <button @tap="reLaunch" class="uni-btn">
+          <button @tap="navigateBack" class="mt-10">返回上一页</button>
+          <button @tap="redirectTo" class="mt-10">在当前页面打开</button>
+          <button @tap="switchTab" class="mt-10">切换到模板选项卡</button>
+          <button @tap="reLaunch" class="mt-10">
             关闭所有页面，打开首页
           </button>
-          <button @tap="navigateToErrorPage" class="uni-btn">
+          <button @tap="navigateToErrorPage" class="mt-10">
             打开不存在的页面
           </button>
           <!-- #ifndef MP-ALIPAY -->
           <button v-for="(item, _) in data.animationTypeList" @tap="navigateToAnimationType(item)"
-            class="uni-btn">navigateTo动画({{item}})</button>
+            class="mt-10">navigateTo动画({{item}})</button>
           <!-- #endif -->
-          <button class="uni-btn" @click="goOnLoadCallAPI">测试 onLoad 调用 API</button>
+          <button class="mt-10" @click="goOnLoadCallAPI">测试 onLoad 调用 API</button>
         </view>
       </view>
-    </view>
 </template>
 
 <script setup lang="ts">
@@ -440,10 +438,6 @@
 </script>
 
 <style>
-  .direction-row {
-    flex-direction: row;
-  }
-
   .label {
     width: 190px;
   }

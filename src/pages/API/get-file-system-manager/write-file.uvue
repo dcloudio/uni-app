@@ -1,0 +1,327 @@
+<template>
+  <!-- #ifdef APP -->
+  <page-intro content="演示 FileSystemManager.writeFile / writeFileSync：覆盖写入文本（支持 utf-8/base64/ascii 编码）与 ArrayBuffer，写入成功后自动读回内容校验。"></page-intro>
+  <scroll-view class="flex-1">
+  <!-- #endif -->
+    <view class="p-8 flex-dir-column">
+      <view class="p-8 border-1-solid-e0e0e0 radius-4 flex-dir-column m-4-0">
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">根目录</text>
+          <enum-data-checkbox
+            class="flex-1"
+            :model-value="data.rootKey"
+            :items="rootOptions"
+            mode="default"
+            :show-toast="false"
+            @change="onRootChange"
+          />
+        </view>
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">文件路径</text>
+          <input class="flex-1 border-1-solid-d0d0d0 radius-4 p-4-8 fs-13 h-32" v-model="data.filePath" placeholder="相对根目录的路径" />
+        </view>
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">写入内容</text>
+          <textarea class="flex-1 border-1-solid-d0d0d0 radius-4 p-4-8 fs-13 h-104" v-model="data.content" :maxlength="-1" :placeholder="getContentPlaceholder()" />
+        </view>
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">编码</text>
+          <enum-data-checkbox
+            class="flex-1"
+            :model-value="data.encoding"
+            :items="encodingOptions"
+            mode="default"
+            :show-toast="false"
+            @change="onEncodingChange"
+          />
+        </view>
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333"></text>
+          <text class="flex-1 fs-12 color-999">base64：输入内容会先经 base64 解码再写入文件，需输入合法 base64 字符串（如 aGVsbG8= → hello），直接输入明文中文读回将显示乱码；ascii：非 ASCII 字符将转换为单字节写入，读回内容可能与输入不一致</text>
+        </view>
+      </view>
+      <view class="flex-dir-row flex-wrap-wrap m-4-0">
+        <button class="m-4" type="primary" @tap="writeFile" id="btn-write-file">writeFile 写入</button>
+        <button class="m-4" type="primary" @tap="writeFileSync" id="btn-write-file-sync">writeFileSync 写入</button>
+        <button class="m-4" type="warn" @tap="demoFail" id="btn-write-file-fail">演示失败（不支持的编码）</button>
+        <button class="m-4" type="primary" @tap="writeFileBuffer" id="btn-write-file-buffer">写入 ArrayBuffer</button>
+        <button class="m-4" type="primary" @tap="writeFileBufferSync" id="btn-write-file-buffer-sync">同步写入 ArrayBuffer</button>
+      </view>
+      <view class="p-8 border-1-solid-e0e0e0 radius-4 flex-dir-column m-4-0-12-0">
+        <text class="fw-bold fs-14 m-2-0 color-333">执行结果：{{ data.lastResult == '' ? '等待执行' : (data.lastResult == 'success' ? '成功' : '失败') }}</text>
+        <text class="fs-13 m-2-0 color-666">目标路径：{{ data.rootPath }}{{ data.filePath }}</text>
+        <text class="fs-13 m-2-0 color-666" v-if="data.lastResult == 'success' && data.bufferValue == 0">读回内容（utf-8）：{{ data.writeRet }}</text>
+        <text class="fs-13 m-2-0 color-666" v-if="data.bufferValue != 0">ArrayBuffer 读回 Float64[1]：{{ data.bufferValue }}</text>
+        <text class="fs-13 m-2-0 color-e64340" v-if="data.lastResult == 'fail'">errCode：{{ data.lastFailError.errCode }}；errMsg：{{ data.lastFailError.errMsg }}</text>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="ts">
+  import { createEnumItems } from '@/components/enum-data-checkbox/enum-data-checkbox-types'
+  const rootOptions = createEnumItems(['usr', 'cache', 'sandbox'])
+  const encodingOptions = [
+    { value: 'utf-8', text: 'utf-8' },
+    { value: 'base64', text: 'base64' },
+    { value: 'ascii', text: 'ascii' },
+  ]
+
+  import { getFsmRootPath, ensureFsmDirSync, removeFsmPathSync, removeFsmDirSync, createFsmMockError } from './fsm-utils'
+
+  // 各编码的默认示例内容：切换编码时若内容仍是任一示例，则自动切换，便于快速体验
+  const DEMO_CONTENT_UTF8 : string = '测试writeFile API的写入功能。\n\t制表符缩进行\n回车换行：\r\n下一行\n反斜杠 \\ 双引号 " 单引号 \'\n空格[  ]全角空格[　]不间断空格[ ]\n混合内容：中文English123!@#'
+  // "测试writeFile" 的 base64 编码，base64 模式写入后会先解码为该中文再存储
+  const DEMO_CONTENT_BASE64 : string = '5rWL6K+Vd3JpdGVGaWxl'
+  // 纯 ASCII 示例，ascii 模式写入与读回一致
+  const DEMO_CONTENT_ASCII : string = 'hello writeFile 123!@#'
+  type DataType = {
+    rootKey : string
+    rootPath : string
+    filePath : string
+    content : string
+    encoding : string
+    writeRet : string
+    bufferValue : number
+    existsRet : boolean
+    done : boolean
+    lastResult : string
+    lastFailError : UniError
+  }
+
+  const data = reactive({
+    rootKey: 'usr',
+    rootPath: getFsmRootPath('usr'),
+    filePath: 'fsm-write-file-demo/1.txt',
+    content: DEMO_CONTENT_UTF8,
+    encoding: 'utf-8',
+    writeRet: '',
+    bufferValue: 0,
+    existsRet: false,
+    done: false,
+    lastResult: '',
+    lastFailError: createFsmMockError(),
+  } as DataType)
+
+  function onRootChange(value : string) {
+    data.rootKey = value
+    data.rootPath = getFsmRootPath(data.rootKey)
+  }
+
+  function onEncodingChange(value : string) {
+    data.encoding = value
+    // 内容仍为任一编码的默认示例时，自动切换为所选编码的示例，便于一目了然地快速体验；用户自定义内容不覆盖
+    if (data.content == DEMO_CONTENT_UTF8 || data.content == DEMO_CONTENT_BASE64 || data.content == DEMO_CONTENT_ASCII) {
+      if (data.encoding == 'base64') {
+        data.content = DEMO_CONTENT_BASE64
+      } else if (data.encoding == 'ascii') {
+        data.content = DEMO_CONTENT_ASCII
+      } else {
+        data.content = DEMO_CONTENT_UTF8
+      }
+    }
+  }
+
+  // 按所选编码给出输入提示
+  function getContentPlaceholder() : string {
+    if (data.encoding == 'base64') {
+      return '请输入合法 base64 字符串，如 5rWL6K+Vd3JpdGVGaWxl（解码后为：测试writeFile）'
+    }
+    if (data.encoding == 'ascii') {
+      return '请输入纯 ASCII 字符（数字/英文/半角符号），非 ASCII 字符将转换为单字节写入'
+    }
+    return '要写入的文本（utf-8 直接输入明文）'
+  }
+
+  function targetPath(path : string) : string {
+    return `${data.rootPath}${path ?? data.filePath}`
+  }
+
+  function resetResult() {
+    data.done = false
+    data.lastResult = ''
+    data.writeRet = ''
+    data.bufferValue = 0
+  }
+
+  function applyFail(res : IUniError) {
+    data.lastResult = 'fail'
+    data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+  }
+
+  function applySyncFail(e : any) {
+    data.lastResult = 'fail'
+    data.lastFailError = new UniError('uni-file-manager', 0, `${e}`)
+  }
+
+  function exists(path : string) : void {
+    try {
+      uni.getFileSystemManager().accessSync(targetPath(path))
+      data.existsRet = true
+    } catch (e) {
+      data.existsRet = false
+    }
+  }
+
+  // 读回文本内容（固定 utf-8），用于展示与测试断言
+  function readBackText() : void {
+    try {
+      const content = uni.getFileSystemManager().readFileSync(targetPath(data.filePath), 'utf-8')
+      data.writeRet = content.toString()
+    } catch (e) {
+      data.writeRet = `read back fail: ${e}`
+    }
+  }
+
+  function prepare() : void {
+    ensureFsmDirSync(`${data.rootPath}fsm-write-file-demo`)
+    data.done = true
+  }
+
+  function cleanup() : void {
+    removeFsmDirSync(`${data.rootPath}fsm-write-file-demo`)
+    data.done = true
+  }
+
+  function writeFile() : void {
+    resetResult()
+    // 自愈：确保默认演示目录存在，保证任意时刻重复点击都能成功
+    if (data.filePath == 'fsm-write-file-demo/1.txt') {
+      ensureFsmDirSync(`${data.rootPath}fsm-write-file-demo`)
+    }
+    const fileManager = uni.getFileSystemManager()
+    const options : WriteFileOptions = {
+      filePath: targetPath(data.filePath),
+      data: data.content,
+      encoding: data.encoding,
+      success: (_ : FileManagerSuccessResult) => {
+        data.lastResult = 'success'
+        readBackText()
+      },
+      fail: (res : IUniError) => {
+        applyFail(res)
+      },
+      complete: (_ : any) => {
+        data.done = true
+      }
+    }
+    fileManager.writeFile(options)
+  }
+
+  function writeFileSync() : void {
+    resetResult()
+    // 自愈：确保默认演示目录存在，保证任意时刻重复点击都能成功
+    if (data.filePath == 'fsm-write-file-demo/1.txt') {
+      ensureFsmDirSync(`${data.rootPath}fsm-write-file-demo`)
+    }
+    try {
+      uni.getFileSystemManager().writeFileSync(targetPath(data.filePath), data.content, data.encoding)
+      data.lastResult = 'success'
+      readBackText()
+    } catch (e) {
+      applySyncFail(e)
+    }
+    data.done = true
+  }
+
+  // 一键演示失败场景：传入不支持的编码，预期 errCode 1200002（文档：仅支持 base64 / utf-8 / ascii，演示后自动恢复参数）
+  function demoFail() : void {
+    resetResult()
+    const prevEncoding = data.encoding
+    data.encoding = 'gbk'
+    const fileManager = uni.getFileSystemManager()
+    const options : WriteFileOptions = {
+      filePath: targetPath(data.filePath),
+      data: data.content,
+      encoding: 'gbk',
+      success: (_ : FileManagerSuccessResult) => {
+        data.lastResult = 'success'
+      },
+      fail: (res : IUniError) => {
+        applyFail(res)
+      },
+      complete: (_ : any) => {
+        data.encoding = prevEncoding
+        data.done = true
+      }
+    }
+    fileManager.writeFile(options)
+  }
+
+  function writeBufferCore(buffer : ArrayBuffer) {
+    // 自愈：确保默认演示目录存在，保证任意时刻重复点击都能成功
+    if (data.filePath == 'fsm-write-file-demo/1.txt') {
+      ensureFsmDirSync(`${data.rootPath}fsm-write-file-demo`)
+    }
+    const fileManager = uni.getFileSystemManager()
+    const options : WriteFileOptions = {
+      filePath: targetPath(data.filePath),
+      data: buffer,
+      success: (_ : FileManagerSuccessResult) => {
+        data.lastResult = 'success'
+        try {
+          const res = fileManager.readFileSync(targetPath(data.filePath), null)
+          const value = new Float64Array(res as ArrayBuffer)
+          data.bufferValue = value[1]
+        } catch (e) {
+          data.lastResult = 'fail'
+          data.lastFailError = new UniError('uni-file-manager', 0, `read back fail: ${e}`)
+        }
+      },
+      fail: (res : IUniError) => {
+        applyFail(res)
+      },
+      complete: (_ : any) => {
+        data.done = true
+      }
+    }
+    fileManager.writeFile(options)
+  }
+
+  function writeFileBuffer() : void {
+    resetResult()
+    const buffer = new ArrayBuffer(16)
+    const float64 = new Float64Array(buffer)
+    float64[1] = 1.2222222
+    writeBufferCore(buffer)
+  }
+
+  function writeFileBufferSync() : void {
+    resetResult()
+    // 自愈：确保默认演示目录存在，保证任意时刻重复点击都能成功
+    if (data.filePath == 'fsm-write-file-demo/1.txt') {
+      ensureFsmDirSync(`${data.rootPath}fsm-write-file-demo`)
+    }
+    try {
+      const buffer = new ArrayBuffer(16)
+      const float64 = new Float64Array(buffer)
+      float64[1] = 1.333
+      uni.getFileSystemManager().writeFileSync(targetPath(data.filePath), buffer, 'utf-8')
+      data.lastResult = 'success'
+      const res = uni.getFileSystemManager().readFileSync(targetPath(data.filePath), null)
+      const value = new Float64Array(res as ArrayBuffer)
+      data.bufferValue = value[1]
+    } catch (e) {
+      applySyncFail(e)
+    }
+    data.done = true
+  }
+
+  onReady(() => {
+    prepare()
+  })
+
+  defineExpose({
+    data,
+    prepare,
+    cleanup,
+    exists,
+    writeFile,
+    writeFileSync,
+    demoFail,
+    writeFileBuffer,
+    writeFileBufferSync
+  })
+</script>

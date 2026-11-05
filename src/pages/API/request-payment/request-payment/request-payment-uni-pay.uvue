@@ -1,86 +1,85 @@
 <template>
-  <view class="app">
-    <view class="uni-common-mb">
-      <text class="body-text">如对当前页面的支付示例功能有任何疑问，通过在线IM联系我们 https://im.dcloud.net.cn/#/?joinGroup=662b3d7e8551460030874a5d</text>
+    <view class="mb-15">
+      <text class="color-text-333">如对当前页面的支付示例功能有任何疑问，通过在线IM联系我们 https://im.dcloud.net.cn/#/?joinGroup=662b3d7e8551460030874a5d</text>
     </view>
     <view v-if="errMsg != ''">
-      <text class="err-msg">注意：{{ errMsg }}</text>
+      <text class="u-color-red fs-14">注意：{{ errMsg }}</text>
     </view>
     <view>
-      <view class="margin"><text class="body-text">支付单号：</text></view>
-      <view><input class="input" v-model="out_trade_no" placeholder="点击发起支付会自动生成" /></view>
+      <view class="m-5-0 color-text-333"><text class="color-text-333">支付单号：</text></view>
+      <view><input class="w-full box-border-box h-40 color-333 bg-fff p-5 input" v-model="out_trade_no" placeholder="点击发起支付会自动生成" /></view>
     </view>
     <view>
-      <view class="margin"><text class="body-text">支付金额（单位分，100=1元）：</text></view>
-      <view><input class="input" v-model="total_fee" /></view>
+      <view class="m-5-0 color-text-333"><text class="color-text-333">支付金额（单位分，100=1元）：</text></view>
+      <view><input class="w-full box-border-box h-40 color-333 bg-fff p-5 input" v-model="total_fee" /></view>
     </view>
     <!-- #ifdef APP || WEB -->
-    <button class="button" @click="open()">打开收银台（弹窗模式）</button>
+    <button class="mt-10" @click="open()">打开收银台（弹窗模式）</button>
     <view v-if="!isPcCom">
-      <button class="button" @click="toPayDesk">打开收银台（新页面模式）</button>
+      <button class="mt-10" @click="toPayDesk">打开收银台（新页面模式）</button>
     </view>
     <!-- #endif -->
 
     <!-- #ifdef MP-WEIXIN || WEB || APP -->
-    <button class="button" @click="createOrder('wxpay')">发起支付（微信）</button>
+    <button class="mt-10" @click="createOrder('wxpay')">发起支付（微信）</button>
     <!-- #endif -->
 
     <!-- #ifdef MP-ALIPAY || WEB || APP -->
-    <button class="button" @click="createOrder('alipay')">发起支付（支付宝）</button>
+    <button class="mt-10" @click="createOrder('alipay')">发起支付（支付宝）</button>
     <!-- #endif -->
 
     <!-- #ifdef APP -->
-    <button class="button" @click="createQRcode('alipay')">APP扫码支付（支付宝）</button>
+    <button class="mt-10" @click="createQRcode('alipay')">APP扫码支付（支付宝）</button>
     <!-- #endif -->
 
-    <button class="button" @click="getOrderPopup(true)">查询支付状态</button>
-    <button class="button"
+    <button class="mt-10" @click="getOrderPopup(true)">查询支付状态</button>
+    <button class="mt-10"
       @click="pageTo('/uni_modules/uni-pay-x/pages/success/success?out_trade_no=test2024030501-1&order_no=test2024030501&total_fee=1&adpid=1000000001&return_url=/pages/API/request-payment/request-payment/order-detail')">支付成功页面示例</button>
     <!-- #ifdef APP-IOS -->
-    <button class="button" @click="pageTo('/pages/API/virtual-payment/virtual-payment-uni-pay')">苹果虚拟支付示例（iOS内购）</button>
+    <button class="mt-10" @click="pageTo('/pages/API/virtual-payment/virtual-payment-uni-pay')">苹果虚拟支付示例（iOS内购）</button>
     <!-- #endif -->
     <!-- 查询支付的弹窗 -->
     <uni-pay-popup ref="getOrderPopupRef" type="center">
-      <scroll-view direction="vertical" class="get-order-popup">
-        <view class="margin">插件支付单号：</view>
-        <view class="mt20">
-          <input class="input pd2030" v-model="out_trade_no" placeholder="请输入" />
-          <view><text class="tips">插件支付单号和第三方交易单号2选1填即可</text> </view>
+      <scroll-view direction="vertical" class="bg-list-fff u-p-15 radius-10 w-full get-order-popup">
+        <view class="m-5-0 color-text-333">插件支付单号：</view>
+        <view class="mt-10">
+          <input class="w-full box-border-box h-40 color-333 bg-fff p-10-15 input" v-model="out_trade_no" placeholder="请输入" />
+          <view><text class="m-10-0 fs-12 tips">插件支付单号和第三方交易单号2选1填即可</text> </view>
         </view>
-        <view class="margin">第三方交易单号：</view>
-        <view class="mt20">
-          <input class="input pd2030" v-model="transaction_id" placeholder="请输入" />
-          <view><text class="tips">可从支付宝账单（订单号）、微信账单（交易单号）中复制</text></view>
+        <view class="m-5-0 color-text-333">第三方交易单号：</view>
+        <view class="mt-10">
+          <input class="w-full box-border-box h-40 color-333 bg-fff p-10-15 input" v-model="transaction_id" placeholder="请输入" />
+          <view><text class="m-10-0 fs-12 tips">可从支付宝账单（订单号）、微信账单（交易单号）中复制</text></view>
         </view>
-        <view class="mt20">
-          <button class="button" @click="getOrder">查询支付状态</button>
+        <view class="mt-10">
+          <button class="mt-10" @click="getOrder">查询支付状态</button>
         </view>
-        <view class="mt20" v-if="getOrderRes['transaction_id']">
-          <view class="table">
-            <view class="table-tr">
-              <view class="table-td label"><text class="text align-left">订单描述</text></view>
-              <view class="table-td"><text class="text align-right">{{ getOrderRes['description'] }}</text></view>
+        <view class="mt-10" v-if="getOrderRes['transaction_id']">
+          <view>
+            <view class="d-flex flex-dir-row justify-center items-center p-5-0">
+              <view class="w-90 flex-1"><text class="fs-12 color-text-333 text-left">订单描述</text></view>
+              <view class="flex-1"><text class="fs-12 color-text-333 text-right">{{ getOrderRes['description'] }}</text></view>
             </view>
-            <view class="table-tr">
-              <view class="table-td label"><text class="text align-left">支付金额</text></view>
-              <view class="table-td"><text class="text align-right">{{ amountFormat(getOrderRes['total_fee'] as number | null) }}</text></view>
+            <view class="d-flex flex-dir-row justify-center items-center p-5-0">
+              <view class="w-90 flex-1"><text class="fs-12 color-text-333 text-left">支付金额</text></view>
+              <view class="flex-1"><text class="fs-12 color-text-333 text-right">{{ amountFormat(getOrderRes['total_fee'] as number | null) }}</text></view>
             </view>
-            <view class="table-tr">
-              <view class="table-td label"><text class="text align-left">支付方式</text></view>
-              <view class="table-td"><text class="text align-right">{{ providerFormat(getOrderRes['provider'] as string) }}</text></view>
+            <view class="d-flex flex-dir-row justify-center items-center p-5-0">
+              <view class="w-90 flex-1"><text class="fs-12 color-text-333 text-left">支付方式</text></view>
+              <view class="flex-1"><text class="fs-12 color-text-333 text-right">{{ providerFormat(getOrderRes['provider'] as string) }}</text></view>
             </view>
-            <view class="table-tr">
-              <view class="table-td label"><text class="text align-left">第三方交易单号</text></view>
-              <view class="table-td"><text class="text align-right">{{ getOrderRes['transaction_id'] }}</text></view>
+            <view class="d-flex flex-dir-row justify-center items-center p-5-0">
+              <view class="w-90 flex-1"><text class="fs-12 color-text-333 text-left">第三方交易单号</text></view>
+              <view class="flex-1"><text class="fs-12 color-text-333 text-right">{{ getOrderRes['transaction_id'] }}</text></view>
             </view>
-            <view class="table-tr">
-              <view class="table-td label"><text class="text align-left">插件支付单号</text></view>
-              <view class="table-td"><text class="text align-right">{{ getOrderRes['out_trade_no'] }}</text></view>
+            <view class="d-flex flex-dir-row justify-center items-center p-5-0">
+              <view class="w-90 flex-1"><text class="fs-12 color-text-333 text-left">插件支付单号</text></view>
+              <view class="flex-1"><text class="fs-12 color-text-333 text-right">{{ getOrderRes['out_trade_no'] }}</text></view>
             </view>
-            <view class="table-tr">
-              <view class="table-td label"><text class="text align-left">回调状态</text></view>
-              <view class="table-td"><text
-                  class="text align-right">{{ getOrderRes['user_order_success'] != null && getOrderRes['user_order_success'] == true ? "成功" : "异常" }}</text>
+            <view class="d-flex flex-dir-row justify-center items-center p-5-0">
+              <view class="w-90 flex-1"><text class="fs-12 color-text-333 text-left">回调状态</text></view>
+              <view class="flex-1"><text
+                  class="fs-12 color-text-333 text-right">{{ getOrderRes['user_order_success'] != null && getOrderRes['user_order_success'] == true ? "成功" : "异常" }}</text>
               </view>
             </view>
           </view>
@@ -89,12 +88,11 @@
     </uni-pay-popup>
 
     <!-- #ifdef WEB -->
-    <button class="button" v-if="h5Env === 'h5-weixin'" @click="getWeiXinJsCode('snsapi_base')">公众号获取openid示例</button>
+    <button class="mt-10" v-if="h5Env === 'h5-weixin'" @click="getWeiXinJsCode('snsapi_base')">公众号获取openid示例</button>
     <!-- #endif -->
     <!-- 统一支付组件，注意：vue3下ref不可以等于组件名，因此这里ref="pay" 而不能是 ref="uniPay" -->
     <uni-pay ref="payRef" :adpid="adpid" height="450px" return-url="/pages/API/request-payment/request-payment/order-detail" logo="/static/test-image/logo.png" @success="onSuccess"
       @create="onCreate" @fail="onFail" @cancel="onCancel"></uni-pay>
-  </view>
 </template>
 
 <script setup lang="ts">
@@ -489,87 +487,20 @@
 </script>
 
 <style>
-  .app {
-    padding: 15px;
-  }
+page {
+  padding: 15px;
+}
 
   .input {
     border: 1px solid #f3f3f3;
-    padding: 5px;
-    width: 100%;
-    box-sizing: border-box;
-    height: 40px;
-    color: #333333;
-    background-color: #ffffff;
-  }
-
-  .button {
-    margin-top: 10px;
-  }
-
-  .margin {
-    margin: 5px 0;
-    color: var(--text-color, #333333);
-  }
-
-  .body-text {
-    color: var(--text-color, #333333);
   }
 
   .tips {
-    margin: 10px 0;
-    font-size: 12px;
     color: var(--active-color, #565656);
   }
 
   .get-order-popup {
-    background-color: var(--list-background-color, #ffffff);
-    padding: 15px;
     height: 450px;
-    border-radius: 10px;
-    width: 100%;
-  }
-
-  .mt20 {
-    margin-top: 10px;
-  }
-
-  .pd2030 {
-    padding: 10px 15px;
-  }
-
-  .table-tr {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    padding: 5px 0;
-  }
-
-  .table-td {
-    flex: 1;
-  }
-
-  .align-left {
-    text-align: left;
-  }
-
-  .align-right {
-    text-align: right;
-  }
-
-  .label {
-    width: 90px;
-  }
-
-  .text {
-    font-size: 12px;
-    color: var(--text-color, #333333);
-  }
-
-  .err-msg {
-    color: red;
-    font-size: 14px;
   }
 
   @media (prefers-color-scheme: dark) {

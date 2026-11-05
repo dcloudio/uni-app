@@ -1,0 +1,227 @@
+<template>
+	<scroll-view class="flex-1 bg-page-f5f5f5 page" :class="{ 'page-dark': isDarkMode }">
+		<view class="u-p-16 bg-content-background-fff intro">
+			<text class="fw-bold color-text-222 fs-18 page-title">样式与属性示例</text>
+			<text class="fs-13 lh-21 color-secondary-text-657180 page-desc">示例按移动端排列：标签在左，输入在右。label-width、label-align 和 border 调整这一行；标签、星号、错误文字用样式类覆盖。</text>
+		</view>
+
+		<view class="u-p-16 bg-content-background-fff mt-10 section property-section">
+			<text class="fw-bold color-text-222 mb-12 fs-16 section-title">属性对照</text>
+			<view class="property-row"><text class="property-name">label-position</text><text class="property-value">left，移动端默认</text></view>
+			<view class="property-row"><text class="property-name">label-width</text><text class="property-value">数字或 CSS 宽度</text></view>
+			<view class="property-row"><text class="property-name">label-align</text><text class="property-value">left / center / right</text></view>
+			<view class="property-row"><text class="property-name">border</text><text class="property-value">控制字段分隔线</text></view>
+			<view class="property-row"><text class="property-name">class / style</text><text class="property-value">直接作用于 uni-forms 外层</text></view>
+		</view>
+
+		<view class="u-p-16 bg-content-background-fff mt-10 section">
+			<text class="fw-bold color-text-222 mb-12 fs-16 section-title">左侧标签</text>
+			<uni-forms
+				class="left-form-surface"
+				style="border-radius: 8px;"
+				v-model="leftForm"
+				label-position="left"
+				label-width="86"
+				label-align="right"
+				border
+			>
+				<uni-forms-item label="标题" name="title" required label-class="left-label" content-class="left-content">
+					<uni-easyinput v-model="leftForm.title" placeholder="右对齐标签" />
+				</uni-forms-item>
+				<uni-forms-item label="说明" name="description" label-class="left-label" content-class="left-content">
+					<uni-easyinput v-model="leftForm.description" placeholder="border 会显示字段分隔线" />
+				</uni-forms-item>
+			</uni-forms>
+		</view>
+
+		<view class="u-p-16 bg-content-background-fff mt-10 section pb-32 section-last">
+			<text class="fw-bold color-text-222 mb-12 fs-16 section-title">左侧标签样式</text>
+			<uni-forms
+				ref="topFormRef"
+				class="theme-form-surface"
+				style="padding: 12px; border-radius: 8px;"
+				v-model="topForm"
+				:rules="topRules"
+				label-position="left"
+				label-width="80"
+				label-align="left"
+				err-show-type="undertext"
+			>
+				<uni-forms-item
+					name="account"
+					label="账号"
+					required
+					label-class="theme-label"
+					required-class="theme-required"
+					error-message-class="theme-error"
+				>
+					<uni-easyinput v-model="topForm.account" placeholder="观察标签、必填星号和错误文字颜色" />
+				</uni-forms-item>
+				<uni-forms-item
+					name="phone"
+					label="手机号"
+					label-class="theme-label"
+					error-message-class="theme-error"
+				>
+					<uni-easyinput v-model="topForm.phone" placeholder="错误样式由 externalClasses 控制" />
+				</uni-forms-item>
+			</uni-forms>
+
+			<view class="flex-dir-row button-row">
+				<button class="mr-10 color-fff bg-007aff action-button" size="mini" @click="validateTopForm">显示错误样式</button>
+				<button class="mr-10 color-fff bg-007aff action-button color-text-333 bg-active-e9eef5 secondary-button" size="mini" @click="clearTopForm">清除错误</button>
+			</view>
+			<text class="mt-8 fs-14 color-007aff status-text">{{ statusText }}</text>
+			<text class="fs-13 lh-21 color-secondary-text-657180 class-list">本例使用 label-class、required-class、error-message-class。上一例另外使用 content-class。</text>
+		</view>
+	</scroll-view>
+</template>
+
+<script setup lang="ts">
+import { state } from '@/store/index.ts'
+
+const isDarkMode = computed((): boolean => state.isDarkMode)
+
+/** 暗黑模式下同步导航栏颜色，与图标示例页保持一致 */
+function syncNavigationBar(): void {
+	// #ifdef APP
+	const dark = isDarkMode.value
+	uni.setNavigationBarColor({
+		frontColor: dark ? '#ffffff' : '#000000',
+		backgroundColor: dark ? '#1a1a1a' : '#efeff4'
+	})
+	// #endif
+}
+
+watch(isDarkMode, syncNavigationBar, { immediate: true })
+onShow(syncNavigationBar)
+
+const leftForm = ref({
+	title: '',
+	description: ''
+})
+
+const topForm = ref({
+	account: '',
+	phone: ''
+})
+
+const topFormRef = ref<any>(null)
+
+const topRules = {
+	account: { label: '账号', rules: [{ required: true, errorMessage: '请输入账号' }] },
+	phone: { label: '手机号', rules: [{ pattern: '^1[3-9]\\d{9}$', errorMessage: '手机号格式不正确' }] }
+}
+
+const statusText = ref<string>('点击校验查看错误样式')
+
+async function validateTopForm() {
+	try {
+		await topFormRef.value.validate()
+		statusText.value = '校验通过'
+	} catch (errors) {
+		statusText.value = '错误样式已展示'
+	}
+}
+
+function clearTopForm() {
+	topFormRef.value.clearValidate()
+	statusText.value = '已清除错误'
+}
+</script>
+
+<style>
+  .page {
+    --left-surface-background: #f8fbff;
+    --left-label-color: #44546a;
+    --theme-surface-background: #fffaf2;
+    --theme-label-color: #8b5e34;
+  }
+
+  /* 跟随示例页的 page-dark。系统是暗色但媒体查询未生效时，仍用这组变量 */
+  .page-dark {
+    --left-surface-background: #1c2838;
+    --left-label-color: #d3e0f0;
+    --theme-surface-background: #32281e;
+    --theme-label-color: #f0d0a6;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .page {
+      --left-surface-background: #1c2838;
+      --left-label-color: #d3e0f0;
+      --theme-surface-background: #32281e;
+      --theme-label-color: #f0d0a6;
+    }
+  }
+
+  .property-section {
+    padding-bottom: 10px;
+  }
+
+  .property-row {
+    min-height: 30px;
+    padding: 5px 0;
+    flex-direction: row;
+    justify-content: space-between;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: var(--divider-color, #eef1f5);
+  }
+
+  .property-name {
+    font-size: 13px;
+    font-weight: bold;
+    color: #007aff;
+  }
+
+  .property-value {
+    font-size: 13px;
+    color: var(--secondary-text-color, #657180);
+  }
+
+  .left-form-surface {
+    padding: 6px 12px;
+    background-color: var(--left-surface-background, #f8fbff);
+  }
+
+  .left-label {
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--left-label-color, #44546a);
+  }
+
+  .left-content {
+    padding-left: 8px;
+  }
+
+  .theme-form-surface {
+    background-color: var(--theme-surface-background, #fffaf2);
+  }
+
+  .theme-label {
+    font-size: 15px;
+    font-weight: bold;
+    color: var(--theme-label-color, #8b5e34);
+  }
+
+  .theme-required {
+    font-size: 16px;
+    color: #e56b6f;
+  }
+
+  .theme-error {
+    font-size: 12px;
+    font-weight: bold;
+    color: #d9485f;
+  }
+
+  .button-row {
+    margin-top: 12px;
+  }
+
+  .class-list {
+    margin-top: 10px;
+    font-size: 12px;
+  }
+</style>

@@ -1,0 +1,13 @@
+{
+	"simulatorArchitectures": [
+		"x86_64"
+	],
+	"deploymentTarget": "15.0",
+	"dependencies-pods": [{
+		"name": "AMapLocation",
+		"version": "2.12.2"
+	}],
+	"thirdSDKs": [
+		"amap-location"
+	]
+}

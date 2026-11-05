@@ -1,20 +1,14 @@
 <template>
-    <view>
       <page-head :title="'getAccessibilityInfo'"></page-head>
-      <view class="uni-common-mt" >
-        <text style="margin-left: 8px;">无障碍服务信息如下：</text>
-        <text style="margin-top: 15px;padding: 8px;">{{
+      <view class="mt-15" >
+        <text class="ml-8">无障碍服务信息如下：</text>
+        <text class="mt-15 p-8">{{
 		        accessibilityInfo
 		      }}</text>
       </view>
-    </view>
 </template>
 
 <script setup lang="ts">
   const accessibilityInfo = ref("")
   accessibilityInfo.value = JSON.stringify(uni.getAccessibilityInfo())
 </script>
-
-<style>
-
-</style>

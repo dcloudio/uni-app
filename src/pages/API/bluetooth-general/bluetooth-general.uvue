@@ -1,0 +1,577 @@
+<template>
+	<view class="page">
+		<view class="log-panel">
+			<view class="panel-heading">
+				<text class="panel-title">Log</text>
+				<button class="clear-button" size="mini" @click="clearLogs">清空</button>
+			</view>
+			<scroll-view class="log-list" direction="vertical" :show-scrollbar="true">
+				<text v-if="logs.length == 0" class="log-empty">等待 API 调用</text>
+				<text v-for="(log, index) in logs" :key="index" class="log-item">{{ log }}</text>
+			</scroll-view>
+		</view>
+
+		<scroll-view class="api-scroll" direction="vertical" :show-scrollbar="true">
+			<view class="api-content">
+
+			<view class="section">
+				<text class="section-title">监听 API</text>
+				<view class="listener-card">
+					<view class="listener-heading">
+						<text class="listener-title">适配器状态变化</text>
+						<text class="listener-status">listenerId: {{ adapterListenerId == 0 ? '-' : adapterListenerId }}</text>
+					</view>
+					<view class="listener-api-row">
+						<text class="listener-api-name">uni.onBluetoothAdapterStateChange</text>
+						<button id="test-on-bluetooth-adapter-state-change" class="listener-button" size="mini" type="primary"
+							@click="onAdapterStateChange">监听</button>
+					</view>
+					<view class="listener-api-row">
+						<text class="listener-api-name">uni.offBluetoothAdapterStateChange</text>
+						<button id="test-off-bluetooth-adapter-state-change" class="listener-button" size="mini"
+							@click="offAdapterStateChange">取消</button>
+					</view>
+				</view>
+
+				<view class="listener-card">
+					<view class="listener-heading">
+						<text class="listener-title">发现蓝牙设备</text>
+						<text class="listener-status">listenerId: {{ deviceListenerId == 0 ? '-' : deviceListenerId }}</text>
+					</view>
+					<view class="listener-api-row">
+						<text class="listener-api-name">uni.onBluetoothDeviceFound</text>
+						<button id="test-on-bluetooth-device-found" class="listener-button" size="mini" type="primary"
+							@click="onDeviceFound">监听</button>
+					</view>
+					<view class="listener-api-row">
+						<text class="listener-api-name">uni.offBluetoothDeviceFound</text>
+						<button id="test-off-bluetooth-device-found" class="listener-button" size="mini"
+							@click="offDeviceFound">取消</button>
+					</view>
+				</view>
+			</view>
+
+			<view class="section">
+				<text class="section-title">普通 API</text>
+				<view class="api-card">
+					<view class="api-action-row">
+						<text class="api-name">uni.openBluetoothAdapter</text>
+						<button id="test-open-bluetooth-adapter" class="call-button" size="mini" type="primary" @click="openAdapter">调用</button>
+					</view>
+				</view>
+
+				<view class="api-card">
+					<view class="api-action-row">
+						<text class="api-name">uni.getBluetoothAdapterState</text>
+						<button id="test-get-bluetooth-adapter-state" class="call-button" size="mini" @click="getAdapterState">调用</button>
+					</view>
+				</view>
+
+				<view class="api-card">
+					<view class="parameter-row parameter-row-column">
+						<text class="parameter-name">services</text>
+						<input v-model="discoveryServices" class="parameter-input" placeholder="多个 UUID 使用英文逗号分隔" />
+					</view>
+					<view class="parameter-row">
+						<text class="parameter-name">allowDuplicatesKey</text>
+						<switch :checked="allowDuplicates" @change="allowDuplicates = $event.detail.value" />
+					</view>
+					<view class="parameter-row">
+						<text class="parameter-name">interval (ms)</text>
+						<input v-model="discoveryInterval" class="parameter-input parameter-input-short" type="number" placeholder="0" />
+					</view>
+					<!-- #ifdef APP-ANDROID -->
+					<view class="parameter-row">
+						<text class="parameter-name">powerLevel</text>
+						<picker class="parameter-picker" :range="powerLevels" :value="powerLevelIndex" @change="onPowerLevelChange">
+							<view class="picker-value">{{ powerLevels[powerLevelIndex] }}</view>
+						</picker>
+					</view>
+					<!-- #endif -->
+					<view class="api-action-row api-action-row-after-parameters">
+						<text class="api-name">uni.startBluetoothDevicesDiscovery</text>
+						<button id="test-start-bluetooth-devices-discovery" class="call-button" size="mini" type="primary"
+							@click="startDiscovery">调用</button>
+					</view>
+				</view>
+
+				<view class="api-card">
+					<view class="api-action-row">
+						<text class="api-name">uni.stopBluetoothDevicesDiscovery</text>
+						<button id="test-stop-bluetooth-devices-discovery" class="call-button" size="mini" @click="stopDiscovery">调用</button>
+					</view>
+				</view>
+
+				<view class="api-card">
+					<view class="api-action-row">
+						<text class="api-name">uni.getBluetoothDevices</text>
+						<button id="test-get-bluetooth-devices" class="call-button" size="mini" @click="getDevices">调用</button>
+					</view>
+				</view>
+
+				<view class="api-card">
+					<view class="parameter-row parameter-row-column">
+						<text class="parameter-name">services</text>
+						<input v-model="connectedServices" class="parameter-input" placeholder="必填，多个 UUID 使用英文逗号分隔" />
+					</view>
+					<view class="api-action-row api-action-row-after-parameters">
+						<text class="api-name">uni.getConnectedBluetoothDevices</text>
+						<button id="test-get-connected-bluetooth-devices" class="call-button" size="mini"
+							@click="getConnectedDevices">调用</button>
+					</view>
+				</view>
+
+				<view class="api-card">
+					<view class="api-action-row">
+						<text class="api-name">uni.closeBluetoothAdapter</text>
+						<button id="test-close-bluetooth-adapter" class="call-button" size="mini" @click="closeAdapter">调用</button>
+					</view>
+				</view>
+			</view>
+
+			<button id="bluetooth-general-performance-test" class="performance-button" type="primary"
+				@click="openPerformanceTest">综合性能测试</button>
+			</view>
+		</scroll-view>
+	</view>
+</template>
+
+<script setup lang="ts">
+	// #ifdef APP-ANDROID
+	type PowerLevel = 'low' | 'medium' | 'high'
+	// #endif
+
+	type GeneralBluetoothDevice = {
+		name ?: string | null
+		localName ?: string | null
+		deviceId : string
+		RSSI ?: number | null
+	}
+
+	const logs = ref<string[]>([])
+	const adapterListenerId = ref(0)
+	const deviceListenerId = ref(0)
+	const adapterOpened = ref(false)
+	const discovering = ref(false)
+	const discoveryServices = ref('')
+	const connectedServices = ref('')
+	const allowDuplicates = ref(false)
+	const discoveryInterval = ref('0')
+	// #ifdef APP-ANDROID
+	const powerLevels = ['low', 'medium', 'high'] as PowerLevel[]
+	const powerLevelIndex = ref(1)
+	// #endif
+
+	function addLog(apiName : string, message : string) {
+		logs.value.unshift('[' + new Date().toLocaleTimeString() + '] ' + apiName + ': ' + message)
+		if (logs.value.length > 100) logs.value.pop()
+	}
+
+	function addCallbackLog(message : string) {
+		logs.value.unshift('[' + new Date().toLocaleTimeString() + '] ' + message)
+		if (logs.value.length > 100) logs.value.pop()
+	}
+
+	function addError(errCode ?: number | null) {
+		const code = errCode == null ? 'null' : errCode!.toString()
+		addCallbackLog('errCode=' + code)
+	}
+
+	function clearLogs() {
+		logs.value = []
+	}
+
+	function parseServices(value : string) : string[] {
+		const result = [] as string[]
+		value.split(',').forEach((item : string) => {
+			const service = item.trim()
+			if (service.length > 0) result.push(service)
+		})
+		return result
+	}
+
+	function formatDevices(devices : GeneralBluetoothDevice[]) : string {
+		if (devices.length == 0) return 'devices=[]'
+		const details = [] as string[]
+		devices.forEach((device : GeneralBluetoothDevice) => {
+			let name = device.name
+			if ((name == null || name!.length == 0) && device.localName != null) name = device.localName
+			const RSSI = device.RSSI == null ? 'null' : device.RSSI!.toString()
+			details.push('{name=' + (name == null ? '' : name!) + ', deviceId=' + device.deviceId + ', RSSI=' + RSSI + '}')
+		})
+		return 'devices(' + devices.length.toString() + ')=[' + details.join(', ') + ']'
+	}
+
+	const adapterStateCallback = (result : { available : boolean, discovering : boolean }) => {
+		addLog('onBluetoothAdapterStateChange callback', 'available=' + result.available.toString() + ', discovering=' + result.discovering.toString())
+	}
+
+	const deviceFoundCallback = (result : { devices : GeneralBluetoothDevice[] }) => {
+		addLog('onBluetoothDeviceFound callback', formatDevices(result.devices))
+	}
+
+	function openAdapter() {
+		addLog('openBluetoothAdapter', 'request')
+		uni.openBluetoothAdapter({
+			success: (result) => {
+				adapterOpened.value = true
+				addCallbackLog(result.errMsg)
+			},
+			fail: (error) => addError(error.errCode)
+		})
+	}
+
+	function closeAdapter() {
+		addLog('closeBluetoothAdapter', 'request')
+		uni.closeBluetoothAdapter({
+			success: (result) => {
+				adapterOpened.value = false
+				discovering.value = false
+				addCallbackLog(result.errMsg)
+			},
+			fail: (error) => addError(error.errCode)
+		})
+	}
+
+	function getAdapterState() {
+		addLog('getBluetoothAdapterState', 'request')
+		uni.getBluetoothAdapterState({
+			success: (result) => {
+				addCallbackLog(result.errMsg + ', available=' + result.available.toString() + ', discovering=' + result.discovering.toString())
+			},
+			fail: (error) => addError(error.errCode)
+		})
+	}
+
+	function onAdapterStateChange() {
+		if (adapterListenerId.value != 0) {
+			addLog('onBluetoothAdapterStateChange', 'listener already registered, listenerId=' + adapterListenerId.value.toString())
+			return
+		}
+		adapterListenerId.value = uni.onBluetoothAdapterStateChange(adapterStateCallback)
+		addLog('onBluetoothAdapterStateChange', 'registered, listenerId=' + adapterListenerId.value.toString())
+	}
+
+	function offAdapterStateChange() {
+		const listenerId = adapterListenerId.value
+		if (listenerId != 0) uni.offBluetoothAdapterStateChange(listenerId)
+		else uni.offBluetoothAdapterStateChange()
+		adapterListenerId.value = 0
+		addLog('offBluetoothAdapterStateChange', listenerId == 0 ? 'removed all listeners' : 'removed listenerId=' + listenerId.toString())
+	}
+
+	// #ifdef APP-ANDROID
+	function onPowerLevelChange(event : UniPickerChangeEvent) {
+		powerLevelIndex.value = event.detail.value as number
+	}
+	// #endif
+
+	function startDiscovery() {
+		const services = parseServices(discoveryServices.value)
+		let interval = parseInt(discoveryInterval.value)
+		if (Number.isNaN(interval) || interval < 0) interval = 0
+		let parameterLog = 'request, services=[' + services.join(', ') + '], allowDuplicatesKey=' + allowDuplicates.value.toString() + ', interval=' + interval.toString()
+		// #ifdef APP-ANDROID
+		const powerLevel = powerLevels[powerLevelIndex.value]
+		parameterLog += ', powerLevel=' + powerLevel
+		// #endif
+		addLog('startBluetoothDevicesDiscovery', parameterLog)
+		const options : StartBluetoothDevicesDiscoveryOptions = {
+			allowDuplicatesKey: allowDuplicates.value,
+			interval,
+			// #ifdef APP-ANDROID
+			powerLevel,
+			// #endif
+			success: (result) => {
+				discovering.value = true
+				addCallbackLog(result.errMsg)
+			},
+			fail: (error) => addError(error.errCode)
+		}
+		if (services.length > 0) options.services = services
+		uni.startBluetoothDevicesDiscovery(options)
+	}
+
+	function stopDiscovery() {
+		addLog('stopBluetoothDevicesDiscovery', 'request')
+		uni.stopBluetoothDevicesDiscovery({
+			success: (result) => {
+				discovering.value = false
+				addCallbackLog(result.errMsg)
+			},
+			fail: (error) => addError(error.errCode)
+		})
+	}
+
+	function onDeviceFound() {
+		if (deviceListenerId.value != 0) {
+			addLog('onBluetoothDeviceFound', 'listener already registered, listenerId=' + deviceListenerId.value.toString())
+			return
+		}
+		deviceListenerId.value = uni.onBluetoothDeviceFound(deviceFoundCallback)
+		addLog('onBluetoothDeviceFound', 'registered, listenerId=' + deviceListenerId.value.toString())
+	}
+
+	function offDeviceFound() {
+		const listenerId = deviceListenerId.value
+		if (listenerId != 0) uni.offBluetoothDeviceFound(listenerId)
+		else uni.offBluetoothDeviceFound()
+		deviceListenerId.value = 0
+		addLog('offBluetoothDeviceFound', listenerId == 0 ? 'removed all listeners' : 'removed listenerId=' + listenerId.toString())
+	}
+
+	function getDevices() {
+		addLog('getBluetoothDevices', 'request')
+		uni.getBluetoothDevices({
+			success: (result) => addCallbackLog(result.errMsg + ', ' + formatDevices(result.devices)),
+			fail: (error) => addError(error.errCode)
+		})
+	}
+
+	function getConnectedDevices() {
+		const services = parseServices(connectedServices.value)
+		addLog('getConnectedBluetoothDevices', 'request, services=[' + services.join(', ') + ']')
+		uni.getConnectedBluetoothDevices({
+			services,
+			success: (result) => addCallbackLog(result.errMsg + ', ' + formatDevices(result.devices)),
+			fail: (error) => addError(error.errCode)
+		})
+	}
+
+	function openPerformanceTest() {
+		uni.navigateTo({
+			url: '/pages/API/bluetooth-benchmark/bluetooth-benchmark'
+		})
+	}
+
+	onLoad(() => {
+		onAdapterStateChange()
+		onDeviceFound()
+	})
+
+	onUnload(() => {
+		if (adapterListenerId.value != 0) uni.offBluetoothAdapterStateChange(adapterListenerId.value)
+		if (deviceListenerId.value != 0) uni.offBluetoothDeviceFound(deviceListenerId.value)
+		if (discovering.value) uni.stopBluetoothDevicesDiscovery({})
+		if (adapterOpened.value) uni.closeBluetoothAdapter({})
+	})
+</script>
+
+<style>
+	.page {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+		background-color: #f5f5f5;
+	}
+
+	.api-scroll {
+		flex: 1;
+	}
+
+	.api-content {
+		display: flex;
+		flex-direction: column;
+		padding: 0 15px 15px;
+	}
+
+	.log-panel {
+		display: flex;
+		flex-direction: column;
+		flex-shrink: 0;
+		margin: 15px 15px 10px;
+		background-color: #1f2329;
+		border-radius: 6px;
+		overflow: hidden;
+	}
+
+	.panel-heading {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		padding: 8px 10px;
+		border-bottom-width: 1px;
+		border-bottom-style: solid;
+		border-bottom-color: #3a3f47;
+	}
+
+	.panel-title {
+		font-size: 14px;
+		font-weight: 600;
+		color: #ffffff;
+	}
+
+	.clear-button {
+		margin: 0;
+	}
+
+	.log-list {
+		height: 210px;
+		padding: 8px 10px;
+	}
+
+	.log-empty,
+	.log-item {
+		margin-bottom: 6px;
+		font-size: 11px;
+		line-height: 16px;
+		color: #aeb6c2;
+	}
+
+	.log-item {
+		color: #d7dde5;
+	}
+
+	.section {
+		display: flex;
+		flex-direction: column;
+		margin-bottom: 20px;
+	}
+
+	.section-title {
+		margin-bottom: 10px;
+		font-size: 16px;
+		font-weight: 600;
+		color: #222222;
+	}
+
+	.listener-card {
+		display: flex;
+		flex-direction: column;
+		margin-bottom: 12px;
+		padding: 12px;
+		background-color: #ffffff;
+		border-radius: 6px;
+	}
+
+	.listener-heading {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		padding-bottom: 8px;
+	}
+
+	.listener-title {
+		font-size: 14px;
+		font-weight: 600;
+		color: #222222;
+	}
+
+	.listener-status {
+		font-size: 11px;
+		color: #777777;
+	}
+
+	.listener-api-row {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		min-height: 46px;
+		border-top-width: 1px;
+		border-top-style: solid;
+		border-top-color: #eeeeee;
+	}
+
+	.listener-api-name {
+		flex: 1;
+		margin-right: 10px;
+		font-size: 12px;
+		color: #333333;
+	}
+
+	.listener-button {
+		width: 64px;
+		margin: 0;
+	}
+
+	.api-card {
+		display: flex;
+		flex-direction: column;
+		margin-bottom: 12px;
+		padding: 12px;
+		background-color: #ffffff;
+		border-radius: 6px;
+	}
+
+	.api-name {
+		flex: 1;
+		margin-right: 10px;
+		font-size: 14px;
+		font-weight: 600;
+		color: #222222;
+	}
+
+	.api-action-row {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		min-height: 32px;
+	}
+
+	.api-action-row-after-parameters {
+		margin-top: 10px;
+	}
+
+	.parameter-row {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		min-height: 42px;
+		padding: 4px 0;
+		border-top-width: 1px;
+		border-top-style: solid;
+		border-top-color: #eeeeee;
+	}
+
+	.parameter-row-column {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.parameter-name {
+		font-size: 12px;
+		color: #555555;
+	}
+
+	.parameter-input {
+		height: 36px;
+		margin-top: 6px;
+		padding: 0 10px;
+		background-color: #f5f5f5;
+		border-radius: 4px;
+		font-size: 12px;
+	}
+
+	.parameter-input-short {
+		width: 120px;
+		margin-top: 0;
+	}
+
+	.parameter-picker {
+		width: 120px;
+	}
+
+	.picker-value {
+		height: 36px;
+		padding: 0 10px;
+		background-color: #f5f5f5;
+		border-radius: 4px;
+		font-size: 12px;
+		line-height: 36px;
+		color: #333333;
+	}
+
+	.call-button {
+		width: 64px;
+		margin: 0;
+	}
+
+	.performance-button {
+		width: 100%;
+		margin-top: 8px;
+		margin-bottom: 10px;
+	}
+</style>

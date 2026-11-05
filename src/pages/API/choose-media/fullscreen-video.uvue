@@ -1,9 +1,7 @@
 <template>
-  <view style="flex:1">
-    <uni-back-arrow-circle class="back" arrow-class="arrow"></uni-back-arrow-circle>
-    <video ref="video" class="video-box" :src="url" controls="false" autoplay="true" show-progress="false"
+    <uni-back-arrow-circle :auto-back="true" class="back arrow"></uni-back-arrow-circle>
+    <video ref="video" class="w-full flex-1 h-full" :src="url" controls="false" autoplay="true" show-progress="false"
       show-fullscreen-btn="false" show-play-btn="false" show-center-play-btn="false"></video>
-  </view>
 </template>
 
 <script setup lang="ts">
@@ -20,11 +18,6 @@ onLoad((options : OnLoadOptions) => {
 </script>
 
 <style>
-  .video-box {
-    width: 100%;
-    flex: 1;
-    height: 100%;
-  }
   .back{
     position: absolute;
     /* #ifdef APP || MP */
@@ -37,7 +30,6 @@ onLoad((options : OnLoadOptions) => {
   }
   /* uni-back-arrow-circle组件 自定义样式 */
   .arrow {
-    border-left-color: #FFFFFF !important;
-    border-bottom-color: #FFFFFF !important;
+    --back-arrow-color: #FFFFFF;
   }
 </style>

@@ -1,25 +1,25 @@
 <template>
   <view>
     默认通过page选择器设置padding: 16px
-    <text class="uni-subtitle-text">预期：page 内边距 16px、背景随主题变化；点按钮后变 20px</text>
+    <text class="color-888 fs-12 fw-bold u-mt-5">预期：page 内边距 16px、背景随主题变化；点按钮后变 20px</text>
     <!-- WEB 和 MP-WEIXIN 暂不支持动态修改 page 的 style，因此不展示切换按钮 -->
     <!-- #ifndef WEB || MP-WEIXIN -->
     <button id="setPagePaddingButton" @tap="setPagePadding">切换page padding为20px</button>
     <!-- #endif -->
 
     <!-- 类选择器 -->
-    <view class="uni-common-mt">
-      <text class="uni-title-text">类选择器 .class {}</text>
-      <text class="uni-subtitle-text">预期：盒子边框蓝色、背景浅蓝</text>
+    <view class="mt-15">
+      <text class="fs-15 fw-bold color-text-333">类选择器 .class {}</text>
+      <text class="color-888 fs-12 fw-bold u-mt-5">预期：盒子边框蓝色、背景浅蓝</text>
       <view class="selector-demo selector-class" id="selector-class">
         <text>.selector-class 生效</text>
       </view>
     </view>
 
     <!-- 多类名（复合）选择器 -->
-    <view class="uni-common-mt">
-      <text class="uni-title-text">多类名（复合）选择器 .a.b {}</text>
-      <text class="uni-subtitle-text">预期：仅 .selector-base 边框青色；再加 .selector-active 时背景和边框绿色</text>
+    <view class="mt-15">
+      <text class="fs-15 fw-bold color-text-333">多类名（复合）选择器 .a.b {}</text>
+      <text class="color-888 fs-12 fw-bold u-mt-5">预期：仅 .selector-base 边框青色；再加 .selector-active 时背景和边框绿色</text>
       <view class="selector-demo selector-base" id="selector-base">
         <text>仅 .selector-base</text>
       </view>
@@ -29,9 +29,9 @@
     </view>
 
     <!-- 分组选择器 -->
-    <view class="uni-common-mt">
-      <text class="uni-title-text">分组选择器 .a, .b {}</text>
-      <text class="uni-subtitle-text">预期：两个盒子边框均为红色</text>
+    <view class="mt-15">
+      <text class="fs-15 fw-bold color-text-333">分组选择器 .a, .b {}</text>
+      <text class="color-888 fs-12 fw-bold u-mt-5">预期：两个盒子边框均为红色</text>
       <view class="selector-demo selector-group-a" id="selector-group-a">
         <text>.selector-group-a</text>
       </view>

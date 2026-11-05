@@ -1,7 +1,9 @@
 import {
     API_HIDE_KEYBOARD,
+    API_OFF_KEYBOARD_ANIMATION_CHANGE,
     API_ON_KEYBOARD_HEIGHT_CHANGE,
-    API_OFF_KEYBOARD_HEIGHT_CHANGE
+    API_OFF_KEYBOARD_HEIGHT_CHANGE,
+    API_ON_KEYBOARD_ANIMATION_CHANGE
 } from '../protocol.uts'
 import {
     HideKeyboardOptions,
@@ -11,9 +13,15 @@ import {
     OnKeyboardHeightChange,
     OffKeyboardHeightChange,
     OnKeyboardHeightChangeCallback,
-    OnKeyboardHeightChangeCallbackResult
+    OnKeyboardHeightChangeCallbackResult,
+    OnKeyboardAnimationChange,
+    OffKeyboardAnimationChange,
+    OnKeyboardAnimationChangeCallback,
+    OnKeyboardAnimationChangeCallbackResult
 } from '../interface.uts'
 import inputMethod from '@ohos.inputMethod';
+import window from '@ohos.window';
+import curves from '@ohos.curves';
 
 export const hideKeyboard: HideKeyboard = defineAsyncApi<HideKeyboardOptions, HideKeyboardSuccess>(
     API_HIDE_KEYBOARD,
@@ -36,7 +44,8 @@ export const onKeyboardHeightChange: OnKeyboardHeightChange = defineSyncApi<numb
         const currentId = index
         const windowClass = UTSHarmony.getCurrentWindow()
         const wrappedCallback = (keyboardHeight: number) => {
-            callback({ height: px2vp(keyboardHeight) } as OnKeyboardHeightChangeCallbackResult)
+            const result = { height: px2vp(keyboardHeight) } as OnKeyboardHeightChangeCallbackResult
+            callback(result)
         }
         keyboardCallbackMap.set(currentId, wrappedCallback)
         windowClass.on('keyboardHeightChange', wrappedCallback)
@@ -63,6 +72,234 @@ export const offKeyboardHeightChange: OffKeyboardHeightChange = defineSyncApi<vo
     }
 ) as OffKeyboardHeightChange
 
+type KeyboardAnimationState = 'start' | 'running' | 'end'
+
+function toKeyboardHeight(pxHeight : number) : number {
+    return Number.isFinite(pxHeight) && pxHeight > 0 ? px2vp(pxHeight) : 0
+}
+
+type NativeKeyboardHeightCallback = (height: number) => void
+
+class KeyboardHeightChangeManager {
+    window : window.Window
+    callbacks : Map<NativeKeyboardHeightCallback, NativeKeyboardHeightCallback> = new Map()
+    nativeCallback : NativeKeyboardHeightCallback | null = null
+
+    constructor(windowClass : window.Window) {
+        this.window = windowClass
+    }
+
+    add(callback : NativeKeyboardHeightCallback) {
+        if (this.callbacks.has(callback)) return
+        this.callbacks.set(callback, callback)
+        if (this.nativeCallback == null) {
+            const nativeCallback : NativeKeyboardHeightCallback = (height: number) => {
+                // 解绑后原生队列中可能仍有旧回调，不能让它驱动下一次订阅。
+                if (this.nativeCallback !== nativeCallback) return
+                const callbacks = Array.from(this.callbacks.values())
+                callbacks.forEach((callback) => {
+                    if (!this.callbacks.has(callback)) return
+                    try {
+                        callback(height)
+                    } catch (error) {
+                        // 单个内部订阅异常不能阻断其他订阅者接收高度变化。
+                        console.error(error)
+                    }
+                })
+            }
+            this.nativeCallback = nativeCallback
+            try {
+                this.window.on('keyboardHeightChange', nativeCallback)
+            } catch (error) {
+                this.nativeCallback = null
+                this.callbacks.delete(callback)
+                throw error as Error
+            }
+        }
+    }
+
+    remove(callback : NativeKeyboardHeightCallback) {
+        this.callbacks.delete(callback)
+        if (this.callbacks.size == 0) {
+            this.stop()
+        }
+    }
+
+    stop() {
+        this.callbacks.clear()
+        const nativeCallback = this.nativeCallback
+        if (nativeCallback == null) return
+        try {
+            this.window.off('keyboardHeightChange', nativeCallback)
+            this.nativeCallback = null
+        } catch (error) {
+            // 解绑失败时保留回调引用，后续订阅复用现有监听，避免重复注册。
+            console.error(error)
+        }
+    }
+}
+
+let keyboardHeightChangeManager : KeyboardHeightChangeManager | null = null
+
+function getKeyboardHeightChangeManager(windowClass : window.Window) : KeyboardHeightChangeManager {
+    if (keyboardHeightChangeManager == null ||
+        (keyboardHeightChangeManager.callbacks.size == 0 && keyboardHeightChangeManager.window !== windowClass)) {
+        keyboardHeightChangeManager = new KeyboardHeightChangeManager(windowClass)
+    }
+    return keyboardHeightChangeManager
+}
+
+// 系统事件只提供目标高度；这里生成 325ms 平滑值，并非系统键盘的真实逐帧进度。
+const KEYBOARD_ANIMATION_DURATION = 325
+const keyboardAnimationCurve = curves.cubicBezierCurve(0.0, 0.0, 0.2, 1.0)
+const keyboardAnimationCallbacks : Map<OnKeyboardAnimationChangeCallback, number> = new Map()
+let keyboardAnimationCallbackId = 0
+let keyboardAnimationHeight = 0
+let keyboardAnimationTargetHeight = 0
+let keyboardAnimationStartHeight = 0
+let keyboardAnimationStartTime = -1
+let keyboardAnimationFrameId = 0
+let keyboardAnimationRunning = false
+let keyboardAnimationVersion = 0
+
+function emitKeyboardAnimation(state : KeyboardAnimationState, height : number) {
+    const callbacks = Array.from(keyboardAnimationCallbacks.entries())
+    callbacks.forEach((entry) => {
+        const callback = entry[0]
+        // 已开始分发的事件不因目标变化而中断，只跳过退订或重新注册的监听。
+        if (keyboardAnimationCallbacks.get(callback) != entry[1]) return
+        const result = { height, state } as OnKeyboardAnimationChangeCallbackResult
+        try {
+            callback(result)
+        } catch (error) {
+            // 单个业务回调异常不能阻断其他监听和动画状态处理。
+            console.error(error)
+        }
+    })
+}
+
+function cancelKeyboardAnimationFrame() {
+    if (keyboardAnimationFrameId != 0) {
+        // #ifdef UNI-APP-X
+        cancelAnimationFrame(keyboardAnimationFrameId)
+        // #endif
+        // #ifndef UNI-APP-X
+        clearTimeout(keyboardAnimationFrameId)
+        // #endif
+        keyboardAnimationFrameId = 0
+    }
+}
+
+function runKeyboardAnimationFrame(timestamp : number, version : number) {
+    if (version != keyboardAnimationVersion || !keyboardAnimationRunning || keyboardAnimationCallbacks.size == 0) return
+    keyboardAnimationFrameId = 0
+    const firstFrame = keyboardAnimationStartTime < 0
+    if (firstFrame) {
+        keyboardAnimationStartTime = timestamp
+    }
+    const elapsed = timestamp - keyboardAnimationStartTime
+    const progress = Math.max(0, Math.min(1, elapsed / KEYBOARD_ANIMATION_DURATION))
+    const easedProgress = keyboardAnimationCurve.interpolate(progress)
+    keyboardAnimationHeight = keyboardAnimationStartHeight +
+        (keyboardAnimationTargetHeight - keyboardAnimationStartHeight) * easedProgress
+    const state : KeyboardAnimationState = firstFrame ? 'start' : 'running'
+
+    if (progress >= 1) {
+        keyboardAnimationHeight = keyboardAnimationTargetHeight
+        keyboardAnimationRunning = false
+        emitKeyboardAnimation('end', keyboardAnimationHeight)
+        return
+    }
+
+    emitKeyboardAnimation(state, keyboardAnimationHeight)
+    // 用户回调可能取消监听或发起新动画，旧帧不能再创建第二条调度链。
+    if (version == keyboardAnimationVersion && keyboardAnimationRunning && keyboardAnimationCallbacks.size > 0) {
+        scheduleKeyboardAnimationFrame(version)
+    }
+}
+
+function scheduleKeyboardAnimationFrame(version : number) {
+    // #ifdef UNI-APP-X
+    keyboardAnimationFrameId = requestAnimationFrame((timestamp : number) => {
+        runKeyboardAnimationFrame(timestamp, version)
+    })
+    // #endif
+    // #ifndef UNI-APP-X
+    // uni1 不支持 rAF，使用实际时间插值，避免定时器延迟累积到动画进度。
+    keyboardAnimationFrameId = setTimeout(() => {
+        runKeyboardAnimationFrame(Date.now(), version)
+    }, 8)
+    // #endif
+}
+
+function startKeyboardAnimation(targetHeight : number) {
+    if (keyboardAnimationCallbacks.size == 0) return
+    if (!keyboardAnimationRunning && keyboardAnimationHeight == targetHeight) return
+    if (keyboardAnimationRunning && keyboardAnimationTargetHeight == targetHeight) return
+    cancelKeyboardAnimationFrame()
+    keyboardAnimationStartHeight = keyboardAnimationHeight
+    keyboardAnimationTargetHeight = targetHeight
+    keyboardAnimationStartTime = -1
+    keyboardAnimationRunning = true
+    keyboardAnimationVersion++
+    scheduleKeyboardAnimationFrame(keyboardAnimationVersion)
+}
+
+const keyboardAnimationHeightCallback : NativeKeyboardHeightCallback = (height: number) => {
+    startKeyboardAnimation(toKeyboardHeight(height))
+}
+
+function stopKeyboardAnimation() {
+    keyboardAnimationVersion++
+    cancelKeyboardAnimationFrame()
+    keyboardAnimationRunning = false
+    keyboardAnimationCallbacks.clear()
+    const manager = keyboardHeightChangeManager
+    if (manager != null) {
+        manager.remove(keyboardAnimationHeightCallback)
+    }
+}
+
+// 注册/取消监听直接接收 callback，不使用会将参数对象化并创建 Promise 的 defineAsyncApi。
+export const onKeyboardAnimationChange: OnKeyboardAnimationChange = defineSyncApi<void>(
+    API_ON_KEYBOARD_ANIMATION_CHANGE,
+    (callback: OnKeyboardAnimationChangeCallback) => {
+        if (keyboardAnimationCallbacks.has(callback)) return
+        if (keyboardAnimationCallbacks.size == 0) {
+            try {
+                const windowClass = UTSHarmony.getCurrentWindow()
+                const manager = getKeyboardHeightChangeManager(windowClass)
+                // 只在首次订阅时读取当前高度，避免键盘已弹出或无人监听期间变化后从旧高度开始。
+                keyboardAnimationHeight = 0
+                try {
+                    keyboardAnimationHeight = toKeyboardHeight(windowClass.getWindowAvoidArea(window.AvoidAreaType.TYPE_KEYBOARD).bottomRect.height)
+                } catch (_error) {
+                    // 获取失败按 0 初始化；动画目标仍只使用 keyboardHeightChange 事件。
+                }
+                keyboardAnimationCallbacks.set(callback, ++keyboardAnimationCallbackId)
+                manager.add(keyboardAnimationHeightCallback)
+            } catch (error) {
+                stopKeyboardAnimation()
+                throw error as Error
+            }
+            return
+        }
+        keyboardAnimationCallbacks.set(callback, ++keyboardAnimationCallbackId)
+    }
+) as OnKeyboardAnimationChange
+
+export const offKeyboardAnimationChange: OffKeyboardAnimationChange = defineSyncApi<void>(
+    API_OFF_KEYBOARD_ANIMATION_CHANGE,
+    (callback?: OnKeyboardAnimationChangeCallback | null) => {
+        if (callback != null) {
+            keyboardAnimationCallbacks.delete(callback)
+        }
+        if (callback == null || keyboardAnimationCallbacks.size == 0) {
+            stopKeyboardAnimation()
+        }
+    }
+) as OffKeyboardAnimationChange
+
 export {
     HideKeyboard,
     HideKeyboardCompleteCallback,
@@ -74,5 +311,9 @@ export {
     OffKeyboardHeightChange,
     OnKeyboardHeightChange,
     OnKeyboardHeightChangeCallback,
-    OnKeyboardHeightChangeCallbackResult
+    OnKeyboardHeightChangeCallbackResult,
+    OffKeyboardAnimationChange,
+    OnKeyboardAnimationChange,
+    OnKeyboardAnimationChangeCallback,
+    OnKeyboardAnimationChangeCallbackResult
 } from '../interface.uts';

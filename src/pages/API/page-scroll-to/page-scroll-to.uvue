@@ -1,32 +1,44 @@
 <template>
-    <view class="uni-padding-wrap">
-      <page-head :title="title"></page-head>
-      <button type="default" class="btn-scrollTo" @click="scrollTo">
-        scrollTo
-      </button>
-      <button type="default" class="btn-scrollToElement" @click="scrollToElement">
-        scrollToElement
-      </button>
-      <view class="uni-list" v-for="(_, index) in 10" :key="index">
-        <view class="uni-list-cell list-item">{{ index }}</view>
-      </view>
-      <view class="custom-element">scrollTo-custom-element</view>
-      <view class="uni-list" v-for="(_, index2) in 10" :key="index2">
-        <view class="uni-list-cell list-item">{{ index2 }}</view>
-      </view>
-    </view>
+  <page-head :title="title"></page-head>
+  <button type="default" class="btn-scrollTo" @click="scrollTo">
+    scrollTo
+  </button>
+  <button type="default" class="btn-scrollToElement" @click="scrollToElement">
+    scrollToElement
+  </button>
+  <button type="default" @click="scrollToElementWithOffset">scrollToElement（offsetTop: -50）</button>
+  <view class="bg-list-fff pos-relative d-flex flex-dir-column border-b-1-solid-c8c7cc-dark-3a3a3c" v-for="(_, index) in 10" :key="index">
+    <view class="pos-relative d-flex flex-dir-row justify-between items-center h-100 list-item color-text-333">{{ index }}</view>
+  </view>
+  <view class="custom-element color-text-333">scrollTo-custom-element</view>
+  <view class="bg-list-fff pos-relative d-flex flex-dir-column border-b-1-solid-c8c7cc-dark-3a3a3c" v-for="(_, index2) in 10" :key="index2">
+    <view class="pos-relative d-flex flex-dir-row justify-between items-center h-100 list-item color-text-333">{{ index2 }}</view>
+  </view>
 </template>
 
 <script setup lang="ts">
   const title = ref('pageScrollTo')
 
+  const callbackEvents = ref<string[]>([])
+  const getCallbackEvents = (): string[] => callbackEvents.value
+
   const scrollTo = () => {
+    callbackEvents.value = []
     uni.pageScrollTo({
       scrollTop: 100,
       duration: 300,
       success: () => {
+        callbackEvents.value.push('success')
         console.log('success')
       },
+      fail: (res) => {
+        callbackEvents.value.push('fail')
+        console.log('pageScrollTo fail', res)
+      },
+      complete: (res) => {
+        callbackEvents.value.push('complete')
+        console.log('pageScrollTo complete', res)
+      }
     })
   }
 
@@ -40,20 +52,34 @@
     })
   }
 
+  const scrollToElementWithOffset = () => {
+    uni.pageScrollTo({
+      selector: '.custom-element',
+      offsetTop: -50,
+      duration: 300,
+      fail: (res) => {
+        console.log('pageScrollTo fail', res)
+      },
+      complete: (res) => {
+        console.log('pageScrollTo complete', res)
+      }
+    })
+  }
+
   defineExpose({
+    scrollToElementWithOffset,
+    getCallbackEvents,
     scrollTo
   })
 
 </script>
 
 <style>
-  .list-item {
-    height: 100px;
-    padding-left: 30px;
+  page {
+    padding: 0px 15px;
   }
 
-  .list-item,
-  .custom-element {
-    color: var(--text-color, #333333);
+  .list-item {
+    padding-left: 30px;
   }
 </style>

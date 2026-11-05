@@ -1,0 +1,276 @@
+<template>
+  <!-- #ifdef APP -->
+  <page-intro content="演示 FileSystemManager.appendFile / appendFileSync：在文件末尾追加内容（支持文本与 ArrayBuffer），追加成功后自动读回全文校验。"></page-intro>
+  <scroll-view class="flex-1">
+  <!-- #endif -->
+    <view class="p-8 flex-dir-column">
+      <view class="p-8 border-1-solid-e0e0e0 radius-4 flex-dir-column m-4-0">
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">根目录</text>
+          <enum-data-checkbox
+            class="flex-1"
+            :model-value="data.rootKey"
+            :items="rootOptions"
+            mode="default"
+            :show-toast="false"
+            @change="onRootChange"
+          />
+        </view>
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">文件路径</text>
+          <input class="flex-1 border-1-solid-d0d0d0 radius-4 p-4-8 fs-13 h-32" v-model="data.filePath" placeholder="相对根目录的路径" />
+        </view>
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">追加内容</text>
+          <textarea class="flex-1 border-1-solid-d0d0d0 radius-4 p-4-8 fs-13 h-60" v-model="data.content" :maxlength="-1" placeholder="要追加的文本" />
+        </view>
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333"></text>
+          <text class="flex-1 fs-12 color-999">内容追加到文件末尾（编码固定 utf-8），追加成功后自动读回全文；ArrayBuffer 追加演示使用描述符写入</text>
+        </view>
+      </view>
+      <view class="flex-dir-row flex-wrap-wrap m-4-0">
+        <button class="m-4" type="primary" @tap="appendFile" id="btn-append-file">appendFile 追加</button>
+        <button class="m-4" type="primary" @tap="appendFileSync" id="btn-append-file-sync">appendFileSync 追加</button>
+        <button class="m-4" type="primary" @tap="appendFileBuffer" id="btn-append-file-buffer">追加 ArrayBuffer</button>
+        <button class="m-4" type="primary" @tap="appendFileBufferSync" id="btn-append-file-buffer-sync">同步追加 ArrayBuffer</button>
+      </view>
+      <view class="p-8 border-1-solid-e0e0e0 radius-4 flex-dir-column m-4-0-12-0">
+        <text class="fw-bold fs-14 m-2-0 color-333">执行结果：{{ data.lastResult == '' ? '等待执行' : (data.lastResult == 'success' ? '成功' : '失败') }}</text>
+        <text class="fs-13 m-2-0 color-666">目标路径：{{ data.rootPath }}{{ data.filePath }}</text>
+        <text class="fs-13 m-2-0 color-666" v-if="data.lastResult == 'success' && data.bufferValue == 0">追加后全文（utf-8）：{{ data.readRet }}</text>
+        <text class="fs-13 m-2-0 color-666" v-if="data.bufferValue != 0">ArrayBuffer 读回 Float64[3]：{{ data.bufferValue }}</text>
+        <text class="fs-13 m-2-0 color-e64340" v-if="data.lastResult == 'fail'">errCode：{{ data.lastFailError.errCode }}；errMsg：{{ data.lastFailError.errMsg }}</text>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="ts">
+  import { createEnumItems } from '@/components/enum-data-checkbox/enum-data-checkbox-types'
+  const rootOptions = createEnumItems(['usr', 'cache', 'sandbox'])
+
+  import { getFsmRootPath, ensureFsmDirSync, ensureFsmFileSync, removeFsmPathSync, removeFsmDirSync, createFsmMockError } from './fsm-utils'
+
+  type DataType = {
+    rootKey : string
+    rootPath : string
+    filePath : string
+    content : string
+    readRet : string
+    bufferValue : number
+    existsRet : boolean
+    done : boolean
+    lastResult : string
+    lastFailError : UniError
+  }
+
+  const data = reactive({
+    rootKey: 'usr',
+    rootPath: getFsmRootPath('usr'),
+    filePath: 'fsm-append-file-demo/1.txt',
+    content: '测试appendFile API的写入功能。\n\t制表符缩进行\n回车换行：\r\n下一行\n反斜杠 \\ 双引号 " 单引号 \'\n空格[  ]全角空格[　]不间断空格[ ]\n混合内容：中文English123!@#',
+    readRet: '',
+    bufferValue: 0,
+    existsRet: false,
+    done: false,
+    lastResult: '',
+    lastFailError: createFsmMockError(),
+  } as DataType)
+
+  function onRootChange(value : string) {
+    data.rootKey = value
+    data.rootPath = getFsmRootPath(data.rootKey)
+  }
+
+  function targetPath(path : string) : string {
+    return `${data.rootPath}${path ?? data.filePath}`
+  }
+
+  function resetResult() {
+    data.done = false
+    data.lastResult = ''
+    data.readRet = ''
+    data.bufferValue = 0
+  }
+
+  function applyFail(res : IUniError) {
+    data.lastResult = 'fail'
+    data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+  }
+
+  function applySyncFail(e : any) {
+    data.lastResult = 'fail'
+    data.lastFailError = new UniError('uni-file-manager', 0, `${e}`)
+  }
+
+  function exists(path : string) : void {
+    try {
+      uni.getFileSystemManager().accessSync(targetPath(path))
+      data.existsRet = true
+    } catch (e) {
+      data.existsRet = false
+    }
+  }
+
+  // 准备演示数据：基础内容文件
+  function prepare() : void {
+    const demoDir = `${data.rootPath}fsm-append-file-demo`
+    ensureFsmDirSync(demoDir)
+    ensureFsmFileSync(`${demoDir}/1.txt`, '测试appendFile API的写入功能。')
+    data.done = true
+  }
+
+  function cleanup() : void {
+    removeFsmDirSync(`${data.rootPath}fsm-append-file-demo`)
+    data.done = true
+  }
+
+  function readBackText() : void {
+    try {
+      const content = uni.getFileSystemManager().readFileSync(targetPath(data.filePath), 'utf-8')
+      data.readRet = (content as string).toString()
+    } catch (e) {
+      data.readRet = `read back fail: ${e}`
+    }
+  }
+
+  function appendFile() : void {
+    resetResult()
+    // 自愈：默认演示文件重复追加时从基础内容开始，保证演示结果一致
+    if (data.filePath == 'fsm-append-file-demo/1.txt') {
+      ensureFsmDirSync(`${data.rootPath}fsm-append-file-demo`)
+      ensureFsmFileSync(`${data.rootPath}fsm-append-file-demo/1.txt`, '测试appendFile API的写入功能。')
+    }
+    const fileManager = uni.getFileSystemManager()
+    const options : AppendFileOptions = {
+      filePath: targetPath(data.filePath),
+      data: data.content,
+      encoding: 'utf-8',
+      success: (_ : FileManagerSuccessResult) => {
+        data.lastResult = 'success'
+        readBackText()
+      },
+      fail: (res : IUniError) => {
+        applyFail(res)
+      },
+      complete: (_ : any) => {
+        data.done = true
+      }
+    }
+    fileManager.appendFile(options)
+  }
+
+  function appendFileSync() : void {
+    resetResult()
+    // 自愈：默认演示文件重复追加时从基础内容开始，保证演示结果一致
+    if (data.filePath == 'fsm-append-file-demo/1.txt') {
+      ensureFsmDirSync(`${data.rootPath}fsm-append-file-demo`)
+      ensureFsmFileSync(`${data.rootPath}fsm-append-file-demo/1.txt`, '测试appendFile API的写入功能。')
+    }
+    try {
+      uni.getFileSystemManager().appendFileSync(targetPath(data.filePath), data.content, 'utf-8')
+      data.lastResult = 'success'
+      readBackText()
+    } catch (e) {
+      applySyncFail(e)
+    }
+    data.done = true
+  }
+
+  // 读回 ArrayBuffer 数据（供 appendBufferCore 使用，需先于调用者定义）
+  function readBackBuffer() : void {
+    const fileManager = uni.getFileSystemManager()
+    try {
+      const fd = fileManager.openSync({ filePath: targetPath(data.filePath), flag: 'a+' } as OpenFileSyncOptions)
+      const ab = new ArrayBuffer(32)
+      const readResult = fileManager.readSync({ fd: fd, arrayBuffer: ab, length: 24, position: 10, offset: 8 } as ReadSyncOption)
+      fileManager.closeSync({ fd: fd } as CloseSyncOptions)
+      const float64 = new Float64Array(readResult.arrayBuffer)
+      data.bufferValue = float64[3]
+    } catch (e) {
+      data.lastResult = 'fail'
+      data.lastFailError = new UniError('uni-file-manager', 0, `read back fail: ${e}`)
+      data.done = true
+    }
+  }
+
+  // ArrayBuffer 追加：先通过描述符写入 24 字节（有效 16 字节），再追加 16 字节，最后读回解析
+  function appendBufferCore(asyncAppend : boolean) {
+    // 自愈：确保默认演示目录存在，保证任意时刻重复点击都能成功
+    if (data.filePath == 'fsm-append-file-demo/1.txt') {
+      ensureFsmDirSync(`${data.rootPath}fsm-append-file-demo`)
+    }
+    const fileManager = uni.getFileSystemManager()
+    try {
+      let buffer = new ArrayBuffer(24)
+      let float64 = new Float64Array(buffer)
+      float64[1] = 1.2222222
+      float64[2] = 1.33
+      const fd = fileManager.openSync({ filePath: targetPath(data.filePath), flag: 'w+' } as OpenFileSyncOptions)
+      fileManager.writeSync({ fd: fd, data: buffer, length: 16, offset: 8, position: 10 } as WriteSyncOptions)
+      fileManager.closeSync({ fd: fd } as CloseSyncOptions)
+
+      buffer = new ArrayBuffer(16)
+      float64 = new Float64Array(buffer)
+      float64[0] = asyncAppend ? 21 : 20
+      if (asyncAppend) {
+        const appendOptions : AppendFileOptions = {
+          filePath: targetPath(data.filePath),
+          data: buffer,
+          success: (_ : FileManagerSuccessResult) => {
+            data.lastResult = 'success'
+            readBackBuffer()
+          },
+          fail: (res : IUniError) => {
+            applyFail(res)
+            data.done = true
+          },
+          complete: (_ : any) => {
+            data.done = true
+          }
+        }
+        fileManager.appendFile(appendOptions)
+        return
+      } else {
+        fileManager.appendFileSync(targetPath(data.filePath), buffer, null)
+        data.lastResult = 'success'
+        readBackBuffer()
+      }
+    } catch (e) {
+      applySyncFail(e)
+      data.done = true
+    }
+    if (!asyncAppend) {
+      data.done = true
+    }
+  }
+
+function appendFileBuffer() : void {
+    resetResult()
+    appendBufferCore(true)
+  }
+
+  function appendFileBufferSync() : void {
+    resetResult()
+    appendBufferCore(false)
+  }
+
+  onReady(() => {
+    prepare()
+  })
+
+  defineExpose({
+    data,
+    prepare,
+    cleanup,
+    exists,
+    appendFile,
+    appendFileSync,
+    appendFileBuffer,
+    appendFileBufferSync
+  })
+</script>
+

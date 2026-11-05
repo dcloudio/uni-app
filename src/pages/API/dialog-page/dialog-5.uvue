@@ -1,41 +1,45 @@
 <template>
-  <view class="dialog-container">
-    <view class="dialog-content">
-      <text class="dialog-text">title: {{ title }}</text>
-      <view class="uni-common-mt flex-row" v-if="pageBody != null">
-        <text class="dialog-text">pageBody: {</text>
-        <text class="dialog-text">top: </text>
-        <text id="page-body-top" class="dialog-text">{{pageBody!.top}}</text><text class="dialog-text">,</text>
-        <text class="dialog-text">right: </text>
-        <text id="page-body-right" class="dialog-text">{{pageBody!.right}}</text><text class="dialog-text">,</text>
-        <text class="dialog-text">bottom: </text>
-        <text id="page-body-bottom" class="dialog-text">{{pageBody!.bottom}}</text><text class="dialog-text">,</text>
-        <text class="dialog-text">left: </text>
-        <text id="page-body-left" class="dialog-text">{{pageBody!.left}}</text><text class="dialog-text">,</text>
-        <text class="dialog-text">width: </text>
-        <text id="page-body-width" class="dialog-text">{{pageBody!.width}}</text><text class="dialog-text">,</text>
-        <text class="dialog-text">height: </text>
-        <text id="page-body-height" class="dialog-text">{{pageBody!.height}}</text><text class="dialog-text">}</text>
+  <view class="w-full h-full bg-black-a30 d-flex justify-center items-center">
+    <view class="w-80pct u-p-10 bg-list-fff radius-6">
+      <text class="color-text-333">title: {{ title }}</text>
+      <view class="mt-15 flex-dir-row flex-wrap-wrap" v-if="pageBody != null">
+        <text class="color-text-333">pageBody: {</text>
+        <text class="color-text-333">top: </text>
+        <text id="page-body-top" class="color-text-333">{{pageBody!.top}}</text><text class="color-text-333">,</text>
+        <text class="color-text-333">right: </text>
+        <text id="page-body-right" class="color-text-333">{{pageBody!.right}}</text><text class="color-text-333">,</text>
+        <text class="color-text-333">bottom: </text>
+        <text id="page-body-bottom" class="color-text-333">{{pageBody!.bottom}}</text><text class="color-text-333">,</text>
+        <text class="color-text-333">left: </text>
+        <text id="page-body-left" class="color-text-333">{{pageBody!.left}}</text><text class="color-text-333">,</text>
+        <text class="color-text-333">width: </text>
+        <text id="page-body-width" class="color-text-333">{{pageBody!.width}}</text><text class="color-text-333">,</text>
+        <text class="color-text-333">height: </text>
+        <text id="page-body-height" class="color-text-333">{{pageBody!.height}}</text><text class="color-text-333">}</text>
       </view>
-      <view class="uni-common-mt flex-row" v-if="safeAreaInsets != null">
-        <text class="dialog-text">safeAreaInsets: {</text>
-        <text class="dialog-text">top: </text>
-        <text id="page-safe-area-insets-top" class="dialog-text">{{safeAreaInsets!.top}}</text><text class="dialog-text">,</text>
-        <text class="dialog-text">right: </text>
-        <text id="page-safe-area-insets-right" class="dialog-text">{{safeAreaInsets!.right}}</text><text class="dialog-text">,</text>
-        <text class="dialog-text">bottom: </text>
-        <text id="page-safe-area-insets-bottom" class="dialog-text">{{safeAreaInsets!.bottom}}</text><text class="dialog-text">,</text>
-        <text class="dialog-text">left: </text>
-        <text id="page-safe-area-insets-left" class="dialog-text">{{safeAreaInsets!.left}}</text><text class="dialog-text">}</text>
+      <view class="mt-15 flex-dir-row flex-wrap-wrap" v-if="safeAreaInsets != null">
+        <text class="color-text-333">safeAreaInsets: {</text>
+        <text class="color-text-333">top: </text>
+        <text id="page-safe-area-insets-top" class="color-text-333">{{safeAreaInsets!.top}}</text><text class="color-text-333">,</text>
+        <text class="color-text-333">right: </text>
+        <text id="page-safe-area-insets-right" class="color-text-333">{{safeAreaInsets!.right}}</text><text class="color-text-333">,</text>
+        <text class="color-text-333">bottom: </text>
+        <text id="page-safe-area-insets-bottom" class="color-text-333">{{safeAreaInsets!.bottom}}</text><text class="color-text-333">,</text>
+        <text class="color-text-333">left: </text>
+        <text id="page-safe-area-insets-left" class="color-text-333">{{safeAreaInsets!.left}}</text><text class="color-text-333">}</text>
       </view>
-      <!-- #ifdef APP-ANDROID || APP-IOS || WEB -->
-      <view class="uni-common-mt flex-row dialog-text" v-if="width != null">width: <text class="dialog-text">{{width!}}</text>
+      <view class="mt-15 flex-dir-row flex-wrap-wrap color-text-333" v-if="width != null">
+      <text class="color-text-333">width: </text>
+      <text class="color-text-333">{{width!}}</text>
       </view>
-      <view class="uni-common-mt flex-row dialog-text" v-if="height != null">height: <text class="dialog-text">{{height!}}</text>
+      <view class="mt-15 flex-dir-row flex-wrap-wrap color-text-333" v-if="height != null">
+      <text class="color-text-333">height: </text>
+      <text class="color-text-333">{{height!}}</text>
       </view>
-      <view class="uni-common-mt flex-row dialog-text" v-if="statusBarHeight != null">statusBarHeight: <text class="dialog-text">{{statusBarHeight!}}</text>
+      <view class="mt-15 flex-dir-row flex-wrap-wrap color-text-333" v-if="statusBarHeight != null">
+      <text class="color-text-333">statusBarHeight: </text>
+      <text class="color-text-333">{{statusBarHeight!}}</text>
       </view>
-      <!-- #endif -->
       <button class="mt-10" @click="closeThisDialog">
         closeThisDialog
       </button>
@@ -61,11 +65,9 @@
   onReady(() => {
     pageBody.value = currentPage.pageBody;
     safeAreaInsets.value = currentPage.safeAreaInsets
-    // #ifdef APP-ANDROID || APP-IOS || WEB
     width.value = currentPage.width
     height.value = currentPage.height
     statusBarHeight.value = currentPage.statusBarHeight
-    // #endif
   })
 
   onUnload(() => {
@@ -93,33 +95,5 @@
 <style>
   page {
     background-color: transparent;
-  }
-
-  .dialog-container {
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.3);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .dialog-content {
-    width: 80%;
-    padding: 10px;
-    background-color: var(--list-background-color, #fff);
-    border-radius: 6px;
-  }
-
-  .mt-10 {
-    margin-top: 10px;
-  }
-  .flex-row{
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-
-  .dialog-text {
-    color: var(--text-color, #333333);
   }
 </style>

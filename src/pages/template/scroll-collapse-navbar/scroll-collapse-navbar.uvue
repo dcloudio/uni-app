@@ -1,32 +1,32 @@
 <template>
-  <scroll-view :scroll-top="testState.scrollTop" @scroll="onScroll" class="page" show-scrollbar="false">
+  <scroll-view :scroll-top="testState.scrollTop" @scroll="onScroll" class="flex-1" show-scrollbar="false">
     <view ref="seatbarRef" class="seatbar"></view>
-    <view class="content">
-      <view class="content-item">
-        <text class="text">1. 当前示例监听了 scroll-view 的 scroll 事件 ，滚动页面实时监听scrollTop。</text>
-        <text class="text">2. 使用 ref 直接获取元素的节点，并在 scroll 事件中通过节点的 setProperty
+    <view class="p-5-15">
+      <view class="u-p-15 m-5-0 bg-list-fff radius-5">
+        <text class="fs-14 color-text-666 opacity-0_75 lh-20">1. 当前示例监听了 scroll-view 的 scroll 事件 ，滚动页面实时监听scrollTop。</text>
+        <text class="fs-14 color-text-666 opacity-0_75 lh-20">2. 使用 ref 直接获取元素的节点，并在 scroll 事件中通过节点的 setProperty
           方法来修改搜索导航栏的高度、位置和背景颜色等样式，从而达到滚动折叠的效果。</text>
-        <text class="text">3. 请向上\向下滚动页面观察效果。</text>
+        <text class="fs-14 color-text-666 opacity-0_75 lh-20">3. 请向上\向下滚动页面观察效果。</text>
       </view>
-      <view class="content-item" v-for="(item,index) in 20" :key="index">
-        <text class="text">content-{{item}}</text>
+      <view class="u-p-15 m-5-0 bg-list-fff radius-5" v-for="(item,index) in 20" :key="index">
+        <text class="fs-14 color-text-666 opacity-0_75 lh-20">content-{{item}}</text>
       </view>
     </view>
 
-    <view ref="navigatorbarRef" class="navigatorbar">
-      <view class="titlebar">
+    <view ref="navigatorbarRef" class="pos-fixed border-b-width-1 border-b-style-solid w-full bg-page-f5f5f5 navigatorbar">
+      <view class="flex-dir-row items-center h-44">
         <!-- #ifndef MP-ALIPAY -->
-        <uni-back-arrow-circle style="background-color: transparent;" arrow-class="arrow"></uni-back-arrow-circle>
+        <uni-back-arrow-circle :auto-back="true" style="background-color: transparent;" class="arrow"></uni-back-arrow-circle>
         <!-- #endif -->
         <!-- #ifdef MP-ALIPAY -->
-        <view style="width:36px;"></view>
+        <view class="w-36"></view>
         <!-- #endif -->
-        <text ref="titleRef" class="title">DCloud 为开发者而生</text>
+        <text ref="titleRef" class="color-text-333 title">DCloud 为开发者而生</text>
       </view>
-      <view :style="inputWidthStyle" ref="searchbarRef" class="searchbar" @tap="search">
-        <image class="searchimg" src="/static/template/scroll-fold-nav/search.png" mode="widthFix"></image>
-        <text class="searchinput">请输入你要搜索的内容</text>
-        <text class="searchbutton">搜索</text>
+      <view :style="inputWidthStyle" ref="searchbarRef" class="pos-absolute right-0 bg-list-fff h-32 radius-100 p-8 flex-dir-row items-center justify-center searchbar left-0 border-1-solid-fbdf0d" @tap="search">
+        <image class="w-15" src="/static/template/scroll-fold-nav/search.png" mode="widthFix"></image>
+        <text class="fs-12 flex-grow-1 color-666 searchinput">请输入你要搜索的内容</text>
+        <text class="fs-12 bg-ff6900 color-fff p-5-8 radius-100">搜索</text>
       </view>
     </view>
   </scroll-view>
@@ -168,11 +168,7 @@ defineExpose({
 </script>
 
 <style>
-.page {
-  flex: 1;
-}
 .navigatorbar {
-  position: fixed;
 /* #ifdef APP */
   padding-top: 35px;
   height: 124px;
@@ -180,57 +176,20 @@ defineExpose({
 /* #ifdef WEB */
   height: 88px;
 /* #endif */
-  border-bottom-width: 1px;
-  border-bottom-style: solid;
   border-bottom-color: var(--border-color, #efefef);
-  width: 100%;
-  background-color: var(--background-color, #f5f5f5);
-}
-.titlebar {
-  flex-direction: row;
-  align-items: center;
-  height: 44px;
 }
 
 /* uni-back-arrow-circle组件 自定义样式 */
 .arrow {
-  border-left: 2px solid #555!important;
-  border-bottom: 2px solid #555!important;
+  --back-arrow-color: #555;
 }
 
 .title {
   margin: 0px 2px;
-  color: var(--text-color, #333333);
 }
 .searchbar {
-  position: absolute;
   bottom: 2px;
-  left: 0px;
-  right: 0px;
-  background-color: var(--list-background-color, #ffffff);
-  border: 1px solid #fbdf0d;
-  height: 32px;
-  border-radius: 100px;
   margin: 6px 12px;
-  padding: 8px;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-}
-.searchimg {
-  width: 15px;
-}
-.searchinput {
-  flex-grow: 1;
-  font-size: 12px;
-  color: #666;
-}
-.searchbutton {
-  font-size: 12px;
-  background-color: #ff6900;
-  color: #FFF;
-  padding: 5px 8px;
-  border-radius: 100px;
 }
 .seatbar {
 /* #ifdef APP */
@@ -240,26 +199,10 @@ defineExpose({
   height: 88px;
 /* #endif */
 }
-.content {
-  padding: 5px 15px;
-}
-.content-item {
-  padding: 15px;
-  margin: 5px 0;
-  background-color: var(--list-background-color, #ffffff);
-  border-radius: 5px;
-}
-.text {
-  font-size: 14px;
-  color: var(--text-color, #666666);
-  opacity: 0.75;
-  line-height: 20px;
-}
 
 @media (prefers-color-scheme: dark) {
   .arrow {
-    border-left-color: #ffffff !important;
-    border-bottom-color: #ffffff !important;
+    --back-arrow-color: #ffffff;
   }
 
   .searchinput {

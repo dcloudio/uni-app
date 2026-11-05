@@ -1,27 +1,25 @@
 <template>
-  <view class="box">
-    <button class="uni-btn" @click="on">开始监听</button>
-    <button class="uni-btn" @click="once">监听一次</button>
-    <button class="uni-btn" @click="off">取消监听</button>
+    <button class="mt-10" @click="on">开始监听</button>
+    <button class="mt-10" @click="once">监听一次</button>
+    <button class="mt-10" @click="off">取消监听</button>
     <!-- <button @click="offAll">取消全部监听</button> -->
-    <button class="uni-btn" @click="emit">触发监听</button>
-    <button class="uni-btn" @click="clear">清空消息</button>
+    <button class="mt-10" @click="emit">触发监听</button>
+    <button class="mt-10" @click="clear">清空消息</button>
     <view>
-      <view class="uni-btn">收到的消息：</view>
-      <view class="uni-btn">
+      <view class="mt-10">收到的消息：</view>
+      <view class="mt-10">
         <view v-for="(item, index) in data.log" :key="index">{{ item }}</view>
       </view>
-      <button class="uni-btn" @click="onObj">开始监听 obj 参数</button>
-      <button class="uni-btn" @click="emitWithObj">触发监听 obj 参数</button>
-      <view class='uni-btn'>
+      <button class="mt-10" @click="onObj">开始监听 obj 参数</button>
+      <button class="mt-10" @click="emitWithObj">触发监听 obj 参数</button>
+      <view class="mt-10">
         <text>接收到的 obj 参数：</text>
         <text>{{ JSON.stringify(data.objArg) }}</text>
       </view>
-      <button class='uni-btn' @click="testReturnId">测试返回 id</button>
-      <button class='uni-btn' @click="testEmitNoArgs">测试 $emit 无参</button>
-      <button class='uni-btn' @click="testEmitMultipleArgs">测试 $emit 多个参数</button>
+      <button class="mt-10" @click="testReturnId">测试返回 id</button>
+      <button class="mt-10" @click="testEmitNoArgs">测试 $emit 无参</button>
+      <button class="mt-10" @click="testEmitMultipleArgs">测试 $emit 多个参数</button>
     </view>
-  </view>
 </template>
 
 <script setup lang="ts">
@@ -129,7 +127,7 @@
 </script>
 
 <style>
-.box {
+page {
   padding: 10px;
 }
 </style>

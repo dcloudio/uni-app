@@ -1,0 +1,12 @@
+{
+  "frameworks": [
+    "CoreBluetooth.framework"
+  ],
+  "deploymentTarget": "15.0",
+  "plists": {
+    "NSBluetoothAlwaysUsageDescription": "用于发现并连接附近的蓝牙设备",
+    "UIBackgroundModes": [
+      "bluetooth-central"
+    ]
+  }
+}

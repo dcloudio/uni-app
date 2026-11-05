@@ -41,44 +41,30 @@ export type GetDeviceInfoResult = {
      * 	},
      *  "mp": {
      *    "weixin": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
      *        "unixVer": "4.41"
      *    },
      *    "alipay": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
      *    },
      *    "toutiao": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
      *    },
      *    "lark": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
      *    },
      *    "qq": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
      *    },
      *    "kuaishou": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
      *    },
      *    "jd": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
      *    }
      *  },
      *   "web": {
@@ -110,44 +96,30 @@ export type GetDeviceInfoResult = {
      * 	},
      *  "mp": {
      *    "weixin": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
      *        "unixVer": "4.41"
      *    },
      *    "alipay": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "toutiao": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "lark": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "qq": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "kuaishou": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "jd": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    }
      *  },
      *   "web": {
@@ -179,44 +151,30 @@ export type GetDeviceInfoResult = {
      * 	},
      *  "mp": {
      *    "weixin": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
      *        "unixVer": "4.41"
      *    },
      *    "alipay": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
      *    },
      *    "toutiao": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
      *    },
      *    "lark": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
      *    },
      *    "qq": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
      *    },
      *    "kuaishou": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
      *    },
      *    "jd": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
      *    }
      *  },
      *   "web": {
@@ -248,44 +206,30 @@ export type GetDeviceInfoResult = {
      * 	},
      *  "mp": {
      *    "weixin": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
      *        "unixVer": "4.41"
      *    },
      *    "alipay": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
      *    },
      *    "toutiao": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
      *    },
      *    "lark": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
      *    },
      *    "qq": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
      *    },
      *    "kuaishou": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
      *    },
      *    "jd": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
      *    }
      *  },
      *   "web": {
@@ -317,44 +261,30 @@ export type GetDeviceInfoResult = {
      * 	},
      *  "mp": {
      *    "weixin": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
      *        "unixVer": "4.41"
      *    },
      *    "alipay": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "toutiao": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "lark": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "qq": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "kuaishou": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "jd": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    }
      *  },
      *   "web": {
@@ -386,44 +316,30 @@ export type GetDeviceInfoResult = {
      * 	},
      *  "mp": {
      *    "weixin": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
      *        "unixVer": "4.41"
      *    },
      *    "alipay": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "toutiao": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "lark": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "qq": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "kuaishou": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "jd": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    }
      *  },
      *   "web": {
@@ -455,44 +371,30 @@ export type GetDeviceInfoResult = {
      * 	},
      *  "mp": {
      *    "weixin": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
      *        "unixVer": "x"
      *    },
      *    "alipay": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
      *        "unixVer": "x"
      *    },
      *    "baidu": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "toutiao": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "lark": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "qq": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "kuaishou": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "jd": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    }
      *  },
      *   "web": {
@@ -524,44 +426,30 @@ export type GetDeviceInfoResult = {
      * 	},
      *  "mp": {
      *    "weixin": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
      *        "unixVer": "x"
      *    },
      *    "alipay": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
      *        "unixVer": "x"
      *    },
      *    "baidu": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "toutiao": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "lark": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "qq": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "kuaishou": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "jd": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    }
      *  },
      *   "web": {
@@ -593,44 +481,30 @@ export type GetDeviceInfoResult = {
      * 	},
      *  "mp": {
      *    "weixin": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
      *        "unixVer": "4.41"
      *    },
      *    "alipay": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
      *    },
      *    "toutiao": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
      *    },
      *    "lark": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
      *    },
      *    "qq": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
      *    },
      *    "kuaishou": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
      *    },
      *    "jd": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
      *    }
      *  },
      *   "web": {
@@ -662,44 +536,30 @@ export type GetDeviceInfoResult = {
      * 	},
      *  "mp": {
      *    "weixin": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
      *        "unixVer": "4.41"
      *    },
      *    "alipay": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
      *    },
      *    "toutiao": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
      *    },
      *    "lark": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
      *    },
      *    "qq": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
      *    },
      *    "kuaishou": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
      *    },
      *    "jd": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
      *    }
      *  },
      *   "web": {
@@ -730,44 +590,30 @@ export type GetDeviceInfoResult = {
      * 	},
      *  "mp": {
      *    "weixin": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
      *        "unixVer": "x"
      *    },
      *    "alipay": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
      *        "unixVer": "x"
      *    },
      *    "baidu": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "toutiao": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "lark": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "qq": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "kuaishou": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "jd": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    }
      *  },
      *   "web": {
@@ -799,44 +645,30 @@ export type GetDeviceInfoResult = {
      * 	},
      *  "mp": {
      *    "weixin": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
      *        "unixVer": "x"
      *    },
      *    "alipay": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
      *        "unixVer": "x"
      *    },
      *    "baidu": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "toutiao": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "lark": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "qq": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "kuaishou": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "jd": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    }
      *  },
      *   "web": {
@@ -867,44 +699,30 @@ export type GetDeviceInfoResult = {
      * 	},
      *  "mp": {
      *    "weixin": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
      *        "unixVer": "x"
      *    },
      *    "alipay": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
      *        "unixVer": "x"
      *    },
      *    "baidu": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "toutiao": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "lark": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "qq": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "kuaishou": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "jd": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    }
      *  },
      *   "web": {
@@ -936,44 +754,30 @@ export type GetDeviceInfoResult = {
      * 	},
      *  "mp": {
      *    "weixin": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
      *        "unixVer": "4.41"
      *    },
      *    "alipay": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "toutiao": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "lark": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "qq": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "kuaishou": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "jd": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    }
      *  },
      *   "web": {
@@ -1005,44 +809,30 @@ export type GetDeviceInfoResult = {
      * 	},
      *  "mp": {
      *    "weixin": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
      *        "unixVer": "4.41"
      *    },
      *    "alipay": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "toutiao": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "lark": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "qq": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "kuaishou": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "jd": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    }
      *  },
      *   "web": {
@@ -1074,44 +864,30 @@ export type GetDeviceInfoResult = {
      * 	},
      *  "mp": {
      *    "weixin": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
      *        "unixVer": "x"
      *    },
      *    "alipay": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
      *        "unixVer": "x"
      *    },
      *    "baidu": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "toutiao": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "lark": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "qq": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "kuaishou": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "jd": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    }
      *  },
      *   "web": {
@@ -1143,44 +919,30 @@ export type GetDeviceInfoResult = {
      * 	},
      *  "mp": {
      *    "weixin": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
      *        "unixVer": "x"
      *    },
      *    "alipay": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
      *        "unixVer": "x"
      *    },
      *    "baidu": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "toutiao": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "lark": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "qq": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "kuaishou": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "jd": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    }
      *  },
      *   "web": {
@@ -1211,44 +973,30 @@ export type GetDeviceInfoResult = {
        * },
      *  "mp": {
      *    "weixin": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
      *        "unixVer": "x"
      *    },
      *    "alipay": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
      *        "unixVer": "x"
      *    },
      *    "baidu": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "toutiao": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "lark": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "qq": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "kuaishou": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "jd": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    }
      *  },
      *   "web": {
@@ -1273,7 +1021,6 @@ export type GetDeviceInfoResult = {
      *      "unixVer": "x"
      *    },
      *    "harmony": {
-     *      "osVer": "√",
      *      "uniVer": "4.61",
      *      "unixVer": "4.61",
      *      "unixVaporVer": "5.0"
@@ -1281,44 +1028,30 @@ export type GetDeviceInfoResult = {
      *  },
      *  "mp": {
      *    "weixin": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
      *        "unixVer": "x"
      *    },
      *    "alipay": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
      *        "unixVer": "x"
      *    },
      *    "baidu": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "toutiao": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "lark": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "qq": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "kuaishou": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "jd": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    }
      *  },
      *   "web": {
@@ -1343,7 +1076,6 @@ export type GetDeviceInfoResult = {
      *      "unixVer": "x"
      *    },
      *    "harmony": {
-     *      "osVer": "√",
      *      "uniVer": "4.61",
      *      "unixVer": "4.61",
      *      "unixVaporVer": "5.0"
@@ -1351,44 +1083,30 @@ export type GetDeviceInfoResult = {
      *  },
      *  "mp": {
      *    "weixin": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
      *        "unixVer": "x"
      *    },
      *    "alipay": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
      *        "unixVer": "x"
      *    },
      *    "baidu": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "toutiao": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "lark": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "qq": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "kuaishou": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "jd": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    }
      *  },
      *   "web": {
@@ -1420,44 +1138,30 @@ export type GetDeviceInfoResult = {
      * 	},
      *  "mp": {
      *    "weixin": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
      *        "unixVer": "x"
      *    },
      *    "alipay": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
      *        "unixVer": "x"
      *    },
      *    "baidu": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "toutiao": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "lark": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "qq": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "kuaishou": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "jd": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    }
      *  },
      *   "web": {
@@ -1489,44 +1193,30 @@ export type GetDeviceInfoResult = {
      * 	},
      *  "mp": {
      *    "weixin": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
      *        "unixVer": "x"
      *    },
      *    "alipay": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
      *        "unixVer": "x"
      *    },
      *    "baidu": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "toutiao": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "lark": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "qq": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "kuaishou": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "jd": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    }
      *  },
      *   "web": {
@@ -1574,44 +1264,30 @@ export interface Uni {
       * 	},
      *  "mp": {
      *    "weixin": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
      *        "unixVer": "4.41"
      *    },
      *    "alipay": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
      *    },
      *    "toutiao": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
      *    },
      *    "lark": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
      *    },
      *    "qq": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
      *    },
      *    "kuaishou": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
      *    },
      *    "jd": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
      *    }
      *  },
     *   "web": {
@@ -1651,44 +1327,30 @@ export interface Uni {
 	 * 	},
 	 *  "mp": {
 	 *    "weixin": {
-	 *        "hostVer": "√",
 	 *        "uniVer": "x",
 	 *        "unixVer": "x"
 	 *    },
 	 *    "alipay": {
-	 *        "hostVer": "√",
 	 *        "uniVer": "x",
 	 *        "unixVer": "x"
 	 *    },
 	 *    "baidu": {
-	 *        "hostVer": "√",
 	 *        "uniVer": "x",
-	 *        "unixVer": "x"
 	 *    },
 	 *    "toutiao": {
-	 *        "hostVer": "√",
 	 *        "uniVer": "x",
-	 *        "unixVer": "x"
 	 *    },
 	 *    "lark": {
-	 *        "hostVer": "√",
 	 *        "uniVer": "x",
-	 *        "unixVer": "x"
 	 *    },
 	 *    "qq": {
-	 *        "hostVer": "√",
 	 *        "uniVer": "x",
-	 *        "unixVer": "x"
 	 *    },
 	 *    "kuaishou": {
-	 *        "hostVer": "√",
 	 *        "uniVer": "x",
-	 *        "unixVer": "x"
 	 *    },
 	 *    "jd": {
-	 *        "hostVer": "√",
 	 *        "uniVer": "x",
-	 *        "unixVer": "x"
 	 *    }
 	 *  },
 	 *   "web": {

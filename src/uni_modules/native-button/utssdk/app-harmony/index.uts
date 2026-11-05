@@ -1,4 +1,3 @@
-import { BuilderNode } from "@kit.ArkUI"
 // 导入混编实现的声明式UI构建函数
 import { buildButton } from "./builder.ets"
 
@@ -11,7 +10,6 @@ interface NativeButtonOptions {
 
 export class NativeButton {
     private $element : UniNativeViewElement;
-    private builder : BuilderNode<[NativeButtonOptions]> | null = null
     // 初始化 buildButton 默认参数
     private params : NativeButtonOptions = {
         text: '',
@@ -25,7 +23,7 @@ export class NativeButton {
 
     constructor(element : UniNativeViewElement) {
         // 绑定 wrapBuilder 函数
-        this.builder = element.bindHarmonyWrappedBuilder(wrapBuilder<[NativeButtonOptions]>(buildButton), this.params)
+        element.bindHarmonyWrappedBuilder(wrapBuilder<[NativeButtonOptions]>(buildButton), this.params)
         this.$element = element
         // 绑定当前实例为自定义的controller，方便其他地方通过 element 获取使用
         this.$element.bindHarmonyController(this)
@@ -33,8 +31,16 @@ export class NativeButton {
 
     updateText(text : string) {
         this.params.text = text
-        // 调用 builder update 函数来更新 UI
-        this.builder?.update(this.params)
+        // #ifdef VUE3-VAPOR
+        // Vapor 模式通过 ComponentContent 更新 UI
+        const content = this.$element.getHarmonyComponentContent<NativeButtonOptions>()
+        content?.update(this.params)
+        // #endif
+        // #ifndef VUE3-VAPOR
+        // 非 Vapor 模式通过 BuilderNode 更新 UI
+        const builder = this.$element.getHarmonyBuilderNode<NativeButtonOptions>()
+        builder?.update(this.params)
+        // #endif
     }
 
     destroy() {

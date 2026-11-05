@@ -1,25 +1,29 @@
 <template>
-  <view class="content">
-    <view class="uni-list">
-      <radio-group @change="applePriceChange">
-        <view class="uni-list-cell" v-for="(item, index) in productList" :key="index">
-          <radio :value="item['product_id']" :checked="product_id == item['product_id']" />
-          <view class="price" @click="applePriceClick(item)">{{item['title']}} {{item['goods_price']}}元</view>
-        </view>
-      </radio-group>
+    <view class="bg-list-fff pos-relative d-flex flex-dir-column border-b-1-solid-c8c7cc-dark-3a3a3c">
+      <enum-data-checkbox
+        :model-value="product_id"
+        :items="productOptions"
+        mode="list"
+        :show-toast="false"
+        @change="applePriceChange"
+      />
     </view>
-    <view class="uni-padding-wrap">
-      <button class="button btn-pay" @click="createOrder" :loading="loading" :disabled="disabled">立即支付</button>
+    <view class="p-0-15">
+      <button class="bg-007aff color-fff mt-30" @click="createOrder" :loading="loading" :disabled="disabled">立即支付</button>
     </view>
 
     <!-- 统一支付组件 -->
     <uni-pay ref="payRef" :debug="true" :adpid="adpid"
       return-url="/pages/API/request-payment/request-payment/order-detail" @mounted="onMounted" @success="onSuccess"
       @fail="onFail" @cancel="onCancel"></uni-pay>
-  </view>
 </template>
 
 <script setup lang="ts">
+  const productOptions = computed(() => productList.value.map((item : UTSJSONObject) => ({
+    value: item['product_id'] as string,
+    text: `${item['title']} ${item['goods_price']}元`
+  })))
+
 
   const order_no = ref("") // 业务系统订单号（即你自己业务系统的订单表的订单号）
   const out_trade_no = ref("") // 插件支付单号
@@ -183,13 +187,9 @@
     });
   }
 
-  // 监听-多选框选中的值改变
-  function applePriceChange(e: any) {
-    product_id.value = e.detail.value;
-  }
-
-  function applePriceClick(item : any) {
-    product_id.value = item['product_id'] as string;
+  // 选择虚拟商品
+  function applePriceChange(value : string) {
+    product_id.value = value;
   }
 
   onLoad(() => {
@@ -204,28 +204,7 @@
 </script>
 
 <style>
-  .content {
-    padding: 15px;
-  }
-
-  .button {
-    background-color: #007aff;
-    color: #ffffff;
-  }
-
-  .uni-list-cell {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 10px;
-    border-bottom: 1px solid #eee;
-  }
-
-  .price {
-    margin-left: 10px;
-  }
-
-  .btn-pay {
-    margin-top: 30px;
-  }
+page {
+  padding: 15px;
+}
 </style>

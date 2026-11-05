@@ -1,0 +1,215 @@
+<template>
+  <!-- #ifdef APP -->
+  <page-intro content="演示 FileSystemManager.access / accessSync：判断文件或目录是否存在，存在返回 access:ok，不存在返回 errCode 1300002。"></page-intro>
+  <scroll-view class="flex-1">
+  <!-- #endif -->
+    <view class="p-8 flex-dir-column">
+      <view class="p-8 border-1-solid-e0e0e0 radius-4 flex-dir-column m-4-0">
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">根目录</text>
+          <enum-data-checkbox
+            class="flex-1"
+            :model-value="data.rootKey"
+            :items="rootOptions"
+            mode="default"
+            :show-toast="false"
+            @change="onRootChange"
+          />
+        </view>
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">目标路径</text>
+          <input class="flex-1 border-1-solid-d0d0d0 radius-4 p-4-8 fs-13 h-32" v-model="data.accessPath" placeholder="相对根目录的路径" />
+        </view>
+      </view>
+      <view class="flex-dir-row flex-wrap-wrap m-4-0">
+        <button class="m-4" type="primary" @tap="access" id="btn-access">access 判断</button>
+        <button class="m-4" type="primary" @tap="accessSync" id="btn-access-sync">accessSync 判断</button>
+        <button class="m-4" type="warn" @tap="demoFail" id="btn-access-fail">演示失败（不存在）</button>
+        <button class="m-4" type="primary" @tap="demoStatic" id="btn-access-static">判断包内 static 资源</button>
+      </view>
+      <view class="p-8 border-1-solid-e0e0e0 radius-4 flex-dir-column m-4-0-12-0">
+        <text class="fw-bold fs-14 m-2-0 color-333">执行结果：{{ data.lastResult == '' ? '等待执行' : (data.lastResult == 'success' ? '存在' : '不存在/失败') }}</text>
+        <text class="fs-13 m-2-0 color-666">目标路径：{{ data.rootPath }}{{ data.accessPath }}</text>
+        <text class="fs-13 m-2-0 color-666" v-if="data.lastResult == 'success'">access:ok</text>
+        <text class="fs-13 m-2-0 color-e64340" v-if="data.lastResult == 'fail'">errCode：{{ data.lastFailError.errCode }}；errMsg：{{ data.lastFailError.errMsg }}</text>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="ts">
+  import { createEnumItems } from '@/components/enum-data-checkbox/enum-data-checkbox-types'
+  const rootOptions = createEnumItems(['usr', 'cache', 'sandbox'])
+
+  import { getFsmRootPath, ensureFsmDirSync, ensureFsmFileSync, removeFsmDirSync, createFsmMockError } from './fsm-utils'
+
+  type DataType = {
+    rootKey : string
+    rootPath : string
+    accessPath : string
+    existsRet : boolean
+    done : boolean
+    lastResult : string
+    lastFailError : UniError
+  }
+
+  const data = reactive({
+    rootKey: 'usr',
+    rootPath: getFsmRootPath('usr'),
+    accessPath: 'fsm-access-demo/1.txt',
+    existsRet: false,
+    done: false,
+    lastResult: '',
+    lastFailError: createFsmMockError(),
+  } as DataType)
+
+  function onRootChange(value : string) {
+    data.rootKey = value
+    data.rootPath = getFsmRootPath(data.rootKey)
+  }
+
+  function targetPath(path : string) : string {
+    return `${data.rootPath}${path ?? data.accessPath}`
+  }
+
+  function resetResult() {
+    data.done = false
+    data.lastResult = ''
+  }
+
+  function applyFail(res : IUniError) {
+    data.lastResult = 'fail'
+    data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+  }
+
+  function exists(path : string) : void {
+    const fileManager = uni.getFileSystemManager()
+    try {
+      fileManager.accessSync(targetPath(path))
+      data.existsRet = true
+    } catch (e) {
+      try {
+        // 兼容绝对路径（如包内资源）：按原样路径再判断一次
+        fileManager.accessSync(path != null ? path : targetPath(path))
+        data.existsRet = true
+      } catch (e2) {
+        data.existsRet = false
+      }
+    }
+  }
+
+  function prepare() : void {
+    const demoDir = `${data.rootPath}fsm-access-demo`
+    ensureFsmDirSync(demoDir)
+    ensureFsmFileSync(`${demoDir}/1.txt`, '测试access API的写入功能。\n\t制表符缩进行\n回车换行：\r\n下一行\n反斜杠 \\ 双引号 " 单引号 \'\n空格[  ]全角空格[　]不间断空格[ ]\n混合内容：中文English123!@#')
+    data.done = true
+  }
+
+  function cleanup() : void {
+    removeFsmDirSync(`${data.rootPath}fsm-access-demo`)
+    data.done = true
+  }
+
+  function access() : void {
+    resetResult()
+    // 自愈：默认演示文件不存在时重建，保证任意时刻重复点击都能成功
+    if (data.accessPath == 'fsm-access-demo/1.txt') {
+      ensureFsmDirSync(`${data.rootPath}fsm-access-demo`)
+      ensureFsmFileSync(`${data.rootPath}fsm-access-demo/1.txt`, '测试access API的写入功能。\n\t制表符缩进行\n回车换行：\r\n下一行\n反斜杠 \\ 双引号 " 单引号 \'\n空格[  ]全角空格[　]不间断空格[ ]\n混合内容：中文English123!@#')
+    }
+    const fileManager = uni.getFileSystemManager()
+    const options : AccessOptions = {
+      path: targetPath(data.accessPath),
+      success: (_ : FileManagerSuccessResult) => {
+        data.lastResult = 'success'
+      },
+      fail: (res : IUniError) => {
+        applyFail(res)
+      },
+      complete: (_ : any) => {
+        data.done = true
+      }
+    }
+    fileManager.access(options)
+  }
+
+  function accessSync() : void {
+    resetResult()
+    // 自愈：默认演示文件不存在时重建，保证任意时刻重复点击都能成功
+    if (data.accessPath == 'fsm-access-demo/1.txt') {
+      ensureFsmDirSync(`${data.rootPath}fsm-access-demo`)
+      ensureFsmFileSync(`${data.rootPath}fsm-access-demo/1.txt`, '测试access API的写入功能。\n\t制表符缩进行\n回车换行：\r\n下一行\n反斜杠 \\ 双引号 " 单引号 \'\n空格[  ]全角空格[　]不间断空格[ ]\n混合内容：中文English123!@#')
+    }
+    try {
+      uni.getFileSystemManager().accessSync(targetPath(data.accessPath))
+      data.lastResult = 'success'
+    } catch (e) {
+      data.lastResult = 'fail'
+      data.lastFailError = new UniError('uni-file-manager', 0, `${e}`)
+    }
+    data.done = true
+  }
+
+  // 一键演示失败场景：判断不存在的路径，预期 errCode 1300002（演示后自动恢复参数，不影响后续操作）
+  function demoFail() : void {
+    resetResult()
+    const prevPath = data.accessPath
+    const missingPath = 'fsm-access-demo/missing.txt'
+    data.accessPath = missingPath
+    const fileManager = uni.getFileSystemManager()
+    const options : AccessOptions = {
+      path: `${data.rootPath}${missingPath}`,
+      success: (_ : FileManagerSuccessResult) => {
+        data.lastResult = 'success'
+      },
+      fail: (res : IUniError) => {
+        applyFail(res)
+      },
+      complete: (_ : any) => {
+        data.accessPath = prevPath
+        data.done = true
+      }
+    }
+    fileManager.access(options)
+  }
+
+  // 判断应用包内 static 资源（根目录固定为包根，演示后自动恢复参数）
+  function demoStatic() : void {
+    resetResult()
+    const prevPath = data.accessPath
+    const staticPath = 'static/test-image/logo.ico'
+    data.accessPath = staticPath
+    const fileManager = uni.getFileSystemManager()
+    const options : AccessOptions = {
+      path: `/${staticPath}`,
+      success: (_ : FileManagerSuccessResult) => {
+        data.lastResult = 'success'
+      },
+      fail: (res : IUniError) => {
+        applyFail(res)
+      },
+      complete: (_ : any) => {
+        data.accessPath = prevPath
+        data.done = true
+      }
+    }
+    fileManager.access(options)
+  }
+
+  onReady(() => {
+    prepare()
+  })
+
+  defineExpose({
+    data,
+    prepare,
+    cleanup,
+    exists,
+    access,
+    accessSync,
+    demoFail,
+    demoStatic
+  })
+</script>

@@ -12,16 +12,18 @@
         </template>
       </view>
     </scroll-view>
-    <list-view ref="listView" class="list-view" :class="listViewClass" :scroll-y="true" @scroll="onListScroll">
-      <list-item class="list-item" :class="listItemClass" v-for="(item, index) in dataPicker.currentDataList" :key="index"
+    <scroll-view ref="listView" class="list-view" :class="listViewClass" :scroll-y="true" @scroll="onListScroll">
+      <view class="list-item" :class="listItemClass" v-for="(item, index) in dataPicker.currentDataList" :key="index"
         @click="dataPicker.onNodeClick(item)">
-        <text class="item-text" :class="[listItemTextClass, (item['disable'] as boolean) ? 'item-text-disabled' : '']"
+        <text class="item-text" :class="[listItemTextClass,
+          (item['disable'] as boolean) ? 'item-text-disabled' : '',
+          item[dataPicker.mappingValueName] == dataPicker.selectedNodes[dataPicker.selectedIndex][dataPicker.mappingValueName] ? 'item-text-active' : '']"
           flatten>{{item[dataPicker.mappingTextName]}}</text>
         <text class="check" :class="listItemCheckClass"
           v-if="item[dataPicker.mappingValueName] == dataPicker.selectedNodes[dataPicker.selectedIndex][dataPicker.mappingValueName]"
           flatten></text>
-      </list-item>
-    </list-view>
+      </view>
+    </scroll-view>
     <view class="loading-cover" v-if="dataPicker.loading">
       <slot name="picker-view-loading" :loading="dataPicker.loading">
         <loading class="loading-size" :class="loadingClass"></loading>
@@ -31,12 +33,38 @@
 </template>
 
 <script setup lang="ts">
+  /**
+   * DataPickerview
+   * @description 通过本地数据或 datacom 数据的级联选择组件，支持单列和多列级联选择，列数没有限制，如果屏幕显示不全，顶部tab区域会左右滚动。
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.33",
+   *       "unixVaporVer": "5.33"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.33",
+   *       "unixVaporVer": "5.33"
+   *     },
+   *     "harmony": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.33",
+   *       "unixVaporVer": "5.33"
+   *     }
+   *   },
+   *   "web": {
+   *     "uniVer": "x",
+   *     "unixVer": "5.33"
+   *   }
+   * }
+   */
+
   import { dataPickerProps, useDataPicker } from "./uni-data-picker.ts"
 
   /**
-   * DataPickerview
-   * @description uni-data-picker-view
-   * @tutorial https://ext.dcloud.net.cn/plugin?id=xxx
+   * @tutorial https://ext.dcloud.net.cn/plugin?id=uni-data-picker-x
    * @property {Array} localdata 本地数据，参考
    * @property {Boolean} step-searh = [true|false] 是否分布查询
    * @value true 启用分布查询，仅查询当前选中节点
@@ -47,6 +75,8 @@
    * @property {String|DBFieldString} field 查询字段，多个字段用 `,` 分割
    * @property {String} orderby 排序字段及正序倒叙设置
    * @property {String|JQLString} where 查询条件
+   * @event {Function} nodeclick 点击节点时触发此事件
+   * @event {Function} change 选择结束后触发此事件
    */
   const props = defineProps({
     ...dataPickerProps,

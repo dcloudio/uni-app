@@ -30,7 +30,7 @@
 
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 	const page = getCurrentInstance()?.proxy?.$page
 	
 	const successEventName = ref('')

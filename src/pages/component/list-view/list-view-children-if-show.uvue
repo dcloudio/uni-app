@@ -1,23 +1,22 @@
 <template>
-  <view class="p-10">
-    <button id="init-btn" class="uni-btn" @click="init">init</button>
-    <button id="clear-btn" class="uni-btn" @click="clear">clear</button>
+    <button id="init-btn" class="mt-10" @click="init">init</button>
+    <button id="clear-btn" class="mt-10" @click="clear">clear</button>
     <view
-      class="uni-common-mt list-view-container"
-      :class="{ ' p-10': list.length > 0 }"
+      class="mt-15 bg-list-fff"
+      :class="{ ' u-p-10': list.length > 0 }"
     >
       <list-view>
         <template v-for="(item, index) in list" :key="item.id">
           <list-item
 						id="toggle-children-show-btn"
-            :class="{ 'uni-common-mt': index > 0 }"
+            :class="{ 'mt-15': index > 0 }"
             @click="toggleChildrenShow(item.id)"
           >
             <text>toggle children isShow</text>
           </list-item>
           <template v-if="expandIds.includes(item.id)">
             <template v-for="child in item.children" :key="child.id">
-              <list-item id="list-item-child" class="mt-5">
+              <list-item id="list-item-child" class="u-mt-5">
                 <text>{{ child.id }}</text>
               </list-item>
             </template>
@@ -25,7 +24,6 @@
         </template>
       </list-view>
     </view>
-  </view>
 </template>
 
 <script setup lang="ts">
@@ -72,13 +70,7 @@ onLoad(() => {
 </script>
 
 <style>
-.p-10 {
+page {
   padding: 10px;
-}
-.list-view-container {
-  background-color: var(--list-background-color, #fff);
-}
-.mt-5 {
-  margin-top: 5px;
 }
 </style>

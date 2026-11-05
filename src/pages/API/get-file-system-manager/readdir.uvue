@@ -1,0 +1,197 @@
+<template>
+  <!-- #ifdef APP -->
+  <page-intro content="演示 FileSystemManager.readdir / readdirSync：读取目录下的文件与子目录名称列表，目录不存在时返回错误。"></page-intro>
+  <scroll-view class="flex-1">
+  <!-- #endif -->
+    <view class="p-8 flex-dir-column">
+      <view class="p-8 border-1-solid-e0e0e0 radius-4 flex-dir-column m-4-0">
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">根目录</text>
+          <enum-data-checkbox
+            class="flex-1"
+            :model-value="data.rootKey"
+            :items="rootOptions"
+            mode="default"
+            :show-toast="false"
+            @change="onRootChange"
+          />
+        </view>
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">目录路径</text>
+          <input class="flex-1 border-1-solid-d0d0d0 radius-4 p-4-8 fs-13 h-32" v-model="data.dirPath" placeholder="相对根目录的路径" />
+        </view>
+      </view>
+      <view class="flex-dir-row flex-wrap-wrap m-4-0">
+        <button class="m-4" type="primary" @tap="readdir" id="btn-readdir">readdir 读取目录</button>
+        <button class="m-4" type="primary" @tap="readdirSync" id="btn-readdir-sync">readdirSync 读取目录</button>
+        <button class="m-4" type="warn" @tap="demoFail" id="btn-readdir-fail">演示失败（目录不存在）</button>
+      </view>
+      <view class="p-8 border-1-solid-e0e0e0 radius-4 flex-dir-column m-4-0-12-0">
+        <text class="fw-bold fs-14 m-2-0 color-333">执行结果：{{ data.lastResult == '' ? '等待执行' : (data.lastResult == 'success' ? '成功' : '失败') }}</text>
+        <text class="fs-13 m-2-0 color-666">目标路径：{{ data.rootPath }}{{ data.dirPath }}</text>
+        <text class="fs-13 m-2-0 color-666" v-if="data.lastResult == 'success'">目录内容（{{ data.fileList.length }} 项）：</text>
+        <view class="flex-dir-column ml-8" v-if="data.lastResult == 'success'">
+          <text class="fs-13 m-2-0 color-666" v-for="(item, index) in data.fileList" :key="index">{{ item }}</text>
+        </view>
+        <text class="fs-13 m-2-0 color-e64340" v-if="data.lastResult == 'fail'">errCode：{{ data.lastFailError.errCode }}；errMsg：{{ data.lastFailError.errMsg }}</text>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="ts">
+  import { createEnumItems } from '@/components/enum-data-checkbox/enum-data-checkbox-types'
+  const rootOptions = createEnumItems(['usr', 'cache', 'sandbox'])
+
+  import { getFsmRootPath, ensureFsmDirSync, ensureFsmFileSync, removeFsmPathSync, removeFsmDirSync, createFsmMockError } from './fsm-utils'
+
+  type DataType = {
+    rootKey : string
+    rootPath : string
+    dirPath : string
+    fileList : string[]
+    existsRet : boolean
+    done : boolean
+    lastResult : string
+    lastFailError : UniError
+  }
+
+  const data = reactive({
+    rootKey: 'usr',
+    rootPath: getFsmRootPath('usr'),
+    dirPath: 'fsm-readdir-demo',
+    fileList: [] as string[],
+    existsRet: false,
+    done: false,
+    lastResult: '',
+    lastFailError: createFsmMockError(),
+  } as DataType)
+
+  function onRootChange(value : string) {
+    data.rootKey = value
+    data.rootPath = getFsmRootPath(data.rootKey)
+  }
+
+  function targetPath(path : string) : string {
+    return `${data.rootPath}${path ?? data.dirPath}`
+  }
+
+  function resetResult() {
+    data.done = false
+    data.lastResult = ''
+    data.fileList = [] as string[]
+  }
+
+  function applyFail(res : IUniError) {
+    data.lastResult = 'fail'
+    data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+  }
+
+  function exists(path : string) : void {
+    try {
+      uni.getFileSystemManager().accessSync(targetPath(path))
+      data.existsRet = true
+    } catch (e) {
+      data.existsRet = false
+    }
+  }
+
+  // 准备演示数据：fsm-readdir-demo 下两个文件与一个子目录
+  function prepare() : void {
+    const demoDir = `${data.rootPath}fsm-readdir-demo`
+    ensureFsmDirSync(`${demoDir}/sub`)
+    ensureFsmFileSync(`${demoDir}/1.txt`, '测试readdir API的写入功能。\n\t制表符缩进行\n回车换行：\r\n下一行\n反斜杠 \\ 双引号 " 单引号 \'\n空格[  ]全角空格[　]不间断空格[ ]\n混合内容：中文English123!@#')
+    ensureFsmFileSync(`${demoDir}/2.txt`, '测试readdir API的写入功能。\n\t制表符缩进行\n回车换行：\r\n下一行\n反斜杠 \\ 双引号 " 单引号 \'\n空格[  ]全角空格[　]不间断空格[ ]\n混合内容：中文English123!@#')
+    data.done = true
+  }
+
+  function cleanup() : void {
+    removeFsmDirSync(`${data.rootPath}fsm-readdir-demo`)
+    data.done = true
+  }
+
+  function readdir() : void {
+    resetResult()
+    // 自愈：默认演示目录不存在时重建，保证任意时刻重复点击都能成功
+    if (data.dirPath == 'fsm-readdir-demo') {
+      ensureFsmDirSync(`${data.rootPath}fsm-readdir-demo/sub`)
+      ensureFsmFileSync(`${data.rootPath}fsm-readdir-demo/1.txt`, '测试readdir API的写入功能。\n\t制表符缩进行\n回车换行：\r\n下一行\n反斜杠 \\ 双引号 " 单引号 \'\n空格[  ]全角空格[　]不间断空格[ ]\n混合内容：中文English123!@#')
+      ensureFsmFileSync(`${data.rootPath}fsm-readdir-demo/2.txt`, '测试readdir API的写入功能。\n\t制表符缩进行\n回车换行：\r\n下一行\n反斜杠 \\ 双引号 " 单引号 \'\n空格[  ]全角空格[　]不间断空格[ ]\n混合内容：中文English123!@#')
+    }
+    const fileManager = uni.getFileSystemManager()
+    const options : ReadDirOptions = {
+      dirPath: targetPath(data.dirPath),
+      success: (res : ReadDirSuccessResult) => {
+        data.fileList = res.files
+        data.lastResult = 'success'
+      },
+      fail: (res : IUniError) => {
+        applyFail(res)
+      },
+      complete: (_ : any) => {
+        data.done = true
+      }
+    }
+    fileManager.readdir(options)
+  }
+
+  function readdirSync() : void {
+    resetResult()
+    // 自愈：默认演示目录不存在时重建，保证任意时刻重复点击都能成功
+    if (data.dirPath == 'fsm-readdir-demo') {
+      ensureFsmDirSync(`${data.rootPath}fsm-readdir-demo/sub`)
+      ensureFsmFileSync(`${data.rootPath}fsm-readdir-demo/1.txt`, '测试readdir API的写入功能。\n\t制表符缩进行\n回车换行：\r\n下一行\n反斜杠 \\ 双引号 " 单引号 \'\n空格[  ]全角空格[　]不间断空格[ ]\n混合内容：中文English123!@#')
+      ensureFsmFileSync(`${data.rootPath}fsm-readdir-demo/2.txt`, '测试readdir API的写入功能。\n\t制表符缩进行\n回车换行：\r\n下一行\n反斜杠 \\ 双引号 " 单引号 \'\n空格[  ]全角空格[　]不间断空格[ ]\n混合内容：中文English123!@#')
+    }
+    try {
+      const res = uni.getFileSystemManager().readdirSync(targetPath(data.dirPath))
+      if (res != null) {
+        data.fileList = res
+      }
+      data.lastResult = 'success'
+    } catch (e) {
+      data.lastResult = 'fail'
+      data.lastFailError = new UniError('uni-file-manager', 0, `${e}`)
+    }
+    data.done = true
+  }
+
+  // 一键演示失败场景：读取不存在的目录，预期 errCode 1300002（演示后自动恢复参数）
+  function demoFail() : void {
+    resetResult()
+    const prevPath = data.dirPath
+    data.dirPath = 'fsm-readdir-demo/missing'
+    const fileManager = uni.getFileSystemManager()
+    const options : ReadDirOptions = {
+      dirPath: `${data.rootPath}fsm-readdir-demo/missing`,
+      success: (res : ReadDirSuccessResult) => {
+        data.fileList = res.files
+        data.lastResult = 'success'
+      },
+      fail: (res : IUniError) => {
+        applyFail(res)
+      },
+      complete: (_ : any) => {
+        data.dirPath = prevPath
+        data.done = true
+      }
+    }
+    fileManager.readdir(options)
+  }
+
+  onReady(() => {
+    prepare()
+  })
+
+  defineExpose({
+    data,
+    prepare,
+    cleanup,
+    exists,
+    readdir,
+    readdirSync,
+    demoFail
+  })
+</script>

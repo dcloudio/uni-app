@@ -1,289 +1,104 @@
 <template>
   <!-- #ifdef APP -->
-  <page-intro content="本页演示文件系统 API：递归获取目录、创建文件夹、读写/复制/重命名/删除文件、同步与异步接口等，操作结果在日志区展示。"></page-intro>
-  <text>显示简易操作日志(可滚动查看),详细日志需真机运行查看</text><button size="mini" @click="data.log=''">清空日志</button>
-  <scroll-view style="max-height: 300px;">
-    <text style="margin: 2px; padding: 2px; border: 1px solid #000000;">{{ data.log }}</text>
-  </scroll-view>
-  <scroll-view style="flex: 1;">
+  <page-intro content="本页演示 uni.getFileSystemManager() 文件管理器：上方为读写删除完整流程的快速体验，下方按目录操作、文件操作、文件描述符、存储与压缩分组提供每个方法的独立演示页。"></page-intro>
+  <scroll-view class="flex-1">
   <!-- #endif -->
-    <!-- #ifdef MP -->
-    <text style="margin: 2px; padding: 2px; border: 1px solid #000000;">{{ data.log }}</text>
-    <!-- #endif -->
-    <button class="btnstyle" type="primary" @tap="statFileInfoTest"
-      id="btn-stat-file">递归获取目录files的Stats对象{{data.statFile}}</button>
-    <button class="btnstyle" type="primary" @tap="mkdirTest" id="btn-mkdir">创建文件夹{{data.mkdirFile}}</button>
-    <button class="btnstyle" type="primary" @tap="writeFileTest" id="btn-write-file">覆盖写入文件{{data.writeFile}}</button>
-    <button class="btnstyle" type="primary" @tap="readDirTest" id="btn-read-dir">读取文件夹{{data.readDir}}</button>
-    <button class="btnstyle" type="primary" @tap="readFileTest" id="btn-read-file">读取文件{{data.readFile}}</button>
-    <button class="btnstyle" type="primary" @tap="copyFileTest"
-      id="btn-copy-file">复制文件{{data.copyFromFile}}到{{data.copyToFile}}</button>
-    <button class="btnstyle" type="primary" @tap="renameFileTest"
-      id="btn-rename-file">重命名文件{{data.renameFromFile}}到{{data.renameToFile}}</button>
-    <button class="btnstyle" type="primary" @tap="accessFileTest"
-      id="btn-access-file">判断文件{{data.accessFile}}是否存在</button>
-    <button class="btnstyle" type="primary" @tap="unlinkTest" id="btn-unlink-file">删除文件{{data.unlinkFile}}</button>
-    <button class="btnstyle" type="primary" @tap="unlinkAllFileTest"
-      id="btn-clear-file">删除文件夹{{data.rmDirFile}}下的所有文件</button>
-    <button class="btnstyle" type="primary" @tap="rmdirTest" id="btn-remove-dir">删除文件夹{{data.rmDirFile}}</button>
+    <view class="p-8 flex-dir-column">
+      <text class="fw-bold fs-15 color-333 section-title">快速体验：mkdir → writeFile → readFile → unlink</text>
+      <view class="flex-dir-row flex-wrap-wrap m-4-0">
+        <button size="mini" type="primary" @tap="runQuickDemo" id="btn-quick-demo">一键执行完整流程</button>
+      </view>
+      <view class="p-8 border-1-solid-e0e0e0 radius-4 flex-dir-column m-4-0">
+        <text class="fw-bold fs-14 m-2-0 color-333">执行结果</text>
+        <text class="fs-13 m-2-0 color-666">{{ data.quickRet == '' ? '等待执行' : data.quickRet }}</text>
+      </view>
 
-    <!-- #ifndef MP-ALIPAY -->
-    <button class="btnstyle" type="primary" @tap="statFileInfoSyncTest"
-      id="btn-stat-file-sync">同步递归获取目录files的Stats对象{{data.statFile}}</button>
-    <button class="btnstyle" type="primary" @tap="appendFileTest"
-      id="btn-append-file">在文件{{data.readFile}}结尾追加内容</button>
-    <button class="btnstyle" type="primary" @tap="appendFileSyncTest"
-      id="btn-append-file-sync">同步在文件{{data.readFile}}结尾追加内容</button>
-    <!-- #endif -->
-    <button class="btnstyle" type="primary" @tap="writeFileSyncTest"
-      id="btn-write-file-sync">同步覆盖写入文件{{data.writeFile}}</button>
-    <button class="btnstyle" type="primary" @tap="readFileSyncTest"
-      id="btn-read-file-sync">同步读取文件{{data.readFile}}</button>
-    <button class="btnstyle" type="primary" @tap="unlinkSyncTest"
-      id="btn-unlink-file-sync">同步删除文件{{data.unlinkFile}}</button>
-    <button class="btnstyle" type="primary" @tap="mkdirSyncTest" id="btn-mkdir-sync">同步创建文件夹{{data.mkdirFile}}</button>
-    <button class="btnstyle" type="primary" @tap="rmdirSyncTest"
-      id="btn-remove-dir-sync">同步删除文件夹{{data.rmDirFile}}</button>
-    <button class="btnstyle" type="primary" @tap="readDirSyncTest"
-      id="btn-read-dir-sync">同步读取文件夹{{data.readDir}}</button>
-    <!-- #ifndef MP-ALIPAY -->
-    <button class="btnstyle" type="primary" @tap="accessFileSyncTest"
-      id="btn-access-file-sync">同步判断文件{{data.accessFile}}是否存在</button>
-    <button class="btnstyle" type="primary" @tap="renameFileSync"
-      id="btn-rename-file-sync">同步重命名文件{{data.renameFromFile}}到{{data.renameToFile}}</button>
-    <!-- #endif -->
-    <button class="btnstyle" type="primary" @tap="copyFileSyncTest"
-      id="btn-copy-file-sync">同步复制文件{{data.copyFromFile}}到{{data.copyToFile}}</button>
-    <!-- #ifndef MP-ALIPAY -->
-    <button class="btnstyle" type="primary" @tap="removeSavedFileTest" id="btn-remove-saved-file">删除已保存的本地文件</button>
-    <button class="btnstyle" type="primary" @tap="getSavedFileListTest"
-      id="btn-getsaved-filelist">获取该已保存的本地缓存文件列表</button>
-    <!-- #endif -->
-    <!-- #ifndef MP-ALIPAY -->
-    <button class="btnstyle" type="primary" @tap="truncateFileTest"
-      id="btn-truncate-file">对文件{{data.writeFile}}内容进行截断操作</button>
-    <button class="btnstyle" type="primary" @tap="openFileTest" id="btn-open-file">打开文件{{data.readFile}}，返回描述符</button>
-    <button class="btnstyle" type="primary" @tap="openFileSyncTest('r',true)"
-      id="btn-open-file-sync">同步打开文件{{data.readFile}}，返回描述符</button>
-    <button class="btnstyle" type="primary" @tap="closeTest" id="btn-close-file">通过文件描述符关闭文件{{data.readFile}}</button>
-    <button class="btnstyle" type="primary" @tap="closeSyncTest"
-      id="btn-close-file-sync">通过文件描述符同步关闭文件{{data.readFile}}</button>
-    <button class="btnstyle" type="primary" @tap="writeTest" id="btn-write">通过文件描述符写入文件{{data.readFile}}</button>
-    <button class="btnstyle" type="primary" @tap="writeSyncTest"
-      id="btn-write-sync">同步通过文件描述符写入文件{{data.readFile}}</button>
-    <button class="btnstyle" type="primary" @tap="fstatTest"
-      id="btn-fstat-file">通过文件描述符获取{{data.statFile}}的状态信息</button>
-    <button class="btnstyle" type="primary" @tap="fstatSyncTest"
-      id="btn-fstat-file-sync">同步通过文件描述符获取{{data.statFile}}的状态信息</button>
-    <button class="btnstyle" type="primary" @tap="ftruncateFileTest"
-      id="btn-ftruncate-file">通过文件描述符对文件{{data.writeFile}}内容进行截断</button>
-    <button class="btnstyle" type="primary" @tap="ftruncateFileSyncTest"
-      id="btn-ftruncate-file-sync">同步通过文件描述符对文件{{data.writeFile}}内容进行截断</button>
-    <button class="btnstyle" type="primary" @tap="testWriteReadFileBuffer" id="btn-writereadfile-buffer">写入/读取
-      ArrayBuffer</button>
-    <button class="btnstyle" type="primary" @tap="testWriteReadBuffer" id="btn-writeread-buffer">通过文件描述符写入/读取
-      ArrayBuffer</button>
-    <button class="btnstyle" type="primary" @tap="testWriteReadSyncBuffer" id="btn-writereadsync-buffer">通过文件描述符同步写入/读取
-      ArrayBuffer</button>
-    <button class="btnstyle" type="primary" @tap="testAppendFileBuffer" id="btn-appendfile-buffer">在文件末尾追加
-      ArrayBuffer</button>
-    <button class="btnstyle" type="primary" @tap="testAppendFileBufferSync" id="btn-appendfilesync-buffer">同步在文件末尾追加
-      ArrayBuffer</button>
-    <!-- #endif -->
+      <text class="fw-bold fs-15 color-333 section-title">目录操作</text>
+      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/access">access | 判断文件/目录是否存在</navigator>
+      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/stat">stat | 获取文件 Stats 对象</navigator>
+      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/mkdir">mkdir | 创建目录</navigator>
+      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/rmdir">rmdir | 删除目录</navigator>
+      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/readdir">readdir | 读取目录内容</navigator>
 
-    <!-- #ifdef APP -->
-    <button class="btnstyle" type="primary" @tap="copyStaticToFilesTest"
-      id="btn-copyStatic-file">从static目录复制文件到a目录</button>
-    <button class="btnstyle" type="primary" @tap="saveFileTest" id="btn-save-file">保存临时文件到本地, filePath=null</button>
-    <button class="btnstyle" type="primary" @tap="saveFileTest1" id="btn-save-file1">保存临时文件到本地,
-      filePath=xxx/path.txt</button>
-    <button class="btnstyle" type="primary" @tap="saveFileTest2" id="btn-save-file2">保存临时文件到本地,
-      filePath=xxx/path</button>
-    <button class="btnstyle" type="primary" @tap="saveFileTest3" id="btn-save-file3">保存临时文件到本地,
-      filePath=xxx/path/</button>
+      <text class="fw-bold fs-15 color-333 section-title">文件操作</text>
+      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/read-file">readFile | 读取文件</navigator>
+      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/write-file">writeFile | 写入文件</navigator>
+      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/append-file">appendFile | 追加文件</navigator>
+      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/copy-file">copyFile | 复制文件</navigator>
+      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/rename">rename | 重命名文件</navigator>
+      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/unlink">unlink | 删除文件</navigator>
+      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/truncate">truncate | 截断文件</navigator>
 
-    <button class="btnstyle" type="primary" @tap="saveFileAndReadFileTest" id="btn-save-file-read-file">saveFile成功后验证是否可以readFile</button>
-    <button class="btnstyle" type="primary" @tap="saveFileSyncTest" id="btn-save-file-sync">同步保存临时文件到本地</button>
-    <button class="btnstyle" type="primary" @tap="unzipFileTest" id="btn-unzip-file">解压文件</button>
-    <!-- #ifdef VUE3-VAPOR -->
-    <button class="btnstyle" type="primary" @tap="unzipFileSyncTest" id="btn-unzip-file-sync">同步解压文件</button>
-    <!-- #endif -->
-    <!-- #ifndef MP-ALIPAY -->
-    <button class="btnstyle" type="primary" @tap="truncateFileSyncTest"
-      id="btn-truncate-file-sync">同步对文件{{data.writeFile}}内容进行截断操作</button>
-    <button class="btnstyle" type="primary" @tap="readCompressedFileTest"
-      id="btn-compressed-file">读取指定压缩类型的本地文件内容</button>
-    <button class="btnstyle" type="primary" @tap="readCompressedFileSyncTest"
-      id="btn-compressed-file-sync">同步读取指定压缩类型的本地文件内容</button>
-    <button class="btnstyle" type="primary" @tap="readZipEntry" id="btn-readzip-entry">读取压缩包内的文件</button>
-    <!-- #endif -->
-    <button class="btnstyle" type="primary" @tap="testWriteReadFileSyncBuffer" id="btn-writereadfilesync-buffer">同步写入/读取
-      ArrayBuffer</button>
-    <button class="btnstyle" type="primary" @tap="testReadFileEncoding('base64')">readFile(content://base64)</button>
-    <button class="btnstyle" type="primary" @tap="testReadFileEncoding('utf-8')">readFile(content://utf-8)</button>
-    <button class="btnstyle" type="primary" @tap="testReadFileEncoding('ascii')">readFile(content://ascii)</button>
-    <button class="btnstyle" type="primary" @tap="testReadFileArrayBuffer()">readFile(content://arraybuffer)</button>
-    <button class="btnstyle" type="primary"
-      @tap="testReadFileSyncEncoding('base64')">readFileSync(content://base64)</button>
-    <button class="btnstyle" type="primary"
-      @tap="testReadFileSyncEncoding('utf-8')">readFileSync(content://utf-8)</button>
-    <button class="btnstyle" type="primary"
-      @tap="testReadFileSyncEncoding('ascii')">readFileSync(content://ascii)</button>
-    <button class="btnstyle" type="primary"
-      @tap="testReadFileSyncArrayBuffer()">readFileSync(content://arraybuffer)</button>
-    <button class="btnstyle" type="primary" @tap="copyFileByContent()">copyFile(content://)</button>
-    <button class="btnstyle" type="primary" @tap="copyFileSyncByContent()">copyFileSync(content://)</button>
+      <text class="fw-bold fs-15 color-333 section-title">文件描述符</text>
+      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/open">open | 打开文件获取描述符</navigator>
+      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/close">close | 关闭文件描述符</navigator>
+      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/read">read | 通过描述符读取</navigator>
+      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/write">write | 通过描述符写入</navigator>
+      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/fstat">fstat | 描述符获取状态</navigator>
+      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/ftruncate">ftruncate | 描述符截断文件</navigator>
 
-    <!-- #endif -->
-    <button class="btnstyle" type="primary" @tap="gotoExplore()">前往沙盒文件管理器</button>
-    <button class="btnstyle" type="primary" @tap="gotoTestStatic()">前往Static文件测试</button>
-    <button class="btnstyle" type="primary" @tap="gotoGetFileInfo()">前往getFileInfo摘要测试</button>
-    <view style="height: 4px;"></view>
+      <text class="fw-bold fs-15 color-333 section-title">存储与压缩</text>
+      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/save-file">saveFile | 保存临时文件</navigator>
+      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/unzip">unzip | 解压文件</navigator>
+      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/read-compressed-file">readCompressedFile | 读取压缩文件</navigator>
+      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/read-zip-entry">readZipEntry | 读取压缩包内文件</navigator>
+
+      <text class="fw-bold fs-15 color-333 section-title">其他</text>
+      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/getFileInfo">getFileInfo | 获取文件摘要（md5/sha1/sha256）</navigator>
+      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/filemanage">沙盒文件管理器</navigator>
+      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/testStatic">文件管理类直接操作 Static</navigator>
+      <view class="h-12"></view>
+    </view>
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
 
 <script setup lang="ts">
-  import { createFileSystemManagerState } from './file-system-manager-state.ts'
-  import { createBasicAsyncActions } from './file-system-manager-basic-async-actions.ts'
-  import { createBasicSyncActions } from './file-system-manager-basic-sync.ts'
-  import { createStorageActions } from './file-system-manager-storage-actions.ts'
-  import { createFdActions } from './file-system-manager-fd.ts'
-  import { createBufferActions } from './file-system-manager-buffer.ts'
-  import { createContentActions } from './file-system-manager-content.ts'
+  import { getFsmRootPath } from './fsm-utils'
 
-  const data = reactive(createFileSystemManagerState())
-
-  const {
-    statFileInfoTest,
-    copyFileTest,
-    renameFileTest,
-    readDirTest,
-    writeFileTest,
-    readFileTest,
-    rmdirTest,
-    mkdirTest,
-    accessFileTest,
-    unlinkTest,
-    unlinkAllFileTest,
-    copyStaticToFilesTest,
-    // #ifndef MP-ALIPAY
-    appendFileTest,
-    // #endif
-  } = createBasicAsyncActions(data)
-
-  const {
-    writeFileSyncTest,
-    readFileSyncTest,
-    unlinkSyncTest,
-    mkdirSyncTest,
-    rmdirSyncTest,
-    readDirSyncTest,
-    copyFileSyncTest,
-    // #ifndef MP-ALIPAY
-    accessFileSyncTest,
-    renameFileSync,
-    appendFileSyncTest,
-    statFileInfoSyncTest,
-    // #endif
-  } = createBasicSyncActions(data)
-
-  const {
-    unzipFileTest,
-    unzipFileSyncTest,
-    // #ifndef MP-ALIPAY
-    saveFileTest,
-    saveFileAndReadFileTest,
-    saveFileTest1,
-    saveFileTest2,
-    saveFileTest3,
-    saveFileSyncTest,
-    getSavedFileListTest,
-    truncateFileTest,
-    truncateFileSyncTest,
-    readCompressedFileTest,
-    readCompressedFileSyncTest,
-    removeSavedFileTest,
-    // #endif
-  } = createStorageActions(data, writeFileSyncTest)
-
-  const {
-    // #ifndef MP-ALIPAY
-    openFileTest,
-    openFileSyncTest,
-    closeSyncTest,
-    closeTest,
-    writeTest,
-    writeSyncTest,
-    fstatTest,
-    fstatSyncTest,
-    ftruncateFileTest,
-    ftruncateFileSyncTest,
-    readZipEntry,
-    // #endif
-  } = createFdActions(data)
-
-  const {
-    testReadFileBuffer,
-    testWriteReadFileBuffer,
-    testReadFileSyncBuffer,
-    testWriteReadFileSyncBuffer,
-    // #ifndef MP-ALIPAY
-    testWriteReadBuffer,
-    testWriteReadSyncBuffer,
-    testAppendFileBufferSync,
-    testAppendFileBuffer,
-    // #endif
-  } = createBufferActions(
-    data
-    // #ifndef MP-ALIPAY
-    , openFileSyncTest
-    // #endif
-  )
-
-  const {
-    // #ifdef APP
-    testReadFileEncoding,
-    testReadFileArrayBuffer,
-    testReadFileSyncEncoding,
-    testReadFileSyncArrayBuffer,
-    copyFileByContent,
-    copyFileSyncByContent,
-    // #endif
-    // #ifndef MP-ALIPAY
-    testOpenFlagWrite,
-    testWriteLongString,
-    // #endif
-  } = createContentActions(data)
-
-  const gotoExplore = () => {
-    uni.navigateTo({
-      url: "/pages/API/get-file-system-manager/filemanage"
-    })
+  type QuickDemoDataType = {
+    quickRet : string
   }
-  const gotoTestStatic = () => {
-    uni.navigateTo({
-      url: "/pages/API/get-file-system-manager/testStatic"
-    })
-  }
-  const gotoGetFileInfo = () => {
-    uni.navigateTo({
-      url: "/pages/API/get-file-system-manager/getFileInfo"
-    })
+
+  const data = reactive({ quickRet: '' } as QuickDemoDataType)
+
+  // 快速体验：创建目录 → 写入 → 读取 → 删除文件 → 删除目录的完整同步流程
+  function runQuickDemo() : void {
+    const fileManager = uni.getFileSystemManager()
+    const dir = `${getFsmRootPath('usr')}fsm-quick-demo`
+    const file = `${dir}/1.txt`
+    const steps : string[] = []
+    try {
+      try {
+        fileManager.accessSync(dir)
+        fileManager.rmdirSync(dir, true)
+      } catch (_) {
+        // 目录不存在则无需清理
+      }
+      fileManager.mkdirSync(dir, true)
+      steps.push('mkdirSync 成功')
+      fileManager.writeFileSync(file, '测试getFileSystemManager API的写入功能。', 'utf-8')
+      steps.push('writeFileSync 成功')
+      const content = fileManager.readFileSync(file, 'utf-8')
+      steps.push(`readFileSync 成功：${content}`)
+      fileManager.unlinkSync(file)
+      fileManager.rmdirSync(dir, true)
+      steps.push('unlinkSync/rmdirSync 成功')
+      data.quickRet = steps.join(' → ')
+    } catch (e) {
+      data.quickRet = `执行失败：${e}`
+    }
   }
 
   defineExpose({
     data,
-    // #ifndef MP-ALIPAY
-    testOpenFlagWrite,
-    testWriteLongString
-    // #endif
+    runQuickDemo
   })
 </script>
 
 <style>
-  .btnstyle {
-    margin: 4px;
+  .section-title {
+    margin: 12px 4px 4px 4px;
   }
 </style>

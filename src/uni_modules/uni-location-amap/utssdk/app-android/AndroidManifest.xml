@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
+	package="io.dcloud.nativeresouce">
+	<!--permissions-->
+	<!-- 用于进行网络定位 -->
+	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+	<!-- 用于访问GPS定位 -->
+	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+	<!-- 用于获取运营商信息，用于支持提供运营商信息相关的接口 -->
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<!-- 用于访问wifi网络信息，wifi信息会用于进行网络定位 -->
+	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+	<!-- 用于获取wifi的获取权限，wifi信息会用来进行网络定位 -->
+	<uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+	<!-- 用于访问网络，网络定位需要上网 -->
+	<uses-permission android:name="android.permission.INTERNET" />
+	<!-- 用于申请调用A-GPS模块,卫星定位加速 -->
+	<uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+	<!-- 如果设置了target >= 28 如果需要启动后台定位则必须声明这个权限 -->
+	<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+	<!-- 如果您的应用需要后台定位权限，且有可能运行在Android Q设备上,并且设置了target>28，必须增加这个权限声明 -->
+	<uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+
+	<application>
+		<service android:name="com.amap.api.location.APSService" android:foregroundServiceType="location" />
+	</application>
+
+</manifest>

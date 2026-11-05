@@ -29,7 +29,7 @@ Android 和 iOS 使用不同类型的 Key，需要分别在高德开放平台创
 
 ### 2. Android 配置
 
-在 `uni_modules/uni-map-amap/utssdk/app-android/AndroidManifest.xml` 的 `<application>` 标签内配置 Android Key：
+在 `uni_modules/uni-map-amap/utssdk/app-android/AndroidManifest.xml` 的 `<application>` 标签内配置 Android Key(不需要配置manifest.json)：
 
 ```xml
 <meta-data
@@ -43,7 +43,7 @@ Android 和 iOS 使用不同类型的 Key，需要分别在高德开放平台创
 
 ### 3. iOS 配置
 
-在 `uni_modules/uni-map-amap/utssdk/app-ios/Info.plist` 中配置 iOS Key：
+在 `uni_modules/uni-map-amap/utssdk/app-ios/Info.plist` 中配置 iOS Key(不需要配置manifest.json)：
 
 ```xml
 <key>AMapAPIKey</key>

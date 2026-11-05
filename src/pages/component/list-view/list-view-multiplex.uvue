@@ -1,17 +1,16 @@
 <template>
-  <view class="list-view-page" style="flex: 1;">
-    <scroll-view direction="horizontal" style="flex-direction: row;">
-      <button class="button_item" @click="delayShow">测试延时显示</button>
-      <button class="button_item" @click="switchItemContent">修改item子元素</button>
+    <scroll-view direction="horizontal" class="flex-dir-row">
+      <button class="w-200" @click="delayShow">测试延时显示</button>
+      <button class="w-200" @click="switchItemContent">修改item子元素</button>
     </scroll-view>
-    <list-view v-show="data.list_show" id="listview" :scroll-top="data.scrollTop" style="flex: 1;" show-scrollbar=false @scrolltolower="onScrollTolower">
+    <list-view v-show="data.list_show" id="listview" :scroll-top="data.scrollTop" class="flex-1" show-scrollbar=false @scrolltolower="onScrollTolower">
       <list-item v-for="(item,index) in list" :key="item.id" :id="'item_'+item.id" @click="itemClick(item.id)">
-        <view class="item">
-          <view style="flex-direction: row;">
-            <text class="text">item-------{{item.id}}</text>
-            <scroll-view direction="horizontal" show-scrollbar="false" class="scroll_item">
-              <text class="text">scroll-view{{item.id}}：</text>
-              <text class="text tip_text" v-for="tab in 5">元素{{tab}}</text>
+        <view class="u-p-15 m-0-0-5-0 radius-5 item">
+          <view class="flex-dir-row">
+            <text class="color-text-000">item-------{{item.id}}</text>
+            <scroll-view direction="horizontal" show-scrollbar="false" class="flex-1 flex-dir-row overflow-hidden u-ml-10">
+              <text class="color-text-000">scroll-view{{item.id}}：</text>
+              <text class="border-style-solid radius-3 border-width-1 m-0-10 border-color-border-000 color-text-000" v-for="tab in 5">元素{{tab}}</text>
             </scroll-view>
           </view>
           <text v-show="data.displayArrow">item-------<text>{{item.id}}</text></text>
@@ -21,7 +20,6 @@
         </view>
       </list-item>
     </list-view>
-  </view>
 </template>
 
 <script setup lang="ts">
@@ -118,33 +116,7 @@ defineExpose({
 
 <style>
   .item {
-    padding: 15px;
-    margin: 0 0 5px 0;
     border: 1px solid var(--border-color, #000000);
     background-color: var(--list-background-color, #fdfdfd);
-    border-radius: 5px;
-  }
-
-  .button_item {
-    width: 200px;
-  }
-
-  .scroll_item {
-    flex: 1;
-    flex-direction: row;
-    overflow: hidden;
-    margin-left: 10px;
-  }
-
-  .tip_text {
-    border-style: solid;
-    border-color: var(--border-color, #000000);
-    border-radius: 3px;
-    border-width: 1px;
-    margin: 0px 10px;
-  }
-
-  .text {
-    color: var(--text-color, #000000);
   }
 </style>

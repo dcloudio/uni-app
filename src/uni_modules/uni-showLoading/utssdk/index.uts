@@ -17,6 +17,17 @@ export const showLoading: ShowLoading = (options?: ShowLoadingOptions | null) =>
 	const optionsEventName = `${baseEventName}_options`
 	const successEventName = `${baseEventName}_success`
 	const failEventName = `${baseEventName}_fail`
+	let failed = false
+	const fail = (res: ShowLoadingFailImpl) => {
+		if (failed) return
+		// openDialogPage 可能在调用 fail 后返回 null，失败结果只派发一次。
+		failed = true
+		uni.$off(readyEventName)
+		uni.$off(successEventName)
+		uni.$off(failEventName)
+		options?.fail?.(res)
+		options?.complete?.(res)
+	}
 	uni.$on(readyEventName, () => {
 		uni.$emit(optionsEventName, options != null ? JSON.parse(JSON.stringify(options)!) : {})
 	})
@@ -26,9 +37,7 @@ export const showLoading: ShowLoading = (options?: ShowLoadingOptions | null) =>
 		options?.complete?.(res)
 	})
 	uni.$on(failEventName, () => {
-		const res = new ShowLoadingFailImpl()
-		options?.fail?.(res)
-		options?.complete?.(res)
+		fail(new ShowLoadingFailImpl())
 	})
 	const openRet: UniPage | null = uni.openDialogPage({
 		url: `/uni_modules/uni-showLoading/pages/showLoading/showLoading?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
@@ -40,19 +49,13 @@ export const showLoading: ShowLoading = (options?: ShowLoadingOptions | null) =>
 			// #ifdef APP-HARMONY
 			const res = new ShowLoadingFailImpl(`showLoading failed, ${err['errMsg']}`)
 			// #endif
-			options?.fail?.(res)
-			options?.complete?.(res)
-			uni.$off(readyEventName)
-			uni.$off(successEventName)
-			uni.$off(failEventName)
+			fail(res)
 		}
 	})
 	if (openRet != null) {
 		return openRet as LoadingPage
 	}
-	const res = new ShowLoadingFailImpl()
-	options?.fail?.(res)
-	options?.complete?.(res)
+	fail(new ShowLoadingFailImpl())
 	return null
 }
 

@@ -1,7 +1,7 @@
 <template>
   <view class="single-root-box" :class="props.childClass">
     <text class="single-root-text">{{ props.text }}</text>
-    <view class="box" :class="props.boxClass"></view>
+    <view :class="'box ' + props.boxClass"></view>
   </view>
 </template>
 

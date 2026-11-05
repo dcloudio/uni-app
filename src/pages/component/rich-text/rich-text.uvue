@@ -1,48 +1,55 @@
 <template>
-		<view class="rich-text-page uni-padding-wrap uni-common-mt">
-      <navigator url="/pages/component/rich-text/rich-text-tags" class="uni-btn-v">
+		<view class="p-0-15 mt-15">
+      <navigator url="/pages/component/rich-text/rich-text-tags" class="p-5-0">
         <button>rich-text渲染单个HTML标签示例</button>
       </navigator>
-      <navigator url="/pages/component/rich-text/rich-text-complex" class="uni-btn-v">
+      <navigator url="/pages/component/rich-text/rich-text-complex" class="p-5-0">
         <button>rich-text渲染复杂HTML示例</button>
       </navigator>
-      <navigator url="/pages/component/rich-text/rich-text-highlight" class="uni-btn-v">
+      <navigator url="/pages/component/rich-text/rich-text-highlight" class="p-5-0">
         <button>rich-text高亮覆盖测试</button>
       </navigator>
       <!-- #ifndef MP-ALIPAY -->
-        <navigator url="/pages/template/long-rich-text/long-rich-text" class="uni-btn-v">
-          <button class="uni-btn">组件性能测试</button>
+        <navigator url="/pages/template/long-rich-text/long-rich-text" class="p-5-0">
+          <button class="mt-10">组件性能测试</button>
         </navigator>
       <!-- #endif -->
-			<view class="uni-title">
+			<view class="p-10-0 color-text-333">
 				<button type="default" @click="changeText">修改文本内容</button>
 			</view>
-			<view class="uni-title">
+			<view class="p-10-0 color-text-333">
 				<button type="default" @click="changeFontSize">切换 font-size ({{ data.currentFontSize }})</button>
 			</view>
-			<view class="uni-title">
+			<view class="p-10-0 color-text-333">
 				<button type="default" @click="changeColor">切换 color ({{ data.currentColor }})</button>
 			</view>
-			<view class="uni-title">
+			<view class="p-10-0 color-text-333">
 				<button type="default" @click="changeLineHeight">切换 line-height ({{ data.currentLineHeight }})</button>
 			</view>
-			<view class="uni-title">
+			<view class="p-10-0 color-text-333">
 				<button type="default" @click="changeFontFamily">切换 font-family ({{ data.currentFontFamily }})</button>
 			</view>
-			<view class="text-box" id="rich-text-parent" @click="richTextParentClick">
-				<rich-text id='rich-text' class="rich-text-content" :style="data.richTextStyle" :nodes="data.text" mode="native">
+			<view class="bg-fff p-20-0" id="rich-text-parent" @click="richTextParentClick">
+				<rich-text id='rich-text' :style="data.richTextStyle" :nodes="data.text" mode="native">
 				</rich-text>
 				<view>
-					<text class="rich-text-label">rich-text-parent</text>
-					<text id='rich-text-str' class="rich-text-label">{{ data.richTextStr }}</text>
+					<text class="color-333">rich-text-parent</text>
+					<text id='rich-text-str' class="color-333">{{ data.richTextStr }}</text>
 				</view>
 			</view>
-			<view class="uni-title">
-				<text class="uni-subtitle-text">user-select</text>
+			<view class="p-10-0 color-text-333">
+				<text class="color-888 fs-12 fw-bold u-mt-5">user-select</text>
 			</view>
-			<view class="text-box2">
-				<rich-text id="user-select-rich-text" class="rich-text-content" style="height: 80px;" :user-select="data.userSelect" :nodes="data.text"></rich-text>
+			<view class="bg-fff top-20">
+				<rich-text id="user-select-rich-text" class="h-80" :user-select="data.userSelect" :nodes="data.text"></rich-text>
 			</view>
+			<!-- #ifdef APP -->
+			<view class="p-10-0 color-text-333 bg-fff mb-15">
+				<text>selection 颜色属性</text>
+				<rich-text mode="native" id="selection-color-rich-text" :nodes="data.text" :selectable="true"
+					selection-handle-color="#ff5434" selection-background-color="#ffb080"></rich-text>
+			</view>
+			<!-- #endif -->
 		</view>
 </template>
 
@@ -224,19 +231,3 @@
 		queryUserSelectRect
 	})
 </script>
-
-<style>
-	.text-box {
-		padding: 20px 0;
-		background-color: #ffffff;
-	}
-
-	.text-box2 {
-		top: 20px;
-		background-color: #ffffff;
-	}
-
-	.rich-text-label {
-		color: #333333;
-	}
-</style>

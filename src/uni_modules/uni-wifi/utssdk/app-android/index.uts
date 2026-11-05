@@ -311,7 +311,7 @@ class CustomBroadcastReceiver extends BroadcastReceiver {
 
 			if (results != null) {
 				Global.scanList = []
-				for (let scanResult in results) {
+				for (let scanResult of results) {
 					if (scanResult.SSID == null) {
 						continue;
 					}

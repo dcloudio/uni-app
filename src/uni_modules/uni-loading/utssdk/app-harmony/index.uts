@@ -1,7 +1,5 @@
 // #ifndef VUE3-VAPOR
 import { buildLoading } from "./builder.ets";
-// #endif
-// #ifndef VUE3-VAPOR
 import { formatColorSync } from '@dcloudio/uni-runtime'
 // #endif
 

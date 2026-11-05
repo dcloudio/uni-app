@@ -1,0 +1,9 @@
+{
+	"dependencies": [
+		"com.amap.api:location:11.3.101"
+	],
+	"minSdkVersion": "21",
+	"thirdSDKs": [
+		"amap-location"
+	]
+}

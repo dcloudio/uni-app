@@ -1,68 +1,84 @@
 <template>
-  <view class="animate-page">
+  <view>
     <page-intro content="本页演示 uni.createAnimation 与 uni.createAnimateContext：点击开始/暂停/恢复/取消动画，可点击各 view 修改宽度、高度、margin、padding 等属性动画。"></page-intro>
-    <view id="main" style="width: 100px;height: 100px; background-color: brown; transform: scale(1);"></view>
+    <view id="main" style="width: 100px;height: 100px; background-color: brown; transform: scale(1); position: relative;"></view>
 
-    <button @click="startAnimate">开始动画</button>
-    <!-- #ifndef !VUE3-VAPOR && APP-HARMONY -->
-    <!-- #ifndef MP -->
-    <button @click="pauseAnimate">暂停动画</button>
-    <!-- #endif -->
-    <button @click="resumeAnimate">恢复动画</button>
-    <button @click="cancelAnimate">取消动画</button>
-    <!-- #endif -->
+    <view class="d-flex flex-dir-row">
+      <view class="d-flex flex-dir-column flex-1 m-4">
+        <text class="mb-4 text-center color-text-333">变尺寸</text>
+        <button @click="startAnimate">开始动画</button>
+        <!-- #ifndef !VUE3-VAPOR && APP-HARMONY -->
+        <!-- #ifndef MP -->
+        <button @click="pauseAnimate">暂停动画</button>
+        <!-- #endif -->
+        <button @click="resumeAnimate">恢复动画</button>
+        <button @click="cancelAnimate">取消动画</button>
+        <!-- #endif -->
+      </view>
+      <view class="d-flex flex-dir-column flex-1 m-4">
+        <text class="mb-4 text-center color-text-333">变位置</text>
+        <button @click="startPositionAnimate">开始动画</button>
+        <!-- #ifndef !VUE3-VAPOR && APP-HARMONY -->
+        <!-- #ifndef MP -->
+        <button @click="pausePositionAnimate">暂停动画</button>
+        <!-- #endif -->
+        <button @click="resumePositionAnimate">恢复动画</button>
+        <button @click="cancelPositionAnimate">取消动画</button>
+        <!-- #endif -->
+      </view>
+    </view>
 
     <image src="/static/test-image/logo.png" id="roll" style="width: 100px; height: 100px;margin: 10px;"></image>
 
 
-    <text class="animation-label">修改宽度</text>
-    <view class="animation-target" id="widthProperty" style="width: 100px;height: 100px;background-color: brown;" @click="widthProperty"></view>
+    <text class="border-style-solid color-text-333 animation-label">修改宽度</text>
+    <view class="border-style-solid animation-target" id="widthProperty" style="width: 100px;height: 100px;background-color: brown;" @click="widthProperty"></view>
 
-    <text class="animation-label">修改高度</text>
-    <view class="animation-target" id="height1" style="width: 100px;height: 100px;background-color: brown;" @click="heightProperty"></view>
+    <text class="border-style-solid color-text-333 animation-label">修改高度</text>
+    <view class="border-style-solid animation-target" id="height1" style="width: 100px;height: 100px;background-color: brown;" @click="heightProperty"></view>
 
-    <text class="animation-label">修改margin</text>
-    <view class="animation-target" id="marginProperty" style="width: 100px;height: 100px;background-color: brown;" @click="marginProperty"></view>
+    <text class="border-style-solid color-text-333 animation-label">修改margin</text>
+    <view class="border-style-solid animation-target" id="marginProperty" style="width: 100px;height: 100px;background-color: brown;" @click="marginProperty"></view>
 
-    <text class="animation-label">修改padding</text>
-    <view class="animation-target" id="paddingProperty" style="width: 100px;height: 100px;background-color: brown;" @click="paddingProperty">
+    <text class="border-style-solid color-text-333 animation-label">修改padding</text>
+    <view class="border-style-solid animation-target" id="paddingProperty" style="width: 100px;height: 100px;background-color: brown;" @click="paddingProperty">
       <view style="width: 50px;height: 50px;background-color: black;"></view>
     </view>
 
-    <text class="animation-label">修改border颜色</text>
-    <view class="animation-target" id="borderProperty"
+    <text class="border-style-solid color-text-333 animation-label">修改border颜色</text>
+    <view class="border-style-solid animation-target" id="borderProperty"
       style="width: 100px;height: 100px;background-color: brown;border-width: 10px;border-color: black;border-style: solid;"
       @click="borderProperty"></view>
 
-    <text class="animation-label">修改transform</text>
-    <view class="animation-target" id="transformProperty" style="width: 100px;height: 100px;background-color: brown;" @click="transformProperty"></view>
+    <text class="border-style-solid color-text-333 animation-label">修改transform</text>
+    <view class="border-style-solid animation-target" id="transformProperty" style="width: 100px;height: 100px;background-color: brown;" @click="transformProperty"></view>
 
-    <text class="animation-label">修改position</text>
-    <view class="animation-target" id="positionProperty" style="width: 100px;height: 100px;background-color: brown;" @click="positionProperty"></view>
+    <text class="border-style-solid color-text-333 animation-label">修改position</text>
+    <view class="border-style-solid animation-target" id="positionProperty" style="width: 100px;height: 100px;background-color: brown;" @click="positionProperty"></view>
 
-    <text class="animation-label">修改背景色和宽度</text>
-    <view class="animation-target" id="backgroundAndWidthProperty" style="width: 100px;height: 100px;background-color: brown;" @click="backgroundAndWidthProperty"></view>
+    <text class="border-style-solid color-text-333 animation-label">修改背景色和宽度</text>
+    <view class="border-style-solid animation-target" id="backgroundAndWidthProperty" style="width: 100px;height: 100px;background-color: brown;" @click="backgroundAndWidthProperty"></view>
 
-    <text class="animation-label">执行的动画只有一个值1</text>
-    <view class="animation-target" id="oneProperty1" style="width: 100px;height: 100px;background-color: brown;" @click="oneProperty1"></view>
+    <text class="border-style-solid color-text-333 animation-label">执行的动画只有一个值1</text>
+    <view class="border-style-solid animation-target" id="oneProperty1" style="width: 100px;height: 100px;background-color: brown;" @click="oneProperty1"></view>
 
-    <text class="animation-label">执行的动画只有一个值2</text>
-    <view class="animation-target" id="oneProperty2" style="width: 100px;height: 100px;background-color: brown;" @click="oneProperty2"></view>
+    <text class="border-style-solid color-text-333 animation-label">执行的动画只有一个值2</text>
+    <view class="border-style-solid animation-target" id="oneProperty2" style="width: 100px;height: 100px;background-color: brown;" @click="oneProperty2"></view>
 
-    <text class="animation-label">修改背景色和margin-left(关键帧)</text>
-    <view class="animation-target" id="backgroundAndMarginLeftProperty" style="width: 100px;height: 100px;background-color: brown;" @click="backgroundAndMarginLeftProperty"></view>
+    <text class="border-style-solid color-text-333 animation-label">修改背景色和margin-left(关键帧)</text>
+    <view class="border-style-solid animation-target" id="backgroundAndMarginLeftProperty" style="width: 100px;height: 100px;background-color: brown;" @click="backgroundAndMarginLeftProperty"></view>
 
-    <text class="animation-label">修改背景色和transform(关键帧)</text>
-    <view class="animation-target" id="backgroundAndTransformProperty" style="width: 100px;height: 100px;background-color: brown;" @click="backgroundAndTransformProperty"></view>
+    <text class="border-style-solid color-text-333 animation-label">修改背景色和transform(关键帧)</text>
+    <view class="border-style-solid animation-target" id="backgroundAndTransformProperty" style="width: 100px;height: 100px;background-color: brown;" @click="backgroundAndTransformProperty"></view>
 
-    <text class="animation-label">修改背景色(关键帧)</text>
-    <view class="animation-target" id="backgroundProperty" style="width: 100px;height: 100px;background-color: brown;" @click="backgroundProperty"></view>
+    <text class="border-style-solid color-text-333 animation-label">修改背景色(关键帧)</text>
+    <view class="border-style-solid animation-target" id="backgroundProperty" style="width: 100px;height: 100px;background-color: brown;" @click="backgroundProperty"></view>
 
-    <text class="animation-label">修改opacity(关键帧)</text>
-    <view class="animation-target" id="opacityProperty" style="width: 100px;height: 100px;background-color: brown;" @click="opacityProperty"></view>
+    <text class="border-style-solid color-text-333 animation-label">修改opacity(关键帧)</text>
+    <view class="border-style-solid animation-target" id="opacityProperty" style="width: 100px;height: 100px;background-color: brown;" @click="opacityProperty"></view>
 
-    <text class="animation-label">修改border-color和margin-left(关键帧)</text>
-    <view class="animation-target" id="borderColorMarginLeftProperty" style="width: 100px;height: 100px;background-color: brown;border-width: 5px;border-style: solid;"
+    <text class="border-style-solid color-text-333 animation-label">修改border-color和margin-left(关键帧)</text>
+    <view class="border-style-solid animation-target" id="borderColorMarginLeftProperty" style="width: 100px;height: 100px;background-color: brown;border-width: 5px;border-style: solid;"
       @click="borderColorMarginLeftProperty"></view>
   </view>
 </template>
@@ -70,6 +86,7 @@
 <script setup lang="ts">
   let mainView : UniElement | null = null
   let animation : UniAnimation | null = null
+  let positionAnimation : UniAnimation | null = null
 
   type Data = {
     testTriggerFinishEvent : boolean,
@@ -82,6 +99,11 @@
   } as Data
 
   function startAnimate() {
+    if (animation != null) {
+      animation!.oncancel = null
+      animation!.onfinish = null
+      animation!.cancel()
+    }
     animation = mainView!.animate([
       {
         transform: "scale(1)",
@@ -103,7 +125,7 @@
       animation!.oncancel = (_ : UniAnimationPlaybackEvent) => {
         data.testTriggerCancelEvent = true
         uni.showToast({
-          title: "动画被取消了"
+          title: "尺寸动画被取消了"
         })
       }
       animation!.onfinish = (_ : UniAnimationPlaybackEvent) => {
@@ -134,6 +156,43 @@
     // #ifdef MP
     return null
     // #endif
+  }
+
+  function startPositionAnimate() {
+    if (positionAnimation != null) {
+      positionAnimation!.oncancel = null
+      positionAnimation!.onfinish = null
+      positionAnimation!.cancel()
+    }
+    positionAnimation = mainView!.animate({
+      left: ["0px", "200px", "0px"]
+    }, {
+      duration: 5000
+    })
+    if (positionAnimation != null) {
+      positionAnimation!.oncancel = (_ : UniAnimationPlaybackEvent) => {
+        uni.showToast({
+          title: "位置动画被取消了"
+        })
+      }
+      positionAnimation!.onfinish = (_ : UniAnimationPlaybackEvent) => {
+        uni.showToast({
+          title: "位置动画播放完成"
+        })
+      }
+    }
+  }
+
+  function pausePositionAnimate() {
+    positionAnimation?.pause()
+  }
+
+  function resumePositionAnimate() {
+    positionAnimation?.play()
+  }
+
+  function cancelPositionAnimate() {
+    positionAnimation?.cancel()
   }
 
   function widthProperty(e : UniPointerEvent) {
@@ -371,23 +430,16 @@
   .animation-label {
     margin: 4px 4px 0;
     padding: 4px 4px 0;
-    border-style: solid;
     border-width: 1px 1px 0;
     background-color: var(--list-background-color, #eeeeee);
     border-color: var(--border-color, #eeeeee);
-    color: var(--text-color, #333333);
     border-radius: 5px 5px 0 0;
   }
 
   .animation-target {
     margin: 0 4px 4px;
-    border-style: solid;
     border-width: 0 1px 1px;
     border-color: var(--border-color, #eeeeee);
     border-radius: 0 0 5px 5px;
-  }
-
-  .view-margin {
-    margin: 8px;
   }
 </style>

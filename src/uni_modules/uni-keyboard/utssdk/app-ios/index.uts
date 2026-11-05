@@ -1,7 +1,8 @@
 import {
 	HideKeyboard, HideKeyboardOptions, HideKeyboardSuccess,
 	OnKeyboardHeightChange, OnKeyboardHeightChangeCallback, OnKeyboardHeightChangeCallbackResult,
-	OffKeyboardHeightChange
+	OffKeyboardHeightChange,
+	OnKeyboardAnimationChangeCallback, OnKeyboardAnimationChangeCallbackResult
 } from "../interface.uts";
 import { UTSiOS } from "DCloudUTSFoundation";
 
@@ -23,6 +24,60 @@ export const onKeyboardHeightChange: OnKeyboardHeightChange = function (callback
 
 export const offKeyboardHeightChange: OffKeyboardHeightChange = function (id ?: number) {
 	UTSiOS.offKeyboardHeightChange(id)
+}
+
+const keyboardAnimationCallbacks : Map<number, OnKeyboardAnimationChangeCallback> = new Map()
+let keyboardAnimationCallbackId = 0
+let keyboardAnimationNativeListening = false
+
+function emitKeyboardAnimationChange(height : number, state : string) : void {
+	keyboardAnimationCallbacks.forEach((callback : OnKeyboardAnimationChangeCallback, id : number) => {
+		if (!keyboardAnimationCallbacks.has(id)) return
+		const result : OnKeyboardAnimationChangeCallbackResult = {
+			height: Math.max(0, height),
+			state: state as 'start' | 'running' | 'end'
+		}
+		try {
+			callback(result)
+		} catch (error) {
+			console.error(error)
+		}
+	})
+}
+
+function startKeyboardAnimationNativeListener() : void {
+	if (keyboardAnimationNativeListening) return
+	keyboardAnimationNativeListening = true
+	KeyboardAnimationNative.shared.start((height : number, state : string) : void => {
+		if (!keyboardAnimationNativeListening) return
+		emitKeyboardAnimationChange(height, state)
+	})
+}
+
+function stopKeyboardAnimationNativeListener() : void {
+	if (!keyboardAnimationNativeListening) return
+	keyboardAnimationNativeListening = false
+	KeyboardAnimationNative.shared.stop()
+}
+
+export function onKeyboardAnimationChange(callback : OnKeyboardAnimationChangeCallback) : number {
+	const id = ++keyboardAnimationCallbackId
+	keyboardAnimationCallbacks.set(id, callback)
+	if (keyboardAnimationCallbacks.size == 1) {
+		startKeyboardAnimationNativeListener()
+	}
+	return id
+}
+
+export function offKeyboardAnimationChange(id : number | null = null) : void {
+	if (id != null) {
+		keyboardAnimationCallbacks.delete(id!)
+	} else {
+		keyboardAnimationCallbacks.clear()
+	}
+	if (keyboardAnimationCallbacks.size == 0) {
+		stopKeyboardAnimationNativeListener()
+	}
 }
 
 // export const getSelectedTextRange: GetSelectedTextRange = function (options : GetSelectedTextRangeOptions) {

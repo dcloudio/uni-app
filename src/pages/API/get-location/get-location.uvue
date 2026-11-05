@@ -1,50 +1,52 @@
 <template>
     <page-head :title="title"></page-head>
-    <view style="padding: 4px">
-      <text class="hello-text">
+    <view class="p-4">
+      <text class="color-text-333 fs-14 lh-20">
         定位功能默认调用操作系统定位API实现。也支持三方SDK定位\n
         部分老款Android手机因gms问题可能导致无法使用系统定位。\n
         Web、Android、iOS平台，gcj国标、逆地理信息等功能需调用腾讯定位。</text>
     </view>
 
-    <view class="uni-padding-wrap uni-common-mt">
+    <view class="p-0-15 mt-15">
       <!-- #ifdef APP-ANDROID || APP-IOS -->
-      <view class="uni-list-cell-db"><text class="uni-list-cell-db-text">定位服务商provider(如系统定位，腾讯定位等)</text></view>
-      <view class="uni-list" style="margin-bottom: 20px">
-        <radio-group @change="radioChangePV">
-          <view class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in providerList" :key="item.id"
-            :class="index < providerList.length - 1 ? 'uni-list-cell-line' : ''">
-            <radio :value="item.id" :checked="index === currentProvider" />
-            <text>{{ item.name }}</text>
-          </view>
-        </radio-group>
+      <view class="flex-1 vapor-color-text-333"><text class="w-full non-vapor-color-text-333 web-mp-break-break-all">定位服务商provider(如系统定位，腾讯定位等)</text></view>
+      <view class="bg-list-fff pos-relative d-flex flex-dir-column border-b-1-solid-c8c7cc-dark-3a3a3c mb-20">
+        <enum-data-checkbox
+          :model-value="providerList[currentProvider]?.id"
+          :items="providerOptions"
+          mode="list"
+          :show-toast="false"
+          @change="radioChangePV"
+        />
       </view>
       <!-- #endif -->
-      <view class="uni-list-cell-db"><text class="uni-list-cell-db-text">定位类型</text></view>
-      <view class="uni-list">
-        <radio-group @change="radioChange">
-          <view class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in items" :key="item.value"
-            :class="index < items.length - 1 ? 'uni-list-cell-line' : ''">
-            <radio :value="item.value" :checked="index === current" />
-            <text>{{ item.name }}</text>
-          </view>
-        </radio-group>
+      <view class="flex-1 vapor-color-text-333"><text class="w-full non-vapor-color-text-333 web-mp-break-break-all">定位类型</text></view>
+      <view class="bg-list-fff pos-relative d-flex flex-dir-column border-b-1-solid-c8c7cc-dark-3a3a3c">
+        <enum-data-checkbox
+          :model-value="items[current]?.value"
+          :items="items"
+          mode="list"
+          :show-toast="false"
+          @change="radioChange"
+        />
       </view>
-      <boolean-data style="margin-top: 20px" :value="altitudeSelect" title="高度信息"
+      <boolean-data class="mt-20" :value="altitudeSelect" title="高度信息"
         @change="altitudeChange"></boolean-data>
       <boolean-data :value="isHighAccuracySelect" title="开启高精度定位"
         @change="highAccuracySelectChange"></boolean-data>
       <boolean-data :value="geocodeSelect" title="是否解析地址信息"
         @change="geocodeChange"></boolean-data>
-      <view class="get-location-result">{{ exeRet }}</view>
-      <view class="uni-btn-v">
-        <button class="uni-btn" type="default" @tap="getLocationTap">
+      <view class="web-mp-break-break-all">{{ exeRet }}</view>
+      <view class="p-5-0">
+        <button class="mt-10" type="default" @tap="getLocationTap">
           获取定位
         </button>
       </view>
     </view>
 </template>
 <script setup lang="ts">
+  const providerOptions = computed(() => providerList.value.map((item : LocationItem) => ({ value: item.id, name: item.name })))
+
   type GetLocationType = 'wgs84' | 'gcj02'
   export type LocationItem = { id : string, name : string, provider ?: UniProvider }
   export type ItemType = { value : GetLocationType, name : GetLocationType }
@@ -135,25 +137,25 @@
     isHighAccuracySelect.value = value
   }
 
-  const radioChange = (e : UniRadioGroupChangeEvent) => {
+  const radioChange = (value : string) => {
     for (let i = 0; i < items.value.length; i++) {
-      if (items.value[i].value === e.detail.value) {
+      if (items.value[i].value === value) {
         current.value = i;
         break;
       }
     }
   }
 
-  const radioChangePV = (e : UniRadioGroupChangeEvent) => {
+  const radioChangePV = (value : string) => {
     for (let i = 0; i < providerList.value.length; i++) {
-      if (providerList.value[i].id === e.detail.value) {
+      if (providerList.value[i].id === value) {
         currentProvider.value = i;
         break;
       }
     }
-    if (e.detail.value == "system") {
+    if (value == "system") {
       current.value = 0
-    } else if (e.detail.value == "tencent") {
+    } else if (value == "tencent") {
       current.value = 1
     }
   }
@@ -234,11 +236,3 @@
     jestGetLocation
   })
 </script>
-
-<style>
-  .get-location-result {
-    /* #ifdef WEB || MP */
-    word-break: break-all;
-    /* #endif */
-  }
-</style>

@@ -27,5 +27,8 @@
     color: #007aff;
     font-weight: 500;
   }
+  .is-hover {
+    background-color: #179b16;
+  }
 
 </style>

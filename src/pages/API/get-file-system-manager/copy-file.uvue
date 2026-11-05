@@ -1,0 +1,285 @@
+<template>
+  <!-- #ifdef APP -->
+  <page-intro content="演示 FileSystemManager.copyFile / copyFileSync：复制文件，复制成功后自动读取目标文件内容校验；也支持复制应用包内 static 资源。"></page-intro>
+  <scroll-view class="flex-1">
+  <!-- #endif -->
+    <view class="p-8 flex-dir-column">
+      <view class="p-8 border-1-solid-e0e0e0 radius-4 flex-dir-column m-4-0">
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">根目录</text>
+          <enum-data-checkbox
+            class="flex-1"
+            :model-value="data.rootKey"
+            :items="rootOptions"
+            mode="default"
+            :show-toast="false"
+            @change="onRootChange"
+          />
+        </view>
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">源路径</text>
+          <input class="flex-1 border-1-solid-d0d0d0 radius-4 p-4-8 fs-13 h-32" v-model="data.srcPath" placeholder="相对根目录的路径" />
+        </view>
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">目标路径</text>
+          <input class="flex-1 border-1-solid-d0d0d0 radius-4 p-4-8 fs-13 h-32" v-model="data.destPath" placeholder="相对根目录的路径" />
+        </view>
+      </view>
+      <view class="flex-dir-row flex-wrap-wrap m-4-0">
+        <button class="m-4" type="primary" @tap="copyFile" id="btn-copy-file">copyFile 复制</button>
+        <button class="m-4" type="primary" @tap="copyFileSync" id="btn-copy-file-sync">copyFileSync 复制</button>
+        <button class="m-4" type="primary" @tap="copyStatic" id="btn-copy-static">复制包内 static 资源</button>
+        <button class="m-4" type="warn" @tap="demoFail" id="btn-copy-file-fail">演示失败（源不存在）</button>
+        <!-- #ifdef APP -->
+        <button class="m-4" type="primary" @tap="copyFileByContent" id="btn-copy-file-content">copyFile(选择相册图片 content://)</button>
+        <!-- #endif -->
+      </view>
+      <view class="p-8 border-1-solid-e0e0e0 radius-4 flex-dir-column m-4-0-12-0">
+        <text class="fw-bold fs-14 m-2-0 color-333">执行结果：{{ data.lastResult == '' ? '等待执行' : (data.lastResult == 'success' ? '成功' : '失败') }}</text>
+        <text class="fs-13 m-2-0 color-666">源路径：{{ data.rootPath }}{{ data.srcPath }}</text>
+        <text class="fs-13 m-2-0 color-666">目标路径：{{ data.rootPath }}{{ data.destPath }}</text>
+        <text class="fs-13 m-2-0 color-666" v-if="data.lastResult == 'success'">目标文件内容（utf-8）：{{ data.readRet }}</text>
+        <text class="fs-13 m-2-0 color-e64340" v-if="data.lastResult == 'fail'">errCode：{{ data.lastFailError.errCode }}；errMsg：{{ data.lastFailError.errMsg }}</text>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="ts">
+  import { createEnumItems } from '@/components/enum-data-checkbox/enum-data-checkbox-types'
+  const rootOptions = createEnumItems(['usr', 'cache', 'sandbox'])
+
+  import { getFsmRootPath, ensureFsmDirSync, ensureFsmFileSync, removeFsmPathSync, removeFsmDirSync, createFsmMockError } from './fsm-utils'
+
+  type DataType = {
+    rootKey : string
+    rootPath : string
+    srcPath : string
+    destPath : string
+    readRet : string
+    existsRet : boolean
+    done : boolean
+    lastResult : string
+    lastFailError : UniError
+  }
+
+  const data = reactive({
+    rootKey: 'usr',
+    rootPath: getFsmRootPath('usr'),
+    srcPath: 'fsm-copy-file-demo/1.txt',
+    destPath: 'fsm-copy-file-demo/2.txt',
+    readRet: '',
+    existsRet: false,
+    done: false,
+    lastResult: '',
+    lastFailError: createFsmMockError(),
+  } as DataType)
+
+  function onRootChange(value : string) {
+    data.rootKey = value
+    data.rootPath = getFsmRootPath(data.rootKey)
+  }
+
+  function targetPath(path : string) : string {
+    return `${data.rootPath}${path}`
+  }
+
+  function resetResult() {
+    data.done = false
+    data.lastResult = ''
+    data.readRet = ''
+  }
+
+  function applyFail(res : IUniError) {
+    data.lastResult = 'fail'
+    data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+  }
+
+  function exists(path : string) : void {
+    const fileManager = uni.getFileSystemManager()
+    try {
+      fileManager.accessSync(targetPath(path))
+      data.existsRet = true
+    } catch (e) {
+      try {
+        // 兼容绝对路径（如包内资源）：按原样路径再判断一次
+        fileManager.accessSync(path != null ? path : targetPath(data.destPath))
+        data.existsRet = true
+      } catch (e2) {
+        data.existsRet = false
+      }
+    }
+  }
+
+  function prepare() : void {
+    const demoDir = `${data.rootPath}fsm-copy-file-demo`
+    ensureFsmDirSync(demoDir)
+    ensureFsmFileSync(`${demoDir}/1.txt`, '测试copyFile API的写入功能。\n\t制表符缩进行\n回车换行：\r\n下一行\n反斜杠 \\ 双引号 " 单引号 \'\n空格[  ]全角空格[　]不间断空格[ ]\n混合内容：中文English123!@#')
+    data.done = true
+  }
+
+  function cleanup() : void {
+    removeFsmDirSync(`${data.rootPath}fsm-copy-file-demo`)
+    data.done = true
+  }
+
+  function readDestText() : void {
+    try {
+      const content = uni.getFileSystemManager().readFileSync(targetPath(data.destPath), 'utf-8')
+      data.readRet = (content as string).toString()
+    } catch (e) {
+      data.readRet = `read back fail: ${e}`
+    }
+  }
+
+  function copyFile() : void {
+    resetResult()
+    // 自愈：重建默认源文件 + 清理目标残留，保证任意时刻重复点击都能成功
+    if (data.srcPath == 'fsm-copy-file-demo/1.txt') {
+      ensureFsmDirSync(`${data.rootPath}fsm-copy-file-demo`)
+      ensureFsmFileSync(`${data.rootPath}fsm-copy-file-demo/1.txt`, '测试copyFile API的写入功能。\n\t制表符缩进行\n回车换行：\r\n下一行\n反斜杠 \\ 双引号 " 单引号 \'\n空格[  ]全角空格[　]不间断空格[ ]\n混合内容：中文English123!@#')
+    }
+    removeFsmPathSync(targetPath(data.destPath))
+    const fileManager = uni.getFileSystemManager()
+    const options : CopyFileOptions = {
+      srcPath: targetPath(data.srcPath),
+      destPath: targetPath(data.destPath),
+      success: (_ : FileManagerSuccessResult) => {
+        data.lastResult = 'success'
+        readDestText()
+      },
+      fail: (res : IUniError) => {
+        applyFail(res)
+      },
+      complete: (_ : any) => {
+        data.done = true
+      }
+    }
+    fileManager.copyFile(options)
+  }
+
+  function copyFileSync() : void {
+    resetResult()
+    // 自愈：重建默认源文件 + 清理目标残留，保证任意时刻重复点击都能成功
+    if (data.srcPath == 'fsm-copy-file-demo/1.txt') {
+      ensureFsmDirSync(`${data.rootPath}fsm-copy-file-demo`)
+      ensureFsmFileSync(`${data.rootPath}fsm-copy-file-demo/1.txt`, '测试copyFile API的写入功能。\n\t制表符缩进行\n回车换行：\r\n下一行\n反斜杠 \\ 双引号 " 单引号 \'\n空格[  ]全角空格[　]不间断空格[ ]\n混合内容：中文English123!@#')
+    }
+    removeFsmPathSync(targetPath(data.destPath))
+    try {
+      uni.getFileSystemManager().copyFileSync(targetPath(data.srcPath), targetPath(data.destPath))
+      data.lastResult = 'success'
+      readDestText()
+    } catch (e) {
+      data.lastResult = 'fail'
+      data.lastFailError = new UniError('uni-file-manager', 0, `${e}`)
+    }
+    data.done = true
+  }
+
+  // 复制应用包内 static 资源到沙盒（源路径为包内绝对路径，演示后自动恢复参数）
+  function copyStatic() : void {
+    resetResult()
+    const prevSrc = data.srcPath
+    const prevDest = data.destPath
+    const staticSrc = '/static/list-mock/mock.json'
+    const staticDest = 'fsm-copy-file-demo/mock.json'
+    data.srcPath = staticSrc
+    data.destPath = staticDest
+    const fileManager = uni.getFileSystemManager()
+    const options : CopyFileOptions = {
+      srcPath: staticSrc,
+      destPath: `${data.rootPath}${staticDest}`,
+      success: (_ : FileManagerSuccessResult) => {
+        data.lastResult = 'success'
+        exists(`${data.rootPath}${staticDest}`)
+      },
+      fail: (res : IUniError) => {
+        applyFail(res)
+      },
+      complete: (_ : any) => {
+        data.srcPath = prevSrc
+        data.destPath = prevDest
+        data.done = true
+      }
+    }
+    fileManager.copyFile(options)
+  }
+
+  // 一键演示失败场景：源文件不存在，预期 errCode 1300002（演示后自动恢复参数）
+  function demoFail() : void {
+    resetResult()
+    const prevSrc = data.srcPath
+    const missingSrc = 'fsm-copy-file-demo/missing.txt'
+    data.srcPath = missingSrc
+    const fileManager = uni.getFileSystemManager()
+    const options : CopyFileOptions = {
+      srcPath: `${data.rootPath}${missingSrc}`,
+      destPath: targetPath(data.destPath),
+      success: (_ : FileManagerSuccessResult) => {
+        data.lastResult = 'success'
+      },
+      fail: (res : IUniError) => {
+        applyFail(res)
+      },
+      complete: (_ : any) => {
+        data.srcPath = prevSrc
+        data.done = true
+      }
+    }
+    fileManager.copyFile(options)
+  }
+
+  // #ifdef APP
+  // 手动体验：选择相册图片后复制其临时文件到缓存目录（content:// 路径，需手动选择）
+  function copyFileByContent() : void {
+    uni.chooseImage({
+      count: 1,
+      albumMode: 'system',
+      sizeType: ['original'],
+      sourceType: ['album'],
+      success: (e) => {
+        const filePath = e.tempFilePaths[0]
+        resetResult()
+        data.srcPath = filePath
+        data.destPath = 'copyFileByContent.jpg'
+        const options : CopyFileOptions = {
+          srcPath: filePath,
+          destPath: `${uni.env.CACHE_PATH}copyFileByContent.jpg`,
+          success: (_ : FileManagerSuccessResult) => {
+            data.lastResult = 'success'
+            data.readRet = `copied to ${uni.env.CACHE_PATH}copyFileByContent.jpg`
+          },
+          fail: (res : IUniError) => {
+            applyFail(res)
+          },
+          complete: (_ : any) => {
+            data.done = true
+          }
+        }
+        uni.getFileSystemManager().copyFile(options)
+      }
+    })
+  }
+  // #endif
+
+  onReady(() => {
+    prepare()
+  })
+
+  defineExpose({
+    data,
+    prepare,
+    cleanup,
+    exists,
+    copyFile,
+    copyFileSync,
+    copyStatic,
+    demoFail
+    // #ifdef APP
+    ,copyFileByContent
+    // #endif
+  })
+</script>

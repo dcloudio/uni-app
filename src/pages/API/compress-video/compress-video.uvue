@@ -1,26 +1,26 @@
 <template>
     <page-head :title="title"></page-head>
     <view>
-      <view class="uni-padding-wrap">
-        <video class="video" :src="beforeCompressPath" :controls="true" :poster="beforeCoverImagePath"></video>
-        <view class="uni-title">
-          <text class="uni-subtitle-text">压缩前视频信息</text>
+      <view class="p-0-15">
+        <video class="self-center" :src="beforeCompressPath" :controls="true" :poster="beforeCoverImagePath"></video>
+        <view class="p-10-0 color-text-333">
+          <text class="color-888 fs-12 fw-bold u-mt-5">压缩前视频信息</text>
         </view>
         <text>{{beforeCompressVideoInfo}}</text>
-        <video class="video" :src="afterCompressPath" :controls="true" :poster="afterCoverImagePath"></video>
-        <view class="uni-title">
-          <text class="uni-subtitle-text">压缩后视频信息</text>
+        <video class="self-center" :src="afterCompressPath" :controls="true" :poster="afterCoverImagePath"></video>
+        <view class="p-10-0 color-text-333">
+          <text class="color-888 fs-12 fw-bold u-mt-5">压缩后视频信息</text>
         </view>
         <text>{{afterCompressVideoInfo}}</text>
-        <view class="uni-btn-v">
+        <view class="p-5-0">
           <button type="primary" @click="chooseVideo">从相册中选取待压缩的视频</button>
         </view>
-        <view class="uni-btn-v">
+        <view class="p-5-0">
           <button type="primary" @click="compressVideo">压缩视频</button>
         </view>
-        <enum-data title="压缩质量" :items="qualityItemTypes" @change="onQualityChange"></enum-data>
-        <view class="uni-common-mt">
-          <text class="uni-title uni-title-text">相对于原视频的分辨率比例，取值范围(0, 1]</text>
+        <enum-data-checkbox title="压缩质量" :items="qualityItemTypes" @change="onQualityChange"></enum-data-checkbox>
+        <view class="mt-15">
+          <text class="p-10-0 fs-15 fw-bold color-text-333">相对于原视频的分辨率比例，取值范围(0, 1]</text>
           <slider :min="0.1" :max="1" :step="0.1" :show-value="true" @change="onResolutionChange"></slider>
         </view>
       </view>
@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ItemType } from '@/components/enum-data/enum-data-types';
+  import { ItemType } from '@/components/enum-data-checkbox/enum-data-checkbox-types';
   type VideoInfoForTest = {
     width: number;
     height: number;
@@ -180,13 +180,3 @@
     testCompressVideo
   })
 </script>
-
-<style>
-  .video {
-    align-self: center;
-  }
-
-  .image-container {
-    flex-direction: row;
-  }
-</style>

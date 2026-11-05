@@ -1,16 +1,15 @@
 <template>
-    <view>
       <!-- #ifndef MP -->
       <fps />
       <!-- #endif -->
 
       <!-- 控制按钮区域 -->
-      <view style="padding: 2px;flex-direction: row;flex-wrap: wrap;align-items: center;">
-        <button @click="toggleDisabled" :type="sharedDisabled ? 'primary' : 'default'" size="mini" style="margin: 2px;">{{ sharedDisabled ? '启用' : '禁用' }}</button>
+      <view class="u-p-2 flex-dir-row flex-wrap-wrap items-center">
+        <button @click="toggleDisabled" :type="sharedDisabled ? 'primary' : 'default'" size="mini" class="m-2">{{ sharedDisabled ? '启用' : '禁用' }}</button>
       </view>
 
       <!-- 200个radio组件 -->
-      <radio-group @change="onSharedChange" style="flex-direction: row;flex-wrap: wrap;padding: 2px;">
+      <radio-group @change="onSharedChange" class="flex-dir-row flex-wrap-wrap u-p-2">
               <radio
                   :value="index.toString()"
                   :checked="sharedChecked === index.toString()"
@@ -18,7 +17,6 @@
                   v-for="index in 200" :key="index"
               />
       </radio-group>
-    </view>
   </template>
 
   <script setup lang="ts">
@@ -35,6 +33,3 @@
       console.log('radio状态改变:', e.detail.value)
     }
   </script>
-
-  <style>
-  </style>

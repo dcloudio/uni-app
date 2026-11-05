@@ -1,6 +1,12 @@
 <template>
-    <canvas class="drawing" id="tablet" @touchstart="touchStart" @touchmove="touchMove" @touchend="touchEnd" @ready="onCanvasReady"></canvas>
-    <button style="margin-bottom: 20px" @click="doClear()">清空</button>
+    <!-- #ifdef WEB -->
+    <!-- TODO 后续支持配置时在移除 -->
+    <canvas class="w-full flex-grow-1 mb-10 bg-d3d3d3" id="tablet" @pointerdown="pointerDown" @pointermove="pointerMove" @pointerup="pointerUp" @pointercancel="pointerUp" @pointerleave="pointerUp" @ready="onCanvasReady"></canvas>
+    <!-- #endif -->
+    <!-- #ifndef WEB -->
+    <canvas class="w-full flex-grow-1 mb-10 bg-d3d3d3" id="tablet" @touchstart="touchStart" @touchmove="touchMove" @touchend="touchEnd" @ready="onCanvasReady"></canvas>
+    <!-- #endif -->
+    <button class="mb-20" @click="doClear()">清空</button>
 </template>
 
 <script setup lang="ts">
@@ -14,9 +20,29 @@ let lastPointX = 0
 let lastPointY = 0
 let offsetX = 0
 let offsetY = 0
+let isDrawing = false
 let renderingContext: CanvasRenderingContext2D | null = null
 
 // Methods
+function startDraw(x : number, y : number) {
+  lastPointX = x
+  lastPointY = y
+}
+
+function drawLine(x : number, y : number) {
+  const ctx = renderingContext!
+  ctx.lineWidth = 5
+  ctx.lineCap = "round"
+  ctx.lineJoin = "round"
+  ctx.beginPath()
+  ctx.moveTo(lastPointX, lastPointY)
+  ctx.lineTo(x, y)
+  ctx.stroke()
+
+  lastPointX = x
+  lastPointY = y
+}
+
 function getPosition(event : TouchEvent) : Point {
   const touch = event.touches[0]
   // #ifndef MP
@@ -36,30 +62,34 @@ function getPosition(event : TouchEvent) : Point {
 
 function touchStart(event : TouchEvent) {
   const position = getPosition(event)
-  lastPointX = position.x
-  lastPointY = position.y
+  startDraw(position.x, position.y)
 }
 
 function touchMove(event : TouchEvent) {
   const position = getPosition(event)
-  const x = position.x
-  const y = position.y
-
-  const ctx = renderingContext!
-  ctx.lineWidth = 5
-  ctx.lineCap = "round"
-  ctx.lineJoin = "round"
-  ctx.beginPath()
-  ctx.moveTo(lastPointX, lastPointY)
-  ctx.lineTo(x, y)
-  ctx.stroke()
-
-  lastPointX = x
-  lastPointY = y
+  drawLine(position.x, position.y)
 }
 
 function touchEnd(event : TouchEvent) {
 }
+
+// #ifdef WEB
+function pointerDown(event : PointerEvent) {
+  isDrawing = true
+  startDraw(event.clientX - offsetX, event.clientY - offsetY)
+}
+
+function pointerMove(event : PointerEvent) {
+  if (!isDrawing) {
+    return
+  }
+  drawLine(event.clientX - offsetX, event.clientY - offsetY)
+}
+
+function pointerUp(event : PointerEvent) {
+  isDrawing = false
+}
+// #endif
 
 function doClear() {
   if (renderingContext != null) {
@@ -116,12 +146,3 @@ onReady(() => {
   // #endif
 })
 </script>
-
-<style>
-  .drawing {
-    width: 100%;
-    flex-grow: 1;
-    background-color: lightgray;
-    margin-bottom: 10px;
-  }
-</style>

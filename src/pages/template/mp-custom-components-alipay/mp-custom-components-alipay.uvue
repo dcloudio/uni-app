@@ -1,14 +1,13 @@
 <template>
-  <view class="page">
     <page-intro
       style="margin: 10px 0;"
       content="本页演示支付宝小程序自定义组件：父组件通过属性向 my-counter 传值，监听 change 回调更新计数，并通过 ref 调用子组件 increment/decrement 方法。"
     ></page-intro>
-    <view class="demo-section">
-      <text class="status-text">父组件中的值：{{ data.count }}</text>
-      <text class="status-text">已收到 change 回调：{{ data.changeCount }} 次</text>
+    <view class="pt-20">
+      <text class="mt-10 color-text-333 fs-15 lh-22">父组件中的值：{{ data.count }}</text>
+      <text class="mt-10 color-text-333 fs-15 lh-22">已收到 change 回调：{{ data.changeCount }} 次</text>
 
-      <view class="counter-row">
+      <view class="mt-20 items-flex-start">
         <my-counter
           ref="nativeCounter"
           :initial-count="data.count"
@@ -19,7 +18,6 @@
         ></my-counter>
       </view>
     </view>
-  </view>
 </template>
 
 <script setup lang="ts">
@@ -62,23 +60,7 @@
 </script>
 
 <style>
-  .page {
-    padding: 0 24px 32px;
-  }
-
-  .demo-section {
-    padding-top: 20px;
-  }
-
-  .status-text {
-    margin-top: 10px;
-    color: var(--text-color, #333333);
-    font-size: 15px;
-    line-height: 22px;
-  }
-
-  .counter-row {
-    margin-top: 20px;
-    align-items: flex-start;
-  }
+page {
+  padding: 0px 24px 32px;
+}
 </style>

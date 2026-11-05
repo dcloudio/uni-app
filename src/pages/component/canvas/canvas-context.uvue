@@ -1,12 +1,12 @@
 <template>
-  <view class="page" id="page-canvas-context">
+  <view class="flex-1" id="page-canvas-context">
     <page-intro
       content="本页演示 CanvasContext 2D API：arc、路径、描边填充、drawImage、createPattern、getSetImageData 等绘图与导出能力。"></page-intro>
-    <canvas id="canvasContext" class="canvas-element" @ready="onCanvasReady"></canvas>
-    <scroll-view class="scroll-view">
-      <view class="grid-view">
-        <view class="grid-item" v-for="(name, index) in names" :key="index">
-          <button class="canvas-drawing-button" @click="handleCanvasButton(name)">{{name}}</button>
+    <canvas id="canvasContext" class="w-full h-250 bg-fff" @ready="onCanvasReady"></canvas>
+    <scroll-view class="flex-1">
+      <view class="u-p-10 flex-dir-row flex-wrap-wrap">
+        <view class="p-5 w-50pct" v-for="(name, index) in names" :key="index">
+          <button @click="handleCanvasButton(name)">{{name}}</button>
         </view>
       </view>
     </scroll-view>
@@ -922,30 +922,3 @@
     measureText
   })
 </script>
-
-<style>
-  .page {
-    flex: 1;
-  }
-
-  .scroll-view {
-    flex: 1;
-  }
-
-  .canvas-element {
-    width: 100%;
-    height: 250px;
-    background-color: #ffffff;
-  }
-
-  .grid-view {
-    padding: 10px;
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-
-  .grid-item {
-    width: 50%;
-    padding: 5px;
-  }
-</style>

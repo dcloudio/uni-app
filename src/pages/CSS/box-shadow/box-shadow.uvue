@@ -1,10 +1,10 @@
 <template>
-    <view class="box-shadow-page" style="flex-grow: 1">
+    <view class="flex-grow-1">
       <view style="margin-bottom: 10px;">
-        <text class="box-shadow-label" style="font-weight: bold;">说明：左边是正常版本，右边是拍平版本</text>
+        <text class="color-text-333" style="font-weight: bold;">说明：左边是正常版本，右边是拍平版本</text>
       </view>
       <view>
-        <text class="box-shadow-label">box-shadow: 5px 5px black</text>
+        <text class="color-text-333">box-shadow: 5px 5px black</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview">
@@ -20,7 +20,7 @@
       </view>
 
       <view>
-        <text class="box-shadow-label">box-shadow: 5px 5px 5px #00FF00</text>
+        <text class="color-text-333">box-shadow: 5px 5px 5px #00FF00</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview-rect">
@@ -36,7 +36,7 @@
       </view>
 
       <view>
-        <text class="box-shadow-label">box-shadow: 5px 5px 5px rgb(0,0,255)</text>
+        <text class="color-text-333">box-shadow: 5px 5px 5px rgb(0,0,255)</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview">
@@ -52,7 +52,7 @@
       </view>
 
       <view>
-        <text class="box-shadow-label">box-shadow: 5px 5px 5px rgba(0,255,255,0.5)</text>
+        <text class="color-text-333">box-shadow: 5px 5px 5px rgba(0,255,255,0.5)</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview-rect">
@@ -68,7 +68,7 @@
       </view>
 
       <view>
-        <text class="box-shadow-label">box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5)</text>
+        <text class="color-text-333">box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5)</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview">
@@ -84,7 +84,7 @@
       </view>
 
       <view>
-        <text class="box-shadow-label">box-shadow: 5rpx 5rpx 5rpx #0000ff80</text>
+        <text class="color-text-333">box-shadow: 5rpx 5rpx 5rpx #0000ff80</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview-rect">
@@ -100,7 +100,7 @@
       </view>
 
       <view>
-        <text class="box-shadow-label">box-shadow: 5px 5px 5px black</text>
+        <text class="color-text-333">box-shadow: 5px 5px 5px black</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview-rect">
@@ -116,7 +116,7 @@
       </view>
 
       <view>
-        <text class="box-shadow-label">box-shadow: 5px 10px 5px black</text>
+        <text class="color-text-333">box-shadow: 5px 10px 5px black</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview">
@@ -131,7 +131,7 @@
         </view>
       </view>
       <view>
-        <text class="box-shadow-label">box-shadow: 5px 5px 5px 5px black（harmony暂不支持阴影扩散半径）</text>
+        <text class="color-text-333">box-shadow: 5px 5px 5px 5px black（harmony暂不支持阴影扩散半径）</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview-rect">
@@ -147,7 +147,7 @@
       </view>
 
       <view>
-        <text class="box-shadow-label">box-shadow: -5px -5px 5px black</text>
+        <text class="color-text-333">box-shadow: -5px -5px 5px black</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview">
@@ -163,7 +163,7 @@
       </view>
 
       <view>
-        <text class="box-shadow-label">box-shadow: inset 5px 5px black（harmony暂不支持inset）</text>
+        <text class="color-text-333">box-shadow: inset 5px 5px black（harmony暂不支持inset）</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview">
@@ -179,7 +179,7 @@
       </view>
 
       <view>
-        <text class="box-shadow-label">box-shadow: inset 5px 5px 5px black（harmony暂不支持inset）</text>
+        <text class="color-text-333">box-shadow: inset 5px 5px 5px black（harmony暂不支持inset）</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview">
@@ -195,7 +195,7 @@
       </view>
 
       <view>
-        <text class="box-shadow-label">box-shadow: inset 5px 10px 5px black（harmony暂不支持inset）</text>
+        <text class="color-text-333">box-shadow: inset 5px 10px 5px black（harmony暂不支持inset）</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview">
@@ -211,7 +211,7 @@
       </view>
 
       <view>
-        <text class="box-shadow-label">box-shadow: inset 5px 5px 5px 5px black（harmony暂不支持inset）</text>
+        <text class="color-text-333">box-shadow: inset 5px 5px 5px 5px black（harmony暂不支持inset）</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview">
@@ -227,7 +227,7 @@
       </view>
 
       <view>
-        <text class="box-shadow-label">box-shadow: inset -5px -5px 5px black（harmony暂不支持inset）</text>
+        <text class="color-text-333">box-shadow: inset -5px -5px 5px black（harmony暂不支持inset）</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview">
@@ -243,7 +243,7 @@
       </view>
 
       <view>
-        <text class="box-shadow-label">box-shadow: 0px 1px 3px rgba(0,0,0,0.4)</text>
+        <text class="color-text-333">box-shadow: 0px 1px 3px rgba(0,0,0,0.4)</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview-rect">
@@ -259,7 +259,7 @@
       </view>
 
       <view>
-        <text class="box-shadow-label">circle: box-shadow: 5px 5px black（正圆）</text>
+        <text class="color-text-333">circle: box-shadow: 5px 5px black（正圆）</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview">
@@ -275,7 +275,7 @@
       </view>
 
       <view>
-        <text class="box-shadow-label">circle: box-shadow: 5px 5px 5px black（椭圆）</text>
+        <text class="color-text-333">circle: box-shadow: 5px 5px 5px black（椭圆）</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview-rect">
@@ -291,7 +291,7 @@
       </view>
 
       <view>
-        <text class="box-shadow-label">circle: box-shadow: 5px 10px 5px black（正圆）</text>
+        <text class="color-text-333">circle: box-shadow: 5px 10px 5px black（正圆）</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview">
@@ -307,7 +307,7 @@
       </view>
 
       <view>
-        <text class="box-shadow-label">circle: box-shadow: 5px 5px 5px 5px black（椭圆）</text>
+        <text class="color-text-333">circle: box-shadow: 5px 5px 5px 5px black（椭圆）</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview-rect">
@@ -323,7 +323,7 @@
       </view>
 
       <view>
-        <text class="box-shadow-label">circle: box-shadow: -5px -5px 5px black（正圆）</text>
+        <text class="color-text-333">circle: box-shadow: -5px -5px 5px black（正圆）</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview">
@@ -339,7 +339,7 @@
       </view>
 
       <view>
-        <text class="box-shadow-label">circle: box-shadow: 0px 1px 3px rgba(0,0,0,0.4)（椭圆）</text>
+        <text class="color-text-333">circle: box-shadow: 0px 1px 3px rgba(0,0,0,0.4)（椭圆）</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview-rect">
@@ -355,7 +355,7 @@
       </view>
 
       <view>
-        <text class="box-shadow-label">点击动态切换 box-shadow: none</text>
+        <text class="color-text-333">点击动态切换 box-shadow: none</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview" @click="changed">
@@ -371,7 +371,7 @@
       </view>
 
       <view>
-        <text class="box-shadow-label">点击动态切换 box-shadow: 非法值</text>
+        <text class="color-text-333">点击动态切换 box-shadow: 非法值</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview" @click="changed">
@@ -387,7 +387,7 @@
       </view>
 
       <view>
-        <text class="box-shadow-label">初始小尺寸，延迟1秒自动变大，点击可重放，验证 box-shadow 会随 view 尺寸同步更新</text>
+        <text class="color-text-333">初始小尺寸，延迟1秒自动变大，点击可重放，验证 box-shadow 会随 view 尺寸同步更新</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview-resize" @click="triggerShadowResizeDemo">
@@ -403,13 +403,13 @@
       </view>
 
       <view>
-        <text class="box-shadow-label">box-shadow父视图动态改变高度的渲染效果</text>
+        <text class="color-text-333">box-shadow父视图动态改变高度的渲染效果</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview">
               <view style="justify-content: center;align-items: center;width: 75px;background-color: green;box-shadow: 0 0 10px">
                 <view>
-                  <textarea id="dynamic-height-textarea" class="shadow-textarea" style="margin: 10px;background-color: aqua;height: 16px;width: 55px;" value="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"></textarea>
+                  <textarea id="dynamic-height-textarea" class="color-1a1a1a" style="margin: 10px;background-color: aqua;height: 16px;width: 55px;" value="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"></textarea>
                 </view>
               </view>
             </view>
@@ -418,7 +418,7 @@
             <view class="backgroundview">
               <view style="justify-content: center;align-items: center;width: 75px;background-color: green;box-shadow: 0 0 10px" flatten>
                 <view>
-                  <textarea id="dynamic-height-textarea-flat" class="shadow-textarea" style="margin: 10px;background-color: aqua;height: 16px;width: 55px;" value="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"></textarea>
+                  <textarea id="dynamic-height-textarea-flat" class="color-1a1a1a" style="margin: 10px;background-color: aqua;height: 16px;width: 55px;" value="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"></textarea>
                 </view>
               </view>
             </view>
@@ -426,7 +426,7 @@
         </view>
       </view>
       <view>
-        <text class="box-shadow-label">text组件: box-shadow: 5px 5px black</text>
+        <text class="color-text-333">text组件: box-shadow: 5px 5px black</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview">
@@ -441,7 +441,7 @@
         </view>
       </view>
       <view>
-        <text class="box-shadow-label">text组件: box-shadow: 5px 5px 5px #00FF00</text>
+        <text class="color-text-333">text组件: box-shadow: 5px 5px 5px #00FF00</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview-rect">
@@ -456,11 +456,11 @@
         </view>
       </view>
       <view>
-        <text class="box-shadow-label" style="font-weight: bold; margin-top: 20px;">圆形图片</text>
+        <text class="color-text-333" style="font-weight: bold; margin-top: 20px;">圆形图片</text>
       </view>
 
       <view>
-        <text class="box-shadow-label">image组件: box-shadow: 5px 5px black</text>
+        <text class="color-text-333">image组件: box-shadow: 5px 5px black</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview">
@@ -475,7 +475,7 @@
         </view>
       </view>
       <view>
-        <text class="box-shadow-label">image组件: box-shadow: 5px 5px 5px #00FF00</text>
+        <text class="color-text-333">image组件: box-shadow: 5px 5px 5px #00FF00</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview-rect">
@@ -490,7 +490,7 @@
         </view>
       </view>
       <view>
-        <text class="box-shadow-label">image组件（正圆）: box-shadow: 5px 5px black</text>
+        <text class="color-text-333">image组件（正圆）: box-shadow: 5px 5px black</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview">
@@ -506,11 +506,11 @@
       </view>
 
       <view>
-        <text class="box-shadow-label" style="font-weight: bold; margin-top: 20px;">方形图片</text>
+        <text class="color-text-333" style="font-weight: bold; margin-top: 20px;">方形图片</text>
       </view>
 
       <view>
-        <text class="box-shadow-label">image组件: box-shadow: 5px 5px black</text>
+        <text class="color-text-333">image组件: box-shadow: 5px 5px black</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview">
@@ -525,7 +525,7 @@
         </view>
       </view>
       <view>
-        <text class="box-shadow-label">image组件: box-shadow: 5px 5px 5px #00FF00</text>
+        <text class="color-text-333">image组件: box-shadow: 5px 5px 5px #00FF00</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview-rect">
@@ -540,7 +540,7 @@
         </view>
       </view>
       <view>
-        <text class="box-shadow-label">image组件（正圆）: box-shadow: 5px 5px black</text>
+        <text class="color-text-333">image组件（正圆）: box-shadow: 5px 5px black</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview">
@@ -555,9 +555,9 @@
         </view>
       </view>
 
-      <view class="uni-common-mt">
-        <text class="uni-title-text">scroll-view 组件</text>
-        <text class="uni-subtitle-text">box-shadow: 5px 5px black 和 box-shadow: 0 0 10px blue</text>
+      <view class="mt-15">
+        <text class="fs-15 fw-bold color-text-333">scroll-view 组件</text>
+        <text class="color-888 fs-12 fw-bold u-mt-5">box-shadow: 5px 5px black 和 box-shadow: 0 0 10px blue</text>
       </view>
 
       <view class="row-container">
@@ -569,84 +569,84 @@
         </view>
       </view>
 
-      <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
+      <view class="mt-15">
+        <text class="fs-15 fw-bold color-text-333">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <!-- 普通版本 -->
-      <view class="test-container">
+      <view class="flex-dir-row justify-between mt-10">
         <!-- view 组件测试 -->
-        <view class="test-item">
-          <text class="uni-subtitle-text">view 组件</text>
-          <text class="uni-info">设置值: {{data.boxShadow}}</text>
-          <text class="uni-info">获取值: {{data.boxShadowActual}}</text>
+        <view class="flex-1 m-0-5">
+          <text class="color-888 fs-12 fw-bold u-mt-5">view 组件</text>
+          <text class="fs-12 color-999">设置值: {{data.boxShadow}}</text>
+          <text class="fs-12 color-999">获取值: {{data.boxShadowActual}}</text>
           <view class="test-box">
-            <view ref="viewRef" class="common-dynamic test-view" :style="{ boxShadow: data.boxShadow }">
+            <view ref="viewRef" class="common-dynamic" :style="{ boxShadow: data.boxShadow }">
               <text class="common-text">view</text>
             </view>
           </view>
         </view>
 
         <!-- text 组件测试 -->
-        <view class="test-item">
-          <text class="uni-subtitle-text">text 组件</text>
-          <text class="uni-info">设置值: {{data.boxShadow}}</text>
-          <text class="uni-info">获取值: {{data.boxShadowActualText}}</text>
+        <view class="flex-1 m-0-5">
+          <text class="color-888 fs-12 fw-bold u-mt-5">text 组件</text>
+          <text class="fs-12 color-999">设置值: {{data.boxShadow}}</text>
+          <text class="fs-12 color-999">获取值: {{data.boxShadowActualText}}</text>
           <view class="test-box">
-            <text ref="textRef" class="common-dynamic common-text test-text" :style="{ boxShadow: data.boxShadow }">text</text>
+            <text ref="textRef" class="common-dynamic common-text" :style="{ boxShadow: data.boxShadow }">text</text>
           </view>
         </view>
 
         <!-- image 组件测试 -->
-        <view class="test-item">
-          <text class="uni-subtitle-text">image 组件</text>
-          <text class="uni-info">设置值: {{data.boxShadow}}</text>
-          <text class="uni-info">获取值: {{data.boxShadowActualImage}}</text>
+        <view class="flex-1 m-0-5">
+          <text class="color-888 fs-12 fw-bold u-mt-5">image 组件</text>
+          <text class="fs-12 color-999">设置值: {{data.boxShadow}}</text>
+          <text class="fs-12 color-999">获取值: {{data.boxShadowActualImage}}</text>
           <view class="test-box">
-            <image ref="imageRef" class="common-dynamic test-image" :style="{ boxShadow: data.boxShadow }" src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common-dynamic" :style="{ boxShadow: data.boxShadow }" src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
 
       <!-- 拍平版本（注意：不支持 inset 值） -->
-      <view class="test-container" v-if="showFlatSection()">
+      <view class="flex-dir-row justify-between mt-10" v-if="showFlatSection()">
         <!-- view 组件拍平测试 -->
-        <view class="test-item">
-          <text class="uni-subtitle-text">view 组件拍平</text>
-          <text class="uni-info">设置值: {{data.boxShadow}}</text>
-          <text class="uni-info">获取值: {{data.boxShadowActualFlat}}</text>
+        <view class="flex-1 m-0-5">
+          <text class="color-888 fs-12 fw-bold u-mt-5">view 组件拍平</text>
+          <text class="fs-12 color-999">设置值: {{data.boxShadow}}</text>
+          <text class="fs-12 color-999">获取值: {{data.boxShadowActualFlat}}</text>
           <view class="test-box">
-            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ boxShadow: data.boxShadow }" flatten>
+            <view ref="viewRefFlat" class="common-dynamic" :style="{ boxShadow: data.boxShadow }" flatten>
               <text class="common-text">view</text>
             </view>
           </view>
         </view>
 
         <!-- text 组件拍平测试 -->
-        <view class="test-item">
-          <text class="uni-subtitle-text">text 组件拍平</text>
-          <text class="uni-info">设置值: {{data.boxShadow}}</text>
-          <text class="uni-info">获取值: {{data.boxShadowActualTextFlat}}</text>
+        <view class="flex-1 m-0-5">
+          <text class="color-888 fs-12 fw-bold u-mt-5">text 组件拍平</text>
+          <text class="fs-12 color-999">设置值: {{data.boxShadow}}</text>
+          <text class="fs-12 color-999">获取值: {{data.boxShadowActualTextFlat}}</text>
           <view class="test-box">
-            <text ref="textRefFlat" class="common-dynamic common-text test-text-flatten" :style="{ boxShadow: data.boxShadow }" flatten>text</text>
+            <text ref="textRefFlat" class="common-dynamic common-text" :style="{ boxShadow: data.boxShadow }" flatten>text</text>
           </view>
         </view>
 
         <!-- image 组件拍平测试 -->
-        <view class="test-item">
-          <text class="uni-subtitle-text">image 组件拍平</text>
-          <text class="uni-info">设置值: {{data.boxShadow}}</text>
-          <text class="uni-info">获取值: {{data.boxShadowActualImageFlat}}</text>
+        <view class="flex-1 m-0-5">
+          <text class="color-888 fs-12 fw-bold u-mt-5">image 组件拍平</text>
+          <text class="fs-12 color-999">设置值: {{data.boxShadow}}</text>
+          <text class="fs-12 color-999">获取值: {{data.boxShadowActualImageFlat}}</text>
           <view class="test-box">
-            <image ref="imageRefFlat" class="common-dynamic test-image-flatten" :style="{ boxShadow: data.boxShadow }" flatten src="/static/test-image/logo.png"></image>
+            <image ref="imageRefFlat" class="common-dynamic" :style="{ boxShadow: data.boxShadow }" flatten src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
 
       <!-- 测试控制区域 -->
-      <view class="uni-common-mt uni-common-mb">
-        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
-        <enum-data :compact="true" :items="boxShadowEnum" title="box-shadow 枚举值" @change="radioChangeBoxShadow"></enum-data>
+      <view class="mt-15 mb-15">
+        <text class="fs-13 color-tips-0958d9 bg-tips-e6f4ff border-l-4-solid-tips-91caff p-10-12 radius-4 m-10">第一个枚举值，'' (空字符串) - 空值情况</text>
+        <enum-data-checkbox :compact="true" :items="boxShadowEnum" title="box-shadow 枚举值" @change="radioChangeBoxShadow"></enum-data-checkbox>
         <input-data :defaultValue="data.boxShadow" title="box-shadow 自定义值" type="text" @confirm="inputChangeBoxShadow"></input-data>
       </view>
 
@@ -654,7 +654,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ItemType } from '@/components/enum-data/enum-data-types'
+  import { ItemType } from '@/components/enum-data-checkbox/enum-data-checkbox-types'
 
   const data = reactive({
     boxShadow: '5px 5px black',
@@ -783,15 +783,6 @@
 </script>
 
 <style>
-  .box-shadow-label {
-    color: var(--text-color, #333333);
-  }
-
-  .shadow-textarea,
-  .scroll-view-label {
-    color: #1a1a1a;
-  }
-
   .common {
     width: 50px;
     height: 50px;
@@ -839,11 +830,6 @@
   .row-item {
     flex: 1;
     margin-right: 10px;
-  }
-
-  .big{
-    width: 200px;
-    height: 200px;
   }
 
   .shadow {
@@ -907,23 +893,7 @@
     background-color: brown;
   }
 
-  .image-shadow-ellipse {
-    width: 62px;
-    height: 40px;
-    background-color: brown;
-  }
-
   /* 多组件横向布局样式 */
-  .test-container {
-    flex-direction: row;
-    justify-content: space-between;
-    margin-top: 10px;
-  }
-
-  .test-item {
-    flex: 1;
-    margin: 0 5px;
-  }
 
   .test-box {
     width: 100%;
@@ -941,11 +911,5 @@
   .common-text {
     font-size: 10px;
     color: white;
-  }
-
-  .scroll-view-label {
-    font-size: 12px;
-    line-height: 100px;
-    text-align: center;
   }
 </style>

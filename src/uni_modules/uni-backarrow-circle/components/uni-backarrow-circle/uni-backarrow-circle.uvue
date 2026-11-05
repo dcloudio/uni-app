@@ -1,0 +1,112 @@
+<template>
+  <!-- 圆形背景承载点击区域，箭头由旋转边框绘制。 -->
+  <view class="back-circle" @click="handleClick">
+    <!-- #ifdef APP -->
+    <view class="back-arrow" flatten></view>
+    <!-- #endif -->
+  </view>
+</template>
+
+<script lang="ts" setup>
+  /**
+   * BackArrowCircle 圆形返回按钮
+   * @description 带圆形背景的返回箭头组件，使用旋转边框绘制箭头，支持暗黑模式与 CSS 变量定制箭头颜色、线宽；默认只触发 click，开启 autoBack 后自动返回上一页。
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {"unixVaporVer": "5.33"},
+   *     "ios": {"unixVaporVer": "5.33"},
+   *     "harmony": {"unixVaporVer": "5.33"}
+   *   },
+   *   "mp": {
+   *     "weixin": {"unixVer": "5.33"},
+   *     "alipay": {"unixVer": "5.33"}
+   *   },
+   *   "web": {"unixVer": "5.33","unixVaporVer": "5.33"}
+   * }
+   * @property {Boolean} autoBack 点击后是否自动调用 uni.navigateBack({}) 返回上一页，默认值 false
+   * @event {Function} click 点击时触发，无参数；当 autoBack 为 true 时随后返回上一页
+   */
+
+  const props = withDefaults(defineProps<{
+    /**
+     * @description 点击后是否自动调用 uni.navigateBack({}) 返回上一页
+     * @default false
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {"unixVaporVer": "5.33"},
+     *     "ios": {"unixVaporVer": "5.33"},
+     *     "harmony": {"unixVaporVer": "5.33"}
+     *   },
+     *   "mp": {
+     *     "weixin": {"unixVer": "5.33"},
+     *     "alipay": {"unixVer": "5.33"}
+     *   },
+     *   "web": {"unixVer": "5.33","unixVaporVer": "5.33"}
+     * }
+     */
+    autoBack?: boolean
+  }>(), {
+    autoBack: false
+  })
+
+  const emit = defineEmits(['click'])
+  const handleClick = () => {
+    emit('click')
+    if (props.autoBack) {
+      uni.navigateBack({})
+    }
+  }
+</script>
+
+<style>
+  .back-circle {
+    width: 28px;
+    height: 28px;
+    border-radius: 14px;
+    background-color: rgba(220, 220, 220, 0.3);
+    justify-content: center;
+    align-items: center;
+    margin-left: calc(var(--uni-safe-area-inset-left, 0px) + 6px);
+    /* #ifdef MP */
+    margin-top: var(--status-bar-height);
+    /* #endif */
+    /* #ifndef MP */
+    margin-top: var(--uni-safe-area-inset-top);
+    /* #endif */
+    /* 将旋转边框绘制的箭头向右微调，使其在圆形背景内视觉居中。 */
+    padding-left: 4px;
+  }
+
+  /* 通过根节点上的 CSS 变量定制箭头颜色和线宽。 */
+  /* #ifdef WEB || MP */
+  .back-circle::after,
+  /* #endif */
+  .back-arrow {
+    width: 12px;
+    height: 12px;
+    transform: rotate(45deg);
+    border-left: var(--uni-backarrow-circle-width, 2px) solid var(--uni-backarrow-circle-color, #000000);
+    border-bottom: var(--uni-backarrow-circle-width, 2px) solid var(--uni-backarrow-circle-color, #000000);
+  }
+
+  /* #ifdef WEB || MP */
+  .back-circle::after {
+    content: '';
+    box-sizing: border-box;
+  }
+  /* #endif */
+
+  @media (prefers-color-scheme: dark) {
+    .back-circle {
+      background-color: rgba(80, 80, 80, 0.45);
+    }
+
+    /* #ifdef WEB || MP */
+    .back-circle::after,
+    /* #endif */
+    .back-arrow {
+      border-left-color: var(--uni-backarrow-circle-color, #ffffff);
+      border-bottom-color: var(--uni-backarrow-circle-color, #ffffff);
+    }
+  }
+</style>

@@ -1,38 +1,36 @@
 <template>
-  <view class="swiper-list">
-    <scroll-view ref="tabScroll" class="swiper-tabs" direction="horizontal" :show-scrollbar="false">
-      <view class="flex-row">
-        <text :ref="setSwiperTabRef" class="swiper-tabs-item"
-          :class="swiperIndex==index ? 'swiper-tabs-item-active' : ''" v-for="(item, index) in swiperList" :key="index"
+    <scroll-view ref="tabScroll" class="bg-list-fff" direction="horizontal" :show-scrollbar="false">
+      <view class="flex-dir-row self-flex-start">
+        <text :ref="setSwiperTabRef" class="fs-16 p-12-25 ws-nowrap"
+          :class="swiperIndex==index ? 'color-007aff' : 'color-text-555'" v-for="(item, index) in swiperList" :key="index"
           @click="onTabClick(index)">
           {{item.title}}
         </text>
       </view>
-      <view ref="indicator" class="swiper-tabs-indicator"></view>
+      <view ref="indicator" class="w-1 u-h-2 bg-007aff"></view>
     </scroll-view>
 
-    <swiper ref="swiper" class="swiper-view" :current="swiperIndex" @transition="onSwiperTransition"
+    <swiper ref="swiper" class="flex-1" :current="swiperIndex" @transition="onSwiperTransition"
       @animationfinish="onSwiperAnimationfinish">
-      <swiper-item class="swiper-item" v-for="(_, index) in swiperList" :key="index">
-        <text class="uni-title">显示当前value</text>
+      <swiper-item class="flex-1 u-p-15" v-for="(_, index) in swiperList" :key="index">
+        <text class="p-10-0 color-text-333">显示当前value</text>
         <slider :value="50" :show-value="true" />
 
-        <text class="uni-title">设置步进:step=10跳动</text>
+        <text class="p-10-0 color-text-333">设置步进:step=10跳动</text>
         <slider :value="60" :step="10" />
 
-        <text class="uni-title">浮点步进:step=0.01跳动</text>
+        <text class="p-10-0 color-text-333">浮点步进:step=0.01跳动</text>
         <slider :value="0.5" :min="0" :max="1" :step="0.01" :show-value="true" />
 
-        <text class="uni-title">设置最小/最大值</text>
+        <text class="p-10-0 color-text-333">设置最小/最大值</text>
         <slider :value="100" :min="50" :max="200" :show-value="true" />
 
-        <text class="uni-title">不同颜色和大小的滑块</text>
+        <text class="p-10-0 color-text-333">不同颜色和大小的滑块</text>
         <slider id="slider-custom-color-and-size" :value="sliderValue" :backgroundColor="sliderBackgroundColor"
           :activeColor="sliderActiveColor" :activeBackgroundColor="sliderActiveColor" :blockColor="sliderBlockColor"
           :foreColor="sliderBlockColor" :block-size="sliderBlockSize" track-active-class="track-active-class" track-class="track-class" thumb-class="thumb-class"/>
       </swiper-item>
     </swiper>
-  </view>
 </template>
 
 <script setup lang="ts">
@@ -246,45 +244,6 @@
 </script>
 
 <style>
-  .flex-row {
-    flex-direction: row;
-    align-self: flex-start;
-  }
-
-  .swiper-list {
-    flex: 1;
-  }
-
-  .swiper-tabs {
-    background-color: var(--list-background-color, #ffffff);
-  }
-
-  .swiper-tabs-item {
-    color: var(--text-color, #555);
-    font-size: 16px;
-    padding: 12px 25px;
-    white-space: nowrap;
-  }
-
-  .swiper-tabs-item-active {
-    color: #007AFF;
-  }
-
-  .swiper-tabs-indicator {
-    width: 1px;
-    height: 2px;
-    background-color: #007AFF;
-  }
-
-  .swiper-view {
-    flex: 1;
-  }
-
-  .swiper-item {
-    flex: 1;
-    padding: 15px;
-  }
-
   .track-class {
     background-color: #000000;
   }

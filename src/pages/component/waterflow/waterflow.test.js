@@ -195,4 +195,82 @@ describe('component-native-waterflow', () => {
     const image = await program.screenshot({fullPage: false});
     expect(image).toSaveImageSnapshot();
   })
+
+  async function expectNumericAttribute(element, name, value) {
+    // 不把 null / 空字符串转换成 0，属性读不到时必须失败。
+    await page.waitFor(async () => {
+      return String(await element.attribute(name)) === String(value)
+    })
+    expect(String(await element.attribute(name))).toBe(String(value))
+  }
+
+  it('max-cross-axis-extent 开启限制宽度，关闭恢复布局', async () => {
+    page = await program.reLaunch('/pages/component/waterflow/waterflow')
+    await page.waitFor('#waterflow')
+    const waterflow = await page.$('#waterflow')
+    // 单列确保初始 item 宽度超过 150px，不依赖设备的默认列宽。
+    await page.setData({ data: { cross_axis_count: 1 } })
+    await page.waitFor('#item---0')
+    const item = await page.$('#item---0')
+    await page.waitFor(async () => {
+      const { width } = await item.size()
+      const containerWidth = (await waterflow.size()).width
+      // 原页左右 padding 合计 10px；等待单列布局完成，避免读到旧列宽。
+      return width > 151 && Math.abs(containerWidth - width) <= 11
+    })
+    const originalWidth = (await item.size()).width
+    await expectNumericAttribute(waterflow, 'max-cross-axis-extent', 0)
+
+    await page.setData({ data: { max_cross_axis_extent_boolean: true } })
+    await expectNumericAttribute(waterflow, 'max-cross-axis-extent', 150)
+    await page.waitFor(async () => {
+      const { width } = await item.size()
+      return width > 0 && width <= 151
+    })
+    const enabledWidth = (await item.size()).width
+    expect(enabledWidth).toBeGreaterThan(0)
+    expect(enabledWidth).toBeLessThanOrEqual(151)
+    expect(enabledWidth).toBeLessThan(originalWidth)
+
+    await page.setData({ data: { max_cross_axis_extent_boolean: false } })
+    await expectNumericAttribute(waterflow, 'max-cross-axis-extent', 0)
+    await page.waitFor(async () => Math.abs((await item.size()).width - originalWidth) <= 1)
+    expect(Math.abs((await item.size()).width - originalWidth)).toBeLessThanOrEqual(1)
+  })
+
+  // 只检查组件属性绑定，不模拟下拉手势
+  it('refresher-threshold 开关绑定 45 → 80 → 45', async () => {
+    page = await program.reLaunch('/pages/component/waterflow/waterflow')
+    await page.waitFor('#waterflow')
+    const waterflow = await page.$('#waterflow')
+    await page.setData({ data: {
+      refresher_enabled_boolean: true,
+      refresher_default_style_input: 'none'
+    } })
+    await expectNumericAttribute(waterflow, 'refresher-threshold', 45)
+    await page.setData({ data: { refresher_threshold_boolean: true } })
+    await expectNumericAttribute(waterflow, 'refresher-threshold', 80)
+    await page.setData({ data: { refresher_threshold_boolean: false } })
+    await expectNumericAttribute(waterflow, 'refresher-threshold', 45)
+  })
+
+  it('refresher-max-drag-distance 开启设置 200，关闭恢复默认', async () => {
+    page = await program.reLaunch('/pages/component/waterflow/waterflow')
+    await page.waitFor('#waterflow')
+    const waterflow = await page.$('#waterflow')
+    await page.setData({ data: {
+      refresher_enabled_boolean: true,
+      refresher_default_style_input: 'none'
+    } })
+    await expectNumericAttribute(waterflow, 'refresher-threshold', 45)
+    // 未设置时各端可能返回空值或原生默认值，记录基线用于验证恢复。
+    const originalValue = await waterflow.attribute('refresher-max-drag-distance')
+    await page.setData({ data: { refresher_max_drag_distance_boolean: true } })
+    await expectNumericAttribute(waterflow, 'refresher-max-drag-distance', 200)
+    await page.setData({ data: { refresher_max_drag_distance_boolean: false } })
+    await page.waitFor(async () => {
+      return await waterflow.attribute('refresher-max-drag-distance') === originalValue
+    })
+    expect(await waterflow.attribute('refresher-max-drag-distance')).toBe(originalValue)
+  })
 })

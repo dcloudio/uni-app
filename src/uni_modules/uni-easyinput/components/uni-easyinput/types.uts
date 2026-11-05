@@ -1,0 +1,139 @@
+/**
+ * uni-easyinput 增强输入框属性
+ * @description 在原生 input / textarea 基础上提供清空、密码显隐、错误态、空白裁剪和左右插槽。所有布尔属性默认均为 false。
+ * @uniPlatform {
+ *   "app": {
+ *     "android": {
+ *       "uniVer": "x",
+ *       "unixVer": "5.07",
+ *       "unixVaporVer": "5.21"
+ *     },
+ *     "ios": {
+ *       "uniVer": "x",
+ *       "unixVer": "5.07",
+ *       "unixVaporVer": "5.11"
+ *     },
+ *     "harmony": {
+ *       "uniVer": "x",
+ *       "unixVer": "5.07",
+ *       "unixVaporVer": "5.07"
+ *     }
+ *   },
+ *   "mp": {
+ *     "weixin": {
+ *       "uniVer": "x",
+ *       "unixVer": "5.07"
+ *     },
+ *     "alipay": {
+ *       "uniVer": "x",
+ *       "unixVer": "5.31"
+ *     }
+ *   },
+ *   "web": {
+ *     "uniVer": "x",
+ *     "unixVer": "5.07"
+ *   }
+ * }
+ */
+export type UniEasyinputProps = {
+	/**
+	 * @description 输入内容，支持 v-model
+	 * @default ""
+	 */
+	modelValue? : string | number | null,
+	/**
+	 * @description 不使用 v-model 时传入的输入内容
+	 * @default ""
+	 */
+	value? : string | number | null,
+	/**
+	 * @description 原生表单控件名称，透传给 input / textarea
+	 * @default ""
+	 */
+	name? : string,
+	/**
+	 * @description 输入类型。textarea 渲染多行输入框，password 渲染密码输入框，其余透传给原生单行输入
+	 * @default "text"
+	 */
+	type? : string,
+	/**
+	 * @description 占位文字
+	 * @default ""
+	 */
+	placeholder? : string,
+	/**
+	 * @description 是否禁用
+	 * @default false
+	 */
+	disabled? : boolean,
+	/**
+	 * @description 最大输入长度，透传给 input / textarea
+	 * @default -1
+	 */
+	maxlength? : number,
+	/**
+	 * @description 是否聚焦
+	 * @default false
+	 */
+	focus? : boolean,
+	/**
+	 * @description 键盘右下角按钮类型，透传给 input / textarea
+	 * @default ""
+	 */
+	confirmType? : string,
+	/**
+	 * @description 光标与键盘的距离，单位 px，透传给 input / textarea
+	 * @default 0
+	 */
+	cursorSpacing? : number,
+	/**
+	 * @description 键盘弹起时是否自动上推页面，透传给 input / textarea
+	 * @default false
+	 */
+	adjustPosition? : boolean,
+	/**
+	 * @description 是否自动增高，仅当 type 为 textarea 时生效
+	 * @default false
+	 */
+	autoHeight? : boolean,
+	/**
+	 * @description 是否显示清空图标，仅对单行 input 生效
+	 * @default false
+	 */
+	clearable? : boolean,
+	/**
+	 * @description type 为 password 时是否显示密码显隐图标
+	 * @default false
+	 */
+	passwordIcon? : boolean,
+	/**
+	 * @description 空白裁剪方式。true/"both" 去首尾；"left" 去左侧；"right" 去右侧；"all" 去全部空白
+	 * @default false
+	 */
+	trim? : boolean | string,
+	/**
+	 * @description 错误状态。为 true 或非空字符串时进入错误态，不渲染错误文案节点
+	 * @default false
+	 */
+	errorMessage? : string | boolean,
+	/**
+	 * @description input / textarea 的自定义样式类
+	 * @default ""
+	 */
+	inputClass? : string.ClassString,
+	/**
+	 * @description 占位文字的自定义样式类
+	 * @default ""
+	 */
+	placeholderClass? : string.ClassString,
+	/**
+	 * @description 清空和密码显隐图标的自定义样式类
+	 * @default ""
+	 */
+	iconClass? : string.ClassString,
+	/**
+	 * @description 错误态的自定义样式类，作用于根节点边框和占位文字颜色
+	 * @default ""
+	 */
+	errorClass? : string.ClassString
+}

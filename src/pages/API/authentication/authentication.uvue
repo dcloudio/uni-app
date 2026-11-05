@@ -1,25 +1,19 @@
 <template>
-	<!-- #ifdef APP -->
-	<scroll-view style="flex: 1;padding: 6px;">
-	<!-- #endif -->
-		<text class="uni-h2">生物认证</text>
-		<text class="notice">低版本安卓仅支持指纹，高版本 Android 指纹和人脸会弹出统一认证框。</text>
+		<text class="fs-24 fw-bold border-b-1-solid-ccc m-8-0">生物认证</text>
+		<text class="color-500 fs-14 font-italic">低版本安卓仅支持指纹，高版本 Android 指纹和人脸会弹出统一认证框。</text>
 
-		<text class="uni-h3">设备支持情况</text>
-		<text class="log-text">{{ supportStatus }}</text>
-		<button class="margin-v" @tap="checkSupport">检查支持的认证方式</button>
+		<text class="fs-20 fw-bold m-8-0">设备支持情况</text>
+		<text class="u-p-10 border-1-solid-ccc fs-14">{{ supportStatus }}</text>
+		<button class="m-5-0" @tap="checkSupport">检查支持的认证方式</button>
 
-		<text class="uni-h3">录入状态检查</text>
-		<button class="margin-v" @tap="checkAuth('fingerPrint')">检查指纹</button>
-		<button class="margin-v" @tap="checkAuth('facial')">检查人脸识别</button>
+		<text class="fs-20 fw-bold m-8-0">录入状态检查</text>
+		<button class="m-5-0" @tap="checkAuth('fingerPrint')">检查指纹</button>
+		<button class="m-5-0" @tap="checkAuth('facial')">检查人脸识别</button>
 
-		<text class="uni-h3">认证结果</text>
-		<text class="log-text">{{ authResult }}</text>
-		<button class="margin-v" @tap="startAuth('fingerPrint')" type="primary">指纹认证</button>
-		<button class="margin-v" @tap="startAuth('facial')" type="primary">人脸认证</button>
-	<!-- #ifdef APP -->
-	</scroll-view>
-	<!-- #endif -->
+		<text class="fs-20 fw-bold m-8-0">认证结果</text>
+		<text class="u-p-10 border-1-solid-ccc fs-14">{{ authResult }}</text>
+		<button class="m-5-0" @tap="startAuth('fingerPrint')" type="primary">指纹认证</button>
+		<button class="m-5-0" @tap="startAuth('facial')" type="primary">人脸认证</button>
 </template>
 
 <script setup lang="ts">
@@ -79,19 +73,7 @@ const startAuth = (mode: AuthMode) => {
 </script>
 
 <style>
-  .margin-v {
-    margin: 5px 0;
-  }
-
-	.log-text {
-    padding: 10px;
-		font-size: 14px;
-    border: 1px solid #ccc;
-  }
-
-	.notice {
-	  color: #550000;
-		font-size: 14px;
-		font-style: italic;
-	}
+page {
+  padding: 6px;
+}
 </style>

@@ -1,18 +1,18 @@
 <template>
   <page-head title="share-element"></page-head>
-  <view class="main">
+  <view class="p-5-0 items-center justify-center">
     <swiper circular="true">
       <swiper-item>
-        <share-element class="share-element" share-key="left" :shuttle-on-pop="shuttleOnPopType"
+        <share-element share-key="left" :shuttle-on-pop="shuttleOnPopType"
           :transition-on-gesture="transitionOnGesture" :shuttle-on-push="shuttleOnPushType"  :easing-function="easingFunctionType" @tap="openPage()">
-          <image style="width: 100px;height: 150px;"
+          <image class="w-100 h-150"
             src="https://web-ext-storage.dcloud.net.cn/hello-uni-app-x/drop-card-1.jpg">
           </image>
         </share-element>
       </swiper-item>
     </swiper>
   </view>
-  <button type="primary" @click="openPage" class="button">
+  <button type="primary" @click="openPage">
     打开share-element页面
   </button>
 
@@ -43,7 +43,7 @@
     'from' |
     'to'
 
-  import { ItemType } from '@/components/enum-data/enum-data-types'
+  import { ItemType } from '@/components/enum-data-checkbox/enum-data-checkbox-types'
 
   const transitionOnGesture = ref(true)
   const shuttleOnPopType = ref('to' as ShuttleOnType)
@@ -81,39 +81,3 @@
     })
   }
 </script>
-
-<style>
-  .ml-10 {
-    margin-left: 10px;
-  }
-
-  .choose-property-title {
-    font-weight: bold;
-  }
-
-  .choose-property-type-radio-group {
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-
-  .bottomWrap {
-    width: 100%;
-    bottom: 0px;
-    height: 80px;
-    position: fixed;
-  }
-
-  .bottom {
-    width: 100%;
-    height: 100%;
-    align-items: center;
-    justify-content: center;
-    background-color: #007aff;
-  }
-
-  .main {
-    padding: 5px 0;
-    align-items: center;
-    justify-content: center;
-  }
-</style>

@@ -1,24 +1,22 @@
 <template>
-  <view style="flex: 1;">
-    <list-view style="flex: 1;" @scrolltolower="loadmore" :refresher-enabled="true" @refresherrefresh="refresh">
-      <list-item v-for="(item, index) in items" :key="item.id" style="padding: 10px; border-bottom: 1px solid #eee;">
+    <list-view class="flex-1" @scrolltolower="loadmore" :refresher-enabled="true" @refresherrefresh="refresh">
+      <list-item class="u-p-10 border-b-width-1 border-b-style-solid border-b-color-eee" v-for="(item, index) in items" :key="item.id">
         <view>
           <text>{{ item.name }}</text>
         </view>
-        <view style="margin-top: 10px;">
+        <view class="mt-10">
           <checkbox-group @change="checkboxChange(index)">
             <checkbox :checked="item.checkboxChecked" />
           </checkbox-group>
         </view>
-        <view style="margin-top: 10px;">
+        <view class="mt-10">
           <switch :checked="item.switchChecked" @change="switchChange(index)" />
         </view>
-        <view style="margin-top: 10px;">
-          <input v-model="item.inputValue" placeholder="Input something..." style="border: 1px solid #ccc;" />
+        <view class="mt-10">
+          <input v-model="item.inputValue" placeholder="Input something..." class="border-1-solid-ccc" />
         </view>
       </list-item>
     </list-view>
-  </view>
 </template>
 
 <script setup lang="ts">
@@ -73,7 +71,3 @@
     loadData(false)
   })
 </script>
-
-<style>
-
-</style>

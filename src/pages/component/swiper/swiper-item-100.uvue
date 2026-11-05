@@ -1,19 +1,23 @@
 <template>
-  <view class="swiper-list">
-    <scroll-view ref="tabScroll" class="swiper-tabs" direction="horizontal" :show-scrollbar="false">
-      <view class="flex-row">
-        <text ref="swipertab" class="swiper-tabs-item"
-          :class="swiperIndex==index ? 'swiper-tabs-item-active' : ''" v-for="(item, index) in swiperList" :key="index"
+  <view class="flex-1 swiper-list">
+    <scroll-view ref="tabScroll" class="bg-list-fff" direction="horizontal" :show-scrollbar="false">
+      <view class="flex-dir-row self-flex-start
+      <!-- #ifdef (WEB && VUE3-VAPOR) -->
+      swiper-tabs
+      <!-- #endif -->
+       ">
+        <text ref="swipertab" class="fs-16 p-12-25"
+          :class="swiperIndex==index ? 'color-007aff' : 'color-swiper-tab-text-555'" v-for="(item, index) in swiperList" :key="index"
           @click="onTabClick(index)">
           {{item.title}}
         </text>
       </view>
-      <view ref="indicator" class="swiper-tabs-indicator"></view>
+      <view ref="indicator" class="w-1 u-h-2 bg-007aff"></view>
     </scroll-view>
-    <swiper ref="swiper" class="swiper-view" :current="swiperIndex" @transition="onSwiperTransition"
+    <swiper ref="swiper" class="flex-1" :current="swiperIndex" @transition="onSwiperTransition"
       @animationfinish="onSwiperAnimationfinish">
-      <swiper-item class="swiper-item" v-for="(_, index) in swiperList" :key="index">
-        <text class="swiper-item-text">{{index}}</text>
+      <swiper-item class="flex-1 items-center justify-center" v-for="(_, index) in swiperList" :key="index">
+        <text class="fs-72 fw-bold color-text-333">{{index}}</text>
         <!-- 可以将上述text组件替换为list组件，实现可左右滑动的长列表 -->
       </swiper-item>
     </swiper>
@@ -187,51 +191,8 @@ insPage.onRenderChange(({ duration }) => {
 </script>
 
 <style>
-  .flex-row {
-    flex-direction: row;
-    align-self: flex-start;
-  }
-
   .swiper-list {
     --swiper-tab-text-color: #555;
-    flex: 1;
-  }
-
-  .swiper-tabs {
-    background-color: var(--list-background-color, #ffffff);
-  }
-
-  .swiper-tabs-item {
-    color: var(--swiper-tab-text-color, #555);
-    font-size: 16px;
-    padding: 12px 25px;
-    /* white-space: nowrap; */
-  }
-
-  .swiper-tabs-item-active {
-    color: #007AFF;
-  }
-
-  .swiper-tabs-indicator {
-    width: 1px;
-    height: 2px;
-    background-color: #007AFF;
-  }
-
-  .swiper-view {
-    flex: 1;
-  }
-
-  .swiper-item {
-    flex: 1;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .swiper-item-text {
-    font-size: 72px;
-    font-weight: bold;
-    color: var(--text-color, #333333);
   }
 
   @media (prefers-color-scheme: dark) {
@@ -239,4 +200,11 @@ insPage.onRenderChange(({ duration }) => {
       --swiper-tab-text-color: #ffffff;
     }
   }
+
+  /* #ifdef WEB && VUE3-VAPOR */
+  /* Flex 兼容性算法: https://github.com/w3c/csswg-drafts/issues/8884 */
+  .swiper-tabs {
+    overflow: visible;
+  }
+  /* #endif */
 </style>

@@ -1,59 +1,64 @@
 <template>
-    <view>
     <page-head :title="title"></page-head>
-    <view class="uni-list-cell-padding status-box">
-      <view class="uni-title uni-common-mt">
-        <text class="uni-title-text share-text">分享内容：</text>
+    <view class="p-10-15 color-text-333 bg-list-fff m-0-20">
+      <view class="p-10-0 color-text-333 mt-15">
+        <text class="fs-15 fw-bold color-text-333">分享内容：</text>
       </view>
-      <textarea class="share-content"
+      <textarea class="u-p-10 color-333 share-content border-width-1 border-style-solid border-color-000 bg-f0f8ff"
         :auto-height=" true" :value="shareContent"></textarea>
     </view>
-    <view class="uni-list-cell-padding status-box">
-      <view class="uni-title uni-common-mt">
-        <text class="uni-title-text share-text">分享图片：</text>
+    <view class="p-10-15 color-text-333 bg-list-fff m-0-20">
+      <view class="p-10-0 color-text-333 mt-15">
+        <text class="fs-15 fw-bold color-text-333">分享图片：</text>
       </view>
-      <view style="flex-wrap: wrap;">
-        <image v-if="imageURL != null" style="width: 104px; height: 104px;" :src="imageURL">
+      <view class="flex-wrap-wrap">
+        <image v-if="imageURL != null" class="w-104 h-104" :src="imageURL">
         </image>
-        <image v-else class="uni-uploader__input-box" @tap="chooseImage" src="/static/plus.png"></image>
+        <image v-else class="uni-uploader__input-box w-104 h-104 m-5 border-1-solid-d9d9d9" @tap="chooseImage" src="/static/plus.png"></image>
       </view>
     </view>
-    <view class="uni-list-cell-padding status-box">
-      <view class="uni-title uni-common-mt">
-        <text class="uni-title-text share-text">分享类型：</text>
+    <view class="p-10-15 color-text-333 bg-list-fff m-0-20">
+      <view class="p-10-0 color-text-333 mt-15">
+        <text class="fs-15 fw-bold color-text-333">分享类型：</text>
       </view>
-      <radio-group class="uni-row" @change="typeChange">
-        <view class="uni-common-mt share-radio"><radio value="0" :checked="true" /><text>图文</text></view>
-        <view class="uni-common-mt share-radio"><radio value="1" /><text>纯文字</text></view>
-        <view class="uni-common-mt share-radio"><radio value="2" /><text>纯图片</text></view>
-      </radio-group>
+      <enum-data-checkbox
+        :model-value="type.toString()"
+        :items="typeOptions"
+        mode="default"
+        :show-toast="false"
+        @change="typeChange"
+      />
     </view>
-    <view class="uni-list-cell-padding status-box">
-      <view class="uni-title uni-common-mt">
-        <text class="uni-title-text share-text">分享到：</text>
+    <view class="p-10-15 color-text-333 bg-list-fff m-0-20">
+      <view class="p-10-0 color-text-333 mt-15">
+        <text class="fs-15 fw-bold color-text-333">分享到：</text>
       </view>
-      <radio-group class="uni-row" style="flex-wrap: wrap;" @change="sceneChange">
-        <view class="uni-common-mt share-radio"><radio value="WXSceneSession" :checked="true" /><text>聊天界面</text></view>
-        <view class="uni-common-mt share-radio"><radio value="WXSceneTimeline" /><text>朋友圈</text></view>
-        <view class="uni-common-mt share-radio"><radio value="WXSceneFavorite" :disabled="true" style="color: gray;" /><text>微信收藏（暂不支持）</text></view>
-      </radio-group>
+      <enum-data-checkbox
+        :model-value="scene"
+        :items="sceneOptions"
+        mode="default"
+        :show-toast="false"
+        @change="sceneChange"
+      />
     </view>
 
-    <view class="uni-padding-wrap uni-common-mt">
+    <view class="p-0-15 mt-15">
       <button type="primary" @click="share">分享</button>
-    </view>
     </view>
 </template>
 
 <script setup lang="ts">
+  const typeOptions = [{ value: '0', text: '图文' }, { value: '1', text: '纯文字' }, { value: '2', text: '纯图片' }]
+  const sceneOptions = [{ value: 'WXSceneSession', text: '聊天界面' }, { value: 'WXSceneTimeline', text: '朋友圈' }, { value: 'WXSceneFavorite', text: '微信收藏（暂不支持）', disabled: true }]
+
   const scene = ref('WXSceneSession')
   const type = ref(0)
 
-  const typeChange = (e : UniRadioGroupChangeEvent) => {
-    type.value = parseInt(e.detail.value)
+  const typeChange = (value : string) => {
+    type.value = parseInt(value)
   }
-  const sceneChange = (e : UniRadioGroupChangeEvent) => {
-    scene.value = e.detail.value
+  const sceneChange = (value : string) => {
+    scene.value = value
   }
 
   const title = ref('share')
@@ -106,35 +111,8 @@
 </script>
 
 <style>
-  .uni-uploader__input-box {
-    margin: 5px;
-    width: 104px;
-    height: 104px;
-    border: 1px solid #D9D9D9;
-  }
-
-  .status-box {
-    background-color: var(--list-background-color, #ffffff);
-    margin: 0 20px;
-  }
-
-  .share-text,
-  .share-radio {
-    color: var(--text-color, #333333);
-  }
-
-  .share-radio {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-  }
-
   .share-content {
     max-height: 100px;
-    padding: 10px;
-    color: #333333;
-    background-color: aliceblue;
-    border: 1px solid black;
   }
 
   @media (prefers-color-scheme: dark) {

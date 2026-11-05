@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ItemType } from '@/components/enum-data/enum-data-types'
+  import { ItemType } from '@/components/enum-data-checkbox/enum-data-checkbox-types'
 
   type DataType = {
     value2: string;
@@ -163,8 +163,8 @@
 </script>
 
 <template>
-    <view class="main">
-      <textarea :value="data.default_value" id="uni-textarea" class="uni-textarea themed-textarea" :auto-focus="true" :focus="data.focus_boolean"
+    <view class="min-h-100 p-5-0 border-b-1-solid-border-black-a6 bg-page-f8f8f8 flex-dir-row justify-center">
+      <textarea :value="data.default_value" id="uni-textarea" class="uni-textarea lh-1_6x fs-14 themed-textarea u-p-10 h-200" :auto-focus="true" :focus="data.focus_boolean"
         :confirm-hold="data.confirm_hold_boolean" :auto-height="data.auto_height_boolean" :fixed="data.fixed_boolean"
         :show-confirm-bar="data.show_confirm_bar_boolean" :adjust-position="data.adjust_position_boolean"
         :cursor-color="data.cursor_color" :cursor="data.cursor" :placeholder="data.placeholder_value"
@@ -173,8 +173,7 @@
         @touchstart="textarea_touchstart" @touchmove="textarea_touchmove" @touchcancel="textarea_touchcancel"
         @touchend="textarea_touchend" @tap="textarea_tap" @longpress="textarea_longpress" @confirm="textarea_confirm"
         @input="textarea_input" @linechange="textarea_linechange" @blur="textarea_blur"
-        @keyboardheightchange="textarea_keyboardheightchange" @focus="textarea_focus" @change="textarea_change"
-        style="padding: 10px;height: 200px" />
+        @keyboardheightchange="textarea_keyboardheightchange" @focus="textarea_focus" @change="textarea_change"/>
     </view>
     <view class="textarea-page">
       <!-- #ifndef MP-ALIPAY -->
@@ -191,16 +190,16 @@
       <boolean-data :value="false" title="设置禁用输入框"
         @change="change_disabled_boolean"></boolean-data>
       <!-- #ifndef MP-ALIPAY -->
-      <enum-data :items="data.confirm_type_list" title="confirm-type，设置键盘右下角按钮。"
-        @change="radio_change_confirm_type"></enum-data>
+      <enum-data-checkbox :items="data.confirm_type_list" title="confirm-type，设置键盘右下角按钮。"
+        @change="radio_change_confirm_type"></enum-data-checkbox>
       <!-- #endif -->
       <!-- #ifndef MP-ALIPAY -->
       <boolean-data :value="false" title="点击软键盘右下角按钮时是否保持键盘不收起(confirm-type为return时必然不收起)"
         @change="change_confirm_hold_boolean"></boolean-data>
       <!-- #endif -->
       <!-- #ifndef MP-ALIPAY -->
-      <enum-data :items="data.inputmode_enum" title="input-mode，控制软键盘类型。（仅限 Web 平台符合条件的高版本浏览器或webview）。"
-        @change="radio_change_inputmode_enum"></enum-data>
+      <enum-data-checkbox :items="data.inputmode_enum" title="input-mode，控制软键盘类型。（仅限 Web 平台符合条件的高版本浏览器或webview）。"
+        @change="radio_change_inputmode_enum"></enum-data-checkbox>
       <!-- #endif -->
       <!-- #ifndef MP-ALIPAY -->
       <boolean-data :value="false" title="是否显示键盘上方带有“完成”按钮那一栏（仅限小程序平台）"
@@ -210,167 +209,167 @@
       <!-- #endif -->
 
 
-      <view class="title-wrap">
+      <view class="flex-dir-row items-center u-ml-10 color-text-333">
         <view>maxlength 输入最大长度为10</view>
       </view>
-      <view class="textarea-wrap">
-        <textarea id="textarea-instance-maxlength" class="textarea-instance" :value="data.textareaMaxLengthValue"
+      <view class="flex-dir-row justify-center">
+        <textarea id="textarea-instance-maxlength" class="textarea-instance flex-1 m-10" :value="data.textareaMaxLengthValue"
           :maxlength="10" />
       </view>
 
       <!-- #ifndef MP-ALIPAY -->
-      <view class="title-wrap">
-        <view class="textarea-title-text">cursor-spacing、placeholder-class、placeholder-style例子(harmony 不支持设置 placeholder backgroundColor)</view>
+      <view class="flex-dir-row items-center u-ml-10 color-text-333">
+        <view class="flex-1">cursor-spacing、placeholder-class、placeholder-style例子(harmony 不支持设置 placeholder backgroundColor)</view>
       </view>
-      <view class="textarea-wrap">
-        <textarea id="textarea-height-exception" class="textarea-instance" placeholder="底部textarea测试键盘遮挡"
+      <view class="flex-dir-row justify-center">
+        <textarea id="textarea-height-exception" class="textarea-instance flex-1 m-10" placeholder="底部textarea测试键盘遮挡"
           placeholder-class="placeholder" placeholder-style="background-color:red" :cursor-spacing="300" />
       </view>
-      <view class="title-wrap">
-        <view class="textarea-title-text" @click="setSelection(2, 5)">设置输入框聚焦时光标的起始位置和结束位置（点击生效）</view>
+      <view class="flex-dir-row items-center u-ml-10 color-text-333">
+        <view class="flex-1" @click="setSelection(2, 5)">设置输入框聚焦时光标的起始位置和结束位置（点击生效）</view>
       </view>
-      <view class="textarea-wrap">
-        <textarea id="textarea-instance-2" class="textarea-instance" value="Hello UniApp X Textarea TestCase" :focus="data.isSelectionFocus"
+      <view class="flex-dir-row justify-center">
+        <textarea id="textarea-instance-2" class="textarea-instance flex-1 m-10" value="Hello UniApp X Textarea TestCase" :focus="data.isSelectionFocus"
           :selection-start="data.selectionStart" :selection-end="data.selectionEnd" @blur="onSelectionBlurChange" />
       </view>
 
       <boolean-data :value="data.hold_keyboard" title="设置hold-keyboard"
         @change="changeHoldKeyboard"></boolean-data>
-      <view class="textarea-wrap">
-        <textarea class="textarea-instance" :hold-keyboard="data.hold_keyboard" />
+      <view class="flex-dir-row justify-center">
+        <textarea class="textarea-instance flex-1 m-10" :hold-keyboard="data.hold_keyboard" />
       </view>
       <!-- #endif -->
-      <view class="title-wrap">
+      <view class="flex-dir-row items-center u-ml-10 color-text-333">
         <view>同时存在 v-model 和 value</view>
       </view>
       <!-- harmony 不符合预期因为 switch 组件存在时，textarea 非预期 update 导致 -->
-      <view class="textarea-wrap">
-          <textarea id="both-model-value" class="textarea-instance" v-model='data.defaultModel' value='456'></textarea>
+      <view class="flex-dir-row justify-center">
+          <textarea id="both-model-value" class="textarea-instance flex-1 m-10" v-model='data.defaultModel' value='456'></textarea>
       </view>
 
       <!-- #ifndef MP-ALIPAY -->
       <boolean-data :value="data.adjust_position" title="设置adjust-position"
         @change="changeAdjustPosition"></boolean-data>
-      <view class="textarea-wrap">
-        <textarea class="textarea-instance" :adjust-position="data.adjust_position" />
+      <view class="flex-dir-row justify-center">
+        <textarea class="textarea-instance flex-1 m-10" :adjust-position="data.adjust_position" />
       </view>
       <!-- #endif -->
-      <view v-if="data.isAutoTest" class="textarea-wrap">
-        <textarea id="test-width" class="test-width" value="123456" placeholder="" />
+      <view v-if="data.isAutoTest" class="flex-dir-row justify-center">
+        <textarea id="test-width" class="w-100 h-100 bg-0ff color-1a1a1a" value="123456" placeholder="" />
       </view>
-      <view class="title-wrap">
+      <view class="flex-dir-row items-center u-ml-10 color-text-333">
         <view>设置line-height</view>
       </view>
-      <view class="textarea-wrap">
-        <textarea class="textarea-instance" style="line-height: 1.2em;" value="设置line-height为1.2em" ></textarea>
+      <view class="flex-dir-row justify-center">
+        <textarea class="textarea-instance flex-1 m-10" style="line-height: 1.2em;" value="设置line-height为1.2em" ></textarea>
       </view>
-      <view class="title-wrap">
+      <view class="flex-dir-row items-center u-ml-10 color-text-333">
         <view>设置min-height</view>
       </view>
-      <view class="textarea-wrap">
-        <textarea class="textarea-instance" style="min-height: 100px;" :value="data.default_value"></textarea>
+      <view class="flex-dir-row justify-center">
+        <textarea class="textarea-instance flex-1 m-10 min-h-100" :value="data.default_value"></textarea>
       </view>
-      <view class="title-wrap">
+      <view class="flex-dir-row items-center u-ml-10 color-text-333">
         <view>设置max-height</view>
       </view>
-      <view class="textarea-wrap">
-        <textarea class="textarea-instance" style="max-height: 50px;" :value="data.default_value"></textarea>
+      <view class="flex-dir-row justify-center">
+        <textarea class="textarea-instance flex-1 m-10 max-h-50" :value="data.default_value"></textarea>
       </view>
-      <view class="title-wrap">
+      <view class="flex-dir-row items-center u-ml-10 color-text-333">
         <view>设置min-height与auto-height</view>
       </view>
-      <view class="textarea-wrap">
-        <textarea class="textarea-instance" style="min-height: 100px;" auto-height="true" :value="data.default_value"></textarea>
+      <view class="flex-dir-row justify-center">
+        <textarea class="textarea-instance flex-1 m-10 min-h-100" auto-height="true" :value="data.default_value"></textarea>
       </view>
-      <view class="title-wrap">
+      <view class="flex-dir-row items-center u-ml-10 color-text-333">
         <view>设置max-height与auto-height</view>
       </view>
-      <view class="textarea-wrap">
-        <textarea class="textarea-instance" style="max-height: 50px;" auto-height="true" :value="data.default_value"></textarea>
+      <view class="flex-dir-row justify-center">
+        <textarea class="textarea-instance flex-1 m-10 max-h-50" auto-height="true" :value="data.default_value"></textarea>
       </view>
-      <view class="title-wrap">
+      <view class="flex-dir-row items-center u-ml-10 color-text-333">
         <view>同时设置value与text-align</view>
       </view>
-      <view class="textarea-wrap">
-        <textarea class="textarea-instance" style="height: 50px;text-align: right;" value="同时设置value与text-align"></textarea>
+      <view class="flex-dir-row justify-center">
+        <textarea class="textarea-instance u-h-50 text-right flex-1 m-10" value="同时设置value与text-align"></textarea>
       </view>
       <!-- #ifndef MP-ALIPAY -->
-      <view class="title-wrap">
+      <view class="flex-dir-row items-center u-ml-10 color-text-333">
         <view>scroll-view嵌套textarea滚动</view>
       </view>
-      <scroll-view style="height: 150px;" direction="vertical">
-      	<textarea class="textarea-instance" :adjust-position="false" :auto-height="true" :value="data.value2" />
+      <scroll-view class="h-150" direction="vertical">
+        <textarea class="textarea-instance flex-1 m-10" :adjust-position="false" :auto-height="true" :value="data.value2" />
       </scroll-view>
       <!-- #endif -->
-      <view class="textarea-wrap">
-        <textarea class="textarea-instance" style="height: 60px;padding: 20px;" value="style padding:20px"></textarea>
+      <view class="flex-dir-row justify-center">
+        <textarea class="textarea-instance h-60 p-20 flex-1 m-10" value="style padding:20px"></textarea>
       </view>
-      <view class="title-wrap">
+      <view class="flex-dir-row items-center u-ml-10 color-text-333">
         <view>注册confirm事件，点击换行效果</view>
       </view>
-      <view class="textarea-wrap">
-        <textarea class="textarea-instance" @confirm="()=>{}"></textarea>
+      <view class="flex-dir-row justify-center">
+        <textarea class="textarea-instance flex-1 m-10" @confirm="()=>{}"></textarea>
       </view>
 
-      <view class="textarea-wrap">
-        <textarea class="textarea-instance" placeholder="占位符字体大小为15px" />
+      <view class="flex-dir-row justify-center">
+        <textarea class="textarea-instance flex-1 m-10" placeholder="占位符字体大小为15px" />
       </view>
-      <view class="textarea-wrap">
-        <textarea class="textarea-instance" :placeholder="`占位符字体大小为${data.textareaPlaceholderClass == '' ? '15px' : '30px'}`" :placeholder-class="data.textareaPlaceholderClass"  />
+      <view class="flex-dir-row justify-center">
+        <textarea class="textarea-instance flex-1 m-10" :placeholder="`占位符字体大小为${data.textareaPlaceholderClass == '' ? '15px' : '30px'}`" :placeholder-class="data.textareaPlaceholderClass"  />
       </view>
-      <view class="textarea-wrap">
+      <view class="flex-dir-row justify-center">
         <button @click="togglePlaceholderClass">切换 placeholder-class</button>
       </view>
-      <view class="uni-title-text">
+      <view class="fs-15 fw-bold color-text-333">
         <text>style 设置 font-size:20px</text>
       </view>
-      <view class="textarea-wrap">
-        <textarea class="textarea-instance" style="height: 60px;font-size:20px" placeholder="placeholder" />
+      <view class="flex-dir-row justify-center">
+        <textarea class="textarea-instance h-60 flex-1 m-10" style="font-size:20px" placeholder="placeholder" />
       </view>
-      <view style="padding-left: 10px;flex-direction: column;">
+      <view class="pl-10 flex-dir-column">
         <text>style 设置 font-size:20px</text>
         <text>placeholder-class 设置 30px</text>
       </view>
-      <view class="textarea-wrap">
-        <textarea id="textarea-placeholder-class-dynamic" class="textarea-instance" style="height: 60px;font-size:20px"
+      <view class="flex-dir-row justify-center">
+        <textarea id="textarea-placeholder-class-dynamic" class="textarea-instance h-60 flex-1 m-10" style="font-size:20px"
           :placeholder-class="data.textareaPlaceholderClass" placeholder="placeholder" />
       </view>
-      <view style="padding-left: 10px;flex-direction: column;">
+      <view class="pl-10 flex-dir-column">
         <text>style 设置 font-size:20px</text>
         <text>placeholder-class 设置 30px</text>
         <text>placeholder-style 设置 40px</text>
       </view>
-      <view class="textarea-wrap">
-        <textarea class="textarea-instance" style="height: 60px;font-size:20px" placeholder-class="placeholder-class" placeholder-style="font-size:40px" placeholder="placeholder" />
+      <view class="flex-dir-row justify-center">
+        <textarea class="textarea-instance h-60 flex-1 m-10" style="font-size:20px" placeholder-class="placeholder-class" placeholder-style="font-size:40px" placeholder="placeholder" />
       </view>
-      <view class="textarea-wrap">
-        <textarea class="textarea-instance" style="font-size: 20px;padding-top: 5px;" :auto-height="true" value="font-size: 20px;padding-top: 5px;" />
+      <view class="flex-dir-row justify-center">
+        <textarea class="textarea-instance flex-1 m-10" style="font-size: 20px;padding-top: 5px;" :auto-height="true" value="font-size: 20px;padding-top: 5px;" />
       </view>
-      <view class="textarea-wrap">
-        <textarea class="textarea-instance" style="font-size: 20px;padding-bottom: 5px;" :auto-height="true" value="font-size: 20px;padding-bottom: 5px;" />
+      <view class="flex-dir-row justify-center">
+        <textarea class="textarea-instance flex-1 m-10" style="font-size: 20px;padding-bottom: 5px;" :auto-height="true" value="font-size: 20px;padding-bottom: 5px;" />
       </view>
-      <view class="textarea-wrap">
-        <textarea class="textarea-instance" style="font-size: 20px;padding: 5px;" :auto-height="true" value="font-size: 20px;padding: 5px;" />
+      <view class="flex-dir-row justify-center">
+        <textarea class="textarea-instance p-5 flex-1 m-10" style="font-size: 20px;" :auto-height="true" value="font-size: 20px;padding: 5px;" />
       </view>
 
-      <text class="uni-title-text">textarea样式大合集</text>
-      <view class="textarea-wrap">
-        <textarea class="textarea-all-styles" value="样式效果：文本颜色深蓝色、字号16px、字重400、行高1.5、文本居左对齐；外边距10px、内边距10px；圆角8px；浅蓝色渐变背景、蓝色边框、透明度70%、阴影效果。" />
+      <text class="fs-15 fw-bold color-text-333">textarea样式大合集</text>
+      <view class="flex-dir-row justify-center">
+        <textarea class="textarea-all-styles fs-16 fw-400 text-left w-90pct h-150 min-h-100 max-h-300 m-10 u-p-10 radius-8 color-0008a7 lh-1_5x min-w-200 bg-e3f2fd border-1-solid-007aff opacity-0_7" value="样式效果：文本颜色深蓝色、字号16px、字重400、行高1.5、文本居左对齐；外边距10px、内边距10px；圆角8px；浅蓝色渐变背景、蓝色边框、透明度70%、阴影效果。" />
       </view>
 
       <!-- #ifndef MP-ALIPAY -->
-        <navigator url="/pages/component/textarea/textarea-performance" style="margin: 10px;">
+        <navigator url="/pages/component/textarea/textarea-performance" class="m-10">
           <button type="primary">
             textarea 性能测试
           </button>
         </navigator>
       <!-- #endif -->
 
-      <view class="title-wrap">
+      <view class="flex-dir-row items-center u-ml-10 color-text-333">
         <view>textarea 设置自定义字体</view>
       </view>
-      <view class="textarea-wrap">
-        <textarea class="textarea-instance pacifico-font" v-model="data.customFontValue" :auto-height="true"
+      <view class="flex-dir-row justify-center">
+        <textarea class="textarea-instance pacifico-font flex-1 m-10" v-model="data.customFontValue" :auto-height="true"
           :adjust-position="true" />
       </view>
     </view>
@@ -382,40 +381,8 @@
     src: url('/static/font/Pacifico-Regular.ttf');
   }
 
-  .main {
-    min-height: 100px;
-    padding: 5px 0;
-    border-bottom: 1px solid var(--border-color, rgba(0, 0, 0, 0.06));
-    background-color: var(--background-color, #f8f8f8);
-    flex-direction: row;
-    justify-content: center;
-  }
-
-  .test-width {
-    width: 100px;
-    height: 100px;
-    background-color: aqua;
-    color: #1a1a1a;
-  }
-
   .textarea-page {
     margin-bottom: 40px;
-  }
-
-  .textarea-wrap {
-    flex-direction: row;
-    justify-content: center;
-  }
-
-  .title-wrap {
-    flex-direction: row;
-    align-items: center;
-    margin-left: 10px;
-    color: var(--text-color, #333333);
-  }
-
-  .textarea-title-text {
-    flex: 1;
   }
 
   .themed-textarea,
@@ -426,8 +393,6 @@
   }
 
   .textarea-instance {
-    flex: 1;
-    margin: 10px;
     font-size: 15px;
   }
 
@@ -444,24 +409,8 @@
   }
 
   .textarea-all-styles {
-    color: #0008a7;
     font-family: Arial, sans-serif;
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 1.5;
-    text-align: left;
-    width: 90%;
-    height: 150px;
-    min-width: 200px;
-    min-height: 100px;
-    max-height: 300px;
-    margin: 10px;
-    padding: 10px;
-    border-radius: 8px;
-    background-color: #e3f2fd;
     background-image: linear-gradient(to right, #e3f2fd, #a9d5fa);
-    border: 1px solid #007aff;
-    opacity: 0.7;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 

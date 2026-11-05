@@ -2,7 +2,7 @@
   <view>
     <view @touchend="onParentTouchEnd" @click="onParentClick"
       style="padding-bottom: 100px; background-color: darkgrey;">
-      <view id="eventClick" @touchend="onTouchEnd" style="width:100%;height: 300px; background-color: yellow;"
+      <view class="w-full u-h-300 bg-ff0" id="eventClick" @touchend="onTouchEnd"
         @click="onClick">
       </view>
     </view>
@@ -57,7 +57,3 @@
     data.isParentClickTrigger = true
   }
 </script>
-
-<style>
-
-</style>

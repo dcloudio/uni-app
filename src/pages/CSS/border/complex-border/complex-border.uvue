@@ -1,5 +1,5 @@
 <template>
-  <view style="flex-grow: 1;">
+  <view class="flex-grow-1">
     <view>
       <text>圆角 : 各边之间 不同width && 不同颜色 && 不同圆角</text>
       <view style="width: 250px;height: 250px;background-color: gray;justify-content: center;align-items: center;">
@@ -16,12 +16,6 @@
   </view>
 </template>
 <style>
-  .common {
-    width: 250px;
-    height: 250px;
-    background-color: gray;
-  }
-
   .border-circle {
     width: 125px;
     height: 125px;

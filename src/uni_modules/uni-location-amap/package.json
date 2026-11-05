@@ -1,0 +1,94 @@
+{
+    "id": "uni-location-amap",
+    "displayName": "uni-location-amap",
+    "version": "1.0.0",
+    "description": "基于高德定位服务，实现uni.getLocation 获取定位功能",
+    "keywords": [
+        "uni-location-amap"
+    ],
+    "repository": "",
+    "engines": {
+        "HBuilderX": "^3.8.12"
+    },
+    "dcloudext": {
+        "type": "uts",
+        "sale": {
+            "regular": {
+                "price": "0.00"
+            },
+            "sourcecode": {
+                "price": "0.00"
+            }
+        },
+        "contact": {
+            "qq": ""
+        },
+        "declaration": {
+            "ads": "无",
+            "data": "插件使用的 高德定位SDK会采集数据，详情可参考：https://lbs.amap.com/",
+            "permissions": "<!-- 用于进行网络定位 -->\n\t<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\"/>\n\t<!-- 用于访问GPS定位 -->\n\t<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\"/>\n\t<!-- 用于获取运营商信息，用于支持提供运营商信息相关的接口 -->\n\t<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\"/>\n\t<!-- 用于访问wifi网络信息，wifi信息会用于进行网络定位 -->\n\t<uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\"/>\n\t<!-- 用于获取wifi的获取权限，wifi信息会用来进行网络定位 -->\n\t<uses-permission android:name=\"android.permission.CHANGE_WIFI_STATE\"/>\n\t<!-- 用于访问网络，网络定位需要上网 -->\n\t<uses-permission android:name=\"android.permission.INTERNET\"/>\n\t<!-- 用于申请调用A-GPS模块 -->\n\t<uses-permission android:name=\"android.permission.ACCESS_LOCATION_EXTRA_COMMANDS\"/>\n\t<!-- 如果设置了target >= 28 如果需要启动后台定位则必须声明这个权限 -->\n\t<uses-permission android:name=\"android.permission.FOREGROUND_SERVICE\"/>\n\t<!-- 后台定位权限 -->\n\t<uses-permission android:name=\"android.permission.ACCESS_BACKGROUND_LOCATION\"/>\n"
+        },
+        "npmurl": ""
+    },
+    "uni_modules": {
+        "uni-ext-api": {
+            "provider": {
+                "service": "location",
+                "name": "amap",
+                "servicePlugin": "uni-location"
+            }
+        },
+        "dependencies": [
+            "uni-location"
+        ],
+        "encrypt": [],
+        "platforms": {
+            "cloud": {
+                "tcb": "y",
+                "aliyun": "y"
+            },
+            "client": {
+                "Vue": {
+                    "vue2": "y",
+                    "vue3": "y"
+                },
+                "App": {
+                    "app-android": {
+                        "minVersion": "21"
+                    },
+                    "app-ios": {
+                        "minVersion": "15.0"
+                    }
+                },
+                "H5-mobile": {
+                    "Safari": "n",
+                    "Android Browser": "n",
+                    "微信浏览器(Android)": "n",
+                    "QQ浏览器(Android)": "n"
+                },
+                "H5-pc": {
+                    "Chrome": "n",
+                    "IE": "n",
+                    "Edge": "n",
+                    "Firefox": "n",
+                    "Safari": "n"
+                },
+                "小程序": {
+                    "微信": "n",
+                    "阿里": "n",
+                    "百度": "n",
+                    "字节跳动": "n",
+                    "QQ": "n",
+                    "钉钉": "n",
+                    "快手": "n",
+                    "飞书": "n",
+                    "京东": "n"
+                },
+                "快应用": {
+                    "华为": "n",
+                    "联盟": "n"
+                }
+            }
+        }
+    }
+}

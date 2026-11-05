@@ -1,17 +1,17 @@
 <template>
-  <view class="page">
-    <view class="header">
-      <text class="eyebrow">echarts-miniprogram版，可以在web、小程序、app蒸汽下运行</text>
-      <text class="title">Weekly sales</text>
-      <text class="subtitle">Mini program canvas example</text>
+  <view class="flex-1 flex-dir-column page">
+    <view class="flex-dir-column mb-24">
+      <text class="fs-12 fw-700 letter-spacing-1 mb-8 eyebrow">echarts-miniprogram版，可以在web、小程序、app蒸汽下运行</text>
+      <text class="fs-28 fw-700 mb-6 title color-0f172a">Weekly sales</text>
+      <text class="fs-15 subtitle color-64748b">Mini program canvas example</text>
     </view>
 
-    <view class="chart-card">
+    <view class="flex-dir-column radius-8 p-12 bg-fff chart-card">
       <EchartsMiniprogramCanvas class="chart" canvas-id="sales-chart" height="300px" :ec="ec"
         @inited="onChartInited"></EchartsMiniprogramCanvas>
     </view>
 
-    <button class="action-button" @click="toggleData">Switch data set</button>
+    <button class="radius-8 color-fff fs-16 fw-600 mt-20 action-button" @click="toggleData">Switch data set</button>
   </view>
 </template>
 
@@ -89,41 +89,11 @@
 
 <style>
   .page {
-    flex: 1;
-    flex-direction: column;
     padding: 24px 20px;
-  }
-
-  .header {
-    flex-direction: column;
-    margin-bottom: 24px;
   }
 
   .eyebrow {
     color: #0F766E;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    margin-bottom: 8px;
-  }
-
-  .title {
-    color: #0F172A;
-    font-size: 28px;
-    font-weight: 700;
-    margin-bottom: 6px;
-  }
-
-  .subtitle {
-    color: #64748B;
-    font-size: 15px;
-  }
-
-  .chart-card {
-    flex-direction: column;
-    background-color: #FFFFFF;
-    border-radius: 8px;
-    padding: 12px;
   }
 
   .chart {
@@ -132,11 +102,6 @@
 
   .action-button {
     background-color: #0F766E;
-    border-radius: 8px;
-    color: #FFFFFF;
-    font-size: 16px;
-    font-weight: 600;
-    margin-top: 20px;
   }
 
   @media (prefers-color-scheme: dark) {

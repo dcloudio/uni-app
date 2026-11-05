@@ -2,120 +2,120 @@
   <view id="editor-page-shell" :class="pageShellClass">
     <view id="editor-layout" :class="editorLayoutClass">
     <view
-      class="toolbar-wrap"
+      class="pos-relative w-full d-flex flex-dir-column items-center toolbar-wrap mb-0 shadow-none"
       <!--#ifdef WEB -->
       @mousedown="onToolbarMouseDown"
       <!--#endif-->
     >
-      <view class="toolbar-frame">
+      <view class="w-full flex-dir-column border-width-1 border-b-width-1 toolbar-frame self-center d-flex radius-0 p-0">
         <view :class="desktopToolbarShellClass" @mousemove="hideToolbarTooltip">
           <view :class="desktopToolbarLeadingGroupClass">
-            <view id="toolbar-button-undo" @tap="undo" @mousemove.stop="showToolbarTooltip('toolbar-button-undo', '撤回')" class="toolbar-icon-button">
-              <text class="toolbar-icon-text iconfont">{{"&#xe6a3;"}}</text>
+            <view id="toolbar-button-undo" @tap="undo" @mousemove.stop="showToolbarTooltip('toolbar-button-undo', '撤回')" class="items-center toolbar-icon-button h-28 d-flex border-width-1 radius-4 bg-transparent w-28 flex-dir-column justify-center">
+              <text class="toolbar-icon-text fs-16 lh-16 iconfont">{{"&#xe6a3;"}}</text>
             </view>
-            <view id="toolbar-button-redo" @tap="redo" @mousemove.stop="showToolbarTooltip('toolbar-button-redo', '重做')" class="toolbar-icon-button">
-              <text class="toolbar-icon-text iconfont">{{"&#xe6a5;"}}</text>
+            <view id="toolbar-button-redo" @tap="redo" @mousemove.stop="showToolbarTooltip('toolbar-button-redo', '重做')" class="items-center toolbar-icon-button h-28 d-flex border-width-1 radius-4 bg-transparent w-28 flex-dir-column justify-center">
+              <text class="toolbar-icon-text fs-16 lh-16 iconfont">{{"&#xe6a5;"}}</text>
             </view>
-            <view id="toolbar-button-clear-format" @tap="clearFormatting" @mousemove.stop="showToolbarTooltip('toolbar-button-clear-format', '清除格式')" class="toolbar-icon-button">
-              <text class="toolbar-icon-text iconfont">{{"&#xe6b9;"}}</text>
-            </view>
-          </view>
-
-          <view :class="desktopToolbarDividerClass"></view>
-
-          <view :class="desktopToolbarGroupClass">
-            <view id="toolbar-button-font-size" @tap="openFontSizeSheet" @mousemove.stop="showToolbarTooltip('toolbar-button-font-size', '设置字号')" :class="fontSizeSheetHighlighted ? 'toolbar-select toolbar-select-active' : 'toolbar-select'">
-              <text :class="fontSizeSheetHighlighted ? 'toolbar-select-label toolbar-select-label-active toolbar-size-label' : 'toolbar-select-label toolbar-size-label'">{{ getDesktopFontSizeLabel() }}</text>
-              <text :class="fontSizeSheetHighlighted ? 'toolbar-select-arrow toolbar-select-arrow-active iconfont' : 'toolbar-select-arrow iconfont'">{{"&#xe6be;"}}</text>
-            </view>
-            <view id="toolbar-button-font-family" @tap="openFontFamilySheet" @mousemove.stop="showToolbarTooltip('toolbar-button-font-family', '设置字体')" :class="fontFamilySheetHighlighted ? 'toolbar-select toolbar-select-font toolbar-select-active' : 'toolbar-select toolbar-select-font'">
-              <text :class="fontFamilySheetHighlighted ? 'toolbar-select-label toolbar-select-label-active toolbar-select-font-label' : 'toolbar-select-label toolbar-select-font-label'">{{ getDesktopFontFamilyLabel() }}</text>
-              <text :class="fontFamilySheetHighlighted ? 'toolbar-select-arrow toolbar-select-arrow-active iconfont' : 'toolbar-select-arrow iconfont'">{{"&#xe6be;"}}</text>
-            </view>
-            <view id="toolbar-button-bold" @tap="toggleBold" @mousemove.stop="showToolbarTooltip('toolbar-button-bold', '加粗')" :class="data.formats.bold ? 'toolbar-icon-button toolbar-icon-button-active' : 'toolbar-icon-button'">
-              <text :class="data.formats.bold ? 'toolbar-icon-text toolbar-icon-text-active toolbar-font-action iconfont relative-top-1' : 'toolbar-icon-text toolbar-font-action iconfont relative-top-1'">{{"&#xe6ae;"}}</text>
-            </view>
-            <view id="toolbar-button-italic" @tap="toggleItalic" @mousemove.stop="showToolbarTooltip('toolbar-button-italic', '斜体')" :class="data.formats.italic ? 'toolbar-icon-button toolbar-icon-button-active' : 'toolbar-icon-button'">
-              <text :class="data.formats.italic ? 'toolbar-icon-text toolbar-icon-text-active toolbar-font-action iconfont relative-top-1' : 'toolbar-icon-text toolbar-font-action iconfont relative-top-1'">{{"&#xe6af;"}}</text>
-            </view>
-            <view id="toolbar-button-underline" @tap="toggleUnderline" @mousemove.stop="showToolbarTooltip('toolbar-button-underline', '下划线')" :class="data.formats.underline ? 'toolbar-icon-button toolbar-icon-button-active' : 'toolbar-icon-button'">
-              <text :class="data.formats.underline ? 'toolbar-icon-text toolbar-icon-text-active toolbar-font-action iconfont' : 'toolbar-icon-text toolbar-font-action iconfont'">{{"&#xe6a7;"}}</text>
-            </view>
-            <view id="toolbar-button-strike" @tap="toggleStrike" @mousemove.stop="showToolbarTooltip('toolbar-button-strike', '删除线')" :class="data.formats.strike ? 'toolbar-icon-button toolbar-icon-button-active' : 'toolbar-icon-button'">
-              <text :class="data.formats.strike ? 'toolbar-icon-text toolbar-icon-text-active toolbar-font-action iconfont relative-top-1' : 'toolbar-icon-text toolbar-font-action iconfont relative-top-1'">{{"&#xe6aa;"}}</text>
+            <view id="toolbar-button-clear-format" @tap="clearFormatting" @mousemove.stop="showToolbarTooltip('toolbar-button-clear-format', '清除格式')" class="items-center toolbar-icon-button h-28 d-flex border-width-1 radius-4 bg-transparent w-28 flex-dir-column justify-center">
+              <text class="toolbar-icon-text fs-16 lh-16 iconfont">{{"&#xe6b9;"}}</text>
             </view>
           </view>
 
           <view :class="desktopToolbarDividerClass"></view>
 
           <view :class="desktopToolbarGroupClass">
-            <view id="toolbar-button-text-color" @tap="openTextColorSheet" @mousemove.stop="showToolbarTooltip('toolbar-button-text-color', '字体颜色')" :class="textColorSheetHighlighted ? 'toolbar-color-button toolbar-color-button-active' : 'toolbar-color-button'">
-              <view class="toolbar-color-stack">
-                <text :class="textColorSheetHighlighted ? 'toolbar-color-symbol toolbar-color-symbol-active iconfont' : 'toolbar-color-symbol iconfont'">{{"&#xe6b8;"}}</text>
-                <view class="toolbar-color-underline" :style="toolbarTextColorChipStyle"></view>
+            <view id="toolbar-button-font-size" @tap="openFontSizeSheet" @mousemove.stop="showToolbarTooltip('toolbar-button-font-size', '设置字号')" :class="fontSizeSheetHighlighted ? 'items-center toolbar-select h-28 d-flex border-width-1 radius-4 bg-transparent flex-dir-row pl-4 pr-4 mr-1 justify-between toolbar-select-active' : 'items-center toolbar-select h-28 d-flex border-width-1 radius-4 bg-transparent flex-dir-row pl-4 pr-4 mr-1 justify-between'">
+              <text :class="fontSizeSheetHighlighted ? 'toolbar-select-label fs-11 lh-18 toolbar-select-label-active toolbar-size-label' : 'toolbar-select-label fs-11 lh-18 toolbar-size-label'">{{ getDesktopFontSizeLabel() }}</text>
+              <text :class="fontSizeSheetHighlighted ? 'u-ml-2 toolbar-select-arrow toolbar-select-arrow-active iconfont' : 'u-ml-2 toolbar-select-arrow iconfont'">{{"&#xe6be;"}}</text>
+            </view>
+            <view id="toolbar-button-font-family" @tap="openFontFamilySheet" @mousemove.stop="showToolbarTooltip('toolbar-button-font-family', '设置字体')" :class="fontFamilySheetHighlighted ? 'items-center toolbar-select h-28 d-flex border-width-1 radius-4 bg-transparent flex-dir-row pl-4 pr-4 mr-1 justify-between toolbar-select-active' : 'items-center toolbar-select h-28 d-flex border-width-1 radius-4 bg-transparent flex-dir-row pl-4 pr-4 mr-1 justify-between'">
+              <text :class="fontFamilySheetHighlighted ? 'toolbar-select-label fs-11 lh-18 toolbar-select-label-active toolbar-select-font-label' : 'toolbar-select-label fs-11 lh-18 toolbar-select-font-label'">{{ getDesktopFontFamilyLabel() }}</text>
+              <text :class="fontFamilySheetHighlighted ? 'u-ml-2 toolbar-select-arrow toolbar-select-arrow-active iconfont' : 'u-ml-2 toolbar-select-arrow iconfont'">{{"&#xe6be;"}}</text>
+            </view>
+            <view id="toolbar-button-bold" @tap="toggleBold" @mousemove.stop="showToolbarTooltip('toolbar-button-bold', '加粗')" :class="data.formats.bold ? 'items-center toolbar-icon-button h-28 d-flex border-width-1 radius-4 bg-transparent w-28 flex-dir-column justify-center toolbar-icon-button-active' : 'items-center toolbar-icon-button h-28 d-flex border-width-1 radius-4 bg-transparent w-28 flex-dir-column justify-center'">
+              <text :class="data.formats.bold ? 'toolbar-icon-text fs-16 lh-16 toolbar-icon-text-active iconfont relative-top-1 pos-relative' : 'toolbar-icon-text fs-16 lh-16 iconfont relative-top-1 pos-relative'">{{"&#xe6ae;"}}</text>
+            </view>
+            <view id="toolbar-button-italic" @tap="toggleItalic" @mousemove.stop="showToolbarTooltip('toolbar-button-italic', '斜体')" :class="data.formats.italic ? 'items-center toolbar-icon-button h-28 d-flex border-width-1 radius-4 bg-transparent w-28 flex-dir-column justify-center toolbar-icon-button-active' : 'items-center toolbar-icon-button h-28 d-flex border-width-1 radius-4 bg-transparent w-28 flex-dir-column justify-center'">
+              <text :class="data.formats.italic ? 'toolbar-icon-text fs-16 lh-16 toolbar-icon-text-active iconfont relative-top-1 pos-relative' : 'toolbar-icon-text fs-16 lh-16 iconfont relative-top-1 pos-relative'">{{"&#xe6af;"}}</text>
+            </view>
+            <view id="toolbar-button-underline" @tap="toggleUnderline" @mousemove.stop="showToolbarTooltip('toolbar-button-underline', '下划线')" :class="data.formats.underline ? 'items-center toolbar-icon-button h-28 d-flex border-width-1 radius-4 bg-transparent w-28 flex-dir-column justify-center toolbar-icon-button-active' : 'items-center toolbar-icon-button h-28 d-flex border-width-1 radius-4 bg-transparent w-28 flex-dir-column justify-center'">
+              <text :class="data.formats.underline ? 'toolbar-icon-text fs-16 lh-16 toolbar-icon-text-active iconfont' : 'toolbar-icon-text fs-16 lh-16 iconfont'">{{"&#xe6a7;"}}</text>
+            </view>
+            <view id="toolbar-button-strike" @tap="toggleStrike" @mousemove.stop="showToolbarTooltip('toolbar-button-strike', '删除线')" :class="data.formats.strike ? 'items-center toolbar-icon-button h-28 d-flex border-width-1 radius-4 bg-transparent w-28 flex-dir-column justify-center toolbar-icon-button-active' : 'items-center toolbar-icon-button h-28 d-flex border-width-1 radius-4 bg-transparent w-28 flex-dir-column justify-center'">
+              <text :class="data.formats.strike ? 'toolbar-icon-text fs-16 lh-16 toolbar-icon-text-active iconfont relative-top-1 pos-relative' : 'toolbar-icon-text fs-16 lh-16 iconfont relative-top-1 pos-relative'">{{"&#xe6aa;"}}</text>
+            </view>
+          </view>
+
+          <view :class="desktopToolbarDividerClass"></view>
+
+          <view :class="desktopToolbarGroupClass">
+            <view id="toolbar-button-text-color" @tap="openTextColorSheet" @mousemove.stop="showToolbarTooltip('toolbar-button-text-color', '字体颜色')" :class="textColorSheetHighlighted ? 'items-center toolbar-color-button h-28 d-flex border-width-1 radius-4 bg-transparent flex-dir-row pl-4 pr-4 justify-center ml-1 toolbar-color-button-active' : 'items-center toolbar-color-button h-28 d-flex border-width-1 radius-4 bg-transparent flex-dir-row pl-4 pr-4 justify-center ml-1'">
+              <view class="d-flex flex-dir-column items-center justify-center">
+                <text :class="textColorSheetHighlighted ? 'toolbar-color-symbol fw-600 toolbar-color-symbol-active iconfont' : 'toolbar-color-symbol fw-600 iconfont'">{{"&#xe6b8;"}}</text>
+                <view class="u-h-2 radius-2 w-12 mt-neg-1 ml-1" :style="toolbarTextColorChipStyle"></view>
               </view>
-              <text :class="textColorSheetHighlighted ? 'toolbar-color-arrow toolbar-color-arrow-active iconfont' : 'toolbar-color-arrow iconfont'">{{"&#xe6be;"}}</text>
+              <text :class="textColorSheetHighlighted ? 'toolbar-color-arrow ml-0 toolbar-color-arrow-active iconfont' : 'toolbar-color-arrow ml-0 iconfont'">{{"&#xe6be;"}}</text>
             </view>
-            <view id="toolbar-button-background-color" @tap="openBackgroundColorSheet" @mousemove.stop="showToolbarTooltip('toolbar-button-background-color', '背景颜色')" :class="backgroundColorSheetHighlighted ? 'toolbar-color-button toolbar-color-button-active' : 'toolbar-color-button'">
-              <view class="toolbar-color-stack">
-                <text :class="backgroundColorSheetHighlighted ? 'toolbar-color-symbol toolbar-color-symbol-active iconfont' : 'toolbar-color-symbol iconfont'">{{"&#xe6bb;"}}</text>
-                <view class="toolbar-color-underline" :style="toolbarBackgroundColorChipStyle"></view>
+            <view id="toolbar-button-background-color" @tap="openBackgroundColorSheet" @mousemove.stop="showToolbarTooltip('toolbar-button-background-color', '背景颜色')" :class="backgroundColorSheetHighlighted ? 'items-center toolbar-color-button h-28 d-flex border-width-1 radius-4 bg-transparent flex-dir-row pl-4 pr-4 justify-center ml-1 toolbar-color-button-active' : 'items-center toolbar-color-button h-28 d-flex border-width-1 radius-4 bg-transparent flex-dir-row pl-4 pr-4 justify-center ml-1'">
+              <view class="d-flex flex-dir-column items-center justify-center">
+                <text :class="backgroundColorSheetHighlighted ? 'toolbar-color-symbol fw-600 toolbar-color-symbol-active iconfont' : 'toolbar-color-symbol fw-600 iconfont'">{{"&#xe6bb;"}}</text>
+                <view class="u-h-2 radius-2 w-12 mt-neg-1 ml-1" :style="toolbarBackgroundColorChipStyle"></view>
               </view>
-              <text :class="backgroundColorSheetHighlighted ? 'toolbar-color-arrow toolbar-color-arrow-active iconfont' : 'toolbar-color-arrow iconfont'" style="margin-left: 2px">{{"&#xe6be;"}}</text>
+              <text :class="backgroundColorSheetHighlighted ? 'toolbar-color-arrow toolbar-color-arrow-active iconfont' : 'toolbar-color-arrow iconfont'" class="u-ml-2">{{"&#xe6be;"}}</text>
             </view>
           </view>
           <view :class="desktopToolbarDividerClass"></view>
 
           <view :class="desktopToolbarGroupClass">
-            <view id="toolbar-button-align" @tap="openAlignSheet" @mousemove.stop="showToolbarTooltip('toolbar-button-align', '对齐方式')" :class="alignSheetHighlighted ? 'toolbar-select toolbar-select-compact toolbar-select-active' : 'toolbar-select toolbar-select-compact'">
-              <text :class="alignSheetHighlighted ? 'toolbar-icon-text toolbar-icon-text-active toolbar-select-glyph iconfont' : 'toolbar-icon-text toolbar-select-glyph iconfont'">{{ desktopAlignIconGlyph }}</text>
-              <text :class="alignSheetHighlighted ? 'toolbar-select-arrow toolbar-select-arrow-active iconfont' : 'toolbar-select-arrow iconfont'">{{"&#xe6be;"}}</text>
+            <view id="toolbar-button-align" @tap="openAlignSheet" @mousemove.stop="showToolbarTooltip('toolbar-button-align', '对齐方式')" :class="alignSheetHighlighted ? 'items-center toolbar-select h-28 d-flex border-width-1 radius-4 bg-transparent flex-dir-row pl-4 pr-4 mr-1 justify-between min-w-40 toolbar-select-active' : 'items-center toolbar-select h-28 d-flex border-width-1 radius-4 bg-transparent flex-dir-row pl-4 pr-4 mr-1 justify-between min-w-40'">
+              <text :class="alignSheetHighlighted ? 'toolbar-icon-text fs-16 lh-16 toolbar-icon-text-active iconfont' : 'toolbar-icon-text fs-16 lh-16 iconfont'">{{ desktopAlignIconGlyph }}</text>
+              <text :class="alignSheetHighlighted ? 'u-ml-2 toolbar-select-arrow toolbar-select-arrow-active iconfont' : 'u-ml-2 toolbar-select-arrow iconfont'">{{"&#xe6be;"}}</text>
             </view>
-            <view id="toolbar-button-text-indent" @tap="toggleTextIndent" @mousemove.stop="showToolbarTooltip('toolbar-button-text-indent', '首行缩进')" :class="textIndentHighlighted ? 'toolbar-icon-button toolbar-icon-button-active' : 'toolbar-icon-button'">
-              <text :class="textIndentHighlighted ? 'toolbar-icon-text toolbar-icon-text-active iconfont' : 'toolbar-icon-text iconfont'">{{"&#xe6ad;"}}</text>
+            <view id="toolbar-button-text-indent" @tap="toggleTextIndent" @mousemove.stop="showToolbarTooltip('toolbar-button-text-indent', '首行缩进')" :class="textIndentHighlighted ? 'items-center toolbar-icon-button h-28 d-flex border-width-1 radius-4 bg-transparent w-28 flex-dir-column justify-center toolbar-icon-button-active' : 'items-center toolbar-icon-button h-28 d-flex border-width-1 radius-4 bg-transparent w-28 flex-dir-column justify-center'">
+              <text :class="textIndentHighlighted ? 'toolbar-icon-text fs-16 lh-16 toolbar-icon-text-active iconfont' : 'toolbar-icon-text fs-16 lh-16 iconfont'">{{"&#xe6ad;"}}</text>
             </view>
-            <view id="toolbar-button-block-indent" @tap="openBlockIndentSheet" @mousemove.stop="showToolbarTooltip('toolbar-button-block-indent', '两端缩进')" :class="blockIndentSheetHighlighted ? 'toolbar-select toolbar-select-compact toolbar-select-active' : 'toolbar-select toolbar-select-compact'">
-              <text :class="blockIndentSheetHighlighted ? 'toolbar-icon-text toolbar-icon-text-active toolbar-select-glyph iconfont' : 'toolbar-icon-text toolbar-select-glyph iconfont'">{{"&#xe6ba;"}}</text>
-              <text :class="blockIndentSheetHighlighted ? 'toolbar-select-arrow toolbar-select-arrow-active iconfont' : 'toolbar-select-arrow iconfont'">{{"&#xe6be;"}}</text>
+            <view id="toolbar-button-block-indent" @tap="openBlockIndentSheet" @mousemove.stop="showToolbarTooltip('toolbar-button-block-indent', '两端缩进')" :class="blockIndentSheetHighlighted ? 'items-center toolbar-select h-28 d-flex border-width-1 radius-4 bg-transparent flex-dir-row pl-4 pr-4 mr-1 justify-between min-w-40 toolbar-select-active' : 'items-center toolbar-select h-28 d-flex border-width-1 radius-4 bg-transparent flex-dir-row pl-4 pr-4 mr-1 justify-between min-w-40'">
+              <text :class="blockIndentSheetHighlighted ? 'toolbar-icon-text fs-16 lh-16 toolbar-icon-text-active iconfont' : 'toolbar-icon-text fs-16 lh-16 iconfont'">{{"&#xe6ba;"}}</text>
+              <text :class="blockIndentSheetHighlighted ? 'u-ml-2 toolbar-select-arrow toolbar-select-arrow-active iconfont' : 'u-ml-2 toolbar-select-arrow iconfont'">{{"&#xe6be;"}}</text>
             </view>
-            <view id="toolbar-button-line-height" @tap="openLineHeightSheet" @mousemove.stop="showToolbarTooltip('toolbar-button-line-height', '行间距')" :class="lineHeightSheetHighlighted ? 'toolbar-select toolbar-select-compact toolbar-select-value toolbar-select-active' : 'toolbar-select toolbar-select-compact toolbar-select-value'">
-              <text :class="lineHeightSheetHighlighted ? 'toolbar-icon-text toolbar-icon-text-active toolbar-select-glyph iconfont' : 'toolbar-icon-text toolbar-select-glyph iconfont'">{{"&#xe6b0;"}}</text>
-              <text :class="lineHeightSheetHighlighted ? 'toolbar-select-arrow toolbar-select-arrow-active iconfont' : 'toolbar-select-arrow iconfont'">{{"&#xe6be;"}}</text>
+            <view id="toolbar-button-line-height" @tap="openLineHeightSheet" @mousemove.stop="showToolbarTooltip('toolbar-button-line-height', '行间距')" :class="lineHeightSheetHighlighted ? 'items-center toolbar-select h-28 d-flex border-width-1 radius-4 bg-transparent flex-dir-row pl-4 pr-4 mr-1 justify-between min-w-40 toolbar-select-active' : 'items-center toolbar-select h-28 d-flex border-width-1 radius-4 bg-transparent flex-dir-row pl-4 pr-4 mr-1 justify-between min-w-40'">
+              <text :class="lineHeightSheetHighlighted ? 'toolbar-icon-text fs-16 lh-16 toolbar-icon-text-active iconfont' : 'toolbar-icon-text fs-16 lh-16 iconfont'">{{"&#xe6b0;"}}</text>
+              <text :class="lineHeightSheetHighlighted ? 'u-ml-2 toolbar-select-arrow toolbar-select-arrow-active iconfont' : 'u-ml-2 toolbar-select-arrow iconfont'">{{"&#xe6be;"}}</text>
             </view>
-            <view id="toolbar-button-letter-spacing" @tap="openLetterSpacingSheet" @mousemove.stop="showToolbarTooltip('toolbar-button-letter-spacing', '字间距')" :class="letterSpacingSheetHighlighted ? 'toolbar-select toolbar-select-compact toolbar-select-value toolbar-select-active' : 'toolbar-select toolbar-select-compact toolbar-select-value'">
-              <text :class="letterSpacingSheetHighlighted ? 'toolbar-icon-text toolbar-icon-text-active toolbar-select-glyph iconfont' : 'toolbar-icon-text toolbar-select-glyph iconfont'">{{"&#xe6ac;"}}</text>
-              <text :class="letterSpacingSheetHighlighted ? 'toolbar-select-arrow toolbar-select-arrow-active iconfont' : 'toolbar-select-arrow iconfont'">{{"&#xe6be;"}}</text>
+            <view id="toolbar-button-letter-spacing" @tap="openLetterSpacingSheet" @mousemove.stop="showToolbarTooltip('toolbar-button-letter-spacing', '字间距')" :class="letterSpacingSheetHighlighted ? 'items-center toolbar-select h-28 d-flex border-width-1 radius-4 bg-transparent flex-dir-row pl-4 pr-4 mr-1 justify-between min-w-40 toolbar-select-active' : 'items-center toolbar-select h-28 d-flex border-width-1 radius-4 bg-transparent flex-dir-row pl-4 pr-4 mr-1 justify-between min-w-40'">
+              <text :class="letterSpacingSheetHighlighted ? 'toolbar-icon-text fs-16 lh-16 toolbar-icon-text-active iconfont' : 'toolbar-icon-text fs-16 lh-16 iconfont'">{{"&#xe6ac;"}}</text>
+              <text :class="letterSpacingSheetHighlighted ? 'u-ml-2 toolbar-select-arrow toolbar-select-arrow-active iconfont' : 'u-ml-2 toolbar-select-arrow iconfont'">{{"&#xe6be;"}}</text>
             </view>
-            <view id="toolbar-button-list" @tap="openListSheet" @mousemove.stop="showToolbarTooltip('toolbar-button-list', '列表')" :class="listSheetHighlighted ? 'toolbar-select toolbar-select-compact toolbar-select-active' : 'toolbar-select toolbar-select-compact'">
-              <text :class="listSheetHighlighted ? 'toolbar-icon-text toolbar-icon-text-active toolbar-select-glyph iconfont' : 'toolbar-icon-text toolbar-select-glyph iconfont'">{{"&#xe6a4;"}}</text>
-              <text :class="listSheetHighlighted ? 'toolbar-select-arrow toolbar-select-arrow-active iconfont' : 'toolbar-select-arrow iconfont'">{{"&#xe6be;"}}</text>
+            <view id="toolbar-button-list" @tap="openListSheet" @mousemove.stop="showToolbarTooltip('toolbar-button-list', '列表')" :class="listSheetHighlighted ? 'items-center toolbar-select h-28 d-flex border-width-1 radius-4 bg-transparent flex-dir-row pl-4 pr-4 mr-1 justify-between min-w-40 toolbar-select-active' : 'items-center toolbar-select h-28 d-flex border-width-1 radius-4 bg-transparent flex-dir-row pl-4 pr-4 mr-1 justify-between min-w-40'">
+              <text :class="listSheetHighlighted ? 'toolbar-icon-text fs-16 lh-16 toolbar-icon-text-active iconfont' : 'toolbar-icon-text fs-16 lh-16 iconfont'">{{"&#xe6a4;"}}</text>
+              <text :class="listSheetHighlighted ? 'u-ml-2 toolbar-select-arrow toolbar-select-arrow-active iconfont' : 'u-ml-2 toolbar-select-arrow iconfont'">{{"&#xe6be;"}}</text>
             </view>
             <!-- #ifndef MP -->
-            <view id="toolbar-button-blockquote" @tap="toggleBlockquote" @mousemove.stop="showToolbarTooltip('toolbar-button-blockquote', '引用')" :class="data.formats.blockquote ? 'toolbar-icon-button toolbar-icon-button-active' : 'toolbar-icon-button'">
-              <text :class="data.formats.blockquote ? 'toolbar-icon-text toolbar-icon-text-active iconfont' : 'toolbar-icon-text iconfont'">{{"&#xe6b5;"}}</text>
+            <view id="toolbar-button-blockquote" @tap="toggleBlockquote" @mousemove.stop="showToolbarTooltip('toolbar-button-blockquote', '引用')" :class="data.formats.blockquote ? 'items-center toolbar-icon-button h-28 d-flex border-width-1 radius-4 bg-transparent w-28 flex-dir-column justify-center toolbar-icon-button-active' : 'items-center toolbar-icon-button h-28 d-flex border-width-1 radius-4 bg-transparent w-28 flex-dir-column justify-center'">
+              <text :class="data.formats.blockquote ? 'toolbar-icon-text fs-16 lh-16 toolbar-icon-text-active iconfont' : 'toolbar-icon-text fs-16 lh-16 iconfont'">{{"&#xe6b5;"}}</text>
             </view>
-            <view id="toolbar-button-code-block" @tap="toggleCodeBlock" @mousemove.stop="showToolbarTooltip('toolbar-button-code-block', '代码块')" :class="data.formats.codeBlock ? 'toolbar-icon-button toolbar-icon-button-active' : 'toolbar-icon-button'">
-              <text :class="data.formats.codeBlock ? 'toolbar-icon-text toolbar-icon-text-active iconfont' : 'toolbar-icon-text iconfont'">{{"&#xe6a9;"}}</text>
+            <view id="toolbar-button-code-block" @tap="toggleCodeBlock" @mousemove.stop="showToolbarTooltip('toolbar-button-code-block', '代码块')" :class="data.formats.codeBlock ? 'items-center toolbar-icon-button h-28 d-flex border-width-1 radius-4 bg-transparent w-28 flex-dir-column justify-center toolbar-icon-button-active' : 'items-center toolbar-icon-button h-28 d-flex border-width-1 radius-4 bg-transparent w-28 flex-dir-column justify-center'">
+              <text :class="data.formats.codeBlock ? 'toolbar-icon-text fs-16 lh-16 toolbar-icon-text-active iconfont' : 'toolbar-icon-text fs-16 lh-16 iconfont'">{{"&#xe6a9;"}}</text>
             </view>
             <!-- #endif -->
-            <view id="toolbar-button-divider" @tap="insertDivider" @mousemove.stop="showToolbarTooltip('toolbar-button-divider', '分割线')" class="toolbar-icon-button">
-              <text class="toolbar-icon-text iconfont">{{"&#xe6b4;"}}</text>
+            <view id="toolbar-button-divider" @tap="insertDivider" @mousemove.stop="showToolbarTooltip('toolbar-button-divider', '分割线')" class="items-center toolbar-icon-button h-28 d-flex border-width-1 radius-4 bg-transparent w-28 flex-dir-column justify-center">
+              <text class="toolbar-icon-text fs-16 lh-16 iconfont">{{"&#xe6b4;"}}</text>
             </view>
           </view>
 
           <view :class="desktopToolbarDividerClass"></view>
 
           <view :class="desktopToolbarGroupClass">
-            <view id="toolbar-button-image" @tap="chooseInsertImage" @mousemove.stop="showToolbarTooltip('toolbar-button-image', '图片')" class="toolbar-icon-button toolbar-icon-button-action">
-              <text class="toolbar-icon-text iconfont">{{"&#xe6bc;"}}</text>
+            <view id="toolbar-button-image" @tap="chooseInsertImage" @mousemove.stop="showToolbarTooltip('toolbar-button-image', '图片')" class="items-center toolbar-icon-button h-28 d-flex border-width-1 radius-4 bg-transparent toolbar-icon-button-action u-ml-2 w-28 flex-dir-column justify-center">
+              <text class="toolbar-icon-text fs-16 lh-16 iconfont">{{"&#xe6bc;"}}</text>
             </view>
             <!-- #ifndef MP -->
-            <view id="toolbar-button-link" @tap="openLinkModal" @mousemove.stop="showToolbarTooltip('toolbar-button-link', data.formats.link != '' ? '编辑超链接' : '插入超链接')" :class="data.formats.link != '' ? 'toolbar-icon-button toolbar-icon-button-action toolbar-icon-button-active' : 'toolbar-icon-button toolbar-icon-button-action'">
-              <text :class="data.formats.link != '' ? 'toolbar-icon-text toolbar-icon-text-active iconfont' : 'toolbar-icon-text iconfont'">{{"&#xe6bd;"}}</text>
+            <view id="toolbar-button-link" @tap="openLinkModal" @mousemove.stop="showToolbarTooltip('toolbar-button-link', data.formats.link != '' ? '编辑超链接' : '插入超链接')" :class="data.formats.link != '' ? 'items-center toolbar-icon-button h-28 d-flex border-width-1 radius-4 bg-transparent w-28 flex-dir-column justify-center toolbar-icon-button-action u-ml-2 toolbar-icon-button-active' : 'items-center toolbar-icon-button h-28 d-flex border-width-1 radius-4 bg-transparent w-28 flex-dir-column justify-center toolbar-icon-button-action u-ml-2'">
+              <text :class="data.formats.link != '' ? 'toolbar-icon-text fs-16 lh-16 toolbar-icon-text-active iconfont' : 'toolbar-icon-text fs-16 lh-16 iconfont'">{{"&#xe6bd;"}}</text>
             </view>
             <!-- #endif -->
-            <view id="toolbar-button-preview" @tap="openPreview" @mousemove.stop="showToolbarTooltip('toolbar-button-preview', '预览')" class="toolbar-preview-button">
-              <text class="toolbar-preview-label">预览</text>
+            <view id="toolbar-button-preview" @tap="openPreview" @mousemove.stop="showToolbarTooltip('toolbar-button-preview', '预览')" class="h-28 d-flex flex-dir-row items-center justify-center radius-4 ml-6 pl-10 pr-10 bg-fff toolbar-preview-button">
+              <text class="fs-12 lh-18 toolbar-preview-label">预览</text>
             </view>
           </view>
         </view>
@@ -127,11 +127,11 @@
           </view>
         </view>
         <!-- #endif -->
-        <view v-if="!data.isFocused && data.activeSheet == ''" class="desktop-toolbar-mask"></view>
+        <view v-if="!data.isFocused && data.activeSheet == ''" class="pos-absolute top-0 bottom-0 right-0 desktop-toolbar-mask left-0"></view>
       </view>
     </view>
 
-    <view v-if="data.activeSheet != ''" class="sheet-backdrop" @tap="closeSheets"></view>
+    <view v-if="data.activeSheet != ''" class="pos-fixed top-0 right-0 bottom-0 sheet-backdrop left-0" @tap="closeSheets"></view>
 
     <view
      id="editor-sheet-host"
@@ -140,7 +140,7 @@
      :style="sheetHostStyle"
       <!-- #endif -->
       <!-- #ifndef WEB -->
-      class="sheet-host"
+      class="sheet-host pos-fixed left-0 right-0 bottom-0 d-flex flex-dir-column"
       <!-- #endif -->
      v-if="data.activeSheet != ''"
       <!--#ifdef WEB -->
@@ -152,7 +152,7 @@
         :class="toolbarPanelClass"
         <!-- #endif -->
         <!-- #ifndef WEB -->
-        class="toolbar-panel toolbar-panel-attached"
+        class="toolbar-panel pt-14 pb-12 toolbar-panel-attached overflow-hidden border-width-1"
         <!-- #endif -->
       >
         <!-- #ifdef WEB -->
@@ -163,16 +163,16 @@
           :class="toolbarPanelHeaderClass"
           <!-- #endif -->
           <!-- #ifndef WEB -->
-          class="toolbar-panel-header"
+          class="mb-12 d-flex flex-dir-row items-center justify-between"
           <!-- #endif -->
         >
-          <view class="toolbar-panel-title-wrap">
+          <view class="d-flex flex-dir-column flex-1">
             <text
               <!-- #ifdef WEB -->
               :class="toolbarPanelTitleClass"
               <!-- #endif -->
               <!-- #ifndef WEB -->
-              class="toolbar-panel-title"
+              class="toolbar-panel-title fs-14 color-0f172a fw-600"
               <!-- #endif -->
             >{{ getPanelTitle() }}</text>
             <text
@@ -180,7 +180,7 @@
               :class="toolbarPanelSubtitleClass"
               <!-- #endif -->
               <!-- #ifndef WEB -->
-              class="toolbar-panel-subtitle"
+              class="toolbar-panel-subtitle fs-11 mt-4 color-64748b lh-16"
               <!-- #endif -->
             >{{ getPanelSubtitle() }}</text>
           </view>
@@ -191,12 +191,12 @@
           :class="toolbarPanelScrollClass"
           <!-- #endif -->
           <!-- #ifndef WEB -->
-          class="toolbar-panel-scroll"
+          class="flex-1 d-flex flex-dir-column"
           <!-- #endif -->
           direction="vertical"
           :show-scrollbar="false"
         >
-          <view class="toolbar-panel-section" v-if="data.activeSheet == 'title'">
+          <view class="d-flex flex-dir-column" v-if="data.activeSheet == 'title'">
             <view :class="data.toolbarChipRowClass">
               <view :class="data.toolbarChipCellClass"><view @tap="setParagraph" :class="(paragraphActive) ? desktopMenuItemActiveClass : desktopMenuItemClass"><text :class="(paragraphActive) ? desktopMenuBadgeActiveClass : desktopMenuBadgeClass">P</text><text :class="(paragraphActive) ? desktopMenuTextActiveClass : desktopMenuTextClass">正文</text></view></view>
               <!-- #ifndef MP -->
@@ -207,7 +207,7 @@
             </view>
           </view>
 
-          <view class="toolbar-panel-section" v-if="data.activeSheet == 'style'">
+          <view class="d-flex flex-dir-column" v-if="data.activeSheet == 'style'">
             <view :class="data.toolbarChipRowClass">
               <view :class="data.toolbarChipCellClass"><view @tap="toggleBoldAndClose" :class="(data.formats.bold) ? desktopMenuItemActiveClass : desktopMenuItemClass"><text :class="(data.formats.bold) ? desktopMenuBadgeActiveClass : desktopMenuBadgeClass">B</text><text :class="(data.formats.bold) ? desktopMenuTextActiveClass : desktopMenuTextClass">加粗</text></view></view>
               <view :class="data.toolbarChipCellClass"><view @tap="toggleItalicAndClose" :class="(data.formats.italic) ? desktopMenuItemActiveClass : desktopMenuItemClass"><text :class="(data.formats.italic) ? desktopMenuBadgeActiveClass : desktopMenuBadgeClass">I</text><text :class="(data.formats.italic) ? desktopMenuTextActiveClass : desktopMenuTextClass">斜体</text></view></view>
@@ -215,17 +215,17 @@
               <view :class="data.toolbarChipCellClass"><view @tap="toggleStrikeAndClose" :class="(data.formats.strike) ? desktopMenuItemActiveClass : desktopMenuItemClass"><text :class="(data.formats.strike) ? desktopMenuBadgeActiveClass : desktopMenuBadgeClass">S</text><text :class="(data.formats.strike) ? desktopMenuTextActiveClass : desktopMenuTextClass">删除线</text></view></view>
             </view>
 
-            <view class="toolbar-color-section">
-              <text class="toolbar-color-title">文字颜色</text>
-              <view class="color-row color-row-panel">
+            <view class="d-flex flex-dir-column mt-4">
+              <text class="fs-11 mb-6 toolbar-color-title color-64748b">文字颜色</text>
+              <view class="items-center color-row d-flex flex-dir-row flex-wrap-wrap self-center color-row-panel w-340">
                 <view @tap="setTextColorAndClose('')" :class="(data.formats.color == '') ? clearColorSwatchActiveClass : clearColorSwatchClass"></view>
                 <view v-for="color in TEXT_COLOR_PRESETS" :key="color" @tap="setTextColorAndClose(color)" :class="(data.formats.color == color) ? filledColorSwatchActiveClass : filledColorSwatchClass" :style="'background-color: ' + color + ';'"></view>
               </view>
             </view>
 
-            <view class="toolbar-color-section">
-              <text class="toolbar-color-title">背景颜色</text>
-              <view class="color-row color-row-panel">
+            <view class="d-flex flex-dir-column mt-4">
+              <text class="fs-11 mb-6 toolbar-color-title color-64748b">背景颜色</text>
+              <view class="items-center color-row d-flex flex-dir-row flex-wrap-wrap self-center color-row-panel w-340">
                 <view @tap="setBackgroundColorAndClose('')" :class="(data.formats.backgroundColor == '') ? clearColorSwatchActiveClass : clearColorSwatchClass"></view>
                 <view v-for="color in BACKGROUND_COLOR_PRESETS" :key="color" @tap="setBackgroundColorAndClose(color)" :class="(data.formats.backgroundColor == color) ? filledColorSwatchActiveClass : filledColorSwatchClass" :style="'background-color: ' + color + ';'"></view>
               </view>
@@ -233,43 +233,43 @@
 
           </view>
 
-          <view class="toolbar-panel-section" v-if="data.activeSheet == 'line-height'">
-            <view class="toolbar-panel-group">
-              <text class="toolbar-color-title">行间距</text>
+          <view class="d-flex flex-dir-column" v-if="data.activeSheet == 'line-height'">
+            <view class="d-flex flex-dir-column mb-6">
+              <text class="fs-11 mb-6 toolbar-color-title color-64748b">行间距</text>
               <view :class="data.toolbarChipRowClass">
                 <view v-for="(value, index) in LINE_HEIGHT_PRESETS" :key="value" :class="data.toolbarChipCellClass"><view @tap="setLineHeightAndClose(value)" :class="data.formats.lineHeight == value ? desktopMenuItemActiveClass : desktopMenuItemClass"><text :class="data.formats.lineHeight == value ? desktopMenuBadgeActiveClass : desktopMenuBadgeClass">{{ LINE_HEIGHT_BADGES[index] }}</text><text :class="data.formats.lineHeight == value ? desktopMenuTextActiveClass : desktopMenuTextClass">{{ LINE_HEIGHT_LABELS[index] }}</text></view></view>
               </view>
             </view>
           </view>
 
-          <view class="toolbar-panel-section" v-if="data.activeSheet == 'letter-spacing'">
-            <view class="toolbar-panel-group">
-              <text class="toolbar-color-title">字间距</text>
+          <view class="d-flex flex-dir-column" v-if="data.activeSheet == 'letter-spacing'">
+            <view class="d-flex flex-dir-column mb-6">
+              <text class="fs-11 mb-6 toolbar-color-title color-64748b">字间距</text>
               <view :class="data.toolbarChipRowClass">
                 <view v-for="(value, index) in LETTER_SPACING_PRESETS" :key="value" :class="data.toolbarChipCellClass"><view @tap="setLetterSpacingAndClose(value)" :class="data.formats.letterSpacing == value ? desktopMenuItemActiveClass : desktopMenuItemClass"><text :class="data.formats.letterSpacing == value ? desktopMenuBadgeActiveClass : desktopMenuBadgeClass">{{ LETTER_SPACING_BADGES[index] }}</text><text :class="data.formats.letterSpacing == value ? desktopMenuTextActiveClass : desktopMenuTextClass">{{ LETTER_SPACING_LABELS[index] }}</text></view></view>
               </view>
             </view>
           </view>
 
-          <view class="toolbar-panel-section" v-if="data.activeSheet == 'font-size'">
-            <view class="toolbar-panel-group">
-              <text class="toolbar-color-title">字号</text>
+          <view class="d-flex flex-dir-column" v-if="data.activeSheet == 'font-size'">
+            <view class="d-flex flex-dir-column mb-6">
+              <text class="fs-11 mb-6 toolbar-color-title color-64748b">字号</text>
               <view :class="data.toolbarChipRowClass">
                 <view v-for="size in FONT_SIZE_PRESETS" :key="size" :class="data.toolbarChipCellClass"><view @tap="setFontSizeAndClose(size + 'px')" :class="(data.formats.fontSize == size + 'px' || (size == '17' && data.formats.fontSize == '')) ? desktopMenuItemActiveClass : desktopMenuItemClass"><text :class="(data.formats.fontSize == size + 'px' || (size == '17' && data.formats.fontSize == '')) ? desktopMenuBadgeActiveClass : desktopMenuBadgeClass">{{ size }}</text><text :class="(data.formats.fontSize == size + 'px' || (size == '17' && data.formats.fontSize == '')) ? desktopMenuTextActiveClass : desktopMenuTextClass">{{ size == '17' ? '默认' : size + 'px' }}</text></view></view>
               </view>
             </view>
           </view>
 
-          <view class="toolbar-panel-section" v-if="data.activeSheet == 'font-family'">
-            <view class="toolbar-panel-group">
-              <text class="toolbar-color-title">字体</text>
+          <view class="d-flex flex-dir-column" v-if="data.activeSheet == 'font-family'">
+            <view class="d-flex flex-dir-column mb-6">
+              <text class="fs-11 mb-6 toolbar-color-title color-64748b">字体</text>
               <view :class="data.toolbarChipRowClass">
                 <view v-for="(font, index) in FONT_FAMILY_PRESETS" :key="font" :class="data.toolbarChipCellClass"><view @tap="setFontFamilyAndClose(font)" :class="data.formats.fontFamily == font ? desktopMenuItemActiveClass : desktopMenuItemClass"><text :class="data.formats.fontFamily == font ? desktopMenuBadgeActiveClass : desktopMenuBadgeClass">{{ FONT_FAMILY_BADGES[index] }}</text><text :class="data.formats.fontFamily == font ? desktopMenuTextActiveClass : desktopMenuTextClass">{{ FONT_FAMILY_LABELS[index] }}</text></view></view>
               </view>
             </view>
           </view>
 
-          <view class="toolbar-panel-section" v-if="data.activeSheet == 'align'">
+          <view class="d-flex flex-dir-column" v-if="data.activeSheet == 'align'">
             <view :class="data.toolbarChipRowClass">
               <view :class="data.toolbarChipCellClass"><view @tap="clearAlign" :class="(data.formats.align == '') ? desktopMenuItemActiveClass : desktopMenuItemClass"><text :class="(data.formats.align == '') ? desktopMenuBadgeActiveClass : desktopMenuBadgeClass">D</text><text :class="(data.formats.align == '') ? desktopMenuTextActiveClass : desktopMenuTextClass">默认</text></view></view>
               <view :class="data.toolbarChipCellClass"><view @tap="setAlignLeft" :class="(data.formats.align == 'left') ? desktopMenuItemActiveClass : desktopMenuItemClass"><text :class="(data.formats.align == 'left') ? desktopMenuBadgeActiveClass : desktopMenuBadgeClass">L</text><text :class="(data.formats.align == 'left') ? desktopMenuTextActiveClass : desktopMenuTextClass">居左</text></view></view>
@@ -279,16 +279,16 @@
             </view>
           </view>
 
-          <view class="toolbar-panel-section" v-if="data.activeSheet == 'block-indent'">
-            <view class="toolbar-panel-group">
-              <text class="toolbar-color-title">两端缩进</text>
+          <view class="d-flex flex-dir-column" v-if="data.activeSheet == 'block-indent'">
+            <view class="d-flex flex-dir-column mb-6">
+              <text class="fs-11 mb-6 toolbar-color-title color-64748b">两端缩进</text>
               <view :class="data.toolbarChipRowClass">
                 <view v-for="indent in BLOCK_INDENT_PRESETS" :key="indent" :class="data.toolbarChipCellClass"><view @tap="setBlockIndentAndClose(indent + 'px')" :class="((indent == '0' && data.formats.marginLeft == '' && data.formats.marginRight == '') || (data.formats.marginLeft == indent + 'px' && data.formats.marginRight == indent + 'px')) ? desktopMenuItemActiveClass : desktopMenuItemClass"><text :class="((indent == '0' && data.formats.marginLeft == '' && data.formats.marginRight == '') || (data.formats.marginLeft == indent + 'px' && data.formats.marginRight == indent + 'px')) ? desktopMenuBadgeActiveClass : desktopMenuBadgeClass">{{ indent }}</text><text :class="((indent == '0' && data.formats.marginLeft == '' && data.formats.marginRight == '') || (data.formats.marginLeft == indent + 'px' && data.formats.marginRight == indent + 'px')) ? desktopMenuTextActiveClass : desktopMenuTextClass">{{ indent + 'px' }}</text></view></view>
               </view>
             </view>
           </view>
 
-          <view class="toolbar-panel-section" v-if="data.activeSheet == 'list'">
+          <view class="d-flex flex-dir-column" v-if="data.activeSheet == 'list'">
             <view :class="data.toolbarChipRowClass">
               <view :class="data.toolbarChipCellClass"><view @tap="clearListFormat" :class="(data.formats.list == '') ? desktopMenuItemActiveClass : desktopMenuItemClass"><text :class="(data.formats.list == '') ? desktopMenuBadgeActiveClass : desktopMenuBadgeClass">D</text><text :class="(data.formats.list == '') ? desktopMenuTextActiveClass : desktopMenuTextClass">默认</text></view></view>
               <view :class="data.toolbarChipCellClass"><view @tap="setBulletList" :class="(data.formats.list == 'bullet') ? desktopMenuItemActiveClass : desktopMenuItemClass"><text :class="(data.formats.list == 'bullet') ? desktopMenuBadgeActiveClass : desktopMenuBadgeClass">•</text><text :class="(data.formats.list == 'bullet') ? desktopMenuTextActiveClass : desktopMenuTextClass">无序列表</text></view></view>
@@ -296,35 +296,35 @@
             </view>
           </view>
 
-          <view class="toolbar-panel-section" v-if="data.activeSheet == 'text-color'">
-            <view class="toolbar-color-section">
-              <view class="desktop-color-sheet-label">
-                <view class="desktop-color-sheet-icon"></view>
-                <text class="desktop-color-sheet-label-text">默认颜色</text>
+          <view class="d-flex flex-dir-column" v-if="data.activeSheet == 'text-color'">
+            <view class="d-flex flex-dir-column mt-4">
+              <view class="d-flex flex-dir-row items-center mb-12">
+                <view class="w-14 h-14 border-width-1 radius-2 mr-10 transform-rotate-45deg desktop-color-sheet-icon"></view>
+                <text class="fs-12 lh-18 desktop-color-sheet-label-text color-374151">默认颜色</text>
               </view>
-              <view class="color-row color-row-panel">
+              <view class="items-center color-row d-flex flex-dir-row flex-wrap-wrap self-center color-row-panel w-340">
                 <view @tap="setTextColorAndClose('')" :class="(data.formats.color == '') ? clearColorSwatchActiveClass : clearColorSwatchClass"></view>
                 <view v-for="color in TEXT_COLOR_PRESETS" :key="color" @tap="setTextColorAndClose(color)" :class="(data.formats.color == color) ? filledColorSwatchActiveClass : filledColorSwatchClass" :style="'background-color: ' + color + ';'"></view>
               </view>
             </view>
           </view>
 
-          <view class="toolbar-panel-section" v-if="data.activeSheet == 'background-color'">
-            <view class="toolbar-color-section">
-              <view class="desktop-color-sheet-label">
-                <view class="desktop-color-sheet-icon"></view>
-                <text class="desktop-color-sheet-label-text">默认背景</text>
+          <view class="d-flex flex-dir-column" v-if="data.activeSheet == 'background-color'">
+            <view class="d-flex flex-dir-column mt-4">
+              <view class="d-flex flex-dir-row items-center mb-12">
+                <view class="w-14 h-14 border-width-1 radius-2 mr-10 transform-rotate-45deg desktop-color-sheet-icon"></view>
+                <text class="fs-12 lh-18 desktop-color-sheet-label-text color-374151">默认背景</text>
               </view>
-              <view class="color-row color-row-panel">
+              <view class="items-center color-row d-flex flex-dir-row flex-wrap-wrap self-center color-row-panel w-340">
                 <view @tap="setBackgroundColorAndClose('')" :class="(data.formats.backgroundColor == '') ? clearColorSwatchActiveClass : clearColorSwatchClass"></view>
                 <view v-for="color in BACKGROUND_COLOR_PRESETS" :key="color" @tap="setBackgroundColorAndClose(color)" :class="(data.formats.backgroundColor == color) ? filledColorSwatchActiveClass : filledColorSwatchClass" :style="'background-color: ' + color + ';'"></view>
               </view>
             </view>
           </view>
 
-          <view class="toolbar-panel-section" v-if="data.activeSheet == 'more'">
-            <view class="toolbar-panel-group">
-              <text class="toolbar-color-title">插入内容</text>
+          <view class="d-flex flex-dir-column" v-if="data.activeSheet == 'more'">
+            <view class="d-flex flex-dir-column mb-6">
+              <text class="fs-11 mb-6 toolbar-color-title color-64748b">插入内容</text>
               <view :class="data.toolbarChipRowClass">
                 <view :class="data.toolbarChipCellClass"><view @tap="toggleChecklistTool" :class="(data.formats.list == 'check') ? desktopMenuItemActiveClass : desktopMenuItemClass"><text :class="(data.formats.list == 'check') ? desktopMenuBadgeActiveClass : desktopMenuBadgeClass">TODO</text><text :class="(data.formats.list == 'check') ? desktopMenuTextActiveClass : desktopMenuTextClass">TODO</text></view></view>
                 <view :class="data.toolbarChipCellClass"><view @tap="insertDivider" :class="desktopMenuItemClass"><text :class="desktopMenuBadgeClass">---</text><text :class="desktopMenuTextClass">分割线</text></view></view>
@@ -333,8 +333,8 @@
               </view>
             </view>
 
-            <view class="toolbar-panel-group">
-              <text class="toolbar-color-title">编辑操作</text>
+            <view class="d-flex flex-dir-column mb-6">
+              <text class="fs-11 mb-6 toolbar-color-title color-64748b">编辑操作</text>
               <view :class="data.toolbarChipRowClass">
                 <view :class="data.toolbarChipCellClass"><view @tap="clearFormatting" :class="desktopMenuItemClass"><text :class="desktopMenuBadgeClass">CLR</text><text :class="desktopMenuTextClass">清除样式</text></view></view>
                 <view :class="data.toolbarChipCellClass"><view @tap="undo" :class="desktopMenuItemClass"><text :class="desktopMenuBadgeClass">↶</text><text :class="desktopMenuTextClass">撤销</text></view></view>
@@ -421,7 +421,7 @@
               <text class="link-modal-button-text link-modal-button-text-secondary link-modal-button-text-secondary-app">取消</text>
             </view>
             <view class="link-modal-button link-modal-button-primary link-modal-button-primary-app" @tap="confirmLinkModal">
-              <text class="link-modal-button-text link-modal-button-text-app">确定</text>
+              <text class="link-modal-button-text">确定</text>
             </view>
           </view>
         </view>
@@ -430,12 +430,11 @@
     <!-- #endif -->
     <!-- #endif -->
 
-    <view class="editor-stage">
+    <view class="w-full self-center radius-0 overflow-hidden mt-50 editor-stage flex-1 d-flex flex-dir-column bg-fff border-width-1">
       <editor
         id="editor"
-        class="editor-field"
+        class="flex-1 bg-fff editor-field p-20"
         placeholder="请输入正文内容..."
-        style="padding: 20px;"
         show-img-size
         show-img-toolbar
         show-img-resize
@@ -589,8 +588,8 @@ function assignFormats(target: Formats, source: Formats) {
 const data = reactive<DataType>({
   pageWindowHeight: 0,
   pageWindowWidth: 0,
-  toolbarChipRowClass: 'toolbar-chip-row',
-  toolbarChipCellClass: 'toolbar-chip-cell',
+  toolbarChipRowClass: 'toolbar-chip-row d-flex flex-dir-row flex-wrap-wrap justify-start',
+  toolbarChipCellClass: 'w-25pct pl-3 pr-3 mb-6',
   // #ifdef WEB
   tooltipVisible: false,
   tooltipText: '',
@@ -680,16 +679,16 @@ function isWebPhoneLayout() : boolean {
 
 function getPageShellClass() : string {
   if (isWideLayout()) {
-    return 'page-shell page-shell-wide'
+    return 'flex-1 d-flex flex-dir-column pos-relative pt-24 pr-24 pl-24 pb-20'
   }
-  return 'page-shell'
+  return 'flex-1 d-flex flex-dir-column pt-16 pr-12 pb-12 pl-12 pos-relative'
 }
 
 function getEditorLayoutClass() : string {
   if (isWideLayout()) {
-    return 'editor-layout editor-layout-wide'
+    return 'editor-layout flex-1 d-flex flex-dir-column pos-relative w-full self-center editor-layout-wide'
   }
-  return 'editor-layout'
+  return 'editor-layout flex-1 d-flex flex-dir-column pos-relative w-full self-center'
 }
 
 function getSheetWidth() : number {
@@ -720,22 +719,18 @@ function getSheetWidth() : number {
 }
 
 function syncToolbarChipClasses() {
-  const panelWidth = getSheetWidth()
-  if (panelWidth <= 300) {
-    data.toolbarChipRowClass = 'toolbar-chip-row toolbar-chip-row-panel toolbar-chip-row-panel-compact'
-  } else {
-    data.toolbarChipRowClass = 'toolbar-chip-row toolbar-chip-row-panel'
-  }
+  // App 按 class 顺序覆盖边距，panel 需保留在基础行 class 之后。
+  data.toolbarChipRowClass = 'toolbar-chip-row d-flex flex-dir-row flex-wrap-wrap justify-start toolbar-chip-row-panel'
 
   if (data.activeSheet == 'title' || data.activeSheet == 'align' || data.activeSheet == 'more' || data.activeSheet == 'line-height' || data.activeSheet == 'letter-spacing' || data.activeSheet == 'font-size' || data.activeSheet == 'font-family' || data.activeSheet == 'block-indent' || data.activeSheet == 'list') {
-    data.toolbarChipCellClass = 'toolbar-chip-cell toolbar-chip-cell-full'
+    data.toolbarChipCellClass = 'pl-3 pr-3 mb-6 w-full'
     return
   }
   if (data.activeSheet == 'style') {
-    data.toolbarChipCellClass = 'toolbar-chip-cell toolbar-chip-cell-third'
+    data.toolbarChipCellClass = 'pl-3 pr-3 mb-6 toolbar-chip-cell-third'
     return
   }
-  data.toolbarChipCellClass = 'toolbar-chip-cell toolbar-chip-cell-quarter'
+  data.toolbarChipCellClass = 'w-25pct pl-3 pr-3 mb-6'
 }
 
 function getSheetHostStyle() : string {
@@ -753,11 +748,11 @@ function getSheetHostStyle() : string {
 function getSheetHostClass() : string {
   // #ifdef WEB
   if (isWebPhoneLayout()) {
-    return 'sheet-host sheet-host-mobile-web'
+    return 'sheet-host pos-fixed left-0 right-0 bottom-0 d-flex flex-dir-column sheet-host-mobile-web'
   }
-  return 'sheet-host sheet-host-floating'
+  return 'sheet-host pos-fixed left-0 right-0 bottom-0 d-flex flex-dir-column sheet-host-floating'
   // #endif
-  return 'sheet-host'
+  return 'sheet-host pos-fixed left-0 right-0 bottom-0 d-flex flex-dir-column'
 }
 
 // #ifdef WEB
@@ -794,9 +789,9 @@ function getDesktopFontFamilyLabel() : string {
 }
 
 function getDesktopToolbarShellClass() : string {
-  let className = 'toolbar-shell'
+  let className = 'toolbar-shell self-center d-flex radius-0 p-0 flex-wrap-nowrap flex-dir-row items-center border-width-0 shadow-none'
   if (isCompactToolbar()) {
-    className += ' toolbar-shell-compact'
+    className += ' toolbar-shell-compact pt-6 pb-6 justify-center'
   }
   if (isDenseToolbar()) {
     className += ' toolbar-shell-dense'
@@ -806,12 +801,12 @@ function getDesktopToolbarShellClass() : string {
 }
 
 function getDesktopToolbarGroupClass(isLeading: boolean) : string {
-  let className = 'toolbar-group'
+  let className = 'd-flex flex-dir-row items-center flex-wrap-nowrap'
   if (isLeading) {
     className += ' toolbar-group-leading'
   }
   if (isCompactToolbar()) {
-    className += ' toolbar-group-compact'
+    className += ' toolbar-group-compact justify-center'
     if (isLeading) {
       className += ' toolbar-group-leading-compact'
     }
@@ -824,74 +819,74 @@ function getDesktopToolbarGroupClass(isLeading: boolean) : string {
 
 function getDesktopToolbarDividerClass() : string {
   if (isCompactToolbar()) {
-    return 'toolbar-divider toolbar-divider-hidden'
+    return 'toolbar-divider w-1 h-20 ml-3 mr-3 toolbar-divider-hidden'
   }
-  return 'toolbar-divider'
+  return 'toolbar-divider w-1 h-20 ml-3 mr-3'
 }
 
 function getToolbarPanelClass() : string {
   // #ifdef WEB
   if (isWebPhoneLayout()) {
-    return 'toolbar-panel toolbar-panel-mobile-web'
+    return 'toolbar-panel pt-14 pb-12 overflow-hidden border-width-1 toolbar-panel-mobile-web'
   }
   if (data.sheetAnimated) {
-    return 'toolbar-panel toolbar-panel-attached toolbar-panel-floating toolbar-panel-floating-attached toolbar-panel-floating-entered'
+    return 'toolbar-panel pt-14 pb-12 overflow-hidden border-width-1 toolbar-panel-attached toolbar-panel-floating toolbar-panel-floating-attached toolbar-panel-floating-entered'
   }
-  return 'toolbar-panel toolbar-panel-attached toolbar-panel-floating toolbar-panel-floating-attached'
+  return 'toolbar-panel pt-14 pb-12 overflow-hidden border-width-1 toolbar-panel-attached toolbar-panel-floating toolbar-panel-floating-attached'
   // #endif
-  return 'toolbar-panel toolbar-panel-attached'
+  return 'toolbar-panel pt-14 pb-12 overflow-hidden border-width-1 toolbar-panel-attached'
 }
 
 function getToolbarPanelHeaderClass() : string {
   // #ifdef WEB
   if (isWebPhoneLayout()) {
-    return 'toolbar-panel-header toolbar-panel-header-mobile-web'
+    return 'mb-12 d-flex flex-dir-row items-center justify-between'
   }
-  return 'toolbar-panel-header toolbar-panel-header-floating'
+  return 'mb-12 d-flex flex-dir-row items-center justify-between'
   // #endif
-  return 'toolbar-panel-header'
+  return 'mb-12 d-flex flex-dir-row items-center justify-between'
 }
 
 function getToolbarPanelTitleClass() : string {
   // #ifdef WEB
   if (isWebPhoneLayout()) {
-    return 'toolbar-panel-title toolbar-panel-title-mobile-web'
+    return 'toolbar-panel-title fs-14 color-0f172a fw-600'
   }
-  return 'toolbar-panel-title toolbar-panel-title-floating'
+  return 'toolbar-panel-title fs-14 color-0f172a fw-600'
   // #endif
-  return 'toolbar-panel-title'
+  return 'toolbar-panel-title fs-14 color-0f172a fw-600'
 }
 
 function getToolbarPanelSubtitleClass() : string {
   // #ifdef WEB
   if (isWebPhoneLayout()) {
-    return 'toolbar-panel-subtitle toolbar-panel-subtitle-mobile-web'
+    return 'toolbar-panel-subtitle fs-11 mt-4 color-64748b lh-16'
   }
-  return 'toolbar-panel-subtitle toolbar-panel-subtitle-floating'
+  return 'toolbar-panel-subtitle fs-11 mt-4 color-64748b lh-16'
   // #endif
-  return 'toolbar-panel-subtitle'
+  return 'toolbar-panel-subtitle fs-11 mt-4 color-64748b lh-16'
 }
 
 function getToolbarPanelScrollClass() : string {
   // #ifdef WEB
   if (isWebPhoneLayout()) {
-    return 'toolbar-panel-scroll toolbar-panel-scroll-mobile-web'
+    return 'flex-1 d-flex flex-dir-column'
   }
-  return 'toolbar-panel-scroll toolbar-panel-scroll-floating'
+  return 'flex-1 d-flex flex-dir-column'
   // #endif
-  return 'toolbar-panel-scroll'
+  return 'flex-1 d-flex flex-dir-column'
 }
 
 function getDesktopMenuItemClass(active: boolean) : string {
-  return active ? 'desktop-menu-item desktop-menu-item-active' : 'desktop-menu-item'
+  return active ? 'desktop-menu-item w-full min-w-0 min-h-0 d-flex flex-dir-row items-center justify-start border-width-1 radius-6 bg-fff pt-8 pr-10 pb-8 pl-10 ml-0 mr-0 mb-4 desktop-menu-item-active' : 'desktop-menu-item w-full min-w-0 min-h-0 d-flex flex-dir-row items-center justify-start border-width-1 radius-6 bg-fff pt-8 pr-10 pb-8 pl-10 ml-0 mr-0 mb-4'
 }
 
 function getDesktopMenuBadgeClass(active: boolean) : string {
-  return active ? 'desktop-menu-badge desktop-menu-badge-active' : 'desktop-menu-badge'
+  return active ? 'desktop-menu-badge h-24 radius-4 fs-11 fw-700 text-center lh-24 mr-10 desktop-menu-badge-active' : 'desktop-menu-badge h-24 radius-4 fs-11 fw-700 text-center lh-24 mr-10'
 }
 
 function getDesktopMenuTextClass(active: boolean) : string {
-  return active ? 'desktop-menu-text desktop-menu-text-active' : 'desktop-menu-text'
+  return active ? 'desktop-menu-text color-1f2937 fs-13 text-left lh-18 desktop-menu-text-active' : 'desktop-menu-text color-1f2937 fs-13 text-left lh-18'
 }
 
 function closeSheets() {
@@ -908,8 +903,8 @@ function closeSheets() {
 }
 
 function getClearColorSwatchClass(isActive: boolean) : string {
-  let className = 'color-swatch color-swatch-panel'
-  className += ' color-swatch-clear'
+  let className = 'color-swatch h-36 radius-10 border-width-2 border-style-solid ml-4 mr-4 mb-10 color-swatch-panel'
+  className += ' color-swatch-clear bg-fff'
   if (isActive) {
     className += ' color-swatch-active'
   }
@@ -917,7 +912,7 @@ function getClearColorSwatchClass(isActive: boolean) : string {
 }
 
 function getFilledColorSwatchClass(isActive: boolean) : string {
-  let className = 'color-swatch color-swatch-panel'
+  let className = 'color-swatch h-36 radius-10 border-width-2 border-style-solid ml-4 mr-4 mb-10 color-swatch-panel'
   if (isActive) {
     className += ' color-swatch-active'
   }
@@ -2197,34 +2192,8 @@ defineExpose({
 <style>
 @import './editor-icon.css';
 
-.page-shell,
-.editor-layout,
-.editor-stage {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.page-shell {
-  position: relative;
-  padding-top: 16px;
-  padding-right: 12px;
-  padding-bottom: 12px;
-  padding-left: 12px;
-}
-
-.page-shell-wide {
-  padding-top: 24px;
-  padding-right: 24px;
-  padding-bottom: 20px;
-  padding-left: 24px;
-}
-
 .editor-layout {
-  position: relative;
-  width: 100%;
   max-width: 1320px;
-  align-self: center;
 }
 
 .editor-layout-wide {
@@ -2232,16 +2201,9 @@ defineExpose({
 }
 
 .editor-stage {
-  width: 100%;
   /* max-width: 1120px; */
-  align-self: center;
-  background-color: #ffffff;
-  border-width: 1px;
   border-color: #d6dde4;
-  border-radius: 0;
   /* box-shadow: 0 18px 36px rgba(15, 23, 42, 0.07); */
-  overflow: hidden;
-  margin-top: 50px;
 }
 
 /* #ifdef WEB */
@@ -2254,61 +2216,27 @@ defineExpose({
 }
 /* #endif */
 
-.editor-field {
-  flex: 1;
-  background-color: #ffffff;
-}
-
 .toolbar-wrap {
-  position: relative;
   left: auto;
   right: auto;
   bottom: auto;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   z-index: 130;
-  margin-bottom: 0;
-  box-shadow: none;
 }
 
 .toolbar-frame,
 .toolbar-shell {
-  align-self: center;
-  display: flex;
   background-color: #fafafa;
-  border-radius: 0;
-  padding-top: 0;
-  padding-right: 0;
-  padding-bottom: 0;
-  padding-left: 0;
 }
 
 .toolbar-frame {
-  width: 100%;
-  flex-direction: column;
-  border-width: 1px;
   border-color: #ebebeb;
-  border-bottom-width: 1px;
 }
 
 .sheet-host {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  flex-direction: column;
   z-index: 131;
 }
 
 .sheet-backdrop {
-  position: fixed;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
   z-index: 129;
   background-color: rgba(15, 23, 42, 0.04);
 }
@@ -2333,13 +2261,9 @@ defineExpose({
 /* #endif */
 
 .toolbar-panel {
-  overflow: hidden;
   background-color: rgba(255, 255, 255, 0.98);
-  border-width: 1px;
   border-color: #d6dde4;
-  padding-top: 14px;
   padding-right: 14px;
-  padding-bottom: 12px;
   padding-left: 14px;
   /* box-shadow: 0 10px 24px rgba(25, 25, 25, 0.12); */
 }
@@ -2352,31 +2276,14 @@ defineExpose({
 }
 
 .toolbar-shell {
-  flex-direction: row;
-  align-items: center;
-  flex-wrap: nowrap;
-  border-width: 0;
   min-height: 40px;
-  box-shadow: none;
 }
 
 .toolbar-shell-compact {
   flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  padding-top: 6px;
-  padding-bottom: 6px;
-}
-
-.toolbar-group {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  flex-wrap: nowrap;
 }
 
 .toolbar-group-compact {
-  justify-content: center;
   margin-top: 0;
 }
 
@@ -2389,16 +2296,11 @@ defineExpose({
 }
 
 .toolbar-icon-button-action {
-  margin-left: 2px;
   margin-right: 0;
 }
 
 .toolbar-divider {
-  width: 1px;
-  height: 20px;
   background-color: #d8d8d8;
-  margin-left: 3px;
-  margin-right: 3px;
 }
 
 .toolbar-divider-hidden {
@@ -2408,37 +2310,9 @@ defineExpose({
 .toolbar-select,
 .toolbar-icon-button,
 .toolbar-color-button {
-  height: 28px;
-  display: flex;
-  align-items: center;
-  border-width: 1px;
   border-color: transparent;
-  border-radius: 4px;
-  background-color: transparent;
   transition-property: background-color, border-color;
   transition-duration: 160ms;
-}
-
-.toolbar-select,
-.toolbar-color-button {
-  flex-direction: row;
-  padding-left: 4px;
-  padding-right: 4px;
-}
-
-.toolbar-select {
-  justify-content: space-between;
-  margin-right: 1px;
-}
-
-.toolbar-select-value {
-  min-width: 40px;
-  padding-left: 4px;
-  padding-right: 4px;
-}
-
-.toolbar-select-compact {
-  min-width: 40px;
 }
 
 .toolbar-select-active,
@@ -2449,23 +2323,14 @@ defineExpose({
 
 .toolbar-select-label {
   color: #50565f;
-  font-size: 11px;
-  line-height: 18px;
-}
-
-.toolbar-select-glyph {
-  font-size: 16px;
-  line-height: 16px;
 }
 
 .toolbar-size-label {
   font-size: 14px;
-  line-height: 18px;
   /* padding: 0 5px; */
 }
 
 .toolbar-select-font-label {
-  font-size: 11px;
   line-height: 16px;
   /* padding: 0 5px; */
 }
@@ -2486,10 +2351,6 @@ defineExpose({
   transform: scale(0.5);
 }
 
-.toolbar-select-arrow {
-  margin-left: 2px;
-}
-
 .toolbar-select-arrow.iconfont,
 .toolbar-color-arrow.iconfont {
   font-size: 8px;
@@ -2502,34 +2363,11 @@ defineExpose({
 }
 
 .toolbar-icon-button {
-  width: 28px;
-  flex-direction: column;
-  justify-content: center;
   margin-right: 1px;
-}
-
-.toolbar-preview-button {
-  height: 28px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px;
-  background-color: #ffffff;
-  margin-left: 6px;
-  padding-left: 10px;
-  padding-right: 10px;
 }
 
 .toolbar-preview-label {
   color: #2f3b47;
-  font-size: 12px;
-  line-height: 18px;
-}
-
-.toolbar-color-button {
-  justify-content: center;
-  margin-left: 1px;
 }
 
 .toolbar-color-button-active {
@@ -2541,36 +2379,14 @@ defineExpose({
   color: #50565f;
   font-size: 15px;
   line-height: 15px;
-  font-weight: 600;
 }
 
 .toolbar-color-symbol-active {
   color: #111827;
 }
 
-.toolbar-color-stack {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.toolbar-color-underline {
-  width: 12px;
-  height: 2px;
-  border-radius: 2px;
-  margin-top: -1px;
-  margin-left: 1px;
-}
-
-.toolbar-color-arrow {
-  margin-left: 0;
-}
-
 .toolbar-icon-text {
   color: #50565f;
-  font-size: 16px;
-  line-height: 16px;
 }
 
 /* #ifndef MP */
@@ -2824,10 +2640,6 @@ defineExpose({
   font-weight: 600;
 }
 
-.link-modal-button-text-app {
-  color: #ffffff;
-}
-
 .link-modal-button-text-secondary,
 .link-modal-button-text-secondary-app {
   color: #334155;
@@ -2835,15 +2647,9 @@ defineExpose({
 /* #endif */
 
 .relative-top-1 {
-  position: relative;
   top: 1px;
 }
 .desktop-toolbar-mask {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
     background: rgba(255, 255, 255, 0.5);
 }
 /* #ifdef WEB */
@@ -2946,88 +2752,19 @@ defineExpose({
   box-shadow: none;
   transform: rotate(45deg);
 }
-
-.toolbar-panel-header-floating {
-  margin-bottom: 6px;
-}
-
-.toolbar-panel-header-mobile-web {
-  margin-bottom: 10px;
-}
-
-.toolbar-panel-title-floating {
-  font-size: 12px;
-}
-
-.toolbar-panel-title-mobile-web {
-  font-size: 15px;
-}
-
-.toolbar-panel-subtitle-floating {
-  font-size: 10px;
-  margin-top: 2px;
-}
-
-.toolbar-panel-subtitle-mobile-web {
-  font-size: 11px;
-  margin-top: 4px;
-}
-
-.toolbar-panel-scroll-floating,
-.toolbar-panel-scroll-mobile-web {
-  flex: 0;
-  /* max-height: 62vh; */
-}
 /* #endif */
 
-.toolbar-chip-row-panel,
-.toolbar-chip-row-panel-compact {
+.toolbar-chip-row-panel {
   margin-left: 0;
   margin-right: 0;
-}
-
-.desktop-color-sheet-label {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin-bottom: 12px;
 }
 
 .desktop-color-sheet-icon {
-  width: 14px;
-  height: 14px;
-  border-width: 1px;
   border-color: #6b7280;
-  border-radius: 2px;
-  margin-right: 10px;
-  transform: rotate(45deg);
-}
-
-.desktop-color-sheet-label-text {
-  color: #374151;
-  font-size: 12px;
-  line-height: 18px;
 }
 
 .desktop-menu-item {
-  width: 100%;
-  min-width: 0;
-  min-height: 0;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  border-width: 1px;
   border-color: transparent;
-  border-radius: 6px;
-  background-color: #ffffff;
-  padding-top: 8px;
-  padding-right: 10px;
-  padding-bottom: 8px;
-  padding-left: 10px;
-  margin-left: 0;
-  margin-right: 0;
-  margin-bottom: 4px;
 }
 
 .desktop-menu-item-active {
@@ -3037,15 +2774,8 @@ defineExpose({
 
 .desktop-menu-badge {
   min-width: 24px;
-  height: 24px;
-  border-radius: 4px;
   background-color: #f1f5f9;
   color: #475569;
-  font-size: 11px;
-  font-weight: 700;
-  text-align: center;
-  line-height: 24px;
-  margin-right: 10px;
 }
 
 .desktop-menu-badge-active {
@@ -3054,10 +2784,6 @@ defineExpose({
 }
 
 .desktop-menu-text {
-  color: #1f2937;
-  font-size: 13px;
-  text-align: left;
-  line-height: 18px;
   letter-spacing: 0;
 }
 
@@ -3065,90 +2791,18 @@ defineExpose({
   color: #0f172a;
 }
 
-.toolbar-panel-header {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-}
-
-.toolbar-panel-title-wrap {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
-
 .toolbar-panel-title {
-  color: #0f172a;
-  font-size: 14px;
-  font-weight: 600;
   letter-spacing: 0.4px;
-}
-
-.toolbar-panel-subtitle {
-  color: #64748b;
-  font-size: 11px;
-  margin-top: 4px;
-  line-height: 16px;
-}
-
-.toolbar-panel-section {
-  display: flex;
-  flex-direction: column;
-}
-
-.toolbar-panel-scroll {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.toolbar-panel-group {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 6px;
 }
 
 .toolbar-chip-row,
 .color-row {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
   margin-left: -4px;
   margin-right: -4px;
 }
 
-.toolbar-chip-row {
-  justify-content: flex-start;
-}
-
-.toolbar-chip-cell {
-  width: 25%;
-  padding-left: 3px;
-  padding-right: 3px;
-  margin-bottom: 6px;
-}
-
-.toolbar-color-section {
-  display: flex;
-  flex-direction: column;
-  margin-top: 4px;
-}
-
 .toolbar-color-title {
-  color: #64748b;
-  font-size: 11px;
-  margin-bottom: 6px;
   letter-spacing: 0.3px;
-}
-
-.toolbar-chip-cell-quarter {
-  width: 25%;
-}
-
-.toolbar-chip-cell-full {
-  width: 100%;
 }
 
 .toolbar-chip-cell-third {
@@ -3156,26 +2810,13 @@ defineExpose({
 }
 
 .color-row-panel {
-  width: 340px;
-  align-self: center;
   margin-left: 0;
   margin-right: 0;
 }
 
-.color-row {
-  align-items: center;
-}
-
 .color-swatch {
   width: 48px;
-  height: 36px;
-  border-radius: 10px;
-  border-width: 2px;
-  border-style: solid;
   border-color: rgba(15, 23, 42, 0.08);
-  margin-left: 4px;
-  margin-right: 4px;
-  margin-bottom: 10px;
 }
 
 .color-swatch.color-swatch-panel {
@@ -3195,7 +2836,6 @@ defineExpose({
 }
 
 .color-swatch-clear {
-  background-color: #ffffff;
   border-color: #cbd5e1;
 }
 

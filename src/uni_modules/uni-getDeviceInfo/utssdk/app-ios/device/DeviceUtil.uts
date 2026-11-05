@@ -1,4 +1,4 @@
-import { UIDevice, UIApplication, UIInterfaceOrientation, UIScreen } from 'UIKit';
+import { UIDevice, UIInterfaceOrientation, UIScreen } from 'UIKit';
 import { NSLocale, URL, FileManager } from 'Foundation';
 import { DispatchSemaphore, DispatchQueue } from 'Dispatch';
 
@@ -21,9 +21,12 @@ export class DeviceUtil {
 
 	public static getOrientation(): string {
 		let orientation = "portrait";
-		const orient = UIApplication.shared.statusBarOrientation;
-		if (orient == UIInterfaceOrientation.landscapeLeft || orient == UIInterfaceOrientation.landscapeRight) {
-			orientation = "landscape";
+		const windowScene = UTSiOS.getKeyWindow().windowScene;
+		if (windowScene != null) {
+			const orient = windowScene!.interfaceOrientation;
+			if (orient == UIInterfaceOrientation.landscapeLeft || orient == UIInterfaceOrientation.landscapeRight) {
+				orientation = "landscape";
+			}
 		}
 		return orientation;
 	}

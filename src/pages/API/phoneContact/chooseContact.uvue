@@ -1,40 +1,34 @@
 <template>
-	<!-- #ifdef APP -->
-	<scroll-view style="flex: 1;padding: 6px;">
-	<!-- #endif -->
-		<text class="uni-h2">联系人选择 uni.chooseContact</text>
+		<text class="fs-24 fw-bold border-b-1-solid-ccc m-8-0">联系人选择 uni.chooseContact</text>
 		<text>调用系统的联系人选择界面</text>
 
-		<text class="uni-h3">快捷操作</text>
-		<text class="margin-v">调用状态：{{ invokeState }}</text>
-		<button class="margin-v" @tap="choosePhoneContact">选择联系人</button>
-		<button class="margin-v" @tap="clearResult">清空结果</button>
-		<button class="margin-v" @tap="clearLogs">清空日志</button>
+		<text class="fs-20 fw-bold m-8-0">快捷操作</text>
+		<text class="m-5-0">调用状态：{{ invokeState }}</text>
+		<button class="m-5-0" @tap="choosePhoneContact">选择联系人</button>
+		<button class="m-5-0" @tap="clearResult">清空结果</button>
+		<button class="m-5-0" @tap="clearLogs">清空日志</button>
 
-		<text class="uni-h3">选择结果</text>
-		<text class="field-label">displayName</text>
-		<text class="log-text">{{ displayName }}</text>
-		<text class="field-label">phoneNumber</text>
-		<text class="log-text">{{ phoneNumber }}</text>
-		<text class="field-label">phoneNumberList（{{ phoneNumberList.length }}）</text>
-		<view class="log-list" v-if="phoneNumberList.length > 0">
-			<text class="log-item" v-for="item in phoneNumberList" :key="item">{{ item }}</text>
+		<text class="fs-20 fw-bold m-8-0">选择结果</text>
+		<text class="mt-6 fs-14">displayName</text>
+		<text class="m-5-0 u-p-10 border-1-solid-ccc fs-14">{{ displayName }}</text>
+		<text class="mt-6 fs-14">phoneNumber</text>
+		<text class="m-5-0 u-p-10 border-1-solid-ccc fs-14">{{ phoneNumber }}</text>
+		<text class="mt-6 fs-14">phoneNumberList（{{ phoneNumberList.length }}）</text>
+		<view class="m-5-0 u-p-10 border-1-solid-ccc d-flex flex-dir-column" v-if="phoneNumberList.length > 0">
+			<text class="fs-14 m-4-0" v-for="item in phoneNumberList" :key="item">{{ item }}</text>
 		</view>
-		<text class="log-text" v-else>尚未返回手机号列表</text>
+		<text class="m-5-0 u-p-10 border-1-solid-ccc fs-14" v-else>尚未返回手机号列表</text>
 
-		<text class="uni-h3">回调信息</text>
-		<text class="margin-v">success：{{ successText }}</text>
-		<text class="margin-v">fail：{{ failText }}</text>
-		<text class="margin-v">complete：{{ completeText }}</text>
+		<text class="fs-20 fw-bold m-8-0">回调信息</text>
+		<text class="m-5-0">success：{{ successText }}</text>
+		<text class="m-5-0">fail：{{ failText }}</text>
+		<text class="m-5-0">complete：{{ completeText }}</text>
 
-		<text class="uni-h3">最近日志</text>
-		<view class="log-list" v-if="logs.length > 0">
-			<text class="log-item" v-for="item in logs" :key="item">{{ item }}</text>
+		<text class="fs-20 fw-bold m-8-0">最近日志</text>
+		<view class="m-5-0 u-p-10 border-1-solid-ccc d-flex flex-dir-column" v-if="logs.length > 0">
+			<text class="fs-14 m-4-0" v-for="item in logs" :key="item">{{ item }}</text>
 		</view>
-		<text class="log-text" v-else>暂无日志</text>
-	<!-- #ifdef APP -->
-		</scroll-view>
-	<!-- #endif -->
+		<text class="m-5-0 u-p-10 border-1-solid-ccc fs-14" v-else>暂无日志</text>
 </template>
 
 <script setup lang="ts">
@@ -109,32 +103,7 @@
 </script>
 
 <style>
-	.margin-v {
-		margin: 5px 0;
-	}
-
-	.field-label {
-		margin-top: 6px;
-		font-size: 14px;
-	}
-
-	.log-text {
-		margin: 5px 0;
-		padding: 10px;
-		font-size: 14px;
-		border: 1px solid #ccc;
-	}
-
-	.log-list {
-		margin: 5px 0;
-		padding: 10px;
-		border: 1px solid #ccc;
-		display: flex;
-		flex-direction: column;
-	}
-
-	.log-item {
-		font-size: 14px;
-		margin: 4px 0;
-	}
+page {
+  padding: 6px;
+}
 </style>

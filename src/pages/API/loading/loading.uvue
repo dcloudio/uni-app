@@ -1,31 +1,29 @@
 <template>
-	<view>
-		<page-head :title="data.title"></page-head>
-		<enum-data :items="titleOptions" title="设置标题" @change="radioChange"></enum-data>
+	<page-head :title="data.title"></page-head>
+	<enum-data-checkbox :items="titleOptions" title="设置标题" @change="radioChange"></enum-data-checkbox>
 
-<!-- 		<view class="uni-padding-wrap uni-common-mt" style="flex-direction: row; justify-content: space-between; align-items: center;">
-			<text class="uni-title-text"> iOS 雪花样式 </text>
-			<switch :checked="data.iosSpinner" @change="iosSpinnerChange" />
-		</view> -->
+<!-- 		<view class="uni-padding-wrap p-0-15 uni-common-mt mt-15" style="flex-direction: row; justify-content: space-between; align-items: center;">
+		<text class="fs-15 fw-bold color-text-333"> iOS 雪花样式 </text>
+		<switch :checked="data.iosSpinner" @change="iosSpinnerChange" />
+	</view> -->
 
-		<view class="uni-padding-wrap">
-			<view class="uni-btn-v">
-				<button type="primary" @click="showLoading">显示 loading 提示框</button>
-				<button @click="hideLoading">隐藏 loading 提示框</button>
-				<text>为方便演示，loading弹出3秒后自动关闭</text>
-			</view>
+	<view class="p-0-15">
+		<view class="p-5-0">
+			<button type="primary" @click="showLoading">显示 loading 提示框</button>
+			<button @click="hideLoading">隐藏 loading 提示框</button>
+			<text>为方便演示，loading弹出3秒后自动关闭</text>
 		</view>
-		<view class="uni-padding-wrap">
-			<text>{{data.callbackText}}</text>
-			<view class="uni-btn-v">
-				<button type="primary" @click="closeSomeLoading">关闭指定loading</button>
-				<button type="primary" @click="noParamLoading">无参数测试</button>
-			</view>
+	</view>
+	<view class="p-0-15">
+		<text>{{data.callbackText}}</text>
+		<view class="p-5-0">
+			<button type="primary" @click="closeSomeLoading">关闭指定loading</button>
+			<button type="primary" @click="noParamLoading">无参数测试</button>
 		</view>
 	</view>
 </template>
 <script setup lang="ts">
-	import { ItemType as EnumItemType } from '@/components/enum-data/enum-data-types'
+	import { ItemType as EnumItemType } from '@/components/enum-data-checkbox/enum-data-checkbox-types'
 
 	type ItemType = {
 		value : string

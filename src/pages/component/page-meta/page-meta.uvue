@@ -23,12 +23,12 @@
       :background-color="data.nbBackgroundColor"
     />
   </page-meta>
-  <view class="content">
+  <view>
     <page-intro content="本页演示 page-meta 与 navigation-bar：配置页面背景色、滚动、导航栏标题与样式，通过按钮触发滚动到指定位置并监听 scroll 与 scrolldone。"></page-intro>
-    <text class="title">页面内容</text>
+    <text>页面内容</text>
     <button @click="scrollTo">点击跳到 300px 处</button>
-    <view class="uni-list" v-for="(_, index) in 30" :key="index">
-      <view class="uni-list-cell">{{ index }}</view>
+    <view class="bg-list-fff pos-relative d-flex flex-dir-column border-b-1-solid-c8c7cc-dark-3a3a3c" v-for="(_, index) in 30" :key="index">
+      <view class="pos-relative d-flex flex-dir-row justify-between items-center">{{ index }}</view>
     </view>
   </view>
 </template>

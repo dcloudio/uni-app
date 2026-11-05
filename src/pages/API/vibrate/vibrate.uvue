@@ -1,23 +1,17 @@
 <template>
-	<!-- #ifdef APP -->
-	<scroll-view style="flex: 1;padding: 6px;">
-	<!-- #endif -->
-		<text class="uni-h2">振动</text>
-		<text class="notice">如下情况会导致无法振动：设备电量不足、静音模式、关闭了系统触感</text>
-		<text class="uni-h3">短振动 uni.vibrateShort</text>
-		<text class="margin-v">短振动支持 `light`、`medium`、`heavy` 三种力度类型。</text>
-		<button class="margin-v" @tap="callShort('light')">轻振动</button>
-		<button class="margin-v" @tap="callShort('medium')">中振动</button>
-		<button class="margin-v" @tap="callShort('heavy')">强振动</button>
+		<text class="fs-24 fw-bold border-b-1-solid-ccc m-8-0">振动</text>
+		<text class="color-500 fs-14 font-italic">如下情况会导致无法振动：设备电量不足、静音模式、关闭了系统触感</text>
+		<text class="fs-20 fw-bold m-8-0">短振动 uni.vibrateShort</text>
+		<text class="m-5-0">短振动支持 `light`、`medium`、`heavy` 三种力度类型。</text>
+		<button class="m-5-0" @tap="callShort('light')">轻振动</button>
+		<button class="m-5-0" @tap="callShort('medium')">中振动</button>
+		<button class="m-5-0" @tap="callShort('heavy')">强振动</button>
 		
-		<text class="uni-h3">长振动 uni.vibrateLong</text>
+		<text class="fs-20 fw-bold m-8-0">长振动 uni.vibrateLong</text>
 		<button @tap="callLong">触发长振动</button>
 		
-    <text class="uni-h4">最近日志：</text>
-    <text class="log-text">{{ statusText }}</text>
-	<!-- #ifdef APP -->
-	</scroll-view>
-	<!-- #endif -->
+    <text class="fw-bold m-8-0">最近日志：</text>
+    <text class="u-p-10 border-1-solid-ccc fs-14">{{ statusText }}</text>
 </template>
 
 <script setup lang="ts">
@@ -66,18 +60,7 @@
 </script>
 
 <style>
-  .margin-v {
-    margin: 5px 0;
-  }
-	.log-text {
-    padding: 10px;
-		font-size: 14px;
-    border: 1px solid #ccc;
-  }
-	.notice {
-	  color: #550000;
-		font-size: 14px;
-		font-style: italic;
-	}
-	
+page {
+  padding: 6px;
+}
 </style>

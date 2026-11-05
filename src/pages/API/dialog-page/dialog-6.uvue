@@ -1,7 +1,7 @@
 <template>
-  <view class="dialog-container">
-    <view class="dialog-content">
-      <text class="dialog-text">title: {{ title }}</text>
+  <view class="w-full h-full bg-black-a30 d-flex justify-center items-center">
+    <view class="w-80pct u-p-10 bg-list-fff radius-6">
+      <text class="color-text-333">title: {{ title }}</text>
       <button class="mt-10" @click="closeThisDialog">
         closeThisDialog
       </button>
@@ -57,29 +57,5 @@
 <style>
   page {
     background-color: transparent;
-  }
-
-  .dialog-container {
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.3);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .dialog-content {
-    width: 80%;
-    padding: 10px;
-    background-color: var(--list-background-color, #fff);
-    border-radius: 6px;
-  }
-
-  .mt-10 {
-    margin-top: 10px;
-  }
-
-  .dialog-text {
-    color: var(--text-color, #333333);
   }
 </style>

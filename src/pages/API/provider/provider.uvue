@@ -1,17 +1,15 @@
 <template>
-  <view class="page">
     <page-head :title="data.title"></page-head>
-    <view class="service-item" v-for="(item, index) in data.serviceList" :key="index">
-      <text class="service-name">{{item.name}}:</text>
+    <view class="mt-10" v-for="(item, index) in data.serviceList" :key="index">
+      <text class="fw-bold">{{item.name}}:</text>
       <view class="provider-list">
-        <text class="provider-item" v-for="(item2, index2) in item.provider" :key="index2">
+        <text class="lh-1_5x" v-for="(item2, index2) in item.provider" :key="index2">
           {{item2}}
           {{item.providerObj.length > 0 ? ':' + JSON.stringify(item.providerObj[index2]) : '' }}
         </text>
       </view>
     </view>
-    <button class="btn-get-provider" type="primary" @click="getProvider">getProviderSync</button>
-  </view>
+    <button class="mt-30" type="primary" @click="getProvider">getProviderSync</button>
 </template>
 
 <script setup lang="ts">
@@ -79,27 +77,11 @@
 </script>
 
 <style>
-  .page {
+  page {
     padding: 15px;
-  }
-
-  .service-item {
-    margin-top: 10px;
-  }
-
-  .service-name {
-    font-weight: bold;
   }
 
   .provider-list {
     margin-left: 32px;
-  }
-
-  .provider-item {
-    line-height: 1.5;
-  }
-
-  .btn-get-provider {
-    margin-top: 30px;
   }
 </style>

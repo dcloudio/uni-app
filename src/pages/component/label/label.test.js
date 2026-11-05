@@ -5,7 +5,7 @@ const isVapor = process.env.UNI_APP_X_DOM2 == 'true'
 
 let page;
 describe('label.uvue', () => {
-  if (!isWeb && !isHarmony) {
+  if (!isWeb && !isHarmony && !isVapor) {
     it('app', () => {
       expect(1).toBe(1)
     })
@@ -36,10 +36,6 @@ describe('label.uvue', () => {
     expect(await getData('checkboxValue')).toEqual(['USA', 'CHN'])
   })
   it('label用for标识表单组件', async () => {
-    if (isVapor && isHarmony) {
-      expect(1).toBe(1)
-      return
-    }
     const radioItems = await page.$$('.label-2-text')
     await radioItems[0].tap()
     expect(await getData('radioValue')).toEqual('USA')

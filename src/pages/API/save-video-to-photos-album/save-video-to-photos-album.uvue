@@ -1,8 +1,8 @@
 <template>
     <page-head :title="title"></page-head>
-    <view class="uni-padding-wrap">
-      <video class="video" :src="src" :controls="true"></video>
-      <button type="primary" class="margin-top-10" @click="saveVideo">将视频保存到手机相册</button>
+    <view class="p-0-15">
+      <video class="self-center" :src="src" :controls="true"></video>
+      <button type="primary" class="mt-10" @click="saveVideo">将视频保存到手机相册</button>
     </view>
 </template>
 
@@ -51,13 +51,3 @@
     saveVideo
   })
 </script>
-
-<style>
-  .video {
-    align-self: center;
-  }
-
-  .margin-top-10 {
-    margin-top: 10px;
-  }
-</style>

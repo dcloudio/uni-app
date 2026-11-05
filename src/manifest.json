@@ -2,11 +2,13 @@
 	"name": "Hello uni-app x",
 	"appid": "__UNI__HelloUniAppX",
 	"description": "",
-	"versionName": "2.3.3",
-	"versionCode": 20303,
+	"versionName": "2.3.4",
+	"versionCode": 20304,
 	"uni-app-x": {
+		"styleIsolationVersion": "2",
+		"vapor-default-script-lang": "ts",
 		"vapor": true,
-		"styleIsolationVersion": "2"
+		"vapor-render-target": "bytecode"
 	},
 	"vueVersion": "3",
 	"uniStatistics": {
@@ -219,9 +221,9 @@
 		"unipush": {
 			"enable": true
 		},
-    "optimization": {
-    	"subPackages": true
-    },
+		"optimization": {
+			"subPackages": true
+		},
 		"darkmode": true,
 		"appid": ""
 	}

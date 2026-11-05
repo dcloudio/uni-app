@@ -4,6 +4,140 @@ import { TextareaBuilder, UniTextareaOptions, UniTextareaPadding } from './texta
 import { getCurrentMP, UTSHarmony } from "@dcloudio/uni-runtime";
 import { deviceInfo } from '@kit.BasicServicesKit';
 
+let harmonyInputPositionOwnerSeed = 0
+let harmonyInputPositionOwner = 0
+type HarmonyInputPositionResetRecord = {
+	owner: number,
+	reset: () => void
+}
+let harmonyInputPositionResetRecords: HarmonyInputPositionResetRecord[] = []
+let harmonyInputKeyboardHeight = 0
+let harmonyInputKeyboardAvoidPendingOwner = 0
+let harmonyInputKeyboardAvoidActiveOwner = 0
+
+export function createHarmonyInputPositionOwner(): number {
+	harmonyInputPositionOwnerSeed++
+	return harmonyInputPositionOwnerSeed
+}
+
+export function activateHarmonyInputPositionOwner(owner: number) {
+	if (harmonyInputPositionOwner == owner) return
+	harmonyInputPositionOwner = owner
+}
+
+export function registerHarmonyInputPositionReset(owner: number, reset: (() => void) | null) {
+	if (harmonyInputPositionOwner != owner) return
+	for (let i = harmonyInputPositionResetRecords.length - 1; i >= 0; i--) {
+		if (harmonyInputPositionResetRecords[i].owner == owner) {
+			harmonyInputPositionResetRecords.splice(i, 1)
+		}
+	}
+	if (reset != null) {
+		harmonyInputPositionResetRecords.push({ owner, reset: reset! } as HarmonyInputPositionResetRecord)
+	}
+}
+
+export function resetHarmonyInputPositionOwner(owner: number, release: boolean = false) {
+	// An inactive input's offset can be the baseline of a newer input. Keep
+	// that record until the active owner unwinds the session in reverse order.
+	if (harmonyInputPositionOwner != owner) return
+	let firstResetIndex = 0
+	if (!release) {
+		firstResetIndex = -1
+		for (let i = harmonyInputPositionResetRecords.length - 1; i >= 0; i--) {
+			if (harmonyInputPositionResetRecords[i].owner == owner) {
+				firstResetIndex = i
+				break
+			}
+		}
+		if (firstResetIndex < 0) return
+	}
+	// Refocusing an earlier input can put its record below newer records.
+	// Unwind the entire dependent suffix, never a middle layer on its own.
+	while (harmonyInputPositionResetRecords.length > firstResetIndex) {
+		const index = harmonyInputPositionResetRecords.length - 1
+		const record = harmonyInputPositionResetRecords[index]
+		harmonyInputPositionResetRecords.splice(index, 1)
+		record.reset()
+	}
+	if (release) {
+		harmonyInputPositionOwner = 0
+	}
+}
+
+export function isHarmonyInputPositionOwner(owner: number): boolean {
+	return harmonyInputPositionOwner == owner
+}
+
+export function setHarmonyInputKeyboardHeight(height: number) {
+	harmonyInputKeyboardHeight = Math.max(0, height)
+}
+
+export function getHarmonyInputKeyboardHeight(): number {
+	return harmonyInputKeyboardHeight
+}
+
+export function getHarmonyInputErrorMessage(error: Error | string | null): string {
+	if (error == null) return ''
+	if (typeof error == 'string') return error
+	const message: string = (error.message ?? '').toString()
+	return message != '' ? message : `${error}`
+}
+
+export function setHarmonyInputDefaultKeyboardAvoidEnabled(enabled: boolean) {
+	try {
+		const mainWindow = getCurrentMP().window
+		if (!mainWindow) return
+		const uiContext = mainWindow.getUIContext()
+		if (!uiContext) return
+		uiContext.setKeyboardAvoidMode(
+			enabled ? KeyboardAvoidMode.OFFSET : KeyboardAvoidMode.NONE
+		)
+	} catch (e) {
+		// Harmony destroys the native Window before Vue finishes unmounting its
+		// component tree when the application exits. That teardown race is an
+		// expected no-op; keep reporting unrelated window errors.
+		const message : string = getHarmonyInputErrorMessage(e)
+		if (message.indexOf('Window is nullptr') < 0) {
+			console.error(message)
+		}
+	}
+}
+
+export function beginHarmonyInputKeyboardAvoid(owner: number) {
+	harmonyInputKeyboardAvoidPendingOwner = owner
+	setHarmonyInputDefaultKeyboardAvoidEnabled(false)
+}
+
+export function activateHarmonyInputKeyboardAvoid(owner: number) {
+	harmonyInputKeyboardAvoidPendingOwner = 0
+	harmonyInputKeyboardAvoidActiveOwner = owner
+	setHarmonyInputDefaultKeyboardAvoidEnabled(false)
+}
+
+export function cancelHarmonyInputKeyboardAvoid(owner: number) {
+	if (harmonyInputKeyboardAvoidPendingOwner != owner) return
+	harmonyInputKeyboardAvoidPendingOwner = 0
+	if (harmonyInputKeyboardAvoidPendingOwner == 0 && harmonyInputKeyboardAvoidActiveOwner == 0) {
+		setHarmonyInputDefaultKeyboardAvoidEnabled(true)
+	}
+}
+
+export function releaseHarmonyInputKeyboardAvoid(owner: number) {
+	const ownedPending = harmonyInputKeyboardAvoidPendingOwner == owner
+	const ownedActive = harmonyInputKeyboardAvoidActiveOwner == owner
+	if (!ownedPending && !ownedActive) return
+	if (ownedPending) {
+		harmonyInputKeyboardAvoidPendingOwner = 0
+	}
+	if (ownedActive) {
+		harmonyInputKeyboardAvoidActiveOwner = 0
+	}
+	if (harmonyInputKeyboardAvoidPendingOwner == 0 && harmonyInputKeyboardAvoidActiveOwner == 0) {
+		setHarmonyInputDefaultKeyboardAvoidEnabled(true)
+	}
+}
+
 // @ts-expect-error
 const INPUT_TYPES = new Map<string, InputType>([
 	// for type
@@ -209,6 +343,8 @@ export interface UniInputFileOptions {
 	textDirection?: string
 	// @ts-expect-error
 	caretColor?: ResourceColor
+	// @ts-expect-error ArkUI provides ResourceColor during Harmony compilation.
+	selectedBackgroundColor?: ResourceColor
 }
 
 interface EventHandlers {
@@ -364,6 +500,11 @@ class NativeInputFileView {
 
 	updateCursorColor(value: string) {
 		this.params.caretColor = UTSHarmony.colorWithString(value == '' ? defaultCursorColor : value)
+		this.updateParams()
+	}
+
+	updateSelectionColor(value: string) {
+		this.params.selectedBackgroundColor = value == '' ? undefined : UTSHarmony.colorWithString(value)
 		this.updateParams()
 	}
 

@@ -493,7 +493,7 @@ export class UniShareWeixinProviderImpl implements UniShareWeixinProvider {
     // 小程序类型转换：0-正式版 1-测试版 2-体验版
     let miniprogramType: Int | null = null;
     if (miniProgram.type != null) {
-      miniprogramType = miniProgram.type! as Int;
+      miniprogramType = miniProgram.type!.toInt();
     }
 
     this.shareMiniProgram({

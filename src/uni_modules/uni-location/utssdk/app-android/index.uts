@@ -22,6 +22,50 @@ let locationChangeIndex = 0
 let locationProvider : UniLocationProvider | null = null
 
 let selectedProvider : string | null = null
+
+/**
+ * 根据入参 provider 和 type 选择定位 provider，完整规则如下：
+ *
+ * 一、provider 已指定（如 system、tencent、amap）：
+ *   - 指定的 provider 存在  → 直接返回该 provider，使用指定 provider
+ *   - 指定的 provider 不存在 → 返回入参原值，由调用方通过 getProvider 判定后返回 1505604，不自动切换到其他 provider
+ *
+ * 二、provider 未指定时，按 type 自动选择支持该坐标系的 provider：
+ *   - type 为 gcj02：
+ *       腾讯定位、高德定位都存在 → 使用腾讯定位（腾讯定位是内置默认 provider，保持向下兼容）
+ *       只有腾讯定位           → 使用腾讯定位
+ *       只有高德定位           → 使用高德定位
+ *       腾讯定位、高德定位都不存在 → 返回 null，由调用方返回 1505604
+ *   - type 为 wgs84            → 使用系统定位（系统定位仅支持 wgs84）
+ *   - type 未传或其他非法值     → 使用系统定位，保持原有行为（type 未传时默认 wgs84）
+ *
+ * @param provider 入参指定的定位服务供应商，可能为 null
+ * @param type     入参指定的坐标系类型，可能为 null
+ * @return provider 名称；返回 null 表示未指定 provider 且 type 为 gcj02 时腾讯定位、高德定位均不存在，
+ *         调用方需构造 1505604（服务供应商获取失败）错误并结束本次调用
+ */
+function resolveProviderName(provider : string | null, type : string | null) : string | null {
+	// 已指定 provider：直接返回原值，不自动切换；其是否存在由调用方通过 getProvider 判定
+	if (provider != null) {
+		return provider
+	}
+	// 未指定 provider：gcj02 坐标系系统定位不支持，需从三方 provider 中按优先级选择
+	if (type == 'gcj02') {
+		// 优先腾讯定位：保持向下兼容（历史版本未指定 provider 时默认使用腾讯定位）
+		if (UTSAndroid.getProvider<UniLocationProvider>("location", 'tencent') != null) {
+			return 'tencent'
+		}
+		// 腾讯定位不存在时使用高德定位
+		if (UTSAndroid.getProvider<UniLocationProvider>("location", 'amap') != null) {
+			return 'amap'
+		}
+		// 腾讯定位、高德定位均不存在，无可用 provider
+		return null
+	}
+	// wgs84、未传或其他值：使用系统定位，保持原有行为
+	return 'system'
+}
+
 /**
  * 对外的函数接口
  */
@@ -32,16 +76,14 @@ export const getLocation : GetLocation = function (options : GetLocationOptions)
 		options.complete?.(err)
 		return
 	}
-	let providerName = 'system'
-	if (options.provider != null) {
-		providerName = options.provider!
-	} else {
-		//定位 API 需要特殊逻辑处理 type 和 provider 的特殊逻辑，没有设置 provider 时需根据 type 自动选择支持 type 的provider。
-		if (options.type == 'wgs84') {//默认使用系统定位
-			providerName = 'system'
-		} else if (options.type == 'gcj02') {//默认使用腾讯定位
-			providerName = 'tencent'
-		}
+	// 根据 provider 和 type 选择定位 provider（未指定 provider 时自动选择支持该 type 的 provider）
+	const providerName = resolveProviderName(options.provider, options.type)
+	if (providerName == null) {
+		// 未指定 provider 且 type 为 gcj02 时腾讯定位、高德定位均不存在，无可用 provider
+		const err = new GetLocationFailImpl(1505604);
+		options.fail?.(err)
+		options.complete?.(err)
+		return
 	}
 	const provider = UTSAndroid.getProvider<UniLocationProvider>("location", providerName)
 	if (provider != null) {
@@ -60,16 +102,14 @@ export const startLocationUpdate : StartLocationUpdate = function (options : Sta
 		options.complete?.(err)
 		return
 	}
-	let providerName = 'system'
-	if (options.provider != null) {
-		providerName = options.provider!
-	} else {
-		//定位 API 需要特殊逻辑处理 type 和 provider 的特殊逻辑，没有设置 provider 时需根据 type 自动选择支持 type 的provider。
-		if (options.type == 'wgs84') {//默认使用系统定位
-			providerName = 'system'
-		} else if (options.type == 'gcj02') {//默认使用腾讯定位
-			providerName = 'tencent'
-		}
+	// 根据 provider 和 type 选择定位 provider（未指定 provider 时自动选择支持该 type 的 provider）
+	const providerName = resolveProviderName(options.provider, options.type)
+	if (providerName == null) {
+		// 未指定 provider 且 type 为 gcj02 时腾讯定位、高德定位均不存在，无可用 provider
+		const err = new GetLocationFailImpl(1505604);
+		options.fail?.(err)
+		options.complete?.(err)
+		return
 	}
 	if (selectedProvider != null) {
 		if (selectedProvider! == providerName) {
@@ -131,16 +171,14 @@ export const startLocationUpdateBackground : StartLocationUpdateBackground = fun
 		options.complete?.(err)
 		return
 	}
-	let providerName = 'system'
-	if (options.provider != null) {
-		providerName = options.provider!
-	} else {
-		//定位 API 需要特殊逻辑处理 type 和 provider 的特殊逻辑，没有设置 provider 时需根据 type 自动选择支持 type 的provider。
-		if (options.type == 'wgs84') {//默认使用系统定位
-			providerName = 'system'
-		} else if (options.type == 'gcj02') {//默认使用腾讯定位
-			providerName = 'tencent'
-		}
+	// 根据 provider 和 type 选择定位 provider（未指定 provider 时自动选择支持该 type 的 provider）
+	const providerName = resolveProviderName(options.provider, options.type)
+	if (providerName == null) {
+		// 未指定 provider 且 type 为 gcj02 时腾讯定位、高德定位均不存在，无可用 provider
+		const err = new GetLocationFailImpl(1505604);
+		options.fail?.(err)
+		options.complete?.(err)
+		return
 	}
 
 	if (selectedProvider != null) {

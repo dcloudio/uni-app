@@ -35,6 +35,13 @@ describe('native-view.uvue', () => {
 
     const isLoad = await page.callMethod('getIsLoadTest')
     expect(isLoad).toBe(true)
+
+    await page.waitFor(async () => {
+      return await page.callMethod('getNativeViewInitTriggeredTest')
+    })
+
+    expect(await page.callMethod('getNativeViewInitTriggeredTest')).toBe(true)
+    expect(await page.callMethod('getNativeViewInitHasElementTest')).toBe(true)
   })
 
   it('native-view点击事件透传自定义value', async () => {

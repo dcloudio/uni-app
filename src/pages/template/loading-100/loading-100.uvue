@@ -1,11 +1,11 @@
 <template>
-  <view class="page">
+  <view class="flex-dir-column color-text-333 p-3">
     <!-- #ifndef MP -->
     <fps />
     <!-- #endif -->
 
-    <view style="flex-direction: row;flex-wrap: wrap;align-items: center;margin-top: 40px;">
-      <button size="mini" @click="toggleTimer" style="margin-right:4px;">停止/启动 计时</button>
+    <view class="flex-dir-row flex-wrap-wrap items-center mt-40">
+      <button size="mini" @click="toggleTimer" class="mr-4">停止/启动 计时</button>
       <text>{{datetime}}</text>
     </view>
     <text>计时器主线程一直占用绘制文字，但100个loading圈不卡顿</text>
@@ -13,8 +13,8 @@
     <button size="mini" @click="changePaused">{{ paused ? '旋转' : '暂停' }}</button>
 
     <!-- 100个loading组件 -->
-    <view style="flex-direction: row;flex-wrap: wrap;padding: 2px;">
-      <loading v-for="index in 100" :key="index" :paused="paused" style="margin: 10px;"/>
+    <view class="flex-dir-row flex-wrap-wrap u-p-2">
+      <loading v-for="index in 100" :key="index" :paused="paused" class="m-10"/>
     </view>
   </view>
 </template>
@@ -86,11 +86,3 @@
   }
 
 </script>
-
-<style>
-  .page {
-    flex-direction: column;
-    color: var(--text-color, #333333);
-    padding: 3px;
-  }
-</style>

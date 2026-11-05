@@ -56,17 +56,42 @@
 </template>
 
 <script setup lang="ts">
+  /**
+   * DataPicker 级联选择
+   * @description 通过本地数据或 datacom 数据的级联选择组件，支持单列和多列级联选择，列数没有限制，如果屏幕显示不全，顶部tab区域会左右滚动。
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.33",
+   *       "unixVaporVer": "5.33"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.33",
+   *       "unixVaporVer": "5.33"
+   *     },
+   *     "harmony": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.33",
+   *       "unixVaporVer": "5.33"
+   *     }
+   *   },
+   *   "web": {
+   *     "uniVer": "x",
+   *     "unixVer": "5.33"
+   *   }
+   * }
+   */
+
   import { dataPickerProps, useDataPicker } from "../uni-data-picker-view/uni-data-picker.ts"
 
   /**
-   * DataPicker 级联选择
-   * @description 支持单列、和多列级联选择。列数没有限制，如果屏幕显示不全，顶部tab区域会左右滚动。
-   * @tutorial https://ext.dcloud.net.cn/plugin?id=xxx
+   * @tutorial https://ext.dcloud.net.cn/plugin?id=uni-data-picker-x
    * @property {String} popup-title 弹出窗口标题
    * @property {String} popup-class 弹出窗口自定义样式类名
    * @property {String} cover-class 遮罩层自定义样式类名
    * @property {Array} localdata 本地数据，参考
-   * @property {Boolean} border = [true|false] 是否有边框
    * @property {Boolean} readonly = [true|false] 是否仅读
    * @property {Boolean} preload = [true|false] 是否预加载数据
    * @value true 开启预加载数据，点击弹出窗口后显示已加载数据
@@ -80,8 +105,10 @@
    * @property {String|DBFieldString} field 查询字段，多个字段用 `,` 分割
    * @property {String} orderby 排序字段及正序倒叙设置
    * @property {String|JQLString} where 查询条件
-   * @event {Function} popupshow 弹出的选择窗口打开时触发此事件
-   * @event {Function} popuphide 弹出的选择窗口关闭时触发此事件
+   * @event {Function} nodeclick 点击节点时触发此事件
+   * @event {Function} change 选择结束后触发此事件
+   * @event {Function} popupopened 弹出的选择窗口打开时触发此事件
+   * @event {Function} popupclosed 弹出的选择窗口关闭时触发此事件
    */
   const props = defineProps({
     ...dataPickerProps,
@@ -588,7 +615,7 @@
       position: unset;
       height: auto;
       width: 100%;
-      min-height: 200px;
+      min-height: 150px;
       max-height: 50vh;
       overflow: unset;
       /* 宽屏下不使用滑入/滑出动画，直接显示 */

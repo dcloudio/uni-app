@@ -1,33 +1,31 @@
 <template>
-	<view class="uni-padding-wrap">
 		<page-head :title="title"></page-head>
-    <view class="item-box">
+    <view class="mb-10 d-flex flex-dir-row justify-between">
       <text>当前应用隐私授权状态:</text>
       <text>{{ appPrivacy }}</text>
     </view>
-    <!-- #ifdef MP-WEIXIN -->
-    <view class="item-box">
+    <!-- #ifdef MP -->
+    <view class="mb-10 d-flex flex-dir-row justify-between">
       <text>隐私授权协议的名称:</text>
       <text>{{ privacyContractName }}</text>
     </view>
     <!-- #endif -->
     <view>
-      <button class="privacy-button" type="primary" @tap="getPrivacySetting">
+      <button class="u-mt-5 mb-5" type="primary" @tap="getPrivacySetting">
         获取隐私协议授权状态
       </button>
-      <button class="privacy-button" type="primary" open-type="agreePrivacyAuthorization">
+      <button class="u-mt-5 mb-5" type="primary" open-type="agreePrivacyAuthorization">
         同意隐私协议专用按钮
       </button>
       <!-- #ifdef APP -->
-      <button class="privacy-button" type="primary" @tap="resetPrivacyAuthorization">
+      <button class="u-mt-5 mb-5" type="primary" @tap="resetPrivacyAuthorization">
         重置隐私协议授权状态
       </button>
-      <button class="privacy-button" @tap="openPrivacyDialog">
+      <button class="u-mt-5 mb-5" @tap="openPrivacyDialog">
         显示隐私政策弹框
       </button>
       <!-- #endif -->
     </view>
-	</view>
 </template>
 
 <script setup lang="ts">
@@ -40,7 +38,7 @@
 		uni.getPrivacySetting({
 			success: (res) => {
 				appPrivacy.value = res.needAuthorization ? "未同意" : "已同意"
-				// #ifdef MP-WEIXIN
+				// #ifdef MP
 				privacyContractName.value = res.privacyContractName
 				// #endif
 			}
@@ -91,14 +89,7 @@
 </script>
 
 <style>
-.item-box {
-    margin-bottom: 10px;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-  }
-.privacy-button{
-  margin-top: 5px;
-  margin-bottom: 5px;
+page {
+  padding: 0px 15px;
 }
 </style>

@@ -1,0 +1,138 @@
+<template>
+	<view class="page">
+		<view class="navigation-bar">
+			<!-- 支付宝小程序导航栏左上角返回按钮始终存在，无法隐藏，会导致重叠 -->
+			<!-- #ifndef MP-ALIPAY -->
+			<uni-backarrow-circle id="default-back" auto-back @click="onBackClick" />
+			<!-- #endif -->
+			<text class="navigation-title" :style="{ marginRight: titleRightSpace + 'px' }">uni-backarrow-circle</text>
+		</view>
+		<view class="content">
+			<text class="description">圆形返回箭头，适配安全区，点击左上角返回按钮自动返回上一页。</text>
+			<text class="section-title">自定义样式</text>
+			<view class="examples">
+				<uni-backarrow-circle id="custom-blue" class="blue-arrow" @click="onCustomClick" />
+				<uni-backarrow-circle id="custom-large" class="large-arrow" @click="onCustomClick" />
+				<uni-backarrow-circle id="custom-dark" class="dark-arrow" @click="onCustomClick" />
+			</view>
+			<text class="section-title">事件</text>
+			<button id="event-button" type="primary" @click="onCustomClick">点击返回箭头或按钮</button>
+			<text class="event-result">{{ eventMessage }}</text>
+		</view>
+	</view>
+</template>
+
+<script setup lang="ts">
+	const eventMessage = ref('尚未触发 click 事件')
+	const titleRightSpace = ref(0)
+	// #ifdef MP
+	titleRightSpace.value = 96
+	// #endif
+	// #ifdef MP-WEIXIN
+	function updateTitleRightSpace() {
+		const capsule = uni.getMenuButtonBoundingClientRect()
+		const windowWidth = uni.getWindowInfo().windowWidth
+		if (capsule.width > 0 && capsule.left > 0 && capsule.left < windowWidth) {
+			// 胶囊左侧额外留出 8px，标题只使用返回按钮与胶囊之间的空间。
+			titleRightSpace.value = windowWidth - capsule.left + 8
+		}
+	}
+	onReady(updateTitleRightSpace)
+	onResize(() => {
+		updateTitleRightSpace()
+	})
+	// #endif
+
+	function onBackClick() {
+		eventMessage.value = '默认返回按钮触发了 click'
+	}
+
+	function onCustomClick() {
+		eventMessage.value = '自定义返回按钮触发了 click'
+		uni.showToast({ title: '点击了返回箭头', icon: 'none' })
+	}
+</script>
+
+<style>
+	.page {
+		flex: 1;
+	}
+
+	.content {
+		padding: 15px;
+	}
+
+	.description {
+		margin-bottom: 15px;
+	}
+
+	.section-title {
+		font-weight: bold;
+		margin: 8px 0;
+	}
+
+	.event-result {
+		margin-top: 15px;
+	}
+
+	.navigation-bar {
+		flex-direction: row;
+		/* 返回按钮自身包含顶部安全区，导航行只提供对应的布局高度。 */
+		/* #ifdef MP */
+		height: calc(var(--status-bar-height, 0px) + 44px);
+		/* #endif */
+		/* #ifndef MP */
+		height: calc(var(--uni-safe-area-inset-top, 0px) + 44px);
+		/* #endif */
+		flex-shrink: 0;
+		align-items: center;
+	}
+
+	.navigation-title {
+		flex: 1;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		text-align: center;
+		font-size: 18px;
+		font-weight: bold;
+		/* 标题与返回按钮一起下移，保持同一行的视觉中心。 */
+		/* #ifdef MP */
+		margin-top: var(--status-bar-height);
+		/* #endif */
+		/* #ifndef MP */
+		margin-top: var(--uni-safe-area-inset-top);
+		/* #endif */
+	}
+
+	.examples {
+		flex-direction: row;
+		align-items: center;
+		height: 100px;
+	}
+
+	/* 内容区展示按钮无需再次避让屏幕安全区。 */
+	.blue-arrow,
+	.large-arrow,
+	.dark-arrow {
+		margin-top: 0;
+		margin-left: 0;
+	}
+
+	.blue-arrow {
+		--uni-backarrow-circle-color: #007aff;
+		--uni-backarrow-circle-width: 3px;
+		background-color: #e5f1ff;
+	}
+
+	.large-arrow {
+		margin-left: 40px;
+		transform: scale(1.25);
+		--uni-backarrow-circle-width: 3px;
+	}
+
+	.dark-arrow {
+		margin-left: 40px;
+		--uni-backarrow-circle-color: #fff;
+		background-color: #333;
+	}
+</style>

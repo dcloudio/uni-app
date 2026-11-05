@@ -1,0 +1,126 @@
+<template>
+  <!-- #ifdef APP -->
+  <page-intro content="演示 FileSystemManager.readZipEntry：读取压缩包内文件条目（encoding 为 utf-8 时返回各条目内容映射）。"></page-intro>
+  <scroll-view class="flex-1">
+  <!-- #endif -->
+    <view class="p-8 flex-dir-column">
+      <view class="p-8 border-1-solid-e0e0e0 radius-4 flex-dir-column m-4-0">
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">压缩包</text>
+          <input class="flex-1 border-1-solid-d0d0d0 radius-4 p-4-8 fs-13 h-32" v-model="data.filePath" placeholder="zip 文件路径" />
+        </view>
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">编码</text>
+          <text class="flex-1 fs-12 color-999">encoding：utf-8</text>
+        </view>
+      </view>
+      <view class="flex-dir-row flex-wrap-wrap m-4-0">
+        <button class="m-4" type="primary" @tap="readZipEntry" id="btn-readzip-entry">readZipEntry 读取条目</button>
+      </view>
+      <view class="p-8 border-1-solid-e0e0e0 radius-4 flex-dir-column m-4-0-12-0">
+        <text class="fw-bold fs-14 m-2-0 color-333">执行结果：{{ data.lastResult == '' ? '等待执行' : (data.lastResult == 'success' ? '成功' : '失败') }}</text>
+        <text class="fs-13 m-2-0 color-666">目标路径：{{ data.filePath }}</text>
+        <text class="fs-13 m-2-0 color-666" v-if="data.lastResult == 'success'">条目列表（{{ data.zipEntryNames.length }} 项）：</text>
+        <view class="flex-dir-column ml-8" v-if="data.lastResult == 'success'">
+          <text class="fs-13 m-2-0 color-666" v-for="(item, index) in data.zipEntryNames" :key="index">{{ item }}</text>
+        </view>
+        <text class="fs-13 m-2-0 color-e64340" v-if="data.lastResult == 'fail'">errCode：{{ data.lastFailError.errCode }}；errMsg：{{ data.lastFailError.errMsg }}</text>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="ts">
+  import { createFsmMockError } from './fsm-utils'
+
+  type DataType = {
+    filePath : string
+    zipEntryNames : string[]
+    existsRet : boolean
+    done : boolean
+    lastResult : string
+    lastFailError : UniError
+  }
+
+  const data = reactive({
+    filePath: '/static/filemanager/to.zip',
+    zipEntryNames: [] as string[],
+    existsRet: false,
+    done: false,
+    lastResult: '',
+    lastFailError: createFsmMockError(),
+  } as DataType)
+
+  function resetResult() {
+    data.done = false
+    data.lastResult = ''
+    data.zipEntryNames = [] as string[]
+  }
+
+  function applyFail(res : IUniError) {
+    data.lastResult = 'fail'
+    data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+  }
+
+  function exists(path : string) : void {
+    const target = path != null ? path : data.filePath
+    try {
+      uni.getFileSystemManager().accessSync(target)
+      data.existsRet = true
+    } catch (e) {
+      data.existsRet = false
+    }
+  }
+
+  function prepare() : void {
+    data.done = true
+  }
+
+  function cleanup() : void {
+    data.done = true
+  }
+
+  function readZipEntry() : void {
+    resetResult()
+    const fileManager = uni.getFileSystemManager()
+    const options : ReadZipEntryOptions = {
+      filePath: data.filePath,
+      encoding: 'utf-8',
+      success: (res : EntriesResult) => {
+        // 不同平台与编译模式下条目返回结构不同：Android 非 vapor 与 Harmony 返回 Map，其余返回 UTSJSONObject
+        // #ifdef (APP-ANDROID && !VUE3-VAPOR) || APP-HARMONY
+        res.entries.forEach((_ : ZipFileItem, key : string) => {
+          data.zipEntryNames.push(key)
+        })
+        // #endif
+        // #ifndef (APP-ANDROID && !VUE3-VAPOR) || APP-HARMONY
+        Object.keys(res.result as UTSJSONObject).forEach((key : string) => {
+          data.zipEntryNames.push(key)
+        })
+        // #endif
+        data.lastResult = 'success'
+      },
+      fail: (res : IUniError) => {
+        applyFail(res)
+      },
+      complete: (_ : any) => {
+        data.done = true
+      }
+    }
+    fileManager.readZipEntry(options)
+  }
+
+  onReady(() => {
+    prepare()
+  })
+
+  defineExpose({
+    data,
+    prepare,
+    cleanup,
+    exists,
+    readZipEntry
+  })
+</script>

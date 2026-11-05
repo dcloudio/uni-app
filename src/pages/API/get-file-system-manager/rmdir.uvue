@@ -1,0 +1,204 @@
+<template>
+  <!-- #ifdef APP -->
+  <page-intro content="演示 FileSystemManager.rmdir / rmdirSync：删除目录，recursive 为 true 时可递归删除非空目录，删除成功后自动校验目录已不存在。"></page-intro>
+  <scroll-view class="flex-1">
+  <!-- #endif -->
+    <view class="p-8 flex-dir-column">
+      <view class="p-8 border-1-solid-e0e0e0 radius-4 flex-dir-column m-4-0">
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">根目录</text>
+          <enum-data-checkbox
+            class="flex-1"
+            :model-value="data.rootKey"
+            :items="rootOptions"
+            mode="default"
+            :show-toast="false"
+            @change="onRootChange"
+          />
+        </view>
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">目录路径</text>
+          <input class="flex-1 border-1-solid-d0d0d0 radius-4 p-4-8 fs-13 h-32" v-model="data.dirPath" placeholder="相对根目录的路径" />
+        </view>
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">递归删除</text>
+          <switch :checked="data.recursive" @change="onRecursiveChange" />
+          <text class="flex-1 fs-12 color-999">recursive=true 时删除非空目录</text>
+        </view>
+      </view>
+      <view class="flex-dir-row flex-wrap-wrap m-4-0">
+        <button class="m-4" type="primary" @tap="rmdir" id="btn-rmdir">rmdir 删除目录</button>
+        <button class="m-4" type="primary" @tap="rmdirSync" id="btn-rmdir-sync">rmdirSync 删除目录</button>
+        <button class="m-4" type="warn" @tap="demoFail" id="btn-rmdir-fail">演示失败（非空目录未递归）</button>
+      </view>
+      <view class="p-8 border-1-solid-e0e0e0 radius-4 flex-dir-column m-4-0-12-0">
+        <text class="fw-bold fs-14 m-2-0 color-333">执行结果：{{ data.lastResult == '' ? '等待执行' : (data.lastResult == 'success' ? '成功' : '失败') }}</text>
+        <text class="fs-13 m-2-0 color-666">目标路径：{{ data.rootPath }}{{ data.dirPath }}</text>
+        <text class="fs-13 m-2-0 color-666" v-if="data.lastResult == 'success'">目录已删除（存在性校验：{{ data.existsRet ? '仍存在' : '已不存在' }}）</text>
+        <text class="fs-13 m-2-0 color-e64340" v-if="data.lastResult == 'fail'">errCode：{{ data.lastFailError.errCode }}；errMsg：{{ data.lastFailError.errMsg }}</text>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="ts">
+  import { createEnumItems } from '@/components/enum-data-checkbox/enum-data-checkbox-types'
+  const rootOptions = createEnumItems(['usr', 'cache', 'sandbox'])
+
+  import { getFsmRootPath, ensureFsmDirSync, ensureFsmFileSync, removeFsmPathSync, removeFsmDirSync, createFsmMockError } from './fsm-utils'
+
+  type DataType = {
+    rootKey : string
+    rootPath : string
+    dirPath : string
+    recursive : boolean
+    existsRet : boolean
+    done : boolean
+    lastResult : string
+    lastFailError : UniError
+  }
+
+  const data = reactive({
+    rootKey: 'usr',
+    rootPath: getFsmRootPath('usr'),
+    dirPath: 'fsm-rmdir-demo/target',
+    recursive: true,
+    existsRet: false,
+    done: false,
+    lastResult: '',
+    lastFailError: createFsmMockError(),
+  } as DataType)
+
+  function onRootChange(value : string) {
+    data.rootKey = value
+    data.rootPath = getFsmRootPath(data.rootKey)
+  }
+
+  function onRecursiveChange(e : UniSwitchChangeEvent) {
+    data.recursive = e.detail.value
+  }
+
+  function targetPath(path : string) : string {
+    return `${data.rootPath}${path ?? data.dirPath}`
+  }
+
+  function resetResult() {
+    data.done = false
+    data.lastResult = ''
+    data.existsRet = false
+  }
+
+  function applyFail(res : IUniError) {
+    data.lastResult = 'fail'
+    data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+  }
+
+  function exists(path : string) : void {
+    try {
+      uni.getFileSystemManager().accessSync(targetPath(path))
+      data.existsRet = true
+    } catch (e) {
+      data.existsRet = false
+    }
+  }
+
+  // 准备演示数据：创建含文件的目录 fsm-rmdir-demo/target/1.txt 与空目录 fsm-rmdir-demo/empty
+  function prepare() : void {
+    const demoRoot = `${data.rootPath}fsm-rmdir-demo`
+    ensureFsmDirSync(`${demoRoot}/target`)
+    ensureFsmFileSync(`${demoRoot}/target/1.txt`, '测试rmdir API的写入功能。\n\t制表符缩进行\n回车换行：\r\n下一行\n反斜杠 \\ 双引号 " 单引号 \'\n空格[  ]全角空格[　]不间断空格[ ]\n混合内容：中文English123!@#')
+    ensureFsmDirSync(`${demoRoot}/empty`)
+    data.done = true
+  }
+
+  function cleanup() : void {
+    removeFsmDirSync(`${data.rootPath}fsm-rmdir-demo`)
+    data.done = true
+  }
+
+  function verifyRemoved() {
+    exists(data.dirPath)
+  }
+
+  function rmdir() : void {
+    resetResult()
+    // 自愈：重建删除目标目录，保证按钮可重复点击
+    ensureFsmDirSync(targetPath(data.dirPath))
+    const fileManager = uni.getFileSystemManager()
+    const options : RmDirOptions = {
+      dirPath: targetPath(data.dirPath),
+      recursive: data.recursive,
+      success: (_ : FileManagerSuccessResult) => {
+        data.lastResult = 'success'
+        verifyRemoved()
+      },
+      fail: (res : IUniError) => {
+        applyFail(res)
+      },
+      complete: (_ : any) => {
+        data.done = true
+      }
+    }
+    fileManager.rmdir(options)
+  }
+
+  function rmdirSync() : void {
+    resetResult()
+    // 自愈：重建删除目标目录，保证按钮可重复点击
+    ensureFsmDirSync(targetPath(data.dirPath))
+    try {
+      uni.getFileSystemManager().rmdirSync(targetPath(data.dirPath), data.recursive)
+      data.lastResult = 'success'
+      verifyRemoved()
+    } catch (e) {
+      data.lastResult = 'fail'
+      data.lastFailError = new UniError('uni-file-manager', 0, `${e}`)
+    }
+    data.done = true
+  }
+
+  // 一键演示失败场景：非空目录且 recursive=false，预期 errCode 1300066（演示后自动恢复参数）
+  function demoFail() : void {
+    resetResult()
+    const prevPath = data.dirPath
+    const prevRecursive = data.recursive
+    // 准备非空目录用于失败演示
+    ensureFsmDirSync(`${data.rootPath}fsm-rmdir-demo/target`)
+    ensureFsmFileSync(`${data.rootPath}fsm-rmdir-demo/target/1.txt`, '测试rmdir API的写入功能。\n\t制表符缩进行\n回车换行：\r\n下一行\n反斜杠 \\ 双引号 " 单引号 \'\n空格[  ]全角空格[　]不间断空格[ ]\n混合内容：中文English123!@#')
+    data.dirPath = 'fsm-rmdir-demo/target'
+    data.recursive = false
+    const fileManager = uni.getFileSystemManager()
+    const options : RmDirOptions = {
+      dirPath: `${data.rootPath}fsm-rmdir-demo/target`,
+      recursive: false,
+      success: (_ : FileManagerSuccessResult) => {
+        data.lastResult = 'success'
+      },
+      fail: (res : IUniError) => {
+        applyFail(res)
+      },
+      complete: (_ : any) => {
+        data.dirPath = prevPath
+        data.recursive = prevRecursive
+        data.done = true
+      }
+    }
+    fileManager.rmdir(options)
+  }
+
+  onReady(() => {
+    prepare()
+  })
+
+  defineExpose({
+    data,
+    prepare,
+    cleanup,
+    exists,
+    rmdir,
+    rmdirSync,
+    demoFail
+  })
+</script>

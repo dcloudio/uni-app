@@ -1,7 +1,6 @@
 <template>
-  <view>
     <page-head title="getApp"></page-head>
-    <view class="uni-padding-wrap">
+    <view class="p-0-15">
       <list-view-wrapper>
         <template #default>
           <list-item v-for="item in list" :key="item">
@@ -14,10 +13,9 @@
           </list-item>
         </template>
       </list-view-wrapper>
-      <button id="add-btn" class="uni-common-mt" @click="addItem">add item</button>
-      <button id="empty-btn" class="uni-common-mt" @click="emptyList">empty list</button>
+      <button id="add-btn" class="mt-15" @click="addItem">add item</button>
+      <button id="empty-btn" class="mt-15" @click="emptyList">empty list</button>
     </view>
-  </view>
 </template>
 
 <script setup lang="ts">

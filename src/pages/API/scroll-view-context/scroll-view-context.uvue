@@ -1,0 +1,29 @@
+<template>
+  <scroll-view class="flex-1" direction="vertical" :show-scrollbar="false">
+    <page-head title="ScrollViewContext"></page-head>
+    <page-intro content="本页演示 ScrollViewContext：选择滚动容器，查看属性读写、scrollTo、scrollIntoView、下拉刷新与二级面板示例。每个页面均可单项检查、手动操作，也可运行完整验收。"></page-intro>
+
+    <view class="p-0-15 pb-15 pb-safe-area-inset-bottom">
+      <button id="open-scroll-view" type="primary" class="mt-15" @click="openContainer('scroll-view')">scroll-view</button>
+      <text class="u-mt-5 fs-12 lh-20 color-888">竖向与双轴滚动，支持坐标和条目定位。</text>
+
+      <button id="open-list-view" type="primary" class="mt-15" @click="openContainer('list-view')">list-view</button>
+      <text class="u-mt-5 fs-12 lh-20 color-888">列表复用，支持已渲染条目定位。</text>
+
+      <button id="open-waterflow" type="primary" class="mt-15" @click="openContainer('waterflow')">waterflow</button>
+      <text class="u-mt-5 fs-12 lh-20 color-888">双列瀑布流，支持已渲染条目定位。</text>
+
+      <view class="mt-15 p-10-0">
+        <text class="fs-15 fw-bold color-text-333">验收范围</text>
+        <text class="u-mt-5 fs-12 lh-20 color-888">属性读写、scrollTo、scrollIntoView、刷新与二级面板，分别在三个原生容器中验证。</text>
+        <text class="u-mt-5 fs-12 lh-20 color-888">fastDeceleration、decelerationDisabled、withinExtent 尚未实现，不列入通过条件。</text>
+      </view>
+    </view>
+  </scroll-view>
+</template>
+
+<script setup lang="ts">
+  function openContainer(container: string) {
+    uni.navigateTo({ url: '/pages/API/scroll-view-context/' + container })
+  }
+</script>

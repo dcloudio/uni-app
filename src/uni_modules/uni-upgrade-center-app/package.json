@@ -1,7 +1,7 @@
 {
   "id": "uni-upgrade-center-app",
   "displayName": "升级中心 uni-upgrade-center - App",
-  "version": "0.11.1",
+  "version": "0.11.3",
   "description": "uni升级中心 - 客户端检查更新",
   "keywords": [
     "uniCloud",
@@ -37,7 +37,7 @@
     "darkmode": "x",
     "i18n": "x",
     "widescreen": "√",
-    "vapor": "√"
+    "vapor": "x"
   },
   "uni_modules": {
     "dependencies": [
@@ -99,7 +99,7 @@
             "harmony": "x",
             "qq": "x",
             "lark": "x",
-            "xhs": "x"
+            "xhs": "-"
           },
           "quickapp": {
             "huawei": "x",

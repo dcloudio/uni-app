@@ -114,6 +114,12 @@ describe('Button.uvue', () => {
     expect(await textBtn.text()).toEqual('')
   })
 
+  it('hover attributes', async () => {
+    const el = await page.$('#testButton')
+    expect(await el.attribute('hover-stop-propagation')).toBeTruthy()
+    expect(await el.attribute('hover-start-time')).toBe('100')
+  })
+
   // 自定义button和默认button来回切换截图对比
   it("button-screenshot-plain+primary+default", async () => {
     if (isWeb || isMP) {
@@ -243,4 +249,5 @@ describe('Buttonstatus.uvue', () => {
       return 'buttonstatus-button-hover-class-default-value'
     }});
   })
+
 })

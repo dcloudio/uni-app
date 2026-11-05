@@ -1,22 +1,22 @@
 <template>
   <page-head title="setNavigationBarColor"></page-head>
-  <view class="uni-padding-wrap uni-common-mt">
-    <button @tap="setNavigationBarColor1" class="uni-btn">
+  <view class="p-0-15 mt-15">
+    <button @tap="setNavigationBarColor1" class="mt-10">
       设置导航条背景绿色，标题白色
     </button>
-    <button @tap="setNavigationBarColor2" class="uni-btn">
+    <button @tap="setNavigationBarColor2" class="mt-10">
       设置导航条背景红色，标题黑色
     </button>
     <!-- #ifdef APP -->
-    <button @tap="hideNavigationBar" class="uni-btn">
+    <button @tap="hideNavigationBar" class="mt-10">
       隐藏导航栏
     </button>
-    <button @tap="showNavigationBar" class="uni-btn">
+    <button @tap="showNavigationBar" class="mt-10">
       恢复导航栏
     </button>
     <!-- #endif -->
     <!-- #ifndef MP-ALIPAY -->
-    <button @tap="goNavbarLite" class="uni-btn">
+    <button @tap="goNavbarLite" class="mt-10">
       跳转自定义导航栏页面
     </button>
     <!-- #endif -->

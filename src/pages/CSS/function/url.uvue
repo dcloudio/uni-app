@@ -1,9 +1,9 @@
 <template>
-	<view class="container">
+	<view class="p-20">
 		<text class="intro-text">url() 函数用于加载图片、字体等资源，支持 /static 目录下的本地文件和网络链接。</text>
-		<view class="section">
-			<text class="section-title">字体示例</text>
-			<view class="font-grid">
+		<view class="mb-30">
+			<text class="fs-18 fw-bold mb-15">字体示例</text>
+			<view class="flex-dir-row flex-wrap-wrap">
 				<!-- #ifdef APP-IOS -->
 				<view class="font-item">
 					<text class="custom-font">阿里妈妈刀隶体</text>
@@ -43,10 +43,6 @@
 		src: url('https://qiniu-web-assets.dcloud.net.cn/uni-app-x/static/font/AlimamaDaoLiTi.ttf');
 	}
 
-	.container {
-		padding: 20px;
-	}
-
 	.intro-text {
 		font-size: 14px;
 		color: #333;
@@ -55,21 +51,6 @@
 		padding: 15px;
 		background-color: #f8f9fa;
 		border-radius: 8px;
-	}
-
-	.section {
-		margin-bottom: 30px;
-	}
-
-	.section-title {
-		font-size: 18px;
-		font-weight: bold;
-		margin-bottom: 15px;
-	}
-
-	.font-grid {
-		flex-direction: row;
-		flex-wrap: wrap;
 	}
 
 	.font-item {

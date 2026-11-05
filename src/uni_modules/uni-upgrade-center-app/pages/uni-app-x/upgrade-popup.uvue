@@ -40,14 +40,14 @@
                 </view>
               </view>
 
-              <button v-else class="content-button" @click="updateApp">
-                {{downLoadBtnText}}
+              <button v-else class="content-button" :disabled="verifyBlocked" @click="updateApp">
+                {{verifyBlocked ? '安装包校验失败，请联系管理员重新发布' : downLoadBtnText}}
               </button>
             </template>
 
             <button v-else-if="downloadSuccess && !installed" class="content-button" :loading="installing"
               :disabled="installing" @click="installPackage">
-              {{installing ? '正在安装……' : '下载完成，立即安装'}}
+              {{verifying ? '正在校验安装包……' : (installing ? '正在安装……' : '下载完成，立即安装')}}
             </button>
 
             <button v-else-if="installed && !isWgt" class="content-button" @click="installPackage">
@@ -62,7 +62,7 @@
       </view>
 
       <view class="content-bottom">
-        <image v-if="!is_mandatory" class="close-img" mode="widthFix"
+        <image v-if="!is_mandatory || verifyBlocked" class="close-img" mode="widthFix"
           src="/uni_modules/uni-upgrade-center-app/static/app/app_update_close.png" @click="closeUpdate">
         </image>
       </view>
@@ -73,8 +73,9 @@
 <script setup lang="uts">
   import { openSchema as utsOpenSchema } from '@/uni_modules/uts-openSchema'
   import { UniUpgradeCenterResult, StoreListItem, isWgtPackage } from '../../utils/call-check-version'
-  import { platform_iOS, platform_Android, platform_Harmony, probeFileSize, restart } from '../../utils'
-  import { createUpdateManager } from '../../utils/update-manager'
+  import { platform_iOS, platform_Android, platform_Harmony, probeFileSize } from '../../utils'
+  import { createUpdateManager, UpdateTaskContext, UpgradePopupPayload } from '../../utils/update-manager'
+  import { verifyPackageSha256 } from '../../utils/verify-package'
   // #ifdef VUE3-VAPOR && APP && !APP-HARMONY
   import { installVaporWgt, getWgtCacheFilePath, getWgtCacheRecord, saveWgtCacheRecord, clearWgtCache, isSameWgtPackage } from '../../utils/install-wgt'
   // #endif
@@ -88,6 +89,8 @@
   // 支付宝云等 chunked 响应不返回 Content-Length，onProgressUpdate 的 totalBytesExpectedToWrite 为 -1、progress 为负数，
   // 需复用 download.ts 的 probeFileSize 探测安装包总大小来计算进度
   let packageTotalSize : number = 0;
+  // 弹窗已关闭标记：关闭后异步回调不得再触发安装或更新界面
+  let popupClosed = false
 
   const openSchema = (url : string) : Promise<boolean> => new Promise<boolean>((resolve, reject) => {
     try {
@@ -102,6 +105,10 @@
   const installed = ref<boolean>(false)
   const readyPromptHandled = ref<boolean>(false)
   const installing = ref<boolean>(false)
+  // 安装包校验进行中：禁止关闭弹窗，避免校验期间退出导致安装被静默取消
+  const verifying = ref<boolean>(false)
+  // 校验配置错误（如 sha256 为空/格式非法）：重新下载无法修复，禁用下载入口
+  const verifyBlocked = ref<boolean>(false)
 
   // 下载
   const downloadSuccess = ref<boolean>(false)
@@ -124,10 +131,11 @@
   const store_list = ref<StoreListItem[] | null>(null)
   // 完整安装包信息（vapor wgt 安装时使用）
   const packageInfo = ref<UniUpgradeCenterResult | null>(null)
+  const taskContext = ref<UpdateTaskContext | null>(null)
   const updateManager = createUpdateManager()
 
   function restartApp() : void {
-    restart()
+    updateManager.applyUpdate()
   }
 
   // 可自定义属性
@@ -170,6 +178,7 @@
   }
 
   function closePopup() {
+    popupClosed = true
     downloadSuccess.value = false
     downloading.value = false
     downLoadPercent.value = 0
@@ -185,6 +194,8 @@
       dialogPage: getCurrentDialogPage(),
       fail(e) {
         console.log('e: ', e);
+        // 关闭失败时页面仍在，恢复可交互，避免异步回调被误判为已关闭而不执行
+        popupClosed = false
       }
     })
   }
@@ -209,6 +220,8 @@
   }
 
   function closeUpdate() {
+    // 校验进行中禁止关闭，避免安装被静默取消
+    if (verifying.value) return
     if (downloading.value && !needNotificationProgress.value) {
       askAbortDownload()
       return;
@@ -220,7 +233,7 @@
     openSchema(url.value)
   }
 
-  function show(localPackageInfo : UniUpgradeCenterResult | null) {
+  function show(localPackageInfo : UniUpgradeCenterResult | null, localTaskContext : UpdateTaskContext | null = null) {
     if (localPackageInfo === null) return;
     for (let key in localPackageInfo) {
       if (requiredKey.indexOf(key) != -1 && localPackageInfo[key] === null) {
@@ -237,7 +250,9 @@
     version.value = localPackageInfo.version
     store_list.value = localPackageInfo.store_list
     packageInfo.value = localPackageInfo
+    taskContext.value = localTaskContext == null ? updateManager.createTaskContext(0) : { taskId: localTaskContext.taskId, checkId: localTaskContext.checkId }
     readyPromptHandled.value = false
+    verifyBlocked.value = false
     // #ifdef VUE3-VAPOR && APP && !APP-HARMONY
     // 校验本地 wgt 缓存：同一个资源包直接复用，避免重复下载（apk 不参与）
     checkWgtCache()
@@ -296,7 +311,11 @@
     return null
   }
 
-  function downloadFail() {
+  function downloadFail(message : string = '下载失败，请点击重试', reportFailure : boolean = true) {
+    if (reportFailure && packageInfo.value != null && taskContext.value != null) {
+      updateManager.notifyUpdateFailed({ taskId: taskContext.value!.taskId, checkId: taskContext.value!.checkId,
+        packageInfo: packageInfo.value, stage: 'download', code: null, message, retryable: true })
+    }
     const errMsg = '下载失败，请点击重试'
     downloadSuccess.value = false;
     downloading.value = false;
@@ -317,59 +336,103 @@
   }
 
   function installPackage() {
+    const currentPackageInfo = packageInfo.value
+    const currentTaskContext = taskContext.value
+    if (currentPackageInfo == null || currentTaskContext == null) return
     installing.value = true;
     // #ifdef VUE3-VAPOR && APP && !APP-HARMONY
     // vapor wgt：先做 SHA256 完整性校验再安装（vapor-harmony 暂不支持热更新）
     if (isWgtPackage(packageInfo.value)) {
       installVaporWgt({
-        packageInfo: packageInfo.value!,
+        packageInfo: currentPackageInfo,
         filePath: tempFilePath.value,
         onFail: (message : string) => {
           installing.value = false;
           installed.value = false;
-          updateManager.notifyUpdateFailed({ taskId: `${version.value}:install`, checkId: 0, packageInfo: packageInfo.value, stage: 'install', code: message.includes('不支持') ? 'UNSUPPORTED_INSTALL_WGT' : null, message, retryable: !message.includes('不支持') })
+          updateManager.notifyUpdateFailed({ taskId: currentTaskContext.taskId, checkId: currentTaskContext.checkId, packageInfo: currentPackageInfo, stage: 'install', code: message.includes('不支持') ? 'UNSUPPORTED_INSTALL_WGT' : null, message, retryable: !message.includes('不支持') })
           uni.showModal({
             title: '更新失败',
             content: message,
             showCancel: false
           });
           // 校验失败需重新下载安装包
-          downloadFail();
+          downloadFail(message, false);
         },
 		onAlreadyLatest: () => { closePopup() },
          onSuccess: () => {
            installing.value = false;
            installed.value = true;
-           readyPromptHandled.value = packageInfo.value!.is_update_prompt ?? false
-           updateManager.notifyUpdateReady(packageInfo.value!)
+            readyPromptHandled.value = currentPackageInfo.is_update_prompt ?? false
+            updateManager.notifyUpdateReady(currentPackageInfo, currentTaskContext.taskId, false, currentTaskContext)
         }
       });
       return;
     }
     // #endif
     // #ifdef APP
-    uni.installApk({
-      filePath: tempFilePath.value,
-      success: _ => {
+    const installApk = () => {
+      if (popupClosed) {
         installing.value = false;
-        installed.value = true;
-      },
-      fail: err => {
-        console.error('installApk fail', err);
-        // 安装失败需要重新下载安装包
-        installing.value = false;
-        installed.value = false;
-        uni.showModal({
-          title: '更新失败，请重新下载',
-          content: `uni.installApk 错误码 ${err.errCode}`,
-          showCancel: false
-        });
+        return
       }
-    });
-    // 不是强制更新直接关闭
-    if (!is_mandatory.value) {
-      closeUpdate()
+      uni.installApk({
+        filePath: tempFilePath.value,
+        success: _ => {
+          installing.value = false;
+          installed.value = true;
+        },
+        fail: err => {
+          console.error('installApk fail', err);
+          // 安装失败需要重新下载安装包
+          installing.value = false;
+          installed.value = false;
+          updateManager.notifyUpdateFailed({ taskId: currentTaskContext.taskId, checkId: currentTaskContext.checkId,
+            packageInfo: currentPackageInfo, stage: 'install', code: err.errCode, message: err.errMsg, retryable: true })
+          uni.showModal({
+            title: '更新失败，请重新下载',
+            content: `uni.installApk 错误码 ${err.errCode}`,
+            showCancel: false
+          });
+        }
+      });
+      // 不是强制更新直接关闭
+      if (!is_mandatory.value) {
+        closeUpdate()
+      }
     }
+    // #ifdef UNI-APP-X
+    // 发布端开启 verify_sha256 时，先校验安装包 SHA256 再安装
+    if (currentPackageInfo.verify_sha256 == true) {
+      verifying.value = true
+      verifyPackageSha256(tempFilePath.value, currentPackageInfo.sha256,
+        () => {
+          verifying.value = false
+          installApk()
+        },
+        (message : string, retryable : boolean) => {
+          verifying.value = false
+          if (popupClosed) return
+          installing.value = false;
+          installed.value = false;
+          updateManager.notifyUpdateFailed({ taskId: currentTaskContext.taskId, checkId: currentTaskContext.checkId, packageInfo: currentPackageInfo, stage: 'verify', code: null, message, retryable })
+          uni.showModal({
+            title: '更新失败',
+            content: message,
+            showCancel: false
+          });
+          if (retryable) {
+            // 文件损坏等可恢复原因：回到可重新下载状态
+            downloadFail(message, false);
+          } else {
+            // 发布配置错误：重新下载无法修复，禁用下载入口避免无效循环
+            verifyBlocked.value = true;
+            downloadSuccess.value = false;
+          }
+        })
+      return;
+    }
+    // #endif
+    installApk()
     // #endif
   }
 
@@ -406,7 +469,7 @@
   function downloadPackage() {
     // #ifdef APP-ANDROID
     if (needNotificationProgress.value && packageInfo.value != null) {
-      updateManager.startNotificationDownload(packageInfo.value!)
+      updateManager.startNotificationDownload(packageInfo.value!, taskContext.value!)
       closePopup()
       return
     }
@@ -426,16 +489,23 @@
     const handleDownloadSuccess = (res : DownloadFileSuccess) => {
       if (res.statusCode == 200) {
         // 传 filePath 时部分平台 tempFilePath 为空，回退使用落盘路径
-        tempFilePath.value = res.tempFilePath.length > 0 ? res.tempFilePath : downloadFilePath
+        const downloadedPath = res.tempFilePath.length > 0 ? res.tempFilePath : downloadFilePath
+        if (downloadedPath.length == 0) {
+          // 未拿到可用路径时按失败处理，避免把空路径当成已下载
+          console.log('downloadFile err: empty file path')
+          downloadFail('下载文件路径为空，请重新检查更新')
+          return
+        }
+        tempFilePath.value = downloadedPath
         downLoadComplete()
       } else {
         console.log('downloadFile err: ', res);
-        downloadFail()
+        downloadFail(`下载失败（HTTP ${res.statusCode}）`)
       }
     }
-    const handleDownloadFail = (err : any) => {
+    const handleDownloadFail = (err : DownloadFileFail) => {
       console.log('downloadFile err: ', err);
-      downloadFail()
+      downloadFail(err.errMsg)
     }
 
     if (downloadFilePath.length > 0) {
@@ -454,9 +524,6 @@
     }
     if (downloadTask !== null) {
       downloading.value = true;
-      if (needNotificationProgress.value) {
-        closePopup()
-      }
       // 支付宝云等 chunked 响应无 Content-Length，并行探测安装包总大小
       probeFileSize(url.value, (size : number) => {
         if (size > 0) {
@@ -517,16 +584,25 @@
       return;
     };
     const localPackageInfo = uni.getStorageSync(local_storage_key);
+    uni.removeStorageSync(local_storage_key)
     if (localPackageInfo == null) {
       console.error('安装包信息为空，请检查后重试')
       closePopup()
       return;
     };
-    show(JSON.parse<UniUpgradeCenterResult>(JSON.stringify(localPackageInfo)) as UniUpgradeCenterResult)
+    const parsed = JSON.parse(JSON.stringify(localPackageInfo)) as UTSJSONObject
+    if (parsed['packageInfo'] != null) {
+      const payload = JSON.parse<UpgradePopupPayload>(JSON.stringify(localPackageInfo)) as UpgradePopupPayload
+      show(payload.packageInfo, payload.taskContext)
+    } else {
+      // 兼容旧裸包存储及 nvue 入口，不把上下文写进安装包字段。
+      show(JSON.parse<UniUpgradeCenterResult>(JSON.stringify(localPackageInfo)) as UniUpgradeCenterResult)
+    }
   })
 
   onBackPress((options : OnBackPressOptions) : boolean | null => {
-    if (is_mandatory.value) return true
+    // 强制更新不允许返回；但校验配置错误（无法安装）时放行，避免用户被困在弹窗内
+    if ((is_mandatory.value && !verifyBlocked.value) || verifying.value) return true
     if (!needNotificationProgress.value) {
       if (downloadTask !== null) {
         downloadTask!.abort()
@@ -534,12 +610,19 @@
     }
     return false
   })
+
+  onUnload(() => {
+    // 页面已销毁：阻止校验等异步回调继续安装或改状态
+    popupClosed = true
+  })
 </script>
 
 <style>
+  /* #ifdef VUE3-VAPOR */
   page {
     background-color: transparent;
   }
+  /* #endif */
 
   .flex-center {
     justify-content: center;

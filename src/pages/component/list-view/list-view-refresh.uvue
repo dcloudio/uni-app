@@ -1,11 +1,15 @@
 <template>
-  <list-view v-if="list_show" id="listview" class="list-view-page" style="flex: 1;" show-scrollbar=false :refresher-enabled="true"
-    :refresher-triggered="data.refresherTriggered" @refresherrefresh="onRefresherrefresh" @refresherabort="onRefresherabort"
+  <list-view v-if="list_show" id="listview" class="flex-1" show-scrollbar=false :refresher-enabled="true"
+    :refresher-triggered="data.refresherTriggered"
+    <!-- #ifdef APP-ANDROID && VUE3-VAPOR -->
+    :android-refresher-color="getAndroidRefresherColorBinding()"
+    <!-- #endif -->
+    @refresherrefresh="onRefresherrefresh" @refresherabort="onRefresherabort"
     @refresherrestore="onRefresherrestore" @refresherpulling="onRefresherpulling">
-    <list-item class="item">
+    <list-item class="u-p-15 m-0-0-5-0 bg-list-fff radius-5">
       <text>向下滑动触发下拉刷新</text>
     </list-item>
-    <list-item v-for="index in item_count" :key="index" class="item">
+    <list-item v-for="index in item_count" :key="index" class="u-p-15 m-0-0-5-0 bg-list-fff radius-5">
       <text>item-------{{index}}</text>
     </list-item>
   </list-view>
@@ -32,13 +36,13 @@ type DataType = {
 // Data
 const item_count = ref(20)
 const list_show = ref(false)
-const data = reactive({
+const data = reactive<DataType>({
   refresherTriggered: true,
   refresherrefreshTest: "",
   onRefresherabortTest: "",
   onRefresherrestoreTest: "",
   onRefresherpullingTest: "",
-} as DataType)
+})
 
 // Methods
 function checkEventTest(e : RefresherEventTest, eventName : String) {
@@ -65,12 +69,13 @@ function checkEventTest(e : RefresherEventTest, eventName : String) {
 function onRefresherrefresh(e : UniRefresherEvent) {
   console.log('refresherrefresh-----下拉刷新被触发', e.detail.dy)
   data.refresherTriggered = true
-  checkEventTest({
+  const refresherrefreshEventTest : RefresherEventTest = {
     type: e.type,
     target: e.target,
     currentTarget: e.currentTarget,
     dy: e.detail.dy,
-  } as RefresherEventTest, 'refresherrefresh')
+  }
+  checkEventTest(refresherrefreshEventTest, 'refresherrefresh')
   setTimeout(() => {
     data.refresherTriggered = false
   }, 1000)
@@ -78,33 +83,54 @@ function onRefresherrefresh(e : UniRefresherEvent) {
 
 function onRefresherabort(e : UniRefresherEvent) {
   console.log("onRefresherabort------下拉刷新被中止", e.detail)
-  checkEventTest({
+  const refresherabortEventTest : RefresherEventTest = {
     type: e.type,
     target: e.target,
     currentTarget: e.currentTarget,
     dy: e.detail.dy,
-  } as RefresherEventTest, 'refresherabort')
+  }
+  checkEventTest(refresherabortEventTest, 'refresherabort')
 }
 
 function onRefresherrestore(e : UniRefresherEvent) {
   console.log("onRefresherrestore------下拉刷新被复位", e.detail.dy)
-  checkEventTest({
+  const refresherrestoreEventTest : RefresherEventTest = {
     type: e.type,
     target: e.target,
     currentTarget: e.currentTarget,
     dy: e.detail.dy,
-  } as RefresherEventTest, 'refresherrestore')
+  }
+  checkEventTest(refresherrestoreEventTest, 'refresherrestore')
 }
 
 function onRefresherpulling(e : UniRefresherEvent) {
   console.log("onRefresherpulling------拉刷新控件被下拉-dy=" + e.detail.dy)
-  checkEventTest({
+  const refresherpullingEventTest : RefresherEventTest = {
     type: e.type,
     target: e.target,
     currentTarget: e.currentTarget,
     dy: e.detail.dy,
-  } as RefresherEventTest, 'refresherpulling')
+  }
+  checkEventTest(refresherpullingEventTest, 'refresherpulling')
 }
+
+// #ifdef APP-ANDROID && VUE3-VAPOR
+const androidRefresherColor = ref("#000000" as string | null)
+
+function getAndroidRefresherColorBinding() : any {
+  return androidRefresherColor.value
+}
+
+// 自动化测试专用
+function setAndroidRefresherColorForTest(value : string | null) {
+  androidRefresherColor.value = value
+}
+
+// 自动化测试专用
+function getAndroidRefresherColorForTest() : string | null {
+  return androidRefresherColor.value
+}
+// #endif
 
 // Lifecycle
 onLoad(() => {
@@ -114,18 +140,10 @@ onLoad(() => {
 })
 
 defineExpose({
-  data
+  data,
+  // #ifdef APP-ANDROID && VUE3-VAPOR
+  getAndroidRefresherColorForTest,
+  setAndroidRefresherColorForTest,
+  // #endif
 })
 </script>
-<style>
-  .item {
-    padding: 15px;
-    margin: 0 0 5px 0;
-    background-color: var(--list-background-color, #fff);
-    border-radius: 5px;
-  }
-
-  .button_item {
-    width: 200px;
-  }
-</style>

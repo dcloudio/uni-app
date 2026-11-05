@@ -1,29 +1,29 @@
 <template>
-  <scroll-view ref="pageScrollView" class="page" :bounces="false" type="nested"
+  <scroll-view ref="pageScrollView" class="flex-1" :bounces="false" type="nested"
   :refresher-triggered="refresherTriggered" refresher-enabled="true" @refresherrefresh="onRefresherrefresh"
   >
     <nested-scroll-header>
-      <swiper ref="header" indicator-dots="true" circular="true" style="height: 150px;">
-        <swiper-item v-for="i in 3" :item-id="''+i" style="height: 100%;align-items: center;justify-content: center;">
-          <text class="banner-index">{{i}}</text>
+      <swiper ref="header" indicator-dots="true" circular="true" class="h-150">
+        <swiper-item v-for="i in 3" :item-id="''+i" class="h-full items-center justify-center">
+          <text class="color-text-333">{{i}}</text>
           <!-- 可以将上述text组件替换为image组件，实现轮播图效果 -->
         </swiper-item>
       </swiper>
     </nested-scroll-header>
-    <nested-scroll-body style="height: 100%;">
-      <view style="flex: 1;">
-        <scroll-view ref="tabScroll" class="swiper-tabs" direction="horizontal" :show-scrollbar="false">
-          <view class="flex-row" style="align-self: flex-start;">
-            <text ref="swipertab" class="swiper-tabs-item" :class="swiperIndex==index ? 'swiper-tabs-item-active' : ''"
+    <nested-scroll-body class="h-full">
+      <view class="flex-1">
+        <scroll-view ref="tabScroll" class="bg-list-fff flex-dir-column" direction="horizontal" :show-scrollbar="false">
+          <view class="flex-dir-row self-flex-start">
+            <text ref="swipertab" class="fs-16 p-12-25 ws-nowrap swiper-tabs-item" :class="swiperIndex==index ? 'color-007aff' : 'color-text-555'"
               v-for="(item, index) in swiperList" :key="index" @click="onTabClick(index)">
               {{item.name}}
             </text>
           </view>
-          <view ref="indicatorNode" class="swiper-tabs-indicator"></view>
+          <view ref="indicatorNode" class="w-1 u-h-2 bg-007aff"></view>
         </scroll-view>
-        <swiper ref="swiper" class="swiper-view" :current="swiperIndex" @transition="onSwiperTransition"
+        <swiper ref="swiper" class="flex-1" :current="swiperIndex" @transition="onSwiperTransition"
           @animationfinish="onSwiperAnimationfinish">
-          <swiper-item class="swiper-item" v-for="(item, index) in swiperList" :key="index">
+          <swiper-item class="h-full" v-for="(item, index) in swiperList" :key="index">
             <long-page ref="longPageRef" :id="item.id" :type="item.type" :preload="item.preload"></long-page>
           </swiper-item>
         </swiper>
@@ -304,59 +304,3 @@
     jest_getListState,
   })
 </script>
-
-<style>
-  .flex-row {
-    flex-direction: row;
-  }
-
-  .page {
-    flex: 1;
-  }
-
-  .search-bar {
-    padding: 10px;
-  }
-
-  .swiper-list {
-    height: 100%;
-    /* #ifdef WEB */
-    flex: 1;
-    /* #endif */
-  }
-
-  .swiper-tabs {
-    background-color: var(--list-background-color, #ffffff);
-    flex-direction: column;
-  }
-
-  .swiper-tabs-item {
-    color: var(--text-color, #555555);
-    font-size: 16px;
-    padding: 12px 25px;
-    white-space: nowrap;
-  }
-
-  .swiper-tabs-item-active {
-    color: #007AFF;
-  }
-
-  .swiper-tabs-indicator {
-    width: 1px;
-    height: 2px;
-    background-color: #007AFF;
-  }
-
-  .swiper-view {
-    flex: 1;
-  }
-
-  .swiper-item {
-    /* flex: 1; harmony 高度异常 */
-    height: 100%;
-  }
-
-  .banner-index {
-    color: var(--text-color, #333333);
-  }
-</style>

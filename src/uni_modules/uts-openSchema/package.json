@@ -1,18 +1,16 @@
 {
   "id": "uts-openSchema",
   "displayName": "uts-openSchema",
-  "version": "1.0.0",
+  "version": "1.1.4",
   "description": "在 Android、iOS、HarmonyOS 上打开链接的 UTS API",
   "keywords": [
     "uts-openSchema"
-  ],
-  "repository": "https://gitcode.com/dcloud/uni-ui-x",
+],
+  "repository": "",
   "engines": {
     "HBuilderX": "^4.0",
+    "uni-app": "^4.75",
     "uni-app-x": "^4.75"
-  },
-  "directories": {
-    "example": "../../temps/example_temps"
   },
   "dcloudext": {
     "type": "uts",
@@ -32,6 +30,7 @@
       "data": "无",
       "permissions": "无"
     },
+    "npmurl": "",
     "darkmode": "x",
     "i18n": "x",
     "widescreen": "x"
@@ -46,6 +45,57 @@
         "alipay": "√"
       },
       "client": {
+        "uni-app": {
+          "vue": {
+            "vue2": {
+                "extVersion": "1.0.0",
+                "minVersion": ""
+            },
+            "vue3": {
+                "extVersion": "1.0.0",
+                "minVersion": ""
+            }
+          },
+          "web": {
+            "safari": "x",
+            "chrome": "x"
+          },
+          "app": {
+            "vue": {
+                "extVersion": "1.0.0",
+                "minVersion": ""
+            },
+            "nvue": "-",
+            "android": {
+                "extVersion": "1.0.0",
+                "minVersion": "21"
+            },
+            "ios": {
+                "extVersion": "1.0.0",
+                "minVersion": "12"
+            },
+            "harmony": {
+                "extVersion": "1.1.2",
+                "minVersion": "5.0.0"
+            }
+          },
+          "mp": {
+            "weixin": "x",
+            "alipay": "x",
+            "toutiao": "x",
+            "baidu": "x",
+            "kuaishou": "x",
+            "jd": "x",
+            "harmony": "x",
+            "qq": "x",
+            "lark": "x",
+            "xhs": "-"
+          },
+          "quickapp": {
+            "huawei": "x",
+            "union": "x"
+          }
+        },
         "uni-app-x": {
           "web": {
             "safari": "x",
@@ -53,16 +103,16 @@
           },
           "app": {
             "android": {
-              "extVersion": "1.0.0",
-              "minVersion": "21"
+                "extVersion": "1.0.0",
+                "minVersion": "21"
             },
             "ios": {
-              "extVersion": "1.0.0",
-              "minVersion": "12"
+                "extVersion": "1.0.0",
+                "minVersion": "12"
             },
             "harmony": {
-              "extVersion": "1.1.2",
-              "minVersion": "5.0.0"
+                "extVersion": "1.1.2",
+                "minVersion": "5.0.0"
             }
           },
           "mp": {

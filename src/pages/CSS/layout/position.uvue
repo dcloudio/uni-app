@@ -1,9 +1,9 @@
 <template>
-    <view style="flex-grow: 1">
-      <view class="common-box">
+    <view class="flex-grow-1">
+      <view class="flex-dir-row justify-around">
         <view>
           <view class="title-container">
-            <text class="uni-title-text uni-common-mt">position: fixed</text>
+            <text class="fs-15 fw-bold color-text-333 mt-15">position: fixed</text>
           </view>
           <scroll-view class="test-scroll-view">
             <view class="test-block red"></view>
@@ -24,7 +24,7 @@
         </view>
         <view>
           <view class="title-container">
-            <text class="uni-subtitle-text">(四方向组合: top + left + bottom + right)</text>
+            <text class="color-888 fs-12 fw-bold u-mt-5">(四方向组合: top + left + bottom + right)</text>
           </view>
           <scroll-view class="test-scroll-view">
             <view class="test-block red"></view>
@@ -45,10 +45,10 @@
         </view>
       </view>
 
-      <view class="common-box">
+      <view class="flex-dir-row justify-around">
         <view>
           <view class="title-container">
-            <text class="uni-title-text uni-common-mt">position: absolute</text>
+            <text class="fs-15 fw-bold color-text-333 mt-15">position: absolute</text>
           </view>
           <scroll-view class="test-scroll-view">
             <view class="test-block red"></view>
@@ -69,7 +69,7 @@
         </view>
         <view>
           <view class="title-container">
-            <text class="uni-subtitle-text">(四方向组合: top + left + bottom + right)</text>
+            <text class="color-888 fs-12 fw-bold u-mt-5">(四方向组合: top + left + bottom + right)</text>
           </view>
           <scroll-view class="test-scroll-view">
             <view class="test-block red"></view>
@@ -90,10 +90,10 @@
         </view>
       </view>
 
-      <view class="common-box">
+      <view class="flex-dir-row justify-around">
         <view>
           <view class="title-container">
-            <text class="uni-title-text uni-common-mt">position: relative</text>
+            <text class="fs-15 fw-bold color-text-333 mt-15">position: relative</text>
           </view>
           <scroll-view class="test-scroll-view">
             <view class="test-block red"></view>
@@ -114,7 +114,7 @@
         </view>
         <view>
           <view class="title-container">
-            <text class="uni-subtitle-text uni-common-mt">(四方向组合: top + left + bottom + right)</text>
+            <text class="color-888 fs-12 fw-bold u-mt-5 mt-15">(四方向组合: top + left + bottom + right)</text>
           </view>
           <scroll-view class="test-scroll-view">
             <view class="test-block red"></view>
@@ -135,12 +135,12 @@
         </view>
       </view>
 
-      <view class="uni-common-mb">
-        <text class="uni-title-text uni-common-mt">scroll-view 组件</text>
-        <text class="uni-subtitle-text">position: relative 和 position: absolute</text>
+      <view class="mb-15">
+        <text class="fs-15 fw-bold color-text-333 mt-15">scroll-view 组件</text>
+        <text class="color-888 fs-12 fw-bold u-mt-5">position: relative 和 position: absolute</text>
         <view class="position-test-box">
           <scroll-view class="scroll-view-common" style="position: relative; top: 20px; left: 20px; background-color: cyan;">
-            <text class="cyan-text">relative</text>
+            <text class="color-1a1a1a">relative</text>
           </scroll-view>
           <scroll-view class="scroll-view-common" style="position: absolute; top: 65px; left: 65px; background-color: green;">
             <text>absolute</text>
@@ -148,55 +148,55 @@
         </view>
       </view>
 
-      <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
+      <view class="mt-15">
+        <text class="fs-15 fw-bold color-text-333">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
-      <view class="test-container">
-        <view class="test-item">
-          <text class="uni-subtitle-text">view 组件</text>
-          <text class="uni-info">设置值: {{data.position}}</text>
-          <text class="uni-info">获取值: {{data.positionActual}}</text>
+      <view class="flex-dir-row justify-between mt-10">
+        <view class="flex-1 m-0-5">
+          <text class="color-888 fs-12 fw-bold u-mt-5">view 组件</text>
+          <text class="fs-12 color-999">设置值: {{data.position}}</text>
+          <text class="fs-12 color-999">获取值: {{data.positionActual}}</text>
           <view class="test-box">
             <view class="test-block-small red"></view>
-            <view ref="viewRef" class="common-dynamic test-view" style="top: 10px; left: 10px;" :style="{ position: data.position }">
+            <view ref="viewRef" class="common-dynamic" style="top: 10px; left: 10px;" :style="{ position: data.position }">
               <text style="font-size: 10px;">view</text>
             </view>
             <view class="test-block-small blue"></view>
           </view>
         </view>
 
-        <view class="test-item">
-          <text class="uni-subtitle-text">text 组件</text>
-          <text class="uni-info">设置值: {{data.position}}</text>
-          <text class="uni-info">获取值: {{data.positionActualText}}</text>
+        <view class="flex-1 m-0-5">
+          <text class="color-888 fs-12 fw-bold u-mt-5">text 组件</text>
+          <text class="fs-12 color-999">设置值: {{data.position}}</text>
+          <text class="fs-12 color-999">获取值: {{data.positionActualText}}</text>
           <view class="test-box">
             <text class="test-block-small red test-block-small-text">红</text>
-            <text ref="textRef" class="common-dynamic common-text-dynamic test-text" style="top: 10px; left: 10px;" :style="{ position: data.position }">text</text>
+            <text ref="textRef" class="common-dynamic common-text-dynamic" style="top: 10px; left: 10px;" :style="{ position: data.position }">text</text>
             <text class="test-block-small blue test-block-small-text">蓝</text>
           </view>
         </view>
 
-        <view class="test-item">
-          <text class="uni-subtitle-text">image 组件</text>
-          <text class="uni-info">设置值: {{data.position}}</text>
-          <text class="uni-info">获取值: {{data.positionActualImage}}</text>
+        <view class="flex-1 m-0-5">
+          <text class="color-888 fs-12 fw-bold u-mt-5">image 组件</text>
+          <text class="fs-12 color-999">设置值: {{data.position}}</text>
+          <text class="fs-12 color-999">获取值: {{data.positionActualImage}}</text>
           <view class="test-box">
             <image class="common-image-static" src="/static/test-image/logo.png"></image>
-            <image ref="imageRef" class="common-dynamic test-image" style="top: 10px; left: 10px;" :style="{ position: data.position }" src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common-dynamic" style="top: 10px; left: 10px;" :style="{ position: data.position }" src="/static/test-image/logo.png"></image>
             <image class="common-image-static" src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
 
-      <view class="uni-common-mt uni-common-mb">
-        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
-        <enum-data :items="positionEnum" title="position 枚举值" @change="radioChangePosition" :compact="true"></enum-data>
+      <view class="mt-15 mb-15">
+        <text class="fs-13 color-tips-0958d9 bg-tips-e6f4ff border-l-4-solid-tips-91caff p-10-12 radius-4 m-10">第一个枚举值，'' (空字符串) - 空值情况</text>
+        <enum-data-checkbox :items="positionEnum" title="position 枚举值" @change="radioChangePosition" :compact="true"></enum-data-checkbox>
         <input-data :defaultValue="data.position" title="position 自定义值" type="text" @confirm="inputChangePosition"></input-data>
       </view>
 
       <!-- #ifndef MP-ALIPAY -->
-      <view class="uni-common-mb">
+      <view class="mb-15">
         <text>native-view组件: position: relative 和 position: absolute</text>
         <view class="position-test-box">
           <test-native-view class="scroll-view-common" style="position: relative; top: 20px; left: 20px; background-color: cyan;"></test-native-view>
@@ -208,7 +208,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ItemType } from '@/components/enum-data/enum-data-types'
+  import { ItemType } from '@/components/enum-data-checkbox/enum-data-checkbox-types'
 
   const positionEnum : ItemType[] = [
     { value: 0, name: '' },
@@ -268,11 +268,6 @@
 </script>
 
 <style>
-  .common-box {
-    flex-direction: row;
-    justify-content: space-around;
-  }
-
   .title-container {
     width: 180px;
     height: 45px;
@@ -375,17 +370,6 @@
     background-color: rgba(255, 0, 0, 0.3);
   }
 
-  .test-container {
-    flex-direction: row;
-    justify-content: space-between;
-    margin-top: 10px;
-  }
-
-  .test-item {
-    flex: 1;
-    margin: 0 5px;
-  }
-
   .test-box {
     width: 100%;
     height: 120px;
@@ -405,9 +389,5 @@
   .scroll-view-common {
     width: 80px;
     height: 60px;
-  }
-
-  .cyan-text {
-    color: #1a1a1a;
   }
 </style>

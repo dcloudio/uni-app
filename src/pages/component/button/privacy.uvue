@@ -1,11 +1,11 @@
 <template>
-  <view class="dialog-container">
-    <view class="dialog-content">
-      <view class="privacy-header">
-        <image src="/static/test-image/logo.png" style="margin-top: 20px;width: 60px;height: 60px;"></image>
+  <view class="w-full h-full d-flex justify-center items-center bg-black-a30 dialog-container">
+    <view class="w-80pct radius-12 dialog-content">
+      <view class="w-full justify-center items-center bg-list-fff">
+        <image src="/static/test-image/logo.png" class="mt-20 w-60 h-60"></image>
       </view>
-      <text class="privacy-title">个人信息保护指引</text>
-      <scroll-view class="privacy-content" show-scrollbar="false">
+      <text class="pt-20 fs-20 text-center color-text-333 bg-list-fff">个人信息保护指引</text>
+      <scroll-view class="flex-1 pt-10 bg-list-fff privacy-content content-center" show-scrollbar="false">
         <text>
           <!-- #ifdef APP-HARMONY -->
           <text class="privacy-text">欢迎使用DCloud开发者中心系统，我们将通过</text>
@@ -13,17 +13,17 @@
           <!-- #ifndef APP-HARMONY -->
           <text class="privacy-text">欢迎使用 Hello uni-app x 应用，我们将通过</text>
           <!-- #endif -->
-          <text class="privacy-href" @click="hrefClick(hrefLicense)">《用户服务协议》</text>
+          <text class="fw-bold privacy-href text-underline" @click="hrefClick(hrefLicense)">《用户服务协议》</text>
           <text class="privacy-text">及</text>
           <text
             class="privacy-text">相关个人信息处理规则帮助你了解我们如何收集、处理个人信息。根据《常见类型移动互联网应用程序必要个人信息范围规定》，应用在演示 uni-app x 能力时仅收集、处理相关必要个人信息及数据。我们通过</text>
-          <text class="privacy-href" @click="hrefClick(hrefPrivacy)">《隐私政策》</text>
+          <text class="fw-bold privacy-href text-underline" @click="hrefClick(hrefPrivacy)">《隐私政策》</text>
           <text class="privacy-text">帮助你全面了解我们的服务及收集、处理个人信息的详细情况。</text>
         </text>
         <text class="privacy-text">如你同意请点击“同意”按钮接受我们的服务。</text>
       </scroll-view>
-      <button class="button" @click="reject">不同意</button>
-      <button class="button" type="primary" open-type="agreePrivacyAuthorization" @click="agree">同意</button>
+      <button class="radius-0 fs-15 text-center button" @click="reject">不同意</button>
+      <button class="radius-0 fs-15 text-center button" type="primary" open-type="agreePrivacyAuthorization" @click="agree">同意</button>
     </view>
   </view>
 </template>
@@ -90,61 +90,21 @@
     --privacy-text-color: grey;
     --privacy-href-color: cadetblue;
     --privacy-button-text-color: lightgrey;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.3);
-    display: flex;
-    justify-content: center;
-    align-items: center;
   }
 
   .dialog-content {
     height: 60%;
-    width: 80%;
     /* background-color: #fff; */
-    border-radius: 12px;
-  }
-
-  .privacy-header {
-    width: 100%;
-    justify-content: center;
-    align-items: center;
-    background-color: var(--list-background-color, #fff);
-  }
-
-  .privacy-title {
-    padding-top: 20px;
-    font-size: 20px;
-    text-align: center;
-    color: var(--text-color, #333333);
-    background-color: var(--list-background-color, #fff);
   }
 
   .privacy-content {
-    flex: 1;
-    align-content: center;
-    padding-top: 10px;
     padding-left: 25px;
     padding-right: 25px;
-    background-color: var(--list-background-color, #fff);
   }
 
   .button {
-    border-radius: 0px;
     border: 0px none;
-    font-size: 15px;
     color: var(--privacy-button-text-color, lightgrey);
-    text-align: center;
-  }
-
-  .button-hover1 {
-    color: black;
-    background-color: #fff;
-  }
-
-  .button-hover2 {
-    color: black;
-    background-color: royalblue;
   }
 
   .privacy-text {
@@ -153,8 +113,6 @@
 
   .privacy-href {
     color: var(--privacy-href-color, cadetblue);
-    font-weight: bold;
-    text-decoration-line: underline;
   }
 
   @media (prefers-color-scheme: dark) {

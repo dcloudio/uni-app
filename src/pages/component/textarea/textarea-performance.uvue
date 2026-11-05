@@ -1,43 +1,37 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1">
+  <view class="bg-f5f5f5">
+    <!-- #ifndef MP -->
+    <fps />
     <!-- #endif -->
-    <view class="page-container">
-      <!-- #ifndef MP -->
-      <fps />
-      <!-- #endif -->
-      <!-- 控制按钮区域 -->
-      <view class="control-panel padding-2 flex-row flex-wrap">
-        <button @click="clearValue" size="mini" class="ml-2">清空内容</button>
-        <button
-          @click="toggleDisabled"
-          :type="sharedDisabled ? 'primary' : 'default'"
-          size="mini"
-          class="ml-2"
-        >
-          {{ sharedDisabled ? "启用" : "禁用" }}输入
-        </button>
-        <text class="current-value"
-          >值: {{ sharedValue == "" ? "(空)" : sharedValue }}</text
-        >
-      </view>
-
-      <!-- 100个textarea组件 -->
-      <view class="padding-2 flex-row flex-wrap">
-        <template v-for="index in 100" :key="index">
-          <textarea
-            :value="sharedValue"
-            :placeholder="index.toString()"
-            :disabled="sharedDisabled"
-            @input="onInput"
-            class="item padding-2"
-          />
-        </template>
-      </view>
+    <!-- 控制按钮区域 -->
+    <view class="bg-fff items-center u-p-2 flex-dir-row flex-wrap-wrap">
+      <button @click="clearValue" size="mini" class="u-ml-2">清空内容</button>
+      <button
+        @click="toggleDisabled"
+        :type="sharedDisabled ? 'primary' : 'default'"
+        size="mini"
+        class="u-ml-2"
+      >
+        {{ sharedDisabled ? "启用" : "禁用" }}输入
+      </button>
+      <text class="fs-11 color-666 ml-5"
+        >值: {{ sharedValue == "" ? "(空)" : sharedValue }}</text
+      >
     </view>
-    <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
+
+    <!-- 100个textarea组件 -->
+    <view class="u-p-2 flex-dir-row flex-wrap-wrap">
+      <template v-for="index in 100" :key="index">
+        <textarea
+          :value="sharedValue"
+          :placeholder="index.toString()"
+          :disabled="sharedDisabled"
+          @input="onInput"
+          class="border-1-solid-ddd fs-9 radius-2 bg-fff h-30 m-1 u-p-2 w-15pct"
+        />
+      </template>
+    </view>
+  </view>
 </template>
 
 <script setup lang="ts">
@@ -59,39 +53,3 @@
     console.log('disabled:', sharedDisabled.value)
   }
 </script>
-
-<style>
-.ml-2 {
-  margin-left: 2px;
-}
-.padding-2 {
-  padding: 2px;
-}
-.flex-row {
-  flex-direction: row;
-}
-.flex-wrap {
-  flex-wrap: wrap;
-}
-.page-container {
-  background-color: #f5f5f5;
-}
-.control-panel {
-  background-color: #ffffff;
-  align-items: center;
-}
-.current-value {
-  font-size: 11px;
-  color: #666;
-  margin-left: 5px;
-}
-.item {
-  width: 15%;
-  margin: 1px;
-  border: 1px solid #ddd;
-  font-size: 9px;
-  border-radius: 2px;
-  background-color: #fff;
-  height: 30px;
-}
-</style>

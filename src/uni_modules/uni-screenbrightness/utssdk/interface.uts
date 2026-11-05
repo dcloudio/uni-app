@@ -10,17 +10,14 @@ export interface Uni {
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "5.08"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "5.08"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "3.0",
 	 *      "uniVer": "4.81",
 	 *      "unixVer": "4.81",
 	 *      "unixVaporVer": "5.0"
@@ -32,7 +29,6 @@ export interface Uni {
 	 *   },
 	 *  "mp":{
 	 *    "weixin": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.41"
 	 *    },
@@ -42,34 +38,22 @@ export interface Uni {
 	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "toutiao": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "lark": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "qq": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "kuaishou": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "jd": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    }
 	 *  }
 	 * }
@@ -86,17 +70,14 @@ export interface Uni {
 	* @uniPlatform {
 	* 	"app": {
 	* 		"android": {
-	* 			"osVer": "5.0",
 	* 			"uniVer": "√",
 	* 			"unixVer": "5.08"
 	* 		},
 	* 		"ios": {
-	* 			"osVer": "12.0",
 	* 			"uniVer": "√",
 	* 			"unixVer": "5.08"
 	* 		},
 	*    "harmony": {
-	*      "osVer": "3.0",
 	*      "uniVer": "4.81",
 	*      "unixVer": "4.81",
 	*      "unixVaporVer": "5.0"
@@ -108,7 +89,6 @@ export interface Uni {
 	*   },
 	*  "mp":{
 	*    "weixin": {
-	*      "hostVer": "√",
 	*      "uniVer": "√",
 	*      "unixVer": "4.41"
 	*    },
@@ -118,34 +98,22 @@ export interface Uni {
 	*      "unixVer": "5.31"
 	*    },
 	*    "baidu": {
-	*      "hostVer": "√",
 	*      "uniVer": "√",
-	*      "unixVer": "x"
 	*    },
 	*    "toutiao": {
-	*      "hostVer": "√",
 	*      "uniVer": "√",
-	*      "unixVer": "x"
 	*    },
 	*    "lark": {
-	*      "hostVer": "√",
 	*      "uniVer": "√",
-	*      "unixVer": "x"
 	*    },
 	*    "qq": {
-	*      "hostVer": "√",
 	*      "uniVer": "√",
-	*      "unixVer": "x"
 	*    },
 	*    "kuaishou": {
-	*      "hostVer": "√",
 	*      "uniVer": "√",
-	*      "unixVer": "x"
 	*    },
 	*    "jd": {
-	*      "hostVer": "√",
 	*      "uniVer": "√",
-	*      "unixVer": "x"
 	*    }
 	*  }
 	* }
@@ -162,17 +130,14 @@ export interface Uni {
 	* @uniPlatform {
 	* 	"app": {
 	* 		"android": {
-	* 			"osVer": "5.0",
 	* 			"uniVer": "√",
 	* 			"unixVer": "5.08"
 	* 		},
 	* 		"ios": {
-	* 			"osVer": "12.0",
 	* 			"uniVer": "√",
 	* 			"unixVer": "5.08"
 	* 		},
 	*    "harmony": {
-	*      "osVer": "3.0",
 	*      "uniVer": "4.81",
 	*      "unixVer": "4.81",
 	*      "unixVaporVer": "5.0"
@@ -184,7 +149,6 @@ export interface Uni {
 	*   },
 	*  "mp":{
 	*    "weixin": {
-	*      "hostVer": "√",
 	*      "uniVer": "√",
 	*      "unixVer": "4.41"
 	*    },
@@ -194,34 +158,22 @@ export interface Uni {
 	*      "unixVer": "5.31"
 	*    },
 	*    "baidu": {
-	*      "hostVer": "√",
 	*      "uniVer": "√",
-	*      "unixVer": "x"
 	*    },
 	*    "toutiao": {
-	*      "hostVer": "√",
 	*      "uniVer": "√",
-	*      "unixVer": "x"
 	*    },
 	*    "lark": {
-	*      "hostVer": "√",
 	*      "uniVer": "√",
-	*      "unixVer": "x"
 	*    },
 	*    "qq": {
-	*      "hostVer": "√",
 	*      "uniVer": "√",
-	*      "unixVer": "x"
 	*    },
 	*    "kuaishou": {
-	*      "hostVer": "√",
 	*      "uniVer": "√",
-	*      "unixVer": "x"
 	*    },
 	*    "jd": {
-	*      "hostVer": "√",
 	*      "uniVer": "√",
-	*      "unixVer": "x"
 	*    }
 	*  }
 	* }
@@ -243,17 +195,14 @@ export type SetScreenBrightnessOptions = {
 	* @uniPlatform {
 	* 	"app": {
 	* 		"android": {
-	* 			"osVer": "5.0",
 	* 			"uniVer": "√",
 	* 			"unixVer": "5.08"
 	* 		},
 	* 		"ios": {
-	* 			"osVer": "12.0",
 	* 			"uniVer": "√",
 	* 			"unixVer": "5.08"
 	* 		},
 	*    "harmony": {
-	*      "osVer": "3.0",
 	*      "uniVer": "4.81",
 	*      "unixVer": "4.81",
 	*      "unixVaporVer": "5.0"
@@ -265,7 +214,6 @@ export type SetScreenBrightnessOptions = {
 	*   },
 	*  "mp":{
 	*    "weixin": {
-	*      "hostVer": "√",
 	*      "uniVer": "√",
 	*      "unixVer": "4.41"
 	*    },
@@ -275,34 +223,22 @@ export type SetScreenBrightnessOptions = {
 	*      "unixVer": "5.31"
 	*    },
 	*    "baidu": {
-	*      "hostVer": "√",
 	*      "uniVer": "√",
-	*      "unixVer": "x"
 	*    },
 	*    "toutiao": {
-	*      "hostVer": "√",
 	*      "uniVer": "√",
-	*      "unixVer": "x"
 	*    },
 	*    "lark": {
-	*      "hostVer": "√",
 	*      "uniVer": "√",
-	*      "unixVer": "x"
 	*    },
 	*    "qq": {
-	*      "hostVer": "√",
 	*      "uniVer": "√",
-	*      "unixVer": "x"
 	*    },
 	*    "kuaishou": {
-	*      "hostVer": "√",
 	*      "uniVer": "√",
-	*      "unixVer": "x"
 	*    },
 	*    "jd": {
-	*      "hostVer": "√",
 	*      "uniVer": "√",
-	*      "unixVer": "x"
 	*    }
 	*  }
 	* }
@@ -313,17 +249,14 @@ export type SetScreenBrightnessOptions = {
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "5.08"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "5.08"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "3.0",
 	 *      "uniVer": "4.81",
 	 *      "unixVer": "4.81",
 	 *      "unixVaporVer": "5.0"
@@ -335,7 +268,6 @@ export type SetScreenBrightnessOptions = {
 	 *   },
 	 *  "mp":{
 	 *    "weixin": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.41"
 	 *    },
@@ -345,34 +277,22 @@ export type SetScreenBrightnessOptions = {
 	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "toutiao": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "lark": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "qq": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "kuaishou": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "jd": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    }
 	 *  }
 	 * }
@@ -383,17 +303,14 @@ export type SetScreenBrightnessOptions = {
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "5.08"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "5.08"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "3.0",
 	 *      "uniVer": "4.81",
 	 *      "unixVer": "4.81",
 	 *      "unixVaporVer": "5.0"
@@ -405,7 +322,6 @@ export type SetScreenBrightnessOptions = {
 	 *   },
 	 *  "mp":{
 	 *    "weixin": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.41"
 	 *    },
@@ -415,34 +331,22 @@ export type SetScreenBrightnessOptions = {
 	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "toutiao": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "lark": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "qq": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "kuaishou": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "jd": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    }
 	 *  }
 	 * }
@@ -453,17 +357,14 @@ export type SetScreenBrightnessOptions = {
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "5.08"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "5.08"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "3.0",
 	 *      "uniVer": "4.81",
 	 *      "unixVer": "4.81",
 	 *      "unixVaporVer": "5.0"
@@ -475,7 +376,6 @@ export type SetScreenBrightnessOptions = {
 	 *   },
 	 *  "mp":{
 	 *    "weixin": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.41"
 	 *    },
@@ -485,34 +385,22 @@ export type SetScreenBrightnessOptions = {
 	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "toutiao": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "lark": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "qq": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "kuaishou": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "jd": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    }
 	 *  }
 	 * }
@@ -529,17 +417,14 @@ export type GetScreenBrightnessSuccess = {
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "5.08"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "5.08"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "3.0",
 	 *      "uniVer": "4.81",
 	 *      "unixVer": "4.81",
 	 *      "unixVaporVer": "5.0"
@@ -551,7 +436,6 @@ export type GetScreenBrightnessSuccess = {
 	 *   },
 	 *  "mp":{
 	 *    "weixin": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.41"
 	 *    },
@@ -561,34 +445,22 @@ export type GetScreenBrightnessSuccess = {
 	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "toutiao": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "lark": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "qq": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "kuaishou": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "jd": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    }
 	 *  }
 	 * }
@@ -607,17 +479,14 @@ export type GetScreenBrightnessOptions = {
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "5.08"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "5.08"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "3.0",
 	 *      "uniVer": "4.81",
 	 *      "unixVer": "4.81",
 	 *      "unixVaporVer": "5.0"
@@ -629,7 +498,6 @@ export type GetScreenBrightnessOptions = {
 	 *   },
 	 *  "mp":{
 	 *    "weixin": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.41"
 	 *    },
@@ -639,34 +507,22 @@ export type GetScreenBrightnessOptions = {
 	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "toutiao": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "lark": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "qq": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "kuaishou": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "jd": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    }
 	 *  }
 	 * }
@@ -677,17 +533,14 @@ export type GetScreenBrightnessOptions = {
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "5.08"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "5.08"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "3.0",
 	 *      "uniVer": "4.81",
 	 *      "unixVer": "4.81",
 	 *      "unixVaporVer": "5.0"
@@ -699,7 +552,6 @@ export type GetScreenBrightnessOptions = {
 	 *   },
 	 *  "mp":{
 	 *    "weixin": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.41"
 	 *    },
@@ -709,34 +561,22 @@ export type GetScreenBrightnessOptions = {
 	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "toutiao": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "lark": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "qq": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "kuaishou": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "jd": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    }
 	 *  }
 	 * }
@@ -747,17 +587,14 @@ export type GetScreenBrightnessOptions = {
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "5.08"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "5.08"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "3.0",
 	 *      "uniVer": "4.81",
 	 *      "unixVer": "4.81",
 	 *      "unixVaporVer": "5.0"
@@ -769,7 +606,6 @@ export type GetScreenBrightnessOptions = {
 	 *   },
 	 *  "mp":{
 	 *    "weixin": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.41"
 	 *    },
@@ -779,34 +615,22 @@ export type GetScreenBrightnessOptions = {
 	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "toutiao": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "lark": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "qq": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "kuaishou": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "jd": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    }
 	 *  }
 	 * }
@@ -823,17 +647,14 @@ export type SetKeepScreenOnSuccess = {
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "5.08"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "5.08"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "3.0",
 	 *      "uniVer": "4.81",
 	 *      "unixVer": "4.81",
 	 *      "unixVaporVer": "5.0"
@@ -845,7 +666,6 @@ export type SetKeepScreenOnSuccess = {
 	 *   },
 	 *  "mp":{
 	 *    "weixin": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.41"
 	 *    },
@@ -855,34 +675,22 @@ export type SetKeepScreenOnSuccess = {
 	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "toutiao": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "lark": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "qq": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "kuaishou": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "jd": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    }
 	 *  }
 	 * }
@@ -902,17 +710,14 @@ export type SetKeepScreenOnOptions = {
 	* @uniPlatform {
 	* 	"app": {
 	* 		"android": {
-	* 			"osVer": "5.0",
 	* 			"uniVer": "√",
 	* 			"unixVer": "5.08"
 	* 		},
 	* 		"ios": {
-	* 			"osVer": "12.0",
 	* 			"uniVer": "√",
 	* 			"unixVer": "5.08"
 	* 		},
 	*    "harmony": {
-	*      "osVer": "3.0",
 	*      "uniVer": "4.81",
 	*      "unixVer": "4.81",
 	*      "unixVaporVer": "5.0"
@@ -924,7 +729,6 @@ export type SetKeepScreenOnOptions = {
 	*   },
 	*  "mp":{
 	*    "weixin": {
-	*      "hostVer": "√",
 	*      "uniVer": "√",
 	*      "unixVer": "4.41"
 	*    },
@@ -934,34 +738,22 @@ export type SetKeepScreenOnOptions = {
 	*      "unixVer": "5.31"
 	*    },
 	*    "baidu": {
-	*      "hostVer": "√",
 	*      "uniVer": "√",
-	*      "unixVer": "x"
 	*    },
 	*    "toutiao": {
-	*      "hostVer": "√",
 	*      "uniVer": "√",
-	*      "unixVer": "x"
 	*    },
 	*    "lark": {
-	*      "hostVer": "√",
 	*      "uniVer": "√",
-	*      "unixVer": "x"
 	*    },
 	*    "qq": {
-	*      "hostVer": "√",
 	*      "uniVer": "√",
-	*      "unixVer": "x"
 	*    },
 	*    "kuaishou": {
-	*      "hostVer": "√",
 	*      "uniVer": "√",
-	*      "unixVer": "x"
 	*    },
 	*    "jd": {
-	*      "hostVer": "√",
 	*      "uniVer": "√",
-	*      "unixVer": "x"
 	*    }
 	*  }
 	* }
@@ -972,17 +764,14 @@ export type SetKeepScreenOnOptions = {
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "5.08"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "5.08"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "3.0",
 	 *      "uniVer": "4.81",
 	 *      "unixVer": "4.81",
 	 *      "unixVaporVer": "5.0"
@@ -994,7 +783,6 @@ export type SetKeepScreenOnOptions = {
 	 *   },
 	 *  "mp":{
 	 *    "weixin": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.41"
 	 *    },
@@ -1004,34 +792,22 @@ export type SetKeepScreenOnOptions = {
 	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "toutiao": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "lark": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "qq": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "kuaishou": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "jd": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    }
 	 *  }
 	 * }
@@ -1042,17 +818,14 @@ export type SetKeepScreenOnOptions = {
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "5.08"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "5.08"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "3.0",
 	 *      "uniVer": "4.81",
 	 *      "unixVer": "4.81",
 	 *      "unixVaporVer": "5.0"
@@ -1064,7 +837,6 @@ export type SetKeepScreenOnOptions = {
 	 *   },
 	 *  "mp":{
 	 *    "weixin": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.41"
 	 *    },
@@ -1074,34 +846,22 @@ export type SetKeepScreenOnOptions = {
 	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "toutiao": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "lark": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "qq": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "kuaishou": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "jd": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    }
 	 *  }
 	 * }
@@ -1112,17 +872,14 @@ export type SetKeepScreenOnOptions = {
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "5.08"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "5.08"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "3.0",
 	 *      "uniVer": "4.81",
 	 *      "unixVer": "4.81",
 	 *      "unixVaporVer": "5.0"
@@ -1134,7 +891,6 @@ export type SetKeepScreenOnOptions = {
 	 *   },
 	 *  "mp":{
 	 *    "weixin": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.41"
 	 *    },
@@ -1144,34 +900,22 @@ export type SetKeepScreenOnOptions = {
 	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "toutiao": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "lark": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "qq": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "kuaishou": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    },
 	 *    "jd": {
-	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
 	 *    }
 	 *  }
 	 * }

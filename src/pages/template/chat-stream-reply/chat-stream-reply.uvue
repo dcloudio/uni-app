@@ -1,42 +1,40 @@
 <template>
-  <view class="page">
-    <scroll-view @click="hideKeyboard" @touchmove="onUserScroll" @touchend="onUserScrollEnd" :show-scrollbar="false" :scroll-with-animation="true" style="flex: 1;padding-bottom: 10px;" :bounces="false">
-      <list-view ref="messageView" @scrolltoupper="clearData" @scrolltolower="loadData" :scroll-with-animation="true"
-        :show-scrollbar="false" style="flex: 1;transform: scale(1, -1)" @scroll="onListScroll">
-        <list-item v-for="(item, index) in messageList" @longpress="listItemLongPress(index)" :key="'listItem' + index"
-          :id="'listItem' + item.id" style="transform: scale(1, -1);padding: 10px 12px;" type="0">
-          <view class="item" :class="{self: item.self}">
+    <scroll-view @click="hideKeyboard" @touchmove="onUserScroll" @touchend="onUserScrollEnd" :show-scrollbar="false" :scroll-with-animation="true" class="flex-1 pb-10" :bounces="false">
+      <list-view class="flex-1 scale-y-neg-1" ref="messageView" @scrolltoupper="clearData" @scrolltolower="loadData" :scroll-with-animation="true"
+        :show-scrollbar="false" @scroll="onListScroll">
+        <list-item class="p-10-12 scale-y-neg-1" v-for="(item, index) in messageList" @longpress="listItemLongPress(index)" :key="'listItem' + index"
+          :id="'listItem' + item.id" type="0">
+          <view class="flex-dir-row" :class="{self: item.self}">
             <image :fade-show="true" :src="item.avatar"
               :style="{width: avatarWidth + 'px',height: avatarWidth + 'px',borderRadius: avatarWidth + 'px'}"></image>
-            <view :id="'listItemContent' + item.id" class="flex-row content" :class="{'self-content': item.self}">
-              <view v-if="item.type == 'rich-text'" class="content-rich-wrap">
+            <view :id="'listItemContent' + item.id" class="d-flex flex-dir-row min-w-0 flex-shrink-1 overflow-hidden radius-7 items-center content" :class="item.self ? 'bg-3c99ff' : 'bg-list-fff'">
+              <view v-if="item.type == 'rich-text'" class="max-w-540rpx min-w-0 overflow-hidden">
                 <rich-text-msg :nodes="item.content" />
               </view>
-              <text v-else class="content-text" :class="{'self-content-text': item.self}">
+              <text v-else class="d-flex fs-13 lh-20" :class="item.self ? 'color-fff opacity-1' : 'color-text-666 opacity-0_78'">
                 {{ item.content }}
               </text>
             </view>
-            <view style="flex: 1;">
+            <view class="flex-1">
             </view>
           </view>
         </list-item>
-        <list-item class="loading">
+        <list-item class="h-30 justify-center items-center scale-y-neg-1">
           <loading v-if="load" style="border-color:#999;"></loading>
         </list-item>
       </list-view>
     </scroll-view>
-    <view class="input-box">
-      <textarea class="input-el" v-model="message" placeholder="发消息体验流式回复" :adjust-position="false"
+    <view class="flex-dir-row flex-wrap-wrap border-t-width-1 border-t-style-solid w-full bg-list-fff input-box u-p-10">
+      <textarea class="flex-1 h-30 p-5-10 color-333 input-el bg-eee" v-model="message" placeholder="发消息体验流式回复" :adjust-position="false"
         :hold-keyboard="true" :auto-height="true" @keyboardheightchange="onKeyboardheightchange"
       />
-      <text class="send-msg" :class="{active: message.length > 0}" @click="send">发送</text>
-      <view class="placeholder-box">
+      <text class="u-ml-10 fs-12 radius-4 mt-2 p-0-10 h-26 send-msg color-999" :class="{'active bg-3c99ff': message.length > 0}" @click="send">发送</text>
+      <view class="w-full">
         <view v-if="keyboardIsShow" :style="{height: maxKeyboardHeight}"></view>
         <!-- Android 端的键盘高度不包括底部安全区，其他包括 -->
-        <view v-if="!keyboardIsShow || isAndroid" class="safe-area-inset-bottom"></view>
+        <view v-if="!keyboardIsShow || isAndroid" class="h-env-safe-area-inset-bottom"></view>
       </view>
     </view>
-  </view>
 </template>
 
 <script setup lang="ts">
@@ -471,101 +469,26 @@
 </script>
 
 <style>
-  .page {
-    flex: 1;
-  }
-
-  .flex-row {
-    display: flex;
-    flex-direction: row;
-  }
-
-  .item {
-    flex-direction: row;
-  }
-
   .content {
     margin: 0 8px;
     max-width: 562rpx;
-    min-width: 0;
-    flex-shrink: 1;
-    overflow: hidden;
-    border-radius: 7px;
     padding: 9px 11px 9px 11px;
-    align-items: center;
-    background-color: var(--list-background-color, #ffffff);
-  }
-
-  .content-rich-wrap {
-    max-width: 540rpx;
-    min-width: 0;
-    overflow: hidden;
-  }
-
-  .content-text {
-    display: flex;
-    font-size: 13px;
-    line-height: 20px;
-    color: var(--text-color, #666666);
-    opacity: 0.78;
-  }
-
-  .loading {
-    height: 30px;
-    justify-content: center;
-    align-items: center;
-    transform: scale(1, -1)
   }
 
   .input-box {
-    flex-direction: row;
-    flex-wrap: wrap;
-    padding: 10px;
     padding-bottom: 5px;
-    border-top-width: 1px;
-    border-top-style: solid;
     border-top-color: var(--border-color, #e5e5e5);
-    width: 100%;
-    background-color: var(--list-background-color, #ffffff);
-  }
-  .placeholder-box {
-    width: 100%;
-  }
-  .safe-area-inset-bottom {
-    height: env(safe-area-inset-bottom);
-  }
-  .input-el {
-    flex: 1;
-    height: 30px;
-    padding: 5px 10px;
-    background-color: #eeeeee;
-    color: #333333;
   }
   .send-msg {
-    margin-left: 10px;
-    font-size: 12px;
-    border-radius: 4px;
-    color: #999;
-    margin-top: 2px;
-    padding: 0 10px;
-    height: 26px;
     line-height: 26px;
     border: 1px solid #eee;
   }
   .active {
     color: #fff;
-    background-color: #3c99ff;
     border-color: #3c99ff;
   }
   .self {
     flex-direction: row-reverse;
-  }
-  .self-content {
-    background-color: #3c99ff;
-  }
-  .self-content-text {
-    color: #fff;
-    opacity: 1;
   }
 
   @media (prefers-color-scheme: dark) {
@@ -581,7 +504,6 @@
 
     .active {
       color: #ffffff;
-      background-color: #3c99ff;
       border-color: #3c99ff;
     }
   }

@@ -1,11 +1,11 @@
 <template>
-  <view class="page">
+  <view class="flex-1 min-h-0">
     <button id="toggle-list-button" class="toggle-button" @click="toggleList">toggleList</button>
     <list-view
       v-if="showList"
       id="initial-scroll-bottom-list"
       ref="listViewRef"
-      class="list"
+      class="flex-1 min-h-0"
       :initial-scroll-bottom="true"
       :scroll-anchoring="true"
     >
@@ -13,12 +13,12 @@
         v-for="item in 200"
         :id="'item-' + item.toString()"
         :key="item"
-        class="list-item"
+        class="pt-10 pr-10 pb-10 pl-10 items-center border-width-1 list-item border-color-000"
       >
-        <text class="item-text">{{ item }}</text>
+        <text class="lh-30 text-center color-black">{{ item }}</text>
         <image
           v-if="item % 5 == 0"
-          class="item-image"
+          class="w-80"
           src="/static/test-image/logo.png"
           mode="widthFix"
         ></image>
@@ -65,38 +65,11 @@
 </script>
 
 <style>
-  .page {
-    flex: 1;
-    min-height: 0;
-  }
-
   .toggle-button {
     flex-shrink: 0;
   }
 
-  .list {
-    flex: 1;
-    min-height: 0;
-  }
-
   .list-item {
-    padding-top: 10px;
-    padding-right: 10px;
-    padding-bottom: 10px;
-    padding-left: 10px;
-    align-items: center;
-    border-width: 1px;
     border-style: dashed;
-    border-color: #000000;
-  }
-
-  .item-text {
-    line-height: 30px;
-    text-align: center;
-    color: #000000;
-  }
-
-  .item-image {
-    width: 80px;
   }
 </style>

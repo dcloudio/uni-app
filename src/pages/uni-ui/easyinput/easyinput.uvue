@@ -1,0 +1,333 @@
+<template>
+	<scroll-view class="flex-1 bg-page-f5f5f5 page" :class="{ 'page-dark': isDarkMode }">
+		<view class="u-p-16 bg-content-background-fff intro">
+			<text class="fw-bold color-text-222 fs-18 page-title">Easyinput 增强输入框</text>
+			<text class="fs-13 lh-21 color-secondary-text-657180 page-desc">支持单行、多行、密码、清空、错误态、空白裁剪和自定义内部样式。</text>
+		</view>
+
+		<view class="u-p-16 bg-content-background-fff mt-10 section">
+			<text class="fw-bold color-text-222 mb-12 fs-16 section-title">基础输入</text>
+			<uni-easyinput
+				v-model="data.basicValue"
+				clearable
+				placeholder="请输入内容"
+				input-class="test-basic-input"
+				icon-class="test-clear-icon"
+				@clear="onClear"
+				@change="onChange"
+				@confirm="onConfirm"
+				@blur="handleBlur"
+			/>
+			<text
+				class="result-text test-basic-result"
+				:data-change-count="data.changeCount"
+				:data-confirm-count="data.confirmCount"
+				:data-blur-count="data.blurCount"
+			>当前值：{{ data.basicValue }}</text>
+		</view>
+
+		<view class="u-p-16 bg-content-background-fff mt-10 section">
+			<text class="fw-bold color-text-222 mb-12 fs-16 section-title">外部值同步</text>
+			<view class="flex-dir-row flex-wrap-wrap button-row">
+				<button class="small-button" size="mini" @click="setExternalValue(0)">设为 0</button>
+				<button class="small-button" size="mini" @click="setExternalValue(null)">设为 null</button>
+				<button class="small-button" size="mini" @click="setExternalValue('外部更新')">设为文本</button>
+			</view>
+			<uni-easyinput
+				v-model="data.externalValue"
+				value="后备值"
+				placeholder="观察外部值同步"
+				input-class="test-external-input"
+			/>
+			<text class="result-text">当前值：{{ data.externalValue == null ? 'null' : data.externalValue }}</text>
+		</view>
+
+		<view class="u-p-16 bg-content-background-fff mt-10 section">
+			<text class="fw-bold color-text-222 mb-12 fs-16 section-title">去除全部空白</text>
+			<uni-easyinput
+				v-model="data.trimValue"
+				trim="all"
+				placeholder="输入空格会被移除"
+				input-class="test-trim-input"
+			/>
+			<text class="result-text">当前值：{{ data.trimValue }}</text>
+		</view>
+
+		<view class="u-p-16 bg-content-background-fff mt-10 section">
+			<text class="fw-bold color-text-222 mb-12 fs-16 section-title">密码和清空</text>
+			<uni-easyinput
+				v-model="data.passwordValue"
+				type="password"
+				password-icon
+				clearable
+				placeholder="请输入密码"
+				input-class="test-password-input"
+				icon-class="test-password-icon"
+				@eyes="onEyes"
+			/>
+			<text class="result-text">密码显隐：{{ data.passwordVisible ? '显示' : '隐藏' }}</text>
+		</view>
+
+		<view class="u-p-16 bg-content-background-fff mt-10 section">
+			<text class="fw-bold color-text-222 mb-12 fs-16 section-title">多行输入</text>
+			<uni-easyinput
+				v-model="data.textareaValue"
+				type="textarea"
+				auto-height
+				placeholder="请输入多行内容"
+				input-class="demo-textarea test-textarea"
+			/>
+			<text class="result-text">当前值：{{ data.textareaValue }}</text>
+		</view>
+
+		<view class="u-p-16 bg-content-background-fff mt-10 section">
+			<text class="fw-bold color-text-222 mb-12 fs-16 section-title">状态</text>
+			<uni-easyinput
+				class="state-input"
+				value="disabled-secret"
+				type="password"
+				password-icon
+				clearable
+				disabled
+				input-class="test-disabled-input"
+				icon-class="test-disabled-icon"
+			/>
+			<uni-easyinput
+				class="state-input state-borderless"
+				v-model="data.borderlessValue"
+				placeholder="无边框（class 覆盖）"
+			/>
+			<uni-easyinput
+				class="state-input"
+				v-model="data.errorValue"
+				error-message="输入内容有误"
+				error-class="test-error"
+				placeholder="错误状态"
+			/>
+		</view>
+
+		<view class="u-p-16 bg-content-background-fff mt-10 section">
+			<text class="fw-bold color-text-222 mb-12 fs-16 section-title">左右插槽</text>
+			<uni-easyinput v-model="data.slotValue" placeholder="请输入域名">
+				<template #left>
+					<text class="slot-prefix">https://</text>
+				</template>
+				<template #right>
+					<text class="slot-suffix">.com</text>
+				</template>
+			</uni-easyinput>
+		</view>
+
+		<view class="u-p-16 bg-content-background-fff mt-10 pb-32 section section-last">
+			<text class="fw-bold color-text-222 mb-12 fs-16 section-title">自定义样式与窄布局</text>
+			<uni-easyinput
+				class="custom-root"
+				v-model="data.customValue"
+				clearable
+				placeholder="宽度受限时保持输入区域可用"
+				input-class="custom-field"
+				placeholder-class="custom-placeholder"
+				icon-class="custom-icon"
+			/>
+
+			<text class="fw-bold color-text-222 mb-12 fs-16 section-title custom-title-gap">自定义图标颜色（自定义样式）</text>
+			<uni-easyinput
+				v-model="data.iconColorValue"
+				clearable
+				placeholder="示例：紫色清空图标"
+				icon-class="custom-icon-purple"
+			/>
+		</view>
+	</scroll-view>
+</template>
+
+<script setup lang="ts">
+import { state } from '@/store/index.ts'
+
+const isDarkMode = computed((): boolean => state.isDarkMode)
+
+/** 暗黑模式下同步导航栏颜色，与图标示例页保持一致 */
+function syncNavigationBar(): void {
+	// #ifdef APP
+	const dark = isDarkMode.value
+	uni.setNavigationBarColor({
+		frontColor: dark ? '#ffffff' : '#000000',
+		backgroundColor: dark ? '#1a1a1a' : '#efeff4'
+	})
+	// #endif
+}
+
+watch(isDarkMode, syncNavigationBar, { immediate: true })
+onShow(syncNavigationBar)
+
+type Data = {
+	basicValue : string,
+	externalValue : string | number | null,
+	trimValue : string,
+	passwordValue : string,
+	passwordVisible : boolean,
+	textareaValue : string,
+	borderlessValue : string,
+	errorValue : string,
+	slotValue : string,
+	customValue : string,
+	iconColorValue : string,
+	clearCount : number,
+	eyesCount : number,
+	changeCount : number,
+	confirmCount : number,
+	blurCount : number,
+	lastChangeValue : string,
+	lastConfirmValue : string
+}
+
+const data = reactive<Data>({
+	basicValue: '初始内容',
+	externalValue: '初始值',
+	trimValue: '',
+	passwordValue: '123456',
+	passwordVisible: false,
+	textareaValue: '',
+	borderlessValue: '',
+	errorValue: '',
+	slotValue: '',
+	customValue: '窄布局内容',
+	iconColorValue: '',
+	clearCount: 0,
+	eyesCount: 0,
+	changeCount: 0,
+	confirmCount: 0,
+	blurCount: 0,
+	lastChangeValue: '',
+	lastConfirmValue: ''
+})
+
+function setExternalValue(value : string | number | null) {
+	data.externalValue = value
+}
+
+function onClear() {
+	data.clearCount += 1
+}
+
+function onEyes(visible : boolean) {
+	data.passwordVisible = visible
+	data.eyesCount += 1
+}
+
+function onChange(value : string) {
+	data.lastChangeValue = value
+	data.changeCount += 1
+}
+
+function onConfirm(value : string) {
+	data.lastConfirmValue = value
+	data.confirmCount += 1
+}
+
+function handleBlur(_event : UniInputBlurEvent) {
+	data.blurCount += 1
+}
+
+defineExpose({
+	data,
+	setExternalValue
+})
+</script>
+
+<style>
+.intro {
+	padding: 18px 16px;
+}
+
+.page-title {
+	font-size: 20px;
+}
+
+.page-desc {
+	margin-top: 8px;
+	font-size: 14px;
+}
+
+.section-title {
+	color: var(--text-color, #333333);
+}
+
+.result-text {
+	margin-top: 8px;
+	font-size: 13px;
+	color: var(--secondary-text-color, #657180);
+}
+
+.button-row {
+	margin-bottom: 10px;
+}
+
+.small-button {
+	margin: 0 8px 6px 0;
+}
+
+.state-input {
+	margin-bottom: 10px;
+}
+
+.state-borderless {
+	border-width: 0;
+}
+
+.slot-prefix,
+.slot-suffix {
+	padding: 0 8px;
+	font-size: 13px;
+	color: var(--secondary-text-color, #657180);
+}
+
+.slot-prefix {
+	border-right-width: 1px;
+	border-right-style: solid;
+	border-right-color: var(--input-border-color, #dcdfe6);
+}
+
+.slot-suffix {
+	border-left-width: 1px;
+	border-left-style: solid;
+	border-left-color: var(--input-border-color, #dcdfe6);
+}
+
+.demo-textarea {
+	min-height: 96px;
+}
+
+.test-error {
+	border-color: #f56c6c;
+}
+
+.custom-root {
+	width: 260px;
+	border-color: #0f766e;
+	border-radius: 0;
+	background-color: #f0fdfa;
+}
+
+.custom-field {
+	color: #115e59;
+	font-size: 15px;
+}
+
+.custom-placeholder {
+	color: #5f8f89;
+}
+
+.custom-icon {
+	color: #0f766e;
+}
+
+/* 自定义图标颜色示例：通过 icon-class 覆盖默认灰色图标 */
+.custom-title-gap {
+	margin-top: 16px;
+}
+
+.custom-icon-purple {
+	color: #7c3aed;
+}
+</style>

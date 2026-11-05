@@ -1,48 +1,46 @@
 <template>
-  <view>
     <!-- #ifdef APP-ANDROID -->
-    <button class="normal-button" type="default" @click="handleCreateChannel(true)">
+    <button class="w-full" type="default" @click="handleCreateChannel(true)">
       创建通知渠道 | setPushChannel
     </button>
-    <button class="normal-button" type="default" @click="handleGetAllChannels">
+    <button class="w-full" type="default" @click="handleGetAllChannels">
       获取所有通知渠道信息 | getAllChannels
     </button>
-    <textarea style="width: 100%;" :disabled="true" :value="channelInfo"></textarea>
+    <textarea class="w-full" :disabled="true" :value="channelInfo"></textarea>
     <!-- #endif -->
     <!-- #ifdef APP -->
-    <button class="normal-button" type="default" @click="handleCreateLocalNotification">
+    <button class="w-full" type="default" @click="handleCreateLocalNotification">
       创建本地通知消息 | createPushMessage
     </button>
-    <text class="instructions">
+    <text class="mt-10 u-ml-10 mr-10 bg-eee">
       不同手机厂商的角标显示规则不同，有部分设备的rom版本不支持显示角标，另有部分rom需要在应用的通知管理里开启`桌面角标`配置，才可以设置角标成功。\n
       部分rom需要在设置中同时开启`通知开关`和`桌面角标`配置，才允许设置角标，例如鸿蒙4.2。 \n
       另外针对高版本小米设备，会借助创建通知栏消息来设置角标数，所以设置时需要注意是否有权限创建通知栏消息。
     </text>
-    <button class="normal-button" type="default" @click="handleSetBadge">
+    <button class="w-full" type="default" @click="handleSetBadge">
       设置角标为5 | setAppBadgeNumber(5)
     </button>
-    <button class="normal-button" type="default" @click="handleCleanBadge">
+    <button class="w-full" type="default" @click="handleCleanBadge">
       清空角标 | setAppBadgeNumber(0)
     </button>
     <!-- #endif -->
-    <button class="normal-button" type="default" @click="handleSendPushMessage">
+    <button class="w-full" type="default" @click="handleSendPushMessage">
       发送通知消息 | sendPushMessage
     </button>
-    <button class="normal-button uni-common-mb" type="default" @click="handleGetClientId">
+    <button class="w-full mb-15" type="default" @click="handleGetClientId">
       获取cid | getPushClientId
     </button>
-    <button class="normal-button" type="default" @click="handleOnPushMessage">
+    <button class="w-full" type="default" @click="handleOnPushMessage">
       注册回调（默认不申请通知权限） | onPushMessage
     </button>
     <!-- #ifdef APP-ANDROID -->
-    <button class="normal-button" type="default" @click="handleOnPushMessageWithPermission">
+    <button class="w-full" type="default" @click="handleOnPushMessageWithPermission">
       注册回调（申请通知权限） | onPushMessage
     </button>
     <!-- #endif -->
-    <button class="normal-button" type="default" @click="handleOffPushMessage">
+    <button class="w-full" type="default" @click="handleOffPushMessage">
       注销回调 | offPushMessage
     </button>
-  </view>
 </template>
 
 <script setup>
@@ -177,55 +175,57 @@
     // #endif
   }
   const handleCreateLocalNotification = () => {
-    if (uni.getAppAuthorizeSetting().notificationAuthorized == "authorized") {
-      handleCreateChannel(false)
-      const date = new Date();
-      const hour = date.getHours()
-      const minute = date.getMinutes()
-      const second = date.getSeconds()
-      const formateTime = (target : number) : string => {
-        return target < 10 ? `0${target}` : `${target}`
-      }
-      uni.createPushMessage({
-        title: "主标题(title)",
-        content: `内容(content)，创建时间: ${formateTime(hour)}:${formateTime(minute)}:${formateTime(second)}`,
-        cover: false,
-        channelId: "msg-pass",
-        when: Date.now() + 10000,
-        icon: "/static/test-image/logo.png",
-        sound: "system",
-        delay: 1,
-        payload: {
-          pkey: "pvalue1"
-        },
-        // #ifdef APP-HARMONY
-        category: "SOCIAL_COMMUNICATION",
-        // #endif
-        // #ifndef APP-HARMONY
-        category: "IM",
-        // #endif
-        success(res) {
-          console.log("res: " + res);
-          uni.hideToast()
-          uni.showToast({
-            title: "创建本地通知消息成功"
-          })
-        },
-        fail(e) {
-          console.log("fail :" + e);
-          uni.hideToast()
-          uni.showToast({
-            title: "创建本地通知消息失败",
-            icon: "error"
-          })
-        }
-      })
-    } else {
+    // #ifdef APP-ANDROID
+    if (uni.getAppAuthorizeSetting().notificationAuthorized != "authorized") {
       uni.showToast({
         title: "请在设置中开启通知权限",
         icon: "error"
       })
+      return
     }
+    // #endif
+    handleCreateChannel(false)
+    const date = new Date();
+    const hour = date.getHours()
+    const minute = date.getMinutes()
+    const second = date.getSeconds()
+    const formateTime = (target : number) : string => {
+      return target < 10 ? `0${target}` : `${target}`
+    }
+    uni.createPushMessage({
+      title: "主标题(title)",
+      content: `内容(content)，创建时间: ${formateTime(hour)}:${formateTime(minute)}:${formateTime(second)}`,
+      cover: false,
+      channelId: "msg-pass",
+      when: Date.now() + 10000,
+      icon: "/static/test-image/logo.png",
+      sound: "system",
+      delay: 1,
+      payload: {
+        pkey: "pvalue1"
+      },
+      // #ifdef APP-HARMONY
+      category: "SOCIAL_COMMUNICATION",
+      // #endif
+      // #ifndef APP-HARMONY
+      category: "IM",
+      // #endif
+      success(res) {
+        console.log("res: " + res);
+        uni.hideToast()
+        uni.showToast({
+          title: "创建本地通知消息成功"
+        })
+      },
+      fail(e) {
+        console.log("fail :" + e);
+        uni.hideToast()
+        uni.showToast({
+          title: "创建本地通知消息失败",
+          icon: "error"
+        })
+      }
+    })
   }
 
   async function getPushClientId(): Promise<string>{
@@ -375,16 +375,3 @@
     uni.hideToast()
   })
 </script>
-
-<style>
-  .normal-button {
-    width: 100%;
-  }
-
-  .instructions {
-    margin-top: 10px;
-    margin-left: 10px;
-    margin-right: 10px;
-    background-color: #eee;
-  }
-</style>

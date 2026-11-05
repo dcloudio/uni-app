@@ -1,0 +1,49 @@
+{
+	"bsonType": "object",
+	"permission": {
+		"create": false,
+		"delete": false,
+		"read": true,
+		"update": false
+	},
+	"required": [
+		"data"
+	],
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"data": {
+			"bsonType": "string",
+			"description": "内容数据",
+			"label": "内容数据",
+			"maxLength": 32,
+			"errorMessage": {
+				"maxLength": "{label}不能大于{maxLength}个字符"
+			}
+		},
+		"view_count": {
+			"bsonType": "int",
+			"title": "阅读数量",
+			"description": "阅读数量",
+			"permission": {
+				"write": false
+			}
+		},
+		"create_time": {
+			"description": "创建时间",
+			"bsonType": "timestamp",
+			"forceDefaultValue": {
+				"$env": "now"
+			}
+		},
+		"update_time": {
+			"description": "更新时间",
+			"bsonType": "timestamp",
+			"forceDefaultValue": {
+				"$env": "now"
+			}
+		}
+	},
+	"version": "0.0.1"
+}

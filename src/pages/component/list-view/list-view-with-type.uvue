@@ -1,13 +1,13 @@
 <template>
-  <list-view @scrolltolower="onScrollToLower" style="flex: 1;">
+  <list-view @scrolltolower="onScrollToLower" class="flex-1">
     <list-item
       v-for="item in list"
       :key="item.id"
       :type="item.type"
     >
-      <view style="padding: 10px; border-bottom: 1px solid #eee;">
-        <text style="font-weight: bold;">name: {{ item.name }} type: {{ item.type }}</text>
-        <view v-if="item.type == 0" style="flex-direction: row;">
+      <view class="u-p-10 border-b-width-1 border-b-style-solid border-b-color-eee">
+        <text class="fw-bold">name: {{ item.name }} type: {{ item.type }}</text>
+        <view v-if="item.type == 0" class="flex-dir-row">
           <text v-for="star in item.stars" :key="star">★</text>
         </view>
         <text v-else-if="item.type == 1">Stars: {{ item.stars }}</text>
@@ -41,7 +41,3 @@
     generateList()
   }
 </script>
-
-<style>
-
-</style>

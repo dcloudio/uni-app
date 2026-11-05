@@ -2,7 +2,7 @@
     <view>
       <page-head title="global-properties"></page-head>
       <page-intro content="本页演示组件通用属性：id、class、data、style 的绑定与校验，以及 ref、hover-class、hover-start-time、hover-stay-time 等点击态效果。"></page-intro>
-      <view class="uni-padding-wrap">
+      <view class="p-0-15">
         <view :id="generalId" :class="generalClass"
           :data-test="generalData"
           :style="generalStyle" ref="generalTargetRef">
@@ -11,20 +11,20 @@
           <text>data-test: {{ generalData }}</text>
           <text>style: {{ generalStyle }}</text>
         </view>
-        <view class="btn btn-style uni-common-mt" @click="validateGeneralAttributes">
-          <text class="btn-inner">{{ validateGeneralAttrText }}</text>
+        <view class="u-h-50 d-flex items-center justify-center radius-5 btn-style mt-15 bg-409eff" @click="validateGeneralAttributes">
+          <text class="color-fff btn-inner">{{ validateGeneralAttrText }}</text>
         </view>
-        <view class="btn btn-ref uni-common-mt" @click="changeHeight">
-          <text class="btn-inner">{{ changeHeightByRefText }}</text>
+        <view class="u-h-50 d-flex items-center justify-center radius-5 btn-ref mt-15 bg-409eff" @click="changeHeight">
+          <text class="color-fff btn-inner">{{ changeHeightByRefText }}</text>
         </view>
-        <view class="view-class" :hover-class="hoverClass" ref="viewTargetRef">
-          <text class="text">按下 50 ms 后背景变红</text>
-          <text class="text">抬起 400 ms 后背景恢复</text>
+        <view class="view-class u-p-10 h-100 bg-faebd7" :hover-class="hoverClass" ref="viewTargetRef">
+          <text class="u-mt-5 text-center">按下 50 ms 后背景变红</text>
+          <text class="u-mt-5 text-center">抬起 400 ms 后背景恢复</text>
         </view>
-        <view class="view-class" :hover-class="hoverClass" :hover-start-time="1000" :hover-stay-time="1000"
+        <view class="view-class u-p-10 h-100 bg-faebd7" :hover-class="hoverClass" :hover-start-time="1000" :hover-stay-time="1000"
           ref="viewTargetRef">
-          <text class="text">按下 1000 ms 后背景变红</text>
-          <text class="text">抬起 1000 ms 后背景恢复</text>
+          <text class="u-mt-5 text-center">按下 1000 ms 后背景变红</text>
+          <text class="u-mt-5 text-center">抬起 1000 ms 后背景恢复</text>
         </view>
       </view>
     </view>
@@ -81,19 +81,6 @@
 </script>
 
 <style>
-  .btn {
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #409eff;
-    border-radius: 5px;
-  }
-
-  .btn-inner {
-    color: #fff;
-  }
-
   .general-class {
     margin-left: 40px;
     padding: 10px;
@@ -104,15 +91,7 @@
 
   .view-class {
     margin: 20px 0 0 50px;
-    padding: 10px;
     width: 240px;
-    height: 100px;
-    background-color: antiquewhite;
-  }
-
-  .text {
-    margin-top: 5px;
-    text-align: center;
   }
 
   .hover-class {

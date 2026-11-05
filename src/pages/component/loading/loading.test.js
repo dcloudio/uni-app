@@ -1,9 +1,12 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isIOS = platformInfo.startsWith('ios')
 const isAndroid = platformInfo.startsWith('android')
+const isHarmony = platformInfo.startsWith('harmony')
+const isWeb = platformInfo.startsWith('web')
+const isMP = platformInfo.startsWith('mp')
 
 describe('component loading', () => {
-  if (!(isIOS || isAndroid)) {
+  if (!(isIOS || isAndroid || isHarmony || isWeb || isMP)) {
     it('skip', async () => {
       expect(1).toBe(1);
     });

@@ -1,0 +1,1141 @@
+<template>
+	<view class="page">
+		<view id="ble-log-panel" class="log-panel">
+			<view class="log-header">
+				<text class="log-title">Log</text>
+				<button class="log-clear" size="mini" @click="clearLogs">清空</button>
+			</view>
+			<scroll-view class="log-list" direction="vertical" :show-scrollbar="true">
+				<text v-if="logs.length == 0" class="log-empty">暂无日志</text>
+				<text v-for="(item, index) in logs" :key="index" class="log-item">{{ item }}</text>
+			</scroll-view>
+		</view>
+
+		<scroll-view class="workflow-scroll" direction="vertical" :show-scrollbar="true">
+			<view class="workflow-content">
+				<view class="status-strip">
+					<view class="status-item">
+						<text class="status-label">适配器</text>
+						<text class="status-value">{{ adapterOpened ? '已打开' : '未打开' }}</text>
+					</view>
+					<view class="status-item">
+						<text class="status-label">扫描</text>
+						<text class="status-value">{{ discovering ? '进行中' : '已停止' }}</text>
+					</view>
+					<view class="status-item">
+						<text class="status-label">连接</text>
+						<text class="status-value">{{ connected ? '已连接' : '未连接' }}</text>
+					</view>
+					<view class="status-item status-item-last">
+						<text class="status-label">设备</text>
+						<text class="status-value">{{ devices.length }}</text>
+					</view>
+				</view>
+
+				<view class="workflow-section">
+					<view class="section-heading">
+						<text class="section-title section-title-inline">1. 发现设备</text>
+						<button class="fold-button" size="mini" @click="devicesExpanded = !devicesExpanded">{{ devicesExpanded ? '收起' : '展开' }}</button>
+					</view>
+					<view class="api-action-row">
+						<text class="api-name">uni.startBluetoothDevicesDiscovery</text>
+						<button id="test-start-bluetooth-devices-discovery" class="call-button" size="mini" type="primary" :disabled="!adapterOpened"
+							@click="toggleDiscovery">{{ discovering ? '停止' : '扫描' }}</button>
+					</view>
+					<view v-if="selectedDevice != null" class="selected-device-band">
+						<view class="selected-device-main">
+							<text class="selected-device-label">已选设备</text>
+							<text class="selected-device-name">{{ selectedDevice!.name }}</text>
+							<text class="selected-device-id">{{ selectedDevice!.deviceId }}</text>
+						</view>
+						<text class="selected-device-rssi">{{ selectedDevice!.RSSI }} dBm</text>
+					</view>
+					<scroll-view v-if="devicesExpanded" class="device-list" direction="vertical" :show-scrollbar="true">
+						<view v-if="devices.length == 0" class="empty-row">
+							<text class="empty-text">未发现可连接设备</text>
+						</view>
+						<view v-for="device in devices" :key="device.deviceId" class="select-row"
+							:class="selectedDeviceId == device.deviceId ? 'select-row-active' : ''">
+							<view class="select-main">
+								<text class="select-title">{{ device.name }}</text>
+								<text class="select-id">{{ device.deviceId }}</text>
+							</view>
+							<text class="select-meta">{{ device.RSSI }} dBm</text>
+							<button class="select-button" size="mini" @click="selectDevice(device.deviceId)">{{ selectedDeviceId == device.deviceId ? '已选' : '选择' }}</button>
+						</view>
+					</scroll-view>
+				</view>
+
+				<view class="workflow-section">
+					<text class="section-title">2. 连接与链路</text>
+					<view class="listener-row">
+						<text class="listener-name">uni.onBLEConnectionStateChange</text>
+						<button id="test-on-ble-connection-state-change" class="listener-button" size="mini" type="primary" @click="onConnectionStateChange">监听</button>
+					</view>
+					<view class="listener-row">
+						<text class="listener-name">uni.offBLEConnectionStateChange</text>
+						<button id="test-off-ble-connection-state-change" class="listener-button" size="mini" @click="offConnectionStateChange">取消</button>
+					</view>
+					<view class="api-action-row api-row-border">
+						<text class="api-name">uni.createBLEConnection</text>
+						<button id="test-create-ble-connection" class="call-button" size="mini" type="primary" :disabled="selectedDeviceId.length == 0 || connected"
+							@click="connectDevice">连接</button>
+					</view>
+					<view class="api-action-row api-row-border">
+						<text class="api-name">uni.closeBLEConnection</text>
+						<button id="test-close-ble-connection" class="call-button" size="mini" :disabled="!connected" @click="disconnectDevice">断开</button>
+					</view>
+					<view class="api-action-row api-row-border">
+						<text class="api-name">uni.getBLEDeviceRSSI</text>
+						<text class="result-value">{{ rssiText }}</text>
+						<button id="test-get-ble-device-rssi" class="call-button" size="mini" :disabled="!connected" @click="getRSSI">查询</button>
+					</view>
+					<view class="api-action-row api-row-border">
+						<text class="api-name">uni.getBLEMTU</text>
+						<text class="result-value">{{ mtuText }}</text>
+						<button id="test-get-ble-mtu" class="call-button" size="mini" :disabled="!connected" @click="getMTU">查询</button>
+					</view>
+					<!-- #ifdef APP-ANDROID -->
+					<view class="parameter-row">
+						<text class="parameter-name">MTU</text>
+						<input v-model="mtuInput" class="parameter-input parameter-input-short" type="number" placeholder="185" />
+					</view>
+					<view class="api-action-row">
+						<text class="api-name">uni.setBLEMTU</text>
+						<button id="test-set-ble-mtu" class="call-button" size="mini" :disabled="!connected" @click="setMTU">设置</button>
+					</view>
+					<view class="listener-row api-row-border">
+						<text class="listener-name">uni.onBLEMTUChange</text>
+						<button id="test-on-ble-mtu-change" class="listener-button" size="mini" type="primary" @click="onMTUChange">监听</button>
+					</view>
+					<view class="listener-row">
+						<text class="listener-name">uni.offBLEMTUChange</text>
+						<button id="test-off-ble-mtu-change" class="listener-button" size="mini" @click="offMTUChange">取消</button>
+					</view>
+					<!-- #endif -->
+				</view>
+
+				<view class="workflow-section">
+					<text class="section-title">3. 服务与特征</text>
+					<view class="api-action-row">
+						<text class="api-name">uni.getBLEDeviceServices</text>
+						<button id="test-get-ble-device-services" class="call-button" size="mini" type="primary" :disabled="!connected" @click="getServices">查询</button>
+					</view>
+					<view v-if="selectedService != null" class="selected-device-band">
+						<view class="selected-device-main">
+							<text class="selected-device-label">已选 Service</text>
+							<text class="selected-device-name">{{ selectedService!.isPrimary ? 'Primary Service' : 'Service' }}</text>
+							<text class="selected-device-id">{{ selectedService!.uuid }}</text>
+						</view>
+					</view>
+					<view class="result-heading">
+						<text class="result-title">Services ({{ services.length }})</text>
+						<button class="fold-button fold-button-compact" size="mini" @click="servicesExpanded = !servicesExpanded">{{ servicesExpanded ? '收起' : '展开' }}</button>
+					</view>
+					<scroll-view v-if="servicesExpanded" class="result-list" direction="vertical" :show-scrollbar="true">
+						<view v-if="services.length == 0" class="empty-row">
+							<text class="empty-text">暂无服务</text>
+						</view>
+						<view v-for="service in services" :key="service.uuid" class="select-row"
+							:class="selectedServiceId == service.uuid ? 'select-row-active' : ''">
+							<view class="select-main">
+								<text class="select-title">{{ service.isPrimary ? 'Primary Service' : 'Service' }}</text>
+								<text class="select-id">{{ service.uuid }}</text>
+							</view>
+							<button class="select-button" size="mini" @click="selectService(service.uuid)">{{ selectedServiceId == service.uuid ? '已选' : '选择' }}</button>
+						</view>
+					</scroll-view>
+					<view class="api-action-row api-row-border">
+						<text class="api-name">uni.getBLEDeviceCharacteristics</text>
+						<button id="test-get-ble-device-characteristics" class="call-button" size="mini" type="primary" :disabled="selectedServiceId.length == 0"
+							@click="getCharacteristics">查询</button>
+					</view>
+					<view v-if="selectedCharacteristic != null" class="selected-device-band">
+						<view class="selected-device-main">
+							<text class="selected-device-label">已选 Characteristic</text>
+							<text class="selected-device-name">{{ characteristicPropertiesText(selectedCharacteristic!) }}</text>
+							<text class="selected-device-id">{{ selectedCharacteristic!.uuid }}</text>
+						</view>
+					</view>
+					<view class="result-heading">
+						<text class="result-title">Characteristics ({{ characteristics.length }})</text>
+						<button class="fold-button fold-button-compact" size="mini" @click="characteristicsExpanded = !characteristicsExpanded">{{ characteristicsExpanded ? '收起' : '展开' }}</button>
+					</view>
+					<scroll-view v-if="characteristicsExpanded" class="result-list" direction="vertical" :show-scrollbar="true">
+						<view v-if="characteristics.length == 0" class="empty-row">
+							<text class="empty-text">暂无特征</text>
+						</view>
+						<view v-for="characteristic in characteristics" :key="characteristic.uuid" class="select-row"
+							:class="selectedCharacteristicId == characteristic.uuid ? 'select-row-active' : ''">
+							<view class="select-main">
+								<text class="select-title">{{ characteristicPropertiesText(characteristic) }}</text>
+								<text class="select-id">{{ characteristic.uuid }}</text>
+							</view>
+							<button class="select-button" size="mini" @click="selectCharacteristic(characteristic.uuid)">{{ selectedCharacteristicId == characteristic.uuid ? '已选' : '选择' }}</button>
+						</view>
+					</scroll-view>
+				</view>
+
+				<view class="workflow-section">
+					<text class="section-title">4. GATT 操作</text>
+					<view v-if="selectedCharacteristic == null" class="empty-row">
+						<text class="empty-text">请选择 Characteristic</text>
+					</view>
+					<view v-else class="gatt-content">
+						<view v-if="canRead || canNotify" class="listener-row">
+							<text class="listener-name">uni.onBLECharacteristicValueChange</text>
+							<button id="test-on-ble-characteristic-value-change" class="listener-button" size="mini" type="primary" @click="onValueChange">监听</button>
+						</view>
+						<view v-if="canRead || canNotify" class="listener-row">
+							<text class="listener-name">uni.offBLECharacteristicValueChange</text>
+							<button id="test-off-ble-characteristic-value-change" class="listener-button" size="mini" @click="offValueChange">取消</button>
+						</view>
+						<view v-if="canRead || canNotify" class="result-heading">
+							<text class="result-title">Characteristic Value</text>
+							<button class="fold-button fold-button-compact" size="mini" @click="valueExpanded = !valueExpanded">{{ valueExpanded ? '收起' : '展开' }}</button>
+						</view>
+						<view v-if="(canRead || canNotify) && valueExpanded" class="value-band">
+							<text class="value-label">HEX</text>
+							<text class="value-text">{{ latestValue }}</text>
+						</view>
+						<view v-if="canRead" class="api-action-row api-row-border">
+							<text class="api-name">uni.readBLECharacteristicValue</text>
+							<button id="test-read-ble-characteristic-value" class="call-button" size="mini" type="primary" @click="readValue">读取</button>
+						</view>
+						<view v-if="canNotify" class="api-action-row api-row-border">
+							<text class="api-name">uni.notifyBLECharacteristicValueChange</text>
+							<button id="test-notify-ble-characteristic-value-change" class="call-button" size="mini" @click="toggleNotify">{{ notifying ? '关闭' : '订阅' }}</button>
+						</view>
+						<view v-if="supportsWrite" class="parameter-row parameter-row-column">
+							<text class="parameter-name">HEX 数据</text>
+							<input v-model="writeHex" class="parameter-input" placeholder="例如 01 FF 0A" />
+						</view>
+						<view v-if="supportsWrite" class="parameter-row">
+							<text class="parameter-name">writeType</text>
+							<picker class="parameter-picker" :range="availableWriteTypes" :value="availableWriteTypeIndex" @change="onWriteTypeChange">
+								<view class="picker-value">{{ availableWriteTypes[availableWriteTypeIndex] }}</view>
+							</picker>
+						</view>
+						<view v-if="supportsWrite" class="api-action-row">
+							<text class="api-name">uni.writeBLECharacteristicValue</text>
+							<button id="test-write-ble-characteristic-value" class="call-button" size="mini" type="primary" @click="writeValue">写入</button>
+						</view>
+						<view v-if="!canRead && !canNotify && !supportsWrite" class="empty-row">
+							<text class="empty-text">该特征没有可用 GATT 操作</text>
+						</view>
+					</view>
+				</view>
+
+				<button id="bluetooth-ble-performance-test" class="performance-button" type="primary" @click="openPerformanceTest">综合性能测试</button>
+			</view>
+		</scroll-view>
+	</view>
+</template>
+
+<script setup lang="ts">
+	type WriteType = 'write' | 'writeNoResponse'
+	type NotifyType = 'notification' | 'indication'
+	type SimpleDevice = { name : string, deviceId : string, RSSI : number, connectable : boolean | null }
+	type SimpleService = { uuid : string, isPrimary : boolean }
+	type SimpleProperties = {
+		read : boolean,
+		write : boolean,
+		writeDefault : boolean,
+		writeNoResponse : boolean,
+		notify : boolean,
+		indicate : boolean
+	}
+	type SimpleCharacteristic = { uuid : string, properties : SimpleProperties }
+
+	const logs = ref<string[]>([])
+	const devices = ref<SimpleDevice[]>([])
+	const services = ref<SimpleService[]>([])
+	const characteristics = ref<SimpleCharacteristic[]>([])
+	const adapterOpened = ref(false)
+	const discovering = ref(false)
+	const connected = ref(false)
+	const selectedDeviceId = ref('')
+	const selectedServiceId = ref('')
+	const selectedCharacteristicId = ref('')
+	const rssiText = ref('--')
+	const mtuText = ref('--')
+	const mtuInput = ref('185')
+	const latestValue = ref('--')
+	const writeHex = ref('01')
+	const writeTypes = ['write', 'writeNoResponse'] as WriteType[]
+	const writeTypeIndex = ref(0)
+	const notifying = ref(false)
+	const devicesExpanded = ref(true)
+	const servicesExpanded = ref(true)
+	const characteristicsExpanded = ref(true)
+	const valueExpanded = ref(true)
+	let deviceFoundListenerId = 0
+	let connectionListenerId = 0
+	let valueListenerId = 0
+	// #ifdef APP-ANDROID
+	let mtuListenerId = 0
+	// #endif
+
+	const selectedCharacteristic = computed(() : SimpleCharacteristic | null => {
+		return characteristics.value.find((item : SimpleCharacteristic) : boolean => item.uuid == selectedCharacteristicId.value) ?? null
+	})
+	const selectedDevice = computed(() : SimpleDevice | null => {
+		return devices.value.find((item : SimpleDevice) : boolean => item.deviceId == selectedDeviceId.value) ?? null
+	})
+	const selectedService = computed(() : SimpleService | null => {
+		return services.value.find((item : SimpleService) : boolean => item.uuid == selectedServiceId.value) ?? null
+	})
+	const canRead = computed(() : boolean => selectedCharacteristic.value != null && selectedCharacteristic.value!.properties.read)
+	const canNotify = computed(() : boolean => selectedCharacteristic.value != null && (selectedCharacteristic.value!.properties.notify || selectedCharacteristic.value!.properties.indicate))
+	const canWriteWithResponse = computed(() : boolean => selectedCharacteristic.value != null && (selectedCharacteristic.value!.properties.write || selectedCharacteristic.value!.properties.writeDefault))
+	const canWriteWithoutResponse = computed(() : boolean => selectedCharacteristic.value != null && selectedCharacteristic.value!.properties.writeNoResponse)
+	const supportsWrite = computed(() : boolean => canWriteWithResponse.value || canWriteWithoutResponse.value)
+	const availableWriteTypes = computed(() : WriteType[] => {
+		const result = [] as WriteType[]
+		if (canWriteWithResponse.value) result.push('write')
+		if (canWriteWithoutResponse.value) result.push('writeNoResponse')
+		return result
+	})
+	const availableWriteTypeIndex = computed(() : number => {
+		const index = availableWriteTypes.value.indexOf(writeTypes[writeTypeIndex.value])
+		return index < 0 ? 0 : index
+	})
+	const canWrite = computed(() : boolean => {
+		if (selectedCharacteristic.value == null) return false
+		const properties = selectedCharacteristic.value!.properties
+		const writeType = writeTypes[writeTypeIndex.value]
+		return writeType == 'write' ? (properties.write || properties.writeDefault) : properties.writeNoResponse
+	})
+
+	function addLog(apiName : string, message : string) {
+		logs.value.unshift('[' + new Date().toLocaleTimeString() + '] ' + apiName + ': ' + message)
+		if (logs.value.length > 100) logs.value.pop()
+	}
+
+	function addCallbackLog(message : string) {
+		logs.value.unshift('[' + new Date().toLocaleTimeString() + '] ' + message)
+		if (logs.value.length > 100) logs.value.pop()
+	}
+
+	function addError(errCode ?: number | null) {
+		const code = errCode == null ? 'null' : errCode!.toString()
+		addCallbackLog('errCode=' + code)
+	}
+
+	function clearLogs() {
+		logs.value = []
+	}
+
+	function resetGatt() {
+		services.value = []
+		characteristics.value = []
+		selectedServiceId.value = ''
+		selectedCharacteristicId.value = ''
+		rssiText.value = '--'
+		mtuText.value = '--'
+		latestValue.value = '--'
+		notifying.value = false
+	}
+
+	function bytesHex(buffer : ArrayBuffer) : string {
+		const bytes = new Uint8Array(buffer)
+		let result = ''
+		for (let index = 0; index < bytes.length; index++) {
+			const value = bytes[index].toString(16).toUpperCase()
+			result += (value.length == 1 ? '0' + value : value) + (index + 1 == bytes.length ? '' : ' ')
+		}
+		return result.length == 0 ? '--' : result
+	}
+
+	function hexBuffer(source : string) : ArrayBuffer | null {
+		const compact = source.replace(/[\s:-]/g, '')
+		if (compact.length == 0 || compact.length % 2 != 0 || !/^[0-9a-fA-F]+$/.test(compact)) return null
+		const result = new Uint8Array(compact.length / 2)
+		for (let index = 0; index < result.length; index++) {
+			result[index] = parseInt(compact.substring(index * 2, index * 2 + 2), 16)
+		}
+		return result.buffer
+	}
+
+	function characteristicPropertiesText(item : SimpleCharacteristic) : string {
+		const values = [] as string[]
+		if (item.properties.read) values.push('READ')
+		if (item.properties.write || item.properties.writeDefault) values.push('WRITE')
+		if (item.properties.writeNoResponse) values.push('WRITE NR')
+		if (item.properties.notify) values.push('NOTIFY')
+		if (item.properties.indicate) values.push('INDICATE')
+		return values.length == 0 ? 'NO GATT PERMISSION' : values.join(' · ')
+	}
+
+	const deviceFoundCallback = (result : { devices : { name ?: string | null, localName ?: string | null, deviceId : string, RSSI ?: number | null, connectable ?: boolean | null }[] }) => {
+		result.devices.forEach((item) => {
+			let name = item.name ?? ''
+			if (name.length == 0) name = item.localName ?? ''
+			name = name.trim()
+			if (name.length == 0 || item.connectable != true) return
+			const RSSI = item.RSSI ?? 0
+			const index = devices.value.findIndex((device : SimpleDevice) : boolean => device.deviceId == item.deviceId)
+			const device = { name, deviceId: item.deviceId, RSSI, connectable: item.connectable ?? null } as SimpleDevice
+			if (index < 0) devices.value.push(device)
+			else devices.value[index] = device
+		})
+		addLog('onBluetoothDeviceFound callback', 'devices=' + result.devices.length.toString())
+	}
+
+	const connectionStateCallback = (result : { deviceId : string, connected : boolean }) => {
+		if (result.deviceId == selectedDeviceId.value) {
+			connected.value = result.connected
+			if (!result.connected) resetGatt()
+		}
+		addLog('onBLEConnectionStateChange callback', 'deviceId=' + result.deviceId + ', connected=' + result.connected.toString())
+	}
+
+	const valueChangeCallback = (result : { deviceId : string, serviceId : string, characteristicId : string, value : ArrayBuffer }) => {
+		const value = bytesHex(result.value)
+		if (result.deviceId == selectedDeviceId.value && result.serviceId == selectedServiceId.value && result.characteristicId == selectedCharacteristicId.value) {
+			latestValue.value = value
+			valueExpanded.value = true
+		}
+		addLog('onBLECharacteristicValueChange callback', 'value=' + value + ', characteristicId=' + result.characteristicId)
+	}
+
+	// #ifdef APP-ANDROID
+	const mtuChangeCallback = (result : { deviceId : string, mtu : number }) => {
+		if (result.deviceId == selectedDeviceId.value) mtuText.value = result.mtu.toString()
+		addLog('onBLEMTUChange callback', 'deviceId=' + result.deviceId + ', mtu=' + result.mtu.toString())
+	}
+	// #endif
+
+	function onDeviceFound() {
+		if (deviceFoundListenerId != 0) return
+		deviceFoundListenerId = uni.onBluetoothDeviceFound(deviceFoundCallback)
+	}
+
+	function openAdapter() {
+		addLog('openBluetoothAdapter', 'request')
+		uni.openBluetoothAdapter({
+			success: (result) => {
+				adapterOpened.value = true
+				addCallbackLog(result.errMsg)
+			},
+			fail: (error) => addError(error.errCode)
+		})
+	}
+
+	function toggleDiscovery() {
+		if (discovering.value) {
+			addLog('stopBluetoothDevicesDiscovery', 'request')
+			uni.stopBluetoothDevicesDiscovery({
+				success: (result) => {
+					discovering.value = false
+					addCallbackLog(result.errMsg)
+				},
+				fail: (error) => addError(error.errCode)
+			})
+			return
+		}
+		devices.value = []
+		addLog('startBluetoothDevicesDiscovery', 'request')
+		uni.startBluetoothDevicesDiscovery({
+			allowDuplicatesKey: false,
+			success: (result) => {
+				discovering.value = true
+				addCallbackLog(result.errMsg)
+			},
+			fail: (error) => addError(error.errCode)
+		})
+	}
+
+	function selectDevice(deviceId : string) {
+		if (selectedDeviceId.value == deviceId) {
+			devicesExpanded.value = false
+			return
+		}
+		if (connected.value) disconnectDevice()
+		selectedDeviceId.value = deviceId
+		devicesExpanded.value = false
+		connected.value = false
+		resetGatt()
+		if (discovering.value) toggleDiscovery()
+		addLog('selectDevice', 'deviceId=' + deviceId)
+	}
+
+	function onConnectionStateChange() {
+		if (connectionListenerId != 0) {
+			addLog('onBLEConnectionStateChange', 'listenerId=' + connectionListenerId.toString())
+			return
+		}
+		connectionListenerId = uni.onBLEConnectionStateChange(connectionStateCallback)
+		addLog('onBLEConnectionStateChange', 'registered, listenerId=' + connectionListenerId.toString())
+	}
+
+	function offConnectionStateChange() {
+		if (connectionListenerId != 0) uni.offBLEConnectionStateChange(connectionListenerId)
+		else uni.offBLEConnectionStateChange()
+		connectionListenerId = 0
+		addLog('offBLEConnectionStateChange', 'removed')
+	}
+
+	function connectDevice() {
+		if (selectedDeviceId.value.length == 0) return
+		const deviceId = selectedDeviceId.value
+		addLog('createBLEConnection', 'request, deviceId=' + deviceId)
+		uni.createBLEConnection({
+			deviceId,
+			timeout: 8000,
+			success: (result) => {
+				connected.value = true
+				addCallbackLog(result.errMsg)
+			},
+			fail: (error) => addError(error.errCode)
+		})
+	}
+
+	function disconnectDevice() {
+		if (selectedDeviceId.value.length == 0) return
+		const deviceId = selectedDeviceId.value
+		addLog('closeBLEConnection', 'request, deviceId=' + deviceId)
+		uni.closeBLEConnection({
+			deviceId,
+			success: (result) => {
+				connected.value = false
+				resetGatt()
+				addCallbackLog(result.errMsg)
+			},
+			fail: (error) => addError(error.errCode)
+		})
+	}
+
+	function getRSSI() {
+		if (!connected.value) return
+		addLog('getBLEDeviceRSSI', 'request')
+		uni.getBLEDeviceRSSI({
+			deviceId: selectedDeviceId.value,
+			success: (result) => {
+				rssiText.value = result.RSSI.toString() + ' dBm'
+				addCallbackLog(result.errMsg + ', RSSI=' + result.RSSI.toString())
+			},
+			fail: (error) => addError(error.errCode)
+		})
+	}
+
+	function getMTU() {
+		if (!connected.value) return
+		const writeType = writeTypes[writeTypeIndex.value]
+		addLog('getBLEMTU', 'request, writeType=' + writeType)
+		uni.getBLEMTU({
+			deviceId: selectedDeviceId.value,
+			writeType,
+			success: (result) => {
+				mtuText.value = result.mtu.toString()
+				addCallbackLog(result.errMsg + ', mtu=' + result.mtu.toString())
+			},
+			fail: (error) => addError(error.errCode)
+		})
+	}
+
+	// #ifdef APP-ANDROID
+	function setMTU() {
+		let mtu = parseInt(mtuInput.value)
+		if (Number.isNaN(mtu) || mtu <= 0) mtu = 185
+		addLog('setBLEMTU', 'request, mtu=' + mtu.toString())
+		uni.setBLEMTU({
+			deviceId: selectedDeviceId.value,
+			mtu,
+			success: (result) => {
+				mtuText.value = result.mtu.toString()
+				addCallbackLog(result.errMsg + ', mtu=' + result.mtu.toString())
+			},
+			fail: (error) => addError(error.errCode)
+		})
+	}
+
+	function onMTUChange() {
+		if (mtuListenerId != 0) {
+			addLog('onBLEMTUChange', 'listenerId=' + mtuListenerId.toString())
+			return
+		}
+		mtuListenerId = uni.onBLEMTUChange(mtuChangeCallback)
+		addLog('onBLEMTUChange', 'registered, listenerId=' + mtuListenerId.toString())
+	}
+
+	function offMTUChange() {
+		if (mtuListenerId != 0) uni.offBLEMTUChange(mtuListenerId)
+		else uni.offBLEMTUChange()
+		mtuListenerId = 0
+		addLog('offBLEMTUChange', 'removed')
+	}
+	// #endif
+
+	function getServices() {
+		if (!connected.value) return
+		const deviceId = selectedDeviceId.value
+		addLog('getBLEDeviceServices', 'request')
+		uni.getBLEDeviceServices({
+			deviceId,
+			success: (result) => {
+				services.value = result.services.map((item) : SimpleService => ({ uuid: item.uuid, isPrimary: item.isPrimary }))
+				servicesExpanded.value = true
+				characteristics.value = []
+				selectedCharacteristicId.value = ''
+				selectedServiceId.value = services.value.length > 0 ? services.value[0].uuid : ''
+				addCallbackLog(result.errMsg + ', services=' + services.value.length.toString())
+			},
+			fail: (error) => addError(error.errCode)
+		})
+	}
+
+	function selectService(serviceId : string) {
+		if (selectedServiceId.value == serviceId) {
+			servicesExpanded.value = false
+			return
+		}
+		selectedServiceId.value = serviceId
+		servicesExpanded.value = false
+		characteristics.value = []
+		selectedCharacteristicId.value = ''
+		notifying.value = false
+		addLog('selectService', 'serviceId=' + serviceId)
+	}
+
+	function getCharacteristics() {
+		if (selectedServiceId.value.length == 0) return
+		const serviceId = selectedServiceId.value
+		addLog('getBLEDeviceCharacteristics', 'request, serviceId=' + serviceId)
+		uni.getBLEDeviceCharacteristics({
+			deviceId: selectedDeviceId.value,
+			serviceId,
+			success: (result) => {
+				characteristics.value = result.characteristics.map((item) : SimpleCharacteristic => ({
+					uuid: item.uuid,
+					properties: {
+						read: item.properties.read,
+						write: item.properties.write,
+						writeDefault: item.properties.writeDefault,
+						writeNoResponse: item.properties.writeNoResponse,
+						notify: item.properties.notify,
+						indicate: item.properties.indicate
+					}
+				}))
+				characteristicsExpanded.value = true
+				selectedCharacteristicId.value = characteristics.value.length > 0 ? characteristics.value[0].uuid : ''
+				notifying.value = false
+				addCallbackLog(result.errMsg + ', characteristics=' + characteristics.value.length.toString())
+			},
+			fail: (error) => addError(error.errCode)
+		})
+	}
+
+	function selectCharacteristic(characteristicId : string) {
+		if (selectedCharacteristicId.value == characteristicId) {
+			characteristicsExpanded.value = false
+			return
+		}
+		selectedCharacteristicId.value = characteristicId
+		characteristicsExpanded.value = false
+		notifying.value = false
+		latestValue.value = '--'
+		const characteristic = characteristics.value.find((item : SimpleCharacteristic) : boolean => item.uuid == characteristicId)
+		if (characteristic != null && !(characteristic!.properties.write || characteristic!.properties.writeDefault) && characteristic!.properties.writeNoResponse) {
+			writeTypeIndex.value = 1
+		} else {
+			writeTypeIndex.value = 0
+		}
+		addLog('selectCharacteristic', 'characteristicId=' + characteristicId)
+	}
+
+	function onValueChange() {
+		if (valueListenerId != 0) {
+			addLog('onBLECharacteristicValueChange', 'listenerId=' + valueListenerId.toString())
+			return
+		}
+		valueListenerId = uni.onBLECharacteristicValueChange(valueChangeCallback)
+		addLog('onBLECharacteristicValueChange', 'registered, listenerId=' + valueListenerId.toString())
+	}
+
+	function offValueChange() {
+		if (valueListenerId != 0) uni.offBLECharacteristicValueChange(valueListenerId)
+		else uni.offBLECharacteristicValueChange()
+		valueListenerId = 0
+		addLog('offBLECharacteristicValueChange', 'removed')
+	}
+
+	function readValue() {
+		if (!canRead.value) return
+		addLog('readBLECharacteristicValue', 'request')
+		uni.readBLECharacteristicValue({
+			deviceId: selectedDeviceId.value,
+			serviceId: selectedServiceId.value,
+			characteristicId: selectedCharacteristicId.value,
+			success: (result) => addCallbackLog(result.errMsg),
+			fail: (error) => addError(error.errCode)
+		})
+	}
+
+	function toggleNotify() {
+		if (!canNotify.value || selectedCharacteristic.value == null) return
+		const type : NotifyType = selectedCharacteristic.value!.properties.notify ? 'notification' : 'indication'
+		const state = !notifying.value
+		addLog('notifyBLECharacteristicValueChange', 'request, state=' + state.toString() + ', type=' + type)
+		uni.notifyBLECharacteristicValueChange({
+			deviceId: selectedDeviceId.value,
+			serviceId: selectedServiceId.value,
+			characteristicId: selectedCharacteristicId.value,
+			state,
+			type,
+			success: (result) => {
+				notifying.value = state
+				addCallbackLog(result.errMsg)
+			},
+			fail: (error) => addError(error.errCode)
+		})
+	}
+
+	function onWriteTypeChange(event : UniPickerChangeEvent) {
+		const selectedIndex = event.detail.value as number
+		const selectedType = availableWriteTypes.value[selectedIndex]
+		writeTypeIndex.value = writeTypes.indexOf(selectedType)
+	}
+
+	function writeValue() {
+		if (!canWrite.value) return
+		const value = hexBuffer(writeHex.value)
+		if (value == null) {
+			addCallbackLog('HEX 数据格式错误')
+			return
+		}
+		const writeType = writeTypes[writeTypeIndex.value]
+		addLog('writeBLECharacteristicValue', 'request, writeType=' + writeType + ', value=' + bytesHex(value!))
+		uni.writeBLECharacteristicValue({
+			deviceId: selectedDeviceId.value,
+			serviceId: selectedServiceId.value,
+			characteristicId: selectedCharacteristicId.value,
+			value: value!,
+			writeType,
+			success: (result) => addCallbackLog(result.errMsg),
+			fail: (error) => addError(error.errCode)
+		})
+	}
+
+	function openPerformanceTest() {
+		uni.navigateTo({ url: '/pages/API/bluetooth-benchmark/bluetooth-benchmark' })
+	}
+
+	onReady(() => {
+		onDeviceFound()
+		onConnectionStateChange()
+		onValueChange()
+		// #ifdef APP-ANDROID
+		onMTUChange()
+		// #endif
+		openAdapter()
+	})
+
+	onUnload(() => {
+		if (discovering.value) uni.stopBluetoothDevicesDiscovery({})
+		if (deviceFoundListenerId != 0) uni.offBluetoothDeviceFound(deviceFoundListenerId)
+		if (connectionListenerId != 0) uni.offBLEConnectionStateChange(connectionListenerId)
+		if (valueListenerId != 0) uni.offBLECharacteristicValueChange(valueListenerId)
+		// #ifdef APP-ANDROID
+		if (mtuListenerId != 0) uni.offBLEMTUChange(mtuListenerId)
+		// #endif
+		if (connected.value && selectedDeviceId.value.length > 0) uni.closeBLEConnection({ deviceId: selectedDeviceId.value })
+		if (adapterOpened.value) uni.closeBluetoothAdapter({})
+	})
+</script>
+
+<style>
+	.page {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+		background-color: #f4f5f7;
+	}
+
+	.log-panel {
+		display: flex;
+		flex-direction: column;
+		height: 190px;
+		background-color: #17202a;
+	}
+
+	.log-header {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		height: 40px;
+		padding: 0 12px;
+		border-bottom-width: 1px;
+		border-bottom-style: solid;
+		border-bottom-color: #303b46;
+	}
+
+	.log-title {
+		font-size: 14px;
+		font-weight: 600;
+		color: #ffffff;
+	}
+
+	.log-clear {
+		width: 64px;
+		margin: 0;
+	}
+
+	.log-list {
+		height: 150px;
+		padding: 8px 10px;
+	}
+
+	.log-empty,
+	.log-item {
+		display: flex;
+		flex-direction: row;
+		margin-bottom: 6px;
+		font-size: 11px;
+		line-height: 16px;
+		color: #aeb6c2;
+	}
+
+	.log-item {
+		color: #d7dde5;
+	}
+
+	.workflow-scroll {
+		flex: 1;
+	}
+
+	.workflow-content {
+		display: flex;
+		flex-direction: column;
+		padding-bottom: 20px;
+	}
+
+	.status-strip {
+		display: flex;
+		flex-direction: row;
+		padding: 12px 10px;
+		background-color: #ffffff;
+		border-bottom-width: 1px;
+		border-bottom-style: solid;
+		border-bottom-color: #e3e6e8;
+	}
+
+	.status-item {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+		align-items: center;
+		border-right-width: 1px;
+		border-right-style: solid;
+		border-right-color: #e5e7e9;
+	}
+
+	.status-item-last {
+		border-right-width: 0;
+	}
+
+	.status-label {
+		font-size: 11px;
+		color: #7b8490;
+	}
+
+	.status-value {
+		margin-top: 4px;
+		font-size: 13px;
+		font-weight: 600;
+		color: #1f2d3d;
+	}
+
+	.workflow-section {
+		display: flex;
+		flex-direction: column;
+		margin-top: 12px;
+		padding: 12px 15px;
+		background-color: #ffffff;
+		border-top-width: 1px;
+		border-top-style: solid;
+		border-top-color: #e3e6e8;
+		border-bottom-width: 1px;
+		border-bottom-style: solid;
+		border-bottom-color: #e3e6e8;
+	}
+
+	.section-title {
+		margin-bottom: 8px;
+		font-size: 15px;
+		font-weight: 600;
+		color: #17202a;
+	}
+
+	.section-heading {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.section-title-inline {
+		flex: 1;
+	}
+
+	.result-heading {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		min-height: 40px;
+		padding: 4px 0;
+		border-top-width: 1px;
+		border-top-style: solid;
+		border-top-color: #edf0f2;
+	}
+
+	.result-title {
+		flex: 1;
+		font-size: 12px;
+		font-weight: 600;
+		color: #4f5b66;
+	}
+
+	.fold-button {
+		width: 64px;
+		margin: 0 0 8px;
+	}
+
+	.fold-button-compact {
+		margin: 0;
+	}
+
+	.api-action-row,
+	.listener-row {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		min-height: 44px;
+	}
+
+	.api-row-border,
+	.listener-row {
+		border-top-width: 1px;
+		border-top-style: solid;
+		border-top-color: #edf0f2;
+	}
+
+	.api-name,
+	.listener-name {
+		flex: 1;
+		margin-right: 8px;
+		font-size: 12px;
+		color: #263442;
+	}
+
+	.call-button,
+	.listener-button,
+	.select-button {
+		width: 64px;
+		margin: 0;
+	}
+
+	.result-value {
+		margin-right: 8px;
+		font-size: 11px;
+		color: #1677ff;
+	}
+
+	.empty-row {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		height: 48px;
+		border-top-width: 1px;
+		border-top-style: solid;
+		border-top-color: #edf0f2;
+	}
+
+	.device-list {
+		height: 220px;
+		border-top-width: 1px;
+		border-top-style: solid;
+		border-top-color: #edf0f2;
+	}
+
+	.selected-device-band {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		min-height: 58px;
+		padding: 8px 10px;
+		background-color: #eef6ff;
+		border-top-width: 1px;
+		border-top-style: solid;
+		border-top-color: #d7e8fb;
+	}
+
+	.selected-device-main {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+		margin-right: 8px;
+	}
+
+	.selected-device-label {
+		font-size: 10px;
+		color: #5e7d9f;
+	}
+
+	.selected-device-name {
+		margin-top: 2px;
+		font-size: 12px;
+		font-weight: 600;
+		color: #1f4f7a;
+	}
+
+	.selected-device-id {
+		margin-top: 3px;
+		font-size: 10px;
+		line-height: 14px;
+		color: #5e7185;
+	}
+
+	.selected-device-rssi {
+		font-size: 11px;
+		color: #1677ff;
+	}
+
+	.result-list {
+		height: 180px;
+		border-top-width: 1px;
+		border-top-style: solid;
+		border-top-color: #edf0f2;
+	}
+
+	.empty-text {
+		font-size: 12px;
+		color: #929ba5;
+	}
+
+	.select-row {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		min-height: 58px;
+		padding: 6px 0;
+		border-top-width: 1px;
+		border-top-style: solid;
+		border-top-color: #edf0f2;
+	}
+
+	.select-row-active {
+		background-color: #eef6ff;
+	}
+
+	.select-main {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+		margin-right: 8px;
+	}
+
+	.select-title {
+		font-size: 12px;
+		font-weight: 600;
+		color: #263442;
+	}
+
+	.select-id {
+		margin-top: 4px;
+		font-size: 10px;
+		line-height: 14px;
+		color: #78838e;
+	}
+
+	.select-meta {
+		margin-right: 8px;
+		font-size: 11px;
+		color: #596673;
+	}
+
+	.parameter-row {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		min-height: 44px;
+		padding: 4px 0;
+		border-top-width: 1px;
+		border-top-style: solid;
+		border-top-color: #edf0f2;
+	}
+
+	.parameter-row-column {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.parameter-name {
+		font-size: 12px;
+		color: #4f5b66;
+	}
+
+	.parameter-input {
+		height: 34px;
+		margin-top: 6px;
+		padding: 0 10px;
+		background-color: #f3f5f7;
+		border-radius: 4px;
+		font-size: 12px;
+	}
+
+	.parameter-input-short {
+		width: 120px;
+		margin-top: 0;
+	}
+
+	.parameter-picker {
+		width: 150px;
+	}
+
+	.picker-value {
+		height: 34px;
+		padding: 0 10px;
+		background-color: #f3f5f7;
+		border-radius: 4px;
+		font-size: 12px;
+		line-height: 34px;
+		color: #263442;
+	}
+
+	.value-band {
+		display: flex;
+		flex-direction: row;
+		align-items: flex-start;
+		min-height: 42px;
+		padding: 8px 10px;
+		background-color: #f3f5f7;
+	}
+
+	.gatt-content {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.value-label {
+		width: 56px;
+		font-size: 11px;
+		color: #6d7781;
+	}
+
+	.value-text {
+		flex: 1;
+		font-size: 11px;
+		line-height: 16px;
+		color: #17202a;
+	}
+
+	.performance-button {
+		width: auto;
+		margin: 16px 15px 0;
+	}
+</style>

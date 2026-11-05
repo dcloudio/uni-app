@@ -1,7 +1,6 @@
 <template>
-	<view>
 		<text>computed属性在设置duration=0的测试:</text>
-		<swiper  :current="current" :vertical="true" :duration="0" style="height: 100px; width: 100%;">
+		<swiper  :current="current" :vertical="true" :duration="0" class="h-100 w-full">
 			<swiper-item v-for="item,index in data.list" :key="item.id">
 				<view>
 					当前实际渲染的值:{{index}},指定current的值：{{current}}
@@ -9,7 +8,7 @@
 			</swiper-item>
 		</swiper>
 		<text>同时设置autoplay / circular / duration的测试:</text>
-		<swiper id="swiper-view" :autoplay="true" :interval="3000" :circular="true" :duration="3000" :current="0" style="height: 100px; width: 100%;">
+		<swiper id="swiper-view" :autoplay="true" :interval="3000" :circular="true" :duration="3000" :current="0" class="h-100 w-full">
 			<swiper-item >
 				<text>0000000000000000000</text>
 			</swiper-item>
@@ -17,7 +16,6 @@
 				<text>111111111111111111</text>
 			</swiper-item>
 		</swiper>
-	</view>
 
 </template>
 
@@ -54,7 +52,3 @@ defineExpose({
   jest_getWindowInfo
 })
 </script>
-
-<style>
-
-</style>

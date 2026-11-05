@@ -1,87 +1,119 @@
 <template>
-    <view class="css-page" style="flex-grow: 1;">
-      <text class="uni-tips">visibility: {{data.visibility}} ，说明：点击切换</text>
-      <view class="demo-box">
+    <view class="flex-grow-1">
+      <text class="fs-13 color-tips-0958d9 bg-tips-e6f4ff border-l-4-solid-tips-91caff p-10-12 radius-4 m-10">visibility: {{data.visibility}} ，说明：点击切换</text>
+      <view class="flex-dir-row justify-around mt-10">
         <view @click="changeVisibility">
-          <text class="theme-label">view组件: {{data.visibility}}</text>
+          <text class="color-text-333">view组件: {{data.visibility}}</text>
           <view class="common" :style="{'visibility': data.visibility}"></view>
         </view>
         <view @click="changeVisibility">
-          <text class="theme-label">text组件: {{data.visibility}}</text>
-          <text class="common cyan-label" :style="{'visibility': data.visibility}">文本</text>
+          <text class="color-text-333">text组件: {{data.visibility}}</text>
+          <text class="common color-1a1a1a" :style="{'visibility': data.visibility}">文本</text>
         </view>
         <view @click="changeVisibility">
-          <text class="theme-label">image组件: {{data.visibility}}</text>
+          <text class="color-text-333">image组件: {{data.visibility}}</text>
           <image class="common" :style="{'visibility': data.visibility}" src="/static/test-image/logo.png"></image>
         </view>
       </view>
 
-      <view class="uni-common-mb">
-        <text class="uni-title-text uni-common-mt">scroll-view 组件</text>
-        <view class="demo-box">
+      <view class="mb-15">
+        <text class="fs-15 fw-bold color-text-333 mt-15">scroll-view 组件</text>
+        <view class="flex-dir-row justify-around mt-10">
           <view>
-            <text class="theme-label">scroll-view: visible</text>
+            <text class="color-text-333">scroll-view: visible</text>
             <scroll-view class="common" style="visibility: visible;"></scroll-view>
           </view>
           <view>
-            <text class="theme-label">scroll-view: hidden</text>
+            <text class="color-text-333">scroll-view: hidden</text>
             <scroll-view class="common" style="visibility: hidden;"></scroll-view>
           </view>
         </view>
       </view>
 
-      <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
+      <view class="mt-15">
+        <text class="fs-15 fw-bold color-text-333">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <!-- 普通版本 -->
-      <view class="test-container">
-        <view class="test-item">
-          <text class="uni-subtitle-text">view 组件</text>
-          <text class="uni-info">设置值: {{data.visibilityValue}}</text>
-          <text class="uni-info">获取值: {{data.visibilityActual}}</text>
+      <view class="flex-dir-row justify-between mt-10">
+        <view class="flex-1 m-0-5">
+          <text class="color-888 fs-12 fw-bold u-mt-5">view 组件</text>
+          <text class="fs-12 color-999">设置值: {{data.visibilityValue}}</text>
+          <text class="fs-12 color-999">获取值: {{data.visibilityActual}}</text>
           <view class="test-box">
-            <view ref="viewRef" class="common-dynamic test-view" :style="{ visibility: data.visibilityValue }">
-              <text class="cyan-label">view</text>
+            <view ref="viewRef" class="common-dynamic" :style="{ visibility: data.visibilityValue }">
+              <text class="color-1a1a1a">view</text>
             </view>
           </view>
         </view>
 
-        <view class="test-item">
-          <text class="uni-subtitle-text">text 组件</text>
-          <text class="uni-info">设置值: {{data.visibilityValue}}</text>
-          <text class="uni-info">获取值: {{data.visibilityActualText}}</text>
+        <view class="flex-1 m-0-5">
+          <text class="color-888 fs-12 fw-bold u-mt-5">text 组件</text>
+          <text class="fs-12 color-999">设置值: {{data.visibilityValue}}</text>
+          <text class="fs-12 color-999">获取值: {{data.visibilityActualText}}</text>
           <view class="test-box">
-            <text ref="textRef" class="common-dynamic test-text" :style="{ visibility: data.visibilityValue }">text</text>
+            <text ref="textRef" class="common-dynamic" :style="{ visibility: data.visibilityValue }">text</text>
           </view>
         </view>
 
-        <view class="test-item">
-          <text class="uni-subtitle-text">image 组件</text>
-          <text class="uni-info">设置值: {{data.visibilityValue}}</text>
-          <text class="uni-info">获取值: {{data.visibilityActualImage}}</text>
+        <view class="flex-1 m-0-5">
+          <text class="color-888 fs-12 fw-bold u-mt-5">image 组件</text>
+          <text class="fs-12 color-999">设置值: {{data.visibilityValue}}</text>
+          <text class="fs-12 color-999">获取值: {{data.visibilityActualImage}}</text>
           <view class="test-box">
-            <image ref="imageRef" class="common-dynamic test-image" :style="{ visibility: data.visibilityValue }" src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common-dynamic" :style="{ visibility: data.visibilityValue }" src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
 
-      <view class="uni-common-mt uni-common-mb">
-        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
-        <enum-data :items="visibilityEnum" title="visibility 枚举值" @change="radioChangeVisibility" :compact="true"></enum-data>
+      <!-- 拍平版本 -->
+      <view class="flex-dir-row justify-between mt-10">
+        <view class="flex-1 m-0-5">
+          <text class="color-888 fs-12 fw-bold u-mt-5">view 组件拍平</text>
+          <text class="fs-12 color-999">设置值: {{data.visibilityValue}}</text>
+          <text class="fs-12 color-999">获取值: {{data.visibilityActualFlatten}}</text>
+          <view class="test-box">
+            <view ref="viewRefFlatten" class="common-dynamic" :style="{ visibility: data.visibilityValue }" flatten>
+              <text class="color-1a1a1a">view</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="flex-1 m-0-5">
+          <text class="color-888 fs-12 fw-bold u-mt-5">text 组件拍平</text>
+          <text class="fs-12 color-999">设置值: {{data.visibilityValue}}</text>
+          <text class="fs-12 color-999">获取值: {{data.visibilityActualTextFlatten}}</text>
+          <view class="test-box">
+            <text ref="textRefFlatten" class="common-dynamic" :style="{ visibility: data.visibilityValue }" flatten>text</text>
+          </view>
+        </view>
+
+        <view class="flex-1 m-0-5">
+          <text class="color-888 fs-12 fw-bold u-mt-5">image 组件拍平</text>
+          <text class="fs-12 color-999">设置值: {{data.visibilityValue}}</text>
+          <text class="fs-12 color-999">获取值: {{data.visibilityActualImageFlatten}}</text>
+          <view class="test-box">
+            <image ref="imageRefFlatten" class="common-dynamic" :style="{ visibility: data.visibilityValue }" src="/static/test-image/logo.png" flatten></image>
+          </view>
+        </view>
+      </view>
+
+      <view class="mt-15 mb-15">
+        <text class="fs-13 color-tips-0958d9 bg-tips-e6f4ff border-l-4-solid-tips-91caff p-10-12 radius-4 m-10">第一个枚举值，'' (空字符串) - 空值情况</text>
+        <enum-data-checkbox :items="visibilityEnum" title="visibility 枚举值" @change="radioChangeVisibility" :compact="true"></enum-data-checkbox>
         <input-data :defaultValue="data.visibilityValue" title="visibility 自定义值" type="text" @confirm="inputChangeVisibility"></input-data>
       </view>
 
       <!-- #ifndef MP-ALIPAY -->
-      <view class="uni-common-mb">
-        <text class="theme-label">native-view 组件</text>
-        <view class="demo-box">
+      <view class="mb-15">
+        <text class="color-text-333">native-view 组件</text>
+        <view class="flex-dir-row justify-around mt-10">
           <view>
-            <text class="theme-label">native-view: visible</text>
+            <text class="color-text-333">native-view: visible</text>
             <test-native-view class="common" style="visibility: visible;"></test-native-view>
           </view>
           <view>
-            <text class="theme-label">native-view: hidden</text>
+            <text class="color-text-333">native-view: hidden</text>
             <test-native-view class="common" style="visibility: hidden;"></test-native-view>
           </view>
         </view>
@@ -91,15 +123,18 @@
 </template>
 
 <script setup lang="ts">
-  import { ItemType } from '@/components/enum-data/enum-data-types'
+  import { ItemType } from '@/components/enum-data-checkbox/enum-data-checkbox-types'
 
   let flag = true
   const data = reactive({
     visibility: 'visible',
     visibilityValue: 'visible',
     visibilityActual: '',
+    visibilityActualFlatten: '',
     visibilityActualText: '',
-    visibilityActualImage: ''
+    visibilityActualTextFlatten: '',
+    visibilityActualImage: '',
+    visibilityActualImageFlatten: ''
   })
 
 
@@ -121,11 +156,17 @@
   const viewRef = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
   const imageRef = ref(null as UniImageElement | null)
+  const viewRefFlatten = ref(null as UniElement | null)
+  const textRefFlatten = ref(null as UniTextElement | null)
+  const imageRefFlatten = ref(null as UniImageElement | null)
 
   const getPropertyValues = () => {
     data.visibilityActual = viewRef.value?.style.getPropertyValue('visibility') ?? ''
     data.visibilityActualText = textRef.value?.style.getPropertyValue('visibility') ?? ''
     data.visibilityActualImage = imageRef.value?.style.getPropertyValue('visibility') ?? ''
+    data.visibilityActualFlatten = viewRef.value?.style.getPropertyValue('visibility') ?? ''
+    data.visibilityActualTextFlatten = textRef.value?.style.getPropertyValue('visibility') ?? ''
+    data.visibilityActualImageFlatten = imageRef.value?.style.getPropertyValue('visibility') ?? ''
   }
 
   const changeVisibilityProperty = (value : string) => {
@@ -133,6 +174,9 @@
     viewRef.value?.style.setProperty('visibility', value)
     textRef.value?.style.setProperty('visibility', value)
     imageRef.value?.style.setProperty('visibility', value)
+    viewRefFlatten.value?.style.setProperty('visibility', value)
+    textRefFlatten.value?.style.setProperty('visibility', value)
+    imageRefFlatten.value?.style.setProperty('visibility', value)
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
@@ -161,41 +205,16 @@
 </script>
 
 <style>
-  .theme-label {
-    color: var(--text-color, #333333);
-  }
-
-  .cyan-label {
-    color: #1a1a1a;
-  }
-
   .common {
     width: 100px;
     height: 100px;
     background-color: cyan;
   }
 
-  .demo-box {
-    flex-direction: row;
-    margin-top: 10px;
-    justify-content: space-around;
-  }
-
   .common-dynamic {
     width: 100px;
     height: 100px;
     background-color: cyan;
-  }
-
-  .test-container {
-    flex-direction: row;
-    justify-content: space-between;
-    margin-top: 10px;
-  }
-
-  .test-item {
-    flex: 1;
-    margin: 0 5px;
   }
 
   .test-box {

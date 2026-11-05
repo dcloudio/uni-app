@@ -12,11 +12,14 @@
 </template>
 
 <script setup lang="ts">
+  import { useRouter } from 'vue-router'
   type IndexPageItem = {
     tabBar : string.PageURIString;
     indexPageUrl : string.PageURIString;
   }
-  const instance = getCurrentInstance()!.proxy!
+  // Vapor 不支持实例 $route，VDOM/Vapor 统一通过 Router 获取路由。
+  // 直接监听 currentRoute ref，保留路由对象切换时的触发语义，无需深度监听。
+  const { currentRoute } = useRouter()
   const selected = {
     component: 0,
     API: 1,
@@ -53,7 +56,7 @@
     }
   }
 
-  watch(() => instance.$route, newRoute => {
+  watch(currentRoute, newRoute => {
     // immediate: true,
     const width = uni.getSystemInfoSync().windowWidth
     if (width <= 768) {

@@ -27,44 +27,30 @@ export interface Uni {
         },
         "mp": {
             "weixin": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "5.31"
             },
             "baidu": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "toutiao": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "lark": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "qq": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "kuaishou": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "jd": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             }
         },
         "web": {
@@ -97,44 +83,30 @@ export interface Uni {
 	    },
 	    "mp": {
 	        "weixin": {
-	            "hostVer": "√",
 	            "uniVer": "√",
 	            "unixVer": "4.41"
 	        },
 	        "alipay": {
-	            "hostVer": "√",
 	            "uniVer": "√",
 	            "unixVer": "5.31"
 	        },
 	        "baidu": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        },
 	        "toutiao": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        },
 	        "lark": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        },
 	        "qq": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        },
 	        "kuaishou": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        },
 	        "jd": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        }
 	    },
 	    "web": {
@@ -173,51 +145,36 @@ export type SetInnerAudioOptionOptions = {
 	            "unixUtsPlugin": "4.81"
 	        },
 	        "harmony": {
-	            "osVer": "5.0.0(12)",
 	            "uniVer": "4.85",
 	            "unixVer": "4.85",
 	        }
 	    },
 	    "mp": {
 	        "weixin": {
-	            "hostVer": "√",
 	            "uniVer": "√",
 	            "unixVer": "4.41"
 	        },
 	        "alipay": {
-	            "hostVer": "√",
 	            "uniVer": "√",
 	            "unixVer": "5.31"
 	        },
 	        "baidu": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        },
 	        "toutiao": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        },
 	        "lark": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        },
 	        "qq": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        },
 	        "kuaishou": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        },
 	        "jd": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        }
 	    },
 	    "web": {
@@ -245,51 +202,36 @@ export type SetInnerAudioOptionOptions = {
 	            "unixUtsPlugin": "5.0"
 	        },
 	        "harmony": {
-	            "osVer": "5.0.0(12)",
 	            "uniVer": "5.0",
 	            "unixVer": "5.0",
 	        }
 	    },
 	    "mp": {
 	        "weixin": {
-	            "hostVer": "√",
 	            "uniVer": "√",
 	            "unixVer": "4.41"
 	        },
 	        "alipay": {
-	            "hostVer": "√",
 	            "uniVer": "√",
 	            "unixVer": "5.31"
 	        },
 	        "baidu": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        },
 	        "toutiao": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        },
 	        "lark": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        },
 	        "qq": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        },
 	        "kuaishou": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        },
 	        "jd": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        }
 	    },
 	    "web": {
@@ -317,51 +259,36 @@ export type SetInnerAudioOptionOptions = {
 	            "unixUtsPlugin": "5.0"
 	        },
 	        "harmony": {
-	            "osVer": "5.0.0(12)",
 	            "uniVer": "x",
 	            "unixVer": "x",
 	        }
 	    },
 	    "mp": {
 	        "weixin": {
-	            "hostVer": "√",
 	            "uniVer": "√",
 	            "unixVer": "4.41"
 	        },
 	        "alipay": {
-	            "hostVer": "√",
 	            "uniVer": "√",
 	            "unixVer": "5.31"
 	        },
 	        "baidu": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        },
 	        "toutiao": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        },
 	        "lark": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        },
 	        "qq": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        },
 	        "kuaishou": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        },
 	        "jd": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        }
 	    },
 	    "web": {
@@ -394,44 +321,30 @@ export type SetInnerAudioOptionOptions = {
 	    },
 	    "mp": {
 	        "weixin": {
-	            "hostVer": "√",
 	            "uniVer": "√",
 	            "unixVer": "4.41"
 	        },
 	        "alipay": {
-	            "hostVer": "√",
 	            "uniVer": "√",
 	            "unixVer": "5.31"
 	        },
 	        "baidu": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        },
 	        "toutiao": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        },
 	        "lark": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        },
 	        "qq": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        },
 	        "kuaishou": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        },
 	        "jd": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        }
 	    },
 	    "web": {
@@ -464,44 +377,30 @@ export type SetInnerAudioOptionOptions = {
 	    },
 	    "mp": {
 	        "weixin": {
-	            "hostVer": "√",
 	            "uniVer": "√",
 	            "unixVer": "4.41"
 	        },
 	        "alipay": {
-	            "hostVer": "√",
 	            "uniVer": "√",
 	            "unixVer": "5.31"
 	        },
 	        "baidu": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        },
 	        "toutiao": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        },
 	        "lark": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        },
 	        "qq": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        },
 	        "kuaishou": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        },
 	        "jd": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        }
 	    },
 	    "web": {
@@ -534,44 +433,30 @@ export type SetInnerAudioOptionOptions = {
 	    },
 	    "mp": {
 	        "weixin": {
-	            "hostVer": "√",
 	            "uniVer": "√",
 	            "unixVer": "4.41"
 	        },
 	        "alipay": {
-	            "hostVer": "√",
 	            "uniVer": "√",
 	            "unixVer": "5.31"
 	        },
 	        "baidu": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        },
 	        "toutiao": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        },
 	        "lark": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        },
 	        "qq": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        },
 	        "kuaishou": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        },
 	        "jd": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        }
 	    },
 	    "web": {
@@ -609,44 +494,30 @@ export interface InnerAudioContext {
           },
         "mp": {
             "weixin": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "5.31"
             },
             "baidu": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "toutiao": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "lark": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "qq": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "kuaishou": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "jd": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             }
         },
           "web": {
@@ -679,44 +550,30 @@ export interface InnerAudioContext {
           },
         "mp": {
             "weixin": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "5.31"
             },
             "baidu": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "toutiao": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "lark": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "qq": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "kuaishou": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "jd": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             }
         },
           "web": {
@@ -749,44 +606,30 @@ export interface InnerAudioContext {
           },
         "mp": {
             "weixin": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "5.31"
             },
             "baidu": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "toutiao": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "lark": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "qq": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "kuaishou": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "jd": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             }
         },
           "web": {
@@ -819,44 +662,30 @@ export interface InnerAudioContext {
           },
         "mp": {
             "weixin": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "5.31"
             },
             "baidu": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "toutiao": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "lark": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "qq": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "kuaishou": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "jd": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             }
         },
           "web": {
@@ -889,44 +718,30 @@ export interface InnerAudioContext {
           },
         "mp": {
             "weixin": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "5.31"
             },
             "baidu": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "toutiao": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "lark": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "qq": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "kuaishou": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "jd": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             }
         },
           "web": {
@@ -959,44 +774,30 @@ export interface InnerAudioContext {
           },
         "mp": {
             "weixin": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "5.31"
             },
             "baidu": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "toutiao": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "lark": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "qq": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "kuaishou": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "jd": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             }
         },
           "web": {
@@ -1030,44 +831,30 @@ export interface InnerAudioContext {
           },
         "mp": {
             "weixin": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "5.31"
             },
             "baidu": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "toutiao": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "lark": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "qq": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "kuaishou": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "jd": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             }
         },
           "web": {
@@ -1101,44 +888,30 @@ export interface InnerAudioContext {
           },
         "mp": {
             "weixin": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "5.31"
             },
             "baidu": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "toutiao": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "lark": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "qq": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "kuaishou": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "jd": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             }
         },
           "web": {
@@ -1171,44 +944,30 @@ export interface InnerAudioContext {
           },
         "mp": {
             "weixin": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "5.31"
             },
             "baidu": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "toutiao": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "lark": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "qq": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "kuaishou": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "jd": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             }
         },
           "web": {
@@ -1241,44 +1000,30 @@ export interface InnerAudioContext {
          },
         "mp": {
             "weixin": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "5.31"
             },
             "baidu": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "toutiao": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "lark": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "qq": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "kuaishou": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "jd": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             }
         },
          "web": {
@@ -1312,44 +1057,30 @@ export interface InnerAudioContext {
          },
         "mp": {
             "weixin": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "5.31"
             },
             "baidu": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "toutiao": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "lark": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "qq": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "kuaishou": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "jd": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             }
         },
          "web": {
@@ -1382,44 +1113,30 @@ export interface InnerAudioContext {
 	      },
 	    "mp": {
 	        "weixin": {
-	            "hostVer": "√",
 	            "uniVer": "√",
 	            "unixVer": "4.41"
 	        },
 	        "alipay": {
-	            "hostVer": "√",
 	            "uniVer": "√",
 	            "unixVer": "5.31"
 	        },
 	        "baidu": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        },
 	        "toutiao": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        },
 	        "lark": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        },
 	        "qq": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        },
 	        "kuaishou": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        },
 	        "jd": {
-	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
 	        }
 	    },
 	      "web": {
@@ -1454,44 +1171,30 @@ export interface InnerAudioContext {
           },
         "mp": {
             "weixin": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "5.31"
             },
             "baidu": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "toutiao": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "lark": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "qq": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "kuaishou": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "jd": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             }
         },
           "web": {
@@ -1524,44 +1227,30 @@ export interface InnerAudioContext {
           },
         "mp": {
             "weixin": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "5.31"
             },
             "baidu": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "toutiao": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "lark": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "qq": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "kuaishou": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "jd": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             }
         },
           "web": {
@@ -1594,44 +1283,30 @@ export interface InnerAudioContext {
           },
         "mp": {
             "weixin": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "5.31"
             },
             "baidu": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "toutiao": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "lark": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "qq": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "kuaishou": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "jd": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             }
         },
           "web": {
@@ -1664,44 +1339,30 @@ export interface InnerAudioContext {
           },
         "mp": {
             "weixin": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "5.31"
             },
             "baidu": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "toutiao": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "lark": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "qq": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "kuaishou": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "jd": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             }
         },
           "web": {
@@ -1762,44 +1423,30 @@ export interface InnerAudioContext {
           },
         "mp": {
             "weixin": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "5.31"
             },
             "baidu": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "toutiao": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "lark": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "qq": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "kuaishou": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "jd": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             }
         },
           "web": {
@@ -1861,44 +1508,30 @@ export interface InnerAudioContext {
           },
         "mp": {
             "weixin": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "5.31"
             },
             "baidu": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "toutiao": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "lark": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "qq": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "kuaishou": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "jd": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             }
         },
           "web": {
@@ -1932,44 +1565,30 @@ export interface InnerAudioContext {
           },
         "mp": {
             "weixin": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "5.31"
             },
             "baidu": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "toutiao": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "lark": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "qq": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "kuaishou": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "jd": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             }
         },
           "web": {
@@ -2002,44 +1621,30 @@ export interface InnerAudioContext {
           },
         "mp": {
             "weixin": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "5.31"
             },
             "baidu": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "toutiao": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "lark": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "qq": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "kuaishou": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "jd": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             }
         },
           "web": {
@@ -2072,44 +1677,30 @@ export interface InnerAudioContext {
           },
         "mp": {
             "weixin": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "5.31"
             },
             "baidu": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "toutiao": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "lark": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "qq": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "kuaishou": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "jd": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             }
         },
           "web": {
@@ -2142,44 +1733,30 @@ export interface InnerAudioContext {
           },
         "mp": {
             "weixin": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "5.31"
             },
             "baidu": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "toutiao": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "lark": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "qq": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "kuaishou": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "jd": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             }
         },
           "web": {
@@ -2212,44 +1789,30 @@ export interface InnerAudioContext {
           },
         "mp": {
             "weixin": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "5.31"
             },
             "baidu": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "toutiao": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "lark": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "qq": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "kuaishou": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "jd": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             }
         },
           "web": {
@@ -2282,44 +1845,30 @@ export interface InnerAudioContext {
           },
         "mp": {
             "weixin": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "5.31"
             },
             "baidu": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "toutiao": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "lark": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "qq": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "kuaishou": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "jd": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             }
         },
           "web": {
@@ -2352,44 +1901,30 @@ export interface InnerAudioContext {
           },
         "mp": {
             "weixin": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "5.31"
             },
             "baidu": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "toutiao": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "lark": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "qq": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "kuaishou": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "jd": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             }
         },
           "web": {
@@ -2422,44 +1957,30 @@ export interface InnerAudioContext {
           },
         "mp": {
             "weixin": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "5.31"
             },
             "baidu": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "toutiao": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "lark": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "qq": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "kuaishou": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "jd": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             }
         },
           "web": {
@@ -2492,44 +2013,30 @@ export interface InnerAudioContext {
           },
         "mp": {
             "weixin": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "5.31"
             },
             "baidu": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "toutiao": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "lark": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "qq": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "kuaishou": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "jd": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             }
         },
           "web": {
@@ -2562,44 +2069,30 @@ export interface InnerAudioContext {
           },
         "mp": {
             "weixin": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "5.31"
             },
             "baidu": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "toutiao": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "lark": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "qq": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "kuaishou": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "jd": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             }
         },
           "web": {
@@ -2632,44 +2125,30 @@ export interface InnerAudioContext {
           },
         "mp": {
             "weixin": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "5.31"
             },
             "baidu": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "toutiao": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "lark": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "qq": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "kuaishou": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "jd": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             }
         },
           "web": {
@@ -2702,44 +2181,30 @@ export interface InnerAudioContext {
           },
         "mp": {
             "weixin": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "5.31"
             },
             "baidu": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "toutiao": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "lark": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "qq": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "kuaishou": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "jd": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             }
         },
           "web": {
@@ -2772,44 +2237,30 @@ export interface InnerAudioContext {
           },
         "mp": {
             "weixin": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "5.31"
             },
             "baidu": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "toutiao": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "lark": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "qq": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "kuaishou": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "jd": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             }
         },
           "web": {
@@ -2842,44 +2293,30 @@ export interface InnerAudioContext {
           },
         "mp": {
             "weixin": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "5.31"
             },
             "baidu": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "toutiao": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "lark": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "qq": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "kuaishou": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "jd": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             }
         },
           "web": {
@@ -2940,44 +2377,30 @@ export interface InnerAudioContext {
           },
         "mp": {
             "weixin": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "5.31"
             },
             "baidu": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "toutiao": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "lark": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "qq": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "kuaishou": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "jd": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             }
         },
           "web": {
@@ -3010,44 +2433,30 @@ export interface InnerAudioContext {
           },
         "mp": {
             "weixin": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "√",
                 "uniVer": "√",
                 "unixVer": "5.31"
             },
             "baidu": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "toutiao": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "lark": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "qq": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "kuaishou": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             },
             "jd": {
-                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
             }
         },
           "web": {

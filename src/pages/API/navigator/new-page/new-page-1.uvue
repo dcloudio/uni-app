@@ -1,17 +1,17 @@
 <template>
   <page-head title="new-page-1" />
   <!-- #ifndef (APP-ANDROID || APP-IOS) && !VUE3-VAPOR -->
-  <image style="width: 250px; height: 176px;" src="/static/shuijiao.jpg" mode="scaleToFill"></image>
+  <image class="w-250 h-176" src="/static/shuijiao.jpg" mode="scaleToFill"></image>
   <!-- #endif -->
   <!-- #ifdef (APP-ANDROID || APP-IOS) && !VUE3-VAPOR -->
   <share-element share-key="test-share-element-key">
-    <image style="width: 250px; height: 176px;" src="/static/shuijiao.jpg" mode="scaleToFill"></image>
+    <image class="w-250 h-176" src="/static/shuijiao.jpg" mode="scaleToFill"></image>
   </share-element>
   <!-- #endif -->
-  <view class="uni-padding-wrap">
+  <view class="p-0-15">
     <text>onLoad 接收到参数</text>
     <text>data: {{ data.data }}</text>
-    <button @tap="navigateBackWithDelta2" class="uni-btn">
+    <button @tap="navigateBackWithDelta2" class="mt-10">
       回退到上上层页面
     </button>
   </view>

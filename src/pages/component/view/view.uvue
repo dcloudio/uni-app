@@ -1,42 +1,57 @@
 <template>
   <page-head title="view"></page-head>
-  <scroll-view style="flex: 1">
-    <view class="uni-padding-wrap uni-common-mt">
+  <scroll-view class="flex-1" :scroll-top="data.scroll_top">
+    <view class="p-0-15 mt-15">
       <!-- view样式大合集 -->
-      <text class="uni-title-text">view样式大合集</text>
-      <view class="styled-view-row">
-        <view class="styled-view">
-          <text class="demo-text">普通view</text>
+      <text class="fs-15 fw-bold color-text-333">view样式大合集</text>
+      <view class="flex-dir-row bg-list-fff justify-around h-120 items-center">
+        <view class="w-80 h-80 m-5 p-5 radius-8 d-flex flex-dir-column justify-center items-center pos-relative transform-rotate-45deg styled-view bg-f0f8ff opacity-0_95">
+          <text class="fs-12 color-007aff fw-500">普通view</text>
         </view>
-        <view class="styled-view" flatten>
-          <text class="demo-text" flatten>拍平view</text>
+        <view class="w-80 h-80 m-5 p-5 radius-8 d-flex flex-dir-column justify-center items-center pos-relative transform-rotate-45deg styled-view bg-f0f8ff opacity-0_95" flatten>
+          <text class="fs-12 color-007aff fw-500" flatten>拍平view</text>
         </view>
       </view>
 
-      <text class="uni-title-text">自定义组件：右边拍平</text>
-      <view class="styled-view-row">
+      <text class="fs-15 fw-bold color-text-333">自定义组件：右边拍平</text>
+      <view class="flex-dir-row bg-list-fff justify-around h-120 items-center">
         <child></child>
         <child flatten></child>
       </view>
 
-      <text class="uni-title-text uni-common-mt">Hover 点击态效果</text>
-      <view id="view" class="main" :hover-class="data.hover_class ? 'is-parent-hover' : 'none'">
-        <view id="view-child1" class="test-view" :hover-class="data.hover_class ? 'is-hover' : 'none'" :hover-stop-propagation="data.stop_propagation"
+      <text class="fs-15 fw-bold color-text-333 mt-15">Hover 点击态效果</text>
+      <view id="view" class="p-5-0 flex-dir-row justify-center" :hover-class="data.hover_class ? 'is-parent-hover' : 'none'">
+        <view id="view-child1" class="h-200 w-200 bg-list-fff" :hover-class="data.hover_class ? 'is-hover' : 'none'" :hover-stop-propagation="data.stop_propagation"
           :hover-start-time="data.start_time" :hover-stay-time="data.stay_time">
         </view>
       </view>
 
-      <view class="content">
+      <text class="fs-15 fw-bold color-text-333 mt-15">自定义组件 Hover 属性透传</text>
+      <view class="p-5-0 flex-dir-row justify-center">
+        <child id="hover-child" :hover-class="data.hover_class ? 'is-hover' : 'none'" :hover-stop-propagation="data.stop_propagation"
+          :hover-start-time="data.start_time" :hover-stay-time="data.stay_time">
+        </child>
+      </view>
+
+      <view>
         <boolean-data :value="false" title="是否指定按下去的样式类" @change="change_hover_class_boolean"></boolean-data>
         <boolean-data :value="false" title="是否阻止本节点的祖先节点出现点击态"
           @change="change_stop_propagation_boolean"></boolean-data>
-        <enum-data :items="data.start_time_enum" title="按住后多久出现点击态" @change="radio_change_start_time_enum"></enum-data>
-        <enum-data :items="data.stay_time_enum" title="手指松开后点击态保留时间" @change="radio_change_stay_time_enum"></enum-data>
+        <enum-data-checkbox
+          v-model="data.start_time"
+          :items="data.start_time_enum"
+          title="按住后多久出现点击态"
+        />
+        <enum-data-checkbox
+          v-model="data.stay_time"
+          :items="data.stay_time_enum"
+          title="手指松开后点击态保留时间"
+        />
       </view>
 
       <!-- #ifdef VUE3-VAPOR && !MP-ALIPAY -->
       <navigator url="/pages/template/4050/4050">
-        <button style="margin:20px;">组件性能测试</button>
+        <button class="m-20">组件性能测试</button>
       </navigator>
       <!-- #endif -->
     </view>
@@ -44,17 +59,7 @@
 
 </template>
 <script setup lang="ts">
-  import { ItemType } from '@/components/enum-data/enum-data-types'
   import Child from './child.uvue'
-
-  type DataType = {
-    hover_class: boolean;
-    stop_propagation: boolean;
-    start_time: number;
-    stay_time: number;
-    start_time_enum: ItemType[];
-    stay_time_enum: ItemType[];
-  }
 
   // 使用reactive解决ref数据在自动化测试中无法访问
   const data = reactive({
@@ -63,8 +68,9 @@
     start_time: 50,
     stay_time: 400,
     start_time_enum: [{ "value": 50, "name": "50毫秒" }, { "value": 200, "name": "200毫秒" }],
-    stay_time_enum: [{ "value": 400, "name": "400毫秒" }, { "value": 200, "name": "200毫秒" }]
-  } as DataType)
+    stay_time_enum: [{ "value": 400, "name": "400毫秒" }, { "value": 200, "name": "200毫秒" }],
+    scroll_top: 0
+  })
 
   const change_hover_class_boolean = (checked: boolean) => {
     data.hover_class = checked
@@ -74,63 +80,39 @@
     data.stop_propagation = checked
   }
 
-  const radio_change_start_time_enum = (time: number) => {
-    data.start_time = time
+  type HoverChildRectType = {
+    left : number,
+    top : number,
+    width : number,
+    height : number,
   }
 
-  const radio_change_stay_time_enum = (time: number) => {
-    data.stay_time = time
+  // 计算自定义组件根节点在屏幕中的位置（用于自动化测试点击）
+  const get_hover_child_rect = () : HoverChildRectType | null => {
+    const el = uni.getElementById("hover-child")
+    const rect = el?.getBoundingClientRect() ?? null
+    if (rect == null) {
+      return null
+    }
+    return {
+      left: rect.left,
+      top: rect.top,
+      width: rect.width,
+      height: rect.height,
+    }
   }
 
   defineExpose({
-    data
+    data,
+    get_hover_child_rect
   })
 </script>
 
 <style>
-  .styled-view-row {
-    flex-direction: row;
-    background-color: var(--list-background-color, #ffffff);
-    justify-content: space-around;
-    height: 120px;
-    align-items: center;
-  }
-
   /* view样式大合集 */
   .styled-view {
-    width: 80px;
-    height: 80px;
-    margin: 5px;
-    padding: 5px;
     border: 2px solid #007aff;
-    border-radius: 8px;
-    background-color: #f0f8ff;
     box-shadow: 0 2px 4px rgba(0, 122, 255, 0.2);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    opacity: 0.95;
-    position: relative;
-    transform: rotate(45deg);
-  }
-
-  .demo-text {
-    font-size: 12px;
-    color: #007aff;
-    font-weight: 500;
-  }
-
-  .main {
-    padding: 5px 0;
-    flex-direction: row;
-    justify-content: center;
-  }
-
-  .test-view {
-    height: 200px;
-    width: 200px;
-    background-color: var(--list-background-color,#ffffff);
   }
 
   .is-hover {

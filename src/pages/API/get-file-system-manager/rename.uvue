@@ -1,0 +1,208 @@
+<template>
+  <!-- #ifdef APP -->
+  <page-intro content="演示 FileSystemManager.rename / renameSync：重命名（或移动）文件，目标目录不存在时返回 errCode 1300002。"></page-intro>
+  <scroll-view class="flex-1">
+  <!-- #endif -->
+    <view class="p-8 flex-dir-column">
+      <view class="p-8 border-1-solid-e0e0e0 radius-4 flex-dir-column m-4-0">
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">根目录</text>
+          <enum-data-checkbox
+            class="flex-1"
+            :model-value="data.rootKey"
+            :items="rootOptions"
+            mode="default"
+            :show-toast="false"
+            @change="onRootChange"
+          />
+        </view>
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">原路径</text>
+          <input class="flex-1 border-1-solid-d0d0d0 radius-4 p-4-8 fs-13 h-32" v-model="data.oldPath" placeholder="相对根目录的路径" />
+        </view>
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">新路径</text>
+          <input class="flex-1 border-1-solid-d0d0d0 radius-4 p-4-8 fs-13 h-32" v-model="data.newPath" placeholder="相对根目录的路径" />
+        </view>
+      </view>
+      <view class="flex-dir-row flex-wrap-wrap m-4-0">
+        <button class="m-4" type="primary" @tap="rename" id="btn-rename">rename 重命名</button>
+        <button class="m-4" type="primary" @tap="renameSync" id="btn-rename-sync">renameSync 重命名</button>
+        <button class="m-4" type="warn" @tap="demoFail" id="btn-rename-fail">演示失败（目标目录不存在）</button>
+      </view>
+      <view class="p-8 border-1-solid-e0e0e0 radius-4 flex-dir-column m-4-0-12-0">
+        <text class="fw-bold fs-14 m-2-0 color-333">执行结果：{{ data.lastResult == '' ? '等待执行' : (data.lastResult == 'success' ? '成功' : '失败') }}</text>
+        <text class="fs-13 m-2-0 color-666">原路径：{{ data.rootPath }}{{ data.oldPath }}</text>
+        <text class="fs-13 m-2-0 color-666">新路径：{{ data.rootPath }}{{ data.newPath }}</text>
+        <text class="fs-13 m-2-0 color-666" v-if="data.lastResult == 'success'">新文件内容（utf-8）：{{ data.readRet }}</text>
+        <text class="fs-13 m-2-0 color-e64340" v-if="data.lastResult == 'fail'">errCode：{{ data.lastFailError.errCode }}；errMsg：{{ data.lastFailError.errMsg }}</text>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="ts">
+  import { createEnumItems } from '@/components/enum-data-checkbox/enum-data-checkbox-types'
+  const rootOptions = createEnumItems(['usr', 'cache', 'sandbox'])
+
+  import { getFsmRootPath, ensureFsmDirSync, ensureFsmFileSync, removeFsmPathSync, removeFsmDirSync, createFsmMockError } from './fsm-utils'
+
+  type DataType = {
+    rootKey : string
+    rootPath : string
+    oldPath : string
+    newPath : string
+    readRet : string
+    existsRet : boolean
+    done : boolean
+    lastResult : string
+    lastFailError : UniError
+  }
+
+  const data = reactive({
+    rootKey: 'usr',
+    rootPath: getFsmRootPath('usr'),
+    oldPath: 'fsm-rename-demo/1.txt',
+    newPath: 'fsm-rename-demo/2.txt',
+    readRet: '',
+    existsRet: false,
+    done: false,
+    lastResult: '',
+    lastFailError: createFsmMockError(),
+  } as DataType)
+
+  function onRootChange(value : string) {
+    data.rootKey = value
+    data.rootPath = getFsmRootPath(data.rootKey)
+  }
+
+  function targetPath(path : string) : string {
+    return `${data.rootPath}${path}`
+  }
+
+  function resetResult() {
+    data.done = false
+    data.lastResult = ''
+    data.readRet = ''
+  }
+
+  function applyFail(res : IUniError) {
+    data.lastResult = 'fail'
+    data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+  }
+
+  function exists(path : string) : void {
+    try {
+      uni.getFileSystemManager().accessSync(path != null ? path : targetPath(data.newPath))
+      data.existsRet = true
+    } catch (e) {
+      data.existsRet = false
+    }
+  }
+
+  function prepare() : void {
+    const demoDir = `${data.rootPath}fsm-rename-demo`
+    ensureFsmDirSync(demoDir)
+    ensureFsmFileSync(`${demoDir}/1.txt`, '测试rename API的写入功能。\n\t制表符缩进行\n回车换行：\r\n下一行\n反斜杠 \\ 双引号 " 单引号 \'\n空格[  ]全角空格[　]不间断空格[ ]\n混合内容：中文English123!@#')
+    data.done = true
+  }
+
+  function cleanup() : void {
+    removeFsmDirSync(`${data.rootPath}fsm-rename-demo`)
+    data.done = true
+  }
+
+  function readNewText() : void {
+    try {
+      const content = uni.getFileSystemManager().readFileSync(targetPath(data.newPath), 'utf-8')
+      data.readRet = (content as string).toString()
+    } catch (e) {
+      data.readRet = `read back fail: ${e}`
+    }
+  }
+
+  function rename() : void {
+    resetResult()
+    // 自愈：重建默认源文件并清理目标残留，保证重复点击始终成功
+    if (data.oldPath == 'fsm-rename-demo/1.txt') {
+      ensureFsmDirSync(`${data.rootPath}fsm-rename-demo`)
+      ensureFsmFileSync(`${data.rootPath}fsm-rename-demo/1.txt`, '测试rename API的写入功能。\n\t制表符缩进行\n回车换行：\r\n下一行\n反斜杠 \\ 双引号 " 单引号 \'\n空格[  ]全角空格[　]不间断空格[ ]\n混合内容：中文English123!@#')
+    }
+    removeFsmPathSync(targetPath(data.newPath))
+    const fileManager = uni.getFileSystemManager()
+    const options : RenameOptions = {
+      oldPath: targetPath(data.oldPath),
+      newPath: targetPath(data.newPath),
+      success: (_ : FileManagerSuccessResult) => {
+        data.lastResult = 'success'
+        readNewText()
+      },
+      fail: (res : IUniError) => {
+        applyFail(res)
+      },
+      complete: (_ : any) => {
+        data.done = true
+      }
+    }
+    fileManager.rename(options)
+  }
+
+  function renameSync() : void {
+    resetResult()
+    // 自愈：重建默认源文件并清理目标残留，保证重复点击始终成功
+    if (data.oldPath == 'fsm-rename-demo/1.txt') {
+      ensureFsmDirSync(`${data.rootPath}fsm-rename-demo`)
+      ensureFsmFileSync(`${data.rootPath}fsm-rename-demo/1.txt`, '测试rename API的写入功能。\n\t制表符缩进行\n回车换行：\r\n下一行\n反斜杠 \\ 双引号 " 单引号 \'\n空格[  ]全角空格[　]不间断空格[ ]\n混合内容：中文English123!@#')
+    }
+    removeFsmPathSync(targetPath(data.newPath))
+    try {
+      uni.getFileSystemManager().renameSync(targetPath(data.oldPath), targetPath(data.newPath))
+      data.lastResult = 'success'
+      readNewText()
+    } catch (e) {
+      data.lastResult = 'fail'
+      data.lastFailError = new UniError('uni-file-manager', 0, `${e}`)
+    }
+    data.done = true
+  }
+
+  // 一键演示失败场景：目标目录不存在，预期 errCode 1300002（演示后自动恢复参数）
+  function demoFail() : void {
+    resetResult()
+    const prevNew = data.newPath
+    const missingNew = 'fsm-rename-demo/missing/2.txt'
+    data.newPath = missingNew
+    const fileManager = uni.getFileSystemManager()
+    const options : RenameOptions = {
+      oldPath: targetPath(data.oldPath),
+      newPath: `${data.rootPath}${missingNew}`,
+      success: (_ : FileManagerSuccessResult) => {
+        data.lastResult = 'success'
+      },
+      fail: (res : IUniError) => {
+        applyFail(res)
+      },
+      complete: (_ : any) => {
+        data.newPath = prevNew
+        data.done = true
+      }
+    }
+    fileManager.rename(options)
+  }
+
+  onReady(() => {
+    prepare()
+  })
+
+  defineExpose({
+    data,
+    prepare,
+    cleanup,
+    exists,
+    rename,
+    renameSync,
+    demoFail
+  })
+</script>

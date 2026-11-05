@@ -1,76 +1,76 @@
 <template>
     <page-head title="scroll-view,区域滚动视图"></page-head>
-    <view class="uni-padding-wrap uni-common-mt">
-      <view class="uni-title uni-common-mt">
-        <text class="uni-title-text">Vertical Scroll</text>
-        <text class="uni-subtitle-text">纵向滚动</text>
+    <view class="p-0-15 mt-15">
+      <view class="p-10-0 color-text-333 mt-15">
+        <text class="fs-15 fw-bold color-text-333">Vertical Scroll</text>
+        <text class="color-888 fs-12 fw-bold u-mt-5">纵向滚动</text>
       </view>
       <view>
-        <scroll-view :scroll-top="data.scrollTop" :direction="data.scrollDirection" class="scroll-Y" scroll-with-animation="true"
+        <scroll-view :scroll-top="data.scrollTop" :direction="data.scrollDirection" class="h-150" scroll-with-animation="true"
           @scrolltoupper="upper" @scrolltolower="lower" @scroll="scroll" @scrollend="end"
           :show-scrollbar="data.showScrollbar" id="verticalScrollView">
-          <view class="scroll-view-item uni-bg-red"><text class="text">A</text></view>
-          <view class="scroll-view-item uni-bg-green"><text class="text">B</text></view>
-          <view class="scroll-view-item uni-bg-blue"><text class="text">C</text></view>
+          <view class="h-150 justify-center items-center background-f76260"><text class="fs-18 color-fff">A</text></view>
+          <view class="h-150 justify-center items-center background-09bb07"><text class="fs-18 color-fff">B</text></view>
+          <view class="h-150 justify-center items-center background-007aff"><text class="fs-18 color-fff">C</text></view>
         </scroll-view>
       </view>
-      <view @tap="goTop" class="uni-center uni-common-mt">
-        <text class="uni-link">点击这里返回顶部</text>
+      <view @tap="goTop" class="flex-dir-row justify-center mt-15">
+        <text class="color-576b95 fs-13">点击这里返回顶部</text>
       </view>
       <boolean-data :value="false" title="是否禁用scroll-view滚动" @change="change_disabled_boolean"></boolean-data>
 
-      <view class="uni-title uni-common-mt">
-        <text class="uni-title-text">Horizontal Scroll</text>
-        <text class="uni-subtitle-text">横向滚动</text>
+      <view class="p-10-0 color-text-333 mt-15">
+        <text class="fs-15 fw-bold color-text-333">Horizontal Scroll</text>
+        <text class="color-888 fs-12 fw-bold u-mt-5">横向滚动</text>
       </view>
       <view>
-        <scroll-view class="scroll-view_H" direction="horizontal" @scroll="scroll" @scrollend="end"
+        <scroll-view class="w-full flex-dir-row" direction="horizontal" @scroll="scroll" @scrollend="end"
           :scroll-left="data.scrollLeft" :show-scrollbar="data.showScrollbar">
-          <view class="scroll-view-item_H uni-bg-red"><text class="text">A</text></view>
-          <view class="scroll-view-item_H uni-bg-green"><text class="text">B</text></view>
-          <view class="scroll-view-item_H uni-bg-blue"><text class="text">C</text></view>
+          <view class="w-full h-150 justify-center items-center background-f76260"><text class="fs-18 color-fff">A</text></view>
+          <view class="w-full h-150 justify-center items-center background-09bb07"><text class="fs-18 color-fff">B</text></view>
+          <view class="w-full h-150 justify-center items-center background-007aff"><text class="fs-18 color-fff">C</text></view>
         </scroll-view>
       </view>
 
-      <text class="uni-title-text">scroll-view样式大合集</text>
-      <scroll-view class="scroll-view-style-demo" direction="vertical">
-        <view class="style-demo-item uni-bg-red"><text class="text">1</text></view>
-        <view class="style-demo-item uni-bg-green"><text class="text">2</text></view>
-        <view class="style-demo-item uni-bg-blue"><text class="text">3</text></view>
+      <text class="fs-15 fw-bold color-text-333">scroll-view样式大合集</text>
+      <scroll-view class="flex-dir-column flex-wrap-nowrap items-center w-90pct h-80 radius-4 m-10 u-p-10 d-flex scroll-view-style-demo justify-start bg-e3f2fd border-1-solid-007aff opacity-0_95" direction="vertical">
+        <view class="w-100 h-80 background-f76260"><text class="fs-18 color-fff">1</text></view>
+        <view class="w-100 h-80 background-09bb07"><text class="fs-18 color-fff">2</text></view>
+        <view class="w-100 h-80 background-007aff"><text class="fs-18 color-fff">3</text></view>
       </scroll-view>
 
       <navigator url="/pages/component/scroll-view/scroll-view-props" hover-class="none">
-        <button type="primary" class="button">
+        <button type="primary" class="mt-15">
           非下拉刷新的属性示例
         </button>
       </navigator>
-      <view class="uni-common-pb"></view>
+      <view class="pb-15"></view>
       <!-- #ifdef VUE3-VAPOR -->
       <navigator url="/pages/component/scroll-view/scroll-view-props-direction-all" hover-class="none">
-        <button type="primary" class="button">
+        <button type="primary" class="mt-15">
           direction=all 属性示例
         </button>
       </navigator>
-      <view class="uni-common-pb"></view>
+      <view class="pb-15"></view>
       <!-- #endif -->
 
       <!-- #ifndef MP-ALIPAY -->
       <navigator url="/pages/component/scroll-view/scroll-view-refresher-props" hover-class="none">
-        <button type="primary" class="button">
+        <button type="primary" class="mt-15">
           下拉刷新的属性示例
         </button>
       </navigator>
-      <view class="uni-common-pb"></view>
+      <view class="pb-15"></view>
       <navigator url="/pages/component/scroll-view/scroll-view-refresher" hover-class="none">
-        <button type="primary" class="button"> 默认下拉刷新示例 </button>
+        <button type="primary" class="mt-15"> 默认下拉刷新示例 </button>
       </navigator>
-      <view class="uni-common-pb"></view>
+      <view class="pb-15"></view>
       <navigator url="/pages/component/scroll-view/scroll-view-custom-refresher-props" hover-class="none">
-        <button type="primary" class="button">
+        <button type="primary" class="mt-15">
           自定义下拉刷新示例
         </button>
       </navigator>
-      <view class="uni-common-pb"></view>
+      <view class="pb-15"></view>
       <!-- #endif -->
     </view>
 </template>
@@ -91,6 +91,7 @@
     scrollDirection: string;
     // 自动化测试
     isScrollTest: string;
+    isScrollendTest: string;
     isScrolltolowerTest: string;
     isScrolltoupperTest: string;
     scrollDetailTest: UniScrollEventDetail | null;
@@ -106,6 +107,7 @@
     scrollDirection: "vertical",
     // 自动化测试
     isScrollTest: '',
+    isScrollendTest: '',
     isScrolltolowerTest: '',
     isScrolltoupperTest: '',
     scrollDetailTest: null as UniScrollEventDetail | null,
@@ -124,6 +126,9 @@
     switch (eventName) {
       case 'scroll':
         data.isScrollTest = result
+        break;
+      case 'scrollend':
+        data.isScrollendTest = result
         break;
       case 'scrolltolower':
         data.isScrolltolowerTest = result + `-${e.direction}`
@@ -211,57 +216,9 @@
 </script>
 
 <style>
-  .scroll-Y {
-    height: 150px;
-  }
-
-  .scroll-view_H {
-    width: 100%;
-    flex-direction: row;
-  }
-
-  .scroll-view-item {
-    height: 150px;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .scroll-view-item_H {
-    width: 100%;
-    height: 150px;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .text {
-    font-size: 18px;
-    color: #ffffff;
-  }
-
-  .button {
-    margin-top: 15px;
-  }
-
   .scroll-view-style-demo {
-    flex-direction: column;
-    justify-content: flex-start;
-    flex-wrap: nowrap;
-    align-items: center;
-    width: 90%;
-    height: 80px;
-    background-color: #e3f2fd;
     background-image: linear-gradient(to right, #e3f2fd, #a9d5fa);
-    border: 1px solid #007aff;
-    border-radius: 4px;
-    margin: 10px;
-    padding: 10px;
-    display: flex;
-    opacity: 0.95;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  }
-  .style-demo-item {
-    width: 100px;
-    height: 80px;
   }
 
 </style>

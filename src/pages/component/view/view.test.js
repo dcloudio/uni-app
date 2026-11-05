@@ -7,9 +7,10 @@ describe('view-test', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
   const isIos = platformInfo.startsWith('ios')
   const isHarmony = platformInfo.startsWith('harmony')
+  const isAndroid = platformInfo.startsWith('android')
   const isVapor = process.env.UNI_APP_X_DOM2 === "true"
 
-  if (!isIos && !isHarmony) {
+  if (!isIos && !isHarmony && !isAndroid) {
     it('other platform', () => {
       expect(1).toBe(1)
     })
@@ -21,6 +22,43 @@ describe('view-test', () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor('view');
   })
+
+  // 自定义组件 hover 属性透传：Android 已正常，iOS/Harmony 修复中
+  // if (isAndroid) {
+  //   it('child-hover-props-passthrough', async () => {
+  //     const hoverChild = await page.$('#hover-child')
+  //     await page.setData({
+  //       data: {
+  //         hover_class: true,
+  //         start_time: 0,
+  //         stay_time: 1000 * 10
+  //       }
+  //     })
+  //     await page.waitFor(100)
+
+  //     const win = await program.callUniMethod('getWindowInfo')
+  //     const statusTop = win.statusBarHeight || (win.safeAreaInsets && win.safeAreaInsets.top) || 0
+  //     // 元素位于 scroll-view 内，若在折叠线以下，先滚动到屏幕中部，保证可点击
+  //     let rect = await page.callMethod('get_hover_child_rect')
+  //     console.log('rect1', JSON.stringify(rect))
+  //     const delta = Math.round(statusTop + 44 + rect.top + rect.height / 2 - win.windowHeight * 0.5)
+  //     if (delta > 0) {
+  //       await page.setData({ data: { scroll_top: delta } })
+  //       await page.waitFor(300)
+  //       rect = await page.callMethod('get_hover_child_rect')
+  //       console.log('rect2', JSON.stringify(rect))
+  //     }
+
+  //     const x = Math.round(rect.left + rect.width / 2)
+  //     const y = Math.round(statusTop + 44 + rect.top + rect.height / 2)
+  //     await program.tap({ x, y, duration: 1000 })
+
+  //     // 通过检查样式来判断 hover 相关属性是否透传到自定义组件根节点
+  //     const bgColor = await hoverChild.style('background-color')
+  //     const normalizedBgColor = bgColor.toLowerCase().replace(/\s/g, '')
+  //     expect(['#179b16ff', 'rgb(23,155,22)']).toContain(normalizedBgColor)
+  //   })
+  // }
 
   if (isIos) {
     it('itemclick-event', async () => {

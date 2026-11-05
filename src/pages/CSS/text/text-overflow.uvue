@@ -1,5 +1,5 @@
 <template>
-    <view style="flex-grow: 1;">
+    <view class="flex-grow-1">
       <view style="padding: 0 10px; background-color: gray;justify-content: center;">
         <view class="margin-bottom-10">
           <text class="font-weight-bold">text-overflow:clip white-space:nowrap</text>
@@ -49,37 +49,51 @@
           <text class="font-size-20" style="text-overflow: ellipsis; width: 100px;" :max-lines="2">{{data.multiLineText}}</text>
           <!-- #endif -->
         </view>
-
-
-        <view class="margin-bottom-10 uni-common-mt">
-          <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
+        <view class="margin-bottom-10">
+          <text class="font-weight-bold">定宽半字边界测试（宽200px）</text>
+          <view class="margin-bottom-10">
+            <text class="font-weight-bold">单行</text>
+            <text class="font-size-20" style="width: 200px;text-overflow: clip;white-space: nowrap;">{{data.multiLineText}}</text>
+            <text style="color:#dbd9d9;">拍平版本</text>
+            <text class="font-size-20" style="width: 200px;text-overflow: clip;white-space: nowrap;" flatten>{{data.multiLineText}}</text>
+          </view>
+          <view class="margin-bottom-10">
+            <text class="font-weight-bold">多行</text>
+            <text class="font-size-20" style="width: 200px;text-overflow: clip;">{{data.multiLineText}}</text>
+            <text style="color:#dbd9d9;">拍平版本</text>
+            <text class="font-size-20" style="width: 200px;text-overflow: clip;" flatten>{{data.multiLineText}}</text>
+          </view>
         </view>
 
-        <view class="common-box">
+        <view class="margin-bottom-10 mt-15">
+          <text class="fs-15 fw-bold color-text-333">setProperty 设置与 getPropertyValue 获取</text>
+        </view>
+
+        <view class="flex-dir-row justify-around">
           <!-- 普通版本 -->
-          <view class="uni-common-mt">
-            <text class="uni-title-text">text-overflow</text>
-            <text class="uni-info">设置值: {{data.textOverflow}}</text>
-            <text class="uni-info">获取值: {{data.textOverflowActual}}</text>
+          <view class="mt-15">
+            <text class="fs-15 fw-bold color-text-333">text-overflow</text>
+            <text class="fs-12 color-999">设置值: {{data.textOverflow}}</text>
+            <text class="fs-12 color-999">获取值: {{data.textOverflowActual}}</text>
             <view class="test-box">
-              <text ref="textRef" class="font-size-14 test-text" :style="{ textOverflow: data.textOverflow, whiteSpace: 'nowrap', width: '150px' }">{{data.multiLineText}}</text>
+              <text ref="textRef" class="font-size-14" :style="{ textOverflow: data.textOverflow, whiteSpace: 'nowrap', width: '150px' }">{{data.multiLineText}}</text>
             </view>
           </view>
 
           <!-- 拍平版本 -->
-          <view class="uni-common-mt">
-            <text class="uni-title-text">拍平</text>
-            <text class="uni-info">设置值: {{data.textOverflow}}</text>
-            <text class="uni-info">获取值: {{data.textOverflowActualFlat}}</text>
+          <view class="mt-15">
+            <text class="fs-15 fw-bold color-text-333">拍平</text>
+            <text class="fs-12 color-999">设置值: {{data.textOverflow}}</text>
+            <text class="fs-12 color-999">获取值: {{data.textOverflowActualFlat}}</text>
             <view class="test-box">
-              <text ref="textRefFlat" class="font-size-14 test-text-flatten" :style="{ textOverflow: data.textOverflow, whiteSpace: 'nowrap', width: '150px' }" flatten>{{data.multiLineText}}</text>
+              <text ref="textRefFlat" class="font-size-14" :style="{ textOverflow: data.textOverflow, whiteSpace: 'nowrap', width: '150px' }" flatten>{{data.multiLineText}}</text>
             </view>
           </view>
         </view>
 
-        <view class="uni-common-mt uni-common-mb">
-            <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
-            <enum-data :items="textOverflowEnum" title="text-overflow 枚举值" @change="radioChangeTextOverflow" :compact="true"></enum-data>
+        <view class="mt-15 mb-15">
+            <text class="fs-13 color-tips-0958d9 bg-tips-e6f4ff border-l-4-solid-tips-91caff p-10-12 radius-4 m-10">第一个枚举值，'' (空字符串) - 空值情况</text>
+            <enum-data-checkbox :items="textOverflowEnum" title="text-overflow 枚举值" @change="radioChangeTextOverflow" :compact="true"></enum-data-checkbox>
             <input-data :defaultValue="data.textOverflow" title="text-overflow 自定义值" type="text" @confirm="inputChangeTextOverflow"></input-data>
         </view>
       </view>
@@ -87,7 +101,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ItemType } from '@/components/enum-data/enum-data-types'
+  import { ItemType } from '@/components/enum-data-checkbox/enum-data-checkbox-types'
 
   const data = reactive({
     multiLineText: 'HBuilderX，轻巧、极速，极客编辑器；uni-app x，终极跨平台方案；uts，大一统语言',
@@ -157,11 +171,6 @@
 
   .margin-bottom-10 {
     margin-bottom: 10px;
-  }
-
-  .common-box{
-    flex-direction: row;
-    justify-content: space-around;
   }
 
   .test-box {

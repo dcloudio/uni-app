@@ -137,12 +137,12 @@
         <view class="jest-calc-flex-row">
           <view ref="jestFlexBasisRef" class="jest-calc-flex-basis"></view>
         </view>
-        <view ref="jestBorderRef" class="jest-calc-test-box jest-calc-border"></view>
-        <view ref="jestBorderTopRef" class="jest-calc-test-box jest-calc-border-top"></view>
-        <view ref="jestBorderRightRef" class="jest-calc-test-box jest-calc-border-right"></view>
-        <view ref="jestBorderBottomRef" class="jest-calc-test-box jest-calc-border-bottom"></view>
-        <view ref="jestBorderLeftRef" class="jest-calc-test-box jest-calc-border-left"></view>
-        <view ref="jestBorderWidthRef" class="jest-calc-test-box jest-calc-border-width"></view>
+        <view ref="jestBorderRef" class="jest-calc-test-box"></view>
+        <view ref="jestBorderTopRef" class="jest-calc-test-box"></view>
+        <view ref="jestBorderRightRef" class="jest-calc-test-box"></view>
+        <view ref="jestBorderBottomRef" class="jest-calc-test-box"></view>
+        <view ref="jestBorderLeftRef" class="jest-calc-test-box"></view>
+        <view ref="jestBorderWidthRef" class="jest-calc-test-box"></view>
         <view ref="jestBorderTopWidthRef" class="jest-calc-test-box jest-calc-border-top-width"></view>
         <view ref="jestBorderRightWidthRef" class="jest-calc-test-box jest-calc-border-right-width"></view>
         <view ref="jestBorderBottomWidthRef" class="jest-calc-test-box jest-calc-border-bottom-width"></view>
@@ -308,12 +308,6 @@
     margin-bottom: 12px;
   }
 
-  .title {
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--calc-text-color, #202124);
-  }
-
   .track {
     width: 100%;
     height: 40px;
@@ -361,14 +355,6 @@
     padding-left: calc(var(--uni-safe-area-inset-left) + 6px);
     background-color: #2878d0;
     margin-bottom: 12px;
-  }
-
-  .fixed-test {
-    position: fixed;
-    height: 60px;
-    width: 100%;
-    background-color: #2878d0;
-    top: calc(100% - 70px);
   }
 
   .rpx-test {

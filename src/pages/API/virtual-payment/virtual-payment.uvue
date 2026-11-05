@@ -1,13 +1,13 @@
 <template>
     <page-head title="虚拟支付"></page-head>
-    <view style="padding-left: 20px; padding-right: 20px;">
+    <view class="pr-20 pl-20">
       <text>
         requestVirtualPayment api 适用于消耗性类型、非消耗性类型、自动续期订阅类型、非自动续期订阅类型产品的购买。\n\n
         1. 消耗性类型：该类型的产品可以设置购买数量，默认是1，最大值是10； \n
         2. 非消耗性类型、自动续期订阅类型、非自动续期订阅类型: 这些类型的产品购买数量设置无效，数量只能是1; \n
         3. 非消耗性类型：该类型产品一个appleId只能购买一次，可以在任何登陆该appleId账号的设备上restore获取。
       </text>
-      <button style="margin-top: 20px;" type="primary" v-for="(item,index) in productList" :key="index"
+      <button class="mt-20" type="primary" v-for="(item,index) in productList" :key="index"
         @click="requestVirtualPayment(item)">{{item.name}}</button>
 
       <text>
@@ -17,7 +17,7 @@
         3. 非自动续期订阅类型: 返回每个已购买的非自动续期订阅类型产品的最新购买记录, 该类型订阅可以连续多次购买，开发者需要自己的后台计算产品过期的时间。\n
         Note: 不能用来恢复消耗性类型的购买记录。
       </text>
-      <button style="margin-top: 20px;" type="primary" @click="restoreTransactions">恢复购买订单列表</button>
+      <button class="mt-20" type="primary" @click="restoreTransactions">恢复购买订单列表</button>
 
       <text>
         \ngetUnfinishedTransactions api 适用于获取未完成的各种类型产品的购买记录（用来防止丢单）。\n\n
@@ -26,7 +26,7 @@
         2. 针对消耗性类型产品交易，只能通过该api获取未finished的交易，防止丢单；\n
         3. 对于其他类型产品未finished交易, 不仅可以通过该api获取，也可以通过restoreTransactions api (也可获取已经finished的交易)获取；
       </text>
-      <button style="margin-top: 20px; margin-bottom: 50px;" type="primary"
+      <button class="mt-20 mb-50" type="primary"
         @click="getUnfinishedTransactions">获取未结束的订单列表</button>
     </view>
 </template>

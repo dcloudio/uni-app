@@ -1,16 +1,16 @@
 <template>
-  <scroll-view class="content" direction="vertical">
-    <view id="fullscreen" class="view1" @click="fullscreen" @fullscreenchange="fullscreenchange" @fullscreenerror="fullscreenerror">
-      <text style="color: white;">{{ text }}</text>
+  <scroll-view class="flex-1" direction="vertical">
+    <view id="fullscreen" class="w-full h-150 items-center justify-center bg-000" @click="fullscreen" @fullscreenchange="fullscreenchange" @fullscreenerror="fullscreenerror">
+      <text class="color-white">{{ text }}</text>
     </view>
-    <enum-data :items="orientation_enum" title="orientation" @change="radio_change_orientation"></enum-data>
-    <enum-data :items="navigationUI_enum" title="navigationUI" @change="radio_change_ui"></enum-data>
+    <enum-data-checkbox :items="orientation_enum" title="orientation" @change="radio_change_orientation"></enum-data-checkbox>
+    <enum-data-checkbox :items="navigationUI_enum" title="navigationUI" @change="radio_change_ui"></enum-data-checkbox>
   </scroll-view>
 </template>
 
 <script setup lang="ts">
   
-  import { ItemType } from '@/components/enum-data/enum-data-types';
+  import { ItemType } from '@/components/enum-data-checkbox/enum-data-checkbox-types';
 
   const orientation_enum = ref([{ "value": 0, "name": "auto" }, { "value": 1, "name": "landscape" }, { "value": 2, "name": "landscape-primary" }, { "value": 3, "name": "landscape-secondary" }, { "value": 4, "name": "portrait" }] as ItemType[])
   const navigationUI_enum = ref([{ "value": 0, "name": "auto" }, { "value": 1, "name": "hide" }, { "value": 2, "name": "show" }] as ItemType[])
@@ -109,17 +109,3 @@
     fullscreen
   })
 </script>
-
-<style>
-  .content {
-    flex: 1;
-  }
-
-  .view1 {
-    width: 100%;
-    height: 150px;
-    align-items: center;
-    justify-content: center;
-    background-color: black;
-  }
-</style>

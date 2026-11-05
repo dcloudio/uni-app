@@ -1,0 +1,203 @@
+<template>
+  <!-- #ifdef APP -->
+  <page-intro content="演示 FileSystemManager.close / closeSync：关闭文件描述符；每次演示会自动打开新描述符再关闭，也可演示无效描述符的错误返回。"></page-intro>
+  <scroll-view class="flex-1">
+  <!-- #endif -->
+    <view class="p-8 flex-dir-column">
+      <view class="p-8 border-1-solid-e0e0e0 radius-4 flex-dir-column m-4-0">
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">根目录</text>
+          <enum-data-checkbox
+            class="flex-1"
+            :model-value="data.rootKey"
+            :items="rootOptions"
+            mode="default"
+            :show-toast="false"
+            @change="onRootChange"
+          />
+        </view>
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">文件路径</text>
+          <input class="flex-1 border-1-solid-d0d0d0 radius-4 p-4-8 fs-13 h-32" v-model="data.filePath" placeholder="相对根目录的路径" />
+        </view>
+      </view>
+      <view class="flex-dir-row flex-wrap-wrap m-4-0">
+        <button class="m-4" type="primary" @tap="close" id="btn-close">close 关闭描述符</button>
+        <button class="m-4" type="primary" @tap="closeSync" id="btn-close-sync">closeSync 关闭描述符</button>
+        <button class="m-4" type="warn" @tap="demoFail" id="btn-close-fail">演示失败（无效描述符）</button>
+      </view>
+      <view class="p-8 border-1-solid-e0e0e0 radius-4 flex-dir-column m-4-0-12-0">
+        <text class="fw-bold fs-14 m-2-0 color-333">执行结果：{{ data.lastResult == '' ? '等待执行' : (data.lastResult == 'success' ? '成功' : '失败') }}</text>
+        <text class="fs-13 m-2-0 color-666">目标路径：{{ data.rootPath }}{{ data.filePath }}</text>
+        <text class="fs-13 m-2-0 color-666" v-if="data.lastResult == 'success'">已关闭 fd：{{ data.fd }}；返回：{{ data.closeRet }}</text>
+        <text class="fs-13 m-2-0 color-e64340" v-if="data.lastResult == 'fail'">errCode：{{ data.lastFailError.errCode }}；errMsg：{{ data.lastFailError.errMsg }}</text>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="ts">
+  import { createEnumItems } from '@/components/enum-data-checkbox/enum-data-checkbox-types'
+  const rootOptions = createEnumItems(['usr', 'cache', 'sandbox'])
+
+  import { getFsmRootPath, ensureFsmDirSync, ensureFsmFileSync, removeFsmPathSync, removeFsmDirSync, createFsmMockError } from './fsm-utils'
+
+  type DataType = {
+    rootKey : string
+    rootPath : string
+    filePath : string
+    fd : string
+    closeRet : string
+    existsRet : boolean
+    done : boolean
+    lastResult : string
+    lastFailError : UniError
+  }
+
+  const data = reactive({
+    rootKey: 'usr',
+    rootPath: getFsmRootPath('usr'),
+    filePath: 'fsm-close-demo/1.txt',
+    fd: '',
+    closeRet: '',
+    existsRet: false,
+    done: false,
+    lastResult: '',
+    lastFailError: createFsmMockError(),
+  } as DataType)
+
+  function onRootChange(value : string) {
+    data.rootKey = value
+    data.rootPath = getFsmRootPath(data.rootKey)
+  }
+
+  function targetPath(path : string) : string {
+    return `${data.rootPath}${path ?? data.filePath}`
+  }
+
+  function resetResult() {
+    data.done = false
+    data.lastResult = ''
+    data.fd = ''
+    data.closeRet = ''
+  }
+
+  function applyFail(res : IUniError) {
+    data.lastResult = 'fail'
+    data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+  }
+
+  function exists(path : string) : void {
+    try {
+      uni.getFileSystemManager().accessSync(targetPath(path))
+      data.existsRet = true
+    } catch (e) {
+      data.existsRet = false
+    }
+  }
+
+  function prepare() : void {
+    const demoDir = `${data.rootPath}fsm-close-demo`
+    ensureFsmDirSync(demoDir)
+    ensureFsmFileSync(`${demoDir}/1.txt`, '测试close API的写入功能。\n\t制表符缩进行\n回车换行：\r\n下一行\n反斜杠 \\ 双引号 " 单引号 \'\n空格[  ]全角空格[　]不间断空格[ ]\n混合内容：中文English123!@#')
+    data.done = true
+  }
+
+  function cleanup() : void {
+    removeFsmDirSync(`${data.rootPath}fsm-close-demo`)
+    data.done = true
+  }
+
+  // 打开一个新描述符用于关闭演示
+  function openNewFd() : boolean {
+    // 自愈：默认演示文件不存在时重建，保证任意时刻重复点击都能成功
+    if (data.filePath == 'fsm-close-demo/1.txt') {
+      ensureFsmDirSync(`${data.rootPath}fsm-close-demo`)
+      ensureFsmFileSync(`${data.rootPath}fsm-close-demo/1.txt`, '测试close API的写入功能。\n\t制表符缩进行\n回车换行：\r\n下一行\n反斜杠 \\ 双引号 " 单引号 \'\n空格[  ]全角空格[　]不间断空格[ ]\n混合内容：中文English123!@#')
+    }
+    try {
+      data.fd = uni.getFileSystemManager().openSync({ filePath: targetPath(data.filePath), flag: 'r' } as OpenFileSyncOptions)
+      return true
+    } catch (e) {
+      data.lastResult = 'fail'
+      data.lastFailError = new UniError('uni-file-manager', 0, `open fail: ${e}`)
+      data.done = true
+      return false
+    }
+  }
+
+  function close() : void {
+    resetResult()
+    if (!openNewFd()) {
+      return
+    }
+    const fileManager = uni.getFileSystemManager()
+    const options : CloseOptions = {
+      fd: data.fd,
+      success: (res : FileManagerSuccessResult) => {
+        data.lastResult = 'success'
+        data.closeRet = res.errMsg
+      },
+      fail: (res : IUniError) => {
+        applyFail(res)
+      },
+      complete: (_ : any) => {
+        data.done = true
+      }
+    }
+    fileManager.close(options)
+  }
+
+  function closeSync() : void {
+    resetResult()
+    if (!openNewFd()) {
+      return
+    }
+    try {
+      uni.getFileSystemManager().closeSync({ fd: data.fd } as CloseSyncOptions)
+      data.lastResult = 'success'
+      data.closeRet = 'close:ok'
+    } catch (e) {
+      data.lastResult = 'fail'
+      data.lastFailError = new UniError('uni-file-manager', 0, `${e}`)
+    }
+    data.done = true
+  }
+
+  // 一键演示失败场景：关闭无效的文件描述符
+  function demoFail() : void {
+    resetResult()
+    data.fd = '-1'
+    const fileManager = uni.getFileSystemManager()
+    const options : CloseOptions = {
+      fd: data.fd,
+      success: (res : FileManagerSuccessResult) => {
+        data.lastResult = 'success'
+        data.closeRet = res.errMsg
+      },
+      fail: (res : IUniError) => {
+        applyFail(res)
+      },
+      complete: (_ : any) => {
+        data.done = true
+      }
+    }
+    fileManager.close(options)
+  }
+
+  onReady(() => {
+    prepare()
+  })
+
+  defineExpose({
+    data,
+    prepare,
+    cleanup,
+    exists,
+    close,
+    closeSync,
+    demoFail
+  })
+</script>

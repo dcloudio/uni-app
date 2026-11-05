@@ -31,11 +31,11 @@
   <rich-text-native v-else="props.mode == 'native'" :nodes="props.nodes" :selectable="isSelectable" @itemclick="itemclick"></rich-text-native>
   <!-- #endif -->
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
   import {
     UniRichTextItemClickEventDetail,
     UniRichTextItemClickEvent
-  } from './global.uts'
+  } from './global.ts'
 
   // 属性定义
   interface RichTextProps1 {
@@ -308,9 +308,8 @@
           // 处理属性
           if (node['attrs'] != null) {
             const attrs = node['attrs'] as UTSJSONObject
-            const keys = UTSJSONObject.keys(attrs)
-            for (let j = 0; j < keys.length; j++) {
-              const key = keys[j]
+            // 仅使用对象属性枚举，不依赖 UTSJSONObject 的静态方法，兼容 UTS 和 TS 编译。
+            for (const key in attrs) {
               const value = attrs[key]
               html += ` ${key}="${value}"`
             }

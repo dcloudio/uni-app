@@ -9,6 +9,7 @@
 </template>
 
 <script setup lang="ts">
+  import { useRouter } from 'vue-router'
   import componentPage from '@/pages/tabBar/component.uvue'
   import API from '@/pages/tabBar/API.uvue'
   import CSS from '@/pages/tabBar/CSS.uvue'
@@ -17,6 +18,9 @@
   import { state, setMatchLeftWindow, setActive, setLeftWinActive } from '@/store/index.ts'
 
   const instance = getCurrentInstance()!.proxy!
+  // Vapor 不支持实例 $route，VDOM/Vapor 统一通过 Router 获取路由。
+  // 直接监听 currentRoute ref，保留路由对象切换时的触发语义，无需深度监听。
+  const { currentRoute } = useRouter()
   const nav = [
     'component',
     'API',
@@ -90,7 +94,7 @@
     }, matched => {
       isPC.value = matched
     })
-    handlerRoute(instance.$route)
+    handlerRoute(currentRoute.value)
   })
 
   onUnmounted(() => {
@@ -103,7 +107,7 @@
     immediate: true
   })
 
-  watch(() => instance.$route, newRoute => {
+  watch(currentRoute, newRoute => {
     handlerRoute(newRoute)
   })
 </script>

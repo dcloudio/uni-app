@@ -25,7 +25,7 @@
 				"navigationBarTitleText": "view | 基本视图容器"
 			}
 		},
-		// #ifdef APP-IOS && VUE3-VAPOR
+		// #ifdef APP-IOS
 		{
 			"path": "pages/component/glass-effect-view/glass-effect-view",
 			"group": "0,1,1",
@@ -53,7 +53,7 @@
 				"navigationBarTitleText": "非下拉刷新的scroll-view属性示例"
 			}
 		},
-		// #ifdef VUE3-VAPOR
+		// #ifdef APP
 		{
 			"path": "pages/component/scroll-view/scroll-view-props-direction-all",
 			"style": {
@@ -88,7 +88,7 @@
 				"navigationBarTitleText": "swiper | 滑块视图容器 - 动画测试"
 			}
 		},
-		// #ifdef VUE3-VAPOR || MP
+		// #ifdef APP || MP
 		{
 			"path": "pages/component/swiper/swiper-more",
 			"style": {
@@ -96,7 +96,7 @@
 			}
 		},
 		// #endif
-		// #ifdef VUE3-VAPOR || MP
+		// #ifdef APP || MP
 		{
 			"path": "pages/component/swiper/swiper-in-swiper",
 			"style": {
@@ -104,7 +104,7 @@
 			}
 		},
 		// #endif
-		// #ifdef (VUE3-VAPOR && !MP-ALIPAY) || MP-WEIXIN
+		// #ifdef APP || MP-WEIXIN
 		{
 			"path": "pages/component/swiper/swiper-item-100",
 			"style": {
@@ -211,7 +211,7 @@
 			}
 		},
 		// #endif
-		// #ifdef APP && VUE3-VAPOR
+		// #ifndef MP
 		{
 			"path": "pages/component/list-view/initial-scroll-bottom",
 			"style": {
@@ -220,7 +220,7 @@
 			}
 		},
 		// #endif
-		// #ifdef APP && VUE3-VAPOR
+		// #ifndef MP
 		{
 			"path": "pages/component/list-view/scroll-anchoring",
 			"style": {
@@ -229,7 +229,7 @@
 			}
 		},
 		// #endif
-		// #ifdef APP && VUE3-VAPOR
+		// #ifndef MP
 		{
 			"path": "pages/component/list-view/scroll-into-item",
 			"style": {
@@ -238,7 +238,7 @@
 			}
 		},
 		// #endif
-		// #ifdef APP && VUE3-VAPOR
+		// #ifndef MP
 		{
 			"path": "pages/component/list-view/scroll-into-section",
 			"style": {
@@ -257,7 +257,7 @@
 			}
 		},
 		// #endif
-		// #ifdef APP-ANDROID || (APP-HARMONY && VUE3-VAPOR) || APP-IOS
+		// #ifdef APP-ANDROID || APP-HARMONY || APP-IOS
 		{
 			"path": "pages/component/sticky-section/sticky-section-push-pinned-header",
 			"style": {
@@ -296,14 +296,6 @@
 				"navigationBarTitleText": "text-writer"
 			}
 		},
-		// #ifdef APP-ANDROID && !VUE3-VAPOR
-		{
-			"path": "pages/component/text/text-layout",
-			"style": {
-				"navigationBarTitleText": "text-layout"
-			}
-		},
-		// #endif
 		{
 			"path": "pages/component/rich-text/rich-text",
 			"group": "0,2,2",
@@ -616,6 +608,7 @@
 				"navigationBarTitleText": "联系人详情"
 			}
 		},
+		// #endif
 		// #ifdef APP
 		{
 			"path": "pages/component/unicloud-db/unicloud-db/datacom/datacom",
@@ -624,7 +617,6 @@
 				"navigationBarTitleText": "datacom"
 			}
 		},
-		// #endif
 		// #endif
 		{
 			"path": "pages/component/global-properties/global-properties",
@@ -672,7 +664,6 @@
 			}
 		},
 		// #endif
-		// #ifdef APP-HARMONY || WEB || MP
 		{
 			"path": "pages/component/label/label",
 			"group": "0,3,5",
@@ -680,7 +671,6 @@
 				"navigationBarTitleText": "label"
 			}
 		},
-		// #endif
 		{
 			"path": "pages/component/picker/picker",
 			"group": "0,3,6",
@@ -759,7 +749,7 @@
 			}
 		},
 		// #endif
-		// #ifdef APP-ANDROID || APP-HARMONY || APP-IOS
+		// #ifdef APP-ANDROID || APP-HARMONY || APP-IOS || (WEB && VUE3-VAPOR)
 		{
 			"path": "pages/component/waterflow/waterflow",
 			"group": "0,1,9",
@@ -776,6 +766,14 @@
 			}
 		},
 		// #endif
+		// #ifdef APP-ANDROID || APP-HARMONY || APP-IOS
+		{
+			"path": "pages/component/waterflow/waterflow-refresher-props",
+			"style": {
+				"navigationBarTitleText": "waterflow | 下拉刷新属性"
+			}
+		},
+		// #endif
 		// #ifdef APP-ANDROID || APP-IOS || MP-WEIXIN
 		{
 			"path": "pages/component/ad/list-view-ad",
@@ -783,31 +781,6 @@
 				"navigationBarTitleText": "ad | 信息流广告",
 				"enablePullDownRefresh": false,
 				"disableScroll": true
-			}
-		},
-		// #endif
-		// #ifdef (APP-ANDROID || APP-IOS) && !VUE3-VAPOR
-		{
-			"path": "pages/component/share-element/share-element",
-			"group": "0,1,12",
-			"style": {
-				"navigationBarTitleText": "share-element | 共享元素视图容器"
-			}
-		},
-		// #endif
-		// #ifdef (APP-ANDROID || APP-IOS) && !VUE3-VAPOR
-		{
-			"path": "pages/component/share-element/share-element-with-swiper",
-			"style": {
-				"navigationBarTitleText": "share-element-with-swiper"
-			}
-		},
-		// #endif
-		// #ifdef (APP-ANDROID || APP-IOS) && !VUE3-VAPOR
-		{
-			"path": "pages/component/share-element/share-element-to",
-			"style": {
-				"navigationBarTitleText": ""
 			}
 		},
 		// #endif
@@ -893,16 +866,6 @@
 				"backgroundColor": "#F8F8F8"
 			}
 		},
-		// #ifdef APP-ANDROID || APP-IOS || WEB || APP-HARMONY
-		{
-			"path": "uni_modules/uni-openLocation/pages/openLocation/openLocation",
-			"style": {
-				"navigationBarTitleText": " ",
-				"navigationStyle": "custom",
-				"disableSwipeBack": false
-			}
-		},
-		// #endif
 		// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
 		{
 			"path": "pages/component/video/video-dialog-page",
@@ -1093,7 +1056,7 @@
 						"navigationBarTitleText": "getApp | 获取当前应用实例"
 					}
 				},
-				// #ifdef (APP-ANDROID || APP-IOS) && VUE3-VAPOR
+				// #ifdef APP-ANDROID || APP-IOS
 				{
 					"path": "get-app/get-app-restart",
 					"style": {
@@ -1120,16 +1083,16 @@
 					}
 				},
 				// #endif
-        // #ifdef VUE3-VAPOR && (APP-ANDROID || APP-IOS)
-        {
-        	"path": "install-wgt/install-wgt",
-        	"group": "1,1,10",
-        	"style": {
-        		"navigationBarTitleText": "uni.installWgt | 安装 WGT",
-        		"enablePullDownRefresh": false
-        	}
-        },
-        // #endif
+				// #ifdef APP-ANDROID || APP-IOS
+				{
+					"path": "install-wgt/install-wgt",
+					"group": "1,1,5",
+					"style": {
+						"navigationBarTitleText": "uni.installWgt | 安装 WGT",
+						"enablePullDownRefresh": false
+					}
+				},
+				// #endif
 				{
 					"path": "get-current-pages/get-current-pages",
 					"group": "1,0,1",
@@ -1179,7 +1142,7 @@
 				},
 				{
 					"path": "app-route/app-route",
-					"group": "1,2,4",
+					"group": "1,2,1",
 					"style": {
 						"navigationBarTitleText": "appRoute | 应用路由事件"
 					}
@@ -1252,15 +1215,13 @@
 						"navigationBarTitleText": "storage | key-value本地数据存储"
 					}
 				},
-				// #ifndef MP-ALIPAY
 				{
 					"path": "storage/storagemanage",
 					"style": {
 						"navigationBarTitleText": "storage管理器"
 					}
 				},
-				// #endif
-				// #ifdef APP-ANDROID || APP-HARMONY || APP-IOS || MP-WEIXIN
+				// #ifdef APP-ANDROID || APP-HARMONY || APP-IOS || MP
 				{
 					"path": "env/env",
 					"group": "1,1,0",
@@ -1486,7 +1447,7 @@
 						"navigationBarTitleText": "getAttribute | 获取元素的属性值"
 					}
 				},
-				// #ifdef VUE3-VAPOR && (APP-HARMONY || APP-IOS)
+				// #ifdef APP-HARMONY || APP-IOS
 				{
 					"path": "element-event-listener/element-event-listener",
 					"group": "1,30",
@@ -1613,6 +1574,33 @@
 						"navigationBarTitleText": "uni.pageScrollTo | 将页面滚动到指定位置"
 					}
 				},
+				// #ifdef APP
+				{
+					"path": "scroll-view-context/scroll-view-context",
+					"group": "1,2,9",
+					"style": {
+						"navigationBarTitleText": "ScrollViewContext | 滚动上下文"
+					}
+				},
+				{
+					"path": "scroll-view-context/scroll-view",
+					"style": {
+						"navigationBarTitleText": "ScrollViewContext | scroll-view"
+					}
+				},
+				{
+					"path": "scroll-view-context/list-view",
+					"style": {
+						"navigationBarTitleText": "ScrollViewContext | list-view"
+					}
+				},
+				{
+					"path": "scroll-view-context/waterflow",
+					"style": {
+						"navigationBarTitleText": "ScrollViewContext | waterflow"
+					}
+				},
+				// #endif
 				{
 					"path": "event-bus/event-bus",
 					"group": "1,1,1",
@@ -1657,16 +1645,6 @@
 						"navigationStyle": "custom"
 					}
 				},
-				// #ifdef (APP-ANDROID || APP-HARMONY || APP-IOS) && !VUE3-VAPOR
-				{
-					"path": "element-draw/element-draw",
-					"group": "1,30",
-					"style": {
-						"navigationBarTitleText": "getDrawableContext | 获取绘制对象",
-						"enablePullDownRefresh": false
-					}
-				},
-				// #endif
 				// #ifdef APP-ANDROID || APP-HARMONY || APP-IOS
 				{
 					"path": "element-request-fullscreen/element-request-fullscreen",
@@ -1845,7 +1823,6 @@
 					}
 				},
 				// #endif
-				// #ifndef MP-ALIPAY
 				{
 					"path": "theme-change/theme-change",
 					"group": "1,4,7",
@@ -1854,7 +1831,6 @@
 						"enablePullDownRefresh": false
 					}
 				},
-				// #endif
 				// #ifdef WEB || MP
 				{
 					"path": "create-intersection-observer/create-intersection-observer",
@@ -1931,7 +1907,7 @@
 					}
 				},
 				// #endif
-				// #ifdef APP-ANDROID || APP-HARMONY || APP-IOS || MP-WEIXIN
+				// #ifdef APP-ANDROID || APP-HARMONY || APP-IOS || MP
 				{
 					"path": "privacy/privacy",
 					"group": "1,1,9",
@@ -1954,7 +1930,7 @@
 						"navigationBarTitleText": "推送"
 					}
 				},
-				// #ifdef VUE3-VAPOR || WEB || MP-WEIXIN
+				// #ifdef APP || WEB || MP-WEIXIN
 				{
 					"path": "report/report",
 					"group": "1,17,0",
@@ -2234,7 +2210,7 @@
 					}
 				},
 				// #endif
-				// #ifdef (APP-ANDROID && !VUE3-VAPOR) || APP-HARMONY || WEB || MP-WEIXIN || MP-ALIPAY
+				// #ifdef APP-HARMONY || WEB || MP-WEIXIN || MP-ALIPAY
 				{
 					"path": "create-worker/create-worker",
 					"group": "1,19,0",
@@ -2352,7 +2328,7 @@
 				// #ifdef APP-ANDROID || APP-HARMONY || APP-IOS || MP-WEIXIN || MP-ALIPAY
 				{
 					"path": "phoneContact/addPhoneContact",
-					"group": "1,6,10",
+					"group": "1,6,10,0",
 					"style": {
 						"navigationBarTitleText": "addPhoneContact"
 					}
@@ -2361,7 +2337,7 @@
 				// #ifdef APP-ANDROID || APP-HARMONY || APP-IOS || MP-WEIXIN || MP-ALIPAY
 				{
 					"path": "phoneContact/chooseContact",
-					"group": "1,6,10",
+					"group": "1,6,10,1",
 					"style": {
 						"navigationBarTitleText": "chooseContact"
 					}
@@ -2380,6 +2356,29 @@
 					"group": "1,6,26",
 					"style": {
 						"navigationBarTitleText": "vibrate | 振动"
+					}
+				},
+				// #endif
+				// #ifdef APP-IOS || APP-ANDROID
+				{
+					"path": "bluetooth-general/bluetooth-general",
+					"group": "1,6,27,0",
+					"style": {
+						"navigationBarTitleText": "general | 蓝牙-通用"
+					}
+				},
+				{
+					"path": "bluetooth-ble/bluetooth-ble",
+					"group": "1,6,27,1",
+					"style": {
+						"navigationBarTitleText": "ble | 低功耗蓝牙",
+						"disableScroll": true
+					}
+				},
+				{
+					"path": "bluetooth-benchmark/bluetooth-benchmark",
+					"style": {
+						"navigationBarTitleText": "ble | 综合性能测试"
 					}
 				},
 				// #endif
@@ -2416,6 +2415,138 @@
 					"path": "get-file-system-manager/getFileInfo",
 					"style": {
 						"navigationBarTitleText": "测试getFileInfo各摘要算法"
+					}
+				},
+				{
+					"path": "get-file-system-manager/access",
+					"style": {
+						"navigationBarTitleText": "FileSystemManager.access | 判断文件/目录是否存在"
+					}
+				},
+				{
+					"path": "get-file-system-manager/stat",
+					"style": {
+						"navigationBarTitleText": "FileSystemManager.stat | 获取文件Stats对象"
+					}
+				},
+				{
+					"path": "get-file-system-manager/mkdir",
+					"style": {
+						"navigationBarTitleText": "FileSystemManager.mkdir | 创建目录"
+					}
+				},
+				{
+					"path": "get-file-system-manager/rmdir",
+					"style": {
+						"navigationBarTitleText": "FileSystemManager.rmdir | 删除目录"
+					}
+				},
+				{
+					"path": "get-file-system-manager/readdir",
+					"style": {
+						"navigationBarTitleText": "FileSystemManager.readdir | 读取目录内容"
+					}
+				},
+				{
+					"path": "get-file-system-manager/read-file",
+					"style": {
+						"navigationBarTitleText": "FileSystemManager.readFile | 读取文件"
+					}
+				},
+				{
+					"path": "get-file-system-manager/write-file",
+					"style": {
+						"navigationBarTitleText": "FileSystemManager.writeFile | 写入文件"
+					}
+				},
+				{
+					"path": "get-file-system-manager/append-file",
+					"style": {
+						"navigationBarTitleText": "FileSystemManager.appendFile | 追加文件"
+					}
+				},
+				{
+					"path": "get-file-system-manager/copy-file",
+					"style": {
+						"navigationBarTitleText": "FileSystemManager.copyFile | 复制文件"
+					}
+				},
+				{
+					"path": "get-file-system-manager/rename",
+					"style": {
+						"navigationBarTitleText": "FileSystemManager.rename | 重命名文件"
+					}
+				},
+				{
+					"path": "get-file-system-manager/unlink",
+					"style": {
+						"navigationBarTitleText": "FileSystemManager.unlink | 删除文件"
+					}
+				},
+				{
+					"path": "get-file-system-manager/truncate",
+					"style": {
+						"navigationBarTitleText": "FileSystemManager.truncate | 截断文件"
+					}
+				},
+				{
+					"path": "get-file-system-manager/open",
+					"style": {
+						"navigationBarTitleText": "FileSystemManager.open | 打开文件获取描述符"
+					}
+				},
+				{
+					"path": "get-file-system-manager/close",
+					"style": {
+						"navigationBarTitleText": "FileSystemManager.close | 关闭文件描述符"
+					}
+				},
+				{
+					"path": "get-file-system-manager/read",
+					"style": {
+						"navigationBarTitleText": "FileSystemManager.read | 通过描述符读取"
+					}
+				},
+				{
+					"path": "get-file-system-manager/write",
+					"style": {
+						"navigationBarTitleText": "FileSystemManager.write | 通过描述符写入"
+					}
+				},
+				{
+					"path": "get-file-system-manager/fstat",
+					"style": {
+						"navigationBarTitleText": "FileSystemManager.fstat | 描述符获取状态"
+					}
+				},
+				{
+					"path": "get-file-system-manager/ftruncate",
+					"style": {
+						"navigationBarTitleText": "FileSystemManager.ftruncate | 描述符截断文件"
+					}
+				},
+				{
+					"path": "get-file-system-manager/save-file",
+					"style": {
+						"navigationBarTitleText": "FileSystemManager.saveFile | 保存临时文件"
+					}
+				},
+				{
+					"path": "get-file-system-manager/unzip",
+					"style": {
+						"navigationBarTitleText": "FileSystemManager.unzip | 解压文件"
+					}
+				},
+				{
+					"path": "get-file-system-manager/read-compressed-file",
+					"style": {
+						"navigationBarTitleText": "FileSystemManager.readCompressedFile | 读取压缩文件"
+					}
+				},
+				{
+					"path": "get-file-system-manager/read-zip-entry",
+					"style": {
+						"navigationBarTitleText": "FileSystemManager.readZipEntry | 读取压缩包内文件"
 					}
 				},
 				// #endif
@@ -2782,7 +2913,7 @@
 					}
 				},
 				// #endif
-				// #ifdef APP && VUE3-VAPOR || WEB
+				// #ifdef APP || WEB
 				{
 					"path": "list-delete-swipe-batch/list-delete-swipe-batch",
 					"style": {
@@ -2797,7 +2928,7 @@
 					}
 				},
 				// #endif
-				// #ifdef MP || VUE3-VAPOR
+				// #ifdef APP || MP
 				{
 					"path": "calendar-vapor/calendar-vapor",
 					"style": {
@@ -2805,7 +2936,7 @@
 					}
 				},
 				// #endif
-				// #ifndef VUE3-VAPOR
+				// #ifndef APP
 				{
 					"path": "recycle-long-list/recycle-long-list",
 					"style": {
@@ -2836,30 +2967,12 @@
 					}
 				},
 				// #endif
-				// #ifdef !VUE3-VAPOR && (APP-ANDROID || APP-IOS)
-				{
-					"path": "native-button-bridge/native-button-bridge",
-					"style": {
-						"navigationBarTitleText": "UTS 原生按钮桥接示例"
-					}
-				},
-				// #endif
-				// #ifdef APP && !VUE3-VAPOR
-				{
-					"path": "calendar/calendar",
-					"style": {
-						"navigationBarTitleText": "日历"
-					}
-				},
-				// #endif
-				// #ifdef WEB || MP-WEIXIN || (APP && VUE3-VAPOR)
 				{
 					"path": "echarts-miniprogram/echarts-miniprogram",
 					"style": {
 						"navigationBarTitleText": "eCharts图表"
 					}
 				},
-				// #endif
 				// #ifndef MP-ALIPAY
 				{
 					"path": "slider-100/slider-100",
@@ -2868,7 +2981,25 @@
 					}
 				},
 				// #endif
-				// #ifdef APP && VUE3-VAPOR
+				// #ifndef MP
+				{
+					"path": "long-list-perf/long-list-perf",
+					"style": {
+						"navigationBarTitleText": "死亡列表性能测试",
+						"disableScroll": true
+					}
+				},
+				// #endif
+				// #ifdef APP || (WEB && VUE3-VAPOR)
+				{
+					"path": "waterflow-perf/waterflow-perf",
+					"style": {
+						"navigationBarTitleText": "waterflow滚动加载长列表",
+						"disableScroll": true
+					}
+				},
+				// #endif
+				// #ifdef APP
 				{
 					"path": "sticky-section-reverse/sticky-section-reverse",
 					"style": {
@@ -2898,20 +3029,6 @@
 					"path": "2000-image/2000-image-svg",
 					"style": {
 						"navigationBarTitleText": "2000-image-svg"
-					}
-				},
-				{
-					"path": "long-list-perf/long-list-perf",
-					"style": {
-						"navigationBarTitleText": "死亡列表性能测试",
-						"disableScroll": true
-					}
-				},
-				{
-					"path": "waterflow-perf/waterflow-perf",
-					"style": {
-						"navigationBarTitleText": "waterflow滚动加载长列表",
-						"disableScroll": true
 					}
 				},
 				{
@@ -3002,6 +3119,9 @@
 					"path": "combobox/combobox",
 					"style": {
 						"navigationBarTitleText": "uni-combobox"
+						// #ifdef MP-ALIPAY
+						,"allowsBounceVertical": "NO"
+						// #endif
 					}
 				},
 				// #endif
@@ -3038,6 +3158,20 @@
 						"navigationBarTitleText": "uni-drag-cell"
 						// #ifdef MP-ALIPAY
 						,"allowsBounceVertical": "NO"
+						// #endif
+					}
+				},
+				{
+					"path": "backarrow-circle/backarrow-circle",
+					"style": {
+						// #ifndef MP-ALIPAY
+						"navigationBarTitleText": "uni-backarrow-circle",
+						"navigationStyle": "custom"
+						// #endif
+						// #ifdef MP-ALIPAY
+						,
+						"transparentTitle": "always",
+						"navigationBarTextStyle":"black"
 						// #endif
 					}
 				},
@@ -3140,17 +3274,67 @@
 					"style": {
 						"navigationBarTitleText": "Icons 图标"
 					}
+				}
+				,{
+					"path": "easyinput/easyinput",
+					"style": {
+						"navigationBarTitleText": "Easyinput 增强输入框"
+					}
+				}
+				,{
+					"path": "forms/forms",
+					"style": {
+						"navigationBarTitleText": "uni-forms 表单"
+					}
+				},
+				{
+					"path": "forms/validation",
+					"style": {
+						"navigationBarTitleText": "uni-forms 校验"
+					}
+				},
+				{
+					"path": "forms/valibot",
+					"style": {
+						"navigationBarTitleText": "uni-forms Valibot"
+					}
+				},
+				{
+					"path": "forms/controls",
+					"style": {
+						"navigationBarTitleText": "uni-forms 控件接入"
+					}
+				},
+				{
+					"path": "forms/styles",
+					"style": {
+						"navigationBarTitleText": "uni-forms 样式与属性"
+					}
 				},
 				{
 					"path": "forms/form-item",
 					"style": {
 						"navigationBarTitleText": "表单项布局"
 					}
+				}
+				// #ifdef VUE3-VAPOR || MP
+				,{
+					"path": "expandable-text/expandable-text",
+					"style": {
+						"navigationBarTitleText": "可折叠文本"
+					}
+				}
+				// #endif
+				,{
+					"path": "sidebar/sidebar",
+					"style": {
+						"navigationBarTitleText": "uni-sidebar"
+					}
 				},
 				{
 					"path": "forms/formcard",
 					"style": {
-						"navigationBarTitleText": "表单卡片"
+						"navigationBarTitleText": ""
 					}
 				},
 				{
@@ -3165,16 +3349,6 @@
 						"navigationBarTitleText": "label 点击验证"
 					}
 				},
-				// #ifdef VUE3-VAPOR || MP
-				{
-					"path": "expandable-text/expandable-text",
-					"style": {
-						"navigationBarTitleText": "可折叠文本"
-					}
-				}
-				// #endif
-				// #ifdef VUE3-VAPOR
-				,
 				{
 					"path": "data-picker/data-picker",
 					"style": {
@@ -3186,17 +3360,22 @@
 					"style": {
 						"navigationBarTitleText": "uni-data-picker-view"
 					}
+				},
+				{
+					"path": "data-vertical-marquee/data-vertical-marquee",
+					"style": {
+						"navigationBarTitleText": "uni-data-vertical-marquee"
+					}
 				}
-				// #endif
 			]
 		},
 		{
 			"root": "pages/CSS",
 			"pages": [
-				// #ifdef WEB || (APP && VUE3-VAPOR)
+				// #ifdef APP || WEB
 				{
 					"path": "backdrop-filter/backdrop-filter",
-					"group": "2,19",
+					"group": "2,20",
 					"style": {
 						"navigationBarTitleText": "backdrop-filter",
 						"disableScroll": true
@@ -3205,7 +3384,7 @@
 				// #endif
 				{
 					"path": "background/background-color",
-					"group": "2,8,1",
+					"group": "2,9,1",
 					"style": {
 						"navigationBarTitleText": "background-color"
 					}
@@ -3218,98 +3397,98 @@
 				},
 				{
 					"path": "background/background-image",
-					"group": "2,8,2",
+					"group": "2,9,2",
 					"style": {
 						"navigationBarTitleText": "background-image"
 					}
 				},
 				{
 					"path": "border/border-bottom",
-					"group": "2,13,22",
+					"group": "2,14,22",
 					"style": {
 						"navigationBarTitleText": "border-bottom"
 					}
 				},
 				{
 					"path": "border/border-color",
-					"group": "2,13,11",
+					"group": "2,14,11",
 					"style": {
 						"navigationBarTitleText": "border-color"
 					}
 				},
 				{
 					"path": "border/border-left",
-					"group": "2,13,23",
+					"group": "2,14,23",
 					"style": {
 						"navigationBarTitleText": "border-left"
 					}
 				},
 				{
 					"path": "border/border-radius",
-					"group": "2,13,16",
+					"group": "2,14,16",
 					"style": {
 						"navigationBarTitleText": "border-radius"
 					}
 				},
 				{
 					"path": "border/border-right",
-					"group": "2,13,24",
+					"group": "2,14,24",
 					"style": {
 						"navigationBarTitleText": "border-right"
 					}
 				},
 				{
 					"path": "border/border-style",
-					"group": "2,13,1",
+					"group": "2,14,1",
 					"style": {
 						"navigationBarTitleText": "border-style"
 					}
 				},
 				{
 					"path": "border/border-top",
-					"group": "2,13,21",
+					"group": "2,14,21",
 					"style": {
 						"navigationBarTitleText": "border-top"
 					}
 				},
 				{
 					"path": "border/border-width",
-					"group": "2,13,6",
+					"group": "2,14,6",
 					"style": {
 						"navigationBarTitleText": "border-width"
 					}
 				},
 				{
 					"path": "border/border",
-					"group": "2,13,0",
+					"group": "2,14,0",
 					"style": {
 						"navigationBarTitleText": "border"
 					}
 				},
 				{
 					"path": "border/complex-border/complex-border",
-					"group": "2,13",
+					"group": "2,14",
 					"style": {
 						"navigationBarTitleText": "border属性组合示例"
 					}
 				},
 				{
 					"path": "border/dynamic-border",
-					"group": "2,13",
+					"group": "2,14",
 					"style": {
 						"navigationBarTitleText": "border动态修改"
 					}
 				},
 				{
 					"path": "border/border-update",
-					"group": "2,13",
+					"group": "2,14",
 					"style": {
 						"navigationBarTitleText": "border更新样式"
 					}
 				},
 				{
 					"path": "box-shadow/box-shadow",
-					"group": "2,15",
+					"group": "2,16",
 					"style": {
 						"navigationBarTitleText": "box-shadow"
 					}
@@ -3337,77 +3516,77 @@
 				},
 				{
 					"path": "flex/align-content",
-					"group": "2,7,6",
+					"group": "2,8,6",
 					"style": {
 						"navigationBarTitleText": "align-content"
 					}
 				},
 				{
 					"path": "flex/align-items",
-					"group": "2,7,4",
+					"group": "2,8,4",
 					"style": {
 						"navigationBarTitleText": "align-items"
 					}
 				},
 				{
 					"path": "flex/flex-wrap",
-					"group": "2,7,3",
+					"group": "2,8,3",
 					"style": {
 						"navigationBarTitleText": "flex-wrap"
 					}
 				},
 				{
 					"path": "flex/align-self",
-					"group": "2,7,5",
+					"group": "2,8,5",
 					"style": {
 						"navigationBarTitleText": "align-self"
 					}
 				},
 				{
 					"path": "flex/flex-basis",
-					"group": "2,7,9",
+					"group": "2,8,9",
 					"style": {
 						"navigationBarTitleText": "flex-basis"
 					}
 				},
 				{
 					"path": "flex/flex-direction",
-					"group": "2,7,1",
+					"group": "2,8,1",
 					"style": {
 						"navigationBarTitleText": "flex-direction"
 					}
 				},
 				{
 					"path": "flex/flex-flow",
-					"group": "2,7,10",
+					"group": "2,8,10",
 					"style": {
 						"navigationBarTitleText": "flex-flow"
 					}
 				},
 				{
 					"path": "flex/flex-grow",
-					"group": "2,7,7",
+					"group": "2,8,7",
 					"style": {
 						"navigationBarTitleText": "flex-grow"
 					}
 				},
 				{
 					"path": "flex/flex-shrink",
-					"group": "2,7,8",
+					"group": "2,8,8",
 					"style": {
 						"navigationBarTitleText": "flex-shrink"
 					}
 				},
 				{
 					"path": "flex/flex",
-					"group": "2,7,0",
+					"group": "2,8,0",
 					"style": {
 						"navigationBarTitleText": "flex"
 					}
 				},
 				{
 					"path": "flex/justify-content",
-					"group": "2,7,2",
+					"group": "2,8,2",
 					"style": {
 						"navigationBarTitleText": "justify-content"
 					}
@@ -3449,35 +3628,35 @@
 				},
 				{
 					"path": "layout/position",
-					"group": "2,9,0",
+					"group": "2,10,0",
 					"style": {
 						"navigationBarTitleText": "position"
 					}
 				},
 				{
 					"path": "layout/top",
-					"group": "2,9,1",
+					"group": "2,10,1",
 					"style": {
 						"navigationBarTitleText": "top"
 					}
 				},
 				{
 					"path": "layout/bottom",
-					"group": "2,9,2",
+					"group": "2,10,2",
 					"style": {
 						"navigationBarTitleText": "bottom"
 					}
 				},
 				{
 					"path": "layout/left",
-					"group": "2,9,3",
+					"group": "2,10,3",
 					"style": {
 						"navigationBarTitleText": "left"
 					}
 				},
 				{
 					"path": "layout/right",
-					"group": "2,9,4",
+					"group": "2,10,4",
 					"style": {
 						"navigationBarTitleText": "right"
 					}
@@ -3491,7 +3670,7 @@
 				},
 				{
 					"path": "layout/z-index",
-					"group": "2,10",
+					"group": "2,11",
 					"style": {
 						"navigationBarTitleText": "z-index"
 					}
@@ -3505,7 +3684,7 @@
 				},
 				{
 					"path": "layout/opacity",
-					"group": "2,12",
+					"group": "2,13",
 					"style": {
 						"navigationBarTitleText": "opacity"
 					}
@@ -3554,7 +3733,7 @@
 				},
 				{
 					"path": "overflow/overflow",
-					"group": "2,11",
+					"group": "2,12",
 					"style": {
 						"navigationBarTitleText": "overflow"
 					}
@@ -3596,56 +3775,56 @@
 				},
 				{
 					"path": "text/color",
-					"group": "2,14,0",
+					"group": "2,15,0",
 					"style": {
 						"navigationBarTitleText": "color"
 					}
 				},
 				{
 					"path": "text/font-family",
-					"group": "2,14,3",
+					"group": "2,15,3",
 					"style": {
 						"navigationBarTitleText": "font-family"
 					}
 				},
 				{
 					"path": "text/font-size",
-					"group": "2,14,2",
+					"group": "2,15,2",
 					"style": {
 						"navigationBarTitleText": "font-size"
 					}
 				},
 				{
 					"path": "text/font-style",
-					"group": "2,14,4",
+					"group": "2,15,4",
 					"style": {
 						"navigationBarTitleText": "font-style"
 					}
 				},
 				{
 					"path": "text/font-weight",
-					"group": "2,14,5",
+					"group": "2,15,5",
 					"style": {
 						"navigationBarTitleText": "font-weight"
 					}
 				},
 				{
 					"path": "text/letter-spacing",
-					"group": "2,14,16",
+					"group": "2,15,16",
 					"style": {
 						"navigationBarTitleText": "letter-spacing"
 					}
 				},
 				{
 					"path": "text/white-space",
-					"group": "2,14,17",
+					"group": "2,15,17",
 					"style": {
 						"navigationBarTitleText": "white-space"
 					}
 				},
 				{
 					"path": "text/word-break",
-					"group": "2,14,18",
+					"group": "2,15,18",
 					"style": {
 						"navigationBarTitleText": "word-break"
 					}
@@ -3658,43 +3837,43 @@
 				},
 				{
 					"path": "text/line-height",
-					"group": "2,14,14",
+					"group": "2,15,14",
 					"style": {
 						"navigationBarTitleText": "line-height"
 					}
 				},
 				{
 					"path": "text/text-align",
-					"group": "2,14,11",
+					"group": "2,15,11",
 					"style": {
 						"navigationBarTitleText": "text-align"
 					}
 				},
 				{
 					"path": "text/text-overflow",
-					"group": "2,14,12",
+					"group": "2,15,12",
 					"style": {
 						"navigationBarTitleText": "text-overflow"
 					}
 				},
 				{
 					"path": "text/text-decoration-line",
-					"group": "2,14,7",
+					"group": "2,15,7",
 					"style": {
 						"navigationBarTitleText": "text-decoration-line"
 					}
 				},
 				{
 					"path": "text/text-shadow",
-					"group": "2,14,13",
+					"group": "2,15,13",
 					"style": {
 						"navigationBarTitleText": "text-shadow"
 					}
 				},
-				// #ifdef VUE3-VAPOR || WEB || MP-WEIXIN
+				// #ifdef APP || WEB || MP-WEIXIN
 				{
 					"path": "text/direction",
-					"group": "2,14,1",
+					"group": "2,15,1",
 					"style": {
 						"navigationBarTitleText": "direction"
 					}
@@ -3702,15 +3881,15 @@
 				// #endif
 				{
 					"path": "transition/transition",
-					"group": "2,16,0",
+					"group": "2,17,0",
 					"style": {
 						"navigationBarTitleText": "transition"
 					}
 				},
-				// #ifdef WEB || (APP && VUE3-VAPOR)
+				// #ifdef APP || WEB
 				{
 					"path": "animation/animation",
-					"group": "2,20",
+					"group": "2,21",
 					"style": {
 						"navigationBarTitleText": "animation"
 					}
@@ -3718,21 +3897,21 @@
 				// #endif
 				{
 					"path": "transition/transition-duration",
-					"group": "2,16,2",
+					"group": "2,17,2",
 					"style": {
 						"navigationBarTitleText": "transition-duration"
 					}
 				},
 				{
 					"path": "transition/transition-timing-function",
-					"group": "2,16,3",
+					"group": "2,17,3",
 					"style": {
 						"navigationBarTitleText": "transition-timing-function"
 					}
 				},
 				{
 					"path": "transition/transition-delay",
-					"group": "2,16,4",
+					"group": "2,17,4",
 					"style": {
 						"navigationBarTitleText": "transition-delay"
 					}
@@ -3745,35 +3924,35 @@
 				},
 				{
 					"path": "pointer-events/pointer-events",
-					"group": "2,18",
+					"group": "2,19",
 					"style": {
 						"navigationBarTitleText": "pointer-events"
 					}
 				},
 				{
 					"path": "transform/translate",
-					"group": "2,17",
+					"group": "2,18",
 					"style": {
 						"navigationBarTitleText": "translate"
 					}
 				},
 				{
 					"path": "transform/scale",
-					"group": "2,17",
+					"group": "2,18",
 					"style": {
 						"navigationBarTitleText": "scale"
 					}
 				},
 				{
 					"path": "transform/rotate",
-					"group": "2,17",
+					"group": "2,18",
 					"style": {
 						"navigationBarTitleText": "rotate"
 					}
 				},
 				{
 					"path": "variable/variable",
-					"group": "2,21",
+					"group": "2,22",
 					"style": {
 						"navigationBarTitleText": "预置css变量",
 						"pageOrientation": "auto"
@@ -3781,7 +3960,7 @@
 				},
 				{
 					"path": "overflow/overflow-visible-event",
-					"group": "2,11",
+					"group": "2,12",
 					"style": {
 						"navigationBarTitleText": "overflow-visible-event"
 					}
@@ -3794,7 +3973,7 @@
 				},
 				{
 					"path": "variable/custom_variable",
-					"group": "2,21",
+					"group": "2,22",
 					"style": {
 						"navigationBarTitleText": "自定义css变量",
 						"pageOrientation": "auto"
@@ -3802,7 +3981,7 @@
 				},
 				{
 					"path": "function/function",
-					"group": "2,21",
+					"group": "2,22",
 					"style": {
 						"navigationBarTitleText": "env 函数",
 						"pageOrientation": "auto"
@@ -3810,29 +3989,29 @@
 				},
 				{
 					"path": "function/rgb",
-					"group": "2,21",
+					"group": "2,22",
 					"style": {
 						"navigationBarTitleText": "rgb 函数"
 					}
 				},
 				{
 					"path": "function/rgba",
-					"group": "2,21",
+					"group": "2,22",
 					"style": {
 						"navigationBarTitleText": "rgba 函数"
 					}
 				},
 				{
 					"path": "function/url",
-					"group": "2,21",
+					"group": "2,22",
 					"style": {
 						"navigationBarTitleText": "url 函数"
 					}
 				},
-				// #ifdef VUE3-VAPOR
+				// #ifdef APP || WEB
 				{
 					"path": "function/calc",
-					"group": "2,21",
+					"group": "2,22",
 					"style": {
 						"navigationBarTitleText": "calc 函数"
 					}
@@ -3840,41 +4019,39 @@
 				// #endif
 				{
 					"path": "style-isolation/style-isolation",
-					"group": "2,22",
+					"group": "2,23",
 					"style": {
 						"navigationBarTitleText": "style-isolation"
 					}
 				},
 				{
 					"path": "specificity/specificity",
-					"group": "2,22",
+					"group": "2,23",
 					"style": {
 						"navigationBarTitleText": "specificity | 优先级"
 					}
 				},
 				{
 					"path": "selector/selector",
-					"group": "2,23",
+					"group": "2,24",
 					"style": {
 						"navigationBarTitleText": "selector | 选择器",
 						"backgroundColorContent": "#ffffff"
 					}
 				}
-				// #ifdef VUE3-VAPOR
-				,
-				{
+				// #ifdef APP
+				,{
 					"path": "prefers-color-scheme/prefers-color-scheme",
-					"group": "2,23",
+					"group": "2,24",
 					"style": {
 						"navigationBarTitleText": "prefers-color-scheme | 媒体查询"
 					}
 				}
 				// #endif
 				// #ifdef WEB
-				,
-				{
+				,{
 					"path": "page-body-scope/page-body-scope",
-					"group": "2,23",
+					"group": "2,24",
 					"style": {
 						"navigationBarTitleText": "page-body-scope | 页面 body scopeId"
 					}
@@ -3886,6 +4063,13 @@
 					}
 				}
 				// #endif
+				,{
+					"path": "layout/gap",
+					"group": "2,7,0",
+					"style": {
+						"navigationBarTitleText": "gap"
+					}
+				}
 			]
 		}
 	],
@@ -3898,7 +4082,7 @@
 		"navigationBarBackgroundColor": "@navigationBarBackgroundColor",
 		"backgroundColor": "@backgroundColor",
 		"backgroundTextStyle": "@backgroundTextStyle"
-		// #ifdef VUE3-VAPOR
+		// #ifdef APP
 		,
 		"animationDuration": 150
 		// #endif
@@ -4272,7 +4456,10 @@
 								}
 							]
 						},
-						null,
+						{
+							"id": "api.base.installWgt",
+							"name": "uni.installWgt"
+						},
 						{
 							"id": "api.base.exit",
 							"name": "uni.exit"
@@ -4285,11 +4472,7 @@
 						{
 							"id": "api.base.privacy",
 							"name": "privacy"
-						},
-            {
-            	"id": "api.base.installWgt",
-            	"name": "uni.installWgt"
-            }
+						}
 					]
 				},
 				{
@@ -4300,7 +4483,10 @@
 							"id": "api.page.navigator",
 							"name": "navigator"
 						},
-						null,
+						{
+							"id": "api.page.app-route",
+							"name": "app-route"
+						},
 						{
 							"id": "api.page.dialogPage",
 							"name": "dialogPage"
@@ -4310,8 +4496,8 @@
 							"name": "uni.setNavigationBarColor"
 						},
 						{
-							"id": "api.page.appRoute",
-							"name": "appRoute"
+							"id": "api.page.setNavigationBarTitle",
+							"name": "uni.setNavigationBarTitle"
 						},
 						null,
 						null,
@@ -4322,6 +4508,10 @@
 						{
 							"id": "api.page.pageScrollTo",
 							"name": "uni.pageScrollTo"
+						},
+						{
+							"id": "api.page.ScrollViewContext",
+							"name": "ScrollViewContext"
 						}
 					]
 				},
@@ -4458,7 +4648,7 @@
 						},
 						{
 							"id": "api.device.contact",
-							"name": "contact | 手机联系人",
+							"name": "contact",
 							"children": [
 								{
 									"id": "api.device.contact.addPhoneContact",
@@ -4530,6 +4720,132 @@
 						{
 							"id": "api.device.vibrate",
 							"name": "vibrate"
+						},
+						{
+							"id": "api.device.bluetooth",
+							"name": "bluetooth",
+							"children": [
+								{
+									"id": "api.device.bluetooth.general",
+									"name": "general",
+									"children": [
+										{
+											"id": "api.device.bluetooth.general.openBluetoothAdapter",
+											"name": "uni.openBluetoothAdapter"
+										},
+										{
+											"id": "api.device.bluetooth.general.closeBluetoothAdapter",
+											"name": "uni.closeBluetoothAdapter"
+										},
+										{
+											"id": "api.device.bluetooth.general.getBluetoothAdapterState",
+											"name": "uni.getBluetoothAdapterState"
+										},
+										{
+											"id": "api.device.bluetooth.general.onBluetoothAdapterStateChange",
+											"name": "uni.onBluetoothAdapterStateChange"
+										},
+										{
+											"id": "api.device.bluetooth.general.offBluetoothAdapterStateChange",
+											"name": "uni.offBluetoothAdapterStateChange"
+										},
+										{
+											"id": "api.device.bluetooth.general.startBluetoothDevicesDiscovery",
+											"name": "uni.startBluetoothDevicesDiscovery"
+										},
+										{
+											"id": "api.device.bluetooth.general.stopBluetoothDevicesDiscovery",
+											"name": "uni.stopBluetoothDevicesDiscovery"
+										},
+										{
+											"id": "api.device.bluetooth.general.onBluetoothDeviceFound",
+											"name": "uni.onBluetoothDeviceFound"
+										},
+										{
+											"id": "api.device.bluetooth.general.offBluetoothDeviceFound",
+											"name": "uni.offBluetoothDeviceFound"
+										},
+										{
+											"id": "api.device.bluetooth.general.getBluetoothDevices",
+											"name": "uni.getBluetoothDevices"
+										},
+										{
+											"id": "api.device.bluetooth.general.getConnectedBluetoothDevices",
+											"name": "uni.getConnectedBluetoothDevices"
+										}
+									]
+								},
+								{
+									"id": "api.device.bluetooth.ble",
+									"name": "ble",
+									"children": [
+										{
+											"id": "api.device.bluetooth.ble.createBLEConnection",
+											"name": "uni.createBLEConnection"
+										},
+										{
+											"id": "api.device.bluetooth.ble.closeBLEConnection",
+											"name": "uni.closeBLEConnection"
+										},
+										{
+											"id": "api.device.bluetooth.ble.onBLEConnectionStateChange",
+											"name": "uni.onBLEConnectionStateChange"
+										},
+										{
+											"id": "api.device.bluetooth.ble.offBLEConnectionStateChange",
+											"name": "uni.offBLEConnectionStateChange"
+										},
+										{
+											"id": "api.device.bluetooth.ble.getBLEDeviceRSSI",
+											"name": "uni.getBLEDeviceRSSI"
+										},
+										{
+											"id": "api.device.bluetooth.ble.getBLEMTU",
+											"name": "uni.getBLEMTU"
+										},
+										{
+											"id": "api.device.bluetooth.ble.setBLEMTU",
+											"name": "uni.setBLEMTU"
+										},
+										{
+											"id": "api.device.bluetooth.ble.onBLEMTUChange",
+											"name": "uni.onBLEMTUChange"
+										},
+										{
+											"id": "api.device.bluetooth.ble.offBLEMTUChange",
+											"name": "uni.offBLEMTUChange"
+										},
+										{
+											"id": "api.device.bluetooth.ble.getBLEDeviceServices",
+											"name": "uni.getBLEDeviceServices"
+										},
+										{
+											"id": "api.device.bluetooth.ble.getBLEDeviceCharacteristics",
+											"name": "uni.getBLEDeviceCharacteristics"
+										},
+										{
+											"id": "api.device.bluetooth.ble.readBLECharacteristicValue",
+											"name": "uni.readBLECharacteristicValue"
+										},
+										{
+											"id": "api.device.bluetooth.ble.writeBLECharacteristicValue",
+											"name": "uni.writeBLECharacteristicValue"
+										},
+										{
+											"id": "api.device.bluetooth.ble.notifyBLECharacteristicValueChange",
+											"name": "uni.notifyBLECharacteristicValueChange"
+										},
+										{
+											"id": "api.device.bluetooth.ble.onBLECharacteristicValueChange",
+											"name": "uni.onBLECharacteristicValueChange"
+										},
+										{
+											"id": "api.device.bluetooth.ble.offBLECharacteristicValueChange",
+											"name": "uni.offBLECharacteristicValueChange"
+										}
+									]
+								}
+							]
 						}
 					]
 				},
@@ -4904,6 +5220,16 @@
 				{
 					"id": "css.properties.visibility",
 					"name": "visibility"
+				},
+				{
+					"id": "css.properties.gap",
+					"name": "gap",
+					"children": [
+						{
+							"id": "css.properties.gap.gap",
+							"name": "gap"
+						}
+					]
 				},
 				{
 					"id": "css.properties.flex",

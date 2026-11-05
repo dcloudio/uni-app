@@ -1,49 +1,47 @@
 <template>
-  <view style="flex: 1;">
     <button @click="testScroll">滚动测试</button>
-    <list-view style="flex: 1;" :scroll-top="scrollTop" :scroll-with-animation="true">
+    <list-view class="flex-1" :scroll-top="scrollTop" :scroll-with-animation="true">
       <sticky-section :push-pinned-header="false">
         <sticky-header>
-          <text class="header">A</text>
+          <text class="bg-ccc fs-18 lh-40">A</text>
         </sticky-header>
         <list-item v-for="item in 20" :key="item">
-          <text class="item">item-{{item}}</text>
+          <text class="fs-14 lh-30 bg-eee">item-{{item}}</text>
         </list-item>
       </sticky-section>
       <sticky-section>
         <sticky-header>
-          <text class="header">B</text>
+          <text class="bg-ccc fs-18 lh-40">B</text>
         </sticky-header>
         <list-item v-for="item in 20" :key="item">
-          <text class="item">item-{{item}}</text>
+          <text class="fs-14 lh-30 bg-eee">item-{{item}}</text>
         </list-item>
       </sticky-section>
       <sticky-section :push-pinned-header="false">
         <sticky-header>
-          <text class="header">C</text>
+          <text class="bg-ccc fs-18 lh-40">C</text>
         </sticky-header>
         <list-item v-for="item in 20" :key="item">
-          <text class="item">item-{{item}}</text>
+          <text class="fs-14 lh-30 bg-eee">item-{{item}}</text>
         </list-item>
       </sticky-section>
       <sticky-section>
         <sticky-header>
-          <text class="header">D</text>
+          <text class="bg-ccc fs-18 lh-40">D</text>
         </sticky-header>
         <list-item v-for="item in 20" :key="item">
-          <text class="item">item-{{item}}</text>
+          <text class="fs-14 lh-30 bg-eee">item-{{item}}</text>
         </list-item>
       </sticky-section>
       <sticky-section>
         <sticky-header>
-          <text class="header">E</text>
+          <text class="bg-ccc fs-18 lh-40">E</text>
         </sticky-header>
         <list-item v-for="item in 20" :key="item">
-          <text class="item">item-{{item}}</text>
+          <text class="fs-14 lh-30 bg-eee">item-{{item}}</text>
         </list-item>
       </sticky-section>
     </list-view>
-  </view>
 </template>
 
 <script setup lang="ts">
@@ -62,17 +60,3 @@
     testScroll
   })
 </script>
-
-<style>
-  .header {
-    background-color: #cccccc;
-    font-size: 18px;
-    line-height: 40px;
-  }
-
-  .item {
-    font-size: 14px;
-    line-height: 30px;
-    background-color: #eeeeee;
-  }
-</style>

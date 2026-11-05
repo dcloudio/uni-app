@@ -1,12 +1,12 @@
 <template>
   <page-head :title="title"></page-head>
-  <view class="uni-padding-wrap uni-common-mt">
-    <view class="uni-title">
-      <text class="uni-title-text">音频路径示例</text>
+  <view class="p-0-15 mt-15">
+    <view class="p-10-0 color-text-333">
+      <text class="fs-15 fw-bold color-text-333">音频路径示例</text>
     </view>
-    <view class="formats" v-for="(item,index) in supportPaths" :key="index">
-      <text class="uni-subtitle-text">{{item.description}}</text>
-      <image class="icon-play" :src="(isPlaying && playIndex==index)?'/static/test-audio/pause.png':'/static/test-audio/play.png'"
+    <view class="items-center" v-for="(item,index) in supportPaths" :key="index">
+      <text class="color-888 fs-12 fw-bold u-mt-5">{{item.description}}</text>
+      <image class="w-60 h-60 m-10" :src="(isPlaying && playIndex==index)?'/static/test-audio/pause.png':'/static/test-audio/play.png'"
         @click="play(item.src,index)"></image>
     </view>
   </view>
@@ -134,15 +134,3 @@ onUnload(() => {
   }
 })
 </script>
-
-<style>
-  .formats {
-    align-items: center;
-  }
-
-  .icon-play {
-    width: 60px;
-    height: 60px;
-    margin: 10px;
-  }
-</style>

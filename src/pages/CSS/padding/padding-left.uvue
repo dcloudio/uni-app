@@ -1,9 +1,9 @@
 <template>
-    <view style="flex-grow: 1;">
-      <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
+    <view class="flex-grow-1">
+      <text class="fs-13 color-tips-0958d9 bg-tips-e6f4ff border-l-4-solid-tips-91caff p-10-12 radius-4 m-10">说明：左边是正常版本，右边是拍平版本</text>
       <view>
         <text>padding-left: 25px</text>
-        <view class="demo-box">
+        <view class="flex-dir-row justify-around mt-10">
           <view class="common" style="padding-left: 25px;">
             <view class="inner-content"></view>
           </view>
@@ -15,7 +15,7 @@
 
       <view>
         <text>padding-left: 10%</text>
-        <view class="demo-box">
+        <view class="flex-dir-row justify-around mt-10">
           <view class="common" style="padding-left: 10%;">
             <view class="inner-content"></view>
           </view>
@@ -25,13 +25,13 @@
         </view>
       </view>
 
-      <view class="uni-common-mt">
-        <text class="uni-title-text">scroll-view 组件</text>
+      <view class="mt-15">
+        <text class="fs-15 fw-bold color-text-333">scroll-view 组件</text>
       </view>
 
       <view>
-        <text class="uni-subtitle-text">padding-left: 10% 和 padding-left: 30px</text>
-        <view class="demo-box">
+        <text class="color-888 fs-12 fw-bold u-mt-5">padding-left: 10% 和 padding-left: 30px</text>
+        <view class="flex-dir-row justify-around mt-10">
           <scroll-view class="common" style="padding-left: 10%;">
             <view class="inner-content"></view>
           </scroll-view>
@@ -41,77 +41,77 @@
         </view>
       </view>
 
-      <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
+      <view class="mt-15">
+        <text class="fs-15 fw-bold color-text-333">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <!-- 普通版本 -->
-      <view class="test-container">
-        <view class="test-item">
-          <text class="uni-subtitle-text">view 组件</text>
-          <text class="uni-info">设置值: {{data.paddingLeft}}</text>
-          <text class="uni-info">获取值: {{data.paddingLeftActual}}</text>
+      <view class="flex-dir-row justify-between mt-10">
+        <view class="flex-1 m-0-5">
+          <text class="color-888 fs-12 fw-bold u-mt-5">view 组件</text>
+          <text class="fs-12 color-999">设置值: {{data.paddingLeft}}</text>
+          <text class="fs-12 color-999">获取值: {{data.paddingLeftActual}}</text>
           <view class="test-box">
-            <view ref="viewRef" class="common-dynamic test-view" :style="{ paddingLeft: data.paddingLeft }">
-              <view style="flex-grow: 1;background-color: cyan;"><text class="cyan-text">view</text></view>
+            <view ref="viewRef" class="common-dynamic" :style="{ paddingLeft: data.paddingLeft }">
+              <view style="flex-grow: 1;background-color: cyan;"><text class="color-1a1a1a">view</text></view>
             </view>
           </view>
         </view>
 
-        <view class="test-item">
-          <text class="uni-subtitle-text">text 组件</text>
-          <text class="uni-info">设置值: {{data.paddingLeft}}</text>
-          <text class="uni-info">获取值: {{data.paddingLeftActualText}}</text>
+        <view class="flex-1 m-0-5">
+          <text class="color-888 fs-12 fw-bold u-mt-5">text 组件</text>
+          <text class="fs-12 color-999">设置值: {{data.paddingLeft}}</text>
+          <text class="fs-12 color-999">获取值: {{data.paddingLeftActualText}}</text>
           <view class="test-box">
-            <text ref="textRef" class="common-dynamic test-text" :style="{ paddingLeft: data.paddingLeft }">text</text>
+            <text ref="textRef" class="common-dynamic" :style="{ paddingLeft: data.paddingLeft }">text</text>
           </view>
         </view>
 
-        <view class="test-item">
-          <text class="uni-subtitle-text">image 组件</text>
-          <text class="uni-info">设置值: {{data.paddingLeft}}</text>
-          <text class="uni-info">获取值: {{data.paddingLeftActualImage}}</text>
+        <view class="flex-1 m-0-5">
+          <text class="color-888 fs-12 fw-bold u-mt-5">image 组件</text>
+          <text class="fs-12 color-999">设置值: {{data.paddingLeft}}</text>
+          <text class="fs-12 color-999">获取值: {{data.paddingLeftActualImage}}</text>
           <view class="test-box">
-            <image ref="imageRef" class="common-image test-image" :style="{ paddingLeft: data.paddingLeft }" src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common-image" :style="{ paddingLeft: data.paddingLeft }" src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
 
       <!-- 拍平版本 -->
-      <view class="test-container">
-        <view class="test-item">
-          <text class="uni-subtitle-text">view 组件拍平</text>
-          <text class="uni-info">设置值: {{data.paddingLeft}}</text>
-          <text class="uni-info">获取值: {{data.paddingLeftActualFlat}}</text>
+      <view class="flex-dir-row justify-between mt-10">
+        <view class="flex-1 m-0-5">
+          <text class="color-888 fs-12 fw-bold u-mt-5">view 组件拍平</text>
+          <text class="fs-12 color-999">设置值: {{data.paddingLeft}}</text>
+          <text class="fs-12 color-999">获取值: {{data.paddingLeftActualFlat}}</text>
           <view class="test-box">
-            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ paddingLeft: data.paddingLeft }" flatten>
-              <view style="flex-grow: 1;background-color: cyan;"><text class="cyan-text">view</text></view>
+            <view ref="viewRefFlat" class="common-dynamic" :style="{ paddingLeft: data.paddingLeft }" flatten>
+              <view style="flex-grow: 1;background-color: cyan;"><text class="color-1a1a1a">view</text></view>
             </view>
           </view>
         </view>
 
-        <view class="test-item">
-          <text class="uni-subtitle-text">text 组件拍平</text>
-          <text class="uni-info">设置值: {{data.paddingLeft}}</text>
-          <text class="uni-info">获取值: {{data.paddingLeftActualTextFlat}}</text>
+        <view class="flex-1 m-0-5">
+          <text class="color-888 fs-12 fw-bold u-mt-5">text 组件拍平</text>
+          <text class="fs-12 color-999">设置值: {{data.paddingLeft}}</text>
+          <text class="fs-12 color-999">获取值: {{data.paddingLeftActualTextFlat}}</text>
           <view class="test-box">
-            <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ paddingLeft: data.paddingLeft }" flatten>text</text>
+            <text ref="textRefFlat" class="common-dynamic" :style="{ paddingLeft: data.paddingLeft }" flatten>text</text>
           </view>
         </view>
 
-        <view class="test-item">
-          <text class="uni-subtitle-text">image 组件拍平</text>
-          <text class="uni-info">设置值: {{data.paddingLeft}}</text>
-          <text class="uni-info">获取值: {{data.paddingLeftActualImageFlat}}</text>
+        <view class="flex-1 m-0-5">
+          <text class="color-888 fs-12 fw-bold u-mt-5">image 组件拍平</text>
+          <text class="fs-12 color-999">设置值: {{data.paddingLeft}}</text>
+          <text class="fs-12 color-999">获取值: {{data.paddingLeftActualImageFlat}}</text>
           <view class="test-box">
-            <image ref="imageRefFlat" class="common-image test-image-flatten" :style="{ paddingLeft: data.paddingLeft }" flatten src="/static/test-image/logo.png"></image>
+            <image ref="imageRefFlat" class="common-image" :style="{ paddingLeft: data.paddingLeft }" flatten src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
 
-      <view class="uni-common-mt uni-common-mb">
-        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
-        <enum-data :items="paddingLeftEnum" title="padding-left 枚举值" @change="radioChangePaddingLeft" :compact="true"></enum-data>
+      <view class="mt-15 mb-15">
+        <text class="fs-13 color-tips-0958d9 bg-tips-e6f4ff border-l-4-solid-tips-91caff p-10-12 radius-4 m-10">第一个枚举值，'' (空字符串) - 空值情况</text>
+        <enum-data-checkbox :items="paddingLeftEnum" title="padding-left 枚举值" @change="radioChangePaddingLeft" :compact="true"></enum-data-checkbox>
         <input-data :defaultValue="data.paddingLeft" title="padding-left 自定义值" type="text" @confirm="inputChangePaddingLeft"></input-data>
       </view>
 
@@ -119,7 +119,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ItemType } from '@/components/enum-data/enum-data-types'
+  import { ItemType } from '@/components/enum-data-checkbox/enum-data-checkbox-types'
 
   const data = reactive({
     paddingLeft: '25px',
@@ -198,18 +198,9 @@
     height: 100px;
     background-color: gray;
   }
-  .demo-box {
-    flex-direction: row;
-    margin-top: 10px;
-    justify-content: space-around;
-  }
   .inner-content {
     flex-grow: 1;
     background-color: cyan;
-  }
-
-  .cyan-text {
-    color: #1a1a1a;
   }
 
   .common-dynamic {
@@ -223,35 +214,10 @@
     background-color: gray;
   }
 
-  .test-container {
-    flex-direction: row;
-    justify-content: space-between;
-    margin-top: 10px;
-  }
-
-  .test-item {
-    flex: 1;
-    margin: 0 5px;
-  }
-
   .test-box {
     width: 100%;
     height: 80px;
     background-color: lightgray;
-  }
-
-  .native-view-container-large {
-    width: 120px;
-    height: 120px;
-    background-color: #e0e0e0;
-    border: 2px solid #999;
-    margin: 0 10px;
-    align-items: flex-start;
-  }
-
-  .native-view-padding-large {
-    height: 100%;
-    background-color: cyan;
   }
 
 </style>

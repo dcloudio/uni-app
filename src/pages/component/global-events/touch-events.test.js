@@ -54,4 +54,35 @@ describe('touch-events-test', () => {
     expect(touchTargetsCount).toBe(2)
   })
 
+  it('底部安全区域点击正常触发 touchstart 和 touchend #34134', async () => {
+    const info = await program.callUniMethod('getWindowInfo')
+    const bottom = info.safeAreaInsets.bottom
+    if (bottom <= 0) {
+      console.log('当前设备无底部安全区域，跳过底部安全区触摸验证')
+      return
+    }
+
+    try {
+      await page.callMethod('setBottomTouchTest', true)
+      await page.waitFor('#bottom-touch-test')
+      // 使用屏幕坐标点击安全区内部，不能用元素触发事件代替真实触摸。
+      await program.tap({
+        x: Math.round(info.screenWidth / 4),
+        y: Math.round(info.screenHeight - bottom / 2),
+        duration: 100
+      })
+      await page.waitFor(async () => {
+        return (await page.callMethod('getBottomTouchEvents')).includes('tap')
+      }, 3000)
+
+      const events = await page.callMethod('getBottomTouchEvents')
+      expect(events.filter(type => type === 'touchstart').length).toBe(1)
+      expect(events.filter(type => type === 'touchend').length).toBe(1)
+      expect(events).not.toContain('touchcancel')
+      expect(events.indexOf('touchstart')).toBeLessThan(events.indexOf('touchend'))
+    } finally {
+      await page.callMethod('setBottomTouchTest', false)
+    }
+  })
+
 })

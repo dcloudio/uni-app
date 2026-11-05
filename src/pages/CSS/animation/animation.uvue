@@ -1,13 +1,26 @@
 <template>
   <view class="animate-page">
     <page-intro content="本页演示 @keyframes 与 animation：点击开始/暂停/恢复/取消动画，可点击各 view 修改宽度、高度、margin、padding 等属性动画。"></page-intro>
-    <view id="main" :class="'main-box main-animation-' + data.mainAnimationState"
+    <view id="main"
+      :class="'main-box main-animation-' + data.mainAnimationState + ' main-position-animation-' + data.mainPositionAnimationState"
       @animationend="onMainAnimationEnd"></view>
 
-    <button @click="startAnimate">开始动画</button>
-    <button @click="pauseAnimate">暂停动画</button>
-    <button @click="resumeAnimate">恢复动画</button>
-    <button @click="cancelAnimate">取消动画</button>
+    <view class="animation-buttons">
+      <view class="animation-buttons-group">
+        <text class="animation-buttons-title">变尺寸</text>
+        <button @click="startAnimate">开始动画</button>
+        <button @click="pauseAnimate">暂停动画</button>
+        <button @click="resumeAnimate">恢复动画</button>
+        <button @click="cancelAnimate">取消动画</button>
+      </view>
+      <view class="animation-buttons-group">
+        <text class="animation-buttons-title">变位置</text>
+        <button @click="startPositionAnimate">开始动画</button>
+        <button @click="pausePositionAnimate">暂停动画</button>
+        <button @click="resumePositionAnimate">恢复动画</button>
+        <button @click="cancelPositionAnimate">取消动画</button>
+      </view>
+    </view>
 
     <image src="/static/test-image/logo.png" id="roll"
       :class="'roll-image roll-image-' + data.rollAnimationState"></image>
@@ -95,6 +108,7 @@
 <script setup lang="ts">
   type Data = {
     mainAnimationState : string,
+    mainPositionAnimationState : string,
     widthAnimationState : string,
     heightAnimationState : string,
     marginAnimationState : string,
@@ -121,6 +135,7 @@
 
   const data = reactive({
     mainAnimationState: '',
+    mainPositionAnimationState: '',
     widthAnimationState: '',
     heightAnimationState: '',
     marginAnimationState: '',
@@ -148,6 +163,10 @@
   let mainAnimationTimer = 0
   let mainAnimationStartedAt = 0
   let mainAnimationRemaining = 5000
+
+  let mainPositionAnimationTimer = 0
+  let mainPositionAnimationStartedAt = 0
+  let mainPositionAnimationRemaining = 5000
 
   function finishMainAnimation() {
     if (data.mainAnimationState != 'running' && data.mainAnimationState != 'paused') {
@@ -211,7 +230,67 @@
   }
 
   function onMainAnimationEnd() {
+    if (data.mainPositionAnimationState == 'running' || data.mainPositionAnimationState == 'paused') {
+      return
+    }
     finishMainAnimation()
+  }
+
+  function finishMainPositionAnimation() {
+    if (data.mainPositionAnimationState != 'running' && data.mainPositionAnimationState != 'paused') {
+      return
+    }
+    clearTimeout(mainPositionAnimationTimer)
+    mainPositionAnimationTimer = 0
+    data.mainPositionAnimationState = 'finished'
+    uni.showToast({
+      title: '位置动画播放完成'
+    })
+  }
+
+  function scheduleMainPositionAnimationFinish() {
+    mainPositionAnimationStartedAt = Date.now()
+    mainPositionAnimationTimer = setTimeout(() => {
+      finishMainPositionAnimation()
+    }, mainPositionAnimationRemaining)
+  }
+
+  function startPositionAnimate() {
+    clearTimeout(mainPositionAnimationTimer)
+    mainPositionAnimationTimer = 0
+    mainPositionAnimationRemaining = 5000
+    data.mainPositionAnimationState = ''
+    nextTick(() => {
+      data.mainPositionAnimationState = 'running'
+      scheduleMainPositionAnimationFinish()
+    })
+  }
+
+  function pausePositionAnimate() {
+    if (data.mainPositionAnimationState == 'running') {
+      clearTimeout(mainPositionAnimationTimer)
+      mainPositionAnimationTimer = 0
+      mainPositionAnimationRemaining = Math.max(0, mainPositionAnimationRemaining - (Date.now() - mainPositionAnimationStartedAt))
+      data.mainPositionAnimationState = 'paused'
+    }
+  }
+
+  function resumePositionAnimate() {
+    if (data.mainPositionAnimationState == 'paused') {
+      data.mainPositionAnimationState = 'running'
+      scheduleMainPositionAnimationFinish()
+    }
+  }
+
+  function cancelPositionAnimate() {
+    if (data.mainPositionAnimationState == 'running' || data.mainPositionAnimationState == 'paused') {
+      clearTimeout(mainPositionAnimationTimer)
+      mainPositionAnimationTimer = 0
+      data.mainPositionAnimationState = ''
+      uni.showToast({
+        title: '位置动画被取消了'
+      })
+    }
   }
 
   function cssVariableProperty() {
@@ -379,6 +458,10 @@
     pauseAnimate,
     resumeAnimate,
     cancelAnimate,
+    startPositionAnimate,
+    pausePositionAnimate,
+    resumePositionAnimate,
+    cancelPositionAnimate,
     stopRollAnimation
   })
 </script>
@@ -394,6 +477,30 @@
     height: 100px;
     background-color: brown;
     transform: scale(1);
+    position: relative;
+    animation-name: var(--main-size-animation-name, none), var(--main-position-animation-name, none);
+    animation-duration: 5s, 5s;
+    animation-timing-function: linear, linear;
+    animation-iteration-count: 1, 1;
+    animation-play-state: var(--main-size-animation-play-state, running), var(--main-position-animation-play-state, running);
+  }
+
+  .animation-buttons {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .animation-buttons-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    margin: 4px;
+  }
+
+  .animation-buttons-title {
+    margin-bottom: 4px;
+    text-align: center;
+    color: var(--animation-text-color, #333333);
   }
 
   .css-test-label {
@@ -450,13 +557,22 @@
   }
   /* #endif */
 
-  .main-animation-running,
-  .main-animation-paused {
-    animation: main-scale 5s linear 1;
+  .main-animation-running {
+    --main-size-animation-name: main-scale;
   }
 
   .main-animation-paused {
-    animation-play-state: paused;
+    --main-size-animation-name: main-scale;
+    --main-size-animation-play-state: paused;
+  }
+
+  .main-position-animation-running {
+    --main-position-animation-name: main-position;
+  }
+
+  .main-position-animation-paused {
+    --main-position-animation-name: main-position;
+    --main-position-animation-play-state: paused;
   }
 
   .roll-image {
@@ -651,6 +767,20 @@
     100% {
       transform: scale(1);
       transform-origin: 100px 100px;
+    }
+  }
+
+  @keyframes main-position {
+    0% {
+      left: 0px;
+    }
+
+    50% {
+      left: 200px;
+    }
+
+    100% {
+      left: 0px;
     }
   }
 

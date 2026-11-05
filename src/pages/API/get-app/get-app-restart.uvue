@@ -1,10 +1,8 @@
 <template>
-  <view>
     <page-head title="getApp restart"></page-head>
-    <view class="uni-padding-wrap">
+    <view class="p-0-15">
       <text>restart from: {{ restartFrom }}</text>
     </view>
-  </view>
 </template>
 
 <script setup lang="ts">

@@ -3,7 +3,6 @@
   "displayName": "uni-memory",
   "version": "1.3.0",
   "description": "UTS 实现内存警告监听",
-  "isExt": true,
   "keywords": [
     "onMemoryWarning",
     "offMemoryWarning"

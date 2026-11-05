@@ -1,9 +1,9 @@
 <template>
   <!-- #ifdef APP -->
-  <view class="page-scroll-view">
+  <view class="app-flex-1">
   <!-- #endif -->
     <page-head title="下拉刷新的scroll-view属性示例"></page-head>
-    <view class="uni-margin-wrap">
+    <view class="h-200 m-0-25-25-25">
       <scroll-view id="refresher-scroll-view" direction="vertical" :bounces="bounces" :refresher-enabled="refresherEnabled" :refresher-threshold="refresherThreshold"
         :refresher-default-style="refresherDefaultStyle" :refresher-background="refresherBackground"
         <!-- #ifdef APP-ANDROID && VUE3-VAPOR -->
@@ -11,16 +11,16 @@
         :android-refresher-color="getAndroidRefresherColorBinding()"
         <!-- #endif -->
         :refresher-triggered="refresherTriggered" @refresherpulling="refresherpulling" @refresherrefresh="refresherrefresh"
-        @refresherrestore="refresherrestore" @refresherabort="refresherabort" style="width: 100%;height: 100%;">
-        <view class="item" :id="item.id" v-for="(item,_) in items">
-          <text class="uni-text">{{item.label}}</text>
+        @refresherrestore="refresherrestore" @refresherabort="refresherabort" class="w-full h-full">
+        <view class="justify-center items-center h-200 w-full bg-f0ffff border-width-1 border-style-solid border-color-d2691e" :id="item.id" v-for="(item,_) in items">
+          <text class="color-black fs-50">{{item.label}}</text>
         </view>
       </scroll-view>
     </view>
 
-    <scroll-view class="uni-list" style="padding-top: 16px;">
-      <view class="uni-list-cell-padding">
-        <text class="refresher-tips">**下拉刷新的属性设置需要先打开下拉刷新开关**</text>
+    <scroll-view class="bg-list-fff pos-relative d-flex flex-dir-column border-b-1-solid-c8c7cc-dark-3a3a3c flex-1 pt-16">
+      <view class="p-10-15 color-text-333">
+        <text class="fs-12 text-center u-color-red">**下拉刷新的属性设置需要先打开下拉刷新开关**</text>
       </view>
       <boolean-data :value="refresherEnabled" title="是否开启下拉刷新"
         @change="handleTrunOnRefresher"></boolean-data>
@@ -34,27 +34,27 @@
       <boolean-data :value="androidOverscroll" title="是否开启弹簧回弹效果"
         @change="setAndroidOverscroll"></boolean-data>
 
-      <view class="uni-list-cell-padding">
-        <text class="refresher-background-value">当前值：{{ androidRefresherColor == null ? '未设置' : androidRefresherColor }}</text>
+      <view class="p-10-15 color-text-333">
+        <text class="mt-8 fs-12 color-666 refresher-background-value">当前值：{{ androidRefresherColor == null ? '未设置' : androidRefresherColor }}</text>
       </view>
-      <enum-data :items="androidRefresherColorEnum" :disabled="!refresherEnabled" title="设置默认下拉刷新前景色"
-        @change="handleAndroidRefresherColorChange"></enum-data>
+      <enum-data-checkbox :items="androidRefresherColorEnum" :disabled="!refresherEnabled" title="设置默认下拉刷新前景色"
+        @change="handleAndroidRefresherColorChange"></enum-data-checkbox>
       <!-- #endif -->
 
       <input-data :defaultValue="refresherThreshold.toString()" :disabled="!refresherEnabled" title="设置下拉刷新阈值"
         type="number" @confirm="handleRefresherThresholdInput"></input-data>
 
-      <view class="uni-list-cell-padding">
-        <text class="refresher-background-value">当前值：{{ refresherBackground }}</text>
+      <view class="p-10-15 color-text-333">
+        <text class="mt-8 fs-12 color-666 refresher-background-value">当前值：{{ refresherBackground }}</text>
       </view>
-      <enum-data :items="refresherBackgroundEnum" :disabled="!refresherEnabled" title="设置下拉刷新区域背景颜色"
-        @change="handleRefresherBackgroundChange"></enum-data>
+      <enum-data-checkbox :items="refresherBackgroundEnum" :disabled="!refresherEnabled" title="设置下拉刷新区域背景颜色"
+        @change="handleRefresherBackgroundChange"></enum-data-checkbox>
 
-      <view class="uni-list-cell-padding">
-        <text class="refresher-background-value">当前值：{{ refresherDefaultStyle }}</text>
+      <view class="p-10-15 color-text-333">
+        <text class="mt-8 fs-12 color-666 refresher-background-value">当前值：{{ refresherDefaultStyle }}</text>
       </view>
-      <enum-data :items="refresherStyleEnum" :disabled="!refresherEnabled" title="设置下拉刷新默认样式"
-        @change="handleRefresherDefaultStyleChange"></enum-data>
+      <enum-data-checkbox :items="refresherStyleEnum" :disabled="!refresherEnabled" title="设置下拉刷新默认样式"
+        @change="handleRefresherDefaultStyleChange"></enum-data-checkbox>
     </scroll-view>
   <!-- #ifdef APP -->
   </view>
@@ -62,7 +62,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ItemType } from '@/components/enum-data/enum-data-types'
+  import { ItemType } from '@/components/enum-data-checkbox/enum-data-checkbox-types'
 
   type Item = {
     id : string,
@@ -354,43 +354,6 @@
 </script>
 
 <style>
-  .uni-margin-wrap {
-    height: 200px;
-    margin: 0 25px 25px 25px;
-  }
-
-  .item {
-    justify-content: center;
-    align-items: center;
-    height: 200px;
-    width: 100%;
-    background-color: azure;
-    border-width: 1px;
-    border-style: solid;
-    border-color: chocolate;
-  }
-
-  .refresher-tips {
-    font-size: 12px;
-    text-align: center;
-    color: red;
-  }
-
-  .refresher-background-value {
-    margin-top: 8px;
-    font-size: 12px;
-    color: #666666;
-  }
-
-  .uni-text {
-    color: black;
-    font-size: 50px;
-  }
-
-  .uni-list {
-    flex: 1;
-  }
-
   @media (prefers-color-scheme: dark) {
     .refresher-background-value {
       color: #a0a0a0;

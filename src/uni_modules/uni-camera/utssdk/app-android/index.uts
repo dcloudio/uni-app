@@ -365,6 +365,7 @@ export class CameraInstance {
 			//dialogpage时，自己处理
 			this.cameraImpl?.stopCamera()
 		}
+		this.cameraImpl?.detachPreview()
 		this.cameraImpl = null
 		UTSAndroid.destroyInstance(this)
 	}

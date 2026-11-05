@@ -1,15 +1,24 @@
 <template>
 	<view class="drag-cell-host">
-	<view class="drag-cell" :class="containerClass" :style="containerStyle">
+	<view class="drag-cell" :style="containerStyle">
 		<view
 			v-for="(item, index) in innerList"
 			:key="itemIds.length > index ? itemIds[index] : index"
 			class="drag-cell-item"
 			:style="getItemStyle(index)"
+			<!-- #ifdef WEB -->
+			@pointerdown.stop="onItemTouchStart($event, index)"
+			@pointermove="onItemTouchMove($event, index)"
+			@pointerup="onItemTouchEnd($event, index)"
+			@pointercancel="onItemTouchEnd($event, index)"
+			<!-- #endif -->
+			<!-- #ifndef WEB -->
 			@touchstart.stop="onItemTouchStart($event, index)"
 			@touchmove="onItemTouchMove($event, index)"
 			@touchend="onItemTouchEnd($event, index)"
-			@touchcancel="onItemTouchEnd($event, index)">
+			@touchcancel="onItemTouchEnd($event, index)"
+			<!-- #endif -->
+			>
 			<view class="drag-cell-item-inner">
 				<view class="drag-cell-slot-content">
 					<slot :item="item" :index="index"></slot>
@@ -18,9 +27,17 @@
 					v-if="handleModeEnabled"
 					class="drag-cell-handle"
 					:class="getHandleClass(index)"
+					<!-- #ifdef WEB -->
+					@pointerdown.stop="onHandleTouchStart($event, index)"
+					@pointerup.stop="onHandleTouchEnd($event, index)"
+					@pointercancel.stop="onHandleTouchEnd($event, index)"
+					<!-- #endif -->
+					<!-- #ifndef WEB -->
 					@touchstart.stop="onHandleTouchStart($event, index)"
 					@touchend.stop="onHandleTouchEnd($event, index)"
-					@touchcancel.stop="onHandleTouchEnd($event, index)">
+					@touchcancel.stop="onHandleTouchEnd($event, index)"
+					<!-- #endif -->
+					>
 					<!-- 此处item、index参数除传递参数之外，还会激活编译到小程序的scopedSlot特殊处理逻辑，使外部使用时能正常循环创建插槽内容。需要注意的是使用此插槽是也需要声明参数来激活特殊逻辑 -->
 					<slot name="handle" :item="item" :index="index"></slot>
 				</view>
@@ -84,6 +101,13 @@
    *   }
    * }
    */
+	// #ifdef WEB
+	type DragInputEvent = PointerEvent
+	// #endif
+	// #ifndef WEB
+	type DragInputEvent = UniTouchEvent
+	// #endif
+
 	type ItemLayout = {
 		left: number,
 		pageTop: number,
@@ -410,7 +434,6 @@
 	const gridColumnCenters = ref<number[]>([])
 	const gridRowCenters = ref<number[]>([])
 	const previewItemIds = ref<number[]>([])
-	const settling = ref(false)
 	const dragging = ref(false)
 	// TODO XXXIndex存的太多了，后续优化
 	const activeIndex = ref(-1)
@@ -426,7 +449,7 @@
 	const activeViewTop = ref(0)
 	const dragCoordOffsetX = ref(0)
 	const dragCoordOffsetY = ref(0)
-	const nextItemId = ref(0)
+	let nextItemId = 0
 	let longPressTimer = 0
 	const longPressDuration = 350
 	const pressCancelDistance = 10
@@ -450,10 +473,6 @@
 			return 0
 		}
 		return Math.floor(currentColumn)
-	})
-
-	const containerClass = computed(() : string => {
-		return columnCount.value > 0 ? 'drag-cell-grid' : 'drag-cell-row'
 	})
 
 	const showClose = computed(() : boolean => props.showClose == true)
@@ -566,8 +585,8 @@
 	const buildIdList = (length : number) : number[] => {
 		const ids : number[] = []
 		for (let i = 0; i < length; i++) {
-			ids.push(nextItemId.value)
-			nextItemId.value = nextItemId.value + 1
+			ids.push(nextItemId)
+			nextItemId++
 		}
 		return ids
 	}
@@ -592,7 +611,6 @@
 		dragCoordOffsetY.value = 0
 		dragOffsetX.value = 0
 		dragOffsetY.value = 0
-		applyPreviewOrder(createIdentityOrder(innerList.value.length))
 	}
 
 	const getItemLayout = (index : number) : ItemLayout | null => {
@@ -703,11 +721,6 @@
 	const emitChange = () => {
 		emit('update:modelValue', innerList.value)
 		emit('change', innerList.value)
-	}
-
-	const resetItemIdsByListOrder = () => {
-		itemIds.value = createIdentityOrder(innerList.value.length)
-		applyPreviewOrder(createIdentityOrder(innerList.value.length))
 	}
 
 	watch(() : number => {
@@ -855,7 +868,6 @@
 		dragOffsetY.value = 0
 		dragCoordOffsetX.value = layouts.value[index].left - activeViewLeft.value
 		dragCoordOffsetY.value = layouts.value[index].pageTop - activeViewTop.value
-		settling.value = false
 		dragging.value = true
 		activeIndex.value = index
 		hoverIndex.value = index
@@ -949,14 +961,10 @@
 		if (showClose.value == true && overDeleteBar.value == true) {
 			const nextList = innerList.value.slice()
 			nextList.splice(currentActiveIndex, 1)
-			settling.value = true
 			resetDragState()
 			innerList.value = nextList
-			resetItemIdsByListOrder()
+			itemIds.value = itemIds.value.splice(currentActiveIndex, 1)
 			emitChange()
-			nextTick(() => {
-				settling.value = false
-			})
 			return
 		}
 		const targetIndex = hoverIndex.value
@@ -969,35 +977,56 @@
 		const movedItem = nextList.splice(currentActiveIndex, 1)[0]
 		nextList.splice(targetIndex, 0, movedItem)
 
-		settling.value = true
 		resetDragState()
 		innerList.value = nextList
-		resetItemIdsByListOrder()
+		const movedId = itemIds.value.splice(currentActiveIndex, 1)[0]
+		itemIds.value.splice(targetIndex, 0, movedId)
 		emitChange()
-		nextTick(() => {
-			settling.value = false
-		})
 	}
 
+	const getDragPoint = (event : DragInputEvent) => {
+		// #ifdef WEB
+		return event
+		// #endif
+		// #ifndef WEB
+		return event.touches[0]
+		// #endif
+	}
+
+	// #ifdef WEB
+	const capturePointer = (event : PointerEvent) : boolean => {
+		if (event.isPrimary != true || event.button != 0) {
+			return false
+		}
+		const target = event.currentTarget as HTMLElement
+		target.setPointerCapture(event.pointerId)
+		event.preventDefault()
+		return true
+	}
+	// #endif
+
 	let currentTouchContext: TouchContext | null = null
-	const onItemTouchStart = (event : any, index : number) => {
+	const onItemTouchStart = (event : DragInputEvent, index : number) => {
 		if (handleModeEnabled.value == true) {
 			return
 		}
 		if (dragging.value == true) {
 			return
 		}
+		// #ifdef WEB
+		if (capturePointer(event) != true) {
+			return
+		}
+		// #endif
 		currentTouchContext = new TouchContext(index)
-		const touchEvent = event as UniTouchEvent
-		const touch = touchEvent.touches[0]
+		const touch = getDragPoint(event)
 		scheduleLongPress(currentTouchContext!, touch.clientX, touch.clientY)
 	}
 
-	const onItemTouchMove = (event : any, index : number) => {
-		const touchEvent = event as UniTouchEvent
-		const touch = touchEvent.touches[0]
+	const onItemTouchMove = (event : DragInputEvent, index : number) => {
+		const touch = getDragPoint(event)
 		if (dragging.value == true) {
-			touchEvent.preventDefault()
+			event.preventDefault()
 			if (index != activeIndex.value) {
 				return
 			}
@@ -1018,12 +1047,16 @@
 		}
 	}
 
-	const onHandleTouchStart = (event : any, index : number) => {
+	const onHandleTouchStart = (event : DragInputEvent, index : number) => {
 		if (handleModeEnabled.value != true) {
 			return
 		}
-		const touchEvent = event as UniTouchEvent
-		const touch = touchEvent.touches[0]
+		// #ifdef WEB
+		if (capturePointer(event) != true) {
+			return
+		}
+		// #endif
+		const touch = getDragPoint(event)
 		currentTouchContext = new TouchContext(index)
 		beginHandleDrag(currentTouchContext!, touch.clientX, touch.clientY)
 	}
@@ -1062,10 +1095,6 @@
 		// TODO 安卓平台transition动画过程中新设置的属性不生效，暂时在安卓平台屏蔽transition动画，待安卓平台修复后移除此条件编译
 		transitionStyle = 'transition-duration: 0ms;'
 		// #endif
-
-		if (settling.value == true) {
-			transitionStyle = 'transition-duration: 0ms;'
-		}
 
 		const currentContainerLayout = containerLayout.value
 		if (dragging.value == true && index < layouts.value.length && currentContainerLayout != null) {
@@ -1132,13 +1161,6 @@
 		width: 100%;
 		position: relative;
 		overflow: visible;
-	}
-
-	.drag-cell-row {
-		justify-content: flex-start;
-	}
-
-	.drag-cell-grid {
 		justify-content: flex-start;
 	}
 
@@ -1152,6 +1174,8 @@
 		overflow: visible;
 		/* #ifdef WEB */
 		cursor: grab;
+		touch-action: none;
+		user-select: none;
 		/* #endif */
 	}
 

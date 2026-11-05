@@ -1,38 +1,42 @@
 <template>
-  <view class="page">
+  <view class="page u-p-15">
     <unicloud-db ref="udbRef" :collection="collection" loadtime="manual"></unicloud-db>
     <form @submit="onFormSubmit">
-      <view class="form-item">
-        <text class="form-item-label">姓名</text>
-        <input class="form-item-input" placeholder="姓名" name="username" />
+      <view class="flex-dir-row mb-15 items-center">
+        <text class="w-45 mr-10 color-contact-text-333">姓名</text>
+        <input class="flex-1 fs-14 border-1-solid-contact-border-e5e5e5 radius-5 h-34 pl-8 pr-8 color-contact-input-a1a1a1" placeholder="姓名" name="username" />
       </view>
-      <view class="form-item">
-        <text class="form-item-label">电话</text>
-        <input class="form-item-input" placeholder="电话" name="mobile" />
+      <view class="flex-dir-row mb-15 items-center">
+        <text class="w-45 mr-10 color-contact-text-333">电话</text>
+        <input class="flex-1 fs-14 border-1-solid-contact-border-e5e5e5 radius-5 h-34 pl-8 pr-8 color-contact-input-a1a1a1" placeholder="电话" name="mobile" />
       </view>
-      <view class="form-item">
-        <text class="form-item-label">邮箱</text>
-        <input class="form-item-input" placeholder="邮箱地址" name="email" />
+      <view class="flex-dir-row mb-15 items-center">
+        <text class="w-45 mr-10 color-contact-text-333">邮箱</text>
+        <input class="flex-1 fs-14 border-1-solid-contact-border-e5e5e5 radius-5 h-34 pl-8 pr-8 color-contact-input-a1a1a1" placeholder="邮箱地址" name="email" />
       </view>
-      <view class="form-item">
-        <text class="form-item-label">备注</text>
-        <textarea class="form-item-input-comment" placeholder="备注" name="comment" :maxlength="-1" />
+      <view class="flex-dir-row mb-15 items-center">
+        <text class="w-45 mr-10 color-contact-text-333">备注</text>
+        <textarea class="flex-1 fs-14 border-1-solid-contact-border-e5e5e5 radius-5 p-8 color-contact-input-a1a1a1" placeholder="备注" name="comment" :maxlength="-1" />
       </view>
-      <view class="form-item">
-        <text class="form-item-label">性别</text>
-        <radio-group class="radio-list" name="gender">
-          <view class="radio-item" v-for="(item, _) in genderList" :key="item.value">
-            <radio :value="item.value.toString()" />
-            <text class="radio-item-text">{{item.text}}</text>
-          </view>
-        </radio-group>
+      <view class="flex-dir-row mb-15 items-center">
+        <text class="w-45 mr-10 color-contact-text-333">性别</text>
+        <enum-data-checkbox
+          class="flex-1"
+          :model-value="selectedGender"
+          :items="genderList"
+          mode="default"
+          :show-toast="false"
+          @change="selectedGender = $event as number"
+        />
       </view>
-      <button class="btn-add" type="primary" form-type="submit">保存</button>
+      <button class="mt-50" type="primary" form-type="submit">保存</button>
     </form>
   </view>
 </template>
 
 <script setup lang="ts">
+  const selectedGender = ref<number>(-1)
+
 
   import { COLLECTION_NAME, GenderType, GenderList, UNICLOUD_DB_CONTACTS_ADD } from './types.ts'
 
@@ -42,8 +46,7 @@
 
   function onFormSubmit(e : UniFormSubmitEvent) {
     const formData = e.detail.value
-    const genderString = formData['gender'] as string
-    formData['gender'] = (genderString.length > 0) ? parseInt(genderString) : -1
+    formData['gender'] = selectedGender.value
     console.log('formData', formData)
     if (udbRef.value != null) {
       udbRef.value!.add(formData, {
@@ -70,61 +73,14 @@
 </script>
 
 <style>
+  .color-contact-input-a1a1a1 {
+    color: var(--contact-input-color, #a1a1a1);
+  }
+
   .page {
     --contact-text-color: #333333;
     --contact-border-color: #e5e5e5;
     --contact-input-color: #a1a1a1;
-    padding: 15px;
-  }
-
-  .form-item {
-    flex-direction: row;
-    margin-bottom: 15px;
-    align-items: center;
-  }
-
-  .form-item-label {
-    width: 45px;
-    margin-right: 10px;
-    color: var(--contact-text-color, #333333);
-  }
-
-  .form-item-input {
-    flex: 1;
-    font-size: 14px;
-    color: var(--contact-input-color, #a1a1a1);
-    border: 1px solid var(--contact-border-color, #e5e5e5);
-    border-radius: 5px;
-    height: 34px;
-    padding-left: 8px;
-    padding-right: 8px;
-  }
-
-  .form-item-input-comment {
-    flex: 1;
-    font-size: 14px;
-    color: var(--contact-input-color, #a1a1a1);
-    border: 1px solid var(--contact-border-color, #e5e5e5);
-    border-radius: 5px;
-    padding: 8px;
-  }
-
-  .radio-list {
-    flex-direction: row;
-  }
-
-  .radio-item {
-    flex-direction: row;
-    margin-right: 30px;
-    align-items: center;
-  }
-
-  .radio-item-text {
-    color: var(--contact-text-color, #333333);
-  }
-
-  .btn-add {
-    margin-top: 50px;
   }
 
   @media (prefers-color-scheme: dark) {

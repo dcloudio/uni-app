@@ -152,7 +152,6 @@ export type CreateEditorContextAsyncOptions = {
    *  },
    *  "mp":{
    *    "weixin": {
-   *      "hostVer": "√",
    *      "uniVer": "5.08",
    *      "unixVer": "5.08",
    *      "unixVaporVer": "5.08"
@@ -165,32 +164,26 @@ export type CreateEditorContextAsyncOptions = {
    *    "baidu": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "kuaishou": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    }
    *  }
    * }
@@ -223,7 +216,6 @@ export type CreateEditorContextAsyncOptions = {
    *  },
    *  "mp":{
    *    "weixin": {
-   *      "hostVer": "√",
    *      "uniVer": "5.08",
    *      "unixVer": "5.08",
    *      "unixVaporVer": "5.08"
@@ -236,32 +228,26 @@ export type CreateEditorContextAsyncOptions = {
    *    "baidu": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "kuaishou": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    }
    *  }
    * }
@@ -294,7 +280,6 @@ export type CreateEditorContextAsyncOptions = {
    *  },
    *  "mp":{
    *    "weixin": {
-   *      "hostVer": "√",
    *      "uniVer": "5.08",
    *      "unixVer": "5.08",
    *      "unixVaporVer": "5.08"
@@ -307,32 +292,26 @@ export type CreateEditorContextAsyncOptions = {
    *    "baidu": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "kuaishou": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    }
    *  }
    * }
@@ -365,7 +344,6 @@ export type CreateEditorContextAsyncOptions = {
    *  },
    *  "mp":{
    *    "weixin": {
-   *      "hostVer": "√",
    *      "uniVer": "5.08",
    *      "unixVer": "5.08",
    *      "unixVaporVer": "5.08"
@@ -378,32 +356,26 @@ export type CreateEditorContextAsyncOptions = {
    *    "baidu": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "kuaishou": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    }
    *  }
    * }
@@ -436,7 +408,6 @@ export type CreateEditorContextAsyncOptions = {
    *  },
    *  "mp":{
    *    "weixin": {
-   *      "hostVer": "√",
    *      "uniVer": "5.08",
    *      "unixVer": "5.08",
    *      "unixVaporVer": "5.08"
@@ -449,32 +420,26 @@ export type CreateEditorContextAsyncOptions = {
    *    "baidu": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "kuaishou": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    }
    *  }
    * }
@@ -496,7 +461,6 @@ export interface EditorContext {
    *       "unixVer": "5.08"
    *     },
    *     "harmony": {
-   *       "osVer": "√",
    *       "uniVer": "x",
    *       "unixVer": "5.08",
    *       "unixVaporVer": "5.08"
@@ -509,7 +473,6 @@ export interface EditorContext {
    *   },
    *   "mp":{
    *     "weixin": {
-   *       "hostVer": "√",
    *       "uniVer": "5.08",
    *       "unixVer": "5.08",
    *       "unixVaporVer": "5.08"
@@ -522,32 +485,26 @@ export interface EditorContext {
    *     "baidu": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "toutiao": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "lark": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "qq": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "kuaishou": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "jd": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     }
    *   }
    * }
@@ -566,7 +523,6 @@ export interface EditorContext {
    *       "unixVer": "5.08"
    *     },
    *     "harmony": {
-   *       "osVer": "√",
    *       "uniVer": "x",
    *       "unixVer": "5.08",
    *       "unixVaporVer": "5.08"
@@ -579,7 +535,6 @@ export interface EditorContext {
    *   },
    *   "mp":{
    *     "weixin": {
-   *       "hostVer": "√",
    *       "uniVer": "5.08",
    *       "unixVer": "5.08",
    *       "unixVaporVer": "5.08"
@@ -592,32 +547,26 @@ export interface EditorContext {
    *     "baidu": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "toutiao": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "lark": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "qq": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "kuaishou": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "jd": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     }
    *   }
    * }
@@ -636,7 +585,6 @@ export interface EditorContext {
    *       "unixVer": "5.08"
    *     },
    *     "harmony": {
-   *       "osVer": "√",
    *       "uniVer": "x",
    *       "unixVer": "5.08",
    *       "unixVaporVer": "5.08"
@@ -649,7 +597,6 @@ export interface EditorContext {
    *   },
    *   "mp":{
    *     "weixin": {
-   *       "hostVer": "√",
    *       "uniVer": "5.08",
    *       "unixVer": "5.08",
    *       "unixVaporVer": "5.08"
@@ -662,32 +609,26 @@ export interface EditorContext {
    *     "baidu": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "toutiao": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "lark": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "qq": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "kuaishou": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "jd": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     }
    *   }
    * }
@@ -706,7 +647,6 @@ export interface EditorContext {
    *       "unixVer": "5.08"
    *     },
    *     "harmony": {
-   *       "osVer": "√",
    *       "uniVer": "x",
    *       "unixVer": "5.08",
    *       "unixVaporVer": "5.08"
@@ -719,7 +659,6 @@ export interface EditorContext {
    *   },
    *   "mp":{
    *     "weixin": {
-   *       "hostVer": "√",
    *       "uniVer": "5.08",
    *       "unixVer": "5.08",
    *       "unixVaporVer": "5.08"
@@ -732,32 +671,26 @@ export interface EditorContext {
    *     "baidu": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "toutiao": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "lark": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "qq": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "kuaishou": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "jd": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     }
    *   }
    * }
@@ -776,7 +709,6 @@ export interface EditorContext {
     *       "unixVer": "5.08"
     *     },
     *     "harmony": {
-    *       "osVer": "√",
     *       "uniVer": "x",
     *       "unixVer": "5.08",
     *       "unixVaporVer": "5.08"
@@ -789,7 +721,6 @@ export interface EditorContext {
     *   },
     *   "mp":{
     *     "weixin": {
-    *       "hostVer": "√",
     *       "uniVer": "5.08",
     *       "unixVer": "5.08",
     *       "unixVaporVer": "5.08"
@@ -802,32 +733,26 @@ export interface EditorContext {
     *     "baidu": {
     *       "hostVer": "x",
     *       "uniVer": "x",
-    *       "unixVer": "x"
     *     },
     *     "toutiao": {
     *       "hostVer": "x",
     *       "uniVer": "x",
-    *       "unixVer": "x"
     *     },
     *     "lark": {
     *       "hostVer": "x",
     *       "uniVer": "x",
-    *       "unixVer": "x"
     *     },
     *     "qq": {
     *       "hostVer": "x",
     *       "uniVer": "x",
-    *       "unixVer": "x"
     *     },
     *     "kuaishou": {
     *       "hostVer": "x",
     *       "uniVer": "x",
-    *       "unixVer": "x"
     *     },
     *     "jd": {
     *       "hostVer": "x",
     *       "uniVer": "x",
-    *       "unixVer": "x"
     *     }
     *   }
     * }
@@ -846,7 +771,6 @@ export interface EditorContext {
    *       "unixVer": "5.08"
    *     },
    *     "harmony": {
-   *       "osVer": "√",
    *       "uniVer": "x",
    *       "unixVer": "5.08",
    *       "unixVaporVer": "5.11"
@@ -859,7 +783,6 @@ export interface EditorContext {
    *   },
    *   "mp":{
    *     "weixin": {
-   *       "hostVer": "√",
    *       "uniVer": "5.08",
    *       "unixVer": "5.08",
    *       "unixVaporVer": "5.08"
@@ -872,32 +795,26 @@ export interface EditorContext {
    *     "baidu": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "toutiao": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "lark": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "qq": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "kuaishou": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "jd": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     }
    *   }
    * }
@@ -916,7 +833,6 @@ export interface EditorContext {
    *       "unixVer": "5.08"
    *     },
    *     "harmony": {
-   *       "osVer": "√",
    *       "uniVer": "x",
    *       "unixVer": "5.08",
    *       "unixVaporVer": "5.08"
@@ -929,7 +845,6 @@ export interface EditorContext {
    *   },
    *   "mp":{
    *     "weixin": {
-   *       "hostVer": "√",
    *       "uniVer": "5.08",
    *       "unixVer": "5.08",
    *       "unixVaporVer": "5.08"
@@ -942,32 +857,26 @@ export interface EditorContext {
    *     "baidu": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "toutiao": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "lark": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "qq": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "kuaishou": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "jd": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     }
    *   }
    * }
@@ -986,7 +895,6 @@ export interface EditorContext {
    *       "unixVer": "5.08"
    *     },
    *     "harmony": {
-   *       "osVer": "√",
    *       "uniVer": "x",
    *       "unixVer": "5.08",
    *       "unixVaporVer": "5.08"
@@ -999,7 +907,6 @@ export interface EditorContext {
    *   },
    *   "mp":{
    *     "weixin": {
-   *       "hostVer": "√",
    *       "uniVer": "5.08",
    *       "unixVer": "5.08",
    *       "unixVaporVer": "5.08"
@@ -1012,32 +919,26 @@ export interface EditorContext {
    *     "baidu": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "toutiao": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "lark": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "qq": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "kuaishou": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "jd": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     }
    *   }
    * }
@@ -1056,7 +957,6 @@ export interface EditorContext {
    *       "unixVer": "5.08"
    *     },
    *     "harmony": {
-   *       "osVer": "√",
    *       "uniVer": "x",
    *       "unixVer": "5.08",
    *       "unixVaporVer": "5.08"
@@ -1069,7 +969,6 @@ export interface EditorContext {
    *   },
    *   "mp":{
    *     "weixin": {
-   *       "hostVer": "√",
    *       "uniVer": "5.08",
    *       "unixVer": "5.08",
    *       "unixVaporVer": "5.08"
@@ -1082,32 +981,26 @@ export interface EditorContext {
    *     "baidu": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "toutiao": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "lark": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "qq": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "kuaishou": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "jd": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     }
    *   }
    * }
@@ -1126,7 +1019,6 @@ export interface EditorContext {
    *       "unixVer": "5.08"
    *     },
    *     "harmony": {
-   *       "osVer": "√",
    *       "uniVer": "x",
    *       "unixVer": "5.08",
    *       "unixVaporVer": "5.08"
@@ -1139,7 +1031,6 @@ export interface EditorContext {
    *   },
    *   "mp":{
    *     "weixin": {
-   *       "hostVer": "√",
    *       "uniVer": "5.08",
    *       "unixVer": "5.08",
    *       "unixVaporVer": "5.08"
@@ -1152,32 +1043,26 @@ export interface EditorContext {
    *     "baidu": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "toutiao": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "lark": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "qq": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "kuaishou": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "jd": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     }
    *   }
    * }
@@ -1196,7 +1081,6 @@ export interface EditorContext {
    *       "unixVer": "5.08"
    *     },
    *     "harmony": {
-   *       "osVer": "√",
    *       "uniVer": "x",
    *       "unixVer": "5.08",
    *       "unixVaporVer": "5.08"
@@ -1209,7 +1093,6 @@ export interface EditorContext {
    *   },
    *   "mp":{
    *     "weixin": {
-   *       "hostVer": "√",
    *       "uniVer": "5.08",
    *       "unixVer": "5.08",
    *       "unixVaporVer": "5.08"
@@ -1222,32 +1105,26 @@ export interface EditorContext {
    *     "baidu": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "toutiao": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "lark": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "qq": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "kuaishou": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "jd": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     }
    *   }
    * }
@@ -1266,7 +1143,6 @@ export interface EditorContext {
    *       "unixVer": "5.08"
    *     },
    *     "harmony": {
-   *       "osVer": "√",
    *       "uniVer": "x",
    *       "unixVer": "5.08",
    *       "unixVaporVer": "5.08"
@@ -1279,7 +1155,6 @@ export interface EditorContext {
    *   },
    *   "mp":{
    *     "weixin": {
-   *       "hostVer": "√",
    *       "uniVer": "5.08",
    *       "unixVer": "5.08",
    *       "unixVaporVer": "5.08"
@@ -1292,32 +1167,26 @@ export interface EditorContext {
    *     "baidu": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "toutiao": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "lark": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "qq": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "kuaishou": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "jd": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     }
    *   }
    * }
@@ -1336,7 +1205,6 @@ export interface EditorContext {
    *       "unixVer": "5.08"
    *     },
    *     "harmony": {
-   *       "osVer": "√",
    *       "uniVer": "x",
    *       "unixVer": "5.08",
    *       "unixVaporVer": "5.08"
@@ -1349,7 +1217,6 @@ export interface EditorContext {
    *   },
    *   "mp":{
    *     "weixin": {
-   *       "hostVer": "√",
    *       "uniVer": "5.08",
    *       "unixVer": "5.08",
    *       "unixVaporVer": "5.08"
@@ -1362,32 +1229,26 @@ export interface EditorContext {
    *     "baidu": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "toutiao": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "lark": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "qq": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "kuaishou": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "jd": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     }
    *   }
    * }
@@ -1406,7 +1267,6 @@ export interface EditorContext {
    *       "unixVer": "5.08"
    *     },
    *     "harmony": {
-   *       "osVer": "√",
    *       "uniVer": "x",
    *       "unixVer": "5.08",
    *       "unixVaporVer": "5.08"
@@ -1419,7 +1279,6 @@ export interface EditorContext {
    *   },
    *   "mp":{
    *     "weixin": {
-   *       "hostVer": "√",
    *       "uniVer": "5.08",
    *       "unixVer": "5.08",
    *       "unixVaporVer": "5.08"
@@ -1432,32 +1291,26 @@ export interface EditorContext {
    *     "baidu": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "toutiao": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "lark": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "qq": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "kuaishou": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "jd": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     }
    *   }
    * }
@@ -1476,7 +1329,6 @@ export interface EditorContext {
    *       "unixVer": "5.08"
    *     },
    *     "harmony": {
-   *       "osVer": "√",
    *       "uniVer": "x",
    *       "unixVer": "5.08",
    *       "unixVaporVer": "5.08"
@@ -1489,7 +1341,6 @@ export interface EditorContext {
    *   },
    *   "mp":{
    *     "weixin": {
-   *       "hostVer": "√",
    *       "uniVer": "5.08",
    *       "unixVer": "5.08",
    *       "unixVaporVer": "5.08"
@@ -1502,32 +1353,26 @@ export interface EditorContext {
    *     "baidu": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "toutiao": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "lark": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "qq": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "kuaishou": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     },
    *     "jd": {
    *       "hostVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
    *     }
    *   }
    * }
@@ -1565,7 +1410,6 @@ export interface Uni {
    *  },
    *  "mp":{
    *    "weixin": {
-   *      "hostVer": "√",
    *      "uniVer": "5.08",
    *      "unixVer": "5.08",
    *      "unixVaporVer": "5.08"
@@ -1578,32 +1422,26 @@ export interface Uni {
    *    "baidu": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "kuaishou": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    }
    *  }
    * }

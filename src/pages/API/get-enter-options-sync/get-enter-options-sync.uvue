@@ -1,9 +1,9 @@
 <template>
   <page-head title="getEnterOptionsSync"></page-head>
-  <view class="uni-padding-wrap">
-    <view class="uni-common-mt">
+  <view class="p-0-15">
+    <view class="mt-15">
       <text>应用本次启动路径：</text>
-      <text style="margin-top: 5px">{{ data.enterOptionsString }}</text>
+      <text class="u-mt-5">{{ data.enterOptionsString }}</text>
     </view>
   </view>
 </template>

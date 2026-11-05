@@ -1,5 +1,5 @@
 <template>
-  <view class="transition-page">
+  <view>
     <view class="container">
       <text class="text">点击修改宽度</text>
       <view class="base-style transition-width" id="widthOrHeight" @click="changeWidthOrHeight"></view>
@@ -173,10 +173,10 @@
     </view>
 
     <!-- #ifndef MP-ALIPAY -->
-    <text class="uni-title-text uni-common-mt">scroll-view 组件</text>
+    <text class="fs-15 fw-bold color-text-333 mt-15">scroll-view 组件</text>
     <text class="text">点击 scroll-view 查看 transition 效果</text>
 
-    <view class="demo-box">
+    <view class="flex-dir-row justify-around mt-10">
       <scroll-view ref="scrollView1" class="base-style" style="transition: width 1s;" @click="changeScrollViewWidth1">
         <text class="colored-box-text">transition: width 1s</text>
       </scroll-view>
@@ -186,15 +186,15 @@
     </view>
     <!-- #endif -->
 
-    <view class="uni-common-mt">
-      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
+    <view class="mt-15">
+      <text class="fs-15 fw-bold color-text-333">setProperty 设置与 getPropertyValue 获取</text>
     </view>
 
-    <view class="test-container">
-      <view class="test-item">
-        <text class="uni-subtitle-text">view 组件</text>
-        <text class="uni-info">设置值: {{data.transitionValue}}</text>
-        <text class="uni-info">获取值: {{data.transitionActual}}</text>
+    <view class="flex-dir-row justify-between mt-10">
+      <view class="flex-1 m-0-5">
+        <text class="color-888 fs-12 fw-bold u-mt-5">view 组件</text>
+        <text class="fs-12 color-999">设置值: {{data.transitionValue}}</text>
+        <text class="fs-12 color-999">获取值: {{data.transitionActual}}</text>
         <view class="test-box">
           <view ref="viewRefTransition" class="common-image" :style="{ transition: data.transitionValue }" @click="triggerTransitionView">
             <text class="colored-box-text" style="font-size: 12px;">点击view</text>
@@ -202,30 +202,30 @@
         </view>
       </view>
 
-      <view class="test-item">
-        <text class="uni-subtitle-text">text 组件</text>
-        <text class="uni-info">设置值 sdf: {{data.transitionValue}}</text>
-        <text class="uni-info">获取值: {{data.transitionActualText}}</text>
+      <view class="flex-1 m-0-5">
+        <text class="color-888 fs-12 fw-bold u-mt-5">text 组件</text>
+        <text class="fs-12 color-999">设置值 sdf: {{data.transitionValue}}</text>
+        <text class="fs-12 color-999">获取值: {{data.transitionActualText}}</text>
         <view class="test-box">
           <text ref="textRefTransition" class="common-text" :style="{ transition: data.transitionValue }" @click="triggerTransitionText">点击text</text>
         </view>
       </view>
 
-      <view class="test-item">
-        <text class="uni-subtitle-text">image 组件</text>
-        <text class="uni-info">设置值: {{data.transitionValue}}</text>
-        <text class="uni-info">获取值: {{data.transitionActualImage}}</text>
+      <view class="flex-1 m-0-5">
+        <text class="color-888 fs-12 fw-bold u-mt-5">image 组件</text>
+        <text class="fs-12 color-999">设置值: {{data.transitionValue}}</text>
+        <text class="fs-12 color-999">获取值: {{data.transitionActualImage}}</text>
         <view class="test-box">
           <image ref="imageRefTransition" class="common-image" :style="{ transition: data.transitionValue }" @click="triggerTransitionImage" src="/static/test-image/logo.png"></image>
         </view>
       </view>
     </view>
 
-    <view class="test-container">
-      <view class="test-item">
-        <text class="uni-subtitle-text">view 组件拍平</text>
-        <text class="uni-info">设置值: {{data.transitionValue}}</text>
-        <text class="uni-info">获取值: {{data.transitionActualFlat}}</text>
+    <view class="flex-dir-row justify-between mt-10">
+      <view class="flex-1 m-0-5">
+        <text class="color-888 fs-12 fw-bold u-mt-5">view 组件拍平</text>
+        <text class="fs-12 color-999">设置值: {{data.transitionValue}}</text>
+        <text class="fs-12 color-999">获取值: {{data.transitionActualFlat}}</text>
         <view class="test-box">
           <view ref="viewRefTransitionFlat" class="common-image" :style="{ transition: data.transitionValue }" @click="triggerTransitionView" flatten>
             <text class="colored-box-text" style="font-size: 12px;">点击view</text>
@@ -233,35 +233,35 @@
         </view>
       </view>
 
-      <view class="test-item">
-        <text class="uni-subtitle-text">text 组件拍平</text>
-        <text class="uni-info">设置值: {{data.transitionValue}}</text>
-        <text class="uni-info">获取值: {{data.transitionActualTextFlat}}</text>
+      <view class="flex-1 m-0-5">
+        <text class="color-888 fs-12 fw-bold u-mt-5">text 组件拍平</text>
+        <text class="fs-12 color-999">设置值: {{data.transitionValue}}</text>
+        <text class="fs-12 color-999">获取值: {{data.transitionActualTextFlat}}</text>
         <view class="test-box">
           <text ref="textRefTransitionFlat" class="common-text" :style="{ transition: data.transitionValue }" @click="triggerTransitionText" flatten>点击text</text>
         </view>
       </view>
 
-      <view class="test-item">
-        <text class="uni-subtitle-text">image 组件拍平</text>
-        <text class="uni-info">设置值: {{data.transitionValue}}</text>
-        <text class="uni-info">获取值: {{data.transitionActualImageFlat}}</text>
+      <view class="flex-1 m-0-5">
+        <text class="color-888 fs-12 fw-bold u-mt-5">image 组件拍平</text>
+        <text class="fs-12 color-999">设置值: {{data.transitionValue}}</text>
+        <text class="fs-12 color-999">获取值: {{data.transitionActualImageFlat}}</text>
         <view class="test-box">
           <image ref="imageRefTransitionFlat" class="common-image" :style="{ transition: data.transitionValue }" @click="triggerTransitionImage" src="/static/test-image/logo.png" flatten></image>
         </view>
       </view>
     </view>
 
-    <view class="uni-common-mt uni-common-mb">
-      <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
-      <enum-data :items="transitionEnum" title="transition 枚举值" @change="radioChangeTransition" :compact="true"></enum-data>
+    <view class="mt-15 mb-15">
+      <text class="fs-13 color-tips-0958d9 bg-tips-e6f4ff border-l-4-solid-tips-91caff p-10-12 radius-4 m-10">第一个枚举值，'' (空字符串) - 空值情况</text>
+      <enum-data-checkbox :items="transitionEnum" title="transition 枚举值" @change="radioChangeTransition" :compact="true"></enum-data-checkbox>
       <input-data :defaultValue="data.transitionValue" title="transition 自定义值" type="text" @confirm="inputChangeTransition"></input-data>
     </view>
 
     <!-- #ifndef MP-ALIPAY -->
-      <text class="uni-title-text uni-common-mt uni-common-mb">native-view 组件</text>
+      <text class="fs-15 fw-bold color-text-333 mt-15 mb-15">native-view 组件</text>
       <text class="text">点击 native-view 查看 transition 效果</text>
-      <view class="demo-box">
+      <view class="flex-dir-row justify-around mt-10">
         <test-native-view ref="nativeView1" class="base-style" style="transition: width 1s;" @click="changeNativeViewWidth1"></test-native-view>
         <test-native-view ref="nativeView2" class="base-style" style="transition: width 2s ease-in-out;" @click="changeNativeViewWidth2"></test-native-view>
       </view>
@@ -278,7 +278,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ItemType } from '@/components/enum-data/enum-data-types'
+  import { ItemType } from '@/components/enum-data-checkbox/enum-data-checkbox-types'
 
   let isTranstionWidthOrHeight = false
   let isTranstionWidthAuto = false
@@ -913,22 +913,11 @@
     background-color: brown;
   }
 
-  .demo-box {
-    flex-direction: row;
-    justify-content: space-around;
-    margin-top: 10px;
-  }
-
   .width-progress {
     width: 100px;
     height: 100px;
     border-radius: 100px;
     background-color: brown;
-  }
-
-  .transform-bgColor {
-    transition-property: background-color;
-    transition-duration: 0.5s;
   }
 
   .transition-width {
@@ -1042,17 +1031,6 @@
     width: 50px;
     height: 50px;
     background-color: green;
-  }
-
-  .test-container {
-    flex-direction: row;
-    justify-content: space-between;
-    margin-top: 10px;
-  }
-
-  .test-item {
-    flex: 1;
-    margin: 0 5px;
   }
 
   .test-box {

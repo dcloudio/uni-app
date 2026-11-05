@@ -1,21 +1,19 @@
 <template>
   <page-head title="setNavigationBarTitle"></page-head>
-  <view class="uni-padding-wrap uni-common-mt">
-    <button @tap="setNavigationBarNewTitle" class="uni-btn">
+  <view class="p-0-15 mt-15">
+    <button @tap="setNavigationBarNewTitle" class="mt-10">
       设置当前页面标题为: {{ newTitle }}
     </button>
-    <button @tap="setNavigationBarLongTitle" class="uni-btn">
+    <button @tap="setNavigationBarLongTitle" class="mt-10">
       设置超长标题
     </button>
-    <!-- #ifndef VUE3-VAPOR -->
-    <!-- #ifdef APP-HARMONY -->
-    <button @tap="showNavigationBarLoading" class="uni-btn">
+    <!-- #ifdef (APP-HARMONY && !VUE3-VAPOR) || WEB || MP -->
+    <button @tap="showNavigationBarLoading" class="mt-10">
       设置标题 loading
     </button>
-    <button @tap="hideNavigationBarLoading" class="uni-btn">
+    <button @tap="hideNavigationBarLoading" class="mt-10">
       隐藏标题 loading
     </button>
-    <!-- #endif -->
     <!-- #endif -->
   </view>
 </template>
@@ -36,7 +34,7 @@
     setLifeCycleNum(num)
   }
 
-  // #ifdef APP-HARMONY
+  // #ifdef (APP-HARMONY && !VUE3-VAPOR) || WEB || MP
   const showNavigationBarLoading = () => {
     uni.showNavigationBarLoading({
       success: () => {

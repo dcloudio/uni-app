@@ -1,11 +1,11 @@
 <template>
   <!-- #ifdef APP-ANDROID || (APP-HARMONY && VUE3-VAPOR) || (APP-IOS && VUE3-VAPOR) -->
-  <!-- <enum-data title="设置mode（仅Android和harmony平台支持，默认值为web）" :items="modeItemTypes" @change="onModeChange"></enum-data> -->
+  <!-- <enum-data-checkbox title="设置mode（仅Android和harmony平台支持，默认值为web）" :items="modeItemTypes" @change="onModeChange"></enum-data-checkbox> -->
   <!-- #endif -->
   <!-- #ifndef MP -->
   <fps v-if="autoData.showFps" />
   <!-- #endif -->
-	<scroll-view style="flex: 1;padding: 4px;" :enable-back-to-top="true">
+	<scroll-view class="flex-1 p-4" :enable-back-to-top="true">
 		<!-- <view style=""> -->
 			<!-- <rich-text :nodes="htmlContent" :mode="modeData.mode" @itemclick="onItemClick"></rich-text> -->
 			<rich-text :nodes="htmlContent" mode="native" @itemclick="onItemClick"></rich-text>
@@ -16,7 +16,7 @@
 <script setup lang="ts">
   const autoData = reactive({ showFps: true })
 
-  /* import { ItemType } from '@/components/enum-data/enum-data-types';
+  /* import { ItemType } from '@/components/enum-data-checkbox/enum-data-checkbox-types';
   type ModeDataType = {
     mode: string
   }

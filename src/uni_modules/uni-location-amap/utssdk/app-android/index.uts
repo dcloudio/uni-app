@@ -1,0 +1,412 @@
+import { UTSAndroid } from "io.dcloud.uts";
+import PackageManager from "android.content.pm.PackageManager";
+import Build from 'android.os.Build';
+import Notification from "android.app.Notification";
+import NotificationManager from "android.app.NotificationManager";
+import NotificationChannel from "android.app.NotificationChannel";
+import AMapLocationClient from "com.amap.api.location.AMapLocationClient";
+import AMapLocationClientOption from "com.amap.api.location.AMapLocationClientOption";
+import AMapLocationListener from "com.amap.api.location.AMapLocationListener";
+import AMapLocation from "com.amap.api.location.AMapLocation";
+import { UniLocationAmapProvider } from '../interface';
+
+export class UniLocationAmapProviderImpl implements UniLocationAmapProvider, io.dcloud.uts.json.IJsonStringify, AMapLocationListener {
+	override id : String = 'amap';
+	override description : String = "高德定位";
+	override isAppExist : boolean | null = null;
+	private locationOptions ?: GetLocationOptions = null;
+	private mLocationClient : AMapLocationClient | null = null;
+	private locationUpdateCallback : OnLocationChangeCallback | null = null;
+	private locationUpdateErrorCallback : OnLocationChangeErrorCallback | null = null;
+	private isBackgroundLocation = false
+	notif : Notification | null = null
+
+	setNotification(notif : Notification) {
+		this.notif = notif
+	}
+
+	private failedAction(errCode : number) {
+		let err = new GetLocationFailImpl(errCode);
+		this.locationOptions?.fail?.(err);
+		this.locationOptions?.complete?.(err);
+	}
+	override getLocation(options : GetLocationOptions) {
+		this.locationOptions = options;
+		if (!checkLocationConfig()) {
+			this.failedAction(1505605);
+			return;
+		}
+		AMapLocationClient.updatePrivacyShow(UTSAndroid.getAppContext()!, true, true);
+		AMapLocationClient.updatePrivacyAgree(UTSAndroid.getAppContext()!, true);
+		/**
+		 * 准备权限
+		 */
+		let permissionNeed = ["android.permission.ACCESS_FINE_LOCATION"];
+		UTSAndroid.requestSystemPermission(UTSAndroid.getUniActivity()!, permissionNeed, function (allRight : boolean, _ : string[]) {
+			if (allRight) {
+				// 交给目前的location 引擎，真实执行
+				getLocationImpl(options);
+			}
+		}, function (a : boolean, _ : string[]) {
+			this.failedAction(1505004);
+		});
+	}
+	override startLocationUpdate(locationOptions : StartLocationUpdateOptions) : void {
+		if (!checkLocationConfig()) {
+			let ret = new GetLocationFailImpl(1505605)
+			locationOptions.fail?.(ret)
+			locationOptions.complete?.(ret)
+			return
+		}
+		AMapLocationClient.updatePrivacyShow(UTSAndroid.getAppContext()!, true, true);
+		AMapLocationClient.updatePrivacyAgree(UTSAndroid.getAppContext()!, true);
+		/**
+		 * 准备权限
+		 */
+		let permissionNeed = ["android.permission.ACCESS_FINE_LOCATION"];
+		UTSAndroid.requestSystemPermission(UTSAndroid.getUniActivity()!, permissionNeed, function (allRight : boolean, _ : string[]) {
+			if (allRight) {
+				this.isBackgroundLocation = false
+				this.requestLocation(locationOptions)
+			}
+		}, function (a : boolean, _ : string[]) {
+			let ret = new GetLocationFailImpl(1505004)
+			locationOptions.fail?.(ret)
+			locationOptions.complete?.(ret)
+		})
+	}
+	requestLocation(locationOptions : StartLocationUpdateOptions) {
+		if (locationOptions.type != null && locationOptions.type!.toUpperCase() != 'GCJ-02' && locationOptions.type!.toUpperCase() != 'GCJ02') {
+			// 高德定位只支持GCJ-02，如果不是则报错
+			let ret = new GetLocationFailImpl(1505607);
+			locationOptions.fail?.(ret)
+			locationOptions.complete?.(ret)
+			return
+		}
+		if (this.mLocationClient == null) {
+			// 高德要求构造AMapLocationClient时捕获异常
+			try {
+				this.mLocationClient = new AMapLocationClient(UTSAndroid.getAppContext());
+			} catch (e) {
+				let ret = new GetLocationFailImpl(1505602);
+				locationOptions.fail?.(ret)
+				locationOptions.complete?.(ret)
+				return
+			}
+		}
+		let locationRequest = new AMapLocationClientOption();
+		locationRequest.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
+		locationRequest.setInterval(2000);
+		locationRequest.setNeedAddress(false);
+		this.mLocationClient!.setLocationOption(locationRequest);
+		this.mLocationClient!.setLocationListener(this);
+		if (this.isBackgroundLocation) {
+			if (this.notif == null) {
+				this.notif = getBackgroundLocationNotification()
+			}
+			this.mLocationClient!.enableBackgroundLocation(1001, this.notif!)
+		}
+		this.mLocationClient!.startLocation();
+		let success : StartLocationUpdateSuccess = {}
+		locationOptions.success?.(success)
+		locationOptions.complete?.({})
+	}
+	override stopLocationUpdate(options : StopLocationUpdateOptions) : void {
+		this.locationUpdateCallback = null;
+		this.locationUpdateErrorCallback = null
+		this.mLocationClient?.disableBackgroundLocation(true);
+		this.mLocationClient?.stopLocation();
+	}
+	override onLocationChange(result : OnLocationChangeCallback) : number {
+		this.locationUpdateCallback = result;
+		return 0;
+	}
+	override offLocationChange(id ?: number | OnLocationChangeCallback | null) : void {
+		this.locationUpdateCallback = null;
+	}
+	override onLocationChangeError(result : OnLocationChangeErrorCallback) : number {
+		this.locationUpdateErrorCallback = result;
+		return 0;
+	}
+	override offLocationChangeError(id ?: number | OnLocationChangeErrorCallback | null) : void {
+		this.locationUpdateErrorCallback = null;
+	}
+	override startLocationUpdateBackground(options : StartLocationUpdateBackgroundOptions) : void {
+		if (!checkLocationConfig()) {
+			let ret = new GetLocationFailImpl(1505605)
+			options.fail?.(ret)
+			options.complete?.(ret)
+			return
+		}
+		AMapLocationClient.updatePrivacyShow(UTSAndroid.getAppContext()!, true, true);
+		AMapLocationClient.updatePrivacyAgree(UTSAndroid.getAppContext()!, true);
+		/**
+		 * 准备权限
+		 */
+		let permissionNeed = ["android.permission.ACCESS_FINE_LOCATION"];
+		if (Build.VERSION.SDK_INT >= 29) {
+			permissionNeed.push("android.permission.ACCESS_BACKGROUND_LOCATION");
+		}
+		UTSAndroid.requestSystemPermission(UTSAndroid.getUniActivity()!, permissionNeed, function (allRight : boolean, _ : string[]) {
+			if (allRight) {
+				this.isBackgroundLocation = true
+				let startOptions : StartLocationUpdateOptions = {
+					provider: options.provider,
+					type: options.type,
+					success: options.success,
+					fail: options.fail,
+					complete: options.complete
+				}
+				this.requestLocation(startOptions)
+			}
+		}, function (a : boolean, _ : string[]) {
+			let ret = new GetLocationFailImpl(1505004)
+			options.fail?.(ret)
+			options.complete?.(ret)
+		})
+	}
+	override onLocationChanged(amapLocation : AMapLocation) {
+		if (amapLocation.getErrorCode() == 0) {
+			let ret : GetLocationSuccess = {
+				latitude: amapLocation.getLatitude(),
+				longitude: amapLocation.getLongitude(),
+				speed: amapLocation.getSpeed(),
+				accuracy: amapLocation.getAccuracy(),
+				altitude: amapLocation.getAltitude(),
+				verticalAccuracy: 0,
+				horizontalAccuracy: amapLocation.getAccuracy(),
+				address: amapLocation.getAddress()
+			}
+			this.locationUpdateCallback?.(ret);
+		} else {
+			this.locationUpdateErrorCallback?.(new GetLocationFailImpl(mapAmapErrorCode(amapLocation.getErrorCode())));
+		}
+	}
+	constructor() {
+	}
+	/*
+	 * @internal
+	 */
+	override toJSON() : any | null {
+		let jsonRet = new UTSJSONObject();
+		jsonRet.set("id", this.id);
+		jsonRet.set("description", this.description);
+		jsonRet.set("isAppExist", this.isAppExist);
+		return jsonRet;
+	}
+}
+/****************************************内部功能实现****************************************************/
+
+/**
+ * 高德定位错误码映射为uni规范错误码
+ */
+function mapAmapErrorCode(errorCode : number) : LocationErrorCode {
+	/**
+	 * 12: 缺少定位权限
+	 */
+	if (errorCode == 12) {
+		return 1505004;
+	}
+	/**
+	 * 7: KEY鉴权失败
+	 */
+	if (errorCode == 7) {
+		return 1505605;
+	}
+	/**
+	 * 13: 未获得WIFI列表和基站信息且GPS当前不可用 18: 手机WIFI功能被关闭且为飞行模式 19: 没插sim卡且WIFI功能被关闭
+	 */
+	if (errorCode == 13 || errorCode == 18 || errorCode == 19) {
+		return 1505003;
+	}
+	/**
+	 * 20: 模糊定位异常，用户设置应用位置权限为“大致位置”
+	 */
+	if (errorCode == 20) {
+		return 1505800;
+	}
+	/**
+	 * 其余错误统一按捕获定位失败处理
+	 */
+	return 1505602;
+}
+
+/**
+ * 定位监听结果包装类
+ */
+class LocationOptionsWapper {
+	hostOption : GetLocationOptions;
+	hostLocationClient : AMapLocationClient;
+
+	constructor(option : GetLocationOptions, client : AMapLocationClient) {
+		this.hostOption = option;
+		this.hostLocationClient = client;
+	}
+
+	onLocationChanged(amapLocation : AMapLocation) {
+		this.hostLocationClient.stopLocation();
+		this.hostLocationClient.onDestroy();
+		if (amapLocation.getErrorCode() == 0) {
+			let ret : GetLocationSuccess = {
+				latitude: amapLocation.getLatitude(),
+				longitude: amapLocation.getLongitude(),
+				speed: amapLocation.getSpeed(),
+				accuracy: amapLocation.getAccuracy(),
+				altitude: amapLocation.getAltitude(),
+				verticalAccuracy: 0,
+				horizontalAccuracy: amapLocation.getAccuracy(),
+				address: amapLocation.getAddress()
+			}
+			this.hostOption.success?.(ret)
+			this.hostOption.complete?.(ret)
+		} else {
+			let ret = new GetLocationFailImpl(mapAmapErrorCode(amapLocation.getErrorCode()));
+			this.hostOption.fail?.(ret)
+			this.hostOption.complete?.(ret)
+		}
+		// 包装数据结构返回
+	}
+};
+
+/**
+ * AMap 定位监听实现类
+ */
+class SingleLocationListener extends AMapLocationListener {
+	hostOptionWraper : LocationOptionsWapper;
+
+	constructor(option : LocationOptionsWapper) {
+		super();
+		this.hostOptionWraper = option;
+	}
+
+	override onLocationChanged(amapLocation : AMapLocation) : void {
+		this.hostOptionWraper.onLocationChanged(amapLocation);
+	}
+}
+
+/**
+ * 检查定位的相关配置是否正确
+ */
+function checkLocationConfig() : boolean {
+	let packageName = UTSAndroid.getAppContext()!.getPackageName();
+	let appInfo = UTSAndroid.getAppContext()!.getPackageManager()!.getApplicationInfo(packageName, PackageManager.GET_META_DATA);
+	let metaData = appInfo.metaData;
+	if (metaData == null) {
+		return false;
+	}
+	let adId = metaData.getString("com.amap.api.v2.apikey");
+	if (adId == null) {
+		return false;
+	}
+	if (adId.length >= 16) {
+		// 高德key为32位字符串，做长度宽松校验
+		return true;
+	}
+	// 不符合校验规则，打回
+	return false;
+}
+
+/**
+ * 构建后台定位前台服务通知
+ */
+function getBackgroundLocationNotification() : Notification | null {
+	let context = UTSAndroid.getUniActivity()!
+	var builder : Notification.Builder | null = null
+	if (Build.VERSION.SDK_INT >= 26) {
+		let notificationManager = UTSAndroid.getUniActivity()?.getSystemService("notification") as NotificationManager | null
+		if (notificationManager == null) {
+			return null
+		}
+		let channelId = "uni_app_uni_location_amap_background_channel"
+		let channel = new NotificationChannel(channelId, "Background Location", 3)
+		channel.enableLights(true)
+		channel.setShowBadge(true)
+		notificationManager!.createNotificationChannel(channel)
+		builder = new Notification.Builder(UTSAndroid.getUniActivity()!, channelId)
+	} else {
+		builder = new Notification.Builder(UTSAndroid.getUniActivity()!)
+	}
+	var packageManager = UTSAndroid.getUniActivity()!.getPackageManager()
+	var appName = ""
+	try {
+		var applicationInfo = packageManager.getApplicationInfo(UTSAndroid.getUniActivity()!.getPackageName(), 0);
+		appName = packageManager.getApplicationLabel(applicationInfo).toString()
+	} catch (e) {
+
+	}
+	builder!.setContentTitle(appName + " is running in the background")
+		.setContentText("Location service is running").setWhen(System.currentTimeMillis())
+	builder!.setSmallIcon(context.getApplicationInfo().icon)
+	return builder!.build()
+}
+
+/**
+ * 高德地图获取定位信息
+ * 参考文档:https://lbs.amap.com/api/android-location-sdk/guide/create-project/get-location
+ */
+function getLocationImpl(locationOptions : GetLocationOptions) {
+	if (locationOptions.type != null && locationOptions.type!.toUpperCase() != 'GCJ-02' && locationOptions.type!.toUpperCase() != 'GCJ02') {
+		// 高德定位只支持GCJ-02，如果不是则报错
+		let ret = new GetLocationFailImpl(1505607);
+		locationOptions.fail?.(ret)
+		locationOptions.complete?.(ret)
+		return
+	}
+	let mLocationClient : AMapLocationClient | null = null;
+	// 高德要求构造AMapLocationClient时捕获异常
+	try {
+		mLocationClient = new AMapLocationClient(UTSAndroid.getAppContext());
+	} catch (e) {
+		let ret = new GetLocationFailImpl(1505602);
+		locationOptions.fail?.(ret)
+		locationOptions.complete?.(ret)
+		return
+	}
+	if (mLocationClient == null) {
+		let ret = new GetLocationFailImpl(1505602);
+		locationOptions.fail?.(ret)
+		locationOptions.complete?.(ret)
+		return
+	}
+	// 定位监听器封装
+	let locationOptionWrapper = new LocationOptionsWapper(locationOptions, mLocationClient!);
+	let mLocationListener = new SingleLocationListener(locationOptionWrapper);
+	// 发起单次请求
+	let locationRequest = new AMapLocationClientOption();
+	locationRequest.setOnceLocation(true);
+	locationRequest.setOnceLocationLatest(true);
+	// 是否需要逆地理编码
+	if (locationOptions.geocode != null && locationOptions.geocode == true) {
+		locationRequest.setNeedAddress(true);
+	} else {
+		locationRequest.setNeedAddress(false);
+	}
+	// 是否开启了高精度
+	if (locationOptions.isHighAccuracy != null && locationOptions.isHighAccuracy == true) {
+		locationRequest.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
+	} else {
+		locationRequest.setLocationMode(AMapLocationClientOption.AMapLocationMode.Battery_Saving);
+	}
+	/**
+	 * 高度信息需要GPS参与
+	 */
+	if (locationOptions.altitude != null && locationOptions.altitude == true) {
+		locationRequest.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
+	}
+	/**
+	 * 高精度定位时，使用用户指定的超时时间，高德建议超时时间不要低于8000毫秒
+	 */
+	if (locationOptions.highAccuracyExpireTime != null && locationOptions.highAccuracyExpireTime! >= 3000 && locationOptions.isHighAccuracy == true) {
+		let httpTimeout = locationOptions.highAccuracyExpireTime!;
+		if (httpTimeout < 8000) {
+			httpTimeout = 8000;
+		}
+		locationRequest.setHttpTimeOut(httpTimeout.toLong());
+	} else {
+		locationRequest.setHttpTimeOut(30000);
+	}
+
+	mLocationClient!.setLocationOption(locationRequest);
+	mLocationClient!.setLocationListener(mLocationListener);
+	mLocationClient!.startLocation();
+}

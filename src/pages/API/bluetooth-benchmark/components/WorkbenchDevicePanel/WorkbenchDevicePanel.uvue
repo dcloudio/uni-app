@@ -1,0 +1,881 @@
+<template>
+	<view class="panel">
+		<view class="section-heading">
+			<view class="section-heading-copy">
+				<text class="section-title">设备发现</text>
+				<text class="section-meta">{{ displayedDevices.length }} 台设备 · RSSI 实时更新</text>
+			</view>
+			<view class="settings-entry">
+				<text class="settings-hint">{{ settingsExpanded ? '收起扫描设置' : '扫描设置' }}</text>
+				<button class="settings-button" :class="settingsExpanded ? 'settings-button-active' : ''" size="mini"
+					@click="toggleSettings">☷</button>
+			</view>
+		</view>
+
+		<view class="scan-status" :class="props.discovering ? 'scan-status-running' : ''">
+			<view class="scan-status-icon"><text class="scan-glyph">⌁</text></view>
+			<view class="scan-status-copy">
+				<text class="scan-status-title">{{ props.discovering ? '正在扫描' : '扫描已停止' }}</text>
+				<text class="scan-status-meta">{{ scanStatusMeta() }}</text>
+			</view>
+			<button class="scan-button" :class="scanButtonClass" size="mini"
+				@click="toggleScan">{{ props.discovering ? '停止' : '开始' }}</button>
+		</view>
+
+		<view v-if="settingsExpanded" class="form-block">
+			<text class="field-label">主服务 UUID</text>
+			<input class="input" :value="props.scanServicesText" placeholder="例如 FFF0, 180D" @input="onScanServicesInput" />
+			<view class="interval-row">
+				<view class="number-field">
+					<text class="field-label">上报间隔</text>
+					<view class="interval-input">
+						<input class="compact-input" type="number" :value="props.scanIntervalText" @input="onScanIntervalInput" />
+						<text class="interval-unit">ms</text>
+					</view>
+				</view>
+				<view class="number-field">
+					<text class="field-label">自动停止</text>
+					<view class="interval-input">
+						<input class="compact-input" type="number" :value="props.scanDurationText" @input="onScanDurationInput" />
+						<text class="interval-unit">s</text>
+					</view>
+				</view>
+			</view>
+			<view class="setting-switches">
+				<view class="setting-switch-row">
+					<text class="switch-label">重复上报</text>
+					<switch class="setting-switch" :checked="props.allowDuplicates" color="#2875d6" @change="onDuplicateChange" />
+				</view>
+				<view class="setting-switch-row">
+					<text class="switch-label">忽略未知设备</text>
+					<switch class="setting-switch" :checked="props.ignoreUnknownDevices" color="#2875d6"
+						@change="onIgnoreUnknownChange" />
+				</view>
+				<view class="setting-switch-row setting-switch-row-last">
+					<text class="switch-label">仅显示可连接设备</text>
+					<switch class="setting-switch" :checked="props.filterConnectableDevices" color="#2875d6"
+						@change="onFilterConnectableChange" />
+				</view>
+			</view>
+			<view class="button-row">
+				<button class="query-button query-button-leading"
+					:class="!props.adapterOpened || props.queryPending ? 'query-button-disabled' : ''" size="mini"
+					:disabled="!props.adapterOpened || props.queryPending" @click="getCachedDevices">缓存设备</button>
+				<button class="query-button" :class="!props.adapterOpened || props.queryPending ? 'query-button-disabled' : ''"
+					size="mini" :disabled="!props.adapterOpened || props.queryPending" @click="getConnectedDevices">已连接设备</button>
+			</view>
+		</view>
+		<view class="filter-row">
+			<view class="search-field">
+				<text class="search-glyph">⌕</text>
+				<input class="search-input" :value="searchText" placeholder="设备名或 deviceId" @input="onSearchInput" />
+			</view>
+			<button class="sort-button" size="mini" @click="toggleSort">↕ RSSI</button>
+		</view>
+
+		<view v-if="displayedDevices.length == 0" class="empty-state">
+			<text class="empty-title">{{ props.discovering ? '正在扫描…' : '暂无设备' }}</text>
+			<text
+				class="empty-text">{{ props.discovering ? '正在搜索附近设备，结果会按 deviceId 去重并实时更新。' : '初始化适配器后开始扫描，结果会按 deviceId 去重并实时更新 RSSI。' }}</text>
+		</view>
+
+		<view v-for="device in displayedDevices" :key="device.deviceId" class="device-card"
+			:class="isConnected(device.deviceId) ? 'device-connected' : ''">
+			<view class="device-summary" @click="toggleDeviceDetails(device.deviceId)">
+				<view class="ble-icon">
+					<image class="ble-icon-image" src="/static/bluetooth.svg" mode="aspectFit"></image>
+				</view>
+				<view class="device-main">
+					<view class="device-name-row">
+						<text class="device-name">{{ device.title }}</text>
+						<text v-if="isConnected(device.deviceId)" class="connected-label">已连接</text>
+						<text v-else-if="device.connectable == true" class="available-label">广播可连接</text>
+						<text v-else-if="device.connectable == false" class="unavailable-label">广播不可连接</text>
+						<text v-else class="unknown-label">连接能力未知</text>
+					</view>
+					<view class="device-id-row">
+						<text class="mono device-id"
+							@click.stop="emit('copyDeviceId', device.deviceId)">{{ device.deviceId }}</text>
+						<button class="copy-id-action" size="mini" @click.stop="emit('copyDeviceId', device.deviceId)">复制</button>
+					</view>
+					<view class="service-summary-row">
+						<text class="service-summary-value"
+							:class="device.serviceCount == 0 ? 'service-summary-empty' : ''">{{ rssiText(device.RSSI) }} ·
+							{{ device.serviceCountText }} · 上报 {{ device.seenCount.toString() }} 次</text>
+					</view>
+					<text v-if="device.notice.length > 0" class="device-notice">{{ device.notice }}</text>
+				</view>
+				<view class="summary-side">
+					<button v-if="!isConnected(device.deviceId) && device.connectable == true"
+						class="device-action connect-action" size="mini"
+						:disabled="isConnecting(device.deviceId) || props.scanPending"
+						@click.stop="connectDevice(device.deviceId)">{{ isConnecting(device.deviceId) ? '连接中' : '连接' }}</button>
+					<text v-else class="row-arrow">›</text>
+				</view>
+			</view>
+
+			<view v-if="device.expanded" class="device-detail">
+				<view class="detail-row">
+					<text class="detail-label">LocalName</text>
+					<text class="detail-value">{{ emptyText(device.localName) }}</text>
+				</view>
+				<view class="detail-row">
+					<text class="detail-label">广播连接能力</text>
+					<text class="detail-value">{{ connectableText(device) }}</text>
+				</view>
+				<view class="detail-row">
+					<text class="detail-label">发现次数</text>
+					<text class="detail-value">{{ device.seenCount.toString() }}</text>
+				</view>
+				<view class="detail-row">
+					<text class="detail-label">Manufacturer Data</text>
+					<text class="detail-value mono">{{ device.manufacturerDataText }}</text>
+				</view>
+				<view class="detail-row">
+					<text class="detail-label">Service Data</text>
+					<text class="detail-value mono">{{ device.serviceDataText }}</text>
+				</view>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script setup lang="ts">
+	type DemoDeviceRecord = {
+		name ?: string | null,
+		deviceId : string,
+		RSSI : number,
+		serviceCountText : string,
+		serviceCount : number,
+		manufacturerDataText : string,
+		serviceDataText : string,
+		title : string,
+		localName : string,
+		connectable ?: boolean | null,
+		seenCount : number,
+		expanded : boolean,
+		notice : string
+	}
+
+	type DevicePanelProps = {
+		adapterOpened : boolean,
+		discovering : boolean,
+		devices : DemoDeviceRecord[],
+		connectedDeviceId : string,
+		connectedDeviceIds ?: string[],
+		scanServicesText : string,
+		scanIntervalText : string,
+		scanDurationText : string,
+		scanRemainingSeconds : number,
+		allowDuplicates : boolean,
+		ignoreUnknownDevices : boolean,
+		filterConnectableDevices : boolean,
+		scanPending : boolean,
+		connectingIds : string[],
+		queryPending : boolean
+	}
+
+	const props = defineProps<DevicePanelProps>()
+	const emit = defineEmits<{
+		scanServicesChange : [value: string],
+		scanIntervalChange : [value: string],
+		scanDurationChange : [value: string],
+		duplicateChange : [value: boolean],
+		ignoreUnknownChange : [value: boolean],
+		filterConnectableChange : [value: boolean],
+		searchChange : [value: string],
+		startDiscovery : [],
+		stopDiscovery : [],
+		getCachedDevices : [],
+		getConnectedDevices : [],
+		toggleDeviceDetails : [deviceId: string],
+		connectDevice : [deviceId: string],
+		copyDeviceId : [deviceId: string]
+	}>()
+	const searchText = ref('')
+	const sortDescending = ref(true)
+	const settingsExpanded = ref(false)
+	const displayedDevices = computed(() : DemoDeviceRecord[] => {
+		const query = searchText.value.trim().toLowerCase()
+		const result = props.devices.filter((device : DemoDeviceRecord) : boolean => {
+			if (props.ignoreUnknownDevices && device.title == '未知设备') return false
+			if (props.filterConnectableDevices && device.connectable != true && !isConnected(device.deviceId)) return false
+			if (query.length == 0) return true
+			return device.title.toLowerCase().indexOf(query) >= 0 || device.deviceId.toLowerCase().indexOf(query) >= 0
+		})
+		result.sort((a : DemoDeviceRecord, b : DemoDeviceRecord) => sortDescending.value ? b.RSSI - a.RSSI : a.RSSI - b.RSSI)
+		return result
+	})
+
+	const scanButtonClass = computed(() : string => {
+		if (!props.adapterOpened || (!props.discovering && props.scanPending)) return 'control-disabled'
+		return props.discovering ? 'scan-button-stop' : 'scan-button-start'
+	})
+
+	function onScanServicesInput(event : UniInputEvent) : void {
+		emit('scanServicesChange', event.detail.value)
+	}
+
+	function onScanIntervalInput(event : UniInputEvent) : void {
+		emit('scanIntervalChange', event.detail.value)
+	}
+
+	function onScanDurationInput(event : UniInputEvent) : void {
+		emit('scanDurationChange', event.detail.value)
+	}
+
+	function onDuplicateChange(event : UniSwitchChangeEvent) : void {
+		emit('duplicateChange', event.detail.value)
+	}
+
+	function onIgnoreUnknownChange(event : UniSwitchChangeEvent) : void {
+		emit('ignoreUnknownChange', event.detail.value)
+	}
+
+	function onFilterConnectableChange(event : UniSwitchChangeEvent) : void {
+		emit('filterConnectableChange', event.detail.value)
+	}
+
+	function toggleSettings() : void {
+		settingsExpanded.value = !settingsExpanded.value
+	}
+
+	function onSearchInput(event : UniInputEvent) : void {
+		searchText.value = event.detail.value
+		emit('searchChange', searchText.value)
+	}
+
+	function toggleSort() : void {
+		sortDescending.value = !sortDescending.value
+	}
+
+	function startDiscovery() : void {
+		emit('startDiscovery')
+	}
+
+	function stopDiscovery() : void {
+		emit('stopDiscovery')
+	}
+
+	function scanStatusMeta() : string {
+		if (!props.discovering) return '点击开始扫描获取附近设备'
+		if (props.scanRemainingSeconds > 0) return '剩余 ' + props.scanRemainingSeconds.toString() + 's 后自动停止 · RSSI 实时更新'
+		return 'RSSI 实时更新'
+	}
+
+	function toggleScan() : void {
+		if (!props.adapterOpened) return
+		if (props.discovering) {
+			stopDiscovery()
+			return
+		}
+		if (props.scanPending) return
+		startDiscovery()
+	}
+
+	function getCachedDevices() : void {
+		if (!props.adapterOpened || props.queryPending) return
+		emit('getCachedDevices')
+	}
+
+	function getConnectedDevices() : void {
+		if (!props.adapterOpened || props.queryPending) return
+		emit('getConnectedDevices')
+	}
+
+	function toggleDeviceDetails(deviceId : string) : void {
+		emit('toggleDeviceDetails', deviceId)
+	}
+
+	function connectDevice(deviceId : string) : void {
+		if (isConnecting(deviceId) || props.scanPending) return
+		emit('connectDevice', deviceId)
+	}
+
+	function isConnecting(deviceId : string) : boolean {
+		return props.connectingIds.indexOf(deviceId) >= 0
+	}
+
+	function isConnected(deviceId : string) : boolean {
+		if (props.connectedDeviceId == deviceId) return true
+		if (props.connectedDeviceIds == null) return false
+		return props.connectedDeviceIds!.indexOf(deviceId) >= 0
+	}
+
+	function emptyText(value : string) : string {
+		return value.length == 0 ? '未知名设备' : value
+	}
+
+	function rssiText(value : number) : string {
+		return value == 0 ? '-- dBm' : value.toString() + ' dBm'
+	}
+
+	function connectableText(device : DemoDeviceRecord) : string {
+		if (device.connectable == null) return '未知'
+		return device.connectable! ? '广播声明可连接' : '广播声明不可连接'
+	}
+</script>
+
+<style>
+	.panel {
+		padding: 14px 10px 24px;
+	}
+
+	.section-heading,
+	.button-row,
+	.device-summary,
+	.device-name-row,
+	.summary-side,
+	.detail-row {
+		display: flex;
+		flex-direction: row;
+	}
+
+	.section-heading {
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.section-heading-copy {
+		display: flex;
+		flex-direction: column;
+		flex: 1;
+		min-width: 0;
+	}
+
+	.section-title {
+		color: #1b2733;
+		font-size: 18px;
+		font-weight: 700;
+	}
+
+	.section-meta {
+		color: #77838e;
+		font-size: 10px;
+		margin-top: 4px;
+	}
+
+	.settings-entry {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+	}
+
+	.settings-hint {
+		margin-right: 7px;
+		color: #77838e;
+		font-size: 10px;
+	}
+
+	.settings-button {
+		width: 34px;
+		height: 34px;
+		line-height: 32px;
+		margin: 0;
+		padding: 0;
+		border-width: 1px;
+		border-color: #c4d3da;
+		border-radius: 7px;
+		background-color: #ffffff;
+		color: #2875d6;
+		font-size: 16px;
+		text-align: center;
+	}
+
+	.settings-button-active {
+		border-color: #2875d6;
+		background-color: #2875d6;
+		color: #ffffff;
+	}
+
+	.scan-status {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		margin-top: 12px;
+		padding: 10px;
+		border: 1px solid #cbddea;
+		border-radius: 7px;
+		background-color: #e8f3ff;
+	}
+
+	.scan-status-running {
+		background-color: #e8f3ff;
+	}
+
+	.scan-status-icon {
+		width: 32px;
+		height: 32px;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		margin-right: 9px;
+		border-radius: 50%;
+		background-color: #2875d6;
+	}
+
+	.scan-glyph {
+		color: #fff;
+		font-size: 16px;
+	}
+
+	.scan-status-copy {
+		flex: 1;
+	}
+
+	.scan-status-title {
+		color: #1d5b9a;
+		font-size: 12px;
+		font-weight: 700;
+	}
+
+	.scan-status-meta {
+		margin-top: 3px;
+		color: #748a99;
+		font-size: 9px;
+	}
+
+	.scan-button {
+		flex: none;
+		min-width: 56px;
+		height: 32px;
+		line-height: 30px;
+		margin: 0;
+		padding: 0 12px;
+		border-width: 1px;
+		border-radius: 6px;
+		font-size: 11px;
+		font-weight: 600;
+	}
+
+	.scan-button-start {
+		border-color: #2875d6;
+		background-color: #2875d6;
+		color: #ffffff;
+	}
+
+	.scan-button-stop {
+		border-color: #cbd8df;
+		background-color: #ffffff;
+		color: #2d4c5b;
+	}
+
+	.form-block {
+		margin-top: 9px;
+		padding: 10px;
+		border-radius: 7px;
+		background-color: #ffffff;
+		border-width: 1px;
+		border-color: #dce2e7;
+	}
+
+	.field-label {
+		color: #46535f;
+		font-size: 10px;
+		font-weight: 600;
+		margin-bottom: 5px;
+	}
+
+	.input {
+		height: 34px;
+		padding: 0 10px;
+		border-width: 1px;
+		border-color: #cdd5dc;
+		border-radius: 4px;
+		background-color: #ffffff;
+		color: #17232e;
+		font-size: 11px;
+	}
+
+	.interval-row {
+		display: flex;
+		flex-direction: row;
+		align-items: flex-end;
+		justify-content: space-between;
+		margin-top: 9px;
+	}
+
+	.number-field {
+		display: flex;
+		flex-direction: column;
+		width: 48%;
+		margin-top: 0;
+	}
+
+	.interval-input {
+		height: 32px;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		padding: 0 9px;
+		border-width: 1px;
+		border-color: #cdd5dc;
+		border-radius: 5px;
+		background-color: #f8fafb;
+	}
+
+	.compact-input {
+		flex: 1;
+		width: 100%;
+		height: 30px;
+		padding: 0;
+		border-width: 0;
+		background-color: transparent;
+		color: #17232e;
+		font-size: 10px;
+	}
+
+	.interval-unit {
+		color: #80909a;
+		font-size: 9px;
+	}
+
+	.setting-switches {
+		margin-top: 9px;
+		overflow: hidden;
+		border-width: 1px;
+		border-color: #e0e6eb;
+		border-radius: 6px;
+		background-color: #f8fafb;
+	}
+
+	.setting-switch-row {
+		display: flex;
+		flex-direction: row;
+		min-height: 44px;
+		padding: 0 9px;
+		align-items: center;
+		justify-content: space-between;
+		border-bottom-width: 1px;
+		border-bottom-color: #e7ecef;
+	}
+
+	.setting-switch-row-last {
+		border-bottom-width: 0;
+	}
+
+	.switch-label {
+		flex: 1;
+		color: #354552;
+		font-size: 11px;
+	}
+
+	.setting-switch {
+		margin-left: 12px;
+	}
+
+	.button-row {
+		margin-top: 10px;
+	}
+
+	.query-button {
+		flex: 1;
+		height: 34px;
+		line-height: 32px;
+		margin: 0;
+		padding: 0 10px;
+		border-width: 1px;
+		border-color: #b9c9d5;
+		border-radius: 6px;
+		background-color: #ffffff;
+		color: #24445b;
+		font-size: 11px;
+		font-weight: 600;
+	}
+
+	.query-button-leading {
+		margin-right: 8px;
+	}
+
+	.query-button-disabled {
+		border-color: #d7dfe5;
+		background-color: #f2f5f7;
+		color: #9aa7b0;
+	}
+
+	.filter-row {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		margin-top: 9px;
+	}
+
+	.search-field {
+		flex: 1;
+		height: 34px;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		padding: 0 8px;
+		border: 1px solid #cbd8df;
+		border-radius: 6px;
+		background-color: #fff;
+	}
+
+	.search-glyph {
+		width: 15px;
+		color: #71838c;
+		font-size: 17px;
+	}
+
+	.search-input {
+		flex: 1;
+		height: 32px;
+		padding: 0 4px;
+		color: #2d4c5b;
+		font-size: 10px;
+	}
+
+	.sort-button {
+		flex: none;
+		height: 34px;
+		line-height: 32px;
+		margin: 0 0 0 7px;
+		padding: 0 10px;
+		border-width: 1px;
+		border-color: #cbd8df;
+		border-radius: 6px;
+		background-color: #ffffff;
+		color: #46535f;
+		font-size: 10px;
+	}
+
+	.empty-state {
+		padding: 48px 20px;
+		align-items: center;
+	}
+
+	.empty-title {
+		color: #46535f;
+		font-size: 16px;
+		font-weight: 600;
+	}
+
+	.empty-text {
+		color: #7a8792;
+		font-size: 12px;
+		line-height: 18px;
+		margin-top: 6px;
+	}
+
+	.device-card {
+		margin-top: 9px;
+		overflow: hidden;
+		border-width: 1px;
+		border-color: #e1e6eb;
+		border-radius: 7px;
+		background-color: #ffffff;
+	}
+
+	.device-connected {
+		border-left-width: 3px;
+		border-left-color: #20a465;
+	}
+
+	.device-summary {
+		min-height: 68px;
+		padding: 8px 9px;
+		align-items: center;
+	}
+
+	.ble-icon {
+		display: flex;
+		flex-direction: row;
+		width: 32px;
+		height: 32px;
+		flex: 0 0 32px;
+		align-items: center;
+		justify-content: center;
+		border-radius: 6px;
+		background-color: #edf5ff;
+	}
+
+	.ble-icon-image {
+		width: 18px;
+		height: 18px;
+	}
+
+	.device-main {
+		flex: 1;
+		min-width: 0;
+		padding: 0 8px 0 9px;
+	}
+
+	.device-name-row {
+		min-width: 0;
+		align-items: center;
+	}
+
+	.device-name {
+		flex: 1;
+		min-width: 0;
+		overflow: hidden;
+		height: 17px;
+		color: #172231;
+		font-size: 12px;
+		line-height: 17px;
+		font-weight: 700;
+		max-width: 150px;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.device-id-row {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		margin-top: 3px;
+	}
+
+	.mono {
+		font-family: monospace;
+	}
+
+	.device-id {
+		flex: 0 1 auto;
+		min-width: 0;
+		overflow: hidden;
+		color: #707d8e;
+		font-size: 8px;
+		line-height: 18px;
+		margin-top: 7px;
+		text-overflow: ellipsis;
+	}
+
+	.service-summary-row {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		margin-top: 4px;
+		min-width: 0;
+	}
+
+	.service-summary-value {
+		flex: 1;
+		color: #71838c;
+		font-size: 8px;
+		line-height: 15px;
+	}
+
+	.service-summary-empty {
+		color: #a0aab3;
+	}
+
+	.device-notice {
+		margin-top: 4px;
+		color: #d34a4a;
+		font-size: 8px;
+		line-height: 12px;
+	}
+
+	.summary-side {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-end;
+		justify-content: center;
+		min-width: 52px;
+	}
+
+	.connected-label,
+	.available-label,
+	.unavailable-label,
+	.unknown-label {
+		flex-shrink: 0;
+		margin-left: 5px;
+		padding: 2px 4px;
+		border-radius: 3px;
+		font-size: 8px;
+	}
+
+	.connected-label {
+		background-color: #dff5e8;
+		color: #168447;
+	}
+
+	.available-label {
+		color: #2875d6;
+		background-color: #edf5ff;
+	}
+
+	.unavailable-label {
+		color: #88979f;
+		background-color: #f0f3f5;
+	}
+
+	.unknown-label {
+		color: #8b6f2f;
+		background-color: #fff7df;
+	}
+
+	.device-action {
+		flex: none;
+		min-width: 52px;
+		height: 28px;
+		line-height: 26px;
+		margin: 0;
+		padding: 0 10px;
+		border-width: 1px;
+		border-radius: 6px;
+		font-size: 10px;
+		font-weight: 600;
+	}
+
+	.connect-action {
+		border-color: #bcd7f7;
+		background-color: #edf5ff;
+		color: #246bfd;
+	}
+
+	.copy-id-action {
+		flex: none;
+		height: 18px;
+		line-height: 16px;
+		margin: 0 0 0 4px;
+		padding: 0 6px;
+		border-width: 1px;
+		border-color: #cdd9e0;
+		border-radius: 4px;
+		background-color: #ffffff;
+		color: #2875d6;
+		font-size: 8px;
+	}
+
+	.control-disabled {
+		opacity: 0.42;
+	}
+
+	.row-arrow {
+		margin-left: 5px;
+		color: #80929e;
+		font-size: 18px;
+	}
+
+	.device-detail {
+		display: flex;
+		flex-direction: column;
+		padding: 2px 12px 11px;
+		background-color: #f8fafb;
+	}
+
+	.detail-row {
+		padding-top: 10px;
+		align-items: flex-start;
+	}
+
+	.detail-label {
+		width: 112px;
+		flex: 0 0 112px;
+		color: #7a8792;
+		font-size: 10px;
+		line-height: 15px;
+	}
+
+	.detail-value {
+		flex: 1;
+		color: #33434f;
+		font-size: 10px;
+		line-height: 15px;
+		white-space: pre-line;
+	}
+</style>

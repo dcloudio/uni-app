@@ -1,28 +1,28 @@
 <template>
 	<!-- #ifdef APP -->
-	<scroll-view direction="vertical" style="flex:1;">
+	<scroll-view direction="vertical" class="flex-1">
 	<!-- #endif -->
 		<view id="viewshot">
-			<button class="button" @click="shareText()">分享文本</button>
-			<button class="button" @click="shareLink()">分享链接</button>
-			<button class="button" @click="sharePrivateImg()">分享单个本地图片</button>
-			<button class="button" @click="sharePrivateImgs()">分享多个本地图片</button>
-			<button class="button" @click="shareAll()">分享链接、文本、一张图片</button>
-			<button class="button" @click="sharePrivateVideo()">分享video文件(单个)</button>
-			<button class="button" @click="sharePrivateVideos()">分享video文件(多个)</button>
-			<button class="button" @click="sharePrivateAudio()">分享Audio文件(单个)</button>
-			<button class="button" @click="sharePrivateAudios()">分享Audio文件(多个)</button>
-			<button class="button" @click="sharePrivateFile()">分享文件(单个)</button>
-			<button class="button" @click="sharePrivateFiles()">分享文件(多个)</button>
-      <button class="button" @click="sharePubImg()">选择图片并分享</button>
-      <button class="button" @click="sharePubMedias()">选择video并分享</button>
-      <button class="button" @click="shareSnapShot()">指定view截图并分享</button>
+			<button class="ml-30 mr-30 mb-15" @click="shareText()">分享文本</button>
+			<button class="ml-30 mr-30 mb-15" @click="shareLink()">分享链接</button>
+			<button class="ml-30 mr-30 mb-15" @click="sharePrivateImg()">分享单个本地图片</button>
+			<button class="ml-30 mr-30 mb-15" @click="sharePrivateImgs()">分享多个本地图片</button>
+			<button class="ml-30 mr-30 mb-15" @click="shareAll()">分享链接、文本、一张图片</button>
+			<button class="ml-30 mr-30 mb-15" @click="sharePrivateVideo()">分享video文件(单个)</button>
+			<button class="ml-30 mr-30 mb-15" @click="sharePrivateVideos()">分享video文件(多个)</button>
+			<button class="ml-30 mr-30 mb-15" @click="sharePrivateAudio()">分享Audio文件(单个)</button>
+			<button class="ml-30 mr-30 mb-15" @click="sharePrivateAudios()">分享Audio文件(多个)</button>
+			<button class="ml-30 mr-30 mb-15" @click="sharePrivateFile()">分享文件(单个)</button>
+			<button class="ml-30 mr-30 mb-15" @click="sharePrivateFiles()">分享文件(多个)</button>
+      <button class="ml-30 mr-30 mb-15" @click="sharePubImg()">选择图片并分享</button>
+      <button class="ml-30 mr-30 mb-15" @click="sharePubMedias()">选择video并分享</button>
+      <button class="ml-30 mr-30 mb-15" @click="shareSnapShot()">指定view截图并分享</button>
 
-			<button class="button" type="warn" @click="sharePrivateErrorImg()">分享单个本地图片(错误路径)</button>
-			<button class="button" type="warn" @click="sharePrivateErrorImgs()">分享多个本地图片(含有错误路径)</button>
-			<button class="button" type="warn" @click="sharePrivateErrorVideos()">分享Video文件(错误路径)</button>
-			<button class="button" type="warn" @click="sharePrivateErrorAudios()">分享Audio文件(错误路径)</button>
-			<button class="button" type="warn" @click="sharePrivateErrorFiles()">分享文件(错误路径)</button>
+			<button class="ml-30 mr-30 mb-15" type="warn" @click="sharePrivateErrorImg()">分享单个本地图片(错误路径)</button>
+			<button class="ml-30 mr-30 mb-15" type="warn" @click="sharePrivateErrorImgs()">分享多个本地图片(含有错误路径)</button>
+			<button class="ml-30 mr-30 mb-15" type="warn" @click="sharePrivateErrorVideos()">分享Video文件(错误路径)</button>
+			<button class="ml-30 mr-30 mb-15" type="warn" @click="sharePrivateErrorAudios()">分享Audio文件(错误路径)</button>
+			<button class="ml-30 mr-30 mb-15" type="warn" @click="sharePrivateErrorFiles()">分享文件(错误路径)</button>
 
 
 		</view>
@@ -515,11 +515,3 @@
 	}
 
 </script>
-
-<style>
-	.button {
-		margin-left: 30px;
-		margin-right: 30px;
-		margin-bottom: 15px;
-	}
-</style>

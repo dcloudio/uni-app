@@ -1,31 +1,31 @@
 <template>
-  <view class="page-root">
-    <view class="preview-panel">
-      <view class="preview-header">
-        <text class="uni-title-text">editor 属性示例</text>
+  <view class="flex-dir-column flex-1">
+    <view class="flex-dir-column u-p-10 bg-list-fff border-b-width-1 border-b-style-solid preview-panel">
+      <view class="flex-dir-column">
+        <text class="fs-15 fw-bold color-text-333">editor 属性示例</text>
       </view>
 
-      <view class="preview-state-row">
-        <text class="preview-state-text">read-only: {{ data.readOnly }}</text>
+      <view class="flex-dir-row flex-wrap-wrap mt-6">
+        <text class="mr-12 color-active-666 fs-13">read-only: {{ data.readOnly }}</text>
         <!-- #ifndef MP -->
-        <text class="preview-state-text">type: {{ getTypeLabel() }}</text>
+        <text class="mr-12 color-active-666 fs-13">type: {{ getTypeLabel() }}</text>
         <!-- #endif -->
       </view>
 
-      <view class="preview-state-row">
+      <view class="flex-dir-row flex-wrap-wrap mt-6">
         <view v-if="showLogs">
-          <text class="preview-state-text">X: {{ data.editorX }}</text>
-          <text class="preview-state-text">Y: {{ data.editorY }}</text>
-          <text class="preview-state-text">width: {{ data.editorWidth }}</text>
-          <text class="preview-state-text">height: {{ data.editorHeight }}</text>
+          <text class="mr-12 color-active-666 fs-13">X: {{ data.editorX }}</text>
+          <text class="mr-12 color-active-666 fs-13">Y: {{ data.editorY }}</text>
+          <text class="mr-12 color-active-666 fs-13">width: {{ data.editorWidth }}</text>
+          <text class="mr-12 color-active-666 fs-13">height: {{ data.editorHeight }}</text>
         </view>
       </view>
 
-      <view class="preview-editor-box">
+      <view class="mt-10 h-150 border-width-1 border-style-solid radius-6 bg-list-fff preview-editor-box">
         <editor
           v-if="data.showEditor"
           id="editor-props-demo"
-          class="preview-editor"
+          :class="data.customStyle ? 'h-150 min-h-0 u-p-10 bg-list-fff preview-editor-custom color-e64340' : 'h-150 min-h-0 u-p-10 bg-list-fff'"
           :read-only="data.readOnly"
           :placeholder="data.appliedPlaceholder"
           :show-img-size="data.appliedShowImgSize"
@@ -40,107 +40,109 @@
         />
       </view>
 
-      <view class="preview-toolbar">
-        <view class="preview-toolbar-item" @tap="insertSampleText">
-          <text class="preview-toolbar-icon iconfont">A</text>
+      <view class="flex-dir-row flex-wrap-wrap mt-10 pt-8 pr-8 radius-6 preview-toolbar pb-8">
+        <view class="w-36 h-36 mt-8 ml-8 radius-6 justify-center items-center bg-list-fff" @tap="insertSampleText">
+          <text class="preview-toolbar-icon color-text-333 iconfont">A</text>
         </view>
-        <view class="preview-toolbar-item" @tap="insertSampleImage">
-          <text class="preview-toolbar-icon iconfont">{{"&#xe6bc;"}}</text>
+        <view class="w-36 h-36 mt-8 ml-8 radius-6 justify-center items-center bg-list-fff" @tap="insertSampleImage">
+          <text class="preview-toolbar-icon color-text-333 iconfont">{{"&#xe6bc;"}}</text>
         </view>
-        <view :class="data.boldActive ? 'preview-toolbar-item preview-toolbar-item-active' : 'preview-toolbar-item'" @tap="toggleBold">
-          <text :class="data.boldActive ? 'preview-toolbar-icon preview-toolbar-icon-active iconfont' : 'preview-toolbar-icon iconfont'">{{"&#xe6ae;"}}</text>
+        <view :class="data.boldActive ? 'w-36 h-36 mt-8 ml-8 radius-6 justify-center items-center bg-list-fff preview-toolbar-item-active' : 'w-36 h-36 mt-8 ml-8 radius-6 justify-center items-center bg-list-fff'" @tap="toggleBold">
+          <text :class="data.boldActive ? 'preview-toolbar-icon color-007aff iconfont' : 'preview-toolbar-icon color-text-333 iconfont'">{{"&#xe6ae;"}}</text>
         </view>
-        <view :class="data.alignCenterActive ? 'preview-toolbar-item preview-toolbar-item-active' : 'preview-toolbar-item'" @tap="setAlignCenter">
-          <text :class="data.alignCenterActive ? 'preview-toolbar-icon preview-toolbar-icon-active iconfont' : 'preview-toolbar-icon iconfont'">{{"&#xe6b6;"}}</text>
+        <view :class="data.alignCenterActive ? 'w-36 h-36 mt-8 ml-8 radius-6 justify-center items-center bg-list-fff preview-toolbar-item-active' : 'w-36 h-36 mt-8 ml-8 radius-6 justify-center items-center bg-list-fff'" @tap="setAlignCenter">
+          <text :class="data.alignCenterActive ? 'preview-toolbar-icon color-007aff iconfont' : 'preview-toolbar-icon color-text-333 iconfont'">{{"&#xe6b6;"}}</text>
         </view>
-        <view class="preview-toolbar-item" @tap="removeFormat">
-          <text class="preview-toolbar-icon iconfont">{{"&#xe6b9;"}}</text>
+        <view class="w-36 h-36 mt-8 ml-8 radius-6 justify-center items-center bg-list-fff" @tap="removeFormat">
+          <text class="preview-toolbar-icon color-text-333 iconfont">{{"&#xe6b9;"}}</text>
         </view>
-        <view class="preview-toolbar-item" @tap="clearEditor">
-          <text class="preview-toolbar-icon iconfont">{{"&#xe6b1;"}}</text>
+        <view class="w-36 h-36 mt-8 ml-8 radius-6 justify-center items-center bg-list-fff" @tap="clearEditor">
+          <text class="preview-toolbar-icon color-text-333 iconfont">{{"&#xe6b1;"}}</text>
         </view>
-        <view class="preview-toolbar-item" @tap="blurEditor">
-          <text class="preview-toolbar-icon iconfont">{{"&#xe69a;"}}</text>
+        <view class="w-36 h-36 mt-8 ml-8 radius-6 justify-center items-center bg-list-fff" @tap="blurEditor">
+          <text class="preview-toolbar-icon color-text-333 iconfont">{{"&#xe69a;"}}</text>
         </view>
         <!-- #ifndef MP -->
-        <view class="preview-toolbar-item" @tap="insertMention">
-          <text class="preview-toolbar-icon iconfont">@</text>
+        <view class="w-36 h-36 mt-8 ml-8 radius-6 justify-center items-center bg-list-fff" @tap="insertMention">
+          <text class="preview-toolbar-icon color-text-333 iconfont">@</text>
         </view>
         <!-- #endif -->
       </view>
     </view>
 
-    <scroll-view class="props-scroll" direction="vertical">
-      <view class="uni-padding-wrap">
-        <view class="uni-title uni-common-mt">
-          <text class="uni-title-text">可动态修改属性</text>
+    <scroll-view class="flex-1" direction="vertical">
+      <view class="p-0-15">
+        <view class="p-10-0 color-text-333 mt-15">
+          <text class="fs-15 fw-bold color-text-333">可动态修改属性</text>
         </view>
       </view>
       <boolean-data :value="data.readOnly" title="read-only：设置编辑器为只读，可动态修改" @change="onReadOnlyChange"></boolean-data>
+      <boolean-data :value="data.customStyle" title="CSS 样式：关闭时使用主题默认颜色，开启时覆盖 color 和 caret-color" @change="onCustomStyleChange"></boolean-data>
       <!-- #ifndef MP -->
-      <enum-data :items="data.typeItems" title="type：null | none，控制聚焦时是否弹出键盘" @change="onTypeChange"></enum-data>
+      <enum-data-checkbox :items="data.typeItems" title="type：null | none，控制聚焦时是否弹出键盘" @change="onTypeChange"></enum-data-checkbox>
       <!-- #endif -->
 
-      <view class="uni-padding-wrap">
-        <view class="uni-title uni-common-mt">
-          <text class="uni-title-text">初始化生效属性</text>
+      <view class="p-0-15">
+        <view class="p-10-0 color-text-333 mt-15">
+          <text class="fs-15 fw-bold color-text-333">初始化生效属性</text>
         </view>
-        <text class="uni-subtitle-text">placeholder 与 show-img-* 调整后不会直接作用到当前 editor，请点击下方按钮重建后查看。</text>
+        <text class="color-888 fs-12 fw-bold u-mt-5">placeholder 与 show-img-* 调整后不会直接作用到当前 editor，请点击下方按钮重建后查看。</text>
       </view>
       <input-data :defaultValue="data.draftPlaceholder" title="placeholder：提示信息，不可动态修改" type="text" @confirm="onPlaceholderChange"></input-data>
       <boolean-data :value="data.draftShowImgSize" title="show-img-size：点击图片时显示图片大小控件，不可动态修改" @change="onDraftShowImgSizeChange"></boolean-data>
       <boolean-data :value="data.draftShowImgToolbar" title="show-img-toolbar：点击图片时显示工具栏控件，不可动态修改" @change="onDraftShowImgToolbarChange"></boolean-data>
       <boolean-data :value="data.draftShowImgResize" title="show-img-resize：点击图片时显示修改尺寸控件，不可动态修改" @change="onDraftShowImgResizeChange"></boolean-data>
 
-      <view class="uni-padding-wrap uni-common-mt">
-        <view class="uni-title">
-          <text class="uni-title-text">当前应用中的 editor 配置</text>
+      <view class="p-0-15 mt-15">
+        <view class="p-10-0 color-text-333">
+          <text class="fs-15 fw-bold color-text-333">当前应用中的 editor 配置</text>
         </view>
-        <text class="uni-subtitle-text">placeholder：{{ data.appliedPlaceholder }}</text>
-        <text class="uni-subtitle-text">show-img-size：{{ data.appliedShowImgSize }}</text>
-        <text class="uni-subtitle-text">show-img-toolbar：{{ data.appliedShowImgToolbar }}</text>
-        <text class="uni-subtitle-text">show-img-resize：{{ data.appliedShowImgResize }}</text>
-        <button type="primary" size="mini" class="action-button apply-button" @tap="rebuildEditor">重建 editor 并应用初始化属性</button>
+        <text class="color-888 fs-12 fw-bold u-mt-5">placeholder：{{ data.appliedPlaceholder }}</text>
+        <text class="color-888 fs-12 fw-bold u-mt-5">show-img-size：{{ data.appliedShowImgSize }}</text>
+        <text class="color-888 fs-12 fw-bold u-mt-5">show-img-toolbar：{{ data.appliedShowImgToolbar }}</text>
+        <text class="color-888 fs-12 fw-bold u-mt-5">show-img-resize：{{ data.appliedShowImgResize }}</text>
+        <button type="primary" size="mini" class="mt-10 mb-10" @tap="rebuildEditor">重建 editor 并应用初始化属性</button>
       </view>
 
-      <view v-if="showLogs" class="uni-padding-wrap uni-common-mt">
-        <view class="uni-title">
-          <text class="uni-title-text">事件示例</text>
+      <view v-if="showLogs" class="p-0-15 mt-15">
+        <view class="p-10-0 color-text-333">
+          <text class="fs-15 fw-bold color-text-333">事件示例</text>
         </view>
-        <text class="uni-subtitle-text">@ready：{{ data.readyCount }}</text>
-        <text class="uni-subtitle-text">@focus：{{ data.focusCount }}</text>
-        <text class="uni-subtitle-text">@blur：{{ data.blurCount }}</text>
-        <text class="uni-subtitle-text">@input：{{ data.inputCount }}</text>
-        <text class="uni-subtitle-text">@statuschange：{{ data.statusChangeCount }}</text>
-        <text class="uni-subtitle-text">最近状态：{{ data.statusSummary }}</text>
+        <text class="color-888 fs-12 fw-bold u-mt-5">@ready：{{ data.readyCount }}</text>
+        <text class="color-888 fs-12 fw-bold u-mt-5">@focus：{{ data.focusCount }}</text>
+        <text class="color-888 fs-12 fw-bold u-mt-5">@blur：{{ data.blurCount }}</text>
+        <text class="color-888 fs-12 fw-bold u-mt-5">@input：{{ data.inputCount }}</text>
+        <text class="color-888 fs-12 fw-bold u-mt-5">@statuschange：{{ data.statusChangeCount }}</text>
+        <text class="color-888 fs-12 fw-bold u-mt-5">最近状态：{{ data.statusSummary }}</text>
       </view>
 
-      <view v-if="showLogs" class="uni-padding-wrap uni-common-mt uni-common-mb">
-        <view class="uni-title event-header-row">
-          <text class="uni-title-text">事件日志</text>
+      <view v-if="showLogs" class="p-0-15 mt-15 mb-15">
+        <view class="p-10-0 color-text-333 flex-dir-row justify-between items-center">
+          <text class="fs-15 fw-bold color-text-333">事件日志</text>
           <button size="mini" @tap="clearLogs">清空日志</button>
         </view>
-        <view class="log-box" v-if="data.logs.length > 0">
-          <text v-for="(item, index) in data.logs" :key="index" class="log-text">{{ item }}</text>
+        <view class="flex-dir-column mt-10 u-p-10 radius-6 bg-list-fff" v-if="data.logs.length > 0">
+          <text v-for="(item, index) in data.logs" :key="index" class="mt-6 color-text-333 fs-12 lh-18">{{ item }}</text>
         </view>
-        <text v-else class="uni-subtitle-text">等待事件触发...</text>
+        <text v-else class="color-888 fs-12 fw-bold u-mt-5">等待事件触发...</text>
       </view>
     </scroll-view>
 
-    <navigator style="margin-top: 20px;" url="./editor-edit">
+    <navigator class="mt-20" url="./editor-edit">
       <button>富文本编辑模板</button>
     </navigator>
 
-    <view class="scroll-view_bottom-fixed"></view>
+    <view class="h-safe-area-inset-bottom-20 min-h-20"></view>
   </view>
 </template>
 
 <script setup lang="ts">
-import { ItemType } from '@/components/enum-data/enum-data-types'
+import { ItemType } from '@/components/enum-data-checkbox/enum-data-checkbox-types'
 
 type EditorPropsPageData = {
   showEditor: boolean
   readOnly: boolean
+  customStyle: boolean
   editorType: string | null
   draftPlaceholder: string
   appliedPlaceholder: string
@@ -182,6 +184,7 @@ const showLogs = false
 const initialData: EditorPropsPageData = {
   showEditor: true,
   readOnly: false,
+  customStyle: false,
   editorType: null,
   draftPlaceholder: '请输入内容，placeholder 仅初始化生效',
   appliedPlaceholder: '请输入内容，placeholder 仅初始化生效',
@@ -239,6 +242,11 @@ function syncTypeItems() {
 function onReadOnlyChange(checked: boolean) {
   data.readOnly = checked
   appendLog('prop', `read-only => ${checked}`)
+}
+
+function onCustomStyleChange(checked: boolean) {
+  data.customStyle = checked
+  appendLog('style', `CSS 样式覆盖 => ${checked}`)
 }
 
 function onTypeChange(value: number) {
@@ -468,6 +476,7 @@ defineExpose({
   data,
   getTypeLabel,
   onReadOnlyChange,
+  onCustomStyleChange,
   onTypeChange,
   onPlaceholderChange,
   onDraftShowImgSizeChange,
@@ -491,50 +500,12 @@ defineExpose({
 <style>
 @import './editor-icon.css';
 
-.page-root {
-  flex-direction: column;
-  flex: 1;
-}
-
 .preview-panel {
-  flex-direction: column;
-  padding: 10px;
-  background-color: var(--list-background-color, #ffffff);
-  border-bottom-width: 1px;
-  border-bottom-style: solid;
   border-bottom-color: var(--border-color, rgba(0, 0, 0, 0.06));
 }
 
-.preview-header {
-  flex-direction: column;
-}
-
-.preview-state-row {
-  flex-direction: row;
-  flex-wrap: wrap;
-  margin-top: 6px;
-}
-
 .preview-toolbar {
-  flex-direction: row;
-  flex-wrap: wrap;
-  margin-top: 10px;
-  padding-top: 8px;
-  padding-right: 8px;
-  padding-bottom: 8px;
-  border-radius: 6px;
   background-color: var(--active-background-color, #f5f6f8);
-}
-
-.preview-toolbar-item {
-  width: 36px;
-  height: 36px;
-  margin-top: 8px;
-  margin-left: 8px;
-  border-radius: 6px;
-  justify-content: center;
-  align-items: center;
-  background-color: var(--list-background-color, #ffffff);
 }
 
 .preview-toolbar-item-active {
@@ -542,73 +513,14 @@ defineExpose({
 }
 
 .preview-toolbar-icon {
-  color: var(--text-color, #333333);
   font-size: 18px;
 }
 
-.preview-toolbar-icon-active {
-  color: #007aff;
-}
-
-.preview-state-text {
-  margin-right: 12px;
-  color: var(--active-color, #666666);
-  font-size: 13px;
-}
-
 .preview-editor-box {
-  margin-top: 10px;
-  height: 150px;
-  border-width: 1px;
-  border-style: solid;
   border-color: var(--border-color, rgba(0, 0, 0, 0.08));
-  border-radius: 6px;
-  background-color: var(--list-background-color, #ffffff);
 }
 
-.preview-editor {
-  height: 150px;
-  min-height: 0px;
-  padding: 10px;
-  color: var(--text-color, #333333);
-  background-color: var(--list-background-color, #ffffff);
-}
-
-.props-scroll {
-  flex: 1;
-}
-
-.button-list {
-  flex-direction: column;
-  margin-top: 10px;
-}
-
-.action-button {
-  margin-top: 10px;
-}
-
-.apply-button {
-  margin-bottom: 10px;
-}
-
-.event-header-row {
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.log-box {
-  flex-direction: column;
-  margin-top: 10px;
-  padding: 10px;
-  border-radius: 6px;
-  background-color: var(--list-background-color, #ffffff);
-}
-
-.log-text {
-  margin-top: 6px;
-  color: var(--text-color, #333333);
-  font-size: 12px;
-  line-height: 18px;
+.preview-editor-custom {
+  caret-color: #42b983;
 }
 </style>

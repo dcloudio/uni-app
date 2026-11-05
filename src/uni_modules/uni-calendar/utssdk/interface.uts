@@ -824,17 +824,14 @@ export interface Uni {
    * @uniPlatform {
    * 	"app": {
    * 		"android": {
-   * 			"osVer": "5.0",
    * 			"uniVer": "x",
    * 			"unixVer": "5.08"
    * 		},
    * 		"ios": {
-   * 			"osVer": "12.0",
    * 			"uniVer": "x",
    * 			"unixVer": "5.08"
    * 		},
    *    "harmony": {
-   *      "osVer": "5.0.0",
    *      "uniVer": "x",
    *      "unixVer": "5.08",
    *      "unixvVer": "5.08"
@@ -851,39 +848,30 @@ export interface Uni {
    *      "unixVer": "4.41"
    *    },
    *    "alipay": {
-   *      "hostVer": "√",
    *      "uniVer": "√",
    *      "unixVer": "x"
    *    },
    *    "baidu": {
-   *      "hostVer": "√",
    *      "uniVer": "√",
-   *      "unixVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "kuaishou": {
-   *      "hostVer": "√",
    *      "uniVer": "√",
-   *      "unixVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    }
    *  }
    * }
@@ -901,17 +889,14 @@ export interface Uni {
    * @uniPlatform {
    * 	"app": {
    * 		"android": {
-   * 			"osVer": "5.0",
    * 			"uniVer": "x",
    * 			"unixVer": "5.08"
    * 		},
    * 		"ios": {
-   * 			"osVer": "12.0",
    * 			"uniVer": "x",
    * 			"unixVer": "5.08"
    * 		},
    *    "harmony": {
-   *      "osVer": "5.0.0",
    *      "uniVer": "x",
    *      "unixVer": "5.08",
    *      "unixvVer": "5.08"
@@ -928,39 +913,30 @@ export interface Uni {
    *      "unixVer": "4.41"
    *    },
    *    "alipay": {
-   *      "hostVer": "√",
    *      "uniVer": "√",
    *      "unixVer": "x"
    *    },
    *    "baidu": {
-   *      "hostVer": "√",
    *      "uniVer": "√",
-   *      "unixVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "kuaishou": {
-   *      "hostVer": "√",
    *      "uniVer": "√",
-   *      "unixVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    }
    *  }
    * }

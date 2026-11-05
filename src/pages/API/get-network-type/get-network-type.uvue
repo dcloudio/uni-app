@@ -1,19 +1,19 @@
 <template>
   <page-head :title="data.title"></page-head>
-  <view class="uni-padding-wrap uni-common-mt">
-    <view class="uni-container">
-      <view class="uni-center">网络状态</view>
+  <view class="p-0-15 mt-15">
+    <view class="u-p-15">
+      <view class="flex-dir-row justify-center">网络状态</view>
       <view v-if="data.hasNetworkType == false">
-        <view class="uni-center uni-common-mt">未获取</view>
-        <view class="uni-center uni-common-mt">请点击下面按钮获取网络状态</view>
+        <view class="flex-dir-row justify-center mt-15">未获取</view>
+        <view class="flex-dir-row justify-center mt-15">请点击下面按钮获取网络状态</view>
       </view>
       <view v-if="data.hasNetworkType == true">
-        <view class="uni-center uni-common-mt">{{data.networkType}}</view>
+        <view class="flex-dir-row justify-center mt-15">{{data.networkType}}</view>
       </view>
     </view>
-    <view class="uni-btn-v uni-common-mt">
+    <view class="p-5-0 mt-15">
       <button type="primary" @tap="getNetworkType">获取设备网络状态</button>
-      <button class="uni-common-mt" @tap="clear">清空</button>
+      <button class="mt-15" @tap="clear">清空</button>
     </view>
   </view>
 </template>
@@ -79,7 +79,3 @@
     jest_getNetworkType
   })
 </script>
-
-<style>
-
-</style>

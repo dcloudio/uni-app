@@ -1,6 +1,6 @@
 <template>
-  <view class="dialog-container">
-    <rich-text class="dialog-content" :nodes="nodes"></rich-text>
+  <view class="w-full h-full bg-black-a30 d-flex justify-center items-center">
+    <rich-text class="w-full bg-white" :nodes="nodes"></rich-text>
   </view>
 </template>
 
@@ -11,19 +11,5 @@
 <style>
   page {
     background-color: transparent;
-  }
-
-  .dialog-container {
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.3);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .dialog-content {
-    background-color: white;
-    width: 100%;
   }
 </style>

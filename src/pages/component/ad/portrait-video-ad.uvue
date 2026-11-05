@@ -1,11 +1,11 @@
 <template>
-	<view class="container">
+	<view class="items-center pos-relative w-full h-full d-flex flex-dir-column">
 		<!-- 视频组件 -->
-		<video id="myVideo1" :src="src" :controls="true" :autoplay="false" class="video"  @play="onVideoPlay">
+		<video id="myVideo1" :src="src" :controls="true" :autoplay="false" class="w-full h-420rpx"  @play="onVideoPlay">
 			<!-- 信息流广告 - 覆盖在视频上方 -->
-			<view v-if="adVisible" class="ad-container">
+			<view v-if="adVisible" class="h-full w-full bg-black-a70 d-flex items-center justify-center">
 				<!-- 1204745639 1000000001-->
-				<ad adpid="1597617406" style="width: 100%; height: 100%;" @load="loadFun" @error="errorFun" @close="closeAd"></ad>
+				<ad adpid="1597617406" class="w-full h-full" @load="loadFun" @error="errorFun" @close="closeAd"></ad>
 			</view>
 		</video>
 	</view>
@@ -50,28 +50,3 @@
 		// 页面加载逻辑
 	})
 </script>
-
-<style>
-	.container {
-		position: relative;
-		width: 100%;
-		height: 100%;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-	}
-
-	.video {
-		width: 100%;
-		height: 420rpx;
-	}
-
-	.ad-container {
-		width: 100%;
-		height: 100%;
-		background-color: rgba(0, 0, 0, 0.7);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-</style>

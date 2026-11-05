@@ -1,33 +1,42 @@
 <template>
     <page-head title="setInnerAudioOption"></page-head>
-    <text class="labelText">是否允许与其他音频同时播放</text>
-    <radio-group class="uni-row radioGroup" @change="(event:UniRadioGroupChangeEvent)=>handleRadioChange(event, 'mixWithOther')">
-      <view class="audio-option-item"><radio value="1" :checked="true" /><text>是</text></view>
-      <view class="radioItem audio-option-item"><radio value="0" /><text>否</text></view>
-    </radio-group>
+    <text class="ml-8">是否允许与其他音频同时播放</text>
+    <enum-data-checkbox
+      :model-value="data.mixWithOther ? '1' : '0'"
+      :items="audioOptionItems"
+      mode="default"
+      :show-toast="false"
+      @change="handleRadioChange($event as string, 'mixWithOther')"
+    />
 
-    <text class="labelText">是否允许扬声器播放</text>
-    <radio-group class="uni-row radioGroup" @change="(event:UniRadioGroupChangeEvent)=>handleRadioChange(event, 'speakerOn')">
-      <view class="audio-option-item"><radio value="1" :checked="true" /><text>是</text></view>
-      <view class="radioItem audio-option-item"><radio value="0" /><text>否</text></view>
-    </radio-group>
+    <text class="ml-8">是否允许扬声器播放</text>
+    <enum-data-checkbox
+      :model-value="data.speakerOn ? '1' : '0'"
+      :items="audioOptionItems"
+      mode="default"
+      :show-toast="false"
+      @change="handleRadioChange($event as string, 'speakerOn')"
+    />
 
 <!-- #ifdef APP-IOS -->
-    <text class="labelText">（仅在 iOS 生效）是否遵循静音开关，设置为 false 之后，即使是在静音模式下，也能播放声音</text>
-    <radio-group class="uni-row radioGroup" @change="(event:UniRadioGroupChangeEvent)=>handleRadioChange(event, 'obeyMuteSwitch')">
-      <view class="audio-option-item"><radio value="1" :checked="true" /><text>是</text></view>
-      <view class="radioItem audio-option-item"><radio value="0" /><text>否</text></view>
-    </radio-group>
+    <text class="ml-8">（仅在 iOS 生效）是否遵循静音开关，设置为 false 之后，即使是在静音模式下，也能播放声音</text>
+    <enum-data-checkbox
+      :model-value="data.obeyMuteSwitch ? '1' : '0'"
+      :items="audioOptionItems"
+      mode="default"
+      :show-toast="false"
+      @change="handleRadioChange($event as string, 'obeyMuteSwitch')"
+    />
 <!-- #endif -->
 
-    <view class="buttonContainer">
-      <button @click="playBackgroundMusic" type="primary" class="radioGroup">播放背景音频</button>
-      <button @click="pauseBackgroundMusic" type="primary" class="radioGroup">暂停背景音频</button>
-      <button @click="stopBackgroundMusic" type="primary" class="radioGroup">停止背景音频</button>
+    <view class="p-8">
+      <button @click="playBackgroundMusic" type="primary" class="m-8">播放背景音频</button>
+      <button @click="pauseBackgroundMusic" type="primary" class="m-8">暂停背景音频</button>
+      <button @click="stopBackgroundMusic" type="primary" class="m-8">停止背景音频</button>
 
-      <button @click="playInnerMusic" type="primary" class="radioGroup">播放音频</button>
-      <button @click="pauseInnerMusic" type="primary" class="radioGroup">暂停音频</button>
-      <button @click="stopInnerMusic" type="primary" class="radioGroup">停止音频</button>
+      <button @click="playInnerMusic" type="primary" class="m-8">播放音频</button>
+      <button @click="pauseInnerMusic" type="primary" class="m-8">暂停音频</button>
+      <button @click="stopInnerMusic" type="primary" class="m-8">停止音频</button>
     </view>
     <view style="padding: 16px 8px;">
       <text>1. uni.setInnerAudioOption需要与uni.createInnerAudioContext搭配才会生效 \n </text>
@@ -38,6 +47,8 @@
 </template>
 
 <script setup lang="ts">
+  const audioOptionItems = [{ value: '1', text: '是' }, { value: '0', text: '否' }]
+
   type DataType = {
     isBackgroundAudioPaused: boolean,
     mixWithOther: boolean,
@@ -102,8 +113,8 @@
     innerAudio.value?.stop()
   }
 
-  function handleRadioChange(event : UniRadioGroupChangeEvent, propertyName : 'mixWithOther' | 'speakerOn' | 'obeyMuteSwitch') {
-    const value = event.detail.value == "1"
+  function handleRadioChange(selected : string, propertyName : 'mixWithOther' | 'speakerOn' | 'obeyMuteSwitch') {
+    const value = selected == "1"
 
     // 使用 switch 语句，意图更明确
     switch (propertyName) {
@@ -140,27 +151,3 @@
 
 
 </script>
-
-<style>
-.labelText {
-  margin-left: 8px
-}
-
-.radioGroup {
-  margin: 8px
-}
-
-.radioItem {
-  margin-left: 16px
-}
-
-.audio-option-item {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
-.buttonContainer {
-  padding: 8px 8px;
-}
-</style>

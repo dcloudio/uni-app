@@ -1,101 +1,99 @@
 <template>
-    <view class="page">
       <form @submit="onFormSubmit" @reset="onFormReset">
-        <view class="uni-form-item">
-          <text class="title">姓名</text>
-          <input class="uni-input form-input" name="nickname" :value="data.nickname" placeholder="请输入姓名" :maxlength="-1" />
+        <view class="p-15-0">
+          <text class="mb-10 opacity-0_8 color-text-333">姓名</text>
+          <input class="h-25 p-8-13 fs-14 flex-1 box-content-box bg-fff color-333 form-input" name="nickname" :value="data.nickname" placeholder="请输入姓名" :maxlength="-1" />
         </view>
-        <view class="uni-form-item">
-          <text class="title">性别</text>
-          <radio-group name="gender" class="flex-row">
-            <view class="group-item">
-              <radio value="0" :checked="data.gender=='0'" /><text class="form-text">男</text>
+        <view class="p-15-0">
+          <text class="mb-10 opacity-0_8 color-text-333">性别</text>
+          <radio-group name="gender" class="flex-dir-row items-center">
+            <view class="flex-dir-row u-mr-20">
+              <radio value="0" :checked="data.gender=='0'" /><text class="color-text-333">男</text>
             </view>
-            <view class="group-item">
-              <radio value="1" :checked="data.gender=='1'" /><text class="form-text">女</text>
+            <view class="flex-dir-row u-mr-20">
+              <radio value="1" :checked="data.gender=='1'" /><text class="color-text-333">女</text>
             </view>
           </radio-group>
         </view>
-        <view class="uni-form-item">
-          <text class="title">爱好</text>
-          <checkbox-group name="loves" class="flex-row">
-            <view class="group-item">
-              <checkbox value="0" :checked="data.loves.indexOf('0')>-1" /><text class="form-text">读书</text>
+        <view class="p-15-0">
+          <text class="mb-10 opacity-0_8 color-text-333">爱好</text>
+          <checkbox-group name="loves" class="flex-dir-row items-center">
+            <view class="flex-dir-row u-mr-20">
+              <checkbox value="0" :checked="data.loves.indexOf('0')>-1" /><text class="color-text-333">读书</text>
             </view>
-            <view class="group-item">
-              <checkbox value="1" :checked="data.loves.indexOf('1')>-1" /><text class="form-text">写字</text>
+            <view class="flex-dir-row u-mr-20">
+              <checkbox value="1" :checked="data.loves.indexOf('1')>-1" /><text class="color-text-333">写字</text>
             </view>
           </checkbox-group>
         </view>
-        <view class="uni-form-item">
-          <text class="title">年龄</text>
+        <view class="p-15-0">
+          <text class="mb-10 opacity-0_8 color-text-333">年龄</text>
           <slider name="age" :value="data.age" :show-value="true"></slider>
         </view>
-        <view class="uni-form-item">
-          <text class="title">保留选项</text>
-          <view style="display: flex;flex-direction: row;">
+        <view class="p-15-0">
+          <text class="mb-10 opacity-0_8 color-text-333">保留选项</text>
+          <view class="d-flex flex-dir-row">
             <switch name="switch" :checked="data.switch" />
           </view>
         </view>
-        <view class="uni-form-item">
-          <text class="title">备注</text>
-          <textarea class="comment-textarea" name="comment" :value="data.comment" placeholder="请输入备注" />
-          <!-- <textarea class="uni-input" name="comment" :value="comment" placeholder="这个class的写法，导致iOS和Android产生了高度差异"/> -->
+        <view class="p-15-0">
+          <text class="mb-10 opacity-0_8 color-text-333">备注</text>
+          <textarea class="u-p-10 comment-textarea color-333 bg-fff" name="comment" :value="data.comment" placeholder="请输入备注" />
+          <!-- <textarea class="uni-input h-25 p-8-13 fs-14 flex-1 box-content-box bg-list-fff" name="comment" :value="comment" placeholder="这个class的写法，导致iOS和Android产生了高度差异"/> -->
         </view>
         <!-- picker -->
-        <view class="uni-form-item flex-row">
-          <text class="picker-title">时区</text>
-          <picker class="picker" name="timeZone" @change="onTimeZoneChange" :value="data.timeZoneIndex" :range="data.timeZoneList">
-            <view class="uni-picker-select-value pickerValue">{{data.timeZoneList[data.timeZoneIndex]}}</view>
+        <view class="flex-dir-row items-center p-15-0">
+          <text class="opacity-0_8 color-text-333">时区</text>
+          <picker class="ml-15" name="timeZone" @change="onTimeZoneChange" :value="data.timeZoneIndex" :range="data.timeZoneList">
+            <view class="fs-14 color-text-333 bg-list-fff justify-center uni-picker-select-value h-41">{{data.timeZoneList[data.timeZoneIndex]}}</view>
           </picker>
         </view>
         <!-- #ifndef MP-ALIPAY -->
-        <view class="uni-form-item flex-row">
-          <text class="picker-title">多列选择器</text>
-          <picker class="picker pickerMulti" name="picker-mode-multiSelector" mode="multiSelector" @columnchange="onMultiPickerColumnChange"
+        <view class="flex-dir-row items-center p-15-0">
+          <text class="opacity-0_8 color-text-333">多列选择器</text>
+          <picker class="ml-15" name="picker-mode-multiSelector" mode="multiSelector" @columnchange="onMultiPickerColumnChange"
             :value="data.multiIndex" :range="data.multiArray">
-            <view class="uni-picker-select-value pickerMultiValue">
+            <view class="fs-14 color-text-333 bg-list-fff justify-center uni-picker-select-value h-41">
               {{data.multiArray[0][data.multiIndex[0]]}}，{{data.multiArray[1][data.multiIndex[1]]}}，{{data.multiArray[2][data.multiIndex[2]]}}
             </view>
           </picker>
         </view>
         <!-- #endif -->
-        <view class="uni-form-item flex-row">
-          <text class="picker-title">时间选择器</text>
-          <picker class="picker pickerTime" name="picker-mode-time" mode="time" :value="data.timePickerValue" start="09:01" end="21:01" @change="onTimeChange">
-            <view class="uni-picker-select-value">{{data.timePickerValue}}</view>
+        <view class="flex-dir-row items-center p-15-0">
+          <text class="opacity-0_8 color-text-333">时间选择器</text>
+          <picker class="ml-15" name="picker-mode-time" mode="time" :value="data.timePickerValue" start="09:01" end="21:01" @change="onTimeChange">
+            <view class="fs-14 color-text-333 bg-list-fff justify-center uni-picker-select-value h-41">{{data.timePickerValue}}</view>
           </picker>
         </view>
-        <view class="uni-form-item flex-row">
-          <text class="picker-title">日期选择器</text>
-          <picker class="picker pickerDate" name="picker-mode-date" mode="date" :value="data.datePickerValue" :start="data.startDate" :end="data.endDate"
+        <view class="flex-dir-row items-center p-15-0">
+          <text class="opacity-0_8 color-text-333">日期选择器</text>
+          <picker class="ml-15" name="picker-mode-date" mode="date" :value="data.datePickerValue" :start="data.startDate" :end="data.endDate"
             @change="onDateChange">
-            <view class="uni-picker-select-value">{{data.datePickerValue}}</view>
+            <view class="fs-14 color-text-333 bg-list-fff justify-center uni-picker-select-value h-41">{{data.datePickerValue}}</view>
           </picker>
         </view>
-        <view class="uni-form-item">
-          <text class="title">时间</text>
-          <picker-view class="picker-view" name="time" :value="data.time" indicator-style="height:50px">
+        <view class="p-15-0">
+          <text class="mb-10 opacity-0_8 color-text-333">时间</text>
+          <picker-view class="w-200 mt-10 h-320" name="time" :value="data.time" indicator-style="height:50px">
             <picker-view-column>
-              <view class="picker-view-item" v-for="(item,index) in data.hours" :key="index">
-                <text class="picker-view-text">{{item}}时</text>
+              <view class="u-h-50" v-for="(item,index) in data.hours" :key="index">
+                <text class="lh-50 text-center color-text-333">{{item}}时</text>
               </view>
             </picker-view-column>
             <picker-view-column>
-              <view class="picker-view-item" v-for="(item,index) in data.minutes" :key="index">
-                <text class="picker-view-text">{{item}}分</text>
+              <view class="u-h-50" v-for="(item,index) in data.minutes" :key="index">
+                <text class="lh-50 text-center color-text-333">{{item}}分</text>
               </view>
             </picker-view-column>
           </picker-view>
         </view>
-        <view class="flex-row">
-          <button class="btn btn-submit" form-type="submit" type="primary">Submit</button>
-          <button class="btn btn-reset" type="default" form-type="reset">Reset</button>
+        <view class="flex-dir-row items-center">
+          <button class="mr-5 btn-submit flex-1" form-type="submit" type="primary">Submit</button>
+          <button class="ml-5 btn-reset flex-1" type="default" form-type="reset">Reset</button>
         </view>
       </form>
-      <view class="result">提交的表单数据</view>
-      <textarea class="textarea" :value="formDataText" :maxlength="-1" :auto-height="true"></textarea>
-    </view>
+      <view class="mt-30 color-text-333">提交的表单数据</view>
+      <textarea class="u-mt-5 p-5 textarea color-333 bg-fff" :value="formDataText" :maxlength="-1" :auto-height="true"></textarea>
 </template>
 
 <script setup lang="ts">
@@ -264,107 +262,12 @@
 </script>
 
 <style>
-  .scroll-view {
-    flex: 1;
-  }
-
-  .page {
+  page {
     padding: 15px;
   }
 
-  .flex-row {
-    flex-direction: row;
-    align-items: center;
-  }
-
-  .uni-form-item {
-    padding: 15px 0;
-  }
-
-  .title {
-    margin-bottom: 10px;
-    opacity: 0.8;
-    color: var(--text-color, #333333);
-  }
-
-  .picker-title {
-    opacity: 0.8;
-    color: var(--text-color, #333333);
-  }
-
-  .picker {
-    margin-left: 15px;
-  }
-
-  .group-item {
-    flex-direction: row;
-    margin-right: 20px;
-  }
-
-  .picker-view {
-    width: 200px;
-    height: 320px;
-    margin-top: 10px;
-  }
-
-  .picker-view-item {
-    height: 50px;
-  }
-
-  .picker-view-text {
-    line-height: 50px;
-    text-align: center;
-    color: var(--text-color, #333333);
-  }
-
-  .btn {
-    flex: 1;
-  }
-
-  .btn-submit {
-    margin-right: 5px;
-  }
-
-  .btn-reset {
-    margin-left: 5px;
-  }
-
-  .result {
-    margin-top: 30px;
-    color: var(--text-color, #333333);
-  }
-
-  .comment-textarea,
-  .textarea {
-    color: #333333;
-    background-color: #ffffff;
-  }
-
-  .comment-textarea {
-    padding: 10px;
-  }
-
-  .textarea {
-    margin-top: 5px;
-    padding: 5px;
-  }
-
-  .form-input {
-    color: #333333;
-    background-color: #ffffff;
-  }
-
-  .form-text {
-    color: var(--text-color, #333333);
-  }
-
   .uni-picker-select-value {
-    height: 41px;
     padding: 0 13px;
-    font-size: 14px;
-    color: var(--text-color, #333333);
-    background-color: var(--list-background-color,#ffffff);
-    justify-content: center;
   }
 
   @media (prefers-color-scheme: dark) {

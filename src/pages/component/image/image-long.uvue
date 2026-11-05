@@ -1,5 +1,5 @@
 <template>
-  <image style="width: 100%;" src="/static/test-image/longPath.jpg" mode="widthFix" @load="load"></image>
+  <image class="w-full" src="/static/test-image/longPath.jpg" mode="widthFix" @load="load"></image>
 </template>
 
 <script setup lang="ts">
@@ -7,7 +7,3 @@ function load(event : ImageLoadEvent) {
   console.log("load event:", event)
 }
 </script>
-
-<style>
-
-</style>

@@ -37,11 +37,8 @@ describe('slider', () => {
     const newValue = await slider.property('value')
     expect(newValue.toString()).toBe(sliderValue + '')
   })
-  if(isVapor) {
-    return
-  }
   it('color', async () => {
-    const slider = await page.$('#slider-custom-color-and-size')
+    const slider = await page.$('#slider-color-and-size-props')
     expect(await slider.attribute('backgroundColor')).toBe('#000000')
     expect(await slider.attribute('activeColor')).toBe('#FFCC33')
     expect(await slider.attribute('blockColor')).toBe('#8A6DE9')
@@ -66,7 +63,7 @@ describe('slider', () => {
   })
 
   it('block-size', async () => {
-    const slider = await page.$('#slider-custom-color-and-size')
+    const slider = await page.$('#slider-color-and-size-props')
     expect(await slider.attribute('blockSize')).toBe(20 + '')
 
     const blockSize = 18

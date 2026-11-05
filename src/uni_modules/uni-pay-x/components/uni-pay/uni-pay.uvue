@@ -49,7 +49,7 @@
 					<view class="mobile-pay-popup-amount"><text class="mobile-pay-popup-amount-text">{{ (totalFeeCom / 100).toFixed(2) }}</text></view>
 				</view>
 				<view class="mobile-pay-popup-provider-list">
-					<view class="uni-list">
+					<view class="uni-list bg-list-fff pos-relative d-flex flex-dir-column border-b-1-solid-c8c7cc-dark-3a3a3c">
 						<!-- #ifdef MP-WEIXIN || WEB || APP -->
 						<view class="uni-list-item" v-if="currentProviders.indexOf('wxpay') > -1" @click="createOrderByProvider('wxpay')">
 							<view class="uni-list-item__container uni-list-item__container--right">
@@ -119,7 +119,7 @@
 	</view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 	import { checkPlatform, objectAssign, getWeixinCode, getAlipayCode } from "../../js_sdk/js_sdk"
 
 	// Props

@@ -1,11 +1,11 @@
 <template>
-  <view class="page-root">
+  <view class="flex-1">
     <fps />
 
     <view class="control-panel">
       <view class="control-section">
         <text class="control-label">模糊半径</text>
-        <slider class="control-wrapper"
+        <slider class="flex-1"
           :min="0"
           :max="15"
           :step="1"
@@ -18,19 +18,21 @@
 
       <view class="control-section">
         <text class="control-label">背景颜色</text>
-        <view class="control-wrapper">
-          <radio-group class="radio-group" @change="updateBackgroundColor">
-            <radio class="control-radio" value="rgba(255, 255, 255, 0.3)" :checked="backgroundColor == 'rgba(255, 255, 255, 0.3)'">白色</radio>
-            <radio class="control-radio" value="rgba(255, 0, 0, 0.3)" :checked="backgroundColor == 'rgba(255, 0, 0, 0.3)'">红色</radio>
-            <radio class="control-radio" value="rgba(0, 255, 0, 0.3)" :checked="backgroundColor == 'rgba(0, 255, 0, 0.3)'">绿色</radio>
-            <radio class="control-radio" value="rgba(0, 0, 255, 0.3)" :checked="backgroundColor == 'rgba(0, 0, 255, 0.3)'">蓝色</radio>
-          </radio-group>
+        <view class="flex-1">
+          <enum-data-checkbox
+            class="flex-1"
+            :model-value="backgroundColor"
+            :items="backgroundOptions"
+            mode="default"
+            :show-toast="false"
+            @change="updateBackgroundColor"
+          />
         </view>
       </view>
 
       <view class="control-section">
         <text class="control-label">边框宽度</text>
-        <slider class="control-wrapper"
+        <slider class="flex-1"
           :min="0"
           :max="20"
           :step="1"
@@ -67,34 +69,34 @@
           <view class="demo-slot">
             <view class="glass-box" :style="`backdrop-filter: blur(${blurValue}px); background-color: ${backgroundColor}; border-width: ${borderWidthValue}px;`"></view>
             <view class="demo-label demo-label-stack">
-              <text class="demo-label-text">动态 {{ blurValue }}px</text>
-              <text class="demo-label-text">{{ colorLabel }} / {{ borderWidthValue }}px</text>
+              <text class="color-1a1a1a">动态 {{ blurValue }}px</text>
+              <text class="color-1a1a1a">{{ colorLabel }} / {{ borderWidthValue }}px</text>
             </view>
           </view>
           <view class="demo-slot"></view>
         </view>
       </view>
 
-      <scroll-view class="content-scroll-view" direction="vertical" :show-scrollbar="true">
+      <scroll-view class="flex-1" direction="vertical" :show-scrollbar="true">
         <view class="background-content">
-          <view v-for="section in backgroundSections" :key="section" class="uni-common-mb">
+          <view v-for="section in backgroundSections" :key="section" class="mb-15">
             <view class="logo-row">
               <image v-for="logoIndex in logoIndexes" :key="logoIndex" class="logo-item" src="/static/test-image/logo.png" mode="widthFix"></image>
             </view>
-            <view class="uni-row uni-common-mt">
+            <view class="flex-dir-row mt-15">
               <view v-for="(color, colorIndex) in solidColors1" :key="colorIndex" class="color-box" :style="`background-color: ${color};`"></view>
             </view>
-            <view class="uni-row">
+            <view class="flex-dir-row">
               <view v-for="(color, colorIndex) in solidColors2" :key="colorIndex" class="color-box" :style="`background-color: ${color};`"></view>
             </view>
-            <view class="uni-row uni-common-mt">
+            <view class="flex-dir-row mt-15">
               <view v-for="(gradientStyle, gradientIndex) in gradientStyles1" :key="gradientIndex" class="color-box" :style="gradientStyle"></view>
             </view>
-            <view class="uni-row">
+            <view class="flex-dir-row">
               <view v-for="(gradientStyle, gradientIndex) in gradientStyles2" :key="gradientIndex" class="color-box" :style="gradientStyle"></view>
             </view>
-            <view class="uni-common-mt uni-common-mb">
-              <text class="sample-line uni-common-mb" v-for="(line, lineIndex) in sampleLines" :key="lineIndex">{{ line }}</text>
+            <view class="mt-15 mb-15">
+              <text class="mb-15 color-text-333" v-for="(line, lineIndex) in sampleLines" :key="lineIndex">{{ line }}</text>
             </view>
           </view>
         </view>
@@ -104,6 +106,13 @@
 </template>
 
 <script setup lang="ts">
+  const backgroundOptions = [
+    { value: 'rgba(255, 255, 255, 0.3)', text: '白色' },
+    { value: 'rgba(255, 0, 0, 0.3)', text: '红色' },
+    { value: 'rgba(0, 255, 0, 0.3)', text: '绿色' },
+    { value: 'rgba(0, 0, 255, 0.3)', text: '蓝色' },
+  ]
+
   const backgroundSections = [1, 2, 3, 4, 5, 6]
   const logoIndexes = [1, 2, 3]
   const solidColors1 = ['#ff0000', '#00ff00', '#ff0000', '#00ff00', '#ff0000', '#00ff00']
@@ -139,13 +148,13 @@
     borderWidthValue.value = event.detail.value
   }
 
-  const updateBackgroundColor = (event : UniRadioGroupChangeEvent) => {
-    backgroundColor.value = event.detail.value
-    if (event.detail.value == 'rgba(255, 0, 0, 0.3)') {
+  const updateBackgroundColor = (value : string) => {
+    backgroundColor.value = value
+    if (value == 'rgba(255, 0, 0, 0.3)') {
       colorLabel.value = '红色'
-    } else if (event.detail.value == 'rgba(0, 255, 0, 0.3)') {
+    } else if (value == 'rgba(0, 255, 0, 0.3)') {
       colorLabel.value = '绿色'
-    } else if (event.detail.value == 'rgba(0, 0, 255, 0.3)') {
+    } else if (value == 'rgba(0, 0, 255, 0.3)') {
       colorLabel.value = '蓝色'
     } else {
       colorLabel.value = '白色'
@@ -154,10 +163,6 @@
 </script>
 
 <style>
-.page-root {
-  flex: 1;
-}
-
 .control-panel {
   padding: 20px;
 }
@@ -165,10 +170,6 @@
 .scroll-panel {
   flex: 1;
   position: relative;
-}
-
-.content-scroll-view {
-  flex: 1;
 }
 
 .background-content {
@@ -218,10 +219,6 @@
   color: #1a1a1a;
 }
 
-.demo-label-text {
-  color: #1a1a1a;
-}
-
 .glass-box {
   width: 100px;
   height: 100px;
@@ -249,20 +246,5 @@
   color: var(--text-color, #1a1a1a);
 }
 
-.control-radio {
-  color: var(--text-color, #1a1a1a);
-}
 
-.sample-line {
-  color: var(--text-color, #333333);
-}
-
-.control-wrapper {
-  flex: 1;
-}
-
-.radio-group {
-  flex-direction: row;
-  justify-content: space-around;
-}
 </style>

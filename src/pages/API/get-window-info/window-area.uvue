@@ -1,28 +1,27 @@
 <template>
-  <view style="flex:1;">
-    <view id="statusBar" class="statusBar" v-if="statusBarArea.width > 0 && statusBarArea.height > 0"
+    <view id="statusBar" class="pos-absolute border-style-solid border-color-f00 border-width-4" v-if="statusBarArea.width > 0 && statusBarArea.height > 0"
       :style="{'width': statusBarArea.width,'height': statusBarArea.height}">
     </view>
-    <view id="cutoutArea" class="cutoutArea" v-if="cutoutArea.length > 0" v-for="(item, _) in cutoutArea"
+    <view id="cutoutArea" class="pos-absolute border-style-solid cutoutArea border-width-4" v-if="cutoutArea.length > 0" v-for="(item, _) in cutoutArea"
       :style="{'top': item.top,'left': item.left,'width': item.width,'height': item.height}"></view>
-    <view id="safeArea" class="safeArea"
+    <view id="safeArea" class="pos-absolute border-style-solid safeArea border-width-4"
       :style="{'top': safeArea.top,'left': safeArea.left,'width': safeArea.width,'height': safeArea.height}"></view>
-    <view id="bottomNavigationIndicator" class="bottomNavigationIndicator"
+    <view id="bottomNavigationIndicator" class="pos-absolute bottom-0 border-style-solid bottomNavigationIndicator border-width-4"
       v-if="bottomNavigationIndicatorArea.width > 0 && bottomNavigationIndicatorArea.height > 0"
       :style="{'width': bottomNavigationIndicatorArea.width,'height': bottomNavigationIndicatorArea.height}"></view>
-    <view style="flex: 1;justify-content: center;align-items: center;">
-      <view v-if="statusBarArea.width > 0 && statusBarArea.height > 0" style="margin: 5px 0;">
-        <text style="color: red;">系统状态栏区域</text>
+    <view class="flex-1 justify-center items-center">
+      <view v-if="statusBarArea.width > 0 && statusBarArea.height > 0" class="m-5-0">
+        <text class="u-color-red">系统状态栏区域</text>
       </view>
-      <view v-if="cutoutArea.length > 0" style="margin: 5px 0;">
+      <view v-if="cutoutArea.length > 0" class="m-5-0">
         <text style="color: orange;">摄像头区域</text>
       </view>
-      <view style="margin: 5px 0;">
-        <text style="color: green;">安全区域</text>
+      <view class="m-5-0">
+        <text class="color-008000">安全区域</text>
       </view>
       <view v-if="bottomNavigationIndicatorArea.width > 0 && bottomNavigationIndicatorArea.height > 0"
-        style="margin: 5px 0;">
-        <text style="color: blue;">系统导航栏区域</text>
+        class="m-5-0">
+        <text class="color-00f">系统导航栏区域</text>
       </view>
       <!-- <view style="flex-direction: row;align-items: center;margin: 5px 0">
         <text>显示系统状态栏</text>
@@ -33,7 +32,6 @@
         <switch :checked="isBottomNavigationIndicatorShow" @change="bottomNavigationIndicatorChange"></switch>
       </view> -->
     </view>
-  </view>
 </template>
 
 <script setup lang="ts">
@@ -118,32 +116,15 @@
 </script>
 
 <style>
-  .statusBar {
-    position: absolute;
-    border-style: solid;
-    border-color: red;
-    border-width: 4px;
-  }
-
   .cutoutArea {
-    position: absolute;
-    border-style: solid;
     border-color: orange;
-    border-width: 4px;
   }
 
   .safeArea {
-    position: absolute;
-    border-style: solid;
     border-color: green;
-    border-width: 4px;
   }
 
   .bottomNavigationIndicator {
-    position: absolute;
-    bottom: 0;
-    border-style: solid;
     border-color: blue;
-    border-width: 4px;
   }
 </style>

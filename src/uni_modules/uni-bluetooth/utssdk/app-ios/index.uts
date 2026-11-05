@@ -1,0 +1,675 @@
+import {
+	BluetoothAdapterStateChangeCallback,
+	BluetoothAdapterStateChangeResult,
+	BluetoothDevice,
+	BluetoothDeviceFoundCallback,
+	BluetoothDeviceFoundResult,
+	ConnectedBluetoothDevice,
+	BLECharacteristic,
+	BLECharacteristicValueChangeResult,
+	BLECharacteristicValueChangeCallback,
+	BLEConnectionStateChangeResult,
+	BLEConnectionStateChangeCallback,
+	BLEMTUChangeCallback,
+	BLEOperationSuccess,
+	BLEService,
+	CloseBluetoothAdapter,
+	CloseBluetoothAdapterOptions,
+	CloseBluetoothAdapterSuccess,
+	CloseBLEConnection,
+	CloseBLEConnectionOptions,
+	CreateBLEConnection,
+	CreateBLEConnectionOptions,
+	GetBLEDeviceCharacteristics,
+	GetBLEDeviceCharacteristicsOptions,
+	GetBLEDeviceCharacteristicsSuccess,
+	GetBLEDeviceRSSI,
+	GetBLEDeviceRSSIOptions,
+	GetBLEDeviceRSSISuccess,
+	GetBLEDeviceServices,
+	GetBLEDeviceServicesOptions,
+	GetBLEDeviceServicesSuccess,
+	GetBLEMTU,
+	GetBLEMTUOptions,
+	GetBLEMTUSuccess,
+	GetBluetoothAdapterState,
+	GetBluetoothAdapterStateOptions,
+	GetBluetoothAdapterStateSuccess,
+	GetBluetoothDevices,
+	GetBluetoothDevicesOptions,
+	GetBluetoothDevicesSuccess,
+	GetConnectedBluetoothDevices,
+	GetConnectedBluetoothDevicesOptions,
+	GetConnectedBluetoothDevicesSuccess,
+	NotifyBLECharacteristicValueChange,
+	NotifyBLECharacteristicValueChangeOptions,
+	OffBLECharacteristicValueChange,
+	OffBLEConnectionStateChange,
+	OffBLEMTUChange,
+	OffBluetoothAdapterStateChange,
+	OffBluetoothDeviceFound,
+	OnBLECharacteristicValueChange,
+	OnBLEConnectionStateChange,
+	OnBLEMTUChange,
+	OnBluetoothAdapterStateChange,
+	OnBluetoothDeviceFound,
+	OpenBluetoothAdapter,
+	OpenBluetoothAdapterOptions,
+	OpenBluetoothAdapterSuccess,
+	ReadBLECharacteristicValue,
+	ReadBLECharacteristicValueOptions,
+	SetBLEMTU,
+	SetBLEMTUOptions,
+	StartBluetoothDevicesDiscovery,
+	StartBluetoothDevicesDiscoveryOptions,
+	StartBluetoothDevicesDiscoverySuccess,
+	StopBluetoothDevicesDiscovery,
+	StopBluetoothDevicesDiscoveryOptions,
+	StopBluetoothDevicesDiscoverySuccess,
+	WriteBLECharacteristicValue,
+	WriteBLECharacteristicValueOptions
+} from '../interface.uts'
+import { UniBluetoothErrorCode } from '../interface.uts'
+import { BluetoothApiName, BluetoothFailImpl } from '../unierror.uts'
+
+// Keep adapter-state error mapping in the UTS layer so callers can branch on errCode.
+@UTSiOS.keyword("private")
+function createIOSBluetoothFail(
+	apiName : BluetoothApiName,
+	errCode : UniBluetoothErrorCode,
+	state : number | null = null,
+	reason : string | null = null
+) : BluetoothFailImpl {
+	if (state == null && reason == null) {
+		return new BluetoothFailImpl(apiName, errCode)
+	}
+
+	const stateValue = state == null ? 0 : state!
+	const reasonValue = reason == null ? 'unknown' : reason!
+	const cause = new SourceError(`CoreBluetooth state: ${stateValue}, reason: ${reasonValue}`)
+	cause.subject = 'CoreBluetooth'
+	cause.code = stateValue
+	const fail = new BluetoothFailImpl(apiName, errCode, cause)
+	fail.data = { state: stateValue, reason: reasonValue }
+	return fail
+}
+
+@UTSiOS.keyword("private")
+function createOpenBluetoothAdapterFail(
+	errCode : UniBluetoothErrorCode,
+	state : number | null = null,
+	reason : string | null = null
+) : BluetoothFailImpl {
+	return createIOSBluetoothFail('openBluetoothAdapter', errCode, state, reason)
+}
+
+@UTSiOS.keyword("private")
+function createCloseBluetoothAdapterFail(errCode : 1500101) : BluetoothFailImpl {
+	return createIOSBluetoothFail('closeBluetoothAdapter', errCode)
+}
+
+@UTSiOS.keyword("private")
+class BluetoothAdapterBridgeManager {
+	static shared = new BluetoothAdapterBridgeManager()
+
+	private stateChangeCallbackIndex : number = 0
+	private stateChangeCallbacks : Map<number, BluetoothAdapterStateChangeCallback> = new Map()
+	private nativeStateListenerToken : BluetoothListenerToken | null = null
+
+	open(options : OpenBluetoothAdapterOptions) : void {
+		BluetoothUTSAdapterBridge.shared.openAdapter(success = () : void => {
+			const result : OpenBluetoothAdapterSuccess = {
+				errMsg: 'openBluetoothAdapter:ok'
+			}
+			options.success?.(result)
+			options.complete?.(result)
+		}, failure = (reason : string, state : Int) : void => {
+			const stateCode = Number.from(state)
+			let fail : BluetoothFailImpl
+			if (reason == 'timeout') {
+				fail = createOpenBluetoothAdapterFail(1509010, stateCode, reason)
+			} else if (reason == 'unsupported') {
+				fail = createOpenBluetoothAdapterFail(1500105, stateCode, reason)
+			} else if (reason == 'unauthorized') {
+				fail = createOpenBluetoothAdapterFail(1509602, stateCode, reason)
+			} else if (reason == 'poweredOff') {
+				fail = createOpenBluetoothAdapterFail(1509603, stateCode, reason)
+			} else if (reason == 'resetting') {
+				fail = createOpenBluetoothAdapterFail(1500102, stateCode, reason)
+			} else if (reason == 'unknown') {
+				fail = createOpenBluetoothAdapterFail(1500102, stateCode, reason)
+			} else if (reason == 'cancelled') {
+				fail = createOpenBluetoothAdapterFail(1509000, stateCode, reason)
+			} else {
+				fail = createOpenBluetoothAdapterFail(1500104, stateCode, reason)
+			}
+			options.fail?.(fail)
+			options.complete?.(fail)
+		})
+	}
+
+	close(options : CloseBluetoothAdapterOptions) : void {
+		BluetoothUTSAdapterBridge.shared.closeAdapter(success = () : void => {
+			const result : CloseBluetoothAdapterSuccess = {
+				errMsg: 'closeBluetoothAdapter:ok'
+			}
+			options.success?.(result)
+			options.complete?.(result)
+		}, notInitialized = () : void => {
+			const fail = createCloseBluetoothAdapterFail(1500101)
+			options.fail?.(fail)
+			options.complete?.(fail)
+		})
+	}
+
+	addStateChangeCallback(callback : BluetoothAdapterStateChangeCallback) : number {
+		this.stateChangeCallbackIndex++
+		const id = this.stateChangeCallbackIndex
+		this.stateChangeCallbacks.set(id, callback)
+		this.ensureNativeStateListener()
+		return id
+	}
+
+	removeStateChangeCallback(listener ?: number | BluetoothAdapterStateChangeCallback | null) : void {
+		if (listener != null && typeof listener! == "number") {
+			this.stateChangeCallbacks.delete(listener as number)
+		} else {
+			this.stateChangeCallbacks.clear()
+		}
+		if (this.stateChangeCallbacks.size == 0) {
+			this.removeNativeStateListener()
+		}
+	}
+
+	private ensureNativeStateListener() : void {
+		if (this.nativeStateListenerToken != null) {
+			return
+		}
+		this.nativeStateListenerToken = BluetoothUTSAdapterBridge.shared.addAdapterStateListener((available : boolean, discovering : boolean) : void => {
+			const result : BluetoothAdapterStateChangeResult = {
+				available: available,
+				discovering: discovering
+			}
+			this.stateChangeCallbacks.forEach((callback : BluetoothAdapterStateChangeCallback, _id : number) : void => {
+				callback(result)
+			})
+		})
+	}
+
+	private removeNativeStateListener() : void {
+		if (this.nativeStateListenerToken == null) {
+			return
+		}
+		BluetoothUTSAdapterBridge.shared.removeAdapterStateListener(this.nativeStateListenerToken)
+		this.nativeStateListenerToken = null
+	}
+}
+
+export const openBluetoothAdapter : OpenBluetoothAdapter = function (options : OpenBluetoothAdapterOptions) : void {
+	BluetoothAdapterBridgeManager.shared.open(options)
+}
+
+export const closeBluetoothAdapter : CloseBluetoothAdapter = function (options : CloseBluetoothAdapterOptions) : void {
+	BluetoothAdapterBridgeManager.shared.close(options)
+}
+
+export const onBluetoothAdapterStateChange : OnBluetoothAdapterStateChange = function (callback : BluetoothAdapterStateChangeCallback) : number {
+	return BluetoothAdapterBridgeManager.shared.addStateChangeCallback(callback)
+}
+
+export const offBluetoothAdapterStateChange : OffBluetoothAdapterStateChange = function (listener ?: number | BluetoothAdapterStateChangeCallback | null) : void {
+	BluetoothAdapterBridgeManager.shared.removeStateChangeCallback(listener)
+}
+
+@UTSiOS.keyword("private")
+let bluetoothDeviceFoundIndex : number = 0
+@UTSiOS.keyword("private")
+const bluetoothDeviceFoundCallbacks : Map<number, BluetoothDeviceFoundCallback> = new Map()
+@UTSiOS.keyword("private")
+let nativeDiscoveryListenerToken : BluetoothListenerToken | null = null
+
+@UTSiOS.keyword("private")
+function serviceDataObject(entries : BluetoothUTSServiceDataEntry[]) : UTSJSONObject {
+	const result : UTSJSONObject = {}
+	entries.forEach((entry : BluetoothUTSServiceDataEntry) : void => {
+		result[entry.uuid] = entry.data
+	})
+	return result
+}
+
+@UTSiOS.keyword("private")
+function convertBluetoothDevice(nativeDevice : BluetoothUTSDeviceSnapshot) : BluetoothDevice {
+	const device : BluetoothDevice = {
+		name: nativeDevice.name,
+		deviceId: nativeDevice.deviceId,
+		RSSI: nativeDevice.rssi,
+		advertisData: nativeDevice.advertisData,
+		advertisServiceUUIDs: nativeDevice.advertisServiceUUIDs,
+		localName: nativeDevice.localName,
+		serviceData: serviceDataObject(nativeDevice.serviceData)
+	}
+	if (nativeDevice.connectable != null) {
+		device.connectable = nativeDevice.connectable!
+	}
+	return device
+}
+
+@UTSiOS.keyword("private")
+function convertBluetoothDevices(nativeDevices : BluetoothUTSDeviceSnapshot[]) : BluetoothDevice[] {
+	return nativeDevices.map((nativeDevice : BluetoothUTSDeviceSnapshot) : BluetoothDevice => convertBluetoothDevice(nativeDevice))
+}
+
+@UTSiOS.keyword("private")
+function ensureNativeDiscoveryListener() : void {
+	if (nativeDiscoveryListenerToken != null) {
+		return
+	}
+	nativeDiscoveryListenerToken = BluetoothUTSAdapterBridge.shared.addDiscoveryListener((devices : BluetoothUTSDeviceSnapshot[]) : void => {
+		const result : BluetoothDeviceFoundResult = {
+			devices: convertBluetoothDevices(devices)
+		}
+		bluetoothDeviceFoundCallbacks.forEach((callback : BluetoothDeviceFoundCallback, _id : number) : void => {
+			callback(result)
+		})
+	})
+}
+
+@UTSiOS.keyword("private")
+function removeNativeDiscoveryListener() : void {
+	if (nativeDiscoveryListenerToken == null) {
+		return
+	}
+	BluetoothUTSAdapterBridge.shared.removeDiscoveryListener(nativeDiscoveryListenerToken)
+	nativeDiscoveryListenerToken = null
+}
+
+export const startBluetoothDevicesDiscovery : StartBluetoothDevicesDiscovery = function (options : StartBluetoothDevicesDiscoveryOptions) : void {
+	const serviceFilter = options.services == null ? null : options.services!
+	const duplicateScan = options.allowDuplicatesKey ?? false
+	const reportInterval = options.interval == null ? 0 : options.interval!.toInt()
+	BluetoothUTSAdapterBridge.shared.startDiscovery(services = serviceFilter, allowDuplicates = duplicateScan, intervalMilliseconds = reportInterval, success = () : void => {
+		const result : StartBluetoothDevicesDiscoverySuccess = {
+			errMsg: 'startBluetoothDevicesDiscovery:ok'
+		}
+		options.success?.(result)
+		options.complete?.(result)
+	}, failure = (errorCode : Int, state : Int, reason : string) : void => {
+		const fail = createIOSBluetoothFail('startBluetoothDevicesDiscovery', Number.from(errorCode) as UniBluetoothErrorCode, Number.from(state), reason)
+		options.fail?.(fail)
+		options.complete?.(fail)
+	})
+}
+
+export const stopBluetoothDevicesDiscovery : StopBluetoothDevicesDiscovery = function (options : StopBluetoothDevicesDiscoveryOptions) : void {
+	BluetoothUTSAdapterBridge.shared.stopDiscovery(success = () : void => {
+		const result : StopBluetoothDevicesDiscoverySuccess = {
+			errMsg: 'stopBluetoothDevicesDiscovery:ok'
+		}
+		options.success?.(result)
+		options.complete?.(result)
+	}, failure = (errorCode : Int, state : Int, reason : string) : void => {
+		const fail = createIOSBluetoothFail('stopBluetoothDevicesDiscovery', Number.from(errorCode) as UniBluetoothErrorCode, Number.from(state), reason)
+		options.fail?.(fail)
+		options.complete?.(fail)
+	})
+}
+
+export const onBluetoothDeviceFound : OnBluetoothDeviceFound = function (listener : BluetoothDeviceFoundCallback) : number {
+	bluetoothDeviceFoundIndex++
+	bluetoothDeviceFoundCallbacks.set(bluetoothDeviceFoundIndex, listener)
+	ensureNativeDiscoveryListener()
+	return bluetoothDeviceFoundIndex
+}
+
+export const offBluetoothDeviceFound : OffBluetoothDeviceFound = function (listener ?: number | BluetoothDeviceFoundCallback | null) : void {
+	if (listener != null && typeof listener! == "number") {
+		bluetoothDeviceFoundCallbacks.delete(listener as number)
+	} else {
+		bluetoothDeviceFoundCallbacks.clear()
+	}
+	if (bluetoothDeviceFoundCallbacks.size == 0) {
+		removeNativeDiscoveryListener()
+	}
+}
+
+export const getBluetoothDevices : GetBluetoothDevices = function (options : GetBluetoothDevicesOptions) : void {
+	BluetoothUTSAdapterBridge.shared.getDiscoveredDevices(success = (devices : BluetoothUTSDeviceSnapshot[]) : void => {
+		const result : GetBluetoothDevicesSuccess = {
+			errMsg: 'getBluetoothDevices:ok',
+			devices: convertBluetoothDevices(devices)
+		}
+		options.success?.(result)
+		options.complete?.(result)
+	}, failure = (errorCode : Int, state : Int, reason : string) : void => {
+		const fail = createIOSBluetoothFail('getBluetoothDevices', Number.from(errorCode) as UniBluetoothErrorCode, Number.from(state), reason)
+		options.fail?.(fail)
+		options.complete?.(fail)
+	})
+}
+
+export const getBluetoothAdapterState : GetBluetoothAdapterState = function (options : GetBluetoothAdapterStateOptions) : void {
+	BluetoothUTSAdapterBridge.shared.getAdapterState(success = (available : boolean, discovering : boolean) : void => {
+		const result : GetBluetoothAdapterStateSuccess = {
+			errMsg: 'getBluetoothAdapterState:ok',
+			available: available,
+			discovering: discovering
+		}
+		options.success?.(result)
+		options.complete?.(result)
+	}, failure = (errorCode : Int, state : Int, reason : string) : void => {
+		const fail = createIOSBluetoothFail('getBluetoothAdapterState', Number.from(errorCode) as UniBluetoothErrorCode, Number.from(state), reason)
+		options.fail?.(fail)
+		options.complete?.(fail)
+	})
+}
+
+@UTSiOS.keyword("private")
+function convertConnectedBluetoothDevices(nativeDevices : BluetoothUTSConnectedDeviceSnapshot[]) : ConnectedBluetoothDevice[] {
+	return nativeDevices
+		.filter((device : BluetoothUTSConnectedDeviceSnapshot) : boolean => device.state == 'connected')
+		.map((device : BluetoothUTSConnectedDeviceSnapshot) : ConnectedBluetoothDevice => {
+			const result : ConnectedBluetoothDevice = {
+				deviceId: device.deviceId
+			}
+			if (device.name != null) {
+				result.name = device.name
+			}
+			return result
+		})
+}
+
+export const getConnectedBluetoothDevices : GetConnectedBluetoothDevices = function (options : GetConnectedBluetoothDevicesOptions) : void {
+	BluetoothUTSAdapterBridge.shared.getConnectedDevices(services = options.services, success = (devices : BluetoothUTSConnectedDeviceSnapshot[]) : void => {
+		const result : GetConnectedBluetoothDevicesSuccess = {
+			errMsg: 'getConnectedBluetoothDevices:ok',
+			devices: convertConnectedBluetoothDevices(devices)
+		}
+		options.success?.(result)
+		options.complete?.(result)
+	}, failure = (errorCode : Int, state : Int, reason : string) : void => {
+		const fail = createIOSBluetoothFail('getConnectedBluetoothDevices', Number.from(errorCode) as UniBluetoothErrorCode, Number.from(state), reason)
+		options.fail?.(fail)
+		options.complete?.(fail)
+	})
+}
+
+@UTSiOS.keyword("private")
+let bleConnectionStateChangeIndex : number = 0
+
+@UTSiOS.keyword("private")
+const bleConnectionStateChangeCallbacks : Map<number, BLEConnectionStateChangeCallback> = new Map()
+
+@UTSiOS.keyword("private")
+let nativeConnectionListenerToken : BluetoothListenerToken | null = null
+
+@UTSiOS.keyword("private")
+let bleCharacteristicValueChangeIndex : number = 0
+
+@UTSiOS.keyword("private")
+const bleCharacteristicValueChangeCallbacks : Map<number, BLECharacteristicValueChangeCallback> = new Map()
+
+@UTSiOS.keyword("private")
+let nativeCharacteristicValueListenerToken : BluetoothListenerToken | null = null
+
+export const writeBLECharacteristicValue : WriteBLECharacteristicValue = function (options : WriteBLECharacteristicValueOptions) : void {
+	BluetoothUTSAdapterBridge.shared.writeCharacteristicValue(deviceId = options.deviceId, serviceId = options.serviceId, characteristicId = options.characteristicId, value = options.value, writeType = options.writeType, success = () : void => {
+		const result : BLEOperationSuccess = {
+			errMsg: 'writeBLECharacteristicValue:ok'
+		}
+		options.success?.(result)
+		options.complete?.(result)
+	}, failure = (errorCode : Int, state : Int, reason : string) : void => {
+		const fail = createIOSBluetoothFail('writeBLECharacteristicValue', Number.from(errorCode) as UniBluetoothErrorCode, Number.from(state), reason)
+		options.fail?.(fail)
+		options.complete?.(fail)
+	})
+}
+
+export const setBLEMTU : SetBLEMTU = function (options : SetBLEMTUOptions) : void {
+	// iOS 未提供 ATT MTU 设置接口。保留此 UTS 兼容 API，
+	// 以便在不调用原生桥接的情况下报告该能力不受支持。
+	const fail = createIOSBluetoothFail('setBLEMTU', 1500105)
+	options.fail?.(fail)
+	options.complete?.(fail)
+}
+
+export const readBLECharacteristicValue : ReadBLECharacteristicValue = function (options : ReadBLECharacteristicValueOptions) : void {
+	BluetoothUTSAdapterBridge.shared.readCharacteristicValue(deviceId = options.deviceId, serviceId = options.serviceId, characteristicId = options.characteristicId, success = () : void => {
+		const result : BLEOperationSuccess = {
+			errMsg: 'readBLECharacteristicValue:ok'
+		}
+		options.success?.(result)
+		options.complete?.(result)
+	}, failure = (errorCode : Int, state : Int, reason : string) : void => {
+		const fail = createIOSBluetoothFail('readBLECharacteristicValue', Number.from(errorCode) as UniBluetoothErrorCode, Number.from(state), reason)
+		options.fail?.(fail)
+		options.complete?.(fail)
+	})
+}
+
+export const onBLEMTUChange : OnBLEMTUChange = function (_listener : BLEMTUChangeCallback) : number {
+	return -1
+}
+
+export const onBLEConnectionStateChange : OnBLEConnectionStateChange = function (listener : BLEConnectionStateChangeCallback) : number {
+	bleConnectionStateChangeIndex++
+	bleConnectionStateChangeCallbacks.set(bleConnectionStateChangeIndex, listener)
+	ensureNativeConnectionListener()
+	return bleConnectionStateChangeIndex
+}
+
+export const onBLECharacteristicValueChange : OnBLECharacteristicValueChange = function (listener : BLECharacteristicValueChangeCallback) : number {
+	bleCharacteristicValueChangeIndex++
+	bleCharacteristicValueChangeCallbacks.set(bleCharacteristicValueChangeIndex, listener)
+	ensureNativeCharacteristicValueListener()
+	return bleCharacteristicValueChangeIndex
+}
+
+export const offBLEMTUChange : OffBLEMTUChange = function (_listener ?: number | BLEMTUChangeCallback | null) : void {
+}
+
+export const offBLEConnectionStateChange : OffBLEConnectionStateChange = function (listener ?: number | BLEConnectionStateChangeCallback | null) : void {
+	if (listener != null && typeof listener! == "number") {
+		bleConnectionStateChangeCallbacks.delete(listener as number)
+	} else {
+		bleConnectionStateChangeCallbacks.clear()
+	}
+	if (bleConnectionStateChangeCallbacks.size == 0) {
+		removeNativeConnectionListener()
+	}
+}
+
+export const offBLECharacteristicValueChange : OffBLECharacteristicValueChange = function (listener ?: number | BLECharacteristicValueChangeCallback | null) : void {
+	if (listener != null && typeof listener! == "number") {
+		bleCharacteristicValueChangeCallbacks.delete(listener as number)
+	} else {
+		bleCharacteristicValueChangeCallbacks.clear()
+	}
+	if (bleCharacteristicValueChangeCallbacks.size == 0) {
+		removeNativeCharacteristicValueListener()
+	}
+}
+
+export const notifyBLECharacteristicValueChange : NotifyBLECharacteristicValueChange = function (options : NotifyBLECharacteristicValueChangeOptions) : void {
+	BluetoothUTSAdapterBridge.shared.notifyCharacteristicValueChange(deviceId = options.deviceId, serviceId = options.serviceId, characteristicId = options.characteristicId, state = options.state, type = options.type, success = () : void => {
+		const result : BLEOperationSuccess = {
+			errMsg: 'notifyBLECharacteristicValueChange:ok'
+		}
+		options.success?.(result)
+		options.complete?.(result)
+	}, failure = (errorCode : Int, state : Int, reason : string) : void => {
+		const fail = createIOSBluetoothFail('notifyBLECharacteristicValueChange', Number.from(errorCode) as UniBluetoothErrorCode, Number.from(state), reason)
+		options.fail?.(fail)
+		options.complete?.(fail)
+	})
+}
+
+export const getBLEMTU : GetBLEMTU = function (options : GetBLEMTUOptions) : void {
+	BluetoothUTSAdapterBridge.shared.getMTU(deviceId = options.deviceId, writeType = options.writeType, success = (mtu : Int) : void => {
+		const result : GetBLEMTUSuccess = {
+			errMsg: 'getBLEMTU:ok',
+			mtu: Number.from(mtu)
+		}
+		options.success?.(result)
+		options.complete?.(result)
+	}, failure = (errorCode : Int, state : Int, reason : string) : void => {
+		const fail = createIOSBluetoothFail('getBLEMTU', Number.from(errorCode) as UniBluetoothErrorCode, Number.from(state), reason)
+		options.fail?.(fail)
+		options.complete?.(fail)
+	})
+}
+
+export const getBLEDeviceServices : GetBLEDeviceServices = function (options : GetBLEDeviceServicesOptions) : void {
+	BluetoothUTSAdapterBridge.shared.getDeviceServices(deviceId = options.deviceId, success = (services : BluetoothUTSServiceSnapshot[]) : void => {
+		const result : GetBLEDeviceServicesSuccess = {
+			errMsg: 'getBLEDeviceServices:ok',
+			services: services.map((service : BluetoothUTSServiceSnapshot) : BLEService => {
+				return {
+					uuid: service.uuid,
+					isPrimary: service.isPrimary
+				}
+			})
+		}
+		options.success?.(result)
+		options.complete?.(result)
+	}, failure = (errorCode : Int, state : Int, reason : string) : void => {
+		const fail = createIOSBluetoothFail('getBLEDeviceServices', Number.from(errorCode) as UniBluetoothErrorCode, Number.from(state), reason)
+		options.fail?.(fail)
+		options.complete?.(fail)
+	})
+}
+
+export const getBLEDeviceRSSI : GetBLEDeviceRSSI = function (options : GetBLEDeviceRSSIOptions) : void {
+	BluetoothUTSAdapterBridge.shared.getDeviceRSSI(deviceId = options.deviceId, success = (rssi : Int) : void => {
+		const result : GetBLEDeviceRSSISuccess = {
+			errMsg: 'getBLEDeviceRSSI:ok',
+			RSSI: Number.from(rssi)
+		}
+		options.success?.(result)
+		options.complete?.(result)
+	}, failure = (errorCode : Int, state : Int, reason : string) : void => {
+		const fail = createIOSBluetoothFail('getBLEDeviceRSSI', Number.from(errorCode) as UniBluetoothErrorCode, Number.from(state), reason)
+		options.fail?.(fail)
+		options.complete?.(fail)
+	})
+}
+
+export const getBLEDeviceCharacteristics : GetBLEDeviceCharacteristics = function (options : GetBLEDeviceCharacteristicsOptions) : void {
+	BluetoothUTSAdapterBridge.shared.getDeviceCharacteristics(deviceId = options.deviceId, serviceId = options.serviceId, success = (characteristics : BluetoothUTSCharacteristicSnapshot[]) : void => {
+		const result : GetBLEDeviceCharacteristicsSuccess = {
+			errMsg: 'getBLEDeviceCharacteristics:ok',
+			characteristics: characteristics.map((characteristic : BluetoothUTSCharacteristicSnapshot) : BLECharacteristic => {
+				return {
+					uuid: characteristic.uuid,
+					properties: {
+						read: characteristic.read,
+						write: characteristic.write,
+						notify: characteristic.notify,
+						indicate: characteristic.indicate,
+						writeNoResponse: characteristic.writeNoResponse,
+						writeDefault: characteristic.writeDefault
+					}
+				}
+			})
+		}
+		options.success?.(result)
+		options.complete?.(result)
+	}, failure = (errorCode : Int, state : Int, reason : string) : void => {
+		const fail = createIOSBluetoothFail('getBLEDeviceCharacteristics', Number.from(errorCode) as UniBluetoothErrorCode, Number.from(state), reason)
+		options.fail?.(fail)
+		options.complete?.(fail)
+	})
+}
+
+@UTSiOS.keyword("private")
+function ensureNativeConnectionListener() : void {
+	if (nativeConnectionListenerToken != null) {
+		return
+	}
+	nativeConnectionListenerToken = BluetoothUTSAdapterBridge.shared.addConnectionListener((deviceId : string, state : string) : void => {
+		if (state != 'connected' && state != 'disconnected') {
+			return
+		}
+		const result : BLEConnectionStateChangeResult = {
+			deviceId: deviceId,
+			connected: state == 'connected'
+		}
+		bleConnectionStateChangeCallbacks.forEach((callback : BLEConnectionStateChangeCallback, _id : number) : void => {
+			callback(result)
+		})
+	})
+}
+
+@UTSiOS.keyword("private")
+function removeNativeConnectionListener() : void {
+	if (nativeConnectionListenerToken == null) {
+		return
+	}
+	BluetoothUTSAdapterBridge.shared.removeConnectionListener(nativeConnectionListenerToken)
+	nativeConnectionListenerToken = null
+}
+
+@UTSiOS.keyword("private")
+function ensureNativeCharacteristicValueListener() : void {
+	if (nativeCharacteristicValueListenerToken != null) {
+		return
+	}
+	nativeCharacteristicValueListenerToken = BluetoothUTSAdapterBridge.shared.addCharacteristicValueListener((event : BluetoothUTSCharacteristicValueSnapshot) : void => {
+		const result : BLECharacteristicValueChangeResult = {
+			deviceId: event.deviceId,
+			serviceId: event.serviceId,
+			characteristicId: event.characteristicId,
+			value: event.value
+		}
+		bleCharacteristicValueChangeCallbacks.forEach((callback : BLECharacteristicValueChangeCallback, _id : number) : void => {
+			callback(result)
+		})
+	})
+}
+
+@UTSiOS.keyword("private")
+function removeNativeCharacteristicValueListener() : void {
+	if (nativeCharacteristicValueListenerToken == null) {
+		return
+	}
+	BluetoothUTSAdapterBridge.shared.removeCharacteristicValueListener(nativeCharacteristicValueListenerToken)
+	nativeCharacteristicValueListenerToken = null
+}
+
+export const createBLEConnection : CreateBLEConnection = function (options : CreateBLEConnectionOptions) : void {
+	const connectionTimeoutMilliseconds : Int | null = options.timeout == null ? null : options.timeout!.toInt()
+	BluetoothUTSAdapterBridge.shared.connect(deviceId = options.deviceId, timeoutMilliseconds = connectionTimeoutMilliseconds, success = () : void => {
+		const result : BLEOperationSuccess = {
+			errMsg: 'createBLEConnection:ok'
+		}
+		options.success?.(result)
+		options.complete?.(result)
+	}, failure = (errorCode : Int, state : Int, reason : string) : void => {
+		// 对已连接设备重复连接按幂等成功处理（与微信一致，实测 iOS 亦为成功）。
+		if (errorCode == 1509007) {
+			const result : BLEOperationSuccess = {
+				errMsg: 'createBLEConnection:ok'
+			}
+			options.success?.(result)
+			options.complete?.(result)
+			return
+		}
+		const fail = createIOSBluetoothFail('createBLEConnection', Number.from(errorCode) as UniBluetoothErrorCode, Number.from(state), reason)
+		options.fail?.(fail)
+		options.complete?.(fail)
+	})
+}
+
+export const closeBLEConnection : CloseBLEConnection = function (options : CloseBLEConnectionOptions) : void {
+	BluetoothUTSAdapterBridge.shared.disconnect(deviceId = options.deviceId, success = () : void => {
+		const result : BLEOperationSuccess = {
+			errMsg: 'closeBLEConnection:ok'
+		}
+		options.success?.(result)
+		options.complete?.(result)
+	}, failure = (errorCode : Int, state : Int, reason : string) : void => {
+		const fail = createIOSBluetoothFail('closeBLEConnection', Number.from(errorCode) as UniBluetoothErrorCode, Number.from(state), reason)
+		options.fail?.(fail)
+		options.complete?.(fail)
+	})
+}

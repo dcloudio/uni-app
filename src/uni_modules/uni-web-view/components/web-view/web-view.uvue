@@ -33,7 +33,7 @@
   </view>
   <!-- #endif -->
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
   import {
     UniWebViewMessageEventDetail,
     UniWebViewMessageEvent,
@@ -47,20 +47,20 @@
     UniWebViewContentHeightChangeEvent,
     UniWebViewErrorEvent,
     UniWebViewErrorEventDetail
-  } from './global.uts'
+  } from './global.ts'
 
   // #ifdef APP-IOS
   import {
     UniWebViewDidTerminateEventDetail,
     UniWebViewDidTerminateEvent,
-  } from './global.uts'
+  } from './global.ts'
   // #endif
 
   // #ifdef APP-IOS || APP-ANDROID
   import {
     UniWebViewLoadedEventDetail,
     UniWebViewLoadedEvent
-  } from './global.uts'
+  } from './global.ts'
   // #endif
 
   import {

@@ -31,14 +31,14 @@
 				<view style="width: 20px;height: 16px;background-color: green;"></view>
 			</uni-badge-view>
 		</view>
-
+		
 		<!-- 不包裹内容 -->
 		<view style="margin-bottom: 10px;">
 			<text class="label" style="margin-bottom: 10px;">不包裹内容的圆点：</text>
 			<uni-badge-view text="">
 			</uni-badge-view>
 		</view>
-
+		
 		<view style="margin-bottom: 10px;">
 			<text class="label" style="margin-bottom: 10px;">不包裹内容的文字：</text>
 			<uni-badge-view text="1" badge-style="align-self:flex-start;"/> <!-- 在flex方向为竖时，默认横向拉伸，需要设flex-start避免 -->
@@ -63,7 +63,7 @@
 				</view>
 			</uni-badge-view>
 		</view>
-
+		
 		<uni-badge-view text="99+" >
 			<view style="width: 10px; height: 20px; background-color: green;"></view>
 		</uni-badge-view>
@@ -126,7 +126,7 @@
 				</view>
 			</uni-badge-view>
 		</view>
-
+		
 		<view style="margin-bottom: 10px;">
 			<text class="label" style="margin-bottom: 10px;">按钮中badge文字：</text>
 			<!-- <button size="mini">按钮<uni-badge-view text="9"/></button> -->
@@ -134,7 +134,7 @@
 			<view	style="width: 150px; height: 30px; background-color: lightgray; border-radius: 4px; align-items: center; justify-content: center;flex-direction: row;">
 				<text>按钮&nbsp;</text>
 				<uni-badge-view text="9"/>
-				<!--
+				<!-- 
 				 上面加style="padding-top: 5px;" 会导致vue报错：
 				 [Vue warn]: Extraneous non-props attributes (style) were passed to component but could not be automatically inherited because component renders fragment or text root nodes. \n at <UniBadgeView>\nat <View>\nat <View>\nat <View>\nat <Badge>\nat <AsyncComponentWrapper>\nat <PageBody>\nat <Page>\nat <Anonymous>\nat <Layout>\nat <App>
 				 app不报错。app也应该报错。
@@ -142,7 +142,7 @@
 				 -->
 			</view>
 		</view>
-
+		
 		<view style="margin-bottom: 10px;">
 			<text class="label" style="margin-bottom: 10px;">按钮中badge红点：</text>
 			<view	style="width: 150px; height: 30px; background-color: lightgray; border-radius: 4px; align-items: center; justify-content: center;flex-direction: row;">
@@ -197,15 +197,14 @@ defineExpose({
 		width: 200px;
 		height: 24px;
 		padding-left: 2px;
-		color: #333333;
-		/* color: var(--text-color, #333333); */
+		color: var(--text-color, #333333);
 	}
 
 	.custom-badge-text {
 		background-color: #28a745;
 		color: black;
 	}
-
+	
 	.custom-badge-dot {
 		background-color: #28a745;
 		width: 16px;

@@ -1,15 +1,19 @@
 <template>
-  <view style="flex-direction: row;">
-    <view @click="onClickWrong" class="btn">
-      <text class="btn-text">点击测试，错误写法</text>
+  <view class="flex-dir-row">
+    <view @click="onClickWrong" class="p-5">
+      <text class="fs-12 color-ccc radius-3 border-1-solid-ccc">点击测试，错误写法</text>
     </view>
-    <view @click="onClickRight" class="btn">
-      <text class="btn-text">点击测试，正确写法</text>
+    <view @click="onClickRight" class="p-5">
+      <text class="fs-12 color-ccc radius-3 border-1-solid-ccc">点击测试，正确写法</text>
     </view>
   </view>
 </template>
 
 <script setup lang="ts">
+  defineOptions({
+    styleIsolation: 'app'
+  })
+
   const props = defineProps({
     name: {
       type: String,
@@ -25,16 +29,3 @@
     console.log('current name is ' + props.name)
   }
 </script>
-
-<style>
-  .btn {
-    padding: 5px;
-  }
-
-  .btn-text {
-    font-size: 12px;
-    color: #ccc;
-    border-radius: 3px;
-    border: solid 1px #ccc;
-  }
-</style>

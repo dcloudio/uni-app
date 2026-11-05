@@ -1,24 +1,24 @@
 <template>
-  <scroll-view class="page">
+  <scroll-view class="flex-1 page">
     <page-head title="uni统计 2.0"></page-head>
-    <view class="status-panel">
-      <text class="status-title">最近操作</text>
-      <text class="status-content">{{ state.message }}</text>
+    <view class="u-p-16 radius-8 status-panel">
+      <text class="d-flex mb-12 fs-17 fw-600 status-title">最近操作</text>
+      <text class="fs-14 status-content">{{ state.message }}</text>
     </view>
 
-    <view class="section">
-      <text class="section-title">自定义事件</text>
-      <button class="normal-button" @click="reportObject">对象参数事件</button>
-      <button class="normal-button" @click="reportString">字符串参数事件</button>
-      <button class="normal-button" @click="reportEmpty">空参数事件</button>
-      <button class="normal-button" @click="reportPair">连续上报两个同名事件</button>
+    <view class="u-p-16 radius-8 section">
+      <text class="d-flex mb-12 fs-17 fw-600 section-title">自定义事件</text>
+      <button class="w-full mt-10" @click="reportObject">对象参数事件</button>
+      <button class="w-full mt-10" @click="reportString">字符串参数事件</button>
+      <button class="w-full mt-10" @click="reportEmpty">空参数事件</button>
+      <button class="w-full mt-10" @click="reportPair">连续上报两个同名事件</button>
     </view>
 
-    <view class="section">
-      <text class="section-title">上下文与参数</text>
-      <button class="normal-button" @click="reportTitle">标题上下文</button>
-      <button class="normal-button" @click="reportBaseInfo">基础信息快照</button>
-      <button class="normal-button" @click="goBack">返回上一页</button>
+    <view class="u-p-16 radius-8 section">
+      <text class="d-flex mb-12 fs-17 fw-600 section-title">上下文与参数</text>
+      <button class="w-full mt-10" @click="reportTitle">标题上下文</button>
+      <button class="w-full mt-10" @click="reportBaseInfo">基础信息快照</button>
+      <button class="w-full mt-10" @click="goBack">返回上一页</button>
     </view>
   </scroll-view>
 </template>
@@ -123,7 +123,6 @@
     --report-surface-background: #ffffff;
     --report-title-color: #202124;
     --report-content-color: #5f6673;
-    flex: 1;
   }
 
   @media (prefers-color-scheme: dark) {
@@ -137,27 +136,15 @@
   .status-panel,
   .section {
     margin: 12px 16px;
-    padding: 16px;
     background-color: var(--report-surface-background, #ffffff);
-    border-radius: 8px;
   }
 
   .status-title,
   .section-title {
-    display: flex;
-    margin-bottom: 12px;
     color: var(--report-title-color, #202124);
-    font-size: 17px;
-    font-weight: 600;
   }
 
   .status-content {
     color: var(--report-content-color, #5f6673);
-    font-size: 14px;
-  }
-
-  .normal-button {
-    width: 100%;
-    margin-top: 10px;
   }
 </style>

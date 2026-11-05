@@ -1,14 +1,14 @@
 <template>
-  <view class="content">
-    <button class="button" @click="pay">支付0.2元</button>
-    <button class="button" @click="transfer" :disabled="disabled">接受0.1元转账</button>
-    <text class="tips" v-if="disabled" style="color: #ff5a5f;">请先支付 0.2 元，才能体验接收转账 0.1 元</text>
+  <view class="d-flex flex-dir-column items-center justify-center p-20">
+    <button class="w-full mb-20 radius-5" @click="pay">支付0.2元</button>
+    <button class="w-full mb-20 radius-5" @click="transfer" :disabled="disabled">接受0.1元转账</button>
+    <text class="fs-14" v-if="disabled" style="color: #ff5a5f;">请先支付 0.2 元，才能体验接收转账 0.1 元</text>
     <!-- #ifdef MP-WEIXIN -->
-    <view v-else><text class="tips" style="color: #42b983;">若已支付 0.2 元，请点击“接受0.1元转账”按钮</text></view>
+    <view v-else><text class="fs-14 color-42b983">若已支付 0.2 元，请点击“接受0.1元转账”按钮</text></view>
     <!-- #endif -->
 
     <!-- #ifndef MP-WEIXIN -->
-    <view v-else><text class="tips" style="color: #42b983;">已支付 0.2 元，请点击“接受0.1元转账”按钮</text></view>
+    <view v-else><text class="fs-14 color-42b983">已支付 0.2 元，请点击“接受0.1元转账”按钮</text></view>
     <!-- #endif -->
   </view>
 </template>
@@ -227,24 +227,3 @@
   })
 
 </script>
-
-<style>
-  .content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-  }
-
-  .button {
-    width: 100%;
-    margin-bottom: 20px;
-    border-radius: 5px;
-  }
-
-  .tips {
-    color: #999;
-    font-size: 14px;
-  }
-</style>

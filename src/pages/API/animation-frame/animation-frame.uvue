@@ -1,12 +1,10 @@
 <template>
-  <view class="page">
     <page-head :title="data.title"></page-head>
     <button @click="startRequestAnimationFrame">requestAnimationFrame</button>
     <button @click="stopRequestAnimationFrame">cancelAnimationFrame</button>
-    <text class="frame-count">FPS: {{data.FPSString}}</text>
-    <text class="frame-count">FrameCount: {{data.testFrameCount}}</text>
-    <text class="tips">提示: 重复点击会忽略重复启动，避免创建多个并行的 requestAnimationFrame 循环</text>
-  </view>
+    <text class="mt-15">FPS: {{data.FPSString}}</text>
+    <text class="mt-15">FrameCount: {{data.testFrameCount}}</text>
+    <text class="fs-12 mt-30 opacity-0_7">提示: 重复点击会忽略重复启动，避免创建多个并行的 requestAnimationFrame 循环</text>
 </template>
 
 <script setup lang="ts">
@@ -89,17 +87,7 @@
 </script>
 
 <style>
-  .page {
-    padding: 15px;
-  }
-
-  .frame-count {
-    margin-top: 15px;
-  }
-
-  .tips {
-    font-size: 12px;
-    margin-top: 30px;
-    opacity: 0.7;
-  }
+page {
+  padding: 15px;
+}
 </style>

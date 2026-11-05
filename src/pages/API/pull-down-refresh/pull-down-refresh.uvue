@@ -1,12 +1,12 @@
 <template>
     <!-- 实际开发中，长列表应该使用list-view -->
-    <view class="refresh-page uni-padding-wrap uni-common-mt">
-      <view class="uni-btn-v">
+    <view class="p-0-15 mt-15">
+      <view class="p-5-0">
         <button id="btn-pull-down-refresh-after-hide-loading" type="primary"
           @click="startPullDownRefreshAfterHideLoading">隐藏 loading 后开始并停止下拉刷新</button>
       </view>
-      <text class="text" v-for="(num,index) in listData" :key="index">list - {{num}}</text>
-      <view v-if="showLoadMore" class="load-more-text">{{loadMoreText}}</view>
+      <text class="w-full bg-list-fff text-center color-text-555 radius-4 text m-6-0 h-52" v-for="(num,index) in listData" :key="index">list - {{num}}</text>
+      <view v-if="showLoadMore" class="color-text-333">{{loadMoreText}}</view>
     </view>
 </template>
 <script setup lang="ts">
@@ -146,17 +146,6 @@
 
 <style>
   .text {
-    margin: 6px 0;
-    width: 100%;
-    background-color: var(--list-background-color, #ffffff);
-    height: 52px;
     line-height: 52px;
-    text-align: center;
-    color: var(--text-color, #555555);
-    border-radius: 4px;
-  }
-
-  .load-more-text {
-    color: var(--text-color, #333333);
   }
 </style>

@@ -1,20 +1,20 @@
 <template>
   <page-head title="loadFontFace-child"></page-head>
-  <view class="uni-padding-wrap">
+  <view class="p-0-15">
     <!-- #ifndef MP-WEIXIN -->
-    <text class="font-size-20">上一页全局加载字体：</text>
-    <text class="font-size-20 line-height-40" style="font-family: UniFontFamily">font-family: uni.ttf</text>
-    <view style="flex-direction: row;">
-      <text style="font-family: UniFontFamily;font-size:20px;">{{uniIcon1}}</text>
-      <text style="margin-left:5px;margin-right: 20px;line-height:22px;">\ue100</text>
-      <text style="font-family: UniFontFamily;font-size:20px;">{{uniIcon2}}</text>
-      <text style="margin-left:5px;line-height:22px;">\ue101</text>
+    <text class="fs-20">上一页全局加载字体：</text>
+    <text class="fs-20 lh-40" style="font-family: UniFontFamily">font-family: uni.ttf</text>
+    <view class="flex-dir-row">
+      <text class="fs-20" style="font-family: UniFontFamily;">{{uniIcon1}}</text>
+      <text class="ml-5 u-mr-20 lh-22">\ue100</text>
+      <text class="fs-20" style="font-family: UniFontFamily;">{{uniIcon2}}</text>
+      <text class="ml-5 lh-22">\ue101</text>
     </view>
     <!-- #endif -->
     <!-- #ifndef APP-HARMONY -->
-    <text class="uni-common-mt font-size-20">上一页非全局加载字体（不生效为正常）：</text>
-    <text class="font-size-20 line-height-40" style="font-family: AlimamaDaoLiTiTTF">font-family: 阿里妈妈刀隶体-ttf</text>
-    <text class="font-size-20 line-height-40" style="font-family: AlimamaDaoLiTiOTF">font-family: 阿里妈妈刀隶体-otf</text>
+    <text class="mt-15 fs-20">上一页非全局加载字体（不生效为正常）：</text>
+    <text class="fs-20 lh-40" style="font-family: AlimamaDaoLiTiTTF">font-family: 阿里妈妈刀隶体-ttf</text>
+    <text class="fs-20 lh-40" style="font-family: AlimamaDaoLiTiOTF">font-family: 阿里妈妈刀隶体-otf</text>
     <!-- #endif -->
     <!-- <text class="item" style="font-family: AlimamaDaoLiTiWOFF"
       >font-family: 阿里妈妈刀隶体-woff</text
@@ -31,13 +31,3 @@
 const uniIcon1 = ref('\ue100')
 const uniIcon2 = ref('\ue101')
 </script>
-
-<style>
-  .font-size-20 {
-    font-size: 20px;
-  }
-
-  .line-height-40 {
-    line-height: 40px;
-  }
-</style>

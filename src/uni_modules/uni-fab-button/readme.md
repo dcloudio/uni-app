@@ -4,11 +4,11 @@
 
 组件的根view默认是一个圆形，蓝色背景（#007AFF），并带有阴影。使用组件时注意组件的父容器要留出阴影的空间，避免被裁剪。
 
-组件的二级view是2个view交叉组成的加号。其中垂直的view是通过transform变换方向实现的。
+非Web端使用2个带flatten属性的view交叉组成加号，在支持拍平的App渲染模式下绘制到父级上。Web端默认使用根view的::before和::after伪元素绘制加号，不创建内部view。其中竖线通过transform旋转90度实现。
 
-组件的属性为 plus-class，它是一个externalClass，用于外部修改组件内部的、组成加号的2个view的样式。
+组件的属性为 plus-class，它是一个externalClass，用于外部修改加号的颜色、尺寸和圆角等样式。Web端传入plus-class时，使用1个内部view绘制横线，并由其::after伪元素继承背景色、尺寸和圆角绘制竖线，兼容现有的自定义样式写法。
 
 组件中加号的默认样式为背景白色、粗细为2px、尺寸为40%。
 
 ### 注意
-- 鸿蒙平台按下fab-button不缩写的问题，需升级到HBuilderX 5.09+解决
+- 鸿蒙平台按下fab-button不缩放的问题，需升级到HBuilderX 5.09+解决

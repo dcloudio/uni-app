@@ -1,21 +1,21 @@
 <template>
-  <view class="page">
-    <text class="title">Uasm 性能测试</text>
+  <view class="u-p-15">
+    <text class="fs-18 fw-bold mb-10">Uasm 性能测试</text>
 
-    <text class="text">uni.loadUasmSync：在 onReady 时同步加载 uasm 模块 uni_modules/test-uasm，加载完成后自动校验 add(1, 2) === 3、concat('uni', '-app') === 'uni-app'。</text>
+    <text class="fs-13 lh-20 mb-6">uni.loadUasmSync：在 onReady 时同步加载 uasm 模块 uni_modules/test-uasm，加载完成后自动校验 add(1, 2) === 3、concat('uni', '-app') === 'uni-app'。</text>
 
-    <button class="btn" @click="test_number">number(a + b) * 1_000_000</button>
-    <text class="text">循环 100 万次调用 2个数字相加(1, 2)，并显示总耗时。</text>
-    <view class="line"></view>
+    <button class="flex-1 mt-15" @click="test_number">number(a + b) * 1_000_000</button>
+    <text class="fs-13 lh-20 mb-6">循环 100 万次调用 2个数字相加(1, 2)，并显示总耗时。</text>
+    <view class="mt-10 mb-10 u-h-1 bg-ccc"></view>
 
-    <button class="btn" @click="test_string">string(a + b) * 1_000_000</button>
-    <text class="text">循环 100 万次调用 2个字符串拼接('uni', '-app')，并显示总耗时。</text>
+    <button class="flex-1 mt-15" @click="test_string">string(a + b) * 1_000_000</button>
+    <text class="fs-13 lh-20 mb-6">循环 100 万次调用 2个字符串拼接('uni', '-app')，并显示总耗时。</text>
 
-    <view class="line"></view>
+    <view class="mt-10 mb-10 u-h-1 bg-ccc"></view>
 
-    <text class="result">{{ result }}</text>
+    <text>{{ result }}</text>
 
-    <text class="error-message">{{ errorMessage }}</text>
+    <text class="u-color-red mt-20">{{ errorMessage }}</text>
   </view>
 </template>
 
@@ -118,38 +118,3 @@
     test_no_error
   })
 </script>
-
-<style>
-  .page {
-    padding: 15px;
-  }
-
-  .title {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 10px;
-  }
-
-  .text {
-    font-size: 13px;
-    line-height: 20px;
-    margin-bottom: 6px;
-  }
-
-  .btn {
-    flex: 1;
-    margin-top: 15px;
-  }
-
-  .line {
-    margin-top: 10px;
-    margin-bottom: 10px;
-    height: 1px;
-    background-color: #ccc;
-  }
-
-  .error-message {
-    color: red;
-    margin-top: 20px;
-  }
-</style>

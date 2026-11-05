@@ -10,7 +10,7 @@
       <text class="text" style="text-shadow: 1rpx 2rpx 4rpx #00f8;">text-shadow: 1rpx 2rpx 4rpx #00f8</text>
       <text class="text" style="text-shadow: 2px 4px #0000ff80;">text-shadow: 2px 4px #0000ff80</text>
 
-      <text class="uni-title-text">【拍平版本】</text>
+      <text class="fs-15 fw-bold color-text-333">【拍平版本】</text>
       <text class="text" style="text-shadow: 1px 1px 2px pink;" flatten>text-shadow: 1px 1px 2px pink</text>
       <!-- <text class="text" style="text-shadow: #fc0 1px 0 10px;" flatten>text-shadow: #fc0 1px 0 10px</text> -->
       <text class="text" style="text-shadow: 5px 5px #558abb;" flatten>text-shadow: 5px 5px #558abb</text>
@@ -21,42 +21,42 @@
       <text class="text" style="text-shadow: 1rpx 2rpx 4rpx #00f8;" flatten>text-shadow: 1rpx 2rpx 4rpx #00f8</text>
       <text class="text" style="text-shadow: 2px 4px #0000ff80;" flatten>text-shadow: 2px 4px #0000ff80</text>
 
-      <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
+      <view class="mt-15">
+        <text class="fs-15 fw-bold color-text-333">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
-      <view class="common-box">
+      <view class="flex-dir-row justify-around">
         <!-- 普通版本 -->
-        <view class="uni-common-mt">
-          <text class="uni-title-text">text-shadow</text>
-          <text class="uni-info">设置值: {{data.textShadow}}</text>
-          <text class="uni-info info-wrap">获取值: {{data.textShadowActual}}</text>
+        <view class="mt-15">
+          <text class="fs-15 fw-bold color-text-333">text-shadow</text>
+          <text class="fs-12 color-999">设置值: {{data.textShadow}}</text>
+          <text class="fs-12 color-999 info-wrap">获取值: {{data.textShadowActual}}</text>
           <view class="test-box">
-            <text ref="textRef" class="text test-text" :style="{ textShadow: data.textShadow }">当前 text-shadow: {{data.textShadow}}</text>
+            <text ref="textRef" class="text" :style="{ textShadow: data.textShadow }">当前 text-shadow: {{data.textShadow}}</text>
           </view>
         </view>
 
         <!-- 拍平版本 -->
-        <view class="uni-common-mt">
-          <text class="uni-title-text">拍平</text>
-          <text class="uni-info">设置值: {{data.textShadow}}</text>
-          <text class="uni-info info-wrap">获取值: {{data.textShadowActualFlat}}</text>
+        <view class="mt-15">
+          <text class="fs-15 fw-bold color-text-333">拍平</text>
+          <text class="fs-12 color-999">设置值: {{data.textShadow}}</text>
+          <text class="fs-12 color-999 info-wrap">获取值: {{data.textShadowActualFlat}}</text>
           <view class="test-box">
-            <text ref="textRefFlat" class="text test-text-flatten" :style="{ textShadow: data.textShadow }" flatten>当前 text-shadow: {{data.textShadow}}</text>
+            <text ref="textRefFlat" class="text" :style="{ textShadow: data.textShadow }" flatten>当前 text-shadow: {{data.textShadow}}</text>
           </view>
         </view>
       </view>
 
-      <view class="uni-common-mt uni-common-mb">
-        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
-        <enum-data :items="textShadowEnum" title="text-shadow 枚举值" @change="radioChangeTextShadow" :compact="true"></enum-data>
+      <view class="mt-15 mb-15">
+        <text class="fs-13 color-tips-0958d9 bg-tips-e6f4ff border-l-4-solid-tips-91caff p-10-12 radius-4 m-10">第一个枚举值，'' (空字符串) - 空值情况</text>
+        <enum-data-checkbox :items="textShadowEnum" title="text-shadow 枚举值" @change="radioChangeTextShadow" :compact="true"></enum-data-checkbox>
         <input-data :defaultValue="data.textShadow" title="text-shadow 自定义值" type="text" @confirm="inputChangeTextShadow"></input-data>
       </view>
     </view>
 </template>
 
 <script setup lang="ts">
-  import { ItemType } from '@/components/enum-data/enum-data-types'
+  import { ItemType } from '@/components/enum-data-checkbox/enum-data-checkbox-types'
 
   const textShadowEnum: ItemType[] = [
     { value: 0, name: '' },
@@ -127,11 +127,6 @@
     height: 50px;
     font-size: 20px;
     text-align: center;
-  }
-
-  .common-box{
-    flex-direction: row;
-    justify-content: space-around;
   }
 
   .test-box {

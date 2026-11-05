@@ -1007,7 +1007,6 @@ export type ShareOptions = {
      *       "unixVer": "x"
      *    },
      *    "harmony": {
-     *      "osVer": "5.0.0 (12)",
      *      "uniVer": "5.0",
      *      "unixVer": "5.0"
      *    }
@@ -1029,7 +1028,6 @@ export type ShareOptions = {
      *       "unixVer": "x"
      *    },
      *    "harmony": {
-     *      "osVer": "5.0.0 (12)",
      *      "uniVer": "5.0",
      *      "unixVer": "5.0"
      *    }
@@ -1051,7 +1049,6 @@ export type ShareOptions = {
      *       "unixVer": "x"
      *    },
      *    "harmony": {
-     *      "osVer": "5.0.0 (12)",
      *      "uniVer": "5.0",
      *      "unixVer": "5.0"
      *    }

@@ -1,18 +1,16 @@
 <template>
-  <view>
     <page-head :title="title"></page-head>
-    <view class="uni-padding-wrap uni-common-mt">
-      <view class="uni-btn-v uni-common-mt">
+    <view class="p-0-15 mt-15">
+      <view class="p-5-0 mt-15">
         <button type="default" @click="verify(false)">一键登录（半屏）</button>
       </view>
-      <view class="uni-btn-v uni-common-mt">
+      <view class="p-5-0 mt-15">
         <button type="default" @click="verify(true)">一键登录（全屏）</button>
       </view>
-      <view class="uni-btn-v uni-common-mt">
+      <view class="p-5-0 mt-15">
         <button type="default" @click="customLoginIn()">一键登录（自定义页面）</button>
       </view>
     </view>
-  </view>
 </template>
 
 <script setup lang="ts">

@@ -1,5 +1,4 @@
 <template>
-  <view style="flex: 1">
     <button @click="addInterceptor">添加路由拦截器</button>
     <button @click="removeInterceptor">移除路由拦截器</button>
     <text>点击下方按钮{{ msg }}</text>
@@ -13,7 +12,6 @@
     <button @click="addSwitchTabInterceptor">添加switchTab拦截器</button>
     <button @click="removeSwitchTabInterceptor">移除switchTab拦截器</button>
     <button @click="switchTab">switchTab API</button>
-  </view>
 </template>
 
 <script setup lang="ts">

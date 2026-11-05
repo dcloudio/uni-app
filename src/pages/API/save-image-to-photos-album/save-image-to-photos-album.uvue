@@ -1,22 +1,36 @@
 <template>
     <page-head :title="title"></page-head>
-    <view class="uni-padding-wrap">
-      <image class="image" src="/static/test-image/logo.png"></image>
-      <button class="margin-top-10" type="primary" @click="saveImage">将图片保存到手机相册</button>
+    <view class="p-0-15">
+      <image class="self-center image" src="/static/test-image/logo.png"></image>
+      <button class="mt-10" type="primary" @click="saveImage">将图片保存到手机相册</button>
+      <button class="mt-10" type="primary" @click="saveImageFromCachePath">将缓存文件保存到手机相册</button>
     </view>
 </template>
 
 <script setup lang="ts">
   const title = ref("saveImageToPhotosAlbum")
 
+  // 64x64 红色 PNG，用于模拟 canvas 2d 生成的图片内容
+  const DEMO_PNG_BASE64 = 'iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAYklEQVR42u3QMREAAAgAoe9fWnN4MlCApuazBAgQIECAAAECBAgQIECAAAECBAgQIECAAAECBAgQIECAAAECBAgQIECAAAECBAgQIECAAAECBAgQIECAAAECBAgQIECAgPsWQ4jh0jwfLk0AAAAASUVORK5CYII='
+
   type TestStateType = {
     success : boolean
+    cacheFilePath : string
+    cacheSaveSuccess : boolean
+    cacheSaveError : string
+  }
+
+  function createTestState() : TestStateType {
+    return {
+      success: false,
+      cacheFilePath: '',
+      cacheSaveSuccess: false,
+      cacheSaveError: ''
+    }
   }
 
   // 使用reactive避免ref数据在自动化测试中无法访问
-  const testState = reactive({
-    success: false
-  } as TestStateType)
+  const testState = reactive(createTestState())
 
   const saveImage = () => {
     uni.saveImageToPhotosAlbum({
@@ -41,21 +55,49 @@
     })
   }
 
+  // 模拟业务场景：先用 FileSystemManager 在 uni.env.CACHE_PATH 下写出图片，
+  // （HarmonyOS 上 CACHE_PATH 为 unifile://cache/ 协议路径），再保存该路径到相册
+  const saveImageFromCachePath = () => {
+    // #ifdef APP
+    const cachePath = uni.env.CACHE_PATH
+    const filePath = cachePath.endsWith('/') ? cachePath + 'save-image-to-photos-album-demo.png' : cachePath + '/save-image-to-photos-album-demo.png'
+    testState.cacheFilePath = filePath
+    testState.cacheSaveSuccess = false
+    testState.cacheSaveError = ''
+    uni.getFileSystemManager().writeFile({
+      filePath,
+      data: uni.base64ToArrayBuffer(DEMO_PNG_BASE64),
+      success: (_ : FileManagerSuccessResult) => {
+        uni.saveImageToPhotosAlbum({
+          filePath,
+          success: (_ : SaveImageToPhotosAlbumSuccess) => {
+            testState.cacheSaveSuccess = true
+          },
+          fail: (err) => {
+            testState.cacheSaveError = JSON.stringify(err)
+            console.log("saveImageToPhotosAlbum(cachePath) fail", testState.cacheSaveError)
+          }
+        })
+      },
+      fail: (res : IUniError) => {
+        testState.cacheSaveError = JSON.stringify(res)
+        console.log("writeFile(cachePath) fail", testState.cacheSaveError)
+      }
+    })
+    // #endif
+  }
+
   defineExpose({
     testState,
-    saveImage
+    saveImage,
+    saveImageFromCachePath
   })
 
 </script>
 
 <style>
-  .margin-top-10 {
-    margin-top: 10px;
-  }
-
   .image {
     width: 196px;
     height: 196px;
-    align-self: center;
   }
 </style>

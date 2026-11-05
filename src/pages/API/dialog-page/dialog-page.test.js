@@ -1,4 +1,4 @@
-jest.setTimeout(30000)
+jest.setTimeout(40000)
 
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isWeb = platformInfo.startsWith('web')

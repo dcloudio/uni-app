@@ -1,17 +1,17 @@
 <template>
-  <view class="background">
-    <view class="container">
-      <view class="nav">
-        <view class="left_content">
-          <text class="left_icon" @click="onBack()">{{backIcon}}</text>
+  <view class="bg-007aff w-full h-full">
+    <view class="w-full pos-absolute h-full pt-status-bar-height">
+      <view class="w-full pos-relative flex-dir-row justify-between h-45">
+        <view class="justify-center items-center w-40 h-full">
+          <text class="color-white h-full fs-26 left_icon top-5" @click="onBack()">{{backIcon}}</text>
         </view>
 
-        <view class="title_content">
-          <text class="title">{{title}}</text>
+        <view class="pos-absolute h-full top-0 bottom-0 flex-dir-row justify-center items-center left-45 right-45">
+          <text class="color-fff fs-17">{{title}}</text>
         </view>
 
       </view>
-      <web-view class="web_container" :src="url"></web-view>
+      <web-view class="pt-10 flex-1 w-full web_container" :src="url"></web-view>
     </view>
   </view>
 </template>
@@ -45,64 +45,11 @@
 </script>
 
 <style>
-  .background {
-    background-color: #007aff;
-    width: 100%;
-    height: 100%;
-  }
-
-  .nav {
-    height: 45px;
-    width: 100%;
-    position: relative;
-    flex-direction: row;
-    justify-content: space-between;
-    height: 45px;
-  }
-
-  .left_content {
-    justify-content: center;
-    align-items: center;
-    width: 40px;
-    height: 100%;
-  }
-
   .left_icon {
-    color: white;
-    top: 5px;
-    height: 100%;
     font-family: uni-icon;
-    font-size: 26px;
-  }
-
-  .title_content {
-    position: absolute;
-    height: 100%;
-    top: 0;
-    bottom: 0;
-    left: 45px;
-    right: 45px;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .title {
-    color: white;
-    font-size: 17px;
-  }
-
-  .container {
-    padding-top: var(--status-bar-height);
-    width: 100%;
-    position: absolute;
-    height: 100%;
   }
 
   .web_container {
     background-color: #f1f1f1;
-    padding-top: 10px;
-    flex: 1;
-    width: 100%;
   }
 </style>

@@ -1,24 +1,26 @@
 <template>
-  <view class="uni-padding-wrap">
-    <view class="container">
-      <page-head :title="title"></page-head>
-      <button class="button" @click="setTabBarBadge">{{ !hasSetTabBarBadge ? '设置tab徽标' : '移除tab徽标' }}</button>
-      <button class="button" @click="showTabBarRedDot">{{ !hasShownTabBarRedDot ?  '显示红点' : '移除红点'}}</button>
-      <button class="button" @click="customStyle">{{ !hasCustomedStyle ? '自定义Tab样式' : '移除自定义样式'}}</button>
-      <button class="button" @click="customItem">{{ !hasCustomedItem ? '自定义Tab信息' : '移除自定义信息' }}</button>
-      <button class="button" @click="hideTabBar">{{ !hasHiddenTabBar ? '隐藏TabBar' : '显示TabBar' }}</button>
-      <!-- #ifdef APP-ANDROID || APP-IOS || WEB || APP-HARMONY -->
-      <button class="button" @click="hideTabBarItem">{{ !hasHiddenTabBarItem ? '隐藏接口Item' : '显示接口Item' }}</button>
-      <!-- #endif -->
-      <button class="button" @click="setTabBarTitle">{{ !hasSetLongTitle ? '自定义超长标题' : '移除自定义信息' }}</button>
-      <view class="btn-area">
-        <!-- <button class="button" type="primary" @click="navigateBack">关闭</button> -->
-      </view>
+  <view class="bg-page-fff web-m-0-15">
+    <page-head :title="title"></page-head>
+    <button class="mt-15 ml-0 mr-0" @click="setTabBarBadge">{{ !hasSetTabBarBadge ? '设置tab徽标' : '移除tab徽标' }}</button>
+    <button class="mt-15 ml-0 mr-0" @click="showTabBarRedDot">{{ !hasShownTabBarRedDot ?  '显示红点' : '移除红点'}}</button>
+    <button class="mt-15 ml-0 mr-0" @click="customStyle">{{ !hasCustomedStyle ? '自定义Tab样式' : '移除自定义样式'}}</button>
+    <button class="mt-15 ml-0 mr-0" @click="customItem">{{ !hasCustomedItem ? '自定义Tab信息' : '移除自定义信息' }}</button>
+    <button class="mt-15 ml-0 mr-0" @click="hideTabBar">{{ !hasHiddenTabBar ? '隐藏TabBar' : '显示TabBar' }}</button>
+    <!-- #ifdef APP-ANDROID || APP-IOS || WEB || APP-HARMONY -->
+    <button class="mt-15 ml-0 mr-0" @click="hideTabBarItem">{{ !hasHiddenTabBarItem ? '隐藏接口Item' : '显示接口Item' }}</button>
+    <!-- #endif -->
+    <button class="mt-15 ml-0 mr-0" @click="setTabBarTitle">{{ !hasSetLongTitle ? '自定义超长标题' : '移除自定义信息' }}</button>
+    <view class="pt-15">
+      <!-- <button class="mt-15 ml-0 mr-0" type="primary" @click="navigateBack">关闭</button> -->
     </view>
   </view>
 </template>
 
 <script lang="ts" setup>
+  defineOptions({
+    styleIsolation: 'app'
+  })
+
   const title = ref('tababr')
   const hasSetTabBarBadge = ref(false)
   const hasShownTabBarRedDot = ref(false)
@@ -215,18 +217,3 @@
 
 
 </script>
-
-<style>
-  .container {
-    background-color: var(--background-color, #fff);
-  }
-  .button {
-    margin-top: 15px;
-    margin-left: 0;
-    margin-right: 0;
-  }
-
-  .btn-area {
-    padding-top: 15px;
-  }
-</style>

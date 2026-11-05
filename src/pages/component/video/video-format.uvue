@@ -1,25 +1,25 @@
 <template>
   <!-- #ifdef APP -->
-  <scroll-view class="page-scroll-view">
+  <scroll-view class="app-flex-1">
   <!-- #endif -->
     <page-head title="video-format"></page-head>
     <!-- 自动化测试图片显示是否正常 -->
-    <image v-if="autoTestData.autoTest" src="/static/logo_square.jpeg" style="width: 50px;height: 50px;"></image>
-    <view class="uni-padding-wrap uni-common-mt">
-      <view class="uni-title">
-        <text class="uni-title-text">支持的视频格式示例</text>
+    <image v-if="autoTestData.autoTest" src="/static/logo_square.jpeg" class="w-50 u-h-50"></image>
+    <view class="p-0-15 mt-15">
+      <view class="p-10-0 color-text-333">
+        <text class="fs-15 fw-bold color-text-333">支持的视频格式示例</text>
       </view>
       <view v-for="(item,index) in supportFormats" :key="index">
-        <text class="uni-subtitle-text">{{item.format}}</text>
-        <video :id="'video-' + item.format" class="video" :src="item.src" :controls="true" :direction="-90"
+        <text class="color-888 fs-12 fw-bold u-mt-5">{{item.format}}</text>
+        <video :id="'video-' + item.format" class="h-200" :src="item.src" :controls="true" :direction="-90"
           @error="onError(item.format, $event as UniVideoErrorEvent)"></video>
       </view>
-      <view class="uni-title">
-        <text class="uni-title-text">暂不支持的格式</text>
+      <view class="p-10-0 color-text-333">
+        <text class="fs-15 fw-bold color-text-333">暂不支持的格式</text>
       </view>
       <view v-for="(item,index) in notSupportFormats" :key="index">
-        <text class="uni-subtitle-text">{{item.format}}</text>
-        <video :id="'video-' + item.format" :ref="'videoRef-' + item.format" class="video" :src="item.src"
+        <text class="color-888 fs-12 fw-bold u-mt-5">{{item.format}}</text>
+        <video :id="'video-' + item.format" :ref="'videoRef-' + item.format" class="h-200" :src="item.src"
           :controls="true" :direction="-90"></video>
       </view>
     </view>
@@ -114,9 +114,3 @@
 
   defineExpose({ isError, autoTestData })
 </script>
-
-<style>
-  .video {
-    height: 200px;
-  }
-</style>

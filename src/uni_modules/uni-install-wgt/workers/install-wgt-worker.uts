@@ -3,6 +3,7 @@ import { } from "CommonCrypto"
 // #endif
 // #ifdef APP-ANDROID
 import File from 'java.io.File'
+import FileOutputStream from 'java.io.FileOutputStream'
 import MessageDigest from 'java.security.MessageDigest'
 import UUID from 'java.util.UUID'
 // #endif
@@ -18,6 +19,7 @@ export class InstallWgtWorker extends WorkerTaskImpl {
 	private runtimeAppVersion: string = ''
 	private runtimeCompilerRuleVersion: number = 0
 	private rootPath: string = ''
+	private currentResourcePath: string = ''
 	private txnPath: string = ''
 	private unzipPath: string = ''
 	private unzippedResourcePath: string = ''
@@ -25,6 +27,8 @@ export class InstallWgtWorker extends WorkerTaskImpl {
 	private versionName: string = ''
 	private versionCode: string = ''
 	private compilerRuleVersion: number = 0
+	private differentialBaseVersion: string = ''
+	private differentialDeleteFiles: string[] = []
 	private finished: boolean = false
 	private lastFileSystemErrorMessage: string = ''
 
@@ -72,12 +76,14 @@ export class InstallWgtWorker extends WorkerTaskImpl {
 		const runtimeAppVersion = payload.getString('runtimeAppVersion')
 		const runtimeCompilerRuleVersion = payload.getNumber('runtimeCompilerRuleVersion')
 		const rootPath = payload.getString('rootPath')
+		const currentResourcePath = payload.getString('currentResourcePath')
 		if (zipFilePath == null || zipFilePath.length == 0
 			|| stagingRoot == null || stagingRoot.length == 0
 			|| ignoreVersion == null || isSyncDebug == null
 			|| runtimeAppId == null || runtimeAppVersion == null
 			|| runtimeCompilerRuleVersion == null
-			|| rootPath == null || rootPath.length == 0) {
+			|| rootPath == null || rootPath.length == 0
+			|| currentResourcePath == null) {
 			this.failInvalidMessage('Worker start message contains invalid fields')
 			return
 		}
@@ -91,7 +97,12 @@ export class InstallWgtWorker extends WorkerTaskImpl {
 		this.runtimeAppVersion = runtimeAppVersion
 		this.runtimeCompilerRuleVersion = runtimeCompilerRuleVersion
 		this.rootPath = rootPath
-		this.txnPath = this.stagingRoot + '/txn-' + this.transactionId.toString()
+		this.currentResourcePath = currentResourcePath
+		this.txnPath = this.stagingRoot
+			+ '/txn-'
+			+ this.transactionId.toString()
+			+ '-'
+			+ this.createInstallNonce()
 		this.unzipPath = this.txnPath + '/unzip'
 		this.decompressedZipPath = this.txnPath + '/payload.zip'
 		const inputIsLocalFile = this.isFile(this.zipFilePath)
@@ -101,11 +112,19 @@ export class InstallWgtWorker extends WorkerTaskImpl {
 			return
 		}
 		// #endif
-		if (!this.removeDirectoryIfPresent(this.stagingRoot)) {
+		if (!this.ensureDirectory(this.stagingRoot)) {
 			this.terminalFailure(
 				103602,
-				'installWgt:fail unable to remove the previous staging directory',
+				'installWgt:fail unable to create the staging directory',
 				this.fileSystemFailureCause(this.stagingRoot)
+			)
+			return
+		}
+		if (this.resourcePathExists(this.txnPath)) {
+			this.terminalFailure(
+				103602,
+				'installWgt:fail staging transaction path already exists',
+				this.fileSystemFailureCause(this.txnPath)
 			)
 			return
 		}
@@ -168,54 +187,253 @@ export class InstallWgtWorker extends WorkerTaskImpl {
 			this.cleanupAndFail(103613, '')
 			return
 		}
-		if (!this.requireFile(resourcePath + '/app-config.js') || !this.requireFile(resourcePath + '/app-service.js')) {
+		const isDifferentialUpdate = UTSJSONObject.keys(manifest).indexOf('app-wgtu') >= 0
+		if (!isDifferentialUpdate
+			&& (!this.requireFile(resourcePath + '/app-config.js') || !this.requireFile(resourcePath + '/app-service.js'))) {
 			this.cleanupAndFail(103609, '')
 			return
 		}
+		if (!this.validateManifestMetadata(manifest)) {
+			return
+		}
+		if (isDifferentialUpdate && !this.validateDifferentialMetadata(manifest)) {
+			return
+		}
+		if (!this.validateRuntimeMetadata(isDifferentialUpdate)) {
+			return
+		}
 
+		if (isDifferentialUpdate) {
+			const mergedResourcePath = this.prepareDifferentialResource(resourcePath)
+			if (mergedResourcePath == null) {
+				return
+			}
+			this.unzippedResourcePath = mergedResourcePath
+		} else {
+			this.unzippedResourcePath = resourcePath
+		}
+		this.installValidatedResource(isDifferentialUpdate)
+	}
+
+	private validateManifestMetadata(manifest: UTSJSONObject): boolean {
 		const appId = manifest.getString('id')
 		const version = manifest.getJSON('version')
 		const uniAppX = manifest.getJSON('uni-app-x')
 		if (appId == null || version == null || uniAppX == null) {
 			this.cleanupAndFail(103610, '')
-			return
+			return false
 		}
 		const versionName = version.getString('name')
 		const versionCode = this.normalizeVersionCode(version)
 		const compilerRuleVersion = this.normalizeCompilerRuleVersion(uniAppX)
 		if (compilerRuleVersion == null) {
 			this.cleanupAndFail(103618, '')
-			return
+			return false
 		}
 		if (versionName == null || versionCode == null
 			|| !this.isSafeAppId(appId) || !this.isVersionName(versionName)
 			|| !this.isVersionCode(versionCode)) {
 			this.cleanupAndFail(103610, '')
-			return
+			return false
 		}
 
 		this.appId = appId
 		this.versionName = versionName
 		this.versionCode = versionCode
 		this.compilerRuleVersion = compilerRuleVersion
-		this.unzippedResourcePath = resourcePath
-		this.validateRuntimeAndInstall()
+		return true
 	}
 
-	private validateRuntimeAndInstall(): void {
+	private validateRuntimeMetadata(isDifferentialUpdate: boolean): boolean {
 		if (this.appId != this.runtimeAppId) {
 			this.cleanupAndFail(103614, '')
-			return
+			return false
 		}
 		if (this.compilerRuleVersion != this.runtimeCompilerRuleVersion) {
 			this.cleanupAndFail(103619, '')
-			return
+			return false
 		}
-		if (!this.ignoreVersion && (!this.isVersionName(this.runtimeAppVersion) || this.isVersionNotHigher(this.versionName, this.runtimeAppVersion))) {
+		if (!isDifferentialUpdate && !this.ignoreVersion
+			&& (!this.isVersionName(this.runtimeAppVersion)
+				|| this.isVersionNotHigher(this.versionName, this.runtimeAppVersion))) {
 			this.cleanupAndFail(103611, '')
-			return
+			return false
+		}
+		return true
+	}
+
+	private validateDifferentialMetadata(manifest: UTSJSONObject): boolean {
+		const appWgtu = manifest.getJSON('app-wgtu')
+		if (appWgtu == null) {
+			this.cleanupAndFail(103621, '')
+			return false
+		}
+		const appWgtuKeys = UTSJSONObject.keys(appWgtu)
+		if (appWgtuKeys.indexOf('baseVersion') < 0) {
+			this.cleanupAndFail(103620, '')
+			return false
+		}
+		const baseVersion = appWgtu.getString('baseVersion')
+		if (baseVersion == null || !this.isVersionName(baseVersion)) {
+			this.cleanupAndFail(103621, '')
+			return false
+		}
+		if (this.versionName != baseVersion) {
+			this.cleanupAndFail(103625, '')
+			return false
 		}
 
+		const deleteFiles: string[] = []
+		if (appWgtuKeys.indexOf('deleteFiles') >= 0) {
+			const rawDeleteFiles = appWgtu.getArray('deleteFiles')
+			if (rawDeleteFiles == null) {
+				this.cleanupAndFail(103621, '')
+				return false
+			}
+			for (const rawDeleteFile of rawDeleteFiles) {
+				if (typeof rawDeleteFile != 'string') {
+					this.cleanupAndFail(103621, '')
+					return false
+				}
+				const deleteFile = this.normalizeDifferentialFilePath(rawDeleteFile as string)
+				if (deleteFile == null) {
+					this.cleanupAndFail(103621, '')
+					return false
+				}
+				if (deleteFiles.indexOf(deleteFile) < 0) {
+					deleteFiles.push(deleteFile)
+				}
+			}
+		}
+		this.differentialBaseVersion = baseVersion
+		this.differentialDeleteFiles = deleteFiles
+		return true
+	}
+
+	private prepareDifferentialResource(resourcePath: string): string | null {
+		if (this.currentResourcePath.length == 0) {
+			this.cleanupAndFail(103623, '', 'phase=resolve-current-resource; resource path is empty')
+			return null
+		}
+
+		if (this.differentialBaseVersion != this.runtimeAppVersion) {
+			this.cleanupAndFail(103622, '')
+			return null
+		}
+		const currentManifestPath = this.appendPath(this.currentResourcePath, 'manifest.json')
+		const currentManifestContent = this.readUtf8File(currentManifestPath)
+		if (currentManifestContent == null) {
+			this.cleanupAndFail(
+				103623,
+				'',
+				'phase=read-current-manifest; path=' + currentManifestPath
+			)
+			return null
+		}
+		const currentManifest = JSON.parseObject(currentManifestContent)
+		const currentVersion = currentManifest?.getJSON('version')
+		const currentVersionName = currentVersion?.getString('name')
+		const currentVersionCode = currentVersion != null
+			? this.normalizeVersionCode(currentVersion)
+			: null
+		if (currentManifest == null || currentVersion == null
+			|| currentVersionName == null || currentVersionCode == null
+			|| !this.isVersionName(currentVersionName)
+			|| !this.isVersionCode(currentVersionCode)) {
+			this.cleanupAndFail(
+				103623,
+				'',
+				'phase=validate-current-manifest; path=' + currentManifestPath
+			)
+			return null
+		}
+		if (this.differentialBaseVersion != currentVersionName) {
+			this.cleanupAndFail(103622, '')
+			return null
+		}
+		if (this.versionName != currentVersionName || this.versionCode != currentVersionCode) {
+			this.cleanupAndFail(103625, '')
+			return null
+		}
+		for (const deleteFile of this.differentialDeleteFiles) {
+			if (this.isResourceSourceDirectoryEntry(this.currentResourcePath, deleteFile)) {
+				this.cleanupAndFail(103621, '')
+				return null
+			}
+		}
+
+		const mergedResourcePath = this.txnPath + '/merged-www'
+		if (!this.copyResourceDirectory(
+			this.currentResourcePath,
+			mergedResourcePath,
+			this.differentialDeleteFiles,
+			''
+		)) {
+			this.cleanupAndFail(
+				103623,
+				'',
+				this.differentialFileSystemCause('copy-current-resources', this.currentResourcePath, mergedResourcePath)
+			)
+			return null
+		}
+		if (!this.copyResourceDirectory(resourcePath, mergedResourcePath, [], '')) {
+			this.cleanupAndFail(
+				103624,
+				'',
+				this.differentialFileSystemCause('overlay-differential-resources', resourcePath, mergedResourcePath)
+			)
+			return null
+		}
+		const mergedManifestPath = this.appendPath(mergedResourcePath, 'manifest.json')
+		const mergedManifestContent = this.readUtf8File(mergedManifestPath)
+		if (mergedManifestContent == null || JSON.parseObject(mergedManifestContent) == null) {
+			this.cleanupAndFail(
+				103624,
+				'',
+				'phase=verify-merged-manifest; path=' + mergedManifestPath
+			)
+			return null
+		}
+		if (!this.requireFile(this.appendPath(mergedResourcePath, 'app-config.js'))
+			|| !this.requireFile(this.appendPath(mergedResourcePath, 'app-service.js'))) {
+			this.cleanupAndFail(103609, '')
+			return null
+		}
+
+		return mergedResourcePath
+	}
+
+	private normalizeDifferentialFilePath(value: string): string | null {
+		let normalized = value
+		if (normalized.startsWith('/')) {
+			normalized = normalized.substring(1)
+		}
+		if (normalized.length == 0
+			|| normalized.indexOf('\\') >= 0
+			|| normalized.indexOf('\u0000') >= 0
+			|| /^[A-Za-z][A-Za-z0-9+.-]*:/.test(normalized)) {
+			return null
+		}
+		const pathParts = normalized.split('/')
+		for (const pathPart of pathParts) {
+			if (pathPart.length == 0 || pathPart == '.' || pathPart == '..') {
+				return null
+			}
+		}
+		return pathParts.join('/')
+	}
+
+	private differentialFileSystemCause(phase: string, sourcePath: string, targetPath: string): string {
+		const reason = this.lastFileSystemErrorMessage.length > 0
+			? this.lastFileSystemErrorMessage
+			: 'filesystem operation failed without an error message'
+		return 'phase=' + phase
+			+ '; reason=' + reason
+			+ '; source=' + sourcePath
+			+ '; target=' + targetPath
+	}
+
+	private installValidatedResource(isDifferentialUpdate: boolean): void {
 		if (!this.ensureDirectory(this.rootPath)) {
 			this.cleanupAndFail(103604, '')
 			return
@@ -229,20 +447,51 @@ export class InstallWgtWorker extends WorkerTaskImpl {
 			this.removeDirectoryIfPresent(this.unzipPath)
 
 			// #ifdef APP-ANDROID
-			this.installAndroidSyncDebugResources(stagingWwwPath)
+			this.installAndroidSyncDebugResources(stagingWwwPath, isDifferentialUpdate)
 			return
 			// #endif
 
 			// #ifdef APP-IOS
 			const finalWwwPath = this.rootPath + '/www'
-			if (!this.removeDirectoryIfPresent(finalWwwPath)
-				|| !this.renameResource(stagingWwwPath, finalWwwPath)
+			const oldWwwBackupPath = this.txnPath + '/old-www'
+			const hadOldWww = this.isDirectory(finalWwwPath)
+			if (this.resourcePathExists(finalWwwPath) && !hadOldWww) {
+				this.cleanupAndFail(
+					103604,
+					'installWgt:fail iOS sync-debug resource placement failed; phase: inspect-old-www; path is not a directory; rollback: not-required'
+				)
+				return
+			}
+			if (hadOldWww && (!this.renameResource(finalWwwPath, oldWwwBackupPath)
+				|| !this.isDirectory(oldWwwBackupPath)
+				|| this.resourcePathExists(finalWwwPath))) {
+				const failureCause = this.fileSystemFailureCause(finalWwwPath)
+				this.rollbackAndFailIOSSyncDebug(
+					'backup-old-www',
+					failureCause,
+					stagingWwwPath,
+					finalWwwPath,
+					oldWwwBackupPath,
+					hadOldWww
+				)
+				return
+			}
+			if (!this.renameResource(stagingWwwPath, finalWwwPath)
 				|| !this.isDirectory(finalWwwPath)
-				|| this.isDirectory(stagingWwwPath)) {
-				this.cleanupAndFail(103604, '')
+				|| this.resourcePathExists(stagingWwwPath)) {
+				const failureCause = this.fileSystemFailureCause(finalWwwPath)
+				this.rollbackAndFailIOSSyncDebug(
+					'activate-new-www',
+					failureCause,
+					stagingWwwPath,
+					finalWwwPath,
+					oldWwwBackupPath,
+					hadOldWww
+				)
 				return
 			}
 
+			this.removeDirectoryIfPresent(oldWwwBackupPath)
 			this.removeDirectoryIfPresent(this.txnPath)
 			this.terminalSuccess(finalWwwPath)
 			return
@@ -403,9 +652,10 @@ export class InstallWgtWorker extends WorkerTaskImpl {
 			: 'path: ' + path
 	}
 
+	/** Checks only local filesystem paths; Android APK assets are handled separately. */
 	private isDirectory(path: string): boolean {
 		// #ifdef APP-ANDROID
-		return this.readDirectory(path) != null
+		return new File(path).isDirectory() == true
 		// #endif
 
 		// #ifdef APP-IOS
@@ -459,6 +709,46 @@ export class InstallWgtWorker extends WorkerTaskImpl {
 		this.zipFilePath = localInputPath
 		return true
 	}
+
+	private androidAssetRelativePath(path: string): string | null {
+		let absolutePath = path
+		if (absolutePath.startsWith('file:///android_asset/')) {
+			absolutePath = absolutePath.substring('file://'.length)
+		} else if (!absolutePath.startsWith('/android_asset/')) {
+			absolutePath = UTSAndroid.convert2AbsFullPath(path)
+		}
+		if (!absolutePath.startsWith('/android_asset/')) {
+			return null
+		}
+		let assetPath = absolutePath.substring('/android_asset/'.length)
+		if (assetPath.endsWith('/') && assetPath.length > 0) {
+			assetPath = assetPath.substring(0, assetPath.length - 1)
+		}
+		return assetPath
+	}
+
+	private copyAndroidAssetFile(assetPath: string, targetPath: string): number {
+		let copiedLength: number = 0
+		const inputStream = UTSAndroid.getAppContext()!.getResources().getAssets().open(assetPath)
+		try {
+			const outputStream = new FileOutputStream(new File(targetPath))
+			try {
+				const buffer = new ByteArray(8192)
+				let length = inputStream.read(buffer)
+				while (length != -1) {
+					outputStream.write(buffer, 0, length)
+					copiedLength += length
+					length = inputStream.read(buffer)
+				}
+				outputStream.flush()
+			} finally {
+				outputStream.close()
+			}
+		} finally {
+			inputStream.close()
+		}
+		return copiedLength
+	}
 	// #endif
 
 	private readDirectory(path: string): string[] | null {
@@ -474,6 +764,354 @@ export class InstallWgtWorker extends WorkerTaskImpl {
 		return uni.getFileSystemManager().readdirSync(path)
 		// #endif
 	}
+
+	private appendPath(basePath: string, relativePath: string): string {
+		return basePath.endsWith('/') ? basePath + relativePath : basePath + '/' + relativePath
+	}
+
+	/**
+	 * Reads a source directory that may live in the Android APK assets tree.
+	 * AssetManager.list returns an empty array for both files and empty directories,
+	 * so an open attempt is used to distinguish those two cases.
+	 */
+	private readResourceSourceDirectory(path: string): string[] | null {
+		// #ifdef APP-ANDROID
+		const assetPath = this.androidAssetRelativePath(path)
+		if (assetPath != null) {
+			try {
+				const nativeEntries = UTSAndroid.getAppContext()!.getResources().getAssets().list(assetPath!)
+				if (nativeEntries == null) {
+					return null
+				}
+				const entries: string[] = UTSArray.fromNative(nativeEntries)
+				if (entries.length > 0) {
+					return entries
+				}
+				try {
+					const assetStream = UTSAndroid.getAppContext()!.getResources().getAssets().open(assetPath!)
+					assetStream.close()
+					return null
+				} catch (error) {
+					return entries
+				}
+			} catch (error) {
+				return null
+			}
+		}
+		// #endif
+
+		// Android APK assets are handled above because they are not java.io.File
+		// paths. All remaining Android paths and every iOS path are local, so avoid
+		// calling readdirSync for regular files just to determine their type.
+		if (!this.isDirectory(path)) {
+			return null
+		}
+		try {
+			return uni.getFileSystemManager().readdirSync(path)
+		} catch (error) {
+			return null
+		}
+	}
+
+	private copyResourceDirectory(
+		sourcePath: string,
+		targetPath: string,
+		filteredFiles: string[],
+		relativePath: string
+	): boolean {
+		const entries = this.readResourceSourceDirectory(sourcePath)
+		if (entries == null) {
+			this.lastFileSystemErrorMessage = 'resource source is not a readable directory: ' + sourcePath
+			return false
+		}
+		return this.copyResourceDirectoryEntries(
+			sourcePath,
+			targetPath,
+			filteredFiles,
+			relativePath,
+			entries
+		)
+	}
+
+	private copyResourceDirectoryEntries(
+		sourcePath: string,
+		targetPath: string,
+		filteredFiles: string[],
+		relativePath: string,
+		entries: string[]
+	): boolean {
+		if (this.resourcePathExists(targetPath) && !this.isDirectory(targetPath)) {
+			if (!this.removeResourceItemIfPresent(targetPath)) {
+				return false
+			}
+		}
+		if (!this.ensureDirectory(targetPath)) {
+			return false
+		}
+
+		for (const entry of entries) {
+			if (entry.length == 0 || entry == '.' || entry == '..'
+				|| entry.indexOf('/') >= 0 || entry.indexOf('\\') >= 0) {
+				this.lastFileSystemErrorMessage = 'invalid resource directory entry: ' + entry
+				return false
+			}
+			const childRelativePath = relativePath.length > 0
+				? relativePath + '/' + entry
+				: entry
+			if (filteredFiles.indexOf(childRelativePath) >= 0) {
+				continue
+			}
+			const childSourcePath = this.appendPath(sourcePath, entry)
+			const childTargetPath = this.appendPath(targetPath, entry)
+			const childEntries = this.readResourceSourceDirectory(childSourcePath)
+			if (childEntries != null) {
+				if (!this.copyResourceDirectoryEntries(
+					childSourcePath,
+					childTargetPath,
+					filteredFiles,
+					childRelativePath,
+					childEntries
+				)) {
+					return false
+				}
+				continue
+			}
+			if (!this.copyResourceFileReplacing(childSourcePath, childTargetPath)) {
+				return false
+			}
+		}
+		return true
+	}
+
+	private isResourceSourceDirectoryEntry(rootPath: string, relativePath: string): boolean {
+		const entryPath = this.appendPath(rootPath, relativePath)
+		// #ifdef APP-IOS
+		return this.isDirectory(entryPath)
+		// #endif
+
+		// #ifdef APP-ANDROID
+		if (this.androidAssetRelativePath(entryPath) == null) {
+			return this.isDirectory(entryPath)
+		}
+
+		// AssetManager.list cannot distinguish an empty directory from a missing
+		// path. Confirm the entry exists in its parent before checking its type.
+		const separatorIndex = relativePath.lastIndexOf('/')
+		const parentRelativePath = separatorIndex >= 0
+			? relativePath.substring(0, separatorIndex.toInt())
+			: ''
+		const entry = separatorIndex >= 0
+			? relativePath.substring((separatorIndex + 1).toInt())
+			: relativePath
+		const parentPath = parentRelativePath.length > 0
+			? this.appendPath(rootPath, parentRelativePath)
+			: rootPath
+		const parentEntries = this.readResourceSourceDirectory(parentPath)
+		if (parentEntries == null || parentEntries.indexOf(entry) < 0) {
+			return false
+		}
+		return this.readResourceSourceDirectory(this.appendPath(parentPath, entry)) != null
+		// #endif
+	}
+
+	private copyResourceFileReplacing(sourcePath: string, targetPath: string): boolean {
+		this.lastFileSystemErrorMessage = ''
+		if (!this.removeResourceItemIfPresent(targetPath)) {
+			return false
+		}
+		const targetParentPath = this.resourceParentPath(targetPath)
+		if (!this.ensureDirectory(targetParentPath)) {
+			return false
+		}
+		// #ifdef APP-ANDROID
+		let expectedFileLength: number | null = null
+		// #endif
+		try {
+			// #ifdef APP-ANDROID
+			const assetPath = this.androidAssetRelativePath(sourcePath)
+			if (assetPath != null) {
+				expectedFileLength = this.copyAndroidAssetFile(assetPath!, targetPath)
+			} else {
+				const sourceFile = new File(sourcePath)
+				if (sourceFile.isFile() != true) {
+					this.lastFileSystemErrorMessage = 'resource copy source is not a regular file: ' + sourcePath
+					return false
+				}
+				expectedFileLength = sourceFile.length()
+				uni.getFileSystemManager().copyFileSync(sourcePath, targetPath)
+			}
+			// #endif
+			// #ifdef APP-IOS
+			uni.getFileSystemManager().copyFileSync(sourcePath, targetPath)
+			// #endif
+		} catch (error) {
+			// #ifdef APP-ANDROID
+			const errorMessage = error.message ?? ''
+			const throwableDescription = error.toString()
+			this.lastFileSystemErrorMessage = throwableDescription.length > 0
+				? throwableDescription
+				: (errorMessage.length > 0 ? errorMessage : 'unknown copyFileSync exception')
+			// #endif
+			// #ifdef APP-IOS
+			this.lastFileSystemErrorMessage = error.message
+			// #endif
+			return false
+		}
+		if (!this.isFile(targetPath)) {
+			this.lastFileSystemErrorMessage = 'copyFileSync did not create a regular target file: ' + targetPath
+			return false
+		}
+		// #ifdef APP-ANDROID
+		const targetFileLength = new File(targetPath).length()
+		if (expectedFileLength == null || targetFileLength != expectedFileLength) {
+			this.lastFileSystemErrorMessage = 'resource file copy length verification failed; expected='
+				+ (expectedFileLength?.toString() ?? 'unknown')
+				+ '; actual=' + targetFileLength.toString()
+				+ '; source=' + sourcePath
+				+ '; target=' + targetPath
+			return false
+		}
+		// #endif
+		return true
+	}
+
+	private removeResourceItemIfPresent(path: string): boolean {
+		this.lastFileSystemErrorMessage = ''
+		if (!this.resourcePathExists(path)) {
+			return true
+		}
+
+		// #ifdef APP-ANDROID
+		try {
+			if (this.isDirectory(path)) {
+				uni.getFileSystemManager().rmdirSync(path, true)
+			} else {
+				uni.getFileSystemManager().unlinkSync(path)
+			}
+			if (!this.resourcePathExists(path)) {
+				return true
+			}
+			this.lastFileSystemErrorMessage = 'resource path still exists after removal: ' + path
+			return false
+		} catch (error) {
+			const errorMessage = error.message ?? ''
+			const throwableDescription = error.toString()
+			this.lastFileSystemErrorMessage = throwableDescription.length > 0
+				? throwableDescription
+				: (errorMessage.length > 0 ? errorMessage : 'unknown resource removal exception')
+			return false
+		}
+		// #endif
+
+		// #ifdef APP-IOS
+		try {
+			UTSiOS.try(FileManager.default.removeItem(atPath = path))
+			if (!this.resourcePathExists(path)) {
+				return true
+			}
+			this.lastFileSystemErrorMessage = 'resource path still exists after removal: ' + path
+			return false
+		} catch (error) {
+			this.lastFileSystemErrorMessage = error.message
+			return false
+		}
+		// #endif
+	}
+
+	private resourcePathExists(path: string): boolean {
+		// #ifdef APP-ANDROID
+		return new File(path).exists() == true
+		// #endif
+
+		// #ifdef APP-IOS
+		return FileManager.default.fileExists(atPath = path)
+		// #endif
+	}
+
+	private resourceParentPath(path: string): string {
+		const separatorIndex = path.lastIndexOf('/')
+		return separatorIndex > 0 ? path.substring(0, separatorIndex.toInt()) : path
+	}
+
+	// #ifdef APP-IOS
+	private rollbackIOSSyncDebugResources(
+		stagingWwwPath: string,
+		finalWwwPath: string,
+		oldWwwBackupPath: string,
+		hadOldWww: boolean
+	): boolean {
+		const backupExists = this.isDirectory(oldWwwBackupPath)
+		const finalExists = this.isDirectory(finalWwwPath)
+		const stagingExists = this.isDirectory(stagingWwwPath)
+
+		if (backupExists) {
+			if (finalExists) {
+				if (stagingExists) {
+					this.lastFileSystemErrorMessage = 'rollback cannot move final www aside because staging www already exists'
+					return false
+				}
+				if (!this.renameResource(finalWwwPath, stagingWwwPath)
+					|| !this.isDirectory(stagingWwwPath)
+					|| this.resourcePathExists(finalWwwPath)) {
+					return false
+				}
+			} else if (this.resourcePathExists(finalWwwPath)) {
+				this.lastFileSystemErrorMessage = 'rollback final www exists but is not a directory'
+				return false
+			}
+			if (!this.renameResource(oldWwwBackupPath, finalWwwPath)
+				|| !this.isDirectory(finalWwwPath)
+				|| this.resourcePathExists(oldWwwBackupPath)) {
+				return false
+			}
+		} else if (hadOldWww) {
+			if (!finalExists) {
+				this.lastFileSystemErrorMessage = 'old www backup is absent and final www is not a directory'
+				return false
+			}
+		} else if (finalExists) {
+			if (stagingExists) {
+				this.lastFileSystemErrorMessage = 'rollback staging conflict when no old www existed'
+				return false
+			}
+			if (!this.renameResource(finalWwwPath, stagingWwwPath)
+				|| !this.isDirectory(stagingWwwPath)
+				|| this.resourcePathExists(finalWwwPath)) {
+				return false
+			}
+		} else if (this.resourcePathExists(finalWwwPath)) {
+			this.lastFileSystemErrorMessage = 'final www exists but is not a directory during rollback'
+			return false
+		}
+		return true
+	}
+
+	private rollbackAndFailIOSSyncDebug(
+		phase: string,
+		cause: string,
+		stagingWwwPath: string,
+		finalWwwPath: string,
+		oldWwwBackupPath: string,
+		hadOldWww: boolean
+	): void {
+		const rollbackSucceeded = this.rollbackIOSSyncDebugResources(
+			stagingWwwPath,
+			finalWwwPath,
+			oldWwwBackupPath,
+			hadOldWww
+		)
+		const detail = cause.length > 0 ? cause : 'path: ' + finalWwwPath
+		const message = 'installWgt:fail iOS sync-debug resource placement failed'
+			+ '; phase: ' + phase
+			+ '; ' + detail
+			+ '; rollback: ' + (rollbackSucceeded ? 'success' : 'failed')
+		if (rollbackSucceeded) {
+			this.cleanupAndFail(103604, message)
+			return
+		}
+		this.terminalFailure(103604, message)
+	}
+	// #endif
 
 	private requireFile(path: string): boolean {
 		const content = this.readUtf8File(path)
@@ -491,26 +1129,34 @@ export class InstallWgtWorker extends WorkerTaskImpl {
 		// #endif
 
 		// #ifdef APP-IOS
-		const content = uni.getFileSystemManager().readFileSync(path, 'utf-8')
-		return typeof content == 'string' ? content : null
+		try {
+			const content = uni.getFileSystemManager().readFileSync(path, 'utf-8')
+			return typeof content == 'string' ? content : null
+		} catch (error) {
+			return null
+		}
 		// #endif
 	}
 
 	// #ifdef APP-ANDROID
 	/**
 	 * Installs a sync-debug Android resource tree without losing UTS plugin DEX and
-	 * config.json files. Missing files are copied into staging and verified before the
-	 * old www tree is backed up. A file from the new WGT wins only when it has the same
-	 * relative path as an old file.
+	 * config.json files. A full WGT is supplemented with missing files from the old www
+	 * tree. A differential candidate already contains the filtered and overlaid current
+	 * resources, so it only needs permission preparation and verification before the old
+	 * www tree is backed up. A file from the new WGT wins when it has the same relative
+	 * path as an old file.
 	 */
-	private installAndroidSyncDebugResources(stagingWwwPath: string): void {
+	private installAndroidSyncDebugResources(stagingWwwPath: string, isDifferentialUpdate: boolean): void {
 		const finalWwwPath = this.rootPath + '/www'
 		const oldWwwBackupPath = this.txnPath + '/old-www'
 		const hadOldWww = this.isDirectory(finalWwwPath)
 
 		const oldResourcePaths: string[] = []
-		const oldDexPaths: string[] = []
-		if (!this.collectAndroidSyncDebugResourcePaths(finalWwwPath, oldResourcePaths, oldDexPaths)) {
+		// A differential candidate already contains every retained base resource.
+		// The old tree is enumerated only if a later placement failure requires rollback.
+		if (!isDifferentialUpdate
+			&& !this.collectAndroidSyncDebugResourcePaths(finalWwwPath, oldResourcePaths)) {
 			this.failAndroidSyncDebugPreparation(
 				'scan-old-resources',
 				finalWwwPath + '/uni_modules',
@@ -519,8 +1165,7 @@ export class InstallWgtWorker extends WorkerTaskImpl {
 			return
 		}
 		const incomingResourcePaths: string[] = []
-		const incomingDexPaths: string[] = []
-		if (!this.collectAndroidSyncDebugResourcePaths(stagingWwwPath, incomingResourcePaths, incomingDexPaths)) {
+		if (!this.collectAndroidSyncDebugResourcePaths(stagingWwwPath, incomingResourcePaths)) {
 			this.failAndroidSyncDebugPreparation(
 				'scan-incoming-resources',
 				stagingWwwPath + '/uni_modules',
@@ -533,6 +1178,12 @@ export class InstallWgtWorker extends WorkerTaskImpl {
 			expectedResourcePaths.push(relativePath)
 		}
 
+		const incomingDexPaths: string[] = []
+		for (const relativePath of incomingResourcePaths) {
+			if (relativePath.endsWith('.dex')) {
+				incomingDexPaths.push(relativePath)
+			}
+		}
 		if (!this.makeDexFilesReadOnly(stagingWwwPath, incomingDexPaths)) {
 			this.failAndroidSyncDebugPreparation(
 				'prepare-incoming-dex-permissions',
@@ -591,6 +1242,7 @@ export class InstallWgtWorker extends WorkerTaskImpl {
 				stagingWwwPath,
 				finalWwwPath,
 				oldWwwBackupPath,
+				isDifferentialUpdate,
 				oldResourcePaths,
 				hadOldWww
 			)
@@ -606,6 +1258,7 @@ export class InstallWgtWorker extends WorkerTaskImpl {
 				stagingWwwPath,
 				finalWwwPath,
 				oldWwwBackupPath,
+				isDifferentialUpdate,
 				oldResourcePaths,
 				hadOldWww
 			)
@@ -620,6 +1273,7 @@ export class InstallWgtWorker extends WorkerTaskImpl {
 				stagingWwwPath,
 				finalWwwPath,
 				oldWwwBackupPath,
+				isDifferentialUpdate,
 				oldResourcePaths,
 				hadOldWww
 			)
@@ -634,8 +1288,7 @@ export class InstallWgtWorker extends WorkerTaskImpl {
 
 	private collectAndroidSyncDebugResourcePaths(
 		wwwPath: string,
-		resourcePaths: string[],
-		dexPaths: string[]
+		resourcePaths: string[]
 	): boolean {
 		const uniModulesPath = wwwPath + '/uni_modules'
 		const uniModulesFile = new File(uniModulesPath)
@@ -649,21 +1302,18 @@ export class InstallWgtWorker extends WorkerTaskImpl {
 		if (!this.collectAndroidSyncDebugResourcePathsFromDirectory(
 			uniModulesPath,
 			'uni_modules',
-			resourcePaths,
-			dexPaths
+			resourcePaths
 		)) {
 			return false
 		}
 		resourcePaths.sort()
-		dexPaths.sort()
 		return true
 	}
 
 	private collectAndroidSyncDebugResourcePathsFromDirectory(
 		path: string,
 		relativePath: string,
-		resourcePaths: string[],
-		dexPaths: string[]
+		resourcePaths: string[]
 	): boolean {
 		let entries: string[]
 		try {
@@ -692,8 +1342,7 @@ export class InstallWgtWorker extends WorkerTaskImpl {
 				if (!this.collectAndroidSyncDebugResourcePathsFromDirectory(
 					childPath,
 					childRelativePath,
-					resourcePaths,
-					dexPaths
+					resourcePaths
 				)) {
 					return false
 				}
@@ -706,9 +1355,6 @@ export class InstallWgtWorker extends WorkerTaskImpl {
 					return false
 				}
 				resourcePaths.push(childRelativePath)
-				if (isDexFile) {
-					dexPaths.push(childRelativePath)
-				}
 			}
 		}
 		return true
@@ -736,12 +1382,31 @@ export class InstallWgtWorker extends WorkerTaskImpl {
 		stagingWwwPath: string,
 		finalWwwPath: string,
 		oldWwwBackupPath: string,
+		isDifferentialUpdate: boolean,
 		oldResourcePaths: string[],
 		hadOldWww: boolean
 	): boolean {
 		const backupExists = this.isDirectory(oldWwwBackupPath)
 		const finalExists = this.isDirectory(finalWwwPath)
 		const stagingExists = this.isDirectory(stagingWwwPath)
+		let expectedOldResourcePaths: string[] = oldResourcePaths
+		let rollbackVerificationError: string = ''
+		if (isDifferentialUpdate && hadOldWww) {
+			const oldResourceRootPath = backupExists ? oldWwwBackupPath : finalWwwPath
+			if (!this.isDirectory(oldResourceRootPath)) {
+				rollbackVerificationError = 'unable to locate old www before differential rollback verification'
+			} else {
+				const rollbackResourcePaths: string[] = []
+				if (!this.collectAndroidSyncDebugResourcePaths(oldResourceRootPath, rollbackResourcePaths)) {
+					const reason = this.lastFileSystemErrorMessage.length > 0
+						? this.lastFileSystemErrorMessage
+						: 'old resource enumeration failed without an error message'
+					rollbackVerificationError = 'unable to enumerate old resources before differential rollback; reason=' + reason
+				} else {
+					expectedOldResourcePaths = rollbackResourcePaths
+				}
+			}
+		}
 
 		if (backupExists) {
 			// The old tree reached the backup path. Move an activated new tree aside,
@@ -783,7 +1448,11 @@ export class InstallWgtWorker extends WorkerTaskImpl {
 			}
 		}
 
-		for (const relativePath of oldResourcePaths) {
+		if (rollbackVerificationError.length > 0) {
+			this.lastFileSystemErrorMessage = rollbackVerificationError
+			return false
+		}
+		for (const relativePath of expectedOldResourcePaths) {
 			if (!this.isRegularFile(finalWwwPath + '/' + relativePath)) {
 				this.lastFileSystemErrorMessage = 'rollback verification found a missing old resource: ' + relativePath
 				return false
@@ -962,6 +1631,7 @@ export class InstallWgtWorker extends WorkerTaskImpl {
 		stagingWwwPath: string,
 		finalWwwPath: string,
 		oldWwwBackupPath: string,
+		isDifferentialUpdate: boolean,
 		oldResourcePaths: string[],
 		hadOldWww: boolean
 	): void {
@@ -969,6 +1639,7 @@ export class InstallWgtWorker extends WorkerTaskImpl {
 			stagingWwwPath,
 			finalWwwPath,
 			oldWwwBackupPath,
+			isDifferentialUpdate,
 			oldResourcePaths,
 			hadOldWww
 		)
@@ -1018,10 +1689,12 @@ export class InstallWgtWorker extends WorkerTaskImpl {
 		// #endif
 
 		// #ifdef APP-IOS
+		this.lastFileSystemErrorMessage = ''
 		try {
 			UTSiOS.try(FileManager.default.moveItem(atPath = sourcePath, toPath = targetPath))
 			return true
 		} catch (error) {
+			this.lastFileSystemErrorMessage = error.message
 			return false
 		}
 		// #endif  

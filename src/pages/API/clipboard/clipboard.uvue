@@ -1,19 +1,17 @@
 <template>
-  <view>
     <page-head :title="title"></page-head>
-    <view class="uni-padding-wrap">
-      <view class="uni-title">请输入剪贴板内容</view>
-      <view class="uni-list">
-        <view class="uni-list-cell">
-          <input class="uni-input" type="text" placeholder="请输入剪贴板内容" :value="data.data" @input="dataChange" />
+    <view class="p-0-15">
+      <view class="p-10-0 color-text-333">请输入剪贴板内容</view>
+      <view class="bg-list-fff pos-relative d-flex flex-dir-column border-b-1-solid-c8c7cc-dark-3a3a3c">
+        <view class="pos-relative d-flex flex-dir-row justify-between items-center">
+          <input class="h-25 p-8-13 fs-14 flex-1 box-content-box bg-list-fff" type="text" placeholder="请输入剪贴板内容" :value="data.data" @input="dataChange" />
         </view>
       </view>
-      <view class="uni-btn-v">
+      <view class="p-5-0">
         <button type="primary" @click="setClipboard">存储数据</button>
         <button @tap="getClipboard">读取数据</button>
       </view>
     </view>
-  </view>
 </template>
 <script setup lang="ts">
   type DataType = {
@@ -100,6 +98,3 @@
     setClipboard
   })
 </script>
-
-<style>
-</style>

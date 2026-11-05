@@ -76,10 +76,8 @@ export type OpenLocationOptions = {
    *      "weixin": {
    *        "uniVer": "√",
    *        "unixVer": "5.11",
-   *        "hostVer": "√"
    *      },
    *      "alipay": {
-   *        "hostVer": "√",
    *        "uniVer": "√",
    *        "unixVer": "5.31"
    *      }
@@ -112,10 +110,8 @@ export type OpenLocationOptions = {
    *      "weixin": {
    *        "uniVer": "√",
    *        "unixVer": "5.11",
-   *        "hostVer": "√"
    *      },
    *      "alipay": {
-   *        "hostVer": "√",
    *        "uniVer": "√",
    *        "unixVer": "5.31"
    *      }
@@ -148,10 +144,8 @@ export type OpenLocationOptions = {
    *      "weixin": {
    *        "uniVer": "√",
    *        "unixVer": "5.11",
-   *        "hostVer": "√"
    *      },
    *      "alipay": {
-   *        "hostVer": "√",
    *        "uniVer": "√",
    *        "unixVer": "5.31"
    *      }
@@ -184,10 +178,8 @@ export type OpenLocationOptions = {
    *      "weixin": {
    *        "uniVer": "√",
    *        "unixVer": "5.11",
-   *        "hostVer": "√"
    *      },
    *      "alipay": {
-   *        "hostVer": "√",
    *        "uniVer": "√",
    *        "unixVer": "5.31"
    *      }
@@ -220,10 +212,8 @@ export type OpenLocationOptions = {
    *      "weixin": {
    *        "uniVer": "√",
    *        "unixVer": "5.11",
-   *        "hostVer": "√"
    *      },
    *      "alipay": {
-   *        "hostVer": "√",
    *        "uniVer": "√",
    *        "unixVer": "5.31"
    *      }
@@ -256,10 +246,8 @@ export type OpenLocationOptions = {
    *      "weixin": {
    *        "uniVer": "√",
    *        "unixVer": "5.11",
-   *        "hostVer": "√"
    *      },
    *      "alipay": {
-   *        "hostVer": "√",
    *        "uniVer": "√",
    *        "unixVer": "5.31"
    *      }
@@ -292,10 +280,8 @@ export type OpenLocationOptions = {
    *      "weixin": {
    *        "uniVer": "√",
    *        "unixVer": "5.11",
-   *        "hostVer": "√"
    *      },
    *      "alipay": {
-   *        "hostVer": "√",
    *        "uniVer": "√",
    *        "unixVer": "5.31"
    *      }
@@ -328,10 +314,8 @@ export type OpenLocationOptions = {
    *      "weixin": {
    *        "uniVer": "√",
    *        "unixVer": "5.11",
-   *        "hostVer": "√"
    *      },
    *      "alipay": {
-   *        "hostVer": "√",
    *        "uniVer": "√",
    *        "unixVer": "5.31"
    *      }
@@ -421,7 +405,6 @@ export interface Uni {
    *        "hostVer": "1.9.6"
    *      },
    *      "alipay": {
-   *        "hostVer": "√",
    *        "uniVer": "√",
    *        "unixVer": "5.31"
    *      }

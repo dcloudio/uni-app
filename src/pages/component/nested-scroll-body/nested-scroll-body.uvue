@@ -1,27 +1,27 @@
 <template>
-  <scroll-view style="flex:1" type="nested" direction="vertical" refresher-enabled="true" refresher-default-style="none"
+  <scroll-view class="flex-1" type="nested" direction="vertical" refresher-enabled="true" refresher-default-style="none"
     bounces="false" :refresher-triggered="data.refresherTriggered" @refresherpulling="onRefresherpulling"
     @refresherrefresh="onRefresherrefresh" @refresherrestore="onRefreshrestore" @scrollend="scrollEnd">
     <nested-scroll-header>
       <swiper ref="header" indicator-dots="true" circular="true">
         <swiper-item v-for="i in 3" :item-id="i + ''">
-          <image src="/static/shuijiao.jpg" style="width:100% ;height: 240px;"></image>
+          <image class="w-full h-240" src="/static/shuijiao.jpg"></image>
         </swiper-item>
       </swiper>
     </nested-scroll-header>
     <nested-scroll-body>
-      <view style="flex:1">
-        <view style="flex-direction: row;">
-          <text style="padding: 12px 15px;">nested-scroll-body</text>
+      <view class="flex-1">
+        <view class="flex-dir-row">
+          <text class="p-12-15">nested-scroll-body</text>
         </view>
-        <swiper style="flex: 1;">
-          <swiper-item style="flex: 1;" v-for="item in data.swiperList">
+        <swiper class="flex-1">
+          <swiper-item class="flex-1" v-for="item in data.swiperList">
             <!-- 嵌套滚动仅可能关闭bounces效果 会影响嵌套滚动不连贯 -->
-            <list-view bounces="false" id="body-list" :scroll-top="data.scrollTop" style="flex:1" :key="item.type"
+            <list-view bounces="false" id="body-list" :scroll-top="data.scrollTop" class="flex-1" :key="item.type"
               associative-container="nested-scroll-view" :refresher-enabled="false">
               <list-item v-for="key in data.scrollData" :key="key">
-                <view class="scroll-item">
-                  <text class="scroll-item-title">{{key}}</text>
+                <view class="ml-6 mr-6 mt-6 bg-list-fff radius-4">
+                  <text class="w-full h-60 lh-60 text-center color-text-555">{{key}}</text>
                 </view>
               </list-item>
             </list-view>
@@ -119,28 +119,3 @@
     testBodyScrollBy
   })
 </script>
-
-<style>
-  .scroll-item {
-    margin-left: 6px;
-    margin-right: 6px;
-    margin-top: 6px;
-    background-color: var(--list-background-color, #fff);
-    border-radius: 4px;
-  }
-
-  .scroll-item-title {
-    width: 100%;
-    height: 60px;
-    line-height: 60px;
-    text-align: center;
-    color: var(--text-color, #555555);
-  }
-
-  .scroll-header-tiem {
-    height: 200px;
-    background-color: #66ccff;
-    align-items: center;
-    justify-content: center;
-  }
-</style>

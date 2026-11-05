@@ -1,30 +1,31 @@
 <template>
-  <view>
     <page-head :title="data.title"></page-head>
-    <view class="uni-padding-wrap">
-      <view class="uni-title">
+    <view class="p-0-15">
+      <view class="p-10-0 color-text-333">
         日期：{{data.year}}年{{data.month}}月{{data.day}}日
       </view>
     </view>
-    <picker-view class="picker-view" :value="data.value" @change="bindChange" :indicator-style="data.indicatorStyle"
+    <picker-view class="picker-view w-full h-320 mt-10 mb-20" :value="data.value" @change="bindChange" :indicator-style="data.indicatorStyle"
       :indicator-class="data.indicatorClass" :mask-style="data.maskStyle" :mask-class="data.maskClass" :mask-top-style="data.maskTopStyle"
       :mask-bottom-style="data.maskBottomStyle">
       <picker-view-column class="picker-view-column">
-        <view class="item" v-for="(item,index) in data.years" :key="index"><text class="text">{{item}}年</text></view>
+        <view class="u-h-50" v-for="(item,index) in data.years" :key="index"><text class="lh-50 text-center">{{item}}年</text></view>
       </picker-view-column>
       <picker-view-column class="picker-view-column">
-        <view class="item" v-for="(item,index) in data.months" :key="index"><text class="text">{{item}}月</text>
+        <view class="u-h-50" v-for="(item,index) in data.months" :key="index"><text class="lh-50 text-center">{{item}}月</text>
         </view>
       </picker-view-column>
       <picker-view-column class="picker-view-column">
-        <view class="item" v-for="(item,index) in data.days" :key="index"><text class="text">{{item}}日</text></view>
+        <view class="u-h-50" v-for="(item,index) in data.days" :key="index"><text class="lh-50 text-center">{{item}}日</text></view>
       </picker-view-column>
     </picker-view>
     <!-- #ifndef MP-ALIPAY -->
     <boolean-data :value="false" title="设置选择器中间选中框的样式" @change="setIndicatorStyle"></boolean-data>
     <!-- #endif -->
-    <!-- #ifdef WEB || MP-WEIXIN -->
+    <!-- #ifdef WEB || MP-WEIXIN || APP -->
     <boolean-data :value="false" title="设置选择器中间选中框的类名" @change="setIndicatorClass"></boolean-data>
+    <!-- #endif -->
+    <!-- #ifdef WEB || MP-WEIXIN -->
     <boolean-data :value="false" title="设置蒙层的样式" @change="setMaskStyle"></boolean-data>
     <boolean-data :value="false" title="设置蒙层的类名" @change="setMaskClass"></boolean-data>
     <!-- #endif -->
@@ -32,7 +33,6 @@
     <boolean-data :value="false" title="设置蒙层上半部分的样式" @change="setMaskTopStyle"></boolean-data>
     <boolean-data :value="false" title="设置蒙层下半部分的样式" @change="setMaskBottomStyle"></boolean-data>
     <!-- #endif -->
-  </view>
 </template>
 
 <script setup lang="ts">
@@ -192,22 +192,6 @@
 </script>
 
 <style>
-  .picker-view {
-    width: 100%;
-    height: 320px;
-    margin-top: 10px;
-    margin-bottom: 20px;
-  }
-
-  .item {
-    height: 50px;
-  }
-
-  .text {
-    line-height: 50px;
-    text-align: center;
-  }
-
   /* 自动化测试 */
   .indicator-test {
     height: 50px;

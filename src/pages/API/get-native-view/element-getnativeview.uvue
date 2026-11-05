@@ -1,8 +1,8 @@
 <template>
   <view id="view">
-    <input id="input" value="input" class="input" />
-    <textarea id="textarea" value="textarea" class="textarea" />
-    <web-view id="webview" src="/hybrid/html/local.html" class="web-view"></web-view>
+    <input id="input" value="input" class="w-300 h-40 radius-4 border-width-1 border-color-000 border-style-solid m-20-auto" />
+    <textarea id="textarea" value="textarea" class="w-300 h-80 radius-4 border-width-1 border-color-000 border-style-solid m-20-auto" />
+    <web-view id="webview" src="/hybrid/html/local.html" class="w-300 h-120 radius-4 border-width-1 border-style-solid m-20-auto border-color-000"></web-view>
     // 注意：iOS平台真机运行时需要安装 Xcode 开发工具具备 UTS 开发环境，或提交自定基座打包后 checkNativeView 相关方法才会生效
     <button class="button" type="primary" @click="checkViewNativeView">检测view标签原生View</button>
     <button class="button" type="primary" @click="checkInputNativeView">检测input标签原生View</button>
@@ -99,36 +99,6 @@
 </script>
 
 <style>
-  .input {
-    width: 300px;
-    height: 40px;
-    border-radius: 4px;
-    border-width: 1px;
-    border-color: black;
-    border-style: solid;
-    margin: 20px auto;
-  }
-
-  .textarea {
-    width: 300px;
-    height: 80px;
-    border-radius: 4px;
-    border-width: 1px;
-    border-color: black;
-    border-style: solid;
-    margin: 20px auto;
-  }
-
-  .web-view {
-    width: 300px;
-    height: 120px;
-    margin: 20px auto;
-    border-radius: 4px;
-    border-width: 1px;
-    border-color: black;
-    border-style: solid;
-  }
-
   .button {
     margin: 10px 20px;
   }

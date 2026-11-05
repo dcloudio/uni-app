@@ -1,0 +1,220 @@
+import UniIntersectionObserver from 'io.dcloud.uniappxv.runtime.UniIntersectionObserver'
+import UniIntersectionObserveResult from 'io.dcloud.uniappxv.runtime.UniIntersectionObserveResult'
+import UniIntersectionRect from 'io.dcloud.uniappxv.runtime.UniIntersectionRect'
+import { CreateIntersectionObserverOptions, IntersectionObserver, ObserveResult, ObserveNodeRect, ObserveCallback } from '../interface.uts'
+
+function toObserveNodeRect(rect: UniIntersectionRect): ObserveNodeRect {
+    return {
+        left: rect.left as number,
+        top: rect.top as number,
+        right: rect.right as number,
+        bottom: rect.bottom as number,
+        width: rect.width as number,
+        height: rect.height as number,
+    } as ObserveNodeRect
+}
+
+/**
+ * 归一化 thresholds。
+ *
+ * 接口声明是 any[]，而原生构造参数按 UTSArray<Number> 读取，非法元素会在原生层
+ * 抛类型转换异常；这里先过滤掉非 number 的元素，全部非法时退回 [0]（与 wx 一致）。
+ */
+function normalizeThresholds(values: any[] | null): Array<number> {
+    const result: Array<number> = []
+    if (values != null) {
+        values.forEach((value: any) => {
+            if (typeof value == 'number') {
+                result.push(value as number)
+            }
+        })
+    }
+    if (result.length == 0) {
+        result.push(0)
+    }
+    return result
+}
+
+/**
+ * CreateIntersectionObserverOptions 的实现类。
+ *
+ * UTS 编译到 Kotlin 时 interface 没有构造函数，不能用对象字面量 + as 的方式创建，
+ * 必须通过实现类实例化。
+ */
+class CreateIntersectionObserverOptionsImpl implements CreateIntersectionObserverOptions {
+    thresholds: any[] | null = null
+    initialRatio: number | null = null
+    observeAll: boolean | null = null
+
+    constructor(thresholds: any[] | null, initialRatio: number | null, observeAll: boolean | null) {
+        this.thresholds = thresholds
+        this.initialRatio = initialRatio
+        this.observeAll = observeAll
+    }
+}
+
+/**
+ * 首个参数按 options 传入时（uni.createIntersectionObserver({ thresholds: [...] })），
+ * JS→UTS 桥接层会把普通对象还原成 UTSJSONObject，这里按同名字段读回 options，
+ * 与 JS/Harmony 实现「首参不是组件实例时按 options 处理」的行为保持一致。
+ */
+function optionsFromJSONObject(value: UTSJSONObject): CreateIntersectionObserverOptions {
+    return new CreateIntersectionObserverOptionsImpl(
+        value.getArray<any>('thresholds'),
+        value.getNumber('initialRatio'),
+        value.getBoolean('observeAll'),
+    )
+}
+
+/**
+ * IntersectionObserver 的 UTS 实现。
+ *
+ * 返回给业务的是本 UTS 对象，参照区域、阈值、观察目标等状态都保存在 UTS 层；
+ * 原生 UniIntersectionObserver 只在 observe 时创建一次，作为纯实现细节被持有，
+ * 组件实例 / 元素数组也在 observe 时才解析，因此组件挂载前后创建观察器都能正常工作。
+ */
+class ServiceIntersectionObserver implements IntersectionObserver {
+    /**
+     * 作用域：组件实例或 uniElement 数组，与 interface.uts 的 component 入参一致。
+     * observe() 时才解析成原生需要的元素数组。
+     */
+    private _scope: any | null
+    private _thresholds: Array<number>
+    private _initialRatio: number
+    private _observeAll: boolean
+    private _relativeToSelector: string | null = null
+    private _margins: any | null = null
+    private _observer: UniIntersectionObserver | null = null
+
+    constructor(
+        scope: any | null,
+        options?: CreateIntersectionObserverOptions | null,
+    ) {
+        this._scope = scope
+        this._thresholds = normalizeThresholds(options?.thresholds ?? null)
+        this._initialRatio = (options?.initialRatio ?? 0) as number
+        this._observeAll = (options?.observeAll ?? false) as boolean
+    }
+
+    relativeTo(selector: string, margins?: any): IntersectionObserver {
+        this._relativeToSelector = selector
+        this._margins = margins ?? null
+        return this
+    }
+
+    relativeToViewport(margins?: any): IntersectionObserver {
+        this._relativeToSelector = null
+        this._margins = margins ?? null
+        return this
+    }
+
+    /**
+     * 长期回调：observe 注册后要持续触发，必须让桥接层保住这次回调（否则只会回调一次）。
+     */
+    observe(targetSelector: string, callback: ObserveCallback): void {
+        if (callback == null) {
+            return
+        }
+        const observer = this.resolveObserver()
+        observer.observe(targetSelector, (result: UniIntersectionObserveResult) => {
+            callback({
+                id: result.id as string,
+                intersectionRatio: result.intersectionRatio as number,
+                intersectionRect: toObserveNodeRect(result.intersectionRect),
+                boundingClientRect: toObserveNodeRect(result.boundingClientRect),
+                relativeRect: toObserveNodeRect(result.relativeRect),
+                time: result.time as number,
+            } as ObserveResult)
+        })
+    }
+
+    disconnect(): void {
+        this._observer?.disconnect()
+        this._observer = null
+    }
+
+    /**
+     * 惰性创建唯一的原生观察器，并下发当前参照区域配置。
+     *
+     * 原生对象只在 observe 时创建：作用域和页面都要等挂载后才能解析，
+     * 这样组件挂载前后创建观察器都能正常工作。同一个原生对象可承载多个 target，
+     * 重复 observe 复用同一个句柄，disconnect 一次即可全部释放。
+     */
+    private resolveObserver(): UniIntersectionObserver {
+        if (this._observer == null) {
+            // 作用域可空：未传或解析为空时由原生退化为当前栈顶页面。
+            this._observer = new UniIntersectionObserver(
+                this.resolveScopeElements(),
+                this._thresholds,
+                this._initialRatio,
+                this._observeAll,
+            )
+        }
+        const observer = this._observer!
+        // 参照区域以最近一次 relativeTo / relativeToViewport 为准；未显式指定时与 wx 一致取页面视口。
+        const relativeToSelector = this._relativeToSelector
+        if (relativeToSelector != null) {
+            observer.relativeTo(relativeToSelector!, this._margins)
+        } else {
+            observer.relativeToViewport(this._margins)
+        }
+        return observer
+    }
+
+    /**
+     * 把作用域解析成原生需要的元素数组。
+     *
+     * 组件实例取 $rootElements（当前已渲染的直接根元素快照），所以必须等 observe()
+     * 再取：组件挂载前快照是空的。空快照原样交给原生，由原生退化为当前栈顶页面。
+     * 直接传 uniElement 数组的用法保持不变（历史兼容）。
+     */
+    private resolveScopeElements(): Array<UniElement> | null {
+        const scope = this._scope
+        if (scope == null) {
+            return null
+        }
+        if (Array.isArray(scope)) {
+            return scope as Array<UniElement>
+        }
+        return (scope as ComponentPublicInstance).$rootElements
+    }
+}
+
+/**
+ * options 归一化。
+ *
+ * uvue/JS 传进来的普通对象在桥接层是 UTSJSONObject，而 CreateIntersectionObserverOptions
+ * 是接口、没有构造函数，桥接层按接口类型强转会抛 ClassCastException；
+ * 所以导出签名收 any，这里统一按字段读回，已经是实现类实例的才直接透传。
+ */
+function resolveOptions(value: any | null): CreateIntersectionObserverOptions | null {
+    if (value == null) {
+        return null
+    }
+    if (value instanceof UTSJSONObject) {
+        return optionsFromJSONObject(value as UTSJSONObject)
+    }
+    return value as CreateIntersectionObserverOptions
+}
+
+/** 导出签名：options 收 any，避免桥接层生成接口类型的强转。 */
+type CreateIntersectionObserverExport = (component: any, options?: any) => IntersectionObserver
+
+export const createIntersectionObserver: CreateIntersectionObserverExport =
+    function (
+        component: any,
+        options?: any,
+    ): IntersectionObserver {
+        let resolvedOptions = resolveOptions(options)
+        let scope: any | null = null
+        if (component != null) {
+            if (component instanceof UTSJSONObject) {
+                // 与 JS/Harmony 实现保持一致：首个参数不是元素数组时按 options 处理。
+                resolvedOptions = optionsFromJSONObject(component as UTSJSONObject)
+            } else {
+                // 组件实例或 uniElement 数组：原样透传，observe() 时再解析成元素数组。
+                scope = component
+            }
+        }
+        return new ServiceIntersectionObserver(scope, resolvedOptions)
+    }

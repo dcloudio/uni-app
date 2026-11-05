@@ -75,9 +75,32 @@
 }
 
 .loading-size {
-  width: 72px;
-  height: 72px;
+  width: 48px;
+  height: 48px;
 }
+
+/* #ifdef H5 */
+@media all and (min-width: 768px) {
+  .list-view {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    align-content: flex-start;
+  }
+
+  .list-item {
+    border-bottom: none;
+  }
+
+  .item-text-active {
+    color: #007aff;
+  }
+
+  .check {
+    display: none;
+  }
+}
+/* #endif */
 
 @media (prefers-color-scheme: dark) {
   .uni-data-picker-view {

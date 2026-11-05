@@ -1,8 +1,7 @@
 <template>
-  <view>
     <page-head :title="data.title"></page-head>
     <page-intro content="本页演示 uni.showActionSheet：通过单选切换列表项、开关控制 titleColor/itemColor、超长与空文本 item、cancelText/cancelColor/backgroundColor 等；点击按钮弹出 actionSheet，可查看回调结果。"></page-intro>
-    <enum-data :items="titleOptions" title="设置标题" @change="radioChange"></enum-data>
+    <enum-data-checkbox :items="titleOptions" title="设置标题" @change="radioChange"></enum-data-checkbox>
     <!-- #ifndef MP-ALIPAY -->
     <boolean-data :value="data.titleColorCustom" title="自定义 titleColor" @change="titleColorChange"></boolean-data>
     <!-- #endif -->
@@ -14,26 +13,25 @@
     <boolean-data :value="data.cancelColorCustom" title="自定义 cancelColor" @change="cancelColorChange"></boolean-data>
     <boolean-data :value="data.backgroundColorCustom" title="自定义 backgroundColor" @change="backgroundColorChange"></boolean-data>
     <!-- #endif -->
-    <view class="uni-padding-wrap">
-      <view class="uni-btn-v">
+    <view class="p-0-15">
+      <view class="p-5-0">
         <button <!-- #ifndef MP-ALIPAY -->
-          class="uni-btn-v"
+          class="p-5-0"
           <!-- #endif -->
           type="default" @tap="showActionSheet" id="btn-action-sheet-show">弹出actionSheet</button>
         <button <!-- #ifndef MP-ALIPAY -->
-          class="uni-btn-v uni-btn"
+          class="p-5-0 mt-10"
           <!-- #endif -->
           <!-- #ifdef MP-ALIPAY -->
-          class="uni-btn"
+          class="mt-10"
           <!-- #endif -->
           type="default" @tap="showActionSheetAndShowAgainInCallback" id="btn-action-sheet-show">showActionSheet 并在回调中再次 showActionSheet</button>
       </view>
     </view>
-  </view>
 </template>
 <script setup lang="ts">
   import { state, setLifeCycleNum } from '@/store/index.ts'
-  import { ItemType } from '@/components/enum-data/enum-data-types'
+  import { ItemType } from '@/components/enum-data-checkbox/enum-data-checkbox-types'
 
   type ActionSheetItemType = {
     value: string,

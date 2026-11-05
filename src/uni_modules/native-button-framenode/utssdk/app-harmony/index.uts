@@ -3,7 +3,6 @@ import { INativeButtonFrameNodeContext } from "../interface.uts"
 
 export class NativeButtonFrameNode {
   private $element : UniNativeViewElement
-  private button : typeNode.Button | null = null
   private options : ButtonOptions = {
     type: ButtonType.Normal,
     stateEffect: true
@@ -26,13 +25,15 @@ export class NativeButtonFrameNode {
       this.$element.dispatchEvent(new UniNativeViewEvent("customClick", detail))
     })
 
-    this.button = button
     this.$element.bindHarmonyFrameNode(button)
     this.$element.bindHarmonyController(this)
   }
 
   updateText(text : string) {
-    this.button?.initialize(text, this.options)
+    const frameNode = this.$element.getHarmonyFrameNode()
+    if (frameNode != null) {
+      (frameNode as typeNode.Button).initialize(text, this.options)
+    }
   }
 
 }

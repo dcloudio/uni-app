@@ -1,13 +1,13 @@
 <template>
-  <list-view @scrolltolower="onScrollTolower" style="flex:1" show-scrollbar=false>
+  <list-view @scrolltolower="onScrollTolower" class="flex-1" show-scrollbar=false>
     <list-item v-for="index in listcount" :key="index" :type="(index != 0 && index%10 == 6) ? 0:1">
       <!-- #ifndef MP -->
       <ad v-if="index != 0 && index%10 == 6" adpid="1111111111" @load="onAdLoad" @error="onAdError" @close="onAdClose"></ad>
       <!-- #endif -->
       <!-- #ifdef MP -->
-      <view class="uni-center">微信小程序平台暂不支持测试广告位，需要开通uni-ad后可测试</view>
+      <view class="flex-dir-row justify-center">微信小程序平台暂不支持测试广告位，需要开通uni-ad后可测试</view>
       <!-- #endif -->
-      <text v-if="index == 0 || index%10 != 6" style="width: 100%; height: 200px;background-color: aquamarine;margin-top: 10px;">这是一条占位的信息{{index}}</text>
+      <text class="w-full h-200 mt-10 bg-7fffd4" v-if="index == 0 || index%10 != 6">这是一条占位的信息{{index}}</text>
     </list-item>
   </list-view>
 </template>

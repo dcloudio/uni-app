@@ -1,34 +1,32 @@
 <template>
-	<view>
 		<page-head :title="title"></page-head>
-		<view class="uni-padding-wrap">
+		<view class="p-0-15">
 			<text>
 				注意：1.离开当前页面后背景音乐将保持播放；\n
 				2. 硬退出app、调用stop api、播放结束都会清理后台控制中心和锁屏信息显示
 			</text>
 			<boolean-data :value="false" title="是否循环播放" @change="setLoop"></boolean-data>
-			<view class="uni-common-mt">
+			<view class="mt-15">
 				<slider ref="sliderRef" :value="position" :min="0" :max="duration" @changing="onchanging"
 					@change="onchange"></slider>
 			</view>
-			<view class="page-body-buttons">
+			<view class="d-flex justify-center mt-50 flex-dir-column">
 				<template v-if="playing">
-					<view class="page-body-button" @tap="stop">
-						<image class="image" src="/static/test-audio/stop.png"></image>
+					<view class="flex-dir-row justify-center" @tap="stop">
+						<image class="w-75 h-75" src="/static/test-audio/stop.png"></image>
 					</view>
-					<view class="page-body-button" @tap="pause" style="margin-top: 20px;">
-						<image class="image" src="/static/test-audio/pause.png"></image>
+					<view class="flex-dir-row justify-center mt-20" @tap="pause">
+						<image class="w-75 h-75" src="/static/test-audio/pause.png"></image>
 					</view>
 				</template>
 				<template v-if="!playing">
-					<view class="page-body-button" @tap="play">
-						<image class="image" src="/static/test-audio/play.png"></image>
+					<view class="flex-dir-row justify-center" @tap="play">
+						<image class="w-75 h-75" src="/static/test-audio/play.png"></image>
 					</view>
 				</template>
-				<view class="page-body-button"></view>
+				<view class="flex-dir-row justify-center"></view>
 			</view>
 		</view>
-	</view>
 </template>
 <script setup lang="ts">
 	const title = ref("backgroundAudio")
@@ -195,51 +193,3 @@
 	})
 
 </script>
-
-<style>
-	.image {
-		width: 75px;
-		height: 75px;
-	}
-
-	.page-body-text {
-		padding: 0 15px;
-	}
-
-	.page-body-wrapper {
-		margin-top: 0;
-	}
-
-	.page-body-info {
-		padding-bottom: 25px;
-	}
-
-	.time-big {
-		font-size: 30px;
-		margin: 10px;
-	}
-
-	.slider {
-		width: 315px;
-	}
-
-	.play-time {
-		width: 100%;
-		padding: 10px 0;
-		display: flex;
-		justify-content: space-between;
-		box-sizing: border-box;
-	}
-
-	.page-body-buttons {
-		display: flex;
-		justify-content: center;
-		margin-top: 50px;
-		flex-direction: column;
-	}
-
-	.page-body-button {
-		flex-direction: row;
-		justify-content: center;
-	}
-</style>

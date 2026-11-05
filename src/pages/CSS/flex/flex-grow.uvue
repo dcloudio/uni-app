@@ -1,9 +1,9 @@
 <template>
-    <view style="flex-grow: 1">
-      <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
+    <view class="flex-grow-1">
+      <text class="fs-13 color-tips-0958d9 bg-tips-e6f4ff border-l-4-solid-tips-91caff p-10-12 radius-4 m-10">说明：左边是正常版本，右边是拍平版本</text>
       <view>
         <text>flex-grow</text>
-        <view class="demo-box">
+        <view class="flex-dir-row justify-around mt-10">
           <view class="flex-container">
             <view class="common red" style="flex-grow: 0.5">
               <text>0.5</text>
@@ -29,42 +29,42 @@
         </view>
       </view>
 
-      <view class="uni-common-mt">
-        <text class="uni-title-text">scroll-view 组件</text>
+      <view class="mt-15">
+        <text class="fs-15 fw-bold color-text-333">scroll-view 组件</text>
       </view>
 
-      <view class="demo-box">
+      <view class="flex-dir-row justify-around mt-10">
         <view class="flex-container-compare" style="margin-right:10px;">
           <view class="common red width-30-no-grow"></view>
           <scroll-view class="scroll-view-grow green" style="flex-grow: 0.5;">
-            <text class="scroll-view-label">flex-grow: 0.5</text>
+            <text class="scroll-view-label fs-12 text-center">flex-grow: 0.5</text>
           </scroll-view>
           <view class="common blue width-30-no-grow"></view>
         </view>
         <view class="flex-container-compare">
           <view class="common red width-30-no-grow"></view>
           <scroll-view class="scroll-view-grow green" style="flex-grow: 1;">
-            <text class="scroll-view-label">flex-grow: 1</text>
+            <text class="scroll-view-label fs-12 text-center">flex-grow: 1</text>
           </scroll-view>
           <view class="common blue width-30-no-grow"></view>
         </view>
       </view>
 
-      <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
+      <view class="mt-15">
+        <text class="fs-15 fw-bold color-text-333">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <!-- 普通版本 -->
-      <view class="test-container">
+      <view class="flex-dir-row justify-between mt-10">
         <!-- view 组件测试 -->
-        <view class="test-item">
-          <text class="uni-subtitle-text">view 组件</text>
-          <text class="uni-info">设置值: {{data.flexGrow}}</text>
-          <text class="uni-info">获取值: {{data.flexGrowActual}}</text>
+        <view class="flex-1 m-0-5">
+          <text class="color-888 fs-12 fw-bold u-mt-5">view 组件</text>
+          <text class="fs-12 color-999">设置值: {{data.flexGrow}}</text>
+          <text class="fs-12 color-999">获取值: {{data.flexGrowActual}}</text>
           <view class="test-box">
             <view class="test-flex-container">
               <view class="common-image red"></view>
-              <view ref="viewRef" class="common-image green test-view" :style="{ flexGrow: data.flexGrow }">
+              <view ref="viewRef" class="common-image green" :style="{ flexGrow: data.flexGrow }">
                 <text class="common-text">{{data.flexGrow}}</text>
               </view>
               <view class="common-image blue"></view>
@@ -73,28 +73,28 @@
         </view>
 
         <!-- text 组件测试 -->
-        <view class="test-item">
-          <text class="uni-subtitle-text">text 组件</text>
-          <text class="uni-info">设置值: {{data.flexGrow}}</text>
-          <text class="uni-info">获取值: {{data.flexGrowActualText}}</text>
+        <view class="flex-1 m-0-5">
+          <text class="color-888 fs-12 fw-bold u-mt-5">text 组件</text>
+          <text class="fs-12 color-999">设置值: {{data.flexGrow}}</text>
+          <text class="fs-12 color-999">获取值: {{data.flexGrowActualText}}</text>
           <view class="test-box">
             <view class="test-flex-container">
               <text class="common-text red">红色</text>
-              <text ref="textRef" class="common-text green test-text" :style="{ flexGrow: data.flexGrow }">text</text>
+              <text ref="textRef" class="common-text green" :style="{ flexGrow: data.flexGrow }">text</text>
               <text class="common-text blue">蓝色</text>
             </view>
           </view>
         </view>
 
         <!-- image 组件测试 -->
-        <view class="test-item">
-          <text class="uni-subtitle-text">image 组件</text>
-          <text class="uni-info">设置值: {{data.flexGrow}}</text>
-          <text class="uni-info">获取值: {{data.flexGrowActualImage}}</text>
+        <view class="flex-1 m-0-5">
+          <text class="color-888 fs-12 fw-bold u-mt-5">image 组件</text>
+          <text class="fs-12 color-999">设置值: {{data.flexGrow}}</text>
+          <text class="fs-12 color-999">获取值: {{data.flexGrowActualImage}}</text>
           <view class="test-box">
             <view class="test-flex-container">
               <image class="common-image red" src="/static/test-image/logo.png"></image>
-              <image ref="imageRef" class="common-image green test-image" :style="{ flexGrow: data.flexGrow }" src="/static/test-image/logo.png"></image>
+              <image ref="imageRef" class="common-image green" :style="{ flexGrow: data.flexGrow }" src="/static/test-image/logo.png"></image>
               <image class="common-image blue" src="/static/test-image/logo.png"></image>
             </view>
           </view>
@@ -102,16 +102,16 @@
       </view>
 
       <!-- 拍平版本 -->
-      <view class="test-container">
+      <view class="flex-dir-row justify-between mt-10">
         <!-- view 组件拍平测试 -->
-        <view class="test-item">
-          <text class="uni-subtitle-text">view 组件拍平</text>
-          <text class="uni-info">设置值: {{data.flexGrow}}</text>
-          <text class="uni-info">获取值: {{data.flexGrowActualFlat}}</text>
+        <view class="flex-1 m-0-5">
+          <text class="color-888 fs-12 fw-bold u-mt-5">view 组件拍平</text>
+          <text class="fs-12 color-999">设置值: {{data.flexGrow}}</text>
+          <text class="fs-12 color-999">获取值: {{data.flexGrowActualFlat}}</text>
           <view class="test-box">
             <view class="test-flex-container">
               <view class="common-image red"></view>
-              <view ref="viewRefFlat" class="common-image green test-view-flatten" :style="{ flexGrow: data.flexGrow }" flatten>
+              <view ref="viewRefFlat" class="common-image green" :style="{ flexGrow: data.flexGrow }" flatten>
                 <text class="common-text">{{data.flexGrow}}</text>
               </view>
               <view class="common-image blue"></view>
@@ -120,43 +120,43 @@
         </view>
 
         <!-- text 组件拍平测试 -->
-        <view class="test-item">
-          <text class="uni-subtitle-text">text 组件拍平</text>
-          <text class="uni-info">设置值: {{data.flexGrow}}</text>
-          <text class="uni-info">获取值: {{data.flexGrowActualTextFlat}}</text>
+        <view class="flex-1 m-0-5">
+          <text class="color-888 fs-12 fw-bold u-mt-5">text 组件拍平</text>
+          <text class="fs-12 color-999">设置值: {{data.flexGrow}}</text>
+          <text class="fs-12 color-999">获取值: {{data.flexGrowActualTextFlat}}</text>
           <view class="test-box">
             <view class="test-flex-container">
               <text class="common-text red">红色</text>
-              <text ref="textRefFlat" class="common-text green test-text-flatten" :style="{ flexGrow: data.flexGrow }" flatten>text</text>
+              <text ref="textRefFlat" class="common-text green" :style="{ flexGrow: data.flexGrow }" flatten>text</text>
               <text class="common-text blue">蓝色</text>
             </view>
           </view>
         </view>
 
         <!-- image 组件拍平测试 -->
-        <view class="test-item">
-          <text class="uni-subtitle-text">image 组件拍平</text>
-          <text class="uni-info">设置值: {{data.flexGrow}}</text>
-          <text class="uni-info">获取值: {{data.flexGrowActualImageFlat}}</text>
+        <view class="flex-1 m-0-5">
+          <text class="color-888 fs-12 fw-bold u-mt-5">image 组件拍平</text>
+          <text class="fs-12 color-999">设置值: {{data.flexGrow}}</text>
+          <text class="fs-12 color-999">获取值: {{data.flexGrowActualImageFlat}}</text>
           <view class="test-box">
             <view class="test-flex-container">
               <image class="common-image red" src="/static/test-image/logo.png"></image>
-              <image ref="imageRefFlat" class="common-image green test-image-flatten" :style="{ flexGrow: data.flexGrow }" flatten src="/static/test-image/logo.png"></image>
+              <image ref="imageRefFlat" class="common-image green" :style="{ flexGrow: data.flexGrow }" flatten src="/static/test-image/logo.png"></image>
               <image class="common-image blue" src="/static/test-image/logo.png"></image>
             </view>
           </view>
         </view>
       </view>
 
-      <view class="uni-common-mt uni-common-mb">
-        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
-        <enum-data :items="flexGrowEnum" title="flex-grow 枚举值" @change="radioChangeFlexGrow" :compact="true"></enum-data>
+      <view class="mt-15 mb-15">
+        <text class="fs-13 color-tips-0958d9 bg-tips-e6f4ff border-l-4-solid-tips-91caff p-10-12 radius-4 m-10">第一个枚举值，'' (空字符串) - 空值情况</text>
+        <enum-data-checkbox :items="flexGrowEnum" title="flex-grow 枚举值" @change="radioChangeFlexGrow" :compact="true"></enum-data-checkbox>
         <input-data :defaultValue="data.flexGrow" title="flex-grow 自定义值" type="text" @confirm="inputChangeFlexGrow"></input-data>
       </view>
 
       <!-- #ifndef MP-ALIPAY -->
-        <text class="uni-title-text uni-common-mt">native-view 组件：flex-grow: 0.5 和 flex-grow: 1</text>
-        <view class="demo-box uni-common-mb">
+        <text class="fs-15 fw-bold color-text-333 mt-15">native-view 组件：flex-grow: 0.5 和 flex-grow: 1</text>
+        <view class="mb-15 flex-dir-row justify-around mt-10">
           <view class="flex-container-compare" style="margin-right:10px;">
             <view class="common red width-30-no-grow"></view>
             <test-native-view class="native-view-grow green" style="flex-grow: 0.5;"></test-native-view>
@@ -173,7 +173,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ItemType } from '@/components/enum-data/enum-data-types'
+  import { ItemType } from '@/components/enum-data-checkbox/enum-data-checkbox-types'
 
   const flexGrowEnum: ItemType[] = [
     { value: 0, name: '' },
@@ -245,12 +245,6 @@
 </script>
 
 <style>
-  .demo-box {
-    flex-direction: row;
-    margin-top: 10px;
-    justify-content: space-around;
-  }
-
   .flex-container {
     flex: 1;
     margin: 0 10px;
@@ -276,17 +270,6 @@
     width: 30px;
     height: 30px;
     background-color: green;
-  }
-
-  .test-container {
-    flex-direction: row;
-    justify-content: space-between;
-    margin-top: 10px;
-  }
-
-  .test-item {
-    flex: 1;
-    margin: 0 5px;
   }
 
   .test-box {
@@ -315,9 +298,7 @@
   }
 
   .scroll-view-label {
-    font-size: 12px;
     line-height: 50px;
-    text-align: center;
   }
 
   .flex-container-compare {

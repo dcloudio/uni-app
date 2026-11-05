@@ -1,0 +1,148 @@
+import { UniLocationAmapProvider } from '../interface.uts'
+
+export class UniLocationAmapProviderImpl implements UniLocationAmapProvider {
+	id : string = 'amap'
+	override description : string = '高德定位'
+	isAppExist : boolean = true
+
+	private driver : AmapLocationManager = new AmapLocationManager()
+	private locationUpdateCallback : OnLocationChangeCallback | null = null
+	private locationUpdateErrorCallback : OnLocationChangeErrorCallback | null = null
+
+	getLocation(options : GetLocationOptions) : void {
+		if (options.type != null && options.type != 'gcj02') {
+			this.fail(options.fail, options.complete, 1505607)
+			return
+		}
+		let highAccuracyExpireTime : number = options.highAccuracyExpireTime ?? 3000
+		if (highAccuracyExpireTime < 3000) {
+			highAccuracyExpireTime = 3000
+		}
+		const timeoutSeconds : number = highAccuracyExpireTime / 1000
+		this.driver.requestLocation(
+			highAccuracy = options.isHighAccuracy == true,
+			geocode = options.geocode == true,
+			altitude = options.altitude == true,
+			timeout = timeoutSeconds,
+			success = (result : Map<string, any>) => {
+				const location = this.toLocationResult(result)
+				options.success?.(location)
+				options.complete?.(location)
+			},
+			failure = (code : number, message : string) => {
+				this.fail(options.fail, options.complete, code, message)
+			}
+		)
+	}
+
+	startLocationUpdate(options : StartLocationUpdateOptions) : void {
+		this.start(options.type, false, options.success, options.fail, options.complete)
+	}
+
+	startLocationUpdateBackground(options : StartLocationUpdateBackgroundOptions) : void {
+		this.start(options.type, true, options.success, options.fail, options.complete)
+	}
+
+	private start(
+		type : string | null,
+		background : boolean,
+		success : ((result : StartLocationUpdateSuccess) => void) | null,
+		fail : ((result : GetLocationFail) => void) | null,
+		complete : ((result : any) => void) | null
+	) : void {
+		if (type != null && type != 'gcj02') {
+			this.fail(fail, complete, 1505607)
+			return
+		}
+		this.driver.startUpdatingLocation(
+			highAccuracy = true,
+			geocode = false,
+			altitude = false,
+			background = background,
+			started = () => {
+				const result : StartLocationUpdateSuccess = {}
+				success?.(result)
+				complete?.({})
+			},
+			success = (result : Map<string, any>) => {
+				this.locationUpdateCallback?.(this.toLocationResult(result))
+			},
+			startFailure = (code : number, message : string) => {
+				this.fail(fail, complete, code, message)
+			},
+			updateFailure = (code : number, message : string) => {
+				this.locationUpdateErrorCallback?.(this.createError(code, message))
+			}
+		)
+	}
+
+	stopLocationUpdate(_options : StopLocationUpdateOptions) : void {
+		this.driver.stopUpdatingLocation()
+	}
+
+	@UTSJS.keepAlive
+	onLocationChange(@escaping listener : OnLocationChangeCallback) : number {
+		this.locationUpdateCallback = listener
+		return 0
+	}
+
+	offLocationChange(_listener ?: number | OnLocationChangeCallback | null) : void {
+		this.locationUpdateCallback = null
+	}
+
+	@UTSJS.keepAlive
+	onLocationChangeError(@escaping listener : OnLocationChangeErrorCallback) : number {
+		this.locationUpdateErrorCallback = listener
+		return 0
+	}
+
+	offLocationChangeError(_listener ?: number | OnLocationChangeErrorCallback | null) : void {
+		this.locationUpdateErrorCallback = null
+	}
+
+	toJSON() : Map<string, any> {
+		const value = new Map<string, any>()
+		value.set('id', this.id)
+		value.set('description', this.description)
+		value.set('isAppExist', this.isAppExist)
+		return value
+	}
+
+	private toLocationResult(result : Map<string, any>) : GetLocationSuccess {
+		return {
+			latitude: result['latitude'] as number,
+			longitude: result['longitude'] as number,
+			accuracy: result['accuracy'] as number,
+			horizontalAccuracy: result['horizontalAccuracy'] as number,
+			verticalAccuracy: result['verticalAccuracy'] as number,
+			speed: result['speed'] as number,
+			altitude: result['altitude'] as number,
+			address: (result['address'] ?? null) as string | null
+		}
+	}
+
+	private fail(
+		failCallback : ((result : GetLocationFail) => void) | null,
+		completeCallback : ((result : any) => void) | null,
+		errCode : number,
+		message : string = ''
+	) : void {
+		const error = this.createError(errCode, message)
+		failCallback?.(error)
+		completeCallback?.(error)
+	}
+
+	private createError(errCode : number, message : string) : GetLocationFailImpl {
+		const error = new GetLocationFailImpl(errCode)
+		if (errCode == 1505605) {
+			error.errMsg = 'AMap API key is missing or invalid.'
+		}
+		if (message.length > 0) {
+			error.errMsg = error.errMsg + ' ' + message
+		}
+		return error
+	}
+
+	constructor() {
+	}
+}

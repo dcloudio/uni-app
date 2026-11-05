@@ -1,57 +1,57 @@
 <template>
-  <view class="border-width-page">
-    <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
+  <view>
+    <text class="fs-13 color-tips-0958d9 bg-tips-e6f4ff border-l-4-solid-tips-91caff p-10-12 radius-4 m-10">说明：左边是正常版本，右边是拍平版本</text>
     <view>
-      <text class="theme-label">border-width: 5px (无 border-style)</text>
-      <view class="demo-box">
+      <text class="color-text-333">border-width: 5px (无 border-style)</text>
+      <view class="flex-dir-row justify-around mt-10">
         <view class="common" style="border-width: 5px;"></view>
         <view class="common" style="border-width: 5px;" flatten></view>
       </view>
     </view>
 
     <view>
-      <text class="theme-label">border-width: 5px</text>
-      <view class="demo-box">
+      <text class="color-text-333">border-width: 5px</text>
+      <view class="flex-dir-row justify-around mt-10">
         <view class="common" style="border-width: 5px; border-style: solid;"></view>
         <view class="common" style="border-width: 5px; border-style: solid;" flatten></view>
       </view>
     </view>
 
     <view>
-      <text class="theme-label">border-left-width: 5px</text>
-      <view class="demo-box">
+      <text class="color-text-333">border-left-width: 5px</text>
+      <view class="flex-dir-row justify-around mt-10">
         <view class="common" style="border-left-width: 5px; border-left-style: solid; "></view>
         <view class="common" style="border-left-width: 5px; border-left-style: solid; " flatten></view>
       </view>
     </view>
 
     <view>
-      <text class="theme-label">border-top-width: 10px</text>
-      <view class="demo-box">
+      <text class="color-text-333">border-top-width: 10px</text>
+      <view class="flex-dir-row justify-around mt-10">
         <view class="common" style="border-top-width: 10px; border-top-style: solid; "></view>
         <view class="common" style="border-top-width: 10px; border-top-style: solid; " flatten></view>
       </view>
     </view>
 
     <view>
-      <text class="theme-label">border-right-width: 15px</text>
-      <view class="demo-box">
+      <text class="color-text-333">border-right-width: 15px</text>
+      <view class="flex-dir-row justify-around mt-10">
         <view class="common" style="border-right-width: 15px; border-right-style: solid; "></view>
         <view class="common" style="border-right-width: 15px; border-right-style: solid; " flatten></view>
       </view>
     </view>
 
     <view>
-      <text class="theme-label">border-bottom-width: 20px</text>
-      <view class="demo-box">
+      <text class="color-text-333">border-bottom-width: 20px</text>
+      <view class="flex-dir-row justify-around mt-10">
         <view class="common" style="border-bottom-width: 20px; border-bottom-style: solid; "></view>
         <view class="common" style="border-bottom-width: 20px; border-bottom-style: solid; " flatten></view>
       </view>
     </view>
 
     <view>
-      <text class="theme-label">左下细边框蓝色</text>
-      <view class="demo-box">
+      <text class="color-text-333">左下细边框蓝色</text>
+      <view class="flex-dir-row justify-around mt-10">
         <view class="common"
           style="border-left-width: 0.5px; border-bottom-width: 0.5px; border-left-style: solid; border-bottom-style: solid; border-color:blue;">
         </view>
@@ -63,56 +63,56 @@
 
     <!-- 圆角测试 -->
     <view>
-      <text class="theme-label">border-width: 5px (无 border-style)</text>
-      <view class="demo-box">
+      <text class="color-text-333">border-width: 5px (无 border-style)</text>
+      <view class="flex-dir-row justify-around mt-10">
         <view class="common-circle" style="border-width: 5px;"></view>
         <view class="common-circle" style="border-width: 5px;" flatten></view>
       </view>
     </view>
 
     <view>
-      <text class="theme-label">border-width: 5px</text>
-      <view class="demo-box">
+      <text class="color-text-333">border-width: 5px</text>
+      <view class="flex-dir-row justify-around mt-10">
         <view class="common-circle" style="border-width: 5px; border-style: solid;"></view>
         <view class="common-circle" style="border-width: 5px; border-style: solid;" flatten></view>
       </view>
     </view>
 
     <view>
-      <text class="theme-label">border-left-width: 5px</text>
-      <view class="demo-box">
+      <text class="color-text-333">border-left-width: 5px</text>
+      <view class="flex-dir-row justify-around mt-10">
         <view class="common-circle" style="border-left-width: 5px; border-left-style: solid; "></view>
         <view class="common-circle" style="border-left-width: 5px; border-left-style: solid; " flatten></view>
       </view>
     </view>
 
     <view>
-      <text class="theme-label">border-top-width: 10px</text>
-      <view class="demo-box">
+      <text class="color-text-333">border-top-width: 10px</text>
+      <view class="flex-dir-row justify-around mt-10">
         <view class="common-circle" style="border-top-width: 10px; border-top-style: solid; "></view>
         <view class="common-circle" style="border-top-width: 10px; border-top-style: solid; " flatten></view>
       </view>
     </view>
 
     <view>
-      <text class="theme-label">border-right-width: 15px</text>
-      <view class="demo-box">
+      <text class="color-text-333">border-right-width: 15px</text>
+      <view class="flex-dir-row justify-around mt-10">
         <view class="common-circle" style="border-right-width: 15px; border-right-style: solid; "></view>
         <view class="common-circle" style="border-right-width: 15px; border-right-style: solid; " flatten></view>
       </view>
     </view>
 
     <view>
-      <text class="theme-label">border-bottom-width: 20px</text>
-      <view class="demo-box">
+      <text class="color-text-333">border-bottom-width: 20px</text>
+      <view class="flex-dir-row justify-around mt-10">
         <view class="common-circle" style="border-bottom-width: 20px; border-bottom-style: solid; "></view>
         <view class="common-circle" style="border-bottom-width: 20px; border-bottom-style: solid; " flatten></view>
       </view>
     </view>
 
     <view>
-      <text class="theme-label">左下细边框蓝色</text>
-      <view class="demo-box">
+      <text class="color-text-333">左下细边框蓝色</text>
+      <view class="flex-dir-row justify-around mt-10">
         <view class="common-circle"
           style="border-left-width: 0.5px; border-bottom-width: 0.5px; border-left-style: solid; border-bottom-style: solid; border-color:blue;">
         </view>
@@ -123,8 +123,8 @@
     </view>
 
     <view>
-      <text class="theme-label">裁剪展现半圆</text>
-      <view class="demo-box">
+      <text class="color-text-333">裁剪展现半圆</text>
+      <view class="flex-dir-row justify-around mt-10">
         <view style="width: 100px;height: 50px; /* 高度是宽度的一半 */
             overflow: hidden; /* 隐藏下半部分 */
             position: relative;">
@@ -150,8 +150,8 @@
     </view>
 
     <view>
-      <text class="theme-label">底边透明，3边上色的 3/4 圆弧</text>
-      <view class="demo-box">
+      <text class="color-text-333">底边透明，3边上色的 3/4 圆弧</text>
+      <view class="flex-dir-row justify-around mt-10">
         <view style="width: 40px; height: 40px;
           /* 1. 基础边框：厚度、样式、透明色 */
           border: 5px solid transparent;
@@ -176,8 +176,8 @@
     </view>
 
     <view>
-      <text class="theme-label">底边上色，1/4边透明的 3/4 圆弧 加scale缩小</text>
-      <view class="demo-box">
+      <text class="color-text-333">底边上色，1/4边透明的 3/4 圆弧 加scale缩小</text>
+      <view class="flex-dir-row justify-around mt-10">
         <view style="width: 32px;height: 32px;
           border-radius: 16px;
           border: 2px solid blue;
@@ -193,9 +193,9 @@
       </view>
     </view>
 
-    <text class="uni-title-text uni-common-mt">scroll-view 组件</text>
+    <text class="fs-15 fw-bold color-text-333 mt-15">scroll-view 组件</text>
 
-    <view class="demo-box">
+    <view class="flex-dir-row justify-around mt-10">
       <scroll-view class="common scroll-view-border" style="border-width: 5px;">
         <text class="common-text">border-width: 5px</text>
       </scroll-view>
@@ -205,83 +205,83 @@
     </view>
 
     <!-- 动态设置 -->
-    <view class="uni-common-mt">
-      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
+    <view class="mt-15">
+      <text class="fs-15 fw-bold color-text-333">setProperty 设置与 getPropertyValue 获取</text>
     </view>
 
     <!-- 普通版本 -->
-    <view class="test-container">
-      <view class="test-item">
-        <text class="uni-subtitle-text">view 组件</text>
-        <text class="uni-info">设置值: {{data.borderWidth}}</text>
-        <text class="uni-info">获取值: {{data.borderWidthActual}}</text>
+    <view class="flex-dir-row justify-between mt-10">
+      <view class="flex-1 m-0-5">
+        <text class="color-888 fs-12 fw-bold u-mt-5">view 组件</text>
+        <text class="fs-12 color-999">设置值: {{data.borderWidth}}</text>
+        <text class="fs-12 color-999">获取值: {{data.borderWidthActual}}</text>
         <view class="test-box">
-          <view ref="viewRef" class="common-dynamic test-view" :style="{ borderWidth: data.borderWidth, borderStyle: 'solid' }">
-            <view style="flex-grow: 1;background-color: cyan;"><text class="cyan-text">view</text></view>
+          <view ref="viewRef" class="common-dynamic" :style="{ borderWidth: data.borderWidth, borderStyle: 'solid' }">
+            <view style="flex-grow: 1;background-color: cyan;"><text class="color-1a1a1a">view</text></view>
           </view>
         </view>
       </view>
 
-      <view class="test-item">
-        <text class="uni-subtitle-text">text 组件</text>
-        <text class="uni-info">设置值: {{data.borderWidth}}</text>
-        <text class="uni-info">获取值: {{data.borderWidthActualText}}</text>
+      <view class="flex-1 m-0-5">
+        <text class="color-888 fs-12 fw-bold u-mt-5">text 组件</text>
+        <text class="fs-12 color-999">设置值: {{data.borderWidth}}</text>
+        <text class="fs-12 color-999">获取值: {{data.borderWidthActualText}}</text>
         <view class="test-box">
-          <text ref="textRef" class="common-dynamic test-text"
+          <text ref="textRef" class="common-dynamic"
             :style="{ borderWidth: data.borderWidth, borderStyle: 'solid' }">text</text>
         </view>
       </view>
 
-      <view class="test-item">
-        <text class="uni-subtitle-text">image 组件</text>
-        <text class="uni-info">设置值: {{data.borderWidth}}</text>
-        <text class="uni-info">获取值: {{data.borderWidthActualImage}}</text>
+      <view class="flex-1 m-0-5">
+        <text class="color-888 fs-12 fw-bold u-mt-5">image 组件</text>
+        <text class="fs-12 color-999">设置值: {{data.borderWidth}}</text>
+        <text class="fs-12 color-999">获取值: {{data.borderWidthActualImage}}</text>
         <view class="test-box">
-          <image ref="imageRef" class="common-image test-image" :style="{ borderWidth: data.borderWidth, borderStyle: 'solid' }"
+          <image ref="imageRef" class="common-image" :style="{ borderWidth: data.borderWidth, borderStyle: 'solid' }"
             src="/static/test-image/logo.png"></image>
         </view>
       </view>
     </view>
 
     <!-- 拍平版本 -->
-    <view class="test-container">
-      <view class="test-item">
-        <text class="uni-subtitle-text">view 组件拍平</text>
-        <text class="uni-info">设置值: {{data.borderWidth}}</text>
-        <text class="uni-info">获取值: {{data.borderWidthActualFlat}}</text>
+    <view class="flex-dir-row justify-between mt-10">
+      <view class="flex-1 m-0-5">
+        <text class="color-888 fs-12 fw-bold u-mt-5">view 组件拍平</text>
+        <text class="fs-12 color-999">设置值: {{data.borderWidth}}</text>
+        <text class="fs-12 color-999">获取值: {{data.borderWidthActualFlat}}</text>
         <view class="test-box">
-          <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ borderWidth: data.borderWidth, borderStyle: 'solid' }"
+          <view ref="viewRefFlat" class="common-dynamic" :style="{ borderWidth: data.borderWidth, borderStyle: 'solid' }"
             flatten>
-            <view style="flex-grow: 1;background-color: cyan;"><text class="cyan-text">view</text></view>
+            <view style="flex-grow: 1;background-color: cyan;"><text class="color-1a1a1a">view</text></view>
           </view>
         </view>
       </view>
 
-      <view class="test-item">
-        <text class="uni-subtitle-text">text 组件拍平</text>
-        <text class="uni-info">设置值: {{data.borderWidth}}</text>
-        <text class="uni-info">获取值: {{data.borderWidthActualTextFlat}}</text>
+      <view class="flex-1 m-0-5">
+        <text class="color-888 fs-12 fw-bold u-mt-5">text 组件拍平</text>
+        <text class="fs-12 color-999">设置值: {{data.borderWidth}}</text>
+        <text class="fs-12 color-999">获取值: {{data.borderWidthActualTextFlat}}</text>
         <view class="test-box">
-          <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ borderWidth: data.borderWidth, borderStyle: 'solid' }"
+          <text ref="textRefFlat" class="common-dynamic" :style="{ borderWidth: data.borderWidth, borderStyle: 'solid' }"
             flatten>text</text>
         </view>
       </view>
 
-      <view class="test-item">
-        <text class="uni-subtitle-text">image 组件拍平</text>
-        <text class="uni-info">设置值: {{data.borderWidth}}</text>
-        <text class="uni-info">获取值: {{data.borderWidthActualImageFlat}}</text>
+      <view class="flex-1 m-0-5">
+        <text class="color-888 fs-12 fw-bold u-mt-5">image 组件拍平</text>
+        <text class="fs-12 color-999">设置值: {{data.borderWidth}}</text>
+        <text class="fs-12 color-999">获取值: {{data.borderWidthActualImageFlat}}</text>
         <view class="test-box">
-          <image ref="imageRefFlat" class="common-image test-image-flatten" :style="{ borderWidth: data.borderWidth, borderStyle: 'solid' }"
+          <image ref="imageRefFlat" class="common-image" :style="{ borderWidth: data.borderWidth, borderStyle: 'solid' }"
             flatten src="/static/test-image/logo.png"></image>
         </view>
       </view>
     </view>
 
-    <view class="uni-common-mt uni-common-mb">
-      <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
-      <enum-data :items="borderWidthEnum" title="border-width 枚举值" @change="radioChangeBorderWidth"
-        :compact="true"></enum-data>
+    <view class="mt-15 mb-15">
+      <text class="fs-13 color-tips-0958d9 bg-tips-e6f4ff border-l-4-solid-tips-91caff p-10-12 radius-4 m-10">第一个枚举值，'' (空字符串) - 空值情况</text>
+      <enum-data-checkbox :items="borderWidthEnum" title="border-width 枚举值" @change="radioChangeBorderWidth"
+        :compact="true"></enum-data-checkbox>
       <input-data :defaultValue="data.borderWidth" title="border-width 自定义值" type="text"
         @confirm="inputChangeBorderWidth"></input-data>
     </view>
@@ -289,7 +289,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ItemType } from '@/components/enum-data/enum-data-types'
+  import { ItemType } from '@/components/enum-data-checkbox/enum-data-checkbox-types'
 
   const borderWidthEnum : ItemType[] = [
     { value: 0, name: '' },
@@ -362,24 +362,10 @@
 </script>
 
 <style>
-  .theme-label {
-    color: var(--text-color, #333333);
-  }
-
-  .cyan-text {
-    color: #1a1a1a;
-  }
-
   .common {
     width: 150px;
     height: 50px;
     background-color: gray;
-  }
-
-  .demo-box {
-    flex-direction: row;
-    margin-top: 10px;
-    justify-content: space-around;
   }
 
   .common-circle {
@@ -399,17 +385,6 @@
     width: 50px;
     height: 50px;
     background-color: gray;
-  }
-
-  .test-container {
-    flex-direction: row;
-    justify-content: space-between;
-    margin-top: 10px;
-  }
-
-  .test-item {
-    flex: 1;
-    margin: 0 5px;
   }
 
   .test-box {

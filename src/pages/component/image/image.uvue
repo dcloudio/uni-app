@@ -1,49 +1,49 @@
 <template>
-  <view class="image-page">
+  <view class="flex-1">
     <page-head :title="data.title"></page-head>
-    <scroll-view style="flex: 1">
-      <view class="uni-padding-wrap">
+    <scroll-view class="flex-1">
+      <view class="p-0-15">
         <!-- image样式大合集 -->
-        <text class="uni-title-text">image样式大合集</text>
-        <text class="uni-subtitle-text uni-common-mb">右边为拍平</text>
-        <view class="styled-image-row">
-          <image class="styled-image" mode="aspectFill" :src="data.imageSrc"></image>
-          <image class="styled-image" mode="aspectFill" :src="data.imageSrc" flatten></image>
+        <text class="fs-15 fw-bold color-text-333">image样式大合集</text>
+        <text class="color-888 fs-12 fw-bold u-mt-5 mb-15">右边为拍平</text>
+        <view class="flex-dir-row bg-list-fff justify-around h-120 items-center">
+          <image class="w-80 h-80 m-5 p-5 radius-10 transform-rotate-45deg styled-image border-2-solid-ff6b6b" mode="aspectFill" :src="data.imageSrc" lazy-load></image>
+          <image class="w-80 h-80 m-5 p-5 radius-10 transform-rotate-45deg styled-image border-2-solid-ff6b6b" mode="aspectFill" :src="data.imageSrc" flatten></image>
         </view>
 
-        <text class="uni-title-text">自定义组件：右边拍平</text>
-        <view class="styled-image-row">
+        <text class="fs-15 fw-bold color-text-333">自定义组件：右边拍平</text>
+        <view class="flex-dir-row bg-list-fff justify-around h-120 items-center">
           <child></child>
           <child flatten></child>
         </view>
 
         <!-- 原有的基础拍平测试 -->
-        <text class="uni-title-text uni-common-mt">基础（右边为拍平）</text>
-        <view class="uni-center image-bg">
-          <image class="image" mode="widthFix" :src="data.imageSrc" @error="error" @load="load"></image>
-          <image class="image" mode="widthFix" :src="data.imageSrc" @error="error" @load="load" flatten></image>
+        <text class="fs-15 fw-bold color-text-333 mt-15">基础（右边为拍平）</text>
+        <view class="flex-dir-row justify-center bg-list-fff">
+          <image class="m-20-auto w-100" mode="widthFix" :src="data.imageSrc" @error="error" @load="load"></image>
+          <image class="m-20-auto w-100" mode="widthFix" :src="data.imageSrc" @error="error" @load="load" flatten></image>
         </view>
 
-        <button class="uni-btn" @tap="imageFormat">图片格式示例</button>
-        <button class="uni-btn" @tap="imageMode">图片缩放模式示例</button>
-        <button class="uni-btn" @tap="imagePath">图片路径示例</button>
+        <button class="uni-btn mt-10" @tap="imageFormat">图片格式示例</button>
+        <button class="uni-btn mt-10" @tap="imageMode">图片缩放模式示例</button>
+        <button class="uni-btn mt-10" @tap="imagePath">图片路径示例</button>
 
-        <button class="uni-btn" @tap="imageLarge">大图示例</button>
-        <button class="uni-btn" @tap="imageLong">长图示例</button>
-        <button class="uni-btn" @tap="imageOrientation">图片方向修正示例</button>
+        <button class="uni-btn mt-10" @tap="imageLarge">大图示例</button>
+        <button class="uni-btn mt-10" @tap="imageLong">长图示例</button>
+        <button class="uni-btn mt-10" @tap="imageOrientation">图片方向修正示例</button>
 
         <!-- #ifdef VUE3-VAPOR && !MP-ALIPAY -->
         <navigator url="/pages/template/2000-image/2000-image">
-          <button class="uni-btn">组件性能测试</button>
+          <button class="uni-btn mt-10">组件性能测试</button>
         </navigator>
         <navigator url="/pages/template/2000-image/2000-image-svg">
-          <button class="uni-btn">组件性能测试(SVG)</button>
+          <button class="uni-btn mt-10">组件性能测试(SVG)</button>
         </navigator>
         <navigator url="/pages/component/image/image-mode-svg">
-          <button class="uni-btn">图片缩放模式清晰度测试(SVG)</button>
+          <button class="uni-btn mt-10">图片缩放模式清晰度测试(SVG)</button>
         </navigator>
         <!-- #ifdef APP-ANDROID -->
-        <button class="uni-btn" @tap="imageFadeShow">fade-show 属性示例</button>
+        <button class="uni-btn mt-10" @tap="imageFadeShow">fade-show 属性示例</button>
         <!-- #endif -->
         <!-- #endif -->
       </view>
@@ -159,41 +159,13 @@
   })
 </script>
 <style>
-  .image-page {
-    flex: 1;
-  }
-
-  .styled-image-row {
-    flex-direction: row;
-    background-color: var(--list-background-color, #ffffff);
-    justify-content: space-around;
-    height: 120px;
-    align-items: center;
-  }
-
   /* image样式大合集 */
   .styled-image {
-    width: 80px;
-    height: 80px;
-    margin: 5px;
-    padding: 5px;
-    border: 2px solid #ff6b6b;
-    border-radius: 10px;
     background-color: #ffe0e0;
     /* === 阴影 === */
     box-shadow: 0 3px 6px rgba(255, 107, 107, 0.3);
     /* === 可见性 === */
     opacity: 0.98;
     /* === 变换 === */
-    transform: rotate(45deg);
-  }
-
-  .image {
-    margin: 20px auto;
-    width: 100px;
-  }
-
-  .image-bg {
-    background-color: var(--list-background-color, #ffffff);
   }
 </style>

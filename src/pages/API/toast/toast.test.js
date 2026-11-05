@@ -159,6 +159,8 @@ describe('API-toast', () => {
   it("image-toast-test", async () => {
     await resetToastOptions({imageSelect: true})
     await showToastAndScreenShot('toast1Tap', 'toast-image')
+    await page.waitFor(async () => (await page.data('data.exeRet')).startsWith('complete:'))
+    expect(await page.data('data.exeRet')).toContain('complete:')
   })
 
   it("duration-toast-test", async () => {

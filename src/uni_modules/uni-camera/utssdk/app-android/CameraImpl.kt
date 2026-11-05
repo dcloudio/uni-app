@@ -24,6 +24,7 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.ImageProxy
 import androidx.camera.core.MirrorMode
 import androidx.camera.core.Preview
+import androidx.camera.core.SurfaceRequest
 import androidx.camera.core.UseCaseGroup
 import androidx.camera.core.resolutionselector.ResolutionSelector
 import androidx.camera.core.resolutionselector.ResolutionStrategy
@@ -59,9 +60,34 @@ interface ICallBack {
 }
 
 class CameraImpl(private val activity: AppCompatActivity) {
+    private class DetachableSurfaceProvider(
+        private var delegate: Preview.SurfaceProvider?
+    ) : Preview.SurfaceProvider {
+        private var request: SurfaceRequest? = null
+
+        override fun onSurfaceRequested(surfaceRequest: SurfaceRequest) {
+            val currentDelegate = delegate
+            if (currentDelegate == null) {
+                surfaceRequest.willNotProvideSurface()
+                return
+            }
+            request?.clearTransformationInfoListener()
+            request = surfaceRequest
+            currentDelegate.onSurfaceRequested(surfaceRequest)
+        }
+
+        fun dispose() {
+            delegate = null
+            // CameraX 请求可能在解绑后仍保留 transformation listener。
+            request?.clearTransformationInfoListener()
+            request = null
+        }
+    }
+
     private var previewView: PreviewView? = null
     private var cameraProvider: ProcessCameraProvider? = null
     private var preview: Preview? = null
+    private var previewSurfaceProvider: DetachableSurfaceProvider? = null
     private var camera: Camera? = null
     private var imageCapture: ImageCapture? = null
     private var imageAnalysis: ImageAnalysis? = null
@@ -111,6 +137,15 @@ class CameraImpl(private val activity: AppCompatActivity) {
             }, ContextCompat.getMainExecutor(activity))
         } else {
             startPreview()
+        }
+    }
+
+    fun detachPreview() {
+        activity.runOnUiThread {
+            previewSurfaceProvider?.dispose()
+            previewSurfaceProvider = null
+            preview?.setSurfaceProvider(null as Preview.SurfaceProvider?)
+            previewView = null
         }
     }
 
@@ -325,8 +360,13 @@ class CameraImpl(private val activity: AppCompatActivity) {
 //                Log.d("aaa", "startPreview: ${Thread.currentThread().stackTrace.joinToString("\n")}")
                 cameraProvider?.unbindAll()
 
+                previewSurfaceProvider?.dispose()
+                previewSurfaceProvider = null
+                preview?.setSurfaceProvider(null as Preview.SurfaceProvider?)
                 preview = buildPreview()
-                preview?.surfaceProvider = it.surfaceProvider
+                val surfaceProvider = DetachableSurfaceProvider(it.surfaceProvider)
+                previewSurfaceProvider = surfaceProvider
+                preview?.setSurfaceProvider(ContextCompat.getMainExecutor(activity), surfaceProvider)
                 imageCapture = buildImageCapture()
                 imageAnalysis = buildImageAnalysis()
                 analyzerRegistered = false

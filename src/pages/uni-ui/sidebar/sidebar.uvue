@@ -1,0 +1,350 @@
+<template>
+	<!-- 小程序（默认 WebView）没有原生分段吸顶能力，改用「页面滚动 + CSS position: sticky」实现推出式吸顶 -->
+	<!-- #ifdef MP -->
+	<view class="page">
+		<view class="sidebar-wrap">
+			<uni-sidebar class="sidebar" :list="categories" target-id="food-list" :page-scroll="true">
+				<template #default="{ item, index, active }">
+					<view class="sidebar-item" :class="active ? 'sidebar-item--active' : ''">
+						<view class="sidebar-item__bar" v-if="active"></view>
+						<text class="sidebar-item__text" :class="active ? 'sidebar-item__text--active' : ''">{{ item }}</text>
+					</view>
+				</template>
+			</uni-sidebar>
+		</view>
+		<view class="list">
+			<view class="header">
+				<text class="header__title">uni-sidebar 侧边滚动导航</text>
+				<text class="header__desc">点击左侧分类滚动，右侧分组标题吸顶并推出上一段</text>
+			</view>
+			<view v-for="(group, index) in groups" :key="group.name" :id="'food-list-item-' + index" class="section">
+				<view class="group__header">
+					<text class="group__header-text">{{ group.name }}</text>
+				</view>
+				<view v-for="food in group.items" :key="food.id" class="food">
+					<view class="food__thumb">
+						<text class="food__thumb-text">{{ food.name.substring(0, 1) }}</text>
+					</view>
+					<view class="food__info">
+						<text class="food__name">{{ food.name }}</text>
+						<text class="food__desc">{{ food.desc }}</text>
+					</view>
+					<text class="food__price">￥{{ food.price }}</text>
+				</view>
+			</view>
+		</view>
+	</view>
+	<!-- #endif -->
+	<!-- 其他平台：独立滚动容器 + sticky-section 原生分段吸顶 -->
+	<!-- #ifndef MP -->
+	<view class="page">
+		<view class="header">
+			<text class="header__title">uni-sidebar 侧边滚动导航</text>
+			<text class="header__desc">点击左侧分类，右侧列表滚动到对应位置；滚动右侧列表，左侧分类自动高亮</text>
+		</view>
+		<view class="body">
+			<uni-sidebar class="sidebar" :list="categories" target-id="food-list">
+				<template #default="{ item, index, active }">
+					<view class="sidebar-item" :class="active ? 'sidebar-item--active' : ''">
+						<view class="sidebar-item__bar" v-if="active"></view>
+						<text class="sidebar-item__text" :class="active ? 'sidebar-item__text--active' : ''">{{ item }}</text>
+					</view>
+				</template>
+			</uni-sidebar>
+			<list-view id="food-list" class="food-list" :scroll-with-animation="true">
+				<sticky-section v-for="(group, index) in groups" :key="group.name" :id="'food-list-item-' + index">
+					<sticky-header>
+						<view class="group__header">
+							<text class="group__header-text">{{ group.name }}</text>
+						</view>
+					</sticky-header>
+					<list-item v-for="food in group.items" :key="food.id">
+						<view class="food">
+							<view class="food__thumb">
+								<text class="food__thumb-text">{{ food.name.substring(0, 1) }}</text>
+							</view>
+							<view class="food__info">
+								<text class="food__name">{{ food.name }}</text>
+								<text class="food__desc">{{ food.desc }}</text>
+							</view>
+							<text class="food__price">￥{{ food.price }}</text>
+						</view>
+					</list-item>
+				</sticky-section>
+			</list-view>
+		</view>
+	</view>
+	<!-- #endif -->
+</template>
+
+<script setup lang="ts">
+	type Food = {
+		id : number,
+		name : string,
+		desc : string,
+		price : number
+	}
+
+	type Group = {
+		name : string,
+		items : Food[]
+	}
+
+	const groups : Group[] = [
+		{
+			name: '热销',
+			items: [
+				{ id: 101, name: '招牌炸鸡', desc: '外酥里嫩，人气爆款', price: 29 },
+				{ id: 102, name: '芝士汉堡', desc: '双层芝士，肉感十足', price: 25 },
+				{ id: 103, name: '香辣鸡翅', desc: '微辣过瘾', price: 18 }
+			]
+		},
+		{
+			name: '招牌套餐',
+			items: [
+				{ id: 201, name: '单人精选套餐', desc: '主食 + 小食 + 饮料', price: 39 },
+				{ id: 202, name: '双人分享套餐', desc: '主食 * 2 + 小食 + 饮料 * 2', price: 72 },
+				{ id: 203, name: '全家桶套餐', desc: '适合 3-4 人享用', price: 109 }
+			]
+		},
+		{
+			name: '主食',
+			items: [
+				{ id: 301, name: '照烧鸡腿饭', desc: '日式照烧汁', price: 26 },
+				{ id: 302, name: '黑椒牛柳饭', desc: '黑椒浓郁', price: 32 },
+				{ id: 303, name: '番茄意面', desc: '酸甜开胃', price: 24 },
+				{ id: 304, name: '咖喱猪排饭', desc: '香浓咖喱', price: 30 }
+			]
+		},
+		{
+			name: '小吃',
+			items: [
+				{ id: 401, name: '黄金薯条', desc: '现炸酥脆', price: 12 },
+				{ id: 402, name: '洋葱圈', desc: '香甜可口', price: 14 },
+				{ id: 403, name: '鸡肉卷', desc: '墨西哥风味', price: 16 }
+			]
+		},
+		{
+			name: '汤类',
+			items: [
+				{ id: 501, name: '玉米浓汤', desc: '奶油香浓', price: 10 },
+				{ id: 502, name: '罗宋汤', desc: '番茄牛肉', price: 15 },
+				{ id: 503, name: '蘑菇汤', desc: '细腻顺滑', price: 12 }
+			]
+		},
+		{
+			name: '饮品',
+			items: [
+				{ id: 601, name: '冰柠檬水', desc: '清爽解腻', price: 8 },
+				{ id: 602, name: '可乐', desc: '经典碳酸', price: 7 },
+				{ id: 603, name: '鲜橙汁', desc: '现榨橙汁', price: 15 },
+				{ id: 604, name: '美式咖啡', desc: '醇香提神', price: 16 }
+			]
+		},
+		{
+			name: '甜点',
+			items: [
+				{ id: 701, name: '蛋挞', desc: '酥皮流心', price: 9 },
+				{ id: 702, name: '提拉米苏', desc: '入口即化', price: 22 },
+				{ id: 703, name: '草莓圣代', desc: '香甜草莓', price: 13 }
+			]
+		},
+		{
+			name: '其他',
+			items: [
+				{ id: 801, name: '餐具包', desc: '含刀叉纸巾', price: 1 },
+				{ id: 802, name: '调味酱', desc: '番茄 / 甜辣', price: 2 }
+			]
+		}
+	]
+
+	const categories = groups.map((group : Group) : string => group.name)
+</script>
+
+<style>
+	.page {
+		flex-direction: column;
+		background-color: var(--background-color, #ffffff);
+	}
+
+	/* #ifndef MP */
+	.page {
+		flex: 1;
+	}
+	/* #endif */
+	.header {
+		padding: 12px 16px;
+		flex-direction: column;
+		background-color: var(--background-color, #f0f7ff);
+		border-bottom-width: 1px;
+		border-bottom-style: solid;
+		border-bottom-color: var(--border-color, #eeeeee);
+	}
+
+	.header__title {
+		font-size: 16px;
+		font-weight: bold;
+		color: var(--text-color, #333333);
+	}
+
+	.header__desc {
+		margin-top: 4px;
+		font-size: 12px;
+		color: var(--secondary-text-color, #999999);
+	}
+
+	/* #ifdef MP */
+	/* 小程序：侧边栏固定在左侧，右侧列表随页面滚动。
+	   uni-app x 给所有 view 默认加了 overflow: hidden，会破坏 position: sticky，
+	   因此这里把 sticky 标题的所有祖先容器改为 overflow: visible */
+	.page {
+		overflow: visible;
+	}
+
+	/* 用固定容器显式给定宽度和背景，避免组件根节点宽度为 0 导致左侧漏内容 */
+	.sidebar-wrap {
+		position: fixed;
+		left: 0;
+		top: 0;
+		bottom: 0;
+		width: 90px;
+		z-index: 30;
+		background-color: var(--background-color, #f7f7f7);
+	}
+
+	.sidebar {
+		width: 100%;
+		height: 100%;
+	}
+
+	.list {
+		flex-direction: column;
+		padding-left: 90px;
+		overflow: visible;
+	}
+
+	.section {
+		flex-direction: column;
+		overflow: visible;
+	}
+	/* #endif */
+
+	/* #ifndef MP */
+	.body {
+		flex: 1;
+		flex-direction: row;
+	}
+
+	.sidebar {
+		height: 100%;
+	}
+
+	.food-list {
+		flex: 1;
+		height: 100%;
+		background-color: var(--list-background-color, #ffffff);
+	}
+	/* #endif */
+
+	.sidebar-item {
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		padding: 16px 6px;
+	}
+
+	.sidebar-item__bar {
+		position: absolute;
+		left: 0;
+		width: 3px;
+		height: 18px;
+		background-color: var(--sidebar-active-color, #ff5500);
+		border-top-right-radius: 2px;
+		border-bottom-right-radius: 2px;
+	}
+
+	.sidebar-item__text {
+		font-size: 14px;
+		color: var(--text-color, #666666);
+	}
+
+	.sidebar-item__text--active {
+		color: var(--sidebar-active-color, #ff5500);
+		font-weight: bold;
+	}
+
+	.sidebar-item--active {
+		background-color: var(--list-background-color, #ffffff);
+	}
+
+	.group__header {
+		padding: 10px 16px;
+		background-color: var(--background-color, #f5f5f5);
+		border-bottom-width: 1px;
+		border-bottom-style: solid;
+		border-bottom-color: var(--border-color, #eeeeee);
+	}
+
+	/* #ifdef MP */
+	/* 页面滚动下用 CSS sticky 实现分段吸顶（下一段标题会推出上一段） */
+	.group__header {
+		position: sticky;
+		top: 0;
+		z-index: 10;
+	}
+	/* #endif */
+
+	.group__header-text {
+		font-size: 14px;
+		font-weight: bold;
+		color: var(--text-color, #333333);
+		opacity: 0.8;
+	}
+
+	.food {
+		flex-direction: row;
+		align-items: center;
+		padding: 12px 16px;
+		border-bottom-width: 1px;
+		border-bottom-style: solid;
+		border-bottom-color: var(--border-color, #f0f0f0);
+	}
+
+	.food__thumb {
+		width: 48px;
+		height: 48px;
+		border-radius: 6px;
+		background-color: var(--active-background-color, #ffe8d9);
+		align-items: center;
+		justify-content: center;
+	}
+
+	.food__thumb-text {
+		font-size: 18px;
+		color: var(--sidebar-active-color, #ff5500);
+		font-weight: bold;
+	}
+
+	.food__info {
+		flex: 1;
+		flex-direction: column;
+		margin-left: 12px;
+	}
+
+	.food__name {
+		font-size: 15px;
+		color: var(--text-color, #333333);
+	}
+
+	.food__desc {
+		margin-top: 4px;
+		font-size: 12px;
+		color: var(--secondary-text-color, #999999);
+	}
+
+	.food__price {
+		font-size: 15px;
+		font-weight: bold;
+		color: var(--sidebar-active-color, #ff5500);
+	}
+</style>

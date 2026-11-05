@@ -38,7 +38,7 @@
                     "name": "createIntersectionObserver",
                     "app": {
                         "js": false,
-                        "kotlin": false,
+                        "kotlin": "dom2",
                         "swift": false,
 						"arkts": false
                     }

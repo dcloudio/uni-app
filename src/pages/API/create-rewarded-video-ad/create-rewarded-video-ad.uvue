@@ -1,6 +1,6 @@
 <template>
   <page-head title="激励视频广告"></page-head>
-  <button :type="btnType" style="margin: 10px;" :disabled="btnDisable" @click="showAd()">{{btnText}}</button>
+  <button :type="btnType" class="m-10" :disabled="btnDisable" @click="showAd()">{{btnText}}</button>
   <view v-for="(item,index) in errorDetails">{{item}}</view>
 </template>
 
@@ -73,7 +73,3 @@
     console.log("Page Hide");
   })
 </script>
-
-<style>
-
-</style>

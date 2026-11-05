@@ -1,8 +1,8 @@
 <template>
   <view>
     <page-head :title="title"></page-head>
-    <view class="uni-padding-wrap uni-common-mt">
-      <view class="uni-btn-v uni-common-mt">
+    <view class="p-0-15 mt-15">
+      <view class="p-5-0 mt-15">
         <button type="primary" @click="uploadFile">选择文件上传</button>
         <button type="primary" @click="chooseAndUploadFile">一个接口选择文件并上传</button>
       </view>
@@ -79,6 +79,3 @@
       })
   }
 </script>
-
-<style>
-</style>

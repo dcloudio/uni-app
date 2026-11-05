@@ -99,6 +99,8 @@ class UniEditor {
       showImgSize: false,
       showImgToolbar: false,
       showImgResize: false,
+      caretColor: '',
+      textColor: '',
       mentionData: [],
       type: ''
     }, options);
@@ -165,6 +167,8 @@ class UniEditor {
     }
 
     const root = this.quill.root;
+    this.setCaretColor(this.options.caretColor);
+    this.setTextColor(this.options.textColor);
 
     // 绑定事件
     const events = ['focus', 'blur', 'input'];
@@ -241,6 +245,20 @@ class UniEditor {
     const root = this.quill.root;
     if (root.getAttribute(placeHolderAttrName) !== value) {
       root.setAttribute(placeHolderAttrName, value);
+    }
+  }
+
+  setCaretColor(color) {
+    const root = this.quill.root;
+    root.style.setProperty('caret-color', color && color !== 'auto' ? color : '#3393E2');
+  }
+
+  setTextColor(color) {
+    const root = this.quill.root;
+    if (color && color !== 'auto') {
+      root.style.setProperty('color', color);
+    } else {
+      root.style.removeProperty('color');
     }
   }
 
@@ -1154,4 +1172,16 @@ window.editorSetPlaceholder = function (options, callbackId) {
     });
   }
   return result;
+};
+
+window.editorSetCaretColor = function (color) {
+  if (editorInstance) {
+    editorInstance.setCaretColor(color);
+  }
+};
+
+window.editorSetTextColor = function (color) {
+  if (editorInstance) {
+    editorInstance.setTextColor(color);
+  }
 };

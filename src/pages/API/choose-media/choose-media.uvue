@@ -1,79 +1,77 @@
 <template>
-  <view>
     <page-head :title="title"></page-head>
-    <view class="uni-common-mt">
-      <view class="uni-list">
+    <view class="mt-15">
+      <view class="bg-list-fff pos-relative d-flex flex-dir-column border-b-1-solid-c8c7cc-dark-3a3a3c">
 
-        <view class="uni-list-cell cell-pd">
-          <view class="uni-list-cell-left uni-label">
-            <text class="media-label">来源</text>
+        <view class="pos-relative d-flex flex-dir-row justify-between items-center p-11-15">
+          <view class="p-0-15-0-10 w-105">
+            <text class="color-text-333">来源</text>
           </view>
-          <view class="uni-list-cell-right" @click="chooseMediaSource">
-            <text class="click-t">{{sourceTypes[sourceTypeIndex].title}}</text>
+          <view class="flex-1 vapor-color-text-333" @click="chooseMediaSource">
+            <text class="click-t color-a9a9a9">{{sourceTypes[sourceTypeIndex].title}}</text>
           </view>
         </view>
 
-        <view class="uni-list-cell cell-pd">
-          <view class="uni-list-cell-left uni-label">
-            <text class="media-label">方式</text>
+        <view class="pos-relative d-flex flex-dir-row justify-between items-center p-11-15">
+          <view class="p-0-15-0-10 w-105">
+            <text class="color-text-333">方式</text>
           </view>
-          <view class="uni-list-cell-right" @click="chooseMediaType">
-            <text class="click-t">{{(mediaTypes[mediaTypeIndex] as ChooseSource).title}}</text>
+          <view class="flex-1 vapor-color-text-333" @click="chooseMediaType">
+            <text class="click-t color-a9a9a9">{{(mediaTypes[mediaTypeIndex] as ChooseSource).title}}</text>
           </view>
         </view>
 
-        <view class="uni-list-cell cell-pd">
-          <view class="uni-list-cell-left uni-label">
-            <text class="media-label">数量限制</text>
+        <view class="pos-relative d-flex flex-dir-row justify-between items-center p-11-15">
+          <view class="p-0-15-0-10 w-105">
+            <text class="color-text-333">数量限制</text>
           </view>
-          <view class="uni-list-cell-right">
-            <input class="click-t" ref="refCountInput" :value="count" type="number" :maxlength="1" @blur="chooseMediaCount"/>
+          <view class="flex-1 vapor-color-text-333">
+            <input class="click-t color-a9a9a9" ref="refCountInput" :value="count" type="number" :maxlength="1" @blur="chooseMediaCount"/>
           </view>
         </view>
 
         <!-- #ifdef APP-ANDROID -->
-        <view class="uni-list-cell cell-pd">
-          <view class="uni-list-cell-left uni-label">
-            <text class="media-label">屏幕方向</text>
+        <view class="pos-relative d-flex flex-dir-row justify-between items-center p-11-15">
+          <view class="p-0-15-0-10 w-105">
+            <text class="color-text-333">屏幕方向</text>
           </view>
-          <view class="uni-list-cell-right" @click="chooseOrientationType">
-            <text class="click-t">{{orientationTypes[orientationTypeIndex].title}}</text>
+          <view class="flex-1 vapor-color-text-333" @click="chooseOrientationType">
+            <text class="click-t color-a9a9a9">{{orientationTypes[orientationTypeIndex].title}}</text>
           </view>
         </view>
         <!-- #endif -->
 
-        <view class="uni-list-cell cell-pd">
-          <view class="uni-list-cell-left uni-label">
-            <text class="media-label">摄像头</text>
+        <view class="pos-relative d-flex flex-dir-row justify-between items-center p-11-15">
+          <view class="p-0-15-0-10 w-105">
+            <text class="color-text-333">摄像头</text>
           </view>
-          <view class="uni-list-cell-right" @click="chooseCameraType">
-            <text class="click-t">{{cameraTypes[cameraTypeIndex].title}}</text>
+          <view class="flex-1 vapor-color-text-333" @click="chooseCameraType">
+            <text class="click-t color-a9a9a9">{{cameraTypes[cameraTypeIndex].title}}</text>
           </view>
         </view>
       </view>
       <!-- #ifdef APP-IOS -->
       <input-data title="最长拍摄时间，单位秒" defaultValue="10" type="number" @confirm="onMaxDurationConfirm"></input-data>
       <!-- #endif -->
-      <view class="uni-list list-pd" style="padding: 15px;">
-        <view class="uni-row" style="margin-bottom: 10px;">
-          <view class="uni-list-cell-left">
-            <text class="media-label">点击预览</text>
+      <view class="bg-list-fff pos-relative d-flex flex-dir-column border-b-1-solid-c8c7cc-dark-3a3a3c mt-25 u-p-15">
+        <view class="flex-dir-row mb-10">
+          <view class="p-0-15-0-10">
+            <text class="color-text-333">点击预览</text>
           </view>
-          <view style="margin-left: auto;">
-            <text class="click-t">{{mediaList.length}}/{{count}}</text>
+          <view class="ml-auto">
+            <text class="click-t color-a9a9a9">{{mediaList.length}}/{{count}}</text>
           </view>
         </view>
-        <view class="uni-row" style="flex-wrap: wrap;">
-          <view v-for="(file,index) in mediaList" :key="index" class="uni-uploader__input-box" style="border: 0;">
-            <image style="width: 104px; height: 104px;" :src="file.imagePath" @tap="previewMedia(index)">
+        <view class="flex-wrap-wrap flex-dir-row">
+          <view v-for="(file,index) in mediaList" :key="index" class="w-104 h-104 m-5 border-0">
+            <image class="w-104 h-104" :src="file.imagePath" @tap="previewMedia(index)">
             </image>
-            <image src="/static/plus.png" class="image-remove" @click="removeMedia(index)"></image>
+            <image src="/static/plus.png" class="transform-rotate-45deg w-25 h-25 pos-absolute top-0 right-0 radius-13 bg-rgba-200-200-200-0_8" @click="removeMedia(index)"></image>
           </view>
-          <image class="uni-uploader__input-box" @tap="chooseMedia" src="/static/plus.png"></image>
+          <image class="uni-uploader__input-box w-104 h-104 m-5 border-1-solid-d9d9d9" @tap="chooseMedia" src="/static/plus.png"></image>
         </view>
       </view>
     </view>
-  </view>
 </template>
 
 <script setup lang="ts">
@@ -275,29 +273,6 @@
 </script>
 
 <style>
-  .cell-pd {
-    padding: 11px 15px;
-  }
-
-  .click-t {
-    color: darkgray;
-  }
-
-  .media-label {
-    color: var(--text-color, #333333);
-  }
-
-  .list-pd {
-    margin-top: 25px;
-  }
-
-  .uni-uploader__input-box {
-    margin: 5px;
-    width: 104px;
-    height: 104px;
-    border: 1px solid #D9D9D9;
-  }
-
   @media (prefers-color-scheme: dark) {
     .click-t {
       color: #b8b8b8;
@@ -308,28 +283,4 @@
     }
   }
 
-  .uni-uploader__input {
-    position: absolute;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-  }
-
-  .image-remove {
-    transform: rotate(45deg);
-    width: 25px;
-    height: 25px;
-    position: absolute;
-    top: 0;
-    right: 0;
-    border-radius: 13px;
-    background-color: rgba(200, 200, 200, 0.8);
-  }
-
-  .item_width {
-    width: 130px;
-  }
 </style>

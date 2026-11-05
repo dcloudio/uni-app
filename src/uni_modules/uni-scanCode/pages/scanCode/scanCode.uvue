@@ -67,7 +67,7 @@ import { ScanCodeSupportedTypes } from "@/uni_modules/uni-scanCode";
 
 //测试用导入
 // import camera1 from "../../../uni-camera/components/camera/camera.vue";
-// import { UniCameraInitDoneEvent } from "@/uni_modules/uni-camera/components/camera/global.uts";
+// import { UniCameraInitDoneEvent } from "@/uni_modules/uni-camera/components/camera/global.ts";
 
 // #ifdef APP-ANDROID
 // #ifndef VUE3-VAPOR
@@ -118,6 +118,17 @@ import {
 } from "@/uni_modules/uni-scanCode";
 // #endif
 
+// iOS 和 Android Vapor 使用 Map 转换结果，类型与转换函数保持相同的条件编译范围。
+// #ifdef APP-IOS || APP-ANDROID && VUE3-VAPOR
+type ScanCodeBarcodeInformation = {
+  result: string;
+  scanType: string;
+  charset: string;
+  rawData: string;
+  scanArea: Array<number>;
+};
+// #endif
+
 // #ifdef APP-ANDROID
 // #ifndef VUE3-VAPOR
 type Marker = {
@@ -129,14 +140,6 @@ type Marker = {
 };
 // #endif
 // #ifdef VUE3-VAPOR
-type ScanCodeBarcodeInformation = {
-  result: string;
-  scanType: string;
-  charset: string;
-  rawData: string;
-  scanArea: Array<number>;
-};
-
 type Marker = {
   left: number;
   top: number;
@@ -267,6 +270,21 @@ function closeDialogPage() {
 function cancelAnimation() {
   animation.value?.cancel();
 }
+
+// #ifdef APP-IOS || APP-ANDROID && VUE3-VAPOR
+function createScanCodeResult(
+  barcode: Map<string, any>
+): ScanCodeBarcodeInformation {
+  return {
+    result: barcode["result"] as string,
+    scanType: barcode["scanType"] as string,
+    charset: barcode["charset"] as string,
+    rawData: barcode["rawData"] as string,
+    scanArea: barcode["scanArea"] as Array<number>,
+  };
+}
+
+// #endif
 
 // #ifdef APP-ANDROID
 // #ifndef VUE3-VAPOR
@@ -603,7 +621,10 @@ function startAnalysis() {
       if (barcodeInformation.length == 0) {
         return;
       }
-      uni.$emit(successEventName.value, new UTSJSONObject(barcodeInformation[0]));
+      uni.$emit(
+        successEventName.value,
+        createScanCodeResult(barcodeInformation[0])
+      );
       cancelAnimation();
       closeDialogPage();
     },
@@ -661,7 +682,7 @@ function startAnalysis() {
     },
     (barcodeInformation: Array<Map<string, any>>) => {
       const barcode = barcodeInformation[0];
-      uni.$emit(successEventName.value, new UTSJSONObject(barcode));
+      uni.$emit(successEventName.value, createScanCodeResult(barcode));
       cancelAnimation();
       closeDialogPage();
     },
@@ -765,7 +786,7 @@ function handleChooseAlbum() {
           }
           uni.$emit(
             successEventName.value,
-            new UTSJSONObject(barcodeInformationMap[0])
+            createScanCodeResult(barcodeInformationMap[0])
           );
           cancelAnimation();
           closeDialogPage();
@@ -799,7 +820,7 @@ function handleChooseAlbum() {
           }
           uni.$emit(
             successEventName.value,
-            new UTSJSONObject(barcodeInformationMap[0])
+            createScanCodeResult(barcodeInformationMap[0])
           );
           cancelAnimation();
           closeDialogPage();

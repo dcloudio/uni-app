@@ -1,10 +1,10 @@
 <template>
-  <view style="flex: 1;">
+  <view class="flex-1">
     <page-head title="横向滑动时阻止默认事件，即阻止页面滚动"></page-head>
-    <view class="uni-padding-wrap uni-common-mt" style="height: 40px; align-items: center;">
+    <view class="p-0-15 mt-15 h-40 items-center">
       <text>手势方向：{{direction}}</text>
     </view>
-    <scroll-view style="flex: 1;" @scroll="onScroll">
+    <scroll-view class="flex-1" @scroll="onScroll">
     	<view v-for="item in 120" :key="item" class="box" @touchstart="touchstart" @touchmove="touchmove" @touchend="touchend">
     		{{item}}
     	</view>

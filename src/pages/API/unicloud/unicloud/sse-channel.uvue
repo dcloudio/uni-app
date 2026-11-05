@@ -1,11 +1,9 @@
 <template>
-  <view>
     <page-head :title="title"></page-head>
     <button @click="receiveMessage">接收服务端通知</button>
     <view>
       <view v-for="item in data.messages">{{item}}</view>
     </view>
-  </view>
 </template>
 
 <script setup lang="ts">
@@ -55,6 +53,3 @@ defineExpose({
   receiveMessage
 })
 </script>
-
-<style>
-</style>

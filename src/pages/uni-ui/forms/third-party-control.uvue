@@ -1,0 +1,60 @@
+<template>
+	<view class="third-party-control" @click="selectNext">
+		<text class="third-party-label">{{ displayValue }}</text>
+		<text class="third-party-arrow">切换</text>
+	</view>
+</template>
+
+<script setup lang="ts">
+type Props = {
+	modelValue?: string,
+	options?: string[],
+	placeholder?: string
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	modelValue: '',
+	options: () : string[] => ['普通', '重要', '紧急'],
+	placeholder: '点击选择'
+})
+
+const emit = defineEmits<{
+	(e : 'update:modelValue', value : string) : void
+}>()
+
+const displayValue = computed<string>(() : string => props.modelValue == '' ? props.placeholder : props.modelValue)
+
+function selectNext() {
+	if (props.options.length == 0) {
+		return
+	}
+	const currentIndex = props.options.indexOf(props.modelValue)
+	const nextIndex = currentIndex < 0 || currentIndex == props.options.length - 1 ? 0 : currentIndex + 1
+	emit('update:modelValue', props.options[nextIndex])
+}
+</script>
+
+<style>
+.third-party-control {
+	min-height: 38px;
+	padding: 0 12px;
+	border-width: 1px;
+	border-style: solid;
+	border-color: var(--input-border-color, #d8dfe8);
+	border-radius: 4px;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+	background-color: var(--list-background-color, #ffffff);
+}
+
+.third-party-label {
+	font-size: 14px;
+	color: var(--text-color, #333333);
+}
+
+.third-party-arrow {
+	font-size: 12px;
+	color: #007aff;
+}
+</style>

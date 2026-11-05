@@ -34,7 +34,8 @@ export type UniUpgradeCenterResult = {
   min_uni_version : string | null  // 升级 wgt 的最低 uni-app 版本
   is_vapor ?: boolean | null // 是否为 Vapor 应用资源包（仅 type 为 wgt 时有意义；历史记录可能无该字段）
   isVapor ?: boolean | null // 已废弃：旧版记录字段，仅用于读取历史数据兼容（云函数返回的历史记录可能带该字段）
-  sha256 : string | null // Vapor wgt 资源包的 SHA256（安装前完整性校验用）
+  sha256 : string | null // 安装包 SHA256（蒸汽模式 wgt 或开启 verify_sha256 的 APK 安装前完整性校验用）
+  verify_sha256 ?: boolean | null // 发布端开关：是否校验安装包 SHA256（仅 uni-app x 客户端安装 APK 前校验，uni1 忽略）
 }
 
 /**

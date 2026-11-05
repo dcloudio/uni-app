@@ -1,0 +1,348 @@
+<template>
+	<view>
+		<view class="task-editor-backdrop" @click="emit('close')"></view>
+		<view class="task-editor-sheet">
+			<view class="task-editor-handle"></view>
+			<view class="task-editor-head">
+				<view><text class="task-editor-title">加入批量任务</text><text
+						class="task-editor-subtitle">{{ props.currentDeviceName }} · {{ shortUUID(props.serviceId) }} /
+						{{ shortUUID(props.characteristicId) }}</text></view>
+				<text class="task-editor-close" @click="emit('close')">×</text>
+			</view>
+			<text class="task-editor-label">操作类型</text>
+			<view class="task-kind-selector">
+				<text v-for="kind in props.availableTaskKinds" :key="kind" class="task-kind-option"
+					:class="props.taskDraftKind == kind ? 'task-kind-option-selected' : ''"
+					@click="emit('selectKind', kind)">{{ taskKindName(kind) }}</text>
+			</view>
+			<view v-if="props.taskDraftKind == 'write'" class="task-editor-block">
+				<text class="task-editor-label">写入方式</text>
+				<view class="segmented"><text v-if="props.canWriteWithResponse" class="segment-option"
+						:class="props.writeMode == 'write' ? 'segment-selected' : ''"
+						@click="emit('selectWriteMode', 'write')">有回复</text><text v-if="props.canWriteWithoutResponse"
+						class="segment-option" :class="props.writeMode == 'writeNoResponse' ? 'segment-selected' : ''"
+						@click="emit('selectWriteMode', 'writeNoResponse')">无回复</text></view>
+				<text class="task-editor-value">{{ props.writePayloadSummary }} · {{ props.writePayloadHexPreview }}</text>
+				<text class="task-editor-note">{{ props.taskWriteVerificationText }}</text>
+			</view>
+			<view v-if="props.taskDraftKind == 'notify'" class="task-editor-block">
+				<text class="task-editor-label">订阅方式</text>
+				<text class="task-editor-value">{{ props.taskDraftNotifyTypeLabel }}</text>
+			</view>
+			<view class="task-editor-grid">
+				<view v-if="props.taskDraftKind == 'notify'" class="task-editor-field"><text
+						class="task-editor-label">目标事件数</text><input class="task-editor-input" type="number"
+						:value="props.taskDraftCountText" @input="onCountInput" /></view>
+				<view v-else class="task-editor-field"><text class="task-editor-label">提交方式</text><text
+						class="task-editor-value">单次请求；并发请添加不同特征或设备的任务</text></view>
+				<view class="task-editor-field task-editor-field-last"><text class="task-editor-label">超时 ms</text><input
+						class="task-editor-input" type="number" :value="props.taskDraftTimeoutText" @input="onTimeoutInput" />
+				</view>
+			</view>
+			<view v-if="props.taskDraftKind == 'read'" class="task-editor-block">
+				<text class="task-editor-label">期望 HEX（可选）</text>
+				<view class="task-editor-input-row">
+					<input class="task-editor-input task-editor-expected-input" :value="props.taskDraftExpectedHex"
+						placeholder="例如 01 A0 7F" @input="onExpectedHexInput" />
+					<view class="clipboard-button" @click="emit('pasteExpectedHex')"><text class="clipboard-button-text">粘贴</text>
+					</view>
+				</view>
+				<text class="task-editor-note">READ：每个任务只提交一次；同一特征 READ 可与 Notify 并发。</text>
+			</view>
+			<text v-if="props.taskDraftConflictReason.length > 0"
+				class="task-editor-error">{{ props.taskDraftConflictReason }}</text>
+			<text v-else-if="props.taskEditorError.length > 0" class="task-editor-error">{{ props.taskEditorError }}</text>
+			<view class="task-editor-actions">
+				<view class="task-editor-cancel" @click="emit('close')"><text>取消</text></view>
+				<view class="task-editor-confirm" :class="props.taskDraftConflictReason.length > 0 ? 'control-disabled' : ''"
+					@click="emit('confirm')"><text>加入任务</text></view>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script setup lang="ts">
+	import { TaskKind, WriteMode } from '../../logic/BleWorkspaceTypes.ts'
+	import { shortUUID } from '../../logic/BleUuid.ts'
+
+	type TaskEditorSheetProps = {
+		currentDeviceName : string,
+		serviceId : string,
+		characteristicId : string,
+		availableTaskKinds : TaskKind[],
+		taskDraftKind : TaskKind,
+		canWriteWithResponse : boolean,
+		canWriteWithoutResponse : boolean,
+		writeMode : WriteMode,
+		writePayloadSummary : string,
+		writePayloadHexPreview : string,
+		taskWriteVerificationText : string,
+		taskDraftNotifyTypeLabel : string,
+		taskDraftCountText : string,
+		taskDraftTimeoutText : string,
+		taskDraftExpectedHex : string,
+		taskDraftConflictReason : string,
+		taskEditorError : string
+	}
+
+	const props = defineProps<TaskEditorSheetProps>()
+	const emit = defineEmits<{
+		close : [],
+		confirm : [],
+		selectKind : [kind: TaskKind],
+		selectWriteMode : [mode: WriteMode],
+		countTextChange : [value: string],
+		timeoutTextChange : [value: string],
+		expectedHexChange : [value: string],
+		pasteExpectedHex : []
+	}>()
+
+	function taskKindName(kind : TaskKind) : string {
+		if (kind == 'read') return 'Read'
+		if (kind == 'write') return 'Write'
+		return 'Notify'
+	}
+
+	function onCountInput(event : UniInputEvent) : void {
+		emit('countTextChange', event.detail.value)
+	}
+
+	function onTimeoutInput(event : UniInputEvent) : void {
+		emit('timeoutTextChange', event.detail.value)
+	}
+
+	function onExpectedHexInput(event : UniInputEvent) : void {
+		emit('expectedHexChange', event.detail.value)
+	}
+</script>
+
+<style>
+	.task-editor-backdrop {
+		position: fixed;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		background-color: rgba(0, 0, 0, 0.42);
+	}
+
+	.task-editor-sheet {
+		position: fixed;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		padding: 8px 16px 24px;
+		border-top-left-radius: 8px;
+		border-top-right-radius: 8px;
+		background-color: #ffffff;
+	}
+
+	.task-editor-handle {
+		width: 36px;
+		height: 4px;
+		margin: 0 auto 12px;
+		border-radius: 2px;
+		background-color: #c4cdd2;
+	}
+
+	.task-editor-head {
+		display: flex;
+		flex-direction: row;
+		align-items: flex-start;
+		justify-content: space-between;
+		margin-bottom: 14px;
+	}
+
+	.task-editor-title {
+		color: #182731;
+		font-size: 17px;
+		font-weight: 700;
+	}
+
+	.task-editor-subtitle {
+		margin-top: 4px;
+		color: #71838c;
+		font-family: monospace;
+		font-size: 8px;
+	}
+
+	.task-editor-close {
+		width: 30px;
+		color: #71838c;
+		font-size: 22px;
+		line-height: 26px;
+		text-align: right;
+	}
+
+	.task-editor-label {
+		color: #52656f;
+		font-size: 9px;
+		font-weight: 600;
+	}
+
+	.task-kind-selector {
+		display: flex;
+		flex-direction: row;
+		margin-top: 7px;
+		padding: 3px;
+		border-radius: 6px;
+		background-color: #e9eff2;
+	}
+
+	.task-kind-option {
+		flex: 1;
+		padding: 8px 5px;
+		border-radius: 4px;
+		color: #657983;
+		font-size: 10px;
+		text-align: center;
+	}
+
+	.task-kind-option-selected {
+		background-color: #ffffff;
+		color: #2875d6;
+		font-weight: 600;
+	}
+
+	.task-editor-block {
+		margin-top: 13px;
+	}
+
+	.task-editor-value {
+		margin-top: 6px;
+		color: #2875d6;
+		font-family: monospace;
+		font-size: 9px;
+		line-height: 14px;
+	}
+
+	.task-editor-note {
+		margin-top: 6px;
+		color: #71838c;
+		font-size: 8px;
+		line-height: 13px;
+	}
+
+	.task-editor-grid {
+		display: flex;
+		flex-direction: row;
+		margin-top: 13px;
+	}
+
+	.task-editor-field {
+		flex: 1;
+		margin-right: 8px;
+	}
+
+	.task-editor-field-last {
+		margin-right: 0;
+	}
+
+	.task-editor-input {
+		height: 34px;
+		margin-top: 6px;
+		padding: 0 8px;
+		border-width: 1px;
+		border-color: #cbd8de;
+		border-radius: 5px;
+		background-color: #f8fafb;
+		color: #233640;
+		font-size: 10px;
+	}
+
+	.task-editor-input-row {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		margin-top: 6px;
+	}
+
+	.task-editor-expected-input {
+		flex: 1;
+		min-width: 0;
+		margin-top: 0;
+	}
+
+	.task-editor-error {
+		margin-top: 10px;
+		color: #c65353;
+		font-size: 9px;
+		line-height: 14px;
+	}
+
+	.task-editor-actions {
+		display: flex;
+		flex-direction: row;
+		margin-top: 17px;
+	}
+
+	.task-editor-cancel,
+	.task-editor-confirm {
+		display: flex;
+		flex: 1;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		height: 38px;
+		border-radius: 6px;
+		font-size: 11px;
+	}
+
+	.task-editor-cancel {
+		margin-right: 9px;
+		border-width: 1px;
+		border-color: #cbd8de;
+		color: #52656f;
+	}
+
+	.task-editor-confirm {
+		background-color: #2875d6;
+		color: #ffffff;
+	}
+
+	.segmented {
+		display: flex;
+		flex-direction: row;
+		flex: 1;
+		padding: 3px;
+		border-radius: 5px;
+		background-color: #e8eef1;
+	}
+
+	.segment-option {
+		flex: 1;
+		padding: 7px 4px;
+		color: #71838c;
+		font-size: 9px;
+		text-align: center;
+	}
+
+	.segment-selected {
+		border-radius: 4px;
+		background-color: #fff;
+		color: #2875d6;
+	}
+
+	.clipboard-button {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		width: 46px;
+		height: 33px;
+		margin-left: 7px;
+		border-width: 1px;
+		border-color: #cad8df;
+		border-radius: 5px;
+		background-color: #ffffff;
+	}
+
+	.clipboard-button-text {
+		color: #2875d6;
+		font-size: 9px;
+	}
+
+	.control-disabled {
+		opacity: 0.42;
+	}
+</style>

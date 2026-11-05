@@ -1,19 +1,19 @@
 <template>
-	<view class="page-root">
-		<view class="summary-panel">
-			<text class="summary-title">list-view scroll-into-section</text>
-			<text class="summary-text">list-view 带 sticky-section，验证滚动到 item、header、section。</text>
-			<text class="summary-target">current target: {{ currentTargetLabel }}</text>
+	<view class="theme-list-scroll flex-1 d-flex flex-dir-column page-root">
+		<view class="pt-12 pr-16 pb-12 pl-16 bg-list-demo-panel-background d-flex flex-dir-column">
+			<text class="fs-16 fw-600 color-list-demo-title">list-view scroll-into-section</text>
+			<text class="mt-4 fs-13 lh-20 color-list-demo-text">list-view 带 sticky-section，验证滚动到 item、header、section。</text>
+			<text class="mt-6 fs-13 color-1677ff">current target: {{ currentTargetLabel }}</text>
 		</view>
-		<scroll-view class="toolbar-panel" direction="horizontal" :show-scrollbar="false">
-			<button class="toolbar-button" @click="scrollToTarget('item-4-8')">滚动到 item</button>
-			<button class="toolbar-button" @click="scrollToTarget('header-4')">滚动到 header</button>
-			<button class="toolbar-button" @click="scrollToTarget('section-4')">滚动到 section</button>
-			<button class="toolbar-button" @click="resetScrollPosition">回到顶部</button>
+		<scroll-view class="pt-12 pr-12 pb-12 pl-12 bg-list-demo-panel-background d-flex flex-dir-row items-center" direction="horizontal" :show-scrollbar="false">
+			<button class="mr-6" @click="scrollToTarget('item-4-8')">滚动到 item</button>
+			<button class="mr-6" @click="scrollToTarget('header-4')">滚动到 header</button>
+			<button class="mr-6" @click="scrollToTarget('section-4')">滚动到 section</button>
+			<button class="mr-6" @click="resetScrollPosition">回到顶部</button>
 		</scroll-view>
 		<list-view
 			id="scroll-into-section-list"
-			class="list-root"
+			class="flex-1 bg-list-demo-background"
 			direction="vertical"
 			:show-scrollbar="true"
 			:scroll-top="scrollTop"
@@ -28,13 +28,13 @@
 				:preload="true"
 			>
 				<sticky-header :id="section.headerId">
-					<view class="header-box">
-						<text class="header-title">{{ section.title }}</text>
+					<view class="pt-10 pr-16 pb-10 pl-16 border-b-width-1 border-b-style-solid header-box">
+						<text class="fs-15 fw-600 color-list-demo-title">{{ section.title }}</text>
 					</view>
 				</sticky-header>
-				<list-item v-for="item in section.items" :key="item.id" :id="item.id" class="list-item">
-					<text class="item-title">{{ item.label }}</text>
-					<text class="item-desc">{{ item.desc }}</text>
+				<list-item v-for="item in section.items" :key="item.id" :id="item.id" class="h-76 pt-12 pr-16 pb-12 pl-16 bg-list-demo-card-background border-b-width-1 border-b-style-solid d-flex flex-dir-column justify-center list-item">
+					<text class="fs-15 fw-600 color-list-demo-title">{{ item.label }}</text>
+					<text class="mt-4 fs-12 color-list-demo-text">{{ item.desc }}</text>
 				</list-item>
 			</sticky-section>
 		</list-view>
@@ -150,119 +150,22 @@
 
 <style>
 	.page-root {
-		flex: 1;
-		display: flex;
-		flex-direction: column;
-		--list-demo-panel-background: #ffffff;
-		--list-demo-background: #eef2f7;
-		--list-demo-title-color: #1f2329;
-		--list-demo-text-color: #4e5969;
-		--list-demo-card-background: #ffffff;
 		--list-demo-header-background: #dfe7f3;
 		--list-demo-header-border: #c5d0df;
 		--list-demo-item-border: #edf1f5;
 	}
 
-	.summary-panel {
-		padding-top: 12px;
-		padding-right: 16px;
-		padding-bottom: 12px;
-		padding-left: 16px;
-		background-color: var(--list-demo-panel-background);
-		display: flex;
-		flex-direction: column;
-	}
-
-	.summary-title {
-		font-size: 16px;
-		font-weight: 600;
-		color: var(--list-demo-title-color);
-	}
-
-	.summary-text {
-		margin-top: 4px;
-		font-size: 13px;
-		line-height: 20px;
-		color: var(--list-demo-text-color);
-	}
-
-	.summary-target {
-		margin-top: 6px;
-		font-size: 13px;
-		color: #1677ff;
-	}
-
-	.toolbar-panel {
-		padding-top: 12px;
-		padding-right: 12px;
-		padding-bottom: 12px;
-		padding-left: 12px;
-		background-color: var(--list-demo-panel-background);
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-	}
-
-	.toolbar-button {
-		margin-right: 6px;
-	}
-
-	.list-root {
-		flex: 1;
-		background-color: var(--list-demo-background);
-	}
-
 	.header-box {
-		padding-top: 10px;
-		padding-right: 16px;
-		padding-bottom: 10px;
-		padding-left: 16px;
 		background-color: var(--list-demo-header-background);
-		border-bottom-width: 1px;
-		border-bottom-style: solid;
 		border-bottom-color: var(--list-demo-header-border);
 	}
 
-	.header-title {
-		font-size: 15px;
-		font-weight: 600;
-		color: var(--list-demo-title-color);
-	}
-
 	.list-item {
-		height: 76px;
-		padding-top: 12px;
-		padding-right: 16px;
-		padding-bottom: 12px;
-		padding-left: 16px;
-		background-color: var(--list-demo-card-background);
-		border-bottom-width: 1px;
-		border-bottom-style: solid;
 		border-bottom-color: var(--list-demo-item-border);
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-	}
-
-	.item-title {
-		font-size: 15px;
-		font-weight: 600;
-		color: var(--list-demo-title-color);
-	}
-
-	.item-desc {
-		margin-top: 4px;
-		font-size: 12px;
-		color: var(--list-demo-text-color);
 	}
 
 	@media (prefers-color-scheme: dark) {
 		.page-root {
-			--list-demo-panel-background: #2d2d2d;
-			--list-demo-background: #1a1a1a;
-			--list-demo-title-color: #ffffff;
-			--list-demo-text-color: #b8b8b8;
-			--list-demo-card-background: #2d2d2d;
 			--list-demo-header-background: #3b3b3b;
 			--list-demo-header-border: rgba(255, 255, 255, 0.1);
 			--list-demo-item-border: rgba(255, 255, 255, 0.1);

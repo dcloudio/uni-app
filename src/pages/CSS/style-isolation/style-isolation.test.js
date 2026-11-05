@@ -21,6 +21,33 @@ describe('style-isolation', () => {
   });
 
 
+  it('externalClasses 与内部类名字符串拼接后可更新样式', async () => {
+    const container = await page.$('#external-class-concat-case')
+    const box = await container.$('.box')
+    expect(box).not.toBeNull()
+    // 鸿蒙未设置的样式可能返回空串，更新后则返回默认数值。
+    const styleNumber = async (property, defaultValue) => {
+      const value = await box.style(property)
+      return value === '' ? defaultValue : parseFloat(value)
+    }
+    const cases = [
+      ['concat-opacity', 0.5, 0],
+      ['concat-opacity concat-radius', 0.5, 12],
+      ['concat-radius', 1, 12],
+      ['', 1, 0],
+    ]
+    try {
+      for (const [externalBoxClass, opacity, radius] of cases) {
+        await page.setData({ data: { externalBoxClass } })
+        await page.waitFor(100)
+        expect(await styleNumber('opacity', 1)).toBe(opacity)
+        expect(await styleNumber('border-top-left-radius', 0)).toBe(radius)
+      }
+    } finally {
+      await page.setData({ data: { externalBoxClass: 'external-custom-box' } })
+    }
+  })
+
   it('自定义组件hover-class透传', async () => {
     const childHoverEl = await page.$('.view-class')
     // 设置较长的 hover-stay-time，确保在 waitFor(1000) 时 hover 状态仍然激活

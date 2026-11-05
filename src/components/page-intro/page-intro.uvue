@@ -1,4 +1,8 @@
 <script setup lang="ts">
+  defineOptions({
+    styleIsolation: 'app'
+  })
+
 const props = defineProps({
   content: {
     type: String,
@@ -6,7 +10,7 @@ const props = defineProps({
   }
 })
 
-const expanded = ref(false)
+const expanded = ref(true)
 
 const toggle = () => {
   expanded.value = !expanded.value
@@ -14,13 +18,13 @@ const toggle = () => {
 </script>
 
 <template>
-  <view class="page-intro" @click="toggle">
-    <view class="page-intro-header">
-      <text class="page-intro-label">页面介绍</text>
-      <text class="page-intro-arrow">{{ expanded ? '▲' : '▼' }}</text>
+  <view class="page-intro m-10 radius-4 overflow-hidden" @click="toggle">
+    <view class="page-intro-header flex-dir-row justify-between items-center">
+      <text class="page-intro-label fs-13 fw-bold">页面介绍</text>
+      <text class="page-intro-arrow fs-11">{{ expanded ? '▲' : '▼' }}</text>
     </view>
     <view v-if="expanded" class="page-intro-body">
-      <text class="page-intro-content">{{ content }}</text>
+      <text class="page-intro-content fs-13 lh-22">{{ content }}</text>
     </view>
   </view>
 </template>
@@ -32,11 +36,8 @@ const toggle = () => {
     --page-intro-title-color: #0958d9;
     --page-intro-divider-color: #91caff;
     --page-intro-content-color: #1d39c4;
-    margin: 10px;
-    border-radius: 4px;
     border-left: 4px solid var(--page-intro-border-color, #91caff);
     background-color: var(--page-intro-bg-color, #e6f4ff);
-    overflow: hidden;
   }
 
   @media (prefers-color-scheme: dark) {
@@ -50,20 +51,14 @@ const toggle = () => {
   }
 
   .page-intro-header {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
     padding: 9px 12px;
   }
 
   .page-intro-label {
-    font-size: 13px;
     color: var(--page-intro-title-color, #0958d9);
-    font-weight: bold;
   }
 
   .page-intro-arrow {
-    font-size: 11px;
     color: var(--page-intro-title-color, #0958d9);
   }
 
@@ -73,8 +68,6 @@ const toggle = () => {
   }
 
   .page-intro-content {
-    font-size: 13px;
     color: var(--page-intro-content-color, #1d39c4);
-    line-height: 22px;
   }
 </style>

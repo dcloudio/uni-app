@@ -1,5 +1,5 @@
 <template>
-  <scroll-view class="page uni-theme-root">
+  <scroll-view class="page">
     <view class="section">
       <text class="section-title">当前时间不同格式</text>
       <view class="row">

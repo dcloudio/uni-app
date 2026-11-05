@@ -1,0 +1,183 @@
+<script setup lang="ts">
+import { ItemType } from './enum-data-checkbox-types'
+
+defineOptions({
+  name: 'EnumDataCheckbox',
+  styleIsolation: 'app',
+  inheritAttrs: false
+})
+
+const emit = defineEmits(['change', 'update:modelValue'])
+const props = defineProps({
+  title: {
+    type: String,
+    default: ''
+  },
+  items: {
+    type: Array as PropType<Array<ItemType>>,
+    default: () => []
+  },
+  modelValue: {
+    type: [Array, String, Number],
+    default: null
+  },
+  multiple: {
+    type: Boolean,
+    default: false
+  },
+  mode: {
+    type: String,
+    default: ''
+  },
+  // 用于控制单选项的显示模式，为true时紧凑横排显示，自动换行。默认false，垂直列表布局，每个选项占一行
+  compact: {
+    type: Boolean,
+    default: false
+  },
+  disabled: {
+    type: Boolean,
+    default: false
+  },
+  itemClass: {
+    type: String,
+    default: ''
+  },
+  showToast: {
+    type: Boolean,
+    default: true
+  }
+})
+
+const current = ref<any>(null)
+
+const localdata = computed(() => {
+  return props.items.map((item : ItemType) => ({
+    text: item.name ?? item.text ?? item.label ?? item.value.toString(),
+    value: item.value,
+    disabled: props.disabled || item.disabled === true
+  }))
+})
+
+const displayMode = computed(() : string => props.mode != '' ? props.mode : (props.compact ? 'default' : 'list'))
+const labelClass = computed(() : string => [props.itemClass, props.compact ? 'compact-item' : ''].join(' ').trim())
+const textClass = computed(() : string => displayMode.value == 'list' ? 'uni-data-checkbox_label-text-right' : '')
+
+function getCheckedValue(items : Array<ItemType>) : any {
+  if (props.multiple) {
+    return items.filter((item : ItemType) : boolean => item.checked === true).map((item : ItemType) => item.value)
+  }
+  const checked = items.find((item : ItemType) : boolean => item.checked === true)
+  return checked == null ? null : checked.value
+}
+
+function isSameSelection(left : any, right : any) : boolean {
+  if (Array.isArray(left) && Array.isArray(right)) {
+    return left.length == right.length && left.every((value : any) : boolean => right.includes(value))
+  }
+  return left === right
+}
+
+function keepAvailable(value : any, values : any[], fallback : any = null) : any {
+  return Array.isArray(value)
+    ? value.filter((item : any) : boolean => values.includes(item))
+    : (values.includes(value) ? value : fallback)
+}
+
+function setCurrent(value : any) {
+  // 数组复制让底层组件能感知父页面 push/splice 产生的模型更新。
+  current.value = Array.isArray(value) ? value.slice() : value
+}
+
+watch(() => props.modelValue, (value : any) => {
+  setCurrent(value == null ? getCheckedValue(props.items) : value)
+}, { deep: true, immediate: true })
+
+// checked 仍可用于外部控制；仅修改文案、禁用状态或重建等价数组时不重置用户选择。
+watch(() => ({
+  values: props.items.map((item : ItemType) => item.value),
+  checked: getCheckedValue(props.items)
+}), (options, previous) => {
+  if (props.modelValue != null) return
+  const previousChecked = keepAvailable(previous.checked, options.values)
+  const value = isSameSelection(options.checked, previousChecked)
+    ? keepAvailable(current.value, options.values, options.checked)
+    : options.checked
+  if (!isSameSelection(value, current.value)) setCurrent(value)
+}, { deep: true })
+
+function _change(event : any) {
+  if (props.disabled) return
+  const value = event.detail.value
+  const selected = event.detail.data
+  if (!props.multiple && (selected == null || Array.isArray(selected) || selected.disabled === true)) return
+  setCurrent(value)
+  emit('update:modelValue', value)
+  emit('change', value)
+  if (!props.multiple && props.showToast) {
+    uni.showToast({
+      icon: 'none',
+      title: '当前选中:' + selected.text,
+    })
+  }
+}
+
+</script>
+
+<template>
+  <uni-forms-item
+    v-bind="$attrs"
+    :label="title"
+    label-position="top"
+    label-class="enum-data-title"
+    class="enum-data-item p-0-10"
+  >
+    <uni-data-checkbox
+      :key="displayMode + (multiple ? '-multiple' : '-single')"
+      class="uni-data-checkbox_frame bg-list-fff overflow-hidden"
+      :model-value="current"
+      :mode="displayMode"
+      :multiple="multiple"
+      :localdata="localdata"
+      :label-class="labelClass"
+      :text-class="textClass"
+      :disabled="disabled"
+      @change="_change"
+    />
+  </uni-forms-item>
+</template>
+
+<style>
+/* 保留局部优先级，避免透传 class 和表单错误态改变间距。 */
+.enum-data-item {
+  margin-top: 15px;
+  margin-bottom: 8px;
+}
+
+.enum-data-title {
+  font-size: 15px;
+  font-weight: bold;
+  color: var(--text-color, #333333);
+}
+
+.uni-data-checkbox_frame {
+  margin: 0;
+  border-radius: 5px;
+  padding: 0 8px;
+}
+
+.uni-data-checkbox_label-text-right {
+  flex: 1;
+  margin-left: 12px;
+  text-align: right;
+}
+
+.compact-item {
+  margin: 6px;
+  padding: 4px 10px !important;
+  border-radius: 4px;
+  background-color: var(--background-color, #f5f5f5);
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--border-color, #e0e0e0);
+}
+</style>

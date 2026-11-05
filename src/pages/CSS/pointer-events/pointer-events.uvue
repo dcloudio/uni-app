@@ -1,5 +1,5 @@
 <template>
-    <view class="pointer-page">
+    <view>
       <page-intro content="本页演示 pointer-events：通过开关控制父 view、遮罩层、text、image 的 pointer-events（auto/none），观察点击是否穿透或响应；点击可修改 view/text/image 宽度，用于验证事件是否命中目标。"></page-intro>
       <boolean-data :value="true" title="控制父视图pointer-events打开时可以点击"
         @change="onChange1"></boolean-data>
@@ -97,14 +97,6 @@
 </script>
 
 <style>
-  .container1 {
-    margin: 7px 0px 7px 7px;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-  }
-
   .container {
     margin: 7px;
     background-color: var(--list-background-color, #ffffff);
@@ -113,10 +105,6 @@
   .text {
     margin-top: 10px;
     margin-bottom: 16px;
-    color: var(--text-color, #333333);
-  }
-
-  .switch-label {
     color: var(--text-color, #333333);
   }
 

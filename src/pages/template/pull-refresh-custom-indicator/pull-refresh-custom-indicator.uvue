@@ -2,18 +2,18 @@
 <!-- #ifdef WEB -->
   <view>
   <!-- #endif -->
-    <list-view class="list-view" :refresher-enabled="true" :refresher-triggered="data.refresherTriggered"
+    <list-view class="flex-1 list-view" :refresher-enabled="true" :refresher-triggered="data.refresherTriggered"
       refresher-default-style="none" @refresherpulling="onRefresherpulling" @refresherrefresh="onRefresherrefresh"
       @refresherrestore="onRefreshrestore" :refresher-threshold="data.refresherThreshold" refresher-max-drag-distance="200px">
 
       <page-intro content="本页演示自定义下拉刷新：sticky header、列表项与自定义 refresher 插槽（refresh-box），下拉触发刷新。"></page-intro>
       <sticky-header>
-        <view class="header">
+        <view class="justify-center u-h-50 u-p-15 header">
           <text class="header-text">sticky header</text>
         </view>
       </sticky-header>
-      <list-item v-for="i in 20" :key="i" class="content-item">
-        <text class="content-item-text">item-{{i}}</text>
+      <list-item v-for="i in 20" :key="i">
+        <text class="m-5-0 u-p-15 fs-14 lh-20 content-item-text">item-{{i}}</text>
       </list-item>
       <refresh-box slot="refresher" :state="state" :pullingDistance="data.pullingDistance"></refresh-box>
     </list-view>
@@ -121,17 +121,10 @@ defineExpose({
     --pull-refresh-surface-background: #fff;
     --pull-refresh-title-color: #000000;
     --pull-refresh-secondary-color: #666;
-    flex: 1;
   }
 
   .header {
-    justify-content: center;
-    height: 50px;
     background-color: var(--pull-refresh-page-background, #f5f5f5);
-    padding: 15px;
-  }
-
-  .content-item {
   }
 
   .header-text {
@@ -139,12 +132,8 @@ defineExpose({
   }
 
   .content-item-text {
-    margin: 5px 0;
-    padding: 15px;
     background-color: var(--pull-refresh-surface-background, #fff);
-    font-size: 14px;
     color: var(--pull-refresh-secondary-color, #666);
-    line-height: 20px;
   }
 
   @media (prefers-color-scheme: dark) {

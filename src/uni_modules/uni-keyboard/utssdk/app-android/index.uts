@@ -1,4 +1,9 @@
-import { HideKeyboard, HideKeyboardOptions, HideKeyboardSuccess, OffKeyboardHeightChange, OnKeyboardHeightChange, OnKeyboardHeightChangeCallback, OnKeyboardHeightChangeCallbackResult } from "../interface.uts"
+import {
+	HideKeyboard, HideKeyboardOptions, HideKeyboardSuccess,
+	OffKeyboardHeightChange, OnKeyboardHeightChange, OnKeyboardHeightChangeCallback, OnKeyboardHeightChangeCallbackResult,
+	OnKeyboardAnimationChange, OnKeyboardAnimationChangeCallback, OnKeyboardAnimationChangeCallbackResult, OffKeyboardAnimationChange
+} from "../interface.uts"
+import { KeyboardAnimationNative } from "uts.sdk.modules.uniKeyboard"
 import InputMethodManager from 'android.view.inputmethod.InputMethodManager';
 import ViewTreeObserver from "android.view.ViewTreeObserver";
 import Rect from 'android.graphics.Rect';
@@ -79,6 +84,46 @@ export const offKeyboardHeightChange : OffKeyboardHeightChange = function (id : 
 		if (keyBoardChangeListeerMaps.isEmpty()) {
 			listener?.unwatch()
 		}
+	}
+}
+
+let animationCallbacks : Array<OnKeyboardAnimationChangeCallback> = []
+
+let animationListenerRegistered = false
+
+function ensureKeyboardAnimationListener() : void {
+	if (animationListenerRegistered) {
+		return
+	}
+	animationListenerRegistered = true
+	KeyboardAnimationNative.onKeyboardAnimationChangeKotlin((height : number, state : string) => {
+		const result : OnKeyboardAnimationChangeCallbackResult = {
+			height: UTSAndroid.devicePX2px(height),
+			state: state as 'start' | 'running' | 'end'
+		}
+		animationCallbacks.forEach((callback : OnKeyboardAnimationChangeCallback) => {
+			callback(result)
+		})
+	})
+}
+
+export const onKeyboardAnimationChange : OnKeyboardAnimationChange = function (callback : OnKeyboardAnimationChangeCallback) : void {
+	animationCallbacks.push(callback)
+	ensureKeyboardAnimationListener()
+}
+
+export const offKeyboardAnimationChange : OffKeyboardAnimationChange = function (callback ?: OnKeyboardAnimationChangeCallback | null) {
+	if (callback == null) {
+		animationCallbacks = []
+	} else {
+		const index = animationCallbacks.indexOf(callback)
+		if (index > -1) {
+			animationCallbacks.splice(index, 1)
+		}
+	}
+	if (animationCallbacks.length == 0 && animationListenerRegistered) {
+		KeyboardAnimationNative.offKeyboardAnimationChangeKotlin()
+		animationListenerRegistered = false
 	}
 }
 

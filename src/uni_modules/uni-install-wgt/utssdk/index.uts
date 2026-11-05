@@ -51,7 +51,7 @@ function isInteger(value: number): boolean {
 }
 
 function isInstallWgtFailureCode(code: number): boolean {
-	return code == 1030601 || (code >= 103602 && code <= 103615) || (code >= 103617 && code <= 103619)
+	return code == 1030601 || (code >= 103602 && code <= 103615) || (code >= 103617 && code <= 103625)
 }
 
 function resolveWgtPath(filePath: string): string {
@@ -209,6 +209,7 @@ function startInstall(options: InstallWgtOptions): void {
 	const runtimeCompilerRuleVersion = UTSiOS.getUniCompilerRuleVersion()
 	const isSyncDebug = UTSiOS.isSyncDebug()
 	const rootPath = UTSiOS.getAppRootPath(appId = runtimeAppId)
+	const currentResourcePath = UTSiOS.getResourcePath("")
 	// #endif
 
 	// #ifdef APP-ANDROID
@@ -217,6 +218,7 @@ function startInstall(options: InstallWgtOptions): void {
 	const runtimeCompilerRuleVersion = UTSAndroid.getUniCompilerRuleVersion()
 	const isSyncDebug = UTSAndroid.isSyncDebug()
 	const rootPath = UTSAndroid.getAppRootPath(runtimeAppId)
+	const currentResourcePath = UTSAndroid.getResourcePath('')
 	// #endif
 
 	const worker = uni.createWorker('uni_modules/uni-install-wgt/workers/install-wgt-worker.uts')
@@ -238,6 +240,7 @@ function startInstall(options: InstallWgtOptions): void {
 		runtimeCompilerRuleVersion,
 		isSyncDebug,
 		rootPath,
+		currentResourcePath,
 	}, null)
 }
 

@@ -1,29 +1,27 @@
 <template>
-  <view class="content">
     <page-intro content="本页演示 unicloud-db 云数据库组件：集合查询、分页与 loadtime manual，列表展示与 Add/Get 操作，可跳转通讯录等 mixin-datacom 示例。"></page-intro>
     <unicloud-db ref="udbRef" v-slot:default="{data, pagination, loading, error}" :collection="collection" :getcount="true"
       loadtime="manual">
-      <list-view v-if="data.length>0" ref="listViewRef" class="list" :scroll-y="true" @scrolltolower="loadMore()">
-        <list-item class="list-item" v-for="(item, _) in data" :key="(item._id as string)">
-          <view class="list-item-fill">
+      <list-view v-if="data.length>0" ref="listViewRef" class="flex-1 flex-dir-column" :scroll-y="true" @scrolltolower="loadMore()">
+        <list-item class="flex-dir-row u-p-10" v-for="(item, _) in data" :key="(item._id as string)">
+          <view class="flex-1">
             <text>{{item}}</text>
           </view>
           <view>
-            <text class="list-item-remove" @click="remove((item._id as string)!)">❌</text>
+            <text class="u-p-10" @click="remove((item._id as string)!)">❌</text>
           </view>
         </list-item>
       </list-view>
-      <text class="loading" v-if="loading">Loading...</text>
+      <text class="u-p-10 text-center" v-if="loading">Loading...</text>
       <view v-if="error!=null">{{error.errMsg}}</view>
-      <view class="pagination" v-if="data.length>0">
-        <text class="pagination-item">{{data.length}} / {{pagination.count}}</text>
+      <view class="flex-dir-row pagination" v-if="data.length>0">
+        <text class="p-5-10 m-auto">{{data.length}} / {{pagination.count}}</text>
       </view>
     </unicloud-db>
-    <view class="btn-group">
-      <button class="btn" @click="add()">Add</button>
-      <button class="btn" @click="get()">Get</button>
+    <view class="flex-dir-row">
+      <button class="flex-1 m-10" @click="add()">Add</button>
+      <button class="flex-1 m-10" @click="get()">Get</button>
     </view>
-  </view>
 </template>
 
 <script setup lang="ts">
@@ -167,50 +165,7 @@ defineExpose({
 </script>
 
 <style>
-  .content {
-    flex: 1;
-    flex-direction: column;
-  }
-
-  .list {
-    flex: 1;
-    flex-direction: column;
-  }
-
-  .list-item {
-    flex-direction: row;
-    padding: 10px;
-  }
-
-  .list-item-fill {
-    flex: 1;
-  }
-
-  .list-item-remove {
-    padding: 10px;
-  }
-
-  .loading {
-    padding: 10px;
-    text-align: center;
-  }
-
   .pagination {
-    flex-direction: row;
     background-color: #f2f2f2;
-  }
-
-  .pagination-item {
-    margin: auto;
-    padding: 5px 10px;
-  }
-
-  .btn-group {
-    flex-direction: row;
-  }
-
-  .btn {
-    flex: 1;
-    margin: 10px;
   }
 </style>

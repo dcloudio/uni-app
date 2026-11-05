@@ -1,40 +1,42 @@
 <template>
   <!-- #ifdef APP -->
   <text>显示简易操作日志(可滚动查看)</text><button size="mini" @click="data.log=''">清空日志</button>
-  <scroll-view style="max-height: 300px;">
-    <text style="margin: 2px; padding: 2px; border: 1px solid #000000;">{{ data.log }}</text>
+  <scroll-view class="max-h-300">
+    <text class="u-p-2 m-2 border-width-1 border-style-solid border-color-000">{{ data.log }}</text>
   </scroll-view>
-  <view class="uni-list">
-    <text style="margin-bottom: 4px"> 请选择定位服务提供商：</text>
-    <radio-group class="uni-row" @change="providerChange" style="flex-wrap: wrap">
-      <view class="uni-list-cell" style="margin-right: 15px" v-for="(item, index) in data.providerList" :key="item.id">
-        <radio :value="item.id" :checked="index === data.currentSelectedProvider" />
-        <text>{{ item.name }}</text>
-      </view>
-    </radio-group>
+  <view class="u-ml-10 mr-10 mt-4 mb-4 border-b-0 pos-relative d-flex flex-dir-column bg-transparent">
+    <text class="mb-4"> 请选择定位服务提供商：</text>
+    <enum-data-checkbox
+      :model-value="data.providerList[data.currentSelectedProvider]?.id"
+      :items="providerOptions"
+      mode="default"
+      :show-toast="false"
+      @change="providerChange"
+    />
   </view>
 
-  <view class="uni-list">
-    <text style="margin-bottom: 4px"> 请选择坐标系：</text>
-    <radio-group class="uni-row" @change="typeChange" style="flex-wrap: wrap">
-      <view class="uni-list-cell" style="margin-right: 15px" v-for="(item, index) in types" :key="item.value">
-        <radio :value="item.value" :checked="index === data.currentSelectedType" />
-        <text>{{ item.name }}</text>
-      </view>
-    </radio-group>
+  <view class="u-ml-10 mr-10 mt-4 mb-4 border-b-0 pos-relative d-flex flex-dir-column bg-transparent">
+    <text class="mb-4"> 请选择坐标系：</text>
+    <enum-data-checkbox
+      :model-value="types[data.currentSelectedType]?.value"
+      :items="types"
+      mode="default"
+      :show-toast="false"
+      @change="typeChange"
+    />
   </view>
 
-  <scroll-view style="flex:1">
+  <scroll-view class="flex-1">
   <!-- #endif -->
-    <button class="btnstyle" type="primary" @tap="startLocationUpdate" id="startLocationUpdate">点击连续定位</button>
-    <button class="btnstyle" type="primary" @tap="startLocationUpdateBackground"
+    <button class="m-4" type="primary" @tap="startLocationUpdate" id="startLocationUpdate">点击连续定位</button>
+    <button class="m-4" type="primary" @tap="startLocationUpdateBackground"
       id="startLocationUpdateBackground">后台点击连续定位</button>
-    <button class="btnstyle" type="primary" @tap="stopLocationUpdate" id="stopLocationUpdate">点击关闭定位</button>
-    <button class="btnstyle" type="primary" @tap="onLocationChange" id="onLocationChange">onLocationChange</button>
-    <button class="btnstyle" type="primary" @tap="offLocationChange" id="offLocationChange">offLocationChange</button>
-    <button class="btnstyle" type="primary" @tap="onLocationChangeError"
+    <button class="m-4" type="primary" @tap="stopLocationUpdate" id="stopLocationUpdate">点击关闭定位</button>
+    <button class="m-4" type="primary" @tap="onLocationChange" id="onLocationChange">onLocationChange</button>
+    <button class="m-4" type="primary" @tap="offLocationChange" id="offLocationChange">offLocationChange</button>
+    <button class="m-4" type="primary" @tap="onLocationChangeError"
       id="onLocationChangeError">onLocationChangeError</button>
-    <button class="btnstyle" type="primary" @tap="offLocationChangeError"
+    <button class="m-4" type="primary" @tap="offLocationChangeError"
       id="offLocationChangeError">offLocationChangeError</button>
   <!-- #ifdef APP -->
   </scroll-view>
@@ -42,6 +44,8 @@
 </template>
 
 <script setup lang="ts">
+  const providerOptions = computed(() => data.providerList.map((item : LocationItem) => ({ value: item.id, name: item.name })))
+
   type LocationType = 'wgs84' | 'gcj02'
   export type ItemType = { value : LocationType, name : LocationType }
   export type LocationItem = { id : string, name : string, provider ?: UniProvider }
@@ -102,24 +106,24 @@
     // #endif
   }
 
-  const providerChange = (e : UniRadioGroupChangeEvent) => {
+  const providerChange = (value : string) => {
     for (let i = 0; i < data.providerList.length; i++) {
-      if (data.providerList[i].id === e.detail.value) {
+      if (data.providerList[i].id === value) {
         data.currentSelectedProvider = i;
         break;
       }
     }
 
-    if (e.detail.value == "system") {
+    if (value == "system") {
       data.currentSelectedType = 0
-    } else if (e.detail.value == "tencent") {
+    } else if (value == "tencent") {
       data.currentSelectedType = 1
     }
   }
 
-  const typeChange = (e : UniRadioGroupChangeEvent) => {
+  const typeChange = (value : string) => {
     for (let i = 0; i < types.value.length; i++) {
-      if (types.value[i].value === e.detail.value) {
+      if (types.value[i].value === value) {
         data.currentSelectedType = i;
         break;
       }
@@ -170,7 +174,11 @@
     uni.offLocationChange(null)
   }
 
+  const completeCounts = reactive({ foreground: 0, background: 0 })
+  const getCompleteCounts = () => completeCounts
+
   const startLocationUpdate = () => {
+    completeCounts.foreground = 0
     // #ifdef APP
     if (data.providerList.length == 0) {
       uni.showToast({
@@ -189,6 +197,10 @@
     }
     // #endif
     uni.startLocationUpdate({
+      complete: (res) => {
+        completeCounts.foreground++
+        console.log('startLocationUpdate complete', res)
+      },
       provider: currentProvider.id,
       type: types.value[data.currentSelectedType].value,
       success: () => {
@@ -212,6 +224,7 @@
   }
 
   const startLocationUpdateBackground = () => {
+    completeCounts.background = 0
     // #ifdef APP
     if (data.providerList.length == 0) {
       uni.showToast({
@@ -230,6 +243,10 @@
     }
     // #endif
     uni.startLocationUpdateBackground({
+      complete: (res) => {
+        completeCounts.background++
+        console.log('startLocationUpdateBackground complete', res)
+      },
       provider: currentProvider.id,
       type: types.value[data.currentSelectedType].value,
       success: () => {
@@ -275,30 +292,8 @@
   })
 
   defineExpose({
+    getCompleteCounts,
     data,
     stopLocationUpdate
   })
 </script>
-
-<style>
-  .uni-list {
-    border-bottom: 0px;
-    background-color: transparent;
-    margin-left: 10px;
-    margin-right: 10px;
-    margin-top: 4px;
-    margin-bottom: 4px;
-  }
-
-  .uni-list-cell {
-    position: relative;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .btnstyle {
-    margin: 4px;
-  }
-</style>

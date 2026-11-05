@@ -1,0 +1,88 @@
+<template>
+  <!-- #ifdef APP -->
+  <view class="flex-1 flex-dir-column">
+  <!-- #endif -->
+    <page-head title="下拉刷新的waterflow属性示例"></page-head>
+    <view class="flex-1 m-0-25-25-25">
+      <waterflow id="refresher-waterflow" class="w-full h-full" :cross-axis-count="2" :main-axis-gap="10"
+        :cross-axis-gap="10" :refresher-enabled="refresherEnabled"
+        <!-- #ifdef APP-ANDROID && VUE3-VAPOR -->
+        :android-refresher-color="getAndroidRefresherColorBinding()"
+        <!-- #endif -->
+        :refresher-triggered="refresherTriggered" @refresherpulling="refresherpulling"
+        @refresherrefresh="refresherrefresh" @refresherrestore="refresherrestore" @refresherabort="refresherabort">
+        <flow-item v-for="(item, index) in items" :key="index" class="h-120 w-full bg-f0ffff border-width-1 border-style-solid border-color-d2691e items-center justify-center" :type="1">
+          <text class="color-black fs-20">{{item}}</text>
+        </flow-item>
+        <flow-item slot="refresher" id="refresher" :type="2" class="justify-center items-center flex-dir-row h-45">
+          <text class="color-888 fs-12">正在刷新...</text>
+        </flow-item>
+      </waterflow>
+    </view>
+  <!-- #ifdef APP -->
+  </view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="ts">
+  const items = ref<string[]>([])
+  const refresherEnabled = ref(true)
+  const refresherTriggered = ref(false)
+
+  // #ifdef APP-ANDROID && VUE3-VAPOR
+  const androidRefresherColor = ref("#000000" as string | null)
+
+  function getAndroidRefresherColorBinding() : any {
+    return androidRefresherColor.value
+  }
+
+  // 自动化测试专用
+  function setAndroidRefresherColorForTest(value : string | null) {
+    androidRefresherColor.value = value
+  }
+
+  // 自动化测试专用
+  function getAndroidRefresherColorForTest() : string | null {
+    return androidRefresherColor.value
+  }
+  // #endif
+
+  // 自动化测试专用
+  function getBoundingClientRectForTest() : DOMRect {
+    return uni.getElementById('refresher-waterflow')?.getBoundingClientRect()!
+  }
+
+  onLoad(() => {
+    for (let i = 0; i < 12; i++) {
+      items.value.push("item" + i)
+    }
+  })
+
+  function refresherpulling() {
+    console.log("下拉刷新控件被下拉")
+  }
+
+  function refresherrefresh() {
+    console.log("下拉刷新被触发")
+    refresherTriggered.value = true
+    setTimeout(() => {
+      refresherTriggered.value = false
+    }, 1500)
+  }
+
+  function refresherrestore() {
+    console.log("下拉刷新被复位")
+  }
+
+  function refresherabort() {
+    console.log("下拉刷新被中止")
+  }
+
+  defineExpose({
+    getBoundingClientRectForTest,
+    // #ifdef APP-ANDROID && VUE3-VAPOR
+    getAndroidRefresherColorForTest,
+    setAndroidRefresherColorForTest,
+    // #endif
+  })
+</script>

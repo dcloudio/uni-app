@@ -11,17 +11,14 @@ export interface Uni {
      * @uniPlatform {
      * 	"app": {
      * 		"android": {
-     * 			"osVer": "5.0",
      * 			"uniVer": "2.3.8",
      * 			"unixVer": "5.08"
      * 		},
      * 		"ios": {
-     * 			"osVer": "12.0",
      * 			"uniVer": "2.3.8",
      * 			"unixVer": "5.08"
      * 		},
      *    "harmony": {
-     *      "osVer": "3.0",
      *       "uniVer": "4.31",
      *       "unixVer": "4.61",
      *       "unixVaporVer": "5.0"
@@ -33,7 +30,6 @@ export interface Uni {
      *   },
      *  "mp":{
      *    "weixin": {
-     *      "hostVer": "√",
      *      "uniVer": "√",
      *      "unixVer": "4.41"
      *    },
@@ -45,32 +41,26 @@ export interface Uni {
      *    "baidu": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "toutiao": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "lark": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "qq": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "kuaishou": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "jd": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    }
      *  }
      * }
@@ -87,17 +77,14 @@ export interface Uni {
      * @uniPlatform {
      * 	"app": {
      * 		"android": {
-     * 			"osVer": "5.0",
      * 			"uniVer": "2.3.8",
      * 			"unixVer": "5.08"
      * 		},
      * 		"ios": {
-     * 			"osVer": "12.0",
      * 			"uniVer": "2.3.8",
      * 			"unixVer": "5.08"
      * 		},
      *    "harmony": {
-     *      "osVer": "3.0",
      *       "uniVer": "4.31",
      *       "unixVer": "4.61",
      *       "unixVaporVer": "5.0"
@@ -109,7 +96,6 @@ export interface Uni {
      *   },
      *  "mp":{
      *    "weixin": {
-     *      "hostVer": "√",
      *      "uniVer": "√",
      *      "unixVer": "4.41"
      *    },
@@ -121,32 +107,26 @@ export interface Uni {
      *    "baidu": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "toutiao": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "lark": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "qq": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "kuaishou": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "jd": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    }
      *  }
      * }
@@ -162,17 +142,14 @@ export interface Uni {
      * @uniPlatform {
      * 	"app": {
      * 		"android": {
-     * 			"osVer": "5.0",
      * 			"uniVer": "2.3.8",
      * 			"unixVer": "5.08"
      * 		},
      * 		"ios": {
-     * 			"osVer": "12.0",
      * 			"uniVer": "2.3.8",
      * 			"unixVer": "5.08"
      * 		},
      *    "harmony": {
-     *      "osVer": "3.0",
      *       "uniVer": "4.31",
      *       "unixVer": "4.61",
      *       "unixVaporVer": "5.0"
@@ -184,7 +161,6 @@ export interface Uni {
      *   },
      *  "mp":{
      *    "weixin": {
-     *      "hostVer": "√",
      *      "uniVer": "√",
      *      "unixVer": "4.41"
      *    },
@@ -196,32 +172,26 @@ export interface Uni {
      *    "baidu": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "toutiao": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "lark": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "qq": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "kuaishou": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    },
      *    "jd": {
      *      "hostVer": "x",
      *      "uniVer": "x",
-     *      "unixVer": "x"
      *    }
      *  }
      * }

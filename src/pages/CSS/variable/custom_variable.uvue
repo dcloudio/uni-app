@@ -1,5 +1,5 @@
 <template>
-  <view class="custom-variable-page" style="flex-grow: 1;">
+  <view class="flex-grow-1">
     <view id="var_1" style="flex:1;--var_margin: 2px;" class="var_1" :class="var_bind">
       <view>
         <view class="var_1_1_1">

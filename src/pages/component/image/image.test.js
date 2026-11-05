@@ -165,13 +165,11 @@ describe('component-native-image', () => {
     // 获取所有按钮元素
     const buttons = await page.$$('.uni-btn');
     const buttonCount = buttons.length;
-    console.log('buttonCount',buttonCount)
     // 循环点击每个按钮
     for (let i = 0; i < buttonCount; i++) {
       // 重新获取按钮（因为返回后页面可能重新渲染）
       const currentButtons = await page.$$('.uni-btn');
       const button = currentButtons[i];
-      console.log('button',button)
       // 点击按钮
       await button.tap();
       // 等待页面跳转完成,返回上一页

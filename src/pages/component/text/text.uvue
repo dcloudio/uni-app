@@ -1,72 +1,72 @@
 <template>
     <page-head :title="title"></page-head>
-    <view class="text-page uni-padding-wrap uni-common-mt">
+    <view class="p-0-15 mt-15">
       <!-- 单行文本测试 -->
-      <text class="uni-title-text">单行文本</text>
-      <view class="text-box">
-        <text class="styled-text single-line">{{ singleLineText }}</text>
+      <text class="fs-15 fw-bold color-text-333">单行文本</text>
+      <view class="mb-15 u-p-10 d-flex bg-list-fff justify-center items-center text-box">
+        <text class="fs-16 fw-500 font-italic letter-spacing-1 w-full m-5-0 radius-4 text-center styled-text ws-nowrap text-overflow-ellipsis lh-1_8x text-underline p-8-12 bg-active-f9f9f9">{{ singleLineText }}</text>
       </view>
-      <text class="uni-subtitle-text">单行文本 - 拍平</text>
-      <view class="text-box" flatten>
-        <text class="styled-text single-line" flatten>{{ singleLineText }}</text>
+      <text class="color-888 fs-12 fw-bold u-mt-5">单行文本 - 拍平</text>
+      <view class="mb-15 u-p-10 d-flex bg-list-fff justify-center items-center text-box" flatten>
+        <text class="fs-16 fw-500 font-italic letter-spacing-1 w-full m-5-0 radius-4 text-center styled-text ws-nowrap text-overflow-ellipsis lh-1_8x text-underline p-8-12 bg-active-f9f9f9" flatten>{{ singleLineText }}</text>
       </view>
 
       <!-- 多行文本测试 -->
-      <text class="uni-title-text">多行文本</text>
-      <view class="text-box">
-        <text class="styled-text">{{ multiLineText }}</text>
+      <text class="fs-15 fw-bold color-text-333">多行文本</text>
+      <view class="mb-15 u-p-10 d-flex bg-list-fff justify-center items-center text-box">
+        <text class="fs-16 fw-500 font-italic letter-spacing-1 w-full m-5-0 radius-4 text-left styled-text lh-1_8x text-underline p-8-12 bg-active-f9f9f9">{{ multiLineText }}</text>
       </view>
-      <text class="uni-subtitle-text">多行文本 - 拍平</text>
-      <view class="text-box" flatten>
-        <text class="styled-text" flatten>{{ multiLineText }}</text>
+      <text class="color-888 fs-12 fw-bold u-mt-5">多行文本 - 拍平</text>
+      <view class="mb-15 u-p-10 d-flex bg-list-fff justify-center items-center text-box" flatten>
+        <text class="fs-16 fw-500 font-italic letter-spacing-1 w-full m-5-0 radius-4 text-left styled-text lh-1_8x text-underline p-8-12 bg-active-f9f9f9" flatten>{{ multiLineText }}</text>
       </view>
 
-      <text class="uni-title-text">嵌套的text样式合集</text>
-      <text class="uni-common-mt uni-common-mb">
-        <text class="styled-text">text嵌套text的内容：</text>
-        <text class="styled-text">{{multiLineText}}</text>
+      <text class="fs-15 fw-bold color-text-333">嵌套的text样式合集</text>
+      <text class="mt-15 mb-15">
+        <text class="fs-16 fw-500 font-italic letter-spacing-1 w-full m-5-0 radius-4 text-left styled-text lh-1_8x text-underline p-8-12 bg-active-f9f9f9">text嵌套text的内容：</text>
+        <text class="fs-16 fw-500 font-italic letter-spacing-1 w-full m-5-0 radius-4 text-left styled-text lh-1_8x text-underline p-8-12 bg-active-f9f9f9">{{multiLineText}}</text>
       </text>
 
       <!-- 自定义组件拍平 -->
-      <text class="uni-title-text">自定义组件：右边拍平</text>
-      <view class="view-row">
+      <text class="fs-15 fw-bold color-text-333">自定义组件：右边拍平</text>
+      <view class="flex-dir-row bg-list-fff justify-around">
         <child></child>
         <child flatten></child>
       </view>
 
       <!-- 动态文本测试 -->
-      <text class="uni-title-text">动态文本</text>
-      <view class="dynamic-text-box">
-        <text class="text">{{ text }}</text>
+      <text class="fs-15 fw-bold color-text-333">动态文本</text>
+      <view class="mb-15 u-p-10 d-flex bg-list-fff border-1-solid-border-ddd radius-5 justify-center items-center dynamic-text-box">
+        <text class="fs-14 color-text-353535 lh-22 text-center">{{ text }}</text>
       </view>
-      <text class="uni-subtitle-text">动态文本 - 拍平</text>
-      <view class="dynamic-text-box" flatten>
-        <text class="text" flatten>{{ text }}</text>
+      <text class="color-888 fs-12 fw-bold u-mt-5">动态文本 - 拍平</text>
+      <view class="mb-15 u-p-10 d-flex bg-list-fff border-1-solid-border-ddd radius-5 justify-center items-center dynamic-text-box" flatten>
+        <text class="fs-14 color-text-353535 lh-22 text-center" flatten>{{ text }}</text>
       </view>
-      <view class="uni-btn-v">
-        <button class="uni-btn" type="primary" :disabled="!canAdd" @click="add">
+      <view class="p-5-0">
+        <button class="mt-10" type="primary" :disabled="!canAdd" @click="add">
           add line
         </button>
-        <button class="uni-btn" type="warn" :disabled="!canRemove" @click="remove">
+        <button class="mt-10" type="warn" :disabled="!canRemove" @click="remove">
           remove line
         </button>
-        <button class="uni-btn" type="primary" @click="textProps">
+        <button class="mt-10" type="primary" @click="textProps">
           更多属性示例
         </button>
         <!-- #ifdef WEB || VUE3-VAPOR -->
-        <button class="uni-btn" type="primary" @click="textWriter">
+        <button class="mt-10" type="primary" @click="textWriter">
           打字机效果示例
         </button>
         <!-- #endif -->
         <!-- #ifdef APP-ANDROID && !VUE3-VAPOR -->
-        <button class="uni-btn" type="primary" @click="textLayout">
+        <button class="mt-10" type="primary" @click="textLayout">
           文本测量
         </button>
         <!-- #endif -->
       </view>
       <!-- #ifdef VUE3-VAPOR && !MP-ALIPAY -->
       <navigator url="/pages/template/4050/4050">
-        <button class="uni-btn uni-common-mb">组件性能测试</button>
+        <button class="mt-10 mb-15">组件性能测试</button>
       </navigator>
       <!-- #endif -->
     </view>
@@ -139,70 +139,24 @@
 </script>
 
 <style>
-  .view-row {
-    flex-direction: row;
-    background-color: var(--list-background-color, #ffffff);
-    justify-content: space-around;
-  }
   .text-box {
-    margin-bottom: 15px;
-    padding: 10px;
-    display: flex;
     min-height: 60px;
-    background-color: var(--list-background-color, #ffffff);
-    justify-content: center;
-    align-items: center;
   }
 
   /* 包含所有文字和排版CSS的综合样式 */
   .styled-text {
     /* 文字专用CSS */
     /* 字体相关 */
-    font-size: 16px;
-    font-weight: 500;
-    font-style: italic;
     color: var(--text-color, #1a1a1a);
     /* 行高与字间距 */
-    line-height: 1.8;
-    letter-spacing: 1px;
-    /* 对齐 */
-    text-align: left;
     /* 文字装饰 */
-    text-decoration-line: underline;
     /* 文本阴影 */
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     /* 排版CSS */
-    width: 100%;
-    margin: 5px 0;
-    padding: 8px 12px;
     border: 1px solid var(--border-color, #e0e0e0);
-    border-radius: 4px;
-    background-color: var(--active-background-color, #f9f9f9);
-  }
-
-  /* 单行文本特定样式 */
-  .single-line {
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    text-align: center;
   }
 
   .dynamic-text-box {
-    margin-bottom: 15px;
-    padding: 10px;
-    display: flex;
     min-height: 50px;
-    background-color: var(--list-background-color, #ffffff);
-    border: 1px solid var(--border-color, #dddddd);
-    border-radius: 5px;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .text {
-    font-size: 14px;
-    color: var(--text-color, #353535);
-    line-height: 22px;
-    text-align: center;
   }
 </style>

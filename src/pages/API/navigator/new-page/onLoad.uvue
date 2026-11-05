@@ -1,12 +1,10 @@
 <template>
-    <view class="uni-padding-wrap">
-      <page-head title="onLoad 生命周期调用 uni api 测试" />
-      <text v-if="isTrueValue">v-if with true</text>
-      <text v-if="isFalseValue">v-if with false</text>
-      <text v-show="isTrueValue">v-show with true</text>
-      <text v-show="isFalseValue">v-show with false</text>
-      <text>msg: {{ msg }}</text>
-    </view>
+  <page-head title="onLoad 生命周期调用 uni api 测试" />
+  <text v-if="isTrueValue">v-if with true</text>
+  <text v-if="isFalseValue">v-if with false</text>
+  <text v-show="isTrueValue">v-show with true</text>
+  <text v-show="isFalseValue">v-show with false</text>
+  <text>msg: {{ msg }}</text>
 </template>
 
 <script setup lang="ts">
@@ -152,3 +150,9 @@
 
   defineExpose({hideActionSheet, hideToast, hideLoading})
 </script>
+
+<style>
+page {
+  padding: 0px 15px;
+}
+</style>

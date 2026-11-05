@@ -92,11 +92,6 @@ describe('Checkbox.uvue', () => {
   }
   if(!isMP) {
     it('color', async () => {
-      if ((isHarmony || isIOS || isAndroid) && isVapor) {
-        console.log('Checkbox Harmony or iOS or Android Dom2 not support props color、iconColor、foreColor')
-        expect(1).toBe(1)
-        return
-      }
       const cb = await page.$('.cb')
       expect(await cb.attribute('color')).toBe('#007aff')
       await setPageData({color: '#63acfc'})
@@ -135,10 +130,24 @@ describe('Checkbox.uvue', () => {
     })
   }
 
-  if (isVapor && !isMP) {
+  if (isVapor && (isHarmony || isIOS || isAndroid)) {
+    it('checkbox-active-class: select and deselect', async () => {
+      const checkbox = await page.$('#checkbox-vapor')
+      expect(await page.data('data.customCheckboxValues')).toEqual([])
+      await checkbox.tap()
+      await page.waitFor(100)
+      expect(await page.data('data.customCheckboxValues')).toEqual(['custom'])
+      expect(await checkbox.attribute('checkbox-active-class')).toContain('custom-checkbox-active')
+      await checkbox.tap()
+      await page.waitFor(100)
+      expect(await page.data('data.customCheckboxValues')).toEqual([])
+      expect(await checkbox.attribute('checkbox-class')).toContain('custom-checkbox')
+    })
+
     it('externalClasses', async () => {
       const checkbox = await page.$('#checkbox-vapor')
       expect(await checkbox.attribute('checkbox-class')).toContain('custom-checkbox')
+      expect(await checkbox.attribute('checkbox-active-class')).toContain('custom-checkbox-active')
     })
   }
 })

@@ -18,6 +18,17 @@ export const showModal: ShowModal = (options?: ShowModalOptions | null) => {
 	const optionsEventName = `${baseEventName}_options`
 	const successEventName = `${baseEventName}_success`
 	const failEventName = `${baseEventName}_fail`
+	let failed = false
+	const fail = (res: ShowModalFailImpl) => {
+		if (failed) return
+		// openDialogPage 可能在调用 fail 后返回 null，失败结果只派发一次。
+		failed = true
+		uni.$off(readyEventName)
+		uni.$off(successEventName)
+		uni.$off(failEventName)
+		options?.fail?.(res)
+		options?.complete?.(res)
+	}
 	uni.$on(readyEventName, () => {
 		uni.$emit(optionsEventName, options != null ? JSON.parse(JSON.stringify(options)!) : {})
 	})
@@ -32,9 +43,7 @@ export const showModal: ShowModal = (options?: ShowModalOptions | null) => {
 		options?.complete?.(res)
 	})
 	uni.$on(failEventName, () => {
-		const res = new ShowModalFailImpl()
-		options?.fail?.(res)
-		options?.complete?.(res)
+		fail(new ShowModalFailImpl())
 	})
 	const openRet: UniPage | null = uni.openDialogPage({
 		url: `/uni_modules/uni-modal/pages/uniModal/uniModal?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
@@ -46,19 +55,13 @@ export const showModal: ShowModal = (options?: ShowModalOptions | null) => {
 			// #ifdef APP-HARMONY
 			const res = new ShowModalFailImpl(`showModal failed, ${err['errMsg']}`)
 			// #endif
-			options?.fail?.(res)
-			options?.complete?.(res)
-			uni.$off(readyEventName)
-			uni.$off(successEventName)
-			uni.$off(failEventName)
+			fail(res)
 		}
 	})
 	if (openRet != null) {
 		return openRet as ModalPage
 	}
-	const res = new ShowModalFailImpl()
-	options?.fail?.(res)
-	options?.complete?.(res)
+	fail(new ShowModalFailImpl())
 	return null
 }
 

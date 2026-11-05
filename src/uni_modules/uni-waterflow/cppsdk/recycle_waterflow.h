@@ -52,7 +52,9 @@ namespace recycle_waterflow {
         virtual float getItemSize(const std::string key) { return -1.0; };
 
         virtual float getItemCrossAxisSize() { return -1.0; };
-        std::unordered_map<std::string, IRecycleFlowItem *> itemInstanceMap;
+        // Lock ownership while cross-thread cleanup is pending.
+        // 异步注销期间，读取方通过 lock() 保持列表项存活。
+        std::unordered_map<std::string, std::weak_ptr<IRecycleFlowItem>> itemInstanceMap;
     };
     // common end
 
@@ -71,11 +73,9 @@ namespace recycle_waterflow {
 
         void removeInstance(std::string key);
 
-        IRecycleWaterflow *getRecycleWaterflow();
+        std::shared_ptr<IRecycleWaterflow> getRecycleWaterflow();
 
         void startObserve();
-
-        void stopObserve();
 
         bool isCurrentElementAttached();
 
@@ -158,8 +158,9 @@ namespace recycle_waterflow {
         float containerCrossAxisSize = 0.0f;
         float itemCrossAxisSize = 0.0f;
 
-        float size = 600.0f;
-        float defaultItemSize = 150.0f;
+        float size = 0.0f;
+        float defaultItemSize = 100.0f;
+        float maxItemSize = 100.0f;
         float realScrollOffset = 0.0f;
         float scrollOffset = 0.0f;
         float lastScrollOffset = 0.0f;
@@ -167,7 +168,7 @@ namespace recycle_waterflow {
         float lastScrollOffsetForFastScrollRender = 0.0f;
         uint64_t lastScrollTimestampForFastScroll = 0;
         float minRenderOffset = 0.0f;
-        float maxRenderOffset = 600.0f;
+        float maxRenderOffset = 0.0f;
         float placeholderSize = 0.0f;
         float lastPlaceholderSize = -1.0f;
         // float cachedSize = 200.0f;
@@ -277,6 +278,16 @@ namespace recycle_waterflow {
         void setMaxCrossAxisExtent(double maxCrossAxisExtent);
 
         void setScrollIntoViewKey(const std::string key);
+
+        void updateCachedSize() {
+            this->originalCachedSize = this->maxItemSize * 2;
+            if (this->cachedSizeStart > 0.0f) {
+                this->cachedSizeStart = this->originalCachedSize;
+            }
+            if (this->cachedSizeEnd > 0.0f) {
+                this->cachedSizeEnd = this->originalCachedSize;
+            }
+        }
 
     private:
         // helpers

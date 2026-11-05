@@ -1,0 +1,196 @@
+<template>
+  <!-- #ifdef APP -->
+  <page-intro content="演示 FileSystemManager.unzip / unzipSync：将 zip 压缩包解压到指定目录（示例使用应用包内 static 资源），解压后自动列出目标目录内容。"></page-intro>
+  <scroll-view class="flex-1">
+  <!-- #endif -->
+    <view class="p-8 flex-dir-column">
+      <view class="p-8 border-1-solid-e0e0e0 radius-4 flex-dir-column m-4-0">
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">压缩包</text>
+          <input class="flex-1 border-1-solid-d0d0d0 radius-4 p-4-8 fs-13 h-32" v-model="data.zipFilePath" placeholder="zip 文件路径" />
+        </view>
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">目标目录</text>
+          <input class="flex-1 border-1-solid-d0d0d0 radius-4 p-4-8 fs-13 h-32" v-model="data.targetPath" placeholder="相对根目录的路径" />
+        </view>
+      </view>
+      <view class="flex-dir-row flex-wrap-wrap m-4-0">
+        <button class="m-4" type="primary" @tap="unzip" id="btn-unzip">unzip 解压</button>
+        <!-- #ifdef VUE3-VAPOR -->
+        <button class="m-4" type="primary" @tap="unzipSync" id="btn-unzip-sync">unzipSync 解压</button>
+        <!-- #endif -->
+      </view>
+      <view class="p-8 border-1-solid-e0e0e0 radius-4 flex-dir-column m-4-0-12-0">
+        <text class="fw-bold fs-14 m-2-0 color-333">执行结果：{{ data.lastResult == '' ? '等待执行' : (data.lastResult == 'success' ? '成功' : '失败') }}</text>
+        <text class="fs-13 m-2-0 color-666">目标目录：{{ data.rootPath }}{{ data.targetPath }}</text>
+        <view class="flex-dir-column ml-8" v-if="data.lastResult == 'success'">
+          <text class="fs-13 m-2-0 color-666" v-for="(item, index) in data.fileList" :key="index">{{ item }}</text>
+        </view>
+        <text class="fs-13 m-2-0 color-e64340" v-if="data.lastResult == 'fail'">errCode：{{ data.lastFailError.errCode }}；errMsg：{{ data.lastFailError.errMsg }}</text>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="ts">
+  import { getFsmRootPath, ensureFsmDirSync, removeFsmPathSync, removeFsmDirSync, createFsmMockError } from './fsm-utils'
+
+  type DataType = {
+    rootKey : string
+    rootPath : string
+    zipFilePath : string
+    targetPath : string
+    fileList : string[]
+    unzipSyncRet : string
+    existsRet : boolean
+    done : boolean
+    lastResult : string
+    lastFailError : UniError
+  }
+
+  const data = reactive({
+    rootKey: 'usr',
+    rootPath: getFsmRootPath('usr'),
+    zipFilePath: '/static/filemanager/to.zip',
+    targetPath: 'fsm-unzip-demo',
+    fileList: [] as string[],
+    unzipSyncRet: '',
+    existsRet: false,
+    done: false,
+    lastResult: '',
+    lastFailError: createFsmMockError(),
+  } as DataType)
+
+  function onRootChange(e : UniRadioGroupChangeEvent) {
+    data.rootKey = e.detail.value
+    data.rootPath = getFsmRootPath(data.rootKey)
+  }
+
+  function targetFullPath() : string {
+    return `${data.rootPath}${data.targetPath}`
+  }
+
+  function resetResult() {
+    data.done = false
+    data.lastResult = ''
+    data.fileList = [] as string[]
+    data.unzipSyncRet = ''
+  }
+
+  function applyFail(res : IUniError) {
+    data.lastResult = 'fail'
+    data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+  }
+
+  function exists(path : string) : void {
+    try {
+      uni.getFileSystemManager().accessSync(path != null ? path : targetFullPath())
+      data.existsRet = true
+    } catch (e) {
+      data.existsRet = false
+    }
+  }
+
+  function prepare() : void {
+    // 清理上次解压产物，确保从干净状态开始
+    removeFsmPathSync(targetFullPath())
+    data.done = true
+  }
+
+  function cleanup() : void {
+    removeFsmPathSync(targetFullPath())
+    data.done = true
+  }
+
+  function listTargetDir() : void {
+    try {
+      const entries = uni.getFileSystemManager().readdirSync(targetFullPath())
+      if (entries != null) {
+        data.fileList = entries
+      }
+    } catch (e) {
+      // 列表读取失败不影响解压结果
+    }
+  }
+
+  function unzip() : void {
+    resetResult()
+    // 自愈：重置目标目录，保证重复点击始终成功
+    removeFsmDirSync(targetFullPath())
+    ensureFsmDirSync(targetFullPath())
+    const fileManager = uni.getFileSystemManager()
+    const options : UnzipFileOptions = {
+      zipFilePath: data.zipFilePath,
+      targetPath: targetFullPath(),
+      success: (_ : FileManagerSuccessResult) => {
+        data.lastResult = 'success'
+        listTargetDir()
+      },
+      fail: (res : IUniError) => {
+        applyFail(res)
+      },
+      complete: (_ : any) => {
+        data.done = true
+      }
+    }
+    fileManager.unzip(options)
+  }
+
+  // #ifdef VUE3-VAPOR
+  function unzipSync() : void {
+    resetResult()
+    const fileManager = uni.getFileSystemManager()
+    try {
+      // 确保从干净的目标目录开始
+      try {
+        fileManager.accessSync(targetFullPath())
+        fileManager.rmdirSync(targetFullPath(), true)
+      } catch (_) { }
+      try {
+        fileManager.mkdirSync(targetFullPath(), true)
+      } catch (_) { }
+      const success = fileManager.unzipSync({ zipFilePath: data.zipFilePath, targetPath: targetFullPath() } as UnzipSyncOptions)
+      if (!success) {
+        throw new Error('unzipSync returned false')
+      }
+      const entries = fileManager.readdirSync(targetFullPath())
+      if (entries == null || !entries.includes('1.txt') || !entries.includes('2.txt')) {
+        throw new Error(`unexpected entries: ${JSON.stringify(entries)}`)
+      }
+      const file1 = fileManager.readFileSync(`${targetFullPath()}/1.txt`, 'utf-8').toString()
+      const file2 = fileManager.readFileSync(`${targetFullPath()}/2.txt`, 'utf-8').toString()
+      if (file1 !== 'fdsafds' || file2 !== 'fdsafds') {
+        throw new Error(`unexpected file contents: ${file1}, ${file2}`)
+      }
+      data.unzipSyncRet = 'unzip:ok'
+      data.fileList = entries
+      data.lastResult = 'success'
+    } catch (e) {
+      data.lastResult = 'fail'
+      data.lastFailError = new UniError('uni-file-manager', 0, `${e}`)
+    }
+    data.done = true
+  }
+  // #endif
+  // #ifndef VUE3-VAPOR
+  function unzipSync() : void {
+    // unzipSync 需要 HBuilderX 5.31+，非 vapor 分支暂不支持
+    data.done = true
+  }
+  // #endif
+
+  onReady(() => {
+    prepare()
+  })
+
+  defineExpose({
+    data,
+    prepare,
+    cleanup,
+    exists,
+    unzip,
+    unzipSync
+  })
+</script>

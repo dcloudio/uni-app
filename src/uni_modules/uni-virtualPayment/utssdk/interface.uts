@@ -25,51 +25,36 @@ export interface Uni {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
      *    },
      *  "mp": {
      *    "weixin": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
      *        "unixVer": "4.41"
      *    },
      *    "alipay": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "toutiao": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "lark": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "qq": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "kuaishou": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "jd": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    }
      *  },
      *    "web": {
@@ -91,7 +76,6 @@ export interface Uni {
     *      "unixVer": "x"
     *    },
     *    "ios": {
-    *      "osVer": "15.0",
     *      "uniVer": "√",
     *      "unixVer": "4.25"
     *    },
@@ -133,7 +117,6 @@ export interface VirtualPaymentManager {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
@@ -166,7 +149,6 @@ export interface VirtualPaymentManager {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
@@ -198,7 +180,6 @@ export interface VirtualPaymentManager {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
@@ -226,7 +207,6 @@ export type RequestVirtualPaymentErrorCode =
         *            "unixVer": "x"
         *        },
         *        "ios": {
-        *            "osVer": "15.0",
         *            "uniVer": "√",
         *            "unixVer": "4.25"
         *        }
@@ -247,7 +227,6 @@ export type RequestVirtualPaymentErrorCode =
         *            "unixVer": "x"
         *        },
         *        "ios": {
-        *            "osVer": "15.0",
         *            "uniVer": "√",
         *            "unixVer": "4.25"
         *        }
@@ -268,7 +247,6 @@ export type RequestVirtualPaymentErrorCode =
         *            "unixVer": "x"
         *        },
         *        "ios": {
-        *            "osVer": "15.0",
         *            "uniVer": "√",
         *            "unixVer": "4.25"
         *        }
@@ -289,7 +267,6 @@ export type RequestVirtualPaymentErrorCode =
         *            "unixVer": "x"
         *        },
         *        "ios": {
-        *            "osVer": "15.0",
         *            "uniVer": "√",
         *            "unixVer": "4.25"
         *        }
@@ -310,7 +287,6 @@ export type RequestVirtualPaymentErrorCode =
         *            "unixVer": "x"
         *        },
         *        "ios": {
-        *            "osVer": "15.0",
         *            "uniVer": "√",
         *            "unixVer": "4.25"
         *        }
@@ -331,7 +307,6 @@ export type RequestVirtualPaymentErrorCode =
         *            "unixVer": "x"
         *        },
         *        "ios": {
-        *            "osVer": "15.0",
         *            "uniVer": "√",
         *            "unixVer": "4.25"
         *        }
@@ -352,7 +327,6 @@ export type RequestVirtualPaymentErrorCode =
         *            "unixVer": "x"
         *        },
         *        "ios": {
-        *            "osVer": "15.0",
         *            "uniVer": "√",
         *            "unixVer": "4.25"
         *        }
@@ -373,7 +347,6 @@ export type RequestVirtualPaymentErrorCode =
         *            "unixVer": "x"
         *        },
         *        "ios": {
-        *            "osVer": "15.0",
         *            "uniVer": "√",
         *            "unixVer": "4.25"
         *        }
@@ -394,7 +367,6 @@ export type RequestVirtualPaymentErrorCode =
         *            "unixVer": "x"
         *        },
         *        "ios": {
-        *            "osVer": "15.0",
         *            "uniVer": "√",
         *            "unixVer": "4.25"
         *        }
@@ -420,7 +392,6 @@ export type AppleIAPPromotionalOffer = {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
@@ -441,7 +412,6 @@ export type AppleIAPPromotionalOffer = {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
@@ -462,7 +432,6 @@ export type AppleIAPPromotionalOffer = {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
@@ -483,7 +452,6 @@ export type AppleIAPPromotionalOffer = {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
@@ -504,7 +472,6 @@ export type AppleIAPPromotionalOffer = {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
@@ -528,7 +495,6 @@ export type AppleIAPTransactionOptions = {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
@@ -549,7 +515,6 @@ export type AppleIAPTransactionOptions = {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
@@ -570,7 +535,6 @@ export type AppleIAPTransactionOptions = {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
@@ -591,7 +555,6 @@ export type AppleIAPTransactionOptions = {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
@@ -612,7 +575,6 @@ export type AppleIAPTransactionOptions = {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
@@ -633,7 +595,6 @@ export type AppleIAPTransactionOptions = {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
@@ -654,7 +615,6 @@ export type AppleIAPTransactionOptions = {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
@@ -675,7 +635,6 @@ export type AppleIAPTransactionOptions = {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
@@ -708,7 +667,6 @@ export type RequestVirtualPaymentSuccess = {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
@@ -737,7 +695,6 @@ export interface IRequestVirtualPaymentFail extends IUniError {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
@@ -763,7 +720,6 @@ export type AppleIAPOptions = {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
@@ -784,7 +740,6 @@ export type AppleIAPOptions = {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
@@ -805,7 +760,6 @@ export type AppleIAPOptions = {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
@@ -826,7 +780,6 @@ export type AppleIAPOptions = {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
@@ -858,7 +811,6 @@ export type RequestVirtualPaymentOptions = {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
@@ -891,51 +843,36 @@ export type RequestVirtualPaymentOptions = {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
      *    },
      *  "mp": {
      *    "weixin": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
      *        "unixVer": "4.41"
      *    },
      *    "alipay": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "toutiao": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "lark": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "qq": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "kuaishou": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "jd": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    }
      *  },
      *    "web": {
@@ -954,51 +891,36 @@ export type RequestVirtualPaymentOptions = {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
      *    },
      *  "mp": {
      *    "weixin": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
      *        "unixVer": "4.41"
      *    },
      *    "alipay": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "toutiao": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "lark": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "qq": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "kuaishou": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "jd": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    }
      *  },
      *    "web": {
@@ -1017,51 +939,36 @@ export type RequestVirtualPaymentOptions = {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
      *    },
      *  "mp": {
      *    "weixin": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
      *        "unixVer": "4.41"
      *    },
      *    "alipay": {
-     *        "hostVer": "√",
      *        "uniVer": "√",
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "toutiao": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "lark": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "qq": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "kuaishou": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    },
      *    "jd": {
-     *        "hostVer": "√",
      *        "uniVer": "x",
-     *        "unixVer": "x"
      *    }
      *  },
      *    "web": {
@@ -1086,7 +993,6 @@ export type AppleIAPRestoreSuccess = {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
@@ -1112,7 +1018,6 @@ export interface IAppleIAPRestoreFail extends IUniError {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
@@ -1140,7 +1045,6 @@ export type AppleIAPRestoreErrorCode =
         *            "unixVer": "x"
         *        },
         *        "ios": {
-        *            "osVer": "15.0",
         *            "uniVer": "√",
         *            "unixVer": "4.25"
         *        }
@@ -1161,7 +1065,6 @@ export type AppleIAPRestoreErrorCode =
         *            "unixVer": "x"
         *        },
         *        "ios": {
-        *            "osVer": "15.0",
         *            "uniVer": "√",
         *            "unixVer": "4.25"
         *        }
@@ -1182,7 +1085,6 @@ export type AppleIAPRestoreErrorCode =
         *            "unixVer": "x"
         *        },
         *        "ios": {
-        *            "osVer": "15.0",
         *            "uniVer": "√",
         *            "unixVer": "4.25"
         *        }
@@ -1203,7 +1105,6 @@ export type AppleIAPRestoreErrorCode =
         *            "unixVer": "x"
         *        },
         *        "ios": {
-        *            "osVer": "15.0",
         *            "uniVer": "√",
         *            "unixVer": "4.25"
         *        }
@@ -1227,7 +1128,6 @@ export type AppleIAPRestoreOptions = {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
@@ -1248,7 +1148,6 @@ export type AppleIAPRestoreOptions = {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
@@ -1269,7 +1168,6 @@ export type AppleIAPRestoreOptions = {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
@@ -1297,7 +1195,6 @@ export type AppleIAPUnfinishedTransactionSuccess = {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
@@ -1323,7 +1220,6 @@ export interface IAppleIAPUnfinishedTransactionFail extends IUniError {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
@@ -1354,7 +1250,6 @@ export type AppleIAPUnfinishedTransactionOptions = {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
@@ -1375,7 +1270,6 @@ export type AppleIAPUnfinishedTransactionOptions = {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
@@ -1396,7 +1290,6 @@ export type AppleIAPUnfinishedTransactionOptions = {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
@@ -1424,7 +1317,6 @@ export type AppleIAPFinishTransactionSuccess = {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
@@ -1450,7 +1342,6 @@ export interface IAppleIAPFinishTransactionFail extends IUniError {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
@@ -1478,7 +1369,6 @@ export type AppleIAPFinishTransactionFailErrorCode =
         *            "unixVer": "x"
         *        },
         *        "ios": {
-        *            "osVer": "15.0",
         *            "uniVer": "√",
         *            "unixVer": "4.25"
         *        }
@@ -1499,7 +1389,6 @@ export type AppleIAPFinishTransactionFailErrorCode =
         *            "unixVer": "x"
         *        },
         *        "ios": {
-        *            "osVer": "15.0",
         *            "uniVer": "√",
         *            "unixVer": "4.25"
         *        }
@@ -1523,7 +1412,6 @@ export type AppleIAPFinishTransactionOptions = {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
@@ -1544,7 +1432,6 @@ export type AppleIAPFinishTransactionOptions = {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
@@ -1565,7 +1452,6 @@ export type AppleIAPFinishTransactionOptions = {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
@@ -1586,7 +1472,6 @@ export type AppleIAPFinishTransactionOptions = {
      *            "unixVer": "x"
      *        },
      *        "ios": {
-     *            "osVer": "15.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }

@@ -1,5 +1,5 @@
 <template>
-    <view class="uni-padding-wrap">
+    <view class="p-0-15">
       <text class="common" style="font-family: monospace">font-family: monospace</text>
 
       <text class="common" style="font-family: cursive">font-family: cursive</text>
@@ -15,7 +15,7 @@
       <!--    <text class="common" style="font-family: AlimamaDaoLiTiWOFF">font-family: 阿里妈妈刀隶体-woff</text>
       <text class="common" style="font-family: AlimamaDaoLiTiWOFF2">font-family: 阿里妈妈刀隶体-woff2</text> -->
 
-      <text class="uni-title-text title-color">【拍平测试】</text>
+      <text class="fs-15 fw-bold color-text-333 title-color">【拍平测试】</text>
       <text class="common" style="font-family: monospace" flatten>font-family: monospace</text>
       <text class="common" style="font-family: cursive" flatten>font-family: cursive</text>
       <text class="common" style="font-family: AlimamaDaoLiTiTTF" flatten>font-family: 阿里妈妈刀隶体-ttf（网络字体下载后生效）</text>
@@ -24,22 +24,22 @@
       <text style="font-family: UniFontFamily;" flatten>style 加载非 static 目录字体文件：{{uniIcon}}</text>
 
 
-      <view class="uni-common-mt">
-        <text class="uni-title-text title-color">setProperty 设置与 getPropertyValue 获取</text>
+      <view class="mt-15">
+        <text class="fs-15 fw-bold color-text-333 title-color">setProperty 设置与 getPropertyValue 获取</text>
 
         <!-- 普通版本 -->
-        <text class="uni-info">设置值: {{data.fontFamily}}</text>
-        <text class="uni-info">获取值: {{data.fontFamilyActual}}</text>
+        <text class="fs-12 color-999">设置值: {{data.fontFamily}}</text>
+        <text class="fs-12 color-999">获取值: {{data.fontFamilyActual}}</text>
         <text ref="textRef" class="common" :style="{ fontFamily: data.fontFamily }">当前 font-family: {{data.fontFamily}}</text>
 
         <!-- 拍平版本 -->
-        <text class="uni-info">设置值: {{data.fontFamily}}</text>
-        <text class="uni-info">获取值: {{data.fontFamilyActualFlat}}</text>
+        <text class="fs-12 color-999">设置值: {{data.fontFamily}}</text>
+        <text class="fs-12 color-999">获取值: {{data.fontFamilyActualFlat}}</text>
         <text ref="textRefFlat" class="common" :style="{ fontFamily: data.fontFamily }" flatten>当前 font-family: {{data.fontFamily}}</text>
 
-        <view class="uni-common-mt uni-common-mb">
-          <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
-          <enum-data :items="fontFamilyEnum" title="font-family 枚举值" @change="radioChangeFontFamily" :compact="true"></enum-data>
+        <view class="mt-15 mb-15">
+          <text class="fs-13 color-tips-0958d9 bg-tips-e6f4ff border-l-4-solid-tips-91caff p-10-12 radius-4 m-10">第一个枚举值，'' (空字符串) - 空值情况</text>
+          <enum-data-checkbox :items="fontFamilyEnum" title="font-family 枚举值" @change="radioChangeFontFamily" :compact="true"></enum-data-checkbox>
           <input-data :defaultValue="data.fontFamily" title="font-family 自定义值" type="text" @confirm="inputChangeFontFamily"></input-data>
         </view>
       </view>
@@ -52,7 +52,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ItemType } from '@/components/enum-data/enum-data-types'
+  import { ItemType } from '@/components/enum-data-checkbox/enum-data-checkbox-types'
 
   const uniIcon = ref('\ue100')
   const openUniIcon = () => {
@@ -148,18 +148,5 @@
     font-family: AlimamaDaoLiTiWOFF2;
     src: url('/static/app-ios/AlimamaDaoLiTi.woff2');
   } */
-
-  .common-box{
-    flex-direction: row;
-    justify-content: space-around;
-  }
-
-  .test-box {
-    width: 180px;
-    height: 80px;
-    background-color: gray;
-    justify-content: center;
-    align-items: center;
-  }
 
 </style>

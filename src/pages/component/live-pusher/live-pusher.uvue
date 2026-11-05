@@ -1,55 +1,55 @@
 <template>
-  <view class="uni-flex-item">
-    <live-pusher v-if="isUrlSet" id="live-pusher" class="live-pusher" :url="url" :beauty="beauty"
+  <view class="flex-1">
+    <live-pusher v-if="isUrlSet" id="live-pusher" class="w-full h-50pct" :url="url" :beauty="beauty"
       :whiteness="whiteness" :remote-mirror="remoteMirror" :local-mirror="localMirror" :device-position="devicePosition"
       :mode="mode" :auto-focus="autoFocus" :muted="muted" :orientation="orientation" :enable-camera="enableCamera"
       :enable-mic="enableMic" :audio-quality="audioQuality" :min-bitrate="minBitrate" :max-bitrate="maxBitrate"
       :audio-volume-type="audioVolumeType" :aspect="aspect" :background-mute="backgroundMute"
       :waiting-image="waitingImage" :zoom="zoom" @statechange="statechange" @netstatus="netstatus" @error="error">
     </live-pusher>
-    <scroll-view class="uni-padding-wrap uni-common-mt uni-flex-item">
-      <view class="uni-title">
-        <text class="uni-title-text">API示例</text>
+    <scroll-view class="p-0-15 mt-15 flex-1">
+      <view class="p-10-0 color-text-333">
+        <text class="fs-15 fw-bold color-text-333">API示例</text>
       </View>
-      <view class="uni-btn-v">
+      <view class="p-5-0">
         <button type="primary" @click="start" :disabled="connectedState || !previewState">开始推流</button>
       </view>
-      <view class="uni-btn-v">
+      <view class="p-5-0">
         <button type="primary" @click="pause" :disabled="!connectedState || !previewState">暂停推流</button>
       </view>
-      <view class="uni-btn-v">
+      <view class="p-5-0">
         <button type="primary" @click="resume"
           :disabled="initState || connectedState || stopState || !previewState">恢复推流</button>
       </view>
-      <view class="uni-btn-v">
+      <view class="p-5-0">
         <button type="primary" @click="stop" :disabled="!connectedState || !previewState">停止推流</button>
       </view>
-      <view class="uni-btn-v">
+      <view class="p-5-0">
         <button type="primary" @click="switchCamera" :disabled="stopState || !previewState">切换前后摄像头</button>
       </view>
-      <view class="uni-btn-v">
+      <view class="p-5-0">
         <button type="primary" @click="snapshot" :disabled="stopState || !previewState">快照</button>
       </view>
-      <view class="uni-btn-v">
+      <view class="p-5-0">
         <button type="primary" @click="startPreview" :disabled="stopState || previewState">开启摄像头预览</button>
       </view>
-      <view class="uni-btn-v">
+      <view class="p-5-0">
         <button type="primary" @click="stopPreview" :disabled="stopState || !previewState">关闭摄像头预览</button>
       </view>
-      <view class="uni-title">
-        <text class="uni-title-text">属性示例</text>
+      <view class="p-10-0 color-text-333">
+        <text class="fs-15 fw-bold color-text-333">属性示例</text>
       </view>
-      <input class="input margin-10" type="string" placeholder="设置推流地址" @confirm="onUrlComfirm"></input>
-      <input class="input margin-10" type="string" placeholder="设置最小码率" @confirm="onMinBitrateComfirm"></input>
-      <input class="input margin-10" type="string" placeholder="设置最大码率" @confirm="onMaxBitrateComfirm"></input>
-      <input class="input margin-10" type="string" placeholder="设置进入后台时推流的等待画面"
+      <input class="m-10 h-40 background-fff p-8-13" type="string" placeholder="设置推流地址" @confirm="onUrlComfirm"></input>
+      <input class="m-10 h-40 background-fff p-8-13" type="string" placeholder="设置最小码率" @confirm="onMinBitrateComfirm"></input>
+      <input class="m-10 h-40 background-fff p-8-13" type="string" placeholder="设置最大码率" @confirm="onMaxBitrateComfirm"></input>
+      <input class="m-10 h-40 background-fff p-8-13" type="string" placeholder="设置进入后台时推流的等待画面"
         @confirm="onWaitingImageComfirm"></input>
-      <input class="input margin-10" type="string" placeholder="设置焦距" @confirm="onZoomComfirm"></input>
-      <view class="margin-10">
+      <input class="m-10 h-40 background-fff p-8-13" type="string" placeholder="设置焦距" @confirm="onZoomComfirm"></input>
+      <view class="m-10">
         <text>美颜, 取值范围0-9(iOS取值范围为1), 0表示关闭</text>
         <slider :min="0" :max="9" @change="onBeautyChange" />
       </view>
-      <view class="margin-10">
+      <view class="m-10">
         <text>美白, 取值范围0-9(iOS取值范围为1), 0表示关闭</text>
         <slider :min="0" :max="9" @change="onWhitenessChange" />
       </view>
@@ -59,18 +59,18 @@
       <boolean-data title="设置是否自动聚焦" :value="autoFocus" @change="onAutoFocusChange"></boolean-data>
       <boolean-data title="设置进入后台时是否静音" :value="backgroundMute" @change="onBackgroundMuteChange"></boolean-data>
       <boolean-data title="设置推流画面是否镜像" :value="remoteMirror" @change="onRemoteMirrorChange"></boolean-data>
-      <enum-data title="设置本地预览画面是否镜像" :items="localMirrorItemTypes" @change="onLocalMirrorChange"></enum-data>
-      <enum-data title="设置使用前置或后置摄像头" :items="devicePositionItemTypes" @change="onDevicePositionChange"></enum-data>
-      <enum-data title="设置推流视频模式" :items="modeItemTypes" @change="onModeChange"></enum-data>
-      <enum-data title="设置视频宽高比例" :items="aspectItemTypes" @change="onAspectChange"></enum-data>
-      <enum-data title="设置画面方向" :items="orientationItemTypes" @change="onOrientationChange"></enum-data>
-      <enum-data title="设置音质" :items="audioQualityItemTypes" @change="onAudioQualityChange"></enum-data>
+      <enum-data-checkbox title="设置本地预览画面是否镜像" :items="localMirrorItemTypes" @change="onLocalMirrorChange"></enum-data-checkbox>
+      <enum-data-checkbox title="设置使用前置或后置摄像头" :items="devicePositionItemTypes" @change="onDevicePositionChange"></enum-data-checkbox>
+      <enum-data-checkbox title="设置推流视频模式" :items="modeItemTypes" @change="onModeChange"></enum-data-checkbox>
+      <enum-data-checkbox title="设置视频宽高比例" :items="aspectItemTypes" @change="onAspectChange"></enum-data-checkbox>
+      <enum-data-checkbox title="设置画面方向" :items="orientationItemTypes" @change="onOrientationChange"></enum-data-checkbox>
+      <enum-data-checkbox title="设置音质" :items="audioQualityItemTypes" @change="onAudioQualityChange"></enum-data-checkbox>
     </scroll-view>
   </view>
 </template>
 
 <script setup lang="ts">
-  import { ItemType } from '@/components/enum-data/enum-data-types';
+  import { ItemType } from '@/components/enum-data-checkbox/enum-data-checkbox-types';
 
   const context = ref(null as LivePusherContext | null);
   const instance = ref(null as ComponentPublicInstance | null);
@@ -376,16 +376,3 @@
     console.log("audio-quality ->", audioQuality.value);
   };
 </script>
-
-<style>
-  .live-pusher {
-    width: 100%;
-    height: 50%;
-  }
-
-  .input {
-    height: 40px;
-    background: #FFF;
-    padding: 8px 13px;
-  }
-</style>

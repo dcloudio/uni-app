@@ -1,6 +1,6 @@
 <template>
     <view>
-      <view class="uni-common-mt">
+      <view class="mt-15">
         <text>多类名优先级测试 (.s1.s2 > .s1)</text>
         <view class="test-box s1" id="spec-multi-1">
           <text>1 class: .s1 (blue)</text>
@@ -16,7 +16,7 @@
       <!-- 当前已注释的代码段在app和web平台有差异 -->
       <!-- app 如果需要后面覆盖前面，需要保证class在模版中的顺序，不是css代码的顺序 -->
       <!-- web 模版中的css顺序不影响优先级 -->
-      <!-- <view class="uni-common-mt">
+      <!-- <view class="uni-common-mt mt-15">
         <text>同优先级定义顺序测试 (后定义覆盖前定义)</text>
         <view class="test-box order-first order-second" id="spec-order-1">
           <text>Defined Second (Purple)</text>
@@ -26,7 +26,7 @@
         </view>
       </view> -->
 
-      <view class="uni-common-mt">
+      <view class="mt-15">
         <text>字母排序测试 (测试编译是否受字母顺序影响)</text>
         <!-- .alpha 定义在前, .beta 定义在后 -->
         <view class="test-box alpha beta" id="spec-alpha-1">
@@ -41,7 +41,7 @@
         </view>
       </view>
 
-      <view class="uni-common-mt">
+      <view class="mt-15">
         <text>组合类名顺序测试 (Chained Classes Order)</text>
         <text>1. 字母序与定义序一致 (.ab.x then .ab.y)</text>
         <view class="test-box ab x y" id="spec-chain-1">
@@ -54,7 +54,7 @@
         </view>
       </view>
 
-      <view class="uni-common-mt">
+      <view class="mt-15">
         <text>特定前缀测试 (.a.b vs .a.c)</text>
         <text>1. Normal Order: .a.b then .a.c</text>
         <view class="test-box a b c" id="spec-prefix-1">
@@ -70,7 +70,7 @@
         </view>
       </view>
 
-      <view class="uni-common-mt">
+      <view class="mt-15">
         <text>完全无公共前缀测试 (Disjoint Classes)</text>
         <text>Inverse Order: .year-2025.month-12 then .year-2024.month-01</text>
         <view class="test-box year-2025 month-12 year-2024 month-01" id="spec-disjoint">
@@ -78,7 +78,7 @@
         </view>
       </view>
 
-      <view class="uni-common-mt">
+      <view class="mt-15">
         <text>自定义组件标签使用 .a.b 测试</text>
         <specificity-ab-custom class="specificity-component-box spec-component-box-base"></specificity-ab-custom>
         <specificity-ab-custom class="specificity-component-box specificity-component-box--dark spec-component-box-dark"></specificity-ab-custom>
@@ -99,12 +99,6 @@ import specificityAbCustom from './specificity-ab-custom.uvue'
     border: 2px solid black;
     justify-content: center;
     align-items: center;
-  }
-
-  /* Class selector */
-  .class-style {
-    border: 5px solid blue;
-    background-color: lightblue;
   }
 
   /* Multi-class tests */

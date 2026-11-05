@@ -1,244 +1,244 @@
 <template>
     <page-head title="组件全局事件示例"></page-head>
     <page-intro content="本页演示组件全局事件：触摸区域展示 touchstart/touchmove/touchend/touchcancel，点击区域展示 tap/click/longpress，并显示事件详情与清除；可跳转冒泡、阻止默认、transform 等子示例。"></page-intro>
-    <view class="uni-padding-wrap uni-common-mt container">
-      <view class="section">
-        <text class="section-title">触摸事件区域：touchstart/touchmove/touchend/touchcancel</text>
-        <text class="section-desc">在下方蓝色区域滑动查看触摸事件详情</text>
-        <view class="target touch-area" id="touch-target" @touchstart="onTouchStart" @touchcancel="onTouchCancel"
+    <view class="p-0-15 mt-15 container pb-10">
+      <view class="mb-20">
+        <text class="fs-16 fw-bold mb-8 section-title">触摸事件区域：touchstart/touchmove/touchend/touchcancel</text>
+        <text class="fs-14 mb-10 section-desc">在下方蓝色区域滑动查看触摸事件详情</text>
+        <view class="w-full h-200 radius-10 d-flex items-center justify-center bg-409eff" id="touch-target" @touchstart="onTouchStart" @touchcancel="onTouchCancel"
           @touchmove="onTouchMove" @touchend="onTouchEnd">
-          <text class="target-text">在此区域滑动</text>
+          <text class="color-fff fs-16 fw-bold">在此区域滑动</text>
         </view>
       </view>
 
-      <view class="section">
-        <text class="section-title">点击/长按事件区域：tap/click/longpress</text>
-        <text class="section-desc">点击或长按下方绿色区域查看事件详情</text>
-        <view class="target click-area" id="longpress-target" @tap="onTap" @click="onClick" @longpress="onLongPress">
-          <text class="target-text">点击或长按</text>
+      <view class="mb-20">
+        <text class="fs-16 fw-bold mb-8 section-title">点击/长按事件区域：tap/click/longpress</text>
+        <text class="fs-14 mb-10 section-desc">点击或长按下方绿色区域查看事件详情</text>
+        <view class="w-full h-200 radius-10 d-flex items-center justify-center bg-67c23a" id="longpress-target" @tap="onTap" @click="onClick" @longpress="onLongPress">
+          <text class="color-fff fs-16 fw-bold">点击或长按</text>
         </view>
       </view>
 
-      <view class="section" v-if="touchStartEvent !== null || touchMoveEvent !== null || touchEndEvent !== null || touchCancelEvent !== null || tapEvent !== null || clickEvent !== null || longPressEvent !== null">
-        <view class="clear-btn-wrapper">
-          <button class="clear-btn" @click="clearAllEvents">清除所有事件</button>
+      <view class="mb-20" v-if="touchStartEvent !== null || touchMoveEvent !== null || touchEndEvent !== null || touchCancelEvent !== null || tapEvent !== null || clickEvent !== null || longPressEvent !== null">
+        <view class="d-flex justify-center m-20-0">
+          <button class="w-full color-fff radius-6 fs-14 clear-btn" @click="clearAllEvents">清除所有事件</button>
         </view>
       </view>
-      <view v-if="touchStartEvent !== null" class="event-detail">
-        <text class="event-title">touchStart Event（触摸开始事件）</text>
-        <view class="event-base-info">
-          <text class="info-title">UniEvent 基础属性:</text>
-          <view class="info-row">
-            <text class="info-label">event.type (事件类型):</text>
-            <text class="info-value">{{ touchStartEvent!.type }}</text>
+      <view v-if="touchStartEvent !== null" class="u-p-15 radius-8 mb-20 event-detail">
+        <text class="fs-18 fw-bold mb-12 color-global-title-303133">touchStart Event（触摸开始事件）</text>
+        <view class="u-p-10 radius-6 mb-12 bg-list-fff">
+          <text class="fs-15 fw-bold mb-8 color-global-body-606266">UniEvent 基础属性:</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.type (事件类型):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60">{{ touchStartEvent!.type }}</text>
           </view>
-          <view class="info-row">
-            <text class="info-label">event.bubbles (是否冒泡):</text>
-            <text class="info-value">{{ touchStartEvent!.bubbles }}</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.bubbles (是否冒泡):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60">{{ touchStartEvent!.bubbles }}</text>
           </view>
-          <view class="info-row">
-            <text class="info-label">event.cancelable (是否可取消):</text>
-            <text class="info-value">{{ touchStartEvent!.cancelable }}</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.cancelable (是否可取消):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60">{{ touchStartEvent!.cancelable }}</text>
           </view>
-          <view class="info-row">
-            <text class="info-label">event.timeStamp (时间戳):</text>
-            <text class="info-value">{{ touchStartEvent!.timeStamp }}</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.timeStamp (时间戳):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60">{{ touchStartEvent!.timeStamp }}</text>
           </view>
         </view>
-        <text class="touches-title">event.touches (当前所有触摸点):</text>
+        <text class="fs-15 fw-bold mt-12 mb-8 color-global-body-606266">event.touches (当前所有触摸点):</text>
         <template v-for="(touch, index) in touchStartEvent!.touches" :key="index">
-          <view class="touch-item">
-            <text class="touch-index">event.touches[{{ index }}]:</text>
-            <view class="touch-props">
-              <view class="prop-row">
-                <text class="prop-label">  .identifier (触摸点标识符):</text>
-                <text class="prop-value" id="touch-start-touch-identifier">{{ touch.identifier }}</text>
+          <view class="u-p-10 radius-6 mb-10 bg-list-fff">
+            <text class="fs-14 fw-bold mb-8 color-409eff">event.touches[{{ index }}]:</text>
+            <view class="pl-10">
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .identifier (触摸点标识符):</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-start-touch-identifier">{{ touch.identifier }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .pageX (相对于页面左边,含滚动):</text>
-                <text class="prop-value" id="touch-start-touch-page-x">{{ touch.pageX }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .pageX (相对于页面左边,含滚动):</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-start-touch-page-x">{{ touch.pageX }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .pageY (相对于页面顶部,含滚动):</text>
-                <text class="prop-value" id="touch-start-touch-page-y">{{ touch.pageY }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .pageY (相对于页面顶部,含滚动):</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-start-touch-page-y">{{ touch.pageY }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .clientX (相对于可视区域左边):</text>
-                <text class="prop-value" id="touch-start-touch-client-x">{{ touch.clientX }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .clientX (相对于可视区域左边):</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-start-touch-client-x">{{ touch.clientX }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .clientY (相对于可视区域顶部):</text>
-                <text class="prop-value" id="touch-start-touch-client-y">{{ touch.clientY }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .clientY (相对于可视区域顶部):</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-start-touch-client-y">{{ touch.clientY }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .screenX (相对于屏幕左边,不含滚动):</text>
-                <text class="prop-value" id="touch-start-touch-screen-x">{{ touch.screenX }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .screenX (相对于屏幕左边,不含滚动):</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-start-touch-screen-x">{{ touch.screenX }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .screenY (相对于屏幕顶部,不含滚动):</text>
-                <text class="prop-value" id="touch-start-touch-screen-y">{{ touch.screenY }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .screenY (相对于屏幕顶部,不含滚动):</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-start-touch-screen-y">{{ touch.screenY }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .force (触摸点的压力大小):</text>
-                <text class="prop-value" id="touch-start-touch-force">{{ touch.force }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .force (触摸点的压力大小):</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-start-touch-force">{{ touch.force }}</text>
               </view>
             </view>
           </view>
         </template>
-        <text class="touches-title">event.changedTouches (变化的触摸点):</text>
+        <text class="fs-15 fw-bold mt-12 mb-8 color-global-body-606266">event.changedTouches (变化的触摸点):</text>
         <template v-for="(touch, index) in touchStartEvent!.changedTouches" :key="index">
-          <view class="touch-item">
-            <text class="touch-index">event.changedTouches[{{ index }}]:</text>
-            <view class="touch-props">
-              <view class="prop-row">
-                <text class="prop-label">  .identifier:</text>
-                <text class="prop-value" id="touch-start-changed-touch-identifier">{{ touch.identifier }}</text>
+          <view class="u-p-10 radius-6 mb-10 bg-list-fff">
+            <text class="fs-14 fw-bold mb-8 color-409eff">event.changedTouches[{{ index }}]:</text>
+            <view class="pl-10">
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .identifier:</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-start-changed-touch-identifier">{{ touch.identifier }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .pageX:</text>
-                <text class="prop-value" id="touch-start-changed-touch-page-x">{{ touch.pageX }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .pageX:</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-start-changed-touch-page-x">{{ touch.pageX }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .pageY:</text>
-                <text class="prop-value" id="touch-start-changed-touch-page-y">{{ touch.pageY }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .pageY:</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-start-changed-touch-page-y">{{ touch.pageY }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .clientX:</text>
-                <text class="prop-value" id="touch-start-changed-touch-client-x">{{ touch.clientX }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .clientX:</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-start-changed-touch-client-x">{{ touch.clientX }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .clientY:</text>
-                <text class="prop-value" id="touch-start-changed-touch-client-y">{{ touch.clientY }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .clientY:</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-start-changed-touch-client-y">{{ touch.clientY }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .screenX:</text>
-                <text class="prop-value" id="touch-start-changed-touch-screen-x">{{ touch.screenX }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .screenX:</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-start-changed-touch-screen-x">{{ touch.screenX }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .screenY:</text>
-                <text class="prop-value" id="touch-start-changed-touch-screen-y">{{ touch.screenY }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .screenY:</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-start-changed-touch-screen-y">{{ touch.screenY }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .force:</text>
-                <text class="prop-value" id="touch-start-changed-touch-force">{{ touch.force }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .force:</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-start-changed-touch-force">{{ touch.force }}</text>
               </view>
             </view>
           </view>
         </template>
       </view>
-      <view v-if="touchCancelEvent !== null" class="event-detail">
-        <text class="event-title">touchCancel Event（触摸取消事件）</text>
-        <view class="event-base-info">
-          <text class="info-title">UniEvent 基础属性:</text>
-          <view class="info-row">
-            <text class="info-label">event.type (事件类型):</text>
-            <text class="info-value">{{ touchCancelEvent!.type }}</text>
+      <view v-if="touchCancelEvent !== null" class="u-p-15 radius-8 mb-20 event-detail">
+        <text class="fs-18 fw-bold mb-12 color-global-title-303133">touchCancel Event（触摸取消事件）</text>
+        <view class="u-p-10 radius-6 mb-12 bg-list-fff">
+          <text class="fs-15 fw-bold mb-8 color-global-body-606266">UniEvent 基础属性:</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.type (事件类型):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60">{{ touchCancelEvent!.type }}</text>
           </view>
-          <view class="info-row">
-            <text class="info-label">event.bubbles (是否冒泡):</text>
-            <text class="info-value">{{ touchCancelEvent!.bubbles }}</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.bubbles (是否冒泡):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60">{{ touchCancelEvent!.bubbles }}</text>
           </view>
-          <view class="info-row">
-            <text class="info-label">event.cancelable (是否可取消):</text>
-            <text class="info-value">{{ touchCancelEvent!.cancelable }}</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.cancelable (是否可取消):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60">{{ touchCancelEvent!.cancelable }}</text>
           </view>
-          <view class="info-row">
-            <text class="info-label">event.timeStamp (时间戳):</text>
-            <text class="info-value">{{ touchCancelEvent!.timeStamp }}</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.timeStamp (时间戳):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60">{{ touchCancelEvent!.timeStamp }}</text>
           </view>
         </view>
-        <text class="touches-title">event.touches (当前所有触摸点):</text>
+        <text class="fs-15 fw-bold mt-12 mb-8 color-global-body-606266">event.touches (当前所有触摸点):</text>
         <template v-for="(touch, index) in touchCancelEvent!.touches" :key="index">
-          <view class="touch-item">
-            <text class="touch-index">event.touches[{{ index }}]:</text>
-            <view class="touch-props">
-              <view class="prop-row">
-                <text class="prop-label">  .identifier (触摸点标识符):</text>
-                <text class="prop-value" id="touch-cancel-touch-identifier">{{
+          <view class="u-p-10 radius-6 mb-10 bg-list-fff">
+            <text class="fs-14 fw-bold mb-8 color-409eff">event.touches[{{ index }}]:</text>
+            <view class="pl-10">
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .identifier (触摸点标识符):</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-cancel-touch-identifier">{{
               touch.identifier
             }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .pageX (相对于页面左边,含滚动):</text>
-                <text class="prop-value" id="touch-cancel-touch-page-x">{{ touch.pageX }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .pageX (相对于页面左边,含滚动):</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-cancel-touch-page-x">{{ touch.pageX }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .pageY (相对于页面顶部,含滚动):</text>
-                <text class="prop-value" id="touch-cancel-touch-page-y">{{ touch.pageY }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .pageY (相对于页面顶部,含滚动):</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-cancel-touch-page-y">{{ touch.pageY }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .clientX (相对于可视区域左边):</text>
-                <text class="prop-value" id="touch-cancel-touch-client-x">{{ touch.clientX }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .clientX (相对于可视区域左边):</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-cancel-touch-client-x">{{ touch.clientX }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .clientY (相对于可视区域顶部):</text>
-                <text class="prop-value" id="touch-cancel-touch-client-y">{{ touch.clientY }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .clientY (相对于可视区域顶部):</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-cancel-touch-client-y">{{ touch.clientY }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .screenX (相对于屏幕左边,不含滚动):</text>
-                <text class="prop-value" id="touch-cancel-touch-screen-x">{{ touch.screenX }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .screenX (相对于屏幕左边,不含滚动):</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-cancel-touch-screen-x">{{ touch.screenX }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .screenY (相对于屏幕顶部,不含滚动):</text>
-                <text class="prop-value" id="touch-cancel-touch-screen-y">{{ touch.screenY }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .screenY (相对于屏幕顶部,不含滚动):</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-cancel-touch-screen-y">{{ touch.screenY }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .force (触摸点的压力大小):</text>
-                <text class="prop-value" id="touch-cancel-touch-force">{{ touch.force }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .force (触摸点的压力大小):</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-cancel-touch-force">{{ touch.force }}</text>
               </view>
             </view>
           </view>
         </template>
-        <text class="touches-title">event.changedTouches (变化的触摸点):</text>
+        <text class="fs-15 fw-bold mt-12 mb-8 color-global-body-606266">event.changedTouches (变化的触摸点):</text>
         <template v-for="(touch, index) in touchCancelEvent!.changedTouches" :key="index">
-          <view class="touch-item">
-            <text class="touch-index">event.changedTouches[{{ index }}]:</text>
-            <view class="touch-props">
-              <view class="prop-row">
-                <text class="prop-label">  .identifier:</text>
-                <text class="prop-value" id="touch-cancel-changed-touch-identifier">{{
+          <view class="u-p-10 radius-6 mb-10 bg-list-fff">
+            <text class="fs-14 fw-bold mb-8 color-409eff">event.changedTouches[{{ index }}]:</text>
+            <view class="pl-10">
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .identifier:</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-cancel-changed-touch-identifier">{{
               touch.identifier
             }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .pageX:</text>
-                <text class="prop-value" id="touch-cancel-changed-touch-page-x">{{
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .pageX:</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-cancel-changed-touch-page-x">{{
               touch.pageX
             }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .pageY:</text>
-                <text class="prop-value" id="touch-cancel-changed-touch-page-y">{{
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .pageY:</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-cancel-changed-touch-page-y">{{
               touch.pageY
             }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .clientX:</text>
-                <text class="prop-value" id="touch-cancel-changed-touch-client-x">{{
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .clientX:</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-cancel-changed-touch-client-x">{{
               touch.clientX
             }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .clientY:</text>
-                <text class="prop-value" id="touch-cancel-changed-touch-client-y">{{
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .clientY:</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-cancel-changed-touch-client-y">{{
               touch.clientY
             }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .screenX:</text>
-                <text class="prop-value" id="touch-cancel-changed-touch-screen-x">{{
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .screenX:</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-cancel-changed-touch-screen-x">{{
               touch.screenX
             }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .screenY:</text>
-                <text class="prop-value" id="touch-cancel-changed-touch-screen-y">{{
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .screenY:</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-cancel-changed-touch-screen-y">{{
               touch.screenY
             }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .force:</text>
-                <text class="prop-value" id="touch-cancel-changed-touch-force">{{
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .force:</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-cancel-changed-touch-force">{{
               touch.force
             }}</text>
               </view>
@@ -246,319 +246,319 @@
           </view>
         </template>
       </view>
-      <view v-if="touchMoveEvent !== null" class="event-detail">
-        <text class="event-title">touchMove Event（触摸移动事件）</text>
-        <view class="event-base-info">
-          <text class="info-title">UniEvent 基础属性:</text>
-          <view class="info-row">
-            <text class="info-label">event.type (事件类型):</text>
-            <text class="info-value">{{ touchMoveEvent!.type }}</text>
+      <view v-if="touchMoveEvent !== null" class="u-p-15 radius-8 mb-20 event-detail">
+        <text class="fs-18 fw-bold mb-12 color-global-title-303133">touchMove Event（触摸移动事件）</text>
+        <view class="u-p-10 radius-6 mb-12 bg-list-fff">
+          <text class="fs-15 fw-bold mb-8 color-global-body-606266">UniEvent 基础属性:</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.type (事件类型):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60">{{ touchMoveEvent!.type }}</text>
           </view>
-          <view class="info-row">
-            <text class="info-label">event.bubbles (是否冒泡):</text>
-            <text class="info-value">{{ touchMoveEvent!.bubbles }}</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.bubbles (是否冒泡):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60">{{ touchMoveEvent!.bubbles }}</text>
           </view>
-          <view class="info-row">
-            <text class="info-label">event.cancelable (是否可取消):</text>
-            <text class="info-value">{{ touchMoveEvent!.cancelable }}</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.cancelable (是否可取消):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60">{{ touchMoveEvent!.cancelable }}</text>
           </view>
-          <view class="info-row">
-            <text class="info-label">event.timeStamp (时间戳):</text>
-            <text class="info-value">{{ touchMoveEvent!.timeStamp }}</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.timeStamp (时间戳):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60">{{ touchMoveEvent!.timeStamp }}</text>
           </view>
         </view>
-        <text class="touches-title">event.touches (当前所有触摸点):</text>
+        <text class="fs-15 fw-bold mt-12 mb-8 color-global-body-606266">event.touches (当前所有触摸点):</text>
         <template v-for="(touch, index) in touchMoveEvent!.touches" :key="index">
-          <view class="touch-item">
-            <text class="touch-index">event.touches[{{ index }}]:</text>
-            <view class="touch-props">
-              <view class="prop-row">
-                <text class="prop-label">  .identifier (触摸点标识符):</text>
-                <text class="prop-value" id="touch-move-touch-identifier">{{ touch.identifier }}</text>
+          <view class="u-p-10 radius-6 mb-10 bg-list-fff">
+            <text class="fs-14 fw-bold mb-8 color-409eff">event.touches[{{ index }}]:</text>
+            <view class="pl-10">
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .identifier (触摸点标识符):</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-move-touch-identifier">{{ touch.identifier }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .pageX (相对于页面左边,含滚动):</text>
-                <text class="prop-value" id="touch-move-touch-page-x">{{ touch.pageX }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .pageX (相对于页面左边,含滚动):</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-move-touch-page-x">{{ touch.pageX }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .pageY (相对于页面顶部,含滚动):</text>
-                <text class="prop-value" id="touch-move-touch-page-y">{{ touch.pageY }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .pageY (相对于页面顶部,含滚动):</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-move-touch-page-y">{{ touch.pageY }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .clientX (相对于可视区域左边):</text>
-                <text class="prop-value" id="touch-move-touch-client-x">{{ touch.clientX }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .clientX (相对于可视区域左边):</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-move-touch-client-x">{{ touch.clientX }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .clientY (相对于可视区域顶部):</text>
-                <text class="prop-value" id="touch-move-touch-client-y">{{ touch.clientY }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .clientY (相对于可视区域顶部):</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-move-touch-client-y">{{ touch.clientY }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .screenX (相对于屏幕左边,不含滚动):</text>
-                <text class="prop-value" id="touch-move-touch-screen-x">{{ touch.screenX }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .screenX (相对于屏幕左边,不含滚动):</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-move-touch-screen-x">{{ touch.screenX }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .screenY (相对于屏幕顶部,不含滚动):</text>
-                <text class="prop-value" id="touch-move-touch-screen-y">{{ touch.screenY }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .screenY (相对于屏幕顶部,不含滚动):</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-move-touch-screen-y">{{ touch.screenY }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .force (触摸点的压力大小):</text>
-                <text class="prop-value" id="touch-move-touch-force">{{ touch.force }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .force (触摸点的压力大小):</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-move-touch-force">{{ touch.force }}</text>
               </view>
             </view>
           </view>
         </template>
-        <text class="touches-title">event.changedTouches (变化的触摸点):</text>
+        <text class="fs-15 fw-bold mt-12 mb-8 color-global-body-606266">event.changedTouches (变化的触摸点):</text>
         <template v-for="(touch, index) in touchMoveEvent!.changedTouches" :key="index">
-          <view class="touch-item">
-            <text class="touch-index">event.changedTouches[{{ index }}]:</text>
-            <view class="touch-props">
-              <view class="prop-row">
-                <text class="prop-label">  .identifier:</text>
-                <text class="prop-value" id="touch-move-changed-touch-identifier">{{ touch.identifier }}</text>
+          <view class="u-p-10 radius-6 mb-10 bg-list-fff">
+            <text class="fs-14 fw-bold mb-8 color-409eff">event.changedTouches[{{ index }}]:</text>
+            <view class="pl-10">
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .identifier:</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-move-changed-touch-identifier">{{ touch.identifier }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .pageX:</text>
-                <text class="prop-value" id="touch-move-changed-touch-page-x">{{ touch.pageX }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .pageX:</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-move-changed-touch-page-x">{{ touch.pageX }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .pageY:</text>
-                <text class="prop-value" id="touch-move-changed-touch-page-y">{{ touch.pageY }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .pageY:</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-move-changed-touch-page-y">{{ touch.pageY }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .clientX:</text>
-                <text class="prop-value" id="touch-move-changed-touch-client-x">{{ touch.clientX }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .clientX:</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-move-changed-touch-client-x">{{ touch.clientX }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .clientY:</text>
-                <text class="prop-value" id="touch-move-changed-touch-client-y">{{ touch.clientY }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .clientY:</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-move-changed-touch-client-y">{{ touch.clientY }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .screenX:</text>
-                <text class="prop-value" id="touch-move-changed-touch-screen-x">{{ touch.screenX }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .screenX:</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-move-changed-touch-screen-x">{{ touch.screenX }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .screenY:</text>
-                <text class="prop-value" id="touch-move-changed-touch-screen-y">{{ touch.screenY }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .screenY:</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-move-changed-touch-screen-y">{{ touch.screenY }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .force:</text>
-                <text class="prop-value" id="touch-move-changed-touch-force">{{ touch.force }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .force:</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-move-changed-touch-force">{{ touch.force }}</text>
               </view>
             </view>
           </view>
         </template>
       </view>
-      <view v-if="touchEndEvent !== null" class="event-detail">
-        <text class="event-title">touchEnd Event（触摸结束事件）</text>
-        <view class="event-base-info">
-          <text class="info-title">UniEvent 基础属性:</text>
-          <view class="info-row">
-            <text class="info-label">event.type (事件类型):</text>
-            <text class="info-value">{{ touchEndEvent!.type }}</text>
+      <view v-if="touchEndEvent !== null" class="u-p-15 radius-8 mb-20 event-detail">
+        <text class="fs-18 fw-bold mb-12 color-global-title-303133">touchEnd Event（触摸结束事件）</text>
+        <view class="u-p-10 radius-6 mb-12 bg-list-fff">
+          <text class="fs-15 fw-bold mb-8 color-global-body-606266">UniEvent 基础属性:</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.type (事件类型):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60">{{ touchEndEvent!.type }}</text>
           </view>
-          <view class="info-row">
-            <text class="info-label">event.bubbles (是否冒泡):</text>
-            <text class="info-value">{{ touchEndEvent!.bubbles }}</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.bubbles (是否冒泡):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60">{{ touchEndEvent!.bubbles }}</text>
           </view>
-          <view class="info-row">
-            <text class="info-label">event.cancelable (是否可取消):</text>
-            <text class="info-value">{{ touchEndEvent!.cancelable }}</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.cancelable (是否可取消):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60">{{ touchEndEvent!.cancelable }}</text>
           </view>
-          <view class="info-row">
-            <text class="info-label">event.timeStamp (时间戳):</text>
-            <text class="info-value">{{ touchEndEvent!.timeStamp }}</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.timeStamp (时间戳):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60">{{ touchEndEvent!.timeStamp }}</text>
           </view>
         </view>
-        <text class="touches-title">event.touches (当前所有触摸点):</text>
+        <text class="fs-15 fw-bold mt-12 mb-8 color-global-body-606266">event.touches (当前所有触摸点):</text>
         <template v-for="(touch, index) in touchEndEvent!.touches" :key="index">
-          <view class="touch-item">
-            <text class="touch-index">event.touches[{{ index }}]:</text>
-            <view class="touch-props">
-              <view class="prop-row">
-                <text class="prop-label">  .identifier (触摸点标识符):</text>
-                <text class="prop-value" id="touch-end-touch-identifier">{{ touch.identifier }}</text>
+          <view class="u-p-10 radius-6 mb-10 bg-list-fff">
+            <text class="fs-14 fw-bold mb-8 color-409eff">event.touches[{{ index }}]:</text>
+            <view class="pl-10">
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .identifier (触摸点标识符):</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-end-touch-identifier">{{ touch.identifier }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .pageX (相对于页面左边,含滚动):</text>
-                <text class="prop-value" id="touch-end-touch-page-x">{{ touch.pageX }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .pageX (相对于页面左边,含滚动):</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-end-touch-page-x">{{ touch.pageX }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .pageY (相对于页面顶部,含滚动):</text>
-                <text class="prop-value" id="touch-end-touch-page-y">{{ touch.pageY }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .pageY (相对于页面顶部,含滚动):</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-end-touch-page-y">{{ touch.pageY }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .clientX (相对于可视区域左边):</text>
-                <text class="prop-value" id="touch-end-touch-client-x">{{ touch.clientX }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .clientX (相对于可视区域左边):</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-end-touch-client-x">{{ touch.clientX }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .clientY (相对于可视区域顶部):</text>
-                <text class="prop-value" id="touch-end-touch-client-y">{{ touch.clientY }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .clientY (相对于可视区域顶部):</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-end-touch-client-y">{{ touch.clientY }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .screenX (相对于屏幕左边,不含滚动):</text>
-                <text class="prop-value" id="touch-end-touch-screen-x">{{ touch.screenX }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .screenX (相对于屏幕左边,不含滚动):</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-end-touch-screen-x">{{ touch.screenX }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .screenY (相对于屏幕顶部,不含滚动):</text>
-                <text class="prop-value" id="touch-end-touch-screen-y">{{ touch.screenY }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .screenY (相对于屏幕顶部,不含滚动):</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-end-touch-screen-y">{{ touch.screenY }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .force (触摸点的压力大小):</text>
-                <text class="prop-value" id="touch-end-touch-force">{{ touch.force }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .force (触摸点的压力大小):</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-end-touch-force">{{ touch.force }}</text>
               </view>
             </view>
           </view>
         </template>
-        <text class="touches-title">event.changedTouches (变化的触摸点):</text>
+        <text class="fs-15 fw-bold mt-12 mb-8 color-global-body-606266">event.changedTouches (变化的触摸点):</text>
         <template v-for="(touch, index) in touchEndEvent!.changedTouches" :key="index">
-          <view class="touch-item">
-            <text class="touch-index">event.changedTouches[{{ index }}]:</text>
-            <view class="touch-props">
-              <view class="prop-row">
-                <text class="prop-label">  .identifier:</text>
-                <text class="prop-value" id="touch-end-changed-touch-identifier">{{ touch.identifier }}</text>
+          <view class="u-p-10 radius-6 mb-10 bg-list-fff">
+            <text class="fs-14 fw-bold mb-8 color-409eff">event.changedTouches[{{ index }}]:</text>
+            <view class="pl-10">
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .identifier:</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-end-changed-touch-identifier">{{ touch.identifier }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .pageX:</text>
-                <text class="prop-value" id="touch-end-changed-touch-page-x">{{ touch.pageX }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .pageX:</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-end-changed-touch-page-x">{{ touch.pageX }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .pageY:</text>
-                <text class="prop-value" id="touch-end-changed-touch-page-y">{{ touch.pageY }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .pageY:</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-end-changed-touch-page-y">{{ touch.pageY }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .clientX:</text>
-                <text class="prop-value" id="touch-end-changed-touch-client-x">{{ touch.clientX }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .clientX:</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-end-changed-touch-client-x">{{ touch.clientX }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .clientY:</text>
-                <text class="prop-value" id="touch-end-changed-touch-client-y">{{ touch.clientY }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .clientY:</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-end-changed-touch-client-y">{{ touch.clientY }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .screenX:</text>
-                <text class="prop-value" id="touch-end-changed-touch-screen-x">{{ touch.screenX }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .screenX:</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-end-changed-touch-screen-x">{{ touch.screenX }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .screenY:</text>
-                <text class="prop-value" id="touch-end-changed-touch-screen-y">{{ touch.screenY }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .screenY:</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-end-changed-touch-screen-y">{{ touch.screenY }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .force:</text>
-                <text class="prop-value" id="touch-end-changed-touch-force">{{ touch.force }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .force:</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="touch-end-changed-touch-force">{{ touch.force }}</text>
               </view>
             </view>
           </view>
         </template>
       </view>
-      <view v-if="longPressEvent !== null" class="event-detail">
-        <text class="event-title">longPress Event（长按事件）</text>
-        <view class="event-base-info">
-          <text class="info-title">UniEvent 基础属性:</text>
-          <view class="info-row">
-            <text class="info-label">event.type (事件类型):</text>
-            <text class="info-value">{{ longPressEvent!.type }}</text>
+      <view v-if="longPressEvent !== null" class="u-p-15 radius-8 mb-20 event-detail">
+        <text class="fs-18 fw-bold mb-12 color-global-title-303133">longPress Event（长按事件）</text>
+        <view class="u-p-10 radius-6 mb-12 bg-list-fff">
+          <text class="fs-15 fw-bold mb-8 color-global-body-606266">UniEvent 基础属性:</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.type (事件类型):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60">{{ longPressEvent!.type }}</text>
           </view>
-          <view class="info-row">
-            <text class="info-label">event.bubbles (是否冒泡):</text>
-            <text class="info-value">{{ longPressEvent!.bubbles }}</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.bubbles (是否冒泡):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60">{{ longPressEvent!.bubbles }}</text>
           </view>
-          <view class="info-row">
-            <text class="info-label">event.cancelable (是否可取消):</text>
-            <text class="info-value">{{ longPressEvent!.cancelable }}</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.cancelable (是否可取消):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60">{{ longPressEvent!.cancelable }}</text>
           </view>
-          <view class="info-row">
-            <text class="info-label">event.timeStamp (时间戳):</text>
-            <text class="info-value">{{ longPressEvent!.timeStamp }}</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.timeStamp (时间戳):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60">{{ longPressEvent!.timeStamp }}</text>
           </view>
         </view>
-        <text class="touches-title">event.touches (当前所有触摸点):</text>
+        <text class="fs-15 fw-bold mt-12 mb-8 color-global-body-606266">event.touches (当前所有触摸点):</text>
         <template v-for="(touch, index) in longPressEvent!.touches"
           :key="index">
-          <view class="touch-item">
-            <text class="touch-index">event.touches[{{ index }}]:</text>
-            <view class="touch-props">
-              <view class="prop-row">
-                <text class="prop-label">  .identifier (触摸点标识符):</text>
-                <text class="prop-value" id="long-press-touch-identifier">{{ touch.identifier }}</text>
+          <view class="u-p-10 radius-6 mb-10 bg-list-fff">
+            <text class="fs-14 fw-bold mb-8 color-409eff">event.touches[{{ index }}]:</text>
+            <view class="pl-10">
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .identifier (触摸点标识符):</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="long-press-touch-identifier">{{ touch.identifier }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .pageX (相对于页面左边,含滚动):</text>
-                <text class="prop-value" id="long-press-touch-page-x">{{ touch.pageX }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .pageX (相对于页面左边,含滚动):</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="long-press-touch-page-x">{{ touch.pageX }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .pageY (相对于页面顶部,含滚动):</text>
-                <text class="prop-value" id="long-press-touch-page-y">{{ touch.pageY }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .pageY (相对于页面顶部,含滚动):</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="long-press-touch-page-y">{{ touch.pageY }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .clientX (相对于可视区域左边):</text>
-                <text class="prop-value" id="long-press-touch-client-x">{{ touch.clientX }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .clientX (相对于可视区域左边):</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="long-press-touch-client-x">{{ touch.clientX }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .clientY (相对于可视区域顶部):</text>
-                <text class="prop-value" id="long-press-touch-client-y">{{ touch.clientY }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .clientY (相对于可视区域顶部):</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="long-press-touch-client-y">{{ touch.clientY }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .screenX (相对于屏幕左边,不含滚动):</text>
-                <text class="prop-value" id="long-press-touch-screen-x">{{ touch.screenX }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .screenX (相对于屏幕左边,不含滚动):</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="long-press-touch-screen-x">{{ touch.screenX }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .screenY (相对于屏幕顶部,不含滚动):</text>
-                <text class="prop-value" id="long-press-touch-screen-y">{{ touch.screenY }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .screenY (相对于屏幕顶部,不含滚动):</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="long-press-touch-screen-y">{{ touch.screenY }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .force (触摸点的压力大小):</text>
-                <text class="prop-value" id="long-press-touch-force">{{ touch.force }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .force (触摸点的压力大小):</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="long-press-touch-force">{{ touch.force }}</text>
               </view>
             </view>
           </view>
         </template>
         <!-- #ifndef MP-ALIPAY -->
-        <text class="touches-title">event.changedTouches (变化的触摸点):</text>
+        <text class="fs-15 fw-bold mt-12 mb-8 color-global-body-606266">event.changedTouches (变化的触摸点):</text>
         <template v-for="(touch, index) in longPressEvent!.changedTouches" :key="index">
-          <view class="touch-item">
-            <text class="touch-index">event.changedTouches[{{ index }}]:</text>
-            <view class="touch-props">
-              <view class="prop-row">
-                <text class="prop-label">  .identifier:</text>
-                <text class="prop-value" id="long-press-changed-touch-identifier">{{
+          <view class="u-p-10 radius-6 mb-10 bg-list-fff">
+            <text class="fs-14 fw-bold mb-8 color-409eff">event.changedTouches[{{ index }}]:</text>
+            <view class="pl-10">
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .identifier:</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="long-press-changed-touch-identifier">{{
               touch.identifier
             }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .pageX:</text>
-                <text class="prop-value" id="long-press-changed-touch-page-x">{{ touch.pageX }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .pageX:</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="long-press-changed-touch-page-x">{{ touch.pageX }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .pageY:</text>
-                <text class="prop-value" id="long-press-changed-touch-page-y">{{ touch.pageY }}</text>
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .pageY:</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="long-press-changed-touch-page-y">{{ touch.pageY }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .clientX:</text>
-                <text class="prop-value" id="long-press-changed-touch-client-x">{{
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .clientX:</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="long-press-changed-touch-client-x">{{
               touch.clientX
             }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .clientY:</text>
-                <text class="prop-value" id="long-press-changed-touch-client-y">{{
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .clientY:</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="long-press-changed-touch-client-y">{{
               touch.clientY
             }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .screenX:</text>
-                <text class="prop-value" id="long-press-changed-touch-screen-x">{{
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .screenX:</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="long-press-changed-touch-screen-x">{{
               touch.screenX
             }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .screenY:</text>
-                <text class="prop-value" id="long-press-changed-touch-screen-y">{{
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .screenY:</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="long-press-changed-touch-screen-y">{{
               touch.screenY
             }}</text>
               </view>
-              <view class="prop-row">
-                <text class="prop-label">  .force:</text>
-                <text class="prop-value" id="long-press-changed-touch-force">{{
+              <view class="d-flex flex-dir-row mb-6 items-flex-start">
+                <text class="fs-13 mr-8 prop-label ws-normal color-global-muted-909399 max-w-120">  .force:</text>
+                <text class="fs-13 fw-bold flex-1 text-right ws-normal color-global-title-303133 min-w-60" id="long-press-changed-touch-force">{{
               touch.force
             }}</text>
               </view>
@@ -567,117 +567,117 @@
         </template>
         <!-- #endif -->
       </view>
-      <view v-if="tapEvent !== null" class="event-detail">
-        <text class="event-title">tap Event（点击事件）</text>
-        <view class="event-base-info">
-          <text class="info-title">UniEvent 基础属性:</text>
-          <view class="info-row">
-            <text class="info-label">event.type (事件类型):</text>
-            <text class="info-value">{{ tapEvent!.type }}</text>
+      <view v-if="tapEvent !== null" class="u-p-15 radius-8 mb-20 event-detail">
+        <text class="fs-18 fw-bold mb-12 color-global-title-303133">tap Event（点击事件）</text>
+        <view class="u-p-10 radius-6 mb-12 bg-list-fff">
+          <text class="fs-15 fw-bold mb-8 color-global-body-606266">UniEvent 基础属性:</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.type (事件类型):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60">{{ tapEvent!.type }}</text>
           </view>
-          <view class="info-row">
-            <text class="info-label">event.bubbles (是否冒泡):</text>
-            <text class="info-value">{{ tapEvent!.bubbles }}</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.bubbles (是否冒泡):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60">{{ tapEvent!.bubbles }}</text>
           </view>
-          <view class="info-row">
-            <text class="info-label">event.cancelable (是否可取消):</text>
-            <text class="info-value">{{ tapEvent!.cancelable }}</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.cancelable (是否可取消):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60">{{ tapEvent!.cancelable }}</text>
           </view>
-          <view class="info-row">
-            <text class="info-label">event.timeStamp (时间戳):</text>
-            <text class="info-value">{{ tapEvent!.timeStamp }}</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.timeStamp (时间戳):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60">{{ tapEvent!.timeStamp }}</text>
           </view>
         </view>
-        <view class="event-base-info">
-          <text class="info-title">PointerEvent 位置信息:</text>
-          <view class="info-row">
-            <text class="info-label">event.x (同clientX):</text>
-            <text class="info-value" id="tap-event-x">{{ tapEvent!.x }}</text>
+        <view class="u-p-10 radius-6 mb-12 bg-list-fff">
+          <text class="fs-15 fw-bold mb-8 color-global-body-606266">PointerEvent 位置信息:</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.x (同clientX):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60" id="tap-event-x">{{ tapEvent!.x }}</text>
           </view>
-          <view class="info-row">
-            <text class="info-label">event.y (同clientY):</text>
-            <text class="info-value" id="tap-event-y">{{ tapEvent!.y }}</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.y (同clientY):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60" id="tap-event-y">{{ tapEvent!.y }}</text>
           </view>
-          <view class="info-row">
-            <text class="info-label">event.clientX (相对于可视区域左边):</text>
-            <text class="info-value">{{ tapEvent!.clientX }}</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.clientX (相对于可视区域左边):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60">{{ tapEvent!.clientX }}</text>
           </view>
-          <view class="info-row">
-            <text class="info-label">event.clientY (相对于可视区域顶部):</text>
-            <text class="info-value">{{ tapEvent!.clientY }}</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.clientY (相对于可视区域顶部):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60">{{ tapEvent!.clientY }}</text>
           </view>
-          <view class="info-row">
-            <text class="info-label">event.pageX (相对于页面左边,含滚动):</text>
-            <text class="info-value">{{ tapEvent!.pageX }}</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.pageX (相对于页面左边,含滚动):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60">{{ tapEvent!.pageX }}</text>
           </view>
-          <view class="info-row">
-            <text class="info-label">event.pageY (相对于页面顶部,含滚动):</text>
-            <text class="info-value">{{ tapEvent!.pageY }}</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.pageY (相对于页面顶部,含滚动):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60">{{ tapEvent!.pageY }}</text>
           </view>
-          <view class="info-row">
-            <text class="info-label">event.screenX (相对于屏幕左边,不含滚动):</text>
-            <text class="info-value">{{ tapEvent!.screenX }}</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.screenX (相对于屏幕左边,不含滚动):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60">{{ tapEvent!.screenX }}</text>
           </view>
-          <view class="info-row">
-            <text class="info-label">event.screenY (相对于屏幕顶部,不含滚动):</text>
-            <text class="info-value">{{ tapEvent!.screenY }}</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.screenY (相对于屏幕顶部,不含滚动):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60">{{ tapEvent!.screenY }}</text>
           </view>
         </view>
       </view>
-      <view v-if="clickEvent !== null" class="event-detail">
-        <text class="event-title">click Event（点击事件）</text>
-        <view class="event-base-info">
-          <text class="info-title">UniEvent 基础属性:</text>
-          <view class="info-row">
-            <text class="info-label">event.type (事件类型):</text>
-            <text class="info-value">{{ clickEvent!.type }}</text>
+      <view v-if="clickEvent !== null" class="u-p-15 radius-8 mb-20 event-detail">
+        <text class="fs-18 fw-bold mb-12 color-global-title-303133">click Event（点击事件）</text>
+        <view class="u-p-10 radius-6 mb-12 bg-list-fff">
+          <text class="fs-15 fw-bold mb-8 color-global-body-606266">UniEvent 基础属性:</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.type (事件类型):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60">{{ clickEvent!.type }}</text>
           </view>
-          <view class="info-row">
-            <text class="info-label">event.bubbles (是否冒泡):</text>
-            <text class="info-value">{{ clickEvent!.bubbles }}</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.bubbles (是否冒泡):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60">{{ clickEvent!.bubbles }}</text>
           </view>
-          <view class="info-row">
-            <text class="info-label">event.cancelable (是否可取消):</text>
-            <text class="info-value">{{ clickEvent!.cancelable }}</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.cancelable (是否可取消):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60">{{ clickEvent!.cancelable }}</text>
           </view>
-          <view class="info-row">
-            <text class="info-label">event.timeStamp (时间戳):</text>
-            <text class="info-value">{{ clickEvent!.timeStamp }}</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.timeStamp (时间戳):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60">{{ clickEvent!.timeStamp }}</text>
           </view>
         </view>
-        <view class="event-base-info">
-          <text class="info-title">PointerEvent 位置信息:</text>
-          <view class="info-row">
-            <text class="info-label">event.x (同clientX):</text>
-            <text class="info-value" id="click-event-x">{{ clickEvent!.x }}</text>
+        <view class="u-p-10 radius-6 mb-12 bg-list-fff">
+          <text class="fs-15 fw-bold mb-8 color-global-body-606266">PointerEvent 位置信息:</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.x (同clientX):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60" id="click-event-x">{{ clickEvent!.x }}</text>
           </view>
-          <view class="info-row">
-            <text class="info-label">event.y (同clientY):</text>
-            <text class="info-value" id="click-event-y">{{ clickEvent!.y }}</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.y (同clientY):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60" id="click-event-y">{{ clickEvent!.y }}</text>
           </view>
-          <view class="info-row">
-            <text class="info-label">event.clientX (相对于可视区域左边):</text>
-            <text class="info-value">{{ clickEvent!.clientX }}</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.clientX (相对于可视区域左边):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60">{{ clickEvent!.clientX }}</text>
           </view>
-          <view class="info-row">
-            <text class="info-label">event.clientY (相对于可视区域顶部):</text>
-            <text class="info-value">{{ clickEvent!.clientY }}</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.clientY (相对于可视区域顶部):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60">{{ clickEvent!.clientY }}</text>
           </view>
-          <view class="info-row">
-            <text class="info-label">event.pageX (相对于页面左边,含滚动):</text>
-            <text class="info-value">{{ clickEvent!.pageX }}</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.pageX (相对于页面左边,含滚动):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60">{{ clickEvent!.pageX }}</text>
           </view>
-          <view class="info-row">
-            <text class="info-label">event.pageY (相对于页面顶部,含滚动):</text>
-            <text class="info-value">{{ clickEvent!.pageY }}</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.pageY (相对于页面顶部,含滚动):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60">{{ clickEvent!.pageY }}</text>
           </view>
-          <view class="info-row">
-            <text class="info-label">event.screenX (相对于屏幕左边,不含滚动):</text>
-            <text class="info-value">{{ clickEvent!.screenX }}</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.screenX (相对于屏幕左边,不含滚动):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60">{{ clickEvent!.screenX }}</text>
           </view>
-          <view class="info-row">
-            <text class="info-label">event.screenY (相对于屏幕顶部,不含滚动):</text>
-            <text class="info-value">{{ clickEvent!.screenY }}</text>
+          <view class="d-flex flex-dir-row justify-between items-flex-start mb-8">
+            <text class="fs-14 mr-10 info-label ws-normal color-global-muted-909399 max-w-120">event.screenY (相对于屏幕顶部,不含滚动):</text>
+            <text class="fs-14 fw-bold text-right flex-1 ws-normal color-global-title-303133 min-w-60">{{ clickEvent!.screenY }}</text>
           </view>
         </view>
       </view>
@@ -783,194 +783,52 @@
 </script>
 
 <style>
+  .color-global-title-303133 {
+    color: var(--global-title-color, #303133);
+  }
+
+  .color-global-body-606266 {
+    color: var(--global-body-color, #606266);
+  }
+
+  .color-global-muted-909399 {
+    color: var(--global-muted-color, #909399);
+  }
+
   .container {
     --global-section-title-color: #333;
     --global-section-desc-color: #666;
     --global-detail-background: #f5f7fa;
     --global-title-color: #303133;
-    --global-surface-background: #fff;
     --global-body-color: #606266;
     --global-muted-color: #909399;
-    padding-bottom: 10px;
-  }
-
-  .section {
-    margin-bottom: 20px;
   }
 
   .section-title {
-    font-size: 16px;
-    font-weight: bold;
     color: var(--global-section-title-color, #333);
-    margin-bottom: 8px;
   }
 
   .section-desc {
-    font-size: 14px;
     color: var(--global-section-desc-color, #666);
-    margin-bottom: 10px;
-  }
-
-  .target {
-    width: 100%;
-    height: 200px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .touch-area {
-    background-color: #409eff;
-  }
-
-  .click-area {
-    background-color: #67c23a;
-  }
-
-  .target-text {
-    color: #fff;
-    font-size: 16px;
-    font-weight: bold;
-  }
-
-  .clear-btn-wrapper {
-    display: flex;
-    justify-content: center;
-    margin: 20px 0;
   }
 
   .clear-btn {
-    width: 100%;
     background-color: #f56c6c;
-    color: #fff;
     /* #ifndef MP-ALIPAY */
     padding: 12px 0;
     /* #endif */
-    border-radius: 6px;
-    font-size: 14px;
   }
 
   .event-detail {
     background-color: var(--global-detail-background, #f5f7fa);
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-  }
-
-  .event-title {
-    font-size: 18px;
-    font-weight: bold;
-    color: var(--global-title-color, #303133);
-    margin-bottom: 12px;
-  }
-
-  .event-base-info {
-    background-color: var(--global-surface-background, #fff);
-    padding: 10px;
-    border-radius: 6px;
-    margin-bottom: 12px;
-  }
-
-  .info-title {
-    font-size: 15px;
-    font-weight: bold;
-    color: var(--global-body-color, #606266);
-    margin-bottom: 8px;
-  }
-
-  .info-row {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 8px;
   }
 
   .info-label {
-    font-size: 14px;
-    color: var(--global-muted-color, #909399);
     flex: 0 0 120px;
-    max-width: 120px;
-    margin-right: 10px;
-    white-space: normal;
-  }
-
-  .info-value {
-    font-size: 14px;
-    color: var(--global-title-color, #303133);
-    font-weight: bold;
-    text-align: right;
-    flex: 1;
-    min-width: 60px;
-    white-space: normal;
-  }
-
-  .touches-title {
-    font-size: 15px;
-    font-weight: bold;
-    color: var(--global-body-color, #606266);
-    margin-top: 12px;
-    margin-bottom: 8px;
-  }
-
-  .touch-item {
-    background-color: var(--global-surface-background, #fff);
-    padding: 10px;
-    border-radius: 6px;
-    margin-bottom: 10px;
-  }
-
-  .touch-index {
-    font-size: 14px;
-    font-weight: bold;
-    color: #409eff;
-    margin-bottom: 8px;
-  }
-
-  .touch-props {
-    padding-left: 10px;
-  }
-
-  .prop-row {
-    display: flex;
-    flex-direction: row;
-    margin-bottom: 6px;
-    align-items: flex-start;
   }
 
   .prop-label {
-    font-size: 13px;
-    color: var(--global-muted-color, #909399);
     flex: 0 0 120px;
-    max-width: 120px;
-    margin-right: 8px;
-    white-space: normal;
-  }
-
-   .prop-value {
-    font-size: 13px;
-    color: var(--global-title-color, #303133);
-    font-weight: bold;
-    flex: 1;
-    min-width: 60px;
-    text-align: right;
-    white-space: normal;
-  }
-
-  .title1 {
-    margin-top: 15px;
-    font-size: 20px;
-  }
-
-  .title2 {
-    margin-top: 10px;
-    font-size: 18px;
-  }
-
-  .title3 {
-    margin-top: 5px;
-    font-size: 16px;
   }
 
   @media (prefers-color-scheme: dark) {
@@ -979,15 +837,8 @@
       --global-section-desc-color: #a0a0a0;
       --global-detail-background: #1a1a1a;
       --global-title-color: #ffffff;
-      --global-surface-background: #2d2d2d;
       --global-body-color: #d0d0d0;
       --global-muted-color: #a0a0a0;
     }
-  }
-
-  .uni-list-cell {
-    display: flex;
-    flex-direction: row;
-    margin-bottom: 5px;
   }
 </style>

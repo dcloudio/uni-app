@@ -97,7 +97,7 @@
 			</view>
 
 			<view style="margin-top: 20px; margin-left: 10px;">
-				<text class="uni-title-text">text 组件 scale </text>
+				<text class="fs-15 fw-bold color-text-333">text 组件 scale </text>
 			</view>
 
 			<view class="base text-base-box">
@@ -132,7 +132,7 @@
 			</view>
 
 			<view style="margin-top: 20px; margin-left: 10px;">
-				<text class="uni-title-text">image 组件 scale </text>
+				<text class="fs-15 fw-bold color-text-333">image 组件 scale </text>
 			</view>
 
 			<view class="base image-container">
@@ -191,8 +191,8 @@
 				<view style="width: 200px; height: 1px; background-color: #000; transform: scaleY(0.5)" flatten></view>
 			</view>
 
-			<text class="uni-title-text uni-common-mt">scroll-view 组件</text>
-			<view class="demo-box">
+			<text class="fs-15 fw-bold color-text-333 mt-15">scroll-view 组件</text>
+			<view class="demo-box flex-dir-row justify-around mt-10">
 				<view class="scroll-view-item">
 					<scroll-view class="scroll-view-base transform" style="transform: scale(1.2);">
 						<text>scale(1.2)</text>
@@ -205,15 +205,15 @@
 				</view>
 			</view>
 
-			<view class="uni-common-mt">
-				<text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
+			<view class="mt-15">
+				<text class="fs-15 fw-bold color-text-333">setProperty 设置与 getPropertyValue 获取</text>
 			</view>
 
-			<view class="test-container">
-				<view class="test-item">
-					<text class="uni-subtitle-text">view 组件</text>
-					<text class="uni-info">设置值: {{data.transformValueDynamic}}</text>
-					<text class="uni-info">获取值: {{data.transformActual}}</text>
+			<view class="test-container flex-dir-row justify-between mt-10">
+				<view class="flex-1 m-0-5">
+					<text class="color-888 fs-12 fw-bold u-mt-5">view 组件</text>
+					<text class="fs-12 color-999">设置值: {{data.transformValueDynamic}}</text>
+					<text class="fs-12 color-999">获取值: {{data.transformActual}}</text>
 					<view class="test-box">
 						<view ref="viewRefDynamic" class="common-image" :style="{ transform: data.transformValueDynamic }">
 							<text style="font-size: 12px;">view</text>
@@ -221,20 +221,20 @@
 					</view>
 				</view>
 
-				<view class="test-item">
-					<text class="uni-subtitle-text">text 组件</text>
-					<text class="uni-info">设置值: {{data.transformValueDynamic}}</text>
-					<text class="uni-info">获取值: {{data.transformActualText}}</text>
+				<view class="flex-1 m-0-5">
+					<text class="color-888 fs-12 fw-bold u-mt-5">text 组件</text>
+					<text class="fs-12 color-999">设置值: {{data.transformValueDynamic}}</text>
+					<text class="fs-12 color-999">获取值: {{data.transformActualText}}</text>
 					<view class="test-box">
 						<text ref="textRefDynamic" class="common-text"
 							:style="{ transform: data.transformValueDynamic }">text</text>
 					</view>
 				</view>
 
-				<view class="test-item">
-					<text class="uni-subtitle-text">image 组件</text>
-					<text class="uni-info">设置值: {{data.transformValueDynamic}}</text>
-					<text class="uni-info">获取值: {{data.transformActualImage}}</text>
+				<view class="flex-1 m-0-5">
+					<text class="color-888 fs-12 fw-bold u-mt-5">image 组件</text>
+					<text class="fs-12 color-999">设置值: {{data.transformValueDynamic}}</text>
+					<text class="fs-12 color-999">获取值: {{data.transformActualImage}}</text>
 					<view class="test-box">
 						<image ref="imageRefDynamic" class="common-image" :style="{ transform: data.transformValueDynamic }"
 							src="/static/test-image/logo.png"></image>
@@ -242,11 +242,11 @@
 				</view>
 			</view>
 
-			<view class="test-container">
-				<view class="test-item">
-					<text class="uni-subtitle-text">view 组件拍平</text>
-					<text class="uni-info">设置值: {{data.transformValueDynamic}}</text>
-					<text class="uni-info">获取值: {{data.transformActualFlat}}</text>
+			<view class="test-container flex-dir-row justify-between mt-10">
+				<view class="flex-1 m-0-5">
+					<text class="color-888 fs-12 fw-bold u-mt-5">view 组件拍平</text>
+					<text class="fs-12 color-999">设置值: {{data.transformValueDynamic}}</text>
+					<text class="fs-12 color-999">获取值: {{data.transformActualFlat}}</text>
 					<view class="test-box">
 						<view ref="viewRefDynamicFlat" class="common-image"
 							:style="{ transform: data.transformValueDynamic }" flatten>
@@ -255,20 +255,20 @@
 					</view>
 				</view>
 
-				<view class="test-item">
-					<text class="uni-subtitle-text">text 组件拍平</text>
-					<text class="uni-info">设置值: {{data.transformValueDynamic}}</text>
-					<text class="uni-info">获取值: {{data.transformActualTextFlat}}</text>
+				<view class="flex-1 m-0-5">
+					<text class="color-888 fs-12 fw-bold u-mt-5">text 组件拍平</text>
+					<text class="fs-12 color-999">设置值: {{data.transformValueDynamic}}</text>
+					<text class="fs-12 color-999">获取值: {{data.transformActualTextFlat}}</text>
 					<view class="test-box">
 						<text ref="textRefDynamicFlat" class="common-text" :style="{ transform: data.transformValueDynamic }"
 							flatten>text</text>
 					</view>
 				</view>
 
-				<view class="test-item">
-					<text class="uni-subtitle-text">image 组件拍平</text>
-					<text class="uni-info">设置值: {{data.transformValueDynamic}}</text>
-					<text class="uni-info">获取值: {{data.transformActualImageFlat}}</text>
+				<view class="flex-1 m-0-5">
+					<text class="color-888 fs-12 fw-bold u-mt-5">image 组件拍平</text>
+					<text class="fs-12 color-999">设置值: {{data.transformValueDynamic}}</text>
+					<text class="fs-12 color-999">获取值: {{data.transformActualImageFlat}}</text>
 					<view class="test-box">
 						<image ref="imageRefDynamicFlat" class="common-image"
 							:style="{ transform: data.transformValueDynamic }" src="/static/test-image/logo.png" flatten>
@@ -277,17 +277,17 @@
 				</view>
 			</view>
 
-			<view class="uni-common-mt uni-common-mb">
-				<text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
-				<enum-data :items="transformEnum" title="transform 枚举值" @change="radioChangeTransform"
-					:compact="true"></enum-data>
+			<view class="mt-15 mb-15">
+				<text class="fs-13 color-tips-0958d9 bg-tips-e6f4ff border-l-4-solid-tips-91caff p-10-12 radius-4 m-10">第一个枚举值，'' (空字符串) - 空值情况</text>
+				<enum-data-checkbox :items="transformEnum" title="transform 枚举值" @change="radioChangeTransform"
+					:compact="true"></enum-data-checkbox>
 				<input-data :defaultValue="data.transformValueDynamic" title="transform 自定义值" type="text"
 					@confirm="inputChangeTransform"></input-data>
 			</view>
 
       <!-- #ifndef MP-ALIPAY -->
-      <text class="uni-title-text uni-common-mt uni-common-mb">native-view 组件</text>
-      <view class="demo-box">
+      <text class="fs-15 fw-bold color-text-333 mt-15 mb-15">native-view 组件</text>
+      <view class="demo-box flex-dir-row justify-around mt-10">
       	<view class="scroll-view-item">
       		<test-native-view class="native-view-base transform-native" style="transform: scale(1.2);"></test-native-view>
       	</view>
@@ -301,7 +301,7 @@
 </template>
 
 <script setup lang="ts">
-	import { ItemType } from '@/components/enum-data/enum-data-types'
+	import { ItemType } from '@/components/enum-data-checkbox/enum-data-checkbox-types'
 
 	const data = reactive({
 		transformValueDynamic: 'scale(1,1)',
@@ -467,14 +467,6 @@
 
 	.test-container {
 		width: 100%;
-		flex-direction: row;
-		justify-content: space-between;
-		margin-top: 10px;
-	}
-
-	.test-item {
-		flex: 1;
-		margin: 0 5px;
 	}
 
 	.test-box {
@@ -485,9 +477,6 @@
 	}
 
 	.demo-box {
-		flex-direction: row;
-		justify-content: space-around;
-		margin-top: 10px;
 		width: 100%;
 	}
 

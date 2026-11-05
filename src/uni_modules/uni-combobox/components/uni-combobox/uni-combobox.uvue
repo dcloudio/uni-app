@@ -658,7 +658,7 @@ const defaultOptionHeight = 36
 const pcOptionHeight = 32
 // #endif
 const defaultMaxOptionsHeight = 200
-const popupVerticalPadding = 8
+const popupBorderHeight = 2
 const viewportGap = 8
 const popupGap = 4
 
@@ -683,7 +683,7 @@ const highlightedIndex = ref<number>(-1)
 const popupLeft = ref<number>(0)
 const popupTop = ref<number>(0)
 const popupWidth = ref<number>(0)
-const popupHeight = ref<number>(getOptionHeight() + popupVerticalPadding)
+const popupHeight = ref<number>(getOptionHeight() + popupBorderHeight)
 const keyboardHeight = ref<number>(0)
 let positionRequestId = 0
 let isUnmounted = false
@@ -772,8 +772,8 @@ function applyPopupRect(rect : DOMRect) {
 	const windowHeight = Math.max(0, windowInfo.windowHeight - keyboardHeight.value)
 	const optionHeight = getOptionHeight()
 	const optionCount = Math.max(1, visibleOptions.value.length)
-	const expectedHeight = Math.min(defaultMaxOptionsHeight, optionCount * optionHeight) + popupVerticalPadding
-	const minOptionsHeight = optionHeight + popupVerticalPadding
+	const expectedHeight = Math.min(defaultMaxOptionsHeight, optionCount * optionHeight) + popupBorderHeight
+	const minOptionsHeight = optionHeight + popupBorderHeight
 	const belowSpace = windowHeight - rectBottom - viewportGap
 	const aboveSpace = rectTop - viewportGap
 
@@ -1154,17 +1154,12 @@ onBackPress(() : boolean => {
 .uni-combobox__options-content {
 	width: 100%;
 	box-sizing: border-box;
-	padding-top: 4px;
-	padding-right: 4px;
-	padding-bottom: 4px;
-	padding-left: 4px;
 }
 
 .uni-combobox__option-row {
 	width: 100%;
 	box-sizing: border-box;
 	height: 36px;
-	border-radius: 6px;
 	flex-direction: row;
 	align-items: center;
 }
@@ -1248,7 +1243,7 @@ onBackPress(() : boolean => {
 	}
 
 	.uni-combobox__option {
-		color: rgba(255, 255, 255, 0.8);
+		color: #fafafa;
 	}
 
 	.uni-combobox__option--empty {
@@ -1262,11 +1257,12 @@ onBackPress(() : boolean => {
 
 	.uni-combobox__options {
 		background-color: #232323;
-		border-color: rgba(255, 255, 255, 0.05);
+		border-color: rgba(255, 255, 255, 0.12);
+		box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
 	}
 
 	.uni-combobox__option-row--highlight {
-		background-color: #373737;
+		background-color: #27272a;
 	}
 
 	/* #ifdef WEB */
@@ -1281,7 +1277,7 @@ onBackPress(() : boolean => {
 	}
 
 	.uni-combobox__option-row:hover {
-		background-color: #373737;
+		background-color: #27272a;
 	}
 	/* #endif */
 }

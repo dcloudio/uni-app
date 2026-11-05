@@ -54,9 +54,9 @@ export const InstallWgtErrors: Map<InstallWgtErrorCode, string> = new Map([
 	 */
 	[103610, 'manifest fields are invalid'],
 	/**
-	 * WGT 版本低于或等于 Runtime 版本
+	 * 完整 WGT 版本低于或等于 Runtime 版本
 	 */
-	[103611, 'WGT version must be higher than the Runtime version'],
+	[103611, 'full WGT version must be higher than the Runtime version'],
 	/**
 	 * 内部错误
 	 */
@@ -85,4 +85,28 @@ export const InstallWgtErrors: Map<InstallWgtErrorCode, string> = new Map([
 	 * WGT 与 Runtime 的 compilerRuleVersion 不一致
 	 */
 	[103619, 'WGT compilerRuleVersion does not match the Runtime compilerRuleVersion'],
+	/**
+	 * app-wgtu 缺少 baseVersion
+	 */
+	[103620, 'app-wgtu.baseVersion is missing'],
+	/**
+	 * app-wgtu 字段不合法
+	 */
+	[103621, 'app-wgtu fields are invalid'],
+	/**
+	 * 差量升级基准版本与当前 WGT 版本不一致
+	 */
+	[103622, 'app-wgtu.baseVersion does not match the current WGT version'],
+	/**
+	 * 差量升级时 copy 当前 WGT 资源失败。
+	 */
+	[103623, 'unable to copy the current WGT resources during the incremental upgrade'],
+	/**
+	 * 差量 WGT 资源合并失败
+	 */
+	[103624, 'differential WGT resource merge failed'],
+	/**
+	 * 差量 WGT 版本与基准资源版本不一致
+	 */
+	[103625, 'differential WGT version does not match the base resource version'],
 ])

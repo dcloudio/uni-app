@@ -1,0 +1,190 @@
+<template>
+	<scroll-view class="flex-1 bg-page-f5f5f5 page" :class="{ 'page-dark': isDarkMode }">
+		<view class="u-p-16 bg-content-background-fff intro">
+			<text class="fw-bold color-text-222 fs-18 page-title">控件接入示例</text>
+			<text class="fs-13 lh-21 color-secondary-text-657180 page-desc">uni-forms 不要求控件继承特定基类。只要控件通过 v-model 更新表单对象，就能参与提交校验；需要失焦即时校验时，再按需接入表单项上下文。</text>
+		</view>
+
+		<view class="u-p-16 bg-content-background-fff mt-10 section">
+			<uni-forms
+				ref="formRef"
+				v-model="formData"
+				:rules="rules"
+				err-show-type="undertext"
+				label-position="left"
+				label-width="120"
+				border
+			>
+				<uni-forms-item name="nativeInput" label="原生 input" required label-class="demo-label" error-message-class="demo-error">
+					<input class="flex-1 w-full fs-14 color-text-333 box-border-box min-h-38 p-0-10 border-width-1 border-style-solid border-color-input-border-d8dfe8 radius-4 native-input" v-model="formData.nativeInput" placeholder="直接使用 v-model" />
+				</uni-forms-item>
+
+				<uni-forms-item name="nativeNote" label="原生 textarea" label-class="demo-label" error-message-class="demo-error">
+					<textarea class="flex-1 w-full fs-14 color-text-333 box-border-box min-h-38 p-0-10 border-width-1 border-style-solid border-color-input-border-d8dfe8 radius-4 native-textarea" v-model="formData.nativeNote" placeholder="多行文本不需要额外适配" />
+				</uni-forms-item>
+
+				<uni-forms-item name="agree" label="原生 switch" required label-class="demo-label" error-message-class="demo-error">
+					<switch :checked="formData.agree" @change="onAgreeChange" />
+				</uni-forms-item>
+
+				<uni-forms-item name="nativeCity" label="原生 picker" required label-class="demo-label" error-message-class="demo-error">
+					<picker class="flex-1 w-full fs-14 color-text-333 box-border-box picker-control" :range="cityOptions" :value="cityIndex" @change="onCityChange">
+						<view class="min-h-38 p-0-10 border-width-1 border-style-solid border-color-input-border-d8dfe8 radius-4 picker-value"><text>{{ formData.nativeCity || '请选择城市' }}</text></view>
+					</picker>
+				</uni-forms-item>
+
+				<uni-forms-item name="easyInput" label="uni-easyinput" required label-class="demo-label" error-message-class="demo-error">
+					<uni-easyinput v-model="formData.easyInput" placeholder="uni-x 组件直接接入" />
+				</uni-forms-item>
+
+				<!-- #ifndef (APP-IOS || APP-HARMONY) && !VUE3-VAPOR -->
+				<uni-forms-item name="combobox" label="uni-combobox" required label-class="demo-label" error-message-class="demo-error">
+					<uni-combobox v-model="formData.combobox" :options="comboboxOptions" placeholder="uni-combobox 直接接入" />
+				</uni-forms-item>
+				<!-- #endif -->
+
+				<uni-forms-item name="thirdParty" label="三方组件" required label-class="demo-label" error-message-class="demo-error">
+					<thirdPartyControl v-model="formData.thirdParty" :options="thirdPartyOptions" placeholder="只实现 update:modelValue" />
+				</uni-forms-item>
+			</uni-forms>
+
+			<view class="flex-dir-row button-row">
+				<button class="mr-10 color-fff bg-007aff action-button" size="mini" @click="validateForm">校验接入控件</button>
+				<button class="mr-10 color-fff bg-007aff color-text-333 bg-active-e9eef5 action-button secondary-button" size="mini" @click="resetForm">重置</button>
+			</view>
+			<text class="mt-8 fs-14 color-007aff status-text">{{ statusText }}</text>
+		</view>
+
+		<view class="u-p-16 bg-content-background-fff mt-10 pb-32 section section-last">
+			<text class="fw-bold color-text-222 mb-12 fs-16 section-title">接入要点</text>
+			<text class="fs-13 lh-21 color-secondary-text-657180 point-text">1. 输入类控件：实现 modelValue 属性和 update:modelValue 事件。</text>
+			<text class="fs-13 lh-21 color-secondary-text-657180 point-text">2. 原生 picker/switch：用 change 事件把 detail.value 写回表单模型。</text>
+			<text class="fs-13 lh-21 color-secondary-text-657180 point-text">3. 只使用 v-model 的三方组件可以参与 submit 校验；失焦校验属于可选增强。</text>
+			<text class="data-text">{{ dataText }}</text>
+		</view>
+	</scroll-view>
+</template>
+
+<script setup lang="ts">
+import { state } from '@/store/index.ts'
+import thirdPartyControl from './third-party-control.uvue'
+
+const isDarkMode = computed((): boolean => state.isDarkMode)
+
+/** 暗黑模式下同步导航栏颜色，与图标示例页保持一致 */
+function syncNavigationBar(): void {
+	// #ifdef APP
+	const dark = isDarkMode.value
+	uni.setNavigationBarColor({
+		frontColor: dark ? '#ffffff' : '#000000',
+		backgroundColor: dark ? '#1a1a1a' : '#efeff4'
+	})
+	// #endif
+}
+
+watch(isDarkMode, syncNavigationBar, { immediate: true })
+onShow(syncNavigationBar)
+
+
+type FormData = {
+	nativeInput : string,
+	nativeNote : string,
+	agree : boolean,
+	nativeCity : string,
+	easyInput : string,
+	combobox : string,
+	thirdParty : string
+}
+
+const formRef = ref<any>(null)
+const formData = ref<FormData>({
+	nativeInput: '',
+	nativeNote: '',
+	agree: false,
+	nativeCity: '',
+	easyInput: '',
+	combobox: '',
+	thirdParty: ''
+})
+
+const cityOptions : string[] = ['北京', '上海', '广州', '深圳']
+const comboboxOptions : string[] = ['Web', 'iOS', 'Android', 'HarmonyOS']
+const thirdPartyOptions : string[] = ['普通', '重要', '紧急']
+const cityIndex = ref<number>(0)
+const statusText = ref<string>('等待校验')
+const dataText = computed<string>(() : string => JSON.stringify(formData.value))
+
+const rules = {
+	nativeInput: { label: '原生 input', rules: [{ required: true, errorMessage: '请输入原生 input 内容' }] },
+	agree: {
+		label: '原生 switch',
+		rules: [{ validateFunction: (_rule : any, value : any) : string | void => value ? undefined : '请先打开开关并同意协议' }]
+	},
+	nativeCity: { label: '原生 picker', rules: [{ required: true, errorMessage: '请选择城市' }] },
+	easyInput: { label: 'uni-easyinput', rules: [{ required: true, errorMessage: '请输入 easyinput 内容' }] },
+	combobox: { label: 'uni-combobox', rules: [{ required: true, errorMessage: '请选择 combobox 选项' }] },
+	thirdParty: { label: '三方组件', rules: [{ required: true, errorMessage: '请点击三方组件选择一个值' }] }
+}
+
+function onAgreeChange(event : any) {
+	formData.value.agree = Boolean(event.detail.value)
+}
+
+function onCityChange(event : any) {
+	const index = Number(event.detail.value)
+	cityIndex.value = index
+	formData.value.nativeCity = cityOptions[index] || ''
+}
+
+async function validateForm() {
+	try {
+		await formRef.value.validate()
+		statusText.value = '所有控件均已通过校验'
+	} catch (errors) {
+		const list = errors as any[]
+		statusText.value = list != null && list.length > 0 ? list[0].errorMessage : '校验未通过'
+	}
+}
+
+function resetForm() {
+	formRef.value.resetFields()
+	cityIndex.value = 0
+	statusText.value = '已恢复初始值'
+}
+</script>
+
+<style>
+.native-textarea {
+	min-height: 76px;
+	padding: 8px 10px;
+}
+
+.picker-value {
+	justify-content: center;
+}
+
+.button-row {
+	margin-top: 10px;
+}
+
+.point-text {
+	margin-bottom: 6px;
+}
+
+.data-text {
+	margin-top: 12px;
+	font-size: 12px;
+	line-height: 20px;
+	color: var(--secondary-text-color, #657180);
+}
+
+.demo-label {
+	font-weight: bold;
+	color: #007aff;
+}
+
+.demo-error {
+	font-weight: bold;
+	color: #dd524d;
+}
+</style>

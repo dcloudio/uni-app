@@ -1,5 +1,5 @@
 <template>
-	<view class="uni-theme-root" style="flex: 1; flex-direction: column; position: relative;">
+	<view style="flex: 1; flex-direction: column; position: relative;">
 		<!-- 控制条 -->
 			<view class="control-bar">
 				<button class="control-btn" @click="toggleStyle">{{ data.useCustomStyle ? '默认样式' : '自定义样式' }}</button>

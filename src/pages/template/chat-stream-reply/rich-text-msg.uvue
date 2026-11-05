@@ -24,7 +24,7 @@
         <rich-text-msg v-if="hasChildren(node)" :nodes="getChildren(node)" :inline-class-name="getBlockInlineClass(node)" />
       </view>
       <!-- 链接 a：单类 rich-text-link-inline -->
-      <view v-else-if="isLink(node)" :style="getNodeStyle(node)" class="rich-text-inline-wrap rich-text-link"
+      <view v-else-if="isLink(node)" :style="getNodeStyle(node)" class="rich-text-inline-wrap"
         @click.stop="onLinkClick(node)">
         <rich-text-msg v-if="hasChildren(node)" :nodes="getChildren(node)" inline-class-name="rich-text-link-inline" />
       </view>

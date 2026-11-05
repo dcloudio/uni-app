@@ -1,20 +1,29 @@
 <template>
-  <view class="picker-view-column" ref="rootRef" @click="handleClick">
+  <view class="picker-view-column" ref="rootRef"
+    <!-- #ifdef WEB -->
+    tabindex="0"
+    @keydown="handleKeydown"
+    @mousedown="clearKeyboardTarget"
+    @touchstart="clearKeyboardTarget"
+    @wheel="clearKeyboardTarget"
+    <!-- #endif -->
+    @click="handleClick"
+  >
     <scroll-view ref="scrollViewRef" class="picker-view-scroll" direction="vertical" :show-scrollbar="false" :scroll-with-animation="scrollWithAnimation" @scrollend="onScrollEnd" @scroll="onScroll">
       <view ref="contentRef" :style="{ 'padding-top': containerPaddingPx, 'padding-bottom': containerPaddingPx }">
         <slot></slot>
       </view>
     </scroll-view>
     <view class="uni-picker-view-mask uni-picker-view-mask-top" :class="maskClass" :style="maskTopInlineStyle"></view>
-    <view class="uni-picker-view-indicator" :style="indicatorInlineStyle"></view>
+    <view class="uni-picker-view-indicator" :class="indicatorClass" :style="indicatorInlineStyle"></view>
     <view class="uni-picker-view-mask uni-picker-view-mask-bottom" :class="maskClass" :style="maskBottomInlineStyle"></view>
   </view>
 </template>
 
-<script lang="uts" setup>
-  import { PICKER_VIEW_KEY } from '../common.uts'
-  import { UniPickerViewColumnElement } from './global.uts'
-  import { PickerViewContext, PickerViewColumnApi } from '../types.uts'
+<script lang="ts" setup>
+  import { PICKER_VIEW_KEY } from '../common.ts'
+  import { UniPickerViewColumnElement } from './global.ts'
+  import { PickerViewContext, PickerViewColumnApi } from '../types.ts'
 
   defineOptions({
     name: 'picker-view-column',
@@ -28,6 +37,7 @@
   const itemHeight = computed<number>(() => ctx ? ctx.itemHeight() : 50)
   const containerPaddingPx = computed<string>(() => ctx ? ctx.containerPaddingPx() : '50%')
   const maskClass = computed<string>(() => ctx ? ctx.maskClass() : '')
+  const indicatorClass = computed<string>(() => ctx ? ctx.indicatorClass() : '')
   const maskTopInlineStyle = computed<any>(() => ctx ? ctx.maskTopStyle() : {})
   const maskBottomInlineStyle = computed<any>(() => ctx ? ctx.maskBottomStyle() : {})
   const indicatorInlineStyle = computed<any>(() => ctx ? ctx.indicatorStyle() : {})
@@ -39,6 +49,35 @@
   const rootRef = ref<UniElement | null>(null)
   const contentRef = ref<UniElement | null>(null)
   const scrollWithAnimation = ref(false)
+
+  // #ifdef WEB
+  let keyboardTargetIndex: number | null = null
+
+  function clearKeyboardTarget() {
+    keyboardTargetIndex = null
+  }
+
+  function handleKeydown(event: KeyboardEvent) {
+    if (event.target !== event.currentTarget || event.defaultPrevented ||
+        event.altKey || event.ctrlKey || event.metaKey ||
+        (event.key !== 'ArrowUp' && event.key !== 'ArrowDown')) {
+      return
+    }
+    event.preventDefault()
+    const itemCount = contentRef.value?.children.length ?? 0
+    if (itemCount === 0 || scrollViewRef.value == null) {
+      return
+    }
+    const step = event.key === 'ArrowUp' ? -1 : 1
+    const targetIndex = Math.max(0, Math.min(itemCount - 1, selectedIndex.value + step))
+    if (targetIndex === selectedIndex.value) {
+      return
+    }
+    keyboardTargetIndex = targetIndex
+    setScrollTop(targetIndex)
+    ctx?.onColumnIndexChange(columnIndex, targetIndex)
+  }
+  // #endif
 
   const EPSILON = 1
 
@@ -52,6 +91,11 @@
     if (idx < 0) {
       idx = 0
     }
+    // #ifdef WEB
+    if (keyboardTargetIndex != null && keyboardTargetIndex !== idx) {
+      clearKeyboardTarget()
+    }
+    // #endif
     selectedIndex.value = idx
     const scrollTop = Math.max(0, idx * itemHeight.value)
     scrollViewRef.value?.scrollTo(0, scrollTop)
@@ -95,6 +139,22 @@
 
     // top may be negative, so we need to clamp it to 0
     const top = Math.max(e.detail.scrollTop, 0)
+    // #ifdef WEB
+    // A previous animation may finish after another key press. Keep the latest target.
+    if (keyboardTargetIndex != null) {
+      const itemCount = contentRef.value?.children.length ?? 0
+      if (keyboardTargetIndex < itemCount) {
+        if (Math.abs(top - keyboardTargetIndex * itemHeight.value) > EPSILON) {
+          setScrollTop(keyboardTargetIndex)
+        } else {
+          clearKeyboardTarget()
+        }
+        return
+      }
+      // Linked columns may remove the target item while scrolling.
+      clearKeyboardTarget()
+    }
+    // #endif
     // compute nearest index
     const idx = Math.round(top / itemHeight.value)
     const valueChanged = selectedIndex.value !== idx
@@ -205,5 +265,20 @@
     border-color: #ddd;
     background-color: #efeff480;
     z-index: 1;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .uni-picker-view-mask-bottom {
+      background-image: linear-gradient(to top, rgba(35, 35, 35, 0.95), rgba(35, 35, 35, 0.6));
+    }
+
+    .uni-picker-view-mask-top {
+      background-image: linear-gradient(to bottom, rgba(35, 35, 35, 0.95), rgba(35, 35, 35, 0.6));
+    }
+
+    .uni-picker-view-indicator {
+      border-color: rgba(255, 255, 255, 0.05);
+      background-color: transparent;
+    }
   }
 </style>

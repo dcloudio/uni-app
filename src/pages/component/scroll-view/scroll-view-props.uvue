@@ -1,5 +1,5 @@
 <template>
-  <!-- <view class="page-scroll-view"> -->
+  <!-- <view class="app-flex-1"> -->
     <page-head title="非下拉刷新的scroll-view属性示例"></page-head>
     <!-- 暂时分成两个方向不同的滚动视图，原因为：scroll-view组件不支持动态改变direction。 -->
     <scroll-view v-if="data.scrollX" direction="horizontal" :scroll-top="data.scrollTop" :scroll-left="data.scrollLeft"
@@ -7,29 +7,29 @@
       :android-overscroll="data.androidOverscroll"
       <!-- #endif -->
       :upper-threshold="data.upperThreshold" :lower-threshold="data.lowerThreshold" :scroll-into-view="data.scrollIntoView"
-      :enable-back-to-top="data.enableBackToTop" :scroll-with-animation="data.scrollWithAnimation" style="flex-direction: row;"
-      class="uni-margin-wrap" :show-scrollbar="data.showScrollbar" :bounces="data.bounces" @scrolltoupper="scrolltoupper"
+      :enable-back-to-top="data.enableBackToTop" :scroll-with-animation="data.scrollWithAnimation"
+      class="h-250 m-0-25-25-25 flex-dir-row" :show-scrollbar="data.showScrollbar" :bounces="data.bounces" @scrolltoupper="scrolltoupper"
       @scrolltolower="scrolltolower" @scroll="scroll" @scrollend="scrollend" ref="scrollViewXRef" id="scrollViewX">
       <!-- h-margin-right末尾元素添加margin-right 测试bug #3866-->
-      <view class="item" :id="'horizontal_'+item.id" v-for="(item,index) in data.items"
+      <view class="justify-center items-center h-250 w-full bg-f0ffff border-width-1 border-style-solid border-color-d2691e" :id="'horizontal_'+item.id" v-for="(item,index) in data.items"
         :class="index==9 ? 'h-margin-right': ''">
         <view :id="'horizontal_grand_child__' + item.id"></view>
-        <text class="uni-text">{{item.label}}</text>
+        <text class="color-black fs-50">{{item.label}}</text>
       </view>
     </scroll-view>
     <scroll-view v-else direction="vertical" :scroll-top="data.scrollTop" :scroll-left="data.scrollLeft"
       :upper-threshold="data.upperThreshold" :lower-threshold="data.lowerThreshold" :scroll-into-view="data.scrollIntoView"
       :enable-back-to-top="data.enableBackToTop" :scroll-with-animation="data.scrollWithAnimation" :show-scrollbar="data.showScrollbar"
       :bounces="data.bounces" @scrolltoupper="scrolltoupper" @touchmove="onTouchMove" @scrolltolower="scrolltolower"
-      @scroll="scroll" @scrollend="scrollend" ref="scrollViewYRef" id="scrollViewY" class="uni-margin-wrap">
+      @scroll="scroll" @scrollend="scrollend" ref="scrollViewYRef" id="scrollViewY" class="h-250 m-0-25-25-25">
       <!-- v-margin-bottom末尾元素添加margin-bottom 测试bug #3866-->
-      <view class="item" :id="item.id" v-for="(item, index) in data.items" :class="index==9 ? 'v-margin-bottom': ''">
+      <view class="justify-center items-center h-250 w-full bg-f0ffff border-width-1 border-style-solid border-color-d2691e" :id="item.id" v-for="(item, index) in data.items" :class="index==9 ? 'mb-50': ''">
         <view :id="'grand_child_' + item.id"></view>
-        <text class="uni-text">{{item.label}}</text>
+        <text class="color-black fs-50">{{item.label}}</text>
       </view>
     </scroll-view>
 
-    <scroll-view class="uni-list">
+    <scroll-view class="bg-list-fff pos-relative d-flex flex-dir-column border-b-1-solid-c8c7cc-dark-3a3a3c flex-1">
       <boolean-data :value="data.enableBackToTop" title="点击状态栏回到顶部（仅iOS）"
         @change="changeEnableBackToTop"></boolean-data>
       <!-- #ifndef MP-ALIPAY -->
@@ -46,33 +46,33 @@
         @change="changeScrollWithAnimation"></boolean-data>
       <boolean-data :value="data.scrollX" title="是否横向滚动" @change="changeDirectionX"></boolean-data>
       <boolean-data :value="data.scrollY" title="是否竖向滚动" @change="changeDirectionY"></boolean-data>
-      <view class="uni-slider uni-list-cell-padding">
+      <view class="justify-center p-10-15 color-text-333">
         <text>拖动设置scroll-top</text>
       </view>
-      <view class="uni-slider uni-list-cell-padding">
+      <view class="justify-center p-10-15 color-text-333">
         <slider :max="1000" :min="0" :step="10" :value="data.scrollTop" :show-value="true" @change="handleChangeScrollTop" />
       </view>
-      <view class="uni-slider uni-list-cell-padding">
+      <view class="justify-center p-10-15 color-text-333">
         <text>拖动设置scroll-left</text>
       </view>
-      <view class="uni-slider uni-list-cell-padding">
+      <view class="justify-center p-10-15 color-text-333">
         <slider :max="1000" :min="0" :step="10" :value="data.scrollLeft" :show-value="true"
           @change="handleChangeScrollLeft" />
       </view>
-      <view class="uni-list-cell uni-list-cell-padding">
+      <view class="pos-relative d-flex flex-dir-row justify-between items-center p-10-15 color-text-333">
         <text>设置触发scrolltoupper的距离</text>
-        <input class="uni-list-cell-input" type="number" :value="data.upperThreshold" @input="handleUpperThresholdInput" />
+        <input class="w-50 text-center border-1-solid-ccc uni-list-cell-input" type="number" :value="data.upperThreshold" @input="handleUpperThresholdInput" />
       </view>
-      <view class="uni-list-cell uni-list-cell-padding">
+      <view class="pos-relative d-flex flex-dir-row justify-between items-center p-10-15 color-text-333">
         <text>设置触发scrolltolower的距离</text>
-        <input class="uni-list-cell-input" type="number" :value="data.lowerThreshold" @input="handleLowerThresholdInput" />
+        <input class="w-50 text-center border-1-solid-ccc uni-list-cell-input" type="number" :value="data.lowerThreshold" @input="handleLowerThresholdInput" />
       </view>
-      <view class="uni-list-cell uni-list-cell-padding">
-        <button type="primary" class="button" @click="handleScrollIntoView">
+      <view class="pos-relative d-flex flex-dir-row justify-between items-center p-10-15 color-text-333">
+        <button type="primary" class="flex-1" @click="handleScrollIntoView">
           滚动到id为`item3`的子视图
         </button>
       </view>
-      <view class="uni-list-cell uni-list-cell-padding">
+      <view class="pos-relative d-flex flex-dir-row justify-between items-center p-10-15 color-text-333">
       </view>
     </scroll-view>
   <!-- </view> -->
@@ -262,49 +262,7 @@ defineExpose({
 </script>
 
 <style>
-  .uni-margin-wrap {
-    height: 250px;
-    margin: 0 25px 25px 25px;
-  }
-
-  .item {
-    justify-content: center;
-    align-items: center;
-    height: 250px;
-    width: 100%;
-    background-color: azure;
-    border-width: 1px;
-    border-style: solid;
-    border-color: chocolate;
-  }
-
-  .uni-list {
-    flex: 1;
-  }
-
-  .uni-text {
-    color: black;
-    font-size: 50px;
-  }
-
-  .uni-slider {
-    justify-content: center;
-  }
-
-  .uni-list-cell-input {
-    width: 50px;
-    border: 1px solid #ccc;
-    text-align: center;
-  }
-
-  .button {
-    flex: 1;
-  }
-
   /*自动化测试专用*/
-  .v-margin-bottom {
-    margin-bottom: 50px;
-  }
 
   /*自动化测试专用*/
   .h-margin-right {

@@ -82,6 +82,26 @@ describe('应用路由事件', () => {
     expect(data.appRouteEvents.length).toBe(2)
   })
 
+  itRewriteRoute('preserveQuery 保留原参数并覆盖同名参数', async () => {
+    await page.callMethod('enableRewritePreserveQuery')
+    page = await program.navigateTo(`${TARGET_PATH}?from=source&preserved=hello`)
+    await waitForPageReady()
+    expect((await page.data('data')).preserved).toBe('hello')
+    expect((await page.data('data')).from).toBe('source')
+
+    page = await program.navigateBack()
+    await waitForPageReady()
+    const data = await page.data('data')
+    expect(data.rewriteRouteResult.replace(/\s/g, '')).toBe('rewriteRoute:ok')
+
+    // 独立入口仅重写一次，后续普通跳转不受影响。
+    page = await program.navigateTo(`${TARGET_PATH}?from=normal`)
+    await waitForPageReady()
+    expect((await page.data('data')).from).toBe('normal')
+    page = await program.navigateBack()
+    await waitForPageReady()
+  })
+
   itRewriteRouteNotSupported('支付宝不支持重写路由', async () => {
     await page.callMethod('enableRewriteNextRoute')
     page = await program.navigateTo(`${TARGET_PATH}?from=source`)

@@ -1,16 +1,14 @@
 <template>
-	<view>
 		<page-head :title="title"></page-head>
-		<view class="uni-padding-wrap uni-common-mt">
-			<view class="uni-title">扫码结果：</view>
-			<view v-if="result" class="scan-result">
+		<view class="p-0-15 mt-15">
+			<view class="p-10-0 color-text-333">扫码结果：</view>
+			<view v-if="result" class="min-h-25 lh-25">
 				{{result}}
 			</view>
-			<view class="uni-btn-v">
+			<view class="p-5-0">
 				<button type="primary" @click="scan">扫一扫</button>
 			</view>
 		</view>
-	</view>
 </template>
 <script setup lang="ts">
 	const title = ref('scanCode')
@@ -28,10 +26,3 @@
 		});
 	}
 </script>
-
-<style>
-	.scan-result {
-		min-height: 25px;
-		line-height: 25px;
-	}
-</style>

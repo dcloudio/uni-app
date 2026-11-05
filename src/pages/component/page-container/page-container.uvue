@@ -1,107 +1,107 @@
 <template>
-  <scroll-view style="flex: 1">
+  <scroll-view class="flex-1">
     <page-intro
       content="本页演示 page-container 页面容器，用于在页面内创建弹出层效果，支持拦截返回操作：顶部/底部/左侧/右侧/居中弹出、圆角、遮罩与透明蒙层、下滑关闭等能力，通过按钮触发不同展示。"></page-intro>
-    <view class="uni-padding-wrap uni-common-mt">
-      <view class="uni-title uni-common-mt">
-        <text class="uni-title-text"> 弹出位置 </text>
+    <view class="p-0-15 mt-15">
+      <view class="p-10-0 color-text-333 mt-15">
+        <text class="fs-15 fw-bold color-text-333"> 弹出位置 </text>
       </view>
       <view>
         <button @click="showContainer('top', '顶部')">顶部弹出</button>
-        <button class="mt-5" @click="showContainer('bottom', '底部')">底部弹出</button>
-        <button id="right-button" class="mt-5" @click="showContainer('right', '右侧')">右侧弹出</button>
+        <button class="mt-5 u-mt-5" @click="showContainer('bottom', '底部')">底部弹出</button>
+        <button id="right-button" class="mt-5 u-mt-5" @click="showContainer('right', '右侧')">右侧弹出</button>
         <!-- #ifndef MP -->
-        <button class="mt-5" @click="showContainer('left', '左侧')">左侧弹出</button>
+        <button class="mt-5 u-mt-5" @click="showContainer('left', '左侧')">左侧弹出</button>
         <!-- #endif -->
-        <button class="mt-5" @click="showContainer('center', '居中')">居中弹出</button>
+        <button class="mt-5 u-mt-5" @click="showContainer('center', '居中')">居中弹出</button>
       </view>
     </view>
 
-    <view class="uni-padding-wrap uni-common-mt">
-      <view class="uni-title uni-common-mt">
-        <text class="uni-title-text"> 跟随元素对齐 </text>
+    <view class="p-0-15 mt-15">
+      <view class="p-10-0 color-text-333 mt-15">
+        <text class="fs-15 fw-bold color-text-333"> 跟随元素对齐 </text>
       </view>
       <view>
         <button id="align-left-button" @click="showAlignLeft">下方左对齐</button>
-        <button id="align-center-button" class="mt-5" @click="showAlignCenter">下方水平居中</button>
-        <button id="align-right-button" class="mt-5" @click="showAlignRight">下方右对齐</button>
+        <button id="align-center-button" class="mt-5 u-mt-5" @click="showAlignCenter">下方水平居中</button>
+        <button id="align-right-button" class="mt-5 u-mt-5" @click="showAlignRight">下方右对齐</button>
       </view>
     </view>
 
-    <view class="uni-padding-wrap uni-common-mt">
-      <view class="uni-title uni-common-mt">
-        <text class="uni-title-text"> 弹窗圆角 </text>
+    <view class="p-0-15 mt-15">
+      <view class="p-10-0 color-text-333 mt-15">
+        <text class="fs-15 fw-bold color-text-333"> 弹窗圆角 </text>
       </view>
       <view>
         <button id="round-button" @click="showRound"> 开启圆角 </button>
-        <button id="close-round-button" class="mt-5" @click="closeRound"> 关闭圆角 </button>
+        <button id="close-round-button" class="mt-5 u-mt-5" @click="closeRound"> 关闭圆角 </button>
       </view>
     </view>
 
-    <view class="uni-padding-wrap uni-common-mt">
-      <view class="uni-title uni-common-mt">
-        <text class="uni-title-text"> 遮罩层 </text>
+    <view class="p-0-15 mt-15">
+      <view class="p-10-0 color-text-333 mt-15">
+        <text class="fs-15 fw-bold color-text-333"> 遮罩层 </text>
       </view>
       <view>
         <button @click="showOverlay(false)">不显示蒙层</button>
-        <button class="mt-5" @click="showOverlay(true)">显示蒙层</button>
-        <button class="mt-5" @click="showTransparentOverlay">透明蒙层</button>
-        <button class="mt-5" @click="showGreenTransparentOverlay">绿色半透明蒙层</button>
+        <button class="mt-5 u-mt-5" @click="showOverlay(true)">显示蒙层</button>
+        <button class="mt-5 u-mt-5" @click="showTransparentOverlay">透明蒙层</button>
+        <button class="mt-5 u-mt-5" @click="showGreenTransparentOverlay">绿色半透明蒙层</button>
         <!-- #ifndef APP-ANDROID -->
-        <button class="mt-5" @click="showOverlayPointerEventsNone">蒙层穿透（点击蒙层不关闭）</button>
+        <button class="mt-5 u-mt-5" @click="showOverlayPointerEventsNone">蒙层穿透（点击蒙层不关闭）</button>
         <!-- #endif -->
       </view>
     </view>
 
-    <view class="uni-padding-wrap uni-common-mt">
-      <view class="uni-title uni-common-mt">
-        <text class="uni-title-text"> 自动隐藏 </text>
+    <view class="p-0-15 mt-15">
+      <view class="p-10-0 color-text-333 mt-15">
+        <text class="fs-15 fw-bold color-text-333"> 自动隐藏 </text>
       </view>
       <view>
         <button @click="autoClose">2秒后自动关闭</button>
       </view>
     </view>
 
-    <view class="uni-padding-wrap uni-common-mt">
-      <view class="uni-title uni-common-mt">
-        <text class="uni-title-text"> 滚动穿透 </text>
+    <view class="p-0-15 mt-15">
+      <view class="p-10-0 color-text-333 mt-15">
+        <text class="fs-15 fw-bold color-text-333"> 滚动穿透 </text>
       </view>
       <view>
         <button @click="showScrollThrough">打开滚动穿透测试弹层</button>
-        <text class="slider-down-info">测试弹层内滚动到顶部或底部时是否会影响主页面滚动</text>
+        <text class="slider-down-info fs-12 u-mt-5 mb-20 color-active-999">测试弹层内滚动到顶部或底部时是否会影响主页面滚动</text>
       </view>
     </view>
 
-    <view class="uni-padding-wrap uni-common-mt">
-      <view class="uni-title uni-common-mt">
-        <text class="uni-title-text"> 下滑关闭 </text>
+    <view class="p-0-15 mt-15">
+      <view class="p-10-0 color-text-333 mt-15">
+        <text class="fs-15 fw-bold color-text-333"> 下滑关闭 </text>
       </view>
       <view>
         <button @click="showSlideDown">支持下滑关闭</button>
-        <text class="slider-down-info">提示: 当 close-on-slide-down=true 时，可下滑关闭容器</text>
+        <text class="slider-down-info fs-12 u-mt-5 mb-20 color-active-999">提示: 当 close-on-slide-down=true 时，可下滑关闭容器</text>
       </view>
     </view>
 
     <!-- #ifndef MP-ALIPAY -->
-    <view class="uni-padding-wrap uni-common-mt">
-      <view class="uni-title uni-common-mt">
-        <text class="uni-title-text"> 其他方向滑动关闭 </text>
+    <view class="p-0-15 mt-15">
+      <view class="p-10-0 color-text-333 mt-15">
+        <text class="fs-15 fw-bold color-text-333"> 其他方向滑动关闭 </text>
       </view>
       <view>
         <!-- #ifndef MP -->
         <button @click="showSlideClose('left')">左滑关闭</button>
         <!-- #endif -->
-        <button class="mt-5" @click="showSlideClose('right')">右滑关闭</button>
-        <button class="mt-5" @click="showSlideClose('top')">上滑关闭</button>
-        <text class="slider-down-info">提示: close-on-slide-down=true 时，关闭方向由 position 决定</text>
+        <button class="mt-5 u-mt-5" @click="showSlideClose('right')">右滑关闭</button>
+        <button class="mt-5 u-mt-5" @click="showSlideClose('top')">上滑关闭</button>
+        <text class="slider-down-info fs-12 u-mt-5 mb-20 color-active-999">提示: close-on-slide-down=true 时，关闭方向由 position 决定</text>
       </view>
     </view>
     <!-- #endif -->
 
     <!-- #ifndef MP -->
-    <view class="uni-padding-wrap uni-common-mt" style="margin-bottom: 30px;">
-      <view class="uni-title uni-common-mt">
-        <text class="uni-title-text"> 多层堆叠测试 </text>
+    <view class="p-0-15 mt-15 mb-30">
+      <view class="p-10-0 color-text-333 mt-15">
+        <text class="fs-15 fw-bold color-text-333"> 多层堆叠测试 </text>
       </view>
       <view>
         <button @click="showStackedLayer1">打开第1层弹层</button>
@@ -116,24 +116,24 @@
       :overlay="containerOverlay" :overlay-style="containerOverlayStyle"
       :custom-style="containerCustomStyle"
       :close-on-slide-down="containerCloseOnSlideDown" @afterleave="onAfterLeave">
-      <view class="container">
-        <text class="container-title">{{ containerTitle }}</text>
-        <scroll-view v-if="enableScrollThrough" style="height: 200px;margin-bottom: 15px; padding: 10px;">
-          <text class="container-content">{{ containerContent }}</text>
+      <view class="container p-20 bg-list-fff">
+        <text class="fs-18 fw-bold color-text-333 mb-10">{{ containerTitle }}</text>
+        <scroll-view v-if="enableScrollThrough" class="h-200 mb-15 u-p-10">
+          <text class="container-content fs-14 color-active-666 mb-15">{{ containerContent }}</text>
         </scroll-view>
-        <text v-else class="container-content">{{ containerContent }}</text>
+        <text v-else class="container-content fs-14 color-active-666 mb-15">{{ containerContent }}</text>
         <button @click="closeContainer" type="primary">关闭容器</button>
-        <button class="mt-5" @click="navigateBack">后退页面</button>
+        <button class="mt-5 u-mt-5" @click="navigateBack">后退页面</button>
       </view>
     </page-container>
 
     <!-- #ifndef MP -->
     <!-- 多层堆叠弹层 - 第1层 -->
     <page-container v-if="showStackedPop1" :show="showStackedPop1" position="center" @afterleave="closeStackedLayer1">
-      <view class="stacked-container stacked-container-level-1" style="width: 360px;">
-        <text class="container-title">第1层弹层</text>
-        <text class="container-content">这是第1层弹层,点击下方按钮可以打开第2层</text>
-        <view style="flex-direction: row; justify-content: space-around;">
+      <view class="stacked-container stacked-container-level-1 u-p-10 radius-8 bg-fff" style="width: 360px;">
+        <text class="fs-18 fw-bold color-text-333 mb-10">第1层弹层</text>
+        <text class="container-content fs-14 color-active-666 mb-15">这是第1层弹层,点击下方按钮可以打开第2层</text>
+        <view class="flex-dir-row justify-around">
           <button @click="showStackedLayer2" size="default" type="primary">打开第2层</button>
           <button @click="closeStackedLayer1" size="default">关闭本层</button>
         </view>
@@ -142,10 +142,10 @@
 
     <!-- 多层堆叠弹层 - 第2层 -->
     <page-container v-if="showStackedPop2" :show="showStackedPop2" position="center" @afterleave="closeStackedLayer2">
-      <view class="stacked-container stacked-container-level-2" style="width: 340px;">
-        <text class="container-title">第2层弹层</text>
-        <text class="container-content">这是第2层弹层,点击下方按钮可以打开第3层</text>
-        <view style="flex-direction: row; justify-content: space-around;">
+      <view class="stacked-container stacked-container-level-2 u-p-10 radius-8 w-340 bg-f0f0f0">
+        <text class="fs-18 fw-bold color-text-333 mb-10">第2层弹层</text>
+        <text class="container-content fs-14 color-active-666 mb-15">这是第2层弹层,点击下方按钮可以打开第3层</text>
+        <view class="flex-dir-row justify-around">
           <button @click="showStackedLayer3" size="default" type="primary">打开第3层</button>
           <button @click="closeStackedLayer2" size="default">关闭本层</button>
         </view>
@@ -154,9 +154,9 @@
 
     <!-- 多层堆叠弹层 - 第3层 -->
     <page-container v-if="showStackedPop3" :show="showStackedPop3" position="center" @afterleave="closeStackedLayer3">
-      <view class="stacked-container stacked-container-level-3" style="width: 300px;">
-        <text class="container-title">第3层弹层</text>
-        <text class="container-content">这是第3层弹层,最顶层的弹层</text>
+      <view class="stacked-container stacked-container-level-3 w-300 u-p-10 radius-8">
+        <text class="fs-18 fw-bold color-text-333 mb-10">第3层弹层</text>
+        <text class="container-content fs-14 color-active-666 mb-15">这是第3层弹层,最顶层的弹层</text>
         <button @click="closeStackedLayer3" size="default">关闭本层</button>
       </view>
     </page-container>
@@ -169,18 +169,18 @@
       :show="showAlignContainer" position="center" overlay-style="background-color: rgba(0, 0, 0, 0.1);"
       :custom-style="alignContainerStyle"
       @afterleave="closeAlignContainer">
-      <view class="align-shell">
-        <view class="align-arrow" :style="alignArrowStyle"></view>
-        <view class="align-container">
-          <view class="align-menu-item" hover-class="align-menu-item-hover" @click="onAlignMenuClick('菜单1')">
-            <text class="align-menu-text">菜单1</text>
+      <view class="align-shell w-200 pos-relative bg-transparent">
+        <view class="align-arrow pos-absolute top-0 h-0" :style="alignArrowStyle"></view>
+        <view class="bg-list-fff w-200 radius-8 mt-neg-1">
+          <view class="border-b-width-1 p-12 border-b-style-solid border-b-color-border-eee" hover-class="align-menu-item-hover" @click="onAlignMenuClick('菜单1')">
+            <text class="fs-14 color-text-333">菜单1</text>
           </view>
-          <view class="align-menu-item" hover-class="align-menu-item-hover" @click="onAlignMenuClick('菜单2')">
-            <text class="align-menu-text">菜单2</text>
+          <view class="border-b-width-1 p-12 border-b-style-solid border-b-color-border-eee" hover-class="align-menu-item-hover" @click="onAlignMenuClick('菜单2')">
+            <text class="fs-14 color-text-333">菜单2</text>
           </view>
-          <view class="align-menu-item align-menu-item-last" hover-class="align-menu-item-hover"
+          <view class="border-b-width-0 p-12 border-b-style-solid border-b-color-border-eee" hover-class="align-menu-item-hover"
             @click="closeAlignContainer">
-            <text class="align-menu-text">关闭</text>
+            <text class="fs-14 color-text-333">关闭</text>
           </view>
         </view>
       </view>
@@ -479,75 +479,16 @@
 
 <style scoped>
   .container {
-    padding: 20px;
-    background-color: var(--list-background-color, #ffffff);
     min-height: 300px;
     min-width: 300px;
   }
 
-  .container-title {
-    font-size: 18px;
-    font-weight: bold;
-    color: var(--text-color, #333);
-    margin-bottom: 10px;
-  }
-
-  .container-content {
-    font-size: 14px;
-    color: var(--active-color, #666);
-    margin-bottom: 15px;
-  }
-
-  .mt-5 {
-    margin-top: 5px;
-  }
-
-  .slider-down-info {
-    font-size: 12px;
-    color: var(--active-color, #999);
-    margin-top: 5px;
-    margin-bottom: 20px;
-  }
-
   .stacked-container {
-    padding: 10px;
-    border-radius: 8px;
     min-height: 150px;
-  }
-
-  .stacked-container-level-1 {
-    background-color: #ffffff;
-  }
-
-  .stacked-container-level-2 {
-    background-color: #f0f0f0;
   }
 
   .stacked-container-level-3 {
     background-color: #e0e0e0;
-  }
-
-  .align-container {
-    background-color: var(--list-background-color, #ffffff);
-    width: 200px;
-    border-radius: 8px;
-    margin-top: -1px;
-  }
-
-  .align-menu-item {
-    padding: 12px;
-    border-bottom-width: 1px;
-    border-bottom-style: solid;
-    border-bottom-color: var(--border-color, #eeeeee);
-  }
-
-  .align-menu-item-last {
-    border-bottom-width: 0;
-  }
-
-  .align-menu-text {
-    font-size: 14px;
-    color: var(--text-color, #333333);
   }
 
   .align-menu-item-hover {
@@ -555,17 +496,11 @@
   }
 
   .align-shell {
-    width: 200px;
     padding-top: 7px;
-    position: relative;
-    background-color: transparent;
   }
 
   .align-arrow {
-    position: absolute;
-    top: 0;
     width: 0;
-    height: 0;
     border-left: 8px solid transparent;
     border-right: 8px solid transparent;
     border-bottom: 8px solid #ffffff;

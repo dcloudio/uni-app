@@ -107,6 +107,15 @@ describe('component-native-input', () => {
     expect(await input.property('value')).toEqual("hello uni-app x")
   })
 
+  // 测试 onLoad 阶段延迟设置 value，input 能否 watch 到 props 变化
+  it("onload set value", async () => {
+    const input = await page.$('#uni-input-onload-value');
+    await page.waitFor(async () => {
+      return (await input.value()) === 'onload-changed-value'
+    })
+    expect(await input.value()).toBe('onload-changed-value')
+  })
+
   //测试input的类型
   it("type", async () => {
     const text = await page.$('#uni-input-type-text');

@@ -1,0 +1,172 @@
+<template>
+  <view class="flex-grow-1">
+    <text class="fs-13 color-tips-0958d9 bg-tips-e6f4ff border-l-4-solid-tips-91caff p-10-12 radius-4 m-10">说明：左边是普通版本，右边是拍平版本</text>
+
+    <view class="mt-15">
+      <text class="fs-15 fw-bold color-text-333">gap: 12px</text>
+      <view class="flex-dir-row justify-around mt-10">
+        <view class="gap-container" style="gap: 12px">
+          <view class="gap-item red"></view>
+          <view class="gap-item green"></view>
+          <view class="gap-item blue"></view>
+        </view>
+        <view class="gap-container" style="gap: 12px" flatten>
+          <view class="gap-item red"></view>
+          <view class="gap-item green"></view>
+          <view class="gap-item blue"></view>
+        </view>
+      </view>
+    </view>
+
+    <view class="mt-15">
+      <text class="fs-15 fw-bold color-text-333">row-gap: 8px; column-gap: 16px</text>
+      <view class="flex-dir-row justify-around mt-10">
+        <view class="gap-container wrap-container" style="row-gap: 8px; column-gap: 16px">
+          <view class="gap-item red"></view>
+          <view class="gap-item green"></view>
+          <view class="gap-item blue"></view>
+          <view class="gap-item yellow"></view>
+          <view class="gap-item purple"></view>
+          <view class="gap-item cyan"></view>
+        </view>
+        <view class="gap-container wrap-container" style="row-gap: 8px; column-gap: 16px" flatten>
+          <view class="gap-item red"></view>
+          <view class="gap-item green"></view>
+          <view class="gap-item blue"></view>
+          <view class="gap-item yellow"></view>
+          <view class="gap-item purple"></view>
+          <view class="gap-item cyan"></view>
+        </view>
+      </view>
+    </view>
+
+    <view class="mt-15">
+      <text class="fs-15 fw-bold color-text-333">setProperty 设置与 getPropertyValue 获取</text>
+      <text class="fs-12 color-999">设置值: {{data.gap}}</text>
+      <text class="fs-12 color-999">普通版本获取值: {{data.gapActual}}</text>
+      <text class="fs-12 color-999">拍平版本获取值: {{data.gapActualFlat}}</text>
+      <view class="flex-dir-row justify-around mt-10">
+        <view ref="viewRef" class="gap-container dynamic-container" :style="{ gap: data.gap }">
+          <view class="gap-item red"></view>
+          <view class="gap-item green"></view>
+          <view class="gap-item blue"></view>
+        </view>
+        <view ref="viewRefFlat" class="gap-container dynamic-container" :style="{ gap: data.gap }" flatten>
+          <view class="gap-item red"></view>
+          <view class="gap-item green"></view>
+          <view class="gap-item blue"></view>
+        </view>
+      </view>
+    </view>
+
+    <view class="mt-15 mb-15">
+      <text class="fs-13 color-tips-0958d9 bg-tips-e6f4ff border-l-4-solid-tips-91caff p-10-12 radius-4 m-10">选择或输入 gap 值，观察 flex 子项之间的间距</text>
+      <enum-data-checkbox :items="gapEnum" title="gap 枚举值" @change="radioChangeGap" :compact="true"></enum-data-checkbox>
+      <input-data :defaultValue="data.gap" title="gap 自定义值" type="text" @confirm="inputChangeGap"></input-data>
+    </view>
+  </view>
+</template>
+
+<script setup lang="ts">
+  import { ItemType } from '@/components/enum-data-checkbox/enum-data-checkbox-types'
+
+  const gapEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: '0' },
+    { value: 2, name: '8px' },
+    { value: 3, name: '16px' },
+    { value: 4, name: '8px 16px' }
+  ]
+
+  const data = reactive({
+    gap: '12px',
+    gapActual: '',
+    gapActualFlat: ''
+  })
+  const viewRef = ref(null as UniElement | null)
+  const viewRefFlat = ref(null as UniElement | null)
+
+  const getPropertyValues = () => {
+    data.gapActual = viewRef.value?.style.getPropertyValue('gap') ?? ''
+    data.gapActualFlat = viewRefFlat.value?.style.getPropertyValue('gap') ?? ''
+  }
+
+  const changeGap = (value: string) => {
+    data.gap = value
+    viewRef.value?.style.setProperty('gap', value)
+    viewRefFlat.value?.style.setProperty('gap', value)
+    nextTick(() => {
+      getPropertyValues()
+    })
+  }
+
+  const radioChangeGap = (index: number) => {
+    const selectedItem = gapEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeGap(selectedItem.name)
+    }
+  }
+
+  const inputChangeGap = (value: string) => {
+    changeGap(value)
+  }
+
+  onReady(() => {
+    getPropertyValues()
+  })
+
+  defineExpose({
+    radioChangeGap,
+    data
+  })
+</script>
+
+<style>
+  .gap-container {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    width: 40%;
+    min-height: 110px;
+    padding: 8px;
+    background-color: #e5e7eb;
+    gap: 12px;
+  }
+
+  .wrap-container {
+    height: 110px;
+  }
+
+  .dynamic-container {
+    height: 80px;
+  }
+
+  .gap-item {
+    width: 32px;
+    height: 32px;
+  }
+
+  .red {
+    background-color: #ef4444;
+  }
+
+  .green {
+    background-color: #22c55e;
+  }
+
+  .blue {
+    background-color: #3b82f6;
+  }
+
+  .yellow {
+    background-color: #eab308;
+  }
+
+  .purple {
+    background-color: #a855f7;
+  }
+
+  .cyan {
+    background-color: #06b6d4;
+  }
+</style>

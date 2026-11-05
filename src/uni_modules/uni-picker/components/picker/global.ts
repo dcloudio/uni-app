@@ -1,0 +1,59 @@
+export type UniPickerCancelEventDetail = {}
+
+export type UniPickerChangeEventDetail = {
+    value : number | string | number[]
+}
+
+export type UniPickerColumnChangeEventDetail = {
+    value : number
+    column : number
+}
+
+/**
+ * 取消事件触发
+ */
+export class UniPickerCancelEvent extends UniCustomEvent<UniPickerCancelEventDetail> {
+    constructor() {
+        super('cancel', {
+            detail: {}
+        } as UniCustomEventOptions<UniPickerCancelEventDetail>)
+    }
+}
+
+/**
+ * change 事件触发
+ */
+export class UniPickerChangeEvent extends UniCustomEvent<UniPickerChangeEventDetail> {
+    constructor(value : number | string | number[]) {
+        super('change', {
+            detail: { value } as UniPickerChangeEventDetail
+        } as UniCustomEventOptions<UniPickerChangeEventDetail>)
+    }
+}
+
+/**
+ * 列改变 columnchange 事件触发
+ */
+export class UniPickerColumnChangeEvent extends UniCustomEvent<UniPickerColumnChangeEventDetail> {
+    constructor(column : number, value : number) {
+        super('columnchange', {
+            detail: { value, column } as UniPickerColumnChangeEventDetail
+        } as UniCustomEventOptions<UniPickerColumnChangeEventDetail>)
+    }
+}
+
+// Vapor 使用 JS 元素实现，不依赖 Android 原生节点类型。
+// #ifdef APP-IOS || VUE3-VAPOR
+export class UniPickerElement extends UniViewElementImpl {}
+// #endif
+
+// #ifdef APP-ANDROID && !VUE3-VAPOR
+import PageNode from "io.dcloud.uniapp.dom.node.PageNode";
+import INodeData from "io.dcloud.uniapp.interfaces.INodeData";
+
+export class UniPickerElement extends UniViewElementImpl {
+	constructor(data : INodeData, pageNode : PageNode) {
+		super(data, pageNode);
+	}
+}
+// #endif

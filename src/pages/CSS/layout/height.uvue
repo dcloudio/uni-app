@@ -1,113 +1,113 @@
 <template>
-    <view class="css-page" style="flex-grow: 1;">
-      <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
+    <view class="flex-grow-1">
+      <text class="fs-13 color-tips-0958d9 bg-tips-e6f4ff border-l-4-solid-tips-91caff p-10-12 radius-4 m-10">说明：左边是正常版本，右边是拍平版本</text>
       <view>
-        <text class="theme-label">height: 100px</text>
-        <view class="demo-box">
+        <text class="color-text-333">height: 100px</text>
+        <view class="flex-dir-row justify-around mt-10">
           <view class="common" style="height: 100px;"></view>
           <view class="common" style="height: 100px;" flatten></view>
         </view>
       </view>
 
       <view>
-        <text class="theme-label">height: 50%</text>
-        <view class="demo-box" style="height: 100px;">
+        <text class="color-text-333">height: 50%</text>
+        <view class="flex-dir-row justify-around mt-10" style="height: 100px;">
           <view class="common" style="height: 50%;"></view>
           <view class="common" style="height: 50%;" flatten></view>
         </view>
       </view>
 
-      <view class="uni-common-mt">
-        <text class="uni-title-text">scroll-view 组件</text>
+      <view class="mt-15">
+        <text class="fs-15 fw-bold color-text-333">scroll-view 组件</text>
       </view>
 
-      <view class="demo-box">
+      <view class="flex-dir-row justify-around mt-10">
         <scroll-view style="width: 100px; height: 80px; background-color: cyan;">
-          <text class="scroll-view-label">height: 80px</text>
+          <text class="color-1a1a1a fs-12 text-center">height: 80px</text>
         </scroll-view>
         <scroll-view style="width: 100px; height: 120px; background-color: cyan;">
-          <text class="scroll-view-label">height: 120px</text>
+          <text class="color-1a1a1a fs-12 text-center">height: 120px</text>
         </scroll-view>
       </view>
 
-      <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
+      <view class="mt-15">
+        <text class="fs-15 fw-bold color-text-333">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <!-- 普通版本 -->
-      <view class="test-container">
-        <view class="test-item">
-          <text class="uni-subtitle-text">view 组件</text>
-          <text class="uni-info">设置值: {{data.height}}</text>
-          <text class="uni-info">获取值: {{data.heightActual}}</text>
+      <view class="flex-dir-row justify-between mt-10">
+        <view class="flex-1 m-0-5">
+          <text class="color-888 fs-12 fw-bold u-mt-5">view 组件</text>
+          <text class="fs-12 color-999">设置值: {{data.height}}</text>
+          <text class="fs-12 color-999">获取值: {{data.heightActual}}</text>
           <view class="test-box">
-            <view ref="viewRef" class="common-dynamic test-view" :style="{ height: data.height }">
-              <text class="cyan-label">view</text>
+            <view ref="viewRef" class="common-dynamic" :style="{ height: data.height }">
+              <text class="color-1a1a1a">view</text>
             </view>
           </view>
         </view>
 
-        <view class="test-item">
-          <text class="uni-subtitle-text">text 组件</text>
-          <text class="uni-info">设置值: {{data.height}}</text>
-          <text class="uni-info">获取值: {{data.heightActualText}}</text>
+        <view class="flex-1 m-0-5">
+          <text class="color-888 fs-12 fw-bold u-mt-5">text 组件</text>
+          <text class="fs-12 color-999">设置值: {{data.height}}</text>
+          <text class="fs-12 color-999">获取值: {{data.heightActualText}}</text>
           <view class="test-box">
-            <text ref="textRef" class="common-dynamic test-text" :style="{ height: data.height }">text</text>
+            <text ref="textRef" class="common-dynamic" :style="{ height: data.height }">text</text>
           </view>
         </view>
 
-        <view class="test-item">
-          <text class="uni-subtitle-text">image 组件</text>
-          <text class="uni-info">设置值: {{data.height}}</text>
-          <text class="uni-info">获取值: {{data.heightActualImage}}</text>
+        <view class="flex-1 m-0-5">
+          <text class="color-888 fs-12 fw-bold u-mt-5">image 组件</text>
+          <text class="fs-12 color-999">设置值: {{data.height}}</text>
+          <text class="fs-12 color-999">获取值: {{data.heightActualImage}}</text>
           <view class="test-box">
-            <image ref="imageRef" class="common-dynamic test-image" :style="{ height: data.height }" src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common-dynamic" :style="{ height: data.height }" src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
 
       <!-- 拍平版本 -->
-      <view class="test-container">
-        <view class="test-item">
-          <text class="uni-subtitle-text">view 组件拍平</text>
-          <text class="uni-info">设置值: {{data.height}}</text>
-          <text class="uni-info">获取值: {{data.heightActualFlat}}</text>
+      <view class="flex-dir-row justify-between mt-10">
+        <view class="flex-1 m-0-5">
+          <text class="color-888 fs-12 fw-bold u-mt-5">view 组件拍平</text>
+          <text class="fs-12 color-999">设置值: {{data.height}}</text>
+          <text class="fs-12 color-999">获取值: {{data.heightActualFlat}}</text>
           <view class="test-box">
-            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ height: data.height }" flatten>
-              <text class="cyan-label">view</text>
+            <view ref="viewRefFlat" class="common-dynamic" :style="{ height: data.height }" flatten>
+              <text class="color-1a1a1a">view</text>
             </view>
           </view>
         </view>
 
-        <view class="test-item">
-          <text class="uni-subtitle-text">text 组件拍平</text>
-          <text class="uni-info">设置值: {{data.height}}</text>
-          <text class="uni-info">获取值: {{data.heightActualTextFlat}}</text>
+        <view class="flex-1 m-0-5">
+          <text class="color-888 fs-12 fw-bold u-mt-5">text 组件拍平</text>
+          <text class="fs-12 color-999">设置值: {{data.height}}</text>
+          <text class="fs-12 color-999">获取值: {{data.heightActualTextFlat}}</text>
           <view class="test-box">
-            <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ height: data.height }" flatten>text</text>
+            <text ref="textRefFlat" class="common-dynamic" :style="{ height: data.height }" flatten>text</text>
           </view>
         </view>
 
-        <view class="test-item">
-          <text class="uni-subtitle-text">image 组件拍平</text>
-          <text class="uni-info">设置值: {{data.height}}</text>
-          <text class="uni-info">获取值: {{data.heightActualImageFlat}}</text>
+        <view class="flex-1 m-0-5">
+          <text class="color-888 fs-12 fw-bold u-mt-5">image 组件拍平</text>
+          <text class="fs-12 color-999">设置值: {{data.height}}</text>
+          <text class="fs-12 color-999">获取值: {{data.heightActualImageFlat}}</text>
           <view class="test-box">
-            <image ref="imageRefFlat" class="common-dynamic test-image-flatten" :style="{ height: data.height }" flatten src="/static/test-image/logo.png"></image>
+            <image ref="imageRefFlat" class="common-dynamic" :style="{ height: data.height }" flatten src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
 
-      <view class="uni-common-mt uni-common-mb">
-        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
-        <enum-data :items="heightEnum" title="height 枚举值" @change="radioChangeHeight" :compact="true"></enum-data>
+      <view class="mt-15 mb-15">
+        <text class="fs-13 color-tips-0958d9 bg-tips-e6f4ff border-l-4-solid-tips-91caff p-10-12 radius-4 m-10">第一个枚举值，'' (空字符串) - 空值情况</text>
+        <enum-data-checkbox :items="heightEnum" title="height 枚举值" @change="radioChangeHeight" :compact="true"></enum-data-checkbox>
         <input-data :defaultValue="data.height" title="height 自定义值" type="text" @confirm="inputChangeHeight"></input-data>
       </view>
 
       <!-- #ifndef MP-ALIPAY -->
-      <view class="uni-common-mb">
-        <text class="theme-label">native-view组件: height: 80px 和 height: 120px</text>
-        <view class="demo-box-native">
+      <view class="mb-15">
+        <text class="color-text-333">native-view组件: height: 80px 和 height: 120px</text>
+        <view class="demo-box-native flex-dir-row justify-around mt-10">
           <view class="container-native">
             <native-view style="width: 100px;height: 80px;"></native-view>
           </view>
@@ -121,7 +121,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ItemType } from '@/components/enum-data/enum-data-types'
+  import { ItemType } from '@/components/enum-data-checkbox/enum-data-checkbox-types'
 
   const heightEnum: ItemType[] = [
     { value: 0, name: '' },
@@ -196,40 +196,15 @@
 </script>
 
 <style>
-  .theme-label {
-    color: var(--text-color, #333333);
-  }
-
-  .cyan-label,
-  .scroll-view-label {
-    color: #1a1a1a;
-  }
-
   .common {
     flex: 1;
     margin:0 10px;
     background-color: cyan;
   }
-  .demo-box {
-    flex-direction: row;
-    margin-top: 10px;
-    justify-content: space-around;
-  }
 
   .common-dynamic {
     width: 100px;
     background-color: cyan;
-  }
-
-  .test-container {
-    flex-direction: row;
-    justify-content: space-between;
-    margin-top: 10px;
-  }
-
-  .test-item {
-    flex: 1;
-    margin: 0 5px;
   }
 
   .test-box {
@@ -238,15 +213,7 @@
     background-color: gray;
   }
 
-  .scroll-view-label {
-    font-size: 12px;
-    text-align: center;
-  }
-
   .demo-box-native {
-    flex-direction: row;
-    margin-top: 10px;
-    justify-content: space-around;
     align-items: center;
   }
 

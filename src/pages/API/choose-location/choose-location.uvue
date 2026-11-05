@@ -1,34 +1,34 @@
 <template>
-  <view>
     <page-head :title="data.title"></page-head>
-    <view class="uni-padding-wrap">
-      <view class="uni-column uni-container align-center">
-        <text class="uni-hello-text">位置信息</text>
-        <text v-if="!data.hasLocation" class="uni-title-text uni-common-mt">未选择位置</text>
-        <view v-if="data.hasLocation" class="align-center">
-          <text class="uni-common-mt">{{data.locationName}}</text>
-          <text class="uni-common-mt">{{data.locationAddress}}</text>
-          <view class="uni-common-mt" v-if="data.location.latitude.length>1">
+    <view class="p-0-15">
+      <view class="flex-dir-column u-p-15 items-center">
+        <text class="color-text-333 lh-22">位置信息</text>
+        <text v-if="data.chooseLocationComplete" class="fs-12 color-text-333 mt-15">chooseLocation complete 已触发</text>
+        <text v-if="data.chooseLocationFail" class="fs-12 color-text-333 mt-15">chooseLocation fail 已触发</text>
+        <text v-if="!data.hasLocation" class="fs-15 fw-bold color-text-333 mt-15">未选择位置</text>
+        <view v-if="data.hasLocation" class="items-center">
+          <text class="mt-15">{{data.locationName}}</text>
+          <text class="mt-15">{{data.locationAddress}}</text>
+          <view class="mt-15" v-if="data.location.latitude.length>1">
             <text>E: {{data.location.longitude[0]}}°{{data.location.longitude[1]}}′</text>
             <text>\nN: {{data.location.latitude[0]}}°{{data.location.latitude[1]}}′</text>
           </view>
         </view>
       </view>
-      <view class="uni-btn-v">
-        <text class="tips">注意：\n1. Web和App需要正确配置地图服务商的Key并且保证Key的权限和余额足够，才能正常选择位置\n2. 若没有关联uniCloud空间，则只能全屏地图选点，不能根据POI选择位置\n3. payload参数会原样透传给uni-map-co，可用于用户鉴权</text>
+      <view class="p-5-0">
+        <text class="fs-12 opacity-0_8 tips">注意：\n1. Web和App需要正确配置地图服务商的Key并且保证Key的权限和余额足够，才能正常选择位置\n2. 若没有关联uniCloud空间，则只能全屏地图选点，不能根据POI选择位置\n3. payload参数会原样透传给uni-map-co，可用于用户鉴权</text>
         <boolean-data :value="false" title="是否指定位置为天安门" @change="changeLocationBoolean"></boolean-data>
         <boolean-data :value="false" title="是否携带keyword参数" @change="changeKeywordBoolean"></boolean-data>
         <!-- #ifndef MP -->
         <boolean-data :value="false" title="是否携带payload参数" @change="changePayloadBoolean"></boolean-data>
         <!-- #endif -->
-        <button class="uni-btn" type="primary" @tap="chooseLocation">选择位置</button>
-        <button class="uni-btn" @tap="clear">清空</button>
+        <button class="mt-10" type="primary" @tap="chooseLocation">选择位置</button>
+        <button class="mt-10" @tap="clear">清空</button>
         <!-- #ifdef APP-IOS -->
-        <button class="uni-btn" type="primary" @tap="chooseLocationByPlugin">通过 uts 插件调用 chooseLocation</button>
+        <button class="mt-10" type="primary" @tap="chooseLocationByPlugin">通过 uts 插件调用 chooseLocation</button>
         <!-- #endif -->
       </view>
     </view>
-  </view>
 </template>
 <script setup lang="ts">
   import {
@@ -51,6 +51,8 @@
     hoverLocation: boolean
     hoverKeyword: boolean
     hoverPayload: boolean
+    chooseLocationComplete: boolean
+    chooseLocationFail: boolean
   }
 
   const data = reactive({
@@ -65,7 +67,9 @@
     dialogPagesNum: -1,
     hoverLocation: false,
     hoverKeyword: false,
-    hoverPayload: false
+    hoverPayload: false,
+    chooseLocationComplete: false,
+    chooseLocationFail: false
   } as DataType)
 
   const formatLocation = (longitude: number, latitude: number): Location => {
@@ -126,6 +130,8 @@
   }
 
   const chooseLocation = () => {
+    data.chooseLocationComplete = false
+    data.chooseLocationFail = false
     let chooseLocationOptions = {
       success: (res) => {
         console.log('chooseLocation success', res)
@@ -133,6 +139,14 @@
         data.location = formatLocation(res.longitude, res.latitude)
         data.locationName = res.name
         data.locationAddress = res.address
+      },
+      fail: (res) => {
+        console.log('chooseLocation fail', res)
+        data.chooseLocationFail = true
+      },
+      complete: (res) => {
+        console.log('chooseLocation complete', res)
+        data.chooseLocationComplete = true
       }
     } as ChooseLocationOptions
     if (data.hoverLocation) {
@@ -185,16 +199,7 @@
 </script>
 
 <style>
-  .page-body-info {
-    padding-bottom: 0;
-    height: 220px;
-  }
-  .align-center{
-    align-items: center;
-  }
   .tips {
-    font-size: 12px;
     margin: 15px 0;
-    opacity: .8;
   }
 </style>

@@ -1,8 +1,6 @@
 <template>
-  <view>
     <MyPickerView ref='pickerViewRef' v-if='visible'></MyPickerView>
     <button class="btn_toggle" @click="toggle">btn</button>
-  </view>
 </template>
 
 <script setup lang="ts">
@@ -26,7 +24,3 @@
     }
   }
 </script>
-
-<style>
-
-</style>

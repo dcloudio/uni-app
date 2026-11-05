@@ -3,9 +3,9 @@
     @touchmove="touchmove($event as TouchEvent)" @touchend="touchend" @touchcancel="touchend">
     <view class="card-content" ref="cardContent" :style="{ backgroundColor: color }"></view>
     <view class="state">
-      <image class="state-icon like" ref="stateIconLike" src="/static/template/drop-card/like.png" mode="widthFix">
+      <image class="state-icon" ref="stateIconLike" src="/static/template/drop-card/like.png" mode="widthFix">
       </image>
-      <image class="state-icon dislike" ref="stateIconDislike" src="/static/dislike.png"
+      <image class="state-icon" ref="stateIconDislike" src="/static/dislike.png"
         mode="widthFix"></image>
       <!-- cardIndex:{{cardIndex}} -->
     </view>

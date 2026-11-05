@@ -57,7 +57,7 @@
     </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
     type SelectedData = {
         year : number,
         month : number,
@@ -551,9 +551,11 @@
                     const nowMinutes = minutes.value[newMIdx]
                     minutes.value = getMinutes(h)
                     // #ifdef APP-ANDROID
+                    // #ifndef VUE3-VAPOR
                     newMIdx = parseInt(nowMinutes).toInt()
                     // #endif
-                    // #ifdef APP-IOS || APP-HARMONY
+                    // #endif
+                    // #ifdef APP-IOS || APP-HARMONY || VUE3-VAPOR
                     newMIdx = parseInt(nowMinutes)
                     // #endif
                 }

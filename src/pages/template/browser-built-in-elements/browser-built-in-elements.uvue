@@ -1,16 +1,14 @@
 <template>
-  <view class="page">
     <page-head :title="title"></page-head>
-    <view class="page-body">
-      <text class="title">使用浏览器内置的 a 标签</text>
+    <view>
+      <text class="mt-15 title">使用浏览器内置的 a 标签</text>
       <view>
         <a class="browser-native-link" href="https://doc.dcloud.net.cn/uni-app-x/" target="uni-app-x">uni-app x，是下一代 uni-app，是一个跨平台应用开发引擎</a>
       </view>
 
-      <text class="title">使用浏览器内置的 button 标签(浏览器内置标签和 uni-app 重名的情况)</text>
+      <text class="mt-15 title">使用浏览器内置的 button 标签(浏览器内置标签和 uni-app 重名的情况)</text>
       <view class="html-element-area" ref="htmlElementAreaRef"></view>
     </view>
-  </view>
 </template>
 
 <script setup lang="ts">
@@ -63,11 +61,7 @@
 </script>
 
 <style>
-  .page {
-    padding: 15px;
-  }
-
-  .title {
-    margin-top: 15px;
-  }
+page {
+  padding: 15px;
+}
 </style>

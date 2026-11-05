@@ -1,0 +1,498 @@
+<template>
+	<view class="panel">
+		<view class="panel-head">
+			<view>
+				<text class="panel-title">批量任务</text>
+				<text class="panel-subtitle">{{ props.subtitle }}</text>
+			</view>
+			<button class="small-button primary"
+				:class="props.totalTasks == 0 || props.runningTasks > 0 ? 'control-disabled' : ''" size="mini"
+				@click="emit('runAll')">▷ 全部执行</button>
+		</view>
+		<view class="metrics">
+			<view class="metric-cell"><text class="metric-label">进行中</text><text
+					class="metric-running">{{ props.runningTasks }}</text></view>
+			<view class="metric-cell"><text class="metric-label">通过</text><text
+					class="metric-pass">{{ props.passedTasks }}</text></view>
+			<view class="metric-cell metric-cell-last"><text class="metric-label">失败</text><text
+					class="metric-fail">{{ props.failedTasks }}</text></view>
+		</view>
+		<view class="guide-card">
+			<view class="guide-head" @click="guideOpen = !guideOpen">
+				<text class="guide-title">测试说明</text>
+				<text class="guide-toggle">{{ guideOpen ? '收起' : '展开' }}</text>
+			</view>
+			<view v-if="guideOpen" class="guide-body">
+				<view class="guide-item"><text class="guide-term">定位</text><text class="guide-copy">向多台已连接设备、不同 GATT
+						特征同时发起独立请求，验证多路径并行下的通道隔离与回调归因；它测的是“同时发起”，不是同一资源上的并发争用。</text></view>
+				<view class="guide-item"><text class="guide-term">执行</text><text class="guide-copy">点击“全部执行”后，所有任务在同一时刻发起；Read /
+						Write 各提交一次，Notify 按目标事件数采集，直到达标或超时。</text></view>
+				<view class="guide-item"><text class="guide-term">边界</text><text class="guide-copy">同一特征的 Read 与 Write
+						不能同时加入（会互相干扰、无法可靠归因）；同一特征 Read 可与 Notify 并行；跨设备、跨特征之间互不影响。</text></view>
+			</view>
+		</view>
+		<view v-if="props.tasks.length == 0" class="task-empty">
+			<text class="task-empty-title">暂无批量任务</text>
+			<text class="task-empty-note">从已连接设备的不同 GATT 路径中加入 Read、Write 或 Notify 测试。</text>
+		</view>
+		<view v-for="task in props.tasks" :key="task.id" class="task-card">
+			<view class="task-head">
+				<view class="task-device-copy">
+					<view class="task-device-title-row">
+						<view class="task-device-dot"
+							:class="isConnected(task.deviceId) ? 'task-device-online' : 'task-device-offline'"></view><text
+							class="task-device">{{ task.deviceName }}</text>
+					</view>
+					<text class="task-id">{{ task.deviceId }} · {{ deviceTaskMeta(task) }}</text>
+				</view>
+				<view class="task-stop" @click="emit('togglePause', task)"><text>{{ task.paused ? '▷' : 'Ⅱ' }}</text></view>
+			</view>
+			<view v-for="item in task.items" :key="item.id" class="task-row">
+				<text class="task-kind" :class="item.kind">{{ taskKindLetter(item.kind) }}</text>
+				<view class="task-copy">
+					<text class="task-copy-main">{{ shortUUID(item.characteristicId) }} · {{ item.label }} ·
+						{{ taskModeLabel(item) }}</text>
+					<text class="task-copy-detail">{{ item.detail }}</text>
+				</view>
+				<text class="task-status" :class="item.status">{{ taskStatusLabel(item.status) }}</text>
+				<text class="task-item-remove" @click.stop="emit('removeItem', task.id, item.id)">×</text>
+			</view>
+			<view class="task-footer">
+				<text class="task-add-link" @click="emit('openPicker', task.deviceId)">＋ 添加特征任务</text>
+				<text v-if="isConnected(task.deviceId) && hasBlockedTask(task)" class="task-rebind-link"
+					@click="emit('rebind', task)">重新绑定</text>
+				<text class="task-remove-link" @click="emit('removeTask', task.id)">清除</text>
+			</view>
+		</view>
+		<view class="add-task" @click="emit('openPicker', '')">＋ 添加特征任务</view>
+	</view>
+</template>
+
+<script setup lang="ts">
+	import { ref } from 'vue'
+	import { DeviceTask, TaskItem, TaskKind, TaskStatus } from '../../logic/BleWorkspaceTypes.ts'
+	import { shortUUID } from '../../logic/BleUuid.ts'
+
+	type ConcurrencyPanelProps = {
+		tasks : DeviceTask[],
+		connectedIds : string[],
+		subtitle : string,
+		totalTasks : number,
+		runningTasks : number,
+		passedTasks : number,
+		failedTasks : number
+	}
+
+	const props = defineProps<ConcurrencyPanelProps>()
+	const emit = defineEmits<{
+		runAll : [],
+		togglePause : [task: DeviceTask],
+		removeItem : [taskId: string, itemId: string],
+		openPicker : [deviceId: string],
+		rebind : [task: DeviceTask],
+		removeTask : [taskId: string]
+	}>()
+
+	const guideOpen = ref(true)
+
+	function isConnected(deviceId : string) : boolean {
+		return props.connectedIds.indexOf(deviceId) >= 0
+	}
+
+	function taskKindLetter(kind : TaskKind) : string {
+		if (kind == 'read') return 'R'
+		if (kind == 'write') return 'W'
+		return 'N'
+	}
+
+	function taskModeLabel(item : TaskItem) : string {
+		if (item.kind == 'write') return item.writeMode == 'write' ? 'W' : 'WN'
+		if (item.kind == 'notify') return item.notifyMode == 'notification' ? 'N' : 'I'
+		return 'R'
+	}
+
+	function taskStatusLabel(status : TaskStatus) : string {
+		if (status == 'IDLE') return '待执行'
+		if (status == 'RUNNING') return '运行中'
+		if (status == 'PASS') return '通过'
+		if (status == 'FAIL') return '失败'
+		if (status == 'PAUSED') return '已暂停'
+		return '待恢复'
+	}
+
+	function deviceTaskMeta(task : DeviceTask) : string {
+		if (task.paused) return '已暂停'
+		if (!isConnected(task.deviceId)) return '设备已断开'
+		return task.items.length.toString() + ' 条任务'
+	}
+
+	function hasBlockedTask(task : DeviceTask) : boolean {
+		return task.items.findIndex((item : TaskItem) : boolean => item.status == 'BLOCKED') >= 0
+	}
+</script>
+
+<style>
+	.panel {
+		padding: 15px 10px 24px;
+	}
+
+	.panel-head {
+		display: flex;
+		flex-direction: row;
+		align-items: flex-start;
+		justify-content: space-between;
+	}
+
+	.panel-title {
+		font-size: 19px;
+		font-weight: 600;
+	}
+
+	.panel-subtitle {
+		margin-top: 3px;
+		color: #71838d;
+		font-size: 10px;
+	}
+
+	.small-button {
+		min-width: 72px;
+		margin: 0;
+		padding: 0 9px;
+		border: 1px solid #c4d3da;
+		border-radius: 5px;
+		background-color: #fff;
+		color: #40545f;
+		font-size: 10px;
+		line-height: 28px;
+	}
+
+	.primary {
+		border-color: #2875d6;
+		background-color: #2875d6;
+		color: #fff;
+	}
+
+	.control-disabled {
+		opacity: 0.42;
+	}
+
+	.metrics {
+		display: flex;
+		flex-direction: row;
+		margin-top: 12px;
+		border: 1px solid #d5e0e5;
+		border-radius: 7px;
+		background-color: #fff;
+	}
+
+	.metric-cell {
+		flex: 1;
+		padding: 9px 3px;
+		border-right: 1px solid #e0e8ec;
+		text-align: center;
+	}
+
+	.metric-cell-last {
+		border-right: 0;
+	}
+
+	.metric-label {
+		color: #71838c;
+		font-size: 8px;
+		text-align: center;
+	}
+
+	.metric-running,
+	.metric-pass,
+	.metric-fail {
+		margin-top: 4px;
+		color: #1e2c35;
+		font-size: 14px;
+		text-align: center;
+	}
+
+	.metric-running {
+		color: #bd6500 !important;
+	}
+
+	.metric-pass {
+		color: #26945c !important;
+	}
+
+	.metric-fail {
+		color: #c65353 !important;
+	}
+
+	.guide-card {
+		display: flex;
+		flex-direction: column;
+		margin-top: 9px;
+		padding: 11px 12px;
+		border: 1px solid #f0dcb8;
+		border-radius: 7px;
+		background-color: #fff4df;
+	}
+
+	.guide-head {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.guide-title {
+		color: #8f5900;
+		font-size: 11px;
+		font-weight: 600;
+	}
+
+	.guide-toggle {
+		color: #8f5900;
+		font-size: 9px;
+	}
+
+	.guide-body {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.guide-item {
+		display: flex;
+		flex-direction: row;
+		margin-top: 8px;
+	}
+
+	.guide-term {
+		flex-shrink: 0;
+		width: 34px;
+		color: #b96d10;
+		font-size: 9px;
+		font-weight: 600;
+		line-height: 14px;
+	}
+
+	.guide-copy {
+		flex: 1;
+		color: #7f7464;
+		font-size: 9px;
+		line-height: 14px;
+	}
+
+	.task-empty {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		min-height: 130px;
+		margin-top: 9px;
+		padding: 20px 14px;
+		border-width: 1px;
+		border-style: dashed;
+		border-color: #b9cad4;
+		border-radius: 7px;
+		background-color: #ffffff;
+	}
+
+	.task-empty-title {
+		color: #354852;
+		font-size: 12px;
+		font-weight: 600;
+	}
+
+	.task-empty-note {
+		margin-top: 6px;
+		color: #7a8c94;
+		font-size: 9px;
+		line-height: 15px;
+		text-align: center;
+	}
+
+	.task-card {
+		overflow: hidden;
+		margin-top: 9px;
+		border: 1px solid #d5e0e5;
+		border-radius: 7px;
+		background-color: #fff;
+	}
+
+	.task-head {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		padding: 10px;
+		border-bottom: 1px solid #e2eaee;
+	}
+
+	.task-device-copy {
+		flex: 1;
+		min-width: 0;
+	}
+
+	.task-device-title-row {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+	}
+
+	.task-device-dot {
+		width: 7px;
+		height: 7px;
+		margin-right: 7px;
+		border-radius: 4px;
+	}
+
+	.task-device-online {
+		background-color: #20a465;
+	}
+
+	.task-device-offline {
+		background-color: #d95656;
+	}
+
+	.task-device {
+		font-size: 11px;
+	}
+
+	.task-id {
+		margin-top: 3px;
+		color: #738690;
+		font-family: monospace;
+		font-size: 8px;
+	}
+
+	.task-stop {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		width: 30px;
+		height: 30px;
+		margin-left: 8px;
+		border-width: 1px;
+		border-color: #cad8df;
+		border-radius: 5px;
+		color: #738690;
+	}
+
+	.task-row {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		padding: 9px 10px;
+		border-bottom: 1px solid #e2eaee;
+	}
+
+	.task-kind {
+		width: 22px;
+		height: 22px;
+		border-radius: 4px;
+		text-align: center;
+		line-height: 22px;
+		font-size: 9px;
+	}
+
+	.task-kind.read {
+		background-color: #e8f2ff;
+		color: #2875d6;
+	}
+
+	.task-kind.write {
+		background-color: #fff1dc;
+		color: #b86c00;
+	}
+
+	.task-kind.notify {
+		background-color: #e4f7ec;
+		color: #278c5a;
+	}
+
+	.task-copy {
+		flex: 1;
+		margin-left: 8px;
+		margin-right: 8px;
+	}
+
+	.task-copy-main {
+		font-size: 10px;
+	}
+
+	.task-copy-detail {
+		margin-top: 3px;
+		color: #7a8c94;
+		font-size: 8px;
+	}
+
+	.task-status {
+		flex-shrink: 0;
+		color: #657983;
+		font-size: 8px;
+	}
+
+	.task-item-remove {
+		flex-shrink: 0;
+		width: 22px;
+		margin-left: 7px;
+		color: #b06b72;
+		font-size: 16px;
+		line-height: 20px;
+		text-align: center;
+	}
+
+	.task-status.RUNNING {
+		color: #b76c00;
+	}
+
+	.task-status.PASS {
+		color: #26945c;
+	}
+
+	.task-status.FAIL {
+		color: #c65353;
+	}
+
+	.task-status.PAUSED {
+		color: #657983;
+	}
+
+	.task-status.BLOCKED {
+		color: #c65353;
+	}
+
+	.task-footer {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		min-height: 36px;
+		padding: 0 10px;
+		background-color: #f8fafb;
+	}
+
+	.task-add-link {
+		flex: 1;
+		color: #2875d6;
+		font-size: 9px;
+	}
+
+	.task-rebind-link {
+		margin-left: 10px;
+		color: #b96d10;
+		font-size: 9px;
+	}
+
+	.task-remove-link {
+		margin-left: 12px;
+		color: #c65353;
+		font-size: 9px;
+	}
+
+	.add-task {
+		margin-top: 9px;
+		padding: 10px;
+		border: 1px dashed #a9c6de;
+		border-radius: 6px;
+		color: #2875d6;
+		font-size: 10px;
+		text-align: center;
+	}
+</style>

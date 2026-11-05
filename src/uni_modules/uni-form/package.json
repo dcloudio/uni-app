@@ -49,7 +49,9 @@
       "app-android": "dom2",
       "app-harmony": "dom2",
       "app-ios": "dom2",
-      "web": "dom2",
+      "web": {
+        "exclude": ["input", "textarea"]
+      },
       "mp-weixin": "dom2"
     },
     "encrypt": [],

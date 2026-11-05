@@ -15,7 +15,9 @@ export class DeviceUtil{
 	 * @throws Exception 如果没开启蓝牙权限就有异常
 	 */
 	public static blueToothEnable(context: Context): boolean {
-		if (Build.VERSION.SDK_INT >= 23 && context.checkSelfPermission(Manifest.permission.BLUETOOTH) == PackageManager.PERMISSION_DENIED) {
+		if (Build.VERSION.SDK_INT >= 23 &&
+			(Build.VERSION.SDK_INT < 31 || context.getApplicationInfo().targetSdkVersion < 31) &&
+			context.checkSelfPermission(Manifest.permission.BLUETOOTH) == PackageManager.PERMISSION_DENIED) {
 			throw new Exception();
 		}
 		let bluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager;

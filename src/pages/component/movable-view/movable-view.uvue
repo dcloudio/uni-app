@@ -1,53 +1,52 @@
 <template>
-  <view class="page-body">
     <page-head title="movable-view,可拖动视图"></page-head>
-    <view class="uni-padding-wrap uni-common-mt">
-      <view class="uni-title uni-common-mt">
+    <view class="p-0-15 mt-15">
+      <view class="p-10-0 color-text-333 mt-15">
         示例 1
         <text>\nmovable-view 区域小于 movable-area</text>
       </view>
       <movable-area>
         <movable-view :x="x" :y="y" direction="all" @change="onChange">text</movable-view>
       </movable-area>
-      <view @tap="tap" class="uni-link uni-center uni-common-mt">
+      <view @tap="tap" class="color-576b95 fs-13 flex-dir-row justify-center mt-15">
         点击这里移动至 (30px, 30px)
       </view>
-      <view class="uni-title uni-common-mt">
+      <view class="p-10-0 color-text-333 mt-15">
         示例 2
         <text>\nmovable-view区域大于movable-area</text>
       </view>
       <movable-area>
         <movable-view class="max" direction="all">text</movable-view>
       </movable-area>
-      <view class="uni-title uni-common-mt">
+      <view class="p-10-0 color-text-333 mt-15">
         示例 3
         <text>\n只可以横向移动</text>
       </view>
       <movable-area>
         <movable-view direction="horizontal">text</movable-view>
       </movable-area>
-      <view class="uni-title uni-common-mt">
+      <view class="p-10-0 color-text-333 mt-15">
         示例 4
         <text>\n只可以纵向移动</text>
       </view>
       <movable-area>
         <movable-view direction="vertical">text</movable-view>
       </movable-area>
-      <view class="uni-title uni-common-mt">
+      <view class="p-10-0 color-text-333 mt-15">
         示例 5
         <text>\n可超出边界</text>
       </view>
       <movable-area>
         <movable-view direction="all" out-of-bounds>text</movable-view>
       </movable-area>
-      <view class="uni-title uni-common-mt">
+      <view class="p-10-0 color-text-333 mt-15">
         示例 6
         <text>\n带有惯性</text>
       </view>
       <movable-area>
         <movable-view direction="all" inertia>text</movable-view>
       </movable-area>
-      <view class="uni-title uni-common-mt">
+      <view class="p-10-0 color-text-333 mt-15">
         示例 7
         <text>\n可放缩</text>
       </view>
@@ -55,11 +54,10 @@
         <movable-view direction="all" @scale="onScale" scale scale-min="0.5" scale-max="4"
           :scale-value="scale">text</movable-view>
       </movable-area>
-      <view @tap="tap2" class="uni-link uni-center uni-common-mt" style="padding-bottom:40px;">
+      <view @tap="tap2" class="color-576b95 fs-13 flex-dir-row justify-center mt-15" style="padding-bottom:40px;">
         点击这里放大3倍
       </view>
     </view>
-  </view>
 </template>
 
 <script setup lang="ts">

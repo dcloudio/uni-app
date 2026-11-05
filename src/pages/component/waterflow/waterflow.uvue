@@ -15,6 +15,12 @@
     scroll_with_animation_boolean: boolean;
     show_scrollbar_boolean: boolean;
     bounces_boolean: boolean;
+    max_cross_axis_extent_boolean: boolean;
+    android_overscroll_boolean: boolean;
+    android_scrollbar_draggable_boolean: boolean;
+    refresher_threshold_boolean: boolean;
+    refresher_max_drag_distance_boolean: boolean;
+    enable_back_to_top_boolean: boolean;
     upper_threshold_input: number;
     lower_threshold_input: number;
     scroll_top_input: number;
@@ -41,7 +47,7 @@
     hasMore: boolean;
     osHarmonySDKAPIVersion: number;
   }
-  import { ItemType } from '@/components/enum-data/enum-data-types'
+  import { ItemType } from '@/components/enum-data-checkbox/enum-data-checkbox-types'
 
   const data = reactive({
     refresher_triggered_boolean: false,
@@ -49,6 +55,12 @@
     scroll_with_animation_boolean: false,
     show_scrollbar_boolean: false,
     bounces_boolean: true,
+    max_cross_axis_extent_boolean: false,
+    android_overscroll_boolean: false,
+    android_scrollbar_draggable_boolean: false,
+    refresher_threshold_boolean: false,
+    refresher_max_drag_distance_boolean: false,
+    enable_back_to_top_boolean: false,
     upper_threshold_input: 50,
     lower_threshold_input: 50,
     scroll_top_input: 0,
@@ -120,7 +132,7 @@
   const waterflow_refresherpulling = (e : RefresherEvent) => {
     console.log("下拉刷新控件被下拉")
     if (data.reset) {
-      if (e.detail.dy > 45) {
+      if (e.detail.dy > (data.refresher_threshold_boolean ? 80 : 45)) {
         data.state = 1
       } else {
         data.state = 0
@@ -212,6 +224,12 @@
   const change_scroll_with_animation_boolean = (checked : boolean) => { data.scroll_with_animation_boolean = checked }
   const change_show_scrollbar_boolean = (checked : boolean) => { data.show_scrollbar_boolean = checked }
   const change_bounces_boolean = (checked : boolean) => { data.bounces_boolean = checked }
+  const change_max_cross_axis_extent_boolean = (checked : boolean) => { data.max_cross_axis_extent_boolean = checked }
+  const change_android_overscroll_boolean = (checked : boolean) => { data.android_overscroll_boolean = checked }
+  const change_android_scrollbar_draggable_boolean = (checked : boolean) => { data.android_scrollbar_draggable_boolean = checked }
+  const change_refresher_threshold_boolean = (checked : boolean) => { data.refresher_threshold_boolean = checked }
+  const change_refresher_max_drag_distance_boolean = (checked : boolean) => { data.refresher_max_drag_distance_boolean = checked }
+  const change_enable_back_to_top_boolean = (checked : boolean) => { data.enable_back_to_top_boolean = checked }
   const confirm_upper_threshold_input = (value : number) => { data.upper_threshold_input = value }
   const confirm_lower_threshold_input = (value : number) => { data.lower_threshold_input = value }
   const confirm_scroll_top_input = (value : number) => { data.scroll_top_input = value }
@@ -310,11 +328,19 @@
 
 <template>
   <page-intro content="本页演示 waterflow 瀑布流组件：列数、间距、下拉刷新与加载更多；下方可调节滚动与 refresher 等属性，可跳转固定高度示例。"></page-intro>
-  <view class="main">
+  <view class="p-5-0 flex-dir-row justify-center border-b-1-solid-black-a6 max-h-250">
     <waterflow :cross-axis-count="data.cross_axis_count" :main-axis-gap="data.main_axis_gap" :cross-axis-gap="data.cross_axis_gap"
       :bounces="data.bounces_boolean" :upper-threshold="data.upper_threshold_input" :lower-threshold="data.lower_threshold_input"
       :scroll-top="data.scroll_top_input" :scroll-left="data.scroll_left_input" :show-scrollbar="data.show_scrollbar_boolean"
       :scroll-into-view="data.scrollIntoView" :scroll-with-animation="data.scroll_with_animation_boolean"
+      :max-cross-axis-extent="data.max_cross_axis_extent_boolean ? 150 : 0"
+      <!-- #ifdef APP-ANDROID && VUE3-VAPOR -->
+      :android-overscroll="data.android_overscroll_boolean"
+      :android-scrollbar-draggable="data.android_scrollbar_draggable_boolean"
+      <!-- #endif -->
+      :refresher-threshold="data.refresher_threshold_boolean ? 80 : 45"
+      :refresher-max-drag-distance="data.refresher_max_drag_distance_boolean ? 200 : undefined"
+      :enable-back-to-top="data.enable_back_to_top_boolean"
       :refresher-enabled="data.refresher_enabled_boolean" :refresher-background="data.refresher_background_input"
       :refresher-triggered="data.refresher_triggered_boolean" :refresher-default-style="data.refresher_default_style_input"
       @click="waterflow_click" @touchstart="waterflow_touchstart" @touchmove="waterflow_touchmove"
@@ -323,26 +349,26 @@
       @refresherrefresh="waterflow_refresherrefresh" @refresherrestore="waterflow_refresherrestore"
       @refresherabort="waterflow_refresherabort" @scrolltoupper="waterflow_scrolltoupper" ref="waterflowRef"
       @scrolltolower="waterflow_scrolltolower" @scroll="waterflow_scroll" @scrollend="waterflow_scrollend"
-      style="width:100%; " id="waterflow" :padding="data.waterflowPadding">
+      class="w-full" id="waterflow" :padding="data.waterflowPadding">
 
       <flow-item v-for="(item, index) in data.scrollData" :key="index" :id="item.text" @click="flow_item_click"
         :style="{'height' : item.height}" @touchstart="flow_item_touchstart" @touchmove="flow_item_touchmove"
         @touchcancel="flow_item_touchcancel" @touchend="flow_item_touchend" @tap="flow_item_tap"
-        @longpress="flow_item_longpress" class="flow-item" type=1>
+        @longpress="flow_item_longpress" class="w-full h-200 bg-6cf items-center justify-center border-1-solid-666" type=1>
         <text>{{item.text}}</text>
       </flow-item>
 
-      <flow-item slot="refresher" id="refresher" type=2 class="refresh-box">
-        <text class="tip-text">{{data.text[data.state]}}</text>
+      <flow-item slot="refresher" id="refresher" type=2 class="justify-center items-center flex-dir-row h-45 w-full">
+        <text class="color-888 fs-12">{{data.text[data.state]}}</text>
       </flow-item>
-      <flow-item v-show="data.hasMore" slot="load-more" id="loadmore" type=6 class="load-more-box" @click="load_more_click">
+      <flow-item v-show="data.hasMore" slot="load-more" id="loadmore" type=6 class="border-style-solid justify-center items-center flex-dir-row h-45 w-full" @click="load_more_click">
         <text>加载更多</text>
       </flow-item>
     </waterflow>
   </view>
 
-  <scroll-view style="flex:1" direction="vertical">
-    <view class="content">
+  <scroll-view class="flex-1" direction="vertical">
+    <view>
       <boolean-data :value="false" title="设置当前下拉刷新状态，true 表示下拉刷新已经被触发，false 表示下拉刷新未被触发"
         @change="change_refresher_triggered_boolean"></boolean-data>
       <boolean-data :value="false" title="开启下拉刷新" @change="change_refresher_enabled_boolean"></boolean-data>
@@ -352,19 +378,33 @@
       <boolean-data :value="false" title="控制是否出现滚动条" @change="change_show_scrollbar_boolean"></boolean-data>
       <boolean-data :value="true" title="控制是否回弹效果" @change="change_bounces_boolean"></boolean-data>
       <boolean-data :value="true" title="是否显示加载更多" @change="change_load_more_boolean"></boolean-data>
+      <boolean-data :value="data.max_cross_axis_extent_boolean" title="启用 max-cross-axis-extent（交叉轴最大尺寸 150px）"
+        @change="change_max_cross_axis_extent_boolean"></boolean-data>
+      <!-- #ifdef APP-ANDROID && VUE3-VAPOR -->
+      <boolean-data :value="data.android_overscroll_boolean" title="开启 android-overscroll（Android 弹簧回弹效果）"
+        @change="change_android_overscroll_boolean"></boolean-data>
+      <boolean-data :value="data.android_scrollbar_draggable_boolean" title="开启 android-scrollbar-draggable（Android，需先开启滚动条）"
+        @change="change_android_scrollbar_draggable_boolean"></boolean-data>
+      <!-- #endif -->
+      <boolean-data :value="data.refresher_threshold_boolean" title="启用 refresher-threshold（80px，需开启下拉刷新和自定义样式）"
+        @change="change_refresher_threshold_boolean"></boolean-data>
+      <boolean-data :value="data.refresher_max_drag_distance_boolean" title="启用 refresher-max-drag-distance（200px，需开启下拉刷新）"
+        @change="change_refresher_max_drag_distance_boolean"></boolean-data>
+      <boolean-data :value="data.enable_back_to_top_boolean" title="开启 enable-back-to-top（点击顶部状态栏返回顶部）"
+        @change="change_enable_back_to_top_boolean"></boolean-data>
       <input-data defaultValue="2" title="设置cross-axis-count，触发 scrolltoupper 事件" type="number"
         @confirm="handleChangeCrossAxisCount"></input-data>
-      <view class="uni-slider uni-list-cell-padding">
+      <view class="p-10-15 color-text-333">
         <text>拖动设置cross-axis-gap</text>
       </view>
-      <view class="uni-slider uni-list-cell-padding">
+      <view class="p-10-15 color-text-333">
         <slider :max="20" :min="0" :step="1" :value="data.cross_axis_gap" :show-value="true"
           @change="handleChangeCrossAxisGap" />
       </view>
-      <view class="uni-slider uni-list-cell-padding">
+      <view class="p-10-15 color-text-333">
         <text>拖动设置main-axis-gap</text>
       </view>
-      <view class="uni-slider uni-list-cell-padding">
+      <view class="p-10-15 color-text-333">
         <slider :max="20" :min="0" :step="1" :value="data.main_axis_gap" :show-value="true"
           @change="handleChangeMainAxisGap" />
       </view>
@@ -376,60 +416,20 @@
       <input-data defaultValue="#FFF" title="设置下拉刷新区域背景颜色" type="text"
         @confirm="confirm_refresher_background_input"></input-data>
       <!-- #ifndef VUE3-VAPOR -->
-      <enum-data :items="data.size_enum" title="通过id位置跳转" @change="item_change_size_enum"></enum-data>
+      <enum-data-checkbox :items="data.size_enum" title="通过id位置跳转" @change="item_change_size_enum"></enum-data-checkbox>
       <!-- #endif -->
       <navigator url="/pages/component/waterflow/waterflow-fit-height">
-        <button type="primary" class="button">
+        <button type="primary" class="mt-15">
           item高度自适应
+        </button>
+      </navigator>
+      <navigator url="/pages/component/waterflow/waterflow-refresher-props">
+        <button type="primary" class="mt-15">
+          下拉刷新属性
         </button>
       </navigator>
     </view>
 
-    <view class="scroll-view_bottom-fixed"></view>
+    <view class="h-safe-area-inset-bottom-20 min-h-20"></view>
   </scroll-view>
 </template>
-
-<style>
-  .main {
-    max-height: 250px;
-    padding: 5px 0;
-    border-bottom: 1px solid rgba(0, 0, 0, .06);
-    flex-direction: row;
-    justify-content: center;
-  }
-
-  .flow-item {
-    width: 100%;
-    height: 200px;
-    border: 1px solid #666;
-    background-color: #66ccff;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .tip-text {
-    color: #888;
-    font-size: 12px;
-  }
-
-  .refresh-box {
-    justify-content: center;
-    align-items: center;
-    flex-direction: row;
-    height: 45px;
-    width: 100%;
-  }
-
-  .load-more-box {
-    justify-content: center;
-    align-items: center;
-    flex-direction: row;
-    height: 45px;
-    width: 100%;
-    border-style: solid;
-  }
-
-  .button {
-    margin-top: 15px;
-  }
-</style>

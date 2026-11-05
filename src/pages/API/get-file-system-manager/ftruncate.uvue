@@ -1,0 +1,235 @@
+<template>
+  <!-- #ifdef APP -->
+  <page-intro content="演示 FileSystemManager.ftruncate / ftruncateSync：通过文件描述符按长度截断文件，截断后自动通过 fstatSync 校验文件大小。"></page-intro>
+  <scroll-view class="flex-1">
+  <!-- #endif -->
+    <view class="p-8 flex-dir-column">
+      <view class="p-8 border-1-solid-e0e0e0 radius-4 flex-dir-column m-4-0">
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">根目录</text>
+          <enum-data-checkbox
+            class="flex-1"
+            :model-value="data.rootKey"
+            :items="rootOptions"
+            mode="default"
+            :show-toast="false"
+            @change="onRootChange"
+          />
+        </view>
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">文件路径</text>
+          <input class="flex-1 border-1-solid-d0d0d0 radius-4 p-4-8 fs-13 h-32" v-model="data.filePath" placeholder="相对根目录的路径" />
+        </view>
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">截断长度</text>
+          <input class="flex-1 border-1-solid-d0d0d0 radius-4 p-4-8 fs-13 h-32" v-model="data.lengthText" type="number" placeholder="保留的字节数" />
+        </view>
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333"></text>
+          <text class="flex-1 fs-12 color-999">长度为保留的字节数；本页演示固定异步截断到 6 字节、同步截断到 4 字节，输入框随演示联动展示</text>
+        </view>
+      </view>
+      <view class="flex-dir-row flex-wrap-wrap m-4-0">
+        <button class="m-4" type="primary" @tap="ftruncate" id="btn-ftruncate">ftruncate 截断（6 字节）</button>
+        <button class="m-4" type="primary" @tap="ftruncateSync" id="btn-ftruncate-sync">ftruncateSync 截断（4 字节）</button>
+        <button class="m-4" type="warn" @tap="demoFail" id="btn-ftruncate-fail">演示失败（无效描述符）</button>
+      </view>
+      <view class="p-8 border-1-solid-e0e0e0 radius-4 flex-dir-column m-4-0-12-0">
+        <text class="fw-bold fs-14 m-2-0 color-333">执行结果：{{ data.lastResult == '' ? '等待执行' : (data.lastResult == 'success' ? '成功' : '失败') }}</text>
+        <text class="fs-13 m-2-0 color-666">目标路径：{{ data.rootPath }}{{ data.filePath }}</text>
+        <text class="fs-13 m-2-0 color-666" v-if="data.lastResult == 'success'">截断后文件大小：{{ data.fstatSize }} 字节</text>
+        <text class="fs-13 m-2-0 color-e64340" v-if="data.lastResult == 'fail'">errCode：{{ data.lastFailError.errCode }}；errMsg：{{ data.lastFailError.errMsg }}</text>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="ts">
+  import { createEnumItems } from '@/components/enum-data-checkbox/enum-data-checkbox-types'
+  const rootOptions = createEnumItems(['usr', 'cache', 'sandbox'])
+
+  import { getFsmRootPath, ensureFsmDirSync, ensureFsmFileSync, removeFsmPathSync, removeFsmDirSync, createFsmMockError } from './fsm-utils'
+
+  type DataType = {
+    rootKey : string
+    rootPath : string
+    filePath : string
+    lengthText : string
+    fd : string
+    fstatSize : number
+    existsRet : boolean
+    done : boolean
+    lastResult : string
+    lastFailError : UniError
+  }
+
+  const data = reactive({
+    rootKey: 'usr',
+    rootPath: getFsmRootPath('usr'),
+    filePath: 'fsm-ftruncate-demo/1.txt',
+    lengthText: '6',
+    fd: '',
+    fstatSize: 0,
+    existsRet: false,
+    done: false,
+    lastResult: '',
+    lastFailError: createFsmMockError(),
+  } as DataType)
+
+  function onRootChange(value : string) {
+    data.rootKey = value
+    data.rootPath = getFsmRootPath(data.rootKey)
+  }
+
+  function targetPath(path : string) : string {
+    return `${data.rootPath}${path ?? data.filePath}`
+  }
+
+  function resetResult() {
+    data.done = false
+    data.lastResult = ''
+    data.fstatSize = 0
+  }
+
+  function applyFail(res : IUniError) {
+    data.lastResult = 'fail'
+    data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+  }
+
+  function exists(path : string) : void {
+    try {
+      uni.getFileSystemManager().accessSync(targetPath(path))
+      data.existsRet = true
+    } catch (e) {
+      data.existsRet = false
+    }
+  }
+
+  // 每次截断演示前重置文件内容并重新打开描述符（r+），保证可重复演示
+  function openForWrite() : boolean {
+    const fileManager = uni.getFileSystemManager()
+    ensureFsmFileSync(targetPath(data.filePath), '测试ftruncate API的写入功能。\n\t制表符缩进行\n回车换行：\r\n下一行\n反斜杠 \\ 双引号 " 单引号 \'\n空格[  ]全角空格[　]不间断空格[ ]\n混合内容：中文English123!@#')
+    try {
+      if (data.fd != '') {
+        try {
+          fileManager.closeSync({ fd: data.fd } as CloseSyncOptions)
+        } catch (e) {
+          // 描述符可能已关闭
+        }
+      }
+      data.fd = fileManager.openSync({ filePath: targetPath(data.filePath), flag: 'r+' } as OpenFileSyncOptions)
+      return true
+    } catch (e) {
+      data.fd = ''
+      data.lastResult = 'fail'
+      data.lastFailError = new UniError('uni-file-manager', 0, `open fail: ${e}`)
+      data.done = true
+      return false
+    }
+  }
+
+  function prepare() : void {
+    const demoDir = `${data.rootPath}fsm-ftruncate-demo`
+    ensureFsmDirSync(demoDir)
+    openForWrite()
+    data.done = true
+  }
+
+  function cleanup() : void {
+    removeFsmDirSync(`${data.rootPath}fsm-ftruncate-demo`)
+    data.fd = ''
+    data.done = true
+  }
+
+
+  function verifySize() : void {
+    try {
+      // Android 平台 statSync/fstatSync 在 ftruncate 后存在结果缓存（读到截断前的 size），
+      // 改用 readFileSync(ArrayBuffer).byteLength 读取真实文件大小
+      const ab = uni.getFileSystemManager().readFileSync(targetPath(data.filePath)) as ArrayBuffer
+      data.fstatSize = ab.byteLength
+    } catch (e) {
+      data.fstatSize = -1
+    }
+  }
+
+  function ftruncate() : void {
+    resetResult()
+    data.lengthText = '6'
+    if (!openForWrite()) {
+      return
+    }
+    const fileManager = uni.getFileSystemManager()
+    const options : FTruncateFileOptions = {
+      fd: data.fd,
+      length: 6,
+      success: (_ : FileManagerSuccessResult) => {
+        data.lastResult = 'success'
+        verifySize()
+      },
+      fail: (res : IUniError) => {
+        applyFail(res)
+      },
+      complete: (_ : any) => {
+        data.done = true
+      }
+    }
+    fileManager.ftruncate(options)
+  }
+
+  function ftruncateSync() : void {
+    resetResult()
+    data.lengthText = '4'
+    if (!openForWrite()) {
+      return
+    }
+    try {
+      uni.getFileSystemManager().ftruncateSync({ fd: data.fd, length: 4 } as FTruncateFileSyncOptions)
+      data.lastResult = 'success'
+      verifySize()
+    } catch (e) {
+      data.lastResult = 'fail'
+      data.lastFailError = new UniError('uni-file-manager', 0, `${e}`)
+    }
+    data.done = true
+  }
+
+  // 一键演示失败场景：使用无效描述符截断
+  function demoFail() : void {
+    resetResult()
+    data.lengthText = '6'
+    const fileManager = uni.getFileSystemManager()
+    const options : FTruncateFileOptions = {
+      fd: '-1',
+      length: 6,
+      success: (_ : FileManagerSuccessResult) => {
+        data.lastResult = 'success'
+        verifySize()
+      },
+      fail: (res : IUniError) => {
+        applyFail(res)
+      },
+      complete: (_ : any) => {
+        data.done = true
+      }
+    }
+    fileManager.ftruncate(options)
+  }
+
+  onReady(() => {
+    prepare()
+  })
+
+  defineExpose({
+    data,
+    prepare,
+    cleanup,
+    exists,
+    ftruncate,
+    ftruncateSync,
+    demoFail
+  })
+</script>
+

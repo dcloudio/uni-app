@@ -1,0 +1,218 @@
+<template>
+  <!-- #ifdef APP -->
+  <page-intro content="演示 FileSystemManager.mkdir / mkdirSync：创建目录，recursive 为 true 时可一次创建多级路径，创建成功后自动校验目录存在性。"></page-intro>
+  <scroll-view class="flex-1">
+  <!-- #endif -->
+    <view class="p-8 flex-dir-column">
+      <view class="p-8 border-1-solid-e0e0e0 radius-4 flex-dir-column m-4-0">
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">根目录</text>
+          <enum-data-checkbox
+            class="flex-1"
+            :model-value="data.rootKey"
+            :items="rootOptions"
+            mode="default"
+            :show-toast="false"
+            @change="onRootChange"
+          />
+        </view>
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">目录路径</text>
+          <input class="flex-1 border-1-solid-d0d0d0 radius-4 p-4-8 fs-13 h-32" v-model="data.dirPath" placeholder="相对根目录的路径" />
+        </view>
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">递归创建</text>
+          <switch :checked="data.recursive" @change="onRecursiveChange" />
+          <text class="flex-1 fs-12 color-999">recursive=true 时一次创建多级目录</text>
+        </view>
+      </view>
+      <view class="flex-dir-row flex-wrap-wrap m-4-0">
+        <button class="m-4" type="primary" @tap="mkdir" id="btn-mkdir">mkdir 创建目录</button>
+        <button class="m-4" type="primary" @tap="mkdirSync" id="btn-mkdir-sync">mkdirSync 创建目录</button>
+        <button class="m-4" type="warn" @tap="demoFail" id="btn-mkdir-fail">演示失败（父目录不存在）</button>
+      </view>
+      <view class="p-8 border-1-solid-e0e0e0 radius-4 flex-dir-column m-4-0-12-0">
+        <text class="fw-bold fs-14 m-2-0 color-333">执行结果：{{ data.lastResult == '' ? '等待执行' : (data.lastResult == 'success' ? '成功' : '失败') }}</text>
+        <text class="fs-13 m-2-0 color-666">目标路径：{{ data.rootPath }}{{ data.dirPath }}</text>
+        <text class="fs-13 m-2-0 color-666" v-if="data.lastResult == 'success'">目录存在性校验：{{ data.existsRet ? '通过' : '未通过' }}</text>
+        <text class="fs-13 m-2-0 color-e64340" v-if="data.lastResult == 'fail'">errCode：{{ data.lastFailError.errCode }}；errMsg：{{ data.lastFailError.errMsg }}</text>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="ts">
+  import { createEnumItems } from '@/components/enum-data-checkbox/enum-data-checkbox-types'
+  const rootOptions = createEnumItems(['usr', 'cache', 'sandbox'])
+
+  import { getFsmRootPath, createFsmMockError } from './fsm-utils'
+
+  type DataType = {
+    rootKey : string
+    rootPath : string
+    dirPath : string
+    recursive : boolean
+    existsRet : boolean
+    done : boolean
+    lastResult : string
+    lastFailError : UniError
+  }
+
+  const data = reactive({
+    rootKey: 'usr',
+    rootPath: getFsmRootPath('usr'),
+    dirPath: 'fsm-mkdir-demo/child/中文目录',
+    recursive: true,
+    existsRet: false,
+    done: false,
+    lastResult: '',
+    lastFailError: createFsmMockError(),
+  } as DataType)
+
+  function onRootChange(value : string) {
+    data.rootKey = value
+    data.rootPath = getFsmRootPath(data.rootKey)
+  }
+
+  function onRecursiveChange(e : UniSwitchChangeEvent) {
+    data.recursive = e.detail.value
+  }
+
+  function targetPath(path : string) : string {
+    return `${data.rootPath}${path ?? data.dirPath}`
+  }
+
+  function resetResult() {
+    data.done = false
+    data.lastResult = ''
+    data.existsRet = false
+  }
+
+  function applyFail(res : IUniError) {
+    data.lastResult = 'fail'
+    data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+  }
+
+  function applySyncFail(e : any) {
+    data.lastResult = 'fail'
+    data.lastFailError = new UniError('uni-file-manager', 0, `${e}`)
+  }
+
+  function verifyExists() {
+    try {
+      uni.getFileSystemManager().accessSync(targetPath(data.dirPath))
+      data.existsRet = true
+    } catch (e) {
+      data.existsRet = false
+    }
+  }
+
+  // 判断路径是否存在（供结果展示与自动化测试使用）
+  function exists(path : string) : void {
+    try {
+      uni.getFileSystemManager().accessSync(targetPath(path))
+      data.existsRet = true
+    } catch (e) {
+      data.existsRet = false
+    }
+  }
+
+  // 重置演示数据：清理固定演示根目录下的所有内容
+  function prepare() : void {
+    const fileManager = uni.getFileSystemManager()
+    const demoRoot = `${data.rootPath}fsm-mkdir-demo`
+    try {
+      fileManager.accessSync(demoRoot)
+      fileManager.rmdirSync(demoRoot, true)
+    } catch (e) {
+      // 目录不存在时忽略
+    }
+    data.done = true
+  }
+
+  function cleanup() : void {
+    prepare()
+  }
+
+  function mkdir() : void {
+    resetResult()
+    // 自愈：清理目标路径残留，保证重复点击始终成功
+    try {
+      uni.getFileSystemManager().rmdirSync(targetPath(data.dirPath), true)
+    } catch (e) { }
+    const fileManager = uni.getFileSystemManager()
+    const options : MkDirOptions = {
+      dirPath: targetPath(data.dirPath),
+      recursive: data.recursive,
+      success: (_ : FileManagerSuccessResult) => {
+        data.lastResult = 'success'
+        verifyExists()
+      },
+      fail: (res : IUniError) => {
+        applyFail(res)
+      },
+      complete: (_ : any) => {
+        data.done = true
+      }
+    }
+    fileManager.mkdir(options)
+  }
+
+  function mkdirSync() : void {
+    resetResult()
+    // 自愈：清理目标路径残留，保证重复点击始终成功
+    try {
+      uni.getFileSystemManager().rmdirSync(targetPath(data.dirPath), true)
+    } catch (e) { }
+    try {
+      uni.getFileSystemManager().mkdirSync(targetPath(data.dirPath), data.recursive)
+      data.lastResult = 'success'
+      verifyExists()
+    } catch (e) {
+      applySyncFail(e)
+    }
+    data.done = true
+  }
+
+  // 一键演示失败场景：recursive=false 且父目录不存在，预期 errCode 1300002（演示后自动恢复参数）
+  function demoFail() : void {
+    resetResult()
+    const prevPath = data.dirPath
+    const prevRecursive = data.recursive
+    data.dirPath = 'fsm-mkdir-demo/missing/child'
+    data.recursive = false
+    const fileManager = uni.getFileSystemManager()
+    const missingPath = `${data.rootPath}fsm-mkdir-demo/missing/child`
+    const options : MkDirOptions = {
+      dirPath: missingPath,
+      recursive: false,
+      success: (_ : FileManagerSuccessResult) => {
+        data.lastResult = 'success'
+      },
+      fail: (res : IUniError) => {
+        applyFail(res)
+      },
+      complete: (_ : any) => {
+        data.dirPath = prevPath
+        data.recursive = prevRecursive
+        data.done = true
+      }
+    }
+    fileManager.mkdir(options)
+  }
+  onReady(() => {
+    prepare()
+  })
+
+  defineExpose({
+    data,
+    prepare,
+    cleanup,
+    exists,
+    mkdir,
+    mkdirSync,
+    demoFail
+  })
+</script>

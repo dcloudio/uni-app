@@ -11,9 +11,9 @@
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { scheduleIdleWork } from './idleScheduler'
-  import { DanmakuTask, DanmakuType } from './danmakuTypes.uts'
+  import { DanmakuTask, DanmakuType } from './danmakuTypes.ts'
 
   /* ================= 类型定义 ================= */
 

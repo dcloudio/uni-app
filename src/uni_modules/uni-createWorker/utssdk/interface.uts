@@ -157,44 +157,36 @@ export type WorkerEnv = {
     *  },
     *   "mp": {
     *     "weixin": {
-    *       "hostVer": "√",
     *       "uniVer": "√",
     *       "unixVer": "4.41"
     *     },
     *     "alipay": {
-    *       "hostVer": "√",
     *       "uniVer": "√",
     *       "unixVer": "5.31"
     *     },
     *     "baidu": {
     *       "hostVer": "-",
     *       "uniVer": "-",
-    *       "unixVer": "-"
     *     },
     *     "toutiao": {
     *       "hostVer": "-",
     *       "uniVer": "-",
-    *       "unixVer": "-"
     *     },
     *     "lark": {
     *       "hostVer": "-",
     *       "uniVer": "-",
-    *       "unixVer": "-"
     *     },
     *     "qq": {
     *       "hostVer": "-",
     *       "uniVer": "-",
-    *       "unixVer": "-"
     *     },
     *     "kuaishou": {
     *       "hostVer": "-",
     *       "uniVer": "-",
-    *       "unixVer": "-"
     *     },
     *     "jd": {
     *       "hostVer": "-",
     *       "uniVer": "-",
-    *       "unixVer": "-"
     *     }
     *   }
     * }
@@ -242,44 +234,36 @@ export interface Worker {
     *  },
     *   "mp": {
     *     "weixin": {
-    *       "hostVer": "√",
     *       "uniVer": "√",
     *       "unixVer": "4.41"
     *     },
     *     "alipay": {
-    *       "hostVer": "√",
     *       "uniVer": "√",
     *       "unixVer": "5.31"
     *     },
     *     "baidu": {
     *       "hostVer": "-",
     *       "uniVer": "-",
-    *       "unixVer": "-"
     *     },
     *     "toutiao": {
     *       "hostVer": "-",
     *       "uniVer": "-",
-    *       "unixVer": "-"
     *     },
     *     "lark": {
     *       "hostVer": "-",
     *       "uniVer": "-",
-    *       "unixVer": "-"
     *     },
     *     "qq": {
     *       "hostVer": "-",
     *       "uniVer": "-",
-    *       "unixVer": "-"
     *     },
     *     "kuaishou": {
     *       "hostVer": "-",
     *       "uniVer": "-",
-    *       "unixVer": "-"
     *     },
     *     "jd": {
     *       "hostVer": "-",
     *       "uniVer": "-",
-    *       "unixVer": "-"
     *     }
     *   }
     * }
@@ -323,7 +307,6 @@ export interface Worker {
    *      "unixVer": "4.41"
    *    },
    *    "alipay": {
-   *      "hostVer": "√",
    *      "uniVer": "√",
    *      "unixVer": "5.31"
    *    }
@@ -416,7 +399,6 @@ export interface Worker {
    *      "unixVer": "4.41"
    *    },
    *    "alipay": {
-   *      "hostVer": "√",
    *      "uniVer": "√",
    *      "unixVer": "5.31"
    *    }
@@ -461,7 +443,6 @@ export interface Worker {
    *      "unixVer": "4.41"
    *    },
    *    "alipay": {
-   *      "hostVer": "√",
    *      "uniVer": "√",
    *      "unixVer": "5.31"
    *    }
@@ -515,7 +496,6 @@ export interface Uni {
    *      "unixVer": "4.41"
    *    },
    *    "alipay": {
-   *      "hostVer": "√",
    *      "uniVer": "√",
    *      "unixVer": "5.31"
    *    }

@@ -1,0 +1,450 @@
+<template>
+  <view class="uni-data-vertical-marquee" :id="marqueeId">
+    <text
+      class="uni-data-vertical-marquee__text"
+      :class="textClass"
+      :style="style1"
+      @tap.stop="onTextTap(currentIndex)"
+    >{{ currentText }}</text>
+    <text
+      class="uni-data-vertical-marquee__text uni-data-vertical-marquee__text--next"
+      :class="textClass"
+      :style="style2"
+      @transitionend="onTransitionEnd"
+      @tap.stop="onTextTap(nextIndex)"
+    >{{ nextText }}</text>
+  </view>
+</template>
+
+<script setup lang="ts">
+/**
+ * DataVerticalMarquee 上下滚动文字组件
+ * @description 绑定数组数据，上下轮播；用于公告、搜索框推荐词等场景
+ * @uniPlatform {
+ *   "app": {
+ *     "android": { "unixVaporVer": "5.33" },
+ *     "ios": { "unixVaporVer": "5.33" },
+ *     "harmony": { "unixVaporVer": "5.33" }
+ *   },
+ *   "mp": {
+ *     "weixin": { "unixVer": "5.33" },
+ *     "alipay": { "unixVer": "5.33" }
+ *   },
+ *   "web": { "unixVer": "5.33","unixVaporVer": "5.41" }
+ * }
+ * @property {Array} localdata 本地数据，支持对象数组 [{ text, value }] 或字符串数组 ["公告1", "公告2"]，默认值 []
+ * @property {String} collection uniCloud 数据库集合名称；设置后且未提供 localdata 时使用云端数据，默认值为空字符串
+ * @property {Number} interval 滚动间隔毫秒数，默认值 3000
+ * @property {String} text-class 文字 external class，默认值为空字符串
+ * @event {Function} click 点击文字时触发，参数为 { index, data }
+ * @event {Function} change 轮播切到新的一条时触发，参数为 { index, data }
+ */
+defineOptions({
+  name: 'UniDataVerticalMarquee',
+  externalClasses: ['text-class']
+})
+
+const props = defineProps({
+  ...uniCloud.datacomProps,
+  /**
+   * @description 本地数据，支持对象数组 [{ text, value }] 或字符串数组 ["公告1", "公告2"]
+   * @default []
+   */
+  localdata: { type: Array, default: () => [] },
+  /**
+   * @description uniCloud 数据库集合名称；设置后且未提供 localdata 时使用云端数据
+   * @default ""
+   */
+  collection: { type: String, default: '' },
+  /**
+   * @description 滚动间隔毫秒数
+   * @default 3000
+   */
+  interval: { type: Number, default: 3000 },
+  /**
+   * @description 文字 external class
+   * @default ""
+   */
+  textClass: { type: String, default: '' },
+  /**
+   * @description 查询字段，多个字段用 `,` 分割，支持 `oldname as newname` 别名
+   * @default ""
+   */
+  field: { type: String, default: '' },
+  /**
+   * @description 排序字段及正序倒序设置
+   * @default ""
+   */
+  orderby: { type: String, default: '' },
+  /**
+   * @description 查询条件
+   * @default ""
+   */
+  where: { type: [String, Object], default: '' },
+  /**
+   * @description 每页数据数量
+   * @default 20
+   */
+  pageSize: { type: Number, default: 20 }
+})
+
+const emit = defineEmits<{
+  /**
+   * @description 点击文字时触发；参数为 { index, data }
+   */
+  click: [event: any],
+  /**
+   * @description 轮播切到新的一条时触发；参数为 { index, data }，仅回传索引与原始数据以降低高频开销
+   */
+  change: [event: any]
+}>()
+
+const marqueeId = 'uni-data-vertical-marquee--' + Math.floor(Math.random() * 1000000) //这个ID的存在是为了相交API监听时使用不重复的选择器
+const ANIM_TRANSITION = 'transform 500ms ease'
+const ANIM_DURATION = 500
+
+const source = ref([])
+const currentIndex = ref(0)
+const offset1 = ref(0)
+const offset2 = ref(100)
+const transition1 = ref('none')
+const transition2 = ref('none')
+
+const isPageVisible = ref(true)
+const isInViewport = ref(true)
+
+let timer: number | null = null
+let endTimer: number | null = null
+let observer: IntersectionObserver | null = null
+let isAnimating = false
+
+const style1 = computed(() : string => {
+  return `transform: translateY(${offset1.value}%); transition: ${transition1.value};`
+})
+const style2 = computed(() : string => {
+  return `transform: translateY(${offset2.value}%); transition: ${transition2.value};`
+})
+
+const nextIndex = computed(() : number => {
+  const len = source.value.length
+  if (len <= 1) return -1
+  return (currentIndex.value + 1) % len
+})
+
+const currentText = computed(() : string => {
+  const len = source.value.length
+  if (len === 0) return ''
+  const index = currentIndex.value % len
+  return source.value[index]['_text']
+})
+
+const nextText = computed(() : string => {
+  const index = nextIndex.value
+  if (index < 0) return ''
+  return source.value[index]['_text']
+})
+
+// #ifdef MP-WEIXIN
+// 微信小程序 text 在 nowrap 下仍会保留换行；只规范化展示文本，事件仍回传原始数据。
+function toSingleLine(text: string) : string {
+  return text.replace(/[\r\n]+/g, ' ')
+}
+// #endif
+
+// 将字符串数组或对象数组统一归一化为内部渲染结构
+function buildSource(list: any) {
+  const result = []
+  if (!Array.isArray(list)) return result
+  const total = list.length
+  for (let i = 0; i < total; i++) {
+    const item = list[i]
+    if (typeof item === 'string') {
+      let text = item
+      // #ifdef MP-WEIXIN
+      text = toSingleLine(text)
+      // #endif
+      result.push({ _text: text, _value: item, _data: item })
+    } else if (item != null) {
+      const text = item['text']
+      const value = item['value']
+      let displayText = text != null ? String(text) : ''
+      // #ifdef MP-WEIXIN
+      displayText = toSingleLine(displayText)
+      // #endif
+      result.push({
+        _text: displayText,
+        _value: value != null ? value : '',
+        _data: item
+      })
+    }
+  }
+  return result
+}
+
+function resetAnimation() : void {
+  clearEndTimer()
+  isAnimating = false
+  transition1.value = 'none'
+  transition2.value = 'none'
+  offset1.value = 0
+  offset2.value = 100
+}
+
+function setSource(list: any) : void {
+  source.value = buildSource(list)
+  currentIndex.value = 0
+  resetAnimation()
+  updateTimer()
+}
+
+function clearTimer() : void {
+  if (timer != null) {
+    clearInterval(timer)
+    timer = null
+  }
+}
+
+function clearEndTimer() : void {
+  if (endTimer != null) {
+    clearTimeout(endTimer)
+    endTimer = null
+  }
+}
+
+function shouldScroll() : boolean {
+  return source.value.length > 1 && isPageVisible.value && isInViewport.value
+}
+
+function updateTimer() : void {
+  clearTimer()
+  if (!shouldScroll()) return
+  timer = setInterval(() => {
+    triggerScroll()
+  }, props.interval)
+}
+
+function triggerScroll() : void {
+  if (source.value.length <= 1 || isAnimating) return
+  isAnimating = true
+  transition1.value = ANIM_TRANSITION
+  transition2.value = ANIM_TRANSITION
+  nextTick(() => {
+    if (!isAnimating) return
+    offset1.value = -100
+    offset2.value = 0
+  })
+  clearEndTimer()
+  endTimer = setTimeout(() => {
+    finishScroll()
+  }, ANIM_DURATION + 100)
+}
+
+// 动画结束：先关闭 transition 再无感重置位置与索引
+function finishScroll() : void {
+  if (!isAnimating) return
+  isAnimating = false
+  clearEndTimer()
+  transition1.value = 'none'
+  transition2.value = 'none'
+  const target = nextIndex.value
+  if (target >= 0) {
+    currentIndex.value = target
+    emitChange(target)
+  }
+  offset1.value = 0
+  offset2.value = 100
+}
+
+function onTransitionEnd() : void {
+  finishScroll()
+}
+
+function onTextTap(index: number) : void {
+  if (index < 0 || index >= source.value.length) return
+  emit('click', { index: index, data: toRaw(source.value[index]['_data']) })
+}
+
+function emitChange(index: number) : void {
+  if (index < 0 || index >= source.value.length) return
+  emit('change', { index: index, data: toRaw(source.value[index]['_data']) })
+}
+
+function getObserverScope() : any {
+  // 传 null 使用页面作用域。H5 端若传入自定义组件实例，框架会把它当成 options 参数做
+  // extend 枚举（触发 “Avoid app logic that relies on enumerating keys...” 警告），且组件监听
+  // 的目标节点本就在页面中，页面作用域即可。
+  return null
+}
+
+function setupObserver() : void {
+  // 相交观察器仅在 Web 端启用：
+  // - 小程序端组件自身节点位于自定义组件内部，页面作用域的选择器取不到该节点，会报
+  //   “Node ... is not found”；而组件作用域又会触发 Vue “枚举组件实例”的开发告警。
+  // - Web 端相交 API 以「当前页面实例的 $el」为查找根，若页面为多根节点会抛错，用 try/catch 降级。
+  try {
+    observer = uni.createIntersectionObserver(getObserverScope(), { thresholds: [0] })
+    observer.relativeToViewport().observe('#' + marqueeId, (res : ObserveResult) => {
+      const visible = res.intersectionRatio > 0
+      if (visible !== isInViewport.value) {
+        isInViewport.value = visible
+        updateTimer()
+      }
+    })
+  } catch (_e) {
+    observer = null
+  }
+}
+
+// 依据选中值渲染：localdata 优先，未提供时使用 datacom 云端数据
+const shouldUseDatacom = props.localdata.length === 0 && props.collection !== ''
+const canUseDatacom = shouldUseDatacom && typeof uniCloud.useDatacom === 'function'
+
+// H5 等运行时未提供 uniCloud.useDatacom / datacomProps（runtime 只暴露 mixinDatacom），
+// 这里用 uniCloud.database() 兜底实现等价查询，保证组件在各平台都能加载云端数据。
+const fallbackDatacom: any = reactive({
+  loading: false,
+  errorMessage: '',
+  resData: [],
+  page: { current: 1, size: props.pageSize, count: 0 },
+  easyGet: () => {
+    runFallbackQuery()
+  },
+  refresh: () => {
+    runFallbackQuery()
+  },
+  reset: () => {
+    fallbackDatacom.resData = []
+  }
+})
+
+function runFallbackQuery() : void {
+  const hasJQL = typeof uniCloud.databaseForJQL === 'function'
+  const hasDB = typeof uniCloud.database === 'function'
+  if (props.collection === '' || (!hasJQL && !hasDB)) return
+  fallbackDatacom.loading = true
+  fallbackDatacom.errorMessage = ''
+  let db: any = hasJQL
+    ? uniCloud.databaseForJQL().collection(props.collection)
+    : uniCloud.database().collection(props.collection)
+  if (props.field !== '') db = db.field(props.field)
+  const whereValue: any = props.where
+  if (whereValue !== '' && whereValue != null) db = db.where(whereValue)
+  if (props.orderby !== '') db = db.orderBy(props.orderby)
+  db.limit(props.pageSize).get().then((res : any) => {
+    fallbackDatacom.loading = false
+    const payload : any = res.result != null ? res.result : res
+    const data = payload.data
+    fallbackDatacom.resData = Array.isArray(data) ? data : []
+  }).catch((err : any) => {
+    fallbackDatacom.loading = false
+    fallbackDatacom.errorMessage = (err != null && err.errMsg != null) ? err.errMsg : String(err)
+  })
+}
+
+const datacom: any = canUseDatacom ? uniCloud.useDatacom(props) : fallbackDatacom
+
+watch(() => props.localdata, (value) => setSource(value), { deep: true, immediate: true })
+watch(() => datacom.resData, (value) => {
+  if (Array.isArray(value)) setSource(value)
+}, { deep: true })
+
+watch(() => props.interval, () => updateTimer())
+
+if (shouldUseDatacom) {
+  datacom.easyGet()
+}
+onMounted(() => {
+	// TODO 目前相交检测API还无法全平台正常使用
+  // #ifdef WEB
+  setupObserver()
+  // #endif
+  updateTimer()
+})
+
+onPageShow(() => {
+  isPageVisible.value = true
+  updateTimer()
+})
+
+onPageHide(() => {
+  isPageVisible.value = false
+  clearTimer()
+})
+
+onUnmounted(() => {
+  clearTimer()
+  clearEndTimer()
+  // #ifdef WEB
+  if (observer != null) {
+    observer.disconnect()
+    observer = null
+  }
+  // #endif
+})
+
+// App（vapor）运行时 useDatacom 的 reset() 会把 page.current 置为 0，之后 get() 会用
+// skip(size * (current - 1)) 计算出负数导致查询失败；Web/小程序走兜底实现无此问题。
+// 这里在加载、刷新、清空后统一把 current 纠正回第 1 页。
+function ensureFirstPage() : void {
+  const page : any = datacom.page
+  if (page != null && (page.current == null || page.current < 1)) {
+    page.current = 1
+  }
+}
+
+function loadData() : void {
+  ensureFirstPage()
+  datacom.easyGet()
+}
+
+function refreshData() : void {
+  ensureFirstPage()
+  datacom.refresh()
+}
+
+function clearData() : void {
+  datacom.reset()
+  ensureFirstPage()
+}
+
+defineExpose({
+  /**
+   * @description 加载云端数据
+   */
+  loadData,
+  /**
+   * @description 按当前查询条件重新加载云端数据
+   */
+  refresh: refreshData,
+  /**
+   * @description 清空当前查询结果
+   */
+  clear: clearData
+})
+</script>
+
+<style>
+.uni-data-vertical-marquee {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+.uni-data-vertical-marquee__text {
+  /* #ifdef MP-WEIXIN */
+  display: block;
+  /* #endif */
+  width: 100%;
+  padding: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.uni-data-vertical-marquee__text--next {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+</style>

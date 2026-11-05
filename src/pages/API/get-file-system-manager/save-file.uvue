@@ -1,0 +1,317 @@
+<template>
+  <!-- #ifdef APP -->
+  <page-intro content="演示 FileSystemManager.saveFile / saveFileSync / getSavedFileList / removeSavedFile：保存临时文件到本地（unifile:// 协议路径），支持自定义目标路径，并可查询与删除已保存文件。"></page-intro>
+  <scroll-view class="flex-1">
+  <!-- #endif -->
+    <view class="p-8 flex-dir-column">
+      <view class="p-8 border-1-solid-e0e0e0 radius-4 flex-dir-column m-4-0">
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">临时文件</text>
+          <input class="flex-1 border-1-solid-d0d0d0 radius-4 p-4-8 fs-13 h-32" v-model="data.tempFilePath" placeholder="待保存的临时文件路径" />
+        </view>
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333"></text>
+          <text class="flex-1 fs-12 color-999">临时文件路径相对 cache 目录（演示已自动准备 fsm-save-file-demo/temp.txt）；saveFile 为移动语义，保存成功后源临时文件不可用，每次演示前会自动重建</text>
+        </view>
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">目标路径</text>
+          <input class="flex-1 border-1-solid-d0d0d0 radius-4 p-4-8 fs-13 h-32" v-model="data.targetPath" placeholder="可选，如 local/1.txt、local、local/" />
+        </view>
+      </view>
+      <view class="flex-dir-row flex-wrap-wrap m-4-0">
+        <button class="m-4" type="primary" @tap="saveFile" id="btn-save-file">saveFile 保存（不传 filePath）</button>
+        <button class="m-4" type="primary" @tap="saveFileWithTarget" id="btn-save-file-target">saveFile 保存（用 filePath）</button>
+        <button class="m-4" type="primary" @tap="saveFileSync" id="btn-save-file-sync">saveFileSync 保存</button>
+        <button class="m-4" type="primary" @tap="saveFileAndRead" id="btn-save-file-read">保存后读取校验</button>
+        <button class="m-4" type="primary" @tap="getSavedFileList" id="btn-getsaved-filelist">getSavedFileList 查询列表</button>
+        <button class="m-4" type="warn" @tap="removeSavedFile" id="btn-remove-saved-file">removeSavedFile 删除已保存文件</button>
+      </view>
+      <view class="p-8 border-1-solid-e0e0e0 radius-4 flex-dir-column m-4-0-12-0">
+        <text class="fw-bold fs-14 m-2-0 color-333">执行结果：{{ data.lastResult == '' ? '等待执行' : (data.lastResult == 'success' ? '成功' : '失败') }}</text>
+        <text class="fs-13 m-2-0 color-666" v-if="data.saveFileRet != ''">已保存路径：{{ data.saveFileRet }}</text>
+        <text class="fs-13 m-2-0 color-666" v-if="data.saveReadRet != ''">保存后读取校验：{{ data.saveReadRet }}</text>
+        <text class="fs-13 m-2-0 color-666" v-if="data.removeSavedFileRet != ''">删除返回：{{ data.removeSavedFileRet }}</text>
+        <text class="fs-13 m-2-0 color-666" v-if="data.savedFileListJson != ''">已保存文件列表：{{ data.savedFileListJson }}</text>
+        <text class="fs-13 m-2-0 color-e64340" v-if="data.lastResult == 'fail'">errCode：{{ data.lastFailError.errCode }}；errMsg：{{ data.lastFailError.errMsg }}</text>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="ts">
+  import { getFsmRootPath, ensureFsmDirSync, ensureFsmFileSync, removeFsmPathSync, removeFsmDirSync, createFsmMockError } from './fsm-utils'
+
+  type DataType = {
+    rootKey : string
+    rootPath : string
+    cacheRootPath : string
+    tempFilePath : string
+    targetPath : string
+    saveFileRet : string
+    saveReadRet : string
+    removeSavedFileRet : string
+    savedFileListJson : string
+    existsRet : boolean
+    done : boolean
+    lastResult : string
+    lastFailError : UniError
+  }
+
+  const data = reactive({
+    rootKey: 'usr',
+    rootPath: getFsmRootPath('usr'),
+    cacheRootPath: getFsmRootPath('cache'),
+    tempFilePath: 'fsm-save-file-demo/temp.txt',
+    targetPath: 'local/1.txt',
+    saveFileRet: '',
+    saveReadRet: '',
+    removeSavedFileRet: '',
+    savedFileListJson: '',
+    existsRet: false,
+    done: false,
+    lastResult: '',
+    lastFailError: createFsmMockError(),
+  } as DataType)
+
+  function onRootChange(e : UniRadioGroupChangeEvent) {
+    data.rootKey = e.detail.value
+    data.rootPath = getFsmRootPath(data.rootKey)
+  }
+
+  // saveFile 的源文件必须是"临时文件"，演示临时文件统一放在 cache 目录
+  function tempFullPath() : string {
+    return `${data.cacheRootPath}${data.tempFilePath}`
+  }
+
+  function resetResult() {
+    data.done = false
+    data.lastResult = ''
+    data.saveFileRet = ''
+    data.saveReadRet = ''
+    data.savedFileListJson = ''
+  }
+
+  function applyFail(res : IUniError) {
+    data.lastResult = 'fail'
+    data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+    data.done = true
+  }
+
+  function exists(path : string) : void {
+    try {
+      uni.getFileSystemManager().accessSync(path != null ? path : tempFullPath())
+      data.existsRet = true
+    } catch (e) {
+      data.existsRet = false
+    }
+  }
+
+  function prepare() : void {
+    const fileManager = uni.getFileSystemManager()
+    // saveFile 的 uni-store 目标不支持覆盖保存，且 removeSavedFile 可能残留物理文件，
+    // 每次演示前先物理清理历史保存产物，避免 1300002 冲突
+    try {
+      fileManager.unlinkSync(`${data.cacheRootPath}uni-store/temp.txt`)
+    } catch (e) { }
+    try {
+      fileManager.unlinkSync(`${data.cacheRootPath}uni-store/local`)
+    } catch (e) { }
+    try {
+      fileManager.unlinkSync(`${data.cacheRootPath}uni-store/local/1.txt`)
+    } catch (e) { }
+    // 清理 usr 下 local 目标残留（可能是目录或文件）
+    removeFsmPathSync(`${data.rootPath}local`)
+    // 在 cache 目录准备演示"临时文件"
+    ensureFsmDirSync(`${data.cacheRootPath}fsm-save-file-demo`)
+    ensureFsmFileSync(`${data.cacheRootPath}fsm-save-file-demo/temp.txt`, '测试saveFile API的写入功能。\n\t制表符缩进行\n回车换行：\r\n下一行\n反斜杠 \\ 双引号 " 单引号 \'\n空格[  ]全角空格[　]不间断空格[ ]\n混合内容：中文English123!@#')
+    data.done = true
+  }
+
+  function cleanup() : void {
+    removeFsmDirSync(`${data.cacheRootPath}fsm-save-file-demo`)
+    // local 可能是文件（saveFileWithTarget 保存为 unifile://usr/local），用 removeFsmPathSync 兼容文件与目录
+    removeFsmPathSync(`${data.rootPath}local`)
+    // removeSavedFile 在当前版本可能残留物理文件，直接物理清理
+    const fileManager = uni.getFileSystemManager()
+    try {
+      fileManager.unlinkSync(`${data.cacheRootPath}uni-store/temp.txt`)
+    } catch (e) { }
+    data.done = true
+  }
+
+  // saveFile 为移动语义，保存成功后源临时文件不可用；每次执行前重建，保证按钮可重复演示
+  function ensureSaveTempFile() : void {
+    ensureFsmDirSync(`${data.cacheRootPath}fsm-save-file-demo`)
+    ensureFsmFileSync(`${data.cacheRootPath}fsm-save-file-demo/temp.txt`, '测试saveFile API的写入功能。\n\t制表符缩进行\n回车换行：\r\n下一行\n反斜杠 \\ 双引号 " 单引号 \'\n空格[  ]全角空格[　]不间断空格[ ]\n混合内容：中文English123!@#')
+  }
+
+  function saveCore(withTarget : boolean, sync : boolean) {
+    resetResult()
+    ensureSaveTempFile()
+    const fileManager = uni.getFileSystemManager()
+    if (sync) {
+      try {
+        const ret = withTarget
+          ? fileManager.saveFileSync(tempFullPath(), `${data.rootPath}${data.targetPath}`)
+          : fileManager.saveFileSync(tempFullPath(), null)
+        data.saveFileRet = ret
+        data.lastResult = 'success'
+      } catch (e) {
+        data.lastResult = 'fail'
+        data.lastFailError = new UniError('uni-file-manager', 0, `${e}`)
+      }
+      data.done = true
+      return
+    }
+    const options : SaveFileOptions = {
+      tempFilePath: tempFullPath(),
+      success: (res : SaveFileSuccessResult) => {
+        data.saveFileRet = res.savedFilePath
+        data.lastResult = 'success'
+        data.done = true
+      },
+      fail: (res : IUniError) => {
+        applyFail(res)
+      },
+      complete: (_ : any) => {
+        data.done = true
+      }
+    }
+    if (withTarget) {
+      options.filePath = `${data.rootPath}${data.targetPath}`
+    }
+    fileManager.saveFile(options)
+  }
+
+  function saveFile() : void {
+    saveCore(false, false)
+  }
+
+  function saveFileWithTarget() : void {
+    saveCore(true, false)
+  }
+
+  function saveFileSync() : void {
+    saveCore(false, true)
+  }
+
+  // 保存成功后立即读取校验
+  function saveFileAndRead() : void {
+    resetResult()
+    ensureSaveTempFile()
+    const fileManager = uni.getFileSystemManager()
+    const options : SaveFileOptions = {
+      tempFilePath: tempFullPath(),
+      success: (res : SaveFileSuccessResult) => {
+        data.saveFileRet = res.savedFilePath
+        fileManager.readFile({
+          filePath: res.savedFilePath,
+          encoding: 'utf-8',
+          success: (readRes : ReadFileSuccessResult) => {
+            data.saveReadRet = `ok：${readRes.data.toString()}`
+            data.lastResult = 'success'
+            data.done = true
+          },
+          fail: (err : IUniError) => {
+            applyFail(err)
+          }
+        } as ReadFileOptions)
+      },
+      fail: (res : IUniError) => {
+        applyFail(res)
+      },
+      complete: (_ : any) => {
+        data.done = true
+      }
+    }
+    fileManager.saveFile(options)
+  }
+
+  function getSavedFileList() : void {
+    resetResult()
+    const fileManager = uni.getFileSystemManager()
+    const options : GetSavedFileListOptions = {
+      success: (res : GetSavedFileListResult) => {
+        data.savedFileListJson = JSON.stringify(res.fileList)
+        data.lastResult = 'success'
+      },
+      fail: (res : IUniError) => {
+        applyFail(res)
+      },
+      complete: (_ : any) => {
+        data.done = true
+      }
+    }
+    fileManager.getSavedFileList(options)
+  }
+
+  // 删除已保存文件：无保存结果或文件已被删除时，自动先保存一次再删除，保证按钮可独立演示
+  function removeSavedFile() : void {
+    resetResult()
+    const fileManager = uni.getFileSystemManager()
+    const doRemove = (filePath : string) => {
+      const options : RemoveSavedFileOptions = {
+        filePath: filePath,
+        success: (res : FileManagerSuccessResult) => {
+          data.removeSavedFileRet = res.errMsg
+          data.lastResult = 'success'
+        },
+        fail: (res : IUniError) => {
+          applyFail(res)
+        },
+        complete: (_ : any) => {
+          data.done = true
+        }
+      }
+      fileManager.removeSavedFile(options)
+    }
+    const autoSaveThenRemove = () => {
+      ensureSaveTempFile()
+      const saveOptions : SaveFileOptions = {
+        tempFilePath: tempFullPath(),
+        success: (res : SaveFileSuccessResult) => {
+          data.saveFileRet = res.savedFilePath
+          doRemove(res.savedFilePath)
+        },
+        fail: (res : IUniError) => {
+          applyFail(res)
+        },
+        complete: (_ : any) => {
+          data.done = true
+        }
+      }
+      fileManager.saveFile(saveOptions)
+    }
+    if (data.saveFileRet == '') {
+      autoSaveThenRemove()
+      return
+    }
+    try {
+      fileManager.accessSync(data.saveFileRet)
+      doRemove(data.saveFileRet)
+    } catch (e) {
+      // 已保存文件不存在（可能已被删除），重新保存后再删除
+      autoSaveThenRemove()
+    }
+  }
+
+  onReady(() => {
+    prepare()
+  })
+
+  defineExpose({
+    data,
+    prepare,
+    cleanup,
+    exists,
+    saveFile,
+    saveFileWithTarget,
+    saveFileSync,
+    saveFileAndRead,
+    getSavedFileList,
+    removeSavedFile
+  })
+</script>
+

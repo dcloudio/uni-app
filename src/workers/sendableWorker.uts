@@ -22,8 +22,14 @@ export class SendableWorker extends WorkerTaskImpl {
 
 // #ifndef APP-HARMONY
 export class SendableWorker extends WorkerTaskImpl {
+  constructor() {
+    super();
+  }
+
   override entry() {
     console.log('[SendableWorker] Worker启动完成');
   }
+
+  override onMessage(message : any) {}
 }
 // #endif

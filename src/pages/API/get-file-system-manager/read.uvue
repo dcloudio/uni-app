@@ -1,0 +1,325 @@
+<template>
+  <!-- #ifdef APP -->
+  <page-intro content="演示 FileSystemManager.read / readSync：通过文件描述符按 position/length 读取 ArrayBuffer，并演示写入+读取的完整闭环（Float64 数值往返）。"></page-intro>
+  <scroll-view class="flex-1">
+  <!-- #endif -->
+    <view class="p-8 flex-dir-column">
+      <view class="p-8 border-1-solid-e0e0e0 radius-4 flex-dir-column m-4-0">
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">根目录</text>
+          <enum-data-checkbox
+            class="flex-1"
+            :model-value="data.rootKey"
+            :items="rootOptions"
+            mode="default"
+            :show-toast="false"
+            @change="onRootChange"
+          />
+        </view>
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">读取位置</text>
+          <input class="flex-1 border-1-solid-d0d0d0 radius-4 p-4-8 fs-13 h-32" v-model="data.positionText" type="number" placeholder="position" />
+        </view>
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">读取长度</text>
+          <input class="flex-1 border-1-solid-d0d0d0 radius-4 p-4-8 fs-13 h-32" v-model="data.lengthText" type="number" placeholder="length" />
+        </view>
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333"></text>
+          <text class="flex-1 fs-12 color-999">演示文件在偏移 10 字节处预置了 8 字节 Float64 数据（值 1.24）：默认 position=10、length=8 即读回该值</text>
+        </view>
+      </view>
+      <view class="flex-dir-row flex-wrap-wrap m-4-0">
+        <button class="m-4" type="primary" @tap="read" id="btn-read">read 读取</button>
+        <button class="m-4" type="primary" @tap="readSync" id="btn-read-sync">readSync 读取</button>
+        <button class="m-4" type="primary" @tap="writeReadBuffer" id="btn-writeread-buffer">写入+读取闭环</button>
+        <button class="m-4" type="primary" @tap="writeReadBufferSync" id="btn-writeread-sync-buffer">同步写入+读取闭环</button>
+        <button class="m-4" type="warn" @tap="demoFail" id="btn-read-fail">演示失败（无效描述符）</button>
+      </view>
+      <view class="p-8 border-1-solid-e0e0e0 radius-4 flex-dir-column m-4-0-12-0">
+        <text class="fw-bold fs-14 m-2-0 color-333">执行结果：{{ data.lastResult == '' ? '等待执行' : (data.lastResult == 'success' ? '成功' : '失败') }}</text>
+        <text class="fs-13 m-2-0 color-666">当前描述符 fd：{{ data.fd }}</text>
+        <text class="fs-13 m-2-0 color-666" v-if="data.lastResult == 'success'">bytesRead：{{ data.bytesRead }}；Float64 解析值：{{ data.bufferValue }}</text>
+        <text class="fs-13 m-2-0 color-e64340" v-if="data.lastResult == 'fail'">errCode：{{ data.lastFailError.errCode }}；errMsg：{{ data.lastFailError.errMsg }}</text>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="ts">
+  import { createEnumItems } from '@/components/enum-data-checkbox/enum-data-checkbox-types'
+  const rootOptions = createEnumItems(['usr', 'cache', 'sandbox'])
+
+  import { getFsmRootPath, ensureFsmDirSync, ensureFsmFileSync, ensureFsmFileBufferSync, removeFsmPathSync, removeFsmDirSync, parseIntSafe, createFsmMockError } from './fsm-utils'
+
+  type DataType = {
+    rootKey : string
+    rootPath : string
+    filePath : string
+    positionText : string
+    lengthText : string
+    fd : string
+    bytesRead : number
+    bufferValue : number
+    existsRet : boolean
+    done : boolean
+    lastResult : string
+    lastFailError : UniError
+  }
+
+  const data = reactive({
+    rootKey: 'usr',
+    rootPath: getFsmRootPath('usr'),
+    filePath: 'fsm-read-demo/1.txt',
+    positionText: '10',
+    lengthText: '8',
+    fd: '',
+    bytesRead: 0,
+    bufferValue: 0,
+    existsRet: false,
+    done: false,
+    lastResult: '',
+    lastFailError: createFsmMockError(),
+  } as DataType)
+
+  function onRootChange(value : string) {
+    data.rootKey = value
+    data.rootPath = getFsmRootPath(data.rootKey)
+  }
+
+  function targetPath(path : string) : string {
+    return `${data.rootPath}${path ?? data.filePath}`
+  }
+
+  function resetResult() {
+    data.done = false
+    data.lastResult = ''
+    data.bytesRead = 0
+    data.bufferValue = 0
+  }
+
+  function applyFail(res : IUniError) {
+    data.lastResult = 'fail'
+    data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+  }
+
+  function exists(path : string) : void {
+    try {
+      uni.getFileSystemManager().accessSync(targetPath(path))
+      data.existsRet = true
+    } catch (e) {
+      data.existsRet = false
+    }
+  }
+
+  // 准备演示数据：写入 Float64 数据（有效 16 字节从 position 10 开始）并打开 a+ 描述符
+  function prepare() : void {
+    const demoDir = `${data.rootPath}fsm-read-demo`
+    ensureFsmDirSync(demoDir)
+    const fileManager = uni.getFileSystemManager()
+    const buffer = new ArrayBuffer(24)
+    const float64 = new Float64Array(buffer)
+    float64[1] = 1.24
+    float64[2] = 1.33
+    try {
+      const fd = fileManager.openSync({ filePath: targetPath(data.filePath), flag: 'w+' } as OpenFileSyncOptions)
+      fileManager.writeSync({ fd: fd, data: buffer, length: 16, offset: 8, position: 10 } as WriteSyncOptions)
+      fileManager.closeSync({ fd: fd } as CloseSyncOptions)
+    } catch (e) {
+      console.error('prepare write fail', e)
+    }
+    try {
+      data.fd = fileManager.openSync({ filePath: targetPath(data.filePath), flag: 'a+' } as OpenFileSyncOptions)
+    } catch (e) {
+      data.fd = ''
+    }
+    data.done = true
+  }
+
+  function cleanup() : void {
+    if (data.fd != '') {
+      try {
+        uni.getFileSystemManager().closeSync({ fd: data.fd } as CloseSyncOptions)
+      } catch (e) {
+        // 描述符可能已关闭
+      }
+      data.fd = ''
+    }
+    removeFsmDirSync(`${data.rootPath}fsm-read-demo`)
+    data.done = true
+  }
+
+  function readCore(sync : boolean) {
+    resetResult()
+    // 自愈：描述符失效时重新准备演示数据
+    if (data.fd == '') {
+      prepare()
+    }
+    const fileManager = uni.getFileSystemManager()
+    if (sync) {
+      try {
+        const ab = new ArrayBuffer(8)
+        const readLength = parseIntSafe(data.lengthText)
+        const readPosition = parseIntSafe(data.positionText)
+        const result = fileManager.readSync({ fd: data.fd, arrayBuffer: ab, length: readLength, position: readPosition } as ReadSyncOption)
+        data.bytesRead = result.bytesRead
+        data.bufferValue = new Float64Array(result.arrayBuffer)[0]
+        data.lastResult = 'success'
+      } catch (e) {
+        data.lastResult = 'fail'
+        data.lastFailError = new UniError('uni-file-manager', 0, `${e}`)
+      }
+      data.done = true
+      return
+    }
+    const ab = new ArrayBuffer(8)
+    const options : ReadOption = {
+      fd: data.fd,
+      arrayBuffer: ab,
+      length: parseIntSafe(data.lengthText),
+      position: parseIntSafe(data.positionText),
+      success: (res : ReadSuccessCallbackResult) => {
+        data.bytesRead = res.bytesRead
+        data.bufferValue = new Float64Array(res.arrayBuffer)[0]
+        data.lastResult = 'success'
+      },
+      fail: (res : IUniError) => {
+        applyFail(res)
+      },
+      complete: (_ : any) => {
+        data.done = true
+      }
+    }
+    fileManager.read(options)
+  }
+
+  function read() : void {
+    readCore(false)
+  }
+
+  function readSync() : void {
+    readCore(true)
+  }
+
+  // 完整闭环：描述符写入 Float64 数据后读回校验
+  function writeReadBuffer() : void {
+    resetResult()
+    const fileManager = uni.getFileSystemManager()
+    const buffer = new ArrayBuffer(24)
+    const float64 = new Float64Array(buffer)
+    float64[1] = 1.24
+    float64[2] = 1.33
+    try {
+      const fd = fileManager.openSync({ filePath: targetPath(data.filePath), flag: 'w+' } as OpenFileSyncOptions)
+      const writeOptions : WriteOptions = {
+        fd: fd,
+        data: buffer,
+        length: 16,
+        offset: 8,
+        position: 10,
+        success: (_ : WriteResult) => {
+          const ab = new ArrayBuffer(8)
+          const readOptions : ReadOption = {
+            fd: fileManager.openSync({ filePath: targetPath(data.filePath), flag: 'a+' } as OpenFileSyncOptions),
+            arrayBuffer: ab,
+            length: 8,
+            position: 10,
+            success: (res : ReadSuccessCallbackResult) => {
+              data.bytesRead = res.bytesRead
+              data.bufferValue = new Float64Array(res.arrayBuffer)[0]
+              data.lastResult = 'success'
+              data.done = true
+            },
+            fail: (err : IUniError) => {
+              applyFail(err)
+              data.done = true
+            },
+            complete: (_ : any) => {
+              data.done = true
+            }
+          }
+          fileManager.read(readOptions)
+        },
+        fail: (res : IUniError) => {
+          applyFail(res)
+          data.done = true
+        },
+        complete: (_ : any) => {
+          data.done = true
+        }
+      }
+      fileManager.write(writeOptions)
+    } catch (e) {
+      data.lastResult = 'fail'
+      data.lastFailError = new UniError('uni-file-manager', 0, `${e}`)
+      data.done = true
+    }
+  }
+
+  function writeReadBufferSync() : void {
+    resetResult()
+    const fileManager = uni.getFileSystemManager()
+    try {
+      const buffer = new ArrayBuffer(24)
+      const float64 = new Float64Array(buffer)
+      float64[1] = 1.11
+      float64[2] = 1.33
+      const fd = fileManager.openSync({ filePath: targetPath(data.filePath), flag: 'w+' } as OpenFileSyncOptions)
+      fileManager.writeSync({ fd: fd, data: buffer, length: 16, offset: 8, position: 10 } as WriteSyncOptions)
+      fileManager.closeSync({ fd: fd } as CloseSyncOptions)
+      const ab = new ArrayBuffer(8)
+      const readFd = fileManager.openSync({ filePath: targetPath(data.filePath), flag: 'a+' } as OpenFileSyncOptions)
+      const result = fileManager.readSync({ fd: readFd, arrayBuffer: ab, length: 8, position: 10 } as ReadSyncOption)
+      fileManager.closeSync({ fd: readFd } as CloseSyncOptions)
+      data.bytesRead = result.bytesRead
+      data.bufferValue = new Float64Array(result.arrayBuffer)[0]
+      data.lastResult = 'success'
+    } catch (e) {
+      data.lastResult = 'fail'
+      data.lastFailError = new UniError('uni-file-manager', 0, `${e}`)
+    }
+    data.done = true
+  }
+
+  // 一键演示失败场景：使用无效描述符读取
+  function demoFail() : void {
+    resetResult()
+    const fileManager = uni.getFileSystemManager()
+    const options : ReadOption = {
+      fd: '-1',
+      arrayBuffer: new ArrayBuffer(8),
+      length: 8,
+      position: 10,
+      success: (res : ReadSuccessCallbackResult) => {
+        data.bytesRead = res.bytesRead
+        data.lastResult = 'success'
+      },
+      fail: (res : IUniError) => {
+        applyFail(res)
+      },
+      complete: (_ : any) => {
+        data.done = true
+      }
+    }
+    fileManager.read(options)
+  }
+
+  onReady(() => {
+    prepare()
+  })
+
+  defineExpose({
+    data,
+    prepare,
+    cleanup,
+    exists,
+    read,
+    readSync,
+    writeReadBuffer,
+    writeReadBufferSync,
+    demoFail
+  })
+</script>
+

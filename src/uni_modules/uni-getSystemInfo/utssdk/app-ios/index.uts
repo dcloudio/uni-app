@@ -1,6 +1,6 @@
 import { GetSystemInfoOptions, GetSystemInfo, GetSystemInfoResult, SafeArea, SafeAreaInsets, GetSystemInfoSync, GetWindowInfo, GetWindowInfoResult } from "../interface.uts";
 import { UTSiOS } from "DCloudUTSFoundation";
-import { UIScreen , UIDevice ,UIApplication } from 'UIKit';
+import { UIDevice, UIInterfaceOrientation } from 'UIKit';
 export const getSystemInfo : GetSystemInfo = function (options : GetSystemInfoOptions) {
 	const result = getSystemInfoSync();
 	const success = options.success;
@@ -16,11 +16,7 @@ export const getSystemInfoSync : GetSystemInfoSync = function () : GetSystemInfo
 	
 	const osVersion = UIDevice.current.systemVersion
 	
-	let deviceOrientation = 'portrait'
-	const orient = UIApplication.shared.statusBarOrientation;
-	if (orient == UIInterfaceOrientation.landscapeLeft || orient == UIInterfaceOrientation.landscapeRight) {
-	    deviceOrientation = "landscape";
-	 }
+	const deviceOrientation = getOrientation()
 	
 	const result : GetSystemInfoResult = {
 		SDKVersion: "",
@@ -37,7 +33,7 @@ export const getSystemInfoSync : GetSystemInfoSync = function () : GetSystemInfo
 		deviceBrand: "apple",
 		deviceModel: UTSiOS.getModel(),
 		deviceType: deviceType,
-		devicePixelRatio: Number.from(UIScreen.main.scale),
+		devicePixelRatio: windowInfo.pixelRatio,
 		deviceOrientation: deviceOrientation,
 		language: UTSiOS.getOsLanguage(),
 		model: UTSiOS.getModel(),
@@ -85,7 +81,19 @@ const systemInfoConvertVersionCode = function(version: string): number {
 	return 0
 }
 
+function getOrientation() : string {
+	const windowScene = UTSiOS.getKeyWindow().windowScene
+	if (windowScene != null) {
+		const orientation = windowScene!.interfaceOrientation
+		if (orientation == UIInterfaceOrientation.landscapeLeft || orientation == UIInterfaceOrientation.landscapeRight) {
+			return "landscape"
+		}
+	}
+	return "portrait"
+}
+
 function getWindowInfoResult() : GetWindowInfoResult {
+	const keyWindow = UTSiOS.getKeyWindow()
 	let insets : Map<string, any> = UTSiOS.getSafeAreaInsets()
 	let window : Map<string, any> = UTSiOS.getWindowInfo()
 	
@@ -95,8 +103,15 @@ function getWindowInfoResult() : GetWindowInfoResult {
 	const windowBottom = window.get("windowBottom") as number
 	
 	
-	const screenWidth = Number.from(UIScreen.main.bounds.width)
-	const screenHeight = Number.from(UIScreen.main.bounds.height)
+	let screenWidth = Number.from(keyWindow.bounds.width)
+	let screenHeight = Number.from(keyWindow.bounds.height)
+	let pixelRatio = Number.from(keyWindow.traitCollection.displayScale)
+	const windowScene = keyWindow.windowScene
+	if (windowScene != null) {
+		screenWidth = Number.from(windowScene!.screen.bounds.width)
+		screenHeight = Number.from(windowScene!.screen.bounds.height)
+		pixelRatio = Number.from(windowScene!.screen.scale)
+	}
 	
 	const insetLeft = insets.get("left") as number
 	const insetRight = insets.get("right") as number
@@ -129,7 +144,7 @@ function getWindowInfoResult() : GetWindowInfoResult {
 	const screenTop = 0;
 	
 	const result : GetWindowInfoResult = {
-		pixelRatio: Number.from(UIScreen.main.scale),
+		pixelRatio: pixelRatio,
 		screenWidth: screenWidth,
 		screenHeight: screenHeight,
 		windowWidth: windowWidth,

@@ -1,10 +1,8 @@
 <template>
-	<view>
 		<view>
-			<button class="btnstyle" type="primary" @tap="arrayBufferToBase64"> arrayBufferToBase64 </button>
-			<button class="btnstyle" type="primary" @tap="base64ToArrayBuffer"> base64ToArrayBuffer </button>
+			<button class="m-4" type="primary" @tap="arrayBufferToBase64"> arrayBufferToBase64 </button>
+			<button class="m-4" type="primary" @tap="base64ToArrayBuffer"> base64ToArrayBuffer </button>
 		</view>
-	</view>
 </template>
 
 <script setup lang="ts">
@@ -47,21 +45,3 @@
 		base64ToArrayBuffer
 	})
 </script>
-
-<style>
-	.logo {
-		height: 100px;
-		width: 100px;
-		margin: 100px auto 25px auto;
-	}
-
-	.title {
-		font-size: 18px;
-		color: #8f8f94;
-		text-align: center;
-	}
-
-  .btnstyle {
-  	margin: 4px;
-  }
-</style>

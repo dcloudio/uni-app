@@ -64,11 +64,6 @@ describe('Radio.uvue', () => {
     })
   }
   it('color', async () => {
-    if ((isHarmony || isIOS || isAndroid) && isVapor) {
-      console.log('Radio Harmony or iOS or Android Dom2 not support props color')
-      expect(1).toBe(1)
-      return
-    }
     const radio = await page.$('.r')
     expect(await radio.attribute('color')).toBe('#007aff')
     await setPageData({
@@ -113,4 +108,10 @@ describe('Radio.uvue', () => {
       expect(await radio.attribute('radio-active-class')).toContain('radio-active')
     })
   }
+  if (isVapor && !isMP) it('radio class attributes', async () => {
+    const el = await page.$('#radio-vapor')
+    expect(await el.attribute('icon-class')).toContain('custom-radio-icon')
+    expect(await el.attribute('radio-class')).toContain('custom-radio')
+  })
+
 })

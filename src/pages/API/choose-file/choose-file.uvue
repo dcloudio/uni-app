@@ -1,9 +1,8 @@
 <template>
-    <view>
       <page-head :title="title"></page-head>
       <!-- #ifdef APP-IOS -->
-      <view style="padding-left: 20px; padding-right: 20px;">
-      		<text style="color: #353535; font-size: 15px;">
+      <view class="pr-20 pl-20">
+          <text class="fs-15" style="color: #353535;">
       			iOS 调试首先需要添加对应 audio、video、image 存储到文件系统中，步骤如下：\n
       			1. 从系统相册或者语音备忘录中选择具体的video、image、audio；\n
       			2. 点击 ‘分享’ 按钮；\n
@@ -12,23 +11,29 @@
       </view>
       <!-- #endif -->
       <button size="mini" @click="log=''">清空日志</button>
-      <text style="margin: 2px; padding: 2px; border: 1px solid #000000;">{{ log }}</text>
+      <text class="u-p-2 m-2 border-width-1 border-style-solid border-color-000">{{ log }}</text>
 
-      <button class="btnstyle" type="primary" @tap="chooseVideo">选择文件(video) 单选</button>
-      <button class="btnstyle" type="primary" @tap="chooseVideoMul">选择文件(video) 多选</button>
-      <button class="btnstyle" type="primary" @tap="playVideo">选择文件(video)并播放</button>
-      <video class="video" :src="src" :controls="true" :autoplay="true" :loop="true">111</video>
-      <button class="btnstyle" type="primary" @tap="chooseImage">选择文件(image) 单选</button>
-      <button class="btnstyle" type="primary" @tap="chooseImageMul">选择文件(image) 多选</button>
-      <button class="btnstyle" type="primary" @tap="viewImg">选择文件(image) 并预览</button>
-      <button class="btnstyle" type="primary" @tap="chooseAudio">选择文件(audio) 单选</button>
-      <button class="btnstyle" type="primary" @tap="chooseAudioMul">选择文件(audio) 多选</button>
-      <button class="btnstyle" type="primary" @tap="playAudio">选择文件(audio) 并播放</button>
-      <button class="btnstyle" type="primary" @tap='chooseAll'>选择文件(all) 单选</button>
-      <button class="btnstyle" type="primary" @tap='chooseAllMul'>选择文件(all) 多选</button>
+      <button class="m-4" type="primary" @tap="chooseVideo">选择文件(video) 单选</button>
+      <button class="m-4" type="primary" @tap="chooseVideoMul">选择文件(video) 多选</button>
+      <button class="m-4" type="primary" @tap="playVideo">选择文件(video)并播放</button>
+      <video class="w-full h-225" :src="src" :controls="true" :autoplay="true" :loop="true">111</video>
+      <button class="m-4" type="primary" @tap="chooseImage">选择文件(image) 单选</button>
+      <button class="m-4" type="primary" @tap="chooseImageMul">选择文件(image) 多选</button>
+      <button class="m-4" type="primary" @tap="viewImg">选择文件(image) 并预览</button>
+      <button class="m-4" type="primary" @tap="chooseAudio">选择文件(audio) 单选</button>
+      <button class="m-4" type="primary" @tap="chooseAudioMul">选择文件(audio) 多选</button>
+      <button class="m-4" type="primary" @tap="playAudio">选择文件(audio) 并播放</button>
+      <button class="m-4" type="primary" @tap='chooseAll'>选择文件(all) 单选</button>
+      <button class="m-4" type="primary" @tap='chooseAllMul'>选择文件(all) 多选</button>
+      <!-- #ifdef APP-HARMONY || WEB || MP -->
+      <button class="m-4" type="primary" @tap="chooseFileWithExtension">选择文件（extension: png）</button>
+      <button class="m-4" type="primary" @tap="chooseFileWithSourceType">选择文件（sourceType: album）</button>
+      <!-- #endif -->
+      <!-- #ifdef WEB || MP -->
+      <button class="m-4" type="primary" @tap="chooseFileWithSizeType">选择文件（sizeType: original）</button>
+      <!-- #endif -->
 
       <view style="height: 4px;"></view>
-    </view>
 </template>
 
 <script setup lang="ts">
@@ -243,22 +248,50 @@
       }
     })
   }
+
+  // #ifdef APP-HARMONY || WEB || MP
+  const chooseFileWithExtension = () => {
+    uni.chooseFile({
+      type: 'all',
+      extension: ['png'],
+      success: (res) => {
+        console.log(res)
+        log.value += getPath(res.tempFiles) + '\n\n'
+      },
+      complete: (res) => {
+        console.log(res)
+      }
+    })
+  }
+
+  const chooseFileWithSourceType = () => {
+    uni.chooseFile({
+      type: 'all',
+      sourceType: ['album'],
+      success: (res) => {
+        console.log(res)
+        log.value += getPath(res.tempFiles) + '\n\n'
+      },
+      complete: (res) => {
+        console.log(res)
+      }
+    })
+  }
+  // #endif
+
+  // #ifdef WEB || MP
+  const chooseFileWithSizeType = () => {
+    uni.chooseFile({
+      type: 'image',
+      sizeType: ['original'],
+      success: (res) => {
+        console.log(res)
+        log.value += getPath(res.tempFiles) + '\n\n'
+      },
+      complete: (res) => {
+        console.log(res)
+      }
+    })
+  }
+  // #endif
 </script>
-
-<style>
-  .btnstyle {
-    margin: 4px;
-  }
-
-  .video {
-    width: 100%;
-    height: 225px;
-  }
-
-  .uni-uploader__input-box {
-    margin: 5px;
-    width: 104px;
-    height: 104px;
-    border: 1px solid #D9D9D9;
-  }
-</style>

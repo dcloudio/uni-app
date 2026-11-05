@@ -1,0 +1,220 @@
+<template>
+  <!-- #ifdef APP -->
+  <page-intro content="演示 FileSystemManager.truncate / truncateSync：按长度截断文件内容，中文按字节截断（一个汉字占 3 个 UTF-8 字节），截断后自动读回内容校验。"></page-intro>
+  <scroll-view class="flex-1">
+  <!-- #endif -->
+    <view class="p-8 flex-dir-column">
+      <view class="p-8 border-1-solid-e0e0e0 radius-4 flex-dir-column m-4-0">
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">根目录</text>
+          <enum-data-checkbox
+            class="flex-1"
+            :model-value="data.rootKey"
+            :items="rootOptions"
+            mode="default"
+            :show-toast="false"
+            @change="onRootChange"
+          />
+        </view>
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">文件路径</text>
+          <input class="flex-1 border-1-solid-d0d0d0 radius-4 p-4-8 fs-13 h-32" v-model="data.filePath" placeholder="相对根目录的路径" />
+        </view>
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333">截断长度</text>
+          <input class="flex-1 border-1-solid-d0d0d0 radius-4 p-4-8 fs-13 h-32" v-model="data.lengthText" type="number" placeholder="保留的字节数" />
+        </view>
+        <view class="flex-dir-row items-center m-4-0">
+          <text class="w-72 fs-14 color-333"></text>
+          <text class="flex-1 fs-12 color-999">长度为保留的字节数（一个汉字占 3 个 UTF-8 字节，按字节截断可能出现半字）；同步演示固定截断到 3 字节</text>
+        </view>
+      </view>
+      <view class="flex-dir-row flex-wrap-wrap m-4-0">
+        <button class="m-4" type="primary" @tap="truncate" id="btn-truncate">truncate 截断（6 字节）</button>
+        <button class="m-4" type="primary" @tap="truncateSync" id="btn-truncate-sync">truncateSync 截断（3 字节）</button>
+        <button class="m-4" type="warn" @tap="demoFail" id="btn-truncate-fail">演示失败（文件不存在）</button>
+      </view>
+      <view class="p-8 border-1-solid-e0e0e0 radius-4 flex-dir-column m-4-0-12-0">
+        <text class="fw-bold fs-14 m-2-0 color-333">执行结果：{{ data.lastResult == '' ? '等待执行' : (data.lastResult == 'success' ? '成功' : '失败') }}</text>
+        <text class="fs-13 m-2-0 color-666">目标路径：{{ data.rootPath }}{{ data.filePath }}</text>
+        <text class="fs-13 m-2-0 color-666" v-if="data.lastResult == 'success'">截断后内容（utf-8）：{{ data.readRet }}；文件大小：{{ data.fileSize }} 字节</text>
+        <text class="fs-13 m-2-0 color-e64340" v-if="data.lastResult == 'fail'">errCode：{{ data.lastFailError.errCode }}；errMsg：{{ data.lastFailError.errMsg }}</text>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="ts">
+  import { createEnumItems } from '@/components/enum-data-checkbox/enum-data-checkbox-types'
+  const rootOptions = createEnumItems(['usr', 'cache', 'sandbox'])
+
+  import { getFsmRootPath, ensureFsmDirSync, ensureFsmFileSync, removeFsmPathSync, removeFsmDirSync, parseIntSafe, createFsmMockError } from './fsm-utils'
+
+  type DataType = {
+    rootKey : string
+    rootPath : string
+    filePath : string
+    lengthText : string
+    readRet : string
+    fileSize : number
+    existsRet : boolean
+    done : boolean
+    lastResult : string
+    lastFailError : UniError
+  }
+
+  const data = reactive({
+    rootKey: 'usr',
+    rootPath: getFsmRootPath('usr'),
+    filePath: 'fsm-truncate-demo/1.txt',
+    lengthText: '6',
+    readRet: '',
+    fileSize: 0,
+    existsRet: false,
+    done: false,
+    lastResult: '',
+    lastFailError: createFsmMockError(),
+  } as DataType)
+
+  function onRootChange(value : string) {
+    data.rootKey = value
+    data.rootPath = getFsmRootPath(data.rootKey)
+  }
+
+  function targetPath(path : string) : string {
+    return `${data.rootPath}${path ?? data.filePath}`
+  }
+
+  function resetResult() {
+    data.done = false
+    data.lastResult = ''
+    data.readRet = ''
+    data.fileSize = 0
+  }
+
+  function applyFail(res : IUniError) {
+    data.lastResult = 'fail'
+    data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+  }
+
+  function exists(path : string) : void {
+    try {
+      uni.getFileSystemManager().accessSync(targetPath(path))
+      data.existsRet = true
+    } catch (e) {
+      data.existsRet = false
+    }
+  }
+
+  function prepare() : void {
+    const demoDir = `${data.rootPath}fsm-truncate-demo`
+    ensureFsmDirSync(demoDir)
+    ensureFsmFileSync(`${demoDir}/1.txt`, '测试truncate API的写入功能。\n\t制表符缩进行\n回车换行：\r\n下一行\n反斜杠 \\ 双引号 " 单引号 \'\n空格[  ]全角空格[　]不间断空格[ ]\n混合内容：中文English123!@#')
+    data.done = true
+  }
+
+  function cleanup() : void {
+    removeFsmDirSync(`${data.rootPath}fsm-truncate-demo`)
+    data.done = true
+  }
+
+  // 截断后读回内容并获取文件大小
+  function verifyResult() : void {
+    try {
+      const content = uni.getFileSystemManager().readFileSync(targetPath(data.filePath), 'utf-8')
+      data.readRet = (content as string).toString()
+    } catch (e) {
+      data.readRet = `read back fail: ${e}`
+    }
+    try {
+      const stats = uni.getFileSystemManager().statSync(targetPath(data.filePath), false)
+      data.fileSize = stats[0].stats.size
+    } catch (e) {
+      data.fileSize = -1
+    }
+  }
+
+  function truncate() : void {
+    resetResult()
+    // 自愈：重建默认演示文件，保证重复点击演示结果一致
+    if (data.filePath == 'fsm-truncate-demo/1.txt') {
+      ensureFsmDirSync(`${data.rootPath}fsm-truncate-demo`)
+      ensureFsmFileSync(`${data.rootPath}fsm-truncate-demo/1.txt`, '测试truncate API的写入功能。\n\t制表符缩进行\n回车换行：\r\n下一行\n反斜杠 \\ 双引号 " 单引号 \'\n空格[  ]全角空格[　]不间断空格[ ]\n混合内容：中文English123!@#')
+    }
+    const fileManager = uni.getFileSystemManager()
+    const options : TruncateFileOptions = {
+      filePath: targetPath(data.filePath),
+      length: parseIntSafe(data.lengthText),
+      success: (_ : FileManagerSuccessResult) => {
+        data.lastResult = 'success'
+        verifyResult()
+      },
+      fail: (res : IUniError) => {
+        applyFail(res)
+      },
+      complete: (_ : any) => {
+        data.done = true
+      }
+    }
+    fileManager.truncate(options)
+  }
+
+  function truncateSync() : void {
+    resetResult()
+    // 自愈：重建默认演示文件，保证重复点击演示结果一致
+    if (data.filePath == 'fsm-truncate-demo/1.txt') {
+      ensureFsmDirSync(`${data.rootPath}fsm-truncate-demo`)
+      ensureFsmFileSync(`${data.rootPath}fsm-truncate-demo/1.txt`, '测试truncate API的写入功能。\n\t制表符缩进行\n回车换行：\r\n下一行\n反斜杠 \\ 双引号 " 单引号 \'\n空格[  ]全角空格[　]不间断空格[ ]\n混合内容：中文English123!@#')
+    }
+    try {
+      uni.getFileSystemManager().truncateSync(targetPath(data.filePath), 3)
+      data.lastResult = 'success'
+      verifyResult()
+    } catch (e) {
+      data.lastResult = 'fail'
+      data.lastFailError = new UniError('uni-file-manager', 0, `${e}`)
+    }
+    data.done = true
+  }
+
+  // 一键演示失败场景：文件不存在，预期 errCode 1300002（演示后自动恢复参数）
+  function demoFail() : void {
+    resetResult()
+    const prevPath = data.filePath
+    const missingPath = 'fsm-truncate-demo/missing.txt'
+    data.filePath = missingPath
+    const fileManager = uni.getFileSystemManager()
+    const options : TruncateFileOptions = {
+      filePath: `${data.rootPath}${missingPath}`,
+      length: parseIntSafe(data.lengthText),
+      success: (_ : FileManagerSuccessResult) => {
+        data.lastResult = 'success'
+      },
+      fail: (res : IUniError) => {
+        applyFail(res)
+      },
+      complete: (_ : any) => {
+        data.filePath = prevPath
+        data.done = true
+      }
+    }
+    fileManager.truncate(options)
+  }
+
+  onReady(() => {
+    prepare()
+  })
+
+  defineExpose({
+    data,
+    prepare,
+    cleanup,
+    exists,
+    truncate,
+    truncateSync,
+    demoFail
+  })
+</script>
+

@@ -110,4 +110,9 @@ describe('Progress.uvue', () => {
     const eventCallbackNum = await page.callMethod('getEventCallbackNum')
     expect(eventCallbackNum).toBe(3)
   })
+  it('active-color attribute', async () => {
+    const el = await page.$('progress')
+    expect(await el.attribute('active-color')).toBe('#09BB07')
+  })
+
 })

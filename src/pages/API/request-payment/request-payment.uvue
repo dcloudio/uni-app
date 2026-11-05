@@ -1,14 +1,14 @@
 <template>
   <page-head title="发起支付"></page-head>
-  <view class="uni-common-mt payment-content">
+  <view class="mt-15 p-0-10">
     <text>如对当前页面的支付示例功能有任何疑问，通过电子邮件：service@dcloud.io 联系我们</text>
   </view>
-  <view class="payment-content">
+  <view class="p-0-10">
     <template v-if="providerList.length > 0">
-      <button class="payment-button" type="primary" v-for="(item, index) in providerList" :key="index" @click="requestPaymentByItem(item)">{{ item.name }}</button>
+      <button class="mt-20" type="primary" v-for="(item, index) in providerList" :key="index" @click="requestPaymentByItem(item)">{{ item.name }}</button>
     </template>
     <template v-else>
-      <button class="payment-button" type="primary">请先在 manifest.json 配置勾选微信支付、支付宝</button>
+      <button class="mt-20" type="primary">请先在 manifest.json 配置勾选微信支付、支付宝</button>
     </template>
   </view>
 </template>
@@ -253,13 +253,3 @@
     jest_pay,
   });
 </script>
-
-<style>
-  .payment-content {
-    padding: 0 10px;
-  }
-
-  .payment-button {
-    margin-top: 20px;
-  }
-</style>

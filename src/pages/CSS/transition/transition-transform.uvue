@@ -1,13 +1,13 @@
 <template>
     <view>
-      <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
+      <view class="mt-15">
+        <text class="fs-15 fw-bold color-text-333">setProperty 设置与 getPropertyValue 获取</text>
       </view>
-      <view class="test-container">
-        <view class="test-item">
-          <text class="uni-subtitle-text">view 组件</text>
-          <text class="uni-info">设置值: {{data.transitionTransform}}</text>
-          <text class="uni-info">获取值: {{data.transitionTransformActual}}</text>
+      <view class="flex-dir-row justify-between mt-10">
+        <view class="flex-1 m-0-5">
+          <text class="color-888 fs-12 fw-bold u-mt-5">view 组件</text>
+          <text class="fs-12 color-999">设置值: {{data.transitionTransform}}</text>
+          <text class="fs-12 color-999">获取值: {{data.transitionTransformActual}}</text>
           <view class="test-box">
             <view ref="viewRefDynamic" class="common-image" @click="triggerTransitionDynamic">
               <text style="font-size: 12px;">view</text>
@@ -15,30 +15,30 @@
           </view>
         </view>
 
-        <view class="test-item">
-          <text class="uni-subtitle-text">text 组件</text>
-          <text class="uni-info">设置值: {{data.transitionTransform}}</text>
-          <text class="uni-info">获取值: {{data.transitionTransformActualText}}</text>
+        <view class="flex-1 m-0-5">
+          <text class="color-888 fs-12 fw-bold u-mt-5">text 组件</text>
+          <text class="fs-12 color-999">设置值: {{data.transitionTransform}}</text>
+          <text class="fs-12 color-999">获取值: {{data.transitionTransformActualText}}</text>
           <view class="test-box">
             <text ref="textRefDynamic" class="common-text" @click="triggerTransitionTextDynamic">text</text>
           </view>
         </view>
 
-        <view class="test-item">
-          <text class="uni-subtitle-text">image 组件</text>
-          <text class="uni-info">设置值: {{data.transitionTransform}}</text>
-          <text class="uni-info">获取值: {{data.transitionTransformActualImage}}</text>
+        <view class="flex-1 m-0-5">
+          <text class="color-888 fs-12 fw-bold u-mt-5">image 组件</text>
+          <text class="fs-12 color-999">设置值: {{data.transitionTransform}}</text>
+          <text class="fs-12 color-999">获取值: {{data.transitionTransformActualImage}}</text>
           <view class="test-box">
             <image ref="imageRefDynamic" class="common-image" @click="triggerTransitionImageDynamic" src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
 
-      <view class="test-container">
-        <view class="test-item">
-          <text class="uni-subtitle-text">view 组件拍平</text>
-          <text class="uni-info">设置值: {{data.transitionTransform}}</text>
-          <text class="uni-info">获取值: {{data.transitionTransformActualFlat}}</text>
+      <view class="flex-dir-row justify-between mt-10">
+        <view class="flex-1 m-0-5">
+          <text class="color-888 fs-12 fw-bold u-mt-5">view 组件拍平</text>
+          <text class="fs-12 color-999">设置值: {{data.transitionTransform}}</text>
+          <text class="fs-12 color-999">获取值: {{data.transitionTransformActualFlat}}</text>
           <view class="test-box">
             <view ref="viewRefDynamicFlat" class="common-image" @click="triggerTransitionDynamic" flatten>
               <text style="font-size: 12px;">view</text>
@@ -46,35 +46,35 @@
           </view>
         </view>
 
-        <view class="test-item">
-          <text class="uni-subtitle-text">text 组件拍平</text>
-          <text class="uni-info">设置值: {{data.transitionTransform}}</text>
-          <text class="uni-info">获取值: {{data.transitionTransformActualTextFlat}}</text>
+        <view class="flex-1 m-0-5">
+          <text class="color-888 fs-12 fw-bold u-mt-5">text 组件拍平</text>
+          <text class="fs-12 color-999">设置值: {{data.transitionTransform}}</text>
+          <text class="fs-12 color-999">获取值: {{data.transitionTransformActualTextFlat}}</text>
           <view class="test-box">
             <text ref="textRefDynamicFlat" class="common-text" @click="triggerTransitionTextDynamic" flatten>text</text>
           </view>
         </view>
 
-        <view class="test-item">
-          <text class="uni-subtitle-text">image 组件拍平</text>
-          <text class="uni-info">设置值: {{data.transitionTransform}}</text>
-          <text class="uni-info">获取值: {{data.transitionTransformActualImageFlat}}</text>
+        <view class="flex-1 m-0-5">
+          <text class="color-888 fs-12 fw-bold u-mt-5">image 组件拍平</text>
+          <text class="fs-12 color-999">设置值: {{data.transitionTransform}}</text>
+          <text class="fs-12 color-999">获取值: {{data.transitionTransformActualImageFlat}}</text>
           <view class="test-box">
             <image ref="imageRefDynamicFlat" class="common-image" @click="triggerTransitionImageDynamic" src="/static/test-image/logo.png" flatten></image>
           </view>
         </view>
       </view>
 
-      <view class="uni-common-mt uni-common-mb">
-        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
-        <enum-data :items="transitionTransformEnum" title="transition-property 枚举值" @change="radioChangeTransitionTransform" :compact="true"></enum-data>
+      <view class="mt-15 mb-15">
+        <text class="fs-13 color-tips-0958d9 bg-tips-e6f4ff border-l-4-solid-tips-91caff p-10-12 radius-4 m-10">第一个枚举值，'' (空字符串) - 空值情况</text>
+        <enum-data-checkbox :items="transitionTransformEnum" title="transition-property 枚举值" @change="radioChangeTransitionTransform" :compact="true"></enum-data-checkbox>
         <input-data :defaultValue="data.transitionTransform" title="transition-property 自定义值" type="text" @confirm="inputChangeTransitionTransform"></input-data>
       </view>
 
       <view id="v" class="popup" @click="open">open</view>
       <view class="test"></view>
 
-      <text class="uni-title-text uni-common-mt">scroll-view 组件</text>
+      <text class="fs-15 fw-bold color-text-333 mt-15">scroll-view 组件</text>
       <scroll-view ref="scrollViewRefDynamic" class="common-image" style="margin: 30px;" @click="triggerTransitionScrollViewDynamic">
         <text style="font-size: 12px;">点击</text>
       </scroll-view>
@@ -90,7 +90,7 @@
       </view>
 
       <!-- #ifndef MP-ALIPAY -->
-        <text class="uni-title-text uni-common-mb">native-view 组件</text>
+        <text class="fs-15 fw-bold color-text-333 mb-15">native-view 组件</text>
         <test-native-view ref="nativeViewRefDynamic" class="common-image" style="margin: 30px;" @click="triggerTransitionNativeViewDynamic"></test-native-view>
       <!-- #endif -->
 
@@ -98,7 +98,7 @@
 </template>
 
 <script setup lang="ts">
-	import { ItemType } from '@/components/enum-data/enum-data-types'
+	import { ItemType } from '@/components/enum-data-checkbox/enum-data-checkbox-types'
 
 	const transform = ref('scale(0.6) translate(-50%, -50%)')
 	const textTransform = ref('scale(0.6) translate(-50%, -50%)')
@@ -467,29 +467,12 @@
     background-color: green;
   }
 
-  .test-container {
-    flex-direction: row;
-    justify-content: space-between;
-    margin-top: 10px;
-  }
-
-  .test-item {
-    flex: 1;
-    margin: 0 5px;
-  }
-
   .test-box {
     width: 100%;
     height: 80px;
     padding: 10px;
     background-color: gray;
     overflow: visible;
-  }
-
-  .demo-box {
-    flex-direction: row;
-    justify-content: space-around;
-    margin-top: 10px;
   }
 
 </style>

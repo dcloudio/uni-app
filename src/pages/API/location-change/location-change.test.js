@@ -66,6 +66,12 @@ describe("location-change", () => {
       startSuccess = data['startSuccess']
       expect(startSuccess).toEqual(true);
     }
+    await page.waitFor(async () => (await page.callMethod('getCompleteCounts')).foreground === 1)
+    expect((await page.callMethod('getCompleteCounts')).foreground).toBe(1)
+    if (!isHarmony) {
+      await page.waitFor(async () => (await page.callMethod('getCompleteCounts')).background === 1)
+      expect((await page.callMethod('getCompleteCounts')).background).toBe(1)
+    }
   });
 
   it(`system+type=gcj02+${isHarmony ? 'success' : 'fail'}`, async () => {
@@ -113,6 +119,12 @@ describe("location-change", () => {
       errCode = data['errCode']
       expect(startSuccess).toEqual(false);
       expect(errCode).toEqual(1505601);
+    }
+    await page.waitFor(async () => (await page.callMethod('getCompleteCounts')).foreground === 1)
+    expect((await page.callMethod('getCompleteCounts')).foreground).toBe(1)
+    if (!isHarmony) {
+      await page.waitFor(async () => (await page.callMethod('getCompleteCounts')).background === 1)
+      expect((await page.callMethod('getCompleteCounts')).background).toBe(1)
     }
   });
 

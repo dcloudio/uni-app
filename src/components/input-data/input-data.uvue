@@ -81,23 +81,23 @@ function focus() {
 </script>
 
 <template>
-  <view class="uni-padding-wrap">
-    <view class="uni-title uni-common-mt">
-      <text class="uni-title-text"> {{title}} </text>
+  <view class="p-0-15">
+    <view class="p-10-0 color-text-333 mt-15">
+      <text class="fs-15 fw-bold color-text-333"> {{title}} </text>
     </view>
   </view>
-  <view class="input-wrapper">
-    <input class="uni-input _input" :type="inputType" :value="inputClearValue" :placeholder="title" :disabled="disabled"
+  <view class="flex-dir-row justify-center p-0 m-0-10 flex-wrap-nowrap input-wrapper">
+    <input class="h-25 p-8-13 fs-14 flex-1 box-content-box bg-list-fff _input color-black" :type="inputType" :value="inputClearValue" :placeholder="title" :disabled="disabled"
       <!-- #ifndef MP-ALIPAY -->
       :maxlength="-1"
       <!-- #endif -->
       @input="input" @blur="blur"
       @focus="focus" />
     <!-- #ifdef WEB || MP -->
-    <image class="input-wrapper_image" src="/static/icons/clear.png" v-if="showClearIcon && !disabled" @touchstart="clearIcon" @mousedown="clearIcon">
+    <image class="self-center mr-5 w-22 h-22" src="/static/icons/clear.png" v-if="showClearIcon && !disabled" @touchstart="clearIcon" @mousedown="clearIcon">
     <!-- #endif -->
     <!-- #ifndef WEB || MP -->
-    <image class="input-wrapper_image" src="/static/icons/clear.png" v-if="showClearIcon && !disabled" @touchstart="clearIcon">
+    <image class="self-center mr-5 w-22 h-22" src="/static/icons/clear.png" v-if="showClearIcon && !disabled" @touchstart="clearIcon">
     <!-- #endif -->
     </image>
   </view>
@@ -107,23 +107,7 @@ function focus() {
 <style>
   .input-wrapper {
     border: 1px solid var(--input-data-border-color, rgba(0, 0, 0, .08));
-    flex-direction: row;
-    justify-content: center;
-    padding: 0;
-    margin: 0 10px;
-    flex-wrap: nowrap;
     background-color: var(--input-data-background-color, #ffffff);
-  }
-
-  .input-wrapper_image {
-    width: 22px;
-    height: 22px;
-    align-self: center;
-    margin-right: 5px;
-  }
-
-  ._input {
-    color: #000;
   }
 
   @media (prefers-color-scheme: dark) {

@@ -1,67 +1,76 @@
 <template>
   <page-head title="share-element"></page-head>
   <page-intro content="本页演示 share-element 共享元素组件：点击图片打开详情页时的转场共享效果；下方可配置过渡手势、easing、shuttle-on-push/pop 等。"></page-intro>
-  <view class="main">
-    <share-element class="share-element" share-key="left" :shuttle-on-pop="shuttleOnPopType"
+  <view class="p-5-0 items-center justify-center">
+    <share-element share-key="left" :shuttle-on-pop="shuttleOnPopType"
       :transition-on-gesture="transitionOnGesture" :shuttle-on-push="shuttleOnPushType"  :easing-function="easingFunctionType" @tap="openPage()">
-      <image style="width: 100px;height: 150px;"
+      <image class="w-100 h-150"
         src="https://web-ext-storage.dcloud.net.cn/hello-uni-app-x/drop-card-1.jpg">
       </image>
     </share-element>
   </view>
-  <button type="primary" @click="openPage" class="button">
+  <button type="primary" @click="openPage">
     打开share-element页面
   </button>
 
-  <scroll-view style="flex: 1">
-    <view class="content">
+  <scroll-view class="flex-1">
+    <view>
       <boolean-data :value="transitionOnGesture" title="transition-on-gesture= true(仅iOS生效)"
         @change="changeTransitionOnGesture"></boolean-data>
 
-      <text class="uni-common-mt choose-property-title">easing-function:</text>
-      <radio-group class="choose-property-type-radio-group" @change="handleEasingFunction">
-        <view class="ml-10 uni-common-mt" v-for="item in easingFunctionTypeList" :key="item">
-          <radio :value="item" :checked="easingFunctionType == item" />
-          <text>{{ item }}</text>
-        </view>
-      </radio-group>
+      <text class="mt-15 fw-bold">easing-function:</text>
+      <enum-data-checkbox
+        :model-value="easingFunctionType"
+        :items="easingOptions"
+        mode="default"
+        :show-toast="false"
+        @change="handleEasingFunction"
+      />
 
-      <text class="uni-common-mt choose-property-title">shuttle-on-push(仅iOS生效):</text>
-      <radio-group class="choose-property-type-radio-group" @change="handleShuttleOnPushType">
-        <view class="ml-10 uni-common-mt" v-for="item in shuttleOnTypeList" :key="item">
-          <radio :value="item" :checked="shuttleOnPushType == item" />
-          <text>{{ item }}</text>
-        </view>
-      </radio-group>
+      <text class="mt-15 fw-bold">shuttle-on-push(仅iOS生效):</text>
+      <enum-data-checkbox
+        :model-value="shuttleOnPushType"
+        :items="shuttleOptions"
+        mode="default"
+        :show-toast="false"
+        @change="handleShuttleOnPushType"
+      />
 
-      <text class="uni-common-mt choose-property-title">shuttle-on-pop(仅iOS生效):</text>
-      <radio-group class="choose-property-type-radio-group" @change="handleShuttleOnPopType">
-        <view class="ml-10 uni-common-mt" v-for="item in shuttleOnTypeList" :key="item">
-          <radio :value="item" :checked="shuttleOnPopType == item" />
-          <text>{{ item }}</text>
-        </view>
-      </radio-group>
+      <text class="mt-15 fw-bold">shuttle-on-pop(仅iOS生效):</text>
+      <enum-data-checkbox
+        :model-value="shuttleOnPopType"
+        :items="shuttleOptions"
+        mode="default"
+        :show-toast="false"
+        @change="handleShuttleOnPopType"
+      />
 
-      <text class="uni-common-mt choose-property-title">animationType(页面动画降级):</text>
-      <radio-group class="choose-property-type-radio-group" @change="handleOpenAnimationType">
-        <view class="ml-10 uni-common-mt" v-for="item in openAnimationTypeList" :key="item">
-          <radio :value="item" :checked="openAnimationType == item" />
-          <text>{{ item }}</text>
-        </view>
-      </radio-group>
+      <text class="mt-15 fw-bold">animationType(页面动画降级):</text>
+      <enum-data-checkbox
+        :model-value="openAnimationType"
+        :items="animationOptions"
+        mode="default"
+        :show-toast="false"
+        @change="handleOpenAnimationType"
+      />
     </view>
   </scroll-view>
-  <button  @click="gotoShareElementWithSwiper" class="button">
+  <button  @click="gotoShareElementWithSwiper">
     打开share-element-with-swiper页面
   </button>
-  <view style="height: 80px;"></view>
-  <share-element class="bottomWrap" share-key="bottom" @tap="openPage()" transitionOnGesture=true>
-    <view class="bottom">
-      <text style="color: white;">share-element(底部固定)</text>
+  <view class="h-80"></view>
+  <share-element class="w-full bottom-0 h-80 pos-fixed" share-key="bottom" @tap="openPage()" transitionOnGesture=true>
+    <view class="w-full h-full items-center justify-center bg-007aff">
+      <text class="color-white">share-element(底部固定)</text>
     </view>
   </share-element>
 </template>
 <script setup lang="ts">
+  import { createEnumItems } from '@/components/enum-data-checkbox/enum-data-checkbox-types'
+  const easingOptions = computed(() => createEnumItems(easingFunctionTypeList))
+  const shuttleOptions = computed(() => createEnumItems(shuttleOnTypeList))
+  const animationOptions = computed(() => createEnumItems(openAnimationTypeList))
+
   type ShareElementOpenAnimationType =
     'auto' |
     'none' |
@@ -85,7 +94,7 @@
     'from' |
     'to'
 
-  import { ItemType } from '@/components/enum-data/enum-data-types'
+  import { ItemType } from '@/components/enum-data-checkbox/enum-data-checkbox-types'
 
   const transitionOnGesture = ref(true)
   const shuttleOnPopType = ref('to' as ShuttleOnType)
@@ -134,20 +143,20 @@
     transitionOnGesture.value = checked
   }
 
-  const handleOpenAnimationType = (e : RadioGroupChangeEvent) => {
-    openAnimationType.value = e.detail.value as ShareElementOpenAnimationType
+  const handleOpenAnimationType = (value : ShareElementOpenAnimationType) => {
+    openAnimationType.value = value as ShareElementOpenAnimationType
   }
 
-  const handleEasingFunction = (e : RadioGroupChangeEvent) => {
-    easingFunctionType.value = e.detail.value as ShareElementEasingFunctionType
+  const handleEasingFunction = (value : ShareElementEasingFunctionType) => {
+    easingFunctionType.value = value as ShareElementEasingFunctionType
   }
 
-  const handleShuttleOnPopType = (e : RadioGroupChangeEvent) => {
-    shuttleOnPopType.value = e.detail.value as ShuttleOnType
+  const handleShuttleOnPopType = (value : ShuttleOnType) => {
+    shuttleOnPopType.value = value as ShuttleOnType
   }
 
-  const handleShuttleOnPushType = (e : RadioGroupChangeEvent) => {
-    shuttleOnPushType.value = e.detail.value as ShuttleOnType
+  const handleShuttleOnPushType = (value : ShuttleOnType) => {
+    shuttleOnPushType.value = value as ShuttleOnType
   }
 
   defineExpose({
@@ -168,39 +177,3 @@
     handleShuttleOnPushType
   })
 </script>
-
-<style>
-  .ml-10 {
-    margin-left: 10px;
-  }
-
-  .choose-property-title {
-    font-weight: bold;
-  }
-
-  .choose-property-type-radio-group {
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-
-  .bottomWrap {
-    width: 100%;
-    bottom: 0px;
-    height: 80px;
-    position: fixed;
-  }
-
-  .bottom {
-    width: 100%;
-    height: 100%;
-    align-items: center;
-    justify-content: center;
-    background-color: #007aff;
-  }
-
-  .main {
-    padding: 5px 0;
-    align-items: center;
-    justify-content: center;
-  }
-</style>

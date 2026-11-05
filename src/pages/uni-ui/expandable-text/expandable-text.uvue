@@ -10,15 +10,15 @@
 		trigger-class="custom-trigger"
 		style="width:100px;margin-bottom: 8px"
 	/> -->
-	<text class="uni-h4">空字符串</text>
+	<text class="fw-bold m-8-0">空字符串</text>
 	<uni-expandable-text />
-	<text class="uni-h4">默认模式</text>
+	<text class="fw-bold m-8-0">默认模式</text>
 	<uni-expandable-text ref="expandabeltext1" :text="data.articleText" :style="data.dynamicStyle" text-class="test-default-text" trigger-class="test-default-trigger" />
-	<text class="uni-h4">lines=1模式。监听change事件</text>
+	<text class="fw-bold m-8-0">lines=1模式。监听change事件</text>
 		<uni-expandable-text :text="data.articleText" :lines="1" @change="triggerEvent" trigger-class="test-single-line-trigger" style="wrefth:100px;" />
-	<text class="uni-h4">lines=2模式。展开后不显示trigger</text>
+	<text class="fw-bold m-8-0">lines=2模式。展开后不显示trigger</text>
 		<uni-expandable-text :text="data.articleText" :lines="2" :show-collapse="false" trigger-class="test-no-collapse-trigger" style="width:100px;" />
-	<text class="uni-h4">lines=2，自定义正文和trigger文字和样式</text>
+	<text class="fw-bold m-8-0">lines=2，自定义正文和trigger文字和样式</text>
 	<uni-expandable-text
 		ref="expandabeltext4"
 		:text="data.articleText"
@@ -29,12 +29,12 @@
 		trigger-class="custom-trigger-bold"
 		:style="'width:'+ data.dynamicWidth2 +'px'"
 	/>
-	<text class="uni-h4">测试动态调整文字内容、组件宽度，trigger是否正常的出现和消失</text>
+	<text class="fw-bold m-8-0">测试动态调整文字内容、组件宽度，trigger是否正常的出现和消失</text>
 	<button @click="changeArticleText" style="margin-top: 10px;">缩短显示文字内容，line行可以显示完整时不再出现trigger</button>
 	<button @click="changeDynamicStyle" style="margin-top: 4px;">缩短默认模式的正文width，1行显示不全时自动出现trigger</button>
 	<button @click="changeDynamicWidth" style="margin-top: 4px;">加宽最后一个组件的正文width，2行可以显示完整时不再出现trigger</button>
 	<button @click="resetChange" style="margin-top: 4px;">reset上述3个修改</button>
-	<text class="uni-h4">测试组件方法</text>
+	<text class="fw-bold m-8-0">测试组件方法</text>
 	<button @click="toggle" style="margin-top: 10px;">最后一个组件的toggle()</button>
 	<button @click="expand" style="margin-top: 4px;">最后一个组件的expand()</button>
 	<button @click="collapse" style="margin-top: 4px;">最后一个组件的collapse()</button>

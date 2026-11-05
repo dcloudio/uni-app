@@ -1,8 +1,8 @@
 <template>
-  <view class="area">
+  <view class="pos-absolute w-full h-full">
     <page-intro content="本页演示 WXS/SJS（script module）：在 wxs/sjs 中导出 setColor、touchstart、touchmove 等，通过 ins.setStyle 改样式、ins.selectComponent 取子节点并设 left/top 实现拖拽；上方点击文字变红，下方橙色块可触摸拖拽移动。"></page-intro>
     <view @click="test.setColor" class="setColor">点击变成红色: {{test.msg}}</view>
-    <view @touchstart="test.touchstart" @touchmove="test.touchmove" class="movable">{{test.msg}}</view>
+    <view @touchstart="test.touchstart" @touchmove="test.touchmove" class="pos-absolute h-100 text-center w-100 movable lh-100">{{test.msg}}</view>
   </view>
 </template>
 <!-- #ifdef MP-ALIPAY -->
@@ -60,20 +60,10 @@
    */
 </script>
 <style>
-  .area {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-  }
   .movable {
-    position: absolute;
-    width: 100px;
-    height: 100px;
     left: 50px;
     top: 50px;
     color: #fff000;
-    text-align: center;
-    line-height: 100px;
     background-color: #ff5500;
   }
 </style>

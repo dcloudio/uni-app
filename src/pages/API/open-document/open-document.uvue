@@ -1,10 +1,10 @@
 <template>
     <page-head :title="title"></page-head>
     <!-- #ifdef APP -->
-    <scroll-view direction="vertical" style="flex:1">
+    <scroll-view direction="vertical" class="flex-1">
     <!-- #endif -->
-      <view class="uni-common-mt">
-        <button v-for="(item, index) in fileList" :key="index" @click="openDocument(item)" style="margin: 10px;">
+      <view class="mt-15">
+        <button v-for="(item, index) in fileList" :key="index" @click="openDocument(item)" class="m-10">
           打开 {{item.type}} 文件
         </button>
       </view>

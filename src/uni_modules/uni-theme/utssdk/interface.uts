@@ -37,32 +37,26 @@ export interface Uni {
         "baidu": {
           "hostVer": "x",
           "uniVer": "x",
-          "unixVer": "x"
         },
         "toutiao": {
           "hostVer": "x",
           "uniVer": "x",
-          "unixVer": "x"
         },
         "lark": {
           "hostVer": "x",
           "uniVer": "x",
-          "unixVer": "x"
         },
         "qq": {
           "hostVer": "x",
           "uniVer": "x",
-          "unixVer": "x"
         },
         "kuaishou": {
           "hostVer": "x",
           "uniVer": "x",
-          "unixVer": "x"
         },
         "jd": {
           "hostVer": "x",
           "uniVer": "x",
-          "unixVer": "x"
         }
       },
       "web": {
@@ -117,32 +111,26 @@ export interface Uni {
         "baidu": {
           "hostVer": "x",
           "uniVer": "x",
-          "unixVer": "x"
         },
         "toutiao": {
           "hostVer": "x",
           "uniVer": "x",
-          "unixVer": "x"
         },
         "lark": {
           "hostVer": "x",
           "uniVer": "x",
-          "unixVer": "x"
         },
         "qq": {
           "hostVer": "x",
           "uniVer": "x",
-          "unixVer": "x"
         },
         "kuaishou": {
           "hostVer": "x",
           "uniVer": "x",
-          "unixVer": "x"
         },
         "jd": {
           "hostVer": "x",
           "uniVer": "x",
-          "unixVer": "x"
         }
       },
       "web": {
@@ -195,32 +183,26 @@ export interface Uni {
         "baidu": {
           "hostVer": "x",
           "uniVer": "x",
-          "unixVer": "x"
         },
         "toutiao": {
           "hostVer": "x",
           "uniVer": "x",
-          "unixVer": "x"
         },
         "lark": {
           "hostVer": "x",
           "uniVer": "x",
-          "unixVer": "x"
         },
         "qq": {
           "hostVer": "x",
           "uniVer": "x",
-          "unixVer": "x"
         },
         "kuaishou": {
           "hostVer": "x",
           "uniVer": "x",
-          "unixVer": "x"
         },
         "jd": {
           "hostVer": "x",
           "uniVer": "x",
-          "unixVer": "x"
         }
       },
       "web": {
@@ -284,32 +266,26 @@ export interface Uni {
         "baidu": {
           "hostVer": "x",
           "uniVer": "x",
-          "unixVer": "x"
         },
         "toutiao": {
           "hostVer": "x",
           "uniVer": "x",
-          "unixVer": "x"
         },
         "lark": {
           "hostVer": "x",
           "uniVer": "x",
-          "unixVer": "x"
         },
         "qq": {
           "hostVer": "x",
           "uniVer": "x",
-          "unixVer": "x"
         },
         "kuaishou": {
           "hostVer": "x",
           "uniVer": "x",
-          "unixVer": "x"
         },
         "jd": {
           "hostVer": "x",
           "uniVer": "x",
-          "unixVer": "x"
         }
       },
       "web": {
@@ -385,44 +361,36 @@ export interface Uni {
    *  },
    *  "mp": {
    *    "weixin": {
-   *      "hostVer": "√",
    *      "uniVer": "x",
    *      "unixVer": "4.41"
    *    },
    *    "alipay": {
-   *      "hostVer": "√",
-   *      "uniVer": "√",
-   *      "unixVer": "5.31"
+   *      "uniVer": "x",
+   *      "unixVer": "5.36"
    *    },
    *    "baidu": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "kuaishou": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    }
    *  },
    *  "web": {
@@ -461,39 +429,32 @@ export interface Uni {
    *      "unixVer": "4.41"
    *    },
    *    "alipay": {
-   *      "hostVer": "√",
-   *      "uniVer": "√",
-   *      "unixVer": "5.31"
+   *      "uniVer": "x",
+   *      "unixVer": "5.36"
    *    },
    *    "baidu": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "kuaishou": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    }
    *  },
    *  "web": {
@@ -528,44 +489,35 @@ export interface Uni {
    *  },
    *  "mp": {
    *    "weixin": {
-   *      "hostVer": "√",
    *      "uniVer": "2.11.0",
    *      "unixVer": "4.41"
    *    },
    *    "alipay": {
-   *      "hostVer": "√",
    *      "uniVer": "√",
    *      "unixVer": "5.31"
    *    },
    *    "baidu": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "lark": {
-   *      "hostVer": "√",
    *      "uniVer": "5.3.0",
-   *      "unixVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "kuaishou": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    }
    *  },
    *  "web": {
@@ -600,44 +552,35 @@ export interface Uni {
    *  },
    *  "mp": {
    *    "weixin": {
-   *      "hostVer": "√",
    *      "uniVer": "2.11.0",
    *      "unixVer": "4.41"
    *    },
    *    "alipay": {
-   *      "hostVer": "√",
    *      "uniVer": "√",
    *      "unixVer": "5.31"
    *    },
    *    "baidu": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "lark": {
-   *      "hostVer": "√",
    *      "uniVer": "5.3.0",
-   *      "unixVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "kuaishou": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
    *      "uniVer": "x",
-   *      "unixVer": "x"
    *    }
    *  },
    *  "web": {

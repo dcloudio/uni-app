@@ -29,7 +29,7 @@ export type InstallWgtErrorCode =
 103609 |
 /** manifest 字段不合法。 */
 103610 |
-/** WGT 版本低于或等于 Runtime 版本。 */
+/** 完整 WGT 版本低于或等于 Runtime 版本。 */
 103611 |
 /** 内部错误。 */
 103612 |
@@ -44,7 +44,19 @@ export type InstallWgtErrorCode =
 /** manifest 缺少 uni-app-x.compilerRuleVersion。 */
 103618 |
 /** WGT 与 Runtime 的 compilerRuleVersion 不一致。 */
-103619
+103619 |
+/** app-wgtu 缺少 baseVersion。 */
+103620 |
+/** app-wgtu 字段不合法。 */
+103621 |
+/** 差量升级基准版本与当前 WGT 版本不一致。 */
+103622 |
+/** 差量升级时 copy 当前 WGT 资源失败。 */
+103623 |
+/** 差量 WGT 资源合并失败。 */
+103624 |
+/** 差量 WGT 版本与基准资源版本不一致。 */
+103625
 
 /**
  * 安装应用成功回调参数
@@ -79,7 +91,7 @@ export class InstallWgtFailImpl extends UniError implements InstallWgtFail {
     this.errMsg = message.length > 0
       ? message
       : InstallWgtErrors.get(this.errCode) ?? ''
-    if ((this.errCode == 103602 || this.errCode == 103612) && cause.length > 0) {
+    if ((this.errCode == 103602 || this.errCode == 103612 || this.errCode == 103623 || this.errCode == 103624) && cause.length > 0) {
       this.cause = new SourceError(cause)
     }
   }
@@ -102,8 +114,8 @@ export type InstallWgtOptions = {
    */
   filePath: string
   /**
-   * 忽略 WGT version.name 校验，默认值为 false。
-   * compilerRuleVersion 仍会校验。
+   * 忽略完整 WGT version.name 升级校验，默认值为 false。
+   * compilerRuleVersion 与差量 WGT 的版本身份仍会校验。
    */
   ignoreVersion?: boolean
   /**

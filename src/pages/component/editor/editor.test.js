@@ -67,6 +67,7 @@ describe('editor.uvue', () => {
   async function resetEditorProps() {
     const readyCount = await page.data('data.readyCount')
     await page.callMethod('onReadOnlyChange', false)
+    await page.callMethod('onCustomStyleChange', false)
     await page.callMethod('onTypeChange', 0)
     await page.callMethod('onPlaceholderChange', '请输入内容，placeholder 仅初始化生效')
     await page.callMethod('onDraftShowImgSizeChange', true)
@@ -147,6 +148,16 @@ describe('editor.uvue', () => {
     await waitForData('data.readyCount', value => value >= readyCount + 1, 2000)
     await page.waitFor(500)
     await screenshot('editor-props-placeholder')
+  })
+
+  it('主题默认颜色和 CSS 覆盖截图', async () => {
+    expect(await page.data('data.customStyle')).toBe(false)
+    await screenshot('editor-theme-default-color')
+
+    await page.callMethod('onCustomStyleChange', true)
+    await waitForData('data.customStyle', value => value === true, 3000)
+    expect(await page.data('data.customStyle')).toBe(true)
+    await screenshot('editor-theme-custom-color')
   })
 
   it('方法调用截图', async () => {

@@ -1,8 +1,7 @@
 <template>
-  <view style="flex: 1;">
     <page-intro content="本页演示 scroll-view 自定义下拉刷新属性：refresher 插槽、pulling/refresh/restore/abort 事件、竖排暗黑样式。"></page-intro>
     <scroll-view id="refreshing1"
-      style="flex: 1;"
+      class="flex-1"
       :refresher-enabled="true"
       :refresher-triggered="data.refreshing1"
       refresher-default-style="none"
@@ -14,8 +13,8 @@
       @refresherabort="onRefresherabort1"
     > <!-- TODO Android不支持bool属性，:refresher-enabled="true" 不能简写为 refresher-enabled -->
       <!-- 列表内容 -->
-      <view v-for="i in data.listCount1" :key="i" class="content-item">
-        <text class="text">item-{{ i }}</text>
+      <view v-for="i in data.listCount1" :key="i" class="m-5-10">
+        <text class="color-666 fs-14">item-{{ i }}</text>
       </view>
 
       <!-- refresher 插槽使用 uni-refresh-box 组件 -->
@@ -25,9 +24,9 @@
         :refreshing="data.refreshing1"
       ></uni-refresh-box> <!-- TODO web只认在组件外层使用slot="refresher"，不支持组件内根元素使用-->
     </scroll-view>
-		<text style="margin: 5px;">竖排暗黑自定义文字的下拉设置</text>
-		<scroll-view id="refreshing2"
-		  style="flex: 1;background-color: black;"
+		<text class="m-5">竖排暗黑自定义文字的下拉设置</text>
+		<scroll-view class="flex-1 bg-000" id="refreshing2"
+
 		  :refresher-enabled="true"
 		  :refresher-triggered="data.refreshing2"
 		  refresher-default-style="none"
@@ -39,8 +38,8 @@
 		  @refresherabort="onRefresherabort2"
 		> <!-- TODO Android不支持bool属性，:refresher-enabled="true" 不能简写为 refresher-enabled -->
 		  <!-- 列表内容 -->
-		  <view v-for="i in data.listCount2" :key="i" class="content-item">
-		    <text class="text">item-{{ i }}</text>
+		  <view v-for="i in data.listCount2" :key="i" class="m-5-10">
+		    <text class="color-666 fs-14">item-{{ i }}</text>
 		  </view>
 
 		  <!-- refresher 插槽使用 uni-refresh-box 组件 -->
@@ -56,9 +55,9 @@
 				loading-text="奋力加载中..."
 			></uni-refresh-box> <!-- TODO web只认在组件外层使用slot="refresher"，不支持组件内根元素使用-->
 		</scroll-view>
-		<text style="margin: 5px;">slot自定义下拉图标</text>
+		<text class="m-5">slot自定义下拉图标</text>
 		<scroll-view id="refreshing3"
-		  style="flex: 1;"
+		  class="flex-1"
 		  :refresher-enabled="true"
 		  :refresher-triggered="data.refreshing3"
 		  refresher-default-style="none"
@@ -70,8 +69,8 @@
 		  @refresherabort="onRefresherabort3"
 		> <!-- TODO Android不支持bool属性，:refresher-enabled="true" 不能简写为 refresher-enabled -->
 		  <!-- 列表内容 -->
-		  <view v-for="i in data.listCount3" :key="i" class="content-item">
-		    <text class="text">item-{{ i }}</text>
+		  <view v-for="i in data.listCount3" :key="i" class="m-5-10">
+		    <text class="color-666 fs-14">item-{{ i }}</text>
 		  </view>
 
 		  <!-- refresher 插槽使用 uni-refresh-box 组件 -->
@@ -81,23 +80,23 @@
 		    :refreshing="data.refreshing3"
 		  >
 				<template #loading="{ state }">
-				  <image
+				  <image class="w-20 h-20"
 				    v-if="state == 2"
 				    src="https://web-ext-storage.dcloud.net.cn/hello-uni-app-x/refresh-box-run.gif"
-				    style="width: 20px; height: 20px;"
+
 				  /> <!-- 刷新中的动图-->
-				  <image
+				  <image class="w-20 h-20"
 				    v-else
 				    src="https://web-ext-storage.dcloud.net.cn/hello-uni-app-x/refresh-box-run.gif"
-				    style="width: 20px; height: 20px;"
+
 				  /> <!-- 非刷新中的图，可以和刷新中的图是一张，也可以分开-->
 				</template>
 				<!-- <image src="https://web-ext-storage.dcloud.net.cn/hello-uni-app-x/refresh-box-run.gif" style="width:20px;height:20px;"></image> -->
 			</uni-refresh-box> <!-- TODO web只认在组件外层使用slot="refresher"，不支持组件内根元素使用-->
 		</scroll-view>
-		<text style="margin: 5px;">无文字，纯loading</text>
+		<text class="m-5">无文字，纯loading</text>
 		<scroll-view id="refreshing4"
-		  style="flex: 1;"
+		  class="flex-1"
 		  :refresher-enabled="true"
 		  :refresher-triggered="data.refreshing4"
 		  refresher-default-style="none"
@@ -109,8 +108,8 @@
 		  @refresherabort="onRefresherabort4"
 		> <!-- TODO Android不支持bool属性，:refresher-enabled="true" 不能简写为 refresher-enabled -->
 		  <!-- 列表内容 -->
-		  <view v-for="i in data.listCount4" :key="i" class="content-item">
-		    <text class="text">item-{{ i }}</text>
+		  <view v-for="i in data.listCount4" :key="i" class="m-5-10">
+		    <text class="color-666 fs-14">item-{{ i }}</text>
 		  </view>
 
 		  <!-- refresher 插槽使用 uni-refresh-box 组件 -->
@@ -124,7 +123,6 @@
 				loading-class="loading-big-font"
 		  ></uni-refresh-box> <!-- TODO web只认在组件外层使用slot="refresher"，不支持组件内根元素使用-->
 		</scroll-view>
-  </view>
 </template>
 
 <script setup lang="ts">
@@ -261,14 +259,6 @@ defineExpose({
 </script>
 
 <style>
-.content-item {
-  margin: 5px 10px;
-}
-.text {
-  color: #666;
-  font-size: 14px;
-}
-
 .loading-dark{
 	border-color:white;
 	width: 20px;

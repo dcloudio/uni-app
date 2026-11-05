@@ -1,24 +1,58 @@
 <template>
-	<view class="container">
-		<view class="input-section">
-			<input id="uni-input-box" class="input-box" type="text" :value="data.inputValue" placeholder="点击输入框显示键盘" :focus="data.isFocus" hold-keyboard="true" />
-			<button class="btn" @click="hideKeyboard">隐藏键盘</button>
-		</view>
-		<view class="info-section">
-			<text class="info-text">键盘高度: {{data.keyboardHeight}}px</text>
-			<text class="info-text">键盘状态: {{data.keyboardStatus}}</text>
-		</view>
-	</view>
+  <view class="flex-dir-row items-center justify-between p-20">
+    <text class="fs-17 fw-bold color-text-fff">对话输入</text>
+    <button id="toggle-keyboard-details" class="details-toggle" size="mini" @click="showDetails = !showDetails">{{ showDetails ? '隐藏状态' : '查看状态' }}</button>
+  </view>
+  <scroll-view class="page-content flex-1 box-border-box">
+    <view class="welcome items-center">
+      <view class="welcome-mark h-52 items-center justify-center radius-18"><text class="welcome-symbol fs-30">✦</text></view>
+      <text class="welcome-title fw-bold text-center color-text-fff">有什么可以帮你？</text>
+      <text class="welcome-description fs-14 lh-22 text-center mt-10">从一个问题、一段灵感开始</text>
+    </view>
+    <view v-if="showDetails" id="keyboard-details" class="keyboard-details u-p-16 radius-14 mb-16">
+      <text class="details-title fs-13 fw-bold mb-8">键盘状态</text>
+      <text class="info-text fs-12 lh-22">高度：{{data.keyboardHeight}}px · {{data.keyboardStatus}}</text>
+      <!-- #ifdef APP-HARMONY -->
+      <text class="info-text fs-12 lh-22">动画：{{keyboardAnimationData.keyboardAnimationState}}</text>
+      <text class="info-text fs-12 lh-22">动画高度：{{keyboardAnimationData.keyboardAnimationHeight}}px</text>
+      <text class="info-text fs-12 lh-22">事件数：{{keyboardAnimationData.keyboardAnimationEventCount}}</text>
+      <text class="info-text fs-12 lh-22">最近事件：{{keyboardAnimationData.keyboardAnimationLog}}</text>
+      <!-- #endif -->
+    </view>
+  </scroll-view>
+  <!-- #ifdef APP-HARMONY -->
+  <view id="keyboard-animation-panel" class="keyboard-panel pos-absolute left-0 right-0" :style="keyboardPanelStyle">
+    <view class="composer p-14 bg-list-2d2d2d" @click="focusInput">
+      <input id="uni-input-box" class="w-full h-42 fs-16 bg-list-2d2d2d color-text-fff" type="text" v-model="data.inputValue"
+        placeholder="发消息，或聊聊你的想法…" placeholder-class="composer-hint" confirm-type="done"
+        :focus="data.isFocus" :adjust-position="false" :hold-keyboard="true"
+        @click.stop @focus="data.isFocus = true" @blur="data.isFocus = false" @confirm="hideKeyboard" />
+      <view class="flex-dir-row items-center justify-between mt-8">
+        <text id="keyboard-composer-hint" class="composer-hint">键盘跟随 · 动画示例</text>
+        <button id="keyboard-dismiss" class="dismiss-button" size="mini" @click.stop="hideKeyboard">收起键盘</button>
+      </view>
+    </view>
+  </view>
+  <!-- #endif -->
+  <!-- #ifndef APP-HARMONY -->
+  <view class="keyboard-panel keyboard-panel-static left-0 right-0 pos-relative">
+    <view class="composer p-14 bg-list-2d2d2d" @click="focusInput">
+      <input id="uni-input-box" class="w-full h-42 fs-16 bg-list-2d2d2d color-text-fff" type="text" v-model="data.inputValue"
+        placeholder="发消息，或聊聊你的想法…" placeholder-class="composer-hint" confirm-type="done"
+        :focus="data.isFocus" :hold-keyboard="true"
+        @click.stop @focus="data.isFocus = true" @blur="data.isFocus = false" @confirm="hideKeyboard" />
+      <view class="flex-dir-row items-center justify-between mt-8">
+        <text id="keyboard-composer-hint" class="composer-hint">键盘交互示例</text>
+        <button id="keyboard-dismiss" class="dismiss-button" size="mini" @click.stop="hideKeyboard">收起键盘</button>
+      </view>
+    </view>
+  </view>
+  <!-- #endif -->
 </template>
 
 <script setup lang="ts">
 
-type DataType = {
-  inputValue: string,
-  isFocus: boolean,
-  keyboardHeight: number,
-  keyboardStatus: string,
-}
+const showDetails = ref(true)
 
 // 使用reactive包装数据，便于自动化测试获取
 const data = reactive({
@@ -26,66 +60,168 @@ const data = reactive({
   isFocus: false,
   keyboardHeight: 0,
   keyboardStatus: '未显示',
-} as DataType)
+})
+
+// #ifdef APP-HARMONY
+let keyboardHeightChangeId : number | null = null
+const keyboardBottomSafeArea = uni.getWindowInfo().safeAreaInsets.bottom
+const keyboardAnimationData = reactive({
+  keyboardAnimationHeight: 0,
+  keyboardAnimationState: '未开始',
+  keyboardAnimationEventCount: 0,
+  keyboardAnimationLog: '无'
+})
+const keyboardPanelStyle = computed(() => ({
+  bottom: `${keyboardBottomSafeArea}px`,
+  // 面板原本已位于安全区上方，不重复计算安全区；回调已平滑，无需再加 transition。
+  transform: `translateY(-${Math.max(0, keyboardAnimationData.keyboardAnimationHeight - keyboardBottomSafeArea)}px)`
+}))
+
+function getKeyboardPanelBottom() : number {
+  return uni.getElementById('keyboard-animation-panel')?.getBoundingClientRect()?.bottom ?? -1
+}
+
+const keyboardAnimationChangeCallback = (res : OnKeyboardAnimationChangeCallbackResult) => {
+  console.log('res.state: ',res.state);
+  keyboardAnimationData.keyboardAnimationHeight = res.height;
+  keyboardAnimationData.keyboardAnimationState = res.state;
+  keyboardAnimationData.keyboardAnimationEventCount += 1;
+  keyboardAnimationData.keyboardAnimationLog = `${res.state}:${res.height.toFixed(1)}`;
+};
+// #endif
+
+function focusInput() {
+  if (data.isFocus) return
+  data.isFocus = true
+}
 
 function hideKeyboard() {
+  data.isFocus = false;
   uni.hideKeyboard();
 }
 
 onLoad(() => {
   // 监听键盘高度变化
-  uni.onKeyboardHeightChange(res => {
+  const keyboardHeightChangeCallback = (res : OnKeyboardHeightChangeCallbackResult) => {
     data.keyboardHeight = res.height;
     data.keyboardStatus = res.height > 0 ? '显示中' : '已隐藏';
-  });
+  };
+  // #ifdef APP-HARMONY
+  keyboardHeightChangeId = uni.onKeyboardHeightChange(keyboardHeightChangeCallback);
+  // #endif
+  // #ifndef APP-HARMONY
+  uni.onKeyboardHeightChange(keyboardHeightChangeCallback);
+  // #endif
+  // #ifdef APP-HARMONY
+  uni.onKeyboardAnimationChange(keyboardAnimationChangeCallback);
+  // #endif
 })
 
 onUnload(() => {
   // 页面卸载时移除监听
-  uni.offKeyboardHeightChange();
+	// #ifdef APP-HARMONY
+  if (keyboardHeightChangeId != null) {
+    uni.offKeyboardHeightChange(keyboardHeightChangeId);
+    keyboardHeightChangeId = null;
+  }
+  uni.offKeyboardAnimationChange(keyboardAnimationChangeCallback);
+	// #endif
+	// #ifndef APP-HARMONY
+	uni.offKeyboardHeightChange();
+	// #endif
 })
 
 defineExpose({
   data,
+  // #ifdef APP-HARMONY
+  keyboardAnimationData,
+  keyboardBottomSafeArea,
+  getKeyboardPanelBottom,
+  // #endif
   hideKeyboard
 })
 </script>
 
 <style>
-.container {
-	--keyboard-border-color: #ccc;
-	--keyboard-text-color: #333;
-	padding: 20px;
+.details-toggle,
+.dismiss-button {
+	margin: 0;
+	padding: 0 12px;
+	font-size: 12px;
+	line-height: 30px;
+	border: 0;
+	border-radius: 15px;
+	background-color: #eceef0;
+	color: #626973;
 }
-.input-section {
-	margin-bottom: 20px;
+.page-content {
+	padding: 0 20px;
+	margin-bottom: 150px;
 }
-.input-box {
-	width: 100%;
-	height: 40px;
-	border: 1px solid var(--keyboard-border-color, #ccc);
-	border-radius: 4px;
-	padding: 0 10px;
-	margin-bottom: 10px;
+.welcome {
+	padding: 48px 0 32px;
 }
-.btn {
-	background-color: #007AFF;
-	color: #fff;
+.welcome-mark {
+	width: 52px;
+	background-color: #e7ebe8;
+	margin-bottom: 22px;
 }
-.info-section {
-	margin-top: 20px;
+.welcome-symbol {
+	color: #526c5c;
+}
+.welcome-title {
+	font-size: 23px;
+}
+.welcome-description {
+	color: #858c96;
+}
+.keyboard-details {
+	background-color: #eceef0;
+}
+.details-title {
+	color: #626973;
 }
 .info-text {
-	width: 100%;
-	margin-bottom: 10px;
-	font-size: 16px;
-	color: var(--keyboard-text-color, #333);
+	color: #858c96;
+}
+.keyboard-panel {
+	padding: 10px 16px;
+	background-color: var(--page-background-color, #efeff4);
+}
+.keyboard-panel-static {
+	padding-bottom: calc(10px + var(--uni-safe-area-inset-bottom, 0px));
+}
+.composer {
+	border: 1px solid #e2e5e8;
+	border-radius: 22px;
+  border-color: var(--border-color, rgba(255, 255, 255, 0.1));
+}
+.composer-hint {
+	font-size: 12px;
+	color: #858c96;
 }
 
 @media (prefers-color-scheme: dark) {
-	.container {
-		--keyboard-border-color: rgba(255, 255, 255, 0.1);
-		--keyboard-text-color: #ffffff;
+	.welcome-mark {
+		background-color: #29352f;
+	}
+	.welcome-symbol {
+		color: #aac4b3;
+	}
+	.details-toggle,
+	.dismiss-button,
+	.keyboard-details {
+		background-color: var(--active-background-color, #3b3b3b);
+	}
+	.details-toggle,
+	.dismiss-button,
+	.details-title {
+		color: var(--text-color, #ffffff);
+	}
+	.welcome-description,
+	.info-text,
+	.composer-hint {
+		color: #e2e2e2;
 	}
 }
 </style>

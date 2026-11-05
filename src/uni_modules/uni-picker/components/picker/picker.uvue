@@ -4,8 +4,8 @@
     </view>
 </template>
 
-<script setup lang="uts">
-    import { UniPickerElement, UniPickerChangeEvent, UniPickerColumnChangeEvent, UniPickerCancelEvent } from './global.uts'
+<script setup lang="ts">
+    import { UniPickerElement, UniPickerChangeEvent, UniPickerColumnChangeEvent, UniPickerCancelEvent } from './global.ts'
 
     const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`
     const baseEventName = `uni_picker_${uuid}`

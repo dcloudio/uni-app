@@ -1,5 +1,5 @@
 <template>
-    <button type="primary" style="margin: 20px;" @tap="go">跳转系统授权管理页</button>
+    <button type="primary" class="m-20" @tap="go">跳转系统授权管理页</button>
 </template>
 
 <script setup lang="ts">
@@ -15,7 +15,3 @@
     go
   })
 </script>
-
-<style>
-
-</style>

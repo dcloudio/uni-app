@@ -210,8 +210,8 @@
   <!-- #endif -->
 </template>
 
-<script setup lang="uts">
-  import { formatTime as _formatTime } from './utils.uts';
+<script setup lang="ts">
+  import { formatTime as _formatTime } from './utils.ts';
   import {
     UniVideoTimeUpdateEvent,
     UniVideoFullScreenChangeEvent,
@@ -221,14 +221,14 @@
     UniVideoEvent,
     UniVideoErrorEvent,
     UniVideoErrorEventDetail
-  } from './global.uts';
+  } from './global.ts';
   // #ifdef APP-HARMONY && VUE3-VAPOR
   import { AVVolumePanelOptions } from '@/uni_modules/uni-video';
   // #endif
   import Danmaku from './danmaku.uvue';
-  import { DanmakuTask } from './danmakuTypes.uts'
+  import { DanmakuTask } from './danmakuTypes.ts'
   // #ifdef VUE3-VAPOR
-  import { UniVideoRecycleEvent, UniVideoRecycleEventDetail, UniVideoReuseEvent, UniVideoReuseEventDetail } from './global.uts'
+  import { UniVideoRecycleEvent, UniVideoRecycleEventDetail, UniVideoReuseEvent, UniVideoReuseEventDetail } from './global.ts'
   // #endif
   import { Video, ObjectFit, Danmu, BuilderVideoOptions, BuilderVideoParams, AudioManager, Brightness, UniVideoElement, RequestFullScreenOptions } from '@/uni_modules/uni-video';
 
@@ -1791,7 +1791,16 @@
       time: 0,
       index: -1
     };
-    const danmuList: Danmu[] = Array.isArray(props.danmuList) ? JSON.parseArray<Danmu>(JSON.stringify(props.danmuList)) ?? [] : [];
+    let danmuList: Danmu[] = [];
+    if (Array.isArray(props.danmuList)) {
+      // 保留深拷贝，避免与外部共享弹幕对象；非 Vapor 保留 UTS 强类型解析。
+      // #ifndef VUE3-VAPOR
+      danmuList = JSON.parseArray<Danmu>(JSON.stringify(props.danmuList)) ?? [];
+      // #endif
+      // #ifdef VUE3-VAPOR
+      danmuList = JSON.parse(JSON.stringify(props.danmuList)) as Danmu[];
+      // #endif
+    }
     danmuList.sort(function (a: Danmu, b: Danmu) {
       return (a.time ?? 0) - (b.time ?? 0);
     });

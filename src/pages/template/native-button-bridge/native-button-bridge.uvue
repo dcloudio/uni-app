@@ -1,7 +1,5 @@
 <template>
-  <view>
     <uts-button>uts button</uts-button>
-  </view>
 </template>
 
 <script setup lang="ts">
@@ -11,7 +9,3 @@
    * @optimization: 通过最小页面结构隔离桥接能力验证，避免其他布局或状态逻辑干扰原生组件接入结果。
    */
 </script>
-
-<style>
-
-</style>

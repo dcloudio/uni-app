@@ -1,8 +1,6 @@
 <template>
-  <view>
     <text>当前电量：{{data.level}}%</text>
     <text>是否充电中：{{data.isCharging}}</text>
-  </view>
 </template>
 
 <script setup lang="ts">

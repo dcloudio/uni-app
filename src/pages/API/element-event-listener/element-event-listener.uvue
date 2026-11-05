@@ -1,23 +1,23 @@
 <template>
-	<view class="page">
-		<text class="title">UniElement EventListener 示例</text>
-		<text class="desc">点击下方红色区域前，先注册 click 监听；移除后再次点击将不再计数。</text>
-		<text class="support-text">{{ data.supportText }}</text>
+	<view class="page u-p-15">
+		<text class="fs-18 fw-bold title">UniElement EventListener 示例</text>
+		<text class="mt-10 lh-22 desc">点击下方红色区域前，先注册 click 监听；移除后再次点击将不再计数。</text>
+		<text class="mt-10 color-007aff lh-22">{{ data.supportText }}</text>
 
-		<view ref="targetRef" class="listener-target">
-			<text class="listener-target-text">点按这里触发元素 click 事件</text>
+		<view ref="targetRef" class="mt-16 radius-10 listener-target">
+			<text class="color-fff">点按这里触发元素 click 事件</text>
 		</view>
 
-		<view class="panel">
-			<text class="panel-text">监听状态：{{ data.listenerStatusText }}</text>
-			<text class="panel-text">触发次数：{{ data.triggerCount }}</text>
-			<text class="panel-text">最近事件：{{ data.lastEventType }}</text>
-			<text class="panel-text">最近结果：{{ data.lastAction }}</text>
+		<view class="mt-16 p-12 radius-10 panel">
+			<text class="mt-6 panel-text">监听状态：{{ data.listenerStatusText }}</text>
+			<text class="mt-6 panel-text">触发次数：{{ data.triggerCount }}</text>
+			<text class="mt-6 panel-text">最近事件：{{ data.lastEventType }}</text>
+			<text class="mt-6 panel-text">最近结果：{{ data.lastAction }}</text>
 		</view>
 
-		<text class="button btn-add" @click="add">addEventListener</text>
-		<text class="button btn-remove" @click="remove">removeEventListener</text>
-		<text class="button btn-reset" @click="reset">reset</text>
+		<text class="pos-relative box-border-box radius-5 overflow-hidden bg-007aff border-style-solid color-fff mt-15 button border-width-0_5" @click="add">addEventListener</text>
+		<text class="pos-relative box-border-box radius-5 overflow-hidden bg-007aff border-style-solid color-fff mt-15 button border-width-0_5" @click="remove">removeEventListener</text>
+		<text class="pos-relative box-border-box radius-5 overflow-hidden bg-007aff border-style-solid color-fff mt-15 button border-width-0_5" @click="reset">reset</text>
 	</view>
 </template>
 
@@ -112,63 +112,30 @@
 </script>
 
 <style>
-	.page {
-		padding: 15px;
-	}
-
 	.title {
-		font-size: 18px;
-		font-weight: bold;
 		color: var(--event-title-color, #222222);
 	}
 
 	.desc {
-		margin-top: 10px;
 		color: var(--event-desc-color, #666666);
-		line-height: 22px;
-	}
-
-	.support-text {
-		margin-top: 10px;
-		color: #007aff;
-		line-height: 22px;
 	}
 
 	.listener-target {
-		margin-top: 16px;
 		padding: 50px 12px;
-		border-radius: 10px;
 		background-color: #f04f4f;
 	}
 
-	.listener-target-text {
-		color: #ffffff;
-	}
-
 	.panel {
-		margin-top: 16px;
-		padding: 12px;
-		border-radius: 10px;
 		background-color: var(--event-panel-background, #f5f7fa);
 	}
 
 	.panel-text {
-		margin-top: 6px;
 		color: var(--event-panel-text-color, #333333);
 	}
 
 	.button {
-		position: relative;
-		box-sizing: border-box;
-		border-radius: 5px;
-		overflow: hidden;
-		background-color: #007aff;
-		border-style: solid;
-		border-width: 0.5px;
 		border-color: rgba(0, 0, 0, 0.2);
-		color: #ffffff;
 		padding: 10px 5px;
-		margin-top: 15px;
 	}
 
 	@media (prefers-color-scheme: dark) {

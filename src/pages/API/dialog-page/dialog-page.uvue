@@ -1,79 +1,81 @@
 <template>
   <page-intro content="本页演示 dialog 弹窗与页面信息：展示 pageBody、safeAreaInsets、窗口尺寸等；通过按钮跳转下一页、打开各 dialog 示例（含错误路径、triggerParentHide、页面样式等）。"></page-intro>
-  <view class="uni-padding-wrap">
-    <view class="uni-common-mt flex-row" v-if="data.pageBody != null"><text class="dialog-page-text">pageBody: {</text>
-      <text class="dialog-page-text">top: </text><text id="page-body-top" class="dialog-page-text">{{data.pageBody!.top}}</text><text class="dialog-page-text">,</text>
-      <text class="dialog-page-text">right: </text><text id="page-body-right" class="dialog-page-text">{{data.pageBody!.right}}</text><text class="dialog-page-text">,</text>
-      <text class="dialog-page-text">bottom: </text><text id="page-body-bottom" class="dialog-page-text">{{data.pageBody!.bottom}}</text><text class="dialog-page-text">,</text>
-      <text class="dialog-page-text">left: </text><text id="page-body-left" class="dialog-page-text">{{data.pageBody!.left}}</text><text class="dialog-page-text">,</text>
-      <text class="dialog-page-text">width: </text><text id="page-body-width" class="dialog-page-text">{{data.pageBody!.width}}</text><text class="dialog-page-text">,</text>
-      <text class="dialog-page-text">height: </text><text id="page-body-height" class="dialog-page-text">{{data.pageBody!.height}}</text>
-      <text class="dialog-page-text">}</text>
+  <view class="pb-safe-area-inset-bottom p-0-15">
+    <view class="mt-15 flex-dir-row flex-wrap-wrap" v-if="data.pageBody != null"><text class="color-text-333">pageBody: {</text>
+      <text class="color-text-333">top: </text><text id="page-body-top" class="color-text-333">{{data.pageBody!.top}}</text><text class="color-text-333">,</text>
+      <text class="color-text-333">right: </text><text id="page-body-right" class="color-text-333">{{data.pageBody!.right}}</text><text class="color-text-333">,</text>
+      <text class="color-text-333">bottom: </text><text id="page-body-bottom" class="color-text-333">{{data.pageBody!.bottom}}</text><text class="color-text-333">,</text>
+      <text class="color-text-333">left: </text><text id="page-body-left" class="color-text-333">{{data.pageBody!.left}}</text><text class="color-text-333">,</text>
+      <text class="color-text-333">width: </text><text id="page-body-width" class="color-text-333">{{data.pageBody!.width}}</text><text class="color-text-333">,</text>
+      <text class="color-text-333">height: </text><text id="page-body-height" class="color-text-333">{{data.pageBody!.height}}</text>
+      <text class="color-text-333">}</text>
     </view>
-    <view class="uni-common-mt flex-row" v-if="data.safeAreaInsets != null"><text class="dialog-page-text">safeAreaInsets: {</text>
-      <text class="dialog-page-text">top: </text><text id="page-safe-area-insets-top" class="dialog-page-text">{{data.safeAreaInsets!.top}}</text><text class="dialog-page-text">,</text>
-      <text class="dialog-page-text">right: </text><text id="page-safe-area-insets-right" class="dialog-page-text">{{data.safeAreaInsets!.right}}</text><text class="dialog-page-text">,</text>
-      <text class="dialog-page-text">bottom: </text><text id="page-safe-area-insets-bottom" class="dialog-page-text">{{data.safeAreaInsets!.bottom}}</text><text class="dialog-page-text">,</text>
-      <text class="dialog-page-text">left: </text><text id="page-safe-area-insets-left" class="dialog-page-text">{{data.safeAreaInsets!.left}}</text><text class="dialog-page-text">}</text>
+    <view class="mt-15 flex-dir-row flex-wrap-wrap" v-if="data.safeAreaInsets != null"><text class="color-text-333">safeAreaInsets: {</text>
+      <text class="color-text-333">top: </text><text id="page-safe-area-insets-top" class="color-text-333">{{data.safeAreaInsets!.top}}</text><text class="color-text-333">,</text>
+      <text class="color-text-333">right: </text><text id="page-safe-area-insets-right" class="color-text-333">{{data.safeAreaInsets!.right}}</text><text class="color-text-333">,</text>
+      <text class="color-text-333">bottom: </text><text id="page-safe-area-insets-bottom" class="color-text-333">{{data.safeAreaInsets!.bottom}}</text><text class="color-text-333">,</text>
+      <text class="color-text-333">left: </text><text id="page-safe-area-insets-left" class="color-text-333">{{data.safeAreaInsets!.left}}</text><text class="color-text-333">}</text>
     </view>
-    <!-- #ifdef APP-ANDROID || APP-IOS || APP-HARMONY || WEB -->
-    <view class="uni-common-mt flex-row" v-if="data.width != null"><text class="dialog-page-text">width: </text><text id="page-width" class="dialog-page-text">{{data.width!}}</text>
+    <view class="mt-15 flex-dir-row flex-wrap-wrap" v-if="data.width != null"><text class="color-text-333">width: </text><text id="page-width" class="color-text-333">{{data.width!}}</text>
     </view>
-    <view class="uni-common-mt flex-row" v-if="data.height != null"><text class="dialog-page-text">height: </text><text id="page-height" class="dialog-page-text">{{data.height!}}</text>
+    <view class="mt-15 flex-dir-row flex-wrap-wrap" v-if="data.height != null"><text class="color-text-333">height: </text><text id="page-height" class="color-text-333">{{data.height!}}</text>
     </view>
-    <view class="uni-common-mt flex-row" v-if="data.statusBarHeight != null"><text class="dialog-page-text">statusBarHeight: </text><text id="page-statusBarHeight" class="dialog-page-text">{{data.statusBarHeight!}}</text>
+    <view class="mt-15 flex-dir-row flex-wrap-wrap" v-if="data.statusBarHeight != null"><text class="color-text-333">statusBarHeight: </text><text id="page-statusBarHeight" class="color-text-333">{{data.statusBarHeight!}}</text>
     </view>
-    <!-- #endif -->
-    <button class="uni-common-mt" id="go-next-page" @click="goNextPage">
+    <button class="mt-15" id="go-next-page" @click="goNextPage">
       go next page
     </button>
-    <button class="uni-common-mt" id="open-dialog1" @click="openDialog1">
+    <button class="mt-15" id="open-dialog1" @click="openDialog1">
       open dialog 1
     </button>
-    <button class="uni-common-mt" id="open-dialog-navigation-bar-text-style" @click="openDialogNavigationBarTextStyle">
+    <button class="mt-15" id="open-dialog-navigation-bar-text-style" @click="openDialogNavigationBarTextStyle">
       open dialog test navigationBarTextStyle restore
     </button>
-    <button class="uni-common-mt" id="open-dialog11" @click="openDialog11">
+    <button class="mt-15" id="open-dialog11" @click="openDialog11">
       open dialog 1-1
     </button>
-    <button class="uni-common-mt" id="open-dialog1-wrong-path" @click="openDialog1WrongPath">
+    <button class="mt-15" id="open-dialog1-wrong-path" @click="openDialog1WrongPath">
       open dialog page 1 with wrong path
     </button>
-    <button class="uni-common-mt" id="go-next-page-open-dialog1" @click="goNextPageOpenDialog1">
+    <button class="mt-15" id="go-next-page-open-dialog1" @click="goNextPageOpenDialog1">
       go next page & open dialog1
     </button>
-    <button class="uni-common-mt" id="open-dialog3" @click="openDialog3">
+    <button class="mt-15" id="open-dialog3" @click="openDialog3">
       open dialog 3 test page style
     </button>
-    <button class="uni-common-mt" id="open-dialog4" @click="openDialogWithTriggerParentHide">
+    <button class="mt-15" id="open-dialog4" @click="openDialogWithTriggerParentHide">
       openDialog with triggerParentHide
     </button>
-    <button class="uni-common-mt" id="open-dialog5" @click="openDialogCheckMoreAttribute">
+    <button class="mt-15" id="open-dialog5" @click="openDialogCheckMoreAttribute">
       openDialog check more attribute
     </button>
-    <button class="uni-common-mt" id="open-dialog1-with-relative-path" @click="openDialogWithRelativePath">
+    <button class="mt-15" id="open-dialog1-with-relative-path" @click="openDialogWithRelativePath">
       openDialog with relative path
     </button>
-    <button class="uni-common-mt" id="open-dialog6" @click="openDialogCheckSetNavigationBarColor">
+    <button class="mt-15" id="open-dialog6" @click="openDialogCheckSetNavigationBarColor">
       openDialog check setNavigationBarColor
     </button>
-    <button class="uni-common-mt" @click="openDialogWithTextarea">
+    <button class="mt-15" @click="openDialogWithTextarea">
       openDialog with textarea
     </button>
-    <button class="uni-common-mt" @click="openDialogWithInput">
+    <button class="mt-15" @click="openDialogWithInput">
       openDialog with input
     </button>
-    <text class="uni-common-mt choose-open-animation-type-title dialog-page-text">choose open dialogPage animationType</text>
-    <radio-group class="choose-open-animation-type-radio-group" @change="handleOpenAnimationType">
-      <view class="ml-10 uni-common-mt dialog-page-radio" v-for="item in data.openAnimationTypeList" :key="item">
-        <radio :value="item" :checked="data.openAnimationType == item" />
-        <text>{{ item }}</text>
-      </view>
-    </radio-group>
+    <text class="mt-15 fw-bold color-text-333">choose open dialogPage animationType</text>
+    <enum-data-checkbox
+      :model-value="data.openAnimationType"
+      :items="openAnimationOptions"
+      mode="default"
+      :show-toast="false"
+      @change="handleOpenAnimationType"
+    />
   </view>
 </template>
 
 <script setup lang="ts">
+  import { createEnumItems } from '@/components/enum-data-checkbox/enum-data-checkbox-types'
+  const openAnimationOptions = computed(() => createEnumItems(data.openAnimationTypeList))
+
   import {
     state,
     setLifeCycleNum
@@ -137,11 +139,9 @@
     const currentPage = getCurrentPages()[getCurrentPages().length - 1]
     data.pageBody = currentPage.pageBody;
     data.safeAreaInsets = currentPage.safeAreaInsets
-    // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY || WEB
     data.width = currentPage.width
     data.height = currentPage.height
     data.statusBarHeight = currentPage.statusBarHeight
-    // #endif
   })
 
   onPageHide(() => {
@@ -379,8 +379,8 @@
   const openDialog3 = () => {
     uni.openDialogPage({ url: '/pages/API/dialog-page/dialog-3', animationType: data.openAnimationType })
   }
-  const handleOpenAnimationType = (e : RadioGroupChangeEvent) => {
-    data.openAnimationType = e.detail.value as OpenAnimationType
+  const handleOpenAnimationType = (value : OpenAnimationType) => {
+    data.openAnimationType = value as OpenAnimationType
   }
   const openDialogWithRelativePath = () => {
     uni.openDialogPage({
@@ -509,38 +509,5 @@
 <style>
   page {
     background-color: transparent;
-  }
-
-  .uni-padding-wrap{
-    padding-bottom: var(--uni-safe-area-inset-bottom);
-  }
-
-  .ml-10 {
-    margin-left: 10px;
-  }
-
-  .choose-open-animation-type-title {
-    font-weight: bold;
-  }
-
-  .choose-open-animation-type-radio-group {
-    flex-direction: row;
-    flex-wrap: wrap;
-    margin-bottom: 20px;
-  }
-  .flex-row{
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-
-  .dialog-page-text,
-  .dialog-page-radio {
-    color: var(--text-color, #333333);
-  }
-
-  .dialog-page-radio {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
   }
 </style>
