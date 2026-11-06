@@ -42,6 +42,9 @@ export function initApp(app: App) {
   } else {
     uniIdMixin(globalProperties)
   }
+  //#if !_X_VAPOR_ || _NODE_JS_
+  // Web Vapor 客户端不提供 $set，$callMethod 由运行时的实例属性表提供。
+  // 构建框架时直接排除注入，避免保留项目阶段无法裁剪的旧实现。
   if (__VUE_OPTIONS_API__) {
     globalProperties.$set = set
     //#if !_X_VAPOR_
@@ -49,6 +52,7 @@ export function initApp(app: App) {
     //#endif
     globalProperties.$callMethod = $callMethod
   }
+  //#endif
   //#if _X_VAPOR_ && !_NODE_JS_
   // Vapor 页面在模板创建前触发初始化，不依赖全局属性注入或 Options API 开关。
   setUniPageHooksInitializer(initVaporPageHooks)

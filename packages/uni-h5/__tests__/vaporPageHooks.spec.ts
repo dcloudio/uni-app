@@ -1,7 +1,7 @@
 import path from 'path'
 import ts from 'typescript'
 import jscc from 'rollup-plugin-jscc'
-import { set } from '../../uni-vue/src/componentInstance'
+import { $callMethod, set } from '../../uni-vue/src/componentInstance'
 
 const root = path.resolve(__dirname, '../../..')
 
@@ -59,7 +59,7 @@ describe('Web Vapor 页面生命周期框架接入', () => {
             },
             './componentOptions': { applyOptions },
             './componentOptions/hooks': { initHooks },
-            './componentInstance': { set },
+            './componentInstance': { $callMethod, set },
             './appConfig': { initOptionMergeStrategies },
             './uni-id-mixin': {},
             './reactivity': {},
@@ -75,10 +75,13 @@ describe('Web Vapor 页面生命周期框架接入', () => {
           config: { globalProperties: {}, optionMergeStrategies: {} },
         }
         initApp(app)
-        // Web Vapor 客户端关闭 Options API 后不再注入 $set，响应式对象直接赋值即可。
-        // 旧模式和服务端仍遵循原有开关。
+        // Web Vapor 客户端不依赖 Options API 开关，旧模式和服务端保持原行为。
+        const injectOptionsApi = (!vapor || ssr) && optionsApi
         expect((app.config.globalProperties as any).$set).toBe(
-          optionsApi ? set : undefined
+          injectOptionsApi ? set : undefined
+        )
+        expect((app.config.globalProperties as any).$callMethod).toBe(
+          injectOptionsApi ? $callMethod : undefined
         )
         expect(initOptionMergeStrategies).toHaveBeenCalledTimes(
           vapor && !ssr ? 0 : 1
