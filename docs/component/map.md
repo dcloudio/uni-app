@@ -20,10 +20,10 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.31; iOS: 4
 |图商		|Web|Android|iOS	|harmony|
 |:-:		|:-:|:-:		|:-:	|:-:		|
 |腾讯		|√	|4.31+	|4.31+|4.61+	|
-|高德		|√	|√		  |√	  |x			|
+|高德		|√	|√		  |√	  |插件 1.5.0+（仅 Vapor）|
 |Google	|√	|x			|x		|x			|
 
-App标准基座里地图是腾讯地图，如需高德地图版本，请在插件市场单独安装，需要自定义基座运行：[官方高德地图插件](https://ext.dcloud.net.cn/plugin?id=25947)。该插件基于独立的 `<amap>` 组件实现。Android平台自`1.4.0`起，本节列出的属性、事件和上下文 API 与内置 map 组件的功能对齐；iOS平台自`1.3.0`起功能对齐；Harmony 平台暂不支持。详见[高德地图插件功能差异](#amap)。
+App标准基座里地图是腾讯地图，如需高德地图版本，请在插件市场单独安装，需要自定义基座运行：[官方高德地图插件](https://ext.dcloud.net.cn/plugin?id=25947)。该插件基于独立的 `<amap>` 组件实现。Android平台自`1.4.0`起，本节列出的属性、事件和上下文 API 与内置 map 组件的功能对齐；iOS平台自`1.3.0`起功能对齐；Harmony 平台自`1.5.0`起支持，仅限 Vapor（bytecode）模式。详见[高德地图插件功能差异](#amap)。
 
 除了内置支持的图商，还可以在插件市场寻找更多地图解决方案：
 1. [插件市场的三方地图插件](https://ext.dcloud.net.cn/search?q=%E5%9C%B0%E5%9B%BE&orderBy=Relevance&uni-appx=1)
@@ -1059,21 +1059,41 @@ app平台目前还没有可视化界面，采用摇树机制，即调用地图�
 
 ### 高德地图@amap
 
-App平台的高德地图由插件市场 [官方高德地图插件 uni-map-amap](https://ext.dcloud.net.cn/plugin?id=25947) 提供，基于独立的 `<amap>` 组件实现，需要自定义基座运行，支持 Android、iOS 平台，暂不支持 Harmony。
+App平台的高德地图由插件市场 [官方高德地图插件 uni-map-amap](https://ext.dcloud.net.cn/plugin?id=25947) 提供，基于独立的 `<amap>` 组件实现，需要自定义基座运行，支持 Android、iOS 平台，自插件 `1.5.0` 起支持 Harmony（仅 Vapor）。
+
+Harmony 平台要求 HBuilderX 5.34 及以上、HarmonyOS API 20 及以上，仅支持 Vapor（bytecode）模式。
 
 高德地图插件与内置 map 组件（腾讯地图）的功能差异概览：
 
 | 差异项 | 内置 map 组件（腾讯地图） | 高德地图插件 |
 | :- | :-: | :-: |
-| 基础属性：longitude、latitude、scale、theme、min-scale、max-scale、layer-style、show-location、enable-satellite、enable-traffic | √ | Android：1.0.0+；iOS：1.1.0+；Harmony：x |
-| markers 标记点 | √ | Android：1.0.0+；iOS：1.1.0+；Harmony：x |
-| 覆盖物属性：polyline（`<amap>` 使用 `polylines`）、polygons、circles、controls、include-points | √ | Android：1.4.0+；iOS：1.3.0+；Harmony：x |
-| 手势视角属性：enable-3D、show-compass、enable-zoom、enable-scroll、enable-rotate、rotate、skew、enable-overlooking | √ | Android：1.4.0+；iOS：1.3.0+；Harmony：x |
-| 显示控制属性：show-scale、enable-poi、enable-building、enable-indoorMap | √ | Android：1.4.0+；iOS：1.3.0+；Harmony：x |
-| 事件：@markertap、@controltap、@regionchange、@updated、@tap、@callouttap、@anchorpointtap、@poitap | √ | Android：1.4.0+；iOS：1.3.0+；Harmony：x |
-| 上下文 API：`uni.createAmapContext` 及已实现的上下文方法 | √ | Android：1.4.0+；iOS：1.3.0+；Harmony：x |
+| 基础属性：longitude、latitude、scale、theme、min-scale、max-scale、layer-style、show-location、enable-satellite、enable-traffic | √ | Android：1.0.0+；iOS：1.1.0+；Harmony：1.5.0+ |
+| markers 标记点 | √ | Android：1.0.0+；iOS：1.1.0+；Harmony：1.5.0+ |
+| 覆盖物属性：polyline（`<amap>` 使用 `polylines`）、polygons、circles、controls、include-points | √ | Android：1.4.0+；iOS：1.3.0+；Harmony：1.5.0+ |
+| 手势视角属性：enable-3D、show-compass、enable-zoom、enable-scroll、enable-rotate、rotate、skew、enable-overlooking | √ | Android：1.4.0+；iOS：1.3.0+；Harmony：1.5.0+ |
+| 显示控制属性：show-scale、enable-poi、enable-building、enable-indoorMap | √ | Android：1.4.0+；iOS：1.3.0+；Harmony：1.5.0+ |
+| 事件：@markertap、@controltap、@regionchange、@updated、@tap、@callouttap、@anchorpointtap、@poitap | √ | Android：1.4.0+；iOS：1.3.0+；Harmony：1.5.0+ |
+| 上下文 API：`uni.createAmapContext` 及已实现的上下文方法 | √ | Android：1.4.0+；iOS：1.3.0+；Harmony：1.5.0+ |
 
 高德插件通过 `uni.createAmapContext(mapId, component)` 获取上下文，与内置腾讯地图的 `uni.createMapContext(mapId)` 不同。Android 1.4.0+ 和 iOS 1.3.0+ 支持 `getCenterLocation`、`moveToLocation`、`translateMarker`、`includePoints`、`getRegion`、`getScale`、`addMarkers`、`removeMarkers`、`moveAlong`、`addGroundOverlay`、`updateGroundOverlay`、`removeGroundOverlay`。
+
+Harmony 1.5.0+（仅 Vapor）支持上述全部上下文方法。
+
+高德地图插件在 Harmony 平台的行为差异：
+
+- `layer-style` 的值为 `2`～`6` 的整数时，选择对应的高德内置地图类型，而非腾讯个性化样式序号。样式优先级为：`enable-satellite=true` 或 `theme="satellite"` → 有效的非默认 `layer-style` → `theme`。
+- `translateMarker`、`moveAlong` 的成功回调表示动画请求已被接受，不代表动画结束；没有实际动画时也可能立即返回。
+- `updated` 在初始配置应用后的首次有效绘制时派发一次，不表示在线地图瓦片已全部加载完成。
+
+#### Harmony 平台 Map Key 配置
+
+在宿主项目 `harmony-configs/entry/src/main/module.json5` 的 `module.metadata` 数组中添加以下配置，保留已有配置项：
+
+```json5
+{ name: 'AMAP_API_KEY', value: 'your_harmony_api_key' }
+```
+
+将 `your_harmony_api_key` 替换为高德开放平台创建的 Harmony Key，确保应用标识和签名与申请 Key 时一致。Android、iOS 和 Harmony 的 Key 不能混用，修改配置后需要重新打包自定义基座。
 
 完整差异明细、插件版本支持情况及 API Key 配置说明，详见插件市场 [uni-map-amap 插件文档](https://ext.dcloud.net.cn/plugin?id=25947)。
 
