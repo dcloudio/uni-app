@@ -13,13 +13,14 @@ import {
 
 export const navigateTo = defineAsyncApi<API_TYPE_NAVIGATE_TO>(
   API_NAVIGATE_TO,
-  // @ts-expect-error
-  ({ url, events, isAutomatedTesting }, { resolve, reject }) => {
+  function navigateTo(args, callbacks) {
+    // @ts-expect-error 自动化测试的内部参数不属于公开 API 类型。
+    const { url, events, isAutomatedTesting } = args
+    const { resolve, reject } = callbacks
     if (!entryPageState.handledBeforeEntryPageRoutes) {
-      navigateToPagesBeforeEntryPages.push({
-        args: { type: API_NAVIGATE_TO, url, events, isAutomatedTesting },
-        resolve,
-        reject,
+      const options = { url, events, isAutomatedTesting }
+      navigateToPagesBeforeEntryPages.push(() => {
+        navigateTo(options, callbacks)
       })
       return
     }

@@ -28,13 +28,14 @@ export function removeLastPage() {
 
 export const redirectTo = defineAsyncApi<API_TYPE_REDIRECT_TO>(
   API_REDIRECT_TO,
-  // @ts-expect-error
-  ({ url, isAutomatedTesting }, { resolve, reject }) => {
+  function redirectTo(args, callbacks) {
+    // @ts-expect-error 自动化测试的内部参数不属于公开 API 类型。
+    const { url, isAutomatedTesting } = args
+    const { resolve, reject } = callbacks
     if (!entryPageState.handledBeforeEntryPageRoutes) {
-      redirectToPagesBeforeEntryPages.push({
-        args: { type: API_REDIRECT_TO, url, isAutomatedTesting },
-        resolve,
-        reject,
+      const options = { url, isAutomatedTesting }
+      redirectToPagesBeforeEntryPages.push(() => {
+        redirectTo(options, callbacks)
       })
       return
     }

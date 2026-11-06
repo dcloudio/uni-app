@@ -66,13 +66,14 @@ export function getTabBarPageId(url: string) {
 
 export const switchTab = defineAsyncApi<API_TYPE_SWITCH_TAB>(
   API_SWITCH_TAB,
-  // @ts-expect-error
-  ({ url, tabBarText, isAutomatedTesting }, { resolve, reject }) => {
+  function switchTab(args, callbacks) {
+    // @ts-expect-error 自动化测试的内部参数不属于公开 API 类型。
+    const { url, tabBarText, isAutomatedTesting } = args
+    const { resolve, reject } = callbacks
     if (!entryPageState.handledBeforeEntryPageRoutes) {
-      switchTabPagesBeforeEntryPages.push({
-        args: { type: API_SWITCH_TAB, url, tabBarText, isAutomatedTesting },
-        resolve,
-        reject,
+      const options = { url, tabBarText, isAutomatedTesting }
+      switchTabPagesBeforeEntryPages.push(() => {
+        switchTab(options, callbacks)
       })
       return
     }

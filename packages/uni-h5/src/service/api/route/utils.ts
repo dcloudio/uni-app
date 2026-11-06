@@ -14,9 +14,6 @@ import {
   redirectToPagesBeforeEntryPages,
   switchTabPagesBeforeEntryPages,
 } from '../../../framework/setup/page'
-import { getTabBarPageId, removeNonTabBarPages } from './switchTab'
-import { removeLastPage } from './redirectTo'
-import { removeAllPages } from './reLaunch'
 import {
   createWebAppRouteTransaction,
   discardWebAppRouteTransaction,
@@ -161,39 +158,15 @@ export function handleBeforeEntryPageRoutes() {
   }
   entryPageState.handledBeforeEntryPageRoutes = true
 
-  const navigateToPages = [...navigateToPagesBeforeEntryPages]
-  navigateToPagesBeforeEntryPages.length = 0
-  navigateToPages.forEach(({ args, resolve, reject }) =>
-    // @ts-expect-error
-    navigate(args).then(resolve).catch(reject)
-  )
-
-  const switchTabPages = [...switchTabPagesBeforeEntryPages]
-  switchTabPagesBeforeEntryPages.length = 0
-  switchTabPages.forEach(({ args, resolve, reject }) => {
-    if (!__X__) {
-      removeNonTabBarPages()
-    }
-    navigate(args, __X__ ? undefined : getTabBarPageId(args.url))
-      .then(resolve)
-      .catch(reject)
-  })
-
-  const redirectToPages = [...redirectToPagesBeforeEntryPages]
-  redirectToPagesBeforeEntryPages.length = 0
-  redirectToPages.forEach(({ args, resolve, reject }) => {
-    if (!__X__) {
-      removeLastPage()
-    }
-    navigate(args).then(resolve).catch(reject)
-  })
-
-  const reLaunchPages = [...reLaunchPagesBeforeEntryPages]
-  reLaunchPagesBeforeEntryPages.length = 0
-  reLaunchPages.forEach(({ args, resolve, reject }) => {
-    if (!__X__) {
-      removeAllPages()
-    }
-    navigate(args).then(resolve).catch(reject)
-  })
+  // 逐组复制并清空，保留原有分组顺序以及执行期间入队的处理语义。
+  for (const queue of [
+    navigateToPagesBeforeEntryPages,
+    switchTabPagesBeforeEntryPages,
+    redirectToPagesBeforeEntryPages,
+    reLaunchPagesBeforeEntryPages,
+  ]) {
+    const pending = [...queue]
+    queue.length = 0
+    pending.forEach((execute) => execute())
+  }
 }

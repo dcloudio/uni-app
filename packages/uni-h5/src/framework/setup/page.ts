@@ -30,7 +30,6 @@ import { usePageMeta } from './provide'
 import { usePageRoute } from './provide'
 //#endif
 import {
-  type NavigateOptions,
   type NavigateType,
   handleBeforeEntryPageRoutes,
 } from '../../service/api/route/utils'
@@ -57,30 +56,12 @@ export function getPage$BasePage(
 export const entryPageState = {
   handledBeforeEntryPageRoutes: false,
 }
-type NavigateToPage = {
-  args: NavigateOptions
-  resolve: (res: void | AsyncApiRes<UniNamespace.NavigateToOptions>) => void
-  reject: (errMsg?: string, errRes?: any) => void
-}
-type SwitchTabPage = {
-  args: NavigateOptions
-  resolve: (res: void | AsyncApiRes<UniNamespace.SwitchTabOptions>) => void
-  reject: (errMsg?: string, errRes?: any) => void
-}
-type RedirectToPage = {
-  args: NavigateOptions
-  resolve: (res: void | AsyncApiRes<UniNamespace.RedirectToOptions>) => void
-  reject: (errMsg?: string, errRes?: any) => void
-}
-type ReLaunchPage = {
-  args: NavigateOptions
-  resolve: (res: void | AsyncApiRes<UniNamespace.ReLaunchOptions>) => void
-  reject: (errMsg?: string, errRes?: any) => void
-}
-export const navigateToPagesBeforeEntryPages: NavigateToPage[] = []
-export const switchTabPagesBeforeEntryPages: SwitchTabPage[] = []
-export const redirectToPagesBeforeEntryPages: RedirectToPage[] = []
-export const reLaunchPagesBeforeEntryPages: ReLaunchPage[] = []
+// 首页就绪后按原有 API 分组顺序执行；导航实现由实际调用的 API 提供，避免初始化保留全部导航依赖。
+// 回调只调用 API 的内部实现，不重复执行参数校验和拦截器。
+export const navigateToPagesBeforeEntryPages: (() => void)[] = []
+export const switchTabPagesBeforeEntryPages: (() => void)[] = []
+export const redirectToPagesBeforeEntryPages: (() => void)[] = []
+export const reLaunchPagesBeforeEntryPages: (() => void)[] = []
 
 function pruneCurrentPages() {
   currentPagesMap.forEach((page, id) => {

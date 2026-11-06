@@ -22,13 +22,14 @@ export function removeAllPages() {
 
 export const reLaunch = defineAsyncApi<API_TYPE_RE_LAUNCH>(
   API_RE_LAUNCH,
-  // @ts-expect-error
-  ({ url, isAutomatedTesting }, { resolve, reject }) => {
+  function reLaunch(args, callbacks) {
+    // @ts-expect-error 自动化测试的内部参数不属于公开 API 类型。
+    const { url, isAutomatedTesting } = args
+    const { resolve, reject } = callbacks
     if (!entryPageState.handledBeforeEntryPageRoutes) {
-      reLaunchPagesBeforeEntryPages.push({
-        args: { type: API_RE_LAUNCH, url, isAutomatedTesting },
-        resolve,
-        reject,
+      const options = { url, isAutomatedTesting }
+      reLaunchPagesBeforeEntryPages.push(() => {
+        reLaunch(options, callbacks)
       })
       return
     }
