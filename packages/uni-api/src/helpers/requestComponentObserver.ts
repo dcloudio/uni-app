@@ -7,6 +7,12 @@ export interface RequestComponentObserverOptions {
   relativeToSelector?: string
 }
 
+// 组件查询作用域由调用端提供，可覆盖多根节点及根元素自身。
+interface ComponentObserverQueryScope {
+  querySelector(selector: string): Element | null
+  querySelectorAll(selector: string): ArrayLike<Element>
+}
+
 function normalizeRect(rect: DOMRect) {
   const { bottom, height, left, right, top, width } = rect || {}
   return {
@@ -40,7 +46,7 @@ function rectifyIntersectionRatio(entrie: IntersectionObserverEntry) {
 }
 
 export function requestComponentObserver(
-  $el: HTMLElement,
+  $el: HTMLElement | ComponentObserverQueryScope,
   options: UniApp.CreateIntersectionObserverOptions &
     RequestComponentObserverOptions,
   callback: WechatMiniprogram.IntersectionObserverObserveCallback
@@ -79,9 +85,10 @@ export function requestComponentObserver(
   } else {
     ;(intersectionObserver as any).USE_MUTATION_OBSERVER = false
     // 先查找当前元素是否匹配selector，如果不匹配，则查找子元素中是否匹配
-    const el = $el.matches(options.selector!)
-      ? $el
-      : $el.querySelector(options.selector!)
+    const el =
+      'matches' in $el && $el.matches(options.selector!)
+        ? $el
+        : $el.querySelector(options.selector!)
     if (!el) {
       console.warn(
         `Node ${options.selector} is not found. Intersection observer will not trigger.`
