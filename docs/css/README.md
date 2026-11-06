@@ -442,7 +442,6 @@ app平台由于暂不支持伪元素，字体图标需使用unicode直显方式�
 | [transition-duration](transition-duration.md) | Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): x |
 | [transition-property](transition-property.md) | Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): x |
 | [transition-timing-function](transition-timing-function.md) | Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): x |
-| [visibility](visibility.md) | Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): x |
 | [z-index](z-index.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
 
 
