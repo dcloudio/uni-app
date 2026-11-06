@@ -42,7 +42,7 @@ describe('Web Vapor 标签选择器', () => {
     ['list-view', 'div:where([uni-list-view])'],
     ['waterflow', 'div:where([uni-waterflow])'],
     ['match-media', 'div:where([uni-match-media])'],
-    ['v-uni-input', 'input:where([uni-input])'],
+    ['v-uni-input', 'div:where([uni-input])'],
     ['page', 'uni-page-body'],
   ])('%s 保留标签权重并匹配对应宿主', async (input, output) => {
     expect(await css(`${input} { color: red }`)).toBe(
@@ -68,10 +68,7 @@ describe('Web Vapor 标签选择器', () => {
   test('原生 HTML、自定义组件、框架标签和显式命名空间保持不变', async () => {
     const source =
       'div, span, img, .view, #text, my-card, uni-page-body, uni-progress, svg|image { color:red }'
-    const result = postcss.parse(await css(source))
-    expect(result.nodes.find((node) => node.type === 'rule')!.toString()).toBe(
-      source
-    )
+    expect(await css(source)).toBe(source)
   })
 
   test.each([

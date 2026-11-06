@@ -11,7 +11,6 @@ import {
 import { BG_PROPS } from './constants'
 import { adaptAlipayPageBackground } from './alipayPageBackground'
 import { isUniAppXWebVapor } from '../../x'
-import { transformVaporInputStyles } from './vaporInputStyles'
 
 export interface UniAppCssProcessorOptions {
   unit?: string // 目标单位，默认rem
@@ -77,7 +76,6 @@ function rewriteVaporTag(selector: selectorParser.Tag) {
   if (tag === 'text') host = 'span'
   else if (tag === 'image') host = 'img'
   else if (tag === 'canvas') host = 'canvas'
-  else if (tag === 'input') host = 'input'
   // Button、Navigator 会使用 View 或 Text 根，切换分支后仍须匹配。
   else if (tag === 'button' || tag === 'navigator') host = ':is(div,span)'
 
@@ -202,7 +200,6 @@ const uniapp = (opts?: UniAppCssProcessorOptions) => {
               })
             )
           }
-          if (isUniAppXWebVapor()) transformVaporInputStyles(root)
         },
       }
     },

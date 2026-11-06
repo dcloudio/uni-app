@@ -430,8 +430,7 @@ function useEvent(
   props: Props,
   trigger: CustomEventTrigger,
   triggerInput: Function,
-  beforeInput?: (event: Event, state: State, force?: boolean) => any,
-  native = false
+  beforeInput?: (event: Event, state: State) => any
 ) {
   function checkSelection() {
     const field = fieldRef.value
@@ -470,7 +469,6 @@ function useEvent(
     const field = fieldRef.value
     if (!field) return
     const onFocus = function (event: Event) {
-      if (native && props.disabled) return
       state.focus = true
       trigger('focus', event, {
         value: state.value,
@@ -481,10 +479,7 @@ function useEvent(
     }
     const onInput = function (event: Event, force?: boolean) {
       event.stopPropagation()
-      if (
-        isFunction(beforeInput) &&
-        beforeInput(event, state, force) === false
-      ) {
+      if (isFunction(beforeInput) && beforeInput(event, state) === false) {
         return
       }
       state.value = field.value
@@ -500,7 +495,6 @@ function useEvent(
       }
     }
     const onBlur = function (event: Event) {
-      if (native && props.disabled && !state.focus) return
       // iOS 输入法 compositionend 事件可能晚于 blur
       if (state.composing) {
         state.composing = false
@@ -519,7 +513,6 @@ function useEvent(
     field.addEventListener('input', onInput)
     field.addEventListener('compositionstart', (event) => {
       event.stopPropagation()
-      if (native && props.disabled) return
       state.composing = true
       _onComposition(event)
     })
@@ -528,8 +521,7 @@ function useEvent(
       if (state.composing) {
         state.composing = false
         // 部分输入法 compositionend 事件可能晚于 input
-        // 禁用触发的合成结束可能早于 blur，同样需要提交此前已经输入的内容。
-        onInput(event, native && !!props.disabled)
+        onInput(event)
       }
       _onComposition(event)
     })
@@ -544,33 +536,14 @@ function useEvent(
   }
   watch([() => state.selectionStart, () => state.selectionEnd], checkSelection)
   watch(() => state.cursor, checkCursor)
-  if (native) {
-    // 复用字段监听独立同步占位文本，只有原生节点变化时重新绑定事件。
-    watch(
-      [fieldRef, () => props.placeholder],
-      ([field, value], [previousField]) => {
-        if (field) {
-          if (value == null) {
-            if (field.hasAttribute('placeholder'))
-              field.removeAttribute('placeholder')
-          } else if (field.placeholder !== value) {
-            field.placeholder = value
-          }
-        }
-        if (field !== previousField) initField()
-      }
-    )
-  } else {
-    watch(() => fieldRef.value, initField)
-  }
+  watch(() => fieldRef.value, initField)
 }
 
 export function useField(
   props: Props,
   rootRef: Ref<HTMLElement | null>,
   emit: SetupContext['emit'],
-  beforeInput?: (event: Event, state: State, force?: boolean) => any,
-  native = false
+  beforeInput?: (event: Event, state: State) => any
 ) {
   UniViewJSBridgeSubscribe()
   const { fieldRef, state, trigger } = useBase(props, rootRef, emit)
@@ -583,7 +556,7 @@ export function useField(
   //#else
   useFormField('name', state)
   //#endif
-  useEvent(fieldRef, state, props, trigger, triggerInput, beforeInput, native)
+  useEvent(fieldRef, state, props, trigger, triggerInput, beforeInput)
 
   // Safari 14 以上修正禁用状态颜色
   // TODO fixDisabledColor 可以调整到beforeMount或mounted做修正，确保不影响SSR

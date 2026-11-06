@@ -15,7 +15,7 @@ import {
   props as fieldProps,
   useField,
 } from '../../helpers/useField'
-import { resolveDigitDecimalPoint, truncateInputNumber } from './utils'
+import { resolveDigitDecimalPoint } from './utils'
 import {
   fieldSelectionProps,
   useFieldSelection,
@@ -84,8 +84,7 @@ export const emits = ['confirm', ...fieldEmit]
 
 export function useInput(
   props: Props,
-  { emit, expose }: Pick<SetupContext, 'emit' | 'expose'>,
-  native = false
+  { emit, expose }: Pick<SetupContext, 'emit' | 'expose'>
 ) {
   const INPUT_TYPES = [
     'text',
@@ -96,7 +95,6 @@ export function useInput(
     'tel',
     'search',
     'email',
-    ...(native ? ['url'] : []),
   ]
   const AUTOCOMPLETES = ['off', 'one-time-code']
   const type = computed(() => {
@@ -160,116 +158,79 @@ export function useInput(
     }
     return inputmodeMap[props.type]
   })
-  let cache = native ? ref('') : useCache(props, type)
+  let cache = useCache(props, type)
   let resetCache: ResetCache = { fn: null }
   const rootRef: Ref<HTMLElement | null> = ref(null)
   const { fieldRef, state, scopedAttrsState, fixDisabledColor, trigger } =
-    useField(
-      props,
-      rootRef,
-      emit,
-      (event, state, force) => {
-        if (native) {
-          // 强制同步仅用于完成禁用前已开始的合成输入；禁用后的新输入仍拒绝。
-          if (props.disabled && !force) return false
-          const input = event.target as HTMLInputElement
-          // 原生 number 不支持 maxlength；在状态同步和事件派发前统一截断，含 0 和粘贴。
-          if (
-            type.value === 'number' &&
-            Number.isFinite(state.maxlength) &&
-            input.value.length > state.maxlength
-          ) {
-            input.value = truncateInputNumber(
-              input.value,
-              state.maxlength,
-              state.value
-            )
-          }
-        }
-        if (__X__) {
-          return
-        }
+    useField(props, rootRef, emit, (event, state) => {
+      if (__X__) {
+        return
+      }
 
-        const input = event.target as HTMLInputElement
-        if (type.value === 'number') {
-          // 数字类型输入错误时无法获取具体的值，自定义校验和纠正。
-          if (resetCache.fn) {
-            input.removeEventListener('blur', resetCache.fn)
-            resetCache.fn = null
-          }
-          if (input.validity && !input.validity.valid) {
-            if (
-              ((!cache.value || !input.value) &&
-                (event as InputEvent).data === '-') ||
-              (cache.value[0] === '-' &&
-                (event as InputEvent).inputType === 'deleteContentBackward')
-            ) {
-              cache.value = '-'
-              state.value = ''
-              resetCache.fn = () => {
-                cache.value = input.value = ''
-              }
-              input.addEventListener('blur', resetCache.fn)
-              return false
+      const input = event.target as HTMLInputElement
+      if (type.value === 'number') {
+        // 数字类型输入错误时无法获取具体的值，自定义校验和纠正。
+        if (resetCache.fn) {
+          input.removeEventListener('blur', resetCache.fn)
+          resetCache.fn = null
+        }
+        if (input.validity && !input.validity.valid) {
+          if (
+            ((!cache.value || !input.value) &&
+              (event as InputEvent).data === '-') ||
+            (cache.value[0] === '-' &&
+              (event as InputEvent).inputType === 'deleteContentBackward')
+          ) {
+            cache.value = '-'
+            state.value = ''
+            resetCache.fn = () => {
+              cache.value = input.value = ''
             }
-            // 处理小数点
-            const res = resolveDigitDecimalPoint(
-              event as InputEvent,
-              cache,
-              state,
-              input,
-              resetCache
-            )
-            if (typeof res === 'boolean') return res
-            cache.value =
-              state.value =
-              input.value =
-                cache.value === '-' ? '' : cache.value
-            // 输入非法字符不触发 input 事件
-            return false
-          } else {
-            // 处理小数点
-            const res = resolveDigitDecimalPoint(
-              event as InputEvent,
-              cache,
-              state,
-              input,
-              resetCache
-            )
-            if (typeof res === 'boolean') return res
-
-            cache.value = input.value
-          }
-
-          // type="number" 不支持 maxlength 属性，因此需要主动限制长度。
-          if (
-            state.maxlength > 0 &&
-            input.value.length > state.maxlength &&
-            !isPaste(event as InputEvent)
-          ) {
-            input.value = cache.value = state.value
+            input.addEventListener('blur', resetCache.fn)
             return false
           }
+          // 处理小数点
+          const res = resolveDigitDecimalPoint(
+            event as InputEvent,
+            cache,
+            state,
+            input,
+            resetCache
+          )
+          if (typeof res === 'boolean') return res
+          cache.value =
+            state.value =
+            input.value =
+              cache.value === '-' ? '' : cache.value
+          // 输入非法字符不触发 input 事件
+          return false
+        } else {
+          // 处理小数点
+          const res = resolveDigitDecimalPoint(
+            event as InputEvent,
+            cache,
+            state,
+            input,
+            resetCache
+          )
+          if (typeof res === 'boolean') return res
+
+          cache.value = input.value
         }
-      },
-      native
-    )
-  if (native) {
-    // 同时覆盖初始 value、受控更新以及动态 maxlength 的截断，避免渲染时清空数值。
-    watch(
-      [() => state.value, () => state.maxlength, type],
-      ([value, maxlength, inputType]) => {
-        if (inputType !== 'number') return
-        const normalized = truncateInputNumber(value, maxlength)
-        if (normalized !== value) state.value = normalized
-      },
-      { immediate: true, flush: 'sync' }
-    )
-  }
+
+        // type="number" 不支持 maxlength 属性，因此需要主动限制长度。
+        if (
+          state.maxlength > 0 &&
+          input.value.length > state.maxlength &&
+          !isPaste(event as InputEvent)
+        ) {
+          input.value = cache.value = state.value
+          return false
+        }
+      }
+    })
   const selectionRef =
-    __PLATFORM__ === 'h5' && !native
-      ? useFieldSelection(props, fieldRef)
-      : undefined
+    __PLATFORM__ === 'h5' ? useFieldSelection(props, fieldRef) : undefined
   watch(
     () => state.value,
     (value) => {
@@ -350,6 +311,5 @@ export function useInput(
     step,
     onKeyUpEnter,
     onInput,
-    trigger,
   }
 }

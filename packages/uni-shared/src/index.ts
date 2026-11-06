@@ -21,7 +21,6 @@ export * from './dom2/tags'
 export * from './dom2/dataset'
 export * from './dom2/elementPage'
 export * from './dom2/vue'
-export * from './dom2/inputStyle'
 
 export * from './node/locale'
 export * from './polyfill'

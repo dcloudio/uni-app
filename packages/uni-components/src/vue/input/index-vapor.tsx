@@ -1,11 +1,7 @@
-import { computed, watch } from 'vue'
-import { INPUT_PLACEHOLDER_STYLE_CLASS_PREFIX } from '@dcloudio/uni-shared'
+import { fieldSelectionProbeStyle } from '../../helpers/useFieldSelection'
+import { withModifiers } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
-import {
-  normalizeInputStyleClass,
-  useInputStyles,
-} from '../../helpers/useInputStyles'
-import { UniInputElement } from './element-vapor'
+import { UniInputElement, initInputElement } from './element-vapor'
 import { emits, props, useInput } from './useInput'
 
 export { UniInputElement }
@@ -13,8 +9,7 @@ export { UniInputElement }
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Input',
   props,
-  emits: ['change', ...emits],
-  externalClasses: ['placeholder-class', 'selection-class'],
+  emits,
   rootElement: { name: 'uni-input', class: UniInputElement },
   setup(props, context) {
     const {
@@ -22,90 +17,111 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       fieldRef,
       state,
       scopedAttrsState,
+      selectionRef,
       fixDisabledColor,
       type,
       autocomplete,
       inputmode,
+      cache,
       step,
       onKeyUpEnter,
-      trigger,
-    } = useInput(props, context, true)
-    const placeholderStyle = useInputStyles(props, fieldRef)
-    // 初值供首屏及 SSR 使用；后续由字段监听独立同步，不触发整组属性 diff。
-    const initialPlaceholder = props.placeholder
-    const readonly = computed(() => !!props.disabled && fixDisabledColor)
-    if (fixDisabledColor) {
-      // readonly 不会让已聚焦节点失焦；复用原生节点时需主动同步禁用行为。
-      watch(
-        readonly,
-        (disabled) => {
-          if (disabled) fieldRef.value?.blur()
-        },
-        { flush: 'post' }
-      )
-    }
-    const style = computed(() =>
-      props.cursorColor ? { caretColor: props.cursorColor } : {}
-    )
-    const setFieldRef = (el: HTMLInputElement | null) => {
-      rootRef.value = fieldRef.value = el
-    }
-    // 保持同一个原生节点，disabled、password 和 search 切换不会使外部 ref 失效。
-    return (
-      <input
-        uni-input=""
-        ref={setFieldRef}
-        {...scopedAttrsState.attrs}
-        class={
-          placeholderStyle.value
-            ? 'uni-input-input ' +
-              INPUT_PLACEHOLDER_STYLE_CLASS_PREFIX +
-              placeholderStyle.value
-            : 'uni-input-input'
-        }
-        data-uni-placeholder-class={normalizeInputStyleClass(
-          props.placeholderClass
+      onInput,
+    } = useInput(props, context)
+    // 分支内创建自己的输入 Block，避免搜索表单卸载后复用已经停止的响应式作用域。
+    const renderInput = () => (
+      <>
+        {props.disabled && fixDisabledColor ? (
+          <input
+            key="disabled-input"
+            ref={fieldRef}
+            value={state.value}
+            tabindex="-1"
+            readonly={!!props.disabled}
+            type={type.value}
+            maxlength={state.maxlength}
+            step={step.value}
+            class={
+              __PLATFORM__ === 'h5' && props.selectionClass
+                ? 'uni-input-input uni-field-selection'
+                : 'uni-input-input'
+            }
+            style={props.cursorColor ? { caretColor: props.cursorColor } : {}}
+            inputmode={inputmode.value}
+            // fix: 禁止 readonly 状态获取焦点
+            onFocus={(event: Event) =>
+              (event.target as HTMLInputElement).blur()
+            }
+          />
+        ) : (
+          <input
+            key="input"
+            ref={fieldRef}
+            // v-model 会导致 type 为 number 或 digit 时赋值为 number 类型
+            value={state.value}
+            onInput={withModifiers(onInput, ['stop'])}
+            disabled={!!props.disabled}
+            type={type.value}
+            maxlength={state.maxlength}
+            step={step.value}
+            enterkeyhint={props.confirmType}
+            pattern={props.type === 'number' ? '[0-9]*' : undefined}
+            class={
+              __PLATFORM__ === 'h5' && props.selectionClass
+                ? 'uni-input-input uni-field-selection'
+                : 'uni-input-input'
+            }
+            style={props.cursorColor ? { caretColor: props.cursorColor } : {}}
+            autocomplete={autocomplete.value}
+            onKeyup={onKeyUpEnter}
+            inputmode={inputmode.value}
+          />
         )}
-        data-uni-selection-class={normalizeInputStyleClass(
-          props.selectionClass
-        )}
-        data-uni-placeholder-style={placeholderStyle.value || undefined}
-        name={props.name}
-        value={state.value}
-        placeholder={initialPlaceholder}
-        disabled={!!props.disabled && !readonly.value}
-        readonly={readonly.value}
-        tabindex={readonly.value ? -1 : undefined}
-        type={type.value}
-        maxlength={
-          Number.isFinite(state.maxlength) ? state.maxlength : undefined
-        }
-        step={step.value}
-        enterkeyhint={props.confirmType}
-        pattern={props.type === 'number' ? '[0-9]*' : undefined}
-        autocomplete={autocomplete.value}
-        inputmode={inputmode.value}
-        style={style.value}
-        onFocus={(event: Event) => {
-          if (props.disabled) (event.target as HTMLInputElement).blur()
-        }}
-        onChange={(event: Event) => {
-          event.stopPropagation()
-          if (!props.disabled) {
-            trigger('change', event, {
-              value: (event.target as HTMLInputElement).value,
-            })
-          }
-        }}
-        onKeyup={(event: Event) => {
-          if (
-            !props.disabled &&
-            !state.composing &&
-            !(event as KeyboardEvent).isComposing
-          )
-            onKeyUpEnter(event)
-        }}
-      />
+      </>
     )
+    const root = (
+      <div uni-input="" uni-view="" ref={rootRef}>
+        <div class="uni-input-wrapper">
+          {__PLATFORM__ === 'h5' && props.selectionClass && (
+            <div
+              ref={selectionRef}
+              {...scopedAttrsState.attrs}
+              class={['uni-field-selection-probe', props.selectionClass]}
+              aria-hidden="true"
+              style={fieldSelectionProbeStyle}
+            />
+          )}
+          <div
+            v-show={
+              !(
+                state.value.length ||
+                cache.value === '-' ||
+                cache.value.includes('.')
+              )
+            }
+            {...scopedAttrsState.attrs}
+            style={props.placeholderStyle}
+            class={['uni-input-placeholder', props.placeholderClass]}
+          >
+            {props.placeholder}
+          </div>
+          {props.confirmType === 'search' ? (
+            <form
+              action=""
+              novalidate
+              onSubmit={(event) => event.preventDefault()}
+              class="uni-input-form"
+            >
+              {renderInput()}
+            </form>
+          ) : (
+            renderInput()
+          )}
+        </div>
+      </div>
+    )
+
+    // setup 仅执行一次，在外部 ref 可见前绑定根节点能力。
+    initInputElement(root)
+    return root
   },
 })

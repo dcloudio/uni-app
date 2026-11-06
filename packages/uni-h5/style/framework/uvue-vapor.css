@@ -4,12 +4,6 @@
  * VDOM 继续使用 uvue.css，组件样式路径保持原样。
  */
 
-/* 在按需组件和业务样式加载前固定默认层顺序。 */
-@layer uni-input-placeholder-inline-important, uni-input-placeholder-class, uni-field-selection;
-@layer uni-input-placeholder-class {
-  @layer uni-input-defaults;
-}
-
 html,
 body {
   font-family: -apple-system, HelveticaNeue;
@@ -54,10 +48,15 @@ uni-app.uni-app--showtabbar uni-page-wrapper::after {
 }
 
 /* input 布局对齐 App 端 */
-uni-app input:where([uni-input]) {
+uni-app div:where([uni-input]) {
   height: auto;
-  display: block;
+  display: flex;
   line-height: 1.4em;
+  /* 保留旧 input 的 flex 默认值，不继承基础 view 的纵向布局。 */
+  flex-direction: row;
+  align-items: normal;
+  align-content: normal;
+  justify-content: normal;
 }
 
 /* Textarea 保留旧宿主的尺寸、换行和布局默认值，内部类样式位于 style/vapor/textarea.css。 */
@@ -249,7 +248,7 @@ uni-app uni-top-window .uni-top-window {
 }
 
 /* 默认色放在组件根节点，支持通过 caret-color 和 CSS 变量覆盖。 */
-input:where([uni-input]),
+div:where([uni-input]),
 div:where([uni-textarea]) {
   caret-color: #3393e2;
 }

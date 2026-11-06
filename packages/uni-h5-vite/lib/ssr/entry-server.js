@@ -6,8 +6,6 @@ import {
   UNI_SSR_STORE,
   UNI_SSR_TITLE,
   UNI_SSR_GLOBAL_DATA,
-  UNI_SSR_INPUT_STYLES,
-  stringifyInputStyles,
 } from '@dcloudio/uni-shared'
 import { plugin } from '@dcloudio/uni-h5'
 import { getSsrGlobalData } from '@dcloudio/uni-app'
@@ -86,26 +84,16 @@ function renderAppContext(ctx) {
 }
 
 function renderHeadMeta(ctx) {
-  const styles = ctx[UNI_SSR_INPUT_STYLES]
-  // 原生占位样式随首屏进入 head；保留规则供尚未水合的异步组件使用。
-  const inputStyles = styles?.size
-    ? `<style data-uni-input-ssr-styles>${stringifyInputStyles(
-        styles.values()
-      )}</style>`
-    : ''
   if (!ctx.__teleportBuffers || !ctx.__teleportBuffers.head) {
-    return inputStyles
+    return ''
   }
-  return (
-    inputStyles +
-    ctx.__teleportBuffers.head
-      .map((buffer) =>
-        buffer
-          .toString()
-          .replace(/\s+data-v-[a-f0-9]{8}/gi, '')
-          .replace('<!--[-->', '')
-          .replace('<!--]--><!---->', '')
-      )
-      .join('\n')
-  )
+  return ctx.__teleportBuffers.head
+    .map((buffer) =>
+      buffer
+        .toString()
+        .replace(/\s+data-v-[a-f0-9]{8}/gi, '')
+        .replace('<!--[-->', '')
+        .replace('<!--]--><!---->', '')
+    )
+    .join('\n')
 }
