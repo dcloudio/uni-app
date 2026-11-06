@@ -759,46 +759,33 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。
 #### 微信分享 @shareweixin  
 使用 “微信 Open SDK for Android” 实现，使用前需到[微信开放平台](https://open.weixin.qq.com/)创建移动应用并在开发配置中正确配置`Android应用`的包名和签名。
 
-在uni-app x项目中使用此模块，需在manifest.json中配置：  
+在uni-app x项目中使用此模块，需在manifest.json中配置。
 
-- HBuilderX 5.08 及以上版本  
-  需通过 manifest.json 的`源码视图`在 "app-android" -> "distribute" -> "modules" -> "uni-share" 下添加 "weixin" 节点，如下示例：  
-  ```json
-  {
-    "app-android": {
-      "distribute": {
-        "modules": {
-          "uni-share":{
-            "weixin":{
-              "appid" : "%微信开放平台申请应用的APPID%"
-            }
+可视化界面操作在 “安卓App配置” 的 “可选模块配置” 勾选 “uni-share（分享）” 下的 “微信分享” 模块：
+
+![](https://web-ext-storage.dcloud.net.cn/uni-app-x/collocation/android_share_weixin.png)
+
+也可通过`源码视图`在 "app-android" -> "distribute" -> "modules" 下添加 "uni-share" 节点，如下示例：
+```json
+{
+  "app-android": {
+    "distribute": {
+      "modules": {
+        "uni-share":{
+          "weixin":{
+            "appid" : "%微信开放平台申请应用的APPID%"
           }
         }
       }
     }
   }
-  ```
+}
+```
 
 
 ### JS引擎
 蒸汽模式下 Android 平台业务逻辑代码运行在Google V8 JS 引擎中。  
 Google V8 引擎通过 Android NDK 编译为 .so 动态链接库，且需要针对多种 CPU 架构（如 armeabi-v7a、arm64-v8a 等）分别打包。为严格控制 APK 的安装包体积，构建时默认禁用了 ICU 模块（编译参数 v8_enable_i18n_support = false）。  
-
-在uni-app x项目中使用包含 ICU 功能的 V8 引擎，需在manifest.json中配置：  
-
-- HBuilderX 5.35 及以上版本  
-  需通过 manifest.json 的`源码视图`在 "app-android" -> "distribute" -> "modules" 下添加 "v8-icu" 节点，如下示例：  
-  ```json
-  {
-    "app-android": {
-      "distribute": {
-        "modules": {
-          "v8-icu": {}
-        }
-      }
-    }
-  }
-  ```
 
 启用该裁剪后，所有与国际化（i18n）、本地化格式化以及复杂 Unicode 字符处理相关的 API 与特性将被限制或禁用，具体影响如下：  
 + [Intl](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Intl) 全局对象不可用  
@@ -830,6 +817,31 @@ Google V8 引擎通过 Android NDK 编译为 .so 动态链接库，且需要针�
 + 正则表达式 Unicode 属性转义匹配受限  
   在正则表达式开启 u 或 v 标志（Unicode Mode）时，依赖 Unicode 属性匹配（Unicode Property Escapes）的功能会受到影响：  
   例如 \p{UnicodeProperty} 或 \p{Script=Han}（用于匹配汉字、特定语种字符集或 Emoji 属性分类）等语法，因缺乏 ICU 提供的 UCD 数据库支持，会导致引擎抛出 SyntaxError 或无法正确识别非 ASCII 字符的属性。  
+
+#### 启用包含ICU功能的JS引擎
+
+> HBuilder5.36 及以上版本支持配置使用包含 ICU 功能的 V8 JS引擎
+
+在uni-app x项目中使用包含 ICU 功能的 V8 JS引擎，需在manifest.json中配置：  
+
+可视化界面操作在 “安卓App配置” 的 “可选模块配置” 勾选 “v8-icu（支持ICU的JS引擎）”模块：
+
+![](https://web-ext-storage.dcloud.net.cn/uni-app-x/collocation/android_v8_icu.png)
+
+- HBuilderX 5.35 及以上版本  
+  需通过 manifest.json 的`源码视图`在 "app-android" -> "distribute" -> "modules" 下添加 "v8-icu" 节点，如下示例：  
+  ```json
+  {
+    "app-android": {
+      "distribute": {
+        "modules": {
+          "v8-icu": {}
+        }
+      }
+    }
+  }
+  ```
+
 
 
 
