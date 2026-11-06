@@ -71,8 +71,15 @@ describe('框架 TSX 发行功能裁剪', () => {
     }
   )
 
+  test('Page 不再直接依赖 dialogPage 列表渲染', () => {
+    const code = compileFrameworkTsx('page/index-vapor', true)
+    expect(code).not.toContain('createFor')
+    expect(code).not.toContain('createDynamicComponent')
+    expect(code).toContain('dialogPageRenderer')
+  })
+
   test('Vapor 列表继续生成 createFor，保持按 key 复用', () => {
-    for (const file of ['layout/tabBar', 'page/pageHead', 'page/index-vapor']) {
+    for (const file of ['layout/tabBar', 'page/pageHead']) {
       const code = compileFrameworkTsx(file, true)
       expect(code).toContain('createFor')
       expect(code).not.toMatch(

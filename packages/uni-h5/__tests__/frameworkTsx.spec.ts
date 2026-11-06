@@ -159,6 +159,9 @@ describe('框架 TSX 动态行为', () => {
         ],
       })
       const Component = load('page/pageHead', vapor, {
+        './navigationBarLoading-vapor': {
+          NavigationBarLoading: stub(vapor, 'loading-stub'),
+        },
         '@dcloudio/uni-components': { Input: stub(vapor, 'input-stub') },
         '../../../../../uni-components/src/vue/loading': {
           default: stub(vapor, 'loading-stub'),
@@ -387,97 +390,154 @@ describe('框架 TSX 动态行为', () => {
     }
   )
 
-  test('Vapor Page 传入 query、保留页面 ref，dialogPage 增删不重建已有实例', async () => {
-    global.__UNI_FEATURE_NAVIGATIONBAR__ = false
-    const query = { message: '页面参数' }
-    let pageInstance: any
-    const Content = vue.defineVaporComponent({
-      props: ['message'],
-      setup(props: any) {
-        const el = document.createElement('main')
-        el.textContent = props.message
-        return el
-      },
-    })
-    global.__UNI_FEATURE_PULL_DOWN_REFRESH__ = false
-    const usePageBody = load('page/pageBody', true, {
-      '@dcloudio/uni-components': { ResizeSensor: stub(true, 'resize-stub') },
-      './page-refresh/component.vue': {},
-      './page-refresh': {},
-      '../../../helpers/safeArea': {},
-    })
-    const Component = load('page/index-vapor', true, {
-      '../../setup/provide': {
-        providePageMeta: () => ({ route: 'index', navigationBar: {} }),
-        usePageRoute: () => ({ query }),
-      },
-      '../../../helpers/useDocumentTitle': {
-        useDocumentTitle: () => {
-          pageInstance = vue.getCurrentInstance()
+  test.each([false, true])(
+    'Vapor dialogPage 按需启用且不重建页面和已有实例（挂载前启用=%s）',
+    async (enableBeforeMount) => {
+      global.__UNI_FEATURE_NAVIGATIONBAR__ = false
+      const query = { message: '页面参数' }
+      let pageInstance: any
+      const Content = vue.defineVaporComponent({
+        props: ['message'],
+        setup(props: any) {
+          const el = document.createElement('main')
+          el.textContent = props.message
+          return el
         },
-      },
-      '../../../helpers/useBackgroundColorContent': {
-        useBackgroundColorContent: () => {},
-      },
-      '../../../helpers/dom': { getStateId: () => 1 },
-      '../../setup/page': {},
-      '@dcloudio/uni-shared': { stringifyQuery: () => '' },
-      '@dcloudio/uni-core': {
-        isDialogPageInstance: () => false,
-        DIALOG_TAG: 'dialog',
-        SYSTEM_DIALOG_TAG: 'system-dialog',
-      },
-      './pageHead-vapor': {},
-      './pageBody-vapor': { default: usePageBody },
-    })
-    Component.__uniPageComponent = Content
-    const host = mount(Component, true)
-    await vue.nextTick()
-    expect(host.querySelector('main')!.textContent).toBe(query.message)
-    expect(pageInstance.refs.page).toBeTruthy()
-    const originalPageRef = pageInstance.refs.page
-    const originalPageElement = host.querySelector('main')
-    let mounts = 0,
-      unmounts = 0
-    const Dialog = vue.defineVaporComponent({
-      props: ['route'],
-      setup(props: any) {
-        mounts++
-        vue.onUnmounted(() => unmounts++)
-        const el = document.createElement('aside')
-        el.textContent = props.route
-        return el
-      },
-    })
-    const first = {
-      route: 'first',
-      options: {},
-      $component: vue.markRaw(Dialog),
+      })
+      global.__UNI_FEATURE_PULL_DOWN_REFRESH__ = false
+      const usePageBody = load('page/pageBody', true, {
+        '@dcloudio/uni-components': { ResizeSensor: stub(true, 'resize-stub') },
+        './page-refresh/component.vue': {},
+        './page-refresh': {},
+        '../../../helpers/safeArea': {},
+      })
+      const renderDialogPages = evaluateFramework(
+        fs.readFileSync(
+          path.join(
+            root,
+            'packages/uni-h5/src/framework/components/page/dialogPages-vapor.ts'
+          ),
+          'utf8'
+        ),
+        {
+          vue,
+          '@dcloudio/uni-shared': { stringifyQuery: () => '' },
+          '@dcloudio/uni-core': {
+            DIALOG_TAG: 'dialog',
+            SYSTEM_DIALOG_TAG: 'system-dialog',
+          },
+        }
+      ).renderDialogPages
+      const rendererState = evaluateFramework(
+        fs.readFileSync(
+          path.join(
+            root,
+            'packages/uni-h5/src/framework/components/page/dialogPageRenderer-vapor.ts'
+          ),
+          'utf8'
+        ),
+        { vue }
+      )
+      if (enableBeforeMount)
+        rendererState.dialogPageRenderer.value = renderDialogPages
+      const Component = load('page/index-vapor', true, {
+        './dialogPageRenderer-vapor': rendererState,
+        '../../setup/provide': {
+          providePageMeta: () => ({ route: 'index', navigationBar: {} }),
+          usePageRoute: () => ({ query }),
+        },
+        '../../../helpers/useDocumentTitle': {
+          useDocumentTitle: () => {
+            pageInstance = vue.getCurrentInstance()
+          },
+        },
+        '../../../helpers/useBackgroundColorContent': {
+          useBackgroundColorContent: () => {},
+        },
+        '../../../helpers/dom': { getStateId: () => 1 },
+        '../../setup/page': {},
+        '@dcloudio/uni-shared': { stringifyQuery: () => '' },
+        '@dcloudio/uni-core': {
+          isDialogPageInstance: () => false,
+          DIALOG_TAG: 'dialog',
+          SYSTEM_DIALOG_TAG: 'system-dialog',
+        },
+        './pageHead-vapor': {},
+        './pageBody-vapor': { default: usePageBody },
+      })
+      Component.__uniPageComponent = Content
+      const host = mount(Component, true)
+      await vue.nextTick()
+      expect(host.querySelector('main')!.textContent).toBe(query.message)
+      expect(pageInstance.refs.page).toBeTruthy()
+      const originalPageRef = pageInstance.refs.page
+      const originalPageElement = host.querySelector('main')
+      let mounts = 0,
+        unmounts = 0
+      const Dialog = vue.defineVaporComponent({
+        props: ['route'],
+        setup(props: any) {
+          mounts++
+          vue.onUnmounted(() => unmounts++)
+          const el = document.createElement('aside')
+          el.textContent = props.route
+          return el
+        },
+      })
+      const first = {
+        route: 'first',
+        options: {},
+        $component: vue.markRaw(Dialog),
+      }
+      const second = {
+        route: 'second',
+        options: {},
+        $component: vue.markRaw(Dialog),
+      }
+      rendererState.dialogPageRenderer.value = renderDialogPages
+      pageInstance.$dialogPages.value.push(first)
+      await vue.nextTick()
+      const firstElement = host.querySelector('aside')
+      // 再次打开不重建已启用的渲染区域。
+      rendererState.dialogPageRenderer.value = renderDialogPages
+      pageInstance.$systemDialogPages.value.push(second)
+      await vue.nextTick()
+      expect(host.querySelector('aside')).toBe(firstElement)
+      expect(host.querySelectorAll('aside')).toHaveLength(2)
+      expect(mounts).toBe(2)
+      pageInstance.$systemDialogPages.value.pop()
+      await vue.nextTick()
+      expect(host.querySelector('aside')).toBe(firstElement)
+      expect(unmounts).toBe(1)
+      pageInstance.$dialogPages.value.pop()
+      await vue.nextTick()
+      expect(host.querySelector('aside')).toBeNull()
+      expect(unmounts).toBe(2)
+      pageInstance.$dialogPages.value.push(first)
+      await vue.nextTick()
+      expect(host.querySelectorAll('aside')).toHaveLength(1)
+      expect(mounts).toBe(3)
+      // 后续异步页面加载也沿用原列表作用域，卸载父页面时一并清理。
+      pageInstance.$systemDialogPages.value.push({
+        route: 'async',
+        options: {},
+        $component: vue.markRaw(
+          vue.defineVaporAsyncComponent(() => Promise.resolve(Dialog))
+        ),
+      })
+      await new Promise((resolve) => setTimeout(resolve, 0))
+      await vue.nextTick()
+      expect(host.querySelectorAll('aside')).toHaveLength(2)
+      expect(mounts).toBe(4)
+      expect(pageInstance.refs.page).toBe(originalPageRef)
+      expect(host.querySelector('main')).toBe(originalPageElement)
+      apps.pop().unmount()
+      expect(unmounts).toBe(4)
+      pageInstance.$dialogPages.value.push(second)
+      await vue.nextTick()
+      expect(mounts).toBe(4)
     }
-    const second = {
-      route: 'second',
-      options: {},
-      $component: vue.markRaw(Dialog),
-    }
-    pageInstance.$dialogPages.value.push(first)
-    await vue.nextTick()
-    const firstElement = host.querySelector('aside')
-    pageInstance.$systemDialogPages.value.push(second)
-    await vue.nextTick()
-    expect(host.querySelector('aside')).toBe(firstElement)
-    expect(host.querySelectorAll('aside')).toHaveLength(2)
-    expect(mounts).toBe(2)
-    pageInstance.$systemDialogPages.value.pop()
-    await vue.nextTick()
-    expect(host.querySelector('aside')).toBe(firstElement)
-    expect(unmounts).toBe(1)
-    pageInstance.$dialogPages.value.pop()
-    await vue.nextTick()
-    expect(host.querySelector('aside')).toBeNull()
-    expect(unmounts).toBe(2)
-    expect(pageInstance.refs.page).toBe(originalPageRef)
-    expect(host.querySelector('main')).toBe(originalPageElement)
-  })
+  )
 
   test.each([false, true])(
     'Vapor Layout 路由往返复用页面，窗口 ref 与属性正常（响应式=%s）',

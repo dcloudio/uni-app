@@ -1,5 +1,3 @@
-// @ts-expect-error 当前 Vue 类型尚未升级到 3.6，Vapor runtime 已导出该方法
-import { createDynamicComponent, createFor } from 'vue'
 import { defineSystemComponent } from '@dcloudio/uni-components'
 import {
   type ComponentInternalInstance,
@@ -13,14 +11,13 @@ import { useDocumentTitle } from '../../../helpers/useDocumentTitle'
 import { useBackgroundColorContent } from '../../../helpers/useBackgroundColorContent'
 import { providePageMeta, usePageRoute } from '../../setup/provide'
 import { getStateId } from '../../../helpers/dom'
-import { stringifyQuery } from '@dcloudio/uni-shared'
+import { dialogPageRenderer } from './dialogPageRenderer-vapor'
 import PageHead from './pageHead-vapor'
 import usePageBody from './pageBody-vapor'
 import type { VaporPageRouteComponent } from './route-vapor'
 import { createDialogPageId } from '../../setup/page'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 import {
-  DIALOG_TAG,
   SYSTEM_DIALOG_TAG,
   isDialogPageInstance,
   isNormalDialogPageInstance,
@@ -82,44 +79,6 @@ export default /*#__PURE__*/ defineSystemComponent({
       provide('parentInstance', currentInstance)
     }
 
-    interface DialogPageInfo {
-      component: UniDialogPage['$component']
-      type: string
-      route: string
-    }
-
-    function getDialogPages(): DialogPageInfo[] {
-      const pages = [
-        ...currentInstance.$dialogPages!.value.map((page) => ({
-          page,
-          type: DIALOG_TAG,
-        })),
-        ...currentInstance.$systemDialogPages!.value.map((page) => ({
-          page,
-          type: SYSTEM_DIALOG_TAG,
-        })),
-      ]
-      pages.sort((a, b) => {
-        const aId = a.page.vm?.$basePage?.id || Number.MAX_SAFE_INTEGER
-        const bId = b.page.vm?.$basePage?.id || Number.MAX_SAFE_INTEGER
-        return aId - bId
-      })
-      return pages.map(({ page, type }) => ({
-        component: page.$component,
-        type,
-        route: `${page.route}${stringifyQuery(page.options)}`,
-      }))
-    }
-
-    const dialogPageStyle = {
-      position: 'fixed',
-      zIndex: 999,
-      top: 0,
-      right: 0,
-      bottom: 0,
-      left: 0,
-    }
-
     function assignDialogPage(
       ctx: ComponentInternalInstance,
       parentInstance: ComponentInternalInstance,
@@ -157,17 +116,7 @@ export default /*#__PURE__*/ defineSystemComponent({
           <PageHead v-if={navigationBar.style !== 'custom'} />
         )}
         {renderPageBody()}
-        {createFor(
-          () => getDialogPages(),
-          (dialogPage) =>
-            createDynamicComponent(() => dialogPage.value.component, {
-              style: () => dialogPageStyle,
-              'data-type': () => dialogPage.value.type,
-              route: () => dialogPage.value.route,
-            }),
-          (dialogPage) => dialogPage.route,
-          18 /* IS_COMPONENT | IS_FRAGMENT：与原动态组件 v-for 的卸载及插入路径一致。 */
-        )}
+        {dialogPageRenderer.value?.(currentInstance)}
       </uni-page>
     )
   },

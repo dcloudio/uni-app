@@ -293,6 +293,8 @@ describe('Web Vapor 系统页面接入', () => {
   test.each([false, true])(
     'Picker 由组件入口注册，通用 openDialogPage 不依赖 Picker：%s',
     async (vapor) => {
+      const rendererState = { value: undefined as unknown }
+      const renderDialogPages = jest.fn()
       const routes: any[] = []
       const dialogs: any[] = []
       const page = {}
@@ -350,6 +352,15 @@ describe('Web Vapor 系统页面接入', () => {
           vapor
         ),
         {
+          ...(vapor
+            ? {
+                '../../../../framework/components/page/dialogPageRenderer-vapor':
+                  { dialogPageRenderer: rendererState },
+                '../../../../framework/components/page/dialogPages-vapor': {
+                  renderDialogPages,
+                },
+              }
+            : {}),
           '@dcloudio/uni-api': {
             createNormalizeUrl: () => (url: string) =>
               routes.some((route) => route.path === url.split('?')[0])
@@ -388,11 +399,15 @@ describe('Web Vapor 系统页面接入', () => {
       )
       expect(registered).toHaveBeenCalledTimes(vapor ? 1 : 0)
       const fail = jest.fn()
+      exports.openDialogPage({ url: '/pages/missing' })
+      exports.openDialogPage({ url: 'uni:picker', parentPage: {} })
+      expect(rendererState.value).toBeUndefined()
       const result = exports.openDialogPage({
         url: 'uni:picker?readyEventName=ready',
         fail,
       })
       if (vapor) {
+        expect(rendererState.value).toBe(renderDialogPages)
         expect(result.$component).toBe(page)
         expect(result.options).toEqual({ readyEventName: 'ready' })
         expect(fail).not.toHaveBeenCalled()

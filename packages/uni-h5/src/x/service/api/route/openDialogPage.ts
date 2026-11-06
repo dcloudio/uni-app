@@ -21,6 +21,11 @@ import { closePreSystemDialogPage } from './utils'
 import type { UTSJSONObject } from '@dcloudio/uni-shared'
 import { markRaw } from 'vue'
 
+//#if _X_VAPOR_
+import { dialogPageRenderer } from '../../../../framework/components/page/dialogPageRenderer-vapor'
+import { renderDialogPages } from '../../../../framework/components/page/dialogPages-vapor'
+//#endif
+
 export const openDialogPage = (
   options: OpenDialogPageOptions
 ): UniDialogPage | null => {
@@ -60,6 +65,11 @@ export const openDialogPage = (
       return null
     }
   }
+  //#if _X_VAPOR_
+  // 校验成功后启用，再写入页面或首页暂存队列；重复赋同一函数不会再次通知。
+  // 不能在模块顶层注册，否则未使用的 API 也会保留 dialogPage 渲染依赖。
+  dialogPageRenderer.value = renderDialogPages
+  //#endif
   if (!isSystemDialogPage(dialogPage)) {
     if (!currentPages.length) {
       homeDialogPages.push(dialogPage)
