@@ -1971,6 +1971,17 @@ function initAppVm(appVm2) {
   appVm2.$vm = appVm2;
   appVm2.$mpType = "app";
   const locale = ref(useI18n().getLocale());
+  Object.defineProperty(appVm2, "$watchLocale", {
+    configurable: true,
+    value(callback) {
+      return appVm2.$.scope.run(
+        () => (
+          // 先更新翻译器语言，再让读取 $locale 的组件刷新，避免显示上一种语言。
+          watch(locale, callback, { flush: "sync" })
+        )
+      );
+    }
+  });
   Object.defineProperty(appVm2, "$locale", {
     get() {
       return locale.value;
