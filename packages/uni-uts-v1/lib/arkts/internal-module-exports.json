@@ -1819,6 +1819,9 @@
       "SendSocketMessageOptions"
     ],
     [
+      "SetAppCrashReportEnable"
+    ],
+    [
       "SetAppTheme"
     ],
     [
