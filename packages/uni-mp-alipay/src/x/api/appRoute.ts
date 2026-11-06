@@ -5,6 +5,10 @@ import {
   type AppRouteOpenType,
   type RewriteRoute,
   createAppRouteRuntime,
+  offAppRoute as offAppRouteBase,
+  offBeforeAppRoute as offBeforeAppRouteBase,
+  onAppRoute as onAppRouteBase,
+  onBeforeAppRoute as onBeforeAppRouteBase,
 } from '@dcloudio/uni-api/src/service/route/appRoute'
 
 type AlipayRoutePayload = {
@@ -98,10 +102,10 @@ export function createAlipayAppRouteApi(platform: AlipayRoutePlatform) {
   }
 
   return {
-    onAppRoute: appRouteRuntime.onAppRoute,
-    offAppRoute: appRouteRuntime.offAppRoute,
-    onBeforeAppRoute: appRouteRuntime.onBeforeAppRoute,
-    offBeforeAppRoute: appRouteRuntime.offBeforeAppRoute,
+    onAppRoute: onAppRouteBase,
+    offAppRoute: offAppRouteBase,
+    onBeforeAppRoute: onBeforeAppRouteBase,
+    offBeforeAppRoute: offBeforeAppRouteBase,
     rewriteRoute: defineAsyncApi<RewriteRoute>(
       API_REWRITE_ROUTE,
       (_, { reject }) => reject('not supported', { errCode: 4 })

@@ -40,11 +40,13 @@ function normalizeRewriteRoute(
 
 const appRouteRuntime = createAppRouteRuntime({ normalizeRewriteRoute })
 
-export const onAppRoute = appRouteRuntime.onAppRoute
-export const offAppRoute = appRouteRuntime.offAppRoute
-export const onBeforeAppRoute = appRouteRuntime.onBeforeAppRoute
-export const offBeforeAppRoute = appRouteRuntime.offBeforeAppRoute
-export const rewriteRoute = appRouteRuntime.rewriteRoute
+export {
+  onAppRoute,
+  offAppRoute,
+  onBeforeAppRoute,
+  offBeforeAppRoute,
+  rewriteRoute,
+} from '@dcloudio/uni-api'
 
 export interface ResolvedAppRoute {
   url: string

@@ -1,6 +1,11 @@
 import {
   type AppRouteEvent,
   createAppRouteRuntime,
+  offAppRoute,
+  offBeforeAppRoute,
+  onAppRoute,
+  onBeforeAppRoute,
+  rewriteRoute,
 } from '../../src/service/route/appRoute'
 
 function createRouteEvent(
@@ -42,9 +47,8 @@ describe('app route runtime', () => {
   })
 
   afterEach(() => {
-    const runtime = createAppRouteRuntime()
-    runtime.offAppRoute()
-    runtime.offBeforeAppRoute()
+    offAppRoute()
+    offBeforeAppRoute()
   })
 
   test('registers and removes route listeners', () => {
@@ -52,13 +56,13 @@ describe('app route runtime', () => {
     const event = createRouteEvent('switchTab')
     const listener = jest.fn()
 
-    runtime.onAppRoute(listener)
-    runtime.onAppRoute(listener)
+    onAppRoute(listener)
+    onAppRoute(listener)
     runtime.dispatchAppRoute(runtime.createAppRouteContext(event))
     expect(listener).toHaveBeenCalledWith(event)
     expect(listener).toHaveBeenCalledTimes(2)
 
-    runtime.offAppRoute(listener)
+    offAppRoute(listener)
     runtime.dispatchAppRoute(runtime.createAppRouteContext(event))
     expect(listener).toHaveBeenCalledTimes(2)
   })
@@ -69,16 +73,19 @@ describe('app route runtime', () => {
     const listener1 = jest.fn()
     const listener2 = jest.fn()
 
-    runtime1.onAppRoute(listener1)
-    runtime2.onAppRoute(listener2)
+    onAppRoute(listener1)
+    onAppRoute(listener2)
+    runtime1.dispatchAppRoute(
+      runtime1.createAppRouteContext(createRouteEvent())
+    )
     runtime2.dispatchAppRoute(
       runtime2.createAppRouteContext(createRouteEvent())
     )
 
-    expect(listener1).toHaveBeenCalledTimes(1)
-    expect(listener2).toHaveBeenCalledTimes(1)
-    runtime1.offAppRoute(listener1)
-    runtime2.offAppRoute(listener2)
+    expect(listener1).toHaveBeenCalledTimes(2)
+    expect(listener2).toHaveBeenCalledTimes(2)
+    offAppRoute(listener1)
+    offAppRoute(listener2)
   })
 
   test('removes all listeners when callback is omitted or null', () => {
@@ -86,16 +93,16 @@ describe('app route runtime', () => {
     const listener1 = jest.fn()
     const listener2 = jest.fn()
 
-    runtime.onAppRoute(listener1)
-    runtime.onAppRoute(listener2)
-    runtime.offAppRoute()
+    onAppRoute(listener1)
+    onAppRoute(listener2)
+    offAppRoute()
     runtime.dispatchAppRoute(runtime.createAppRouteContext(createRouteEvent()))
     expect(listener1).not.toHaveBeenCalled()
     expect(listener2).not.toHaveBeenCalled()
 
-    runtime.onAppRoute(listener1)
-    runtime.onAppRoute(listener2)
-    runtime.offAppRoute(null)
+    onAppRoute(listener1)
+    onAppRoute(listener2)
+    offAppRoute(null)
     runtime.dispatchAppRoute(runtime.createAppRouteContext(createRouteEvent()))
     expect(listener1).not.toHaveBeenCalled()
     expect(listener2).not.toHaveBeenCalled()
@@ -105,14 +112,14 @@ describe('app route runtime', () => {
     const runtime = createAppRouteRuntime()
     const context = runtime.createAppRouteContext(createRouteEvent())
 
-    runtime.onAppRoute((event) => {
+    onAppRoute((event) => {
       event.path = 'pages/changed/index'
       event.query.from = 'changed'
     })
     runtime.dispatchAppRoute(context)
 
     expect(context.event).toEqual(createRouteEvent())
-    runtime.offAppRoute()
+    offAppRoute()
   })
 
   test('isolates listener errors from the route flow', () => {
@@ -123,10 +130,10 @@ describe('app route runtime', () => {
       .mockImplementation(() => {})
     const skippedListener = jest.fn()
 
-    runtime.onAppRoute(() => {
+    onAppRoute(() => {
       throw error
     })
-    runtime.onAppRoute(skippedListener)
+    onAppRoute(skippedListener)
 
     expect(() =>
       runtime.dispatchAppRoute(
@@ -135,7 +142,7 @@ describe('app route runtime', () => {
     ).not.toThrow()
     expect(skippedListener).not.toHaveBeenCalled()
     expect(consoleError).toHaveBeenCalledWith(error)
-    runtime.offAppRoute()
+    offAppRoute()
     consoleError.mockRestore()
   })
 
@@ -145,8 +152,8 @@ describe('app route runtime', () => {
     const routeListener = jest.fn()
     const context = runtime.createAppRouteContext(createRouteEvent())
 
-    runtime.onBeforeAppRoute(beforeListener)
-    runtime.onAppRoute(routeListener)
+    onBeforeAppRoute(beforeListener)
+    onAppRoute(routeListener)
     runtime.dispatchBeforeAppRoute(context)
     runtime.dispatchAppRoute(context)
 
@@ -166,16 +173,16 @@ describe('app route runtime', () => {
     const listener1 = jest.fn()
     const listener2 = jest.fn()
 
-    runtime.onBeforeAppRoute(listener1)
-    runtime.onBeforeAppRoute(listener2)
-    runtime.offBeforeAppRoute(listener1)
+    onBeforeAppRoute(listener1)
+    onBeforeAppRoute(listener2)
+    offBeforeAppRoute(listener1)
     runtime.dispatchBeforeAppRoute(
       runtime.createAppRouteContext(createRouteEvent())
     )
     expect(listener1).not.toHaveBeenCalled()
     expect(listener2).toHaveBeenCalledTimes(1)
 
-    runtime.offBeforeAppRoute()
+    offBeforeAppRoute()
     runtime.dispatchBeforeAppRoute(
       runtime.createAppRouteContext(createRouteEvent())
     )
@@ -192,9 +199,9 @@ describe('app route runtime', () => {
     const runtime = createAppRouteRuntime({ normalizeRewriteRoute })
     const secondFail = jest.fn()
 
-    runtime.onBeforeAppRoute(() => {
-      runtime.rewriteRoute({ url: '/pages/first/first' })
-      runtime.rewriteRoute({
+    onBeforeAppRoute(() => {
+      rewriteRoute({ url: '/pages/first/first' })
+      rewriteRoute({
         url: '/pages/second/second',
         fail: secondFail,
       })
@@ -222,9 +229,9 @@ describe('app route runtime', () => {
     })
     let asyncRewrite: Promise<unknown> | undefined
 
-    runtime.onBeforeAppRoute(() => {
+    onBeforeAppRoute(() => {
       asyncRewrite = Promise.resolve().then(
-        () => runtime.rewriteRoute({ url: '/pages/next/next' }) as any
+        () => rewriteRoute({ url: '/pages/next/next' }) as any
       )
     })
     runtime.dispatchBeforeAppRoute(
@@ -238,7 +245,7 @@ describe('app route runtime', () => {
       })
     )
     await expect(
-      runtime.rewriteRoute({ url: '/pages/next/next' }) as any
+      rewriteRoute({ url: '/pages/next/next' }) as any
     ).rejects.toEqual(
       expect.objectContaining({
         errMsg:
@@ -253,8 +260,8 @@ describe('app route runtime', () => {
     })
     const fail = jest.fn()
 
-    runtime.onBeforeAppRoute(() => {
-      runtime.rewriteRoute({ url: '/pages/next/next', fail })
+    onBeforeAppRoute(() => {
+      rewriteRoute({ url: '/pages/next/next', fail })
     })
     const context = runtime.createAppRouteContext(
       createRouteEvent('navigateBack')
@@ -279,8 +286,8 @@ describe('app route runtime', () => {
       }),
     })
     const fail = jest.fn()
-    runtime.onBeforeAppRoute(() => {
-      runtime.rewriteRoute({ url: '/pages/next/next', fail })
+    onBeforeAppRoute(() => {
+      rewriteRoute({ url: '/pages/next/next', fail })
     })
     const context = runtime.createAppRouteContext(createRouteEvent())
     context.rewriteCount = 100
@@ -308,12 +315,12 @@ describe('app route runtime', () => {
       path: 'pages/inner/inner',
     })
 
-    runtime.onBeforeAppRoute((event) => {
+    onBeforeAppRoute((event) => {
       if (event.path === 'pages/index/index') {
         runtime.dispatchBeforeAppRoute(innerContext)
-        runtime.rewriteRoute({ url: '/pages/outer/outer' })
+        rewriteRoute({ url: '/pages/outer/outer' })
       } else {
-        runtime.rewriteRoute({ url: '/pages/inner-rewrite/inner-rewrite' })
+        rewriteRoute({ url: '/pages/inner-rewrite/inner-rewrite' })
       }
     })
     const outerContext = runtime.createAppRouteContext(createRouteEvent())
