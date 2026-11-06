@@ -35,6 +35,87 @@ function evaluate(code: string, imports: Record<string, any>, globals = {}) {
 
 describe('Web Vapor 系统页面接入', () => {
   test.each([false, true])(
+    '导航栏 Loading 随显示 API 提供定义，非 Vapor 保持原行为：%s',
+    async (vapor) => {
+      const loading = {}
+      const loadingState = evaluate(
+        await frameworkSource(
+          'packages/uni-h5/src/framework/components/page/navigationBarLoading-vapor.ts',
+          true
+        ),
+        {}
+      )
+      let visible = false
+      const navigationBar = {
+        titleText: '',
+        get loading() {
+          return visible
+        },
+        set loading(value: boolean) {
+          if (vapor && value) {
+            expect(loadingState.NavigationBarLoading).toBe(loading)
+          }
+          visible = value
+        },
+      }
+      let pageMeta: { navigationBar: typeof navigationBar } | undefined
+      const resolve = jest.fn()
+      const reject = jest.fn()
+      const exports = evaluate(
+        await frameworkSource(
+          'packages/uni-h5/src/service/api/ui/navigationBar.ts',
+          vapor
+        ),
+        {
+          '@dcloudio/uni-api': {
+            API_SHOW_NAVIGATION_BAR_LOADING: 'showNavigationBarLoading',
+            API_HIDE_NAVIGATION_BAR_LOADING: 'hideNavigationBarLoading',
+            API_SET_NAVIGATION_BAR_COLOR: 'setNavigationBarColor',
+            API_SET_NAVIGATION_BAR_TITLE: 'setNavigationBarTitle',
+            defineAsyncApi:
+              (_name: string, handler: Function) =>
+              (args = {}) =>
+                handler(args, { resolve, reject }),
+          },
+          '@dcloudio/uni-core': { getCurrentPageMeta: () => pageMeta },
+          '../../../helpers/useDocumentTitle': {
+            updateDocumentTitle: jest.fn(),
+          },
+          ...(vapor
+            ? {
+                '../../../../../uni-components/src/vue/loading': {
+                  default: loading,
+                },
+                '../../../framework/components/page/navigationBarLoading-vapor':
+                  loadingState,
+              }
+            : {}),
+        },
+        { __NODE_JS__: false }
+      )
+      expect(loadingState.NavigationBarLoading).toBeUndefined()
+      exports.showNavigationBarLoading()
+      expect(reject).toHaveBeenCalledWith('page not found')
+      expect(loadingState.NavigationBarLoading).toBeUndefined()
+      pageMeta = { navigationBar }
+      exports.setNavigationBarTitle({ title: '标题' })
+      exports.hideNavigationBarLoading()
+      expect(loadingState.NavigationBarLoading).toBeUndefined()
+      expect(navigationBar.titleText).toBe('标题')
+      exports.showNavigationBarLoading()
+      expect(visible).toBe(true)
+      exports.hideNavigationBarLoading()
+      expect(visible).toBe(false)
+      exports.showNavigationBarLoading()
+      expect(visible).toBe(true)
+      expect(loadingState.NavigationBarLoading).toBe(
+        vapor ? loading : undefined
+      )
+      expect(resolve).toHaveBeenCalledTimes(5)
+    }
+  )
+
+  test.each([false, true])(
     'openLocation 仅在 Vapor 切换内网实现：%s',
     async (vapor) => {
       const api = await frameworkSource(

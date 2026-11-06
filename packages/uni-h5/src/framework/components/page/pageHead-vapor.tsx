@@ -3,7 +3,6 @@ import { createFor } from 'vue'
 import { Input, defineSystemComponent } from '@dcloudio/uni-components'
 import { computed, onBeforeMount, ref, unref } from 'vue'
 import { extend, isArray } from '@vue/shared'
-import Loading from '../../../../../uni-components/src/vue/loading'
 import { getRealPath } from '@dcloudio/uni-platform'
 import {
   ICON_PATH_BACK,
@@ -25,6 +24,7 @@ import {
   usePageHeadTransparentBackgroundColor,
 } from './transparent'
 import { parseTheme, useTheme } from '../../../helpers/theme'
+import { NavigationBarLoading as Loading } from './navigationBarLoading-vapor'
 
 const ICON_PATHS = {
   none: '',

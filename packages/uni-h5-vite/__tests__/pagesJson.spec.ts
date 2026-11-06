@@ -73,14 +73,14 @@ describe('h5 pages.json page route', () => {
   }
 
   test.each([false, true])(
-    '导航栏发行构建按模式加载 Loading 样式（Vapor=%s）',
+    '导航栏发行入口不全量加载 Loading 样式（Vapor=%s）',
     (vapor) => {
       const code = transform(vapor, false, true)
       expect(
         code.includes(
           "import '@dcloudio/uni-components/style-x-vapor/loading.css'"
         )
-      ).toBe(vapor)
+      ).toBe(false)
       expect(code).not.toContain(
         "import '@dcloudio/uni-components/style-x/loading.css'"
       )

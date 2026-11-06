@@ -48,6 +48,9 @@ describe('API 样式依赖', () => {
           '@dcloudio/uni-components/style-x-vapor/loading.css',
         ],
         showLoading: ['@dcloudio/uni-components/style-x-vapor/loading.css'],
+        showNavigationBarLoading: [
+          '@dcloudio/uni-components/style-x-vapor/loading.css',
+        ],
         previewImage: [
           '@dcloudio/uni-components/style-x-vapor/swiper.css',
           '@dcloudio/uni-components/style-x-vapor/swiper-item.css',

@@ -30,6 +30,12 @@ describe('h5 API 样式注入', () => {
     delete process.env.UNI_AUTOMATOR_WS_ENDPOINT
     originalCss = [...buildInCssSet]
     buildInCssSet.clear()
+    // 这里只测试样式收集，无需依赖本地是否已有框架构建产物。
+    jest
+      .spyOn(resolve, 'resolveBuiltIn')
+      .mockReturnValue(
+        path.resolve(__dirname, '../../uni-h5/dist-x-vapor/uni-h5.es.js')
+      )
   })
 
   afterEach(() => {
@@ -134,6 +140,11 @@ describe('h5 API 样式注入', () => {
       ],
     ],
     ['showLoading', ['@dcloudio/uni-components/style-x-vapor/loading.css']],
+    [
+      'showNavigationBarLoading',
+      ['@dcloudio/uni-components/style-x-vapor/loading.css'],
+    ],
+    ['hideNavigationBarLoading', []],
   ] as const)('Vapor 调用 %s 时仅加载实际依赖', (name, expectedStyles) => {
     process.env.UNI_APP_X_DOM2 = 'true'
     for (const combine of [false, true]) {

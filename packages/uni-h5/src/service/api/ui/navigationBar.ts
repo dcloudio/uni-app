@@ -14,6 +14,10 @@ import {
 } from '@dcloudio/uni-api'
 import { getCurrentPageMeta } from '@dcloudio/uni-core'
 import { updateDocumentTitle } from '../../../helpers/useDocumentTitle'
+//#if _X_VAPOR_
+import Loading from '../../../../../uni-components/src/vue/loading'
+import { setNavigationBarLoadingComponent } from '../../../framework/components/page/navigationBarLoading-vapor'
+//#endif
 
 function setNavigationBar(
   pageMeta: UniApp.PageRouteMeta | undefined,
@@ -94,8 +98,15 @@ export const showNavigationBarLoading =
   defineAsyncApi<API_TYPE_SHOW_NAVIGATION_BAR_LOADING>(
     API_SHOW_NAVIGATION_BAR_LOADING,
     (args, { resolve, reject }) => {
+      const pageMeta = getCurrentPageMeta()
+      //#if _X_VAPOR_
+      if (pageMeta) {
+        // 组件只随显示 API 引入；先提供定义再更新显示状态，已挂载的导航栏也能立即显示。
+        setNavigationBarLoadingComponent(Loading)
+      }
+      //#endif
       setNavigationBar(
-        getCurrentPageMeta(),
+        pageMeta,
         API_SHOW_NAVIGATION_BAR_LOADING,
         args || {},
         resolve,

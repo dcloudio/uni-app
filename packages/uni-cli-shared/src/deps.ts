@@ -105,6 +105,8 @@ function getVaporApiDepsCss() {
       loadingCss,
     ],
     showLoading: [loadingCss],
+    // 导航栏的 Loading 随显示 API 引入，不随页面入口全量加载。
+    showNavigationBarLoading: [loadingCss],
     // 写入剪贴板默认显示 Toast，框架内部调用不再单独收集 CSS。
     setClipboardData: [`${H5_API_STYLE_PATH}toast.css`],
   }
