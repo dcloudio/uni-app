@@ -8695,6 +8695,7 @@ const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
         _push(`<!--[0--><div${ssrRenderAttrs(mergeProps({
           "uni-view": "",
           class: ["uni-checkbox-view uni-checkbox-icon", unref(classes)(
+            [unref(isChecked), "uni-checkbox-active"],
             [__props.disabled, "uni-checkbox-disabled"],
             [!__props.disabled && unref(isChecked), __props.checkboxActiveClass],
             [!__props.disabled && !unref(isChecked), __props.checkboxClass],
@@ -8721,6 +8722,7 @@ const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
           "aria-checked": unref(isChecked),
           "aria-disabled": __props.disabled
         }, _attrs))}><div uni-view class="${ssrRenderClass([unref(classes)(
+          [unref(isChecked), "uni-checkbox-active"],
           [__props.disabled, "uni-checkbox-disabled"],
           [!__props.disabled && unref(isChecked), __props.checkboxActiveClass],
           [!__props.disabled && !unref(isChecked), __props.checkboxClass],

@@ -16212,9 +16212,10 @@ const _sfc_main$w = /* @__PURE__ */ defineVaporComponent({
         const n2 = t1$g();
         initUniElement(n2, _uniCheckboxElement);
         renderEffect(() => {
-          const _disabled = __props.disabled;
           const _isChecked = unref(isChecked);
+          const _disabled = __props.disabled;
           setClass(n2, ["uni-checkbox-view uni-checkbox-icon", unref(classes)(
+            [_isChecked, "uni-checkbox-active"],
             [_disabled, "uni-checkbox-disabled"],
             [!_disabled && _isChecked, __props.checkboxActiveClass],
             [!_disabled && !_isChecked, __props.checkboxClass],
@@ -16249,6 +16250,7 @@ const _sfc_main$w = /* @__PURE__ */ defineVaporComponent({
           setAttr(n8, "aria-checked", _isChecked);
           setAttr(n8, "aria-disabled", _disabled);
           setClass(n13, ["uni-checkbox-view uni-checkbox-icon", unref(classes)(
+            [_isChecked, "uni-checkbox-active"],
             [_disabled, "uni-checkbox-disabled"],
             [!_disabled && _isChecked, __props.checkboxActiveClass],
             [!_disabled && !_isChecked, __props.checkboxClass],

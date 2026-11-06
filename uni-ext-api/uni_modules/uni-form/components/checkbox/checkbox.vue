@@ -5,6 +5,7 @@
     v-if="!hasDefaultSlot"
     class="uni-checkbox-view uni-checkbox-icon"
     :class="classes(
+      [isChecked, 'uni-checkbox-active'],
       [disabled, 'uni-checkbox-disabled'],
       [!disabled && isChecked, checkboxActiveClass],
       [!disabled && !isChecked, checkboxClass],
@@ -57,6 +58,7 @@
     <view
       class="uni-checkbox-view uni-checkbox-icon"
       :class="classes(
+        [isChecked, 'uni-checkbox-active'],
         [disabled, 'uni-checkbox-disabled'],
         [!disabled && isChecked, checkboxActiveClass],
         [!disabled && !isChecked, checkboxClass],
@@ -428,8 +430,8 @@
 
   /* #ifdef WEB */
   @media (hover: hover) {
-    .uni-checkbox-view:not(.uni-checkbox-disabled):hover {
-      border-color: #007aff !important;
+    .uni-checkbox-view:not(.uni-checkbox-disabled):not(.uni-checkbox-active):hover {
+      border-color: #007aff;
     }
   }
 

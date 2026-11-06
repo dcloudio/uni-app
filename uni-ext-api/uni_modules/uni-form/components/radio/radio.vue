@@ -450,8 +450,8 @@
 
   /* #ifdef WEB */
   @media (hover: hover) {
-    .uni-radio-view:not(.uni-radio-disabled):hover {
-      border-color: #007aff !important;
+    .uni-radio-view:not(.uni-radio-disabled):not(.uni-radio-active):hover {
+      border-color: #007aff;
     }
   }
 

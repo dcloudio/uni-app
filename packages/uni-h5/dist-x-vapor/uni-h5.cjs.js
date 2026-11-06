@@ -7860,9 +7860,10 @@ const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
         const n2 = t1$a();
         Vue.initUniElement(n2, _uniCheckboxElement);
         Vue.renderEffect(() => {
-          const _disabled = __props.disabled;
           const _isChecked = Vue.unref(isChecked);
+          const _disabled = __props.disabled;
           Vue.setClass(n2, ["uni-checkbox-view uni-checkbox-icon", Vue.unref(classes)(
+            [_isChecked, "uni-checkbox-active"],
             [_disabled, "uni-checkbox-disabled"],
             [!_disabled && _isChecked, __props.checkboxActiveClass],
             [!_disabled && !_isChecked, __props.checkboxClass],
@@ -7897,6 +7898,7 @@ const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
           Vue.setAttr(n8, "aria-checked", _isChecked);
           Vue.setAttr(n8, "aria-disabled", _disabled);
           Vue.setClass(n13, ["uni-checkbox-view uni-checkbox-icon", Vue.unref(classes)(
+            [_isChecked, "uni-checkbox-active"],
             [_disabled, "uni-checkbox-disabled"],
             [!_disabled && _isChecked, __props.checkboxActiveClass],
             [!_disabled && !_isChecked, __props.checkboxClass],
