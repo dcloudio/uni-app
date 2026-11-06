@@ -54,7 +54,7 @@ export {
   UniPageContainerElement,
   UniPageContainerElement as UniPageContainerElementImpl,
 } from '@dcloudio/uni-ext-component/uni-page-container/components/page-container/global.ts'
-export { default as Picker } from '@dcloudio/uni-ext-component/uni-form/components/picker/picker.uvue'
+export { default as Picker } from './picker'
 export {
   UniPickerElement,
   UniPickerElement as UniPickerElementImpl,

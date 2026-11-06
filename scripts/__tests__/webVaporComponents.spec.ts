@@ -465,7 +465,7 @@ describe('Web Vapor 组件生成', () => {
     }
   )
 
-  test('Button 样式随内网组件的启用状态生成', async () => {
+  test('Button 样式及 Picker 专用入口随内网组件的启用状态生成', async () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'web-vapor-button-'))
     try {
       const extApiDir = path.join(tempDir, 'source [button]')
@@ -488,6 +488,14 @@ describe('Web Vapor 组件生成', () => {
         path.join(extApiDir, 'uni-form/components/button/button.uvue'),
         '<template><view /></template><style>.app-button { color: red; }</style>'
       )
+      fs.outputFileSync(
+        path.join(extApiDir, 'uni-form/components/picker/picker.uvue'),
+        '<template><view /></template>'
+      )
+      fs.outputFileSync(
+        path.join(extApiDir, 'uni-form/components/picker/global.ts'),
+        'export class UniPickerElement {}'
+      )
       const buttonStyle = path.join(styleDir, 'button.css')
       const manualStyle = 'div:where([uni-button]) { display: block; }'
       fs.outputFileSync(buttonStyle, manualStyle)
@@ -498,6 +506,9 @@ describe('Web Vapor 组件生成', () => {
       expect(
         fs.readFileSync(options.componentsEntryOutput, 'utf8')
       ).not.toContain('default as Button')
+      expect(
+        fs.readFileSync(options.componentsEntryOutput, 'utf8')
+      ).not.toContain('default as Picker')
 
       fs.outputJsonSync(packageFile, {
         uni_modules: { components: { web: 'dom2' } },
@@ -507,6 +518,11 @@ describe('Web Vapor 组件生成', () => {
       expect(fs.readFileSync(buttonStyle, 'utf8')).not.toContain('[uni-button]')
       expect(fs.readFileSync(options.componentsEntryOutput, 'utf8')).toContain(
         'default as Button'
+      )
+      const entry = fs.readFileSync(options.componentsEntryOutput, 'utf8')
+      expect(entry).toMatch(/default as Picker } from ['"]\.\/picker['"]/)
+      expect(entry).toMatch(
+        /from ['"]@dcloudio\/uni-ext-component\/uni-form\/components\/picker\/global.ts['"]/
       )
     } finally {
       fs.removeSync(tempDir)

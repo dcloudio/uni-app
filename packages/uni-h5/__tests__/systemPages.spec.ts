@@ -210,7 +210,7 @@ describe('Web Vapor 系统页面接入', () => {
   )
 
   test.each([false, true])(
-    'Picker 在校验路由前按需注册，非 Vapor 不变：%s',
+    'Picker 由组件入口注册，通用 openDialogPage 不依赖 Picker：%s',
     async (vapor) => {
       const routes: any[] = []
       const dialogs: any[] = []
@@ -220,6 +220,49 @@ describe('Web Vapor 系统页面接入', () => {
           routes.push({ path: route, component, meta: { route } })
         }
       })
+      if (vapor) {
+        const props = { mode: 'selector' }
+        const context = { expose: jest.fn() }
+        const render = jest.fn()
+        const setup = jest.fn((receivedProps, receivedContext) => {
+          expect(registered).toHaveBeenCalledTimes(1)
+          expect(receivedProps).toBe(props)
+          expect(receivedContext).toBe(context)
+          return render
+        })
+        const original = {
+          name: 'picker',
+          __vapor: true,
+          props: { mode: String },
+          rootElement: {},
+          setup,
+        }
+        const picker = evaluate(
+          await frameworkSource(
+            'packages/uni-h5/src/x/view/components/picker.ts',
+            true
+          ),
+          {
+            '@dcloudio/uni-ext-component/uni-form/components/picker/picker.uvue':
+              { default: original },
+            '@/uni_modules/uni-form/pages/picker/picker.vue': { default: page },
+            '@dcloudio/uni-shared': jest.requireActual('../../uni-shared/src'),
+            '@vue/shared': jest.requireActual('@vue/shared'),
+            '../../framework/route': { registerSystemRoute: registered },
+          }
+        ).default
+        expect(registered).not.toHaveBeenCalled()
+        expect(picker).toMatchObject({
+          name: 'picker',
+          __vapor: true,
+          props: original.props,
+          rootElement: original.rootElement,
+        })
+        expect(picker.setup(props, context)).toBe(render)
+        expect(picker.setup(props, context)).toBe(render)
+        expect(setup).toHaveBeenCalledTimes(2)
+        expect(original.setup).toBe(setup)
+      }
       const exports = evaluate(
         await frameworkSource(
           'packages/uni-h5/src/x/service/api/route/openDialogPage.ts',
@@ -255,8 +298,6 @@ describe('Web Vapor 系统页面接入', () => {
           },
           './utils': {},
           vue: { markRaw: (value: unknown) => value },
-          '@/uni_modules/uni-form/pages/picker/picker.vue': { default: page },
-          '../../../framework/route': { registerSystemRoute: registered },
         },
         {
           __uniRoutes: routes,
@@ -264,7 +305,7 @@ describe('Web Vapor 系统页面接入', () => {
           UniError: class {},
         }
       )
-      expect(registered).not.toHaveBeenCalled()
+      expect(registered).toHaveBeenCalledTimes(vapor ? 1 : 0)
       const fail = jest.fn()
       const result = exports.openDialogPage({
         url: 'uni:picker?readyEventName=ready',

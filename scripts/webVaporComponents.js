@@ -119,9 +119,12 @@ async function prepareWebVaporComponents({
       '',
       ...components.flatMap(([name, component]) => {
         const exportName = capitalize(camelize(name))
-        const exports = [
-          `export { default as ${exportName} } from '@dcloudio/uni-ext-component/${component.source}'`,
-        ]
+        // Picker 入口负责注册自己的系统页面，不能让通用 openDialogPage 引入它。
+        const source =
+          name === 'picker'
+            ? './picker'
+            : `@dcloudio/uni-ext-component/${component.source}`
+        const exports = [`export { default as ${exportName} } from '${source}'`]
         if (component.elementSource) {
           const elementName = `Uni${exportName}Element`
           exports.push(
