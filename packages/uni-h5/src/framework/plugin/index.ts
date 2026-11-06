@@ -27,7 +27,8 @@ export default {
     //#endif
     initServicePlugin(app)
 
-    if (!app.config.warnHandler) {
+    // Vapor 发行产物不调用 Vue 告警处理器，跳过默认注册以裁剪其实现；旧模式保持不变。
+    if ((__DEV__ || !__VAPOR__) && !app.config.warnHandler) {
       app.config.warnHandler = warnHandler
     }
 

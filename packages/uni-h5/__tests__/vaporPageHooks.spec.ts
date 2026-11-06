@@ -34,6 +34,56 @@ async function load(
   return exports
 }
 
+describe('Web 框架默认告警处理器', () => {
+  test.each([
+    { vapor: false, dev: false },
+    { vapor: false, dev: true },
+    { vapor: true, dev: false },
+    { vapor: true, dev: true },
+  ])('按模式注册且保留用户配置：%j', async ({ vapor, dev }) => {
+    const { default: plugin } = await load(
+      'packages/uni-h5/src/framework/plugin/index.ts',
+      vapor,
+      {
+        vue: {
+          setRealPathResolver: jest.fn(),
+          setNativeEventNormalizer: jest.fn(),
+        },
+        '@dcloudio/uni-vue': { initApp: jest.fn() },
+        '@dcloudio/uni-core': {
+          initServicePlugin: jest.fn(),
+          initViewPlugin: jest.fn(),
+        },
+        '../../platform': {},
+        './router': {},
+      },
+      { __DEV__: dev, __VAPOR__: vapor, __UNI_FEATURE_PAGES__: false }
+    )
+    const app = { config: { warnHandler: undefined as Function | undefined } }
+    plugin.install(app)
+    if (dev || !vapor) {
+      expect(app.config.warnHandler).toEqual(expect.any(Function))
+      const warn = jest.spyOn(console, 'warn').mockImplementation(() => {})
+      try {
+        app.config.warnHandler!('测试告警', null, '组件调用链')
+        expect(warn).toHaveBeenCalledWith(
+          '[Vue warn]: 测试告警',
+          '\n',
+          '组件调用链'
+        )
+      } finally {
+        warn.mockRestore()
+      }
+    } else {
+      expect(app.config.warnHandler).toBeUndefined()
+    }
+    const customHandler = jest.fn()
+    app.config.warnHandler = customHandler
+    plugin.install(app)
+    expect(app.config.warnHandler).toBe(customHandler)
+  })
+})
+
 describe('Web Vapor 页面生命周期框架接入', () => {
   test.each([
     { optionsApi: false, ssr: false },
