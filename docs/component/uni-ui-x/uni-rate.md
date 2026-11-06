@@ -65,9 +65,8 @@ Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 
 | readonly | boolean | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | 是否只读，为 true 时不响应点击评分（full 为 false 时始终只读） |
 | plain | boolean | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | 灰星是否使用镂空样式（☆），为 false 时使用实心灰星（★） |
 | starClass | string([string.ClassString](/uts/data-type.md#ide-string)) | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | 灰星（未选中）的自定义样式类 |
-| starStyle | string | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | 灰星（未选中）的内联样式 |
 | starActiveClass | string([string.ClassString](/uts/data-type.md#ide-string)) | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | 亮星（选中）的自定义样式类 |
-| starActiveStyle | string | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | 亮星（选中）的内联样式 |
+| letterSpacing | number | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.07 | 字间距 (px) |
 | @change | Event |   | 评分变化事件，参数为评分值，类型为 number |
 | @update:modelValue | Event |   | v-model 绑定值变化事件，参数为评分值，类型为 number |
 

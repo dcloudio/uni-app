@@ -54,6 +54,7 @@
 | refresher-triggered | boolean \| string | false | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 设置当前下拉刷新状态，true 表示下拉刷新已经被触发，false 表示下拉刷新未被触发 |
 | enable-back-to-top | boolean \| string | false | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: 4.41; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.02 | 点击顶部状态栏滚动条返回顶部 |
 | custom-nested-scroll | boolean \| string | false | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.41; iOS: x; HarmonyOS: x | 子元素是否开启嵌套滚动 将滚动事件与父元素协商处理 |
+| scroll-left | number |   |   |   |
 | @refresherpulling | (event: [UniRefresherEvent](#unirefresherevent)) => void |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 下拉刷新控件被下拉 |
 | @refresherrefresh | (event: [UniRefresherEvent](#unirefresherevent)) => void |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 下拉刷新被触发 |
 | @refresherrestore | (event: [UniRefresherEvent](#unirefresherevent)) => void |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 下拉刷新被复位 |
