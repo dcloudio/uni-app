@@ -61,6 +61,7 @@ describe('Vapor 页面查询参数', () => {
       '../../setup/page': {},
       './pageHead-vapor': {},
       './pageBody-vapor': { default: () => () => [] },
+      './dialogPageRenderer-vapor': { dialogPageRenderer: {} },
     }
     const exports = {} as any
     new Function('require', 'exports', '__UNI_FEATURE_NAVIGATIONBAR__', code)(
