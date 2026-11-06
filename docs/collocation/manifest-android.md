@@ -820,16 +820,16 @@ Google V8 引擎通过 Android NDK 编译为 .so 动态链接库，且需要针�
 
 #### 启用包含ICU功能的JS引擎
 
-> HBuilder5.36 及以上版本支持配置使用包含 ICU 功能的 V8 JS引擎
+> HBuilder5.36 及以上版本支持配置启用包含 ICU 功能的 V8 JS引擎，启用后上面列出的限制或禁用特性可正常使用，同时安装包将会增大，压缩.so文件的情况每个cpu类型约增加1.1M，不压缩.so文件的情况每个cpu类型约增加2.8M。
 
-在uni-app x项目中使用包含 ICU 功能的 V8 JS引擎，需在manifest.json中配置：  
+在uni-app x项目中使用包含 ICU 功能的 V8 JS引擎，需在manifest.json中配置。
 
 可视化界面操作在 “安卓App配置” 的 “可选模块配置” 勾选 “v8-icu（支持ICU的JS引擎）”模块：
 
 ![](https://web-ext-storage.dcloud.net.cn/uni-app-x/collocation/android_v8_icu.png)
 
-- HBuilderX 5.35 及以上版本  
-  需通过 manifest.json 的`源码视图`在 "app-android" -> "distribute" -> "modules" 下添加 "v8-icu" 节点，如下示例：  
+
+也可通过`源码视图`在 "app-android" -> "distribute" -> "modules" 下添加 "v8-icu" 节点，如下示例：  
   ```json
   {
     "app-android": {
@@ -842,6 +842,7 @@ Google V8 引擎通过 Android NDK 编译为 .so 动态链接库，且需要针�
   }
   ```
 
+**注意：需要提交云端打包自定义基座生效**  
 
 
 
