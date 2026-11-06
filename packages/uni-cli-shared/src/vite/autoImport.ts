@@ -395,7 +395,8 @@ export function initAutoImportOptions(
     /[\\/]\.git[\\/]/,
     // @dcloudio 包中的 JS 是自带完整导入的官方产物，正则扫描导出别名或继承类时可能误判，
     // 进而产生自引用或重复声明。
-    /[\\/]@dcloudio[\\/].*\.js$/,
+    // 需要排除uni-components
+    /[\\/]@dcloudio[\\/](?!uni-components).*\.js(?:\?v=[\w.-]+)?$/,
   ]
   if (process.env.UNI_INPUT_DIR) {
     exclude.push(
@@ -406,7 +407,8 @@ export function initAutoImportOptions(
   }
   return {
     ...userOptions,
-    include: [/\.(?:js|ts|uts)$/, /\.[u]?vue/],
+    // node_modules下的ts、js serve模式vite会自动加?v=xxx，@dcloudio/uni-components最终也是在node_modules下
+    include: [/\.(?:js|ts|uts)(?:\?v=[\w.-]+)?$/, /\.[u]?vue/],
     exclude,
     imports: (imports as any[]).concat(
       // 旧版 Android x 仍由专有编译流程处理，Android Vapor 对齐 iOS 走通用自动导入
