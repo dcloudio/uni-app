@@ -138,8 +138,6 @@ number,
 Partial<UniNodeJSON | UniNodeJSONMinify>?
 ];
 
-export declare function createInputPlaceholderStyle(style: string | null | undefined): InputPlaceholderStyle;
-
 export declare function createIsCustomElement(tags?: string[]): (tag: string) => boolean;
 
 export declare function createRpx2Unit(unit: string, unitRatio: number, unitPrecision: number): (val: string) => string;
@@ -275,34 +273,6 @@ export declare const I18N_JSON_DELIMITERS: [string, string];
 export declare const initCustomDatasetOnce: (isBuiltInElement?: ((el: HTMLElement) => boolean) | undefined) => void;
 
 export declare function initVaporDataset(window: Window): void;
-
-export declare const INPUT_PLACEHOLDER_CLASS = "data-uni-placeholder-class";
-
-export declare const INPUT_PLACEHOLDER_CLASS_LAYER = "uni-input-placeholder-class";
-
-export declare const INPUT_PLACEHOLDER_IMPORTANT_LAYER = "uni-input-placeholder-inline-important";
-
-export declare const INPUT_PLACEHOLDER_STYLE = "data-uni-placeholder-style";
-
-export declare const INPUT_PLACEHOLDER_STYLE_CLASS_PREFIX = "uni-input-style-";
-
-export declare const INPUT_SELECTION_ATTRIBUTE = "data-uni-input-selection";
-
-export declare const INPUT_SELECTION_BACKGROUND = "--uni-input-selection-background";
-
-export declare const INPUT_SELECTION_CLASS = "data-uni-selection-class";
-
-export declare const INPUT_SELECTION_PROBE = "::before";
-
-export declare const INPUT_SELECTION_PROBE_BACKGROUND = "--uni-input-selection-probe-background";
-
-export declare interface InputPlaceholderStyle {
-    readonly key: string;
-    readonly normal: string;
-    readonly important: string;
-}
-
-export declare function inputStyleDeclarations(prop: string, value: string, selection?: boolean): [string, string][];
 
 /**
  * nodeId
@@ -715,8 +685,6 @@ export declare type PageUpdateAction = CreateAction | InsertAction | RemoveActio
 
 export declare function parseEventName(name: string): [string, EventListenerOptions | undefined];
 
-export declare function parseInputStyle(style: string): [string, string][];
-
 export declare function parseNVueDataset(attr?: Record<string, unknown>): Record<string, unknown>;
 
 /**
@@ -840,8 +808,6 @@ declare function stringAt(str: string, pos: number): string | null;
 
 declare function stringCodePointAt(str: string, pos: number): number | null;
 
-export declare function stringifyInputStyles(styles: Iterable<InputPlaceholderStyle>): string;
-
 export declare function stringifyQuery(obj?: Record<string, any>, encodeStr?: typeof encodeURIComponent): string;
 
 export declare const TABBAR_HEIGHT = 50;
@@ -862,8 +828,6 @@ export declare const UNI_SSR = "__uniSSR";
 export declare const UNI_SSR_DATA = "data";
 
 export declare const UNI_SSR_GLOBAL_DATA = "globalData";
-
-export declare const UNI_SSR_INPUT_STYLES = "__uniInputStyles";
 
 export declare const UNI_SSR_STORE = "store";
 

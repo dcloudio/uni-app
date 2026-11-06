@@ -1,7 +1,7 @@
-import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, getUniElementPage, INPUT_PLACEHOLDER_STYLE_CLASS_PREFIX, INPUT_PLACEHOLDER_IMPORTANT_LAYER, createInputPlaceholderStyle, UNI_SSR_INPUT_STYLES, INPUT_SELECTION_ATTRIBUTE, INPUT_SELECTION_BACKGROUND, INPUT_SELECTION_PROBE, INPUT_SELECTION_PROBE_BACKGROUND, once, getEnvLocale, I18N_JSON_DELIMITERS, Emitter, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, normalizeTarget, passive, LINEFEED, parseQuery, NAVBAR_HEIGHT, parseUrl, decodedQuery, removeLeadingSlash, stringifyQuery as stringifyQuery$1, EventChannel, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, UNI_SSR_TITLE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, PRIMARY_COLOR, debounce, ON_RESIZE, ON_WEB_INVOKE_APP_SERVICE, callOptions, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from "@dcloudio/uni-shared";
+import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, getUniElementPage, once, getEnvLocale, I18N_JSON_DELIMITERS, Emitter, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, normalizeTarget, passive, LINEFEED, parseQuery, NAVBAR_HEIGHT, parseUrl, decodedQuery, removeLeadingSlash, stringifyQuery as stringifyQuery$1, EventChannel, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, UNI_SSR_TITLE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, PRIMARY_COLOR, debounce, ON_RESIZE, ON_WEB_INVOKE_APP_SERVICE, callOptions, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2 } from "@dcloudio/uni-shared";
-import { defineVaporComponent, createPlainElement, openBlock, createBlock, queuePostFlushCb, onActivated, onDeactivated, computed, isInSSRComponentSetup, useSSRContext, watch, setAttr, template, getCurrentInstance, warn, unref, ref, reactive, onMounted, onBeforeUnmount, inject, onBeforeMount, nextTick, mergeProps, isVNode, createElementBlock, Fragment, createElementVNode, Comment, Text, cloneVNode, renderList, createVNode, defineComponent as defineComponent$2, withDirectives, vShow, shallowRef, watchEffect, provide, isReactive, createFor, createCommentVNode, VaporKeepAlive, createDynamicComponent, onServerPrefetch, ssrContextKey, onUnmounted, useSlots, renderSlot, withCtx, markRaw, toRaw, createKeyedFragment, createTextNode, renderEffect, setText, remove, setDynamicProps, effectScope, insert, syncSelectValue, useAttrs as useAttrs$1, injectHook, logError } from "vue";
-import { capitalize, camelize, normalizeClass, isArray, isString, extend, isFunction, hyphenate, hasOwn, isPlainObject, isObject, toRawType, makeMap as makeMap$1, isPromise, EMPTY_OBJ, Namespaces } from "@vue/shared";
+import { defineVaporComponent, createPlainElement, openBlock, createBlock, ref, watch, setAttr, template, getCurrentInstance, warn, unref, reactive, onMounted, onBeforeUnmount, computed, inject, onBeforeMount, nextTick, isVNode, createElementBlock, Fragment, createElementVNode, Comment, Text, cloneVNode, renderList, createVNode, defineComponent as defineComponent$2, mergeProps, withDirectives, vShow, onActivated, shallowRef, watchEffect, provide, isReactive, createFor, createCommentVNode, VaporKeepAlive, createDynamicComponent, useSSRContext, onServerPrefetch, ssrContextKey, onUnmounted, useSlots, renderSlot, withCtx, markRaw, toRaw, createKeyedFragment, createTextNode, renderEffect, setText, remove, setDynamicProps, effectScope, insert, syncSelectValue, useAttrs as useAttrs$1, isInSSRComponentSetup, injectHook, queuePostFlushCb, logError } from "vue";
+import { capitalize, camelize, isArray, isString, extend, isFunction, hyphenate, hasOwn, isPlainObject, isObject, toRawType, makeMap as makeMap$1, isPromise, EMPTY_OBJ, Namespaces } from "@vue/shared";
 import { useRoute, isNavigationFailure, VaporRouterView, useRouter, createRouter, createMemoryHistory } from "vue-router";
 import { ssrRenderAttrs, ssrInterpolate, ssrRenderComponent, ssrRenderClass, ssrRenderStyle, ssrRenderAttr, ssrRenderSlot, ssrRenderList } from "vue/server-renderer";
 import safeAreaInsets from "safe-area-insets";
@@ -92,7 +92,7 @@ const canvasProps = {
     default: false
   }
 };
-const _hoisted_1$6 = {
+const _hoisted_1$7 = {
   "uni-canvas": "",
   class: "uni-canvas-canvas"
 };
@@ -104,223 +104,140 @@ const indexVapor$a = /* @__PURE__ */ defineBuiltInComponent({
     class: UniCanvasElement
   },
   setup() {
-    const root = (openBlock(), createBlock("canvas", _hoisted_1$6));
+    const root = (openBlock(), createBlock("canvas", _hoisted_1$7));
     return root;
   }
 });
-const documents = /* @__PURE__ */ new WeakMap();
-const queueStyleFlush = queuePostFlushCb;
-function update(document2, state) {
-  if (state.pending)
-    return;
-  state.pending = true;
-  queueStyleFlush(() => {
-    state.pending = false;
-    if (documents.get(document2) !== state)
-      return;
-    if (!state.element.isConnected)
-      (document2.head || document2.documentElement).appendChild(state.element);
-    const sheet = state.element.sheet;
-    for (const entry of state.dirty) {
-      if (entry.count)
-        continue;
-      for (const type of ["normal", "important"]) {
-        const rule = entry[type];
-        if (!rule)
-          continue;
-        rule.style.cssText = "";
-        (type === "normal" ? state.freeNormal : state.freeImportant).push(rule);
-        entry[type] = void 0;
-      }
-    }
-    for (const entry of state.dirty) {
-      if (!entry.count)
-        continue;
-      const selector = `input:where([uni-input]).${INPUT_PLACEHOLDER_STYLE_CLASS_PREFIX}${entry.style.key}::placeholder`;
-      for (const type of ["normal", "important"]) {
-        const declarations = entry.style[type];
-        if (!declarations)
-          continue;
-        const free = type === "normal" ? state.freeNormal : state.freeImportant;
-        let rule = free.pop();
-        if (rule) {
-          rule.selectorText = selector;
-          rule.style.cssText = declarations;
-        } else {
-          let parent = sheet;
-          if (type === "important") {
-            if (!state.important) {
-              const index22 = sheet.insertRule(
-                `@layer ${INPUT_PLACEHOLDER_IMPORTANT_LAYER}{}`,
-                sheet.cssRules.length
-              );
-              state.important = sheet.cssRules[index22];
-            }
-            parent = state.important;
-          }
-          const index2 = parent.insertRule(
-            `${selector}{${declarations}}`,
-            parent.cssRules.length
-          );
-          rule = parent.cssRules[index2];
-        }
-        entry[type] = rule;
-      }
-    }
-    state.dirty.clear();
-  }, -1);
+const selectionProperty = "--uni-selection-background-color";
+const selectionAttribute = "data-uni-selection";
+const probeBackgroundProperty = "--uni-selection-probe-background-color";
+const fieldSelectionProps = {
+  selectionClass: {
+    type: String,
+    default: ""
+  }
+};
+const fieldSelectionProbeStyle = "display: none !important;";
+function clearSelection(field) {
+  field.style.removeProperty(selectionProperty);
+  field.removeAttribute(selectionAttribute);
 }
-function registerInputStyle(document2, style) {
-  if (!style.key)
-    return () => {
-    };
-  let state = documents.get(document2);
-  if (!state) {
-    const element = document2.createElement("style");
-    element.setAttribute("data-uni-input-styles", "");
-    state = {
-      element,
-      styles: /* @__PURE__ */ new Map(),
-      dirty: /* @__PURE__ */ new Set(),
-      freeNormal: [],
-      freeImportant: [],
-      pending: false
-    };
-    documents.set(document2, state);
-  }
-  let entry = state.styles.get(style.key);
-  if (entry)
-    entry.count++;
-  else {
-    entry = { style, count: 1 };
-    state.styles.set(style.key, entry);
-    state.dirty.add(entry);
-    update(document2, state);
-  }
-  let registered = true;
-  return () => {
-    if (!registered)
-      return;
-    registered = false;
-    if (--entry.count)
-      return;
-    state.styles.delete(style.key);
-    if (state.styles.size) {
-      state.dirty.add(entry);
-      update(document2, state);
-    } else {
-      state.element.remove();
-      documents.delete(document2);
+function resolveSelectionColor(probe) {
+  const color = getComputedStyle(probe).backgroundColor;
+  if (color === "transparent" || color.replace(/\s/g, "") === "rgba(0,0,0,0)") {
+    probe.style.setProperty(probeBackgroundProperty, "#000000");
+    try {
+      return getComputedStyle(probe).backgroundColor === color ? color : "";
+    } finally {
+      probe.style.removeProperty(probeBackgroundProperty);
     }
+  }
+  return color;
+}
+function updateSelection(field, color) {
+  if (!color) {
+    clearSelection(field);
+    return;
+  }
+  if (field.style.getPropertyValue(selectionProperty) !== color) {
+    field.style.setProperty(selectionProperty, color);
+  }
+  if (!field.hasAttribute(selectionAttribute)) {
+    field.setAttribute(selectionAttribute, "");
+  }
+}
+function observeSelection(probe, field) {
+  let refreshFrame = null;
+  function refreshSelection() {
+    refreshFrame = null;
+    if (!field.isConnected || field.ownerDocument.activeElement !== field) {
+      return;
+    }
+    updateSelection(field, resolveSelectionColor(probe));
+    refreshFrame = requestAnimationFrame(refreshSelection);
+  }
+  function startRefresh() {
+    if (refreshFrame === null) {
+      refreshSelection();
+    }
+  }
+  function stopRefresh() {
+    if (refreshFrame !== null) {
+      cancelAnimationFrame(refreshFrame);
+      refreshFrame = null;
+    }
+  }
+  field.addEventListener("focus", startRefresh);
+  field.addEventListener("blur", stopRefresh);
+  startRefresh();
+  return () => {
+    field.removeEventListener("focus", startRefresh);
+    field.removeEventListener("blur", stopRefresh);
+    stopRefresh();
+    clearSelection(field);
   };
 }
-function normalizeInputStyleClass(value) {
-  return normalizeClass(value).replace(/(^|\s)\^+/g, "$1").trim();
-}
-function useInputStyles(props2, fieldRef) {
-  let active = true;
-  let resume;
-  let pause;
-  onActivated(() => {
-    active = true;
-    resume == null ? void 0 : resume();
-  });
-  onDeactivated(() => {
-    active = false;
-    pause == null ? void 0 : pause();
-  });
-  const placeholder = computed(
-    () => createInputPlaceholderStyle(props2.placeholderStyle)
-  );
-  const placeholderStyle = computed(() => placeholder.value.key);
-  if (isInSSRComponentSetup) {
-    const context = useSSRContext();
-    if (context && placeholder.value.key) {
-      const styles = context[UNI_SSR_INPUT_STYLES] || (context[UNI_SSR_INPUT_STYLES] = /* @__PURE__ */ new Map());
-      styles.set(placeholder.value.key, placeholder.value);
-    }
-  }
+function useFieldSelection(props2, fieldRef) {
+  const selectionRef = ref(null);
   watch(
-    [fieldRef, placeholder],
-    ([field, style], _, onCleanup) => {
-      if (!field)
-        return;
-      onCleanup(registerInputStyle(field.ownerDocument, style));
+    [() => props2.selectionClass, fieldRef, selectionRef],
+    ([className, field, probe], _, onCleanup) => {
+      if (className && field && probe) {
+        onCleanup(observeSelection(probe, field));
+      }
     },
-    // 先收集本轮规则，再由共享样式表在 mounted/updated 之前统一写入。
-    { flush: "pre" }
+    { immediate: true, flush: "post" }
   );
-  watch(
-    [fieldRef, () => props2.selectionClass],
-    ([field, className], _, onCleanup) => {
-      if (!field || !className)
-        return;
-      let frame;
-      const clear = () => {
-        field.removeAttribute(INPUT_SELECTION_ATTRIBUTE);
-        field.style.removeProperty(INPUT_SELECTION_BACKGROUND);
-      };
-      function refresh() {
-        frame = void 0;
-        if (!active || !field.isConnected)
-          return;
-        let color = getComputedStyle(
-          field,
-          INPUT_SELECTION_PROBE
-        ).backgroundColor;
-        if (color === "transparent" || color.replace(/\s/g, "") === "rgba(0,0,0,0)") {
-          field.style.setProperty(INPUT_SELECTION_PROBE_BACKGROUND, "#000000");
-          try {
-            if (getComputedStyle(field, INPUT_SELECTION_PROBE).backgroundColor !== color)
-              color = "";
-          } finally {
-            field.style.removeProperty(INPUT_SELECTION_PROBE_BACKGROUND);
-          }
-        }
-        if (color) {
-          if (field.style.getPropertyValue(INPUT_SELECTION_BACKGROUND) !== color)
-            field.style.setProperty(INPUT_SELECTION_BACKGROUND, color);
-          if (!field.hasAttribute(INPUT_SELECTION_ATTRIBUTE))
-            field.setAttribute(INPUT_SELECTION_ATTRIBUTE, "");
-        } else {
-          clear();
-        }
-        if (field.ownerDocument.activeElement === field) {
-          frame = requestAnimationFrame(refresh);
-        }
-      }
-      function stop() {
-        if (frame !== void 0)
-          cancelAnimationFrame(frame);
-        frame = void 0;
-      }
-      function start() {
-        stop();
-        refresh();
-      }
-      resume = () => {
-        start();
-      };
-      pause = stop;
-      field.addEventListener("focus", start);
-      field.addEventListener("blur", start);
-      resume();
-      onCleanup(() => {
-        pause == null ? void 0 : pause();
-        resume = pause = void 0;
-        field.removeEventListener("focus", start);
-        field.removeEventListener("blur", start);
-        clear();
-      });
-    },
-    { flush: "post" }
-  );
-  return placeholderStyle;
+  return selectionRef;
 }
-class UniInputElement extends UniElement2 {
+const nativeHasInstance = Function.prototype[Symbol.hasInstance];
+function isUniNativeElement(value, tag, marker) {
+  const el = value;
+  return (el == null ? void 0 : el.nodeType) === 1 && el.localName === tag && el.hasAttribute(marker);
+}
+const NativeUniElement = UniElement2;
+class UniViewElement extends NativeUniElement {
   static [Symbol.hasInstance](value) {
-    return this === UniInputElement && (value == null ? void 0 : value.nodeType) === 1 && value.localName === "input" && value.hasAttribute("uni-input") || Function.prototype[Symbol.hasInstance].call(this, value);
+    return this === UniViewElement && isUniNativeElement(value, "div", "uni-view") || nativeHasInstance.call(this, value);
   }
+}
+class UniTextElement extends NativeUniElement {
+  // Web 直接读取 DOM 文字，不缓存、不触发布局；不提供会删除 Vue 子节点的 setter。
+  // 类上保留 getter，供 Button 等复合 Element 的 super.value 复用。
+  get value() {
+    return this.textContent ?? "";
+  }
+  static [Symbol.hasInstance](value) {
+    return this === UniTextElement && isUniNativeElement(value, "span", "uni-text") || nativeHasInstance.call(this, value);
+  }
+}
+class UniImageElement extends NativeUniElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniImageElement && isUniNativeElement(value, "img", "uni-image") || nativeHasInstance.call(this, value);
+  }
+}
+class UniInputElement extends UniViewElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniInputElement && value instanceof UniViewElement && value.hasAttribute("uni-input") || Function.prototype[Symbol.hasInstance].call(this, value);
+  }
+  focus(options) {
+    var _a;
+    (_a = this.querySelector("input")) == null ? void 0 : _a.focus(options);
+  }
+  get value() {
+    return this.querySelector("input").value;
+  }
+  set value(value) {
+    this.querySelector("input").value = value;
+  }
+}
+const descriptors$1 = /* @__PURE__ */ (() => ({
+  uniTagName: { value: "INPUT" },
+  focus: Object.getOwnPropertyDescriptor(UniInputElement.prototype, "focus"),
+  value: Object.getOwnPropertyDescriptor(UniInputElement.prototype, "value")
+}))();
+function initInputElement(root) {
+  Object.defineProperties(root, descriptors$1);
 }
 const isEnableLocale = /* @__PURE__ */ once(
   () => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
@@ -1550,7 +1467,7 @@ function useAutoFocus(props2, fieldRef) {
     }
   });
 }
-function useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput, native = false) {
+function useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput) {
   function checkSelection() {
     const field = fieldRef.value;
     if (field && state.focus && state.selectionStart > -1 && state.selectionEnd > -1 && typeof field.selectionStart === "number") {
@@ -1576,8 +1493,6 @@ function useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput, n
     if (!field)
       return;
     const onFocus = function(event) {
-      if (native && props2.disabled)
-        return;
       state.focus = true;
       trigger("focus", event, {
         value: state.value
@@ -1587,7 +1502,7 @@ function useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput, n
     };
     const onInput = function(event, force) {
       event.stopPropagation();
-      if (isFunction(beforeInput) && beforeInput(event, state, force) === false) {
+      if (isFunction(beforeInput) && beforeInput(event, state) === false) {
         return;
       }
       state.value = field.value;
@@ -1603,8 +1518,6 @@ function useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput, n
       }
     };
     const onBlur = function(event) {
-      if (native && props2.disabled && !state.focus)
-        return;
       if (state.composing) {
         state.composing = false;
         onInput(event, true);
@@ -1621,8 +1534,6 @@ function useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput, n
     field.addEventListener("input", onInput);
     field.addEventListener("compositionstart", (event) => {
       event.stopPropagation();
-      if (native && props2.disabled)
-        return;
       state.composing = true;
       _onComposition(event);
     });
@@ -1630,7 +1541,7 @@ function useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput, n
       event.stopPropagation();
       if (state.composing) {
         state.composing = false;
-        onInput(event, native && !!props2.disabled);
+        onInput(event);
       }
       _onComposition(event);
     });
@@ -1645,27 +1556,9 @@ function useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput, n
   }
   watch([() => state.selectionStart, () => state.selectionEnd], checkSelection);
   watch(() => state.cursor, checkCursor);
-  if (native) {
-    watch(
-      [fieldRef, () => props2.placeholder],
-      ([field, value], [previousField]) => {
-        if (field) {
-          if (value == null) {
-            if (field.hasAttribute("placeholder"))
-              field.removeAttribute("placeholder");
-          } else if (field.placeholder !== value) {
-            field.placeholder = value;
-          }
-        }
-        if (field !== previousField)
-          initField();
-      }
-    );
-  } else {
-    watch(() => fieldRef.value, initField);
-  }
+  watch(() => fieldRef.value, initField);
 }
-function useField(props2, rootRef, emit2, beforeInput, native = false) {
+function useField(props2, rootRef, emit2, beforeInput) {
   UniViewJSBridgeSubscribe();
   const { fieldRef, state, trigger } = useBase(props2, rootRef, emit2);
   const { triggerInput } = useValueSync(props2, state, emit2, trigger);
@@ -1673,7 +1566,7 @@ function useField(props2, rootRef, emit2, beforeInput, native = false) {
   useKeyboard(props2, fieldRef);
   const { state: scopedAttrsState } = useScopedAttrs();
   useVaporFormField(props2, state);
-  useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput, native);
+  useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput);
   const fixDisabledColor = false;
   return {
     fieldRef,
@@ -1683,101 +1576,8 @@ function useField(props2, rootRef, emit2, beforeInput, native = false) {
     trigger
   };
 }
-function truncateInputNumber(value, maxlength, previous = "") {
-  var _a;
-  if (!Number.isFinite(maxlength))
-    return value;
-  if (maxlength === 0 || !value)
-    return "";
-  const prefix = (_a = value.slice(0, maxlength).match(/^-?(?:\d+(?:\.\d+)?|\.\d+)(?:[eE][+-]?\d+)?/)) == null ? void 0 : _a[0];
-  if (prefix)
-    return prefix;
-  return previous.length <= maxlength && /^-?(?:\d+(?:\.\d+)?|\.\d+)(?:[eE][+-]?\d+)?$/.test(previous) ? previous : "";
-}
 once(() => {
 });
-const selectionProperty = "--uni-selection-background-color";
-const selectionAttribute = "data-uni-selection";
-const probeBackgroundProperty = "--uni-selection-probe-background-color";
-const fieldSelectionProps = {
-  selectionClass: {
-    type: String,
-    default: ""
-  }
-};
-const fieldSelectionProbeStyle = "display: none !important;";
-function clearSelection(field) {
-  field.style.removeProperty(selectionProperty);
-  field.removeAttribute(selectionAttribute);
-}
-function resolveSelectionColor(probe) {
-  const color = getComputedStyle(probe).backgroundColor;
-  if (color === "transparent" || color.replace(/\s/g, "") === "rgba(0,0,0,0)") {
-    probe.style.setProperty(probeBackgroundProperty, "#000000");
-    try {
-      return getComputedStyle(probe).backgroundColor === color ? color : "";
-    } finally {
-      probe.style.removeProperty(probeBackgroundProperty);
-    }
-  }
-  return color;
-}
-function updateSelection(field, color) {
-  if (!color) {
-    clearSelection(field);
-    return;
-  }
-  if (field.style.getPropertyValue(selectionProperty) !== color) {
-    field.style.setProperty(selectionProperty, color);
-  }
-  if (!field.hasAttribute(selectionAttribute)) {
-    field.setAttribute(selectionAttribute, "");
-  }
-}
-function observeSelection(probe, field) {
-  let refreshFrame = null;
-  function refreshSelection() {
-    refreshFrame = null;
-    if (!field.isConnected || field.ownerDocument.activeElement !== field) {
-      return;
-    }
-    updateSelection(field, resolveSelectionColor(probe));
-    refreshFrame = requestAnimationFrame(refreshSelection);
-  }
-  function startRefresh() {
-    if (refreshFrame === null) {
-      refreshSelection();
-    }
-  }
-  function stopRefresh() {
-    if (refreshFrame !== null) {
-      cancelAnimationFrame(refreshFrame);
-      refreshFrame = null;
-    }
-  }
-  field.addEventListener("focus", startRefresh);
-  field.addEventListener("blur", stopRefresh);
-  startRefresh();
-  return () => {
-    field.removeEventListener("focus", startRefresh);
-    field.removeEventListener("blur", stopRefresh);
-    stopRefresh();
-    clearSelection(field);
-  };
-}
-function useFieldSelection(props2, fieldRef) {
-  const selectionRef = ref(null);
-  watch(
-    [() => props2.selectionClass, fieldRef, selectionRef],
-    ([className, field, probe], _, onCleanup) => {
-      if (className && field && probe) {
-        onCleanup(observeSelection(probe, field));
-      }
-    },
-    { immediate: true, flush: "post" }
-  );
-  return selectionRef;
-}
 const webSelectionProps$1 = fieldSelectionProps;
 const props$8 = /* @__PURE__ */ extend(
   {},
@@ -1821,7 +1621,7 @@ function useCache(props2, type) {
   }
 }
 const emits$2 = ["confirm", ...emit];
-function useInput(props2, { emit: emit2, expose }, native = false) {
+function useInput(props2, { emit: emit2, expose }) {
   const INPUT_TYPES = [
     "text",
     "number",
@@ -1830,8 +1630,7 @@ function useInput(props2, { emit: emit2, expose }, native = false) {
     "password",
     "tel",
     "search",
-    "email",
-    ...native ? ["url"] : []
+    "email"
   ];
   const AUTOCOMPLETES = ["off", "one-time-code"];
   const type = computed(() => {
@@ -1883,45 +1682,14 @@ function useInput(props2, { emit: emit2, expose }, native = false) {
     }
     return inputmodeMap[props2.type];
   });
-  let cache = native ? ref("") : useCache(props2, type);
+  let cache = useCache(props2, type);
   const rootRef = ref(null);
-  const { fieldRef, state, scopedAttrsState, fixDisabledColor, trigger } = useField(
-    props2,
-    rootRef,
-    emit2,
-    (event, state2, force) => {
-      if (native) {
-        if (props2.disabled && !force)
-          return false;
-        const input2 = event.target;
-        if (type.value === "number" && Number.isFinite(state2.maxlength) && input2.value.length > state2.maxlength) {
-          input2.value = truncateInputNumber(
-            input2.value,
-            state2.maxlength,
-            state2.value
-          );
-        }
-      }
-      {
-        return;
-      }
-    },
-    native
-  );
-  if (native) {
-    watch(
-      [() => state.value, () => state.maxlength, type],
-      ([value, maxlength, inputType]) => {
-        if (inputType !== "number")
-          return;
-        const normalized = truncateInputNumber(value, maxlength);
-        if (normalized !== value)
-          state.value = normalized;
-      },
-      { immediate: true, flush: "sync" }
-    );
-  }
-  const selectionRef = !native ? useFieldSelection(props2, fieldRef) : void 0;
+  const { fieldRef, state, scopedAttrsState, fixDisabledColor, trigger } = useField(props2, rootRef, emit2, (event, state2) => {
+    {
+      return;
+    }
+  });
+  const selectionRef = useFieldSelection(props2, fieldRef);
   watch(
     () => state.value,
     (value) => {
@@ -1989,112 +1757,8 @@ function useInput(props2, { emit: emit2, expose }, native = false) {
     cache,
     step,
     onKeyUpEnter,
-    onInput,
-    trigger
+    onInput
   };
-}
-const Input = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Input",
-  props: props$8,
-  emits: ["change", ...emits$2],
-  externalClasses: ["placeholder-class", "selection-class"],
-  rootElement: {
-    name: "uni-input",
-    class: UniInputElement
-  },
-  setup(props2, context) {
-    const { rootRef, fieldRef, state, scopedAttrsState, fixDisabledColor, type, autocomplete, inputmode, step, onKeyUpEnter, trigger } = useInput(props2, context, true);
-    const placeholderStyle = useInputStyles(props2, fieldRef);
-    const initialPlaceholder = props2.placeholder;
-    const readonly = computed(() => !!props2.disabled && fixDisabledColor);
-    if (fixDisabledColor) {
-      watch(readonly, (disabled) => {
-        var _a;
-        if (disabled)
-          (_a = fieldRef.value) == null ? void 0 : _a.blur();
-      }, { flush: "post" });
-    }
-    const style = computed(() => props2.cursorColor ? { caretColor: props2.cursorColor } : {});
-    const setFieldRef = (el) => {
-      rootRef.value = fieldRef.value = el;
-    };
-    return openBlock(), createBlock("input", mergeProps({
-      "uni-input": "",
-      ref: setFieldRef
-    }, scopedAttrsState.attrs, {
-      class: placeholderStyle.value ? "uni-input-input " + INPUT_PLACEHOLDER_STYLE_CLASS_PREFIX + placeholderStyle.value : "uni-input-input",
-      "data-uni-placeholder-class": normalizeInputStyleClass(props2.placeholderClass),
-      "data-uni-selection-class": normalizeInputStyleClass(props2.selectionClass),
-      "data-uni-placeholder-style": placeholderStyle.value || void 0,
-      name: props2.name,
-      value: state.value,
-      placeholder: initialPlaceholder,
-      disabled: !!props2.disabled && !readonly.value,
-      readonly: readonly.value,
-      tabindex: readonly.value ? -1 : void 0,
-      type: type.value,
-      maxlength: Number.isFinite(state.maxlength) ? state.maxlength : void 0,
-      step: step.value,
-      enterkeyhint: props2.confirmType,
-      pattern: props2.type === "number" ? "[0-9]*" : void 0,
-      autocomplete: autocomplete.value,
-      inputmode: inputmode.value,
-      style: style.value
-    }), null, 16);
-  }
-});
-const resizeSensorProps = {
-  initial: {
-    type: Boolean,
-    default: false
-  }
-};
-function useResizeSensor(props2, emit2) {
-  const rootRef = ref(null);
-  const reset = useResizeSensorReset(rootRef);
-  const update2 = useResizeSensorUpdate(rootRef, emit2, reset);
-  useResizeSensorLifecycle(rootRef, props2, update2, reset);
-  return { rootRef, update: update2 };
-}
-function useResizeSensorUpdate(rootRef, emit2, reset) {
-  const size = reactive({ width: -1, height: -1 });
-  watch(
-    () => extend({}, size),
-    (value) => emit2("resize", value)
-  );
-  return () => {
-    const rootEl = rootRef.value;
-    if (!rootEl)
-      return;
-    const rect = rootEl.getBoundingClientRect();
-    size.width = rect.width;
-    size.height = rect.height;
-    reset();
-  };
-}
-function useResizeSensorReset(rootRef) {
-  return () => {
-    const { firstElementChild, lastElementChild } = rootRef.value;
-    firstElementChild.scrollLeft = 1e5;
-    firstElementChild.scrollTop = 1e5;
-    lastElementChild.scrollLeft = 1e5;
-    lastElementChild.scrollTop = 1e5;
-  };
-}
-function useResizeSensorLifecycle(rootRef, props2, update2, reset) {
-  onActivated(reset);
-  onMounted(() => {
-    if (props2.initial) {
-      nextTick(update2);
-    }
-    const rootEl = rootRef.value;
-    if (rootEl.offsetParent !== rootEl.parentElement) {
-      rootEl.parentElement.style.position = "relative";
-    }
-    if (!("AnimationEvent" in window)) {
-      reset();
-    }
-  });
 }
 const cacheMap = /* @__PURE__ */ new WeakMap();
 function createVNodeCache(key) {
@@ -2146,12 +1810,128 @@ defineComponent(
   },
   { props: ["in"] }
 );
+const _hoisted_1$6 = { class: "uni-input-wrapper" };
+const Input = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Input",
+  props: props$8,
+  emits: emits$2,
+  rootElement: {
+    name: "uni-input",
+    class: UniInputElement
+  },
+  setup(props2, context) {
+    const { rootRef, fieldRef, state, scopedAttrsState, selectionRef, fixDisabledColor, type, autocomplete, inputmode, cache, step, onKeyUpEnter, onInput } = useInput(props2, context);
+    const renderInput = () => (openBlock(), createBlock(Fragment, null, [props2.disabled && fixDisabledColor ? (openBlock(), createBlock("input", {
+      key: "disabled-input",
+      ref: fieldRef,
+      value: state.value,
+      tabindex: "-1",
+      readonly: !!props2.disabled,
+      type: type.value,
+      maxlength: state.maxlength,
+      step: step.value,
+      class: props2.selectionClass ? "uni-input-input uni-field-selection" : "uni-input-input",
+      style: props2.cursorColor ? { caretColor: props2.cursorColor } : {},
+      inputmode: inputmode.value
+    }, null, 512)) : (openBlock(), createBlock("input", {
+      key: "input",
+      ref: fieldRef,
+      value: state.value,
+      disabled: !!props2.disabled,
+      type: type.value,
+      maxlength: state.maxlength,
+      step: step.value,
+      enterkeyhint: props2.confirmType,
+      pattern: props2.type === "number" ? "[0-9]*" : void 0,
+      class: props2.selectionClass ? "uni-input-input uni-field-selection" : "uni-input-input",
+      style: props2.cursorColor ? { caretColor: props2.cursorColor } : {},
+      autocomplete: autocomplete.value,
+      inputmode: inputmode.value
+    }, null, 512))], 64));
+    const root = (openBlock(), createBlock("div", {
+      "uni-input": "",
+      "uni-view": "",
+      ref: rootRef
+    }, [createVNode("div", _hoisted_1$6, [
+      normalizeVNode(() => props2.selectionClass && (openBlock(), createBlock("div", mergeProps({ ref: selectionRef }, scopedAttrsState.attrs, {
+        class: ["uni-field-selection-probe", props2.selectionClass],
+        "aria-hidden": "true",
+        style: fieldSelectionProbeStyle
+      }), null, 16))),
+      withDirectives(createVNode("div", mergeProps(scopedAttrsState.attrs, {
+        style: props2.placeholderStyle,
+        class: ["uni-input-placeholder", props2.placeholderClass]
+      }), [normalizeVNode(() => props2.placeholder)], 16), [[vShow, !(state.value.length || cache.value === "-" || cache.value.includes("."))]]),
+      props2.confirmType === "search" ? (openBlock(), createBlock("form", {
+        key: 0,
+        action: "",
+        novalidate: true,
+        class: "uni-input-form"
+      }, [normalizeVNode(() => renderInput())])) : (openBlock(), createBlock(Fragment, { key: 1 }, [normalizeVNode(() => renderInput())], 64))
+    ])], 512));
+    initInputElement(root);
+    return root;
+  }
+});
+const resizeSensorProps = {
+  initial: {
+    type: Boolean,
+    default: false
+  }
+};
+function useResizeSensor(props2, emit2) {
+  const rootRef = ref(null);
+  const reset = useResizeSensorReset(rootRef);
+  const update = useResizeSensorUpdate(rootRef, emit2, reset);
+  useResizeSensorLifecycle(rootRef, props2, update, reset);
+  return { rootRef, update };
+}
+function useResizeSensorUpdate(rootRef, emit2, reset) {
+  const size = reactive({ width: -1, height: -1 });
+  watch(
+    () => extend({}, size),
+    (value) => emit2("resize", value)
+  );
+  return () => {
+    const rootEl = rootRef.value;
+    if (!rootEl)
+      return;
+    const rect = rootEl.getBoundingClientRect();
+    size.width = rect.width;
+    size.height = rect.height;
+    reset();
+  };
+}
+function useResizeSensorReset(rootRef) {
+  return () => {
+    const { firstElementChild, lastElementChild } = rootRef.value;
+    firstElementChild.scrollLeft = 1e5;
+    firstElementChild.scrollTop = 1e5;
+    lastElementChild.scrollLeft = 1e5;
+    lastElementChild.scrollTop = 1e5;
+  };
+}
+function useResizeSensorLifecycle(rootRef, props2, update, reset) {
+  onActivated(reset);
+  onMounted(() => {
+    if (props2.initial) {
+      nextTick(update);
+    }
+    const rootEl = rootRef.value;
+    if (rootEl.offsetParent !== rootEl.parentElement) {
+      rootEl.parentElement.style.position = "relative";
+    }
+    if (!("AnimationEvent" in window)) {
+      reset();
+    }
+  });
+}
 const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
   name: "ResizeSensor",
   props: resizeSensorProps,
   emits: ["resize"],
   setup(props2, { emit: emit2 }) {
-    const { rootRef, update: update2 } = useResizeSensor(props2, emit2);
+    const { rootRef, update } = useResizeSensor(props2, emit2);
     const root = (() => {
       const _cache = createVNodeCache("d8f4f8be");
       return openBlock(), createBlock("div", {
@@ -2162,32 +1942,6 @@ const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
     return root;
   }
 });
-const nativeHasInstance = Function.prototype[Symbol.hasInstance];
-function isUniNativeElement(value, tag, marker) {
-  const el = value;
-  return (el == null ? void 0 : el.nodeType) === 1 && el.localName === tag && el.hasAttribute(marker);
-}
-const NativeUniElement = UniElement2;
-class UniViewElement extends NativeUniElement {
-  static [Symbol.hasInstance](value) {
-    return this === UniViewElement && isUniNativeElement(value, "div", "uni-view") || nativeHasInstance.call(this, value);
-  }
-}
-class UniTextElement extends NativeUniElement {
-  // Web 直接读取 DOM 文字，不缓存、不触发布局；不提供会删除 Vue 子节点的 setter。
-  // 类上保留 getter，供 Button 等复合 Element 的 super.value 复用。
-  get value() {
-    return this.textContent ?? "";
-  }
-  static [Symbol.hasInstance](value) {
-    return this === UniTextElement && isUniNativeElement(value, "span", "uni-text") || nativeHasInstance.call(this, value);
-  }
-}
-class UniImageElement extends NativeUniElement {
-  static [Symbol.hasInstance](value) {
-    return this === UniImageElement && isUniNativeElement(value, "img", "uni-image") || nativeHasInstance.call(this, value);
-  }
-}
 class UniTextareaElement extends UniViewElement {
   static [Symbol.hasInstance](value) {
     return this === UniTextareaElement && value instanceof UniViewElement && value.hasAttribute("uni-textarea") || Function.prototype[Symbol.hasInstance].call(this, value);
@@ -5293,11 +5047,11 @@ function updateDocumentTitle(title) {
   UniServiceJSBridge.emit(ON_NAVIGATION_BAR_CHANGE, { titleText: title });
 }
 function useDocumentTitle(pageMeta) {
-  function update2() {
+  function update() {
     updateDocumentTitle(pageMeta.navigationBar.titleText);
   }
-  watchEffect(update2);
-  onActivated(update2);
+  watchEffect(update);
+  onActivated(update);
 }
 function updateBackgroundColorContent(backgroundColorContent) {
   {
@@ -5305,16 +5059,16 @@ function updateBackgroundColorContent(backgroundColorContent) {
   }
 }
 function useBackgroundColorContent(pageMeta) {
-  function update2() {
+  function update() {
     if (pageMeta.backgroundColorContent) {
       updateBackgroundColorContent(
         parseTheme({ backgroundColorContent: pageMeta.backgroundColorContent }).backgroundColorContent
       );
     }
   }
-  onThemeChange(update2);
-  watchEffect(update2);
-  onActivated(update2);
+  onThemeChange(update);
+  watchEffect(update);
+  onActivated(update);
 }
 class UniLoadingElement extends UniViewElement {
 }

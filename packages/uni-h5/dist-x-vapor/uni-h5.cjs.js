@@ -127,213 +127,139 @@ const indexVapor$a = /* @__PURE__ */ defineBuiltInComponent({
     return root;
   }
 });
-const documents = /* @__PURE__ */ new WeakMap();
-const queueStyleFlush = Vue.queuePostFlushCb;
-function update(document2, state) {
-  if (state.pending)
-    return;
-  state.pending = true;
-  queueStyleFlush(() => {
-    state.pending = false;
-    if (documents.get(document2) !== state)
-      return;
-    if (!state.element.isConnected)
-      (document2.head || document2.documentElement).appendChild(state.element);
-    const sheet = state.element.sheet;
-    for (const entry of state.dirty) {
-      if (entry.count)
-        continue;
-      for (const type of ["normal", "important"]) {
-        const rule = entry[type];
-        if (!rule)
-          continue;
-        rule.style.cssText = "";
-        (type === "normal" ? state.freeNormal : state.freeImportant).push(rule);
-        entry[type] = void 0;
-      }
-    }
-    for (const entry of state.dirty) {
-      if (!entry.count)
-        continue;
-      const selector = `input:where([uni-input]).${uniShared.INPUT_PLACEHOLDER_STYLE_CLASS_PREFIX}${entry.style.key}::placeholder`;
-      for (const type of ["normal", "important"]) {
-        const declarations = entry.style[type];
-        if (!declarations)
-          continue;
-        const free = type === "normal" ? state.freeNormal : state.freeImportant;
-        let rule = free.pop();
-        if (rule) {
-          rule.selectorText = selector;
-          rule.style.cssText = declarations;
-        } else {
-          let parent = sheet;
-          if (type === "important") {
-            if (!state.important) {
-              const index22 = sheet.insertRule(
-                `@layer ${uniShared.INPUT_PLACEHOLDER_IMPORTANT_LAYER}{}`,
-                sheet.cssRules.length
-              );
-              state.important = sheet.cssRules[index22];
-            }
-            parent = state.important;
-          }
-          const index2 = parent.insertRule(
-            `${selector}{${declarations}}`,
-            parent.cssRules.length
-          );
-          rule = parent.cssRules[index2];
-        }
-        entry[type] = rule;
-      }
-    }
-    state.dirty.clear();
-  }, -1);
+const selectionProperty = "--uni-selection-background-color";
+const selectionAttribute = "data-uni-selection";
+const probeBackgroundProperty = "--uni-selection-probe-background-color";
+const fieldSelectionProps = {
+  selectionClass: {
+    type: String,
+    default: ""
+  }
+};
+const fieldSelectionProbeStyle = "display: none !important;";
+function clearSelection(field) {
+  field.style.removeProperty(selectionProperty);
+  field.removeAttribute(selectionAttribute);
 }
-function registerInputStyle(document2, style) {
-  if (!style.key)
-    return () => {
-    };
-  let state = documents.get(document2);
-  if (!state) {
-    const element = document2.createElement("style");
-    element.setAttribute("data-uni-input-styles", "");
-    state = {
-      element,
-      styles: /* @__PURE__ */ new Map(),
-      dirty: /* @__PURE__ */ new Set(),
-      freeNormal: [],
-      freeImportant: [],
-      pending: false
-    };
-    documents.set(document2, state);
-  }
-  let entry = state.styles.get(style.key);
-  if (entry)
-    entry.count++;
-  else {
-    entry = { style, count: 1 };
-    state.styles.set(style.key, entry);
-    state.dirty.add(entry);
-    update(document2, state);
-  }
-  let registered = true;
-  return () => {
-    if (!registered)
-      return;
-    registered = false;
-    if (--entry.count)
-      return;
-    state.styles.delete(style.key);
-    if (state.styles.size) {
-      state.dirty.add(entry);
-      update(document2, state);
-    } else {
-      state.element.remove();
-      documents.delete(document2);
+function resolveSelectionColor(probe) {
+  const color = getComputedStyle(probe).backgroundColor;
+  if (color === "transparent" || color.replace(/\s/g, "") === "rgba(0,0,0,0)") {
+    probe.style.setProperty(probeBackgroundProperty, "#000000");
+    try {
+      return getComputedStyle(probe).backgroundColor === color ? color : "";
+    } finally {
+      probe.style.removeProperty(probeBackgroundProperty);
     }
+  }
+  return color;
+}
+function updateSelection(field, color) {
+  if (!color) {
+    clearSelection(field);
+    return;
+  }
+  if (field.style.getPropertyValue(selectionProperty) !== color) {
+    field.style.setProperty(selectionProperty, color);
+  }
+  if (!field.hasAttribute(selectionAttribute)) {
+    field.setAttribute(selectionAttribute, "");
+  }
+}
+function observeSelection(probe, field) {
+  let refreshFrame = null;
+  function refreshSelection() {
+    refreshFrame = null;
+    if (!field.isConnected || field.ownerDocument.activeElement !== field) {
+      return;
+    }
+    updateSelection(field, resolveSelectionColor(probe));
+    refreshFrame = requestAnimationFrame(refreshSelection);
+  }
+  function startRefresh() {
+    if (refreshFrame === null) {
+      refreshSelection();
+    }
+  }
+  function stopRefresh() {
+    if (refreshFrame !== null) {
+      cancelAnimationFrame(refreshFrame);
+      refreshFrame = null;
+    }
+  }
+  field.addEventListener("focus", startRefresh);
+  field.addEventListener("blur", stopRefresh);
+  startRefresh();
+  return () => {
+    field.removeEventListener("focus", startRefresh);
+    field.removeEventListener("blur", stopRefresh);
+    stopRefresh();
+    clearSelection(field);
   };
 }
-function normalizeInputStyleClass(value) {
-  return shared.normalizeClass(value).replace(/(^|\s)\^+/g, "$1").trim();
-}
-function useInputStyles(props2, fieldRef) {
-  let resume;
-  let pause;
-  const placeholder = Vue.computed(
-    () => uniShared.createInputPlaceholderStyle(props2.placeholderStyle)
-  );
-  const placeholderStyle = Vue.computed(() => placeholder.value.key);
-  if (Vue.isInSSRComponentSetup) {
-    const context = Vue.useSSRContext();
-    if (context && placeholder.value.key) {
-      const styles = context[uniShared.UNI_SSR_INPUT_STYLES] || (context[uniShared.UNI_SSR_INPUT_STYLES] = /* @__PURE__ */ new Map());
-      styles.set(placeholder.value.key, placeholder.value);
-    }
-  }
+function useFieldSelection(props2, fieldRef) {
+  const selectionRef = Vue.ref(null);
   Vue.watch(
-    [fieldRef, placeholder],
-    ([field, style], _, onCleanup) => {
-      if (!field)
-        return;
-      onCleanup(registerInputStyle(field.ownerDocument, style));
+    [() => props2.selectionClass, fieldRef, selectionRef],
+    ([className, field, probe], _, onCleanup) => {
+      if (className && field && probe) {
+        onCleanup(observeSelection(probe, field));
+      }
     },
-    // 先收集本轮规则，再由共享样式表在 mounted/updated 之前统一写入。
-    { flush: "pre" }
+    { immediate: true, flush: "post" }
   );
-  Vue.watch(
-    [fieldRef, () => props2.selectionClass],
-    ([field, className], _, onCleanup) => {
-      if (!field || !className)
-        return;
-      let frame;
-      const clear = () => {
-        field.removeAttribute(uniShared.INPUT_SELECTION_ATTRIBUTE);
-        field.style.removeProperty(uniShared.INPUT_SELECTION_BACKGROUND);
-      };
-      function refresh() {
-        frame = void 0;
-        if (!field.isConnected)
-          return;
-        let color = getComputedStyle(
-          field,
-          uniShared.INPUT_SELECTION_PROBE
-        ).backgroundColor;
-        if (color === "transparent" || color.replace(/\s/g, "") === "rgba(0,0,0,0)") {
-          field.style.setProperty(uniShared.INPUT_SELECTION_PROBE_BACKGROUND, "#000000");
-          try {
-            if (getComputedStyle(field, uniShared.INPUT_SELECTION_PROBE).backgroundColor !== color)
-              color = "";
-          } finally {
-            field.style.removeProperty(uniShared.INPUT_SELECTION_PROBE_BACKGROUND);
-          }
-        }
-        if (color) {
-          if (field.style.getPropertyValue(uniShared.INPUT_SELECTION_BACKGROUND) !== color)
-            field.style.setProperty(uniShared.INPUT_SELECTION_BACKGROUND, color);
-          if (!field.hasAttribute(uniShared.INPUT_SELECTION_ATTRIBUTE))
-            field.setAttribute(uniShared.INPUT_SELECTION_ATTRIBUTE, "");
-        } else {
-          clear();
-        }
-        if (field.ownerDocument.activeElement === field) {
-          frame = requestAnimationFrame(refresh);
-        }
-      }
-      function stop() {
-        if (frame !== void 0)
-          cancelAnimationFrame(frame);
-        frame = void 0;
-      }
-      function start() {
-        stop();
-        refresh();
-      }
-      resume = () => {
-        start();
-      };
-      pause = stop;
-      field.addEventListener("focus", start);
-      field.addEventListener("blur", start);
-      resume();
-      onCleanup(() => {
-        pause == null ? void 0 : pause();
-        resume = pause = void 0;
-        field.removeEventListener("focus", start);
-        field.removeEventListener("blur", start);
-        clear();
-      });
-    },
-    { flush: "post" }
-  );
-  return placeholderStyle;
+  return selectionRef;
 }
-class UniInputElement extends UniElement2 {
+const nativeHasInstance = Function.prototype[Symbol.hasInstance];
+function isUniNativeElement(value, tag, marker) {
+  const el = value;
+  return (el == null ? void 0 : el.nodeType) === 1 && el.localName === tag && el.hasAttribute(marker);
+}
+const NativeUniElement = UniElement2;
+class UniViewElement extends NativeUniElement {
   static [Symbol.hasInstance](value) {
-    return this === UniInputElement && (value == null ? void 0 : value.nodeType) === 1 && value.localName === "input" && value.hasAttribute("uni-input") || Function.prototype[Symbol.hasInstance].call(this, value);
+    return this === UniViewElement && isUniNativeElement(value, "div", "uni-view") || nativeHasInstance.call(this, value);
+  }
+}
+class UniTextElement extends NativeUniElement {
+  // Web 直接读取 DOM 文字，不缓存、不触发布局；不提供会删除 Vue 子节点的 setter。
+  // 类上保留 getter，供 Button 等复合 Element 的 super.value 复用。
+  get value() {
+    return this.textContent ?? "";
+  }
+  static [Symbol.hasInstance](value) {
+    return this === UniTextElement && isUniNativeElement(value, "span", "uni-text") || nativeHasInstance.call(this, value);
+  }
+}
+class UniImageElement extends NativeUniElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniImageElement && isUniNativeElement(value, "img", "uni-image") || nativeHasInstance.call(this, value);
+  }
+}
+class UniInputElement extends UniViewElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniInputElement && value instanceof UniViewElement && value.hasAttribute("uni-input") || Function.prototype[Symbol.hasInstance].call(this, value);
+  }
+  focus(options) {
+    var _a;
+    (_a = this.querySelector("input")) == null ? void 0 : _a.focus(options);
+  }
+  get value() {
+    return this.querySelector("input").value;
+  }
+  set value(value) {
+    this.querySelector("input").value = value;
   }
   static get __uniElement() {
     return {};
   }
+}
+const descriptors$1 = /* @__PURE__ */ (() => ({
+  uniTagName: { value: "INPUT" },
+  focus: Object.getOwnPropertyDescriptor(UniInputElement.prototype, "focus"),
+  value: Object.getOwnPropertyDescriptor(UniInputElement.prototype, "value")
+}))();
+function initInputElement(root) {
+  Object.defineProperties(root, descriptors$1);
 }
 const isEnableLocale = /* @__PURE__ */ uniShared.once(
   () => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
@@ -1653,7 +1579,7 @@ function useAutoFocus(props2, fieldRef) {
     }
   );
 }
-function useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput, native = false) {
+function useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput) {
   function checkSelection() {
     const field = fieldRef.value;
     if (field && state.focus && state.selectionStart > -1 && state.selectionEnd > -1 && typeof field.selectionStart === "number") {
@@ -1679,8 +1605,6 @@ function useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput, n
     if (!field)
       return;
     const onFocus = function(event) {
-      if (native && props2.disabled)
-        return;
       state.focus = true;
       trigger("focus", event, {
         value: state.value
@@ -1690,7 +1614,7 @@ function useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput, n
     };
     const onInput = function(event, force) {
       event.stopPropagation();
-      if (shared.isFunction(beforeInput) && beforeInput(event, state, force) === false) {
+      if (shared.isFunction(beforeInput) && beforeInput(event, state) === false) {
         return;
       }
       state.value = field.value;
@@ -1706,8 +1630,6 @@ function useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput, n
       }
     };
     const onBlur = function(event) {
-      if (native && props2.disabled && !state.focus)
-        return;
       if (state.composing) {
         state.composing = false;
         onInput(event, true);
@@ -1724,8 +1646,6 @@ function useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput, n
     field.addEventListener("input", onInput);
     field.addEventListener("compositionstart", (event) => {
       event.stopPropagation();
-      if (native && props2.disabled)
-        return;
       state.composing = true;
       _onComposition(event);
     });
@@ -1733,7 +1653,7 @@ function useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput, n
       event.stopPropagation();
       if (state.composing) {
         state.composing = false;
-        onInput(event, native && !!props2.disabled);
+        onInput(event);
       }
       _onComposition(event);
     });
@@ -1748,27 +1668,9 @@ function useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput, n
   }
   Vue.watch([() => state.selectionStart, () => state.selectionEnd], checkSelection);
   Vue.watch(() => state.cursor, checkCursor);
-  if (native) {
-    Vue.watch(
-      [fieldRef, () => props2.placeholder],
-      ([field, value], [previousField]) => {
-        if (field) {
-          if (value == null) {
-            if (field.hasAttribute("placeholder"))
-              field.removeAttribute("placeholder");
-          } else if (field.placeholder !== value) {
-            field.placeholder = value;
-          }
-        }
-        if (field !== previousField)
-          initField();
-      }
-    );
-  } else {
-    Vue.watch(() => fieldRef.value, initField);
-  }
+  Vue.watch(() => fieldRef.value, initField);
 }
-function useField(props2, rootRef, emit2, beforeInput, native = false) {
+function useField(props2, rootRef, emit2, beforeInput) {
   UniViewJSBridgeSubscribe();
   const { fieldRef, state, trigger } = useBase(props2, rootRef, emit2);
   const { triggerInput } = useValueSync(props2, state, emit2, trigger);
@@ -1776,7 +1678,7 @@ function useField(props2, rootRef, emit2, beforeInput, native = false) {
   useKeyboard(props2, fieldRef);
   const { state: scopedAttrsState } = useScopedAttrs();
   useVaporFormField(props2, state);
-  useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput, native);
+  useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput);
   const fixDisabledColor = false;
   return {
     fieldRef,
@@ -1786,101 +1688,8 @@ function useField(props2, rootRef, emit2, beforeInput, native = false) {
     trigger
   };
 }
-function truncateInputNumber(value, maxlength, previous = "") {
-  var _a;
-  if (!Number.isFinite(maxlength))
-    return value;
-  if (maxlength === 0 || !value)
-    return "";
-  const prefix = (_a = value.slice(0, maxlength).match(/^-?(?:\d+(?:\.\d+)?|\.\d+)(?:[eE][+-]?\d+)?/)) == null ? void 0 : _a[0];
-  if (prefix)
-    return prefix;
-  return previous.length <= maxlength && /^-?(?:\d+(?:\.\d+)?|\.\d+)(?:[eE][+-]?\d+)?$/.test(previous) ? previous : "";
-}
 uniShared.once(() => {
 });
-const selectionProperty = "--uni-selection-background-color";
-const selectionAttribute = "data-uni-selection";
-const probeBackgroundProperty = "--uni-selection-probe-background-color";
-const fieldSelectionProps = {
-  selectionClass: {
-    type: String,
-    default: ""
-  }
-};
-const fieldSelectionProbeStyle = "display: none !important;";
-function clearSelection(field) {
-  field.style.removeProperty(selectionProperty);
-  field.removeAttribute(selectionAttribute);
-}
-function resolveSelectionColor(probe) {
-  const color = getComputedStyle(probe).backgroundColor;
-  if (color === "transparent" || color.replace(/\s/g, "") === "rgba(0,0,0,0)") {
-    probe.style.setProperty(probeBackgroundProperty, "#000000");
-    try {
-      return getComputedStyle(probe).backgroundColor === color ? color : "";
-    } finally {
-      probe.style.removeProperty(probeBackgroundProperty);
-    }
-  }
-  return color;
-}
-function updateSelection(field, color) {
-  if (!color) {
-    clearSelection(field);
-    return;
-  }
-  if (field.style.getPropertyValue(selectionProperty) !== color) {
-    field.style.setProperty(selectionProperty, color);
-  }
-  if (!field.hasAttribute(selectionAttribute)) {
-    field.setAttribute(selectionAttribute, "");
-  }
-}
-function observeSelection(probe, field) {
-  let refreshFrame = null;
-  function refreshSelection() {
-    refreshFrame = null;
-    if (!field.isConnected || field.ownerDocument.activeElement !== field) {
-      return;
-    }
-    updateSelection(field, resolveSelectionColor(probe));
-    refreshFrame = requestAnimationFrame(refreshSelection);
-  }
-  function startRefresh() {
-    if (refreshFrame === null) {
-      refreshSelection();
-    }
-  }
-  function stopRefresh() {
-    if (refreshFrame !== null) {
-      cancelAnimationFrame(refreshFrame);
-      refreshFrame = null;
-    }
-  }
-  field.addEventListener("focus", startRefresh);
-  field.addEventListener("blur", stopRefresh);
-  startRefresh();
-  return () => {
-    field.removeEventListener("focus", startRefresh);
-    field.removeEventListener("blur", stopRefresh);
-    stopRefresh();
-    clearSelection(field);
-  };
-}
-function useFieldSelection(props2, fieldRef) {
-  const selectionRef = Vue.ref(null);
-  Vue.watch(
-    [() => props2.selectionClass, fieldRef, selectionRef],
-    ([className, field, probe], _, onCleanup) => {
-      if (className && field && probe) {
-        onCleanup(observeSelection(probe, field));
-      }
-    },
-    { immediate: true, flush: "post" }
-  );
-  return selectionRef;
-}
 const webSelectionProps$1 = fieldSelectionProps;
 const props$8 = /* @__PURE__ */ shared.extend(
   {},
@@ -1924,7 +1733,7 @@ function useCache(props2, type) {
   }
 }
 const emits$2 = ["confirm", ...emit];
-function useInput(props2, { emit: emit2, expose }, native = false) {
+function useInput(props2, { emit: emit2, expose }) {
   const INPUT_TYPES = [
     "text",
     "number",
@@ -1933,8 +1742,7 @@ function useInput(props2, { emit: emit2, expose }, native = false) {
     "password",
     "tel",
     "search",
-    "email",
-    ...native ? ["url"] : []
+    "email"
   ];
   const AUTOCOMPLETES = ["off", "one-time-code"];
   const type = Vue.computed(() => {
@@ -1986,45 +1794,14 @@ function useInput(props2, { emit: emit2, expose }, native = false) {
     }
     return inputmodeMap[props2.type];
   });
-  let cache = native ? Vue.ref("") : useCache(props2, type);
+  let cache = useCache(props2, type);
   const rootRef = Vue.ref(null);
-  const { fieldRef, state, scopedAttrsState, fixDisabledColor, trigger } = useField(
-    props2,
-    rootRef,
-    emit2,
-    (event, state2, force) => {
-      if (native) {
-        if (props2.disabled && !force)
-          return false;
-        const input2 = event.target;
-        if (type.value === "number" && Number.isFinite(state2.maxlength) && input2.value.length > state2.maxlength) {
-          input2.value = truncateInputNumber(
-            input2.value,
-            state2.maxlength,
-            state2.value
-          );
-        }
-      }
-      {
-        return;
-      }
-    },
-    native
-  );
-  if (native) {
-    Vue.watch(
-      [() => state.value, () => state.maxlength, type],
-      ([value, maxlength, inputType]) => {
-        if (inputType !== "number")
-          return;
-        const normalized = truncateInputNumber(value, maxlength);
-        if (normalized !== value)
-          state.value = normalized;
-      },
-      { immediate: true, flush: "sync" }
-    );
-  }
-  const selectionRef = !native ? useFieldSelection(props2, fieldRef) : void 0;
+  const { fieldRef, state, scopedAttrsState, fixDisabledColor, trigger } = useField(props2, rootRef, emit2, (event, state2) => {
+    {
+      return;
+    }
+  });
+  const selectionRef = useFieldSelection(props2, fieldRef);
   Vue.watch(
     () => state.value,
     (value) => {
@@ -2092,82 +1869,239 @@ function useInput(props2, { emit: emit2, expose }, native = false) {
     cache,
     step,
     onKeyUpEnter,
-    onInput,
-    trigger
+    onInput
   };
 }
-const _t0$g = Vue.template("<input>", 1);
+const createComponent = (type, ...args) => {
+  if (type === Vue.Fragment) {
+    const slots = args[1];
+    return slots ? typeof slots === "function" ? slots() : typeof slots.default === "function" ? slots.default() : [] : [];
+  }
+  return Vue__namespace.createComponentWithFallback(
+    createProxyComponent(Vue__namespace.resolveDynamicComponent(type)),
+    ...args
+  );
+};
+const proxyCache = /* @__PURE__ */ new WeakMap();
+function createProxyComponent(type, normalizeNode2) {
+  if (typeof type === "function") {
+    const existing = proxyCache.get(type);
+    if (existing)
+      return existing;
+    const i = Vue__namespace.currentInstance || Vue.getCurrentInstance();
+    const proxy = new Proxy(type, {
+      apply(target, ctx, args) {
+        if (typeof target.__setup === "function") {
+          target.__setup.apply(ctx, args);
+        }
+        const node = Reflect.apply(target, ctx, args);
+        return node;
+      },
+      get(target, p2, receiver) {
+        const result = Reflect.get(target, p2, receiver);
+        if (p2 === "__vapor" && result === void 0 && i && i.appContext.vapor) {
+          return true;
+        }
+        return result;
+      }
+    });
+    proxyCache.set(type, proxy);
+    return proxy;
+  }
+  return type;
+}
+function createFragment(nodes, anchor = document.createTextNode("")) {
+  const frag = new Vue__namespace.VaporFragment(nodes);
+  frag.anchor = anchor;
+  return frag;
+}
+function normalizeBlock(node, anchor, processFunction = false) {
+  if (node instanceof Node || Vue__namespace.isFragment(node)) {
+    return node;
+  } else if (Vue__namespace.isVaporComponent(node)) {
+    return createFragment(node, anchor);
+  } else if (Array.isArray(node)) {
+    return createFragment(
+      node.map((i) => normalizeBlock(i, void 0, processFunction)),
+      anchor
+    );
+  } else if (processFunction && typeof node === "function") {
+    return resolveValues([node], anchor, true)[0];
+  } else {
+    const result = node == null || typeof node === "boolean" ? "" : String(node);
+    if (anchor) {
+      anchor.textContent = result;
+      return anchor;
+    } else {
+      return document.createTextNode(result);
+    }
+  }
+}
+function resolveValue(current, value, anchor, processFunction = false) {
+  anchor = anchor || (current instanceof Node && current.nodeType === 3 ? current : void 0);
+  const node = normalizeBlock(value, anchor, processFunction);
+  if (current) {
+    if (Vue__namespace.isFragment(current)) {
+      if (current.anchor && current.anchor.parentNode) {
+        Vue__namespace.remove(current.nodes, current.anchor.parentNode);
+        Vue__namespace.insert(node, current.anchor.parentNode, current.anchor);
+        if (!anchor)
+          current.anchor.parentNode.removeChild(current.anchor);
+        if (current.scope)
+          current.scope.stop();
+      }
+    } else if (current instanceof Node) {
+      if (current.nodeType === 3 && (!(node instanceof Node) || node.nodeType !== 3)) {
+        current.textContent = "";
+      }
+      if (Vue__namespace.isFragment(node) && current.parentNode) {
+        Vue__namespace.insert(node, current.parentNode, current);
+        if (!anchor || current.nodeType !== 3) {
+          current.parentNode.removeChild(current);
+        }
+      } else if (node instanceof Node) {
+        if (current.nodeType === 3 && node.nodeType === 3) {
+          current.textContent = node.textContent;
+          return current;
+        } else if (current.parentNode) {
+          current.parentNode.replaceChild(node, current);
+        }
+      }
+    }
+  }
+  return node;
+}
+function resolveValues(values = [], _anchor, processFunction = false) {
+  const nodes = [];
+  const scopes = [];
+  for (const [index2, value] of values.entries()) {
+    const anchor = index2 === values.length - 1 ? _anchor : void 0;
+    if (typeof value === "function") {
+      Vue__namespace.renderEffect(() => {
+        if (scopes[index2])
+          scopes[index2].stop();
+        scopes[index2] = new Vue.EffectScope();
+        nodes[index2] = scopes[index2].run(
+          () => resolveValue(nodes[index2], value(), anchor, processFunction)
+        );
+      });
+    } else {
+      nodes[index2] = resolveValue(nodes[index2], value, anchor, processFunction);
+    }
+  }
+  return nodes;
+}
+function setNodes(anchor, ...values) {
+  const resolvedValues = resolveValues(values, anchor);
+  if (anchor.parentNode)
+    Vue__namespace.insert(resolvedValues, anchor.parentNode, anchor);
+}
+function createNodes(...values) {
+  return resolveValues(values);
+}
+const _t0$g = Vue.template("<input tabindex=-1>");
+const _t1$6 = Vue.template("<input>");
+const _t2$5 = Vue.template("<form action novalidate class=uni-input-form> ");
+const _t3$5 = Vue.template("<div uni-input uni-view><div class=uni-input-wrapper> <div> </div>", 1);
+const _t4$5 = Vue.template("<div>", 1);
 const Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
   props: props$8,
-  emits: ["change", ...emits$2],
-  externalClasses: ["placeholder-class", "selection-class"],
+  emits: emits$2,
   rootElement: {
     name: "uni-input",
     class: UniInputElement
   },
   setup(props2, context) {
-    const { rootRef, fieldRef, state, scopedAttrsState, fixDisabledColor, type, autocomplete, inputmode, step, onKeyUpEnter, trigger } = useInput(props2, context, true);
-    const placeholderStyle = useInputStyles(props2, fieldRef);
-    const initialPlaceholder = props2.placeholder;
-    const readonly = Vue.computed(() => !!props2.disabled && fixDisabledColor);
-    if (fixDisabledColor) {
-      Vue.watch(readonly, (disabled) => {
-        var _a;
-        if (disabled)
-          (_a = fieldRef.value) == null ? void 0 : _a.blur();
-      }, { flush: "post" });
-    }
-    const style = Vue.computed(() => props2.cursorColor ? { caretColor: props2.cursorColor } : {});
-    const setFieldRef = (el) => {
-      rootRef.value = fieldRef.value = el;
-    };
-    return (() => {
+    const { rootRef, fieldRef, state, scopedAttrsState, selectionRef, fixDisabledColor, type, autocomplete, inputmode, cache, step, onKeyUpEnter, onInput } = useInput(props2, context);
+    const renderInput = () => (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
-      const _n0 = _t0$g();
-      Vue.on(_n0, "focus", (event) => {
-        if (props2.disabled)
-          event.target.blur();
-      });
-      Vue.on(_n0, "change", (event) => {
-        event.stopPropagation();
-        if (!props2.disabled) {
-          trigger("change", event, { value: event.target.value });
-        }
-      });
-      Vue.on(_n0, "keyup", (event) => {
-        if (!props2.disabled && !state.composing && !event.isComposing)
-          onKeyUpEnter(event);
-      });
-      Vue.renderEffect(() => {
-        Vue.setDynamicProps(_n0, [
-          { "uni-input": "" },
-          scopedAttrsState.attrs,
-          {
-            class: placeholderStyle.value ? "uni-input-input " + uniShared.INPUT_PLACEHOLDER_STYLE_CLASS_PREFIX + placeholderStyle.value : "uni-input-input",
-            "data-uni-placeholder-class": normalizeInputStyleClass(props2.placeholderClass),
-            "data-uni-selection-class": normalizeInputStyleClass(props2.selectionClass),
-            "data-uni-placeholder-style": placeholderStyle.value || void 0,
-            name: props2.name,
-            value: state.value,
-            placeholder: initialPlaceholder,
-            disabled: !!props2.disabled && !readonly.value,
-            readonly: readonly.value,
-            tabindex: readonly.value ? -1 : void 0,
-            type: type.value,
-            maxlength: Number.isFinite(state.maxlength) ? state.maxlength : void 0,
-            step: step.value,
-            enterkeyhint: props2.confirmType,
-            pattern: props2.type === "number" ? "[0-9]*" : void 0,
-            autocomplete: autocomplete.value,
-            inputmode: inputmode.value,
-            style: style.value
-          }
-        ]);
-        _setTemplateRef(_n0, setFieldRef);
-      });
+      const _n0 = Vue.createIf(() => props2.disabled && fixDisabledColor, () => {
+        const _n2 = _t0$g();
+        Vue.setBlockKey(_n2, "disabled-input");
+        Vue.on(
+          _n2,
+          // fix: 禁止 readonly 状态获取焦点
+          "focus",
+          (event) => event.target.blur()
+        );
+        Vue.renderEffect(() => {
+          Vue.setValue(_n2, state.value);
+          Vue.setProp(_n2, "readonly", !!props2.disabled);
+          Vue.setProp(_n2, "type", type.value);
+          Vue.setProp(_n2, "maxlength", state.maxlength);
+          Vue.setProp(_n2, "step", step.value);
+          Vue.setClass(_n2, props2.selectionClass ? "uni-input-input uni-field-selection" : "uni-input-input");
+          Vue.setStyle(_n2, props2.cursorColor ? { caretColor: props2.cursorColor } : {});
+          Vue.setProp(_n2, "inputmode", inputmode.value);
+          _setTemplateRef(_n2, fieldRef);
+        });
+        return _n2;
+      }, () => {
+        const _n4 = _t1$6();
+        Vue.setBlockKey(_n4, "input");
+        Vue.on(_n4, "input", Vue.withModifiers(onInput, ["stop"]));
+        Vue.on(_n4, "keyup", onKeyUpEnter);
+        Vue.renderEffect(() => {
+          Vue.setValue(_n4, state.value);
+          Vue.setProp(_n4, "disabled", !!props2.disabled);
+          Vue.setProp(_n4, "type", type.value);
+          Vue.setProp(_n4, "maxlength", state.maxlength);
+          Vue.setProp(_n4, "step", step.value);
+          Vue.setProp(_n4, "enterkeyhint", props2.confirmType);
+          Vue.setProp(_n4, "pattern", props2.type === "number" ? "[0-9]*" : void 0);
+          Vue.setClass(_n4, props2.selectionClass ? "uni-input-input uni-field-selection" : "uni-input-input");
+          Vue.setStyle(_n4, props2.cursorColor ? { caretColor: props2.cursorColor } : {});
+          Vue.setProp(_n4, "autocomplete", autocomplete.value);
+          Vue.setProp(_n4, "inputmode", inputmode.value);
+          _setTemplateRef(_n4, fieldRef);
+        });
+        return _n4;
+      }, 261);
       return _n0;
     })();
+    const root = (() => {
+      const _setTemplateRef = Vue.createTemplateRefSetter();
+      const _n8 = _t3$5();
+      const _n7 = Vue.child(_n8);
+      const _n0 = Vue.child(_n7, true);
+      const _n1 = Vue.next(_n0);
+      setNodes(_n0, () => props2.selectionClass && (() => {
+        const _setTemplateRef2 = Vue.createTemplateRefSetter();
+        const _n02 = _t4$5();
+        Vue.renderEffect(() => {
+          Vue.setDynamicProps(_n02, [scopedAttrsState.attrs, {
+            class: ["uni-field-selection-probe", props2.selectionClass],
+            "aria-hidden": "true",
+            style: fieldSelectionProbeStyle
+          }]);
+          _setTemplateRef2(_n02, selectionRef);
+        });
+        return _n02;
+      })());
+      Vue.applyVShow(_n1, () => !(state.value.length || cache.value === "-" || cache.value.includes(".")));
+      const _x1 = Vue.txt(_n1);
+      setNodes(_x1, () => props2.placeholder);
+      Vue.renderEffect(() => Vue.setDynamicProps(_n1, [scopedAttrsState.attrs, {
+        style: props2.placeholderStyle,
+        class: ["uni-input-placeholder", props2.placeholderClass]
+      }]));
+      Vue.setInsertionState(_n7, 2);
+      Vue.createIf(() => props2.confirmType === "search", () => {
+        const _n4 = _t2$5();
+        Vue.on(_n4, "submit", (event) => event.preventDefault());
+        const _x4 = Vue.txt(_n4);
+        setNodes(_x4, () => renderInput());
+        return _n4;
+      }, () => {
+        const _n6 = createNodes(() => renderInput());
+        return _n6;
+      }, 265);
+      Vue.renderEffect(() => _setTemplateRef(_n8, rootRef));
+      return _n8;
+    })();
+    initInputElement(root);
+    return root;
   }
 });
 const resizeSensorProps = {
@@ -2179,8 +2113,8 @@ const resizeSensorProps = {
 function useResizeSensor(props2, emit2) {
   const rootRef = Vue.ref(null);
   const reset = useResizeSensorReset(rootRef);
-  const update2 = useResizeSensorUpdate(rootRef, emit2, reset);
-  return { rootRef, update: update2 };
+  const update = useResizeSensorUpdate(rootRef, emit2, reset);
+  return { rootRef, update };
 }
 function useResizeSensorUpdate(rootRef, emit2, reset) {
   const size = Vue.reactive({ width: -1, height: -1 });
@@ -2213,46 +2147,20 @@ const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
   props: resizeSensorProps,
   emits: ["resize"],
   setup(props2, { emit: emit2 }) {
-    const { rootRef, update: update2 } = useResizeSensor(props2, emit2);
+    const { rootRef, update } = useResizeSensor(props2, emit2);
     const root = (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
       const _n2 = _t0$f();
       const _n0 = Vue.child(_n2);
       const _n1 = Vue.next(_n0);
-      Vue.on(_n0, "scroll", update2);
-      Vue.on(_n1, "scroll", update2);
+      Vue.on(_n0, "scroll", update);
+      Vue.on(_n1, "scroll", update);
       Vue.renderEffect(() => _setTemplateRef(_n2, rootRef));
       return _n2;
     })();
     return root;
   }
 });
-const nativeHasInstance = Function.prototype[Symbol.hasInstance];
-function isUniNativeElement(value, tag, marker) {
-  const el = value;
-  return (el == null ? void 0 : el.nodeType) === 1 && el.localName === tag && el.hasAttribute(marker);
-}
-const NativeUniElement = UniElement2;
-class UniViewElement extends NativeUniElement {
-  static [Symbol.hasInstance](value) {
-    return this === UniViewElement && isUniNativeElement(value, "div", "uni-view") || nativeHasInstance.call(this, value);
-  }
-}
-class UniTextElement extends NativeUniElement {
-  // Web 直接读取 DOM 文字，不缓存、不触发布局；不提供会删除 Vue 子节点的 setter。
-  // 类上保留 getter，供 Button 等复合 Element 的 super.value 复用。
-  get value() {
-    return this.textContent ?? "";
-  }
-  static [Symbol.hasInstance](value) {
-    return this === UniTextElement && isUniNativeElement(value, "span", "uni-text") || nativeHasInstance.call(this, value);
-  }
-}
-class UniImageElement extends NativeUniElement {
-  static [Symbol.hasInstance](value) {
-    return this === UniImageElement && isUniNativeElement(value, "img", "uni-image") || nativeHasInstance.call(this, value);
-  }
-}
 class UniTextareaElement extends UniViewElement {
   static [Symbol.hasInstance](value) {
     return this === UniTextareaElement && value instanceof UniViewElement && value.hasAttribute("uni-textarea") || Function.prototype[Symbol.hasInstance].call(this, value);
@@ -2403,133 +2311,6 @@ function useTextarea(props2, { emit: emit2, expose }) {
     onKeyDownEnter,
     onKeyUpEnter
   };
-}
-const createComponent = (type, ...args) => {
-  if (type === Vue.Fragment) {
-    const slots = args[1];
-    return slots ? typeof slots === "function" ? slots() : typeof slots.default === "function" ? slots.default() : [] : [];
-  }
-  return Vue__namespace.createComponentWithFallback(
-    createProxyComponent(Vue__namespace.resolveDynamicComponent(type)),
-    ...args
-  );
-};
-const proxyCache = /* @__PURE__ */ new WeakMap();
-function createProxyComponent(type, normalizeNode2) {
-  if (typeof type === "function") {
-    const existing = proxyCache.get(type);
-    if (existing)
-      return existing;
-    const i = Vue__namespace.currentInstance || Vue.getCurrentInstance();
-    const proxy = new Proxy(type, {
-      apply(target, ctx, args) {
-        if (typeof target.__setup === "function") {
-          target.__setup.apply(ctx, args);
-        }
-        const node = Reflect.apply(target, ctx, args);
-        return node;
-      },
-      get(target, p2, receiver) {
-        const result = Reflect.get(target, p2, receiver);
-        if (p2 === "__vapor" && result === void 0 && i && i.appContext.vapor) {
-          return true;
-        }
-        return result;
-      }
-    });
-    proxyCache.set(type, proxy);
-    return proxy;
-  }
-  return type;
-}
-function createFragment(nodes, anchor = document.createTextNode("")) {
-  const frag = new Vue__namespace.VaporFragment(nodes);
-  frag.anchor = anchor;
-  return frag;
-}
-function normalizeBlock(node, anchor, processFunction = false) {
-  if (node instanceof Node || Vue__namespace.isFragment(node)) {
-    return node;
-  } else if (Vue__namespace.isVaporComponent(node)) {
-    return createFragment(node, anchor);
-  } else if (Array.isArray(node)) {
-    return createFragment(
-      node.map((i) => normalizeBlock(i, void 0, processFunction)),
-      anchor
-    );
-  } else if (processFunction && typeof node === "function") {
-    return resolveValues([node], anchor, true)[0];
-  } else {
-    const result = node == null || typeof node === "boolean" ? "" : String(node);
-    if (anchor) {
-      anchor.textContent = result;
-      return anchor;
-    } else {
-      return document.createTextNode(result);
-    }
-  }
-}
-function resolveValue(current, value, anchor, processFunction = false) {
-  anchor = anchor || (current instanceof Node && current.nodeType === 3 ? current : void 0);
-  const node = normalizeBlock(value, anchor, processFunction);
-  if (current) {
-    if (Vue__namespace.isFragment(current)) {
-      if (current.anchor && current.anchor.parentNode) {
-        Vue__namespace.remove(current.nodes, current.anchor.parentNode);
-        Vue__namespace.insert(node, current.anchor.parentNode, current.anchor);
-        if (!anchor)
-          current.anchor.parentNode.removeChild(current.anchor);
-        if (current.scope)
-          current.scope.stop();
-      }
-    } else if (current instanceof Node) {
-      if (current.nodeType === 3 && (!(node instanceof Node) || node.nodeType !== 3)) {
-        current.textContent = "";
-      }
-      if (Vue__namespace.isFragment(node) && current.parentNode) {
-        Vue__namespace.insert(node, current.parentNode, current);
-        if (!anchor || current.nodeType !== 3) {
-          current.parentNode.removeChild(current);
-        }
-      } else if (node instanceof Node) {
-        if (current.nodeType === 3 && node.nodeType === 3) {
-          current.textContent = node.textContent;
-          return current;
-        } else if (current.parentNode) {
-          current.parentNode.replaceChild(node, current);
-        }
-      }
-    }
-  }
-  return node;
-}
-function resolveValues(values = [], _anchor, processFunction = false) {
-  const nodes = [];
-  const scopes = [];
-  for (const [index2, value] of values.entries()) {
-    const anchor = index2 === values.length - 1 ? _anchor : void 0;
-    if (typeof value === "function") {
-      Vue__namespace.renderEffect(() => {
-        if (scopes[index2])
-          scopes[index2].stop();
-        scopes[index2] = new Vue.EffectScope();
-        nodes[index2] = scopes[index2].run(
-          () => resolveValue(nodes[index2], value(), anchor, processFunction)
-        );
-      });
-    } else {
-      nodes[index2] = resolveValue(nodes[index2], value, anchor, processFunction);
-    }
-  }
-  return nodes;
-}
-function setNodes(anchor, ...values) {
-  const resolvedValues = resolveValues(values, anchor);
-  if (anchor.parentNode)
-    Vue__namespace.insert(resolvedValues, anchor.parentNode, anchor);
-}
-function createNodes(...values) {
-  return resolveValues(values);
 }
 const _t0$e = Vue.template("<textarea tabindex=-1>");
 const _t1$5 = Vue.template("<textarea>");
@@ -5401,10 +5182,10 @@ function updateDocumentTitle(title) {
   UniServiceJSBridge.emit(uniShared.ON_NAVIGATION_BAR_CHANGE, { titleText: title });
 }
 function useDocumentTitle(pageMeta) {
-  function update2() {
+  function update() {
     updateDocumentTitle(pageMeta.navigationBar.titleText);
   }
-  Vue.watchEffect(update2);
+  Vue.watchEffect(update);
 }
 function updateBackgroundColorContent(backgroundColorContent) {
   {
@@ -5412,15 +5193,15 @@ function updateBackgroundColorContent(backgroundColorContent) {
   }
 }
 function useBackgroundColorContent(pageMeta) {
-  function update2() {
+  function update() {
     if (pageMeta.backgroundColorContent) {
       updateBackgroundColorContent(
         parseTheme({ backgroundColorContent: pageMeta.backgroundColorContent }).backgroundColorContent
       );
     }
   }
-  onThemeChange(update2);
-  Vue.watchEffect(update2);
+  onThemeChange(update);
+  Vue.watchEffect(update);
 }
 class UniLoadingElement extends UniViewElement {
   static get __uniElement() {

@@ -16393,7 +16393,6 @@
     });
   }
   function useEvent(fieldRef, state, props2, trigger2, triggerInput, beforeInput) {
-    var native = arguments.length > 6 && arguments[6] !== void 0 ? arguments[6] : false;
     function checkSelection() {
       var field = fieldRef.value;
       if (field && state.focus && state.selectionStart > -1 && state.selectionEnd > -1 && typeof field.selectionStart === "number") {
@@ -16419,8 +16418,6 @@
       if (!field)
         return;
       var onFocus = function(event) {
-        if (native && props2.disabled)
-          return;
         state.focus = true;
         trigger2("focus", event, {
           value: state.value
@@ -16430,7 +16427,7 @@
       };
       var onInput = function(event, force) {
         event.stopPropagation();
-        if (isFunction(beforeInput) && beforeInput(event, state, force) === false) {
+        if (isFunction(beforeInput) && beforeInput(event, state) === false) {
           return;
         }
         state.value = field.value;
@@ -16442,8 +16439,6 @@
         }
       };
       var onBlur = function(event) {
-        if (native && props2.disabled && !state.focus)
-          return;
         if (state.composing) {
           state.composing = false;
           onInput(event, true);
@@ -16460,8 +16455,6 @@
       field.addEventListener("input", onInput);
       field.addEventListener("compositionstart", (event) => {
         event.stopPropagation();
-        if (native && props2.disabled)
-          return;
         state.composing = true;
         _onComposition(event);
       });
@@ -16469,7 +16462,7 @@
         event.stopPropagation();
         if (state.composing) {
           state.composing = false;
-          onInput(event, native && !!props2.disabled);
+          onInput(event);
         }
         _onComposition(event);
       });
@@ -16484,27 +16477,9 @@
     }
     watch([() => state.selectionStart, () => state.selectionEnd], checkSelection);
     watch(() => state.cursor, checkCursor);
-    if (native) {
-      watch([fieldRef, () => props2.placeholder], (_ref, _ref2) => {
-        var [field, value] = _ref;
-        var [previousField] = _ref2;
-        if (field) {
-          if (value == null) {
-            if (field.hasAttribute("placeholder"))
-              field.removeAttribute("placeholder");
-          } else if (field.placeholder !== value) {
-            field.placeholder = value;
-          }
-        }
-        if (field !== previousField)
-          initField();
-      });
-    } else {
-      watch(() => fieldRef.value, initField);
-    }
+    watch(() => fieldRef.value, initField);
   }
   function useField(props2, rootRef, emit2, beforeInput) {
-    var native = arguments.length > 4 && arguments[4] !== void 0 ? arguments[4] : false;
     UniViewJSBridgeSubscribe();
     var {
       fieldRef,
@@ -16520,7 +16495,7 @@
       state: scopedAttrsState
     } = useScopedAttrs();
     useFormField("name", state);
-    useEvent(fieldRef, state, props2, trigger2, triggerInput, beforeInput, native);
+    useEvent(fieldRef, state, props2, trigger2, triggerInput, beforeInput);
     var fixDisabledColor = String(navigator.vendor).indexOf("Apple") === 0 && CSS.supports("image-orientation:from-image");
     return {
       fieldRef,
@@ -16529,18 +16504,6 @@
       fixDisabledColor,
       trigger: trigger2
     };
-  }
-  function truncateInputNumber(value, maxlength) {
-    var previous = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : "";
-    var _a;
-    if (!Number.isFinite(maxlength))
-      return value;
-    if (maxlength === 0 || !value)
-      return "";
-    var prefix = (_a = value.slice(0, maxlength).match(/^-?(?:\d+(?:\.\d+)?|\.\d+)(?:[eE][+-]?\d+)?/)) == null ? void 0 : _a[0];
-    if (prefix)
-      return prefix;
-    return previous.length <= maxlength && /^-?(?:\d+(?:\.\d+)?|\.\d+)(?:[eE][+-]?\d+)?$/.test(previous) ? previous : "";
   }
   var resolveDigitDecimalPointDeleteContentBackward = once(() => {
     {
@@ -16610,8 +16573,7 @@
       emit: emit2,
       expose
     } = _ref;
-    var native = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : false;
-    var INPUT_TYPES = ["text", "number", "idcard", "digit", "password", "tel", "search", "email", ...native ? ["url"] : []];
+    var INPUT_TYPES = ["text", "number", "idcard", "digit", "password", "tel", "search", "email"];
     var AUTOCOMPLETES = ["off", "one-time-code"];
     var type = computed(() => {
       var type2 = "";
@@ -16658,7 +16620,7 @@
       }
       return inputmodeMap[props2.type];
     });
-    var cache2 = native ? ref("") : useCache(props2, type);
+    var cache2 = useCache(props2, type);
     var resetCache = {
       fn: null
     };
@@ -16669,15 +16631,7 @@
       scopedAttrsState,
       fixDisabledColor,
       trigger: trigger2
-    } = useField(props2, rootRef, emit2, (event, state2, force) => {
-      if (native) {
-        if (props2.disabled && !force)
-          return false;
-        var input2 = event.target;
-        if (type.value === "number" && Number.isFinite(state2.maxlength) && input2.value.length > state2.maxlength) {
-          input2.value = truncateInputNumber(input2.value, state2.maxlength, state2.value);
-        }
-      }
+    } = useField(props2, rootRef, emit2, (event, state2) => {
       var input = event.target;
       if (type.value === "number") {
         if (resetCache.fn) {
@@ -16710,20 +16664,7 @@
           return false;
         }
       }
-    }, native);
-    if (native) {
-      watch([() => state.value, () => state.maxlength, type], (_ref2) => {
-        var [value, maxlength, inputType] = _ref2;
-        if (inputType !== "number")
-          return;
-        var normalized = truncateInputNumber(value, maxlength);
-        if (normalized !== value)
-          state.value = normalized;
-      }, {
-        immediate: true,
-        flush: "sync"
-      });
-    }
+    });
     var selectionRef = void 0;
     watch(() => state.value, (value) => {
       if (props2.type === "number" && !(cache2.value === "-" && value === "")) {
@@ -16784,8 +16725,7 @@
       cache: cache2,
       step: step2,
       onKeyUpEnter,
-      onInput,
-      trigger: trigger2
+      onInput
     };
   }
   const Input = /* @__PURE__ */ defineBuiltInComponent({
