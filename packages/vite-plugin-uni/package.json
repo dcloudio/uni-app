@@ -50,7 +50,7 @@
     "jsonc-parser": "catalog:",
     "magic-string": "catalog:",
     "picocolors": "catalog:",
-    "terser": "^5.4.0",
+    "terser": "catalog:",
     "source-map-js": "catalog:",
     "unplugin-auto-import": "catalog:"
   },

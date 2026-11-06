@@ -107,7 +107,7 @@
     "sass": "^1.87.0",
     "semver": "catalog:",
     "simple-git-hooks": "^2.8.0",
-    "terser": "^5.4.0",
+    "terser": "catalog:",
     "ts-jest": "^29.1.0",
     "typescript": "5.4.2",
     "vite": "catalog:",
