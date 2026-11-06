@@ -183,6 +183,7 @@ async function build (target) {
         {
           stdio: 'inherit',
           env: Object.assign({}, process.env, env, {
+            UNI_APP_X_VAPOR: 'true',
             UNI_INPUT_DIR: path.resolve(pkgDir, 'vapor'),
             VITE_ROOT_DIR: path.resolve(pkgDir, 'vapor'),
             UNI_OUTPUT_DIR: vaporOutDir,
@@ -247,7 +248,6 @@ async function build (target) {
             FORMAT: 'es',
             UNI_APP_X: 'true',
             UNI_APP_X_VAPOR: 'true',
-            UNI_APP_X_VAPOR_BUILD: 'true',
             UNI_PLATFORM: 'h5',
           }),
           cwd: pkgDir,
@@ -263,7 +263,6 @@ async function build (target) {
             FORMAT: 'cjs',
             UNI_APP_X: 'true',
             UNI_APP_X_VAPOR: 'true',
-            UNI_APP_X_VAPOR_BUILD: 'true',
             UNI_PLATFORM: 'h5',
           }),
           cwd: pkgDir,
@@ -280,7 +279,6 @@ async function build (target) {
             FORMAT: 'es',
             UNI_APP_X: 'true',
             UNI_APP_X_VAPOR: 'true',
-            UNI_APP_X_VAPOR_BUILD: 'true',
             UNI_APP_X_VAPOR_SSR_BUILD: 'true',
             UNI_PLATFORM: 'h5',
           }),

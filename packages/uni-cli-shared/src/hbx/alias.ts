@@ -1,5 +1,4 @@
 // 注意：该文件尽可能少依赖其他文件，否则可能会导致还没有alias的时候，就加载了目标模块
-import fs from 'fs'
 import path from 'path'
 import moduleAlias from 'module-alias'
 import { isInHBuilderX } from './utils'
@@ -99,22 +98,8 @@ function addNonVaporVuePackageAliases(
   })
 }
 
-function isWebOrMpPlatform(platform?: string) {
-  return platform === 'h5' || platform === 'web' || platform?.startsWith('mp-')
-}
-
 function isWebPlatform(platform?: string) {
   return platform === 'h5' || platform === 'web'
-}
-
-function hasWebVaporConfig() {
-  // 框架自身生成 dist-x-vapor 时没有用户项目目录，通过内部构建标记绕过配置文件检查。
-  if (process.env.UNI_APP_X_VAPOR_BUILD === 'true') {
-    return true
-  }
-  // HBuilderX/CLI 会在加载框架前传入项目根目录。
-  const inputDir = process.env.UNI_INPUT_DIR
-  return !!inputDir && fs.existsSync(path.resolve(inputDir, '.vapor'))
 }
 
 function resolveUniCliPlatform() {
@@ -145,49 +130,29 @@ function resolveUniCliPlatform() {
   return 'h5'
 }
 
-// 在归一化前记录外部开关，避免将初始化生成的 DOM2 状态误认为外部配置。
-const externalDom2 = process.env.UNI_APP_X_DOM2 === 'true'
-
 export function normalizeUniAppXVaporEnv() {
-  // App 使用 UNI_APP_X_VAPOR 作为对外开关；Web 还支持 .vapor 和 DOM2 环境变量。
-  const utsPlatform = process.env.UNI_UTS_PLATFORM
-  const uniPlatform = process.env.UNI_PLATFORM
-  const cliPlatform = resolveUniCliPlatform()
-  const platform = cliPlatform || utsPlatform || uniPlatform
-  const webVaporConfigured =
-    isWebPlatform(platform) && (externalDom2 || hasWebVaporConfig())
-  // HBuilderX dev 不会预先注入 UNI_APP_X，因此这里需要同步补齐 uni-app x 环境标记。
-  const isWebVapor = webVaporConfigured
-  if (isWebVapor) {
-    process.env.UNI_APP_X = 'true'
-    // Web Vapor 固定使用新样式隔离，在加载插件前统一首次编译、HMR 和 CSS 处理规则。
-    process.env.UNI_APP_STYLE_ISOLATION_VERSION = '2'
-  }
-
-  if (process.env.UNI_APP_X_VAPOR === 'true' || isWebVapor) {
+  // App 和 Web 统一使用公开 Vapor 开关，并兼容旧的内部 DOM2 开关。
+  if (process.env.UNI_APP_X_VAPOR === 'true') {
     process.env.UNI_APP_X_DOM2 = 'true'
   } else if (process.env.UNI_APP_X_VAPOR === 'false') {
     delete process.env.UNI_APP_X_DOM2
   }
 
   // alias 初始化早于 CLI 环境初始化，优先读取 CLI 参数，否则使用预置的平台环境变量。
-  // 小程序仍关闭 Vapor，Web 平台使用独立的 Web Vapor 产物。
+  const utsPlatform = process.env.UNI_UTS_PLATFORM
+  const uniPlatform = process.env.UNI_PLATFORM
+  const cliPlatform = resolveUniCliPlatform()
   const shouldDisableVapor = cliPlatform
-    ? isWebOrMpPlatform(cliPlatform) && !isWebVapor
-    : (isWebOrMpPlatform(utsPlatform) || isWebOrMpPlatform(uniPlatform)) &&
-      !isWebVapor
+    ? cliPlatform.startsWith('mp-')
+    : utsPlatform?.startsWith('mp-') || uniPlatform?.startsWith('mp-')
   if (shouldDisableVapor) {
     delete process.env.UNI_APP_X_DOM2
   }
 
-  // 将平台归一化后的实际状态同步回对外开关。
-  if (isWebVapor) {
-    process.env.UNI_APP_X_VAPOR = 'true'
-    process.env.UNI_APP_X_DOM2 = 'true'
-  }
-
   if (process.env.UNI_APP_X_DOM2 === 'true') {
     process.env.UNI_APP_X_VAPOR = 'true'
+    // Vapor 固定使用新样式隔离，统一首次编译、HMR 和 CSS 处理规则。
+    process.env.UNI_APP_STYLE_ISOLATION_VERSION = '2'
   } else {
     delete process.env.UNI_APP_X_DOM2
     delete process.env.UNI_APP_X_VAPOR

@@ -3,7 +3,6 @@ import os from 'os'
 import path from 'path'
 
 function normalizeUniAppXVaporEnv() {
-  // 设置环境后再加载模块，模拟编译进程启动时读取外部开关。
   require('../src/hbx/alias').normalizeUniAppXVaporEnv()
 }
 
@@ -15,7 +14,6 @@ describe('normalizeUniAppXVaporEnv', () => {
     'UNI_APP_X_DOM2',
     'UNI_APP_X_DOM2_DYNAMIC',
     'UNI_APP_X_VAPOR_RENDER_TARGET',
-    'UNI_APP_X_VAPOR_BUILD',
     'UNI_APP_STYLE_ISOLATION_VERSION',
     'UNI_INPUT_DIR',
     'UNI_PLATFORM',
@@ -54,42 +52,70 @@ describe('normalizeUniAppXVaporEnv', () => {
     tempDirs.forEach((dir) => fs.rmSync(dir, { recursive: true, force: true }))
   })
 
-  test('公开 Vapor 开关启用内部 DOM2 状态', () => {
-    process.env.UNI_APP_X_VAPOR = 'true'
-    process.env.UNI_APP_X_VAPOR_RENDER_TARGET = 'nativecode'
-    process.env.UNI_PLATFORM = 'app'
+  test.each(['app', 'h5', 'web'])(
+    '%s 平台公开 Vapor 开关启用内部 DOM2 状态',
+    (platform) => {
+      process.env.UNI_APP_X_VAPOR = 'true'
+      process.env.UNI_APP_X_VAPOR_RENDER_TARGET = 'nativecode'
+      process.env.UNI_PLATFORM = platform as NodeJS.ProcessEnv['UNI_PLATFORM']
 
-    normalizeUniAppXVaporEnv()
+      normalizeUniAppXVaporEnv()
 
-    expect(process.env.UNI_APP_X_VAPOR).toBe('true')
-    expect(process.env.UNI_APP_X_DOM2).toBe('true')
-    expect(process.env.UNI_APP_X_VAPOR_RENDER_TARGET).toBe('nativecode')
-  })
+      expect(process.env.UNI_APP_X_VAPOR).toBe('true')
+      expect(process.env.UNI_APP_X_DOM2).toBe('true')
+      expect(process.env.UNI_APP_X_VAPOR_RENDER_TARGET).toBe('nativecode')
+    }
+  )
 
-  test('公开 Vapor 开关可以关闭旧的内部 DOM2 状态', () => {
-    process.env.UNI_APP_X_VAPOR = 'false'
-    process.env.UNI_APP_X_DOM2 = 'true'
-    process.env.UNI_APP_X_DOM2_DYNAMIC = 'true'
-    process.env.UNI_APP_X_VAPOR_RENDER_TARGET = 'bytecode'
-    process.env.UNI_PLATFORM = 'app'
+  test.each(['app', 'h5', 'web'])(
+    '%s 平台公开 Vapor 开关可以关闭旧的内部 DOM2 状态',
+    (platform) => {
+      process.env.UNI_APP_X_VAPOR = 'false'
+      process.env.UNI_APP_X_DOM2 = 'true'
+      process.env.UNI_APP_X_DOM2_DYNAMIC = 'true'
+      process.env.UNI_APP_X_VAPOR_RENDER_TARGET = 'bytecode'
+      process.env.UNI_PLATFORM = platform as NodeJS.ProcessEnv['UNI_PLATFORM']
 
-    normalizeUniAppXVaporEnv()
+      normalizeUniAppXVaporEnv()
 
-    expect(process.env.UNI_APP_X_VAPOR).toBeUndefined()
-    expect(process.env.UNI_APP_X_DOM2).toBeUndefined()
-    expect(process.env.UNI_APP_X_DOM2_DYNAMIC).toBeUndefined()
-    expect(process.env.UNI_APP_X_VAPOR_RENDER_TARGET).toBeUndefined()
-  })
+      expect(process.env.UNI_APP_X_VAPOR).toBeUndefined()
+      expect(process.env.UNI_APP_X_DOM2).toBeUndefined()
+      expect(process.env.UNI_APP_X_DOM2_DYNAMIC).toBeUndefined()
+      expect(process.env.UNI_APP_X_VAPOR_RENDER_TARGET).toBeUndefined()
+    }
+  )
 
-  test('兼容旧的内部 DOM2 开关', () => {
-    process.env.UNI_APP_X_DOM2 = 'true'
-    process.env.UNI_PLATFORM = 'app'
+  test.each(['app', 'h5', 'web'])(
+    '%s 平台兼容旧的内部 DOM2 开关',
+    (platform) => {
+      process.env.UNI_APP_X_DOM2 = 'true'
+      process.env.UNI_PLATFORM = platform as NodeJS.ProcessEnv['UNI_PLATFORM']
 
-    normalizeUniAppXVaporEnv()
+      normalizeUniAppXVaporEnv()
 
-    expect(process.env.UNI_APP_X_VAPOR).toBe('true')
-    expect(process.env.UNI_APP_X_DOM2).toBe('true')
-  })
+      expect(process.env.UNI_APP_X_VAPOR).toBe('true')
+      expect(process.env.UNI_APP_X_DOM2).toBe('true')
+      expect(process.env.UNI_APP_STYLE_ISOLATION_VERSION).toBe('2')
+    }
+  )
+
+  test.each(['app', 'h5', 'web'])(
+    '%s 平台 Vapor 归一化保留 UNI_APP_X，交由公共初始化识别项目',
+    (platform) => {
+      process.env.UNI_APP_X_VAPOR = 'true'
+      process.env.UNI_PLATFORM = platform as NodeJS.ProcessEnv['UNI_PLATFORM']
+      for (const value of [undefined, 'false', 'true'] as const) {
+        if (value === undefined) delete process.env.UNI_APP_X
+        else process.env.UNI_APP_X = value
+
+        normalizeUniAppXVaporEnv()
+
+        expect(process.env.UNI_APP_X).toBe(value)
+        expect(process.env.UNI_APP_X_VAPOR).toBe('true')
+        expect(process.env.UNI_APP_STYLE_ISOLATION_VERSION).toBe('2')
+      }
+    }
+  )
 
   test.each(['mp-weixin'])('%s 平台关闭 Vapor 和 DOM2 状态', (platform) => {
     process.env.UNI_APP_X_VAPOR = 'true'
@@ -107,79 +133,51 @@ describe('normalizeUniAppXVaporEnv', () => {
   })
 
   test.each(['h5', 'web'])(
-    '%s 平台无 .vapor 时关闭 Vapor 和 DOM2 状态',
-    (platform) => {
-      setProjectDir()
-      process.env.UNI_APP_X_VAPOR = 'true'
-      process.env.UNI_APP_X_DOM2_DYNAMIC = 'true'
-      process.env.UNI_APP_X_VAPOR_RENDER_TARGET = 'nativecode'
-      process.env.UNI_PLATFORM = platform as NodeJS.ProcessEnv['UNI_PLATFORM']
-
-      normalizeUniAppXVaporEnv()
-
-      expect(process.env.UNI_APP_X_VAPOR).toBeUndefined()
-      expect(process.env.UNI_APP_X_DOM2).toBeUndefined()
-      expect(process.env.UNI_APP_X_DOM2_DYNAMIC).toBeUndefined()
-      expect(process.env.UNI_APP_X_VAPOR_RENDER_TARGET).toBeUndefined()
-    }
-  )
-
-  test.each(['h5', 'web'])(
-    '%s 平台通过 DOM2 环境变量启用 Vapor',
-    (platform) => {
-      setProjectDir()
-      process.env.UNI_PLATFORM = platform as NodeJS.ProcessEnv['UNI_PLATFORM']
-      process.env.UNI_APP_X_DOM2 = 'true'
-      process.env.UNI_APP_X_VAPOR = 'false'
-
-      normalizeUniAppXVaporEnv()
-
-      expect(process.env.UNI_APP_X).toBe('true')
-      expect(process.env.UNI_APP_X_VAPOR).toBe('true')
-      expect(process.env.UNI_APP_X_DOM2).toBe('true')
-      expect(process.env.UNI_APP_STYLE_ISOLATION_VERSION).toBe('2')
-    }
-  )
-
-  test.each(['h5', 'web'])(
-    '%s 平台根目录有 .vapor 时启用 Vapor 和 DOM2 状态',
+    '%s 平台根目录有 .vapor 时不启用 Vapor',
     (platform) => {
       setProjectDir(true)
-      process.env.UNI_APP_X = 'true'
       process.env.UNI_PLATFORM = platform as NodeJS.ProcessEnv['UNI_PLATFORM']
 
       normalizeUniAppXVaporEnv()
 
-      expect(process.env.UNI_APP_X_VAPOR).toBe('true')
-      expect(process.env.UNI_APP_X_DOM2).toBe('true')
-      expect(process.env.UNI_APP_STYLE_ISOLATION_VERSION).toBe('2')
+      expect(process.env.UNI_APP_X).toBeUndefined()
+      expect(process.env.UNI_APP_X_VAPOR).toBeUndefined()
+      expect(process.env.UNI_APP_X_DOM2).toBeUndefined()
+      expect(process.env.UNI_APP_STYLE_ISOLATION_VERSION).toBeUndefined()
     }
   )
 
-  test('Web 平台以 .vapor 为准启用 Vapor', () => {
+  test('Web 平台有 .vapor 时仍可关闭 Vapor', () => {
     setProjectDir(true)
-    process.env.UNI_APP_X = 'true'
     process.env.UNI_APP_X_VAPOR = 'false'
     process.env.UNI_PLATFORM = 'h5'
 
     normalizeUniAppXVaporEnv()
 
-    expect(process.env.UNI_APP_X_VAPOR).toBe('true')
-    expect(process.env.UNI_APP_X_DOM2).toBe('true')
+    expect(process.env.UNI_APP_X_VAPOR).toBeUndefined()
+    expect(process.env.UNI_APP_X_DOM2).toBeUndefined()
   })
 
-  test('Web Vapor 固定使用新隔离规则，不受旧隔离版本影响', () => {
-    setProjectDir(true)
-    process.env.UNI_PLATFORM = 'h5'
-    Reflect.set(process.env, 'UNI_APP_STYLE_ISOLATION_VERSION', '1')
+  test.each(['app', 'app-plus', 'app-harmony', 'h5', 'web'])(
+    '%s 平台 Vapor 固定使用新隔离规则，不受旧隔离版本影响',
+    (platform) => {
+      process.env.UNI_APP_X_VAPOR = 'true'
+      process.env.UNI_PLATFORM = platform as NodeJS.ProcessEnv['UNI_PLATFORM']
+      for (const version of [undefined, '1', '2']) {
+        if (version === undefined)
+          delete process.env.UNI_APP_STYLE_ISOLATION_VERSION
+        else
+          Reflect.set(process.env, 'UNI_APP_STYLE_ISOLATION_VERSION', version)
 
-    normalizeUniAppXVaporEnv()
+        normalizeUniAppXVaporEnv()
 
-    expect(process.env.UNI_APP_STYLE_ISOLATION_VERSION).toBe('2')
-  })
+        expect(process.env.UNI_APP_STYLE_ISOLATION_VERSION).toBe('2')
+      }
+    }
+  )
 
   test.each(['h5', 'web', 'app', 'mp-weixin'])(
-    '%s 非 Web Vapor 保留原有隔离版本',
+    '%s 非 Vapor 保留原有隔离版本',
     (platform) => {
       setProjectDir()
       process.env.UNI_APP_X = 'true'
@@ -189,7 +187,7 @@ describe('normalizeUniAppXVaporEnv', () => {
           delete process.env.UNI_APP_STYLE_ISOLATION_VERSION
         else
           Reflect.set(process.env, 'UNI_APP_STYLE_ISOLATION_VERSION', version)
-        process.env.UNI_APP_X_VAPOR = 'true'
+        process.env.UNI_APP_X_VAPOR = 'false'
 
         normalizeUniAppXVaporEnv()
 
@@ -198,51 +196,8 @@ describe('normalizeUniAppXVaporEnv', () => {
     }
   )
 
-  test.each(['h5', 'web'])(
-    '%s 平台内部 Vapor 构建可绕过 .vapor 文件检查',
-    (platform) => {
-      setProjectDir()
-      process.env.UNI_APP_X = 'true'
-      process.env.UNI_APP_X_VAPOR_BUILD = 'true'
-      process.env.UNI_PLATFORM = platform as NodeJS.ProcessEnv['UNI_PLATFORM']
-
-      normalizeUniAppXVaporEnv()
-
-      expect(process.env.UNI_APP_X_VAPOR).toBe('true')
-      expect(process.env.UNI_APP_X_DOM2).toBe('true')
-    }
-  )
-
-  test('Web 项目根目录有 .vapor 时启用 Vapor', () => {
-    setProjectDir(true)
-    process.env.UNI_PLATFORM = 'h5'
-
-    normalizeUniAppXVaporEnv()
-
-    expect(process.env.UNI_APP_X).toBe('true')
-    expect(process.env.UNI_APP_X_VAPOR).toBe('true')
-    expect(process.env.UNI_APP_X_DOM2).toBe('true')
-  })
-
-  test('Web Vapor 不依赖 manifest.json，仅读取 .vapor', () => {
-    const projectDir = setProjectDir(true)
-    const inputDir = path.join(projectDir, 'src')
-    fs.mkdirSync(inputDir)
-    fs.writeFileSync(
-      path.join(inputDir, 'manifest.json'),
-      '{ "uni-app-x": {} }'
-    )
-    process.env.UNI_PLATFORM = 'h5'
-
-    normalizeUniAppXVaporEnv()
-
-    expect(process.env.UNI_APP_X).toBe('true')
-    expect(process.env.UNI_APP_X_VAPOR).toBe('true')
-    expect(process.env.UNI_APP_X_DOM2).toBe('true')
-  })
-
   test.each([
-    [[], false],
+    [[], true],
     [['-p', 'app'], true],
     [['--platform', 'mp-weixin'], false],
     [['--platform=app'], true],
@@ -271,36 +226,36 @@ describe('normalizeUniAppXVaporEnv', () => {
     expect(process.env.UNI_APP_X_DOM2).toBe('true')
   })
 
-  test.each([true, false])(
-    '平台从未知变为 Web 时区分外部 DOM2 开关：%s',
-    (externalDom2) => {
+  test.each(['UNI_APP_X_VAPOR', 'UNI_APP_X_DOM2'])(
+    '平台从未知变为 Web 时保留 %s 启用状态',
+    (envName) => {
       process.argv = ['node', '/project/scripts/build.js']
-      setProjectDir()
-      process.env.UNI_APP_X_VAPOR = 'true'
-      if (externalDom2) process.env.UNI_APP_X_DOM2 = 'true'
+      process.env[envName] = 'true'
 
       normalizeUniAppXVaporEnv()
       expect(process.env.UNI_APP_X_DOM2).toBe('true')
 
       process.env.UNI_PLATFORM = 'h5'
       normalizeUniAppXVaporEnv()
-      expect(process.env.UNI_APP_X_DOM2 === 'true').toBe(externalDom2)
-      expect(process.env.UNI_APP_X_VAPOR === 'true').toBe(externalDom2)
+      normalizeUniAppXVaporEnv()
+      expect(process.env.UNI_APP_X_DOM2).toBe('true')
+      expect(process.env.UNI_APP_X_VAPOR).toBe('true')
+      expect(process.env.UNI_APP_X).toBeUndefined()
+      expect(process.env.UNI_APP_STYLE_ISOLATION_VERSION).toBe('2')
     }
   )
 
-  test('uni CLI 未指定平台时默认 h5 且无 .vapor 时关闭 Vapor', () => {
+  test('uni CLI 未指定平台时默认 h5 并应用 Web Vapor 配置', () => {
     process.argv = ['node', '/project/node_modules/.bin/uni']
-    setProjectDir()
     process.env.UNI_APP_X_VAPOR = 'true'
     process.env.UNI_PLATFORM = 'app'
 
     normalizeUniAppXVaporEnv()
 
-    expect(process.env.UNI_APP_X_VAPOR).toBeUndefined()
-    expect(process.env.UNI_APP_X_DOM2).toBeUndefined()
-    expect(process.env.UNI_APP_X_DOM2_DYNAMIC).toBeUndefined()
-    expect(process.env.UNI_APP_X_VAPOR_RENDER_TARGET).toBeUndefined()
+    expect(process.env.UNI_APP_X_VAPOR).toBe('true')
+    expect(process.env.UNI_APP_X_DOM2).toBe('true')
+    expect(process.env.UNI_APP_X).toBeUndefined()
+    expect(process.env.UNI_APP_STYLE_ISOLATION_VERSION).toBe('2')
   })
 
   test('uni CLI 显式 App 平台覆盖旧的 web 平台环境', () => {

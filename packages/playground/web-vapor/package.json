@@ -2,7 +2,7 @@
   "name": "web-vapor-playground",
   "private": true,
   "scripts": {
-    "dev:e2e:web": "uni --port 5188 --strictPort",
+    "dev:e2e:web": "node --env-file=.env.vapor ../../vite-plugin-uni/bin/uni.js --port 5188 --strictPort",
     "test:e2e:web": "cypress run --config-file cypress.config.js"
   },
   "dependencies": {

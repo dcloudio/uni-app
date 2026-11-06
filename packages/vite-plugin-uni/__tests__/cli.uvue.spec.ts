@@ -10,7 +10,7 @@ jest.mock('@dcloudio/uni-cli-shared', () => ({
   initEasycomsOnce: jest.fn(),
   isInHBuilderX: () => false,
   output: jest.fn(),
-  parseManifestJsonOnce: () => ({}),
+  parseManifestJsonOnce: jest.fn(() => ({})),
   resetOutput: jest.fn(),
   resolveComponentsLibDirs: () => [],
   runByHBuilderX: () => false,
@@ -40,6 +40,12 @@ describe('cli uvue init', () => {
     UNI_UTS_PLATFORM: process.env.UNI_UTS_PLATFORM,
   }
 
+  beforeEach(() => {
+    Object.keys(originalEnv).forEach((key) =>
+      Reflect.deleteProperty(process.env, key)
+    )
+  })
+
   afterEach(() => {
     Object.entries(originalEnv).forEach(([key, value]) => {
       if (value === undefined) {
@@ -48,8 +54,62 @@ describe('cli uvue init', () => {
         process.env[key] = value
       }
     })
+    jest.resetAllMocks()
     jest.resetModules()
   })
+
+  test.each(['app', 'h5', 'web'])(
+    '%s 平台根据 manifest 统一识别 uni-app x 项目',
+    (platform) => {
+      process.env.UNI_PLATFORM = platform as NodeJS.ProcessEnv['UNI_PLATFORM']
+      const { parseManifestJsonOnce } = jest.requireMock(
+        '@dcloudio/uni-cli-shared'
+      )
+      parseManifestJsonOnce.mockReturnValue({
+        'uni-app-x': { singleThread: false },
+      })
+
+      const { initUVueEnv } = require('../src/cli/uvue')
+      initUVueEnv()
+
+      expect(process.env.UNI_APP_X).toBe('true')
+      expect(process.env.UNI_APP_X_SINGLE_THREAD).toBe('false')
+    }
+  )
+
+  test.each(['app', 'h5', 'web'])(
+    '%s 平台 manifest 无 uni-app-x 时保留普通项目状态',
+    (platform) => {
+      process.env.UNI_PLATFORM = platform as NodeJS.ProcessEnv['UNI_PLATFORM']
+      const { parseManifestJsonOnce } = jest.requireMock(
+        '@dcloudio/uni-cli-shared'
+      )
+      parseManifestJsonOnce.mockReturnValue({})
+
+      const { initUVueEnv } = require('../src/cli/uvue')
+      initUVueEnv()
+
+      expect(process.env.UNI_APP_X).toBeUndefined()
+    }
+  )
+
+  test.each(['app', 'h5', 'web'])(
+    '%s 平台保留显式关闭的 UNI_APP_X',
+    (platform) => {
+      process.env.UNI_PLATFORM = platform as NodeJS.ProcessEnv['UNI_PLATFORM']
+      process.env.UNI_APP_X = 'false'
+      const { parseManifestJsonOnce } = jest.requireMock(
+        '@dcloudio/uni-cli-shared'
+      )
+      parseManifestJsonOnce.mockReturnValue({ 'uni-app-x': {} })
+
+      const { initUVueEnv } = require('../src/cli/uvue')
+      initUVueEnv()
+
+      expect(process.env.UNI_APP_X).toBe('false')
+      expect(parseManifestJsonOnce).not.toHaveBeenCalled()
+    }
+  )
 
   test('app x Android vapor initializes js engine', () => {
     process.env.UNI_APP_X = 'true'
