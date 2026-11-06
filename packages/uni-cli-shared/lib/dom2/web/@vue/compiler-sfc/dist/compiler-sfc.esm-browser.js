@@ -23172,7 +23172,7 @@ function hrtime(previousTimestamp) {
 function uptime() {
 	return (/* @__PURE__ */ new Date() - startTime) / 1e3;
 }
-var cachedSetTimeout, cachedClearTimeout, queue, draining, currentQueue, queueIndex, title, platform, env, argv, versions, release, config, on, addListener, once$1, off, removeListener, removeAllListeners, emit, performance, performanceNow, startTime, browser$1;
+var cachedSetTimeout, cachedClearTimeout, queue, draining, currentQueue, queueIndex, title, platform, env, argv, versions, release, config, on, addListener, once$2, off, removeListener, removeAllListeners, emit, performance, performanceNow, startTime, browser$1;
 var init__polyfill_node_process = __esmMin((() => {
 	init__polyfill_node_global();
 	cachedSetTimeout = defaultSetTimout;
@@ -23194,7 +23194,7 @@ var init__polyfill_node_process = __esmMin((() => {
 	config = {};
 	on = noop;
 	addListener = noop;
-	once$1 = noop;
+	once$2 = noop;
 	off = noop;
 	removeListener = noop;
 	removeAllListeners = noop;
@@ -23214,7 +23214,7 @@ var init__polyfill_node_process = __esmMin((() => {
 		versions,
 		on,
 		addListener,
-		once: once$1,
+		once: once$2,
 		off,
 		removeListener,
 		removeAllListeners,
@@ -29576,95 +29576,16 @@ function closesOpenAncestor(tag, ns, parentTag, scope) {
 	}
 	return false;
 }
-const BUILT_IN_TAGS = /*#__PURE__*/ [
-	"ad",
-	"ad-content-page",
-	"ad-draw",
-	"audio",
-	"button",
-	"camera",
-	"canvas",
-	"checkbox",
-	"checkbox-group",
-	"cover-image",
-	"cover-view",
-	"editor",
-	"form",
-	"functional-page-navigator",
-	"icon",
-	"image",
-	"input",
-	"label",
-	"live-player",
-	"live-pusher",
-	"map",
-	"movable-area",
-	"movable-view",
-	"navigator",
-	"official-account",
-	"open-data",
-	"picker",
-	"picker-view",
-	"picker-view-column",
-	"progress",
-	"radio",
-	"radio-group",
-	"rich-text",
-	"scroll-view",
-	"slider",
-	"swiper",
-	"swiper-item",
-	"switch",
-	"text",
-	"textarea",
-	"video",
-	"view",
-	"web-view",
-	"location-picker",
-	"location-view"
-].map((tag) => "uni-" + tag);
-const UVUE_WEB_BUILT_IN_TAGS = /*#__PURE__*/ [
-	"page-container",
-	"list-view",
-	"list-item",
-	"sticky-section",
-	"sticky-header",
-	"cloud-db-element",
-	"loading-element",
-	"loading"
-].map((tag) => "uni-" + tag);
-const rpxRE = /"[^"]+"|'[^']+'|url\([^)]+\)|--(?:[\w-]|[^\x00-\x7f]|\\(?:[\da-fA-F]{1,6}(?:\r\n|[ \t\r\n\f])?|[^\r\n\f]))+|(\d*\.?\d+)[ru]px/g;
-const hasRpxRE = /[ru]px/;
-function normalizeRpx(value) {
-	if (!hasRpxRE.test(value)) return value;
-	return value.replace(rpxRE, (match, number) => {
+const rpxRE$1 = /"[^"]+"|'[^']+'|url\([^)]+\)|--(?:[\w-]|[^\x00-\x7f]|\\(?:[\da-fA-F]{1,6}(?:\r\n|[ \t\r\n\f])?|[^\r\n\f]))+|(\d*\.?\d+)[ru]px/g;
+const hasRpxRE$1 = /[ru]px/;
+function normalizeRpx$1(value) {
+	if (!hasRpxRE$1.test(value)) return value;
+	return value.replace(rpxRE$1, (match, number) => {
 		if (!number) return match;
 		const whole = Math.floor(parseFloat(number) * (10 / 320) * 1e6);
 		const result = Math.round(whole / 10) * 10 / 1e6;
 		return result === 0 ? "0" : `${result}rem`;
 	});
-}
-const UVUE_VAPOR_WEB_EASYCOMS = [
-	"checkbox",
-	"checkbox-group",
-	"form",
-	"label",
-	"loading",
-	"match-media",
-	"navigator",
-	"picker",
-	"picker-view",
-	"picker-view-column",
-	"progress",
-	"radio",
-	"radio-group",
-	"slider",
-	"swiper",
-	"swiper-item",
-	"switch"
-];
-function isDom2WebVueComponentTag(tag) {
-	return UVUE_VAPOR_WEB_EASYCOMS.includes(tag);
 }
 //#endregion
 //#region packages/compiler-vapor/src/transforms/vBind.ts
@@ -30150,7 +30071,7 @@ function foldStyleValues(values) {
 		if (!evaluated || !isStaticStyleValue(evaluated.value)) return;
 		evaluatedValues.push(evaluated.value);
 	}
-	return normalizeRpx(stringifyStyle(normalizeStyle(evaluatedValues.length === 1 ? evaluatedValues[0] : evaluatedValues)));
+	return normalizeRpx$1(stringifyStyle(normalizeStyle(evaluatedValues.length === 1 ? evaluatedValues[0] : evaluatedValues)));
 }
 function isStaticStyleValue(value) {
 	if (typeof value === "string") return true;
@@ -31724,6 +31645,66 @@ function getBaseTransformPreset() {
 		model: transformVModel
 	}];
 }
+const rpxRE = /"[^"]+"|'[^']+'|url\([^)]+\)|--(?:[\w-]|[^\x00-\x7f]|\\(?:[\da-fA-F]{1,6}(?:\r\n|[ \t\r\n\f])?|[^\r\n\f]))+|(\d*\.?\d+)[ru]px/g;
+const hasRpxRE = /[ru]px/;
+function normalizeRpx(value) {
+	if (!hasRpxRE.test(value)) return value;
+	return value.replace(rpxRE, (match, number) => {
+		if (!number) return match;
+		const whole = Math.floor(parseFloat(number) * (10 / 320) * 1e6);
+		const result = Math.round(whole / 10) * 10 / 1e6;
+		return result === 0 ? "0" : `${result}rem`;
+	});
+}
+const UVUE_VAPOR_WEB_EASYCOMS = [
+	"ad",
+	"ad-content-page",
+	"ad-draw",
+	"button",
+	"camera",
+	"canvas",
+	"checkbox",
+	"checkbox-group",
+	"editor",
+	"flow-item",
+	"form",
+	"icon",
+	"input",
+	"label",
+	"list-item",
+	"list-view",
+	"live-player",
+	"live-pusher",
+	"loading",
+	"map",
+	"match-media",
+	"movable-area",
+	"movable-view",
+	"navigator",
+	"page-container",
+	"picker",
+	"picker-view",
+	"picker-view-column",
+	"progress",
+	"radio",
+	"radio-group",
+	"resize-sensor",
+	"rich-text",
+	"scroll-view",
+	"slider",
+	"sticky-header",
+	"sticky-section",
+	"swiper",
+	"swiper-item",
+	"switch",
+	"textarea",
+	"video",
+	"waterflow",
+	"web-view"
+];
+function isDom2WebVueComponentTag(tag) {
+	return UVUE_VAPOR_WEB_EASYCOMS.includes(tag);
+}
 //#endregion
 //#region packages/compiler-vapor-web/src/transforms/transformView.ts
 function transformView(node) {
@@ -32244,9 +32225,8 @@ function createDatasetTransform() {
 }
 //#endregion
 //#region packages/compiler-vapor-web/src/uniElement.ts
-const names = /* @__PURE__ */ new Set([...BUILT_IN_TAGS, ...UVUE_WEB_BUILT_IN_TAGS]);
 function resolveUniElementRoots(ast, name) {
-	if (!ast || !(names.has(`uni-${name}`) || isDom2WebVueComponentTag(name))) return;
+	if (!ast || !(name === "unicloud-db" || isDom2WebVueComponentTag(name))) return;
 	const roots = ast.children.filter((node) => node.type !== 3 && !(node.type === 2 && !node.content.trim()));
 	if (!roots.length) return;
 	const elements = roots.filter((node) => node.type === 1);

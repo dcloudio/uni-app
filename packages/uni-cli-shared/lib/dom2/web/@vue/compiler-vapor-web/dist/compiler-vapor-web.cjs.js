@@ -582,9 +582,8 @@ function createDatasetTransform() {
 }
 //#endregion
 //#region packages/compiler-vapor-web/src/uniElement.ts
-const names = /* @__PURE__ */ new Set([..._dcloudio_uni_shared.BUILT_IN_TAGS, ..._dcloudio_uni_shared.UVUE_WEB_BUILT_IN_TAGS]);
 function resolveUniElementRoots(ast, name) {
-	if (!ast || !(names.has(`uni-${name}`) || (0, _dcloudio_uni_shared.isDom2WebVueComponentTag)(name))) return;
+	if (!ast || !(name === "unicloud-db" || (0, _dcloudio_uni_shared.isDom2WebVueComponentTag)(name))) return;
 	const roots = ast.children.filter((node) => node.type !== 3 && !(node.type === 2 && !node.content.trim()));
 	if (!roots.length) return;
 	const elements = roots.filter((node) => node.type === 1);
