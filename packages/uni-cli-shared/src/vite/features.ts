@@ -2,6 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import type { ConfigEnv } from 'vite'
 import { extend, isArray, isString } from '@vue/shared'
+import { isUniAppXWebVapor } from '../x'
 
 interface ProjectFeatures {
   i18nLocale: boolean
@@ -173,6 +174,7 @@ function initManifestFeature({
   manifestJson,
   command,
   platform,
+  ssr,
 }: InitFeaturesOptions): ManifestFeatures {
   const features: ManifestFeatures = {
     wx: false,
@@ -181,7 +183,9 @@ function initManifestFeature({
     promise: false,
     longpress: true,
     routerMode: '"hash"',
-    vueOptionsApi: true,
+    // Web Vapor 客户端只支持组合式组件，无需保留 Options API 合并与实例观察逻辑。
+    // 非 Vapor 和服务端仍沿用原有开关。
+    vueOptionsApi: ssr || !isUniAppXWebVapor(),
     vueProdDevTools: false,
     vueProdHydrationMismatchDetails: false,
   }
