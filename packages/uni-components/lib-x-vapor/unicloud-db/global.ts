@@ -1,4 +1,4 @@
-export class UniCloudDBElement extends UniElementImpl {
+export class UniCloudDBElement extends UniViewElementImpl {
   loadData(arg: any): void {
     this.onLoadData(arg)
   }
