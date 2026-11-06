@@ -6987,7 +6987,7 @@ function requestComponentObserver($el, options, callback) {
     }
   } else {
     intersectionObserver.USE_MUTATION_OBSERVER = false;
-    const el = $el.matches(options.selector) ? $el : $el.querySelector(options.selector);
+    const el = "matches" in $el && $el.matches(options.selector) ? $el : $el.querySelector(options.selector);
     if (!el) {
       console.warn(
         `Node ${options.selector} is not found. Intersection observer will not trigger.`

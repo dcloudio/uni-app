@@ -12497,7 +12497,7 @@
       }
     } else {
       intersectionObserver.USE_MUTATION_OBSERVER = false;
-      var el = $el.matches(options.selector) ? $el : $el.querySelector(options.selector);
+      var el = "matches" in $el && $el.matches(options.selector) ? $el : $el.querySelector(options.selector);
       if (!el) {
         console.warn("Node ".concat(options.selector, " is not found. Intersection observer will not trigger."));
       } else {

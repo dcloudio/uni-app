@@ -8572,7 +8572,7 @@ function requestComponentObserver($el, options, callback) {
     }
   } else {
     intersectionObserver.USE_MUTATION_OBSERVER = false;
-    const el = $el.matches(options.selector) ? $el : $el.querySelector(options.selector);
+    const el = "matches" in $el && $el.matches(options.selector) ? $el : $el.querySelector(options.selector);
     if (!el) {
       console.warn(
         `Node ${options.selector} is not found. Intersection observer will not trigger.`
@@ -10342,9 +10342,6 @@ function createOnPageScroll(pageId, onPageScroll, navigationBarTransparent) {
     }
   };
 }
-function findElem(vm) {
-  return vm.$el;
-}
 function addBase(filePath) {
   const { base: baseUrl } = __uniConfig.router;
   if (addLeadingSlash(filePath).indexOf(baseUrl) === 0) {
@@ -10519,20 +10516,36 @@ function setCurrentPageMeta(_page, { pageStyle, rootFontSize }) {
     document.documentElement.style.fontSize = rootFontSize;
   }
 }
+const componentObservers = /* @__PURE__ */ new WeakMap();
 function addIntersectionObserver({ reqId, component, options, callback }, _pageId) {
-  const $el = findElem(component);
-  ($el.__io || ($el.__io = {}))[reqId] = requestComponentObserver(
-    $el,
+  const instance = component.$;
+  const observer = requestComponentObserver(
+    {
+      querySelector: (selector) => querySelectorInComponent(instance, selector),
+      querySelectorAll: (selector) => querySelectorAllInComponent(instance, selector)
+    },
     options,
     callback
   );
+  let observers = componentObservers.get(instance);
+  if (!observers) {
+    componentObservers.set(instance, observers = /* @__PURE__ */ new Map());
+  }
+  observers.set(reqId, observer);
 }
 function removeIntersectionObserver({ reqId, component }, _pageId) {
-  const $el = findElem(component);
-  const intersectionObserver = $el.__io && $el.__io[reqId];
-  if (intersectionObserver) {
-    intersectionObserver.disconnect();
-    delete $el.__io[reqId];
+  const instance = component.$;
+  const observers = componentObservers.get(instance);
+  if (!observers) {
+    return;
+  }
+  const observer = observers.get(reqId);
+  if (observer) {
+    observer.disconnect();
+    observers.delete(reqId);
+    if (!observers.size) {
+      componentObservers.delete(instance);
+    }
   }
 }
 let mediaQueryObservers = {};
