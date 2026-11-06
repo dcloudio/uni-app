@@ -13,7 +13,7 @@ Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
-| 5.21 | 5.11 | x |
+| 5.21 | 5.11 | 5.36 |
 
 
 
