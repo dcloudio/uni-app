@@ -512,6 +512,9 @@ describe('Web Vapor 真实运行时节点', () => {
         '../../components/rich-text': richText,
         './render-vapor': { renderRichText: renderVaporRichText },
         '../web-vapor-elements': elements,
+        '../../helpers/useWebSelectionStyle': {
+          useWebSelectionStyle: jest.fn(),
+        },
       }
     )
     RichText = component.default
