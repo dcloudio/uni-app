@@ -122,7 +122,7 @@ const indexVapor$8 = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const selectionProperty = "--uni-selection-background-color";
-const selectionAttribute = "data-uni-selection";
+const selectionAttribute$1 = "data-uni-selection";
 const probeBackgroundProperty = "--uni-selection-probe-background-color";
 const fieldSelectionProps = {
   selectionClass: {
@@ -133,7 +133,7 @@ const fieldSelectionProps = {
 const fieldSelectionProbeStyle = "display: none !important;";
 function clearSelection(field) {
   field.style.removeProperty(selectionProperty);
-  field.removeAttribute(selectionAttribute);
+  field.removeAttribute(selectionAttribute$1);
 }
 function resolveSelectionColor(probe) {
   const color = getComputedStyle(probe).backgroundColor;
@@ -155,8 +155,8 @@ function updateSelection(field, color) {
   if (field.style.getPropertyValue(selectionProperty) !== color) {
     field.style.setProperty(selectionProperty, color);
   }
-  if (!field.hasAttribute(selectionAttribute)) {
-    field.setAttribute(selectionAttribute, "");
+  if (!field.hasAttribute(selectionAttribute$1)) {
+    field.setAttribute(selectionAttribute$1, "");
   }
 }
 function observeSelection(probe, field) {
@@ -3458,6 +3458,163 @@ const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
     return root;
   }
 });
+const selectionAttribute = "data-uni-selection-style";
+const probeAttribute = "data-uni-selection-style-probe";
+const probeMarker = "--uni-selection-style-probe";
+const probeColor = "rgb(1, 2, 3)";
+const probeBackgroundColor = "rgb(4, 5, 6)";
+const probeMarkerValue = "1";
+const elementNodeType = 1;
+let seed = 0;
+function getSelectionSelector(root) {
+  let id2 = root.getAttribute(selectionAttribute);
+  if (!id2) {
+    id2 = String(++seed);
+    root.setAttribute(selectionAttribute, id2);
+  }
+  return `[${selectionAttribute}="${id2}"]`;
+}
+function createFallbackRule() {
+  return `:where([${probeAttribute}])::selection,
+    :where([${probeAttribute}]) *::selection {
+      ${probeMarker}: ${probeMarkerValue};
+      color: ${probeColor};
+      background-color: ${probeBackgroundColor};
+  }`;
+}
+function createSelectionRule(selector, color, backgroundColor) {
+  const declarations = [];
+  if (color) {
+    declarations.push(`color: ${color};`);
+  }
+  if (backgroundColor) {
+    declarations.push(`background-color: ${backgroundColor};`);
+  }
+  if (!declarations.length) {
+    return "";
+  }
+  return `${selector}::selection,
+    ${selector} *::selection {
+      ${declarations.join("\n")}
+    }`;
+}
+function normalizeColor(value) {
+  return value.replace(/\s+/g, "").toLowerCase();
+}
+function insertStyleElement(styleElement) {
+  document.head.insertBefore(
+    styleElement,
+    document.head.querySelector('style, link[rel="stylesheet"]')
+  );
+}
+function isInternalStyleMutation(target) {
+  const element = target.nodeType === elementNodeType ? target : target.parentElement;
+  return !!(element == null ? void 0 : element.closest("style[data-uni-selection-style-element]"));
+}
+function resolveStyle(root, styleElement) {
+  styleElement.textContent = createFallbackRule();
+  root.setAttribute(probeAttribute, "");
+  let color = "";
+  let backgroundColor = "";
+  try {
+    const computed2 = getComputedStyle(root, "::selection");
+    if (computed2.getPropertyValue(probeMarker) !== probeMarkerValue) {
+      return { color, backgroundColor };
+    }
+    const computedColor = computed2.color;
+    const computedBackgroundColor = computed2.backgroundColor;
+    if (normalizeColor(computedColor) !== normalizeColor(probeColor)) {
+      color = computedColor;
+    }
+    if (normalizeColor(computedBackgroundColor) !== normalizeColor(probeBackgroundColor)) {
+      backgroundColor = computedBackgroundColor;
+    }
+  } catch {
+    return { color, backgroundColor };
+  } finally {
+    root.removeAttribute(probeAttribute);
+  }
+  return { color, backgroundColor };
+}
+function observeSelectionStyle(root) {
+  var _a;
+  const styleElement = document.createElement("style");
+  styleElement.setAttribute("data-uni-selection-style-element", "");
+  insertStyleElement(styleElement);
+  function update() {
+    if (!root.isConnected) {
+      return;
+    }
+    if (!styleElement.isConnected) {
+      insertStyleElement(styleElement);
+    }
+    const selector = getSelectionSelector(root);
+    const { color, backgroundColor } = resolveStyle(root, styleElement);
+    styleElement.textContent = createFallbackRule() + createSelectionRule(selector, color, backgroundColor);
+  }
+  const rootObserver = new MutationObserver(update);
+  rootObserver.observe(root, {
+    attributes: true,
+    attributeFilter: ["class", "style"]
+  });
+  const documentObserver = new MutationObserver(update);
+  documentObserver.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["class", "style", "data-theme"]
+  });
+  if (document.body) {
+    documentObserver.observe(document.body, {
+      attributes: true,
+      attributeFilter: ["class", "style", "data-theme"]
+    });
+  }
+  const headObserver = new MutationObserver((records) => {
+    if (records.some((record) => !isInternalStyleMutation(record.target))) {
+      update();
+    }
+  });
+  headObserver.observe(document.head, {
+    childList: true,
+    characterData: true,
+    subtree: true
+  });
+  const mediaQuery = (_a = window.matchMedia) == null ? void 0 : _a.call(window, "(prefers-color-scheme: dark)");
+  if (mediaQuery) {
+    if (mediaQuery.addEventListener) {
+      mediaQuery.addEventListener("change", update);
+    } else {
+      mediaQuery.addListener(update);
+    }
+  }
+  window.addEventListener("load", update);
+  update();
+  return () => {
+    rootObserver.disconnect();
+    documentObserver.disconnect();
+    headObserver.disconnect();
+    if (mediaQuery) {
+      if (mediaQuery.removeEventListener) {
+        mediaQuery.removeEventListener("change", update);
+      } else {
+        mediaQuery.removeListener(update);
+      }
+    }
+    window.removeEventListener("load", update);
+    root.removeAttribute(selectionAttribute);
+    styleElement.remove();
+  };
+}
+function useWebSelectionStyle(rootRef) {
+  watch(
+    rootRef,
+    (root, _, onCleanup) => {
+      if (root) {
+        onCleanup(observeSelectionStyle(root));
+      }
+    },
+    { immediate: true, flush: "post" }
+  );
+}
 function normalizeEvent(vm, id2) {
   if (!id2) {
     id2 = vm.id;
@@ -11511,6 +11668,7 @@ function useBackgroundColorContent(pageMeta) {
   watchEffect(update);
   onActivated(update);
 }
+const dialogPageRenderer = /* @__PURE__ */ shallowRef();
 function hexToRgba(hex) {
   if (!hex) {
     return {
@@ -12362,34 +12520,6 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
       useBackgroundColorContent(pageMeta);
       provide("parentInstance", currentInstance);
     }
-    function getDialogPages() {
-      const pages = [...currentInstance.$dialogPages.value.map((page) => ({
-        page,
-        type: DIALOG_TAG
-      })), ...currentInstance.$systemDialogPages.value.map((page) => ({
-        page,
-        type: SYSTEM_DIALOG_TAG
-      }))];
-      pages.sort((a, b) => {
-        var _a2, _b, _c, _d;
-        const aId = ((_b = (_a2 = a.page.vm) == null ? void 0 : _a2.$basePage) == null ? void 0 : _b.id) || Number.MAX_SAFE_INTEGER;
-        const bId = ((_d = (_c = b.page.vm) == null ? void 0 : _c.$basePage) == null ? void 0 : _d.id) || Number.MAX_SAFE_INTEGER;
-        return aId - bId;
-      });
-      return pages.map(({ page, type }) => ({
-        component: page.$component,
-        type,
-        route: `${page.route}${stringifyQuery$1(page.options)}`
-      }));
-    }
-    const dialogPageStyle = {
-      position: "fixed",
-      zIndex: 999,
-      top: 0,
-      right: 0,
-      bottom: 0,
-      left: 0
-    };
     function assignDialogPage(ctx, parentInstance, currentInstance2) {
       let parentDialogPages = [];
       if (isNormalDialogPageInstance(ctx)) {
@@ -12426,11 +12556,10 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
             return _n2;
           });
           return _n02;
-        })(), () => renderPageBody(), () => createFor(() => getDialogPages(), (dialogPage) => createDynamicComponent(() => dialogPage.value.component, {
-          style: () => dialogPageStyle,
-          "data-type": () => dialogPage.value.type,
-          route: () => dialogPage.value.route
-        }), (dialogPage) => dialogPage.route, 18));
+        })(), () => renderPageBody(), () => {
+          var _a2;
+          return (_a2 = dialogPageRenderer.value) == null ? void 0 : _a2.call(dialogPageRenderer, currentInstance);
+        });
         return _n0;
       }, { _: 1 }), true);
       return _n3;
@@ -13437,6 +13566,7 @@ function useEditor(props2, emit2) {
   const trigger = useCustomEvent(rootRef, emit2);
   useQuill(props2, rootRef, trigger);
   useKeyboard$1(props2, rootRef);
+  useWebSelectionStyle(rootRef);
   return rootRef;
 }
 const _t0$c = template("<div uni-editor uni-view class=ql-container>", 1);
@@ -15346,6 +15476,7 @@ const indexVapor$3 = /* @__PURE__ */ defineBuiltInComponent({
       trigger("itemclick", e2, detail);
     }
     const result = renderRichText(props2, rootRef, triggerItemClick);
+    useWebSelectionStyle(rootRef);
     Object.defineProperty(result, "uniTagName", uniTagName$4);
     return result;
   }
@@ -29636,6 +29767,50 @@ const createEditorContextAsync = function(options) {
     );
   });
 };
+function renderDialogPages(currentInstance) {
+  function getDialogPages() {
+    const pages = [
+      ...currentInstance.$dialogPages.value.map((page) => ({
+        page,
+        type: DIALOG_TAG
+      })),
+      ...currentInstance.$systemDialogPages.value.map((page) => ({
+        page,
+        type: SYSTEM_DIALOG_TAG
+      }))
+    ];
+    pages.sort((a, b) => {
+      var _a, _b, _c, _d;
+      const aId = ((_b = (_a = a.page.vm) == null ? void 0 : _a.$basePage) == null ? void 0 : _b.id) || Number.MAX_SAFE_INTEGER;
+      const bId = ((_d = (_c = b.page.vm) == null ? void 0 : _c.$basePage) == null ? void 0 : _d.id) || Number.MAX_SAFE_INTEGER;
+      return aId - bId;
+    });
+    return pages.map(({ page, type }) => ({
+      component: page.$component,
+      type,
+      route: `${page.route}${stringifyQuery$1(page.options)}`
+    }));
+  }
+  const dialogPageStyle = {
+    position: "fixed",
+    zIndex: 999,
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0
+  };
+  return createFor(
+    () => getDialogPages(),
+    (dialogPage) => createDynamicComponent(() => dialogPage.value.component, {
+      style: () => dialogPageStyle,
+      "data-type": () => dialogPage.value.type,
+      route: () => dialogPage.value.route
+    }),
+    (dialogPage) => dialogPage.route,
+    18
+    /* IS_COMPONENT | IS_FRAGMENT：沿用原列表的卸载、插入和按 key 复用行为。 */
+  );
+}
 const openDialogPage = (options) => {
   var _a, _b, _c;
   if (!options.url) {
@@ -29672,6 +29847,7 @@ const openDialogPage = (options) => {
       return null;
     }
   }
+  dialogPageRenderer.value = renderDialogPages;
   if (!isSystemDialogPage(dialogPage)) {
     if (!currentPages.length) {
       homeDialogPages.push(dialogPage);

@@ -4695,6 +4695,7 @@ function useBackgroundColorContent(pageMeta) {
   onThemeChange(update);
   Vue.watchEffect(update);
 }
+const dialogPageRenderer = /* @__PURE__ */ Vue.shallowRef();
 function hexToRgba(hex) {
   if (!hex) {
     return {
@@ -5228,34 +5229,6 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
       useBackgroundColorContent(pageMeta);
       Vue.provide("parentInstance", currentInstance);
     }
-    function getDialogPages() {
-      const pages = [...currentInstance.$dialogPages.value.map((page) => ({
-        page,
-        type: DIALOG_TAG
-      })), ...currentInstance.$systemDialogPages.value.map((page) => ({
-        page,
-        type: SYSTEM_DIALOG_TAG
-      }))];
-      pages.sort((a, b) => {
-        var _a2, _b, _c, _d;
-        const aId = ((_b = (_a2 = a.page.vm) == null ? void 0 : _a2.$basePage) == null ? void 0 : _b.id) || Number.MAX_SAFE_INTEGER;
-        const bId = ((_d = (_c = b.page.vm) == null ? void 0 : _c.$basePage) == null ? void 0 : _d.id) || Number.MAX_SAFE_INTEGER;
-        return aId - bId;
-      });
-      return pages.map(({ page, type }) => ({
-        component: page.$component,
-        type,
-        route: `${page.route}${uniShared.stringifyQuery(page.options)}`
-      }));
-    }
-    const dialogPageStyle = {
-      position: "fixed",
-      zIndex: 999,
-      top: 0,
-      right: 0,
-      bottom: 0,
-      left: 0
-    };
     function assignDialogPage(ctx, parentInstance, currentInstance2) {
       let parentDialogPages = [];
       if (isNormalDialogPageInstance(ctx)) {
@@ -5292,11 +5265,10 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
             return _n2;
           });
           return _n02;
-        })(), () => renderPageBody(), () => Vue.createFor(() => getDialogPages(), (dialogPage) => Vue.createDynamicComponent(() => dialogPage.value.component, {
-          style: () => dialogPageStyle,
-          "data-type": () => dialogPage.value.type,
-          route: () => dialogPage.value.route
-        }), (dialogPage) => dialogPage.route, 18));
+        })(), () => renderPageBody(), () => {
+          var _a2;
+          return (_a2 = dialogPageRenderer.value) == null ? void 0 : _a2.call(dialogPageRenderer, currentInstance);
+        });
         return _n0;
       }, { _: 1 }), true);
       return _n3;

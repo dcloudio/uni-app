@@ -1,4 +1,4 @@
-import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, getUniElementPage, once, getEnvLocale, I18N_JSON_DELIMITERS, Emitter, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, normalizeTarget, passive, LINEFEED, parseQuery, NAVBAR_HEIGHT, ON_THEME_CHANGE, removeLeadingSlash, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, decodedQuery, UNI_SSR_TITLE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, stringifyQuery as stringifyQuery$1, PRIMARY_COLOR, debounce, ON_LOAD, ON_READY, ON_UNLOAD, ON_RESIZE, ON_WEB_INVOKE_APP_SERVICE, callOptions, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from "@dcloudio/uni-shared";
+import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, getUniElementPage, once, getEnvLocale, I18N_JSON_DELIMITERS, Emitter, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, normalizeTarget, passive, LINEFEED, parseQuery, NAVBAR_HEIGHT, ON_THEME_CHANGE, removeLeadingSlash, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, decodedQuery, UNI_SSR_TITLE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, PRIMARY_COLOR, debounce, ON_LOAD, ON_READY, ON_UNLOAD, ON_RESIZE, ON_WEB_INVOKE_APP_SERVICE, callOptions, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2 } from "@dcloudio/uni-shared";
 import { defineVaporComponent, createPlainElement, openBlock, createBlock, ref, watch, setAttr, template, getCurrentInstance, warn, unref, reactive, onMounted, onBeforeUnmount, computed, inject, onBeforeMount, nextTick, isVNode, createElementBlock, Fragment, createElementVNode, Comment, Text, cloneVNode, renderList, createVNode, defineComponent as defineComponent$2, mergeProps, withDirectives, vShow, onActivated, shallowRef, watchEffect, provide, isReactive, createFor, createCommentVNode, VaporKeepAlive, createDynamicComponent, useSSRContext, onServerPrefetch, ssrContextKey, markRaw, onUnmounted, toRaw, createKeyedFragment, createTextNode, renderEffect, setText, remove, setDynamicProps, effectScope, insert, syncSelectValue, useAttrs as useAttrs$1, useSlots, withCtx, renderSlot, isInSSRComponentSetup, injectHook, toDisplayString, queuePostFlushCb, logError } from "vue";
 import { capitalize, camelize, isArray, isString, extend, isFunction, hyphenate, hasOwn, isPlainObject, isObject, toRawType, makeMap as makeMap$1, isPromise, EMPTY_OBJ, Namespaces } from "@vue/shared";
@@ -4532,6 +4532,7 @@ function useBackgroundColorContent(pageMeta) {
   watchEffect(update);
   onActivated(update);
 }
+const dialogPageRenderer = /* @__PURE__ */ shallowRef();
 function hexToRgba(hex) {
   if (!hex) {
     return {
@@ -5045,34 +5046,6 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
       useBackgroundColorContent(pageMeta);
       provide("parentInstance", currentInstance);
     }
-    function getDialogPages() {
-      const pages = [...currentInstance.$dialogPages.value.map((page) => ({
-        page,
-        type: DIALOG_TAG
-      })), ...currentInstance.$systemDialogPages.value.map((page) => ({
-        page,
-        type: SYSTEM_DIALOG_TAG
-      }))];
-      pages.sort((a, b) => {
-        var _a2, _b, _c, _d;
-        const aId = ((_b = (_a2 = a.page.vm) == null ? void 0 : _a2.$basePage) == null ? void 0 : _b.id) || Number.MAX_SAFE_INTEGER;
-        const bId = ((_d = (_c = b.page.vm) == null ? void 0 : _c.$basePage) == null ? void 0 : _d.id) || Number.MAX_SAFE_INTEGER;
-        return aId - bId;
-      });
-      return pages.map(({ page, type }) => ({
-        component: page.$component,
-        type,
-        route: `${page.route}${stringifyQuery$1(page.options)}`
-      }));
-    }
-    const dialogPageStyle = {
-      position: "fixed",
-      zIndex: 999,
-      top: 0,
-      right: 0,
-      bottom: 0,
-      left: 0
-    };
     function assignDialogPage(ctx, parentInstance, currentInstance2) {
       let parentDialogPages = [];
       if (isNormalDialogPageInstance(ctx)) {
@@ -5099,11 +5072,10 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
     }, [
       normalizeVNode(() => __UNI_FEATURE_NAVIGATIONBAR__ && (navigationBar.style !== "custom" ? (openBlock(), createBlock(PageHead, { key: 0 })) : createCommentVNode("", true))),
       normalizeVNode(() => renderPageBody()),
-      normalizeVNode(() => createFor(() => getDialogPages(), (dialogPage) => createDynamicComponent(() => dialogPage.value.component, {
-        style: () => dialogPageStyle,
-        "data-type": () => dialogPage.value.type,
-        route: () => dialogPage.value.route
-      }), (dialogPage) => dialogPage.route, 18))
+      normalizeVNode(() => {
+        var _a2;
+        return (_a2 = dialogPageRenderer.value) == null ? void 0 : _a2.call(dialogPageRenderer, currentInstance);
+      })
     ]));
   }
 });
