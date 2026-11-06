@@ -651,6 +651,15 @@
           "arkts": true
         }
       },
+      "__setAppCrashReportEnable": {
+        "name": "__setAppCrashReportEnable",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
       "__deleteAppCrashInfo": {
         "name": "__deleteAppCrashInfo",
         "app": {
