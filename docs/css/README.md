@@ -345,6 +345,7 @@ app平台由于暂不支持伪元素，字体图标需使用unicode直显方式�
 | [bottom](bottom.md) |
 | [box-shadow](box-shadow.md) |
 | [box-sizing](box-sizing.md) |
+| [caret-color](caret-color.md) |
 | [color](color.md) |
 | [direction](direction.md) |
 | [display](display.md) |
@@ -428,6 +429,7 @@ app平台由于暂不支持伪元素，字体图标需使用unicode直显方式�
 | [backdrop-filter](backdrop-filter.md) |   |
 | [background-clip](background-clip.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
 | [background-image](background-image.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [caret-color](caret-color.md) |   |
 | [lines](lines.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
 | [overflow](overflow.md) | Android(Vapor): x; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 |
 | [pointer-events](pointer-events.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
