@@ -46,6 +46,7 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.
 | show-confirm-bar | boolean |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 是否显示键盘上方带有”完成“按钮那一栏 |
 | disable-default-padding | boolean |   | 微信小程序: 4.41; 支付宝小程序: x | *(boolean)*<br/>是否去掉 iOS 下的默认内边距 |
 | adjust-keyboard-to | boolean |   | 微信小程序: 4.41; 支付宝小程序: x | *(boolean)*<br/>键盘对齐位置 |
+| value-modifiers | ModelModifiers |   |   |   |
 | @confirm | (event: [UniInputConfirmEvent](#uniinputconfirmevent)) => void |   | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.73; iOS: 4.73; HarmonyOS: 4.61 | 点击完成时， 触发 confirm 事件，event.detail = {value: value} |
 | @input | (event: [UniInputEvent](#uniinputevent)) => void |   | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 当键盘输入时，触发 input 事件，event.detail = {value, cursor}， @input 处理函数的返回值并不会反映到 textarea 上 |
 | @linechange | (event: [UniTextareaLineChangeEvent](#unitextarealinechangeevent)) => void |   | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.65 | 输入框行数变化时调用，event.detail = {height: 0, heightRpx: 0, lineCount: 0} |

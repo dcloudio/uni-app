@@ -395,7 +395,330 @@ Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 
 
 
 
+### 示例
+示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/uni-ui/forms/forms.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/uni-ui/forms/forms.uvue) 
+::: preview https://hellouniappx.dcloud.net.cn/web/#/pages/uni-ui/forms/forms
 
+> appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/uni-ui/forms/forms
+
+>示例
+```vue
+<template>
+	<scroll-view class="flex-1 bg-page-f5f5f5 page" :class="{ 'page-dark': isDarkMode }">
+		<view class="u-p-16 bg-content-background-fff intro">
+			<text class="fw-bold color-text-222 fs-18 page-title">uni-forms 表单</text>
+			<text class="fs-13 lh-21 color-secondary-text-657180 page-desc">通过 v-model 统一收集字段值，并支持字段校验、错误展示和表单重置。</text>
+		</view>
+
+		<view class="u-p-16 bg-content-background-fff mt-10 section demo-index">
+			<text class="fw-bold color-text-222 mb-12 fs-16 section-title">多功能演示</text>
+			<text class="fs-13 lh-21 color-secondary-text-657180 section-desc">uni-forms 的所有表单用法从这里进入，按场景查看基础接入、校验方案、控件接入和样式配置。</text>
+			<view class="flex-dir-row flex-wrap-wrap demo-links">
+				<navigator class="demo-link" url="/pages/uni-ui/forms/validation">
+					<text class="demo-link-title">完整校验</text>
+					<text class="demo-link-desc">DB Schema 规则、异步校验和字段方法</text>
+				</navigator>
+				<navigator class="demo-link" url="/pages/uni-ui/forms/valibot">
+					<text class="demo-link-title">Valibot schema</text>
+					<text class="demo-link-desc">Standard Schema、异步、嵌套和原生 API</text>
+				</navigator>
+				<navigator class="demo-link" url="/pages/uni-ui/forms/controls">
+					<text class="demo-link-title">控件接入</text>
+					<text class="demo-link-desc">原生控件、uni-x 控件和三方组件</text>
+				</navigator>
+				<navigator class="demo-link" url="/pages/uni-ui/forms/styles">
+					<text class="demo-link-title">样式与属性</text>
+					<text class="demo-link-desc">布局属性和 externalClasses 样式覆盖</text>
+				</navigator>
+				<navigator class="demo-link" url="/pages/uni-ui/forms/form-item">
+					<text class="demo-link-title">表单项布局</text>
+					<text class="demo-link-desc">左标签字号、宽度、对齐、箭头和说明</text>
+				</navigator>
+			</view>
+		</view>
+
+		<view class="u-p-16 bg-content-background-fff mt-10 section">
+			<uni-forms
+				ref="formRef"
+				v-model="formData"
+				:rules="rules"
+				validate-trigger="blur"
+				err-show-type="undertext"
+				label-position="top"
+				label-width="80"
+				@validate="onValidate"
+			>
+				<uni-forms-item name="name" label="姓名" required label-class="demo-label" error-message-class="demo-error">
+					<uni-easyinput
+						v-model="formData.name"
+						placeholder="请输入姓名"
+						clearable
+					/>
+				</uni-forms-item>
+
+				<!-- #ifndef (APP-IOS || APP-HARMONY) && !VUE3-VAPOR -->
+				<uni-forms-item name="city" label="城市" label-class="demo-label" error-message-class="demo-error">
+					<uni-combobox
+						v-model="formData.city"
+						:options="cityOptions"
+						placeholder="请选择城市"
+					/>
+				</uni-forms-item>
+				<!-- #endif -->
+
+				<uni-forms-item name="email" label="邮箱" label-class="demo-label" error-message-class="demo-error">
+					<uni-easyinput
+						v-model="formData.email"
+						type="text"
+						placeholder="请输入邮箱"
+					/>
+				</uni-forms-item>
+
+				<uni-forms-item name="profile.nickname" label="嵌套字段" label-class="demo-label" error-message-class="demo-error">
+					<uni-easyinput
+						v-model="formData.profile.nickname"
+						placeholder="请输入昵称"
+					/>
+				</uni-forms-item>
+			</uni-forms>
+
+			<view class="flex-dir-row button-row">
+				<button class="mr-10 color-fff bg-007aff action-button" size="mini" @click="validateForm">校验表单</button>
+				<button class="mr-10 color-fff bg-007aff color-text-333 bg-active-e9eef5 action-button secondary-button" size="mini" @click="resetForm">重置字段</button>
+			</view>
+			<text class="mt-8 fs-14 color-007aff status-text">{{ statusText }}</text>
+		</view>
+
+		<view class="u-p-16 bg-content-background-fff mt-10 pb-32 section section-last">
+			<text class="fw-bold color-text-222 mb-12 fs-16 section-title">当前数据</text>
+			<text class="data-text">{{ dataText }}</text>
+			<view class="property-list">
+				<text class="property-title">本页使用的关键属性</text>
+				<text class="property-text">v-model：formData</text>
+				<text class="property-text">validate-trigger：blur</text>
+				<text class="property-text">label-position：left</text>
+				<text class="property-text">label-class / error-message-class：自定义字段样式</text>
+			</view>
+		</view>
+	</scroll-view>
+</template>
+
+<script setup lang="ts">
+import { state } from '@/store/index.ts'
+
+const isDarkMode = computed((): boolean => state.isDarkMode)
+
+/** 暗黑模式下同步导航栏颜色，与图标示例页保持一致 */
+function syncNavigationBar(): void {
+	// #ifdef APP
+	const dark = isDarkMode.value
+	uni.setNavigationBarColor({
+		frontColor: dark ? '#ffffff' : '#000000',
+		backgroundColor: dark ? '#1a1a1a' : '#efeff4'
+	})
+	// #endif
+}
+
+watch(isDarkMode, syncNavigationBar, { immediate: true })
+onShow(syncNavigationBar)
+
+type FormData = {
+	name : string,
+	city : string,
+	email : string,
+	profile : {
+		nickname : string
+	}
+}
+
+type FormRule = {
+	label : string,
+	rules : Array<{
+		required? : boolean,
+		format? : string,
+		pattern? : string,
+		errorMessage : string,
+		trigger? : 'bind' | 'blur' | 'submit'
+	}>
+}
+
+const formRef = ref<any>(null)
+const formData = ref<FormData>({
+	name: '',
+	city: '',
+	email: '',
+	profile: {
+		nickname: ''
+	}
+})
+
+const cityOptions : string[] = ['北京', '上海', '广州', '深圳', '杭州', '成都']
+
+const rules = {
+	name: {
+		label: '姓名',
+		rules: [{ required: true, errorMessage: '请输入姓名', trigger: 'blur' }]
+	},
+	city: {
+		label: '城市',
+		rules: [{ required: true, errorMessage: '请选择城市', trigger: 'submit' }]
+	},
+	email: {
+		label: '邮箱',
+		rules: [
+			{ required: true, errorMessage: '请输入邮箱地址', trigger: 'blur' },
+			{ format: 'email', errorMessage: '请输入正确的邮箱地址', trigger: 'blur' }
+		]
+	},
+	'profile.nickname': {
+		label: '嵌套字段',
+		rules: [{ required: true, errorMessage: '请输入昵称', trigger: 'blur' }]
+	}
+}
+
+const statusText = ref<string>('等待校验')
+const dataText = computed<string>(() : string => JSON.stringify(formData.value))
+
+async function validateForm() {
+	try {
+		await formRef.value.validate()
+		statusText.value = '校验通过'
+	} catch (errors) {
+		const list = errors as any[]
+		statusText.value = list != null && list.length > 0 ? list[0].errorMessage : '校验未通过'
+	}
+}
+
+function resetForm() {
+	formRef.value.resetFields()
+	statusText.value = '已重置为初始值'
+}
+
+/**
+ * 填入一组可以通过当前示例规则的值，供 HBuilderX 自动化测试调用。
+ */
+function setDemoValues(): void {
+	formData.value.name = '张三'
+	formData.value.city = '北京'
+	formData.value.email = 'name@example.com'
+	formData.value.profile.nickname = '小张'
+}
+
+function onValidate(result : any) {
+	if (result == null) {
+		return
+	}
+	const list = Array.isArray(result) ? result : [result]
+	if (list.length > 0 && list[0].errorMessage != null) {
+		statusText.value = list[0].errorMessage
+	}
+}
+
+defineExpose({
+	formData,
+	statusText,
+	validateForm,
+	resetForm,
+	setDemoValues
+})
+</script>
+
+<style>
+.intro {
+	padding: 18px 16px;
+}
+
+.page-title {
+	font-size: 20px;
+}
+
+.page-desc {
+	margin-top: 8px;
+	font-size: 14px;
+}
+
+.demo-index {
+	padding-bottom: 8px;
+}
+
+.section-desc {
+	margin-bottom: 10px;
+	line-height: 20px;
+}
+
+.demo-link {
+	width: 48%;
+	padding: 12px;
+	margin: 0 2% 10px 0;
+	border-radius: 6px;
+	background-color: var(--active-background-color, #f3f7fc);
+}
+
+.demo-link-title {
+	font-size: 15px;
+	font-weight: bold;
+	color: #007aff;
+}
+
+.demo-link-desc {
+	margin-top: 5px;
+	font-size: 12px;
+	line-height: 18px;
+	color: var(--secondary-text-color, #657180);
+}
+
+.section-title {
+	color: var(--text-color, #333333);
+}
+
+.button-row {
+	margin-top: 8px;
+}
+
+.status-text {
+	margin-top: 12px;
+	color: var(--secondary-text-color, #657180);
+}
+
+.data-text {
+	font-size: 13px;
+	line-height: 20px;
+	color: var(--secondary-text-color, #657180);
+}
+
+.property-list {
+	padding-top: 16px;
+	margin-top: 16px;
+	border-top: 1px solid var(--divider-color, #e5e5e5);
+}
+
+.property-title {
+	margin-bottom: 6px;
+	font-size: 14px;
+	font-weight: bold;
+	color: var(--text-color, #333333);
+}
+
+.property-text {
+	font-size: 12px;
+	line-height: 20px;
+	color: var(--secondary-text-color, #657180);
+}
+
+.demo-label {
+	font-weight: bold;
+	color: #007aff;
+}
+
+.demo-error {
+	font-weight: bold;
+	color: #dd524d;
+}
+</style>
+
+```
+
+:::
 
 
 

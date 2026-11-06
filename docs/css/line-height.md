@@ -25,7 +25,7 @@ line-height: normal | <number> | <length> | <percentage>;
 
 
 ### 值限制
-- length
+- line-height-length
 - number
 
 

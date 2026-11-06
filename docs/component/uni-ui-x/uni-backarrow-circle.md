@@ -48,7 +48,7 @@ App 端使用一个 `flatten` 子 view 绘制箭头并拍平到圆形背景上�
 默认只触发 `click`，由调用方处理导航、关闭弹层或二次确认。需要组件自动返回上一页时，显式开启：
 
 ```vue
-<uni-backarrow-circle :auto-back="true" />
+<uni-backarrow-circle auto-back />
 ```
 
 请使用 `:auto-back="true"` 传入布尔值。开启自动返回后，组件先触发 `click`，随后调用 `uni.navigateBack({})`，不会等待异步点击处理完成；需要离开确认时，保持默认关闭，在确认后自行调用导航 API。
@@ -65,8 +65,8 @@ App 端使用一个 `flatten` 子 view 绘制箭头并拍平到圆形背景上�
 
 | CSS 变量 | 默认值 | 说明 |
 | --- | --- | --- |
-| --back-arrow-color | 浅色 #000000，深色 #ffffff | 箭头颜色；显式设置后覆盖深浅色默认值 |
-| --back-arrow-width | 2px | 箭头边框线宽 |
+| --uni-backarrow-circle-color | 浅色 #000000，深色 #ffffff | 箭头颜色；显式设置后覆盖深浅色默认值 |
+| --uni-backarrow-circle-width | 2px | 箭头边框线宽 |
 
 ```vue
 <uni-backarrow-circle class="back" />
@@ -74,17 +74,17 @@ App 端使用一个 `flatten` 子 view 绘制箭头并拍平到圆形背景上�
 
 ```css
 .back {
-  --back-arrow-color: #ffffff;
-  --back-arrow-width: 1px;
+  --uni-backarrow-circle-color: #ffffff;
+  --uni-backarrow-circle-width: 1px;
   background-color: rgba(0, 0, 0, 0.3);
 }
 ```
 
-默认外边距为 6px，圆形背景直径为 28px。
+圆形背景直径为 28px，组件已适配安全区，左侧额外保留 6px 间距。若外层已处理安全区，需覆盖组件对应的 margin，避免重复留白。
 
 ## 暗黑模式
 
-组件默认跟随系统暗黑模式：圆形背景色自动加深，箭头颜色由 #000000 切换为 #ffffff。未显式设置 `--back-arrow-color` 时生效。
+组件默认跟随系统暗黑模式：圆形背景色自动加深，箭头颜色由 #000000 切换为 #ffffff。未显式设置 `--uni-backarrow-circle-color` 时生效。
 
 
 
