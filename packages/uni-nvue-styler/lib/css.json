@@ -17,17 +17,17 @@
           "android": {
             "uniVer": "x",
             "unixVer": "x",
-            "unixVaporVer": "5.35"
+            "unixVaporVer": "5.36"
           },
           "ios": {
             "uniVer": "x",
             "unixVer": "x",
-            "unixVaporVer": "5.35"
+            "unixVaporVer": "5.36"
           },
           "harmony": {
             "uniVer": "x",
             "unixVer": "x",
-            "unixVaporVer": "5.35"
+            "unixVaporVer": "5.36"
           }
         },
         "web": {
@@ -3973,7 +3973,7 @@
             "unixVaporVer": "5.11"
           },
           "harmony": {
-            "unixVaporVer": "x"
+            "unixVaporVer": "5.36"
           }
         }
       },
