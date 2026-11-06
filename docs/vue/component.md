@@ -141,7 +141,7 @@ const component1 = ref<ComponentPublicInstance | null>(null) // 手动引入组�
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <array-literal class="array-literal-component" :str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
     <object-type class="object-type-component" str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
     <same-name-prop-default-value class="same-name-prop-default-value-component" />
@@ -175,7 +175,7 @@ const component1 = ref<ComponentPublicInstance | null>(null) // 手动引入组�
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <array-literal class="array-literal-component" :str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
     <object-type class="object-type-component" str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
     <same-name-prop-default-value class="same-name-prop-default-value-component" />
@@ -230,8 +230,8 @@ const component1 = ref<ComponentPublicInstance | null>(null) // 手动引入组�
 
 ```vue
 <template>
-  <view class="page">
-    <view class="row">
+  <view class="p-15">
+    <view class="flex flex-row justify-between mb-10">
       <text>子组件传的参数</text>
       <text id="value">
         {{ value }}
@@ -251,23 +251,14 @@ const callback = (str: string) => {
 }
 </script>
 
-<style>
-.row {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-</style>
-
 ```
 
 > 选项式 API
 
 ```vue
 <template>
-  <view class="page">
-    <view class="row">
+  <view class="p-15">
+    <view class="flex flex-row justify-between mb-10">
       <text>子组件传的参数</text>
       <text id="value">
         {{ value }}
@@ -297,15 +288,6 @@ export default {
 }
 </script>
 
-<style>
-.row {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-</style>
-
 ```
 
 :::
@@ -320,7 +302,7 @@ export default {
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <inject-comp class="component-for-inject" />
   </view>
 </template>
@@ -342,9 +324,9 @@ provide('fn', () : string => 'hello');
 ```vue
 <template>
   <!-- #ifdef APP -->
-  <scroll-view style="flex: 1">
+  <scroll-view class="flex-1">
     <!-- #endif -->
-    <view class="page">
+    <view class="p-15">
       <text>provide page</text>
       <button class="mt-10" @click="goProvidePage2">
         跳转函数方式定义 provide 示例
@@ -410,7 +392,7 @@ export default {
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <view class="flex-row">
       父组件:
       <text class="parent-msg">{{ msg }}</text>
@@ -437,7 +419,7 @@ const change = () => {
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <view class="flex-row">
       父组件:
       <text class="parent-msg">{{ msg }}</text>
@@ -491,9 +473,9 @@ app.config.globalProperties.globalPropertiesReactiveObj = reactive({
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1;">
+  <scroll-view class="flex-1">
     <!-- #endif -->
-    <view class="uni-padding-wrap">
+    <view class="pt-10 pr-10 pb-40 pl-10">
       <text class="mt-10"
         >globalProperties string: {{ globalPropertiesStr }}</text
       >
@@ -623,12 +605,6 @@ defineExpose({
 })
 </script>
 
-<style>
-.uni-padding-wrap {
-  padding: 10px 10px 40px 10px;
-}
-</style>
-
 ```
 
 > 选项式 API
@@ -636,9 +612,9 @@ defineExpose({
 ```vue
 <template>
   <!-- #ifdef APP -->
-  <scroll-view style="flex: 1;">
+  <scroll-view class="flex-1">
     <!-- #endif -->
-    <view class="uni-padding-wrap">
+    <view class="pt-10 pr-10 pb-40 pl-10">
       <text class="mt-10"
         >globalProperties string: {{ globalPropertiesStr }}</text
       >
@@ -784,12 +760,6 @@ export default {
 	},
 }
 </script>
-
-<style>
-.uni-padding-wrap {
-  padding: 10px 10px 40px 10px;
-}
-</style>
 
 ```
 
@@ -1119,12 +1089,12 @@ export default {
     <view>---</view>
     <test-props id="btn1" :numList="numList" :objList='objList' @buttonclick='onButtonClick'
       @numListChange='numListChange' @objListChange='objListChange'
-      style="width: 80px;height: 30px;background-color: lightblue"></test-props>
-    <view style="flex-direction: row ;">
+      class="w-80 h-30 bg-add8e6"></test-props>
+    <view class="flex-row">
       <text>isNumListValid: </text>
       <text id='isNumListValid'>{{isNumListValid}}</text>
     </view>
-    <view style="flex-direction: row ;">
+    <view class="flex-row">
       <text>isObjListValid: </text>
       <text id='isObjListValid'>{{isObjListValid}}</text>
     </view>
@@ -1264,12 +1234,12 @@ export default {
     <view>---</view>
     <test-props id="btn1" :numList="numList" :objList='objList' @buttonclick='onButtonClick'
       @numListChange='numListChange' @objListChange='objListChange'
-      style="width: 80px;height: 30px;background-color: lightblue"></test-props>
-    <view style="flex-direction: row ;">
+      class="w-80 h-30 bg-add8e6"></test-props>
+    <view class="flex-row">
       <text>isNumListValid: </text>
       <text id='isNumListValid'>{{isNumListValid}}</text>
     </view>
-    <view style="flex-direction: row ;">
+    <view class="flex-row">
       <text>isObjListValid: </text>
       <text id='isObjListValid'>{{isObjListValid}}</text>
     </view>
@@ -1422,7 +1392,7 @@ ComponentPublicInstance
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <child ref="childRef" class="parent-child" />
   </view>
 </template>
@@ -1456,7 +1426,7 @@ ComponentPublicInstance
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <child ref='child' class="parent-child" />
   </view>
 </template>
@@ -1609,6 +1579,8 @@ export default {
 import { onAppShow } from '@dcloudio/uni-app'
 import { state, setLifeCycleNum } from '@/store/index.uts'
 
+defineOptions({ styleIsolation: 'app' })
+
 onAppShow((onShowOptions: OnShowOptions) => {
 	console.log('组合式组件监听应用生命周期 => onAppShow => onShowOptions', onShowOptions)
 	// 自动化测试
@@ -1629,7 +1601,7 @@ const triggerError = () => {
 </script>
 
 <template>
-	<text id="trigger-monitor-app-error" style="margin: 10px 0;" @click="triggerError">组件监听应用生命周期（组合式 API）</text>
+	<text id="trigger-monitor-app-error" class="mt-10 mr-0 mb-10 ml-0" @click="triggerError">组件监听应用生命周期（组合式 API）</text>
 </template>
 
 ```
@@ -1640,6 +1612,7 @@ const triggerError = () => {
 <script lang="uts">
 import { state, setLifeCycleNum } from '@/store/index.uts'
 export default {
+	styleIsolation: 'app',
 	setup() {
 		onAppShow((onShowOptions: OnShowOptions) => {
 			console.log('选项式组件监听应用生命周期 => onAppShow => onShowOptions', onShowOptions)
@@ -1666,7 +1639,7 @@ export default {
 </script>
 
 <template>
-	<text id="trigger-monitor-app-error" style="margin: 10px 0;" @click="triggerError">组件监听应用生命周期（选项式 API）</text>
+	<text id="trigger-monitor-app-error" class="mt-10 mr-0 mb-10 ml-0" @click="triggerError">组件监听应用生命周期（选项式 API）</text>
 </template>
 
 ```
@@ -1704,6 +1677,8 @@ export default {
 
 ```vue
 <script lang="uts" setup>
+	defineOptions({ styleIsolation: 'app' })
+
 	import { state, setLifeCycleNum } from '@/store/index.uts'
 
 	const isScrolled = ref(false)
@@ -1769,18 +1744,6 @@ export default {
 		</view>
 	</view>
 </template>
-
-<style>
-	.mb-10{
-		margin-bottom: 10px;
-	}
-	.justify-between{
-		justify-content: space-between;
-	}
-	.flex-row{
-		flex-direction: row;
-	}
-</style>
 ```
 
 > 选项式 API
@@ -1790,6 +1753,7 @@ export default {
 	import { state, setLifeCycleNum } from '@/store/index.uts'
 
 	export default {
+		styleIsolation: 'app',
 		setup() {
 			const isScrolled = ref(false)
 			
@@ -1860,18 +1824,6 @@ export default {
 		</view>
 	</view>
 </template>
-
-<style>
-	.mb-10{
-		margin-bottom: 10px;
-	}
-	.justify-between{
-		justify-content: space-between;
-	}
-	.flex-row{
-		flex-direction: row;
-	}
-</style>
 ```
 
 :::
@@ -1946,6 +1898,8 @@ export default {
 </template>
 
 <script setup lang='uts'>
+defineOptions({ styleIsolation: 'app' })
+
 import { state, setLifeCycleNum } from '@/store/index.uts'
 
 const title = ref('component for composition API lifecycle test')
@@ -2078,6 +2032,7 @@ const updateTitle = () => {
 <script lang='uts'>
   import { state, setLifeCycleNum } from '@/store/index.uts';
   export default {
+    styleIsolation: 'app',
     name: 'OptionsAPIComponentLifecycle',
     data() {
       return {
@@ -2163,7 +2118,7 @@ const updateTitle = () => {
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <array-literal class="array-literal-component" :str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
     <object-type class="object-type-component" str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
     <same-name-prop-default-value class="same-name-prop-default-value-component" />
@@ -2197,7 +2152,7 @@ const updateTitle = () => {
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <array-literal class="array-literal-component" :str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
     <object-type class="object-type-component" str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
     <same-name-prop-default-value class="same-name-prop-default-value-component" />
@@ -2367,16 +2322,16 @@ uni-app x 编译到小程序时，`v-bind="$attrs"` 的显式透传范围存在�
 
 ```vue
 <template>
-  <view class="page">
-    <view class="row">
+  <view class="p-15">
+    <view class="flex flex-row justify-between mb-10">
       <text>NodeRef: </text>
       <text ref="nodeRef">{{ dataInfo.existRef }}</text>
     </view>
-    <view class="row">
+    <view class="flex flex-row justify-between mb-10">
       <text>childRef:</text>
       <text>{{ dataInfo.existChildRef }}</text>
     </view>
-    <view class="row">
+    <view class="flex flex-row justify-between mb-10">
       <text>existTextItems:</text>
       <text>{{ dataInfo.existTextItems }}</text>
     </view>
@@ -2387,13 +2342,13 @@ uni-app x 编译到小程序时，`v-bind="$attrs"` 的显式透传范围存在�
     </view>
     <child class="mt-10" ref="childRef">ComponentRef</child>
     <view class="mt-10">
-      <text class="section-title">getCurrentInstance() + $refs</text>
+      <text class="mb-10">getCurrentInstance() + $refs</text>
     </view>
-    <view class="row">
+    <view class="flex flex-row justify-between mb-10">
       <text>$refs 获取 nodeRef:</text>
       <text>{{ dataInfo.existRefByRefs }}</text>
     </view>
-    <view class="row">
+    <view class="flex flex-row justify-between mb-10">
       <text>$refs 获取 childRef:</text>
       <text>{{ dataInfo.existChildRefByRefs }}</text>
     </view>
@@ -2441,33 +2396,22 @@ defineExpose({
 })
 </script>
 
-<style>
-.row {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-.section-title {
-  margin-bottom: 10px;
-}
-</style>
 ```
 
 > uni-app x（选项式）
 
 ```vue
 <template>
-  <view class="page">
-    <view class="row">
+  <view class="p-15">
+    <view class="flex flex-row justify-between mb-10">
       <text>NodeRef: </text>
       <text ref="node">{{ dataInfo.existRef }}</text>
     </view>
-    <view class="row">
+    <view class="flex flex-row justify-between mb-10">
       <text>childRef:</text>
       <text>{{ dataInfo.existChildRef }}</text>
     </view>
-    <view class="row">
+    <view class="flex flex-row justify-between mb-10">
       <text>existTextItems:</text>
       <text>{{ dataInfo.existTextItems }}</text>
     </view>
@@ -2511,15 +2455,6 @@ export default {
   }
 }
 </script>
-
-<style>
-.row {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-</style>
 
 ```
 

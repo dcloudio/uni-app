@@ -42,7 +42,7 @@ const render = ():VNode => {
   list.value.forEach((item) => {
     textList.push(h('text', { class: 'text-item' }, item))
   })
-  return h('view', { class: 'page' }, [
+  return h('view', { class: 'p-15' }, [
     h(CompForHFunctionWithSlot, {}, () : VNode[] => [h('text', { class: 'comp-slot' }, 'component slot')]),
     h(CompForHFunction, { msg: msg.value }),
     h('text', msgProps, msg.value),
@@ -54,7 +54,7 @@ const render = ():VNode => {
     h(
       'button',
       {
-        class: 'mt-10 btn',
+        class: 'mt-10 btn text-f00',
         type: 'primary',
         onClick: () => {
           msg.value = 'new msg'
@@ -71,12 +71,6 @@ const render = ():VNode => {
 </script>
 
 <template><render /></template>
-
-<style>
-.btn {
-  color: red;
-}
-</style>
 
 ```
 
@@ -100,7 +94,7 @@ export default {
     this.list.forEach((item) => {
       textList.push(h('text', { class: 'text-item' }, item))
     })
-    return h('view', { class: 'page' }, [
+    return h('view', { class: 'p-15' }, [
       h(CompForHFunctionWithSlot, {}, () : VNode[] => [h('text', { class: 'comp-slot' }, 'component slot')]),
       h(CompForHFunction, { msg: this.msg }),
       h('text', msgProps, this.msg),
@@ -112,7 +106,7 @@ export default {
       h(
         'button',
         {
-          class: 'mt-10 btn',
+          class: 'mt-10 btn text-f00',
           type: 'primary',
           onClick: () => {
             this.msg = 'new msg'
@@ -126,11 +120,6 @@ export default {
 }
 </script>
 
-<style>
-.btn {
-  color: red;
-}
-</style>
 ```
 :::
 
@@ -154,7 +143,7 @@ export default {
 > 组合式 API
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <view class="mb-10 flex flex-row justify-between">
       <text>merged class</text>
       <text id="merged-class">{{mergedProps['class']}}</text>
@@ -192,7 +181,7 @@ export default {
 > 选项式 API
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <view class="mb-10 flex flex-row justify-between">
       <text>merged class</text>
       <text id="merged-class">{{mergedProps['class']}}</text>
@@ -256,25 +245,16 @@ export default {
 <script setup lang="uts">
   defineOptions({
     render() : VNode {
-      const originalVNode = h('view', { class: 'original' }, [
+      const originalVNode = h('view', { class: 'original bg-f00' }, [
         h('text', {}, 'Hello World'),
       ])
-      const clonedVNode = cloneVNode(originalVNode, { class: 'cloned' })
+      const clonedVNode = cloneVNode(originalVNode, { class: 'cloned bg-0f0' })
 
       return h('view', { class: 'flex flex-col' }, [originalVNode, clonedVNode])
     }
   })
 </script>
 
-<style>
-  .original {
-    background-color: #ff0000;
-  }
-
-  .cloned {
-    background-color: #00ff00;
-  }
-</style>
 ```
 
 > 选项式 API
@@ -282,25 +262,16 @@ export default {
 <script lang="uts">
   export default {
     render() : VNode {
-      const originalVNode = h('view', { class: 'original' }, [
+      const originalVNode = h('view', { class: 'original bg-f00' }, [
         h('text', {}, 'Hello World'),
       ])
-      const clonedVNode = cloneVNode(originalVNode, { class: 'cloned' })
+      const clonedVNode = cloneVNode(originalVNode, { class: 'cloned bg-0f0' })
 
       return h('view', { class: 'flex flex-col' }, [originalVNode, clonedVNode])
     }
   }
 </script>
 
-<style>
-  .original {
-    background-color: #ff0000;
-  }
-
-  .cloned {
-    background-color: #00ff00;
-  }
-</style>
 ```
 :::
 
@@ -315,7 +286,7 @@ export default {
 > 组合式 API
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <view class="mb-10 flex flex-row justify-between">
       <text>isVNode VNode:</text>
       <text id="is-vnode-vnode">{{ isVNodeVNode }}</text>
@@ -339,7 +310,7 @@ export default {
 > 选项式 API
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <view class="mb-10 flex flex-row justify-between">
       <text>isVNode VNode:</text>
       <text id="is-vnode-vnode">{{ isVNodeVNode }}</text>
@@ -444,7 +415,7 @@ export default {
           instance.$data['isMounted'] = true
         }
       } as Directive
-      return h('view', { class: 'page' }, [
+      return h('view', { class: 'p-15' }, [
         withDirectives(h('text', 'Hello World'), [[customDirective]]),
         h('view', { class: 'mt-10 flex flex-row justify-between' }, [
           h('text', {}, `isMounted:`),
@@ -474,7 +445,7 @@ export default {
           instance.$data['isMounted'] = true
         }
       } as Directive
-      return h('view', { class: 'page' }, [
+      return h('view', { class: 'p-15' }, [
         withDirectives(h('text', 'Hello World'), [[customDirective]]),
         h('view', { class: 'mt-10 flex flex-row justify-between' }, [
           h('text', {}, `isMounted:`),

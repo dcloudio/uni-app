@@ -424,7 +424,7 @@ Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 3.9; iOS: 4.11; Ha
 
 ```vue
 <template>
-  <view class="page container">
+  <view class="p-15">
     <text>测试 onBackPress 生命周期返回 true</text>
     <button class="mt-10" @click="goChildPage">
       跳转子页，测试返回值为 false
@@ -457,7 +457,7 @@ Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 3.9; iOS: 4.11; Ha
 
 ```vue
 <template>
-  <view class="page container">
+  <view class="p-15">
     <text>测试 onBackPress 生命周期返回 true</text>
     <button class='mt-10' @click="goChildPage">跳转子页，测试返回值为 false</button>
   </view>
@@ -599,9 +599,9 @@ Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; Harmony
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1" :bounces="false">
+  <scroll-view class="flex-1" :bounces="false">
     <!-- #endif -->
-    <view class="page container">
+    <view class="p-15 h-2200">
       <text>page lifecycle 组合式 API</text>
       <view class="flex flex-row justify-between mt-10">
         <text>onLoad 触发：</text>
@@ -640,7 +640,7 @@ Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; Harmony
         <text>{{ isOnResizeTriggered }}</text>
       </view>
       <view class="mt-10">
-        <MonitorAppLifecycleComposition class="monitor-app-lifecycle" />
+        <MonitorAppLifecycleComposition />
       </view>
       <view class="mt-10">
         <MonitorPageLifecycleComposition />
@@ -803,12 +803,6 @@ defineExpose({
   // #endif
 })
 </script>
-
-<style>
-.container {
-  height: 2200px;
-}
-</style>
 
 ```
 

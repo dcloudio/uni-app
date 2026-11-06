@@ -11,7 +11,7 @@
 | app.mount() | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 |
 | app.unmount() | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 |
 | app.component() | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 |
-| app.use() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.99; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x |
+| app.use() | Web: 4.0; 微信小程序: 4.41; Android: 3.99; iOS: 4.11; HarmonyOS: 4.61 |
 | app.mixin() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.99; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x |
 | app.provide() | Web: 4.0; 微信小程序: 4.41; Android: 3.99; iOS: 4.11; HarmonyOS: 4.61 |
 | app.version | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 |
@@ -52,7 +52,7 @@ export function createApp() {
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <CompForAppComponent class="component-for-app-component" />
   </view>
 </template>
@@ -74,7 +74,7 @@ export function createApp() {
 > 组合式 API
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <CompForAppUse class="component-for-app-use" />
   </view>
 </template>
@@ -88,7 +88,7 @@ import CompForAppUse from '@/components/CompForAppUse.uvue'
 > 选项式 API
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <CompForAppUse class="component-for-app-use" />
   </view>
 </template>
@@ -142,9 +142,9 @@ export function createApp() {
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1;">
+  <scroll-view class="flex-1">
     <!-- #endif -->
-    <view class="uni-padding-wrap">
+    <view class="pt-10 pr-10 pb-40 pl-10">
       <text class="mt-10"
         >globalProperties string: {{ globalPropertiesStr }}</text
       >
@@ -274,21 +274,15 @@ defineExpose({
 })
 </script>
 
-<style>
-.uni-padding-wrap {
-  padding: 10px 10px 40px 10px;
-}
-</style>
-
 ```
 
 > 选项式 API
 ```vue
 <template>
   <!-- #ifdef APP -->
-  <scroll-view style="flex: 1;">
+  <scroll-view class="flex-1">
     <!-- #endif -->
-    <view class="uni-padding-wrap">
+    <view class="pt-10 pr-10 pb-40 pl-10">
       <text class="mt-10"
         >globalProperties string: {{ globalPropertiesStr }}</text
       >
@@ -435,12 +429,6 @@ export default {
 }
 </script>
 
-<style>
-.uni-padding-wrap {
-  padding: 10px 10px 40px 10px;
-}
-</style>
-
 ```
 :::
 
@@ -558,25 +546,9 @@ uni-app x 新增了 [onLastPageBackPress](../collocation/App.md#applifecycle) �
 
 <style>
   @import './styles/common.css';
-
-  .list-item-text {
-    line-height: 36px;
-  }
-
-  .split-title {
-    margin: 20px 0 5px;
-    padding: 5px 0;
-    border-bottom: 1px solid #dfdfdf;
-  }
-
-  .btn-view {
-    margin: 10px 0;
-    padding: 10px;
-    border: 1px solid #dfdfdf;
-    border-radius: 3px;
-  }
 </style>
 <style>
+/* multiple-style-script 用例验证多个全局 style 的合并，保留此样式块。 */
 .text-red{
   color: red;
 }

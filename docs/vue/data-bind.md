@@ -27,7 +27,7 @@ vue的一大特色，就是可以定义一个响应式变量，通过模板绑�
 ::: preview https://hellouvue.dcloud.net.cn/#/pages/component-instance/data/data-composition
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <view class="flex justify-between flex-row mb-10">
       <text>str: </text>
       <text id="str">{{ str }}</text>
@@ -138,7 +138,7 @@ vue的一大特色，就是可以定义一个响应式变量，通过模板绑�
 ::: preview https://hellouvue.dcloud.net.cn/#/pages/reactivity/core/ref/ref
 ```vue
 <template>
-	<view class="page">
+	<view class="p-15">
 		<view class="flex justify-between flex-row mb-10">
 			<text>count:</text>
 			<text id="count">{{ count }}</text>
@@ -286,7 +286,7 @@ vue的一大特色，就是可以定义一个响应式变量，通过模板绑�
 ::: preview https://hellouvue.dcloud.net.cn/#/pages/reactivity/core/readonly/readonly
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <view class="flex justify-between flex-row mb-10">
       <text>data.str:</text>
       <text id="data-str">{{ data.str }}</text>
@@ -365,7 +365,7 @@ const updateReadonlyData = () => {
 ::: preview https://hellouvue.dcloud.net.cn/#/pages/component-instance/define-expose/define-expose
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <define-expose-foo ref="fooRef" />
     <view class="flex justify-between flex-row mt-10">
       <text>str from component Foo: </text>
@@ -418,7 +418,7 @@ data需要特殊类型时，通过 as 来转换。
 ::: preview https://hellouvue.dcloud.net.cn/#/pages/component-instance/data/data-options
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <view class="flex justify-between flex-row mb-10">
       <text>str: </text>
       <text id="str">{{ str }}</text>
@@ -531,7 +531,7 @@ data中的响应式变量，如需在script中使用，需通过 `this.xx` 的�
 > 组合式 API
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <template v-if="dataInfo.isShow">
       <text id="title">{{ title }}</text>
     </template>
@@ -539,9 +539,9 @@ data中的响应式变量，如需在script中使用，需通过 `this.xx` 的�
       <text>隐藏标题时显示</text>
     </template>
     <!-- vapor button 调整实现，自动化测试无法通过 innerText 获取文本内容，重构为 text  -->
-    <text class="mt-10 btn" id="show-botton" @click="handleShow">{{ dataInfo.isShow ? '点击隐藏' : '点击显示' }}</text>
+    <text class="mt-10 border-1 border-solid border-eee radius-4 text-center pt-8 pb-8" id="show-botton" @click="handleShow">{{ dataInfo.isShow ? '点击隐藏' : '点击显示' }}</text>
     <template v-for="(item, index) in list" :key="index">
-      <text :class="'item'">{{ index + 1 }}.{{ item.name }}</text>
+      <text :class="'item m-15 pt-4 pr-8 pb-4 pl-8 border-1 border-solid border-eee'">{{ index + 1 }}.{{ item.name }}</text>
     </template>
     <button @click="goMapStyle">跳转绑定 Map 类型 style 页面</button>
   </view>
@@ -583,35 +583,21 @@ defineExpose({
 })
 </script>
 
-<style>
-.btn{
-  border: 1px solid #eee;
-  border-radius: 4px;
-  text-align: center;
-  padding-top: 8px;
-  padding-bottom: 8px;
-}
-.item {
-  margin: 15px;
-  padding: 4px 8px;
-  border: #eee solid 1px;
-}
-</style>
 ```
 
 > 选项式 API
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <template v-if="dataInfo.isShow">
       <text id="title">{{ title }}</text>
     </template>
     <template v-else>
       <text>隐藏标题时显示</text>
     </template>
-    <text class="mt-10 btn" id="show-botton" @click="handleShow">{{ dataInfo.isShow ? '点击隐藏' : '点击显示' }}</text>
+    <text class="mt-10 border-1 border-solid border-eee radius-4 text-center pt-8 pb-8" id="show-botton" @click="handleShow">{{ dataInfo.isShow ? '点击隐藏' : '点击显示' }}</text>
     <template v-for="(item, index) in list" :key="index">
-      <text :class="'item'">{{ index + 1 }}.{{ item.name }}</text>
+      <text :class="'item m-15 pt-4 pr-8 pb-4 pl-8 border-1 border-solid border-eee'">{{ index + 1 }}.{{ item.name }}</text>
     </template>
     <button @click="goMapStyle">跳转绑定 Map 类型 style 页面</button>
   </view>
@@ -651,21 +637,6 @@ export default {
 }
 </script>
 
-<style>
-.btn{
-  border: 1px solid #eee;
-  border-radius: 4px;
-  text-align: center;
-  padding-top: 8px;
-  padding-bottom: 8px;
-}
-.item {
-  margin: 15px;
-  padding: 4px 8px;
-  border: #eee solid 1px;
-}
-</style>
-
 ```
 :::
 
@@ -689,9 +660,9 @@ export default {
 ```vue
 <template>
 <!-- #ifdef APP && !VUE3-VAPOR -->
-<scroll-view style="flex: 1">
+<scroll-view class="flex-1">
   <!-- #endif -->    
-  <view class="page">
+  <view class="p-15">
     <!-- v-bind attribute -->
     <button id="disabled-btn" class="mb-10" :disabled="true">
       :disabled true
@@ -709,7 +680,7 @@ export default {
     </view>
     <view id="bind-array-style" class="mb-10 p-10" :style="[dataInfo.backgroundColor, dataInfo.border]">
       <view>bind arr style</view>
-      <view class="my-10">{{ dataInfo.backgroundColor }}</view>
+      <view class="mt-10 mb-10">{{ dataInfo.backgroundColor }}</view>
       <view>{{ dataInfo.border }}</view>
     </view>
     <view class="mb-10 p-10">
@@ -738,7 +709,7 @@ export default {
     <Foo id="bindObj5" title="foo" v-bind="fooProps" />
     <!-- #endif -->
     <!-- v-bind in style -->
-    <!-- #ifdef WEB -->
+    <!-- #ifdef WEB || MP || (APP && VUE3-VAPOR) -->
     <view class="mb-10 v-bind-css"></view>
     <!-- #endif -->
   </view>
@@ -757,7 +728,7 @@ export default {
     border : string
     fooProps : FooProps
     vBindClassBackgroundColor : string,
-    vBindClassRpxHeight : string,
+    vBindClassHeight : string,
   }
 
   const dataInfo = reactive({
@@ -772,7 +743,7 @@ export default {
       } as FooPropsObj
     },
     vBindClassBackgroundColor: 'red',
-    vBindClassRpxHeight: '300rpx'
+    vBindClassHeight: '150px'
   } as DataInfo)
   
   const fooProps = reactive({
@@ -802,10 +773,10 @@ export default {
 </script>
 
 <style>
-  /* #ifdef WEB */
+  /* #ifdef WEB || MP || (APP && VUE3-VAPOR) */
   .v-bind-css {
     background-color: v-bind(dataInfo.vBindClassBackgroundColor);
-    height: v-bind(dataInfo.vBindClassRpxHeight);
+    height: v-bind(dataInfo.vBindClassHeight);
   }
   /* #endif */
 </style>
@@ -816,9 +787,9 @@ export default {
 ```vue
 <template>
 <!-- #ifdef APP -->
-<scroll-view style="flex: 1">
+<scroll-view class="flex-1">
   <!-- #endif -->
-  <view class="page">
+  <view class="p-15">
     <!-- v-bind attribute -->
     <button id="disabled-btn" class="mb-10" :disabled="true">:disabled true</button>
     <button id="v-bind-disabled-btn" class="mb-10" v-bind:disabled="false">v-bind:disabled false</button>
@@ -832,7 +803,7 @@ export default {
     </view>
     <view id="bind-array-style" class="mb-10 p-10" :style="[dataInfo.backgroundColor, dataInfo.border]">
       <view>bind arr style</view>
-      <view class="my-10">{{ dataInfo.backgroundColor }}</view>
+      <view class="mt-10 mb-10">{{ dataInfo.backgroundColor }}</view>
       <view>{{ dataInfo.border }}</view>
     </view>
     <view class="mb-10 p-10">
@@ -864,7 +835,7 @@ export default {
     <!-- #endif -->
     
     <!-- v-bind in style -->
-    <!-- #ifdef WEB -->
+    <!-- #ifdef WEB || MP -->
     <view class="mb-10 v-bind-css"></view>
     <!-- #endif -->
   </view>
@@ -883,7 +854,7 @@ export default {
     border : string
     fooProps : FooProps
     vBindClassBackgroundColor : string
-    vBindClassRpxHeight : string
+    vBindClassHeight : string
   }
 
   export default {
@@ -902,7 +873,7 @@ export default {
             } as FooPropsObj
           },
           vBindClassBackgroundColor: 'red',
-          vBindClassRpxHeight: '300rpx'
+          vBindClassHeight: '150px'
         } as DataInfo,
         fooProps:{
             title: 'foo title(json)',
@@ -928,10 +899,10 @@ export default {
 </script>
 
 <style>
-  /* #ifdef WEB */
+  /* #ifdef WEB || MP */
   .v-bind-css {
     background-color: v-bind(dataInfo.vBindClassBackgroundColor);
-    height: v-bind(dataInfo.vBindClassRpxHeight);
+    height: v-bind(dataInfo.vBindClassHeight);
   }
   /* #endif */
 </style>
@@ -951,7 +922,7 @@ export default {
 ::: preview https://hellouvue.dcloud.net.cn/#/pages/reactivity/core/ref/ref
 ```vue
 <template>
-	<view class="page">
+	<view class="p-15">
 		<view class="flex justify-between flex-row mb-10">
 			<text>count:</text>
 			<text id="count">{{ count }}</text>
