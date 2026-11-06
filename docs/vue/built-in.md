@@ -37,7 +37,7 @@
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <view class="flex flex-row justify-between mb-10">
       <text>v-txt for text:</text>
       <text id="v-text-text" v-text="vTextForText"></text>
@@ -61,7 +61,7 @@ const vTextForView = ref('v-text for view')
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <view class="flex flex-row justify-between mb-10">
       <text>v-txt for text:</text>
       <text id="v-text-text" v-text="vTextForText"></text>
@@ -110,7 +110,7 @@ export default {
 </template>
 
 <script setup lang="uts">
-const  html = '<p class="p" style="color: red;">hello world for composition API!</p>'
+const  html = '<p style="color: red;">hello world for composition API!</p>'
 </script>
 
 ```
@@ -126,7 +126,7 @@ const  html = '<p class="p" style="color: red;">hello world for composition API!
 export default {
   data() {
     return {
-      html: '<p class="p" style="color: red;">hello world for options API!</p>'
+      html: '<p style="color: red;">hello world for options API!</p>'
     }
   }
 }
@@ -149,13 +149,13 @@ export default {
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <button id="toggle-btn" @click="toggleShow">toggle show/hide</button>
     <text>点击上方按钮，切换下方 view 显示/隐藏</text>
     <text>show default true: {{dataInfo.showDefaultTrue}}</text>
-    <view class="mt-10 default-true" id="v-show-element-default-true" v-show="dataInfo.showDefaultTrue"></view>
+    <view class="flex bg-adff2f mt-10 w-100 h-50" id="v-show-element-default-true" v-show="dataInfo.showDefaultTrue"></view>
     <text>show default false: {{dataInfo.showDefaultFalse}}</text>
-    <view class="mt-10 default-false" id="v-show-element-default-false" v-show="dataInfo.showDefaultFalse"></view>
+    <view class="flex bg-faebd7 mt-10 w-100 h-50" id="v-show-element-default-false" v-show="dataInfo.showDefaultFalse"></view>
     <Foo v-show="dataInfo.showDefaultFalse" />
   </view>
 </template>
@@ -183,35 +183,19 @@ export default {
   })
 </script>
 
-<style>
-  .default-true,
-  .default-false {
-    display: flex;
-    width: 100px;
-    height: 50px;
-  }
-
-  .default-true {
-    background-color: greenyellow;
-  }
-
-  .default-false {
-    background-color: antiquewhite;
-  }
-</style>
 ```
 
 > 选项式 API
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <button id="toggle-btn" @click="toggleShow">toggle show/hide</button>
     <text>点击上方按钮，切换下方 view 显示/隐藏</text>
     <text>show default true: {{dataInfo.showDefaultTrue}}</text>
-    <view class="mt-10 default-true" id="v-show-element-default-true" v-show="dataInfo.showDefaultTrue"></view>
+    <view class="flex bg-adff2f mt-10 w-100 h-50" id="v-show-element-default-true" v-show="dataInfo.showDefaultTrue"></view>
     <text>show default false: {{dataInfo.showDefaultFalse}}</text>
-    <view class="mt-10 default-false" id="v-show-element-default-false" v-show="dataInfo.showDefaultFalse"></view>
+    <view class="flex bg-faebd7 mt-10 w-100 h-50" id="v-show-element-default-false" v-show="dataInfo.showDefaultFalse"></view>
     <Foo v-show="dataInfo.showDefaultFalse" />
   </view>
 </template>
@@ -243,22 +227,6 @@ export default {
   }
 </script>
 
-<style>
-  .default-true,
-  .default-false {
-    display: flex;
-    width: 100px;
-    height: 50px;
-  }
-
-  .default-true {
-    background-color: greenyellow;
-  }
-
-  .default-false {
-    background-color: antiquewhite;
-  }
-</style>
 ```
 
 :::
@@ -282,9 +250,9 @@ export default {
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
+  <scroll-view class="flex-1">
   <!-- #endif -->
-      <view class="page">
+      <view class="p-15">
         <view class="mb-10 flex justify-between flex-row">
           <text>v-if</text>
           <text id="v-if-show" v-if="show">show</text>
@@ -305,13 +273,13 @@ export default {
 
         <!-- 测试标题 -->
         <view class="mt-10">
-          <text class="section-title">多层嵌套v-if测试</text>
+          <text class="fs-16 fw-bold mb-10">多层嵌套v-if测试</text>
         </view>
 
         <!-- view 普通版本 -->
         <view class="mt-10">
-          <text class="test-label">1. view 普通版本 </text>
-          <view class="test-item" v-if="viewNormalChild1">
+          <text class="fs-14 text-666 mb-5">1. view 普通版本 </text>
+          <view class="bg-f5f5f5 p-10 radius-5" v-if="viewNormalChild1">
             <view v-if="viewNormalChild1" id="view-normal-child1">
               <text>view二层嵌套内容</text>
               <view v-if="viewNormalChild2" id="view-normal-child2">
@@ -325,8 +293,8 @@ export default {
 
         <!-- view 拍平版本 -->
         <view class="mt-10">
-          <text class="test-label">2. view 拍平版本 </text>
-          <view class="test-item" v-if="viewFlattenChild1">
+          <text class="fs-14 text-666 mb-5">2. view 拍平版本 </text>
+          <view class="bg-f5f5f5 p-10 radius-5" v-if="viewFlattenChild1">
             <view flatten v-if="viewFlattenChild1" id="view-flatten-child1">
               <view flatten v-if="viewFlattenChild1">
                 <text>view拍平三层嵌套内容（应该能消失）</text>
@@ -340,8 +308,8 @@ export default {
 
         <!-- text 普通版本 -->
         <view class="mt-10">
-          <text class="test-label">3. text 普通版本 </text>
-          <view class="test-item">
+          <text class="fs-14 text-666 mb-5">3. text 普通版本 </text>
+          <view class="bg-f5f5f5 p-10 radius-5">
             <text v-if="textNormalChild1">
               <text v-if="textNormalChild1" id="text-normal-child1">text二层嵌套内容（应该能消失）</text>
             </text>
@@ -353,8 +321,8 @@ export default {
 
         <!-- text 拍平版本 -->
         <view class="mt-10">
-          <text class="test-label">4. text 拍平版本 </text>
-          <view flatten class="test-item">
+          <text class="fs-14 text-666 mb-5">4. text 拍平版本 </text>
+          <view flatten class="bg-f5f5f5 p-10 radius-5">
             <text flatten v-if="textFlattenChild1">
               <text flatten v-if="textFlattenChild1" id="text-flatten-child1">text拍平二层嵌套内容（应该能消失）</text>
             </text>
@@ -366,9 +334,9 @@ export default {
 
         <!-- image 普通版本 -->
         <view class="mt-10">
-          <text class="test-label">5. image 普通版本 </text>
-          <view class="test-item">
-              <image v-if="imageNormalChild1" id="image-normal-child1" src="/static/logo.png" class="test-image"></image>
+          <text class="fs-14 text-666 mb-5">5. image 普通版本 </text>
+          <view class="bg-f5f5f5 p-10 radius-5">
+              <image v-if="imageNormalChild1" id="image-normal-child1" src="/static/logo.png" class="h-50 test-image"></image>
           </view>
           <button id="toggle-image-normal-child1" @click="imageNormalChild1 = !imageNormalChild1">
             切换显示
@@ -377,9 +345,9 @@ export default {
 
         <!-- image 拍平版本 -->
         <view class="mt-10">
-          <text class="test-label">6. image 拍平版本（多层嵌套v-if）</text>
-          <view flatten class="test-item">
-              <image flatten v-if="imageFlattenChild1" id="image-flatten-child1" src="/static/logo.png" class="test-image"></image>
+          <text class="fs-14 text-666 mb-5">6. image 拍平版本（多层嵌套v-if）</text>
+          <view flatten class="bg-f5f5f5 p-10 radius-5">
+              <image flatten v-if="imageFlattenChild1" id="image-flatten-child1" src="/static/logo.png" class="h-50 test-image"></image>
           </view>
           <button id="toggle-image-flatten-child1" @click="imageFlattenChild1 = !imageFlattenChild1">
             切换显示
@@ -388,9 +356,9 @@ export default {
         
         <!-- scroll-view：动态切换 -->
         <view class="mt-10">
-          <text class="test-label">8. scroll-view（动态v-if）</text>
-          <view class="test-item">
-            <scroll-view v-if="scrollViewChild1" id="scroll-view-child1" class="scroll-view-test">
+          <text class="fs-14 text-666 mb-5">8. scroll-view（动态v-if）</text>
+          <view class="bg-f5f5f5 p-10 radius-5">
+            <scroll-view v-if="scrollViewChild1" id="scroll-view-child1" class="p-10 scroll-view-test">
               <text>scroll-view内容1（应该能消失）</text>
               <view><text>scroll-view内容2（应该能消失）</text></view>
             </scroll-view>
@@ -402,8 +370,8 @@ export default {
 
         <!-- 自定义 child 组件 -->
         <view class="mt-10">
-          <text class="test-label">9. child 组件（子child动态v-if普通版本➕拍平版本）</text>
-          <view class="test-item">
+          <text class="fs-14 text-666 mb-5">9. child 组件（子child动态v-if普通版本➕拍平版本）</text>
+          <view class="bg-f5f5f5 p-10 radius-5">
             <child v-if="childComponent1" id="child-component1"></child>
             <view flatten>
                 <child v-if="childComponent1" id="child-component2" flatten></child>
@@ -456,33 +424,13 @@ const changeNum = () => {
 </script>
 
 <style>
-.section-title {
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-.test-label {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 5px;
-}
-
-.test-item {
-  padding: 10px;
-  background-color: #f5f5f5;
-  border-radius: 5px;
-}
-
 .test-image {
   width: 50px;
-  height: 50px;
 }
 
 .scroll-view-test {
   height: 100px;
   background-color: #e0e0e0;
-  padding: 10px;
 }
 </style>
 
@@ -492,7 +440,7 @@ const changeNum = () => {
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <view class="mb-10 flex justify-between flex-row">
       <text>v-if</text>
       <text id="v-if-show" v-if="show">show</text>
@@ -569,10 +517,10 @@ export default {
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
+  <scroll-view class="flex-1">
     <!-- #endif -->
-    <view class="page">
-      <text class="bold mb-10">v-for number</text>
+    <view class="p-15">
+      <text class="fw-bold mb-10">v-for number</text>
       <view class="mb-10" v-for="item in 3" :key="item">
         <text :id="`number-${item}`">{{ item }}</text>
       </view>
@@ -581,7 +529,7 @@ export default {
         <text :id="`uts-number-${item}`">{{ item }}</text>
       </view>
 
-      <view class="bold mb-10">v-for object</view>
+      <view class="fw-bold mb-10">v-for object</view>
       <view
         v-for="(value, key) in object"
         :key="key"
@@ -590,7 +538,7 @@ export default {
         <text :id="value">{{ value }}</text>
       </view>
 
-      <view class="bold mb-10">v-for & v-if list items</view>
+      <view class="fw-bold mb-10">v-for & v-if list items</view>
       <view
         id="v-for-v-if-list-items"
         v-for="item in listItems"
@@ -616,7 +564,7 @@ export default {
         </template>
       </view>
 
-      <view class="bold mb-10">v-for & v-show list items</view>
+      <view class="fw-bold mb-10">v-for & v-show list items</view>
       <view
         id="v-for-v-if-list-items"
         v-for="item in listItems"
@@ -652,7 +600,7 @@ export default {
         <text :id="`set-value-${index + 1}`">{{ item }}</text>
       </view>
 
-      <view class="bold mb-10">v-for UTSJSONObject</view>
+      <view class="fw-bold mb-10">v-for UTSJSONObject</view>
       <view
         v-for="(value, key) in utsJSONObject"
         :key="key"
@@ -729,10 +677,10 @@ const utsNumber = JSON.parse("3") as number
 ```vue
 <template>
   <!-- #ifdef APP -->
-  <scroll-view style="flex: 1">
+  <scroll-view class="flex-1">
     <!-- #endif -->
-    <view class="page">
-      <text class="bold mb-10">v-for number</text>
+    <view class="p-15">
+      <text class="fw-bold mb-10">v-for number</text>
       <view class="mb-10" v-for="item in 3" :key="item">
         <text :id="`number-${item}`">{{ item }}</text>
       </view>
@@ -741,7 +689,7 @@ const utsNumber = JSON.parse("3") as number
         <text :id="`uts-number-${item}`">{{ item }}</text>
       </view>
 
-      <view class="bold mb-10">v-for object</view>
+      <view class="fw-bold mb-10">v-for object</view>
       <view
         v-for="(value, key) in object"
         :key="key"
@@ -750,7 +698,7 @@ const utsNumber = JSON.parse("3") as number
         <text :id="value">{{ value }}</text>
       </view>
 
-      <view class="bold mb-10">v-for & v-if list items</view>
+      <view class="fw-bold mb-10">v-for & v-if list items</view>
       <view
         id="v-for-v-if-list-items"
         v-for="item in listItems"
@@ -776,7 +724,7 @@ const utsNumber = JSON.parse("3") as number
         </template>
       </view>
 
-      <view class="bold mb-10">v-for & v-show list items</view>
+      <view class="fw-bold mb-10">v-for & v-show list items</view>
       <view
         id="v-for-v-show-list-items"
         v-for="item in listItems"
@@ -812,7 +760,7 @@ const utsNumber = JSON.parse("3") as number
         <text :id="`set-value-${index + 1}`">{{ item }}</text>
       </view>
 
-      <view class="bold mb-10">v-for UTSJSONObject</view>
+      <view class="fw-bold mb-10">v-for UTSJSONObject</view>
       <view
         v-for="(value, key) in utsJSONObject"
         :key="key"
@@ -912,8 +860,8 @@ export default {
 
 ```vue
 <template>
-  <view class="page">
-    <text class="bold mb-10">下方按钮点击累加 count</text>
+  <view class="p-15">
+    <text class="fw-bold mb-10">下方按钮点击累加 count</text>
     <view class="flex justify-between flex-row mb-10">
       <text>count:</text>
       <text id="count">{{ count }}</text>
@@ -990,8 +938,8 @@ defineExpose({
 
 ```vue
 <template>
-  <view class="page">
-    <text class="bold mb-10">下方按钮点击累加 count</text>
+  <view class="p-15">
+    <text class="fw-bold mb-10">下方按钮点击累加 count</text>
     <view class="flex justify-between flex-row mb-10">
       <text>count:</text>
       <text id="count">{{ count }}</text>
@@ -1095,9 +1043,9 @@ export default {
 ```vue
 <template>
 <!-- #ifdef APP && !VUE3-VAPOR -->
-<scroll-view style="flex: 1">
+<scroll-view class="flex-1">
   <!-- #endif -->    
-  <view class="page">
+  <view class="p-15">
     <!-- v-bind attribute -->
     <button id="disabled-btn" class="mb-10" :disabled="true">
       :disabled true
@@ -1115,7 +1063,7 @@ export default {
     </view>
     <view id="bind-array-style" class="mb-10 p-10" :style="[dataInfo.backgroundColor, dataInfo.border]">
       <view>bind arr style</view>
-      <view class="my-10">{{ dataInfo.backgroundColor }}</view>
+      <view class="mt-10 mb-10">{{ dataInfo.backgroundColor }}</view>
       <view>{{ dataInfo.border }}</view>
     </view>
     <view class="mb-10 p-10">
@@ -1144,7 +1092,7 @@ export default {
     <Foo id="bindObj5" title="foo" v-bind="fooProps" />
     <!-- #endif -->
     <!-- v-bind in style -->
-    <!-- #ifdef WEB -->
+    <!-- #ifdef WEB || MP || (APP && VUE3-VAPOR) -->
     <view class="mb-10 v-bind-css"></view>
     <!-- #endif -->
   </view>
@@ -1163,7 +1111,7 @@ export default {
     border : string
     fooProps : FooProps
     vBindClassBackgroundColor : string,
-    vBindClassRpxHeight : string,
+    vBindClassHeight : string,
   }
 
   const dataInfo = reactive({
@@ -1178,7 +1126,7 @@ export default {
       } as FooPropsObj
     },
     vBindClassBackgroundColor: 'red',
-    vBindClassRpxHeight: '300rpx'
+    vBindClassHeight: '150px'
   } as DataInfo)
   
   const fooProps = reactive({
@@ -1208,10 +1156,10 @@ export default {
 </script>
 
 <style>
-  /* #ifdef WEB */
+  /* #ifdef WEB || MP || (APP && VUE3-VAPOR) */
   .v-bind-css {
     background-color: v-bind(dataInfo.vBindClassBackgroundColor);
-    height: v-bind(dataInfo.vBindClassRpxHeight);
+    height: v-bind(dataInfo.vBindClassHeight);
   }
   /* #endif */
 </style>
@@ -1223,9 +1171,9 @@ export default {
 ```vue
 <template>
 <!-- #ifdef APP -->
-<scroll-view style="flex: 1">
+<scroll-view class="flex-1">
   <!-- #endif -->
-  <view class="page">
+  <view class="p-15">
     <!-- v-bind attribute -->
     <button id="disabled-btn" class="mb-10" :disabled="true">:disabled true</button>
     <button id="v-bind-disabled-btn" class="mb-10" v-bind:disabled="false">v-bind:disabled false</button>
@@ -1239,7 +1187,7 @@ export default {
     </view>
     <view id="bind-array-style" class="mb-10 p-10" :style="[dataInfo.backgroundColor, dataInfo.border]">
       <view>bind arr style</view>
-      <view class="my-10">{{ dataInfo.backgroundColor }}</view>
+      <view class="mt-10 mb-10">{{ dataInfo.backgroundColor }}</view>
       <view>{{ dataInfo.border }}</view>
     </view>
     <view class="mb-10 p-10">
@@ -1271,7 +1219,7 @@ export default {
     <!-- #endif -->
     
     <!-- v-bind in style -->
-    <!-- #ifdef WEB -->
+    <!-- #ifdef WEB || MP -->
     <view class="mb-10 v-bind-css"></view>
     <!-- #endif -->
   </view>
@@ -1290,7 +1238,7 @@ export default {
     border : string
     fooProps : FooProps
     vBindClassBackgroundColor : string
-    vBindClassRpxHeight : string
+    vBindClassHeight : string
   }
 
   export default {
@@ -1309,7 +1257,7 @@ export default {
             } as FooPropsObj
           },
           vBindClassBackgroundColor: 'red',
-          vBindClassRpxHeight: '300rpx'
+          vBindClassHeight: '150px'
         } as DataInfo,
         fooProps:{
             title: 'foo title(json)',
@@ -1335,10 +1283,10 @@ export default {
 </script>
 
 <style>
-  /* #ifdef WEB */
+  /* #ifdef WEB || MP */
   .v-bind-css {
     background-color: v-bind(dataInfo.vBindClassBackgroundColor);
-    height: v-bind(dataInfo.vBindClassRpxHeight);
+    height: v-bind(dataInfo.vBindClassHeight);
   }
   /* #endif */
 </style>
@@ -1370,7 +1318,35 @@ export default {
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
+    <!-- #ifdef APP && VUE3-VAPOR -->
+    <view id="model-modifiers-outside" class="mb-10">
+      <text>v-model modifiers</text>
+    </view>
+    <input class="mb-10 h-40 border-1 border-solid border-ccc radius-4 pt-0 pr-10 pb-0 pl-10" id="model-num" v-model.number="num" type="text" placeholder="v-model.number" />
+    <view class="mb-10 flex justify-between flex-row">
+      <text>typeof num:</text>
+      <text id="typeof-num">{{ typeof num }}</text>
+    </view>
+    <view class="mb-10 flex justify-between flex-row">
+      <text>num:</text>
+      <text id="num-value">{{ num }}</text>
+    </view>
+    <input class="mb-10 h-40 border-1 border-solid border-ccc radius-4 pt-0 pr-10 pb-0 pl-10" id="model-str-trim" v-model.trim="strForTrim" placeholder="v-model.trim" />
+    <view class="mb-10 flex justify-between flex-row">
+      <text>str for trim:</text>
+      <text id="str-trim">{{ JSON.stringify(strForTrim) }}</text>
+    </view>
+    <view class="mb-10 flex justify-between flex-row">
+      <text>str for trim length:</text>
+      <text id="str-length">{{ strForTrim.length }}</text>
+    </view>
+    <input class="mb-10 h-40 border-1 border-solid border-ccc radius-4 pt-0 pr-10 pb-0 pl-10" id="model-str-lazy" v-model.lazy="strForLazy" type="text" placeholder="v-model.lazy" />
+    <view class="mb-10 flex justify-between flex-row">
+      <text>str for lazy:</text>
+      <text id="str-lazy">{{ strForLazy }}</text>
+    </view>
+    <!-- #endif -->
     <Foo
       v-model="str"
       v-model:msg="msg"
@@ -1381,10 +1357,10 @@ export default {
       @update:modelValue="handleModelValueUpdate"
       @update:msg="handleModelMsgUpdate"
        />
-    <input class="mb-10 input" id="model-value-input" v-model="str" @input="onInput" />
-    <input class="mb-10 input" id="model-msg-input" v-model="msg" />
-    <input class="mb-10 input" id="model-uts-obj-value-input" v-model="utsObj['modelValue']" />
-    <input class="mb-10 input" id="model-type-obj-value-input" v-model="typeObj.modelValue" />
+    <input class="mb-10 h-40 border-1 border-solid border-ccc radius-4 pt-0 pr-10 pb-0 pl-10" id="model-value-input" v-model="str" @input="onInput" />
+    <input class="mb-10 h-40 border-1 border-solid border-ccc radius-4 pt-0 pr-10 pb-0 pl-10" id="model-msg-input" v-model="msg" />
+    <input class="mb-10 h-40 border-1 border-solid border-ccc radius-4 pt-0 pr-10 pb-0 pl-10" id="model-uts-obj-value-input" v-model="utsObj['modelValue']" />
+    <input class="mb-10 h-40 border-1 border-solid border-ccc radius-4 pt-0 pr-10 pb-0 pl-10" id="model-type-obj-value-input" v-model="typeObj.modelValue" />
     <view class="mb-10 flex justify-between flex-row">
       <text>handle modelValue update res:</text>
       <text id="handle-model-value-update-res">{{ handleModelValueUpdateRes }}</text>
@@ -1413,6 +1389,11 @@ const msg = ref('msg')
 const strArr = ref<string[]>(['0'])
 const numArr = ref<number[]>([0])
 const value = ref("nested");
+// #ifdef APP && VUE3-VAPOR
+const num = ref<number | string>('')
+const strForTrim = ref('')
+const strForLazy = ref('')
+// #endif
 const arrayValue = reactive({
 	region: [] as string[]
 });
@@ -1433,30 +1414,21 @@ function onInput(){
 }
 </script>
 
-<style>
-.input {
-  padding: 0px 10px;
-  height: 40px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-</style>
-
 ```
 
 > 选项式 API
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <view class="mb-10 flex justify-between flex-row">
       <text>str:</text>
       <text id="str">{{ str }}</text>
     </view>
-    <input class="mb-10 input" id="model-str" v-model="str" @input="onInput" />
-    <input class="mb-10 input" id="model-num" v-model.number="num" type="text" />
-    <input class="mb-10 input" id="model-str-trim" v-model.trim="strForTrim" />
-    <input class="mb-10 input" id="model-str-lazy" v-model.lazy="str" type="text" />
+    <input class="mb-10 h-40 border-1 border-solid border-ccc radius-4 pt-0 pr-10 pb-0 pl-10" id="model-str" v-model="str" @input="onInput" />
+    <input class="mb-10 h-40 border-1 border-solid border-ccc radius-4 pt-0 pr-10 pb-0 pl-10" id="model-num" v-model.number="num" type="text" />
+    <input class="mb-10 h-40 border-1 border-solid border-ccc radius-4 pt-0 pr-10 pb-0 pl-10" id="model-str-trim" v-model.trim="strForTrim" />
+    <input class="mb-10 h-40 border-1 border-solid border-ccc radius-4 pt-0 pr-10 pb-0 pl-10" id="model-str-lazy" v-model.lazy="str" type="text" />
     <view class="mb-10 flex justify-between flex-row">
       <text>typeof num:</text>
       <text id="typeof-num">{{ typeof num }}</text>
@@ -1501,15 +1473,6 @@ export default {
 }
 </script>
 
-<style>
-.input {
-  padding: 0px 10px;
-  height: 40px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-</style>
-
 ```
 
 :::
@@ -1530,8 +1493,8 @@ export default {
 
 ```vue
 <template>
-  <view class="page">
-    <text class="bold mb-10">v-pre 跳过该元素及其所有子元素的编译</text>
+  <view class="p-15">
+    <text class="fw-bold mb-10">v-pre 跳过该元素及其所有子元素的编译</text>
     <text class="mb-10 v-pre-text" v-pre>{{ this will not be compiled }}</text>
   </view>
 </template>
@@ -1558,7 +1521,7 @@ export default {
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <!-- #ifndef MP -->
     <view class="flex flex-row justify-between mb-10" v-once>
       <text>This msg will never change:</text>
@@ -1588,7 +1551,7 @@ export default {
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <!-- #ifndef MP -->
     <view class="flex flex-row justify-between mb-10" v-once>
       <text>This msg will never change:</text>
@@ -1646,7 +1609,7 @@ export default {
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <Foo>
       <template #header="{ msg }">
         <view class="mb-10 flex justify-between flex-row">
@@ -1714,7 +1677,7 @@ export default {
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <Foo>
       <template #header="{ msg }">
         <view class="mb-10 flex justify-between flex-row">
@@ -1824,7 +1787,7 @@ export default {
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <view class="flex flex-row justify-between mb-10" v-memo="[]">
       <text>msg will never change:</text>
       <text id="v-memo-never-change-msg">{{ msg }}</text>
@@ -1878,7 +1841,7 @@ const incrementNum = () =>{
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <view class="flex flex-row justify-between mb-10" v-memo="[]">
       <text>msg will never change:</text>
       <text id="v-memo-never-change-msg">{{ msg }}</text>
@@ -1973,34 +1936,34 @@ export default {
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
+  <scroll-view class="flex-1">
     <!-- #endif -->
-    <view class="page">
-      <text class="bold mb-10">include="Counter,Message"</text>
+    <view class="p-15">
+      <text class="fw-bold mb-10">include="Counter,Message"</text>
       <KeepAlive include="Counter,Message">
         <component :is="currentComponent"></component>
       </KeepAlive>
-      <view class="hr"></view>
-      <text class="bold mt-10 mb-10">:include="/Counter|Message/"</text>
+      <view class="border-b-1 border-b-solid border-b-ccc mt-30rpx mb-30rpx mr-0 ml-0"></view>
+      <text class="fw-bold mt-10 mb-10">:include="/Counter|Message/"</text>
       <KeepAlive :include="/Counter|Message/">
         <component :is="currentComponent"></component>
       </KeepAlive>
-      <view class="hr"></view>
-      <text class="bold mb-10 mb-10">:include="['Counter', 'Message']"</text>
+      <view class="border-b-1 border-b-solid border-b-ccc mt-30rpx mb-30rpx mr-0 ml-0"></view>
+      <text class="fw-bold mb-10">:include="['Counter', 'Message']"</text>
       <KeepAlive :include="['Counter', 'Message']">
         <component :is="currentComponent"></component>
       </KeepAlive>
-      <view class="hr"></view>
-      <text class="bold mt-10 mb-10">exclude="ShouldExclude"</text>
+      <view class="border-b-1 border-b-solid border-b-ccc mt-30rpx mb-30rpx mr-0 ml-0"></view>
+      <text class="fw-bold mt-10 mb-10">exclude="ShouldExclude"</text>
       <KeepAlive exclude="ShouldExclude">
         <component :is="currentComponent"></component>
       </KeepAlive>
-      <view class="hr"></view>
-      <text class="bold mt-10 mb-10">:max="2"</text>
+      <view class="border-b-1 border-b-solid border-b-ccc mt-30rpx mb-30rpx mr-0 ml-0"></view>
+      <text class="fw-bold mt-10 mb-10">:max="2"</text>
       <KeepAlive :max="2">
         <component :is="currentComponent"></component>
       </KeepAlive>
-      <view class="hr"></view>
+      <view class="border-b-1 border-b-solid border-b-ccc mt-30rpx mb-30rpx mr-0 ml-0"></view>
       <button class="mt-10 show-counter" @click="changeComponent('Counter')">show Counter</button>
       <button class="mt-10 show-message" @click="changeComponent('Message')">show Message</button>
       <button class="mt-10 show-should-exclude" @click="changeComponent('ShouldExclude')">show ShouldExclude</button>
@@ -2030,12 +1993,6 @@ const changeComponent = (componentName: string) => {
 }
 </script>
 
-<style>
-.hr {
-  margin: 30rpx 0;
-  border-bottom: 1px solid #ccc;
-}
-</style>
 ```
 
 >选项式 API
@@ -2043,34 +2000,34 @@ const changeComponent = (componentName: string) => {
 ```vue
 <template>
   <!-- #ifdef APP -->
-  <scroll-view style="flex: 1">
+  <scroll-view class="flex-1">
     <!-- #endif -->
-    <view class="page">
-      <text class="bold mb-10">include "Counter,Message"</text>
+    <view class="p-15">
+      <text class="fw-bold mb-10">include "Counter,Message"</text>
       <KeepAlive include="Counter,Message">
         <component :is="currentComponent"></component>
       </KeepAlive>
-      <view class="hr"></view>
-      <text class="bold mt-10 mb-10">include "/Counter|Message/"</text>
+      <view class="border-b-1 border-b-solid border-b-ccc mt-30rpx"></view>
+      <text class="fw-bold mt-10 mb-10">include "/Counter|Message/"</text>
       <KeepAlive :include="/Counter|Message/">
         <component :is="currentComponent"></component>
       </KeepAlive>
-      <view class="hr"></view>
-      <text class="bold mt-10 mb-10">include "['Counter', 'Message']"</text>
+      <view class="border-b-1 border-b-solid border-b-ccc mt-30rpx"></view>
+      <text class="fw-bold mt-10 mb-10">include "['Counter', 'Message']"</text>
       <KeepAlive :include="['Counter', 'Message']">
         <component :is="currentComponent"></component>
       </KeepAlive>
-      <view class="hr"></view>
-      <text class="bold mt-10 mb-10">exclude "ShouldExclude"</text>
+      <view class="border-b-1 border-b-solid border-b-ccc mt-30rpx"></view>
+      <text class="fw-bold mt-10 mb-10">exclude "ShouldExclude"</text>
       <KeepAlive exclude="ShouldExclude">
         <component :is="currentComponent"></component>
       </KeepAlive>
-      <view class="hr"></view>
-      <text class="bold mt-10 mb-10">max 2</text>
+      <view class="border-b-1 border-b-solid border-b-ccc mt-30rpx"></view>
+      <text class="fw-bold mt-10 mb-10">max 2</text>
       <KeepAlive :max="2">
         <component :is="currentComponent"></component>
       </KeepAlive>
-      <view class="hr"></view>
+      <view class="border-b-1 border-b-solid border-b-ccc mt-30rpx"></view>
       <button class="mt-10 show-counter" @click="changeComponent('Counter')">show Counter</button>
       <button class="mt-10 show-message" @click="changeComponent('Message')">show Message</button>
       <button class="mt-10 show-should-exclude" @click="changeComponent('ShouldExclude')">show ShouldExclude</button>
@@ -2103,12 +2060,6 @@ export default {
 }
 </script>
 
-<style>
-.hr {
-  margin-top: 30rpx;
-  border-bottom: 1px solid #ccc;
-}
-</style>
 ```
 
 :::
@@ -2282,19 +2233,19 @@ export default {
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
+  <scroll-view class="flex-1">
     <!-- #endif -->
-    <view id="container" class="container">
-      <text class="text">.container 区域</text>
-      <view id="content1" class="content content-1">
-        <text class="text">content1 区域</text>
+    <view id="container" class="border-1 border-solid border-ccc m-5 p-10 bg-f5f5f5">
+      <text class="mt-5 mr-0 mb-5 ml-0">#container 区域</text>
+      <view id="content1" class="border-1 border-solid border-ccc m-5 p-10 h-120">
+        <text class="mt-5 mr-0 mb-5 ml-0">content1 区域</text>
       </view>
-      <view id="content2" class="content content-2">
-        <text class="text">content2 区域</text>
+      <view id="content2" class="border-1 border-solid border-ccc m-5 p-10 h-120">
+        <text class="mt-5 mr-0 mb-5 ml-0">content2 区域</text>
       </view>
       <teleport v-if="show" to="#content1" :disabled="disabled">
-        <view class="send-content">
-          <text class="send-content-text">内容在.container中，使用teleport在#content1元素中展示</text>
+        <view class="p-5 bg-ff5a5f h-50">
+          <text class="text-fff fs-12">内容在#container中，使用teleport在#content1元素中展示</text>
         </view>
       </teleport>
     </view>
@@ -2321,36 +2272,6 @@ defineExpose({
 })
 </script>
 
-<style>
-.container {
-  background-color: #f5f5f5;
-  border: 1px #ccc solid;
-  margin: 5px;
-  padding: 10px;
-}
-
-.text {
-  margin: 5px 0;
-}
-
-.content {
-  height: 120px;
-  border: 1px #ccc solid;
-  margin: 5px;
-  padding: 10px;
-}
-
-.send-content {
-  padding: 5px;
-  background-color: #ff5a5f;
-  height: 50px;
-}
-
-.send-content-text {
-  color: #fff;
-  font-size: 12px;
-}
-</style>
 ```
 
 >选项式 API
@@ -2358,19 +2279,19 @@ defineExpose({
 ```vue
 <template>
   <!-- #ifdef APP -->
-  <scroll-view style="flex: 1">
+  <scroll-view class="flex-1">
     <!-- #endif -->
-    <view id="container" class="container">
-      <text class="text">.container 区域</text>
-      <view id="content1" class="content content-1">
-        <text class="text">content1 区域</text>
+    <view id="container" class="border-1 border-solid border-ccc m-5 p-10 bg-f5f5f5">
+      <text class="mt-5 mr-0 mb-5 ml-0">#container 区域</text>
+      <view id="content1" class="border-1 border-solid border-ccc m-5 p-10 h-120">
+        <text class="mt-5 mr-0 mb-5 ml-0">content1 区域</text>
       </view>
-      <view id="content2" class="content content-2">
-        <text class="text">content2 区域</text>
+      <view id="content2" class="border-1 border-solid border-ccc m-5 p-10 h-120">
+        <text class="mt-5 mr-0 mb-5 ml-0">content2 区域</text>
       </view>
       <teleport v-if="show" to="#content1" :disabled="disabled">
-        <view class="send-content">
-          <text class="send-content-text">内容在.container中，使用teleport在#content1元素中展示</text>
+        <view class="p-5 bg-ff5a5f h-50">
+          <text class="text-fff fs-12">内容在#container中，使用teleport在#content1元素中展示</text>
         </view>
       </teleport>
     </view>
@@ -2400,36 +2321,6 @@ export default {
   }
 }
 </script>
-
-<style>
-.container {
-  background-color: #f5f5f5;
-  border: 1px #ccc solid;
-  margin: 5px;
-  padding: 10px;
-}
-.text {
-  margin: 5px 0;
-}
-
-.content {
-  height: 120px;
-  border: 1px #ccc solid;
-  margin: 5px;
-  padding: 10px;
-}
-
-.send-content {
-  padding: 5px;
-  background-color: #ff5a5f;
-  height: 50px;
-}
-
-.send-content-text {
-  color: #fff;
-  font-size: 12px;
-}
-</style>
 
 ```
 
@@ -2510,7 +2401,7 @@ Web: 4.0; 微信小程序: √; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.1
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <template v-if="dataInfo.isShow">
       <text id="title">{{ title }}</text>
     </template>
@@ -2518,9 +2409,9 @@ Web: 4.0; 微信小程序: √; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.1
       <text>隐藏标题时显示</text>
     </template>
     <!-- vapor button 调整实现，自动化测试无法通过 innerText 获取文本内容，重构为 text  -->
-    <text class="mt-10 btn" id="show-botton" @click="handleShow">{{ dataInfo.isShow ? '点击隐藏' : '点击显示' }}</text>
+    <text class="mt-10 border-1 border-solid border-eee radius-4 text-center pt-8 pb-8" id="show-botton" @click="handleShow">{{ dataInfo.isShow ? '点击隐藏' : '点击显示' }}</text>
     <template v-for="(item, index) in list" :key="index">
-      <text :class="'item'">{{ index + 1 }}.{{ item.name }}</text>
+      <text :class="'item m-15 pt-4 pr-8 pb-4 pl-8 border-1 border-solid border-eee'">{{ index + 1 }}.{{ item.name }}</text>
     </template>
     <button @click="goMapStyle">跳转绑定 Map 类型 style 页面</button>
   </view>
@@ -2562,36 +2453,22 @@ defineExpose({
 })
 </script>
 
-<style>
-.btn{
-  border: 1px solid #eee;
-  border-radius: 4px;
-  text-align: center;
-  padding-top: 8px;
-  padding-bottom: 8px;
-}
-.item {
-  margin: 15px;
-  padding: 4px 8px;
-  border: #eee solid 1px;
-}
-</style>
 ```
 
 >选项式 API
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <template v-if="dataInfo.isShow">
       <text id="title">{{ title }}</text>
     </template>
     <template v-else>
       <text>隐藏标题时显示</text>
     </template>
-    <text class="mt-10 btn" id="show-botton" @click="handleShow">{{ dataInfo.isShow ? '点击隐藏' : '点击显示' }}</text>
+    <text class="mt-10 border-1 border-solid border-eee radius-4 text-center pt-8 pb-8" id="show-botton" @click="handleShow">{{ dataInfo.isShow ? '点击隐藏' : '点击显示' }}</text>
     <template v-for="(item, index) in list" :key="index">
-      <text :class="'item'">{{ index + 1 }}.{{ item.name }}</text>
+      <text :class="'item m-15 pt-4 pr-8 pb-4 pl-8 border-1 border-solid border-eee'">{{ index + 1 }}.{{ item.name }}</text>
     </template>
     <button @click="goMapStyle">跳转绑定 Map 类型 style 页面</button>
   </view>
@@ -2631,21 +2508,6 @@ export default {
 }
 </script>
 
-<style>
-.btn{
-  border: 1px solid #eee;
-  border-radius: 4px;
-  text-align: center;
-  padding-top: 8px;
-  padding-bottom: 8px;
-}
-.item {
-  margin: 15px;
-  padding: 4px 8px;
-  border: #eee solid 1px;
-}
-</style>
-
 ```
 
 :::
@@ -2683,7 +2545,7 @@ Web: 4.0; 微信小程序: 4.11; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.
 
 ```vue
 <template>
-  <view class="content">
+  <view>
     <child>
       <template v-slot:header="slotProps">
         <view class="header">{{ slotProps.msg }}</view>
@@ -2707,7 +2569,7 @@ import child from './child-composition.uvue'
 
 ```vue
 <template>
-  <view class="content">
+  <view>
     <child>
       <template v-slot:header="slotProps">
         <view class="header">{{ slotProps.msg }}</view>
@@ -2765,7 +2627,7 @@ export default {
 
 ```vue
 <template>
-  <view class="container">
+  <view>
     <component :is="currentComponentInstance" />
     <component :is="myInput" :value="inputValue" id="my-input" />
     <button @click="changeCurrentComponent">change current component</button>
@@ -2796,21 +2658,13 @@ export default {
   })
 </script>
 
-<style>
-  .item {
-    display: flex;
-    flex-direction: row;
-    margin: 15px;
-    border: #eee solid 1px;
-  }
-</style>
 ```
 
 >选项式 API
 
 ```vue
 <template>
-  <view class="container">
+  <view>
     <component :is="currentComponentStr" />
     <component :is="currentComponentInstance" />
     <component :is="myInput" :value="inputValue" id="my-input" />
@@ -2848,14 +2702,6 @@ export default {
   }
 </script>
 
-<style>
-  .item {
-    display: flex;
-    flex-direction: row;
-    margin: 15px;
-    border: #eee solid 1px;
-  }
-</style>
 ```
 
 :::
@@ -3064,14 +2910,14 @@ export default {
 
 ```vue
 <template>
-    <view style="flex: 1; padding: 20px;">
+    <view class="flex-1 p-20">
         <button id="btn" @click="switchItem">切换详情</button>
 
         <text>页面当前 currentId: </text>
         <text id="current-id">{{ currentId }}</text>
 
         <!-- 小程序平台不支持 :key，该页面已在页面注册和入口处通过条件编译屏蔽 -->
-        <view v-if="currentId != ''" style="margin-top: 20px;">
+        <view v-if="currentId != ''" class="mt-20">
             <Child :key="currentId" :id="currentId" />
         </view>
     </view>

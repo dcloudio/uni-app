@@ -19,7 +19,7 @@
 ::: preview https://hellouvue.dcloud.net.cn/#/pages/component-instance/data/data-options
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <view class="flex justify-between flex-row mb-10">
       <text>str: </text>
       <text id="str">{{ str }}</text>
@@ -116,7 +116,7 @@
 ::: preview https://hellouvue.dcloud.net.cn/#/pages/component-instance/props/props-options
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <array-literal class="array-literal-component" :str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
     <object-type class="object-type-component" str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
     <same-name-prop-default-value class="same-name-prop-default-value-component" />
@@ -170,7 +170,7 @@
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <view class="flex justify-between flex-row mb-10">
       <text>count:</text>
       <text id="count">{{ count }}</text>
@@ -268,9 +268,9 @@ export default {
 ```vue
 <template>
   <!-- #ifdef APP -->
-  <scroll-view style="flex: 1; padding-bottom: 20px">
+  <scroll-view class="flex-1 pb-20">
   <!-- #endif -->
-    <view class="page">
+    <view class="p-15">
       <view class="flex justify-between flex-row mb-10">
         <text>count:</text>
         <text id="count" ref="countRef">{{ count }}</text>
@@ -537,10 +537,6 @@ export default {
 }
 </script>
 
-<style scoped>
-
-</style>
-
 ```
 
 :::
@@ -560,16 +556,16 @@ export default {
 ::: preview https://hellouvue.dcloud.net.cn/#/pages/built-in/special-elements/template/template-options
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <template v-if="dataInfo.isShow">
       <text id="title">{{ title }}</text>
     </template>
     <template v-else>
       <text>隐藏标题时显示</text>
     </template>
-    <text class="mt-10 btn" id="show-botton" @click="handleShow">{{ dataInfo.isShow ? '点击隐藏' : '点击显示' }}</text>
+    <text class="mt-10 border-1 border-solid border-eee radius-4 text-center pt-8 pb-8" id="show-botton" @click="handleShow">{{ dataInfo.isShow ? '点击隐藏' : '点击显示' }}</text>
     <template v-for="(item, index) in list" :key="index">
-      <text :class="'item'">{{ index + 1 }}.{{ item.name }}</text>
+      <text :class="'item m-15 pt-4 pr-8 pb-4 pl-8 border-1 border-solid border-eee'">{{ index + 1 }}.{{ item.name }}</text>
     </template>
     <button @click="goMapStyle">跳转绑定 Map 类型 style 页面</button>
   </view>
@@ -609,21 +605,6 @@ export default {
 }
 </script>
 
-<style>
-.btn{
-  border: 1px solid #eee;
-  border-radius: 4px;
-  text-align: center;
-  padding-top: 8px;
-  padding-bottom: 8px;
-}
-.item {
-  margin: 15px;
-  padding: 4px 8px;
-  border: #eee solid 1px;
-}
-</style>
-
 ```
 :::
 
@@ -657,7 +638,7 @@ export default {
     this.list.forEach((item) => {
       textList.push(h('text', { class: 'text-item' }, item))
     })
-    return h('view', { class: 'page' }, [
+    return h('view', { class: 'p-15' }, [
       h(CompForHFunctionWithSlot, {}, () : VNode[] => [h('text', { class: 'comp-slot' }, 'component slot')]),
       h(CompForHFunction, { msg: this.msg }),
       h('text', msgProps, this.msg),
@@ -669,7 +650,7 @@ export default {
       h(
         'button',
         {
-          class: 'mt-10 btn',
+          class: 'mt-10 btn text-f00',
           type: 'primary',
           onClick: () => {
             this.msg = 'new msg'
@@ -683,11 +664,6 @@ export default {
 }
 </script>
 
-<style>
-.btn {
-  color: red;
-}
-</style>
 ```
 :::
 
@@ -702,7 +678,7 @@ export default {
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <Foo>
       <template #header="{ msg }">
         <view class="mb-10 flex justify-between flex-row">
@@ -792,9 +768,9 @@ export default {
 ```vue
 <template>
   <!-- #ifdef APP -->
-  <scroll-view style="flex: 1" :bounces="false">
+  <scroll-view class="flex-1" :bounces="false">
     <!-- #endif -->
-    <view class="page container">
+    <view class="p-15 h-2200">
       <text>page lifecycle 选项式 API</text>
       <view class="flex flex-row justify-between mt-10">
         <text>onLoad 触发：</text>
@@ -832,7 +808,7 @@ export default {
         <text>onResize 触发：</text>
         <text>{{ isOnResizeTriggered }}</text>
       </view>
-			<MonitorAppLifecycleOptions class="monitor-app-lifecycle" />
+			<MonitorAppLifecycleOptions />
 			<MonitorPageLifecycleOptions />
       <button class="mt-10" @click="scrollToBottom">scrollToBottom</button>
       <button class="mt-10" @click="pullDownRefresh">
@@ -980,12 +956,6 @@ export default {
 }
 </script>
 
-<style>
-.container {
-  height: 2200px;
-}
-</style>
-
 ```
 
 :::
@@ -1042,6 +1012,7 @@ export default {
 <script lang='uts'>
   import { state, setLifeCycleNum } from '@/store/index.uts';
   export default {
+    styleIsolation: 'app',
     name: 'OptionsAPIComponentLifecycle',
     data() {
       return {
@@ -1128,7 +1099,7 @@ export default {
 ```vue
 <template>
   <view>
-    <text class="mt-10 bold">component for inject 1</text>
+    <text class="mt-10 fw-bold">component for inject 1</text>
     <text class="mt-10 alias-provide-page-title"
       >aliasProvidePageTitle: {{ aliasProvidePageTitle }}</text
     >
@@ -1172,6 +1143,7 @@ export default {
 
 <script lang="uts">
 export default {
+  styleIsolation: 'app',
   inject: {
     aliasProvidePageTitle: {
       type: String,
@@ -1257,7 +1229,7 @@ export default {
 ```vue
 <template>
   <view>
-    <text class="mt-10 bold">component for inject 2</text>
+    <text class="mt-10 fw-bold">component for inject 2</text>
     <text class="mt-10 provide-page-title"
       >providePageTitle: {{ providePageTitle }}</text
     >
@@ -1278,6 +1250,7 @@ export default {
 
 <script lang="uts">
 export default {
+  styleIsolation: 'app',
   inject: {
     providePageTitle: {
       type: String,
@@ -1393,9 +1366,9 @@ export default {
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
+  <scroll-view class="flex-1">
     <!-- #endif -->
-    <view class="page">
+    <view class="p-15">
       <text id="mixin-prop" class="mb-10">mixinProp: {{mixinProp}}</text>
       <text id="mixin-data-msg" class="mb-10">mixinDataMsg: {{mixinDataMsg}}</text>
       <text id="mixin-onload-msg" class="mb-10">mixinOnloadMsg: {{mixinOnloadMsg}}</text>
@@ -1471,26 +1444,26 @@ export default {
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
+  <scroll-view class="flex-1">
     <!-- #endif -->
-    <view class="page">
-      <text class="bold">props:</text>
+    <view class="p-15">
+      <text class="fw-bold">props:</text>
       <text class="mt-10 namesake-mixin-prop">{{ namesakeMixinProp }}</text>
       <text class="mt-10 namesake-child-mixin-prop">{{ namesakeChildMixinProp }}</text>
 
-      <text class="bold mt-10">data:</text>
+      <text class="fw-bold mt-10">data:</text>
       <text class="mt-10 namesake-mixin-data-msg">{{ namesakeMixinDataMsg }}</text>
       <text class="mt-10 namesake-child-mixin-data-msg">{{ namesakeChildMixinDataMsg }}</text>
 
-      <text class="bold mt-10">computed:</text>
+      <text class="fw-bold mt-10">computed:</text>
       <text class="mt-10 namesake-mixin-computed">{{ namesakeMixinComputed }}</text>
       <text class="mt-10 namesake-child-mixin-computed">{{ namesakeChildMixinComputed }}</text>
 
-      <text class="mt-10 bold">method:</text>
+      <text class="mt-10 fw-bold">method:</text>
       <text class="mt-10 namesake-mixin-method">{{ namesakeMixinMethod() }}</text>
       <text class="mt-10 namesake-child-mixin-method">{{ namesakeChildMixinMethod() }}</text>
 
-      <text class="mt-10 bold">mixin component:</text>
+      <text class="mt-10 fw-bold">mixin component:</text>
       <GlobalMixinComp1 />
       <GlobalChildMixinComp1 />
       <GlobalMixinComp2 />
@@ -1688,11 +1661,11 @@ export default {
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
+  <scroll-view class="flex-1">
     <!-- #endif -->
-    <view class="page">
+    <view class="p-15">
       <button type="primary" @click="goMixinPageNamesake">go mixin page namesake</button>
-      <text class="mt-10 bold">props:</text>
+      <text class="mt-10 fw-bold">props:</text>
       <text class="mt-10 global-mixin-prop-1">{{ globalMixinProp1 }}</text>
       <text class="mt-10 global-child-mixin-prop-1">{{ globalChildMixinProp1 }}</text>
       <text class="mt-10 global-mixin-prop-2">{{ globalMixinProp2 }}</text>
@@ -1704,19 +1677,19 @@ export default {
       <text class="mt-10 namesake-mixin-prop">{{ namesakeMixinProp }}</text>
       <text class="mt-10 namesake-child-mixin-prop">{{ namesakeChildMixinProp }}</text>
 
-      <text class="bold mt-10">data:</text>
-      <text class="mt-10 global-mixin-data-msg-1">{{ globalMixinDataMsg1 }}</text>
-      <text class="mt-10 global-child-mixin-data-msg-1">{{ globalChildMixinDataMsg1 }}</text>
-      <text class="mt-10 global-mixin-data-msg-2">{{ globalMixinDataMsg2 }}</text>
-      <text class="mt-10 global-child-mixin-data-msg-2">{{ globalChildMixinDataMsg2 }}</text>
-      <text class="mt-10 mixin-data-msg-1">{{ mixinDataMsg1 }}</text>
-      <text class="mt-10 child-mixin-data-msg-1">{{ childMixinDataMsg1 }}</text>
-      <text class="mt-10 mixin-data-msg-2">{{ mixinDataMsg2 }}</text>
-      <text class="mt-10 child-mixin-data-msg-2">{{ childMixinDataMsg2 }}</text>
+      <text class="fw-bold mt-10">data:</text>
+      <text class="mt-10">{{ globalMixinDataMsg1 }}</text>
+      <text class="mt-10">{{ globalChildMixinDataMsg1 }}</text>
+      <text class="mt-10">{{ globalMixinDataMsg2 }}</text>
+      <text class="mt-10">{{ globalChildMixinDataMsg2 }}</text>
+      <text class="mt-10">{{ mixinDataMsg1 }}</text>
+      <text class="mt-10">{{ childMixinDataMsg1 }}</text>
+      <text class="mt-10">{{ mixinDataMsg2 }}</text>
+      <text class="mt-10">{{ childMixinDataMsg2 }}</text>
       <text class="mt-10 namesake-mixin-data-msg">{{ namesakeMixinDataMsg }}</text>
       <text class="mt-10 namesake-child-mixin-data-msg">{{ namesakeChildMixinDataMsg }}</text>
 
-      <text class="bold mt-10">computed:</text>
+      <text class="fw-bold mt-10">computed:</text>
       <text class="mt-10 global-mixin-computed-1">{{ globalMixinComputed1 }}</text>
       <text class="mt-10 global-child-mixin-computed-1">{{ globalChildMixinComputed1 }}</text>
       <text class="mt-10 global-mixin-computed-2">{{ globalMixinComputed2 }}</text>
@@ -1728,7 +1701,7 @@ export default {
       <text class="mt-10 namesake-mixin-computed">{{ namesakeMixinComputed }}</text>
       <text class="mt-10 namesake-child-mixin-computed">{{ namesakeChildMixinComputed }}</text>
 
-      <text class="bold mt-10">watch:</text>
+      <text class="fw-bold mt-10">watch:</text>
       <text class="mt-10 global-mixin-watch-1">{{ globalMixinWatchMsg1 }}</text>
       <text class="mt-10 global-child-mixin-watch-1">{{ globalChildMixinWatchMsg1 }}</text>
       <text class="mt-10 global-mixin-watch-2">{{ globalMixinWatchMsg2 }}</text>
@@ -1739,7 +1712,7 @@ export default {
       <text class="mt-10 child-mixin-watch-2">{{ childMixinWatchMsg2 }}</text>
       <text class="mt-10 mixin-watch">{{ mixinWatchMsg }}</text>
 
-      <text class="bold mt-10">lifecycle:</text>
+      <text class="fw-bold mt-10">lifecycle:</text>
       <text class="mt-10">{{ globalMixinOnloadMsg1 }}</text>
       <text class="mt-10">{{ globalMixinOnloadMsg2 }}</text>
       <text class="mt-10">{{ globalChildMixinOnloadMsg1 }}</text>
@@ -1750,7 +1723,7 @@ export default {
       <text class="mt-10">{{ childMixinOnloadMsg2 }}</text>
       <text class="mt-10">{{ onloadMsg }}</text>
 
-      <text class="mt-10 bold">method:</text>
+      <text class="mt-10 fw-bold">method:</text>
       <text class="mt-10 global-mixin-method-1">{{ globalMixinMethod1() }}</text>
       <text class="mt-10 global-child-mixin-method-1">{{ globalChildMixinMethod1() }}</text>
       <text class="mt-10 global-mixin-method-2">{{ globalMixinMethod2() }}</text>
@@ -1762,7 +1735,7 @@ export default {
       <text class="mt-10 namesake-mixin-method">{{ namesakeMixinMethod() }}</text>
       <text class="mt-10 namesake-child-mixin-method">{{ namesakeChildMixinMethod() }}</text>
 
-      <text class="mt-10 bold">component:</text>
+      <text class="mt-10 fw-bold">component:</text>
       <Comp1
         title="title"
         @globalMixinEmit1="(arg: string) => handleMixinEmitter('globalMixinEmit1', arg)"
@@ -1775,7 +1748,7 @@ export default {
         >handleMixinEmitterMsg: {{ handleMixinEmitterMsg }}</text
       >
       <Comp2 class='comp2' title="title" />
-      <text class="mt-10 bold">mixin component:</text>
+      <text class="mt-10 fw-bold">mixin component:</text>
       <GlobalMixinComp1 />
       <GlobalChildMixinComp1 />
       <GlobalMixinComp2 />
@@ -1982,7 +1955,7 @@ export default {
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <!-- #ifdef APP-ANDROID -->
     <!-- TODO: ios & web 不支持 a b 互相引用 -->
     <child-a :limit="5" />
@@ -2025,13 +1998,13 @@ export default {
 ```vue
 <template>
   <view class="mt-10" ref="mixin-comp-root">
-    <text class="bold">Comp1: inheritAttrs: false</text>
-    <text class="mt-10" style="color:#ccc;"
+    <text class="fw-bold">Comp1: inheritAttrs: false</text>
+    <text class="text-ccc mt-10"
       >rootElementTitle should be null</text
     >
     <text class="mt-10 root-element-title-1">rootElementTitle: {{ rootElementTitle }}</text>
     <!-- #ifdef APP -->
-    <text class="mt-10 bold">trigger emitter:</text>
+    <text class="mt-10 fw-bold">trigger emitter:</text>
     <button class="mt-10 global-mixin-emit-1" @click="triggerEmitter('globalMixinEmit1')">
       trigger globalMixinEmit1
     </button>
@@ -2061,6 +2034,7 @@ export default {
 
 <script lang="uts">
 export default {
+  styleIsolation: 'app',
   mixins:[{
     mixins: [{
       emits: ['childMixinEmit']
@@ -2092,8 +2066,8 @@ export default {
 ```vue
 <template>
   <view class="mt-10" ref="mixin-comp-root">
-    <text class="bold">Comp2: inheritAttrs: true</text>
-    <text class="mt-10" style="color:#ccc;">rootElementTitle should not be null</text>
+    <text class="fw-bold">Comp2: inheritAttrs: true</text>
+    <text class="text-ccc mt-10">rootElementTitle should not be null</text>
     <text class="mt-10 root-element-title-2">rootElementTitle: {{ rootElementTitle }}</text>
     <text class="mt-10">{{ namesakeMixinProp }}</text>
     <text class="mt-10">{{ namesakeMixinDataMsg }}</text>
@@ -2111,6 +2085,7 @@ export default {
   import CompForComp from './CompForComp.uvue'
 
   export default {
+    styleIsolation: 'app',
     mixins: [{
       inheritAttrs: true,
     }],
@@ -2162,6 +2137,7 @@ export default {
     }
   }
 </script>
+
 ```
 
 :::
@@ -2176,7 +2152,7 @@ export default {
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <child
       class="child-class"
       str="str from parent"
@@ -2266,7 +2242,7 @@ export default {
 ::: preview https://hellouvue.dcloud.net.cn/#/pages/component-instance/data/data-options
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <view class="flex justify-between flex-row mb-10">
       <text>str: </text>
       <text id="str">{{ str }}</text>
@@ -2363,7 +2339,7 @@ export default {
 ::: preview https://hellouvue.dcloud.net.cn/#/pages/component-instance/props/props-options
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <array-literal class="array-literal-component" :str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
     <object-type class="object-type-component" str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
     <same-name-prop-default-value class="same-name-prop-default-value-component" />
@@ -2416,8 +2392,8 @@ export default {
 ::: preview https://hellouvue.dcloud.net.cn/#/pages/component-instance/el/el-options
 ```vue
 <template>
-  <view class="page flex justify-between flex-row">
-    <text class="child">root node tagName：</text>
+  <view class="p-15 flex justify-between flex-row">
+    <text>root node tagName：</text>
     <text class="tag-name">{{ el }}</text>
   </view>
 </template>
@@ -2447,7 +2423,7 @@ export default {
 ::: preview https://hellouvue.dcloud.net.cn/#/pages/component-instance/options/options-options
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <view class="mb-10 flex justify-between flex-row">
       <text>component name: </text>
       <text id="component-name">{{ dataInfo.name }}</text>
@@ -2510,7 +2486,7 @@ export default {
 ::: preview https://hellouvue.dcloud.net.cn/#/pages/component-instance/parent/parent-options
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <child ref='child' class="parent-child" />
   </view>
 </template>
@@ -2553,7 +2529,7 @@ export default {
 ::: preview
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <view class="mb-10 flex justify-between flex-row">
       <text>root str in parent component: </text>
       <text id="root-str-parent">{{ rootStr }}</text>
@@ -2592,7 +2568,7 @@ export default {
 ::: preview https://hellouvue.dcloud.net.cn/#/pages/component-instance/slots/slots-options
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <SlotComp id="slot-comp">
       <template v-slot:header>
         <text>header</text>
@@ -2630,16 +2606,16 @@ export default {
 ::: preview https://hellouvue.dcloud.net.cn/#/pages/component-instance/refs/refs-options
 ```vue
 <template>
-  <view class="page">
-    <view class="row">
+  <view class="p-15">
+    <view class="flex flex-row justify-between mb-10">
       <text>NodeRef: </text>
       <text ref="node">{{ dataInfo.existRef }}</text>
     </view>
-    <view class="row">
+    <view class="flex flex-row justify-between mb-10">
       <text>childRef:</text>
       <text>{{ dataInfo.existChildRef }}</text>
     </view>
-    <view class="row">
+    <view class="flex flex-row justify-between mb-10">
       <text>existTextItems:</text>
       <text>{{ dataInfo.existTextItems }}</text>
     </view>
@@ -2684,15 +2660,6 @@ export default {
 }
 </script>
 
-<style>
-.row {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-</style>
-
 ```
 :::
 
@@ -2706,7 +2673,7 @@ export default {
 ::: preview https://hellouvue.dcloud.net.cn/#/pages/component-instance/attrs/attrs-options
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <child
       class="child-class"
       str="str from parent"
@@ -2746,9 +2713,9 @@ export default {
 ```vue
 <template>
   <!-- #ifdef APP -->
-  <scroll-view style="flex: 1; padding-bottom: 20px">
+  <scroll-view class="flex-1 pb-20">
   <!-- #endif -->
-    <view class="page">
+    <view class="p-15">
       <view class="flex justify-between flex-row mb-10">
         <text>count:</text>
         <text id="count" ref="countRef">{{ count }}</text>
@@ -2977,8 +2944,8 @@ export default {
 ::: preview https://hellouvue.dcloud.net.cn/#/pages/component-instance/emit-function/emit-function-options
 ```vue
 <template>
-  <view class="page">
-    <view class="row">
+  <view class="p-15">
+    <view class="flex flex-row justify-between mb-10">
       <text>子组件传的参数</text>
       <text id="value">
         {{ value }}
@@ -3008,15 +2975,6 @@ export default {
 }
 </script>
 
-<style>
-.row {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-</style>
-
 ```
 :::
 
@@ -3030,8 +2988,8 @@ export default {
 ::: preview https://hellouvue.dcloud.net.cn/#/pages/component-instance/force-update/force-update-options
 ```vue
 <template>
-  <view class="page">
-    <view class="split-title">$forceUpdate</view>
+  <view class="p-15">
+    <view class="mt-20 mr-0 mb-5 ml-0 pt-5 pr-0 pb-5 pl-0 border-b-1 border-b-solid border-b-dfdfdf">$forceUpdate</view>
     <text class="mt-10 time">Date.now(): {{ Date.now() }}</text>
     <button
       class="mt-10 trigger-force-update-btn"
@@ -3073,9 +3031,9 @@ export default {
 ```vue
 <template>
   <!-- #ifdef APP -->
-  <scroll-view style="flex: 1">
+  <scroll-view class="flex-1">
   <!-- #endif -->
-    <view class="page">
+    <view class="p-15">
       <view class="flex justify-between mb-10">
         <text ref="text">title for callback:</text>
         <text id="page-text-callback">{{ dataInfo.titleForCallback }}</text>

@@ -376,25 +376,9 @@ Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; Har
 
 <style>
   @import './styles/common.css';
-
-  .list-item-text {
-    line-height: 36px;
-  }
-
-  .split-title {
-    margin: 20px 0 5px;
-    padding: 5px 0;
-    border-bottom: 1px solid #dfdfdf;
-  }
-
-  .btn-view {
-    margin: 10px 0;
-    padding: 10px;
-    border: 1px solid #dfdfdf;
-    border-radius: 3px;
-  }
 </style>
 <style>
+/* multiple-style-script 用例验证多个全局 style 的合并，保留此样式块。 */
 .text-red{
   color: red;
 }

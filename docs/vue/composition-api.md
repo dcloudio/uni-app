@@ -25,7 +25,7 @@
 
 ```vue
 <template>
-	<view class="page">
+	<view class="p-15">
 		<view class="flex justify-between flex-row mb-10">
 			<text>count:</text>
 			<text id="count">{{ count }}</text>
@@ -169,16 +169,16 @@
 
 ```vue
 <template>
-  <view class="page">
-    <view class="row">
+  <view class="p-15">
+    <view class="flex flex-row justify-between mb-10">
       <text>NodeRef: </text>
       <text ref="nodeRef">{{ dataInfo.existRef }}</text>
     </view>
-    <view class="row">
+    <view class="flex flex-row justify-between mb-10">
       <text>childRef:</text>
       <text>{{ dataInfo.existChildRef }}</text>
     </view>
-    <view class="row">
+    <view class="flex flex-row justify-between mb-10">
       <text>existTextItems:</text>
       <text>{{ dataInfo.existTextItems }}</text>
     </view>
@@ -189,13 +189,13 @@
     </view>
     <child class="mt-10" ref="childRef">ComponentRef</child>
     <view class="mt-10">
-      <text class="section-title">getCurrentInstance() + $refs</text>
+      <text class="mb-10">getCurrentInstance() + $refs</text>
     </view>
-    <view class="row">
+    <view class="flex flex-row justify-between mb-10">
       <text>$refs 获取 nodeRef:</text>
       <text>{{ dataInfo.existRefByRefs }}</text>
     </view>
-    <view class="row">
+    <view class="flex flex-row justify-between mb-10">
       <text>$refs 获取 childRef:</text>
       <text>{{ dataInfo.existChildRefByRefs }}</text>
     </view>
@@ -243,17 +243,6 @@ defineExpose({
 })
 </script>
 
-<style>
-.row {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-.section-title {
-  margin-bottom: 10px;
-}
-</style>
 ```
 
 :::
@@ -269,9 +258,9 @@ defineExpose({
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1; padding-bottom: 20px">
+  <scroll-view class="flex-1 pb-20">
     <!-- #endif -->
-    <view class="page">
+    <view class="p-15">
       <view class="flex justify-between flex-row mb-10">
         <text>count:</text>
         <text id="count" ref="countRef">{{ count }}</text>
@@ -509,7 +498,7 @@ watch(
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <view class="flex justify-between flex-row mb-10">
       <text>count:</text>
       <text id="count">{{ count }}</text>
@@ -599,9 +588,9 @@ const stateText = computed(() => {
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1;">
+  <scroll-view class="flex-1">
     <!-- #endif -->
-		<view class="page">
+		<view class="p-15">
       <view class="flex justify-between flex-row mb-10">
         <text>count:</text>
         <text id="count">{{ count }}</text>
@@ -710,8 +699,8 @@ const stateText = computed(() => {
       <button class='mb-10' id="update-generic" @click="updateResponse()">response.data.success</button>
       
       <!-- 复杂场景测试 -->
-      <view class="flex justify-between flex-row mb-10 mt-20">
-        <text class="section-title">复杂场景</text>
+      <view class="flex justify-between flex-row mb-10">
+        <text class="fs-16 fw-bold mb-10">复杂场景</text>
       </view>
       
       <!-- 1. 数组嵌套对象测试 -->
@@ -1157,13 +1146,6 @@ const stateText = computed(() => {
     list.push({ id: list.length + 1, value: 'value' + (list.length + 1) } as UTSJSONObject)
   }
 </script>
-<style>
-    .section-title {
-      font-size: 16px;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-</style>
 
 ```
 
@@ -1185,7 +1167,7 @@ const stateText = computed(() => {
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <view class="flex justify-between flex-row mb-10">
       <text>data.str:</text>
       <text id="data-str">{{ data.str }}</text>
@@ -1273,9 +1255,9 @@ const updateReadonlyData = () => {
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1; padding-bottom: 20px">
+  <scroll-view class="flex-1 pb-20">
     <!-- #endif -->
-    <view class="page">
+    <view class="p-15">
       <view class="flex justify-between flex-row mb-10">
         <text>count:</text>
         <text id="count" ref="countRef">{{ count }}</text>
@@ -1486,9 +1468,9 @@ const updateReadonlyData = () => {
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1; padding-bottom: 20px">
+  <scroll-view class="flex-1 pb-20">
     <!-- #endif -->
-    <view class="page">
+    <view class="p-15">
       <view class="flex justify-between flex-row mb-10">
         <text>count:</text>
         <text id="count" ref="countRef">{{ count }}</text>
@@ -1674,9 +1656,9 @@ const updateReadonlyData = () => {
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1; padding-bottom: 20px">
+  <scroll-view class="flex-1 pb-20">
     <!-- #endif -->
-    <view class="page">
+    <view class="p-15">
       <view class="flex justify-between flex-row mb-10">
         <text>count:</text>
         <text id="count" ref="countRef">{{ count }}</text>
@@ -1872,7 +1854,7 @@ const updateReadonlyData = () => {
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <view class="flex justify-between flex-row mb-10">
       <text>ref count:</text>
       <text id="ref-count">{{ refCount }}</text>
@@ -1913,7 +1895,7 @@ const isRefCount = isRef(count);
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <view class="flex justify-between flex-row mb-10">
       <text>ref count:</text>
       <text id="ref-count">{{ refCount }}</text>
@@ -1956,7 +1938,7 @@ const countType = typeof count;
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <view class="flex justify-between flex-row mb-10">
       <text>count:</text>
       <text id="count">{{ count }}</text>
@@ -2030,7 +2012,7 @@ const increment = () => {
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <view class="flex justify-between flex-row mb-10">
       <text>ref count:</text>
       <text id="ref-count">{{ refCount }}</text>
@@ -2096,7 +2078,7 @@ const increment = () => {
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <view class="flex justify-between flex-row mb-10">
       <text>state.num:</text>
       <text id="state-num">{{ state['num'] }}</text>
@@ -2145,7 +2127,7 @@ const increment = () => {
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <view class="flex justify-between flex-row mb-10">
       <text>isProxy(count):</text>
       <text id="is-proxy-count">{{ isProxyCount }}</text>
@@ -2211,7 +2193,7 @@ const isProxyShallowReadonlyCount = isProxy(shallowReadonlyCount);
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <view class="flex justify-between flex-row mb-10">
       <text>isReactive(count):</text>
       <text id="is-reactive-count">{{ isReactiveCount }}</text>
@@ -2283,7 +2265,7 @@ const isReactiveShallowReadonlyCount = isReactive(shallowReadonlyCount);
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <view class="flex justify-between flex-row mb-10">
       <text>isReadonly(count):</text>
       <text id="is-readonly-count">{{ isReadonlyCount }}</text>
@@ -2371,7 +2353,7 @@ const isReactiveShallowReadonlyCount = isReactive(shallowReadonlyCount);
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <view class="flex justify-between flex-row mb-10">
       <text>state.count:</text>
       <text id="state-count">{{ state['count'] }}</text>
@@ -2427,7 +2409,7 @@ const triggerRefState = () => {
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <view class="flex justify-between flex-row mb-10">
       <text>counter:</text>
       <text id="counter">{{ counter }}</text>
@@ -2492,7 +2474,7 @@ const stopEffectScope = () => scope.stop()
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <view class="flex justify-between flex-row mb-10">
       <text>hasCurrentScope:</text>
       <text id="has-current-scope">{{ hasCurrentScope }}</text>
@@ -2530,7 +2512,7 @@ const createScope = () => {
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <view class="flex justify-between flex-row mb-10">
       <text>hasCurrentScope:</text>
       <text id="has-current-scope">{{ hasCurrentScope }}</text>
@@ -2580,7 +2562,7 @@ const stopScope = () => {
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <view class="flex justify-between flex-row mb-10">
       <text>state.count:</text>
       <text id="state-count">{{ state.count }}</text>
@@ -2646,7 +2628,7 @@ defineExpose({
 
 ```vue
 <template>
-  <view :key="pageKey" class="page">
+  <view :key="pageKey" class="p-15">
     <view class="flex justify-between flex-row mb-10">
       <text>state.count:</text>
       <text id="state-count">{{ state.count }}</text>
@@ -2728,7 +2710,7 @@ defineExpose({
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <view class="flex justify-between flex-row mb-10">
       <text>state.count:</text>
       <text id="state-count">{{ state.count }}</text>
@@ -2775,7 +2757,7 @@ const updateState = () => {
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <view class="flex justify-between flex-row mb-10">
       <text>check toRaw ref:</text>
       <text id="check-to-raw-ref">{{ checkToRawRef }}</text>
@@ -2836,7 +2818,7 @@ const checkToRawShallowReadonly = toRaw<UTSJSONObject>(shallowReadonlyObj) === o
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <view class="flex justify-between flex-row mb-10">
       <text>state.count:</text>
       <text id="state-count">{{ state.count }}</text>
@@ -2907,6 +2889,8 @@ const triggerRefState = () => {
 </template>
 
 <script setup lang='uts'>
+  defineOptions({ styleIsolation: 'app' })
+
   const msg = inject<string>('msg')
   const num = inject('num')
   const obj = inject('obj')
@@ -2974,9 +2958,9 @@ onReady(() => {
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1" :bounces="false">
+  <scroll-view class="flex-1" :bounces="false">
     <!-- #endif -->
-    <view class="page container">
+    <view class="p-15 h-2200">
       <text>page lifecycle 组合式 API</text>
       <view class="flex flex-row justify-between mt-10">
         <text>onLoad 触发：</text>
@@ -3015,7 +2999,7 @@ onReady(() => {
         <text>{{ isOnResizeTriggered }}</text>
       </view>
       <view class="mt-10">
-        <MonitorAppLifecycleComposition class="monitor-app-lifecycle" />
+        <MonitorAppLifecycleComposition />
       </view>
       <view class="mt-10">
         <MonitorPageLifecycleComposition />
@@ -3179,12 +3163,6 @@ defineExpose({
 })
 </script>
 
-<style>
-.container {
-  height: 2200px;
-}
-</style>
-
 ```
 
 :::
@@ -3256,6 +3234,8 @@ defineExpose({
 </template>
 
 <script setup lang='uts'>
+defineOptions({ styleIsolation: 'app' })
+
 import { state, setLifeCycleNum } from '@/store/index.uts'
 
 const title = ref('component for composition API lifecycle test')
@@ -3418,9 +3398,9 @@ Web: 4.0; 微信小程序: √; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.1
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
+  <scroll-view class="flex-1">
     <!-- #endif -->
-    <view class="page">
+    <view class="p-15">
       <view class="flex justify-between flex-row mt-10">
         <text>str:</text>
         <text id="str">{{ str }}</text>
@@ -3549,7 +3529,7 @@ export default {
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <array-literal class="array-literal-component" :str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
     <object-type class="object-type-component" str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
     <same-name-prop-default-value class="same-name-prop-default-value-component" />
@@ -3668,7 +3648,7 @@ defineOptions({
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <view class="mb-10 flex justify-between flex-row">
       <text>component name: </text>
       <text id="component-name">{{ dataInfo.name }}</text>
@@ -3756,7 +3736,7 @@ defineExpose({
 ::: preview https://hellouvue.dcloud.net.cn/#/pages/component-instance/data/data-composition
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <view class="flex justify-between flex-row mb-10">
       <text>str: </text>
       <text id="str">{{ str }}</text>
@@ -3859,7 +3839,7 @@ defineExpose({
 ```vue
 <template>
   <view>
-    <view class="mb-10 flex justify-between flex-row">
+    <view id="model-shared-style-row" class="mb-10 flex justify-between flex-row">
       <text>v-model in Foo:</text>
       <text id="model-value-text">{{ modelValue }}</text>
     </view>
@@ -3894,6 +3874,8 @@ defineExpose({
 </template>
 
 <script setup lang="uts">
+defineOptions({ styleIsolation: 'app' })
+
 // 在被修改时，触发 "update:modelValue" 事件
 const modelValue = defineModel({ type: String })
 
@@ -3990,7 +3972,7 @@ const updateValue = () => {
 
 ```vue
 <template>
-  <view class="page">
+  <view class="p-15">
     <Foo>
       <template #header="{ msg }">
         <view class="mb-10 flex justify-between flex-row">
@@ -4085,6 +4067,8 @@ const updateValue = () => {
 </template>
 
 <script setup lang="uts">
+defineOptions({ styleIsolation: 'app' })
+
 defineEmits(['childClick'])
 
 defineProps({
@@ -4157,7 +4141,6 @@ declare function useComputedStyle(options: UseComputedStyleOptions | null): Map<
 	})
 </script>
 
-<style></style>
 ```
 
 :::
@@ -4193,7 +4176,7 @@ const props = withDefaults(defineProps<Props>(), {
 ```vue
 <template>
   <view class='mt-10'>
-    <text class="mb-10 bold">withDefaults</text>
+    <text class="mb-10 fw-bold">withDefaults</text>
     <view class="mb-10 flex flex-row justify-between">
       <text>msg</text>
       <text id="prop-msg">{{ props.msg }}</text>
@@ -4206,6 +4189,8 @@ const props = withDefaults(defineProps<Props>(), {
 </template>
 
 <script setup lang="uts">
+defineOptions({ styleIsolation: 'app' })
+
 type CustomPropsTestType = {
   a?: number
 }  
@@ -4255,7 +4240,7 @@ const render = ():VNode => {
   list.value.forEach((item) => {
     textList.push(h('text', { class: 'text-item' }, item))
   })
-  return h('view', { class: 'page' }, [
+  return h('view', { class: 'p-15' }, [
     h(CompForHFunctionWithSlot, {}, () : VNode[] => [h('text', { class: 'comp-slot' }, 'component slot')]),
     h(CompForHFunction, { msg: msg.value }),
     h('text', msgProps, msg.value),
@@ -4267,7 +4252,7 @@ const render = ():VNode => {
     h(
       'button',
       {
-        class: 'mt-10 btn',
+        class: 'mt-10 btn text-f00',
         type: 'primary',
         onClick: () => {
           msg.value = 'new msg'
@@ -4284,12 +4269,6 @@ const render = ():VNode => {
 </script>
 
 <template><render /></template>
-
-<style>
-.btn {
-  color: red;
-}
-</style>
 
 ```
 :::
