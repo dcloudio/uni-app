@@ -4939,41 +4939,43 @@ const getDevRootFragmentEl = (i) => {
 let publicPropertiesMap;
 let vaporPublicPropertiesMap;
 const getPublicPropertiesMap = (vapor = false) => {
-	if (!publicPropertiesMap) publicPropertiesMap = (0, _vue_shared.extend)(Object.create(null), {
-		$: (i) => i,
-		$el: (i) => i.vapor ? i.getRootElement() : getDevRootFragmentEl(i),
-		$data: (i) => i.data,
-		$props: (i) => /* @__PURE__ */ shallowReadonly(i.props),
-		$attrs: (i) => /* @__PURE__ */ shallowReadonly(i.attrs),
-		$slots: (i) => /* @__PURE__ */ shallowReadonly(i.slots),
-		$refs: (i) => /* @__PURE__ */ shallowReadonly(i.refs),
-		$parent: (i) => getPublicInstance(i.parent),
-		$root: (i) => getPublicInstance(i.root),
-		$page: (i) => i.page || null,
-		$host: (i) => i.ce,
-		$emit: (i) => i.emit,
-		$options: (i) => resolveMergedOptions(i),
-		$forceUpdate: (i) => i.f || (i.f = () => {
-			queueJob(i.update);
-		}),
-		$nextTick: (i) => i.n || (i.n = nextTick.bind(i.proxy)),
-		$watch: (i) => instanceWatch.bind(i)
-	});
-	if (vapor) {
-		if (!vaporPublicPropertiesMap) {
-			vaporPublicPropertiesMap = (0, _vue_shared.extend)(Object.create(null), publicPropertiesMap, { $callMethod: (i) => (methodName, ...args) => {
+	let map = vapor ? vaporPublicPropertiesMap : publicPropertiesMap;
+	if (!map) {
+		map = (0, _vue_shared.extend)(Object.create(null), {
+			$: (i) => i,
+			$el: (i) => i.vapor ? i.getRootElement() : getDevRootFragmentEl(i),
+			$data: (i) => i.data,
+			$props: (i) => /* @__PURE__ */ shallowReadonly(i.props),
+			$attrs: (i) => /* @__PURE__ */ shallowReadonly(i.attrs),
+			$slots: (i) => /* @__PURE__ */ shallowReadonly(i.slots),
+			$refs: (i) => /* @__PURE__ */ shallowReadonly(i.refs),
+			$parent: (i) => getPublicInstance(i.parent),
+			$root: (i) => getPublicInstance(i.root),
+			$page: (i) => i.page || null,
+			$host: (i) => i.ce,
+			$emit: (i) => i.emit,
+			$options: (i) => resolveMergedOptions(i),
+			$nextTick: (i) => i.n || (i.n = nextTick.bind(i.proxy))
+		});
+		if (vapor) {
+			map.$callMethod = (i) => (methodName, ...args) => {
 				const proxy = getComponentPublicInstance(i) || i.proxy;
 				if (!proxy) return null;
 				const method = proxy[methodName];
 				if (method) return method(...args);
 				console.error(`method ${methodName} not found`);
 				return null;
-			} });
-			delete vaporPublicPropertiesMap.$forceUpdate;
+			};
+			vaporPublicPropertiesMap = map;
+		} else {
+			map.$watch = (i) => instanceWatch.bind(i);
+			map.$forceUpdate = (i) => i.f || (i.f = () => {
+				queueJob(i.update);
+			});
+			publicPropertiesMap = map;
 		}
-		return vaporPublicPropertiesMap;
 	}
-	return publicPropertiesMap;
+	return map;
 };
 const isReservedPrefix = (key) => key === "_" || key === "$";
 const hasSetupBinding = (state, key) => state !== _vue_shared.EMPTY_OBJ && !state.__isScriptSetup && (0, _vue_shared.hasOwn)(state, key);

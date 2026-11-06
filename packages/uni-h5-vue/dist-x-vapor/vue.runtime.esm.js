@@ -4953,41 +4953,43 @@ const getDevRootFragmentEl = (i) => {
 let publicPropertiesMap;
 let vaporPublicPropertiesMap;
 const getPublicPropertiesMap = (vapor = false) => {
-	if (!publicPropertiesMap) publicPropertiesMap = extend$1(Object.create(null), {
-		$: (i) => i,
-		$el: (i) => i.vapor ? i.getRootElement() : !!(process.env.NODE_ENV !== "production") ? getDevRootFragmentEl(i) : i.vnode.el,
-		$data: (i) => i.data,
-		$props: (i) => !!(process.env.NODE_ENV !== "production") ? /* @__PURE__ */ shallowReadonly(i.props) : i.props,
-		$attrs: (i) => !!(process.env.NODE_ENV !== "production") ? /* @__PURE__ */ shallowReadonly(i.attrs) : i.attrs,
-		$slots: (i) => !!(process.env.NODE_ENV !== "production") ? /* @__PURE__ */ shallowReadonly(i.slots) : i.slots,
-		$refs: (i) => !!(process.env.NODE_ENV !== "production") ? /* @__PURE__ */ shallowReadonly(i.refs) : i.refs,
-		$parent: (i) => getPublicInstance(i.parent),
-		$root: (i) => getPublicInstance(i.root),
-		$page: (i) => i.page || null,
-		$host: (i) => i.ce,
-		$emit: (i) => i.emit,
-		$options: (i) => __VUE_OPTIONS_API__ ? resolveMergedOptions(i) : i.type,
-		$forceUpdate: (i) => i.f || (i.f = () => {
-			queueJob(i.update);
-		}),
-		$nextTick: (i) => i.n || (i.n = nextTick.bind(i.proxy)),
-		$watch: (i) => __VUE_OPTIONS_API__ ? instanceWatch.bind(i) : NOOP
-	});
-	if (vapor) {
-		if (!vaporPublicPropertiesMap) {
-			vaporPublicPropertiesMap = extend$1(Object.create(null), publicPropertiesMap, { $callMethod: (i) => (methodName, ...args) => {
+	let map = vapor ? vaporPublicPropertiesMap : publicPropertiesMap;
+	if (!map) {
+		map = extend$1(Object.create(null), {
+			$: (i) => i,
+			$el: (i) => i.vapor ? i.getRootElement() : !!(process.env.NODE_ENV !== "production") ? getDevRootFragmentEl(i) : i.vnode.el,
+			$data: (i) => i.data,
+			$props: (i) => !!(process.env.NODE_ENV !== "production") ? /* @__PURE__ */ shallowReadonly(i.props) : i.props,
+			$attrs: (i) => !!(process.env.NODE_ENV !== "production") ? /* @__PURE__ */ shallowReadonly(i.attrs) : i.attrs,
+			$slots: (i) => !!(process.env.NODE_ENV !== "production") ? /* @__PURE__ */ shallowReadonly(i.slots) : i.slots,
+			$refs: (i) => !!(process.env.NODE_ENV !== "production") ? /* @__PURE__ */ shallowReadonly(i.refs) : i.refs,
+			$parent: (i) => getPublicInstance(i.parent),
+			$root: (i) => getPublicInstance(i.root),
+			$page: (i) => i.page || null,
+			$host: (i) => i.ce,
+			$emit: (i) => i.emit,
+			$options: (i) => __VUE_OPTIONS_API__ ? resolveMergedOptions(i) : i.type,
+			$nextTick: (i) => i.n || (i.n = nextTick.bind(i.proxy))
+		});
+		if (vapor) {
+			map.$callMethod = (i) => (methodName, ...args) => {
 				const proxy = getComponentPublicInstance(i) || i.proxy;
 				if (!proxy) return null;
 				const method = proxy[methodName];
 				if (method) return method(...args);
 				console.error(`method ${methodName} not found`);
 				return null;
-			} });
-			delete vaporPublicPropertiesMap.$forceUpdate;
+			};
+			vaporPublicPropertiesMap = map;
+		} else {
+			map.$watch = (i) => __VUE_OPTIONS_API__ ? instanceWatch.bind(i) : NOOP;
+			map.$forceUpdate = (i) => i.f || (i.f = () => {
+				queueJob(i.update);
+			});
+			publicPropertiesMap = map;
 		}
-		return vaporPublicPropertiesMap;
 	}
-	return publicPropertiesMap;
+	return map;
 };
 const isReservedPrefix = (key) => key === "_" || key === "$";
 const hasSetupBinding = (state, key) => state !== EMPTY_OBJ && !state.__isScriptSetup && hasOwn(state, key);
