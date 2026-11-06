@@ -15,7 +15,7 @@ import { providePageMeta, usePageRoute } from '../../setup/provide'
 import { getStateId } from '../../../helpers/dom'
 import { stringifyQuery } from '@dcloudio/uni-shared'
 import PageHead from './pageHead-vapor'
-import PageBody from './pageBody-vapor'
+import usePageBody from './pageBody-vapor'
 import type { VaporPageRouteComponent } from './route-vapor'
 import { createDialogPageId } from '../../setup/page'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
@@ -147,14 +147,16 @@ export default /*#__PURE__*/ defineSystemComponent({
       }
     }
 
+    const renderPageBody = usePageBody(pageMeta, () => (
+      <PageComponent {...pageProps} ref={'page'}></PageComponent>
+    ))
+
     return () => (
       <uni-page data-page={pageMeta.route} style={pageStyle}>
         {__UNI_FEATURE_NAVIGATIONBAR__ && (
           <PageHead v-if={navigationBar.style !== 'custom'} />
         )}
-        <PageBody>
-          <PageComponent {...pageProps} ref={'page'}></PageComponent>
-        </PageBody>
+        {renderPageBody()}
         {createFor(
           () => getDialogPages(),
           (dialogPage) =>

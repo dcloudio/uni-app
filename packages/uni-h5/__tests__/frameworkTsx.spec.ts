@@ -300,7 +300,7 @@ describe('框架 TSX 动态行为', () => {
     }
   )
   test.each([true, false])(
-    'PageBody 保留插槽、刷新事件及安全区 ref（Vapor=%s）',
+    '页面正文保留刷新事件、安全区和响应式内容（Vapor=%s）',
     async (vapor) => {
       vue = vapor ? vaporVue : vdomVue
       const meta = vue.reactive({ enablePullDownRefresh: true })
@@ -331,7 +331,8 @@ describe('框架 TSX 动态行为', () => {
           default: stub(vapor, 'refresh-stub'),
         },
         './page-refresh': {
-          usePageRefresh: (ref: any) => {
+          usePageRefresh: (ref: any, explicitMeta?: any) => {
+            expect(explicitMeta).toBe(vapor ? meta : undefined)
             refreshRef = ref
             return { onTouchstart }
           },
@@ -344,15 +345,13 @@ describe('框架 TSX 动态行为', () => {
       const Parent = vapor
         ? vue.defineVaporComponent({
             setup: () =>
-              vue.createComponent(Component, null, {
-                default: () => {
-                  const element = slotTemplate()
-                  vue.renderEffect(() => {
-                    element.textContent = text.value
-                  })
-                  return element
-                },
-              }),
+              Component(meta, () => {
+                const element = slotTemplate()
+                vue.renderEffect(() => {
+                  element.textContent = text.value
+                })
+                return element
+              })(),
           })
         : vue.defineComponent({
             setup: () => () =>
@@ -365,7 +364,7 @@ describe('框架 TSX 动态行为', () => {
       const wrapper = host.querySelector('uni-page-wrapper') as HTMLElement
       expect(host.querySelector('uni-page-body')!.textContent).toBe('正文')
       const slotElement = host.querySelector('uni-page-body span')!
-      expect(slotElement.hasAttribute('data-v-page-body-s')).toBe(true)
+      expect(slotElement.hasAttribute('data-v-page-body-s')).toBe(!vapor)
       text.value = '更新正文'
       await vue.nextTick()
       expect(slotElement.textContent).toBe('更新正文')
@@ -400,10 +399,12 @@ describe('框架 TSX 动态行为', () => {
         return el
       },
     })
-    const Body = vue.defineVaporComponent({
-      setup(_: any, { slots }: any) {
-        return slots.default()
-      },
+    global.__UNI_FEATURE_PULL_DOWN_REFRESH__ = false
+    const usePageBody = load('page/pageBody', true, {
+      '@dcloudio/uni-components': { ResizeSensor: stub(true, 'resize-stub') },
+      './page-refresh/component.vue': {},
+      './page-refresh': {},
+      '../../../helpers/safeArea': {},
     })
     const Component = load('page/index-vapor', true, {
       '../../setup/provide': {
@@ -427,13 +428,15 @@ describe('框架 TSX 动态行为', () => {
         SYSTEM_DIALOG_TAG: 'system-dialog',
       },
       './pageHead-vapor': {},
-      './pageBody-vapor': { default: Body },
+      './pageBody-vapor': { default: usePageBody },
     })
     Component.__uniPageComponent = Content
     const host = mount(Component, true)
     await vue.nextTick()
     expect(host.querySelector('main')!.textContent).toBe(query.message)
     expect(pageInstance.refs.page).toBeTruthy()
+    const originalPageRef = pageInstance.refs.page
+    const originalPageElement = host.querySelector('main')
     let mounts = 0,
       unmounts = 0
     const Dialog = vue.defineVaporComponent({
@@ -472,6 +475,8 @@ describe('框架 TSX 动态行为', () => {
     await vue.nextTick()
     expect(host.querySelector('aside')).toBeNull()
     expect(unmounts).toBe(2)
+    expect(pageInstance.refs.page).toBe(originalPageRef)
+    expect(host.querySelector('main')).toBe(originalPageElement)
   })
 
   test.each([false, true])(

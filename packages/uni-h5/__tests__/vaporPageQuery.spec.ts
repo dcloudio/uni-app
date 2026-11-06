@@ -60,7 +60,7 @@ describe('Vapor 页面查询参数', () => {
       '@dcloudio/uni-shared': {},
       '../../setup/page': {},
       './pageHead-vapor': {},
-      './pageBody-vapor': {},
+      './pageBody-vapor': { default: () => () => [] },
     }
     const exports = {} as any
     new Function('require', 'exports', '__UNI_FEATURE_NAVIGATIONBAR__', code)(

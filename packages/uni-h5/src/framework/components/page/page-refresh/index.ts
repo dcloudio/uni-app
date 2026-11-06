@@ -32,8 +32,7 @@ const ABORTING = 'aborting'
 const REFRESHING = 'refreshing'
 const RESTORING = 'restoring'
 
-export function usePageRefresh(refreshRef: Ref) {
-  const pageMeta = usePageMeta()
+export function usePageRefresh(refreshRef: Ref, pageMeta = usePageMeta()) {
   const { id, pullToRefresh } = pageMeta
   const { range, height } = pullToRefresh!
   let refreshContainerElem: HTMLDivElement
