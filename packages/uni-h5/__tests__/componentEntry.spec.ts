@@ -56,6 +56,8 @@ describe('Web 框架组件入口', () => {
         'require',
         'exports',
         '__UNI_FEATURE_PAGES__',
+        '__VAPOR__',
+        '__DEV__',
         ts.transpileModule(code, {
           compilerOptions: { module: ts.ModuleKind.CommonJS },
         }).outputText
@@ -65,6 +67,8 @@ describe('Web 框架组件入口', () => {
           return imports[id]
         },
         exports,
+        false,
+        vapor,
         false
       )
       const app = { config: {} }
