@@ -6998,116 +6998,6 @@ function requestComponentObserver($el, options, callback) {
   }
   return intersectionObserver;
 }
-function removeNonTabBarPages(targetPageId) {
-  const curTabBarPageVm = getCurrentPageVm();
-  if (!curTabBarPageVm) {
-    return;
-  }
-  const pagesMap = getCurrentPagesMap();
-  const keys = pagesMap.keys();
-  for (const routeKey of keys) {
-    const page = pagesMap.get(routeKey);
-    if (!page.$.__isTabBar) {
-      removePage(routeKey);
-    } else {
-      page.$.__isActive = targetPageId !== void 0 && getPage$BasePage(page).id === targetPageId;
-    }
-  }
-  if (curTabBarPageVm.$.__isTabBar && (targetPageId === void 0 || getPage$BasePage(curTabBarPageVm).id !== targetPageId)) {
-    curTabBarPageVm.$.__isVisible = false;
-    invokeHook(curTabBarPageVm, ON_HIDE);
-  }
-}
-function isSamePage(url, $page) {
-  return url === $page.fullPath || url === "/" && $page.meta.isEntry;
-}
-function getTabBarPageId(url) {
-  const pages = getCurrentPagesMap().values();
-  for (const page of pages) {
-    const $page = getPage$BasePage(page);
-    if (isSamePage(url, $page)) {
-      page.$.__isActive = true;
-      return $page.id;
-    }
-  }
-}
-const switchTab = /* @__PURE__ */ defineAsyncApi(
-  API_SWITCH_TAB,
-  // @ts-expect-error
-  ({ url, tabBarText, isAutomatedTesting }, { resolve, reject }) => {
-    if (!entryPageState.handledBeforeEntryPageRoutes) {
-      switchTabPagesBeforeEntryPages.push({
-        args: { type: API_SWITCH_TAB, url, tabBarText, isAutomatedTesting },
-        resolve,
-        reject
-      });
-      return;
-    }
-    {
-      removeNonTabBarPages();
-    }
-    return navigate(
-      { type: API_SWITCH_TAB, url, tabBarText, isAutomatedTesting },
-      getTabBarPageId(url)
-    ).then(resolve).catch(reject);
-  },
-  SwitchTabProtocol,
-  SwitchTabOptions
-);
-function removeLastPage() {
-  const page = getCurrentPage();
-  if (!page) {
-    return;
-  }
-  const $page = getPage$BasePage(page);
-  removePage(normalizeRouteKey($page.path, $page.id));
-}
-const redirectTo = /* @__PURE__ */ defineAsyncApi(
-  API_REDIRECT_TO,
-  // @ts-expect-error
-  ({ url, isAutomatedTesting }, { resolve, reject }) => {
-    if (!entryPageState.handledBeforeEntryPageRoutes) {
-      redirectToPagesBeforeEntryPages.push({
-        args: { type: API_REDIRECT_TO, url, isAutomatedTesting },
-        resolve,
-        reject
-      });
-      return;
-    }
-    {
-      removeLastPage();
-    }
-    return navigate({ type: API_REDIRECT_TO, url, isAutomatedTesting }).then(resolve).catch(reject);
-  },
-  RedirectToProtocol,
-  RedirectToOptions
-);
-function removeAllPages() {
-  const keys = getCurrentPagesMap().keys();
-  for (const routeKey of keys) {
-    removePage(routeKey);
-  }
-}
-const reLaunch = /* @__PURE__ */ defineAsyncApi(
-  API_RE_LAUNCH,
-  // @ts-expect-error
-  ({ url, isAutomatedTesting }, { resolve, reject }) => {
-    if (!entryPageState.handledBeforeEntryPageRoutes) {
-      reLaunchPagesBeforeEntryPages.push({
-        args: { type: API_RE_LAUNCH, url, isAutomatedTesting },
-        resolve,
-        reject
-      });
-      return;
-    }
-    {
-      removeAllPages();
-    }
-    return navigate({ type: API_RE_LAUNCH, url, isAutomatedTesting }).then(resolve).catch(reject);
-  },
-  ReLaunchProtocol,
-  ReLaunchOptions
-);
 function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__) {
   if (process.env.NODE_ENV !== "production" && !__UNI_FEATURE_PAGES__) {
     console.warn(
@@ -7163,38 +7053,16 @@ function handleBeforeEntryPageRoutes() {
     return;
   }
   entryPageState.handledBeforeEntryPageRoutes = true;
-  const navigateToPages = [...navigateToPagesBeforeEntryPages];
-  navigateToPagesBeforeEntryPages.length = 0;
-  navigateToPages.forEach(
-    ({ args, resolve, reject }) => (
-      // @ts-expect-error
-      navigate(args).then(resolve).catch(reject)
-    )
-  );
-  const switchTabPages = [...switchTabPagesBeforeEntryPages];
-  switchTabPagesBeforeEntryPages.length = 0;
-  switchTabPages.forEach(({ args, resolve, reject }) => {
-    {
-      removeNonTabBarPages();
-    }
-    navigate(args, getTabBarPageId(args.url)).then(resolve).catch(reject);
-  });
-  const redirectToPages = [...redirectToPagesBeforeEntryPages];
-  redirectToPagesBeforeEntryPages.length = 0;
-  redirectToPages.forEach(({ args, resolve, reject }) => {
-    {
-      removeLastPage();
-    }
-    navigate(args).then(resolve).catch(reject);
-  });
-  const reLaunchPages = [...reLaunchPagesBeforeEntryPages];
-  reLaunchPagesBeforeEntryPages.length = 0;
-  reLaunchPages.forEach(({ args, resolve, reject }) => {
-    {
-      removeAllPages();
-    }
-    navigate(args).then(resolve).catch(reject);
-  });
+  for (const queue2 of [
+    navigateToPagesBeforeEntryPages,
+    switchTabPagesBeforeEntryPages,
+    redirectToPagesBeforeEntryPages,
+    reLaunchPagesBeforeEntryPages
+  ]) {
+    const pending = [...queue2];
+    queue2.length = 0;
+    pending.forEach((execute) => execute());
+  }
 }
 const ua = navigator.userAgent;
 const isAndroid = /* @__PURE__ */ /android/i.test(ua);
@@ -17440,7 +17308,7 @@ const index$e = {
     initApp$1(app);
     initViewPlugin(app);
     initServicePlugin(app);
-    if (!app.config.warnHandler) {
+    if ((process.env.NODE_ENV !== "production" || true) && !app.config.warnHandler) {
       app.config.warnHandler = warnHandler;
     }
     if (__UNI_FEATURE_PAGES__) {
@@ -23002,13 +22870,13 @@ const navigateBack = /* @__PURE__ */ defineAsyncApi(
 );
 const navigateTo = /* @__PURE__ */ defineAsyncApi(
   API_NAVIGATE_TO,
-  // @ts-expect-error
-  ({ url, events, isAutomatedTesting }, { resolve, reject }) => {
+  function navigateTo2(args, callbacks2) {
+    const { url, events, isAutomatedTesting } = args;
+    const { resolve, reject } = callbacks2;
     if (!entryPageState.handledBeforeEntryPageRoutes) {
-      navigateToPagesBeforeEntryPages.push({
-        args: { type: API_NAVIGATE_TO, url, events, isAutomatedTesting },
-        resolve,
-        reject
+      const options = { url, events, isAutomatedTesting };
+      navigateToPagesBeforeEntryPages.push(() => {
+        navigateTo2(options, callbacks2);
       });
       return;
     }
@@ -23016,6 +22884,116 @@ const navigateTo = /* @__PURE__ */ defineAsyncApi(
   },
   NavigateToProtocol,
   NavigateToOptions
+);
+function removeLastPage() {
+  const page = getCurrentPage();
+  if (!page) {
+    return;
+  }
+  const $page = getPage$BasePage(page);
+  removePage(normalizeRouteKey($page.path, $page.id));
+}
+const redirectTo = /* @__PURE__ */ defineAsyncApi(
+  API_REDIRECT_TO,
+  function redirectTo2(args, callbacks2) {
+    const { url, isAutomatedTesting } = args;
+    const { resolve, reject } = callbacks2;
+    if (!entryPageState.handledBeforeEntryPageRoutes) {
+      const options = { url, isAutomatedTesting };
+      redirectToPagesBeforeEntryPages.push(() => {
+        redirectTo2(options, callbacks2);
+      });
+      return;
+    }
+    {
+      removeLastPage();
+    }
+    return navigate({ type: API_REDIRECT_TO, url, isAutomatedTesting }).then(resolve).catch(reject);
+  },
+  RedirectToProtocol,
+  RedirectToOptions
+);
+function removeAllPages() {
+  const keys = getCurrentPagesMap().keys();
+  for (const routeKey of keys) {
+    removePage(routeKey);
+  }
+}
+const reLaunch = /* @__PURE__ */ defineAsyncApi(
+  API_RE_LAUNCH,
+  function reLaunch2(args, callbacks2) {
+    const { url, isAutomatedTesting } = args;
+    const { resolve, reject } = callbacks2;
+    if (!entryPageState.handledBeforeEntryPageRoutes) {
+      const options = { url, isAutomatedTesting };
+      reLaunchPagesBeforeEntryPages.push(() => {
+        reLaunch2(options, callbacks2);
+      });
+      return;
+    }
+    {
+      removeAllPages();
+    }
+    return navigate({ type: API_RE_LAUNCH, url, isAutomatedTesting }).then(resolve).catch(reject);
+  },
+  ReLaunchProtocol,
+  ReLaunchOptions
+);
+function removeNonTabBarPages(targetPageId) {
+  const curTabBarPageVm = getCurrentPageVm();
+  if (!curTabBarPageVm) {
+    return;
+  }
+  const pagesMap = getCurrentPagesMap();
+  const keys = pagesMap.keys();
+  for (const routeKey of keys) {
+    const page = pagesMap.get(routeKey);
+    if (!page.$.__isTabBar) {
+      removePage(routeKey);
+    } else {
+      page.$.__isActive = targetPageId !== void 0 && getPage$BasePage(page).id === targetPageId;
+    }
+  }
+  if (curTabBarPageVm.$.__isTabBar && (targetPageId === void 0 || getPage$BasePage(curTabBarPageVm).id !== targetPageId)) {
+    curTabBarPageVm.$.__isVisible = false;
+    invokeHook(curTabBarPageVm, ON_HIDE);
+  }
+}
+function isSamePage(url, $page) {
+  return url === $page.fullPath || url === "/" && $page.meta.isEntry;
+}
+function getTabBarPageId(url) {
+  const pages = getCurrentPagesMap().values();
+  for (const page of pages) {
+    const $page = getPage$BasePage(page);
+    if (isSamePage(url, $page)) {
+      page.$.__isActive = true;
+      return $page.id;
+    }
+  }
+}
+const switchTab = /* @__PURE__ */ defineAsyncApi(
+  API_SWITCH_TAB,
+  function switchTab2(args, callbacks2) {
+    const { url, tabBarText, isAutomatedTesting } = args;
+    const { resolve, reject } = callbacks2;
+    if (!entryPageState.handledBeforeEntryPageRoutes) {
+      const options = { url, tabBarText, isAutomatedTesting };
+      switchTabPagesBeforeEntryPages.push(() => {
+        switchTab2(options, callbacks2);
+      });
+      return;
+    }
+    {
+      removeNonTabBarPages();
+    }
+    return navigate(
+      { type: API_SWITCH_TAB, url, tabBarText, isAutomatedTesting },
+      getTabBarPageId(url)
+    ).then(resolve).catch(reject);
+  },
+  SwitchTabProtocol,
+  SwitchTabOptions
 );
 const preloadPage = /* @__PURE__ */ defineAsyncApi(
   API_PRELOAD_PAGE,
@@ -23931,8 +23909,9 @@ const setNavigationBarColor = /* @__PURE__ */ defineAsyncApi(
 const showNavigationBarLoading = /* @__PURE__ */ defineAsyncApi(
   API_SHOW_NAVIGATION_BAR_LOADING,
   (args, { resolve, reject }) => {
+    const pageMeta = getCurrentPageMeta();
     setNavigationBar(
-      getCurrentPageMeta(),
+      pageMeta,
       API_SHOW_NAVIGATION_BAR_LOADING,
       args || {},
       resolve,
@@ -28160,8 +28139,7 @@ const REACHED = "reached";
 const ABORTING = "aborting";
 const REFRESHING = "refreshing";
 const RESTORING = "restoring";
-function usePageRefresh(refreshRef) {
-  const pageMeta = usePageMeta();
+function usePageRefresh(refreshRef, pageMeta = usePageMeta()) {
   const { id: id2, pullToRefresh } = pageMeta;
   const { range, height } = pullToRefresh;
   let refreshContainerElem;

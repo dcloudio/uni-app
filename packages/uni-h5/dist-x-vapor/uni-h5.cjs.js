@@ -530,9 +530,9 @@ const INVOKE_SERVICE_API = "invokeServiceApi";
 let invokeServiceMethodId = 1;
 const invokeServiceMethod = (name, args, callback) => {
   const { subscribe, publishHandler } = UniViewJSBridge;
-  const id2 = callback ? invokeServiceMethodId++ : 0;
-  callback && subscribe(INVOKE_SERVICE_API + "." + id2, callback, true);
-  publishHandler(INVOKE_SERVICE_API, { id: id2, name, args });
+  const id = callback ? invokeServiceMethodId++ : 0;
+  callback && subscribe(INVOKE_SERVICE_API + "." + id, callback, true);
+  publishHandler(INVOKE_SERVICE_API, { id, name, args });
 };
 const viewMethods = /* @__PURE__ */ Object.create(null);
 function normalizeViewMethodName(pageId, name) {
@@ -749,6 +749,36 @@ function updateCssVar(cssVars) {
 function updatePageCssVar(cssVars) {
   return updateCssVar(cssVars);
 }
+const sheetsMap = /* @__PURE__ */ new Map();
+function updateStyle(id, content) {
+  let style = sheetsMap.get(id);
+  if (style && !(style instanceof HTMLStyleElement)) {
+    removeStyle(id);
+    style = void 0;
+  }
+  if (!style) {
+    style = document.createElement("style");
+    style.setAttribute("type", "text/css");
+    style.innerHTML = content;
+    document.head.appendChild(style);
+  } else {
+    style.innerHTML = content;
+  }
+  sheetsMap.set(id, style);
+}
+function removeStyle(id) {
+  let style = sheetsMap.get(id);
+  if (style) {
+    if (style instanceof CSSStyleSheet) {
+      document.adoptedStyleSheets = document.adoptedStyleSheets.filter(
+        (s) => s !== style
+      );
+    } else {
+      document.head.removeChild(style);
+    }
+    sheetsMap.delete(id);
+  }
+}
 function PolySymbol(name) {
   return Symbol(process.env.NODE_ENV !== "production" ? "[uni-app]: " + name : name);
 }
@@ -835,9 +865,9 @@ const PAGE_META_KEYS = ["navigationBar", "pullToRefresh"];
 function initGlobalStyle() {
   return JSON.parse(JSON.stringify(__uniConfig.globalStyle || {}));
 }
-function initRouteMeta(pageMeta, id2) {
+function initRouteMeta(pageMeta, id) {
   const globalStyle = initGlobalStyle();
-  const res = shared.extend({ id: id2 }, globalStyle, pageMeta);
+  const res = shared.extend({ id }, globalStyle, pageMeta);
   PAGE_META_KEYS.forEach((name) => {
     res[name] = shared.extend({}, globalStyle[name], pageMeta[name]);
   });
@@ -858,14 +888,14 @@ function normalizePullToRefreshRpx(pullToRefresh) {
   return pullToRefresh;
 }
 function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel, themeMode) {
-  const { id: id2, route } = meta;
+  const { id, route } = meta;
   const titleColor = uniShared.normalizeStyles(
     meta.navigationBar,
     __uniConfig.themeConfig,
     themeMode
   ).titleColor;
   return {
-    id: id2,
+    id,
     path: uniShared.addLeadingSlash(route),
     route,
     fullPath: url,
@@ -903,17 +933,6 @@ function invokeHook(vm, name, args) {
     return hooks && uniShared.invokeArrayFnsWithResults(hooks, args).some((ret) => ret === true);
   }
   return hooks && uniShared.invokeArrayFns(hooks, args);
-}
-function normalizeRoute(toRoute) {
-  if (toRoute.indexOf("/") === 0 || toRoute.indexOf("uni:") === 0) {
-    return toRoute;
-  }
-  let fromRoute = "";
-  const pages = getCurrentPages();
-  if (pages.length) {
-    fromRoute = get$pageByPage(pages[pages.length - 1]).route;
-  }
-  return getRealRoute(fromRoute, toRoute);
 }
 function getRealRoute(fromRoute, toRoute) {
   if (toRoute.indexOf("/") === 0) {
@@ -1111,16 +1130,16 @@ function publishViewMethodName(pageId) {
 }
 const invokeViewMethod = (name, args, pageId, callback) => {
   const { subscribe, publishHandler } = UniServiceJSBridge;
-  const id2 = callback ? invokeViewMethodId++ : 0;
-  callback && subscribe(INVOKE_VIEW_API + "." + id2, callback, true);
-  publishHandler(publishViewMethodName(pageId), { id: id2, name, args }, pageId);
+  const id = callback ? invokeViewMethodId++ : 0;
+  callback && subscribe(INVOKE_VIEW_API + "." + id, callback, true);
+  publishHandler(publishViewMethodName(pageId), { id, name, args }, pageId);
 };
 const invokeViewMethodKeepAlive = (name, args, callback, pageId) => {
   const { subscribe, unsubscribe, publishHandler } = UniServiceJSBridge;
-  const id2 = invokeViewMethodId++;
-  const subscribeName = INVOKE_VIEW_API + "." + id2;
+  const id = invokeViewMethodId++;
+  const subscribeName = INVOKE_VIEW_API + "." + id;
   subscribe(subscribeName, callback);
-  publishHandler(publishViewMethodName(pageId), { id: id2, name, args }, pageId);
+  publishHandler(publishViewMethodName(pageId), { id, name, args }, pageId);
   return () => {
     unsubscribe(subscribeName);
   };
@@ -2466,8 +2485,8 @@ function useContextInfo(_id) {
   const instance = Vue.getCurrentInstance();
   const vm = instance.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id2 = vm.id || `context${index$6++}`;
-  return `${type}.${id2}`;
+  const id = vm.id || `context${index$6++}`;
+  return `${type}.${id}`;
 }
 function entries(obj) {
   return Object.keys(obj).map((key) => [key, obj[key]]);
@@ -2513,8 +2532,8 @@ const pageMetaKey = PolySymbol(process.env.NODE_ENV !== "production" ? "UniPageM
 function usePageMeta() {
   return Vue.inject(pageMetaKey);
 }
-function providePageMeta(id2) {
-  const pageMeta = initPageMeta(id2);
+function providePageMeta(id) {
+  const pageMeta = initPageMeta(id);
   Vue.provide(pageMetaKey, pageMeta);
   return pageMeta;
 }
@@ -2540,7 +2559,7 @@ function usePageRoute() {
     matched: [{ path }]
   };
 }
-function initPageMeta(id2) {
+function initPageMeta(id) {
   if (__UNI_FEATURE_PAGES__) {
     return Vue.reactive(
       normalizePageMeta(
@@ -2548,7 +2567,7 @@ function initPageMeta(id2) {
           JSON.stringify(
             initRouteMeta(
               vueRouter.useRoute().meta,
-              id2
+              id
             )
           )
         )
@@ -2557,7 +2576,7 @@ function initPageMeta(id2) {
   }
   return Vue.reactive(
     normalizePageMeta(
-      JSON.parse(JSON.stringify(initRouteMeta(__uniRoutes[0].meta, id2)))
+      JSON.parse(JSON.stringify(initRouteMeta(__uniRoutes[0].meta, id)))
     )
   );
 }
@@ -2601,13 +2620,6 @@ function getStateId() {
   {
     return 1;
   }
-}
-let router;
-function setRouterInstance(value) {
-  router = value;
-}
-function getRouterInstance() {
-  return router;
 }
 const HTTP_METHODS = [
   "GET",
@@ -2768,68 +2780,25 @@ function tryCatch(fn) {
 }
 let invokeCallbackId = 1;
 const invokeCallbacks = {};
-function addInvokeCallback(id2, name, callback, keepAlive = false) {
-  invokeCallbacks[id2] = {
+function addInvokeCallback(id, name, callback, keepAlive = false) {
+  invokeCallbacks[id] = {
     name,
     keepAlive,
     callback
   };
-  return id2;
+  return id;
 }
-function invokeCallback(id2, res, extras) {
-  if (typeof id2 === "number") {
-    const opts = invokeCallbacks[id2];
+function invokeCallback(id, res, extras) {
+  if (typeof id === "number") {
+    const opts = invokeCallbacks[id];
     if (opts) {
       if (!opts.keepAlive) {
-        delete invokeCallbacks[id2];
+        delete invokeCallbacks[id];
       }
       return opts.callback(res, extras);
     }
   }
   return res;
-}
-function findInvokeCallbackByName(name) {
-  for (const key in invokeCallbacks) {
-    if (invokeCallbacks[key].name === name) {
-      return true;
-    }
-  }
-  return false;
-}
-function removeKeepAliveApiCallback(name, callback) {
-  for (const key in invokeCallbacks) {
-    const item = invokeCallbacks[key];
-    if (item.callback === callback && item.name === name) {
-      delete invokeCallbacks[key];
-    }
-  }
-}
-function removeAllKeepAliveApiCallbacks(name) {
-  for (const key in invokeCallbacks) {
-    if (invokeCallbacks[key].name === name) {
-      delete invokeCallbacks[key];
-    }
-  }
-}
-function offKeepAliveApiCallback(name, eventTransport2) {
-  const eventName = eventTransport2 ? name : "api." + name;
-  const transport = eventTransport2 || UniServiceJSBridge;
-  transport.off(eventName);
-}
-function onKeepAliveApiCallback(name, eventTransport2) {
-  const eventName = eventTransport2 ? name : "api." + name;
-  const transport = eventTransport2 || UniServiceJSBridge;
-  transport.on(eventName, (res) => {
-    for (const key in invokeCallbacks) {
-      const opts = invokeCallbacks[key];
-      if (opts.name === name) {
-        opts.callback(res);
-      }
-    }
-  });
-}
-function createKeepAliveApiCallback(name, callback) {
-  return addInvokeCallback(invokeCallbackId++, name, callback, true);
 }
 const API_SUCCESS = "success";
 const API_FAIL = "fail";
@@ -3044,16 +3013,16 @@ function formatApiArgs(args, options) {
     }
   }
 }
-function invokeSuccess(id2, name, res) {
+function invokeSuccess(id, name, res) {
   const result = {
     errMsg: name + ":ok"
   };
   {
     result.errSubject = name;
   }
-  return invokeCallback(id2, shared.extend(res || {}, result));
+  return invokeCallback(id, shared.extend(res || {}, result));
 }
-function invokeFail(id2, name, errMsg, errRes = {}) {
+function invokeFail(id, name, errMsg, errRes = {}) {
   const errMsgPrefix = name + ":fail";
   let apiErrMsg = "";
   if (!errMsg) {
@@ -3073,7 +3042,7 @@ function invokeFail(id2, name, errMsg, errRes = {}) {
       res = new UniError(apiErrMsg, errOptions);
     }
   }
-  return invokeCallback(id2, res);
+  return invokeCallback(id, res);
 }
 function beforeInvokeApi(name, args, protocol, options) {
   if (process.env.NODE_ENV !== "production") {
@@ -3090,56 +3059,6 @@ function beforeInvokeApi(name, args, protocol, options) {
     return errMsg;
   }
 }
-function checkCallback(callback) {
-  if (!shared.isFunction(callback)) {
-    throw new Error(
-      'Invalid args: type check failed for args "callback". Expected Function'
-    );
-  }
-}
-function wrapperOnApi(name, fn, options) {
-  return (callback) => {
-    checkCallback(callback);
-    const errMsg = beforeInvokeApi(name, [callback], void 0, options);
-    if (errMsg) {
-      throw new Error(errMsg);
-    }
-    const isFirstInvokeOnApi = !findInvokeCallbackByName(name);
-    createKeepAliveApiCallback(name, callback);
-    if (isFirstInvokeOnApi) {
-      onKeepAliveApiCallback(name, options == null ? void 0 : options.eventTransport);
-      fn();
-    }
-  };
-}
-function wrapperOffApi(name, fn, options) {
-  return (callback) => {
-    const clearAll = (options == null ? void 0 : options.allowClearAll) === true && callback == null;
-    if (!clearAll) {
-      checkCallback(callback);
-    }
-    const errMsg = beforeInvokeApi(
-      name,
-      clearAll ? [] : [callback],
-      void 0,
-      options
-    );
-    if (errMsg) {
-      throw new Error(errMsg);
-    }
-    const onApiName = name.replace("off", "on");
-    if (clearAll) {
-      removeAllKeepAliveApiCallbacks(onApiName);
-    } else {
-      removeKeepAliveApiCallback(onApiName, callback);
-    }
-    const hasInvokeOnApi = findInvokeCallbackByName(onApiName);
-    if (!hasInvokeOnApi) {
-      offKeepAliveApiCallback(onApiName, options == null ? void 0 : options.eventTransport);
-      fn();
-    }
-  };
-}
 function parseErrMsg(errMsg) {
   if (!errMsg || shared.isString(errMsg)) {
     return errMsg;
@@ -3151,14 +3070,14 @@ function parseErrMsg(errMsg) {
 }
 function wrapperTaskApi(name, fn, protocol, options) {
   return (args) => {
-    const id2 = createAsyncApiCallback(name, args, options);
+    const id = createAsyncApiCallback(name, args, options);
     const errMsg = beforeInvokeApi(name, [args], protocol, options);
     if (errMsg) {
-      return invokeFail(id2, name, errMsg);
+      return invokeFail(id, name, errMsg);
     }
     return fn(args, {
-      resolve: (res) => invokeSuccess(id2, name, res),
-      reject: (errMsg2, errRes) => invokeFail(id2, name, parseErrMsg(errMsg2), errRes)
+      resolve: (res) => invokeSuccess(id, name, res),
+      reject: (errMsg2, errRes) => invokeFail(id, name, parseErrMsg(errMsg2), errRes)
     });
   };
 }
@@ -3173,12 +3092,6 @@ function wrapperSyncApi(name, fn, protocol, options) {
 }
 function wrapperAsyncApi(name, fn, protocol, options) {
   return wrapperTaskApi(name, fn, protocol, options);
-}
-function defineOnApi(name, fn, options) {
-  return wrapperOnApi(name, fn, options);
-}
-function defineOffApi(name, fn, options) {
-  return wrapperOffApi(name, fn, options);
 }
 function defineTaskApi(name, fn, protocol, options) {
   return promisify(
@@ -3212,154 +3125,6 @@ const getLocale = /* @__PURE__ */ defineSyncApi(
     return useI18n().getLocale();
   }
 );
-const API_ON_APP_ROUTE = "onAppRoute";
-const API_OFF_APP_ROUTE = "offAppRoute";
-const API_ON_BEFORE_APP_ROUTE = "onBeforeAppRoute";
-const API_OFF_BEFORE_APP_ROUTE = "offBeforeAppRoute";
-const API_REWRITE_ROUTE = "rewriteRoute";
-const eventTransport = /* @__PURE__ */ new uniShared.Emitter();
-let activeBeforeAppRouteContext;
-const MAX_APP_ROUTE_REWRITE_COUNT = 100;
-const APP_ROUTE_ERROR_CODE = 4;
-function createAppRouteRuntime(options = {}) {
-  let routeEventId = 0;
-  const onAppRoute = /* @__PURE__ */ defineOnApi(API_ON_APP_ROUTE, () => {
-  }, {
-    eventTransport
-  });
-  const offAppRoute = /* @__PURE__ */ defineOffApi(API_OFF_APP_ROUTE, () => {
-  }, {
-    allowClearAll: true,
-    eventTransport
-  });
-  const onBeforeAppRoute = /* @__PURE__ */ defineOnApi(
-    API_ON_BEFORE_APP_ROUTE,
-    () => {
-    },
-    { eventTransport }
-  );
-  const offBeforeAppRoute = /* @__PURE__ */ defineOffApi(
-    API_OFF_BEFORE_APP_ROUTE,
-    () => {
-    },
-    {
-      allowClearAll: true,
-      eventTransport
-    }
-  );
-  const rewriteRoute = /* @__PURE__ */ defineAsyncApi(
-    API_REWRITE_ROUTE,
-    ({ url, preserveQuery }, { resolve, reject }) => {
-      const rejectRewriteRoute = (errMsg) => reject(errMsg, { errCode: APP_ROUTE_ERROR_CODE });
-      const context = activeBeforeAppRouteContext;
-      if (!context) {
-        rejectRewriteRoute(
-          "rewriteRoute is only allowed in a onBeforeAppRoute callback"
-        );
-        return;
-      }
-      if (context.event.openType === "navigateBack") {
-        rejectRewriteRoute(
-          'a "navigateBack" event is not allowed to be rewritten'
-        );
-        return;
-      }
-      if (context.rewrite) {
-        rejectRewriteRoute(
-          `rewriteRoute can only be called once in a route event, this page has been rewritten to "${context.rewrite.path}"`
-        );
-        return;
-      }
-      if ((context.rewriteCount || 0) >= MAX_APP_ROUTE_REWRITE_COUNT) {
-        rejectRewriteRoute(
-          `rewriteRoute exceeded the maximum rewrite count of ${MAX_APP_ROUTE_REWRITE_COUNT}`
-        );
-        return;
-      }
-      if (!context.normalizeRewriteRoute) {
-        rejectRewriteRoute("not supported");
-        return;
-      }
-      const rewrite = context.normalizeRewriteRoute(
-        { url, preserveQuery },
-        context.event
-      );
-      if (typeof rewrite === "string") {
-        rejectRewriteRoute(rewrite);
-        return;
-      }
-      context.rewrite = rewrite;
-      resolve();
-    },
-    {
-      url: {
-        type: String,
-        required: true
-      },
-      preserveQuery: Boolean
-    }
-  );
-  function createAppRouteContext2(event) {
-    const timeStamp = event.timeStamp ?? Date.now();
-    return {
-      event: {
-        path: event.path,
-        query: Object.assign({}, event.query),
-        openType: event.openType,
-        notFound: event.notFound,
-        timeStamp,
-        routeEventId: event.routeEventId ?? `${timeStamp}-${++routeEventId}`
-      },
-      normalizeRewriteRoute: options.normalizeRewriteRoute
-    };
-  }
-  function dispatchBeforeAppRoute(context) {
-    const event = context.event;
-    const beforeEvent = {
-      path: event.path,
-      query: Object.assign({}, event.query),
-      openType: event.openType,
-      notFound: event.notFound,
-      routeEventId: event.routeEventId
-    };
-    const previousContext = activeBeforeAppRouteContext;
-    activeBeforeAppRouteContext = context;
-    try {
-      eventTransport.emit(API_ON_BEFORE_APP_ROUTE, beforeEvent);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      activeBeforeAppRouteContext = previousContext;
-    }
-    return context.rewrite;
-  }
-  function dispatchAppRoute(context) {
-    const event = context.event;
-    try {
-      const routeEvent = {
-        path: event.path,
-        query: Object.assign({}, event.query),
-        openType: event.openType,
-        notFound: event.notFound,
-        timeStamp: event.timeStamp,
-        routeEventId: event.routeEventId
-      };
-      eventTransport.emit(API_ON_APP_ROUTE, routeEvent);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-  return {
-    onAppRoute,
-    offAppRoute,
-    onBeforeAppRoute,
-    offBeforeAppRoute,
-    rewriteRoute,
-    createAppRouteContext: createAppRouteContext2,
-    dispatchBeforeAppRoute,
-    dispatchAppRoute
-  };
-}
 const API_GET_STORAGE = "getStorage";
 const GetStorageProtocol = {
   key: {
@@ -3482,93 +3247,6 @@ const RequestOptions = {
     }
   }
 };
-function encodeQueryString(url) {
-  if (!shared.isString(url)) {
-    return url;
-  }
-  const index2 = url.indexOf("?");
-  if (index2 === -1) {
-    return url;
-  }
-  const query = url.slice(index2 + 1).trim().replace(/^(\?|#|&)/, "");
-  if (!query) {
-    return url;
-  }
-  url = url.slice(0, index2);
-  const params = [];
-  query.split("&").forEach((param) => {
-    const parts = param.replace(/\+/g, " ").split("=");
-    const key = parts.shift();
-    const val = parts.length > 0 ? parts.join("=") : "";
-    params.push(key + "=" + encodeURIComponent(val));
-  });
-  return params.length ? url + "?" + params.join("&") : url;
-}
-const API_NAVIGATE_TO = "navigateTo";
-const API_REDIRECT_TO = "redirectTo";
-const API_SWITCH_TAB = "switchTab";
-const API_PRELOAD_PAGE = "preloadPage";
-const API_UN_PRELOAD_PAGE = "unPreloadPage";
-let navigatorLock;
-let navigatorLockId = 0;
-function beforeRoute() {
-  navigatorLock = "";
-  navigatorLockId++;
-}
-function createNormalizeUrl(type, options = {}) {
-  return function normalizeUrl(url, params) {
-    var _a;
-    if (!url) {
-      return `Missing required args: "url"`;
-    }
-    url = normalizeRoute(url);
-    const pagePath = url.split("?")[0];
-    const routeOptions = getRouteOptions(pagePath, true);
-    if (!routeOptions) {
-      return "page `" + url + "` is not found";
-    }
-    if (type === API_NAVIGATE_TO || type === API_REDIRECT_TO) {
-      if (routeOptions.meta.isTabBar) {
-        return `can not ${type} a tabbar page`;
-      }
-    } else if (type === API_SWITCH_TAB) {
-      if (!routeOptions.meta.isTabBar) {
-        return "can not switch to no-tabBar page";
-      }
-    }
-    if ((type === API_SWITCH_TAB || type === API_PRELOAD_PAGE) && routeOptions.meta.isTabBar && params.openType !== "appLaunch") {
-      url = pagePath;
-    }
-    if (routeOptions.meta.isEntry) {
-      url = url.replace(routeOptions.alias, "/");
-    }
-    params.url = encodeQueryString(url);
-    if (type === API_UN_PRELOAD_PAGE) {
-      return;
-    } else if (type === API_PRELOAD_PAGE) {
-      if (routeOptions.meta.isTabBar) {
-        const pages = getCurrentPages();
-        const tabBarPagePath = routeOptions.path.slice(1);
-        if (pages.find((page) => page.route === tabBarPagePath)) {
-          return "tabBar page `" + tabBarPagePath + "` already exists";
-        }
-      }
-      return;
-    }
-    if (!options.skipNavigatorLock && navigatorLock === url && params.openType !== "appLaunch") {
-      return `${navigatorLock} locked`;
-    }
-    if (!options.skipNavigatorLock && __uniConfig.ready) {
-      navigatorLock = url;
-      const lockId = ++navigatorLockId;
-      (_a = options.onNavigatorLock) == null ? void 0 : _a.call(options, () => {
-        if (lockId === navigatorLockId) {
-          beforeRoute();
-        }
-      });
-    }
-  };
-}
 const API_SET_NAVIGATION_BAR_COLOR = "setNavigationBarColor";
 const API_SET_NAVIGATION_BAR_TITLE = "setNavigationBarTitle";
 const SetNavigationBarTitleProtocol = {
@@ -3579,197 +3257,21 @@ const SetNavigationBarTitleProtocol = {
 };
 const API_SHOW_NAVIGATION_BAR_LOADING = "showNavigationBarLoading";
 const API_HIDE_NAVIGATION_BAR_LOADING = "hideNavigationBarLoading";
-function normalizeAppRoutePath(path) {
-  const route = getRouteOptions(path, true);
-  const pagePath = route == null ? void 0 : route.meta.route;
-  return typeof pagePath === "string" ? pagePath : uniShared.removeLeadingSlash((route == null ? void 0 : route.path) || path);
-}
-function normalizeRewriteRoute({ url, preserveQuery }, event) {
-  if (preserveQuery) {
-    url = uniShared.parseUrl(url).path + uniShared.stringifyQuery(event.query);
-  }
-  const params = { url, openType: event.openType };
-  const errMsg = createNormalizeUrl(event.openType, {
-    skipNavigatorLock: true
-  })(url, params);
-  if (errMsg) {
-    return errMsg;
-  }
-  const { path, query } = uniShared.parseUrl(params.url);
-  return {
-    url: params.url,
-    path: normalizeAppRoutePath(path),
-    query: uniShared.decodedQuery(query),
-    notFound: false
-  };
-}
-const appRouteRuntime = createAppRouteRuntime({ normalizeRewriteRoute });
-const pendingProgrammaticRoutes = [];
-new Promise((resolve) => {
-});
-function createAppRouteContext(path, query, openType, notFound = false) {
-  return appRouteRuntime.createAppRouteContext({
-    path: normalizeAppRoutePath(path),
-    query: uniShared.decodedQuery(query),
-    openType,
-    notFound
-  });
-}
-function resolveAppRoute(url, openType, notFound = false) {
-  let routeUrl = url;
-  let routeNotFound = notFound;
-  let rewriteCount = 0;
-  while (true) {
-    const { path, query } = uniShared.parseUrl(routeUrl);
-    const context = createAppRouteContext(path, query, openType, routeNotFound);
-    context.rewriteCount = rewriteCount;
-    const rewrite = appRouteRuntime.dispatchBeforeAppRoute(context);
-    if (!rewrite) {
-      return { url: routeUrl, context };
-    }
-    routeUrl = rewrite.url;
-    routeNotFound = rewrite.notFound;
-    rewriteCount++;
-  }
-}
-function createWebAppRouteTransaction(finalFullPath, openType, context) {
-  return {
-    finalFullPath,
-    openType,
-    context
-  };
-}
-function queueWebAppRouteTransaction(transaction) {
-  pendingProgrammaticRoutes.push(transaction);
-}
-function discardWebAppRouteTransaction(transaction) {
-  transaction.cancelled = true;
-  const index2 = pendingProgrammaticRoutes.indexOf(transaction);
-  if (index2 !== -1) {
-    pendingProgrammaticRoutes.splice(index2, 1);
-  }
-}
-function isCurrentTabBarPage(url) {
-  const pages = getCurrentBasePages();
-  const currentPage = pages[pages.length - 1];
-  if (!(currentPage == null ? void 0 : currentPage.$.__isTabBar)) {
-    return false;
-  }
-  const path = uniShared.parseUrl(url).path;
-  const $page = getPage$BasePage(currentPage);
-  return path === $page.path || path === "/" && $page.meta.isEntry;
-}
-function findTabBarPageId(url) {
-  const path = uniShared.parseUrl(url).path;
-  const pages = getCurrentPagesMap().values();
-  for (const page of pages) {
-    const $page = getPage$BasePage(page);
-    if (path === $page.path || path === "/" && $page.meta.isEntry) {
-      return $page.id;
-    }
-  }
-}
-function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__) {
-  if (process.env.NODE_ENV !== "production" && !__UNI_FEATURE_PAGES__) {
-    console.warn(
-      "当前项目为单页面工程，不能执行页面跳转api。如果需进行页面跳转， 需要在pages.json文件的pages字段中配置多个页面，然后重新运行。"
-    );
-  }
-  let router2;
-  router2 = getRouterInstance();
-  return new Promise((resolve, reject) => {
-    let routeUrl = url;
-    let transaction;
-    {
-      const shouldDispatchAppRoute = type !== "switchTab" || !isCurrentTabBarPage(url);
-      const appRoute = shouldDispatchAppRoute ? resolveAppRoute(url, type) : void 0;
-      routeUrl = (appRoute == null ? void 0 : appRoute.url) || url;
-      const { path: path2, query: query2 } = uniShared.parseUrl(routeUrl);
-      transaction = createWebAppRouteTransaction(
-        router2.resolve({ path: path2, query: query2 }).fullPath,
-        type,
-        appRoute == null ? void 0 : appRoute.context
-      );
-    }
-    const { path, query } = uniShared.parseUrl(routeUrl);
-    const tabBarPageId = type === "switchTab" ? findTabBarPageId(routeUrl) : __id__;
-    const state = createPageState(type, tabBarPageId);
-    if (transaction) {
-      transaction.pageId = state.__id__;
-      queueWebAppRouteTransaction(transaction);
-    }
-    const navigation = router2[type === "navigateTo" ? "push" : "replace"]({
-      path,
-      query,
-      state,
-      force: true
-    }).then((failure) => {
-      if (vueRouter.isNavigationFailure(failure)) {
-        transaction && discardWebAppRouteTransaction(transaction);
-        return reject(failure.message);
-      }
-      if (type === "switchTab") {
-        const finalTabBarText = routeUrl === url ? tabBarText : router2.resolve({ path, query }).meta.tabBarText;
-        router2.currentRoute.value.meta.tabBarText = finalTabBarText;
-      }
-      if (type === "navigateTo") {
-        const meta = router2.currentRoute.value.meta;
-        if (!meta.eventChannel) {
-          meta.eventChannel = new uniShared.EventChannel(state.__id__, events);
-        } else if (events) {
-          Object.keys(events).forEach((eventName) => {
-            meta.eventChannel._addListener(
-              eventName,
-              "on",
-              events[eventName]
-            );
-          });
-          meta.eventChannel._clearCache();
-        }
-        return isAutomatedTesting ? resolve({
-          __id__: state.__id__
-        }) : resolve({
-          eventChannel: meta.eventChannel
-        });
-      }
-      return isAutomatedTesting ? resolve({ __id__: state.__id__ }) : resolve();
-    });
-    {
-      navigation.catch((error) => {
-        transaction && discardWebAppRouteTransaction(transaction);
-        reject(error instanceof Error ? error.message : error);
-      });
-    }
-  });
-}
 function handleBeforeEntryPageRoutes() {
   if (entryPageState.handledBeforeEntryPageRoutes) {
     return;
   }
   entryPageState.handledBeforeEntryPageRoutes = true;
-  const navigateToPages = [...navigateToPagesBeforeEntryPages];
-  navigateToPagesBeforeEntryPages.length = 0;
-  navigateToPages.forEach(
-    ({ args, resolve, reject }) => (
-      // @ts-expect-error
-      navigate(args).then(resolve).catch(reject)
-    )
-  );
-  const switchTabPages = [...switchTabPagesBeforeEntryPages];
-  switchTabPagesBeforeEntryPages.length = 0;
-  switchTabPages.forEach(({ args, resolve, reject }) => {
-    navigate(args, void 0).then(resolve).catch(reject);
-  });
-  const redirectToPages = [...redirectToPagesBeforeEntryPages];
-  redirectToPagesBeforeEntryPages.length = 0;
-  redirectToPages.forEach(({ args, resolve, reject }) => {
-    navigate(args).then(resolve).catch(reject);
-  });
-  const reLaunchPages = [...reLaunchPagesBeforeEntryPages];
-  reLaunchPagesBeforeEntryPages.length = 0;
-  reLaunchPages.forEach(({ args, resolve, reject }) => {
-    navigate(args).then(resolve).catch(reject);
-  });
+  for (const queue2 of [
+    navigateToPagesBeforeEntryPages,
+    switchTabPagesBeforeEntryPages,
+    redirectToPagesBeforeEntryPages,
+    reLaunchPagesBeforeEntryPages
+  ]) {
+    const pending = [...queue2];
+    queue2.length = 0;
+    pending.forEach((execute) => execute());
+  }
 }
 function getTheme() {
   if (__uniConfig.darkmode == null || __uniConfig.darkmode === false)
@@ -3957,7 +3459,7 @@ class UniPageImpl {
   $setPageStyle(style) {
     this.setPageStyle(style);
   }
-  getElementById(id2) {
+  getElementById(id) {
     {
       return null;
     }
@@ -4117,9 +3619,6 @@ function pruneCurrentPages() {
     }
   });
 }
-function getCurrentPagesMap() {
-  return currentPagesMap;
-}
 function getCurrentPages$1() {
   const curPages = getCurrentBasePages();
   {
@@ -4139,13 +3638,6 @@ function getCurrentBasePages() {
     }
   }
   return curPages;
-}
-let id = /* @__PURE__ */ getStateId();
-function createPageState(type, __id__) {
-  return {
-    __id__: __id__ || ++id,
-    __type__: type
-  };
 }
 let dialogPageId = Number.MIN_SAFE_INTEGER;
 function createDialogPageId() {
@@ -4965,8 +4457,8 @@ function useRightWindow(layoutState) {
     windowRef
   };
 }
-const t0$r = Vue.template("<div class=uni-async-loading><i class=uni-loading>", 3);
-const _sfc_main$r = /* @__PURE__ */ Vue.defineVaporComponent({
+const t0$s = Vue.template("<div class=uni-async-loading><i class=uni-loading>", 3);
+const _sfc_main$s = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "AsyncLoading",
     __reserved: true,
@@ -4974,12 +4466,12 @@ const _sfc_main$r = /* @__PURE__ */ Vue.defineVaporComponent({
   },
   __name: "asyncLoading",
   setup(__props) {
-    const n0 = t0$r();
+    const n0 = t0$s();
     return n0;
   }
 });
-const t0$q = Vue.template("<div class=uni-async-error> ", 1);
-const _sfc_main$q = /* @__PURE__ */ Vue.defineVaporComponent({
+const t0$r = Vue.template("<div class=uni-async-error> ", 1);
+const _sfc_main$r = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "AsyncError",
     __reserved: true,
@@ -4993,7 +4485,7 @@ const _sfc_main$q = /* @__PURE__ */ Vue.defineVaporComponent({
     function reload() {
       window.location.reload();
     }
-    const n0 = t0$q();
+    const n0 = t0$r();
     const x0 = Vue.txt(n0);
     Vue.on(n0, "click", reload);
     Vue.renderEffect(() => Vue.setText(x0, Vue.toDisplayString(Vue.unref(t4)("uni.async.error"))));
@@ -5051,11 +4543,11 @@ function initApp$1(vm) {
     }
   });
   const app = appVm.$.appContext.app;
+  if (!app.component(_sfc_main$s.name)) {
+    app.component(_sfc_main$s.name, _sfc_main$s);
+  }
   if (!app.component(_sfc_main$r.name)) {
     app.component(_sfc_main$r.name, _sfc_main$r);
-  }
-  if (!app.component(_sfc_main$q.name)) {
-    app.component(_sfc_main$q.name, _sfc_main$q);
   }
   initAppVm(appVm);
   defineGlobalData(appVm);
@@ -5088,13 +4580,13 @@ function setupComponent(comp, options) {
   }
   return wrapperComponentSetup(comp, options);
 }
-function setupWindow(comp, id2) {
+function setupWindow(comp, id) {
   return setupComponent(comp, {
     type: "window",
     init: (vm) => {
       {
         vm.$basePage = {
-          id: id2
+          id
         };
       }
     },
@@ -5203,54 +4695,6 @@ function useBackgroundColorContent(pageMeta) {
   onThemeChange(update);
   Vue.watchEffect(update);
 }
-class UniLoadingElement extends UniViewElement {
-  static get __uniElement() {
-    return {};
-  }
-}
-function useLoadingStyle(targetElement, bold) {
-  const loadingSize = Vue.ref("16px");
-  const loadingBorderWidth = Vue.ref("1px");
-  Vue.ref("8px");
-  return {
-    width: loadingSize,
-    height: loadingSize,
-    borderWidth: loadingBorderWidth
-    // borderRadius: loadingBorderRadius,
-  };
-}
-const t0$p = Vue.template('<div uni-loading uni-view data-v-212d40c7 class="default __uni_loading_container__" style="display: flex;"><div uni-view data-v-212d40c7>', 257);
-const _uniLoadingElement = { value: "LOADING" };
-const _sfc_main$p = /* @__PURE__ */ Vue.defineVaporComponent({
-  ...{
-    name: "loading",
-    styleIsolation: "app-and-page",
-    // @ts-ignore
-    rootElement: {
-      class: /* @__PURE__ */ Vue.initUniElementType(UniLoadingElement, "loading")
-    }
-  },
-  __name: "loading",
-  props: {
-    paused: { type: Boolean, default: false },
-    bold: { type: Boolean, default: false },
-    iosSpinner: { type: Boolean, default: false }
-  },
-  setup(__props) {
-    const props2 = __props;
-    const LoadingRef = Vue.ref(null);
-    const loadingStyle = Vue.reactive(useLoadingStyle(LoadingRef, Vue.computed(() => props2.bold)));
-    const n0 = t0$p();
-    const n1 = Vue.child(n0);
-    Vue.initUniElement(n0, _uniLoadingElement);
-    Vue.setStaticTemplateRef(n0, LoadingRef, null, "LoadingRef");
-    Vue.renderEffect(() => {
-      Vue.setClassName(n1, props2.paused ? 1 : 0, " __uni-loading__paused", "__uni-loading__ __loading-4-3__");
-      Vue.setStyle(n1, loadingStyle);
-    });
-    return n0;
-  }
-});
 function hexToRgba(hex) {
   if (!hex) {
     return {
@@ -5290,11 +4734,12 @@ function usePageHeadTransparentBackgroundColor(backgroundColor) {
   return `rgba(${r},${g2},${b},0)`;
 }
 function usePageHeadTransparent(headRef, {
-  id: id2,
+  id,
   navigationBar: { titleColor, coverage, backgroundColor }
 }) {
   Vue.computed(() => hexToRgba(backgroundColor));
 }
+let NavigationBarLoading;
 const _t0$b = Vue.template("<img class=uni-page-head__title_image>");
 const _t1$2 = Vue.template("<div class=uni-page-head-bd><div class=uni-page-head__title>", 1);
 const _t2$1 = Vue.template('<div class=uni-page-head-search><div><div class=uni-page-head-search-icon><svg width=20 height=20 viewBox="0 0 32 32"><path></div> </div>', 1);
@@ -5348,7 +4793,7 @@ const PageHead = /* @__PURE__ */ defineSystemComponent({
         }));
         Vue.setInsertionState(_n7);
         Vue.createIf(() => navigationBar.loading, () => {
-          const _n2 = createComponent(_sfc_main$p, { style: "display: inline-block; width: 20px; height: 20px; margin-top: 7px;" });
+          const _n2 = createComponent(NavigationBarLoading, { style: "display: inline-block; width: 20px; height: 20px; margin-top: 7px;" });
           return _n2;
         }, () => Vue.createIf(() => navigationBar.titleImage, () => {
           const _n4 = _t0$b();
@@ -5577,7 +5022,7 @@ function usePageHead(navigationBar) {
     style
   };
 }
-function usePageHeadButtons({ id: id2, navigationBar }) {
+function usePageHeadButtons({ id, navigationBar }) {
   const left = [];
   const right = [];
   const { buttons } = navigationBar;
@@ -5595,7 +5040,7 @@ function usePageHeadButtons({ id: id2, navigationBar }) {
         }
         btn.fontFamily = fontFamily;
       }
-      const pageHeadBtn = usePageHeadButton(id2, index2, btn, isTransparent);
+      const pageHeadBtn = usePageHeadButton(id, index2, btn, isTransparent);
       if (btn.float === "left") {
         left.push(pageHeadBtn);
       } else {
@@ -5643,14 +5088,14 @@ function usePageHeadButton(pageId, index2, btn, isTransparent) {
     }
   } });
 }
-function usePageHeadSearchInput({ id: id2, navigationBar: { searchInput } }) {
+function usePageHeadSearchInput({ id, navigationBar: { searchInput } }) {
   const focus = Vue.ref(false);
   const text = Vue.ref("");
   const composing = Vue.ref(false);
   const { disabled } = searchInput;
   if (disabled) {
     const onClick = () => {
-      invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED);
+      invokeHook(id, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED);
     };
     return {
       focus,
@@ -5661,18 +5106,18 @@ function usePageHeadSearchInput({ id: id2, navigationBar: { searchInput } }) {
   }
   const onFocus = () => {
     focus.value = true;
-    invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, { focus: true });
+    invokeHook(id, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, { focus: true });
   };
   const onBlur = () => {
     focus.value = false;
-    invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, { focus: false });
+    invokeHook(id, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, { focus: false });
   };
   const onInput = (evt) => {
     text.value = evt.detail.value;
-    invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, { text: text.value });
+    invokeHook(id, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, { text: text.value });
   };
   const onConfirm = (evt) => {
-    invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, { text: text.value });
+    invokeHook(id, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, { text: text.value });
   };
   return {
     focus,
@@ -5684,15 +5129,15 @@ function usePageHeadSearchInput({ id: id2, navigationBar: { searchInput } }) {
     onConfirm
   };
 }
-const t0$o = Vue.template('<uni-page-refresh><div class=uni-page-refresh><div class=uni-page-refresh-inner><svg class=uni-page-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none></svg><svg class=uni-page-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle class=uni-page-refresh__path cx=50 cy=50 r=20 fill=none stroke-width=4 stroke-miterlimit=10>', 1);
-const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
+const t0$q = Vue.template('<uni-page-refresh><div class=uni-page-refresh><div class=uni-page-refresh-inner><svg class=uni-page-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none></svg><svg class=uni-page-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle class=uni-page-refresh__path cx=50 cy=50 r=20 fill=none stroke-width=4 stroke-miterlimit=10>', 1);
+const _sfc_main$q = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{ name: "PageRefresh" },
   __name: "component",
   setup(__props) {
     const { pullToRefresh } = usePageMeta();
     const offset = pullToRefresh.offset;
     const color = pullToRefresh.color;
-    const n3 = t0$o();
+    const n3 = t0$q();
     const n2 = Vue.child(n3);
     const n0 = Vue.child(Vue.child(n2));
     const n1 = Vue.child(Vue.next(n0));
@@ -5705,46 +5150,43 @@ const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
     return n3;
   }
 });
-const PageBody = /* @__PURE__ */ defineSystemComponent({
-  name: "PageBody",
-  setup() {
-    const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ ? usePageMeta() : null;
-    const refreshRef = Vue.ref(null);
-    const wrapperRef = Vue.ref(null);
-    const _pageRefresh = null;
-    const pageRefresh = Vue.ref(null);
-    Vue.watch(() => pageMeta == null ? void 0 : pageMeta.enablePullDownRefresh, () => {
-      pageRefresh.value = (pageMeta == null ? void 0 : pageMeta.enablePullDownRefresh) ? _pageRefresh : null;
-    }, { immediate: true });
-    function resize() {
-      {
-        return;
-      }
+function usePageBody(meta, renderPage) {
+  const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ ? meta : null;
+  const refreshRef = Vue.ref(null);
+  const wrapperRef = Vue.ref(null);
+  const _pageRefresh = null;
+  const pageRefresh = Vue.ref(null);
+  Vue.watch(() => pageMeta == null ? void 0 : pageMeta.enablePullDownRefresh, () => {
+    pageRefresh.value = (pageMeta == null ? void 0 : pageMeta.enablePullDownRefresh) ? _pageRefresh : null;
+  }, { immediate: true });
+  function resize() {
+    {
+      return;
     }
-    return () => (() => {
-      const _setTemplateRef = Vue.createTemplateRefSetter();
-      const _n0 = createNodes(() => __UNI_FEATURE_PULL_DOWN_REFRESH__ && !!pageMeta && true && (() => {
-        const _setTemplateRef2 = Vue.createTemplateRefSetter();
-        const _n02 = createComponent(_sfc_main$o, null, null, true);
-        Vue.renderEffect(() => _setTemplateRef2(_n02, refreshRef));
+  }
+  return () => (() => {
+    const _setTemplateRef = Vue.createTemplateRefSetter();
+    const _n0 = createNodes(() => __UNI_FEATURE_PULL_DOWN_REFRESH__ && !!pageMeta && true && (() => {
+      const _setTemplateRef2 = Vue.createTemplateRefSetter();
+      const _n02 = createComponent(_sfc_main$q, null, null, true);
+      Vue.renderEffect(() => _setTemplateRef2(_n02, refreshRef));
+      return _n02;
+    })());
+    const _n4 = Vue.createPlainElement("uni-page-wrapper", { $: [() => pageRefresh.value] }, () => {
+      const _n2 = Vue.createPlainElement("uni-page-body", null, Vue.extend(() => {
+        const _n1 = createNodes(() => renderPage());
+        return _n1;
+      }, { _: 1 }));
+      const _n3 = createNodes(() => (() => {
+        const _n02 = createComponent(ResizeSensor, { onResize: () => resize }, null, true);
         return _n02;
       })());
-      const _n4 = Vue.createPlainElement("uni-page-wrapper", { $: [() => pageRefresh.value] }, () => {
-        const _n2 = Vue.createPlainElement("uni-page-body", null, Vue.extend(() => {
-          const _n1 = Vue.createSlot("default", null, null, 4);
-          return _n1;
-        }, { _: 1 }));
-        const _n3 = createNodes(() => (() => {
-          const _n02 = createComponent(ResizeSensor, { onResize: () => resize }, null, true);
-          return _n02;
-        })());
-        return [_n2, _n3];
-      });
-      Vue.renderEffect(() => _setTemplateRef(_n4, wrapperRef));
-      return [_n0, _n4];
-    })();
-  }
-});
+      return [_n2, _n3];
+    });
+    Vue.renderEffect(() => _setTemplateRef(_n4, wrapperRef));
+    return [_n0, _n4];
+  })();
+}
 const PageComponent = /* @__PURE__ */ defineSystemComponent({
   name: "Page",
   setup() {
@@ -5833,42 +5275,66 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
         }
       }
     }
-    return () => (() => {
+    const renderPageBody = usePageBody(pageMeta, () => (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
-      const _n4 = Vue.createPlainElement("uni-page", {
+      const _n0 = createComponent(PageComponent2, { $: [() => pageProps] }, null, true);
+      _setTemplateRef(_n0, "page");
+      return _n0;
+    })());
+    return () => (() => {
+      const _n3 = Vue.createPlainElement("uni-page", {
         "data-page": () => pageMeta.route,
         style: () => pageStyle
-      }, () => {
+      }, Vue.extend(() => {
         const _n0 = createNodes(() => __UNI_FEATURE_NAVIGATIONBAR__ && (() => {
           const _n02 = Vue.createIf(() => navigationBar.style !== "custom", () => {
-            const _n22 = createComponent(PageHead, null, null, true);
-            return _n22;
+            const _n2 = createComponent(PageHead, null, null, true);
+            return _n2;
           });
           return _n02;
-        })());
-        const _n2 = createComponent(PageBody, null, () => {
-          const _n1 = createComponent(PageComponent2, { $: [() => pageProps] });
-          _setTemplateRef(_n1, "page");
-          return _n1;
-        });
-        const _n3 = createNodes(() => Vue.createFor(() => getDialogPages(), (dialogPage) => Vue.createDynamicComponent(() => dialogPage.value.component, {
+        })(), () => renderPageBody(), () => Vue.createFor(() => getDialogPages(), (dialogPage) => Vue.createDynamicComponent(() => dialogPage.value.component, {
           style: () => dialogPageStyle,
           "data-type": () => dialogPage.value.type,
           route: () => dialogPage.value.route
         }), (dialogPage) => dialogPage.route, 18));
-        return [
-          _n0,
-          _n2,
-          _n3
-        ];
-      }, true);
-      return _n4;
+        return _n0;
+      }, { _: 1 }), true);
+      return _n3;
     })();
   }
 });
 function createVaporPageRouteComponent(pageComponent) {
   return Object.assign({}, PageComponent, {
     __uniPageComponent: pageComponent
+  });
+}
+const systemRoutes = [];
+function registerSystemRoute(route, page, meta = {}) {
+  if (systemRoutes.includes(route)) {
+    return;
+  }
+  systemRoutes.push(route);
+  if (shared.isArray(page.styles) && page.styles.length > 0) {
+    page.styles.forEach((style, index2) => {
+      updateStyle(`${route}-style-${index2}`, style);
+    });
+  }
+  const __uniPage = setupPage(page);
+  let routeComponent;
+  routeComponent = createVaporPageRouteComponent(__uniPage);
+  routeComponent.mpType = "page";
+  __uniRoutes.push({
+    path: route,
+    component: routeComponent,
+    meta: shared.extend(
+      {
+        isQuit: false,
+        isEntry: false,
+        navigationBar: {},
+        route
+      },
+      meta
+    )
   });
 }
 var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
@@ -7844,15 +7310,15 @@ function useScrollView(props2, { emit: emit2, expose }) {
       })
     );
   }
-  function scrollIntoView(id2) {
+  function scrollIntoView(id) {
     const root = rootRef.value;
-    if (!root || !id2)
+    if (!root || !id)
       return;
-    if (!/^[_a-zA-Z][-_a-zA-Z0-9:]*$/.test(id2)) {
-      console.error(`id error: scroll-into-view=${id2}`);
+    if (!/^[_a-zA-Z][-_a-zA-Z0-9:]*$/.test(id)) {
+      console.error(`id error: scroll-into-view=${id}`);
       return;
     }
-    const element = root.querySelector(`[id="${id2}"]`);
+    const element = root.querySelector(`[id="${id}"]`);
     if (!element)
       return;
     const rootRect = root.getBoundingClientRect();
@@ -7917,10 +7383,10 @@ const RADIO_GROUP_KEY = "UNI_RADIO_GROUP_CTX";
 const CHECKBOX_GROUP_KEY = "UNI_CHECKBOX_GROUP_CTX";
 const PICKER_VIEW_KEY = "UNI_PICKER_VIEW_CTX";
 const labelTargets = /* @__PURE__ */ new Map();
-function findLabelTarget(id2) {
-  if (id2.length === 0)
+function findLabelTarget(id) {
+  if (id.length === 0)
     return null;
-  const targets = labelTargets.get(id2);
+  const targets = labelTargets.get(id);
   if (targets == null || targets.length === 0)
     return null;
   return targets[targets.length - 1];
@@ -7994,11 +7460,11 @@ class UniButtonElement extends UniTextElement {
     } };
   }
 }
-const t0$n = Vue.template('<div uni-button uni-view style="display: flex;justify-content: center;flex-direction: row;align-items: center" role=button><!><span uni-text>', 1);
-const t1$a = Vue.template("<span uni-button uni-text role=button>", 1);
+const t0$p = Vue.template('<div uni-button uni-view style="display: flex;justify-content: center;flex-direction: row;align-items: center" role=button><!><span uni-text>', 1);
+const t1$b = Vue.template("<span uni-button uni-text role=button>", 1);
 const _uniButtonElement = { value: "BUTTON" };
 const DEFAULT_BUTTON_HOVER_CLASS_NAME = "button-hover";
-const _sfc_main$n = /* @__PURE__ */ Vue.defineVaporComponent({
+const _sfc_main$p = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "button",
     // @ts-ignore
@@ -8179,11 +7645,11 @@ const _sfc_main$n = /* @__PURE__ */ Vue.defineVaporComponent({
         return props2.loading && !props2.disabled;
       }
     });
-    const _component_loading = _sfc_main$p;
+    const _component_loading = _sfc_main$h;
     const n0 = Vue.createIf(
       () => __props.loading && !__props.disabled,
       () => {
-        const n2 = t0$n();
+        const n2 = t0$p();
         const n6 = Vue.child(n2);
         const n5 = Vue.next(n6);
         Vue.initUniElement(n2, _uniButtonElement);
@@ -8241,7 +7707,7 @@ const _sfc_main$n = /* @__PURE__ */ Vue.defineVaporComponent({
         return n2;
       },
       () => {
-        const n8 = t1$a();
+        const n8 = t1$b();
         Vue.initUniElement(n8, _uniButtonElement);
         Vue.renderEffect(() => {
           const _disabled = __props.disabled;
@@ -8315,13 +7781,13 @@ class UniCheckboxElement extends UniViewElement {
     } };
   }
 }
-const t0$m = Vue.template('<svg class=uni-checkbox-svg viewBox="0 0 32 32"><path fill=currentColor>', 0, 1);
-const t1$9 = Vue.template("<div uni-checkbox uni-view role=checkbox>", 1);
-const t2$1 = Vue.template("<span uni-text>");
-const t3$1 = Vue.template("<div uni-checkbox uni-view class=uni-checkbox role=checkbox><div uni-view></div>", 1);
+const t0$o = Vue.template('<svg class=uni-checkbox-svg viewBox="0 0 32 32"><path fill=currentColor>', 0, 1);
+const t1$a = Vue.template("<div uni-checkbox uni-view role=checkbox>", 1);
+const t2$2 = Vue.template("<span uni-text>");
+const t3$2 = Vue.template("<div uni-checkbox uni-view class=uni-checkbox role=checkbox><div uni-view></div>", 1);
 const _uniCheckboxElement = { value: "CHECKBOX" };
 const iconPath$1 = "M1.952 18.080q-0.32-0.352-0.416-0.88t0.128-0.976l0.16-0.352q0.224-0.416 0.64-0.528t0.8 0.176l6.496 4.704q0.384 0.288 0.912 0.272t0.88-0.336l17.312-14.272q0.352-0.288 0.848-0.256t0.848 0.352l-0.416-0.416q0.32 0.352 0.32 0.816t-0.32 0.816l-18.656 18.912q-0.32 0.352-0.8 0.352t-0.8-0.32l-7.936-8.064z";
-const _sfc_main$m = /* @__PURE__ */ Vue.defineVaporComponent({
+const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "checkbox",
     // @ts-ignore
@@ -8391,7 +7857,7 @@ const _sfc_main$m = /* @__PURE__ */ Vue.defineVaporComponent({
     const n0 = Vue.createIf(
       () => !hasDefaultSlot,
       () => {
-        const n2 = t1$9();
+        const n2 = t1$a();
         Vue.initUniElement(n2, _uniCheckboxElement);
         Vue.renderEffect(() => {
           const _disabled = __props.disabled;
@@ -8409,7 +7875,7 @@ const _sfc_main$m = /* @__PURE__ */ Vue.defineVaporComponent({
         });
         Vue.setInsertionState(n2);
         Vue.createIf(() => Vue.unref(isChecked), () => {
-          const n6 = t0$m();
+          const n6 = t0$o();
           const n5 = Vue.child(n6);
           Vue.setAttr(n5, "d", iconPath$1, true);
           return n6;
@@ -8421,7 +7887,7 @@ const _sfc_main$m = /* @__PURE__ */ Vue.defineVaporComponent({
         return n2;
       },
       () => {
-        const n8 = t3$1();
+        const n8 = t3$2();
         const n13 = Vue.child(n8);
         Vue.initUniElement(n8, _uniCheckboxElement);
         Vue.renderEffect(() => {
@@ -8440,7 +7906,7 @@ const _sfc_main$m = /* @__PURE__ */ Vue.defineVaporComponent({
         });
         Vue.setInsertionState(n13);
         Vue.createIf(() => Vue.unref(isChecked), () => {
-          const n12 = t0$m();
+          const n12 = t0$o();
           const n11 = Vue.child(n12);
           Vue.setAttr(n11, "d", iconPath$1, true);
           return n12;
@@ -8449,7 +7915,7 @@ const _sfc_main$m = /* @__PURE__ */ Vue.defineVaporComponent({
         Vue.createIf(
           () => isStringSlot,
           () => {
-            const n17 = t2$1();
+            const n17 = t2$2();
             Vue.setInsertionState(n17);
             Vue.createSlot(
               "default",
@@ -8484,9 +7950,9 @@ class UniCheckboxGroupElement extends UniViewElement {
     return {};
   }
 }
-const t0$l = Vue.template("<div uni-checkbox-group uni-view>", 1);
+const t0$n = Vue.template("<div uni-checkbox-group uni-view>", 1);
 const _uniCheckboxGroupElement = { value: "CHECKBOX-GROUP" };
-const _sfc_main$l = /* @__PURE__ */ Vue.defineVaporComponent({
+const _sfc_main$n = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "checkbox-group",
     // @ts-ignore
@@ -8570,7 +8036,7 @@ const _sfc_main$l = /* @__PURE__ */ Vue.defineVaporComponent({
     };
     Vue.provide(CHECKBOX_GROUP_KEY, ctx);
     Vue.inject(FORM_KEY, null);
-    const n0 = t0$l();
+    const n0 = t0$n();
     Vue.initUniElement(n0, _uniCheckboxGroupElement);
     Vue.setInsertionState(n0);
     Vue.createSlot();
@@ -8587,9 +8053,9 @@ class UniWaterflowElement extends UniScrollViewElement {
     return {};
   }
 }
-const t0$k = Vue.template('<div uni-flow-item uni-view class=uni-flow-item style="position: absolute; top: 0; left: 0; width: 0px">', 1);
+const t0$m = Vue.template('<div uni-flow-item uni-view class=uni-flow-item style="position: absolute; top: 0; left: 0; width: 0px">', 1);
 const _uniFlowItemElement = { value: "FLOW-ITEM" };
-const _sfc_main$k = /* @__PURE__ */ Vue.defineVaporComponent({
+const _sfc_main$m = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "flow-item",
     rootElement: {
@@ -8669,7 +8135,7 @@ const _sfc_main$k = /* @__PURE__ */ Vue.defineVaporComponent({
       { flush: "post" }
     );
     __expose({ recycleHooks });
-    const n0 = t0$k();
+    const n0 = t0$m();
     Vue.initUniElement(n0, _uniFlowItemElement);
     Vue.setInsertionState(n0);
     Vue.createSlot();
@@ -8682,9 +8148,9 @@ class UniFormElement extends UniViewElement {
     return {};
   }
 }
-const t0$j = Vue.template("<div uni-form uni-view class=uni-form>", 1);
+const t0$l = Vue.template("<div uni-form uni-view class=uni-form>", 1);
 const _uniFormElement = { value: "FORM" };
-const _sfc_main$j = /* @__PURE__ */ Vue.defineVaporComponent({
+const _sfc_main$l = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "form",
     // @ts-ignore
@@ -8750,7 +8216,7 @@ const _sfc_main$j = /* @__PURE__ */ Vue.defineVaporComponent({
     const ctx = { registerField, unregisterField, submit, reset };
     Vue.provide(FORM_KEY, ctx);
     __expose({ submit, reset });
-    const n0 = t0$j();
+    const n0 = t0$l();
     Vue.initUniElement(n0, _uniFormElement);
     Vue.setInsertionState(n0);
     Vue.createSlot();
@@ -8762,9 +8228,9 @@ class UniLabelElement extends UniViewElement {
     return {};
   }
 }
-const t0$i = Vue.template("<div uni-label uni-view class=uni-label>", 1);
+const t0$k = Vue.template("<div uni-label uni-view class=uni-label>", 1);
 const _uniLabelElement = { value: "LABEL" };
-const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
+const _sfc_main$k = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "label",
     // @ts-ignore
@@ -8791,10 +8257,10 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
       }
       children.push(child);
     }
-    function unregister(id2) {
-      if (!id2)
+    function unregister(id) {
+      if (!id)
         return;
-      const idx = children.findIndex((c) => c.id === id2);
+      const idx = children.findIndex((c) => c.id === id);
       if (idx !== -1) {
         children.splice(idx, 1);
       }
@@ -8837,7 +8303,7 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
         return;
       target.activate(event);
     };
-    const n0 = t0$i();
+    const n0 = t0$k();
     Vue.initUniElement(n0, _uniLabelElement);
     Vue.renderEffect(() => {
       const _disabled = __props.disabled;
@@ -8873,9 +8339,9 @@ class UniListViewElement extends UniScrollViewElement {
     return {};
   }
 }
-const t0$h = Vue.template('<div uni-list-item uni-view class=uni-list-item style="position: absolute; top: 0; left: 0; width: 100%">', 1);
+const t0$j = Vue.template('<div uni-list-item uni-view class=uni-list-item style="position: absolute; top: 0; left: 0; width: 100%">', 1);
 const _uniListItemElement = { value: "LIST-ITEM" };
-const _sfc_main$h = /* @__PURE__ */ Vue.defineVaporComponent({
+const _sfc_main$j = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "list-item",
     rootElement: {
@@ -8947,7 +8413,7 @@ const _sfc_main$h = /* @__PURE__ */ Vue.defineVaporComponent({
       { flush: "post" }
     );
     __expose({ recycleHooks });
-    const n0 = t0$h();
+    const n0 = t0$j();
     Vue.initUniElement(n0, _uniListItemElement);
     Vue.setInsertionState(n0);
     Vue.createSlot();
@@ -9022,10 +8488,10 @@ class RecycleListItemDataStore {
     return [start, low - start];
   }
 }
-const t0$g = Vue.template("<div uni-view></div>");
-const t1$8 = Vue.template('<div uni-view style="position: relative; overflow: visible; overflow-anchor: none"><div uni-view style="width: 1px; flex-shrink: 0;"></div></div>');
+const t0$i = Vue.template("<div uni-view></div>");
+const t1$9 = Vue.template('<div uni-view style="position: relative; overflow: visible; overflow-anchor: none"><div uni-view style="width: 1px; flex-shrink: 0;"></div></div>');
 const _uniListViewElement = { value: "LIST-VIEW" };
-const _sfc_main$g = /* @__PURE__ */ Vue.defineVaporComponent({
+const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "list-view",
     rootElement: {
@@ -9090,9 +8556,9 @@ const _sfc_main$g = /* @__PURE__ */ Vue.defineVaporComponent({
       if (listIds.length !== keys.length)
         return;
       idKeyMap.clear();
-      listIds.forEach((id2, index2) => {
-        if (id2 && keys[index2])
-          idKeyMap.set(id2, keys[index2]);
+      listIds.forEach((id, index2) => {
+        if (id && keys[index2])
+          idKeyMap.set(id, keys[index2]);
       });
     }
     function updateList(newList) {
@@ -9326,8 +8792,8 @@ const _sfc_main$g = /* @__PURE__ */ Vue.defineVaporComponent({
     new MutationObserver(queueLayout);
     Vue.watch(
       () => props2.scrollIntoView,
-      (id2) => {
-        pendingScrollId = id2;
+      (id) => {
+        pendingScrollId = id;
         scrollTarget = void 0;
         queueLayout();
       }
@@ -9350,16 +8816,16 @@ const _sfc_main$g = /* @__PURE__ */ Vue.defineVaporComponent({
         /* NON_STABLE */
       }),
       "default": () => {
-        const n1 = t0$g();
+        const n1 = t0$i();
         Vue.setInsertionState(n1);
         Vue.createSlot("header");
-        const n4 = t1$8();
+        const n4 = t1$9();
         const n2 = Vue.child(n4);
         Vue.setStaticTemplateRef(n1, headerElement, null, "headerElement");
         Vue.setStaticTemplateRef(n2, placeholderElement, null, "placeholderElement");
         Vue.setInsertionState(n4, 1);
         Vue.createSlot();
-        const n6 = t0$g();
+        const n6 = t0$i();
         Vue.setStaticTemplateRef(n4, bodyElement, null, "bodyElement");
         Vue.setInsertionState(n6);
         Vue.createSlot("footer");
@@ -9375,6 +8841,54 @@ const _sfc_main$g = /* @__PURE__ */ Vue.defineVaporComponent({
     return n9;
   }
 });
+class UniLoadingElement extends UniViewElement {
+  static get __uniElement() {
+    return {};
+  }
+}
+function useLoadingStyle(targetElement, bold) {
+  const loadingSize = Vue.ref("16px");
+  const loadingBorderWidth = Vue.ref("1px");
+  Vue.ref("8px");
+  return {
+    width: loadingSize,
+    height: loadingSize,
+    borderWidth: loadingBorderWidth
+    // borderRadius: loadingBorderRadius,
+  };
+}
+const t0$h = Vue.template('<div uni-loading uni-view data-v-212d40c7 class="default __uni_loading_container__" style="display: flex;"><div uni-view data-v-212d40c7>', 257);
+const _uniLoadingElement = { value: "LOADING" };
+const _sfc_main$h = /* @__PURE__ */ Vue.defineVaporComponent({
+  ...{
+    name: "loading",
+    styleIsolation: "app-and-page",
+    // @ts-ignore
+    rootElement: {
+      class: /* @__PURE__ */ Vue.initUniElementType(UniLoadingElement, "loading")
+    }
+  },
+  __name: "loading",
+  props: {
+    paused: { type: Boolean, default: false },
+    bold: { type: Boolean, default: false },
+    iosSpinner: { type: Boolean, default: false }
+  },
+  setup(__props) {
+    const props2 = __props;
+    const LoadingRef = Vue.ref(null);
+    const loadingStyle = Vue.reactive(useLoadingStyle(LoadingRef, Vue.computed(() => props2.bold)));
+    const n0 = t0$h();
+    const n1 = Vue.child(n0);
+    Vue.initUniElement(n0, _uniLoadingElement);
+    Vue.setStaticTemplateRef(n0, LoadingRef, null, "LoadingRef");
+    Vue.renderEffect(() => {
+      Vue.setClassName(n1, props2.paused ? 1 : 0, " __uni-loading__paused", "__uni-loading__ __loading-4-3__");
+      Vue.setStyle(n1, loadingStyle);
+    });
+    return n0;
+  }
+});
 class UniMatchMediaElement extends UniViewElement {
   static get __uniElement() {
     return {};
@@ -9385,14 +8899,29 @@ const createLifeCycleHook = (lifecycle, flag = 0) => (hook, target = Vue.getCurr
     return;
   Vue.injectHook(lifecycle, hook, target);
 };
+const onLoad = /* @__PURE__ */ createLifeCycleHook(
+  uniShared.ON_LOAD,
+  2
+  /* HookFlags.PAGE */
+);
+const onReady = /* @__PURE__ */ createLifeCycleHook(
+  uniShared.ON_READY,
+  2
+  /* HookFlags.PAGE */
+);
+const onUnload = /* @__PURE__ */ createLifeCycleHook(
+  uniShared.ON_UNLOAD,
+  2
+  /* HookFlags.PAGE */
+);
 const onResize = /* @__PURE__ */ createLifeCycleHook(
   uniShared.ON_RESIZE,
   2
   /* HookFlags.PAGE */
 );
-const t0$f = Vue.template("<div uni-match-media uni-view>", 1);
+const t0$g = Vue.template("<div uni-match-media uni-view>", 1);
 const _uniMatchMediaElement = { value: "MATCH-MEDIA" };
-const _sfc_main$f = /* @__PURE__ */ Vue.defineVaporComponent({
+const _sfc_main$g = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "match-media",
     // @ts-ignore
@@ -9471,7 +9000,7 @@ const _sfc_main$f = /* @__PURE__ */ Vue.defineVaporComponent({
         }
       });
     }
-    const n0 = t0$f();
+    const n0 = t0$g();
     Vue.initUniElement(n0, _uniMatchMediaElement);
     Vue.setInsertionState(n0);
     Vue.createSlot();
@@ -9484,10 +9013,10 @@ class UniNavigatorElement extends UniViewElement {
     return {};
   }
 }
-const t0$e = Vue.template("<span uni-navigator uni-text>", 1);
-const t1$7 = Vue.template("<div uni-navigator uni-view>", 1);
+const t0$f = Vue.template("<span uni-navigator uni-text>", 1);
+const t1$8 = Vue.template("<div uni-navigator uni-view>", 1);
 const _uniNavigatorElement = { value: "NAVIGATOR" };
-const _sfc_main$e = /* @__PURE__ */ Vue.defineVaporComponent({
+const _sfc_main$f = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "navigator",
     // @ts-ignore
@@ -9557,7 +9086,7 @@ const _sfc_main$e = /* @__PURE__ */ Vue.defineVaporComponent({
     const n0 = Vue.createIf(
       () => isStringSlot,
       () => {
-        const n2 = t0$e();
+        const n2 = t0$f();
         Vue.initUniElement(n2, _uniNavigatorElement);
         Vue.setInsertionState(n2);
         Vue.createSlot(
@@ -9571,7 +9100,7 @@ const _sfc_main$e = /* @__PURE__ */ Vue.defineVaporComponent({
         return n2;
       },
       () => {
-        const n5 = t1$7();
+        const n5 = t1$8();
         Vue.initUniElement(n5, _uniNavigatorElement);
         Vue.setInsertionState(n5);
         Vue.createSlot();
@@ -9591,11 +9120,11 @@ class UniPageContainerElement extends UniVueElement {
     return {};
   }
 }
-const t0$d = Vue.template("<div uni-view class=uni-page-container-overlay>");
-const t1$6 = Vue.template("<div uni-view>");
+const t0$e = Vue.template("<div uni-view class=uni-page-container-overlay>");
+const t1$7 = Vue.template("<div uni-view>");
 const MAX_SLIDER_DISTANCE = 100;
 const MIN_SLIDER_VELOCITY = 0.3;
-const _sfc_main$d = /* @__PURE__ */ Vue.defineVaporComponent({
+const _sfc_main$e = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "page-container",
     rootElement: {
@@ -9897,7 +9426,7 @@ const _sfc_main$d = /* @__PURE__ */ Vue.defineVaporComponent({
       }
     }
     const n0 = Vue.createIf(() => __props.overlay && Vue.unref(showPageContainer), () => {
-      const n2 = t0$d();
+      const n2 = t0$e();
       Vue.on(n2, "click", onClickOverlay);
       Vue.on(n2, "touchmove", Vue.withModifiers(() => {
       }, ["prevent", "stop"]));
@@ -9905,7 +9434,7 @@ const _sfc_main$d = /* @__PURE__ */ Vue.defineVaporComponent({
       return n2;
     });
     const n3 = Vue.createIf(() => Vue.unref(showPageContainer), () => {
-      const n6 = t1$6();
+      const n6 = t1$7();
       Vue.renderEffect(() => {
         Vue.setClass(n6, ["uni-page-container-popup", Vue.unref(popupClasses)]);
         Vue.setStyle(n6, [Vue.unref(innerStyleMap), __props.customStyle]);
@@ -9943,10 +9472,10 @@ class UniPickerElement extends UniViewElement {
     } };
   }
 }
-const t0$c = Vue.template("<div uni-picker uni-view>", 1);
+const t0$d = Vue.template("<div uni-picker uni-view>", 1);
 const _uniPickerElement = { value: "PICKER" };
 const OPEN_LOCK_DURATION = 300;
-const _sfc_main$c = /* @__PURE__ */ Vue.defineVaporComponent({
+const _sfc_main$d = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "picker",
     // @ts-ignore
@@ -10028,12 +9557,933 @@ const _sfc_main$c = /* @__PURE__ */ Vue.defineVaporComponent({
         innerValue.value = value;
       }
     });
-    const n0 = t0$c();
+    const n0 = t0$d();
     Vue.initUniElement(n0, _uniPickerElement);
     Vue.setInsertionState(n0);
     Vue.createSlot();
     Vue.on(n0, "click", handleClick);
     return n0;
+  }
+});
+const POPUP_WIDTH = 300;
+const POPUP_EDGE = 6;
+function getPickerPopupStyle(popover, windowWidth, windowHeight, contentHeight) {
+  const availableWidth = Math.max(0, windowWidth - POPUP_EDGE * 2);
+  const availableHeight = Math.max(0, windowHeight - POPUP_EDGE * 2);
+  const width = Math.min(POPUP_WIDTH, availableWidth);
+  let height = Math.min(Math.max(0, contentHeight), availableHeight);
+  let left = (windowWidth - width) / 2;
+  let top = (windowHeight - height) / 2;
+  if (popover != null) {
+    left = Math.max(POPUP_EDGE, Math.min(windowWidth - width - POPUP_EDGE, popover.left));
+    const spaceAbove = Math.max(0, popover.top - POPUP_EDGE * 2);
+    const spaceBelow = Math.max(0, windowHeight - popover.top - popover.height - POPUP_EDGE * 2);
+    const above = spaceBelow < height && spaceAbove > spaceBelow;
+    height = Math.min(height, above ? spaceAbove : spaceBelow);
+    top = above ? popover.top - height - POPUP_EDGE : popover.top + popover.height + POPUP_EDGE;
+    top = Math.max(POPUP_EDGE, Math.min(windowHeight - height - POPUP_EDGE, top));
+  }
+  return {
+    content: {
+      left: `${left}px`,
+      top: `${top}px`,
+      right: "auto",
+      bottom: "auto",
+      width: `${width}px`,
+      height: `${height}px`
+    }
+  };
+}
+const t0$c = Vue.template("<span uni-text data-v-212d40c7> ");
+const t1$6 = Vue.template("<div uni-view data-v-212d40c7><span uni-text data-v-212d40c7> </span><span uni-text data-v-212d40c7 class=uni-picker__header-btn-ok> </div>");
+const t2$1 = Vue.template("<div uni-view data-v-212d40c7 class=uni-picker__view>");
+const t3$1 = Vue.template("<div uni-view data-v-212d40c7><div uni-view data-v-212d40c7></div><div uni-view data-v-212d40c7>", 1);
+const _sfc_main$c = /* @__PURE__ */ Vue.defineVaporComponent({
+  __name: "picker",
+  setup(__props) {
+    const show = Vue.ref(false);
+    const readyEventName = Vue.ref("");
+    const optionsEventName = Vue.ref("");
+    const cancelEventName = Vue.ref("");
+    const selectorChangeEventName = Vue.ref("");
+    const multiSelectorChangeEventName = Vue.ref("");
+    const timeChangeEventName = Vue.ref("");
+    const columnChangeEventName = Vue.ref("");
+    const mode = Vue.ref("selector");
+    const range = Vue.ref([]);
+    const rangeKey = Vue.ref("");
+    const value = Vue.ref([]);
+    const eventValue = Vue.ref([]);
+    const prevMultiValue = Vue.ref([]);
+    const selected = Vue.reactive({
+      year: (/* @__PURE__ */ new Date()).getFullYear(),
+      month: (/* @__PURE__ */ new Date()).getMonth() + 1,
+      day: (/* @__PURE__ */ new Date()).getDate()
+    });
+    const years = Vue.ref([]);
+    const months = Vue.ref(Array.from({ length: 12 }, (_, i) => i + 1));
+    const days = Vue.ref([]);
+    const hours = Vue.ref([]);
+    const minutes = Vue.ref([]);
+    const fields = Vue.ref("day");
+    const start = Vue.ref([]);
+    const end = Vue.ref([]);
+    const yearRange = Vue.ref([]);
+    const monthRange = Vue.ref([]);
+    const dayRange = Vue.ref([]);
+    const timer = Vue.ref(0);
+    const theme = Vue.ref("light");
+    const maskTopStyle = Vue.ref("background-image: linear-gradient(to bottom, rgba(255,255,255,1), rgba(255, 255, 255, 0));");
+    const maskBottomStyle = Vue.ref("background-image: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255, 255, 255, 1));");
+    const i18nText = {
+      "en": {
+        "cancel": "Cancel",
+        "confirm": "OK",
+        "year": "",
+        "month": "",
+        "day": "",
+        "months": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"]
+      },
+      "es": {
+        "cancel": "Cancelar",
+        "confirm": "Aceptar",
+        "year": "",
+        "month": "",
+        "day": "",
+        "months": ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
+      },
+      "fr": {
+        "cancel": "Annuler",
+        "confirm": "Valider",
+        "year": "",
+        "month": "",
+        "day": "",
+        "months": ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Aoû", "Sep", "Oct", "Nov", "Déc"]
+      },
+      "zh-Hans": {
+        "cancel": "取消",
+        "confirm": "确定",
+        "year": "年",
+        "month": "月",
+        "day": "日",
+        "months": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
+      },
+      "zh-Hant": {
+        "cancel": "取消",
+        "confirm": "確定",
+        "year": "年",
+        "month": "月",
+        "day": "日",
+        "months": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
+      }
+    };
+    const language = Vue.ref("zh-Hans");
+    const instance = Vue.getCurrentInstance();
+    const popover = Vue.ref(null);
+    const selectorType = Vue.ref("select");
+    const windowWidth = Vue.ref(0);
+    const windowHeight = Vue.ref(0);
+    const containerRef = Vue.ref(null);
+    const selectRef = Vue.ref(null);
+    let layoutFrame = null;
+    let closing = false;
+    const isDesktop = Vue.computed(() => windowWidth.value >= 500 && windowHeight.value >= 500);
+    const isSelect = Vue.computed(() => isDesktop.value && mode.value == "selector" && selectorType.value == "select");
+    const popupStyle = Vue.computed(() => {
+      if (!isDesktop.value)
+        return { content: {} };
+      const contentHeight = isSelect.value ? Math.min(300, range.value.length * 34 + 12) : 300;
+      return getPickerPopupStyle(popover.value, windowWidth.value, windowHeight.value, contentHeight);
+    });
+    const updateLayout = () => {
+      windowWidth.value = window.innerWidth;
+      windowHeight.value = window.innerHeight;
+      uni.$emit(`${optionsEventName.value}_layout`);
+    };
+    const scheduleLayout = () => {
+      if (layoutFrame != null)
+        return;
+      layoutFrame = window.requestAnimationFrame(() => {
+        layoutFrame = null;
+        updateLayout();
+      });
+    };
+    const handleScroll = (event) => {
+      var _a;
+      if (event.target instanceof Node && ((_a = containerRef.value) == null ? void 0 : _a.contains(event.target)))
+        return;
+      scheduleLayout();
+    };
+    const selectItem = (index2) => {
+      eventValue.value = [index2];
+      confirm();
+    };
+    Vue.watch(isSelect, (select) => {
+      if (!select)
+        value.value = eventValue.value.slice();
+    });
+    Vue.watch(() => [isSelect.value, eventValue.value[0], range.value.length, show.value], () => {
+      if (isSelect.value && show.value) {
+        Vue.nextTick(() => {
+          var _a;
+          return (_a = selectRef.value) == null ? void 0 : _a.scrollTo(0, Math.max(0, eventValue.value[0] ?? 0) * 34);
+        });
+      }
+    });
+    const selectedDate = Vue.computed(() => {
+      const { year, month, day } = selected;
+      switch (fields.value) {
+        case "year":
+          return `${year}`;
+        case "month":
+          return `${year}-${formatSingle(month)}`;
+        case "day":
+          return `${year}-${formatSingle(month)}-${formatSingle(day)}`;
+        default:
+          return `${year}-${formatSingle(month)}-${formatSingle(day)}`;
+      }
+    });
+    const indicatorStyle = Vue.computed(() => {
+      const color = theme.value == "dark" ? "rgba(255,255,255,0.05)" : "#F5F5F5";
+      return `height:50px;background:rgba(255,255,255,0);border-top:1px ${color} solid;border-bottom:1px ${color} solid;`;
+    });
+    const cancelText = Vue.computed(() => {
+      return i18nHandle("cancel", "取消");
+    });
+    const confirmText = Vue.computed(() => {
+      return i18nHandle("confirm", "确定");
+    });
+    const yearText = Vue.computed(() => {
+      return i18nHandle("year", "年");
+    });
+    const monthText = Vue.computed(() => {
+      return i18nHandle("month", "月");
+    });
+    const dayText = Vue.computed(() => {
+      return i18nHandle("day", "日");
+    });
+    const monthsText = Vue.computed(() => {
+      let monthsList = months.value;
+      let i18months = i18nHandle("months", i18nText["zh-Hans"]["months"]);
+      let arr = [];
+      monthsList.forEach((v2) => {
+        let index2 = v2 - 1;
+        arr.push(i18months[index2].toString().padStart(2, "0"));
+      });
+      return arr;
+    });
+    const switchTheme = (themeValue) => {
+      if (themeValue == "light") {
+        maskTopStyle.value = "background-image: linear-gradient(to bottom, rgba(255,255,255,1), rgba(255, 255, 255, 0));";
+        maskBottomStyle.value = "background-image: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255, 255, 255, 1));";
+      } else {
+        maskTopStyle.value = "background-image: linear-gradient(to bottom, rgba(35, 35, 35, 1), rgba(35, 35, 35, 0));";
+        maskBottomStyle.value = "background-image: linear-gradient(to bottom, rgba(35, 35, 35, 0), rgba(35, 35, 35, 1));";
+      }
+    };
+    const confirm = () => {
+      if (closing)
+        return;
+      const val = eventValue.value;
+      const modeValue = mode.value;
+      switch (modeValue) {
+        case "selector":
+          uni.$emit(selectorChangeEventName.value, val[0]);
+          break;
+        case "multiSelector":
+          uni.$emit(multiSelectorChangeEventName.value, val);
+          break;
+        case "time":
+          const h = hours.value[val[0]];
+          const m = minutes.value[val[1]];
+          uni.$emit(timeChangeEventName.value, `${h}:${m}`);
+          break;
+        case "date":
+          uni.$emit(timeChangeEventName.value, selectedDate.value);
+          break;
+      }
+      closeDialog();
+    };
+    const close = () => {
+      if (closing)
+        return;
+      uni.$emit(cancelEventName.value);
+      closeDialog();
+    };
+    const closeDialog = () => {
+      closing = true;
+      show.value = false;
+      clearTimeout(timer.value);
+      timer.value = setTimeout(() => {
+        var _a;
+        const dialogPages = (_a = instance == null ? void 0 : instance.proxy) == null ? void 0 : _a.$page;
+        uni.closeDialogPage({
+          dialogPage: dialogPages
+        });
+      }, 250);
+    };
+    const handleChange = (e2) => {
+      const val = e2.detail.value;
+      if (mode.value == "date") {
+        let yIdx = val[0];
+        let mIdx = val[1] ?? 0;
+        let dIdx = val[2] ?? 0;
+        yIdx = Math.max(yearRange.value[0], Math.min(yearRange.value[1], yIdx));
+        const currentYear = years.value[yIdx];
+        let sy = parseInt(start.value[0]);
+        let sm = parseInt(start.value[1]);
+        let ey = parseInt(end.value[0]);
+        let em = parseInt(end.value[1]);
+        if (currentYear == sy || currentYear == ey) {
+          let newMonths = getMonths(currentYear);
+          if (months.value.length !== newMonths.length) {
+            calculateRanges();
+            const originalMonth = months.value[mIdx];
+            mIdx = newMonths.findIndex((month) => month === originalMonth);
+            mIdx = Math.max(0, mIdx);
+            months.value = newMonths;
+          }
+        } else {
+          if (months.value.length != 12) {
+            const nowMonth = months.value[mIdx];
+            months.value = getMonths(currentYear);
+            calculateRanges();
+            mIdx = nowMonth - 1;
+          }
+        }
+        mIdx = Math.max(0, Math.min(mIdx, months.value.length - 1));
+        const monthsValue = months.value[mIdx];
+        if (currentYear == sy && monthsValue == sm || currentYear == ey && monthsValue == em) {
+          let newDays = getDays(currentYear, monthsValue);
+          if (days.value.length != newDays.length) {
+            calculateRanges();
+            let dayIdx = newDays.length - 1;
+            if (currentYear == sy && monthsValue == sm) {
+              dIdx = Math.max(0, dIdx - dayIdx);
+            }
+            if (currentYear == ey && monthsValue == em) {
+              dIdx = Math.max(0, dayIdx);
+            }
+            days.value = newDays;
+          }
+        } else {
+          const nowDay = days.value[dIdx];
+          days.value = getDays(currentYear, monthsValue);
+          calculateRanges();
+          dIdx = days.value.findIndex((day) => day === nowDay);
+          dIdx = Math.max(0, dIdx);
+        }
+        if (dIdx >= days.value.length) {
+          dIdx = 0;
+        }
+        selected.year = years.value[yIdx];
+        selected.month = months.value[mIdx];
+        selected.day = days.value[dIdx];
+        const indices = fields.value == "year" ? [yIdx] : fields.value == "month" ? [yIdx, mIdx] : [yIdx, mIdx, dIdx];
+        value.value = indices;
+        eventValue.value = indices.slice();
+      } else if (mode.value == "time") {
+        let h_idx = val[0];
+        let m_idx = val[1];
+        let h = parseInt(hours.value[h_idx]);
+        let m = parseInt(minutes.value[m_idx]);
+        let sh = parseInt(start.value[0]);
+        let eh = parseInt(end.value[0]);
+        const adjusted = adjustTime(h, m);
+        h = adjusted.h;
+        m = adjusted.m;
+        const hStr = h.toString().padStart(2, "0");
+        const mStr = m.toString().padStart(2, "0");
+        const newHIdx = hours.value.findIndex((e22) => e22 == hStr);
+        let newMIdx = minutes.value.findIndex((e22) => e22 == mStr);
+        if (h == sh || h == eh) {
+          const newMinutes = getMinutes(h);
+          if (minutes.value.length !== newMinutes.length) {
+            const originalMinute = minutes.value[newMIdx];
+            newMIdx = newMinutes.findIndex((m2) => m2 === originalMinute);
+            newMIdx = Math.max(0, newMIdx);
+            minutes.value = newMinutes;
+          }
+        } else {
+          if (minutes.value.length != 60) {
+            const nowMinutes = minutes.value[newMIdx];
+            minutes.value = getMinutes(h);
+            newMIdx = parseInt(nowMinutes);
+          }
+        }
+        const indices = [newHIdx, newMIdx];
+        value.value = indices;
+        eventValue.value = indices.slice();
+      } else if (mode.value == "multiSelector") {
+        const newValue = val;
+        const oldValue = prevMultiValue.value;
+        newValue.forEach((v2, column) => {
+          if (oldValue[column] !== v2) {
+            uni.$emit(columnChangeEventName.value, column, v2);
+          }
+        });
+        prevMultiValue.value = [...newValue];
+        eventValue.value = [...newValue];
+      } else {
+        eventValue.value = val;
+      }
+    };
+    const calculateRanges = () => {
+      const startYear = parseInt(start.value[0]);
+      const endYear = parseInt(end.value[0]);
+      yearRange.value = [
+        years.value.findIndex((y) => y >= startYear),
+        years.value.findIndex((y) => y >= endYear)
+      ];
+      const startMonth = parseInt(start.value[1]);
+      const endMonth = parseInt(end.value[1]);
+      monthRange.value = [startMonth - 1, endMonth - 1];
+      const startDay = parseInt(start.value[2]);
+      const endDay = parseInt(end.value[2]);
+      dayRange.value = [startDay - 1, endDay - 1];
+    };
+    const getYears = () => {
+      const startYear = parseInt(start.value[0] || "1970");
+      const endYear = parseInt(end.value[0] || "2099");
+      return Array.from({ length: endYear - startYear + 1 }, (_, i) => startYear + i);
+    };
+    const getMonths = (year) => {
+      let startMonth = 1;
+      let endMonth = 12;
+      if (year == parseInt(start.value[0])) {
+        startMonth = parseInt(start.value[1]) ?? 1;
+      }
+      if (year == parseInt(end.value[0])) {
+        endMonth = parseInt(end.value[1]) ?? 12;
+      }
+      return Array.from({ length: endMonth - startMonth + 1 }, (_, i) => startMonth + i);
+    };
+    const getDays = (currentYear, currentMonth) => {
+      let startDay = 1;
+      let endDay = new Date(currentYear, currentMonth, 0).getDate();
+      if (currentYear == parseInt(start.value[0]) && currentMonth == parseInt(start.value[1])) {
+        startDay = parseInt(start.value[2]) || 1;
+      }
+      if (currentYear == parseInt(end.value[0]) && currentMonth == parseInt(end.value[1])) {
+        endDay = Math.min(endDay, parseInt(end.value[2]) || endDay);
+      }
+      return Array.from({ length: endDay - startDay + 1 }, (_, i) => startDay + i);
+    };
+    const updateDateColumns = () => {
+      years.value = getYears();
+      months.value = getMonths(selected.year);
+      days.value = getDays(selected.year, selected.month);
+    };
+    const getHours = () => {
+      const sH = parseInt(start.value[0] || "1");
+      const eH = parseInt(end.value[0] || "12");
+      return Array.from({ length: eH - sH + 1 }, (_, i) => String(sH + i).padStart(2, "0"));
+    };
+    const getMinutes = (hour) => {
+      let startMinute = 0;
+      let endMinute = 59;
+      if (hour == parseInt(start.value[0])) {
+        startMinute = parseInt(start.value[1]) ?? 1;
+      }
+      if (hour == parseInt(end.value[0])) {
+        endMinute = parseInt(end.value[1]) ?? 12;
+      }
+      return Array.from({ length: endMinute - startMinute + 1 }, (_, i) => String(startMinute + i).padStart(2, "0"));
+    };
+    const updateTimeColumns = (hour) => {
+      hours.value = getHours();
+      let minuteHour = hour;
+      if (minuteHour == null || isNaN(minuteHour)) {
+        minuteHour = parseInt(hours.value[0] || "00");
+      }
+      minutes.value = getMinutes(minuteHour);
+    };
+    const adjustTime = (h, m) => {
+      var _a, _b;
+      if (!((_a = start.value) == null ? void 0 : _a.length) || !((_b = end.value) == null ? void 0 : _b.length))
+        return { h, m };
+      const startHour = parseInt(start.value[0]);
+      const startMinute = parseInt(start.value[1]);
+      const endHour = parseInt(end.value[0]);
+      const endMinute = parseInt(end.value[1]);
+      const current = h * 60 + m;
+      const startTotal = startHour * 60 + startMinute;
+      const endTotal = endHour * 60 + endMinute;
+      if (current < startTotal) {
+        return { h: startHour, m: startMinute };
+      } else if (current > endTotal) {
+        return { h: endHour, m: endMinute };
+      } else {
+        if (h == startHour && m < startMinute)
+          return { h, m: startMinute };
+        if (h == endHour && m > endMinute)
+          return { h, m: endMinute };
+        return { h, m };
+      }
+    };
+    const initTimeValue = (timeValue) => {
+      let h = parseInt(timeValue[0]);
+      let m = parseInt(timeValue[1]);
+      const adjusted = adjustTime(h, m);
+      const hStr = adjusted.h.toString().padStart(2, "0");
+      const mStr = adjusted.m.toString().padStart(2, "0");
+      return [
+        hours.value.findIndex((e2) => e2 == hStr),
+        minutes.value.findIndex((e2) => e2 == mStr)
+      ];
+    };
+    const formatSingle = (num) => {
+      return num.toString().padStart(2, "0");
+    };
+    const i18nHandle = (key, defaultVal) => {
+      if (language.value.startsWith("en")) {
+        return i18nText["en"][key];
+      }
+      if (language.value.startsWith("es")) {
+        return i18nText["es"][key];
+      }
+      if (language.value.startsWith("fr")) {
+        return i18nText["fr"][key];
+      }
+      if (language.value.startsWith("zh-Hans")) {
+        return i18nText["zh-Hans"][key];
+      }
+      if (language.value.startsWith("zh-Hant")) {
+        return i18nText["zh-Hant"][key];
+      }
+      return defaultVal;
+    };
+    const initLanguageAndTheme = () => {
+      const appBaseInfo = uni.getAppBaseInfo();
+      language.value = uni.getLocale();
+      theme.value = appBaseInfo.hostTheme == "dark" ? "dark" : "light";
+    };
+    onLoad((options) => {
+      readyEventName.value = options["readyEventName"];
+      optionsEventName.value = options["optionsEventName"];
+      cancelEventName.value = options["cancelEventName"];
+      selectorChangeEventName.value = options["selectorChangeEventName"];
+      multiSelectorChangeEventName.value = options["multiSelectorChangeEventName"];
+      timeChangeEventName.value = options["timeChangeEventName"];
+      columnChangeEventName.value = options["columnChangeEventName"];
+      uni.$on(optionsEventName.value, (data) => {
+        if (data["layoutOnly"] == true) {
+          popover.value = data["popover"];
+          return;
+        }
+        if (data["selectorType"] != null) {
+          selectorType.value = data["selectorType"];
+          popover.value = data["popover"];
+        }
+        if (data["mode"] != null) {
+          mode.value = data["mode"];
+        }
+        if (data["range"] != null) {
+          range.value = data["range"];
+        }
+        if (data["rangeKey"] != null) {
+          rangeKey.value = data["rangeKey"];
+        }
+        if (data["selectorValue"] != null) {
+          value.value = [data["selectorValue"]];
+        }
+        if (data["multiSelectorValue"] != null) {
+          value.value.length = 0;
+          const multiSelectorValue = data["multiSelectorValue"];
+          const len = range.value.length;
+          let arr = Array.from({ length: len }, () => 0);
+          arr.forEach((_, index2) => {
+            let val = multiSelectorValue[index2] ?? 0;
+            value.value.push(val);
+          });
+          prevMultiValue.value = value.value.slice();
+        }
+        if (data["timeValue"] != null) {
+          const timeVal = data["timeValue"];
+          start.value = data["start"];
+          end.value = data["end"];
+          const timeHour = parseInt(timeVal[0]);
+          const timeMinute = parseInt(timeVal[1]);
+          const adjusted = adjustTime(timeHour, timeMinute);
+          updateTimeColumns(adjusted.h);
+          value.value = initTimeValue(timeVal);
+        }
+        if (data["dateValue"] != null) {
+          const dateValue = data["dateValue"];
+          const year = dateValue[0];
+          const month = dateValue[1];
+          const day = dateValue[2];
+          fields.value = data["fields"];
+          start.value = data["start"] ?? ["1970", "01", "01"];
+          end.value = data["end"] ?? ["2099", "12", "31"];
+          selected.year = parseInt(year) ?? (/* @__PURE__ */ new Date()).getFullYear();
+          selected.month = parseInt(month) ?? 1;
+          selected.day = parseInt(day) ?? 1;
+          selected.year = Math.max(
+            parseInt(start.value[0]),
+            Math.min(parseInt(end.value[0]), selected.year)
+          );
+          selected.month = Math.max(1, Math.min(12, selected.month));
+          selected.day = Math.max(1, Math.min(
+            new Date(selected.year, selected.month, 0).getDate(),
+            selected.day
+          ));
+          updateDateColumns();
+          const yIdx = years.value.findIndex((y) => y == selected.year);
+          const mIdx = months.value.findIndex((m) => m == selected.month);
+          const dIdx = days.value.findIndex((d) => d == selected.day);
+          switch (fields.value) {
+            case "year":
+              value.value = [yIdx];
+              break;
+            case "month":
+              value.value = [yIdx, mIdx];
+              break;
+            case "day":
+              value.value = [yIdx, mIdx, dIdx];
+              break;
+          }
+        }
+        eventValue.value = value.value;
+        calculateRanges();
+      });
+      updateLayout();
+      window.addEventListener("resize", scheduleLayout);
+      document.addEventListener("scroll", handleScroll, true);
+      uni.$emit(readyEventName.value);
+      initLanguageAndTheme();
+      switchTheme(theme.value);
+      uni.onHostThemeChange((res) => {
+        theme.value = res.hostTheme == "dark" ? "dark" : "light";
+        switchTheme(theme.value);
+      });
+    });
+    onReady(() => {
+      show.value = true;
+    });
+    onUnload(() => {
+      window.removeEventListener("resize", scheduleLayout);
+      document.removeEventListener("scroll", handleScroll, true);
+      if (layoutFrame != null) {
+        window.cancelAnimationFrame(layoutFrame);
+        layoutFrame = null;
+      }
+      uni.$off(optionsEventName.value, null);
+      if (timer.value) {
+        clearTimeout(timer.value);
+      }
+    });
+    Vue.initUniPageHooks();
+    const _component_scroll_view = __syscom_0;
+    const _component_picker_view_column = _sfc_main$a;
+    const _component_picker_view = _sfc_main$b;
+    const n56 = t3$1();
+    const n0 = Vue.child(n56);
+    const n55 = Vue.next(n0);
+    Vue.on(n0, "click", close);
+    Vue.renderEffect(() => {
+      const _theme = Vue.unref(theme);
+      const _isDesktop = Vue.unref(isDesktop);
+      const _show = Vue.unref(show);
+      Vue.setClass(n56, ["uni-picker__container", ["uni-picker-theme--" + _theme, { "uni-picker__container--desktop": _isDesktop }]]);
+      Vue.setClassName(n0, (_show ? 1 : 0) | (_theme == "dark" ? 2 : 0), [" picker__ani-show", " picker__mask--dark"], "uni-picker__mask");
+      Vue.setClass(n55, ["uni-picker__inner-box", [_show ? "picker__ani-box-show" : "", "inner-box--" + _theme, { "uni-picker__inner-box--desktop": _isDesktop }]]);
+      Vue.setStyle(n55, Vue.unref(popupStyle).content);
+    });
+    Vue.setInsertionState(n55);
+    Vue.createIf(
+      () => Vue.unref(isSelect),
+      () => {
+        const n6 = Vue.withComponentId("3e32089c", () => Vue.createComponentWithFallback(_component_scroll_view, {
+          class: "uni-picker__select",
+          direction: "vertical",
+          "show-scrollbar": true
+        }, Vue.extend(() => {
+          const n3 = Vue.createFor(
+            () => Vue.unref(range),
+            (_for_item0, _for_key0) => {
+              const n5 = t0$c();
+              const x5 = Vue.txt(n5);
+              Vue.on(n5, "click", () => selectItem(_for_key0.value));
+              Vue.renderEffect(() => {
+                const _rangeKey = Vue.unref(rangeKey);
+                const _item = _for_item0.value;
+                Vue.setClassName(n5, Vue.unref(eventValue)[0] == _for_key0.value ? 1 : 0, " uni-picker__select-item--selected", "uni-picker__select-item");
+                Vue.setText(x5, Vue.normalizeUniText(Vue.toDisplayString(_rangeKey ? _item[_rangeKey] : _item)));
+              });
+              return n5;
+            },
+            (item, selectorIdx) => selectorIdx,
+            40
+            /* IS_SINGLE_NODE, SLOT_ROOT */
+          );
+          return n3;
+        }, {
+          _: 1
+          /* NON_STABLE */
+        })));
+        Vue.setStaticTemplateRef(n6, selectRef, null, "selectRef");
+        return n6;
+      },
+      () => {
+        const n10 = t1$6();
+        const n8 = Vue.child(n10);
+        const n9 = Vue.next(n8);
+        const n54 = t2$1();
+        const x8 = Vue.txt(n8);
+        Vue.on(n8, "click", close);
+        const x9 = Vue.txt(n9);
+        Vue.on(n9, "click", confirm);
+        Vue.on(n10, "click", Vue.withModifiers(() => {
+        }, ["stop"]));
+        Vue.renderEffect(() => {
+          const _theme = Vue.unref(theme);
+          Vue.setClass(n10, ["uni-picker__header-btn", ["header-btn--" + _theme]]);
+          Vue.setClass(n8, ["uni-picker__header-btn-cancel", ["header-btn-cannel--" + _theme]]);
+          Vue.setText(x8, Vue.normalizeUniText(Vue.toDisplayString(Vue.unref(cancelText))));
+          Vue.setText(x9, Vue.normalizeUniText(Vue.toDisplayString(Vue.unref(confirmText))));
+        });
+        Vue.setInsertionState(n54);
+        Vue.withComponentId("3bf71206", () => Vue.createComponentWithFallback(_component_picker_view, {
+          style: { "flex": "1" },
+          onChange: () => handleChange,
+          "mask-top-style": () => Vue.unref(maskTopStyle),
+          "mask-bottom-style": () => Vue.unref(maskBottomStyle),
+          indicatorStyle: () => Vue.unref(indicatorStyle),
+          value: () => Vue.unref(value)
+        }, Vue.extend(() => {
+          const n11 = Vue.createIf(
+            () => Vue.unref(mode) == "selector",
+            () => {
+              const n16 = Vue.withComponentId("3bf719c2", () => Vue.createComponentWithFallback(_component_picker_view_column, null, Vue.extend(() => {
+                const n13 = Vue.createFor(
+                  () => Vue.unref(range),
+                  (_for_item0, _for_key0) => {
+                    const n15 = t0$c();
+                    const x15 = Vue.txt(n15);
+                    Vue.renderEffect(() => {
+                      const _rangeKey = Vue.unref(rangeKey);
+                      const _item = _for_item0.value;
+                      Vue.setClass(n15, ["uni-picker__view-item", ["view-item--" + Vue.unref(theme)]]);
+                      Vue.setText(x15, Vue.normalizeUniText(Vue.toDisplayString(_rangeKey ? _item[_rangeKey] : _item)));
+                    });
+                    return n15;
+                  },
+                  (item, selectorIdx) => selectorIdx,
+                  40
+                  /* IS_SINGLE_NODE, SLOT_ROOT */
+                );
+                return n13;
+              }, {
+                _: 1
+                /* NON_STABLE */
+              })));
+              return n16;
+            },
+            null,
+            129
+            /* TRUE_SINGLE_ROOT, SLOT_ROOT */
+          );
+          const n17 = Vue.createIf(
+            () => Vue.unref(mode) == "multiSelector",
+            () => {
+              const n19 = Vue.createFor(
+                () => Vue.unref(range),
+                (_for_item0, _for_key0) => {
+                  const n24 = Vue.withComponentId("3bf728cb-" + _for_key0.value, () => Vue.createComponentWithFallback(_component_picker_view_column, null, Vue.extend(() => {
+                    const n21 = Vue.createFor(
+                      () => _for_item0.value,
+                      (_for_item1, _for_key1) => {
+                        const n23 = t0$c();
+                        const x23 = Vue.txt(n23);
+                        Vue.renderEffect(() => {
+                          const _rangeKey = Vue.unref(rangeKey);
+                          const _column = _for_item1.value;
+                          Vue.setClass(n23, ["uni-picker__view-item", ["view-item--" + Vue.unref(theme)]]);
+                          Vue.setText(x23, Vue.normalizeUniText(Vue.toDisplayString(_rangeKey ? _column[_rangeKey] : _column)));
+                        });
+                        return n23;
+                      },
+                      (column, colIdx) => colIdx,
+                      40
+                      /* IS_SINGLE_NODE, SLOT_ROOT */
+                    );
+                    return n21;
+                  }, {
+                    _: 1
+                    /* NON_STABLE */
+                  })));
+                  return n24;
+                },
+                (item, multiIdx) => multiIdx,
+                34
+                /* IS_COMPONENT, SLOT_ROOT */
+              );
+              return n19;
+            },
+            null,
+            129
+            /* TRUE_SINGLE_ROOT, SLOT_ROOT */
+          );
+          const n25 = Vue.createIf(
+            () => Vue.unref(mode) == "time",
+            () => {
+              const n30 = Vue.withComponentId("3bf7837a", () => Vue.createComponentWithFallback(_component_picker_view_column, null, Vue.extend(() => {
+                const n27 = Vue.createFor(
+                  () => Vue.unref(hours),
+                  (_for_item0, _for_key0) => {
+                    const n29 = t0$c();
+                    const x29 = Vue.txt(n29);
+                    Vue.renderEffect(() => {
+                      Vue.setClass(n29, ["uni-picker__view-item", ["view-item--" + Vue.unref(theme)]]);
+                      Vue.setText(x29, Vue.normalizeUniText(Vue.toDisplayString(_for_item0.value)));
+                    });
+                    return n29;
+                  },
+                  (h, hIdx) => h,
+                  40
+                  /* IS_SINGLE_NODE, SLOT_ROOT */
+                );
+                return n27;
+              }, {
+                _: 1
+                /* NON_STABLE */
+              })));
+              const n34 = Vue.withComponentId("3bf78ac3", () => Vue.createComponentWithFallback(_component_picker_view_column, null, Vue.extend(() => {
+                const n31 = Vue.createFor(
+                  () => Vue.unref(minutes),
+                  (_for_item0, _for_key0) => {
+                    const n33 = t0$c();
+                    const x33 = Vue.txt(n33);
+                    Vue.renderEffect(() => {
+                      Vue.setClass(n33, ["uni-picker__view-item", ["view-item--" + Vue.unref(theme)]]);
+                      Vue.setText(x33, Vue.normalizeUniText(Vue.toDisplayString(_for_item0.value)));
+                    });
+                    return n33;
+                  },
+                  (m, mIdx) => m,
+                  40
+                  /* IS_SINGLE_NODE, SLOT_ROOT */
+                );
+                return n31;
+              }, {
+                _: 1
+                /* NON_STABLE */
+              })));
+              return [n30, n34];
+            },
+            null,
+            130
+            /* TRUE_MULTI_ROOT, SLOT_ROOT */
+          );
+          const n35 = Vue.createIf(
+            () => Vue.unref(mode) == "date",
+            () => {
+              const n40 = Vue.withComponentId("3bf7954e", () => Vue.createComponentWithFallback(_component_picker_view_column, null, Vue.extend(() => {
+                const n37 = Vue.createFor(
+                  () => Vue.unref(years),
+                  (_for_item0) => {
+                    const n39 = t0$c();
+                    const x39 = Vue.txt(n39);
+                    Vue.renderEffect(() => {
+                      Vue.setClass(n39, ["uni-picker__view-item", ["view-item--" + Vue.unref(theme)]]);
+                      Vue.setText(x39, Vue.normalizeUniText(Vue.toDisplayString(_for_item0.value) + Vue.toDisplayString(Vue.unref(yearText))));
+                    });
+                    return n39;
+                  },
+                  (year) => year,
+                  40
+                  /* IS_SINGLE_NODE, SLOT_ROOT */
+                );
+                return n37;
+              }, {
+                _: 1
+                /* NON_STABLE */
+              })));
+              const n41 = Vue.createIf(() => Vue.unref(fields) != "year", () => {
+                const n46 = Vue.withComponentId("3bf79ccf", () => Vue.createComponentWithFallback(_component_picker_view_column, null, Vue.extend(() => {
+                  const n43 = Vue.createFor(
+                    () => Vue.unref(monthsText),
+                    (_for_item0) => {
+                      const n45 = t0$c();
+                      const x45 = Vue.txt(n45);
+                      Vue.renderEffect(() => {
+                        Vue.setClass(n45, ["uni-picker__view-item", ["view-item--" + Vue.unref(theme)]]);
+                        Vue.setText(x45, Vue.normalizeUniText(Vue.toDisplayString(formatSingle(_for_item0.value)) + Vue.toDisplayString(Vue.unref(monthText))));
+                      });
+                      return n45;
+                    },
+                    (month) => month,
+                    40
+                    /* IS_SINGLE_NODE, SLOT_ROOT */
+                  );
+                  return n43;
+                }, {
+                  _: 1
+                  /* NON_STABLE */
+                })));
+                return n46;
+              });
+              const n47 = Vue.createIf(() => Vue.unref(fields) == "day", () => {
+                const n52 = Vue.withComponentId("3bf7f3bd", () => Vue.createComponentWithFallback(_component_picker_view_column, null, Vue.extend(() => {
+                  const n49 = Vue.createFor(
+                    () => Vue.unref(days),
+                    (_for_item0) => {
+                      const n51 = t0$c();
+                      const x51 = Vue.txt(n51);
+                      Vue.renderEffect(() => {
+                        Vue.setClass(n51, ["uni-picker__view-item", ["view-item--" + Vue.unref(theme)]]);
+                        Vue.setText(x51, Vue.normalizeUniText(Vue.toDisplayString(formatSingle(_for_item0.value)) + Vue.toDisplayString(Vue.unref(dayText))));
+                      });
+                      return n51;
+                    },
+                    (day) => day,
+                    40
+                    /* IS_SINGLE_NODE, SLOT_ROOT */
+                  );
+                  return n49;
+                }, {
+                  _: 1
+                  /* NON_STABLE */
+                })));
+                return n52;
+              });
+              return [n40, n41, n47];
+            },
+            null,
+            130
+            /* TRUE_MULTI_ROOT, SLOT_ROOT */
+          );
+          return [n11, n17, n25, n35];
+        }, {
+          _: 1
+          /* NON_STABLE */
+        })));
+        return [n10, n54];
+      },
+      265
+      /* TRUE_SINGLE_ROOT, FALSE_MULTI_ROOT, KEYED_INDEX_0 */
+    );
+    Vue.setStaticTemplateRef(n56, containerRef, null, "containerRef");
+    return n56;
+  }
+});
+const _style_0 = "\n.uni-picker__container {\n		flex: 1;\n}\n.uni-picker__mask {\n		flex: 1;\n		background-color: rgba(0, 0, 0, .3);\n		opacity: 0;\n		transition-property: opacity;\n		transition-duration: 0.3s;\n}\n.picker__mask--dark {\n		background-color: rgba(0, 0, 0, .6);\n}\n.picker__ani-show {\n		opacity: 1;\n}\n.uni-picker__inner-box {\n		position: absolute;\n		bottom: 0;\n		left: 0;\n		right: 0;\n		height: 300px;\n		transform: translateY(100%);\n		transition-property: transform;\n		transition-duration: 0.2s;\n}\n.picker__ani-box-show {\n		transform: translateY(0%);\n}\n.uni-picker__header-btn {\n		flex-direction: row;\n		justify-content: space-between;\n		border-bottom: 1px #f7f7f7 solid;\n}\n.uni-picker__header-btn-cancel {\n		font-size: 14px;\n		padding: 15px;\n		background-color: transparent;\n}\n.uni-picker__header-btn-ok {\n		font-size: 14px;\n		padding: 15px;\n		color: #007aff;\n}\n.uni-picker__view {\n		position: relative;\n		flex: 1;\n}\n.uni-picker__view-item {\n		width: 100%;\n		text-align: center;\n		height: 50px;\n		line-height: 50px;\n}\n.inner-box--light {\n		background-color: #fff;\n}\n.header-btn-cannel--light {\n		color: #000;\n}\n.inner-box--dark {\n		background-color: #232323;\n}\n.header-btn-cannel--dark {\n		color: rgba(255, 255, 255, .8);\n}\n.view-item--dark {\n		color: rgba(255, 255, 255, .8);\n}\n.header-btn--dark {\n		border-color: rgba(255, 255, 255, .05);\n}\n.uni-picker__mask {\n		/* 建立滚动容器，通过 CSS 阻止遮罩上的滚动传递到背景页面。 */\n		overflow: auto;\n		overscroll-behavior: none;\n		touch-action: none;\n}\n.uni-picker__container--desktop .uni-picker__mask {\n		background-color: transparent;\n}\n.uni-picker__inner-box--desktop {\n		transform: none;\n		opacity: 0;\n		border-radius: 5px;\n		box-shadow: 0 0 20px 5px rgba(0, 0, 0, .3);\n		transition-property: opacity;\n}\n.uni-picker__inner-box--desktop.picker__ani-box-show {\n		transform: none;\n		opacity: 1;\n}\n.uni-picker__inner-box--desktop .uni-picker__header-btn {\n		flex-shrink: 0;\n}\n.uni-picker__inner-box--desktop .uni-picker__view {\n		min-height: 0;\n		overflow: hidden;\n		border-radius: 0 0 5px 5px;\n}\n.uni-picker__select {\n		height: 100%;\n		box-sizing: border-box;\n		padding: 6px 0;\n		border-radius: 5px;\n		overscroll-behavior: contain;\n}\n.uni-picker__select .uni-scroll-view {\n		overscroll-behavior: contain;\n}\n.uni-picker__select-item {\n		flex-shrink: 0;\n		height: 34px;\n		line-height: 34px;\n		padding: 0 10px;\n		text-align: center;\n		color: #555;\n		white-space: nowrap;\n		text-overflow: ellipsis;\n		overflow: hidden;\n		cursor: pointer;\n}\n.uni-picker__select-item:hover {\n		background-color: #f6f6f6;\n}\n.uni-picker-theme--dark .uni-picker__select-item {\n		color: rgba(255, 255, 255, .8);\n}\n.uni-picker-theme--dark .uni-picker__select-item:hover {\n		background-color: rgba(255, 255, 255, .1);\n}\n.uni-picker__select-item.uni-picker__select-item--selected {\n		color: #007aff;\n}\n\n";
+const _export_sfc = (sfc, props2) => {
+  const target = sfc.__vccOpts || sfc;
+  for (const [key, val] of props2) {
+    target[key] = val;
+  }
+  return target;
+};
+const UniPickerPage = /* @__PURE__ */ _export_sfc(_sfc_main$c, [["styles", [_style_0]]]);
+const registerPickerOnce = /* @__PURE__ */ uniShared.once(() => {
+  registerSystemRoute("uni:picker", UniPickerPage);
+});
+const picker = /* @__PURE__ */ shared.extend({}, _sfc_main$d, {
+  setup: (props2, context) => {
+    registerPickerOnce();
+    return _sfc_main$d.setup(props2, context);
   }
 });
 class UniPickerViewElement extends UniViewElement {
@@ -11232,7 +11682,7 @@ const _sfc_main$4 = /* @__PURE__ */ Vue.defineVaporComponent({
       headerSize: 0,
       placeholderSize: 0,
       offsetTop: 0,
-      resolveKeyById: (id2) => idKeyMap.get(id2),
+      resolveKeyById: (id) => idKeyMap.get(id),
       getItemOffset,
       onScrollContextUpdate,
       applyDefaultItemSize
@@ -11250,9 +11700,9 @@ const _sfc_main$4 = /* @__PURE__ */ Vue.defineVaporComponent({
       if (listIds.length !== keys.length)
         return;
       idKeyMap.clear();
-      listIds.forEach((id2, index2) => {
-        if (id2 && keys[index2])
-          idKeyMap.set(id2, keys[index2]);
+      listIds.forEach((id, index2) => {
+        if (id && keys[index2])
+          idKeyMap.set(id, keys[index2]);
       });
     }
     function updateList(newList) {
@@ -12184,9 +12634,9 @@ const _sfc_main = /* @__PURE__ */ Vue.defineVaporComponent({
       if (listIds.length !== list.length)
         return;
       idKeyMap.clear();
-      listIds.forEach((id2, index2) => {
-        if (id2 && list[index2].key)
-          idKeyMap.set(id2, list[index2].key);
+      listIds.forEach((id, index2) => {
+        if (id && list[index2].key)
+          idKeyMap.set(id, list[index2].key);
       });
     }
     function updateList(keys) {
@@ -12380,8 +12830,8 @@ const _sfc_main = /* @__PURE__ */ Vue.defineVaporComponent({
     );
     Vue.watch(
       () => props2.scrollIntoView,
-      (id2) => {
-        pendingScrollId = id2;
+      (id) => {
+        pendingScrollId = id;
         scrollingToItemKey = void 0;
         queueLayout();
       }
@@ -13475,8 +13925,8 @@ const props$4 = {
     default: ""
   }
 };
-function useMarkerLabelStyle(id2) {
-  const className = "uni-map-marker-label-" + id2;
+function useMarkerLabelStyle(id) {
+  const className = "uni-map-marker-label-" + id;
   const styleEl = document.createElement("style");
   styleEl.id = className;
   document.head.appendChild(styleEl);
@@ -13498,9 +13948,9 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
   name: "MapMarker",
   props: props$4,
   setup(props2) {
-    const id2 = String(!isNaN(Number(props2.id)) ? props2.id : "");
+    const id = String(!isNaN(Number(props2.id)) ? props2.id : "");
     const onMapReady = Vue.inject("onMapReady");
-    const updateMarkerLabelStyle = useMarkerLabelStyle(id2);
+    const updateMarkerLabelStyle = useMarkerLabelStyle(id);
     let marker;
     function removeMarkerCallout(callout) {
       if (getIsAMap()) {
@@ -13663,16 +14113,16 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
             } else {
               if (getIsAMap()) {
                 const callback = () => {
-                  if (id2 !== "") {
-                    trigger("callouttap", {}, { markerId: Number(id2) });
+                  if (id !== "") {
+                    trigger("callouttap", {}, { markerId: Number(id) });
                   }
                 };
                 callout = marker.callout = new maps.Callout(calloutStyle, callback);
               } else {
                 callout = marker.callout = new maps.Callout(calloutStyle);
                 callout.div.onclick = function($event) {
-                  if (id2 !== "") {
-                    trigger("callouttap", $event, { markerId: Number(id2) });
+                  if (id !== "") {
+                    trigger("callouttap", $event, { markerId: Number(id) });
                   }
                   $event.stopPropagation();
                   $event.preventDefault();
@@ -13733,9 +14183,9 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
                 }
               }
             }
-            if (id2) {
+            if (id) {
               trigger("markertap", {}, {
-                markerId: Number(id2),
+                markerId: Number(id),
                 latitude: props3.latitude,
                 longitude: props3.longitude
               });
@@ -13746,11 +14196,11 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
       addMarker(props2);
       Vue.watch(props2, updateMarker);
     });
-    if (id2) {
+    if (id) {
       const addMapChidlContext = Vue.inject("addMapChidlContext");
       Vue.inject("removeMapChidlContext");
       const context = {
-        id: id2,
+        id,
         translate(data) {
           onMapReady((map, maps, trigger) => {
             const destination = data.destination;
@@ -14407,7 +14857,7 @@ function useMap(props2, rootRef, emit2) {
     }
   }
   try {
-    const id2 = useContextInfo();
+    const id = useContextInfo();
     useSubscribe(
       (type, data = {}) => {
         switch (type) {
@@ -14497,7 +14947,7 @@ function useMap(props2, rootRef, emit2) {
             break;
         }
       },
-      id2,
+      id,
       true
     );
   } catch (error) {
@@ -14919,14 +15369,14 @@ class AdRender {
     }
     const script = providerConfig.script || providerConfig.s;
     this._currentChannel = providerId;
-    const id2 = this._randomId();
-    this._createView(id2);
+    const id = this._randomId();
+    this._createView(id);
     if (providerId === AD_PROVIDER.GDT) {
       window.TencentGDT = window.TencentGDT || [];
       AdScript.instance.load(
         { provider: providerId, script },
         () => {
-          this._renderGdt(id2, data);
+          this._renderGdt(id, data);
         },
         (err) => {
           this._trigger("error", {}, err);
@@ -14939,7 +15389,7 @@ class AdRender {
       AdScript.instance.load(
         { provider: providerId, script },
         () => {
-          this._renderTuiaMaterial(id2, data);
+          this._renderTuiaMaterial(id, data);
         },
         (err) => {
           this._trigger("error", {}, err);
@@ -14950,18 +15400,18 @@ class AdRender {
     }
     this._renderNext();
   }
-  _createView(id2) {
+  _createView(id) {
     if (!this._rootRef.value) {
       return null;
     }
     var adView = document.createElement("div");
-    adView.setAttribute("id", id2);
-    adView.setAttribute("class", id2);
+    adView.setAttribute("id", id);
+    adView.setAttribute("class", id);
     this._rootRef.value.innerHTML = "";
     this._rootRef.value.append(adView);
     return adView;
   }
-  _renderGdt(id2, data) {
+  _renderGdt(id, data) {
     window.TencentGDT.push({
       placement_id: data.a3,
       app_id: data.a2,
@@ -14969,7 +15419,7 @@ class AdRender {
       count: 1,
       onComplete: (res) => {
         if (res && res.constructor === Array && res.length > 0) {
-          window.TencentGDT.NATIVE.renderAd(res[0], id2);
+          window.TencentGDT.NATIVE.renderAd(res[0], id);
           this._trigger("load", {}, {});
         } else {
           this._trigger(
@@ -14983,8 +15433,8 @@ class AdRender {
     });
     this._startCheckTimer();
   }
-  _renderTuiaMaterial(id2, data) {
-    const adView = document.getElementById(id2);
+  _renderTuiaMaterial(id, data) {
+    const adView = document.getElementById(id);
     if (!adView) {
       this._trigger("error", {}, { errMsg: "Invalid ad container" });
       this._renderNext();
@@ -15426,23 +15876,22 @@ function initApp(app) {
   }
 }
 function initRouter(app) {
-  const router2 = vueRouter.createRouter(createRouterOptions());
-  setRouterInstance(router2);
-  router2.beforeEach((to, from) => {
+  const router = vueRouter.createRouter(createRouterOptions());
+  router.beforeEach((to, from) => {
     if (to && from && to.meta.isTabBar && from.meta.isTabBar) {
       saveTabBarScrollPosition(from.meta.tabBarIndex);
     }
   });
-  app.router = router2;
-  app.use(router2);
+  app.router = router;
+  app.use(router);
 }
 let positionStore = /* @__PURE__ */ Object.create(null);
-function getTabBarScrollPosition(id2) {
-  return positionStore[id2];
+function getTabBarScrollPosition(id) {
+  return positionStore[id];
 }
-function saveTabBarScrollPosition(id2) {
+function saveTabBarScrollPosition(id) {
   if (typeof window !== "undefined") {
-    positionStore[id2] = {
+    positionStore[id] = {
       left: window.pageXOffset,
       top: window.pageYOffset
     };
@@ -15484,7 +15933,7 @@ function initHistory() {
 const index = {
   install(app) {
     initApp(app);
-    if (!app.config.warnHandler) {
+    if ((process.env.NODE_ENV !== "production" || false) && !app.config.warnHandler) {
       app.config.warnHandler = warnHandler;
     }
     if (__UNI_FEATURE_PAGES__) {
@@ -15769,9 +16218,9 @@ class RequestTask {
       return;
     }
     if (typeof callback === "function") {
-      this._requestOnHeadersReceiveCallbacks.forEach((cb, id2) => {
+      this._requestOnHeadersReceiveCallbacks.forEach((cb, id) => {
         if (cb === callback) {
-          this._requestOnHeadersReceiveCallbacks.delete(id2);
+          this._requestOnHeadersReceiveCallbacks.delete(id);
           this._emitter.off("headersReceived", callback);
         }
       });
@@ -15799,9 +16248,9 @@ class RequestTask {
       return;
     }
     if (typeof callback === "function") {
-      this._requestOnChunkReceiveCallbacks.forEach((cb, id2) => {
+      this._requestOnChunkReceiveCallbacks.forEach((cb, id) => {
         if (cb === callback) {
-          this._requestOnChunkReceiveCallbacks.delete(id2);
+          this._requestOnChunkReceiveCallbacks.delete(id);
           this._emitter.off("chunkReceived", callback);
         }
       });
@@ -16170,33 +16619,33 @@ Object.defineProperty(exports, "UniError", {
 exports.Ad = indexVapor;
 exports.AdContentPage = index$5;
 exports.AdDraw = index$4;
-exports.AsyncErrorComponent = _sfc_main$q;
-exports.AsyncLoadingComponent = _sfc_main$r;
-exports.Button = _sfc_main$n;
+exports.AsyncErrorComponent = _sfc_main$r;
+exports.AsyncLoadingComponent = _sfc_main$s;
+exports.Button = _sfc_main$p;
 exports.Camera = index$3;
 exports.Canvas = indexVapor$a;
-exports.Checkbox = _sfc_main$m;
-exports.CheckboxGroup = _sfc_main$l;
+exports.Checkbox = _sfc_main$o;
+exports.CheckboxGroup = _sfc_main$n;
 exports.Editor = indexVapor$8;
-exports.FlowItem = _sfc_main$k;
-exports.Form = _sfc_main$j;
+exports.FlowItem = _sfc_main$m;
+exports.Form = _sfc_main$l;
 exports.Icon = indexVapor$7;
 exports.Input = Input;
-exports.Label = _sfc_main$i;
+exports.Label = _sfc_main$k;
 exports.LayoutComponent = LayoutComponent;
-exports.ListItem = _sfc_main$h;
-exports.ListView = _sfc_main$g;
+exports.ListItem = _sfc_main$j;
+exports.ListView = _sfc_main$i;
 exports.LivePlayer = index$2;
 exports.LivePusher = index$1;
-exports.Loading = _sfc_main$p;
+exports.Loading = _sfc_main$h;
 exports.Map = indexVapor$1;
-exports.MatchMedia = _sfc_main$f;
+exports.MatchMedia = _sfc_main$g;
 exports.MovableArea = indexVapor$6;
 exports.MovableView = indexVapor$5;
-exports.Navigator = _sfc_main$e;
+exports.Navigator = _sfc_main$f;
 exports.PageComponent = PageComponent;
-exports.PageContainer = _sfc_main$d;
-exports.Picker = _sfc_main$c;
+exports.PageContainer = _sfc_main$e;
+exports.Picker = picker;
 exports.PickerView = _sfc_main$b;
 exports.PickerViewColumn = _sfc_main$a;
 exports.Progress = _sfc_main$9;

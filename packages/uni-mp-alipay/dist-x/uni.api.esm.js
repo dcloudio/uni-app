@@ -1917,61 +1917,22 @@ const API_ON_BEFORE_APP_ROUTE = 'onBeforeAppRoute';
 const API_OFF_BEFORE_APP_ROUTE = 'offBeforeAppRoute';
 const API_REWRITE_ROUTE = 'rewriteRoute';
 const eventTransport = /*#__PURE__*/ new Emitter();
-let activeBeforeAppRouteContext;
-const MAX_APP_ROUTE_REWRITE_COUNT = 100;
-const APP_ROUTE_ERROR_CODE = 4;
+// 公开 API 独立导出，避免框架仅派发路由事件时也保留全部 API 及异步调用依赖。
+// 独立通道避免依赖平台 Bridge，对外仍沿用 define API 的校验和拦截器。
+const onAppRoute$1 = /*#__PURE__*/ defineOnApi(API_ON_APP_ROUTE, () => { }, {
+    eventTransport,
+});
+const offAppRoute$1 = /*#__PURE__*/ defineOffApi(API_OFF_APP_ROUTE, () => { }, {
+    allowClearAll: true,
+    eventTransport,
+});
+const onBeforeAppRoute$1 = /*#__PURE__*/ defineOnApi(API_ON_BEFORE_APP_ROUTE, () => { }, { eventTransport });
+const offBeforeAppRoute$1 = /*#__PURE__*/ defineOffApi(API_OFF_BEFORE_APP_ROUTE, () => { }, {
+    allowClearAll: true,
+    eventTransport,
+});
 function createAppRouteRuntime(options = {}) {
     let routeEventId = 0;
-    // 独立通道避免依赖平台 Bridge，对外仍沿用 define API 的校验和拦截器。
-    const onAppRoute = defineOnApi(API_ON_APP_ROUTE, () => { }, {
-        eventTransport,
-    });
-    const offAppRoute = defineOffApi(API_OFF_APP_ROUTE, () => { }, {
-        allowClearAll: true,
-        eventTransport,
-    });
-    const onBeforeAppRoute = defineOnApi(API_ON_BEFORE_APP_ROUTE, () => { }, { eventTransport });
-    const offBeforeAppRoute = defineOffApi(API_OFF_BEFORE_APP_ROUTE, () => { }, {
-        allowClearAll: true,
-        eventTransport,
-    });
-    const rewriteRoute = defineAsyncApi(API_REWRITE_ROUTE, ({ url, preserveQuery }, { resolve, reject }) => {
-        const rejectRewriteRoute = (errMsg) => reject(errMsg, { errCode: APP_ROUTE_ERROR_CODE });
-        const context = activeBeforeAppRouteContext;
-        if (!context) {
-            rejectRewriteRoute('rewriteRoute is only allowed in a onBeforeAppRoute callback');
-            return;
-        }
-        if (context.event.openType === 'navigateBack') {
-            rejectRewriteRoute('a "navigateBack" event is not allowed to be rewritten');
-            return;
-        }
-        if (context.rewrite) {
-            rejectRewriteRoute(`rewriteRoute can only be called once in a route event, this page has been rewritten to "${context.rewrite.path}"`);
-            return;
-        }
-        if ((context.rewriteCount || 0) >= MAX_APP_ROUTE_REWRITE_COUNT) {
-            rejectRewriteRoute(`rewriteRoute exceeded the maximum rewrite count of ${MAX_APP_ROUTE_REWRITE_COUNT}`);
-            return;
-        }
-        if (!context.normalizeRewriteRoute) {
-            rejectRewriteRoute('not supported');
-            return;
-        }
-        const rewrite = context.normalizeRewriteRoute({ url, preserveQuery }, context.event);
-        if (typeof rewrite === 'string') {
-            rejectRewriteRoute(rewrite);
-            return;
-        }
-        context.rewrite = rewrite;
-        resolve();
-    }, {
-        url: {
-            type: String,
-            required: true,
-        },
-        preserveQuery: Boolean,
-    });
     function createAppRouteContext(event) {
         var _a, _b;
         const timeStamp = (_a = event.timeStamp) !== null && _a !== void 0 ? _a : Date.now();
@@ -1996,8 +1957,6 @@ function createAppRouteRuntime(options = {}) {
             notFound: event.notFound,
             routeEventId: event.routeEventId,
         };
-        const previousContext = activeBeforeAppRouteContext;
-        activeBeforeAppRouteContext = context;
         try {
             eventTransport.emit(API_ON_BEFORE_APP_ROUTE, beforeEvent);
         }
@@ -2006,7 +1965,6 @@ function createAppRouteRuntime(options = {}) {
             console.error(error);
         }
         finally {
-            activeBeforeAppRouteContext = previousContext;
         }
         return context.rewrite;
     }
@@ -2029,11 +1987,6 @@ function createAppRouteRuntime(options = {}) {
         }
     }
     return {
-        onAppRoute,
-        offAppRoute,
-        onBeforeAppRoute,
-        offBeforeAppRoute,
-        rewriteRoute,
         createAppRouteContext,
         dispatchBeforeAppRoute,
         dispatchAppRoute,
@@ -2099,10 +2052,10 @@ function createAlipayAppRouteApi(platform) {
         observer.observe();
     }
     return {
-        onAppRoute: appRouteRuntime.onAppRoute,
-        offAppRoute: appRouteRuntime.offAppRoute,
-        onBeforeAppRoute: appRouteRuntime.onBeforeAppRoute,
-        offBeforeAppRoute: appRouteRuntime.offBeforeAppRoute,
+        onAppRoute: onAppRoute$1,
+        offAppRoute: offAppRoute$1,
+        onBeforeAppRoute: onBeforeAppRoute$1,
+        offBeforeAppRoute: offBeforeAppRoute$1,
         rewriteRoute: defineAsyncApi(API_REWRITE_ROUTE, (_, { reject }) => reject('not supported', { errCode: 4 })),
     };
 }

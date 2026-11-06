@@ -24,6 +24,12 @@
   color: #ffffff;
 }
 
+@media (hover: hover) {
+  .uni-radio-view:not(.uni-radio-disabled):hover {
+    border-color: #007aff !important;
+  }
+}
+
 .uni-radio-svg {
   width: 14px;
   height: 14px;

@@ -287,6 +287,13 @@
     properties: ['caret-color', 'color'],
     filterProperties: true
   } as UseComputedStyleOptions)
+  const selectionStyle = useComputedStyle({
+    pseudoElement: '::selection',
+    properties: ['color', 'background-color'],
+    filterProperties: false
+  } as UseComputedStyleOptions)
+  const selectionColor = computed<string | null>(() => selectionStyle.get('color')?.toString() ?? null)
+  const selectionBackgroundColor = computed<string | null>(() => selectionStyle.get('background-color')?.toString() ?? null)
   const computedCaretColor = computed<string | null>(() => computedStyle.get('caret-color')?.toString() ?? null)
   const computedTextColor = computed<string | null>(() => computedStyle.get('color')?.toString() ?? null)
   const caretColor = computed<string>(() => {
@@ -324,6 +331,12 @@
     if (isReady) {
       evalJS(`editorSetCaretColor(${JSON.stringify(caretColor.value)})`)
       evalJS(`editorSetTextColor(${JSON.stringify(textColor.value)})`)
+    }
+  }
+
+  function updateSelectionStyle() {
+    if (isReady) {
+      evalJS(`editorSetSelectionStyle(${JSON.stringify(selectionColor.value)}, ${JSON.stringify(selectionBackgroundColor.value)})`)
     }
   }
 
@@ -407,6 +420,7 @@
         // 编辑器初始化完成
         isReady = true
         updateEditorStyle()
+        updateSelectionStyle()
         emit('ready')
         break
 
@@ -543,7 +557,9 @@
       readOnly: props.readOnly,
       type: props.type,
       caretColor: caretColor.value,
-      textColor: textColor.value
+      textColor: textColor.value,
+      selectionColor: selectionColor.value,
+      selectionBackgroundColor: selectionBackgroundColor.value
     }
 
     evalJS(`editorInit(${JSON.stringify(config)})`)
@@ -856,6 +872,7 @@
 
   watch(caretColor, updateEditorStyle)
   watch(textColor, updateEditorStyle)
+  watch([selectionColor, selectionBackgroundColor], updateSelectionStyle)
 
   // #ifndef VUE3-VAPOR
   const __UNIEDITOR_FORMAT_EVENT_NAME__ = createEditorEventName('format', eventSeed)

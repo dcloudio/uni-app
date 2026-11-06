@@ -1,7 +1,7 @@
-import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, getUniElementPage, initVaporDataset, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, LINEFEED, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, createUniDOMStringMap, parseUrl, stringifyQuery as stringifyQuery$1, decodedQuery, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, setUniElementPage, ON_UNLOAD, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, RESPONSIVE_MIN_WIDTH, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, scrollTo, onCreateVueApp } from "@dcloudio/uni-shared";
+import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, getUniElementPage, initVaporDataset, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, LINEFEED, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, createUniDOMStringMap, parseUrl, decodedQuery, stringifyQuery as stringifyQuery$1, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, setUniElementPage, ON_UNLOAD, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, RESPONSIVE_MIN_WIDTH, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, scrollTo, onCreateVueApp } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2, onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import * as Vue from "vue";
-import { defineVaporComponent, createPlainElement, template, ref, watch, withModifiers, setAttr, getCurrentInstance, warn, unref, reactive, onMounted, onBeforeUnmount, computed, inject, onBeforeMount, nextTick, Fragment, EffectScope, createTemplateRefSetter, child, next, renderEffect, setDynamicProps, applyVShow, txt, setInsertionState, createIf, on as on$1, setBlockKey, setValue as setValue$1, setProp, setClass, setStyle, onActivated, setClassName, shallowRef, watchEffect, provide, injectHook, isReactive, markRaw, querySelectorInComponent, querySelectorAllInComponent, createFor, extend as extend$1, VaporKeepAlive, createDynamicComponent, setText, toDisplayString, onServerPrefetch, initUniPageHooks, onBeforeActivate, onBeforeDeactivate, createComponent as createComponent$1, onUnmounted, initUniElementType, initUniElement, setStaticTemplateRef, setHtml, createSlot, toRaw, createKeyedFragment, createTextNode, remove as remove$1, effectScope, insert, syncSelectValue, setHover, withComponentId, createComponentWithFallback, useAttrs as useAttrs$1, useSlots, getBlockFirstNode, isInSSRComponentSetup, normalizeUniText, queuePostFlushCb, logError, setUniPageHooksInitializer, setRealPathResolver, setNativeEventNormalizer, createVaporApp, VaporTransition, nthChild, withImageEventDetail, setImageMode, setImageSrc } from "vue";
+import { defineVaporComponent, createPlainElement, template, ref, watch, withModifiers, setAttr, getCurrentInstance, warn, unref, reactive, onMounted, onBeforeUnmount, computed, inject, onBeforeMount, nextTick, Fragment, EffectScope, createTemplateRefSetter, child, next, renderEffect, setDynamicProps, applyVShow, txt, setInsertionState, createIf, on as on$1, setBlockKey, setValue as setValue$1, setProp, setClass, setStyle, onActivated, setClassName, shallowRef, watchEffect, provide, injectHook, isReactive, markRaw, querySelectorInComponent, querySelectorAllInComponent, createFor, extend as extend$1, VaporKeepAlive, createDynamicComponent, setText, toDisplayString, onServerPrefetch, initUniPageHooks, onBeforeActivate, onBeforeDeactivate, createComponent as createComponent$1, setHtml, onUnmounted, toRaw, createKeyedFragment, createTextNode, remove as remove$1, effectScope, insert, syncSelectValue, initUniElementType, initUniElement, setHover, withComponentId, createComponentWithFallback, createSlot, setStaticTemplateRef, useAttrs as useAttrs$1, useSlots, getBlockFirstNode, isInSSRComponentSetup, normalizeUniText, queuePostFlushCb, logError, setUniPageHooksInitializer, setRealPathResolver, setNativeEventNormalizer, createVaporApp, VaporTransition, nthChild, withImageEventDetail, setImageMode, setImageSrc } from "vue";
 import { capitalize, camelize, isArray, isString, extend, remove, isPlainObject, isFunction, hyphenate, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, EMPTY_OBJ, Namespaces } from "@vue/shared";
 import { useRoute, isNavigationFailure, VaporRouterView, useRouter, createRouter, createWebHistory, createWebHashHistory } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -6632,84 +6632,92 @@ const eventTransport = /* @__PURE__ */ new Emitter();
 let activeBeforeAppRouteContext;
 const MAX_APP_ROUTE_REWRITE_COUNT = 100;
 const APP_ROUTE_ERROR_CODE = 4;
-function createAppRouteRuntime(options = {}) {
-  let routeEventId = 0;
-  const onAppRoute2 = /* @__PURE__ */ defineOnApi(API_ON_APP_ROUTE, () => {
-  }, {
+const onAppRoute = /* @__PURE__ */ defineOnApi(
+  API_ON_APP_ROUTE,
+  () => {
+  },
+  {
     eventTransport
-  });
-  const offAppRoute2 = /* @__PURE__ */ defineOffApi(API_OFF_APP_ROUTE, () => {
-  }, {
+  }
+);
+const offAppRoute = /* @__PURE__ */ defineOffApi(
+  API_OFF_APP_ROUTE,
+  () => {
+  },
+  {
     allowClearAll: true,
     eventTransport
-  });
-  const onBeforeAppRoute2 = /* @__PURE__ */ defineOnApi(
-    API_ON_BEFORE_APP_ROUTE,
-    () => {
-    },
-    { eventTransport }
-  );
-  const offBeforeAppRoute2 = /* @__PURE__ */ defineOffApi(
-    API_OFF_BEFORE_APP_ROUTE,
-    () => {
-    },
-    {
-      allowClearAll: true,
-      eventTransport
-    }
-  );
-  const rewriteRoute2 = /* @__PURE__ */ defineAsyncApi(
-    API_REWRITE_ROUTE,
-    ({ url, preserveQuery }, { resolve, reject }) => {
-      const rejectRewriteRoute = (errMsg) => reject(errMsg, { errCode: APP_ROUTE_ERROR_CODE });
-      const context = activeBeforeAppRouteContext;
-      if (!context) {
-        rejectRewriteRoute(
-          "rewriteRoute is only allowed in a onBeforeAppRoute callback"
-        );
-        return;
-      }
-      if (context.event.openType === "navigateBack") {
-        rejectRewriteRoute(
-          'a "navigateBack" event is not allowed to be rewritten'
-        );
-        return;
-      }
-      if (context.rewrite) {
-        rejectRewriteRoute(
-          `rewriteRoute can only be called once in a route event, this page has been rewritten to "${context.rewrite.path}"`
-        );
-        return;
-      }
-      if ((context.rewriteCount || 0) >= MAX_APP_ROUTE_REWRITE_COUNT) {
-        rejectRewriteRoute(
-          `rewriteRoute exceeded the maximum rewrite count of ${MAX_APP_ROUTE_REWRITE_COUNT}`
-        );
-        return;
-      }
-      if (!context.normalizeRewriteRoute) {
-        rejectRewriteRoute("not supported");
-        return;
-      }
-      const rewrite = context.normalizeRewriteRoute(
-        { url, preserveQuery },
-        context.event
+  }
+);
+const onBeforeAppRoute = /* @__PURE__ */ defineOnApi(
+  API_ON_BEFORE_APP_ROUTE,
+  () => {
+  },
+  { eventTransport }
+);
+const offBeforeAppRoute = /* @__PURE__ */ defineOffApi(
+  API_OFF_BEFORE_APP_ROUTE,
+  () => {
+  },
+  {
+    allowClearAll: true,
+    eventTransport
+  }
+);
+const rewriteRoute = /* @__PURE__ */ defineAsyncApi(
+  API_REWRITE_ROUTE,
+  ({ url, preserveQuery }, { resolve, reject }) => {
+    const rejectRewriteRoute = (errMsg) => reject(errMsg, { errCode: APP_ROUTE_ERROR_CODE });
+    const context = activeBeforeAppRouteContext;
+    if (!context) {
+      rejectRewriteRoute(
+        "rewriteRoute is only allowed in a onBeforeAppRoute callback"
       );
-      if (typeof rewrite === "string") {
-        rejectRewriteRoute(rewrite);
-        return;
-      }
-      context.rewrite = rewrite;
-      resolve();
-    },
-    {
-      url: {
-        type: String,
-        required: true
-      },
-      preserveQuery: Boolean
+      return;
     }
-  );
+    if (context.event.openType === "navigateBack") {
+      rejectRewriteRoute(
+        'a "navigateBack" event is not allowed to be rewritten'
+      );
+      return;
+    }
+    if (context.rewrite) {
+      rejectRewriteRoute(
+        `rewriteRoute can only be called once in a route event, this page has been rewritten to "${context.rewrite.path}"`
+      );
+      return;
+    }
+    if ((context.rewriteCount || 0) >= MAX_APP_ROUTE_REWRITE_COUNT) {
+      rejectRewriteRoute(
+        `rewriteRoute exceeded the maximum rewrite count of ${MAX_APP_ROUTE_REWRITE_COUNT}`
+      );
+      return;
+    }
+    if (!context.normalizeRewriteRoute) {
+      rejectRewriteRoute("not supported");
+      return;
+    }
+    const rewrite = context.normalizeRewriteRoute(
+      { url, preserveQuery },
+      context.event
+    );
+    if (typeof rewrite === "string") {
+      rejectRewriteRoute(rewrite);
+      return;
+    }
+    context.rewrite = rewrite;
+    resolve();
+  },
+  {
+    url: {
+      type: String,
+      required: true
+    },
+    preserveQuery: Boolean
+  }
+);
+function createAppRouteRuntime(options = {}) {
+  let routeEventId = 0;
   function createAppRouteContext2(event) {
     const timeStamp = event.timeStamp ?? Date.now();
     return {
@@ -6761,11 +6769,6 @@ function createAppRouteRuntime(options = {}) {
     }
   }
   return {
-    onAppRoute: onAppRoute2,
-    offAppRoute: offAppRoute2,
-    onBeforeAppRoute: onBeforeAppRoute2,
-    offBeforeAppRoute: offBeforeAppRoute2,
-    rewriteRoute: rewriteRoute2,
     createAppRouteContext: createAppRouteContext2,
     dispatchBeforeAppRoute,
     dispatchAppRoute: dispatchAppRoute2
@@ -8351,108 +8354,6 @@ function requestComponentObserver($el, options, callback) {
   }
   return intersectionObserver;
 }
-function removeNonTabBarPages(targetPageId) {
-  const curTabBarPageVm = getCurrentPageVm();
-  if (!curTabBarPageVm) {
-    return;
-  }
-  const pagesMap = getCurrentPagesMap();
-  const keys = pagesMap.keys();
-  for (const routeKey of keys) {
-    const page = pagesMap.get(routeKey);
-    if (!page.$.__isTabBar) {
-      removePage(routeKey);
-    } else {
-      page.$.__isActive = targetPageId !== void 0 && getPage$BasePage(page).id === targetPageId;
-    }
-  }
-  if (curTabBarPageVm.$.__isTabBar && (targetPageId === void 0 || getPage$BasePage(curTabBarPageVm).id !== targetPageId)) {
-    curTabBarPageVm.$.__isVisible = false;
-    invokeHook(curTabBarPageVm, ON_HIDE);
-  }
-}
-function isSamePage(url, $page) {
-  return url === $page.fullPath || url === "/" && $page.meta.isEntry;
-}
-function getTabBarPageId(url) {
-  const pages = getCurrentPagesMap().values();
-  for (const page of pages) {
-    const $page = getPage$BasePage(page);
-    if (isSamePage(url, $page)) {
-      page.$.__isActive = true;
-      return $page.id;
-    }
-  }
-}
-const switchTab = /* @__PURE__ */ defineAsyncApi(
-  API_SWITCH_TAB,
-  // @ts-expect-error
-  ({ url, tabBarText, isAutomatedTesting }, { resolve, reject }) => {
-    if (!entryPageState.handledBeforeEntryPageRoutes) {
-      switchTabPagesBeforeEntryPages.push({
-        args: { type: API_SWITCH_TAB, url, tabBarText, isAutomatedTesting },
-        resolve,
-        reject
-      });
-      return;
-    }
-    return navigate(
-      { type: API_SWITCH_TAB, url, tabBarText, isAutomatedTesting },
-      void 0
-    ).then(resolve).catch(reject);
-  },
-  SwitchTabProtocol,
-  SwitchTabOptions
-);
-function removeLastPage() {
-  var _a;
-  const page = (_a = getCurrentPage()) == null ? void 0 : _a.vm;
-  if (!page) {
-    return;
-  }
-  const $page = getPage$BasePage(page);
-  removePage(normalizeRouteKey($page.path, $page.id));
-}
-const redirectTo = /* @__PURE__ */ defineAsyncApi(
-  API_REDIRECT_TO,
-  // @ts-expect-error
-  ({ url, isAutomatedTesting }, { resolve, reject }) => {
-    if (!entryPageState.handledBeforeEntryPageRoutes) {
-      redirectToPagesBeforeEntryPages.push({
-        args: { type: API_REDIRECT_TO, url, isAutomatedTesting },
-        resolve,
-        reject
-      });
-      return;
-    }
-    return navigate({ type: API_REDIRECT_TO, url, isAutomatedTesting }).then(resolve).catch(reject);
-  },
-  RedirectToProtocol,
-  RedirectToOptions
-);
-function removeAllPages() {
-  const keys = getCurrentPagesMap().keys();
-  for (const routeKey of keys) {
-    removePage(routeKey);
-  }
-}
-const reLaunch = /* @__PURE__ */ defineAsyncApi(
-  API_RE_LAUNCH,
-  // @ts-expect-error
-  ({ url, isAutomatedTesting }, { resolve, reject }) => {
-    if (!entryPageState.handledBeforeEntryPageRoutes) {
-      reLaunchPagesBeforeEntryPages.push({
-        args: { type: API_RE_LAUNCH, url, isAutomatedTesting },
-        resolve,
-        reject
-      });
-      return;
-    }
-    return navigate({ type: API_RE_LAUNCH, url, isAutomatedTesting }).then(resolve).catch(reject);
-  },
-  ReLaunchProtocol,
-  ReLaunchOptions
-);
 function normalizeAppRoutePath(path) {
   const route = getRouteOptions(path, true);
   const pagePath = route == null ? void 0 : route.meta.route;
@@ -8488,11 +8389,6 @@ const launchExecutorReady = new Promise((resolve) => {
   resolveLaunchExecutor = resolve;
 });
 let singlePageAppRouteContext;
-const onAppRoute = appRouteRuntime.onAppRoute;
-const offAppRoute = appRouteRuntime.offAppRoute;
-const onBeforeAppRoute = appRouteRuntime.onBeforeAppRoute;
-const offBeforeAppRoute = appRouteRuntime.offBeforeAppRoute;
-const rewriteRoute = appRouteRuntime.rewriteRoute;
 function createAppRouteContext(path, query, openType, notFound = false) {
   return appRouteRuntime.createAppRouteContext({
     path: normalizeAppRoutePath(path),
@@ -8863,29 +8759,16 @@ function handleBeforeEntryPageRoutes() {
     return;
   }
   entryPageState.handledBeforeEntryPageRoutes = true;
-  const navigateToPages = [...navigateToPagesBeforeEntryPages];
-  navigateToPagesBeforeEntryPages.length = 0;
-  navigateToPages.forEach(
-    ({ args, resolve, reject }) => (
-      // @ts-expect-error
-      navigate(args).then(resolve).catch(reject)
-    )
-  );
-  const switchTabPages = [...switchTabPagesBeforeEntryPages];
-  switchTabPagesBeforeEntryPages.length = 0;
-  switchTabPages.forEach(({ args, resolve, reject }) => {
-    navigate(args, void 0).then(resolve).catch(reject);
-  });
-  const redirectToPages = [...redirectToPagesBeforeEntryPages];
-  redirectToPagesBeforeEntryPages.length = 0;
-  redirectToPages.forEach(({ args, resolve, reject }) => {
-    navigate(args).then(resolve).catch(reject);
-  });
-  const reLaunchPages = [...reLaunchPagesBeforeEntryPages];
-  reLaunchPagesBeforeEntryPages.length = 0;
-  reLaunchPages.forEach(({ args, resolve, reject }) => {
-    navigate(args).then(resolve).catch(reject);
-  });
+  for (const queue2 of [
+    navigateToPagesBeforeEntryPages,
+    switchTabPagesBeforeEntryPages,
+    redirectToPagesBeforeEntryPages,
+    reLaunchPagesBeforeEntryPages
+  ]) {
+    const pending = [...queue2];
+    queue2.length = 0;
+    pending.forEach((execute) => execute());
+  }
 }
 const ua = navigator.userAgent;
 const isAndroid = /* @__PURE__ */ /android/i.test(ua);
@@ -11628,90 +11511,6 @@ function useBackgroundColorContent(pageMeta) {
   watchEffect(update);
   onActivated(update);
 }
-class UniLoadingElement extends UniViewElement {
-  static get __uniElement() {
-    return {};
-  }
-}
-function useLoadingStyle(targetElement, bold) {
-  const loadingSize = ref("16px");
-  const loadingBorderWidth = ref("1px");
-  const loadingBorderRadius = ref("8px");
-  let observer = null;
-  const calculateLoadingWidth = (element, bold2) => {
-    const { width, height } = element.getBoundingClientRect();
-    const coefficient = bold2 ? 2 : 1;
-    const minSide = Math.min(width, height);
-    const calculatedWidth = minSide / 16 * coefficient;
-    loadingSize.value = `${minSide}px`;
-    loadingBorderWidth.value = `${calculatedWidth}px`;
-    loadingBorderRadius.value = `${minSide / 2}px`;
-  };
-  const setupObserver = (cb) => {
-    const el = targetElement.value;
-    if (!el)
-      return;
-    observer = new ResizeObserver((entries2) => {
-      cb(el);
-    });
-    observer.observe(el);
-  };
-  onMounted(() => {
-    setupObserver((el) => {
-      calculateLoadingWidth(el, bold.value);
-    });
-    watchEffect(() => {
-      const _bold = bold.value;
-      const el = targetElement.value;
-      if (el !== null) {
-        calculateLoadingWidth(el, _bold);
-      }
-    });
-  });
-  onUnmounted(() => {
-    if (observer) {
-      observer.disconnect();
-    }
-  });
-  return {
-    width: loadingSize,
-    height: loadingSize,
-    borderWidth: loadingBorderWidth
-    // borderRadius: loadingBorderRadius,
-  };
-}
-const t0$y = template('<div uni-loading uni-view data-v-212d40c7 class="default __uni_loading_container__" style="display: flex;"><div uni-view data-v-212d40c7>', 257);
-const _uniLoadingElement = { value: "LOADING" };
-const _sfc_main$y = /* @__PURE__ */ defineVaporComponent({
-  ...{
-    name: "loading",
-    styleIsolation: "app-and-page",
-    // @ts-ignore
-    rootElement: {
-      class: /* @__PURE__ */ initUniElementType(UniLoadingElement, "loading")
-    }
-  },
-  __name: "loading",
-  props: {
-    paused: { type: Boolean, default: false },
-    bold: { type: Boolean, default: false },
-    iosSpinner: { type: Boolean, default: false }
-  },
-  setup(__props) {
-    const props2 = __props;
-    const LoadingRef = ref(null);
-    const loadingStyle = reactive(useLoadingStyle(LoadingRef, computed(() => props2.bold)));
-    const n0 = t0$y();
-    const n1 = child(n0);
-    initUniElement(n0, _uniLoadingElement);
-    setStaticTemplateRef(n0, LoadingRef, null, "LoadingRef");
-    renderEffect(() => {
-      setClassName(n1, props2.paused ? 1 : 0, " __uni-loading__paused", "__uni-loading__ __loading-4-3__");
-      setStyle(n1, loadingStyle);
-    });
-    return n0;
-  }
-});
 function hexToRgba(hex) {
   if (!hex) {
     return {
@@ -11809,6 +11608,10 @@ function usePageHeadTransparent(headRef, {
     });
   });
 }
+let NavigationBarLoading;
+function setNavigationBarLoadingComponent(component) {
+  NavigationBarLoading = component;
+}
 const _t0$d = template("<img class=uni-page-head__title_image>");
 const _t1$3 = template("<div class=uni-page-head-bd><div class=uni-page-head__title>", 1);
 const _t2$2 = template('<div class=uni-page-head-search><div><div class=uni-page-head-search-icon><svg width=20 height=20 viewBox="0 0 32 32"><path></div> </div>', 1);
@@ -11862,7 +11665,7 @@ const PageHead = /* @__PURE__ */ defineSystemComponent({
         }));
         setInsertionState(_n7);
         createIf(() => navigationBar.loading, () => {
-          const _n2 = createComponent(_sfc_main$y, { style: "display: inline-block; width: 20px; height: 20px; margin-top: 7px;" });
+          const _n2 = createComponent(NavigationBarLoading, { style: "display: inline-block; width: 20px; height: 20px; margin-top: 7px;" });
           return _n2;
         }, () => createIf(() => navigationBar.titleImage, () => {
           const _n4 = _t0$d();
@@ -12199,15 +12002,15 @@ function usePageHeadSearchInput({ id: id2, navigationBar: { searchInput } }) {
     onConfirm
   };
 }
-const t0$x = template('<uni-page-refresh><div class=uni-page-refresh><div class=uni-page-refresh-inner><svg class=uni-page-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none></svg><svg class=uni-page-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle class=uni-page-refresh__path cx=50 cy=50 r=20 fill=none stroke-width=4 stroke-miterlimit=10>', 1);
-const _sfc_main$x = /* @__PURE__ */ defineVaporComponent({
+const t0$y = template('<uni-page-refresh><div class=uni-page-refresh><div class=uni-page-refresh-inner><svg class=uni-page-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none></svg><svg class=uni-page-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle class=uni-page-refresh__path cx=50 cy=50 r=20 fill=none stroke-width=4 stroke-miterlimit=10>', 1);
+const _sfc_main$y = /* @__PURE__ */ defineVaporComponent({
   ...{ name: "PageRefresh" },
   __name: "component",
   setup(__props) {
     const { pullToRefresh } = usePageMeta();
     const offset = pullToRefresh.offset;
     const color = pullToRefresh.color;
-    const n3 = t0$x();
+    const n3 = t0$y();
     const n2 = child(n3);
     const n0 = child(child(n2));
     const n1 = child(next(n0));
@@ -12233,8 +12036,7 @@ const REACHED = "reached";
 const ABORTING = "aborting";
 const REFRESHING = "refreshing";
 const RESTORING = "restoring";
-function usePageRefresh(refreshRef) {
-  const pageMeta = usePageMeta();
+function usePageRefresh(refreshRef, pageMeta = usePageMeta()) {
   const { id: id2, pullToRefresh } = pageMeta;
   const { range, height } = pullToRefresh;
   let refreshContainerElem;
@@ -12475,53 +12277,50 @@ function usePageRefresh(refreshRef) {
     onTouchcancel: onTouchend
   };
 }
-const PageBody = /* @__PURE__ */ defineSystemComponent({
-  name: "PageBody",
-  setup() {
-    const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ ? usePageMeta() : null;
-    const refreshRef = ref(null);
-    const wrapperRef = ref(null);
-    const _pageRefresh = __UNI_FEATURE_PULL_DOWN_REFRESH__ && pageMeta && (pageMeta.enablePullDownRefresh || true) ? usePageRefresh(refreshRef) : null;
-    const pageRefresh = ref(null);
-    watch(() => pageMeta == null ? void 0 : pageMeta.enablePullDownRefresh, () => {
-      pageRefresh.value = (pageMeta == null ? void 0 : pageMeta.enablePullDownRefresh) ? _pageRefresh : null;
-    }, { immediate: true });
-    function resize() {
-      const { top, left, right, bottom } = getSafeAreaInsets(wrapperRef.value);
-      const vars = {
-        "--uni-safe-area-inset-top": `${top}px`,
-        "--uni-safe-area-inset-left": `${left}px`,
-        "--uni-safe-area-inset-right": `${right}px`,
-        "--uni-safe-area-inset-bottom": `${bottom}px`
-      };
-      for (const key in vars) {
-        wrapperRef.value.style.setProperty(key, vars[key]);
-      }
+function usePageBody(meta, renderPage) {
+  const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ ? meta : null;
+  const refreshRef = ref(null);
+  const wrapperRef = ref(null);
+  const _pageRefresh = __UNI_FEATURE_PULL_DOWN_REFRESH__ && pageMeta && (pageMeta.enablePullDownRefresh || true) ? usePageRefresh(refreshRef, pageMeta) : null;
+  const pageRefresh = ref(null);
+  watch(() => pageMeta == null ? void 0 : pageMeta.enablePullDownRefresh, () => {
+    pageRefresh.value = (pageMeta == null ? void 0 : pageMeta.enablePullDownRefresh) ? _pageRefresh : null;
+  }, { immediate: true });
+  function resize() {
+    const { top, left, right, bottom } = getSafeAreaInsets(wrapperRef.value);
+    const vars = {
+      "--uni-safe-area-inset-top": `${top}px`,
+      "--uni-safe-area-inset-left": `${left}px`,
+      "--uni-safe-area-inset-right": `${right}px`,
+      "--uni-safe-area-inset-bottom": `${bottom}px`
+    };
+    for (const key in vars) {
+      wrapperRef.value.style.setProperty(key, vars[key]);
     }
-    return () => (() => {
-      const _setTemplateRef = createTemplateRefSetter();
-      const _n0 = createNodes(() => __UNI_FEATURE_PULL_DOWN_REFRESH__ && !!pageMeta && true && (() => {
-        const _setTemplateRef2 = createTemplateRefSetter();
-        const _n02 = createComponent(_sfc_main$x, null, null, true);
-        renderEffect(() => _setTemplateRef2(_n02, refreshRef));
+  }
+  return () => (() => {
+    const _setTemplateRef = createTemplateRefSetter();
+    const _n0 = createNodes(() => __UNI_FEATURE_PULL_DOWN_REFRESH__ && !!pageMeta && true && (() => {
+      const _setTemplateRef2 = createTemplateRefSetter();
+      const _n02 = createComponent(_sfc_main$y, null, null, true);
+      renderEffect(() => _setTemplateRef2(_n02, refreshRef));
+      return _n02;
+    })());
+    const _n4 = createPlainElement("uni-page-wrapper", { $: [() => pageRefresh.value] }, () => {
+      const _n2 = createPlainElement("uni-page-body", null, extend$1(() => {
+        const _n1 = createNodes(() => renderPage());
+        return _n1;
+      }, { _: 1 }));
+      const _n3 = createNodes(() => (() => {
+        const _n02 = createComponent(ResizeSensor, { onResize: () => resize }, null, true);
         return _n02;
       })());
-      const _n4 = createPlainElement("uni-page-wrapper", { $: [() => pageRefresh.value] }, () => {
-        const _n2 = createPlainElement("uni-page-body", null, extend$1(() => {
-          const _n1 = createSlot("default", null, null, 4);
-          return _n1;
-        }, { _: 1 }));
-        const _n3 = createNodes(() => (() => {
-          const _n02 = createComponent(ResizeSensor, { onResize: () => resize }, null, true);
-          return _n02;
-        })());
-        return [_n2, _n3];
-      });
-      renderEffect(() => _setTemplateRef(_n4, wrapperRef));
-      return [_n0, _n4];
-    })();
-  }
-});
+      return [_n2, _n3];
+    });
+    renderEffect(() => _setTemplateRef(_n4, wrapperRef));
+    return [_n0, _n4];
+  })();
+}
 const PageComponent = /* @__PURE__ */ defineSystemComponent({
   name: "Page",
   setup() {
@@ -12610,36 +12409,31 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
         }
       }
     }
-    return () => (() => {
+    const renderPageBody = usePageBody(pageMeta, () => (() => {
       const _setTemplateRef = createTemplateRefSetter();
-      const _n4 = createPlainElement("uni-page", {
+      const _n0 = createComponent(PageComponent2, { $: [() => pageProps] }, null, true);
+      _setTemplateRef(_n0, "page");
+      return _n0;
+    })());
+    return () => (() => {
+      const _n3 = createPlainElement("uni-page", {
         "data-page": () => pageMeta.route,
         style: () => pageStyle
-      }, () => {
+      }, extend$1(() => {
         const _n0 = createNodes(() => __UNI_FEATURE_NAVIGATIONBAR__ && (() => {
           const _n02 = createIf(() => navigationBar.style !== "custom", () => {
-            const _n22 = createComponent(PageHead, null, null, true);
-            return _n22;
+            const _n2 = createComponent(PageHead, null, null, true);
+            return _n2;
           });
           return _n02;
-        })());
-        const _n2 = createComponent(PageBody, null, () => {
-          const _n1 = createComponent(PageComponent2, { $: [() => pageProps] });
-          _setTemplateRef(_n1, "page");
-          return _n1;
-        });
-        const _n3 = createNodes(() => createFor(() => getDialogPages(), (dialogPage) => createDynamicComponent(() => dialogPage.value.component, {
+        })(), () => renderPageBody(), () => createFor(() => getDialogPages(), (dialogPage) => createDynamicComponent(() => dialogPage.value.component, {
           style: () => dialogPageStyle,
           "data-type": () => dialogPage.value.type,
           route: () => dialogPage.value.route
         }), (dialogPage) => dialogPage.route, 18));
-        return [
-          _n0,
-          _n2,
-          _n3
-        ];
-      }, true);
-      return _n4;
+        return _n0;
+      }, { _: 1 }), true);
+      return _n3;
     })();
   }
 });
@@ -15977,11 +15771,11 @@ class UniButtonElement extends UniTextElement {
     } };
   }
 }
-const t0$w = template('<div uni-button uni-view style="display: flex;justify-content: center;flex-direction: row;align-items: center" role=button><!><span uni-text>', 1);
+const t0$x = template('<div uni-button uni-view style="display: flex;justify-content: center;flex-direction: row;align-items: center" role=button><!><span uni-text>', 1);
 const t1$h = template("<span uni-button uni-text role=button>", 1);
 const _uniButtonElement = { value: "BUTTON" };
 const DEFAULT_BUTTON_HOVER_CLASS_NAME = "button-hover";
-const _sfc_main$w = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$x = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "button",
     // @ts-ignore
@@ -16165,11 +15959,11 @@ const _sfc_main$w = /* @__PURE__ */ defineVaporComponent({
         return props2.loading && !props2.disabled;
       }
     });
-    const _component_loading = _sfc_main$y;
+    const _component_loading = _sfc_main$p;
     const n0 = createIf(
       () => __props.loading && !__props.disabled,
       () => {
-        const n2 = t0$w();
+        const n2 = t0$x();
         const n6 = child(n2);
         const n5 = next(n6);
         initUniElement(n2, _uniButtonElement);
@@ -16301,13 +16095,13 @@ class UniCheckboxElement extends UniViewElement {
     } };
   }
 }
-const t0$v = template('<svg class=uni-checkbox-svg viewBox="0 0 32 32"><path fill=currentColor>', 0, 1);
+const t0$w = template('<svg class=uni-checkbox-svg viewBox="0 0 32 32"><path fill=currentColor>', 0, 1);
 const t1$g = template("<div uni-checkbox uni-view role=checkbox>", 1);
 const t2$7 = template("<span uni-text>");
 const t3$5 = template("<div uni-checkbox uni-view class=uni-checkbox role=checkbox><div uni-view></div>", 1);
 const _uniCheckboxElement = { value: "CHECKBOX" };
 const iconPath$1 = "M1.952 18.080q-0.32-0.352-0.416-0.88t0.128-0.976l0.16-0.352q0.224-0.416 0.64-0.528t0.8 0.176l6.496 4.704q0.384 0.288 0.912 0.272t0.88-0.336l17.312-14.272q0.352-0.288 0.848-0.256t0.848 0.352l-0.416-0.416q0.32 0.352 0.32 0.816t-0.32 0.816l-18.656 18.912q-0.32 0.352-0.8 0.352t-0.8-0.32l-7.936-8.064z";
-const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$w = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "checkbox",
     // @ts-ignore
@@ -16433,7 +16227,7 @@ const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
         });
         setInsertionState(n2);
         createIf(() => unref(isChecked), () => {
-          const n6 = t0$v();
+          const n6 = t0$w();
           const n5 = child(n6);
           setAttr(n5, "d", iconPath$1, true);
           return n6;
@@ -16464,7 +16258,7 @@ const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
         });
         setInsertionState(n13);
         createIf(() => unref(isChecked), () => {
-          const n12 = t0$v();
+          const n12 = t0$w();
           const n11 = child(n12);
           setAttr(n11, "d", iconPath$1, true);
           return n12;
@@ -16508,9 +16302,9 @@ class UniCheckboxGroupElement extends UniViewElement {
     return {};
   }
 }
-const t0$u = template("<div uni-checkbox-group uni-view>", 1);
+const t0$v = template("<div uni-checkbox-group uni-view>", 1);
 const _uniCheckboxGroupElement = { value: "CHECKBOX-GROUP" };
-const _sfc_main$u = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "checkbox-group",
     // @ts-ignore
@@ -16618,7 +16412,7 @@ const _sfc_main$u = /* @__PURE__ */ defineVaporComponent({
       elementOrderMap.clear();
       elementOrderCounter = 0;
     });
-    const n0 = t0$u();
+    const n0 = t0$v();
     initUniElement(n0, _uniCheckboxGroupElement);
     setInsertionState(n0);
     createSlot();
@@ -16635,9 +16429,9 @@ class UniWaterflowElement extends UniScrollViewElement {
     return {};
   }
 }
-const t0$t = template('<div uni-flow-item uni-view class=uni-flow-item style="position: absolute; top: 0; left: 0; width: 0px">', 1);
+const t0$u = template('<div uni-flow-item uni-view class=uni-flow-item style="position: absolute; top: 0; left: 0; width: 0px">', 1);
 const _uniFlowItemElement = { value: "FLOW-ITEM" };
-const _sfc_main$t = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$u = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "flow-item",
     rootElement: {
@@ -16724,7 +16518,7 @@ const _sfc_main$t = /* @__PURE__ */ defineVaporComponent({
       unregister();
     });
     __expose({ recycleHooks });
-    const n0 = t0$t();
+    const n0 = t0$u();
     initUniElement(n0, _uniFlowItemElement);
     setInsertionState(n0);
     createSlot();
@@ -16737,9 +16531,9 @@ class UniFormElement extends UniViewElement {
     return {};
   }
 }
-const t0$s = template("<div uni-form uni-view class=uni-form>", 1);
+const t0$t = template("<div uni-form uni-view class=uni-form>", 1);
 const _uniFormElement = { value: "FORM" };
-const _sfc_main$s = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$t = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "form",
     // @ts-ignore
@@ -16805,7 +16599,7 @@ const _sfc_main$s = /* @__PURE__ */ defineVaporComponent({
     const ctx = { registerField, unregisterField, submit, reset };
     provide(FORM_KEY, ctx);
     __expose({ submit, reset });
-    const n0 = t0$s();
+    const n0 = t0$t();
     initUniElement(n0, _uniFormElement);
     setInsertionState(n0);
     createSlot();
@@ -16817,9 +16611,9 @@ class UniLabelElement extends UniViewElement {
     return {};
   }
 }
-const t0$r = template("<div uni-label uni-view class=uni-label>", 1);
+const t0$s = template("<div uni-label uni-view class=uni-label>", 1);
 const _uniLabelElement = { value: "LABEL" };
-const _sfc_main$r = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$s = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "label",
     // @ts-ignore
@@ -16892,7 +16686,7 @@ const _sfc_main$r = /* @__PURE__ */ defineVaporComponent({
         return;
       target.activate(event);
     };
-    const n0 = t0$r();
+    const n0 = t0$s();
     initUniElement(n0, _uniLabelElement);
     renderEffect(() => {
       const _disabled = __props.disabled;
@@ -16928,9 +16722,9 @@ class UniListViewElement extends UniScrollViewElement {
     return {};
   }
 }
-const t0$q = template('<div uni-list-item uni-view class=uni-list-item style="position: absolute; top: 0; left: 0; width: 100%">', 1);
+const t0$r = template('<div uni-list-item uni-view class=uni-list-item style="position: absolute; top: 0; left: 0; width: 100%">', 1);
 const _uniListItemElement = { value: "LIST-ITEM" };
-const _sfc_main$q = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$r = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "list-item",
     rootElement: {
@@ -17009,7 +16803,7 @@ const _sfc_main$q = /* @__PURE__ */ defineVaporComponent({
       unregister();
     });
     __expose({ recycleHooks });
-    const n0 = t0$q();
+    const n0 = t0$r();
     initUniElement(n0, _uniListItemElement);
     setInsertionState(n0);
     createSlot();
@@ -17084,10 +16878,10 @@ class RecycleListItemDataStore {
     return [start, low - start];
   }
 }
-const t0$p = template("<div uni-view></div>");
+const t0$q = template("<div uni-view></div>");
 const t1$f = template('<div uni-view style="position: relative; overflow: visible; overflow-anchor: none"><div uni-view style="width: 1px; flex-shrink: 0;"></div></div>');
 const _uniListViewElement = { value: "LIST-VIEW" };
-const _sfc_main$p = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$q = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "list-view",
     rootElement: {
@@ -17430,7 +17224,7 @@ const _sfc_main$p = /* @__PURE__ */ defineVaporComponent({
         /* NON_STABLE */
       }),
       "default": () => {
-        const n1 = t0$p();
+        const n1 = t0$q();
         setInsertionState(n1);
         createSlot("header");
         const n4 = t1$f();
@@ -17439,7 +17233,7 @@ const _sfc_main$p = /* @__PURE__ */ defineVaporComponent({
         setStaticTemplateRef(n2, placeholderElement, null, "placeholderElement");
         setInsertionState(n4, 1);
         createSlot();
-        const n6 = t0$p();
+        const n6 = t0$q();
         setStaticTemplateRef(n4, bodyElement, null, "bodyElement");
         setInsertionState(n6);
         createSlot("footer");
@@ -17453,6 +17247,90 @@ const _sfc_main$p = /* @__PURE__ */ defineVaporComponent({
       initUniElement(_uniListViewRoot, _uniListViewElement);
     }
     return n9;
+  }
+});
+class UniLoadingElement extends UniViewElement {
+  static get __uniElement() {
+    return {};
+  }
+}
+function useLoadingStyle(targetElement, bold) {
+  const loadingSize = ref("16px");
+  const loadingBorderWidth = ref("1px");
+  const loadingBorderRadius = ref("8px");
+  let observer = null;
+  const calculateLoadingWidth = (element, bold2) => {
+    const { width, height } = element.getBoundingClientRect();
+    const coefficient = bold2 ? 2 : 1;
+    const minSide = Math.min(width, height);
+    const calculatedWidth = minSide / 16 * coefficient;
+    loadingSize.value = `${minSide}px`;
+    loadingBorderWidth.value = `${calculatedWidth}px`;
+    loadingBorderRadius.value = `${minSide / 2}px`;
+  };
+  const setupObserver = (cb) => {
+    const el = targetElement.value;
+    if (!el)
+      return;
+    observer = new ResizeObserver((entries2) => {
+      cb(el);
+    });
+    observer.observe(el);
+  };
+  onMounted(() => {
+    setupObserver((el) => {
+      calculateLoadingWidth(el, bold.value);
+    });
+    watchEffect(() => {
+      const _bold = bold.value;
+      const el = targetElement.value;
+      if (el !== null) {
+        calculateLoadingWidth(el, _bold);
+      }
+    });
+  });
+  onUnmounted(() => {
+    if (observer) {
+      observer.disconnect();
+    }
+  });
+  return {
+    width: loadingSize,
+    height: loadingSize,
+    borderWidth: loadingBorderWidth
+    // borderRadius: loadingBorderRadius,
+  };
+}
+const t0$p = template('<div uni-loading uni-view data-v-212d40c7 class="default __uni_loading_container__" style="display: flex;"><div uni-view data-v-212d40c7>', 257);
+const _uniLoadingElement = { value: "LOADING" };
+const _sfc_main$p = /* @__PURE__ */ defineVaporComponent({
+  ...{
+    name: "loading",
+    styleIsolation: "app-and-page",
+    // @ts-ignore
+    rootElement: {
+      class: /* @__PURE__ */ initUniElementType(UniLoadingElement, "loading")
+    }
+  },
+  __name: "loading",
+  props: {
+    paused: { type: Boolean, default: false },
+    bold: { type: Boolean, default: false },
+    iosSpinner: { type: Boolean, default: false }
+  },
+  setup(__props) {
+    const props2 = __props;
+    const LoadingRef = ref(null);
+    const loadingStyle = reactive(useLoadingStyle(LoadingRef, computed(() => props2.bold)));
+    const n0 = t0$p();
+    const n1 = child(n0);
+    initUniElement(n0, _uniLoadingElement);
+    setStaticTemplateRef(n0, LoadingRef, null, "LoadingRef");
+    renderEffect(() => {
+      setClassName(n1, props2.paused ? 1 : 0, " __uni-loading__paused", "__uni-loading__ __loading-4-3__");
+      setStyle(n1, loadingStyle);
+    });
+    return n0;
   }
 });
 class UniMatchMediaElement extends UniViewElement {
@@ -18386,14 +18264,935 @@ const _sfc_main$l = /* @__PURE__ */ defineVaporComponent({
     return n0;
   }
 });
+const POPUP_WIDTH = 300;
+const POPUP_EDGE = 6;
+function getPickerPopupStyle(popover, windowWidth, windowHeight, contentHeight) {
+  const availableWidth = Math.max(0, windowWidth - POPUP_EDGE * 2);
+  const availableHeight = Math.max(0, windowHeight - POPUP_EDGE * 2);
+  const width = Math.min(POPUP_WIDTH, availableWidth);
+  let height = Math.min(Math.max(0, contentHeight), availableHeight);
+  let left = (windowWidth - width) / 2;
+  let top = (windowHeight - height) / 2;
+  if (popover != null) {
+    left = Math.max(POPUP_EDGE, Math.min(windowWidth - width - POPUP_EDGE, popover.left));
+    const spaceAbove = Math.max(0, popover.top - POPUP_EDGE * 2);
+    const spaceBelow = Math.max(0, windowHeight - popover.top - popover.height - POPUP_EDGE * 2);
+    const above = spaceBelow < height && spaceAbove > spaceBelow;
+    height = Math.min(height, above ? spaceAbove : spaceBelow);
+    top = above ? popover.top - height - POPUP_EDGE : popover.top + popover.height + POPUP_EDGE;
+    top = Math.max(POPUP_EDGE, Math.min(windowHeight - height - POPUP_EDGE, top));
+  }
+  return {
+    content: {
+      left: `${left}px`,
+      top: `${top}px`,
+      right: "auto",
+      bottom: "auto",
+      width: `${width}px`,
+      height: `${height}px`
+    }
+  };
+}
+const t0$k = template("<span uni-text data-v-212d40c7> ");
+const t1$c = template("<div uni-view data-v-212d40c7><span uni-text data-v-212d40c7> </span><span uni-text data-v-212d40c7 class=uni-picker__header-btn-ok> </div>");
+const t2$6 = template("<div uni-view data-v-212d40c7 class=uni-picker__view>");
+const t3$4 = template("<div uni-view data-v-212d40c7><div uni-view data-v-212d40c7></div><div uni-view data-v-212d40c7>", 1);
+const _sfc_main$k = /* @__PURE__ */ defineVaporComponent({
+  __name: "picker",
+  setup(__props) {
+    const show = ref(false);
+    const readyEventName = ref("");
+    const optionsEventName = ref("");
+    const cancelEventName = ref("");
+    const selectorChangeEventName = ref("");
+    const multiSelectorChangeEventName = ref("");
+    const timeChangeEventName = ref("");
+    const columnChangeEventName = ref("");
+    const mode = ref("selector");
+    const range = ref([]);
+    const rangeKey = ref("");
+    const value = ref([]);
+    const eventValue = ref([]);
+    const prevMultiValue = ref([]);
+    const selected = reactive({
+      year: (/* @__PURE__ */ new Date()).getFullYear(),
+      month: (/* @__PURE__ */ new Date()).getMonth() + 1,
+      day: (/* @__PURE__ */ new Date()).getDate()
+    });
+    const years = ref([]);
+    const months = ref(Array.from({ length: 12 }, (_, i) => i + 1));
+    const days = ref([]);
+    const hours = ref([]);
+    const minutes = ref([]);
+    const fields = ref("day");
+    const start = ref([]);
+    const end = ref([]);
+    const yearRange = ref([]);
+    const monthRange = ref([]);
+    const dayRange = ref([]);
+    const timer = ref(0);
+    const theme = ref("light");
+    const maskTopStyle = ref("background-image: linear-gradient(to bottom, rgba(255,255,255,1), rgba(255, 255, 255, 0));");
+    const maskBottomStyle = ref("background-image: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255, 255, 255, 1));");
+    const i18nText = {
+      "en": {
+        "cancel": "Cancel",
+        "confirm": "OK",
+        "year": "",
+        "month": "",
+        "day": "",
+        "months": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"]
+      },
+      "es": {
+        "cancel": "Cancelar",
+        "confirm": "Aceptar",
+        "year": "",
+        "month": "",
+        "day": "",
+        "months": ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
+      },
+      "fr": {
+        "cancel": "Annuler",
+        "confirm": "Valider",
+        "year": "",
+        "month": "",
+        "day": "",
+        "months": ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Aoû", "Sep", "Oct", "Nov", "Déc"]
+      },
+      "zh-Hans": {
+        "cancel": "取消",
+        "confirm": "确定",
+        "year": "年",
+        "month": "月",
+        "day": "日",
+        "months": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
+      },
+      "zh-Hant": {
+        "cancel": "取消",
+        "confirm": "確定",
+        "year": "年",
+        "month": "月",
+        "day": "日",
+        "months": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
+      }
+    };
+    const language = ref("zh-Hans");
+    const instance = getCurrentInstance();
+    const popover = ref(null);
+    const selectorType = ref("select");
+    const windowWidth = ref(0);
+    const windowHeight = ref(0);
+    const containerRef = ref(null);
+    const selectRef = ref(null);
+    let layoutFrame = null;
+    let closing = false;
+    const isDesktop = computed(() => windowWidth.value >= 500 && windowHeight.value >= 500);
+    const isSelect = computed(() => isDesktop.value && mode.value == "selector" && selectorType.value == "select");
+    const popupStyle = computed(() => {
+      if (!isDesktop.value)
+        return { content: {} };
+      const contentHeight = isSelect.value ? Math.min(300, range.value.length * 34 + 12) : 300;
+      return getPickerPopupStyle(popover.value, windowWidth.value, windowHeight.value, contentHeight);
+    });
+    const updateLayout = () => {
+      windowWidth.value = window.innerWidth;
+      windowHeight.value = window.innerHeight;
+      uni.$emit(`${optionsEventName.value}_layout`);
+    };
+    const scheduleLayout = () => {
+      if (layoutFrame != null)
+        return;
+      layoutFrame = window.requestAnimationFrame(() => {
+        layoutFrame = null;
+        updateLayout();
+      });
+    };
+    const handleScroll = (event) => {
+      var _a;
+      if (event.target instanceof Node && ((_a = containerRef.value) == null ? void 0 : _a.contains(event.target)))
+        return;
+      scheduleLayout();
+    };
+    const selectItem = (index2) => {
+      eventValue.value = [index2];
+      confirm();
+    };
+    watch(isSelect, (select) => {
+      if (!select)
+        value.value = eventValue.value.slice();
+    });
+    watch(() => [isSelect.value, eventValue.value[0], range.value.length, show.value], () => {
+      if (isSelect.value && show.value) {
+        nextTick(() => {
+          var _a;
+          return (_a = selectRef.value) == null ? void 0 : _a.scrollTo(0, Math.max(0, eventValue.value[0] ?? 0) * 34);
+        });
+      }
+    });
+    const selectedDate = computed(() => {
+      const { year, month, day } = selected;
+      switch (fields.value) {
+        case "year":
+          return `${year}`;
+        case "month":
+          return `${year}-${formatSingle(month)}`;
+        case "day":
+          return `${year}-${formatSingle(month)}-${formatSingle(day)}`;
+        default:
+          return `${year}-${formatSingle(month)}-${formatSingle(day)}`;
+      }
+    });
+    const indicatorStyle = computed(() => {
+      const color = theme.value == "dark" ? "rgba(255,255,255,0.05)" : "#F5F5F5";
+      return `height:50px;background:rgba(255,255,255,0);border-top:1px ${color} solid;border-bottom:1px ${color} solid;`;
+    });
+    const cancelText = computed(() => {
+      return i18nHandle("cancel", "取消");
+    });
+    const confirmText = computed(() => {
+      return i18nHandle("confirm", "确定");
+    });
+    const yearText = computed(() => {
+      return i18nHandle("year", "年");
+    });
+    const monthText = computed(() => {
+      return i18nHandle("month", "月");
+    });
+    const dayText = computed(() => {
+      return i18nHandle("day", "日");
+    });
+    const monthsText = computed(() => {
+      let monthsList = months.value;
+      let i18months = i18nHandle("months", i18nText["zh-Hans"]["months"]);
+      let arr = [];
+      monthsList.forEach((v2) => {
+        let index2 = v2 - 1;
+        arr.push(i18months[index2].toString().padStart(2, "0"));
+      });
+      return arr;
+    });
+    const switchTheme = (themeValue) => {
+      if (themeValue == "light") {
+        maskTopStyle.value = "background-image: linear-gradient(to bottom, rgba(255,255,255,1), rgba(255, 255, 255, 0));";
+        maskBottomStyle.value = "background-image: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255, 255, 255, 1));";
+      } else {
+        maskTopStyle.value = "background-image: linear-gradient(to bottom, rgba(35, 35, 35, 1), rgba(35, 35, 35, 0));";
+        maskBottomStyle.value = "background-image: linear-gradient(to bottom, rgba(35, 35, 35, 0), rgba(35, 35, 35, 1));";
+      }
+    };
+    const confirm = () => {
+      if (closing)
+        return;
+      const val = eventValue.value;
+      const modeValue = mode.value;
+      switch (modeValue) {
+        case "selector":
+          uni.$emit(selectorChangeEventName.value, val[0]);
+          break;
+        case "multiSelector":
+          uni.$emit(multiSelectorChangeEventName.value, val);
+          break;
+        case "time":
+          const h = hours.value[val[0]];
+          const m = minutes.value[val[1]];
+          uni.$emit(timeChangeEventName.value, `${h}:${m}`);
+          break;
+        case "date":
+          uni.$emit(timeChangeEventName.value, selectedDate.value);
+          break;
+      }
+      closeDialog();
+    };
+    const close = () => {
+      if (closing)
+        return;
+      uni.$emit(cancelEventName.value);
+      closeDialog();
+    };
+    const closeDialog = () => {
+      closing = true;
+      show.value = false;
+      clearTimeout(timer.value);
+      timer.value = setTimeout(() => {
+        var _a;
+        const dialogPages = (_a = instance == null ? void 0 : instance.proxy) == null ? void 0 : _a.$page;
+        uni.closeDialogPage({
+          dialogPage: dialogPages
+        });
+      }, 250);
+    };
+    const handleChange = (e2) => {
+      const val = e2.detail.value;
+      if (mode.value == "date") {
+        let yIdx = val[0];
+        let mIdx = val[1] ?? 0;
+        let dIdx = val[2] ?? 0;
+        yIdx = Math.max(yearRange.value[0], Math.min(yearRange.value[1], yIdx));
+        const currentYear = years.value[yIdx];
+        let sy = parseInt(start.value[0]);
+        let sm = parseInt(start.value[1]);
+        let ey = parseInt(end.value[0]);
+        let em = parseInt(end.value[1]);
+        if (currentYear == sy || currentYear == ey) {
+          let newMonths = getMonths(currentYear);
+          if (months.value.length !== newMonths.length) {
+            calculateRanges();
+            const originalMonth = months.value[mIdx];
+            mIdx = newMonths.findIndex((month) => month === originalMonth);
+            mIdx = Math.max(0, mIdx);
+            months.value = newMonths;
+          }
+        } else {
+          if (months.value.length != 12) {
+            const nowMonth = months.value[mIdx];
+            months.value = getMonths(currentYear);
+            calculateRanges();
+            mIdx = nowMonth - 1;
+          }
+        }
+        mIdx = Math.max(0, Math.min(mIdx, months.value.length - 1));
+        const monthsValue = months.value[mIdx];
+        if (currentYear == sy && monthsValue == sm || currentYear == ey && monthsValue == em) {
+          let newDays = getDays(currentYear, monthsValue);
+          if (days.value.length != newDays.length) {
+            calculateRanges();
+            let dayIdx = newDays.length - 1;
+            if (currentYear == sy && monthsValue == sm) {
+              dIdx = Math.max(0, dIdx - dayIdx);
+            }
+            if (currentYear == ey && monthsValue == em) {
+              dIdx = Math.max(0, dayIdx);
+            }
+            days.value = newDays;
+          }
+        } else {
+          const nowDay = days.value[dIdx];
+          days.value = getDays(currentYear, monthsValue);
+          calculateRanges();
+          dIdx = days.value.findIndex((day) => day === nowDay);
+          dIdx = Math.max(0, dIdx);
+        }
+        if (dIdx >= days.value.length) {
+          dIdx = 0;
+        }
+        selected.year = years.value[yIdx];
+        selected.month = months.value[mIdx];
+        selected.day = days.value[dIdx];
+        const indices = fields.value == "year" ? [yIdx] : fields.value == "month" ? [yIdx, mIdx] : [yIdx, mIdx, dIdx];
+        value.value = indices;
+        eventValue.value = indices.slice();
+      } else if (mode.value == "time") {
+        let h_idx = val[0];
+        let m_idx = val[1];
+        let h = parseInt(hours.value[h_idx]);
+        let m = parseInt(minutes.value[m_idx]);
+        let sh = parseInt(start.value[0]);
+        let eh = parseInt(end.value[0]);
+        const adjusted = adjustTime(h, m);
+        h = adjusted.h;
+        m = adjusted.m;
+        const hStr = h.toString().padStart(2, "0");
+        const mStr = m.toString().padStart(2, "0");
+        const newHIdx = hours.value.findIndex((e22) => e22 == hStr);
+        let newMIdx = minutes.value.findIndex((e22) => e22 == mStr);
+        if (h == sh || h == eh) {
+          const newMinutes = getMinutes(h);
+          if (minutes.value.length !== newMinutes.length) {
+            const originalMinute = minutes.value[newMIdx];
+            newMIdx = newMinutes.findIndex((m2) => m2 === originalMinute);
+            newMIdx = Math.max(0, newMIdx);
+            minutes.value = newMinutes;
+          }
+        } else {
+          if (minutes.value.length != 60) {
+            const nowMinutes = minutes.value[newMIdx];
+            minutes.value = getMinutes(h);
+            newMIdx = parseInt(nowMinutes);
+          }
+        }
+        const indices = [newHIdx, newMIdx];
+        value.value = indices;
+        eventValue.value = indices.slice();
+      } else if (mode.value == "multiSelector") {
+        const newValue = val;
+        const oldValue = prevMultiValue.value;
+        newValue.forEach((v2, column) => {
+          if (oldValue[column] !== v2) {
+            uni.$emit(columnChangeEventName.value, column, v2);
+          }
+        });
+        prevMultiValue.value = [...newValue];
+        eventValue.value = [...newValue];
+      } else {
+        eventValue.value = val;
+      }
+    };
+    const calculateRanges = () => {
+      const startYear = parseInt(start.value[0]);
+      const endYear = parseInt(end.value[0]);
+      yearRange.value = [
+        years.value.findIndex((y) => y >= startYear),
+        years.value.findIndex((y) => y >= endYear)
+      ];
+      const startMonth = parseInt(start.value[1]);
+      const endMonth = parseInt(end.value[1]);
+      monthRange.value = [startMonth - 1, endMonth - 1];
+      const startDay = parseInt(start.value[2]);
+      const endDay = parseInt(end.value[2]);
+      dayRange.value = [startDay - 1, endDay - 1];
+    };
+    const getYears = () => {
+      const startYear = parseInt(start.value[0] || "1970");
+      const endYear = parseInt(end.value[0] || "2099");
+      return Array.from({ length: endYear - startYear + 1 }, (_, i) => startYear + i);
+    };
+    const getMonths = (year) => {
+      let startMonth = 1;
+      let endMonth = 12;
+      if (year == parseInt(start.value[0])) {
+        startMonth = parseInt(start.value[1]) ?? 1;
+      }
+      if (year == parseInt(end.value[0])) {
+        endMonth = parseInt(end.value[1]) ?? 12;
+      }
+      return Array.from({ length: endMonth - startMonth + 1 }, (_, i) => startMonth + i);
+    };
+    const getDays = (currentYear, currentMonth) => {
+      let startDay = 1;
+      let endDay = new Date(currentYear, currentMonth, 0).getDate();
+      if (currentYear == parseInt(start.value[0]) && currentMonth == parseInt(start.value[1])) {
+        startDay = parseInt(start.value[2]) || 1;
+      }
+      if (currentYear == parseInt(end.value[0]) && currentMonth == parseInt(end.value[1])) {
+        endDay = Math.min(endDay, parseInt(end.value[2]) || endDay);
+      }
+      return Array.from({ length: endDay - startDay + 1 }, (_, i) => startDay + i);
+    };
+    const updateDateColumns = () => {
+      years.value = getYears();
+      months.value = getMonths(selected.year);
+      days.value = getDays(selected.year, selected.month);
+    };
+    const getHours = () => {
+      const sH = parseInt(start.value[0] || "1");
+      const eH = parseInt(end.value[0] || "12");
+      return Array.from({ length: eH - sH + 1 }, (_, i) => String(sH + i).padStart(2, "0"));
+    };
+    const getMinutes = (hour) => {
+      let startMinute = 0;
+      let endMinute = 59;
+      if (hour == parseInt(start.value[0])) {
+        startMinute = parseInt(start.value[1]) ?? 1;
+      }
+      if (hour == parseInt(end.value[0])) {
+        endMinute = parseInt(end.value[1]) ?? 12;
+      }
+      return Array.from({ length: endMinute - startMinute + 1 }, (_, i) => String(startMinute + i).padStart(2, "0"));
+    };
+    const updateTimeColumns = (hour) => {
+      hours.value = getHours();
+      let minuteHour = hour;
+      if (minuteHour == null || isNaN(minuteHour)) {
+        minuteHour = parseInt(hours.value[0] || "00");
+      }
+      minutes.value = getMinutes(minuteHour);
+    };
+    const adjustTime = (h, m) => {
+      var _a, _b;
+      if (!((_a = start.value) == null ? void 0 : _a.length) || !((_b = end.value) == null ? void 0 : _b.length))
+        return { h, m };
+      const startHour = parseInt(start.value[0]);
+      const startMinute = parseInt(start.value[1]);
+      const endHour = parseInt(end.value[0]);
+      const endMinute = parseInt(end.value[1]);
+      const current = h * 60 + m;
+      const startTotal = startHour * 60 + startMinute;
+      const endTotal = endHour * 60 + endMinute;
+      if (current < startTotal) {
+        return { h: startHour, m: startMinute };
+      } else if (current > endTotal) {
+        return { h: endHour, m: endMinute };
+      } else {
+        if (h == startHour && m < startMinute)
+          return { h, m: startMinute };
+        if (h == endHour && m > endMinute)
+          return { h, m: endMinute };
+        return { h, m };
+      }
+    };
+    const initTimeValue = (timeValue) => {
+      let h = parseInt(timeValue[0]);
+      let m = parseInt(timeValue[1]);
+      const adjusted = adjustTime(h, m);
+      const hStr = adjusted.h.toString().padStart(2, "0");
+      const mStr = adjusted.m.toString().padStart(2, "0");
+      return [
+        hours.value.findIndex((e2) => e2 == hStr),
+        minutes.value.findIndex((e2) => e2 == mStr)
+      ];
+    };
+    const formatSingle = (num) => {
+      return num.toString().padStart(2, "0");
+    };
+    const i18nHandle = (key, defaultVal) => {
+      if (language.value.startsWith("en")) {
+        return i18nText["en"][key];
+      }
+      if (language.value.startsWith("es")) {
+        return i18nText["es"][key];
+      }
+      if (language.value.startsWith("fr")) {
+        return i18nText["fr"][key];
+      }
+      if (language.value.startsWith("zh-Hans")) {
+        return i18nText["zh-Hans"][key];
+      }
+      if (language.value.startsWith("zh-Hant")) {
+        return i18nText["zh-Hant"][key];
+      }
+      return defaultVal;
+    };
+    const initLanguageAndTheme = () => {
+      const appBaseInfo = uni.getAppBaseInfo();
+      language.value = uni.getLocale();
+      theme.value = appBaseInfo.hostTheme == "dark" ? "dark" : "light";
+    };
+    onLoad((options) => {
+      readyEventName.value = options["readyEventName"];
+      optionsEventName.value = options["optionsEventName"];
+      cancelEventName.value = options["cancelEventName"];
+      selectorChangeEventName.value = options["selectorChangeEventName"];
+      multiSelectorChangeEventName.value = options["multiSelectorChangeEventName"];
+      timeChangeEventName.value = options["timeChangeEventName"];
+      columnChangeEventName.value = options["columnChangeEventName"];
+      uni.$on(optionsEventName.value, (data) => {
+        if (data["layoutOnly"] == true) {
+          popover.value = data["popover"];
+          return;
+        }
+        if (data["selectorType"] != null) {
+          selectorType.value = data["selectorType"];
+          popover.value = data["popover"];
+        }
+        if (data["mode"] != null) {
+          mode.value = data["mode"];
+        }
+        if (data["range"] != null) {
+          range.value = data["range"];
+        }
+        if (data["rangeKey"] != null) {
+          rangeKey.value = data["rangeKey"];
+        }
+        if (data["selectorValue"] != null) {
+          value.value = [data["selectorValue"]];
+        }
+        if (data["multiSelectorValue"] != null) {
+          value.value.length = 0;
+          const multiSelectorValue = data["multiSelectorValue"];
+          const len = range.value.length;
+          let arr = Array.from({ length: len }, () => 0);
+          arr.forEach((_, index2) => {
+            let val = multiSelectorValue[index2] ?? 0;
+            value.value.push(val);
+          });
+          prevMultiValue.value = value.value.slice();
+        }
+        if (data["timeValue"] != null) {
+          const timeVal = data["timeValue"];
+          start.value = data["start"];
+          end.value = data["end"];
+          const timeHour = parseInt(timeVal[0]);
+          const timeMinute = parseInt(timeVal[1]);
+          const adjusted = adjustTime(timeHour, timeMinute);
+          updateTimeColumns(adjusted.h);
+          value.value = initTimeValue(timeVal);
+        }
+        if (data["dateValue"] != null) {
+          const dateValue = data["dateValue"];
+          const year = dateValue[0];
+          const month = dateValue[1];
+          const day = dateValue[2];
+          fields.value = data["fields"];
+          start.value = data["start"] ?? ["1970", "01", "01"];
+          end.value = data["end"] ?? ["2099", "12", "31"];
+          selected.year = parseInt(year) ?? (/* @__PURE__ */ new Date()).getFullYear();
+          selected.month = parseInt(month) ?? 1;
+          selected.day = parseInt(day) ?? 1;
+          selected.year = Math.max(
+            parseInt(start.value[0]),
+            Math.min(parseInt(end.value[0]), selected.year)
+          );
+          selected.month = Math.max(1, Math.min(12, selected.month));
+          selected.day = Math.max(1, Math.min(
+            new Date(selected.year, selected.month, 0).getDate(),
+            selected.day
+          ));
+          updateDateColumns();
+          const yIdx = years.value.findIndex((y) => y == selected.year);
+          const mIdx = months.value.findIndex((m) => m == selected.month);
+          const dIdx = days.value.findIndex((d) => d == selected.day);
+          switch (fields.value) {
+            case "year":
+              value.value = [yIdx];
+              break;
+            case "month":
+              value.value = [yIdx, mIdx];
+              break;
+            case "day":
+              value.value = [yIdx, mIdx, dIdx];
+              break;
+          }
+        }
+        eventValue.value = value.value;
+        calculateRanges();
+      });
+      updateLayout();
+      window.addEventListener("resize", scheduleLayout);
+      document.addEventListener("scroll", handleScroll, true);
+      uni.$emit(readyEventName.value);
+      initLanguageAndTheme();
+      switchTheme(theme.value);
+      uni.onHostThemeChange((res) => {
+        theme.value = res.hostTheme == "dark" ? "dark" : "light";
+        switchTheme(theme.value);
+      });
+    });
+    onReady(() => {
+      show.value = true;
+    });
+    onUnload(() => {
+      window.removeEventListener("resize", scheduleLayout);
+      document.removeEventListener("scroll", handleScroll, true);
+      if (layoutFrame != null) {
+        window.cancelAnimationFrame(layoutFrame);
+        layoutFrame = null;
+      }
+      uni.$off(optionsEventName.value, null);
+      if (timer.value) {
+        clearTimeout(timer.value);
+      }
+    });
+    initUniPageHooks();
+    const _component_scroll_view = __syscom_1;
+    const _component_picker_view_column = _sfc_main$i;
+    const _component_picker_view = _sfc_main$j;
+    const n56 = t3$4();
+    const n0 = child(n56);
+    const n55 = next(n0);
+    on$1(n0, "click", close);
+    renderEffect(() => {
+      const _theme = unref(theme);
+      const _isDesktop = unref(isDesktop);
+      const _show = unref(show);
+      setClass(n56, ["uni-picker__container", ["uni-picker-theme--" + _theme, { "uni-picker__container--desktop": _isDesktop }]]);
+      setClassName(n0, (_show ? 1 : 0) | (_theme == "dark" ? 2 : 0), [" picker__ani-show", " picker__mask--dark"], "uni-picker__mask");
+      setClass(n55, ["uni-picker__inner-box", [_show ? "picker__ani-box-show" : "", "inner-box--" + _theme, { "uni-picker__inner-box--desktop": _isDesktop }]]);
+      setStyle(n55, unref(popupStyle).content);
+    });
+    setInsertionState(n55);
+    createIf(
+      () => unref(isSelect),
+      () => {
+        const n6 = withComponentId("3e32089c", () => createComponentWithFallback(_component_scroll_view, {
+          class: "uni-picker__select",
+          direction: "vertical",
+          "show-scrollbar": true
+        }, extend$1(() => {
+          const n3 = createFor(
+            () => unref(range),
+            (_for_item0, _for_key0) => {
+              const n5 = t0$k();
+              const x5 = txt(n5);
+              on$1(n5, "click", () => selectItem(_for_key0.value));
+              renderEffect(() => {
+                const _rangeKey = unref(rangeKey);
+                const _item = _for_item0.value;
+                setClassName(n5, unref(eventValue)[0] == _for_key0.value ? 1 : 0, " uni-picker__select-item--selected", "uni-picker__select-item");
+                setText(x5, normalizeUniText(toDisplayString(_rangeKey ? _item[_rangeKey] : _item)));
+              });
+              return n5;
+            },
+            (item, selectorIdx) => selectorIdx,
+            40
+            /* IS_SINGLE_NODE, SLOT_ROOT */
+          );
+          return n3;
+        }, {
+          _: 1
+          /* NON_STABLE */
+        })));
+        setStaticTemplateRef(n6, selectRef, null, "selectRef");
+        return n6;
+      },
+      () => {
+        const n10 = t1$c();
+        const n8 = child(n10);
+        const n9 = next(n8);
+        const n54 = t2$6();
+        const x8 = txt(n8);
+        on$1(n8, "click", close);
+        const x9 = txt(n9);
+        on$1(n9, "click", confirm);
+        on$1(n10, "click", withModifiers(() => {
+        }, ["stop"]));
+        renderEffect(() => {
+          const _theme = unref(theme);
+          setClass(n10, ["uni-picker__header-btn", ["header-btn--" + _theme]]);
+          setClass(n8, ["uni-picker__header-btn-cancel", ["header-btn-cannel--" + _theme]]);
+          setText(x8, normalizeUniText(toDisplayString(unref(cancelText))));
+          setText(x9, normalizeUniText(toDisplayString(unref(confirmText))));
+        });
+        setInsertionState(n54);
+        withComponentId("3bf71206", () => createComponentWithFallback(_component_picker_view, {
+          style: { "flex": "1" },
+          onChange: () => handleChange,
+          "mask-top-style": () => unref(maskTopStyle),
+          "mask-bottom-style": () => unref(maskBottomStyle),
+          indicatorStyle: () => unref(indicatorStyle),
+          value: () => unref(value)
+        }, extend$1(() => {
+          const n11 = createIf(
+            () => unref(mode) == "selector",
+            () => {
+              const n16 = withComponentId("3bf719c2", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
+                const n13 = createFor(
+                  () => unref(range),
+                  (_for_item0, _for_key0) => {
+                    const n15 = t0$k();
+                    const x15 = txt(n15);
+                    renderEffect(() => {
+                      const _rangeKey = unref(rangeKey);
+                      const _item = _for_item0.value;
+                      setClass(n15, ["uni-picker__view-item", ["view-item--" + unref(theme)]]);
+                      setText(x15, normalizeUniText(toDisplayString(_rangeKey ? _item[_rangeKey] : _item)));
+                    });
+                    return n15;
+                  },
+                  (item, selectorIdx) => selectorIdx,
+                  40
+                  /* IS_SINGLE_NODE, SLOT_ROOT */
+                );
+                return n13;
+              }, {
+                _: 1
+                /* NON_STABLE */
+              })));
+              return n16;
+            },
+            null,
+            129
+            /* TRUE_SINGLE_ROOT, SLOT_ROOT */
+          );
+          const n17 = createIf(
+            () => unref(mode) == "multiSelector",
+            () => {
+              const n19 = createFor(
+                () => unref(range),
+                (_for_item0, _for_key0) => {
+                  const n24 = withComponentId("3bf728cb-" + _for_key0.value, () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
+                    const n21 = createFor(
+                      () => _for_item0.value,
+                      (_for_item1, _for_key1) => {
+                        const n23 = t0$k();
+                        const x23 = txt(n23);
+                        renderEffect(() => {
+                          const _rangeKey = unref(rangeKey);
+                          const _column = _for_item1.value;
+                          setClass(n23, ["uni-picker__view-item", ["view-item--" + unref(theme)]]);
+                          setText(x23, normalizeUniText(toDisplayString(_rangeKey ? _column[_rangeKey] : _column)));
+                        });
+                        return n23;
+                      },
+                      (column, colIdx) => colIdx,
+                      40
+                      /* IS_SINGLE_NODE, SLOT_ROOT */
+                    );
+                    return n21;
+                  }, {
+                    _: 1
+                    /* NON_STABLE */
+                  })));
+                  return n24;
+                },
+                (item, multiIdx) => multiIdx,
+                34
+                /* IS_COMPONENT, SLOT_ROOT */
+              );
+              return n19;
+            },
+            null,
+            129
+            /* TRUE_SINGLE_ROOT, SLOT_ROOT */
+          );
+          const n25 = createIf(
+            () => unref(mode) == "time",
+            () => {
+              const n30 = withComponentId("3bf7837a", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
+                const n27 = createFor(
+                  () => unref(hours),
+                  (_for_item0, _for_key0) => {
+                    const n29 = t0$k();
+                    const x29 = txt(n29);
+                    renderEffect(() => {
+                      setClass(n29, ["uni-picker__view-item", ["view-item--" + unref(theme)]]);
+                      setText(x29, normalizeUniText(toDisplayString(_for_item0.value)));
+                    });
+                    return n29;
+                  },
+                  (h, hIdx) => h,
+                  40
+                  /* IS_SINGLE_NODE, SLOT_ROOT */
+                );
+                return n27;
+              }, {
+                _: 1
+                /* NON_STABLE */
+              })));
+              const n34 = withComponentId("3bf78ac3", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
+                const n31 = createFor(
+                  () => unref(minutes),
+                  (_for_item0, _for_key0) => {
+                    const n33 = t0$k();
+                    const x33 = txt(n33);
+                    renderEffect(() => {
+                      setClass(n33, ["uni-picker__view-item", ["view-item--" + unref(theme)]]);
+                      setText(x33, normalizeUniText(toDisplayString(_for_item0.value)));
+                    });
+                    return n33;
+                  },
+                  (m, mIdx) => m,
+                  40
+                  /* IS_SINGLE_NODE, SLOT_ROOT */
+                );
+                return n31;
+              }, {
+                _: 1
+                /* NON_STABLE */
+              })));
+              return [n30, n34];
+            },
+            null,
+            130
+            /* TRUE_MULTI_ROOT, SLOT_ROOT */
+          );
+          const n35 = createIf(
+            () => unref(mode) == "date",
+            () => {
+              const n40 = withComponentId("3bf7954e", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
+                const n37 = createFor(
+                  () => unref(years),
+                  (_for_item0) => {
+                    const n39 = t0$k();
+                    const x39 = txt(n39);
+                    renderEffect(() => {
+                      setClass(n39, ["uni-picker__view-item", ["view-item--" + unref(theme)]]);
+                      setText(x39, normalizeUniText(toDisplayString(_for_item0.value) + toDisplayString(unref(yearText))));
+                    });
+                    return n39;
+                  },
+                  (year) => year,
+                  40
+                  /* IS_SINGLE_NODE, SLOT_ROOT */
+                );
+                return n37;
+              }, {
+                _: 1
+                /* NON_STABLE */
+              })));
+              const n41 = createIf(() => unref(fields) != "year", () => {
+                const n46 = withComponentId("3bf79ccf", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
+                  const n43 = createFor(
+                    () => unref(monthsText),
+                    (_for_item0) => {
+                      const n45 = t0$k();
+                      const x45 = txt(n45);
+                      renderEffect(() => {
+                        setClass(n45, ["uni-picker__view-item", ["view-item--" + unref(theme)]]);
+                        setText(x45, normalizeUniText(toDisplayString(formatSingle(_for_item0.value)) + toDisplayString(unref(monthText))));
+                      });
+                      return n45;
+                    },
+                    (month) => month,
+                    40
+                    /* IS_SINGLE_NODE, SLOT_ROOT */
+                  );
+                  return n43;
+                }, {
+                  _: 1
+                  /* NON_STABLE */
+                })));
+                return n46;
+              });
+              const n47 = createIf(() => unref(fields) == "day", () => {
+                const n52 = withComponentId("3bf7f3bd", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
+                  const n49 = createFor(
+                    () => unref(days),
+                    (_for_item0) => {
+                      const n51 = t0$k();
+                      const x51 = txt(n51);
+                      renderEffect(() => {
+                        setClass(n51, ["uni-picker__view-item", ["view-item--" + unref(theme)]]);
+                        setText(x51, normalizeUniText(toDisplayString(formatSingle(_for_item0.value)) + toDisplayString(unref(dayText))));
+                      });
+                      return n51;
+                    },
+                    (day) => day,
+                    40
+                    /* IS_SINGLE_NODE, SLOT_ROOT */
+                  );
+                  return n49;
+                }, {
+                  _: 1
+                  /* NON_STABLE */
+                })));
+                return n52;
+              });
+              return [n40, n41, n47];
+            },
+            null,
+            130
+            /* TRUE_MULTI_ROOT, SLOT_ROOT */
+          );
+          return [n11, n17, n25, n35];
+        }, {
+          _: 1
+          /* NON_STABLE */
+        })));
+        return [n10, n54];
+      },
+      265
+      /* TRUE_SINGLE_ROOT, FALSE_MULTI_ROOT, KEYED_INDEX_0 */
+    );
+    setStaticTemplateRef(n56, containerRef, null, "containerRef");
+    return n56;
+  }
+});
+const _style_0$8 = "\n.uni-picker__container {\n		flex: 1;\n}\n.uni-picker__mask {\n		flex: 1;\n		background-color: rgba(0, 0, 0, .3);\n		opacity: 0;\n		transition-property: opacity;\n		transition-duration: 0.3s;\n}\n.picker__mask--dark {\n		background-color: rgba(0, 0, 0, .6);\n}\n.picker__ani-show {\n		opacity: 1;\n}\n.uni-picker__inner-box {\n		position: absolute;\n		bottom: 0;\n		left: 0;\n		right: 0;\n		height: 300px;\n		transform: translateY(100%);\n		transition-property: transform;\n		transition-duration: 0.2s;\n}\n.picker__ani-box-show {\n		transform: translateY(0%);\n}\n.uni-picker__header-btn {\n		flex-direction: row;\n		justify-content: space-between;\n		border-bottom: 1px #f7f7f7 solid;\n}\n.uni-picker__header-btn-cancel {\n		font-size: 14px;\n		padding: 15px;\n		background-color: transparent;\n}\n.uni-picker__header-btn-ok {\n		font-size: 14px;\n		padding: 15px;\n		color: #007aff;\n}\n.uni-picker__view {\n		position: relative;\n		flex: 1;\n}\n.uni-picker__view-item {\n		width: 100%;\n		text-align: center;\n		height: 50px;\n		line-height: 50px;\n}\n.inner-box--light {\n		background-color: #fff;\n}\n.header-btn-cannel--light {\n		color: #000;\n}\n.inner-box--dark {\n		background-color: #232323;\n}\n.header-btn-cannel--dark {\n		color: rgba(255, 255, 255, .8);\n}\n.view-item--dark {\n		color: rgba(255, 255, 255, .8);\n}\n.header-btn--dark {\n		border-color: rgba(255, 255, 255, .05);\n}\n.uni-picker__mask {\n		/* 建立滚动容器，通过 CSS 阻止遮罩上的滚动传递到背景页面。 */\n		overflow: auto;\n		overscroll-behavior: none;\n		touch-action: none;\n}\n.uni-picker__container--desktop .uni-picker__mask {\n		background-color: transparent;\n}\n.uni-picker__inner-box--desktop {\n		transform: none;\n		opacity: 0;\n		border-radius: 5px;\n		box-shadow: 0 0 20px 5px rgba(0, 0, 0, .3);\n		transition-property: opacity;\n}\n.uni-picker__inner-box--desktop.picker__ani-box-show {\n		transform: none;\n		opacity: 1;\n}\n.uni-picker__inner-box--desktop .uni-picker__header-btn {\n		flex-shrink: 0;\n}\n.uni-picker__inner-box--desktop .uni-picker__view {\n		min-height: 0;\n		overflow: hidden;\n		border-radius: 0 0 5px 5px;\n}\n.uni-picker__select {\n		height: 100%;\n		box-sizing: border-box;\n		padding: 6px 0;\n		border-radius: 5px;\n		overscroll-behavior: contain;\n}\n.uni-picker__select .uni-scroll-view {\n		overscroll-behavior: contain;\n}\n.uni-picker__select-item {\n		flex-shrink: 0;\n		height: 34px;\n		line-height: 34px;\n		padding: 0 10px;\n		text-align: center;\n		color: #555;\n		white-space: nowrap;\n		text-overflow: ellipsis;\n		overflow: hidden;\n		cursor: pointer;\n}\n.uni-picker__select-item:hover {\n		background-color: #f6f6f6;\n}\n.uni-picker-theme--dark .uni-picker__select-item {\n		color: rgba(255, 255, 255, .8);\n}\n.uni-picker-theme--dark .uni-picker__select-item:hover {\n		background-color: rgba(255, 255, 255, .1);\n}\n.uni-picker__select-item.uni-picker__select-item--selected {\n		color: #007aff;\n}\n\n";
+const _export_sfc = (sfc, props2) => {
+  const target = sfc.__vccOpts || sfc;
+  for (const [key, val] of props2) {
+    target[key] = val;
+  }
+  return target;
+};
+const UniPickerPage = /* @__PURE__ */ _export_sfc(_sfc_main$k, [["styles", [_style_0$8]]]);
+const registerPickerOnce = /* @__PURE__ */ once(() => {
+  registerSystemRoute("uni:picker", UniPickerPage);
+});
+const picker = /* @__PURE__ */ extend({}, _sfc_main$l, {
+  setup: (props2, context) => {
+    registerPickerOnce();
+    return _sfc_main$l.setup(props2, context);
+  }
+});
 class UniPickerViewElement extends UniViewElement {
   static get __uniElement() {
     return {};
   }
 }
-const t0$k = template("<div uni-picker-view uni-view class=uni-picker-view>", 1);
+const t0$j = template("<div uni-picker-view uni-view class=uni-picker-view>", 1);
 const _uniPickerViewElement = { value: "PICKER-VIEW" };
-const _sfc_main$k = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$j = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "picker-view",
     // @ts-ignore
@@ -18510,7 +19309,7 @@ const _sfc_main$k = /* @__PURE__ */ defineVaporComponent({
     onUnmounted(() => {
       columns.splice(0, columns.length);
     });
-    const n0 = t0$k();
+    const n0 = t0$j();
     initUniElement(n0, _uniPickerViewElement);
     setInsertionState(n0);
     createSlot();
@@ -18523,11 +19322,11 @@ class UniPickerViewColumnElement extends UniViewElement {
     return {};
   }
 }
-const t0$j = template("<div uni-view>");
-const t1$c = template("<div uni-picker-view-column uni-view class=picker-view-column tabindex=0><!><div uni-view></div><div uni-view></div><div uni-view>", 1);
+const t0$i = template("<div uni-view>");
+const t1$b = template("<div uni-picker-view-column uni-view class=picker-view-column tabindex=0><!><div uni-view></div><div uni-view></div><div uni-view>", 1);
 const _uniPickerViewColumnElement = { value: "PICKER-VIEW-COLUMN" };
 const EPSILON = 1;
-const _sfc_main$j = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$i = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "picker-view-column",
     // @ts-ignore
@@ -18668,7 +19467,7 @@ const _sfc_main$j = /* @__PURE__ */ defineVaporComponent({
         ctx == null ? void 0 : ctx.onColumnIndexChange(columnIndex, targetIndex);
       }
     }
-    const n0 = t1$c();
+    const n0 = t1$b();
     const n7 = child(n0);
     const n4 = next(n7);
     const n5 = next(n4);
@@ -18683,7 +19482,7 @@ const _sfc_main$j = /* @__PURE__ */ defineVaporComponent({
       onScrollend: () => onScrollEnd,
       onScroll: () => onScroll
     }, () => {
-      const n2 = t0$j();
+      const n2 = t0$i();
       renderEffect(() => {
         const _containerPaddingPx = unref(containerPaddingPx);
         setStyle(n2, { "padding-top": _containerPaddingPx, "padding-bottom": _containerPaddingPx });
@@ -18717,10 +19516,10 @@ class UniProgressElement extends UniViewElement {
     return {};
   }
 }
-const t0$i = template("<span uni-text class=uni-progress-value> ");
-const t1$b = template("<div uni-progress uni-view class=uni-progress><div uni-view class=uni-progress-background><div uni-view class=uni-progress-fill></div></div>", 1);
+const t0$h = template("<span uni-text class=uni-progress-value> ");
+const t1$a = template("<div uni-progress uni-view class=uni-progress><div uni-view class=uni-progress-background><div uni-view class=uni-progress-fill></div></div>", 1);
 const _uniProgressElement = { value: "PROGRESS" };
-const _sfc_main$i = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$h = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "progress",
     // @ts-ignore
@@ -18836,7 +19635,7 @@ const _sfc_main$i = /* @__PURE__ */ defineVaporComponent({
     onUnmounted(() => {
       clearTimer();
     });
-    const n0 = t1$b();
+    const n0 = t1$a();
     const n2 = child(n0);
     const n1 = child(n2);
     initUniElement(n0, _uniProgressElement);
@@ -18847,7 +19646,7 @@ const _sfc_main$i = /* @__PURE__ */ defineVaporComponent({
     });
     setInsertionState(n0, 1);
     createIf(() => __props.showInfo, () => {
-      const n5 = t0$i();
+      const n5 = t0$h();
       const x5 = txt(n5);
       renderEffect(() => {
         setStyle(n5, unref(fontStyle));
@@ -18880,13 +19679,13 @@ class UniRadioElement extends UniViewElement {
     } };
   }
 }
-const t0$h = template('<svg class=uni-radio-svg viewBox="0 0 32 32"><path fill=currentColor>', 0, 1);
-const t1$a = template("<div uni-radio uni-view role=radio>", 1);
-const t2$6 = template("<span uni-text>");
-const t3$4 = template("<div uni-radio uni-view class=uni-radio role=radio><div uni-view></div>", 1);
+const t0$g = template('<svg class=uni-radio-svg viewBox="0 0 32 32"><path fill=currentColor>', 0, 1);
+const t1$9 = template("<div uni-radio uni-view role=radio>", 1);
+const t2$5 = template("<span uni-text>");
+const t3$3 = template("<div uni-radio uni-view class=uni-radio role=radio><div uni-view></div>", 1);
 const _uniRadioElement = { value: "RADIO" };
 const iconPath = "M1.952 18.080q-0.32-0.352-0.416-0.88t0.128-0.976l0.16-0.352q0.224-0.416 0.64-0.528t0.8 0.176l6.496 4.704q0.384 0.288 0.912 0.272t0.88-0.336l17.312-14.272q0.352-0.288 0.848-0.256t0.848 0.352l-0.416-0.416q0.32 0.352 0.32 0.816t-0.32 0.816l-18.656 18.912q-0.32 0.352-0.8 0.352t-0.8-0.32l-7.936-8.064z";
-const _sfc_main$h = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$g = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "radio",
     // @ts-ignore
@@ -19003,7 +19802,7 @@ const _sfc_main$h = /* @__PURE__ */ defineVaporComponent({
     const n0 = createIf(
       () => !hasDefaultSlot,
       () => {
-        const n2 = t1$a();
+        const n2 = t1$9();
         initUniElement(n2, _uniRadioElement);
         renderEffect(() => {
           const _disabled = __props.disabled;
@@ -19022,7 +19821,7 @@ const _sfc_main$h = /* @__PURE__ */ defineVaporComponent({
         });
         setInsertionState(n2);
         createIf(() => unref(isChecked), () => {
-          const n6 = t0$h();
+          const n6 = t0$g();
           const n5 = child(n6);
           setAttr(n5, "d", iconPath, true);
           return n6;
@@ -19034,7 +19833,7 @@ const _sfc_main$h = /* @__PURE__ */ defineVaporComponent({
         return n2;
       },
       () => {
-        const n8 = t3$4();
+        const n8 = t3$3();
         const n13 = child(n8);
         initUniElement(n8, _uniRadioElement);
         renderEffect(() => {
@@ -19054,7 +19853,7 @@ const _sfc_main$h = /* @__PURE__ */ defineVaporComponent({
         });
         setInsertionState(n13);
         createIf(() => unref(isChecked), () => {
-          const n12 = t0$h();
+          const n12 = t0$g();
           const n11 = child(n12);
           setAttr(n11, "d", iconPath, true);
           return n12;
@@ -19063,7 +19862,7 @@ const _sfc_main$h = /* @__PURE__ */ defineVaporComponent({
         createIf(
           () => isStringSlot,
           () => {
-            const n17 = t2$6();
+            const n17 = t2$5();
             setInsertionState(n17);
             createSlot(
               "default",
@@ -19098,9 +19897,9 @@ class UniRadioGroupElement extends UniViewElement {
     return {};
   }
 }
-const t0$g = template("<div uni-radio-group uni-view role=radiogroup>", 1);
+const t0$f = template("<div uni-radio-group uni-view role=radiogroup>", 1);
 const _uniRadioGroupElement = { value: "RADIO-GROUP" };
-const _sfc_main$g = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$f = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "radio-group",
     // @ts-ignore
@@ -19187,7 +19986,7 @@ const _sfc_main$g = /* @__PURE__ */ defineVaporComponent({
         formCtx.unregisterField(props2.name);
       }
     });
-    const n0 = t0$g();
+    const n0 = t0$f();
     initUniElement(n0, _uniRadioGroupElement);
     setInsertionState(n0);
     createSlot();
@@ -19226,11 +20025,11 @@ class UniSliderElement extends UniViewElement {
     return { vm: true };
   }
 }
-const t0$f = template('<span uni-text style="width: 35px;color: #888;font-size: 14px;align-self: center;margin-left: 5px;white-space: nowrap;"> ');
-const t1$9 = template("<div uni-slider uni-view class=container><div uni-view class=slider-track><div uni-view><div uni-view></div></div><div uni-view><div uni-view role=slider aria-orientation=horizontal></div></div></div>", 1);
+const t0$e = template('<span uni-text style="width: 35px;color: #888;font-size: 14px;align-self: center;margin-left: 5px;white-space: nowrap;"> ');
+const t1$8 = template("<div uni-slider uni-view class=container><div uni-view class=slider-track><div uni-view><div uni-view></div></div><div uni-view><div uni-view role=slider aria-orientation=horizontal></div></div></div>", 1);
 const _uniSliderElement = { value: "SLIDER" };
 const TOUCH_THRESHOLD = 4;
-const _sfc_main$f = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$e = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "slider",
     externalClasses: ["track-class", "track-active-class", "thumb-class"],
@@ -19655,7 +20454,7 @@ const _sfc_main$f = /* @__PURE__ */ defineVaporComponent({
       renderVisuals,
       getCurrentValue: () => currentValue.value
     });
-    const n0 = t1$9();
+    const n0 = t1$8();
     const n5 = child(n0);
     const n2 = child(n5);
     const n1 = child(n2);
@@ -19694,7 +20493,7 @@ const _sfc_main$f = /* @__PURE__ */ defineVaporComponent({
     });
     setInsertionState(n0, 1);
     createIf(() => props2.showValue, () => {
-      const n8 = t0$f();
+      const n8 = t0$e();
       const x8 = txt(n8);
       renderEffect(() => setText(x8, normalizeUniText(toDisplayString(unref(currentValue)))));
       return n8;
@@ -19702,9 +20501,9 @@ const _sfc_main$f = /* @__PURE__ */ defineVaporComponent({
     return n0;
   }
 });
-const t0$e = template('<div uni-sticky-header uni-view class=uni-sticky-header style="position: sticky; top: 0; width: 100%; z-index: 1">', 1);
+const t0$d = template('<div uni-sticky-header uni-view class=uni-sticky-header style="position: sticky; top: 0; width: 100%; z-index: 1">', 1);
 const _uniStickyHeaderElement = { value: "STICKY-HEADER" };
-const _sfc_main$e = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$d = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "sticky-header",
     rootElement: {
@@ -19730,7 +20529,7 @@ const _sfc_main$e = /* @__PURE__ */ defineVaporComponent({
       section.headerElement = null;
       updateHeaderSize(0);
     });
-    const n0 = t0$e();
+    const n0 = t0$d();
     initUniElement(n0, _uniStickyHeaderElement);
     setInsertionState(n0);
     createSlot();
@@ -19738,9 +20537,9 @@ const _sfc_main$e = /* @__PURE__ */ defineVaporComponent({
     return n0;
   }
 });
-const t0$d = template('<div uni-sticky-section uni-view class=uni-sticky-section style="position: relative; overflow: visible"><!><div uni-view style="width: 1px; flex-shrink: 0;">', 1);
+const t0$c = template('<div uni-sticky-section uni-view class=uni-sticky-section style="position: relative; overflow: visible"><!><div uni-view style="width: 1px; flex-shrink: 0;">', 1);
 const _uniStickySectionElement = { value: "STICKY-SECTION" };
-const _sfc_main$d = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$c = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "sticky-section",
     rootElement: {
@@ -19887,7 +20686,7 @@ const _sfc_main$d = /* @__PURE__ */ defineVaporComponent({
       listView.queueLayout();
     });
     __expose({ renderRange, updateList, updateListIds, updateRenderInfo });
-    const n0 = t0$d();
+    const n0 = t0$c();
     const n3 = child(n0);
     const n2 = next(n3);
     initUniElement(n0, _uniStickySectionElement);
@@ -19944,11 +20743,11 @@ class UniSwiperElement extends UniViewElement {
     return {};
   }
 }
-const t0$c = template("<div uni-view>");
-const t1$8 = template("<div uni-swiper uni-view class=uni-swiper-wrapper><div uni-view></div><div uni-view>", 1);
+const t0$b = template("<div uni-view>");
+const t1$7 = template("<div uni-swiper uni-view class=uni-swiper-wrapper><div uni-view></div><div uni-view>", 1);
 const _uniSwiperElement = { value: "SWIPER" };
 const DIRECTION_LOCK_THRESHOLD = 5;
-const _sfc_main$c = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$b = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "swiper",
     rootElement: {
@@ -21023,7 +21822,7 @@ const _sfc_main$c = /* @__PURE__ */ defineVaporComponent({
         resizeObserver.disconnect(wrapper);
       }
     });
-    const n0 = t1$8();
+    const n0 = t1$7();
     const n2 = child(n0);
     const n9 = next(n2);
     initUniElement(n0, _uniSwiperElement);
@@ -21041,7 +21840,7 @@ const _sfc_main$c = /* @__PURE__ */ defineVaporComponent({
       const n6 = createFor(
         () => unref(sliderCount),
         (_for_item0) => {
-          const n8 = t0$c();
+          const n8 = t0$b();
           on$1(n8, "touchstart", (e2) => {
             e2.stopPropagation();
           });
@@ -21093,10 +21892,10 @@ class UniSwiperItemElement extends UniViewElement {
     } };
   }
 }
-const t0$b = template("<div uni-view class=uni-swiper-item-content>");
-const t1$7 = template('<div uni-swiper-item uni-view class=uni-swiper-item style="position: absolute; visibility: hidden;">', 1);
+const t0$a = template("<div uni-view class=uni-swiper-item-content>");
+const t1$6 = template('<div uni-swiper-item uni-view class=uni-swiper-item style="position: absolute; visibility: hidden;">', 1);
 const _uniSwiperItemElement = { value: "SWIPER-ITEM" };
-const _sfc_main$b = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$a = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "swiper-item",
     rootElement: {
@@ -21122,13 +21921,13 @@ const _sfc_main$b = /* @__PURE__ */ defineVaporComponent({
         handleUnMounted();
       });
     });
-    const n0 = t1$7();
+    const n0 = t1$6();
     initUniElement(n0, _uniSwiperItemElement);
     setInsertionState(n0);
     createIf(
       () => unref(autoHeight),
       () => {
-        const n4 = t0$b();
+        const n4 = t0$a();
         setInsertionState(n4);
         createSlot();
         return n4;
@@ -21166,9 +21965,9 @@ class UniSwitchElement extends UniViewElement {
     } };
   }
 }
-const t0$a = template("<div uni-switch uni-view role=switch><div uni-view>", 1);
+const t0$9 = template("<div uni-switch uni-view role=switch><div uni-view>", 1);
 const _uniSwitchElement = { value: "SWITCH" };
-const _sfc_main$a = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$9 = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "switch",
     // @ts-ignore
@@ -21278,7 +22077,7 @@ const _sfc_main$a = /* @__PURE__ */ defineVaporComponent({
         setChecked(checked);
       }
     });
-    const n0 = t0$a();
+    const n0 = t0$9();
     const n1 = child(n0);
     initUniElement(n0, _uniSwitchElement);
     on$1(n0, "keydown", (e2) => unref(handleKeydown)(e2));
@@ -21309,9 +22108,9 @@ const _sfc_main$a = /* @__PURE__ */ defineVaporComponent({
     return n0;
   }
 });
-const t0$9 = template('<div uni-view style="position: relative; overflow-anchor: none"><!><div uni-view style="width: 1px; flex-shrink: 0;"></div></div>');
+const t0$8 = template('<div uni-view style="position: relative; overflow-anchor: none"><!><div uni-view style="width: 1px; flex-shrink: 0;"></div></div>');
 const _uniWaterflowElement = { value: "WATERFLOW" };
-const _sfc_main$9 = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$8 = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "waterflow",
     rootElement: {
@@ -21607,7 +22406,7 @@ const _sfc_main$9 = /* @__PURE__ */ defineVaporComponent({
         /* NON_STABLE */
       }),
       "default": () => {
-        const n3 = t0$9();
+        const n3 = t0$8();
         const n2 = child(n3);
         const n1 = next(n2);
         setInsertionState(n3, n2);
@@ -25759,17 +26558,6 @@ function initHooks(options, instance, publicThis) {
     }
   }
 }
-function set(target, key, val) {
-  return target[key] = val;
-}
-function $callMethod(method, ...args) {
-  const fn = this[method];
-  if (fn) {
-    return fn(...args);
-  }
-  console.error(`method ${method} not found`);
-  return null;
-}
 function createErrorHandler(app) {
   const userErrorHandler = app.config.errorHandler;
   return function errorHandler(err, instance, info) {
@@ -25871,10 +26659,6 @@ function initApp(app) {
       uniIdMixin(globalProperties);
     }
   }
-  {
-    globalProperties.$set = set;
-    globalProperties.$callMethod = $callMethod;
-  }
   setUniPageHooksInitializer(initVaporPageHooks);
   {
     invokeCreateVueAppHook(app);
@@ -25884,6 +26668,108 @@ function initVaporPageHooks(instance) {
   const page = instance;
   initHooks(page.type, page, page.proxy);
 }
+function removeLastPage() {
+  var _a;
+  const page = (_a = getCurrentPage()) == null ? void 0 : _a.vm;
+  if (!page) {
+    return;
+  }
+  const $page = getPage$BasePage(page);
+  removePage(normalizeRouteKey($page.path, $page.id));
+}
+const redirectTo = /* @__PURE__ */ defineAsyncApi(
+  API_REDIRECT_TO,
+  function redirectTo2(args, callbacks2) {
+    const { url, isAutomatedTesting } = args;
+    const { resolve, reject } = callbacks2;
+    if (!entryPageState.handledBeforeEntryPageRoutes) {
+      const options = { url, isAutomatedTesting };
+      redirectToPagesBeforeEntryPages.push(() => {
+        redirectTo2(options, callbacks2);
+      });
+      return;
+    }
+    return navigate({ type: API_REDIRECT_TO, url, isAutomatedTesting }).then(resolve).catch(reject);
+  },
+  RedirectToProtocol,
+  RedirectToOptions
+);
+function removeAllPages() {
+  const keys = getCurrentPagesMap().keys();
+  for (const routeKey of keys) {
+    removePage(routeKey);
+  }
+}
+const reLaunch = /* @__PURE__ */ defineAsyncApi(
+  API_RE_LAUNCH,
+  function reLaunch2(args, callbacks2) {
+    const { url, isAutomatedTesting } = args;
+    const { resolve, reject } = callbacks2;
+    if (!entryPageState.handledBeforeEntryPageRoutes) {
+      const options = { url, isAutomatedTesting };
+      reLaunchPagesBeforeEntryPages.push(() => {
+        reLaunch2(options, callbacks2);
+      });
+      return;
+    }
+    return navigate({ type: API_RE_LAUNCH, url, isAutomatedTesting }).then(resolve).catch(reject);
+  },
+  ReLaunchProtocol,
+  ReLaunchOptions
+);
+function removeNonTabBarPages(targetPageId) {
+  const curTabBarPageVm = getCurrentPageVm();
+  if (!curTabBarPageVm) {
+    return;
+  }
+  const pagesMap = getCurrentPagesMap();
+  const keys = pagesMap.keys();
+  for (const routeKey of keys) {
+    const page = pagesMap.get(routeKey);
+    if (!page.$.__isTabBar) {
+      removePage(routeKey);
+    } else {
+      page.$.__isActive = targetPageId !== void 0 && getPage$BasePage(page).id === targetPageId;
+    }
+  }
+  if (curTabBarPageVm.$.__isTabBar && (targetPageId === void 0 || getPage$BasePage(curTabBarPageVm).id !== targetPageId)) {
+    curTabBarPageVm.$.__isVisible = false;
+    invokeHook(curTabBarPageVm, ON_HIDE);
+  }
+}
+function isSamePage(url, $page) {
+  return url === $page.fullPath || url === "/" && $page.meta.isEntry;
+}
+function getTabBarPageId(url) {
+  const pages = getCurrentPagesMap().values();
+  for (const page of pages) {
+    const $page = getPage$BasePage(page);
+    if (isSamePage(url, $page)) {
+      page.$.__isActive = true;
+      return $page.id;
+    }
+  }
+}
+const switchTab = /* @__PURE__ */ defineAsyncApi(
+  API_SWITCH_TAB,
+  function switchTab2(args, callbacks2) {
+    const { url, tabBarText, isAutomatedTesting } = args;
+    const { resolve, reject } = callbacks2;
+    if (!entryPageState.handledBeforeEntryPageRoutes) {
+      const options = { url, tabBarText, isAutomatedTesting };
+      switchTabPagesBeforeEntryPages.push(() => {
+        switchTab2(options, callbacks2);
+      });
+      return;
+    }
+    return navigate(
+      { type: API_SWITCH_TAB, url, tabBarText, isAutomatedTesting },
+      void 0
+    ).then(resolve).catch(reject);
+  },
+  SwitchTabProtocol,
+  SwitchTabOptions
+);
 function initRouter(app) {
   const router2 = createRouter(createRouterOptions());
   setRouterInstance(router2);
@@ -25977,7 +26863,7 @@ const index = {
     setNativeEventNormalizer(normalizeVaporNativeEvent);
     initApp(app);
     initServicePlugin(app);
-    if (!app.config.warnHandler) {
+    if ((process.env.NODE_ENV !== "production" || false) && !app.config.warnHandler) {
       app.config.warnHandler = warnHandler;
     }
     if (__UNI_FEATURE_PAGES__) {
@@ -27661,13 +28547,13 @@ const navigateBack = /* @__PURE__ */ defineAsyncApi(
 );
 const navigateTo = /* @__PURE__ */ defineAsyncApi(
   API_NAVIGATE_TO,
-  // @ts-expect-error
-  ({ url, events, isAutomatedTesting }, { resolve, reject }) => {
+  function navigateTo2(args, callbacks2) {
+    const { url, events, isAutomatedTesting } = args;
+    const { resolve, reject } = callbacks2;
     if (!entryPageState.handledBeforeEntryPageRoutes) {
-      navigateToPagesBeforeEntryPages.push({
-        args: { type: API_NAVIGATE_TO, url, events, isAutomatedTesting },
-        resolve,
-        reject
+      const options = { url, events, isAutomatedTesting };
+      navigateToPagesBeforeEntryPages.push(() => {
+        navigateTo2(options, callbacks2);
       });
       return;
     }
@@ -28061,8 +28947,12 @@ const setNavigationBarColor = /* @__PURE__ */ defineAsyncApi(
 const showNavigationBarLoading = /* @__PURE__ */ defineAsyncApi(
   API_SHOW_NAVIGATION_BAR_LOADING,
   (args, { resolve, reject }) => {
+    const pageMeta = getCurrentPageMeta();
+    if (pageMeta) {
+      setNavigationBarLoadingComponent(_sfc_main$p);
+    }
     setNavigationBar(
-      getCurrentPageMeta(),
+      pageMeta,
       API_SHOW_NAVIGATION_BAR_LOADING,
       args || {},
       resolve,
@@ -28744,918 +29634,6 @@ const createEditorContextAsync = function(options) {
     );
   });
 };
-const POPUP_WIDTH = 300;
-const POPUP_EDGE = 6;
-function getPickerPopupStyle(popover, windowWidth, windowHeight, contentHeight) {
-  const availableWidth = Math.max(0, windowWidth - POPUP_EDGE * 2);
-  const availableHeight = Math.max(0, windowHeight - POPUP_EDGE * 2);
-  const width = Math.min(POPUP_WIDTH, availableWidth);
-  let height = Math.min(Math.max(0, contentHeight), availableHeight);
-  let left = (windowWidth - width) / 2;
-  let top = (windowHeight - height) / 2;
-  if (popover != null) {
-    left = Math.max(POPUP_EDGE, Math.min(windowWidth - width - POPUP_EDGE, popover.left));
-    const spaceAbove = Math.max(0, popover.top - POPUP_EDGE * 2);
-    const spaceBelow = Math.max(0, windowHeight - popover.top - popover.height - POPUP_EDGE * 2);
-    const above = spaceBelow < height && spaceAbove > spaceBelow;
-    height = Math.min(height, above ? spaceAbove : spaceBelow);
-    top = above ? popover.top - height - POPUP_EDGE : popover.top + popover.height + POPUP_EDGE;
-    top = Math.max(POPUP_EDGE, Math.min(windowHeight - height - POPUP_EDGE, top));
-  }
-  return {
-    content: {
-      left: `${left}px`,
-      top: `${top}px`,
-      right: "auto",
-      bottom: "auto",
-      width: `${width}px`,
-      height: `${height}px`
-    }
-  };
-}
-const t0$8 = template("<span uni-text data-v-212d40c7> ");
-const t1$6 = template("<div uni-view data-v-212d40c7><span uni-text data-v-212d40c7> </span><span uni-text data-v-212d40c7 class=uni-picker__header-btn-ok> </div>");
-const t2$5 = template("<div uni-view data-v-212d40c7 class=uni-picker__view>");
-const t3$3 = template("<div uni-view data-v-212d40c7><div uni-view data-v-212d40c7></div><div uni-view data-v-212d40c7>", 1);
-const _sfc_main$8 = /* @__PURE__ */ defineVaporComponent({
-  __name: "picker",
-  setup(__props) {
-    const show = ref(false);
-    const readyEventName = ref("");
-    const optionsEventName = ref("");
-    const cancelEventName = ref("");
-    const selectorChangeEventName = ref("");
-    const multiSelectorChangeEventName = ref("");
-    const timeChangeEventName = ref("");
-    const columnChangeEventName = ref("");
-    const mode = ref("selector");
-    const range = ref([]);
-    const rangeKey = ref("");
-    const value = ref([]);
-    const eventValue = ref([]);
-    const prevMultiValue = ref([]);
-    const selected = reactive({
-      year: (/* @__PURE__ */ new Date()).getFullYear(),
-      month: (/* @__PURE__ */ new Date()).getMonth() + 1,
-      day: (/* @__PURE__ */ new Date()).getDate()
-    });
-    const years = ref([]);
-    const months = ref(Array.from({ length: 12 }, (_, i) => i + 1));
-    const days = ref([]);
-    const hours = ref([]);
-    const minutes = ref([]);
-    const fields = ref("day");
-    const start = ref([]);
-    const end = ref([]);
-    const yearRange = ref([]);
-    const monthRange = ref([]);
-    const dayRange = ref([]);
-    const timer = ref(0);
-    const theme = ref("light");
-    const maskTopStyle = ref("background-image: linear-gradient(to bottom, rgba(255,255,255,1), rgba(255, 255, 255, 0));");
-    const maskBottomStyle = ref("background-image: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255, 255, 255, 1));");
-    const i18nText = {
-      "en": {
-        "cancel": "Cancel",
-        "confirm": "OK",
-        "year": "",
-        "month": "",
-        "day": "",
-        "months": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"]
-      },
-      "es": {
-        "cancel": "Cancelar",
-        "confirm": "Aceptar",
-        "year": "",
-        "month": "",
-        "day": "",
-        "months": ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
-      },
-      "fr": {
-        "cancel": "Annuler",
-        "confirm": "Valider",
-        "year": "",
-        "month": "",
-        "day": "",
-        "months": ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Aoû", "Sep", "Oct", "Nov", "Déc"]
-      },
-      "zh-Hans": {
-        "cancel": "取消",
-        "confirm": "确定",
-        "year": "年",
-        "month": "月",
-        "day": "日",
-        "months": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
-      },
-      "zh-Hant": {
-        "cancel": "取消",
-        "confirm": "確定",
-        "year": "年",
-        "month": "月",
-        "day": "日",
-        "months": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
-      }
-    };
-    const language = ref("zh-Hans");
-    const instance = getCurrentInstance();
-    const popover = ref(null);
-    const selectorType = ref("select");
-    const windowWidth = ref(0);
-    const windowHeight = ref(0);
-    const containerRef = ref(null);
-    const selectRef = ref(null);
-    let layoutFrame = null;
-    let closing = false;
-    const isDesktop = computed(() => windowWidth.value >= 500 && windowHeight.value >= 500);
-    const isSelect = computed(() => isDesktop.value && mode.value == "selector" && selectorType.value == "select");
-    const popupStyle = computed(() => {
-      if (!isDesktop.value)
-        return { content: {} };
-      const contentHeight = isSelect.value ? Math.min(300, range.value.length * 34 + 12) : 300;
-      return getPickerPopupStyle(popover.value, windowWidth.value, windowHeight.value, contentHeight);
-    });
-    const updateLayout = () => {
-      windowWidth.value = window.innerWidth;
-      windowHeight.value = window.innerHeight;
-      uni.$emit(`${optionsEventName.value}_layout`);
-    };
-    const scheduleLayout = () => {
-      if (layoutFrame != null)
-        return;
-      layoutFrame = window.requestAnimationFrame(() => {
-        layoutFrame = null;
-        updateLayout();
-      });
-    };
-    const handleScroll = (event) => {
-      var _a;
-      if (event.target instanceof Node && ((_a = containerRef.value) == null ? void 0 : _a.contains(event.target)))
-        return;
-      scheduleLayout();
-    };
-    const selectItem = (index2) => {
-      eventValue.value = [index2];
-      confirm();
-    };
-    watch(isSelect, (select) => {
-      if (!select)
-        value.value = eventValue.value.slice();
-    });
-    watch(() => [isSelect.value, eventValue.value[0], range.value.length, show.value], () => {
-      if (isSelect.value && show.value) {
-        nextTick(() => {
-          var _a;
-          return (_a = selectRef.value) == null ? void 0 : _a.scrollTo(0, Math.max(0, eventValue.value[0] ?? 0) * 34);
-        });
-      }
-    });
-    const selectedDate = computed(() => {
-      const { year, month, day } = selected;
-      switch (fields.value) {
-        case "year":
-          return `${year}`;
-        case "month":
-          return `${year}-${formatSingle(month)}`;
-        case "day":
-          return `${year}-${formatSingle(month)}-${formatSingle(day)}`;
-        default:
-          return `${year}-${formatSingle(month)}-${formatSingle(day)}`;
-      }
-    });
-    const indicatorStyle = computed(() => {
-      const color = theme.value == "dark" ? "rgba(255,255,255,0.05)" : "#F5F5F5";
-      return `height:50px;background:rgba(255,255,255,0);border-top:1px ${color} solid;border-bottom:1px ${color} solid;`;
-    });
-    const cancelText = computed(() => {
-      return i18nHandle("cancel", "取消");
-    });
-    const confirmText = computed(() => {
-      return i18nHandle("confirm", "确定");
-    });
-    const yearText = computed(() => {
-      return i18nHandle("year", "年");
-    });
-    const monthText = computed(() => {
-      return i18nHandle("month", "月");
-    });
-    const dayText = computed(() => {
-      return i18nHandle("day", "日");
-    });
-    const monthsText = computed(() => {
-      let monthsList = months.value;
-      let i18months = i18nHandle("months", i18nText["zh-Hans"]["months"]);
-      let arr = [];
-      monthsList.forEach((v2) => {
-        let index2 = v2 - 1;
-        arr.push(i18months[index2].toString().padStart(2, "0"));
-      });
-      return arr;
-    });
-    const switchTheme = (themeValue) => {
-      if (themeValue == "light") {
-        maskTopStyle.value = "background-image: linear-gradient(to bottom, rgba(255,255,255,1), rgba(255, 255, 255, 0));";
-        maskBottomStyle.value = "background-image: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255, 255, 255, 1));";
-      } else {
-        maskTopStyle.value = "background-image: linear-gradient(to bottom, rgba(35, 35, 35, 1), rgba(35, 35, 35, 0));";
-        maskBottomStyle.value = "background-image: linear-gradient(to bottom, rgba(35, 35, 35, 0), rgba(35, 35, 35, 1));";
-      }
-    };
-    const confirm = () => {
-      if (closing)
-        return;
-      const val = eventValue.value;
-      const modeValue = mode.value;
-      switch (modeValue) {
-        case "selector":
-          uni.$emit(selectorChangeEventName.value, val[0]);
-          break;
-        case "multiSelector":
-          uni.$emit(multiSelectorChangeEventName.value, val);
-          break;
-        case "time":
-          const h = hours.value[val[0]];
-          const m = minutes.value[val[1]];
-          uni.$emit(timeChangeEventName.value, `${h}:${m}`);
-          break;
-        case "date":
-          uni.$emit(timeChangeEventName.value, selectedDate.value);
-          break;
-      }
-      closeDialog();
-    };
-    const close = () => {
-      if (closing)
-        return;
-      uni.$emit(cancelEventName.value);
-      closeDialog();
-    };
-    const closeDialog = () => {
-      closing = true;
-      show.value = false;
-      clearTimeout(timer.value);
-      timer.value = setTimeout(() => {
-        var _a;
-        const dialogPages = (_a = instance == null ? void 0 : instance.proxy) == null ? void 0 : _a.$page;
-        uni.closeDialogPage({
-          dialogPage: dialogPages
-        });
-      }, 250);
-    };
-    const handleChange = (e2) => {
-      const val = e2.detail.value;
-      if (mode.value == "date") {
-        let yIdx = val[0];
-        let mIdx = val[1] ?? 0;
-        let dIdx = val[2] ?? 0;
-        yIdx = Math.max(yearRange.value[0], Math.min(yearRange.value[1], yIdx));
-        const currentYear = years.value[yIdx];
-        let sy = parseInt(start.value[0]);
-        let sm = parseInt(start.value[1]);
-        let ey = parseInt(end.value[0]);
-        let em = parseInt(end.value[1]);
-        if (currentYear == sy || currentYear == ey) {
-          let newMonths = getMonths(currentYear);
-          if (months.value.length !== newMonths.length) {
-            calculateRanges();
-            const originalMonth = months.value[mIdx];
-            mIdx = newMonths.findIndex((month) => month === originalMonth);
-            mIdx = Math.max(0, mIdx);
-            months.value = newMonths;
-          }
-        } else {
-          if (months.value.length != 12) {
-            const nowMonth = months.value[mIdx];
-            months.value = getMonths(currentYear);
-            calculateRanges();
-            mIdx = nowMonth - 1;
-          }
-        }
-        mIdx = Math.max(0, Math.min(mIdx, months.value.length - 1));
-        const monthsValue = months.value[mIdx];
-        if (currentYear == sy && monthsValue == sm || currentYear == ey && monthsValue == em) {
-          let newDays = getDays(currentYear, monthsValue);
-          if (days.value.length != newDays.length) {
-            calculateRanges();
-            let dayIdx = newDays.length - 1;
-            if (currentYear == sy && monthsValue == sm) {
-              dIdx = Math.max(0, dIdx - dayIdx);
-            }
-            if (currentYear == ey && monthsValue == em) {
-              dIdx = Math.max(0, dayIdx);
-            }
-            days.value = newDays;
-          }
-        } else {
-          const nowDay = days.value[dIdx];
-          days.value = getDays(currentYear, monthsValue);
-          calculateRanges();
-          dIdx = days.value.findIndex((day) => day === nowDay);
-          dIdx = Math.max(0, dIdx);
-        }
-        if (dIdx >= days.value.length) {
-          dIdx = 0;
-        }
-        selected.year = years.value[yIdx];
-        selected.month = months.value[mIdx];
-        selected.day = days.value[dIdx];
-        const indices = fields.value == "year" ? [yIdx] : fields.value == "month" ? [yIdx, mIdx] : [yIdx, mIdx, dIdx];
-        value.value = indices;
-        eventValue.value = indices.slice();
-      } else if (mode.value == "time") {
-        let h_idx = val[0];
-        let m_idx = val[1];
-        let h = parseInt(hours.value[h_idx]);
-        let m = parseInt(minutes.value[m_idx]);
-        let sh = parseInt(start.value[0]);
-        let eh = parseInt(end.value[0]);
-        const adjusted = adjustTime(h, m);
-        h = adjusted.h;
-        m = adjusted.m;
-        const hStr = h.toString().padStart(2, "0");
-        const mStr = m.toString().padStart(2, "0");
-        const newHIdx = hours.value.findIndex((e22) => e22 == hStr);
-        let newMIdx = minutes.value.findIndex((e22) => e22 == mStr);
-        if (h == sh || h == eh) {
-          const newMinutes = getMinutes(h);
-          if (minutes.value.length !== newMinutes.length) {
-            const originalMinute = minutes.value[newMIdx];
-            newMIdx = newMinutes.findIndex((m2) => m2 === originalMinute);
-            newMIdx = Math.max(0, newMIdx);
-            minutes.value = newMinutes;
-          }
-        } else {
-          if (minutes.value.length != 60) {
-            const nowMinutes = minutes.value[newMIdx];
-            minutes.value = getMinutes(h);
-            newMIdx = parseInt(nowMinutes);
-          }
-        }
-        const indices = [newHIdx, newMIdx];
-        value.value = indices;
-        eventValue.value = indices.slice();
-      } else if (mode.value == "multiSelector") {
-        const newValue = val;
-        const oldValue = prevMultiValue.value;
-        newValue.forEach((v2, column) => {
-          if (oldValue[column] !== v2) {
-            uni.$emit(columnChangeEventName.value, column, v2);
-          }
-        });
-        prevMultiValue.value = [...newValue];
-        eventValue.value = [...newValue];
-      } else {
-        eventValue.value = val;
-      }
-    };
-    const calculateRanges = () => {
-      const startYear = parseInt(start.value[0]);
-      const endYear = parseInt(end.value[0]);
-      yearRange.value = [
-        years.value.findIndex((y) => y >= startYear),
-        years.value.findIndex((y) => y >= endYear)
-      ];
-      const startMonth = parseInt(start.value[1]);
-      const endMonth = parseInt(end.value[1]);
-      monthRange.value = [startMonth - 1, endMonth - 1];
-      const startDay = parseInt(start.value[2]);
-      const endDay = parseInt(end.value[2]);
-      dayRange.value = [startDay - 1, endDay - 1];
-    };
-    const getYears = () => {
-      const startYear = parseInt(start.value[0] || "1970");
-      const endYear = parseInt(end.value[0] || "2099");
-      return Array.from({ length: endYear - startYear + 1 }, (_, i) => startYear + i);
-    };
-    const getMonths = (year) => {
-      let startMonth = 1;
-      let endMonth = 12;
-      if (year == parseInt(start.value[0])) {
-        startMonth = parseInt(start.value[1]) ?? 1;
-      }
-      if (year == parseInt(end.value[0])) {
-        endMonth = parseInt(end.value[1]) ?? 12;
-      }
-      return Array.from({ length: endMonth - startMonth + 1 }, (_, i) => startMonth + i);
-    };
-    const getDays = (currentYear, currentMonth) => {
-      let startDay = 1;
-      let endDay = new Date(currentYear, currentMonth, 0).getDate();
-      if (currentYear == parseInt(start.value[0]) && currentMonth == parseInt(start.value[1])) {
-        startDay = parseInt(start.value[2]) || 1;
-      }
-      if (currentYear == parseInt(end.value[0]) && currentMonth == parseInt(end.value[1])) {
-        endDay = Math.min(endDay, parseInt(end.value[2]) || endDay);
-      }
-      return Array.from({ length: endDay - startDay + 1 }, (_, i) => startDay + i);
-    };
-    const updateDateColumns = () => {
-      years.value = getYears();
-      months.value = getMonths(selected.year);
-      days.value = getDays(selected.year, selected.month);
-    };
-    const getHours = () => {
-      const sH = parseInt(start.value[0] || "1");
-      const eH = parseInt(end.value[0] || "12");
-      return Array.from({ length: eH - sH + 1 }, (_, i) => String(sH + i).padStart(2, "0"));
-    };
-    const getMinutes = (hour) => {
-      let startMinute = 0;
-      let endMinute = 59;
-      if (hour == parseInt(start.value[0])) {
-        startMinute = parseInt(start.value[1]) ?? 1;
-      }
-      if (hour == parseInt(end.value[0])) {
-        endMinute = parseInt(end.value[1]) ?? 12;
-      }
-      return Array.from({ length: endMinute - startMinute + 1 }, (_, i) => String(startMinute + i).padStart(2, "0"));
-    };
-    const updateTimeColumns = (hour) => {
-      hours.value = getHours();
-      let minuteHour = hour;
-      if (minuteHour == null || isNaN(minuteHour)) {
-        minuteHour = parseInt(hours.value[0] || "00");
-      }
-      minutes.value = getMinutes(minuteHour);
-    };
-    const adjustTime = (h, m) => {
-      var _a, _b;
-      if (!((_a = start.value) == null ? void 0 : _a.length) || !((_b = end.value) == null ? void 0 : _b.length))
-        return { h, m };
-      const startHour = parseInt(start.value[0]);
-      const startMinute = parseInt(start.value[1]);
-      const endHour = parseInt(end.value[0]);
-      const endMinute = parseInt(end.value[1]);
-      const current = h * 60 + m;
-      const startTotal = startHour * 60 + startMinute;
-      const endTotal = endHour * 60 + endMinute;
-      if (current < startTotal) {
-        return { h: startHour, m: startMinute };
-      } else if (current > endTotal) {
-        return { h: endHour, m: endMinute };
-      } else {
-        if (h == startHour && m < startMinute)
-          return { h, m: startMinute };
-        if (h == endHour && m > endMinute)
-          return { h, m: endMinute };
-        return { h, m };
-      }
-    };
-    const initTimeValue = (timeValue) => {
-      let h = parseInt(timeValue[0]);
-      let m = parseInt(timeValue[1]);
-      const adjusted = adjustTime(h, m);
-      const hStr = adjusted.h.toString().padStart(2, "0");
-      const mStr = adjusted.m.toString().padStart(2, "0");
-      return [
-        hours.value.findIndex((e2) => e2 == hStr),
-        minutes.value.findIndex((e2) => e2 == mStr)
-      ];
-    };
-    const formatSingle = (num) => {
-      return num.toString().padStart(2, "0");
-    };
-    const i18nHandle = (key, defaultVal) => {
-      if (language.value.startsWith("en")) {
-        return i18nText["en"][key];
-      }
-      if (language.value.startsWith("es")) {
-        return i18nText["es"][key];
-      }
-      if (language.value.startsWith("fr")) {
-        return i18nText["fr"][key];
-      }
-      if (language.value.startsWith("zh-Hans")) {
-        return i18nText["zh-Hans"][key];
-      }
-      if (language.value.startsWith("zh-Hant")) {
-        return i18nText["zh-Hant"][key];
-      }
-      return defaultVal;
-    };
-    const initLanguageAndTheme = () => {
-      const appBaseInfo = uni.getAppBaseInfo();
-      language.value = uni.getLocale();
-      theme.value = appBaseInfo.hostTheme == "dark" ? "dark" : "light";
-    };
-    onLoad((options) => {
-      readyEventName.value = options["readyEventName"];
-      optionsEventName.value = options["optionsEventName"];
-      cancelEventName.value = options["cancelEventName"];
-      selectorChangeEventName.value = options["selectorChangeEventName"];
-      multiSelectorChangeEventName.value = options["multiSelectorChangeEventName"];
-      timeChangeEventName.value = options["timeChangeEventName"];
-      columnChangeEventName.value = options["columnChangeEventName"];
-      uni.$on(optionsEventName.value, (data) => {
-        if (data["layoutOnly"] == true) {
-          popover.value = data["popover"];
-          return;
-        }
-        if (data["selectorType"] != null) {
-          selectorType.value = data["selectorType"];
-          popover.value = data["popover"];
-        }
-        if (data["mode"] != null) {
-          mode.value = data["mode"];
-        }
-        if (data["range"] != null) {
-          range.value = data["range"];
-        }
-        if (data["rangeKey"] != null) {
-          rangeKey.value = data["rangeKey"];
-        }
-        if (data["selectorValue"] != null) {
-          value.value = [data["selectorValue"]];
-        }
-        if (data["multiSelectorValue"] != null) {
-          value.value.length = 0;
-          const multiSelectorValue = data["multiSelectorValue"];
-          const len = range.value.length;
-          let arr = Array.from({ length: len }, () => 0);
-          arr.forEach((_, index2) => {
-            let val = multiSelectorValue[index2] ?? 0;
-            value.value.push(val);
-          });
-          prevMultiValue.value = value.value.slice();
-        }
-        if (data["timeValue"] != null) {
-          const timeVal = data["timeValue"];
-          start.value = data["start"];
-          end.value = data["end"];
-          const timeHour = parseInt(timeVal[0]);
-          const timeMinute = parseInt(timeVal[1]);
-          const adjusted = adjustTime(timeHour, timeMinute);
-          updateTimeColumns(adjusted.h);
-          value.value = initTimeValue(timeVal);
-        }
-        if (data["dateValue"] != null) {
-          const dateValue = data["dateValue"];
-          const year = dateValue[0];
-          const month = dateValue[1];
-          const day = dateValue[2];
-          fields.value = data["fields"];
-          start.value = data["start"] ?? ["1970", "01", "01"];
-          end.value = data["end"] ?? ["2099", "12", "31"];
-          selected.year = parseInt(year) ?? (/* @__PURE__ */ new Date()).getFullYear();
-          selected.month = parseInt(month) ?? 1;
-          selected.day = parseInt(day) ?? 1;
-          selected.year = Math.max(
-            parseInt(start.value[0]),
-            Math.min(parseInt(end.value[0]), selected.year)
-          );
-          selected.month = Math.max(1, Math.min(12, selected.month));
-          selected.day = Math.max(1, Math.min(
-            new Date(selected.year, selected.month, 0).getDate(),
-            selected.day
-          ));
-          updateDateColumns();
-          const yIdx = years.value.findIndex((y) => y == selected.year);
-          const mIdx = months.value.findIndex((m) => m == selected.month);
-          const dIdx = days.value.findIndex((d) => d == selected.day);
-          switch (fields.value) {
-            case "year":
-              value.value = [yIdx];
-              break;
-            case "month":
-              value.value = [yIdx, mIdx];
-              break;
-            case "day":
-              value.value = [yIdx, mIdx, dIdx];
-              break;
-          }
-        }
-        eventValue.value = value.value;
-        calculateRanges();
-      });
-      updateLayout();
-      window.addEventListener("resize", scheduleLayout);
-      document.addEventListener("scroll", handleScroll, true);
-      uni.$emit(readyEventName.value);
-      initLanguageAndTheme();
-      switchTheme(theme.value);
-      uni.onHostThemeChange((res) => {
-        theme.value = res.hostTheme == "dark" ? "dark" : "light";
-        switchTheme(theme.value);
-      });
-    });
-    onReady(() => {
-      show.value = true;
-    });
-    onUnload(() => {
-      window.removeEventListener("resize", scheduleLayout);
-      document.removeEventListener("scroll", handleScroll, true);
-      if (layoutFrame != null) {
-        window.cancelAnimationFrame(layoutFrame);
-        layoutFrame = null;
-      }
-      uni.$off(optionsEventName.value, null);
-      if (timer.value) {
-        clearTimeout(timer.value);
-      }
-    });
-    initUniPageHooks();
-    const _component_scroll_view = __syscom_1;
-    const _component_picker_view_column = _sfc_main$j;
-    const _component_picker_view = _sfc_main$k;
-    const n56 = t3$3();
-    const n0 = child(n56);
-    const n55 = next(n0);
-    on$1(n0, "click", close);
-    renderEffect(() => {
-      const _theme = unref(theme);
-      const _isDesktop = unref(isDesktop);
-      const _show = unref(show);
-      setClass(n56, ["uni-picker__container", ["uni-picker-theme--" + _theme, { "uni-picker__container--desktop": _isDesktop }]]);
-      setClassName(n0, (_show ? 1 : 0) | (_theme == "dark" ? 2 : 0), [" picker__ani-show", " picker__mask--dark"], "uni-picker__mask");
-      setClass(n55, ["uni-picker__inner-box", [_show ? "picker__ani-box-show" : "", "inner-box--" + _theme, { "uni-picker__inner-box--desktop": _isDesktop }]]);
-      setStyle(n55, unref(popupStyle).content);
-    });
-    setInsertionState(n55);
-    createIf(
-      () => unref(isSelect),
-      () => {
-        const n6 = withComponentId("3e32089c", () => createComponentWithFallback(_component_scroll_view, {
-          class: "uni-picker__select",
-          direction: "vertical",
-          "show-scrollbar": true
-        }, extend$1(() => {
-          const n3 = createFor(
-            () => unref(range),
-            (_for_item0, _for_key0) => {
-              const n5 = t0$8();
-              const x5 = txt(n5);
-              on$1(n5, "click", () => selectItem(_for_key0.value));
-              renderEffect(() => {
-                const _rangeKey = unref(rangeKey);
-                const _item = _for_item0.value;
-                setClassName(n5, unref(eventValue)[0] == _for_key0.value ? 1 : 0, " uni-picker__select-item--selected", "uni-picker__select-item");
-                setText(x5, normalizeUniText(toDisplayString(_rangeKey ? _item[_rangeKey] : _item)));
-              });
-              return n5;
-            },
-            (item, selectorIdx) => selectorIdx,
-            40
-            /* IS_SINGLE_NODE, SLOT_ROOT */
-          );
-          return n3;
-        }, {
-          _: 1
-          /* NON_STABLE */
-        })));
-        setStaticTemplateRef(n6, selectRef, null, "selectRef");
-        return n6;
-      },
-      () => {
-        const n10 = t1$6();
-        const n8 = child(n10);
-        const n9 = next(n8);
-        const n54 = t2$5();
-        const x8 = txt(n8);
-        on$1(n8, "click", close);
-        const x9 = txt(n9);
-        on$1(n9, "click", confirm);
-        on$1(n10, "click", withModifiers(() => {
-        }, ["stop"]));
-        renderEffect(() => {
-          const _theme = unref(theme);
-          setClass(n10, ["uni-picker__header-btn", ["header-btn--" + _theme]]);
-          setClass(n8, ["uni-picker__header-btn-cancel", ["header-btn-cannel--" + _theme]]);
-          setText(x8, normalizeUniText(toDisplayString(unref(cancelText))));
-          setText(x9, normalizeUniText(toDisplayString(unref(confirmText))));
-        });
-        setInsertionState(n54);
-        withComponentId("3bf71206", () => createComponentWithFallback(_component_picker_view, {
-          style: { "flex": "1" },
-          onChange: () => handleChange,
-          "mask-top-style": () => unref(maskTopStyle),
-          "mask-bottom-style": () => unref(maskBottomStyle),
-          indicatorStyle: () => unref(indicatorStyle),
-          value: () => unref(value)
-        }, extend$1(() => {
-          const n11 = createIf(
-            () => unref(mode) == "selector",
-            () => {
-              const n16 = withComponentId("3bf719c2", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
-                const n13 = createFor(
-                  () => unref(range),
-                  (_for_item0, _for_key0) => {
-                    const n15 = t0$8();
-                    const x15 = txt(n15);
-                    renderEffect(() => {
-                      const _rangeKey = unref(rangeKey);
-                      const _item = _for_item0.value;
-                      setClass(n15, ["uni-picker__view-item", ["view-item--" + unref(theme)]]);
-                      setText(x15, normalizeUniText(toDisplayString(_rangeKey ? _item[_rangeKey] : _item)));
-                    });
-                    return n15;
-                  },
-                  (item, selectorIdx) => selectorIdx,
-                  40
-                  /* IS_SINGLE_NODE, SLOT_ROOT */
-                );
-                return n13;
-              }, {
-                _: 1
-                /* NON_STABLE */
-              })));
-              return n16;
-            },
-            null,
-            129
-            /* TRUE_SINGLE_ROOT, SLOT_ROOT */
-          );
-          const n17 = createIf(
-            () => unref(mode) == "multiSelector",
-            () => {
-              const n19 = createFor(
-                () => unref(range),
-                (_for_item0, _for_key0) => {
-                  const n24 = withComponentId("3bf728cb-" + _for_key0.value, () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
-                    const n21 = createFor(
-                      () => _for_item0.value,
-                      (_for_item1, _for_key1) => {
-                        const n23 = t0$8();
-                        const x23 = txt(n23);
-                        renderEffect(() => {
-                          const _rangeKey = unref(rangeKey);
-                          const _column = _for_item1.value;
-                          setClass(n23, ["uni-picker__view-item", ["view-item--" + unref(theme)]]);
-                          setText(x23, normalizeUniText(toDisplayString(_rangeKey ? _column[_rangeKey] : _column)));
-                        });
-                        return n23;
-                      },
-                      (column, colIdx) => colIdx,
-                      40
-                      /* IS_SINGLE_NODE, SLOT_ROOT */
-                    );
-                    return n21;
-                  }, {
-                    _: 1
-                    /* NON_STABLE */
-                  })));
-                  return n24;
-                },
-                (item, multiIdx) => multiIdx,
-                34
-                /* IS_COMPONENT, SLOT_ROOT */
-              );
-              return n19;
-            },
-            null,
-            129
-            /* TRUE_SINGLE_ROOT, SLOT_ROOT */
-          );
-          const n25 = createIf(
-            () => unref(mode) == "time",
-            () => {
-              const n30 = withComponentId("3bf7837a", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
-                const n27 = createFor(
-                  () => unref(hours),
-                  (_for_item0, _for_key0) => {
-                    const n29 = t0$8();
-                    const x29 = txt(n29);
-                    renderEffect(() => {
-                      setClass(n29, ["uni-picker__view-item", ["view-item--" + unref(theme)]]);
-                      setText(x29, normalizeUniText(toDisplayString(_for_item0.value)));
-                    });
-                    return n29;
-                  },
-                  (h, hIdx) => h,
-                  40
-                  /* IS_SINGLE_NODE, SLOT_ROOT */
-                );
-                return n27;
-              }, {
-                _: 1
-                /* NON_STABLE */
-              })));
-              const n34 = withComponentId("3bf78ac3", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
-                const n31 = createFor(
-                  () => unref(minutes),
-                  (_for_item0, _for_key0) => {
-                    const n33 = t0$8();
-                    const x33 = txt(n33);
-                    renderEffect(() => {
-                      setClass(n33, ["uni-picker__view-item", ["view-item--" + unref(theme)]]);
-                      setText(x33, normalizeUniText(toDisplayString(_for_item0.value)));
-                    });
-                    return n33;
-                  },
-                  (m, mIdx) => m,
-                  40
-                  /* IS_SINGLE_NODE, SLOT_ROOT */
-                );
-                return n31;
-              }, {
-                _: 1
-                /* NON_STABLE */
-              })));
-              return [n30, n34];
-            },
-            null,
-            130
-            /* TRUE_MULTI_ROOT, SLOT_ROOT */
-          );
-          const n35 = createIf(
-            () => unref(mode) == "date",
-            () => {
-              const n40 = withComponentId("3bf7954e", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
-                const n37 = createFor(
-                  () => unref(years),
-                  (_for_item0) => {
-                    const n39 = t0$8();
-                    const x39 = txt(n39);
-                    renderEffect(() => {
-                      setClass(n39, ["uni-picker__view-item", ["view-item--" + unref(theme)]]);
-                      setText(x39, normalizeUniText(toDisplayString(_for_item0.value) + toDisplayString(unref(yearText))));
-                    });
-                    return n39;
-                  },
-                  (year) => year,
-                  40
-                  /* IS_SINGLE_NODE, SLOT_ROOT */
-                );
-                return n37;
-              }, {
-                _: 1
-                /* NON_STABLE */
-              })));
-              const n41 = createIf(() => unref(fields) != "year", () => {
-                const n46 = withComponentId("3bf79ccf", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
-                  const n43 = createFor(
-                    () => unref(monthsText),
-                    (_for_item0) => {
-                      const n45 = t0$8();
-                      const x45 = txt(n45);
-                      renderEffect(() => {
-                        setClass(n45, ["uni-picker__view-item", ["view-item--" + unref(theme)]]);
-                        setText(x45, normalizeUniText(toDisplayString(formatSingle(_for_item0.value)) + toDisplayString(unref(monthText))));
-                      });
-                      return n45;
-                    },
-                    (month) => month,
-                    40
-                    /* IS_SINGLE_NODE, SLOT_ROOT */
-                  );
-                  return n43;
-                }, {
-                  _: 1
-                  /* NON_STABLE */
-                })));
-                return n46;
-              });
-              const n47 = createIf(() => unref(fields) == "day", () => {
-                const n52 = withComponentId("3bf7f3bd", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
-                  const n49 = createFor(
-                    () => unref(days),
-                    (_for_item0) => {
-                      const n51 = t0$8();
-                      const x51 = txt(n51);
-                      renderEffect(() => {
-                        setClass(n51, ["uni-picker__view-item", ["view-item--" + unref(theme)]]);
-                        setText(x51, normalizeUniText(toDisplayString(formatSingle(_for_item0.value)) + toDisplayString(unref(dayText))));
-                      });
-                      return n51;
-                    },
-                    (day) => day,
-                    40
-                    /* IS_SINGLE_NODE, SLOT_ROOT */
-                  );
-                  return n49;
-                }, {
-                  _: 1
-                  /* NON_STABLE */
-                })));
-                return n52;
-              });
-              return [n40, n41, n47];
-            },
-            null,
-            130
-            /* TRUE_MULTI_ROOT, SLOT_ROOT */
-          );
-          return [n11, n17, n25, n35];
-        }, {
-          _: 1
-          /* NON_STABLE */
-        })));
-        return [n10, n54];
-      },
-      265
-      /* TRUE_SINGLE_ROOT, FALSE_MULTI_ROOT, KEYED_INDEX_0 */
-    );
-    setStaticTemplateRef(n56, containerRef, null, "containerRef");
-    return n56;
-  }
-});
-const _style_0$8 = "\n.uni-picker__container {\n		flex: 1;\n}\n.uni-picker__mask {\n		flex: 1;\n		background-color: rgba(0, 0, 0, .3);\n		opacity: 0;\n		transition-property: opacity;\n		transition-duration: 0.3s;\n}\n.picker__mask--dark {\n		background-color: rgba(0, 0, 0, .6);\n}\n.picker__ani-show {\n		opacity: 1;\n}\n.uni-picker__inner-box {\n		position: absolute;\n		bottom: 0;\n		left: 0;\n		right: 0;\n		height: 300px;\n		transform: translateY(100%);\n		transition-property: transform;\n		transition-duration: 0.2s;\n}\n.picker__ani-box-show {\n		transform: translateY(0%);\n}\n.uni-picker__header-btn {\n		flex-direction: row;\n		justify-content: space-between;\n		border-bottom: 1px #f7f7f7 solid;\n}\n.uni-picker__header-btn-cancel {\n		font-size: 14px;\n		padding: 15px;\n		background-color: transparent;\n}\n.uni-picker__header-btn-ok {\n		font-size: 14px;\n		padding: 15px;\n		color: #007aff;\n}\n.uni-picker__view {\n		position: relative;\n		flex: 1;\n}\n.uni-picker__view-item {\n		width: 100%;\n		text-align: center;\n		height: 50px;\n		line-height: 50px;\n}\n.inner-box--light {\n		background-color: #fff;\n}\n.header-btn-cannel--light {\n		color: #000;\n}\n.inner-box--dark {\n		background-color: #232323;\n}\n.header-btn-cannel--dark {\n		color: rgba(255, 255, 255, .8);\n}\n.view-item--dark {\n		color: rgba(255, 255, 255, .8);\n}\n.header-btn--dark {\n		border-color: rgba(255, 255, 255, .05);\n}\n.uni-picker__mask {\n		/* 建立滚动容器，通过 CSS 阻止遮罩上的滚动传递到背景页面。 */\n		overflow: auto;\n		overscroll-behavior: none;\n		touch-action: none;\n}\n.uni-picker__container--desktop .uni-picker__mask {\n		background-color: transparent;\n}\n.uni-picker__inner-box--desktop {\n		transform: none;\n		opacity: 0;\n		border-radius: 5px;\n		box-shadow: 0 0 20px 5px rgba(0, 0, 0, .3);\n		transition-property: opacity;\n}\n.uni-picker__inner-box--desktop.picker__ani-box-show {\n		transform: none;\n		opacity: 1;\n}\n.uni-picker__inner-box--desktop .uni-picker__header-btn {\n		flex-shrink: 0;\n}\n.uni-picker__inner-box--desktop .uni-picker__view {\n		min-height: 0;\n		overflow: hidden;\n		border-radius: 0 0 5px 5px;\n}\n.uni-picker__select {\n		height: 100%;\n		box-sizing: border-box;\n		padding: 6px 0;\n		border-radius: 5px;\n		overscroll-behavior: contain;\n}\n.uni-picker__select .uni-scroll-view {\n		overscroll-behavior: contain;\n}\n.uni-picker__select-item {\n		flex-shrink: 0;\n		height: 34px;\n		line-height: 34px;\n		padding: 0 10px;\n		text-align: center;\n		color: #555;\n		white-space: nowrap;\n		text-overflow: ellipsis;\n		overflow: hidden;\n		cursor: pointer;\n}\n.uni-picker__select-item:hover {\n		background-color: #f6f6f6;\n}\n.uni-picker-theme--dark .uni-picker__select-item {\n		color: rgba(255, 255, 255, .8);\n}\n.uni-picker-theme--dark .uni-picker__select-item:hover {\n		background-color: rgba(255, 255, 255, .1);\n}\n.uni-picker__select-item.uni-picker__select-item--selected {\n		color: #007aff;\n}\n\n";
-const _export_sfc = (sfc, props2) => {
-  const target = sfc.__vccOpts || sfc;
-  for (const [key, val] of props2) {
-    target[key] = val;
-  }
-  return target;
-};
-const UniPickerPage = /* @__PURE__ */ _export_sfc(_sfc_main$8, [["styles", [_style_0$8]]]);
 const openDialogPage = (options) => {
   var _a, _b, _c;
   if (!options.url) {
@@ -29664,9 +29642,6 @@ const openDialogPage = (options) => {
   }
   let { path, query } = parseUrl(options.url);
   path = normalizeRoute(path);
-  if (path === "uni:picker") {
-    registerSystemRoute(path, UniPickerPage);
-  }
   const normalizeUrl = createNormalizeUrl("navigateTo");
   const errMsg = normalizeUrl(options.url, {});
   if (errMsg) {
@@ -30798,7 +30773,7 @@ const _sfc_main$6 = /* @__PURE__ */ defineVaporComponent({
     });
     initUniPageHooks();
     const _component_input = __syscom_0$2;
-    const _component_loading = _sfc_main$y;
+    const _component_loading = _sfc_main$p;
     const _component_scroll_view = __syscom_1;
     const n51 = t7();
     const n6 = child(n51);
@@ -31914,7 +31889,7 @@ const _sfc_main$4 = /* @__PURE__ */ defineVaporComponent({
       setClassName(n4, _showAnim ? 1 : 0, " uni-loading-dialog--show", "uni-loading-dialog");
     });
     setInsertionState(n4);
-    withComponentId("9a8ccad6", () => createComponent$1(_sfc_main$y, {
+    withComponentId("9a8ccad6", () => createComponent$1(_sfc_main$p, {
       class: "uni-loading-dialog__spinner",
       "ios-spinner": () => iosSpinner.value
     }));
@@ -32944,7 +32919,7 @@ const _sfc_main$3 = /* @__PURE__ */ defineVaporComponent({
       }, 100);
       e2.stopPropagation();
     };
-    const _component_loading = _sfc_main$y;
+    const _component_loading = _sfc_main$p;
     const n10 = t2$1();
     const n0 = child(n10);
     const n1 = next(n0);
@@ -33235,8 +33210,8 @@ const _sfc_main$2 = /* @__PURE__ */ defineVaporComponent({
       return false;
     });
     initUniPageHooks();
-    const _component_swiper_item = _sfc_main$b;
-    const n8 = withComponentId("c275e6b6", () => createComponent$1(_sfc_main$c, {
+    const _component_swiper_item = _sfc_main$a;
+    const n8 = withComponentId("c275e6b6", () => createComponent$1(_sfc_main$b, {
       class: "uni-preview-image-swiper",
       style: { "flex": "1", "background-color": "black" },
       "indicator-dots": false,
@@ -34138,23 +34113,23 @@ export {
   index$4 as AdDraw,
   _sfc_main$z as AsyncErrorComponent,
   _sfc_main$A as AsyncLoadingComponent,
-  _sfc_main$w as Button,
+  _sfc_main$x as Button,
   index$3 as Camera,
   indexVapor$8 as Canvas,
-  _sfc_main$v as Checkbox,
-  _sfc_main$u as CheckboxGroup,
+  _sfc_main$w as Checkbox,
+  _sfc_main$v as CheckboxGroup,
   indexVapor$7 as Editor,
-  _sfc_main$t as FlowItem,
-  _sfc_main$s as Form,
+  _sfc_main$u as FlowItem,
+  _sfc_main$t as Form,
   indexVapor$6 as Icon,
   __syscom_0$2 as Input,
-  _sfc_main$r as Label,
+  _sfc_main$s as Label,
   LayoutComponent,
-  _sfc_main$q as ListItem,
-  _sfc_main$p as ListView,
+  _sfc_main$r as ListItem,
+  _sfc_main$q as ListView,
   index$2 as LivePlayer,
   index$1 as LivePusher,
-  _sfc_main$y as Loading,
+  _sfc_main$p as Loading,
   __syscom_0 as Map,
   _sfc_main$o as MatchMedia,
   indexVapor$5 as MovableArea,
@@ -34162,21 +34137,21 @@ export {
   _sfc_main$n as Navigator,
   PageComponent,
   _sfc_main$m as PageContainer,
-  _sfc_main$l as Picker,
-  _sfc_main$k as PickerView,
-  _sfc_main$j as PickerViewColumn,
-  _sfc_main$i as Progress,
-  _sfc_main$h as Radio,
-  _sfc_main$g as RadioGroup,
+  picker as Picker,
+  _sfc_main$j as PickerView,
+  _sfc_main$i as PickerViewColumn,
+  _sfc_main$h as Progress,
+  _sfc_main$g as Radio,
+  _sfc_main$f as RadioGroup,
   ResizeSensor,
   indexVapor$3 as RichText,
   __syscom_1 as ScrollView,
-  _sfc_main$f as Slider,
-  _sfc_main$e as StickyHeader,
-  _sfc_main$d as StickySection,
-  _sfc_main$c as Swiper,
-  _sfc_main$b as SwiperItem,
-  _sfc_main$a as Switch,
+  _sfc_main$e as Slider,
+  _sfc_main$d as StickyHeader,
+  _sfc_main$c as StickySection,
+  _sfc_main$b as Swiper,
+  _sfc_main$a as SwiperItem,
+  _sfc_main$9 as Switch,
   __syscom_0$1 as Textarea,
   UTS2 as UTS,
   UTSJSONObject2 as UTSJSONObject,
@@ -34252,7 +34227,7 @@ export {
   UniViewJSBridge$1 as UniViewJSBridge,
   UniWebViewElement,
   indexVapor$2 as Video,
-  _sfc_main$9 as Waterflow,
+  _sfc_main$8 as Waterflow,
   indexVapor$1 as WebView,
   __f__,
   addInterceptor,

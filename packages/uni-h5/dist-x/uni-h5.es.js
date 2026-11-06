@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, passive, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, getUniElementPage, createUniDOMStringMap, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, stringifyQuery as stringifyQuery$1, decodedQuery, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, setUniElementPage, ON_UNLOAD, SCHEME_RE, DATA_RE, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, LINEFEED, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, addFont, scrollTo, formatDateTime, onCreateVueApp, RESPONSIVE_MIN_WIDTH } from "@dcloudio/uni-shared";
+import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, passive, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, getUniElementPage, createUniDOMStringMap, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, decodedQuery, stringifyQuery as stringifyQuery$1, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, setUniElementPage, ON_UNLOAD, SCHEME_RE, DATA_RE, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, LINEFEED, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, addFont, scrollTo, formatDateTime, onCreateVueApp, RESPONSIVE_MIN_WIDTH } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2, onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import { withModifiers, createVNode, getCurrentInstance, warn, unref, ref, openBlock, createElementBlock, defineComponent, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, isReactive, markRaw, watchEffect, nextTick, createElementVNode, toDisplayString, onBeforeMount, onServerPrefetch, onBeforeActivate, onBeforeDeactivate, createBlock, onActivated, normalizeStyle, Fragment, renderSlot, withCtx, renderList, withDirectives, vShow, shallowRef, isVNode, Comment, createTextVNode, h, normalizeClass, isInSSRComponentSetup, createCommentVNode, logError, createApp, Transition, effectScope, KeepAlive, resolveDynamicComponent } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate } from "@vue/shared";
@@ -6025,84 +6025,92 @@ const eventTransport = /* @__PURE__ */ new Emitter();
 let activeBeforeAppRouteContext;
 const MAX_APP_ROUTE_REWRITE_COUNT = 100;
 const APP_ROUTE_ERROR_CODE = 4;
-function createAppRouteRuntime(options = {}) {
-  let routeEventId = 0;
-  const onAppRoute2 = /* @__PURE__ */ defineOnApi(API_ON_APP_ROUTE, () => {
-  }, {
+const onAppRoute = /* @__PURE__ */ defineOnApi(
+  API_ON_APP_ROUTE,
+  () => {
+  },
+  {
     eventTransport
-  });
-  const offAppRoute2 = /* @__PURE__ */ defineOffApi(API_OFF_APP_ROUTE, () => {
-  }, {
+  }
+);
+const offAppRoute = /* @__PURE__ */ defineOffApi(
+  API_OFF_APP_ROUTE,
+  () => {
+  },
+  {
     allowClearAll: true,
     eventTransport
-  });
-  const onBeforeAppRoute2 = /* @__PURE__ */ defineOnApi(
-    API_ON_BEFORE_APP_ROUTE,
-    () => {
-    },
-    { eventTransport }
-  );
-  const offBeforeAppRoute2 = /* @__PURE__ */ defineOffApi(
-    API_OFF_BEFORE_APP_ROUTE,
-    () => {
-    },
-    {
-      allowClearAll: true,
-      eventTransport
-    }
-  );
-  const rewriteRoute2 = /* @__PURE__ */ defineAsyncApi(
-    API_REWRITE_ROUTE,
-    ({ url, preserveQuery }, { resolve, reject }) => {
-      const rejectRewriteRoute = (errMsg) => reject(errMsg, { errCode: APP_ROUTE_ERROR_CODE });
-      const context = activeBeforeAppRouteContext;
-      if (!context) {
-        rejectRewriteRoute(
-          "rewriteRoute is only allowed in a onBeforeAppRoute callback"
-        );
-        return;
-      }
-      if (context.event.openType === "navigateBack") {
-        rejectRewriteRoute(
-          'a "navigateBack" event is not allowed to be rewritten'
-        );
-        return;
-      }
-      if (context.rewrite) {
-        rejectRewriteRoute(
-          `rewriteRoute can only be called once in a route event, this page has been rewritten to "${context.rewrite.path}"`
-        );
-        return;
-      }
-      if ((context.rewriteCount || 0) >= MAX_APP_ROUTE_REWRITE_COUNT) {
-        rejectRewriteRoute(
-          `rewriteRoute exceeded the maximum rewrite count of ${MAX_APP_ROUTE_REWRITE_COUNT}`
-        );
-        return;
-      }
-      if (!context.normalizeRewriteRoute) {
-        rejectRewriteRoute("not supported");
-        return;
-      }
-      const rewrite = context.normalizeRewriteRoute(
-        { url, preserveQuery },
-        context.event
+  }
+);
+const onBeforeAppRoute = /* @__PURE__ */ defineOnApi(
+  API_ON_BEFORE_APP_ROUTE,
+  () => {
+  },
+  { eventTransport }
+);
+const offBeforeAppRoute = /* @__PURE__ */ defineOffApi(
+  API_OFF_BEFORE_APP_ROUTE,
+  () => {
+  },
+  {
+    allowClearAll: true,
+    eventTransport
+  }
+);
+const rewriteRoute = /* @__PURE__ */ defineAsyncApi(
+  API_REWRITE_ROUTE,
+  ({ url, preserveQuery }, { resolve, reject }) => {
+    const rejectRewriteRoute = (errMsg) => reject(errMsg, { errCode: APP_ROUTE_ERROR_CODE });
+    const context = activeBeforeAppRouteContext;
+    if (!context) {
+      rejectRewriteRoute(
+        "rewriteRoute is only allowed in a onBeforeAppRoute callback"
       );
-      if (typeof rewrite === "string") {
-        rejectRewriteRoute(rewrite);
-        return;
-      }
-      context.rewrite = rewrite;
-      resolve();
-    },
-    {
-      url: {
-        type: String,
-        required: true
-      },
-      preserveQuery: Boolean
+      return;
     }
-  );
+    if (context.event.openType === "navigateBack") {
+      rejectRewriteRoute(
+        'a "navigateBack" event is not allowed to be rewritten'
+      );
+      return;
+    }
+    if (context.rewrite) {
+      rejectRewriteRoute(
+        `rewriteRoute can only be called once in a route event, this page has been rewritten to "${context.rewrite.path}"`
+      );
+      return;
+    }
+    if ((context.rewriteCount || 0) >= MAX_APP_ROUTE_REWRITE_COUNT) {
+      rejectRewriteRoute(
+        `rewriteRoute exceeded the maximum rewrite count of ${MAX_APP_ROUTE_REWRITE_COUNT}`
+      );
+      return;
+    }
+    if (!context.normalizeRewriteRoute) {
+      rejectRewriteRoute("not supported");
+      return;
+    }
+    const rewrite = context.normalizeRewriteRoute(
+      { url, preserveQuery },
+      context.event
+    );
+    if (typeof rewrite === "string") {
+      rejectRewriteRoute(rewrite);
+      return;
+    }
+    context.rewrite = rewrite;
+    resolve();
+  },
+  {
+    url: {
+      type: String,
+      required: true
+    },
+    preserveQuery: Boolean
+  }
+);
+function createAppRouteRuntime(options = {}) {
+  let routeEventId = 0;
   function createAppRouteContext2(event) {
     const timeStamp = event.timeStamp ?? Date.now();
     return {
@@ -6154,11 +6162,6 @@ function createAppRouteRuntime(options = {}) {
     }
   }
   return {
-    onAppRoute: onAppRoute2,
-    offAppRoute: offAppRoute2,
-    onBeforeAppRoute: onBeforeAppRoute2,
-    offBeforeAppRoute: offBeforeAppRoute2,
-    rewriteRoute: rewriteRoute2,
     createAppRouteContext: createAppRouteContext2,
     dispatchBeforeAppRoute,
     dispatchAppRoute: dispatchAppRoute2
@@ -7744,108 +7747,6 @@ function requestComponentObserver($el, options, callback) {
   }
   return intersectionObserver;
 }
-function removeNonTabBarPages(targetPageId) {
-  const curTabBarPageVm = getCurrentPageVm();
-  if (!curTabBarPageVm) {
-    return;
-  }
-  const pagesMap = getCurrentPagesMap();
-  const keys = pagesMap.keys();
-  for (const routeKey of keys) {
-    const page = pagesMap.get(routeKey);
-    if (!page.$.__isTabBar) {
-      removePage(routeKey);
-    } else {
-      page.$.__isActive = targetPageId !== void 0 && getPage$BasePage(page).id === targetPageId;
-    }
-  }
-  if (curTabBarPageVm.$.__isTabBar && (targetPageId === void 0 || getPage$BasePage(curTabBarPageVm).id !== targetPageId)) {
-    curTabBarPageVm.$.__isVisible = false;
-    invokeHook(curTabBarPageVm, ON_HIDE);
-  }
-}
-function isSamePage(url, $page) {
-  return url === $page.fullPath || url === "/" && $page.meta.isEntry;
-}
-function getTabBarPageId(url) {
-  const pages = getCurrentPagesMap().values();
-  for (const page of pages) {
-    const $page = getPage$BasePage(page);
-    if (isSamePage(url, $page)) {
-      page.$.__isActive = true;
-      return $page.id;
-    }
-  }
-}
-const switchTab = /* @__PURE__ */ defineAsyncApi(
-  API_SWITCH_TAB,
-  // @ts-expect-error
-  ({ url, tabBarText, isAutomatedTesting }, { resolve, reject }) => {
-    if (!entryPageState.handledBeforeEntryPageRoutes) {
-      switchTabPagesBeforeEntryPages.push({
-        args: { type: API_SWITCH_TAB, url, tabBarText, isAutomatedTesting },
-        resolve,
-        reject
-      });
-      return;
-    }
-    return navigate(
-      { type: API_SWITCH_TAB, url, tabBarText, isAutomatedTesting },
-      void 0
-    ).then(resolve).catch(reject);
-  },
-  SwitchTabProtocol,
-  SwitchTabOptions
-);
-function removeLastPage() {
-  var _a;
-  const page = (_a = getCurrentPage()) == null ? void 0 : _a.vm;
-  if (!page) {
-    return;
-  }
-  const $page = getPage$BasePage(page);
-  removePage(normalizeRouteKey($page.path, $page.id));
-}
-const redirectTo = /* @__PURE__ */ defineAsyncApi(
-  API_REDIRECT_TO,
-  // @ts-expect-error
-  ({ url, isAutomatedTesting }, { resolve, reject }) => {
-    if (!entryPageState.handledBeforeEntryPageRoutes) {
-      redirectToPagesBeforeEntryPages.push({
-        args: { type: API_REDIRECT_TO, url, isAutomatedTesting },
-        resolve,
-        reject
-      });
-      return;
-    }
-    return navigate({ type: API_REDIRECT_TO, url, isAutomatedTesting }).then(resolve).catch(reject);
-  },
-  RedirectToProtocol,
-  RedirectToOptions
-);
-function removeAllPages() {
-  const keys = getCurrentPagesMap().keys();
-  for (const routeKey of keys) {
-    removePage(routeKey);
-  }
-}
-const reLaunch = /* @__PURE__ */ defineAsyncApi(
-  API_RE_LAUNCH,
-  // @ts-expect-error
-  ({ url, isAutomatedTesting }, { resolve, reject }) => {
-    if (!entryPageState.handledBeforeEntryPageRoutes) {
-      reLaunchPagesBeforeEntryPages.push({
-        args: { type: API_RE_LAUNCH, url, isAutomatedTesting },
-        resolve,
-        reject
-      });
-      return;
-    }
-    return navigate({ type: API_RE_LAUNCH, url, isAutomatedTesting }).then(resolve).catch(reject);
-  },
-  ReLaunchProtocol,
-  ReLaunchOptions
-);
 function normalizeAppRoutePath(path) {
   const route = getRouteOptions(path, true);
   const pagePath = route == null ? void 0 : route.meta.route;
@@ -7881,11 +7782,6 @@ const launchExecutorReady = new Promise((resolve) => {
   resolveLaunchExecutor = resolve;
 });
 let singlePageAppRouteContext;
-const onAppRoute = appRouteRuntime.onAppRoute;
-const offAppRoute = appRouteRuntime.offAppRoute;
-const onBeforeAppRoute = appRouteRuntime.onBeforeAppRoute;
-const offBeforeAppRoute = appRouteRuntime.offBeforeAppRoute;
-const rewriteRoute = appRouteRuntime.rewriteRoute;
 function createAppRouteContext(path, query, openType, notFound = false) {
   return appRouteRuntime.createAppRouteContext({
     path: normalizeAppRoutePath(path),
@@ -8256,29 +8152,16 @@ function handleBeforeEntryPageRoutes() {
     return;
   }
   entryPageState.handledBeforeEntryPageRoutes = true;
-  const navigateToPages = [...navigateToPagesBeforeEntryPages];
-  navigateToPagesBeforeEntryPages.length = 0;
-  navigateToPages.forEach(
-    ({ args, resolve, reject }) => (
-      // @ts-expect-error
-      navigate(args).then(resolve).catch(reject)
-    )
-  );
-  const switchTabPages = [...switchTabPagesBeforeEntryPages];
-  switchTabPagesBeforeEntryPages.length = 0;
-  switchTabPages.forEach(({ args, resolve, reject }) => {
-    navigate(args, void 0).then(resolve).catch(reject);
-  });
-  const redirectToPages = [...redirectToPagesBeforeEntryPages];
-  redirectToPagesBeforeEntryPages.length = 0;
-  redirectToPages.forEach(({ args, resolve, reject }) => {
-    navigate(args).then(resolve).catch(reject);
-  });
-  const reLaunchPages = [...reLaunchPagesBeforeEntryPages];
-  reLaunchPagesBeforeEntryPages.length = 0;
-  reLaunchPages.forEach(({ args, resolve, reject }) => {
-    navigate(args).then(resolve).catch(reject);
-  });
+  for (const queue2 of [
+    navigateToPagesBeforeEntryPages,
+    switchTabPagesBeforeEntryPages,
+    redirectToPagesBeforeEntryPages,
+    reLaunchPagesBeforeEntryPages
+  ]) {
+    const pending = [...queue2];
+    queue2.length = 0;
+    pending.forEach((execute) => execute());
+  }
 }
 const ua = navigator.userAgent;
 const isAndroid = /* @__PURE__ */ /android/i.test(ua);
@@ -10974,8 +10857,7 @@ const REACHED = "reached";
 const ABORTING = "aborting";
 const REFRESHING = "refreshing";
 const RESTORING = "restoring";
-function usePageRefresh(refreshRef) {
-  const pageMeta = usePageMeta();
+function usePageRefresh(refreshRef, pageMeta = usePageMeta()) {
   const { id: id2, pullToRefresh } = pageMeta;
   const { range, height } = pullToRefresh;
   let refreshContainerElem;
@@ -21234,6 +21116,108 @@ function initApp(app) {
     invokeCreateVueAppHook(app);
   }
 }
+function removeLastPage() {
+  var _a;
+  const page = (_a = getCurrentPage()) == null ? void 0 : _a.vm;
+  if (!page) {
+    return;
+  }
+  const $page = getPage$BasePage(page);
+  removePage(normalizeRouteKey($page.path, $page.id));
+}
+const redirectTo = /* @__PURE__ */ defineAsyncApi(
+  API_REDIRECT_TO,
+  function redirectTo2(args, callbacks2) {
+    const { url, isAutomatedTesting } = args;
+    const { resolve, reject } = callbacks2;
+    if (!entryPageState.handledBeforeEntryPageRoutes) {
+      const options = { url, isAutomatedTesting };
+      redirectToPagesBeforeEntryPages.push(() => {
+        redirectTo2(options, callbacks2);
+      });
+      return;
+    }
+    return navigate({ type: API_REDIRECT_TO, url, isAutomatedTesting }).then(resolve).catch(reject);
+  },
+  RedirectToProtocol,
+  RedirectToOptions
+);
+function removeAllPages() {
+  const keys = getCurrentPagesMap().keys();
+  for (const routeKey of keys) {
+    removePage(routeKey);
+  }
+}
+const reLaunch = /* @__PURE__ */ defineAsyncApi(
+  API_RE_LAUNCH,
+  function reLaunch2(args, callbacks2) {
+    const { url, isAutomatedTesting } = args;
+    const { resolve, reject } = callbacks2;
+    if (!entryPageState.handledBeforeEntryPageRoutes) {
+      const options = { url, isAutomatedTesting };
+      reLaunchPagesBeforeEntryPages.push(() => {
+        reLaunch2(options, callbacks2);
+      });
+      return;
+    }
+    return navigate({ type: API_RE_LAUNCH, url, isAutomatedTesting }).then(resolve).catch(reject);
+  },
+  ReLaunchProtocol,
+  ReLaunchOptions
+);
+function removeNonTabBarPages(targetPageId) {
+  const curTabBarPageVm = getCurrentPageVm();
+  if (!curTabBarPageVm) {
+    return;
+  }
+  const pagesMap = getCurrentPagesMap();
+  const keys = pagesMap.keys();
+  for (const routeKey of keys) {
+    const page = pagesMap.get(routeKey);
+    if (!page.$.__isTabBar) {
+      removePage(routeKey);
+    } else {
+      page.$.__isActive = targetPageId !== void 0 && getPage$BasePage(page).id === targetPageId;
+    }
+  }
+  if (curTabBarPageVm.$.__isTabBar && (targetPageId === void 0 || getPage$BasePage(curTabBarPageVm).id !== targetPageId)) {
+    curTabBarPageVm.$.__isVisible = false;
+    invokeHook(curTabBarPageVm, ON_HIDE);
+  }
+}
+function isSamePage(url, $page) {
+  return url === $page.fullPath || url === "/" && $page.meta.isEntry;
+}
+function getTabBarPageId(url) {
+  const pages = getCurrentPagesMap().values();
+  for (const page of pages) {
+    const $page = getPage$BasePage(page);
+    if (isSamePage(url, $page)) {
+      page.$.__isActive = true;
+      return $page.id;
+    }
+  }
+}
+const switchTab = /* @__PURE__ */ defineAsyncApi(
+  API_SWITCH_TAB,
+  function switchTab2(args, callbacks2) {
+    const { url, tabBarText, isAutomatedTesting } = args;
+    const { resolve, reject } = callbacks2;
+    if (!entryPageState.handledBeforeEntryPageRoutes) {
+      const options = { url, tabBarText, isAutomatedTesting };
+      switchTabPagesBeforeEntryPages.push(() => {
+        switchTab2(options, callbacks2);
+      });
+      return;
+    }
+    return navigate(
+      { type: API_SWITCH_TAB, url, tabBarText, isAutomatedTesting },
+      void 0
+    ).then(resolve).catch(reject);
+  },
+  SwitchTabProtocol,
+  SwitchTabOptions
+);
 function initRouter(app) {
   const router = createRouter(createRouterOptions());
   initWebAppRouteListener(router, {
@@ -21325,7 +21309,7 @@ const index$c = {
     initApp(app);
     initViewPlugin(app);
     initServicePlugin(app);
-    if (!app.config.warnHandler) {
+    if ((process.env.NODE_ENV !== "production" || true) && !app.config.warnHandler) {
       app.config.warnHandler = warnHandler;
     }
     if (__UNI_FEATURE_PAGES__) {
@@ -25969,13 +25953,13 @@ const navigateBack = /* @__PURE__ */ defineAsyncApi(
 );
 const navigateTo = /* @__PURE__ */ defineAsyncApi(
   API_NAVIGATE_TO,
-  // @ts-expect-error
-  ({ url, events, isAutomatedTesting }, { resolve, reject }) => {
+  function navigateTo2(args, callbacks2) {
+    const { url, events, isAutomatedTesting } = args;
+    const { resolve, reject } = callbacks2;
     if (!entryPageState.handledBeforeEntryPageRoutes) {
-      navigateToPagesBeforeEntryPages.push({
-        args: { type: API_NAVIGATE_TO, url, events, isAutomatedTesting },
-        resolve,
-        reject
+      const options = { url, events, isAutomatedTesting };
+      navigateToPagesBeforeEntryPages.push(() => {
+        navigateTo2(options, callbacks2);
       });
       return;
     }
@@ -26407,8 +26391,9 @@ const setNavigationBarColor = /* @__PURE__ */ defineAsyncApi(
 const showNavigationBarLoading = /* @__PURE__ */ defineAsyncApi(
   API_SHOW_NAVIGATION_BAR_LOADING,
   (args, { resolve, reject }) => {
+    const pageMeta = getCurrentPageMeta();
     setNavigationBar(
-      getCurrentPageMeta(),
+      pageMeta,
       API_SHOW_NAVIGATION_BAR_LOADING,
       args || {},
       resolve,

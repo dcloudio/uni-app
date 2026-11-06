@@ -427,6 +427,12 @@
   }
 
   /* #ifdef WEB */
+  @media (hover: hover) {
+    .uni-checkbox-view:not(.uni-checkbox-disabled):hover {
+      border-color: #007aff !important;
+    }
+  }
+
   .uni-checkbox-svg {
     width: 16px;
     height: 16px;

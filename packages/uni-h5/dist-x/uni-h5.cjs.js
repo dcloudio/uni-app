@@ -318,9 +318,9 @@ const INVOKE_SERVICE_API = "invokeServiceApi";
 let invokeServiceMethodId = 1;
 const invokeServiceMethod = (name, args, callback) => {
   const { subscribe, publishHandler } = UniViewJSBridge;
-  const id2 = callback ? invokeServiceMethodId++ : 0;
-  callback && subscribe(INVOKE_SERVICE_API + "." + id2, callback, true);
-  publishHandler(INVOKE_SERVICE_API, { id: id2, name, args });
+  const id = callback ? invokeServiceMethodId++ : 0;
+  callback && subscribe(INVOKE_SERVICE_API + "." + id, callback, true);
+  publishHandler(INVOKE_SERVICE_API, { id, name, args });
 };
 const viewMethods = /* @__PURE__ */ Object.create(null);
 function normalizeViewMethodName(pageId, name) {
@@ -643,9 +643,9 @@ const PAGE_META_KEYS = ["navigationBar", "pullToRefresh"];
 function initGlobalStyle() {
   return JSON.parse(JSON.stringify(__uniConfig.globalStyle || {}));
 }
-function initRouteMeta(pageMeta, id2) {
+function initRouteMeta(pageMeta, id) {
   const globalStyle = initGlobalStyle();
-  const res = shared.extend({ id: id2 }, globalStyle, pageMeta);
+  const res = shared.extend({ id }, globalStyle, pageMeta);
   PAGE_META_KEYS.forEach((name) => {
     res[name] = shared.extend({}, globalStyle[name], pageMeta[name]);
   });
@@ -666,14 +666,14 @@ function normalizePullToRefreshRpx(pullToRefresh) {
   return pullToRefresh;
 }
 function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel, themeMode) {
-  const { id: id2, route } = meta;
+  const { id, route } = meta;
   const titleColor = uniShared.normalizeStyles(
     meta.navigationBar,
     __uniConfig.themeConfig,
     themeMode
   ).titleColor;
   return {
-    id: id2,
+    id,
     path: uniShared.addLeadingSlash(route),
     route,
     fullPath: url,
@@ -711,17 +711,6 @@ function invokeHook(vm, name, args) {
     return hooks && uniShared.invokeArrayFnsWithResults(hooks, args).some((ret) => ret === true);
   }
   return hooks && uniShared.invokeArrayFns(hooks, args);
-}
-function normalizeRoute(toRoute) {
-  if (toRoute.indexOf("/") === 0 || toRoute.indexOf("uni:") === 0) {
-    return toRoute;
-  }
-  let fromRoute = "";
-  const pages = getCurrentPages();
-  if (pages.length) {
-    fromRoute = get$pageByPage(pages[pages.length - 1]).route;
-  }
-  return getRealRoute(fromRoute, toRoute);
 }
 function getRealRoute(fromRoute, toRoute) {
   if (toRoute.indexOf("/") === 0) {
@@ -944,16 +933,16 @@ function publishViewMethodName(pageId) {
 }
 const invokeViewMethod = (name, args, pageId, callback) => {
   const { subscribe, publishHandler } = UniServiceJSBridge;
-  const id2 = callback ? invokeViewMethodId++ : 0;
-  callback && subscribe(INVOKE_VIEW_API + "." + id2, callback, true);
-  publishHandler(publishViewMethodName(pageId), { id: id2, name, args }, pageId);
+  const id = callback ? invokeViewMethodId++ : 0;
+  callback && subscribe(INVOKE_VIEW_API + "." + id, callback, true);
+  publishHandler(publishViewMethodName(pageId), { id, name, args }, pageId);
 };
 const invokeViewMethodKeepAlive = (name, args, callback, pageId) => {
   const { subscribe, unsubscribe, publishHandler } = UniServiceJSBridge;
-  const id2 = invokeViewMethodId++;
-  const subscribeName = INVOKE_VIEW_API + "." + id2;
+  const id = invokeViewMethodId++;
+  const subscribeName = INVOKE_VIEW_API + "." + id;
   subscribe(subscribeName, callback);
-  publishHandler(publishViewMethodName(pageId), { id: id2, name, args }, pageId);
+  publishHandler(publishViewMethodName(pageId), { id, name, args }, pageId);
   return () => {
     unsubscribe(subscribeName);
   };
@@ -1851,8 +1840,8 @@ const pageMetaKey = PolySymbol(process.env.NODE_ENV !== "production" ? "UniPageM
 function usePageMeta() {
   return vue.inject(pageMetaKey);
 }
-function providePageMeta(id2) {
-  const pageMeta = initPageMeta(id2);
+function providePageMeta(id) {
+  const pageMeta = initPageMeta(id);
   vue.provide(pageMetaKey, pageMeta);
   return pageMeta;
 }
@@ -1878,7 +1867,7 @@ function usePageRoute() {
     matched: [{ path }]
   };
 }
-function initPageMeta(id2) {
+function initPageMeta(id) {
   if (__UNI_FEATURE_PAGES__) {
     return vue.reactive(
       normalizePageMeta(
@@ -1886,7 +1875,7 @@ function initPageMeta(id2) {
           JSON.stringify(
             initRouteMeta(
               vueRouter.useRoute().meta,
-              id2
+              id
             )
           )
         )
@@ -1895,7 +1884,7 @@ function initPageMeta(id2) {
   }
   return vue.reactive(
     normalizePageMeta(
-      JSON.parse(JSON.stringify(initRouteMeta(__uniRoutes[0].meta, id2)))
+      JSON.parse(JSON.stringify(initRouteMeta(__uniRoutes[0].meta, id)))
     )
   );
 }
@@ -2099,68 +2088,25 @@ function tryCatch(fn) {
 }
 let invokeCallbackId = 1;
 const invokeCallbacks = {};
-function addInvokeCallback(id2, name, callback, keepAlive = false) {
-  invokeCallbacks[id2] = {
+function addInvokeCallback(id, name, callback, keepAlive = false) {
+  invokeCallbacks[id] = {
     name,
     keepAlive,
     callback
   };
-  return id2;
+  return id;
 }
-function invokeCallback(id2, res, extras) {
-  if (typeof id2 === "number") {
-    const opts = invokeCallbacks[id2];
+function invokeCallback(id, res, extras) {
+  if (typeof id === "number") {
+    const opts = invokeCallbacks[id];
     if (opts) {
       if (!opts.keepAlive) {
-        delete invokeCallbacks[id2];
+        delete invokeCallbacks[id];
       }
       return opts.callback(res, extras);
     }
   }
   return res;
-}
-function findInvokeCallbackByName(name) {
-  for (const key in invokeCallbacks) {
-    if (invokeCallbacks[key].name === name) {
-      return true;
-    }
-  }
-  return false;
-}
-function removeKeepAliveApiCallback(name, callback) {
-  for (const key in invokeCallbacks) {
-    const item = invokeCallbacks[key];
-    if (item.callback === callback && item.name === name) {
-      delete invokeCallbacks[key];
-    }
-  }
-}
-function removeAllKeepAliveApiCallbacks(name) {
-  for (const key in invokeCallbacks) {
-    if (invokeCallbacks[key].name === name) {
-      delete invokeCallbacks[key];
-    }
-  }
-}
-function offKeepAliveApiCallback(name, eventTransport2) {
-  const eventName = eventTransport2 ? name : "api." + name;
-  const transport = eventTransport2 || UniServiceJSBridge;
-  transport.off(eventName);
-}
-function onKeepAliveApiCallback(name, eventTransport2) {
-  const eventName = eventTransport2 ? name : "api." + name;
-  const transport = eventTransport2 || UniServiceJSBridge;
-  transport.on(eventName, (res) => {
-    for (const key in invokeCallbacks) {
-      const opts = invokeCallbacks[key];
-      if (opts.name === name) {
-        opts.callback(res);
-      }
-    }
-  });
-}
-function createKeepAliveApiCallback(name, callback) {
-  return addInvokeCallback(invokeCallbackId++, name, callback, true);
 }
 const API_SUCCESS = "success";
 const API_FAIL = "fail";
@@ -2375,16 +2321,16 @@ function formatApiArgs(args, options) {
     }
   }
 }
-function invokeSuccess(id2, name, res) {
+function invokeSuccess(id, name, res) {
   const result = {
     errMsg: name + ":ok"
   };
   {
     result.errSubject = name;
   }
-  return invokeCallback(id2, shared.extend(res || {}, result));
+  return invokeCallback(id, shared.extend(res || {}, result));
 }
-function invokeFail(id2, name, errMsg, errRes = {}) {
+function invokeFail(id, name, errMsg, errRes = {}) {
   const errMsgPrefix = name + ":fail";
   let apiErrMsg = "";
   if (!errMsg) {
@@ -2404,7 +2350,7 @@ function invokeFail(id2, name, errMsg, errRes = {}) {
       res = new UniError(apiErrMsg, errOptions);
     }
   }
-  return invokeCallback(id2, res);
+  return invokeCallback(id, res);
 }
 function beforeInvokeApi(name, args, protocol, options) {
   if (process.env.NODE_ENV !== "production") {
@@ -2421,56 +2367,6 @@ function beforeInvokeApi(name, args, protocol, options) {
     return errMsg;
   }
 }
-function checkCallback(callback) {
-  if (!shared.isFunction(callback)) {
-    throw new Error(
-      'Invalid args: type check failed for args "callback". Expected Function'
-    );
-  }
-}
-function wrapperOnApi(name, fn, options) {
-  return (callback) => {
-    checkCallback(callback);
-    const errMsg = beforeInvokeApi(name, [callback], void 0, options);
-    if (errMsg) {
-      throw new Error(errMsg);
-    }
-    const isFirstInvokeOnApi = !findInvokeCallbackByName(name);
-    createKeepAliveApiCallback(name, callback);
-    if (isFirstInvokeOnApi) {
-      onKeepAliveApiCallback(name, options == null ? void 0 : options.eventTransport);
-      fn();
-    }
-  };
-}
-function wrapperOffApi(name, fn, options) {
-  return (callback) => {
-    const clearAll = (options == null ? void 0 : options.allowClearAll) === true && callback == null;
-    if (!clearAll) {
-      checkCallback(callback);
-    }
-    const errMsg = beforeInvokeApi(
-      name,
-      clearAll ? [] : [callback],
-      void 0,
-      options
-    );
-    if (errMsg) {
-      throw new Error(errMsg);
-    }
-    const onApiName = name.replace("off", "on");
-    if (clearAll) {
-      removeAllKeepAliveApiCallbacks(onApiName);
-    } else {
-      removeKeepAliveApiCallback(onApiName, callback);
-    }
-    const hasInvokeOnApi = findInvokeCallbackByName(onApiName);
-    if (!hasInvokeOnApi) {
-      offKeepAliveApiCallback(onApiName, options == null ? void 0 : options.eventTransport);
-      fn();
-    }
-  };
-}
 function parseErrMsg(errMsg) {
   if (!errMsg || shared.isString(errMsg)) {
     return errMsg;
@@ -2482,14 +2378,14 @@ function parseErrMsg(errMsg) {
 }
 function wrapperTaskApi(name, fn, protocol, options) {
   return (args) => {
-    const id2 = createAsyncApiCallback(name, args, options);
+    const id = createAsyncApiCallback(name, args, options);
     const errMsg = beforeInvokeApi(name, [args], protocol, options);
     if (errMsg) {
-      return invokeFail(id2, name, errMsg);
+      return invokeFail(id, name, errMsg);
     }
     return fn(args, {
-      resolve: (res) => invokeSuccess(id2, name, res),
-      reject: (errMsg2, errRes) => invokeFail(id2, name, parseErrMsg(errMsg2), errRes)
+      resolve: (res) => invokeSuccess(id, name, res),
+      reject: (errMsg2, errRes) => invokeFail(id, name, parseErrMsg(errMsg2), errRes)
     });
   };
 }
@@ -2504,12 +2400,6 @@ function wrapperSyncApi(name, fn, protocol, options) {
 }
 function wrapperAsyncApi(name, fn, protocol, options) {
   return wrapperTaskApi(name, fn, protocol, options);
-}
-function defineOnApi(name, fn, options) {
-  return wrapperOnApi(name, fn, options);
-}
-function defineOffApi(name, fn, options) {
-  return wrapperOffApi(name, fn, options);
 }
 function defineTaskApi(name, fn, protocol, options) {
   return promisify(
@@ -2543,154 +2433,6 @@ const getLocale = /* @__PURE__ */ defineSyncApi(
     return useI18n().getLocale();
   }
 );
-const API_ON_APP_ROUTE = "onAppRoute";
-const API_OFF_APP_ROUTE = "offAppRoute";
-const API_ON_BEFORE_APP_ROUTE = "onBeforeAppRoute";
-const API_OFF_BEFORE_APP_ROUTE = "offBeforeAppRoute";
-const API_REWRITE_ROUTE = "rewriteRoute";
-const eventTransport = /* @__PURE__ */ new uniShared.Emitter();
-let activeBeforeAppRouteContext;
-const MAX_APP_ROUTE_REWRITE_COUNT = 100;
-const APP_ROUTE_ERROR_CODE = 4;
-function createAppRouteRuntime(options = {}) {
-  let routeEventId = 0;
-  const onAppRoute = /* @__PURE__ */ defineOnApi(API_ON_APP_ROUTE, () => {
-  }, {
-    eventTransport
-  });
-  const offAppRoute = /* @__PURE__ */ defineOffApi(API_OFF_APP_ROUTE, () => {
-  }, {
-    allowClearAll: true,
-    eventTransport
-  });
-  const onBeforeAppRoute = /* @__PURE__ */ defineOnApi(
-    API_ON_BEFORE_APP_ROUTE,
-    () => {
-    },
-    { eventTransport }
-  );
-  const offBeforeAppRoute = /* @__PURE__ */ defineOffApi(
-    API_OFF_BEFORE_APP_ROUTE,
-    () => {
-    },
-    {
-      allowClearAll: true,
-      eventTransport
-    }
-  );
-  const rewriteRoute = /* @__PURE__ */ defineAsyncApi(
-    API_REWRITE_ROUTE,
-    ({ url, preserveQuery }, { resolve, reject }) => {
-      const rejectRewriteRoute = (errMsg) => reject(errMsg, { errCode: APP_ROUTE_ERROR_CODE });
-      const context = activeBeforeAppRouteContext;
-      if (!context) {
-        rejectRewriteRoute(
-          "rewriteRoute is only allowed in a onBeforeAppRoute callback"
-        );
-        return;
-      }
-      if (context.event.openType === "navigateBack") {
-        rejectRewriteRoute(
-          'a "navigateBack" event is not allowed to be rewritten'
-        );
-        return;
-      }
-      if (context.rewrite) {
-        rejectRewriteRoute(
-          `rewriteRoute can only be called once in a route event, this page has been rewritten to "${context.rewrite.path}"`
-        );
-        return;
-      }
-      if ((context.rewriteCount || 0) >= MAX_APP_ROUTE_REWRITE_COUNT) {
-        rejectRewriteRoute(
-          `rewriteRoute exceeded the maximum rewrite count of ${MAX_APP_ROUTE_REWRITE_COUNT}`
-        );
-        return;
-      }
-      if (!context.normalizeRewriteRoute) {
-        rejectRewriteRoute("not supported");
-        return;
-      }
-      const rewrite = context.normalizeRewriteRoute(
-        { url, preserveQuery },
-        context.event
-      );
-      if (typeof rewrite === "string") {
-        rejectRewriteRoute(rewrite);
-        return;
-      }
-      context.rewrite = rewrite;
-      resolve();
-    },
-    {
-      url: {
-        type: String,
-        required: true
-      },
-      preserveQuery: Boolean
-    }
-  );
-  function createAppRouteContext2(event) {
-    const timeStamp = event.timeStamp ?? Date.now();
-    return {
-      event: {
-        path: event.path,
-        query: Object.assign({}, event.query),
-        openType: event.openType,
-        notFound: event.notFound,
-        timeStamp,
-        routeEventId: event.routeEventId ?? `${timeStamp}-${++routeEventId}`
-      },
-      normalizeRewriteRoute: options.normalizeRewriteRoute
-    };
-  }
-  function dispatchBeforeAppRoute(context) {
-    const event = context.event;
-    const beforeEvent = {
-      path: event.path,
-      query: Object.assign({}, event.query),
-      openType: event.openType,
-      notFound: event.notFound,
-      routeEventId: event.routeEventId
-    };
-    const previousContext = activeBeforeAppRouteContext;
-    activeBeforeAppRouteContext = context;
-    try {
-      eventTransport.emit(API_ON_BEFORE_APP_ROUTE, beforeEvent);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      activeBeforeAppRouteContext = previousContext;
-    }
-    return context.rewrite;
-  }
-  function dispatchAppRoute(context) {
-    const event = context.event;
-    try {
-      const routeEvent = {
-        path: event.path,
-        query: Object.assign({}, event.query),
-        openType: event.openType,
-        notFound: event.notFound,
-        timeStamp: event.timeStamp,
-        routeEventId: event.routeEventId
-      };
-      eventTransport.emit(API_ON_APP_ROUTE, routeEvent);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-  return {
-    onAppRoute,
-    offAppRoute,
-    onBeforeAppRoute,
-    offBeforeAppRoute,
-    rewriteRoute,
-    createAppRouteContext: createAppRouteContext2,
-    dispatchBeforeAppRoute,
-    dispatchAppRoute
-  };
-}
 const API_GET_STORAGE = "getStorage";
 const GetStorageProtocol = {
   key: {
@@ -2813,93 +2555,6 @@ const RequestOptions = {
     }
   }
 };
-function encodeQueryString(url) {
-  if (!shared.isString(url)) {
-    return url;
-  }
-  const index2 = url.indexOf("?");
-  if (index2 === -1) {
-    return url;
-  }
-  const query = url.slice(index2 + 1).trim().replace(/^(\?|#|&)/, "");
-  if (!query) {
-    return url;
-  }
-  url = url.slice(0, index2);
-  const params = [];
-  query.split("&").forEach((param) => {
-    const parts = param.replace(/\+/g, " ").split("=");
-    const key = parts.shift();
-    const val = parts.length > 0 ? parts.join("=") : "";
-    params.push(key + "=" + encodeURIComponent(val));
-  });
-  return params.length ? url + "?" + params.join("&") : url;
-}
-const API_NAVIGATE_TO = "navigateTo";
-const API_REDIRECT_TO = "redirectTo";
-const API_SWITCH_TAB = "switchTab";
-const API_PRELOAD_PAGE = "preloadPage";
-const API_UN_PRELOAD_PAGE = "unPreloadPage";
-let navigatorLock;
-let navigatorLockId = 0;
-function beforeRoute() {
-  navigatorLock = "";
-  navigatorLockId++;
-}
-function createNormalizeUrl(type, options = {}) {
-  return function normalizeUrl(url, params) {
-    var _a;
-    if (!url) {
-      return `Missing required args: "url"`;
-    }
-    url = normalizeRoute(url);
-    const pagePath = url.split("?")[0];
-    const routeOptions = getRouteOptions(pagePath, true);
-    if (!routeOptions) {
-      return "page `" + url + "` is not found";
-    }
-    if (type === API_NAVIGATE_TO || type === API_REDIRECT_TO) {
-      if (routeOptions.meta.isTabBar) {
-        return `can not ${type} a tabbar page`;
-      }
-    } else if (type === API_SWITCH_TAB) {
-      if (!routeOptions.meta.isTabBar) {
-        return "can not switch to no-tabBar page";
-      }
-    }
-    if ((type === API_SWITCH_TAB || type === API_PRELOAD_PAGE) && routeOptions.meta.isTabBar && params.openType !== "appLaunch") {
-      url = pagePath;
-    }
-    if (routeOptions.meta.isEntry) {
-      url = url.replace(routeOptions.alias, "/");
-    }
-    params.url = encodeQueryString(url);
-    if (type === API_UN_PRELOAD_PAGE) {
-      return;
-    } else if (type === API_PRELOAD_PAGE) {
-      if (routeOptions.meta.isTabBar) {
-        const pages = getCurrentPages();
-        const tabBarPagePath = routeOptions.path.slice(1);
-        if (pages.find((page) => page.route === tabBarPagePath)) {
-          return "tabBar page `" + tabBarPagePath + "` already exists";
-        }
-      }
-      return;
-    }
-    if (!options.skipNavigatorLock && navigatorLock === url && params.openType !== "appLaunch") {
-      return `${navigatorLock} locked`;
-    }
-    if (!options.skipNavigatorLock && __uniConfig.ready) {
-      navigatorLock = url;
-      const lockId = ++navigatorLockId;
-      (_a = options.onNavigatorLock) == null ? void 0 : _a.call(options, () => {
-        if (lockId === navigatorLockId) {
-          beforeRoute();
-        }
-      });
-    }
-  };
-}
 const API_SET_NAVIGATION_BAR_COLOR = "setNavigationBarColor";
 const API_SET_NAVIGATION_BAR_TITLE = "setNavigationBarTitle";
 const SetNavigationBarTitleProtocol = {
@@ -2910,197 +2565,21 @@ const SetNavigationBarTitleProtocol = {
 };
 const API_SHOW_NAVIGATION_BAR_LOADING = "showNavigationBarLoading";
 const API_HIDE_NAVIGATION_BAR_LOADING = "hideNavigationBarLoading";
-function normalizeAppRoutePath(path) {
-  const route = getRouteOptions(path, true);
-  const pagePath = route == null ? void 0 : route.meta.route;
-  return typeof pagePath === "string" ? pagePath : uniShared.removeLeadingSlash((route == null ? void 0 : route.path) || path);
-}
-function normalizeRewriteRoute({ url, preserveQuery }, event) {
-  if (preserveQuery) {
-    url = uniShared.parseUrl(url).path + uniShared.stringifyQuery(event.query);
-  }
-  const params = { url, openType: event.openType };
-  const errMsg = createNormalizeUrl(event.openType, {
-    skipNavigatorLock: true
-  })(url, params);
-  if (errMsg) {
-    return errMsg;
-  }
-  const { path, query } = uniShared.parseUrl(params.url);
-  return {
-    url: params.url,
-    path: normalizeAppRoutePath(path),
-    query: uniShared.decodedQuery(query),
-    notFound: false
-  };
-}
-const appRouteRuntime = createAppRouteRuntime({ normalizeRewriteRoute });
-const pendingProgrammaticRoutes = [];
-new Promise((resolve) => {
-});
-function createAppRouteContext(path, query, openType, notFound = false) {
-  return appRouteRuntime.createAppRouteContext({
-    path: normalizeAppRoutePath(path),
-    query: uniShared.decodedQuery(query),
-    openType,
-    notFound
-  });
-}
-function resolveAppRoute(url, openType, notFound = false) {
-  let routeUrl = url;
-  let routeNotFound = notFound;
-  let rewriteCount = 0;
-  while (true) {
-    const { path, query } = uniShared.parseUrl(routeUrl);
-    const context = createAppRouteContext(path, query, openType, routeNotFound);
-    context.rewriteCount = rewriteCount;
-    const rewrite = appRouteRuntime.dispatchBeforeAppRoute(context);
-    if (!rewrite) {
-      return { url: routeUrl, context };
-    }
-    routeUrl = rewrite.url;
-    routeNotFound = rewrite.notFound;
-    rewriteCount++;
-  }
-}
-function createWebAppRouteTransaction(finalFullPath, openType, context) {
-  return {
-    finalFullPath,
-    openType,
-    context
-  };
-}
-function queueWebAppRouteTransaction(transaction) {
-  pendingProgrammaticRoutes.push(transaction);
-}
-function discardWebAppRouteTransaction(transaction) {
-  transaction.cancelled = true;
-  const index2 = pendingProgrammaticRoutes.indexOf(transaction);
-  if (index2 !== -1) {
-    pendingProgrammaticRoutes.splice(index2, 1);
-  }
-}
-function isCurrentTabBarPage(url) {
-  const pages = getCurrentBasePages();
-  const currentPage = pages[pages.length - 1];
-  if (!(currentPage == null ? void 0 : currentPage.$.__isTabBar)) {
-    return false;
-  }
-  const path = uniShared.parseUrl(url).path;
-  const $page = getPage$BasePage(currentPage);
-  return path === $page.path || path === "/" && $page.meta.isEntry;
-}
-function findTabBarPageId(url) {
-  const path = uniShared.parseUrl(url).path;
-  const pages = getCurrentPagesMap().values();
-  for (const page of pages) {
-    const $page = getPage$BasePage(page);
-    if (path === $page.path || path === "/" && $page.meta.isEntry) {
-      return $page.id;
-    }
-  }
-}
-function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__) {
-  if (process.env.NODE_ENV !== "production" && !__UNI_FEATURE_PAGES__) {
-    console.warn(
-      "当前项目为单页面工程，不能执行页面跳转api。如果需进行页面跳转， 需要在pages.json文件的pages字段中配置多个页面，然后重新运行。"
-    );
-  }
-  let router;
-  router = getApp().vm.$router;
-  return new Promise((resolve, reject) => {
-    let routeUrl = url;
-    let transaction;
-    {
-      const shouldDispatchAppRoute = type !== "switchTab" || !isCurrentTabBarPage(url);
-      const appRoute = shouldDispatchAppRoute ? resolveAppRoute(url, type) : void 0;
-      routeUrl = (appRoute == null ? void 0 : appRoute.url) || url;
-      const { path: path2, query: query2 } = uniShared.parseUrl(routeUrl);
-      transaction = createWebAppRouteTransaction(
-        router.resolve({ path: path2, query: query2 }).fullPath,
-        type,
-        appRoute == null ? void 0 : appRoute.context
-      );
-    }
-    const { path, query } = uniShared.parseUrl(routeUrl);
-    const tabBarPageId = type === "switchTab" ? findTabBarPageId(routeUrl) : __id__;
-    const state = createPageState(type, tabBarPageId);
-    if (transaction) {
-      transaction.pageId = state.__id__;
-      queueWebAppRouteTransaction(transaction);
-    }
-    const navigation = router[type === "navigateTo" ? "push" : "replace"]({
-      path,
-      query,
-      state,
-      force: true
-    }).then((failure) => {
-      if (vueRouter.isNavigationFailure(failure)) {
-        transaction && discardWebAppRouteTransaction(transaction);
-        return reject(failure.message);
-      }
-      if (type === "switchTab") {
-        const finalTabBarText = routeUrl === url ? tabBarText : router.resolve({ path, query }).meta.tabBarText;
-        router.currentRoute.value.meta.tabBarText = finalTabBarText;
-      }
-      if (type === "navigateTo") {
-        const meta = router.currentRoute.value.meta;
-        if (!meta.eventChannel) {
-          meta.eventChannel = new uniShared.EventChannel(state.__id__, events);
-        } else if (events) {
-          Object.keys(events).forEach((eventName) => {
-            meta.eventChannel._addListener(
-              eventName,
-              "on",
-              events[eventName]
-            );
-          });
-          meta.eventChannel._clearCache();
-        }
-        return isAutomatedTesting ? resolve({
-          __id__: state.__id__
-        }) : resolve({
-          eventChannel: meta.eventChannel
-        });
-      }
-      return isAutomatedTesting ? resolve({ __id__: state.__id__ }) : resolve();
-    });
-    {
-      navigation.catch((error) => {
-        transaction && discardWebAppRouteTransaction(transaction);
-        reject(error instanceof Error ? error.message : error);
-      });
-    }
-  });
-}
 function handleBeforeEntryPageRoutes() {
   if (entryPageState.handledBeforeEntryPageRoutes) {
     return;
   }
   entryPageState.handledBeforeEntryPageRoutes = true;
-  const navigateToPages = [...navigateToPagesBeforeEntryPages];
-  navigateToPagesBeforeEntryPages.length = 0;
-  navigateToPages.forEach(
-    ({ args, resolve, reject }) => (
-      // @ts-expect-error
-      navigate(args).then(resolve).catch(reject)
-    )
-  );
-  const switchTabPages = [...switchTabPagesBeforeEntryPages];
-  switchTabPagesBeforeEntryPages.length = 0;
-  switchTabPages.forEach(({ args, resolve, reject }) => {
-    navigate(args, void 0).then(resolve).catch(reject);
-  });
-  const redirectToPages = [...redirectToPagesBeforeEntryPages];
-  redirectToPagesBeforeEntryPages.length = 0;
-  redirectToPages.forEach(({ args, resolve, reject }) => {
-    navigate(args).then(resolve).catch(reject);
-  });
-  const reLaunchPages = [...reLaunchPagesBeforeEntryPages];
-  reLaunchPagesBeforeEntryPages.length = 0;
-  reLaunchPages.forEach(({ args, resolve, reject }) => {
-    navigate(args).then(resolve).catch(reject);
-  });
+  for (const queue2 of [
+    navigateToPagesBeforeEntryPages,
+    switchTabPagesBeforeEntryPages,
+    redirectToPagesBeforeEntryPages,
+    reLaunchPagesBeforeEntryPages
+  ]) {
+    const pending = [...queue2];
+    queue2.length = 0;
+    pending.forEach((execute) => execute());
+  }
 }
 function getTheme() {
   if (__uniConfig.darkmode == null || __uniConfig.darkmode === false)
@@ -3288,7 +2767,7 @@ class UniPageImpl {
   $setPageStyle(style) {
     this.setPageStyle(style);
   }
-  getElementById(id2) {
+  getElementById(id) {
     {
       return null;
     }
@@ -3448,9 +2927,6 @@ function pruneCurrentPages() {
     }
   });
 }
-function getCurrentPagesMap() {
-  return currentPagesMap;
-}
 function getCurrentPages$1() {
   const curPages = getCurrentBasePages();
   {
@@ -3470,13 +2946,6 @@ function getCurrentBasePages() {
     }
   }
   return curPages;
-}
-let id = /* @__PURE__ */ getStateId();
-function createPageState(type, __id__) {
-  return {
-    __id__: __id__ || ++id,
-    __type__: type
-  };
 }
 let dialogPageId = Number.MIN_SAFE_INTEGER;
 function createDialogPageId() {
@@ -3728,13 +3197,13 @@ function setupComponent(comp, options) {
   }
   return wrapperComponentSetup(comp, options);
 }
-function setupWindow(comp, id2) {
+function setupWindow(comp, id) {
   return setupComponent(comp, {
     type: "window",
     init: (vm) => {
       {
         vm.$basePage = {
-          id: id2
+          id
         };
       }
     },
@@ -3875,7 +3344,7 @@ function usePageHeadTransparentBackgroundColor(backgroundColor) {
   return `rgba(${r},${g2},${b},0)`;
 }
 function usePageHeadTransparent(headRef, {
-  id: id2,
+  id,
   navigationBar: { titleColor, coverage, backgroundColor }
 }) {
   vue.computed(() => hexToRgba(backgroundColor));
@@ -4129,7 +3598,7 @@ function usePageHead(navigationBar) {
   };
 }
 function usePageHeadButtons({
-  id: id2,
+  id,
   navigationBar
 }) {
   const left = [];
@@ -4153,7 +3622,7 @@ function usePageHeadButtons({
         }
         btn.fontFamily = fontFamily;
       }
-      const pageHeadBtn = usePageHeadButton(id2, index2, btn, isTransparent);
+      const pageHeadBtn = usePageHeadButton(id, index2, btn, isTransparent);
       if (btn.float === "left") {
         left.push(pageHeadBtn);
       } else {
@@ -4207,7 +3676,7 @@ function usePageHeadButton(pageId, index2, btn, isTransparent) {
   });
 }
 function usePageHeadSearchInput({
-  id: id2,
+  id,
   navigationBar: {
     searchInput
   }
@@ -4220,7 +3689,7 @@ function usePageHeadSearchInput({
   } = searchInput;
   if (disabled) {
     const onClick = () => {
-      invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED);
+      invokeHook(id, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED);
     };
     return {
       focus,
@@ -4231,24 +3700,24 @@ function usePageHeadSearchInput({
   }
   const onFocus = () => {
     focus.value = true;
-    invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
+    invokeHook(id, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
       focus: true
     });
   };
   const onBlur = () => {
     focus.value = false;
-    invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
+    invokeHook(id, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
       focus: false
     });
   };
   const onInput = (evt) => {
     text.value = evt.detail.value;
-    invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, {
+    invokeHook(id, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, {
       text: text.value
     });
   };
   const onConfirm = (evt) => {
-    invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, {
+    invokeHook(id, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, {
       text: text.value
     });
   };
@@ -10950,8 +10419,8 @@ function useContextInfo(_id) {
   const instance = vue.getCurrentInstance();
   const vm = instance.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id2 = vm.id || `context${index$c++}`;
-  return `${type}.${id2}`;
+  const id = vm.id || `context${index$c++}`;
+  return `${type}.${id}`;
 }
 function injectLifecycleHook(name, hook, publicThis, instance) {
   if (shared.isFunction(hook)) {
@@ -11151,12 +10620,12 @@ function initRouter(app) {
   app.use(router);
 }
 let positionStore = /* @__PURE__ */ Object.create(null);
-function getTabBarScrollPosition(id2) {
-  return positionStore[id2];
+function getTabBarScrollPosition(id) {
+  return positionStore[id];
 }
-function saveTabBarScrollPosition(id2) {
+function saveTabBarScrollPosition(id) {
   if (typeof window !== "undefined") {
-    positionStore[id2] = {
+    positionStore[id] = {
       left: window.pageXOffset,
       top: window.pageYOffset
     };
@@ -11198,7 +10667,7 @@ function initHistory() {
 const index$b = {
   install(app) {
     initApp(app);
-    if (!app.config.warnHandler) {
+    if ((process.env.NODE_ENV !== "production" || true) && !app.config.warnHandler) {
       app.config.warnHandler = warnHandler;
     }
     if (__UNI_FEATURE_PAGES__) {
@@ -12278,8 +11747,8 @@ const props$6 = {
     default: ""
   }
 };
-function useMarkerLabelStyle(id2) {
-  const className = "uni-map-marker-label-" + id2;
+function useMarkerLabelStyle(id) {
+  const className = "uni-map-marker-label-" + id;
   const styleEl = document.createElement("style");
   styleEl.id = className;
   document.head.appendChild(styleEl);
@@ -12301,9 +11770,9 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
   name: "MapMarker",
   props: props$6,
   setup(props2) {
-    const id2 = String(!isNaN(Number(props2.id)) ? props2.id : "");
+    const id = String(!isNaN(Number(props2.id)) ? props2.id : "");
     const onMapReady = vue.inject("onMapReady");
-    const updateMarkerLabelStyle = useMarkerLabelStyle(id2);
+    const updateMarkerLabelStyle = useMarkerLabelStyle(id);
     let marker;
     function removeMarkerCallout(callout) {
       if (getIsAMap()) {
@@ -12466,9 +11935,9 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
             } else {
               if (getIsAMap()) {
                 const callback = () => {
-                  if (id2 !== "") {
+                  if (id !== "") {
                     trigger("callouttap", {}, {
-                      markerId: Number(id2)
+                      markerId: Number(id)
                     });
                   }
                 };
@@ -12476,9 +11945,9 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
               } else {
                 callout = marker.callout = new maps.Callout(calloutStyle);
                 callout.div.onclick = function($event) {
-                  if (id2 !== "") {
+                  if (id !== "") {
                     trigger("callouttap", $event, {
-                      markerId: Number(id2)
+                      markerId: Number(id)
                     });
                   }
                   $event.stopPropagation();
@@ -12540,9 +12009,9 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
                 }
               }
             }
-            if (id2) {
+            if (id) {
               trigger("markertap", {}, {
-                markerId: Number(id2),
+                markerId: Number(id),
                 latitude: props3.latitude,
                 longitude: props3.longitude
               });
@@ -12553,11 +12022,11 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
       addMarker(props2);
       vue.watch(props2, updateMarker);
     });
-    if (id2) {
+    if (id) {
       const addMapChidlContext = vue.inject("addMapChidlContext");
       vue.inject("removeMapChidlContext");
       const context = {
-        id: id2,
+        id,
         translate(data) {
           onMapReady((map, maps, trigger) => {
             const destination = data.destination;
@@ -13255,7 +12724,7 @@ function useMap(props2, rootRef, emit2) {
     }
   }
   try {
-    const id2 = useContextInfo();
+    const id = useContextInfo();
     useSubscribe(
       (type, data = {}) => {
         switch (type) {
@@ -13345,7 +12814,7 @@ function useMap(props2, rootRef, emit2) {
             break;
         }
       },
-      id2,
+      id,
       true
     );
   } catch (error) {
@@ -14674,14 +14143,14 @@ class AdRender {
     }
     const script = providerConfig.script || providerConfig.s;
     this._currentChannel = providerId;
-    const id2 = this._randomId();
-    this._createView(id2);
+    const id = this._randomId();
+    this._createView(id);
     if (providerId === AD_PROVIDER.GDT) {
       window.TencentGDT = window.TencentGDT || [];
       AdScript.instance.load(
         { provider: providerId, script },
         () => {
-          this._renderGdt(id2, data);
+          this._renderGdt(id, data);
         },
         (err) => {
           this._trigger("error", {}, err);
@@ -14694,7 +14163,7 @@ class AdRender {
       AdScript.instance.load(
         { provider: providerId, script },
         () => {
-          this._renderTuiaMaterial(id2, data);
+          this._renderTuiaMaterial(id, data);
         },
         (err) => {
           this._trigger("error", {}, err);
@@ -14705,18 +14174,18 @@ class AdRender {
     }
     this._renderNext();
   }
-  _createView(id2) {
+  _createView(id) {
     if (!this._rootRef.value) {
       return null;
     }
     var adView = document.createElement("div");
-    adView.setAttribute("id", id2);
-    adView.setAttribute("class", id2);
+    adView.setAttribute("id", id);
+    adView.setAttribute("class", id);
     this._rootRef.value.innerHTML = "";
     this._rootRef.value.append(adView);
     return adView;
   }
-  _renderGdt(id2, data) {
+  _renderGdt(id, data) {
     window.TencentGDT.push({
       placement_id: data.a3,
       app_id: data.a2,
@@ -14724,7 +14193,7 @@ class AdRender {
       count: 1,
       onComplete: (res) => {
         if (res && res.constructor === Array && res.length > 0) {
-          window.TencentGDT.NATIVE.renderAd(res[0], id2);
+          window.TencentGDT.NATIVE.renderAd(res[0], id);
           this._trigger("load", {}, {});
         } else {
           this._trigger(
@@ -14738,8 +14207,8 @@ class AdRender {
     });
     this._startCheckTimer();
   }
-  _renderTuiaMaterial(id2, data) {
-    const adView = document.getElementById(id2);
+  _renderTuiaMaterial(id, data) {
+    const adView = document.getElementById(id);
     if (!adView) {
       this._trigger("error", {}, { errMsg: "Invalid ad container" });
       this._renderNext();
@@ -15263,9 +14732,9 @@ class RequestTask {
       return;
     }
     if (typeof callback === "function") {
-      this._requestOnHeadersReceiveCallbacks.forEach((cb, id2) => {
+      this._requestOnHeadersReceiveCallbacks.forEach((cb, id) => {
         if (cb === callback) {
-          this._requestOnHeadersReceiveCallbacks.delete(id2);
+          this._requestOnHeadersReceiveCallbacks.delete(id);
           this._emitter.off("headersReceived", callback);
         }
       });
@@ -15293,9 +14762,9 @@ class RequestTask {
       return;
     }
     if (typeof callback === "function") {
-      this._requestOnChunkReceiveCallbacks.forEach((cb, id2) => {
+      this._requestOnChunkReceiveCallbacks.forEach((cb, id) => {
         if (cb === callback) {
-          this._requestOnChunkReceiveCallbacks.delete(id2);
+          this._requestOnChunkReceiveCallbacks.delete(id);
           this._emitter.off("chunkReceived", callback);
         }
       });

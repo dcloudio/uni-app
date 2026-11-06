@@ -1434,71 +1434,71 @@ var eventTransport = /* @__PURE__ */ new Emitter();
 var activeBeforeAppRouteContext;
 var MAX_APP_ROUTE_REWRITE_COUNT = 100;
 var APP_ROUTE_ERROR_CODE = 4;
+var onAppRoute = /* @__PURE__ */ defineOnApi(API_ON_APP_ROUTE, () => {
+}, {
+  eventTransport
+});
+var offAppRoute = /* @__PURE__ */ defineOffApi(API_OFF_APP_ROUTE, () => {
+}, {
+  allowClearAll: true,
+  eventTransport
+});
+var onBeforeAppRoute = /* @__PURE__ */ defineOnApi(API_ON_BEFORE_APP_ROUTE, () => {
+}, {
+  eventTransport
+});
+var offBeforeAppRoute = /* @__PURE__ */ defineOffApi(API_OFF_BEFORE_APP_ROUTE, () => {
+}, {
+  allowClearAll: true,
+  eventTransport
+});
+var rewriteRoute = /* @__PURE__ */ defineAsyncApi(API_REWRITE_ROUTE, (_ref, _ref2) => {
+  var {
+    url,
+    preserveQuery
+  } = _ref;
+  var {
+    resolve,
+    reject
+  } = _ref2;
+  var rejectRewriteRoute = (errMsg) => reject(errMsg, {
+    errCode: APP_ROUTE_ERROR_CODE
+  });
+  var context = activeBeforeAppRouteContext;
+  if (!context) {
+    rejectRewriteRoute("rewriteRoute is only allowed in a onBeforeAppRoute callback");
+    return;
+  }
+  if (context.event.openType === "navigateBack") {
+    rejectRewriteRoute('a "navigateBack" event is not allowed to be rewritten');
+    return;
+  }
+  if (context.rewrite) {
+    rejectRewriteRoute('rewriteRoute can only be called once in a route event, this page has been rewritten to "'.concat(context.rewrite.path, '"'));
+    return;
+  }
+  if ((context.rewriteCount || 0) >= MAX_APP_ROUTE_REWRITE_COUNT) {
+    rejectRewriteRoute("rewriteRoute exceeded the maximum rewrite count of ".concat(MAX_APP_ROUTE_REWRITE_COUNT));
+    return;
+  }
+  if (!context.normalizeRewriteRoute) {
+    rejectRewriteRoute("not supported");
+    return;
+  }
+  var rewrite = context.normalizeRewriteRoute({
+    url,
+    preserveQuery
+  }, context.event);
+  if (typeof rewrite === "string") {
+    rejectRewriteRoute(rewrite);
+    return;
+  }
+  context.rewrite = rewrite;
+  resolve();
+});
 function createAppRouteRuntime() {
   var options = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
   var routeEventId = 0;
-  var onAppRoute2 = /* @__PURE__ */ defineOnApi(API_ON_APP_ROUTE, () => {
-  }, {
-    eventTransport
-  });
-  var offAppRoute2 = /* @__PURE__ */ defineOffApi(API_OFF_APP_ROUTE, () => {
-  }, {
-    allowClearAll: true,
-    eventTransport
-  });
-  var onBeforeAppRoute2 = /* @__PURE__ */ defineOnApi(API_ON_BEFORE_APP_ROUTE, () => {
-  }, {
-    eventTransport
-  });
-  var offBeforeAppRoute2 = /* @__PURE__ */ defineOffApi(API_OFF_BEFORE_APP_ROUTE, () => {
-  }, {
-    allowClearAll: true,
-    eventTransport
-  });
-  var rewriteRoute2 = /* @__PURE__ */ defineAsyncApi(API_REWRITE_ROUTE, (_ref, _ref2) => {
-    var {
-      url,
-      preserveQuery
-    } = _ref;
-    var {
-      resolve,
-      reject
-    } = _ref2;
-    var rejectRewriteRoute = (errMsg) => reject(errMsg, {
-      errCode: APP_ROUTE_ERROR_CODE
-    });
-    var context = activeBeforeAppRouteContext;
-    if (!context) {
-      rejectRewriteRoute("rewriteRoute is only allowed in a onBeforeAppRoute callback");
-      return;
-    }
-    if (context.event.openType === "navigateBack") {
-      rejectRewriteRoute('a "navigateBack" event is not allowed to be rewritten');
-      return;
-    }
-    if (context.rewrite) {
-      rejectRewriteRoute('rewriteRoute can only be called once in a route event, this page has been rewritten to "'.concat(context.rewrite.path, '"'));
-      return;
-    }
-    if ((context.rewriteCount || 0) >= MAX_APP_ROUTE_REWRITE_COUNT) {
-      rejectRewriteRoute("rewriteRoute exceeded the maximum rewrite count of ".concat(MAX_APP_ROUTE_REWRITE_COUNT));
-      return;
-    }
-    if (!context.normalizeRewriteRoute) {
-      rejectRewriteRoute("not supported");
-      return;
-    }
-    var rewrite = context.normalizeRewriteRoute({
-      url,
-      preserveQuery
-    }, context.event);
-    if (typeof rewrite === "string") {
-      rejectRewriteRoute(rewrite);
-      return;
-    }
-    context.rewrite = rewrite;
-    resolve();
-  });
   function createAppRouteContext2(event) {
     var _event$timeStamp, _event$routeEventId;
     var timeStamp = (_event$timeStamp = event.timeStamp) !== null && _event$timeStamp !== void 0 ? _event$timeStamp : Date.now();
@@ -1551,11 +1551,6 @@ function createAppRouteRuntime() {
     }
   }
   return {
-    onAppRoute: onAppRoute2,
-    offAppRoute: offAppRoute2,
-    onBeforeAppRoute: onBeforeAppRoute2,
-    offBeforeAppRoute: offBeforeAppRoute2,
-    rewriteRoute: rewriteRoute2,
     createAppRouteContext: createAppRouteContext2,
     dispatchBeforeAppRoute: dispatchBeforeAppRoute2,
     dispatchAppRoute: dispatchAppRoute2
@@ -1950,11 +1945,6 @@ function normalizeRewriteRoute(_ref, event) {
 var appRouteRuntime = createAppRouteRuntime({
   normalizeRewriteRoute
 });
-var onAppRoute = appRouteRuntime.onAppRoute;
-var offAppRoute = appRouteRuntime.offAppRoute;
-var onBeforeAppRoute = appRouteRuntime.onBeforeAppRoute;
-var offBeforeAppRoute = appRouteRuntime.offBeforeAppRoute;
-var rewriteRoute = appRouteRuntime.rewriteRoute;
 function createAppRouteContext(path, query, openType) {
   var notFound = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : false;
   return appRouteRuntime.createAppRouteContext({

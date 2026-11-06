@@ -314,6 +314,8 @@ function initApp(app) {
     {
         uniIdMixin(globalProperties);
     }
+    // Web Vapor 客户端不提供 $set，$callMethod 由运行时的实例属性表提供。
+    // 构建框架时直接排除注入，避免保留项目阶段无法裁剪的旧实现。
     {
         globalProperties.$set = set;
         globalProperties.$applyOptions = applyOptions;
