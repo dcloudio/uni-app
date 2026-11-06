@@ -804,6 +804,7 @@ inputmode 兼容性：Chrome >= 66、Edge >= 79、Firefox >= 95、Chrome Android
 
 ## Tips
 
+* HBuilderX 5.36 起，App 平台蒸汽模式下，textarea 组件的默认背景色和输入文字颜色随应用主题自动切换。亮色主题下，默认背景色为 `#ffffff`，文字颜色为 `#000000`；暗黑主题下，默认背景色为 `#3b3b3b`，文字颜色为 `#ffffff`。通过 `class` 或 `style` 自定义 `background-color`、`color` 后，以自定义样式为准，对应颜色需自行适配主题，详见[暗黑主题适配教程](../api/theme-change.md)。
 * uni-app x 4.0 起，App-Android平台 textarea 点击输入框外的屏幕会自动收起软键盘。
 * uni-app x 4.0 起，App-Android平台 textarea 的 font-size 默认值统一为 16px，line-height 默认值为 1.2em，width 默认值为300px。
 * uni-app x 4.15 起，App-iOS平台 textarea 软键盘默认右下角改为 return(换行) ，换行时，键盘不会收起。

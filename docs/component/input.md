@@ -1216,6 +1216,8 @@ web平台的inputmode的浏览器兼容性如下： Chrome >= 66、Edge >= 79、
 
 
 ## Tips
+
+- HBuilderX 5.36 起，App 平台蒸汽模式下，input 组件的默认背景色和输入文字颜色随应用主题自动切换。亮色主题下，默认背景色为 `#ffffff`，文字颜色为 `#000000`；暗黑主题下，默认背景色为 `#3b3b3b`，文字颜色为 `#ffffff`。通过 `class` 或 `style` 自定义 `background-color`、`color` 后，以自定义样式为准，对应颜色需自行适配主题，详见[暗黑主题适配教程](../api/theme-change.md)。
 - 支付宝小程序二级页面设置 `focus` 为 `true` 时不会自动聚焦
 - 支付宝小程序 `type="number"` 且 `maxlength="-1"` 时不会触发 `input` 事件，也不能通过 CSS 修改光标颜色
 - html规范中input不仅是输入框，还有radio、checkbox、时间、日期、文件选择功能。但在uni-app规范中，input仅仅是输入框，其type属性代表不同的输入框。其他功能有单独的组件或API：[radio组件](radio-group.md)、[checkbox组件](checkbox-group.md)、[图片选择](../api/choose-image.md)、[视频选择](../api/choose-video.md)等。
