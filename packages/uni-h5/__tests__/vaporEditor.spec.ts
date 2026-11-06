@@ -177,6 +177,9 @@ describe('Web Vapor Editor 原生宿主', () => {
     const business = await load('vue/editor/useEditor.ts', {
       '../../helpers/useEvent': events,
       '../../helpers/useKeyboard': keyboard,
+      '../../helpers/useWebSelectionStyle': {
+        useWebSelectionStyle: jest.fn(),
+      },
       './quill': quill,
     })
     const helper = await load('helpers/component.ts', {
@@ -219,6 +222,9 @@ describe('Web Vapor Editor 原生宿主', () => {
       vue,
       '/vue-jsx/vapor': evaluate(fs.readFileSync(runtime, 'utf8'), { vue }),
       '../../helpers/component': helper,
+      '../../helpers/useWebSelectionStyle': {
+        useWebSelectionStyle: jest.fn(),
+      },
       '../web-vapor-elements': elements,
       './useEditor': business,
     })
