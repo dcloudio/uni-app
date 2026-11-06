@@ -1435,6 +1435,9 @@ importers:
       '@babel/types':
         specifier: 'catalog:'
         version: 7.25.6
+      '@csstools/css-tokenizer':
+        specifier: 4.0.0
+        version: 4.0.0
       '@dcloudio/uni-i18n':
         specifier: workspace:*
         version: link:../uni-i18n
@@ -3274,6 +3277,10 @@ packages:
 
   '@bcoe/v8-coverage@0.2.3':
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
+
+  '@csstools/css-tokenizer@4.0.0':
+    resolution: {integrity: sha512-QxULHAm7cNu72w97JUNCBFODFaXpbDg+dP8b/oWFAZ2MTRppA3U00Y2L1HqaS4J6yBqxwa/Y3nMBaxVKbB/NsA==}
+    engines: {node: '>=20.19.0'}
 
   '@cypress/request@4.0.1':
     resolution: {integrity: sha512-y20e+e6dFYkOUUJLVUZTsJRuTiXZaUQ32WD+R/ux/HBybbTx4ge7cNINcua0pU8+SNkKuRbOF12mBmzuzM8n5w==}
@@ -9206,6 +9213,8 @@ snapshots:
       to-fast-properties: 2.0.0
 
   '@bcoe/v8-coverage@0.2.3': {}
+
+  '@csstools/css-tokenizer@4.0.0': {}
 
   '@cypress/request@4.0.1':
     dependencies:

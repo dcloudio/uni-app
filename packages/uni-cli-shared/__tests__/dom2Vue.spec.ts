@@ -1,10 +1,32 @@
 import fs from 'fs'
 import os from 'os'
 import path from 'path'
+import { execFileSync } from 'child_process'
 import {
   initVueTemplateCompilerExtraOptions,
   parseUniXPageOptions,
 } from '../src'
+
+test('DOM2 发布目录可加载生产依赖中的媒体查询 tokenizer', () => {
+  execFileSync(
+    process.execPath,
+    [
+      '--eval',
+      `
+    const assert = require('node:assert/strict')
+    const path = require('node:path')
+    const { createRequire } = require('node:module')
+    assert.ok(require('./package.json').dependencies['@csstools/css-tokenizer'])
+    const load = createRequire(path.resolve('lib/dom2/app/@vue/compiler-vapor-dom2/dist/compiler-vapor-dom2.cjs.js'))
+    const { tokenize, TokenType } = load('@csstools/css-tokenizer')
+    const dimension = tokenize({ css: '(min-width: 600px)' }).find(token => token[0] === TokenType.Dimension)
+    assert.equal(dimension[4].value, 600)
+    assert.equal(dimension[4].unit, 'px')
+  `,
+    ],
+    { cwd: path.resolve(__dirname, '..'), stdio: 'pipe' }
+  )
+})
 
 describe('dom2 vue compiler extra options', () => {
   const originalEnv = {
