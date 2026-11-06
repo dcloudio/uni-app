@@ -16,7 +16,13 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-backarrow
 
 # uni-backarrow-circle 圆形返回按钮
 
-带圆形背景的返回箭头组件。箭头由旋转 45° 的边框绘制，保留 28px × 28px 的圆形点击区域，支持系统暗黑模式，无字体或图片依赖。
+带圆形背景的返回箭头组件。
+
+很多界面顶部是沉浸式通顶，比如视频、地图，没有通栏的顶部导航栏，只需要一个独立的返回按钮。
+
+同时这个按钮需要自带有透明度的背景，以防止和界面背景元素重叠造成不可见。
+
+箭头由旋转 45° 的边框绘制，保留 28px × 28px 的圆形点击区域，支持系统暗黑模式，无字体或图片依赖。组件内置按下降低不透明度与 Web 端悬浮阴影效果。
 
 App 端使用一个 `flatten` 子 view 绘制箭头并拍平到圆形背景上；Web、小程序端使用根节点的 `::after` 伪元素绘制箭头，不额外创建内部节点。
 
@@ -65,7 +71,7 @@ App 端使用一个 `flatten` 子 view 绘制箭头并拍平到圆形背景上�
 
 | CSS 变量 | 默认值 | 说明 |
 | --- | --- | --- |
-| --uni-backarrow-circle-color | 浅色 #000000，深色 #ffffff | 箭头颜色；显式设置后覆盖深浅色默认值 |
+| --uni-backarrow-circle-color | #ffffff | 箭头颜色；深浅色模式默认均为白色，显式设置后覆盖默认值 |
 | --uni-backarrow-circle-width | 2px | 箭头边框线宽 |
 
 ```vue
@@ -84,7 +90,7 @@ App 端使用一个 `flatten` 子 view 绘制箭头并拍平到圆形背景上�
 
 ## 暗黑模式
 
-组件默认跟随系统暗黑模式：圆形背景色自动加深，箭头颜色由 #000000 切换为 #ffffff。未显式设置 `--uni-backarrow-circle-color` 时生效。
+组件默认跟随系统暗黑模式：圆形背景色自动加深，箭头颜色默认统一为 `#ffffff`。未显式设置 `--uni-backarrow-circle-color` 时生效。
 
 
 
