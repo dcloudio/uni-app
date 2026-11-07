@@ -48,7 +48,7 @@ function rewriteCompileScript(extname: string) {
       } else {
         const { styleIsolation, isPage } =
           findMiniProgramComponentStyleIsolation(options.filename) || {}
-        if (!isPage) {
+        if (!isPage && process.env.UNI_PLATFORM !== 'mp-toutiao') {
           if (styleIsolation === 'app') {
             options.source = `@import "/app${extname}";\n` + options.source
           }

@@ -4,7 +4,7 @@ import {
   VIRTUAL_HOST_ID,
   invokeArrayFns,
 } from '@dcloudio/uni-shared'
-import { capitalize, hasOwn, isArray, isFunction } from '@vue/shared'
+import { camelize, capitalize, hasOwn, isArray, isFunction } from '@vue/shared'
 
 import {
   type ComponentInternalInstance,
@@ -21,6 +21,7 @@ import {
   pruneUniElements,
 } from 'vue'
 import type { MPComponentInstance } from './component'
+import { findPropsData } from './componentProps'
 import { getTriggerEventDetail } from './util'
 
 declare const my: any
@@ -32,7 +33,45 @@ const MP_METHODS = [
   'selectComponent',
 ]
 
-function createEmitFn(oldEmit: Function, ctx: Record<string, any>) {
+function invokeFragmentHandler(
+  instance: ComponentInternalInstance,
+  scope: MPComponentInstance,
+  event: string,
+  args: any[]
+) {
+  // 调用点已经限定为抖音 uni-app x 的 virtualHost，这里只保留实例关系判断。
+  if (!instance.parent) {
+    return false
+  }
+  const properties = scope.properties
+  if (!properties || !properties.uP) {
+    return false
+  }
+  const props = findPropsData(properties, false)
+  const handlerId = props[`on${capitalize(camelize(event))}`]
+  const parentScope = (instance.parent as any).ctx?.$scope
+  const handler =
+    typeof handlerId === 'string'
+      ? parentScope && parentScope[handlerId]
+      : handlerId
+  if (typeof handler !== 'function') {
+    return false
+  }
+  // 复用 vOn invoker 的参数解包、once、错误处理和事件调度逻辑。
+  handler({
+    type: event,
+    detail: {
+      __args__: args,
+    },
+  })
+  return true
+}
+
+function createEmitFn(
+  oldEmit: Function,
+  ctx: Record<string, any>,
+  instance: ComponentInternalInstance
+) {
   return function emit(
     this: ComponentPublicInstance,
     event: string,
@@ -40,6 +79,14 @@ function createEmitFn(oldEmit: Function, ctx: Record<string, any>) {
   ) {
     const scope = ctx.$scope as MPComponentInstance
     if (scope && event) {
+      if (
+        __PLATFORM__ === 'mp-toutiao' &&
+        __X__ &&
+        __UNI_FEATURE_VIRTUAL_HOST__ &&
+        invokeFragmentHandler(instance, scope, event, args)
+      ) {
+        return
+      }
       const detail: Record<string, any> = { __args__: args }
       // 百度小程序，快手小程序，自定义组件不能绑定动态事件
       if (
@@ -156,7 +203,7 @@ export function initBaseInstance(
   ctx.$callHook = callHook
 
   // $emit
-  instance.emit = createEmitFn(instance.emit, ctx)
+  instance.emit = createEmitFn(instance.emit, ctx, instance)
 
   if (__X__) {
     onUpdated(() => {

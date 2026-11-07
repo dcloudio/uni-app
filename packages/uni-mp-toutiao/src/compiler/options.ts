@@ -5,6 +5,7 @@ import {
   createCopyComponentDirs,
   createCopyPluginTarget,
   getNativeTags,
+  getPlatformManifestJsonOnce,
   transformComponentLink,
   transformDirection,
   // transformMatchMedia,
@@ -15,6 +16,7 @@ import {
   resolveMiniProgramRuntime,
 } from '@dcloudio/uni-mp-vite'
 import { transformMPBuiltInTag } from './transforms/transformMPBuiltInTag'
+import { transformRef as transformXRef } from './transforms/transformRef'
 
 import source from './project.config.json'
 
@@ -35,13 +37,14 @@ export const customElements = [
   'match-media',
   'mask',
   'video-player',
+  'page-container',
   ...getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ]
 
 const projectConfigFilename = 'project.config.json'
 
 const nodeTransforms = [
-  transformRef,
+  process.env.UNI_APP_X === 'true' ? transformXRef : transformRef,
   // transformMatchMedia,
   transformComponentLink,
 ]
@@ -66,6 +69,24 @@ export const miniProgram: MiniProgramCompilerOptions = {
   component: {
     dir: COMPONENTS_DIR,
     vShow: COMPONENT_CUSTOM_HIDDEN_BIND,
+    // uni-app x 默认启用 virtualHost；关闭 enableVirtualHost 时必须与 runtime 保持一致。
+    fragment:
+      process.env.UNI_APP_X === 'true' &&
+      getPlatformManifestJsonOnce().enableVirtualHost !== false,
+    fragmentEvents: [
+      'tap',
+      'longtap',
+      'longpress',
+      'touchstart',
+      'touchmove',
+      'touchcancel',
+      'touchend',
+      'touchforcechange',
+      'transitionend',
+      'animationstart',
+      'animationiteration',
+      'animationend',
+    ],
   },
   filter: {
     lang: 'sjs',

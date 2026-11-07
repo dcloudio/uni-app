@@ -10,6 +10,7 @@ import { findVmByVueId } from '@dcloudio/uni-mp-core'
 
 import type { ParseComponentOptions } from 'packages/uni-mp-core/src/runtime/component'
 import { ON_READY } from '@dcloudio/uni-shared'
+import { handleRef } from './refs'
 
 import { instances } from './componentLifetimes'
 export { initLifetimes, instances } from './componentLifetimes'
@@ -47,7 +48,7 @@ export function initRelation(
   // 使用 virtualHost 后，头条不支持 triggerEvent，通过主动调用方法抹平差异
   if (
     (__PLATFORM__ === 'mp-toutiao' || __PLATFORM__ === 'mp-lark') &&
-    mpInstance?.$vm?.$options?.options?.virtualHost
+    detail.virtualHost
   ) {
     nextSetDataTick(mpInstance, () => {
       handleLink.apply(mpInstance, [
@@ -135,4 +136,7 @@ export function parse(
   { handleLink }: Partial<ParseComponentOptions>
 ) {
   componentOptions.methods!.__l = handleLink!
+  if (__X__) {
+    componentOptions.methods!.__r = handleRef
+  }
 }

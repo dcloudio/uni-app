@@ -21,7 +21,7 @@ import {
   isDirectiveNode,
 } from '@dcloudio/uni-cli-shared'
 import type { TransformContext } from '../transform'
-import { ATTR_VUE_ID, parseExprWithRewrite } from './utils'
+import { ATTR_TT_REF, ATTR_VUE_ID, parseExprWithRewrite } from './utils'
 
 import { SET_REF } from '../runtimeHelpers'
 import { genBabelExpr } from '../codegen'
@@ -37,9 +37,9 @@ export function rewriteRef(node: ElementNode, context: TransformContext) {
   if (!refProp) {
     return
   }
-  if (findProp(node, 'ref')) {
-    // 支付宝小程序
-    const code = parseAlipayRefCode(refProp, context)
+  if (findProp(node, 'ref') || findProp(node, ATTR_TT_REF)) {
+    // Native component ref callbacks (Alipay ref and Douyin tt:ref).
+    const code = parseComponentRefCode(refProp, context)
     if (code && context.inline && !isDirectiveNode(refProp)) {
       refProp.value!.content = code
       const refPropIndex = node.props.findIndex((prop) => prop === refProp)
@@ -130,7 +130,7 @@ export function rewriteRefProp(
   )
 }
 
-function parseAlipayRefCode(
+function parseComponentRefCode(
   prop: AttributeNode | DirectiveNode,
   context: TransformContext
 ) {
