@@ -1,13 +1,13 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-const isAndroid = platformInfo.startsWith('android')
-const isIOS = platformInfo.startsWith('ios')
-const isHarmony = platformInfo.startsWith('harmony')
-const isApp = isAndroid || isIOS || isHarmony
+const isAndroidOrIOS = platformInfo.startsWith('android') || platformInfo.startsWith('ios')
+const isApp = isAndroidOrIOS || platformInfo.startsWith('harmony')
 const isSafari = platformInfo.indexOf('safari') > -1
 const isMP = platformInfo.startsWith('mp')
+const isVapor = process.env.UNI_APP_X_DOM2 === "true"
 
 describe('API-intersection-observer', () => {
-	if (isApp || isSafari || isMP) {
+	// App 端仅在 Android 和 iOS 蒸汽模式运行，Safari 和小程序跳过
+	if ((isApp && !(isAndroidOrIOS && isVapor)) || isSafari || isMP) {
 	  it('not support', () => {
 	    expect(1).toBe(1)
 	  })

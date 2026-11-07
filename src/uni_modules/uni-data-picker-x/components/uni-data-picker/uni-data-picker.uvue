@@ -460,12 +460,14 @@
     flex-direction: row;
     align-items: center;
     flex-wrap: nowrap;
-    padding: 5px 5px;
-    padding-right: 5px;
+    padding: 8px 10px;
     overflow: hidden;
     min-height: 28px;
-    border: 1px solid #e5e5e5;
-    border-radius: 5px;
+    background-color: var(--content-background-color, #ffffff);
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--input-border-color, #dcdfe6);
+    border-radius: 6px;
   }
 
   .selected-path {
@@ -490,18 +492,19 @@
 
   .text-color {
     font-size: 14px;
-    color: #333;
+    color: var(--text-color, #333333);
   }
 
   .placeholder {
-    color: grey;
     font-size: 14px;
+    color: var(--secondary-text-color, #999999);
   }
 
   .input-split-line {
     opacity: .5;
     margin-left: 1px;
     margin-right: 1px;
+    color: var(--secondary-text-color, #999999);
   }
 
   .arrow-area {
@@ -516,8 +519,12 @@
   .input-arrow {
     width: 8px;
     height: 8px;
-    border-left: 2px solid #999;
-    border-bottom: 2px solid #999;
+    border-left-width: 2px;
+    border-left-style: solid;
+    border-left-color: var(--arrow-color, #999999);
+    border-bottom-width: 2px;
+    border-bottom-style: solid;
+    border-bottom-color: var(--arrow-color, #999999);
   }
 
   .uni-data-tree-cover {
@@ -545,8 +552,9 @@
     right: 0;
     bottom: 0;
     height: 80%;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
+    background-color: var(--content-background-color, #ffffff);
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
     flex-direction: column;
     z-index: 102;
     overflow: hidden;
@@ -573,7 +581,10 @@
   .dialog-caption {
     position: relative;
     flex-direction: row;
-    background-color: #ffffff;
+    background-color: var(--content-background-color, #ffffff);
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: var(--divider-color, #eeeeee);
   }
 
   .dialog-title-view {
@@ -583,6 +594,9 @@
   .dialog-title {
     align-self: center;
     padding: 0 10px;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-color, #333333);
     line-height: 44px;
   }
 
@@ -599,7 +613,7 @@
   .dialog-close-plus {
     width: 16px;
     height: 2px;
-    background-color: #666;
+    background-color: var(--secondary-text-color, #999999);
     border-radius: 2px;
     transform: rotate(45deg);
   }
@@ -640,23 +654,46 @@
 
   @media (prefers-color-scheme: dark) {
     .input-value {
-      border-color: #646464;
-    }
-
-    .input-split-line {
-      color: #999;
+      background-color: #2d2d2d;
+      border-color: rgba(255, 255, 255, 0.18);
     }
 
     .text-color {
-      color: #ccc;
+      color: #ffffff;
+    }
+
+    .placeholder {
+      color: rgba(255, 255, 255, 0.65);
+    }
+
+    .input-split-line {
+      color: rgba(255, 255, 255, 0.65);
+    }
+
+    .input-arrow {
+      border-left-color: #ffffff;
+      border-bottom-color: #ffffff;
+    }
+
+    .error-text {
+      color: #ff7875;
+    }
+
+    .uni-data-tree-dialog {
+      background-color: #2d2d2d;
     }
 
     .dialog-caption {
-      background-color: #2b2b2b;
+      background-color: #2d2d2d;
+      border-bottom-color: rgba(255, 255, 255, 0.12);
     }
 
     .dialog-title {
-      color: #ccc;
+      color: #ffffff;
+    }
+
+    .dialog-close-plus {
+      background-color: #cccccc;
     }
   }
 </style>

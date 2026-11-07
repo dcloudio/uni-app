@@ -16,7 +16,7 @@
     <view ref="navigatorbarRef" class="pos-fixed border-b-width-1 border-b-style-solid w-full bg-page-f5f5f5 navigatorbar">
       <view class="flex-dir-row items-center h-44">
         <!-- #ifndef MP-ALIPAY -->
-        <uni-back-arrow-circle :auto-back="true" style="background-color: transparent;" class="arrow"></uni-back-arrow-circle>
+        <uni-backarrow-circle auto-back style="background-color: transparent;" class="arrow"></uni-backarrow-circle>
         <!-- #endif -->
         <!-- #ifdef MP-ALIPAY -->
         <view class="w-36"></view>
@@ -179,9 +179,11 @@ defineExpose({
   border-bottom-color: var(--border-color, #efefef);
 }
 
-/* uni-back-arrow-circle组件 自定义样式 */
+/* uni-backarrow-circle组件 自定义样式 */
 .arrow {
-  --back-arrow-color: #555;
+  /* 导航栏已处理顶部安全区，按钮无需重复偏移。 */
+  margin-top: 0;
+  --uni-backarrow-circle-color: #555;
 }
 
 .title {
@@ -202,7 +204,7 @@ defineExpose({
 
 @media (prefers-color-scheme: dark) {
   .arrow {
-    --back-arrow-color: #ffffff;
+    --uni-backarrow-circle-color: #ffffff;
   }
 
   .searchinput {

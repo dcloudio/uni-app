@@ -24,23 +24,23 @@
 		 * @description 滚动到目标位置时的额外偏移量，单位 px
 		 * @default 0
 		 */
-		offset : number,
+		offset ?: number,
 		/**
 		 * @description 滚动时是否使用动画
 		 * @default true
 		 */
-		scrollWithAnimation : boolean,
+		scrollWithAnimation ?: boolean,
 		/**
 		 * @description 目标列表是否使用页面滚动（而非独立的 list-view 滚动容器）。
 		 * 页面滚动时可使用 CSS position: sticky 实现原生分段吸顶（小程序 WebView / H5）。
 		 * @default false
 		 */
-		pageScroll : boolean
+		pageScroll ?: boolean
 	}
 
 	const props = withDefaults(defineProps<Props>(), {
 		offset: 0,
-		scrollWithAnimation: true,
+		scrollWithAnimation: false,
 		pageScroll: false
 	})
 
@@ -126,19 +126,30 @@
 	}
 
 	// #region 目标列表滚动时高亮对应导航项
-	// 微信小程序中一个 IntersectionObserver 实例仅能 observe 一次，故每个条目使用独立实例
-	let observers : IntersectionObserver[] = []
-
-	const getObserverScope = () : any => {
-		// 目标条目位于页面中，观察器需使用页面作用域。传 null 时微信小程序默认使用页面作用域
-		return null
-	}
-
 	const emitChange = (index : number) => {
 		if (index != currentIndex.value) {
 			currentIndex.value = index
 			emit('change', index, props.list[index])
 		}
+	}
+
+	// 微信小程序端 / Web 端 / App-Android 端：一个 IntersectionObserver 实例仅能 observe 一次，
+	// 故每个条目使用独立实例。
+	// - 页面滚动场景：以视口顶部 1px 作为参照带
+	// - 独立 list-view 场景：以目标列表顶部 1px 作为参照带
+	// #ifdef MP || WEB || APP-ANDROID
+	let observers : IntersectionObserver[] = []
+
+	const getObserverScope = () : any => {
+		// #ifdef APP-ANDROID
+		// App 端 component 参数不能为 null（会抛 NullPointerException）。传入空数组时不做组件作用域限制，
+		// 观察器内部会退化为页面作用域（在页面内查找观察目标与参照容器）。
+		return [] as UniElement[]
+		// #endif
+		// #ifndef APP-ANDROID
+		// 目标条目位于页面中，传 null 使用页面作用域
+		return null
+		// #endif
 	}
 
 	const createObservers = (targetHeight : number) => {
@@ -169,11 +180,20 @@
 				obs.relativeTo('#' + props.targetId, { top: 0, bottom: bandBottom })
 			}
 			obs.observe('#' + itemSelector(index), (res : ObserveResult) => {
+				// #ifdef WEB || APP-ANDROID
+				// thresholds 为 [0] 时，回调只在相交比例 0↔非 0 跨越时触发。此刻条目正好开始/结束
+				// 覆盖顶部参照带：仍在相交即表示该条目位于顶部，直接高亮即可。
+				if (res.intersectionRatio > 0) {
+					emitChange(index)
+				}
+				// #endif
+				// #ifdef MP
 				// 至少与参照带重叠半个像素才认为是“位于顶部”，过滤掉相邻分段交界处的极小相交比例
 				const itemHeight = res.boundingClientRect.bottom - res.boundingClientRect.top
 				if (itemHeight > 0 && res.intersectionRatio * itemHeight >= 0.5) {
 					emitChange(index)
 				}
+				// #endif
 			})
 			observers.push(obs)
 		}
@@ -195,8 +215,6 @@
 		})
 	}
 
-	// createIntersectionObserver 目前在 App 端尚不支持，仅在支持观察器的平台启用滚动高亮
-	// #ifdef MP || WEB
 	onMounted(() => {
 		nextTick(() => {
 			setupObserver()

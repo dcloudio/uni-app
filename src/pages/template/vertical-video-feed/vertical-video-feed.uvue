@@ -1,6 +1,6 @@
 <template>
     <!-- #ifndef MP-ALIPAY -->
-    <uni-back-arrow-circle :auto-back="true" class="back arrow"></uni-back-arrow-circle>
+    <uni-backarrow-circle auto-back class="back arrow"></uni-backarrow-circle>
     <!-- #endif -->
     <swiper class="w-full swiper h-full" :current="current" :circular="index != 0" :vertical="true" @change="onSwiperChange"
       @transition="onTransition" <!-- #ifdef MP-ALIPAY -->
@@ -47,278 +47,278 @@
    * @optimization: 通过只保留 3 个可见视频容器并复用数据窗口，降低连续视频流场景下的组件创建和视频上下文数量。
    */
 
-type ListItem = { _id : string, content : string, src : string, poster_src : string }
-let page : number = 0,
-  currentPageIsShow : boolean = true;
+  type ListItem = { _id : string, content : string, src : string, poster_src : string }
+  let page : number = 0,
+    currentPageIsShow : boolean = true;
 
-import { state, setNetless } from '@/store/index.ts'
-import CommentPanel from './comment-panel.uvue'
+  import { state, setNetless } from '@/store/index.ts'
+  import CommentPanel from './comment-panel.uvue'
 
-const $videoContextMap = new Map<string, VideoContext>()
-const list = ref([] as ListItem[])
-const visibleList = ref([] as ListItem[])// 提高性能 可见的只有3个
-const current = ref(0 as number)
-const index = ref(0)
-const stateList = ref(["pause", "unPlay", "unPlay"] as string[])
-const showDebugInfo = ref(false as boolean)
+  const $videoContextMap = new Map<string, VideoContext>()
+  const list = ref([] as ListItem[])
+  const visibleList = ref([] as ListItem[])// 提高性能 可见的只有3个
+  const current = ref(0 as number)
+  const index = ref(0)
+  const stateList = ref(["pause", "unPlay", "unPlay"] as string[])
+  const showDebugInfo = ref(false as boolean)
 
-// 评论相关
-const showCommentPanel = ref(false as boolean)
-const commentCount = ref(0 as number)
+  // 评论相关
+  const showCommentPanel = ref(false as boolean)
+  const commentCount = ref(0 as number)
 
-function openCommentPanel() {
-  showCommentPanel.value = true
-}
-
-function closeCommentPanel() {
-  showCommentPanel.value = false
-}
-
-function onCommentCountChange(count : number) {
-  commentCount.value = count
-}
-
-function getVideoContext(idx : number) : VideoContext {
-  let videoContext : VideoContext | null = $videoContextMap.get('video-' + idx)
-  if (videoContext == null) {
-    videoContext = uni.createVideoContext('video-' + idx) as VideoContext
-    $videoContextMap.set('video-' + idx, videoContext)
+  function openCommentPanel() {
+    showCommentPanel.value = true
   }
-  return videoContext
-}
 
-function doPlay(idx : number) {
-  console.log("doPlay  video" + idx);
-  getVideoContext(idx).play()
-}
-
-function doStop(idx : number) {
-  console.log("doStop  video-" + idx);
-  getVideoContext(idx).stop();
-  // TODO 临时方案：解决.stop()时触发了doPause的问题
-  setTimeout(() => {
-    stateList.value[idx] = 'unPlay'
-  }, 1000)
-}
-
-function doPause(idx : number) {
-  getVideoContext(idx).pause()
-  console.log("doPause  video-" + idx);
-}
-
-// #ifdef MP-ALIPAY
-function playCurrent(idx : number) {
-  nextTick(() => {
-    setTimeout(() => doPlay(idx), 120)
-  })
-}
-// #endif
-
-function changeState(idx : number) {
-  if (stateList.value[idx] === 'play') {
-    doPause(idx)
-  } else {
-    // #ifdef MP-ALIPAY
-    playCurrent(current.value)
-    // #endif
-    // #ifndef MP-ALIPAY
-    doPlay(current.value)
-    // #endif
+  function closeCommentPanel() {
+    showCommentPanel.value = false
   }
-}
 
-function onLoadstart(idx : number) {
-  console.error("onLoadstart  video" + idx);
-}
-
-function onPause(idx : number) {
-  stateList.value[idx] = 'pause'
-  console.log('onPause', idx);
-}
-
-function onPlay(idx : number) {
-  if (current.value != idx || !currentPageIsShow) {
-    onPause(idx)
-  } else {
-    stateList.value[idx] = 'play'
-    console.log('onPlay', idx);
+  function onCommentCountChange(count : number) {
+    commentCount.value = count
   }
-}
 
-function getData() : ListItem[] {
-  let videoUrlList = state.netless
+  function getVideoContext(idx : number) : VideoContext {
+    let videoContext : VideoContext | null = $videoContextMap.get('video-' + idx)
+    if (videoContext == null) {
+      videoContext = uni.createVideoContext('video-' + idx) as VideoContext
+      $videoContextMap.set('video-' + idx, videoContext)
+    }
+    return videoContext
+  }
+
+  function doPlay(idx : number) {
+    console.log("doPlay  video" + idx);
+    getVideoContext(idx).play()
+  }
+
+  function doStop(idx : number) {
+    console.log("doStop  video-" + idx);
+    getVideoContext(idx).stop();
+    // TODO 临时方案：解决.stop()时触发了doPause的问题
+    setTimeout(() => {
+      stateList.value[idx] = 'unPlay'
+    }, 1000)
+  }
+
+  function doPause(idx : number) {
+    getVideoContext(idx).pause()
+    console.log("doPause  video-" + idx);
+  }
+
+  // #ifdef MP-ALIPAY
+  function playCurrent(idx : number) {
+    nextTick(() => {
+      setTimeout(() => doPlay(idx), 120)
+    })
+  }
+  // #endif
+
+  function changeState(idx : number) {
+    if (stateList.value[idx] === 'play') {
+      doPause(idx)
+    } else {
+      // #ifdef MP-ALIPAY
+      playCurrent(current.value)
+      // #endif
+      // #ifndef MP-ALIPAY
+      doPlay(current.value)
+      // #endif
+    }
+  }
+
+  function onLoadstart(idx : number) {
+    console.error("onLoadstart  video" + idx);
+  }
+
+  function onPause(idx : number) {
+    stateList.value[idx] = 'pause'
+    console.log('onPause', idx);
+  }
+
+  function onPlay(idx : number) {
+    if (current.value != idx || !currentPageIsShow) {
+      onPause(idx)
+    } else {
+      stateList.value[idx] = 'play'
+      console.log('onPlay', idx);
+    }
+  }
+
+  function getData() : ListItem[] {
+    let videoUrlList = state.netless
+      ? [
+          '/static/test-video/10second-demo.mp4',
+          '/static/test-video/10second-demo.mp4',
+          '/static/test-video/10second-demo.mp4'
+        ]
+      : [
+          'https://web-ext-storage.dcloud.net.cn/uni-app-x/video/uts-5-16.mp4',
+          'https://web-ext-storage.dcloud.net.cn/uni-app-x/video/uni-ai-5-16.mp4',
+          'https://web-ext-storage.dcloud.net.cn/uni-app-x/video/uni-verify-5-16.mp4'
+        ] as string[]
+
+    let posterSrcList = state.netless
     ? [
-        '/static/test-video/10second-demo.mp4',
-        '/static/test-video/10second-demo.mp4',
-        '/static/test-video/10second-demo.mp4'
+        '/static/shuijiao.jpg',
+        '/static/logo.jpg',
+        '/static/shuijiao.jpg'
       ]
     : [
-        'https://web-ext-storage.dcloud.net.cn/uni-app-x/video/uts-5-16.mp4',
-        'https://web-ext-storage.dcloud.net.cn/uni-app-x/video/uni-ai-5-16.mp4',
-        'https://web-ext-storage.dcloud.net.cn/uni-app-x/video/uni-verify-5-16.mp4'
+        'https://web-ext-storage.dcloud.net.cn/uni-app-x/dark-uni-uts-01.png',
+        'https://web-ext-storage.dcloud.net.cn/uni-app-x/dark-uni-ai-01.png',
+        'https://web-ext-storage.dcloud.net.cn/uni-app-x/dark-uni-verify-01.jpg'
       ] as string[]
 
-  let posterSrcList = state.netless
-  ? [
-      '/static/shuijiao.jpg',
-      '/static/logo.jpg',
-      '/static/shuijiao.jpg'
-    ]
-  : [
-      'https://web-ext-storage.dcloud.net.cn/uni-app-x/dark-uni-uts-01.png',
-      'https://web-ext-storage.dcloud.net.cn/uni-app-x/dark-uni-ai-01.png',
-      'https://web-ext-storage.dcloud.net.cn/uni-app-x/dark-uni-verify-01.jpg'
-    ] as string[]
 
-
-  let listData = [] as ListItem[];
-  for (let i = 0; i < 6; i++) {
-    let idx = list.value.length + i;
-    let listItem : ListItem = {
-      "_id": "a00" + idx,
-      "content": "这是第" + idx + "条数据，url地址" + videoUrlList[i % 3],
-      "src": videoUrlList[i % 3],
-      "poster_src": posterSrcList[i % 3]
+    let listData = [] as ListItem[];
+    for (let i = 0; i < 6; i++) {
+      let idx = list.value.length + i;
+      let listItem : ListItem = {
+        "_id": "a00" + idx,
+        "content": "这是第" + idx + "条数据，url地址" + videoUrlList[i % 3],
+        "src": videoUrlList[i % 3],
+        "poster_src": posterSrcList[i % 3]
+      }
+      listData.push(listItem)
     }
-    listData.push(listItem)
-  }
-  return listData
-}
-
-function onSwiperChange(e : SwiperChangeEvent) {
-  // console.error('SwiperChangeEvent',e.detail.current);
-  current.value = e.detail.current;
-}
-
-// #ifdef MP-ALIPAY
-function onSwiperAnimationfinish(e : SwiperAnimationFinishEvent) {
-  playCurrent(e.detail.current)
-}
-// #endif
-
-function onTransition(/*e : SwiperTransitionEvent*/) {
-  // console.log('onTransition e.detail.dx', e.detail.dx);
-}
-
-watch(current, (curr : number, oldCurrent : number) => {
-  let changeNumber = curr - oldCurrent
-  if (changeNumber == 1 || changeNumber == -2) {
-    // console.error('向右');
-    index.value++
-  } else {
-    // console.error('向左');
-    index.value--
-  }
-  // //翻页（3项为一页）
-  if (Math.abs(changeNumber) == 2) {
-    // console.log('翻页');
-    page = Math.floor(index.value / 3);
-    // console.log(index.value);
-    // console.log('page',page);
-    // console.log('slice',3*page,3*page+3);
-    if (list.value.length < 3 * page + 3) {
-      let listData : ListItem[] = getData()
-      list.value.push(...listData)
-    }
-
-    let visible = list.value.slice(3 * page, 3 * page + 3)
-    // 换数据
-    visibleList.value = visible
+    return listData
   }
 
-  stateList.value.forEach((_ : string, idx : number) => {
-    if (idx === curr) {
-      // #ifdef MP-ALIPAY
-      playCurrent(curr)
-      // #endif
-      // #ifndef MP-ALIPAY
-      doPlay(curr)
-      // #endif
+  function onSwiperChange(e : SwiperChangeEvent) {
+    // console.error('SwiperChangeEvent',e.detail.current);
+    current.value = e.detail.current;
+  }
+
+  // #ifdef MP-ALIPAY
+  function onSwiperAnimationfinish(e : SwiperAnimationFinishEvent) {
+    playCurrent(e.detail.current)
+  }
+  // #endif
+
+  function onTransition(/*e : SwiperTransitionEvent*/) {
+    // console.log('onTransition e.detail.dx', e.detail.dx);
+  }
+
+  watch(current, (curr : number, oldCurrent : number) => {
+    let changeNumber = curr - oldCurrent
+    if (changeNumber == 1 || changeNumber == -2) {
+      // console.error('向右');
+      index.value++
     } else {
-      // 除了选中的其他已经播放的都需要停止
-      // #ifdef MP-ALIPAY
-      if (stateList.value[idx] != 'unPlay') {
+      // console.error('向左');
+      index.value--
+    }
+    // //翻页（3项为一页）
+    if (Math.abs(changeNumber) == 2) {
+      // console.log('翻页');
+      page = Math.floor(index.value / 3);
+      // console.log(index.value);
+      // console.log('page',page);
+      // console.log('slice',3*page,3*page+3);
+      if (list.value.length < 3 * page + 3) {
+        let listData : ListItem[] = getData()
+        list.value.push(...listData)
+      }
+
+      let visible = list.value.slice(3 * page, 3 * page + 3)
+      // 换数据
+      visibleList.value = visible
+    }
+
+    stateList.value.forEach((_ : string, idx : number) => {
+      if (idx === curr) {
+        // #ifdef MP-ALIPAY
+        playCurrent(curr)
+        // #endif
+        // #ifndef MP-ALIPAY
+        doPlay(curr)
+        // #endif
+      } else {
+        // 除了选中的其他已经播放的都需要停止
+        // #ifdef MP-ALIPAY
+        if (stateList.value[idx] != 'unPlay') {
+          doStop(idx)
+          console.log('index:' + idx + '已被执行停止');
+        }
+        // #endif
+        // #ifndef MP-ALIPAY
         doStop(idx)
         console.log('index:' + idx + '已被执行停止');
+        // #endif
       }
+    })
+  })
+
+  // #ifdef APP-HARMONY
+  uni.getNetworkType({
+    success: (res) => {
+      setNetless(res.networkType === 'none')
+  // #endif
+      list.value = getData()
+      visibleList.value = list.value.slice(0, 3)
+      // #ifdef APP || MP
+      // 非web端，一启动完成，就播放第一个。因为 web端浏览器限制不支持自动播放
+      // 鸿蒙 vapor 模式下，v-for 后 nextTick 后 nativeView init 事件还没有触发，因此延时 30ms
+      nextTick(() => {
+        setTimeout(() => doPlay(0), 30)
+      })
       // #endif
-      // #ifndef MP-ALIPAY
-      doStop(idx)
-      console.log('index:' + idx + '已被执行停止');
-      // #endif
+  // #ifdef APP-HARMONY
     }
   })
-})
+  // #endif
 
-// #ifdef APP-HARMONY
-uni.getNetworkType({
-  success: (res) => {
-    setNetless(res.networkType === 'none')
-// #endif
-    list.value = getData()
-    visibleList.value = list.value.slice(0, 3)
-    // #ifdef APP || MP
-    // 非web端，一启动完成，就播放第一个。因为 web端浏览器限制不支持自动播放
-    // 鸿蒙 vapor 模式下，v-for 后 nextTick 后 nativeView init 事件还没有触发，因此延时 30ms
-    nextTick(() => {
-      setTimeout(() => doPlay(0), 30)
-    })
-    // #endif
-// #ifdef APP-HARMONY
+  onPageShow(() => {
+    currentPageIsShow = true
+  })
+
+  onHide(() => {
+    currentPageIsShow = false
+    console.log('pages-onHide');
+    doPause(current.value)
+  })
+
+  onBackPress((): boolean => {
+    if (showCommentPanel.value) {
+      closeCommentPanel()
+      return true
+    }
+    return false
+  })
+
+  onUnload(() => {
+    doPause(current.value)
+  })
+
+  function jest_getStateList() : string[] {
+    return stateList.value
   }
-})
-// #endif
 
-onPageShow(() => {
-  currentPageIsShow = true
-})
-
-onHide(() => {
-  currentPageIsShow = false
-  console.log('pages-onHide');
-  doPause(current.value)
-})
-
-onBackPress((): boolean => {
-  if (showCommentPanel.value) {
-    closeCommentPanel()
-    return true
+  function jest_getCurrent() : number {
+    return current.value
   }
-  return false
-})
 
-onUnload(() => {
-  doPause(current.value)
-})
+  function jest_isCommentPanelShown() : boolean {
+    return showCommentPanel.value
+  }
 
-function jest_getStateList() : string[] {
-  return stateList.value
-}
+  function jest_switchTo(idx : number) {
+    current.value = idx
+  }
 
-function jest_getCurrent() : number {
-  return current.value
-}
-
-function jest_isCommentPanelShown() : boolean {
-  return showCommentPanel.value
-}
-
-function jest_switchTo(idx : number) {
-  current.value = idx
-}
-
-defineExpose({
-  jest_getStateList,
-  jest_getCurrent,
-  jest_isCommentPanelShown,
-  jest_switchTo
-})
+  defineExpose({
+    jest_getStateList,
+    jest_getCurrent,
+    jest_isCommentPanelShown,
+    jest_switchTo
+  })
 </script>
 
-  <style>
-    page {
-      background-color: #000000;
-    }
+<style>
+  page {
+    background-color: #000000;
+  }
 
   /* #ifdef MP-ALIPAY */
   .swiper {
@@ -332,18 +332,17 @@ defineExpose({
 
   .back{
     position: absolute;
-    /* #ifdef APP || MP */
-    top: var(--status-bar-height);
-    /* #endif */
+    /* 由uni-backarrow-circle组件适配安全区 */
+    top: 0;
     /* #ifdef WEB */
     top: 10px;
     /* #endif */
     z-index: 10;
   }
 
-  /* uni-back-arrow-circle组件 自定义样式 */
+  /* uni-backarrow-circle组件 自定义样式 */
   .arrow {
-    --back-arrow-color: #FFFFFF;
+    --uni-backarrow-circle-color: #FFFFFF;
   }
 
   /* 评论按钮 */

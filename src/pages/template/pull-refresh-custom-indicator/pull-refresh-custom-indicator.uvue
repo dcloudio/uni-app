@@ -1,25 +1,18 @@
 <template>
-<!-- #ifdef WEB -->
-  <view>
-  <!-- #endif -->
-    <list-view class="flex-1 list-view" :refresher-enabled="true" :refresher-triggered="data.refresherTriggered"
-      refresher-default-style="none" @refresherpulling="onRefresherpulling" @refresherrefresh="onRefresherrefresh"
-      @refresherrestore="onRefreshrestore" :refresher-threshold="data.refresherThreshold" refresher-max-drag-distance="200px">
-
-      <page-intro content="本页演示自定义下拉刷新：sticky header、列表项与自定义 refresher 插槽（refresh-box），下拉触发刷新。"></page-intro>
-      <sticky-header>
-        <view class="justify-center u-h-50 u-p-15 header">
-          <text class="header-text">sticky header</text>
-        </view>
-      </sticky-header>
-      <list-item v-for="i in 20" :key="i">
-        <text class="m-5-0 u-p-15 fs-14 lh-20 content-item-text">item-{{i}}</text>
-      </list-item>
-      <refresh-box slot="refresher" :state="state" :pullingDistance="data.pullingDistance"></refresh-box>
-    </list-view>
-  <!-- #ifdef WEB -->
-  </view>
-  <!-- #endif -->
+  <list-view class="flex-1 list-view" :refresher-enabled="true" :refresher-triggered="data.refresherTriggered"
+    refresher-default-style="none" @refresherpulling="onRefresherpulling" @refresherrefresh="onRefresherrefresh"
+    @refresherrestore="onRefreshrestore" :refresher-threshold="data.refresherThreshold" refresher-max-drag-distance="200px">
+    <page-intro content="本页演示自定义下拉刷新：sticky header、列表项与自定义 refresher 插槽（refresh-box），下拉触发刷新。"></page-intro>
+    <sticky-header>
+      <view class="justify-center u-h-50 u-p-15 header">
+        <text class="header-text">sticky header</text>
+      </view>
+    </sticky-header>
+    <list-item v-for="i in 20" :key="i">
+      <text class="m-5-0 u-p-15 fs-14 lh-20 content-item-text">item-{{i}}</text>
+    </list-item>
+    <refresh-box slot="refresher" :state="state" :pullingDistance="data.pullingDistance"></refresh-box>
+  </list-view>
 </template>
 
 <script setup lang="ts">

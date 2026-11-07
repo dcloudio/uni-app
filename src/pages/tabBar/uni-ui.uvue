@@ -73,6 +73,13 @@
       pages: [] as Page[]
     },
     {
+      id: 'backarrow-circle',
+      name: 'uni-backarrow-circle 圆形返回按钮',
+      open: false,
+      url: '/pages/uni-ui/backarrow-circle/backarrow-circle',
+      pages: [] as Page[]
+    },
+    {
       id: 'collapse',
       name: 'uni-collapse 折叠面板',
       open: false,
@@ -93,6 +100,27 @@
       name: 'uni-data-checkbox 数据选择器',
       open: false,
       url: '/pages/uni-ui/data-checkbox/data-checkbox',
+      pages: [] as Page[]
+    },
+    {
+      id: 'data-picker',
+      name: 'uni-data-picker 级联选择器',
+      open: false,
+      url: '/pages/uni-ui/data-picker/data-picker',
+      pages: [] as Page[]
+    },
+    {
+      id: 'data-picker-view',
+      name: 'uni-data-picker-view 级联选择器',
+      open: false,
+      url: '/pages/uni-ui/data-picker/data-picker-view',
+      pages: [] as Page[]
+    },
+    {
+      id: 'data-vertical-marquee',
+      name: 'uni-data-vertical-marquee 上下滚动文字',
+      open: false,
+      url: '/pages/uni-ui/data-vertical-marquee/data-vertical-marquee',
       pages: [] as Page[]
     },
     {
@@ -123,6 +151,13 @@
       name: 'uni-forms 表单',
       open: false,
       url: '/pages/uni-ui/forms/forms',
+      pages: [] as Page[]
+    },
+    {
+      id: 'icons',
+      name: 'uni-icons 图标',
+      open: false,
+      url: '/pages/uni-ui/icons/icons',
       pages: [] as Page[]
     },
     {
@@ -207,13 +242,6 @@
       name: 'uni-time-format 时间格式化',
       open: false,
       url: '/pages/uni-ui/time-format/time-format',
-      pages: [] as Page[]
-    },
-    {
-      id: 'icons',
-      name: 'uni-icons 图标',
-      open: false,
-      url: '/pages/uni-ui/icons/icons',
       pages: [] as Page[]
     },
   ] as ListItem[])

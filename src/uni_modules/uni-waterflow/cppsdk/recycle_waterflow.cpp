@@ -184,6 +184,8 @@ namespace recycle_waterflow {
             self->callMethod("setNativeChannelFn", {jsFn});
         });
 #else
+        vue::shared::NapiRuntimeScope runtimeScope(this->_sharedData->_env, this->_sharedData->_callJsMethodRef);
+        if (!runtimeScope) return;
         napi_value jsFn;
         napi_create_function(
                 this->_sharedData->_env,
@@ -711,6 +713,8 @@ namespace recycle_waterflow {
                                 {renderRangeStart, renderRangeLength});
             });
 #else
+            vue::shared::NapiRuntimeScope runtimeScope(sharedData->_env, sharedData->_callJsMethodRef);
+            if (!runtimeScope) return;
             this->lastRenderRangeStart = this->renderRangeStart;
             this->lastRenderRangeLength = this->renderRangeLength;
             // 通知vue渲染新列表

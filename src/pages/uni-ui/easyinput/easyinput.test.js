@@ -31,14 +31,16 @@ describe('easyinput', () => {
     expect(await externalInput.value()).toBe('外部更新')
   })
 
-  it('updates v-model and applies trim on input', async () => {
+  it('updates v-model without trimming the input', async () => {
     const basicInput = await page.$('.test-basic-input')
-    await basicInput.input('新的内容')
-    expect(await page.data('data.basicValue')).toBe('新的内容')
+    await basicInput.input(' a b c ')
+    expect(await page.data('data.basicValue')).toBe(' a b c ')
+  })
 
-    const trimInput = await page.$('.test-trim-input')
-    await trimInput.input(' a b c ')
-    expect(await page.data('data.trimValue')).toBe('abc')
+  it('delegates trimming to the Vue v-model modifier', async () => {
+    const modifierInput = await page.$('.test-modifier-input')
+    await modifierInput.input(' trimmed by Vue ')
+    expect(await page.data('data.modifierValue')).toBe('trimmed by Vue')
   })
 
   it('handles clear and password actions', async () => {

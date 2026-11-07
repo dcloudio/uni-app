@@ -189,6 +189,7 @@ export type Polygon = {
 	zIndex ?: number | null;
 };
 
+// #ifndef APP-HARMONY
 export type Circle = {
 	latitude : number;
 	longitude : number;
@@ -197,6 +198,19 @@ export type Circle = {
 	fillColor ?: string | null;
 	strokeWidth ?: number | null;
 };
+// #endif
+// #ifdef APP-HARMONY
+// 该代码不能删除，否则鸿蒙编译会报错
+type AmapCircle = {
+	latitude : number;
+	longitude : number;
+	radius : number;
+	color ?: string | null;
+	fillColor ?: string | null;
+	strokeWidth ?: number | null;
+};
+export type Circle = AmapCircle;
+// #endif
 
 export type Bounds = {
 	southwest : AmapLocationObject;

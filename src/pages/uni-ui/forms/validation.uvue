@@ -1,19 +1,19 @@
 <template>
-	<scroll-view class="flex-1 bg-page-f5f5f5 page" :class="{ 'page-dark': isDarkMode }">
-		<view class="u-p-16 bg-content-background-fff intro">
-			<text class="fw-bold color-text-222 fs-18 page-title">完整校验示例</text>
-			<text class="fs-13 lh-21 color-secondary-text-657180 page-desc">覆盖常用 DB Schema 规则、字段级方法、异步校验和回调式 API。提交时会校验整张表，失焦时只校验配置了 blur 的字段。</text>
+	<scroll-view class="page" :class="{ 'page-dark': isDarkMode }">
+		<view class="intro">
+			<text class="page-title">完整校验示例</text>
+			<text class="page-desc">覆盖常用 DB Schema 规则、字段级方法、异步校验和回调式 API。提交时会校验整张表，失焦时只校验配置了 blur 的字段。</text>
 		</view>
 
-		<view class="u-p-16 bg-content-background-fff mt-10 section rule-summary">
-			<text class="fw-bold color-text-222 mb-12 fs-16 section-title">本页规则</text>
-			<text class="fs-13 lh-21 color-secondary-text-657180 rule-text">required：必填　format：类型/邮箱　pattern：正则</text>
-			<text class="fs-13 lh-21 color-secondary-text-657180 rule-text">minLength / maxLength：长度　minimum / maximum：数值范围</text>
-			<text class="fs-13 lh-21 color-secondary-text-657180 rule-text">range / arrayType：枚举和数组元素类型</text>
-			<text class="fs-13 lh-21 color-secondary-text-657180 rule-text">validateExpr / validateFunction：自定义同步和异步校验</text>
+		<view class="section rule-summary">
+			<text class="section-title">本页规则</text>
+			<text class="rule-text">required：必填　format：类型/邮箱　pattern：正则</text>
+			<text class="rule-text">minLength / maxLength：长度　minimum / maximum：数值范围</text>
+			<text class="rule-text">range / arrayType：枚举和数组元素类型</text>
+			<text class="rule-text">validateExpr / validateFunction：自定义同步和异步校验</text>
 		</view>
 
-		<view class="u-p-16 bg-content-background-fff mt-10 section">
+		<view class="section">
 			<uni-forms
 				ref="formRef"
 				v-model="formData"
@@ -44,7 +44,7 @@
 				<uni-forms-item name="age" label="年龄" required label-class="demo-label" error-message-class="demo-error">
 					<view class="native-input-shell">
 						<input
-							class="flex-1 w-full fs-14 color-text-333 box-border-box native-input"
+							class="native-input"
 							type="number"
 							v-model="ageInput"
 							placeholder="18-120"
@@ -61,7 +61,7 @@
 				<!-- #endif -->
 
 				<uni-forms-item name="tags" label="标签数组" required label-class="demo-label" error-message-class="demo-error">
-					<view class="flex-dir-row flex-wrap-wrap tag-list">
+					<view class="tag-list">
 						<view
 							v-for="tag in tagOptions"
 							:key="tag"
@@ -79,19 +79,19 @@
 				</uni-forms-item>
 			</uni-forms>
 
-			<view class="flex-dir-row flex-wrap-wrap button-grid">
-				<button class="mr-10 color-fff bg-007aff action-button" size="mini" @click="validateForm">Promise 校验整表</button>
-				<button class="mr-10 color-fff bg-007aff action-button" size="mini" @click="validateEmail">校验邮箱字段</button>
-				<button class="mr-10 color-fff bg-007aff color-text-333 bg-active-e9eef5 action-button secondary-button" size="mini" @click="validateByCallback">callback 校验</button>
-				<button class="mr-10 color-fff bg-007aff color-text-333 bg-active-e9eef5 action-button secondary-button" size="mini" @click="clearValidate">清除错误</button>
+			<view class="button-grid">
+				<button class="action-button" size="mini" @click="validateForm">Promise 校验整表</button>
+				<button class="action-button" size="mini" @click="validateEmail">校验邮箱字段</button>
+				<button class="action-button secondary-button" size="mini" @click="validateByCallback">callback 校验</button>
+				<button class="action-button secondary-button" size="mini" @click="clearValidate">清除错误</button>
 			</view>
-			<text class="mt-8 fs-14 color-007aff status-text">{{ statusText }}</text>
+			<text class="status-text">{{ statusText }}</text>
 		</view>
 
-		<view class="u-p-16 bg-content-background-fff mt-10 pb-32 section section-last">
-			<text class="fw-bold color-text-222 mb-12 fs-16 section-title">当前值</text>
+		<view class="section section-last">
+			<text class="section-title">当前值</text>
 			<text class="data-text">{{ dataText }}</text>
-			<text class="fs-13 lh-21 color-secondary-text-657180 hint-text">异步邀请码示例值：UNI-FORM；年龄必须是 18 到 120 的整数。</text>
+			<text class="hint-text">异步邀请码示例值：UNI-FORM；年龄必须是 18 到 120 的整数。</text>
 		</view>
 	</scroll-view>
 </template>
@@ -103,7 +103,7 @@ const isDarkMode = computed((): boolean => state.isDarkMode)
 
 /** 暗黑模式下同步导航栏颜色，与图标示例页保持一致 */
 function syncNavigationBar(): void {
-	// #ifdef APP
+	// #ifdef APP || WEB
 	const dark = isDarkMode.value
 	uni.setNavigationBarColor({
 		frontColor: dark ? '#ffffff' : '#000000',
@@ -295,8 +295,70 @@ function onValidate(result : any) {
 </script>
 
 <style>
+.page {
+	flex: 1;
+	--list-background-color: #ffffff;
+	--background-color: #f5f5f5;
+	--active-color: #a0a0a0;
+	--active-background-color: #f8f8f8;
+	--text-color: #333333;
+	--arrow-color: #999999;
+	--tips-background-color: #e6f4ff;
+	--content-background-color: #ffffff;
+	--secondary-text-color: #657180;
+	--input-border-color: #dcdfe6;
+	--divider-color: #e5e5e5;
+	--forms-error-background-color: #fff2f0;
+	background-color: var(--background-color);
+}
+
+.page-dark {
+	--list-background-color: #2d2d2d;
+	--background-color: #1a1a1a;
+	--active-color: #8f8f8f;
+	--active-background-color: #3b3b3b;
+	--text-color: #ffffff;
+	--arrow-color: #ffffff;
+	--tips-background-color: #0b1b3a;
+	--content-background-color: #2d2d2d;
+	--secondary-text-color: rgba(255, 255, 255, 0.65);
+	--input-border-color: rgba(255, 255, 255, 0.18);
+	--divider-color: rgba(255, 255, 255, 0.12);
+	--forms-error-background-color: #3a1a1c;
+}
+
+.intro,
+.section {
+	padding: 16px;
+	background-color: var(--content-background-color, #ffffff);
+}
+
+.section {
+	margin-top: 10px;
+}
+
+.section-last {
+	padding-bottom: 32px;
+}
+
+.page-title,
+.section-title {
+	font-size: 18px;
+	font-weight: bold;
+	color: var(--text-color, #222222);
+}
+
 .section-title {
 	margin-bottom: 10px;
+	font-size: 16px;
+}
+
+.page-desc,
+.rule-text,
+.hint-text {
+	font-size: 13px;
+	line-height: 21px;
+	color: var(--secondary-text-color, #657180);
 }
 
 .rule-summary {
@@ -318,10 +380,20 @@ function onValidate(result : any) {
 }
 
 .native-input {
+	flex: 1;
+	width: 100%;
 	height: 34px;
 	min-height: 0;
 	padding: 0 10px;
+	font-size: 14px;
 	line-height: 34px;
+	color: var(--text-color, #333333);
+	box-sizing: border-box;
+}
+
+.tag-list {
+	flex-direction: row;
+	flex-wrap: wrap;
 }
 
 .tag-item {
@@ -341,12 +413,27 @@ function onValidate(result : any) {
 }
 
 .button-grid {
+	flex-direction: row;
+	flex-wrap: wrap;
 	margin-top: 8px;
 }
 
 .action-button {
 	width: 48%;
 	margin: 0 2% 8px 0;
+	color: #ffffff;
+	background-color: #007aff;
+}
+
+.secondary-button {
+	color: var(--text-color, #333333);
+	background-color: var(--active-background-color, #e9eef5);
+}
+
+.status-text {
+	margin-top: 8px;
+	font-size: 14px;
+	color: #007aff;
 }
 
 .data-text {
@@ -368,5 +455,22 @@ function onValidate(result : any) {
 .demo-error {
 	font-weight: bold;
 	color: #dd524d;
+}
+
+@media (prefers-color-scheme: dark) {
+	.page {
+		--list-background-color: #2d2d2d;
+		--background-color: #1a1a1a;
+		--active-color: #8f8f8f;
+		--active-background-color: #3b3b3b;
+		--text-color: #ffffff;
+		--arrow-color: #ffffff;
+		--tips-background-color: #0b1b3a;
+		--content-background-color: #2d2d2d;
+		--secondary-text-color: rgba(255, 255, 255, 0.65);
+		--input-border-color: rgba(255, 255, 255, 0.18);
+		--divider-color: rgba(255, 255, 255, 0.12);
+		--forms-error-background-color: #3a1a1c;
+	}
 }
 </style>

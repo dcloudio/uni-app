@@ -9,6 +9,7 @@
 			"version": "11.2.000"
 		}
 	],
+	"dependencies-pod-resources": "app",
 	"thirdSDKs": [
 		"amap"
 	]

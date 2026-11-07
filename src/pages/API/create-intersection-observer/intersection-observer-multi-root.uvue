@@ -1,0 +1,192 @@
+<template>
+	<view class="page">
+		<view class="fixed-area">
+			<text class="title">IntersectionObserver 多根节点测试</text>
+			<text class="hint">当前环境：scroll-view 嵌套模式（外层 nested-scroll-header / nested-scroll-body + 内层 associative-container="nested-scroll-view"）。</text>
+			<text id="mr-status-inner" class="result">相对内层滚动区：{{ visibleInner ? '显示' : '隐藏' }} · 相对外层滚动区：{{ visibleOuter ? '显示' : '隐藏' }}</text>
+			<text id="mr-status-viewport" class="result">相对页面视口：{{ visibleViewport ? '显示' : '隐藏' }}</text>
+			<text id="mr-status-header" class="result">头部元素（相对外层滚动区）：{{ visibleHeader ? '显示' : '隐藏' }}</text>
+			<text id="mr-scroll-info" class="hint">外层滚动 {{ outerTop }} · 内层滚动 {{ innerTop }}。状态区固定在页面顶部，滑动时始终可见。</text>
+		</view>
+		<scroll-view id="mr-outer" class="outer" type="nested" direction="vertical" :scroll-with-animation="false"
+			:show-scrollbar="true" @scroll="onOuterScroll">
+			<nested-scroll-header>
+				<view class="header-box">
+					<view class="layer-tag"><text>外层内容（header，随外层滚动）</text></view>
+					<text class="hint">滑动时外层先滚，随后内层滚；头部与内层元素分别被观察，滚出可视区时应为隐藏。</text>
+					<view id="mr-target-h" class="target-h"><text>头部被观察元素</text></view>
+				</view>
+			</nested-scroll-header>
+			<nested-scroll-body>
+				<view class="body-wrap">
+					<scroll-view id="mr-inner" class="inner" direction="vertical" associative-container="nested-scroll-view"
+						:show-scrollbar="true" @scroll="onInnerScroll">
+						<view v-for="i in 8" :key="i" class="inner-item"
+							:style="{ backgroundColor: i % 2 == 0 ? '#eef5ff' : '#ffffff' }">
+							<text>内层列表项 {{ i }}</text>
+						</view>
+						<view id="mr-target" class="target"><text>被观察元素</text></view>
+						<view v-for="i in 8" :key="'b' + i" class="inner-item"
+							:style="{ backgroundColor: i % 2 == 0 ? '#eef5ff' : '#ffffff' }">
+							<text>内层列表项 {{ i + 8 }}</text>
+						</view>
+					</scroll-view>
+				</view>
+			</nested-scroll-body>
+		</scroll-view>
+	</view>
+</template>
+
+<script setup lang="uts">
+	const outerTop = ref(0)
+	const innerTop = ref(0)
+	const visibleInner = ref(false)
+	const visibleOuter = ref(false)
+	const visibleViewport = ref(false)
+	const visibleHeader = ref(false)
+	let componentInstance : ComponentPublicInstance | null = null
+	let innerObserver : IntersectionObserver | null = null
+	let outerObserver : IntersectionObserver | null = null
+	let viewportObserver : IntersectionObserver | null = null
+	let headerObserver : IntersectionObserver | null = null
+
+	function onOuterScroll(event : UniScrollEvent) {
+		outerTop.value = Math.round(event.detail.scrollTop)
+	}
+
+	function onInnerScroll(event : UniScrollEvent) {
+		innerTop.value = Math.round(event.detail.scrollTop)
+	}
+
+	onReady(() => {
+		componentInstance = getCurrentInstance()!.proxy!
+
+		// 相对内层滚动区观察被观察元素
+		innerObserver = uni.createIntersectionObserver(componentInstance!, { thresholds: [0] } as CreateIntersectionObserverOptions)
+		innerObserver!.relativeTo('#mr-inner').observe('#mr-target', (result : ObserveResult) => {
+			visibleInner.value = result.intersectionRatio > 0
+			console.log('[多根-内层根] ratio=' + result.intersectionRatio + ' top=' + Math.round(result.boundingClientRect.top) + ' innerTop=' + innerTop.value)
+		})
+
+		// 相对外层滚动区观察被观察元素
+		outerObserver = uni.createIntersectionObserver(componentInstance!, { thresholds: [0] } as CreateIntersectionObserverOptions)
+		outerObserver!.relativeTo('#mr-outer').observe('#mr-target', (result : ObserveResult) => {
+			visibleOuter.value = result.intersectionRatio > 0
+			console.log('[多根-外层根] ratio=' + result.intersectionRatio + ' top=' + Math.round(result.boundingClientRect.top) + ' outerTop=' + outerTop.value)
+		})
+
+		// 相对页面视口观察被观察元素（对照）
+		viewportObserver = uni.createIntersectionObserver(componentInstance!, { thresholds: [0] } as CreateIntersectionObserverOptions)
+		viewportObserver!.relativeToViewport().observe('#mr-target', (result : ObserveResult) => {
+			visibleViewport.value = result.intersectionRatio > 0
+			console.log('[多根-页面视口] ratio=' + result.intersectionRatio + ' top=' + Math.round(result.boundingClientRect.top))
+		})
+
+		// 相对外层滚动区观察 nested-scroll-header 中的元素
+		headerObserver = uni.createIntersectionObserver(componentInstance!, { thresholds: [0] } as CreateIntersectionObserverOptions)
+		headerObserver!.relativeTo('#mr-outer').observe('#mr-target-h', (result : ObserveResult) => {
+			visibleHeader.value = result.intersectionRatio > 0
+			console.log('[多根-头部元素] ratio=' + result.intersectionRatio + ' top=' + Math.round(result.boundingClientRect.top) + ' outerTop=' + outerTop.value)
+		})
+	})
+
+	onUnload(() => {
+		innerObserver?.disconnect()
+		innerObserver = null
+		outerObserver?.disconnect()
+		outerObserver = null
+		viewportObserver?.disconnect()
+		viewportObserver = null
+		headerObserver?.disconnect()
+		headerObserver = null
+	})
+</script>
+
+<style>
+	.page {
+		flex: 1;
+		flex-direction: column;
+	}
+
+	.fixed-area {
+		flex-direction: column;
+		padding: 8px 12px 4px 12px;
+		background-color: #ffffff;
+		border-bottom-width: 1px;
+		border-bottom-style: solid;
+		border-bottom-color: #e0e0e0;
+	}
+
+	.title {
+		font-size: 18px;
+		margin-bottom: 4px;
+	}
+
+	.hint {
+		font-size: 12px;
+		line-height: 16px;
+		color: #666666;
+	}
+
+	.result {
+		font-size: 13px;
+		line-height: 18px;
+	}
+
+	.outer {
+		flex: 1;
+	}
+
+	.header-box {
+		flex-direction: column;
+		padding: 8px 12px;
+	}
+
+	.color-block {
+		height: 300px;
+		margin-top: 8px;
+		align-items: center;
+		justify-content: center;
+		background-color: #b6dcff;
+	}
+
+	.layer-tag {
+		height: 40px;
+		margin-bottom: 6px;
+		align-items: center;
+		justify-content: center;
+		background-color: #d0e8ff;
+	}
+
+	.target-h {
+		height: 150px;
+		margin-top: 8px;
+		align-items: center;
+		justify-content: center;
+		background-color: #c8e6c9;
+	}
+
+	.body-wrap {
+		flex: 1;
+	}
+
+	.inner {
+		flex: 1;
+	}
+
+	.inner-item {
+		height: 100px;
+		align-items: center;
+		justify-content: center;
+		border-bottom-width: 1px;
+		border-bottom-style: solid;
+		border-bottom-color: #e0e0e0;
+	}
+
+	.target {
+		height: 150px;
+		align-items: center;
+		justify-content: center;
+		background-color: #ffd6a5;
+	}
+</style>

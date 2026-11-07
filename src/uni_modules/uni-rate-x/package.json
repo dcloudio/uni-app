@@ -1,7 +1,7 @@
 {
   "id": "uni-rate-x",
   "displayName": "uni-rate 评分",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Rate 评分组件，可自定义评分星星图标的大小、间隔、评分数。",
   "isExt": true,
   "extUrl": "https://ext.dcloud.net.cn/plugin?id=27900",
@@ -41,7 +41,8 @@
     "darkmode": "x",
     "i18n": "x",
     "widescreen": "x",
-    "npmurl": ""
+    "npmurl": "",
+    "vapor": "√"
   },
   "uni_modules": {
     "dependencies": [],
@@ -55,16 +56,34 @@
       "client": {
         "uni-app-x": {
           "web": {
-            "safari": "√",
-            "chrome": "√"
+            "safari": {
+                "extVersion": "1.0.2",
+                "minVersion": ""
+            },
+            "chrome": {
+                "extVersion": "1.0.2",
+                "minVersion": ""
+            }
           },
           "app": {
-            "android": "√",
-            "ios": "√",
-            "harmony": "√"
+            "android": {
+                "extVersion": "1.0.2",
+                "minVersion": ""
+            },
+            "ios": {
+                "extVersion": "1.0.2",
+                "minVersion": ""
+            },
+            "harmony": {
+                "extVersion": "1.0.2",
+                "minVersion": ""
+            }
           },
           "mp": {
-            "weixin": "√"
+            "weixin": {
+                "extVersion": "1.0.2",
+                "minVersion": ""
+            }
           }
         }
       }

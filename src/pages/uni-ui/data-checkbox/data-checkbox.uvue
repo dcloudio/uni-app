@@ -157,7 +157,7 @@ import { state } from '@/store/index.ts'
 const isDarkMode = computed(() : boolean => state.isDarkMode)
 
 function syncNavigationBar() : void {
-	// #ifdef APP
+	// #ifdef APP || WEB
 	const dark = isDarkMode.value
 	uni.setNavigationBarColor({
 		frontColor: dark ? '#ffffff' : '#000000',
@@ -263,11 +263,29 @@ defineExpose({
 <style>
 .page {
 	flex: 1;
-	background-color: var(--background-color, #f5f5f5);
+	--background-color: #f5f5f5;
+	--active-background-color: #f8f8f8;
+	--text-color: #333333;
+	--tips-color: #0958d9;
+	--tips-background-color: #e6f4ff;
+	--content-background-color: #ffffff;
+	--secondary-text-color: #657180;
+	--input-border-color: #dcdfe6;
+	--divider-color: #e5e5e5;
 	--data-checkbox-demo-error-color: #dd524d;
+	background-color: var(--background-color);
 }
 
 .page-dark {
+	--background-color: #1a1a1a;
+	--active-background-color: #3b3b3b;
+	--text-color: #ffffff;
+	--tips-color: #91caff;
+	--tips-background-color: #0b1b3a;
+	--content-background-color: #2d2d2d;
+	--secondary-text-color: rgba(255, 255, 255, 0.65);
+	--input-border-color: rgba(255, 255, 255, 0.18);
+	--divider-color: rgba(255, 255, 255, 0.12);
 	--data-checkbox-demo-error-color: #ff7875;
 }
 
@@ -415,6 +433,15 @@ defineExpose({
 
 @media (prefers-color-scheme: dark) {
 	.page {
+		--background-color: #1a1a1a;
+		--active-background-color: #3b3b3b;
+		--text-color: #ffffff;
+		--tips-color: #91caff;
+		--tips-background-color: #0b1b3a;
+		--content-background-color: #2d2d2d;
+		--secondary-text-color: rgba(255, 255, 255, 0.65);
+		--input-border-color: rgba(255, 255, 255, 0.18);
+		--divider-color: rgba(255, 255, 255, 0.12);
 		--data-checkbox-demo-error-color: #ff7875;
 	}
 }

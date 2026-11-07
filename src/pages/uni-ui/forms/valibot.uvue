@@ -1,20 +1,20 @@
 <template>
-	<scroll-view class="flex-1 bg-page-f5f5f5 page" :class="{ 'page-dark': isDarkMode }">
-		<view class="u-p-16 bg-content-background-fff intro">
-			<text class="fw-bold color-text-222 fs-18 page-title">Valibot Standard Schema</text>
-			<text class="fs-13 lh-21 color-secondary-text-657180 page-desc">本页默认引用页面同级的本地 Valibot 1.5.0 运行时创建 schema，再通过 uni-forms 的 schema 属性接入；业务项目可以改用 npm 安装。legacy validate.js 示例仍在“完整校验”页面。</text>
+	<scroll-view class="page" :class="{ 'page-dark': isDarkMode }">
+		<view class="intro">
+			<text class="page-title">Valibot Standard Schema</text>
+			<text class="page-desc">本页默认引用页面同级的本地 Valibot 1.5.0 运行时创建 schema，再通过 uni-forms 的 schema 属性接入；业务项目可以改用 npm 安装。legacy validate.js 示例仍在“完整校验”页面。</text>
 		</view>
 
-		<view class="u-p-16 bg-content-background-fff mt-10 section setup-section">
-			<text class="fw-bold color-text-222 mb-12 fs-16 section-title">1. 引入与 schema 组成</text>
+		<view class="section setup-section">
+			<text class="section-title">1. 引入与 schema 组成</text>
 			<text class="code-text">import * as v from './valibot-local.mjs'</text>
-			<text class="fs-13 lh-21 color-secondary-text-657180 body-text">schema 可以组合 string、number、boolean、picklist、array、object、optional、union 和 pipe。Valibot 会通过 ~standard.validate 暴露给 uni-forms。</text>
+			<text class="body-text">schema 可以组合 string、number、boolean、picklist、array、object、optional、union 和 pipe。Valibot 会通过 ~standard.validate 暴露给 uni-forms。</text>
 			<text class="code-text">const schema = v.object({ profile, role, tags, contact })</text>
-			<text class="fs-13 lh-21 color-secondary-text-657180 body-text">本页的表单覆盖嵌套对象、数组路径、可选字段、联合类型和跨字段确认密码。</text>
+			<text class="body-text">本页的表单覆盖嵌套对象、数组路径、可选字段、联合类型和跨字段确认密码。</text>
 		</view>
 
-		<view class="u-p-16 bg-content-background-fff mt-10 section">
-			<text class="fw-bold color-text-222 mb-12 fs-16 section-title">2. 同步 schema 表单</text>
+		<view class="section">
+			<text class="section-title">2. 同步 schema 表单</text>
 			<uni-forms
 				ref="formRef"
 				v-model="formData"
@@ -43,15 +43,15 @@
 				</uni-forms-item>
 
 				<uni-forms-item name="profile.age" label="年龄" required label-class="demo-label" error-message-class="demo-error">
-					<input class="flex-1 w-full fs-14 color-text-333 box-border-box min-h-38 p-0-10 border-width-1 border-style-solid border-color-input-border-d8dfe8 radius-4 native-input" type="number" v-model="ageInput" placeholder="18-120" :adjust-position="false" @input="onAgeInput" />
+					<input class="native-input" type="number" v-model="ageInput" placeholder="18-120" :adjust-position="false" @input="onAgeInput" />
 				</uni-forms-item>
 
 				<uni-forms-item name="profile.bio" label="个人简介" label-class="demo-label" error-message-class="demo-error">
-					<textarea class="flex-1 w-full fs-14 color-text-333 box-border-box min-h-38 p-0-10 border-width-1 border-style-solid border-color-input-border-d8dfe8 radius-4 native-textarea" v-model="formData.profile.bio" placeholder="可选；会先 trim 再校验" />
+					<textarea class="native-textarea" v-model="formData.profile.bio" placeholder="可选；会先 trim 再校验" />
 				</uni-forms-item>
 
 				<uni-forms-item name="role" label="角色枚举" required label-class="demo-label" error-message-class="demo-error">
-					<view class="flex-dir-row flex-wrap-wrap choice-list">
+					<view class="choice-list">
 						<view v-for="item in roleOptions" :key="item.value" class="choice-item" :class="formData.role == item.value ? 'choice-active' : ''" @click="formData.role = item.value">
 							<text class="choice-text">{{ item.label }}</text>
 						</view>
@@ -59,7 +59,7 @@
 				</uni-forms-item>
 
 				<uni-forms-item name="tags" label="标签数组" required label-class="demo-label" error-message-class="demo-error">
-					<view class="flex-dir-row flex-wrap-wrap choice-list">
+					<view class="choice-list">
 						<view v-for="tag in tagOptions" :key="tag" class="choice-item" :class="formData.tags.indexOf(tag) >= 0 ? 'choice-active' : ''" @click="toggleTag(tag)">
 							<text class="choice-text">{{ tag }}</text>
 						</view>
@@ -75,62 +75,62 @@
 				</uni-forms-item>
 			</uni-forms>
 
-			<view class="flex-dir-row flex-wrap-wrap button-grid">
-				<button class="mr-10 color-fff bg-007aff action-button" size="mini" @click="validateForm">uni-forms.validate</button>
-				<button class="mr-10 color-fff bg-007aff action-button" size="mini" @click="validateField">validateField（legacy）</button>
-				<button class="mr-10 color-fff bg-007aff color-text-333 bg-active-e9eef5 action-button secondary-button" size="mini" @click="clearForm">clearValidate</button>
-				<button class="mr-10 color-fff bg-007aff color-text-333 bg-active-e9eef5 action-button secondary-button" size="mini" @click="resetForm">resetFields</button>
+			<view class="button-grid">
+				<button class="action-button" size="mini" @click="validateForm">uni-forms.validate</button>
+				<button class="action-button" size="mini" @click="validateField">validateField（legacy）</button>
+				<button class="action-button secondary-button" size="mini" @click="clearForm">clearValidate</button>
+				<button class="action-button secondary-button" size="mini" @click="resetForm">resetFields</button>
 			</view>
-			<text class="mt-8 fs-14 color-007aff status-text">{{ statusText }}</text>
+			<text class="status-text">{{ statusText }}</text>
 			<text class="data-text">当前模型：{{ dataText }}</text>
-			<text class="fs-13 lh-21 color-secondary-text-657180 hint-text">兼容边界：validateField 只执行指定字段的 legacy rules；表级 Valibot schema 请使用 uni-forms.validate，或直接使用下方 safeParse。</text>
+			<text class="hint-text">兼容边界：validateField 只执行指定字段的 legacy rules；表级 Valibot schema 请使用 uni-forms.validate，或直接使用下方 safeParse。</text>
 		</view>
 
-		<view class="u-p-16 bg-content-background-fff mt-10 section">
-			<text class="fw-bold color-text-222 mb-12 fs-16 section-title">3. 联合类型和跨字段规则</text>
-			<text class="fs-13 lh-21 color-secondary-text-657180 body-text">contact 使用 variant('kind', ...)：kind 为 email 时按邮箱校验，kind 为 phone 时按手机号校验。修改联系类型后，下面的值会按另一条分支解释。</text>
-			<view class="flex-dir-row flex-wrap-wrap choice-list">
+		<view class="section">
+			<text class="section-title">3. 联合类型和跨字段规则</text>
+			<text class="body-text">contact 使用 variant('kind', ...)：kind 为 email 时按邮箱校验，kind 为 phone 时按手机号校验。修改联系类型后，下面的值会按另一条分支解释。</text>
+			<view class="choice-list">
 				<view class="choice-item" :class="formData.contact.kind == 'email' ? 'choice-active' : ''" @click="changeContactKind('email')"><text class="choice-text">email 分支</text></view>
 				<view class="choice-item" :class="formData.contact.kind == 'phone' ? 'choice-active' : ''" @click="changeContactKind('phone')"><text class="choice-text">phone 分支</text></view>
 			</view>
-			<text class="fs-13 lh-21 color-secondary-text-657180 body-text">确认密码使用 forward(check(...), ['confirmPassword'])，所以错误会映射回确认密码字段，而不是只显示表单级错误。</text>
-			<text class="fs-13 lh-21 color-secondary-text-657180 body-text">profile.age、profile.bio 和 contact.value 展示了 Standard Schema 的嵌套 path 到 uni-forms-item name 的映射。</text>
+			<text class="body-text">确认密码使用 forward(check(...), ['confirmPassword'])，所以错误会映射回确认密码字段，而不是只显示表单级错误。</text>
+			<text class="body-text">profile.age、profile.bio 和 contact.value 展示了 Standard Schema 的嵌套 path 到 uni-forms-item name 的映射。</text>
 		</view>
 
-		<view class="u-p-16 bg-content-background-fff mt-10 section">
-			<text class="fw-bold color-text-222 mb-12 fs-16 section-title">4. 异步 schema 与唯一性校验</text>
-			<text class="fs-13 lh-21 color-secondary-text-657180 body-text">asyncSchema 使用 checkAsync 模拟服务端唯一性查询。输入 taken 会失败，输入其它非空用户名会通过。</text>
+		<view class="section">
+			<text class="section-title">4. 异步 schema 与唯一性校验</text>
+			<text class="body-text">asyncSchema 使用 checkAsync 模拟服务端唯一性查询。输入 taken 会失败，输入其它非空用户名会通过。</text>
 			<uni-forms ref="asyncFormRef" v-model="asyncData" :schema="asyncSchema" err-show-type="undertext" label-position="left" label-width="112" border>
 				<uni-forms-item name="username" label="异步用户名" required label-class="demo-label" error-message-class="demo-error">
 					<uni-easyinput v-model="asyncData.username" placeholder="taken 表示已被占用" />
 				</uni-forms-item>
 			</uni-forms>
-			<view class="flex-dir-row flex-wrap-wrap button-grid">
-				<button class="mr-10 color-fff bg-007aff action-button" size="mini" @click="validateAsyncForm">校验 asyncSchema</button>
-				<button class="mr-10 color-fff bg-007aff color-text-333 bg-active-e9eef5 action-button secondary-button" size="mini" @click="runSafeParseAsync">safeParseAsync</button>
+			<view class="button-grid">
+				<button class="action-button" size="mini" @click="validateAsyncForm">校验 asyncSchema</button>
+				<button class="action-button secondary-button" size="mini" @click="runSafeParseAsync">safeParseAsync</button>
 			</view>
-			<text class="mt-8 fs-14 color-007aff status-text">{{ asyncStatusText }}</text>
+			<text class="status-text">{{ asyncStatusText }}</text>
 		</view>
 
-		<view class="u-p-16 bg-content-background-fff mt-10 section">
-			<text class="fw-bold color-text-222 mb-12 fs-16 section-title">5. Valibot 原生 API 对照</text>
-			<text class="fs-13 lh-21 color-secondary-text-657180 body-text">safeParse 不抛异常，适合按钮预览和实时提示；parse 校验失败会抛出 ValiError；safeParseAsync 适合异步 schema。</text>
-			<view class="flex-dir-row flex-wrap-wrap button-grid">
-				<button class="mr-10 color-fff bg-007aff action-button" size="mini" @click="runSafeParse">safeParse</button>
-				<button class="mr-10 color-fff bg-007aff action-button" size="mini" @click="runParse">parse / catch</button>
-				<button class="mr-10 color-fff bg-007aff action-button" size="mini" @click="runOptional">optional / default</button>
-				<button class="mr-10 color-fff bg-007aff action-button" size="mini" @click="runTransform">查看 transform 输出</button>
+		<view class="section">
+			<text class="section-title">5. Valibot 原生 API 对照</text>
+			<text class="body-text">safeParse 不抛异常，适合按钮预览和实时提示；parse 校验失败会抛出 ValiError；safeParseAsync 适合异步 schema。</text>
+			<view class="button-grid">
+				<button class="action-button" size="mini" @click="runSafeParse">safeParse</button>
+				<button class="action-button" size="mini" @click="runParse">parse / catch</button>
+				<button class="action-button" size="mini" @click="runOptional">optional / default</button>
+				<button class="action-button" size="mini" @click="runTransform">查看 transform 输出</button>
 			</view>
-			<text class="mt-8 fs-14 color-007aff status-text">{{ apiStatusText }}</text>
+			<text class="status-text">{{ apiStatusText }}</text>
 			<text class="data-text">schema 校验输出：{{ parsedText }}</text>
-			<text class="fs-13 lh-21 color-secondary-text-657180 hint-text">transform 只展示 Valibot 的 output；uni-forms 不会把 transform 自动写回 formData，这样可以保持旧版 validate 返回值语义稳定。</text>
+			<text class="hint-text">transform 只展示 Valibot 的 output；uni-forms 不会把 transform 自动写回 formData，这样可以保持旧版 validate 返回值语义稳定。</text>
 		</view>
 
-		<view class="u-p-16 bg-content-background-fff mt-10 pb-32 section section-last">
-			<text class="fw-bold color-text-222 mb-12 fs-16 section-title">6. 选择方案</text>
-			<text class="fs-13 lh-21 color-secondary-text-657180 body-text">Schema2code：使用 :rules，兼容 datacom、DB Schema 和原版 validate.js。</text>
-			<text class="fs-13 lh-21 color-secondary-text-657180 body-text">Valibot：本示例使用页面同级的本地副本，避免示例工程必须先安装依赖；业务侧推荐通过 npm 安装并从 valibot 导入，使用 :schema。uni-forms 只依赖 Standard Schema，不绑定 Valibot 私有 API。</text>
-			<text class="fs-13 lh-21 color-secondary-text-657180 body-text">迁移期：rules 和 schema 可以同时传入；整表校验会合并两套结果，旧字段规则不会被 Valibot 改写。</text>
+		<view class="section section-last">
+			<text class="section-title">6. 选择方案</text>
+			<text class="body-text">Schema2code：使用 :rules，兼容 datacom、DB Schema 和原版 validate.js。</text>
+			<text class="body-text">Valibot：本示例使用页面同级的本地副本，避免示例工程必须先安装依赖；业务侧推荐通过 npm 安装并从 valibot 导入，使用 :schema。uni-forms 只依赖 Standard Schema，不绑定 Valibot 私有 API。</text>
+			<text class="body-text">迁移期：rules 和 schema 可以同时传入；整表校验会合并两套结果，旧字段规则不会被 Valibot 改写。</text>
 			<text class="code-text"># 业务项目（推荐）
 npm install valibot
 import * as v from 'valibot'</text>
@@ -147,7 +147,7 @@ const isDarkMode = computed((): boolean => state.isDarkMode)
 
 /** 暗黑模式下同步导航栏颜色，与图标示例页保持一致 */
 function syncNavigationBar(): void {
-	// #ifdef APP
+	// #ifdef APP || WEB
 	const dark = isDarkMode.value
 	uni.setNavigationBarColor({
 		frontColor: dark ? '#ffffff' : '#000000',
@@ -390,8 +390,72 @@ defineExpose({ formData, validateForm, validateAsyncForm, runSafeParse })
 </script>
 
 <style>
+.page {
+	flex: 1;
+	--list-background-color: #ffffff;
+	--background-color: #f5f5f5;
+	--active-color: #a0a0a0;
+	--active-background-color: #f8f8f8;
+	--text-color: #333333;
+	--arrow-color: #999999;
+	--tips-color: #0958d9;
+	--tips-background-color: #e6f4ff;
+	--content-background-color: #ffffff;
+	--secondary-text-color: #657180;
+	--input-border-color: #dcdfe6;
+	--divider-color: #e5e5e5;
+	--forms-error-background-color: #fff2f0;
+	background-color: var(--background-color);
+}
+
+.page-dark {
+	--list-background-color: #2d2d2d;
+	--background-color: #1a1a1a;
+	--active-color: #8f8f8f;
+	--active-background-color: #3b3b3b;
+	--text-color: #ffffff;
+	--arrow-color: #ffffff;
+	--tips-color: #91caff;
+	--tips-background-color: #0b1b3a;
+	--content-background-color: #2d2d2d;
+	--secondary-text-color: rgba(255, 255, 255, 0.65);
+	--input-border-color: rgba(255, 255, 255, 0.18);
+	--divider-color: rgba(255, 255, 255, 0.12);
+	--forms-error-background-color: #3a1a1c;
+}
+
+.intro,
+.section {
+	padding: 16px;
+	background-color: var(--content-background-color, #ffffff);
+}
+
+.section {
+	margin-top: 10px;
+}
+
+.section-last {
+	padding-bottom: 32px;
+}
+
+.page-title,
+.section-title {
+	font-size: 18px;
+	font-weight: bold;
+	color: var(--text-color, #222222);
+}
+
 .section-title {
 	margin-bottom: 10px;
+	font-size: 16px;
+}
+
+.page-desc,
+.body-text,
+.hint-text {
+	font-size: 13px;
+	line-height: 21px;
+	color: var(--secondary-text-color, #657180);
 }
 
 .body-text {
@@ -409,9 +473,36 @@ defineExpose({ formData, validateForm, validateAsyncForm, runSafeParse })
 	border-radius: 4px;
 }
 
+.native-input,
+.native-textarea {
+	flex: 1;
+	width: 100%;
+	font-size: 14px;
+	color: var(--text-color, #333333);
+	box-sizing: border-box;
+}
+
+.native-input {
+	min-height: 38px;
+	padding: 0 10px;
+	border-width: 1px;
+	border-style: solid;
+	border-color: var(--input-border-color, #d8dfe8);
+	border-radius: 4px;
+}
+
 .native-textarea {
 	min-height: 76px;
 	padding: 8px 10px;
+	border-width: 1px;
+	border-style: solid;
+	border-color: var(--input-border-color, #d8dfe8);
+	border-radius: 4px;
+}
+
+.choice-list {
+	flex-direction: row;
+	flex-wrap: wrap;
 }
 
 .choice-item {
@@ -431,17 +522,28 @@ defineExpose({ formData, validateForm, validateAsyncForm, runSafeParse })
 }
 
 .button-grid {
+	flex-direction: row;
+	flex-wrap: wrap;
 	margin-top: 10px;
 }
 
 .action-button {
 	width: 48%;
 	margin: 0 2% 8px 0;
+	color: #ffffff;
+	background-color: #007aff;
+}
+
+.secondary-button {
+	color: var(--text-color, #333333);
+	background-color: var(--active-background-color, #e9eef5);
 }
 
 .status-text {
 	margin-top: 5px;
+	font-size: 14px;
 	line-height: 21px;
+	color: #007aff;
 }
 
 .data-text,
@@ -459,5 +561,23 @@ defineExpose({ formData, validateForm, validateAsyncForm, runSafeParse })
 .demo-error {
 	font-weight: bold;
 	color: #dd524d;
+}
+
+@media (prefers-color-scheme: dark) {
+	.page {
+		--list-background-color: #2d2d2d;
+		--background-color: #1a1a1a;
+		--active-color: #8f8f8f;
+		--active-background-color: #3b3b3b;
+		--text-color: #ffffff;
+		--arrow-color: #ffffff;
+		--tips-color: #91caff;
+		--tips-background-color: #0b1b3a;
+		--content-background-color: #2d2d2d;
+		--secondary-text-color: rgba(255, 255, 255, 0.65);
+		--input-border-color: rgba(255, 255, 255, 0.18);
+		--divider-color: rgba(255, 255, 255, 0.12);
+		--forms-error-background-color: #3a1a1c;
+	}
 }
 </style>

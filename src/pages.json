@@ -325,7 +325,8 @@
 		{
 			"path": "pages/component/rich-text/rich-text-list",
 			"style": {
-				"navigationBarTitleText": "rich-text-list"
+				"navigationBarTitleText": "rich-text-list",
+				"disableScroll": true
 			}
 		},
 		// #endif
@@ -1831,12 +1832,24 @@
 						"enablePullDownRefresh": false
 					}
 				},
-				// #ifdef WEB || MP
+				// #ifdef ((APP-ANDROID || APP-IOS) && VUE3-VAPOR) || WEB || MP
 				{
 					"path": "create-intersection-observer/create-intersection-observer",
 					"group": "1,4,0",
 					"style": {
 						"navigationBarTitleText": "uni.createIntersectionObserver | 节点布局相交状态"
+					}
+				},
+				{
+					"path": "create-intersection-observer/intersection-observer-batch",
+					"style": {
+						"navigationBarTitleText": "createIntersectionObserver | 批量监听多个元素"
+					}
+				},
+				{
+					"path": "create-intersection-observer/intersection-observer-multi-root",
+					"style": {
+						"navigationBarTitleText": "createIntersectionObserver | 嵌套多根节点"
 					}
 				},
 				// #endif
@@ -1945,6 +1958,22 @@
 					"group": "1,2,2",
 					"style": {
 						"navigationBarTitleText": "dialogPage"
+					}
+				},
+				// #endif
+				// #ifdef WEB
+				{
+					"path": "dialog-page/dialog-window-offset",
+					"style": {
+						"navigationBarTitleText": "弹窗窗口变量测试",
+						"navigationStyle": "default",
+						"disableScroll": false
+					}
+				},
+				{
+					"path": "dialog-page/dialog-window-offset-content",
+					"style": {
+						"navigationStyle": "custom"
 					}
 				},
 				// #endif
@@ -2955,7 +2984,8 @@
 				{
 					"path": "pull-refresh-custom-indicator/pull-refresh-custom-indicator",
 					"style": {
-						"navigationBarTitleText": "自定义下拉刷新指示器"
+						"navigationBarTitleText": "自定义下拉刷新指示器",
+						"disableScroll": true
 					}
 				},
 				// #endif
@@ -3171,8 +3201,9 @@
 						// #ifdef MP-ALIPAY
 						,
 						"transparentTitle": "always",
-						"navigationBarTextStyle":"black"
+						"allowsBounceVertical": "NO"
 						// #endif
+						,"navigationBarTextStyle":"black"
 					}
 				},
 				{
@@ -3329,12 +3360,6 @@
 					"path": "sidebar/sidebar",
 					"style": {
 						"navigationBarTitleText": "uni-sidebar"
-					}
-				},
-				{
-					"path": "forms/formcard",
-					"style": {
-						"navigationBarTitleText": ""
 					}
 				},
 				{

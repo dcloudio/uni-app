@@ -1,6 +1,6 @@
 # uni-easyinput 增强输入框
 
-适用于 uni-app x 的增强输入框。在原生 `input` 和 `textarea` 基础上提供清空、密码显隐、错误态、空白裁剪和左右插槽。
+适用于 uni-app x 的增强输入框。组件包装原生 `input` 和 `textarea`，补充边框、清空、密码显隐和左右插槽等常用输入场景。
 
 - 通过 `type` 指定输入类型，`textarea` 渲染多行输入框、`password` 渲染密码输入框，其余透传给原生单行输入。
 - 所有布尔属性默认值均为 `false`。
@@ -23,6 +23,12 @@
 
 `type="textarea"` 时渲染 `textarea`，并使用 `auto-height` 控制自动增高。
 
+组件不会裁剪输入内容。需要移除首尾空白时使用 Vue 的 `v-model.trim` 修饰符：
+
+```html
+<uni-easyinput v-model.trim="value" />
+```
+
 ## 图标和插槽
 
 清空图标由 `clearable` 控制，密码显隐图标由 `type="password"` + `password-icon` 控制，两者可同时显示。图标样式通过 `icon-class` 设置：
@@ -43,26 +49,6 @@
 		<text>.com</text>
 	</template>
 </uni-easyinput>
-```
-
-## 错误态
-
-`error-message` 为 `true` 或非空字符串时进入错误态（不渲染错误文案节点）。通过 `error-class` 自定义错误边框和占位文字颜色：
-
-```html
-<uni-easyinput
-	v-model="value"
-	error-message="输入内容有误"
-	error-class="my-error"
-	placeholder="错误状态"
-/>
-```
-
-```css
-.my-error {
-	border-color: #f56c6c;
-	color: #f56c6c;
-}
 ```
 
 ## 自定义样式
@@ -101,6 +87,10 @@
 
 VDOM 模式需要在 `manifest.json` 中启用样式隔离策略 2.0。定义在全局 `App.uvue` 中的 external class 覆盖组件默认样式时，部分属性可能需要使用 `!important`。
 
+组件默认不设置 placeholder 的颜色和字号，保留原生 `input` / `textarea` 的表现；需要定制时使用 `placeholder-class`。
+
+输入校验和错误信息由 `uni-forms-item` 负责，`uni-easyinput` 不提供错误态属性。
+
 ## Props
 
 | 属性名 | 类型 | 默认值 | 说明 |
@@ -119,12 +109,9 @@ VDOM 模式需要在 `manifest.json` 中启用样式隔离策略 2.0。定义在
 | autoHeight | Boolean | `false` | `type="textarea"` 时是否自动增高 |
 | clearable | Boolean | `false` | 是否显示清空图标 |
 | passwordIcon | Boolean | `false` | `type="password"` 时是否显示显隐图标 |
-| trim | Boolean / String | `false` | `both`、`left`、`right`、`all`；`true` 等价于 `both` |
-| errorMessage | String / Boolean | `false` | 是否进入错误态，不渲染错误信息节点 |
 | inputClass | String | `''` | input / textarea 的样式类 |
 | placeholderClass | String | `''` | 占位文字的样式类 |
 | iconClass | String | `''` | 清空和密码显隐图标的样式类 |
-| errorClass | String | `''` | 错误态边框和占位文字颜色的样式类 |
 
 ## External Classes
 
@@ -133,7 +120,6 @@ VDOM 模式需要在 `manifest.json` 中启用样式隔离策略 2.0。定义在
 | input-class | input 和 textarea 样式 |
 | placeholder-class | 占位文字样式 |
 | icon-class | 清空和密码显隐图标样式 |
-| error-class | 错误态边框和占位文字颜色 |
 
 ## Events
 
@@ -183,3 +169,5 @@ export type MyInputProps = UniEasyinputProps & {
 - 移除 `input-border` 属性，默认始终显示边框，使用组件 `class` 覆盖即可。
 - 移除 `prefix-icon`、`suffix-icon`、`prefix-icon-class`、`suffix-icon-class` 及 `iconClick` 事件；清空和密码显隐图标统一用 `icon-class` 设置样式。
 - `action-icon-class` 重命名为 `icon-class`。
+- 移除 `trim` 属性，输入内容处理改用 Vue 修饰符。
+- 移除 `error-message` 和 `error-class`，输入校验和错误反馈改由 `uni-forms-item` 负责。

@@ -23,6 +23,12 @@
 
   const newTitle = ref('new title')
   const longTitle = ref('long title long title long title long title long title long title long title long title long title long title')
+  const navigationBarLoadingCallback = reactive({
+    showSuccess: false,
+    showComplete: false,
+    hideSuccess: false,
+    hideComplete: false
+  })
 
   // 自动化测试
   const getLifeCycleNum = () : number => {
@@ -38,13 +44,13 @@
   const showNavigationBarLoading = () => {
     uni.showNavigationBarLoading({
       success: () => {
-        console.log('showNavigationBarLoading success')
+        navigationBarLoadingCallback.showSuccess = true
       },
       fail: () => {
-        console.log('showNavigationBarLoading fail')
+        navigationBarLoadingCallback.showSuccess = false
       },
       complete: () => {
-        console.log('showNavigationBarLoading complete')
+        navigationBarLoadingCallback.showComplete = true
       }
     })
   }
@@ -52,13 +58,13 @@
   const hideNavigationBarLoading = () => {
     uni.hideNavigationBarLoading({
       success: () => {
-        console.log('hideNavigationBarLoading success')
+        navigationBarLoadingCallback.hideSuccess = true
       },
       fail: () => {
-        console.log('hideNavigationBarLoading fail')
+        navigationBarLoadingCallback.hideSuccess = false
       },
       complete: () => {
-        console.log('hideNavigationBarLoading complete')
+        navigationBarLoadingCallback.hideComplete = true
       }
     })
   }
@@ -101,6 +107,11 @@
     getLifeCycleNum,
     setLifeCycleNum: setLifeCycleNumFunc,
     setNavigationBarNewTitle,
-    setNavigationBarLongTitle
+    setNavigationBarLongTitle,
+    navigationBarLoadingCallback,
+    // #ifdef (APP-HARMONY && !VUE3-VAPOR) || WEB || MP
+    showNavigationBarLoading,
+    hideNavigationBarLoading
+    // #endif
   })
 </script>

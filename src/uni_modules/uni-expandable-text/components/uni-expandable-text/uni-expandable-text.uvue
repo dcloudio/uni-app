@@ -22,12 +22,12 @@
 		<!--
 			隐藏的测量节点 (仅 APP & MP) 说明：
 			1. 宽度 100% 且共享与正文文本和Class相同，确保宽度绝对一致。
-			2. APP 端通过条件编译拍平，减少性能损失。5.34以前版本不能拍平，ios拍平后getBoundRect取不到值；鸿蒙拍平后无法设visibility
+			2. APP 端通过条件编译拍平，减少性能损失。5.36以前版本不能拍平，ios拍平后getBoundRect取不到值；鸿蒙拍平后无法设visibility
 		-->
 		<!-- #ifdef APP || MP -->
 		<text ref="measureRef" style="position: absolute; visibility: hidden; top: 0; left: 0; width: 100%;"
 			class="uni-expandable-measure" :class="textClass"
-			<!-- #ifdef APP-ANDROID || ((APP-IOS || APP-HARMONY ) && uniVersion>=5.34) -->
+			<!-- #ifdef APP-ANDROID || ((APP-IOS || APP-HARMONY ) && uniVersion>=5.36) -->
 			flatten
 			<!-- #endif -->
 			>
@@ -46,27 +46,15 @@
 	 * @description 按指定行数截断文本，并在文本溢出时显示展开/收起触发器。
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {
-	 *       "unixVaporVer": "5.31"
-	 *     },
-	 *     "ios": {
-	 *       "unixVaporVer": "5.31"
-	 *     },
-	 *     "harmony": {
-	 *       "unixVaporVer": "5.31"
-	 *     }
+	 *     "android": {"unixVaporVer": "5.31"},
+	 *     "ios": {"unixVaporVer": "5.31"},
+	 *     "harmony": {"unixVaporVer": "5.31"}
 	 *   },
 	 *   "mp": {
-	 *     "weixin": {
-	 *       "unixVer": "5.33"
-	 *     },
-	 *     "alipay": {
-	 *       "unixVer": "5.33"
-	 *     }
+	 *     "weixin": {"unixVer": "5.33"},
+	 *     "alipay": {"unixVer": "5.33"}
 	 *   },
-	 *   "web": {
-	 *     "unixVaporVer": "5.41"
-	 *   }
+	 *   "web": {"unixVaporVer": "5.41"}
 	 * }
 	 */
 	defineOptions({
@@ -86,27 +74,15 @@
 		 * @default ""
 		 * @uniPlatform {
 		 *   "app": {
-		 *     "android": {
-		 *       "unixVaporVer": "5.31"
-		 *     },
-		 *     "ios": {
-		 *       "unixVaporVer": "5.31"
-		 *     },
-		 *     "harmony": {
-		 *       "unixVaporVer": "5.31"
-		 *     }
+		 *     "android": {"unixVaporVer": "5.31"},
+		 *     "ios": {"unixVaporVer": "5.31"},
+		 *     "harmony": {"unixVaporVer": "5.31"}
 		 *   },
 		 *   "mp": {
-		 *     "weixin": {
-		 *       "unixVer": "5.33"
-		 *     },
-		 *     "alipay": {
-		 *       "unixVer": "5.33"
-		 *     }
+		 *     "weixin": {"unixVer": "5.33"},
+		 *     "alipay": {"unixVer": "5.33"}
 		 *   },
-		 *   "web": {
-		 *     "unixVaporVer": "x"
-		 *   }
+		 *   "web": {"unixVaporVer": "x"}
 		 * }
 		 */
 		text?: string
@@ -115,27 +91,15 @@
 		 * @default 1
 		 * @uniPlatform {
 		 *   "app": {
-		 *     "android": {
-		 *       "unixVaporVer": "5.31"
-		 *     },
-		 *     "ios": {
-		 *       "unixVaporVer": "5.31"
-		 *     },
-		 *     "harmony": {
-		 *       "unixVaporVer": "5.31"
-		 *     }
+		 *     "android": {"unixVaporVer": "5.31"},
+		 *     "ios": {"unixVaporVer": "5.31"},
+		 *     "harmony": {"unixVaporVer": "5.31"}
 		 *   },
 		 *   "mp": {
-		 *     "weixin": {
-		 *       "unixVer": "5.33"
-		 *     },
-		 *     "alipay": {
-		 *       "unixVer": "5.33"
-		 *     }
+		 *     "weixin": {"unixVer": "5.33"},
+		 *     "alipay": {"unixVer": "5.33"}
 		 *   },
-		 *   "web": {
-		 *     "unixVaporVer": "x"
-		 *   }
+		 *   "web": {"unixVaporVer": "x"}
 		 * }
 		 */
 		lines?: number
@@ -144,27 +108,15 @@
 		 * @default false
 		 * @uniPlatform {
 		 *   "app": {
-		 *     "android": {
-		 *       "unixVaporVer": "5.31"
-		 *     },
-		 *     "ios": {
-		 *       "unixVaporVer": "5.31"
-		 *     },
-		 *     "harmony": {
-		 *       "unixVaporVer": "5.31"
-		 *     }
+		 *     "android": {"unixVaporVer": "5.31"},
+		 *     "ios": {"unixVaporVer": "5.31"},
+		 *     "harmony": {"unixVaporVer": "5.31"}
 		 *   },
 		 *   "mp": {
-		 *     "weixin": {
-		 *       "unixVer": "5.33"
-		 *     },
-		 *     "alipay": {
-		 *       "unixVer": "5.33"
-		 *     }
+		 *     "weixin": {"unixVer": "5.33"},
+		 *     "alipay": {"unixVer": "5.33"}
 		 *   },
-		 *   "web": {
-		 *     "unixVaporVer": "x"
-		 *   }
+		 *   "web": {"unixVaporVer": "x"}
 		 * }
 		 */
 		inline?: boolean
@@ -173,27 +125,15 @@
 		 * @default 根据应用语言，中文下为"全文"
 		 * @uniPlatform {
 		 *   "app": {
-		 *     "android": {
-		 *       "unixVaporVer": "x"
-		 *     },
-		 *     "ios": {
-		 *       "unixVaporVer": "x"
-		 *     },
-		 *     "harmony": {
-		 *       "unixVaporVer": "x"
-		 *     }
+		 *     "android": {"unixVaporVer": "x"},
+		 *     "ios": {"unixVaporVer": "x"},
+		 *     "harmony": {"unixVaporVer": "x"}
 		 *   },
 		 *   "mp": {
-		 *     "weixin": {
-		 *       "unixVer": "5.33"
-		 *     },
-		 *     "alipay": {
-		 *       "unixVer": "5.33"
-		 *     }
+		 *     "weixin": {"unixVer": "5.33"},
+		 *     "alipay": {"unixVer": "5.33"}
 		 *   },
-		 *   "web": {
-		 *     "unixVaporVer": "x"
-		 *   }
+		 *   "web": {"unixVaporVer": "x"}
 		 * }
 		 */
 		expandText?: string
@@ -202,27 +142,15 @@
 		 * @default 根据应用语言，中文下为"收起"
 		 * @uniPlatform {
 		 *   "app": {
-		 *     "android": {
-		 *       "unixVaporVer": "5.31"
-		 *     },
-		 *     "ios": {
-		 *       "unixVaporVer": "5.31"
-		 *     },
-		 *     "harmony": {
-		 *       "unixVaporVer": "5.31"
-		 *     }
+		 *     "android": {"unixVaporVer": "5.31"},
+		 *     "ios": {"unixVaporVer": "5.31"},
+		 *     "harmony": {"unixVaporVer": "5.31"}
 		 *   },
 		 *   "mp": {
-		 *     "weixin": {
-		 *       "unixVer": "5.33"
-		 *     },
-		 *     "alipay": {
-		 *       "unixVer": "5.33"
-		 *     }
+		 *     "weixin": {"unixVer": "5.33"},
+		 *     "alipay": {"unixVer": "5.33"}
 		 *   },
-		 *   "web": {
-		 *     "unixVaporVer": "x"
-		 *   }
+		 *   "web": {"unixVaporVer": "x"}
 		 * }
 		 */
 		collapseText?: string
@@ -231,27 +159,15 @@
 		 * @default ""
 		 * @uniPlatform {
 		 *   "app": {
-		 *     "android": {
-		 *       "unixVaporVer": "5.31"
-		 *     },
-		 *     "ios": {
-		 *       "unixVaporVer": "5.31"
-		 *     },
-		 *     "harmony": {
-		 *       "unixVaporVer": "5.31"
-		 *     }
+		 *     "android": {"unixVaporVer": "5.31"},
+		 *     "ios": {"unixVaporVer": "5.31"},
+		 *     "harmony": {"unixVaporVer": "5.31"}
 		 *   },
 		 *   "mp": {
-		 *     "weixin": {
-		 *       "unixVer": "5.33"
-		 *     },
-		 *     "alipay": {
-		 *       "unixVer": "5.33"
-		 *     }
+		 *     "weixin": {"unixVer": "5.33"},
+		 *     "alipay": {"unixVer": "5.33"}
 		 *   },
-		 *   "web": {
-		 *     "unixVaporVer": "x"
-		 *   }
+		 *   "web": {"unixVaporVer": "x"}
 		 * }
 		 */
 		textClass?: string
@@ -260,27 +176,15 @@
 		 * @default ""
 		 * @uniPlatform {
 		 *   "app": {
-		 *     "android": {
-		 *       "unixVaporVer": "5.31"
-		 *     },
-		 *     "ios": {
-		 *       "unixVaporVer": "5.31"
-		 *     },
-		 *     "harmony": {
-		 *       "unixVaporVer": "5.31"
-		 *     }
+		 *     "android": {"unixVaporVer": "5.31"},
+		 *     "ios": {"unixVaporVer": "5.31"},
+		 *     "harmony": {"unixVaporVer": "5.31"}
 		 *   },
 		 *   "mp": {
-		 *     "weixin": {
-		 *       "unixVer": "5.33"
-		 *     },
-		 *     "alipay": {
-		 *       "unixVer": "5.33"
-		 *     }
+		 *     "weixin": {"unixVer": "5.33"},
+		 *     "alipay": {"unixVer": "5.33"}
 		 *   },
-		 *   "web": {
-		 *     "unixVaporVer": "x"
-		 *   }
+		 *   "web": {"unixVaporVer": "x"}
 		 * }
 		 */
 		triggerClass?: string
@@ -289,27 +193,15 @@
 		 * @default true
 		 * @uniPlatform {
 		 *   "app": {
-		 *     "android": {
-		 *       "unixVaporVer": "5.31"
-		 *     },
-		 *     "ios": {
-		 *       "unixVaporVer": "5.31"
-		 *     },
-		 *     "harmony": {
-		 *       "unixVaporVer": "5.31"
-		 *     }
+		 *     "android": {"unixVaporVer": "5.31"},
+		 *     "ios": {"unixVaporVer": "5.31"},
+		 *     "harmony": {"unixVaporVer": "5.31"}
 		 *   },
 		 *   "mp": {
-		 *     "weixin": {
-		 *       "unixVer": "5.33"
-		 *     },
-		 *     "alipay": {
-		 *       "unixVer": "5.33"
-		 *     }
+		 *     "weixin": {"unixVer": "5.33"},
+		 *     "alipay": {"unixVer": "5.33"}
 		 *   },
-		 *   "web": {
-		 *     "unixVaporVer": "x"
-		 *   }
+		 *   "web": {"unixVaporVer": "x"}
 		 * }
 		 */
 		showCollapse?: boolean
@@ -332,27 +224,15 @@
 		 * @description 展开或收起状态发生变化时触发
 		 * @uniPlatform {
 		 *   "app": {
-		 *     "android": {
-		 *       "unixVaporVer": "5.31"
-		 *     },
-		 *     "ios": {
-		 *       "unixVaporVer": "5.31"
-		 *     },
-		 *     "harmony": {
-		 *       "unixVaporVer": "5.31"
-		 *     }
+		 *     "android": {"unixVaporVer": "5.31"},
+		 *     "ios": {"unixVaporVer": "5.31"},
+		 *     "harmony": {"unixVaporVer": "5.31"}
 		 *   },
 		 *   "mp": {
-		 *     "weixin": {
-		 *       "unixVer": "5.33"
-		 *     },
-		 *     "alipay": {
-		 *       "unixVer": "5.33"
-		 *     }
+		 *     "weixin": {"unixVer": "5.33"},
+		 *     "alipay": {"unixVer": "5.33"}
 		 *   },
-		 *   "web": {
-		 *     "unixVaporVer": "x"
-		 *   }
+		 *   "web": {"unixVaporVer": "x"}
 		 * }
 		 */
 		change: [expanded: boolean]
@@ -361,27 +241,15 @@
 		 * @param {Boolean} expanded true 表示已展开，false 表示已收起
 		 * @uniPlatform {
 		 *   "app": {
-		 *     "android": {
-		 *       "unixVaporVer": "5.31"
-		 *     },
-		 *     "ios": {
-		 *       "unixVaporVer": "5.31"
-		 *     },
-		 *     "harmony": {
-		 *       "unixVaporVer": "5.31"
-		 *     }
+		 *     "android": {"unixVaporVer": "5.31"},
+		 *     "ios": {"unixVaporVer": "5.31"},
+		 *     "harmony": {"unixVaporVer": "5.31"}
 		 *   },
 		 *   "mp": {
-		 *     "weixin": {
-		 *       "unixVer": "5.33"
-		 *     },
-		 *     "alipay": {
-		 *       "unixVer": "5.33"
-		 *     }
+		 *     "weixin": {"unixVer": "5.33"},
+		 *     "alipay": {"unixVer": "5.33"}
 		 *   },
-		 *   "web": {
-		 *     "unixVaporVer": "x"
-		 *   }
+		 *   "web": {"unixVaporVer": "x"}
 		 * }
 		 */
 		'update:expanded': [expanded: boolean]
@@ -559,27 +427,15 @@
 		 * 切换当前文本的展开状态。
 		 * @uniPlatform {
 		 *   "app": {
-		 *     "android": {
-		 *       "unixVaporVer": "5.31"
-		 *     },
-		 *     "ios": {
-		 *       "unixVaporVer": "5.31"
-		 *     },
-		 *     "harmony": {
-		 *       "unixVaporVer": "5.31"
-		 *     }
+		 *     "android": {"unixVaporVer": "5.31"},
+		 *     "ios": {"unixVaporVer": "5.31"},
+		 *     "harmony": {"unixVaporVer": "5.31"}
 		 *   },
 		 *   "mp": {
-		 *     "weixin": {
-		 *       "unixVer": "5.33"
-		 *     },
-		 *     "alipay": {
-		 *       "unixVer": "5.33"
-		 *     }
+		 *     "weixin": {"unixVer": "5.33"},
+		 *     "alipay": {"unixVer": "5.33"}
 		 *   },
-		 *   "web": {
-		 *     "unixVaporVer": "x"
-		 *   }
+		 *   "web": {"unixVaporVer": "x"}
 		 * }
 		 */
 		toggle,
@@ -587,27 +443,15 @@
 		 * 展开文本。
 		 * @uniPlatform {
 		 *   "app": {
-		 *     "android": {
-		 *       "unixVaporVer": "5.31"
-		 *     },
-		 *     "ios": {
-		 *       "unixVaporVer": "5.31"
-		 *     },
-		 *     "harmony": {
-		 *       "unixVaporVer": "5.31"
-		 *     }
+		 *     "android": {"unixVaporVer": "5.31"},
+		 *     "ios": {"unixVaporVer": "5.31"},
+		 *     "harmony": {"unixVaporVer": "5.31"}
 		 *   },
 		 *   "mp": {
-		 *     "weixin": {
-		 *       "unixVer": "5.33"
-		 *     },
-		 *     "alipay": {
-		 *       "unixVer": "5.33"
-		 *     }
+		 *     "weixin": {"unixVer": "5.33"},
+		 *     "alipay": {"unixVer": "5.33"}
 		 *   },
-		 *   "web": {
-		 *     "unixVaporVer": "x"
-		 *   }
+		 *   "web": {"unixVaporVer": "x"}
 		 * }
 		 */
 		expand: () => {
@@ -617,27 +461,15 @@
 		 * 收起文本。
 		 * @uniPlatform {
 		 *   "app": {
-		 *     "android": {
-		 *       "unixVaporVer": "5.31"
-		 *     },
-		 *     "ios": {
-		 *       "unixVaporVer": "5.31"
-		 *     },
-		 *     "harmony": {
-		 *       "unixVaporVer": "5.31"
-		 *     }
+		 *     "android": {"unixVaporVer": "5.31"},
+		 *     "ios": {"unixVaporVer": "5.31"},
+		 *     "harmony": {"unixVaporVer": "5.31"}
 		 *   },
 		 *   "mp": {
-		 *     "weixin": {
-		 *       "unixVer": "5.33"
-		 *     },
-		 *     "alipay": {
-		 *       "unixVer": "5.33"
-		 *     }
+		 *     "weixin": {"unixVer": "5.33"},
+		 *     "alipay": {"unixVer": "5.33"}
 		 *   },
-		 *   "web": {
-		 *     "unixVaporVer": "x"
-		 *   }
+		 *   "web": {"unixVaporVer": "x"}
 		 * }
 		 */
 		collapse: () => {
@@ -649,12 +481,8 @@
 		 * 小程序没有 ResizeObserver，外部调用时需要手动调用此方法来更新展开/收起按钮的显示状态。
 		 * @uniPlatform {
 		 *   "mp": {
-		 *     "weixin": {
-		 *       "unixVer": "5.33"
-		 *     },
-		 *     "alipay": {
-		 *       "unixVer": "5.33"
-		 *     }
+		 *     "weixin": {"unixVer": "5.33"},
+		 *     "alipay": {"unixVer": "5.33"}
 		 *   }
 		 * }
 		 */

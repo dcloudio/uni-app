@@ -3,10 +3,8 @@
 		class="uni-easyinput"
 		:class="[
 			isFocused ? 'uni-easyinput--focused' : '',
-			hasError ? 'uni-easyinput--error' : '',
 			disabled ? 'uni-easyinput--disabled' : '',
-			type == 'textarea' ? 'uni-easyinput--textarea' : '',
-			hasError ? (errorClass ?? '') : ''
+			type == 'textarea' ? 'uni-easyinput--textarea' : ''
 		]"
 	>
 		<slot name="left"></slot>
@@ -18,7 +16,7 @@
 			:name="nameValue"
 			:value="currentValue"
 			:placeholder="placeholderValue"
-			:placeholder-class="placeholderClassText"
+			:placeholder-class="placeholderClassValue"
 			:disabled="disabled == true"
 			:maxlength="maxlengthValue"
 			:focus="inputFocus"
@@ -41,7 +39,7 @@
 			:type="inputType"
 			:password="type == 'password' && !passwordVisible"
 			:placeholder="placeholderValue"
-			:placeholder-class="placeholderClassText"
+			:placeholder-class="placeholderClassValue"
 			:disabled="disabled == true"
 			:maxlength="maxlengthValue"
 			:focus="inputFocus"
@@ -81,8 +79,7 @@
 		externalClasses: [
 			'input-class',
 			'placeholder-class',
-			'icon-class',
-			'error-class'
+			'icon-class'
 		]
 	})
 
@@ -94,7 +91,7 @@
 		 */
 		'update:modelValue': [value : string],
 		/**
-		 * @description 输入时触发，参数为裁剪后的输入值
+		 * @description 输入时触发
 		 */
 		input: [value : string],
 		/**
@@ -140,26 +137,6 @@
 		return props.modelValue !== undefined ? props.modelValue : (props.value ?? null)
 	}
 
-	function trimValue(value : string) : string {
-		const trim = props.trim
-		if (trim == null || trim === false || trim == 'none') {
-			return value
-		}
-		if (trim === true || trim == 'both') {
-			return value.trim()
-		}
-		if (trim == 'left') {
-			return value.trimStart()
-		}
-		if (trim == 'right') {
-			return value.trimEnd()
-		}
-		if (trim == 'all') {
-			return value.replace(/\s+/g, '')
-		}
-		return value
-	}
-
 	const currentValue = ref<string>(normalizeValue(getPropValue()))
 	const inputFocus = ref<boolean>(props.focus == true)
 	const isFocused = ref<boolean>(false)
@@ -172,17 +149,12 @@
 	const cursorSpacingValue = computed((): number => props.cursorSpacing ?? 0)
 	const inputType = computed((): string => props.type == 'password' ? 'text' : (props.type ?? 'text'))
 	const inputConfirmType = computed((): string => props.confirmType ?? 'done')
+	const placeholderClassValue = computed((): string.ClassString => {
+		return (props.placeholderClass ?? '') as string.ClassString
+	})
 	const textareaConfirmType = computed((): string => {
 		const confirmType = props.confirmType
 		return (confirmType == null || confirmType == '' || confirmType == 'done') ? 'return' : confirmType
-	})
-
-	const hasError = computed((): boolean => {
-		const errorMessage = props.errorMessage
-		if (typeof errorMessage == 'boolean') {
-			return errorMessage
-		}
-		return errorMessage != null && errorMessage != ''
 	})
 
 	const showClearIcon = computed((): boolean => {
@@ -194,33 +166,8 @@
 	})
 
 	const iconActionClass = computed((): string.ClassString => {
-		const className = hasError.value
-			? 'uni-easyinput__icon--error'
-			: (isFocused.value ? 'uni-easyinput__icon--focused' : '')
+		const className = isFocused.value ? 'uni-easyinput__icon--focused' : ''
 		return (className == '' ? (props.iconClass ?? '') : className + ' ' + (props.iconClass ?? '')) as string.ClassString
-	})
-
-	/**
-	 * 组装占位文字样式类。
-	 * 普通状态不附加默认类，保留 input / textarea 自带的 placeholder 颜色和字号。
-	 * 仅禁用、错误态，以及开发者传入的 placeholder-class 会覆盖。
-	 */
-	const placeholderClassText = computed((): string.ClassString => {
-		let className = ''
-		if (props.disabled == true) {
-			className = 'uni-easyinput__placeholder--disabled'
-		} else if (hasError.value) {
-			className = 'uni-easyinput__placeholder--error'
-		}
-		const placeholderClass = props.placeholderClass
-		if (placeholderClass != null && placeholderClass != '') {
-			className = className == '' ? placeholderClass : className + ' ' + placeholderClass
-		}
-		const errorClass = props.errorClass
-		if (hasError.value && errorClass != null && errorClass != '') {
-			className = className == '' ? errorClass : className + ' ' + errorClass
-		}
-		return className as string.ClassString
 	})
 
 	function applyInput(value : string) {
@@ -230,11 +177,10 @@
 	}
 
 	function syncValue(value : string) : string {
-		const trimmed = trimValue(value)
-		if (trimmed != currentValue.value) {
-			applyInput(trimmed)
+		if (value != currentValue.value) {
+			applyInput(value)
 		}
-		return trimmed
+		return value
 	}
 
 	function emitChange(value : string) {
@@ -249,7 +195,7 @@
 		if (props.disabled == true) {
 			return currentValue.value
 		}
-		const value = trimValue(event.detail.value)
+		const value = event.detail.value
 		applyInput(value)
 		return value
 	}
@@ -355,10 +301,6 @@
 		border-color: #2979ff;
 	}
 
-	.uni-easyinput--error {
-		border-color: #dd524d;
-	}
-
 	.uni-easyinput--disabled {
 		background-color: var(--active-background-color, #f7f6f6);
 	}
@@ -373,6 +315,7 @@
 		min-width: 0;
 		width: auto;
 		color: var(--text-color, #333333);
+		background-color: transparent;
 		font-size: 14px;
 		box-sizing: border-box;
 	}
@@ -394,25 +337,14 @@
 		line-height: 21px;
 	}
 
-	.uni-easyinput__placeholder--disabled {
-		color: var(--active-color, #d5d5d5);
-	}
-
-	.uni-easyinput__placeholder--error {
-		color: #ee9e9b;
-	}
-
 	.uni-easyinput__icon {
 		padding: 6px 5px;
 		color: var(--arrow-color, #c0c4cc);
+		background-color: transparent;
 		font-size: 22px;
 	}
 
 	.uni-easyinput__icon--focused {
 		color: #2979ff;
-	}
-
-	.uni-easyinput__icon--error {
-		color: #dd524d;
 	}
 </style>

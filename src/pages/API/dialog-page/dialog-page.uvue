@@ -25,6 +25,11 @@
     <button class="mt-15" id="go-next-page" @click="goNextPage">
       go next page
     </button>
+    <!-- #ifdef WEB -->
+    <button class="mt-15" id="go-window-offset-page" @click="goWindowOffsetPage">
+      弹窗窗口变量与页面滚动测试
+    </button>
+    <!-- #endif -->
     <button class="mt-15" id="open-dialog1" @click="openDialog1">
       open dialog 1
     </button>
@@ -157,6 +162,13 @@
       url: '/pages/API/dialog-page/next-page'
     })
   }
+  // #ifdef WEB
+  const goWindowOffsetPage = () => {
+    uni.navigateTo({
+      url: '/pages/API/dialog-page/dialog-window-offset'
+    })
+  }
+  // #endif
   const openDialog1 = () => {
     uni.openDialogPage({
       url: '/pages/API/dialog-page/dialog-1?name=dialog1',

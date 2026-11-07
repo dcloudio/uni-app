@@ -18,7 +18,9 @@ uni-sidebar 内部需传入导航数据，以数组方式（`list` 属性）。
 
 点击 sidebar 组件中的 list-item，会触发右侧 `targetId` 的列表滚动，滚动到相应的位置。通过 `uni.createSelectorQuery` 传入 `targetId` 获取到右侧列表的 ScrollViewContext，再调用 ScrollViewContext 的 `scrollIntoView` 方法来滚动，避免响应式变量更新。
 
-右侧列表滚动时，通过 IntersectionObserver 在目标列表顶部构造一条 1px 的参照带，与参照带相交的分段即当前吸顶的分段，据此高亮左侧 sidebar 的对应菜单项，保证左侧高亮与右侧吸顶分段严格对应。
+右侧列表滚动时，通过 IntersectionObserver 在目标列表（或视口）顶部构造一条 1px 的参照带，与参照带相交的分段即当前吸顶的分段，据此高亮左侧 sidebar 的对应菜单项，保证左侧高亮与右侧吸顶分段严格对应。
+
+> 说明：`createIntersectionObserver` 的 `thresholds` 为 `[0]` 时，回调只在相交比例 0↔非 0 跨越时触发，触发瞬间条目与参照带的重叠量接近于 0，因此不能再用“重叠像素数”做二次过滤，Web / App-Android 端以 `intersectionRatio > 0` 判定即可。App-Android 端调用 `createIntersectionObserver` 时 `component` 参数不能传 `null`（会抛 `NullPointerException`），传空数组 `[]` 即可退化为页面作用域。
 
 > 分段吸顶：`sticky-section` + `sticky-header` 仅在 Skyline 渲染下可用；默认小程序为 WebView 渲染，`scroll-view` 内 `position: sticky` 也不生效（而且 uni-app x 给所有 `view` 默认加了 `overflow: hidden`，会破坏 sticky）。
 >
@@ -33,7 +35,7 @@ uni-sidebar 内部需传入导航数据，以数组方式（`list` 属性）。
 >
 > 两种结构下，分组 id 均为 `${targetId}-item-${index}`，uni-sidebar 的高亮始终跟随当前吸顶的分组。
 
-> 说明：ScrollViewContext 目前仅在微信小程序和 App 蒸汽模式下可用。微信小程序端 list-view 编译为原生 scroll-view，可通过 `createSelectorQuery().select('#id').node()` 获取 ScrollViewContext。滚动高亮依赖 `createIntersectionObserver`（App 端暂不支持，已自动降级为仅点击高亮）。
+> 说明：ScrollViewContext 目前仅在微信小程序和 App 蒸汽模式下可用。微信小程序端 list-view 编译为原生 scroll-view，可通过 `createSelectorQuery().select('#id').node()` 获取 ScrollViewContext。滚动高亮依赖 `createIntersectionObserver`（微信小程序 / Web / App-Android 端支持；App-iOS 暂不支持，自动降级为仅点击高亮）。
 
 ## 属性
 
@@ -148,3 +150,9 @@ uni-sidebar 内部需传入导航数据，以数组方式（`list` 属性）。
 </view>
 <!-- #endif -->
 ```
+
+# TODO
+- bug: web多根节点下相交api获取不到
+- web缺少scrollViewContext
+- iOS、鸿蒙未提供相交监听
+- 小程序没有吸顶组件，导致页面结构和其他平台差异巨大

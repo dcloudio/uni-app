@@ -1,6 +1,6 @@
 <template>
   <!-- 圆形背景承载点击区域，箭头由旋转边框绘制。 -->
-  <view class="back-circle" @click="handleClick">
+  <view class="back-circle" hover-class="back-circle-hover" @click="handleClick">
     <!-- #ifdef APP -->
     <view class="back-arrow" flatten></view>
     <!-- #endif -->
@@ -63,7 +63,7 @@
     width: 28px;
     height: 28px;
     border-radius: 14px;
-    background-color: rgba(220, 220, 220, 0.3);
+    background-color: rgba(206, 206, 206, 0.6);
     justify-content: center;
     align-items: center;
     margin-left: calc(var(--uni-safe-area-inset-left, 0px) + 6px);
@@ -77,6 +77,22 @@
     padding-left: 4px;
   }
 
+  /* 按下时的点击态：整体降低不透明度，兼容自定义背景色，不覆盖外部样式。 */
+  .back-circle-hover {
+    opacity: 0.6;
+  }
+
+  /* Web 端鼠标悬浮态：用阴影做"浮起"反馈，避免覆盖自定义的背景色。 */
+  /* #ifdef WEB */
+  .back-circle {
+    transition: box-shadow 0.15s ease;
+  }
+
+  .back-circle:hover {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  }
+  /* #endif */
+
   /* 通过根节点上的 CSS 变量定制箭头颜色和线宽。 */
   /* #ifdef WEB || MP */
   .back-circle::after,
@@ -85,8 +101,8 @@
     width: 12px;
     height: 12px;
     transform: rotate(45deg);
-    border-left: var(--uni-backarrow-circle-width, 2px) solid var(--uni-backarrow-circle-color, #000000);
-    border-bottom: var(--uni-backarrow-circle-width, 2px) solid var(--uni-backarrow-circle-color, #000000);
+    border-left: var(--uni-backarrow-circle-width, 2px) solid var(--uni-backarrow-circle-color, #ffffff);
+    border-bottom: var(--uni-backarrow-circle-width, 2px) solid var(--uni-backarrow-circle-color, #ffffff);
   }
 
   /* #ifdef WEB || MP */
@@ -100,6 +116,12 @@
     .back-circle {
       background-color: rgba(80, 80, 80, 0.45);
     }
+
+    /* #ifdef WEB */
+    .back-circle:hover {
+      box-shadow: 0 2px 8px rgba(255, 255, 255, 0.18);
+    }
+    /* #endif */
 
     /* #ifdef WEB || MP */
     .back-circle::after,

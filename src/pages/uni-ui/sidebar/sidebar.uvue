@@ -51,7 +51,7 @@
 					</view>
 				</template>
 			</uni-sidebar>
-			<list-view id="food-list" class="food-list" :scroll-with-animation="true">
+			<list-view id="food-list" class="food-list">
 				<sticky-section v-for="(group, index) in groups" :key="group.name" :id="'food-list-item-' + index">
 					<sticky-header>
 						<view class="group__header">

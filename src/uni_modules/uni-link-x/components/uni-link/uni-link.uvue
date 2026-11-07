@@ -9,36 +9,18 @@
    * @description 链接组件
    * @uniPlatform {
    *   "app": {
-   *     "android": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.21"
+   *     "android": {"unixVer": "5.07","unixVaporVer": "5.21"
    *     },
-   *     "ios": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.11"
+   *     "ios": {"unixVer": "5.07","unixVaporVer": "5.11"
    *     },
-   *     "harmony": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.07"
+   *     "harmony": {"unixVer": "5.07","unixVaporVer": "5.07"
    *     }
    *   },
    *   "mp": {
-   *     "weixin": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07"
-   *     },
-   *     "alipay": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.31"
-   *     }
+   *     "weixin": {"unixVer": "5.07"},
+   *     "alipay": {"unixVer": "5.31"}
    *   },
-   *   "web": {
-   *     "uniVer": "x",
-   *     "unixVer": "5.07"
-   *   }
+   *   "web": {"unixVer": "5.07"}
    * }
    */
   // #ifdef APP
@@ -56,36 +38,15 @@
      * @default ""
      * @uniPlatform {
      *   "app": {
-     *     "android": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.21"
-     *     },
-     *     "ios": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.11"
-     *     },
-     *     "harmony": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.07"
-     *     }
+     *     "android": {"unixVer": "5.07","unixVaporVer": "5.21"},
+     *     "ios": {"unixVer": "5.07","unixVaporVer": "5.11"},
+     *     "harmony": {"unixVer": "5.07","unixVaporVer": "5.07"}
      *   },
      *   "mp": {
-     *     "weixin": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07"
-     *     },
-     *     "alipay": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.31"
-     *     }
+     *     "weixin": {"unixVer": "5.07"},
+     *     "alipay": {"unixVer": "5.31"}
      *   },
-     *   "web": {
-     *     "uniVer": "x",
-     *     "unixVer": "5.07"
-     *   }
+     *   "web": {"unixVer": "5.07"}
      * }
      */
     href?: string
@@ -94,36 +55,15 @@
      * @default "_self"
      * @uniPlatform {
      *   "app": {
-     *     "android": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.21"
-     *     },
-     *     "ios": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.11"
-     *     },
-     *     "harmony": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.07"
-     *     }
+     *     "android": {"unixVer": "5.07","unixVaporVer": "5.21"},
+     *     "ios": {"unixVer": "5.07","unixVaporVer": "5.11"},
+     *     "harmony": {"unixVer": "5.07","unixVaporVer": "5.07"}
      *   },
      *   "mp": {
-     *     "weixin": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07"
-     *     },
-     *     "alipay": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.31"
-     *     }
+     *     "weixin": {"unixVer": "5.07"},
+     *     "alipay": {"unixVer": "5.31"}
      *   },
-     *   "web": {
-     *     "uniVer": "x",
-     *     "unixVer": "5.07"
-     *   }
+     *   "web": {"unixVer": "5.07"}
      * }
      */
     target?: '_blank' | '_self'
@@ -132,36 +72,15 @@
      * @default "turn-self"
      * @uniPlatform {
      *   "app": {
-     *     "android": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.21"
-     *     },
-     *     "ios": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.11"
-     *     },
-     *     "harmony": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.07"
-     *     }
+     *     "android": {"unixVer": "5.07","unixVaporVer": "5.21"},
+     *     "ios": {"unixVer": "5.07","unixVaporVer": "5.11"},
+     *     "harmony": {"unixVer": "5.07","unixVaporVer": "5.07"}
      *   },
      *   "mp": {
-     *     "weixin": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07"
-     *     },
-     *     "alipay": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.31"
-     *     }
+     *     "weixin": {"unixVer": "5.07"},
+     *     "alipay": {"unixVer": "5.31"}
      *   },
-     *   "web": {
-     *     "uniVer": "x",
-     *     "unixVer": "5.07"
-     *   }
+     *   "web": {"unixVer": "5.07"}
      * }
      */
     blankFallback?: 'turn-self' | 'copy-link-modal' | 'none'

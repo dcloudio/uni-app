@@ -101,6 +101,8 @@ class UniEditor {
       showImgResize: false,
       caretColor: '',
       textColor: '',
+      selectionColor: '',
+      selectionBackgroundColor: '',
       mentionData: [],
       type: ''
     }, options);
@@ -169,6 +171,7 @@ class UniEditor {
     const root = this.quill.root;
     this.setCaretColor(this.options.caretColor);
     this.setTextColor(this.options.textColor);
+    this.setSelectionStyle(this.options.selectionColor, this.options.selectionBackgroundColor);
 
     // 绑定事件
     const events = ['focus', 'blur', 'input'];
@@ -259,6 +262,28 @@ class UniEditor {
       root.style.setProperty('color', color);
     } else {
       root.style.removeProperty('color');
+    }
+  }
+
+  setSelectionStyle(color, backgroundColor) {
+    var style = document.getElementById('editor-selection-style');
+    if (!style) {
+      style = document.createElement('style');
+      style.id = 'editor-selection-style';
+      style.textContent = '.ql-editor::selection, .ql-editor *::selection {}';
+      document.head.appendChild(style);
+    }
+    // 独立规则仅影响选区，不修改编辑内容；移除伪元素样式时清除旧值。
+    var rule = style.sheet.cssRules[0].style;
+    if (color) {
+      rule.setProperty('color', color);
+    } else {
+      rule.removeProperty('color');
+    }
+    if (backgroundColor) {
+      rule.setProperty('background-color', backgroundColor);
+    } else {
+      rule.removeProperty('background-color');
     }
   }
 
@@ -1183,5 +1208,11 @@ window.editorSetCaretColor = function (color) {
 window.editorSetTextColor = function (color) {
   if (editorInstance) {
     editorInstance.setTextColor(color);
+  }
+};
+
+window.editorSetSelectionStyle = function (color, backgroundColor) {
+  if (editorInstance) {
+    editorInstance.setSelectionStyle(color, backgroundColor);
   }
 };

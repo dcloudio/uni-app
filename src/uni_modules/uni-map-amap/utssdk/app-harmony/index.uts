@@ -1,0 +1,236 @@
+import { UniPageImpl, markRaw } from '@dcloudio/uni-app-x-vapor-runtime'
+import { BuilderNode } from '@kit.ArkUI'
+import { NativeAmapLifecycle } from './lifecycle.ets'
+import { HarmonyAmapController } from './controller.ets'
+import { AmapBuildParams, buildAmap } from './builder.ets'
+import { MapContextFailImpl, getErrcode } from '../unierror'
+import type {
+  AmapMarker, AmapLocationObject, Polyline, Polygon, Circle, Control,
+  AmapContext, CreateAmapContext, MapContextFail,
+  MapContextGetCenterLocationOptions, MapContextMoveToLocationOptions,
+  MapContextTranslateMarkerOptions, MapContextIncludePointsOptions,
+  MapContextGetRegionOptions, MapContextGetRegionResult,
+  MapContextGetScaleOptions, MapContextGetScaleResult,
+  MapContextAddGroundOverlayOptions, MapContextAddMarkersOptions,
+  MapContextMoveAlongOptions, MapContextRemoveGroundOverlayOptions,
+  MapContextRemoveMarkersOptions, MapContextUpdateGroundOverlayOptions
+} from '../interface'
+
+export {
+  AmapMarker, AmapAnchor, AmapMapMarkerCallout, AmapMapMarkerLabel,
+  AmapLocationObject, Polyline, Polygon, Circle, Control, ControlPosition, Bounds,
+  AmapContext, CreateAmapContext, MapContextFail, MapErrorCode,
+  MapContextGetCenterLocationOptions, MapContextMoveToLocationOptions,
+  MapContextTranslateMarkerOptions, MapContextIncludePointsOptions,
+  MapContextGetRegionOptions, MapContextGetRegionResult,
+  MapContextGetScaleOptions, MapContextGetScaleResult,
+  MapContextAddGroundOverlayOptions, MapContextAddMarkersOptions,
+  MapContextMoveAlongOptions, MapContextRemoveGroundOverlayOptions,
+  MapContextRemoveMarkersOptions, MapContextUpdateGroundOverlayOptions
+} from '../interface'
+
+export class UniAmapElement extends UniViewElementImpl {
+}
+
+// Vapor node ids are page-local; include the owning app and page.
+const maps = new Map<string, AmapMap>()
+
+function instanceKey(element : UniElement | null) : string {
+  if (element == null) return ''
+  const page = element.getPage() as UniPageImpl | null
+  if (page == null) return ''
+  const nativePage = page.getNativePage()
+  return nativePage.app.id.toString() + ':' + nativePage.pageId + ':' + element.getNodeId().toString()
+}
+
+export class AmapMap {
+  private native : HarmonyAmapController | null = null
+  private builder : BuilderNode<[AmapBuildParams]> | null = null
+  private nodeId : string = ''
+  private disposed : boolean = false
+  private lifecycle : NativeAmapLifecycle | null = null
+
+  constructor(element : UniNativeViewElement) {
+    const page = element.getPage() as UniPageImpl | null
+    // Ignore an init event delivered after its native-view was removed.
+    if (page == null || page.getNodeById(Number(element.getNodeId())) == null) {
+      this.disposed = true
+      return
+    }
+    this.nodeId = instanceKey(element.parentElement)
+    maps.get(this.nodeId)?.destroy()
+    if (this.nodeId.length > 0) maps.set(this.nodeId, this)
+    const context = UTSHarmony.getUIAbilityContext()
+    const uiContext = UTSHarmony.getCurrentWindow().getUIContext()
+    this.native = new HarmonyAmapController(context, (src : string) : string => {
+      if (src.startsWith('http://') || src.startsWith('https://') || src.startsWith('resource://')) return src
+      return UTSHarmony.convert2AbsFullPath(src)
+    }, (type : string, payload : string) => {
+      if (this.disposed) return
+      const detail = JSON.parseObject(payload) ?? {} as UTSJSONObject
+      element.dispatchEvent(new UniNativeViewEvent(type, detail))
+    }, (job : () => void) => {
+      // Native render callbacks must not update ArkUI state inline.
+      setTimeout(() => {
+        if (!this.disposed) uiContext.runScopedTask(job)
+      }, 0)
+    })
+    this.lifecycle = new NativeAmapLifecycle(element, (visible : boolean) => { this.setVisible(visible) })
+    const params : AmapBuildParams = { controller: this.native!, onAttached: () => { this.lifecycle?.attach() } }
+    this.builder = element.bindHarmonyWrappedBuilder(wrapBuilder<[AmapBuildParams]>(buildAmap), params)
+    this.setPrivacyGranted(true)
+  }
+
+  private set(name : string, json : string) : void {
+    if (!this.disposed) this.native?.setProperty(name, json)
+  }
+
+  setPrivacyGranted(granted : boolean) : void { this.native?.setPrivacyGranted(granted) }
+  setVisible(visible : boolean) : void { this.native?.setVisible(visible) }
+
+  setCameraPosition(latitude : number, longitude : number, scale : number, skew : number, rotate : number, animate : boolean) : void {
+    this.set('camera', JSON.stringify({ latitude, longitude, scale, skew, rotate, animate }))
+  }
+  setCenter(latitude : number, longitude : number, animate : boolean) : void {
+    this.set('center', JSON.stringify({ latitude, longitude, animate }))
+  }
+  setScale(scale : number, animate : boolean) : void { this.set('scaleCamera', JSON.stringify({ scale, animate })) }
+  setRotate(rotate : number, animate : boolean) : void { this.set('rotateCamera', JSON.stringify({ rotate, animate })) }
+  setSkew(skew : number, animate : boolean) : void { this.set('skewCamera', JSON.stringify({ skew, animate })) }
+  setTheme(value : string) : void { this.set('theme', JSON.stringify(value)) }
+  setLayerStyle(value : string) : void { this.set('layerStyle', JSON.stringify(value)) }
+  setMinScale(value : number) : void { this.set('minScale', JSON.stringify(value)) }
+  setMaxScale(value : number) : void { this.set('maxScale', JSON.stringify(value)) }
+  setShowLocation(value : boolean) : void { this.set('showLocation', JSON.stringify(value)) }
+  setEnableTraffic(value : boolean) : void { this.set('enableTraffic', JSON.stringify(value)) }
+  setEnableSatellite(value : boolean) : void { this.set('enableSatellite', JSON.stringify(value)) }
+  setEnableZoom(value : boolean) : void { this.set('enableZoom', JSON.stringify(value)) }
+  setEnableScroll(value : boolean) : void { this.set('enableScroll', JSON.stringify(value)) }
+  setEnableRotate(value : boolean) : void { this.set('enableRotate', JSON.stringify(value)) }
+  setEnableOverlooking(value : boolean) : void { this.set('enableOverlooking', JSON.stringify(value)) }
+  setEnableBuilding(value : boolean) : void { this.set('enableBuilding', JSON.stringify(value)) }
+  setEnablePoi(value : boolean) : void { this.set('enablePoi', JSON.stringify(value)) }
+  setEnableIndoorMap(value : boolean) : void { this.set('enableIndoorMap', JSON.stringify(value)) }
+  setShowCompass(value : boolean) : void { this.set('showCompass', JSON.stringify(value)) }
+  setShowScale(value : boolean) : void { this.set('showScale', JSON.stringify(value)) }
+  setMarkers(value : AmapMarker[]) : void { this.set('markers', JSON.stringify(value)) }
+  setPolyline(value : Polyline[]) : void { this.set('polylines', JSON.stringify(value)) }
+  setPolygons(value : Polygon[]) : void { this.set('polygons', JSON.stringify(value)) }
+  setCircles(value : Circle[]) : void { this.set('circles', JSON.stringify(value)) }
+  setControls(value : Control[]) : void { this.set('controls', JSON.stringify(value)) }
+  setIncludePoints(points : AmapLocationObject[], animate : boolean) : void {
+    this.set('includePointsCamera', JSON.stringify({ points, animate }))
+  }
+
+  invoke(name : string, json : string, callback : (code : number, result : string) => void) : void {
+    if (this.disposed || this.native == null) {
+      callback(500012, '{}')
+      return
+    }
+    this.native!.invoke(name, json, callback)
+  }
+
+  destroy() : void {
+    if (this.disposed) return
+    this.disposed = true
+    this.lifecycle?.destroy()
+    this.lifecycle = null
+    if (maps.get(this.nodeId) === this) maps.delete(this.nodeId)
+    this.native?.destroy()
+    this.native = null
+    // bindHarmonyWrappedBuilder owns the mounted node. Release our handle only;
+    // disposing the native-view itself is the framework's responsibility.
+    this.builder = null
+  }
+}
+
+class AmapContextImpl implements AmapContext {
+  private map : AmapMap | null
+  private nodeId : string
+
+  constructor(nodeId : string) {
+    this.nodeId = nodeId
+    this.map = maps.get(nodeId) ?? null
+  }
+
+  private call<T>(name : string, json : string, success : ((value : T) => void) | null,
+    fail : ((value : MapContextFail) => void) | null, complete : ((value : any) => void) | null) : void {
+    // A Context created before native-view init may bind once. Once bound, it
+    // never switches to a replacement instance after the original is destroyed.
+    if (this.map == null) this.map = maps.get(this.nodeId) ?? null
+    let settled = false
+    const finish = (code : number, result : string) => {
+      if (settled) return
+      settled = true
+      if (code != 0) {
+        const error = new MapContextFailImpl(getErrcode(code))
+        try { fail?.(error) } finally { complete?.(error) }
+        return
+      }
+      let value : T | null = null
+      try { value = JSON.parse<T>(result) } catch (_) { }
+      if (value == null) {
+        const error = new MapContextFailImpl(getErrcode(500012))
+        try { fail?.(error) } finally { complete?.(error) }
+        return
+      }
+      try { success?.(value!) } finally { complete?.(value) }
+    }
+    if (this.map == null) { finish(500012, '{}'); return }
+    this.map!.invoke(name, json, finish)
+  }
+
+  getCenterLocation(options : MapContextGetCenterLocationOptions) : void {
+    this.call<AmapLocationObject>('getCenterLocation', '{}', options.success ?? null, options.fail ?? null, options.complete ?? null)
+  }
+  getRegion(options : MapContextGetRegionOptions) : void {
+    this.call<MapContextGetRegionResult>('getRegion', '{}', options.success ?? null, options.fail ?? null, options.complete ?? null)
+  }
+  getScale(options : MapContextGetScaleOptions) : void {
+    this.call<MapContextGetScaleResult>('getScale', '{}', options.success ?? null, options.fail ?? null, options.complete ?? null)
+  }
+  moveToLocation(options : MapContextMoveToLocationOptions) : void {
+    this.call<any>('moveToLocation', JSON.stringify({ latitude: options.latitude, longitude: options.longitude }), options.success ?? null, options.fail ?? null, options.complete ?? null)
+  }
+  includePoints(options : MapContextIncludePointsOptions) : void {
+    this.call<any>('includePoints', JSON.stringify({ points: options.points }), options.success ?? null, options.fail ?? null, options.complete ?? null)
+  }
+  addMarkers(options : MapContextAddMarkersOptions) : void {
+    this.call<any>('addMarkers', JSON.stringify({ markers: options.markers, clear: options.clear }), options.success ?? null, options.fail ?? null, options.complete ?? null)
+  }
+  removeMarkers(options : MapContextRemoveMarkersOptions) : void {
+    this.call<any>('removeMarkers', JSON.stringify({ markerIds: options.markerIds }), options.success ?? null, options.fail ?? null, options.complete ?? null)
+  }
+  translateMarker(options : MapContextTranslateMarkerOptions) : void {
+    this.call<any>('translateMarker', JSON.stringify({ markerId: options.markerId, destination: options.destination, duration: options.duration,
+      autoRotate: options.autoRotate, rotate: options.rotate, moveWithRotate: options.moveWithRotate }), options.success ?? null, options.fail ?? null, options.complete ?? null)
+  }
+  moveAlong(options : MapContextMoveAlongOptions) : void {
+    this.call<any>('moveAlong', JSON.stringify({ markerId: options.markerId, path: options.path, duration: options.duration }), options.success ?? null, options.fail ?? null, options.complete ?? null)
+  }
+  addGroundOverlay(options : MapContextAddGroundOverlayOptions) : void {
+    this.call<any>('addGroundOverlay', JSON.stringify({ id: options.id, src: options.src, bounds: options.bounds,
+      visible: options.visible, zIndex: options.zIndex, opacity: options.opacity }), options.success ?? null, options.fail ?? null, options.complete ?? null)
+  }
+  updateGroundOverlay(options : MapContextUpdateGroundOverlayOptions) : void {
+    this.call<any>('updateGroundOverlay', JSON.stringify({ id: options.id, src: options.src, bounds: options.bounds,
+      visible: options.visible, zIndex: options.zIndex, opacity: options.opacity }), options.success ?? null, options.fail ?? null, options.complete ?? null)
+  }
+  removeGroundOverlay(options : MapContextRemoveGroundOverlayOptions) : void {
+    this.call<any>('removeGroundOverlay', JSON.stringify({ id: options.id }), options.success ?? null, options.fail ?? null, options.complete ?? null)
+  }
+}
+
+export const createAmapContext : CreateAmapContext = function(mapId : string, component : ComponentPublicInstance | null) : AmapContext | null {
+  let element : UniElement | null = null
+  if (component == null) {
+    const pages = getCurrentPages()
+    if (pages.length > 0) element = pages[pages.length - 1].querySelector('#' + mapId)
+  } else {
+    const root = component.$el
+    element = root?.querySelector('#' + mapId) ?? root?.parentElement?.querySelector('#' + mapId) ?? null
+  }
+  if (element == null) return null
+  // Keep native controller, record identities and SDK handles out of Vue proxies.
+  return markRaw(new AmapContextImpl(instanceKey(element)))
+}

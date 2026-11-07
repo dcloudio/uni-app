@@ -4,14 +4,15 @@ import UniIntersectionRect from 'io.dcloud.uniappxv.runtime.UniIntersectionRect'
 import { CreateIntersectionObserverOptions, IntersectionObserver, ObserveResult, ObserveNodeRect, ObserveCallback } from '../interface.uts'
 
 function toObserveNodeRect(rect: UniIntersectionRect): ObserveNodeRect {
-    return {
+    const nodeRect: ObserveNodeRect = {
         left: rect.left as number,
         top: rect.top as number,
         right: rect.right as number,
         bottom: rect.bottom as number,
         width: rect.width as number,
         height: rect.height as number,
-    } as ObserveNodeRect
+    }
+    return nodeRect
 }
 
 /**
@@ -96,7 +97,11 @@ class ServiceIntersectionObserver implements IntersectionObserver {
         this._observeAll = (options?.observeAll ?? false) as boolean
     }
 
-    relativeTo(selector: string, margins?: any): IntersectionObserver {
+    relativeTo(selector: string | null, margins?: any): IntersectionObserver {
+        // 兼容桥接层传入 null：selector 非法时忽略本次配置，避免进入原生层抛非空强转异常。
+        if (selector == null) {
+            return this
+        }
         this._relativeToSelector = selector
         this._margins = margins ?? null
         return this
@@ -110,21 +115,23 @@ class ServiceIntersectionObserver implements IntersectionObserver {
 
     /**
      * 长期回调：observe 注册后要持续触发，必须让桥接层保住这次回调（否则只会回调一次）。
+     * selector / callback 均做判空容错，避免桥接层传入 null 时进入原生层抛非空强转异常。
      */
-    observe(targetSelector: string, callback: ObserveCallback): void {
-        if (callback == null) {
+    observe(targetSelector: string | null, callback: ObserveCallback | null): void {
+        if (targetSelector == null || callback == null) {
             return
         }
         const observer = this.resolveObserver()
-        observer.observe(targetSelector, (result: UniIntersectionObserveResult) => {
-            callback({
+        observer.observe(targetSelector!, (result: UniIntersectionObserveResult) => {
+            const observeResult: ObserveResult = {
                 id: result.id as string,
                 intersectionRatio: result.intersectionRatio as number,
                 intersectionRect: toObserveNodeRect(result.intersectionRect),
                 boundingClientRect: toObserveNodeRect(result.boundingClientRect),
                 relativeRect: toObserveNodeRect(result.relativeRect),
                 time: result.time as number,
-            } as ObserveResult)
+            }
+            callback!(observeResult)
         })
     }
 
@@ -174,9 +181,22 @@ class ServiceIntersectionObserver implements IntersectionObserver {
             return null
         }
         if (Array.isArray(scope)) {
-            return scope as Array<UniElement>
+            // Android 端 as 是真实 JVM 强转，数组元素非法会在原生层抛 ClassCastException，
+            // 这里逐个校验，只保留真正的 UniElement（全非法时返回 null，由原生退化为当前栈顶页面）。
+            const scopeArray = scope as Array<any>
+            const elements: Array<UniElement> = []
+            for (let i = 0; i < scopeArray.length; i++) {
+                const item = scopeArray[i]
+                if (item instanceof UniElement) {
+                    elements.push(item as UniElement)
+                }
+            }
+            return elements.length > 0 ? elements : null
         }
-        return (scope as ComponentPublicInstance).$rootElements
+        if (scope instanceof ComponentPublicInstance) {
+            return (scope as ComponentPublicInstance).$rootElements
+        }
+        return null
     }
 }
 
@@ -192,25 +212,29 @@ function resolveOptions(value: any | null): CreateIntersectionObserverOptions | 
         return null
     }
     if (value instanceof UTSJSONObject) {
-        return optionsFromJSONObject(value as UTSJSONObject)
+        return optionsFromJSONObject(value)
     }
-    return value as CreateIntersectionObserverOptions
+    if (value instanceof CreateIntersectionObserverOptionsImpl) {
+        return value as CreateIntersectionObserverOptions
+    }
+    // 非法 options 类型（数字、字符串等）：忽略处理，避免按接口强转在 UTS 层抛 ClassCastException。
+    return null
 }
 
-/** 导出签名：options 收 any，避免桥接层生成接口类型的强转。 */
-type CreateIntersectionObserverExport = (component: any, options?: any) => IntersectionObserver
+/** 导出签名：component/options 均可空，避免桥接层生成非空 Any 强转，对 null 抛 NullPointerException；options 收 any 同时避免接口类型强转。 */
+type CreateIntersectionObserverExport = (component: any | null, options?: any | null) => IntersectionObserver
 
 export const createIntersectionObserver: CreateIntersectionObserverExport =
     function (
-        component: any,
-        options?: any,
+        component: any | null,
+        options?: any | null,
     ): IntersectionObserver {
         let resolvedOptions = resolveOptions(options)
         let scope: any | null = null
         if (component != null) {
             if (component instanceof UTSJSONObject) {
                 // 与 JS/Harmony 实现保持一致：首个参数不是元素数组时按 options 处理。
-                resolvedOptions = optionsFromJSONObject(component as UTSJSONObject)
+                resolvedOptions = optionsFromJSONObject(component)
             } else {
                 // 组件实例或 uniElement 数组：原样透传，observe() 时再解析成元素数组。
                 scope = component

@@ -1,0 +1,275 @@
+<template>
+	<view class="page">
+		<text class="hint">观察者 = 发起监听的对象，被观察元素 = 被监听判断显示/隐藏的元素。进入页面自动监听，离开自动停止。</text>
+		<text class="hint">滚动灰色区域，下方状态随各被观察元素显示/隐藏变化；B、C 验证多个观察者互不干扰。</text>
+		<view class="section">
+			<text id="result-a" class="result">A 批量监听被观察元素1~4：{{ batchStatus }}</text>
+			<text id="result-b1" class="result">B 观察者1 监听被观察元素A：{{ visibleB1 ? '显示' : '隐藏' }}</text>
+			<text id="result-b2" class="result">B 观察者2 监听被观察元素A：{{ visibleB2 ? '显示' : '隐藏' }}</text>
+			<text id="result-b3" class="result">B 观察者3 监听被观察元素B：{{ visibleB3 ? '显示' : '隐藏' }}</text>
+			<text id="result-c1" class="result">C 同一实例 监听被观察元素A：{{ visibleCA ? '显示' : '隐藏' }}</text>
+			<text id="result-c2" class="result">C 同一实例 监听被观察元素B：{{ visibleCB ? '显示' : '隐藏' }}</text>
+		</view>
+
+		<scroll-view id="batch-root" class="root" direction="vertical" :scroll-top="scrollTop"
+			:scroll-with-animation="false" :show-scrollbar="true" @scroll="onScroll">
+			<view class="list-spacer"><text class="hint">向上滑动，查看被观察元素</text></view>
+			<view id="batch-a" class="target-a"><text>被观察元素A #batch-a</text></view>
+			<view class="gap-spacer"></view>
+			<view id="batch-b" class="target-b"><text>被观察元素B #batch-b</text></view>
+			<view v-for="item in batchItems" :key="item.label" class="batch-item"
+				:style="{ height: item.height + 'px' }">
+				<text>{{ item.label }}（高 {{ item.height }}px）</text>
+			</view>
+			<view class="bottom-spacer"></view>
+		</scroll-view>
+
+		<view class="toolbar">
+			<button size="mini" class="button" @click="scrollTo(0)">顶部</button>
+			<button size="mini" class="button" @click="scrollTo(targetATop - 30)">被观察元素A</button>
+			<button size="mini" class="button" @click="scrollTo(targetBTop - 30)">被观察元素B</button>
+			<button size="mini" class="button" @click="scrollTo(itemTop(0) - 30)">被观察元素1</button>
+			<button size="mini" class="button" @click="scrollTo(itemTop(3) - 30)">被观察元素4</button>
+		</view>
+	</view>
+</template>
+
+<script setup lang="uts">
+	type BatchItem = {
+		label : string
+		height : number
+	}
+
+	const TOP_SPACER = 200
+	const TARGET_HEIGHT = 150
+	const TARGET_GAP = 400
+	const LIST_TOP = TOP_SPACER + TARGET_HEIGHT + TARGET_GAP + TARGET_HEIGHT
+
+	const batchItems : BatchItem[] = [
+		{ label: '被观察元素1', height: 120 },
+		{ label: '被观察元素2', height: 160 },
+		{ label: '被观察元素3', height: 200 },
+		{ label: '被观察元素4', height: 240 }
+	]
+
+	const scrollTop = ref(0)
+	let actualScrollTop = 0
+	let componentInstance : ComponentPublicInstance | null = null
+
+	// 场景A：一个 observer 一次 observe 监听多个 .batch-item
+	const batchVisible : boolean[] = [false, false, false, false]
+	const batchStatus = ref('1 隐藏 · 2 隐藏 · 3 隐藏 · 4 隐藏')
+	let batchObserver : IntersectionObserver | null = null
+
+	// 场景B：多个 observer 监听相同/不同元素
+	const visibleB1 = ref(false)
+	const visibleB2 = ref(false)
+	const visibleB3 = ref(false)
+	let observer1 : IntersectionObserver | null = null
+	let observer2 : IntersectionObserver | null = null
+	let observer3 : IntersectionObserver | null = null
+
+	// 场景C：同一个 observer 实例多次 observe
+	const visibleCA = ref(false)
+	const visibleCB = ref(false)
+	let multiObserver : IntersectionObserver | null = null
+
+	function itemTop(index : number) : number {
+		let top = LIST_TOP
+		for (let i = 0; i < index; i++) {
+			top += batchItems[i].height
+		}
+		return top
+	}
+
+	const targetATop = TOP_SPACER
+	const targetBTop = TOP_SPACER + TARGET_HEIGHT + TARGET_GAP
+
+	function findItemIndex(height : number) : number {
+		for (let i = 0; i < batchItems.length; i++) {
+			if (Math.abs(batchItems[i].height - height) <= 2) {
+				return i
+			}
+		}
+		return -1
+	}
+
+	function updateBatchStatus() {
+		let text = ''
+		for (let i = 0; i < batchItems.length; i++) {
+			if (i > 0) text += ' · '
+			text += (i + 1).toString() + (batchVisible[i] ? ' 显示' : ' 隐藏')
+		}
+		batchStatus.value = text
+	}
+
+	function resetStates() {
+		for (let i = 0; i < batchVisible.length; i++) {
+			batchVisible[i] = false
+		}
+		updateBatchStatus()
+		visibleB1.value = false
+		visibleB2.value = false
+		visibleB3.value = false
+		visibleCA.value = false
+		visibleCB.value = false
+	}
+
+	function disconnectAll() {
+		batchObserver?.disconnect()
+		batchObserver = null
+		observer1?.disconnect()
+		observer1 = null
+		observer2?.disconnect()
+		observer2 = null
+		observer3?.disconnect()
+		observer3 = null
+		multiObserver?.disconnect()
+		multiObserver = null
+	}
+
+	function startAll() {
+		if (componentInstance == null) return
+		disconnectAll()
+		resetStates()
+
+		// 场景A：一次 observe 用类选择器监听全部列表项
+		batchObserver = uni.createIntersectionObserver(componentInstance!, {
+			thresholds: [0],
+			observeAll: true
+		} as CreateIntersectionObserverOptions)
+		batchObserver!.relativeTo('#batch-root').observe('.batch-item', (result : ObserveResult) => {
+			const index = findItemIndex(Math.round(result.boundingClientRect.bottom - result.boundingClientRect.top))
+			if (index >= 0) {
+				batchVisible[index] = result.intersectionRatio > 0
+				updateBatchStatus()
+			}
+			console.log('[批量A]', result)
+		})
+
+		// 场景B：观察者1、2 监听同一元素，观察者3 监听另一元素
+		observer1 = uni.createIntersectionObserver(componentInstance!, { thresholds: [0] } as CreateIntersectionObserverOptions)
+		observer1!.relativeTo('#batch-root').observe('#batch-a', (result : ObserveResult) => {
+			visibleB1.value = result.intersectionRatio > 0
+			console.log('[观察者1 → A]', result)
+		})
+
+		observer2 = uni.createIntersectionObserver(componentInstance!, { thresholds: [0] } as CreateIntersectionObserverOptions)
+		observer2!.relativeTo('#batch-root').observe('#batch-a', (result : ObserveResult) => {
+			visibleB2.value = result.intersectionRatio > 0
+			console.log('[观察者2 → A]', result)
+		})
+
+		observer3 = uni.createIntersectionObserver(componentInstance!, { thresholds: [0] } as CreateIntersectionObserverOptions)
+		observer3!.relativeTo('#batch-root').observe('#batch-b', (result : ObserveResult) => {
+			visibleB3.value = result.intersectionRatio > 0
+			console.log('[观察者3 → B]', result)
+		})
+
+		// 场景C：同一实例分别 observe 两个不同元素
+		multiObserver = uni.createIntersectionObserver(componentInstance!, { thresholds: [0] } as CreateIntersectionObserverOptions)
+		multiObserver!.relativeTo('#batch-root').observe('#batch-a', (result : ObserveResult) => {
+			visibleCA.value = result.intersectionRatio > 0
+			console.log('[同一实例 → A]', result)
+		})
+		multiObserver!.relativeTo('#batch-root').observe('#batch-b', (result : ObserveResult) => {
+			visibleCB.value = result.intersectionRatio > 0
+			console.log('[同一实例 → B]', result)
+		})
+	}
+
+	function scrollTo(top : number) {
+		// 先同步实际位置，保证手动滚动后再次点击同一按钮也能定位。
+		scrollTop.value = actualScrollTop
+		nextTick(() => { scrollTop.value = top })
+	}
+
+	function onScroll(event : UniScrollEvent) {
+		// 只记录位置，不能写回绑定的 scroll-top，否则会中断手势。
+		actualScrollTop = event.detail.scrollTop
+	}
+
+	onReady(() => {
+		componentInstance = getCurrentInstance()!.proxy!
+		startAll()
+	})
+	onUnload(() => { disconnectAll() })
+</script>
+
+<style>
+	.page {
+		flex: 1;
+		flex-direction: column;
+		padding: 8px 12px;
+	}
+
+	.hint {
+		font-size: 12px;
+		line-height: 16px;
+		color: #666666;
+	}
+
+	.toolbar {
+		flex-direction: row;
+		flex-wrap: wrap;
+		align-items: center;
+	}
+
+	.button {
+		margin: 0 6px 6px 0;
+	}
+
+	.section {
+		flex-direction: column;
+		margin-top: 4px;
+	}
+
+	.result {
+		font-size: 12px;
+		line-height: 17px;
+	}
+
+	.root {
+		flex: 1;
+		margin: 6px 0;
+		background-color: #eeeeee;
+	}
+
+	.list-spacer {
+		height: 200px;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.gap-spacer {
+		height: 400px;
+	}
+
+	.bottom-spacer {
+		height: 600px;
+	}
+
+	.batch-item {
+		align-items: center;
+		justify-content: center;
+		background-color: #b6dcff;
+		box-sizing: border-box;
+		border-bottom-width: 1px;
+		border-bottom-style: solid;
+		border-bottom-color: #ffffff;
+	}
+
+	.target-a {
+		height: 150px;
+		align-items: center;
+		justify-content: center;
+		background-color: #ffd6a5;
+	}
+
+	.target-b {
+		height: 150px;
+		align-items: center;
+		justify-content: center;
+		background-color: #c8e6c9;
+	}
+</style>

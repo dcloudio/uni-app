@@ -1,12 +1,12 @@
 <template>
-	<scroll-view class="flex-1 bg-page-f5f5f5 page" :class="{ 'page-dark': isDarkMode }">
-		<view class="u-p-16 bg-content-background-fff intro">
-			<text class="fw-bold color-text-222 fs-18 page-title">Easyinput 增强输入框</text>
-			<text class="fs-13 lh-21 color-secondary-text-657180 page-desc">支持单行、多行、密码、清空、错误态、空白裁剪和自定义内部样式。</text>
+	<scroll-view class="page" :class="{ 'page-dark': isDarkMode }">
+		<view class="intro">
+			<text class="page-title">Easyinput 增强输入框</text>
+			<text class="page-desc">支持单行、多行、密码、清空、前后插槽和自定义内部样式。</text>
 		</view>
 
-		<view class="u-p-16 bg-content-background-fff mt-10 section">
-			<text class="fw-bold color-text-222 mb-12 fs-16 section-title">基础输入</text>
+		<view class="section">
+			<text class="section-title">基础输入</text>
 			<uni-easyinput
 				v-model="data.basicValue"
 				clearable
@@ -26,9 +26,9 @@
 			>当前值：{{ data.basicValue }}</text>
 		</view>
 
-		<view class="u-p-16 bg-content-background-fff mt-10 section">
-			<text class="fw-bold color-text-222 mb-12 fs-16 section-title">外部值同步</text>
-			<view class="flex-dir-row flex-wrap-wrap button-row">
+		<view class="section">
+			<text class="section-title">外部值同步</text>
+			<view class="button-row">
 				<button class="small-button" size="mini" @click="setExternalValue(0)">设为 0</button>
 				<button class="small-button" size="mini" @click="setExternalValue(null)">设为 null</button>
 				<button class="small-button" size="mini" @click="setExternalValue('外部更新')">设为文本</button>
@@ -42,19 +42,18 @@
 			<text class="result-text">当前值：{{ data.externalValue == null ? 'null' : data.externalValue }}</text>
 		</view>
 
-		<view class="u-p-16 bg-content-background-fff mt-10 section">
-			<text class="fw-bold color-text-222 mb-12 fs-16 section-title">去除全部空白</text>
+		<view class="section">
+			<text class="section-title">Vue 修饰符</text>
 			<uni-easyinput
-				v-model="data.trimValue"
-				trim="all"
-				placeholder="输入空格会被移除"
-				input-class="test-trim-input"
+				v-model.trim="data.modifierValue"
+				placeholder="首尾空格由 v-model.trim 处理"
+				input-class="test-modifier-input"
 			/>
-			<text class="result-text">当前值：{{ data.trimValue }}</text>
+			<text class="result-text">当前值：[{{ data.modifierValue }}]</text>
 		</view>
 
-		<view class="u-p-16 bg-content-background-fff mt-10 section">
-			<text class="fw-bold color-text-222 mb-12 fs-16 section-title">密码和清空</text>
+		<view class="section">
+			<text class="section-title">密码和清空</text>
 			<uni-easyinput
 				v-model="data.passwordValue"
 				type="password"
@@ -68,8 +67,8 @@
 			<text class="result-text">密码显隐：{{ data.passwordVisible ? '显示' : '隐藏' }}</text>
 		</view>
 
-		<view class="u-p-16 bg-content-background-fff mt-10 section">
-			<text class="fw-bold color-text-222 mb-12 fs-16 section-title">多行输入</text>
+		<view class="section">
+			<text class="section-title">多行输入</text>
 			<uni-easyinput
 				v-model="data.textareaValue"
 				type="textarea"
@@ -80,8 +79,8 @@
 			<text class="result-text">当前值：{{ data.textareaValue }}</text>
 		</view>
 
-		<view class="u-p-16 bg-content-background-fff mt-10 section">
-			<text class="fw-bold color-text-222 mb-12 fs-16 section-title">状态</text>
+		<view class="section">
+			<text class="section-title">状态</text>
 			<uni-easyinput
 				class="state-input"
 				value="disabled-secret"
@@ -97,17 +96,10 @@
 				v-model="data.borderlessValue"
 				placeholder="无边框（class 覆盖）"
 			/>
-			<uni-easyinput
-				class="state-input"
-				v-model="data.errorValue"
-				error-message="输入内容有误"
-				error-class="test-error"
-				placeholder="错误状态"
-			/>
 		</view>
 
-		<view class="u-p-16 bg-content-background-fff mt-10 section">
-			<text class="fw-bold color-text-222 mb-12 fs-16 section-title">左右插槽</text>
+		<view class="section">
+			<text class="section-title">左右插槽</text>
 			<uni-easyinput v-model="data.slotValue" placeholder="请输入域名">
 				<template #left>
 					<text class="slot-prefix">https://</text>
@@ -118,8 +110,8 @@
 			</uni-easyinput>
 		</view>
 
-		<view class="u-p-16 bg-content-background-fff mt-10 pb-32 section section-last">
-			<text class="fw-bold color-text-222 mb-12 fs-16 section-title">自定义样式与窄布局</text>
+		<view class="section section-last">
+			<text class="section-title">自定义样式与窄布局</text>
 			<uni-easyinput
 				class="custom-root"
 				v-model="data.customValue"
@@ -130,7 +122,7 @@
 				icon-class="custom-icon"
 			/>
 
-			<text class="fw-bold color-text-222 mb-12 fs-16 section-title custom-title-gap">自定义图标颜色（自定义样式）</text>
+			<text class="section-title custom-title-gap">自定义图标颜色（自定义样式）</text>
 			<uni-easyinput
 				v-model="data.iconColorValue"
 				clearable
@@ -163,12 +155,11 @@ onShow(syncNavigationBar)
 type Data = {
 	basicValue : string,
 	externalValue : string | number | null,
-	trimValue : string,
+	modifierValue : string,
 	passwordValue : string,
 	passwordVisible : boolean,
 	textareaValue : string,
 	borderlessValue : string,
-	errorValue : string,
 	slotValue : string,
 	customValue : string,
 	iconColorValue : string,
@@ -184,12 +175,11 @@ type Data = {
 const data = reactive<Data>({
 	basicValue: '初始内容',
 	externalValue: '初始值',
-	trimValue: '',
+	modifierValue: '',
 	passwordValue: '123456',
 	passwordVisible: false,
 	textareaValue: '',
 	borderlessValue: '',
-	errorValue: '',
 	slotValue: '',
 	customValue: '窄布局内容',
 	iconColorValue: '',
@@ -236,20 +226,43 @@ defineExpose({
 </script>
 
 <style>
+.page {
+	flex: 1;
+	background-color: var(--background-color, #f5f5f5);
+}
+
 .intro {
 	padding: 18px 16px;
+	background-color: var(--content-background-color, #ffffff);
 }
 
 .page-title {
 	font-size: 20px;
+	font-weight: bold;
+	color: var(--text-color, #222222);
 }
 
 .page-desc {
 	margin-top: 8px;
 	font-size: 14px;
+	line-height: 21px;
+	color: var(--secondary-text-color, #657180);
+}
+
+.section {
+	padding: 16px;
+	margin-top: 10px;
+	background-color: var(--content-background-color, #ffffff);
+}
+
+.section-last {
+	padding-bottom: 32px;
 }
 
 .section-title {
+	margin-bottom: 12px;
+	font-size: 16px;
+	font-weight: bold;
 	color: var(--text-color, #333333);
 }
 
@@ -261,6 +274,8 @@ defineExpose({
 
 .button-row {
 	margin-bottom: 10px;
+	flex-direction: row;
+	flex-wrap: wrap;
 }
 
 .small-button {
@@ -296,10 +311,6 @@ defineExpose({
 
 .demo-textarea {
 	min-height: 96px;
-}
-
-.test-error {
-	border-color: #f56c6c;
 }
 
 .custom-root {

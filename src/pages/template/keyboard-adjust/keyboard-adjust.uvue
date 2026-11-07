@@ -1,7 +1,7 @@
 <template>
     <uni-nav-bar :navigationBarTextStyle="navigationBarTextColor">
       <template #left>
-        <uni-back-arrow-circle :auto-back="true"></uni-back-arrow-circle>
+        <uni-backarrow-circle auto-back class="back-arrow"></uni-backarrow-circle>
       </template>
       <template #mid>
         <text class="color-text-333">{{ title }}</text>
@@ -144,6 +144,11 @@
 </script>
 
 <style>
+  /* 导航栏已处理顶部安全区，按钮无需重复偏移。 */
+  .back-arrow {
+    margin-top: 0;
+  }
+
   .bottomInput {
     margin-bottom: var(--uni-safe-area-inset-bottom);
   }

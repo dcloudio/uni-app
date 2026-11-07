@@ -43,7 +43,13 @@
 			<view class="bg-fff top-20">
 				<rich-text id="user-select-rich-text" class="h-80" :user-select="data.userSelect" :nodes="data.text"></rich-text>
 			</view>
-			<!-- #ifdef APP -->
+			<!-- #ifdef APP || WEB -->
+			<view class="p-10-0 mb-15">
+				<enum-data-checkbox :items="selectionStyleItems" :model-value="data.selectionStyleIndex" :show-toast="false"
+					title="::selection 选区样式（长按选中文字查看）" @change="onSelectionStyleChange"></enum-data-checkbox>
+				<rich-text id="selection-style-rich-text" mode="web" :user-select="true" :nodes="selectionText"
+					:class="data.selectionStyleIndex == 1 ? 'rich-text-selection-static' : (data.selectionStyleIndex == 2 ? 'rich-text-selection-variable' : '')"></rich-text>
+			</view>
 			<view class="p-10-0 color-text-333 bg-fff mb-15">
 				<text>selection 颜色属性</text>
 				<rich-text mode="native" id="selection-color-rich-text" :nodes="data.text" :selectable="true"
@@ -54,6 +60,14 @@
 </template>
 
 <script setup lang="ts">
+	import { ItemType } from '@/components/enum-data-checkbox/enum-data-checkbox-types'
+	const selectionStyleItems: ItemType[] = [
+		{ value: 0, text: '系统默认' },
+		{ value: 1, text: '红字黄底' },
+		{ value: 2, text: 'CSS 变量：白字蓝底' }
+	]
+	const selectionText = '<p>长按选中这段文字，查看选区颜色。<strong>加粗文字</strong>和普通文字均可选择。</p>'
+
 	type DataType = {
 		text : string;
 		richTextHeight : number;
@@ -69,6 +83,11 @@
 		lineHeightIndex : number;
 		fontFamilyIndex : number;
 		userSelect : boolean;
+		selectionStyleIndex : number;
+		selectionStyleRectX : number;
+		selectionStyleRectY : number;
+		selectionStyleRectWidth : number;
+		selectionStyleRectHeight : number;
 		userSelectRectX : number;
 		userSelectRectY : number;
 		userSelectRectWidth : number;
@@ -81,7 +100,7 @@
 	const fontFamilyList : string[] = ["默认", "serif", "sans-serif", "monospace", "cursive"]
 
 	// 使用reactive避免ref数据在自动化测试中无法访问
-	const data = reactive({
+	const data = reactive<DataType>({
 		text: "<span>hello uni-app x!</span><br/><span>uni-app x，终极跨平台方案</span>",
 		richTextHeight: 0,
 		richTextElement: null,
@@ -96,15 +115,24 @@
 		lineHeightIndex: 0,
 		fontFamilyIndex: 0,
 		userSelect: true,
+		selectionStyleIndex: 0,
+		selectionStyleRectX: 0,
+		selectionStyleRectY: 0,
+		selectionStyleRectWidth: 0,
+		selectionStyleRectHeight: 0,
 		userSelectRectX: 0,
 		userSelectRectY: 0,
 		userSelectRectWidth: 0,
 		userSelectRectHeight: 0
-	} as DataType)
+	})
 
   const onUserSelectChange = (checked: boolean) => {
     data.userSelect = checked
   }
+
+	function onSelectionStyleChange(value: number) {
+		data.selectionStyleIndex = value
+	}
 
 	const updateRichTextHeight = () => {
 		if (data.richTextElement != null) {
@@ -218,6 +246,19 @@
 		}
 	}
 
+	function querySelectionStyleRect() {
+		const el = uni.getElementById('selection-style-rich-text')
+		const rect = el?.getBoundingClientRect()
+		if (rect != null) {
+			const windowInfo = uni.getWindowInfo()
+			const offsetY = windowInfo.safeAreaInsets.top + 44
+			data.selectionStyleRectX = rect.left
+			data.selectionStyleRectY = rect.top + offsetY
+			data.selectionStyleRectWidth = rect.width
+			data.selectionStyleRectHeight = rect.height
+		}
+	}
+
 	defineExpose({
 		data,
 		changeText,
@@ -225,9 +266,30 @@
 		changeColor,
 		changeLineHeight,
 		changeFontFamily,
+		onSelectionStyleChange,
 		getBoundingClientRectForTest,
 		testOpenDialogPage,
 		testCloseDialogPage,
-		queryUserSelectRect
+		queryUserSelectRect,
+		querySelectionStyleRect
 	})
 </script>
+
+<style>
+/* #ifdef APP || WEB */
+.rich-text-selection-static::selection {
+	color: #ff0000;
+	background-color: #ffff00;
+}
+
+.rich-text-selection-variable {
+	--rich-text-selection-color: #ffffff;
+	--rich-text-selection-background: rgba(0, 122, 255, 0.65);
+}
+
+.rich-text-selection-variable::selection {
+	color: var(--rich-text-selection-color);
+	background-color: var(--rich-text-selection-background);
+}
+/* #endif */
+</style>

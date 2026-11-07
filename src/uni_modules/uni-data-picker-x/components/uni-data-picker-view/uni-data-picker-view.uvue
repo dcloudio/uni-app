@@ -12,7 +12,7 @@
         </template>
       </view>
     </scroll-view>
-    <scroll-view ref="listView" class="list-view" :class="listViewClass" :scroll-y="true" @scroll="onListScroll">
+    <scroll-view ref="listView" class="list-view" :class="listViewClass" direction="vertical" @scroll="onListScroll">
       <view class="list-item" :class="listItemClass" v-for="(item, index) in dataPicker.currentDataList" :key="index"
         @click="dataPicker.onNodeClick(item)">
         <text class="item-text" :class="[listItemTextClass,

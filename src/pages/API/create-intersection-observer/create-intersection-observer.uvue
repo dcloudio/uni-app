@@ -5,12 +5,14 @@
 			<view class="p-10-0 color-text-333 mt-15">
 				{{data.appear ? '小球出现' : '小球消失'}}
 			</view>
-			<scroll-view class="h-200 bg-list-fff box-border-box scroll-view" :scrollTop="data.scrollTop">
+			<scroll-view class="h-200 bg-list-fff box-border-box scroll-view" :scroll-top="data.scrollTop">
 				<view class="d-flex flex-dir-column items-center scroll-area">
 					<text class="color-text-333 notice">向下滚动让小球出现</text>
 					<view class="w-100 h-100 radius-100 ball"></view>
 				</view>
 			</scroll-view>
+			<navigator url="/pages/API/create-intersection-observer/intersection-observer-batch"><button class="mt-15">批量监听多个元素</button></navigator>
+			<navigator url="/pages/API/create-intersection-observer/intersection-observer-multi-root"><button class="mt-15">嵌套多根节点（嵌套滚动）</button></navigator>
 		</view>
 	</view>
 </template>
@@ -24,12 +26,13 @@
     scrollTop: number;
   }
 
-  const data = reactive({
+  const initData: DataType = {
     appear: false,
     title: 'intersectionObserver',
     testRes: null,
     scrollTop: 0
-  } as DataType)
+  }
+  const data = reactive(initData)
 
   onReady(() => {
     observer = uni.createIntersectionObserver(getCurrentInstance()!.proxy!, {});

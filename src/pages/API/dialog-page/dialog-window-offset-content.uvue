@@ -1,0 +1,20 @@
+<template>
+  <view id="window-offset-dialog" class="w-full h-full bg-black-a30 d-flex justify-center items-center">
+    <view class="w-80pct u-p-10 bg-list-fff radius-6">
+      <text class="fs-14 lh-22 color-text-333">此弹窗使用自定义导航栏，不应修改父页面的窗口变量。</text>
+      <button class="mt-10" @click="closeDialog">关闭弹窗</button>
+    </view>
+  </view>
+</template>
+
+<script setup lang="ts">
+  function closeDialog() {
+    uni.closeDialogPage()
+  }
+</script>
+
+<style>
+  page {
+    background-color: transparent;
+  }
+</style>

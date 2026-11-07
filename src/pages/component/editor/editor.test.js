@@ -1,3 +1,5 @@
+jest.setTimeout(35000)
+
 const PAGE_PATH = '/pages/component/editor/editor'
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isWeb = platformInfo.startsWith('web') || platformInfo.startsWith('h5')
@@ -68,6 +70,7 @@ describe('editor.uvue', () => {
     const readyCount = await page.data('data.readyCount')
     await page.callMethod('onReadOnlyChange', false)
     await page.callMethod('onCustomStyleChange', false)
+    await page.callMethod('onSelectionStyleChange', 0)
     await page.callMethod('onTypeChange', 0)
     await page.callMethod('onPlaceholderChange', '请输入内容，placeholder 仅初始化生效')
     await page.callMethod('onDraftShowImgSizeChange', true)
@@ -94,6 +97,15 @@ describe('editor.uvue', () => {
     await page.waitFor(600)
   }
 
+  async function longPressEditor(offsetX = 60, offsetY = 20) {
+    const point = await getEditorTapPoint(offsetX, offsetY)
+    await program.tap({
+      ...point,
+      duration: 2000
+    })
+    await page.waitFor(500)
+  }
+
   async function assertKeyboardHeightChange() {
     if (isWeb) {
       return
@@ -116,6 +128,21 @@ describe('editor.uvue', () => {
         return name
       }
     })
+  }
+
+  async function expectWebSelectionStyle(item) {
+    const headHTML = await page.windowProperty('document.head.innerHTML')
+    const styleText = headHTML.replace(/\s/g, '')
+    const targetRule = /\[data-uni-selection-style="[^"]+"\]::selection/
+    if (!item.color) {
+      expect(headHTML).not.toMatch(targetRule)
+      return
+    }
+    expect(headHTML).toMatch(targetRule)
+    expect(styleText).toContain(`color:${item.color.replace(/\s/g, '')};`)
+    expect(styleText).toContain(
+      `background-color:${item.backgroundColor.replace(/\s/g, '')};`
+    )
   }
 
   async function getInserImageSize() {
@@ -159,6 +186,45 @@ describe('editor.uvue', () => {
     expect(await page.data('data.customStyle')).toBe(true)
     await screenshot('editor-theme-custom-color')
   })
+
+  if (!isMP) {
+    it('::selection 样式切换和恢复默认', async () => {
+      const cases = [
+        { index: 0, name: 'editor-selection-default' },
+        {
+          index: 1,
+          name: 'editor-selection-static',
+          color: 'rgb(255, 0, 0)',
+          backgroundColor: 'rgb(255, 255, 0)'
+        },
+        {
+          index: 2,
+          name: 'editor-selection-variable',
+          color: 'rgb(255, 255, 255)',
+          backgroundColor: 'rgba(0, 122, 255, 0.65)'
+        }
+      ]
+      for (const item of cases) {
+        await page.callMethod('onSelectionStyleChange', item.index)
+        await waitForData('data.selectionStyleIndex', value => value === item.index, 1000)
+        expect(await page.data('data.selectionStyleIndex')).toBe(item.index)
+        if (isWeb) {
+          await expectWebSelectionStyle(item)
+          continue
+        }
+        await page.callMethod('clearEditor')
+        await page.callMethod('insertSampleText')
+        await page.waitFor(100)
+        await longPressEditor()
+        await screenshot(item.name)
+      }
+      await page.callMethod('onSelectionStyleChange', 0)
+      await waitForData('data.selectionStyleIndex', value => value === 0, 1000)
+      if (isWeb) {
+        await expectWebSelectionStyle(cases[0])
+      }
+    })
+  }
 
   it('方法调用截图', async () => {
     await page.callMethod('insertSampleText')

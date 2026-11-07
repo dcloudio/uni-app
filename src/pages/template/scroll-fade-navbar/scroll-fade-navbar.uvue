@@ -7,9 +7,9 @@
       <view class="status-bar" :style="{ height: statusBarHeight + 'px' }"></view>
       <!-- #endif -->
       <view class="pos-relative flex-dir-row justify-between items-center h-45">
-        <!-- uni-back-arrow-circle组件：旋转边框的view实现返回箭头 -->
+        <!-- uni-backarrow-circle组件：旋转边框的view实现返回箭头 -->
         <!-- #ifndef MP-ALIPAY -->
-        <uni-back-arrow-circle :auto-back="true" :style="{backgroundColor:backBackgroundColor}" :class="arrowClass"></uni-back-arrow-circle>
+        <uni-backarrow-circle auto-back :style="{backgroundColor:backBackgroundColor}" :class="arrowClass"></uni-backarrow-circle>
         <!-- #endif -->
         <view class="pos-absolute h-full top-0 bottom-0 flex-dir-row justify-center items-center left-45 right-45">
           <text ref="textRef" class="opacity-0 lh-20 content-inner-text">
@@ -210,18 +210,20 @@
     background-color: rgba(0, 122, 255, 0);
   }
 
-  /* uni-back-arrow-circle组件 自定义样式 */
+  /* uni-backarrow-circle组件 自定义样式 */
   .arrow-gray,
   .arrow-white {
-    --back-arrow-width: 1px;
+    /* 导航栏已处理顶部安全区，按钮无需重复偏移。 */
+    margin-top: 0;
+    --uni-backarrow-circle-width: 1px;
   }
 
   .arrow-gray {
-    --back-arrow-color: #999999;
+    --uni-backarrow-circle-color: #999999;
   }
 
   .arrow-white {
-    --back-arrow-color: #FFFFFF;
+    --uni-backarrow-circle-color: #FFFFFF;
   }
 
   .content-inner-text {

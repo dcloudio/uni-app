@@ -1,9 +1,10 @@
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
+const isWeb = platformInfo.startsWith('web')
 
 describe("setNavigationBarColor", () => {
-  if (isAppWebView || isMP) {
+  if (isAppWebView) {
     it('skip', () => {
       expect(1).toBe(1)
     })
@@ -39,4 +40,22 @@ describe("setNavigationBarColor", () => {
     const image = await program.screenshot();
     expect(image).toSaveImageSnapshot();
   });
+
+  if(isMP || isWeb){
+    it("showNavigationBarLoading", async () => {
+      await page.callMethod("showNavigationBarLoading");
+      await page.waitFor(100);
+      const callback = await page.data('navigationBarLoadingCallback');
+      expect(callback.showSuccess).toBe(true);
+      expect(callback.showComplete).toBe(true);
+    });
+    it("hideNavigationBarLoading", async () => {
+      await page.callMethod("hideNavigationBarLoading");
+      await page.waitFor(100);
+      const callback = await page.data('navigationBarLoadingCallback');
+      expect(callback.hideSuccess).toBe(true);
+      expect(callback.hideComplete).toBe(true);
+    });
+  }
+
 });

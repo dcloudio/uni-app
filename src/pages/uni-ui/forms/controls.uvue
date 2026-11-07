@@ -1,11 +1,11 @@
 <template>
-	<scroll-view class="flex-1 bg-page-f5f5f5 page" :class="{ 'page-dark': isDarkMode }">
-		<view class="u-p-16 bg-content-background-fff intro">
-			<text class="fw-bold color-text-222 fs-18 page-title">控件接入示例</text>
-			<text class="fs-13 lh-21 color-secondary-text-657180 page-desc">uni-forms 不要求控件继承特定基类。只要控件通过 v-model 更新表单对象，就能参与提交校验；需要失焦即时校验时，再按需接入表单项上下文。</text>
+	<scroll-view class="page" :class="{ 'page-dark': isDarkMode }">
+		<view class="intro">
+			<text class="page-title">控件接入示例</text>
+			<text class="page-desc">uni-forms 不要求控件继承特定基类。只要控件通过 v-model 更新表单对象，就能参与提交校验；需要失焦即时校验时，再按需接入表单项上下文。</text>
 		</view>
 
-		<view class="u-p-16 bg-content-background-fff mt-10 section">
+		<view class="section">
 			<uni-forms
 				ref="formRef"
 				v-model="formData"
@@ -16,11 +16,11 @@
 				border
 			>
 				<uni-forms-item name="nativeInput" label="原生 input" required label-class="demo-label" error-message-class="demo-error">
-					<input class="flex-1 w-full fs-14 color-text-333 box-border-box min-h-38 p-0-10 border-width-1 border-style-solid border-color-input-border-d8dfe8 radius-4 native-input" v-model="formData.nativeInput" placeholder="直接使用 v-model" />
+					<input class="native-input" v-model="formData.nativeInput" placeholder="直接使用 v-model" />
 				</uni-forms-item>
 
 				<uni-forms-item name="nativeNote" label="原生 textarea" label-class="demo-label" error-message-class="demo-error">
-					<textarea class="flex-1 w-full fs-14 color-text-333 box-border-box min-h-38 p-0-10 border-width-1 border-style-solid border-color-input-border-d8dfe8 radius-4 native-textarea" v-model="formData.nativeNote" placeholder="多行文本不需要额外适配" />
+					<textarea class="native-textarea" v-model="formData.nativeNote" placeholder="多行文本不需要额外适配" />
 				</uni-forms-item>
 
 				<uni-forms-item name="agree" label="原生 switch" required label-class="demo-label" error-message-class="demo-error">
@@ -28,8 +28,8 @@
 				</uni-forms-item>
 
 				<uni-forms-item name="nativeCity" label="原生 picker" required label-class="demo-label" error-message-class="demo-error">
-					<picker class="flex-1 w-full fs-14 color-text-333 box-border-box picker-control" :range="cityOptions" :value="cityIndex" @change="onCityChange">
-						<view class="min-h-38 p-0-10 border-width-1 border-style-solid border-color-input-border-d8dfe8 radius-4 picker-value"><text>{{ formData.nativeCity || '请选择城市' }}</text></view>
+					<picker class="picker-control" :range="cityOptions" :value="cityIndex" @change="onCityChange">
+						<view class="picker-value"><text>{{ formData.nativeCity || '请选择城市' }}</text></view>
 					</picker>
 				</uni-forms-item>
 
@@ -48,18 +48,18 @@
 				</uni-forms-item>
 			</uni-forms>
 
-			<view class="flex-dir-row button-row">
-				<button class="mr-10 color-fff bg-007aff action-button" size="mini" @click="validateForm">校验接入控件</button>
-				<button class="mr-10 color-fff bg-007aff color-text-333 bg-active-e9eef5 action-button secondary-button" size="mini" @click="resetForm">重置</button>
+			<view class="button-row">
+				<button class="action-button" size="mini" @click="validateForm">校验接入控件</button>
+				<button class="action-button secondary-button" size="mini" @click="resetForm">重置</button>
 			</view>
-			<text class="mt-8 fs-14 color-007aff status-text">{{ statusText }}</text>
+			<text class="status-text">{{ statusText }}</text>
 		</view>
 
-		<view class="u-p-16 bg-content-background-fff mt-10 pb-32 section section-last">
-			<text class="fw-bold color-text-222 mb-12 fs-16 section-title">接入要点</text>
-			<text class="fs-13 lh-21 color-secondary-text-657180 point-text">1. 输入类控件：实现 modelValue 属性和 update:modelValue 事件。</text>
-			<text class="fs-13 lh-21 color-secondary-text-657180 point-text">2. 原生 picker/switch：用 change 事件把 detail.value 写回表单模型。</text>
-			<text class="fs-13 lh-21 color-secondary-text-657180 point-text">3. 只使用 v-model 的三方组件可以参与 submit 校验；失焦校验属于可选增强。</text>
+		<view class="section section-last">
+			<text class="section-title">接入要点</text>
+			<text class="point-text">1. 输入类控件：实现 modelValue 属性和 update:modelValue 事件。</text>
+			<text class="point-text">2. 原生 picker/switch：用 change 事件把 detail.value 写回表单模型。</text>
+			<text class="point-text">3. 只使用 v-model 的三方组件可以参与 submit 校验；失焦校验属于可选增强。</text>
 			<text class="data-text">{{ dataText }}</text>
 		</view>
 	</scroll-view>
@@ -73,7 +73,7 @@ const isDarkMode = computed((): boolean => state.isDarkMode)
 
 /** 暗黑模式下同步导航栏颜色，与图标示例页保持一致 */
 function syncNavigationBar(): void {
-	// #ifdef APP
+	// #ifdef APP || WEB
 	const dark = isDarkMode.value
 	uni.setNavigationBarColor({
 		frontColor: dark ? '#ffffff' : '#000000',
@@ -154,17 +154,127 @@ function resetForm() {
 </script>
 
 <style>
+.page {
+	flex: 1;
+	--list-background-color: #ffffff;
+	--background-color: #f5f5f5;
+	--active-color: #a0a0a0;
+	--active-background-color: #f8f8f8;
+	--text-color: #333333;
+	--arrow-color: #999999;
+	--content-background-color: #ffffff;
+	--secondary-text-color: #657180;
+	--input-border-color: #dcdfe6;
+	--divider-color: #e5e5e5;
+	--forms-error-background-color: #fff2f0;
+	background-color: var(--background-color);
+}
+
+.page-dark {
+	--list-background-color: #2d2d2d;
+	--background-color: #1a1a1a;
+	--active-color: #8f8f8f;
+	--active-background-color: #3b3b3b;
+	--text-color: #ffffff;
+	--arrow-color: #ffffff;
+	--content-background-color: #2d2d2d;
+	--secondary-text-color: rgba(255, 255, 255, 0.65);
+	--input-border-color: rgba(255, 255, 255, 0.18);
+	--divider-color: rgba(255, 255, 255, 0.12);
+	--forms-error-background-color: #3a1a1c;
+}
+
+.intro,
+.section {
+	padding: 16px;
+	background-color: var(--content-background-color, #ffffff);
+}
+
+.section {
+	margin-top: 10px;
+}
+
+.section-last {
+	padding-bottom: 32px;
+}
+
+.page-title,
+.section-title {
+	font-size: 18px;
+	font-weight: bold;
+	color: var(--text-color, #222222);
+}
+
+.section-title {
+	margin-bottom: 12px;
+	font-size: 16px;
+}
+
+.page-desc,
+.point-text {
+	font-size: 13px;
+	line-height: 21px;
+	color: var(--secondary-text-color, #657180);
+}
+
+.native-input,
+.native-textarea,
+.picker-control {
+	flex: 1;
+	width: 100%;
+	font-size: 14px;
+	color: var(--text-color, #333333);
+	box-sizing: border-box;
+}
+
+.native-input {
+	min-height: 38px;
+	padding: 0 10px;
+	border-width: 1px;
+	border-style: solid;
+	border-color: var(--input-border-color, #d8dfe8);
+	border-radius: 4px;
+}
+
 .native-textarea {
 	min-height: 76px;
 	padding: 8px 10px;
+	border-width: 1px;
+	border-style: solid;
+	border-color: var(--input-border-color, #d8dfe8);
+	border-radius: 4px;
 }
 
 .picker-value {
+	min-height: 38px;
+	padding: 0 10px;
+	border-width: 1px;
+	border-style: solid;
+	border-color: var(--input-border-color, #d8dfe8);
+	border-radius: 4px;
 	justify-content: center;
 }
 
 .button-row {
+	flex-direction: row;
 	margin-top: 10px;
+}
+
+.action-button {
+	margin-right: 10px;
+	color: #ffffff;
+	background-color: #007aff;
+}
+
+.secondary-button {
+	color: var(--text-color, #333333);
+	background-color: var(--active-background-color, #e9eef5);
+}
+
+.status-text {
+	margin-top: 8px;
+	font-size: 14px;
+	color: #007aff;
 }
 
 .point-text {
@@ -186,5 +296,21 @@ function resetForm() {
 .demo-error {
 	font-weight: bold;
 	color: #dd524d;
+}
+
+@media (prefers-color-scheme: dark) {
+	.page {
+		--list-background-color: #2d2d2d;
+		--background-color: #1a1a1a;
+		--active-color: #8f8f8f;
+		--active-background-color: #3b3b3b;
+		--text-color: #ffffff;
+		--arrow-color: #ffffff;
+		--content-background-color: #2d2d2d;
+		--secondary-text-color: rgba(255, 255, 255, 0.65);
+		--input-border-color: rgba(255, 255, 255, 0.18);
+		--divider-color: rgba(255, 255, 255, 0.12);
+		--forms-error-background-color: #3a1a1c;
+	}
 }
 </style>

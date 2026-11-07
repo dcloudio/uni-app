@@ -6,7 +6,6 @@ const isWeb = platformInfo.startsWith('web')
 const isIos = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.startsWith('harmony')
 const isAndroid = platformInfo.startsWith('android')
-const isApp = isAndroid || isIos || isHarmony
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 const PAGE_PATH = '/pages/component/rich-text/rich-text'
@@ -95,7 +94,81 @@ describe('rich-text-test', () => {
     await page.waitFor(300)
   }
 
-  if (isApp && !isAppWebView) {
+  async function longPressSelectionStyleRichText() {
+    await program.pageScrollTo(99999)
+    await page.waitFor(500)
+    await page.callMethod('querySelectionStyleRect')
+    await page.waitFor(300)
+    const rectX = await page.data('data.selectionStyleRectX')
+    const rectY = await page.data('data.selectionStyleRectY')
+    const rectWidth = await page.data('data.selectionStyleRectWidth')
+    const rectHeight = await page.data('data.selectionStyleRectHeight')
+    expect(rectWidth).toBeGreaterThan(0)
+    expect(rectHeight).toBeGreaterThan(0)
+    await program.tap({
+      x: Math.round(rectX + rectWidth / 2),
+      y: Math.round(rectY + Math.min(rectHeight / 2, 20)),
+      duration: 3000
+    })
+    await page.waitFor(500)
+  }
+
+  async function expectWebSelectionStyle(item) {
+    const headHTML = await page.windowProperty('document.head.innerHTML')
+    const styleText = headHTML.replace(/\s/g, '')
+    const targetRule = /\[data-uni-selection-style="[^"]+"\]::selection/
+    if (!item.color) {
+      expect(headHTML).not.toMatch(targetRule)
+      return
+    }
+    expect(headHTML).toMatch(targetRule)
+    expect(styleText).toContain(`color:${item.color.replace(/\s/g, '')};`)
+    expect(styleText).toContain(
+      `background-color:${item.backgroundColor.replace(/\s/g, '')};`
+    )
+  }
+
+  if (!isAppWebView) {
+    it('rich-text ::selection 样式切换和恢复默认', async () => {
+      const cases = [
+        { index: 0, name: 'rich-text-selection-default' },
+        {
+          index: 1,
+          name: 'rich-text-selection-static',
+          color: 'rgb(255, 0, 0)',
+          backgroundColor: 'rgb(255, 255, 0)'
+        },
+        {
+          index: 2,
+          name: 'rich-text-selection-variable',
+          color: 'rgb(255, 255, 255)',
+          backgroundColor: 'rgba(0, 122, 255, 0.65)'
+        }
+      ]
+      for (const item of cases) {
+        await page.callMethod('onSelectionStyleChange', item.index)
+        await page.waitFor(300)
+        expect(await page.data('data.selectionStyleIndex')).toBe(item.index)
+        if (isWeb) {
+          await expectWebSelectionStyle(item)
+          continue
+        }
+        await longPressSelectionStyleRichText()
+        const image = await program.screenshot(deviceShotOptions)
+        expect(image).toSaveImageSnapshot({
+          customSnapshotIdentifier() {
+            return item.name
+          }
+        })
+      }
+      await page.callMethod('onSelectionStyleChange', 0)
+      await page.waitFor(300)
+      expect(await page.data('data.selectionStyleIndex')).toBe(0)
+      if (isWeb) {
+        await expectWebSelectionStyle(cases[0])
+      }
+    })
+
     it('rich-text user-select true', async () => {
       await setPageData({ userSelect: true })
       await page.waitFor(300)

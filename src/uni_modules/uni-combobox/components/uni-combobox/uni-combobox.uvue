@@ -39,49 +39,50 @@
 		<!-- #ifndef WEB || (APP-ANDROID && !VUE3-VAPOR) -->
         <teleport v-if="opened && popupReady" to="page">
 		<!-- #endif -->
-			<view class="uni-combobox__mask" @click="closeOptions">
-				<view
-					class="uni-combobox__options"
-					:class="optionsViewClass"
-					:style="optionsStyle"
-					@click.stop="noop"
+			<!-- #ifdef MP -->
+			<view class="uni-combobox__mask" @click="closeOptions"></view>
+			<!-- #endif -->
+			<view
+				:id="popupId"
+				class="uni-combobox__options"
+				:class="optionsViewClass"
+				:style="optionsStyle"
+			>
+				<scroll-view
+					direction="vertical"
+					class="uni-combobox__options-scroll"
+					:scroll-into-view="scrollIntoViewId"
 				>
-					<scroll-view
-						direction="vertical"
-						class="uni-combobox__options-scroll"
-						:scroll-into-view="scrollIntoViewId"
-					>
-						<view class="uni-combobox__options-content" :class="optionsContentClass">
-							<view
-								v-if="visibleOptions.length == 0"
-								class="uni-combobox__option-row"
-							>
-								<text
-									class="uni-combobox__option uni-combobox__option--empty"
-									:class="optionTextClass"
-									max-lines="1"
-								>无匹配项</text>
-							</view>
-							<view
-								v-for="(item, index) in visibleOptions"
-								:id="getOptionId(index)"
-								:key="item + '_' + index.toString()"
-								class="uni-combobox__option-row"
-								:class="[
-									index == highlightedIndex ? 'uni-combobox__option-row--highlight' : '',
-									index == highlightedIndex ? optionRowHighlightClass : ''
-								]"
-								@click.stop="selectOption(index)"
-							>
-								<text
-									class="uni-combobox__option"
-									:class="[optionTextClass, index == highlightedIndex ? optionTextHighlightClass : '']"
-									max-lines="1"
-								>{{ item }}</text>
-							</view>
+					<view class="uni-combobox__options-content" :class="optionsContentClass">
+						<view
+							v-if="visibleOptions.length == 0"
+							class="uni-combobox__option-row"
+						>
+							<text
+								class="uni-combobox__option uni-combobox__option--empty"
+								:class="optionTextClass"
+								max-lines="1"
+							>无匹配项</text>
 						</view>
-					</scroll-view>
-				</view>
+						<view
+							v-for="(item, index) in visibleOptions"
+							:id="getOptionId(index)"
+							:key="item + '_' + index.toString()"
+							class="uni-combobox__option-row"
+							:class="[
+								index == highlightedIndex ? 'uni-combobox__option-row--highlight' : '',
+								index == highlightedIndex ? optionRowHighlightClass : ''
+							]"
+							@click.stop="selectOption(index)"
+						>
+							<text
+								class="uni-combobox__option"
+								:class="[optionTextClass, index == highlightedIndex ? optionTextHighlightClass : '']"
+								max-lines="1"
+							>{{ item }}</text>
+						</view>
+					</view>
+				</scroll-view>
 			</view>
 		</teleport>
 	</view>
@@ -652,6 +653,7 @@ defineSlots<{
 
 const slots = useSlots()
 const anchorId = `uni_combobox_${Math.ceil(Math.random() * 10e8).toString(36)}`
+const popupId = anchorId + '_popup'
 const optionIdPrefix = `uni_combobox_option_${Math.ceil(Math.random() * 10e8).toString(36)}_`
 const defaultOptionHeight = 36
 // #ifdef WEB
@@ -755,15 +757,15 @@ function emitValue(value : string) {
 	emit('update:modelValue', value)
 }
 
-function noop() {
-}
-
 function applyPopupRect(rect : DOMRect) {
 	const rectTop = rect.top != null ? rect.top : 0
 	const rectLeft = rect.left != null ? rect.left : 0
 	let rectWidth = rect.width != null ? rect.width : 0
 	const rectHeight = rect.height != null ? rect.height : 0
 	const rectBottom = rect.bottom != null ? rect.bottom : rectTop + rectHeight
+	// #ifdef APP
+	appAnchorRect = rect
+	// #endif
 	if (rectWidth <= 0) {
 		rectWidth = uni.getWindowInfo().windowWidth - 32
 	}
@@ -843,6 +845,184 @@ function updatePositionThenOpen() {
 	})
 }
 
+// Web/App 不铺设遮罩，让原始手势直接交给页面滚动容器。
+// 只观察外部交互，不阻止默认行为或事件传播。
+// #ifdef WEB
+let webInteractionListening = false
+
+function isWebTargetInside(target : EventTarget | null, id : string) : boolean {
+	const element = document.getElementById(id)
+	return element != null && target instanceof Node && element.contains(target)
+}
+
+function onWebOutsidePress(event : Event) {
+	if (isWebTargetInside(event.target, anchorId) || isWebTargetInside(event.target, popupId)) {
+		return
+	}
+	closeOptions()
+}
+
+function onWebOutsideScroll(event : Event) {
+	if (!isWebTargetInside(event.target, popupId)) {
+		closeOptions()
+	}
+}
+// #endif
+
+// #ifdef APP
+type PageInteractionListener = {
+	element : UniElement,
+	type : string,
+	callback : UniCallbackWrapper
+}
+const pageInteractionListeners : PageInteractionListener[] = []
+
+let appAnchorRect : DOMRect | null = null
+let appInteractionActive = false
+let appOpeningClickTime = -1
+let appScrollCheckRequest = -1
+let appScrollCheckAgain = false
+
+function onAppAncestorScroll(_event : UniEvent) {
+	if (!opened.value || !popupReady.value || appAnchorRect == null) {
+		return
+	}
+	const requestId = positionRequestId
+	if (appScrollCheckRequest == requestId) {
+		appScrollCheckAgain = true
+		return
+	}
+	const anchor = uni.getElementById(anchorId)
+	if (anchor == null) {
+		return
+	}
+	const rectPromise = anchor.getBoundingClientRectAsync()
+	if (rectPromise == null) {
+		return
+	}
+	appScrollCheckRequest = requestId
+	appScrollCheckAgain = false
+	rectPromise.then((rect : DOMRect) => {
+		// 上一次展开/关闭的异步结果不能关闭新打开的菜单。
+		if (isUnmounted || requestId != positionRequestId || !opened.value) {
+			return
+		}
+		appScrollCheckRequest = -1
+		const anchorRect = appAnchorRect
+		if (anchorRect == null) {
+			return
+		}
+		const dx = Math.abs(rect.left - anchorRect.left)
+		const dy = Math.abs(rect.top - anchorRect.top)
+		// 弹层自身滚动、延迟回调和亚像素回弹不代表页面真正滚动。
+		if (dx >= 1 || dy >= 1) {
+			closeOptions()
+			return
+		}
+		if (appScrollCheckAgain) {
+			appScrollCheckAgain = false
+			onAppAncestorScroll(_event)
+		}
+	}, (_error : any) => {
+		if (appScrollCheckRequest == requestId) {
+			appScrollCheckRequest = -1
+			appScrollCheckAgain = false
+		}
+	})
+}
+
+function isPointInside(x : number, y : number, left : number, top : number, width : number, height : number) : boolean {
+	return x >= left && x <= left + width && y >= top && y <= top + height
+}
+
+function onAppOutsideClick(event : UniPointerEvent) {
+	// 监听在打开菜单的 click 中注册，该事件仍会继续冒泡到页面根节点。
+	if (event.timeStamp == appOpeningClickTime) {
+		return
+	}
+	const x = event.clientX
+	const y = event.clientY
+	const inOptions = popupReady.value && isPointInside(x, y, popupLeft.value, popupTop.value, popupWidth.value, popupHeight.value)
+	const rect = appAnchorRect
+	const inAnchor = rect != null && isPointInside(x, y, rect.left, rect.top, rect.width, rect.height)
+	if (!inOptions && !inAnchor) {
+		closeOptions()
+	}
+}
+
+// 只在组件卸载时注销原生监听，避免在原生事件分发过程中移除当前回调。
+function disposeAppInteractionListeners() {
+	appInteractionActive = false
+	pageInteractionListeners.forEach((listener : PageInteractionListener) => {
+		listener.element.removeEventListener(listener.type, listener.callback)
+	})
+	pageInteractionListeners.length = 0
+}
+
+function addPageInteractionListener(element : UniElement, type : string, handler : (event : UniEvent) => void) {
+	const callback = element.addEventListener(type, (event : UniEvent) => {
+		if (!isUnmounted && appInteractionActive) {
+			handler(event)
+		}
+	})
+	pageInteractionListeners.push({ element, type, callback })
+}
+// #endif
+
+function startPageInteractionListeners() {
+	// #ifdef WEB
+	if (webInteractionListening) {
+		return
+	}
+	webInteractionListening = true
+	document.addEventListener('pointerdown', onWebOutsidePress, { capture: true, passive: true })
+	document.addEventListener('click', onWebOutsidePress, true)
+	document.addEventListener('touchmove', onWebOutsideScroll, { capture: true, passive: true })
+	document.addEventListener('wheel', onWebOutsideScroll, { capture: true, passive: true })
+	document.addEventListener('scroll', onWebOutsideScroll, { capture: true, passive: true })
+	// #endif
+	// #ifdef APP
+	appInteractionActive = true
+	if (pageInteractionListeners.length > 0) {
+		return
+	}
+	const anchor = uni.getElementById(anchorId)
+	if (anchor == null) {
+		return
+	}
+	let root = anchor
+	let parent = anchor.parentElement
+	while (parent != null) {
+		// scroll 不冒泡，逐一监听祖先，兼容嵌套 scroll-view/list-view。
+		addPageInteractionListener(parent, 'scroll', onAppAncestorScroll)
+		root = parent
+		parent = parent.parentElement
+	}
+	// App 只监听 click 和祖先滚动，不向页面根节点动态注册 touch 事件。
+	addPageInteractionListener(root, 'click', (event : UniEvent) => {
+		onAppOutsideClick(event as UniPointerEvent)
+	})
+	// #endif
+}
+
+function stopPageInteractionListeners() {
+	// #ifdef WEB
+	if (webInteractionListening) {
+		document.removeEventListener('pointerdown', onWebOutsidePress, true)
+		document.removeEventListener('click', onWebOutsidePress, true)
+		document.removeEventListener('touchmove', onWebOutsideScroll, true)
+		document.removeEventListener('wheel', onWebOutsideScroll, true)
+		document.removeEventListener('scroll', onWebOutsideScroll, true)
+		webInteractionListening = false
+	}
+	// #endif
+	// #ifdef APP
+	appInteractionActive = false
+	appScrollCheckRequest = -1
+	appScrollCheckAgain = false
+	// #endif
+}
+
 function openOptionsWithMode(filter : boolean) {
 	if (props.disabled) {
 		return
@@ -850,6 +1030,7 @@ function openOptionsWithMode(filter : boolean) {
 	filterEnabled.value = filter
 	syncHighlight()
 	popupReady.value = false
+	startPageInteractionListeners()
 	updatePositionThenOpen()
 }
 
@@ -858,12 +1039,16 @@ function openOptions() {
 }
 
 function closeOptions() {
+	stopPageInteractionListeners()
 	positionRequestId += 1
 	opened.value = false
 	popupReady.value = false
 }
 
-function toggleOptionsByArrow() {
+function toggleOptionsByArrow(event : UniPointerEvent) {
+	// #ifdef APP
+	appOpeningClickTime = event.timeStamp
+	// #endif
 	if (props.disabled) {
 		return
 	}
@@ -874,7 +1059,10 @@ function toggleOptionsByArrow() {
 	openOptions()
 }
 
-function onFieldClick() {
+function onFieldClick(event : UniPointerEvent) {
+	// #ifdef APP
+	appOpeningClickTime = event.timeStamp
+	// #endif
 	if (props.disabled) {
 		return
 	}
@@ -906,9 +1094,14 @@ function onInputBlur() {
 
 onBeforeUnmount(() => {
 	isUnmounted = true
-	positionRequestId += 1
-	opened.value = false
-	popupReady.value = false
+	closeOptions()
+	// #ifdef APP
+	disposeAppInteractionListeners()
+	// #endif
+})
+
+onHide(() => {
+	closeOptions()
 })
 
 // #ifndef WEB
@@ -1033,7 +1226,7 @@ watch(() : string[] => props.options, () => {
 })
 
 watch(() : boolean => props.disabled, (disabled : boolean) => {
-	if (disabled && opened.value) {
+	if (disabled) {
 		closeOptions()
 	}
 })
@@ -1124,6 +1317,7 @@ onBackPress(() : boolean => {
 	transition-duration: 150ms;
 }
 
+/* #ifdef MP */
 .uni-combobox__mask {
 	position: fixed;
 	left: 0;
@@ -1133,6 +1327,8 @@ onBackPress(() : boolean => {
 	z-index: 999;
 	background-color: rgba(0, 0, 0, 0);
 }
+
+/* #endif */
 
 .uni-combobox__options {
 	position: fixed;

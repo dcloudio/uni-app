@@ -1,0 +1,11 @@
+.agents
+.claude
+.cursor
+.hbuilderx
+.vite
+scripts
+unpackage
+node_modules
+package-lock.json
+harmony-mp-configs
+harmony-configs

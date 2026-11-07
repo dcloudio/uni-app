@@ -236,6 +236,13 @@
     properties: ['font-family', 'line-height', 'font-size', 'color'],
     filterProperties: false
   } as UseComputedStyleOptions)
+  const selectionStyle = useComputedStyle({
+    pseudoElement: '::selection',
+    properties: ['color', 'background-color'],
+    filterProperties: false
+  } as UseComputedStyleOptions)
+  const selectionColor = computed<string | null>(() => selectionStyle.get('color')?.toString() ?? null)
+  const selectionBackgroundColor = computed<string | null>(() => selectionStyle.get('background-color')?.toString() ?? null)
   const nativeStyle = computed(() : Map<string, any> => {
     const result = new Map<string, any>()
     style.forEach((value, key) => {
@@ -363,6 +370,7 @@
 		margin: 0;
 	}
 	</style>
+	<style id="rich-text-selection-style">::selection {}</style>
 	<script>
 		function postMessage(m) {
 			window.__uniapp_x_.postMessage(JSON.stringify(m));
@@ -382,6 +390,21 @@
 				document.documentElement.style.webkitTouchCallout = 'none';
 			}
 		}
+		function updateSelectionStyle(color, backgroundColor) {
+			var rule = document.getElementById('rich-text-selection-style').sheet.cssRules[0].style;
+			if (color) {
+				rule.setProperty('color', color);
+			} else {
+				rule.removeProperty('color');
+			}
+			if (backgroundColor) {
+				rule.setProperty('background-color', backgroundColor);
+			} else {
+				rule.removeProperty('background-color');
+			}
+		}
+		// 初始选区样式立即应用，不等待图片加载，也不在 onload 中覆盖后续动态更新。
+		updateSelectionStyle(${JSON.stringify(selectionColor.value)}, ${JSON.stringify(selectionBackgroundColor.value)})
 		window.onload = function () {
 			var aTags = document.getElementsByTagName('a');
 			for (var i = 0; i < aTags.length; i++) {
@@ -444,6 +467,13 @@
   function updateSelectable() {
     if(!isNative){
       webviewRef.value?.evalJS(`updateSelection(${isSelectable.value})`)
+    }
+  }
+
+  function updateSelectionStyle() {
+    if (!isNative && isWebviewLoaded) {
+      // 初始空白页尚无此方法；内容加载完成后会再次同步最新的计算样式。
+      webviewRef.value?.evalJS(`if (typeof updateSelectionStyle === 'function') { updateSelectionStyle(${JSON.stringify(selectionColor.value)}, ${JSON.stringify(selectionBackgroundColor.value)}) }`)
     }
   }
 
@@ -548,6 +578,9 @@
     loadHtmlContent(true)
   })
 
+  // 选区样式单独更新，不重载 HTML，以保留内容及当前选区。
+  watch([selectionColor, selectionBackgroundColor], updateSelectionStyle)
+
   /**
    * 监听 selectable 属性变化
    */
@@ -613,6 +646,7 @@
       isWebviewLoaded = true
       loadHtmlContent(false)
     }
+    updateSelectionStyle()
   }
 
   /**

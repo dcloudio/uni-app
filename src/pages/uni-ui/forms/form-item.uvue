@@ -190,7 +190,7 @@
 	 * 暗黑模式下把导航栏改成深色，和其它表单示例一致。
 	 */
 	function syncNavigationBar(): void {
-		// #ifdef APP
+		// #ifdef APP || WEB
 		const dark = isDarkMode.value
 		uni.setNavigationBarColor({
 			frontColor: dark ? '#ffffff' : '#000000',
@@ -245,14 +245,36 @@
 <style>
 	.page {
 		flex: 1;
-		background-color: var(--background-color, #f5f5f5);
+		--list-background-color: #ffffff;
+		--background-color: #f5f5f5;
+		--active-color: #a0a0a0;
+		--active-background-color: #f8f8f8;
+		--text-color: #333333;
+		--arrow-color: #999999;
+		--content-background-color: #ffffff;
+		--secondary-text-color: #657180;
+		--input-border-color: #dcdfe6;
+		--divider-color: #e5e5e5;
+		--forms-error-background-color: #fff2f0;
 		--card-label-color: #878787;
 		--desc-custom-color: #576b95;
 		--email-error-bg: #fff7e8;
 		--email-error-border: #fa8c16;
+		background-color: var(--background-color);
 	}
 
 	.page-dark {
+		--list-background-color: #2d2d2d;
+		--background-color: #1a1a1a;
+		--active-color: #8f8f8f;
+		--active-background-color: #3b3b3b;
+		--text-color: #ffffff;
+		--arrow-color: #ffffff;
+		--content-background-color: #2d2d2d;
+		--secondary-text-color: rgba(255, 255, 255, 0.65);
+		--input-border-color: rgba(255, 255, 255, 0.18);
+		--divider-color: rgba(255, 255, 255, 0.12);
+		--forms-error-background-color: #3a1a1c;
 		--card-label-color: rgba(255, 255, 255, 0.65);
 		--desc-custom-color: #9db7e8;
 		--email-error-bg: #3a2a12;
@@ -439,5 +461,25 @@
 		border-right-color: var(--email-error-border, #fa8c16);
 		border-bottom-color: var(--email-error-border, #fa8c16);
 		border-left-color: var(--email-error-border, #fa8c16);
+	}
+
+	@media (prefers-color-scheme: dark) {
+		.page {
+			--list-background-color: #2d2d2d;
+			--background-color: #1a1a1a;
+			--active-color: #8f8f8f;
+			--active-background-color: #3b3b3b;
+			--text-color: #ffffff;
+			--arrow-color: #ffffff;
+			--content-background-color: #2d2d2d;
+			--secondary-text-color: rgba(255, 255, 255, 0.65);
+			--input-border-color: rgba(255, 255, 255, 0.18);
+			--divider-color: rgba(255, 255, 255, 0.12);
+			--forms-error-background-color: #3a1a1c;
+			--card-label-color: rgba(255, 255, 255, 0.65);
+			--desc-custom-color: #9db7e8;
+			--email-error-bg: #3a2a12;
+			--email-error-border: #fa8c16;
+		}
 	}
 </style>

@@ -2,7 +2,7 @@
 	"id": "uni-easyinput",
 	"displayName": "uni-easyinput 增强输入框",
 	"version": "1.1.0",
-	"description": "适用于 uni-app x 的增强输入框，支持清空、密码显隐、错误态、空白裁剪和多行输入。",
+	"description": "适用于 uni-app x 的增强输入框，支持清空、密码显隐、前后插槽和多行输入。",
 	"keywords": [
 		"uni-ui-x",
 		"uni-app-x",
@@ -32,7 +32,7 @@
 			"permissions": "无"
 		},
 		"npmurl": "https://www.npmjs.com/package/@dcloudio/uni-ui-x",
-		"darkmode": "-",
+		"darkmode": "√",
 		"i18n": "-",
 		"widescreen": "√",
 		"vapor": "√"

@@ -1,7 +1,7 @@
 {
   "id": "uni-backarrow-circle",
   "displayName": "uni-backarrow-circle 圆形返回按钮",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "带圆形透明背景的返回箭头组件。适用于顶部沉浸时左上角独立返回",
   "isExt": true,
   "extUrl": "https://ext.dcloud.net.cn/plugin?id=30536",
@@ -55,16 +55,34 @@
       "client": {
         "uni-app-x": {
           "web": {
-            "safari": "√",
-            "chrome": "√"
+            "safari": {
+                "extVersion": "1.0.2",
+                "minVersion": ""
+            },
+            "chrome": {
+                "extVersion": "1.0.2",
+                "minVersion": ""
+            }
           },
           "app": {
-            "android": "√",
-            "ios": "√",
-            "harmony": "√"
+            "android": {
+                "extVersion": "1.0.2",
+                "minVersion": ""
+            },
+            "ios": {
+                "extVersion": "1.0.2",
+                "minVersion": ""
+            },
+            "harmony": {
+                "extVersion": "1.0.2",
+                "minVersion": ""
+            }
           },
           "mp": {
-            "weixin": "√"
+            "weixin": {
+                "extVersion": "1.0.2",
+                "minVersion": ""
+            }
           }
         }
       }

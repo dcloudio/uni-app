@@ -25,7 +25,10 @@
         <editor
           v-if="data.showEditor"
           id="editor-props-demo"
-          :class="data.customStyle ? 'h-150 min-h-0 u-p-10 bg-list-fff preview-editor-custom color-e64340' : 'h-150 min-h-0 u-p-10 bg-list-fff'"
+          :class="[
+            data.customStyle ? 'h-150 min-h-0 u-p-10 bg-list-fff preview-editor-custom color-e64340' : 'h-150 min-h-0 u-p-10 bg-list-fff',
+            data.selectionStyleIndex == 1 ? 'editor-selection-static' : (data.selectionStyleIndex == 2 ? 'editor-selection-variable' : '')
+          ]"
           :read-only="data.readOnly"
           :placeholder="data.appliedPlaceholder"
           :show-img-size="data.appliedShowImgSize"
@@ -78,6 +81,10 @@
       </view>
       <boolean-data :value="data.readOnly" title="read-only：设置编辑器为只读，可动态修改" @change="onReadOnlyChange"></boolean-data>
       <boolean-data :value="data.customStyle" title="CSS 样式：关闭时使用主题默认颜色，开启时覆盖 color 和 caret-color" @change="onCustomStyleChange"></boolean-data>
+      <!-- #ifdef APP || WEB -->
+      <enum-data-checkbox :items="selectionStyleItems" :model-value="data.selectionStyleIndex" :show-toast="false"
+        title="::selection 选区样式（长按选中编辑区文字查看）" @change="onSelectionStyleChange"></enum-data-checkbox>
+      <!-- #endif -->
       <!-- #ifndef MP -->
       <enum-data-checkbox :items="data.typeItems" title="type：null | none，控制聚焦时是否弹出键盘" @change="onTypeChange"></enum-data-checkbox>
       <!-- #endif -->
@@ -143,6 +150,7 @@ type EditorPropsPageData = {
   showEditor: boolean
   readOnly: boolean
   customStyle: boolean
+  selectionStyleIndex: number
   editorType: string | null
   draftPlaceholder: string
   appliedPlaceholder: string
@@ -180,11 +188,17 @@ function createTypeItems(selectedValue: number): ItemType[] {
 }
 
 const showLogs = false
+const selectionStyleItems: ItemType[] = [
+  { value: 0, text: '系统默认' },
+  { value: 1, text: '红字黄底' },
+  { value: 2, text: 'CSS 变量：白字蓝底' }
+]
 
 const initialData: EditorPropsPageData = {
   showEditor: true,
   readOnly: false,
   customStyle: false,
+  selectionStyleIndex: 0,
   editorType: null,
   draftPlaceholder: '请输入内容，placeholder 仅初始化生效',
   appliedPlaceholder: '请输入内容，placeholder 仅初始化生效',
@@ -247,6 +261,10 @@ function onReadOnlyChange(checked: boolean) {
 function onCustomStyleChange(checked: boolean) {
   data.customStyle = checked
   appendLog('style', `CSS 样式覆盖 => ${checked}`)
+}
+
+function onSelectionStyleChange(value: number) {
+  data.selectionStyleIndex = value
 }
 
 function onTypeChange(value: number) {
@@ -477,6 +495,7 @@ defineExpose({
   getTypeLabel,
   onReadOnlyChange,
   onCustomStyleChange,
+  onSelectionStyleChange,
   onTypeChange,
   onPlaceholderChange,
   onDraftShowImgSizeChange,
@@ -523,4 +542,21 @@ defineExpose({
 .preview-editor-custom {
   caret-color: #42b983;
 }
+
+/* #ifdef APP || WEB */
+.editor-selection-static::selection {
+  color: #ff0000;
+  background-color: #ffff00;
+}
+
+.editor-selection-variable {
+  --editor-selection-color: #ffffff;
+  --editor-selection-background: rgba(0, 122, 255, 0.65);
+}
+
+.editor-selection-variable::selection {
+  color: var(--editor-selection-color);
+  background-color: var(--editor-selection-background);
+}
+/* #endif */
 </style>
