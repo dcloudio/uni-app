@@ -42,6 +42,7 @@ export type PickerViewContext = {
   unregisterColumn: (api: PickerViewColumnApi) => void,
   onColumnIndexChange: (col: number, index: number) => void,
   maskClass: () => string,
+  indicatorClass: () => string,
   maskTopStyle: () => any,
   maskBottomStyle: () => any,
   indicatorStyle: () => any,
