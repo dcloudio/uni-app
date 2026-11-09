@@ -1,8 +1,7 @@
-import { isSymbol, isObject, hasOwn, def, hasChanged, isFunction, isArray as isArray$1, extend, toRawType, EMPTY_OBJ, isSet, isMap, isPlainObject, NOOP, makeMap, capitalize, isPromise, getGlobalThis, isString, remove as remove$1, toHandlerKey, camelize, hyphenate, isReservedProp, looseToNumber, isOn, isBuiltInTag, parseStringStyle, canSetValueDirectly, invokeArrayFns, isBuiltInDirective, isRegExp, toNumber, EMPTY_ARR, toDisplayString, NO, isModelListener, getSequence, normalizeStyle as normalizeStyle$2, normalizeClass as normalizeClass$1, stringifyStyle, isKnownSvgAttr, isBooleanAttr, isKnownHtmlAttr, includeBooleanAttr, isRenderableAttrValue, normalizeCssVarValue, getEscapedCssVarName, isGloballyAllowed, YES } from '@vue/shared';
+import { isSymbol, isObject, hasOwn, def, hasChanged, isFunction, isArray as isArray$1, extend, toRawType, EMPTY_OBJ, isSet, isMap, isPlainObject, NOOP, makeMap, capitalize, hyphenate, isPromise, getGlobalThis, isString, remove as remove$1, toHandlerKey, camelize, isReservedProp, looseToNumber, isOn, isBuiltInTag, parseStringStyle, canSetValueDirectly, invokeArrayFns, isBuiltInDirective, isRegExp, toNumber, EMPTY_ARR, toDisplayString, NO, isModelListener, getSequence, normalizeStyle as normalizeStyle$2, normalizeClass as normalizeClass$1, stringifyStyle, isKnownSvgAttr, isBooleanAttr, isKnownHtmlAttr, includeBooleanAttr, isRenderableAttrValue, normalizeCssVarValue, getEscapedCssVarName, isGloballyAllowed, YES } from '@vue/shared';
 export { camelize, capitalize, hyphenate, toDisplayString, toHandlerKey } from '@vue/shared';
 import { isIntegerKey, isRootHook, isRootImmediateHook, ON_LOAD, normalizeClass, normalizeStyle as normalizeStyle$1, ON_SHOW, ON_HIDE, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, ON_EXIT, ON_READY, ON_UNLOAD, ON_RESIZE, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SHARE_TIMELINE, ON_SHARE_APP_MESSAGE } from '@dcloudio/uni-shared';
 export { normalizeClass, normalizeProps, normalizeStyle } from '@dcloudio/uni-shared';
-import { expand } from '@dcloudio/uni-nvue-styler/dist/uni-nvue-styler.es';
 function warn$2(msg) {
   for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key2 = 1; _key2 < _len; _key2++) {
     args[_key2 - 1] = arguments[_key2];
@@ -2190,6 +2189,1228 @@ Promise$1._unhandledRejectionFn = function _unhandledRejectionFn(err) {
 };
 var lib = Promise$1;
 var PromisePolyfill = /*@__PURE__*/getDefaultExportFromCjs(lib);
+function createDecl(prop, value, important, raws, source) {
+  var decl = {
+    type: 'decl',
+    prop,
+    value: value.toString(),
+    raws,
+    source
+  };
+  if (important) {
+    decl.important = true;
+  }
+  return decl;
+}
+var NUM_REGEXP = /^[-]?\d*\.?\d+$/;
+var LENGTH_REGEXP = /^[-+]?\d*\.?\d+(\S*)$/;
+var SUPPORT_CSS_UNIT = ['px', 'pt', 'wx', 'upx', 'rpx'];
+var DOM2_CSS_DOCS_BASE_URL = 'https://doc.dcloud.net.cn/uni-app-x/css';
+function getDom2PropertyDocsUrl(property) {
+  return "".concat(DOM2_CSS_DOCS_BASE_URL, "/").concat(hyphenateStyleProperty(property), ".html#suggestion");
+}
+function appendDom2Docs(reason, url) {
+  return url ? "".concat(reason, " \u8BE6\u89C1\uFF1A").concat(url) : reason;
+}
+var isNumber = val => typeof val === 'number';
+var cacheStringFunction = fn => {
+  var cache = Object.create(null);
+  return str => {
+    var hit = cache[str];
+    return hit || (cache[str] = fn(str));
+  };
+};
+var hyphenateRE = /([A-Z])/g;
+var hyphenateStyleProperty = cacheStringFunction(str => str.replace(hyphenateRE, (_, m) => {
+  if (typeof m === 'string') {
+    return '-' + m.toLowerCase();
+  }
+  return m;
+}).toLowerCase());
+function validReason(k, v) {
+  return 'ERROR: property value `' + v + '` is not valid for `' + hyphenateStyleProperty(k) + '`';
+}
+function defaultValueReason(k, v) {
+  return 'NOTE: property value `' + v + '` is the DEFAULT value for `' + hyphenateStyleProperty(k) + '` (could be removed)';
+}
+function supportedEnumReason(k, v, items) {
+  var reason = 'ERROR: property value `' + v + '` is not supported for `' + hyphenateStyleProperty(k) + '`';
+  return items.length ? reason + ' (supported values are: `' + items.join('`|`') + '`)' : reason;
+}
+function supportedValueWithTipsReason(k, v, tips) {
+  return 'ERROR: property value `' + v + '` is not supported for `' + hyphenateStyleProperty(k) + '` ' + tips;
+}
+function supportedUnitWithAutofixedReason(unit, v, result) {
+  return 'NOTE: unit `' + unit + '` is not supported and property value `' + v + '` is autofixed to `' + result + '`';
+}
+/**
+ * css value 分割多值，兼容包含括号的 css 方法，比如 var/env/calc() 等
+ */
+function splitValues(value) {
+  var trimmedValue = value.trim();
+  if (!trimmedValue.includes('(')) {
+    return trimmedValue.split(/\s+/);
+  }
+  var parts = [];
+  var current = '';
+  var depth = 0;
+  for (var i = 0; i < trimmedValue.length; i++) {
+    var char = trimmedValue[i];
+    if (char === '(') {
+      depth++;
+      current += char;
+    } else if (char === ')') {
+      if (depth > 0) {
+        depth--;
+      }
+      current += char;
+    } else if (/\s/.test(char)) {
+      if (depth === 0) {
+        if (current) {
+          parts.push(current);
+          current = '';
+        }
+      } else {
+        // 多个空格处理一个
+        if (current.length > 0 && !/\s$/.test(current)) {
+          current += ' ';
+        }
+      }
+    } else {
+      current += char;
+    }
+  }
+  if (current) {
+    parts.push(current);
+  }
+  return parts;
+}
+function isSingleCssVarValue(value) {
+  var trimmedValue = value.trim();
+  if (splitValues(trimmedValue).length !== 1 || !/^var\(/i.test(trimmedValue)) {
+    return false;
+  }
+  var depth = 0;
+  for (var i = 0; i < trimmedValue.length; i++) {
+    var char = trimmedValue[i];
+    if (char === '(') {
+      depth++;
+    } else if (char === ')') {
+      if (depth === 0) {
+        return false;
+      }
+      depth--;
+      if (depth === 0 && trimmedValue.slice(i + 1).trim()) {
+        return false;
+      }
+    }
+  }
+  return depth === 0;
+}
+function tryExpandSingleValueVarShorthand(decl, props, value, dom2) {
+  // 只在 dom2 运行时兜底展开，避免影响其它平台现有行为。
+  if (!dom2) {
+    return null;
+  }
+  // 当整个简写值只有一个 var() 时，无法静态判断它属于哪个子属性，
+  // 这里直接复制到每个长属性，交给运行时再解析。
+  if (!isSingleCssVarValue(value)) {
+    return null;
+  }
+  return expandShorthand(decl, props, value);
+}
+function expandShorthand(decl, props, value) {
+  var {
+    important,
+    raws,
+    source
+  } = decl;
+  return props.map(prop => createDecl(prop, value, important, raws, source));
+}
+var backgroundColor = 'backgroundColor';
+var backgroundImage = 'backgroundImage';
+function isCssVarValue$3(value) {
+  return /^var\(/i.test(value);
+}
+function isBackgroundImageValue(value) {
+  return value === 'none' || /^linear-gradient(.+)$/.test(value);
+}
+function isBackgroundColorValue(value) {
+  return !isCssVarValue$3(value) && !isBackgroundImageValue(value) && (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value));
+}
+var handleTransformBackground = (decl, dom2) => {
+  var {
+    value,
+    important,
+    raws,
+    source
+  } = decl;
+  value = value.trim();
+  var singleVarResult = tryExpandSingleValueVarShorthand(decl, [backgroundImage, backgroundColor], value, dom2);
+  if (singleVarResult) {
+    return singleVarResult;
+  }
+  if (dom2) {
+    var values = splitValues(value);
+    if (values.length === 2) {
+      var variableIndex = values.findIndex(isCssVarValue$3);
+      var otherIndex = variableIndex === 0 ? 1 : 0;
+      if (variableIndex >= 0 && !isCssVarValue$3(values[otherIndex]) && (isBackgroundImageValue(values[otherIndex]) || isBackgroundColorValue(values[otherIndex]))) {
+        var variableValue = values[variableIndex];
+        var otherValue = values[otherIndex];
+        var variableIsImage = isBackgroundColorValue(otherValue);
+        return [createDecl(backgroundImage, variableIsImage ? variableValue : otherValue, important, raws, source), createDecl(backgroundColor, variableIsImage ? otherValue : variableValue, important, raws, source)];
+      }
+    }
+  }
+  if (value === 'none') {
+    return [createDecl(backgroundImage, 'none', important, raws, source), createDecl(backgroundColor, 'transparent', important, raws, source)];
+  }
+  if (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)) {
+    return [createDecl(backgroundImage, 'none', important, raws, source), createDecl(backgroundColor, value, important, raws, source)];
+  } else if (/^linear-gradient(.+)$/.test(value)) {
+    return [createDecl(backgroundImage, value, important, raws, source), createDecl(backgroundColor, 'transparent', important, raws, source)];
+  } else if (value == '') {
+    return [createDecl(backgroundImage, 'none', important, raws, source), createDecl(backgroundColor, 'transparent', important, raws, source)];
+  }
+  return dom2 && /\bvar\(/i.test(value) ? expandShorthand(decl, [backgroundImage, backgroundColor], value) : [decl];
+};
+var handleTransformBackgroundNvue = decl => {
+  var {
+    value,
+    important,
+    raws,
+    source
+  } = decl;
+  if (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)) {
+    return [createDecl(backgroundColor, value, important, raws, source)];
+  } else if (/^linear-gradient(.+)$/.test(value)) {
+    return [createDecl(backgroundImage, value, important, raws, source)];
+  } else if (value == '') {
+    return [decl];
+  }
+  return [decl];
+};
+function createTransformBackground(options) {
+  return decl => {
+    // nvue 平台维持原有逻辑不变
+    var isUvuePlatform = options.type === 'uvue';
+    if (isUvuePlatform) {
+      return handleTransformBackground(decl, !!options.dom2);
+    } else {
+      return handleTransformBackgroundNvue(decl);
+    }
+  };
+}
+var borderTop = 'borderTop';
+var borderRight = 'borderRight';
+var borderBottom = 'borderBottom';
+var borderLeft = 'borderLeft';
+var transformBorderColor = decl => {
+  var {
+    prop,
+    value,
+    important,
+    raws,
+    source
+  } = decl;
+  value = value.trim();
+  var _property_split = hyphenate(prop).split('-');
+  var property = _property_split[_property_split.length - 1];
+  {
+    property = capitalize(property);
+  }
+  var splitResult = splitValues(value); // 1pt
+  switch (splitResult.length) {
+    case 1:
+      if (_property_split.length === 3) {
+        // border-top-width
+        return [decl];
+      }
+      // border-width
+      splitResult.push(splitResult[0], splitResult[0], splitResult[0]);
+      break;
+    case 2:
+      splitResult.push(splitResult[0], splitResult[1]);
+      break;
+    case 3:
+      splitResult.push(splitResult[1]);
+      break;
+  }
+  return [createDecl(borderTop + property, splitResult[0], important, raws, source), createDecl(borderRight + property, splitResult[1], important, raws, source), createDecl(borderBottom + property, splitResult[2], important, raws, source), createDecl(borderLeft + property, splitResult[3], important, raws, source)];
+};
+var transformBorderColorNvue = decl => {
+  var {
+    prop,
+    value,
+    important,
+    raws,
+    source
+  } = decl;
+  value = value.trim();
+  var property = hyphenate(prop).split('-')[1];
+  {
+    property = capitalize(property);
+  }
+  var splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/);
+  switch (splitResult.length) {
+    case 1:
+      return [decl];
+    case 2:
+      splitResult.push(splitResult[0], splitResult[1]);
+      break;
+    case 3:
+      splitResult.push(splitResult[1]);
+      break;
+  }
+  return [createDecl(borderTop + property, splitResult[0], important, raws, source), createDecl(borderRight + property, splitResult[1], important, raws, source), createDecl(borderBottom + property, splitResult[2], important, raws, source), createDecl(borderLeft + property, splitResult[3], important, raws, source)];
+};
+var transformBorderStyle = transformBorderColor;
+var transformBorderStyleNvue = transformBorderColorNvue;
+var transformBorderWidth = transformBorderColor;
+var transformBorderWidthNvue = transformBorderColorNvue;
+var borderWidth = 'Width';
+var borderStyle = 'Style';
+var borderColor = 'Color';
+var BORDER_WIDTH_REGEXP = /^(?:[\d.]+\S*|thin|medium|thick)$/;
+var BORDER_CALC_WIDTH_REGEXP = /^calc\(.+\)$/i;
+// 这里按完整 CSS line-style 识别，后续再交给 border-*-style 的既有校验逻辑报精确错误。
+var BORDER_STYLE_REGEXP = /^(?:none|hidden|dotted|dashed|solid|double|groove|ridge|inset|outset)$/;
+function createBorderVarOrderWarning(prop, value) {
+  return supportedValueWithTipsReason(prop, value, '(border shorthand with CSS variables must follow `width style color`, for example: `1px solid var(--color, #999999)`)');
+}
+function isCssVarValue$2(value) {
+  return value.startsWith('var(');
+}
+function isBorderWidthValue(value, dom2) {
+  return isCssVarValue$2(value) || BORDER_WIDTH_REGEXP.test(value) || dom2 && BORDER_CALC_WIDTH_REGEXP.test(value);
+}
+function isBorderStyleValue(value) {
+  return isCssVarValue$2(value) || BORDER_STYLE_REGEXP.test(value);
+}
+function isBorderColorValue(value, dom2) {
+  return isCssVarValue$2(value) || !isBorderWidthValue(value, dom2) && !BORDER_STYLE_REGEXP.test(value);
+}
+function createTransformBorder(options) {
+  return (decl, onWarning) => {
+    var {
+      prop,
+      value,
+      important,
+      raws,
+      source
+    } = decl;
+    var dom2 = !!options.dom2;
+    var singleVarResult = tryExpandSingleValueVarShorthand(decl, [prop + borderWidth, prop + borderStyle, prop + borderColor], value, dom2);
+    // 单个 var() 无法提前判断是 width/style/color，dom2 下先平铺后继续展开。
+    if (singleVarResult) {
+      return [...transformBorderWidth(singleVarResult[0]), ...transformBorderStyle(singleVarResult[1]), ...transformBorderColor(singleVarResult[2])];
+    }
+    var splitResult = splitValues(value);
+    var havVar = splitResult.some(str => str.startsWith('var('));
+    var result = [];
+    // 包含 var 时按位置解析，避免把 style 误判成 color
+    if (havVar) {
+      if (splitResult.length > 3 || splitResult.length === 3 && (!isBorderWidthValue(splitResult[0], dom2) || !isBorderStyleValue(splitResult[1]) || !isBorderColorValue(splitResult[2], dom2))) {
+        onWarning === null || onWarning === void 0 || onWarning(createBorderVarOrderWarning(prop, value));
+        return [];
+      }
+      result = splitResult;
+      splitResult = [];
+    } else {
+      result = [str => isBorderWidthValue(str, dom2), str => BORDER_STYLE_REGEXP.test(str), str => /\S+/.test(str)].map(matches => {
+        var index = splitResult.findIndex(matches);
+        return index < 0 ? null : splitResult.splice(index, 1)[0];
+      });
+    }
+    if (splitResult.length > 0 && value != '') {
+      return [decl];
+    }
+    var defaultWidth = str => {
+      if (str != null) {
+        return str.trim();
+      }
+      return 'medium';
+    };
+    var defaultStyle = str => {
+      if (str != null) {
+        return str.trim();
+      }
+      return 'none';
+    };
+    var defaultColor = str => {
+      if (str != null) {
+        return str.trim();
+      }
+      return '#000000';
+    };
+    return [...transformBorderWidth(createDecl(prop + borderWidth, defaultWidth(result[0]), important, raws, source)), ...transformBorderStyle(createDecl(prop + borderStyle, defaultStyle(result[1]), important, raws, source)), ...transformBorderColor(createDecl(prop + borderColor, defaultColor(result[2]), important, raws, source))];
+  };
+}
+/**
+ * nvue 逻辑不变
+ */
+function createTransformBorderNvue(options) {
+  return decl => {
+    var {
+      prop,
+      value,
+      important,
+      raws,
+      source
+    } = decl;
+    value = value.trim();
+    var splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/);
+    var result = [/^[\d\.]+\S*|^(thin|medium|thick)$/, /^(solid|dashed|dotted|none)$/, /\S+/].map(item => {
+      var index = splitResult.findIndex(str => item.test(str));
+      return index < 0 ? null : splitResult.splice(index, 1)[0];
+    });
+    if (splitResult.length) {
+      return [decl];
+    }
+    return [createDecl(prop + borderWidth, (result[0] || '0').trim(), important, raws, source), createDecl(prop + borderStyle, (result[1] || 'solid').trim(), important, raws, source), createDecl(prop + borderColor, (result[2] || '#000000').trim(), important, raws, source)];
+  };
+}
+var borderTopLeftRadius = 'borderTopLeftRadius';
+var borderTopRightRadius = 'borderTopRightRadius';
+var borderBottomRightRadius = 'borderBottomRightRadius';
+var borderBottomLeftRadius = 'borderBottomLeftRadius';
+var transformBorderRadius = decl => {
+  var {
+    value,
+    important,
+    raws,
+    source
+  } = decl;
+  value = value.trim();
+  var splitResult = splitValues(value);
+  if (value.includes('/')) {
+    return [decl];
+  }
+  switch (splitResult.length) {
+    case 1:
+      splitResult.push(splitResult[0], splitResult[0], splitResult[0]);
+      break;
+    case 2:
+      splitResult.push(splitResult[0], splitResult[1]);
+      break;
+    case 3:
+      splitResult.push(splitResult[1]);
+      break;
+  }
+  return [createDecl(borderTopLeftRadius, splitResult[0], important, raws, source), createDecl(borderTopRightRadius, splitResult[1], important, raws, source), createDecl(borderBottomRightRadius, splitResult[2], important, raws, source), createDecl(borderBottomLeftRadius, splitResult[3], important, raws, source)];
+};
+var transformBorderRadiusNvue = decl => {
+  var {
+    value,
+    important,
+    raws,
+    source
+  } = decl;
+  value = value.trim();
+  var splitResult = value.split(/\s+/);
+  if (value.includes('/')) {
+    return [decl];
+  }
+  // const isUvuePlatform = options.type === 'uvue'
+  switch (splitResult.length) {
+    case 1:
+      return [decl];
+    case 2:
+      splitResult.push(splitResult[0], splitResult[1]);
+      break;
+    case 3:
+      splitResult.push(splitResult[1]);
+      break;
+  }
+  return [createDecl(borderTopLeftRadius, splitResult[0], important, raws, source), createDecl(borderTopRightRadius, splitResult[1], important, raws, source), createDecl(borderBottomRightRadius, splitResult[2], important, raws, source), createDecl(borderBottomLeftRadius, splitResult[3], important, raws, source)];
+};
+var flexDirection = 'flexDirection';
+var flexWrap = 'flexWrap';
+function transformFlexFlowDecl(decl, dom2) {
+  var {
+    value,
+    important,
+    raws,
+    source
+  } = decl;
+  value = value.trim();
+  var splitResult = splitValues(value);
+  var singleVarResult = tryExpandSingleValueVarShorthand(decl, [flexDirection, flexWrap], value, dom2);
+  // 单个 var() 无法提前判断是 direction 还是 wrap，dom2 下直接平铺。
+  if (singleVarResult) {
+    return singleVarResult;
+  }
+  var matchers = [/^(column|column-reverse|row|row-reverse)$/, /^(nowrap|wrap|wrap-reverse)$/];
+  var result = matchers.map(item => {
+    var index = splitResult.findIndex(str => item.test(str));
+    return index < 0 ? null : splitResult.splice(index, 1)[0];
+  });
+  if (dom2 && splitResult.length === 1 && /^var\(/i.test(splitResult[0]) && (result[0] === null || result[1] === null)) {
+    result[result[0] === null ? 0 : 1] = splitResult.pop();
+  }
+  if (splitResult.length) {
+    return dom2 && /\bvar\(/i.test(value) ? expandShorthand(decl, [flexDirection, flexWrap], value) : [decl];
+  }
+  return [createDecl(flexDirection, result[0] || 'column', important, raws, source), createDecl(flexWrap, result[1] || 'nowrap', important, raws, source)];
+}
+function createTransformFlexFlow(dom2) {
+  return decl => transformFlexFlowDecl(decl, dom2);
+}
+var top = 'Top';
+var right = 'Right';
+var bottom = 'Bottom';
+var left = 'Left';
+var createTransformBox = type => {
+  return decl => {
+    var {
+      value,
+      important,
+      raws,
+      source
+    } = decl;
+    var splitResult = splitValues(value);
+    switch (splitResult.length) {
+      case 1:
+        splitResult.push(splitResult[0], splitResult[0], splitResult[0]);
+        break;
+      case 2:
+        splitResult.push(splitResult[0], splitResult[1]);
+        break;
+      case 3:
+        splitResult.push(splitResult[1]);
+        break;
+    }
+    return [createDecl(type + top, splitResult[0], important, raws, source), createDecl(type + right, splitResult[1], important, raws, source), createDecl(type + bottom, splitResult[2], important, raws, source), createDecl(type + left, splitResult[3], important, raws, source)];
+  };
+};
+var transformMargin = createTransformBox('margin');
+var transformPadding = createTransformBox('padding');
+var transitionProperty = 'transitionProperty';
+var transitionDuration = 'transitionDuration';
+var transitionTimingFunction = 'transitionTimingFunction';
+var transitionDelay = 'transitionDelay';
+var transitionLonghands = [transitionProperty, transitionDuration, transitionTimingFunction, transitionDelay];
+var TRANSITION_TIME_REGEXP = /^-?(?:\d+(?:\.\d+)?|\.\d+)(?:ms|s)$/;
+var TRANSITION_DURATION_REGEXP = /^(?:\d+(?:\.\d+)?|\.\d+)(?:ms|s)$/;
+var TRANSITION_SIGNED_TIME_REGEXP = /^[+-](?:\d+(?:\.\d+)?|\.\d+)(?:ms|s)$/;
+var TRANSITION_TIMING_FUNCTION_REGEXP = /^(?:linear|ease(?:-in-out|-in|-out)?|cubic-bezier\(\s*-?(?:\d+(?:\.\d+)?|\.\d+)\s*,\s*-?(?:\d+(?:\.\d+)?|\.\d+)\s*,\s*-?(?:\d+(?:\.\d+)?|\.\d+)\s*,\s*-?(?:\d+(?:\.\d+)?|\.\d+)\s*\))$/i;
+function isCssVarValue$1(value) {
+  return /^var\(/i.test(value);
+}
+function containsCssVar(value) {
+  return /\bvar\(/i.test(value);
+}
+function isTransitionTimingFunction(value) {
+  return TRANSITION_TIMING_FUNCTION_REGEXP.test(value);
+}
+function parseTransitionItem(value) {
+  var tokens = splitValues(value);
+  if (!tokens.length) {
+    return null;
+  }
+  var result = {};
+  var hasProperty = false;
+  var hasDuration = false;
+  var hasTimingFunction = false;
+  var hasDelay = false;
+  for (var i = 0; i < tokens.length; i++) {
+    var token = tokens[i];
+    if (isTransitionTimingFunction(token)) {
+      if (hasTimingFunction) {
+        return null;
+      }
+      result.timingFunction = token.toLowerCase();
+      hasTimingFunction = true;
+      continue;
+    }
+    if (TRANSITION_TIME_REGEXP.test(token)) {
+      if (!hasDuration) {
+        // transition-duration 不允许负值，负时间只能作为 delay。
+        if (token[0] === '-') {
+          return null;
+        }
+        result.duration = token;
+        hasDuration = true;
+      } else if (!hasDelay) {
+        result.delay = token;
+        hasDelay = true;
+      } else {
+        return null;
+      }
+      continue;
+    }
+    if (TRANSITION_SIGNED_TIME_REGEXP.test(token)) {
+      return null;
+    }
+    if (!hasProperty) {
+      result.property = token;
+      hasProperty = true;
+      continue;
+    }
+    return null;
+  }
+  return result;
+}
+function tryTransformTransitionNestedVariable(decl, dom2) {
+  if (!dom2) {
+    return null;
+  }
+  var values = splitValues(decl.value);
+  if (values.length < 2 || values.length > 4 || !values.some(containsCssVar) || values.some(isCssVarValue$1) || TRANSITION_TIME_REGEXP.test(values[0]) || !TRANSITION_DURATION_REGEXP.test(values[1]) || values[3] && !TRANSITION_TIME_REGEXP.test(values[3])) {
+    return null;
+  }
+  var {
+    important,
+    raws,
+    source
+  } = decl;
+  return values.map((value, index) => createDecl(transitionLonghands[index], value, important, raws, source));
+}
+function transformTransitionDecl(decl, dom2) {
+  var {
+    value,
+    important,
+    raws,
+    source
+  } = decl;
+  value = value.trim();
+  if (TRANSITION_DURATION_REGEXP.test(value)) {
+    return [createDecl(transitionDuration, value, important, raws, source)];
+  }
+  var singleVarResult = tryExpandSingleValueVarShorthand(decl, transitionLonghands, value, dom2);
+  if (singleVarResult) {
+    return singleVarResult;
+  }
+  var variableResult = tryTransformTransitionNestedVariable(decl, dom2);
+  if (variableResult) {
+    return variableResult;
+  }
+  if (dom2 && /\bvar\(/i.test(value)) {
+    return expandShorthand(decl, transitionLonghands, value);
+  }
+  var parsed = parseTransitionItem(value);
+  if (!parsed) {
+    return [];
+  }
+  var result = [];
+  if (parsed.property !== undefined) {
+    result.push(createDecl(transitionProperty, parsed.property, important, raws, source));
+  }
+  if (parsed.duration !== undefined) {
+    result.push(createDecl(transitionDuration, parsed.duration, important, raws, source));
+  }
+  if (parsed.timingFunction !== undefined) {
+    result.push(createDecl(transitionTimingFunction, parsed.timingFunction, important, raws, source));
+  }
+  if (parsed.delay !== undefined) {
+    result.push(createDecl(transitionDelay, parsed.delay, important, raws, source));
+  }
+  return result;
+}
+function createTransformTransition(dom2) {
+  return decl => transformTransitionDecl(decl, dom2);
+}
+var flexGrow = 'flexGrow';
+var flexShrink = 'flexShrink';
+var flexBasis = 'flexBasis';
+function isCssVarValue(value) {
+  return /^var\(/i.test(value);
+}
+function transformFlexDecl(decl, dom2) {
+  var {
+    value,
+    important,
+    raws,
+    source
+  } = decl;
+  value = value.trim();
+  var result = [];
+  var splitResult = splitValues(value);
+  var singleVarResult = tryExpandSingleValueVarShorthand(decl, [flexGrow, flexShrink, flexBasis], value, dom2);
+  // 单个 var() 无法提前拆出 grow/shrink/basis，dom2 下按完整简写平铺。
+  if (singleVarResult) {
+    return singleVarResult;
+  }
+  var variableResult = dom2 && /\bvar\(/i.test(value) ? expandShorthand(decl, [flexGrow, flexShrink, flexBasis], value) : null;
+  // 是否 flex-grow 的有效值 <number [0,∞]>
+  var isFlexGrowValid = v => isNumber(Number(v)) && !Number.isNaN(Number(v));
+  var isFlexShrinkValid = v => isNumber(Number(v)) && !Number.isNaN(Number(v)) && Number(v) >= 0;
+  var isFlexBasisValid = v => typeof v === 'string' && v.trim() !== '';
+  if (splitResult.length === 1) {
+    // 关键字处理
+    if (value === 'none') {
+      result.push(createDecl(flexGrow, '0', important, raws, source), createDecl(flexShrink, '0', important, raws, source), createDecl(flexBasis, 'auto', important, raws, source));
+      return result;
+    }
+    if (value === 'auto') {
+      result.push(createDecl(flexGrow, '1', important, raws, source), createDecl(flexShrink, '1', important, raws, source), createDecl(flexBasis, 'auto', important, raws, source));
+      return result;
+    }
+    if (value === 'initial') {
+      result.push(createDecl(flexGrow, '0', important, raws, source), createDecl(flexShrink, '1', important, raws, source), createDecl(flexBasis, 'auto', important, raws, source));
+      return result;
+    }
+    var v = splitResult[0];
+    // number 视为 flex-grow
+    if (isFlexGrowValid(v)) {
+      if (Number(v) < 0) {
+        return [];
+      }
+      result.push(createDecl(flexGrow, v, important, raws, source), createDecl(flexShrink, '1', important, raws, source), createDecl(flexBasis, '0%', important, raws, source));
+      return result;
+    } else if (isFlexBasisValid(v)) {
+      result.push(createDecl(flexGrow, '1', important, raws, source), createDecl(flexShrink, '1', important, raws, source), createDecl(flexBasis, v, important, raws, source));
+      return result;
+    } else {
+      return [decl];
+    }
+  } else if (splitResult.length === 2) {
+    var [v1, v2] = splitResult;
+    if (isFlexGrowValid(v1) || dom2 && isCssVarValue(v1)) {
+      if (isFlexShrinkValid(v2)) {
+        // flex: 1 2 => 1 2 0%
+        result.push(createDecl(flexGrow, v1, important, raws, source), createDecl(flexShrink, v2, important, raws, source), createDecl(flexBasis, '0%', important, raws, source));
+        return result;
+      } else {
+        if (dom2 && isCssVarValue(v2)) {
+          return variableResult || [decl];
+        }
+        // flex: 1 100px => 1 1 100px
+        result.push(createDecl(flexGrow, v1, important, raws, source), createDecl(flexShrink, '1', important, raws, source), createDecl(flexBasis, v2, important, raws, source));
+        return result;
+      }
+    } else {
+      return variableResult || [decl];
+    }
+  } else if (splitResult.length === 3) {
+    var [_v, _v2, v3] = splitResult;
+    if ((isFlexGrowValid(_v) || dom2 && isCssVarValue(_v)) && (isFlexShrinkValid(_v2) || dom2 && isCssVarValue(_v2))) {
+      result.push(createDecl(flexGrow, _v, important, raws, source), createDecl(flexShrink, _v2, important, raws, source), createDecl(flexBasis, v3, important, raws, source));
+      return result;
+    } else {
+      // fallback
+      return variableResult || [decl];
+    }
+  }
+  // 其它情况，原样返回
+  return variableResult || [decl];
+}
+function createTransformFlex(dom2) {
+  return decl => transformFlexDecl(decl, dom2);
+}
+function createEnumNormalize(items) {
+  return v => {
+    var index = items.indexOf(v);
+    if (index > 0) {
+      return {
+        value: v
+      };
+    }
+    if (index === 0) {
+      return {
+        value: v,
+        reason: function reason(k, v, result) {
+          return defaultValueReason(k, v);
+        }
+      };
+    }
+    return {
+      value: null,
+      reason: function reason(k, v, result) {
+        return supportedEnumReason(k, v, items);
+      }
+    };
+  };
+}
+var normalizeTimingFunction = v => {
+  v = (v || '').toString();
+  if (v.match(/^(?:linear|ease|ease-in|ease-out|ease-in-out)$/)) {
+    return {
+      value: v
+    };
+  }
+  var match;
+  if (match = v.match(/^cubic-bezier\(\s*(.*)\s*,\s*(.*)\s*,\s*(.*)\s*,\s*(.*)\s*\)$/)) {
+    if (match[1].match(NUM_REGEXP) && match[2].match(NUM_REGEXP) && match[3].match(NUM_REGEXP) && match[4].match(NUM_REGEXP)) {
+      var ret = [parseFloat(match[1]), parseFloat(match[2]), parseFloat(match[3]), parseFloat(match[4])].join(',');
+      return {
+        value: 'cubic-bezier(' + ret + ')'
+      };
+    }
+  }
+  return {
+    value: null,
+    reason(k, v, result) {
+      return supportedEnumReason(k, v, ['linear', 'ease', 'ease-in', 'ease-out', 'ease-in-out', 'cubic-bezier(n,n,n,n)']);
+    }
+  };
+};
+var KEYFRAMES_NAME_RE = /^-?[A-Za-z_][A-Za-z0-9_-]*$/;
+var ANIMATION_NUMBER_RE = /^[+-]?\d*\.?\d+$/;
+var MAX_F32_VALUE = 3.4028234663852886e38;
+var RESERVED_KEYFRAMES_NAMES = new Set(['default', 'inherit', 'initial', 'none', 'revert', 'revert-layer', 'unset']);
+function normalizeAnimationDecimal(value) {
+  var negative = value[0] === '-';
+  var unsigned = value.replace(/^[+-]/, '');
+  var [integer = '', fraction = ''] = unsigned.split('.');
+  var normalizedInteger = integer.replace(/^0+(?=\d)/, '') || '0';
+  var normalizedFraction = fraction.replace(/0+$/, '');
+  var normalized = normalizedFraction ? "".concat(normalizedInteger, ".").concat(normalizedFraction) : normalizedInteger;
+  return negative && normalized !== '0' ? "-".concat(normalized) : normalized;
+}
+function splitAnimationList(value) {
+  var result = [];
+  var start = 0;
+  var depth = 0;
+  for (var i = 0; i < value.length; i++) {
+    var char = value[i];
+    if (char === '(') {
+      depth++;
+    } else if (char === ')') {
+      if (depth === 0) {
+        return null;
+      }
+      depth--;
+    } else if (char === ',' && depth === 0) {
+      var _item = value.slice(start, i).trim();
+      if (!_item) {
+        return null;
+      }
+      result.push(_item);
+      start = i + 1;
+    }
+  }
+  if (depth !== 0) {
+    return null;
+  }
+  var item = value.slice(start).trim();
+  if (!item) {
+    return null;
+  }
+  result.push(item);
+  return result;
+}
+function createAnimationTimeNormalize(allowNegative) {
+  return v => {
+    var value = (v || '').toString().toLowerCase();
+    var match = value.match(/^([+-]?(?:\d+(?:\.\d+)?|\.\d+))(ms|s)$/);
+    if (match && (allowNegative || value[0] !== '-')) {
+      var milliseconds = Number(match[1]) * (match[2] === 's' ? 1000 : 1);
+      if (Number.isFinite(milliseconds) && Math.abs(milliseconds) <= MAX_F32_VALUE) {
+        return {
+          value
+        };
+      }
+    }
+    return {
+      value: null,
+      reason(k, v) {
+        return supportedEnumReason(k, v, [allowNegative ? 'time' : 'non-negative time']);
+      }
+    };
+  };
+}
+var normalizeAnimationNameItem = v => {
+  var value = (v || '').toString();
+  var lowerValue = value.toLowerCase();
+  if (lowerValue === 'none') {
+    return {
+      value: 'none'
+    };
+  }
+  if (KEYFRAMES_NAME_RE.test(value) && !RESERVED_KEYFRAMES_NAMES.has(lowerValue)) {
+    return {
+      value
+    };
+  }
+  return {
+    value: null,
+    reason: validReason
+  };
+};
+var normalizeAnimationIterationCountItem = v => {
+  var value = (v || '').toString().toLowerCase();
+  if (value === 'infinite') {
+    return {
+      value
+    };
+  }
+  var count = Number(value);
+  if (ANIMATION_NUMBER_RE.test(value) && Number.isFinite(count) && count >= 0) {
+    var normalizedValue = normalizeAnimationDecimal(value);
+    return {
+      value: normalizedValue === count.toString() ? count : normalizedValue
+    };
+  }
+  return {
+    value: null,
+    reason(k, v) {
+      return supportedEnumReason(k, v, ['non-negative number', 'infinite']);
+    }
+  };
+};
+function createAnimationKeywordNormalize(items) {
+  var normalize = createEnumNormalize(items);
+  return (v, options) => normalize((v || '').toString().toLowerCase(), options);
+}
+var normalizeAnimationDelayItem = createAnimationTimeNormalize(true);
+var normalizeAnimationDirectionItem = createAnimationKeywordNormalize(['normal', 'reverse', 'alternate', 'alternate-reverse']);
+var normalizeAnimationDurationItem = createAnimationTimeNormalize(false);
+var normalizeAnimationFillModeItem = createAnimationKeywordNormalize(['none', 'forwards', 'backwards', 'both']);
+var normalizeAnimationPlayStateItem = createAnimationKeywordNormalize(['running', 'paused']);
+var normalizeAnimationTimingFunctionItem = (v, options) => {
+  var value = (v || '').toString().toLowerCase();
+  var result = normalizeTimingFunction(value);
+  if (typeof result.value === 'string' && result.value.startsWith('cubic-bezier(')) {
+    var values = value.slice(13, -1).split(',').map(item => item.trim());
+    var numbers = values.map(Number);
+    if (numbers.some(value => !Number.isFinite(value) || Math.abs(value) > MAX_F32_VALUE)) {
+      return normalizeTimingFunction('');
+    }
+    result.value = "cubic-bezier(".concat(values.map(normalizeAnimationDecimal).join(','), ")");
+  }
+  return result;
+};
+function isValidValue(normalize, value) {
+  return normalize(value, {}).value !== null;
+}
+function parseSingleAnimation(value) {
+  var tokens = splitValues(value);
+  if (!tokens.length) {
+    return null;
+  }
+  var result = {
+    name: 'none',
+    duration: '0s',
+    delay: '0s',
+    timingFunction: 'ease',
+    iterationCount: '1',
+    direction: 'normal',
+    fillMode: 'forwards',
+    playState: 'running'
+  };
+  var hasDuration = false;
+  var hasDelay = false;
+  var hasTimingFunction = false;
+  var hasIterationCount = false;
+  var hasDirection = false;
+  var hasFillMode = false;
+  var hasPlayState = false;
+  var hasName = false;
+  var noneCount = 0;
+  for (var i = 0; i < tokens.length; i++) {
+    var token = tokens[i];
+    var keyword = token.toLowerCase();
+    if (keyword === 'none') {
+      noneCount++;
+      continue;
+    }
+    if (isValidValue(normalizeAnimationDelayItem, keyword)) {
+      if (!hasDuration) {
+        if (!isValidValue(normalizeAnimationDurationItem, keyword)) {
+          return null;
+        }
+        result.duration = keyword;
+        hasDuration = true;
+      } else if (!hasDelay) {
+        result.delay = keyword;
+        hasDelay = true;
+      } else {
+        return null;
+      }
+      continue;
+    }
+    if (!hasTimingFunction && isValidValue(normalizeAnimationTimingFunctionItem, keyword)) {
+      result.timingFunction = keyword;
+      hasTimingFunction = true;
+      continue;
+    }
+    if (!hasIterationCount && isValidValue(normalizeAnimationIterationCountItem, keyword)) {
+      result.iterationCount = keyword;
+      hasIterationCount = true;
+      continue;
+    }
+    if (!hasDirection && isValidValue(normalizeAnimationDirectionItem, keyword)) {
+      result.direction = keyword;
+      hasDirection = true;
+      continue;
+    }
+    if (!hasFillMode && isValidValue(normalizeAnimationFillModeItem, keyword)) {
+      result.fillMode = keyword;
+      hasFillMode = true;
+      continue;
+    }
+    if (!hasPlayState && isValidValue(normalizeAnimationPlayStateItem, keyword)) {
+      result.playState = keyword;
+      hasPlayState = true;
+      continue;
+    }
+    if (!hasName && isValidValue(normalizeAnimationNameItem, token)) {
+      result.name = token;
+      hasName = true;
+      continue;
+    }
+    return null;
+  }
+  // none 同时属于 animation-name 和 animation-fill-mode，按剩余槽位消歧。
+  for (var _i = 0; _i < noneCount; _i++) {
+    if (!hasName) {
+      result.name = 'none';
+      hasName = true;
+    } else if (!hasFillMode) {
+      result.fillMode = 'none';
+      hasFillMode = true;
+    } else {
+      return null;
+    }
+  }
+  return result;
+}
+function parseAnimation(value) {
+  var items = splitAnimationList(value);
+  if (!items) {
+    return null;
+  }
+  var animations = [];
+  for (var i = 0; i < items.length; i++) {
+    var animation = parseSingleAnimation(items[i]);
+    if (!animation) {
+      return null;
+    }
+    animations.push(animation);
+  }
+  return {
+    name: animations.map(animation => animation.name).join(','),
+    duration: animations.map(animation => animation.duration).join(','),
+    delay: animations.map(animation => animation.delay).join(','),
+    timingFunction: animations.map(animation => animation.timingFunction).join(','),
+    iterationCount: animations.map(animation => animation.iterationCount).join(','),
+    direction: animations.map(animation => animation.direction).join(','),
+    fillMode: animations.map(animation => animation.fillMode).join(','),
+    playState: animations.map(animation => animation.playState).join(',')
+  };
+}
+function normalizeLengthValue(v, options, removePx) {
+  var extraUnits = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [];
+  var match = v.match(LENGTH_REGEXP);
+  if (match) {
+    var unit = match[1];
+    var uvue = options.type === 'uvue';
+    if (uvue) {
+      if (!unit || unit === 'px' && removePx) {
+        return {
+          value: parseFloat(v)
+        };
+      } else if (unit === 'px' || unit === 'rpx' || extraUnits.includes(unit)) {
+        return {
+          value: v
+        };
+      }
+    } else {
+      // nvue
+      if (!unit || unit === 'px') {
+        return {
+          value: parseFloat(v)
+        };
+      }
+      if (SUPPORT_CSS_UNIT.includes(unit)) {
+        return {
+          value: v
+        };
+      } else {
+        return {
+          value: parseFloat(v),
+          reason(k, v, result) {
+            return supportedUnitWithAutofixedReason(unit, v, result);
+          }
+        };
+      }
+    }
+  }
+  return {
+    value: null,
+    reason(k, v, result) {
+      return supportedEnumReason(k, v, ['number', 'pixel', ...extraUnits]);
+    }
+  };
+}
+var normalizePercent = v => {
+  v = (v || '').toString();
+  var match = v.match(LENGTH_REGEXP);
+  if (match) {
+    var unit = match[1];
+    if (unit === '%') {
+      return {
+        value: v
+      };
+    }
+  }
+  return {
+    value: null,
+    reason(k, v, result) {
+      return supportedEnumReason(k, v, ['percent']);
+    }
+  };
+};
+var normalizeGap = (value, options) => {
+  var text = String(value).trim();
+  if (/^(calc|var|env)\(/i.test(text) && text.endsWith(')')) {
+    return {
+      value: text.replace(/^(calc|var|env)(?=\()/i, name => name.toLowerCase())
+    };
+  }
+  var result = normalizeLengthValue(text, options, !options.keepUnitPx);
+  if (result.value === null) {
+    result = normalizePercent(text);
+  }
+  var number = parseFloat(text);
+  if (result.value !== null && Number.isFinite(number) && number >= 0) {
+    return options.keepUnitPx ? {
+      value: text
+    } : result;
+  }
+  return {
+    value: null,
+    reason(property, value) {
+      return supportedEnumReason(property, value, ['non-negative length', 'percentage']);
+    }
+  };
+};
+var animationName = 'animationName';
+var animationDuration = 'animationDuration';
+var animationDelay = 'animationDelay';
+var animationTimingFunction = 'animationTimingFunction';
+var animationIterationCount = 'animationIterationCount';
+var animationDirection = 'animationDirection';
+var animationFillMode = 'animationFillMode';
+var animationPlayState = 'animationPlayState';
+var animationLonghands = [animationName, animationDuration, animationDelay, animationTimingFunction, animationIterationCount, animationDirection, animationFillMode, animationPlayState];
+function createTransformAnimation(options) {
+  return (decl, onWarning) => {
+    var {
+      value,
+      important,
+      raws,
+      source
+    } = decl;
+    var singleVarResult = tryExpandSingleValueVarShorthand(decl, animationLonghands, value, !!options.dom2);
+    if (singleVarResult) {
+      return singleVarResult;
+    }
+    // animation 的各值域无法仅凭变量位置可靠判断，保留完整值交给运行时投影。
+    if (/\bvar\(/i.test(value)) {
+      return expandShorthand(decl, animationLonghands, value);
+    }
+    var animation = parseAnimation(value.trim());
+    if (!animation) {
+      return [decl];
+    }
+    return [createDecl(animationName, animation.name, important, raws, source), createDecl(animationDuration, animation.duration, important, raws, source), createDecl(animationDelay, animation.delay, important, raws, source), createDecl(animationTimingFunction, animation.timingFunction, important, raws, source), createDecl(animationIterationCount, animation.iterationCount, important, raws, source), createDecl(animationDirection, animation.direction, important, raws, source), createDecl(animationFillMode, animation.fillMode, important, raws, source), createDecl(animationPlayState, animation.playState, important, raws, source)];
+  };
+}
+var rowGap = 'rowGap';
+var columnGap = 'columnGap';
+var transformGap = (decl, warn) => {
+  var _values$;
+  var {
+    value,
+    important,
+    raws,
+    source
+  } = decl;
+  var values = (value.trim() ? splitValues(value) : ['']).map(value => value ? normalizeGap(value, {
+    type: 'uvue',
+    dom2: true,
+    keepUnitPx: true
+  }).value : '');
+  if (values.length > 2 || values.some(value => value === null)) {
+    if (warn) {
+      warn("ERROR: property value `".concat(value, "` is not supported for `gap` (expected one or two non-negative lengths or percentages)"));
+    }
+    return [];
+  }
+  return [createDecl(rowGap, String(values[0]), important, raws, source), createDecl(columnGap, String((_values$ = values[1]) !== null && _values$ !== void 0 ? _values$ : values[0]), important, raws, source)];
+};
+function getDeclTransforms(options, dom2) {
+  var transformBorder = options.type === 'uvue' ? createTransformBorder(options) : createTransformBorderNvue();
+  var styleMap = {
+    transition: createTransformTransition(dom2),
+    border: transformBorder,
+    background: createTransformBackground(options),
+    ['borderTop']: transformBorder,
+    ['borderRight']: transformBorder,
+    ['borderBottom']: transformBorder,
+    ['borderLeft']: transformBorder,
+    ['borderStyle']: options.type === 'uvue' ? transformBorderStyle : transformBorderStyleNvue,
+    ['borderWidth']: options.type === 'uvue' ? transformBorderWidth : transformBorderWidthNvue,
+    ['borderColor']: options.type === 'uvue' ? transformBorderColor : transformBorderColorNvue,
+    ['borderRadius']: options.type === 'uvue' ? transformBorderRadius : transformBorderRadiusNvue,
+    // uvue已经支持这些简写属性，不需要展开
+    // margin,padding继续展开，确保样式的优先级
+    margin: transformMargin,
+    padding: transformPadding,
+    ['flexFlow']: createTransformFlexFlow(dom2)
+  };
+  if (options.type === 'uvue' && dom2) {
+    styleMap.animation = createTransformAnimation(options);
+    styleMap.gap = transformGap;
+  }
+  if (options.type === 'uvue') {
+    styleMap.flex = createTransformFlex(dom2);
+  }
+  var result = {};
+  {
+    result = styleMap;
+  }
+  return result;
+}
+var declTransforms = {};
+var expanded = Symbol('expanded');
+function expand(options) {
+  var type = options.type || 'nvue';
+  var dom2 = !!options.dom2;
+  var transformCacheKey = "".concat(type, ":").concat(dom2, ":").concat(options.platform || '');
+  var plugin = {
+    postcssPlugin: "".concat(options.type || 'nvue', ":expand"),
+    Declaration(decl, helper) {
+      if (decl[expanded]) {
+        return;
+      }
+      var transforms = declTransforms[transformCacheKey] || (declTransforms[transformCacheKey] = getDeclTransforms(options, dom2));
+      var transform = transforms[decl.prop];
+      if (transform) {
+        var res = transform(decl, function (reason) {
+          var property = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : decl.prop;
+          if (!helper || !decl.warn) {
+            return;
+          }
+          var needLog = false;
+          if (options.logLevel === 'NOTE') {
+            needLog = true;
+          } else if (options.logLevel === 'ERROR') {
+            if (reason.startsWith('ERROR:')) {
+              needLog = true;
+            }
+          } else {
+            if (!reason.startsWith('NOTE:')) {
+              needLog = true;
+            }
+          }
+          if (needLog) {
+            decl.warn(helper.result, appendDom2Docs(reason, dom2 ? getDom2PropertyDocsUrl(property) : undefined));
+          }
+        });
+        var _isSame = res.length === 1 && res[0] === decl;
+        if (!_isSame) {
+          decl.replaceWith(res);
+        }
+      }
+      decl[expanded] = true;
+    }
+  };
+  return plugin;
+}
 
 /**
 * @dcloudio/uni-app-nvue v3.6.0-alpha.2
@@ -3608,8 +4829,8 @@ function getTransitionRawChildren(children) {
     }
   }
   if (keyedFragmentCount > 1) {
-    for (var _i = 0; _i < ret.length; _i++) {
-      ret[_i].patchFlag = -2;
+    for (var _i2 = 0; _i2 < ret.length; _i2++) {
+      ret[_i2].patchFlag = -2;
     }
   }
   return ret;
@@ -4941,8 +6162,8 @@ function renderList(source, renderItem, cache, index) {
       warn$1("The v-for range expect an integer value but got ".concat(source, "."));
     }
     ret = new Array(source);
-    for (var _i2 = 0; _i2 < source; _i2++) {
-      ret[_i2] = renderItem(_i2 + 1, _i2, void 0, cached && cached[_i2]);
+    for (var _i3 = 0; _i3 < source; _i3++) {
+      ret[_i3] = renderItem(_i3 + 1, _i3, void 0, cached && cached[_i3]);
     }
   } else if (isObject(source)) {
     if (source[Symbol.iterator]) {
@@ -4950,9 +6171,9 @@ function renderList(source, renderItem, cache, index) {
     } else {
       var keys = Object.keys(source);
       ret = new Array(keys.length);
-      for (var _i3 = 0, _l = keys.length; _i3 < _l; _i3++) {
-        var key = keys[_i3];
-        ret[_i3] = renderItem(source[key], key, _i3, cached && cached[_i3]);
+      for (var _i4 = 0, _l = keys.length; _i4 < _l; _i4++) {
+        var key = keys[_i4];
+        ret[_i4] = renderItem(source[key], key, _i4, cached && cached[_i4]);
       }
     }
   } else {
@@ -9559,8 +10780,8 @@ function setupStatefulComponent(instance, isSSR) {
     }
     if (Component.directives) {
       var _names = Object.keys(Component.directives);
-      for (var _i4 = 0; _i4 < _names.length; _i4++) {
-        validateDirectiveName(_names[_i4]);
+      for (var _i5 = 0; _i5 < _names.length; _i5++) {
+        validateDirectiveName(_names[_i5]);
       }
     }
     if (Component.compilerOptions && isRuntimeOnly()) {
@@ -11930,16 +13151,16 @@ var createFor = function (doc, src, renderItem, getKey) {
     } else {
       parent = parent || parentAnchor.parentNode;
       if (!oldLength) {
-        for (var _i5 = 0; _i5 < newLength; _i5++) {
-          mount(source, _i5);
+        for (var _i6 = 0; _i6 < newLength; _i6++) {
+          mount(source, _i6);
         }
       } else if (!newLength) {
         for (var selector of selectors) {
           selector.cleanup();
         }
         var doRemove = !canUseFastRemove;
-        for (var _i6 = 0; _i6 < oldLength; _i6++) {
-          unmount(oldBlocks[_i6], doRemove, false);
+        for (var _i7 = 0; _i7 < oldLength; _i7++) {
+          unmount(oldBlocks[_i7], doRemove, false);
         }
         if (canUseFastRemove) {
           parent.textContent = "";
@@ -11947,14 +13168,14 @@ var createFor = function (doc, src, renderItem, getKey) {
         }
       } else if (!getKey) {
         var commonLength = Math.min(newLength, oldLength);
-        for (var _i7 = 0; _i7 < commonLength; _i7++) {
-          update(newBlocks[_i7] = oldBlocks[_i7], getItem(source, _i7)[0]);
+        for (var _i8 = 0; _i8 < commonLength; _i8++) {
+          update(newBlocks[_i8] = oldBlocks[_i8], getItem(source, _i8)[0]);
         }
-        for (var _i8 = oldLength; _i8 < newLength; _i8++) {
-          mount(source, _i8);
+        for (var _i9 = oldLength; _i9 < newLength; _i9++) {
+          mount(source, _i9);
         }
-        for (var _i9 = newLength; _i9 < oldLength; _i9++) {
-          unmount(oldBlocks[_i9]);
+        for (var _i10 = newLength; _i10 < oldLength; _i10++) {
+          unmount(oldBlocks[_i10]);
         }
       } else {
         var sharedBlockCount = Math.min(oldLength, newLength);
@@ -11994,20 +13215,20 @@ var createFor = function (doc, src, renderItem, getKey) {
           }
           startOffset++;
         }
-        for (var _i10 = startOffset; _i10 < oldLength - endOffset; _i10++) {
-          previousKeyIndexPairs[previousKeyIndexInsertIndex++] = [oldBlocks[_i10].key, _i10];
+        for (var _i11 = startOffset; _i11 < oldLength - endOffset; _i11++) {
+          previousKeyIndexPairs[previousKeyIndexInsertIndex++] = [oldBlocks[_i11].key, _i11];
         }
         var preparationBlockCount = Math.min(newLength - endOffset, sharedBlockCount);
-        for (var _i11 = startOffset; _i11 < preparationBlockCount; _i11++) {
-          var blockItem = getItem(source, _i11);
+        for (var _i12 = startOffset; _i12 < preparationBlockCount; _i12++) {
+          var blockItem = getItem(source, _i12);
           var blockKey = getKey(...blockItem);
-          queuedBlocks[queuedBlocksInsertIndex++] = [_i11, blockItem, blockKey];
+          queuedBlocks[queuedBlocksInsertIndex++] = [_i12, blockItem, blockKey];
         }
         if (!queuedBlocksInsertIndex && !previousKeyIndexInsertIndex) {
-          for (var _i12 = preparationBlockCount; _i12 < newLength - endOffset; _i12++) {
-            var _blockItem = getItem(source, _i12);
+          for (var _i13 = preparationBlockCount; _i13 < newLength - endOffset; _i13++) {
+            var _blockItem = getItem(source, _i13);
             var _blockKey = getKey(..._blockItem);
-            mount(source, _i12, anchorFallback, _blockItem, _blockKey);
+            mount(source, _i13, anchorFallback, _blockItem, _blockKey);
           }
         } else {
           queuedBlocks.length = queuedBlocksInsertIndex;
@@ -12025,14 +13246,14 @@ var createFor = function (doc, src, renderItem, getKey) {
               blocksToMount.push([blockIndex, blockItem, blockKey, anchorOffset]);
             }
           };
-          for (var _i13 = queuedBlocks.length - 1; _i13 >= 0; _i13--) {
-            var [blockIndex, _blockItem2, _blockKey2] = queuedBlocks[_i13];
+          for (var _i14 = queuedBlocks.length - 1; _i14 >= 0; _i14--) {
+            var [blockIndex, _blockItem2, _blockKey2] = queuedBlocks[_i14];
             relocateOrMountBlock(blockIndex, _blockItem2, _blockKey2, blockIndex < preparationBlockCount - 1 ? blockIndex + 1 : -1);
           }
-          for (var _i14 = preparationBlockCount; _i14 < newLength - endOffset; _i14++) {
-            var _blockItem3 = getItem(source, _i14);
+          for (var _i15 = preparationBlockCount; _i15 < newLength - endOffset; _i15++) {
+            var _blockItem3 = getItem(source, _i15);
             var _blockKey3 = getKey(..._blockItem3);
-            relocateOrMountBlock(_i14, _blockItem3, _blockKey3, -1);
+            relocateOrMountBlock(_i15, _blockItem3, _blockKey3, -1);
           }
           var useFastRemove = blocksToMount.length === newLength;
           for (var leftoverIndex of previousKeyIndexMap.values()) {
@@ -12209,8 +13430,8 @@ function normalizeSource(source) {
     } else {
       keys = Object.keys(source);
       values = new Array(keys.length);
-      for (var _i15 = 0, l = keys.length; _i15 < l; _i15++) {
-        values[_i15] = source[keys[_i15]];
+      for (var _i16 = 0, l = keys.length; _i16 < l; _i16++) {
+        values[_i16] = source[keys[_i16]];
       }
     }
   }

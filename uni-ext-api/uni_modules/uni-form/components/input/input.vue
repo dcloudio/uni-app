@@ -140,6 +140,9 @@
 	// #ifdef APP-ANDROID || APP-IOS
 	let inputView : NativeInputView | null = null
 	// #endif
+	// #ifdef APP-ANDROID
+	let androidStyleSyncTimer : ReturnType<typeof setTimeout> | null = null
+	// #endif
 	const style = useComputedStyle({
 		properties: [
 			'font-size', 'color',
@@ -1533,7 +1536,8 @@
 			})
 		}
 		// #ifdef APP-ANDROID
-		setTimeout(() => {
+		androidStyleSyncTimer = setTimeout(() => {
+			androidStyleSyncTimer = null
 			if (inputView) {
 				inputView.beginUpdateBatch()
 				syncAndroidInputStyleProps()
@@ -1556,6 +1560,13 @@
 	})
 
 	onBeforeUnmount(() => {
+		// #ifdef APP-ANDROID
+		// 卸载时取消延后样式同步，避免访问已注销的原生实例。
+		if (androidStyleSyncTimer != null) {
+			clearTimeout(androidStyleSyncTimer)
+			androidStyleSyncTimer = null
+		}
+		// #endif
 		// #ifdef APP-HARMONY
 		harmonyMounted = false
 		clearHarmonyFocusAttemptTimer()
@@ -1584,6 +1595,7 @@
 		// Android/iOS 平台需要主动释放 UTS 原生实例。
 		// #ifdef APP-ANDROID || APP-IOS
 		inputView?.destroy()
+		inputView = null
 		// #endif
 	})
 </script>
