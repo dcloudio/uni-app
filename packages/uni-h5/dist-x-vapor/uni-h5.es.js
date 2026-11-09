@@ -122,7 +122,7 @@ const indexVapor$8 = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const selectionProperty = "--uni-selection-background-color";
-const selectionAttribute$1 = "data-uni-selection";
+const selectionAttribute = "data-uni-selection";
 const probeBackgroundProperty = "--uni-selection-probe-background-color";
 const fieldSelectionProps = {
   selectionClass: {
@@ -133,7 +133,7 @@ const fieldSelectionProps = {
 const fieldSelectionProbeStyle = "display: none !important;";
 function clearSelection(field) {
   field.style.removeProperty(selectionProperty);
-  field.removeAttribute(selectionAttribute$1);
+  field.removeAttribute(selectionAttribute);
 }
 function resolveSelectionColor(probe) {
   const color = getComputedStyle(probe).backgroundColor;
@@ -155,8 +155,8 @@ function updateSelection(field, color) {
   if (field.style.getPropertyValue(selectionProperty) !== color) {
     field.style.setProperty(selectionProperty, color);
   }
-  if (!field.hasAttribute(selectionAttribute$1)) {
-    field.setAttribute(selectionAttribute$1, "");
+  if (!field.hasAttribute(selectionAttribute)) {
+    field.setAttribute(selectionAttribute, "");
   }
 }
 function observeSelection(probe, field) {
@@ -3470,163 +3470,6 @@ const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
     return root;
   }
 });
-const selectionAttribute = "data-uni-selection-style";
-const probeAttribute = "data-uni-selection-style-probe";
-const probeMarker = "--uni-selection-style-probe";
-const probeColor = "rgb(1, 2, 3)";
-const probeBackgroundColor = "rgb(4, 5, 6)";
-const probeMarkerValue = "1";
-const elementNodeType = 1;
-let seed = 0;
-function getSelectionSelector(root) {
-  let id2 = root.getAttribute(selectionAttribute);
-  if (!id2) {
-    id2 = String(++seed);
-    root.setAttribute(selectionAttribute, id2);
-  }
-  return `[${selectionAttribute}="${id2}"]`;
-}
-function createFallbackRule() {
-  return `:where([${probeAttribute}])::selection,
-    :where([${probeAttribute}]) *::selection {
-      ${probeMarker}: ${probeMarkerValue};
-      color: ${probeColor};
-      background-color: ${probeBackgroundColor};
-  }`;
-}
-function createSelectionRule(selector, color, backgroundColor) {
-  const declarations = [];
-  if (color) {
-    declarations.push(`color: ${color};`);
-  }
-  if (backgroundColor) {
-    declarations.push(`background-color: ${backgroundColor};`);
-  }
-  if (!declarations.length) {
-    return "";
-  }
-  return `${selector}::selection,
-    ${selector} *::selection {
-      ${declarations.join("\n")}
-    }`;
-}
-function normalizeColor(value) {
-  return value.replace(/\s+/g, "").toLowerCase();
-}
-function insertStyleElement(styleElement) {
-  document.head.insertBefore(
-    styleElement,
-    document.head.querySelector('style, link[rel="stylesheet"]')
-  );
-}
-function isInternalStyleMutation(target) {
-  const element = target.nodeType === elementNodeType ? target : target.parentElement;
-  return !!(element == null ? void 0 : element.closest("style[data-uni-selection-style-element]"));
-}
-function resolveStyle(root, styleElement) {
-  styleElement.textContent = createFallbackRule();
-  root.setAttribute(probeAttribute, "");
-  let color = "";
-  let backgroundColor = "";
-  try {
-    const computed2 = getComputedStyle(root, "::selection");
-    if (computed2.getPropertyValue(probeMarker) !== probeMarkerValue) {
-      return { color, backgroundColor };
-    }
-    const computedColor = computed2.color;
-    const computedBackgroundColor = computed2.backgroundColor;
-    if (normalizeColor(computedColor) !== normalizeColor(probeColor)) {
-      color = computedColor;
-    }
-    if (normalizeColor(computedBackgroundColor) !== normalizeColor(probeBackgroundColor)) {
-      backgroundColor = computedBackgroundColor;
-    }
-  } catch {
-    return { color, backgroundColor };
-  } finally {
-    root.removeAttribute(probeAttribute);
-  }
-  return { color, backgroundColor };
-}
-function observeSelectionStyle(root) {
-  var _a;
-  const styleElement = document.createElement("style");
-  styleElement.setAttribute("data-uni-selection-style-element", "");
-  insertStyleElement(styleElement);
-  function update() {
-    if (!root.isConnected) {
-      return;
-    }
-    if (!styleElement.isConnected) {
-      insertStyleElement(styleElement);
-    }
-    const selector = getSelectionSelector(root);
-    const { color, backgroundColor } = resolveStyle(root, styleElement);
-    styleElement.textContent = createFallbackRule() + createSelectionRule(selector, color, backgroundColor);
-  }
-  const rootObserver = new MutationObserver(update);
-  rootObserver.observe(root, {
-    attributes: true,
-    attributeFilter: ["class", "style"]
-  });
-  const documentObserver = new MutationObserver(update);
-  documentObserver.observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: ["class", "style", "data-theme"]
-  });
-  if (document.body) {
-    documentObserver.observe(document.body, {
-      attributes: true,
-      attributeFilter: ["class", "style", "data-theme"]
-    });
-  }
-  const headObserver = new MutationObserver((records) => {
-    if (records.some((record) => !isInternalStyleMutation(record.target))) {
-      update();
-    }
-  });
-  headObserver.observe(document.head, {
-    childList: true,
-    characterData: true,
-    subtree: true
-  });
-  const mediaQuery = (_a = window.matchMedia) == null ? void 0 : _a.call(window, "(prefers-color-scheme: dark)");
-  if (mediaQuery) {
-    if (mediaQuery.addEventListener) {
-      mediaQuery.addEventListener("change", update);
-    } else {
-      mediaQuery.addListener(update);
-    }
-  }
-  window.addEventListener("load", update);
-  update();
-  return () => {
-    rootObserver.disconnect();
-    documentObserver.disconnect();
-    headObserver.disconnect();
-    if (mediaQuery) {
-      if (mediaQuery.removeEventListener) {
-        mediaQuery.removeEventListener("change", update);
-      } else {
-        mediaQuery.removeListener(update);
-      }
-    }
-    window.removeEventListener("load", update);
-    root.removeAttribute(selectionAttribute);
-    styleElement.remove();
-  };
-}
-function useWebSelectionStyle(rootRef) {
-  watch(
-    rootRef,
-    (root, _, onCleanup) => {
-      if (root) {
-        onCleanup(observeSelectionStyle(root));
-      }
-    },
-    { immediate: true, flush: "post" }
-  );
-}
 function normalizeEvent(vm, id2) {
   if (!id2) {
     id2 = vm.id;
@@ -13578,7 +13421,6 @@ function useEditor(props2, emit2) {
   const trigger = useCustomEvent(rootRef, emit2);
   useQuill(props2, rootRef, trigger);
   useKeyboard$1(props2, rootRef);
-  useWebSelectionStyle(rootRef);
   return rootRef;
 }
 const _t0$c = template("<div uni-editor uni-view class=ql-container>", 1);
@@ -15488,7 +15330,6 @@ const indexVapor$3 = /* @__PURE__ */ defineBuiltInComponent({
       trigger("itemclick", e2, detail);
     }
     const result = renderRichText(props2, rootRef, triggerItemClick);
-    useWebSelectionStyle(rootRef);
     Object.defineProperty(result, "uniTagName", uniTagName$4);
     return result;
   }

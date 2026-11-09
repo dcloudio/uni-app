@@ -14791,163 +14791,6 @@
     }
     watch(() => elRef.value, (el) => el && initKeyboard(el));
   }
-  var selectionAttribute = "data-uni-selection-style";
-  var probeAttribute = "data-uni-selection-style-probe";
-  var probeMarker = "--uni-selection-style-probe";
-  var probeColor = "rgb(1, 2, 3)";
-  var probeBackgroundColor = "rgb(4, 5, 6)";
-  var probeMarkerValue = "1";
-  var elementNodeType = 1;
-  var seed = 0;
-  function getSelectionSelector(root) {
-    var id2 = root.getAttribute(selectionAttribute);
-    if (!id2) {
-      id2 = String(++seed);
-      root.setAttribute(selectionAttribute, id2);
-    }
-    return "[".concat(selectionAttribute, '="').concat(id2, '"]');
-  }
-  function createFallbackRule() {
-    return ":where([".concat(probeAttribute, "])::selection,\n    :where([").concat(probeAttribute, "]) *::selection {\n      ").concat(probeMarker, ": ").concat(probeMarkerValue, ";\n      color: ").concat(probeColor, ";\n      background-color: ").concat(probeBackgroundColor, ";\n  }");
-  }
-  function createSelectionRule(selector, color, backgroundColor) {
-    var declarations = [];
-    if (color) {
-      declarations.push("color: ".concat(color, ";"));
-    }
-    if (backgroundColor) {
-      declarations.push("background-color: ".concat(backgroundColor, ";"));
-    }
-    if (!declarations.length) {
-      return "";
-    }
-    return "".concat(selector, "::selection,\n    ").concat(selector, " *::selection {\n      ").concat(declarations.join("\n"), "\n    }");
-  }
-  function normalizeColor(value) {
-    return value.replace(/\s+/g, "").toLowerCase();
-  }
-  function insertStyleElement(styleElement) {
-    document.head.insertBefore(styleElement, document.head.querySelector('style, link[rel="stylesheet"]'));
-  }
-  function isInternalStyleMutation(target) {
-    var element = target.nodeType === elementNodeType ? target : target.parentElement;
-    return !!(element == null ? void 0 : element.closest("style[data-uni-selection-style-element]"));
-  }
-  function resolveStyle(root, styleElement) {
-    styleElement.textContent = createFallbackRule();
-    root.setAttribute(probeAttribute, "");
-    var color = "";
-    var backgroundColor = "";
-    try {
-      var computed2 = getComputedStyle(root, "::selection");
-      if (computed2.getPropertyValue(probeMarker) !== probeMarkerValue) {
-        return {
-          color,
-          backgroundColor
-        };
-      }
-      var computedColor = computed2.color;
-      var computedBackgroundColor = computed2.backgroundColor;
-      if (normalizeColor(computedColor) !== normalizeColor(probeColor)) {
-        color = computedColor;
-      }
-      if (normalizeColor(computedBackgroundColor) !== normalizeColor(probeBackgroundColor)) {
-        backgroundColor = computedBackgroundColor;
-      }
-    } catch (e2) {
-      return {
-        color,
-        backgroundColor
-      };
-    } finally {
-      root.removeAttribute(probeAttribute);
-    }
-    return {
-      color,
-      backgroundColor
-    };
-  }
-  function observeSelectionStyle(root) {
-    var _a;
-    var styleElement = document.createElement("style");
-    styleElement.setAttribute("data-uni-selection-style-element", "");
-    insertStyleElement(styleElement);
-    function update() {
-      if (!root.isConnected) {
-        return;
-      }
-      if (!styleElement.isConnected) {
-        insertStyleElement(styleElement);
-      }
-      var selector = getSelectionSelector(root);
-      var {
-        color,
-        backgroundColor
-      } = resolveStyle(root, styleElement);
-      styleElement.textContent = createFallbackRule() + createSelectionRule(selector, color, backgroundColor);
-    }
-    var rootObserver = new MutationObserver(update);
-    rootObserver.observe(root, {
-      attributes: true,
-      attributeFilter: ["class", "style"]
-    });
-    var documentObserver = new MutationObserver(update);
-    documentObserver.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class", "style", "data-theme"]
-    });
-    if (document.body) {
-      documentObserver.observe(document.body, {
-        attributes: true,
-        attributeFilter: ["class", "style", "data-theme"]
-      });
-    }
-    var headObserver = new MutationObserver((records) => {
-      if (records.some((record) => !isInternalStyleMutation(record.target))) {
-        update();
-      }
-    });
-    headObserver.observe(document.head, {
-      childList: true,
-      characterData: true,
-      subtree: true
-    });
-    var mediaQuery = (_a = window.matchMedia) == null ? void 0 : _a.call(window, "(prefers-color-scheme: dark)");
-    if (mediaQuery) {
-      if (mediaQuery.addEventListener) {
-        mediaQuery.addEventListener("change", update);
-      } else {
-        mediaQuery.addListener(update);
-      }
-    }
-    window.addEventListener("load", update);
-    update();
-    return () => {
-      rootObserver.disconnect();
-      documentObserver.disconnect();
-      headObserver.disconnect();
-      if (mediaQuery) {
-        if (mediaQuery.removeEventListener) {
-          mediaQuery.removeEventListener("change", update);
-        } else {
-          mediaQuery.removeListener(update);
-        }
-      }
-      window.removeEventListener("load", update);
-      root.removeAttribute(selectionAttribute);
-      styleElement.remove();
-    };
-  }
-  function useWebSelectionStyle(rootRef) {
-    watch(rootRef, (root, _, onCleanup) => {
-      if (root) {
-        onCleanup(observeSelectionStyle(root));
-      }
-    }, {
-      immediate: true,
-      flush: "post"
-    });
-  }
   var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
   var endTag = /^<\/([-A-Za-z0-9_]+)[^>]*>/;
   var attr = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g;
@@ -15853,7 +15696,6 @@
     var trigger2 = useCustomEvent(rootRef, emit2);
     useQuill(props2, rootRef, trigger2);
     useKeyboard(props2, rootRef, trigger2);
-    useWebSelectionStyle(rootRef);
     return rootRef;
   }
   const Editor = /* @__PURE__ */ defineBuiltInComponent({
@@ -20314,7 +20156,6 @@
         trigger2("itemclick", e2, detail);
       }
       var result = renderRichText(props2, rootRef, triggerItemClick);
-      useWebSelectionStyle(rootRef);
       return result;
     }
   });
