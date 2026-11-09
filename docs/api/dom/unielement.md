@@ -1512,15 +1512,15 @@ Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.25; iOS: 4.25; H
 使界面滚动到给定元素的指定坐标位置 仅scroll-view、list-view、waterflow等可滚动组件支持
 
 ##### scrollTo 兼容性 <Help /> 
-Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.0; Android(Vapor): 5.23; Android(VDOM) UTS 插件: 5.23; iOS(VDOM): 4.11; iOS(Vapor): 5.23; iOS(VDOM) UTS 插件: 4.25; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.23; HarmonyOS(VDOM) UTS 插件: 5.23
+Web: 4.0; 微信小程序: 5.13; 支付宝小程序: 5.36; Android(VDOM): 4.0; Android(Vapor): 5.23; Android(VDOM) UTS 插件: 5.23; iOS(VDOM): 4.11; iOS(Vapor): 5.23; iOS(VDOM) UTS 插件: 4.25; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.23; HarmonyOS(VDOM) UTS 插件: 5.23
 
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| x | number | 是 | 微信小程序: x; 支付宝小程序: x | x轴要滚动到坐标位置(单位px) |
-| y | number | 是 | 微信小程序: x; 支付宝小程序: x | y轴要滚动到坐标位置(单位px) | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| x | number | 是 | x轴要滚动到坐标位置(单位px) |
+| y | number | 是 | y轴要滚动到坐标位置(单位px) | 
 
 
 
