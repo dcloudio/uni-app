@@ -1,284 +1,191 @@
 <template>
-  <view class="page flex-1">
-    <view class="context-heading items-center">
-      <text id="outside-target" class="context-title fs-15 color-text-333">{{ container }} / ScrollViewContext</text>
-    </view>
-
-    <view class="acceptance-card flex-dir-row items-center u-p-10 bg-list-fff">
-      <view class="flex-1">
-        <text class="fs-12 color-888">自动验收 · 当前容器</text>
-        <text id="acceptance-summary" class="acceptance-result mt-2 fs-14 fw-bold">{{ acceptanceSummary }}</text>
+  <text class="fs-18 fw-bold color-text-333">属性</text>
+  <list-view id="property-scroll" class="context-scroll">
+    <list-item v-for="index in 8" :key="index" :type="1">
+      <view class="context-item">
+        <text>条目 {{ index }}</text>
       </view>
-      <button id="run-acceptance" type="primary" class="primary-button" size="mini" :disabled="!contextReady || busy" @click="startAcceptance">运行验收</button>
-    </view>
+    </list-item>
+  </list-view>
+  <!-- #ifdef APP-IOS -->
+  <boolean-data
+    id="property-bounces"
+    title="bounces（边界回弹，仅 iOS）"
+    :value="data.bounces"
+    @change="changeBounces"
+  />
+  <!-- #endif -->
+  <boolean-data
+    id="property-showScrollbar"
+    title="showScrollbar（显示滚动条）"
+    :value="data.showScrollbar"
+    @change="changeShowScrollbar"
+  />
+  <boolean-data
+    id="property-scrollEnabled"
+    title="scrollEnabled（允许手势滚动）"
+    :value="data.scrollEnabled"
+    @change="changeScrollEnabled"
+  />
+  <boolean-data
+    id="property-pagingEnabled"
+    title="pagingEnabled（分页滚动）"
+    :value="data.pagingEnabled"
+    @change="changePagingEnabled"
+  />
 
-    <view class="preview-heading flex-dir-row items-center justify-between">
-      <text class="fs-15 fw-bold color-text-333">交互预览</text>
-      <text class="preview-tip fs-12">拖动预览区域观察滚动</text>
-    </view>
+  <text class="fs-18 fw-bold color-text-333 mt-15">方法</text>
 
-    <list-view id="demo-scroll" class="viewport h-220 border-width-1" :style="{ height: previewHeight + 'px' }"
-      :scroll-with-animation="animated" @scroll="onScroll"
-      :refresher-enabled="true" refresher-default-style="none"
-      @refresherrefresh="onRefresh" @refresherrestore="onRestore">
-      <list-item v-for="item in items" :key="item" :type="1">
-        <view :id="'item-' + item" class="item h-100 u-p-10 border-b-width-1 items-flex-start">
-          <text class="item-number fs-16 fw-bold">#{{ item }}</text>
-          <text class="item-note mt-1 fs-12">可定位条目</text>
-          <button class="item-target" size="mini" :disabled="!contextReady || busy" @click="scrollIntoItem(item)">定位到此</button>
-        </view>
-      </list-item>
-      <list-item slot="refresher" :type="2" class="w-full h-220"><context-refresher /></list-item>
-    </list-view>
-
-    <view class="live-strip flex-dir-row bg-list-fff">
-      <view class="flex-1 items-center"><text class="live-label fs-12">LEFT</text><text class="live-number mt-1 fs-14 fw-bold">{{ left }}</text></view>
-      <view class="flex-1 items-center"><text class="live-label fs-12">TOP</text><text class="live-number mt-1 fs-14 fw-bold">{{ top }}</text></view>
-      <view class="flex-1 items-center"><text class="live-label fs-12">刷新 / 复位</text><text class="live-number mt-1 fs-14 fw-bold">{{ refreshCount }} / {{ restoreCount }}</text></view>
-    </view>
-    <text class="last-action overflow-hidden text-overflow-ellipsis ws-nowrap fs-12">{{ message }}</text>
-
-    <view class="quick-actions flex-dir-row">
-      <button class="quick-button" size="mini" :disabled="!contextReady || busy" @click="scrollTo({ top: 300, animated: true })">下滚 300</button>
-      <button class="quick-button" size="mini" :disabled="!contextReady || busy" @click="scrollTo({ top: 0, left: 0, animated: false })">回到顶部</button>
-      <button class="quick-button" size="mini" :disabled="!contextReady || busy" @click="resetDemo">重置状态</button>
-    </view>
-
-    <view class="panel-tabs flex-dir-row">
-      <view :class="activePanel == 'properties' ? 'panel-tab panel-tab-active flex-1 items-center justify-center' : 'panel-tab flex-1 items-center justify-center'" @click="selectPanel('properties')"><text :class="activePanel == 'properties' ? 'tab-label fs-14 active-label fw-bold' : 'tab-label fs-14'">属性</text></view>
-      <view :class="activePanel == 'position' ? 'panel-tab panel-tab-active flex-1 items-center justify-center' : 'panel-tab flex-1 items-center justify-center'" @click="selectPanel('position')"><text :class="activePanel == 'position' ? 'tab-label fs-14 active-label fw-bold' : 'tab-label fs-14'">定位</text></view>
-      <view :class="activePanel == 'refresh' ? 'panel-tab panel-tab-active flex-1 items-center justify-center' : 'panel-tab flex-1 items-center justify-center'" @click="selectPanel('refresh')"><text :class="activePanel == 'refresh' ? 'tab-label fs-14 active-label fw-bold' : 'tab-label fs-14'">刷新</text></view>
-      <view :class="activePanel == 'results' ? 'panel-tab panel-tab-active flex-1 items-center justify-center' : 'panel-tab flex-1 items-center justify-center'" @click="selectPanel('results')"><text :class="activePanel == 'results' ? 'tab-label fs-14 active-label fw-bold' : 'tab-label fs-14'">结果</text></view>
-    </view>
-
-    <scroll-view id="demo-controls" :key="activePanel" class="controls flex-1 bg-list-fff" direction="vertical" :style="{ maxHeight: controlsMaxHeight }">
-      <view v-if="activePanel == 'properties'" class="panel-content pt-12">
-        <text class="panel-title fs-15 fw-bold">属性读写</text>
-        <text class="panel-description u-mt-5 fs-12 lh-18">切换属性后直接拖动预览区，再重新获取上下文核对读回值。</text>
-        <view class="guide-card p-9"><text class="guide-text fs-12 lh-18">建议顺序：开关 → 观察手势或滚动条 → 点击 node() 重新读取。</text></view>
-        <view class="control-row flex-dir-row items-center justify-between border-b-width-1">
-          <view class="flex-1 pr-8"><text class="control-name fs-14 fw-bold">scrollEnabled</text><text class="control-hint mt-2 fs-12">关闭后不能手势滚动，按钮仍可滚动</text></view>
-          <switch :checked="scrollEnabled" :disabled="!contextReady || busy" @change="changeScrollEnabled" />
-        </view>
-        <view class="item-check flex-dir-row items-center"><button class="check-button" size="mini" :disabled="!contextReady || busy" @click="checkFocused('scrollEnabled')">检查读写</button><text class="check-result flex-1 fs-12">{{ focusedResult('scrollEnabled') }}</text></view>
-        <view class="control-row flex-dir-row items-center justify-between border-b-width-1">
-          <view class="flex-1 pr-8"><text class="control-name fs-14 fw-bold">pagingEnabled</text><text class="control-hint mt-2 fs-12">开启后拖动应停在整页位置</text></view>
-          <switch :checked="pagingEnabled" :disabled="!contextReady || busy" @change="changePagingEnabled" />
-        </view>
-        <view class="item-check flex-dir-row items-center"><button class="check-button" size="mini" :disabled="!contextReady || busy" @click="checkFocused('pagingEnabled')">检查读写</button><text class="check-result flex-1 fs-12">{{ focusedResult('pagingEnabled') }}</text></view>
-        <view class="control-row flex-dir-row items-center justify-between border-b-width-1">
-          <view class="flex-1 pr-8"><text class="control-name fs-14 fw-bold">bounces</text><text class="control-hint mt-2 fs-12">在顶部下拉，观察边界回弹</text></view>
-          <switch :checked="bounces" :disabled="!contextReady || busy" @change="changeBounces" />
-        </view>
-        <view class="item-check flex-dir-row items-center"><button class="check-button" size="mini" :disabled="!contextReady || busy" @click="checkFocused('bounces')">检查读写</button><text class="check-result flex-1 fs-12">{{ focusedResult('bounces') }}</text></view>
-        <view class="control-row flex-dir-row items-center justify-between border-b-width-1">
-          <view class="flex-1 pr-8"><text class="control-name fs-14 fw-bold">showScrollbar</text><text class="control-hint mt-2 fs-12">滑动时观察右侧滚动条</text></view>
-          <switch :checked="scrollbar" :disabled="!contextReady || busy" @change="changeScrollbar" />
-        </view>
-        <view class="item-check flex-dir-row items-center"><button class="check-button" size="mini" :disabled="!contextReady || busy" @click="checkFocused('showScrollbar')">检查读写</button><text class="check-result flex-1 fs-12">{{ focusedResult('showScrollbar') }}</text></view>
-        <view class="flex-dir-row mt-8">
-          <button class="soft-button" size="mini" :disabled="busy" @click="acquireContext(false)">node().exec</button>
-          <button class="soft-button" size="mini" :disabled="busy" @click="acquireContext(true)">node(callback).exec</button>
-        </view>
-        <view class="item-check flex-dir-row items-center"><button class="check-button" size="mini" :disabled="!contextReady || busy" @click="checkFocused('node.exec')">检查 exec</button><text class="check-result flex-1 fs-12">{{ focusedResult('node.exec') }}</text></view>
-        <view class="item-check flex-dir-row items-center"><button class="check-button" size="mini" :disabled="!contextReady || busy" @click="checkFocused('node.callback')">检查 callback</button><text class="check-result flex-1 fs-12">{{ focusedResult('node.callback') }}</text></view>
-        <text class="panel-note fs-12 lh-18">当前上下文：{{ status }}。重新获取会保留原生属性状态。</text>
+  <!-- scrollTo：使用自己的滚动容器。 -->
+  <text class="fs-15 fw-bold color-text-333 mt-15">scrollTo</text>
+  <list-view id="scroll-to" class="context-scroll">
+    <list-item v-for="index in 8" :key="index" :type="1">
+      <view class="context-item">
+        <text>条目 {{ index }}</text>
       </view>
+    </list-item>
+  </list-view>
+  <button id="call-scroll-to" class="mt-10" @click="scrollTo">滚动到 top = 120</button>
 
-      <view v-else-if="activePanel == 'position'" class="panel-content pt-12">
-        <text class="panel-title fs-15 fw-bold">scrollTo · 精确定位</text>
-        <text class="panel-description u-mt-5 fs-12 lh-18">观察顶部 LEFT / TOP 数值；未传入的坐标应保持原值。</text>
-        <view class="control-row flex-dir-row items-center justify-between border-b-width-1">
-          <view class="flex-1 pr-8"><text class="control-name fs-14 fw-bold">默认动画</text><text class="control-hint mt-2 fs-12">scroll-with-animation</text></view>
-          <switch :checked="animated" :disabled="busy" @change="changeAnimation" />
-        </view>
-        <view class="flex-dir-row mt-8">
-          <button class="soft-button" size="mini" :disabled="!contextReady || busy" @click="scrollTo({ top: 600 })">到 600 · 默认</button>
-          <button class="soft-button" size="mini" :disabled="!contextReady || busy" @click="scrollTo({})">空对象 · 保持</button>
-        </view>
-        <view class="flex-dir-row mt-8">
-          <button class="soft-button" size="mini" :disabled="!contextReady || busy" @click="scrollTo({ top: 600, duration: 1000 })">到 600 · 1000ms</button>
-          <button class="soft-button" size="mini" :disabled="!contextReady || busy" @click="scrollTo({ top: 600, duration: 1000, velocity: 1200 })">到 600 · 初速 1200</button>
-        </view>
-        <view class="item-check flex-dir-row items-center"><button class="check-button" size="mini" :disabled="!contextReady || busy" @click="checkFocused('scrollTo')">检查 scrollTo</button><text class="check-result flex-1 fs-12">{{ focusedResult('scrollTo') }}</text></view>
-        <text class="panel-title fs-15 fw-bold mt-18">scrollIntoView · 条目定位</text>
-        <text class="panel-description u-mt-5 fs-12 lh-18">先滚到目标附近，按钮会定位第一个可见条目；列表和瀑布流只定位已渲染条目。</text>
-        <view class="flex-dir-row mt-8">
-          <button class="soft-button" size="mini" :disabled="!contextReady || busy" @click="scrollIntoVisible('start')">顶部 +12</button>
-          <button class="soft-button" size="mini" :disabled="!contextReady || busy" @click="scrollIntoVisible('center')">居中</button>
-        </view>
-        <view class="flex-dir-row mt-8">
-          <button class="soft-button" size="mini" :disabled="!contextReady || busy" @click="scrollIntoVisible('end')">靠底</button>
-          <button class="soft-button" size="mini" :disabled="!contextReady || busy" @click="scrollIntoVisible('nearest')">最近位置</button>
-        </view>
-        <text class="panel-note fs-12 lh-18">{{ targetInfo }}</text>
-        <view class="item-check flex-dir-row items-center"><button class="check-button" size="mini" :disabled="!contextReady || busy" @click="checkFocused('scrollIntoView')">检查 scrollIntoView</button><text class="check-result flex-1 fs-12">{{ focusedResult('scrollIntoView') }}</text></view>
-        <button type="primary" class="outline-button" size="mini" :disabled="!contextReady || busy" @click="checkEdges">运行边界检查</button>
-        <text class="panel-note fs-12 lh-18">{{ edgeResult }}</text>
+  <!-- scrollIntoView：使用自己的滚动容器。 -->
+  <text class="fs-15 fw-bold color-text-333 mt-15">scrollIntoView</text>
+  <list-view id="scroll-into-view" class="context-scroll">
+    <list-item v-for="index in 8" :key="index" :type="1">
+      <view
+        :id="index == 2 ? 'scroll-into-view-target' : 'into-item-' + index"
+        class="context-item"
+      >
+        <text>{{ index == 2 ? '目标条目' : '条目 ' + index }}</text>
       </view>
+    </list-item>
+  </list-view>
+  <button id="call-scroll-into-view" class="mt-10" @click="scrollIntoView">定位到目标条目</button>
 
-      <view v-else-if="activePanel == 'refresh'" class="panel-content pt-12">
-        <text class="panel-title fs-15 fw-bold">刷新与下拉二级</text>
-        <text class="panel-description u-mt-5 fs-12 lh-18">先准备手势，再从预览区顶部向下拖动；也可调用下方方法。</text>
-        <button type="primary" class="outline-button" size="mini" :disabled="!contextReady || busy" @click="prepareRefreshGesture">准备下拉手势：回顶部、开启回弹</button>
-        <view class="guide-card p-9"><text class="guide-text fs-12 lh-18">普通刷新：事件计数增加 1。二级：绿色面板覆盖预览区，关闭后恢复内容。</text></view>
-        <view class="flex-dir-row mt-8">
-          <button class="soft-button" size="mini" :disabled="!contextReady || busy" @click="triggerRefresh">triggerRefresh</button>
-          <button class="soft-button" size="mini" :disabled="!contextReady || busy" @click="closeRefresh">closeRefresh</button>
-        </view>
-        <view class="item-check flex-dir-row items-center"><button class="check-button" size="mini" :disabled="!contextReady || busy" @click="checkFocused('triggerRefresh')">检查 triggerRefresh</button><text class="check-result flex-1 fs-12">{{ focusedResult('triggerRefresh') }}</text></view>
-        <view class="item-check flex-dir-row items-center"><button class="check-button" size="mini" :disabled="!contextReady || busy" @click="checkFocused('closeRefresh')">检查 closeRefresh</button><text class="check-result flex-1 fs-12">{{ focusedResult('closeRefresh') }}</text></view>
-        <view class="flex-dir-row mt-8">
-          <button class="soft-button" size="mini" :disabled="!contextReady || busy" @click="triggerTwoLevel">triggerTwoLevel</button>
-          <button class="soft-button" size="mini" :disabled="!contextReady || busy" @click="closeTwoLevel">closeTwoLevel</button>
-        </view>
-        <view class="item-check flex-dir-row items-center"><button class="check-button" size="mini" :disabled="!contextReady || busy" @click="checkFocused('triggerTwoLevel')">检查 triggerTwoLevel</button><text class="check-result flex-1 fs-12">{{ focusedResult('triggerTwoLevel') }}</text></view>
-        <view class="item-check flex-dir-row items-center"><button class="check-button" size="mini" :disabled="!contextReady || busy" @click="checkFocused('closeTwoLevel')">检查 closeTwoLevel</button><text class="check-result flex-1 fs-12">{{ focusedResult('closeTwoLevel') }}</text></view>
-        <text class="panel-note fs-12 lh-18">刷新事件 {{ refreshCount }} 次 · 复位事件 {{ restoreCount }} 次</text>
-        <button type="primary" class="outline-button" size="mini" :disabled="!contextReady || busy" @click="checkContext">运行刷新接口检查</button>
-        <text class="panel-note fs-12 lh-18">{{ contextResult }}</text>
+  <!-- triggerRefresh / closeRefresh：共用一个滚动容器。 -->
+  <text class="fs-15 fw-bold color-text-333 mt-15">triggerRefresh / closeRefresh</text>
+  <list-view id="refresh-scroll" class="context-scroll" :refresher-enabled="true">
+    <list-item v-for="index in 8" :key="index" :type="1">
+      <view class="context-item">
+        <text>条目 {{ index }}</text>
       </view>
+    </list-item>
+  </list-view>
+  <button id="call-trigger-refresh" class="mt-10" @click="triggerRefresh">
+    调用 triggerRefresh
+  </button>
 
-      <view v-else class="panel-content pt-12">
-        <text class="panel-title fs-15 fw-bold">验收结果</text>
-        <text class="panel-description u-mt-5 fs-12 lh-18">完整验收请在新打开的页面运行；失败项会显示预期与实际值。</text>
-        <view class="guide-card p-9"><text class="guide-text fs-12 lh-18">{{ acceptanceSummary }} · 共 {{ acceptanceChecks.length }} 项</text></view>
-        <text class="panel-note fs-12 lh-18">预期未实现：fastDeceleration、decelerationDisabled、withinExtent。</text>
-        <view v-for="result in acceptanceChecks" :key="result.id" class="result-row mt-8 p-8">
-          <text :class="result.passed ? 'fs-12 fw-bold pass' : 'fs-12 fw-bold fail'">{{ result.passed ? 'PASS' : 'FAIL' }}</text>
-          <text class="result-id mt-2 fs-14 fw-bold">{{ result.id }}</text>
-          <text class="result-detail mt-2 fs-12">预期：{{ result.expected }}</text>
-          <text class="result-detail mt-2 fs-12">实际：{{ result.actual }}</text>
-        </view>
+  <button id="call-close-refresh" class="mt-10" @click="closeRefresh">调用 closeRefresh</button>
+
+  <!-- triggerTwoLevel / closeTwoLevel：共用一个滚动容器。 -->
+  <text class="fs-15 fw-bold color-text-333 mt-15">triggerTwoLevel / closeTwoLevel</text>
+  <list-view
+    id="two-level-scroll"
+    class="context-scroll"
+    :refresher-enabled="true"
+    refresher-default-style="none"
+  >
+    <list-item v-for="index in 8" :key="index" :type="1">
+      <view class="context-item">
+        <text>条目 {{ index }}</text>
       </view>
-    </scroll-view>
-  </view>
+    </list-item>
+    <list-item slot="refresher" :type="2" class="context-refresher">
+      <view class="context-refresher items-center justify-center"><text>二级面板</text></view>
+    </list-item>
+  </list-view>
+  <button id="call-trigger-two-level" class="mt-10" @click="triggerTwoLevel">
+    调用 triggerTwoLevel
+  </button>
+
+  <button id="call-close-two-level" class="mt-10" @click="closeTwoLevel">调用 closeTwoLevel</button>
 </template>
 
 <script setup lang="ts">
-  import ContextRefresher from './context-refresher.uvue'
-  import { type AcceptanceCheck } from './acceptance.uts'
-  import { createContextLab, previewHeightForWindow } from './context-lab.uts'
-  const container = ref('list-view')
-  const activePanel = ref('properties')
-  const controlsMaxHeight = ref('')
-  const scrollDirection = ref('all')
-  const contextReady = ref(false)
-  const extendedReady = ref(false)
-  const status = ref('未获取')
-  const message = ref('等待获取上下文')
-  const targetInfo = ref('尚未点击条目')
-  const left = ref(0)
-  const top = ref(0)
-  const bounces = ref(true)
-  const scrollbar = ref(true)
-  const animated = ref(false)
-  const checkingEdges = ref(false)
-  const edgeResult = ref('Edge: pending')
-  const checkingContext = ref(false)
-  const contextResult = ref('Context: pending')
-  const scrollEnabled = ref(true)
-  const pagingEnabled = ref(false)
-  const refreshCount = ref(0)
-  const restoreCount = ref(0)
-  const acceptanceRunning = ref(false)
-  const acceptanceChecks = ref<AcceptanceCheck[]>([])
-  const acceptanceSummary = ref('待验收')
-  const focusedChecks = ref<AcceptanceCheck[]>([])
-  const focusedRunning = ref(false)
-  // 与微信 ScrollViewContext 对照时明确记录本次验收约定的未实现项。
-  // 这些字段不应因为当前上下文没有暴露而被当成接口回归失败。
-  const unsupportedProperties: string[] = ['fastDeceleration', 'decelerationDisabled', 'withinExtent']
-  const busy = computed(() => acceptanceRunning.value || checkingEdges.value || checkingContext.value || focusedRunning.value)
-  const items: number[] = []
-  for (let i = 1; i <= 30; i++) items.push(i)
+  import { getScrollViewContext } from './scroll-view-context'
 
-  const previewHeight = ref(220)
+  const data = reactive({
+    // #ifdef APP-IOS
+    bounces: true,
+    // #endif
+    showScrollbar: true,
+    scrollEnabled: true,
+    pagingEnabled: false
+  })
 
-  function syncPreviewHeight() {
-    previewHeight.value = previewHeightForWindow(uni.getWindowInfo().windowHeight)
+  // #ifdef APP-IOS
+  async function changeBounces(value: boolean) {
+    const context = await getScrollViewContext('#property-scroll')
+    context.bounces = value
+    data.bounces = context.bounces
+  }
+  // #endif
+
+  async function changeShowScrollbar(value: boolean) {
+    const context = await getScrollViewContext('#property-scroll')
+    context.showScrollbar = value
+    data.showScrollbar = context.showScrollbar
   }
 
-  const {
-    selectPanel,
-    focusedResult,
-    checkFocused,
-    focusedSnapshot,
-    toggleScrollDirection,
-    resetDemo,
-    prepareRefreshGesture,
-    acquireContext,
-    scrollTo,
-    scrollIntoItem,
-    scrollIntoVisible,
-    startAcceptance,
-    acceptanceSnapshot,
-    prepareGesture,
-    finishGestureRefresh,
-    setControlsMaxHeightForTest,
+  async function changeScrollEnabled(value: boolean) {
+    const context = await getScrollViewContext('#property-scroll')
+    context.scrollEnabled = value
+    data.scrollEnabled = context.scrollEnabled
+  }
+
+  async function changePagingEnabled(value: boolean) {
+    const context = await getScrollViewContext('#property-scroll')
+    context.pagingEnabled = value
+    data.pagingEnabled = context.pagingEnabled
+  }
+
+  async function scrollTo() {
+    const context = await getScrollViewContext('#scroll-to')
+    context.scrollTo({ top: 120 })
+  }
+
+  async function scrollIntoView() {
+    const context = await getScrollViewContext('#scroll-into-view')
+    context.scrollIntoView('#scroll-into-view-target')
+  }
+
+  async function triggerRefresh() {
+    const context = await getScrollViewContext('#refresh-scroll')
+    context.triggerRefresh()
+  }
+
+  async function closeRefresh() {
+    const context = await getScrollViewContext('#refresh-scroll')
+    context.closeRefresh()
+  }
+
+  async function triggerTwoLevel() {
+    const context = await getScrollViewContext('#two-level-scroll')
+    context.setAnyAttribute('refresher-two-level-enabled', true)
+    context.triggerTwoLevel()
+  }
+
+  async function closeTwoLevel() {
+    const context = await getScrollViewContext('#two-level-scroll')
+    context.closeTwoLevel()
+  }
+
+  defineExpose({
+    data,
+    // #ifdef APP-IOS
     changeBounces,
-    changeScrollbar,
-    changeAnimation,
+    // #endif
+    changeShowScrollbar,
     changeScrollEnabled,
     changePagingEnabled,
-    onRefresh,
-    onRestore,
+    scrollTo,
+    scrollIntoView,
     triggerRefresh,
     closeRefresh,
     triggerTwoLevel,
-    closeTwoLevel,
-    checkContext,
-    checkEdges,
-    onScroll,
-    flowHeight,
-    dispose,
-  } = createContextLab({
-    container,
-    activePanel,
-    controlsMaxHeight,
-    scrollDirection,
-    contextReady,
-    extendedReady,
-    status,
-    message,
-    targetInfo,
-    left,
-    top,
-    bounces,
-    scrollbar,
-    animated,
-    checkingEdges,
-    edgeResult,
-    checkingContext,
-    contextResult,
-    scrollEnabled,
-    pagingEnabled,
-    refreshCount,
-    restoreCount,
-    acceptanceRunning,
-    acceptanceChecks,
-    acceptanceSummary,
-    focusedChecks,
-    focusedRunning,
-    busy,
-    items, unsupportedProperties,
-    flush: async () => { await nextTick() }
+    closeTwoLevel
   })
-
-  defineExpose({ startAcceptance, acceptanceSnapshot, prepareGesture, finishGestureRefresh, setControlsMaxHeightForTest, acquireContext, triggerTwoLevel, closeTwoLevel, checkFocused, focusedSnapshot })
-
-  onLoad((options: OnLoadOptions) => {
-    if (options['direction'] == 'vertical') scrollDirection.value = 'vertical'
-  })
-  onReady(async () => {
-    syncPreviewHeight()
-    await nextTick()
-    acquireContext(false)
-  })
-  onResize(() => syncPreviewHeight())
-  onUnload(() => dispose())
 </script>
 
 <style>
-@import "./context-lab.css";
+  @import './scroll-view-context.css';
 </style>

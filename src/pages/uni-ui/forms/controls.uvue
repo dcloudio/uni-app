@@ -1,5 +1,5 @@
 <template>
-	<scroll-view class="page" :class="{ 'page-dark': isDarkMode }">
+	<view>
 		<view class="intro">
 			<text class="page-title">控件接入示例</text>
 			<text class="page-desc">uni-forms 不要求控件继承特定基类。只要控件通过 v-model 更新表单对象，就能参与提交校验；需要失焦即时校验时，再按需接入表单项上下文。</text>
@@ -37,11 +37,9 @@
 					<uni-easyinput v-model="formData.easyInput" placeholder="uni-x 组件直接接入" />
 				</uni-forms-item>
 
-				<!-- #ifndef (APP-IOS || APP-HARMONY) && !VUE3-VAPOR -->
 				<uni-forms-item name="combobox" label="uni-combobox" required label-class="demo-label" error-message-class="demo-error">
 					<uni-combobox v-model="formData.combobox" :options="comboboxOptions" placeholder="uni-combobox 直接接入" />
 				</uni-forms-item>
-				<!-- #endif -->
 
 				<uni-forms-item name="thirdParty" label="三方组件" required label-class="demo-label" error-message-class="demo-error">
 					<thirdPartyControl v-model="formData.thirdParty" :options="thirdPartyOptions" placeholder="只实现 update:modelValue" />
@@ -62,29 +60,11 @@
 			<text class="point-text">3. 只使用 v-model 的三方组件可以参与 submit 校验；失焦校验属于可选增强。</text>
 			<text class="data-text">{{ dataText }}</text>
 		</view>
-	</scroll-view>
+	</view>
 </template>
 
 <script setup lang="ts">
-import { state } from '@/store/index.ts'
 import thirdPartyControl from './third-party-control.uvue'
-
-const isDarkMode = computed((): boolean => state.isDarkMode)
-
-/** 暗黑模式下同步导航栏颜色，与图标示例页保持一致 */
-function syncNavigationBar(): void {
-	// #ifdef APP || WEB
-	const dark = isDarkMode.value
-	uni.setNavigationBarColor({
-		frontColor: dark ? '#ffffff' : '#000000',
-		backgroundColor: dark ? '#1a1a1a' : '#efeff4'
-	})
-	// #endif
-}
-
-watch(isDarkMode, syncNavigationBar, { immediate: true })
-onShow(syncNavigationBar)
-
 
 type FormData = {
 	nativeInput : string,
@@ -154,8 +134,7 @@ function resetForm() {
 </script>
 
 <style>
-.page {
-	flex: 1;
+page {
 	--list-background-color: #ffffff;
 	--background-color: #f5f5f5;
 	--active-color: #a0a0a0;
@@ -168,20 +147,6 @@ function resetForm() {
 	--divider-color: #e5e5e5;
 	--forms-error-background-color: #fff2f0;
 	background-color: var(--background-color);
-}
-
-.page-dark {
-	--list-background-color: #2d2d2d;
-	--background-color: #1a1a1a;
-	--active-color: #8f8f8f;
-	--active-background-color: #3b3b3b;
-	--text-color: #ffffff;
-	--arrow-color: #ffffff;
-	--content-background-color: #2d2d2d;
-	--secondary-text-color: rgba(255, 255, 255, 0.65);
-	--input-border-color: rgba(255, 255, 255, 0.18);
-	--divider-color: rgba(255, 255, 255, 0.12);
-	--forms-error-background-color: #3a1a1c;
 }
 
 .intro,
@@ -225,6 +190,11 @@ function resetForm() {
 	font-size: 14px;
 	color: var(--text-color, #333333);
 	box-sizing: border-box;
+}
+
+.native-input,
+.native-textarea {
+	background-color: var(--list-background-color, #ffffff);
 }
 
 .native-input {
@@ -299,7 +269,7 @@ function resetForm() {
 }
 
 @media (prefers-color-scheme: dark) {
-	.page {
+	page {
 		--list-background-color: #2d2d2d;
 		--background-color: #1a1a1a;
 		--active-color: #8f8f8f;

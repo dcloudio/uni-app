@@ -1,5 +1,5 @@
 <template>
-	<scroll-view class="page" :class="{ 'page-dark': isDarkMode }">
+	<view>
 		<view class="intro">
 			<text class="page-title">Easyinput 增强输入框</text>
 			<text class="page-desc">支持单行、多行、密码、清空、前后插槽和自定义内部样式。</text>
@@ -130,28 +130,10 @@
 				icon-class="custom-icon-purple"
 			/>
 		</view>
-	</scroll-view>
+	</view>
 </template>
 
 <script setup lang="ts">
-import { state } from '@/store/index.ts'
-
-const isDarkMode = computed((): boolean => state.isDarkMode)
-
-/** 暗黑模式下同步导航栏颜色，与图标示例页保持一致 */
-function syncNavigationBar(): void {
-	// #ifdef APP
-	const dark = isDarkMode.value
-	uni.setNavigationBarColor({
-		frontColor: dark ? '#ffffff' : '#000000',
-		backgroundColor: dark ? '#1a1a1a' : '#efeff4'
-	})
-	// #endif
-}
-
-watch(isDarkMode, syncNavigationBar, { immediate: true })
-onShow(syncNavigationBar)
-
 type Data = {
 	basicValue : string,
 	externalValue : string | number | null,
@@ -226,9 +208,17 @@ defineExpose({
 </script>
 
 <style>
-.page {
-	flex: 1;
-	background-color: var(--background-color, #f5f5f5);
+page {
+	--list-background-color: #ffffff;
+	--background-color: #f5f5f5;
+	--active-color: #a0a0a0;
+	--active-background-color: #f8f8f8;
+	--text-color: #333333;
+	--arrow-color: #999999;
+	--content-background-color: #ffffff;
+	--secondary-text-color: #657180;
+	--input-border-color: #dcdfe6;
+	background-color: var(--background-color);
 }
 
 .intro {
@@ -280,6 +270,8 @@ defineExpose({
 
 .small-button {
 	margin: 0 8px 6px 0;
+	color: var(--text-color, #333333);
+	background-color: var(--active-background-color, #f8f8f8);
 }
 
 .state-input {
@@ -340,5 +332,19 @@ defineExpose({
 
 .custom-icon-purple {
 	color: #7c3aed;
+}
+
+@media (prefers-color-scheme: dark) {
+	page {
+		--list-background-color: #2d2d2d;
+		--background-color: #1a1a1a;
+		--active-color: rgba(255, 255, 255, 0.35);
+		--active-background-color: #3b3b3b;
+		--text-color: #ffffff;
+		--arrow-color: #a0a0a0;
+		--content-background-color: #2d2d2d;
+		--secondary-text-color: rgba(255, 255, 255, 0.65);
+		--input-border-color: rgba(255, 255, 255, 0.18);
+	}
 }
 </style>

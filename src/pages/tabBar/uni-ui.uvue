@@ -130,6 +130,13 @@
       url: '/pages/uni-ui/drag-cell/drag-cell',
       pages: [] as Page[]
     },
+    {
+      id: 'easyinput',
+      name: 'uni-easyinput 增强输入框',
+      open: false,
+      url: '/pages/uni-ui/easyinput/easyinput',
+      pages: [] as Page[]
+    },
     // #ifdef VUE3-VAPOR || MP
     {
       id: 'expandable-text',

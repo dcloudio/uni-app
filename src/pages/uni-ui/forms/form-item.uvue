@@ -1,5 +1,5 @@
 <template>
-	<scroll-view class="page" :class="{ 'page-dark': isDarkMode }">
+	<view>
 		<view class="intro">
 			<text class="page-title">表单项布局</text>
 			<text class="page-desc">从 uni-forms 进入。看左侧标签的字号、宽度、垂直位置，以及说明和行尾箭头。</text>
@@ -11,10 +11,10 @@
 			<uni-forms label-width="80">
 				<view class="demo-card-radius demo-card-color">
 					<uni-forms-item label="用户名" label-class="card-label">
-						<input placeholder="请输入用户名" />
+						<input class="card-input" placeholder="请输入用户名" />
 					</uni-forms-item>
 					<uni-forms-item label="密码" label-class="card-label">
-						<input placeholder="请输入密码" />
+						<input class="card-input" placeholder="请输入密码" />
 					</uni-forms-item>
 				</view>
 			</uni-forms>
@@ -22,10 +22,10 @@
 			<uni-forms label-width="80">
 				<view class="demo-card demo-card-color">
 					<uni-forms-item label="用户名" label-class="card-label" class="card-line">
-						<input placeholder="请输入用户名" />
+						<input class="card-input" placeholder="请输入用户名" />
 					</uni-forms-item>
 					<uni-forms-item label="密码" label-class="card-label">
-						<input placeholder="请输入密码" />
+						<input class="card-input" placeholder="请输入密码" />
 					</uni-forms-item>
 				</view>
 			</uni-forms>
@@ -178,30 +178,10 @@
 				<button class="action-button secondary-button" size="mini" @click="clearErrorForm">清除</button>
 			</view>
 		</view>
-	</scroll-view>
+	</view>
 </template>
 
 <script setup lang="ts">
-	import { state } from '@/store/index.ts'
-
-	const isDarkMode = computed((): boolean => state.isDarkMode)
-
-	/**
-	 * 暗黑模式下把导航栏改成深色，和其它表单示例一致。
-	 */
-	function syncNavigationBar(): void {
-		// #ifdef APP || WEB
-		const dark = isDarkMode.value
-		uni.setNavigationBarColor({
-			frontColor: dark ? '#ffffff' : '#000000',
-			backgroundColor: dark ? '#1a1a1a' : '#efeff4'
-		})
-		// #endif
-	}
-
-	watch(isDarkMode, syncNavigationBar, { immediate: true })
-	onShow(syncNavigationBar)
-
 	const arrowOn = ref(true)
 	const errorFormRef = ref<any>(null)
 	const errorForm = ref({
@@ -243,8 +223,7 @@
 </script>
 
 <style>
-	.page {
-		flex: 1;
+	page {
 		--list-background-color: #ffffff;
 		--background-color: #f5f5f5;
 		--active-color: #a0a0a0;
@@ -261,24 +240,6 @@
 		--email-error-bg: #fff7e8;
 		--email-error-border: #fa8c16;
 		background-color: var(--background-color);
-	}
-
-	.page-dark {
-		--list-background-color: #2d2d2d;
-		--background-color: #1a1a1a;
-		--active-color: #8f8f8f;
-		--active-background-color: #3b3b3b;
-		--text-color: #ffffff;
-		--arrow-color: #ffffff;
-		--content-background-color: #2d2d2d;
-		--secondary-text-color: rgba(255, 255, 255, 0.65);
-		--input-border-color: rgba(255, 255, 255, 0.18);
-		--divider-color: rgba(255, 255, 255, 0.12);
-		--forms-error-background-color: #3a1a1c;
-		--card-label-color: rgba(255, 255, 255, 0.65);
-		--desc-custom-color: #9db7e8;
-		--email-error-bg: #3a2a12;
-		--email-error-border: #fa8c16;
 	}
 
 	.intro {
@@ -368,6 +329,7 @@
 		height: 36px;
 		text-align: right;
 		color: var(--text-color, #333333);
+		background-color: transparent;
 	}
 
 	.field-left {
@@ -449,6 +411,11 @@
 		color: var(--card-label-color, #878787);
 	}
 
+	.card-input {
+		color: var(--text-color, #333333);
+		background-color: transparent;
+	}
+
 	.card-line {
 		border-bottom-width: 0.5px;
 		border-bottom-style: solid;
@@ -464,7 +431,7 @@
 	}
 
 	@media (prefers-color-scheme: dark) {
-		.page {
+		page {
 			--list-background-color: #2d2d2d;
 			--background-color: #1a1a1a;
 			--active-color: #8f8f8f;

@@ -1,5 +1,5 @@
 <template>
-    <page-intro content="本页演示 unicloud-db 云数据库组件：集合查询、分页与 loadtime manual，列表展示与 Add/Get 操作，可跳转通讯录等 mixin-datacom 示例。"></page-intro>
+    <page-intro content="本页演示 unicloud-db 云数据库组件：集合查询、分页与 loadtime manual，列表展示与 Add/Get 操作，可跳转通讯录等组合式 datacom 示例。"></page-intro>
     <unicloud-db ref="udbRef" v-slot:default="{data, pagination, loading, error}" :collection="collection" :getcount="true"
       loadtime="manual">
       <list-view v-if="data.length>0" ref="listViewRef" class="flex-1 flex-dir-column" :scroll-y="true" @scrolltolower="loadMore()">

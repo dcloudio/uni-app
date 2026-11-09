@@ -957,8 +957,9 @@ namespace recycle_waterflow {
         }
         const auto viewElement = dynamic_cast<ViewElement *>(element);
         this->viewElement = viewElement;
-        this->initSize();
+        // 先监听再读取，避免首次布局恰好发生在测量与订阅之间而漏报。
         this->startObserve();
+        this->initSize();
         this->getAndUpdateItemOffset();
         this->getAndUpdateItemCrossAxisSize();
     };

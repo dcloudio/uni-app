@@ -1,7 +1,7 @@
 <template>
-  <view class="flex-dir-column app-flex-1">
+  <view class="flex-dir-column" style="flex: 1;">
     <unicloud-db ref="udbRef" class="udb" v-slot:default="{data, pagination, loading, hasMore, error}"
-      :collection="collection" :page-size="15" :getcount="true" loadtime="manual">
+      :collection="collection" :page-size="20" :getcount="true" loadtime="manual">
       <view v-if="error!=null" class="color-text-333">{{error.errMsg}}</view>
       <scroll-view ref="listView" class="flex-1 flex-dir-column" @scrolltolower="loadMore()">
         <view class="flex-dir-row u-p-10 bg-list-fff mb-1" v-for="(item, _) in data" @click="gotoDetailPage(item['_id'] as string)">

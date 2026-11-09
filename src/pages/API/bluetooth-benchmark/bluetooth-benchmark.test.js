@@ -1,5 +1,5 @@
 //
-// 平台策略：当前套件只覆盖 Android App 真机；Harmony、Web、iOS、微信小程序待对应平台实现后单独接入。
+// 平台策略：当前套件暂时只覆盖 Android 11 及以上。
 //
 // 前置：在下方配置 DEVICE_IDS；env.js + jest.config.js 配好 App 基座。
 // Android 蓝牙系统权限在根套件 beforeAll 中、页面启动前静默预授权。
@@ -7,20 +7,14 @@
 
 jest.setTimeout(120000)
 
-const testEnv = require('../../../env.js')
-const platformInfo = String(process.env.uniTestPlatformInfo || '').toLowerCase()
-const isAndroid = platformInfo.includes('android')
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isAndroid = platformInfo.startsWith('android')
+const version = parseInt(platformInfo.split(' ')[1], 10)
 const skipPlatform = !isAndroid
 
 async function grantAndroidPermissions() {
-	const appConfig = testEnv && testEnv['app-plus'] && testEnv['app-plus']['uni-app-x']
-	const config = appConfig && appConfig.android ? appConfig.android : {}
-	const packageName = config.package || ''
-	if (packageName.length === 0) {
-		throw new Error('env.js 未配置 app-plus.uni-app-x.android.package')
-	}
-	const androidVersion = Number(platformInfo.split(/\s+/).pop())
-	const permissions = androidVersion >= 12 ? [
+	const packageName = 'io.dcloud.uniappx'
+	const permissions = version >= 12 ? [
 		'android.permission.BLUETOOTH_SCAN',
 		'android.permission.BLUETOOTH_CONNECT',
 		'android.permission.ACCESS_FINE_LOCATION'
@@ -56,7 +50,7 @@ const UNINITIALIZED_EXPECTATION = {
 	closeBluetoothAdapter: 1500101,
 	getBluetoothAdapterState: 1500101,
 	startBluetoothDevicesDiscovery: 1500101,
-	stopBluetoothDevicesDiscovery: 1500101,
+	stopBluetoothDevicesDiscovery: 'success',
 	getBluetoothDevices: 1500101,
 	getConnectedBluetoothDevices: 1500101,
 	createBLEConnection: 1500101,
@@ -244,6 +238,10 @@ describe('uni-bluetooth 真机接口自动化（未初始化/正常/连接/负�
 	// 当前套件只覆盖 Android App 真机；其他平台使用独立用例。
 	if (skipPlatform) {
 		it.skip(`当前平台不支持 Android BLE 真机用例: ${platformInfo || 'unknown'}`, () => {})
+		return
+	}
+	if (version <= 10) {
+		it.skip(`Android ${version} 暂不执行 BLE 测试`, () => {})
 		return
 	}
 

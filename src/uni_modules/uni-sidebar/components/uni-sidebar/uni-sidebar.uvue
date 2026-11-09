@@ -1,58 +1,104 @@
 <template>
 	<list-view class="uni-sidebar" :show-scrollbar="false">
-		<list-item v-for="(item, index) in list" :key="index" class="uni-sidebar__item" @click="onItemClick(index)">
-			<slot :item="item" :index="index" :active="index === currentIndex"></slot>
+		<list-item v-for="(item, index) in list" :key="index" @click="onItemClick(index)">
+			<slot :item="item" :index="index" :active="index === displayIndex"></slot>
 		</list-item>
 	</list-view>
 </template>
 
 <script setup lang="ts">
+/**
+ * sidebar
+ * @description 侧边导航组件，基于 list-view / list-item 实现，仅负责渲染导航项与抛出交互事件。
+ * @uniPlatform {
+ *   "app": {
+ *     "android": {"unixVaporVer": "5.21"},
+ *     "ios": {"unixVaporVer": "5.11"},
+ *     "harmony": {"unixVaporVer": "5.07"}
+ *   },
+ *   "mp": {
+ *     "weixin": {"unixVer": "5.07"},
+ *     "alipay": {"unixVer": "5.31"}
+ *   },
+ *   "web": {"unixVer": "5.07"}
+ * }
+ */
+
 	/**
 	 * 侧边滚动导航
-	 * @description 点击导航项滚动目标列表到对应位置，目标列表滚动时高亮对应导航项
+	 * @description 受控导航条：展示导航项并抛出点击意图，滚动与滚动高亮由页面编排
 	 */
 	type Props = {
 		/**
-		 * @description 导航数据，数组每一项与目标列表中的条目按索引一一对应
+		 * @description 导航数据，数组每一项与目标列表中的分段按索引一一对应
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
+		 *   },
+		 *   "web": {"unixVer": "5.07"}
+		 * }
 		 */
 		list : string[],
 		/**
-		 * @description 目标列表 list-view 的 id，目标列表中的条目需要设置 id 为 `{targetId}-item-{index}`
+		 * @description 当前高亮索引。传入时为受控模式（推荐搭配 v-model:current-index），
+		 * 点击只抛出变更请求，高亮由绑定值决定；不传时为非受控模式，点击后组件内部维护高亮。
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
+		 *   },
+		 *   "web": {"unixVer": "5.07"}
+		 * }
 		 */
-		targetId : string,
-		/**
-		 * @description 滚动到目标位置时的额外偏移量，单位 px
-		 * @default 0
-		 */
-		offset ?: number,
-		/**
-		 * @description 滚动时是否使用动画
-		 * @default true
-		 */
-		scrollWithAnimation ?: boolean,
-		/**
-		 * @description 目标列表是否使用页面滚动（而非独立的 list-view 滚动容器）。
-		 * 页面滚动时可使用 CSS position: sticky 实现原生分段吸顶（小程序 WebView / H5）。
-		 * @default false
-		 */
-		pageScroll ?: boolean
+		currentIndex ?: number
 	}
 
-	const props = withDefaults(defineProps<Props>(), {
-		offset: 0,
-		scrollWithAnimation: false,
-		pageScroll: false
-	})
+	const props = defineProps<Props>()
 
 	const emit = defineEmits<{
 		/**
-		 * @description 点击导航项时触发
+		 * @description 点击导航项时触发，页面据此滚动目标列表
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
+		 *   },
+		 *   "web": {"unixVer": "5.07"}
+		 * }
 		 */
 		select : [index : number, item : string],
 		/**
-		 * @description 高亮导航项发生变化时触发
+		 * @description 高亮索引更新事件，用于 v-model:current-index
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
+		 *   },
+		 *   "web": {"unixVer": "5.07"}
+		 * }
 		 */
-		change : [index : number, item : string]
+		'update:currentIndex' : [index : number]
 	}>()
 
 	defineSlots<{
@@ -63,189 +109,31 @@
 		name: 'uni-sidebar'
 	})
 
-	// 微信小程序端 ScrollViewContext（通过 createSelectorQuery().node() 获取）
-	type ScrollIntoViewOptions = {
-		offset? : number,
-		withinExtent? : boolean,
-		alignment? : string,
-		animated? : boolean
-	}
+	// 非受控模式下由组件内部维护的高亮索引
+	const internalIndex = ref(0)
 
-	type ScrollViewContext = {
-		scrollIntoView : (selector : string, options? : ScrollIntoViewOptions | null) => void
-	}
+	const isControlled = computed(() : boolean => props.currentIndex != null)
 
-	const currentIndex = ref(0)
-
-	const itemSelector = (index : number) : string => {
-		return props.targetId + '-item-' + index
-	}
-
-	// 滚动目标列表到指定条目
-	const scrollToIndex = (index : number) => {
-		if (index < 0 || index >= props.list.length) {
-			return
+	const displayIndex = computed(() : number => {
+		const controlled = props.currentIndex
+		if (controlled != null) {
+			return controlled
 		}
-		// 页面滚动：把页面滚动到目标条目的绝对位置
-		if (props.pageScroll) {
-			uni.createSelectorQuery().select('#' + itemSelector(index)).boundingClientRect().exec((res) => {
-				const rect = res.length > 0 ? res[0] as NodeInfo : null
-				if (rect == null || rect.top == null) {
-					return
-				}
-				const sectionTop = rect.top as number
-				uni.createSelectorQuery().selectViewport().scrollOffset().exec((vres) => {
-					const viewport = vres.length > 0 ? vres[0] as NodeInfo : null
-					const pageTop = viewport != null && viewport.scrollTop != null ? viewport.scrollTop : 0
-					uni.pageScrollTo({
-						scrollTop: pageTop + sectionTop - props.offset,
-						duration: props.scrollWithAnimation ? 300 : 0
-					})
-				})
-			})
-			return
-		}
-		// 独立滚动容器：获取目标列表的 ScrollViewContext 并滚动
-		uni.createSelectorQuery().select('#' + props.targetId).node((res) => {
-			const node = res.node as ScrollViewContext | null
-			if (node == null) {
-				return
-			}
-			const options : ScrollIntoViewOptions = { animated: props.scrollWithAnimation }
-			if (props.offset != 0) {
-				options.offset = props.offset
-			}
-			node.scrollIntoView('#' + itemSelector(index), options)
-		}).exec()
-	}
+		return internalIndex.value
+	})
 
 	const onItemClick = (index : number) => {
-		currentIndex.value = index
+		if (!isControlled.value) {
+			internalIndex.value = index
+		}
+		emit('update:currentIndex', index)
 		emit('select', index, props.list[index])
-		scrollToIndex(index)
 	}
-
-	// #region 目标列表滚动时高亮对应导航项
-	const emitChange = (index : number) => {
-		if (index != currentIndex.value) {
-			currentIndex.value = index
-			emit('change', index, props.list[index])
-		}
-	}
-
-	// 微信小程序端 / Web 端 / App-Android 端：一个 IntersectionObserver 实例仅能 observe 一次，
-	// 故每个条目使用独立实例。
-	// - 页面滚动场景：以视口顶部 1px 作为参照带
-	// - 独立 list-view 场景：以目标列表顶部 1px 作为参照带
-	// #ifdef MP || WEB || APP-ANDROID
-	let observers : IntersectionObserver[] = []
-
-	const getObserverScope = () : any => {
-		// #ifdef APP-ANDROID
-		// App 端 component 参数不能为 null（会抛 NullPointerException）。传入空数组时不做组件作用域限制，
-		// 观察器内部会退化为页面作用域（在页面内查找观察目标与参照容器）。
-		return [] as UniElement[]
-		// #endif
-		// #ifndef APP-ANDROID
-		// 目标条目位于页面中，传 null 使用页面作用域
-		return null
-		// #endif
-	}
-
-	const createObservers = (targetHeight : number) => {
-		if (observers.length > 0) {
-			return
-		}
-		let bandBottom = 0
-		if (props.pageScroll) {
-			// 页面滚动：参照带取视口顶部 1px（吸顶标题固定在视口顶部）
-			const windowHeight = uni.getWindowInfo().windowHeight
-			bandBottom = windowHeight > 1 ? 1 - windowHeight : 0
-		} else {
-			// 未能测量到目标列表高度时，仅保留点击高亮，不启用滚动高亮
-			if (targetHeight <= 1) {
-				return
-			}
-			bandBottom = 1 - targetHeight
-		}
-		const count = props.list.length
-		// 在顶部构造一条 1px 高的参照带：条目顶部越过顶部时会与参照带相交，
-		// 相交即代表该条目当前位于顶部（即吸顶的分段），从而准确高亮
-		for (let i = 0; i < count; i++) {
-			const index = i
-			const obs = uni.createIntersectionObserver(getObserverScope(), { thresholds: [0] })
-			if (props.pageScroll) {
-				obs.relativeToViewport({ top: 0, bottom: bandBottom })
-			} else {
-				obs.relativeTo('#' + props.targetId, { top: 0, bottom: bandBottom })
-			}
-			obs.observe('#' + itemSelector(index), (res : ObserveResult) => {
-				// #ifdef WEB || APP-ANDROID
-				// thresholds 为 [0] 时，回调只在相交比例 0↔非 0 跨越时触发。此刻条目正好开始/结束
-				// 覆盖顶部参照带：仍在相交即表示该条目位于顶部，直接高亮即可。
-				if (res.intersectionRatio > 0) {
-					emitChange(index)
-				}
-				// #endif
-				// #ifdef MP
-				// 至少与参照带重叠半个像素才认为是“位于顶部”，过滤掉相邻分段交界处的极小相交比例
-				const itemHeight = res.boundingClientRect.bottom - res.boundingClientRect.top
-				if (itemHeight > 0 && res.intersectionRatio * itemHeight >= 0.5) {
-					emitChange(index)
-				}
-				// #endif
-			})
-			observers.push(obs)
-		}
-	}
-
-	const setupObserver = () => {
-		if (observers.length > 0) {
-			return
-		}
-		if (props.pageScroll) {
-			createObservers(0)
-			return
-		}
-		// 先测量目标列表可视区高度，用于构造顶部参照带
-		uni.createSelectorQuery().select('#' + props.targetId).boundingClientRect().exec((res) => {
-			const rect = res.length > 0 ? res[0] as NodeInfo : null
-			const height = rect != null && rect.height != null ? rect.height : 0
-			createObservers(height)
-		})
-	}
-
-	onMounted(() => {
-		nextTick(() => {
-			setupObserver()
-		})
-	})
-
-	onUnmounted(() => {
-		observers.forEach((obs : IntersectionObserver) => {
-			obs.disconnect()
-		})
-		observers = []
-	})
-	// #endif
-	// #endregion
-
-	defineExpose({
-		currentIndex,
-		scrollToIndex
-	})
 </script>
 
 <style>
 	.uni-sidebar {
 		width: 90px;
 		flex-shrink: 0;
-		background-color: var(--background-color, #f7f7f7);
-	}
-
-	.uni-sidebar__item {
-		border-bottom-width: 1px;
-		border-bottom-style: solid;
-		border-bottom-color: var(--border-color, #eeeeee);
 	}
 </style>

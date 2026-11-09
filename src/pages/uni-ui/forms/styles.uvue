@@ -1,5 +1,5 @@
 <template>
-	<scroll-view class="page" :class="{ 'page-dark': isDarkMode }">
+	<view>
 		<view class="intro">
 			<text class="page-title">样式与属性示例</text>
 			<text class="page-desc">示例按移动端排列：标签在左，输入在右。label-width、label-align 和 border 调整这一行；标签、星号、错误文字用样式类覆盖。</text>
@@ -74,28 +74,10 @@
 			<text class="status-text">{{ statusText }}</text>
 			<text class="class-list">本例使用 label-class、required-class、error-message-class。上一例另外使用 content-class。</text>
 		</view>
-	</scroll-view>
+	</view>
 </template>
 
 <script setup lang="ts">
-import { state } from '@/store/index.ts'
-
-const isDarkMode = computed((): boolean => state.isDarkMode)
-
-/** 暗黑模式下同步导航栏颜色，与图标示例页保持一致 */
-function syncNavigationBar(): void {
-	// #ifdef APP || WEB
-	const dark = isDarkMode.value
-	uni.setNavigationBarColor({
-		frontColor: dark ? '#ffffff' : '#000000',
-		backgroundColor: dark ? '#1a1a1a' : '#efeff4'
-	})
-	// #endif
-}
-
-watch(isDarkMode, syncNavigationBar, { immediate: true })
-onShow(syncNavigationBar)
-
 const leftForm = ref({
 	title: '',
 	description: ''
@@ -131,8 +113,7 @@ function clearTopForm() {
 </script>
 
 <style>
-.page {
-	flex: 1;
+page {
 	--list-background-color: #ffffff;
 	--background-color: #f5f5f5;
 	--active-color: #a0a0a0;
@@ -151,26 +132,8 @@ function clearTopForm() {
 	background-color: var(--background-color);
 }
 
-.page-dark {
-	--list-background-color: #2d2d2d;
-	--background-color: #1a1a1a;
-	--active-color: #8f8f8f;
-	--active-background-color: #3b3b3b;
-	--text-color: #ffffff;
-	--arrow-color: #ffffff;
-	--content-background-color: #2d2d2d;
-	--secondary-text-color: rgba(255, 255, 255, 0.65);
-	--input-border-color: rgba(255, 255, 255, 0.18);
-	--divider-color: rgba(255, 255, 255, 0.12);
-	--forms-error-background-color: #3a1a1c;
-	--left-surface-background: #1c2838;
-	--left-label-color: #d3e0f0;
-	--theme-surface-background: #32281e;
-	--theme-label-color: #f0d0a6;
-}
-
 @media (prefers-color-scheme: dark) {
-	.page {
+	page {
 		--list-background-color: #2d2d2d;
 		--background-color: #1a1a1a;
 		--active-color: #8f8f8f;

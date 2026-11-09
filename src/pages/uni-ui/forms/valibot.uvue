@@ -1,5 +1,5 @@
 <template>
-	<scroll-view class="page" :class="{ 'page-dark': isDarkMode }">
+	<view>
 		<view class="intro">
 			<text class="page-title">Valibot Standard Schema</text>
 			<text class="page-desc">本页默认引用页面同级的本地 Valibot 1.5.0 运行时创建 schema，再通过 uni-forms 的 schema 属性接入；业务项目可以改用 npm 安装。legacy validate.js 示例仍在“完整校验”页面。</text>
@@ -136,29 +136,11 @@ npm install valibot
 import * as v from 'valibot'</text>
 			<text class="data-text">最近一次 validate 结果：{{ resultText }}</text>
 		</view>
-	</scroll-view>
+	</view>
 </template>
 
 <script setup lang="ts">
-import { state } from '@/store/index.ts'
 import * as v from './valibot-local.mjs'
-
-const isDarkMode = computed((): boolean => state.isDarkMode)
-
-/** 暗黑模式下同步导航栏颜色，与图标示例页保持一致 */
-function syncNavigationBar(): void {
-	// #ifdef APP || WEB
-	const dark = isDarkMode.value
-	uni.setNavigationBarColor({
-		frontColor: dark ? '#ffffff' : '#000000',
-		backgroundColor: dark ? '#1a1a1a' : '#efeff4'
-	})
-	// #endif
-}
-
-watch(isDarkMode, syncNavigationBar, { immediate: true })
-onShow(syncNavigationBar)
-
 
 type ContactKind = 'email' | 'phone'
 type Role = 'admin' | 'editor' | 'viewer'
@@ -390,8 +372,7 @@ defineExpose({ formData, validateForm, validateAsyncForm, runSafeParse })
 </script>
 
 <style>
-.page {
-	flex: 1;
+page {
 	--list-background-color: #ffffff;
 	--background-color: #f5f5f5;
 	--active-color: #a0a0a0;
@@ -406,22 +387,6 @@ defineExpose({ formData, validateForm, validateAsyncForm, runSafeParse })
 	--divider-color: #e5e5e5;
 	--forms-error-background-color: #fff2f0;
 	background-color: var(--background-color);
-}
-
-.page-dark {
-	--list-background-color: #2d2d2d;
-	--background-color: #1a1a1a;
-	--active-color: #8f8f8f;
-	--active-background-color: #3b3b3b;
-	--text-color: #ffffff;
-	--arrow-color: #ffffff;
-	--tips-color: #91caff;
-	--tips-background-color: #0b1b3a;
-	--content-background-color: #2d2d2d;
-	--secondary-text-color: rgba(255, 255, 255, 0.65);
-	--input-border-color: rgba(255, 255, 255, 0.18);
-	--divider-color: rgba(255, 255, 255, 0.12);
-	--forms-error-background-color: #3a1a1c;
 }
 
 .intro,
@@ -480,6 +445,7 @@ defineExpose({ formData, validateForm, validateAsyncForm, runSafeParse })
 	font-size: 14px;
 	color: var(--text-color, #333333);
 	box-sizing: border-box;
+	background-color: var(--list-background-color, #ffffff);
 }
 
 .native-input {
@@ -564,7 +530,7 @@ defineExpose({ formData, validateForm, validateAsyncForm, runSafeParse })
 }
 
 @media (prefers-color-scheme: dark) {
-	.page {
+	page {
 		--list-background-color: #2d2d2d;
 		--background-color: #1a1a1a;
 		--active-color: #8f8f8f;

@@ -1,5 +1,5 @@
 <template>
-	<scroll-view class="page" :class="{ 'page-dark': isDarkMode }">
+	<view>
 		<view class="intro">
 			<text class="page-title">完整校验示例</text>
 			<text class="page-desc">覆盖常用 DB Schema 规则、字段级方法、异步校验和回调式 API。提交时会校验整张表，失焦时只校验配置了 blur 的字段。</text>
@@ -54,11 +54,9 @@
 					</view>
 				</uni-forms-item>
 
-				<!-- #ifndef (APP-IOS || APP-HARMONY) && !VUE3-VAPOR -->
 				<uni-forms-item name="role" label="角色枚举" required label-class="demo-label" error-message-class="demo-error">
 					<uni-combobox v-model="formData.role" :options="roleOptions" placeholder="请选择角色" />
 				</uni-forms-item>
-				<!-- #endif -->
 
 				<uni-forms-item name="tags" label="标签数组" required label-class="demo-label" error-message-class="demo-error">
 					<view class="tag-list">
@@ -93,28 +91,10 @@
 			<text class="data-text">{{ dataText }}</text>
 			<text class="hint-text">异步邀请码示例值：UNI-FORM；年龄必须是 18 到 120 的整数。</text>
 		</view>
-	</scroll-view>
+	</view>
 </template>
 
 <script setup lang="ts">
-import { state } from '@/store/index.ts'
-
-const isDarkMode = computed((): boolean => state.isDarkMode)
-
-/** 暗黑模式下同步导航栏颜色，与图标示例页保持一致 */
-function syncNavigationBar(): void {
-	// #ifdef APP || WEB
-	const dark = isDarkMode.value
-	uni.setNavigationBarColor({
-		frontColor: dark ? '#ffffff' : '#000000',
-		backgroundColor: dark ? '#1a1a1a' : '#efeff4'
-	})
-	// #endif
-}
-
-watch(isDarkMode, syncNavigationBar, { immediate: true })
-onShow(syncNavigationBar)
-
 type FormData = {
 	username : string,
 	email : string,
@@ -295,8 +275,7 @@ function onValidate(result : any) {
 </script>
 
 <style>
-.page {
-	flex: 1;
+page {
 	--list-background-color: #ffffff;
 	--background-color: #f5f5f5;
 	--active-color: #a0a0a0;
@@ -310,21 +289,6 @@ function onValidate(result : any) {
 	--divider-color: #e5e5e5;
 	--forms-error-background-color: #fff2f0;
 	background-color: var(--background-color);
-}
-
-.page-dark {
-	--list-background-color: #2d2d2d;
-	--background-color: #1a1a1a;
-	--active-color: #8f8f8f;
-	--active-background-color: #3b3b3b;
-	--text-color: #ffffff;
-	--arrow-color: #ffffff;
-	--tips-background-color: #0b1b3a;
-	--content-background-color: #2d2d2d;
-	--secondary-text-color: rgba(255, 255, 255, 0.65);
-	--input-border-color: rgba(255, 255, 255, 0.18);
-	--divider-color: rgba(255, 255, 255, 0.12);
-	--forms-error-background-color: #3a1a1c;
 }
 
 .intro,
@@ -389,6 +353,7 @@ function onValidate(result : any) {
 	line-height: 34px;
 	color: var(--text-color, #333333);
 	box-sizing: border-box;
+	background-color: transparent;
 }
 
 .tag-list {
@@ -458,7 +423,7 @@ function onValidate(result : any) {
 }
 
 @media (prefers-color-scheme: dark) {
-	.page {
+	page {
 		--list-background-color: #2d2d2d;
 		--background-color: #1a1a1a;
 		--active-color: #8f8f8f;

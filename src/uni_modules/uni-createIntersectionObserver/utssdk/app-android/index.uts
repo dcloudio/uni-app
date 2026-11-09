@@ -97,11 +97,7 @@ class ServiceIntersectionObserver implements IntersectionObserver {
         this._observeAll = (options?.observeAll ?? false) as boolean
     }
 
-    relativeTo(selector: string | null, margins?: any): IntersectionObserver {
-        // 兼容桥接层传入 null：selector 非法时忽略本次配置，避免进入原生层抛非空强转异常。
-        if (selector == null) {
-            return this
-        }
+    relativeTo(selector: string, margins?: any): IntersectionObserver {
         this._relativeToSelector = selector
         this._margins = margins ?? null
         return this
@@ -115,14 +111,10 @@ class ServiceIntersectionObserver implements IntersectionObserver {
 
     /**
      * 长期回调：observe 注册后要持续触发，必须让桥接层保住这次回调（否则只会回调一次）。
-     * selector / callback 均做判空容错，避免桥接层传入 null 时进入原生层抛非空强转异常。
      */
-    observe(targetSelector: string | null, callback: ObserveCallback | null): void {
-        if (targetSelector == null || callback == null) {
-            return
-        }
+    observe(targetSelector: string, callback: ObserveCallback): void {
         const observer = this.resolveObserver()
-        observer.observe(targetSelector!, (result: UniIntersectionObserveResult) => {
+        observer.observe(targetSelector, (result: UniIntersectionObserveResult) => {
             const observeResult: ObserveResult = {
                 id: result.id as string,
                 intersectionRatio: result.intersectionRatio as number,
@@ -131,7 +123,7 @@ class ServiceIntersectionObserver implements IntersectionObserver {
                 relativeRect: toObserveNodeRect(result.relativeRect),
                 time: result.time as number,
             }
-            callback!(observeResult)
+            callback(observeResult)
         })
     }
 

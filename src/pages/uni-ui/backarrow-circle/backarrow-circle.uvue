@@ -4,7 +4,7 @@
 		<view class="navigation-bar" :class="{ 'navigation-bar--scrolled': scrolled }">
 			<!-- 支付宝小程序导航栏左上角返回按钮始终存在，无法隐藏，会导致重叠 -->
 			<!-- #ifndef MP-ALIPAY -->
-			<uni-backarrow-circle id="default-back" class="navigation-back" auto-back @click="onBackClick" />
+			<uni-backarrow-circle id="default-back" class="navigation-back" :class="{ 'navigation-back--scrolled': scrolled }" ios-glass auto-back @click="onBackClick" />
 			<!-- #endif -->
 			<text class="navigation-title" :class="{ 'navigation-title--show': scrolled }" :style="{ marginRight: titleRightSpace + 'px' }">uni-backarrow-circle</text>
 		</view>
@@ -173,7 +173,7 @@
 		align-items: center;
 		background-color: transparent;
 		z-index: 10;
-		height: calc(var(--status-bar-height, 0px) + 44px);
+		height: calc(var(--status-bar-height, 0px) + 48px);
 		/* #ifdef MP */
 		padding-top: var(--status-bar-height, 0px);
 		/* #endif */
@@ -185,8 +185,12 @@
 	/* 返回按钮在悬浮行内垂直居中，安全区已由导航行内边距处理。 */
 	.navigation-back {
 		margin-top: 0;
-		margin-left: 6px;
 		flex-shrink: 0;
+		--uni-backarrow-circle-color: #ffffff;
+	}
+
+	.navigation-back--scrolled {
+		--uni-backarrow-circle-color: #1a1a1a;
 	}
 
 	.navigation-title {

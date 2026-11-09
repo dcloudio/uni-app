@@ -73,6 +73,69 @@
 </template>
 
 <script setup lang="ts">
+	/**
+	 * Easyinput 增强输入框
+	 * @description 包装原生 input 和 textarea，提供清空、密码显隐、左右插槽和内部样式定制
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.21"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.11"
+	 *     },
+	 *     "harmony": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.07"
+	 *     }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07"
+	 *     },
+	 *     "alipay": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     }
+	 *   },
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "5.07"
+	 *   }
+	 * }
+	 * @property {String|Number} modelValue 输入内容，支持 v-model；同时传入 value 时优先使用 modelValue，默认值为空字符串
+	 * @property {String|Number} value 不使用 v-model 时传入的输入内容；同时传入 modelValue 时不生效，默认值为空字符串
+	 * @property {String} name 原生表单控件名称，默认值为空字符串
+	 * @property {String} type 输入类型；textarea 渲染多行输入框，password 渲染密码输入框，其余值透传给原生 input，默认值 text
+	 * @property {String} placeholder 占位文字，默认值为空字符串
+	 * @property {Boolean} disabled 是否禁用，默认值 false
+	 * @property {Number} maxlength 最大输入长度，默认值 -1
+	 * @property {Boolean} focus 是否聚焦，默认值 false
+	 * @property {String} confirmType 键盘右下角按钮类型；单行输入默认 done，多行输入默认 return
+	 * @property {Number} cursorSpacing 光标与键盘的距离，单位 px，默认值 0
+	 * @property {Boolean} adjustPosition 键盘弹起时是否自动上推页面，默认值 false
+	 * @property {Boolean} autoHeight 多行输入框是否自动增高，仅 type 为 textarea 时生效，默认值 false
+	 * @property {Boolean} clearable 是否显示清空图标，仅对单行输入框生效，默认值 false
+	 * @property {Boolean} passwordIcon 是否显示密码显隐图标，仅 type 为 password 时生效，默认值 false
+	 * @property {String} inputClass input 或 textarea 的自定义样式类，默认值为空字符串
+	 * @property {String} placeholderClass 占位文字的自定义样式类，默认值为空字符串
+	 * @property {String} iconClass 清空和密码显隐图标的自定义样式类，默认值为空字符串
+	 * @event {Function} update:modelValue 输入内容更新时触发，参数为当前字符串值
+	 * @event {Function} input 输入时触发，参数为当前字符串值
+	 * @event {Function} focus 聚焦时触发，参数为原生聚焦事件
+	 * @event {Function} blur 失焦时触发，参数为原生失焦事件
+	 * @event {Function} confirm 点击键盘完成按钮时触发，参数为当前字符串值
+	 * @event {Function} change 失焦或点击键盘完成按钮时触发，同一次聚焦期间相同值只触发一次
+	 * @event {Function} clear 点击清空图标时触发
+	 * @event {Function} eyes 密码可见状态变化时触发，参数为是否可见
+	 * @event {Function} keyboardheightchange 键盘高度变化时触发，参数为原生键盘高度事件
+	 */
 	import { UniEasyinputProps } from './types.uts'
 
 	defineOptions({
@@ -87,27 +150,27 @@
 
 	const emit = defineEmits<{
 		/**
-		 * @description 输入值更新时触发，用于 v-model
+		 * @description 输入内容更新时触发，用于 v-model，参数为当前字符串值
 		 */
 		'update:modelValue': [value : string],
 		/**
-		 * @description 输入时触发
+		 * @description 输入时触发，参数为当前字符串值
 		 */
 		input: [value : string],
 		/**
-		 * @description 聚焦时触发
+		 * @description 聚焦时触发，参数为原生 input 或 textarea 聚焦事件
 		 */
 		focus: [event : UniInputFocusEvent | UniTextareaFocusEvent],
 		/**
-		 * @description 失焦时触发
+		 * @description 失焦时触发，参数为原生 input 或 textarea 失焦事件
 		 */
 		blur: [event : UniInputBlurEvent | UniTextareaBlurEvent],
 		/**
-		 * @description 点击键盘完成按钮时触发
+		 * @description 点击键盘完成按钮时触发，参数为当前字符串值
 		 */
 		confirm: [value : string],
 		/**
-		 * @description 失焦或点击完成按钮且内容变化时触发
+		 * @description 失焦或点击键盘完成按钮时触发，同一次聚焦期间相同值只触发一次，参数为当前字符串值
 		 */
 		change: [value : string],
 		/**
@@ -115,7 +178,7 @@
 		 */
 		clear: [],
 		/**
-		 * @description 切换密码显隐时触发
+		 * @description 密码可见状态变化时触发；点击图标或可见密码因状态变化恢复隐藏时都会触发
 		 */
 		eyes: [visible : boolean],
 		/**
@@ -125,7 +188,13 @@
 	}>()
 
 	defineSlots<{
+		/**
+		 * @description 输入区域左侧内容
+		 */
 		left(props : {}) : any,
+		/**
+		 * @description 输入区域右侧内容
+		 */
 		right(props : {}) : any
 	}>()
 
@@ -259,6 +328,9 @@
 		}
 	})
 
+	/**
+	 * @description 使内部输入框聚焦；禁用状态下不生效
+	 */
 	function focusInput() {
 		if (props.disabled == true) {
 			return
@@ -269,12 +341,21 @@
 		})
 	}
 
+	/**
+	 * @description 使内部输入框失焦
+	 */
 	function blurInput() {
 		inputFocus.value = false
 	}
 
 	defineExpose({
+		/**
+		 * @description 使内部输入框聚焦；禁用状态下不生效
+		 */
 		focusInput,
+		/**
+		 * @description 使内部输入框失焦
+		 */
 		blurInput
 	})
 </script>

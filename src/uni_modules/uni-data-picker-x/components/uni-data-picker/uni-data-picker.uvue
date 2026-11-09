@@ -32,7 +32,7 @@
         </slot>
       </view>
     </view>
-    <view ref="coverRef" class="uni-data-tree-cover" :class="[coverClass, active ? 'uni-data-tree-cover-active' : '']" v-if="isOpened" @click="handleClose"></view>
+    <view ref="coverRef" class="uni-data-tree-cover" :class="[maskClassValue, active ? 'uni-data-tree-cover-active' : '']" v-if="isOpened" @click="handleClose"></view>
     <view class="uni-data-tree-dialog"
       :class="[popupClass, active ? 'uni-data-tree-dialog-active' : '', dragTransitionOff ? 'uni-data-tree-dialog-drag' : '']"
       :style="dialogStyle" v-if="isOpened">
@@ -90,7 +90,8 @@
    * @tutorial https://ext.dcloud.net.cn/plugin?id=uni-data-picker-x
    * @property {String} popup-title 弹出窗口标题
    * @property {String} popup-class 弹出窗口自定义样式类名
-   * @property {String} cover-class 遮罩层自定义样式类名
+   * @property {String} mask-class 遮罩层自定义样式类名
+   * @property {String} cover-class 遮罩层自定义样式类名（已废弃，请使用 mask-class）
    * @property {Array} localdata 本地数据，参考
    * @property {Boolean} readonly = [true|false] 是否仅读
    * @property {Boolean} preload = [true|false] 是否预加载数据
@@ -144,16 +145,25 @@
       type: String,
       default: ''
     },
+    maskClass: {
+      type: String,
+      default: ''
+    },
+    // 已废弃，请使用 mask-class，保留以兼容旧用法
     coverClass: {
       type: String,
       default: ''
     }
   })
   defineOptions({
-    externalClasses: ['input-class', 'error-class', 'popup-class', 'cover-class']
+    externalClasses: ['input-class', 'error-class', 'popup-class', 'mask-class', 'cover-class']
   })
 
   const dataPicker = useDataPicker(props)
+
+  const maskClassValue = computed(() : string => {
+    return props.maskClass || props.coverClass
+  })
 
   const emit = defineEmits(['popupopened', 'popupclosed', 'nodeclick', 'change', 'input', 'update:modelValue', 'inputclick'])
 

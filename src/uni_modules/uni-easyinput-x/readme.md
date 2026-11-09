@@ -89,74 +89,62 @@ VDOM 模式需要在 `manifest.json` 中启用样式隔离策略 2.0。定义在
 
 组件默认不设置 placeholder 的颜色和字号，保留原生 `input` / `textarea` 的表现；需要定制时使用 `placeholder-class`。
 
-输入校验和错误信息由 `uni-forms-item` 负责，`uni-easyinput` 不提供错误态属性。
+## 配合 uni-forms 使用
 
-## Props
+输入校验和错误信息由 `uni-forms-item` 负责，`uni-easyinput` 不提供错误态属性。表单项的 `name` 需要与绑定数据及校验规则的字段名一致：
 
-| 属性名 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| modelValue | String / Number | - | 输入内容，支持 `v-model` |
-| value | String / Number | - | 不使用 `v-model` 时传入的内容 |
-| name | String | `''` | 原生表单控件名称 |
-| type | String | `text` | 输入类型；`textarea`、`password` 为组件扩展类型 |
-| placeholder | String | `''` | 占位文字 |
-| disabled | Boolean | `false` | 是否禁用 |
-| maxlength | Number | `-1` | 最大输入长度，`-1` 表示不限制 |
-| focus | Boolean | `false` | 是否聚焦 |
-| confirmType | String | `''` | 键盘右下角按钮类型 |
-| cursorSpacing | Number | `0` | 光标与键盘的距离 |
-| adjustPosition | Boolean | `false` | 键盘弹起时是否自动上推页面 |
-| autoHeight | Boolean | `false` | `type="textarea"` 时是否自动增高 |
-| clearable | Boolean | `false` | 是否显示清空图标 |
-| passwordIcon | Boolean | `false` | `type="password"` 时是否显示显隐图标 |
-| inputClass | String | `''` | input / textarea 的样式类 |
-| placeholderClass | String | `''` | 占位文字的样式类 |
-| iconClass | String | `''` | 清空和密码显隐图标的样式类 |
+```vue
+<uni-forms v-model="formData" :rules="rules">
+	<uni-forms-item name="account" label="账号" required>
+		<uni-easyinput
+			v-model="formData.account"
+			clearable
+			placeholder="请输入账号"
+		/>
+	</uni-forms-item>
+</uni-forms>
+```
 
-## External Classes
+## 值同步与交互
 
-| 属性名 | 说明 |
-| --- | --- |
-| input-class | input 和 textarea 样式 |
-| placeholder-class | 占位文字样式 |
-| icon-class | 清空和密码显隐图标样式 |
+推荐使用 `v-model` 双向绑定输入内容。`value` 只用于不使用 `v-model` 的兼容场景；同时传入两者时，以 `modelValue` 为准，包括 `modelValue` 为 `null` 的情况。数字和 `null` 会分别显示为对应字符串和空字符串，组件更新时始终回传字符串。
 
-## Events
+`input` 在输入内容更新时触发。`change` 在失焦或点击键盘完成按钮时触发，同一次聚焦期间相同值只触发一次。点击清空图标会同步更新绑定值并触发 `input` 和 `clear`，随后失焦不会再为同一个空值重复触发 `change`。
 
-| 事件名 | 回调参数 | 说明 |
-| --- | --- | --- |
-| update:modelValue | `value: string` | 输入内容更新 |
-| input | `value: string` | 输入时触发 |
-| focus | 原生 focus 事件 | 聚焦时触发 |
-| blur | 原生 blur 事件 | 失焦时触发 |
-| confirm | `value: string` | 点击键盘完成按钮时触发 |
-| change | `value: string` | 失焦或点击完成按钮且内容变化时触发 |
-| clear | - | 点击清空图标时触发 |
-| eyes | `visible: boolean` | 切换密码显隐时触发 |
-| keyboardheightchange | 原生键盘高度事件 | 键盘高度变化时触发 |
+禁用状态下不能输入，也不会执行清空和密码显隐操作。密码内容清空、组件禁用、切换到非密码类型或关闭 `password-icon` 时，组件会恢复密码隐藏状态；如果此前为显示状态，同时触发 `eyes(false)`。
 
-同时传入 `modelValue` 和 `value` 时，以 `modelValue` 为准（包括 `modelValue` 为 `null`）。禁用状态下不会触发清空、密码显隐操作。密码内容清空、组件禁用、切换到非密码类型或关闭 `password-icon` 时，会恢复隐藏状态；如果此前为显示状态，同时触发 `eyes(false)`。
+## 程序控制焦点
 
-## Slots
+需要从业务逻辑中控制焦点时，通过组件引用调用公开方法：
 
-| 名称 | 说明 |
-| --- | --- |
-| left | 输入区域左侧内容 |
-| right | 输入区域右侧内容 |
+```vue
+<template>
+	<uni-easyinput ref="easyinputRef" v-model="value" />
+	<button @click="focusInput">聚焦输入框</button>
+	<button @click="blurInput">取消聚焦</button>
+</template>
 
-## Expose
+<script setup lang="uts">
+const easyinputRef = ref<any>(null)
 
-| 方法名 | 说明 |
-| --- | --- |
-| focusInput() | 使内部输入框聚焦 |
-| blurInput() | 使内部输入框失焦 |
+function focusInput() {
+	easyinputRef.value?.focusInput()
+}
+
+function blurInput() {
+	easyinputRef.value?.blurInput()
+}
+</script>
+```
+
+组件禁用时，调用 `focusInput()` 不生效。
 
 ## 在二次封装中复用属性类型
 
 组件的 Props 类型已导出，可直接与自定义属性做类型合并，便于二次封装时保留代码提示：
 
 ```ts
-import { UniEasyinputProps } from '@/uni_modules/uni-easyinput/components/uni-easyinput/types.uts'
+import { UniEasyinputProps } from '@/uni_modules/uni-easyinput-x/components/uni-easyinput/types.uts'
 
 export type MyInputProps = UniEasyinputProps & {
 	label? : string

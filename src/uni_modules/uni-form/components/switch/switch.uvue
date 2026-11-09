@@ -356,6 +356,28 @@
     transition-property: background-color;
   }
 
+  /* #ifdef WEB */
+  @media (hover: hover) {
+    .uni-switch.transition-enabled {
+      transition-property: background-color, box-shadow;
+    }
+
+    :where(.uni-switch:not(.uni-switch-disabled):hover) {
+      box-shadow: inset 0 0 0 32px rgba(0, 0, 0, 0.08);
+    }
+
+    :where(.uni-switch.uni-switch-active:not(.uni-switch-disabled):hover) {
+      box-shadow: inset 0 0 0 32px rgba(255, 255, 255, 0.2);
+    }
+  }
+
+  @media (hover: hover) and (prefers-color-scheme: dark) {
+    :where(.uni-switch:not(.uni-switch-active):not(.uni-switch-disabled):hover) {
+      box-shadow: inset 0 0 0 32px rgba(255, 255, 255, 0.12);
+    }
+  }
+  /* #endif */
+
   .uni-switch-disabled {
     opacity: 0.7;
   }

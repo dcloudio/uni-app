@@ -52,17 +52,20 @@ class UniCanvasContext implements CanvasContext {
 
 export const createCanvasContextAsync : CreateCanvasContextAsync =
   function (options : CreateCanvasContextAsyncOptions) {
-    // TODO
+    // TODO 2层next为了解决在script下时机问题
     nextTick(() => {
-      let element: ESObject = uni.getElementById(options.id)
-      if (element) {
-        const canvasElement = element as unknown as UniCanvasElement
-        options.success?.(new UniCanvasContext(canvasElement))
-      } else {
-        const uniError = new UniError('uni-createCanvasContextAsync', -1, 'canvas id invalid.')
-        options.fail?.(uniError)
-      }
-      options.complete?.()
+      nextTick(() => {
+        // TODO 后续还需处理作用域问题
+        let element: ESObject = uni.getElementById(options.id)
+        if (element) {
+          const canvasElement = element as unknown as UniCanvasElement
+          options.success?.(new UniCanvasContext(canvasElement))
+        } else {
+          const uniError = new UniError('uni-createCanvasContextAsync', -1, 'canvas id invalid.')
+          options.fail?.(uniError)
+        }
+        options.complete?.()
+      })
     })
     // uni.createSelectorQuery().in(options.component).select('#' + options.id).fields({
     //     node: true

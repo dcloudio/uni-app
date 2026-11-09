@@ -1,0 +1,21 @@
+page {
+  padding: 15px;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.context-scroll {
+  height: 160px;
+  margin-top: 10px;
+  border: 1px solid var(--border-color, #cccccc);
+  background-color: var(--tips-background-color, #e6f4ff);
+}
+.context-item {
+  height: 80px;
+  flex-shrink: 0;
+  padding: 10px;
+  border-bottom: 1px solid var(--border-color, #cccccc);
+}
+.context-refresher {
+  height: 160px;
+  width: 100%;
+  background-color: #b7eed6;
+}

@@ -7,6 +7,7 @@
     :class="classes(
       [isChecked, 'uni-checkbox-active'],
       [disabled, 'uni-checkbox-disabled'],
+      [isLabelHovered, 'uni-checkbox-hover'],
       [!disabled && isChecked, checkboxActiveClass],
       [!disabled && !isChecked, checkboxClass],
       [!disabled, iconClass]
@@ -60,6 +61,7 @@
       :class="classes(
         [isChecked, 'uni-checkbox-active'],
         [disabled, 'uni-checkbox-disabled'],
+        [isLabelHovered, 'uni-checkbox-hover'],
         [!disabled && isChecked, checkboxActiveClass],
         [!disabled && !isChecked, checkboxClass],
         [!disabled, iconClass]
@@ -92,7 +94,7 @@
 
 <script lang="ts" setup>
   // #ifdef WEB
-  import { createSpaceKeyHandlers } from '../common.ts'
+  import { createSpaceKeyHandlers, createLabelHoverState } from '../common.ts'
   // #endif
   import { CHECKBOX_GROUP_KEY, FORM_KEY, LABEL_KEY, dispatchLabelClick, registerLabelTarget, classes, toStringOrEmpty } from '../common.ts'
   import { UniCheckboxElement } from './global.ts'
@@ -281,6 +283,8 @@
 
   // #ifdef WEB
   const { handleKeydown, handleKeyup, handleBlur } = createSpaceKeyHandlers(() => props.disabled)
+  const { isLabelHovered, setLabelHovered } = createLabelHoverState()
+  let unregisterLabelChild: (() => void) | null = null
   // #endif
 
   defineOptions({
@@ -356,10 +360,18 @@
             dispatchLabelClick(element, event)
           }
         },
+        // #ifdef WEB
+        setLabelHovered,
+        // #endif
         getDisabled: () => props.disabled
     }
     if (labelCtx != null) {
+      // #ifdef WEB
+      unregisterLabelChild = labelCtx.register(target)
+      // #endif
+      // #ifndef WEB
       labelCtx.register(target)
+      // #endif
     }
     if (id != null && id.length > 0) {
       unregisterLabelTarget = registerLabelTarget(id, target)
@@ -370,9 +382,15 @@
     if (group != null) {
       group.unregister(toStringOrEmpty(props.value))
     }
+    // #ifdef WEB
+    unregisterLabelChild?.()
+    unregisterLabelChild = null
+    // #endif
+    // #ifndef WEB
     if (labelCtx != null) {
       labelCtx.unregister(id || toStringOrEmpty(props.value))
     }
+    // #endif
     unregisterLabelTarget?.()
     unregisterLabelTarget = null
   })
@@ -430,7 +448,9 @@
 
   /* #ifdef WEB */
   @media (hover: hover) {
-    .uni-checkbox-view:not(.uni-checkbox-disabled):not(.uni-checkbox-active):hover {
+    .uni-checkbox-view:not(.uni-checkbox-disabled):not(.uni-checkbox-active):hover,
+    .uni-checkbox:hover > .uni-checkbox-view:not(.uni-checkbox-disabled):not(.uni-checkbox-active),
+    .uni-checkbox-view.uni-checkbox-hover:not(.uni-checkbox-disabled):not(.uni-checkbox-active) {
       border-color: #007aff;
     }
   }

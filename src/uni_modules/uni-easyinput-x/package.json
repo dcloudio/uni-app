@@ -1,19 +1,20 @@
 {
-	"id": "uni-easyinput",
+	"id": "uni-easyinput-x",
 	"displayName": "uni-easyinput 增强输入框",
-	"version": "1.1.0",
+	"version": "1.0.0",
 	"description": "适用于 uni-app x 的增强输入框，支持清空、密码显隐、前后插槽和多行输入。",
 	"keywords": [
-		"uni-ui-x",
-		"uni-app-x",
-		"input",
-		"textarea",
-		"输入框"
-	],
+        "uni-ui-x",
+        "uni-app-x",
+        "input",
+        "textarea",
+        "输入框"
+    ],
 	"repository": "https://github.com/dcloudio/uni-ui-x",
 	"engines": {
 		"HBuilderX": "^5.0",
-		"uni-app-x": "^5.0"
+        "uni-app-x": "^5.0",
+        "uni-app": ""
 	},
 	"dcloudext": {
 		"type": "component-vue",
@@ -25,7 +26,9 @@
 				"price": "0.00"
 			}
 		},
-		"contact": {},
+        "contact": {
+            "qq": ""
+        },
 		"declaration": {
 			"ads": "无",
 			"data": "无",
@@ -33,7 +36,7 @@
 		},
 		"npmurl": "https://www.npmjs.com/package/@dcloudio/uni-ui-x",
 		"darkmode": "√",
-		"i18n": "-",
+		"i18n": "x",
 		"widescreen": "√",
 		"vapor": "√"
 	},
@@ -44,9 +47,9 @@
 		"encrypt": [],
 		"platforms": {
 			"cloud": {
-				"tcb": "-",
-				"aliyun": "-",
-				"alipay": "-"
+				"tcb": "x",
+				"aliyun": "x",
+				"alipay": "x"
 			},
 			"client": {
 				"uni-app": {

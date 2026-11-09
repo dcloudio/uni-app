@@ -31,9 +31,10 @@ App 端使用一个 `flatten` 子 view 绘制箭头并拍平到圆形背景上�
 
 | 属性 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| autoBack | boolean | false | 点击后是否自动调用 `uni.navigateBack({})` 返回上一页 |
+| auto-back | boolean | false | 点击后是否自动调用 `uni.navigateBack({})` 返回上一页 |
+| ios-glass | boolean | false | 仅 iOS：使用 `glass-effect-view` 液态玻璃背景，并启用按下交互效果 |
 
-### autoBack
+### auto-back
 
 默认只触发 `click`，由调用方处理导航、关闭弹层或二次确认。需要组件自动返回上一页时，显式开启：
 
@@ -43,11 +44,19 @@ App 端使用一个 `flatten` 子 view 绘制箭头并拍平到圆形背景上�
 
 请使用 `:auto-back="true"` 传入布尔值。开启自动返回后，组件先触发 `click`，随后调用 `uni.navigateBack({})`，不会等待异步点击处理完成；需要离开确认时，保持默认关闭，在确认后自行调用路由 API。
 
+### ios-glass
+
+在 iOS 上开启玻璃背景及按下交互效果：
+
+```vue
+<uni-backarrow-circle ios-glass auto-back />
+```
+
 ## 事件
 
 | 事件 | 说明 | 回调参数 |
 | --- | --- | --- |
-| click | 点击时触发；当 autoBack 为 `true` 时随后返回上一页 | 无 |
+| click | 点击时触发；当 `auto-back` 为 `true` 时随后返回上一页 | 无 |
 
 ## 自定义样式
 

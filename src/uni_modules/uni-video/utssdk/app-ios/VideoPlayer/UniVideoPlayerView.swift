@@ -11,6 +11,18 @@ import UIKit
 import DCloudUTSFoundation
 import DCloudUniappRuntime
 
+private enum PosterPresentationPhase {
+    case idle
+    case waitingForFrame
+    case video
+}
+
+private struct PosterContent {
+    var url: String = ""
+    var image: UIImage?
+    var loadRevision: UInt64 = 0
+}
+
 // MARK: - UniVideoPlayerView
 @available(iOS 13.0, *)
 public class UniVideoPlayerView: UIView {
@@ -20,11 +32,9 @@ public class UniVideoPlayerView: UIView {
     /// 封面图视图
     private var posterImageView: UIImageView?
 
-    /// 封面图地址
-    private var _poster: String = ""
-
-    /// 业务侧是否显式传入了 poster；显式 poster 优先级高于首帧预览。
-    private var hasExplicitPoster: Bool = false
+    /// Poster 内容与展示阶段分离，异步加载只更新内容，渲染统一由 renderPoster() 决定。
+    private var posterContent = PosterContent()
+    private var posterPhase: PosterPresentationPhase = .idle
 
     /// 播放器管理类实例
     private var playerManager: UniVideoPlayerManager?
@@ -40,6 +50,9 @@ public class UniVideoPlayerView: UIView {
 
     /// playerManager 尚未创建时收到 play 请求，等 manager 完成初始化后补偿执行。
     private var pendingPlayAfterManagerSetup: Bool = false
+
+    /// View 侧 source 版本，旧异步任务不得回退当前 source 的 poster。
+    private var sourceRevision: UInt64 = 0
 
     /// 当前播放速率
     private var _playbackRate: Float = 1.0
@@ -62,11 +75,8 @@ public class UniVideoPlayerView: UIView {
     /// 是否已停止（用于过滤 stop 后的回调）
     private var isStopped: Bool = false
 
-    /// 播放层已经有真实画面后再移除 poster，避免 play 事件先于首帧渲染造成闪黑/跳变。
+    /// 仅记录权威 ready 事件与 play 事件的到达顺序，不参与播放器控制。
     private var isVideoReadyForDisplay: Bool = false
-
-    /// play 已经发生，但播放层尚未 ready 时，先挂起 poster 隐藏动作。
-    private var pendingPosterHideAfterDisplay: Bool = false
 
     /// 当前是否全屏
     private var isFullscreen: Bool = false
@@ -147,33 +157,10 @@ public class UniVideoPlayerView: UIView {
     /// 封面图
     public var poster: String {
         get {
-            return self._poster
+            return posterContent.url
         }
         set {
-            guard !isPlaying else { return }
-            self._poster = newValue
-            self.configuration?.poster = newValue
-            self.hasExplicitPoster = !newValue.isEmpty
-            if let objectFit = configuration?.objectFit {
-                self.posterImageView?.contentMode = objectFit.contentMode
-            }
-
-            if !newValue.isEmpty {
-                let requestedPoster = newValue
-
-                UTSiOS.loadImage(newValue) { [weak self] (image, data) in
-                    DispatchQueue.main.async {
-                        guard let self = self else { return }
-                        guard self.hasExplicitPoster, self._poster == requestedPoster else { return }
-                        if let image = image {
-                            self.showPosterImage(image)
-                        }
-                    }
-                }
-            } else {
-                self.posterImageView?.image = nil
-                self.posterImageView?.isHidden = true
-            }
+            updatePoster(newValue)
         }
     }
 
@@ -259,15 +246,14 @@ public class UniVideoPlayerView: UIView {
 
         applyOptionOverrides()
         let initialPoster = self.configuration?.poster ?? ""
-        self.hasExplicitPoster = !initialPoster.isEmpty
-        if hasExplicitPoster {
-            self.poster = initialPoster
-        } else {
-            self._poster = ""
-            self.posterImageView?.image = nil
-            self.posterImageView?.isHidden = true
-            self.posterImageView?.contentMode = objectFitValue.contentMode
-        }
+        sourceRevision &+= 1
+        posterPhase = .idle
+        isVideoReadyForDisplay = false
+        posterContent.loadRevision &+= 1
+        posterContent.url = ""
+        posterContent.image = nil
+        posterImageView?.contentMode = objectFitValue.contentMode
+        poster = initialPoster
 
         Task { @MainActor in
             self.setupPlayerManager()
@@ -277,7 +263,7 @@ public class UniVideoPlayerView: UIView {
     /// 设置播放器管理类
     @MainActor
     private func setupPlayerManager() {
-        guard let config = self.configuration else { return }
+        guard !isDestroying, let config = self.configuration else { return }
 
         self.playerManager = UniVideoPlayerManager(configuration: config)
         self.playerManager?.delegate = self
@@ -297,13 +283,17 @@ public class UniVideoPlayerView: UIView {
 
     /// 显式预加载播放器资源
     public func preloadPrepare() {
+        let requestedSourceRevision = sourceRevision
         Task { @MainActor in
             guard let playerManager = self.playerManager else { return }
 
             do {
                 try await playerManager.prepareIfNeeded()
+                guard requestedSourceRevision == self.sourceRevision else { return }
                 self.isPrepared = playerManager.isReady
             } catch {
+                guard requestedSourceRevision == self.sourceRevision else { return }
+                self.posterPlaybackFailed()
                 self.eventDelegate?.onError(error)
             }
         }
@@ -311,6 +301,8 @@ public class UniVideoPlayerView: UIView {
 
     /// 播放
     public func play() {
+        guard !isDestroying else { return }
+        let requestedSourceRevision = sourceRevision
         playStartTime = CFAbsoluteTimeGetCurrent()
 
         isStopped = false
@@ -322,8 +314,11 @@ public class UniVideoPlayerView: UIView {
 
             do {
                 try await playerManager.play()
+                guard requestedSourceRevision == self.sourceRevision else { return }
                 self.isPrepared = playerManager.isReady
             } catch {
+                guard requestedSourceRevision == self.sourceRevision else { return }
+                self.posterPlaybackFailed()
                 self.eventDelegate?.onError(error)
             }
         }
@@ -428,6 +423,8 @@ public class UniVideoPlayerView: UIView {
 
     /// 更新视频源
     public func updateSource(_ src: String, autoplay: Bool? = nil) {
+        sourceRevision &+= 1
+        let requestedSourceRevision = sourceRevision
         if let autoplay {
             configuration?.autoplay = autoplay
         }
@@ -435,11 +432,16 @@ public class UniVideoPlayerView: UIView {
         let autoplayEnabled = configuration?.autoplay == true
         isPrepared = false
         isStopped = false
+        posterPhase = .idle
         isVideoReadyForDisplay = false
-        pendingPosterHideAfterDisplay = false
-        if !hasExplicitPoster {
-            posterImageView?.image = nil
-            posterImageView?.isHidden = true
+        if posterContent.url.isEmpty {
+            posterContent.image = nil
+        }
+        if !posterContent.url.isEmpty && posterContent.image == nil {
+            // 播放完成后已释放图片；换源时需要重新加载同一张 poster。
+            updatePoster(posterContent.url)
+        } else {
+            renderPoster()
         }
         _cachedCurrentTime = 0
         _cachedDuration = 0
@@ -447,12 +449,24 @@ public class UniVideoPlayerView: UIView {
         Task { @MainActor in
             do {
                 await self.playerManager?.setAutoplay(autoplayEnabled)
+                guard requestedSourceRevision == self.sourceRevision else { return }
+
+                // setAutoplay 的 await 期间旧 source 仍可能回调；更新 source 前再次重置 View 状态。
+                self.posterPhase = .idle
+                if self.posterContent.url.isEmpty {
+                    self.posterContent.image = nil
+                }
+                self.renderPoster()
+
                 try await self.playerManager?.updateSource(src)
+                guard requestedSourceRevision == self.sourceRevision else { return }
                 self.isPrepared = self.playerManager?.isReady == true
                 self._cachedIsPlaying = autoplayEnabled && !src.isEmpty
             } catch {
+                guard requestedSourceRevision == self.sourceRevision else { return }
                 self.isPrepared = false
                 self._cachedIsPlaying = false
+                self.posterPlaybackFailed()
                 self.eventDelegate?.onError(error)
             }
         }
@@ -462,6 +476,7 @@ public class UniVideoPlayerView: UIView {
     public func destroy() {
         guard !isDestroying else { return }
         isDestroying = true
+        sourceRevision &+= 1
         eventDelegate = nil
         siblingBringToFrontWorkItem?.cancel()
         siblingBringToFrontWorkItem = nil
@@ -575,39 +590,93 @@ extension UniVideoPlayerView {
             overlaySuperview.bringSubviewToFront(overlayView)
         }
     }
-    //
-    private func hidePosterWhenVideoReady() {
-        guard isVideoReadyForDisplay else {
-            pendingPosterHideAfterDisplay = true
-            return
+    private func updatePoster(_ url: String) {
+        configuration?.poster = url
+        posterContent.loadRevision &+= 1
+        let requestedRevision = posterContent.loadRevision
+        posterContent.url = url
+        posterContent.image = nil
+        renderPoster()
+
+        guard !url.isEmpty else { return }
+
+        UTSiOS.loadImage(url) { [weak self] (image, data) in
+            DispatchQueue.main.async {
+                guard let self = self, !self.isDestroying else { return }
+                guard self.posterContent.url == url,
+                      self.posterContent.loadRevision == requestedRevision else { return }
+                guard let image = image else { return }
+
+                self.posterContent.image = image
+                self.renderPoster()
+            }
         }
-        hidePoster()
     }
 
-    private func hidePoster() {
-        guard let poster = posterImageView,
-              poster.alpha == 1 else { return }
-
-        poster.layer.removeAllAnimations()
-        poster.alpha = 0
-        poster.isHidden = true
+    private func posterPlaybackStarted() {
+        if isVideoReadyForDisplay {
+            posterPhase = .video
+        } else if case .idle = posterPhase {
+            posterPhase = .waitingForFrame
+        }
+        renderPoster()
     }
 
-    private var canShowPosterOverlay: Bool {
-        return !isDestroying && !_cachedIsPlaying && !pendingPosterHideAfterDisplay
+    private func posterVideoReady() {
+        guard case .waitingForFrame = posterPhase else { return }
+        posterPhase = .video
+        renderPoster()
     }
 
-    private func showPosterImage(_ image: UIImage) {
-        guard canShowPosterOverlay else { return }
+    private func posterPlaybackFailed() {
+        guard case .waitingForFrame = posterPhase else { return }
+        posterPhase = .idle
+        renderPoster()
+    }
+
+    private func renderPoster() {
         guard let posterImageView = posterImageView else { return }
 
-        posterImageView.image = image
-        if let objectFit = configuration?.objectFit {
-            posterImageView.contentMode = objectFit.contentMode
+        switch posterPhase {
+        case .idle:
+            guard let image = posterContent.image else {
+                hidePosterView(posterImageView)
+                return
+            }
+            posterImageView.image = image
+            if let objectFit = configuration?.objectFit {
+                posterImageView.contentMode = objectFit.contentMode
+            }
+            posterImageView.layer.removeAllAnimations()
+            posterImageView.alpha = 1
+            posterImageView.isHidden = false
+            bringSubviewToFront(posterImageView)
+        case .waitingForFrame:
+            // 视频首帧未就绪时保留旧 poster，新的 poster 加载完成后替换它。
+            guard !posterContent.url.isEmpty else {
+                hidePosterView(posterImageView)
+                break
+            }
+            guard let image = posterContent.image else { break }
+            posterImageView.image = image
+            if let objectFit = configuration?.objectFit {
+                posterImageView.contentMode = objectFit.contentMode
+            }
+            posterImageView.layer.removeAllAnimations()
+            posterImageView.alpha = 1
+            posterImageView.isHidden = false
+            bringSubviewToFront(posterImageView)
+        case .video:
+            hidePosterView(posterImageView)
         }
-        posterImageView.isHidden = false
-        posterImageView.alpha = 1
-        bringSubviewToFront(posterImageView)
+    }
+
+    private func hidePosterView(_ posterImageView: UIImageView) {
+        posterImageView.layer.removeAllAnimations()
+        posterImageView.alpha = 0
+        posterImageView.isHidden = true
+        posterImageView.image = nil
+        posterContent.image = nil
     }
 
     private func applyOptionOverrides() {
@@ -660,6 +729,7 @@ extension UniVideoPlayerView: UniVideoPlayerDelegate {
             }
         case .failed(let error):
             // 错误状态需要立即通知
+            self.posterPlaybackFailed()
             eventDelegate?.onError(error)
         default:
             break
@@ -674,13 +744,13 @@ extension UniVideoPlayerView: UniVideoPlayerDelegate {
         switch event {
         case .play:
             _cachedIsPlaying = true
+            posterPlaybackStarted()
             eventDelegate?.onPlay()
 
 #if DEBUG
             logPlayPerformance()
 #endif
 
-            hidePosterWhenVideoReady()
         case .pause:
             _cachedIsPlaying = false
             eventDelegate?.onPause()
@@ -699,20 +769,19 @@ extension UniVideoPlayerView: UniVideoPlayerDelegate {
         case .waiting:
             eventDelegate?.onWaiting()
         case .error(let error):
+            posterPlaybackFailed()
             eventDelegate?.onError(error)
         case .firstFrameCaptured(let image):
             eventDelegate?.onFirstFrameCaptured(image: image)
 
-            if !hasExplicitPoster, posterImageView?.image == nil {
-                showPosterImage(image)
+            if posterContent.url.isEmpty, posterContent.image == nil {
+                posterContent.image = image
+                renderPoster()
             }
         case .videoReadyForDisplay:
             isVideoReadyForDisplay = true
             player.updatePlayerLayerFrame(bounds)
-            if pendingPosterHideAfterDisplay || _cachedIsPlaying {
-                pendingPosterHideAfterDisplay = false
-                hidePoster()
-            }
+            posterVideoReady()
         case .bufferUpdate:
             break
         }
