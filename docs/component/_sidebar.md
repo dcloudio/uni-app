@@ -74,6 +74,7 @@
 * uni-ui x 扩展组件
   * [概述](./uni-ui-x/README.md)
   * [uni-badge-view | 数字角标](./uni-ui-x/uni-badge-view.md)
+  * [uni-backarrow-circle | 圆形返回按钮](./uni-ui-x/uni-backarrow-circle.md)
   * [uni-collapse | 折叠面板容器](./uni-ui-x/uni-collapse.md)
   * [uni-combobox | 组合框](./uni-ui-x/uni-combobox.md)
   * [uni-combox | 组合框 (已废弃)](./uni-ui-x/uni-combox.md)
