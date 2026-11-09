@@ -7,7 +7,6 @@ import {
 import { renderRichText } from './render-vdom'
 import { props } from '../../components/rich-text'
 import { UniElement } from '../../helpers/UniElement'
-import { useWebSelectionStyle } from '../../helpers/useWebSelectionStyle'
 
 export class UniRichTextElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
@@ -32,9 +31,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     }
 
     const result = renderRichText(props, rootRef, triggerItemClick)
-    //#if !_NODE_JS_
-    useWebSelectionStyle(rootRef)
-    //#endif
 
     //#if _X_ && !_NODE_JS_
     onMounted(() => {

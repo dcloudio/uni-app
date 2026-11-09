@@ -392,11 +392,16 @@ describe('Web Vapor 真实运行时节点', () => {
       'customElements',
       '__X__',
       '__NODE_JS__',
+      '__PLATFORM__',
     ]) {
       previousGlobals.set(name, (global as any)[name])
       ;(global as any)[name] = dom.window[name]
     }
-    Object.assign(global, { __X__: true, __NODE_JS__: false })
+    Object.assign(global, {
+      __X__: true,
+      __NODE_JS__: false,
+      __PLATFORM__: 'h5',
+    })
     vue = jest.requireActual(
       path.join(root, 'packages/uni-h5-vue/dist-x-vapor/vue.runtime.cjs.js')
     )
@@ -512,9 +517,6 @@ describe('Web Vapor 真实运行时节点', () => {
         '../../components/rich-text': richText,
         './render-vapor': { renderRichText: renderVaporRichText },
         '../web-vapor-elements': elements,
-        '../../helpers/useWebSelectionStyle': {
-          useWebSelectionStyle: jest.fn(),
-        },
       }
     )
     RichText = component.default

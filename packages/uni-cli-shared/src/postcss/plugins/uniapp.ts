@@ -11,6 +11,7 @@ import {
 import { BG_PROPS } from './constants'
 import { adaptAlipayPageBackground } from './alipayPageBackground'
 import { isUniAppXWebVapor } from '../../x'
+import { expandWebSelection } from './webSelection'
 
 export interface UniAppCssProcessorOptions {
   unit?: string // 目标单位，默认rem
@@ -199,6 +200,9 @@ const uniapp = (opts?: UniAppCssProcessorOptions) => {
                 vapor: isUniAppXWebVapor(),
               })
             )
+          }
+          if (isUniAppXWebVapor()) {
+            expandWebSelection(root)
           }
         },
       }

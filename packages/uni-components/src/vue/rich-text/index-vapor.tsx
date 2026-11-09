@@ -7,7 +7,6 @@ import {
 import { renderRichText } from './render-vapor'
 import { props } from '../../components/rich-text'
 import { UniViewElement } from '../web-vapor-elements'
-import { useWebSelectionStyle } from '../../helpers/useWebSelectionStyle'
 
 // 只提供逻辑类型，根节点由渲染器创建，不构造或注册 Custom Element。
 export class UniRichTextElement extends UniViewElement {
@@ -43,9 +42,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     }
 
     const result = renderRichText(props, rootRef, triggerItemClick)
-    //#if !_NODE_JS_
-    useWebSelectionStyle(rootRef)
-    //#endif
 
     // 在外部 ref 可见前设置一次类型标识，不包装原生属性 API。
     Object.defineProperty(result, 'uniTagName', uniTagName)

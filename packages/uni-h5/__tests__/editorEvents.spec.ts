@@ -62,9 +62,6 @@ describe('Editor 组件事件声明', () => {
         props: {},
         emit: ['keyboardheightchange'],
       },
-      '../../helpers/useWebSelectionStyle': {
-        useWebSelectionStyle: jest.fn(),
-      },
       './quill': {},
     }
     async function load(file: string): Promise<any> {

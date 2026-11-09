@@ -6,7 +6,6 @@ import {
   props as keyboardProps,
   useKeyboard,
 } from '../../helpers/useKeyboard'
-import { useWebSelectionStyle } from '../../helpers/useWebSelectionStyle'
 import { useQuill } from './quill'
 
 export const editorProps = /*#__PURE__*/ extend({}, keyboardProps, {
@@ -57,8 +56,5 @@ export function useEditor(
   const trigger = useCustomEvent(rootRef, emit)
   useQuill(props, rootRef, trigger)
   useKeyboard(props, rootRef, trigger)
-  //#if !_NODE_JS_
-  useWebSelectionStyle(rootRef)
-  //#endif
   return rootRef
 }

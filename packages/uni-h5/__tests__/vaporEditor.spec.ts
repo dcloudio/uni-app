@@ -74,6 +74,7 @@ describe('Web Vapor Editor 原生宿主', () => {
       '__X__',
       '__NODE_JS__',
       '__PLATFORM__',
+      '__VAPOR__',
     ]) {
       globals.set(name, (global as any)[name])
       ;(global as any)[name] = dom.window[name]
@@ -82,6 +83,7 @@ describe('Web Vapor Editor 原生宿主', () => {
       __X__: true,
       __NODE_JS__: false,
       __PLATFORM__: 'h5',
+      __VAPOR__: true,
     })
     // JSDOM 缺少布局及旧编辑命令，仅补充 Quill 读取的浏览器能力。
     dom.window.document.execCommand = () => false
@@ -177,9 +179,6 @@ describe('Web Vapor Editor 原生宿主', () => {
     const business = await load('vue/editor/useEditor.ts', {
       '../../helpers/useEvent': events,
       '../../helpers/useKeyboard': keyboard,
-      '../../helpers/useWebSelectionStyle': {
-        useWebSelectionStyle: jest.fn(),
-      },
       './quill': quill,
     })
     const helper = await load('helpers/component.ts', {
@@ -222,9 +221,6 @@ describe('Web Vapor Editor 原生宿主', () => {
       vue,
       '/vue-jsx/vapor': evaluate(fs.readFileSync(runtime, 'utf8'), { vue }),
       '../../helpers/component': helper,
-      '../../helpers/useWebSelectionStyle': {
-        useWebSelectionStyle: jest.fn(),
-      },
       '../web-vapor-elements': elements,
       './useEditor': business,
     })
