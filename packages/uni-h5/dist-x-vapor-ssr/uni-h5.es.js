@@ -954,7 +954,8 @@ function initAppVm(appVm2) {
   Object.defineProperty(appVm2, "$watchLocale", {
     configurable: true,
     value(callback) {
-      return appVm2.$.scope.run(
+      const scope = appVm2.$.scope;
+      return scope.run(
         () => (
           // 先更新翻译器语言，再让读取 $locale 的组件刷新，避免显示上一种语言。
           watch(locale, callback, { flush: "sync" })
@@ -8278,6 +8279,7 @@ function registerLabelTarget(id, target) {
     labelTargets.set(id, targets);
   }
   targets.push(target);
+  notifyLabelTargetsChanged();
   return () => {
     const current = labelTargets.get(id);
     if (current == null)
@@ -8287,7 +8289,16 @@ function registerLabelTarget(id, target) {
       current.splice(index2, 1);
     if (current.length === 0)
       labelTargets.delete(id);
+    notifyLabelTargetsChanged();
   };
+}
+function findLabelTarget(id) {
+  if (id.length === 0)
+    return null;
+  const targets = labelTargets.get(id);
+  if (targets == null || targets.length === 0)
+    return null;
+  return targets[targets.length - 1];
 }
 function buildPointerEvent(event) {
   return new MouseEvent("click", {
@@ -8319,6 +8330,28 @@ function classes(...classList) {
     }
     return className ?? "";
   });
+}
+const labelTargetListeners = /* @__PURE__ */ new Set();
+function notifyLabelTargetsChanged() {
+  labelTargetListeners.forEach((listener) => listener());
+}
+function subscribeLabelTargets(listener) {
+  labelTargetListeners.add(listener);
+  return () => {
+    labelTargetListeners.delete(listener);
+  };
+}
+function createLabelHoverState() {
+  const sources = /* @__PURE__ */ new Set();
+  const isLabelHovered = ref(false);
+  function setLabelHovered(source, hovered) {
+    if (hovered)
+      sources.add(source);
+    else
+      sources.delete(source);
+    isLabelHovered.value = sources.size > 0;
+  }
+  return { isLabelHovered, setLabelHovered };
 }
 class UniButtonElement extends UniTextElement {
   constructor() {
@@ -8367,6 +8400,10 @@ const _sfc_main$p = /* @__PURE__ */ defineComponent$2({
   __vapor: true,
   setup(__props, { expose: __expose, emit: __emit }) {
     const props2 = __props;
+    const mouseHoverEnabled = computed(() => {
+      const hoverClass = props2.hoverClass == null ? DEFAULT_BUTTON_HOVER_CLASS_NAME : `${props2.hoverClass}`.replace(/^\^+/, "");
+      return !props2.disabled && !props2.loading && hoverClass === DEFAULT_BUTTON_HOVER_CLASS_NAME;
+    });
     const pressedKeys = reactive(/* @__PURE__ */ new Set());
     const keyboardHoverClass = computed(
       () => pressedKeys.size > 0 && !props2.disabled && hoverClasses.value !== "none" ? hoverClasses.value : ""
@@ -8504,7 +8541,8 @@ const _sfc_main$p = /* @__PURE__ */ defineComponent$2({
           ref: loadingRootRef,
           tabindex: __props.disabled ? -1 : 0,
           role: "button",
-          "aria-disabled": __props.disabled
+          "aria-disabled": __props.disabled,
+          "data-mouse-hover": unref(mouseHoverEnabled)
         }, _attrs))}>`);
         _push(ssrRenderComponent(unref(__props["loading"]), {
           class: ["uni-button-loading-icon", unref(classes)(
@@ -8541,7 +8579,8 @@ const _sfc_main$p = /* @__PURE__ */ defineComponent$2({
           )],
           tabindex: __props.disabled ? -1 : 0,
           role: "button",
-          "aria-disabled": __props.disabled
+          "aria-disabled": __props.disabled,
+          "data-mouse-hover": unref(mouseHoverEnabled)
         }, _attrs))}>`);
         ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent, null, true);
         _push(`</span>`);
@@ -8600,6 +8639,8 @@ const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
   setup(__props, { expose: __expose }) {
     var _a, _b;
     const props2 = __props;
+    const { isLabelHovered, setLabelHovered } = createLabelHoverState();
+    let unregisterLabelChild = null;
     const attrs = useAttrs$1();
     const id = attrs.id;
     const slots = useSlots();
@@ -8646,10 +8687,11 @@ const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
             dispatchLabelClick(element, event);
           }
         },
+        setLabelHovered,
         getDisabled: () => props2.disabled
       };
       if (labelCtx != null) {
-        labelCtx.register(target);
+        unregisterLabelChild = labelCtx.register(target);
       }
       if (id != null && id.length > 0) {
         unregisterLabelTarget = registerLabelTarget(id, target);
@@ -8659,9 +8701,8 @@ const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
       if (group != null) {
         group.unregister(toStringOrEmpty(props2.value));
       }
-      if (labelCtx != null) {
-        labelCtx.unregister(id || toStringOrEmpty(props2.value));
-      }
+      unregisterLabelChild == null ? void 0 : unregisterLabelChild();
+      unregisterLabelChild = null;
       unregisterLabelTarget == null ? void 0 : unregisterLabelTarget();
       unregisterLabelTarget = null;
     });
@@ -8680,6 +8721,7 @@ const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
           class: ["uni-checkbox-view uni-checkbox-icon", unref(classes)(
             [unref(isChecked), "uni-checkbox-active"],
             [__props.disabled, "uni-checkbox-disabled"],
+            [unref(isLabelHovered), "uni-checkbox-hover"],
             [!__props.disabled && unref(isChecked), __props.checkboxActiveClass],
             [!__props.disabled && !unref(isChecked), __props.checkboxClass],
             [!__props.disabled, __props.iconClass]
@@ -8707,6 +8749,7 @@ const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
         }, _attrs))}><div uni-view class="${ssrRenderClass([unref(classes)(
           [unref(isChecked), "uni-checkbox-active"],
           [__props.disabled, "uni-checkbox-disabled"],
+          [unref(isLabelHovered), "uni-checkbox-hover"],
           [!__props.disabled && unref(isChecked), __props.checkboxActiveClass],
           [!__props.disabled && !unref(isChecked), __props.checkboxClass],
           [!__props.disabled, __props.iconClass]
@@ -9078,16 +9121,21 @@ const _sfc_main$k = /* @__PURE__ */ defineComponent$2({
   },
   __vapor: true,
   setup(__props) {
+    const props2 = __props;
     const children = [];
     function register2(child) {
-      if (child.id && child.id.length > 0) {
-        const idx = children.findIndex((c) => c.id === child.id);
-        if (idx !== -1) {
-          children[idx] = child;
-          return;
-        }
-      }
-      children.push(child);
+      const index2 = child.id ? children.findIndex((c) => c.id === child.id) : -1;
+      if (index2 !== -1)
+        children[index2] = child;
+      else
+        children.push(child);
+      syncLabelHover();
+      return () => {
+        const index22 = children.indexOf(child);
+        if (index22 !== -1)
+          children.splice(index22, 1);
+        syncLabelHover();
+      };
     }
     function unregister(id) {
       if (!id)
@@ -9095,10 +9143,46 @@ const _sfc_main$k = /* @__PURE__ */ defineComponent$2({
       const idx = children.findIndex((c) => c.id === id);
       if (idx !== -1) {
         children.splice(idx, 1);
+        syncLabelHover();
       }
     }
     const ctx = { register: register2, unregister };
     provide(LABEL_KEY, ctx);
+    function findTarget() {
+      if (props2.for && props2.for.length > 0) {
+        const byId = children.find((c) => c.id === props2.for);
+        if (byId)
+          return byId;
+        const byScopeId = findLabelTarget(props2.for);
+        if (byScopeId)
+          return byScopeId;
+      }
+      if (children.length === 0)
+        return null;
+      return children[0];
+    }
+    const hoverSource = {};
+    let mouseInside = false;
+    let hoverTarget = null;
+    function syncLabelHover() {
+      var _a, _b;
+      const next = mouseInside && !props2.disabled ? findTarget() : null;
+      if (next === hoverTarget)
+        return;
+      (_a = hoverTarget == null ? void 0 : hoverTarget.setLabelHovered) == null ? void 0 : _a.call(hoverTarget, hoverSource, false);
+      hoverTarget = next;
+      (_b = hoverTarget == null ? void 0 : hoverTarget.setLabelHovered) == null ? void 0 : _b.call(hoverTarget, hoverSource, true);
+    }
+    function handleMouseleave() {
+      mouseInside = false;
+      syncLabelHover();
+    }
+    watch(() => [props2.for, props2.disabled], syncLabelHover);
+    const unsubscribeLabelTargets = subscribeLabelTargets(syncLabelHover);
+    onBeforeUnmount(() => {
+      unsubscribeLabelTargets();
+      handleMouseleave();
+    });
     return (_ctx, _push, _parent, _attrs) => {
       _push(`<div${ssrRenderAttrs(mergeProps({
         "uni-view": "",
@@ -11952,6 +12036,8 @@ const _sfc_main$8 = /* @__PURE__ */ defineComponent$2({
   setup(__props, { expose: __expose }) {
     var _a, _b;
     const props2 = __props;
+    const { isLabelHovered, setLabelHovered } = createLabelHoverState();
+    let unregisterLabelChild = null;
     const attrs = useAttrs$1();
     const id = attrs.id;
     const slots = useSlots();
@@ -12009,19 +12095,19 @@ const _sfc_main$8 = /* @__PURE__ */ defineComponent$2({
             dispatchLabelClick(element, event);
           }
         },
+        setLabelHovered,
         getDisabled: () => props2.disabled
       };
       if (labelCtx != null) {
-        labelCtx.register(target);
+        unregisterLabelChild = labelCtx.register(target);
       }
       if (id != null && id.length > 0) {
         unregisterLabelTarget = registerLabelTarget(id, target);
       }
     });
     onUnmounted(() => {
-      if (labelCtx != null) {
-        labelCtx.unregister(id || toStringOrEmpty(props2.value));
-      }
+      unregisterLabelChild == null ? void 0 : unregisterLabelChild();
+      unregisterLabelChild = null;
       unregisterLabelTarget == null ? void 0 : unregisterLabelTarget();
       unregisterLabelTarget = null;
     });
@@ -12039,6 +12125,7 @@ const _sfc_main$8 = /* @__PURE__ */ defineComponent$2({
           "uni-view": "",
           class: ["uni-radio-view uni-radio-icon", unref(classes)(
             [__props.disabled, "uni-radio-disabled"],
+            [unref(isLabelHovered), "uni-radio-hover"],
             [!__props.disabled && unref(isChecked), "uni-radio-active"],
             [!__props.disabled && unref(isChecked), __props.radioActiveClass],
             [!__props.disabled && !unref(isChecked), __props.radioClass],
@@ -12066,6 +12153,7 @@ const _sfc_main$8 = /* @__PURE__ */ defineComponent$2({
           "aria-disabled": __props.disabled
         }, _attrs))}><div uni-view class="${ssrRenderClass([unref(classes)(
           [__props.disabled, "uni-radio-disabled"],
+          [unref(isLabelHovered), "uni-radio-hover"],
           [!__props.disabled && unref(isChecked), "uni-radio-active"],
           [!__props.disabled && unref(isChecked), __props.radioActiveClass],
           [!__props.disabled && !unref(isChecked), __props.radioClass],

@@ -1162,7 +1162,8 @@ function initAppVm(appVm2) {
   Object.defineProperty(appVm2, "$watchLocale", {
     configurable: true,
     value(callback) {
-      return appVm2.$.scope.run(
+      const scope = appVm2.$.scope;
+      return scope.run(
         () => (
           // 先更新翻译器语言，再让读取 $locale 的组件刷新，避免显示上一种语言。
           Vue.watch(locale, callback, { flush: "sync" })
@@ -7392,6 +7393,25 @@ function classes(...classList) {
     return className ?? "";
   });
 }
+const labelTargetListeners = /* @__PURE__ */ new Set();
+function subscribeLabelTargets(listener) {
+  labelTargetListeners.add(listener);
+  return () => {
+    labelTargetListeners.delete(listener);
+  };
+}
+function createLabelHoverState() {
+  const sources = /* @__PURE__ */ new Set();
+  const isLabelHovered = Vue.ref(false);
+  function setLabelHovered(source, hovered) {
+    if (hovered)
+      sources.add(source);
+    else
+      sources.delete(source);
+    isLabelHovered.value = sources.size > 0;
+  }
+  return { isLabelHovered, setLabelHovered };
+}
 function createSpaceKeyHandlers(isDisabled) {
   let spacePressed = false;
   function handleKeydown(event) {
@@ -7477,6 +7497,10 @@ const _sfc_main$p = /* @__PURE__ */ Vue.defineVaporComponent({
   setup(__props, { expose: __expose, emit: __emit }) {
     const emit2 = __emit;
     const props2 = __props;
+    const mouseHoverEnabled = Vue.computed(() => {
+      const hoverClass = props2.hoverClass == null ? DEFAULT_BUTTON_HOVER_CLASS_NAME : `${props2.hoverClass}`.replace(/^\^+/, "");
+      return !props2.disabled && !props2.loading && hoverClass === DEFAULT_BUTTON_HOVER_CLASS_NAME;
+    });
     const spaceKeys = createSpaceKeyHandlers(() => props2.disabled);
     const pressedKeys = Vue.reactive(/* @__PURE__ */ new Set());
     const keyboardHoverClass = Vue.computed(
@@ -7661,9 +7685,10 @@ const _sfc_main$p = /* @__PURE__ */ Vue.defineVaporComponent({
           )]);
           Vue.setProp(n2, "tabindex", _disabled ? -1 : 0);
           Vue.setAttr(n2, "aria-disabled", _disabled);
+          Vue.setAttr(n2, "data-mouse-hover", Vue.unref(mouseHoverEnabled));
         });
         Vue.setInsertionState(n2, n6);
-        Vue.withComponentId("0ed9fc8f", () => Vue.createComponentWithFallback(_component_loading, { class: () => ["uni-button-loading-icon", Vue.unref(classes)(
+        Vue.withComponentId("0ed9fd0d", () => Vue.createComponentWithFallback(_component_loading, { class: () => ["uni-button-loading-icon", Vue.unref(classes)(
           [Vue.unref(buttonType) == "default", "uni-loading-default"],
           [__props.plain && Vue.unref(buttonType) == "primary", "uni-loading-plain-primary"],
           [__props.plain && Vue.unref(buttonType) == "warn", "uni-loading-plain-warn"],
@@ -7717,6 +7742,7 @@ const _sfc_main$p = /* @__PURE__ */ Vue.defineVaporComponent({
           )]);
           Vue.setProp(n8, "tabindex", _disabled ? -1 : 0);
           Vue.setAttr(n8, "aria-disabled", _disabled);
+          Vue.setAttr(n8, "data-mouse-hover", Vue.unref(mouseHoverEnabled));
         });
         Vue.setInsertionState(n8);
         Vue.createSlot(
@@ -7793,6 +7819,7 @@ const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
     var _a, _b;
     const props2 = __props;
     const { handleKeydown, handleKeyup, handleBlur } = createSpaceKeyHandlers(() => props2.disabled);
+    const { isLabelHovered, setLabelHovered } = createLabelHoverState();
     const attrs2 = Vue.useAttrs();
     attrs2.id;
     const slots = Vue.useSlots();
@@ -7848,6 +7875,7 @@ const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
           Vue.setClass(n2, ["uni-checkbox-view uni-checkbox-icon", Vue.unref(classes)(
             [_isChecked, "uni-checkbox-active"],
             [_disabled, "uni-checkbox-disabled"],
+            [Vue.unref(isLabelHovered), "uni-checkbox-hover"],
             [!_disabled && _isChecked, __props.checkboxActiveClass],
             [!_disabled && !_isChecked, __props.checkboxClass],
             [!_disabled, __props.iconClass]
@@ -7883,6 +7911,7 @@ const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
           Vue.setClass(n13, ["uni-checkbox-view uni-checkbox-icon", Vue.unref(classes)(
             [_isChecked, "uni-checkbox-active"],
             [_disabled, "uni-checkbox-disabled"],
+            [Vue.unref(isLabelHovered), "uni-checkbox-hover"],
             [!_disabled && _isChecked, __props.checkboxActiveClass],
             [!_disabled && !_isChecked, __props.checkboxClass],
             [!_disabled, __props.iconClass]
@@ -8233,14 +8262,18 @@ const _sfc_main$k = /* @__PURE__ */ Vue.defineVaporComponent({
     const { handleKeydown, handleKeyup, handleBlur } = createSpaceKeyHandlers(() => props2.disabled);
     const children = [];
     function register(child) {
-      if (child.id && child.id.length > 0) {
-        const idx = children.findIndex((c) => c.id === child.id);
-        if (idx !== -1) {
-          children[idx] = child;
-          return;
-        }
-      }
-      children.push(child);
+      const index2 = child.id ? children.findIndex((c) => c.id === child.id) : -1;
+      if (index2 !== -1)
+        children[index2] = child;
+      else
+        children.push(child);
+      syncLabelHover();
+      return () => {
+        const index22 = children.indexOf(child);
+        if (index22 !== -1)
+          children.splice(index22, 1);
+        syncLabelHover();
+      };
     }
     function unregister(id) {
       if (!id)
@@ -8248,6 +8281,7 @@ const _sfc_main$k = /* @__PURE__ */ Vue.defineVaporComponent({
       const idx = children.findIndex((c) => c.id === id);
       if (idx !== -1) {
         children.splice(idx, 1);
+        syncLabelHover();
       }
     }
     const ctx = { register, unregister };
@@ -8265,6 +8299,28 @@ const _sfc_main$k = /* @__PURE__ */ Vue.defineVaporComponent({
         return null;
       return children[0];
     }
+    const hoverSource = {};
+    let mouseInside = false;
+    let hoverTarget = null;
+    function syncLabelHover() {
+      var _a, _b;
+      const next = mouseInside && !props2.disabled ? findTarget() : null;
+      if (next === hoverTarget)
+        return;
+      (_a = hoverTarget == null ? void 0 : hoverTarget.setLabelHovered) == null ? void 0 : _a.call(hoverTarget, hoverSource, false);
+      hoverTarget = next;
+      (_b = hoverTarget == null ? void 0 : hoverTarget.setLabelHovered) == null ? void 0 : _b.call(hoverTarget, hoverSource, true);
+    }
+    function handleMouseenter() {
+      mouseInside = true;
+      syncLabelHover();
+    }
+    function handleMouseleave() {
+      mouseInside = false;
+      syncLabelHover();
+    }
+    Vue.watch(() => [props2.for, props2.disabled], syncLabelHover);
+    subscribeLabelTargets(syncLabelHover);
     const handleTap = (event) => {
       var _a;
       const eventTarget = event.target;
@@ -8300,6 +8356,8 @@ const _sfc_main$k = /* @__PURE__ */ Vue.defineVaporComponent({
     Vue.on(n0, "keydown", (e2) => Vue.unref(handleKeydown)(e2));
     Vue.on(n0, "keyup", (e2) => Vue.unref(handleKeyup)(e2));
     Vue.on(n0, "blur", (e2) => Vue.unref(handleBlur)(e2));
+    Vue.on(n0, "mouseenter", handleMouseenter);
+    Vue.on(n0, "mouseleave", handleMouseleave);
     Vue.on(n0, "click", handleTap);
     return n0;
   }
@@ -10954,6 +11012,7 @@ const _sfc_main$8 = /* @__PURE__ */ Vue.defineVaporComponent({
     var _a, _b;
     const props2 = __props;
     const { handleKeydown, handleKeyup, handleBlur } = createSpaceKeyHandlers(() => props2.disabled);
+    const { isLabelHovered, setLabelHovered } = createLabelHoverState();
     const attrs2 = Vue.useAttrs();
     attrs2.id;
     const slots = Vue.useSlots();
@@ -11024,6 +11083,7 @@ const _sfc_main$8 = /* @__PURE__ */ Vue.defineVaporComponent({
           const _isChecked = Vue.unref(isChecked);
           Vue.setClass(n2, ["uni-radio-view uni-radio-icon", Vue.unref(classes)(
             [_disabled, "uni-radio-disabled"],
+            [Vue.unref(isLabelHovered), "uni-radio-hover"],
             [!_disabled && _isChecked, "uni-radio-active"],
             [!_disabled && _isChecked, __props.radioActiveClass],
             [!_disabled && !_isChecked, __props.radioClass],
@@ -11059,6 +11119,7 @@ const _sfc_main$8 = /* @__PURE__ */ Vue.defineVaporComponent({
           Vue.setAttr(n8, "aria-disabled", _disabled);
           Vue.setClass(n13, ["uni-radio-view uni-radio-icon", Vue.unref(classes)(
             [_disabled, "uni-radio-disabled"],
+            [Vue.unref(isLabelHovered), "uni-radio-hover"],
             [!_disabled && _isChecked, "uni-radio-active"],
             [!_disabled && _isChecked, __props.radioActiveClass],
             [!_disabled && !_isChecked, __props.radioClass],

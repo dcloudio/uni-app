@@ -6,6 +6,7 @@
     class="uni-radio-view uni-radio-icon"
     :class="classes(
       [disabled, 'uni-radio-disabled'],
+      [isLabelHovered, 'uni-radio-hover'],
       [!disabled && isChecked, 'uni-radio-active'],
       [!disabled && isChecked, radioActiveClass],
       [!disabled && !isChecked, radioClass],
@@ -60,6 +61,7 @@
       class="uni-radio-view uni-radio-icon"
       :class="classes(
         [disabled, 'uni-radio-disabled'],
+        [isLabelHovered, 'uni-radio-hover'],
         [!disabled && isChecked, 'uni-radio-active'],
         [!disabled && isChecked, radioActiveClass],
         [!disabled && !isChecked, radioClass],
@@ -94,7 +96,7 @@
 
 <script lang="ts" setup>
   // #ifdef WEB
-  import { createSpaceKeyHandlers } from '../common.ts'
+  import { createSpaceKeyHandlers, createLabelHoverState } from '../common.ts'
   // #endif
   import { LABEL_KEY, RADIO_GROUP_KEY, dispatchLabelClick, registerLabelTarget, classes, toStringOrEmpty } from '../common.ts'
   import { UniRadioElement } from './global.ts'
@@ -289,6 +291,8 @@
 
   // #ifdef WEB
   const { handleKeydown, handleKeyup, handleBlur } = createSpaceKeyHandlers(() => props.disabled)
+  const { isLabelHovered, setLabelHovered } = createLabelHoverState()
+  let unregisterLabelChild: (() => void) | null = null
   // #endif
 
   defineOptions({
@@ -389,10 +393,18 @@
             dispatchLabelClick(element, event)
           }
         },
+        // #ifdef WEB
+        setLabelHovered,
+        // #endif
         getDisabled: () => props.disabled
     }
     if (labelCtx != null) {
+      // #ifdef WEB
+      unregisterLabelChild = labelCtx.register(target)
+      // #endif
+      // #ifndef WEB
       labelCtx.register(target)
+      // #endif
     }
     if (id != null && id.length > 0) {
       unregisterLabelTarget = registerLabelTarget(id, target)
@@ -400,9 +412,15 @@
   })
 
   onUnmounted(() => {
+    // #ifdef WEB
+    unregisterLabelChild?.()
+    unregisterLabelChild = null
+    // #endif
+    // #ifndef WEB
     if (labelCtx != null) {
       labelCtx.unregister(id || toStringOrEmpty(props.value))
     }
+    // #endif
     unregisterLabelTarget?.()
     unregisterLabelTarget = null
   })
@@ -450,7 +468,9 @@
 
   /* #ifdef WEB */
   @media (hover: hover) {
-    .uni-radio-view:not(.uni-radio-disabled):not(.uni-radio-active):hover {
+    .uni-radio-view:not(.uni-radio-disabled):not(.uni-radio-active):hover,
+    .uni-radio:hover > .uni-radio-view:not(.uni-radio-disabled):not(.uni-radio-active),
+    .uni-radio-view.uni-radio-hover:not(.uni-radio-disabled):not(.uni-radio-active) {
       border-color: #007aff;
     }
   }

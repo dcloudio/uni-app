@@ -27,7 +27,12 @@
 @media (hover: hover) {
   .uni-checkbox-view:not(.uni-checkbox-disabled):not(
       .uni-checkbox-active
-    ):hover {
+    ):hover,
+  .uni-checkbox:hover
+    > .uni-checkbox-view:not(.uni-checkbox-disabled):not(.uni-checkbox-active),
+  .uni-checkbox-view.uni-checkbox-hover:not(.uni-checkbox-disabled):not(
+      .uni-checkbox-active
+    ) {
     border-color: #007aff;
   }
 }

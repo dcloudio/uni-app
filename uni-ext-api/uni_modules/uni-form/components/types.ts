@@ -1,11 +1,19 @@
 export type ActivatableChild = {
   id?: string,
   activate: (event: UniPointerEvent) => void,
+  // #ifdef WEB
+  setLabelHovered?: (source: object, hovered: boolean) => void,
+  // #endif
   getDisabled?: () => boolean
 }
 
 export type LabelContext = {
+  // #ifdef WEB
+  register: (child: ActivatableChild) => (() => void)
+  // #endif
+  // #ifndef WEB
   register: (child: ActivatableChild) => void
+  // #endif
   unregister: (id?: string) => void
 }
 
@@ -42,6 +50,7 @@ export type PickerViewContext = {
   unregisterColumn: (api: PickerViewColumnApi) => void,
   onColumnIndexChange: (col: number, index: number) => void,
   maskClass: () => string,
+  indicatorClass: () => string,
   maskTopStyle: () => any,
   maskBottomStyle: () => any,
   indicatorStyle: () => any,

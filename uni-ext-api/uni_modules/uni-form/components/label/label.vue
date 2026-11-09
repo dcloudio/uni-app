@@ -5,6 +5,8 @@
     @keydown="handleKeydown"
     @keyup="handleKeyup"
     @blur="handleBlur"
+    @mouseenter="handleMouseenter"
+    @mouseleave="handleMouseleave"
     class="uni-label"
     :aria-disabled="disabled"
     <!-- #endif -->
@@ -16,7 +18,7 @@
 
 <script lang="ts" setup>
   // #ifdef WEB
-  import { createSpaceKeyHandlers } from '../common.ts'
+  import { createSpaceKeyHandlers, subscribeLabelTargets } from '../common.ts'
   // #endif
   // Label that supports internal form controls (checkbox/radio/switch)
   // via provide/inject registration. Clicking the label will activate
@@ -83,6 +85,19 @@
   const children: Array<ActivatableChild> = []
 
   function register(child: ActivatableChild) {
+    // #ifdef WEB
+    // Use identity so anonymous children can also unregister reliably.
+    const index = child.id ? children.findIndex(c => c.id === child.id) : -1
+    if (index !== -1) children[index] = child
+    else children.push(child)
+    syncLabelHover()
+    return () => {
+      const index = children.indexOf(child)
+      if (index !== -1) children.splice(index, 1)
+      syncLabelHover()
+    }
+    // #endif
+    // #ifndef WEB
     // prevent duplicate by id if available
     if (child.id && child.id.length > 0) {
       const idx = children.findIndex(c => c.id === child.id)
@@ -92,6 +107,7 @@
       }
     }
     children.push(child)
+    // #endif
   }
 
   function unregister(id?: string) {
@@ -99,6 +115,9 @@
     const idx = children.findIndex(c => c.id === id)
     if (idx !== -1) {
       children.splice(idx, 1)
+      // #ifdef WEB
+      syncLabelHover()
+      // #endif
     }
   }
 
@@ -117,6 +136,37 @@
     // Fallback to first child
     return children[0]
   }
+
+  // #ifdef WEB
+  const hoverSource = {}
+  let mouseInside = false
+  let hoverTarget: ActivatableChild | null = null
+
+  function syncLabelHover() {
+    const next = mouseInside && !props.disabled ? findTarget() : null
+    if (next === hoverTarget) return
+    hoverTarget?.setLabelHovered?.(hoverSource, false)
+    hoverTarget = next
+    hoverTarget?.setLabelHovered?.(hoverSource, true)
+  }
+
+  function handleMouseenter() {
+    mouseInside = true
+    syncLabelHover()
+  }
+
+  function handleMouseleave() {
+    mouseInside = false
+    syncLabelHover()
+  }
+
+  watch(() => [props.for, props.disabled], syncLabelHover)
+  const unsubscribeLabelTargets = subscribeLabelTargets(syncLabelHover)
+  onBeforeUnmount(() => {
+    unsubscribeLabelTargets()
+    handleMouseleave()
+  })
+  // #endif
 
   const handleTap = (event: UniPointerEvent) => {
     // #ifdef WEB

@@ -137,8 +137,14 @@ uni-app div:where(.uni-button) {
 
 .uni-button-view-plain {
   color: #353535;
+
+  color: var(--uni-button-plain-hover-color, #353535);
+
   border-width: 1px;
   border-color: #353535;
+
+  border-color: var(--uni-button-plain-hover-color, #353535);
+
   background-color: transparent;
 }
 
@@ -148,34 +154,50 @@ uni-app div:where(.uni-button) {
 
 .uni-button.uni-button-view-plain.uni-button-has-type.uni-button-type-default_view {
   border-color: #353535;
+
+  border-color: var(--uni-button-plain-hover-color, #353535);
 }
 
 .uni-button.uni-button-view-plain.uni-button-has-type.uni-button-type-default_text {
   color: #353535;
+
+  color: var(--uni-button-plain-hover-color, #353535);
 }
 
 .uni-button.uni-button-view-plain.uni-button-has-type.uni-button-type-primary_view {
   border-color: #007aff;
+
+  border-color: var(--uni-button-plain-hover-color, #007aff);
 }
 
 .uni-button.uni-button-view-plain.uni-button-has-type.uni-button-type-primary_text {
   color: #007aff;
+
+  color: var(--uni-button-plain-hover-color, #007aff);
 }
 
 .uni-button-text-plain.uni-button-type-primary_text {
   color: #007aff;
+
+  color: var(--uni-button-plain-hover-color, #007aff);
 }
 
 .uni-button.uni-button-view-plain.uni-button-has-type.uni-button-type-warn_view {
   border-color: #e64340;
+
+  border-color: var(--uni-button-plain-hover-color, #e64340);
 }
 
 .uni-button.uni-button-view-plain.uni-button-has-type.uni-button-type-warn_text {
   color: #e64340;
+
+  color: var(--uni-button-plain-hover-color, #e64340);
 }
 
 .uni-button-text-plain.uni-button-type-warn_text {
   color: #e64340;
+
+  color: var(--uni-button-plain-hover-color, #e64340);
 }
 
 .uni-button.uni-button-disabled.uni-button-view-plain {
@@ -281,6 +303,64 @@ uni-app div:where(.uni-button) {
   border-color: rgba(0, 0, 0, 0.2);
 }
 
+@media (hover: hover) {
+  :where(.uni-button) {
+    --uni-button-mouse-shadow: inset 0 0 0 100vmax rgba(0, 0, 0, 0.04);
+    --uni-button-plain-hover-color: initial;
+    --uni-button-mouse-plain-color: #535353;
+  }
+
+  .uni-button-type-primary_view,
+  .uni-button-type-warn_view {
+    --uni-button-mouse-shadow: inset 0 0 0 100vmax rgba(255, 255, 255, 0.16);
+  }
+
+  .uni-button-type-primary_view {
+    --uni-button-mouse-plain-color: #3395ff;
+  }
+
+  .uni-button-type-warn_view {
+    --uni-button-mouse-plain-color: #eb6966;
+  }
+
+  /* plain 只调整默认文字和边框，不使用会影响背景及子内容的 filter。 */
+  .uni-button-view-plain {
+    --uni-button-mouse-shadow: none;
+  }
+
+  /* 不覆盖已有按下态的 transition，也允许外部 class 覆盖默认过渡。 */
+  :where(.uni-button.transition-enabled) {
+    transition: background-color 0.1s, color 0.1s, border-color 0.1s,
+      box-shadow 0.1s;
+  }
+
+  /* 松开后的 hover-stay-time 和键盘按下态期间，也必须让 hover-class 优先。 */
+  :where(
+      .uni-button[data-mouse-hover='true']:hover:not(:active):not(
+          .button-hover,
+          .uni-button-view_default_hover,
+          .uni-button-view_primary_hover,
+          .uni-button-view_warn_hover,
+          .uni-button-view_plain_default_hover,
+          .uni-button-view_plain_primary_hover,
+          .uni-button-view_plain_warn_hover
+        )
+    ) {
+    box-shadow: var(--uni-button-mouse-shadow);
+    --uni-button-plain-hover-color: var(--uni-button-mouse-plain-color);
+  }
+}
+
+@media (hover: hover) and (prefers-color-scheme: dark) {
+  .uni-button-type-default_view.uni-button-has-type {
+    --uni-button-mouse-plain-color: #dedede;
+  }
+
+  .uni-button-type-default_view:not(.uni-button-view-plain) {
+    --uni-button-mouse-shadow: inset 0 0 0 100vmax rgba(255, 255, 255, 0.08);
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   .uni-button-type-default_view {
     background-color: #343434;
@@ -307,16 +387,24 @@ uni-app div:where(.uni-button) {
   /* 保持普通 plain 的优先级，使外部自定义颜色和背景仍可覆盖。 */
   .uni-button-view-plain {
     color: #353535;
+
+    color: var(--uni-button-plain-hover-color, #353535);
+
     background-color: transparent;
   }
 
   .uni-button.uni-button-view-plain.uni-button-has-type.uni-button-type-default_view {
     border-color: #d6d6d6;
+
+    border-color: var(--uni-button-plain-hover-color, #d6d6d6);
+
     background-color: transparent;
   }
 
   .uni-button.uni-button-view-plain.uni-button-has-type.uni-button-type-default_text {
     color: #d6d6d6;
+
+    color: var(--uni-button-plain-hover-color, #d6d6d6);
   }
 
   .uni-button-view-plain.uni-button-has-type.uni-button-view_plain_default_hover {

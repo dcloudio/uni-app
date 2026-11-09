@@ -21,12 +21,18 @@ export function registerLabelTarget(id: string, target: ActivatableChild): () =>
     labelTargets.set(id, targets)
   }
   targets.push(target)
+  // #ifdef WEB
+  notifyLabelTargetsChanged()
+  // #endif
   return () => {
     const current = labelTargets.get(id)
     if (current == null) return
     const index = current.indexOf(target)
     if (index !== -1) current.splice(index, 1)
     if (current.length === 0) labelTargets.delete(id)
+    // #ifdef WEB
+    notifyLabelTargetsChanged()
+    // #endif
   }
 }
 
@@ -101,6 +107,30 @@ export function classes(...classList : Array<ClassItem>) : Array<string.ClassStr
 }
 
 // #ifdef WEB
+// Notify hovered labels when an external target mounts or unmounts.
+const labelTargetListeners = new Set<() => void>()
+
+function notifyLabelTargetsChanged() {
+  labelTargetListeners.forEach(listener => listener())
+}
+
+export function subscribeLabelTargets(listener: () => void): () => void {
+  labelTargetListeners.add(listener)
+  return () => { labelTargetListeners.delete(listener) }
+}
+
+// Each label owns its contribution; leaving one must not clear another label.
+export function createLabelHoverState() {
+  const sources = new Set<object>()
+  const isLabelHovered = ref(false)
+  function setLabelHovered(source: object, hovered: boolean) {
+    if (hovered) sources.add(source)
+    else sources.delete(source)
+    isLabelHovered.value = sources.size > 0
+  }
+  return { isLabelHovered, setLabelHovered }
+}
+
 // Only activate the focused root. Slotted inputs and nested controls own their keys.
 export function createSpaceKeyHandlers(isDisabled: () => boolean) {
   let spacePressed = false

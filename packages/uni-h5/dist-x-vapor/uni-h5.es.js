@@ -1974,7 +1974,8 @@ function initAppVm(appVm2) {
   Object.defineProperty(appVm2, "$watchLocale", {
     configurable: true,
     value(callback) {
-      return appVm2.$.scope.run(
+      const scope2 = appVm2.$.scope;
+      return scope2.run(
         () => (
           // 先更新翻译器语言，再让读取 $locale 的组件刷新，避免显示上一种语言。
           watch(locale, callback, { flush: "sync" })
@@ -15812,6 +15813,7 @@ function registerLabelTarget(id2, target) {
     labelTargets.set(id2, targets);
   }
   targets.push(target);
+  notifyLabelTargetsChanged();
   return () => {
     const current = labelTargets.get(id2);
     if (current == null)
@@ -15821,6 +15823,7 @@ function registerLabelTarget(id2, target) {
       current.splice(index2, 1);
     if (current.length === 0)
       labelTargets.delete(id2);
+    notifyLabelTargetsChanged();
   };
 }
 function findLabelTarget(id2) {
@@ -15861,6 +15864,28 @@ function classes(...classList) {
     }
     return className ?? "";
   });
+}
+const labelTargetListeners = /* @__PURE__ */ new Set();
+function notifyLabelTargetsChanged() {
+  labelTargetListeners.forEach((listener2) => listener2());
+}
+function subscribeLabelTargets(listener2) {
+  labelTargetListeners.add(listener2);
+  return () => {
+    labelTargetListeners.delete(listener2);
+  };
+}
+function createLabelHoverState() {
+  const sources = /* @__PURE__ */ new Set();
+  const isLabelHovered = ref(false);
+  function setLabelHovered(source, hovered) {
+    if (hovered)
+      sources.add(source);
+    else
+      sources.delete(source);
+    isLabelHovered.value = sources.size > 0;
+  }
+  return { isLabelHovered, setLabelHovered };
 }
 function createSpaceKeyHandlers(isDisabled) {
   let spacePressed = false;
@@ -15947,6 +15972,10 @@ const _sfc_main$x = /* @__PURE__ */ defineVaporComponent({
   setup(__props, { expose: __expose, emit: __emit }) {
     const emit2 = __emit;
     const props2 = __props;
+    const mouseHoverEnabled = computed(() => {
+      const hoverClass = props2.hoverClass == null ? DEFAULT_BUTTON_HOVER_CLASS_NAME : `${props2.hoverClass}`.replace(/^\^+/, "");
+      return !props2.disabled && !props2.loading && hoverClass === DEFAULT_BUTTON_HOVER_CLASS_NAME;
+    });
     const spaceKeys = createSpaceKeyHandlers(() => props2.disabled);
     const pressedKeys = reactive(/* @__PURE__ */ new Set());
     const keyboardHoverClass = computed(
@@ -16134,9 +16163,10 @@ const _sfc_main$x = /* @__PURE__ */ defineVaporComponent({
           )]);
           setProp(n2, "tabindex", _disabled ? -1 : 0);
           setAttr(n2, "aria-disabled", _disabled);
+          setAttr(n2, "data-mouse-hover", unref(mouseHoverEnabled));
         });
         setInsertionState(n2, n6);
-        withComponentId("0ed9fc8f", () => createComponentWithFallback(_component_loading, { class: () => ["uni-button-loading-icon", unref(classes)(
+        withComponentId("0ed9fd0d", () => createComponentWithFallback(_component_loading, { class: () => ["uni-button-loading-icon", unref(classes)(
           [unref(buttonType) == "default", "uni-loading-default"],
           [__props.plain && unref(buttonType) == "primary", "uni-loading-plain-primary"],
           [__props.plain && unref(buttonType) == "warn", "uni-loading-plain-warn"],
@@ -16190,6 +16220,7 @@ const _sfc_main$x = /* @__PURE__ */ defineVaporComponent({
           )]);
           setProp(n8, "tabindex", _disabled ? -1 : 0);
           setAttr(n8, "aria-disabled", _disabled);
+          setAttr(n8, "data-mouse-hover", unref(mouseHoverEnabled));
         });
         setInsertionState(n8);
         createSlot(
@@ -16266,6 +16297,8 @@ const _sfc_main$w = /* @__PURE__ */ defineVaporComponent({
     var _a, _b;
     const props2 = __props;
     const { handleKeydown, handleKeyup, handleBlur } = createSpaceKeyHandlers(() => props2.disabled);
+    const { isLabelHovered, setLabelHovered } = createLabelHoverState();
+    let unregisterLabelChild = null;
     const attrs2 = useAttrs$1();
     const id2 = attrs2.id;
     const slots = useSlots();
@@ -16312,10 +16345,11 @@ const _sfc_main$w = /* @__PURE__ */ defineVaporComponent({
             dispatchLabelClick(element, event);
           }
         },
+        setLabelHovered,
         getDisabled: () => props2.disabled
       };
       if (labelCtx != null) {
-        labelCtx.register(target);
+        unregisterLabelChild = labelCtx.register(target);
       }
       if (id2 != null && id2.length > 0) {
         unregisterLabelTarget = registerLabelTarget(id2, target);
@@ -16325,9 +16359,8 @@ const _sfc_main$w = /* @__PURE__ */ defineVaporComponent({
       if (group != null) {
         group.unregister(toStringOrEmpty(props2.value));
       }
-      if (labelCtx != null) {
-        labelCtx.unregister(id2 || toStringOrEmpty(props2.value));
-      }
+      unregisterLabelChild == null ? void 0 : unregisterLabelChild();
+      unregisterLabelChild = null;
       unregisterLabelTarget == null ? void 0 : unregisterLabelTarget();
       unregisterLabelTarget = null;
     });
@@ -16359,6 +16392,7 @@ const _sfc_main$w = /* @__PURE__ */ defineVaporComponent({
           setClass(n2, ["uni-checkbox-view uni-checkbox-icon", unref(classes)(
             [_isChecked, "uni-checkbox-active"],
             [_disabled, "uni-checkbox-disabled"],
+            [unref(isLabelHovered), "uni-checkbox-hover"],
             [!_disabled && _isChecked, __props.checkboxActiveClass],
             [!_disabled && !_isChecked, __props.checkboxClass],
             [!_disabled, __props.iconClass]
@@ -16394,6 +16428,7 @@ const _sfc_main$w = /* @__PURE__ */ defineVaporComponent({
           setClass(n13, ["uni-checkbox-view uni-checkbox-icon", unref(classes)(
             [_isChecked, "uni-checkbox-active"],
             [_disabled, "uni-checkbox-disabled"],
+            [unref(isLabelHovered), "uni-checkbox-hover"],
             [!_disabled && _isChecked, __props.checkboxActiveClass],
             [!_disabled && !_isChecked, __props.checkboxClass],
             [!_disabled, __props.iconClass]
@@ -16775,14 +16810,18 @@ const _sfc_main$s = /* @__PURE__ */ defineVaporComponent({
     const { handleKeydown, handleKeyup, handleBlur } = createSpaceKeyHandlers(() => props2.disabled);
     const children = [];
     function register2(child2) {
-      if (child2.id && child2.id.length > 0) {
-        const idx = children.findIndex((c) => c.id === child2.id);
-        if (idx !== -1) {
-          children[idx] = child2;
-          return;
-        }
-      }
-      children.push(child2);
+      const index2 = child2.id ? children.findIndex((c) => c.id === child2.id) : -1;
+      if (index2 !== -1)
+        children[index2] = child2;
+      else
+        children.push(child2);
+      syncLabelHover();
+      return () => {
+        const index22 = children.indexOf(child2);
+        if (index22 !== -1)
+          children.splice(index22, 1);
+        syncLabelHover();
+      };
     }
     function unregister(id2) {
       if (!id2)
@@ -16790,6 +16829,7 @@ const _sfc_main$s = /* @__PURE__ */ defineVaporComponent({
       const idx = children.findIndex((c) => c.id === id2);
       if (idx !== -1) {
         children.splice(idx, 1);
+        syncLabelHover();
       }
     }
     const ctx = { register: register2, unregister };
@@ -16807,6 +16847,32 @@ const _sfc_main$s = /* @__PURE__ */ defineVaporComponent({
         return null;
       return children[0];
     }
+    const hoverSource = {};
+    let mouseInside = false;
+    let hoverTarget = null;
+    function syncLabelHover() {
+      var _a, _b;
+      const next2 = mouseInside && !props2.disabled ? findTarget() : null;
+      if (next2 === hoverTarget)
+        return;
+      (_a = hoverTarget == null ? void 0 : hoverTarget.setLabelHovered) == null ? void 0 : _a.call(hoverTarget, hoverSource, false);
+      hoverTarget = next2;
+      (_b = hoverTarget == null ? void 0 : hoverTarget.setLabelHovered) == null ? void 0 : _b.call(hoverTarget, hoverSource, true);
+    }
+    function handleMouseenter() {
+      mouseInside = true;
+      syncLabelHover();
+    }
+    function handleMouseleave() {
+      mouseInside = false;
+      syncLabelHover();
+    }
+    watch(() => [props2.for, props2.disabled], syncLabelHover);
+    const unsubscribeLabelTargets = subscribeLabelTargets(syncLabelHover);
+    onBeforeUnmount(() => {
+      unsubscribeLabelTargets();
+      handleMouseleave();
+    });
     const handleTap = (event) => {
       var _a;
       const eventTarget = event.target;
@@ -16842,6 +16908,8 @@ const _sfc_main$s = /* @__PURE__ */ defineVaporComponent({
     on$1(n0, "keydown", (e2) => unref(handleKeydown)(e2));
     on$1(n0, "keyup", (e2) => unref(handleKeyup)(e2));
     on$1(n0, "blur", (e2) => unref(handleBlur)(e2));
+    on$1(n0, "mouseenter", handleMouseenter);
+    on$1(n0, "mouseleave", handleMouseleave);
     on$1(n0, "click", handleTap);
     return n0;
   }
@@ -19852,6 +19920,8 @@ const _sfc_main$g = /* @__PURE__ */ defineVaporComponent({
     var _a, _b;
     const props2 = __props;
     const { handleKeydown, handleKeyup, handleBlur } = createSpaceKeyHandlers(() => props2.disabled);
+    const { isLabelHovered, setLabelHovered } = createLabelHoverState();
+    let unregisterLabelChild = null;
     const attrs2 = useAttrs$1();
     const id2 = attrs2.id;
     const slots = useSlots();
@@ -19919,19 +19989,19 @@ const _sfc_main$g = /* @__PURE__ */ defineVaporComponent({
             dispatchLabelClick(element, event);
           }
         },
+        setLabelHovered,
         getDisabled: () => props2.disabled
       };
       if (labelCtx != null) {
-        labelCtx.register(target);
+        unregisterLabelChild = labelCtx.register(target);
       }
       if (id2 != null && id2.length > 0) {
         unregisterLabelTarget = registerLabelTarget(id2, target);
       }
     });
     onUnmounted(() => {
-      if (labelCtx != null) {
-        labelCtx.unregister(id2 || toStringOrEmpty(props2.value));
-      }
+      unregisterLabelChild == null ? void 0 : unregisterLabelChild();
+      unregisterLabelChild = null;
       unregisterLabelTarget == null ? void 0 : unregisterLabelTarget();
       unregisterLabelTarget = null;
     });
@@ -19953,6 +20023,7 @@ const _sfc_main$g = /* @__PURE__ */ defineVaporComponent({
           const _isChecked = unref(isChecked);
           setClass(n2, ["uni-radio-view uni-radio-icon", unref(classes)(
             [_disabled, "uni-radio-disabled"],
+            [unref(isLabelHovered), "uni-radio-hover"],
             [!_disabled && _isChecked, "uni-radio-active"],
             [!_disabled && _isChecked, __props.radioActiveClass],
             [!_disabled && !_isChecked, __props.radioClass],
@@ -19988,6 +20059,7 @@ const _sfc_main$g = /* @__PURE__ */ defineVaporComponent({
           setAttr(n8, "aria-disabled", _disabled);
           setClass(n13, ["uni-radio-view uni-radio-icon", unref(classes)(
             [_disabled, "uni-radio-disabled"],
+            [unref(isLabelHovered), "uni-radio-hover"],
             [!_disabled && _isChecked, "uni-radio-active"],
             [!_disabled && _isChecked, __props.radioActiveClass],
             [!_disabled && !_isChecked, __props.radioClass],

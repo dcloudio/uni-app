@@ -25,7 +25,12 @@
 }
 
 @media (hover: hover) {
-  .uni-radio-view:not(.uni-radio-disabled):not(.uni-radio-active):hover {
+  .uni-radio-view:not(.uni-radio-disabled):not(.uni-radio-active):hover,
+  .uni-radio:hover
+    > .uni-radio-view:not(.uni-radio-disabled):not(.uni-radio-active),
+  .uni-radio-view.uni-radio-hover:not(.uni-radio-disabled):not(
+      .uni-radio-active
+    ) {
     border-color: #007aff;
   }
 }
