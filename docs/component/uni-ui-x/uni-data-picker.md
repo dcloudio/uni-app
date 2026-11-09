@@ -176,7 +176,7 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-data-pick
 
 ### externalClass
 
-`uni-data-picker` 可通过 `input-class`、`error-class` 自定义输入框和错误提示，通过 `popup-class`、`cover-class` 自定义弹出框和遮罩层：
+`uni-data-picker` 可通过 `input-class`、`error-class` 自定义输入框和错误提示，通过 `popup-class`、`mask-class` 自定义弹出框和遮罩层（`cover-class` 为旧命名，仍兼容，建议改用 `mask-class`）：
 
 ```html
 <uni-data-picker
@@ -185,7 +185,7 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-data-pick
   input-class="demo-picker-input"
   error-class="demo-picker-error"
   popup-class="demo-picker-popup"
-  cover-class="demo-picker-cover"
+  mask-class="demo-picker-mask"
 />
 ```
 
@@ -242,11 +242,12 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-data-pick
 | input-class | String | '' | externalClass，输入框容器样式 |
 | error-class | String | '' | externalClass，错误提示文字样式 |
 | popup-class | String | '' | externalClass，弹出框容器样式 |
-| cover-class | String | '' | externalClass，遮罩层样式 |
+| mask-class | String | '' | externalClass，遮罩层样式 |
+| cover-class | String | '' | externalClass，遮罩层样式（已废弃，请使用 `mask-class`） |
 
 #### uni-data-picker-view
 
-`uni-data-picker-view` 支持上述除 `placeholder`、`popup-title`、`readonly`、`split`、`input-class`、`popup-class`、`cover-class` 之外的公共数据属性，另外支持：
+`uni-data-picker-view` 支持上述除 `placeholder`、`popup-title`、`readonly`、`split`、`input-class`、`popup-class`、`mask-class`、`cover-class` 之外的公共数据属性，另外支持：
 
 | 属性名 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
@@ -368,6 +369,7 @@ Web: 5.33; Android: 5.33; iOS: 5.33; HarmonyOS: 5.33
 | errorClass | string([string.ClassString](/uts/data-type.md#ide-string)) |
 | popupTitle | string |
 | popupClass | string([string.ClassString](/uts/data-type.md#ide-string)) |
+| maskClass | string([string.ClassString](/uts/data-type.md#ide-string)) |
 | coverClass | string([string.ClassString](/uts/data-type.md#ide-string)) |
 | @popupopened | Event |
 | @popupclosed | Event |
