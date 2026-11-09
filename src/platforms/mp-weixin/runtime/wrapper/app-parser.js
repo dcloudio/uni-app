@@ -10,14 +10,20 @@ function addLeadingSlash (path) {
 }
 
 export default function parseApp (vm) {
-  const appOptions = parseBaseApp(vm, {
+  if (__PLATFORM__ === 'mp-weixin') {
+    const appOptions = parseBaseApp(vm, {
+      mocks,
+      initRefs
+    })
+    appOptions.restart = function restart (options = {}) {
+      wx.restartMiniProgram({
+        path: options.url || addLeadingSlash(wx.getLaunchOptionsSync().path)
+      })
+    }
+    return appOptions
+  }
+  return parseBaseApp(vm, {
     mocks,
     initRefs
   })
-  appOptions.restart = function restart (options = {}) {
-    wx.restartMiniProgram({
-      path: options.url || addLeadingSlash(wx.getLaunchOptionsSync().path)
-    })
-  }
-  return appOptions
 }
