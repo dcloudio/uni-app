@@ -68,19 +68,19 @@ Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS
 restart
 重启应用
 ##### restart 兼容性 <Help /> 
-Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.31; iOS(VDOM): x; iOS(Vapor): 5.31; HarmonyOS: x
+Web: x; 微信小程序: 5.36; Android(VDOM): x; Android(Vapor): 5.31; iOS(VDOM): x; iOS(Vapor): 5.31; HarmonyOS: x
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **UniAppRestartOptions** | 否 | Web: x; 微信小程序: x; HarmonyOS: x |
+| options | **UniAppRestartOptions** | 否 | Web: x; HarmonyOS: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| url | string | 否 | Web: x; 微信小程序: x; HarmonyOS: x | 重启直达页面路径。路径后可以带参数，参数与路径之间使用 ? 分隔，参数键与参数值用 = 相连，不同参数用 & 分隔，如 'path?key=value&key2=value2' | 
+| url | string | 否 | Web: x; HarmonyOS: x | 重启直达页面路径。路径后可以带参数，参数与路径之间使用 ? 分隔，参数键与参数值用 = 相连，不同参数用 & 分隔，如 'path?key=value&key2=value2' | 
 
 
  
