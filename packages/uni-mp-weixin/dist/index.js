@@ -1058,6 +1058,10 @@ var getAppAuthorizeSetting = {
 
 // import navigateTo from 'uni-helpers/navigate-to'
 
+const exit = {
+  name: 'exitMiniProgram'
+};
+
 const compressImage = {
   args (fromArgs) {
     // https://developers.weixin.qq.com/community/develop/doc/000c08940c865011298e0a43256800?highLine=compressHeight
@@ -1071,6 +1075,7 @@ const compressImage = {
 };
 
 const protocols = {
+  exit,
   redirectTo,
   // navigateTo,  // 由于在微信开发者工具的页面参数，会显示__id__参数，因此暂时关闭mp-weixin对于navigateTo的AOP
   previewImage,
@@ -2433,11 +2438,23 @@ function getLocaleLanguage$1 () {
   return localeLanguage
 }
 
+function addLeadingSlash (path) {
+  return path.charAt(0) === '/' ? path : '/' + path
+}
+
 function parseApp (vm) {
-  return parseBaseApp(vm, {
-    mocks,
-    initRefs
-  })
+  {
+    const appOptions = parseBaseApp(vm, {
+      mocks,
+      initRefs
+    });
+    appOptions.restart = function restart (options = {}) {
+      wx.restartMiniProgram({
+        path: options.url || addLeadingSlash(wx.getLaunchOptionsSync().path)
+      });
+    };
+    return appOptions
+  }
 }
 
 function createApp (vm) {
