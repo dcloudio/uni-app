@@ -1,5 +1,8 @@
 import {
   type ComponentPublicInstance,
+  //#if _X_VAPOR_
+  type EffectScope,
+  //#endif
   ref,
   //#if _X_VAPOR_
   watch,
@@ -26,7 +29,9 @@ export function initAppVm(appVm: ComponentPublicInstance) {
   Object.defineProperty(appVm, '$watchLocale', {
     configurable: true,
     value(callback: (locale: string) => void) {
-      return appVm.$.scope.run(() =>
+      // scope 是 Vue 内部字段，发布的 ComponentInternalInstance 类型未暴露它。
+      const scope = (appVm.$ as typeof appVm.$ & { scope: EffectScope }).scope
+      return scope.run(() =>
         // 先更新翻译器语言，再让读取 $locale 的组件刷新，避免显示上一种语言。
         watch(locale, callback, { flush: 'sync' })
       )
