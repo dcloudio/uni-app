@@ -62,7 +62,9 @@ manifest的结构，在uni-app x中与uni-app略有不同。需要把原来manif
 
 老项目的pages.json可以直接挪过来使用。结构没有差别，只是uni-app x的pages.json中不再支持plus，多支持了一些新的页面style和tabbar的属性。[详见](./collocation/pagesjson.md)
 
-老项目的`main.js`和`app.vue`，挑选内容复制到新项目中对应的新文件中。
+老项目的`index.html`、`main.js`和`app.vue`，挑选内容复制到新项目中对应的新文件中。
+
+常见的比如`index.html`里可能有网站图标、PWA设置，需要复制到新的`index.html`里。`main.js`可能有全局方法，也需要复制。
 
 uni-app x 的app.uvue对比老 uni-app 有2个变化：
 	
