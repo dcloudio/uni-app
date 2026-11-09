@@ -21,8 +21,8 @@
       * [movable-area | 可拖动区域](movable-area.md)
       * [movable-view | 可拖动视图容器](movable-view.md)
     * cover
-      * [~~cover-view~~](cover-view.md)
-      * [~~cover-image~~](cover-image.md)
+      * [cover-view](cover-view.md)
+      * [cover-image](cover-image.md)
   * 基础内容
     * [icon | 图标](icon.md)
     * [text | 文本](text.md)
@@ -76,7 +76,7 @@
   * [uni-badge-view | 数字角标](./uni-ui-x/uni-badge-view.md)
   * [uni-collapse | 折叠面板容器](./uni-ui-x/uni-collapse.md)
   * [uni-combobox | 组合框](./uni-ui-x/uni-combobox.md)
-  * [~~uni-combox | 组合框~~](./uni-ui-x/uni-combox.md)
+  * [uni-combox | 组合框 (已废弃)](./uni-ui-x/uni-combox.md)
   * [uni-data-picker | 级联选择器](./uni-ui-x/uni-data-picker.md)
   * [uni-data-checkbox | 枚举类平铺型选择器](./uni-ui-x/uni-data-checkbox.md)
   * [uni-data-vertical-marquee | 上下滚动文字](./uni-ui-x/uni-data-vertical-marquee.md)
