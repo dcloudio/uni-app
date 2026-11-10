@@ -76,6 +76,7 @@ uni-ui x 没有写死的颜色和文字:
 | uni-number-box			| [数字输入框](https://ext.dcloud.net.cn/plugin?name=uni-number-box-x)		|
 | uni-rate						| [评分](https://ext.dcloud.net.cn/plugin?name=uni-rate-x)								|
 | uni-refresh-box			| [uni-refresh-box](https://ext.dcloud.net.cn/plugin?name=uni-refresh-box)|
+| uni-sidebar				| [侧边滚动导航](https://ext.dcloud.net.cn/plugin?name=uni-sidebar)			|
 | uni-tab							| [选项卡](https://ext.dcloud.net.cn/plugin?name=uni-tab-bar)							|
 | uni-time-format			| [时间格式化](https://ext.dcloud.net.cn/plugin?name=uni-time-format)			|
 <!-- 组件列表结束 -->
