@@ -393,6 +393,8 @@
   let cachedDecimalPlaces = -1 // 缓存 step 小数位数，-1表示未缓存
   let cachedStep = props.step // 缓存 step 值，便于检测变化
   let lastValue = 0 // 用于判断是否触发 change
+  let latestTouchClientX = 0
+  let isTouchActive = false
   // #ifdef WEB
   const thumbTranslateX = ref(0)
   const trackActiveScaleX = ref(0)
@@ -442,6 +444,8 @@
     }
     ticking = false
     isDragging.value = false
+    _activeStatus = 0
+    isTouchActive = false
     lastValue = currentValue.value
     // #ifdef WEB
     releasePointerCapture()
@@ -464,13 +468,19 @@
 
   // 获取数字的小数位数
   function getDecimalPlaces(num : number) : number {
-    if (num == 0) return 0
-    if (cachedStep !== num || cachedDecimalPlaces == -1) {
-      const str = num.toString()
-      const decimalIndex = str.indexOf('.')
-      if (decimalIndex == -1) cachedDecimalPlaces = 0
-      cachedDecimalPlaces = str.length - decimalIndex - 1
+    if (!Number.isFinite(num) || num == 0) return 0
+    if (cachedStep == num && cachedDecimalPlaces != -1) {
+      return cachedDecimalPlaces
     }
+
+    const parts = num.toString().toLowerCase().split('e')
+    const decimalIndex = parts[0].indexOf('.')
+    const mantissaDecimalPlaces = decimalIndex == -1
+      ? 0
+      : parts[0].length - decimalIndex - 1
+    const exponent = parts.length > 1 ? Number(parts[1]) : 0
+    cachedStep = num
+    cachedDecimalPlaces = Math.max(0, mantissaDecimalPlaces - exponent)
     return cachedDecimalPlaces
   }
 
@@ -520,16 +530,17 @@
   function renderVisuals(newValue : number) {
     // 1. 边界限制（使用有效最大值）
     const min = Number.isFinite(props.min) ? props.min : 0
-    const max = Number.isFinite(effectiveMax.value) ? effectiveMax.value : min
-    const clampedValue = Number.isFinite(newValue) ? Math.max(min, Math.min(newValue, max)) : min
+    const valueMax = Number.isFinite(effectiveMax.value) ? effectiveMax.value : min
+    const visualMax = Number.isFinite(props.max) ? props.max : min
+    const clampedValue = Number.isFinite(newValue) ? Math.max(min, Math.min(newValue, valueMax)) : min
     currentValue.value = clampedValue
 
-    // 2. 使用 value、min、max 计算比例（不依赖布局信息）
-    const range = max - min
+    // 2. 使用原始 max 计算比例，使未被 step 整除的 max 保留末端空白
+    const range = visualMax - min
     const percentage = range > 0 ? (clampedValue - min) / range : 0
 
-    // 3. 填充条缩放比例（减去微小值避免边界问题）
-    const fillScale = percentage - 0.001
+    // 3. 填充条缩放比例限制在有效范围内
+    const fillScale = Math.max(0, Math.min(1, percentage))
 
     applyVisualPosition(percentage, fillScale)
 
@@ -576,11 +587,13 @@
 
     // 记录触摸起始位置
     if (e.touches.length > 0) {
+      isTouchActive = true
       lastValue = currentValue.value
       // 重置激活状态
       _activeStatus = 0
       touchStartX = e.touches[0].clientX
       touchStartY = e.touches[0].clientY
+      latestTouchClientX = touchStartX
 
       // 缓存轨道尺寸
       const containerEl = containerRef.value
@@ -594,15 +607,16 @@
 
   // 触摸结束
   function handleTouchEnd(e : UniTouchEvent) {
-    if (_activeStatus == 0 && e.changedTouches.length > 0) {
+    const hasSliderInteraction = isTouchActive && _activeStatus != -1
+    if (!props.disabled && hasSliderInteraction && e.changedTouches.length > 0) {
       const newValue = calculateValue(e.changedTouches[0].clientX)
       renderVisuals(newValue)
     }
 
-    if (lastValue !== currentValue.value) {
-      emit('change', new UniSliderChangeEvent(currentValue.value))
-    }
+    const value = currentValue.value
+    const changed = !props.disabled && hasSliderInteraction && lastValue !== value
     resetInteractionState()
+    if (changed) emit('change', new UniSliderChangeEvent(value))
   }
 
   function handleTouchCancel() {
@@ -611,7 +625,7 @@
 
   // 触摸移动处理
   function handleTouchMove(e : UniTouchEvent) {
-    if (props.disabled == true) {
+    if (props.disabled == true || !isTouchActive) {
       return
     }
 
@@ -626,6 +640,7 @@
         if (deltaX > deltaY) {
           // 水平滑动，激活 slider
           _activeStatus = 1
+          isDragging.value = true
         } else {
           // 垂直滑动，不激活 slider，让页面滚动
           _activeStatus = -1
@@ -641,20 +656,22 @@
     if (_activeStatus != 1) {
       return
     }
+    if (e.touches.length == 0) {
+      return
+    }
 
     preventDefaultEvent(e)
+    latestTouchClientX = e.touches[0].clientX
 
     if (ticking == false) {
       rafId = requestAnimationFrame(() => {
-        if (e.touches.length > 0) {
-          const newValue = calculateValue(e.touches[0].clientX)
-          if (newValue === currentValue.value) {
-            ticking = false
-            return
-          }
-          renderVisuals(newValue)
-          emit('changing', new UniSliderChangeEvent(currentValue.value))
+        const newValue = calculateValue(latestTouchClientX)
+        if (newValue === currentValue.value) {
+          ticking = false
+          return
         }
+        renderVisuals(newValue)
+        emit('changing', new UniSliderChangeEvent(currentValue.value))
         ticking = false
       })
       ticking = true

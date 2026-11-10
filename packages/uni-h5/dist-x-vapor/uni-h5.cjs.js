@@ -11406,6 +11406,7 @@ const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
       }
       ticking = false;
       isDragging.value = false;
+      _activeStatus = 0;
       lastValue = currentValue.value;
       releasePointerCapture();
     }
@@ -11414,15 +11415,17 @@ const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
       return start * (1 - clampedT) + end * clampedT;
     }
     function getDecimalPlaces(num) {
-      if (num == 0)
+      if (!Number.isFinite(num) || num == 0)
         return 0;
-      if (cachedStep !== num || cachedDecimalPlaces == -1) {
-        const str = num.toString();
-        const decimalIndex = str.indexOf(".");
-        if (decimalIndex == -1)
-          cachedDecimalPlaces = 0;
-        cachedDecimalPlaces = str.length - decimalIndex - 1;
+      if (cachedStep == num && cachedDecimalPlaces != -1) {
+        return cachedDecimalPlaces;
       }
+      const parts = num.toString().toLowerCase().split("e");
+      const decimalIndex = parts[0].indexOf(".");
+      const mantissaDecimalPlaces = decimalIndex == -1 ? 0 : parts[0].length - decimalIndex - 1;
+      const exponent = parts.length > 1 ? Number(parts[1]) : 0;
+      cachedStep = num;
+      cachedDecimalPlaces = Math.max(0, mantissaDecimalPlaces - exponent);
       return cachedDecimalPlaces;
     }
     function applyStepPrecision(value) {
@@ -11442,12 +11445,13 @@ const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
     }
     function renderVisuals(newValue) {
       const min = Number.isFinite(props2.min) ? props2.min : 0;
-      const max = Number.isFinite(effectiveMax.value) ? effectiveMax.value : min;
-      const clampedValue = Number.isFinite(newValue) ? Math.max(min, Math.min(newValue, max)) : min;
+      const valueMax = Number.isFinite(effectiveMax.value) ? effectiveMax.value : min;
+      const visualMax = Number.isFinite(props2.max) ? props2.max : min;
+      const clampedValue = Number.isFinite(newValue) ? Math.max(min, Math.min(newValue, valueMax)) : min;
       currentValue.value = clampedValue;
-      const range = max - min;
+      const range = visualMax - min;
       const percentage = range > 0 ? (clampedValue - min) / range : 0;
-      const fillScale = percentage - 1e-3;
+      const fillScale = Math.max(0, Math.min(1, percentage));
       applyVisualPosition(percentage, fillScale);
     }
     function calculateValue(clientX) {

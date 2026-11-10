@@ -12400,12 +12400,13 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
     }
     function renderVisuals(newValue) {
       const min = Number.isFinite(props2.min) ? props2.min : 0;
-      const max = Number.isFinite(effectiveMax.value) ? effectiveMax.value : min;
-      const clampedValue = Number.isFinite(newValue) ? Math.max(min, Math.min(newValue, max)) : min;
+      const valueMax = Number.isFinite(effectiveMax.value) ? effectiveMax.value : min;
+      const visualMax = Number.isFinite(props2.max) ? props2.max : min;
+      const clampedValue = Number.isFinite(newValue) ? Math.max(min, Math.min(newValue, valueMax)) : min;
       currentValue.value = clampedValue;
-      const range = max - min;
+      const range = visualMax - min;
       const percentage = range > 0 ? (clampedValue - min) / range : 0;
-      const fillScale = percentage - 1e-3;
+      const fillScale = Math.max(0, Math.min(1, percentage));
       applyVisualPosition(percentage, fillScale);
     }
     function handleResize() {
