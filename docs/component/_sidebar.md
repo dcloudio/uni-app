@@ -83,7 +83,7 @@
   * [uni-data-vertical-marquee | 上下滚动文字](./uni-ui-x/uni-data-vertical-marquee.md)
   * [uni-drag-cell | 可拖拽排序](./uni-ui-x/uni-drag-cell.md)
   * [uni-expandable-text | 可折叠文本](./uni-ui-x/uni-expandable-text.md)
-  * [uni-easyinput | 增强输入框](./uni-ui-x/uni-easyinput.md)
+  <!-- * [uni-easyinput | 增强输入框](./uni-ui-x/uni-easyinput.md) -->
   * [uni-fab-button | 悬浮按钮](./uni-ui-x/uni-fab-button.md)
   * [uni-forms | 表单](./uni-ui-x/uni-forms.md)
   * [uni-icons | 字体图标](./uni-ui-x/uni-icons.md)
