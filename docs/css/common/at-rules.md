@@ -79,10 +79,11 @@ unicode直显方式的性能优于伪元素方式，尤其是text组件设置fla
 <text style="font-family: UniFontFamily;">&#xe100;</text>
 ```
 
-### App平台内置字体图标 uni-icon @uniicon
-> HBuilderX4.33+
+### 内置字体图标 uni-icon @uniicon
+> App 平台：HBuilderX 4.33+
+> Web、小程序：HBuilderX 5.36+
 
-app平台的内置组件和API用到了一些字体，同时共享出来给开发者，也可以使用这些内置字体。
+内置组件和API用到了一些字体，同时共享出来给开发者，也可以使用这些内置字体。
 
 内置 `uni-icon` 字体图标示例：
 ```html
@@ -98,7 +99,18 @@ app平台的内置组件和API用到了一些字体，同时共享出来给开�
 </script>
 ```
 
-内置 `uni-icon` 包括以下图标：
+Web 平台自 HBuilderX 5.36 起仅支持以下 6 个 `uni-icon` 图标：
+
+|名称|code|Unicode|
+|:-:|:-:|:-:|
+|back|E601|`\ue601`|
+|close|E650|`\ue650`|
+|info|EA03|`\uea03`|
+|success_no_circle|EA08|`\uea08`|
+|warn|EA0F|`\uea0f`|
+|search|EA23|`\uea23`|
+
+App 平台内置 `uni-icon` 完整列表如下：
 
 <div class="iconSample">
   <div class="iconContainer">
@@ -121,7 +133,6 @@ app平台的内置组件和API用到了一些字体，同时共享出来给开�
 </div>
 
 - 注意：
-App内置图标，在小程序和web无法使用。在这些平台需要单独引入字体图标库。\
 内置图标中，forward、back、down、circle，这4个图标已经不再推荐使用。后续会移除。
 因为这4个图标可以通过view的边框配合transform旋转实现，view方案性能更高且全平台支持。
 
