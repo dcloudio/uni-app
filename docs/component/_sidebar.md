@@ -77,13 +77,12 @@
   * [uni-backarrow-circle | 圆形返回按钮](./uni-ui-x/uni-backarrow-circle.md)
   * [uni-collapse | 折叠面板容器](./uni-ui-x/uni-collapse.md)
   * [uni-combobox | 组合框](./uni-ui-x/uni-combobox.md)
-  * [uni-combox | 组合框 (已废弃)](./uni-ui-x/uni-combox.md)
-  * [uni-data-picker | 级联选择器](./uni-ui-x/uni-data-picker.md)
   * [uni-data-checkbox | 枚举类平铺型选择器](./uni-ui-x/uni-data-checkbox.md)
+  * [uni-data-picker | 级联选择器](./uni-ui-x/uni-data-picker.md)
   * [uni-data-vertical-marquee | 上下滚动文字](./uni-ui-x/uni-data-vertical-marquee.md)
   * [uni-drag-cell | 可拖拽排序](./uni-ui-x/uni-drag-cell.md)
-  * [uni-expandable-text | 可折叠文本](./uni-ui-x/uni-expandable-text.md)
   * [uni-easyinput | 增强输入框](./uni-ui-x/uni-easyinput.md)
+  * [uni-expandable-text | 可折叠文本](./uni-ui-x/uni-expandable-text.md)
   * [uni-fab-button | 悬浮按钮](./uni-ui-x/uni-fab-button.md)
   * [uni-forms | 表单](./uni-ui-x/uni-forms.md)
   * [uni-icons | 字体图标](./uni-ui-x/uni-icons.md)
@@ -94,8 +93,8 @@
   * [uni-rate | 评分](./uni-ui-x/uni-rate.md)
   * [uni-refresh-box | 自定义下拉刷新](./uni-ui-x/uni-refresh-box.md)
   * [uni-sidebar | 侧边滚动导航](./uni-ui-x/uni-sidebar.md)
-  * [uni-time-format | 时间格式化](./uni-ui-x/uni-time-format.md)
   * [uni-tab-bar | 选项卡容器](./uni-ui-x/uni-tab.md)
+  * [uni-time-format | 时间格式化](./uni-ui-x/uni-time-format.md)
 * 微信专用组件
   * Skyline
     * 手势系统
