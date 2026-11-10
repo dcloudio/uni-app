@@ -236,6 +236,16 @@
     syncFromProp(normalizeValue(newValue))
   }, { deep: true })
 
+  watch(itemHeight, () => {
+    setTimeout(() => {
+      // indicatorStyle 高度变化只调整滚动位置，不重置选中值或触发 change。
+      for (let i = 0; i < columns.length; i++) {
+        const api = columns[i]
+        api.setScrollTop(api.getIndex())
+      }
+    }, 0)
+  }, { flush: 'post' })
+
   function registerColumn(api: PickerViewColumnApi): number {
     columns.push(api)
     const idx = columns.length - 1
