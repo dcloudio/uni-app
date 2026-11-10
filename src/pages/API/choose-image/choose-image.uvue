@@ -1,98 +1,98 @@
 <template>
   <page-head :title="title"></page-head>
-  <view class="mt-15">
-    <view class="bg-list-fff pos-relative d-flex flex-dir-column border-b-1-solid-c8c7cc-dark-3a3a3c">
-      <view class="pos-relative d-flex flex-dir-row justify-between items-center p-11-15">
-        <text class="p-0-15-0-10 w-105">
+  <view class="uni-common-mt">
+    <view class="uni-list">
+      <view class="uni-list-cell cell-pd">
+        <text class="uni-list-cell-left uni-label">
           图片来源
         </text>
-        <view class="flex-1 vapor-color-text-333" @click="chooseImageSource">
-          <text class="color-a9a9a9">{{sourceType[sourceTypeIndex]}}</text>
+        <view class="uni-list-cell-right" @click="chooseImageSource">
+          <text class="click-t">{{sourceType[sourceTypeIndex]}}</text>
         </view>
       </view>
 
-      <view class="pos-relative d-flex flex-dir-row justify-between items-center p-11-15">
-        <text class="p-0-15-0-10 w-105">
+      <view class="uni-list-cell cell-pd">
+        <text class="uni-list-cell-left uni-label">
           图片质量
         </text>
-        <view class="flex-1 vapor-color-text-333" @click="chooseImageType">
-          <text class="color-a9a9a9">{{sizeType[sizeTypeIndex]}}</text>
+        <view class="uni-list-cell-right" @click="chooseImageType">
+          <text class="click-t">{{sizeType[sizeTypeIndex]}}</text>
         </view>
       </view>
 
-      <view class="pos-relative d-flex flex-dir-row justify-between items-center p-11-15">
-        <text class="p-0-15-0-10 w-105">
+      <view class="uni-list-cell cell-pd">
+        <text class="uni-list-cell-left uni-label">
           数量限制
         </text>
-        <view class="flex-1 vapor-color-text-333">
-          <input class="color-a9a9a9" :value="count" type="number" :maxlength="1" @blur="chooseImageCount" />
+        <view class="uni-list-cell-right">
+          <input class="click-t" :value="count" type="number" :maxlength="1" @blur="chooseImageCount" />
         </view>
       </view>
       <!-- #ifdef APP-ANDROID || APP-IOS -->
-      <view class="pos-relative d-flex flex-dir-row justify-between items-center p-11-15">
-        <text class="p-0-15-0-10 w-105">
+      <view class="uni-list-cell cell-pd">
+        <text class="uni-list-cell-left uni-label">
           屏幕方向
         </text>
-        <view class="flex-1 vapor-color-text-333" @click="chooseOrientationType">
-          <text class="color-a9a9a9">{{orientationType[orientationTypeIndex]}}</text>
+        <view class="uni-list-cell-right" @click="chooseOrientationType">
+          <text class="click-t">{{orientationType[orientationTypeIndex]}}</text>
         </view>
       </view>
       <!-- #endif -->
       <!-- #ifdef APP-ANDROID -->
-      <view class="pos-relative d-flex flex-dir-row justify-between items-center p-11-15">
-        <text class="p-0-15-0-10 w-105">
+      <view class="uni-list-cell cell-pd">
+        <text class="uni-list-cell-left uni-label">
           相册模式
         </text>
-        <view class="flex-1 vapor-color-text-333" @click="albumModeChange">
-          <text class="color-a9a9a9">{{albumModeType[albumModeTypeIndex]}}</text>
+        <view class="uni-list-cell-right" @click="albumModeChange">
+          <text class="click-t">{{albumModeType[albumModeTypeIndex]}}</text>
         </view>
       </view>
       <!-- #endif -->
       <boolean-data :value="isCrop" title="图像裁剪" @change="switchCrop"></boolean-data>
-      <view ref="cropOptionNode" class="radius-11 crop-option transition-duration-200"
+      <view ref="cropOptionNode" class="crop-option"
         :style="{'height':isCrop?'200px':'0px','margin-bottom':isCrop?'11px':'0px'}">
-        <view class="pos-relative d-flex flex-dir-row justify-between items-center p-11-15">
-          <view class="p-0-15-0-10 item_width color-text-333">
+        <view class="uni-list-cell cell-pd">
+          <view class="uni-list-cell-left item_width crop-option-label">
             图片质量(%)
           </view>
-          <view class="flex-1 vapor-color-text-333">
-            <input class="crop-option-input color-text-333" :value="cropPercent" @confirm="cropPercentConfim" type="number" :maxlength="-1" />
+          <view class="uni-list-cell-right">
+            <input class="crop-option-input" :value="cropPercent" @confirm="cropPercentConfim" type="number" :maxlength="-1" />
           </view>
         </view>
-        <view class="pos-relative d-flex flex-dir-row justify-between items-center p-11-15">
-          <view class="p-0-15-0-10 item_width color-text-333">
+        <view class="uni-list-cell cell-pd">
+          <view class="uni-list-cell-left item_width crop-option-label">
             裁剪宽度(px)
           </view>
-          <view class="flex-1 vapor-color-text-333">
-            <input class="crop-option-input color-text-333" :value="cropWidth" @confirm="cropWidthConfim" type="number" :maxlength="-1" />
+          <view class="uni-list-cell-right">
+            <input class="crop-option-input" :value="cropWidth" @confirm="cropWidthConfim" type="number" :maxlength="-1" />
           </view>
         </view>
-        <view class="pos-relative d-flex flex-dir-row justify-between items-center p-11-15">
-          <view class="p-0-15-0-10 item_width color-text-333">
+        <view class="uni-list-cell cell-pd">
+          <view class="uni-list-cell-left item_width crop-option-label">
             裁剪高度(px)
           </view>
-          <view class="flex-1 vapor-color-text-333">
-            <input class="crop-option-input color-text-333" :value="cropHeight" @confirm="cropHeightConfim" type="number" :maxlength="-1" />
+          <view class="uni-list-cell-right">
+            <input class="crop-option-input" :value="cropHeight" @confirm="cropHeightConfim" type="number" :maxlength="-1" />
           </view>
         </view>
         <boolean-data :value="cropResize" title="保留原宽高" @change="cropResizeChange"></boolean-data>
       </view>
     </view>
 
-    <view class="bg-list-fff pos-relative d-flex flex-dir-column border-b-1-solid-c8c7cc-dark-3a3a3c mt-25 u-p-15">
-      <view class="flex-dir-row mb-10">
-        <view class="p-0-15-0-10">点击可预览选好的图片</view>
-        <view class="ml-auto">
-          <text class="color-a9a9a9">{{imageList.length}}/{{count}}</text>
+    <view class="uni-list list-pd" style="padding: 15px;">
+      <view class="uni-row" style="margin-bottom: 10px;">
+        <view class="uni-list-cell-left">点击可预览选好的图片</view>
+        <view style="margin-left: auto;">
+          <text class="click-t">{{imageList.length}}/{{count}}</text>
         </view>
       </view>
-      <view class="flex-wrap-wrap flex-dir-row">
-        <view v-for="(image,index) in imageList" :key="index" class="w-104 h-104 m-5 border-0">
-          <image class="w-104 h-104" :src="image" @tap="previewImage(index)">
+      <view class="uni-row" style="flex-wrap: wrap;">
+        <view v-for="(image,index) in imageList" :key="index" class="uni-uploader__input-box" style="border: 0;">
+          <image style="width: 104px; height: 104px;" :src="image" @tap="previewImage(index)">
           </image>
-          <image src="/static/plus.png" class="transform-rotate-45deg w-25 h-25 pos-absolute top-0 right-0 radius-13 bg-rgba-200-200-200-0_8" @click="removeImage(index)"></image>
+          <image src="/static/plus.png" class="image-remove" @click="removeImage(index)"></image>
         </view>
-        <image class="w-104 h-104 m-5 border-1-solid-d9d9d9" @tap="chooseImage" src="/static/plus.png"></image>
+        <image class="uni-uploader__input-box" @tap="chooseImage" src="/static/plus.png"></image>
       </view>
     </view>
   </view>
@@ -296,6 +296,46 @@ const previewImage = (index: number) => {
 </script>
 
 <style>
+  .cell-pd {
+    padding: 11px 15px;
+  }
+
+  .click-t {
+    color: darkgray;
+  }
+
+  .list-pd {
+    margin-top: 25px;
+  }
+
+  .uni-uploader__input-box {
+    margin: 5px;
+    width: 104px;
+    height: 104px;
+    border: 1px solid #D9D9D9;
+  }
+
+  .uni-uploader__input {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+  }
+
+  .image-remove {
+    transform: rotate(45deg);
+    width: 25px;
+    height: 25px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-radius: 13px;
+    background-color: rgba(200, 200, 200, 0.8);
+  }
+
   .item_width {
     width: 130px;
   }
@@ -303,8 +343,15 @@ const previewImage = (index: number) => {
   .crop-option {
     margin-left: 11px;
     margin-right: 11px;
+    border-radius: 11px;
     background-color: var(--active-background-color, #eee);
     transition-property: height, margin-bottom;
+    transition-duration: 200ms;
+  }
+
+  .crop-option-label,
+  .crop-option-input {
+    color: var(--text-color, #333333);
   }
 
   @media (prefers-color-scheme: dark) {

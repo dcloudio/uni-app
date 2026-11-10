@@ -1,9 +1,9 @@
 <template>
-    <view class="flex-grow-1">
-      <text class="fs-13 color-tips-0958d9 bg-tips-e6f4ff border-l-4-solid-tips-91caff p-10-12 radius-4 m-10">说明：左边是正常版本，右边是拍平版本</text>
+    <view style="flex-grow: 1">
+      <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
       <view>
         <text>justify-content: center</text>
-        <view class="flex-dir-row justify-around mt-10">
+        <view class="demo-box">
           <view class="common" style="justify-content: center">
             <view class="flex-item red"></view>
             <view class="flex-item green"></view>
@@ -19,7 +19,7 @@
 
       <view>
         <text>justify-content: flex-start</text>
-        <view class="flex-dir-row justify-around mt-10">
+        <view class="demo-box">
           <view class="common" style="justify-content: flex-start">
             <view class="flex-item red"></view>
             <view class="flex-item green"></view>
@@ -35,7 +35,7 @@
 
       <view>
         <text>justify-content: flex-end</text>
-        <view class="flex-dir-row justify-around mt-10">
+        <view class="demo-box">
           <view class="common" style="justify-content: flex-end">
             <view class="flex-item red"></view>
             <view class="flex-item green"></view>
@@ -51,7 +51,7 @@
 
       <view>
         <text>justify-content: space-between</text>
-        <view class="flex-dir-row justify-around mt-10">
+        <view class="demo-box">
           <view class="common" style="justify-content: space-between">
             <view class="flex-item red"></view>
             <view class="flex-item green"></view>
@@ -67,7 +67,7 @@
 
       <view>
         <text>justify-content: space-around</text>
-        <view class="flex-dir-row justify-around mt-10">
+        <view class="demo-box">
           <view class="common" style="justify-content: space-around">
             <view class="flex-item red"></view>
             <view class="flex-item green"></view>
@@ -83,7 +83,7 @@
 
       <view>
         <text>justify-content: space-evenly </text>
-        <view class="flex-dir-row justify-around mt-10">
+        <view class="demo-box">
           <view class="common" style="justify-content: space-evenly">
             <view class="flex-item red"></view>
             <view class="flex-item green"></view>
@@ -97,13 +97,13 @@
         </view>
       </view>
 
-      <view class="mt-15">
-        <text class="fs-15 fw-bold color-text-333">scroll-view 组件</text>
+      <view class="uni-common-mt">
+        <text class="uni-title-text">scroll-view 组件</text>
       </view>
 
       <view>
-        <text class="color-888 fs-12 fw-bold u-mt-5">justify-content：center 和 space-between</text>
-        <view class="flex-dir-row justify-around mt-10">
+        <text class="uni-subtitle-text">justify-content：center 和 space-between</text>
+        <view class="demo-box">
           <scroll-view class="common" style="justify-content: center;" direction="horizontal">
             <view class="flex-item red"></view>
             <view class="flex-item green"></view>
@@ -117,18 +117,18 @@
         </view>
       </view>
 
-      <view class="mt-15">
-        <text class="fs-15 fw-bold color-text-333">setProperty 设置与 getPropertyValue 获取</text>
+      <view class="uni-common-mt">
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
-      <view class="flex-dir-row justify-around">
+      <view class="common-box">
         <!-- 普通版本 -->
-        <view class="mt-15">
-          <text class="fs-15 fw-bold color-text-333">justify-content</text>
-          <text class="fs-12 color-999">设置值: {{data.justifyContent}}</text>
-          <text class="fs-12 color-999">获取值: {{data.justifyContentActual}}</text>
+        <view class="uni-common-mt">
+          <text class="uni-title-text">justify-content</text>
+          <text class="uni-info">设置值: {{data.justifyContent}}</text>
+          <text class="uni-info">获取值: {{data.justifyContentActual}}</text>
           <view class="test-box">
-            <view ref="viewRef" class="test-flex-container" :style="{ justifyContent: data.justifyContent }">
+            <view ref="viewRef" class="test-flex-container test-view" :style="{ justifyContent: data.justifyContent }">
               <view class="test-item-small red"></view>
               <view class="test-item-small green"></view>
               <view class="test-item-small blue"></view>
@@ -137,12 +137,12 @@
         </view>
 
         <!-- 拍平版本 -->
-        <view class="mt-15">
-          <text class="fs-15 fw-bold color-text-333">拍平</text>
-          <text class="fs-12 color-999">设置值: {{data.justifyContent}}</text>
-          <text class="fs-12 color-999">获取值: {{data.justifyContentActualFlat}}</text>
+        <view class="uni-common-mt">
+          <text class="uni-title-text">拍平</text>
+          <text class="uni-info">设置值: {{data.justifyContent}}</text>
+          <text class="uni-info">获取值: {{data.justifyContentActualFlat}}</text>
           <view class="test-box">
-            <view ref="viewRefFlat" class="test-flex-container" :style="{ justifyContent: data.justifyContent }" flatten>
+            <view ref="viewRefFlat" class="test-flex-container test-view-flatten" :style="{ justifyContent: data.justifyContent }" flatten>
               <view class="test-item-small red"></view>
               <view class="test-item-small green"></view>
               <view class="test-item-small blue"></view>
@@ -151,8 +151,8 @@
         </view>
       </view>
 
-      <view class="mt-15 mb-15">
-        <text class="fs-13 color-tips-0958d9 bg-tips-e6f4ff border-l-4-solid-tips-91caff p-10-12 radius-4 m-10">第一个枚举值，'' (空字符串) - 空值情况</text>
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
           <enum-data-checkbox :items="justifyContentEnum" title="justify-content 枚举值" @change="radioChangeJustifyContent" :compact="true"></enum-data-checkbox>
         <input-data :defaultValue="data.justifyContent" title="justify-content 自定义值" type="text" @confirm="inputChangeJustifyContent"></input-data>
       </view>
@@ -219,6 +219,12 @@
 </script>
 
 <style>
+  .demo-box {
+    flex-direction: row;
+    margin-top: 10px;
+    justify-content: space-around;
+  }
+
   .flex-item {
     width: 40px;
     height: 40px;
@@ -242,6 +248,11 @@
     height: 80px;
     background-color: gray;
     flex-direction: row;
+  }
+
+  .common-box{
+    flex-direction: row;
+    justify-content: space-around;
   }
 
   .test-box {

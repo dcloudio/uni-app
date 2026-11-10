@@ -1,51 +1,51 @@
 <template>
     <page-head title="getApp"></page-head>
-    <view class="p-0-15">
+    <view class="uni-padding-wrap">
       <button @click="getGlobalData">get globalData</button>
       <template v-if="data.originGlobalData.str.length">
-        <text class="mt-15 fw-bold">初始的 globalData:</text>
-        <text class="mt-15">globalData string: {{ data.originGlobalData.str }}</text>
-        <text class="mt-15">globalData number: {{ data.originGlobalData.num }}</text>
-        <text class="mt-15">globalData boolean: {{ data.originGlobalData.bool }}</text>
-        <text class="mt-15">globalData object: {{ data.originGlobalData.obj }}</text>
-        <text class="mt-15">globalData null: {{ data.originGlobalData.null }}</text>
-        <text class="mt-15">globalData array: {{ data.originGlobalData.arr }}</text>
-        <text class="mt-15">globalData Set: {{ data.originGlobalData.set }}</text>
-        <text class="mt-15">globalData Map: {{ data.originGlobalData.map }}</text>
-        <text class="mt-15">globalData fun 返回值: {{ data.originGlobalDataFuncRes }}</text>
+        <text class="uni-common-mt bold">初始的 globalData:</text>
+        <text class="uni-common-mt">globalData string: {{ data.originGlobalData.str }}</text>
+        <text class="uni-common-mt">globalData number: {{ data.originGlobalData.num }}</text>
+        <text class="uni-common-mt">globalData boolean: {{ data.originGlobalData.bool }}</text>
+        <text class="uni-common-mt">globalData object: {{ data.originGlobalData.obj }}</text>
+        <text class="uni-common-mt">globalData null: {{ data.originGlobalData.null }}</text>
+        <text class="uni-common-mt">globalData array: {{ data.originGlobalData.arr }}</text>
+        <text class="uni-common-mt">globalData Set: {{ data.originGlobalData.set }}</text>
+        <text class="uni-common-mt">globalData Map: {{ data.originGlobalData.map }}</text>
+        <text class="uni-common-mt">globalData fun 返回值: {{ data.originGlobalDataFuncRes }}</text>
       </template>
-      <button @click="setGlobalData" class="mt-15">
+      <button @click="setGlobalData" class="uni-common-mt">
         set globalData
       </button>
       <template v-if="data.newGlobalData.bool">
-        <text class="mt-15 fw-bold">更新后的 globalData:</text>
-        <text class="mt-15">globalData string: {{ data.newGlobalData.str }}</text>
-        <text class="mt-15">globalData number: {{ data.newGlobalData.num }}</text>
-        <text class="mt-15">globalData boolean: {{ data.newGlobalData.bool }}</text>
-        <text class="mt-15">globalData object: {{ data.newGlobalData.obj }}</text>
-        <text class="mt-15">globalData null: {{ data.newGlobalData.null }}</text>
-        <text class="mt-15">globalData array: {{ data.newGlobalData.arr }}</text>
-        <text class="mt-15">globalData Set: {{ data.newGlobalData.set }}</text>
-        <text class="mt-15">globalData Map: {{ data.newGlobalData.map }}</text>
-        <text class="mt-15">globalData fun 返回值: {{ data.newGlobalDataFuncRes }}</text>
+        <text class="uni-common-mt bold">更新后的 globalData:</text>
+        <text class="uni-common-mt">globalData string: {{ data.newGlobalData.str }}</text>
+        <text class="uni-common-mt">globalData number: {{ data.newGlobalData.num }}</text>
+        <text class="uni-common-mt">globalData boolean: {{ data.newGlobalData.bool }}</text>
+        <text class="uni-common-mt">globalData object: {{ data.newGlobalData.obj }}</text>
+        <text class="uni-common-mt">globalData null: {{ data.newGlobalData.null }}</text>
+        <text class="uni-common-mt">globalData array: {{ data.newGlobalData.arr }}</text>
+        <text class="uni-common-mt">globalData Set: {{ data.newGlobalData.set }}</text>
+        <text class="uni-common-mt">globalData Map: {{ data.newGlobalData.map }}</text>
+        <text class="uni-common-mt">globalData fun 返回值: {{ data.newGlobalDataFuncRes }}</text>
       </template>
-      <text class="mt-15">点击按钮调用 App.uvue methods</text>
-      <text class="mt-15">increaseLifeCycleNum 方法</text>
-      <button class="mt-15" @click="_increaseLifeCycleNum">
+      <text class="uni-common-mt">点击按钮调用 App.uvue methods</text>
+      <text class="uni-common-mt">increaseLifeCycleNum 方法</text>
+      <button class="uni-common-mt" @click="_increaseLifeCycleNum">
         increase lifeCycleNum
       </button>
-      <text class="mt-15">lifeCycleNum: {{ data.lifeCycleNum }}</text>
+      <text class="uni-common-mt">lifeCycleNum: {{ data.lifeCycleNum }}</text>
       <!-- #ifdef APP-ANDROID && !VUE3-VAPOR -->
-      <button class="mt-15" @click="getAndroidApplication">
+      <button class="uni-common-mt" @click="getAndroidApplication">
         getAndroidApplication
       </button>
-      <text class="mt-15">androidApplication is null: {{ data.androidApplication == null }}</text>
+      <text class="uni-common-mt">androidApplication is null: {{ data.androidApplication == null }}</text>
       <!-- #endif -->
       <!-- #ifdef (APP-ANDROID || APP-IOS) && VUE3-VAPOR -->
-      <button class="mt-15" @click="_restart">
+      <button class="uni-common-mt" @click="_restart">
         restart
       </button>
-      <button class="mt-15" @click="_restartToUrl">
+      <button class="uni-common-mt" @click="_restartToUrl">
         restart to url
       </button>
       <!-- #endif -->
@@ -229,5 +229,13 @@
 <style>
 page {
   padding-bottom: 20px;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.hr {
+  border-bottom: 1px solid #ccc;
 }
 </style>

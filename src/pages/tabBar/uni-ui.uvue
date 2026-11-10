@@ -1,11 +1,11 @@
 <template>
-  <view class="u-p-15">
-    <view v-if="!hasLeftWin" class="p-15-15 flex-dir-column justify-center items-center u-mt-5">
-      <image class="w-80 h-80" src="/static/extuiIndex.png"></image>
+  <view class="uni-container">
+    <view v-if="!hasLeftWin" class="uni-header-logo">
+      <image class="uni-header-image" src="/static/extuiIndex.png"></image>
     </view>
-    <view v-if="!hasLeftWin" class="mb-20">
-      <text class="color-text-333 fs-14 lh-20">uni-ui x 扩展组件示例，文档详见：</text>
-      <uni-link class="color-text-333 fs-14 lh-20" href="https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x"
+    <view v-if="!hasLeftWin" class="uni-text-box">
+      <text class="hello-text">uni-ui x 扩展组件示例，文档详见：</text>
+      <uni-link class="hello-text" href="https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x"
       <!-- #ifndef MP -->
       target="_blank"
       <!-- #endif -->
@@ -15,26 +15,26 @@
     </view>
     <uni-collapse>
       <template v-for="(item, index) in list" :key="item.id">
-        <uni-collapse-item v-if="item.pages.length > 0" class="mb-12" :open="item.open" :title="item.name"
-          title-wrap-class="bg-list-fff-important" title-class="color-text-333-important"
-          content-wrap-class="bg-list-fff-important" arrow-class="border-r-color-arrow-999-important border-b-color-arrow-999-important"
+        <uni-collapse-item v-if="item.pages.length > 0" class="uni-panel" :open="item.open" :title="item.name"
+          title-wrap-class="component-collapse-title-wrap" title-class="component-collapse-title"
+          content-wrap-class="component-collapse-content-wrap" arrow-class="component-collapse-arrow"
           @change="syncCollapseState(index, $event as boolean)">
-          <view class="flex-dir-row items-center bg-list border-t-style-solid border-t-color-border border-t-width-1 p-12-16 justify-between pl-18"
-            :hover-class="page.enable == false ? '' : 'bg-active'" v-for="(page, key) in item.pages" :key="key"
+          <view style="padding-left: 18px;" class="uni-navigate-item"
+            :hover-class="page.enable == false ? '' : 'is--active'" v-for="(page, key) in item.pages" :key="key"
             @click="goDetailPage(page)">
-            <text class="color-text-333 fs-14 fw-normal w-94pct ws-nowrap overflow-hidden text-overflow-ellipsis"
-              :class="{'color-007aff-important': leftWinActive === getPageKey(page.url) && hasLeftWin,'color-active-important' : page.enable == false}">{{ page.name }}</text>
-            <view class="w-8 h-8 ml-12 transform-rotate-neg45deg border-r-width-1 border-r-style-solid border-r-color-arrow-999 border-b-width-1 border-b-style-solid border-b-color-arrow-999"></view>
+            <text class="uni-navigate-text"
+              :class="{'left-win-active': leftWinActive === getPageKey(page.url) && hasLeftWin,'text-disabled' : page.enable == false}">{{ page.name }}</text>
+            <view class="right_arrow"></view>
           </view>
         </uni-collapse-item>
-        <view v-else class="mb-12">
-          <view hover-class="bg-active" class="bg-list flex-dir-row-important justify-between-important items-center-important p-12 p-12-18" @click="triggerCollapse(index, item)">
-            <text class="color-text-333 fs-14 fw-normal"
+        <view v-else class="uni-panel">
+          <view hover-class="is--active" class="uni-panel-h" @click="triggerCollapse(index, item)">
+            <text class="uni-panel-text"
               :class="{
-                'color-active-important': item.enable == false || item.open == true,
-                'color-007aff-important': getPageKey(item.url!) == leftWinActive && hasLeftWin
+                'text-disabled': item.enable == false || item.open == true,
+                'left-win-active': getPageKey(item.url!) == leftWinActive && hasLeftWin
               }">{{ item.name }}</text>
-            <view class="w-8 h-8 ml-12 transform-rotate-neg45deg border-r-width-1 border-r-style-solid border-r-color-arrow-999 border-b-width-1 border-b-style-solid border-b-color-arrow-999"></view>
+            <view class="right_arrow"></view>
           </view>
         </view>
       </template>
@@ -355,5 +355,45 @@
     /* #ifdef APP && VUE3-VAPOR */
     padding-bottom: var(--uni-safe-area-inset-bottom);
     /* #endif */
+  }
+
+  .uni-panel-h {
+    flex-direction: row;
+    align-items: center;
+    padding: 12px 18px;
+  }
+
+  .uni-ui-navigate-item {
+    border-top-style: none;
+  }
+
+  .right_arrow {
+    width: 8px;
+    height: 8px;
+    margin-left: 12px;
+    transform: rotate(-45deg);
+    border-right-width: 1px;
+    border-right-style: solid;
+    border-right-color: var(--arrow-color, #999999);
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: var(--arrow-color, #999999);
+  }
+
+  .component-collapse-title-wrap {
+    background-color: var(--list-background-color, #ffffff);
+  }
+
+  .component-collapse-title {
+    color: var(--text-color, #333333);
+  }
+
+  .component-collapse-content-wrap {
+    background-color: var(--list-background-color, #ffffff);
+  }
+
+  .component-collapse-arrow {
+    border-right-color: var(--arrow-color, #999999);
+    border-bottom-color: var(--arrow-color, #999999);
   }
 </style>

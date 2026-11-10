@@ -1,14 +1,14 @@
 <template>
   <page-head title="getLaunchOptionsSync"></page-head>
-  <view class="p-0-15">
+  <view class="uni-padding-wrap">
     <button @click="getLaunchOptionsSync">getLaunchOptionsSync</button>
-    <view class="mt-15">
+    <view class="uni-common-mt">
       <text>应用本次启动路径：</text>
-      <text class="u-mt-5">{{ data.launchOptionsPath }}</text>
+      <text style="margin-top: 5px">{{ data.launchOptionsPath }}</text>
     </view>
-    <view class="mt-15">
+    <view class="uni-common-mt">
       <text>应用本次启动：</text>
-      <text class="u-mt-5">{{ data.launchOptionsString }}</text>
+      <text style="margin-top: 5px">{{ data.launchOptionsString }}</text>
     </view>
   </view>
 </template>

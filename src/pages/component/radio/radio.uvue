@@ -157,19 +157,19 @@
 </script>
 
 <template>
-  <view class="max-h-250 border-b-1-solid-border-black-a6 p-5-0 flex-dir-row justify-center">
-    <view class="d-flex flex-dir-row items-center">
+  <view class="main">
+    <view class="control-row">
       <radio :disabled="data.disabled_boolean" :checked="data.checked_boolean" :color="data.color_input"
         :backgroundColor="data.backgroundColor_input" :borderColor="data.borderColor_input"
         :activeBackgroundColor="data.activeBackgroundColor_input" :activeBorderColor="data.activeBorderColor_input"
         :iconColor="data.iconColor_input" @click="radio_click" @touchstart="radio_touchstart" @touchmove="radio_touchmove"
         @touchcancel="radio_touchcancel" @touchend="radio_touchend" @tap="radio_tap" @longpress="radio_longpress" />
-      <text class="ml-5">uni-app-x</text>
+      <text class="control-row-text">uni-app-x</text>
     </view>
   </view>
 
-  <scroll-view class="flex-1">
-    <view>
+  <scroll-view style="flex: 1">
+    <view class="content">
       <page-head title="组件属性"></page-head>
       <boolean-data :value="false" title="<radio/> 当前是否选中" @change="change_checked_boolean"></boolean-data>
       <boolean-data :value="false" title="是否禁用" @change="change_disabled_boolean"></boolean-data>
@@ -178,77 +178,77 @@
 
     <view>
       <page-head title="默认及使用"></page-head>
-      <view class="p-0-15">
-        <view class="p-10-0 color-text-333 mt-15">
-          <text class="fs-15 fw-bold color-text-333"> 默认样式 </text>
+      <view class="uni-padding-wrap">
+        <view class="uni-title uni-common-mt">
+          <text class="uni-title-text"> 默认样式 </text>
         </view>
-        <radio-group class="flex-dir-row radio-group flex-wrap-wrap" @change="testChange">
-          <view class="radio d-flex flex-dir-row items-center color-text-333 mr-15">
+        <radio-group class="uni-row radio-group" @change="testChange" style="flex-wrap: wrap">
+          <view style="margin-right: 15px" class="radio">
             <radio class="r" id="trigger-change" value="r" :checked="data.checked" :color="data.color">选中</radio>
             <!-- #ifdef MP-ALIPAY -->
             <text>选中</text>
             <!-- #endif -->
           </view>
-          <view class="radio d-flex flex-dir-row items-center color-text-333 mr-15">
+          <view style="margin-right: 15px" class="radio">
             <radio class="r1" value="r1">{{ data.text }}</radio>
             <!-- #ifdef MP-ALIPAY -->
             <text>{{ data.text }}</text>
             <!-- #endif -->
           </view>
-          <view class="radio d-flex flex-dir-row items-center color-text-333">
+          <view class="radio">
             <radio class="r2" value="r2" :disabled="data.disabled">禁用</radio>
             <!-- #ifdef MP-ALIPAY -->
             <text>禁用</text>
             <!-- #endif -->
           </view>
-          <view class="radio d-flex flex-dir-row items-center color-text-333 mt-10">
+          <view class="radio r3" style="margin-top: 10px">
             <radio value="r3" />
             <text>{{ data.wrapText }}</text>
           </view>
         </radio-group>
       </view>
 
-      <view class="p-0-15">
-        <view class="p-10-0 color-text-333 mt-15">
-          <text class="fs-15 fw-bold color-text-333"> 不同颜色和尺寸的radio </text>
+      <view class="uni-padding-wrap">
+        <view class="uni-title uni-common-mt">
+          <text class="uni-title-text"> 不同颜色和尺寸的radio </text>
         </view>
-        <radio-group class="flex-dir-row radio-group">
+        <radio-group class="uni-row radio-group">
           <!-- #ifdef !VUE3-VAPOR || (VUE3-VAPOR && MP) -->
-          <view class="radio d-flex flex-dir-row items-center color-text-333 scale-0_7 mr-15">
+          <view style="transform: scale(0.7); margin-right: 15px" class="radio">
             <radio value="r1" :checked="true" color="#FFCC33" />
             <text>选中</text>
           </view>
-          <view class="radio d-flex flex-dir-row items-center color-text-333 scale-0_7"><radio value="r2" color="#FFCC33" /><text>未选中</text></view>
+          <view style="transform: scale(0.7)" class="radio"><radio value="r2" color="#FFCC33" /><text>未选中</text></view>
           <!-- #endif -->
           <!-- #ifdef VUE3-VAPOR && !MP -->
-          <view class="radio d-flex flex-dir-row items-center color-text-333 scale-0_7 mr-15">
+          <view style="transform: scale(0.7); margin-right: 15px" class="radio">
             <radio value="r1" :checked="true" radio-active-class="radio-active" />
             <text>选中</text>
           </view>
-          <view class="radio d-flex flex-dir-row items-center color-text-333 scale-0_7"><radio value="r2" id="radio-vapor" icon-class="custom-radio-icon" radio-class="custom-radio" radio-active-class="radio-active" /><text>未选中</text></view>
+          <view style="transform: scale(0.7)" class="radio"><radio value="r2" id="radio-vapor" icon-class="custom-radio-icon" radio-class="custom-radio" radio-active-class="radio-active" /><text>未选中</text></view>
           <!-- #endif -->
         </radio-group>
       </view>
 
 
-      <view class="p-0-15">
-        <view class="p-10-0 color-text-333 mt-15">
-          <text class="fs-15 fw-bold color-text-333"> 两端对齐样式测试 </text>
+      <view class="uni-padding-wrap">
+        <view class="uni-title uni-common-mt">
+          <text class="uni-title-text"> 两端对齐样式测试 </text>
         </view>
-        <radio-group class="flex-dir-row radio-group">
-          <view class="d-flex flex-dir-row items-center w-full justify-between"><radio /><text>justify-content样式测试</text></view>
+        <radio-group class="uni-row radio-group">
+          <view class="justify-test"><radio /><text>justify-content样式测试</text></view>
         </radio-group>
       </view>
 
-      <view class="p-0-15">
-        <view class="p-10-0 color-text-333 mt-15">
-          <text class="fs-15 fw-bold color-text-333"> 推荐展示样式 </text>
+      <view class="uni-padding-wrap">
+        <view class="uni-title uni-common-mt">
+          <text class="uni-title-text"> 推荐展示样式 </text>
         </view>
       </view>
-      <view class="bg-list-fff pos-relative d-flex flex-dir-column border-b-1-solid-c8c7cc-dark-3a3a3c pl-15">
+      <view class="uni-list uni-common-pl">
         <radio-group @change="radioChange" class="radio-group">
-          <view class="pos-relative p-11-15-11-0 radio d-flex flex-dir-row items-center color-text-333 justify-start" v-for="(item, index) in data.items" :key="item.value"
-            :class="index < data.items.length - 1 ? 'border-b-1-solid-border-black-a6' : ''">
+          <view class="uni-list-cell uni-list-cell-pd radio" v-for="(item, index) in data.items" :key="item.value"
+            :class="index < data.items.length - 1 ? 'uni-list-cell-line' : ''">
             <radio class="recommend" :value="item.value" :checked="index === data.current" />
             <text>{{ item.name }}</text>
           </view>
@@ -273,14 +273,49 @@
     <!-- #endif -->
 
     <!-- #ifdef APP && VUE3-VAPOR -->
-      <navigator class="mb-15" url="/pages/template/radio-200/radio-200">
-        <button class="mt-15">组件性能测试</button>
+      <navigator class="uni-common-mb" url="/pages/template/radio-200/radio-200">
+        <button class="uni-common-mt">组件性能测试</button>
       </navigator>
     <!-- #endif -->
   </scroll-view>
 </template>
 
 <style>
+  .main {
+    max-height: 250px;
+    padding: 5px 0;
+    border-bottom: 1px solid var(--border-color, rgba(0, 0, 0, 0.06));
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .uni-list-cell {
+    justify-content: flex-start;
+  }
+
+  .radio,
+  .control-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .control-row-text {
+    margin-left: 5px;
+  }
+
+  .justify-test {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .radio {
+    color: var(--text-color, #333333);
+  }
+
   /* #ifdef VUE3-VAPOR && !MP */
   .radio-active {
     background-color: #FFCC33;

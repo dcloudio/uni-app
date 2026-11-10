@@ -1,28 +1,28 @@
 <template>
     <page-head :title="title"></page-head>
     <!-- #ifdef MP-ALIPAY -->
-    <text class="fs-13 color-tips-0958d9 bg-tips-e6f4ff border-l-4-solid-tips-91caff p-10-12 radius-4 m-10">提示：支付宝小程序调用 getVideoInfo 需要真机运行</text>
+    <text class="uni-tips">提示：支付宝小程序调用 getVideoInfo 需要真机运行</text>
     <!-- #endif -->
-    <view class="p-0-15">
-      <view class="p-10-0 color-text-333">
-        <text class="color-888 fs-12 fw-bold u-mt-5">获取本地绝对路径视频信息</text>
+    <view class="uni-padding-wrap">
+      <view class="uni-title">
+        <text class="uni-subtitle-text">获取本地绝对路径视频信息</text>
       </view>
-      <video class="w-full" :src="absoluteVideoPath" :controls="true" :poster="absoluteCoverImagePath"></video>
-      <text class="mt-10">{{absoluteVideoInfo}}</text>
-      <view class="p-5-0">
+      <video class="video" :src="absoluteVideoPath" :controls="true" :poster="absoluteCoverImagePath"></video>
+      <text class="margin-top-10">{{absoluteVideoInfo}}</text>
+      <view class="uni-btn-v">
         <button type="primary" @click="chooseVideo">拍摄视频或从相册中选择视频</button>
       </view>
     </view>
     <!-- #ifndef MP -->
-    <view class="p-0-15">
-      <view class="p-10-0 color-text-333">
-        <text class="color-888 fs-12 fw-bold u-mt-5">获取本地相对路径视频信息</text>
+    <view class="uni-padding-wrap">
+      <view class="uni-title">
+        <text class="uni-subtitle-text">获取本地相对路径视频信息</text>
       </view>
-      <video class="w-full" :src="relativeVideoPath" :controls="true" :poster="relativeCoverImagePath"></video>
-      <text class="mt-10">{{relativeVideoInfo}}</text>
+      <video class="video" :src="relativeVideoPath" :controls="true" :poster="relativeCoverImagePath"></video>
+      <text class="margin-top-10">{{relativeVideoInfo}}</text>
     </view>
 
-    <view class="h-safe-area-inset-bottom-20 min-h-20"></view>
+    <view class="scroll-view_bottom-fixed"></view>
     <!-- #endif -->
 </template>
 
@@ -131,3 +131,13 @@
     testGetVideoInfo
   })
 </script>
+
+<style>
+  .video {
+    width: 100%;
+  }
+
+  .margin-top-10 {
+    margin-top: 10px;
+  }
+</style>

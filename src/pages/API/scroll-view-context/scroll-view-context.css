@@ -1,3 +1,39 @@
+.fw-bold {
+  font-weight: bold;
+}
+
+.fs-15 {
+  font-size: 15px;
+}
+
+.mt-15 {
+  margin-top: 15px;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.mt-10 {
+  margin-top: 10px;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.h-80 {
+  height: 80px;
+}
+
+.fs-18 {
+  font-size: 18px;
+}
+
+.color-text-333 {
+  color: var(--text-color, #333333);
+}
+
 page {
   padding: 15px;
   padding-bottom: env(safe-area-inset-bottom);

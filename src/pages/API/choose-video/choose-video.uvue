@@ -1,12 +1,12 @@
 <template>
     <page-head :title="title"></page-head>
-    <view class="p-0-15">
-      <video class="self-center w-300 h-225" :src="src" :controls="true" :poster="videoCoverImage"></video>
-      <view class="p-10-0 color-text-333">
-        <text class="color-888 fs-12 fw-bold u-mt-5">视频信息</text>
+    <view class="uni-padding-wrap">
+      <video class="video" :src="src" :controls="true" :poster="videoCoverImage"></video>
+      <view class="uni-title">
+        <text class="uni-subtitle-text">视频信息</text>
       </view>
       <text>{{videoInfo}}</text>
-      <view class="p-5-0">
+      <view class="uni-btn-v">
         <button type="primary" @click="chooseVideo">选取视频</button>
       </view>
       <enum-data-checkbox title="视频来源" :items="sourceTypeItemTypes" @change="onSourceTypeChange"></enum-data-checkbox>
@@ -20,7 +20,7 @@
     </view>
     <input-data title="最长拍摄时间，单位秒" defaultValue="60" type="number" @confirm="onMaxDurationConfirm"></input-data>
     <!-- #ifdef APP -->
-    <view class="p-0-15">
+    <view class="uni-padding-wrap">
       <boolean-data title="是否压缩（HamonyOS 不支持，推荐使用 uni.compressVideo 进行压缩）" :value="true" @change="onCompressedChange"></boolean-data>
     </view>
     <!-- #endif -->
@@ -115,3 +115,11 @@
     albumMode.value = albumModeTypeItems.value[value]
   }
 </script>
+
+<style>
+  .video {
+    align-self: center;
+    width: 300px;
+    height: 225px;
+  }
+</style>

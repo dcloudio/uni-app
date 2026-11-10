@@ -1,11 +1,11 @@
 <template>
     <view style="padding: 0 10px;">
-      <button class="mb-15" @click="check$page">
+      <button class="uni-common-mb component-check-page-btn" @click="check$page">
         component check $page
       </button>
-      <view class="flex-row mb-15">
+      <view class="flex-row uni-common-mb">
         <text>check page:</text>
-        <text>{{checkPageRes}}</text>
+        <text class="check-page-res">{{checkPageRes}}</text>
       </view>
     </view>
 </template>

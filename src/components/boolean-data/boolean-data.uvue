@@ -33,8 +33,20 @@ function _change(e : UniSwitchChangeEvent) {
 </script>
 
 <template>
-  <view class="justify-between u-p-10 border-b-1-solid-border-black-a6 items-center flex-dir-row">
-    <text class="p-10-0 color-text-333 w-80pct">{{ title }}</text>
+  <view class="button-data-main uni-row">
+    <text class="uni-title" style="width:80%">{{ title }}</text>
     <switch :checked="_checked" :disabled="disabled" @change="_change" />
   </view>
 </template>
+
+<style>
+.button-data-main {
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid var(--border-color, rgba(0, 0, 0, .06));
+  align-items: center;
+}
+.uni-title {
+  color: var(--text-color, #333333);
+}
+</style>

@@ -1,21 +1,21 @@
 <template>
   <!-- #ifdef APP -->
   <text>查看通过uni.getFileSystemManager()直接处理Static目录的操作日志</text><button size="mini" @click="log=''">清空日志</button>
-  <scroll-view class="max-h-300">
-    <text class="u-p-2 m-2 border-width-1 border-style-solid border-color-000">{{ log }}</text>
+  <scroll-view style="max-height: 300px;">
+    <text style="margin: 2px; padding: 2px; border: 1px solid #000000;">{{ log }}</text>
   </scroll-view>
 
-  <scroll-view class="flex-1">
+  <scroll-view style="flex: 1;">
   <!-- #endif -->
-    <button class="m-4" type="primary" @tap="testAccessFile" id="testAccessFile">判断Static中的文件是否存在</button>
-    <button class="m-4" type="primary" @tap="testAccessDir" id="testAccessDir">判断Static中的目录是否存在</button>
-    <button class="m-4" type="primary" @tap="testCopyFile" id="testCopyFile">复制Static中的文件</button>
-    <button class="m-4" type="primary" @tap="testReadFile" id="testReadFile">读取Static中的文件</button>
-    <button class="m-4" type="primary" @tap="testReadDir" id="testReadDir">读取Static中filemanager目录内文件列表</button>
+    <button class="btnstyle" type="primary" @tap="testAccessFile" id="testAccessFile">判断Static中的文件是否存在</button>
+    <button class="btnstyle" type="primary" @tap="testAccessDir" id="testAccessDir">判断Static中的目录是否存在</button>
+    <button class="btnstyle" type="primary" @tap="testCopyFile" id="testCopyFile">复制Static中的文件</button>
+    <button class="btnstyle" type="primary" @tap="testReadFile" id="testReadFile">读取Static中的文件</button>
+    <button class="btnstyle" type="primary" @tap="testReadDir" id="testReadDir">读取Static中filemanager目录内文件列表</button>
 
     <!-- #ifndef MP-ALIPAY -->
-    <button class="m-4" type="primary" @tap="testFstatFile" id="testFstatFile">获取Static中的文件状态信息</button>
-    <button class="m-4" type="primary" @tap="testReadZipEntry" id="testReadZipEntry">获取Static中压缩包内的文件</button>
+    <button class="btnstyle" type="primary" @tap="testFstatFile" id="testFstatFile">获取Static中的文件状态信息</button>
+    <button class="btnstyle" type="primary" @tap="testReadZipEntry" id="testReadZipEntry">获取Static中压缩包内的文件</button>
     <!-- #endif -->
 
   <!-- #ifdef APP -->
@@ -236,3 +236,10 @@
     // #endif
   })
 </script>
+
+
+<style>
+  .btnstyle {
+    margin: 4px;
+  }
+</style>

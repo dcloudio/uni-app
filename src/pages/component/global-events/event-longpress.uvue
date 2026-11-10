@@ -1,6 +1,6 @@
 <template>
   <view>
-    <view class="w-full bg-7fffd4 h-400" id="longPressView" @longpress="onLongPress">
+    <view id="longPressView" style="width: 100%;height: 400px;background-color: aquamarine;" @longpress="onLongPress">
     </view>
   </view>
 </template>
@@ -26,3 +26,7 @@
     data
   })
 </script>
+
+<style>
+
+</style>

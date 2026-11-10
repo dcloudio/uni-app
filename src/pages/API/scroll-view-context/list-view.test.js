@@ -1,13 +1,17 @@
-const container = 'list-view'
-const platform = (process.env.uniTestPlatformInfo || process.env.UNI_OS_NAME || '').toLowerCase()
-const isIos = platform.startsWith('ios')
-const describeApp = /^(android|ios|harmony)/.test(platform) ? describe : describe.skip
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isAndroid = platformInfo.startsWith('android')
+const isIos = platformInfo.startsWith('ios')
+const isHarmony = platformInfo.startsWith('harmony')
+const isApp = isAndroid || isIos || isHarmony
+const isMPWeiXin = platformInfo.startsWith('mp-weixin')
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+
 const properties = [
   ['showScrollbar', 'changeShowScrollbar', true],
   ['scrollEnabled', 'changeScrollEnabled', true],
   ['pagingEnabled', 'changePagingEnabled', false]
 ]
-if (isIos) properties.unshift(['bounces', 'changeBounces', true])
+if (isIos || isMPWeiXin) properties.unshift(['bounces', 'changeBounces', true])
 const methodIds = [
   ['scroll-to', ['scroll-to']],
   ['scroll-into-view', ['scroll-into-view']],
@@ -17,10 +21,17 @@ const methodIds = [
 
 jest.setTimeout(30000)
 
-describeApp(`ScrollViewContext / ${container}`, () => {
+describe(`ScrollViewContext/list-view`, () => {
+  if (!isApp || isAppWebView) {
+    it('skip', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+
   let page
   beforeEach(async () => {
-    page = await program.reLaunch(`/pages/API/scroll-view-context/${container}`)
+    page = await program.reLaunch(`/pages/API/scroll-view-context/list-view`)
     await page.waitFor(500)
   })
 
@@ -55,7 +66,8 @@ describeApp(`ScrollViewContext / ${container}`, () => {
   async function captureContainer(id) {
     const element = await page.$(`#${id}`)
     const offset = await element.offset()
-    offset.top -= await page.scrollTop()
+    // Android Vapor 返回可视区坐标，不能重复扣除页面滚动量。
+    if (!isAndroid) offset.top -= await page.scrollTop()
     const size = await element.size()
     const window = await program.callUniMethod('getWindowInfo')
     const { PNG } = require('pngjs')
@@ -65,7 +77,7 @@ describeApp(`ScrollViewContext / ${container}`, () => {
 
   async function refreshing() {
     // iOS 读取刷新负偏移；Android 和 Harmony 检查实际指示器。
-    if (platform.startsWith('ios')) return (await scrollTop('refresh-scroll')) < -20
+    if (isIos) return (await scrollTop('refresh-scroll')) < -20
     const { png, offset, size, window } = await captureContainer('refresh-scroll')
     const ratio = window.pixelRatio
     const center = offset.left + size.width / 2

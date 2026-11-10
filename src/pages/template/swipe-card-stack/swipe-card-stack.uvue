@@ -1,5 +1,5 @@
 <template>
-  <view class="flex-1 pos-relative w-full h-full overflow-hidden items-center">
+  <view class="root">
     <template v-for="(color,index) in cardColors" :key="index">
       <card :color="color" :cardIndex="index" :stackIndex="getStackIndex(index)"
         :windowWidth="windowWidth" :windowHeight="windowHeight"></card>
@@ -69,4 +69,13 @@ onUnload(() => {
     overflow: hidden
   }
   /* #endif */
+
+  .root {
+    flex: 1;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    align-items: center;
+  }
 </style>

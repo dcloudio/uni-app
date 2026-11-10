@@ -1,9 +1,9 @@
 <template>
-    <view class="mb-15 pb-15">
+    <view class="swiper-page uni-common-mb uni-common-pb">
       <page-head title="swiper,可滑动视图"></page-head>
       <view>
         <!-- 微信小程序自身Bug，autoplay为false时更新interval会导致swiper启用自动播放 -->
-        <swiper id="swiper-view" class="h-150" :vertical="data.verticalSelect" :indicator-dots="data.dotsSelect"
+        <swiper id="swiper-view" class="swiper" :vertical="data.verticalSelect" :indicator-dots="data.dotsSelect"
           :autoplay="data.autoplaySelect"
           <!-- #ifdef (APP && VUE3-VAPOR) -->
           :disable-bounce="data.disableBounceSelect"
@@ -17,18 +17,18 @@
           @change="swiperChange" @transition="swiperTransition" @animationfinish="swiperAnimationfinish"
           @touchstart="swipertouchStart">
           <swiper-item item-id="A">
-            <view class="w-full h-150 background-f76260"><text class="w-full text-center swiper-item-Text" @touchstart="viewtouchStart">A</text>
+            <view class="swiper-item uni-bg-red"><text class="swiper-item-Text" @touchstart="viewtouchStart">A</text>
             </view>
           </swiper-item>
           <swiper-item item-id="B">
-            <view class="w-full h-150 background-09bb07"><text class="w-full text-center swiper-item-Text">B</text></view>
+            <view class="swiper-item uni-bg-green"><text class="swiper-item-Text">B</text></view>
           </swiper-item>
           <swiper-item item-id="C">
-            <view class="w-full h-150 background-007aff"><text class="w-full text-center swiper-item-Text">C</text></view>
+            <view class="swiper-item uni-bg-blue"><text class="swiper-item-Text">C</text></view>
           </swiper-item>
         </swiper>
       </view>
-      <view class="bg-list-fff pos-relative d-flex flex-dir-column border-b-1-solid-c8c7cc-dark-3a3a3c">
+      <view class="uni-list">
         <boolean-data :value="data.dotsSelect" title="显示面板指示点" @change="dotsChange"></boolean-data>
         <boolean-data :value="data.indicatorColorSelect" title="定制指示器颜色"
             <!-- #ifndef (APP && VUE3-VAPOR) || MP-ALIPAY -->
@@ -38,12 +38,12 @@
         <boolean-data :value="data.disableTouchSelect" title="禁止 touch 操作" @change="disableTouchChange"></boolean-data>
         <boolean-data :value="data.autoplaySelect" title="是否自动切换" @change="autoplayChange"></boolean-data>
         <boolean-data :value="data.circularSelect" title="是否衔接滑动" @change="circularChange"></boolean-data>
-        <view class="p-10-0 p-10-15 color-text-333"><text class="color-text">间隔时间(毫秒)</text></view>
-        <view class="p-0-15">
+        <view class="uni-title uni-list-cell-padding"><text class="uni-theme-text">间隔时间(毫秒)</text></view>
+        <view class="uni-padding-wrap">
           <slider @change="sliderChange" :value="2000" :min="500" :max="5000" :show-value="true" />
         </view>
-        <view class="p-10-0 p-10-15 color-text-333"><text class="color-text">动画时长(毫秒)</text></view>
-        <view class="p-0-15">
+        <view class="uni-title uni-list-cell-padding"><text class="uni-theme-text">动画时长(毫秒)</text></view>
+        <view class="uni-padding-wrap">
           <slider @change="durationSliderChange" :value="500" :min="50" :max="2000" :show-value="true" />
         </view>
         <boolean-data :value="data.verticalSelect" title="是否纵向滑动" @change="verticalChange"></boolean-data>
@@ -63,16 +63,16 @@
         <boolean-data :value="data.swiperAnimationfinishSelect" title="打印 swiperAnimationfinish 日志"
           @change="swiperAnimationfinishChange"></boolean-data>
 
-        <view class="p-10-15 color-text-333"><text class="color-text">测试 swiper 默认行为</text></view>
-        <swiper class="h-150" :autoplay="data.autoplayForDefault" :circular="data.circularForDefault">
+        <view class="uni-list-cell-padding"><text class="uni-theme-text">测试 swiper 默认行为</text></view>
+        <swiper class="swiper" :autoplay="data.autoplayForDefault" :circular="data.circularForDefault">
           <swiper-item item-id="A">
-            <view class="w-full h-150 background-f76260"><text class="w-full text-center swiper-item-Text">A</text></view>
+            <view class="swiper-item uni-bg-red"><text class="swiper-item-Text">A</text></view>
           </swiper-item>
           <swiper-item item-id="B">
-            <view class="w-full h-150 background-09bb07"><text class="w-full text-center swiper-item-Text">B</text></view>
+            <view class="swiper-item uni-bg-green"><text class="swiper-item-Text">B</text></view>
           </swiper-item>
           <swiper-item item-id="C">
-            <view class="w-full h-150 background-007aff"><text class="w-full text-center swiper-item-Text">C</text></view>
+            <view class="swiper-item uni-bg-blue"><text class="swiper-item-Text">C</text></view>
           </swiper-item>
         </swiper>
         <boolean-data :value="data.autoplayForDefault" title="是否自动切换"
@@ -85,30 +85,30 @@
             swiper 嵌套 list-view 测试
           </button>
         </navigator>
-        <navigator url="/pages/component/swiper/swiper-anim" class="mt-10">
+        <navigator url="/pages/component/swiper/swiper-anim" style="margin-top: 10px;">
         	<button type="primary">
         		swiper 动画测试
         	</button>
         </navigator>
         <!-- #endif -->
         <!-- #ifdef (APP && VUE3-VAPOR) || MP -->
-        <navigator url="/pages/component/swiper/swiper-more" class="mt-10">
+        <navigator url="/pages/component/swiper/swiper-more" style="margin-top: 10px;">
         	<button type="primary">
         		更多 swiper
         	</button>
         </navigator>
-        <navigator url="/pages/component/swiper/swiper-in-swiper" class="mt-10">
+        <navigator url="/pages/component/swiper/swiper-in-swiper" style="margin-top: 10px;">
           <button type="primary">嵌套测试</button>
         </navigator>
         <!-- #ifndef MP-ALIPAY -->
-          <navigator url="/pages/component/swiper/swiper-item-100" class="mt-10">
+          <navigator url="/pages/component/swiper/swiper-item-100" style="margin-top: 10px;">
             <button>组件性能测试</button>
           </navigator>
         <!-- #endif -->
         <!-- #endif -->
       </view>
       <!-- #ifndef WEB -->
-      <view class="p-10-0 color-text-333">
+      <view class="uni-title p-10-0 color-text-333">
         <text>easing-function</text>
         <swiper id="easing-function-swiper" class="h-80" easing-function="linear">
           <swiper-item><view class="w-full h-80 background-f76260"></view></swiper-item>
@@ -377,7 +377,42 @@
 </script>
 
 <style>
+  .p-10-0 {
+    padding: 10px 0;
+  }
+
+  .w-full {
+    width: 100%;
+  }
+
+  .background-f76260 {
+    background: #F76260;
+  }
+
+  .background-007aff {
+    background: #007AFF;
+  }
+
+  .h-80 {
+    height: 80px;
+  }
+
+  .color-text-333 {
+    color: var(--text-color, #333333);
+  }
+
+  .swiper {
+    height: 150px;
+  }
+
+  .swiper-item {
+    width: 100%;
+    height: 150px;
+  }
+
   .swiper-item-Text {
+    width: 100%;
+    text-align: center;
     line-height: 150px;
   }
 </style>

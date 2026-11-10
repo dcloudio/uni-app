@@ -1,12 +1,12 @@
 <template>
-  <view id="dialog3" class="w-full h-full bg-black-a30 d-flex justify-center items-center">
-    <scroll-view class="bg-list-fff radius-6 dialog-content w-90pct p-10-6">
-      <text class="color-text-333">title: {{ title }}</text>
+  <view id="dialog3" class="dialog-container">
+    <scroll-view class="dialog-content">
+      <text class="dialog-text">title: {{ title }}</text>
       <template v-for="(item, index) in PageStyleArray">
-        <view class="mt-10 radius-5 page-style-item" v-if="currentPageStyle[item.key] != null" :key="index">
-          <view class="flex-dir-row">
-            <text class="fw-bold color-text-333">{{ item.key }}:</text>
-            <text class="ml-5 color-text-333">{{
+        <view class="page-style-item" v-if="currentPageStyle[item.key] != null" :key="index">
+          <view class="item-text">
+            <text class="item-text-key dialog-text">{{ item.key }}:</text>
+            <text class="item-text-value dialog-text">{{
               currentPageStyle[item.key]
             }}</text>
           </view>
@@ -29,7 +29,7 @@
           </view>
         </view>
       </template>
-      <text class="mt-10 fw-bold color-text-333">choose close dialogPage animationType</text>
+      <text class="mt-10 choose-close-animation-type-title dialog-text">choose close dialogPage animationType</text>
       <enum-data-checkbox
         :model-value="closeAnimationType"
         :items="closeAnimationOptions"
@@ -137,16 +137,66 @@
 </script>
 
 <style>
-  page {
-    background-color: #007aff;
+    page {
+      background-color: #007aff;
+    }
+
+  .dialog-container {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   .dialog-content {
+    width: 90%;
     height: 500px;
+    padding: 10px 6px;
+    background-color: var(--list-background-color, #fff);
+    border-radius: 6px;
+  }
+
+  .mt-10 {
+    margin-top: 10px;
+  }
+  .ml-10 {
+    margin-left: 10px;
   }
 
   .page-style-item {
     padding: 6px 0;
+    margin-top: 10px;
     background-color: var(--active-background-color, #ffffff);
+    border-radius: 5px;
   }
-</style>
+
+  .item-text {
+    flex-direction: row;
+  }
+
+  .item-text-key {
+    font-weight: bold;
+  }
+
+  .item-text-value {
+    margin-left: 5px;
+  }
+
+  .radio-set-value {
+    flex-direction: row;
+  }
+  .choose-close-animation-type-title{
+    font-weight: bold;
+  }
+  .choose-close-animation-type-radio-group{
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .dialog-text,
+  .dialog-radio {
+    color: var(--text-color, #333333);
+  }
+  </style>

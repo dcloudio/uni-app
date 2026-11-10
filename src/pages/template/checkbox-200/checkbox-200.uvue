@@ -1,12 +1,12 @@
 <template>
-  <view class="flex-dir-column pos-relative">
+  <view style="flex-direction: column;position: relative;">
     <!-- #ifndef MP -->
     <fps />
     <!-- #endif -->
-    <view class="flex-dir-row items-center u-p-2">
-      <button @click="toggleAll" size="mini" class="m-2">{{ sharedChecked ? '取消' : '全选' }}</button>
+    <view style="flex-direction: row;align-items: center;padding: 2px;">
+      <button @click="toggleAll" size="mini" style="margin: 2px;">{{ sharedChecked ? '取消' : '全选' }}</button>
     </view>
-		<checkbox-group class="u-p-2 flex-dir-row flex-wrap-wrap m-2">
+		<checkbox-group style="margin: 2px;padding: 2px;flex-direction: row;flex-wrap: wrap;">
 			<checkbox v-for="index in 200" :key="index" :checked="sharedChecked" />
 		</checkbox-group>
   </view>
@@ -21,3 +21,6 @@
   }
 
 </script>
+
+<style>
+</style>

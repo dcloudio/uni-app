@@ -1,13 +1,13 @@
 <template>
-	<view class="flex-1">
-		<camera id="camera" class="w-full u-h-300" :resolution="'medium'" :device-position="devicePosition" photo-resolution="high"
+	<view style="flex: 1;" >
+		<camera id="camera" style="width: 100%; height: 300px;" :resolution="'medium'" :device-position="devicePosition" photo-resolution="high"
 			:flash="flash" :frame-size="frameSize" <!-- #ifdef MP-ALIPAY -->
 			@ready="onCameraReady"
 			<!-- #endif -->
 			@stop="handleStop" @error="handleError" @initdone="handleInitDone">
 		</camera>
 
-		<scroll-view class="flex-1">
+		<scroll-view style="flex: 1;" >
 			<view>
         		<button type="default" @click="handleScanCode">扫码</button>
 				<button type="default" @click="switchDevicePosition">切换前后摄像头</button>
@@ -17,18 +17,18 @@
 				<button type="default" @click="startFrameListener">开始捕捉帧数据</button>
 				<button type="default" @click="stopFrameListener">停止捕捉帧数据</button>
 				<view>
-					<view class="p-10-0 color-text-333">
-						<text class="fs-15 fw-bold color-text-333">设置预览缩放</text>
+					<view class="uni-title">
+						<text class="uni-title-text">设置预览缩放</text>
 					</view>
-					<view class="d-flex p-8-13 m-5-0 flex-dir-row flex-wrap-nowrap bg-fff">
-						<slider class="h-28 p-0 flex-1 bg-fff" :disabled="maxZoom == 0" :show-value="true" :min="1"
+					<view class="uni-camera-wrapper">
+						<slider class="uni-camera-test-host" :disabled="maxZoom == 0" :show-value="true" :min="1"
 							:max="maxZoom" :value="1" @changing="zoomSliderChange" />
 					</view>
 				</view>
 
 				<view>
-					<view class="p-10-0 color-text-333">
-						<text class="fs-15 fw-bold color-text-333">拍摄照片示例</text>
+					<view class="uni-title">
+						<text class="uni-title-text">拍摄照片示例</text>
 						<button type="default" @click="handleTakePhoto">拍摄照片</button>
 						<enum-data-checkbox
 						  :items="qualityOptions"
@@ -37,23 +37,23 @@
 						  @change="takePhotoQualityChange"
 						/>
 					</view>
-					<view class="d-flex p-8-13 m-5-0 flex-dir-row flex-wrap-nowrap bg-fff">
-						<image id="take-photo-image" class="p-0 bg-fff w-150 h-150"
+					<view class="uni-camera-wrapper">
+						<image style="width: 150px;height: 150px;" id="take-photo-image" class="uni-camera-test-host-without-flex"
 							v-if="imageSrc != ''" :src="imageSrc" @load="onPhotoImageLoad" @error="onPhotoImageError"></image>
 					</view>
 				</view>
 
 				<view>
-					<view class="p-10-0 color-text-333">
-						<text class="fs-15 fw-bold color-text-333">录制视频示例</text>
-						<view class="flex-dir-row mt-8">
-							<text class="fs-22">录制时长：</text>
-							<input class="fs-22 w-50 u-ml-10 text-right"
-								style="border: 0.5px solid grey;"
+					<view class="uni-title">
+						<text class="uni-title-text">录制视频示例</text>
+						<view style="flex-direction: row;margin-top: 8px;" >
+							<text class="uni-title-size">录制时长：</text>
+							<input class="uni-title-size"
+								style="width: 50px; margin-left: 10px;border: 0.5px solid grey;text-align: right;"
 								type="number" @input="timeoutInput" :value="timeout" />
-							<text class="fs-22 ml-8">秒</text>
+							<text class="uni-title-size" style="margin-left: 8px;">秒</text>
 						</view>
-						<button class="mt-8" type="default" style="font-family: monospace;" @click="startRecord"
+						<button type="default" style="font-family: monospace;margin-top: 8px;" @click="startRecord"
 							:disabled="startRecordStatus">{{ startRecordStatus ? `${remain}秒` : "录制视频" }}</button>
 						<button type="default" @click="stopRecord">停止录制</button>
 						<enum-data-checkbox
@@ -63,8 +63,8 @@
 						  @change="startRecordCompressChange"
 						/>
 					</view>
-					<view class="d-flex p-8-13 m-5-0 flex-dir-row flex-wrap-nowrap bg-fff">
-						<video class="p-0 bg-fff w-300 u-h-300"
+					<view class="uni-camera-wrapper">
+						<video style="width: 300px;height: 300px;" class="uni-camera-test-host-without-flex"
 							v-if="videoSrc != ''" :src="videoSrc" :controls="true"></video>
 					</view>
 				</view>
@@ -296,3 +296,46 @@
 		handleTakePhoto
 	})
 </script>
+
+<style>
+	.uni-title {
+		padding: 10px 0;
+	}
+
+	.uni-title-text {
+		font-size: 15px;
+		font-weight: bold;
+	}
+
+	.uni-camera-wrapper {
+		display: flex;
+		padding: 8px 13px;
+		margin: 5px 0;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		background-color: #ffffff;
+	}
+
+	.uni-camera-test-host {
+		height: 28px;
+		padding: 0px;
+		flex: 1;
+		background-color: #ffffff;
+	}
+
+	.uni-camera-test-host-without-flex {
+		height: 28px;
+		padding: 0px;
+		background-color: #ffffff;
+	}
+
+	.uni-title-size {
+		font-size: 22px;
+	}
+
+	.radio-box {
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+	}
+</style>

@@ -2,17 +2,17 @@
     <text>1帧内显示110个元素。勿使用debug方式运行来测试性能</text>
     <text>当前页面：拍平示例（启用 flatten）</text>
 		<view>
-		    <view class="flex-dir-row" v-for="(_) in 5" flatten>
+		    <view style="flex-direction: row;" v-for="(_) in 5" flatten>
 		        <view v-for="(_,i) in 10" style="background-color: #85d8b4;margin: 0.5px;" flatten>
 		            <text flatten>{{i}}</text>
 		        </view>
 		    </view>
 		</view>
-    <view class="h-48 m-16 bg-1677ff radius-8 justify-center items-center" @click="ShowEvent()">
-        <text class="color-fff">同屏显示4050个元素</text>
+    <view class="btnShow" @click="ShowEvent()">
+        <text class="btnText">同屏显示4050个元素</text>
     </view>
 		<view>
-        <view v-if="show" class="flex-dir-row" v-for="(_) in 50" flatten>
+        <view v-if="show" style="flex-direction: row;" v-for="(_) in 50" flatten>
             <view v-for="(_,i) in 40" style="background-color: #85d8b4;margin: 0.5px;" flatten>
                 <text style="font-size: 5px;line-height: 5px;" flatten>{{i}}</text>
             </view>
@@ -52,3 +52,19 @@
 		});
 
 </script>
+
+<style>
+    .btnShow {
+        height: 48px;
+        margin: 16px;
+        background-color: #1677ff;
+        border-radius: 8px;
+        justify-content: center;
+        align-items: center;
+        /* box-shadow: 0 4px 12px rgba(22, 119, 255, 0.3); */
+    }
+
+    .btnText {
+        color: #ffffff;
+    }
+</style>

@@ -1,16 +1,16 @@
 <template>
   <page-head title="getCurrentPages"></page-head>
-  <view class="p-0-15">
-    <button class="mt-10" type="default" @click="getPageStyle">getPageStyle</button>
-    <button class="mt-10" type="default" @click="setPageStyle(true)">setPageStyle(true)</button>
-    <button class="mt-10" type="default" @click="setPageStyle(false)">setPageStyle(false)</button>
-    <text class="mt-15">当前 PageStyle</text>
-      <text class="u-mt-5 p-5 bg-fff w-full page-style-value">{{pageStyleText}}</text>
-      <text class="mt-20">状态：</text>
-      <view class="u-mt-5">
+  <view class="uni-padding-wrap">
+    <button class="btn btn-get-page-style" type="default" @click="getPageStyle">getPageStyle</button>
+    <button class="btn btn-set-page-style-1" type="default" @click="setPageStyle(true)">setPageStyle(true)</button>
+    <button class="btn btn-set-page-style-0" type="default" @click="setPageStyle(false)">setPageStyle(false)</button>
+    <text class="page-style">当前 PageStyle</text>
+      <text class="page-style-value">{{pageStyleText}}</text>
+      <text class="status">状态：</text>
+      <view class="status-list">
         <text>enablePullDownRefresh: {{data.enablePullDownRefreshStatus}}</text>
       </view>
-    <text class="fs-12 mt-15 opacity-0_8">当前版本仅支持设置属性 enablePullDownRefresh</text>
+    <text class="tips">当前版本仅支持设置属性 enablePullDownRefresh</text>
   </view>
 </template>
 
@@ -81,9 +81,35 @@
 
 
 <style>
+  .btn {
+    margin-top: 10px;
+  }
+
+  .page-style {
+    margin-top: 15px;
+  }
+
   .page-style-value {
+    margin-top: 5px;
+    padding: 5px;
+    background-color: #fff;
+    width: 100%;
     /* #ifdef WEB */
     overflow-wrap: break-word;
     /* #endif */
+  }
+
+  .status {
+    margin-top: 20px;
+  }
+
+  .status-list {
+    margin-top: 5px;
+  }
+
+  .tips {
+    font-size: 12px;
+    margin-top: 15px;
+    opacity: .8;
   }
 </style>

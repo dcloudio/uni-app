@@ -1,17 +1,17 @@
 <template>
   <page-head title="setNavigationBarTitle"></page-head>
-  <view class="p-0-15 mt-15">
-    <button @tap="setNavigationBarNewTitle" class="mt-10">
+  <view class="uni-padding-wrap uni-common-mt">
+    <button @tap="setNavigationBarNewTitle" class="uni-btn">
       设置当前页面标题为: {{ newTitle }}
     </button>
-    <button @tap="setNavigationBarLongTitle" class="mt-10">
+    <button @tap="setNavigationBarLongTitle" class="uni-btn">
       设置超长标题
     </button>
     <!-- #ifdef (APP-HARMONY && !VUE3-VAPOR) || WEB || MP -->
-    <button @tap="showNavigationBarLoading" class="mt-10">
+    <button @tap="showNavigationBarLoading" class="uni-btn">
       设置标题 loading
     </button>
-    <button @tap="hideNavigationBarLoading" class="mt-10">
+    <button @tap="hideNavigationBarLoading" class="uni-btn">
       隐藏标题 loading
     </button>
     <!-- #endif -->

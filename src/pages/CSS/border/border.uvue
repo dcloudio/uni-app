@@ -1,5 +1,5 @@
 <template>
-    <view class="flex-grow-1">
+    <view style="flex-grow: 1;">
       <view>
         <text>border与background-image同时设置</text>
         <view class="common"
@@ -9,23 +9,23 @@
 
       <view>
         <text>设置border 多次赋值的场景</text>
-        <view class="flex-dir-row justify-between mt-10">
+        <view class="demo-box">
           <view class="common multi-times-border"></view>
           <view class="multi-times-border" style="width: 150px;height: 50px;"></view>
         </view>
       </view>
 
-      <text class="fs-13 color-tips-0958d9 bg-tips-e6f4ff border-l-4-solid-tips-91caff p-10-12 radius-4 m-10">说明：左边是正常版本，右边是拍平版本</text>
+      <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
       <view>
         <text>border内联样式覆盖，预期右边框为blue</text>
-        <view class="flex-dir-row justify-between mt-10">
+        <view class="demo-box">
           <view class="multi-times-border" style="border-right: 6px solid blue; width: 150px;height: 50px;"></view>
           <view class="multi-times-border" style="border-right: 6px solid blue; width: 150px;height: 50px;" flatten></view>
         </view>
       </view>
       <view>
         <text>border: 5px dotted blue</text>
-        <view class="flex-dir-row justify-between mt-10">
+        <view class="demo-box">
           <view class="common" style="border: 5px dotted blue;"></view>
           <view class="common" style="border: 5px dotted blue;" flatten></view>
         </view>
@@ -33,7 +33,7 @@
 
       <view>
         <text>border: 6rpx dashed #00f8</text>
-        <view class="flex-dir-row justify-between mt-10">
+        <view class="demo-box">
           <view class="common" style="border: 6rpx dashed #00f8;"></view>
           <view class="common" style="border: 6rpx dashed #00f8;" flatten></view>
         </view>
@@ -41,36 +41,36 @@
 
       <view>
         <text>设置border的view，通过v-show控制显示</text>
-        <view v-show="shown" class="flex-dir-row justify-between mt-10">
+        <view v-show="shown" class="demo-box">
           <view class="common" style="border: 5px dotted blue;"></view>
           <view class="common" style="border: 5px dotted blue;" flatten></view>
         </view>
       </view>
       <view>
         <text>border: dashed</text>
-        <view class="flex-dir-row justify-between mt-10">
+        <view class="demo-box">
           <view class="common multi-times-border" style='border: dashed'></view>
           <view class="common multi-times-border" style='border: dashed' flatten></view>
         </view>
       </view>
       <view>
         <text>text组件: border: 5px dotted blue</text>
-        <view class="flex-dir-row justify-between mt-10">
+        <view class="demo-box">
           <text class="text-border" style="border: 5px dotted blue;">文本</text>
           <text class="text-border" style="border: 5px dotted blue;" flatten>文本</text>
         </view>
       </view>
       <view>
         <text>image组件: border: 5px dotted blue</text>
-        <view class="flex-dir-row justify-between mt-10">
+        <view class="demo-box">
           <image class="image-border" style="border: 5px dotted blue;" src="/static/test-image/logo.png"></image>
           <image class="image-border" style="border: 5px dotted blue;" src="/static/test-image/logo.png" flatten></image>
         </view>
       </view>
 
-      <text class="fs-15 fw-bold color-text-333 mt-15">scroll-view 组件</text>
+      <text class="uni-title-text uni-common-mt">scroll-view 组件</text>
 
-      <view class="flex-dir-row justify-between mt-10">
+      <view class="demo-box">
         <scroll-view class="common" style="border: 1px solid red;">
           <text class="common-text">border: 1px solid red</text>
         </scroll-view>
@@ -81,22 +81,22 @@
 
       <view>
         <text>父视图包含大尺寸子视图的border效果</text>
-        <view class="flex-dir-row justify-between mt-10">
+        <view class="demo-box">
           <view class="border-child-overlap">
             <view style="width: 150px;height: 150px;background-color: red;"></view>
           </view>
         </view>
       </view>
 
-      <view class="mt-15">
-        <text class="fs-15 fw-bold color-text-333">setProperty 设置与 getPropertyValue 获取</text>
+      <view class="uni-common-mt">
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
-      <view class="flex-dir-row justify-between mt-10">
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">view 组件</text>
-          <text class="fs-12 color-999">设置值: {{data.border}}</text>
-          <text class="fs-12 color-999">获取值: {{data.borderActual}}</text>
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件</text>
+          <text class="uni-info">设置值: {{data.border}}</text>
+          <text class="uni-info">获取值: {{data.borderActual}}</text>
           <view class="test-box">
             <view ref="viewRef" class="common-dynamic" :style="{ border: data.border }">
               <text>view</text>
@@ -104,56 +104,56 @@
           </view>
         </view>
 
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">text 组件</text>
-          <text class="fs-12 color-999">设置值: {{data.border}}</text>
-          <text class="fs-12 color-999">获取值: {{data.borderActualText}}</text>
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件</text>
+          <text class="uni-info">设置值: {{data.border}}</text>
+          <text class="uni-info">获取值: {{data.borderActualText}}</text>
           <view class="test-box">
             <text ref="textRef" class="common-dynamic" :style="{ border: data.border }">text</text>
           </view>
         </view>
 
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">image 组件</text>
-          <text class="fs-12 color-999">设置值: {{data.border}}</text>
-          <text class="fs-12 color-999">获取值: {{data.borderActualImage}}</text>
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件</text>
+          <text class="uni-info">设置值: {{data.border}}</text>
+          <text class="uni-info">获取值: {{data.borderActualImage}}</text>
           <view class="test-box">
             <image ref="imageRef" class="common-image" :style="{ border: data.border }" src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
 
-      <view class="flex-dir-row justify-between mt-10">
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">view 组件拍平</text>
-          <text class="fs-12 color-999">设置值: {{data.border}}</text>
-          <text class="fs-12 color-999">获取值: {{data.borderActualFlat}}</text>
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件拍平</text>
+          <text class="uni-info">设置值: {{data.border}}</text>
+          <text class="uni-info">获取值: {{data.borderActualFlat}}</text>
           <view class="test-box">
             <view ref="viewRefFlat" class="common-dynamic" :style="{ border: data.border }" flatten>
               <text>view</text>
             </view>
           </view>
         </view>
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">text 组件拍平</text>
-          <text class="fs-12 color-999">设置值: {{data.border}}</text>
-          <text class="fs-12 color-999">获取值: {{data.borderActualTextFlat}}</text>
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件拍平</text>
+          <text class="uni-info">设置值: {{data.border}}</text>
+          <text class="uni-info">获取值: {{data.borderActualTextFlat}}</text>
           <view class="test-box">
             <text ref="textRefFlat" class="common-dynamic" :style="{ border: data.border }" flatten>text</text>
           </view>
         </view>
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">image 组件拍平</text>
-          <text class="fs-12 color-999">设置值: {{data.border}}</text>
-          <text class="fs-12 color-999">获取值: {{data.borderActualImageFlat}}</text>
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件拍平</text>
+          <text class="uni-info">设置值: {{data.border}}</text>
+          <text class="uni-info">获取值: {{data.borderActualImageFlat}}</text>
           <view class="test-box">
             <image ref="imageRefFlat" class="common-image" :style="{ border: data.border }" flatten src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
 
-      <view class="mt-15 mb-15">
-        <text class="fs-13 color-tips-0958d9 bg-tips-e6f4ff border-l-4-solid-tips-91caff p-10-12 radius-4 m-10">第一个枚举值，'' (空字符串) - 空值情况</text>
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data-checkbox :items="borderEnum" title="border 枚举值" @change="radioChangeBorder" :compact="true"></enum-data-checkbox>
         <input-data :defaultValue="data.border" title="border 自定义值" type="text" @confirm="inputChangeBorder"></input-data>
       </view>
@@ -256,6 +256,12 @@
     border-radius: 6px;
   }
 
+  .demo-box{
+    flex-direction: row;
+    margin-top: 10px;
+    justify-content: space-between;
+  }
+
   .multi-times-border {
     border: 3px solid purple;
     border-right-color: blue;
@@ -292,6 +298,20 @@
     width: 50px;
     height: 50px;
     background-color: gray;
+  }
+
+  .test-container {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
+  }
+  .test-text{
+    height:50px;
   }
 
   .test-box {

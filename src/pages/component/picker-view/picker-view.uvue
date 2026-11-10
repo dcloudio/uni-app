@@ -1,22 +1,22 @@
 <template>
     <page-head :title="data.title"></page-head>
-    <view class="p-0-15">
-      <view class="p-10-0 color-text-333">
+    <view class="uni-padding-wrap">
+      <view class="uni-title">
         日期：{{data.year}}年{{data.month}}月{{data.day}}日
       </view>
     </view>
-    <picker-view class="picker-view w-full h-320 mt-10 mb-20" :value="data.value" @change="bindChange" :indicator-style="data.indicatorStyle"
+    <picker-view class="picker-view" :value="data.value" @change="bindChange" :indicator-style="data.indicatorStyle"
       :indicator-class="data.indicatorClass" :mask-style="data.maskStyle" :mask-class="data.maskClass" :mask-top-style="data.maskTopStyle"
       :mask-bottom-style="data.maskBottomStyle">
       <picker-view-column class="picker-view-column">
-        <view class="u-h-50" v-for="(item,index) in data.years" :key="index"><text class="lh-50 text-center">{{item}}年</text></view>
+        <view class="item" v-for="(item,index) in data.years" :key="index"><text class="text">{{item}}年</text></view>
       </picker-view-column>
       <picker-view-column class="picker-view-column">
-        <view class="u-h-50" v-for="(item,index) in data.months" :key="index"><text class="lh-50 text-center">{{item}}月</text>
+        <view class="item" v-for="(item,index) in data.months" :key="index"><text class="text">{{item}}月</text>
         </view>
       </picker-view-column>
       <picker-view-column class="picker-view-column">
-        <view class="u-h-50" v-for="(item,index) in data.days" :key="index"><text class="lh-50 text-center">{{item}}日</text></view>
+        <view class="item" v-for="(item,index) in data.days" :key="index"><text class="text">{{item}}日</text></view>
       </picker-view-column>
     </picker-view>
     <!-- #ifndef MP-ALIPAY -->
@@ -192,6 +192,22 @@
 </script>
 
 <style>
+  .picker-view {
+    width: 100%;
+    height: 320px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+  }
+
+  .item {
+    height: 50px;
+  }
+
+  .text {
+    line-height: 50px;
+    text-align: center;
+  }
+
   /* 自动化测试 */
   .indicator-test {
     height: 50px;

@@ -1,22 +1,22 @@
 <template>
     <page-head :title="title"></page-head>
-    <view class="p-0-15">
-      <view class="p-10-0 color-text-333">
-        <text class="color-888 fs-12 fw-bold u-mt-5">获取本地相对路径图片信息</text>
+    <view class="uni-padding-wrap">
+      <view class="uni-title">
+        <text class="uni-subtitle-text">获取本地相对路径图片信息</text>
       </view>
-      <image class="self-center" :src="relativeImagePath" mode="aspectFit"></image>
-      <text class="mt-10">{{absoluteImageInfo}}</text>
-      <view class="p-10-0 color-text-333">
-        <text class="color-888 fs-12 fw-bold u-mt-5">获取网络路径图片信息</text>
+      <image class="image" :src="relativeImagePath" mode="aspectFit"></image>
+      <text class="margin-top-10">{{absoluteImageInfo}}</text>
+      <view class="uni-title">
+        <text class="uni-subtitle-text">获取网络路径图片信息</text>
       </view>
-      <image class="self-center" :src="remoteImagePath" mode="aspectFit"></image>
-      <text class="mt-10">{{remoteImageInfo}}</text>
-      <view class="p-10-0 color-text-333">
-        <text class="color-888 fs-12 fw-bold u-mt-5">获取本地绝对路径图片信息</text>
+      <image class="image" :src="remoteImagePath" mode="aspectFit"></image>
+      <text class="margin-top-10">{{remoteImageInfo}}</text>
+      <view class="uni-title">
+        <text class="uni-subtitle-text">获取本地绝对路径图片信息</text>
       </view>
-      <image class="self-center" :src="absoluteImagePath" mode="aspectFit"></image>
-      <text class="mt-10">{{relativeImageInfo}}</text>
-      <view class="p-5-0">
+      <image class="image" :src="absoluteImagePath" mode="aspectFit"></image>
+      <text class="margin-top-10">{{relativeImageInfo}}</text>
+      <view class="uni-btn-v">
         <button type="primary" @click="chooseImage">拍摄照片或从相册中选择照片</button>
       </view>
     </view>
@@ -116,3 +116,13 @@
     chooseImage
   })
 </script>
+
+<style>
+  .image {
+    align-self: center;
+  }
+
+  .margin-top-10 {
+    margin-top: 10px;
+  }
+</style>

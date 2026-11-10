@@ -1,28 +1,28 @@
 <template>
   <page-head id="page-head" title="getElementById"></page-head>
-  <view class="m-0-15">
+  <view style="margin: 0 15px;">
     <text id="text">this is text</text>
-    <view id="view" class="mt-15 border-width-1 border-style-solid border-color-f00">this is view</view>
-    <image id="image" class="mt-15 w-50 u-h-50" src="/static/test-image/logo.png"></image>
-    <scroll-view id="scroll-view" class="mt-15 w-100 u-h-50 border-1-solid-ccc bg-f0f0f0">
+    <view id="view" class="uni-common-mt" style="border: 1px solid red">this is view</view>
+    <image id="image" class="uni-common-mt" src="/static/test-image/logo.png" style="width: 50px; height: 50px;"></image>
+    <scroll-view id="scroll-view" class="uni-common-mt" style="width: 100px; height: 50px; background-color: #f0f0f0; border: 1px solid #ccc;">
       <text>this is scroll-view</text>
     </scroll-view>
-    <button class="mt-10" @click="changePageHeadBackgroundColor">
+    <button class="uni-btn" @click="changePageHeadBackgroundColor">
       修改 page-head 背景色
     </button>
-    <button class="mt-10" @click="changeTextColor">
+    <button class="uni-btn" @click="changeTextColor">
       修改 text 字体颜色
     </button>
-    <button class="mt-10" @click="changeViewStyle">
+    <button class="uni-btn" @click="changeViewStyle">
       修改 view 宽高及背景色
     </button>
-    <button class="mt-10" @click="changeImageStyle">
+    <button class="uni-btn" @click="changeImageStyle">
       修改 image 宽高及边框
     </button>
-    <button class="mt-10" @click="changeScrollViewStyle">
+    <button class="uni-btn" @click="changeScrollViewStyle">
       修改 scroll-view 宽高及背景色
     </button>
-    <button class="mt-10" @click="goMultipleRootNode">
+    <button class="uni-btn" @click="goMultipleRootNode">
       跳转多根节点示例
     </button>
   </view>

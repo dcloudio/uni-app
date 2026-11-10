@@ -1,24 +1,24 @@
 <template>
       <page-head :title="title"></page-head>
-      <view class="p-0-15 mt-15">
-        <view class="p-10-0 color-text-333">
-          <text class="fs-15 fw-bold color-text-333">图片路径示例</text>
+      <view class="uni-padding-wrap uni-common-mt">
+        <view class="uni-title">
+          <text class="uni-title-text">图片路径示例</text>
         </view>
         <test-image-path />
         <view>
-          <text class="color-888 fs-12 fw-bold u-mt-5 image-description">非static目录的src静态路径：./logo.png</text>
-          <view class="flex-dir-row justify-center bg-list-fff">
-            <image class="w-100 m-20-auto" mode="widthFix" src="./logo.png"></image>
-            <image class="w-100 m-20-auto" mode="widthFix" src="./logo.png" flatten></image>
+          <text class="uni-subtitle-text image-description">非static目录的src静态路径：./logo.png</text>
+          <view class="uni-center image-bg">
+            <image class="image" mode="widthFix" src="./logo.png"></image>
+            <image class="image" mode="widthFix" src="./logo.png" flatten></image>
           </view>
         </view>
         <view v-for="(item,index) in data" :key="index">
-          <text class="color-888 fs-12 fw-bold u-mt-5 image-description">{{item.description}}（右边为拍平测试）</text>
-          <view class="flex-dir-row justify-center bg-list-fff">
-            <image class="w-100 m-20-auto" mode="widthFix" :src="item.errorImage == null ? item.src : item.errorImage"
+          <text class="uni-subtitle-text image-description">{{item.description}}（右边为拍平测试）</text>
+          <view class="uni-center image-bg">
+            <image class="image" mode="widthFix" :src="item.errorImage == null ? item.src : item.errorImage"
               @error="imageErrorEvent(index, $event as ImageErrorEvent)"></image>
 
-            <image class="w-100 m-20-auto" mode="widthFix" :src="item.errorImageFlatten == null ? item.src : item.errorImageFlatten"
+            <image class="image" mode="widthFix" :src="item.errorImageFlatten == null ? item.src : item.errorImageFlatten"
               @error="imageFlattenErrorEvent(index, $event as ImageErrorEvent)" flatten></image>
           </view>
         </view>
@@ -198,6 +198,15 @@
 </script>
 
 <style>
+  .image {
+    margin: 20px auto;
+    width: 100px;
+  }
+
+  .image-bg {
+    background-color: var(--list-background-color, #ffffff);
+  }
+
   @media (prefers-color-scheme: dark) {
     .image-description {
       color: #e5e5e5;

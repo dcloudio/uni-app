@@ -1,6 +1,6 @@
 <template>
   <page-head title="插屏广告"></page-head>
-  <button :type="btnType" class="m-10" :disabled="btnDisable" @click="showAd()">{{btnText}}</button>
+  <button :type="btnType" style="margin: 10px;" :disabled="btnDisable" @click="showAd()">{{btnText}}</button>
   <view v-for="(item,index) in errorDetails">{{item}}</view>
 </template>
 
@@ -64,3 +64,7 @@
     loadAd()
   })
 </script>
+
+<style>
+
+</style>

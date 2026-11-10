@@ -1,39 +1,39 @@
 <template>
   <page-head title="view"></page-head>
-  <scroll-view class="flex-1" :scroll-top="data.scroll_top">
-    <view class="p-0-15 mt-15">
+  <scroll-view style="flex: 1" :scroll-top="data.scroll_top">
+    <view class="uni-padding-wrap uni-common-mt">
       <!-- view样式大合集 -->
-      <text class="fs-15 fw-bold color-text-333">view样式大合集</text>
-      <view class="flex-dir-row bg-list-fff justify-around h-120 items-center">
-        <view class="w-80 h-80 m-5 p-5 radius-8 d-flex flex-dir-column justify-center items-center pos-relative transform-rotate-45deg styled-view bg-f0f8ff opacity-0_95">
-          <text class="fs-12 color-007aff fw-500">普通view</text>
+      <text class="uni-title-text">view样式大合集</text>
+      <view class="styled-view-row">
+        <view class="styled-view">
+          <text class="demo-text">普通view</text>
         </view>
-        <view class="w-80 h-80 m-5 p-5 radius-8 d-flex flex-dir-column justify-center items-center pos-relative transform-rotate-45deg styled-view bg-f0f8ff opacity-0_95" flatten>
-          <text class="fs-12 color-007aff fw-500" flatten>拍平view</text>
+        <view class="styled-view" flatten>
+          <text class="demo-text" flatten>拍平view</text>
         </view>
       </view>
 
-      <text class="fs-15 fw-bold color-text-333">自定义组件：右边拍平</text>
-      <view class="flex-dir-row bg-list-fff justify-around h-120 items-center">
+      <text class="uni-title-text">自定义组件：右边拍平</text>
+      <view class="styled-view-row">
         <child></child>
         <child flatten></child>
       </view>
 
-      <text class="fs-15 fw-bold color-text-333 mt-15">Hover 点击态效果</text>
-      <view id="view" class="p-5-0 flex-dir-row justify-center" :hover-class="data.hover_class ? 'is-parent-hover' : 'none'">
-        <view id="view-child1" class="h-200 w-200 bg-list-fff" :hover-class="data.hover_class ? 'is-hover' : 'none'" :hover-stop-propagation="data.stop_propagation"
+      <text class="uni-title-text uni-common-mt">Hover 点击态效果</text>
+      <view id="view" class="main" :hover-class="data.hover_class ? 'is-parent-hover' : 'none'">
+        <view id="view-child1" class="test-view" :hover-class="data.hover_class ? 'is-hover' : 'none'" :hover-stop-propagation="data.stop_propagation"
           :hover-start-time="data.start_time" :hover-stay-time="data.stay_time">
         </view>
       </view>
 
-      <text class="fs-15 fw-bold color-text-333 mt-15">自定义组件 Hover 属性透传</text>
-      <view class="p-5-0 flex-dir-row justify-center">
+      <text class="uni-title-text uni-common-mt">自定义组件 Hover 属性透传</text>
+      <view class="main">
         <child id="hover-child" :hover-class="data.hover_class ? 'is-hover' : 'none'" :hover-stop-propagation="data.stop_propagation"
           :hover-start-time="data.start_time" :hover-stay-time="data.stay_time">
         </child>
       </view>
 
-      <view>
+      <view class="content">
         <boolean-data :value="false" title="是否指定按下去的样式类" @change="change_hover_class_boolean"></boolean-data>
         <boolean-data :value="false" title="是否阻止本节点的祖先节点出现点击态"
           @change="change_stop_propagation_boolean"></boolean-data>
@@ -51,7 +51,7 @@
 
       <!-- #ifdef VUE3-VAPOR && !MP-ALIPAY -->
       <navigator url="/pages/template/4050/4050">
-        <button class="m-20">组件性能测试</button>
+        <button style="margin:20px;">组件性能测试</button>
       </navigator>
       <!-- #endif -->
     </view>
@@ -109,10 +109,49 @@
 </script>
 
 <style>
+  .styled-view-row {
+    flex-direction: row;
+    background-color: var(--list-background-color, #ffffff);
+    justify-content: space-around;
+    height: 120px;
+    align-items: center;
+  }
+
   /* view样式大合集 */
   .styled-view {
+    width: 80px;
+    height: 80px;
+    margin: 5px;
+    padding: 5px;
     border: 2px solid #007aff;
+    border-radius: 8px;
+    background-color: #f0f8ff;
     box-shadow: 0 2px 4px rgba(0, 122, 255, 0.2);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0.95;
+    position: relative;
+    transform: rotate(45deg);
+  }
+
+  .demo-text {
+    font-size: 12px;
+    color: #007aff;
+    font-weight: 500;
+  }
+
+  .main {
+    padding: 5px 0;
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .test-view {
+    height: 200px;
+    width: 200px;
+    background-color: var(--list-background-color,#ffffff);
   }
 
   .is-hover {

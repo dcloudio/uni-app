@@ -1,5 +1,5 @@
 <template>
-  <view class="u-p-15">
+  <view style="padding: 15px;">
     {{name}}的详情页面
   </view>
 </template>
@@ -15,3 +15,7 @@
     name.value = (options["name"] as string | null) ?? ""
   })
 </script>
+
+<style>
+
+</style>

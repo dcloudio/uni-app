@@ -1,36 +1,36 @@
 <template>
   <enum-data-checkbox title="android-nested-scroll（默认值为all）" :items="types" @change="onTypeChange"></enum-data-checkbox>
-  <scroll-view class="flex-1">
-    <view v-for="item in 5" class="ml-6 mr-6 mt-6 bg-fff">
-      <text class="lh-60 text-center color-555">item{{item}}</text>
+  <scroll-view style="flex:1;" >
+    <view v-for="item in 5" class="scroll-item">
+      <text class="scroll-item-title">item{{item}}</text>
     </view>
-    <web-view class="w-300 u-h-300 ml-6 mr-6 mt-6 self-center border-1-solid-000" src="/hybrid/html/local.html" :android-nested-scroll="type"></web-view>
-    <view v-for="item in 5" class="ml-6 mr-6 mt-6 bg-fff">
-      <text class="lh-60 text-center color-555">item{{item}}</text>
+    <web-view class="web-view" src="/hybrid/html/local.html" :android-nested-scroll="type"></web-view>
+    <view v-for="item in 5" class="scroll-item">
+      <text class="scroll-item-title">item{{item}}</text>
     </view>
-    <web-view class="w-300 u-h-300 ml-6 mr-6 mt-6 self-center border-1-solid-000" src="/hybrid/html/simple.html" :android-nested-scroll="type"></web-view>
-    <view v-for="item in 5" class="ml-6 mr-6 mt-6 bg-fff">
-      <text class="lh-60 text-center color-555">item{{item}}</text>
+    <web-view class="web-view" src="/hybrid/html/simple.html" :android-nested-scroll="type"></web-view>
+    <view v-for="item in 5" class="scroll-item">
+      <text class="scroll-item-title">item{{item}}</text>
     </view>
-    <text class="text-center mt-6" style="color: coral;">下面是测试嵌套横向滚动scroll-view的场景</text>
-    <scroll-view class="flex-dir-row" direction="horizontal">
-      <view v-for="item in 5" class="w-80 justify-center ml-6 mr-6 mt-6 bg-fff">
-        <text class="text-center color-555">item{{item}}</text>
+    <text style="color: coral;text-align: center;margin-top: 6px;">下面是测试嵌套横向滚动scroll-view的场景</text>
+    <scroll-view style="flex-direction: row;"  direction="horizontal">
+      <view v-for="item in 5" class="scroll-item2">
+        <text class="scroll-item-title2">item{{item}}</text>
       </view>
-      <web-view class="w-300 u-h-300 ml-6 mr-6 mt-6 self-center border-1-solid-000" src="/hybrid/html/local.html" :android-nested-scroll="type"></web-view>
-      <view v-for="item in 5" class="w-80 justify-center ml-6 mr-6 mt-6 bg-fff">
-        <text class="text-center color-555">item{{item}}</text>
+      <web-view class="web-view" src="/hybrid/html/local.html" :android-nested-scroll="type"></web-view>
+      <view v-for="item in 5" class="scroll-item2">
+        <text class="scroll-item-title2">item{{item}}</text>
       </view>
-      <web-view class="w-300 u-h-300 ml-6 mr-6 mt-6 self-center border-1-solid-000" src="/hybrid/html/simple.html" :android-nested-scroll="type"></web-view>
-      <view v-for="item in 5" class="w-80 justify-center ml-6 mr-6 mt-6 bg-fff">
-        <text class="text-center color-555">item{{item}}</text>
+      <web-view class="web-view" src="/hybrid/html/simple.html" :android-nested-scroll="type"></web-view>
+      <view v-for="item in 5" class="scroll-item2">
+        <text class="scroll-item-title2">item{{item}}</text>
       </view>
     </scroll-view>
-    <view v-for="item in 5" class="ml-6 mr-6 mt-6 bg-fff">
-      <text class="lh-60 text-center color-555">item{{item}}</text>
+    <view v-for="item in 5" class="scroll-item">
+      <text class="scroll-item-title">item{{item}}</text>
     </view>
 
-    <view class="h-safe-area-inset-bottom-20 min-h-20"></view>
+    <view class="scroll-view_bottom-fixed"></view>
   </scroll-view>
 </template>
 
@@ -44,3 +44,42 @@
     type.value = types[value].name;
   };
 </script>
+
+<style>
+  .web-view {
+    width: 300px;
+    height: 300px;
+    margin-left: 6px;
+    margin-right: 6px;
+    margin-top: 6px;
+    border: black 1px solid;
+    align-self: center;
+  }
+
+  .scroll-item {
+    margin-left: 6px;
+    margin-right: 6px;
+    margin-top: 6px;
+    background-color: #fff;
+  }
+
+  .scroll-item2 {
+    width: 80px;
+    justify-content: center;
+    margin-left: 6px;
+    margin-right: 6px;
+    margin-top: 6px;
+    background-color: #fff;
+  }
+
+  .scroll-item-title {
+    line-height: 60px;
+    text-align: center;
+    color: #555;
+  }
+
+  .scroll-item-title2 {
+    text-align: center;
+    color: #555;
+  }
+</style>

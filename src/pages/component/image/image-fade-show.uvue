@@ -1,15 +1,15 @@
 <template>
   <page-head :title="data.title"></page-head>
-  <scroll-view class="flex-1">
-    <view class="p-0-15" flatten>
-      <text class="fs-15 fw-bold color-text-333">fade-show 属性示例</text>
-      <text class="color-888 fs-12 fw-bold u-mt-5 mb-15">图片类型{{data.imageType}}，右边为拍平</text>
-      <view class="flex-dir-row bg-list-fff justify-around items-center mb-10 h-160">
-        <image class="h-120 m-5 p-5 radius-10 styled-image border-2-solid-ff6b6b" mode="aspectFill" :src="data.imageSrc" :fade-show="data.fadeShow"></image>
-        <image class="h-120 m-5 p-5 radius-10 styled-image border-2-solid-ff6b6b" mode="aspectFill" :src="data.imageSrc" :fade-show="data.fadeShow" flatten></image>
+  <scroll-view style="flex: 1">
+    <view class="uni-padding-wrap" flatten>
+      <text class="uni-title-text">fade-show 属性示例</text>
+      <text class="uni-subtitle-text uni-common-mb">图片类型{{data.imageType}}，右边为拍平</text>
+      <view class="styled-image-row">
+        <image class="styled-image" mode="aspectFill" :src="data.imageSrc" :fade-show="data.fadeShow"></image>
+        <image class="styled-image" mode="aspectFill" :src="data.imageSrc" :fade-show="data.fadeShow" flatten></image>
       </view>
-      <button @click="switchSrc">切换图片</button>
-      <button @click="swithchFadeShow">{{data.fadeShow?'关闭fade-show':'开启fade-show'}}</button>
+      <button class="uni-button" @click="switchSrc">切换图片</button>
+      <button class="uni-button" @click="swithchFadeShow">{{data.fadeShow?'关闭fade-show':'开启fade-show'}}</button>
     </view>
   </scroll-view>
 </template>
@@ -49,7 +49,21 @@
 </script>
 
 <style>
+  .styled-image-row {
+    flex-direction: row;
+    background-color: var(--list-background-color, #ffffff);
+    justify-content: space-around;
+    height: 160px;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
   .styled-image {
     width: 120px;
+    height: 120px;
+    margin: 5px;
+    padding: 5px;
+    border: 2px solid #ff6b6b;
+    border-radius: 10px;
   }
 </style>

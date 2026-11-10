@@ -1,8 +1,8 @@
 <template>
       <page-head :title="title"></page-head>
-      <view class="mt-15">
-        <view class="p-0-15">
-          <view class="p-5-0">
+      <view class="uni-common-mt">
+        <view class="uni-padding-wrap">
+          <view class="uni-btn-v">
             <button type="primary" @tap="installApk">
               installApk
             </button>

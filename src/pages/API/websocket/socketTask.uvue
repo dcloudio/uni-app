@@ -1,33 +1,33 @@
 <template>
   <page-head title="websocket通讯示例"></page-head>
-  <view class="theme-websocket p-0-15">
-    <view class="m-10-0 p-5-0">
-      <text class="text-center fs-14 color-websocket-secondary-666 p-40-0 lh-40">{{ showMsg }}</text>
+  <view class="uni-padding-wrap websocket-page">
+    <view class="uni-btn-v">
+      <text class="websocket-msg">{{ showMsg }}</text>
       <button <!-- #ifndef MP-ALIPAY -->
-        class="m-10-0 p-5-0"
+        class="uni-btn-v"
         <!-- #endif -->
         type="primary" @click="connect">
         连接websocket服务
       </button>
       <button <!-- #ifndef MP-ALIPAY -->
-        class="m-10-0 p-5-0"
+        class="uni-btn-v"
         <!-- #endif -->
         v-show="connected" type="primary" @click="send">
         发送一条消息
       </button>
 	  <button <!-- #ifndef MP-ALIPAY -->
-	    class="m-10-0 p-5-0"
+	    class="uni-btn-v"
 	    <!-- #endif -->
 	    v-show="connected" type="primary" @click="sendArrayBuffer">
 	    发送一条ArrayBuffer消息,返回也是ArrayBuffer
 	  </button>
       <button <!-- #ifndef MP-ALIPAY -->
-        class="m-10-0 p-5-0"
+        class="uni-btn-v"
         <!-- #endif -->
         type="primary" @click="close">
         断开websocket服务
       </button>
-      <text class="text-center fs-14 color-websocket-secondary-666 lh-24 p-40-0">发送消息后会收到一条服务器返回的消息（与发送的消息内容一致）</text>
+      <text class="websocket-tips">发送消息后会收到一条服务器返回的消息（与发送的消息内容一致）</text>
     </view>
   </view>
 </template>
@@ -223,3 +223,39 @@
     jest_connectSocket
   })
 </script>
+
+<style>
+  .uni-btn-v {
+    padding: 5px 0;
+  }
+
+  .uni-btn-v {
+    margin: 10px 0;
+  }
+
+  .websocket-msg {
+    padding: 40px 0px;
+    text-align: center;
+    font-size: 14px;
+    line-height: 40px;
+    color: var(--websocket-secondary-color, #666666);
+  }
+
+  .websocket-tips {
+    padding: 40px 0px;
+    text-align: center;
+    font-size: 14px;
+    line-height: 24px;
+    color: var(--websocket-secondary-color, #666666);
+  }
+
+  .websocket-page {
+    --websocket-secondary-color: #666666;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .websocket-page {
+      --websocket-secondary-color: #a0a0a0;
+    }
+  }
+</style>

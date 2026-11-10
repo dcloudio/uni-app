@@ -1,44 +1,44 @@
 <template>
   <page-head :title="title"></page-head>
-  <view class="mt-15">
-    <view class="bg-list-fff pos-relative d-flex flex-dir-column border-b-1-solid-c8c7cc-dark-3a3a3c">
-      <view class="pos-relative d-flex flex-dir-row items-center bg-list-fff justify-start">
-        <view class="w-180 pl-15 bg-list-fff">
-          <text class="color-text-333">蓝牙的系统开关</text>
+  <view class="uni-common-mt">
+    <view class="uni-list">
+      <view class="uni-list-cell system-setting-cell">
+        <view class="system-setting-label">
+          <text class="system-info-text">蓝牙的系统开关</text>
         </view>
-        <view class="flex-1 bg-list-fff">
-          <input class="color-text-333 h-24 p-0 border-width-0 bg-list-fff" placeholder-class="system-info-placeholder" type="text" :disabled="true" placeholder="未获取" :value="data.bluetoothEnabled" />
-        </view>
-      </view>
-      <view class="pos-relative d-flex flex-dir-row items-center bg-list-fff justify-start">
-        <view class="w-180 pl-15 bg-list-fff">
-          <text class="color-text-333">地理位置的系统开关</text>
-        </view>
-        <view class="flex-1 bg-list-fff">
-          <input class="color-text-333 h-24 p-0 border-width-0 bg-list-fff" placeholder-class="system-info-placeholder" type="text" :disabled="true" placeholder="未获取" :value="data.locationEnabled" />
+        <view class="system-setting-value">
+          <input class="system-info-input" placeholder-class="system-info-placeholder" type="text" :disabled="true" placeholder="未获取" :value="data.bluetoothEnabled" />
         </view>
       </view>
-      <view class="pos-relative d-flex flex-dir-row items-center bg-list-fff justify-start">
-        <view class="w-180 pl-15 bg-list-fff">
-          <text class="color-text-333">Wi-Fi 的系统开关</text>
+      <view class="uni-list-cell system-setting-cell">
+        <view class="system-setting-label">
+          <text class="system-info-text">地理位置的系统开关</text>
         </view>
-        <view class="flex-1 bg-list-fff">
-          <input class="color-text-333 h-24 p-0 border-width-0 bg-list-fff" placeholder-class="system-info-placeholder" type="text" :disabled="true" placeholder="未获取" :value="data.wifiEnabled" />
+        <view class="system-setting-value">
+          <input class="system-info-input" placeholder-class="system-info-placeholder" type="text" :disabled="true" placeholder="未获取" :value="data.locationEnabled" />
+        </view>
+      </view>
+      <view class="uni-list-cell system-setting-cell">
+        <view class="system-setting-label">
+          <text class="system-info-text">Wi-Fi 的系统开关</text>
+        </view>
+        <view class="system-setting-value">
+          <input class="system-info-input" placeholder-class="system-info-placeholder" type="text" :disabled="true" placeholder="未获取" :value="data.wifiEnabled" />
         </view>
       </view>
       <!-- #ifndef MP-ALIPAY -->
-      <view class="pos-relative d-flex flex-dir-row items-center bg-list-fff justify-start">
-        <view class="w-180 pl-15 bg-list-fff">
-          <text class="color-text-333">设备方向</text>
+      <view class="uni-list-cell system-setting-cell">
+        <view class="system-setting-label">
+          <text class="system-info-text">设备方向</text>
         </view>
-        <view class="flex-1 bg-list-fff">
-          <input class="color-text-333 h-24 p-0 border-width-0 bg-list-fff" placeholder-class="system-info-placeholder" type="text" :disabled="true" placeholder="未获取" :value="data.deviceOrientation" />
+        <view class="system-setting-value">
+          <input class="system-info-input" placeholder-class="system-info-placeholder" type="text" :disabled="true" placeholder="未获取" :value="data.deviceOrientation" />
         </view>
       </view>
       <!-- #endif -->
     </view>
-    <view class="p-0-15">
-      <view class="p-5-0">
+    <view class="uni-padding-wrap">
+      <view class="uni-btn-v">
         <button type="primary" @tap="getSystemSetting">获取系统设置</button>
       </view>
     </view>
@@ -80,6 +80,36 @@
 </script>
 
 <style>
+  .system-setting-cell {
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: var(--list-background-color, #ffffff);
+  }
+
+  .system-setting-label {
+    width: 180px;
+    padding-left: 15px;
+    background-color: var(--list-background-color, #ffffff);
+  }
+
+  .system-setting-value {
+    flex: 1;
+    background-color: var(--list-background-color, #ffffff);
+  }
+
+  .system-info-text,
+  .system-info-input {
+    color: var(--text-color, #333333);
+  }
+
+  .system-info-input {
+    height: 24px;
+    padding: 0;
+    border-width: 0;
+    background-color: var(--list-background-color, #ffffff);
+  }
+
   .system-info-placeholder {
     color: var(--active-color, #999999);
   }

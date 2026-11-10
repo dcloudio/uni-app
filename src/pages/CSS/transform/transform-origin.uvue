@@ -3,36 +3,36 @@
       <view ref="transformView" class="view" @click="changetransform"></view>
 
       <view class="text-container">
-        <text class="fs-15 fw-bold color-text-333">text 组件 transform-origin ：</text>
-        <text class="color-888 fs-12 fw-bold u-mt-5">点击下方 text 组件，不同 transform-origin 值（60px 30px、100% 0%、10px 10px）对 translate、scale、rotate 变换的影响</text>
-        <text ref="textTransformView" class="text-view color-1a1a1a" @click="changeTextTransform">点击 text 测试 transform-origin</text>
+        <text class="uni-title-text">text 组件 transform-origin ：</text>
+        <text class="uni-subtitle-text">点击下方 text 组件，不同 transform-origin 值（60px 30px、100% 0%、10px 10px）对 translate、scale、rotate 变换的影响</text>
+        <text ref="textTransformView" class="text-view cyan-text" @click="changeTextTransform">点击 text 测试 transform-origin</text>
       </view>
 
       <view class="image-container">
-        <text class="fs-15 fw-bold color-text-333">image 组件 transform-origin ：</text>
-        <text class="color-888 fs-12 fw-bold u-mt-5">点击下方 image 组件，不同 transform-origin 值（60px 60px、100% 0%、10px 10px）对 translate、scale、rotate 变换的影响</text>
+        <text class="uni-title-text">image 组件 transform-origin ：</text>
+        <text class="uni-subtitle-text">点击下方 image 组件，不同 transform-origin 值（60px 60px、100% 0%、10px 10px）对 translate、scale、rotate 变换的影响</text>
         <image ref="imageTransformView" class="image-view" @click="changeImageTransform" src="/static/test-image/logo.png"></image>
       </view>
 
       <view class="scroll-view-container">
-        <text class="fs-15 fw-bold color-text-333">scroll-view 组件 transform-origin ：</text>
-        <text class="color-888 fs-12 fw-bold u-mt-5">点击下方 scroll-view 组件，不同 transform-origin 值（60px 60px、100% 0%、10px 10px）对 translate、scale、rotate 变换的影响</text>
+        <text class="uni-title-text">scroll-view 组件 transform-origin ：</text>
+        <text class="uni-subtitle-text">点击下方 scroll-view 组件，不同 transform-origin 值（60px 60px、100% 0%、10px 10px）对 translate、scale、rotate 变换的影响</text>
         <view class="scroll-view-item">
-          <scroll-view ref="scrollViewTransformView" class="scroll-view-base" @click="changeScrollViewTransform">
-            <text class="color-1a1a1a">点击 scroll-view 测试 transform-origin</text>
+          <scroll-view ref="scrollViewTransformView" class="scroll-view-base transform" @click="changeScrollViewTransform">
+            <text class="cyan-text">点击 scroll-view 测试 transform-origin</text>
           </scroll-view>
         </view>
       </view>
 
-      <view class="mt-15">
-        <text class="fs-15 fw-bold color-text-333">setProperty 设置与 getPropertyValue 获取</text>
+      <view class="uni-common-mt">
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
-      <view class="flex-dir-row justify-between mt-10">
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">view 组件</text>
-          <text class="fs-12 color-999">设置值: {{data.transformOrigin}}</text>
-          <text class="fs-12 color-999">获取值: {{data.transformOriginActual}}</text>
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件</text>
+          <text class="uni-info">设置值: {{data.transformOrigin}}</text>
+          <text class="uni-info">获取值: {{data.transformOriginActual}}</text>
           <view class="test-box">
             <view ref="viewRefDynamic" class="common-image" :style="{ transformOrigin: data.transformOrigin, transform: 'rotate(45deg)' }">
               <text style="font-size: 12px;">view</text>
@@ -40,30 +40,30 @@
           </view>
         </view>
 
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">text 组件</text>
-          <text class="fs-12 color-999">设置值: {{data.transformOrigin}}</text>
-          <text class="fs-12 color-999">获取值: {{data.transformOriginActualText}}</text>
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件</text>
+          <text class="uni-info">设置值: {{data.transformOrigin}}</text>
+          <text class="uni-info">获取值: {{data.transformOriginActualText}}</text>
           <view class="test-box">
             <text ref="textRefDynamic" class="common-text" :style="{ transformOrigin: data.transformOrigin, transform: 'rotate(45deg)' }">text</text>
           </view>
         </view>
 
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">image 组件</text>
-          <text class="fs-12 color-999">设置值: {{data.transformOrigin}}</text>
-          <text class="fs-12 color-999">获取值: {{data.transformOriginActualImage}}</text>
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件</text>
+          <text class="uni-info">设置值: {{data.transformOrigin}}</text>
+          <text class="uni-info">获取值: {{data.transformOriginActualImage}}</text>
           <view class="test-box">
             <image ref="imageRefDynamic" class="common-image" :style="{ transformOrigin: data.transformOrigin, transform: 'rotate(45deg)' }" src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
 
-      <view class="flex-dir-row justify-between mt-10">
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">view 组件拍平</text>
-          <text class="fs-12 color-999">设置值: {{data.transformOrigin}}</text>
-          <text class="fs-12 color-999">获取值: {{data.transformOriginActualFlat}}</text>
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件拍平</text>
+          <text class="uni-info">设置值: {{data.transformOrigin}}</text>
+          <text class="uni-info">获取值: {{data.transformOriginActualFlat}}</text>
           <view class="test-box">
             <view ref="viewRefDynamicFlat" class="common-image" :style="{ transformOrigin: data.transformOrigin, transform: 'rotate(45deg)' }" flatten>
               <text style="font-size: 12px;" flatten>view</text>
@@ -71,35 +71,35 @@
           </view>
         </view>
 
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">text 组件拍平</text>
-          <text class="fs-12 color-999">设置值: {{data.transformOrigin}}</text>
-          <text class="fs-12 color-999">获取值: {{data.transformOriginActualTextFlat}}</text>
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件拍平</text>
+          <text class="uni-info">设置值: {{data.transformOrigin}}</text>
+          <text class="uni-info">获取值: {{data.transformOriginActualTextFlat}}</text>
           <view class="test-box">
             <text ref="textRefDynamicFlat" class="common-text" :style="{ transformOrigin: data.transformOrigin, transform: 'rotate(45deg)' }" flatten>text</text>
           </view>
         </view>
 
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">image 组件拍平</text>
-          <text class="fs-12 color-999">设置值: {{data.transformOrigin}}</text>
-          <text class="fs-12 color-999">获取值: {{data.transformOriginActualImageFlat}}</text>
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件拍平</text>
+          <text class="uni-info">设置值: {{data.transformOrigin}}</text>
+          <text class="uni-info">获取值: {{data.transformOriginActualImageFlat}}</text>
           <view class="test-box">
             <image ref="imageRefDynamicFlat" class="common-image" :style="{ transformOrigin: data.transformOrigin, transform: 'rotate(45deg)' }" src="/static/test-image/logo.png" flatten></image>
           </view>
         </view>
       </view>
 
-      <view class="mt-15 mb-15">
-        <text class="fs-13 color-tips-0958d9 bg-tips-e6f4ff border-l-4-solid-tips-91caff p-10-12 radius-4 m-10">第一个枚举值，'' (空字符串) - 空值情况</text>
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data-checkbox :items="transformOriginEnum" title="transform-origin 枚举值" @change="radioChangeTransformOrigin" :compact="true"></enum-data-checkbox>
         <input-data :defaultValue="data.transformOrigin" title="transform-origin 自定义值" type="text" @confirm="inputChangeTransformOrigin"></input-data>
       </view>
 
       <!-- #ifndef MP-ALIPAY -->
         <view class="scroll-view-container">
-          <text class="fs-15 fw-bold color-text-333">native-view 组件 transform-origin ：</text>
-          <text class="color-888 fs-12 fw-bold u-mt-5">点击下方 native-view 组件，不同 transform-origin 值（60px 60px、100% 0%、10px 10px）对 translate、scale、rotate 变换的影响</text>
+          <text class="uni-title-text">native-view 组件 transform-origin ：</text>
+          <text class="uni-subtitle-text">点击下方 native-view 组件，不同 transform-origin 值（60px 60px、100% 0%、10px 10px）对 translate、scale、rotate 变换的影响</text>
           <view class="scroll-view-item">
             <test-native-view ref="nativeViewTransformView" class="scroll-view-base transform-native" @click="changeNativeViewTransform"></test-native-view>
           </view>
@@ -429,10 +429,28 @@
     background-color: green;
   }
 
+  .test-container {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
+  }
+
   .test-box {
     width: 100%;
     height: 120px;
     background-color: gray;
+  }
+
+  .demo-box {
+    flex-direction: row;
+    justify-content: space-around;
+    margin-top: 10px;
+    width: 100%;
   }
 
   .scroll-view-item {
@@ -460,6 +478,10 @@
 
   .transform-native {
     background-color: #00FFFF80;
+  }
+
+  .cyan-text {
+    color: #1a1a1a;
   }
 
 </style>

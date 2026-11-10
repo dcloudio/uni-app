@@ -1,12 +1,12 @@
 <template>
   <view>
-    <view class="w-100 h-100 bg-a52a2a" @click="onclick"
-      style="transform: rotate(180deg); margin: 8px auto;"
+    <view @click="onclick"
+      style="transform: rotate(180deg); background-color: brown;width: 100px; height: 100px; margin: 8px auto;"
       @longpress="onLongPress" id="event-transform">
-      <text class="text-center color-text lh-100">旋转180°后</text>
+      <text style="text-align: center;line-height: 100px;color: var(--text-color);">旋转180°后</text>
     </view>
   </view>
-  <text class="color-text m-0-auto">点击上面view触发点击事件</text>
+  <text style="margin:0px auto;color: var(--text-color);">点击上面view触发点击事件</text>
 </template>
 
 <script setup lang="ts">
@@ -40,3 +40,7 @@ defineExpose({
   data
 })
 </script>
+
+<style>
+
+</style>

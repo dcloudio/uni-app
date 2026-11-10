@@ -1,10 +1,10 @@
 <template>
-  <view class="flex-grow-1">
-    <text class="fs-13 color-tips-0958d9 bg-tips-e6f4ff border-l-4-solid-tips-91caff p-10-12 radius-4 m-10">说明：左边是普通版本，右边是拍平版本</text>
+  <view style="flex-grow: 1">
+    <text class="uni-tips">说明：左边是普通版本，右边是拍平版本</text>
 
-    <view class="mt-15">
-      <text class="fs-15 fw-bold color-text-333">gap: 12px</text>
-      <view class="flex-dir-row justify-around mt-10">
+    <view class="uni-common-mt">
+      <text class="uni-title-text">gap: 12px</text>
+      <view class="demo-box">
         <view class="gap-container" style="gap: 12px">
           <view class="gap-item red"></view>
           <view class="gap-item green"></view>
@@ -18,9 +18,9 @@
       </view>
     </view>
 
-    <view class="mt-15">
-      <text class="fs-15 fw-bold color-text-333">row-gap: 8px; column-gap: 16px</text>
-      <view class="flex-dir-row justify-around mt-10">
+    <view class="uni-common-mt">
+      <text class="uni-title-text">row-gap: 8px; column-gap: 16px</text>
+      <view class="demo-box">
         <view class="gap-container wrap-container" style="row-gap: 8px; column-gap: 16px">
           <view class="gap-item red"></view>
           <view class="gap-item green"></view>
@@ -40,12 +40,12 @@
       </view>
     </view>
 
-    <view class="mt-15">
-      <text class="fs-15 fw-bold color-text-333">setProperty 设置与 getPropertyValue 获取</text>
-      <text class="fs-12 color-999">设置值: {{data.gap}}</text>
-      <text class="fs-12 color-999">普通版本获取值: {{data.gapActual}}</text>
-      <text class="fs-12 color-999">拍平版本获取值: {{data.gapActualFlat}}</text>
-      <view class="flex-dir-row justify-around mt-10">
+    <view class="uni-common-mt">
+      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
+      <text class="uni-info">设置值: {{data.gap}}</text>
+      <text class="uni-info">普通版本获取值: {{data.gapActual}}</text>
+      <text class="uni-info">拍平版本获取值: {{data.gapActualFlat}}</text>
+      <view class="demo-box">
         <view ref="viewRef" class="gap-container dynamic-container" :style="{ gap: data.gap }">
           <view class="gap-item red"></view>
           <view class="gap-item green"></view>
@@ -59,8 +59,8 @@
       </view>
     </view>
 
-    <view class="mt-15 mb-15">
-      <text class="fs-13 color-tips-0958d9 bg-tips-e6f4ff border-l-4-solid-tips-91caff p-10-12 radius-4 m-10">选择或输入 gap 值，观察 flex 子项之间的间距</text>
+    <view class="uni-common-mt uni-common-mb">
+      <text class="uni-tips">选择或输入 gap 值，观察 flex 子项之间的间距</text>
       <enum-data-checkbox :items="gapEnum" title="gap 枚举值" @change="radioChangeGap" :compact="true"></enum-data-checkbox>
       <input-data :defaultValue="data.gap" title="gap 自定义值" type="text" @confirm="inputChangeGap"></input-data>
     </view>
@@ -122,6 +122,12 @@
 </script>
 
 <style>
+  .demo-box {
+    flex-direction: row;
+    margin-top: 10px;
+    justify-content: space-around;
+  }
+
   .gap-container {
     flex-direction: row;
     flex-wrap: wrap;

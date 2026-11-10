@@ -1,18 +1,18 @@
 <template>
-  <view class="p-5 items-center justify-center">
-    <share-element share-key="left"
+  <view class="main">
+    <share-element class="share-element" share-key="left"
       :shuttle-on-pop="shuttleOnPush" :transition-on-gesture="transitionOnGesture" @tap="openPage()">
       <image src="https://web-ext-storage.dcloud.net.cn/hello-uni-app-x/drop-card-1.jpg" mode="widthFix">
       </image>
-      <view class="pos-absolute bg-007aff opacity-0_8 text-center justify-center items-center bottom-0 right-0 h-30 left-0">
-        <text class="color-white">每一口，都是幸福</text>
+      <view class="text-label">
+        <text style="color: white;">每一口，都是幸福</text>
       </view>
     </share-element>
   </view>
-  <share-element class="w-full bottom-0 h-80 pos-fixed" share-key="bottom" @tap="openPage()"
+  <share-element class="bottomWrap" share-key="bottom" @tap="openPage()"
     transitionOnGesture=true>
-    <view class="w-full h-full items-center justify-center bg-007aff">
-      <text class="color-white">share-element(底部固定)</text>
+    <view class="bottom">
+      <text style="color: white;">share-element(底部固定)</text>
     </view>
   </share-element>
 </template>
@@ -31,3 +31,39 @@ onLoad((event : OnLoadOptions) => {
   console.log(`shuttleOnPush:${shuttleOnPush.value} transitionOnGesture:${transitionOnGesture.value}`)
 })
 </script>
+
+<style>
+  .bottomWrap {
+    width: 100%;
+    bottom: 0px;
+    height: 80px;
+    position: fixed;
+  }
+
+  .bottom {
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    background-color: #007aff;
+  }
+
+  .text-label {
+    position: absolute;
+    background-color:  #007aff;
+    opacity: 0.8;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    height: 30px;
+  }
+
+  .main {
+    padding: 5px;
+    align-items: center;
+    justify-content: center;
+  }
+</style>

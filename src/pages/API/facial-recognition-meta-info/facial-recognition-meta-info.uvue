@@ -1,13 +1,13 @@
 <template>
     <page-head :title="title"></page-head>
-    <view class="p-0-15 mt-15">
-      <view class="p-5-0 mt-15">
-        <input class="h-25 p-8-13 fs-14 flex-1 box-content-box bg-list-fff" type="text" v-model="realName" name="real-name" placeholder="姓名" />
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-btn-v uni-common-mt">
+        <input class="uni-input" type="text" v-model="realName" name="real-name" placeholder="姓名" />
       </view>
-      <view class="p-5-0 mt-15">
-        <input class="h-25 p-8-13 fs-14 flex-1 box-content-box bg-list-fff" type="text" v-model="idCard" name="id-card" placeholder="身份证号" />
+      <view class="uni-btn-v uni-common-mt">
+        <input class="uni-input" type="text" v-model="idCard" name="id-card" placeholder="身份证号" />
       </view>
-      <view class="p-5-0 mt-15">
+      <view class="uni-btn-v uni-common-mt">
         <button type="primary" @click="facialRecognition">开始人脸识别</button>
       </view>
     </view>

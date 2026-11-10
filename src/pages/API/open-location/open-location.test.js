@@ -12,7 +12,7 @@ describe('dialog page', () => {
   	})
   	return
 	}
-	
+
 	if (
 		isIos &&
 		(
@@ -46,6 +46,13 @@ describe('dialog page', () => {
   it('dialogPage should be opened', async () => {
 		const dialogPagesNum = await page.data('data.dialogPagesNum')
 		expect(dialogPagesNum).toBe(1)
+	})
+
+	it('openLocation callbacks', async () => {
+		await page.waitFor(async () => {
+			return (await page.data('data.callbacks')).includes('complete')
+		})
+		expect(await page.data('data.callbacks')).toEqual(['success', 'complete'])
 	})
 
 	afterAll(async () => {

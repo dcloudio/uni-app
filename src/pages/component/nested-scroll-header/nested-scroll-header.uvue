@@ -1,28 +1,28 @@
 <template>
-  <scroll-view class="flex-1" type="nested" direction="vertical">
+  <scroll-view style="flex:1" type="nested" direction="vertical">
     <nested-scroll-header>
-      <view class="h-200 bg-6cf items-center justify-center">
+      <view class="scroll-header-tiem1">
         <text>会渲染的nested-scroll-header</text>
       </view>
       <!-- dom2 nested-scroll-header 没有限制节点数量 临时注释 -->
-      <!-- <view class="h-200 bg-6cf items-center justify-center">
+      <!-- <view class="scroll-header-tiem1">
         <text>不会渲染nested-scroll-header，因为 nested-scroll-header 只会渲染第一个子节点</text>
       </view> -->
     </nested-scroll-header>
     <nested-scroll-header>
       <swiper ref="headerRef" indicator-dots="true" circular="true">
         <swiper-item v-for="i in num" :item-id="i + ''">
-          <view class="h-100 items-center justify-center bg-89ff8d">
+          <view class="scroll-header-tiem2">
             <text>如果存在多个头部节点，那么就使用多个 nested-scroll-header 来将其包裹</text>
           </view>
         </swiper-item>
       </swiper>
     </nested-scroll-header>
     <nested-scroll-body>
-      <scroll-view class="flex-1" associative-container="nested-scroll-view">
+      <scroll-view style="flex:1" associative-container="nested-scroll-view">
         <view v-for="key in scrollData">
-          <view class="ml-6 mr-6 mt-6 bg-list-fff radius-4">
-            <text class="w-full h-60 lh-60 text-center color-text-555">{{key}}</text>
+          <view class="scroll-item">
+            <text class="scroll-item-title">{{key}}</text>
           </view>
         </view>
       </scroll-view>
@@ -48,3 +48,35 @@
   })
 
 </script>
+
+<style>
+  .scroll-item {
+    margin-left: 6px;
+    margin-right: 6px;
+    margin-top: 6px;
+    background-color: var(--list-background-color, #fff);
+    border-radius: 4px;
+  }
+
+  .scroll-item-title {
+    width: 100%;
+    height: 60px;
+    line-height: 60px;
+    text-align: center;
+    color: var(--text-color, #555555);
+  }
+
+  .scroll-header-tiem1 {
+    height: 200px;
+    background-color: #66ccff;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .scroll-header-tiem2 {
+    height: 100px;
+    background-color: #89ff8d;
+    align-items: center;
+    justify-content: center;
+  }
+</style>

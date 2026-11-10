@@ -92,13 +92,14 @@
 </script>
 
 <style>
-	.tab-page-root,
-	.tab-content-stage {
+	.tab-page-root {
 		width: 100%;
 		flex: 1;
 	}
 
 	.tab-content-stage {
+		width: 100%;
+		flex: 1;
 		min-height: 0px;
 		display: flex;
 		flex-direction: column;
@@ -120,6 +121,10 @@
 		background-color: #F8F8F8;
 	}
 
+	.tab-label-active {
+		color: #007aff;
+	}
+
   @media (prefers-color-scheme: dark) {
 		.tab-bar {
 			background-color: #1F1F1F;
@@ -128,9 +133,9 @@
 		.tab-label {
 			color: #CACACA;
 		}
-	}
 
-	.tab-label-active {
-		color: #007aff;
+		.tab-label-active {
+			color: #007aff;
+		}
 	}
 </style>

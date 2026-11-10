@@ -1,5 +1,5 @@
 <template>
-    <view class="p-10-0 color-text-333">最大值溢出测试（不能滑动到最右侧）</view>
+    <view class="uni-title">最大值溢出测试（不能滑动到最右侧）</view>
     <view>
       <slider id="slider" :value="0" :min="0" :max="10.5" :step="1" :show-value="true" @change="valueChange"/>
     </view>

@@ -1,9 +1,9 @@
 <template>
-    <view class="flex-grow-1">
-      <text class="fs-13 color-tips-0958d9 bg-tips-e6f4ff border-l-4-solid-tips-91caff p-10-12 radius-4 m-10">说明：左边是正常版本，右边是拍平版本</text>
+    <view style="flex-grow: 1;">
+      <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
       <view>
         <text>margin-right: 25px</text>
-        <view class="flex-dir-row justify-around mt-10">
+        <view class="demo-box">
           <view class="demo-container">
             <view class="common red"></view>
             <view class="common" style="margin-right: 25px;"></view>
@@ -19,7 +19,7 @@
 
       <view>
         <text>margin-right: 10%</text>
-        <view class="flex-dir-row justify-around mt-10">
+        <view class="demo-box">
           <view class="demo-container">
             <view class="common red"></view>
             <view class="common" style="margin-right: 10%;"></view>
@@ -33,12 +33,12 @@
         </view>
       </view>
 
-      <view class="mt-15">
-        <text class="fs-15 fw-bold color-text-333">scroll-view 组件</text>
+      <view class="uni-common-mt">
+        <text class="uni-title-text">scroll-view 组件</text>
       </view>
       <view>
-        <text class="color-888 fs-12 fw-bold u-mt-5">margin-right: 10% 和 margin-right: 30px</text>
-        <view class="flex-dir-row justify-around mt-10">
+        <text class="uni-subtitle-text">margin-right: 10% 和 margin-right: 30px</text>
+        <view class="demo-box">
           <view class="demo-container">
             <view class="common red"></view>
             <scroll-view class="common" style="margin-right: 10%;"></scroll-view>
@@ -52,93 +52,93 @@
         </view>
       </view>
 
-      <view class="mt-15">
-        <text class="fs-15 fw-bold color-text-333">setProperty 设置与 getPropertyValue 获取</text>
+      <view class="uni-common-mt">
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
-      <view class="flex-dir-row justify-between mt-10">
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">view 组件</text>
-          <text class="fs-12 color-999">设置值: {{data.marginRight}}</text>
-          <text class="fs-12 color-999">获取值: {{data.marginRightActual}}</text>
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件</text>
+          <text class="uni-info">设置值: {{data.marginRight}}</text>
+          <text class="uni-info">获取值: {{data.marginRightActual}}</text>
           <view class="test-box">
             <view class="common-view" style="background-color: red;"></view>
-            <view ref="viewRef" class="common-view" :style="{ marginRight: data.marginRight }">
+            <view ref="viewRef" class="common-view test-view" :style="{ marginRight: data.marginRight }">
               <text class="common-text">view</text>
             </view>
             <view class="common-view" style="background-color: blue;"></view>
           </view>
         </view>
 
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">text 组件</text>
-          <text class="fs-12 color-999">设置值: {{data.marginRight}}</text>
-          <text class="fs-12 color-999">获取值: {{data.marginRightActualText}}</text>
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件</text>
+          <text class="uni-info">设置值: {{data.marginRight}}</text>
+          <text class="uni-info">获取值: {{data.marginRightActualText}}</text>
           <view class="test-box">
             <text class="common-view common-text" style="background-color: red;">红色</text>
-            <text ref="textRef" class="common-view common-text" :style="{ marginRight: data.marginRight }">text</text>
+            <text ref="textRef" class="common-view common-text test-text" :style="{ marginRight: data.marginRight }">text</text>
             <text class="common-view common-text" style="background-color: blue;">蓝色</text>
           </view>
         </view>
 
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">image 组件</text>
-          <text class="fs-12 color-999">设置值: {{data.marginRight}}</text>
-          <text class="fs-12 color-999">获取值: {{data.marginRightActualImage}}</text>
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件</text>
+          <text class="uni-info">设置值: {{data.marginRight}}</text>
+          <text class="uni-info">获取值: {{data.marginRightActualImage}}</text>
           <view class="test-box row">
             <image class="common-image" style="background-color: red;" src="/static/test-image/logo.png"></image>
-            <image ref="imageRef" class="common-image" :style="{ marginRight: data.marginRight }" src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common-image test-image" :style="{ marginRight: data.marginRight }" src="/static/test-image/logo.png"></image>
             <image class="common-image" style="background-color: blue;" src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
 
-      <view class="flex-dir-row justify-between mt-10">
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">view 组件拍平</text>
-          <text class="fs-12 color-999">设置值: {{data.marginRight}}</text>
-          <text class="fs-12 color-999">获取值: {{data.marginRightActualFlat}}</text>
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件拍平</text>
+          <text class="uni-info">设置值: {{data.marginRight}}</text>
+          <text class="uni-info">获取值: {{data.marginRightActualFlat}}</text>
           <view class="test-box">
             <view class="common-view" style="background-color: red;"></view>
-            <view ref="viewRefFlat" class="common-view" :style="{ marginRight: data.marginRight }" flatten>
+            <view ref="viewRefFlat" class="common-view test-view-flatten" :style="{ marginRight: data.marginRight }" flatten>
               <text class="common-text">view</text>
             </view>
             <view class="common-view" style="background-color: blue;"></view>
           </view>
         </view>
 
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">text 组件拍平</text>
-          <text class="fs-12 color-999">设置值: {{data.marginRight}}</text>
-          <text class="fs-12 color-999">获取值: {{data.marginRightActualTextFlat}}</text>
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件拍平</text>
+          <text class="uni-info">设置值: {{data.marginRight}}</text>
+          <text class="uni-info">获取值: {{data.marginRightActualTextFlat}}</text>
           <view class="test-box">
             <text class="common-view common-text" style="background-color: red;">红色</text>
-            <text ref="textRefFlat" class="common-view common-text" :style="{ marginRight: data.marginRight }" flatten>text</text>
+            <text ref="textRefFlat" class="common-view common-text test-text-flatten" :style="{ marginRight: data.marginRight }" flatten>text</text>
             <text class="common-view common-text" style="background-color: blue;">蓝色</text>
           </view>
         </view>
 
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">image 组件拍平</text>
-          <text class="fs-12 color-999">设置值: {{data.marginRight}}</text>
-          <text class="fs-12 color-999">获取值: {{data.marginRightActualImageFlat}}</text>
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件拍平</text>
+          <text class="uni-info">设置值: {{data.marginRight}}</text>
+          <text class="uni-info">获取值: {{data.marginRightActualImageFlat}}</text>
           <view class="test-box row">
             <image class="common-image" style="background-color: red;" src="/static/test-image/logo.png"></image>
-            <image ref="imageRefFlat" class="common-image" :style="{ marginRight: data.marginRight }" flatten src="/static/test-image/logo.png"></image>
+            <image ref="imageRefFlat" class="common-image test-image-flatten" :style="{ marginRight: data.marginRight }" flatten src="/static/test-image/logo.png"></image>
             <image class="common-image" style="background-color: blue;" src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
-      <view class="mt-15 mb-15">
-        <text class="fs-13 color-tips-0958d9 bg-tips-e6f4ff border-l-4-solid-tips-91caff p-10-12 radius-4 m-10">第一个枚举值，'' (空字符串) - 空值情况</text>
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data-checkbox :items="marginRightEnum" title="margin-right 枚举值" @change="radioChangeMarginRight" :compact="true"></enum-data-checkbox>
         <input-data :defaultValue="data.marginRight" title="margin-right 自定义值" type="text" @confirm="inputChangeMarginRight"></input-data>
       </view>
 
       <!-- #ifndef MP-ALIPAY -->
-      <view class="mb-15">
+      <view class="uni-common-mb">
         <text>native-view组件: margin-right: 25px 和 10%</text>
-        <view class="flex-dir-row justify-around mt-10">
+        <view class="demo-box">
           <view class="demo-container">
             <view class="common red"></view>
             <test-native-view class="common" style="margin-right: 25px;"></test-native-view>
@@ -237,6 +237,11 @@
     height: 180px;
     background-color: gray;
   }
+  .demo-box {
+    flex-direction: row;
+    margin-top: 10px;
+    justify-content: space-around;
+  }
   .common {
     height: 50px;
     background-color: green;
@@ -264,6 +269,17 @@
     width: 30px;
     height: 30px;
     background-color: green;
+  }
+
+  .test-container {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
   }
 
   .test-box {

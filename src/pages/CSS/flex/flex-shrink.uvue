@@ -1,9 +1,9 @@
 <template>
-    <view class="flex-grow-1">
-      <text class="fs-13 color-tips-0958d9 bg-tips-e6f4ff border-l-4-solid-tips-91caff p-10-12 radius-4 m-10">说明：左边是正常版本，右边是拍平版本</text>
+    <view style="flex-grow: 1">
+      <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
       <view>
         <text>flex-shrink</text>
-        <view class="flex-dir-row justify-around mt-10">
+        <view class="demo-box">
           <view class="flex-container">
             <view class="common red" style="flex-shrink: 1">
               <text>1</text>
@@ -29,38 +29,38 @@
         </view>
       </view>
 
-      <view class="mt-15">
-        <text class="fs-15 fw-bold color-text-333">scroll-view 组件：flex-shrink: 1 、2、3</text>
+      <view class="uni-common-mt">
+        <text class="uni-title-text">scroll-view 组件：flex-shrink: 1 、2、3</text>
       </view>
-      <view class="flex-dir-row justify-around mt-10">
+      <view class="demo-box">
         <view class="flex-container-shrink">
           <scroll-view class="scroll-view-shrink red" style="width: 100px; flex-shrink: 1;">
-            <text class="fs-12 text-center">flex-shrink: 1</text>
+            <text class="scroll-view-label">flex-shrink: 1</text>
           </scroll-view>
           <scroll-view class="scroll-view-shrink green" style="width: 100px; flex-shrink: 2;">
-            <text class="fs-12 text-center">flex-shrink: 2</text>
+            <text class="scroll-view-label">flex-shrink: 2</text>
           </scroll-view>
           <scroll-view class="scroll-view-shrink blue" style="width: 100px; flex-shrink: 3;">
-            <text class="fs-12 text-center">flex-shrink: 3</text>
+            <text class="scroll-view-label">flex-shrink: 3</text>
           </scroll-view>
         </view>
       </view>
 
-      <view class="mt-15">
-        <text class="fs-15 fw-bold color-text-333">setProperty 设置与 getPropertyValue 获取</text>
+      <view class="uni-common-mt">
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <!-- 普通版本 -->
-      <view class="flex-dir-row justify-between mt-10">
+      <view class="test-container">
         <!-- view 组件测试 -->
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">view 组件</text>
-          <text class="fs-12 color-999">设置值: {{data.flexShrink}}</text>
-          <text class="fs-12 color-999">获取值: {{data.flexShrinkActual}}</text>
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件</text>
+          <text class="uni-info">设置值: {{data.flexShrink}}</text>
+          <text class="uni-info">获取值: {{data.flexShrinkActual}}</text>
           <view class="test-box">
             <view class="test-flex-container">
               <view class="common-image red" style="flex-shrink: 1;"></view>
-              <view ref="viewRef" class="common-image green" :style="{ flexShrink: data.flexShrink }">
+              <view ref="viewRef" class="common-image green test-view" :style="{ flexShrink: data.flexShrink }">
                 <text class="test-label">{{data.flexShrink}}</text>
               </view>
               <view class="common-image blue" style="flex-shrink: 1;"></view>
@@ -69,28 +69,28 @@
         </view>
 
         <!-- text 组件测试 -->
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">text 组件</text>
-          <text class="fs-12 color-999">设置值: {{data.flexShrink}}</text>
-          <text class="fs-12 color-999">获取值: {{data.flexShrinkActualText}}</text>
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件</text>
+          <text class="uni-info">设置值: {{data.flexShrink}}</text>
+          <text class="uni-info">获取值: {{data.flexShrinkActualText}}</text>
           <view class="test-box">
             <view class="test-flex-container">
               <text class="common-text red" style="flex-shrink: 1;">红色</text>
-              <text ref="textRef" class="common-text green" :style="{ flexShrink: data.flexShrink }">text</text>
+              <text ref="textRef" class="common-text green test-text" :style="{ flexShrink: data.flexShrink }">text</text>
               <text class="common-text blue" style="flex-shrink: 1;">蓝色</text>
             </view>
           </view>
         </view>
 
         <!-- image 组件测试 -->
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">image 组件</text>
-          <text class="fs-12 color-999">设置值: {{data.flexShrink}}</text>
-          <text class="fs-12 color-999">获取值: {{data.flexShrinkActualImage}}</text>
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件</text>
+          <text class="uni-info">设置值: {{data.flexShrink}}</text>
+          <text class="uni-info">获取值: {{data.flexShrinkActualImage}}</text>
           <view class="test-box">
             <view class="test-flex-container">
               <image class="common-image red" style="flex-shrink: 1;" src="/static/test-image/logo.png"></image>
-              <image ref="imageRef" class="common-image green" :style="{ flexShrink: data.flexShrink }" src="/static/test-image/logo.png"></image>
+              <image ref="imageRef" class="common-image green test-image" :style="{ flexShrink: data.flexShrink }" src="/static/test-image/logo.png"></image>
               <image class="common-image blue" style="flex-shrink: 1;" src="/static/test-image/logo.png"></image>
             </view>
           </view>
@@ -98,16 +98,16 @@
       </view>
 
       <!-- 拍平版本 -->
-      <view class="flex-dir-row justify-between mt-10">
+      <view class="test-container">
         <!-- view 组件拍平测试 -->
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">view 组件拍平</text>
-          <text class="fs-12 color-999">设置值: {{data.flexShrink}}</text>
-          <text class="fs-12 color-999">获取值: {{data.flexShrinkActualFlat}}</text>
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件拍平</text>
+          <text class="uni-info">设置值: {{data.flexShrink}}</text>
+          <text class="uni-info">获取值: {{data.flexShrinkActualFlat}}</text>
           <view class="test-box">
             <view class="test-flex-container">
               <view class="common-image red" style="flex-shrink: 1;"></view>
-              <view ref="viewRefFlat" class="common-image green" :style="{ flexShrink: data.flexShrink }" flatten>
+              <view ref="viewRefFlat" class="common-image green test-view-flatten" :style="{ flexShrink: data.flexShrink }" flatten>
                 <text class="test-label">{{data.flexShrink}}</text>
               </view>
               <view class="common-image blue" style="flex-shrink: 1;"></view>
@@ -116,43 +116,43 @@
         </view>
 
         <!-- text 组件拍平测试 -->
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">text 组件拍平</text>
-          <text class="fs-12 color-999">设置值: {{data.flexShrink}}</text>
-          <text class="fs-12 color-999">获取值: {{data.flexShrinkActualTextFlat}}</text>
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件拍平</text>
+          <text class="uni-info">设置值: {{data.flexShrink}}</text>
+          <text class="uni-info">获取值: {{data.flexShrinkActualTextFlat}}</text>
           <view class="test-box">
             <view class="test-flex-container">
               <text class="common-text red" style="flex-shrink: 1;">红色</text>
-              <text ref="textRefFlat" class="common-text green" :style="{ flexShrink: data.flexShrink }" flatten>text</text>
+              <text ref="textRefFlat" class="common-text green test-text-flatten" :style="{ flexShrink: data.flexShrink }" flatten>text</text>
               <text class="common-text blue" style="flex-shrink: 1;">蓝色</text>
             </view>
           </view>
         </view>
 
         <!-- image 组件拍平测试 -->
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">image 组件拍平</text>
-          <text class="fs-12 color-999">设置值: {{data.flexShrink}}</text>
-          <text class="fs-12 color-999">获取值: {{data.flexShrinkActualImageFlat}}</text>
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件拍平</text>
+          <text class="uni-info">设置值: {{data.flexShrink}}</text>
+          <text class="uni-info">获取值: {{data.flexShrinkActualImageFlat}}</text>
           <view class="test-box">
             <view class="test-flex-container">
               <image class="common-image red" style="flex-shrink: 1;" src="/static/test-image/logo.png"></image>
-              <image ref="imageRefFlat" class="common-image green" :style="{ flexShrink: data.flexShrink }" flatten src="/static/test-image/logo.png"></image>
+              <image ref="imageRefFlat" class="common-image green test-image-flatten" :style="{ flexShrink: data.flexShrink }" flatten src="/static/test-image/logo.png"></image>
               <image class="common-image blue" style="flex-shrink: 1;" src="/static/test-image/logo.png"></image>
             </view>
           </view>
         </view>
       </view>
 
-      <view class="mt-15 mb-15">
-        <text class="fs-13 color-tips-0958d9 bg-tips-e6f4ff border-l-4-solid-tips-91caff p-10-12 radius-4 m-10">第一个枚举值，'' (空字符串) - 空值情况</text>
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data-checkbox :items="flexShrinkEnum" title="flex-shrink 枚举值" @change="radioChangeFlexShrink" :compact="true"></enum-data-checkbox>
         <input-data :defaultValue="data.flexShrink" title="flex-shrink 自定义值" type="text" @confirm="inputChangeFlexShrink"></input-data>
       </view>
 
       <!-- #ifndef MP-ALIPAY -->
-        <text class="fs-15 fw-bold color-text-333 mt-15">native-view 组件：flex-shrink: 1 、2、3</text>
-        <view class="mb-15 flex-dir-row justify-around mt-10">
+        <text class="uni-title-text uni-common-mt">native-view 组件：flex-shrink: 1 、2、3</text>
+        <view class="demo-box uni-common-mb">
           <view class="flex-container-shrink">
             <test-native-view class="native-view-shrink red" style="width: 100px; flex-shrink: 1;"></test-native-view>
             <test-native-view class="native-view-shrink green" style="width: 100px; flex-shrink: 2;"></test-native-view>
@@ -236,6 +236,12 @@
 </script>
 
 <style>
+  .demo-box {
+    flex-direction: row;
+    margin-top: 10px;
+    justify-content: space-around;
+  }
+
   .flex-container {
     width: 200px;
     margin: 0 10px;
@@ -262,6 +268,17 @@
     width: 60px;
     height: 30px;
     background-color: green;
+  }
+
+  .test-container {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
   }
 
   .test-box {
@@ -292,6 +309,11 @@
   .test-label {
     font-size: 12px;
     color: white;
+  }
+
+  .scroll-view-label {
+    font-size: 12px;
+    text-align: center;
   }
 
   .flex-container-shrink {

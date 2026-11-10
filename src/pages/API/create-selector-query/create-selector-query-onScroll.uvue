@@ -1,7 +1,7 @@
 <template>
-  <scroll-view @scroll="onScroll" class="flex-1">
+  <scroll-view @scroll="onScroll" style="flex: 1;">
     <view v-for="i in 60" class="content-item">
-      <text>item-{{i}}</text>
+      <text class="text">item-{{i}}</text>
     </view>
   </scroll-view>
 </template>
@@ -47,3 +47,7 @@
     data
   })
 </script>
+
+<style>
+
+</style>

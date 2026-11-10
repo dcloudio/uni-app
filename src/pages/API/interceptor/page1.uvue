@@ -1,5 +1,5 @@
 <template>
-  <text class="text-center">测试页面 1</text>
+  <text style="text-align: center;" >测试页面 1</text>
 </template>
 
 <script setup lang="ts">

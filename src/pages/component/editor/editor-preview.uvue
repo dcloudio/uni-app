@@ -1,15 +1,15 @@
 <template>
   <!-- #ifdef APP -->
-  <view class="preview-page h-full d-flex flex-dir-column pos-relative">
-    <web-view id="editor-preview-webview" :class="appPreviewLoaded ? 'flex-1 opacity-1' : 'flex-1 opacity-0'" src="about:blank"></web-view>
-    <view v-if="!appPreviewLoaded" class="pos-absolute top-0 right-0 bottom-0 d-flex flex-dir-column items-center justify-center preview-loading-mask left-0 bg-f8fafc">
-      <text class="fs-15 preview-loading-text color-64748b">预览加载中...</text>
+  <view class="preview-page preview-page-app">
+    <web-view id="editor-preview-webview" :class="appPreviewLoaded ? 'preview-webview preview-webview-visible' : 'preview-webview preview-webview-hidden'" src="about:blank"></web-view>
+    <view v-if="!appPreviewLoaded" class="preview-loading-mask">
+      <text class="preview-loading-text">预览加载中...</text>
     </view>
   </view>
   <!-- #endif -->
   <!-- #ifndef APP -->
-  <view class="preview-page pr-16 pl-16 preview-page-rich pt-16">
-    <rich-text class="w-full preview-rich-text" :nodes="previewHtml"></rich-text>
+  <view class="preview-page preview-page-rich">
+    <rich-text class="preview-rich-text" :nodes="previewHtml"></rich-text>
   </view>
   <!-- #endif -->
 </template>
@@ -111,8 +111,52 @@ onUnload(() => {
 </script>
 
 <style>
+.preview-page-app {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
 .preview-page-rich {
+  padding-top: 16px;
+  padding-right: 16px;
   padding-bottom: 28px;
+  padding-left: 16px;
+}
+
+.preview-webview {
+  flex: 1;
+}
+
+.preview-webview-hidden {
+  opacity: 0;
+}
+
+.preview-webview-visible {
+  opacity: 1;
+}
+
+.preview-loading-mask {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8fafc;
+}
+
+.preview-loading-text {
+  color: #64748b;
+  font-size: 15px;
+}
+
+.preview-rich-text {
+  width: 100%;
 }
 
 @media (prefers-color-scheme: dark) {

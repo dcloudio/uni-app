@@ -1,107 +1,107 @@
 <template>
-		<text class="fs-24 fw-bold border-b-1-solid-ccc m-8-0">联系人写入 uni.addPhoneContact</text>
-		<text class="color-500 fs-14 font-italic">有权限时直接写入联系人，无权限时呼起系统的联系人新建界面</text>
+		<text class="uni-h2">联系人写入 uni.addPhoneContact</text>
+		<text class="notice">有权限时直接写入联系人，无权限时呼起系统的联系人新建界面</text>
 
-		<view class="m-8-0">
-			<text class="fs-20 fw-bold m-8-0">头像与姓名</text>
-			<text class="mt-6 fs-14">头像本地路径</text>
-			<view class="flex-dir-row">
-				<button class="m-5-0" @tap="chooseAvatar" size="mini">选择头像</button>
-				<button class="u-mt-5 mb-5 mr-0 u-ml-10" @tap="clearAvatar" size="mini">清空头像</button>
+		<view class="section-block">
+			<text class="uni-h3">头像与姓名</text>
+			<text class="field-label">头像本地路径</text>
+			<view class="uni-row">
+				<button class="margin-v" @tap="chooseAvatar" size="mini">选择头像</button>
+				<button class="margin-v" style="margin-left: 10px;" @tap="clearAvatar" size="mini">清空头像</button>
 			</view>
-			<text class="m-5-0 u-p-10 border-1-solid-ccc fs-14">{{ photoFilePath.length > 0 ? photoFilePath : '尚未选择头像文件' }}</text>
-			<text class="mt-6 fs-14">昵称</text>
-			<input class="h-40 m-5-0 pl-10 pr-10 border-1-solid-ccc" v-model="nickName" placeholder="请输入昵称" />
-			<text class="mt-6 fs-14">姓氏</text>
-			<input class="h-40 m-5-0 pl-10 pr-10 border-1-solid-ccc" v-model="lastName" placeholder="请输入姓氏" />
-			<text class="mt-6 fs-14">中间名</text>
-			<input class="h-40 m-5-0 pl-10 pr-10 border-1-solid-ccc" v-model="middleName" placeholder="请输入中间名" />
-			<text class="mt-6 fs-14">名字（必填）</text>
-			<input class="h-40 m-5-0 pl-10 pr-10 border-1-solid-ccc" v-model="firstName" placeholder="请输入名字" />
+			<text class="log-text">{{ photoFilePath.length > 0 ? photoFilePath : '尚未选择头像文件' }}</text>
+			<text class="field-label">昵称</text>
+			<input class="field-input" v-model="nickName" placeholder="请输入昵称" />
+			<text class="field-label">姓氏</text>
+			<input class="field-input" v-model="lastName" placeholder="请输入姓氏" />
+			<text class="field-label">中间名</text>
+			<input class="field-input" v-model="middleName" placeholder="请输入中间名" />
+			<text class="field-label">名字（必填）</text>
+			<input class="field-input" v-model="firstName" placeholder="请输入名字" />
 		</view>
 
-		<view class="m-8-0">
-			<text class="fs-20 fw-bold m-8-0">联系方式</text>
-			<text class="mt-6 fs-14">手机号</text>
-			<input class="h-40 m-5-0 pl-10 pr-10 border-1-solid-ccc" v-model="mobilePhoneNumber" placeholder="请输入手机号" />
-			<text class="mt-6 fs-14">工作电话</text>
-			<input class="h-40 m-5-0 pl-10 pr-10 border-1-solid-ccc" v-model="workPhoneNumber" placeholder="请输入工作电话" />
-			<text class="mt-6 fs-14">公司电话</text>
-			<input class="h-40 m-5-0 pl-10 pr-10 border-1-solid-ccc" v-model="hostNumber" placeholder="请输入公司电话" />
-			<text class="mt-6 fs-14">住宅电话</text>
-			<input class="h-40 m-5-0 pl-10 pr-10 border-1-solid-ccc" v-model="homePhoneNumber" placeholder="请输入住宅电话" />
-			<text class="mt-6 fs-14">工作传真</text>
-			<input class="h-40 m-5-0 pl-10 pr-10 border-1-solid-ccc" v-model="workFaxNumber" placeholder="请输入工作传真" />
-			<text class="mt-6 fs-14">住宅传真</text>
-			<input class="h-40 m-5-0 pl-10 pr-10 border-1-solid-ccc" v-model="homeFaxNumber" placeholder="请输入住宅传真" />
-			<text class="mt-6 fs-14">电子邮箱</text>
-			<input class="h-40 m-5-0 pl-10 pr-10 border-1-solid-ccc" v-model="email" placeholder="请输入邮箱" />
-			<text class="mt-6 fs-14">网站</text>
-			<input class="h-40 m-5-0 pl-10 pr-10 border-1-solid-ccc" v-model="url" placeholder="请输入网站地址" />
-			<text class="mt-6 fs-14">即时消息</text>
-			<input class="h-40 m-5-0 pl-10 pr-10 border-1-solid-ccc" v-model="weChatNumber" placeholder="请输入即时消息账号" />
+		<view class="section-block">
+			<text class="uni-h3">联系方式</text>
+			<text class="field-label">手机号</text>
+			<input class="field-input" v-model="mobilePhoneNumber" placeholder="请输入手机号" />
+			<text class="field-label">工作电话</text>
+			<input class="field-input" v-model="workPhoneNumber" placeholder="请输入工作电话" />
+			<text class="field-label">公司电话</text>
+			<input class="field-input" v-model="hostNumber" placeholder="请输入公司电话" />
+			<text class="field-label">住宅电话</text>
+			<input class="field-input" v-model="homePhoneNumber" placeholder="请输入住宅电话" />
+			<text class="field-label">工作传真</text>
+			<input class="field-input" v-model="workFaxNumber" placeholder="请输入工作传真" />
+			<text class="field-label">住宅传真</text>
+			<input class="field-input" v-model="homeFaxNumber" placeholder="请输入住宅传真" />
+			<text class="field-label">电子邮箱</text>
+			<input class="field-input" v-model="email" placeholder="请输入邮箱" />
+			<text class="field-label">网站</text>
+			<input class="field-input" v-model="url" placeholder="请输入网站地址" />
+			<text class="field-label">即时消息</text>
+			<input class="field-input" v-model="weChatNumber" placeholder="请输入即时消息账号" />
 		</view>
 
-		<view class="m-8-0">
-			<text class="fs-20 fw-bold m-8-0">工作信息</text>
-			<text class="mt-6 fs-14">公司</text>
-			<input class="h-40 m-5-0 pl-10 pr-10 border-1-solid-ccc" v-model="organization" placeholder="请输入公司名称" />
-			<text class="mt-6 fs-14">职位</text>
-			<input class="h-40 m-5-0 pl-10 pr-10 border-1-solid-ccc" v-model="title" placeholder="请输入职位" />
-			<text class="mt-6 fs-14">工作地址国家</text>
-			<input class="h-40 m-5-0 pl-10 pr-10 border-1-solid-ccc" v-model="workAddressCountry" placeholder="请输入工作地址国家" />
-			<text class="mt-6 fs-14">工作地址省份</text>
-			<input class="h-40 m-5-0 pl-10 pr-10 border-1-solid-ccc" v-model="workAddressState" placeholder="请输入工作地址省份" />
-			<text class="mt-6 fs-14">工作地址城市</text>
-			<input class="h-40 m-5-0 pl-10 pr-10 border-1-solid-ccc" v-model="workAddressCity" placeholder="请输入工作地址城市" />
-			<text class="mt-6 fs-14">工作地址</text>
-			<input class="h-40 m-5-0 pl-10 pr-10 border-1-solid-ccc" v-model="workAddressStreet" placeholder="请输入工作地址" />
-			<text class="mt-6 fs-14">工作地址邮编</text>
-			<input class="h-40 m-5-0 pl-10 pr-10 border-1-solid-ccc" v-model="workAddressPostalCode" placeholder="请输入工作地址邮编" />
+		<view class="section-block">
+			<text class="uni-h3">工作信息</text>
+			<text class="field-label">公司</text>
+			<input class="field-input" v-model="organization" placeholder="请输入公司名称" />
+			<text class="field-label">职位</text>
+			<input class="field-input" v-model="title" placeholder="请输入职位" />
+			<text class="field-label">工作地址国家</text>
+			<input class="field-input" v-model="workAddressCountry" placeholder="请输入工作地址国家" />
+			<text class="field-label">工作地址省份</text>
+			<input class="field-input" v-model="workAddressState" placeholder="请输入工作地址省份" />
+			<text class="field-label">工作地址城市</text>
+			<input class="field-input" v-model="workAddressCity" placeholder="请输入工作地址城市" />
+			<text class="field-label">工作地址</text>
+			<input class="field-input" v-model="workAddressStreet" placeholder="请输入工作地址" />
+			<text class="field-label">工作地址邮编</text>
+			<input class="field-input" v-model="workAddressPostalCode" placeholder="请输入工作地址邮编" />
 		</view>
 
-		<view class="m-8-0">
-			<text class="fs-20 fw-bold m-8-0">个人地址</text>
-			<text class="mt-6 fs-14">联系地址国家</text>
-			<input class="h-40 m-5-0 pl-10 pr-10 border-1-solid-ccc" v-model="addressCountry" placeholder="请输入联系地址国家" />
-			<text class="mt-6 fs-14">联系地址省份</text>
-			<input class="h-40 m-5-0 pl-10 pr-10 border-1-solid-ccc" v-model="addressState" placeholder="请输入联系地址省份" />
-			<text class="mt-6 fs-14">联系地址城市</text>
-			<input class="h-40 m-5-0 pl-10 pr-10 border-1-solid-ccc" v-model="addressCity" placeholder="请输入联系地址城市" />
-			<text class="mt-6 fs-14">联系地址街道</text>
-			<input class="h-40 m-5-0 pl-10 pr-10 border-1-solid-ccc" v-model="addressStreet" placeholder="请输入联系地址街道" />
-			<text class="mt-6 fs-14">联系地址邮编</text>
-			<input class="h-40 m-5-0 pl-10 pr-10 border-1-solid-ccc" v-model="addressPostalCode" placeholder="请输入联系地址邮编" />
+		<view class="section-block">
+			<text class="uni-h3">个人地址</text>
+			<text class="field-label">联系地址国家</text>
+			<input class="field-input" v-model="addressCountry" placeholder="请输入联系地址国家" />
+			<text class="field-label">联系地址省份</text>
+			<input class="field-input" v-model="addressState" placeholder="请输入联系地址省份" />
+			<text class="field-label">联系地址城市</text>
+			<input class="field-input" v-model="addressCity" placeholder="请输入联系地址城市" />
+			<text class="field-label">联系地址街道</text>
+			<input class="field-input" v-model="addressStreet" placeholder="请输入联系地址街道" />
+			<text class="field-label">联系地址邮编</text>
+			<input class="field-input" v-model="addressPostalCode" placeholder="请输入联系地址邮编" />
 		</view>
 
-		<view class="m-8-0">
-			<text class="fs-20 fw-bold m-8-0">家庭地址与备注</text>
-			<text class="mt-6 fs-14">住宅地址国家</text>
-			<input class="h-40 m-5-0 pl-10 pr-10 border-1-solid-ccc" v-model="homeAddressCountry" placeholder="请输入住宅地址国家" />
-			<text class="mt-6 fs-14">住宅地址省份</text>
-			<input class="h-40 m-5-0 pl-10 pr-10 border-1-solid-ccc" v-model="homeAddressState" placeholder="请输入住宅地址省份" />
-			<text class="mt-6 fs-14">住宅地址城市</text>
-			<input class="h-40 m-5-0 pl-10 pr-10 border-1-solid-ccc" v-model="homeAddressCity" placeholder="请输入住宅地址城市" />
-			<text class="mt-6 fs-14">住宅地址街道</text>
-			<input class="h-40 m-5-0 pl-10 pr-10 border-1-solid-ccc" v-model="homeAddressStreet" placeholder="请输入住宅地址街道" />
-			<text class="mt-6 fs-14">住宅地址邮编</text>
-			<input class="h-40 m-5-0 pl-10 pr-10 border-1-solid-ccc" v-model="homeAddressPostalCode" placeholder="请输入住宅地址邮编" />
-			<text class="mt-6 fs-14">备注</text>
-			<input class="h-40 m-5-0 pl-10 pr-10 border-1-solid-ccc" v-model="remark" placeholder="例如：uni-app x 插件示例联系人" />
+		<view class="section-block">
+			<text class="uni-h3">家庭地址与备注</text>
+			<text class="field-label">住宅地址国家</text>
+			<input class="field-input" v-model="homeAddressCountry" placeholder="请输入住宅地址国家" />
+			<text class="field-label">住宅地址省份</text>
+			<input class="field-input" v-model="homeAddressState" placeholder="请输入住宅地址省份" />
+			<text class="field-label">住宅地址城市</text>
+			<input class="field-input" v-model="homeAddressCity" placeholder="请输入住宅地址城市" />
+			<text class="field-label">住宅地址街道</text>
+			<input class="field-input" v-model="homeAddressStreet" placeholder="请输入住宅地址街道" />
+			<text class="field-label">住宅地址邮编</text>
+			<input class="field-input" v-model="homeAddressPostalCode" placeholder="请输入住宅地址邮编" />
+			<text class="field-label">备注</text>
+			<input class="field-input" v-model="remark" placeholder="例如：uni-app x 插件示例联系人" />
 		</view>
 
-		<text class="fs-20 fw-bold m-8-0">快捷操作</text>
-		<button class="m-5-0" @tap="fillPreset">填充示例数据</button>
-		<button class="m-5-0" @tap="submitContact" type="primary">写入联系人</button>
-		<button class="m-5-0" @tap="clearForm">清空表单</button>
-		<button class="m-5-0" @tap="clearLogs">清空日志</button>
-		<text class="m-5-0">success：{{ successText }}</text>
-		<text class="m-5-0">fail：{{ failText }}</text>
-		<text class="m-5-0">complete：{{ completeText }}</text>
+		<text class="uni-h3">快捷操作</text>
+		<button class="margin-v" @tap="fillPreset">填充示例数据</button>
+		<button class="margin-v" @tap="submitContact" type="primary">写入联系人</button>
+		<button class="margin-v" @tap="clearForm">清空表单</button>
+		<button class="margin-v" @tap="clearLogs">清空日志</button>
+		<text class="margin-v">success：{{ successText }}</text>
+		<text class="margin-v">fail：{{ failText }}</text>
+		<text class="margin-v">complete：{{ completeText }}</text>
 
-		<text class="fs-20 fw-bold m-8-0">最近日志</text>
-		<view class="m-5-0 u-p-10 border-1-solid-ccc d-flex flex-dir-column">
-			<text class="fs-14 m-4-0" v-for="item in logs" :key="item">{{ item }}</text>
+		<text class="uni-h3">最近日志</text>
+		<view class="log-list">
+			<text class="log-item" v-for="item in logs" :key="item">{{ item }}</text>
 		</view>
 </template>
 
@@ -304,7 +304,54 @@
 </script>
 
 <style>
-page {
-  padding: 6px;
-}
+	page {
+		padding: 6px;
+	}
+
+	.margin-v {
+		margin: 5px 0;
+	}
+
+	.notice {
+		color: #550000;
+		font-size: 14px;
+		font-style: italic;
+	}
+
+	.section-block {
+		margin: 8px 0;
+	}
+
+	.field-label {
+		margin-top: 6px;
+		font-size: 14px;
+	}
+
+	.field-input {
+		height: 40px;
+		margin: 5px 0;
+		padding-left: 10px;
+		padding-right: 10px;
+		border: 1px solid #ccc;
+	}
+
+	.log-text {
+		margin: 5px 0;
+		padding: 10px;
+		font-size: 14px;
+		border: 1px solid #ccc;
+	}
+
+	.log-list {
+		margin: 5px 0;
+		padding: 10px;
+		border: 1px solid #ccc;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.log-item {
+		font-size: 14px;
+		margin: 4px 0;
+	}
 </style>

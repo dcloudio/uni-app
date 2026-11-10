@@ -1,9 +1,9 @@
 <template>
     <page-head :title="data.title"></page-head>
-    <view class="p-0-15 mt-15">
-      <view class="bg-list-fff justify-center items-center p-25">
-        <image v-if="data.imageSrc" :src="data.imageSrc" class="w-full" mode="widthFix"></image>
-        <text v-else class="text-center bg-list-fff mt-10 color-active-808080 p-25 fs-19" @click="chooseImage">+ 选择图片</text>
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="demo">
+        <image v-if="data.imageSrc" :src="data.imageSrc" class="image" mode="widthFix"></image>
+        <text v-else class="uni-hello-addfile" @click="chooseImage">+ 选择图片</text>
       </view>
     </view>
 </template>
@@ -48,6 +48,7 @@
           title: '上传中'
         })
         data.task = uni.uploadFile({
+          timeout: 30000,
           url: 'https://unidemo.dcloud.net.cn/upload', //仅为示例，非真实的接口地址
           filePath: imageSrc,
           name: 'file',
@@ -275,3 +276,25 @@
     jest_uploadFileVerifyUA
   })
 </script>
+
+<style>
+  .image {
+    width: 100%;
+  }
+
+  .demo {
+    background-color: var(--list-background-color, #ffffff);
+    padding: 25px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .uni-hello-addfile {
+    text-align: center;
+    background-color: var(--list-background-color, #ffffff);
+    padding: 25px;
+    margin-top: 10px;
+    font-size: 19px;
+    color: var(--active-color, #808080);
+  }
+</style>

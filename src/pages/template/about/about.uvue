@@ -1,44 +1,44 @@
 <template>
-  <scroll-view class="flex-1">
-    <view class="w-full u-p-16 items-center">
-      <image class="qrcode h-160" src="https://web-ext-storage.dcloud.net.cn/uni-app-x/hello-uniappx-qrcode.png"></image>
-      <text class="fs-14 color-text m-12">扫码体验 uni-app x</text>
-      <text class="fs-14 lh-18 desc color-text">
-        <text class="fs-14 code">uni-app x </text>
-        <text class="fs-14 lh-18 desc color-text">是下一代uni-app，基于uts的、兼容vue语法的跨平台开发框架。</text>
+  <scroll-view style="flex:1;">
+    <view class="content">
+      <image class="qrcode" src="https://web-ext-storage.dcloud.net.cn/uni-app-x/hello-uniappx-qrcode.png"></image>
+      <text class="tip">扫码体验 uni-app x</text>
+      <text class="desc">
+        <text class="code">uni-app x </text>
+        <text class="desc">是下一代uni-app，基于uts的、兼容vue语法的跨平台开发框架。</text>
       </text>
-      <text class="self-flex-start mt-18 fs-14 lh-18 desc color-text">本应用源码获取方式：</text>
-      <view class="flex-dir-row self-flex-start sourcelist">
-        <text class="fs-14 lh-18 desc color-text">1. </text>
-        <text class="fs-14 lh-18 desc color-text">
-          <text class="fs-14 lh-18 desc color-text">在 HBuilderX 中新建 uni-app 项目时选择 </text>
-          <text class="fs-14 code">Hello uni-app x</text>
-          <text class="fs-14 lh-18 desc color-text"> 模板</text>
+      <text class="source desc">本应用源码获取方式：</text>
+      <view class="sourcelist">
+        <text class="desc">1. </text>
+        <text class="desc">
+          <text class="desc">在 HBuilderX 中新建 uni-app 项目时选择 </text>
+          <text class="code">Hello uni-app x</text>
+          <text class="desc"> 模板</text>
         </text>
       </view>
-      <view class="flex-dir-row self-flex-start sourcelist">
-        <text class="fs-14 lh-18 desc color-text">2. </text>
-        <text class="fs-14 lh-18 desc color-007aff text-underline" @click="openUrl('https://gitcode.com/dcloud/hello-uni-app-x')">https://gitcode.com/dcloud/hello-uni-app-x</text>
+      <view class="sourcelist">
+        <text class="desc">2. </text>
+        <text class="desc link" @click="openUrl('https://gitcode.com/dcloud/hello-uni-app-x')">https://gitcode.com/dcloud/hello-uni-app-x</text>
       </view>
     </view>
 <!-- #ifdef APP -->
     <view class="panel">
-      <text class="color-text-333 fw-normal fs-14 m-8">服务协议</text>
-      <view class="radius-6">
-        <view style="border-top-style: none;" class="flex-dir-row items-center bg-list border-t-color-border border-t-width-1 p-12-16 justify-between pl-18" hover-class="bg-active" @click="openUrl('https://dcloud.io/license/DCloud.html')">
-          <text class="color-text-333 fs-14 fw-normal w-94pct ws-nowrap overflow-hidden text-overflow-ellipsis">用户协议</text>
-          <image :src="arrowRightIcon" class="w-14 h-14"></image>
+      <text class="uni-panel-text title">服务协议</text>
+      <view class="item">
+        <view style="padding-left: 18px; border-top-style: none;" class="uni-navigate-item" hover-class="is--active" @click="openUrl('https://dcloud.io/license/DCloud.html')">
+          <text class="uni-navigate-text">用户协议</text>
+          <image :src="arrowRightIcon" class="uni-icon-size"></image>
         </view>
-        <view class="flex-dir-row items-center bg-list border-t-style-solid border-t-color-border border-t-width-1 p-12-16 justify-between pl-18" hover-class="bg-active" @click="openUrl('https://dcloud.io/license/hello-uni-app-x.html')">
-          <text class="color-text-333 fs-14 fw-normal w-94pct ws-nowrap overflow-hidden text-overflow-ellipsis">隐私政策</text>
-          <image :src="arrowRightIcon" class="w-14 h-14"></image>
+        <view style="padding-left: 18px;" class="uni-navigate-item" hover-class="is--active" @click="openUrl('https://dcloud.io/license/hello-uni-app-x.html')">
+          <text class="uni-navigate-text">隐私政策</text>
+          <image :src="arrowRightIcon" class="uni-icon-size"></image>
         </view>
       </view>
     </view>
 
-    <button class="mr-18 clear" @click="clearCache">清空缓存</button>
+    <button class="clear" @click="clearCache">清空缓存</button>
 <!-- #endif -->
-    <text class="w-full fs-14 lh-18 text-center color-ccc version">当前版本：{{version}}</text>
+    <text class="version">当前版本：{{version}}</text>
   </scroll-view>
 </template>
 
@@ -103,10 +103,24 @@ onLoad(() => {
 </script>
 
 <style>
+.content {
+  width: 100%;
+  padding: 16px;
+  align-items: center;
+}
 .qrcode {
   width: 160px;
+  height: 160px;
+}
+.tip {
+  margin: 12px;
+  font-size: 14px;
+  color: var(--text-color);
 }
 .desc {
+  font-size: 14px;
+  line-height: 18px;
+  color: var(--text-color);
   /* #ifdef MP-WEIXIN */
   width: fit-content;
   /* #endif */
@@ -115,18 +129,43 @@ onLoad(() => {
   /* #endif */
 }
 .code {
+  font-size: 14px;
   color: #e96900;
 }
+.source {
+  align-self: flex-start;
+  margin-top: 18px;
+  color: var(--text-color);
+}
 .sourcelist {
+  flex-direction: row;
+  align-self: flex-start;
   align-content: flex-start;
 }
+.link{
+  color: #007AFF;
+  text-decoration-line: underline;
+}
 .version {
+  width: 100%;
   margin: 18px 0px;
+  font-size: 14px;
+  line-height: 18px;
+  text-align: center;
+  color: #ccc;
 }
 .panel {
   margin: 18px;
 }
+.title {
+  margin: 8px;
+  font-size: 14px;
+}
+.item {
+  border-radius: 6px;
+}
 .clear {
   margin-left: 18px;
+  margin-right: 18px;
 }
 </style>

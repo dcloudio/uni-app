@@ -1,7 +1,7 @@
 <template>
     <page-head :title="title"></page-head>
-    <view class="p-0-15 mt-15">
-      <view class="p-5-0 mt-15">
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-btn-v uni-common-mt">
         <button type="primary" @click="dbAdd">新增单条数据</button>
         <button type="primary" @click="dbBatchAdd">新增多条数据</button>
         <button type="primary" @click="dbUpdate">更新数据</button>
@@ -335,3 +335,6 @@
     dbMultiSend
   })
 </script>
+
+<style>
+</style>

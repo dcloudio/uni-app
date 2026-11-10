@@ -1,12 +1,12 @@
 <template>
-  <scroll-view class="app-flex-1">
+  <scroll-view class="page-scroll-view">
     <page-head title="requestSystemPermission"></page-head>
-    <view class="p-0-15 mt-15">
-      <view class="bg-list-fff pos-relative d-flex flex-dir-column border-b-1-solid-c8c7cc-dark-3a3a3c">
-        <view class="pos-relative d-flex flex-dir-row justify-between items-center">
-          <view class="flex-1 vapor-color-text-333">
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-list">
+        <view class="uni-list-cell">
+          <view class="uni-list-cell-db">
             <textarea
-              class="w-full h-100 u-p-10 box-border-box"
+              class="permission-input"
               v-model="data.permissionText"
               placeholder="请输入权限名称，多个权限使用逗号分隔"
             />
@@ -14,7 +14,7 @@
         </view>
       </view>
 
-      <view class="p-5-0 mt-15">
+      <view class="uni-btn-v uni-common-mt">
         <!-- #ifdef APP-HARMONY -->
         <button @tap="selectAccelerometer">加速度计权限</button>
         <button @tap="selectLocation">定位权限</button>
@@ -27,14 +27,14 @@
         <button id="request-permission" type="primary" @tap="requestPermission">申请权限</button>
       </view>
 
-      <view class="p-12 border-1-solid-ddd mt-15">
-        <text class="fs-18 fw-bold mb-8">申请结果</text>
-        <text class="mb-6">状态：{{ data.status }}</text>
-        <text class="mb-6">errCode：{{ data.errCode }}</text>
-        <text class="mb-6">errMsg：{{ data.errMsg }}</text>
-        <text class="mb-6">grantedList：{{ (data.grantedList).join(', ') }}</text>
-        <text class="mb-6">deniedList：{{ (data.deniedList).join(', ') }}</text>
-        <text class="mb-6">doNotAskAgainList：{{ (data.doNotAskAgainList).join(', ') }}</text>
+      <view class="result uni-common-mt">
+        <text class="result-title">申请结果</text>
+        <text class="result-text">状态：{{ data.status }}</text>
+        <text class="result-text">errCode：{{ data.errCode }}</text>
+        <text class="result-text">errMsg：{{ data.errMsg }}</text>
+        <text class="result-text">grantedList：{{ (data.grantedList).join(', ') }}</text>
+        <text class="result-text">deniedList：{{ (data.deniedList).join(', ') }}</text>
+        <text class="result-text">doNotAskAgainList：{{ (data.doNotAskAgainList).join(', ') }}</text>
       </view>
     </view>
   </scroll-view>
@@ -167,3 +167,27 @@
   })
   // #endif
 </script>
+
+<style>
+  .permission-input {
+    width: 100%;
+    height: 100px;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+
+  .result {
+    padding: 12px;
+    border: 1px solid #dddddd;
+  }
+
+  .result-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+
+  .result-text {
+    margin-bottom: 6px;
+  }
+</style>

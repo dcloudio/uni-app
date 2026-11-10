@@ -35,8 +35,8 @@
 		</view>
 
 		<view v-if="props.selectedDeviceId == ''" class="gatt-empty"><text>请先在发现页连接设备</text></view>
-		<view v-else class="gatt-service-list">
-			<view v-for="service in props.services" :key="service.uuid" class="gatt-service-block">
+		<view v-else class="service-list gatt-service-list">
+			<view v-for="service in props.services" :key="service.uuid" class="service-block gatt-service-block">
 				<view class="service-row gatt-service-row" @click="emit('selectService', service.uuid)">
 					<view class="service-copy"><text class="service-icon">□</text>
 						<view><text class="service-uuid gatt-service-uuid">{{ shortUUID(service.uuid) }}</text><text
@@ -84,7 +84,7 @@
 				<button class="small-button action-button"
 					:class="!props.canRead || props.ioBusy || props.selectedPathHasRunningTask ? 'control-disabled' : ''"
 					size="mini" @click="emit('readValue')">{{ props.ioBusy ? '处理中' : '读取' }}</button>
-				<button class="small-button action-button action-button-last"
+				<button class="small-button action-button action-button-last notify-button"
 					:class="!props.canNotify || props.notifyBusy || props.selectedPathHasRunningTask ? 'control-disabled' : (props.notifying ? 'notify-button-on' : '')"
 					size="mini" @click="emit('toggleNotify')">{{ props.notifying ? '关闭通知' : '开启通知' }}</button>
 			</view>

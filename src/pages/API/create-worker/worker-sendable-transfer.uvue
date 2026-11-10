@@ -1,29 +1,29 @@
 <template>
-  <scroll-view class="flex-1 u-p-10 container">
-    <view class="d-flex items-center justify-center mb-20 u-p-10 radius-8 bg-list-fff">
-      <text class="fs-16 color-worker-secondary-666">Worker状态: </text>
-      <text class="fs-16 fw-bold ml-8">{{statusText}}</text>
+  <scroll-view class="container">
+    <view class="status-section">
+      <text class="status-label">Worker状态: </text>
+      <text class="status-text">{{statusText}}</text>
     </view>
 
-    <view class="flex-dir-column mb-20">
-      <text class="fs-14 lh-1_4x mb-10 color-worker-secondary-666">操作步骤：1.创建Worker 2.发送数据测试（消息监听已在创建Worker时添加）</text>
-      <button class="mb-10 radius-6 fs-14 text-center p-5-10" type="primary" :disabled="created_boolean" @click="create">UTS插件中创建Worker</button>
-      <button class="mb-10 radius-6 fs-14 text-center p-5-10" @click="destory" :disabled="workerStatus != 'created'">UTS插件中销毁Worker</button>
+    <view class="button-group">
+      <text class="description-text">操作步骤：1.创建Worker 2.发送数据测试（消息监听已在创建Worker时添加）</text>
+      <button class="btn" type="primary" :disabled="created_boolean" @click="create">UTS插件中创建Worker</button>
+      <button class="btn" @click="destory" :disabled="workerStatus != 'created'">UTS插件中销毁Worker</button>
     </view>
 
-    <view class="u-p-15 radius-8 mb-20 bg-list-fff">
-      <button class="mb-10 radius-6 fs-14 text-center p-5-10" type="primary" @click="sendMessage"
+    <view class="input-section">
+      <button class="btn" type="primary" @click="sendMessage"
         :disabled="workerStatus != 'created'">通过UTS插件发送到WorkerTask</button>
     </view>
 
-    <view class="u-p-15 radius-8 bg-list-fff">
-      <text class="fs-18 fw-bold mb-10 section-title">通信日志:</text>
-      <scroll-view class="u-h-300 radius-4 u-p-10 m-10-0 log-container">
-        <view v-for="(log, index) in logs" :key="index" class="mb-5">
-          <text :class="['fs-12 lh-1_4x', 'log-text', log.type]">{{log.message}}</text>
+    <view class="log-section">
+      <text class="section-title">通信日志:</text>
+      <scroll-view class="log-container">
+        <view v-for="(log, index) in logs" :key="index" class="log-item">
+          <text :class="['log-text', log.type]">{{log.message}}</text>
         </view>
       </scroll-view>
-      <button @click="clearLogs" class="mb-10 radius-6 fs-14 text-center fs-12 color-fff radius-4 clear-btn p-8-12">清空日志</button>
+      <button @click="clearLogs" class="btn clear-btn">清空日志</button>
     </view>
   </scroll-view>
 </template>
@@ -139,19 +139,19 @@
 </script>
 
 <style>
-  .color-worker-secondary-666 {
-    color: var(--worker-secondary-color, #666666);
-  }
-
   .container {
+    --worker-surface-background: #ffffff;
     --worker-page-background: #fafafa;
     --worker-text-color: #333333;
     --worker-secondary-color: #666666;
     --worker-border-color: #dddddd;
+    flex: 1;
+    padding: 10px;
   }
 
   @media (prefers-color-scheme: dark) {
     .container {
+      --worker-surface-background: #2d2d2d;
       --worker-page-background: #1a1a1a;
       --worker-text-color: #ffffff;
       --worker-secondary-color: #a0a0a0;
@@ -159,13 +159,90 @@
     }
   }
 
+  .status-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: var(--worker-surface-background, #ffffff);
+    border-radius: 8px;
+  }
+
+  .status-label {
+    font-size: 16px;
+    color: var(--worker-secondary-color, #666666);
+  }
+
+  .status-text {
+    font-size: 16px;
+    font-weight: bold;
+    margin-left: 8px;
+  }
+
+
+  .button-group {
+    flex-direction: column;
+    margin-bottom: 20px;
+  }
+
+  .input-section {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: var(--worker-surface-background, #ffffff);
+    border-radius: 8px;
+  }
+
+  .input-field {
+    /* #ifdef MP-WEIXIN */
+    height: 3em;
+    /* #endif */
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--worker-border-color, #dddddd);
+    border-radius: 6px;
+    font-size: 16px;
+    margin: 10px 0;
+    background-color: var(--worker-surface-background, #ffffff);
+  }
+
+  .btn {
+    margin-bottom: 10px;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 14px;
+    text-align: center;
+  }
+
+  .log-section {
+    background-color: var(--worker-surface-background, #ffffff);
+    border-radius: 8px;
+    padding: 15px;
+  }
+
   .section-title {
+    font-size: 18px;
+    font-weight: bold;
     color: var(--worker-text-color, #333333);
+    margin-bottom: 10px;
   }
 
   .log-container {
+    height: 300px;
     border: 1px solid var(--worker-border-color, #dddddd);
+    border-radius: 4px;
+    padding: 10px;
+    margin: 10px 0;
     background-color: var(--worker-page-background, #fafafa);
+  }
+
+  .log-item {
+    margin-bottom: 5px;
+  }
+
+  .log-text {
+    font-size: 12px;
+    line-height: 1.4;
   }
 
   .log-text.info {
@@ -194,5 +271,31 @@
 
   .clear-btn {
     background-color: #ff9800;
+    font-size: 12px;
+    padding: 8px 12px;
+    color: #ffffff;
+    border-radius: 4px;
+    text-align: center;
+  }
+
+  .description-text {
+    font-size: 14px;
+    color: var(--worker-secondary-color, #666666);
+    line-height: 1.4;
+    margin-bottom: 10px;
+  }
+
+  .ios-tip-section {
+    margin-bottom: 15px;
+    padding: 12px;
+    background-color: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 8px;
+  }
+
+  .ios-tip-text {
+    font-size: 14px;
+    color: #856404;
+    line-height: 1.4;
   }
 </style>

@@ -1,37 +1,37 @@
 <template>
-  <scroll-view class="flex-1 u-p-10">
-    <view class="d-flex items-center justify-center mb-20 u-p-10 bg-list-fff radius-8">
-      <text class="fs-16 color-active-666">Worker状态: </text>
-      <text class="fs-16 fw-bold ml-8 color-text-333">{{statusText}}</text>
+  <scroll-view class="container">
+    <view class="status-section">
+      <text class="status-label">Worker状态: </text>
+      <text class="status-text">{{statusText}}</text>
     </view>
 
     <!-- #ifdef APP-IOS -->
-    <view class="mb-15 p-12 radius-8 ios-tip-section">
-      <text class="fs-14 lh-1_4x ios-tip-text">⚠️ 提示：Windows系统标准基座iOS平台因平台限制无法运行本地UTS插件，需要自定义基座才能使用示例中的uts-worker插件</text>
+    <view class="ios-tip-section">
+      <text class="ios-tip-text">⚠️ 提示：Windows系统标准基座iOS平台因平台限制无法运行本地UTS插件，需要自定义基座才能使用示例中的uts-worker插件</text>
     </view>
     <!-- #endif -->
 
-    <view class="flex-dir-column mb-20">
-      <text class="fs-14 color-active-666 lh-1_4x mb-10">操作步骤：1.创建Worker 2.发送数据测试（消息监听已在创建Worker时添加）</text>
-      <button class="mb-10 radius-6 fs-14 text-center non-alipay-p-5-10" type="primary" :disabled="created_boolean" @click="create">UTS插件中创建Worker</button>
-      <button class="mb-10 radius-6 fs-14 text-center non-alipay-p-5-10 secondary-btn" @click="destory" :disabled="workerStatus != 'created'">UTS插件中销毁Worker</button>
+    <view class="button-group">
+      <text class="description-text">操作步骤：1.创建Worker 2.发送数据测试（消息监听已在创建Worker时添加）</text>
+      <button class="btn" type="primary" :disabled="created_boolean" @click="create">UTS插件中创建Worker</button>
+      <button class="btn secondary-btn" @click="destory" :disabled="workerStatus != 'created'">UTS插件中销毁Worker</button>
     </view>
 
-    <view class="u-p-15 bg-list-fff radius-8 mb-20">
-      <text class="fs-18 fw-bold color-text-333 mb-10">输入测试值:</text>
-      <text class="fs-14 color-active-666 lh-1_4x mb-10">点击发送按钮后，会将输入值传给WorkerTask，在子线程执行+1操作后返回结果</text>
-      <input class="w-full p-12 border-1-solid-ddd radius-6 fs-16 m-10-0 color-333 bg-fff mp-h-3em input-field" v-model="inputValue" type="number" placeholder="请输入数字" />
-			<button class="mb-10 radius-6 fs-14 text-center non-alipay-p-5-10" type="primary" @click="sendMessage" :disabled="workerStatus != 'created'">通过UTS插件发送到WorkerTask (值+1)</button>
+    <view class="input-section">
+      <text class="section-title">输入测试值:</text>
+      <text class="description-text">点击发送按钮后，会将输入值传给WorkerTask，在子线程执行+1操作后返回结果</text>
+      <input class="input-field" v-model="inputValue" type="number" placeholder="请输入数字" />
+			<button class="btn" type="primary" @click="sendMessage" :disabled="workerStatus != 'created'">通过UTS插件发送到WorkerTask (值+1)</button>
     </view>
 
-    <view class="u-p-15 bg-list-fff radius-8">
-      <text class="fs-18 fw-bold color-text-333 mb-10">通信日志:</text>
-      <scroll-view class="u-h-300 border-1-solid-border-ddd radius-4 u-p-10 m-10-0 bg-active-fafafa">
-        <view v-for="(log, index) in logs" :key="index" class="mb-5">
-          <text :class="['fs-12 lh-1_4x', 'log-text', log.type]">{{log.message}}</text>
+    <view class="log-section">
+      <text class="section-title">通信日志:</text>
+      <scroll-view class="log-container">
+        <view v-for="(log, index) in logs" :key="index" class="log-item">
+          <text :class="['log-text', log.type]">{{log.message}}</text>
         </view>
       </scroll-view>
-      <button @click="clearLogs" class="mb-10 radius-6 fs-14 text-center non-alipay-p-5-10 bg-b45309 fs-12 color-fff radius-4 clear-btn">清空日志</button>
+      <button @click="clearLogs" class="btn clear-btn">清空日志</button>
     </view>
   </scroll-view>
 </template>
@@ -158,6 +158,101 @@
 </script>
 
 <style>
+  .container {
+    flex: 1;
+    padding: 10px;
+  }
+
+  .status-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: var(--list-background-color, #ffffff);
+    border-radius: 8px;
+  }
+
+  .status-label {
+    font-size: 16px;
+    color: var(--active-color, #666666);
+  }
+
+  .status-text {
+    font-size: 16px;
+    font-weight: bold;
+    margin-left: 8px;
+    color: var(--text-color, #333333);
+  }
+
+
+  .button-group {
+    flex-direction: column;
+    margin-bottom: 20px;
+  }
+
+  .input-section {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: var(--list-background-color, #ffffff);
+    border-radius: 8px;
+  }
+
+  .input-field {
+    /* #ifdef MP */
+    height: 3em;
+    /* #endif */
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #dddddd;
+    border-radius: 6px;
+    font-size: 16px;
+    margin: 10px 0;
+    color: #333333;
+    background-color: #ffffff;
+  }
+
+  .btn {
+    margin-bottom: 10px;
+    /* #ifndef MP-ALIPAY */
+    padding: 5px 10px;
+    /* #endif */
+    border-radius: 6px;
+    font-size: 14px;
+    text-align: center;
+  }
+
+  .log-section {
+    background-color: var(--list-background-color, #ffffff);
+    border-radius: 8px;
+    padding: 15px;
+  }
+
+  .section-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--text-color, #333333);
+    margin-bottom: 10px;
+  }
+
+  .log-container {
+    height: 300px;
+    border: 1px solid var(--border-color, #dddddd);
+    border-radius: 4px;
+    padding: 10px;
+    margin: 10px 0;
+    background-color: var(--active-background-color, #fafafa);
+  }
+
+  .log-item {
+    margin-bottom: 5px;
+  }
+
+  .log-text {
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
   .log-text.info {
     color: #2196F3;
   }
@@ -183,18 +278,35 @@
   }
 
   .clear-btn {
+    background-color: #b45309;
+    font-size: 12px;
     /* #ifndef MP-ALIPAY */
     padding: 8px 12px;
     /* #endif */
+    color: #ffffff;
+    border-radius: 4px;
+    text-align: center;
+  }
+
+  .description-text {
+    font-size: 14px;
+    color: var(--active-color, #666666);
+    line-height: 1.4;
+    margin-bottom: 10px;
   }
 
   .ios-tip-section {
+    margin-bottom: 15px;
+    padding: 12px;
     background-color: #fff3cd;
     border: 1px solid #ffeaa7;
+    border-radius: 8px;
   }
 
   .ios-tip-text {
+    font-size: 14px;
     color: #856404;
+    line-height: 1.4;
   }
 
   @media (prefers-color-scheme: dark) {

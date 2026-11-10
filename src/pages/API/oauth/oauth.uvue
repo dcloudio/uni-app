@@ -1,33 +1,33 @@
 <template>
   <page-head :title="title"></page-head>
-  <view class="p-0-15 mt-15">
-    <view class="u-p-15">
-      <view class="flex-dir-row justify-center">登录状态</view>
+  <view class="uni-padding-wrap uni-common-mt">
+    <view class="uni-container">
+      <view class="uni-center">登录状态</view>
       <view v-if="userInfo == null">
         <template v-if="logging">
-          <view class="flex-dir-row justify-center mt-15">登录中...</view>
+          <view class="uni-center uni-common-mt">登录中...</view>
         </template>
         <template v-else>
-          <view class="flex-dir-row justify-center mt-15">未登录</view>
-          <view class="flex-dir-row justify-center mt-15">请点击下面按钮登录</view>
+          <view class="uni-center uni-common-mt">未登录</view>
+          <view class="uni-center uni-common-mt">请点击下面按钮登录</view>
         </template>
       </view>
       <view v-else>
-        <view class="flex-dir-row justify-center mt-15">
-          <image class="w-60 h-60 radius-30" :src="userInfo!.avatarUrl"></image>
+        <view class="uni-center uni-common-mt">
+          <image :src="userInfo!.avatarUrl" style="width: 60px;height: 60px;border-radius: 30px;"></image>
         </view>
-        <view class="flex-dir-row justify-center mt-15">Hello, {{userInfo!.nickName}}</view>
+        <view class="uni-center uni-common-mt">Hello, {{userInfo!.nickName}}</view>
       </view>
     </view>
-    <view class="p-5-0 mt-15">
+    <view class="uni-btn-v uni-common-mt">
       <!-- #ifdef APP-HARMONY -->
       <button type="primary" @click="hwLogin">华为登录</button>
       <!-- #endif -->
       <!-- #ifdef APP-IOS -->
       <button type="primary" @click="appleLogin">Apple 登录</button>
       <!-- #endif -->
-      <button class="mt-15" type="primary" @click="wxLogin">微信登录</button>
-      <button class="mt-15" @click="clear">清空</button>
+      <button class="uni-common-mt" type="primary" @click="wxLogin">微信登录</button>
+      <button class="uni-common-mt" @click="clear">清空</button>
     </view>
   </view>
 </template>
@@ -133,3 +133,7 @@
     setUserInfo
   })
 </script>
+
+<style>
+
+</style>

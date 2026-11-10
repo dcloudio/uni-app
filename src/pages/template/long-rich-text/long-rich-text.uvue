@@ -5,7 +5,7 @@
   <!-- #ifndef MP -->
   <fps v-if="autoData.showFps" />
   <!-- #endif -->
-	<scroll-view class="flex-1 p-4" :enable-back-to-top="true">
+	<scroll-view style="flex: 1;padding: 4px;" :enable-back-to-top="true">
 		<!-- <view style=""> -->
 			<!-- <rich-text :nodes="htmlContent" :mode="modeData.mode" @itemclick="onItemClick"></rich-text> -->
 			<rich-text :nodes="htmlContent" mode="native" @itemclick="onItemClick"></rich-text>

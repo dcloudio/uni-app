@@ -1,5 +1,5 @@
 <template>
-    <view class="bg-list-fff pos-relative d-flex flex-dir-column border-b-1-solid-c8c7cc-dark-3a3a3c">
+    <view class="uni-list">
       <enum-data-checkbox
         :model-value="product_id"
         :items="productOptions"
@@ -8,8 +8,8 @@
         @change="applePriceChange"
       />
     </view>
-    <view class="p-0-15">
-      <button class="bg-007aff color-fff mt-30" @click="createOrder" :loading="loading" :disabled="disabled">立即支付</button>
+    <view class="uni-padding-wrap">
+      <button class="button btn-pay" @click="createOrder" :loading="loading" :disabled="disabled">立即支付</button>
     </view>
 
     <!-- 统一支付组件 -->
@@ -191,20 +191,30 @@
   function applePriceChange(value : string) {
     product_id.value = value;
   }
-
-  onLoad(() => {
-
-  })
-
-  onPageShow(() => {
-
-  })
-
-  onUnload(() => { })
 </script>
 
 <style>
-page {
-  padding: 15px;
-}
+  page {
+    padding: 15px;
+  }
+  .button {
+    background-color: #007aff;
+    color: #ffffff;
+  }
+
+  .uni-list-cell {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+  }
+
+  .price {
+    margin-left: 10px;
+  }
+
+  .btn-pay {
+    margin-top: 30px;
+  }
 </style>

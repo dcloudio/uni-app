@@ -1,13 +1,13 @@
 <template>
-    <view>
-      <text>你自己的业务系统订单详情页面</text>
-    </view>
-    <view class="mt-10">
-      <text>order_no：{{ myOptions.order_no }}</text>
-    </view>
-    <view class="mt-10">
-      <text>out_trade_no：{{ myOptions.out_trade_no }}</text>
-    </view>
+  <view>
+    <text>你自己的业务系统订单详情页面</text>
+  </view>
+  <view style="margin-top: 10px;">
+    <text>order_no：{{ myOptions.order_no }}</text>
+  </view>
+  <view style="margin-top: 10px;">
+    <text>out_trade_no：{{ myOptions.out_trade_no }}</text>
+  </view>
 </template>
 
 <script setup lang="ts">

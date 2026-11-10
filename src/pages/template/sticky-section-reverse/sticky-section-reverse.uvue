@@ -1,75 +1,75 @@
 <template>
-    <view class="flex-dir-column u-p-16 bg-list-fff control-panel">
-      <view class="flex-dir-row items-center justify-between">
-        <view class="flex-dir-row items-center">
-          <view class="radius-5 status-dot h-10"></view>
-          <view class="flex-dir-column u-ml-10">
-            <text class="fs-12 lh-18 summary-label">当前分组顺序</text>
-            <text class="mt-2 fs-20 fw-600 summary-value">{{state.reversed ? '倒序排列' : '原始顺序'}}</text>
+    <view class="control-panel">
+      <view class="summary-row">
+        <view class="summary-main">
+          <view class="status-dot"></view>
+          <view class="summary-copy">
+            <text class="summary-label">当前分组顺序</text>
+            <text class="summary-value">{{state.reversed ? '倒序排列' : '原始顺序'}}</text>
           </view>
         </view>
-        <view class="h-40 pl-12 pr-12 radius-8 flex-dir-row items-center justify-center section-count">
-          <text class="fs-20 lh-24 fw-700 section-count-value">{{state.sections.length}}</text>
-          <text class="fs-12 lh-18 section-count-label ml-3">组</text>
+        <view class="section-count">
+          <text class="section-count-value">{{state.sections.length}}</text>
+          <text class="section-count-label">组</text>
         </view>
       </view>
 
-      <view class="h-44 mt-14 p-3 radius-8 flex-dir-row order-switch">
-        <view id="normal-order" class="flex-1 flex-dir-row items-center justify-center radius-6"
-          :class="state.reversed ? 'bg-transparent' : 'order-option-active bg-list-fff'"
+      <view class="order-switch">
+        <view id="normal-order" class="order-option"
+          :class="state.reversed ? 'order-option-default' : 'order-option-active'"
           hover-class="order-option-hover" @click="applyOrder(false)">
-          <text class="fs-14 lh-20 fw-500"
+          <text class="order-option-text"
             :class="state.reversed ? 'order-option-text-default' : 'order-option-text-active'">原始顺序</text>
         </view>
-        <view id="reverse-order" class="flex-1 flex-dir-row items-center justify-center radius-6"
-          :class="state.reversed ? 'order-option-active bg-list-fff' : 'bg-transparent'"
+        <view id="reverse-order" class="order-option"
+          :class="state.reversed ? 'order-option-active' : 'order-option-default'"
           hover-class="order-option-hover" @click="applyOrder(true)">
-          <text class="fs-14 lh-20 fw-500"
+          <text class="order-option-text"
             :class="state.reversed ? 'order-option-text-active' : 'order-option-text-default'">倒序排列</text>
         </view>
       </view>
 
-      <view class="mt-14 flex-dir-row items-center">
-        <view class="flex-1 flex-dir-row items-center">
-          <text class="fs-12 lh-18 range-label">首组</text>
-          <text class="fs-13 lh-18 fw-600 range-value">{{firstSectionKey}}</text>
+      <view class="range-row">
+        <view class="range-item">
+          <text class="range-label">首组</text>
+          <text class="range-value">{{firstSectionKey}}</text>
         </view>
-        <view class="w-1 range-divider"></view>
-        <view class="flex-1 flex-dir-row items-center justify-flex-end">
-          <text class="fs-12 lh-18 range-label">末组</text>
-          <text class="fs-13 lh-18 fw-600 range-value">{{lastSectionKey}}</text>
+        <view class="range-divider"></view>
+        <view class="range-item range-item-right">
+          <text class="range-label">末组</text>
+          <text class="range-value">{{lastSectionKey}}</text>
         </view>
       </view>
     </view>
 
-    <list-view id="section-list" ref="listViewRef" class="flex-1 flex-dir-column bg-background-f3f5f7" :bounces="false"
+    <list-view id="section-list" ref="listViewRef" class="section-list" :bounces="false"
       :show-scrollbar="false">
       <sticky-section v-for="section in state.sections" :key="section.key" :preload="true"
         :push-pinned-header="true">
         <sticky-header :id="`section-${section.key}`">
-          <view class="pl-16 pr-16 flex-dir-row items-center justify-between section-header bg-background-f3f5f7">
-            <view class="flex-dir-column">
-              <text class="fs-16 lh-22 fw-600 section-title">{{section.title}}</text>
-              <text class="fs-11 lh-16 section-meta mt-1">{{section.items.length}} 笔支出</text>
+          <view class="section-header">
+            <view class="section-header-main">
+              <text class="section-title">{{section.title}}</text>
+              <text class="section-meta">{{section.items.length}} 笔支出</text>
             </view>
-            <text class="fs-15 lh-22 fw-600 section-total">{{formatAmount(section.total)}}</text>
+            <text class="section-total">{{formatAmount(section.total)}}</text>
           </view>
         </sticky-header>
 
-        <list-item v-for="item in section.items" :key="item.id" class="pl-12 pr-12 pb-10" :type="10">
-          <view class="pl-12 radius-8 flex-dir-row items-center bg-list-fff expense-card">
-            <view class="w-42 h-48 radius-7 flex-dir-column items-center justify-center date-block">
-              <text class="fs-18 lh-22 fw-700 date-day">{{item.day}}</text>
-              <text class="fs-10 date-label">日</text>
+        <list-item v-for="item in section.items" :key="item.id" class="expense-item" :type="10">
+          <view class="expense-card">
+            <view class="date-block">
+              <text class="date-day">{{item.day}}</text>
+              <text class="date-label">日</text>
             </view>
-            <view class="flex-1 flex-dir-column ml-12">
-              <text class="fs-15 lh-22 fw-500 expense-vendor">{{item.vendor}}</text>
-              <view class="u-mt-5 flex-dir-row items-center">
-                <text class="pl-7 radius-4 fs-11 lh-16 expense-category">{{item.category}}</text>
-                <text class="ml-8 fs-11 lh-16 expense-id">#{{item.id}}</text>
+            <view class="expense-content">
+              <text class="expense-vendor">{{item.vendor}}</text>
+              <view class="expense-detail-row">
+                <text class="expense-category">{{item.category}}</text>
+                <text class="expense-id">#{{item.id}}</text>
               </view>
             </view>
-            <text class="u-ml-10 fs-15 lh-22 fw-600 expense-amount">{{formatAmount(item.amount)}}</text>
+            <text class="expense-amount">{{formatAmount(item.amount)}}</text>
           </view>
         </list-item>
       </sticky-section>
@@ -262,47 +262,115 @@
 </script>
 
 <style>
+  .page {
+    flex: 1;
+    flex-direction: column;
+  }
+
   .control-panel {
+    flex-direction: column;
+    padding: 16px;
+    background-color: var(--list-background-color, #ffffff);
     border-bottom: 1px solid var(--border-color, #e6e9ed);
+  }
+
+  .summary-row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .summary-main {
+    flex-direction: row;
+    align-items: center;
   }
 
   .status-dot {
     width: 10px;
+    height: 10px;
+    border-radius: 5px;
     background-color: #20a06b;
   }
 
+  .summary-copy {
+    flex-direction: column;
+    margin-left: 10px;
+  }
+
   .summary-label {
+    font-size: 12px;
+    line-height: 18px;
     color: var(--text-color-secondary, #7a828d);
   }
 
   .summary-value {
+    margin-top: 2px;
+    font-size: 20px;
     line-height: 28px;
+    font-weight: 600;
     color: var(--text-color, #1f2933);
   }
 
   .section-count {
     min-width: 58px;
+    height: 40px;
+    padding-left: 12px;
+    padding-right: 12px;
+    border-radius: 8px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
     background-color: #edf7f2;
   }
 
   .section-count-value {
+    font-size: 20px;
+    line-height: 24px;
+    font-weight: 700;
     color: #147a51;
   }
 
   .section-count-label {
+    margin-left: 3px;
+    font-size: 12px;
+    line-height: 18px;
     color: #3f725f;
   }
 
   .order-switch {
+    height: 44px;
+    margin-top: 14px;
+    padding: 3px;
+    border-radius: 8px;
+    flex-direction: row;
     background-color: var(--background-color, #eef1f4);
   }
 
+  .order-option {
+    flex: 1;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+  }
+
+  .order-option-default {
+    background-color: transparent;
+  }
+
   .order-option-active {
+    background-color: var(--list-background-color, #ffffff);
     box-shadow: 0px 2px 6px rgba(33, 45, 58, 0.12);
   }
 
   .order-option-hover {
     opacity: 0.72;
+  }
+
+  .order-option-text {
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
   }
 
   .order-option-text-default {
@@ -313,73 +381,167 @@
     color: #176b50;
   }
 
+  .range-row {
+    margin-top: 14px;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .range-item {
+    flex: 1;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .range-item-right {
+    justify-content: flex-end;
+  }
+
   .range-label {
+    font-size: 12px;
+    line-height: 18px;
     color: var(--text-color-secondary, #8a929c);
   }
 
   .range-value {
     margin-left: 7px;
+    font-size: 13px;
+    line-height: 18px;
+    font-weight: 600;
     color: var(--text-color, #34404b);
   }
 
   .range-divider {
+    width: 1px;
     height: 16px;
     background-color: var(--border-color, #d9dee3);
   }
 
+  .section-list {
+    flex: 1;
+    flex-direction: column;
+    background-color: var(--background-color, #f3f5f7);
+  }
+
   .section-header {
     min-height: 54px;
+    padding-left: 16px;
+    padding-right: 16px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--background-color, #f3f5f7);
     border-bottom: 1px solid var(--border-color, #dde2e7);
   }
 
+  .section-header-main {
+    flex-direction: column;
+  }
+
   .section-title {
+    font-size: 16px;
+    line-height: 22px;
+    font-weight: 600;
     color: var(--text-color, #27313a);
   }
 
   .section-meta {
+    margin-top: 1px;
+    font-size: 11px;
+    line-height: 16px;
     color: var(--text-color-secondary, #818994);
   }
 
   .section-total {
+    font-size: 15px;
+    line-height: 22px;
+    font-weight: 600;
     color: #b46b13;
+  }
+
+  .expense-item {
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-bottom: 10px;
   }
 
   .expense-card {
     min-height: 78px;
+    padding-left: 12px;
     padding-right: 14px;
+    border-radius: 8px;
+    flex-direction: row;
+    align-items: center;
+    background-color: var(--list-background-color, #ffffff);
     box-shadow: 0px 2px 8px rgba(36, 48, 59, 0.06);
   }
 
   .date-block {
+    width: 42px;
+    height: 48px;
+    border-radius: 7px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     background-color: #eef4fb;
   }
 
   .date-day {
+    font-size: 18px;
+    line-height: 22px;
+    font-weight: 700;
     color: #295d8d;
   }
 
   .date-label {
+    font-size: 10px;
     line-height: 14px;
     color: #5f7f9d;
   }
 
+  .expense-content {
+    flex: 1;
+    flex-direction: column;
+    margin-left: 12px;
+  }
+
   .expense-vendor {
+    font-size: 15px;
+    line-height: 22px;
+    font-weight: 500;
     color: var(--text-color, #2c353e);
   }
 
+  .expense-detail-row {
+    margin-top: 5px;
+    flex-direction: row;
+    align-items: center;
+  }
+
   .expense-category {
+    padding-left: 7px;
     padding-right: 7px;
     padding-top: 2px;
     padding-bottom: 2px;
+    border-radius: 4px;
+    font-size: 11px;
+    line-height: 16px;
     color: #4c6b5f;
     background-color: #edf6f2;
   }
 
   .expense-id {
+    margin-left: 8px;
+    font-size: 11px;
+    line-height: 16px;
     color: var(--text-color-secondary, #9aa1a9);
   }
 
   .expense-amount {
+    margin-left: 10px;
+    font-size: 15px;
+    line-height: 22px;
+    font-weight: 600;
     color: var(--text-color, #202830);
   }
 

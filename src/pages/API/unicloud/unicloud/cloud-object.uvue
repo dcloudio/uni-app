@@ -1,26 +1,26 @@
 <template>
     <page-head :title="title"></page-head>
-    <view class="p-0-15 mt-15">
-      <view class="p-5-0 mt-15">
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-btn-v uni-common-mt">
         <button type="primary" @tap="addTodo">添加Todo</button>
       </view>
-      <view class="p-5-0 mt-15">
+      <view class="uni-btn-v uni-common-mt">
         <button type="primary" @tap="addTodoWithGeneric">
           添加Todo传入泛型
         </button>
       </view>
-      <view class="p-5-0 mt-15">
+      <view class="uni-btn-v uni-common-mt">
         <button type="primary" @tap="randomFail">随机触发失败重试</button>
       </view>
-      <view class="p-5-0 mt-15">
+      <view class="uni-btn-v uni-common-mt">
         <button type="primary" @tap="fail">云对象失败调用</button>
       </view>
-      <view class="p-5-0 mt-15">
+      <view class="uni-btn-v uni-common-mt">
         <button type="primary" @tap="failWithNumberErrCode">
           云对象数字错误码
         </button>
       </view>
-      <view class="p-5-0 mt-15">
+      <view class="uni-btn-v uni-common-mt">
         <button type="primary" @tap="success">云对象成功调用</button>
       </view>
     </view>

@@ -1,75 +1,75 @@
 <template>
-	<view class="flex-dir-column flex-1 container">
-		<view class="flex-dir-row items-center justify-between u-p-10">
-			<text class="fs-15 fw-bold color-text-333">Storage管理器</text>
-			<button class="h-40 fs-16 btn-create" type="primary" @click="openEditDialogNew">新建</button>
-			<button class="h-40 fs-16 btn-clear" type="default" @click="confirmClear" v-if="storageList.length>0">清空所有</button>
+	<view class="container">
+		<view class="header">
+			<text class="uni-title-text">Storage管理器</text>
+			<button class="btn btn-create" type="primary" @click="openEditDialogNew">新建</button>
+			<button class="btn btn-clear" type="default" @click="confirmClear" v-if="storageList.length>0">清空所有</button>
 		</view>
-		<list-view class="flex-1 w-full radius-0 p-0 list-view bg-list-fff" v-if="storageList.length>0">
+		<list-view class="list-view" v-if="storageList.length>0">
 			<list-item v-for="(item, index) in storageList" :key="item.key" @click="showDetail(item)">
-				<view class="item-block bg-list-fff">
-					<view class="flex-dir-row items-center mb-4">
-						<text class="fs-14 mr-4 w-50 color-storage-secondary-888">Key：</text>
-						<text class="fs-15 flex-1 item-key">{{ item.key }}</text>
+				<view class="item-block">
+					<view class="item-row">
+						<text class="item-label">Key：</text>
+						<text class="item-key">{{ item.key }}</text>
 					</view>
-					<view class="flex-dir-row items-center mb-4">
-						<text class="fs-14 mr-4 w-50 color-storage-secondary-888">Data：</text>
-						<text class="fs-15 flex-1 item-key">{{ truncate(item.value) }}</text>
+					<view class="item-row">
+						<text class="item-label">Data：</text>
+						<text class="item-key">{{ truncate(item.value) }}</text>
 					</view>
-					<view class="flex-dir-row items-center mb-4">
-						<text class="fs-14 mr-4 w-50 color-storage-secondary-888">Type：</text>
-						<text class="fs-15 flex-1 item-key">{{ item.type }}</text>
+					<view class="item-row">
+						<text class="item-label">Type：</text>
+						<text class="item-key">{{ item.type }}</text>
 					</view>
-					<view class="flex-dir-row items-center justify-between mt-6 mb-0">
-						<button class="h-40 fs-16 btn-delete" type="default" @click.stop="confirmDelete(index)">删除</button>
-						<button class="h-40 fs-16 btn-edit" type="primary" @click.stop="openEditDialogEdit(item, index)">编辑</button>
+					<view class="item-row item-actions-row">
+						<button class="btn btn-delete" type="default" @click.stop="confirmDelete(index)">删除</button>
+						<button class="btn btn-edit" type="primary" @click.stop="openEditDialogEdit(item, index)">编辑</button>
 					</view>
 				</view>
 			</list-item>
 		</list-view>
 
-		<view v-else class="flex-dir-row justify-center">
-			<text class="color-text-333 lh-22">暂无数据</text>
+		<view v-else class="uni-center">
+			<text class="uni-hello-text">暂无数据</text>
 		</view>
 
 		<!-- 详情弹窗 -->
-		<view v-if="showDetailDialog" class="pos-fixed top-0 right-0 bottom-0 d-flex items-center justify-center z-index-999 dialog-mask left-0" @click="closeDetail">
-			<view class="radius-10 flex-dir-column items-stretch pos-relative dialog-content shadow-none bg-list-fff" @click.stop>
-				<text class="fs-16 fw-bold text-center letter-spacing-1 dialog-title mb-14">详情</text>
-				<view class="flex-dir-row items-flex-start mb-9">
-					<text class="fs-14 mr-4 w-50 color-storage-secondary-888">Key：</text>
-					<text class="fs-15 flex-1 item-key">{{ detailItem.key }}</text>
+		<view v-if="showDetailDialog" class="dialog-mask" @click="closeDetail">
+			<view class="dialog-content" @click.stop>
+				<text class="dialog-title">详情</text>
+				<view class="detail-row">
+					<text class="item-label">Key：</text>
+					<text class="item-key">{{ detailItem.key }}</text>
 				</view>
-				<view class="flex-dir-row items-flex-start mb-9">
-					<text class="fs-14 mr-4 w-50 color-storage-secondary-888">Data：</text>
-					<text class="fs-15 flex-1 item-key w-full non-vapor-color-text-333 web-mp-break-break-all">{{ detailItem.value }}</text>
+				<view class="detail-row">
+					<text class="item-label">Data：</text>
+					<text class="item-key uni-list-cell-db-text">{{ detailItem.value }}</text>
 				</view>
-				<view class="flex-dir-row items-flex-start mb-9">
-					<text class="fs-14 mr-4 w-50 color-storage-secondary-888">Type：</text>
-					<text class="fs-15 flex-1 item-key">{{ detailItem.type }}</text>
+				<view class="detail-row">
+					<text class="item-label">Type：</text>
+					<text class="item-key">{{ detailItem.type }}</text>
 				</view>
-				<view class="flex-dir-row justify-flex-end mr-8 mt-16">
-					<button class="h-40 fs-16 u-mr-20" type="primary" @click="openEditDialogEdit(detailItem, getDetailIndex())">编辑</button>
-					<button class="h-40 fs-16 u-mr-20" type="warn" @click="confirmDelete(getDetailIndex())">删除</button>
-					<button class="h-40 fs-16" @click="closeDetail">关闭</button>
+				<view class="uni-common-mt popup-actions">
+					<button class="btn mr-20" type="primary" @click="openEditDialogEdit(detailItem, getDetailIndex())">编辑</button>
+					<button class="btn mr-20" type="warn" @click="confirmDelete(getDetailIndex())">删除</button>
+					<button class="btn" @click="closeDetail">关闭</button>
 				</view>
 			</view>
 		</view>
 
 		<!-- 新建/编辑弹窗 -->
-		<view v-show="showEditDialog" class="pos-fixed top-0 right-0 bottom-0 d-flex items-center justify-center z-index-999 dialog-mask left-0" @click="closeEdit">
-			<view class="radius-10 flex-dir-column items-stretch pos-relative dialog-content shadow-none bg-list-fff" @click.stop>
-				<text class="fs-16 fw-bold text-center letter-spacing-1 dialog-title mb-14">{{ isEditing ? '编辑' : '新建' }}</text>
-				<view class="flex-dir-row items-center mb-9">
-					<text class="fs-15 mr-6 edit-label color-storage-secondary-888">Key</text>
-					<input v-model="editKey" placeholder="请输入key" class="flex-1 h-40 radius-4 fs-15 edit-input bg-list-fff color-storage-input-text-000" />
+		<view v-show="showEditDialog" class="dialog-mask" @click="closeEdit">
+			<view class="dialog-content" @click.stop>
+				<text class="dialog-title">{{ isEditing ? '编辑' : '新建' }}</text>
+				<view class="edit-row">
+					<text class="edit-label">Key</text>
+					<input v-model="editKey" placeholder="请输入key" class="edit-input" />
 				</view>
-				<view class="flex-dir-row items-center mb-9">
-					<text class="fs-15 mr-6 edit-label color-storage-secondary-888">Value</text>
-					<textarea v-model="editValue" placeholder="请输入value" class="flex-1 radius-4 fs-15 edit-textarea p-10-6 bg-list-fff color-storage-input-text-000" />
+				<view class="edit-row">
+					<text class="edit-label">Value</text>
+					<textarea v-model="editValue" placeholder="请输入value" class="edit-textarea" />
 				</view>
-				<view class="flex-dir-row items-center mb-9" v-if="!isEditing">
-					<text class="fs-15 mr-6 edit-label color-storage-secondary-888">类型</text>
+				<view class="edit-row" v-if="!isEditing">
+					<text class="edit-label">类型</text>
 					<enum-data-checkbox
 					  class="flex-1"
 					  :model-value="editValueType"
@@ -79,9 +79,9 @@
 					  @change="onValueTypeChange"
 					/>
 				</view>
-				<view class="flex-dir-row justify-flex-end mr-8 mt-16">
-					<button class="h-40 fs-16 u-mr-20 btn-cancel" type="default" @click="closeEdit">取消</button>
-					<button class="h-40 fs-16 btn-save" type="primary" @click="saveEdit">保存</button>
+				<view class="popup-actions">
+					<button class="btn mr-20 btn-cancel" type="default" @click="closeEdit">取消</button>
+					<button class="btn btn-save" type="primary" @click="saveEdit">保存</button>
 				</view>
 			</view>
 		</view>
@@ -386,65 +386,180 @@
 </script>
 
 <style>
-	.color-storage-secondary-888 {
-		color: var(--storage-secondary-color, #888);
+	.flex-1 {
+		flex: 1;
 	}
-
-	.color-storage-input-text-000 {
-		color: var(--storage-input-text-color, #000000);
-	}
-
 	.container {
+		--storage-surface-background: #fff;
 		--storage-text-color: #333;
 		--storage-secondary-color: #888;
 		--storage-item-border-color: #e5e5e5;
 		--storage-input-border-color: #ccc;
 		--storage-dialog-title-color: #222;
 		--storage-input-text-color: #000000;
+		flex-direction: column;
+		flex: 1;
+	}
+
+	.header {
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		padding: 10px;
+	}
+
+	.btn {
+		height: 40px;
+		font-size: 16px;
+	}
+
+	.mr-20 {
+		margin-right: 20px;
+	}
+
+	.list-view {
+		flex: 1;
+		width: 100%;
+		background-color: var(--storage-surface-background, #fff);
+		border-radius: 0;
+		padding: 0;
 	}
 
 	.item-block {
 		padding: 13px;
 		border-bottom: 1px solid var(--storage-item-border-color, #e5e5e5);
+		background-color: var(--storage-surface-background, #fff);
+	}
+
+	.item-row {
+		flex-direction: row;
+		align-items: center;
+		margin-bottom: 4px;
+	}
+
+	.item-label {
+		color: var(--storage-secondary-color, #888);
+		font-size: 14px;
+		margin-right: 4px;
+		width: 50px;
 	}
 
 	.item-key {
 		color: var(--storage-text-color, #333);
+		font-size: 15px;
+		flex: 1;
 		/* #ifdef WEB */
 		word-break: break-all;
 		/* #endif */
 	}
 
+	.item-actions-row {
+		justify-content: space-between;
+		margin-top: 6px;
+		margin-bottom: 0;
+	}
+
 	.dialog-mask {
+		position: fixed;
+		left: 0;
+		top: 0;
+		right: 0;
+		bottom: 0;
 		background: rgba(0, 0, 0, 0.18);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		z-index: 999;
 	}
 
 	.dialog-content {
+		background-color: var(--storage-surface-background, #fff);
+		border-radius: 10px;
 		padding: 20px 16px 16px 16px;
 		min-width: 270px;
 		max-width: 345px;
+		flex-direction: column;
+		align-items: stretch;
+		position: relative;
+		box-shadow: none;
 	}
 
 	.dialog-title {
+		font-size: 16px;
+		font-weight: bold;
+		margin-bottom: 14px;
+		text-align: center;
 		color: var(--storage-dialog-title-color, #222);
+		letter-spacing: 1px;
+	}
+
+	.detail-row {
+		flex-direction: row;
+		align-items: flex-start;
+		margin-bottom: 9px;
+	}
+
+	.popup-actions {
+		flex-direction: row;
+		justify-content: flex-end;
+		margin-top: 16px;
+		margin-right: 8px;
+	}
+
+	.error-tip {
+		color: #FF3B30;
+		font-size: 15px;
+		margin-bottom: 8px;
+		text-align: center;
+		font-weight: bold;
+	}
+
+	.edit-row {
+		flex-direction: row;
+		align-items: center;
+		margin-bottom: 9px;
 	}
 
 	.edit-label {
 		min-width: 35px;
+		color: var(--storage-secondary-color, #888);
+		font-size: 15px;
+		margin-right: 6px;
 	}
 
 	.edit-input {
+		flex: 1;
+		height: 40px;
 		border: 1px solid var(--storage-input-border-color, #ccc);
+		border-radius: 4px;
 		padding: 0 6px;
+		font-size: 15px;
+		background-color: var(--storage-surface-background, #fff);
+		color: var(--storage-input-text-color, #000000);
 	}
 
 	.edit-textarea {
+		flex: 1;
 		min-height: 80px;
 		border: 1px solid var(--storage-input-border-color, #ccc);
+		border-radius: 4px;
+		padding: 10px 6px;
+		font-size: 15px;
+		background-color: var(--storage-surface-background, #fff);
+		color: var(--storage-input-text-color, #000000);
+	}
+
+	.edit-type-group {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		flex-wrap: wrap;
+		width: 90%;
 	}
 
 	@media (prefers-color-scheme: dark) {
 		.container {
+			--storage-surface-background: #2d2d2d;
 			--storage-text-color: #ffffff;
 			--storage-secondary-color: #a0a0a0;
 			--storage-item-border-color: rgba(255, 255, 255, 0.1);
@@ -452,5 +567,12 @@
 			--storage-dialog-title-color: #ffffff;
 			--storage-input-text-color: #ffffff;
 		}
+	}
+
+	.edit-type-radio {
+		flex-direction: row;
+		align-items: center;
+		margin-right: 12px;
+		margin-bottom: 6px;
 	}
 </style>

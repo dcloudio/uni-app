@@ -1,5 +1,5 @@
 <template>
-  <view class="flex-1 items-center justify-center" @click="changeColor">
+  <view class="container" @click="changeColor">
     <text class="container_text">点击切换页面容器颜色</text>
   </view>
 </template>
@@ -39,5 +39,11 @@ defineExpose({
 
   .container_text {
     color: var(--text-color, #fff);
+  }
+
+  .container {
+    flex: 1;
+    align-items: center;
+    justify-content: center;
   }
 </style>

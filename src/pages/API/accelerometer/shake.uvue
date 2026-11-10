@@ -1,26 +1,26 @@
 <template>
-		<text class="fs-20 fw-bold m-8-0">摇一摇</text>
+		<text class="uni-h3">摇一摇</text>
 		<text>握住手机并快速摇晃，会调用加速计传感器，依据加速度变化检测动作，并弹出提示。</text>
 
-		<text class="u-p-10 border-1-solid-ccc fs-14 m-5-0">{{ statusText }}</text>
-		<view class="flex-dir-row m-5-0">
-			<view class="flex-1 p-14">
+		<text class="log-text margin-v">{{ statusText }}</text>
+		<view class="uni-row margin-v">
+			<view class="metric-box">
 				<text>瞬时变化</text>
-				<text class="mt-4 fs-30">{{ deltaText }}</text>
+				<text class="metric-value">{{ deltaText }}</text>
 			</view>
-			<view class="flex-1 p-14 u-ml-10">
+			<view class="metric-box metric-box-space">
 				<text>触发次数</text>
-				<text class="mt-4 fs-30">{{ shakeCountText }}</text>
+				<text class="metric-value">{{ shakeCountText }}</text>
 			</view>
 		</view>
 		
-		<view class="d-flex flex-dir-row items-center justify-between">
+		<view class="sensitivity-header">
 			<text>灵敏度</text>
-			<text>{{ sensitivityLabel }}</text>
+			<text class="sensitivity-value">{{ sensitivityLabel }}</text>
 		</view>
-		<slider class="m-15" :value="sensitivityValue" :min="1" :max="5" :step="1"
+		<slider class="sensitivity-slider" :value="sensitivityValue" :min="1" :max="5" :step="1"
 			@changing="onSensitivityChanging" @change="onSensitivityChange" />
-		<text>当前触发阈值：{{ thresholdText }}，数值越低灵敏度越高，越容易触发。</text>
+		<text class="sensitivity-tip">当前触发阈值：{{ thresholdText }}，数值越低灵敏度越高，越容易触发。</text>
 
 </template>
 
@@ -149,7 +149,45 @@
 </script>
 
 <style>
-page {
-  padding: 6px;
-}
+	page {
+		padding: 6px;
+	}
+
+	.card-space {
+		margin: 5px;
+	}
+
+	.margin-v {
+	  margin: 5px 0;
+	}
+	.log-text {
+	  padding: 10px;
+		font-size: 14px;
+	  border: 1px solid #ccc;
+	}
+
+	.metric-box {
+		flex: 1;
+		padding: 14px;
+	}
+
+	.metric-box-space {
+		margin-left: 10px;
+	}
+
+	.metric-value {
+		margin-top: 4px;
+		font-size: 30px;
+	}
+
+	.sensitivity-header {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.sensitivity-slider {
+		margin: 15px;
+	}
 </style>

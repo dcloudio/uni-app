@@ -1,51 +1,51 @@
 <template>
   <!-- #ifdef APP -->
-  <scroll-view class="app-flex-1">
+  <scroll-view class="page-scroll-view">
   <!-- #endif -->
-    <view id="container">
+    <view id="container" class="current-pages-page">
       <page-head title="getCurrentPages"></page-head>
-      <view class="p-0-15">
+      <view class="uni-padding-wrap">
         <button @click="_getCurrentPages">getCurrentPages</button>
-        <view v-if="data.pages.length" class="p-15-0">
-          <text class="color-text-333">当前页面栈中 {{ data.pages.length }} 个页面，列表如下：</text>
+        <view v-if="data.pages.length" style="padding: 15px 0px">
+          <text class="page-stack-text">当前页面栈中 {{ data.pages.length }} 个页面，列表如下：</text>
           <template v-for="(page, index) in data.pages" :key="page">
-            <text class="color-text-333 u-mt-5">index: {{ index }}, route: {{ page }}</text>
+            <text class="page-stack-text" style="margin-top: 5px">index: {{ index }}, route: {{ page }}</text>
           </template>
         </view>
-        <button class="uni-common-mt mt-15" @click="check$page">page check $page</button>
+        <button class="uni-common-mt" @click="check$page">page check $page</button>
         <!-- #ifndef MP -->
-        <button class="uni-common-mt mt-15" @click="checkGetParentPage">
+        <button class="uni-common-mt" @click="checkGetParentPage">
           check getParentPage
         </button>
-        <button class="uni-common-mt mt-15" @click="checkGetDialogPages">
+        <button class="uni-common-mt" @click="checkGetDialogPages">
           check getDialogPages
         </button>
-        <button id="check-get-element-by-id-btn" class="uni-common-mt mt-15" @click="checkGetElementById">
+        <button id="check-get-element-by-id-btn" class="uni-common-mt" @click="checkGetElementById">
           check getElementById
         </button>
-        <button class="uni-common-mt mt-15" @click="checkGetAndroidView">
+        <button class="uni-common-mt" @click="checkGetAndroidView">
           check getAndroidView
         </button>
-        <button class="uni-common-mt mt-15" @click="checkGetIOSView">
+        <button class="uni-common-mt" @click="checkGetIOSView">
           check getIOSView
         </button>
-        <button class="uni-common-mt mt-15" @click="checkGetHTMLElement">
+        <button class="uni-common-mt" @click="checkGetHTMLElement">
           check getHTMLElement
         </button>
-        <button class="uni-common-mt mt-15" @click="checkQuerySelector">
+        <button class="uni-common-mt" @click="checkQuerySelector">
           check querySelector
         </button>
-        <button class="uni-common-mt mt-15" @click="checkQuerySelectorAll">
+        <button class="uni-common-mt" @click="checkQuerySelectorAll">
           check querySelectorAll
         </button>
         <!-- #endif -->
         <!-- #ifdef APP-ANDROID -->
-        <button class="uni-common-mt mt-15" @click="checkGetAndroidActivity">
+        <button class="uni-common-mt" @click="checkGetAndroidActivity">
           check getAndroidActivity
         </button>
         <!-- #endif -->
         <!-- #ifdef APP -->
-        <button class="uni-common-mt mt-15" @click="checkTakeSnapshot">
+        <button class="uni-common-mt" @click="checkTakeSnapshot">
           check takeSnapshot
         </button>
         <!-- #endif -->
@@ -53,22 +53,22 @@
       <!-- #ifndef MP -->
       <page-head title="currentPageStyle"></page-head>
       <template v-for="(item, index) in data.PageStyleArray">
-        <view class="u-p-10 mt-10 bg-list-fff radius-5" v-if="data.currentPageStyle[item.key] != null" :key="index">
-          <view class="flex-dir-row">
-            <text class="fw-bold color-text-333">{{ item.key }}:</text>
-            <text class="ml-5 color-text-333">{{
+        <view class="page-style-item" v-if="data.currentPageStyle[item.key] != null" :key="index">
+          <view class="item-text">
+            <text class="item-text-key">{{ item.key }}:</text>
+            <text class="item-text-value">{{
               data.currentPageStyle[item.key]
             }}</text>
           </view>
-          <view class="mt-10" v-if="item.type == 'boolean'">
+          <view class="set-value" v-if="item.type == 'boolean'">
             <boolean-data :value="(data.currentPageStyle[item.key] as boolean)" :title="item.key"
               @change="switchChange(item.key, $event as boolean)"></boolean-data>
           </view>
-          <view class="mt-10" v-else-if="item.type == 'number'">
+          <view class="set-value" v-else-if="item.type == 'number'">
             <slider :value="(data.currentPageStyle[item.key] as number)" :show-value="true"
               @change="sliderChange(item.key, $event as UniSliderChangeEvent)" />
           </view>
-          <view class="mt-10" v-else-if="item.type == 'string'">
+          <view class="set-value" v-else-if="item.type == 'string'">
             <enum-data-checkbox
               :model-value="data.currentPageStyle[item.key] as string"
               :items="createEnumItems(item.value as string[])"
@@ -80,7 +80,7 @@
         </view>
       </template>
       <!-- #ifndef APP-HARMONY -->
-      <button class="m-10" @click="goSetDisablePullDownRefresh">
+      <button style="margin: 10px" @click="goSetDisablePullDownRefresh">
         go set disable pullDownRefresh
       </button>
       <!-- #endif -->
@@ -367,3 +367,54 @@
     checkTakeSnapshot
   })
 </script>
+
+<style>
+  .page {
+    flex: 1;
+    padding: 10px;
+  }
+
+  .page-style {
+    margin-top: 15px;
+  }
+
+  .page-style-item {
+    padding: 10px;
+    margin-top: 10px;
+    background-color: var(--list-background-color, #ffffff);
+    border-radius: 5px;
+  }
+
+  .item-text {
+    flex-direction: row;
+  }
+
+  .item-text-key {
+    font-weight: bold;
+    color: var(--text-color, #333333);
+  }
+
+  .item-text-value {
+    margin-left: 5px;
+    color: var(--text-color, #333333);
+  }
+
+  .page-stack-text {
+    color: var(--text-color, #333333);
+  }
+
+  .set-value {
+    margin-top: 10px;
+  }
+
+  .radio-set-value {
+    flex-direction: row;
+  }
+
+  .radio-value {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-left: 10px;
+  }
+</style>

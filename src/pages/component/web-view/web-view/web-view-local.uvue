@@ -4,7 +4,7 @@
     ios-allows-inline-media-playback 默认值为 false，且不再自动向网页 video 注入 playsinline。
     该属性只在 web-view 创建时读取，需要在首次渲染前根据平台完成设置；需要稳定内联显示摄像头预览时应显式设置为 true。
   -->
-  <web-view id="web-view" ref="web-view" class="flex-1" src="/hybrid/html/local.html"
+  <web-view id="web-view" ref="web-view" class="web-view" src="/hybrid/html/local.html"
     :ios-allows-inline-media-playback="isInline" @message="message" @error="error" @loading="loading" @load="load"
     @download="download">
   </web-view>
@@ -111,6 +111,10 @@
 </script>
 
 <style>
+  .web-view {
+    flex: 1;
+  }
+
   .safe-area-inset-bottom {
     height: var(--uni-safe-area-inset-bottom);
   }

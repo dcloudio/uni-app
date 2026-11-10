@@ -1,23 +1,23 @@
 <template>
-    <scroll-view ref="tabScroll" class="bg-list-fff swiper-tabs"
+    <scroll-view ref="tabScroll" class="swiper-tabs"
       <!-- #ifdef MP-ALIPAY -->
       :scroll-left="scrollLeft" 
       <!-- #endif -->
       direction="horizontal" 
       :show-scrollbar="false">
-      <view class="flex-dir-row self-flex-start">
-        <text ref="swipertab" class="fs-16 p-12-25 ws-nowrap swiper-tabs-item" :style="textSpace"
-          :class="swiperIndex==index ? 'color-007aff' : 'color-text-555'" v-for="(item, index) in swiperList" :key="index"
+      <view class="flex-row">
+        <text ref="swipertab" class="swiper-tabs-item" :style="textSpace"
+          :class="swiperIndex==index ? 'swiper-tabs-item-active' : ''" v-for="(item, index) in swiperList" :key="index"
           @click="onTabClick(index)">
           {{item.title}}
         </text>
       </view>
-      <view ref="indicator" class="w-1 u-h-2 bg-007aff"></view>
+      <view ref="indicator" class="swiper-tabs-indicator"></view>
     </scroll-view>
-    <swiper ref="swiper" class="flex-1" :current="swiperIndex" @transition="onSwiperTransition"
+    <swiper ref="swiper" class="swiper-view" :current="swiperIndex" @transition="onSwiperTransition"
       @animationfinish="onSwiperAnimationfinish">
-      <swiper-item class="flex-1 items-center justify-center" v-for="(_, index) in swiperList" :key="index">
-        <text class="fs-72 fw-bold color-text-333">{{index}}</text>
+      <swiper-item class="swiper-item" v-for="(_, index) in swiperList" :key="index">
+        <text class="swiper-item-text">{{index}}</text>
         <!-- 可以将上述text组件替换为list组件，实现可左右滑动的长列表 -->
       </swiper-item>
     </swiper>
@@ -195,9 +195,55 @@ defineExpose({
 </script>
 
 <style>
+  .flex-row {
+    flex-direction: row;
+    align-self: flex-start;
+  }
+
+  .swiper-list {
+    flex: 1;
+  }
+
+  .swiper-tabs {
+    background-color: var(--list-background-color, #ffffff);
+  }
+  
   /* #ifdef MP-ALIPAY */
   .swiper-tabs::-webkit-scrollbar {
     display: none;
   }
   /* #endif */
+
+  .swiper-tabs-item {
+    color: var(--text-color, #555555);
+    font-size: 16px;
+    padding: 12px 25px;
+    white-space: nowrap;
+  }
+
+  .swiper-tabs-item-active {
+    color: #007AFF;
+  }
+
+  .swiper-tabs-indicator {
+    width: 1px;
+    height: 2px;
+    background-color: #007AFF;
+  }
+
+  .swiper-view {
+    flex: 1;
+  }
+
+  .swiper-item {
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .swiper-item-text {
+    font-size: 72px;
+    font-weight: bold;
+    color: var(--text-color, #333333);
+  }
 </style>

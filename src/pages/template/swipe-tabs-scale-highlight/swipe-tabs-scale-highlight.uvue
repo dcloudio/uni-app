@@ -1,16 +1,16 @@
 <template>
-    <scroll-view ref="tabScroll" direction="horizontal" :show-scrollbar="false">
-      <view class="flex-dir-row self-flex-start">
-        <text ref="swipertab" class="fs-16 ws-nowrap swiper-tabs-item" :class="swiperIndex==index ? 'color-black' : 'color-555'"
+    <scroll-view class="swiper-tabs" ref="tabScroll" direction="horizontal" :show-scrollbar="false">
+      <view style="align-self: flex-start;" class="flex-row">
+        <text ref="swipertab" class="swiper-tabs-item" :class="swiperIndex==index ? 'swiper-tabs-item-active' : ''"
           v-for="(item, index) in swiperList" :key="index" @click="onTabClick(index)">
           {{item.title}}
         </text>
       </view>
     </scroll-view>
-    <swiper ref="swiper" class="flex-1 swiper-view" :current="swiperIndex" @transition="onSwiperTransition"
+    <swiper ref="swiper" class="swiper-view" :current="swiperIndex" @transition="onSwiperTransition"
       @animationfinish="onSwiperAnimationfinish">
-      <swiper-item class="flex-1 items-center justify-center" v-for="(_, index) in swiperList" :key="index">
-        <text class="fs-72 fw-bold">{{index}}</text>
+      <swiper-item class="swiper-item" v-for="(_, index) in swiperList" :key="index">
+        <text class="swiper-item-text">{{index}}</text>
         <!-- 可以将上述text组件替换为list组件，实现可左右滑动的长列表 -->
       </swiper-item>
     </swiper>
@@ -151,7 +151,37 @@ defineExpose({
 </script>
 
 <style>
+  .flex-row {
+    flex-direction: row;
+  }
+
+  .swiper-list {
+    flex: 1;
+  }
+
   .swiper-tabs-item {
+    color: #555;
+    font-size: 16px;
     margin: 15px 25px 5px 25px;
+    white-space: nowrap;
+  }
+
+  .swiper-tabs-item-active {
+    color: #000000;
+  }
+
+  .swiper-view {
+    flex: 1;
+  }
+
+  .swiper-item {
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .swiper-item-text {
+    font-size: 72px;
+    font-weight: bold;
   }
 </style>

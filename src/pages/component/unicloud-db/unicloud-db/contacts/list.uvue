@@ -2,22 +2,22 @@
   <view class="flex-dir-column" style="flex: 1;">
     <unicloud-db ref="udbRef" class="udb" v-slot:default="{data, pagination, loading, hasMore, error}"
       :collection="collection" :page-size="20" :getcount="true" loadtime="manual">
-      <view v-if="error!=null" class="color-text-333">{{error.errMsg}}</view>
-      <scroll-view ref="listView" class="flex-1 flex-dir-column" @scrolltolower="loadMore()">
-        <view class="flex-dir-row u-p-10 bg-list-fff mb-1" v-for="(item, _) in data" @click="gotoDetailPage(item['_id'] as string)">
-          <view>
-            <text class="color-text-333">{{item['username']}}</text>
-            <text class="u-mt-5 color-active-666">{{item['mobile']}}</text>
+      <view v-if="error!=null" class="error">{{error.errMsg}}</view>
+      <scroll-view ref="listView" class="list-view" @scrolltolower="loadMore()">
+        <view class="list-item" v-for="(item, _) in data" @click="gotoDetailPage(item['_id'] as string)">
+          <view class="list-item-fill">
+            <text class="name">{{item['username']}}</text>
+            <text class="mobile">{{item['mobile']}}</text>
           </view>
         </view>
       </scroll-view>
-      <loading class="color-999 self-center m-20" v-if="loading"></loading>
-      <view v-if="data.length>0" class="items-center bg-page-f8f8f8 u-p-15">
-        <text class="color-text-333">{{data.length}} / {{pagination.count}}</text>
+      <loading style="color: #999;margin: 20px;align-self: center;"  v-if="loading"></loading>
+      <view v-if="data.length>0" class="pagination">
+        <text class="name">{{data.length}} / {{pagination.count}}</text>
       </view>
     </unicloud-db>
-    <view class="pos-absolute items-center justify-center btn-plus bg-dodgerblue bottom-20 right-20" @click="gotoAddPage">
-      <text class="fs-30 color-fff">+</text>
+    <view class="btn-plus" @click="gotoAddPage">
+      <text class="btn-plus-text">+</text>
     </view>
   </view>
 </template>
@@ -87,6 +87,15 @@
 </script>
 
 <style>
+  .flex-dir-column {
+    flex-direction: column;
+  }
+
+  .loading {
+    margin: 20px;
+    align-self: center;
+  }
+
   .udb {
     flex: 1;
     /* TODO */
@@ -96,9 +105,49 @@
     flex-direction: column;
   }
 
+  .list-view {
+    flex: 1;
+    flex-direction: column;
+  }
+
+  .list-item {
+    flex-direction: row;
+    padding: 10px;
+    background-color: var(--list-background-color, #ffffff);
+    margin-bottom: 1px;
+  }
+
+  .mobile {
+    margin-top: 5px;
+    color: var(--active-color, #666666);
+  }
+
+  .name,
+  .pagination-item,
+  .error {
+    color: var(--text-color, #333333);
+  }
+
   .btn-plus {
+    position: absolute;
     width: 64px;
     height: 64px;
+    right: 20px;
+    bottom: 20px;
+    align-items: center;
+    justify-content: center;
+    background-color: #1e90ff;
     border-radius: 64px;
+  }
+
+  .btn-plus-text {
+    font-size: 30px;
+    color: #fff;
+  }
+
+  .pagination {
+    align-items: center;
+    background-color: var(--background-color, #f8f8f8);
+    padding: 15px;
   }
 </style>

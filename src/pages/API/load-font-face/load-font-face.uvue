@@ -1,52 +1,52 @@
 <template>
   <page-head title="loadFontFace"></page-head>
   <page-intro content="本页演示 uni.loadFontFace：全局与非全局加载字体（本地、base64、网络），展示各字体效果；可跳转子页测试字体生效范围。"></page-intro>
-  <view class="p-0-15">
-    <text class="fs-20">全局加载字体：</text>
-    <text class="fs-20 lh-40" style="font-family: UniFontFamily">font-family: uni.ttf</text>
-    <view class="flex-dir-row">
+  <view class="uni-padding-wrap">
+    <text class="font-size-20">全局加载字体：</text>
+    <text class="font-size-20 line-height-40" style="font-family: UniFontFamily">font-family: uni.ttf</text>
+    <view style="flex-direction: row;">
       <!-- 微信小程序只支持加载网络字体 -->
       <!-- #ifdef MP -->
-      <text class="fs-20" style="font-family: UniFontFamily2;">{{data.uniIcon3}}</text>
-      <text class="ml-5 u-mr-20 lh-22">\ue102</text>
+      <text class="font-size-20" style="font-family: UniFontFamily2;">{{data.uniIcon3}}</text>
+      <text class="icon-text">\ue102</text>
       <!-- #endif -->
       <!-- #ifndef MP -->
-      <text class="fs-20" style="font-family: UniFontFamily;">{{data.uniIcon1}}</text>
-      <text class="ml-5 u-mr-20 lh-22">\ue100</text>
-      <text class="fs-20" style="font-family: UniFontFamily;">{{data.uniIcon2}}</text>
-      <text class="ml-5 lh-22">\ue101</text>
+      <text class="font-size-20" style="font-family: UniFontFamily;">{{data.uniIcon1}}</text>
+      <text class="icon-text">\ue100</text>
+      <text class="font-size-20" style="font-family: UniFontFamily;">{{data.uniIcon2}}</text>
+      <text style="margin-left:5px;line-height:22px;">\ue101</text>
       <!-- #endif -->
     </view>
     <!-- #ifndef MP-ALIPAY -->
-    <text class="fs-20 lh-40" style="font-family: UniFontFamily">实体字符</text>
-    <view class="flex-dir-row">
+    <text class="font-size-20 line-height-40" style="font-family: UniFontFamily">实体字符</text>
+    <view style="flex-direction: row;">
       <!-- #ifdef MP-WEIXIN -->
-      <text class="fs-20" style="font-family: UniFontFamily2;">&#xe102; &amp;#xe102;</text>
+      <text class="font-size-20" style="font-family: UniFontFamily2;">&#xe102; &amp;#xe102;</text>
       <!-- #endif -->
       <!-- #ifndef MP-WEIXIN -->
-      <text class="fs-20" style="font-family: UniFontFamily;">&#xe100; &amp;#xe100;</text>
-      <text class="fs-20 ml-5" style="font-family: UniFontFamily;">&#xe101; &amp;#xe101;</text>
+      <text class="font-size-20" style="font-family: UniFontFamily;">&#xe100; &amp;#xe100;</text>
+      <text class="font-size-20" style="font-family: UniFontFamily; margin-left: 5px;">&#xe101; &amp;#xe101;</text>
       <!-- #endif -->
     </view>
     <!-- #endif -->
     <!-- #ifndef APP-HARMONY -->
-    <text class="mt-15 fs-20">非全局加载字体：</text>
+    <text class="uni-common-mt font-size-20">非全局加载字体：</text>
     <!-- #endif -->
-    <text class="fs-20 lh-40">font-family: uni.ttf(base64格式)</text>
-    <view class="flex-dir-row">
-      <text class="fs-20" style="font-family: UniFontFamily2;">{{data.uniIcon3}}</text>
-      <text class="ml-5 u-mr-20 lh-22">\ue102</text>
+    <text class="font-size-20 line-height-40">font-family: uni.ttf(base64格式)</text>
+    <view style="flex-direction: row;">
+      <text class="font-size-20" style="font-family: UniFontFamily2;">{{data.uniIcon3}}</text>
+      <text class="icon-text">\ue102</text>
     </view>
-    <text class="fs-20 lh-40" style="font-family: AlimamaDaoLiTiTTF">font-family: 阿里妈妈刀隶体-ttf
+    <text class="font-size-20 line-height-40" style="font-family: AlimamaDaoLiTiTTF">font-family: 阿里妈妈刀隶体-ttf
       (网络字体下载后生效)</text>
-    <text class="fs-20 lh-40" style="font-family: AlimamaDaoLiTiOTF">font-family:
+    <text class="font-size-20 line-height-40" style="font-family: AlimamaDaoLiTiOTF">font-family:
       阿里妈妈刀隶体-otf</text>
 
     <!-- #ifdef APP-IOS -->
-    <text style="font-family: AlimamaDaoLiTiWOFF">font-family: 阿里妈妈刀隶体-woff</text>
-    <text style="font-family: AlimamaDaoLiTiWOFF2">font-family: 阿里妈妈刀隶体-woff2</text>
+    <text class="item" style="font-family: AlimamaDaoLiTiWOFF">font-family: 阿里妈妈刀隶体-woff</text>
+    <text class="item" style="font-family: AlimamaDaoLiTiWOFF2">font-family: 阿里妈妈刀隶体-woff2</text>
     <!-- #endif -->
-    <button class="mt-10" @click="navigateToChild">跳转子页面测试字体生效范围</button>
+    <button class="uni-btn" @click="navigateToChild">跳转子页面测试字体生效范围</button>
   </view>
 </template>
 <script setup lang="ts">
@@ -119,6 +119,13 @@
     let status3 = false
     uni.loadFontFace({
       family: 'AlimamaDaoLiTiTTF',
+      // #ifdef APP-IOS || WEB || MP-WEIXIN || MP-ALIPAY
+      desc: {
+        style: 'italic',
+        weight: '800',
+        variant: 'normal'
+      },
+      // #endif
       source:
         "url('https://qiniu-web-assets.dcloud.net.cn/uni-app-x/static/font/AlimamaDaoLiTi.ttf')",
       success() {
@@ -207,3 +214,19 @@
     data
   })
 </script>
+
+<style>
+  .font-size-20 {
+    font-size: 20px;
+  }
+
+  .line-height-40 {
+    line-height: 40px;
+  }
+
+  .icon-text{
+    margin-left:5px;
+    margin-right: 20px;
+    line-height:22px;
+  }
+</style>

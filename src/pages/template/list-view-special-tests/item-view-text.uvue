@@ -1,17 +1,17 @@
 <template>
-	<view class="theme-list-demo bg-list-demo-page-background flex-1 d-flex flex-dir-column min-h-0 p-12-12-0">
-		<view class="d-flex flex-dir-column p-4-4-12">
-			<text class="fs-20 fw-bold color-list-demo-title">View + Text 撑高</text>
-			<text class="mt-4 fs-12 color-list-demo-secondary">200 项 · key 唯一 · 高度由内容决定</text>
+	<view class="page">
+		<view class="header">
+			<text class="title">View + Text 撑高</text>
+			<text class="subtitle">200 项 · key 唯一 · 高度由内容决定</text>
 		</view>
 
-		<list-view id="item-list" class="flex-1 bg-list-demo-panel-background radius-6" show-scrollbar="false">
-			<list-item v-for="item in items" :key="item.id" class="border-b-width-1 border-b-style-solid border-b-color-list-demo-border">
-				<view class="d-flex flex-dir-row items-flex-start p-12-14">
-					<text class="d-flex flex-dir-column items-center justify-center bg-list-demo-badge-background fw-bold color-list-demo-badge w-24 h-24 radius-12 fs-12 text-center lh-24">{{item.id + 1}}</text>
-					<view class="flex-1 d-flex flex-dir-column min-w-0 u-ml-10">
-						<text class="fs-15 fw-bold color-list-demo-title">{{item.title}}</text>
-						<text class="mt-6 fs-13 lh-22 color-list-demo-text">{{item.body}}</text>
+		<list-view id="item-list" class="list" show-scrollbar="false">
+			<list-item v-for="item in items" :key="item.id" class="list-item">
+				<view class="item-content">
+					<text class="item-index">{{item.id + 1}}</text>
+					<view class="item-copy">
+						<text class="item-title">{{item.title}}</text>
+						<text class="item-body">{{item.body}}</text>
 					</view>
 				</view>
 			</list-item>
@@ -52,3 +52,109 @@
 		items
 	})
 </script>
+
+<style>
+	.page {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		min-height: 0;
+		--list-demo-page-background: #f5f7fb;
+		--list-demo-panel-background: #ffffff;
+		--list-demo-title-color: #1f2937;
+		--list-demo-text-color: #4b5563;
+		--list-demo-secondary-color: #6b7280;
+		--list-demo-border-color: #eef0f4;
+		--list-demo-badge-background: #e8f0ff;
+		--list-demo-badge-color: #2563eb;
+		background-color: var(--list-demo-page-background);
+		padding: 12px 12px 0;
+	}
+
+	.header {
+		display: flex;
+		flex-direction: column;
+		padding: 4px 4px 12px;
+	}
+
+	.title {
+		font-size: 20px;
+		font-weight: bold;
+		color: var(--list-demo-title-color);
+	}
+
+	.subtitle {
+		margin-top: 4px;
+		font-size: 12px;
+		color: var(--list-demo-secondary-color);
+	}
+
+	.list {
+		flex: 1;
+		background-color: var(--list-demo-panel-background);
+		border-radius: 6px;
+	}
+
+	.list-item {
+		border-bottom-width: 1px;
+		border-bottom-style: solid;
+		border-bottom-color: var(--list-demo-border-color);
+	}
+
+	.item-content {
+		display: flex;
+		flex-direction: row;
+		align-items: flex-start;
+		padding: 12px 14px;
+	}
+
+	.item-index {
+		width: 24px;
+		height: 24px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		border-radius: 12px;
+		background-color: var(--list-demo-badge-background);
+		font-size: 12px;
+		font-weight: bold;
+		color: var(--list-demo-badge-color);
+		text-align: center;
+		line-height: 24px;
+	}
+
+	.item-copy {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		min-width: 0;
+		margin-left: 10px;
+	}
+
+	.item-title {
+		font-size: 15px;
+		font-weight: bold;
+		color: var(--list-demo-title-color);
+	}
+
+	.item-body {
+		margin-top: 6px;
+		font-size: 13px;
+		line-height: 22px;
+		color: var(--list-demo-text-color);
+	}
+
+	@media (prefers-color-scheme: dark) {
+		.page {
+			--list-demo-page-background: #1a1a1a;
+			--list-demo-panel-background: #2d2d2d;
+			--list-demo-title-color: #ffffff;
+			--list-demo-text-color: #b8b8b8;
+			--list-demo-secondary-color: #8a8a8a;
+			--list-demo-border-color: #3a3a3a;
+			--list-demo-badge-background: #26344a;
+			--list-demo-badge-color: #7aa7e0;
+		}
+	}
+</style>

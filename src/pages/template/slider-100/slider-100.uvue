@@ -3,8 +3,8 @@
     <fps v-if="autoData.showFps" />
     <!-- #endif -->
     <page-head :title="title"></page-head>
-    <view class="flex-dir-row flex-wrap-wrap">
-      <slider ref="sliderRef" class="slider w-25pct" v-for="(_, index) in 100" :key="index" @changing="sliderChanging"
+    <view class="grid-view">
+      <slider ref="sliderRef" class="slider" v-for="(_, index) in 100" :key="index" @changing="sliderChanging"
         @change="sliderChange" :value="sliderValue" thumb-class="thumbclass"/>
     </view>
 </template>
@@ -45,7 +45,13 @@ defineExpose({updateSliderValueTest, autoData})
 </script>
 
 <style>
+  .grid-view {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
   .slider {
+    width: 25%;
     margin: 1px 0px;
   }
 

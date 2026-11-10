@@ -1,6 +1,6 @@
 <template>
   <page-head :title="'isSimulator'"></page-head>
-  <view class="mt-15 justify-center items-center">
+  <view style="justify-content: center;align-items: center;" class="uni-common-mt">
     <text>{{
         isSimulator ? "当前设备是模拟器" : "当前设备不是模拟器"
       }}</text>

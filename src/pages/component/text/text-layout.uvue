@@ -1,34 +1,34 @@
 <template>
-  <scroll-view class="flex-1 p-0-15">
+  <scroll-view class="uni-flex-item uni-padding-wrap">
     <!-- #ifdef APP-ANDROID -->
     <page-head :title="title"></page-head>
-    <view class="p-10-0 color-text-333">
-      <text class="color-888 fs-12 fw-bold u-mt-5">无约束宽高</text>
-      <text class="color-888 fs-12 fw-bold u-mt-5">{{info}}</text>
+    <view class="uni-title">
+      <text class="uni-subtitle-text">无约束宽高</text>
+      <text class="uni-subtitle-text">{{info}}</text>
     </view>
     <view>
-      <text id="text" class="bg-fff"></text>
+      <text id="text" class="text"></text>
     </view>
-    <view class="p-10-0 color-text-333">
-      <text class="color-888 fs-12 fw-bold u-mt-5">约束宽高-多行</text>
-      <text class="color-888 fs-12 fw-bold u-mt-5">{{info2}}</text>
+    <view class="uni-title">
+      <text class="uni-subtitle-text">约束宽高-多行</text>
+      <text class="uni-subtitle-text">{{info2}}</text>
     </view>
-    <view class="items-center">
-      <text id="text2" class="bg-fff"></text>
+    <view class="text-box">
+      <text id="text2" class="text"></text>
     </view>
-    <view class="p-10-0 color-text-333">
-      <text class="color-888 fs-12 fw-bold u-mt-5">约束宽高-单行</text>
-      <text class="color-888 fs-12 fw-bold u-mt-5">{{info3}}</text>
+    <view class="uni-title">
+      <text class="uni-subtitle-text">约束宽高-单行</text>
+      <text class="uni-subtitle-text">{{info3}}</text>
     </view>
-    <view class="items-center">
-      <text id="text3" class="bg-fff"></text>
+    <view class="text-box">
+      <text id="text3" class="text"></text>
     </view>
-    <view class="p-10-0 color-text-333">
-      <text class="color-888 fs-12 fw-bold u-mt-5">嵌套</text>
-      <text class="color-888 fs-12 fw-bold u-mt-5">{{info4}}</text>
+    <view class="uni-title">
+      <text class="uni-subtitle-text">嵌套</text>
+      <text class="uni-subtitle-text">{{info4}}</text>
     </view>
-    <view class="items-center">
-      <text id="text4" class="bg-fff"></text>
+    <view class="text-box">
+      <text id="text4" class="text"></text>
     </view>
     <!-- #endif -->
   </scroll-view>
@@ -137,3 +137,13 @@
   });
   // #endif
 </script>
+
+<style>
+  .text-box {
+    align-items: center;
+  }
+
+  .text {
+    background-color: #ffffff;
+  }
+</style>

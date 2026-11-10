@@ -1,31 +1,31 @@
 <template>
-	<list-view class="flex-1 food-list">
+	<list-view class="food-list">
 			<list-item :type="0">
-				<view class="flex-dir-column page-header bg-132238">
-					<text class="fs-11 header-kicker letter-spacing-1_5">FAST ORDER</text>
-					<text class="mt-4 fs-22 fw-700 color-fff">今日鲜食 50 选</text>
+				<view class="page-header">
+					<text class="header-kicker">FAST ORDER</text>
+					<text class="header-title">今日鲜食 50 选</text>
 				</view>
 			</list-item>
 
-			<list-item v-for="item in foods" :key="item.id" :type="item.id" class="p-10-12 border-b-width-1 border-b-style-solid flex-dir-row items-center border-b-color-shopping-border-e8edf4">
-				<!-- <view class="p-10-12 border-b-width-1 border-b-style-solid flex-dir-row items-center food-card"> -->
+			<list-item v-for="item in foods" :key="item.id" :type="item.id" class="food-card">
+				<!-- <view class="food-card"> -->
 					<image class="food-cover" :src="item.cover" mode="aspectFill"></image>
-					<view class="u-ml-10 flex-1 flex-dir-column">
-						<text class="fs-15 fw-600 food-name">{{ item.name }}</text>
-						<view class="u-mt-5 flex-dir-row items-center">
+					<view class="food-info">
+						<text class="food-name">{{ item.name }}</text>
+						<view class="rating-row">
 							<uni-rate :value="item.rating" full></uni-rate>
-							<text class="ml-6 fs-12 rating-text">{{ formatRating(item.rating) }}</text>
+							<text class="rating-text">{{ formatRating(item.rating) }}</text>
 						</view>
 					</view>
-					<view class="ml-8 flex-dir-column food-side items-end">
-						<view class="flex-dir-row items-end">
-							<text class="fs-12 fw-700 mb-1 color-ff5d2a">￥</text>
-							<text class="fs-20 fw-700 ml-1 color-ff5d2a">{{ formatPrice(item.price) }}</text>
+					<view class="food-side">
+						<view class="price-row">
+							<text class="price-unit">￥</text>
+							<text class="price-value">{{ formatPrice(item.price) }}</text>
 						</view>
-						<view :id="getAnchorId(item.id)" class="w-104 h-30 mt-8 justify-center items-end">
-							<view v-if="item.count <= 0" class="w-28 h-28 items-center justify-center bg-132238" @click="onFirstAdd(item.id)">
-								<view class="pos-absolute w-14 u-h-2 bg-fff plus-bar-horizontal"></view>
-								<view class="pos-absolute w-14 u-h-2 bg-fff plus-bar-vertical"></view>
+						<view :id="getAnchorId(item.id)" class="qty-anchor">
+							<view v-if="item.count <= 0" class="add-button" @click="onFirstAdd(item.id)">
+								<view class="plus-bar plus-bar-horizontal"></view>
+								<view class="plus-bar plus-bar-vertical"></view>
 							</view>
 							<uni-number-box v-else :modelValue="item.count" :min="0" :max="99"
 								btn-class="qty-btn" input-class="qty-input" icon-class="qty-icon"
@@ -36,64 +36,64 @@
 			</list-item>
 		</list-view>
 
-		<view class="h-60 border-t-width-1 border-t-style-solid flex-dir-row items-center justify-between cart-bar overflow-visible p-0-12 bg-132238">
-			<view class="flex-1 flex-dir-row items-center overflow-visible" @click="toggleCartPopup">
-				<view class="self-center overflow-visible">
+		<view class="cart-bar">
+			<view class="cart-main" @click="toggleCartPopup">
+				<view class="cart-badge-wrap">
 				<uni-badge-view :text="badgeText" :alwaysWrapWithContent="true"
 					badge-style="min-width: 20px; height: 20px; line-height: 20px; border-radius: 10px; background-color: #ff5d2a; color: #ffffff; font-size: 11px; font-weight: 700;"
 					style="align-self: center;">
-					<view id="cart-target" class="w-36 h-36 pos-relative">
-						<view class="pos-absolute h-8 border-style-solid cart-handle border-width-2 border-color-fff border-b-width-0"></view>
-						<view class="pos-absolute w-24 border-style-solid cart-basket border-width-2 left-5 border-color-fff"></view>
-						<view class="pos-absolute left-10 w-14 u-h-2 bg-fff cart-base"></view>
+					<view id="cart-target" class="cart-icon">
+						<view class="cart-handle"></view>
+						<view class="cart-basket"></view>
+						<view class="cart-base"></view>
 					</view>
 				</uni-badge-view>
 				</view>
-				<text class="u-ml-10 fs-17 fw-700 color-fff">共{{ totalPriceText }}元</text>
+				<text class="cart-total-text">共{{ totalPriceText }}元</text>
 			</view>
-			<view class="items-center justify-center checkout-button" :class="canCheckout ? 'checkout-button-active' : 'checkout-button-disabled'" @click="submitOrder">
-				<text class="fs-15 fw-700 checkout-button-text">下单</text>
+			<view class="checkout-button" :class="canCheckout ? 'checkout-button-active' : 'checkout-button-disabled'" @click="submitOrder">
+				<text class="checkout-button-text">下单</text>
 			</view>
 		</view>
 
 		<page-container :show="cartPopupVisible" position="bottom" :overlay="true"
 			:overlay-style="overlayStyle" @beforeleave="onCartPopupBeforeLeave"
 			@clickoverlay="closeCartPopup" @afterleave="onCartPopupAfterLeave">
-			<view class="w-full flex-dir-column bg-fff popup-panel">
-				<view class="border-b-width-1 border-b-style-solid flex-dir-row items-center justify-between popup-header border-b-color-shopping-border-e8edf4">
-					<text class="fs-17 fw-700 color-shopping-popup-title-132238">{{ popupTitle }}</text>
-					<view class="flex-dir-row items-center">
-						<view class="p-4-8 ml-6 popup-action-button" @click="clearCart">
-							<text class="fs-12 fw-600 popup-action-text">清空</text>
+			<view class="popup-panel">
+				<view class="popup-header">
+					<text class="popup-title">{{ popupTitle }}</text>
+					<view class="popup-actions">
+						<view class="popup-action-button" @click="clearCart">
+							<text class="popup-action-text">清空</text>
 						</view>
-						<view class="p-4-8 ml-6 popup-action-button" @click="closeCartPopup">
-							<text class="fs-12 fw-600 popup-action-text">收起</text>
+						<view class="popup-action-button" @click="closeCartPopup">
+							<text class="popup-action-text">收起</text>
 						</view>
 					</view>
 				</view>
 
-				<scroll-view class="flex-1 popup-scroll" direction="vertical" :show-scrollbar="false">
-					<view v-if="cartItems.length > 0" class="flex-dir-column p-0-12">
-						<view v-for="item in cartItems" :key="item.id" class="h-48 border-b-width-1 border-b-style-solid flex-dir-row items-center popup-item">
-							<text class="flex-1 fs-14 color-shopping-popup-title-132238">{{ item.name }}</text>
-							<text class="w-40 fs-13 text-center popup-item-count">x{{ item.count }}</text>
-							<text class="w-84 fs-14 fw-700 text-right color-ff5d2a">￥{{ formatPrice(item.price * item.count) }}</text>
+				<scroll-view class="popup-scroll" direction="vertical" :show-scrollbar="false">
+					<view v-if="cartItems.length > 0" class="popup-list">
+						<view v-for="item in cartItems" :key="item.id" class="popup-item">
+							<text class="popup-item-name">{{ item.name }}</text>
+							<text class="popup-item-count">x{{ item.count }}</text>
+							<text class="popup-item-price">￥{{ formatPrice(item.price * item.count) }}</text>
 						</view>
 					</view>
-					<view v-else class="items-center justify-center h-220">
-						<text class="fs-14 popup-empty-text">购物车还是空的，先去加几样喜欢的吧</text>
+					<view v-else class="popup-empty">
+						<text class="popup-empty-text">购物车还是空的，先去加几样喜欢的吧</text>
 					</view>
 				</scroll-view>
 
-				<view class="border-t-width-1 border-t-style-solid justify-center popup-footer h-52 items-end p-0-12">
-					<text class="fs-15 fw-700 color-shopping-popup-title-132238">共 {{ totalCount }} 件，合计 ￥{{ totalPriceText }}</text>
+				<view class="popup-footer">
+					<text class="popup-footer-text">共 {{ totalCount }} 件，合计 ￥{{ totalPriceText }}</text>
 				</view>
 			</view>
 		</page-container>
 
-		<view class="pos-fixed top-0 right-0 bottom-0 w-full h-full flex-dir-column z-index-999 fly-layer overflow-visible left-0">
-			<view id="fly-ball" class="fly-ball pos-absolute w-32 h-32 overflow-hidden opacity-0 z-index-999 bg-fff border-width-1 border-style-solid border-color-fff">
-				<image class="w-full h-full" :src="flyBallImage" mode="aspectFill"></image>
+		<view class="fly-layer">
+			<view id="fly-ball" class="fly-ball">
+				<image class="fly-ball-image" :src="flyBallImage" mode="aspectFill"></image>
 			</view>
 		</view>
 
@@ -517,14 +517,6 @@
 </script>
 
 <style>
-	.border-b-color-shopping-border-e8edf4 {
-		border-bottom-color: var(--shopping-border-color, #e8edf4);
-	}
-
-	.color-shopping-popup-title-132238 {
-		color: var(--shopping-popup-title-color, #132238);
-	}
-
 	.food-list {
 		--shopping-border-color: #e8edf4;
 		--shopping-item-border-color: #edf2f7;
@@ -538,14 +530,43 @@
 		--shopping-count-color: #65768b;
 		--shopping-empty-color: #6f8095;
 		--shopping-footer-background: #f7f9fc;
+		flex: 1;
 	}
 
 	.page-header {
 		padding: 12px 14px 10px 14px;
+		background-color: #132238;
+		flex-direction: column;
 	}
 
 	.header-kicker {
+		font-size: 11px;
+		letter-spacing: 1.5px;
 		color: #7eb7ff;
+	}
+
+	.header-title {
+		margin-top: 4px;
+		font-size: 22px;
+		font-weight: 700;
+		color: #ffffff;
+	}
+
+	.header-subtitle {
+		margin-top: 5px;
+		font-size: 12px;
+		line-height: 17px;
+		color: #bfd2ea;
+	}
+
+	.food-card {
+		padding: 10px 12px;
+		/* background-color: #ffffff; */
+		border-bottom-width: 1px;
+		border-bottom-style: solid;
+		border-bottom-color: var(--shopping-border-color, #e8edf4);
+		flex-direction: row;
+		align-items: center;
 	}
 
 	.food-cover {
@@ -554,16 +575,77 @@
 		background-color: var(--shopping-cover-background, #edf2f8);
 	}
 
+	.food-info {
+		margin-left: 10px;
+		flex: 1;
+		flex-direction: column;
+	}
+
 	.food-name {
+		font-size: 15px;
+		font-weight: 600;
 		color: var(--shopping-name-color, #16202f);
 	}
 
+	.rating-row {
+		margin-top: 5px;
+		flex-direction: row;
+		align-items: center;
+	}
+
 	.rating-text {
+		margin-left: 6px;
+		font-size: 12px;
 		color: var(--shopping-secondary-color, #738396);
 	}
 
 	.food-side {
 		width: 108px;
+		margin-left: 8px;
+		flex-direction: column;
+		align-items: flex-end;
+	}
+
+	.price-row {
+		flex-direction: row;
+		align-items: flex-end;
+	}
+
+	.price-unit {
+		margin-bottom: 1px;
+		font-size: 12px;
+		font-weight: 700;
+		color: #ff5d2a;
+	}
+
+	.price-value {
+		margin-left: 1px;
+		font-size: 20px;
+		font-weight: 700;
+		color: #ff5d2a;
+	}
+
+	.qty-anchor {
+		width: 104px;
+		height: 30px;
+		margin-top: 8px;
+		align-items: flex-end;
+		justify-content: center;
+	}
+
+	.add-button {
+		width: 28px;
+		height: 28px;
+		background-color: #132238;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.plus-bar {
+		position: absolute;
+		width: 14px;
+		height: 2px;
+		background-color: #ffffff;
 	}
 
 	.plus-bar-horizontal {
@@ -593,28 +675,82 @@
 		background-color: #ffffff;
 	}
 
+
 	.cart-bar {
+		height: 60px;
+		padding: 0px 12px;
+		background-color: #132238;
+		border-top-width: 1px;
+		border-top-style: solid;
 		border-top-color: #243653;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		overflow: visible;
+	}
+
+	.cart-main {
+		flex: 1;
+		flex-direction: row;
+		align-items: center;
+		overflow: visible;
+	}
+
+	.cart-badge-wrap {
+		overflow: visible;
+		align-self: center;
+	}
+
+	.cart-icon {
+		width: 36px;
+		height: 36px;
+		position: relative;
 	}
 
 	.cart-handle {
+		position: absolute;
 		left: 8px;
 		top: 4px;
 		width: 16px;
+		height: 8px;
+		border-width: 2px;
+		border-style: solid;
+		border-color: #ffffff;
+		border-bottom-width: 0px;
 	}
 
 	.cart-basket {
+		position: absolute;
+		left: 5px;
 		top: 12px;
+		width: 24px;
 		height: 15px;
+		border-width: 2px;
+		border-style: solid;
+		border-color: #ffffff;
 	}
 
 	.cart-base {
+		position: absolute;
+		left: 10px;
 		top: 29px;
+		width: 14px;
+		height: 2px;
+		background-color: #ffffff;
+	}
+
+	.cart-total-text {
+		margin-left: 10px;
+		font-size: 17px;
+		font-weight: 700;
+		color: #ffffff;
 	}
 
 	.checkout-button {
 		width: 94px;
 		height: 38px;
+		align-items: center;
+		justify-content: center;
 	}
 
 	.checkout-button-active {
@@ -626,26 +762,53 @@
 	}
 
 	.checkout-button-text {
+		font-size: 15px;
+		font-weight: 700;
 		color: #132238;
 	}
 
 	.popup-panel {
+		width: 100%;
 		height: 360px;
+		background-color: #ffffff;
+		flex-direction: column;
 	}
 
 	.popup-header {
 		padding: 14px 12px 10px 12px;
+		border-bottom-width: 1px;
+		border-bottom-style: solid;
+		border-bottom-color: var(--shopping-border-color, #e8edf4);
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.popup-title {
+		font-size: 17px;
+		font-weight: 700;
+		color: var(--shopping-popup-title-color, #132238);
+	}
+
+	.popup-actions {
+		flex-direction: row;
+		align-items: center;
 	}
 
 	.popup-action-button {
+		padding: 4px 8px;
+		margin-left: 6px;
 		background-color: var(--shopping-action-background, #eef3f8);
 	}
 
 	.popup-action-text {
+		font-size: 12px;
+		font-weight: 600;
 		color: var(--shopping-action-text-color, #31445d);
 	}
 
 	.popup-scroll {
+		flex: 1;
 		background-color: var(--shopping-surface-background, #ffffff);
 	}
 
@@ -655,30 +818,101 @@
 	}
 	/* #endif */
 
+	.popup-list {
+		padding: 0px 12px;
+		flex-direction: column;
+	}
+
 	.popup-item {
+		height: 48px;
+		border-bottom-width: 1px;
+		border-bottom-style: solid;
 		border-bottom-color: var(--shopping-item-border-color, #edf2f7);
+		flex-direction: row;
+		align-items: center;
+	}
+
+	.popup-item-name {
+		flex: 1;
+		font-size: 14px;
+		color: var(--shopping-popup-title-color, #132238);
 	}
 
 	.popup-item-count {
+		width: 40px;
+		font-size: 13px;
+		text-align: center;
 		color: var(--shopping-count-color, #65768b);
 	}
 
+	.popup-item-price {
+		width: 84px;
+		font-size: 14px;
+		font-weight: 700;
+		text-align: right;
+		color: #ff5d2a;
+	}
+
+	.popup-empty {
+		height: 220px;
+		align-items: center;
+		justify-content: center;
+	}
+
 	.popup-empty-text {
+		font-size: 14px;
 		color: var(--shopping-empty-color, #6f8095);
 	}
 
 	.popup-footer {
+		height: 52px;
+		padding: 0px 12px;
+		border-top-width: 1px;
+		border-top-style: solid;
 		border-top-color: var(--shopping-border-color, #e8edf4);
 		background-color: var(--shopping-footer-background, #f7f9fc);
+		align-items: flex-end;
+		justify-content: center;
+	}
+
+	.popup-footer-text {
+		font-size: 15px;
+		font-weight: 700;
+		color: var(--shopping-popup-title-color, #132238);
 	}
 
 	.fly-layer {
+		position: fixed;
+		left: 0px;
+		top: 0px;
+		right: 0px;
+		bottom: 0px;
+		width: 100%;
+		height: 100%;
+		flex-direction: column;
+		overflow: visible;
 		pointer-events: none;
+		z-index: 999;
 	}
 
 	.fly-ball {
+		position: absolute;
 		left: -999px;
 		top: -999px;
+		width: 32px;
+		height: 32px;
+		overflow: hidden;
+		opacity: 0;
+		z-index: 999;
+		background-color: #ffffff;
+		border-width: 1px;
+		border-style: solid;
+		border-color: #ffffff;
+	}
+
+	.fly-ball-image {
+		width: 100%;
+		height: 100%;
 	}
 
 	@media (prefers-color-scheme: dark) {

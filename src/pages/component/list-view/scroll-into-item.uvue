@@ -1,18 +1,18 @@
 <template>
-	<view class="theme-list-scroll flex-1 d-flex flex-dir-column">
-		<view class="pt-12 pr-16 pb-12 pl-16 bg-list-demo-panel-background d-flex flex-dir-column">
-			<text class="fs-16 fw-600 color-list-demo-title">list-view scroll-into-item</text>
-			<text class="mt-4 fs-13 lh-20 color-list-demo-text">list-view 无 section，验证 scroll-into-view 滚动到 item。</text>
-			<text class="mt-6 fs-13 color-1677ff">current target: {{ currentTargetLabel }}</text>
+	<view class="page-root">
+		<view class="summary-panel">
+			<text class="summary-title">list-view scroll-into-item</text>
+			<text class="summary-text">list-view 无 section，验证 scroll-into-view 滚动到 item。</text>
+			<text class="summary-target">current target: {{ currentTargetLabel }}</text>
 		</view>
-		<scroll-view class="pt-12 pr-12 pb-12 pl-12 bg-list-demo-panel-background d-flex flex-dir-row items-center" direction="horizontal" :show-scrollbar="false">
-      <button class="mr-6" @click="scrollToItem('item-12')">滚动到 item-12</button>
-      <button class="mr-6" @click="scrollToItem('item-36')">滚动到 item-36</button>
-      <button class="mr-6" @click="resetScrollPosition">回到顶部</button>
+		<scroll-view class="toolbar-panel" direction="horizontal" :show-scrollbar="false">
+      <button class="toolbar-button" @click="scrollToItem('item-12')">滚动到 item-12</button>
+      <button class="toolbar-button" @click="scrollToItem('item-36')">滚动到 item-36</button>
+      <button class="toolbar-button" @click="resetScrollPosition">回到顶部</button>
 		</scroll-view>
 		<list-view
 			id="scroll-into-item-list"
-			class="flex-1 bg-list-demo-background pt-8 pr-12 pb-24 pl-12"
+			class="list-root"
 			direction="vertical"
 			:show-scrollbar="true"
 			:scroll-top="scrollTop"
@@ -20,10 +20,10 @@
 			:scroll-with-animation="false"
 			@scroll="onScroll"
 		>
-			<list-item v-for="item in items" :key="item.id" :id="item.id" class="h-88 pb-12">
-				<view class="bg-list-demo-card-background radius-8 d-flex flex-dir-column justify-center h-76 pr-16 pl-16 pt-14 pb-14">
-					<text class="fs-16 fw-600 color-list-demo-title">{{ item.label }}</text>
-					<text class="mt-6 fs-13 color-list-demo-text">{{ item.desc }}</text>
+			<list-item v-for="item in items" :key="item.id" :id="item.id" class="list-item">
+				<view class="item-card">
+					<text class="item-title">{{ item.label }}</text>
+					<text class="item-desc">{{ item.desc }}</text>
 				</view>
 			</list-item>
 		</list-view>
@@ -119,3 +119,109 @@
 		jest_getScrollMetrics,
 	})
 </script>
+
+<style>
+	.page-root {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		--list-demo-panel-background: #ffffff;
+		--list-demo-background: #eef2f7;
+		--list-demo-title-color: #1f2329;
+		--list-demo-text-color: #4e5969;
+		--list-demo-card-background: #ffffff;
+	}
+
+	.summary-panel {
+		padding-top: 12px;
+		padding-right: 16px;
+		padding-bottom: 12px;
+		padding-left: 16px;
+		background-color: var(--list-demo-panel-background);
+		display: flex;
+		flex-direction: column;
+	}
+
+	.summary-title {
+		font-size: 16px;
+		font-weight: 600;
+		color: var(--list-demo-title-color);
+	}
+
+	.summary-text {
+		margin-top: 4px;
+		font-size: 13px;
+		line-height: 20px;
+		color: var(--list-demo-text-color);
+	}
+
+	.summary-target {
+		margin-top: 6px;
+		font-size: 13px;
+		color: #1677ff;
+	}
+
+	.toolbar-panel {
+		padding-top: 12px;
+		padding-right: 12px;
+		padding-bottom: 12px;
+		padding-left: 12px;
+		background-color: var(--list-demo-panel-background);
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+	}
+
+	.toolbar-button {
+		margin-right: 6px;
+	}
+
+	.list-root {
+		flex: 1;
+		background-color: var(--list-demo-background);
+		padding-top: 8px;
+		padding-right: 12px;
+		padding-bottom: 24px;
+		padding-left: 12px;
+	}
+
+	.list-item {
+		height: 88px;
+		padding-bottom: 12px;
+	}
+
+	.item-card {
+		height: 76px;
+		padding-top: 14px;
+		padding-right: 16px;
+		padding-bottom: 14px;
+		padding-left: 16px;
+		background-color: var(--list-demo-card-background);
+		border-radius: 8px;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+	}
+
+	.item-title {
+		font-size: 16px;
+		font-weight: 600;
+		color: var(--list-demo-title-color);
+	}
+
+	.item-desc {
+		margin-top: 6px;
+		font-size: 13px;
+		color: var(--list-demo-text-color);
+	}
+
+	@media (prefers-color-scheme: dark) {
+		.page-root {
+			--list-demo-panel-background: #2d2d2d;
+			--list-demo-background: #1a1a1a;
+			--list-demo-title-color: #ffffff;
+			--list-demo-text-color: #b8b8b8;
+			--list-demo-card-background: #2d2d2d;
+		}
+	}
+</style>

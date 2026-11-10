@@ -7,7 +7,7 @@
 				<view class="mobile-pay-popup-amount"><text class="mobile-pay-popup-amount-text">{{ amountFormat((myOptions.total_fee as number)) }}</text></view>
 			</view>
 			<view class="mobile-pay-popup-provider-list">
-				<view class="uni-list bg-list-fff pos-relative d-flex flex-dir-column border-b-1-solid-c8c7cc-dark-3a3a3c">
+				<view class="uni-list">
 					<!-- #ifdef MP-WEIXIN || WEB || APP -->
 					<view class="uni-list-item" v-if="checkProvider('wxpay')" @click="createOrderByProvider('wxpay')">
 						<view class="uni-list-item__container uni-list-item__container--right">

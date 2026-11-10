@@ -1,11 +1,11 @@
 <template>
 	<page-head :title="title"></page-head>
-	<view class="p-0-15 mt-15">
-		<view class="p-10-0 color-text-333">
-			<text class="fs-15 fw-bold color-text-333">多音频同时播放</text>
+	<view class="uni-padding-wrap uni-common-mt">
+		<view class="uni-title">
+			<text class="uni-title-text">多音频同时播放</text>
 		</view>
-		<button type="primary" @tap="play1()"  class="mt-10"> 播放/停止(进度：{{currentTime1}})</button>
-		<button type="primary" @tap="play2()"  class="mt-10"> 播放/停止(进度：{{currentTime2}})</button>
+		<button type="primary" @tap="play1()"  class="uni-btn"> 播放/停止(进度：{{currentTime1}})</button>
+		<button type="primary" @tap="play2()"  class="uni-btn"> 播放/停止(进度：{{currentTime2}})</button>
 	</view>
 </template>
 
@@ -77,3 +77,15 @@
     }
   })
 </script>
+
+<style>
+	.formats {
+		align-items: center;
+	}
+
+	.icon-play {
+		width: 60px;
+		height: 60px;
+		margin: 10px;
+	}
+</style>

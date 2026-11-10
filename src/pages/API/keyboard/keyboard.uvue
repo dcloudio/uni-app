@@ -1,33 +1,33 @@
 <template>
-  <view class="flex-dir-row items-center justify-between p-20">
-    <text class="fs-17 fw-bold color-text-fff">对话输入</text>
+  <view class="page-header">
+    <text class="page-title">对话输入</text>
     <button id="toggle-keyboard-details" class="details-toggle" size="mini" @click="showDetails = !showDetails">{{ showDetails ? '隐藏状态' : '查看状态' }}</button>
   </view>
-  <scroll-view class="page-content flex-1 box-border-box">
-    <view class="welcome items-center">
-      <view class="welcome-mark h-52 items-center justify-center radius-18"><text class="welcome-symbol fs-30">✦</text></view>
-      <text class="welcome-title fw-bold text-center color-text-fff">有什么可以帮你？</text>
-      <text class="welcome-description fs-14 lh-22 text-center mt-10">从一个问题、一段灵感开始</text>
+  <scroll-view class="page-content">
+    <view class="welcome">
+      <view class="welcome-mark"><text class="welcome-symbol">✦</text></view>
+      <text class="welcome-title">有什么可以帮你？</text>
+      <text class="welcome-description">从一个问题、一段灵感开始</text>
     </view>
-    <view v-if="showDetails" id="keyboard-details" class="keyboard-details u-p-16 radius-14 mb-16">
-      <text class="details-title fs-13 fw-bold mb-8">键盘状态</text>
-      <text class="info-text fs-12 lh-22">高度：{{data.keyboardHeight}}px · {{data.keyboardStatus}}</text>
+    <view v-if="showDetails" id="keyboard-details" class="keyboard-details">
+      <text class="details-title">键盘状态</text>
+      <text class="info-text">高度：{{data.keyboardHeight}}px · {{data.keyboardStatus}}</text>
       <!-- #ifdef APP-HARMONY -->
-      <text class="info-text fs-12 lh-22">动画：{{keyboardAnimationData.keyboardAnimationState}}</text>
-      <text class="info-text fs-12 lh-22">动画高度：{{keyboardAnimationData.keyboardAnimationHeight}}px</text>
-      <text class="info-text fs-12 lh-22">事件数：{{keyboardAnimationData.keyboardAnimationEventCount}}</text>
-      <text class="info-text fs-12 lh-22">最近事件：{{keyboardAnimationData.keyboardAnimationLog}}</text>
+      <text class="info-text">动画：{{keyboardAnimationData.keyboardAnimationState}}</text>
+      <text class="info-text">动画高度：{{keyboardAnimationData.keyboardAnimationHeight}}px</text>
+      <text class="info-text">事件数：{{keyboardAnimationData.keyboardAnimationEventCount}}</text>
+      <text class="info-text">最近事件：{{keyboardAnimationData.keyboardAnimationLog}}</text>
       <!-- #endif -->
     </view>
   </scroll-view>
   <!-- #ifdef APP-HARMONY -->
-  <view id="keyboard-animation-panel" class="keyboard-panel pos-absolute left-0 right-0" :style="keyboardPanelStyle">
-    <view class="composer p-14 bg-list-2d2d2d" @click="focusInput">
-      <input id="uni-input-box" class="w-full h-42 fs-16 bg-list-2d2d2d color-text-fff" type="text" v-model="data.inputValue"
+  <view id="keyboard-animation-panel" class="keyboard-panel" :style="keyboardPanelStyle">
+    <view class="composer" @click="focusInput">
+      <input id="uni-input-box" class="input-box" type="text" v-model="data.inputValue"
         placeholder="发消息，或聊聊你的想法…" placeholder-class="composer-hint" confirm-type="done"
         :focus="data.isFocus" :adjust-position="false" :hold-keyboard="true"
         @click.stop @focus="data.isFocus = true" @blur="data.isFocus = false" @confirm="hideKeyboard" />
-      <view class="flex-dir-row items-center justify-between mt-8">
+      <view class="composer-toolbar">
         <text id="keyboard-composer-hint" class="composer-hint">键盘跟随 · 动画示例</text>
         <button id="keyboard-dismiss" class="dismiss-button" size="mini" @click.stop="hideKeyboard">收起键盘</button>
       </view>
@@ -35,13 +35,13 @@
   </view>
   <!-- #endif -->
   <!-- #ifndef APP-HARMONY -->
-  <view class="keyboard-panel keyboard-panel-static left-0 right-0 pos-relative">
-    <view class="composer p-14 bg-list-2d2d2d" @click="focusInput">
-      <input id="uni-input-box" class="w-full h-42 fs-16 bg-list-2d2d2d color-text-fff" type="text" v-model="data.inputValue"
+  <view class="keyboard-panel keyboard-panel-static">
+    <view class="composer" @click="focusInput">
+      <input id="uni-input-box" class="input-box" type="text" v-model="data.inputValue"
         placeholder="发消息，或聊聊你的想法…" placeholder-class="composer-hint" confirm-type="done"
         :focus="data.isFocus" :hold-keyboard="true"
         @click.stop @focus="data.isFocus = true" @blur="data.isFocus = false" @confirm="hideKeyboard" />
-      <view class="flex-dir-row items-center justify-between mt-8">
+      <view class="composer-toolbar">
         <text id="keyboard-composer-hint" class="composer-hint">键盘交互示例</text>
         <button id="keyboard-dismiss" class="dismiss-button" size="mini" @click.stop="hideKeyboard">收起键盘</button>
       </view>
@@ -143,8 +143,18 @@ defineExpose({
 </script>
 
 <style>
-.details-toggle,
-.dismiss-button {
+.page-header {
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+	padding: 20px;
+}
+.page-title {
+	font-size: 17px;
+	font-weight: bold;
+  color: var(--text-color, #ffffff);
+}
+.details-toggle {
 	margin: 0;
 	padding: 0 12px;
 	font-size: 12px;
@@ -155,50 +165,102 @@ defineExpose({
 	color: #626973;
 }
 .page-content {
+	flex: 1;
 	padding: 0 20px;
+	box-sizing: border-box;
 	margin-bottom: 150px;
 }
 .welcome {
+	align-items: center;
 	padding: 48px 0 32px;
 }
 .welcome-mark {
 	width: 52px;
+	height: 52px;
+	align-items: center;
+	justify-content: center;
+	border-radius: 18px;
 	background-color: #e7ebe8;
 	margin-bottom: 22px;
 }
 .welcome-symbol {
+	font-size: 30px;
 	color: #526c5c;
 }
 .welcome-title {
 	font-size: 23px;
+	font-weight: bold;
+	text-align: center;
+  color: var(--text-color, #ffffff);
 }
 .welcome-description {
+	font-size: 14px;
+	line-height: 22px;
+	text-align: center;
 	color: #858c96;
+	margin-top: 10px;
 }
 .keyboard-details {
+	padding: 16px;
+	border-radius: 14px;
 	background-color: #eceef0;
+	margin-bottom: 16px;
 }
 .details-title {
+	font-size: 13px;
+	font-weight: bold;
 	color: #626973;
+	margin-bottom: 8px;
 }
 .info-text {
+	font-size: 12px;
+	line-height: 22px;
 	color: #858c96;
 }
 .keyboard-panel {
+	position: absolute;
+	left: 0;
+	right: 0;
 	padding: 10px 16px;
 	background-color: var(--page-background-color, #efeff4);
 }
 .keyboard-panel-static {
+	position: relative;
 	padding-bottom: calc(10px + var(--uni-safe-area-inset-bottom, 0px));
 }
 .composer {
+	padding: 14px;
 	border: 1px solid #e2e5e8;
 	border-radius: 22px;
+  background-color: var(--list-background-color, #2d2d2d);
   border-color: var(--border-color, rgba(255, 255, 255, 0.1));
+}
+.input-box {
+	width: 100%;
+	height: 42px;
+	font-size: 16px;
+  background-color: var(--list-background-color, #2d2d2d);
+  color: var(--text-color, #ffffff);
+}
+.composer-toolbar {
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+	margin-top: 8px;
 }
 .composer-hint {
 	font-size: 12px;
 	color: #858c96;
+}
+.dismiss-button {
+	margin: 0;
+	padding: 0 12px;
+	font-size: 12px;
+	line-height: 30px;
+	border: 0;
+	border-radius: 15px;
+	background-color: #eceef0;
+	color: #626973;
 }
 
 @media (prefers-color-scheme: dark) {

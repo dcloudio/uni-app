@@ -13,7 +13,7 @@
     <button @click="offJs">取消js消息监听</button>
     <button @click="clear">清空消息</button>
 
-    <view class="u-p-10">
+    <view class="box">
       <view>收到的消息：</view>
       <view>
         <view v-for="(item, index) in data.log" :key="index">{{ item }}</view>
@@ -167,3 +167,9 @@
     testAll
   })
 </script>
+
+<style>
+  .box {
+    padding: 10px;
+  }
+</style>

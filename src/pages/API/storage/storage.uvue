@@ -1,93 +1,93 @@
 <template>
       <page-head :title="data.title"></page-head>
-      <view class="mt-15">
-        <view class="bg-list-fff pos-relative d-flex flex-dir-column border-b-1-solid-c8c7cc-dark-3a3a3c">
-          <view class="pos-relative d-flex flex-dir-row justify-between items-center border-b-1-solid-border-black-a6">
-            <view class="p-0-15-0-10">
-              <view class="w-105">key</view>
+      <view class="uni-common-mt">
+        <view class="uni-list">
+          <view class="uni-list-cell uni-list-cell-line">
+            <view class="uni-list-cell-left">
+              <view class="uni-label">key</view>
             </view>
-            <view class="flex-1 vapor-color-text-333">
-              <input class="h-25 p-8-13 fs-14 flex-1 box-content-box bg-list-fff" type="text" placeholder="请输入key" name="key" :value="data.key" :maxlength="-1"
+            <view class="uni-list-cell-db">
+              <input class="uni-input" type="text" placeholder="请输入key" name="key" :value="data.key" :maxlength="-1"
                 @input="keyChange" />
             </view>
           </view>
-          <view class="pos-relative d-flex flex-dir-row justify-between items-center">
-            <view class="p-0-15-0-10">
-              <view class="w-105">value</view>
+          <view class="uni-list-cell">
+            <view class="uni-list-cell-left">
+              <view class="uni-label">value</view>
             </view>
-            <view class="flex-1 vapor-color-text-333">
-              <input class="h-25 p-8-13 fs-14 flex-1 box-content-box bg-list-fff" type="text" placeholder="请输入value" name="data"
+            <view class="uni-list-cell-db">
+              <input class="uni-input" type="text" placeholder="请输入value" name="data"
                 :value="typeof data.data === 'string' ? data.data : JSON.stringify(data.data)" :maxlength="-1" @input="dataChange" />
             </view>
           </view>
         </view>
-        <view class="p-0-15">
-          <view class="p-5-0">
-            <button class="mt-10 btn-getStorageInfoASync" type="primary" @tap="getStorageInfo">
+        <view class="uni-padding-wrap">
+          <view class="uni-btn-v">
+            <button class="uni-btn btn-getStorageInfoASync" type="primary" @tap="getStorageInfo">
               获取存储概述信息-异步
             </button>
-            <button class="mt-10 btn-getStorageInfoSync" @tap="getStorageInfoSync">
+            <button class="uni-btn btn-getStorageInfoSync" @tap="getStorageInfoSync">
               获取存储概述信息-同步
             </button>
           </view>
-          <text class="w-full non-vapor-color-text-333 web-mp-break-break-all">{{ data.storageInfo }}</text>
-          <view class="flex-dir-row">
-            <button type="default" class="w-50pct" @tap="strMock">
+          <text class="uni-list-cell-db-text">{{ data.storageInfo }}</text>
+          <view class="uni-row">
+            <button type="default" style="width:50%" @tap="strMock">
               填充字符串
             </button>
-            <button type="default" class="w-50pct" @tap="complexMock">
+            <button type="default" style="width:50%" @tap="complexMock">
               填充复杂对象
             </button>
           </view>
-          <view class="flex-dir-row">
-            <button type="default" class="w-50pct" @tap="numberMock">
+          <view class="uni-row">
+            <button type="default" style="width:50%" @tap="numberMock">
               填充整型
             </button>
-            <button type="default" class="w-50pct" @tap="floatMock">
+            <button type="default" style="width:50%" @tap="floatMock">
               填充浮点型
             </button>
           </view>
-          <view class="flex-dir-row">
-            <button type="default" class="w-50pct" @tap="jsonLikeMock">
+          <view class="uni-row">
+            <button type="default" style="width:50%" @tap="jsonLikeMock">
               填充json字符串
             </button>
-            <button type="default" class="w-50pct" @tap="longLikeMock">
+            <button type="default" style="width:50%" @tap="longLikeMock">
               填充整数字符串
             </button>
           </view>
-          <view class="flex-dir-row">
-            <button type="default" class="w-50pct" @tap="floatLikeMock">
+          <view class="uni-row">
+            <button type="default" style="width:50%" @tap="floatLikeMock">
               填充浮点字符串
             </button>
-            <button type="default" class="w-50pct" @tap="negativeLikeMock">
+            <button type="default" style="width:50%" @tap="negativeLikeMock">
               填充负数字符串
             </button>
           </view>
-          <view class="flex-dir-row">
-            <button type="default" class="mt-10 btn-complexStaticTest w-full" @tap="complexStaticTest">
+          <view class="uni-row">
+            <button type="default" class="uni-btn btn-complexStaticTest" style="width:100%" @tap="complexStaticTest">
               字面量读写测试
             </button>
           </view>
         </view>
-        <view class="p-0-15">
-          <view class="p-5-0">
-            <button type="primary" class="mt-10 btn-setstorageAsync" @tap="setStorage">
+        <view class="uni-padding-wrap">
+          <view class="uni-btn-v">
+            <button type="primary" class="uni-btn btn-setstorageAsync" @tap="setStorage">
               存储数据-异步
             </button>
-            <button class="mt-10 btn-getstorageAsync" @tap="getStorage">读取数据-异步</button>
-            <button class="mt-10 btn-removeStorageInfoASync" @tap="removeStorage">移除数据-异步</button>
-            <button class="mt-10 btn-clearStorageInfoASync" @tap="clearStorage">清理数据-异步</button>
+            <button class="uni-btn btn-getstorageAsync" @tap="getStorage">读取数据-异步</button>
+            <button class="uni-btn btn-removeStorageInfoASync" @tap="removeStorage">移除数据-异步</button>
+            <button class="uni-btn btn-clearStorageInfoASync" @tap="clearStorage">清理数据-异步</button>
           </view>
 
-          <view class="p-5-0">
-            <button type="primary" class="mt-10 btn-setstorageSync" @tap="setStorageSync">
+          <view class="uni-btn-v">
+            <button type="primary" class="uni-btn btn-setstorageSync" @tap="setStorageSync">
               存储数据-同步
             </button>
-            <button class="mt-10 btn-getstorageSync" @tap="getStorageSync">读取数据-同步</button>
-            <button class="mt-10 btn-removeStorageInfoSync" @tap="removeStorageSync">
+            <button class="uni-btn btn-getstorageSync" @tap="getStorageSync">读取数据-同步</button>
+            <button class="uni-btn btn-removeStorageInfoSync" @tap="removeStorageSync">
               移除数据-同步
             </button>
-            <button class="mt-10 btn-clearStorageInfoSync" @tap="clearStorageSync">
+            <button class="uni-btn btn-clearStorageInfoSync" @tap="clearStorageSync">
               清理数据-同步
             </button>
           </view>
@@ -525,3 +525,6 @@
     jest_saveObjectArray
   })
 </script>
+
+<style>
+</style>

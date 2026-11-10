@@ -7,12 +7,12 @@
     scrollToElement
   </button>
   <button type="default" @click="scrollToElementWithOffset">scrollToElement（offsetTop: -50）</button>
-  <view class="bg-list-fff pos-relative d-flex flex-dir-column border-b-1-solid-c8c7cc-dark-3a3a3c" v-for="(_, index) in 10" :key="index">
-    <view class="pos-relative d-flex flex-dir-row justify-between items-center h-100 list-item color-text-333">{{ index }}</view>
+  <view class="uni-list" v-for="(_, index) in 10" :key="index">
+    <view class="uni-list-cell list-item">{{ index }}</view>
   </view>
-  <view class="custom-element color-text-333">scrollTo-custom-element</view>
-  <view class="bg-list-fff pos-relative d-flex flex-dir-column border-b-1-solid-c8c7cc-dark-3a3a3c" v-for="(_, index2) in 10" :key="index2">
-    <view class="pos-relative d-flex flex-dir-row justify-between items-center h-100 list-item color-text-333">{{ index2 }}</view>
+  <view class="custom-element">scrollTo-custom-element</view>
+  <view class="uni-list" v-for="(_, index2) in 10" :key="index2">
+    <view class="uni-list-cell list-item">{{ index2 }}</view>
   </view>
 </template>
 
@@ -80,6 +80,12 @@
   }
 
   .list-item {
+    height: 100px;
     padding-left: 30px;
+  }
+
+  .list-item,
+  .custom-element {
+    color: var(--text-color, #333333);
   }
 </style>

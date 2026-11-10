@@ -1,26 +1,26 @@
 <template>
     <page-head :title="title"></page-head>
-    <view class="m-10 radius-5 u-p-10 bg-list-fff"><text class="color-text-333">滚动期间对子组件回收复用。此示例限制列表子项固定高度。注意回收复用引发的副作用，详情参考custom-recycle-view-buttons组件内的错误用法。</text></view>
+    <view class="tips"><text class="tips-text">滚动期间对子组件回收复用。此示例限制列表子项固定高度。注意回收复用引发的副作用，详情参考custom-recycle-view-buttons组件内的错误用法。</text></view>
     <uni-recycle-view :itemHeight="140" :list="list" style="flex: 1;" @scrolltolower="onScrollToLower"
       @refresherrefresh="onRefresherRefresh" :refresher-enabled="refresherEnabled"
       :refresher-triggered="refresherTriggered">
       <template v-slot:default="{layoutItems, items}">
         <!-- 注意为复用custom-recycle-item，key只能是layoutItem的id -->
         <uni-recycle-item v-for="(item, index) in (items as Item[])" :key="(layoutItems as LayoutItem[])[index].id" :offset="(layoutItems as LayoutItem[])[index].offset">
-          <view class="justify-center box-border-box border-b-width-1 border-b-style-solid p-0-15 bg-list-fff item-wrapper h-140">
+          <view class="item-wrapper">
             <navigator :hover-stay-time="0" :url="'/pages/template/recycle-long-list/detail?name='+item.name">
               <!-- 测试稍微复杂的模板 -->
-              <view class="d-flex flex-dir-row items-flex-start">
-                <image class="w-80 h-80" :src="item.img" mode="aspectFill"></image>
-                <view class="flex-dir-column ml-5">
-                  <view><text class="fs-14 color-text-333">{{item.name}}</text></view>
-                  <view><text class="fs-12 color-999">{{item.name.length % 2 == 0 ? "name长度为偶数" : "name长度为奇数"}}</text></view>
-                  <view><text class="fs-12 color-999">{{item.info}}</text></view>
-                  <view><text class="fs-12 color-999">{{item.info.length % 2 == 0 ? "info长度为偶数" : "info长度为奇数"}}</text></view>
-                  <view><text
-                      class="fs-12 color-999">{{(item.info.length +item.name.length) % 2 == 0 ? "name+info长度为偶数" : "name+info长度为奇数"}}</text>
+              <view class="item-content">
+                <image class="item-image" :src="item.img" mode="aspectFill"></image>
+                <view class="item-text">
+                  <view class="load-more"><text class="item-name">{{item.name}}</text></view>
+                  <view class="load-more"><text class="item-info">{{item.name.length % 2 == 0 ? "name长度为偶数" : "name长度为奇数"}}</text></view>
+                  <view class="load-more"><text class="item-info">{{item.info}}</text></view>
+                  <view class="load-more"><text class="item-info">{{item.info.length % 2 == 0 ? "info长度为偶数" : "info长度为奇数"}}</text></view>
+                  <view class="load-more"><text
+                      class="item-info">{{(item.info.length +item.name.length) % 2 == 0 ? "name+info长度为偶数" : "name+info长度为奇数"}}</text>
                   </view>
-                  <view v-if="item.tags.length > 0" class="d-flex flex-dir-row items-center"><text class="fs-12 color-999">随机tag：</text><text class="radius-3 p-0-2 fs-12 lh-16 color-999 item-tag" v-for="(tag, index) in item.tags"
+                  <view v-if="item.tags.length > 0" class="item-tags"><text class="item-info">随机tag：</text><text class="item-tag" v-for="(tag, index) in item.tags"
                       :key="index">{{tag}}</text></view>
                 </view>
               </view>
@@ -31,7 +31,7 @@
         </uni-recycle-item>
       </template>
       <template #load-more>
-        <view><text class="color-ccc fs-12 text-center lh-50">{{ hasMore ? "加载中..." : "没有更多"}}</text></view>
+        <view class="load-more"><text class="load-more-text">{{ hasMore ? "加载中..." : "没有更多"}}</text></view>
       </template>
     </uni-recycle-view>
 </template>
@@ -111,14 +111,80 @@
 </script>
 
 <style>
+  .page {
+    flex: 1;
+  }
+
+  .tips {
+    margin: 10px;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: var(--list-background-color, #ffffff);
+  }
+
+  .tips-text {
+    color: var(--text-color, #333333);
+  }
+
   .item-wrapper {
+    height: 140px;
+    justify-content: center;
+    box-sizing: border-box;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
     border-bottom-color: var(--border-color, #cccccc);
+    padding: 0px 15px;
+    background-color: var(--list-background-color, #ffffff);
+  }
+
+  .item-content {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .item-image {
+    width: 80px;
+    height: 80px;
+  }
+
+  .item-text {
+    flex-direction: column;
+    margin-left: 5px;
+  }
+
+  .item-name {
+    font-size: 14px;
+    color: var(--text-color, #333333);
+  }
+
+  .item-info {
+    font-size: 12px;
+    color: #999999;
+  }
+
+  .item-tags {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
   }
 
   .item-tag {
     background-color: var(--active-background-color, aliceblue);
+    color: #999999;
     border: solid 1px #999999;
+    border-radius: 3px;
+    padding: 0px 2px;
+    font-size: 12px;
+    line-height: 16px;
     margin-right: 2px;
+  }
+
+  .load-more-text {
+    color: #cccccc;
+    font-size: 12px;
+    text-align: center;
+    line-height: 50px;
   }
 
   @media (prefers-color-scheme: dark) {

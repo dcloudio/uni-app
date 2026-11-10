@@ -1575,7 +1575,7 @@
 						"navigationBarTitleText": "uni.pageScrollTo | 将页面滚动到指定位置"
 					}
 				},
-				// #ifdef APP
+				// #ifdef APP || MP-WEIXIN
 				{
 					"path": "scroll-view-context/scroll-view-context",
 					"group": "1,2,9",
@@ -1595,12 +1595,14 @@
 						"navigationBarTitleText": "ScrollViewContext | list-view"
 					}
 				},
+				// #ifdef APP
 				{
 					"path": "scroll-view-context/waterflow",
 					"style": {
 						"navigationBarTitleText": "ScrollViewContext | waterflow"
 					}
 				},
+				// #endif
 				// #endif
 				{
 					"path": "event-bus/event-bus",
@@ -3390,6 +3392,12 @@
 					"path": "data-vertical-marquee/data-vertical-marquee",
 					"style": {
 						"navigationBarTitleText": "uni-data-vertical-marquee"
+					}
+				},
+				{
+					"path": "calendar-view/calendar-view",
+					"style": {
+						"navigationBarTitleText": "calendar-view"
 					}
 				}
 			]

@@ -1,28 +1,28 @@
 <template>
   <page-head :title="data.title"></page-head>
-  <view class="p-0-15">
+  <view class="uni-padding-wrap">
     <enum-data-checkbox :items="iconOptions" title="设置icon" item-class="radio-icon"
       @change="radioChangeIcon"></enum-data-checkbox>
     <boolean-data :value="data.imageSelect" title="是否显示自定义图标"
       @change="change_image_boolean"></boolean-data>
     <boolean-data :value="data.maskSelect" title="是否显示透明蒙层-屏蔽点击事件"
       @change="change_mask_boolean"></boolean-data>
-    <view class="p-10-0 p-10-15 color-text-333">提示的延迟时间，默认：1500（单位毫秒）</view>
-    <view class="p-10-15 color-text-333">
+    <view class="uni-title uni-list-cell-padding">提示的延迟时间，默认：1500（单位毫秒）</view>
+    <view class="uni-list-cell-padding">
       <slider @change="sliderChange" foreColor="#007AFF" :value="data.intervalSelect" :min="1500" :max="5000"
         :show-value="true" />
     </view>
-    <view class="p-5-0">
+    <view class="uni-btn-v">
       <button type="default" @tap="toast1Tap" id="btn-toast-default">点击弹出toast</button>
       <button type="default" @tap="hideToast" id="btn-toast-hide">点击隐藏toast</button>
     </view>
     <!-- #ifdef APP || WEB -->
     <enum-data-checkbox :items="positionOptions" title="设置position" item-class="radio-position"
       @change="radioChangePosition"></enum-data-checkbox>
-    <button class="mt-10 mb-15" type="default" @tap="toast2Tap" id="btn-toast-position">点击弹出设置position的toast</button>
+    <button class="uni-btn uni-common-mb" type="default" @tap="toast2Tap" id="btn-toast-position">点击弹出设置position的toast</button>
     <!-- #endif -->
     <!-- #ifdef APP-HARMONY || APP-ANDROID || WEB -->
-    <button class="mt-10 mb-15" type="default" @tap="toast4Tap">
+    <button class="uni-btn uni-common-mb" type="default" @tap="toast4Tap">
       <!-- #ifndef WEB -->
       显示系统toast和原生toast
       <!-- #endif -->
@@ -32,7 +32,7 @@
     </button>
     <!-- #endif -->
     <!-- #ifdef APP-HARMONY || WEB -->
-    <button class="mt-10 mb-15" type="default" @tap="hideSystemToast" id="btn-toast-hide-all">关闭所有toast</button>
+    <button class="uni-btn uni-common-mb" type="default" @tap="hideSystemToast" id="btn-toast-hide-all">关闭所有toast</button>
     <!-- #endif -->
     <text>{{data.exeRet}}</text>
   </view>

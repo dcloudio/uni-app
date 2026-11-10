@@ -1,17 +1,17 @@
 <template>
   <!-- #ifdef APP -->
-  <scroll-view class="app-flex-1">
+  <scroll-view class="page-scroll-view">
   <!-- #endif -->
-    <view class="u-p-15">
+    <view style="padding: 15px;">
       <page-intro content="本页演示元素属性与样式读写：getAttribute 获取元素 id（小程序端支持 style）、getPropertyValue 获取样式值（如背景色）、setProperty 设置样式；含自定义组件子元素的 getBoundingClientRectAsync、scroll-view 的 scrollTo、以及获取 scale 变换后 view 的尺寸信息。"></page-intro>
       <view id="box" ref="boxRef">
-        <text class="fs-15 fw-bold color-text-333">元素的id：{{ data.attrId }}</text>
+        <text class="uni-title-text">元素的id：{{ data.attrId }}</text>
         <!-- #ifndef APP -->
-        <text class="fs-15 fw-bold color-text-333">元素的style：{{ data.attrStyle }}</text>
+        <text class="uni-title-text">元素的style：{{ data.attrStyle }}</text>
         <!-- #endif -->
-        <text class="fs-15 fw-bold color-text-333">元素的背景色样式值：{{ data.propertyValue }}</text>
-        <text class="color-888 fs-12 fw-bold u-mt-5">小程序端：getAttribute 获取元素的属性值，目前仅支持id、style</text>
-        <text class="color-888 fs-12 fw-bold u-mt-5">App端：getAttribute 不支持获取 class、style 属性</text>
+        <text class="uni-title-text">元素的背景色样式值：{{ data.propertyValue }}</text>
+        <text class="uni-subtitle-text">小程序端：getAttribute 获取元素的属性值，目前仅支持id、style</text>
+        <text class="uni-subtitle-text">App端：getAttribute 不支持获取 class、style 属性</text>
       </view>
       <button @click="getAttributeId">getAttribute获取元素的id</button>
       <button @click="setStyle">setProperty设置背景色</button>
@@ -23,52 +23,52 @@
       <child id="child"></child>
       <button @click="getBoundingClientRectAsyncChild">获取自定义组件child元素信息</button>
       <view class="rect-info" v-if="data.rectInfo">
-        <view class="flex-dir-row">
-          <text class="w-72 lh-2x">x: </text>
-          <text class="fw-bold lh-2x">{{data.rectInfo.x}}</text>
+        <view class="node-info-item">
+          <text class="node-info-item-k">x: </text>
+          <text class="node-info-item-v">{{data.rectInfo.x}}</text>
         </view>
-        <view class="flex-dir-row">
-          <text class="w-72 lh-2x">y: </text>
-          <text class="fw-bold lh-2x">{{data.rectInfo.y}}</text>
+        <view class="node-info-item">
+          <text class="node-info-item-k">y: </text>
+          <text class="node-info-item-v">{{data.rectInfo.y}}</text>
         </view>
-        <view class="flex-dir-row">
-          <text class="w-72 lh-2x">width: </text>
-          <text class="fw-bold lh-2x">{{data.rectInfo.width}}</text>
+        <view class="node-info-item">
+          <text class="node-info-item-k">width: </text>
+          <text class="node-info-item-v">{{data.rectInfo.width}}</text>
         </view>
-        <view class="flex-dir-row">
-          <text class="w-72 lh-2x">height: </text>
-          <text class="fw-bold lh-2x">{{data.rectInfo.height}}</text>
+        <view class="node-info-item">
+          <text class="node-info-item-k">height: </text>
+          <text class="node-info-item-v">{{data.rectInfo.height}}</text>
         </view>
-        <view class="flex-dir-row">
-          <text class="w-72 lh-2x">left: </text>
-          <text class="fw-bold lh-2x">{{data.rectInfo.left}}</text>
+        <view class="node-info-item">
+          <text class="node-info-item-k">left: </text>
+          <text class="node-info-item-v">{{data.rectInfo.left}}</text>
         </view>
-        <view class="flex-dir-row">
-          <text class="w-72 lh-2x">top: </text>
-          <text class="fw-bold lh-2x">{{data.rectInfo.top}}</text>
+        <view class="node-info-item">
+          <text class="node-info-item-k">top: </text>
+          <text class="node-info-item-v">{{data.rectInfo.top}}</text>
         </view>
-        <view class="flex-dir-row">
-          <text class="w-72 lh-2x">right: </text>
-          <text class="fw-bold lh-2x">{{data.rectInfo.right}}</text>
+        <view class="node-info-item">
+          <text class="node-info-item-k">right: </text>
+          <text class="node-info-item-v">{{data.rectInfo.right}}</text>
         </view>
-        <view class="flex-dir-row">
-          <text class="w-72 lh-2x">bottom: </text>
-          <text class="fw-bold lh-2x">{{data.rectInfo.bottom}}</text>
+        <view class="node-info-item">
+          <text class="node-info-item-k">bottom: </text>
+          <text class="node-info-item-v">{{data.rectInfo.bottom}}</text>
         </view>
       </view>
       <scroll-view ref="scrollViewRef" class="scroll-view_H" direction="horizontal">
-        <view class="scroll-view-item_H background-f76260"><text class="text">A</text></view>
-        <view class="scroll-view-item_H background-09bb07"><text class="text">B</text></view>
-        <view class="scroll-view-item_H background-007aff"><text class="text">C</text></view>
+        <view class="scroll-view-item_H uni-bg-red"><text class="text">A</text></view>
+        <view class="scroll-view-item_H uni-bg-green"><text class="text">B</text></view>
+        <view class="scroll-view-item_H uni-bg-blue"><text class="text">C</text></view>
       </scroll-view>
       <!-- #ifndef WEB -->
       <button @click="scrollTo">scrollTo设置left滚动200px</button>
       <!-- #endif -->
-      <button class="mt-8" @click="getUniElementScrollOffset">打印 scroll-view 滚动属性</button>
+      <button style="margin-top: 8px" @click="getUniElementScrollOffset">打印 scroll-view 滚动属性</button>
 
       <view id="scaledView" style="transform: scale(2);background-color: green;width: 50px;height: 50px;margin-top: 45px;margin-left: 25px;"></view>
 
-      <button type="default" @click="handleGetScaledViewSize" class="mt-30">获取scale后的view尺寸信息</button>
+      <button type="default" @click="handleGetScaledViewSize" style="margin-top: 30px;">获取scale后的view尺寸信息</button>
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
@@ -265,5 +265,19 @@
     margin-top: 15px;
     padding: 10px;
     flex-direction: column;
+  }
+
+  .node-info-item {
+    flex-direction: row;
+  }
+
+  .node-info-item-k {
+    width: 72px;
+    line-height: 2;
+  }
+
+  .node-info-item-v {
+    font-weight: bold;
+    line-height: 2;
   }
 </style>

@@ -1,12 +1,12 @@
 <template>
   <!-- #ifdef APP -->
   <page-intro content="演示 FileSystemManager.readFile / readFileSync：按 utf-8/base64/ascii 编码读取文本，不传编码时返回 ArrayBuffer；读取失败时展示错误码。"></page-intro>
-  <scroll-view class="flex-1">
+  <scroll-view class="page-scroll">
   <!-- #endif -->
-    <view class="p-8 flex-dir-column">
-      <view class="p-8 border-1-solid-e0e0e0 radius-4 flex-dir-column m-4-0">
-        <view class="flex-dir-row items-center m-4-0">
-          <text class="w-72 fs-14 color-333">根目录</text>
+    <view class="content-group">
+      <view class="param-group">
+        <view class="param-row">
+          <text class="param-label">根目录</text>
           <enum-data-checkbox
             class="flex-1"
             :model-value="data.rootKey"
@@ -16,12 +16,12 @@
             @change="onRootChange"
           />
         </view>
-        <view class="flex-dir-row items-center m-4-0">
-          <text class="w-72 fs-14 color-333">文件路径</text>
-          <input class="flex-1 border-1-solid-d0d0d0 radius-4 p-4-8 fs-13 h-32" v-model="data.filePath" placeholder="相对根目录的路径，也可以输入绝对路径前缀配合根目录留空使用" />
+        <view class="param-row">
+          <text class="param-label">文件路径</text>
+          <input class="param-input" v-model="data.filePath" placeholder="相对根目录的路径，也可以输入绝对路径前缀配合根目录留空使用" />
         </view>
-        <view class="flex-dir-row items-center m-4-0">
-          <text class="w-72 fs-14 color-333">编码</text>
+        <view class="param-row">
+          <text class="param-label">编码</text>
           <enum-data-checkbox
             class="flex-1"
             :model-value="data.encoding"
@@ -31,27 +31,27 @@
             @change="onEncodingChange"
           />
         </view>
-        <view class="flex-dir-row items-center m-4-0">
-          <text class="w-72 fs-14 color-333"></text>
+        <view class="param-row">
+          <text class="param-label"></text>
           <text class="flex-1 fs-12 color-999">演示文件为中文文本：utf-8 直接读回原文；base64 返回文件字节的 base64 字符串；ascii 读取非 ASCII 内容将显示乱码；不传返回 ArrayBuffer（展示字节数）</text>
         </view>
       </view>
-      <view class="flex-dir-row flex-wrap-wrap m-4-0">
-        <button class="m-4" type="primary" @tap="readFile" id="btn-read-file">readFile 读取</button>
-        <button class="m-4" type="primary" @tap="readFileSync" id="btn-read-file-sync">readFileSync 读取</button>
-        <button class="m-4" type="primary" @tap="readFileBuffer" id="btn-read-file-buffer">读取 ArrayBuffer</button>
-        <button class="m-4" type="warn" @tap="demoFail" id="btn-read-file-fail">演示失败（文件不存在）</button>
+      <view class="action-group">
+        <button class="action-btn" type="primary" @tap="readFile" id="btn-read-file">readFile 读取</button>
+        <button class="action-btn" type="primary" @tap="readFileSync" id="btn-read-file-sync">readFileSync 读取</button>
+        <button class="action-btn" type="primary" @tap="readFileBuffer" id="btn-read-file-buffer">读取 ArrayBuffer</button>
+        <button class="action-btn" type="warn" @tap="demoFail" id="btn-read-file-fail">演示失败（文件不存在）</button>
         <!-- #ifdef APP -->
-        <button class="m-4" type="primary" @tap="readFileByContent" id="btn-read-file-content">readFile(选择相册图片 content://)</button>
+        <button class="action-btn" type="primary" @tap="readFileByContent" id="btn-read-file-content">readFile(选择相册图片 content://)</button>
         <!-- #endif -->
       </view>
-      <view class="p-8 border-1-solid-e0e0e0 radius-4 flex-dir-column m-4-0-12-0">
-        <text class="fw-bold fs-14 m-2-0 color-333">执行结果：{{ data.lastResult == '' ? '等待执行' : (data.lastResult == 'success' ? '成功' : '失败') }}</text>
-        <text class="fs-13 m-2-0 color-666">目标路径：{{ data.rootPath }}{{ data.filePath }}</text>
-        <text class="fs-13 m-2-0 color-666" v-if="data.lastResult == 'success' && data.byteLength == 0">读取内容（{{ data.encoding == '' ? 'ArrayBuffer' : data.encoding }}）：</text>
-        <text class="fs-13 m-2-0 color-666" v-if="data.lastResult == 'success' && data.byteLength == 0">{{ data.readRet }}</text>
-        <text class="fs-13 m-2-0 color-666" v-if="data.byteLength != 0">ArrayBuffer 字节数：{{ data.byteLength }}；Float64[1]：{{ data.bufferValue }}</text>
-        <text class="fs-13 m-2-0 color-e64340" v-if="data.lastResult == 'fail'">errCode：{{ data.lastFailError.errCode }}；errMsg：{{ data.lastFailError.errMsg }}</text>
+      <view class="result-group">
+        <text class="result-title">执行结果：{{ data.lastResult == '' ? '等待执行' : (data.lastResult == 'success' ? '成功' : '失败') }}</text>
+        <text class="result-line">目标路径：{{ data.rootPath }}{{ data.filePath }}</text>
+        <text class="result-line" v-if="data.lastResult == 'success' && data.byteLength == 0">读取内容（{{ data.encoding == '' ? 'ArrayBuffer' : data.encoding }}）：</text>
+        <text class="result-line" v-if="data.lastResult == 'success' && data.byteLength == 0">{{ data.readRet }}</text>
+        <text class="result-line" v-if="data.byteLength != 0">ArrayBuffer 字节数：{{ data.byteLength }}；Float64[1]：{{ data.bufferValue }}</text>
+        <text class="result-error" v-if="data.lastResult == 'fail'">errCode：{{ data.lastFailError.errCode }}；errMsg：{{ data.lastFailError.errMsg }}</text>
       </view>
     </view>
   <!-- #ifdef APP -->
@@ -308,3 +308,95 @@
     // #endif
   })
 </script>
+
+<style>
+  .color-999 {
+    color: #999;
+  }
+
+  .flex-1 {
+    flex: 1;
+  }
+
+  .fs-12 {
+    font-size: 12px;
+  }
+
+  .page-scroll {
+    flex: 1;
+  }
+  .content-group {
+    padding: 8px;
+    flex-direction: column;
+  }
+  .param-group {
+    margin: 4px 0;
+    padding: 8px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    flex-direction: column;
+  }
+  .param-row {
+    flex-direction: row;
+    align-items: center;
+    margin: 4px 0;
+  }
+  .param-label {
+    width: 72px;
+    font-size: 14px;
+    color: #333333;
+  }
+  .param-input {
+    flex: 1;
+    border: 1px solid #d0d0d0;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 13px;
+    height: 32px;
+  }
+  .param-tip {
+    flex: 1;
+    font-size: 12px;
+    color: #999999;
+  }
+  .radio-group {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .radio-item {
+    flex-direction: row;
+    align-items: center;
+    margin-right: 10px;
+  }
+  .action-group {
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin: 4px 0;
+  }
+  .action-btn {
+    margin: 4px;
+  }
+  .result-group {
+    margin: 4px 0 12px 0;
+    padding: 8px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    flex-direction: column;
+  }
+  .result-title {
+    font-weight: bold;
+    font-size: 14px;
+    margin: 2px 0;
+    color: #333333;
+  }
+  .result-line {
+    font-size: 13px;
+    margin: 2px 0;
+    color: #666666;
+  }
+  .result-error {
+    font-size: 13px;
+    margin: 2px 0;
+    color: #e64340;
+  }
+</style>

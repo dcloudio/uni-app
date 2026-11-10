@@ -1,26 +1,26 @@
 <template>
-  <scroll-view ref="scroll" @scroll="onScroll" class="flex-1 p-0-15 page" bounces="false">
-    <view class="u-p-15 m-5-0 bg-list-fff radius-5 content-item">
-      <text class="fs-14 color-text-666 opacity-0_75 lh-20">向上滑动页面，体验元素吸顶效果。</text>
+  <scroll-view ref="scroll" @scroll="onScroll" class="page" bounces="false">
+    <view class="content-item">
+      <text class="text">向上滑动页面，体验元素吸顶效果。</text>
     </view>
-    <view v-for="(item,index) in list" :key="index" class="u-p-15 m-5-0 bg-list-fff radius-5 content-item">
-      <text class="fs-14 color-text-666 opacity-0_75 lh-20">first content-{{item}}</text>
+    <view v-for="(item,index) in list" :key="index" class="content-item">
+      <text class="text">first content-{{item}}</text>
     </view>
 
-    <view ref="sticky" class="bg-list-fff radius-100 p-8 flex-dir-row items-center justify-between search border-1-solid-fbdf0d">
-      <view class="flex-dir-row">
-        <image src="/static/template/scroll-fold-nav/search.png" class="w-15" mode="widthFix"></image>
-        <text class="fs-12 color-text-666 opacity-0_75 search-tip-text">请输入你要搜索的内容</text>
+    <view ref="sticky" class="search">
+      <view style="flex-direction: row;">
+        <image src="/static/template/scroll-fold-nav/search.png" style="width: 15px;" mode="widthFix"></image>
+        <text class="search-tip-text">请输入你要搜索的内容</text>
       </view>
-      <text class="fs-12 bg-ff6900 color-fff p-5-8 radius-100 search-btn">搜索</text>
+      <text class="search-btn">搜索</text>
     </view>
 
-    <view v-for="(item,index) in list" :key="index" class="u-p-15 m-5-0 bg-list-fff radius-5 content-item">
-      <text class="fs-14 color-text-666 opacity-0_75 lh-20">second content-{{item}}</text>
+    <view v-for="(item,index) in list" :key="index" class="content-item">
+      <text class="text">second content-{{item}}</text>
     </view>
 
-    <view v-for="(item,index) in list" :key="index" class="u-p-15 m-5-0 bg-list-fff radius-5 content-item">
-      <text class="fs-14 color-text-666 opacity-0_75 lh-20">second content-{{item}}</text>
+    <view v-for="(item,index) in list" :key="index" class="content-item">
+      <text class="text">second content-{{item}}</text>
     </view>
 
   </scroll-view>
@@ -82,9 +82,50 @@
 </script>
 
 <style>
+  .page {
+    flex: 1;
+    padding: 0 15px;
+  }
+
+  .content-item {
+    padding: 15px;
+    margin: 5px 0;
+    background-color: var(--list-background-color, #ffffff);
+    border-radius: 5px;
+
+  }
+
+  .text {
+    font-size: 14px;
+    color: var(--text-color, #666666);
+    opacity: 0.75;
+    line-height: 20px;
+  }
+
   .search {
+    background-color: var(--list-background-color, #ffffff);
+    border: 1px solid #fbdf0d;
     height: 35px;
+    border-radius: 100px;
     margin: 0 12px;
+    padding: 8px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
     z-index: 100;
+  }
+
+  .search-tip-text {
+    font-size: 12px;
+    color: var(--text-color, #666666);
+    opacity: 0.75;
+  }
+
+  .search-btn {
+    font-size: 12px;
+    background-color: #ff6900;
+    color: #FFF;
+    padding: 5px 8px;
+    border-radius: 100px;
   }
 </style>

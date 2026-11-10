@@ -1,7 +1,7 @@
 <template>
-		<view class="p-8">
-			<view class="w-200 h-200 pos-fixed bg-a52a2a" id="fullscreen" @click="requestfullscreen">
-				<text class="color-white">测试position：fixed在安卓上的bug</text>
+		<view style="padding: 8px;" >
+			<view class="position-error" id="fullscreen" @click="requestfullscreen">
+				<text style="color: white;">测试position：fixed在安卓上的bug</text>
 			</view>
 		</view>
 </template>
@@ -49,3 +49,12 @@ defineExpose({
   requestfullscreen
 })
 </script>
+
+<style>
+	.position-error {
+		width: 200px;
+		height: 200px;
+		position: fixed;
+		background-color: brown;
+	}
+</style>

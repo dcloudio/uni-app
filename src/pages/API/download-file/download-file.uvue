@@ -2,10 +2,10 @@
       <page-head :title="data.title"></page-head>
       <view>
         <view v-if="data.imageSrc">
-          <image class="m-0-auto" :src="data.imageSrc" mode="aspectFit" />
+          <image class="img" :src="data.imageSrc" mode="aspectFit" />
         </view>
-        <view v-else class="m-10">
-          <text class="color-text-333 lh-22">点击按钮下载服务端示例图片（下载网络文件到本地临时目录）</text>
+        <view v-else style="margin: 10px;">
+          <text class="uni-hello-text">点击按钮下载服务端示例图片（下载网络文件到本地临时目录）</text>
           <button type="primary" @tap="downloadImage">下载</button>
         </view>
       </view>
@@ -247,3 +247,9 @@
     jest_download_long_url
   })
 </script>
+
+<style>
+  .img {
+    margin: 0 auto;
+  }
+</style>

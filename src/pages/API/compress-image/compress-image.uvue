@@ -1,23 +1,23 @@
 <template>
     <view>
       <page-head :title="title"></page-head>
-      <view class="p-0-15">
-        <view class="flex-dir-row">
-          <image class="flex-1" :src="beforeCompressPath" mode="aspectFit"></image>
-          <image class="flex-1" :src="afterCompressPath" mode="aspectFit"></image>
+      <view class="uni-padding-wrap">
+        <view class="image-container">
+          <image class="image" :src="beforeCompressPath" mode="aspectFit"></image>
+          <image class="image" :src="afterCompressPath" mode="aspectFit"></image>
         </view>
-        <view class="p-10-0 color-text-333">
-          <text class="color-888 fs-12 fw-bold u-mt-5">压缩前图片信息</text>
+        <view class="uni-title">
+          <text class="uni-subtitle-text">压缩前图片信息</text>
         </view>
         <text>{{beforeCompressImageInfo}}</text>
-        <view class="p-10-0 color-text-333">
-          <text class="color-888 fs-12 fw-bold u-mt-5">压缩后图片信息</text>
+        <view class="uni-title">
+          <text class="uni-subtitle-text">压缩后图片信息</text>
         </view>
         <text>{{afterCompressImageInfo}}</text>
-        <view class="p-5-0">
+        <view class="uni-btn-v">
           <button type="primary" @click="chooseImage">从相册中选取待压缩的图片</button>
         </view>
-        <view class="p-5-0">
+        <view class="uni-btn-v">
           <button type="primary" @click="compressImage">压缩图片</button>
         </view>
       </view>
@@ -28,7 +28,7 @@
       <input-data defaultValue="0" title="旋转度数，范围0～360" type="number" @confirm="onRotateConfirm"></input-data>
     </view>
 
-    <view class="h-safe-area-inset-bottom-20 min-h-20"></view>
+    <view class="scroll-view_bottom-fixed"></view>
 </template>
 
 <script setup lang="ts">
@@ -207,3 +207,13 @@
     testCompressImage
   })
 </script>
+
+<style>
+  .image {
+    flex: 1;
+  }
+
+  .image-container {
+    flex-direction: row;
+  }
+</style>

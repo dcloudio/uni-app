@@ -1,0 +1,1439 @@
+<template>
+	<!-- 年月标题与左右切换箭头 -->
+	<view style="flex-direction: row" class="year-month-row">
+		<text class="year-month-arrow" :class="props.yearMonthArrowClass" @click="prevMonth">‹</text>
+		<picker class="year-month-picker" mode="date" :value="pickerValue" fields="month" @change="onPickerChange">
+			<text class="year-month-text" :class="props.yearMonthClass">{{ yearMonthText }}</text>
+		</picker>
+		<text class="year-month-arrow" :class="props.yearMonthArrowClass" @click="nextMonth">›</text>
+	</view>
+
+	<!-- 星期标题 -->
+	<view class="week-row" :class="props.weekClass" flatten>
+		<text v-for="(item, index) in weekdayLabels" :key="index" flatten class="week-item"
+			:class="props.weekItemClass">{{ item }}</text>
+	</view>
+
+	<!-- 日历主体，使用 swiper 承载前后月份，flatten 拍平日期文本提升渲染性能 -->
+	<swiper class="calendar-swiper" auto-height :circular="true" :current="swiperCurrent" :style="swiperStyle" @change="onSwiperChange">
+		<swiper-item v-for="(item, index) in swiperItems" :key="item.key" class="calendar-swiper-item">
+			<view class="calendar-grid" :class="index == 0 ? 'calendar-grid-measure' : ''" @click="onCalendarClick">
+				<!-- 无自定义文字时保持单 text 拍平渲染，避免额外节点 -->
+				<template v-if="hasDayExtras">
+					<view v-for="(day, dayIndex) in item.days" :key="dayIndex" flatten class="day-cell" :class="[
+						props.dayWrapClass,
+						day.isSelected ? 'day-selected' : '',
+						day.isSelected ? 'day-selected-wrap' : '',
+						day.isSelected ? props.daySelectedClass : ''
+					]">
+						<text flatten class="day-extra-text" :class="[
+							props.dayTopClass,
+							day.isDisabled ? 'day-extra-disabled' : '',
+							day.isSelected ? 'day-selected-text' : ''
+						]">{{ day.topText }}</text>
+						<text flatten class="day-text day-text-inner" :class="[
+							props.dayClass,
+							day.day == 0 ? 'day-empty' : '',
+							day.isToday ? 'day-today' : '',
+							day.isToday ? props.todayClass : '',
+							day.isWeekend || day.isHoliday ? 'day-holiday' : '',
+							day.isDisabled ? 'day-disabled' : '',
+							day.isSelected ? 'day-selected-text' : ''
+						]">{{ day.day > 0 ? day.day : '' }}</text>
+						<text flatten class="day-extra-text" :class="[
+							props.dayBottomClass,
+							day.isDisabled ? 'day-extra-disabled' : '',
+							day.isSelected ? 'day-selected-text' : ''
+						]">{{ day.bottomText }}</text>
+					</view>
+				</template>
+				<template v-else>
+					<text flatten v-for="(day, dayIndex) in item.days" :key="dayIndex" class="day-text" :class="[
+						props.dayClass,
+						day.day == 0 ? 'day-empty' : '',
+						day.isToday ? 'day-today' : '',
+						day.isToday ? props.todayClass : '',
+						day.isWeekend || day.isHoliday ? 'day-holiday' : '',
+						day.isDisabled ? 'day-disabled' : '',
+						day.isSelected ? 'day-selected' : '',
+						day.isSelected ? 'day-selected-normal' : '',
+						day.isSelected ? props.daySelectedClass : ''
+					]">{{ day.day > 0 ? day.day : '' }}</text>
+				</template>
+			</view>
+		</swiper-item>
+	</swiper>
+</template>
+
+<script setup lang="ts">
+/**
+ * 日历视图
+ * @description 内嵌在页面中的日历，支持月份切换、日期选择、日期范围限制、节假日高亮、日期上下方自定义文字和国际化
+ * @uniPlatform {
+ *   "app": {
+ *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+ *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+ *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+ *   },
+ *   "mp": {
+ *     "weixin": {"unixVer": "5.26"},
+ *     "alipay": {"unixVer": "5.31"}
+ *   },
+ *   "web": {
+ *     "unixVer": "5.26"
+ *   }
+ * }
+ */
+
+defineOptions({
+	externalClasses: [
+		'year-month-class',
+		'year-month-arrow-class',
+		'week-class',
+		'week-item-class',
+		'day-class',
+		'day-selected-class',
+		'today-class',
+		'day-wrap-class',
+		'day-top-class',
+		'day-bottom-class'
+	]
+})
+
+type CalendarDayExtra = {
+	/**
+	 * 日期，格式 YYYY-MM-DD
+	 */
+	date : string
+	/**
+	 * 日期数字上方显示的文字
+	 */
+	top ?: string
+	/**
+	 * 日期数字下方显示的文字
+	 */
+	bottom ?: string
+}
+
+type Props = {
+	/**
+	 * @description 选中日期，格式 YYYY-MM-DD，支持 v-model 双向绑定
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+	 *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.26"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {
+	 *     "unixVer": "5.26"
+	 *   }
+	 * }
+	 */
+	modelValue?: string
+	/**
+	 * @description 初始显示的月份，格式 YYYY-MM 或 YYYY-MM-DD；为空时依次取 modelValue 所在月份、当前月份
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+	 *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.26"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {
+	 *     "unixVer": "5.26"
+	 *   }
+	 * }
+	 */
+	date?: string
+	/**
+	 * @description 可选的最小日期，格式 YYYY-MM-DD，早于该日期的日期不可点击
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+	 *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.26"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {
+	 *     "unixVer": "5.26"
+	 *   }
+	 * }
+	 */
+	minDate?: string
+	/**
+	 * @description 可选的最大日期，格式 YYYY-MM-DD，晚于该日期的日期不可点击
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+	 *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.26"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {
+	 *     "unixVer": "5.26"
+	 *   }
+	 * }
+	 */
+	maxDate?: string
+	/**
+	 * @description 节假日日期列表，格式 YYYY-MM-DD，命中的日期会高亮显示
+	 * @default []
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+	 *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.26"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {
+	 *     "unixVer": "5.26"
+	 *   }
+	 * }
+	 */
+	holidays?: string[]
+	/**
+	 * @description 语言标识，如 zh-Hans、zh-Hant、en、fr、ja 等；为空时跟随系统语言
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+	 *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.26"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {
+	 *     "unixVer": "5.26"
+	 *   }
+	 * }
+	 */
+	locale?: string
+	/**
+	 * @description 一周的起始日，0 为周日、1 为周一，以此类推；-1 表示按语言自动适配
+	 * @default -1
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+	 *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.26"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {
+	 *     "unixVer": "5.26"
+	 *   }
+	 * }
+	 */
+	weekStart?: number
+	/**
+	 * @description 日期附加文字列表，用于在日期数字上方、下方显示自定义文字，如农历、节日、入住/离店等
+	 * @default []
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+	 *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.26"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {
+	 *     "unixVer": "5.26"
+	 *   }
+	 * }
+	 */
+	dayExtras?: CalendarDayExtra[]
+	/**
+	 * @description 年月标题的自定义样式类
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+	 *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.26"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {
+	 *     "unixVer": "5.26"
+	 *   }
+	 * }
+	 */
+	yearMonthClass?: string.ClassString
+	/**
+	 * @description 年月标题左右箭头的自定义样式类
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+	 *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.26"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {
+	 *     "unixVer": "5.26"
+	 *   }
+	 * }
+	 */
+	yearMonthArrowClass?: string.ClassString
+	/**
+	 * @description 星期标题行容器的自定义样式类
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+	 *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.26"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {
+	 *     "unixVer": "5.26"
+	 *   }
+	 * }
+	 */
+	weekClass?: string.ClassString
+	/**
+	 * @description 星期标题项的自定义样式类
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+	 *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.26"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {
+	 *     "unixVer": "5.26"
+	 *   }
+	 * }
+	 */
+	weekItemClass?: string.ClassString
+	/**
+	 * @description 日期单元格的自定义样式类，作用于所有日期
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+	 *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.26"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {
+	 *     "unixVer": "5.26"
+	 *   }
+	 * }
+	 */
+	dayClass?: string.ClassString
+	/**
+	 * @description 选中日期的自定义样式类，用于覆盖默认选中样式
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+	 *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.26"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {
+	 *     "unixVer": "5.26"
+	 *   }
+	 * }
+	 */
+	daySelectedClass?: string.ClassString
+	/**
+	 * @description 今天日期的自定义样式类，用于覆盖默认今天高亮样式
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+	 *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.26"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {
+	 *     "unixVer": "5.26"
+	 *   }
+	 * }
+	 */
+	todayClass?: string.ClassString
+	/**
+	 * @description 日期数字上方文字的自定义样式类
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+	 *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.26"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {
+	 *     "unixVer": "5.26"
+	 *   }
+	 * }
+	 */
+	dayTopClass?: string.ClassString
+	/**
+	 * @description 日期数字下方文字的自定义样式类
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+	 *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.26"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {
+	 *     "unixVer": "5.26"
+	 *   }
+	 * }
+	 */
+	dayBottomClass?: string.ClassString
+	/**
+	 * @description 日期单元格容器的自定义样式类，仅在传入 day-extras 时生效，可用于调整单元格高度等
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+	 *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.26"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {
+	 *     "unixVer": "5.26"
+	 *   }
+	 * }
+	 */
+	dayWrapClass?: string.ClassString
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	modelValue: '',
+	date: '',
+	minDate: '',
+	maxDate: '',
+	holidays: () : string[] => [] as string[],
+	locale: '',
+	weekStart: -1,
+	dayExtras: () : CalendarDayExtra[] => [] as CalendarDayExtra[],
+	yearMonthClass: '',
+	yearMonthArrowClass: '',
+	weekClass: '',
+	weekItemClass: '',
+	dayClass: '',
+	daySelectedClass: '',
+	todayClass: '',
+	dayTopClass: '',
+	dayBottomClass: '',
+	dayWrapClass: ''
+})
+
+const emit = defineEmits<{
+	/**
+	 * @description 选中日期变化时触发，用于 v-model 双向绑定
+	 * @param date 选中的日期，格式 YYYY-MM-DD
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+	 *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.26"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {
+	 *     "unixVer": "5.26"
+	 *   }
+	 * }
+	 */
+	'update:modelValue': [date: string]
+	/**
+	 * @description 点击选择日期时触发
+	 * @param date 选中的日期，格式 YYYY-MM-DD
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+	 *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.26"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {
+	 *     "unixVer": "5.26"
+	 *   }
+	 * }
+	 */
+	change: [date: string]
+	/**
+	 * @description 当前显示月份变化时触发（切换箭头、滑动、选择月份、方法跳转）
+	 * @param year 当前年份
+	 * @param month 当前月份，1-12
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+	 *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.26"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {
+	 *     "unixVer": "5.26"
+	 *   }
+	 * }
+	 */
+	'month-change': [year: number, month: number]
+}>()
+
+type DayInfo = {
+	day: number
+	date: string
+	isToday: boolean
+	isSelected: boolean
+	isWeekend: boolean
+	isHoliday: boolean
+	isDisabled: boolean
+	weekday: number
+	topText: string
+	bottomText: string
+}
+
+type MonthItem = {
+	key: string
+	year: number
+	month: number
+	days: DayInfo[]
+}
+
+type LocaleMessages = {
+	weekdays: string[]
+	months: string[]
+	yearMonthTemplate: string
+	firstDayOfWeek: number
+}
+
+function padZero(value : number) : string {
+	return value < 10 ? '0' + value.toString() : value.toString()
+}
+
+function toDateKey(year : number, month : number, day : number) : string {
+	return `${year}-${padZero(month)}-${padZero(day)}`
+}
+
+function parseDateKey(value : string) : number[] | null {
+	if (value == null || value.length < 10) {
+		return null
+	}
+	const parts = value.split('-')
+	if (parts.length < 3) {
+		return null
+	}
+	const year = parseInt(parts[0])
+	const month = parseInt(parts[1])
+	const day = parseInt(parts[2])
+	if (isNaN(year) || isNaN(month) || isNaN(day)) {
+		return null
+	}
+	if (month < 1 || month > 12 || day < 1 || day > 31) {
+		return null
+	}
+	return [year, month, day]
+}
+
+function parseMonthKey(value : string) : number[] | null {
+	if (value == null || value.length < 7) {
+		return null
+	}
+	const parts = value.split('-')
+	if (parts.length < 2) {
+		return null
+	}
+	const year = parseInt(parts[0])
+	const month = parseInt(parts[1])
+	if (isNaN(year) || isNaN(month) || month < 1 || month > 12) {
+		return null
+	}
+	return [year, month]
+}
+
+function normalizeLocaleKey(language : string) : string {
+	if (language.indexOf('zh-hant') == 0 || language.indexOf('zh-tw') == 0 ||
+		language.indexOf('zh-hk') == 0 || language.indexOf('zh-mo') == 0) {
+		return 'zh-hant'
+	}
+	if (language.indexOf('zh') == 0) {
+		return 'zh-hans'
+	}
+	if (language.indexOf('ja') == 0) {
+		return 'ja'
+	}
+	if (language.indexOf('ko') == 0) {
+		return 'ko'
+	}
+	if (language.indexOf('de') == 0) {
+		return 'de'
+	}
+	if (language.indexOf('fr') == 0) {
+		return 'fr'
+	}
+	if (language.indexOf('la') == 0) {
+		return 'la'
+	}
+	if (language.indexOf('id') == 0 || language.indexOf('in') == 0) {
+		return 'id'
+	}
+	if (language.indexOf('ms') == 0) {
+		return 'ms'
+	}
+	if (language.indexOf('it') == 0) {
+		return 'it'
+	}
+	if (language.indexOf('pt') == 0) {
+		return 'pt'
+	}
+	if (language.indexOf('ru') == 0) {
+		return 'ru'
+	}
+	if (language.indexOf('th') == 0) {
+		return 'th'
+	}
+	if (language.indexOf('vi') == 0) {
+		return 'vi'
+	}
+	if (language.indexOf('ar') == 0) {
+		return 'ar'
+	}
+	if (language.indexOf('tr') == 0) {
+		return 'tr'
+	}
+	return 'en'
+}
+
+function resolveLocaleKey() : string {
+	const locale = props.locale
+	if (locale != null && locale.length > 0) {
+		return normalizeLocaleKey(locale.toLowerCase())
+	}
+	const appLanguage = (uni.getAppBaseInfo().appLanguage ?? 'en').toLowerCase()
+	return normalizeLocaleKey(appLanguage)
+}
+
+function getLocaleMessages(localeKey : string) : LocaleMessages {
+	if (localeKey == 'zh-hans') {
+		return {
+			weekdays: ['日', '一', '二', '三', '四', '五', '六'],
+			months: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+			yearMonthTemplate: '{year}年{month}月',
+			firstDayOfWeek: 1
+		}
+	}
+	if (localeKey == 'zh-hant') {
+		return {
+			weekdays: ['日', '一', '二', '三', '四', '五', '六'],
+			months: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+			yearMonthTemplate: '{year}年{month}月',
+			firstDayOfWeek: 0
+		}
+	}
+	if (localeKey == 'fr') {
+		return {
+			weekdays: ['dim.', 'lun.', 'mar.', 'mer.', 'jeu.', 'ven.', 'sam.'],
+			months: ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'],
+			yearMonthTemplate: '{month} {year}',
+			firstDayOfWeek: 1
+		}
+	}
+	if (localeKey == 'la') {
+		return {
+			weekdays: ['Sol', 'Lun', 'Mar', 'Mer', 'Iov', 'Ven', 'Sat'],
+			months: ['Ianuarius', 'Februarius', 'Martius', 'Aprilis', 'Maius', 'Iunius', 'Iulius', 'Augustus', 'September', 'October', 'November', 'December'],
+			yearMonthTemplate: '{month} {year}',
+			firstDayOfWeek: 0
+		}
+	}
+	if (localeKey == 'ja') {
+		return {
+			weekdays: ['日', '月', '火', '水', '木', '金', '土'],
+			months: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+			yearMonthTemplate: '{year}年{month}月',
+			firstDayOfWeek: 0
+		}
+	}
+	if (localeKey == 'ko') {
+		return {
+			weekdays: ['일', '월', '화', '수', '목', '금', '토'],
+			months: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+			yearMonthTemplate: '{year}년 {month}월',
+			firstDayOfWeek: 0
+		}
+	}
+	if (localeKey == 'de') {
+		return {
+			weekdays: ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'],
+			months: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
+			yearMonthTemplate: '{month} {year}',
+			firstDayOfWeek: 1
+		}
+	}
+	if (localeKey == 'id') {
+		return {
+			weekdays: ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'],
+			months: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
+			yearMonthTemplate: '{month} {year}',
+			firstDayOfWeek: 0
+		}
+	}
+	if (localeKey == 'ms') {
+		return {
+			weekdays: ['Ahd', 'Isn', 'Sel', 'Rab', 'Kha', 'Jum', 'Sab'],
+			months: ['Januari', 'Februari', 'Mac', 'April', 'Mei', 'Jun', 'Julai', 'Ogos', 'September', 'Oktober', 'November', 'Disember'],
+			yearMonthTemplate: '{month} {year}',
+			firstDayOfWeek: 0
+		}
+	}
+	if (localeKey == 'it') {
+		return {
+			weekdays: ['dom', 'lun', 'mar', 'mer', 'gio', 'ven', 'sab'],
+			months: ['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno', 'luglio', 'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre'],
+			yearMonthTemplate: '{month} {year}',
+			firstDayOfWeek: 1
+		}
+	}
+	if (localeKey == 'pt') {
+		return {
+			weekdays: ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'],
+			months: ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'],
+			yearMonthTemplate: '{month} de {year}',
+			firstDayOfWeek: 0
+		}
+	}
+	if (localeKey == 'ru') {
+		return {
+			weekdays: ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'],
+			months: ['январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь'],
+			yearMonthTemplate: '{month} {year}',
+			firstDayOfWeek: 1
+		}
+	}
+	if (localeKey == 'th') {
+		return {
+			weekdays: ['อา', 'จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส'],
+			months: ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'],
+			yearMonthTemplate: '{month} {year}',
+			firstDayOfWeek: 0
+		}
+	}
+	if (localeKey == 'vi') {
+		return {
+			weekdays: ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'],
+			months: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+			yearMonthTemplate: 'Tháng {month} năm {year}',
+			firstDayOfWeek: 1
+		}
+	}
+	if (localeKey == 'ar') {
+		return {
+			weekdays: ['ح', 'ن', 'ث', 'ر', 'خ', 'ج', 'س'],
+			months: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'],
+			yearMonthTemplate: '{month} {year}',
+			firstDayOfWeek: 0
+		}
+	}
+	if (localeKey == 'tr') {
+		return {
+			weekdays: ['Paz', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt'],
+			months: ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'],
+			yearMonthTemplate: '{month} {year}',
+			firstDayOfWeek: 1
+		}
+	}
+	return {
+		weekdays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+		months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+		yearMonthTemplate: '{month} {year}',
+		firstDayOfWeek: 0
+	}
+}
+
+const localeMessages = computed<LocaleMessages>(() : LocaleMessages => {
+	return getLocaleMessages(resolveLocaleKey())
+})
+
+const effectiveWeekStart = computed<number>(() : number => {
+	const value = props.weekStart
+	if (value >= 0 && value <= 6) {
+		return Math.floor(value)
+	}
+	return localeMessages.value.firstDayOfWeek
+})
+
+const weekdayLabels = computed<string[]>(() : string[] => {
+	const allWeekdays = localeMessages.value.weekdays
+	const start = effectiveWeekStart.value
+	const labels : string[] = []
+	for (let i = 0; i < 7; i++) {
+		labels.push(allWeekdays[(start + i) % 7])
+	}
+	return labels
+})
+
+const yearMonthText = computed<string>(() : string => {
+	const messages = localeMessages.value
+	const monthText = messages.months[currentMonth.value - 1]
+	return messages.yearMonthTemplate.replace('{year}', currentYear.value.toString()).replace('{month}', monthText)
+})
+
+const pickerValue = computed<string>(() : string => {
+	return `${currentYear.value}-${padZero(currentMonth.value)}`
+})
+
+const hasDayExtras = computed<boolean>(() : boolean => {
+	return props.dayExtras.length > 0
+})
+
+function resolveInitialSelectedDate() : string {
+	const value = props.modelValue
+	return parseDateKey(value) != null ? value : ''
+}
+
+function resolveInitialMonth() : number[] {
+	const dateMonth = parseMonthKey(props.date)
+	if (dateMonth != null) {
+		return dateMonth
+	}
+	const modelMonth = parseMonthKey(props.modelValue)
+	if (modelMonth != null) {
+		return modelMonth
+	}
+	const today = new Date()
+	return [today.getFullYear(), today.getMonth() + 1]
+}
+
+const selectedDate = ref(resolveInitialSelectedDate())
+const initialMonth = resolveInitialMonth()
+const currentYear = ref(initialMonth[0])
+const currentMonth = ref(initialMonth[1])
+
+const swiperCurrent = ref(1)
+const swiperItems = ref<MonthItem[]>([])
+let lastItemIndex = 1
+
+function isTodayDate(year : number, month : number, day : number) : boolean {
+	const today = new Date()
+	return year == today.getFullYear() && month == today.getMonth() + 1 && day == today.getDate()
+}
+
+function isDateDisabled(dateStr : string) : boolean {
+	const minDate = props.minDate
+	if (minDate != null && minDate.length >= 10 && dateStr < minDate) {
+		return true
+	}
+	const maxDate = props.maxDate
+	if (maxDate != null && maxDate.length >= 10 && dateStr > maxDate) {
+		return true
+	}
+	return false
+}
+
+function isHolidayDate(dateStr : string) : boolean {
+	return props.holidays.includes(dateStr)
+}
+
+function createEmptyDay() : DayInfo {
+	return {
+		day: 0,
+		date: '',
+		isToday: false,
+		isSelected: false,
+		isWeekend: false,
+		isHoliday: false,
+		isDisabled: false,
+		weekday: 0,
+		topText: '',
+		bottomText: ''
+	}
+}
+
+let dayExtrasMap : Map<string, CalendarDayExtra> = new Map<string, CalendarDayExtra>()
+
+function buildDayExtrasMap() : void {
+	const map = new Map<string, CalendarDayExtra>()
+	const extras = props.dayExtras
+	for (let i = 0; i < extras.length; i++) {
+		const extra = extras[i]
+		if (extra.date.length > 0) {
+			map.set(extra.date, extra)
+		}
+	}
+	dayExtrasMap = map
+}
+
+function generateMonthDays(year : number, month : number) : DayInfo[] {
+	const days : DayInfo[] = []
+	const firstDay = new Date(year, month - 1, 1)
+	const lastDay = new Date(year, month, 0)
+	const daysInMonth = lastDay.getDate()
+	const firstWeekday = firstDay.getDay()
+	const weekStart = effectiveWeekStart.value
+	const leadingCount = (firstWeekday - weekStart + 7) % 7
+
+	for (let i = 0; i < leadingCount; i++) {
+		days.push(createEmptyDay())
+	}
+
+	for (let day = 1; day <= daysInMonth; day++) {
+		const date = new Date(year, month - 1, day)
+		const dateStr = toDateKey(year, month, day)
+		const weekday = date.getDay()
+
+		let topText = ''
+		let bottomText = ''
+		const extra = dayExtrasMap.get(dateStr)
+		if (extra != null) {
+			const top = extra.top
+			if (top != null) {
+				topText = top
+			}
+			const bottom = extra.bottom
+			if (bottom != null) {
+				bottomText = bottom
+			}
+		}
+
+		days.push({
+			day: day,
+			date: dateStr,
+			isToday: isTodayDate(year, month, day),
+			isSelected: dateStr == selectedDate.value,
+			isWeekend: weekday == 0 || weekday == 6,
+			isHoliday: isHolidayDate(dateStr),
+			isDisabled: isDateDisabled(dateStr),
+			weekday: weekday,
+			topText: topText,
+			bottomText: bottomText
+		})
+	}
+
+	while (days.length < 42) {
+		days.push(createEmptyDay())
+	}
+
+	return days
+}
+
+function makeMonthItem(year : number, month : number) : MonthItem {
+	return {
+		key: `${year}-${month}`,
+		year: year,
+		month: month,
+		days: generateMonthDays(year, month)
+	}
+}
+
+function getPrevMonth(year : number, month : number) : number[] {
+	if (month - 1 < 1) {
+		return [year - 1, 12]
+	}
+	return [year, month - 1]
+}
+
+function getNextMonth(year : number, month : number) : number[] {
+	if (month + 1 > 12) {
+		return [year + 1, 1]
+	}
+	return [year, month + 1]
+}
+
+function initSwiperItems() {
+	buildDayExtrasMap()
+	const items : MonthItem[] = []
+	const prev = getPrevMonth(currentYear.value, currentMonth.value)
+	const next = getNextMonth(currentYear.value, currentMonth.value)
+	items.push(makeMonthItem(prev[0], prev[1]))
+	items.push(makeMonthItem(currentYear.value, currentMonth.value))
+	items.push(makeMonthItem(next[0], next[1]))
+	swiperItems.value = items
+	lastItemIndex = 1
+}
+
+function switchToMonth(targetYear : number, targetMonth : number, targetIndex : number) {
+	buildDayExtrasMap()
+	const changed = targetYear != currentYear.value || targetMonth != currentMonth.value
+	currentYear.value = targetYear
+	currentMonth.value = targetMonth
+
+	swiperItems.value[targetIndex] = makeMonthItem(targetYear, targetMonth)
+
+	const prevIndex = (targetIndex - 1 + 3) % 3
+	const nextIndex = (targetIndex + 1) % 3
+	const prev = getPrevMonth(targetYear, targetMonth)
+	const next = getNextMonth(targetYear, targetMonth)
+	swiperItems.value[prevIndex] = makeMonthItem(prev[0], prev[1])
+	swiperItems.value[nextIndex] = makeMonthItem(next[0], next[1])
+
+	lastItemIndex = targetIndex
+
+	if (changed) {
+		emit('month-change', targetYear, targetMonth)
+	}
+}
+
+function refreshAllMonths() {
+	if (swiperItems.value.length != 3) {
+		initSwiperItems()
+		return
+	}
+	switchToMonth(currentYear.value, currentMonth.value, lastItemIndex)
+}
+
+function updateSelectedStateOptimized(oldDate : string, newDate : string) {
+	for (let i = 0; i < swiperItems.value.length; i++) {
+		const item = swiperItems.value[i]
+		for (let j = 0; j < item.days.length; j++) {
+			const day = item.days[j]
+			if (day.day > 0) {
+				if (oldDate.length > 0 && day.date == oldDate) {
+					day.isSelected = false
+				} else if (newDate.length > 0 && day.date == newDate) {
+					day.isSelected = true
+				}
+			}
+		}
+	}
+}
+
+function selectDate(date : string) {
+	const parts = parseDateKey(date)
+	if (parts == null) {
+		return
+	}
+	if (isDateDisabled(date)) {
+		return
+	}
+	if (date == selectedDate.value) {
+		return
+	}
+	const oldDate = selectedDate.value
+	selectedDate.value = date
+	updateSelectedStateOptimized(oldDate, date)
+	emit('update:modelValue', date)
+	emit('change', date)
+}
+
+function goToMonth(year : number, month : number) {
+	if (month < 1 || month > 12) {
+		return
+	}
+	swiperCurrent.value = 1
+	nextTick(() => {
+		switchToMonth(year, month, 1)
+	})
+}
+
+function goToDate(date : string) {
+	const parts = parseDateKey(date)
+	if (parts == null) {
+		return
+	}
+	selectDate(date)
+	goToMonth(parts[0], parts[1])
+}
+
+function moveMonth(offset : number) {
+	let targetYear = currentYear.value
+	let targetMonth = currentMonth.value + offset
+	while (targetMonth < 1) {
+		targetMonth += 12
+		targetYear--
+	}
+	while (targetMonth > 12) {
+		targetMonth -= 12
+		targetYear++
+	}
+	const targetIndex = (swiperCurrent.value + offset + 3) % 3
+	switchToMonth(targetYear, targetMonth, targetIndex)
+	swiperCurrent.value = targetIndex
+}
+
+function prevMonth() {
+	moveMonth(-1)
+}
+
+function nextMonth() {
+	moveMonth(1)
+}
+
+function onSwiperChange(e : UniSwiperChangeEvent) {
+	const current = e.detail.current
+	if (current == lastItemIndex) {
+		return
+	}
+	const item = swiperItems.value[current]
+	if (item == null) {
+		return
+	}
+	swiperCurrent.value = current
+	switchToMonth(item.year, item.month, current)
+}
+
+function onPickerChange(e : UniPickerChangeEvent) {
+	const value = e.detail.value
+	if (value == null) {
+		return
+	}
+	const text = (value as string).split('/').join('-')
+	const parts = parseMonthKey(text)
+	if (parts == null) {
+		return
+	}
+	swiperCurrent.value = 1
+	nextTick(() => {
+		switchToMonth(parts[0], parts[1], 1)
+	})
+}
+
+async function onCalendarClick(e : UniPointerEvent) : Promise<void> {
+	const target = e.currentTarget as UniElement
+	const rect = await target.getBoundingClientRectAsync()!
+	if (rect == null || rect.width <= 0) {
+		return
+	}
+	const cellWidth = rect.width / 7
+	const cellHeight = rect.height / 6
+	const col = Math.floor((e.clientX - rect.left) / cellWidth)
+	const row = Math.floor((e.clientY - rect.top) / cellHeight)
+	if (col < 0 || col > 6 || row < 0 || row > 5) {
+		return
+	}
+	const index = row * 7 + col
+	const currentItem = swiperItems.value[lastItemIndex]
+	if (currentItem == null) {
+		return
+	}
+	const dayInfo = currentItem.days[index]
+	if (dayInfo.day == 0 || dayInfo.isDisabled) {
+		return
+	}
+	selectDate(dayInfo.date)
+}
+
+watch(() : string => props.modelValue, (value : string) => {
+	if (value == selectedDate.value) {
+		return
+	}
+	const parts = parseDateKey(value)
+	if (parts == null) {
+		const oldDate = selectedDate.value
+		selectedDate.value = ''
+		updateSelectedStateOptimized(oldDate, '')
+		return
+	}
+	const oldDate = selectedDate.value
+	selectedDate.value = value
+	if (parts[0] != currentYear.value || parts[1] != currentMonth.value) {
+		goToMonth(parts[0], parts[1])
+		return
+	}
+	updateSelectedStateOptimized(oldDate, value)
+})
+
+watch(() : string => props.date, (value : string) => {
+	const parts = parseMonthKey(value)
+	if (parts != null) {
+		goToMonth(parts[0], parts[1])
+	}
+})
+
+watch(() : number => props.weekStart, () => {
+	refreshAllMonths()
+})
+
+watch(() : CalendarDayExtra[] => props.dayExtras, () => {
+	refreshAllMonths()
+}, { deep: true })
+
+watch(() : string[] => props.holidays, () => {
+	refreshAllMonths()
+})
+
+watch(() : string => props.minDate, () => {
+	refreshAllMonths()
+})
+
+watch(() : string => props.maxDate, () => {
+	refreshAllMonths()
+})
+
+const swiperHeight = ref(0)
+
+const swiperStyle = computed<string>(() : string => {
+	if (swiperHeight.value > 0) {
+		return 'height: ' + swiperHeight.value.toString() + 'px;'
+	}
+	return ''
+})
+
+/* #ifndef APP */
+const componentInstance = getCurrentInstance()
+
+function syncSwiperSize() : void {
+	nextTick(() => {
+		if (componentInstance == null) {
+			return
+		}
+		uni.createSelectorQuery().in(componentInstance!.proxy).select('.calendar-grid-measure').boundingClientRect().exec((res) => {
+			const infos = res as NodeInfo[]
+			if (infos.length > 0 && infos[0] != null) {
+				const h = infos[0].height
+				if (h != null && h > 0) {
+					swiperHeight.value = h
+				}
+			}
+		})
+	})
+}
+
+onMounted(() => {
+	syncSwiperSize()
+})
+
+watch(() : boolean => hasDayExtras.value, () => {
+	syncSwiperSize()
+})
+/* #endif */
+
+initSwiperItems()
+
+defineExpose({
+	/**
+	 * 切换到上一个月
+	 */
+	prevMonth,
+	/**
+	 * 切换到下一个月
+	 */
+	nextMonth,
+	/**
+	 * 跳转到指定年月
+	 * @param year 年份
+	 * @param month 月份，1-12
+	 */
+	goToMonth,
+	/**
+	 * 选中并跳转到指定日期
+	 * @param date 日期，格式 YYYY-MM-DD
+	 */
+	goToDate,
+	/**
+	 * 获取当前选中日期，未选中时返回空字符串
+	 */
+	getSelectedDate: () : string => {
+		return selectedDate.value
+	}
+})
+</script>
+
+<style>
+	.year-month-row {
+		align-items: center;
+		justify-content: center;
+		padding: 12px 16px;
+	}
+
+	.year-month-picker {
+		align-items: center;
+		justify-content: center;
+		margin-left: 10px;
+		margin-right: 10px;
+	}
+
+	.year-month-arrow {
+		width: 40px;
+		height: 40px;
+		line-height: 40px;
+		font-size: 28px;
+		text-align: center;
+	}
+
+	.year-month-text {
+		font-size: 17px;
+		font-weight: 500;
+		text-align: center;
+	}
+
+	.week-row {
+		flex-direction: row;
+		justify-content: center;
+		padding: 8px 0;
+	}
+
+	.week-item {
+		width: 14.28%;
+		font-size: 13px;
+		text-align: center;
+		opacity: 0.75;
+	}
+
+	.calendar-swiper-item {
+		flex-direction: column;
+	}
+
+	.calendar-grid {
+		flex-direction: row;
+		flex-wrap: wrap;
+	}
+
+	/* App 端由 swiper 的 auto-height 随日期单元格高度撑开；
+	 * 其他平台 swiper-item 为绝对定位，此处仅作默认高度兜底，运行时按日期网格实际高度动态校正 */
+	/* #ifndef APP */
+	.calendar-swiper {
+		height: 360px;
+	}
+	/* #endif */
+
+	.day-cell {
+		width: 14.28%;
+		height: 60px;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.day-text {
+		width: 14.28%;
+		height: 60px;
+		line-height: 60px;
+		font-size: 16px;
+		text-align: center;
+	}
+
+	.day-text-inner {
+		width: 100%;
+		height: 24px;
+		line-height: 24px;
+	}
+
+	.day-extra-text {
+		width: 100%;
+		height: 14px;
+		line-height: 14px;
+		font-size: 10px;
+		text-align: center;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		color: var(--text-color, #999999);
+	}
+
+	.day-extra-disabled {
+		color: #cccccc;
+		opacity: 0.5;
+	}
+
+	.day-empty {
+		color: transparent;
+	}
+
+	.day-today {
+		color: #1976d2;
+	}
+
+	.day-holiday {
+		color: #ff5500;
+	}
+
+	.day-disabled {
+		color: #cccccc;
+		opacity: 0.5;
+	}
+
+	.day-selected {
+		background-color: #1976d2;
+		color: #ffffff;
+	}
+
+	/* 标准布局：高亮作用于日期数字 */
+	.day-selected-normal {
+		height: 40px;
+		line-height: 40px;
+		margin-top: 10px;
+		margin-bottom: 10px;
+		border-radius: 30px;
+	}
+
+	/* 带上下文字布局：高亮作用于整个单元格 */
+	.day-selected-wrap {
+		border-radius: 12px;
+	}
+
+	/* 选中时单元格内文字颜色 */
+	.day-selected-text {
+		color: #ffffff;
+	}
+
+	@media (prefers-color-scheme: dark) {
+		.day-today {
+			color: #64b5f6;
+		}
+
+		.day-selected {
+			color: #ffffff;
+		}
+	}
+</style>

@@ -17,10 +17,10 @@
         <view @click='changeBgClass' class="common" :class='testClass'>{{testClass}}</view>
       </view>
 
-      <text class="fs-15 fw-bold color-text-333 mt-15">scroll-view 组件</text>
-      <text class="color-888 fs-12 fw-bold u-mt-5">background-image: linear-gradient(to right, cyan, yellow);</text>
-      <text class="color-888 fs-12 fw-bold u-mt-5">background-image: linear-gradient(to bottom, blue, green);</text>
-      <view class="flex-dir-row justify-around mt-10">
+      <text class="uni-title-text uni-common-mt">scroll-view 组件</text>
+      <text class="uni-subtitle-text">background-image: linear-gradient(to right, cyan, yellow);</text>
+      <text class="uni-subtitle-text">background-image: linear-gradient(to bottom, blue, green);</text>
+      <view class="demo-box">
         <scroll-view class="common" style="background-image: linear-gradient(to right, cyan, yellow);width: 150px;">
           <text class="common-text">to right</text>
         </scroll-view>
@@ -29,12 +29,12 @@
         </scroll-view>
       </view>
 
-      <text class="fs-15 fw-bold color-text-333 mt-15">text 组件</text>
-      <text class="color-888 fs-12 fw-bold u-mt-5">text 设置 background-image: linear-gradient(to right, #fd4365, #fe747a);</text>
+      <text class="uni-title-text uni-common-mt">text 组件</text>
+      <text class="uni-subtitle-text">text 设置 background-image: linear-gradient(to right, #fd4365, #fe747a);</text>
       <text id="text-gradient-background" class="text-gradient-background">text 渐变背景测试</text>
 
-      <view class="mt-15">
-        <text class="fs-15 fw-bold color-text-333">style.setProperty 动态设置 background-image </text>
+      <view class="uni-common-mt">
+        <text class="uni-title-text">style.setProperty 动态设置 background-image </text>
         <text>background-image: {{backgroundImage}}</text>
         <view ref="viewRef" class="common" :style="{ backgroundImage: backgroundImage }">
           <text style="color: white;">当前 background-image: {{backgroundImage}}</text>
@@ -42,8 +42,8 @@
       </view>
 
       <!-- 测试控制区域 -->
-      <view class="mt-15 mb-15">
-        <text class="fs-13 color-tips-0958d9 bg-tips-e6f4ff border-l-4-solid-tips-91caff p-10-12 radius-4 m-10">第一个枚举值，'' (空字符串) - 空值情况</text>
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data-checkbox :compact="true" :items="backgroundImageEnum" title="background-image 枚举值" @change="radioChangeBackgroundImage"></enum-data-checkbox>
         <input-data :defaultValue="backgroundImage" title="background-image 自定义值" type="text" @confirm="inputChangeBackgroundImage"></input-data>
       </view>
@@ -135,6 +135,12 @@
     background: linear-gradient(to right, red, yellow);
   }
 
+  .demo-box {
+    flex-direction: row;
+    justify-content: space-around;
+    margin-top: 10px;
+  }
+
   .common-text {
     font-size: 12px;
     color: white;
@@ -150,5 +156,10 @@
     color: #fff;
     border-radius: 31px;
     background-image: linear-gradient(to right, #fd4365, #fe747a);
+  }
+
+  .native-view-bg {
+    width: 150px;
+    height: 100px;
   }
 </style>

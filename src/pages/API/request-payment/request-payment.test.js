@@ -36,6 +36,10 @@ describe("payment", () => {
       data:{orderInfo: orderInfo,}
     })
     await page.callMethod('jest_pay')
+    await page.waitFor(async () => {
+      return await page.data('data.complete') === true
+    })
+    expect(await page.data('data.complete')).toBe(true)
 
     let complete = await page.data('data.complete')
     let fail = await page.data('data.fail')

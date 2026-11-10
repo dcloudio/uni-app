@@ -1,9 +1,9 @@
 <template>
     <page-head :title="title"></page-head>
-    <view class="p-0-15">
-      <image class="self-center image" src="/static/test-image/logo.png"></image>
-      <button class="mt-10" type="primary" @click="saveImage">将图片保存到手机相册</button>
-      <button class="mt-10" type="primary" @click="saveImageFromCachePath">将缓存文件保存到手机相册</button>
+    <view class="uni-padding-wrap">
+      <image class="image" src="/static/test-image/logo.png"></image>
+      <button class="margin-top-10" type="primary" @click="saveImage">将图片保存到手机相册</button>
+      <button class="margin-top-10" type="primary" @click="saveImageFromCachePath">将缓存文件保存到手机相册</button>
     </view>
 </template>
 
@@ -96,8 +96,13 @@
 </script>
 
 <style>
+  .margin-top-10 {
+    margin-top: 10px;
+  }
+
   .image {
     width: 196px;
     height: 196px;
+    align-self: center;
   }
 </style>

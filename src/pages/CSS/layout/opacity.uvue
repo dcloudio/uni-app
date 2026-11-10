@@ -1,156 +1,156 @@
 <template>
-    <view class="flex-grow-1">
+    <view style="flex-grow: 1;">
       <view class="demo-row">
-        <view class="flex-1 m-0-5">
+        <view class="demo-item">
           <text>opacity: 1 (默认值)</text>
           <view class="common" style="opacity: 1;"></view>
         </view>
-        <view class="flex-1 m-0-5">
+        <view class="demo-item">
           <text>拍平</text>
           <view class="common" style="opacity: 1;" flatten></view>
         </view>
       </view>
 
-      <view class="demo-row mt-15">
-        <view class="flex-1 m-0-5">
+      <view class="demo-row uni-common-mt">
+        <view class="demo-item">
           <text>opacity: 0.8</text>
           <view class="common" style="opacity: 0.8;"></view>
         </view>
-        <view class="flex-1 m-0-5">
+        <view class="demo-item">
           <text>拍平</text>
           <view class="common" style="opacity: 0.8;" flatten></view>
         </view>
       </view>
 
-      <view class="demo-row mt-15">
-        <view class="flex-1 m-0-5">
+      <view class="demo-row uni-common-mt">
+        <view class="demo-item">
           <text>opacity: 0.5</text>
           <view class="common" style="opacity: 0.5;"></view>
         </view>
-        <view class="flex-1 m-0-5">
+        <view class="demo-item">
           <text>拍平</text>
           <view class="common" style="opacity: 0.5;" flatten></view>
         </view>
       </view>
 
-      <view class="demo-row mt-15">
-        <view class="flex-1 m-0-5">
+      <view class="demo-row uni-common-mt">
+        <view class="demo-item">
           <text>opacity: 0.2</text>
           <view class="common" style="opacity: 0.2;"></view>
         </view>
-        <view class="flex-1 m-0-5">
+        <view class="demo-item">
           <text>拍平</text>
           <view class="common" style="opacity: 0.2;" flatten></view>
         </view>
       </view>
 
-      <view class="demo-row mt-15">
-        <view class="flex-1 m-0-5">
+      <view class="demo-row uni-common-mt">
+        <view class="demo-item">
           <text>opacity: 0</text>
           <view class="common" style="opacity: 0;"></view>
         </view>
-        <view class="flex-1 m-0-5">
+        <view class="demo-item">
           <text>拍平</text>
           <view class="common" style="opacity: 0;" flatten></view>
         </view>
       </view>
 
-      <text class="fs-15 fw-bold color-text-333 mt-15">scroll-view 组件</text>
+      <text class="uni-title-text uni-common-mt">scroll-view 组件</text>
 
-      <view class="demo-row mt-15">
-        <view class="flex-1 m-0-5">
+      <view class="demo-row uni-common-mt">
+        <view class="demo-item">
           <text>opacity: 0.5</text>
           <scroll-view class="common" style="opacity: 0.5;"></scroll-view>
         </view>
-        <view class="flex-1 m-0-5">
+        <view class="demo-item">
           <text>opacity: 0.2</text>
           <scroll-view class="common" style="opacity: 0.2;"></scroll-view>
         </view>
       </view>
 
-      <view class="mt-15">
-        <text class="fs-15 fw-bold color-text-333">setProperty 设置与 getPropertyValue 获取</text>
+      <view class="uni-common-mt">
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <!-- 普通版本 -->
-      <view class="flex-dir-row justify-between mt-10">
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">view 组件</text>
-          <text class="fs-12 color-999">设置值: {{data.opacity}}</text>
-          <text class="fs-12 color-999">获取值: {{data.opacityActual}}</text>
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件</text>
+          <text class="uni-info">设置值: {{data.opacity}}</text>
+          <text class="uni-info">获取值: {{data.opacityActual}}</text>
           <view class="test-box">
-            <view ref="viewRef" class="common" :style="{ opacity: data.opacity }">
+            <view ref="viewRef" class="common test-view" :style="{ opacity: data.opacity }">
               <text class="common-text">view</text>
             </view>
           </view>
         </view>
 
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">text 组件</text>
-          <text class="fs-12 color-999">设置值: {{data.opacity}}</text>
-          <text class="fs-12 color-999">获取值: {{data.opacityActualText}}</text>
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件</text>
+          <text class="uni-info">设置值: {{data.opacity}}</text>
+          <text class="uni-info">获取值: {{data.opacityActualText}}</text>
           <view class="test-box">
-            <text ref="textRef" class="common" :style="{ opacity: data.opacity }">text</text>
+            <text ref="textRef" class="common test-text" :style="{ opacity: data.opacity }">text</text>
           </view>
         </view>
 
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">image 组件</text>
-          <text class="fs-12 color-999">设置值: {{data.opacity}}</text>
-          <text class="fs-12 color-999">获取值: {{data.opacityActualImage}}</text>
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件</text>
+          <text class="uni-info">设置值: {{data.opacity}}</text>
+          <text class="uni-info">获取值: {{data.opacityActualImage}}</text>
           <view class="test-box">
-            <image ref="imageRef" class="common" :style="{ opacity: data.opacity }" src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common test-image" :style="{ opacity: data.opacity }" src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
 
       <!-- 拍平版本 -->
-      <view class="flex-dir-row justify-between mt-10">
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">view 组件拍平</text>
-          <text class="fs-12 color-999">设置值: {{data.opacity}}</text>
-          <text class="fs-12 color-999">获取值: {{data.opacityActualFlat}}</text>
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件拍平</text>
+          <text class="uni-info">设置值: {{data.opacity}}</text>
+          <text class="uni-info">获取值: {{data.opacityActualFlat}}</text>
           <view class="test-box">
-            <view ref="viewRefFlat" class="common" :style="{ opacity: data.opacity }" flatten>
+            <view ref="viewRefFlat" class="common test-view-flatten" :style="{ opacity: data.opacity }" flatten>
               <text class="common-text">view</text>
             </view>
           </view>
         </view>
 
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">text 组件拍平</text>
-          <text class="fs-12 color-999">设置值: {{data.opacity}}</text>
-          <text class="fs-12 color-999">获取值: {{data.opacityActualTextFlat}}</text>
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件拍平</text>
+          <text class="uni-info">设置值: {{data.opacity}}</text>
+          <text class="uni-info">获取值: {{data.opacityActualTextFlat}}</text>
           <view class="test-box">
-            <text ref="textRefFlat" class="common" :style="{ opacity: data.opacity }" flatten>text</text>
+            <text ref="textRefFlat" class="common test-text-flatten" :style="{ opacity: data.opacity }" flatten>text</text>
           </view>
         </view>
 
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">image 组件拍平</text>
-          <text class="fs-12 color-999">设置值: {{data.opacity}}</text>
-          <text class="fs-12 color-999">获取值: {{data.opacityActualImageFlat}}</text>
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件拍平</text>
+          <text class="uni-info">设置值: {{data.opacity}}</text>
+          <text class="uni-info">获取值: {{data.opacityActualImageFlat}}</text>
           <view class="test-box">
-            <image ref="imageRefFlat" class="common" :style="{ opacity: data.opacity }" flatten src="/static/test-image/logo.png"></image>
+            <image ref="imageRefFlat" class="common test-image-flatten" :style="{ opacity: data.opacity }" flatten src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
 
-      <view class="mt-15 mb-15">
-        <text class="fs-13 color-tips-0958d9 bg-tips-e6f4ff border-l-4-solid-tips-91caff p-10-12 radius-4 m-10">第一个枚举值，'' (空字符串) - 空值情况</text>
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data-checkbox :items="opacityEnum" title="opacity 枚举值" @change="radioChangeOpacity" :compact="true"></enum-data-checkbox>
         <input-data :defaultValue="data.opacity" title="opacity 自定义值" type="text" @confirm="inputChangeOpacity"></input-data>
       </view>
 
       <!-- #ifndef MP-ALIPAY -->
-      <view class="mb-15">
+      <view class="uni-common-mb">
         <text>native-view组件: opacity: 0.5 和 opacity: 0.2</text>
-        <view class="demo-row mt-15">
-          <view class="flex-1 m-0-5">
+        <view class="demo-row uni-common-mt">
+          <view class="demo-item">
             <text>opacity: 0.5</text>
             <test-native-view class="common" style="opacity: 0.5;"></test-native-view>
           </view>
-          <view class="flex-1 m-0-5">
+          <view class="demo-item">
             <text>opacity: 0.2</text>
             <test-native-view class="common" style="opacity: 0.2;"></test-native-view>
           </view>
@@ -239,6 +239,11 @@
     justify-content: space-between;
   }
 
+  .demo-item {
+    flex: 1;
+    margin: 0 5px;
+  }
+
   .common {
     width: 80px;
     height: 80px;
@@ -247,6 +252,17 @@
 
   .common-text {
     width: 50px;
+  }
+
+  .test-container {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
   }
 
   .test-box {

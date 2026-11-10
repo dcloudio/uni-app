@@ -174,6 +174,8 @@ class NativeWebViewImpl @JvmOverloads constructor(
         mWebView.loadUrl(
             if (url.isEmpty() || url == "about:blank") {
                 "about:blank"
+            } else if (url.startsWith("javascript:")) {
+                url
             } else if (url.startsWith("https://") || url.startsWith("http://")) { // 网络网页
                 url
             } else { // 本地网页

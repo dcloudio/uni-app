@@ -1,76 +1,76 @@
 <template>
     <view>
-      <text class="fs-15 fw-bold color-text-333 mt-15">view 组件 transition-timing-function：linear</text>
+      <text class="uni-title-text uni-common-mt">view 组件 transition-timing-function：linear</text>
       <view :class="classValue"></view>
       <view class="button-container">
         <button class="button-item" @click="start">start</button>
         <button class="button-item" @click="reset">reset</button>
       </view>
 
-      <text class="fs-15 fw-bold color-text-333 mt-15">text 组件 transition-timing-function：ease-in-out</text>
+      <text class="uni-title-text uni-common-mt">text 组件 transition-timing-function：ease-in-out</text>
       <text :class="textClassValue">timing-function: ease-in-out</text>
       <view class="button-container">
         <button class="button-item" @click="textStart">text start</button>
         <button class="button-item" @click="textReset">text reset</button>
       </view>
 
-      <text class="fs-15 fw-bold color-text-333 mt-15">image 组件 transition-timing-function：ease</text>
+      <text class="uni-title-text uni-common-mt">image 组件 transition-timing-function：ease</text>
       <image :class="imageClassValue" src="/static/test-image/logo.png"></image>
       <view class="button-container">
         <button class="button-item" @click="imageStart">image start</button>
         <button class="button-item" @click="imageReset">image reset</button>
       </view>
 
-      <text class="fs-15 fw-bold color-text-333 mt-15">scroll-view 组件 transition-timing-function：ease-in-out</text>
+      <text class="uni-title-text uni-common-mt">scroll-view 组件 transition-timing-function：ease-in-out</text>
       <scroll-view :class="scrollViewClassValue"></scroll-view>
       <view class="button-container">
         <button class="button-item" @click="scrollViewStart">scroll-view start</button>
         <button class="button-item" @click="scrollViewReset">scroll-view reset</button>
       </view>
 
-      <view class="mt-15">
-        <text class="fs-15 fw-bold color-text-333">setProperty 设置与 getPropertyValue 获取</text>
+      <view class="uni-common-mt">
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
-      <view class="flex-dir-row justify-between mt-10">
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">view 组件</text>
-          <text class="fs-12 color-999">设置值: {{data.transitionTimingFunctionDynamic}}</text>
-          <text class="fs-12 color-999">获取值: {{data.transitionTimingFunctionActual}}</text>
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件</text>
+          <text class="uni-info">设置值: {{data.transitionTimingFunctionDynamic}}</text>
+          <text class="uni-info">获取值: {{data.transitionTimingFunctionActual}}</text>
           <view class="test-box">
-            <view ref="viewRefDynamic" class="common-image" :style="{ transitionTimingFunction: data.transitionTimingFunctionDynamic, transitionProperty: 'width', transitionDuration: '2s' }" @click="triggerTransitionDynamic">
+            <view ref="viewRefDynamic" class="common-image test-view" :style="{ transitionTimingFunction: data.transitionTimingFunctionDynamic, transitionProperty: 'width', transitionDuration: '2s' }" @click="triggerTransitionDynamic">
               <text style="font-size: 12px;">点击view</text>
             </view>
           </view>
         </view>
 
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">text 组件</text>
-          <text class="fs-12 color-999">设置值: {{data.transitionTimingFunctionDynamic}}</text>
-          <text class="fs-12 color-999">获取值: {{data.transitionTimingFunctionActualText}}</text>
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件</text>
+          <text class="uni-info">设置值: {{data.transitionTimingFunctionDynamic}}</text>
+          <text class="uni-info">获取值: {{data.transitionTimingFunctionActualText}}</text>
           <view class="test-box">
-            <text ref="textRefDynamic" class="common-text" :style="{ transitionTimingFunction: data.transitionTimingFunctionDynamic, transitionProperty: 'width', transitionDuration: '2s' }" @click="triggerTransitionTextDynamic">点击text</text>
+            <text ref="textRefDynamic" class="common-text test-text" :style="{ transitionTimingFunction: data.transitionTimingFunctionDynamic, transitionProperty: 'width', transitionDuration: '2s' }" @click="triggerTransitionTextDynamic">点击text</text>
           </view>
         </view>
 
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">image 组件</text>
-          <text class="fs-12 color-999">设置值: {{data.transitionTimingFunctionDynamic}}</text>
-          <text class="fs-12 color-999">获取值: {{data.transitionTimingFunctionActualImage}}</text>
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件</text>
+          <text class="uni-info">设置值: {{data.transitionTimingFunctionDynamic}}</text>
+          <text class="uni-info">获取值: {{data.transitionTimingFunctionActualImage}}</text>
           <view class="test-box">
-            <image ref="imageRefDynamic" class="common-image" :style="{ transitionTimingFunction: data.transitionTimingFunctionDynamic, transitionProperty: 'width', transitionDuration: '2s' }" @click="triggerTransitionImageDynamic" src="/static/test-image/logo.png"></image>
+            <image ref="imageRefDynamic" class="common-image test-image" :style="{ transitionTimingFunction: data.transitionTimingFunctionDynamic, transitionProperty: 'width', transitionDuration: '2s' }" @click="triggerTransitionImageDynamic" src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
 
-      <view class="mt-15 mb-15">
-        <text class="fs-13 color-tips-0958d9 bg-tips-e6f4ff border-l-4-solid-tips-91caff p-10-12 radius-4 m-10">第一个枚举值，'' (空字符串) - 空值情况</text>
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data-checkbox :items="transitionTimingFunctionEnum" title="transition-timing-function 枚举值" @change="radioChangeTransitionTimingFunction" :compact="true"></enum-data-checkbox>
         <input-data :defaultValue="data.transitionTimingFunctionDynamic" title="transition-timing-function 自定义值" type="text" @confirm="inputChangeTransitionTimingFunction"></input-data>
       </view>
 
       <!-- #ifndef MP-ALIPAY -->
-        <text class="fs-15 fw-bold color-text-333 mt-15 mb-15">native-view 组件 transition-timing-function：ease-in-out</text>
+        <text class="uni-title-text uni-common-mt uni-common-mb">native-view 组件 transition-timing-function：ease-in-out</text>
         <test-native-view :class="nativeViewClassValue"></test-native-view>
         <view class="button-container">
           <button class="button-item" @click="nativeViewStart">native-view start</button>
@@ -317,10 +317,27 @@
     width: 300px;
   }
 
+  .test-container {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
+  }
+
   .test-box {
     width: 100%;
     height: 80px;
     background-color: gray;
+  }
+
+  .demo-box {
+    flex-direction: row;
+    justify-content: space-around;
+    margin-top: 10px;
   }
 
 

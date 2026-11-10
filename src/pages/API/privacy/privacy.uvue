@@ -1,27 +1,27 @@
 <template>
 		<page-head :title="title"></page-head>
-    <view class="mb-10 d-flex flex-dir-row justify-between">
+    <view class="item-box">
       <text>当前应用隐私授权状态:</text>
       <text>{{ appPrivacy }}</text>
     </view>
     <!-- #ifdef MP -->
-    <view class="mb-10 d-flex flex-dir-row justify-between">
+    <view class="item-box">
       <text>隐私授权协议的名称:</text>
       <text>{{ privacyContractName }}</text>
     </view>
     <!-- #endif -->
     <view>
-      <button class="u-mt-5 mb-5" type="primary" @tap="getPrivacySetting">
+      <button class="privacy-button" type="primary" @tap="getPrivacySetting">
         获取隐私协议授权状态
       </button>
-      <button class="u-mt-5 mb-5" type="primary" open-type="agreePrivacyAuthorization">
+      <button class="privacy-button" type="primary" open-type="agreePrivacyAuthorization">
         同意隐私协议专用按钮
       </button>
       <!-- #ifdef APP -->
-      <button class="u-mt-5 mb-5" type="primary" @tap="resetPrivacyAuthorization">
+      <button class="privacy-button" type="primary" @tap="resetPrivacyAuthorization">
         重置隐私协议授权状态
       </button>
-      <button class="u-mt-5 mb-5" @tap="openPrivacyDialog">
+      <button class="privacy-button" @tap="openPrivacyDialog">
         显示隐私政策弹框
       </button>
       <!-- #endif -->
@@ -41,6 +41,12 @@
 				// #ifdef MP
 				privacyContractName.value = res.privacyContractName
 				// #endif
+			},
+			fail: (res) => {
+				console.log('getPrivacySetting fail', res)
+			},
+			complete: (res) => {
+				console.log('getPrivacySetting complete', res)
 			}
 		})
 	}
@@ -89,7 +95,18 @@
 </script>
 
 <style>
-page {
-  padding: 0px 15px;
+	page {
+		padding: 0px 15px;
+	}
+
+.item-box {
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+.privacy-button{
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 </style>

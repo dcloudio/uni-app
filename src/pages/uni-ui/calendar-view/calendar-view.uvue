@@ -1,0 +1,472 @@
+<template>
+	<view class="intro">
+		<text class="page-title">uni-calendar-view 日历视图</text>
+		<text class="page-desc">内嵌在页面中的日历，支持月份切换、日期选择、日期范围限制、节假日高亮和多语言。</text>
+	</view>
+
+	<!-- 基础用法 -->
+	<view class="section">
+		<text class="section-title">基础用法</text>
+		<text class="section-desc">v-model 双向绑定选中日期，点击左右箭头、滑动日历或点击年月选择月份。</text>
+		<view class="calendar-wrap">
+			<uni-calendar-view v-model="data.basicDate" @change="onBasicChange" @month-change="onBasicMonthChange" />
+		</view>
+		<text class="section-result">选中日期：{{ data.basicDate }}</text>
+		<text class="section-result">最近事件：{{ data.lastEvent }}</text>
+	</view>
+
+	<!-- 自定义样式 -->
+	<view class="section">
+		<text class="section-title">自定义样式（externalClass）</text>
+		<text class="section-desc">同时使用 year-month-class、year-month-arrow-class、week-class、week-item-class、day-class、day-selected-class 定制外观。今天默认高亮，可通过 today-class 覆盖。</text>
+		<view class="calendar-wrap">
+			<uni-calendar-view v-model="data.styleDate" year-month-class="custom-year-month"
+				year-month-arrow-class="custom-arrow" week-class="custom-week" week-item-class="custom-week-item"
+				day-class="custom-day" day-selected-class="custom-day-selected" today-class="custom-today" />
+		</view>
+		<text class="section-result">选中日期：{{ data.styleDate }}</text>
+	</view>
+
+	<!-- 日期范围 -->
+	<view class="section">
+		<text class="section-title">可选日期范围</text>
+		<text class="section-desc">通过 min-date、max-date 限制可选范围，超出范围的日期置灰且不可点击。示例范围为今天起 30 天。</text>
+		<view class="calendar-wrap">
+			<uni-calendar-view :model-value="data.rangeDate" :min-date="minDate" :max-date="maxDate"
+				@change="onRangeChange" />
+		</view>
+		<text class="section-result">选中日期：{{ data.rangeDate }}</text>
+	</view>
+
+	<!-- 节假日 -->
+	<view class="section">
+		<text class="section-title">节假日高亮</text>
+		<text class="section-desc">通过 holidays 传入节假日日期列表，命中的日期以橙色显示。</text>
+		<view class="calendar-wrap">
+			<uni-calendar-view v-model="data.holidayDate" date="2026-10-01" :holidays="holidays"
+				@change="onHolidayChange" />
+		</view>
+		<text class="section-result">选中日期：{{ data.holidayDate }}</text>
+	</view>
+
+	<!-- 日期上下方文字 -->
+	<view class="section">
+		<text class="section-title">日期上下方文字</text>
+		<text class="section-desc">通过 day-extras 在日期数字上方、下方显示节日、农历等文字。上方、下方文字样式由 day-top-class、day-bottom-class 定制，单元格样式由 day-wrap-class 定制。</text>
+		<view class="calendar-wrap">
+			<uni-calendar-view v-model="data.extraDate" :day-extras="dayExtras" day-wrap-class="custom-day-wrap"
+				today-class="custom-today" day-top-class="custom-day-top" day-bottom-class="custom-day-bottom" />
+		</view>
+		<text class="section-result">选中日期：{{ data.extraDate }}</text>
+	</view>
+
+	<!-- 一周起始日 -->
+	<view class="section">
+		<text class="section-title">一周起始日</text>
+		<text class="section-desc">week-start 可指定一周起始日，-1 表示按语言自动适配。星期标题行固定显示。</text>
+		<view class="option-row">
+			<text v-for="(item, index) in weekStartOptions" :key="index" class="option-item"
+				:class="item.value == data.weekStartMode ? 'option-item--active' : ''"
+				@click="onWeekStartSelect(item.value)">{{ item.label }}</text>
+		</view>
+		<view class="calendar-wrap">
+			<uni-calendar-view v-model="data.weekStartDate" :week-start="data.weekStartMode" />
+		</view>
+		<text class="section-result">选中日期：{{ data.weekStartDate }}</text>
+	</view>
+
+	<!-- 国际化 -->
+	<view class="section">
+		<text class="section-title">国际化</text>
+		<text class="section-desc">内置 17 种语言的月份名称和星期缩写，不传 locale 时跟随系统语言。点击下方语言切换查看效果。</text>
+		<view class="locale-list">
+			<text v-for="(item, index) in localeOptions" :key="item.value" class="locale-item"
+				:class="index == data.localeIndex ? 'locale-item--active' : ''"
+				@click="onLocaleSelect(index)">{{ item.label }}</text>
+		</view>
+		<view class="calendar-wrap">
+			<uni-calendar-view v-model="data.localeDate" :locale="activeLocale" />
+		</view>
+		<text class="section-result">当前语言：{{ localeOptions[data.localeIndex].label }}</text>
+	</view>
+
+	<!-- 组件方法 -->
+	<view class="section">
+		<text class="section-title">组件方法</text>
+		<text class="section-desc">通过 ref 调用 prevMonth、nextMonth、goToDate、getSelectedDate 等方法控制日历。</text>
+		<view class="button-row">
+			<button class="demo-btn" size="mini" @click="onPrevMonth">上一月</button>
+			<button class="demo-btn" size="mini" @click="onNextMonth">下一月</button>
+			<button class="demo-btn" size="mini" @click="onJumpDate">跳到 2027-01-15</button>
+			<button class="demo-btn" size="mini" @click="onReadSelected">读取选中日期</button>
+		</view>
+		<view class="calendar-wrap">
+			<uni-calendar-view ref="methodCalendarRef" v-model="data.methodDate" />
+		</view>
+		<text class="section-result">选中日期：{{ data.methodDate }}</text>
+	</view>
+</template>
+
+<script setup lang="ts">
+	type LocaleOption = {
+		label : string
+		value : string
+	}
+
+	type WeekStartOption = {
+		label : string
+		value : number
+	}
+
+	type CalendarDayExtra = {
+		date : string
+		top ?: string
+		bottom ?: string
+	}
+
+	type Data = {
+		basicDate : string
+		styleDate : string
+		rangeDate : string
+		holidayDate : string
+		extraDate : string
+		weekStartDate : string
+		localeDate : string
+		methodDate : string
+		weekStartMode : number
+		localeIndex : number
+		lastEvent : string
+	}
+
+	const localeOptions : LocaleOption[] = [
+		{ label: '简体中文', value: 'zh-Hans' },
+		{ label: '繁體中文', value: 'zh-Hant' },
+		{ label: 'English', value: 'en' },
+		{ label: 'Français', value: 'fr' },
+		{ label: 'Latina', value: 'la' },
+		{ label: '日本語', value: 'ja' },
+		{ label: '한국어', value: 'ko' },
+		{ label: 'Deutsch', value: 'de' },
+		{ label: 'Indonesia', value: 'id' },
+		{ label: 'Melayu', value: 'ms' },
+		{ label: 'Italiano', value: 'it' },
+		{ label: 'Português', value: 'pt' },
+		{ label: 'Русский', value: 'ru' },
+		{ label: 'ไทย', value: 'th' },
+		{ label: 'Tiếng Việt', value: 'vi' },
+		{ label: 'العربية', value: 'ar' },
+		{ label: 'Türkçe', value: 'tr' }
+	]
+
+	const weekStartOptions : WeekStartOption[] = [
+		{ label: '自动', value: -1 },
+		{ label: '周日开始', value: 0 },
+		{ label: '周一开始', value: 1 }
+	]
+
+	// 2026 年中国法定节假日（示例数据）
+	const holidays : string[] = [
+		'2026-01-01', '2026-01-02', '2026-01-03',
+		'2026-02-15', '2026-02-16', '2026-02-17', '2026-02-18',
+		'2026-02-19', '2026-02-20', '2026-02-21', '2026-02-22', '2026-02-23',
+		'2026-04-04', '2026-04-05', '2026-04-06',
+		'2026-05-01', '2026-05-02', '2026-05-03', '2026-05-04', '2026-05-05',
+		'2026-06-19', '2026-06-20', '2026-06-21',
+		'2026-09-25', '2026-09-26', '2026-09-27',
+		'2026-10-01', '2026-10-02', '2026-10-03', '2026-10-04',
+		'2026-10-05', '2026-10-06', '2026-10-07'
+	]
+
+	function padZero(value : number) : string {
+		return value < 10 ? '0' + value.toString() : value.toString()
+	}
+
+	function formatDate(date : Date) : string {
+		return `${date.getFullYear()}-${padZero(date.getMonth() + 1)}-${padZero(date.getDate())}`
+	}
+
+	const today = new Date()
+	const todayText = formatDate(today)
+	const minDate = todayText
+	const maxDate = formatDate(new Date(today.getFullYear(), today.getMonth(), today.getDate() + 30))
+
+	// 模拟农历文字（仅用于演示，真实农历需自行接入数据或算法）
+	const lunarNames : string[] = [
+		'初一', '初二', '初三', '初四', '初五', '初六', '初七', '初八', '初九', '初十',
+		'十一', '十二', '十三', '十四', '十五', '十六', '十七', '十八', '十九', '二十',
+		'廿一', '廿二', '廿三', '廿四', '廿五', '廿六', '廿七', '廿八', '廿九', '三十'
+	]
+
+	const festivalDates : string[] = ['2026-11-26', '2026-12-25', '2027-01-01']
+	const festivalNames : string[] = ['感恩节', '圣诞节', '元旦']
+
+	function getFestivalName(dateStr : string) : string {
+		for (let i = 0; i < festivalDates.length; i++) {
+			if (festivalDates[i] == dateStr) {
+				return festivalNames[i]
+			}
+		}
+		return ''
+	}
+
+	function appendMonthExtras(list : CalendarDayExtra[], year : number, month : number) : void {
+		const daysInMonth = new Date(year, month, 0).getDate()
+		for (let day = 1; day <= daysInMonth; day++) {
+			const dateStr = formatDate(new Date(year, month - 1, day))
+			const lunar = lunarNames[(day - 1) % lunarNames.length]
+			const festival = getFestivalName(dateStr)
+			if (festival.length > 0) {
+				list.push({ date: dateStr, top: festival, bottom: lunar })
+			} else {
+				list.push({ date: dateStr, bottom: lunar })
+			}
+		}
+	}
+
+	const data = reactive<Data>({
+		basicDate: todayText,
+		styleDate: todayText,
+		rangeDate: todayText,
+		holidayDate: '2026-10-01',
+		extraDate: todayText,
+		weekStartDate: todayText,
+		localeDate: todayText,
+		methodDate: todayText,
+		weekStartMode: -1,
+		localeIndex: 0,
+		lastEvent: '暂无事件'
+	})
+
+	const activeLocale = computed<string>(() : string => {
+		return localeOptions[data.localeIndex].value
+	})
+
+	const dayExtras = computed<CalendarDayExtra[]>(() : CalendarDayExtra[] => {
+		const list : CalendarDayExtra[] = []
+		const base = new Date()
+		for (let offset = -1; offset <= 1; offset++) {
+			const monthDate = new Date(base.getFullYear(), base.getMonth() + offset, 1)
+			appendMonthExtras(list, monthDate.getFullYear(), monthDate.getMonth() + 1)
+		}
+		return list
+	})
+
+	function logEvent(text : string) {
+		data.lastEvent = text
+	}
+
+	function onBasicChange(date : string) {
+		logEvent(`change：${date}`)
+	}
+
+	function onBasicMonthChange(year : number, month : number) {
+		logEvent(`month-change：${year}-${padZero(month)}`)
+	}
+
+	function onRangeChange(date : string) {
+		data.rangeDate = date
+		logEvent(`change：${date}`)
+	}
+
+	function onHolidayChange(date : string) {
+		logEvent(`change：${date}`)
+	}
+
+	function onWeekStartSelect(value : number) {
+		data.weekStartMode = value
+	}
+
+	function onLocaleSelect(index : number) {
+		data.localeIndex = index
+	}
+
+	const methodCalendarRef = ref<CallEasyMethodComponentPublicInstance | null>(null)
+
+	function onPrevMonth() {
+		methodCalendarRef.value?.prevMonth()
+	}
+
+	function onNextMonth() {
+		methodCalendarRef.value?.nextMonth()
+	}
+
+	function onJumpDate() {
+		methodCalendarRef.value?.goToDate('2027-01-15')
+	}
+
+	function onReadSelected() {
+		const date = methodCalendarRef.value?.getSelectedDate()
+		const text = date != null && date.length > 0 ? (date as string) : '未选择'
+		uni.showToast({
+			title: text,
+			icon: 'none'
+		})
+	}
+
+	defineExpose({
+		data
+	})
+</script>
+
+<style>
+	page {
+		padding: 12px;
+	}
+
+	.intro {
+		margin-bottom: 12px;
+		padding: 4px;
+	}
+
+	.page-title {
+		font-size: 18px;
+		font-weight: bold;
+		color: var(--text-color, #333333);
+	}
+
+	.page-desc {
+		margin-top: 6px;
+		font-size: 12px;
+		line-height: 18px;
+		color: var(--secondary-text-color, #999999);
+	}
+
+	.section {
+		margin-bottom: 12px;
+		padding: 12px;
+		border-radius: 10px;
+	}
+
+	.section-title {
+		font-size: 15px;
+		font-weight: bold;
+		color: var(--text-color, #333333);
+	}
+
+	.section-desc {
+		margin-top: 4px;
+		margin-bottom: 8px;
+		font-size: 12px;
+		line-height: 18px;
+		color: var(--secondary-text-color, #999999);
+	}
+
+	.section-result {
+		margin-top: 8px;
+		font-size: 13px;
+		line-height: 18px;
+		color: #1976d2;
+	}
+
+	.calendar-wrap {
+		border-radius: 8px;
+		overflow: hidden;
+	}
+
+	.option-row {
+		flex-direction: row;
+		flex-wrap: wrap;
+		margin-bottom: 8px;
+	}
+
+	.option-item {
+		margin-right: 8px;
+		margin-bottom: 8px;
+		padding: 6px 14px;
+		border-radius: 14px;
+		font-size: 12px;
+		color: var(--text-color, #555555);
+		background-color: var(--active-background-color, #f2f3f5);
+	}
+
+	.option-item--active {
+		color: #ffffff;
+		background-color: #ff5500;
+	}
+
+	.locale-list {
+		flex-direction: row;
+		flex-wrap: wrap;
+		margin-bottom: 4px;
+	}
+
+	.locale-item {
+		margin-right: 8px;
+		margin-bottom: 8px;
+		padding: 6px 10px;
+		border-radius: 14px;
+		font-size: 12px;
+		color: var(--text-color, #555555);
+		background-color: var(--active-background-color, #f2f3f5);
+	}
+
+	.locale-item--active {
+		color: #ffffff;
+		background-color: #1976d2;
+	}
+
+	.button-row {
+		flex-direction: row;
+		flex-wrap: wrap;
+		margin-bottom: 8px;
+	}
+
+	.demo-btn {
+		margin-right: 8px;
+		margin-bottom: 8px;
+		font-size: 12px;
+	}
+
+	/* externalClass 自定义样式 */
+	.custom-year-month {
+		font-size: 19px;
+		font-weight: bold;
+		color: #7c3aed;
+	}
+
+	.custom-arrow {
+		font-size: 24px;
+		color: #7c3aed;
+	}
+
+	.custom-week {
+		border-radius: 6px;
+		background-color: #f3e8ff;
+	}
+
+	.custom-week-item {
+		font-weight: bold;
+		color: #7c3aed;
+		opacity: 1;
+	}
+
+	.custom-day {
+		font-size: 15px;
+	}
+
+	.custom-day-selected {
+		border-radius: 8px;
+		background-color: #7c3aed;
+		color: #ffffff;
+	}
+
+	.custom-today {
+		font-weight: bold;
+		text-decoration-line: underline;
+	}
+
+	.custom-day-wrap {
+		height: 72px;
+	}
+
+	.custom-day-top {
+		font-size: 10px;
+		color: #ff5500;
+	}
+
+	.custom-day-bottom {
+		font-size: 10px;
+		color: #999999;
+		opacity: 1;
+	}
+</style>

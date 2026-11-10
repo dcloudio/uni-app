@@ -1,16 +1,16 @@
 <template>
-  <view class="flex-1">
-    <map class="w-full u-h-300 bg-f0f0f0" id="map1" ref="map1" :longitude="location.longitude" :latitude="location.latitude" :scale="scale"
+  <view class="content">
+    <map class="map" id="map1" ref="map1" :longitude="location.longitude" :latitude="location.latitude" :scale="scale"
       :markers="markers" :include-points="includePoints" :polyline="polyline" :polygons="polygons" :circles="circles"
       :controls="controls" :show-location="showLocation" :enable-3D="enable3D" :rotate="rotate" :skew="skew"
       :show-compass="showCompass" :enable-overlooking="enableOverlooking" :enable-zoom="enableZoom"
       :enable-scroll="enableScroll" :enable-rotate="enableRotate" :enable-satellite="enableSatellite"
       :enable-traffic="enableTraffic" @markertap="onmarkertap" @callouttap="oncallouttap" @controltap="oncontroltap"
       @regionchange="onregionchange" @tap="maptap" @updated="onupdated" @poitap="onpoitap"></map>
-    <scroll-view class="flex-1 u-p-10">
-      <view class="mt-15 opacity-0_8"><text class="fs-12">注意：App和Web需要正确配置地图服务商的Key才能显示地图组件</text></view>
-      <view class="p-10-0 color-text-333">
-        <text class="fs-15 fw-bold color-text-333">属性示例</text>
+    <scroll-view class="scrollview">
+      <view class="tips"><text class="tips-text">注意：App和Web需要正确配置地图服务商的Key才能显示地图组件</text></view>
+      <view class="uni-title">
+        <text class="uni-title-text">属性示例</text>
       </View>
       <input-data defaultValue="13" title="scale: 缩放级别，取值范围为5-18" type="number"
         @confirm="confirm_scale_input"></input-data>
@@ -24,28 +24,28 @@
       <boolean-data :default-value="enableSatellite" title="卫星图" @change="change_enable_satellite"></boolean-data>
       <boolean-data :default-value="enableTraffic" title="实时路况" @change="change_enable_traffic"></boolean-data>
 
-      <button class="u-mt-5 mb-5" @click="addControls">控件</button>
-      <button class="u-mt-5 mb-5" @click="addMarkers">添加标记点</button>
+      <button class="button" @click="addControls">控件</button>
+      <button class="button" @click="addMarkers">添加标记点</button>
       <!-- #ifdef WEB || MP -->
-      <button class="u-mt-5 mb-5" @click="addMarkersLabel">为标记点旁边增加标签</button>
+      <button class="button" @click="addMarkersLabel">为标记点旁边增加标签</button>
       <!-- #endif -->
-      <button class="u-mt-5 mb-5" @click="removeMarker">移除ID为4的标记点和标签</button>
-      <button class="u-mt-5 mb-5" @click="addPolyline">添加路线</button>
-      <button class="u-mt-5 mb-5" @click="removePolyline">移除一条路线</button>
-      <button class="u-mt-5 mb-5" @click="addPolygons">添加多边形</button>
-      <button class="u-mt-5 mb-5" @click="removePolygon">移除一个多边形</button>
-      <button class="u-mt-5 mb-5" @click="addCircles">添加圆</button>
-      <button class="u-mt-5 mb-5" @click="removeCircle">移除一个圆</button>
-      <button class="u-mt-5 mb-5" @click="includePoint">缩放视野以包含所有给定的坐标点</button>
-      <view class="p-10-0 color-text-333">
-        <text class="fs-15 fw-bold color-text-333">方法示例</text>
+      <button class="button" @click="removeMarker">移除ID为4的标记点和标签</button>
+      <button class="button" @click="addPolyline">添加路线</button>
+      <button class="button" @click="removePolyline">移除一条路线</button>
+      <button class="button" @click="addPolygons">添加多边形</button>
+      <button class="button" @click="removePolygon">移除一个多边形</button>
+      <button class="button" @click="addCircles">添加圆</button>
+      <button class="button" @click="removeCircle">移除一个圆</button>
+      <button class="button" @click="includePoint">缩放视野以包含所有给定的坐标点</button>
+      <view class="uni-title">
+        <text class="uni-title-text">方法示例</text>
       </View>
-      <button class="u-mt-5 mb-5" @click="handleGetCenterLocation">获取当前地图中心的经纬度</button>
-      <button class="u-mt-5 mb-5" @click="handleGetRegion">获取当前地图的视野范围</button>
-      <button class="u-mt-5 mb-5" @click="handleTranslateMarker">平移marker</button>
-      <button class="u-mt-5 mb-5" @click="handleMoveToLocation(true)">将地图中心移动到指定坐标</button>
-      <button class="u-mt-5 mb-5" @click="handleMoveToMyLocation">将地图中心移动到当前位置</button>
-      <button class="u-mt-5 mb-5" @click="handleGetScale">获取当前地图的缩放级别</button>
+      <button class="button" @click="handleGetCenterLocation">获取当前地图中心的经纬度</button>
+      <button class="button" @click="handleGetRegion">获取当前地图的视野范围</button>
+      <button class="button" @click="handleTranslateMarker">平移marker</button>
+      <button class="button" @click="handleMoveToLocation(true)">将地图中心移动到指定坐标</button>
+      <button class="button" @click="handleMoveToMyLocation">将地图中心移动到当前位置</button>
+      <button class="button" @click="handleGetScale">获取当前地图的缩放级别</button>
     </scroll-view>
   </view>
 </template>
@@ -752,3 +752,34 @@
     handleGetScale
   })
 </script>
+
+<style>
+  .content {
+    flex: 1;
+  }
+
+  .map {
+    width: 100%;
+    height: 300px;
+    background-color: #f0f0f0;
+  }
+
+  .scrollview {
+    flex: 1;
+    padding: 10px;
+  }
+
+  .button {
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+
+  .tips {
+    margin-top: 15px;
+    opacity: .8;
+  }
+
+  .tips-text {
+    font-size: 12px;
+  }
+</style>

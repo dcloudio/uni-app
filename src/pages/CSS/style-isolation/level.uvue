@@ -5,3 +5,7 @@
 <script setup lang="ts">
 		import levelChild from './level-child.uvue'
 </script>
+
+<style>
+
+</style>

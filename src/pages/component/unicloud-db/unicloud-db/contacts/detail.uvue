@@ -1,29 +1,29 @@
 <template>
-  <scroll-view class="page u-p-15 flex-1">
+  <scroll-view class="page">
     <unicloud-db ref="udbRef" v-slot:default="{data, loading, error}" :collection="collection" :where="where"
       page-data="replace">
-      <view v-if="error!=null">{{error.errMsg}}</view>
-      <view v-if="loading" class="items-center">正在加载...</view>
+      <view v-if="error!=null" class="error">{{error.errMsg}}</view>
+      <view v-if="loading" class="loading">正在加载...</view>
       <view v-if="data.length>0">
-        <view class="form-item flex-dir-row mb-15 items-center">
-          <text class="w-45 mr-10 color-contact-text-333">姓名</text>
-          <text class="flex-1 fs-14 color-contact-secondary-666">{{data[0]['username']}}</text>
+        <view class="form-item">
+          <text class="form-item-label">姓名</text>
+          <text class="form-item-input">{{data[0]['username']}}</text>
         </view>
-        <view class="form-item flex-dir-row mb-15 items-center">
-          <text class="w-45 mr-10 color-contact-text-333">电话</text>
-          <text class="flex-1 fs-14 color-contact-secondary-666">{{data[0]['mobile']}}</text>
+        <view class="form-item">
+          <text class="form-item-label">电话</text>
+          <text class="form-item-input">{{data[0]['mobile']}}</text>
         </view>
-        <view class="form-item flex-dir-row mb-15 items-center">
-          <text class="w-45 mr-10 color-contact-text-333">邮箱</text>
-          <text class="flex-1 fs-14 color-contact-secondary-666">{{data[0]['email']}}</text>
+        <view class="form-item">
+          <text class="form-item-label">邮箱</text>
+          <text class="form-item-input">{{data[0]['email']}}</text>
         </view>
-        <view class="form-item flex-dir-row mb-15 items-center">
-          <text class="w-45 mr-10 color-contact-text-333">备注</text>
-          <text class="flex-1 fs-14 color-contact-secondary-666">{{data[0]['comment']}}</text>
+        <view class="form-item">
+          <text class="form-item-label">备注</text>
+          <text class="form-item-input">{{data[0]['comment']}}</text>
         </view>
-        <view class="form-item flex-dir-row mb-15 items-center">
-          <text class="w-45 mr-10 color-contact-text-333">性别</text>
-          <text class="flex-1 fs-14 color-contact-secondary-666">{{displayGender((data[0].gender as number))}}</text>
+        <view class="form-item">
+          <text class="form-item-label">性别</text>
+          <text class="form-item-input">{{displayGender((data[0].gender as number))}}</text>
         </view>
         <button type="default" @click="gotoUpdatePage((data[0]._id as string))">编辑</button>
       </view>
@@ -78,10 +78,31 @@
   .page {
     --contact-text-color: #333333;
     --contact-secondary-color: #666;
+    flex: 1;
+    padding: 15px;
+  }
+
+  .loading {
+    align-items: center;
   }
 
   .form-item {
+    flex-direction: row;
+    margin-bottom: 15px;
+    align-items: center;
     padding: 8px 0;
+  }
+
+  .form-item-label {
+    width: 45px;
+    margin-right: 10px;
+    color: var(--contact-text-color, #333333);
+  }
+
+  .form-item-input {
+    flex: 1;
+    font-size: 14px;
+    color: var(--contact-secondary-color, #666);
   }
 
   @media (prefers-color-scheme: dark) {

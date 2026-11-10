@@ -1,38 +1,38 @@
 <template>
-    <view class="page u-p-15 pb-safe-area-inset-bottom" id="page">
+    <view class="page" style="padding-bottom: var(--uni-safe-area-inset-bottom);" id="page">
       <page-head :title="data.title"></page-head>
       <page-intro content="本页演示 uni.createSelectorQuery：通过 select/selectAll 与 boundingClientRect 获取节点布局信息（left、top、right、bottom、width、height）；含 view、text、image、scroll-view 及子组件多根节点等查询示例，可测试 .fields/.node 结果；底部可跳转「滚动容器中的 createSelectorQuery」子页。"></page-intro>
-      <button class="btn-get-node-info mt-15" @click="getNodeInfo">getNodeInfo</button>
-      <button class="btn-get-all-node-info mt-15" @click="getAllNodeInfo">getAllNodeInfo</button>
-      <view id="rect-1-2" class="flex-dir-row mt-15">
-        <view class="w-150 h-100 rect bg-dodgerblue rect1"></view>
-        <view class="w-150 h-100 rect ml-auto rect2"></view>
+      <button class="btn btn-get-node-info" @click="getNodeInfo">getNodeInfo</button>
+      <button class="btn btn-get-all-node-info" @click="getAllNodeInfo">getAllNodeInfo</button>
+      <view id="rect-1-2" class="rect-1-2">
+        <view class="rect rect1"></view>
+        <view class="rect rect2"></view>
       </view>
-      <view class="flex-dir-row mt-15">
-        <view class="flex-1 flex-dir-column" v-for="(nodeInfo, index) in data.nodeInfoList" :key="index">
-          <view class="flex-dir-row">
-            <text class="w-72 lh-2x">left: </text>
-            <text class="fw-bold lh-2x">{{nodeInfo.left}}</text>
+      <view class="rect-info-1-2">
+        <view class="rect-info" v-for="(nodeInfo, index) in data.nodeInfoList" :key="index">
+          <view class="node-info-item">
+            <text class="node-info-item-k">left: </text>
+            <text class="node-info-item-v">{{nodeInfo.left}}</text>
           </view>
-          <view class="flex-dir-row">
-            <text class="w-72 lh-2x">top: </text>
-            <text class="fw-bold lh-2x">{{nodeInfo.top}}</text>
+          <view class="node-info-item">
+            <text class="node-info-item-k">top: </text>
+            <text class="node-info-item-v">{{nodeInfo.top}}</text>
           </view>
-          <view class="flex-dir-row">
-            <text class="w-72 lh-2x">right: </text>
-            <text class="fw-bold lh-2x">{{nodeInfo.right}}</text>
+          <view class="node-info-item">
+            <text class="node-info-item-k">right: </text>
+            <text class="node-info-item-v">{{nodeInfo.right}}</text>
           </view>
-          <view class="flex-dir-row">
-            <text class="w-72 lh-2x">bottom: </text>
-            <text class="fw-bold lh-2x">{{nodeInfo.bottom}}</text>
+          <view class="node-info-item">
+            <text class="node-info-item-k">bottom: </text>
+            <text class="node-info-item-v">{{nodeInfo.bottom}}</text>
           </view>
-          <view class="flex-dir-row">
-            <text class="w-72 lh-2x">width: </text>
-            <text class="fw-bold lh-2x">{{nodeInfo.width}}</text>
+          <view class="node-info-item">
+            <text class="node-info-item-k">width: </text>
+            <text class="node-info-item-v">{{nodeInfo.width}}</text>
           </view>
-          <view class="flex-dir-row">
-            <text class="w-72 lh-2x">height: </text>
-            <text class="fw-bold lh-2x">{{nodeInfo.height}}</text>
+          <view class="node-info-item">
+            <text class="node-info-item-k">height: </text>
+            <text class="node-info-item-v">{{nodeInfo.height}}</text>
           </view>
         </view>
       </view>
@@ -52,104 +52,104 @@
       <canvas id="canvas1"></canvas>
 
       <!-- text 组件 -->
-      <view class="mt-15">
-        <text class="fs-15 fw-bold color-text-333">Text 组件查询示例</text>
-        <text id="test-text" class="u-p-10 m-10-0 fs-16 color-333 test-text">这是一个测试文本元素</text>
-        <button class="mt-15" @click="getTextNodeInfo">查询 Text 节点信息</button>
-        <view v-if="data.textNodeInfo" class="flex-1 flex-dir-column">
-          <view class="flex-dir-row">
-            <text class="w-72 lh-2x">left: </text>
-            <text class="fw-bold lh-2x">{{data.textNodeInfo!.left}}</text>
+      <view class="uni-common-mt">
+        <text class="uni-title-text">Text 组件查询示例</text>
+        <text id="test-text" class="test-text">这是一个测试文本元素</text>
+        <button class="btn" @click="getTextNodeInfo">查询 Text 节点信息</button>
+        <view v-if="data.textNodeInfo" class="rect-info">
+          <view class="node-info-item">
+            <text class="node-info-item-k">left: </text>
+            <text class="node-info-item-v">{{data.textNodeInfo!.left}}</text>
           </view>
-          <view class="flex-dir-row">
-            <text class="w-72 lh-2x">right: </text>
-            <text class="fw-bold lh-2x">{{data.textNodeInfo!.right}}</text>
+          <view class="node-info-item">
+            <text class="node-info-item-k">right: </text>
+            <text class="node-info-item-v">{{data.textNodeInfo!.right}}</text>
           </view>
-          <view class="flex-dir-row">
-            <text class="w-72 lh-2x">top: </text>
-            <text class="fw-bold lh-2x">{{data.textNodeInfo!.top}}</text>
+          <view class="node-info-item">
+            <text class="node-info-item-k">top: </text>
+            <text class="node-info-item-v">{{data.textNodeInfo!.top}}</text>
           </view>
-          <view class="flex-dir-row">
-            <text class="w-72 lh-2x">bottom: </text>
-            <text class="fw-bold lh-2x">{{data.textNodeInfo!.bottom}}</text>
+          <view class="node-info-item">
+            <text class="node-info-item-k">bottom: </text>
+            <text class="node-info-item-v">{{data.textNodeInfo!.bottom}}</text>
           </view>
-          <view class="flex-dir-row">
-            <text class="w-72 lh-2x">width: </text>
-            <text class="fw-bold lh-2x">{{data.textNodeInfo!.width}}</text>
+          <view class="node-info-item">
+            <text class="node-info-item-k">width: </text>
+            <text class="node-info-item-v">{{data.textNodeInfo!.width}}</text>
           </view>
-          <view class="flex-dir-row">
-            <text class="w-72 lh-2x">height: </text>
-            <text class="fw-bold lh-2x">{{data.textNodeInfo!.height}}</text>
+          <view class="node-info-item">
+            <text class="node-info-item-k">height: </text>
+            <text class="node-info-item-v">{{data.textNodeInfo!.height}}</text>
           </view>
         </view>
       </view>
 
       <!-- image 组件 -->
-      <view class="mt-15">
-        <text class="fs-15 fw-bold color-text-333">Image 组件查询示例</text>
-        <image id="test-image" class="m-10-0 w-100 h-100" src="/static/test-image/logo.png" mode="aspectFit"></image>
-        <button class="mt-15" @click="getImageNodeInfo">查询 Image 节点信息</button>
-        <view v-if="data.imageNodeInfo" class="flex-1 flex-dir-column">
-          <view class="flex-dir-row">
-            <text class="w-72 lh-2x">left: </text>
-            <text class="fw-bold lh-2x">{{data.imageNodeInfo!.left}}</text>
+      <view class="uni-common-mt">
+        <text class="uni-title-text">Image 组件查询示例</text>
+        <image id="test-image" class="test-image" src="/static/test-image/logo.png" mode="aspectFit"></image>
+        <button class="btn" @click="getImageNodeInfo">查询 Image 节点信息</button>
+        <view v-if="data.imageNodeInfo" class="rect-info">
+          <view class="node-info-item">
+            <text class="node-info-item-k">left: </text>
+            <text class="node-info-item-v">{{data.imageNodeInfo!.left}}</text>
           </view>
-          <view class="flex-dir-row">
-            <text class="w-72 lh-2x">right: </text>
-            <text class="fw-bold lh-2x">{{data.imageNodeInfo!.right}}</text>
+          <view class="node-info-item">
+            <text class="node-info-item-k">right: </text>
+            <text class="node-info-item-v">{{data.imageNodeInfo!.right}}</text>
           </view>
-          <view class="flex-dir-row">
-            <text class="w-72 lh-2x">top: </text>
-            <text class="fw-bold lh-2x">{{data.imageNodeInfo!.top}}</text>
+          <view class="node-info-item">
+            <text class="node-info-item-k">top: </text>
+            <text class="node-info-item-v">{{data.imageNodeInfo!.top}}</text>
           </view>
-          <view class="flex-dir-row">
-            <text class="w-72 lh-2x">bottom: </text>
-            <text class="fw-bold lh-2x">{{data.imageNodeInfo!.bottom}}</text>
+          <view class="node-info-item">
+            <text class="node-info-item-k">bottom: </text>
+            <text class="node-info-item-v">{{data.imageNodeInfo!.bottom}}</text>
           </view>
-          <view class="flex-dir-row">
-            <text class="w-72 lh-2x">width: </text>
-            <text class="fw-bold lh-2x">{{data.imageNodeInfo!.width}}</text>
+          <view class="node-info-item">
+            <text class="node-info-item-k">width: </text>
+            <text class="node-info-item-v">{{data.imageNodeInfo!.width}}</text>
           </view>
-          <view class="flex-dir-row">
-            <text class="w-72 lh-2x">height: </text>
-            <text class="fw-bold lh-2x">{{data.imageNodeInfo!.height}}</text>
+          <view class="node-info-item">
+            <text class="node-info-item-k">height: </text>
+            <text class="node-info-item-v">{{data.imageNodeInfo!.height}}</text>
           </view>
         </view>
       </view>
 
       <!-- scroll-view 组件 -->
-      <view class="mt-15">
-        <text class="fs-15 fw-bold color-text-333">Scroll-view 组件查询示例</text>
-        <scroll-view id="test-scroll-view" class="m-10-0 w-300 h-100 border-1-solid-ccc">
-          <view class="u-p-10">
+      <view class="uni-common-mt">
+        <text class="uni-title-text">Scroll-view 组件查询示例</text>
+        <scroll-view id="test-scroll-view" class="test-scroll-view">
+          <view style="padding: 10px;">
             <text v-for="i in 10" :key="i">Scroll-view 第 {{i}} 行</text>
           </view>
         </scroll-view>
-        <button class="mt-15" @click="getScrollViewNodeInfo">查询 Scroll-view 节点信息</button>
-        <view v-if="data.scrollViewNodeInfo" class="flex-1 flex-dir-column">
-          <view class="flex-dir-row">
-            <text class="w-72 lh-2x">left: </text>
-            <text class="fw-bold lh-2x">{{data.scrollViewNodeInfo!.left}}</text>
+        <button class="btn" @click="getScrollViewNodeInfo">查询 Scroll-view 节点信息</button>
+        <view v-if="data.scrollViewNodeInfo" class="rect-info">
+          <view class="node-info-item">
+            <text class="node-info-item-k">left: </text>
+            <text class="node-info-item-v">{{data.scrollViewNodeInfo!.left}}</text>
           </view>
-          <view class="flex-dir-row">
-            <text class="w-72 lh-2x">right: </text>
-            <text class="fw-bold lh-2x">{{data.scrollViewNodeInfo!.right}}</text>
+          <view class="node-info-item">
+            <text class="node-info-item-k">right: </text>
+            <text class="node-info-item-v">{{data.scrollViewNodeInfo!.right}}</text>
           </view>
-          <view class="flex-dir-row">
-            <text class="w-72 lh-2x">top: </text>
-            <text class="fw-bold lh-2x">{{data.scrollViewNodeInfo!.top}}</text>
+          <view class="node-info-item">
+            <text class="node-info-item-k">top: </text>
+            <text class="node-info-item-v">{{data.scrollViewNodeInfo!.top}}</text>
           </view>
-          <view class="flex-dir-row">
-            <text class="w-72 lh-2x">bottom: </text>
-            <text class="fw-bold lh-2x">{{data.scrollViewNodeInfo!.bottom}}</text>
+          <view class="node-info-item">
+            <text class="node-info-item-k">bottom: </text>
+            <text class="node-info-item-v">{{data.scrollViewNodeInfo!.bottom}}</text>
           </view>
-          <view class="flex-dir-row">
-            <text class="w-72 lh-2x">width: </text>
-            <text class="fw-bold lh-2x">{{data.scrollViewNodeInfo!.width}}</text>
+          <view class="node-info-item">
+            <text class="node-info-item-k">width: </text>
+            <text class="node-info-item-v">{{data.scrollViewNodeInfo!.width}}</text>
           </view>
-          <view class="flex-dir-row">
-            <text class="w-72 lh-2x">height: </text>
-            <text class="fw-bold lh-2x">{{data.scrollViewNodeInfo!.height}}</text>
+          <view class="node-info-item">
+            <text class="node-info-item-k">height: </text>
+            <text class="node-info-item-v">{{data.scrollViewNodeInfo!.height}}</text>
           </view>
         </view>
       </view>
@@ -371,12 +371,76 @@
 </script>
 
 <style>
+  .page {
+    padding: 15px;
+  }
+
+  .btn {
+    margin-top: 15px;
+  }
+
+  .rect-1-2 {
+    flex-direction: row;
+    margin-top: 15px;
+  }
+
+  .rect {
+    width: 150px;
+    height: 100px;
+  }
+
+  .rect1 {
+    background-color: dodgerblue;
+  }
+
   .rect2 {
+    margin-left: auto;
     background-color: seagreen;
   }
 
+  .rect-info-1-2 {
+    flex-direction: row;
+    margin-top: 15px;
+  }
+
+  .rect-info {
+    flex: 1;
+    flex-direction: column;
+  }
+
+  .node-info-item {
+    flex-direction: row;
+  }
+
+  .node-info-item-k {
+    width: 72px;
+    line-height: 2;
+  }
+
+  .node-info-item-v {
+    font-weight: bold;
+    line-height: 2;
+  }
+
   .test-text {
+    padding: 10px;
     background-color: #d6d6d6;
+    margin: 10px 0;
+    font-size: 16px;
+    color: #333;
+  }
+
+  .test-image {
+    margin: 10px 0;
+    width: 100px;
+    height: 100px;
+  }
+
+  .test-scroll-view {
+    margin: 10px 0;
+    width: 300px;
+    height: 100px;
+    border: 1px solid #ccc;
   }
 
 </style>

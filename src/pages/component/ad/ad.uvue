@@ -1,12 +1,12 @@
 <template>
     <page-head title="信息流广告"></page-head>
     <!-- #ifndef MP -->
-    <ad adpid="1111111111" class="w-full" @load="loadFun" @error="errorFun"></ad>
+    <ad adpid="1111111111" style="width: 100%;" @load="loadFun" @error="errorFun"></ad>
     <!-- #endif -->
     <!-- #ifdef MP -->
-    <view class="flex-dir-row justify-center">微信小程序平台暂不支持测试广告位，需要开通uni-ad后可测试</view>
+    <view class="uni-center">微信小程序平台暂不支持测试广告位，需要开通uni-ad后可测试</view>
     <!-- #endif -->
-    <view v-if="tips" class="flex-dir-row justify-center">信息流广告加载失败，请退出当前页面重试。</view>
+    <view v-if="tips" class="uni-center">信息流广告加载失败，请退出当前页面重试。</view>
     <!-- #ifndef MP-ALIPAY -->
     <button @click="pushList">列表-信息流</button>
     <!-- #endif -->

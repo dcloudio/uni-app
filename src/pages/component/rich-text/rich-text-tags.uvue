@@ -1,13 +1,13 @@
 <template>
     <page-head title="单tag测试（web模式时页面中有较多web-view）"></page-head>
-    <view class="p-0-15 mt-15">
-      <view class="p-10-0 color-text-333">
-        <text class="fs-15 fw-bold color-text-333">支持的HTML标签</text>
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-title">
+        <text class="uni-title-text">支持的HTML标签</text>
       </view>
-      <view class="mt-15" v-for="(item,index) in data" :key="index">
-        <text class="color-888 fs-12 fw-bold u-mt-5 rich-text-label">{{item.name}}</text>
-        <view class="bg-fff color-1a1a1a">
-          <rich-text class="color-1a1a1a" :nodes="item.html" @itemclick="itemClick" :mode="modeData.mode"></rich-text>
+      <view class="uni-common-mt" v-for="(item,index) in data" :key="index">
+        <text class="uni-subtitle-text rich-text-label">{{item.name}}</text>
+        <view class="rich-text-demo">
+          <rich-text class="rich-text-content" :nodes="item.html" @itemclick="itemClick" :mode="modeData.mode"></rich-text>
         </view>
       </view>
     </view>
@@ -394,6 +394,15 @@
 </script>
 
 <style>
+  .rich-text-demo {
+    background-color: #ffffff;
+    color: #1a1a1a;
+  }
+
+  .rich-text-content {
+    color: #1a1a1a;
+  }
+
   @media (prefers-color-scheme: dark) {
     .rich-text-label {
       color: #e5e5e5;

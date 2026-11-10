@@ -1,40 +1,40 @@
 <template>
-		<text class="fs-24 fw-bold border-b-1-solid-ccc m-8-0">罗盘 API</text>
-		<text class="fs-14 notice">演示 `uni.startCompass`、`uni.stopCompass`、`uni.onCompassChange`、`uni.offCompassChange` 的完整流程。靠近强磁场或金属物体时数据可能抖动，可做“8”字校准。Web平台需使用https</text>
-		<text class="m-5-0">先绑定监听，再启动采集，更容易观察回调是否生效。</text>
+	<text class="uni-h2">罗盘 API</text>
+	<text class="notice">演示 `uni.startCompass`、`uni.stopCompass`、`uni.onCompassChange`、`uni.offCompassChange` 的完整流程。靠近强磁场或金属物体时数据可能抖动，可做“8”字校准。Web平台需使用https</text>
+	<text class="margin-v">先绑定监听，再启动采集，更容易观察回调是否生效。</text>
 
-		<text class="fs-20 fw-bold m-8-0">实时信息</text>
-		<view class="m-5-0 u-p-10 border-1-solid-ccc d-flex flex-dir-column">
-			<text class="fs-14 m-4-0" v-for="item in infoItems" :key="item.label">{{ item.label }}：{{ item.value }}</text>
-		</view>
+	<text class="uni-h3">实时信息</text>
+	<view class="panel-list">
+		<text class="panel-item" v-for="item in infoItems" :key="item.label">{{ item.label }}：{{ item.value }}</text>
+	</view>
 
-		<text class="fs-20 fw-bold m-8-0">当前方位</text>
-		<view class="pos-relative d-flex flex-dir-column items-center justify-center compass-card w-270 h-270">
-			<view class="pos-absolute h-28 radius-100 z-index-1 bg-compass-line"></view>
-			<image class="pos-absolute top-0 bg-compass left-0 w-270 h-270" src="/static/compass.png" :style="compassStyle" />
-			<view class="pos-relative z-index-1 d-flex flex-dir-column items-center">
-				<text class="fs-30">{{ directionText }}</text>
-				<text class="fs-16 mt-6">{{ degreeText }}</text>
-			</view>
+	<text class="uni-h3">当前方位</text>
+	<view class="compass-card">
+		<view class="bg-compass-line"></view>
+		<image class="bg-compass" src="/static/compass.png" :style="compassStyle" />
+		<view class="direction-center">
+			<text class="direction-value">{{ directionText }}</text>
+			<text class="direction-degree">{{ degreeText }}</text>
 		</view>
+	</view>
 
-		<view class="flex-dir-row">
-			<button id="btn-bind-primary-listener" class="m-5-0" @tap="bindPrimaryListener">注册罗盘Change</button>
-			<button id="btn-remove-primary-listener" class="m-5-0 ml-3" @tap="removePrimaryListener">注销罗盘Change</button>
-		</view>
-		<view class="flex-dir-row">
-			<button id="btn-start-compass" class="m-5-0" type="primary" @tap="startCompassListen">uni.startCompass</button>
-			<button id="btn-stop-compass" class="m-5-0 ml-3" @tap="stopCompassListen">uni.stopCompass</button>
-		</view>
-		<text>重复绑定测试</text>
-		<view class="flex-dir-row">
-			<button id="btn-bind-secondary-listener" class="m-5-0" @tap="bindSecondaryListener">注册罗盘Change2</button>
-			<button id="btn-remove-secondary-listener" class="m-5-0 ml-3" @tap="removeSecondaryListener">注销罗盘Change2</button>
-		</view>
-		<text class="fs-20 fw-bold m-8-0">监听日志</text>
-		<view class="m-5-0 u-p-10 border-1-solid-ccc d-flex flex-dir-column">
-			<text class="fs-14 m-4-0" v-for="item in logItems" :key="item.id">{{ item.text }}</text>
-		</view>
+	<view class="uni-row">
+		<button id="btn-bind-primary-listener" class="margin-v" @tap="bindPrimaryListener">注册罗盘Change</button>
+		<button id="btn-remove-primary-listener" class="margin-v" style="margin-left: 3px;" @tap="removePrimaryListener">注销罗盘Change</button>
+	</view>
+	<view class="uni-row">
+		<button id="btn-start-compass" class="margin-v" type="primary" @tap="startCompassListen">uni.startCompass</button>
+		<button id="btn-stop-compass" class="margin-v" style="margin-left: 3px;" @tap="stopCompassListen">uni.stopCompass</button>
+	</view>
+	<text>重复绑定测试</text>
+	<view class="uni-row">
+		<button id="btn-bind-secondary-listener" class="margin-v" @tap="bindSecondaryListener">注册罗盘Change2</button>
+		<button id="btn-remove-secondary-listener" class="margin-v" style="margin-left: 3px;" @tap="removeSecondaryListener">注销罗盘Change2</button>
+	</view>
+	<text class="uni-h3">监听日志</text>
+	<view class="panel-list">
+		<text class="panel-item" v-for="item in logItems" :key="item.id">{{ item.text }}</text>
+	</view>
 </template>
 
 <script setup lang="ts">
@@ -229,22 +229,73 @@
 		padding: 6px;
 	}
 
+	.margin-v {
+		margin: 5px 0;
+	}
+
 	.notice {
 		color: #6b2d16;
+		font-size: 14px;
+	}
+
+	.panel-list {
+		margin: 5px 0;
+		padding: 10px;
+		border: 1px solid #ccc;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.panel-item {
+		font-size: 14px;
+		margin: 4px 0;
 	}
 
 	.compass-card {
+		position: relative;
 		margin: 12px auto;
+		width: 270px;
+		height: 270px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.direction-center {
+		position: relative;
+		z-index: 1;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.direction-value {
+		font-size: 30px;
+	}
+
+	.direction-degree {
+		font-size: 16px;
+		margin-top: 6px;
 	}
 
 	.bg-compass {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 270px;
+		height: 270px;
 		transition-duration: 0.1s;
 	}
 
 	.bg-compass-line {
+		position: absolute;
 		left: 134px;
 		top: -5px;
 		width: 3px;
+		height: 28px;
 		background-color: #1aad19;
+		border-radius: 100px;
+		z-index: 1;
 	}
 </style>

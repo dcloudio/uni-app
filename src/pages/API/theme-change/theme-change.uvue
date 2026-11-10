@@ -1,26 +1,26 @@
 <template>
     <!-- #ifdef APP -->
-    <view class="mt-15 d-flex flex-dir-row justify-between">
+    <view class="uni-common-mt item-box">
       <text>osTheme:</text>
       <text id="theme">{{ data.osTheme }}</text>
     </view>
     <!-- #endif -->
-    <view class="mt-15 d-flex flex-dir-row justify-between">
+    <view class="uni-common-mt item-box">
       <text>应用当前主题:</text>
       <text id="theme">{{ data.appTheme }}</text>
     </view>
 
     <!-- #ifdef APP -->
     <view>
-      <view class="p-10-0 color-text-333 mt-15">
-        <text class="fs-15 fw-bold color-text-333"> 修改appTheme主题（此处仅为演示API，本应用并未完整适配暗黑模式） </text>
+      <view class="uni-title uni-common-mt">
+        <text class="uni-title-text"> 修改appTheme主题（此处仅为演示API，本应用并未完整适配暗黑模式） </text>
       </view>
     </view>
     <enum-data-checkbox :items="data.items" title="appTheme" @change="radioChange"></enum-data-checkbox>
     <!-- #endif -->
 
     <view class="mt-15">
-      <text class="fs-15 fw-bold color-text-333">input / textarea 默认颜色</text>
+      <text class="uni-title-text">input / textarea 默认颜色</text>
       <text class="mt-10 color-text-333">切换主题观察默认文字和背景色，清空内容后观察 placeholder 字体颜色。</text>
       <!-- 仅设置布局，保留组件默认的文字、背景和 placeholder 颜色。 -->
       <input class="theme-input" v-model="preview.defaultInputValue" placeholder="input 默认 placeholder 颜色" />
@@ -28,7 +28,7 @@
     </view>
 
     <view class="theme-section">
-      <text class="fs-15 fw-bold color-text-333">text 默认文字颜色</text>
+      <text class="uni-title-text">text 默认文字颜色</text>
       <text class="theme-hint">切换主题观察默认文字颜色，暗黑模式下预期为白色。</text>
       <!-- 不给待验证的 text 设置文字色，避免覆盖组件默认值。 -->
       <view id="theme-default-view" class="theme-sample">
@@ -37,7 +37,7 @@
     </view>
 
     <view class="theme-section">
-      <text class="fs-15 fw-bold color-text-333">导航栏 / TabBar</text>
+      <text class="uni-title-text">导航栏 / TabBar</text>
       <text class="theme-hint">观察顶部原生导航栏，并通过下方入口查看原生 TabBar。两者使用应用当前配置，可与规范目标色对照。</text>
       <text class="theme-hint">规范目标：浅色背景 #FFFFFF、前景黑色；深色背景 #1C1C1E、前景白色。TabBar 顶部分隔线：浅色 #CCCCCC、深色 #49494B。</text>
       <navigator url="/pages/tabBar/component" open-type="switchTab" class="mt-10">
@@ -46,7 +46,7 @@
     </view>
 
     <view class="theme-section">
-      <text class="fs-15 fw-bold color-text-333">combox / uni-combobox 组合框</text>
+      <text class="uni-title-text">combox / uni-combobox 组合框</text>
       <text class="theme-hint">观察输入区域、文字、箭头和候选浮层；暗黑表单背景预期为 #3B3B3B，placeholder 在两种主题下均为 #757575。</text>
       <text class="theme-hint">uni-combox（兼容组件）</text>
       <view id="theme-combox-placeholder" class="mt-10">
@@ -65,21 +65,21 @@
     </view>
 
     <view class="theme-section">
-      <text class="fs-15 fw-bold color-text-333">rich-text 默认颜色</text>
+      <text class="uni-title-text">rich-text 默认颜色</text>
       <text class="theme-hint">切换主题观察 rich-text 的默认文字颜色。</text>
       <rich-text id="theme-rich-text-default" class="theme-sample" nodes="<p>rich-text 默认文字颜色。</p>" />
     </view>
 
     <!-- #ifndef MP-ALIPAY -->
     <view class="theme-section">
-      <text class="fs-15 fw-bold color-text-333">editor 默认颜色</text>
+      <text class="uni-title-text">editor 默认颜色</text>
       <text class="theme-hint">输入文字和清空内容，观察默认文字、背景及 placeholder 颜色。默认 placeholder 预期为 #757575。</text>
       <editor id="theme-editor-default" class="theme-editor theme-sample" placeholder="editor 默认 placeholder 颜色" />
     </view>
     <!-- #endif -->
 
     <view class="theme-section">
-      <text class="fs-15 fw-bold color-text-333">picker 选择器</text>
+      <text class="uni-title-text">picker 选择器</text>
       <text class="theme-hint">分别打开普通、日期和时间选择器，检查弹出面板、选项、取消及确定按钮的主题颜色。</text>
       <picker id="theme-picker-selector" class="mt-10" :range="preview.options" :value="preview.pickerIndex" @change="onPickerChange">
         <view class="theme-sample"><text>普通选择：{{ preview.options[preview.pickerIndex] }}</text></view>
@@ -93,7 +93,7 @@
     </view>
 
     <view class="theme-section">
-      <text class="fs-15 fw-bold color-text-333">picker-view / picker-view-column</text>
+      <text class="uni-title-text">picker-view / picker-view-column</text>
       <text class="theme-hint">上下滚动，检查默认文字、选中区域、分隔线和上下遮罩颜色。</text>
       <picker-view id="theme-picker-view" class="theme-picker-view mt-10" :value="preview.pickerViewValue" indicator-style="height: 40px" @change="onPickerViewChange">
         <picker-view-column>
@@ -105,7 +105,7 @@
     </view>
 
     <view class="theme-section">
-      <text class="fs-15 fw-bold color-text-333">checkbox</text>
+      <text class="uni-title-text">checkbox</text>
       <text class="theme-hint">点击切换选中状态，检查未选中、选中和禁用状态的边框、背景与勾选颜色。</text>
       <checkbox-group>
         <label class="theme-choice-row"><checkbox value="checked" :checked="true" /><text>默认选中</text></label>
@@ -116,7 +116,7 @@
     </view>
 
     <view class="theme-section">
-      <text class="fs-15 fw-bold color-text-333">radio</text>
+      <text class="uni-title-text">radio</text>
       <text class="theme-hint">切换选项，检查未选中、选中和禁用状态的边框、背景与选中标记。</text>
       <radio-group>
         <label class="theme-choice-row"><radio value="checked" :checked="true" /><text>默认选中</text></label>
@@ -129,7 +129,7 @@
     </view>
 
     <view class="theme-section">
-      <text class="fs-15 fw-bold color-text-333">button</text>
+      <text class="uni-title-text">button</text>
       <text class="theme-hint">检查默认、primary、warn、镂空、禁用及加载状态的文字、背景和边框颜色。</text>
       <button class="mt-10">默认按钮</button>
       <button type="primary" class="mt-10">primary 按钮</button>
@@ -142,7 +142,7 @@
     </view>
 
     <view class="theme-section">
-      <text class="fs-15 fw-bold color-text-333">switch</text>
+      <text class="uni-title-text">switch</text>
       <text class="theme-hint">点击开关，检查开、关及禁用状态的轨道和滑块颜色。</text>
       <view class="theme-choice-row"><switch :checked="true" /><text>开启</text></view>
       <view class="theme-choice-row"><switch /><text>关闭</text></view>
@@ -151,14 +151,14 @@
     </view>
 
     <view class="theme-section">
-      <text class="fs-15 fw-bold color-text-333">slider</text>
+      <text class="uni-title-text">slider</text>
       <text class="theme-hint">拖动滑块，检查默认轨道、已选区域、滑块和数值文字；对照禁用状态。</text>
       <slider id="theme-slider-default" class="mt-10" :value="40" show-value />
       <slider id="theme-slider-disabled" class="mt-10" :value="60" show-value disabled />
     </view>
 
     <view class="theme-section">
-      <text class="fs-15 fw-bold color-text-333">scroll-view 滚动条与默认下拉刷新</text>
+      <text class="uni-title-text">scroll-view 滚动条与默认下拉刷新</text>
       <text class="theme-hint">滚动此页和下方区域，观察页面及 scroll-view 的默认滚动条；从区域顶部下拉或点击按钮查看刷新指示器，约 1.5 秒后结束。</text>
       <!-- 不设置 refresher-default-style / refresher-background，让组件自行适配主题。 -->
       <scroll-view id="theme-scroll-view" class="theme-scroll-preview theme-sample" direction="vertical" :show-scrollbar="true"
@@ -171,7 +171,7 @@
 
     <!-- #ifndef MP-ALIPAY -->
     <view class="theme-section">
-      <text class="fs-15 fw-bold color-text-333">list-view 默认下拉刷新</text>
+      <text class="uni-title-text">list-view 默认下拉刷新</text>
       <text class="theme-hint">从列表顶部下拉或点击按钮，检查默认刷新指示器是否随主题变化；约 1.5 秒后结束。</text>
       <list-view id="theme-list-view" class="theme-scroll-preview theme-sample" :show-scrollbar="true"
         :refresher-enabled="true" :refresher-triggered="preview.listRefreshing" @refresherrefresh="onListRefresh">
@@ -183,7 +183,7 @@
     <!-- #endif -->
 
     <view class="theme-section">
-      <text class="fs-15 fw-bold color-text-333">loading</text>
+      <text class="uni-title-text">loading</text>
       <text class="theme-hint">默认 loading 在暗黑模式下预期为白色；对照普通、bold 和 paused 状态。</text>
       <view class="theme-choice-row"><loading /><text class="u-ml-10">默认 loading</text></view>
       <view class="theme-choice-row"><loading bold /><text class="u-ml-10">bold loading</text></view>
@@ -368,6 +368,23 @@
 </script>
 
 <style>
+.mt-15 {
+  margin-top: 15px;
+}
+
+.u-ml-10 {
+  margin-left: 10px;
+}
+
+.mt-10 {
+  margin-top: 10px;
+}
+
+.color-text-333 {
+  color: var(--text-color, #333333);
+}
+
+
 page {
   padding: 0px 15px;
 }
@@ -435,4 +452,10 @@ page {
   padding: 10px;
 }
 
+
+  .item-box {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
 </style>

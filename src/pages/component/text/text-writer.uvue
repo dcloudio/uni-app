@@ -1,23 +1,23 @@
 <template>
-	<view class="flex-1 pos-relative">
+	<view class="page-container">
 		<!-- #ifndef MP -->
 		<fps v-if="showFPS"></fps>
 		<!-- #endif -->
 		<!-- 打字机效果区域 -->
-		<view class="bg-list-fff typewriter-container m-20 p-30-20 radius-16">
-			<view class="mb-20 pb-15 typewriter-title">
-				<text class="fs-20 fw-bold color-text-333">打字机效果演示</text>
+		<view class="typewriter-container">
+			<view class="typewriter-title">
+				<text class="title-text">打字机效果演示</text>
 			</view>
-			<view class="flex-dir-row flex-wrap-wrap items-flex-start">
+			<view class="typewriter-box">
 				<text v-for="(segment, index) in displayedSegments" :key="index"
 					:class="segment.className">{{ segment.text }}</text>
-				<text :class="showCursor ? 'lh-24 u-ml-2 typewriter-cursor fs-16' : 'lh-24 u-ml-2 color-transparent fs-16'">|</text>
+				<text :class="showCursor ? 'typewriter-cursor' : 'typewriter-cursor-hidden'">|</text>
 			</view>
-      <text class="p-10-0 color-text-333">【拍平测试】</text>
-      <view class="flex-dir-row flex-wrap-wrap items-flex-start">
+      <text class="uni-title">【拍平测试】</text>
+      <view class="typewriter-box">
       	<text flatten v-for="(segment, index) in displayedSegments" :key="index"
       		:class="segment.className">{{ segment.text }}</text>
-        <text flatten :class="showCursor ? 'lh-24 u-ml-2 typewriter-cursor fs-16' : 'lh-24 u-ml-2 color-transparent fs-16'">|</text>
+      	<text flatten :class="showCursor ? 'typewriter-cursor' : 'typewriter-cursor-hidden'">|</text>
       </view>
 		</view>
 	</view>
@@ -32,36 +32,36 @@
 
 	// 定义富文本内容，每个片段有不同的样式
 	const textSegments : TextSegment[] = [
-		{ text: '欢迎使用 ', className: 'text-normal fs-16 color-333' },
-		{ text: 'uni-app x', className: 'fs-20 color-007aff fw-bold letter-spacing-1' },
-		{ text: '！', className: 'fs-22 color-ff3b30' },
-		{ text: '这是一个', className: 'text-small-gray fs-14 color-666' },
-		{ text: '炫酷', className: 'text-fancy-bold fs-19 color-ff2d55 fw-bold font-italic' },
-		{ text: '的', className: 'text-small-gray fs-14 color-666' },
-		{ text: '打字机效果', className: 'text-orange-italic fs-18 color-ff9500 font-italic' },
-		{ text: '演示。', className: 'text-normal-small fs-15 color-333' },
-		{ text: '文字会像 ', className: 'text-small-light fs-14 color-999' },
-		{ text: 'AI', className: 'text-ai-highlight fs-20 color-34c759 fw-bold pl-4 pr-4' },
-		{ text: ' 回复一样', className: 'text-normal-small fs-15 color-333' },
-		{ text: '逐字', className: 'text-purple-bold fs-17 color-5856d6 fw-bold' },
-		{ text: '显示出来～ ', className: 'text-normal-small fs-15 color-333' },
-		{ text: 'HBuilderX ', className: 'fs-18 color-ff9500 fw-bold letter-spacing-1_5' },
-		{ text: '是', className: 'text-small-gray fs-14 color-666' },
-		{ text: '轻巧', className: 'fs-16 color-007aff font-italic' },
-		{ text: '、', className: 'text-small-light fs-14 color-999' },
-		{ text: '极速', className: 'fs-16 color-34c759 font-italic' },
-		{ text: '、', className: 'text-small-light fs-14 color-999' },
-		{ text: '极客', className: 'fs-16 color-ff2d55 font-italic' },
-		{ text: '的编辑器；', className: 'text-normal-small fs-15 color-333' },
-		{ text: 'uni-app x', className: 'text-brand-underline fs-19 color-007aff fw-bold' },
-		{ text: ' 是', className: 'text-small-gray fs-14 color-666' },
-		{ text: '终极', className: 'fs-20 color-ff3b30 fw-bold font-italic' },
-		{ text: '跨平台方案', className: 'text-purple-highlight fs-17 color-5856d6 fw-bold pl-3 pr-3' },
-		{ text: '！', className: 'fs-22 color-ff2d55' },
-		{ text: 'UTS', className: 'text-green-bold-wide fs-18 color-34c759 fw-bold' },
-		{ text: ' 让你使用', className: 'text-normal-small fs-15 color-333' },
-		{ text: '大一统语言', className: 'text-orange-italic-underline fs-17 color-ff9500 font-italic' },
-		{ text: '进行开发～', className: 'text-small-gray-15 fs-15 color-666' }
+		{ text: '欢迎使用 ', className: 'text-normal' },
+		{ text: 'uni-app x', className: 'text-brand-large' },
+		{ text: '！', className: 'text-exclaim-large' },
+		{ text: '这是一个', className: 'text-small-gray' },
+		{ text: '炫酷', className: 'text-fancy-bold' },
+		{ text: '的', className: 'text-small-gray' },
+		{ text: '打字机效果', className: 'text-orange-italic' },
+		{ text: '演示。', className: 'text-normal-small' },
+		{ text: '文字会像 ', className: 'text-small-light' },
+		{ text: 'AI', className: 'text-ai-highlight' },
+		{ text: ' 回复一样', className: 'text-normal-small' },
+		{ text: '逐字', className: 'text-purple-bold' },
+		{ text: '显示出来～ ', className: 'text-normal-small' },
+		{ text: 'HBuilderX ', className: 'text-orange-bold-wide' },
+		{ text: '是', className: 'text-small-gray' },
+		{ text: '轻巧', className: 'text-blue-italic' },
+		{ text: '、', className: 'text-small-light' },
+		{ text: '极速', className: 'text-green-italic' },
+		{ text: '、', className: 'text-small-light' },
+		{ text: '极客', className: 'text-pink-italic' },
+		{ text: '的编辑器；', className: 'text-normal-small' },
+		{ text: 'uni-app x', className: 'text-brand-underline' },
+		{ text: ' 是', className: 'text-small-gray' },
+		{ text: '终极', className: 'text-red-bold-italic' },
+		{ text: '跨平台方案', className: 'text-purple-highlight' },
+		{ text: '！', className: 'text-exclaim-pink' },
+		{ text: 'UTS', className: 'text-green-bold-wide' },
+		{ text: ' 让你使用', className: 'text-normal-small' },
+		{ text: '大一统语言', className: 'text-orange-italic-underline' },
+		{ text: '进行开发～', className: 'text-small-gray-15' }
 	]
 
 	const showFPS = ref(true)
@@ -143,59 +143,194 @@
 </script>
 
 <style>
+	.page-container {
+		flex: 1;
+		position: relative;
+	}
+
 	.typewriter-container {
+		margin: 20px;
+		padding: 30px 20px;
+		background-color: var(--list-background-color, #ffffff);
+		border-radius: 16px;
 		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 	}
 
 	.typewriter-title {
+		margin-bottom: 20px;
+		padding-bottom: 15px;
 		border-bottom: 2px solid var(--border-color, #f0f0f0);
 	}
 
+	.title-text {
+		font-size: 20px;
+		font-weight: bold;
+		color: var(--text-color, #333333);
+	}
+
+	.typewriter-box {
+		flex-direction: row;
+		flex-wrap: wrap;
+		align-items: flex-start;
+	}
+
 	.typewriter-cursor {
+		font-size: 16px;
+		line-height: 24px;
 		color: #3333ff;
+		margin-left: 2px;
+	}
+
+	.typewriter-cursor-hidden {
+		font-size: 16px;
+		line-height: 24px;
+		color: transparent;
+		margin-left: 2px;
 	}
 
 	/* 文本样式类 */
+	.text-normal {
+		font-size: 16px;
+		color: #333333;
+	}
+
+	.text-brand-large {
+		font-size: 20px;
+		color: #007aff;
+		font-weight: bold;
+		letter-spacing: 1px;
+	}
+
+	.text-exclaim-large {
+		font-size: 22px;
+		color: #ff3b30;
+	}
+
+	.text-small-gray {
+		font-size: 14px;
+		color: #666666;
+	}
 
 	.text-fancy-bold {
+		font-size: 19px;
+		color: #ff2d55;
+		font-weight: bold;
+		font-style: italic;
 		/* #ifdef WEB */
 		text-decoration: underline;
     /* #endif */
 	}
 
 	.text-orange-italic {
+		font-size: 18px;
+		color: #ff9500;
+		font-style: italic;
 		letter-spacing: 0.5px;
 	}
 
+	.text-normal-small {
+		font-size: 15px;
+		color: #333333;
+	}
+
+	.text-small-light {
+		font-size: 14px;
+		color: #999999;
+	}
+
 	.text-ai-highlight {
+		font-size: 20px;
+		color: #34c759;
+		font-weight: bold;
 		background-color: #f0f9ff;
+		padding-left: 4px;
+		padding-right: 4px;
 	}
 
 	.text-purple-bold {
+		font-size: 17px;
+		color: #5856d6;
+		font-weight: bold;
 		/* #ifdef WEB */
 		text-decoration: underline;
     /* #endif */
 	}
 
+	.text-orange-bold-wide {
+		font-size: 18px;
+		color: #ff9500;
+		font-weight: bold;
+		letter-spacing: 1.5px;
+	}
+
+	.text-blue-italic {
+		font-size: 16px;
+		color: #007aff;
+		font-style: italic;
+	}
+
+	.text-green-italic {
+		font-size: 16px;
+		color: #34c759;
+		font-style: italic;
+	}
+
+	.text-pink-italic {
+		font-size: 16px;
+		color: #ff2d55;
+		font-style: italic;
+	}
+
 	.text-brand-underline {
+		font-size: 19px;
+		color: #007aff;
+		font-weight: bold;
 		/* #ifdef WEB */
 		text-decoration: underline;
     /* #endif */
 		letter-spacing: 0.8px;
 	}
 
+	.text-red-bold-italic {
+		font-size: 20px;
+		color: #ff3b30;
+		font-weight: bold;
+		font-style: italic;
+	}
+
 	.text-purple-highlight {
+		font-size: 17px;
+		color: #5856d6;
+		font-weight: bold;
 		background-color: #fff3e0;
+		padding-left: 3px;
+		padding-right: 3px;
+	}
+
+	.text-exclaim-pink {
+		font-size: 22px;
+		color: #ff2d55;
 	}
 
 	.text-green-bold-wide {
+		font-size: 18px;
+		color: #34c759;
+		font-weight: bold;
 		letter-spacing: 2px;
 	}
 
 	.text-orange-italic-underline {
+		font-size: 17px;
+		color: #ff9500;
+		font-style: italic;
 		/* #ifdef WEB */
 		text-decoration: underline;
     /* #endif */
+	}
+
+	.text-small-gray-15 {
+		font-size: 15px;
+		color: #666666;
 	}
 
 	@media (prefers-color-scheme: dark) {

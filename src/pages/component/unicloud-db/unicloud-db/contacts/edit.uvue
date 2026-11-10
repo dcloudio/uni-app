@@ -1,29 +1,29 @@
 <template>
-  <scroll-view class="scroll-view u-p-15 flex-1">
+  <scroll-view class="scroll-view">
     <unicloud-db ref="udbRef" v-slot:default="{data, loading, error}" :collection="collection" :where="where"
       page-data="replace">
-      <view v-if="error!=null">{{error.errMsg}}</view>
-      <view v-if="loading" class="items-center">正在加载...</view>
+      <view v-if="error!=null" class="error">{{error.errMsg}}</view>
+      <view v-if="loading" class="loading">正在加载...</view>
       <form v-if="data.length>0" @submit="onFormSubmit($event, data[0].gender as number)">
-        <view class="flex-dir-row mb-15 items-center">
-          <text class="w-45 mr-10 color-contact-text-333">姓名</text>
-          <input class="flex-1 fs-14 border-1-solid-contact-border-e5e5e5 radius-5 h-34 pl-8 pr-8 color-contact-secondary-666" placeholder="姓名" name="username" :value="(data[0].username as string)" />
+        <view class="form-item">
+          <text class="form-item-label">姓名</text>
+          <input class="form-item-input" placeholder="姓名" name="username" :value="(data[0].username as string)" />
         </view>
-        <view class="flex-dir-row mb-15 items-center">
-          <text class="w-45 mr-10 color-contact-text-333">电话</text>
-          <input class="flex-1 fs-14 border-1-solid-contact-border-e5e5e5 radius-5 h-34 pl-8 pr-8 color-contact-secondary-666" placeholder="电话" name="mobile" :value="(data[0].mobile as string)" />
+        <view class="form-item">
+          <text class="form-item-label">电话</text>
+          <input class="form-item-input" placeholder="电话" name="mobile" :value="(data[0].mobile as string)" />
         </view>
-        <view class="flex-dir-row mb-15 items-center">
-          <text class="w-45 mr-10 color-contact-text-333">邮箱</text>
-          <input class="flex-1 fs-14 border-1-solid-contact-border-e5e5e5 radius-5 h-34 pl-8 pr-8 color-contact-secondary-666" placeholder="邮箱地址" name="email" :value="(data[0].email as string)" />
+        <view class="form-item">
+          <text class="form-item-label">邮箱</text>
+          <input class="form-item-input" placeholder="邮箱地址" name="email" :value="(data[0].email as string)" />
         </view>
-        <view class="flex-dir-row mb-15 items-center">
-          <text class="w-45 mr-10 color-contact-text-333">备注</text>
-          <textarea class="flex-1 fs-14 border-1-solid-contact-border-e5e5e5 radius-5 p-8 color-contact-secondary-666" placeholder="备注" name="comment" :maxlength="-1"
+        <view class="form-item">
+          <text class="form-item-label">备注</text>
+          <textarea class="form-item-input-comment" placeholder="备注" name="comment" :maxlength="-1"
             :value="(data[0].comment as string)" />
         </view>
-        <view class="flex-dir-row mb-15 items-center">
-          <text class="w-45 mr-10 color-contact-text-333">性别</text>
+        <view class="form-item">
+          <text class="form-item-label">性别</text>
           <enum-data-checkbox
             class="flex-1"
             :model-value="selectedGender ?? (data[0].gender as number)"
@@ -33,9 +33,9 @@
             @change="selectedGender = $event as number"
           />
         </view>
-        <view class="mt-30">
-          <button type="primary" form-type="submit">保存</button>
-          <button class="mt-15" type="warn"
+        <view class="btn-group">
+          <button class="btn-submit" type="primary" form-type="submit">保存</button>
+          <button class="btn-delete" type="warn"
             @click="remove((data[0]._id as string), (data[0].username as string))">删除联系人</button>
         </view>
       </form>
@@ -117,10 +117,74 @@
 </script>
 
 <style>
+  .flex-1 {
+    flex: 1;
+  }
+
   .scroll-view {
     --contact-text-color: #333333;
     --contact-secondary-color: #666;
     --contact-border-color: #e5e5e5;
+    padding: 15px;
+    flex: 1;
+  }
+
+  .loading {
+    align-items: center;
+  }
+
+  .form-item {
+    flex-direction: row;
+    margin-bottom: 15px;
+    align-items: center;
+  }
+
+  .form-item-label {
+    width: 45px;
+    margin-right: 10px;
+    color: var(--contact-text-color, #333333);
+  }
+
+  .form-item-input {
+    flex: 1;
+    font-size: 14px;
+    color: var(--contact-secondary-color, #666);
+    border: 1px solid var(--contact-border-color, #e5e5e5);
+    border-radius: 5px;
+    height: 34px;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .form-item-input-comment {
+    flex: 1;
+    font-size: 14px;
+    color: var(--contact-secondary-color, #666);
+    border: 1px solid var(--contact-border-color, #e5e5e5);
+    border-radius: 5px;
+    padding: 8px;
+  }
+
+  .radio-list {
+    flex-direction: row;
+  }
+
+  .radio-item {
+    flex-direction: row;
+    margin-right: 30px;
+    align-items: center;
+  }
+
+  .radio-item-text {
+    color: var(--contact-text-color, #333333);
+  }
+
+  .btn-group {
+    margin-top: 30px;
+  }
+
+  .btn-delete {
+    margin-top: 15px;
   }
 
   @media (prefers-color-scheme: dark) {

@@ -1,17 +1,17 @@
 <template>
     <text>1帧内显示110个元素</text>
 		<view>
-		    <view class="flex-dir-row" v-for="(_,index) in 5" :key="index" flatten>
+		    <view style="flex-direction: row;" v-for="(_,index) in 5" :key="index" flatten>
 		        <view v-for="(_,i) in 10" :key="index+'-'+i" flatten>
 		            <image src="/static/test-image/logo.png" style="width: 5px; height: 5px;" flatten></image>
 		        </view>
 		    </view>
 		</view>
-    <view class="h-48 m-16 bg-1677ff radius-8 justify-center items-center" @click="ShowEvent()">
-        <text class="color-fff">同屏显示2000个图片</text>
+    <view class="btnShow" @click="ShowEvent()">
+        <text class="btnText">同屏显示2000个图片</text>
     </view>
 		<view>
-        <view v-if="show" class="flex-dir-row" v-for="(_,index) in 50" :key="index" flatten>
+        <view v-if="show" style="flex-direction: row;" v-for="(_,index) in 50" :key="index" flatten>
            <image v-for="(_,i) in 40" :key="index+'-'+i" style="width: 5px; height: 5px;margin: 0.5px;" flatten src="/static/test-image/logo.png"></image>
         </view>
     </view>
@@ -43,3 +43,19 @@
 		});
 
 </script>
+
+<style>
+    .btnShow {
+        height: 48px;
+        margin: 16px;
+        background-color: #1677ff;
+        border-radius: 8px;
+        justify-content: center;
+        align-items: center;
+        /* box-shadow: 0 4px 12px rgba(22, 119, 255, 0.3); */
+    }
+
+    .btnText {
+        color: #ffffff;
+    }
+</style>

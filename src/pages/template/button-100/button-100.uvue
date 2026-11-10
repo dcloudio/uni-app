@@ -4,23 +4,23 @@
     <!-- #endif -->
 
     <!-- 控制按钮 -->
-    <view class="u-p-2 flex-dir-row flex-wrap-wrap items-center">
-      <button @click="toggleDisabled" :type="sharedDisabled ? 'primary' : 'default'" size="mini" class="m-2">{{ sharedDisabled ? '启用' : '禁用' }}</button>
-      <button @click="togglePlain" :type="sharedPlain ? 'primary' : 'default'" size="mini" class="m-2">{{ sharedPlain ? '实心' : '镂空' }}</button>
-      <button @click="cycleType" size="mini" class="m-2">type: {{ sharedType }}</button>
-      <button @click="cycleSize" size="mini" class="m-2">size: {{ sharedSize }}</button>
+    <view style="padding: 2px;flex-direction: row;flex-wrap: wrap;align-items: center;">
+      <button @click="toggleDisabled" :type="sharedDisabled ? 'primary' : 'default'" size="mini" style="margin: 2px;">{{ sharedDisabled ? '启用' : '禁用' }}</button>
+      <button @click="togglePlain" :type="sharedPlain ? 'primary' : 'default'" size="mini" style="margin: 2px;">{{ sharedPlain ? '实心' : '镂空' }}</button>
+      <button @click="cycleType" size="mini" style="margin: 2px;">type: {{ sharedType }}</button>
+      <button @click="cycleSize" size="mini" style="margin: 2px;">size: {{ sharedSize }}</button>
     </view>
 
     <!-- 100个button组件 -->
-    <view class="flex-dir-row flex-wrap-wrap p-5">
-      <view class="items-center w-15pct m-4rpx" v-for="index in 100" :key="index">
+    <view style="flex-direction: row;flex-wrap: wrap;padding: 5px;">
+      <view v-for="index in 100" :key="index" style="width: 15%;margin: 4rpx;align-items: center;">
         <button
           :disabled="sharedDisabled"
           :plain="sharedPlain"
           :type="sharedType"
           :size="sharedSize"
           @click="onButtonClick(index)"
-          class="w-full"
+          style="width: 100%;"
         >
           {{ index }}
         </button>
@@ -65,3 +65,6 @@
     console.log('button clicked:', index - 1)
   }
 </script>
+
+<style>
+</style>

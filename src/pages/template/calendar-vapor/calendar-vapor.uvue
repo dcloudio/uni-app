@@ -1,44 +1,44 @@
 <template>
 		<!-- 顶部选中日期展示 -->
-		<view class="p-30-20 bg-1976d2">
-			<text class="fs-16 color-rgba-255-255-255-0_8 mb-5 header-year">{{ selectedYear }}年</text>
-			<view class="flex-dir-row">
-				<text class="color-fff lh-50 header-date fs-40">{{ selectedMonth }}月{{ selectedDay }}日{{ selectedWeekday }}</text>
+		<view class="header-selected">
+			<text class="header-year">{{ selectedYear }}年</text>
+			<view class="header-date-row">
+				<text class="header-date">{{ selectedMonth }}月{{ selectedDay }}日{{ selectedWeekday }}</text>
 			</view>
 		</view>
 
 		<!-- 年月选择器和左右箭头 -->
-		<view class="flex-dir-row items-center justify-between bg-list-fff month-selector">
-			<text class="color-text-333 w-40 h-40 text-center lh-40 fs-32" @click="prevMonth">‹</text>
+		<view class="month-selector">
+			<text class="arrow-btn" @click="prevMonth">‹</text>
 			<picker mode="date" :value="pickerValue" fields="month" @change="onPickerChange">
-				<text class="fs-18 color-text-333 fw-500 month-text">{{ currentYear }}年{{ currentMonth }}月</text>
+				<text class="month-text">{{ currentYear }}年{{ currentMonth }}月</text>
 			</picker>
-			<text class="color-text-333 w-40 h-40 text-center lh-40 fs-32" @click="nextMonth">›</text>
+			<text class="arrow-btn" @click="nextMonth">›</text>
 		</view>
 
 		<!-- 星期标题 -->
-		<view class="flex-dir-row bg-list-fff justify-center p-15-0">
+		<view class="weekdays">
 			<text v-for="(day, index) in weekdays" :key="index"
-				class="text-center fs-14 color-text-666 opacity-0_75 weekday-text w-14_28pct" flatten>{{ day }}</text>
+				class="weekday-text" flatten>{{ day }}</text>
 		</view>
 
 		<!-- 日历主体 - Swiper -->
 		<swiper
-			class="bg-list-fff calendar-swiper"
+			class="calendar-swiper"
 			:circular="true"
 			:current="swiperCurrent"
 			@change="onSwiperChange"
 		>
-			<swiper-item v-for="(item, index) in swiperItems" :key="`${item.year}-${item.month}`">
-				<view :id="'calendar-grid-' + index" class="flex-dir-row flex-wrap-wrap" @click="onCalendarClick">
+			<swiper-item v-for="(item, index) in swiperItems" :key="`${item.year}-${item.month}`" class="calendar-swiper-item">
+				<view :id="'calendar-grid-' + index" class="calendar-grid" @click="onCalendarClick">
 					<text flatten
 						v-for="(day, dayIndex) in item.days"
 						:key="dayIndex"
 						:class="[
-							'text-center fs-16 day-text color-text-333 w-14_28pct',
-							day.day === 0 ? 'color-transparent' : '',
+							'day-text',
+							day.day === 0 ? 'empty' : '',
 							day.isToday ? 'today' : '',
-							day.isSelected ? 'm-10-0 selected bg-1976d2 radius-30 h-40 lh-40' : 'h-60 lh-60',
+							day.isSelected ? 'selected' : '',
 							day.isWeekend || day.isHoliday ? 'holiday' : ''
 						]"
 					>{{ day.day > 0 ? day.day : '' }}</text>
@@ -539,12 +539,92 @@
 </script>
 
 <style>
+	.calendar-container {
+		flex: 1;
+	}
+
+	.header-selected {
+		background-color: #1976D2;
+		padding: 30px 20px;
+	}
+
+	.header-year {
+		font-size: 16px;
+		color: rgba(255, 255, 255, 0.8);
+		margin-bottom: 5px;
+	}
+
+	.header-date-row {
+		flex-direction: row;
+		/* align-items: baseline; */
+	}
+
+	.header-date {
+		font-size: 40px;
+		color: #ffffff;
+		/* font-weight: bold; */
+		line-height: 50px;
+	}
+
 	.month-selector {
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
 		padding: 20px 30px;
+		background-color: var(--list-background-color, #ffffff);
+	}
+
+	.arrow-btn {
+		font-size: 32px;
+		color: var(--text-color, #333333);
+		width: 40px;
+		height: 40px;
+		text-align: center;
+		line-height: 40px;
+	}
+
+	.month-text {
+		font-size: 18px;
+		color: var(--text-color, #333333);
+		font-weight: 500;
+	}
+
+	.weekdays {
+		flex-direction: row;
+		background-color: var(--list-background-color, #ffffff);
+		padding: 15px 0;
+		justify-content: center;
+	}
+
+	.weekday-text {
+		width: 14.28%;
+		text-align: center;
+		font-size: 14px;
+		color: var(--text-color, #666666);
+		opacity: 0.75;
 	}
 
 	.calendar-swiper {
 		height: 420px;
+		background-color: var(--list-background-color, #ffffff);
+	}
+
+	.calendar-grid {
+		flex-direction: row;
+		flex-wrap: wrap;
+	}
+
+	.day-text {
+		width: 14.28%;
+		height: 60px;
+		text-align: center;
+		line-height: 60px;
+		font-size: 16px;
+		color: var(--text-color, #333333);
+	}
+
+	.empty {
+		color: transparent;
 	}
 
 	.today {
@@ -556,7 +636,12 @@
 	}
 
 	.selected {
+		background-color: #1976D2;
 		color: #ffffff;
+		border-radius: 30px;
+		margin: 10px 0;
+		line-height: 40px;
+		height: 40px;
 	}
 
 	@media (prefers-color-scheme: dark) {

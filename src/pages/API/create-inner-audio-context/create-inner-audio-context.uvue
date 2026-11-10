@@ -1,69 +1,69 @@
 <template>
-    <view class="p-0-15">
-      <page-head title="audio"></page-head>
-      <view class="mt-15">
-        <slider ref="sliderRef" :value="position" :min="0" :max="data.duration" @changing="onchanging"
-          @change="onchange"></slider>
-      </view>
-      <view class="p-10-0 color-text-333">
-        <text class="fs-15 fw-bold color-text-333">属性示例</text>
-      </View>
-      <text class="mb-20 mt-15">当前音频播放位置（保留小数点后 3 位）：{{data.currentTime}} s</text>
-      <text class="mb-20">音频的长度（单位:s）：{{data.duration}} s</text>
-      <text class="mb-20">当前是否停止状态：{{data.isPaused}}</text>
-      <text class="mb-20">音频缓冲的时间点：{{data.buffered}} s</text>
-      <text class="mb-20">当前音量：{{data.volume}}</text>
-      <button plain :disabled="data.volume == 1" @click="increaseVolume">增加音量</button>
-      <button plain :disabled="data.volume == 0" @click="decreaseVolume">减少音量</button>
-
-      <text class="color-888 fs-12 fw-bold u-mt-5 p-10-0 color-text-333">开始播放的位置（单位：s）</text>
-      <input :value="data.startTime" type="number" placeholder="开始播放的位置（单位：s）" class="h-25 p-8-13 fs-14 flex-1 box-content-box bg-list-fff"
-        @input="startTimeInput"></input>
-      <boolean-data :value="false" title="是否自动开始播放" @change="setAutoplay"></boolean-data>
-      <boolean-data :value="false" title="是否循环播放" @change="setLoop"></boolean-data>
-			<!-- #ifdef APP-IOS -->
-			<boolean-data :value="true" title="是否遵循系统静音开关" @change="setObeyMuteSwitch"></boolean-data>
-			<!-- #endif -->
-
-      <text class="color-888 fs-12 fw-bold u-mt-5 p-10-0 color-text-333 pl-10 pt-10 pr-10">播放倍率(Web/HarmonyOS 不支持)</text>
-      <enum-data-checkbox
-        :items="playbackRateOptions"
-        mode="default"
-        :show-toast="false"
-        @change="playbackRateChange"
-      />
-
-      <view class="p-10-0 color-text-333">
-        <text class="fs-15 fw-bold color-text-333">方法示例</text>
-      </View>
-      <button :disabled="data.isPlaying" @click="play" class="mt-10">播放</button>
-      <button :disabled="!data.isPlaying" @click="pause" class="mt-10">暂停</button>
-      <button :disabled="!data.isPlaying" @click="stop" class="mt-10">停止</button>
-      <button @click="onchangeValue(20)" class="mt-10">跳转到指定位置20</button>
-      <button @click="onTimeUpdate" class="mt-10">onTimeUpdate</button>
-      <button @click="offTimeUpdate" class="mt-10">offTimeUpdate</button>
-      <button @click="onWaiting" class="mt-10">onWaiting</button>
-      <button @click="offWaiting" class="mt-10">offWaiting</button>
-
-
-      <text class="u-color-red fs-15 mt-10">tip:销毁后请重新进入此界面再播放</text>
-      <button @click="destory" class="mt-10">销毁</button>
-
-      <view class="p-10-0 color-text-333">
-        <text class="fs-15 fw-bold color-text-333">格式/路径示例</text>
-      </View>
-      <navigator url="/pages/API/create-inner-audio-context/inner-audio-format" class="mt-10">
-        <button @click="pause">音频格式示例</button>
-      </navigator>
-      <navigator url="/pages/API/create-inner-audio-context/inner-audio-path" class="mt-10">
-        <button @click="pause">音频路径示例</button>
-      </navigator>
-      <navigator url="/pages/API/create-inner-audio-context/inner-audio-mult" class="mt-10">
-        <button @click="pause">多音频同时播放</button>
-      </navigator>
+  <view class="uni-padding-wrap">
+    <page-head title="audio"></page-head>
+    <view class="uni-common-mt">
+      <slider ref="sliderRef" :value="position" :min="0" :max="data.duration" @changing="onchanging"
+        @change="onchange"></slider>
     </view>
+    <view class="uni-title">
+      <text class="uni-title-text">属性示例</text>
+    </View>
+    <text class="uni-text-box uni-common-mt">当前音频播放位置（保留小数点后 3 位）：{{data.currentTime}} s</text>
+    <text class="uni-text-box">音频的长度（单位:s）：{{data.duration}} s</text>
+    <text class="uni-text-box">当前是否停止状态：{{data.isPaused}}</text>
+    <text class="uni-text-box">音频缓冲的时间点：{{data.buffered}} s</text>
+    <text class="uni-text-box">当前音量：{{data.volume}}</text>
+    <button plain :disabled="data.volume == 1" @click="increaseVolume">增加音量</button>
+    <button plain :disabled="data.volume == 0" @click="decreaseVolume">减少音量</button>
 
-    <view class="h-safe-area-inset-bottom-20 min-h-20"></view>
+    <text class="uni-subtitle-text uni-title">开始播放的位置（单位：s）</text>
+    <input :value="data.startTime" type="number" placeholder="开始播放的位置（单位：s）" class="uni-input"
+      @input="startTimeInput"></input>
+    <boolean-data :value="false" title="是否自动开始播放" @change="setAutoplay"></boolean-data>
+    <boolean-data :value="false" title="是否循环播放" @change="setLoop"></boolean-data>
+    <!-- #ifdef APP-IOS -->
+    <boolean-data :value="true" title="是否遵循系统静音开关" @change="setObeyMuteSwitch"></boolean-data>
+    <!-- #endif -->
+
+    <text style="padding-left: 10px;padding-top: 10px;padding-right: 10px;" class="uni-subtitle-text uni-title">播放倍率(Web/HarmonyOS 不支持)</text>
+    <enum-data-checkbox
+      :items="playbackRateOptions"
+      mode="default"
+      :show-toast="false"
+      @change="playbackRateChange"
+    />
+
+    <view class="uni-title">
+      <text class="uni-title-text">方法示例</text>
+    </View>
+    <button :disabled="data.isPlaying" @click="play" class="uni-btn">播放</button>
+    <button :disabled="!data.isPlaying" @click="pause" class="uni-btn">暂停</button>
+    <button :disabled="!data.isPlaying" @click="stop" class="uni-btn">停止</button>
+    <button @click="onchangeValue(20)" class="uni-btn">跳转到指定位置20</button>
+    <button @click="onTimeUpdate" class="uni-btn">onTimeUpdate</button>
+    <button @click="offTimeUpdate" class="uni-btn">offTimeUpdate</button>
+    <button @click="onWaiting" class="uni-btn">onWaiting</button>
+    <button @click="offWaiting" class="uni-btn">offWaiting</button>
+
+
+    <text style="color: red;font-size: 15px;margin-top: 10px;">tip:销毁后请重新进入此界面再播放</text>
+    <button @click="destory" class="uni-btn">销毁</button>
+
+    <view class="uni-title">
+      <text class="uni-title-text">格式/路径示例</text>
+    </View>
+    <navigator url="/pages/API/create-inner-audio-context/inner-audio-format" class="uni-btn">
+      <button @click="pause">音频格式示例</button>
+    </navigator>
+    <navigator url="/pages/API/create-inner-audio-context/inner-audio-path" class="uni-btn">
+      <button @click="pause">音频路径示例</button>
+    </navigator>
+    <navigator url="/pages/API/create-inner-audio-context/inner-audio-mult" class="uni-btn">
+      <button @click="pause">多音频同时播放</button>
+    </navigator>
+  </view>
+
+  <view class="scroll-view_bottom-fixed"></view>
 </template>
 <script setup lang="ts">
   const playbackRateOptions = computed(() => [
@@ -365,3 +365,33 @@
     onchangeValue
   })
 </script>
+
+<style>
+  .play-time-area {
+    display: flex;
+    flex-direction: row;
+    margin-top: 20px;
+  }
+
+  .duration {
+    margin-left: auto;
+  }
+
+  .play-button-area {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin: 50px 0;
+  }
+
+  .icon-play {
+    width: 60px;
+    height: 60px;
+  }
+
+  .playback-rate-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+</style>

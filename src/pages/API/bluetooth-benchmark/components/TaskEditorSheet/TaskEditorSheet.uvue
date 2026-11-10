@@ -50,7 +50,7 @@
 				<text class="task-editor-note">READ：每个任务只提交一次；同一特征 READ 可与 Notify 并发。</text>
 			</view>
 			<text v-if="props.taskDraftConflictReason.length > 0"
-				class="task-editor-error">{{ props.taskDraftConflictReason }}</text>
+				class="task-editor-error task-editor-conflict">{{ props.taskDraftConflictReason }}</text>
 			<text v-else-if="props.taskEditorError.length > 0" class="task-editor-error">{{ props.taskEditorError }}</text>
 			<view class="task-editor-actions">
 				<view class="task-editor-cancel" @click="emit('close')"><text>取消</text></view>

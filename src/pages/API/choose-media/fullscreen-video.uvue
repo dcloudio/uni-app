@@ -1,6 +1,6 @@
 <template>
     <uni-backarrow-circle auto-back class="back arrow"></uni-backarrow-circle>
-    <video ref="video" class="w-full flex-1 h-full" :src="url" controls="false" autoplay="true" show-progress="false"
+    <video ref="video" class="video-box" :src="url" controls="false" autoplay="true" show-progress="false"
       show-fullscreen-btn="false" show-play-btn="false" show-center-play-btn="false"></video>
 </template>
 
@@ -18,6 +18,11 @@ onLoad((options : OnLoadOptions) => {
 </script>
 
 <style>
+  .video-box {
+    width: 100%;
+    flex: 1;
+    height: 100%;
+  }
   .back{
     position: absolute;
     /* 由uni-backarrow-circle组件适配安全区 */

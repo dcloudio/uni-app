@@ -1,7 +1,7 @@
 <template>
-    <button class="mt-15" @click="openDialog1">open dialog1</button>
-    <button class="mt-15" @click="openDialog2">open dialog2</button>
-    <button class="mt-15" @click="openDialogPage1ToHomePage">open dialog page 1 to home page</button>
+    <button class="uni-common-mt" @click="openDialog1">open dialog1</button>
+    <button class="uni-common-mt" @click="openDialog2">open dialog2</button>
+    <button class="uni-common-mt" @click="openDialogPage1ToHomePage">open dialog page 1 to home page</button>
 </template>
 
 <script setup lang='ts'>

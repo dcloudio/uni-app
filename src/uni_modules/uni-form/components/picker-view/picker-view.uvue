@@ -32,13 +32,13 @@
      * @uniPlatform {
        "app": {
          "ios": {
-           "unixVaporVer": "5.11"
+           "unixVaporVer": "5.36"
          },
          "android": {
-           "unixVaporVer": "5.21"
+           "unixVaporVer": "5.36"
          },
         "harmony": {
-           "unixVaporVer": "5.0"
+           "unixVaporVer": "5.36"
          }
        }
      }
@@ -235,6 +235,16 @@
   watch(() => props.value, (newValue: number[]) => {
     syncFromProp(normalizeValue(newValue))
   }, { deep: true })
+
+  watch(itemHeight, () => {
+    setTimeout(() => {
+      // indicatorStyle 高度变化只调整滚动位置，不重置选中值或触发 change。
+      for (let i = 0; i < columns.length; i++) {
+        const api = columns[i]
+        api.setScrollTop(api.getIndex())
+      }
+    }, 0)
+  }, { flush: 'post' })
 
   function registerColumn(api: PickerViewColumnApi): number {
     columns.push(api)

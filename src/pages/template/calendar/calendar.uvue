@@ -1,11 +1,11 @@
 <template>
-  <view class="pos-relative u-p-15 bg-fff">
-    <view class="mb-10 u-ml-10">
-      <text class="fw-bold date-text">{{ current_month }}</text>
+  <view class="root">
+    <view class="date">
+      <text class="date-text">{{ current_month }}</text>
     </view>
-    <view ref="drawHeaderRef" class="h-30 mb-10"></view>
-    <view ref="drawWeeksRef" class="m-2-0 calendar-week" @click="select"></view>
-    <view class="d-flex flex-dir-row justify-between m-20-0">
+    <view ref="drawHeaderRef" class="calendar-header"></view>
+    <view ref="drawWeeksRef" class="calendar-week" @click="select"></view>
+    <view class="btn-group">
       <button size="mini" @click="preDate">上个月</button>
       <button size="mini" @click="gotoToday">回到今天</button>
       <button size="mini" @click="nextDate">下个月</button>
@@ -327,11 +327,37 @@
 </script>
 
 <style>
+  .root {
+    /* flex: 1; */
+    position: relative;
+    padding: 15px;
+    background-color: #fff;
+  }
+
+  .calendar-header {
+    height: 30px;
+    margin-bottom: 10px;
+  }
+
+  .date {
+    margin-bottom: 10px;
+    margin-left: 10px;
+  }
+
   .date-text {
     font-size: 34px;
+    font-weight: bold;
   }
 
   .calendar-week {
     height: 350px;
+    margin: 2px 0;
+  }
+
+  .btn-group {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 20px 0;
   }
 </style>

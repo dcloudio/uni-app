@@ -1,11 +1,11 @@
 <template>
   <!-- #ifdef APP -->
   <text>显示简易操作日志(可滚动查看)</text><button size="mini" @click="data.log=''">清空日志</button>
-  <scroll-view class="max-h-300">
-    <text class="u-p-2 m-2 border-width-1 border-style-solid border-color-000">{{ data.log }}</text>
+  <scroll-view style="max-height: 300px;" >
+    <text style="margin: 2px; padding: 2px; border: 1px solid #000000;" >{{ data.log }}</text>
   </scroll-view>
-  <view class="u-ml-10 mr-10 mt-4 mb-4 border-b-0 pos-relative d-flex flex-dir-column bg-transparent">
-    <text class="mb-4"> 请选择定位服务提供商：</text>
+  <view class="uni-list">
+    <text style="margin-bottom: 4px" > 请选择定位服务提供商：</text>
     <enum-data-checkbox
       :model-value="data.providerList[data.currentSelectedProvider]?.id"
       :items="providerOptions"
@@ -15,8 +15,8 @@
     />
   </view>
 
-  <view class="u-ml-10 mr-10 mt-4 mb-4 border-b-0 pos-relative d-flex flex-dir-column bg-transparent">
-    <text class="mb-4"> 请选择坐标系：</text>
+  <view class="uni-list">
+    <text style="margin-bottom: 4px" > 请选择坐标系：</text>
     <enum-data-checkbox
       :model-value="types[data.currentSelectedType]?.value"
       :items="types"
@@ -26,17 +26,17 @@
     />
   </view>
 
-  <scroll-view class="flex-1">
+  <scroll-view style="flex: 1;" >
   <!-- #endif -->
-    <button class="m-4" type="primary" @tap="startLocationUpdate" id="startLocationUpdate">点击连续定位</button>
-    <button class="m-4" type="primary" @tap="startLocationUpdateBackground"
+    <button class="btnstyle" type="primary" @tap="startLocationUpdate" id="startLocationUpdate">点击连续定位</button>
+    <button class="btnstyle" type="primary" @tap="startLocationUpdateBackground"
       id="startLocationUpdateBackground">后台点击连续定位</button>
-    <button class="m-4" type="primary" @tap="stopLocationUpdate" id="stopLocationUpdate">点击关闭定位</button>
-    <button class="m-4" type="primary" @tap="onLocationChange" id="onLocationChange">onLocationChange</button>
-    <button class="m-4" type="primary" @tap="offLocationChange" id="offLocationChange">offLocationChange</button>
-    <button class="m-4" type="primary" @tap="onLocationChangeError"
+    <button class="btnstyle" type="primary" @tap="stopLocationUpdate" id="stopLocationUpdate">点击关闭定位</button>
+    <button class="btnstyle" type="primary" @tap="onLocationChange" id="onLocationChange">onLocationChange</button>
+    <button class="btnstyle" type="primary" @tap="offLocationChange" id="offLocationChange">offLocationChange</button>
+    <button class="btnstyle" type="primary" @tap="onLocationChangeError"
       id="onLocationChangeError">onLocationChangeError</button>
-    <button class="m-4" type="primary" @tap="offLocationChangeError"
+    <button class="btnstyle" type="primary" @tap="offLocationChangeError"
       id="offLocationChangeError">offLocationChangeError</button>
   <!-- #ifdef APP -->
   </scroll-view>
@@ -297,3 +297,26 @@
     stopLocationUpdate
   })
 </script>
+
+<style>
+  .uni-list {
+    border-bottom: 0px;
+    background-color: transparent;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+  }
+
+  .uni-list-cell {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .btnstyle {
+    margin: 4px;
+  }
+</style>

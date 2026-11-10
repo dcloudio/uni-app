@@ -1,9 +1,9 @@
 <template>
-    <view class="flex-grow-1">
-      <text class="fs-13 color-tips-0958d9 bg-tips-e6f4ff border-l-4-solid-tips-91caff p-10-12 radius-4 m-10">说明：左边是正常版本，右边是拍平版本</text>
+    <view style="flex-grow: 1">
+      <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
       <view>
         <text>align-content: center</text>
-        <view class="flex-dir-row justify-around mt-10">
+        <view class="demo-box">
           <view class="common" style="align-content: center">
             <view class="flex-item red"></view>
             <view class="flex-item green"></view>
@@ -25,7 +25,7 @@
 
       <view>
         <text>align-content: flex-start</text>
-        <view class="flex-dir-row justify-around mt-10">
+        <view class="demo-box">
           <view class="common" style="align-content: flex-start">
             <view class="flex-item red"></view>
             <view class="flex-item green"></view>
@@ -47,7 +47,7 @@
 
       <view>
         <text>align-content: flex-end</text>
-        <view class="flex-dir-row justify-around mt-10">
+        <view class="demo-box">
           <view class="common" style="align-content: flex-end">
             <view class="flex-item red"></view>
             <view class="flex-item green"></view>
@@ -69,7 +69,7 @@
 
       <view>
         <text>align-content: space-between</text>
-        <view class="flex-dir-row justify-around mt-10">
+        <view class="demo-box">
           <view class="common" style="align-content: space-between">
             <view class="flex-item red"></view>
             <view class="flex-item green"></view>
@@ -91,7 +91,7 @@
 
       <view>
         <text>align-content: space-around</text>
-        <view class="flex-dir-row justify-around mt-10">
+        <view class="demo-box">
           <view class="common" style="align-content: space-around">
             <view class="flex-item red"></view>
             <view class="flex-item green"></view>
@@ -113,7 +113,7 @@
 
       <view>
         <text>align-content: stretch</text>
-        <view class="flex-dir-row justify-around mt-10">
+        <view class="demo-box">
           <view class="common" style="align-content: stretch">
             <view class="flex-item-stretch red"></view>
             <view class="flex-item-stretch green"></view>
@@ -133,12 +133,12 @@
         </view>
       </view>
 
-      <view class="mt-15">
-        <text class="fs-15 fw-bold color-text-333">scroll-view 组件</text>
-        <text class="color-888 fs-12 fw-bold u-mt-5">align-content: center; 和 align-content: flex-start;</text>
+      <view class="uni-common-mt">
+        <text class="uni-title-text">scroll-view 组件</text>
+        <text class="uni-subtitle-text">align-content: center; 和 align-content: flex-start;</text>
       </view>
 
-      <view class="flex-dir-row justify-around mt-10">
+      <view class="demo-box">
         <scroll-view class="common" style="align-content: center;" direction="horizontal">
           <view class="flex-item red"></view>
           <view class="flex-item green"></view>
@@ -157,18 +157,18 @@
         </scroll-view>
       </view>
 
-      <view class="mt-15">
-        <text class="fs-15 fw-bold color-text-333">setProperty 设置与 getPropertyValue 获取</text>
+      <view class="uni-common-mt">
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
-      <view class="flex-dir-row justify-around">
+      <view class="common-box">
         <!-- 普通版本 -->
-        <view class="mt-15">
-          <text class="fs-15 fw-bold color-text-333">align-content</text>
-          <text class="fs-12 color-999">设置值: {{data.alignContent}}</text>
-          <text class="fs-12 color-999">获取值: {{data.alignContentActual}}</text>
+        <view class="uni-common-mt">
+          <text class="uni-title-text">align-content</text>
+          <text class="uni-info">设置值: {{data.alignContent}}</text>
+          <text class="uni-info">获取值: {{data.alignContentActual}}</text>
           <view class="test-box">
-            <view ref="viewRef" class="test-flex-container" :style="{ alignContent: data.alignContent }">
+            <view ref="viewRef" class="test-flex-container test-view" :style="{ alignContent: data.alignContent }">
               <view class="test-item-small red"></view>
               <view class="test-item-small green"></view>
               <view class="test-item-small blue"></view>
@@ -180,12 +180,12 @@
         </view>
 
         <!-- 拍平版本 -->
-        <view class="mt-15">
-          <text class="fs-15 fw-bold color-text-333">拍平</text>
-          <text class="fs-12 color-999">设置值: {{data.alignContent}}</text>
-          <text class="fs-12 color-999">获取值: {{data.alignContentActualFlat}}</text>
+        <view class="uni-common-mt">
+          <text class="uni-title-text">拍平</text>
+          <text class="uni-info">设置值: {{data.alignContent}}</text>
+          <text class="uni-info">获取值: {{data.alignContentActualFlat}}</text>
           <view class="test-box">
-            <view ref="viewRefFlat" class="test-flex-container" :style="{ alignContent: data.alignContent }" flatten>
+            <view ref="viewRefFlat" class="test-flex-container test-view-flatten" :style="{ alignContent: data.alignContent }" flatten>
               <view class="test-item-small red"></view>
               <view class="test-item-small green"></view>
               <view class="test-item-small blue"></view>
@@ -197,8 +197,8 @@
         </view>
       </view>
 
-      <view class="mt-15 mb-15">
-        <text class="fs-13 color-tips-0958d9 bg-tips-e6f4ff border-l-4-solid-tips-91caff p-10-12 radius-4 m-10">第一个枚举值，'' (空字符串) - 空值情况</text>
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data-checkbox :items="alignContentEnum" title="align-content 枚举值" @change="radioChangeAlignContent" :compact="true"></enum-data-checkbox>
         <input-data :defaultValue="data.alignContent" title="align-content 自定义值" type="text" @confirm="inputChangeAlignContent"></input-data>
       </view>
@@ -263,6 +263,12 @@
 </script>
 
 <style>
+  .demo-box {
+    flex-direction: row;
+    margin-top: 10px;
+    justify-content: space-around;
+  }
+
   .flex-item {
     width: 40px;
     height: 40px;
@@ -288,6 +294,11 @@
     flex-flow: row wrap;
   }
 
+  .common-box{
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
   .test-box {
     width: 180px;
     height: 150px;
@@ -305,5 +316,10 @@
   .test-item-small {
     width: 35px;
     height: 35px;
+  }
+
+  .scroll-view-label {
+    font-size: 12px;
+    text-align: center;
   }
 </style>

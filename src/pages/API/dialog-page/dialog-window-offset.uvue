@@ -1,14 +1,14 @@
 <template>
-  <view id="window-offset-root" class="window-offset-root d-flex flex-dir-column bg-page-fff">
+  <view id="window-offset-root" class="window-offset-root flex-dir-column bg-page-fff">
     <scroll-view class="flex-1 h-0 min-h-0 bg-list-fff" direction="vertical" :show-scrollbar="true">
-      <view class="u-p-15">
-        <text class="mb-15 fs-14 lh-22 color-text-333">本页保留默认导航栏，允许页面滚动。打开、关闭弹窗后，应仍然只有内容区域可以滚动，底栏位置保持不变。</text>
-        <text class="mb-15 fs-14 lh-22 color-text-333">初始 --window-top: {{ initialWindowTop }}；--window-bottom: {{ initialWindowBottom }}</text>
-        <text class="mb-15 fs-14 lh-22 color-text-333">{{ result }}</text>
-        <button id="show-modal" class="mb-15" @click="openModal">打开 uni.showModal</button>
-        <button id="open-dialog" class="mb-15" @click="openDialog">打开自定义 dialogPage</button>
-        <button class="mb-15" @click="updateResult">读取当前窗口变量</button>
-        <text v-for="item in 20" :key="item" class="window-offset-row h-40 justify-center fs-14 color-text-333">内部滚动内容 {{ item }}</text>
+      <view class="uni-container">
+        <text class="uni-common-mb lh-22 color-text-333">本页保留默认导航栏，允许页面滚动。打开、关闭弹窗后，应仍然只有内容区域可以滚动，底栏位置保持不变。</text>
+        <text class="uni-common-mb lh-22 color-text-333">初始 --window-top: {{ initialWindowTop }}；--window-bottom: {{ initialWindowBottom }}</text>
+        <text class="uni-common-mb lh-22 color-text-333">{{ result }}</text>
+        <button id="show-modal" class="uni-common-mb" @click="openModal">打开 uni.showModal</button>
+        <button id="open-dialog" class="uni-common-mb" @click="openDialog">打开自定义 dialogPage</button>
+        <button class="uni-common-mb" @click="updateResult">读取当前窗口变量</button>
+        <text v-for="item in 20" :key="item" class="window-offset-row h-40 justify-center color-text-333">内部滚动内容 {{ item }}</text>
       </view>
     </scroll-view>
     <view id="window-offset-footer" class="window-offset-footer u-h-50 items-center justify-center bg-active-f8f8f8 border-t-style-solid border-t-color-border border-t-width-1">
@@ -85,6 +85,70 @@
 </script>
 
 <style>
+  .lh-22 {
+    line-height: 22px;
+  }
+
+  .bg-list-fff {
+    background-color: var(--list-background-color,#ffffff);
+  }
+
+  .flex-dir-column {
+    flex-direction: column;
+  }
+
+  .items-center {
+    align-items: center;
+  }
+
+  .bg-active-f8f8f8 {
+    background-color: var(--active-background-color,#f8f8f8);
+  }
+
+  .flex-1 {
+    flex: 1;
+  }
+
+  .justify-center {
+    justify-content: center;
+  }
+
+  .min-h-0 {
+    min-height: 0;
+  }
+
+  .color-text-333 {
+    color: var(--text-color, #333333);
+  }
+
+  .h-40 {
+    height: 40px;
+  }
+
+  .border-t-style-solid {
+    border-top-style: solid;
+  }
+
+  .border-t-color-border {
+    border-top-color: var(--border-color);
+  }
+
+  .border-t-width-1 {
+    border-top-width: 1px;
+  }
+
+  .u-h-50 {
+    height: 50px;
+  }
+
+  .h-0 {
+    height: 0;
+  }
+
+  .bg-page-fff {
+    background-color: var(--background-color, #ffffff);
+  }
+
   .window-offset-root {
     height: calc(100vh - var(--window-top, 0px) - var(--window-bottom, 0px));
   }

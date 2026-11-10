@@ -1,15 +1,15 @@
 <template>
-  <list-view v-if="list_show" id="listview" class="flex-1" show-scrollbar=false :refresher-enabled="true"
+  <list-view v-if="list_show" id="listview" class="list-view-page" style="flex: 1;" show-scrollbar=false :refresher-enabled="true"
     :refresher-triggered="data.refresherTriggered"
     <!-- #ifdef APP-ANDROID && VUE3-VAPOR -->
     :android-refresher-color="getAndroidRefresherColorBinding()"
     <!-- #endif -->
     @refresherrefresh="onRefresherrefresh" @refresherabort="onRefresherabort"
     @refresherrestore="onRefresherrestore" @refresherpulling="onRefresherpulling">
-    <list-item class="u-p-15 m-0-0-5-0 bg-list-fff radius-5">
+    <list-item class="item">
       <text>向下滑动触发下拉刷新</text>
     </list-item>
-    <list-item v-for="index in item_count" :key="index" class="u-p-15 m-0-0-5-0 bg-list-fff radius-5">
+    <list-item v-for="index in item_count" :key="index" class="item">
       <text>item-------{{index}}</text>
     </list-item>
   </list-view>
@@ -147,3 +147,15 @@ defineExpose({
   // #endif
 })
 </script>
+<style>
+  .item {
+    padding: 15px;
+    margin: 0 0 5px 0;
+    background-color: var(--list-background-color, #fff);
+    border-radius: 5px;
+  }
+
+  .button_item {
+    width: 200px;
+  }
+</style>

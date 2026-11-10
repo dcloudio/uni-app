@@ -12,7 +12,7 @@
 				@click="emit('setLogFilter', 'all')">
 				<text class="log-filter-text">全部 {{ props.logs.length }}</text>
 			</view>
-			<view v-for="device in props.visibleLogDevices" :key="device.deviceId" class="log-filter-chip"
+			<view v-for="device in props.visibleLogDevices" :key="device.deviceId" class="log-filter-chip log-device-chip"
 				:class="props.logFilterMode == 'device' && props.selectedLogDeviceId == device.deviceId ? 'log-filter-selected' : ''"
 				@click="emit('selectLogDevice', device.deviceId)">
 				<view class="log-device-dot" :class="'log-state-' + device.state"></view>

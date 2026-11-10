@@ -1,16 +1,16 @@
 <template>
     <page-head :title="title"></page-head>
-    <view class="p-4">
-      <text class="color-text-333 fs-14 lh-20">
+    <view style="padding: 4px" >
+      <text class="hello-text">
         定位功能默认调用操作系统定位API实现。也支持三方SDK定位\n
         部分老款Android手机因gms问题可能导致无法使用系统定位。\n
         Web、Android、iOS平台，gcj国标、逆地理信息等功能需调用腾讯定位。</text>
     </view>
 
-    <view class="p-0-15 mt-15">
+    <view class="uni-padding-wrap uni-common-mt">
       <!-- #ifdef APP-ANDROID || APP-IOS -->
-      <view class="flex-1 vapor-color-text-333"><text class="w-full non-vapor-color-text-333 web-mp-break-break-all">定位服务商provider(如系统定位，腾讯定位等)</text></view>
-      <view class="bg-list-fff pos-relative d-flex flex-dir-column border-b-1-solid-c8c7cc-dark-3a3a3c mb-20">
+      <view class="uni-list-cell-db"><text class="uni-list-cell-db-text">定位服务商provider(如系统定位，腾讯定位等)</text></view>
+      <view class="uni-list" style="margin-bottom: 20px;">
         <enum-data-checkbox
           :model-value="providerList[currentProvider]?.id"
           :items="providerOptions"
@@ -20,8 +20,8 @@
         />
       </view>
       <!-- #endif -->
-      <view class="flex-1 vapor-color-text-333"><text class="w-full non-vapor-color-text-333 web-mp-break-break-all">定位类型</text></view>
-      <view class="bg-list-fff pos-relative d-flex flex-dir-column border-b-1-solid-c8c7cc-dark-3a3a3c">
+      <view class="uni-list-cell-db"><text class="uni-list-cell-db-text">定位类型</text></view>
+      <view class="uni-list">
         <enum-data-checkbox
           :model-value="items[current]?.value"
           :items="items"
@@ -30,15 +30,15 @@
           @change="radioChange"
         />
       </view>
-      <boolean-data class="mt-20" :value="altitudeSelect" title="高度信息"
+      <boolean-data style="margin-top: 20px" :value="altitudeSelect" title="高度信息"
         @change="altitudeChange"></boolean-data>
       <boolean-data :value="isHighAccuracySelect" title="开启高精度定位"
         @change="highAccuracySelectChange"></boolean-data>
       <boolean-data :value="geocodeSelect" title="是否解析地址信息"
         @change="geocodeChange"></boolean-data>
-      <view class="web-mp-break-break-all">{{ exeRet }}</view>
-      <view class="p-5-0">
-        <button class="mt-10" type="default" @tap="getLocationTap">
+      <view class="get-location-result">{{ exeRet }}</view>
+      <view class="uni-btn-v">
+        <button class="uni-btn" type="default" @tap="getLocationTap">
           获取定位
         </button>
       </view>
@@ -181,6 +181,9 @@
       type: items.value[current.value].value,
       altitude: altitudeSelect.value,
       isHighAccuracy: isHighAccuracySelect.value,
+      // #ifndef WEB
+      highAccuracyExpireTime: 5000,
+      // #endif
       geocode: geocodeSelect.value,
       success: (res : any) => {
         uni.hideLoading()
@@ -236,3 +239,11 @@
     jestGetLocation
   })
 </script>
+
+<style>
+  .get-location-result {
+    /* #ifdef WEB || MP */
+    word-break: break-all;
+    /* #endif */
+  }
+</style>

@@ -1,9 +1,9 @@
 <template>
-  <view class="m-12">
+  <view style="margin:12px">
     <page-head title="安装应用资源"></page-head>
     <page-intro content="本页演示 uni.installWgt 安装应用资源的错误示例：点击更新资源按钮后因为传递资源路径不存在而报错。仅蒸汽模式支持"></page-intro>
     <!-- #ifdef VUE3-VAPOR && (APP-ANDROID || APP-IOS) -->
-    <button class="mb-4 ws-nowrap text-overflow-ellipsis" type="primary" @click="update">升级wgt</button>
+    <button class="button" type="primary" @click="update">升级wgt</button>
     <!-- #endif -->
   </view>
 </template>
@@ -32,3 +32,11 @@
   // #endif
 
 </script>
+
+<style>
+  .button {
+    margin-bottom: 4px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+</style>

@@ -5,7 +5,7 @@
       <text>条目 {{ index }}</text>
     </view>
   </scroll-view>
-  <!-- #ifdef APP-IOS -->
+  <!-- #ifdef APP-IOS || MP-WEIXIN -->
   <boolean-data
     id="property-bounces"
     title="bounces（边界回弹，仅 iOS）"
@@ -82,6 +82,7 @@
     class="context-scroll"
     direction="vertical"
     :refresher-enabled="true"
+    :refresher-two-level-enabled="true"
     refresher-default-style="none"
   >
     <view v-for="index in 8" :key="index" class="context-item">
@@ -102,7 +103,7 @@
   import { getScrollViewContext } from './scroll-view-context'
 
   const data = reactive({
-    // #ifdef APP-IOS
+    // #ifdef APP-IOS || MP-WEIXIN
     bounces: true,
     // #endif
     showScrollbar: true,
@@ -110,7 +111,7 @@
     pagingEnabled: false
   })
 
-  // #ifdef APP-IOS
+  // #ifdef APP-IOS || MP-WEIXIN
   async function changeBounces(value: boolean) {
     const context = await getScrollViewContext('#property-scroll')
     context.bounces = value
@@ -148,7 +149,12 @@
 
   async function triggerRefresh() {
     const context = await getScrollViewContext('#refresh-scroll')
+    // #ifdef MP-WEIXIN
+    context.triggerRefresh({})
+    // #endif
+    // #ifdef APP
     context.triggerRefresh()
+    // #endif
   }
 
   async function closeRefresh() {
@@ -158,18 +164,27 @@
 
   async function triggerTwoLevel() {
     const context = await getScrollViewContext('#two-level-scroll')
-    context.setAnyAttribute('refresher-two-level-enabled', true)
+    // #ifdef MP-WEIXIN
+    context.triggerTwoLevel({})
+    // #endif
+    // #ifdef APP
     context.triggerTwoLevel()
+    // #endif
   }
 
   async function closeTwoLevel() {
     const context = await getScrollViewContext('#two-level-scroll')
+    // #ifdef MP-WEIXIN
+    context.closeTwoLevel({})
+    // #endif
+    // #ifdef APP
     context.closeTwoLevel()
+    // #endif
   }
 
   defineExpose({
     data,
-    // #ifdef APP-IOS
+    // #ifdef APP-IOS || MP-WEIXIN
     changeBounces,
     // #endif
     changeShowScrollbar,

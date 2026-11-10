@@ -1,10 +1,18 @@
 <template>
-    <image class="h-100 w-100 logo" src="/static/test-image/logo.png"></image>
+    <image class="logo" src="/static/test-image/logo.png"></image>
     <switch activeBackgroundColor="#23C343" backgroundColor="#C5C5C5" />
 </template>
 
 <style>
   .logo {
+    height: 100px;
+    width: 100px;
     margin: 100px auto 25px auto;
+  }
+
+  .title {
+    font-size: 18px;
+    color: #8f8f94;
+    text-align: center;
   }
 </style>

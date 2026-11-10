@@ -10,3 +10,9 @@ function doOpendDialogpage() {
   testOpenDialogPage("/pages/API/dialog-page/dialog-page")
 }
 </script>
+
+<style>
+  .content {
+    flex: 1;
+  }
+</style>

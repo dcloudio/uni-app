@@ -1,8 +1,8 @@
 <template>
-  <scroll-view class="flex-1">
+  <scroll-view style="flex: 1">
     <page-head title="拖拽图标测试相关事件"></page-head>
     <!-- #ifndef MP-ALIPAY -->
-    <view class="p-0-15 mt-15 bottom-20">
+    <view class="uni-padding-wrap uni-common-mt" style="bottom: 20px;">
       <navigator url="/pages/component/global-events/touch-events-case" hover-class="none">
         <button type="default">
           stopPropagation / preventDefault
@@ -10,17 +10,17 @@
       </navigator>
     </view>
     <!-- #endif -->
-    <view class="w-full flex-dir-column items-center">
-      <view class="w-300 u-h-300 items-center justify-center border-style-solid" @touchstart="onViewTouchStart">
-        <image class="w-100 h-100" id="icon" src="../image/logo.png" @touchstart="onTouchStart" @touchcancel="onTouchCancel"
+    <view class="container">
+      <view class="view-box" @touchstart="onViewTouchStart">
+        <image class="icon" id="icon" src="../image/logo.png" @touchstart="onTouchStart" @touchcancel="onTouchCancel"
           @touchmove="onTouchMove" @touchend="onTouchEnd"></image>
       </view>
 
     </view>
     <view v-if="touchEvent !== null">
-      <text class="mt-10 fs-18">touches: </text>
+      <text class="title1">touches: </text>
       <template v-for="(touch, index) in touchEvent!.touches" :key="index">
-        <text class="u-mt-5 fs-16">touch[{{ index }}]:</text>
+        <text class="title2">touch[{{ index }}]:</text>
         <text>identifier: {{touch.identifier}}</text>
         <text>pageX: {{ touch.pageX }}, pageY: {{ touch.pageY }}</text>
         <text>clientX: {{ touch.clientX }}, clientY: {{ touch.clientY }}</text>
@@ -164,3 +164,34 @@ defineExpose({
   getBottomTouchEvents
 })
 </script>
+
+<style>
+  .container {
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .view-box {
+    width: 300px;
+    height: 300px;
+    align-items: center;
+    justify-content: center;
+    border-style: solid;
+  }
+
+  .icon {
+    width: 100px;
+    height: 100px;
+  }
+
+  .title1 {
+    margin-top: 10px;
+    font-size: 18px;
+  }
+
+  .title2 {
+    margin-top: 5px;
+    font-size: 16px;
+  }
+</style>

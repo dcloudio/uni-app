@@ -1,12 +1,12 @@
 <template>
     <!-- #ifdef WEB -->
     <!-- TODO 后续支持配置时在移除 -->
-    <canvas class="w-full flex-grow-1 mb-10 bg-d3d3d3" id="tablet" @pointerdown="pointerDown" @pointermove="pointerMove" @pointerup="pointerUp" @pointercancel="pointerUp" @pointerleave="pointerUp" @ready="onCanvasReady"></canvas>
+    <canvas class="drawing" id="tablet" @pointerdown="pointerDown" @pointermove="pointerMove" @pointerup="pointerUp" @pointercancel="pointerUp" @pointerleave="pointerUp" @ready="onCanvasReady"></canvas>
     <!-- #endif -->
     <!-- #ifndef WEB -->
-    <canvas class="w-full flex-grow-1 mb-10 bg-d3d3d3" id="tablet" @touchstart="touchStart" @touchmove="touchMove" @touchend="touchEnd" @ready="onCanvasReady"></canvas>
+    <canvas class="drawing" id="tablet" @touchstart="touchStart" @touchmove="touchMove" @touchend="touchEnd" @ready="onCanvasReady"></canvas>
     <!-- #endif -->
-    <button class="mb-20" @click="doClear()">清空</button>
+    <button style="margin-bottom: 20px" @click="doClear()">清空</button>
 </template>
 
 <script setup lang="ts">
@@ -146,3 +146,12 @@ onReady(() => {
   // #endif
 })
 </script>
+
+<style>
+  .drawing {
+    width: 100%;
+    flex-grow: 1;
+    background-color: lightgray;
+    margin-bottom: 10px;
+  }
+</style>

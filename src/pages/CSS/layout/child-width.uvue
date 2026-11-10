@@ -1,5 +1,5 @@
 <template>
-  <view id="child_box" class="box"></view>
+  <view id="child_box" class="box child_box"></view>
 </template>
 
 <style>

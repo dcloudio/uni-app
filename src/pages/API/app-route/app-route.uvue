@@ -1,14 +1,14 @@
 <template>
     <page-head title="应用路由事件"></page-head>
-    <view class="p-0-15">
-      <view class="color-text-333 bg-list-fff p-12">
-        <text class="fs-15 fw-bold color-text-333">监听状态</text>
-        <text class="mt-8 color-text-333">{{ data.isListening ? '监听中' : '已停止' }}</text>
-        <text class="mt-8 color-text-333">onBeforeAppRoute：{{ data.beforeAppRouteCount }} 次</text>
-        <text class="mt-8 color-text-333">onAppRoute：{{ data.appRouteCount }} 次</text>
+    <view class="uni-padding-wrap">
+      <view class="uni-list-cell-padding status-box">
+        <text class="uni-title-text">监听状态</text>
+        <text class="status-text">{{ data.isListening ? '监听中' : '已停止' }}</text>
+        <text class="status-text">onBeforeAppRoute：{{ data.beforeAppRouteCount }} 次</text>
+        <text class="status-text">onAppRoute：{{ data.appRouteCount }} 次</text>
       </view>
 
-      <view class="p-5-0 mt-15">
+      <view class="uni-btn-v uni-common-mt">
         <button type="primary" @click="navigateToTarget">普通跳转</button>
         <button @click="navigateToRewriteTarget">重写下一次跳转</button>
         <button @click="navigateToRewritePreserveQueryTarget">重写并保留原参数</button>
@@ -17,25 +17,25 @@
         <button @click="clearRecords">清空记录</button>
       </view>
 
-      <view class="bg-list-fff p-12 mt-15">
-        <text class="fs-15 fw-bold color-text-333">onBeforeAppRoute 记录</text>
-        <text v-if="data.beforeAppRouteEvents.length == 0" class="mt-8 color-text-333 w-full">暂无记录</text>
-        <view v-for="(event, index) in data.beforeAppRouteEvents" :key="index" class="pt-8 border-b-width-1 border-b-style-solid pb-8 border-b-color-border-eee">
-          <text class="color-active-999">#{{ index + 1 }}</text>
-          <text class="mt-8 color-text-333 w-full">{{ event }}</text>
+      <view class="event-box uni-common-mt">
+        <text class="uni-title-text">onBeforeAppRoute 记录</text>
+        <text v-if="data.beforeAppRouteEvents.length == 0" class="event-text">暂无记录</text>
+        <view v-for="(event, index) in data.beforeAppRouteEvents" :key="index" class="event-item">
+          <text class="event-index">#{{ index + 1 }}</text>
+          <text class="event-text">{{ event }}</text>
         </view>
       </view>
-      <view class="bg-list-fff p-12 mt-15">
-        <text class="fs-15 fw-bold color-text-333">onAppRoute 记录</text>
-        <text v-if="data.appRouteEvents.length == 0" class="mt-8 color-text-333 w-full">暂无记录</text>
-        <view v-for="(event, index) in data.appRouteEvents" :key="index" class="pt-8 border-b-width-1 border-b-style-solid pb-8 border-b-color-border-eee">
-          <text class="color-active-999">#{{ index + 1 }}</text>
-          <text class="mt-8 color-text-333 w-full">{{ event }}</text>
+      <view class="event-box uni-common-mt">
+        <text class="uni-title-text">onAppRoute 记录</text>
+        <text v-if="data.appRouteEvents.length == 0" class="event-text">暂无记录</text>
+        <view v-for="(event, index) in data.appRouteEvents" :key="index" class="event-item">
+          <text class="event-index">#{{ index + 1 }}</text>
+          <text class="event-text">{{ event }}</text>
         </view>
       </view>
-      <view class="bg-list-fff p-12 mt-15">
-        <text class="fs-15 fw-bold color-text-333">最近一次 rewriteRoute 结果</text>
-        <text class="mt-8 color-text-333 w-full">{{ data.rewriteRouteResult }}</text>
+      <view class="event-box uni-common-mt">
+        <text class="uni-title-text">最近一次 rewriteRoute 结果</text>
+        <text class="event-text">{{ data.rewriteRouteResult }}</text>
       </view>
     </view>
 </template>
@@ -201,3 +201,33 @@
     navigateToRewriteTarget
   })
 </script>
+
+<style>
+  .status-box,
+  .event-box {
+    padding: 12px;
+    background-color: var(--list-background-color, #ffffff);
+  }
+
+  .status-text,
+  .event-text {
+    margin-top: 8px;
+    color: var(--text-color, #333333);
+  }
+
+  .event-text {
+    width: 100%;
+  }
+
+  .event-item {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: var(--border-color, #eeeeee);
+  }
+
+  .event-index {
+    color: var(--active-color, #999999);
+  }
+</style>

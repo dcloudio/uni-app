@@ -1,18 +1,18 @@
 <template>
-	<view>
+	<view class="observer-page">
 		<page-head :title="data.title"></page-head>
-		<view class="p-0-15 mt-15">
-			<view class="p-10-0 color-text-333 mt-15">
+		<view class="uni-padding-wrap uni-common-mt">
+			<view class="uni-title uni-common-mt">
 				{{data.appear ? '小球出现' : '小球消失'}}
 			</view>
-			<scroll-view class="h-200 bg-list-fff box-border-box scroll-view" :scroll-top="data.scrollTop">
-				<view class="d-flex flex-dir-column items-center scroll-area">
-					<text class="color-text-333 notice">向下滚动让小球出现</text>
-					<view class="w-100 h-100 radius-100 ball"></view>
+			<scroll-view class="scroll-view" :scroll-top="data.scrollTop">
+				<view class="scroll-area">
+					<text class="notice">向下滚动让小球出现</text>
+					<view class="ball"></view>
 				</view>
 			</scroll-view>
-			<navigator url="/pages/API/create-intersection-observer/intersection-observer-batch"><button class="mt-15">批量监听多个元素</button></navigator>
-			<navigator url="/pages/API/create-intersection-observer/intersection-observer-multi-root"><button class="mt-15">嵌套多根节点（嵌套滚动）</button></navigator>
+			<navigator url="/pages/API/create-intersection-observer/intersection-observer-batch"><button class="uni-common-mt">批量监听多个元素</button></navigator>
+			<navigator url="/pages/API/create-intersection-observer/intersection-observer-multi-root"><button class="uni-common-mt">嵌套多根节点（嵌套滚动）</button></navigator>
 		</view>
 	</view>
 </template>
@@ -58,19 +58,29 @@
 </script>
 <style>
 	.scroll-view {
+		height: 200px;
+		background-color: var(--list-background-color, #fff);
 		border: 1px solid var(--border-color, #ccc);
+		box-sizing: border-box;
 	}
 
 	.scroll-area {
 		height: 650px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
 	}
 
 	.notice {
 		margin-top: 75px;
 		margin:75px 0 200px 0;
+		color: var(--text-color, #333333);
 	}
 
 	.ball {
+		width: 100px;
+		height: 100px;
 		background: #4cd964;
+		border-radius: 100px;
 	}
 </style>

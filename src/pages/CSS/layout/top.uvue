@@ -1,8 +1,8 @@
 <template>
-    <view class="flex-grow-1">
-      <view class="mb-15">
-        <text class="fs-15 fw-bold color-text-333">top: 20px (距离顶部 20px) - 右侧：拍平</text>
-        <view class="flex-dir-row justify-between mt-10">
+    <view class="css-page" style="flex-grow: 1;">
+      <view class="uni-common-mb">
+        <text class="uni-title-text">top: 20px (距离顶部 20px) - 右侧：拍平</text>
+        <view class="test-container">
           <view class="example-box">
             <view class="common" style="top: 20px;"></view>
           </view>
@@ -11,9 +11,9 @@
           </view>
         </view>
       </view>
-      <view class="mb-15">
-        <text class="fs-15 fw-bold color-text-333">top: 20rpx (距离顶部 20rpx) - 右侧：拍平</text>
-        <view class="flex-dir-row justify-between mt-10">
+      <view class="uni-common-mb">
+        <text class="uni-title-text">top: 20rpx (距离顶部 20rpx) - 右侧：拍平</text>
+        <view class="test-container">
           <view class="example-box">
             <view class="common" style="top: 20rpx;"></view>
           </view>
@@ -23,9 +23,9 @@
         </view>
       </view>
 
-      <view class="mb-15">
-        <text class="fs-15 fw-bold color-text-333">top: 20% (距离顶部 20%) - 右侧：拍平</text>
-        <view class="flex-dir-row justify-between mt-10">
+      <view class="uni-common-mb">
+        <text class="uni-title-text">top: 20% (距离顶部 20%) - 右侧：拍平</text>
+        <view class="test-container">
           <view class="example-box">
             <view class="common" style="top: 20%;"></view>
           </view>
@@ -35,9 +35,9 @@
         </view>
       </view>
 
-      <view class="mb-15">
-        <text class="fs-15 fw-bold color-text-333">top: auto (自动，默认顶部对齐) - 右侧：拍平</text>
-        <view class="flex-dir-row justify-between mt-10">
+      <view class="uni-common-mb">
+        <text class="uni-title-text">top: auto (自动，默认顶部对齐) - 右侧：拍平</text>
+        <view class="test-container">
           <view class="example-box">
             <view class="common" style="top: auto;"></view>
           </view>
@@ -47,10 +47,10 @@
         </view>
       </view>
 
-      <text class="fs-15 fw-bold color-text-333 mt-15">scroll-view 组件</text>
-      <view class="mb-15">
-        <text class="color-888 fs-12 fw-bold u-mt-5">top: 10% 和 top: 30px</text>
-        <view class="flex-dir-row justify-between mt-10">
+      <text class="uni-title-text uni-common-mt">scroll-view 组件</text>
+      <view class="uni-common-mb">
+        <text class="uni-subtitle-text">top: 10% 和 top: 30px</text>
+        <view class="test-container">
           <view class="example-box">
             <scroll-view class="common" style="top: 10%;"></scroll-view>
           </view>
@@ -60,84 +60,84 @@
         </view>
       </view>
 
-      <view class="mt-15">
-        <text class="fs-15 fw-bold color-text-333">setProperty 设置与 getPropertyValue 获取</text>
+      <view class="uni-common-mt">
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <!-- 普通版本 -->
-      <view class="flex-dir-row justify-between mt-10">
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">view 组件</text>
-          <text class="fs-12 color-999">设置值: {{data.top}}</text>
-          <text class="fs-12 color-999">获取值: {{data.topActual}}</text>
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件</text>
+          <text class="uni-info">设置值: {{data.top}}</text>
+          <text class="uni-info">获取值: {{data.topActual}}</text>
           <view class="test-box">
-            <view ref="viewRef" class="common" :style="{ top: data.top }">
+            <view ref="viewRef" class="common test-view" :style="{ top: data.top }">
               <text class="common-text">view</text>
             </view>
           </view>
         </view>
 
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">text 组件</text>
-          <text class="fs-12 color-999">设置值: {{data.top}}</text>
-          <text class="fs-12 color-999">获取值: {{data.topActualText}}</text>
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件</text>
+          <text class="uni-info">设置值: {{data.top}}</text>
+          <text class="uni-info">获取值: {{data.topActualText}}</text>
           <view class="test-box">
-            <text ref="textRef" class="common common-text" :style="{ top: data.top }">text</text>
+            <text ref="textRef" class="common common-text test-text" :style="{ top: data.top }">text</text>
           </view>
         </view>
 
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">image 组件</text>
-          <text class="fs-12 color-999">设置值: {{data.top}}</text>
-          <text class="fs-12 color-999">获取值: {{data.topActualImage}}</text>
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件</text>
+          <text class="uni-info">设置值: {{data.top}}</text>
+          <text class="uni-info">获取值: {{data.topActualImage}}</text>
           <view class="test-box">
-            <image ref="imageRef" class="common" :style="{ top: data.top }" src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common test-image" :style="{ top: data.top }" src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
 
       <!-- 拍平版本 -->
-      <view class="flex-dir-row justify-between mt-10">
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">view 组件拍平</text>
-          <text class="fs-12 color-999">设置值: {{data.top}}</text>
-          <text class="fs-12 color-999">获取值: {{data.topActualFlat}}</text>
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件拍平</text>
+          <text class="uni-info">设置值: {{data.top}}</text>
+          <text class="uni-info">获取值: {{data.topActualFlat}}</text>
           <view class="test-box">
-            <view ref="viewRefFlat" class="common" :style="{ top: data.top }" flatten>
+            <view ref="viewRefFlat" class="common test-view-flatten" :style="{ top: data.top }" flatten>
               <text class="common-text">view</text>
             </view>
           </view>
         </view>
 
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">text 组件拍平</text>
-          <text class="fs-12 color-999">设置值: {{data.top}}</text>
-          <text class="fs-12 color-999">获取值: {{data.topActualTextFlat}}</text>
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件拍平</text>
+          <text class="uni-info">设置值: {{data.top}}</text>
+          <text class="uni-info">获取值: {{data.topActualTextFlat}}</text>
           <view class="test-box">
-            <text ref="textRefFlat" class="common common-text" :style="{ top: data.top }" flatten>text</text>
+            <text ref="textRefFlat" class="common common-text test-text-flatten" :style="{ top: data.top }" flatten>text</text>
           </view>
         </view>
 
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">image 组件拍平</text>
-          <text class="fs-12 color-999">设置值: {{data.top}}</text>
-          <text class="fs-12 color-999">获取值: {{data.topActualImageFlat}}</text>
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件拍平</text>
+          <text class="uni-info">设置值: {{data.top}}</text>
+          <text class="uni-info">获取值: {{data.topActualImageFlat}}</text>
           <view class="test-box">
-            <image ref="imageRefFlat" class="common" :style="{ top: data.top }" flatten src="/static/test-image/logo.png"></image>
+            <image ref="imageRefFlat" class="common test-image-flatten" :style="{ top: data.top }" flatten src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
 
-      <view class="mt-15 mb-15">
-        <text class="fs-13 color-tips-0958d9 bg-tips-e6f4ff border-l-4-solid-tips-91caff p-10-12 radius-4 m-10">第一个枚举值，'' (空字符串) - 空值情况</text>
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data-checkbox :items="topEnum" title="top 枚举值" @change="radioChangeTop" :compact="true"></enum-data-checkbox>
         <input-data :defaultValue="data.top" title="top 自定义值" type="text" @confirm="inputChangeTop"></input-data>
       </view>
 
       <!-- #ifndef MP-ALIPAY -->
-      <view class="mb-15">
-        <text class="color-text-333">native-view组件: top: 10% 和 top: 30px</text>
-        <view class="flex-dir-row justify-between mt-10">
+      <view class="uni-common-mb">
+        <text class="theme-label">native-view组件: top: 10% 和 top: 30px</text>
+        <view class="test-container">
           <view class="example-box">
             <test-native-view class="common-native" style="top: 10%;"></test-native-view>
           </view>
@@ -226,6 +226,10 @@
 </script>
 
 <style>
+  .theme-label {
+    color: var(--text-color, #333333);
+  }
+
   .example-box {
     position: relative;
     flex: 1;
@@ -246,6 +250,17 @@
     width: 50px;
     font-size: 12px;
     color: #1a1a1a;
+  }
+
+  .test-container {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
   }
 
   .test-box {

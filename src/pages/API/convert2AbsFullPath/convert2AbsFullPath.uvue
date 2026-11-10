@@ -1,22 +1,22 @@
 <template>
-    <text class="fs-18 fw-bold mb-5">convert2AbsFullPath 演示</text>
-    <text class="fs-13 color-888 mb-15">将项目相对路径转换为运行期绝对路径</text>
+    <text class="title">convert2AbsFullPath 演示</text>
+    <text class="desc">将项目相对路径转换为运行期绝对路径</text>
 
-    <view class="d-flex flex-dir-column mb-15">
-      <text class="fs-13 color-666 mb-5">输入路径</text>
-      <input class="h-40 pl-10 pr-10 border-width-1 border-style-solid radius-6 fs-14 input" v-model="inputPath" type="text" placeholder="例如：/static/logo.png" />
+    <view class="field">
+      <text class="label">输入路径</text>
+      <input class="input" v-model="inputPath" type="text" placeholder="例如：/static/logo.png" />
     </view>
 
-    <button class="mb-15" type="primary" @click="onConvert">转换</button>
+    <button class="btn" type="primary" @click="onConvert">转换</button>
 
-    <view class="d-flex flex-dir-column mb-15">
-      <text class="fs-13 color-666 mb-5">输入</text>
-      <text class="fs-14 lh-20 u-p-10 bg-f5f5f5 radius-6" :selectable="true">{{ inputResult }}</text>
+    <view class="result">
+      <text class="label">输入</text>
+      <text class="value" :selectable="true">{{ inputResult }}</text>
     </view>
 
-    <view class="d-flex flex-dir-column mb-15">
-      <text class="fs-13 color-666 mb-5">输出</text>
-      <text class="fs-14 lh-20 u-p-10 bg-f5f5f5 radius-6" :selectable="true">{{ outputResult }}</text>
+    <view class="result">
+      <text class="label">输出</text>
+      <text class="value" :selectable="true">{{ outputResult }}</text>
     </view>
 </template>
 
@@ -46,7 +46,56 @@
     padding: 15px;
   }
 
+  .title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+
+  .desc {
+    font-size: 13px;
+    color: #888888;
+    margin-bottom: 15px;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+  }
+
+  .label {
+    font-size: 13px;
+    color: #666666;
+    margin-bottom: 5px;
+  }
+
   .input {
+    height: 40px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-width: 1px;
+    border-style: solid;
     border-color: #DDDDDD;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+
+  .btn {
+    margin-bottom: 15px;
+  }
+
+  .result {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+  }
+
+  .value {
+    font-size: 14px;
+    line-height: 20px;
+    padding: 10px;
+    background-color: #F5F5F5;
+    border-radius: 6px;
   }
 </style>

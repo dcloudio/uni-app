@@ -1,15 +1,15 @@
 <template>
     <page-head :title="title"></page-head>
-    <view class="p-0-15 mt-15">
-      <view class="items-center" v-for="(item,index) in supportFormats" :key="index">
-        <text class="color-888 fs-12 fw-bold u-mt-5">{{item.format}}</text>
-        <image class="w-60 h-60 m-10"
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="formats" v-for="(item,index) in supportFormats" :key="index">
+        <text class="uni-subtitle-text">{{item.format}}</text>
+        <image class="icon-play"
           :src="(isPlaying && playIndex==index)?'/static/test-audio/pause.png':'/static/test-audio/play.png'"
           @click="play(item.src,index)"></image>
       </view>
-      <view class="items-center" v-for="(item,index) in notSupportFormats" :key="index">
-        <text class="color-888 fs-12 fw-bold u-mt-5">{{ item.format + (item.support) }}</text>
-        <image class="w-60 h-60 m-10"
+      <view class="formats" v-for="(item,index) in notSupportFormats" :key="index">
+        <text class="uni-subtitle-text">{{ item.format + (item.support) }}</text>
+        <image class="icon-play"
           :src="(isPlaying && playIndex==index)?'/static/test-audio/pause.png':'/static/test-audio/play.png'"
           @click="play(item.src,index)"></image>
       </view>
@@ -132,3 +132,15 @@
     }
   })
 </script>
+
+<style>
+.formats {
+  align-items: center;
+}
+
+.icon-play {
+  width: 60px;
+  height: 60px;
+  margin: 10px;
+}
+</style>

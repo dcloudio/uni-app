@@ -1,9 +1,9 @@
 <template>
-  <scroll-view class="flex-1 u-p-15">
-    <view class="u-p-15 bg-list-fff">
-      <text class="color-text-333 mb-12 fs-18 fw-bold">Worker 中创建 SendableObject</text>
-      <text class="color-text-333 mb-12">Worker 内部创建 @Sendable 对象，并使用 harmonySendable 传回主线程。</text>
-      <text class="color-text-333 mb-12">SendableObject.a：{{data.sendableNumber}}</text>
+  <scroll-view class="sendable-page">
+    <view class="panel">
+      <text class="title">Worker 中创建 SendableObject</text>
+      <text class="description">Worker 内部创建 @Sendable 对象，并使用 harmonySendable 传回主线程。</text>
+      <text class="result">SendableObject.a：{{data.sendableNumber}}</text>
       <button type="primary" @click="create" :disabled="workerStatus == 'created'">创建 Worker</button>
       <button @click="sendMessage" :disabled="workerStatus != 'created'">发送消息</button>
       <button @click="modifySendable" :disabled="!receivedSendable">主线程修改 SendableObject</button>
@@ -63,3 +63,27 @@
     modifySendable
   })
 </script>
+
+<style>
+  .sendable-page {
+    flex: 1;
+    padding: 15px;
+  }
+
+  .panel {
+    padding: 15px;
+    background-color: var(--list-background-color, #ffffff);
+  }
+
+  .title,
+  .description,
+  .result {
+    color: var(--text-color, #333333);
+    margin-bottom: 12px;
+  }
+
+  .title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+</style>

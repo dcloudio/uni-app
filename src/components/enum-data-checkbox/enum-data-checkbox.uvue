@@ -133,7 +133,7 @@ function _change(event : any) {
   >
     <uni-data-checkbox
       :key="displayMode + (multiple ? '-multiple' : '-single')"
-      class="uni-data-checkbox_frame bg-list-fff overflow-hidden"
+      class="uni-data-checkbox_frame"
       :model-value="current"
       :mode="displayMode"
       :multiple="multiple"
@@ -147,7 +147,11 @@ function _change(event : any) {
 </template>
 
 <style>
-/* 保留局部优先级，避免透传 class 和表单错误态改变间距。 */
+.p-0-10 {
+  padding: 0 10px;
+}
+
+
 .enum-data-item {
   margin-top: 15px;
   margin-bottom: 8px;
@@ -161,7 +165,9 @@ function _change(event : any) {
 
 .uni-data-checkbox_frame {
   margin: 0;
+  background-color: var(--list-background-color, #ffffff);
   border-radius: 5px;
+  overflow: hidden;
   padding: 0 8px;
 }
 

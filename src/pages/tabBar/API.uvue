@@ -1,11 +1,11 @@
 <template>
-    <view class="u-p-15">
-      <view v-if="!hasLeftWin" class="p-15-15 flex-dir-column justify-center items-center u-mt-5">
-        <image class="w-80 h-80" src="/static/apiIndex.png"></image>
+    <view class="uni-container">
+      <view v-if="!hasLeftWin" class="uni-header-logo">
+        <image class="uni-header-image" src="/static/apiIndex.png"></image>
       </view>
-      <view v-if="!hasLeftWin" class="mb-20">
-        <text class="color-text-333 fs-14 lh-20">uni-app x API接口能力，文档详见：</text>
-        <uni-link class="color-text-333 fs-14 lh-20" href="https://doc.dcloud.net.cn/uni-app-x/api/"
+      <view v-if="!hasLeftWin" class="uni-text-box">
+        <text class="hello-text">uni-app x API接口能力，文档详见：</text>
+        <uni-link class="hello-text" href="https://doc.dcloud.net.cn/uni-app-x/api/"
         <!-- #ifndef MP -->
         target="_blank"
         <!-- #endif -->
@@ -15,32 +15,32 @@
       </view>
       <uni-collapse>
         <uni-collapse-item ref="categoryRef" v-for="menuItem in menu" :key="menuItem.id" :title="menuItem.name"
-          class="mb-12" title-wrap-class="bg-list-fff-important"
-          title-class="color-text-333-important" content-wrap-class="bg-list-fff-important"
-          arrow-class="border-r-color-arrow-999-important border-b-color-arrow-999-important">
+          class="uni-panel" title-wrap-class="component-collapse-title-wrap"
+          title-class="component-collapse-title" content-wrap-class="component-collapse-content-wrap"
+          arrow-class="component-collapse-arrow">
           <template v-for="childMenuItem in menuItem.items" :key="childMenuItem.id">
-            <view v-if="childMenuItem.items.length==0" hover-class="bg-active"
-              :class="{'flex-dir-row items-center bg-list border-t-style-solid border-t-color-border border-t-width-1 p-12-16 justify-between':childMenuItem.path !== 'set-tab-bar' || windowWidth <= 768}"
+            <view v-if="childMenuItem.items.length==0" hover-class="is--active"
+              :class="{'uni-navigate-item':childMenuItem.path !== 'set-tab-bar' || windowWidth <= 768}"
                @click="goPage(`/${childMenuItem.path}`)">
               <template v-if="childMenuItem.path !== 'set-tab-bar' || windowWidth <= 768">
-                <text class="color-text-333 fs-14 fw-normal w-94pct ws-nowrap overflow-hidden text-overflow-ellipsis"
-                  :class="{'color-007aff-important': leftWinActive === childMenuItem.path && hasLeftWin}">{{ childMenuItem.style["navigationBarTitleText"] }}</text>
-                <view class="w-8 h-8 ml-12 transform-rotate-neg45deg border-r-width-1 border-r-style-solid border-r-color-arrow-999 border-b-width-1 border-b-style-solid border-b-color-arrow-999"></view>
+                <text class="uni-navigate-text"
+                  :class="{'left-win-active': leftWinActive === childMenuItem.path && hasLeftWin}">{{ childMenuItem.style["navigationBarTitleText"] }}</text>
+                <view class="right_arrow"></view>
               </template>
             </view>
             <uni-collapse v-else style="width: 100%;border-top: 1px solid var(--border-color);">
-              <uni-collapse-item :title="childMenuItem.name" class="mb-12"
-                style="margin-bottom: 0;" title-wrap-class="bg-list-fff-important pl-16-important pr-20-important"
-                title-class="color-text-333-important" content-wrap-class="bg-list-fff-important"
-                arrow-class="border-r-color-arrow-999-important border-b-color-arrow-999-important">
-                <view class="flex-dir-row items-center bg-list border-t-style-solid border-t-color-border border-t-width-1 p-12-16 justify-between pr-20" hover-class="bg-active"
+              <uni-collapse-item :title="childMenuItem.name" class="uni-panel"
+                style="margin-bottom: 0;" title-wrap-class="component-collapse-title-wrap component-collapse-sub-title-wrap"
+                title-class="component-collapse-title" content-wrap-class="component-collapse-content-wrap"
+                arrow-class="component-collapse-arrow">
+                <view class="uni-navigate-item component-collapse-sub-navigate-item" hover-class="is--active"
                   v-for="grandChildMenuItem in childMenuItem.items" :key="grandChildMenuItem.path"
                   @click="goPage(`/${grandChildMenuItem.path}`)">
-                  <text class="color-text-333 fs-14 fw-normal w-94pct ws-nowrap overflow-hidden text-overflow-ellipsis" :class="{
-                      'color-007aff-important':
+                  <text class="uni-navigate-text" :class="{
+                      'left-win-active':
                         leftWinActive === grandChildMenuItem.path && hasLeftWin,
                     }">{{ grandChildMenuItem.style["navigationBarTitleText"] }}</text>
-                  <view class="w-8 h-8 ml-12 transform-rotate-neg45deg border-r-width-1 border-r-style-solid border-r-color-arrow-999 border-b-width-1 border-b-style-solid border-b-color-arrow-999"></view>
+                  <view class="right_arrow"></view>
                 </view>
               </uni-collapse-item>
             </uni-collapse>
@@ -48,12 +48,12 @@
         </uni-collapse-item>
       </uni-collapse>
       <!-- #ifdef MP || WEB -->
-      <view v-if="!hasLeftWin" ref="popRef" @click="hidePop()" class="pos-fixed top-0 bottom-0 right-0 items-center justify-center popup left-0" @touchmove.prevent="stopPropagation">
+      <view v-if="!hasLeftWin" ref="popRef" @click="hidePop()" class="popup" @touchmove.prevent="stopPropagation">
       <!-- #endif -->
       <!-- #ifndef MP || WEB -->
-      <view v-if="!hasLeftWin" ref="popRef" @click="hidePop()" class="pos-fixed top-0 bottom-0 right-0 items-center justify-center popup left-0">
+      <view v-if="!hasLeftWin" ref="popRef" @click="hidePop()" class="popup">
       <!-- #endif -->
-        <view class="w-90pct bg-white" @click.stop="stopClickPop">
+        <view style="width: 90%; background-color: white" @click.stop="stopClickPop">
           <api-set-tabbar></api-set-tabbar>
         </view>
       </view>
@@ -253,7 +253,53 @@
   }
 
   .popup {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    align-items: center;
+    justify-content: center;
     display: none;
     background-color: rgba(16, 16, 16, 0.5);
+  }
+
+  .right_arrow {
+    width: 8px;
+    height: 8px;
+    margin-left: 12px;
+    transform: rotate(-45deg);
+    border-right-width: 1px;
+    border-right-style: solid;
+    border-right-color: var(--arrow-color, #999999);
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: var(--arrow-color, #999999);
+  }
+
+  .component-collapse-title-wrap {
+    background-color: var(--list-background-color, #ffffff);
+  }
+
+  .component-collapse-sub-title-wrap {
+    padding-left: 16px;
+    padding-right: 20px;
+  }
+
+  .component-collapse-title {
+    color: var(--text-color, #333333);
+  }
+
+  .component-collapse-content-wrap {
+    background-color: var(--list-background-color, #ffffff);
+  }
+
+  .component-collapse-arrow {
+    border-right-color: var(--arrow-color, #999999);
+    border-bottom-color: var(--arrow-color, #999999);
+  }
+
+  .component-collapse-sub-navigate-item {
+    padding-right: 20px;
   }
 </style>

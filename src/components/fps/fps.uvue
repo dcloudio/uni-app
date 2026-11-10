@@ -1,14 +1,10 @@
 <template>
-  <view class="pos-fixed right-10 z-index-999 flex-dir-column items-end pointer-events-none" style="top: var(--uni-safe-area-inset-top, 10);">
-    <text class="fs-24 color-008000">FPS: {{ fps }}</text>
+  <view style="position: fixed;right: 10px;top: var(--uni-safe-area-inset-top, 10);z-index: 999;flex-direction: column;align-items: flex-end;pointer-events: none;">
+    <text style="font-size: 24px;color: green;">FPS: {{ fps }}</text>
   </view>
 </template>
 
 <script setup lang="ts">
-  defineOptions({
-    styleIsolation: 'app'
-  })
-
   const props = defineProps({
     interval: {
       type: Number,
@@ -47,3 +43,7 @@
     cancelAnimationFrame(animationId)
   })
 </script>
+
+<style>
+
+</style>

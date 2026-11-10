@@ -1,7 +1,7 @@
 <template>
-  <view id="video-parent" class="flex-1" @touchstart="onVideoParentTouchStart" @touchmove="onVideoParentTouchMove"
+  <view id="video-parent" class="video-page uni-flex-item" @touchstart="onVideoParentTouchStart" @touchmove="onVideoParentTouchMove"
     @touchend="onVideoParentTouchEnd">
-    <video class="video w-full h-200" ref="video" id="video" :header="data.header" :src="data.src" :autoplay="data.autoplay" :loop="data.loop"
+    <video class="video" ref="video" id="video" :header="data.header" :src="data.src" :autoplay="data.autoplay" :loop="data.loop"
       :muted="data.muted" :initial-time="data.initialTime" :duration="data.duration" :controls="data.controls" :danmu-btn="data.danmuBtn && fullscreenShowDanmuBtn"
       :enable-danmu="data.enableDanmu" :page-gesture="data.pageGesture" :direction="data.direction" :show-progress="data.showProgress"
       :show-fullscreen-btn="data.showFullscreenBtn && fullscreenShowFullscreenBtn" :show-play-btn="data.showPlayBtn && fullscreenShowPlayBtn" :show-center-play-btn="data.showCenterPlayBtn"
@@ -12,55 +12,55 @@
       @ended="onEnded" @timeupdate="onTimeUpdate" @waiting="onWaiting" @error="onError" @progress="onProgress"
       @fullscreenclick="onFullScreenClick" @controlstoggle="onControlsToggle" @fullscreenchange="onFullScreenChange">
 
-      <image v-if="data.subCompEnable && data.subCompShow" class="w-40 h-40 pos-absolute img-fast-backward top-50pct"
+      <image v-if="data.subCompEnable && data.subCompShow" class="img-fast-backward"
         src="../../../static/test-video/fast-backward.png" @tap.stop="fastBackward"></image>
-      <image v-if="data.subCompEnable && data.subCompShow" class="w-40 h-40 pos-absolute img-fast-forward top-50pct"
+      <image v-if="data.subCompEnable && data.subCompShow" class="img-fast-forward"
         src="../../../static/test-video/fast-forward.png" @tap.stop="fastForward"></image>
       <!-- #ifndef MP-ALIPAY || WEB -->
-      <input v-if="data.subCompEnable && data.subCompShow" id="input-send-danmu" class="input-send-danmu bg-rgba-0-0-0-0_5 h-40 p-8-13 pos-absolute color-fff" placeholder="请输入弹幕内容"
+      <input v-if="data.subCompEnable && data.subCompShow" id="input-send-danmu" class="input-send-danmu" placeholder="请输入弹幕内容"
         placeholder-style="color: white;" confirm-type="send" @confirm="onSendDanmuConfirm"
         @keyboardheightchange="onSendDanmuKeyboardHeightChange" @blur="onSendDanmuBlur"></input>
       <!-- #endif -->
 
       <!-- #ifndef MP || WEB -->
       <template #controls>
-        <view v-if="data.subCompControlsShow" class="pb-10 u-h-50 flex-dir-row justify-between items-center video-fullscreen_controls">
-          <view class="flex-dir-row justify-center items-center">
-            <view class="w-50 h-full justify-center items-center m-0-15" @click="togglePlay">
-              <text class="fs-24 color-rgba-255-255-255-0_8 text-center control-icon">{{ data.isPlaying ? ICON_PAUSH : ICON_PLAY }}</text>
+        <view v-if="data.subCompControlsShow" class="video-fullscreen_controls">
+          <view style="flex-direction: row;justify-content: center;align-items: center;">
+            <view class="control-btn" @click="togglePlay">
+              <text class="control-icon">{{ data.isPlaying ? ICON_PAUSH : ICON_PLAY }}</text>
             </view>
-            <view class="w-50 h-full justify-center items-center m-0-15" @click="toggleDanmu">
-              <text class="fs-24 color-rgba-255-255-255-0_8 text-center control-icon">{{ data.enableDanmu ? ICON_DANMU_ACTIVE : ICON_DANMU }}</text>
+            <view class="control-btn" @click="toggleDanmu">
+              <text class="control-icon">{{ data.enableDanmu ? ICON_DANMU_ACTIVE : ICON_DANMU }}</text>
             </view>
-            <view class="w-50 h-full justify-center items-center m-0-15" @click="toggleMute">
-              <text class="fs-24 color-rgba-255-255-255-0_8 text-center control-icon">{{ data.muted ? ICON_VOLUME_MUTE : ICON_VOLUME }}</text>
+            <view class="control-btn" @click="toggleMute">
+              <text class="control-icon">{{ data.muted ? ICON_VOLUME_MUTE : ICON_VOLUME }}</text>
             </view>
           </view>
 
           <view>
-            <view class="w-50 h-full justify-center items-center m-0-15" @click="toggleFullscreen">
-              <text class="fs-24 color-rgba-255-255-255-0_8 text-center control-icon">{{ data.isFullscreen ? ICON_FULLSCREEN_CLOSE : ICON_FULLSCREEN }}</text>
+            <view class="control-btn" @click="toggleFullscreen">
+              <text class="control-icon">{{ data.isFullscreen ? ICON_FULLSCREEN_CLOSE : ICON_FULLSCREEN }}</text>
             </view>
           </view>
         </view>
       </template>
       <!-- #endif -->
     </video>
-    <scroll-view class="p-0-15 mt-15 flex-1">
-      <view class="p-5-0">
+    <scroll-view class="uni-padding-wrap uni-common-mt uni-flex-item">
+      <view class="uni-btn-v">
         <navigator url="/pages/component/video/video-format">
           <button type="primary" @click="pause">视频格式示例</button>
         </navigator>
       </view>
       <!-- #ifdef APP-HARMONY -->
-      <view class="p-5-0">
+      <view class="uni-btn-v">
         <navigator url="/pages/component/list-view/list-view-multiplex-video">
           <button type="primary" @click="pause">list-view嵌套视频复用示例</button>
         </navigator>
       </view>
       <!-- #endif -->
       <!-- #ifndef MP-ALIPAY || WEB -->
-      <view class="p-5-0">
+      <view class="uni-btn-v">
         <button type="primary" @click="openDialogPageVideo">dialogPage 视频格式示例</button>
       </view>
       <!-- #endif -->
@@ -78,54 +78,54 @@
         @change="onSubCompEnableChange"></boolean-data>
       <!-- #endif -->
       </view>
-      <view class="p-10-0 color-text-333">
-        <text class="fs-15 fw-bold color-text-333">API示例</text>
+      <view class="uni-title">
+        <text class="uni-title-text">API示例</text>
       </View>
-      <view class="p-5-0">
+      <view class="uni-btn-v">
         <button type="primary" @click="play">播放</button>
       </view>
-      <view class="p-5-0">
+      <view class="uni-btn-v">
         <button type="primary" @click="pause">暂停</button>
       </view>
-      <view class="p-5-0">
-        <input class="h-40 p-8-13 color-333 bg-fff input" placeholder="输入要跳转的位置,单位s" type="number" @input="onSeekInput"></input>
+      <view class="uni-btn-v">
+        <input class="input" placeholder="输入要跳转的位置,单位s" type="number" @input="onSeekInput"></input>
         <button type="primary" @click="seek(data.pos)">跳转到指定位置</button>
       </view>
-      <view class="p-5-0">
+      <view class="uni-btn-v">
         <enum-data-checkbox title="选择进入全屏时的视频方向" :items="data.directionItemTypes"
           @change="onRequestFullScreenDirectionChange"></enum-data-checkbox>
         <button type="primary" @click="requestFullScreen">进入全屏</button>
       </view>
-      <view class="p-5-0">
+      <view class="uni-btn-v">
         <button type="primary" @click="exitFullScreen">退出全屏</button>
       </view>
-      <view class="p-5-0">
+      <view class="uni-btn-v">
         <button type="primary" @click="stop">停止</button>
       </view>
       <!-- #ifndef MP-ALIPAY -->
-      <view class="p-5-0">
-        <input class="h-40 p-8-13 color-333 bg-fff input" placeholder="输入弹幕" value="{ 'text': '要显示的文本', 'color': '#FF0000' }" type="string"
+      <view class="uni-btn-v">
+        <input class="input" placeholder="输入弹幕" value="{ 'text': '要显示的文本', 'color': '#FF0000' }" type="string"
           @input="onSendDanmuInput"></input>
         <button type="primary" :disabled="!data.enableDanmu" @click="sendDanmu">发送弹幕</button>
       </view>
       <!-- #endif -->
-      <view class="p-5-0">
+      <view class="uni-btn-v">
         <enum-data-checkbox title="选择倍速" :items="data.rateItemTypes" @change="onPlaybackRateChange"></enum-data-checkbox>
         <button type="primary" @click="playbackRate">设置倍速</button>
       </view>
-      <view class="p-10-0 color-text-333">
-        <text class="fs-15 fw-bold color-text-333">属性示例</text>
+      <view class="uni-title">
+        <text class="uni-title-text">属性示例</text>
       </view>
 
       <!-- //TODO: ios dom2 加一层父view，scrll-view组件滚动方向逻辑就正常了，dom2需要排查input和scroll-view 在该场景导致direction 失效的问题 -->
-      <view class="p-5-0">
-        <input class="h-40 p-8-13 color-333 bg-fff input m-10" type="string" placeholder="设置播放资源" @confirm="onSrcComfirm"></input>
-        <input class="h-40 p-8-13 color-333 bg-fff input m-10" type="number" placeholder="设置初始播放位置（播放前设置有效）"
+      <view class="uni-btn-v">
+        <input class="input margin-10" type="string" placeholder="设置播放资源" @confirm="onSrcComfirm"></input>
+        <input class="input margin-10" type="number" placeholder="设置初始播放位置（播放前设置有效）"
           @confirm="onInitialTimeComfirm"></input>
-        <input class="h-40 p-8-13 color-333 bg-fff input m-10" type="number" placeholder="设置视频时长（播放前设置有效）" @confirm="onDurationComfirm"></input>
-        <input class="h-40 p-8-13 color-333 bg-fff input m-10" type="string" placeholder="设置视频封面" @confirm="onPosterComfirm"></input>
-        <input class="h-40 p-8-13 color-333 bg-fff input m-10" type="string" placeholder="设置视频标题（仅限非 Web 平台）" @confirm="onTitleComfirm"></input>
-        <input class="h-40 p-8-13 color-333 bg-fff input m-10" type="string" placeholder="设置header(json格式)" @confirm="onHeaderComfirm"></input>
+        <input class="input margin-10" type="number" placeholder="设置视频时长（播放前设置有效）" @confirm="onDurationComfirm"></input>
+        <input class="input margin-10" type="string" placeholder="设置视频封面" @confirm="onPosterComfirm"></input>
+        <input class="input margin-10" type="string" placeholder="设置视频标题（仅限非 Web 平台）" @confirm="onTitleComfirm"></input>
+        <input class="input margin-10" type="string" placeholder="设置header(json格式)" @confirm="onHeaderComfirm"></input>
       </view>
 
       <!-- #ifndef MP-ALIPAY -->
@@ -916,28 +916,69 @@
 </script>
 
 <style>
+  .video {
+    width: 100%;
+    height: 200px;
+  }
+
+  .input {
+    height: 40px;
+    color: #333333;
+    background-color: #ffffff;
+    padding: 8px 13px;
+  }
+
   .img-fast-backward {
+    width: 40px;
+    height: 40px;
+    top: 50%;
     left: 12%;
     transform: translate(-50%, -50%);
+    position: absolute;
   }
 
   .img-fast-forward {
+    width: 40px;
+    height: 40px;
+    top: 50%;
     right: 12%;
     transform: translate(50%, -50%);
+    position: absolute;
   }
 
   .input-send-danmu {
+    height: 40px;
+    padding: 8px 13px;
     margin: 0 var(--status-bar-height);
     bottom: 100px;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #FFF;
   }
 
   .video-fullscreen_controls {
     padding-left: var(--uni-safe-area-inset-left);
     padding-right: var(--uni-safe-area-inset-right);
+    padding-bottom: 10px;
+    height: 50px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .control-btn {
+    width: 50px;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    margin: 0 15px;
   }
 
   .control-icon {
     font-family: 'uni-video-icon';
+    font-size: 24px;
+    color: rgba(255, 255, 255, 0.8);
+    text-align: center;
   }
 
   @media (prefers-color-scheme: dark) {

@@ -1,23 +1,23 @@
 <template>
   <page-head title="networkStatusChange"></page-head>
-  <view class="p-10-15 color-text-333 bg-list-fff m-0-20">
-    <text class="fs-15 fw-bold color-text-333">网络状态</text>
-    <view class="flex-dir-row mt-15">
-      <text class="color-text-333 lh-22">是否连接：</text>
-      <text class="color-text-333">{{ isConnected ? '已连接' : '未连接' }}</text>
+  <view class="uni-list-cell-padding status-box">
+    <text class="uni-title-text">网络状态</text>
+    <view class="uni-row uni-common-mt">
+      <text class="uni-hello-text">是否连接：</text>
+      <text class="status-value">{{ isConnected ? '已连接' : '未连接' }}</text>
     </view>
-    <view class="flex-dir-row mt-15">
-      <text class="color-text-333 lh-22">网络类型：</text>
-      <text class="color-text-333">{{ networkType }}</text>
+    <view class="uni-row uni-common-mt">
+      <text class="uni-hello-text">网络类型：</text>
+      <text class="status-value">{{ networkType }}</text>
     </view>
-    <view class="flex-dir-row mt-15">
-      <text class="color-text-333 lh-22">监听状态：</text>
-      <text class="color-text-333">{{ listenStatus }}</text>
+    <view class="uni-row uni-common-mt">
+      <text class="uni-hello-text">监听状态：</text>
+      <text class="status-value">{{ listenStatus }}</text>
     </view>
   </view>
-  <view class="p-10-15 color-text-333 mt-15">
+  <view class="uni-list-cell-padding uni-common-mt">
     <button type="primary" @click="startListen">开始监听</button>
-    <button type="default" class="mt-15" @click="stopListen">停止监听</button>
+    <button type="default" class="uni-common-mt" @click="stopListen">停止监听</button>
   </view>
 </template>
 
@@ -77,3 +77,14 @@
     stopListen()
   })
 </script>
+
+<style>
+  .status-box {
+    background-color: var(--list-background-color, #ffffff);
+    margin: 0 20px;
+  }
+
+  .status-value {
+    color: var(--text-color, #333333);
+  }
+</style>

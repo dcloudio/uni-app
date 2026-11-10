@@ -116,7 +116,7 @@
 </script>
 
 <template>
-  <view class="p-5-0 flex-dir-row justify-center border-b-1-solid-black-a6">
+  <view class="main">
     <button hover-stop-propagation :hover-start-time="100" id="testButton" :loading="data.loading" :disabled="data.disabled_boolean"
       :size="data.size_enum[data.size_enum_current].name" :type="data.type_enum[data.type_enum_current].name"
       :plain="data.plain_boolean" @touchstart="button_touchstart" @touchmove="button_touchmove"
@@ -128,8 +128,8 @@
       {{ data.text }}
     </button>
   </view>
-  <scroll-view class="flex-1">
-    <view>
+  <scroll-view style="flex: 1" >
+    <view class="content">
       <boolean-data :value="false" title="按钮是否镂空，背景色透明" @change="change_plain_boolean"></boolean-data>
       <boolean-data :value="false" title="是否禁用" @change="change_disabled_boolean"></boolean-data>
       <boolean-data :value="false" title="修改默认样式和点击效果(高优先)" @change="change_default_style"></boolean-data>
@@ -137,12 +137,12 @@
       <enum-data-checkbox :items="data.size_enum" title="按钮的大小" @change="radio_change_size_enum"></enum-data-checkbox>
       <enum-data-checkbox :items="data.type_enum" title="按钮的类型" @change="radio_change_type_enum"></enum-data-checkbox>
       <input-data :defaultValue="data.text" title="按钮的文案" type="text" @confirm="confirm_text_input"></input-data>
-      <view class="h-10"></view>
+      <view style="height: 10px;" ></view>
       <button @click="navigateToChild">更多button示例</button>
-      <view class="h-10"></view>
+      <view style="height: 10px;" ></view>
       <!-- #ifdef APP -->
       <button @click="openPrivacyDialog">open-type实现App隐私政策弹框</button>
-      <view class="h-10"></view>
+      <view style="height: 10px;" ></view>
       <!-- #endif -->
     </view>
 
@@ -155,6 +155,13 @@
 </template>
 
 <style>
+  .main {
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    flex-direction: row;
+    justify-content: center;
+  }
+
   .custom-btn {
     color: #ffffff;
     background-color: #1AAD19;
@@ -176,6 +183,12 @@
   .button-hover {
     color: rgba(0, 0, 0, 0.6);
     background-color: #dedede;
+  }
+
+  .default-button {
+    color: #000000;
+    background-color: #f8f8f8;
+    border-color: rgba(0, 0, 0, 0.2);
   }
 
   .black-loading-text {

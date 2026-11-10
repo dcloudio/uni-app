@@ -1,23 +1,23 @@
 <template>
-  <scroll-view ref="pageScrollView" class="flex-1" :bounces="false"
+  <scroll-view ref="pageScrollView" class="page" :bounces="false"
     @startnestedscroll="onStartNestedScroll" @nestedprescroll="onNestedPreScroll"
   :refresher-triggered="refresherTriggered" refresher-enabled="true" @refresherrefresh="onRefresherrefresh">
-    <view ref="header" class="u-p-10 search-bar">
-      <input class="color-333 bg-fff search-input" placeholder="搜索..." :maxlength="-1"/>
+    <view ref="header" class="search-bar">
+      <input class="search-input" placeholder="搜索..." :maxlength="-1"/>
     </view>
-    <view class="h-full bg-page-f8f8f8 swiper-list">
-      <scroll-view ref="tabScroll" class="bg-list-fff flex-dir-column" direction="horizontal" :show-scrollbar="false">
-        <view class="flex-dir-row self-flex-start">
-          <text ref="swipertab" class="fs-16 p-12-25 ws-nowrap swiper-tabs-item" :class="swiperIndex==index ? 'color-007aff' : 'color-text-555'"
+    <view class="swiper-list">
+      <scroll-view ref="tabScroll" class="swiper-tabs" direction="horizontal" :show-scrollbar="false">
+        <view class="flex-row" style="align-self: flex-start;">
+          <text ref="swipertab" class="swiper-tabs-item" :class="swiperIndex==index ? 'swiper-tabs-item-active' : ''"
             v-for="(item, index) in swiperList" :key="index" @click="onTabClick(index)">
             {{item.name}}
           </text>
         </view>
-        <view ref="indicator" class="w-1 u-h-2 bg-007aff swiper-tabs-indicator"></view>
+        <view ref="indicator" class="swiper-tabs-indicator"></view>
       </scroll-view>
-      <swiper ref="swiper" class="flex-1" :current="swiperIndex" @transition="onSwiperTransition"
+      <swiper ref="swiper" class="swiper-view" :current="swiperIndex" @transition="onSwiperTransition"
         @animationfinish="onSwiperAnimationfinish">
-        <swiper-item class="h-full" v-for="(item, index) in swiperList" :key="index">
+        <swiper-item class="swiper-item" v-for="(item, index) in swiperList" :key="index">
           <long-page ref="longPageRef" :type="item.type" :preload="item.preload"></long-page>
         </swiper-item>
       </swiper>
@@ -356,14 +356,61 @@ defineExpose({
 </script>
 
 <style>
+  .flex-row {
+    flex-direction: row;
+  }
+
+  .page {
+    flex: 1;
+  }
+
   .search-bar {
+    padding: 10px;
     background-color: var(--list-background-color, #f8f8f8);
   }
 
+  .search-input {
+    color: #333333;
+    background-color: #ffffff;
+  }
+
   .swiper-list {
+    height: 100%;
+    background-color: var(--background-color, #f8f8f8);
     /* #ifdef WEB */
     flex: 1;
     /* #endif */
+  }
+
+  .swiper-tabs {
+    background-color: var(--list-background-color, #ffffff);
+    flex-direction: column;
+  }
+
+  .swiper-tabs-item {
+    color: var(--text-color, #555555);
+    font-size: 16px;
+    padding: 12px 25px;
+    white-space: nowrap;
+  }
+
+  .swiper-tabs-item-active {
+    color: #007AFF;
+  }
+
+  .swiper-tabs-indicator {
+    width: 1px;
+    height: 2px;
+    background-color: #007AFF;
+  }
+
+  .swiper-view {
+    flex: 1;
+  }
+
+  .swiper-item {
+    /* flex: 1; harmony 高度异常 */
+    height: 100%;
   }
 
   @media (prefers-color-scheme: dark) {

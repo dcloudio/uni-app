@@ -1,23 +1,23 @@
 <template>
-		<text class="fs-24 fw-bold border-b-1-solid-ccc m-8-0">加速度计</text>
+		<text class="uni-h2">加速度计</text>
 		<text>开始监听后可实时查看设备在 X、Y、Z 轴上的加速度数据。</text>
-		<text class="m-5-0">当前状态：{{ statusText }}</text>
+		<text class="margin-v">当前状态：{{ statusText }}</text>
 
-		<text class="fs-20 fw-bold m-8-0">采样频率</text>
+		<text class="uni-h3">采样频率</text>
 		<enum-data-checkbox
-			class="m-5-0"
+			class="margin-v"
 			v-model="activeInterval"
 			:items="intervalOptions"
 			mode="default"
 			:show-toast="false"
 		/>
-		<button class="m-5-0" type="primary" @tap="startListen">开始监听</button>
-		<button class="m-5-0" @tap="stopListen">停止监听</button>
-		<button class="m-5-0" @tap="navigateToShake">跳转摇一摇</button>
+		<button class="margin-v" type="primary" @tap="startListen">开始监听</button>
+		<button class="margin-v" @tap="stopListen">停止监听</button>
+		<button class="margin-v" @tap="navigateToShake">跳转摇一摇</button>
 
-		<text class="fs-20 fw-bold m-8-0">实时数据</text>
-		<view class="m-5-0 u-p-10 border-1-solid-ccc d-flex flex-dir-column">
-			<text class="fs-14 m-4-0" v-for="item in axisItems" :key="item.key">{{ item.key }}：{{ item.value }}</text>
+		<text class="uni-h3">实时数据</text>
+		<view class="log-list">
+			<text class="log-item" v-for="item in axisItems" :key="item.key">{{ item.key }}：{{ item.value }}</text>
 		</view>
 
 </template>
@@ -98,7 +98,49 @@
 </script>
 
 <style>
-page {
-  padding: 6px;
-}
+	page {
+		padding: 6px;
+	}
+
+	.margin-v {
+		margin: 5px 0;
+	}
+
+	.option-group {
+		margin: 5px 0;
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+	}
+
+	.option-item {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		margin-right: 18px;
+		margin-top: 8px;
+	}
+
+	.option-content {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+	}
+
+	.option-text {
+		font-size: 14px;
+	}
+
+	.log-list {
+		margin: 5px 0;
+		padding: 10px;
+		border: 1px solid #ccc;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.log-item {
+		font-size: 14px;
+		margin: 4px 0;
+	}
 </style>

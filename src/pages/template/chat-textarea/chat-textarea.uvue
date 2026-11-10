@@ -1,45 +1,45 @@
 <template>
-	<view class="flex-1 flex-dir-column chat-textarea-box">
-    <view class="border-b-width-1 border-b-style-solid chat-header bg-list-fff">
-      <text class="fs-17 fw-700 lh-24 chat-title">@ 提及演示</text>
-      <text class="mt-4 fs-13 lh-18 chat-subtitle">在输入框中敲 @ 选择联系人</text>
+	<view class="chat-textarea-box">
+    <view class="chat-header">
+      <text class="chat-title">@ 提及演示</text>
+      <text class="chat-subtitle">在输入框中敲 @ 选择联系人</text>
     </view>
 
-    <scroll-view class="flex-1 p-12-16 message-area" direction="vertical" :show-scrollbar="false" @click="tapList">
-      <view class="p-14-16 radius-10 flex-dir-column bg-list-fff">
-        <text class="fs-14 fw-700 mb-8 color-text-333">使用说明</text>
-        <text class="fs-13 lh-22 hint-item">· 在下方输入框输入 @ 唤起联系人列表</text>
-        <text class="fs-13 lh-22 hint-item">· 点击联系人即可插入 @提及</text>
-        <text class="fs-13 lh-22 hint-item">· 删除 @ 后列表会自动收起</text>
+    <scroll-view class="message-area" direction="vertical" :show-scrollbar="false" @click="tapList">
+      <view class="hint-card">
+        <text class="hint-title">使用说明</text>
+        <text class="hint-item">· 在下方输入框输入 @ 唤起联系人列表</text>
+        <text class="hint-item">· 点击联系人即可插入 @提及</text>
+        <text class="hint-item">· 删除 @ 后列表会自动收起</text>
         <boolean-data :value="enableFootBoxAnimation" title="foot-box 动画"
           @change="onAnimationSwitchChange"></boolean-data>
       </view>
-      <view class="mt-16 preview-label">
-        <text class="fs-12 color-chat-muted-bbb"></text>
+      <view class="preview-label">
+        <text class="preview-label-text"></text>
       </view>
     </scroll-view>
 
-    <view class="pos-fixed top-0 right-0 bottom-0 user-list-mask left-0" v-if="showUserList" @click="closeUserList"></view>
-    <view class="pos-fixed right-0 bottom-0 flex-dir-column z-index-999 user-list-panel transition-property-transform transition-timing-ease-out left-0 bg-list-fff" :class="{ 'user-list-panel-show': showUserList }">
-      <view class="flex-dir-row items-center justify-between border-b-width-1 border-b-style-solid user-list-header">
-        <text class="fs-15 fw-700 color-text-333">选择联系人</text>
-        <text class="fs-12 color-chat-muted-bbb">{{ userList.length }} 人</text>
+    <view class="user-list-mask" v-if="showUserList" @click="closeUserList"></view>
+    <view class="user-list-panel" :class="{ 'user-list-panel-show': showUserList }">
+      <view class="user-list-header">
+        <text class="user-list-title">选择联系人</text>
+        <text class="user-list-count">{{ userList.length }} 人</text>
       </view>
-      <scroll-view class="flex-1 user-list-scroll" direction="vertical" :show-scrollbar="false">
-        <view class="flex-dir-row items-center border-b-width-1 border-b-style-solid user-list-item" v-for="item in userList" :key="item.id" @click="insertAt(item.id)">
-          <view class="w-36 h-36 radius-18 items-center justify-center" :style="{ backgroundColor: getAvatarColor(item.name) }">
-            <text class="fs-15 fw-700 color-fff">{{ item.name.substring(0, 1) }}</text>
+      <scroll-view class="user-list-scroll" direction="vertical" :show-scrollbar="false">
+        <view class="user-list-item" v-for="item in userList" :key="item.id" @click="insertAt(item.id)">
+          <view class="user-avatar" :style="{ backgroundColor: getAvatarColor(item.name) }">
+            <text class="user-avatar-text">{{ item.name.substring(0, 1) }}</text>
           </view>
-          <text class="flex-1 ml-12 fs-15 color-text-333">{{ item.name }}</text>
+          <text class="user-name">{{ item.name }}</text>
         </view>
       </scroll-view>
     </view>
 
     <view class="foot-box">
-      <view class="flex-dir-row items-center justify-between p-0-15">
-        <view class="flex-1 radius-8 flex-dir-row items-center input-wrapper bg-list-fff" @click="onEditorTap">
+      <view class="foot-box-main">
+        <view class="input-wrapper" @click="onEditorTap">
           <editor
-            class="flex-1 fs-15 preview-editor color-text-333"
+            class="preview-editor"
             id="editor-props-demo"
             :type="editorKeyboardType"
             placeholder="输入消息，敲 @ 提及联系人"
@@ -49,26 +49,26 @@
             @input="onEditorInput"
           />
         </view>
-        <view class="h-44 u-ml-10 items-center justify-center emoji-toggle" @click="toggleEmojiList">
+        <view class="emoji-toggle" @click="toggleEmojiList">
           <KeyboardIcon v-if="showEmojiList" />
           <EmojiIcon v-else />
         </view>
       </view>
-      <view class="flex-dir-column emoji-panel"
-        :class="{ 'emoji-panel-animate transition-timing-ease-out': enableFootBoxAnimation, 'emoji-panel-animate-show': enableFootBoxAnimation && showEmojiList }"
+      <view class="emoji-panel"
+        :class="{ 'emoji-panel-animate': enableFootBoxAnimation, 'emoji-panel-animate-show': enableFootBoxAnimation && showEmojiList }"
         :style="{ height: (showEmojiList ? emojiPanelDisplayHeight : 0) + 'px', marginTop: (showEmojiList ? emojiPanelMarginTop : 0) + 'px' }"
       >
-        <scroll-view class="border-t-width-1 border-t-style-solid emoji-scroll" direction="vertical" :show-scrollbar="false" :style="{ height: emojiScrollHeight + 'px' }">
-          <view class="flex-dir-row flex-wrap-wrap pb-10 pt-10">
-            <view class="h-44 items-center justify-center emoji-item" v-for="emoji in emojiList" :key="emoji" @click="insertEmoji(emoji)">
-              <text class="fs-30 emoji-item-text">{{ emoji }}</text>
+        <scroll-view class="emoji-scroll" direction="vertical" :show-scrollbar="false" :style="{ height: emojiScrollHeight + 'px' }">
+          <view class="emoji-grid">
+            <view class="emoji-item" v-for="emoji in emojiList" :key="emoji" @click="insertEmoji(emoji)">
+              <text class="emoji-item-text">{{ emoji }}</text>
             </view>
           </view>
         </scroll-view>
       </view>
 
-      <view class="h-0" :class="{ 'keyboard-placeholder-animate transition-timing-ease-out': enableFootBoxAnimation }" :style="{ height: keyboardHeight + 'px' }"></view>
-      <view class="h-env-safe-area-inset-bottom safe-area-inset-bottom" v-if="keyboardHeight == 0 && !showEmojiList"></view>
+      <view class="keyboard-placeholder" :class="{ 'keyboard-placeholder-animate': enableFootBoxAnimation }" :style="{ height: keyboardHeight + 'px' }"></view>
+      <view class="safe-area-inset-bottom" v-if="keyboardHeight == 0 && !showEmojiList"></view>
     </view>
 	</view>
 </template>
@@ -294,58 +294,121 @@
 </script>
 
 <style>
-.color-chat-muted-bbb {
-  color: var(--chat-muted-color, #bbbbbb);
-}
-
 .chat-textarea-box {
   --chat-page-background: #ededed;
+  --chat-surface-background: #ffffff;
   --chat-border-color: #ebebeb;
   --chat-divider-color: #f0f0f0;
   --chat-item-divider-color: #f5f5f5;
   --chat-title-color: #1a1a1a;
+  --chat-text-color: #333333;
   --chat-subtitle-color: #999999;
   --chat-secondary-color: #666666;
   --chat-muted-color: #bbbbbb;
   --chat-foot-background: #f6f6f6;
+  flex: 1;
+  flex-direction: column;
 }
 
 .chat-header {
   padding: 16px 16px 12px;
+  background-color: var(--chat-surface-background, #ffffff);
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
   border-bottom-color: var(--chat-border-color, #ebebeb);
 }
 
 .chat-title {
+  font-size: 17px;
+  font-weight: 700;
   color: var(--chat-title-color, #1a1a1a);
+  line-height: 24px;
 }
 
 .chat-subtitle {
+  margin-top: 4px;
+  font-size: 13px;
   color: var(--chat-subtitle-color, #999999);
+  line-height: 18px;
 }
 
 .message-area {
+  flex: 1;
+  padding: 12px 16px;
   background-color: var(--chat-page-background, #ededed);
 }
 
+.hint-card {
+  padding: 14px 16px;
+  background-color: var(--chat-surface-background, #ffffff);
+  border-radius: 10px;
+  flex-direction: column;
+}
+
+.hint-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--chat-text-color, #333333);
+  margin-bottom: 8px;
+}
+
 .hint-item {
+  font-size: 13px;
   color: var(--chat-secondary-color, #666666);
+  line-height: 22px;
+}
+
+.animation-switch-row {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top-width: 1px;
+  border-top-style: solid;
+  border-top-color: var(--chat-divider-color, #f0f0f0);
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.animation-switch-text {
+  font-size: 13px;
+  color: var(--chat-text-color, #333333);
 }
 
 .preview-label {
+  margin-top: 16px;
   padding: 0 4px;
 }
 
+.preview-label-text {
+  font-size: 12px;
+  color: var(--chat-muted-color, #bbbbbb);
+}
+
 .user-list-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background-color: rgba(0, 0, 0, 0.25);
   z-index: 998;
 }
 
 .user-list-panel {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
   max-height: 280px;
+  background-color: var(--chat-surface-background, #ffffff);
   border-top-left-radius: 16px;
   border-top-right-radius: 16px;
+  flex-direction: column;
+  z-index: 999;
   transform: translateY(100%);
+  transition-property: transform;
   transition-duration: 0.25s;
+  transition-timing-function: ease-out;
 }
 
 .user-list-panel-show {
@@ -353,36 +416,101 @@
 }
 
 .user-list-header {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
   padding: 14px 16px 10px;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
   border-bottom-color: var(--chat-divider-color, #f0f0f0);
 }
 
+.user-list-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--chat-text-color, #333333);
+}
+
+.user-list-count {
+  font-size: 12px;
+  color: var(--chat-muted-color, #bbbbbb);
+}
+
 .user-list-scroll {
+  flex: 1;
   max-height: 220px;
 }
 
 .user-list-item {
+  flex-direction: row;
+  align-items: center;
   padding: 10px 16px;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
   border-bottom-color: var(--chat-item-divider-color, #f5f5f5);
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-avatar-text {
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.user-name {
+  flex: 1;
+  margin-left: 12px;
+  font-size: 15px;
+  color: var(--chat-text-color, #333333);
 }
 
 .foot-box {
   background-color: var(--chat-foot-background, #f6f6f6);
 }
 
+.foot-box-main {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 15px;
+}
+
 .input-wrapper {
+  flex: 1;
   min-height: 44px;
   max-height: 120px;
   padding: 8px 14px;
+  background-color: var(--chat-surface-background, #ffffff);
+  border-radius: 8px;
+  flex-direction: row;
+  align-items: center;
 }
 
 .preview-editor {
+  flex: 1;
   min-height: 28px;
+  font-size: 15px;
+  color: var(--chat-text-color, #333333);
 }
 
 .emoji-toggle {
   width: 44px;
+  height: 44px;
+  margin-left: 10px;
   border-radius: 22px;
+  align-items: center;
+  justify-content: center;
+}
+
+.emoji-panel {
+  flex-direction: column;
 }
 
 .emoji-panel-animate {
@@ -390,6 +518,7 @@
   transform-origin: bottom center;
   transition-property: height, margin-top, opacity, transform, border-top-color;
   transition-duration: 0.24s;
+  transition-timing-function: ease-out;
 }
 
 .emoji-panel-animate-show {
@@ -397,33 +526,54 @@
 }
 
 .emoji-scroll {
+  border-top-width: 1px;
+  border-top-style: solid;
   border-top-color: var(--chat-border-color, #ebebeb);
+}
+
+.emoji-grid {
+  flex-direction: row;
+  flex-wrap: wrap;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 .emoji-item {
   width: 12.5%;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
 }
 
 .emoji-item-text {
+  font-size: 30px;
   line-height: 44px;
 }
 
 .safe-area-inset-bottom {
+  height: env(safe-area-inset-bottom);
   min-height: 8px;
+}
+
+.keyboard-placeholder {
+  height: 0;
 }
 
 .keyboard-placeholder-animate {
   transition-property: height;
   transition-duration: 0.24s;
+  transition-timing-function: ease-out;
 }
 
 @media (prefers-color-scheme: dark) {
   .chat-textarea-box {
     --chat-page-background: #1a1a1a;
+    --chat-surface-background: #2d2d2d;
     --chat-border-color: rgba(255, 255, 255, 0.1);
     --chat-divider-color: rgba(255, 255, 255, 0.1);
     --chat-item-divider-color: rgba(255, 255, 255, 0.1);
     --chat-title-color: #ffffff;
+    --chat-text-color: #ffffff;
     --chat-subtitle-color: #a0a0a0;
     --chat-secondary-color: #b8b8b8;
     --chat-muted-color: #a0a0a0;

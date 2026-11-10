@@ -1,31 +1,31 @@
 <template>
-		<text class="fs-24 fw-bold border-b-1-solid-ccc m-8-0">全景浏览</text>
+		<text class="uni-h2">全景浏览</text>
 		<text>左右转动手机，超宽画卷会跟随陀螺仪横向移动，展示屏幕之外的内容。</text>
 
-		<text class="fs-20 fw-bold m-8-0">当前状态</text>
-		<text id="panoramaStatus" class="m-5-0">{{ statusText }}</text>
-		<view class="m-5-0 d-flex flex-dir-row">
-			<view class="flex-1 p-14 border-1-solid-ccc">
-				<text>水平偏移</text>
-				<text class="mt-4 fs-30">{{ offsetText }}</text>
+		<text class="uni-h3">当前状态</text>
+		<text id="panoramaStatus" class="margin-v">{{ statusText }}</text>
+		<view class="metric-row">
+			<view class="metric-box">
+				<text class="metric-label">水平偏移</text>
+				<text class="metric-value">{{ offsetText }}</text>
 			</view>
-			<view class="flex-1 p-14 border-1-solid-ccc u-ml-10">
-				<text>角速度 Y</text>
-				<text class="mt-4 fs-30">{{ velocityText }}</text>
+			<view class="metric-box metric-box-space">
+				<text class="metric-label">角速度 Y</text>
+				<text class="metric-value">{{ velocityText }}</text>
 			</view>
 		</view>
 
-		<text class="fs-20 fw-bold m-8-0">移动视窗</text>
-		<text class="m-5-0">将手机朝左或朝右缓慢转动，观察画面边缘不断切换的色块与文字。</text>
-		<view id="panoramaViewport" class="m-5-0 border-1-solid-ccc overflow-hidden h-220">
-			<view class="d-flex flex-dir-row pos-relative panorama-strip h-220" :style="panoramaStyle">
-				<view class="w-full h-full p-20 d-flex flex-dir-column justify-flex-end">
-					<text class="fs-30 color-fff panel-title">渐变全景画卷</text>
-					<text class="mt-6 fs-14 color-fff">从红色过渡到黄色的超宽视界</text>
+		<text class="uni-h3">移动视窗</text>
+		<text class="margin-v">将手机朝左或朝右缓慢转动，观察画面边缘不断切换的色块与文字。</text>
+		<view id="panoramaViewport" class="viewport">
+			<view class="panorama-strip" :style="panoramaStyle">
+				<view class="gradient-content">
+					<text class="panel-title">渐变全景画卷</text>
+					<text class="panel-copy">从红色过渡到黄色的超宽视界</text>
 				</view>
-				<view class="pos-absolute d-flex flex-dir-column end-tip bottom-20 items-end">
-						<text class="fs-24 fw-bold color-333">到达尾部了</text>
-						<text class="fs-12 color-666 mt-4">已展示全部内容</text>
+				<view class="end-tip">
+						<text class="end-tip-text">到达尾部了</text>
+						<text class="end-tip-sub">已展示全部内容</text>
 				</view>
 			</view>
 		</view>
@@ -157,22 +157,91 @@
 <style>
 	page {
 		padding: 6px;
+  }
+
+	.margin-v {
+		margin: 5px 0;
+	}
+
+	.metric-row {
+		margin: 5px 0;
+		display: flex;
+		flex-direction: row;
+	}
+
+	.metric-box {
+		flex: 1;
+		padding: 14px;
+		border: 1px solid #ccc;
+	}
+
+	.metric-box-space {
+		margin-left: 10px;
+	}
+
+	.metric-value {
+		margin-top: 4px;
+		font-size: 30px;
+	}
+
+	.viewport {
+		margin: 5px 0;
+		height: 220px;
+		border: 1px solid #ccc;
+		overflow: hidden;
+		/* 确保超出部分隐藏 */
 	}
 
 	.panorama-strip {
 		width: 1400px;
 		/* 这里的总宽度要和 script 中的 panoramaWidth 一致 */
+		height: 220px;
 		/* 核心修改：应用线性渐变背景 */
-		background-image: linear-gradient(to right, #ff4d4d, #fffa65); /* 必须加这个，方便子元素绝对定位 */
+		background-image: linear-gradient(to right, #ff4d4d, #fffa65);
+		display: flex;
+		flex-direction: row;
+		position: relative; /* 必须加这个，方便子元素绝对定位 */
+	}
+
+	.gradient-content {
+		width: 100%;
+		height: 100%;
+		padding: 20px;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-end;
 	}
 
 	.panel-title {
+		font-size: 30px;
+		color: #ffffff;
 		/* 渐变背景下白色文字通常更清晰 */
 		text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 	}
 
+	.panel-copy {
+		margin-top: 6px;
+		font-size: 14px;
+		color: #ffffff;
+	}
+
 	/* 右侧提示文字容器 */
 	.end-tip {
+	    position: absolute;
 	    right: 40px;      /* 距离最右侧留点边距 */
+	    bottom: 20px;
+	    display: flex;
+	    flex-direction: column;
+	    align-items: flex-end;
+	}
+	.end-tip-text {
+	    font-size: 24px;
+	    font-weight: bold;
+	    color: #333;      /* 尾部通常是黄色区域，用深色字更清晰 */
+	}
+	.end-tip-sub {
+	    font-size: 12px;
+	    color: #666;
+	    margin-top: 4px;
 	}
 </style>

@@ -1,40 +1,40 @@
 <template>
-  <view class="flex-1" id="container">
-    <list-view ref="listRef" class="flex-1" @scroll="onListScroll" @scrollend="onScrollEnd" :scroll-with-animation="true">
-      <list-item v-for="(item, index) in items" :key="item.id" class="flex-dir-row items-center overflow-hidden item-wrapper"
+  <view class="container" id="container">
+    <list-view ref="listRef" class="list" @scroll="onListScroll" @scrollend="onScrollEnd" :scroll-with-animation="true">
+      <list-item v-for="(item, index) in items" :key="item.id" class="item-wrapper"
         :style="{ backgroundColor: item.bgColor, transform: 'translateY(' + itemMetas[index].translateY + 'px)', transition: itemMetas[index].wrapperTransition, zIndex: itemMetas[index].zIndex }"
         @touchstart="(e: TouchEvent) => onTouchStart(e, index)" @touchmove="onTouchMove" @touchend="onTouchEnd"
         @touchcancel="onTouchEnd" @longpress="onLongPress">
         <!-- 多选模式下显示 checkbox -->
-        <checkbox v-if="isMultiSelectMode" class="u-ml-10" :checked="selectedIds.includes(item.id)"
+        <checkbox v-if="isMultiSelectMode" style="margin-left: 10px;" :checked="selectedIds.includes(item.id)"
           @click="toggleSelect(item.id)" />
-        <view class="flex-1 flex-dir-column justify-center items-center u-p-10"
+        <view class="item-content"
           :style="{ height: item.height + 'px', transform: 'translateX(' + itemMetas[index].translateX + 'px)', transition: itemMetas[index].contentTransition }">
-          <text class="fs-18 fw-bold color-fff item-text">试试左滑和长按 {{ item.id + 1 }}</text>
-          <text class="fs-14 color-rgba-255-255-255-0_8 u-mt-5">高度: {{ item.height }}px</text>
-          <view class="w-full flex-dir-row justify-center">
+          <text class="item-text">试试左滑和长按 {{ item.id + 1 }}</text>
+          <text class="item-info">高度: {{ item.height }}px</text>
+          <view class="item-sub-items">
             <view v-for="subItem in item.subItems" :key="subItem.index" :style="{ backgroundColor: subItem.bgColor }">
-              <text class="fs-14 color-rgba-255-255-255-0_8 u-mt-5">{{ subItem.index + 1 }}</text>
+              <text class="item-info">{{ subItem.index + 1 }}</text>
             </view>
           </view>
         </view>
       </list-item>
     </list-view>
     <!-- 全局侧滑菜单（始终渲染，通过 visibility 控制显示） -->
-    <view class="pos-absolute top-0 w-80 flex-dir-row overflow-hidden swipe-menu"
+    <view class="swipe-menu"
       :style="{ transform: menuTransform, transition: menuTransition, height: menuHeight + 'px' }">
-      <view class="w-80 justify-center items-center delete-btn" @click="onDeleteClick">
-        <text class="color-fff">删除</text>
+      <view class="menu-item delete-btn" @click="onDeleteClick">
+        <text class="menu-text">删除</text>
       </view>
     </view>
     <!-- 多选模式底部工具栏 -->
-    <view v-if="isMultiSelectMode" class="pos-absolute right-0 bottom-0 bg-fff items-center pl-15 border-t-width-1 border-t-style-solid bottom-toolbar left-0 pb-safe-area-inset-bottom">
-      <view class="flex-1 flex-dir-row items-center justify-between m-2-0">
+    <view v-if="isMultiSelectMode" class="bottom-toolbar">
+      <view class="toolbar">
         <checkbox :checked="isAllSelected" @click="toggleSelectAll">
           <text>{{ isAllSelected ? '取消全选' : '全选' }}</text>
         </checkbox>
-        <text class="m-0-10">已选 {{ selectedIds.length }} 项</text>
-        <button class="m-0-10" @click="exitMultiSelectMode">取消</button>
+        <text style="margin: 0px 10px;">已选 {{ selectedIds.length }} 项</text>
+        <button style="margin: 0px 10px;" @click="exitMultiSelectMode">取消</button>
         <button type="warn" :disabled="selectedIds.length == 0" @click="onBatchDelete">删除</button>
       </view>
     </view>
@@ -649,22 +649,92 @@
 </script>
 
 <style>
+  .container {
+    flex: 1;
+  }
+
+  .list {
+    flex: 1;
+  }
+
+  .item-wrapper {
+    flex-direction: row;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .item-content {
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+  }
+
   .item-text {
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffffff;
     text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+  }
+
+  .item-info {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.8);
+    margin-top: 5px;
+  }
+
+  .item-sub-items {
+    width: 100%;
+    flex-direction: row;
+    justify-content: center;
   }
 
   /* 侧滑菜单样式 */
   .swipe-menu {
+    position: absolute;
     right: -80px;
+    top: 0;
+    width: 80px;
+    flex-direction: row;
+    overflow: hidden;
+  }
+
+  .menu-item {
+    width: 80px;
+    justify-content: center;
+    align-items: center;
   }
 
   .delete-btn {
     background-color: #ff4d4f;
   }
 
+  .menu-text {
+    color: #ffffff;
+  }
+
   /* 底部工具栏样式 */
   .bottom-toolbar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ffffff;
+    align-items: center;
+    padding-left: 15px;
     padding-right: 15px;
+    padding-bottom: var(--uni-safe-area-inset-bottom);
+    border-top-width: 1px;
     border-top-color: #e5e5e5;
+    border-top-style: solid;
+  }
+
+  .toolbar {
+    flex: 1;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin: 2px 0px;
   }
 </style>

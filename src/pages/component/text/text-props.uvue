@@ -1,143 +1,143 @@
 <template>
       <page-head :title="title"></page-head>
-      <view class="p-0-15 mt-15">
-        <view class="p-10-0 color-text-333">
-          <text class="fs-15 fw-bold color-text-333">text相关属性示例</text>
+      <view class="uni-padding-wrap uni-common-mt">
+        <view class="uni-title">
+          <text class="uni-title-text">text相关属性示例</text>
         </view>
 
-        <view class="flex-dir-row items-stretch justify-between">
-          <view class="w-48pct">
-            <text class="color-888 fs-12 fw-bold u-mt-5">根据宽度自动折行</text>
-            <view class="mb-20 bg-list-fff justify-center items-center p-20-0"><text class="fs-15 color-text-353535 text-center lh-27">{{ multiLineText }}</text></view>
+        <view class="text-compare-row">
+          <view class="text-compare-column">
+            <text class="uni-subtitle-text">根据宽度自动折行</text>
+            <view class="text-box"><text class="text">{{ multiLineText }}</text></view>
           </view>
-          <view class="w-48pct">
-            <text class="color-888 fs-12 fw-bold u-mt-5">根据宽度自动折行，拍平测试</text>
-            <view class="mb-20 bg-list-fff justify-center items-center p-20-0"><text class="fs-15 color-text-353535 text-center lh-27" flatten>{{ multiLineText }}</text></view>
+          <view class="text-compare-column">
+            <text class="uni-subtitle-text">根据宽度自动折行，拍平测试</text>
+            <view class="text-box"><text class="text" flatten>{{ multiLineText }}</text></view>
           </view>
         </view>
 
-        <view class="flex-dir-row items-stretch justify-between">
-          <view class="w-48pct">
-            <text class="color-888 fs-12 fw-bold u-mt-5">\\n换行</text>
-            <view class="mb-20 bg-list-fff justify-center items-center p-20-0">
-              <text class="fs-15 color-text-353535 text-center lh-27">\n 换行</text><text class="fs-15 color-text-353535 text-center lh-27">\\n 换行</text><text class="fs-15 color-text-353535 text-center lh-27">\\\n 换行</text>
-              <text class="fs-15 color-text-353535 text-center lh-27">\n 换行 \\n 换行 \\\n 换行 \\\\n 换行 \\\\\n 换行</text>
-              <text class="fs-15 color-text-353535 text-center lh-27">\n\n连续换行\n\n连续换行\n\n连续换行</text>
+        <view class="text-compare-row">
+          <view class="text-compare-column">
+            <text class="uni-subtitle-text">\\n换行</text>
+            <view class="text-box">
+              <text class="text">\n 换行</text><text class="text">\\n 换行</text><text class="text">\\\n 换行</text>
+              <text class="text">\n 换行 \\n 换行 \\\n 换行 \\\\n 换行 \\\\\n 换行</text>
+              <text class="text">\n\n连续换行\n\n连续换行\n\n连续换行</text>
             </view>
           </view>
-          <view class="w-48pct">
-            <text class="color-888 fs-12 fw-bold u-mt-5">\\n换行，拍平测试</text>
-            <view class="mb-20 bg-list-fff justify-center items-center p-20-0">
-              <text class="fs-15 color-text-353535 text-center lh-27" flatten>\n 换行</text><text class="fs-15 color-text-353535 text-center lh-27" flatten>\\n 换行</text><text class="fs-15 color-text-353535 text-center lh-27" flatten>\\\n 换行</text>
-              <text class="fs-15 color-text-353535 text-center lh-27" flatten>\n 换行 \\n 换行 \\\n 换行 \\\\n 换行 \\\\\n 换行</text>
-              <text class="fs-15 color-text-353535 text-center lh-27" flatten>\n\n连续换行\n\n连续换行\n\n连续换行</text>
+          <view class="text-compare-column">
+            <text class="uni-subtitle-text">\\n换行，拍平测试</text>
+            <view class="text-box">
+              <text class="text" flatten>\n 换行</text><text class="text" flatten>\\n 换行</text><text class="text" flatten>\\\n 换行</text>
+              <text class="text" flatten>\n 换行 \\n 换行 \\\n 换行 \\\\n 换行 \\\\\n 换行</text>
+              <text class="text" flatten>\n\n连续换行\n\n连续换行\n\n连续换行</text>
             </view>
           </view>
         </view>
 
-        <view class="p-10-0 color-text-333">
-          <text class="color-888 fs-12 fw-bold u-mt-5">selectable属性</text>
+        <view class="uni-title">
+          <text class="uni-subtitle-text">selectable属性</text>
         </view>
-        <view class="mb-20 bg-list-fff justify-center items-center p-20-0">
-          <text class="fs-15 color-text-353535 text-center lh-27" :selectable="true">{{ singleLineText }}</text>
+        <view class="text-box">
+          <text class="text" :selectable="true">{{ singleLineText }}</text>
         </view>
 
         <template v-if="data.autoTest">
-          <view class="p-10-0 color-text-333">
-            <text class="color-888 fs-12 fw-bold u-mt-5">max-lines="1"（v-if 动态文本）</text>
+          <view class="uni-title">
+            <text class="uni-subtitle-text">max-lines="1"（v-if 动态文本）</text>
           </view>
-          <view class="mb-20 bg-list-fff justify-center items-center p-20-0">
-            <text v-if="data.maxLinesText" id="max-lines-v-if-text" class="w-100 text-overflow-ellipsis text-center fs-40 color-text-353535" :max-lines="1">{{ data.maxLinesText }}</text>
+          <view class="text-box">
+            <text v-if="data.maxLinesText" id="max-lines-v-if-text" class="max-lines-text" :max-lines="1">{{ data.maxLinesText }}</text>
           </view>
         </template>
 
-        <view class="flex-dir-row items-stretch justify-between">
-          <view class="w-48pct">
-            <text class="color-888 fs-12 fw-bold u-mt-5">max-lines="2"</text>
-            <view class="mb-20 bg-list-fff justify-center items-center p-20-0">
-              <text id="max-lines-text" class="w-100 fs-15 text-overflow-ellipsis text-center color-text-353535 lh-27" max-lines="2">{{ multiLineText }}</text>
+        <view class="text-compare-row">
+          <view class="text-compare-column">
+            <text class="uni-subtitle-text">max-lines="2"</text>
+            <view class="text-box">
+              <text id="max-lines-text" class="max-lines-demo-text" max-lines="2">{{ multiLineText }}</text>
             </view>
           </view>
-          <view class="w-48pct">
-            <text class="color-888 fs-12 fw-bold u-mt-5">max-lines="2"，拍平测试</text>
-            <view class="mb-20 bg-list-fff justify-center items-center p-20-0">
-              <text id="max-lines-flat-text" class="w-100 fs-15 text-overflow-ellipsis text-center color-text-353535 lh-27" max-lines="2" flatten>{{ multiLineText }}</text>
+          <view class="text-compare-column">
+            <text class="uni-subtitle-text">max-lines="2"，拍平测试</text>
+            <view class="text-box">
+              <text id="max-lines-flat-text" class="max-lines-demo-text" max-lines="2" flatten>{{ multiLineText }}</text>
             </view>
           </view>
         </view>
 
-        <view class="p-10-0 color-text-333">
-          <text class="color-888 fs-12 fw-bold u-mt-5">space属性（App平台蒸汽模式不支持，推荐改用css white-space）</text>
-          <text class="color-888 fs-12 fw-bold u-mt-5">依次为nbsp ensp emsp效果</text>
+        <view class="uni-title">
+          <text class="uni-subtitle-text">space属性（App平台蒸汽模式不支持，推荐改用css white-space）</text>
+          <text class="uni-subtitle-text">依次为nbsp ensp emsp效果</text>
         </view>
-        <view class="mb-20 bg-list-fff justify-center items-center p-20-0">
+        <view class="text-box">
           <!-- #ifndef VUE3-VAPOR && APP -->
-          <text class="fs-15 color-text-353535 text-center lh-27" space="nbsp">{{ singleLineText }}</text>
-          <text class="fs-15 color-text-353535 text-center lh-27" space="ensp">{{ singleLineText }}</text>
-          <text class="fs-15 color-text-353535 text-center lh-27" space="emsp">{{ singleLineText }}</text>
+          <text class="text" space="nbsp">{{ singleLineText }}</text>
+          <text class="text" space="ensp">{{ singleLineText }}</text>
+          <text class="text" space="emsp">{{ singleLineText }}</text>
           <!-- #endif -->
           <!-- #ifdef VUE3-VAPOR && APP -->
-          <text class="fs-15 color-text-353535 text-center lh-27">{{ singleLineText }}</text>
-          <text class="fs-15 color-text-353535 text-center lh-27">{{ singleLineText }}</text>
-          <text class="fs-15 color-text-353535 text-center lh-27">{{ singleLineText }}</text>
+          <text class="text">{{ singleLineText }}</text>
+          <text class="text">{{ singleLineText }}</text>
+          <text class="text">{{ singleLineText }}</text>
           <!-- #endif -->
         </view>
 
-        <view class="p-10-0 color-text-333">
-          <text class="color-888 fs-12 fw-bold u-mt-5">decode属性（App平台蒸汽模式不支持）</text>
-          <text class="color-888 fs-12 fw-bold u-mt-5">依次为lt gt amp apos nbsp ensp emsp效果</text>
+        <view class="uni-title">
+          <text class="uni-subtitle-text">decode属性（App平台蒸汽模式不支持）</text>
+          <text class="uni-subtitle-text">依次为lt gt amp apos nbsp ensp emsp效果</text>
         </view>
-        <view class="mb-20 bg-list-fff justify-center items-center p-20-0">
+        <view class="text-box">
           <!-- #ifndef VUE3-VAPOR && APP -->
-          <text class="fs-15 color-text-353535 text-center lh-27" :decode="data.decode">{{ decodeStr }}</text>
-          <text class="fs-15 color-text-353535 text-center lh-27" :decode="data.decode">uni-app&nbsp;x，终极跨平台方案</text>
-          <text class="fs-15 color-text-353535 text-center lh-27" :decode="data.decode">uni-app&ensp;x，终极跨平台方案</text>
-          <text class="fs-15 color-text-353535 text-center lh-27" :decode="data.decode">uni-app&emsp;x，终极跨平台方案</text>
+          <text class="text" :decode="data.decode">{{ decodeStr }}</text>
+          <text class="text" :decode="data.decode">uni-app&nbsp;x，终极跨平台方案</text>
+          <text class="text" :decode="data.decode">uni-app&ensp;x，终极跨平台方案</text>
+          <text class="text" :decode="data.decode">uni-app&emsp;x，终极跨平台方案</text>
           <!-- #endif -->
           <!-- #ifdef VUE3-VAPOR && APP -->
-          <text class="fs-15 color-text-353535 text-center lh-27">{{ decodeStr }}</text>
-          <text class="fs-15 color-text-353535 text-center lh-27">uni-app&nbsp;x，终极跨平台方案</text>
-          <text class="fs-15 color-text-353535 text-center lh-27">uni-app&ensp;x，终极跨平台方案</text>
-          <text class="fs-15 color-text-353535 text-center lh-27">uni-app&emsp;x，终极跨平台方案</text>
+          <text class="text">{{ decodeStr }}</text>
+          <text class="text">uni-app&nbsp;x，终极跨平台方案</text>
+          <text class="text">uni-app&ensp;x，终极跨平台方案</text>
+          <text class="text">uni-app&emsp;x，终极跨平台方案</text>
           <!-- #endif -->
         </view>
 
-        <view class="flex-dir-row items-stretch justify-between">
-          <view class="w-48pct">
-          <text class="color-888 fs-12 fw-bold u-mt-5">嵌套1</text><view class="mb-20 bg-list-fff justify-center items-center p-20-0">
-          <text class="fs-15 color-text-353535 text-center lh-27" @tap="nestedText1Tap">一级节点黑/白色
-            <text class="u-color-red bg-ff0" @tap="nestedText2Tap">二级节点红色且背景色黄色
-              <text class="color-00f text-underline" @tap="nestedText3Tap">App三级节点不继承二级的颜色</text>
+        <view class="text-compare-row">
+          <view class="text-compare-column">
+          <text class="uni-subtitle-text">嵌套1</text><view class="text-box">
+          <text class="text" @tap="nestedText1Tap">一级节点黑/白色
+            <text style="color: red;background-color: yellow;" @tap="nestedText2Tap">二级节点红色且背景色黄色
+              <text style="text-decoration-line:underline;color:blue;" @tap="nestedText3Tap">App三级节点不继承二级的颜色</text>
             </text>
-            <text class="fs-50">二级节点大字体</text>
+            <text style="font-size: 50px">二级节点大字体</text>
           </text>
           </view></view>
-          <view class="w-48pct">
-        <text class="color-888 fs-12 fw-bold u-mt-5">嵌套1，拍平测试</text><view class="mb-20 bg-list-fff justify-center items-center p-20-0">
-          <text class="fs-15 color-text-353535 text-center lh-27" flatten @tap="nestedText1Tap">一级节点黑/白色
-            <text class="u-color-red bg-ff0" @tap="nestedText2Tap">二级节点红色且背景色黄色
-              <text class="color-00f text-underline" @tap="nestedText3Tap">App三级节点不继承二级的颜色</text>
+          <view class="text-compare-column">
+        <text class="uni-subtitle-text">嵌套1，拍平测试</text><view class="text-box">
+          <text class="text" flatten @tap="nestedText1Tap">一级节点黑/白色
+            <text style="color: red;background-color: yellow;" @tap="nestedText2Tap">二级节点红色且背景色黄色
+              <text style="text-decoration-line:underline;color:blue;" @tap="nestedText3Tap">App三级节点不继承二级的颜色</text>
             </text>
-            <text class="fs-50">二级节点大字体</text>
+            <text style="font-size: 50px">二级节点大字体</text>
           </text>
           </view></view>
         </view>
 
-        <text class="color-888 fs-12 fw-bold u-mt-5">动态text嵌套</text>
+        <text class="uni-subtitle-text">动态text嵌套</text>
         <text>
           <text v-for="n in textArr" :key="n">{{ n }}</text>
         </text>
 
-        <view class="flex-dir-row items-stretch justify-between">
-          <view class="w-48pct"><text class="color-888 fs-12 fw-bold u-mt-5">空嵌套测试</text><view class="mb-20 bg-list-fff justify-center items-center p-20-0">
-          <text class="fs-15 color-text-353535 text-center lh-27">
+        <view class="text-compare-row">
+          <view class="text-compare-column"><text class="uni-subtitle-text">空嵌套测试</text><view class="text-box">
+          <text class="text">
             <text>
               文字应居中显示<text></text>
             </text>
           </text>
           </view></view>
-          <view class="w-48pct"><text class="color-888 fs-12 fw-bold u-mt-5">空嵌套测试（根拍平）</text><view class="mb-20 bg-list-fff justify-center items-center p-20-0">
-          <text class="fs-15 color-text-353535 text-center lh-27" flatten>
+          <view class="text-compare-column"><text class="uni-subtitle-text">空嵌套测试（根拍平）</text><view class="text-box">
+          <text class="text" flatten>
             <text>
               文字应居中显示<text></text>
             </text>
@@ -145,30 +145,30 @@
           </view></view>
         </view>
 
-        <view class="flex-dir-row items-stretch justify-between">
-          <view class="w-48pct"><text class="color-888 fs-12 fw-bold u-mt-5">含换行符的多行文本(3行)，但不自动换行，可横向滚动</text><scroll-view class="w-full bg-list-fff u-p-10" direction="horizontal">
-          <text class="ws-nowrap self-flex-start fs-15 color-text-353535 text-center lh-27">HBuilderX，轻巧、极速，极客编辑器；\nuni-app x，是下一代 uni-app，是一个跨平台应用开发引擎。uni-app x 是一个庞大的工程，它包括uts语言、uvue渲染引擎、uni的组件和API、以及扩展机制。\nuts是一门类ts的、跨平台的、新语言。</text>
+        <view class="text-compare-row">
+          <view class="text-compare-column"><text class="uni-subtitle-text">含换行符的多行文本(3行)，但不自动换行，可横向滚动</text><scroll-view class="text-container" direction="horizontal">
+          <text class="text" style="white-space: nowrap;align-self: flex-start;">HBuilderX，轻巧、极速，极客编辑器；\nuni-app x，是下一代 uni-app，是一个跨平台应用开发引擎。uni-app x 是一个庞大的工程，它包括uts语言、uvue渲染引擎、uni的组件和API、以及扩展机制。\nuts是一门类ts的、跨平台的、新语言。</text>
           </scroll-view></view>
-          <view class="w-48pct"><text class="color-888 fs-12 fw-bold u-mt-5">含换行符的多行文本(3行)，但不自动换行，可横向滚动【拍平测试】</text><scroll-view class="w-full bg-list-fff u-p-10" direction="horizontal">
-          <text class="ws-nowrap self-flex-start fs-15 color-text-353535 text-center lh-27" flatten>HBuilderX，轻巧、极速，极客编辑器；\nuni-app x，是下一代 uni-app，是一个跨平台应用开发引擎。uni-app x 是一个庞大的工程，它包括uts语言、uvue渲染引擎、uni的组件和API、以及扩展机制。\nuts是一门类ts的、跨平台的、新语言。</text>
+          <view class="text-compare-column"><text class="uni-subtitle-text">含换行符的多行文本(3行)，但不自动换行，可横向滚动【拍平测试】</text><scroll-view class="text-container" direction="horizontal">
+          <text class="text" flatten style="white-space: nowrap;align-self: flex-start;">HBuilderX，轻巧、极速，极客编辑器；\nuni-app x，是下一代 uni-app，是一个跨平台应用开发引擎。uni-app x 是一个庞大的工程，它包括uts语言、uvue渲染引擎、uni的组件和API、以及扩展机制。\nuts是一门类ts的、跨平台的、新语言。</text>
           </scroll-view></view>
         </view>
 
         <!-- #ifdef APP -->
-        <view class="p-10-0 color-text-333">
-          <text class="color-888 fs-12 fw-bold u-mt-5">点击事件测试</text>
+        <view class="uni-title">
+          <text class="uni-subtitle-text">点击事件测试</text>
         </view>
-        <view class="mb-20 bg-list-fff justify-center items-center flex-dir-row p-20-0">
-          <text class="text-icon bg-0ff" @tap="iconTap">{{String.fromCharCode(parseInt('E650',16))}}</text>
-          <text class="text-icon bg-ff0" @tap="iconTap2">{{String.fromCharCode(parseInt('EA08',16))}}</text>
+        <view class="text-box" style="flex-direction: row;">
+          <text class="text-icon" style="background-color: aqua;" @tap="iconTap">{{String.fromCharCode(parseInt('E650',16))}}</text>
+          <text class="text-icon" style="background-color: yellow;" @tap="iconTap2">{{String.fromCharCode(parseInt('EA08',16))}}</text>
         </view>
         <!-- #endif -->
 
         <!-- #ifdef VUE3-VAPOR -->
-        <view class="p-10-0 color-text-333">
-          <text class="fs-15 fw-bold color-text-333">hover-class 测试</text>
+        <view class="uni-title">
+          <text class="uni-title-text">hover-class 测试</text>
         </view>
-        <text id="text-hover-parent" class="p-5-0 flex-dir-row justify-center fs-15 color-text-353535 text-center bg-list-fff lh-27"
+        <text id="text-hover-parent" class="text text-hover-main"
           :hover-class="hoverData.hover_class ? 'is-parent-hover' : 'none'"
           :hover-start-time="hoverData.start_time"
           :hover-stay-time="hoverData.stay_time"
@@ -176,7 +176,7 @@
           点击测试 hover-class
         </text>
 
-        <view class="mb-15">
+        <view class="uni-common-mb">
           <boolean-data :value="false" title="是否指定按下去的样式类" @change="change_hover_class_boolean"></boolean-data>
 
           <enum-data-checkbox :items="hoverData.start_time_enum" title="按住后多久出现点击态" @change="radio_change_start_time_enum"></enum-data-checkbox>
@@ -185,22 +185,22 @@
         <!-- #endif -->
 
         <view v-if="data.autoTest">
-          <view class="flex-dir-row">
+          <view class="uni-row">
             <text id="empty-text"></text>
           </view>
-          <view class="flex-dir-row">
+          <view class="uni-row">
             <text id="empty-text2">{{data.emptyText}}</text>
           </view>
-          <view class="flex-dir-row">
-            <text id="empty-text3" class="w-100 h-100">{{data.emptyText}}</text>
+          <view class="uni-row">
+            <text id="empty-text3" style="width: 100px;height: 100px;">{{data.emptyText}}</text>
           </view>
           <text>一级节点文本
             <text>二级节点文本
               <text id="nested-text">{{data.nestedText}}</text>
             </text>
           </text>
-          <text id="height-text" class="u-h-50">{{data.heightText}}</text>
-          <text class="pos-fixed" id="nested-text2" @tap="nestedText1TapForTest">1
+          <text id="height-text" style="height: 50px;">{{data.heightText}}</text>
+          <text style="position: fixed;" id="nested-text2" @tap="nestedText1TapForTest">1
             <text @tap="nestedText2TapForTest">2
               <text>3</text>
             </text>
@@ -208,22 +208,22 @@
         </view>
 
         <!-- #ifdef VUE3-VAPOR -->
-        <view class="p-10-0 color-text-333">
-          <text class="color-888 fs-12 fw-bold u-mt-5">Text属性交叉测试</text>
+        <view class="uni-title">
+          <text class="uni-subtitle-text">Text属性交叉测试</text>
         </view>
-        <view class="flex-dir-column w-full">
-          <view class="w-full">
-            <text class="color-888 fs-12 fw-bold u-mt-5">user-select + max-lines + flatten</text>
-            <view class="mb-20 bg-list-fff justify-center items-center p-20-0">
-              <text id="text-cross-user-select" class="w-full fs-15 text-center color-text-353535 lh-27" user-select max-lines="2" flatten>
+        <view class="text-cross-column">
+          <view class="text-compare-column text-cross-item">
+            <text class="uni-subtitle-text">user-select + max-lines + flatten</text>
+            <view class="text-box">
+              <text id="text-cross-user-select" class="text-cross-test" user-select max-lines="2" flatten>
                 可选择的长文本内容<text>用于验证 user-select、flatten 和 max-lines 属性同时使用时的渲染与布局行为，继续补充文本内容触发两行限制。</text>
               </text>
             </view>
           </view>
-          <view class="w-full">
-            <text class="color-888 fs-12 fw-bold u-mt-5">max-lines + flatten + hover</text>
-            <view class="mb-20 bg-list-fff justify-center items-center p-20-0">
-              <text id="text-cross-hover" class="w-full fs-15 text-center color-text-353535 lh-27"
+          <view class="text-compare-column text-cross-item">
+            <text class="uni-subtitle-text">max-lines + flatten + hover</text>
+            <view class="text-box">
+              <text id="text-cross-hover" class="text-cross-test"
                 max-lines="2"
                 flatten
                 hover-class="is-cross-hover"
@@ -238,7 +238,7 @@
         <!-- #endif -->
 
         <!-- #ifdef APP && VUE3-VAPOR -->
-        <view class="p-10-0 color-text-333">
+        <view class="uni-title p-10-0 color-text-333">
           <text>hover-stop-propagation</text>
         </view>
         <view class="p-20 mb-20 bg-eee" hover-class="bg-f00" :hover-stay-time="1000">
@@ -394,13 +394,137 @@ defineExpose({
 </script>
 
 <style>
+  .p-10-0 {
+    padding: 10px 0;
+  }
+
+  .mt-15 {
+    margin-top: 15px;
+  }
+
+  .p-15-15 {
+    padding: 15px 15px;
+  }
+
+  .mb-20 {
+    margin-bottom: 20px;
+  }
+
+  .color-text-333 {
+    color: var(--text-color, #333333);
+  }
+
+  .bg-fff {
+    background-color: #ffffff;
+  }
+
+  .p-20 {
+    padding: 20px;
+  }
+
+  .bg-f00 {
+    background-color: #ff0000;
+  }
+
+  .bg-eee {
+    background-color: #eee;
+  }
+
+  .bg-dceaff {
+    background-color: #dceaff;
+  }
+
+  .text-box {
+    margin-bottom: 20px;
+    padding: 20px 0;
+    background-color: var(--list-background-color, #ffffff);
+    justify-content: center;
+    align-items: center;
+  }
+
+  .text-compare-row {
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: space-between;
+  }
+
+  .text-compare-column {
+    width: 48%;
+  }
+
+  .text-container {
+    width: 100%;
+    background-color: var(--list-background-color, #ffffff);
+    padding: 10px;
+  }
+
+  .text {
+    font-size: 15px;
+    color: var(--text-color, #353535);
+    line-height: 27px;
+    text-align: center;
+  }
+
   .text-icon {
     font-family: uni-icon;
     font-size: 100px;
   }
 
-  .is-parent-hover,
+  .max-lines-text {
+    width: 100px;
+    font-size: 40px;
+    color: var(--text-color, #353535);
+    text-overflow: ellipsis;
+    text-align: center;
+  }
+
+  .max-lines-demo-text {
+    width: 100px;
+    font-size: 15px;
+    line-height: 27px;
+    color: var(--text-color, #353535);
+    text-overflow: ellipsis;
+    text-align: center;
+  }
+
+  /* #ifdef VUE3-VAPOR && APP-HARMONY */
+  .harmony-unsupported-tip {
+    font-size: 12px;
+    color: #999999;
+    margin-top: 10px;
+    text-align: center;
+  }
+  /* #endif */
+
+  .text-hover-main {
+    padding: 5px 0;
+    flex-direction: row;
+    justify-content: center;
+    background-color: var(--list-background-color, #ffffff);
+  }
+
+  .is-parent-hover {
+    background-color: #aa0000;
+  }
+
+  .text-cross-test {
+    width: 100%;
+    font-size: 15px;
+    line-height: 27px;
+    color: var(--text-color, #353535);
+    text-align: center;
+  }
+
   .is-cross-hover {
     background-color: #aa0000;
+  }
+
+  .text-cross-column {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .text-cross-item {
+    width: 100%;
   }
 </style>

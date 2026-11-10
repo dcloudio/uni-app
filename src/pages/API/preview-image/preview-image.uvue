@@ -1,7 +1,7 @@
 <template>
       <!-- #ifndef MP-ALIPAY -->
       <view>
-        <text class="mt-16 ml-8 mb-16 fw-bold color-text-333">图片指示器样式</text>
+        <text class="text-desc">图片指示器样式</text>
         <enum-data-checkbox
           :model-value="currentIndicator"
           :items="indicator"
@@ -23,7 +23,7 @@
         />
       </view>
       <view>
-        <text class="mt-16 ml-8 mb-16 fw-bold color-text-333">长按行为</text>
+        <text class="text-desc">长按行为</text>
         <enum-data-checkbox
           :model-value="isLongPress ? '1' : '0'"
           :items="longPressAction"
@@ -34,18 +34,18 @@
         />
       </view>
       <!-- #endif -->
-      <view class="bg-list-fff">
-        <text class="mt-16 ml-8 mb-16 fw-bold color-text-333">点击图片开始预览</text>
-        <view class="flex-dir-row flex-wrap-wrap d-flex m-8">
-          <view class="w-100 h-100 border-width-1 border-style-solid cell-choose-image ml-3 mr-3" v-for="(image, index) in imageList" :key="index">
-            <text class="w-100 h-100 u-color-red text-center fs-14 lh-100 bg-d3d3d3" v-if="image.error"
+      <view class="image-panel">
+        <text class="text-desc">点击图片开始预览</text>
+        <view class="cell-ct">
+          <view class="cell cell-choose-image" v-for="(image, index) in imageList" :key="index">
+            <text style="width: 100px; height: 100px;background-color: lightgray; color: red; text-align: center; line-height: 100px;font-size: 14px;"  v-if="image.error"
               @click="previewImage(index)">图片路径非法</text>
-            <image class="bg-list-fff w-100 h-100" mode="aspectFit" :src="image.src"
+            <image class="preview-image" mode="aspectFit" :src="image.src"
               v-if="!image.error" @click="previewImage(index)"
               @error="onImageLoadError(index,$event as ImageErrorEvent)">
             </image>
           </view>
-          <image class="w-100 h-100 border-width-1 border-style-solid cell-choose-image ml-3 mr-3" src="/static/plus.png" @click="chooseImage">
+          <image class="cell cell-choose-image" src="/static/plus.png" @click="chooseImage">
           </image>
         </view>
       </view>
@@ -193,7 +193,76 @@
     padding-right: 8px;
   }
 
+  .text-desc {
+    margin-top: 16px;
+    margin-left: 8px;
+    margin-bottom: 16px;
+    font-weight: bold;
+    color: var(--text-color, #333333);
+  }
+
+  .cell-ct {
+    margin: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+  }
+
+  .option-panel,
+  .image-panel,
+  .preview-image {
+    background-color: var(--list-background-color, #ffffff);
+  }
+
+  .long-press-panel {
+    margin-bottom: 16px;
+  }
+
+  .preview-image {
+    width: 100px;
+    height: 100px;
+  }
+
+  .notice-panel {
+    margin: 8px;
+  }
+
+  .notice-title {
+    color: var(--text-color, #333333);
+    font-size: 18px;
+    margin-bottom: 4px;
+  }
+
+  .notice-text {
+    font-size: 17px;
+    margin-left: 4px;
+    color: var(--active-color, #808080);
+  }
+
+  .cell {
+    margin-left: 3px;
+    margin-right: 3px;
+    width: 100px;
+    height: 100px;
+  }
+
   .cell-choose-image {
+    border-width: 1px;
+    border-style: solid;
     border-color: var(--border-color, lightgray);
+  }
+
+  .indicator-it {
+    margin: 8px;
+  }
+
+  .option-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .cell-pd {
+    padding: 11px 0px;
   }
 </style>

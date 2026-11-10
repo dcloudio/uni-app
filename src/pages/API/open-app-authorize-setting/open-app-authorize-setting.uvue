@@ -1,12 +1,18 @@
 <template>
-    <button type="primary" class="m-20" @tap="go">跳转系统授权管理页</button>
+    <button type="primary" style="margin: 20px;" @tap="go">跳转系统授权管理页</button>
 </template>
 
 <script setup lang="ts">
   const go = () => {
     uni.openAppAuthorizeSetting({
       success (res) {
-        console.log(res)
+        console.log('openAppAuthorizeSetting success', res)
+      },
+      fail: (res) => {
+        console.log('openAppAuthorizeSetting fail', res)
+      },
+      complete: (res) => {
+        console.log('openAppAuthorizeSetting complete', res)
       }
     })
   }
@@ -15,3 +21,7 @@
     go
   })
 </script>
+
+<style>
+
+</style>

@@ -1,6 +1,6 @@
 <template>
   <view class="selector-query-child-view">
-    <text>selector-query-child</text>
+    <text class="selector-query-child-text">selector-query-child</text>
   </view>
 </template>
 

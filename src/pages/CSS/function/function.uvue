@@ -1,7 +1,7 @@
 <template>
 	<view class="padding-safe-area-inset">
 		<view class="text-background">我在状态栏下边</view>
-    <view class="p-20">
+    <view class="content">
       <text>此页面使用env()函数适配安全区域，仅在app平台生效。</text>
       <text>safe-area-inset-top: {{safeareaInsetTop}}px</text>
       <text>safe-area-inset-left: {{safeareaInsetLeft}}px</text>
@@ -52,4 +52,7 @@
 		padding-bottom: env(safe-area-inset-bottom, 0px);
 /* #endif */
 	}
+  .content{
+    padding: 20px;
+  }
 </style>

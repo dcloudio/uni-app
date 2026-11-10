@@ -1,28 +1,28 @@
 <template>
     <uni-backarrow-circle auto-back class="back arrow"></uni-backarrow-circle>
-    <scroll-view class="flex-1" :refresher-enabled="true"
+    <scroll-view style="flex:1;"  :refresher-enabled="true"
       refresher-default-style="none" @refresherpulling="onRefresherpulling"
       :refresher-threshold="300" :refresher-max-drag-distance="299"
       @scroll="onScroll" :bounces="false"
       >
-      <view class="header-wrapper pos-relative h-200" ref="headerWrapper">
-        <image class="header-img pos-absolute w-full" ref="headerImg" src="https://web-ext-storage.dcloud.net.cn/hello-uni-app-x/pull-zoom-image-head-img.jpg" mode="scaleToFill"></image>
+      <view class="header-wrapper" ref="headerWrapper">
+        <image class="header-img" ref="headerImg" src="https://web-ext-storage.dcloud.net.cn/hello-uni-app-x/pull-zoom-image-head-img.jpg" mode="scaleToFill"></image>
       </view>
-      <view class="user-info flex-1 u-p-15 flex-dir-row z-index-10" ref="userInfo">
-        <image class="radius-100 avatar w-75 h-75" src="/static/test-image/logo.png" mode="widthFix"></image>
-        <view class="flex-dir-column justify-around u-p-10">
-          <text class="fs-26 color-fff username">uni-app-x</text>
-          <text class="fs-16 color-fff slogan">一次开发，多端覆盖</text>
+      <view class="user-info" ref="userInfo">
+        <image class="avatar" src="/static/test-image/logo.png" mode="widthFix"></image>
+        <view class="user-text">
+          <text class="username">uni-app-x</text>
+          <text class="slogan">一次开发，多端覆盖</text>
         </view>
       </view>
-      <view class="bg-list-fff z-index-1">
-        <view class="u-p-10 m-5 list-item" v-for="(item,index) in 30" :key="index">
-          <text class="fs-14 color-text-666 opacity-0_75 lh-20">{{item}}. 占位</text>
+      <view class="content-list">
+        <view class="list-item" v-for="(item,index) in 30" :key="index">
+          <text class="item-text">{{item}}. 占位</text>
         </view>
       </view>
       <!--#ifdef APP -->
-			<view slot="refresher" class="header-pull-wrapper pos-relative u-h-300">
-        <image class="top-0 header-pull-img pos-absolute w-full" ref="headerPullImg" src="https://web-ext-storage.dcloud.net.cn/hello-uni-app-x/pull-zoom-image-head-img.jpg" mode="scaleToFill"></image>
+			<view slot="refresher" class="header-pull-wrapper">
+        <image class="header-pull-img" ref="headerPullImg" src="https://web-ext-storage.dcloud.net.cn/hello-uni-app-x/pull-zoom-image-head-img.jpg" mode="scaleToFill"></image>
 			</view>
       <!--#endif-->
     </scroll-view>
@@ -147,10 +147,16 @@
 </script>
 
 <style>
+  .page {
+    flex: 1;
+  }
+
   .header-pull-wrapper,
   .header-wrapper
   {
+    position: relative;
     background: #5788cd;
+    height: 300px;
   }
   /* #ifdef APP-IOS || APP-HARMONY || (APP-ANDROID && VUE3-VAPOR) */
   /** * TODO: 临时方案。
@@ -166,7 +172,13 @@
   .header-pull-img,
   .header-img
   {
+    position: absolute;
+    width: 100%;
     height: 600px;
+  }
+
+  .header-pull-img {
+    top: 0px;
   }
 
   .header-img {
@@ -175,19 +187,57 @@
 
   .header-wrapper {
     z-index: 9;
+    height: 200px;
   }
 
   .user-info{
     margin-top: -110px;
+    flex: 1;
+    padding: 15px;
+    flex-direction: row;
+    z-index: 10;
   }
 
   .avatar {
+    width: 75px;
+    height: 75px;
+    border-radius: 100px;
     border: 3px solid #FFF;
   }
 
+  .user-text {
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 10px;
+  }
+
+  .username {
+    font-size: 26px;
+    color: #FFF;
+  }
+
+  .slogan {
+    font-size: 16px;
+    color: #FFF;
+  }
+
+  .content-list {
+    background-color: var(--list-background-color, #ffffff);
+    z-index: 1;
+  }
+
   .list-item {
+    padding: 10px;
+    margin: 5px;
     /* border-radius: 5px; */
     border: 1px solid var(--border-color, rgba(220, 220, 220, 0.3));
+  }
+
+  .item-text {
+    font-size: 14px;
+    color: var(--text-color, #666666);
+    opacity: 0.75;
+    line-height: 20px;
   }
   .back{
     position: absolute;

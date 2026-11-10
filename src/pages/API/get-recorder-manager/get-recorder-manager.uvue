@@ -1,21 +1,21 @@
 <template>
   <page-head :title="title"></page-head>
-  <view class="d-flex flex-dir-column items-center">
-    <text class="fs-30 m-10">{{formatedRecordTime}}</text>
-    <!-- <text class="fs-30 m-10">{{recordTimeInterval}}</text> -->
+  <view class="page-body-time">
+    <text class="time-big">{{formatedRecordTime}}</text>
+    <!-- <text class="time-big">{{recordTimeInterval}}</text> -->
   </view>
 
-  <scroll-view class="flex-1">
+  <scroll-view style="flex: 1;">
     <view>
-      <button class="ml-30 mr-30 mt-10" size="default" @click="registerOnStart">注册onStart</button>
-      <button class="ml-30 mr-30 mt-10" size="default" @click="registeronStop">注册onStop</button>
-      <button class="ml-30 mr-30 mt-10" size="default" id="btn-error" @click="registeronError">注册onError</button>
-      <button class="ml-30 mr-30 mt-10" size="default" @click="registeronPause">注册onPause</button>
-      <button class="ml-30 mr-30 mt-10" size="default" @click="registeronResume">注册onResume</button>
-      <button class="ml-30 mr-30 mt-10" size="default" @click="registeronInterruptionBegin">注册onInterruptionBegin</button>
-      <button class="ml-30 mr-30 mt-10" size="default" @click="registeronInterruptionEnd">注册onInterruptionEnd</button>
-      <view class="ml-30 mr-30 mt-10 mb-10 border-b-0 pos-relative d-flex flex-dir-column bg-transparent">
-        <text class="mb-10"> 请选择录音格式：</text>
+      <button class="btnstyle" size="default" @click="registerOnStart">注册onStart</button>
+      <button class="btnstyle" size="default" @click="registeronStop">注册onStop</button>
+      <button class="btnstyle" size="default" id="btn-error" @click="registeronError">注册onError</button>
+      <button class="btnstyle" size="default" @click="registeronPause">注册onPause</button>
+      <button class="btnstyle" size="default" @click="registeronResume">注册onResume</button>
+      <button class="btnstyle" size="default" @click="registeronInterruptionBegin">注册onInterruptionBegin</button>
+      <button class="btnstyle" size="default" @click="registeronInterruptionEnd">注册onInterruptionEnd</button>
+      <view class="uni-list">
+        <text style="margin-bottom: 10px" > 请选择录音格式：</text>
         <enum-data-checkbox
           :model-value="items[current]?.value"
           :items="items"
@@ -24,16 +24,16 @@
           @change="radioChange"
         />
       </view>
-      <button class="ml-30 mr-30 mt-10" size="default" :disabled="disableStartBtn" id="btn-startRecord"
+      <button class="btnstyle" size="default" :disabled="disableStartBtn" id="btn-startRecord"
         @click="startRecord()">开始录制</button>
-      <button class="ml-30 mr-30 mt-10" size="default" :disabled="disablePauseBtn" @click="pauseRecord">暂停录制</button>
-      <button class="ml-30 mr-30 mt-10" size="default" :disabled="disableResumeBtn" @click="resumeRecord">继续录制</button>
-      <button class="ml-30 mr-30 mt-10" size="default" id="btn-stopRecord" @click="stopRecord">停止录制</button>
-      <button class="ml-30 mr-30 mt-10" size="default" id="btn-startPlay" @click="playVoice">开始播放</button>
-      <button class="ml-30 mr-30 mt-10" size="default" id="btn-stopPlay" @click="stopVoice">停止播放</button>
+      <button class="btnstyle" size="default" :disabled="disablePauseBtn" @click="pauseRecord">暂停录制</button>
+      <button class="btnstyle" size="default" :disabled="disableResumeBtn" @click="resumeRecord">继续录制</button>
+      <button class="btnstyle" size="default" id="btn-stopRecord" @click="stopRecord">停止录制</button>
+      <button class="btnstyle" size="default" id="btn-startPlay" @click="playVoice">开始播放</button>
+      <button class="btnstyle" size="default" id="btn-stopPlay" @click="stopVoice">停止播放</button>
     </view>
 
-    <view class="h-safe-area-inset-bottom-20 min-h-20"></view>
+    <view class="scroll-view_bottom-fixed"></view>
   </scroll-view>
 </template>
 <script setup lang="ts">
@@ -375,3 +375,44 @@
 		data
 	})
 </script>
+
+<style>
+  .page-body-time {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .time-big {
+    font-size: 30px;
+    margin: 10px;
+  }
+
+  .btnstyle {
+    margin-left: 30px;
+    margin-right: 30px;
+    margin-top: 10px;
+  }
+
+  .uni-list {
+    border-bottom: 0px;
+    background-color: transparent;
+    margin-left: 30px;
+    margin-right: 30px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  .record-format-group {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .record-format-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-right: 15px;
+  }
+</style>

@@ -1,24 +1,24 @@
 <template>
-  <view class="u-p-15">
-    <canvas id="canvas" class="w-300 u-h-300 m-auto bg-fff" @ready="onCanvasReady"></canvas>
-    <text class="mt-30">FPS: {{fpsString}}</text>
-    <text class="mt-10 mb-20">总球数: {{ballCount}}</text>
-    <view class="flex-dir-row items-center mt-10">
-      <text class="mr-auto">速度</text>
+  <view class="page-body">
+    <canvas id="canvas" class="canvas" @ready="onCanvasReady"></canvas>
+    <text class="fps">FPS: {{fpsString}}</text>
+    <text class="ball-count">总球数: {{ballCount}}</text>
+    <view class="item">
+      <text class="item-label">速度</text>
       <button size="mini" @click="lessClick('speed')">-</button>
-      <text class="w-50 text-center item-value">{{ballSpeed}}</text>
+      <text class="item-value">{{ballSpeed}}</text>
       <button size="mini" @click="plusClick('speed')">+</button>
     </view>
-    <view class="flex-dir-row items-center mt-10">
-      <text class="mr-auto">圈数</text>
+    <view class="item">
+      <text class="item-label">圈数</text>
       <button size="mini" @click="lessClick('layer')">-</button>
-      <text class="w-50 text-center item-value">{{ballLayer}}</text>
+      <text class="item-value">{{ballLayer}}</text>
       <button size="mini" @click="plusClick('layer')">+</button>
     </view>
-    <view class="flex-dir-row items-center mt-10">
-      <text class="mr-auto">每圈球数</text>
+    <view class="item">
+      <text class="item-label">每圈球数</text>
       <button size="mini" @click="lessClick('inLayer')">-</button>
-      <text class="w-50 text-center item-value">{{ballInlayer}}</text>
+      <text class="item-value">{{ballInlayer}}</text>
       <button size="mini" @click="plusClick('inLayer')">+</button>
     </view>
   </view>
@@ -296,7 +296,43 @@
 </script>
 
 <style>
+  .page-body-wrapper {
+    text-align: center;
+  }
+
+  .page-body {
+    padding: 15px;
+  }
+
+  .canvas {
+    width: 300px;
+    height: 300px;
+    margin: auto;
+    background-color: #fff;
+  }
+
+  .fps {
+    margin-top: 30px;
+  }
+
+  .ball-count {
+    margin-top: 10px;
+    margin-bottom: 20px;
+  }
+
+  .item {
+    flex-direction: row;
+    align-items: center;
+    margin-top: 10px;
+  }
+
+  .item-label {
+    margin-right: auto;
+  }
+
   .item-value {
     color: cornflowerblue;
+    width: 50px;
+    text-align: center;
   }
 </style>

@@ -2,7 +2,7 @@
     <page-intro content="本页演示 native-view 原生视图与 UTS 插件组件：调用组件方法、native-button 与容器、native-view 样式；可跳转 native-time-picker 等原生能力。"></page-intro>
     <view style="padding-bottom: 50px;">
       <!-- #ifndef APP-HARMONY -->
-      <text class="fs-14 text-center tips color-bebebe">说明：如果本地无 uts 插件编译环境请提交打包自定义基座查看效果</text>
+      <text class="tips">说明：如果本地无 uts 插件编译环境请提交打包自定义基座查看效果</text>
       <!-- #endif -->
       <text>在 uvue 页面中使用 native-button</text>
       <button type="primary" @tap="testCallMethod">调用组件方法</button>
@@ -19,13 +19,13 @@
       <button type="primary" @click="gotoTimePicker">调用native-time-picker</button>
       <!-- #endif -->
 
-      <text class="fs-15 fw-bold color-text-333">native-view样式（仅支持排版相关样式）</text>
-      <view class="self-center bg-0ff">
-        <native-view class="styled-native-view w-80 h-80"></native-view>
+      <text class="uni-title-text">native-view样式（仅支持排版相关样式）</text>
+      <view class="styled-native-container">
+        <native-view class="styled-native-view"></native-view>
       </view>
 
-      <text class="fs-15 fw-bold color-text-333">test-native-view fixed + v-if 复现</text>
-      <view class="mt-20 flex-dir-column">
+      <text class="uni-title-text">test-native-view fixed + v-if 复现</text>
+      <view class="fixed-case-panel">
         <button id="toggle-fixed-test-native-view" type="primary" @click="toggleFixedTestNativeView">切换 fixed test-native-view</button>
       </view>
 
@@ -153,7 +153,10 @@ defineExpose({
 
 <style>
   .tips {
+    font-size: 14px;
+    color: #BEBEBE;
     margin: 25px auto 25px auto;
+    text-align: center;
   }
 
   .native-button {
@@ -162,8 +165,20 @@ defineExpose({
     margin: 25px auto 25px auto;
   }
 
+  .styled-native-container {
+    background-color: cyan;
+    align-self: center;
+  }
+
   .styled-native-view {
+    width: 80px;
+    height: 80px;
     margin: 20px 30px;
+  }
+
+  .fixed-case-panel {
+    margin-top: 20px;
+    flex-direction: column;
   }
 
   .fixed-test-native-view {

@@ -3,12 +3,14 @@
   <page-intro
     content="属性开关控制顶部滚动容器。刷新与二级面板的打开、关闭分别共用一个容器。"
   ></page-intro>
-  <view class="u-p-15 pb-safe-area-inset-bottom">
-    <button id="open-scroll-view" class="mt-15" @click="openExample('scroll-view')">
+  <view style="padding: 15px; padding-bottom: var(--uni-safe-area-inset-bottom);">
+    <button id="open-scroll-view" style="margin-top: 15px;" @click="openExample('scroll-view')">
       scroll-view
     </button>
-    <button id="open-list-view" class="mt-15" @click="openExample('list-view')">list-view</button>
-    <button id="open-waterflow" class="mt-15" @click="openExample('waterflow')">waterflow</button>
+    <button id="open-list-view" style="margin-top: 15px;" @click="openExample('list-view')">list-view</button>
+    <!-- #ifdef APP -->
+    <button id="open-waterflow" style="margin-top: 15px;" @click="openExample('waterflow')">waterflow</button>
+    <!-- #endif -->
   </view>
 </template>
 

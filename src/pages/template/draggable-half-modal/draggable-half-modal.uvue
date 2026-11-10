@@ -1,16 +1,16 @@
 <template>
-  <view ref="pageRef" class="flex-1">
-    <text class="m-10 color-text-333">半屏弹窗，演示了弹出层内scroll-view滚动到顶时由滚变拖。本效果是通过监听TouchEvent实现，当半屏窗口移动时禁用scroll-view的滚动，避免两者的冲突。</text>
-    <button class="pos-absolute w-full bottom-0 bottomButton" @click="switchHalfScreen(true)">打开弹窗</button>
-    <view ref="halfScreenRef" class="pos-absolute w-full bg-list-fff halfScreen" @touchstart="onHalfTouchStart" @touchmove="onHalfTouchMove"
+  <view ref="pageRef" class="page">
+    <text class="tip">半屏弹窗，演示了弹出层内scroll-view滚动到顶时由滚变拖。本效果是通过监听TouchEvent实现，当半屏窗口移动时禁用scroll-view的滚动，避免两者的冲突。</text>
+    <button class="bottomButton" @click="switchHalfScreen(true)">打开弹窗</button>
+    <view ref="halfScreenRef" class="halfScreen" @touchstart="onHalfTouchStart" @touchmove="onHalfTouchMove"
       @touchend="onHalfTouchEnd" @touchcancel="onHalfTouchEnd">
-      <view class="items-center justify-center h-48 color-text-333 halfTitle">半屏弹窗标题</view>
-      <scroll-view ref="halfScrollRef" class="bg-list-fff flex-1" bounces="true" :direction="scrollDirection"
+      <view class="halfTitle">半屏弹窗标题</view>
+      <scroll-view ref="halfScrollRef" class="halfScroll" bounces="true" :direction="scrollDirection"
        <!-- #ifdef MP-ALIPAY -->
        @touchmove.stop
        <!-- #endif -->
       >
-        <view v-for="(item,index) in list" :key="index" class="h-100 color-text-333">
+        <view v-for="(item,index) in list" :key="index" class="item">
           half screen content-{{item}}
         </view>
       </scroll-view>
@@ -220,24 +220,53 @@ onBackPress((): boolean => {
   }
   /* #endif */
 
+  .page {
+    flex: 1;
+  }
+
+  .tip {
+    margin: 10px;
+    color: var(--text-color, #333333);
+  }
+
   .bottomButton {
+    position: absolute;
+    width: 100%;
+    bottom: 0px;
     /* #ifdef APP */
     padding-bottom: env(safe-area-inset-bottom, 0px);
     /* #endif */
   }
 
   .halfScreen {
+    position: absolute;
     top: 100%;
+    width: 100%;
     height: 70%;
     transition-timing-function: ease-in-out;
     /*ease ease-in ease-out ease-in-out linear step-start step-end*/
     transition-property: top;
     transition-duration: 0ms;
     visibility: hidden;
+    background-color: var(--list-background-color, #ffffff);
     border-radius: 10px 10px 0 0;
   }
 
   .halfTitle {
+    align-items: center;
+    justify-content: center;
+    height: 48px;
     background-color: var(--active-background-color, ghostwhite);
+    color: var(--text-color, #333333);
+  }
+
+  .halfScroll {
+    background-color: var(--list-background-color, #ffffff);
+    flex: 1;
+  }
+
+  .item {
+    height: 100px;
+    color: var(--text-color, #333333);
   }
 </style>

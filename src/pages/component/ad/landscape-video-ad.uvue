@@ -1,10 +1,10 @@
 <template>
-	<view class="pos-relative w-full h-full d-flex flex-dir-column">
+	<view class="container">
 		<!-- 视频组件 -->
-		<video id="myVideo2" :src="src" :controls="true" :autoplay="false" class="w-full h-420rpx d-flex items-center justify-center"  @play="onVideoPlay">
+		<video id="myVideo2" :src="src" :controls="true" :autoplay="false" class="video"  @play="onVideoPlay">
 			<!-- 信息流广告 - 覆盖在视频上方 -->
-			<view v-if="adVisible" class="h-full w-full bg-black-a70 d-flex items-center justify-center">
-				<ad adpid="1597617406" class="w-full h-full d-flex items-center justify-center" @load="loadFun" @error="errorFun" @close="closeAd"></ad>
+			<view v-if="adVisible" class="ad-container">
+				<ad adpid="1597617406" class="ad-class" @load="loadFun" @error="errorFun" @close="closeAd"></ad>
 			</view>
 		</video>
 	</view>
@@ -54,3 +54,39 @@
 		// 页面加载逻辑
 	})
 </script>
+
+<style>
+	.container {
+		position: relative;
+		width: 100%;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		/* align-items: center; */
+	}
+
+	.video {
+		width: 100%;
+		height: 420rpx;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.ad-class{
+		width: 100%;
+		height: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.ad-container {
+		width: 100%;
+		height: 100%;
+		background-color: rgba(0, 0, 0, 0.7);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+</style>

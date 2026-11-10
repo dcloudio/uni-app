@@ -1,8 +1,8 @@
 <template>
-	<view class="flex-dir-column items-center p-24">
-		<text class="fs-20 color-1f2937">uniIdRouter</text>
-		<text class="mt-12 fs-14 text-center color-8f8f94">未登录时进入「需要登录」的页面，会自动跳转到登录页</text>
-		<button class="need-login-btn mt-40" @click="goNeedLogin">进入需要登录的页面</button>
+	<view class="content">
+		<text class="title">uniIdRouter</text>
+		<text class="desc">未登录时进入「需要登录」的页面，会自动跳转到登录页</text>
+		<button class="need-login-btn" @click="goNeedLogin">进入需要登录的页面</button>
 	</view>
 </template>
 
@@ -17,3 +17,27 @@
 		goNeedLogin
 	})
 </script>
+
+<style>
+	.content {
+		flex-direction: column;
+		align-items: center;
+		padding: 24px;
+	}
+
+	.title {
+		font-size: 20px;
+		color: #1f2937;
+	}
+
+	.desc {
+		margin-top: 12px;
+		font-size: 14px;
+		color: #8f8f94;
+		text-align: center;
+	}
+
+	.need-login-btn {
+		margin-top: 40px;
+	}
+</style>

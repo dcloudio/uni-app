@@ -1,6 +1,6 @@
 <template>
     <page-head title="setInnerAudioOption"></page-head>
-    <text class="ml-8">是否允许与其他音频同时播放</text>
+    <text class="labelText">是否允许与其他音频同时播放</text>
     <enum-data-checkbox
       :model-value="data.mixWithOther ? '1' : '0'"
       :items="audioOptionItems"
@@ -9,7 +9,7 @@
       @change="handleRadioChange($event as string, 'mixWithOther')"
     />
 
-    <text class="ml-8">是否允许扬声器播放</text>
+    <text class="labelText">是否允许扬声器播放</text>
     <enum-data-checkbox
       :model-value="data.speakerOn ? '1' : '0'"
       :items="audioOptionItems"
@@ -19,7 +19,7 @@
     />
 
 <!-- #ifdef APP-IOS -->
-    <text class="ml-8">（仅在 iOS 生效）是否遵循静音开关，设置为 false 之后，即使是在静音模式下，也能播放声音</text>
+    <text class="labelText">（仅在 iOS 生效）是否遵循静音开关，设置为 false 之后，即使是在静音模式下，也能播放声音</text>
     <enum-data-checkbox
       :model-value="data.obeyMuteSwitch ? '1' : '0'"
       :items="audioOptionItems"
@@ -29,14 +29,14 @@
     />
 <!-- #endif -->
 
-    <view class="p-8">
-      <button @click="playBackgroundMusic" type="primary" class="m-8">播放背景音频</button>
-      <button @click="pauseBackgroundMusic" type="primary" class="m-8">暂停背景音频</button>
-      <button @click="stopBackgroundMusic" type="primary" class="m-8">停止背景音频</button>
+    <view class="buttonContainer">
+      <button @click="playBackgroundMusic" type="primary" class="radioGroup">播放背景音频</button>
+      <button @click="pauseBackgroundMusic" type="primary" class="radioGroup">暂停背景音频</button>
+      <button @click="stopBackgroundMusic" type="primary" class="radioGroup">停止背景音频</button>
 
-      <button @click="playInnerMusic" type="primary" class="m-8">播放音频</button>
-      <button @click="pauseInnerMusic" type="primary" class="m-8">暂停音频</button>
-      <button @click="stopInnerMusic" type="primary" class="m-8">停止音频</button>
+      <button @click="playInnerMusic" type="primary" class="radioGroup">播放音频</button>
+      <button @click="pauseInnerMusic" type="primary" class="radioGroup">暂停音频</button>
+      <button @click="stopInnerMusic" type="primary" class="radioGroup">停止音频</button>
     </view>
     <view style="padding: 16px 8px;">
       <text>1. uni.setInnerAudioOption需要与uni.createInnerAudioContext搭配才会生效 \n </text>
@@ -151,3 +151,27 @@
 
 
 </script>
+
+<style>
+.labelText {
+  margin-left: 8px
+}
+
+.radioGroup {
+  margin: 8px
+}
+
+.radioItem {
+  margin-left: 16px
+}
+
+.audio-option-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.buttonContainer {
+  padding: 8px 8px;
+}
+</style>

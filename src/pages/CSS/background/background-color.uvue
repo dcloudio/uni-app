@@ -1,64 +1,64 @@
 <template>
-    <view class="flex-grow-1">
-      <text class="fs-13 color-tips-0958d9 bg-tips-e6f4ff border-l-4-solid-tips-91caff p-10-12 radius-4 m-10">说明：左边是正常版本，右边是拍平版本</text>
+    <view class="css-page" style="flex-grow: 1">
+      <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
       <view>
-        <text class="color-text-333">background-color: blue</text>
-        <view class="flex-dir-row justify-around mt-10">
+        <text class="theme-label">background-color: blue</text>
+        <view class="demo-box">
           <view class="common" style="background-color: blue"></view>
           <view class="common" style="background-color: blue" flatten></view>
         </view>
       </view>
 
       <view>
-        <text class="color-text-333">background-color: #0000ff</text>
-        <view class="flex-dir-row justify-around mt-10">
+        <text class="theme-label">background-color: #0000ff</text>
+        <view class="demo-box">
           <view class="common" style="background-color: #0000ff"></view>
           <view class="common" style="background-color: #0000ff" flatten></view>
         </view>
       </view>
 
       <view>
-        <text class="color-text-333">background-color: #00f</text>
-        <view class="flex-dir-row justify-around mt-10">
+        <text class="theme-label">background-color: #00f</text>
+        <view class="demo-box">
           <view class="common" style="background-color: #00f"></view>
           <view class="common" style="background-color: #00f" flatten></view>
         </view>
       </view>
 
       <view>
-        <text class="color-text-333">background-color: #0000ff80</text>
-        <view class="flex-dir-row justify-around mt-10">
+        <text class="theme-label">background-color: #0000ff80</text>
+        <view class="demo-box">
           <view class="common" style="background-color: #0000ff80"></view>
           <view class="common" style="background-color: #0000ff80" flatten></view>
         </view>
       </view>
 
       <view>
-        <text class="color-text-333">background-color: #00f8</text>
-        <view class="flex-dir-row justify-around mt-10">
+        <text class="theme-label">background-color: #00f8</text>
+        <view class="demo-box">
           <view class="common" style="background-color: #00f8"></view>
           <view class="common" style="background-color: #00f8" flatten></view>
         </view>
       </view>
 
       <view>
-        <text class="color-text-333">background-color: rgb(0, 0, 255)</text>
-        <view class="flex-dir-row justify-around mt-10">
+        <text class="theme-label">background-color: rgb(0, 0, 255)</text>
+        <view class="demo-box">
           <view class="common" style="background-color: rgb(0, 0, 255)"></view>
           <view class="common" style="background-color: rgb(0, 0, 255)" flatten></view>
         </view>
       </view>
 
       <view>
-        <text class="color-text-333">background-color: rgba(0, 0, 255, 0.5)</text>
-        <view class="flex-dir-row justify-around mt-10">
+        <text class="theme-label">background-color: rgba(0, 0, 255, 0.5)</text>
+        <view class="demo-box">
           <view class="common" style="background-color: rgba(0, 0, 255, 0.5)"></view>
           <view class="common" style="background-color: rgba(0, 0, 255, 0.5)" flatten></view>
         </view>
       </view>
       <view>
-        <text class="color-text-333">background-color: #0000ff80</text>
-        <view class="flex-dir-row justify-around mt-10">
+        <text class="theme-label">background-color: #0000ff80</text>
+        <view class="demo-box">
           <view class="common" style="background-color: #0000ff80"></view>
           <view class="common" style="background-color: #0000ff80" flatten></view>
         </view>
@@ -67,171 +67,171 @@
         <button type="default" @click="jumpToCheckBoxWithBackgroundColor">应用background-color示例</button>
       </view>
 
-      <view class="mt-15">
-        <text class="fs-15 fw-bold color-text-333">text 组件 background-color </text>
+      <view class="uni-common-mt">
+        <text class="uni-title-text">text 组件 background-color </text>
       </view>
 
       <view>
-        <text class="color-text-333">background-color: blue</text>
-        <view class="flex-dir-row justify-around mt-10">
+        <text class="theme-label">background-color: blue</text>
+        <view class="demo-box">
           <text class="common" style="background-color: blue">文字内容</text>
           <text class="common" style="background-color: blue" flatten>文字内容</text>
         </view>
       </view>
 
       <view>
-        <text class="color-text-333">background-color: rgba(0, 0, 255, 0.5)</text>
-        <view class="flex-dir-row justify-around mt-10">
+        <text class="theme-label">background-color: rgba(0, 0, 255, 0.5)</text>
+        <view class="demo-box">
           <text class="common" style="background-color: rgba(0, 0, 255, 0.5)">文字内容</text>
           <text class="common" style="background-color: rgba(0, 0, 255, 0.5)" flatten>文字内容</text>
         </view>
       </view>
 
       <view>
-        <text class="color-text-333">background-color: #00ff00</text>
-        <view class="flex-dir-row justify-around mt-10">
-          <text class="common color-1a1a1a" style="background-color: #00ff00">文字内容</text>
-          <text class="common color-1a1a1a" style="background-color: #00ff00" flatten>文字内容</text>
+        <text class="theme-label">background-color: #00ff00</text>
+        <view class="demo-box">
+          <text class="common light-background-text" style="background-color: #00ff00">文字内容</text>
+          <text class="common light-background-text" style="background-color: #00ff00" flatten>文字内容</text>
         </view>
       </view>
 
       <view>
-        <text class="color-text-333">background-color: #0000ff80</text>
-        <view class="flex-dir-row justify-around mt-10">
+        <text class="theme-label">background-color: #0000ff80</text>
+        <view class="demo-box">
           <text class="common" style="background-color: #0000ff80">文字内容</text>
           <text class="common" style="background-color: #0000ff80" flatten>文字内容</text>
         </view>
       </view>
-      <view class="mt-15">
-        <text class="fs-15 fw-bold color-text-333">image 组件 background-color </text>
+      <view class="uni-common-mt">
+        <text class="uni-title-text">image 组件 background-color </text>
       </view>
 
       <view>
-        <text class="color-text-333">background-color: blue (无src时显示背景色)</text>
-        <view class="flex-dir-row justify-around mt-10">
+        <text class="theme-label">background-color: blue (无src时显示背景色)</text>
+        <view class="demo-box">
           <image class="common-image" style="background-color: blue"></image>
           <image class="common-image" style="background-color: blue" flatten></image>
         </view>
       </view>
 
       <view>
-        <text class="color-text-333">background-color: rgba(0, 0, 255, 0.5) \n (无src时显示背景色)</text>
-        <view class="flex-dir-row justify-around mt-10">
+        <text class="theme-label">background-color: rgba(0, 0, 255, 0.5) \n (无src时显示背景色)</text>
+        <view class="demo-box">
           <image class="common-image" style="background-color: rgba(0, 0, 255, 0.5)"></image>
           <image class="common-image" style="background-color: rgba(0, 0, 255, 0.5)" flatten></image>
         </view>
       </view>
 
       <view>
-        <text class="color-text-333">background-color: #00ff00 (无src时显示背景色)</text>
-        <view class="flex-dir-row justify-around mt-10">
+        <text class="theme-label">background-color: #00ff00 (无src时显示背景色)</text>
+        <view class="demo-box">
           <image class="common-image" style="background-color: #00ff00"></image>
           <image class="common-image" style="background-color: #00ff00" flatten></image>
         </view>
       </view>
 
       <view>
-        <text class="color-text-333">background-color: #0000ff80 (无src时显示背景色)</text>
-        <view class="flex-dir-row justify-around mt-10">
+        <text class="theme-label">background-color: #0000ff80 (无src时显示背景色)</text>
+        <view class="demo-box">
           <image class="common-image" style="background-color: #0000ff80"></image>
           <image class="common-image" style="background-color: #0000ff80" flatten></image>
         </view>
       </view>
       <view>
-        <text class="color-text-333">background-color: yellow \n (有src时，背景色在图片加载失败或透明区域显示)</text>
-        <view class="flex-dir-row justify-around mt-10">
+        <text class="theme-label">background-color: yellow \n (有src时，背景色在图片加载失败或透明区域显示)</text>
+        <view class="demo-box">
           <image class="common-image" style="background-color: yellow" src="/static/test-image/logo.png"></image>
           <image class="common-image" style="background-color: yellow" src="/static/test-image/logo.png" flatten></image>
         </view>
       </view>
 
-      <text class="fs-15 fw-bold color-text-333 mt-15">scroll-view 组件</text>
-      <view class="flex-dir-row justify-around mt-10">
+      <text class="uni-title-text uni-common-mt">scroll-view 组件</text>
+      <view class="demo-box">
         <scroll-view style="width: 100px; height: 100px; background-color: #0000ff80;">
-          <text class="scroll-view-label fs-12 text-center">#0000ff80</text>
+          <text class="scroll-view-label">#0000ff80</text>
         </scroll-view>
         <scroll-view style="width: 100px; height: 100px; background-color: green;">
-          <text class="scroll-view-label fs-12 text-center">green</text>
+          <text class="scroll-view-label">green</text>
         </scroll-view>
       </view>
 
-      <view class="mt-15">
-        <text class="fs-15 fw-bold color-text-333">setProperty 设置与 getPropertyValue 获取</text>
+      <view class="uni-common-mt">
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <!-- 普通版本 -->
-      <view class="flex-dir-row justify-between mt-10">
+      <view class="test-container">
         <!-- view 组件测试 -->
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">view 组件</text>
-          <text class="fs-12 color-999">设置值: {{data.backgroundColor}}</text>
-          <text class="fs-12 color-999">获取值: {{data.backgroundColorActual}}</text>
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件</text>
+          <text class="uni-info">设置值: {{data.backgroundColor}}</text>
+          <text class="uni-info">获取值: {{data.backgroundColorActual}}</text>
           <view class="test-box">
-            <view ref="viewRef" class="common-view" :style="{ backgroundColor: data.backgroundColor }">
-              <text class="color-1a1a1a" style="font-size: 12px;">view</text>
+            <view ref="viewRef" class="common-view test-view" :style="{ backgroundColor: data.backgroundColor }">
+              <text class="light-background-text" style="font-size: 12px;">view</text>
             </view>
           </view>
         </view>
 
         <!-- text 组件测试 -->
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">text 组件</text>
-          <text class="fs-12 color-999">设置值: {{data.backgroundColor}}</text>
-          <text class="fs-12 color-999">获取值: {{data.backgroundColorActualText}}</text>
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件</text>
+          <text class="uni-info">设置值: {{data.backgroundColor}}</text>
+          <text class="uni-info">获取值: {{data.backgroundColorActualText}}</text>
           <view class="test-box">
-            <text ref="textRef" class="common-text" :style="{ backgroundColor: data.backgroundColor }">text</text>
+            <text ref="textRef" class="common-text test-text" :style="{ backgroundColor: data.backgroundColor }">text</text>
           </view>
         </view>
 
         <!-- image 组件测试 -->
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">image 组件</text>
-          <text class="fs-12 color-999">设置值: {{data.backgroundColor}}</text>
-          <text class="fs-12 color-999">获取值: {{data.backgroundColorActualImage}}</text>
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件</text>
+          <text class="uni-info">设置值: {{data.backgroundColor}}</text>
+          <text class="uni-info">获取值: {{data.backgroundColorActualImage}}</text>
           <view class="test-box">
-            <image ref="imageRef" class="common-image" :style="{ backgroundColor: data.backgroundColor }" src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common-image test-image" :style="{ backgroundColor: data.backgroundColor }" src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
 
       <!-- 拍平版本 -->
-      <view class="flex-dir-row justify-between mt-10">
+      <view class="test-container">
         <!-- view 组件拍平测试 -->
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">view 组件拍平</text>
-          <text class="fs-12 color-999">设置值: {{data.backgroundColor}}</text>
-          <text class="fs-12 color-999">获取值: {{data.backgroundColorActualFlat}}</text>
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件拍平</text>
+          <text class="uni-info">设置值: {{data.backgroundColor}}</text>
+          <text class="uni-info">获取值: {{data.backgroundColorActualFlat}}</text>
           <view class="test-box">
-            <view ref="viewRefFlat" class="common-view" :style="{ backgroundColor: data.backgroundColor }" flatten>
-              <text class="color-1a1a1a" style="font-size: 12px;">view</text>
+            <view ref="viewRefFlat" class="common-view test-view-flatten" :style="{ backgroundColor: data.backgroundColor }" flatten>
+              <text class="light-background-text" style="font-size: 12px;">view</text>
             </view>
           </view>
         </view>
 
         <!-- text 组件拍平测试 -->
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">text 组件拍平</text>
-          <text class="fs-12 color-999">设置值: {{data.backgroundColor}}</text>
-          <text class="fs-12 color-999">获取值: {{data.backgroundColorActualTextFlat}}</text>
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件拍平</text>
+          <text class="uni-info">设置值: {{data.backgroundColor}}</text>
+          <text class="uni-info">获取值: {{data.backgroundColorActualTextFlat}}</text>
           <view class="test-box">
-            <text ref="textRefFlat" class="common-text" :style="{ backgroundColor: data.backgroundColor }" flatten>text</text>
+            <text ref="textRefFlat" class="common-text test-text-flatten" :style="{ backgroundColor: data.backgroundColor }" flatten>text</text>
           </view>
         </view>
 
         <!-- image 组件拍平测试 -->
-        <view class="flex-1 m-0-5">
-          <text class="color-888 fs-12 fw-bold u-mt-5">image 组件拍平</text>
-          <text class="fs-12 color-999">设置值: {{data.backgroundColor}}</text>
-          <text class="fs-12 color-999">获取值: {{data.backgroundColorActualImageFlat}}</text>
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件拍平</text>
+          <text class="uni-info">设置值: {{data.backgroundColor}}</text>
+          <text class="uni-info">获取值: {{data.backgroundColorActualImageFlat}}</text>
           <view class="test-box">
-            <image ref="imageRefFlat" class="common-image" :style="{ backgroundColor: data.backgroundColor }" flatten src="/static/test-image/logo.png"></image>
+            <image ref="imageRefFlat" class="common-image test-image-flatten" :style="{ backgroundColor: data.backgroundColor }" flatten src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
 
       <!-- 测试控制区域 -->
-      <view class="mt-15 mb-15">
-        <text class="fs-13 color-tips-0958d9 bg-tips-e6f4ff border-l-4-solid-tips-91caff p-10-12 radius-4 m-10">第一个枚举值，'' (空字符串) - 空值情况</text>
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data-checkbox :compact="true" :items="backgroundColorEnum" title="background-color 枚举值" @change="radioChangeBackgroundColor"></enum-data-checkbox>
         <input-data :defaultValue="data.backgroundColor" title="background-color 自定义值" type="text" @confirm="inputChangeBackgroundColor"></input-data>
       </view>
@@ -319,6 +319,14 @@
 </script>
 
 <style>
+  .theme-label {
+    color: var(--text-color, #333333);
+  }
+
+  .light-background-text {
+    color: #1a1a1a;
+  }
+
   .scroll-view-label {
     color: #ffffff;
   }
@@ -328,7 +336,23 @@
     height: 50px;
   }
 
+  .demo-box {
+    flex-direction: row;
+    margin-top: 10px;
+    justify-content: space-around;
+  }
+
   /* 多组件横向布局样式 */
+  .test-container {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
+  }
 
   .test-box {
     width: 100%;
@@ -352,5 +376,10 @@
     width: 50px;
     height: 50px;
     background-color: yellow;
+  }
+
+  .scroll-view-label {
+    font-size: 12px;
+    text-align: center;
   }
 </style>

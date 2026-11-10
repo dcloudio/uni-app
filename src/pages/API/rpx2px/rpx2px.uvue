@@ -1,13 +1,13 @@
 <template>
     <page-head :title="data.title"></page-head>
     <view>
-      <view class="flex-dir-row">
-        <text class="w-72 lh-2x">输入:</text>
-        <text class="fw-bold lh-2x">{{data.rpxValue}}rpx</text>
+      <view class="item">
+        <text class="item-k">输入:</text>
+        <text class="item-v">{{data.rpxValue}}rpx</text>
       </view>
-      <view class="flex-dir-row">
-        <text class="w-72 lh-2x">返回:</text>
-        <text class="fw-bold lh-2x">{{data.pxValue}}px</text>
+      <view class="item">
+        <text class="item-k">返回:</text>
+        <text class="item-v">{{data.pxValue}}px</text>
       </view>
     </view>
     <view>
@@ -45,7 +45,21 @@
 </script>
 
 <style>
-page {
-  padding: 15px;
-}
+  page {
+    padding: 15px;
+  }
+  
+  .item {
+    flex-direction: row;
+  }
+
+  .item-k {
+    width: 72px;
+    line-height: 2;
+  }
+
+  .item-v {
+    font-weight: bold;
+    line-height: 2;
+  }
 </style>

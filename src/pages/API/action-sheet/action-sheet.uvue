@@ -13,17 +13,17 @@
     <boolean-data :value="data.cancelColorCustom" title="自定义 cancelColor" @change="cancelColorChange"></boolean-data>
     <boolean-data :value="data.backgroundColorCustom" title="自定义 backgroundColor" @change="backgroundColorChange"></boolean-data>
     <!-- #endif -->
-    <view class="p-0-15">
-      <view class="p-5-0">
+    <view class="uni-padding-wrap">
+      <view class="uni-btn-v">
         <button <!-- #ifndef MP-ALIPAY -->
-          class="p-5-0"
+          class="uni-btn-v"
           <!-- #endif -->
           type="default" @tap="showActionSheet" id="btn-action-sheet-show">弹出actionSheet</button>
         <button <!-- #ifndef MP-ALIPAY -->
-          class="p-5-0 mt-10"
+          class="uni-btn-v uni-btn"
           <!-- #endif -->
           <!-- #ifdef MP-ALIPAY -->
-          class="mt-10"
+          class="uni-btn"
           <!-- #endif -->
           type="default" @tap="showActionSheetAndShowAgainInCallback" id="btn-action-sheet-show">showActionSheet 并在回调中再次 showActionSheet</button>
       </view>

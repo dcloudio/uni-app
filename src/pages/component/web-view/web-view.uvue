@@ -1,5 +1,5 @@
 <template>
-  <web-view id="web-view" class="flex-1" :style="webViewStyle" :src="data.src"
+  <web-view id="web-view" class="uni-flex-item" :style="webViewStyle" :src="data.src"
     :webview-styles="webViewStyles"
     :horizontalScrollBarAccess="data.horizontalScrollBarAccess" :verticalScrollBarAccess="data.verticalScrollBarAccess"
     :bounces="data.bounces" :disable-user-select-menu="data.disableUserSelectMenu" @message="message" @error="error"
@@ -7,38 +7,38 @@
     @touchstart="touchstart" @tap="tap">
   </web-view>
   <!-- #ifdef APP -->
-  <scroll-view class="p-0-15 mt-15 h-50pct">
-    <view class="p-5-0">
-      <input class="h-25 p-8-13 fs-14 flex-1 box-content-box bg-list-fff" confirmType="go" placeholder="输入网址跳转" @confirm="confirm" :maxlength="-1" />
+  <scroll-view class="uni-padding-wrap uni-common-mt" style="height: 50%;">
+    <view class="uni-btn-v">
+      <input class="uni-input" confirmType="go" placeholder="输入网址跳转" @confirm="confirm" :maxlength="-1" />
     </view>
-    <view class="flex-dir-row p-5-0">
-      <button class="flex-1" type="primary" :disabled="!data.canGoBack" @click="back">后退</button>
-      <button class="ml-5 flex-1" type="primary" :disabled="!data.canGoForward"
+    <view class="uni-row uni-btn-v">
+      <button class="uni-flex-item" type="primary" :disabled="!data.canGoBack" @click="back">后退</button>
+      <button class="margin-left-5 uni-flex-item" type="primary" :disabled="!data.canGoForward"
         @click="forward">前进</button>
     </view>
-    <view class="flex-dir-row p-5-0">
-      <button class="flex-1" type="primary" @click="reload">重新加载</button>
-      <button class="ml-5 flex-1" type="primary" @click="stop">停止加载</button>
+    <view class="uni-row uni-btn-v">
+      <button class="uni-flex-item" type="primary" @click="reload">重新加载</button>
+      <button class="margin-left-5 uni-flex-item" type="primary" @click="stop">停止加载</button>
     </view>
-    <view class="flex-dir-row p-5-0">
-      <button class="flex-1" type="primary" @click="nativeToWeb">原生和Web通信</button>
+    <view class="uni-row uni-btn-v">
+      <button class="uni-flex-item" type="primary" @click="nativeToWeb">原生和Web通信</button>
       <!-- #ifdef APP-ANDROID || APP-IOS || APP-HARMONY -->
-      <button class="ml-5 flex-1" type="primary" @click="getContentHeight">获取内容高度</button>
+      <button class="margin-left-5 uni-flex-item" type="primary" @click="getContentHeight">获取内容高度</button>
       <!-- #endif -->
     </view>
-    <view class="flex-dir-row p-5-0">
-      <button class="flex-1" type="primary" @click="loadData">加载页面内容</button>
+    <view class="uni-row uni-btn-v">
+      <button class="uni-flex-item" type="primary" @click="loadData">加载页面内容</button>
       <!-- 用于演示大尺寸平板中能用窄屏展示响应式内容 -->
-      <button id="half-screen-toggle" class="ml-5 flex-1" type="primary"
+      <button id="half-screen-toggle" class="margin-left-5 uni-flex-item" type="primary"
         @click="setHalfScreen">宽窄屏切换</button>
     </view>
-    <view class="p-5-0">
+    <view class="uni-btn-v">
       <navigator url="/pages/component/web-view/web-view-scroll">
         <button type="primary">scroll-view嵌套web-view</button>
       </navigator>
     </view>
     <!-- #ifdef APP-HARMONY || APP-ANDROID || APP-IOS -->
-    <view class="p-5-0">
+    <view class="uni-btn-v">
       <navigator url="/pages/component/web-view/web-view-associative-container">
         <button type="primary">associative-container嵌套滚动</button>
       </navigator>
@@ -54,8 +54,8 @@
     <!-- #endif -->
     <!-- #endif -->
     <!-- #ifdef APP-IOS -->
-    <view class="flex-dir-row p-5-0" v-if="isProd() === false">
-      <view class="flex-dir-row flex-1 items-center">
+    <view class="uni-row uni-btn-v" v-if="isProd() === false">
+      <view class="uni-row uni-flex-item align-items-center">
         <text>前进、后退功能在Windows端需要打自定义基座，MAC端需要配置Xcode环境后进行真机运行或者打自定义基座</text>
       </view>
     </view>
@@ -63,7 +63,7 @@
   </scroll-view>
   <!-- #endif -->
 
-  <view class="h-safe-area-inset-bottom-20 min-h-20"></view>
+  <view class="scroll-view_bottom-fixed"></view>
 </template>
 
 <script setup lang="ts">
@@ -368,3 +368,13 @@
     // #endif
   })
 </script>
+
+<style>
+  .margin-left-5 {
+    margin-left: 5px;
+  }
+
+  .align-items-center {
+    align-items: center;
+  }
+</style>

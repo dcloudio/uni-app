@@ -1,37 +1,37 @@
 <template>
-  <view :class="{ 'flex-dir-row': isWideScreen }" class="flex-1 p-0">
+  <view :class="['uni-container', { 'flex-row': isWideScreen }]" style="flex: 1;padding: 0px;">
     <!-- 列表区域 ：宽屏时在左侧显示，窄屏时只显示列表 -->
-    <list-view class="w-full bg-list-fff flex-1" :class="{'list-narrow': isWideScreen}" refresher-enabled
+    <list-view class="list-container" :class="{'list-narrow': isWideScreen}" refresher-enabled
       @refresherrefresh="onRefresherrefresh" :refresher-triggered="refresherTriggered" enable-back-to-top>
-      <list-item class="h-180 overflow-hidden pos-relative bg-page-f8f8f8" @click="bannerClick(banner)">
-        <image class="w-full" :src="banner.cover"></image>
-        <text class="banner-title max-h-42 overflow-hidden pos-absolute left-15 bottom-15 w-90pct fs-16 fw-400 lh-21 color-white">{{ banner.title }}</text>
+      <list-item class="banner" @click="bannerClick(banner)">
+        <image class="banner-img" :src="banner.cover"></image>
+        <text class="banner-title">{{ banner.title }}</text>
       </list-item>
       <sticky-section>
         <sticky-header>
-          <view class="w-full h-44 bg-list-fff flex-dir-row justify-center items-center">
-            <text v-for="(name,index) in th_item" :key="index" @click="clickTH(index)" class="u-mr-20 color-text-333">
+          <view class="th-item">
+            <text v-for="(name,index) in th_item" :key="index" @click="clickTH(index)" class="th-item-text">
               {{name}}
             </text>
           </view>
         </sticky-header>
         <list-item v-for="(value, index) in listData" :key="index" type=2>
-          <view class="uni-list-cell pos-relative d-flex flex-dir-row justify-between items-center" hover-class="bg-active-f8f8f8" @click="goDetail(value, index)">
-            <view class="p-11-15 box-border-box d-flex w-full flex-dir-row">
-              <image v-if="isWideScreen" class="w-90 h-70" :src="value.cover"></image>
+          <view class="uni-list-cell" hover-class="uni-list-cell-hover" @click="goDetail(value, index)">
+            <view class="uni-media-list">
+              <image v-if="isWideScreen" class="uni-media-list-logo" :src="value.cover"></image>
               <!-- #ifdef VUE3-VAPOR -->
-              <image v-else class="w-90 h-70" :src="value.cover"></image>
+              <image v-else class="uni-media-list-logo" :src="value.cover"></image>
               <!-- #endif -->
               <!-- #ifndef VUE3-VAPOR -->
               <share-element v-else :share-key="'image_'+index">
-                <image class="w-90 h-70" :src="value.cover"></image>
+                <image class="uni-media-list-logo" :src="value.cover"></image>
               </share-element>
               <!-- #endif -->
-              <view class="flex-1 pl-7 justify-around">
-                <text class="uni-media-list-text-top fs-14 overflow-hidden color-text-333">{{ value.title }}</text>
-                <view class="d-flex flex-dir-row justify-between">
-                  <text class="color-9d9d9f fs-13">{{ value.author_name }}</text>
-                  <text class="color-9d9d9f fs-13">{{ value.published_at }}</text>
+              <view class="uni-media-list-body">
+                <text class="uni-media-list-text-top">{{ value.title }}</text>
+                <view class="uni-media-list-text-bottom">
+                  <text class="uni-media-list-text">{{ value.author_name }}</text>
+                  <text class="uni-media-list-text">{{ value.published_at }}</text>
                 </view>
               </view>
             </view>
@@ -41,7 +41,7 @@
     </list-view>
 
     <!-- 详情区域：宽屏时，右侧显示-->
-    <view v-if="isWideScreen" class="flex-1 min-w-0 p-20 bg-page-f8f8f8 detail-container">
+    <view v-if="isWideScreen" class="detail-container">
       <detail-content
         v-if="post_id != '' && title != '' && cover != ''"
         :key="post_id"
@@ -324,6 +324,16 @@
 </script>
 
 <style>
+  .flex-row {
+    flex-direction: row;
+  }
+
+  .list-container {
+    width: 100%;
+    background-color: var(--list-background-color,#ffffff);
+    flex: 1;
+  }
+
   .list-narrow {
     /* #ifdef WEB */
     width: 360px;
@@ -332,18 +342,91 @@
     width: 100px;
     /* #endif */
   }
+  .th-item{
+    width: 100%;
+    height:44px;
+    background-color: var(--list-background-color,#ffffff);
+    flex-direction: row;
+    justify-content:center;
+    align-items:center;
+  }
+  .th-item-text{
+    margin-right: 20px;
+    color: var(--text-color,#333333);
+  }
 
   .detail-container {
+    flex: 1;
+    min-width: 0;
     /* 防止溢出 */
+    padding: 20px;
+    background-color: var(--background-color,#f8f8f8);
     /* #ifdef WEB */
     overflow: auto;
     /* #endif */
   }
 
+  .banner {
+    height: 180px;
+    overflow: hidden;
+    position: relative;
+    background-color: var(--background-color,#f8f8f8);
+  }
+
+  .banner-img {
+    width: 100%;
+  }
+
+  .banner-title {
+    max-height: 42px;
+    overflow: hidden;
+    position: absolute;
+    left: 15px;
+    bottom: 15px;
+    width: 90%;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 21px;
+    color: white;
+  }
+
+  .uni-media-list {
+    padding: 11px 15px;
+    box-sizing: border-box;
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+  }
+
+  .uni-media-list-logo {
+    width: 90px;
+    height: 70px;
+  }
+
+  .uni-media-list-body {
+    flex: 1;
+    padding-left: 7px;
+    justify-content: space-around;
+  }
+
   .uni-media-list-text-top {
     /* height: 37px; */
+    font-size: 14px;
     /* #ifndef VUE3-VAPOR */
     lines: 2;
     /* #endif */
+    overflow: hidden;
+    color: var(--text-color,#333333);
+  }
+
+  .uni-media-list-text-bottom {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .uni-media-list-text {
+    color: #9D9D9F;
+    font-size: 13px;
   }
 </style>

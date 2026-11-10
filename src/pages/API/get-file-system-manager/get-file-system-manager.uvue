@@ -1,53 +1,53 @@
 <template>
   <!-- #ifdef APP -->
   <page-intro content="本页演示 uni.getFileSystemManager() 文件管理器：上方为读写删除完整流程的快速体验，下方按目录操作、文件操作、文件描述符、存储与压缩分组提供每个方法的独立演示页。"></page-intro>
-  <scroll-view class="flex-1">
+  <scroll-view class="page-scroll" style="flex: 1;">
   <!-- #endif -->
-    <view class="p-8 flex-dir-column">
-      <text class="fw-bold fs-15 color-333 section-title">快速体验：mkdir → writeFile → readFile → unlink</text>
-      <view class="flex-dir-row flex-wrap-wrap m-4-0">
+    <view class="content-group">
+      <text class="section-title">快速体验：mkdir → writeFile → readFile → unlink</text>
+      <view class="action-group">
         <button size="mini" type="primary" @tap="runQuickDemo" id="btn-quick-demo">一键执行完整流程</button>
       </view>
-      <view class="p-8 border-1-solid-e0e0e0 radius-4 flex-dir-column m-4-0">
-        <text class="fw-bold fs-14 m-2-0 color-333">执行结果</text>
-        <text class="fs-13 m-2-0 color-666">{{ data.quickRet == '' ? '等待执行' : data.quickRet }}</text>
+      <view class="result-group">
+        <text class="result-title">执行结果</text>
+        <text class="result-line">{{ data.quickRet == '' ? '等待执行' : data.quickRet }}</text>
       </view>
 
-      <text class="fw-bold fs-15 color-333 section-title">目录操作</text>
-      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/access">access | 判断文件/目录是否存在</navigator>
-      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/stat">stat | 获取文件 Stats 对象</navigator>
-      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/mkdir">mkdir | 创建目录</navigator>
-      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/rmdir">rmdir | 删除目录</navigator>
-      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/readdir">readdir | 读取目录内容</navigator>
+      <text class="section-title">目录操作</text>
+      <navigator class="nav-item" url="/pages/API/get-file-system-manager/access">access | 判断文件/目录是否存在</navigator>
+      <navigator class="nav-item" url="/pages/API/get-file-system-manager/stat">stat | 获取文件 Stats 对象</navigator>
+      <navigator class="nav-item" url="/pages/API/get-file-system-manager/mkdir">mkdir | 创建目录</navigator>
+      <navigator class="nav-item" url="/pages/API/get-file-system-manager/rmdir">rmdir | 删除目录</navigator>
+      <navigator class="nav-item" url="/pages/API/get-file-system-manager/readdir">readdir | 读取目录内容</navigator>
 
-      <text class="fw-bold fs-15 color-333 section-title">文件操作</text>
-      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/read-file">readFile | 读取文件</navigator>
-      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/write-file">writeFile | 写入文件</navigator>
-      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/append-file">appendFile | 追加文件</navigator>
-      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/copy-file">copyFile | 复制文件</navigator>
-      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/rename">rename | 重命名文件</navigator>
-      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/unlink">unlink | 删除文件</navigator>
-      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/truncate">truncate | 截断文件</navigator>
+      <text class="section-title">文件操作</text>
+      <navigator class="nav-item" url="/pages/API/get-file-system-manager/read-file">readFile | 读取文件</navigator>
+      <navigator class="nav-item" url="/pages/API/get-file-system-manager/write-file">writeFile | 写入文件</navigator>
+      <navigator class="nav-item" url="/pages/API/get-file-system-manager/append-file">appendFile | 追加文件</navigator>
+      <navigator class="nav-item" url="/pages/API/get-file-system-manager/copy-file">copyFile | 复制文件</navigator>
+      <navigator class="nav-item" url="/pages/API/get-file-system-manager/rename">rename | 重命名文件</navigator>
+      <navigator class="nav-item" url="/pages/API/get-file-system-manager/unlink">unlink | 删除文件</navigator>
+      <navigator class="nav-item" url="/pages/API/get-file-system-manager/truncate">truncate | 截断文件</navigator>
 
-      <text class="fw-bold fs-15 color-333 section-title">文件描述符</text>
-      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/open">open | 打开文件获取描述符</navigator>
-      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/close">close | 关闭文件描述符</navigator>
-      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/read">read | 通过描述符读取</navigator>
-      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/write">write | 通过描述符写入</navigator>
-      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/fstat">fstat | 描述符获取状态</navigator>
-      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/ftruncate">ftruncate | 描述符截断文件</navigator>
+      <text class="section-title">文件描述符</text>
+      <navigator class="nav-item" url="/pages/API/get-file-system-manager/open">open | 打开文件获取描述符</navigator>
+      <navigator class="nav-item" url="/pages/API/get-file-system-manager/close">close | 关闭文件描述符</navigator>
+      <navigator class="nav-item" url="/pages/API/get-file-system-manager/read">read | 通过描述符读取</navigator>
+      <navigator class="nav-item" url="/pages/API/get-file-system-manager/write">write | 通过描述符写入</navigator>
+      <navigator class="nav-item" url="/pages/API/get-file-system-manager/fstat">fstat | 描述符获取状态</navigator>
+      <navigator class="nav-item" url="/pages/API/get-file-system-manager/ftruncate">ftruncate | 描述符截断文件</navigator>
 
-      <text class="fw-bold fs-15 color-333 section-title">存储与压缩</text>
-      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/save-file">saveFile | 保存临时文件</navigator>
-      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/unzip">unzip | 解压文件</navigator>
-      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/read-compressed-file">readCompressedFile | 读取压缩文件</navigator>
-      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/read-zip-entry">readZipEntry | 读取压缩包内文件</navigator>
+      <text class="section-title">存储与压缩</text>
+      <navigator class="nav-item" url="/pages/API/get-file-system-manager/save-file">saveFile | 保存临时文件</navigator>
+      <navigator class="nav-item" url="/pages/API/get-file-system-manager/unzip">unzip | 解压文件</navigator>
+      <navigator class="nav-item" url="/pages/API/get-file-system-manager/read-compressed-file">readCompressedFile | 读取压缩文件</navigator>
+      <navigator class="nav-item" url="/pages/API/get-file-system-manager/read-zip-entry">readZipEntry | 读取压缩包内文件</navigator>
 
-      <text class="fw-bold fs-15 color-333 section-title">其他</text>
-      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/getFileInfo">getFileInfo | 获取文件摘要（md5/sha1/sha256）</navigator>
-      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/filemanage">沙盒文件管理器</navigator>
-      <navigator class="m-4-0 p-10-12 border-1-solid-e0e0e0 radius-4 fs-14 color-007aff bg-f8f8f8" url="/pages/API/get-file-system-manager/testStatic">文件管理类直接操作 Static</navigator>
-      <view class="h-12"></view>
+      <text class="section-title">其他</text>
+      <navigator class="nav-item" url="/pages/API/get-file-system-manager/getFileInfo">getFileInfo | 获取文件摘要（md5/sha1/sha256）</navigator>
+      <navigator class="nav-item" url="/pages/API/get-file-system-manager/filemanage">沙盒文件管理器</navigator>
+      <navigator class="nav-item" url="/pages/API/get-file-system-manager/testStatic">文件管理类直接操作 Static</navigator>
+      <view class="nav-footer-space"></view>
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
@@ -98,7 +98,52 @@
 </script>
 
 <style>
+  .page-scroll {
+    flex: 1;
+  }
+  .content-group {
+    padding: 8px;
+    flex-direction: column;
+  }
   .section-title {
+    font-weight: bold;
+    font-size: 15px;
     margin: 12px 4px 4px 4px;
+    color: #333333;
+  }
+  .action-group {
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin: 4px 0;
+  }
+  .result-group {
+    margin: 4px 0;
+    padding: 8px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    flex-direction: column;
+  }
+  .result-title {
+    font-weight: bold;
+    font-size: 14px;
+    margin: 2px 0;
+    color: #333333;
+  }
+  .result-line {
+    font-size: 13px;
+    margin: 2px 0;
+    color: #666666;
+  }
+  .nav-item {
+    margin: 4px 0;
+    padding: 10px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    background-color: #f8f8f8;
+    font-size: 14px;
+    color: #007aff;
+  }
+  .nav-footer-space {
+    height: 12px;
   }
 </style>

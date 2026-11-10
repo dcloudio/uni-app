@@ -2,7 +2,7 @@
 	<view style="flex: 1;">
     <view class="item">
       <text>check-box设置background-color</text>
-      <view class="mt-10">
+      <view class="case">
         <view class="warp">
           <view><checkbox /><text>select</text></view>
         </view>
@@ -14,6 +14,9 @@
 <style>
   .item {
     margin: 15px;
+  }
+  .case {
+    margin-top: 10px;
   }
   .warp {
     padding: 16px;

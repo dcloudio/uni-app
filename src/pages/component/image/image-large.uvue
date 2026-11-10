@@ -1,13 +1,13 @@
 <template>
-  <scroll-view class="flex-1">
+  <scroll-view style="flex: 1;">
     <page-head :title="title"></page-head>
-    <view class="p-0-15 mt-15">
-      <view class="p-10-0 color-text-333">
-        <text class="fs-15 fw-bold color-text-333">大图示例</text>
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-title">
+        <text class="uni-title-text">大图示例</text>
       </view>
-      <view class="mt-15" v-for="_ in 10">
-        <text class="color-888 fs-12 fw-bold u-mt-5">width={{width}}px height={{height}}px memory={{memory}}MB</text>
-        <image class="w-full" mode="widthFix" :src="src" @load="load"></image>
+      <view class="uni-common-mt" v-for="_ in 10">
+        <text class="uni-subtitle-text">width={{width}}px height={{height}}px memory={{memory}}MB</text>
+        <image class="image" mode="widthFix" :src="src" @load="load"></image>
       </view>
     </view>
   </scroll-view>
@@ -30,3 +30,9 @@ function load(event : ImageLoadEvent) {
   memory.value = Math.round(width.value * height.value * 4 / 1024 / 1024 * 100) / 100
 }
 </script>
+
+<style>
+  .image {
+    width: 100%;
+  }
+</style>

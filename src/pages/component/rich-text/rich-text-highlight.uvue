@@ -4,32 +4,32 @@
     <!-- #ifdef APP-ANDROID || (APP-HARMONY && VUE3-VAPOR) || (APP-IOS && VUE3-VAPOR) -->
     <enum-data-checkbox title="设置mode（app平台 蒸汽模式支持）" :items="modeItemTypes" @change="onModeChange"></enum-data-checkbox>
     <!-- #endif -->
-    <view class="p-0-15 mt-15">
-      <view class="p-12 bg-list-fff radius-8">
-        <view class="flex-dir-row items-center justify-between mb-8">
-          <text class="fs-14 color-text-333">当前模式：{{ data.mode }}</text>
-          <text class="fs-14 color-text-333">当前用例：{{ data.caseName }}</text>
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="toolbar">
+        <view class="toolbar-row">
+          <text class="toolbar-label">当前模式：{{ data.mode }}</text>
+          <text class="toolbar-label">当前用例：{{ data.caseName }}</text>
         </view>
-        <view class="flex-dir-row flex-wrap-wrap mb-8">
-          <text class="mr-12 mb-4 fs-13 color-text-555 lh-20">高亮背景色：{{ highlightBackgroundColor }}</text>
-          <text class="mr-12 mb-4 fs-13 color-text-555 lh-20">操作手柄色：{{ highlightHandleColor }}</text>
+        <view class="color-reference">
+          <text class="reference-text">高亮背景色：{{ highlightBackgroundColor }}</text>
+          <text class="reference-text">操作手柄色：{{ highlightHandleColor }}</text>
         </view>
-        <view class="flex-dir-row flex-wrap-wrap mb-8">
-          <button v-for="(item, index) in highlightCases" :key="item.name" :class="data.currentCaseIndex == index ? 'mr-6 mb-8 fs-12 case-button color-fff case-button-active' : 'mr-6 mb-8 fs-12 case-button'" @click="setCase(index)">{{ item.name }}</button>
+        <view class="case-grid">
+          <button v-for="(item, index) in highlightCases" :key="item.name" :class="data.currentCaseIndex == index ? 'case-button case-button-active' : 'case-button'" @click="setCase(index)">{{ item.name }}</button>
         </view>
-        <text class="fs-13 color-active-666 lh-20">操作方式：切换用例后，长按下方 rich-text 文本并拖动选择范围，观察选区背景和左右操作手柄在同色、近色、交叉配色下是否仍然清晰可见。</text>
+        <text class="tip-text">操作方式：切换用例后，长按下方 rich-text 文本并拖动选择范围，观察选区背景和左右操作手柄在同色、近色、交叉配色下是否仍然清晰可见。</text>
       </view>
 
-      <view class="mt-12 u-p-16 bg-fff border-width-1 border-style-solid radius-8 content-card">
-        <rich-text id="highlight-rich-text" class="w-full rich-text-content" :nodes="htmlString" :selectable="true" :mode="data.mode"></rich-text>
+      <view class="content-card">
+        <rich-text id="highlight-rich-text" class="rich-text-content" :nodes="htmlString" :selectable="true" :mode="data.mode"></rich-text>
       </view>
 
-      <view class="mt-12 p-12 bg-list-fff radius-8">
-        <text class="fs-13 color-text-555 lh-22">观察点：</text>
-        <text class="fs-13 color-text-555 lh-22">1. 高亮背景色固定为 #33B5E566，操作手柄色固定为 #4285F4FF。</text>
-        <text class="fs-13 color-text-555 lh-22">2. 每个用例只改变目标文本的 color 和 background-color。</text>
-        <text class="fs-13 color-text-555 lh-22">3. 重点检查高亮背景、操作手柄、文字颜色、文字背景色两两相同或交叉时是否互相遮挡。</text>
-        <text class="fs-13 color-text-555 lh-22">4. 切换 web/native mode 后重复手动划选，比较不同渲染模式的覆盖效果。</text>
+      <view class="legend">
+        <text class="legend-text">观察点：</text>
+        <text class="legend-text">1. 高亮背景色固定为 #33B5E566，操作手柄色固定为 #4285F4FF。</text>
+        <text class="legend-text">2. 每个用例只改变目标文本的 color 和 background-color。</text>
+        <text class="legend-text">3. 重点检查高亮背景、操作手柄、文字颜色、文字背景色两两相同或交叉时是否互相遮挡。</text>
+        <text class="legend-text">4. 切换 web/native mode 后重复手动划选，比较不同渲染模式的覆盖效果。</text>
       </view>
     </view>
 </template>
@@ -187,20 +187,88 @@
 </script>
 
 <style>
+  .toolbar {
+    padding: 12px;
+    background-color: var(--list-background-color, #ffffff);
+    border-radius: 8px;
+  }
+
+  .toolbar-row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .toolbar-label {
+    font-size: 14px;
+    color: var(--text-color, #333333);
+  }
+
+  .color-reference {
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+
+  .reference-text {
+    margin-right: 12px;
+    margin-bottom: 4px;
+    font-size: 13px;
+    color: var(--text-color, #555555);
+    line-height: 20px;
+  }
+
+  .case-grid {
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+
   .case-button {
     width: 31%;
+    margin-right: 6px;
+    margin-bottom: 8px;
+    font-size: 12px;
   }
 
   .case-button-active {
     background-color: #4285F4;
+    color: #ffffff;
+  }
+
+  .tip-text {
+    font-size: 13px;
+    color: var(--active-color, #666666);
+    line-height: 20px;
   }
 
   .content-card {
+    margin-top: 12px;
+    padding: 16px;
+    background-color: #ffffff;
+    border-width: 1px;
+    border-style: solid;
     border-color: #d8d8d8;
+    border-radius: 8px;
   }
 
   .rich-text-content {
+    width: 100%;
     min-height: 240px;
     color: #202124;
+  }
+
+  .legend {
+    margin-top: 12px;
+    padding: 12px;
+    background-color: var(--list-background-color, #ffffff);
+    border-radius: 8px;
+  }
+
+  .legend-text {
+    font-size: 13px;
+    color: var(--text-color, #555555);
+    line-height: 22px;
   }
 </style>

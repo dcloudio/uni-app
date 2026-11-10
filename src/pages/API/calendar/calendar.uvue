@@ -1,119 +1,119 @@
 <template>
-		<text class="fs-24 fw-bold border-b-1-solid-ccc m-8-0">日历 API</text>
-		<text class="color-500 fs-14 font-italic">本页将 `uni.addPhoneCalendar` 和 `uni.addPhoneRepeatCalendar` 合并为一个可直接提交的表单，覆盖 API 的全部可填参数。在有权限的情况下可直接写入系统日历，在无权限的情况下会打开系统的日历新建页面</text>
-		<text class="m-5-0">开始时间默认是当前时间的下一个整点，结束时间默认顺延一小时；保留预填数据即可直接添加日历。</text>
+	<text class="uni-h2">日历 API</text>
+	<text class="notice">本页将 `uni.addPhoneCalendar` 和 `uni.addPhoneRepeatCalendar` 合并为一个可直接提交的表单，覆盖 API 的全部可填参数。在有权限的情况下可直接写入系统日历，在无权限的情况下会打开系统的日历新建页面</text>
+	<text class="margin-v">开始时间默认是当前时间的下一个整点，结束时间默认顺延一小时；保留预填数据即可直接添加日历。</text>
 
-		<text class="fs-20 fw-bold m-8-0">当前结果</text>
-		<view class="m-5-0 u-p-10 border-1-solid-ccc d-flex flex-dir-column">
-			<text class="fs-14 m-4-0">最近动作：{{ lastAction }}</text>
-			<text class="fs-14 m-4-0">执行状态：{{ lastStatus }}</text>
-			<text class="fs-14 m-4-0">返回信息：{{ lastPayload }}</text>
+	<text class="uni-h3">当前结果</text>
+	<view class="log-list">
+		<text class="log-item">最近动作：{{ lastAction }}</text>
+		<text class="log-item">执行状态：{{ lastStatus }}</text>
+		<text class="log-item">返回信息：{{ lastPayload }}</text>
+	</view>
+
+	<text class="uni-h3">添加日历</text>
+	<text class="margin-v">`repeatInterval` 选为“不重复”时调用单次事件 API，其余选项调用重复事件 API。</text>
+
+		<view class="field-group">
+			<text class="field-label">标题 title</text>
+			<input class="field-input" v-model="title" placeholder="请输入日历标题" />
 		</view>
 
-		<text class="fs-20 fw-bold m-8-0">添加日历</text>
-		<text class="m-5-0">`repeatInterval` 选为“不重复”时调用单次事件 API，其余选项调用重复事件 API。</text>
-
-			<view class="m-8-0 d-flex flex-dir-column">
-				<text class="fs-14">标题 title</text>
-				<input class="h-42 u-mt-5 pl-12 pr-12 border-1-solid-ccc" v-model="title" placeholder="请输入日历标题" />
-			</view>
-
-			<view class="m-8-0 d-flex flex-dir-column">
-				<text class="fs-14">开始时间 startTime</text>
-				<view class="u-mt-5 d-flex flex-dir-row">
-					<picker class="flex-1" mode="date" :value="startDate" :start="dateRangeStart" :end="dateRangeEnd" @change="handleStartDateChange">
-						<view class="pl-12 pr-12 border-1-solid-ccc d-flex flex-dir-row items-center picker-box">
-							<text class="fs-14">{{ startDate }}</text>
-						</view>
-					</picker>
-					<picker v-if="!allDay" class="flex-1 u-ml-10" mode="time" :value="startClock" @change="handleStartClockChange">
-						<view class="pl-12 pr-12 border-1-solid-ccc d-flex flex-dir-row items-center picker-box">
-							<text class="fs-14">{{ startClock }}</text>
-						</view>
-					</picker>
-				</view>
-			</view>
-
-			<view class="m-8-0 d-flex flex-dir-column">
-				<boolean-data :value="allDay" title="全天 allDay" @change="handleAllDayChange"></boolean-data>
-			</view>
-
-			<view class="m-8-0 d-flex flex-dir-column">
-				<text class="fs-14">备注 notes</text>
-				<textarea class="u-mt-5 p-12 border-1-solid-ccc field-textarea" v-model="notesText" placeholder="请输入事件备注" :maxlength="-1" />
-			</view>
-
-			<view class="m-8-0 d-flex flex-dir-column">
-				<text class="fs-14">地点 location</text>
-				<input class="h-42 u-mt-5 pl-12 pr-12 border-1-solid-ccc" v-model="location" placeholder="请输入地点" />
-			</view>
-
-			<view class="m-8-0 d-flex flex-dir-column">
-				<text class="fs-14">结束时间 endTime</text>
-				<view class="u-mt-5 d-flex flex-dir-row">
-					<picker class="flex-1" mode="date" :value="endDate" :start="dateRangeStart" :end="dateRangeEnd" @change="handleEndDateChange">
-						<view class="pl-12 pr-12 border-1-solid-ccc d-flex flex-dir-row items-center picker-box">
-							<text class="fs-14">{{ endDate }}</text>
-						</view>
-					</picker>
-					<picker v-if="!allDay" class="flex-1 u-ml-10" mode="time" :value="endClock" @change="handleEndClockChange">
-						<view class="pl-12 pr-12 border-1-solid-ccc d-flex flex-dir-row items-center picker-box">
-							<text class="fs-14">{{ endClock }}</text>
-						</view>
-					</picker>
-				</view>
-			</view>
-
-			<view class="m-8-0 d-flex flex-dir-column">
-				<boolean-data :value="alarm" title="提醒 alarm" @change="handleAlarmChange"></boolean-data>
-			</view>
-
-			<view class="m-8-0 d-flex flex-dir-column">
-				<text class="fs-14">提醒提前量 alarmOffset（秒）</text>
-				<input class="h-42 u-mt-5 pl-12 pr-12 border-1-solid-ccc" v-model="alarmOffsetSeconds" type="number" placeholder="例如 900" :disabled="!alarm" />
-			</view>
-
-			<view class="m-8-0 d-flex flex-dir-column">
-				<text class="fs-14">点击日程的激活URL path（微信小程序下填path时必须填signature）</text>
-				<input class="h-42 u-mt-5 pl-12 pr-12 border-1-solid-ccc" v-model="path" placeholder="请输入页面路径" />
-			</view>
-
-			<view class="m-8-0 d-flex flex-dir-column">
-				<text class="fs-14">签名 signature（仅微信小程序生效）</text>
-				<input class="h-42 u-mt-5 pl-12 pr-12 border-1-solid-ccc" v-model="signature" placeholder="请输入签名" />
-			</view>
-
-			<view class="m-8-0 d-flex flex-dir-column">
-				<text class="fs-14">重复周期 repeatInterval</text>
-				<picker class="mt-8 flex-1" :value="repeatIntervalIndex" :range="repeatIntervalLabels" @change="handleRepeatIntervalChange">
-					<view class="pl-12 pr-12 border-1-solid-ccc d-flex flex-dir-row items-center picker-box">
-						<text class="fs-14">{{ repeatIntervalText }}</text>
+		<view class="field-group">
+			<text class="field-label">开始时间 startTime</text>
+			<view class="picker-row">
+				<picker class="picker-field" mode="date" :value="startDate" :start="dateRangeStart" :end="dateRangeEnd" @change="handleStartDateChange">
+					<view class="picker-box">
+						<text class="picker-text">{{ startDate }}</text>
+					</view>
+				</picker>
+				<picker v-if="!allDay" class="picker-field picker-field-space" mode="time" :value="startClock" @change="handleStartClockChange">
+					<view class="picker-box">
+						<text class="picker-text">{{ startClock }}</text>
 					</view>
 				</picker>
 			</view>
-
-			<view class="m-8-0 d-flex flex-dir-column">
-				<text class="fs-14">重复截止时间 repeatEndTime</text>
-				<view class="u-mt-5 d-flex flex-dir-row">
-					<picker class="flex-1" mode="date" :value="repeatEndDate" :start="dateRangeStart" :end="dateRangeEnd" :disabled="isRepeatEndDisabled" @change="handleRepeatEndDateChange">
-						<view class="pl-12 pr-12 border-1-solid-ccc d-flex flex-dir-row items-center picker-box">
-							<text class="fs-14">{{ repeatEndDate }}</text>
-						</view>
-					</picker>
-					<picker v-if="!allDay" class="flex-1 u-ml-10" mode="time" :value="repeatEndClock" :disabled="isRepeatEndDisabled" @change="handleRepeatEndClockChange">
-						<view class="pl-12 pr-12 border-1-solid-ccc d-flex flex-dir-row items-center picker-box">
-							<text class="fs-14">{{ repeatEndClock }}</text>
-						</view>
-					</picker>
-				</view>
-			</view>
-
-			<button class="m-10-0" type="primary" @tap="submitCalendar">添加日历</button>
-
-		<text class="fs-20 fw-bold m-8-0">调用日志</text>
-		<view class="m-5-0 u-p-10 border-1-solid-ccc d-flex flex-dir-column">
-			<text class="fs-14 m-4-0" v-for="item in logItems" :key="item">{{ item }}</text>
 		</view>
+
+		<view class="field-group">
+			<boolean-data :value="allDay" title="全天 allDay" @change="handleAllDayChange"></boolean-data>
+		</view>
+
+		<view class="field-group">
+			<text class="field-label">备注 notes</text>
+			<textarea class="field-textarea" v-model="notesText" placeholder="请输入事件备注" :maxlength="-1" />
+		</view>
+
+		<view class="field-group">
+			<text class="field-label">地点 location</text>
+			<input class="field-input" v-model="location" placeholder="请输入地点" />
+		</view>
+
+		<view class="field-group">
+			<text class="field-label">结束时间 endTime</text>
+			<view class="picker-row">
+				<picker class="picker-field" mode="date" :value="endDate" :start="dateRangeStart" :end="dateRangeEnd" @change="handleEndDateChange">
+					<view class="picker-box">
+						<text class="picker-text">{{ endDate }}</text>
+					</view>
+				</picker>
+				<picker v-if="!allDay" class="picker-field picker-field-space" mode="time" :value="endClock" @change="handleEndClockChange">
+					<view class="picker-box">
+						<text class="picker-text">{{ endClock }}</text>
+					</view>
+				</picker>
+			</view>
+		</view>
+
+		<view class="field-group">
+			<boolean-data :value="alarm" title="提醒 alarm" @change="handleAlarmChange"></boolean-data>
+		</view>
+
+		<view class="field-group">
+			<text class="field-label">提醒提前量 alarmOffset（秒）</text>
+			<input class="field-input" v-model="alarmOffsetSeconds" type="number" placeholder="例如 900" :disabled="!alarm" />
+		</view>
+
+		<view class="field-group">
+			<text class="field-label">点击日程的激活URL path（微信小程序下填path时必须填signature）</text>
+			<input class="field-input" v-model="path" placeholder="请输入页面路径" />
+		</view>
+
+		<view class="field-group">
+			<text class="field-label">签名 signature（仅微信小程序生效）</text>
+			<input class="field-input" v-model="signature" placeholder="请输入签名" />
+		</view>
+
+		<view class="field-group">
+			<text class="field-label">重复周期 repeatInterval</text>
+			<picker class="picker-field picker-full" :value="repeatIntervalIndex" :range="repeatIntervalLabels" @change="handleRepeatIntervalChange">
+				<view class="picker-box">
+					<text class="picker-text">{{ repeatIntervalText }}</text>
+				</view>
+			</picker>
+		</view>
+
+		<view class="field-group">
+			<text class="field-label">重复截止时间 repeatEndTime</text>
+			<view class="picker-row">
+				<picker class="picker-field" mode="date" :value="repeatEndDate" :start="dateRangeStart" :end="dateRangeEnd" :disabled="isRepeatEndDisabled" @change="handleRepeatEndDateChange">
+					<view class="picker-box">
+						<text class="picker-text">{{ repeatEndDate }}</text>
+					</view>
+				</picker>
+				<picker v-if="!allDay" class="picker-field picker-field-space" mode="time" :value="repeatEndClock" :disabled="isRepeatEndDisabled" @change="handleRepeatEndClockChange">
+					<view class="picker-box">
+						<text class="picker-text">{{ repeatEndClock }}</text>
+					</view>
+				</picker>
+			</view>
+		</view>
+
+		<button class="submit-button" type="primary" @tap="submitCalendar">添加日历</button>
+
+	<text class="uni-h3">调用日志</text>
+	<view class="log-list">
+		<text class="log-item" v-for="item in logItems" :key="item">{{ item }}</text>
+	</view>
 </template>
 
 <script setup lang="ts">
@@ -452,11 +452,94 @@
 		padding: 6px;
 	}
 
+	.margin-v {
+		margin: 5px 0;
+	}
+
+	.notice {
+		color: #550000;
+		font-size: 14px;
+		font-style: italic;
+	}
+
+	.field-group {
+		margin: 8px 0;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.field-label {
+		font-size: 14px;
+	}
+
+	.field-input {
+		height: 42px;
+		margin-top: 5px;
+		padding-left: 12px;
+		padding-right: 12px;
+		border: 1px solid #ccc;
+	}
+
 	.field-textarea {
 		min-height: 96px;
+		margin-top: 5px;
+		padding: 12px;
+		border: 1px solid #ccc;
+	}
+
+	.picker-row {
+		margin-top: 5px;
+		display: flex;
+		flex-direction: row;
+	}
+
+	.picker-field {
+		flex: 1;
+	}
+
+	.picker-field-space {
+		margin-left: 10px;
+	}
+
+	.picker-full {
+		margin-top: 8px;
 	}
 
 	.picker-box {
 		min-height: 42px;
+		padding-left: 12px;
+		padding-right: 12px;
+		border: 1px solid #ccc;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+	}
+
+	.picker-text {
+		font-size: 14px;
+	}
+
+	.switch-row {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.submit-button {
+		margin: 10px 0;
+	}
+
+	.log-list {
+		margin: 5px 0;
+		padding: 10px;
+		border: 1px solid #ccc;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.log-item {
+		font-size: 14px;
+		margin: 4px 0;
 	}
 </style>

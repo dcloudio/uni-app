@@ -1,91 +1,91 @@
 <template>
-    <view class="pb-safe-area-inset-bottom">
-      <page-intro content="本页演示 UniResizeObserver：监听元素尺寸变化，回调中可获取 contentRect（x、y、width、height）。含 view 嵌套、text、image、scroll-view 等组件的监听示例；可点击方块改宽高、改变字体/图片/scroll-view 尺寸，支持停止/恢复监听、隐藏/显示元素。"></page-intro>
-      <view class="mt-18 mb-10">
-        <text class="fs-18 fw-bold color-1f2937">基础监听</text>
-        <text class="fs-12 mt-3 color-6b7280">点击蓝色或红色方块，观察对应元素的尺寸变化</text>
+    <view style="padding-bottom: var(--uni-safe-area-inset-bottom);">
+      <page-intro content="本页演示 uni.createResizeObserver：监听元素尺寸变化，回调中可获取 contentRect（x、y、width、height）。含 view 嵌套、text、image、scroll-view 等组件的监听示例；可点击方块改宽高、改变字体/图片/scroll-view 尺寸，支持停止/恢复监听、隐藏/显示元素。"></page-intro>
+      <view class="section-heading">
+        <text class="section-title">基础监听</text>
+        <text class="section-caption">点击蓝色或红色方块，观察对应元素的尺寸变化</text>
       </view>
-      <view v-show="boxDisplay" class="items-center justify-center m-10-0 radius-8 box-stage bg-f5f7fa">
-        <view class="items-center justify-center p-5 h-140"
-          style="width: 140px; background-color: blue;"
+      <view v-show="boxDisplay" class="box-stage">
+        <view
+          style="width: 140px; height: 140px; background-color: blue; align-items: center; justify-content: center; padding: 5px;"
           id="outBox" @click="outBoxClick">
-          <view class="w-80 h-80 p-5 bg-f00" id="innerBox"
+          <view style="width: 80px; height: 80px; background-color: red; padding: 5px;" id="innerBox"
             @click="innerBoxClick"></view>
         </view>
       </view>
-      <view class="flex-dir-row flex-wrap-wrap justify-between">
-        <button class="mb-8 w-48pct" @click="revertBoxSize">还原尺寸</button>
-        <button class="mb-8 w-48pct" @click="toggleDisplay">{{boxDisplay? '隐藏元素': '显示元素'}}</button>
-        <button class="mb-8 w-48pct" @click='cancelListen'>停止监听</button>
-        <button class="mb-8 w-48pct" @click='goOnListen'>恢复监听</button>
+      <view class="action-grid">
+        <button class="action-grid-button" @click="revertBoxSize">还原尺寸</button>
+        <button class="action-grid-button" @click="toggleDisplay">{{boxDisplay? '隐藏元素': '显示元素'}}</button>
+        <button class="action-grid-button" @click='cancelListen'>停止监听</button>
+        <button class="action-grid-button" @click='goOnListen'>恢复监听</button>
       </view>
-      <view class="flex-dir-row items-stretch justify-between mt-8">
-        <view class="flex-1 min-w-0 u-p-10 radius-6 result-card accent-blue bg-f8fafc">
-          <text class="fs-14 fw-bold color-374151">蓝色外层元素</text>
-          <text class="u-mt-5 fs-14 color-111827">{{outBoxSizeInfo ? outBoxSummary : '等待首次回调...'}}</text>
-          <text class="mt-6 fs-11 lh-17 color-6b7280">{{outBoxSizeInfo}}</text>
+      <view class="result-grid">
+        <view class="result-card accent-blue">
+          <text class="result-title">蓝色外层元素</text>
+          <text class="result-summary">{{outBoxSizeInfo ? outBoxSummary : '等待首次回调...'}}</text>
+          <text class="result-detail">{{outBoxSizeInfo}}</text>
         </view>
-        <view class="flex-1 min-w-0 u-p-10 radius-6 result-card accent-red bg-f8fafc">
-          <text class="fs-14 fw-bold color-374151">红色内层元素</text>
-          <text class="u-mt-5 fs-14 color-111827">{{innerBoxSizeInfo ? innerBoxSummary : '等待首次回调...'}}</text>
-          <text class="mt-6 fs-11 lh-17 color-6b7280">{{innerBoxSizeInfo}}</text>
+        <view class="result-card accent-red">
+          <text class="result-title">红色内层元素</text>
+          <text class="result-summary">{{innerBoxSizeInfo ? innerBoxSummary : '等待首次回调...'}}</text>
+          <text class="result-detail">{{innerBoxSizeInfo}}</text>
         </view>
       </view>
 
       <!-- text 组件示例 -->
-      <view class="mt-15" v-show="textImageScrollViewDisplay">
-        <view class="mt-18 mb-10"><text class="fs-18 fw-bold color-1f2937">Text 组件</text></view>
-        <text class="fs-13 color-tips-0958d9 bg-tips-e6f4ff border-l-4-solid-tips-91caff p-10-12 radius-4 m-10">说明：左边是正常版本，右边是拍平版本</text>
-        <view class="flex-dir-row justify-around items-center radius-8 flat-compare-row bg-f5f7fa">
-          <text id="testText" class="m-0-5 color-333" :style="{fontSize: textFontSize + 'px'}">普通文本</text>
-          <text id="testTextFlat" class="m-0-5 color-333" :style="{fontSize: textFontSize + 'px'}" flatten>拍平文本</text>
+      <view class="uni-common-mt" v-show="textImageScrollViewDisplay">
+        <view class="section-heading"><text class="section-title">Text 组件</text></view>
+        <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
+        <view class="flat-compare-row">
+          <text id="testText" class="flat-compare-item" :style="{fontSize: textFontSize + 'px', color: '#333'}">普通文本</text>
+          <text id="testTextFlat" class="flat-compare-item" :style="{fontSize: textFontSize + 'px', color: '#333'}" flatten>拍平文本</text>
         </view>
         <button @click="changeTextSize">改变文本字体大小</button>
-        <view class="flex-dir-row items-stretch justify-between mt-8">
-          <view class="flex-1 min-w-0 u-p-10 radius-6 result-card bg-f8fafc"><text class="fs-14 fw-bold color-374151">正常</text><text class="u-mt-5 fs-14 color-111827">{{infoSummary(data.textSizeInfoObj)}}</text><text class="mt-6 fs-11 lh-17 color-6b7280">{{data.textSizeInfo}}</text></view>
-          <view class="flex-1 min-w-0 u-p-10 radius-6 result-card bg-f8fafc"><text class="fs-14 fw-bold color-374151">拍平</text><text class="u-mt-5 fs-14 color-111827">{{infoSummary(data.textFlatSizeInfoObj)}}</text><text class="mt-6 fs-11 lh-17 color-6b7280">{{data.textFlatSizeInfo}}</text></view>
+        <view class="result-grid">
+          <view class="result-card"><text class="result-title">正常</text><text class="result-summary">{{infoSummary(data.textSizeInfoObj)}}</text><text class="result-detail">{{data.textSizeInfo}}</text></view>
+          <view class="result-card"><text class="result-title">拍平</text><text class="result-summary">{{infoSummary(data.textFlatSizeInfoObj)}}</text><text class="result-detail">{{data.textFlatSizeInfo}}</text></view>
         </view>
       </view>
 
       <!-- flatten 拍平元素示例 -->
-      <view class="mt-15" v-show="flatDisplay">
-        <view class="mt-18 mb-10"><text class="fs-18 fw-bold color-1f2937">View 组件</text></view>
-        <view class="flex-dir-row justify-around items-center radius-8 flat-compare-row bg-f5f7fa">
-          <view id="testViewNormal" class="m-0-5 bg-409eff" :style="{width: viewFlatWidth + 'px', height: viewFlatHeight + 'px'}"></view>
-          <view id="testViewFlat" class="m-0-5" style="background-color: #3cb371;" :style="{width: viewFlatWidth + 'px', height: viewFlatHeight + 'px'}" flatten></view>
+      <view class="uni-common-mt" v-show="flatDisplay">
+        <view class="section-heading"><text class="section-title">View 组件</text></view>
+        <view class="flat-compare-row">
+          <view id="testViewNormal" class="flat-compare-item" style="background-color: #409eff;" :style="{width: viewFlatWidth + 'px', height: viewFlatHeight + 'px'}"></view>
+          <view id="testViewFlat" class="flat-compare-item" style="background-color: #3cb371;" :style="{width: viewFlatWidth + 'px', height: viewFlatHeight + 'px'}" flatten></view>
         </view>
         <button @click="changeViewFlatSize">改变 view 尺寸</button>
-        <view class="flex-dir-row items-stretch justify-between mt-8">
-          <view class="flex-1 min-w-0 u-p-10 radius-6 result-card bg-f8fafc"><text class="fs-14 fw-bold color-374151">正常</text><text class="u-mt-5 fs-14 color-111827">{{infoSummary(data.viewNormalSizeInfoObj)}}</text><text class="mt-6 fs-11 lh-17 color-6b7280">{{data.viewNormalSizeInfo}}</text></view>
-          <view class="flex-1 min-w-0 u-p-10 radius-6 result-card bg-f8fafc"><text class="fs-14 fw-bold color-374151">拍平</text><text class="u-mt-5 fs-14 color-111827">{{infoSummary(data.viewFlatSizeInfoObj)}}</text><text class="mt-6 fs-11 lh-17 color-6b7280">{{data.viewFlatSizeInfo}}</text></view>
+        <view class="result-grid">
+          <view class="result-card"><text class="result-title">正常</text><text class="result-summary">{{infoSummary(data.viewNormalSizeInfoObj)}}</text><text class="result-detail">{{data.viewNormalSizeInfo}}</text></view>
+          <view class="result-card"><text class="result-title">拍平</text><text class="result-summary">{{infoSummary(data.viewFlatSizeInfoObj)}}</text><text class="result-detail">{{data.viewFlatSizeInfo}}</text></view>
         </view>
       </view>
 
       <!-- image 组件示例 -->
-      <view class="mt-15" v-show="textImageScrollViewDisplay">
-        <view class="mt-18 mb-10"><text class="fs-18 fw-bold color-1f2937">Image 组件</text></view>
-        <view class="flex-dir-row justify-around items-center radius-8 flat-compare-row bg-f5f7fa">
-          <image id="testImage" class="m-0-5" :style="{width: imageWidth + 'px', height: imageHeight + 'px'}" src="/static/test-image/logo.png" mode="aspectFit"></image>
-          <image id="testImageFlat" class="m-0-5" :style="{width: imageWidth + 'px', height: imageHeight + 'px'}" src="/static/test-image/logo.png" mode="aspectFit" flatten></image>
+      <view class="uni-common-mt" v-show="textImageScrollViewDisplay">
+        <view class="section-heading"><text class="section-title">Image 组件</text></view>
+        <view class="flat-compare-row">
+          <image id="testImage" class="flat-compare-item" :style="{width: imageWidth + 'px', height: imageHeight + 'px'}" src="/static/test-image/logo.png" mode="aspectFit"></image>
+          <image id="testImageFlat" class="flat-compare-item" :style="{width: imageWidth + 'px', height: imageHeight + 'px'}" src="/static/test-image/logo.png" mode="aspectFit" flatten></image>
         </view>
         <button @click="changeImageSize">改变图片尺寸</button>
-        <view class="flex-dir-row items-stretch justify-between mt-8">
-          <view class="flex-1 min-w-0 u-p-10 radius-6 result-card bg-f8fafc"><text class="fs-14 fw-bold color-374151">正常</text><text class="u-mt-5 fs-14 color-111827">{{infoSummary(data.imageSizeInfoObj)}}</text><text class="mt-6 fs-11 lh-17 color-6b7280">{{data.imageSizeInfo}}</text></view>
-          <view class="flex-1 min-w-0 u-p-10 radius-6 result-card bg-f8fafc"><text class="fs-14 fw-bold color-374151">拍平</text><text class="u-mt-5 fs-14 color-111827">{{infoSummary(data.imageFlatSizeInfoObj)}}</text><text class="mt-6 fs-11 lh-17 color-6b7280">{{data.imageFlatSizeInfo}}</text></view>
+        <view class="result-grid">
+          <view class="result-card"><text class="result-title">正常</text><text class="result-summary">{{infoSummary(data.imageSizeInfoObj)}}</text><text class="result-detail">{{data.imageSizeInfo}}</text></view>
+          <view class="result-card"><text class="result-title">拍平</text><text class="result-summary">{{infoSummary(data.imageFlatSizeInfoObj)}}</text><text class="result-detail">{{data.imageFlatSizeInfo}}</text></view>
         </view>
       </view>
 
       <!-- scroll-view 组件示例 -->
-      <view class="mt-15" v-show="textImageScrollViewDisplay">
-        <view class="mt-18 mb-10"><text class="fs-18 fw-bold color-1f2937">Scroll-view 组件</text><text class="fs-12 mt-3 color-6b7280">监听滚动容器尺寸</text></view>
-        <scroll-view class="h-100 border-1-solid-ccc" id="testScrollView" :style="{width: scrollViewWidth + 'px'}" >
-          <view class="u-p-10">
+      <view class="uni-common-mt" v-show="textImageScrollViewDisplay">
+        <view class="section-heading"><text class="section-title">Scroll-view 组件</text><text class="section-caption">监听滚动容器尺寸</text></view>
+        <scroll-view id="testScrollView" :style="{width: scrollViewWidth + 'px', height: '100px', border: '1px solid #ccc'}" >
+          <view style="padding: 10px;">
             <text>这是 scroll-view 内的内容</text>
             <text v-for="i in 10" :key="i">第 {{i}} 行内容</text>
           </view>
         </scroll-view>
         <button @click="changeScrollViewSize">改变 scroll-view 宽度</button>
-        <view class="flex-1 min-w-0 u-p-10 radius-6 result-card bg-f8fafc"><text class="u-mt-5 fs-14 color-111827">{{infoSummary(data.scrollViewSizeInfoObj)}}</text><text class="mt-6 fs-11 lh-17 color-6b7280">{{data.scrollViewSizeInfo}}</text></view>
+        <view class="result-card"><text class="result-summary">{{infoSummary(data.scrollViewSizeInfoObj)}}</text><text class="result-detail">{{data.scrollViewSizeInfo}}</text></view>
       </view>
     </view>
 </template>
@@ -437,12 +437,57 @@ defineExpose({
 </script>
 
 <style>
+  .section-heading {
+    margin-top: 18px;
+    margin-bottom: 10px;
+  }
+
+  .section-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #1f2937;
+  }
+
+  .section-caption {
+    margin-top: 3px;
+    font-size: 12px;
+    color: #6b7280;
+  }
+
   .box-stage {
     min-height: 170px;
+    align-items: center;
+    justify-content: center;
+    margin: 10px 0;
+    background-color: #f5f7fa;
+    border-radius: 8px;
+  }
+
+  .action-grid {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .action-grid-button {
+    width: 48%;
+    margin-bottom: 8px;
+  }
+
+  .result-grid {
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: space-between;
+    margin-top: 8px;
   }
 
   .result-card {
+    flex: 1;
+    min-width: 0;
     margin: 0 4px 8px 0;
+    padding: 10px;
+    background-color: #f8fafc;
+    border-radius: 6px;
     border: 1px solid #e5e7eb;
   }
 
@@ -456,8 +501,36 @@ defineExpose({
     border-left-color: #ef4444;
   }
 
+  .result-title {
+    font-size: 14px;
+    font-weight: bold;
+    color: #374151;
+  }
+
+  .result-summary {
+    margin-top: 5px;
+    font-size: 14px;
+    color: #111827;
+  }
+
+  .result-detail {
+    margin-top: 6px;
+    font-size: 11px;
+    line-height: 17px;
+    color: #6b7280;
+  }
+
   .flat-compare-row {
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
     min-height: 110px;
     margin: 10px 0 6px;
+    background-color: #f5f7fa;
+    border-radius: 8px;
+  }
+
+  .flat-compare-item {
+    margin: 0 5px;
   }
 </style>

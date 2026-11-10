@@ -2,7 +2,7 @@
       <page-head title="rich-text-complex"></page-head>
       <page-intro content="本页演示 rich-text 渲染复杂 HTML：富文本内容、selectable、itemclick 与 click 事件、父 view 与自身点击区分。"></page-intro>
       <enum-data-checkbox title="设置mode（app平台 蒸汽模式支持）" :disabled="data.disabledEnum" :items="modeItemTypes" @change="onModeChange"></enum-data-checkbox>
-      <view class="p-0-15 mt-15" @click="fViewClick('触发父 view click 事件')">
+      <view class="uni-padding-wrap uni-common-mt" @click="fViewClick('触发父 view click 事件')">
         <rich-text id="richtext" :nodes="htmlString" :selectable="true" @itemclick="itemClick" @click="selfClick('触发 richtext click 事件')" :mode="data.mode"/>
       </view>
 </template>

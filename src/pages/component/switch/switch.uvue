@@ -1,13 +1,13 @@
 <template>
-    <view class="p-0-15 mt-15">
-      <view class="p-10-0 color-text-333">默认样式</view>
-      <view class="flex-dir-row">
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-title">默认样式</view>
+      <view class="flex-row">
         <switch class="switch-checked" :checked="data.checked" @change="switch1Change" />
         <switch @change="switch2Change" />
       </view>
       <!-- #ifndef MP-ALIPAY -->
-      <view class="p-10-0 color-text-333">暗黑样式</view>
-      <view class="flex-dir-row">
+      <view class="uni-title">暗黑样式</view>
+      <view class="flex-row">
         <!-- #ifdef !VUE3-VAPOR || (VUE3-VAPOR && MP) -->
         <switch id="darkChecked" background-color="#1f1f1f" activeBackgroundColor="#007aff" foreColor="#f0f0f0"
           activeForeColor="#ffffff" :checked="data.checked" />
@@ -20,38 +20,38 @@
         <!-- #endif -->
       </view>
       <!-- #endif -->
-      <view class="p-10-0 color-text-333">禁用样式</view>
-      <view class="flex-dir-row">
+      <view class="uni-title">禁用样式</view>
+      <view class="flex-row">
         <switch class="switch-checked" :checked="data.checked" :disabled="true" />
         <switch :disabled="true" />
       </view>
-      <view class="p-10-0 color-text-333">不同颜色和尺寸的switch</view>
-      <view class="flex-dir-row">
+      <view class="uni-title">不同颜色和尺寸的switch</view>
+      <view class="flex-row">
         <!-- #ifdef !VUE3-VAPOR || (VUE3-VAPOR && MP) -->
-        <switch class="scale-0_7" :color="data.color" :checked="true" />
-        <switch class="switch-color scale-0_7" :color="data.color" />
+        <switch style="transform:scale(0.7)" class="switch-color-checked" :color="data.color" :checked="true" />
+        <switch style="transform:scale(0.7)" class="switch-color" :color="data.color" />
         <!-- #endif -->
         <!-- #ifdef VUE3-VAPOR && !MP -->
-        <switch switch-active-class="custom-switch-active-color" class="scale-0_7" :checked="true" />
-        <switch switch-active-class="custom-switch-active-color" class="scale-0_7" />
+        <switch style="transform:scale(0.7)" switch-active-class="custom-switch-active-color"  :checked="true" />
+        <switch style="transform:scale(0.7)" switch-active-class="custom-switch-active-color"  />
         <!-- #endif -->
       </view>
-      <view class="p-10-0 color-text-333">推荐展示样式</view>
+      <view class="uni-title">推荐展示样式</view>
     </view>
-    <view class="bg-list-fff pos-relative d-flex flex-dir-column border-b-1-solid-c8c7cc-dark-3a3a3c">
+    <view class="uni-list">
       <boolean-data :value="true" title="开启中"></boolean-data>
       <boolean-data :value="false" title="关闭"></boolean-data>
 
       <!-- #ifdef VUE3-VAPOR && !MP -->
-      <view class="pos-relative d-flex flex-dir-row justify-between items-center p-10-15 color-text-333">
-        <view class="flex-1 vapor-color-text-333">自定义 thumb 样式</view>
+      <view class="uni-list-cell uni-list-cell-padding">
+        <view class="uni-list-cell-db">自定义 thumb 样式</view>
         <switch thumb-class="custom-thumb" thumb-active-class="custom-thumb-active"  />
       </view>
       <!-- #endif -->
     </view>
 
     <!-- #ifdef APP && VUE3-VAPOR -->
-      <navigator class="mb-15" url="/pages/template/switch-100/switch-100">
+      <navigator class="uni-common-mb" url="/pages/template/switch-100/switch-100">
         <button>组件性能测试</button>
       </navigator>
     <!-- #endif -->
@@ -109,6 +109,10 @@
 </script>
 
 <style>
+  .flex-row {
+    flex-direction: row;
+  }
+
   /* #ifdef VUE3-VAPOR && !MP */
   .dark-class {
     background-color: #1f1f1f;

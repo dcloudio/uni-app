@@ -1,14 +1,14 @@
 <template>
   <view>
     <page-intro content="本页演示 canvas 绘制：在 view 上绘制文本、线条、圆、虚线、图形、样式、arcto 等。"></page-intro>
-    <view class="mb-15 drawing bg-d3d3d3" id="draw-text-view"></view>
-    <view class="mb-15 drawing bg-d3d3d3" id="draw-line-view"></view>
-    <view class="mb-15 drawing bg-d3d3d3" id="draw-circle-view"></view>
-    <view class="mb-15 drawing bg-d3d3d3" id="draw-dash-line"></view>
-    <view class="mb-15 drawing bg-d3d3d3" id="draw-house"></view>
-    <view class="mb-15 drawing bg-d3d3d3" id="draw-style"></view>
-    <view class="mb-15 drawing bg-d3d3d3" id="draw-odd"></view>
-    <view class="mb-15 drawing bg-d3d3d3" id="draw-arcto"></view>
+    <view class="drawing" id="draw-text-view"></view>
+    <view class="drawing" id="draw-line-view"></view>
+    <view class="drawing" id="draw-circle-view"></view>
+    <view class="drawing" id="draw-dash-line"></view>
+    <view class="drawing" id="draw-house"></view>
+    <view class="drawing" id="draw-style"></view>
+    <view class="drawing" id="draw-odd"></view>
+    <view class="drawing" id="draw-arcto"></view>
   </view>
 </template>
 
@@ -317,5 +317,7 @@
 <style>
   .drawing {
     height: 275px;
+    background-color: lightgray;
+    margin-bottom: 15px;
   }
 </style>

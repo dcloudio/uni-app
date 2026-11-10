@@ -1,17 +1,20 @@
 <template>
   <page-head title="new-page-1" />
   <!-- #ifndef (APP-ANDROID || APP-IOS) && !VUE3-VAPOR -->
-  <image class="w-250 h-176" src="/static/shuijiao.jpg" mode="scaleToFill"></image>
+  <image style="width: 250px; height: 176px;" src="/static/shuijiao.jpg" mode="scaleToFill"></image>
   <!-- #endif -->
   <!-- #ifdef (APP-ANDROID || APP-IOS) && !VUE3-VAPOR -->
   <share-element share-key="test-share-element-key">
-    <image class="w-250 h-176" src="/static/shuijiao.jpg" mode="scaleToFill"></image>
+    <image style="width: 250px; height: 176px;" src="/static/shuijiao.jpg" mode="scaleToFill"></image>
   </share-element>
   <!-- #endif -->
-  <view class="p-0-15">
+  <view class="uni-padding-wrap">
     <text>onLoad 接收到参数</text>
     <text>data: {{ data.data }}</text>
-    <button @tap="navigateBackWithDelta2" class="mt-10">
+    <!-- #ifdef APP-HARMONY || WEB || MP-WEIXIN || MP-ALIPAY -->
+    <button @tap="replyToOpener" class="uni-btn">通过 EventChannel 向上一页发送数据</button>
+    <!-- #endif -->
+    <button @tap="navigateBackWithDelta2" class="uni-btn">
       回退到上上层页面
     </button>
   </view>
@@ -24,6 +27,13 @@
   type DataType = {
     data: string,
   }
+
+  // #ifdef APP-HARMONY || WEB || MP-WEIXIN || MP-ALIPAY
+  const instance = getCurrentInstance()
+  const replyToOpener = () => {
+    instance?.proxy?.getOpenerEventChannel().emit('reply', 'Hello from new-page-1')
+  }
+  // #endif
 
   const checked = ref(false)
   const data = reactive({
@@ -60,6 +70,9 @@
   })
 
   defineExpose({
+    // #ifdef APP-HARMONY || WEB || MP-WEIXIN || MP-ALIPAY
+    replyToOpener,
+    // #endif
     data,
     navigateToOnLoadWithType
   })

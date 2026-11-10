@@ -1,5 +1,5 @@
 <template>
-	<view class="flex-dir-row" id="rootview">
+	<view style="flex-direction: row;"  id="rootview">
 		<enum-data-checkbox
 		  class="flex-1"
 		  :items="directoryOptions"
@@ -14,11 +14,11 @@
 		<button @click="snapshot">截图</button>
 	</view>
   <text>文件总数：{{ count }}；\n文件总大小：{{size}} M</text>
-	<text class="border-1-solid-ccc m-5">根路径：{{rootPath}}</text>
-	<list-view class="flex-1">
-		<list-item class="border-b-1-solid-ccc p-5" v-for="(item, index) in fileList" :key="index" :style="getIndentStyle(item.shotPath)"
+	<text style="border: 1px solid #ccc;margin: 5px;">根路径：{{rootPath}}</text>
+	<list-view style="flex: 1;" >
+		<list-item v-for="(item, index) in fileList" :key="index" style="padding: 5px;border-bottom: 1px solid #ccc;" :style="getIndentStyle(item.shotPath)"
 		@click="showDialog(item)">
-			<view class="flex-dir-row">
+			<view style="flex-direction: row;" >
 				<!-- <text style="font-family: uni-icon;" v-if="!item.isFile">\uE661</text> -->
 				<!-- #ifdef APP -->
         <!-- TODO: 微信小程序不支持uni内置字体，还得再找一个图标-->
@@ -26,17 +26,17 @@
 				<!-- #endif -->
 				<text >{{(item.shotPath as string)}}</text>
 			</view>
-			<text class="fs-12 color-ccc" v-if="item.isFile" >{{item.size}}k</text>
+			<text style="font-size: 12px;color: #ccc;" v-if="item.isFile" >{{item.size}}k</text>
 		</list-item>
 	</list-view>
-	<view class="pos-fixed top-0 bottom-0 right-0 items-center justify-center left-0 z-index-1000" v-if="dialogShow" style="background-color: rgba(16, 16, 16, 0.5);">
-		<view class="bg-fff u-p-10 radius-10 w-90pct m-0-auto">
-			<text class="fs-20 fw-bold">{{currentFile.shotPath}}</text>
+	<view v-if="dialogShow" style="position: fixed; top: 0; bottom: 0; left: 0; right: 0; align-items: center; justify-content: center; z-index: 1000; background-color: rgba(16, 16, 16, 0.5);">
+		<view style="background-color: #fff;padding: 10px;border-radius: 10px;width: 90%;margin: 0 auto;">
+			<text style="font-size: 20px;font-weight: bold;">{{currentFile.shotPath}}</text>
 			<text>类型：{{currentFile.isFile ? '文件' : '目录'}}</text>
 			<text>路径：{{currentFile.path}}</text>
 			<text>大小：{{currentFile.size}}k</text>
 			<text>修改时间：{{currentFile.modifyTime}}</text>
-			<view class="flex-dir-row w-full justify-between u-p-10">
+			<view style="flex-direction: row;width: 100%;justify-content: space-between;padding: 10px;">
 				<button @click="openFile(currentFile)" size="mini" v-if="currentFile.isFile">打开</button>
 				<button @click="deleteFile(currentFile)" size="mini">删除</button>
 				<button @click="closeDialog" size="mini">关闭</button>
@@ -264,3 +264,15 @@
 	}
 
 </script>
+
+<style>
+.flex-1 {
+  flex: 1;
+}
+
+.radio-box {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+}
+</style>

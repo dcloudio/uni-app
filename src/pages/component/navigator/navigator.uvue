@@ -1,30 +1,30 @@
 <template>
   <page-head :title="title"></page-head>
-  <view class="p-0-15 mt-15">
-    <navigator id="navigate" class="mb-15" url="navigate?title=navigate">
+  <view class="uni-padding-wrap uni-common-mt">
+    <navigator id="navigate" class="navigator" url="navigate?title=navigate">
       <button type="default">跳转到新页面</button>
     </navigator>
-    <navigator id="redirect" class="mb-15" url="redirect?title=redirect" open-type="redirect">
+    <navigator id="redirect" class="navigator" url="redirect?title=redirect" open-type="redirect">
       <button type="default">在当前页打开redirect</button>
     </navigator>
-    <navigator id="switchTab" class="mb-15" url="/pages/tabBar/template" open-type="switchTab">
+    <navigator id="switchTab" class="navigator" url="/pages/tabBar/template" open-type="switchTab">
       <button type="default">切换到模板选项卡switchTab</button>
     </navigator>
-    <navigator id="reLaunch" class="mb-15" url="/pages/tabBar/component" open-type="reLaunch">
+    <navigator id="reLaunch" class="navigator" url="/pages/tabBar/component" open-type="reLaunch">
       <button type="default">关闭所有页面回首页reLaunch</button>
     </navigator>
-    <navigator id="reLaunch" class="mb-15" open-type="navigateBack">
+    <navigator id="reLaunch" class="navigator" open-type="navigateBack">
       <button type="default">返回上一页navigateBack</button>
     </navigator>
-    <navigator id="navigateToErrorPage" class="mb-15" url="/pages/error-page/error-page">
+    <navigator id="navigateToErrorPage" class="navigator" url="/pages/error-page/error-page">
       <button type="default"> 打开不存在的页面 </button>
     </navigator>
-    <navigator id="navigateToErrorPage" class="mb-15">
+    <navigator id="navigateToErrorPage" class="navigator">
       <button type="default"> 未指定URL的跳转 </button>
     </navigator>
-    <navigator class="flex-dir-row justify-between">
+    <navigator style="flex-direction: row;justify-content: space-between;">
       <text>两端对齐样式测试</text>
-      <view class="w-20 h-20 bg-0ff"></view>
+      <view style="width: 20px;height: 20px; background-color: aqua;"></view>
     </navigator>
   </view>
 </template>
@@ -32,3 +32,9 @@
 <script setup lang="ts">
   const title = ref('navigator')
 </script>
+
+<style>
+  .navigator {
+    margin-bottom: 15px;
+  }
+</style>

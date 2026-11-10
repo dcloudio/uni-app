@@ -131,17 +131,17 @@
 </script>
 
 <template>
-  <view class="p-5-0 flex-dir-row justify-center border-b-1-solid-black-a6">
+  <view class="main">
     <slider :disabled="data.disabled_boolean" :min="data.min_input" :max="data.max_input" :step="data.step_input" :value="data.value_input"
       :activeColor="data.activeColor_input" :backgroundColor="data.backgroundColor_input" :block-size="data.block_size_input"
       :block-color="data.block_color_input" :show-value="data.show_value_boolean" :valueColor="data.valueColor" @click="slider_click"
       @touchstart="slider_touchstart" @touchmove="slider_touchmove" @touchcancel="slider_touchcancel"
       @touchend="slider_touchend" @tap="slider_tap" @longpress="slider_longpress" @change="slider_change"
-      @changing="slider_changing" class="w-90pct u-ml-10"></slider>
+      @changing="slider_changing" style="width: 90%;margin-left: 10px;"></slider>
   </view>
 
-  <scroll-view class="flex-1">
-    <view>
+  <scroll-view style="flex: 1">
+    <view class="content">
       <page-head title="组件属性"></page-head>
       <boolean-data :value="false" title="是否显示当前 value" @change="change_show_value_boolean"></boolean-data>
       <boolean-data :value="false" title="是否禁用" @change="change_disabled_boolean"></boolean-data>
@@ -164,58 +164,58 @@
       <!-- #endif -->
     </view>
 
-    <view class="p-0-15">
+    <view class="uni-padding-wrap">
       <page-head title="默认及使用"></page-head>
-      <view class="p-10-0 color-text-333">显示当前value</view>
+      <view class="uni-title">显示当前value</view>
       <view>
-        <slider class="p-5-0 u-ml-10" @change="sliderChange" :value="50" :show-value="true" />
+        <slider style="padding: 5px 0;margin-left: 10px;" @change="sliderChange" :value="50" :show-value="true" />
       </view>
 
-      <view class="p-10-0 color-text-333">设置步进:step=10跳动</view>
+      <view class="uni-title">设置步进:step=10跳动</view>
       <view>
-        <view class="flex-dir-row">
+        <view class="uni-row">
           <text>0</text>
-          <text class="ml-auto">100</text>
+          <text class="m-l-a">100</text>
         </view>
-        <slider class="p-5-0 u-ml-10" @change="sliderChange" :value="60" :step="10" />
+        <slider style="padding: 5px 0;margin-left: 10px;" @change="sliderChange" :value="60" :step="10" />
       </view>
 
-      <view class="p-10-0 color-text-333">浮点步进:step=0.01跳动</view>
+      <view class="uni-title">浮点步进:step=0.01跳动</view>
       <view>
-        <slider class="p-5-0 u-ml-10" :value="0.5" :min="0" :max="1" :step="0.01" :show-value="true" />
+        <slider style="padding: 5px 0;margin-left: 10px" :value="0.5" :min="0" :max="1" :step="0.01" :show-value="true" />
       </view>
 
-      <view class="p-10-0 color-text-333">设置最小/最大值</view>
+      <view class="uni-title">设置最小/最大值</view>
       <view>
-        <slider class="p-5-0 u-ml-10" @change="sliderChange" :value="100" :min="50" :max="200" :show-value="true" />
+        <slider style="padding: 5px 0;margin-left: 10px" @change="sliderChange" :value="100" :min="50" :max="200" :show-value="true" />
       </view>
 
-      <view class="p-10-0 color-text-333">不同颜色和大小的滑块（属性）</view>
+      <view class="uni-title">不同颜色和大小的滑块（属性）</view>
       <view>
-        <slider class="p-5-0 u-ml-10" id="slider-color-and-size-props" @change="sliderChange"
+        <slider style="padding: 5px 0;margin-left: 10px" id="slider-color-and-size-props" @change="sliderChange"
           :value="data.sliderValue" :backgroundColor="data.sliderBackgroundColor"  :activeBackgroundColor="data.sliderActiveColor" :activeColor="data.sliderActiveColor" :foreColor="data.sliderBlockColor" :block-color="data.sliderBlockColor" :block-size="data.sliderBlockSize" />
       </view>
-      <view class="p-10-0 color-text-333">外部样式类（externalClass）</view>
+      <view class="uni-title">外部样式类（externalClass）</view>
       <view>
-        <slider class="p-5-0 u-ml-10" id="slider-custom-color-and-size" @change="sliderChange" :value="data.sliderValue"
+        <slider style="padding: 5px 0;margin-left: 10px" id="slider-custom-color-and-size" @change="sliderChange" :value="data.sliderValue"
           track-class="custom-track" track-active-class="custom-track-active" thumb-class="custom-thumb"/>
       </view>
-      <view class="p-10-0 color-text-333">暗黑模式</view>
+      <view class="uni-title">暗黑模式</view>
       <view>
-        <slider class="p-5-0 u-ml-10" :show-value="true" backgroundColor="rgba(32,32,32,0.5)" valueColor="#555" track-class="dark-track" thumb-class="dark-thumb"/>
+        <slider style="padding: 5px 0;margin-left: 10px" :show-value="true" backgroundColor="rgba(32,32,32,0.5)" valueColor="#555" track-class="dark-track" thumb-class="dark-thumb"/>
       </view>
 
       <!-- #ifndef MP-ALIPAY -->
-        <navigator class="mb-15" url="/pages/template/slider-100/slider-100">
+        <navigator class="uni-common-mb" url="/pages/template/slider-100/slider-100">
           <button>组件性能测试</button>
         </navigator>
       <!-- #endif -->
 
-      <navigator class="mb-15" url="./slider-in-swiper">
+      <navigator class="uni-common-mb" url="./slider-in-swiper">
         <button>slider in swiper</button>
       </navigator>
 
-      <navigator class="mb-15" url="./slider-maxValue">
+      <navigator class="uni-common-mb" url="./slider-maxValue">
         <button>slider maxValue</button>
       </navigator>
     </view>
@@ -223,6 +223,17 @@
 </template>
 
 <style>
+  .main {
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .m-l-a {
+    margin-left: auto;
+  }
+
   /* 自定义样式示例 */
   .custom-track {
     background-color: #000000;
