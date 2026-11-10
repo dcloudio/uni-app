@@ -99,7 +99,10 @@ unicode直显方式的性能优于伪元素方式，尤其是text组件设置fla
 </script>
 ```
 
-Web 平台自 HBuilderX 5.36 起仅支持以下 6 个 `uni-icon` 图标：
+Web 和 小程序平台，内置字体为woff2格式，更有利于网络传输。
+App平台为ttf格式，App包内置字体不涉及网络传输，使用ttf有更好的跨平台兼容性以及避免woff2的解压耗时。
+
+Web和小程序平台，自 HBuilderX 5.36 起仅支持以下 6 个 `uni-icon` 图标：
 
 |名称|code|Unicode|
 |:-:|:-:|:-:|
