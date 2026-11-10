@@ -527,6 +527,18 @@ Android: 3.9.0; iOS: 4.11
 
 
 
+<!-- UTSAPIJSON.offWifiConnectedWithPartialInfo.name -->
+
+<!-- UTSAPIJSON.offWifiConnectedWithPartialInfo.description -->
+
+<!-- UTSAPIJSON.offWifiConnectedWithPartialInfo.compatibility -->
+
+<!-- UTSAPIJSON.offWifiConnectedWithPartialInfo.param -->
+
+<!-- UTSAPIJSON.offWifiConnectedWithPartialInfo.returnValue -->
+
+<!-- UTSAPIJSON.offWifiConnectedWithPartialInfo.tutorial -->
+
 ## 通用类型
 
 
