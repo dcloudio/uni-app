@@ -11655,6 +11655,14 @@ const _sfc_main$b = /* @__PURE__ */ defineComponent$2({
     watch(() => props2.value, (newValue) => {
       syncFromProp(normalizeValue2(newValue));
     }, { deep: true });
+    watch(itemHeight, () => {
+      setTimeout(() => {
+        for (let i = 0; i < columns.length; i++) {
+          const api2 = columns[i];
+          api2.setScrollTop(api2.getIndex());
+        }
+      }, 0);
+    }, { flush: "post" });
     function registerColumn(api2) {
       columns.push(api2);
       const idx = columns.length - 1;
