@@ -25,7 +25,7 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.
 | name | string | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 表单的控件名称，作为键值对的一部分与表单(form组件)一同提交 |
 | value | number\[\] | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 表单的控件值，作为键值对的一部分与表单(form组件)一同提交 |
 | indicator-style | string([string.CSSString](/uts/data-type.md#ide-string)) | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 指示器样式 |
-| indicator-class | string([string.ClassString](/uts/data-type.md#ide-string)) | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 指示器类 |
+| indicator-class | string([string.ClassString](/uts/data-type.md#ide-string)) | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): x; Android(Vapor): 5.36; iOS(VDOM): x; iOS(Vapor): 5.36; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.36 | 指示器类 |
 | mask-style | string([string.CSSString](/uts/data-type.md#ide-string)) | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: 4.61 | 设置蒙层的样式 |
 | mask-top-style | string([string.CSSString](/uts/data-type.md#ide-string)) | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 遮罩顶部类 |
 | mask-bottom-style | string([string.CSSString](/uts/data-type.md#ide-string)) | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 遮罩底部类 |
