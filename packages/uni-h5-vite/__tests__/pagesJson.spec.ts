@@ -72,6 +72,32 @@ describe('h5 pages.json page route', () => {
     ).code as string
   }
 
+  test.each([
+    [false, false, false],
+    [false, false, true],
+    [false, true, false],
+    [false, true, true],
+    [true, false, false],
+    [true, false, true],
+    [true, true, false],
+    [true, true, true],
+  ])(
+    'X Web 只引入一次内置字体（Vapor=%s，SSR=%s，发行=%s）',
+    (vapor, ssr, production) => {
+      const code = transform(vapor, ssr, production)
+      expect(
+        code.match(
+          /import '@dcloudio\/uni-h5\/style\/framework\/uni-icon\.css'/g
+        )
+      ).toHaveLength(1)
+    }
+  )
+
+  test('普通 Web 不引入 X 内置字体', () => {
+    process.env.UNI_APP_X = 'false'
+    expect(transform(false)).not.toContain('framework/uni-icon.css')
+  })
+
   test.each([false, true])(
     '导航栏发行入口不全量加载 Loading 样式（Vapor=%s）',
     (vapor) => {
