@@ -93,6 +93,7 @@
   * [uni-number-box | 数字输入框](./uni-ui-x/uni-number-box.md)
   * [uni-rate | 评分](./uni-ui-x/uni-rate.md)
   * [uni-refresh-box | 自定义下拉刷新](./uni-ui-x/uni-refresh-box.md)
+  * [uni-sidebar | 侧边滚动导航](./uni-ui-x/uni-sidebar.md)
   * [uni-time-format | 时间格式化](./uni-ui-x/uni-time-format.md)
   * [uni-tab-bar | 选项卡容器](./uni-ui-x/uni-tab.md)
 * 微信专用组件
