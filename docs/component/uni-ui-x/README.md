@@ -67,6 +67,7 @@ uni-ui x 没有写死的颜色和文字:
 | uni-forms						| [表单](https://ext.dcloud.net.cn/plugin?name=uni-forms-x)								|
 | uni-data-vertical-marquee | [上下滚动文字组件](https://ext.dcloud.net.cn/plugin?name=uni-data-v-marquee) |
 | uni-drag-cell				| [可拖拽排序组件](https://ext.dcloud.net.cn/plugin?name=uni-drag-cell)		|
+| uni-easyinput | [增强输入框](https://ext.dcloud.net.cn/plugin?name=uni-easyinput) |
 | uni-expandable-text	| [可折叠文本](https://ext.dcloud.net.cn/plugin?name=uni-expandable-text)													|
 | uni-fab-button			| [uni-fab-button](https://ext.dcloud.net.cn/plugin?name=uni-fab-button)	|
 | uni-index-bar				| [uni-index-bar](https://ext.dcloud.net.cn/plugin?name=uni-index-bar)		|
