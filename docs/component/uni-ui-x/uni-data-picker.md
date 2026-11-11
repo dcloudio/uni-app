@@ -14,6 +14,9 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-data-pick
 
 通过本地数据或 datacom 数据的级联选择组件，支持单列和多列级联选择，列数没有限制，如果屏幕显示不全，顶部tab区域会左右滚动。
 
+> 本 Component 是 uni ext component，需下载插件：[uni-data-picker](https://ext.dcloud.net.cn/plugin?name=uni-data-picker-x)
+
+
 ## uni-data-picker 级联选择器
 
 > **组件名：uni-data-picker**
@@ -675,6 +678,9 @@ Web: 5.33; Android: 5.33; iOS: 5.33; HarmonyOS: 5.33
 :::
 
 通过本地数据或 datacom 数据的级联选择组件，支持单列和多列级联选择，列数没有限制，如果屏幕显示不全，顶部tab区域会左右滚动。
+
+> 本 Component 是 uni ext component，需下载插件：[uni-data-picker-view](https://ext.dcloud.net.cn/plugin?name=uni-data-picker-x)
+
 
 
 ### 兼容性 <Help />

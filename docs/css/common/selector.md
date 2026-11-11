@@ -57,11 +57,14 @@ uni-app x 额外引入了 `page` 选择器，该选择器是小程序规范，un
 以上代码示例，当我们把 `rowDesc` 变量从 `row-desc1` 变为 `row-desc2` 时，会更新 `text` 节点样式，但是如果把 `docBody` 变量从 `doc-body1` 变为 `doc-body2`，是不会更新 `text` 节点样式的。\
 因为 `doc-body` 不是最后一个选择器，非末尾的选择器变更有可能影响很多 DOM 元素，从而影响到渲染性能。
 
-## 示例：css选择器
+### 示例 
+ 示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/CSS/selector/selector.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/CSS/selector/selector.uvue) 
+::: preview https://hellouniappx.dcloud.net.cn/web/#/pages/CSS/selector/selector
 
-示例源码 [pages/CSS/selector/selector.uvue](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/CSS/selector/selector.uvue)
+> appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/CSS/selector/selector
 
-```uvue
+>示例
+```vue
 <template>
   <view>
     默认通过page选择器设置padding: 16px
@@ -166,6 +169,8 @@ const setPagePadding = () => {
 </style>
 
 ```
+
+:::
 
 ## tips
 - web端可以使用`html`、`body`、`:root`等选择器。由于页面的css样式隔离，且html节点并未添加data-xxx属性，`html`、`:root`写在页面style内无效，只能写在App.uvue内。
