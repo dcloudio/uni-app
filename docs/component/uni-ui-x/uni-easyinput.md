@@ -11,6 +11,9 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-easyinput
 
 包装原生 input 和 textarea，提供清空、密码显隐、左右插槽和内部样式定制
 
+> 本 Component 是 uni ext component，需下载插件：[uni-easyinput](https://ext.dcloud.net.cn/plugin?name=uni-easyinput-x)
+
+
 # uni-easyinput 增强输入框
 
 适用于 uni-app x 的增强输入框。组件包装原生 `input` 和 `textarea`，补充边框、清空、密码显隐和左右插槽等常用输入场景。
