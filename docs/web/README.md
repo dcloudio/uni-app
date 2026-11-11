@@ -166,7 +166,7 @@ position: fixed定位时，web端为相对于整个浏览器页面进行定位�
    * HBuilderX 4.52之前只能使用--window-top，不可使用--uni-safe-area-inset-top
 	 * App端蒸汽模式5.31+起支持calc
    */
-  top: calc(--uni-safe-area-inset-top + 10px);
+  top: calc(var(--uni-safe-area-inset-top) + 10px);
 }
 ```
 
