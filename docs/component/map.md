@@ -63,7 +63,6 @@ App标准基座里地图是腾讯地图，如需高德地图版本，请在插�
 | show-scale | boolean |   | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>显示比例尺，工具暂不支持 |
 | enable-auto-max-overlooking | boolean |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>开启最大俯视角，俯视角度从 45 度拓展到 75 度 |
 | setting | object |   | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | *(object)*<br/>配置项 |
-| enable3-d | boolean | false | 微信小程序: x; 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 是否显示3D楼块 |
 | enable-indoor-map | boolean | false | 微信小程序: x; 支付宝小程序: x |   |
 | @markertap | (event: [UniMapMarkerTapEvent](#unimapmarkertapevent)) => void |   | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 点击标记点时触发 |
 | @callouttap | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x | 点击标记点对应的气泡时触发 |
