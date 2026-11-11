@@ -2,7 +2,6 @@ import {
   computed,
   nextTick,
   onActivated,
-  onBeforeUnmount,
   onMounted,
   provide,
   reactive,
@@ -17,11 +16,7 @@ import type {
   VNode,
 } from 'vue'
 import { UniElement } from '../../helpers/UniElement'
-import {
-  type CustomEventTrigger,
-  type EmitEvent,
-  useCustomEvent,
-} from '../../helpers/useEvent'
+import { type EmitEvent, useCustomEvent } from '../../helpers/useEvent'
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
 import ResizeSensor from '../resize-sensor/index'
 import type {
@@ -31,7 +26,8 @@ import type {
 } from './types'
 import { debounce } from '@dcloudio/uni-shared'
 import Refresher from '../refresher'
-import type { RefreshState } from '../refresher/types'
+import { RefreshStateEnum, type RefresherState } from '../refresher/types'
+import { useRefresher } from '../refresher/useRefresher'
 
 export function isHTMlElement(node: Node | null): node is HTMLElement {
   return !!(node && node.nodeType === 1)
@@ -224,14 +220,23 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
     const trigger = useCustomEvent<EmitEvent<typeof emit>>(rootRef, emit)
 
-    handleTouchEvent(
-      isVertical,
-      containerRef,
+    useRefresher({
       props,
       state,
+      scrollElement: containerRef,
+      isVertical,
       trigger,
-      emit as SetupContext['emit']
-    )
+      emit: emit as SetupContext['emit'],
+      onNativeTouchMove(event, dx, dy) {
+        if (!isVertical.value || Math.abs(dx) > Math.abs(dy)) return
+        const element = containerRef.value!
+        const position = element.scrollTop
+        const max = element.scrollHeight - element.offsetHeight
+        if ((dy > 0 && position > 0) || (dy < 0 && position < max)) {
+          event.stopPropagation()
+        }
+      },
+    })
 
     function getOffset() {
       return isVertical.value
@@ -509,7 +514,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   },
 })
 
-interface State {
+interface State extends RefresherState {
   defaultItemSize: number
   defaultItemSizeUpdated: boolean
   defaultHeaderSize: number
@@ -521,8 +526,6 @@ interface State {
   containerSize: number
   cacheScreenCount: number
   loadScreenThreshold: number
-  refresherHeight: number
-  refreshState: RefreshState
   lastRenderOffsetMin: number
   lastRenderOffsetMax: number
 }
@@ -544,7 +547,7 @@ function useListViewState(props: Props) {
     cacheScreenCount: 10,
     loadScreenThreshold: 8,
     refresherHeight: 0,
-    refreshState: '',
+    refreshState: RefreshStateEnum.Idle,
     lastRenderOffsetMin: 0,
     lastRenderOffsetMax: 0,
   })
@@ -710,186 +713,4 @@ function rearrange(
   state.visibleSize = tempVisibleSize
   state.headPlaceholderSize = tempHeadPlaceholderSize
   state.tailPlaceholderSize = tempTailPlaceholderSize
-}
-
-function handleTouchEvent(
-  isVertical: ComputedRef<boolean>,
-  containerRef: Ref<HTMLElement | null>,
-  props: Props,
-  state: State,
-  trigger: CustomEventTrigger,
-  emit: SetupContext['emit']
-) {
-  let beforeRefreshing = false
-  let triggerAbort = false
-  let toUpperNumber = 0
-
-  type touchPoint = {
-    x: number
-    y: number
-  }
-  let touchStart: touchPoint = {
-    x: 0,
-    y: 0,
-  }
-  let touchEnd: touchPoint = {
-    x: 0,
-    y: props.refresherThreshold,
-  }
-
-  function _setRefreshState(_state: RefreshState) {
-    if (!props.refresherEnabled) return
-    switch (_state) {
-      case 'refreshing':
-        state.refresherHeight = props.refresherThreshold
-        // 之前是刷新状态则不再触发刷新
-        if (!beforeRefreshing) {
-          beforeRefreshing = true
-          trigger('refresherpulling', {} as Event, {
-            deltaY: state.refresherHeight,
-            dy: state.refresherHeight,
-          })
-          trigger('refresherrefresh', {} as Event, {
-            dy: touchEnd.y - touchStart.y,
-          })
-          emit('update:refresherTriggered', true)
-        }
-        break
-      case 'restore':
-      case 'refresherabort':
-        beforeRefreshing = false
-        state.refresherHeight = toUpperNumber = 0
-        if (_state === 'restore') {
-          triggerAbort = false
-          trigger('refresherrestore', {} as Event, {
-            dy: touchEnd.y - touchStart.y,
-          })
-        }
-        if (_state === 'refresherabort' && triggerAbort) {
-          triggerAbort = false
-          trigger('refresherabort', {} as Event, {
-            dy: touchEnd.y - touchStart.y,
-          })
-        }
-        break
-    }
-    state.refreshState = _state
-  }
-
-  watch(
-    () => props.refresherTriggered,
-    (val) => {
-      if (val === true) {
-        _setRefreshState('refreshing')
-      } else if (val === false) {
-        _setRefreshState('restore')
-      }
-    }
-  )
-
-  function __handleTouchStart(event: TouchEvent) {
-    if (event.touches.length === 1) {
-      touchStart = {
-        x: event.touches[0].pageX,
-        y: event.touches[0].pageY,
-      }
-    }
-  }
-  function __handleTouchMove(event: TouchEvent) {
-    const containerEl = containerRef.value!
-    if (touchStart === null) return
-    let x = event.touches[0].pageX
-    let y = event.touches[0].pageY
-    if (!isVertical.value) {
-      return
-    }
-    let needStop = false
-    if (Math.abs(touchStart.y - y) < Math.abs(touchStart.x - x)) {
-      needStop = false
-    } else if (containerEl.scrollTop === 0 && y > touchStart.y) {
-      needStop = false
-      // 刷新时，阻止页面滚动
-      if (props.refresherEnabled && event.cancelable !== false)
-        event.preventDefault()
-    } else if (
-      containerEl.scrollHeight ===
-        containerEl.offsetHeight + containerEl.scrollTop &&
-      y < touchStart.y
-    ) {
-      needStop = false
-      return
-    } else {
-      needStop = true
-    }
-    if (needStop) {
-      event.stopPropagation()
-    }
-    if (!props.refresherEnabled) {
-      return
-    }
-    if (containerEl.scrollTop === 0 && event.touches.length === 1) {
-      // 如果容器滑动到达顶端，则进入下拉状态
-      _setRefreshState('pulling')
-    }
-
-    if (props.refresherEnabled && state.refreshState === 'pulling') {
-      const dy = y - touchStart.y
-
-      if (toUpperNumber === 0) {
-        toUpperNumber = y
-      }
-
-      if (!beforeRefreshing) {
-        state.refresherHeight = y - toUpperNumber
-        // 之前为刷新状态则不再触发pulling
-        if (state.refresherHeight > 0) {
-          triggerAbort = true
-          trigger('refresherpulling', event, {
-            deltaY: dy,
-            dy,
-          })
-        }
-      } else {
-        state.refresherHeight = dy + props.refresherThreshold
-        // 如果之前在刷新状态，则不触发刷新中断
-        triggerAbort = false
-      }
-    }
-  }
-  function __handleTouchEnd(event: TouchEvent) {
-    touchEnd = {
-      x: event.changedTouches[0].pageX,
-      y: event.changedTouches[0].pageY,
-    }
-    if (state.refresherHeight >= props.refresherThreshold) {
-      _setRefreshState('refreshing')
-    } else {
-      _setRefreshState('refresherabort')
-    }
-    touchStart = {
-      x: 0,
-      y: 0,
-    }
-    touchEnd = {
-      x: 0,
-      y: props.refresherThreshold,
-    }
-  }
-
-  onMounted(() => {
-    //兼容页面下拉刷新
-    const containerEl = containerRef.value!
-    containerEl.addEventListener('touchstart', __handleTouchStart)
-    containerEl.addEventListener('touchmove', __handleTouchMove, {
-      passive: false,
-    })
-    containerEl.addEventListener('touchend', __handleTouchEnd)
-  })
-
-  onBeforeUnmount(() => {
-    const containerEl = containerRef.value!
-    containerEl.removeEventListener('touchstart', __handleTouchStart)
-    containerEl.removeEventListener('touchmove', __handleTouchMove)
-    containerEl.removeEventListener('touchend', __handleTouchEnd)
-  })
 }

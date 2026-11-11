@@ -1,13 +1,14 @@
-import { computed, ref } from 'vue'
+import { type PropType, computed, ref } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import Loading from '../loading'
+import { RefreshStateEnum } from './types'
 
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Refresher',
   props: {
     refreshState: {
-      type: String,
-      default: '',
+      type: String as PropType<RefreshStateEnum>,
+      default: RefreshStateEnum.Idle,
     },
     refresherHeight: {
       type: Number,
@@ -36,16 +37,16 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         backgroundColor: props.refresherBackground,
       }
       switch (props.refreshState) {
-        case 'pulling':
+        case RefreshStateEnum.Pulling:
           style.height = props.refresherHeight + 'px'
           break
-        case 'refreshing':
+        case RefreshStateEnum.Refresh:
           style.height = props.refresherThreshold + 'px'
           style.transition = 'height 0.3s'
           break
-        case '':
-        case 'refresherabort':
-        case 'restore':
+        case RefreshStateEnum.Idle:
+        case RefreshStateEnum.Abort:
+        case RefreshStateEnum.Restore:
           style.height = '0px'
           style.transition = 'height 0.3s'
           break
@@ -79,15 +80,15 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           {props.refresherDefaultStyle !== 'none' ? (
             <div class="uni-scroll-view-refresh">
               {__VAPOR__ ? (
-                props.refreshState == 'pulling' ||
-                props.refreshState == 'refreshing' ? (
+                props.refreshState === RefreshStateEnum.Pulling ||
+                props.refreshState === RefreshStateEnum.Refresh ? (
                   <Loading
                     key="refresh__loading"
                     class="uni-scroll-view-refresh__loading"
-                    paused={props.refreshState == 'pulling'}
+                    paused={props.refreshState === RefreshStateEnum.Pulling}
                     style={{
                       transform:
-                        props.refreshState == 'pulling'
+                        props.refreshState === RefreshStateEnum.Pulling
                           ? 'rotate(' + refreshRotate.value + 'deg)'
                           : undefined,
                       color: refreshColor.value,
@@ -96,7 +97,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
                 ) : null
               ) : (
                 <div class="uni-scroll-view-refresh-inner">
-                  {props.refreshState == 'pulling' ? (
+                  {props.refreshState === RefreshStateEnum.Pulling ? (
                     <svg
                       key="refresh__icon"
                       style={{
@@ -112,7 +113,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
                       <path d="M0 0h24v24H0z" fill="none" />
                     </svg>
                   ) : null}
-                  {props.refreshState == 'refreshing' ? (
+                  {props.refreshState === RefreshStateEnum.Refresh ? (
                     <svg
                       key="refresh__spinner"
                       class="uni-scroll-view-refresh__spinner"

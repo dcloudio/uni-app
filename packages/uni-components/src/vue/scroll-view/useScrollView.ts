@@ -12,27 +12,23 @@ import {
   watch,
 } from 'vue'
 import { passive } from '@dcloudio/uni-shared'
-import { disableScrollBounce, initScrollBounce } from '../../helpers/scroll'
 import { onScrollend } from '../../helpers/scrollend'
 import {
   type CustomEventTrigger,
   type EmitEvent,
   useCustomEvent,
 } from '../../helpers/useEvent'
-import type { RefreshState } from '../refresher/types'
+import { RefreshStateEnum, type RefresherState } from '../refresher/types'
+import { useRefresher } from '../refresher/useRefresher'
 type HTMLRef = Ref<HTMLElement | null>
 type Props = ExtractPropTypes<typeof props>
 type Direction = 'x' | 'y'
-interface State {
+interface State extends RefresherState {
   lastScrollTop: number
   lastScrollLeft: number
   lastScrollToUpperTime: number
   lastScrollToLowerTime: number
-  refresherHeight: number
-  refreshState: RefreshState
 }
-
-const passiveOptions = /*#__PURE__*/ passive(true)
 
 export const props = {
   direction: {
@@ -194,7 +190,7 @@ function useScrollViewState(props: Props) {
     lastScrollToUpperTime: 0,
     lastScrollToLowerTime: 0,
     refresherHeight: 0,
-    refreshState: '',
+    refreshState: RefreshStateEnum.Idle,
   })
 
   return {
@@ -217,9 +213,6 @@ function useScrollViewLoader(
 ) {
   let _innerSetScrollTop: boolean = false
   let _innerSetScrollLeft: boolean = false
-  let beforeRefreshing: boolean = false
-  let toUpperNumber: number = 0 // 容器触顶时，此时鼠标Y轴位置
-  let triggerAbort: boolean = false
 
   let __transitionEnd = () => {}
 
@@ -242,6 +235,28 @@ function useScrollViewLoader(
     //#else
     return props.scrollY
     //#endif
+  })
+
+  useRefresher({
+    props,
+    state,
+    scrollElement: main,
+    isVertical: realScrollY,
+    trigger,
+    emit,
+    onNativeTouchMove(event, dx, dy) {
+      const horizontal = Math.abs(dx) > Math.abs(dy)
+      if (horizontal ? !realScrollX.value : !realScrollY.value) return
+      const element = main.value!
+      const position = horizontal ? element.scrollLeft : element.scrollTop
+      const max = horizontal
+        ? element.scrollWidth - element.offsetWidth
+        : element.scrollHeight - element.offsetHeight
+      const delta = horizontal ? dx : dy
+      if ((delta > 0 && position > 0) || (delta < 0 && position < max)) {
+        event.stopPropagation()
+      }
+    },
   })
 
   const upperThresholdNumber = computed(() => {
@@ -445,67 +460,6 @@ function useScrollViewLoader(
     content.value!.removeEventListener('transitionend', __transitionEnd)
     content.value!.removeEventListener('webkitTransitionEnd', __transitionEnd)
   }
-  /**
-   * 下拉刷新卡顿的情况说明
-   * 卡顿具体场景是一次下拉过程中先触发滚动在触发下拉刷新，
-   * 不管下拉刷新是做高度动画还是transform动画都一样，哪怕把下拉刷新去了只让滚动内容transform都会卡，
-   * 这个问题在chrome 131版本存在，升级到156版本就不卡了。
-   * 要维持现有的表现的话，卡顿的问题尝试了很多方案都没法修复。
-   * 如果可以接受下拉刷新不和滚动连在一起的话，这个倒是能解决，
-   * 表现为用户在scrollTop大于0的位置持续下拉只能拉到scrollTop等于0，松手之后再次下拉才能触发下拉刷新。
-   * 当前微信开发者工具最新稳定版的webview是136版本，所以它在这个场景下也卡
-   */
-  function _setRefreshState(_state: RefreshState) {
-    if (!props.refresherEnabled) return
-    switch (_state) {
-      case 'refreshing':
-        state.refresherHeight = props.refresherThreshold
-        // 之前是刷新状态则不再触发刷新
-        if (!beforeRefreshing) {
-          beforeRefreshing = true
-          trigger('refresherpulling', {} as Event, {
-            deltaY: state.refresherHeight,
-            dy: state.refresherHeight,
-          })
-          trigger('refresherrefresh', {} as Event, {
-            dy: touchEnd.y - touchStart.y,
-          })
-          emit('update:refresherTriggered', true)
-        }
-        break
-      case 'restore':
-      case 'refresherabort':
-        beforeRefreshing = false
-        state.refresherHeight = toUpperNumber = 0
-        if (_state === 'restore') {
-          triggerAbort = false
-          trigger('refresherrestore', {} as Event, {
-            dy: touchEnd.y - touchStart.y,
-          })
-        }
-        if (_state === 'refresherabort' && triggerAbort) {
-          triggerAbort = false
-          trigger('refresherabort', {} as Event, {
-            dy: touchEnd.y - touchStart.y,
-          })
-        }
-        break
-    }
-    state.refreshState = _state
-  }
-  type touchPoint = {
-    x: number
-    y: number
-  }
-  let touchStart: touchPoint = {
-    x: 0,
-    y: 0,
-  }
-  let touchEnd: touchPoint = {
-    x: 0,
-    y: props.refresherThreshold,
-  }
-
   onMounted(() => {
     nextTick(() => {
       _scrollTopChanged(scrollTopNumber.value)
@@ -517,136 +471,11 @@ function useScrollViewLoader(
       event.stopPropagation()
       _handleScroll(event as MouseEvent)
     }
-    let needStop: boolean | null = null
-
-    let __handleTouchMove = function (event: TouchEvent) {
-      if (touchStart === null) return
-
-      let x = event.touches[0].pageX
-      let y = event.touches[0].pageY
-      let _main = main.value!
-
-      if (Math.abs(x - touchStart.x) > Math.abs(y - touchStart.y)) {
-        // 横向滑动
-        if (realScrollX.value) {
-          if (_main.scrollLeft === 0 && x > touchStart.x) {
-            needStop = false
-            return
-          } else if (
-            _main.scrollWidth === _main.offsetWidth + _main.scrollLeft &&
-            x < touchStart.x
-          ) {
-            needStop = false
-            return
-          }
-          needStop = true
-        } else {
-          needStop = false
-        }
-      } else {
-        // 纵向滑动
-        if (realScrollY.value) {
-          if (_main.scrollTop === 0 && y > touchStart.y) {
-            needStop = false
-            // 刷新时，阻止页面滚动
-            if (props.refresherEnabled && event.cancelable !== false)
-              event.preventDefault()
-          } else if (
-            _main.scrollHeight === _main.offsetHeight + _main.scrollTop &&
-            y < touchStart.y
-          ) {
-            needStop = false
-            return
-          } else {
-            needStop = true
-          }
-        } else {
-          needStop = false
-        }
-      }
-
-      if (needStop) {
-        event.stopPropagation()
-      }
-
-      if (_main.scrollTop === 0 && event.touches.length === 1) {
-        // 如果容器滑动到达顶端，则进入下拉状态
-        _setRefreshState('pulling')
-      }
-
-      if (props.refresherEnabled && state.refreshState === 'pulling') {
-        const dy = y - touchStart.y
-
-        if (toUpperNumber === 0) {
-          toUpperNumber = y
-        }
-
-        if (!beforeRefreshing) {
-          state.refresherHeight = y - toUpperNumber
-          // 之前为刷新状态则不再触发pulling
-          if (state.refresherHeight > 0) {
-            triggerAbort = true
-            trigger('refresherpulling', event, {
-              deltaY: dy,
-              dy,
-            })
-          }
-        } else {
-          state.refresherHeight = dy + props.refresherThreshold
-          // 如果之前在刷新状态，则不触发刷新中断
-          triggerAbort = false
-        }
-      }
-    }
-    let __handleTouchStart = function (event: TouchEvent) {
-      if (event.touches.length === 1) {
-        disableScrollBounce({
-          disable: true,
-        })
-        touchStart = {
-          x: event.touches[0].pageX,
-          y: event.touches[0].pageY,
-        }
-      }
-    }
-    let __handleTouchEnd = function (event: TouchEvent) {
-      touchEnd = {
-        x: event.changedTouches[0].pageX,
-        y: event.changedTouches[0].pageY,
-      }
-      disableScrollBounce({
-        disable: false,
-      })
-      if (state.refresherHeight >= props.refresherThreshold) {
-        _setRefreshState('refreshing')
-      } else {
-        _setRefreshState('refresherabort')
-      }
-      touchStart = {
-        x: 0,
-        y: 0,
-      }
-      touchEnd = {
-        x: 0,
-        y: props.refresherThreshold,
-      }
-    }
-    main.value!.addEventListener(
-      'touchstart',
-      __handleTouchStart,
-      passiveOptions
-    )
-    main.value!.addEventListener('touchmove', __handleTouchMove, passive(false))
     main.value!.addEventListener('scroll', __handleScroll, passive(false))
-    main.value!.addEventListener('touchend', __handleTouchEnd, passiveOptions)
     const removeScrollendListener = onScrollend(main.value!, _handleScrollEnd)
-    initScrollBounce()
 
     onBeforeUnmount(() => {
-      main.value!.removeEventListener('touchstart', __handleTouchStart)
-      main.value!.removeEventListener('touchmove', __handleTouchMove)
       main.value!.removeEventListener('scroll', __handleScroll)
-      main.value!.removeEventListener('touchend', __handleTouchEnd)
       removeScrollendListener()
     })
   })
@@ -669,18 +498,6 @@ function useScrollViewLoader(
       _scrollIntoViewChanged(val)
     }
   )
-  watch(
-    () => props.refresherTriggered,
-    (val) => {
-      // TODO
-      if (val === true) {
-        _setRefreshState('refreshing')
-      } else if (val === false) {
-        _setRefreshState('restore')
-      }
-    }
-  )
-
   return {
     realScrollX,
     realScrollY,

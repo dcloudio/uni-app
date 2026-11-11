@@ -1,6 +1,23 @@
-export type RefreshState =
-  | 'refreshing'
-  | 'restore'
-  | 'pulling'
-  | 'refresherabort'
-  | ''
+/**
+ * touch 状态机（touchstart 只记录手势，不改变刷新状态）：
+ * Idle --从顶部开始且可取消的纵向下拉 touchmove--> Pulling
+ * Pulling --touchend，达到阈值--> Refresh
+ * Pulling --touchend，未达阈值 / touchcancel / 多指中断--> Abort
+ * Refresh --向上 touchmove--> Restore
+ * Restore / Abort --300ms 回弹完成--> Idle
+ *
+ * 严格按照此状态机执行，比如Refresh状态继续下拉，不会改变为Pulling状态，scroll-view在界面上也不会动
+ * Refresh --向上 touchmove--> Restore 这步有动画直接完成Restore状态，touch事件继续用于触发滚动
+ */
+export const enum RefreshStateEnum {
+  Idle = '',
+  Pulling = 'pulling',
+  Refresh = 'refresh',
+  Restore = 'restore',
+  Abort = 'abort',
+}
+
+export interface RefresherState {
+  refresherHeight: number
+  refreshState: RefreshStateEnum
+}
