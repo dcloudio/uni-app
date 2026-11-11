@@ -166,7 +166,6 @@ function generateCssCode(config: ResolvedConfig) {
   }
   // x 项目按渲染模式加载唯一一份框架基础样式
   if (process.env.UNI_APP_X === 'true') {
-    cssFiles.push(H5_FRAMEWORK_STYLE_PATH + 'uni-icon.css')
     if (isUniAppXWebVapor()) {
       cssFiles.push(H5_FRAMEWORK_STYLE_PATH + 'uvue-vapor.css')
     } else {
