@@ -241,6 +241,10 @@ UniStopNestedScrollEvent -- Extends --> UniEvent
 ### 子组件 @children-tags
 支持所有组件
 
+### 上下文对象API
+
+scroll-view组件的上下文对象为[ScrollViewContext](../api/scrollviewcontext.md)，可通过该对象调用滚动、下拉刷新等方法。
+
 ### Android的overscroll、bounce、下拉刷新说明@overscroll
 
 overscroll，中文译为过度滚动。
