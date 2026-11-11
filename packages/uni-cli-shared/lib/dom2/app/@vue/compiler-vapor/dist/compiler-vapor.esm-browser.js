@@ -19280,9 +19280,12 @@ function resolveExpression(exp, isComponent) {
 }
 function parseStaticAttrBooleanExpression(exp) {
 	try {
-		return includeBooleanAttr(exp.isStatic ? exp.content : new Function(`return ${exp.content}`)());
+		return includeBooleanAttr(exp.isStatic ? exp.content : evaluateExpression(exp.content));
 	} catch (e) {}
 	return null;
+}
+function evaluateExpression(expression) {
+	return new Function(`return (${expression})`)();
 }
 function getLiteralExpressionValue(exp, excludeNumber) {
 	if (exp.ast) {
@@ -25206,4 +25209,4 @@ function getBaseTransformPreset() {
 	}];
 }
 //#endregion
-export { CodegenContext, DELIMITERS_ARRAY, DELIMITERS_ARRAY_NEWLINE, DELIMITERS_OBJECT, DELIMITERS_OBJECT_NEWLINE, DynamicAccess, DynamicFlag, IMPORT_EXPR_RE, IMPORT_EXP_END, IMPORT_EXP_START, INDENT_END, INDENT_START, IRDynamicPropsKind, IRNodeTypes, IRSlotType, LF, NEWLINE, TEXT_NODE_PLACEHOLDER, TEXT_PLACEHOLDER, TemplateRegistry, VaporErrorCodes, VaporErrorMessages, analyzeExpressions, buildCodeFragment, buildDestructureIdMap, buildNextIdMap, codeFragmentToString, collectSingleUseAssetComponents, compile, createHandlerGroups, createStructuralDirectiveTransform, createVaporCompilerError, genCall, genDirectiveModifiers, genDynamicComponentFlags, genIfChainFlags, genMulti, genSlotFlags, generate, getBaseTransformPreset, getLiteralExpressionValue, getNextId, getParserOptions, getStaticPropKeyName, hasStableSlotRoot, isBlockOperation, isBuiltInComponent, isConstantExpression, isDirectStaticLiteralProp, isKeepAliveTag, isListenerProp, isLongIfChain, isStaticExpression, isTeleportTag, isTransitionGroupTag, isTransitionTag, isVModelListener, isVModelOperation, markSlotRootOperations, markSlotRootOperationsForDom2, matchKeyOnlyBindingPattern, matchSelectorPattern, needsVaporCtx, parse, parseStaticAttrBooleanExpression, parseValueDestructure, propToExpression, transform, transformChildren, transformComment, transformElement, transformKey, transformSlotOutlet, transformTemplateRef, transformText, transformVBind, transformVFor, transformVHtml, transformVIf, transformVModel, transformVOn, transformVOnce, transformVShow, transformVSlot, transformVText, wrapTemplate };
+export { CodegenContext, DELIMITERS_ARRAY, DELIMITERS_ARRAY_NEWLINE, DELIMITERS_OBJECT, DELIMITERS_OBJECT_NEWLINE, DynamicAccess, DynamicFlag, IMPORT_EXPR_RE, IMPORT_EXP_END, IMPORT_EXP_START, INDENT_END, INDENT_START, IRDynamicPropsKind, IRNodeTypes, IRSlotType, LF, NEWLINE, TEXT_NODE_PLACEHOLDER, TEXT_PLACEHOLDER, TemplateRegistry, VaporErrorCodes, VaporErrorMessages, analyzeExpressions, buildCodeFragment, buildDestructureIdMap, buildNextIdMap, codeFragmentToString, collectSingleUseAssetComponents, compile, createHandlerGroups, createStructuralDirectiveTransform, createVaporCompilerError, evaluateExpression, genCall, genDirectiveModifiers, genDynamicComponentFlags, genIfChainFlags, genMulti, genSlotFlags, generate, getBaseTransformPreset, getLiteralExpressionValue, getNextId, getParserOptions, getStaticPropKeyName, hasStableSlotRoot, isBlockOperation, isBuiltInComponent, isConstantExpression, isDirectStaticLiteralProp, isKeepAliveTag, isListenerProp, isLongIfChain, isStaticExpression, isTeleportTag, isTransitionGroupTag, isTransitionTag, isVModelListener, isVModelOperation, markSlotRootOperations, markSlotRootOperationsForDom2, matchKeyOnlyBindingPattern, matchSelectorPattern, needsVaporCtx, parse, parseStaticAttrBooleanExpression, parseValueDestructure, propToExpression, transform, transformChildren, transformComment, transformElement, transformKey, transformSlotOutlet, transformTemplateRef, transformText, transformVBind, transformVFor, transformVHtml, transformVIf, transformVModel, transformVOn, transformVOnce, transformVShow, transformVSlot, transformVText, wrapTemplate };

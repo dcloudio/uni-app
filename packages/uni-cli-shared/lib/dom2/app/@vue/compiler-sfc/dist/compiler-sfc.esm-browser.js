@@ -25406,9 +25406,12 @@ function resolveExpression(exp, isComponent) {
 }
 function parseStaticAttrBooleanExpression(exp) {
 	try {
-		return includeBooleanAttr(exp.isStatic ? exp.content : new Function(`return ${exp.content}`)());
+		return includeBooleanAttr(exp.isStatic ? exp.content : evaluateExpression(exp.content));
 	} catch (e) {}
 	return null;
+}
+function evaluateExpression(expression) {
+	return new Function(`return (${expression})`)();
 }
 function getLiteralExpressionValue(exp, excludeNumber) {
 	if (exp.ast) {
@@ -31311,6 +31314,7 @@ var src_exports$1 = /* @__PURE__ */ __exportAll({
 	createHandlerGroups: () => createHandlerGroups,
 	createStructuralDirectiveTransform: () => createStructuralDirectiveTransform,
 	createVaporCompilerError: () => createVaporCompilerError,
+	evaluateExpression: () => evaluateExpression,
 	genCall: () => genCall,
 	genDirectiveModifiers: () => genDirectiveModifiers,
 	genDynamicComponentFlags: () => genDynamicComponentFlags,

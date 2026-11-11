@@ -220,10 +220,13 @@ function resolveExpression(exp, isComponent) {
 }
 function parseStaticAttrBooleanExpression(exp) {
 	try {
-		const result = exp.isStatic ? exp.content : new Function(`return ${exp.content}`)();
+		const result = exp.isStatic ? exp.content : evaluateExpression(exp.content);
 		return (0, _vue_shared.includeBooleanAttr)(result);
 	} catch (e) {}
 	return null;
+}
+function evaluateExpression(expression) {
+	return new Function(`return (${expression})`)();
 }
 function getLiteralExpressionValue(exp, excludeNumber) {
 	if (exp.ast) {
@@ -6129,6 +6132,7 @@ exports.compile = compile;
 exports.createHandlerGroups = createHandlerGroups;
 exports.createStructuralDirectiveTransform = createStructuralDirectiveTransform;
 exports.createVaporCompilerError = createVaporCompilerError;
+exports.evaluateExpression = evaluateExpression;
 exports.genCall = genCall;
 exports.genDirectiveModifiers = genDirectiveModifiers;
 exports.genDynamicComponentFlags = genDynamicComponentFlags;

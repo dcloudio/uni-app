@@ -23204,6 +23204,7 @@ export declare function propToExpression(prop: AttributeNode | VaporDirectiveNod
 export declare function isConstantExpression(exp: SimpleExpressionNode, bindings?: BindingMetadata): boolean;
 export declare function isStaticExpression(node: SimpleExpressionNode, bindings: BindingMetadata): boolean;
 export declare function parseStaticAttrBooleanExpression(exp: SimpleExpressionNode): boolean | null;
+export declare function evaluateExpression(expression: string): unknown;
 export declare function getLiteralExpressionValue(exp: SimpleExpressionNode, excludeNumber?: boolean): string | null;
 export declare function isTransitionTag(tag: string): boolean;
 export declare function isTransitionGroupTag(tag: string): boolean;
