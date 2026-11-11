@@ -1,5 +1,4 @@
 import path from 'path'
-import fs from 'fs'
 import debug from 'debug'
 import { isString } from '@vue/shared'
 import type { Plugin, ResolvedConfig } from 'vite'
@@ -77,12 +76,6 @@ export function createConfigResolved({
   }
   return (config) => {
     const mainPath = resolveMainPathOnce(process.env.UNI_INPUT_DIR)
-    const iconCss = isUniAppX()
-      ? fs.readFileSync(
-          path.resolve(__dirname, '../../lib/uni-icon.css'),
-          'utf8'
-        )
-      : ''
     fixUnocss(config)
     injectCssPlugin(
       config,
@@ -157,18 +150,6 @@ export function createConfigResolved({
              * ^的作用参考：[引用页面或父组件的样式](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/wxml-wxss.html#%E5%BC%95%E7%94%A8%E9%A1%B5%E9%9D%A2%E6%88%96%E7%88%B6%E7%BB%84%E4%BB%B6%E7%9A%84%E6%A0%B7%E5%BC%8F)
              */
             cssCode = transformPartSelector(cssCode)
-          }
-          // 字体不依赖布局重置；独立分包页面不能继承主包的应用样式。
-          if (
-            isX &&
-            (filename === 'app' + cssExtname ||
-              (isMiniProgramPageFile(filename) &&
-                getIndependentRootByFilename(
-                  path.resolve(process.env.UNI_INPUT_DIR, filename),
-                  process.env.UNI_INPUT_DIR
-                )))
-          ) {
-            cssCode += '\n' + iconCss
           }
           if (filename === 'app' + cssExtname) {
             const componentCustomHiddenCss =
