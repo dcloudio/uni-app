@@ -1083,7 +1083,7 @@ export default {
 
 ## 组合选项 @options-composition
 
-: provide; Web(VDOM): 4.0; Web(Vapor):  ; 微信小程序(VDOM): 4.41; 微信小程序(Vapor):  ; Android(VDOM): 3.99; Android(Vapor): 5.21; iOS(VDOM): 4.11; iOS(Vapor): 5.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0; : inject; Web(VDOM): 4.0; Web(Vapor):  ; 微信小程序(VDOM): 4.41; 微信小程序(Vapor):  ; Android(VDOM): 3.99; Android(Vapor): 5.21; iOS(VDOM): 4.11; iOS(Vapor): 5.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0; : mixins; Web(VDOM): 4.0; Web(Vapor): x; 微信小程序(VDOM): 4.41; 微信小程序(Vapor): x; Android(VDOM): 3.99; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x
+: provide; Web(VDOM): 4.0; Web(Vapor):  ; 微信小程序: 4.41; Android(VDOM): 3.99; Android(Vapor): 5.21; iOS(VDOM): 4.11; iOS(Vapor): 5.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0; : inject; Web(VDOM): 4.0; Web(Vapor):  ; 微信小程序: 4.41; Android(VDOM): 3.99; Android(Vapor): 5.21; iOS(VDOM): 4.11; iOS(Vapor): 5.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0; : mixins; Web(VDOM): 4.0; Web(Vapor): x; 微信小程序: 4.41; Android(VDOM): 3.99; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x
 
 ### inject
 
@@ -2197,7 +2197,7 @@ export default {
 | $root | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 |
 | $options | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 |
 | $nextTick | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 |
-| $forceUpdate | Web(VDOM): 4.0; Web(Vapor): x; 微信小程序(VDOM): 4.41; 微信小程序(Vapor): x; Android(VDOM): √; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; iOS(VDOM) UTS 插件: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x |
+| $forceUpdate | Web(VDOM): 4.0; Web(Vapor): x; 微信小程序: 4.41; Android(VDOM): √; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; iOS(VDOM) UTS 插件: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x |
 | $el | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 |
 | $callMethod | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 |
 | $emit | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 |

@@ -209,7 +209,7 @@
 默认情况下，`v-model` 会在每次 `input` 事件后更新数据 (IME 拼字阶段的状态例外)。你可以添加 `lazy` 修饰符来改为在每次 `change` 事件后更新数据
 
 **兼容性 <Help />** 
- Web: x; 微信小程序: x; Android: 3.9; iOS: x; HarmonyOS: x
+ Web: x; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): 5.36; iOS(VDOM): x; iOS(Vapor): 5.36; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.36
 
 ### number
 
