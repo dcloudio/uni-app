@@ -45,7 +45,7 @@ App平台设置如果元素的 visibility 设置为 hidden，其子元素将不�
 **蒸汽模式拍平(flatten)**  
 - app-android平台visibility支持拍平。view组件visibility设置为hidden时拍平存在缺陷，view的子元素默认仍然会显示，子元素的显示状态由其自身的visibility决定
 - app-ios平台visibility支持拍平。view组件visibility设置为hidden时拍平存在缺陷，view的非拍平子元素默认仍然会显示，非拍平子元素的显示状态由其自身的visibility决定，而拍平子元素会跟随此view不可见
-- app-harmony平台visibility暂不支持拍平
+- app-harmony 平台自 HBuilderX 5.35 起支持 visibility 拍平，其表现与 app-ios 一致：拍平子元素会跟随设置为 hidden 的父元素隐藏；非拍平子元素默认仍会显示，其显示状态由自身的 visibility 决定。
 
 ### 默认值 @default-value 
  `visible`

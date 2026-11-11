@@ -54,7 +54,7 @@
 * 拍平时css样式[visibility](../css/visibility.md)存在差异
   + app-android平台visibility支持拍平。view组件visibility设置为hidden时拍平存在缺陷，view的子元素默认仍然会显示，子元素的显示状态由其自身的visibility决定
   + app-ios平台visibility支持拍平。view组件visibility设置为hidden时拍平存在缺陷，view的非拍平子元素默认仍然会显示，非拍平子元素的显示状态由其自身的visibility决定，而拍平子元素会跟随此view不可见
-  + app-harmony平台visibility暂不支持拍平
+  + app-harmony 平台自 HBuilderX 5.35 起 visibility 支持拍平，其表现与 app-ios 一致：拍平子元素会跟随设置为 hidden 的父元素隐藏；非拍平子元素默认仍会显示，其显示状态由自身的 visibility 决定。
 * view组件拍平后存在以下缺陷：
   + css样式transform、overflow、display、opacity，如果view存在子元素，这些样式不会对非拍平的子元素产生效果
   + hover-class、hover-stop-propagation、hover-start-time、hover-stay-time属性在拍平时无效
