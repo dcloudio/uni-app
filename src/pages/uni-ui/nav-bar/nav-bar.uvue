@@ -34,7 +34,7 @@
 		<uni-nav-bar>
 			<template #mid>
 				<text class="uni-theme-text">插槽右箭头可以点</text>
-				<text style="padding: 3px;font-size: 10px;" class="uni-theme-text" @click="clickButton">▼</text>
+				<text style="padding: 3px;font-size: 10px;" class="uni-theme-text clickable" @click="clickButton">▼</text>
 			</template>
 		</uni-nav-bar>
 		<uni-nav-bar>
@@ -76,6 +76,14 @@
 	line-height: 44px;
 	text-align: center;
 	color: var(--text-color);
+	/* #ifdef WEB */
+	cursor: pointer;
+	/* #endif */
+}
+.clickable {
+	/* #ifdef WEB */
+	cursor: pointer;
+	/* #endif */
 }
 .slot-input {
 	color: #333333;

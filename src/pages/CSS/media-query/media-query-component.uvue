@@ -1,0 +1,57 @@
+<template>
+  <view class="component">
+    <text class="component-title">组件已添加</text>
+    <view class="condition">
+      <text class="condition-title">组件：纵向（高度 ≥ 宽度）</text>
+      <text class="syntax">@media (orientation: portrait)</text>
+      <text id="component-portrait" class="status matched component-portrait">条件满足</text>
+      <text id="component-portrait-unmatched" class="status unmatched component-portrait-unmatched">条件不满足</text>
+    </view>
+    <view class="condition">
+      <text class="condition-title">组件：宽度 ≥ 600px</text>
+      <text class="syntax">@media (min-width: 600px)</text>
+      <text id="component-width" class="status matched component-width">条件满足</text>
+      <text id="component-width-unmatched" class="status unmatched component-width-unmatched">条件不满足</text>
+    </view>
+    <view class="condition">
+      <text class="condition-title">组件：高度 ≥ 500px</text>
+      <text class="syntax">@media (min-height: 500px)</text>
+      <text id="component-height" class="status matched component-height">条件满足</text>
+      <text id="component-height-unmatched" class="status unmatched component-height-unmatched">条件不满足</text>
+    </view>
+    <view class="condition">
+      <text class="condition-title">组件：页面宽度 ≥ 高度（宽高比 ≥ 1/1）</text>
+      <text class="syntax">@media (min-aspect-ratio: 1/1)</text>
+      <text id="component-aspect-ratio" class="status matched component-aspect-ratio">条件满足</text>
+      <text id="component-aspect-ratio-unmatched" class="status unmatched component-aspect-ratio-unmatched">条件不满足</text>
+    </view>
+  </view>
+</template>
+
+<style>
+  .component { padding: 12px; margin-top: 12px; border-radius: 8px; background-color: #eff6ff; }
+  .component-title { font-size: 16px; color: #1e40af; margin-bottom: 8px; }
+  .condition { padding: 12px; margin-bottom: 8px; border-radius: 8px; background-color: #ffffff; }
+  .condition-title { font-size: 15px; color: #1f2937; margin-bottom: 4px; }
+  .syntax { font-size: 12px; color: #64748b; margin-bottom: 8px; }
+  .status { align-self: flex-start; padding: 4px 8px; border-radius: 4px; font-size: 13px; }
+  .matched { display: none; background-color: #dcfce7; color: #166534; }
+  .unmatched { display: flex; background-color: #f1f5f9; color: #475569; }
+
+  @media (min-width: 600px) {
+    .component-width { display: flex; }
+    .component-width-unmatched { display: none; }
+  }
+  @media (min-height: 500px) {
+    .component-height { display: flex; }
+    .component-height-unmatched { display: none; }
+  }
+  @media (orientation: portrait) {
+    .component-portrait { display: flex; }
+    .component-portrait-unmatched { display: none; }
+  }
+  @media (min-aspect-ratio: 1/1) {
+    .component-aspect-ratio { display: flex; }
+    .component-aspect-ratio-unmatched { display: none; }
+  }
+</style>

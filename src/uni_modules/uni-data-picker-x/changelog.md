@@ -1,3 +1,5 @@
+## 1.0.3 (2026-11-11)
+- `uni-data-picker-view` 列表容器 external class 由 `list-view-class` 重命名为 `list-class`，不兼容旧名称
 ## 1.0.2 (2026-11-09)
 - 调整弹出层 class 命名，`cover-class` 重命名为 `mask-class`，同时保留对旧属性 `cover-class` 的兼容（`cover-class` 已废弃，建议改用 `mask-class`）
 ## 1.0.1 (2026-11-06)

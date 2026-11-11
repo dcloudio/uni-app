@@ -1,0 +1,298 @@
+<template>
+  <scroll-view class="page">
+    <view class="content">
+      <text class="title">CSS 媒体查询</text>
+      <view class="summary">
+        <text class="viewport">当前视口：{{ viewportWidth }} × {{ viewportHeight }} px</text>
+        <text class="description">旋转设备或调整窗口，观察下方条件和布局变化。</text>
+        <text class="description">绿色“条件满足”，灰色“条件不满足”；灰色不代表测试失败。状态由 CSS 控制。</text>
+      </view>
+
+      <text class="section-title">视口方向</text>
+      <text class="description">按页面可用宽高判断，不读取设备方向。下方两项始终只有一项满足；正方形属于纵向。</text>
+      <view class="condition">
+        <text class="condition-title">纵向：高度 ≥ 宽度</text>
+        <text class="syntax">@media (orientation: portrait)</text>
+        <text id="portrait" class="status matched portrait">条件满足</text>
+        <text id="portrait-unmatched" class="status unmatched portrait-unmatched">条件不满足</text>
+      </view>
+      <view class="condition">
+        <text class="condition-title">横向：宽度 &gt; 高度</text>
+        <text class="syntax">@media (orientation: landscape)</text>
+        <text id="landscape" class="status matched landscape">条件满足</text>
+        <text id="landscape-unmatched" class="status unmatched landscape-unmatched">条件不满足</text>
+      </view>
+
+      <text class="section-title">视口宽高比</text>
+      <text class="description">宽高比 = 页面可用宽度 ÷ 高度。1/1 表示正方形，16/9 表示宽 16 份、高 9 份；判断的是页面视口，不是卡片尺寸。</text>
+      <text class="description">旋转后观察 ≥ 1/1 和 ≤ 1/1 的状态切换；正方形时两项都满足。</text>
+      <view class="condition">
+        <text class="condition-title">正方形：宽度 = 高度</text>
+        <text class="syntax">@media (aspect-ratio: 1/1)</text>
+        <text id="aspect-ratio" class="status matched aspect-ratio">条件满足</text>
+        <text id="aspect-ratio-unmatched" class="status unmatched aspect-ratio-unmatched">条件不满足</text>
+      </view>
+      <view class="condition">
+        <text class="condition-title">宽度 ≥ 高度（宽高比 ≥ 1/1）</text>
+        <text class="syntax">@media (min-aspect-ratio: 1/1)</text>
+        <text id="min-aspect-ratio" class="status matched min-aspect-ratio">条件满足</text>
+        <text id="min-aspect-ratio-unmatched" class="status unmatched min-aspect-ratio-unmatched">条件不满足</text>
+      </view>
+      <view class="condition">
+        <text class="condition-title">宽度 ≤ 高度（宽高比 ≤ 1/1）</text>
+        <text class="syntax">@media (max-aspect-ratio: 1/1)</text>
+        <text id="max-aspect-ratio" class="status matched max-aspect-ratio">条件满足</text>
+        <text id="max-aspect-ratio-unmatched" class="status unmatched max-aspect-ratio-unmatched">条件不满足</text>
+      </view>
+      <view class="condition">
+        <text class="condition-title">宽高比大于 1/1，且不超过 16/9</text>
+        <text class="syntax">@media (1/1 &lt; aspect-ratio &lt;= 16/9)</text>
+        <text id="range-aspect-ratio" class="status matched range-aspect-ratio">条件满足</text>
+        <text id="range-aspect-ratio-unmatched" class="status unmatched range-aspect-ratio-unmatched">条件不满足</text>
+      </view>
+      <view class="condition">
+        <text class="condition-title">无值查询：始终满足（包括零尺寸视口）</text>
+        <text class="syntax">@media (aspect-ratio)</text>
+        <text id="aspect-ratio-boolean" class="status matched aspect-ratio-boolean">条件满足</text>
+        <text id="aspect-ratio-boolean-unmatched" class="status unmatched aspect-ratio-boolean-unmatched">条件不满足</text>
+      </view>
+
+      <text class="section-title">宽屏布局</text>
+      <text class="description">宽度小于 600px 时上下排列，达到 600px 后左右并排。</text>
+      <view class="columns">
+        <view class="card"><text class="card-title">区域 A</text></view>
+        <view class="card"><text class="card-title">区域 B</text></view>
+      </view>
+
+      <text class="section-title">宽度条件</text>
+      <view class="condition">
+        <text class="condition-title">宽度 ≥ 600px</text>
+        <text class="syntax">@media (min-width: 600px)</text>
+        <text id="min-width" class="status matched min-width">条件满足</text>
+        <text id="min-width-unmatched" class="status unmatched min-width-unmatched">条件不满足</text>
+      </view>
+      <view class="condition">
+        <text class="condition-title">宽度 ≤ 600px</text>
+        <text class="syntax">@media (max-width: 600px)</text>
+        <text id="max-width" class="status matched max-width">条件满足</text>
+        <text id="max-width-unmatched" class="status unmatched max-width-unmatched">条件不满足</text>
+      </view>
+      <view class="condition">
+        <text class="condition-title">600px ≤ 宽度 &lt; 1000px</text>
+        <text class="syntax">@media (600px &lt;= width &lt; 1000px)</text>
+        <text id="range-width" class="status matched range-width">条件满足</text>
+        <text id="range-width-unmatched" class="status unmatched range-width-unmatched">条件不满足</text>
+      </view>
+
+      <text class="section-title">高度条件</text>
+      <view class="condition">
+        <text class="condition-title">高度 ≥ 500px</text>
+        <text class="syntax">@media (min-height: 500px)</text>
+        <text id="min-height" class="status matched min-height">条件满足</text>
+        <text id="min-height-unmatched" class="status unmatched min-height-unmatched">条件不满足</text>
+      </view>
+      <view class="condition">
+        <text class="condition-title">高度 ≤ 500px</text>
+        <text class="syntax">@media (max-height: 500px)</text>
+        <text id="max-height" class="status matched max-height">条件满足</text>
+        <text id="max-height-unmatched" class="status unmatched max-height-unmatched">条件不满足</text>
+      </view>
+      <view class="condition">
+        <text class="condition-title">500px ≤ 高度 ≤ 800px</text>
+        <text class="syntax">@media (500px &lt;= height &lt;= 800px)</text>
+        <text id="range-height" class="status matched range-height">条件满足</text>
+        <text id="range-height-unmatched" class="status unmatched range-height-unmatched">条件不满足</text>
+      </view>
+
+      <text class="section-title">组合条件</text>
+      <view class="condition">
+        <text class="condition-title">方向特征存在：横向和纵向均满足</text>
+        <text class="syntax">@media (orientation)</text>
+        <text id="orientation-boolean" class="status matched orientation-boolean">条件满足</text>
+        <text id="orientation-boolean-unmatched" class="status unmatched orientation-boolean-unmatched">条件不满足</text>
+      </view>
+      <view class="condition">
+        <text class="condition-title">非纵向：应与横向条件一致</text>
+        <text class="syntax">@media not (orientation: portrait)</text>
+        <text id="not-portrait" class="status matched not-portrait">条件满足</text>
+        <text id="not-portrait-unmatched" class="status unmatched not-portrait-unmatched">条件不满足</text>
+      </view>
+      <view class="condition">
+        <text class="condition-title">横向，且宽度 ≥ 600px</text>
+        <text class="syntax">@media (orientation: landscape) and (min-width: 600px)</text>
+        <text id="landscape-width" class="status matched landscape-width">条件满足</text>
+        <text id="landscape-width-unmatched" class="status unmatched landscape-width-unmatched">条件不满足</text>
+      </view>
+      <view class="condition">
+        <text class="condition-title">宽度和高度均大于 0</text>
+        <text class="syntax">@media (width) and (height)</text>
+        <text id="boolean" class="status matched boolean">条件满足</text>
+        <text id="boolean-unmatched" class="status unmatched boolean-unmatched">条件不满足</text>
+      </view>
+      <view class="condition">
+        <text class="condition-title">宽度 ≥ 600px，且高度 ≥ 500px</text>
+        <text class="syntax">@media (min-width: 600px) and (min-height: 500px)</text>
+        <text id="and" class="status matched and">条件满足</text>
+        <text id="and-unmatched" class="status unmatched and-unmatched">条件不满足</text>
+      </view>
+      <view class="condition">
+        <text class="condition-title">宽度 ≥ 600px，或高度 ≥ 500px</text>
+        <text class="syntax">@media (min-width: 600px) or (min-height: 500px)</text>
+        <text id="or" class="status matched or">条件满足</text>
+        <text id="or-unmatched" class="status unmatched or-unmatched">条件不满足</text>
+      </view>
+      <view class="condition">
+        <text class="condition-title">宽度 ≥ 600px，且（高度 ≥ 500px 或高度 ≤ 400px）</text>
+        <text class="syntax">@media ((min-width: 600px) and ((min-height: 500px) or (max-height: 400px)))</text>
+        <text id="nested" class="status matched nested">条件满足</text>
+        <text id="nested-unmatched" class="status unmatched nested-unmatched">条件不满足</text>
+      </view>
+      <view class="condition">
+        <text class="condition-title">宽度不满足 ≥ 600px，即宽度 &lt; 600px</text>
+        <text class="syntax">@media not (min-width: 600px)</text>
+        <text id="not" class="status matched not">条件满足</text>
+        <text id="not-unmatched" class="status unmatched not-unmatched">条件不满足</text>
+      </view>
+
+      <text class="section-title">动态组件</text>
+      <text class="description">添加组件后应立即显示当前条件；旋转设备后应同步变化。可移除后再添加验证。</text>
+      <button size="mini" @click="setComponentVisible(!componentVisible)">
+        {{ componentVisible ? '移除组件' : '添加组件' }}
+      </button>
+      <media-query-component v-if="componentVisible" />
+      <navigator class="component-link" url="./component-only">
+        <text class="link-text">单独验证：页面无媒体查询，仅组件包含媒体查询 →</text>
+      </navigator>
+    </view>
+  </scroll-view>
+</template>
+
+<script setup lang="ts">
+  import MediaQueryComponent from './media-query-component.uvue'
+
+  const viewportWidth = ref(0)
+  const viewportHeight = ref(0)
+  const componentVisible = ref(false)
+
+  function updateViewport() {
+    const info = uni.getWindowInfo()
+    viewportWidth.value = info.windowWidth
+    viewportHeight.value = info.windowHeight
+  }
+
+  function setComponentVisible(visible : boolean) {
+    componentVisible.value = visible
+  }
+
+  onReady(updateViewport)
+  onResize(updateViewport)
+  defineExpose({ setComponentVisible })
+</script>
+
+<style>
+  .page { flex: 1; background-color: #f5f6f8; }
+  .content { padding: 16px; }
+  .title { font-size: 22px; font-weight: bold; color: #111827; margin-bottom: 12px; }
+  .summary { padding: 12px; border-radius: 8px; background-color: #eff6ff; }
+  .viewport { font-size: 18px; font-weight: bold; color: #1e40af; margin-bottom: 8px; }
+  .description { font-size: 14px; color: #475569; margin-bottom: 8px; }
+  .section-title { font-size: 18px; font-weight: bold; color: #111827; margin-top: 20px; margin-bottom: 8px; }
+  .columns { flex-direction: column; }
+  .card { padding: 16px; margin: 4px; border-radius: 8px; background-color: #dbeafe; }
+  .card-title { font-size: 16px; color: #1e40af; }
+  .component-link { margin-top: 16px; }
+  .link-text { font-size: 14px; color: #2563eb; }
+  .condition { padding: 12px; margin-bottom: 8px; border-radius: 8px; background-color: #ffffff; }
+  .condition-title { font-size: 15px; color: #1f2937; margin-bottom: 4px; }
+  .syntax { font-size: 12px; color: #64748b; margin-bottom: 8px; }
+  .status { align-self: flex-start; padding: 4px 8px; border-radius: 4px; font-size: 13px; }
+  .matched { display: none; background-color: #dcfce7; color: #166534; }
+  .unmatched { display: flex; background-color: #f1f5f9; color: #475569; }
+
+  @media (min-width: 600px) {
+    .columns { flex-direction: row; }
+    .card { flex: 1; }
+    .min-width { display: flex; }
+    .min-width-unmatched { display: none; }
+  }
+  @media (max-width: 600px) {
+    .max-width { display: flex; }
+    .max-width-unmatched { display: none; }
+  }
+  @media (600px <= width < 1000px) {
+    .range-width { display: flex; }
+    .range-width-unmatched { display: none; }
+  }
+  @media (min-height: 500px) {
+    .min-height { display: flex; }
+    .min-height-unmatched { display: none; }
+  }
+  @media (max-height: 500px) {
+    .max-height { display: flex; }
+    .max-height-unmatched { display: none; }
+  }
+  @media (500px <= height <= 800px) {
+    .range-height { display: flex; }
+    .range-height-unmatched { display: none; }
+  }
+  @media (width) and (height) {
+    .boolean { display: flex; }
+    .boolean-unmatched { display: none; }
+  }
+  @media (min-width: 600px) and (min-height: 500px) {
+    .and { display: flex; }
+    .and-unmatched { display: none; }
+  }
+  @media (min-width: 600px) or (min-height: 500px) {
+    .or { display: flex; }
+    .or-unmatched { display: none; }
+  }
+  @media ((min-width: 600px) and ((min-height: 500px) or (max-height: 400px))) {
+    .nested { display: flex; }
+    .nested-unmatched { display: none; }
+  }
+  @media not (min-width: 600px) {
+    .not { display: flex; }
+    .not-unmatched { display: none; }
+  }
+  @media (orientation: portrait) {
+    .portrait { display: flex; }
+    .portrait-unmatched { display: none; }
+  }
+  @media (orientation: landscape) {
+    .landscape { display: flex; }
+    .landscape-unmatched { display: none; }
+  }
+  @media (orientation) {
+    .orientation-boolean { display: flex; }
+    .orientation-boolean-unmatched { display: none; }
+  }
+  @media not (orientation: portrait) {
+    .not-portrait { display: flex; }
+    .not-portrait-unmatched { display: none; }
+  }
+  @media (orientation: landscape) and (min-width: 600px) {
+    .landscape-width { display: flex; }
+    .landscape-width-unmatched { display: none; }
+  }
+  @media (aspect-ratio: 1/1) {
+    .aspect-ratio { display: flex; }
+    .aspect-ratio-unmatched { display: none; }
+  }
+  @media (min-aspect-ratio: 1/1) {
+    .min-aspect-ratio { display: flex; }
+    .min-aspect-ratio-unmatched { display: none; }
+  }
+  @media (max-aspect-ratio: 1/1) {
+    .max-aspect-ratio { display: flex; }
+    .max-aspect-ratio-unmatched { display: none; }
+  }
+  @media (1/1 < aspect-ratio <= 16/9) {
+    .range-aspect-ratio { display: flex; }
+    .range-aspect-ratio-unmatched { display: none; }
+  }
+  @media (aspect-ratio) {
+    .aspect-ratio-boolean { display: flex; }
+    .aspect-ratio-boolean-unmatched { display: none; }
+  }
+</style>

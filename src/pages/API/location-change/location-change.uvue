@@ -197,10 +197,6 @@
     }
     // #endif
     uni.startLocationUpdate({
-      complete: (res) => {
-        completeCounts.foreground++
-        console.log('startLocationUpdate complete', res)
-      },
       provider: currentProvider.id,
       type: types.value[data.currentSelectedType].value,
       success: () => {
@@ -214,12 +210,14 @@
         if (data.logAble) {
           data.log += "启动startLocationUpdate失败：erroCode=" + err.errCode + '\n\n'
         }
-
         console.log("持续定位启动失败")
         data.startSuccess = false
         data.errCode = err.errCode
+      },
+      complete: (res) => {
+        completeCounts.foreground++
+        console.log('startLocationUpdate complete', res)
       }
-
     })
   }
 
@@ -243,10 +241,6 @@
     }
     // #endif
     uni.startLocationUpdateBackground({
-      complete: (res) => {
-        completeCounts.background++
-        console.log('startLocationUpdateBackground complete', res)
-      },
       provider: currentProvider.id,
       type: types.value[data.currentSelectedType].value,
       success: () => {
@@ -255,15 +249,19 @@
         }
         console.log("后台持续定位api启动成功")
         data.startSuccess = true
-      }, fail: (err) => {
+      },
+      fail: (err) => {
         if (data.logAble) {
           data.log += "启动startLocationUpdateBackground失败：erroCode=" + err.errCode + '\n\n'
         }
         console.log("后台持续定位启动失败")
         data.startSuccess = false
         data.errCode = err.errCode
+      },
+      complete: (res) => {
+        completeCounts.background++
+        console.log('startLocationUpdateBackground complete', res)
       }
-
     })
   }
 

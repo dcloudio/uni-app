@@ -1,8 +1,15 @@
 <template>
-	<view class="uni-tab-list-item-root" @click.stop="handleClick">
+	<view
+		class="uni-tab-list-item-root"
+		@click.stop="handleClick"
+		<!-- #ifdef WEB -->
+		:tabindex="'0'"
+		@keydown="onKeydown"
+		<!-- #endif -->
+	>
 		<slot></slot>
-		<text v-if="props.badgeText != null && props.badgeText != '0' && props.badgeText != ''" class="uni-tab-list-item-badge-position uni-tab-list-item-badge-text" :class="props.badgeClass">{{ props.badgeText }}</text>
-		<view v-else-if="props.badgeText != null && props.badgeText != '0'" class="uni-tab-list-item-badge-position uni-tab-list-item-badge-dot" :class="props.badgeClass"></view>
+		<text v-if="props.badgeText != null && props.badgeText != '0' && props.badgeText != ''" class="uni-tab-list-item-badge-position uni-tab-list-item-badge-text" :class="props.badgeClass" flatten>{{ props.badgeText }}</text>
+		<view v-else-if="props.badgeText != null && props.badgeText != '0'" class="uni-tab-list-item-badge-position uni-tab-list-item-badge-dot" :class="props.badgeClass" flatten></view>
 	</view>
 </template>
 
@@ -12,36 +19,15 @@
    * @description 选项卡项组件
    * @uniPlatform {
    *   "app": {
-   *     "android": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.21"
-   *     },
-   *     "ios": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.11"
-   *     },
-   *     "harmony": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.07"
-   *     }
+   *     "android": {"unixVaporVer": "5.21"},
+   *     "ios": {"unixVaporVer": "5.11"},
+   *     "harmony": {"unixVaporVer": "5.07"}
    *   },
    *   "mp": {
-   *     "weixin": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07"
-   *     },
-   *     "alipay": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.31"
-   *     }
+   *     "weixin": {"unixVer": "5.07"},
+   *     "alipay": {"unixVer": "5.31"}
    *   },
-   *   "web": {
-   *     "uniVer": "x",
-   *     "unixVer": "5.07"
-   *   }
+   *   "web": {"unixVer": "5.07"}
    * }
    */
 defineOptions({
@@ -51,76 +37,36 @@ defineOptions({
 // 定义组件属性
 type Props = {
 	/**
-	 * @description badge 的内容
+	 * @description badge 的内容。传空字符串显示红点，传 '0' 不显示
+	 * @default ""
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.21"
-	 *     },
-	 *     "ios": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.11"
-	 *     },
-	 *     "harmony": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.07"
-	 *     }
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
 	 *   },
 	 *   "mp": {
-	 *     "weixin": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07"
-	 *     },
-	 *     "alipay": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     }
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "uniVer": "x",
-	 *     "unixVer": "5.07"
-	 *   }
+	 *   "web": {"unixVer": "5.07"}
 	 * }
 	 */
 	badgeText?: string,
 	/**
 	 * @description badge 的样式类
+	 * @default ""
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.21"
-	 *     },
-	 *     "ios": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.11"
-	 *     },
-	 *     "harmony": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.07"
-	 *     }
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
 	 *   },
 	 *   "mp": {
-	 *     "weixin": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07"
-	 *     },
-	 *     "alipay": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     }
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "uniVer": "x",
-	 *     "unixVer": "5.07"
-	 *   }
+	 *   "web": {"unixVer": "5.07"}
 	 * }
 	 */
 	badgeClass?: string.ClassString,
@@ -144,6 +90,17 @@ function handleClick() : void {
 		changeTab(itemIndex.value)
 	}
 }
+
+// #ifdef WEB
+// 键盘操作：Enter/Space 等价于点击
+function onKeydown(event : KeyboardEvent) : void {
+	const key = event.key as string
+	if (key == 'Enter' || key == ' ') {
+		event.preventDefault()
+		handleClick()
+	}
+}
+// #endif
 </script>
 
 <style>
@@ -156,6 +113,9 @@ function handleClick() : void {
 	align-items: center;
 	position: relative;
 	overflow: visible;
+	/* #ifdef WEB */
+	cursor: pointer;
+	/* #endif */
 }
 
 .uni-tab-list-item-badge-position {

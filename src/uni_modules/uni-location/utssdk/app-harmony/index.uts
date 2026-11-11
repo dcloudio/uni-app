@@ -1,5 +1,4 @@
 import {
-    Emitter,
     getCurrentMP
 } from '@dcloudio/uni-runtime'
 import {
@@ -42,6 +41,7 @@ import {
     API_START_LOCATION_UPDATE_BACKGROUND,
     API_STOP_LOCATION_UPDATE
 } from '../protocol.uts'
+import Emitter from './emitter.js'
 
 // region Emitter
 interface ILocationEventEmitter<T = Object> {

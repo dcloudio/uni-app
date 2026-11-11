@@ -17,14 +17,19 @@
 	<!-- 日历主体，使用 swiper 承载前后月份，flatten 拍平日期文本提升渲染性能 -->
 	<swiper class="calendar-swiper" auto-height :circular="true" :current="swiperCurrent" :style="swiperStyle" @change="onSwiperChange">
 		<swiper-item v-for="(item, index) in swiperItems" :key="item.key" class="calendar-swiper-item">
-			<view class="calendar-grid" :class="index == 0 ? 'calendar-grid-measure' : ''" @click="onCalendarClick">
+			<view
+				<!-- #ifdef MP -->
+				:id="calendarGridIdPrefix + index"
+				<!-- #endif -->
+				class="calendar-grid" :class="index == 0 ? 'calendar-grid-measure' : ''" @click="onCalendarClick">
 				<!-- 无自定义文字时保持单 text 拍平渲染，避免额外节点 -->
 				<template v-if="hasDayExtras">
 					<view v-for="(day, dayIndex) in item.days" :key="dayIndex" flatten class="day-cell" :class="[
 						props.dayWrapClass,
 						day.isSelected ? 'day-selected' : '',
 						day.isSelected ? 'day-selected-wrap' : '',
-						day.isSelected ? props.daySelectedClass : ''
+						day.isSelected ? props.daySelectedClass : '',
+						day.day > 0 && !day.isDisabled ? 'day-clickable' : ''
 					]">
 						<text flatten class="day-extra-text" :class="[
 							props.dayTopClass,
@@ -57,7 +62,8 @@
 						day.isDisabled ? 'day-disabled' : '',
 						day.isSelected ? 'day-selected' : '',
 						day.isSelected ? 'day-selected-normal' : '',
-						day.isSelected ? props.daySelectedClass : ''
+						day.isSelected ? props.daySelectedClass : '',
+						day.day > 0 && !day.isDisabled ? 'day-clickable' : ''
 					]">{{ day.day > 0 ? day.day : '' }}</text>
 				</template>
 			</view>
@@ -71,17 +77,15 @@
  * @description 内嵌在页面中的日历，支持月份切换、日期选择、日期范围限制、节假日高亮、日期上下方自定义文字和国际化
  * @uniPlatform {
  *   "app": {
- *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
- *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
- *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+ *     "android": {"unixVaporVer": "5.26"},
+ *     "ios": {"unixVaporVer": "5.26"},
+ *     "harmony": {"unixVaporVer": "5.26"}
  *   },
  *   "mp": {
  *     "weixin": {"unixVer": "5.26"},
  *     "alipay": {"unixVer": "5.31"}
  *   },
- *   "web": {
- *     "unixVer": "5.26"
- *   }
+ *   "web": {"unixVer": "5.26"}
  * }
  */
 
@@ -102,15 +106,15 @@ defineOptions({
 
 type CalendarDayExtra = {
 	/**
-	 * 日期，格式 YYYY-MM-DD
+	 * @description 日期，格式 YYYY-MM-DD
 	 */
 	date : string
 	/**
-	 * 日期数字上方显示的文字
+	 * @description 日期数字上方显示的文字
 	 */
 	top ?: string
 	/**
-	 * 日期数字下方显示的文字
+	 * @description 日期数字下方显示的文字
 	 */
 	bottom ?: string
 }
@@ -121,17 +125,15 @@ type Props = {
 	 * @default ""
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
-	 *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
-	 *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+	 *     "android": {"unixVaporVer": "5.26"},
+	 *     "ios": {"unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVaporVer": "5.26"}
 	 *   },
 	 *   "mp": {
 	 *     "weixin": {"unixVer": "5.26"},
 	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "unixVer": "5.26"
-	 *   }
+	 *   "web": {"unixVer": "5.26"}
 	 * }
 	 */
 	modelValue?: string
@@ -140,17 +142,15 @@ type Props = {
 	 * @default ""
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
-	 *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
-	 *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+	 *     "android": {"unixVaporVer": "5.26"},
+	 *     "ios": {"unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVaporVer": "5.26"}
 	 *   },
 	 *   "mp": {
 	 *     "weixin": {"unixVer": "5.26"},
 	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "unixVer": "5.26"
-	 *   }
+	 *   "web": {"unixVer": "5.26"}
 	 * }
 	 */
 	date?: string
@@ -159,17 +159,15 @@ type Props = {
 	 * @default ""
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
-	 *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
-	 *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+	 *     "android": {"unixVaporVer": "5.26"},
+	 *     "ios": {"unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVaporVer": "5.26"}
 	 *   },
 	 *   "mp": {
 	 *     "weixin": {"unixVer": "5.26"},
 	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "unixVer": "5.26"
-	 *   }
+	 *   "web": {"unixVer": "5.26"}
 	 * }
 	 */
 	minDate?: string
@@ -178,17 +176,15 @@ type Props = {
 	 * @default ""
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
-	 *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
-	 *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+	 *     "android": {"unixVaporVer": "5.26"},
+	 *     "ios": {"unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVaporVer": "5.26"}
 	 *   },
 	 *   "mp": {
 	 *     "weixin": {"unixVer": "5.26"},
 	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "unixVer": "5.26"
-	 *   }
+	 *   "web": {"unixVer": "5.26"}
 	 * }
 	 */
 	maxDate?: string
@@ -197,17 +193,15 @@ type Props = {
 	 * @default []
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
-	 *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
-	 *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+	 *     "android": {"unixVaporVer": "5.26"},
+	 *     "ios": {"unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVaporVer": "5.26"}
 	 *   },
 	 *   "mp": {
 	 *     "weixin": {"unixVer": "5.26"},
 	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "unixVer": "5.26"
-	 *   }
+	 *   "web": {"unixVer": "5.26"}
 	 * }
 	 */
 	holidays?: string[]
@@ -216,17 +210,15 @@ type Props = {
 	 * @default ""
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
-	 *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
-	 *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+	 *     "android": {"unixVaporVer": "5.26"},
+	 *     "ios": {"unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVaporVer": "5.26"}
 	 *   },
 	 *   "mp": {
 	 *     "weixin": {"unixVer": "5.26"},
 	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "unixVer": "5.26"
-	 *   }
+	 *   "web": {"unixVer": "5.26"}
 	 * }
 	 */
 	locale?: string
@@ -235,36 +227,32 @@ type Props = {
 	 * @default -1
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
-	 *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
-	 *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+	 *     "android": {"unixVaporVer": "5.26"},
+	 *     "ios": {"unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVaporVer": "5.26"}
 	 *   },
 	 *   "mp": {
 	 *     "weixin": {"unixVer": "5.26"},
 	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "unixVer": "5.26"
-	 *   }
+	 *   "web": {"unixVer": "5.26"}
 	 * }
 	 */
 	weekStart?: number
 	/**
-	 * @description 日期附加文字列表，用于在日期数字上方、下方显示自定义文字，如农历、节日、入住/离店等
+	 * @description 日期附加文字列表，用于在日期数字上方、下方显示自定义文字，如农历、节日、入住/离店等；组件内部按日期建立一次索引，切换月份时不会重复构建；数据量很大时建议只传当前显示月份前后各一个月的数据，并整体替换数组以触发刷新
 	 * @default []
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
-	 *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
-	 *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+	 *     "android": {"unixVaporVer": "5.26"},
+	 *     "ios": {"unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVaporVer": "5.26"}
 	 *   },
 	 *   "mp": {
 	 *     "weixin": {"unixVer": "5.26"},
 	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "unixVer": "5.26"
-	 *   }
+	 *   "web": {"unixVer": "5.26"}
 	 * }
 	 */
 	dayExtras?: CalendarDayExtra[]
@@ -273,17 +261,15 @@ type Props = {
 	 * @default ""
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
-	 *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
-	 *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+	 *     "android": {"unixVaporVer": "5.26"},
+	 *     "ios": {"unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVaporVer": "5.26"}
 	 *   },
 	 *   "mp": {
 	 *     "weixin": {"unixVer": "5.26"},
 	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "unixVer": "5.26"
-	 *   }
+	 *   "web": {"unixVer": "5.26"}
 	 * }
 	 */
 	yearMonthClass?: string.ClassString
@@ -292,17 +278,15 @@ type Props = {
 	 * @default ""
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
-	 *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
-	 *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+	 *     "android": {"unixVaporVer": "5.26"},
+	 *     "ios": {"unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVaporVer": "5.26"}
 	 *   },
 	 *   "mp": {
 	 *     "weixin": {"unixVer": "5.26"},
 	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "unixVer": "5.26"
-	 *   }
+	 *   "web": {"unixVer": "5.26"}
 	 * }
 	 */
 	yearMonthArrowClass?: string.ClassString
@@ -311,17 +295,15 @@ type Props = {
 	 * @default ""
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
-	 *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
-	 *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+	 *     "android": {"unixVaporVer": "5.26"},
+	 *     "ios": {"unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVaporVer": "5.26"}
 	 *   },
 	 *   "mp": {
 	 *     "weixin": {"unixVer": "5.26"},
 	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "unixVer": "5.26"
-	 *   }
+	 *   "web": {"unixVer": "5.26"}
 	 * }
 	 */
 	weekClass?: string.ClassString
@@ -330,17 +312,15 @@ type Props = {
 	 * @default ""
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
-	 *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
-	 *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+	 *     "android": {"unixVaporVer": "5.26"},
+	 *     "ios": {"unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVaporVer": "5.26"}
 	 *   },
 	 *   "mp": {
 	 *     "weixin": {"unixVer": "5.26"},
 	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "unixVer": "5.26"
-	 *   }
+	 *   "web": {"unixVer": "5.26"}
 	 * }
 	 */
 	weekItemClass?: string.ClassString
@@ -349,17 +329,15 @@ type Props = {
 	 * @default ""
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
-	 *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
-	 *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+	 *     "android": {"unixVaporVer": "5.26"},
+	 *     "ios": {"unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVaporVer": "5.26"}
 	 *   },
 	 *   "mp": {
 	 *     "weixin": {"unixVer": "5.26"},
 	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "unixVer": "5.26"
-	 *   }
+	 *   "web": {"unixVer": "5.26"}
 	 * }
 	 */
 	dayClass?: string.ClassString
@@ -368,17 +346,15 @@ type Props = {
 	 * @default ""
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
-	 *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
-	 *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+	 *     "android": {"unixVaporVer": "5.26"},
+	 *     "ios": {"unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVaporVer": "5.26"}
 	 *   },
 	 *   "mp": {
 	 *     "weixin": {"unixVer": "5.26"},
 	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "unixVer": "5.26"
-	 *   }
+	 *   "web": {"unixVer": "5.26"}
 	 * }
 	 */
 	daySelectedClass?: string.ClassString
@@ -387,17 +363,15 @@ type Props = {
 	 * @default ""
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
-	 *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
-	 *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+	 *     "android": {"unixVaporVer": "5.26"},
+	 *     "ios": {"unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVaporVer": "5.26"}
 	 *   },
 	 *   "mp": {
 	 *     "weixin": {"unixVer": "5.26"},
 	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "unixVer": "5.26"
-	 *   }
+	 *   "web": {"unixVer": "5.26"}
 	 * }
 	 */
 	todayClass?: string.ClassString
@@ -406,17 +380,15 @@ type Props = {
 	 * @default ""
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
-	 *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
-	 *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+	 *     "android": {"unixVaporVer": "5.26"},
+	 *     "ios": {"unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVaporVer": "5.26"}
 	 *   },
 	 *   "mp": {
 	 *     "weixin": {"unixVer": "5.26"},
 	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "unixVer": "5.26"
-	 *   }
+	 *   "web": {"unixVer": "5.26"}
 	 * }
 	 */
 	dayTopClass?: string.ClassString
@@ -425,17 +397,15 @@ type Props = {
 	 * @default ""
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
-	 *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
-	 *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+	 *     "android": {"unixVaporVer": "5.26"},
+	 *     "ios": {"unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVaporVer": "5.26"}
 	 *   },
 	 *   "mp": {
 	 *     "weixin": {"unixVer": "5.26"},
 	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "unixVer": "5.26"
-	 *   }
+	 *   "web": {"unixVer": "5.26"}
 	 * }
 	 */
 	dayBottomClass?: string.ClassString
@@ -444,17 +414,15 @@ type Props = {
 	 * @default ""
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
-	 *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
-	 *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+	 *     "android": {"unixVaporVer": "5.26"},
+	 *     "ios": {"unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVaporVer": "5.26"}
 	 *   },
 	 *   "mp": {
 	 *     "weixin": {"unixVer": "5.26"},
 	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "unixVer": "5.26"
-	 *   }
+	 *   "web": {"unixVer": "5.26"}
 	 * }
 	 */
 	dayWrapClass?: string.ClassString
@@ -487,17 +455,15 @@ const emit = defineEmits<{
 	 * @param date 选中的日期，格式 YYYY-MM-DD
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
-	 *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
-	 *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+	 *     "android": {"unixVaporVer": "5.26"},
+	 *     "ios": {"unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVaporVer": "5.26"}
 	 *   },
 	 *   "mp": {
 	 *     "weixin": {"unixVer": "5.26"},
 	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "unixVer": "5.26"
-	 *   }
+	 *   "web": {"unixVer": "5.26"}
 	 * }
 	 */
 	'update:modelValue': [date: string]
@@ -506,17 +472,15 @@ const emit = defineEmits<{
 	 * @param date 选中的日期，格式 YYYY-MM-DD
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
-	 *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
-	 *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+	 *     "android": {"unixVaporVer": "5.26"},
+	 *     "ios": {"unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVaporVer": "5.26"}
 	 *   },
 	 *   "mp": {
 	 *     "weixin": {"unixVer": "5.26"},
 	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "unixVer": "5.26"
-	 *   }
+	 *   "web": {"unixVer": "5.26"}
 	 * }
 	 */
 	change: [date: string]
@@ -526,17 +490,15 @@ const emit = defineEmits<{
 	 * @param month 当前月份，1-12
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {"unixVer": "5.26", "unixVaporVer": "5.26"},
-	 *     "ios": {"unixVer": "5.26", "unixVaporVer": "5.26"},
-	 *     "harmony": {"unixVer": "5.26", "unixVaporVer": "5.26"}
+	 *     "android": {"unixVaporVer": "5.26"},
+	 *     "ios": {"unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVaporVer": "5.26"}
 	 *   },
 	 *   "mp": {
 	 *     "weixin": {"unixVer": "5.26"},
 	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "unixVer": "5.26"
-	 *   }
+	 *   "web": {"unixVer": "5.26"}
 	 * }
 	 */
 	'month-change': [year: number, month: number]
@@ -871,6 +833,10 @@ const initialMonth = resolveInitialMonth()
 const currentYear = ref(initialMonth[0])
 const currentMonth = ref(initialMonth[1])
 
+// #ifdef MP
+const calendarGridIdPrefix = 'uni-calendar-grid-' + Math.floor(Math.random() * 1e9) + '-'
+// #endif
+
 const swiperCurrent = ref(1)
 const swiperItems = ref<MonthItem[]>([])
 let lastItemIndex = 1
@@ -892,8 +858,19 @@ function isDateDisabled(dateStr : string) : boolean {
 	return false
 }
 
+let holidaySet : Set<string> = new Set<string>()
+
+function buildHolidaySet() : void {
+	const set = new Set<string>()
+	const holidays = props.holidays
+	for (let i = 0; i < holidays.length; i++) {
+		set.add(holidays[i])
+	}
+	holidaySet = set
+}
+
 function isHolidayDate(dateStr : string) : boolean {
-	return props.holidays.includes(dateStr)
+	return holidaySet.has(dateStr)
 }
 
 function createEmptyDay() : DayInfo {
@@ -1002,7 +979,6 @@ function getNextMonth(year : number, month : number) : number[] {
 }
 
 function initSwiperItems() {
-	buildDayExtrasMap()
 	const items : MonthItem[] = []
 	const prev = getPrevMonth(currentYear.value, currentMonth.value)
 	const next = getNextMonth(currentYear.value, currentMonth.value)
@@ -1014,7 +990,6 @@ function initSwiperItems() {
 }
 
 function switchToMonth(targetYear : number, targetMonth : number, targetIndex : number) {
-	buildDayExtrasMap()
 	const changed = targetYear != currentYear.value || targetMonth != currentMonth.value
 	currentYear.value = targetYear
 	currentMonth.value = targetMonth
@@ -1206,10 +1181,12 @@ watch(() : number => props.weekStart, () => {
 })
 
 watch(() : CalendarDayExtra[] => props.dayExtras, () => {
+	buildDayExtrasMap()
 	refreshAllMonths()
-}, { deep: true })
+})
 
 watch(() : string[] => props.holidays, () => {
+	buildHolidaySet()
 	refreshAllMonths()
 })
 
@@ -1259,6 +1236,8 @@ watch(() : boolean => hasDayExtras.value, () => {
 })
 /* #endif */
 
+buildDayExtrasMap()
+buildHolidaySet()
 initSwiperItems()
 
 defineExpose({
@@ -1302,6 +1281,9 @@ defineExpose({
 		justify-content: center;
 		margin-left: 10px;
 		margin-right: 10px;
+		/* #ifdef WEB */
+		cursor: pointer;
+		/* #endif */
 	}
 
 	.year-month-arrow {
@@ -1310,6 +1292,9 @@ defineExpose({
 		line-height: 40px;
 		font-size: 28px;
 		text-align: center;
+		/* #ifdef WEB */
+		cursor: pointer;
+		/* #endif */
 	}
 
 	.year-month-text {
@@ -1355,6 +1340,13 @@ defineExpose({
 		align-items: center;
 		justify-content: center;
 	}
+
+	/* 可点击的日期（非空白格、非禁用日期），web 端显示手型光标 */
+	/* #ifdef WEB */
+	.day-clickable {
+		cursor: pointer;
+	}
+	/* #endif */
 
 	.day-text {
 		width: 14.28%;

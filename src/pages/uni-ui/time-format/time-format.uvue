@@ -1,7 +1,6 @@
 <template>
-  <scroll-view class="page">
     <view class="section">
-      <text class="section-title">当前时间不同格式</text>
+      <text class="uni-h4">当前时间不同格式</text>
       <view class="row">
         <text class="row-label">date</text>
         <uni-time-format :timestamp="data.currentTimestamp" format="date"></uni-time-format>
@@ -17,7 +16,7 @@
     </view>
 
     <view class="section">
-      <text class="section-title">输入时间动态计算相对时间</text>
+      <text class="uni-h4">输入时间动态计算相对时间</text>
       <view class="input-block">
         <text class="row-label">输入格式</text>
         <text class="tip-text">yyyy-mm-dd hh:mm:ss</text>
@@ -34,7 +33,7 @@
     </view>
 
     <view class="section">
-      <text class="section-title">固定 5 分支示例（不随输入变化）</text>
+      <text class="uni-h4">固定 5 分支示例（不随输入变化）</text>
       <view class="row">
         <text class="row-label">刚刚</text>
         <uni-time-format :timestamp="fixedJustNowTimestamp" format="relative"></uni-time-format>
@@ -59,7 +58,7 @@
     </view>
 
     <view class="section">
-      <text class="section-title">秒级时间戳自动换算</text>
+      <text class="uni-h4">秒级时间戳自动换算</text>
       <view class="row">
         <text class="row-label">timestamp(s)</text>
         <uni-time-format :timestamp="secondTimestamp" format="datetime"></uni-time-format>
@@ -67,13 +66,12 @@
     </view>
 
     <view class="section">
-      <text class="section-title">非法时间戳</text>
+      <text class="uni-h4">非法时间戳</text>
       <view class="row">
         <uni-time-format :timestamp="data.invalidTimestamp" format="datetime"></uni-time-format>
       </view>
       <text class="tip-text">非法时间会显示为空字符串。</text>
     </view>
-  </scroll-view>
 </template>
 
 <script setup lang="ts">
@@ -195,18 +193,12 @@
 </script>
 
 <style>
-  .page {
-    flex: 1;
+  page {
     padding: 12px;
   }
 
   .section {
     margin-bottom: 20px;
-  }
-
-  .section-title {
-    font-size: 16px;
-    color: var(--text-color, #333333);
   }
 
   .input-block {

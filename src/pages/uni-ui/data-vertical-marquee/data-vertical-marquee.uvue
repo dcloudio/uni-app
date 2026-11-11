@@ -4,137 +4,99 @@
 		<text class="page-desc">绑定数组数据上下轮播，支持对象数组与字符串数组；数据多于一条时定时滚动，组件始终只复用两个 text 渲染。</text>
 	</view>
 
-	<view class="group-header">
-		<text class="group-title">常见场景</text>
+	<text class="uni-h4">公告通知</text>
+	<text class="section-desc">左侧图标搭配上下滚动的公告文字，点击公告文字可回传数据。</text>
+	<view class="notice-bar">
+		<uni-icons type="sound" class="notice-bar__icon" />
+		<view class="notice-bar__body">
+			<uni-data-vertical-marquee class="test-notice-marquee" :localdata="data.noticeList" text-class="notice-bar__text" @click="onNoticeClick" />
+		</view>
 	</view>
 
-	<view class="section">
-		<text class="section-title">公告通知</text>
-		<text class="section-desc">左侧图标搭配上下滚动的公告文字，点击公告文字可回传数据。</text>
-		<view class="notice-bar">
-			<uni-icons type="sound" class="notice-bar__icon" />
-			<view class="notice-bar__body">
-				<uni-data-vertical-marquee class="test-notice-marquee" :localdata="data.noticeList" text-class="notice-bar__text" @click="onNoticeClick" />
+	<text class="uni-h4">搜索框推荐词</text>
+	<text class="section-desc">搜索框内上下滚动推荐词，点击搜索按钮弹出当前展示的推荐词。</text>
+	<view class="search-bar">
+		<view class="search-bar__field">
+			<view class="search-bar__word" @click="gotosearch"> <!-- 父子都得监听click，容器宽高不一样-->
+				<uni-data-vertical-marquee class="test-search-marquee" :localdata="data.searchWords" text-class="search-bar__word-text" @change="onSearchWordChange" @click="gotosearch" />
 			</view>
+			<view class="search-bar__divider"></view>
+			<text class="search-bar__btn" @tap="onSearch">搜索</text>
 		</view>
 	</view>
 
-	<view class="section">
-		<text class="section-title">搜索框推荐词</text>
-		<text class="section-desc">搜索框内上下滚动推荐词，点击搜索按钮弹出当前展示的推荐词。</text>
-		<view class="search-bar">
-			<view class="search-bar__field">
-				<view class="search-bar__word" @click="gotosearch"> <!-- 父子都得监听click，容器宽高不一样-->
-					<uni-data-vertical-marquee class="test-search-marquee" :localdata="data.searchWords" text-class="search-bar__word-text" @change="onSearchWordChange" @click="gotosearch" />
-				</view>
-				<view class="search-bar__divider"></view>
-				<text class="search-bar__btn" @tap="onSearch">搜索</text>
-			</view>
-		</view>
+	<text class="uni-h4">对象数组与点击事件</text>
+	<text class="section-desc">数据项使用 text、value 字段，点击文字触发 click 事件并回传点中的数据。</text>
+	<view class="marquee-box">
+		<uni-data-vertical-marquee :localdata="data.noticeList" @click="onNoticeClick" />
+	</view>
+	<view class="result-block">
+		<text class="result-text">最近点击：{{ data.latestClick }}</text>
 	</view>
 
-	<view class="group-header">
-		<text class="group-title">基础用法</text>
+	<text class="uni-h4">字符串数组</text>
+	<text class="section-desc">直接传入字符串数组，文字即数据本身。</text>
+	<view class="marquee-box">
+		<uni-data-vertical-marquee class="test-string-marquee" :localdata="data.stringList" :interval="2000" @click="onStringClick" />
 	</view>
 
-	<view class="section">
-		<text class="section-title">对象数组与点击事件</text>
-		<text class="section-desc">数据项使用 text、value 字段，点击文字触发 click 事件并回传点中的数据。</text>
-		<view class="marquee-box">
-			<uni-data-vertical-marquee :localdata="data.noticeList" @click="onNoticeClick" />
-		</view>
-		<view class="result-block">
-			<text class="result-text">最近点击：{{ data.latestClick }}</text>
-		</view>
+	<text class="uni-h4">单条数据不滚动</text>
+	<text class="section-desc">数据只有一条时不做上下滚动。</text>
+	<view class="marquee-box">
+		<uni-data-vertical-marquee class="test-single-marquee" :localdata="data.singleList" />
 	</view>
 
-	<view class="section">
-		<text class="section-title">字符串数组</text>
-		<text class="section-desc">直接传入字符串数组，文字即数据本身。</text>
-		<view class="marquee-box">
-			<uni-data-vertical-marquee class="test-string-marquee" :localdata="data.stringList" :interval="2000" @click="onStringClick" />
-		</view>
+	<text class="uni-h4">interval 滚动间隔</text>
+	<text class="section-desc">切换 interval 会即时生效，单位毫秒。当前：{{ data.intervalValue }} ms。</text>
+	<view class="marquee-box">
+		<uni-data-vertical-marquee class="test-interval-marquee" :localdata="data.noticeList" :interval="data.intervalValue" />
+	</view>
+	<view class="btn-row">
+		<button class="demo-btn" size="mini" @click="setInterval1000">1000ms</button>
+		<button class="demo-btn" size="mini" @click="setInterval2000">2000ms</button>
+		<button class="demo-btn" size="mini" @click="setInterval5000">5000ms</button>
 	</view>
 
-	<view class="section">
-		<text class="section-title">单条数据不滚动</text>
-		<text class="section-desc">数据只有一条时不做上下滚动。</text>
-		<view class="marquee-box">
-			<uni-data-vertical-marquee class="test-single-marquee" :localdata="data.singleList" />
-		</view>
+	<text class="uni-h4">text-class 自定义文字样式</text>
+	<text class="section-desc">通过 external class 定制文字字号、颜色、字重等。</text>
+	<view class="marquee-box marquee-box-tall">
+		<uni-data-vertical-marquee :localdata="data.stringList" text-class="demo-marquee-text" />
 	</view>
 
-	<view class="group-header">
-		<text class="group-title">属性演示</text>
+	<text class="uni-h4">动态更新数据</text>
+	<text class="section-desc">数据由 1 条增到多条时开始滚动，减到 1 条时停止。</text>
+	<view class="marquee-box">
+		<uni-data-vertical-marquee class="test-dynamic-marquee" :localdata="data.dynamicList" />
+	</view>
+	<view class="btn-row">
+		<button class="demo-btn" size="mini" @click="addDynamicItem">新增一条</button>
+		<button class="demo-btn" size="mini" @click="removeDynamicItem">删除一条</button>
+	</view>
+	<text class="result-text result-standalone">当前条数：{{ data.dynamicList.length }}</text>
+
+	<text class="uni-h4">空数据</text>
+	<text class="section-desc">数据为空时不渲染内容，也不会启动定时器。</text>
+	<view class="marquee-box">
+		<uni-data-vertical-marquee class="test-empty-marquee" :localdata="data.emptyList" />
 	</view>
 
-	<view class="section">
-		<text class="section-title">interval 滚动间隔</text>
-		<text class="section-desc">切换 interval 会即时生效，单位毫秒。当前：{{ data.intervalValue }} ms。</text>
-		<view class="marquee-box">
-			<uni-data-vertical-marquee class="test-interval-marquee" :localdata="data.noticeList" :interval="data.intervalValue" />
-		</view>
-		<view class="btn-row">
-			<button class="demo-btn" size="mini" @click="setInterval1000">1000ms</button>
-			<button class="demo-btn" size="mini" @click="setInterval2000">2000ms</button>
-			<button class="demo-btn" size="mini" @click="setInterval5000">5000ms</button>
-		</view>
+	<text class="uni-h4">collection 与查询参数</text>
+	<text class="section-desc">不传 localdata 并设置 collection 后使用 uniCloud 数据，可通过 field / where / orderby / page-size 指定查询。需关联服务空间。</text>
+	<view class="marquee-box">
+		<uni-data-vertical-marquee
+			ref="cloudMarquee"
+			collection="opendb-notice"
+			field="data as text, _id as value"
+			where=""
+			orderby="update_time desc"
+			:page-size="20"
+			:interval="3000"
+		/>
 	</view>
-
-	<view class="section">
-		<text class="section-title">text-class 自定义文字样式</text>
-		<text class="section-desc">通过 external class 定制文字字号、颜色、字重等。</text>
-		<view class="marquee-box marquee-box-tall">
-			<uni-data-vertical-marquee :localdata="data.stringList" text-class="demo-marquee-text" />
-		</view>
-	</view>
-
-	<view class="section">
-		<text class="section-title">动态更新数据</text>
-		<text class="section-desc">数据由 1 条增到多条时开始滚动，减到 1 条时停止。</text>
-		<view class="marquee-box">
-			<uni-data-vertical-marquee class="test-dynamic-marquee" :localdata="data.dynamicList" />
-		</view>
-		<view class="btn-row">
-			<button class="demo-btn" size="mini" @click="addDynamicItem">新增一条</button>
-			<button class="demo-btn" size="mini" @click="removeDynamicItem">删除一条</button>
-		</view>
-		<text class="result-text result-standalone">当前条数：{{ data.dynamicList.length }}</text>
-	</view>
-
-	<view class="section">
-		<text class="section-title">空数据</text>
-		<text class="section-desc">数据为空时不渲染内容，也不会启动定时器。</text>
-		<view class="marquee-box">
-			<uni-data-vertical-marquee class="test-empty-marquee" :localdata="data.emptyList" />
-		</view>
-	</view>
-
-	<view class="group-header">
-		<text class="group-title">datacom 云端数据</text>
-	</view>
-
-	<view class="section section-last">
-		<text class="section-title">collection 与查询参数</text>
-		<text class="section-desc">不传 localdata 并设置 collection 后使用 uniCloud 数据，可通过 field / where / orderby 指定查询。需关联服务空间。</text>
-		<view class="marquee-box">
-			<uni-data-vertical-marquee
-				ref="cloudMarquee"
-				collection="opendb-notice"
-				field="data as text, _id as value"
-				orderby="update_time desc"
-				:interval="3000"
-			/>
-		</view>
-		<!-- 以下2个属性先屏蔽
-		 where="eq(isDel, false)"
-		 limit="10"
-		 -->
-		<view class="btn-row">
-			<button class="demo-btn" size="mini" @click="loadCloudData">loadData</button>
-			<button class="demo-btn" size="mini" @click="refreshCloudData">refresh</button>
-			<button class="demo-btn" size="mini" @click="clearCloudData">clear</button>
-		</view>
+	<view class="btn-row">
+		<button class="demo-btn" size="mini" @click="loadCloudData">loadData</button>
+		<button class="demo-btn" size="mini" @click="refreshCloudData">refresh</button>
+		<button class="demo-btn" size="mini" @click="clearCloudData">clear</button>
 	</view>
 </template>
 
@@ -265,57 +227,31 @@ defineExpose({
 
 <style>
 page {
+	padding: 12px;
 	background-color: var(--background-color, #f5f5f5);
 }
 
 .intro {
-	padding: 18px 16px;
-	background-color: var(--content-background-color, #ffffff);
+	padding: 4px;
+	margin-bottom: 12px;
 }
 
 .page-title {
-	font-size: 20px;
+	font-size: 18px;
 	font-weight: bold;
 	color: var(--text-color, #222222);
 }
 
 .page-desc {
-	margin-top: 8px;
-	font-size: 14px;
-	line-height: 21px;
+	margin-top: 6px;
+	font-size: 13px;
+	line-height: 20px;
 	color: var(--secondary-text-color, #657180);
-}
-
-.group-header {
-	padding: 18px 16px 6px;
-}
-
-.group-title {
-	font-size: 14px;
-	font-weight: bold;
-	color: var(--secondary-text-color, #657180);
-}
-
-.section {
-	padding: 16px;
-	margin-top: 10px;
-	background-color: var(--content-background-color, #ffffff);
-}
-
-.section-last {
-	padding-bottom: 32px;
-}
-
-.section-title {
-	margin-bottom: 12px;
-	font-size: 16px;
-	font-weight: bold;
-	color: var(--text-color, #333333);
 }
 
 .section-desc {
-	margin-top: -4px;
-	margin-bottom: 12px;
+	margin-top: 4px;
+	margin-bottom: 8px;
 	font-size: 13px;
 	line-height: 20px;
 	color: var(--secondary-text-color, #657180);
@@ -328,6 +264,7 @@ page {
 	height: 40px;
 	padding-left: 12px;
 	padding-right: 12px;
+	margin-bottom: 4px;
 	border-width: 1px;
 	border-style: solid;
 	border-color: var(--divider-color, #e2e5e9);
@@ -351,6 +288,7 @@ page {
 	flex-direction: row;
 	align-items: center;
 	padding: 10px 12px;
+	margin-bottom: 4px;
 	background-color: #fff7e6;
 }
 
@@ -372,7 +310,7 @@ page {
 
 .search-bar {
 	padding: 12px;
-	/* border-radius: 8px; */
+	margin-bottom: 4px;
 	background-color: #2b5cff;
 }
 
@@ -444,6 +382,35 @@ page {
 	}
 
 	.demo-marquee-text {
+		color: #91caff;
+	}
+
+	.notice-bar {
+		background-color: #3a2a12;
+	}
+
+	.notice-bar__icon,
+	.notice-bar__text {
+		color: #ffb75d;
+	}
+
+	.search-bar {
+		background-color: #1b3bb3;
+	}
+
+	.search-bar__field {
+		background-color: #2d2d2d;
+	}
+
+	.search-bar__word-text {
+		color: #ffffff;
+	}
+
+	.search-bar__divider {
+		background-color: rgba(255, 255, 255, 0.2);
+	}
+
+	.search-bar__btn {
 		color: #91caff;
 	}
 }

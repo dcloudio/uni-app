@@ -1,15 +1,32 @@
 # uni-forms 表单
 
-uni-forms组件，是 uni-app x 的增强表单组件。相比内置的 form 组件，它解决了如下问题：
+## 用途和场景
 
-1. uni-forms内置了表单校验功能。
-2. uni-forms使用vue的`v-model`机制，方便收集、校验，也方便接入任意三方组件。
- 内置 form 组件使用的是平台form规范，很多小程序平台不提供三方组件接入到内置form表单中管理的功能，如果你开发了自定义的表单组件，只能通过 uni-forms 来跨平台接入表单中。
+uni-forms 是 uni-app x 的增强表单组件。相比内置的 form 组件，它解决了如下问题：
 
-本插件包含2个组件：
+1. 内置表单校验功能。
+2. 使用 vue 的 `v-model` 机制收集、校验数据，方便接入任意三方组件。内置 form 组件使用的是平台 form 规范，很多小程序平台不提供三方组件接入到内置 form 表单中管理的功能；如果你开发了自定义的表单组件，只能通过 uni-forms 来跨平台接入表单中。
+
+本插件包含 2 个组件：
 
 - `uni-forms`：表单容器，负责数据和整表校验
 - `uni-forms-item`：表单项的包裹容器。通过 `label` 设置标签文字，通过默认插槽放置表单控件（如 `input`、`uni-data-checkbox`），并显示校验错误状态。
+
+## 使用方式（职责分工）
+
+组件内部负责：
+
+- 通过 `v-model` 读写表单数据，按 `name` 路径收集字段值。
+- 内置 DB Schema 风格规则校验，可选接入 Standard Schema（如 Valibot、Zod）。
+- 管理字段校验状态与错误展示（`err-show-type`），提供 `validate`、`validateField`、`clearValidate`、`resetFields`、`setRules`、`setValue` 等方法。
+- 通过外部样式类定制标签、说明、必填标记、控件区域和错误状态的样式。
+
+使用者负责：
+
+- 用 `v-model` 绑定表单数据对象，用 `name` 把 `uni-forms-item` 对应到数据字段。
+- 编写 `rules` 或 `schema`，并按需设置 `validate-trigger`、`err-show-type` 等属性。
+- 在 `uni-forms-item` 默认插槽中放置控件，保证控件通过 `v-model` 更新表单数据对象。
+- 需要失焦即时校验时，让控件在失焦时调用表单项的 `onFieldBlur`（见「自定义组件」）。
 
 ## 基本用法
 
@@ -312,3 +329,22 @@ function onBlur(value : string) {
  border-radius: 8px;
 }
 ```
+
+## 注意事项
+
+- `uni-forms-item` 必须放在 `uni-forms` 内使用，并通过 `name` 与表单数据的字段路径对应，才能参与表单校验。
+- `required` 只控制是否显示红色必填标记 `*`，字段是否必填由 `rules` 决定。
+- `validate-trigger` 的 `blur` 需要控件在失焦时主动调用表单项的 `onFieldBlur`；`bind` 随 `v-model` 数据变化触发。
+- 带函数的规则（`validateFunction`、`validateExpr`）在微信小程序中需在页面就绪后通过 `setRules` 设置。
+- `schema` 为实验性属性，后续可能改名，用法也会继续完善。
+- 组件内部用于提示和兜底的文案已内置简体中文、繁体中文、英文、法文和拉丁文，按 `uni.getAppBaseInfo().appLanguage` 切换。
+
+## 示例页面
+
+- `/pages/uni-ui/forms/forms`：功能索引与基础用法
+- `/pages/uni-ui/forms/validation`：完整校验
+- `/pages/uni-ui/forms/valibot`：Standard Schema（Valibot）
+- `/pages/uni-ui/forms/controls`：控件接入
+- `/pages/uni-ui/forms/styles`：样式与属性
+- `/pages/uni-ui/forms/form-item`：表单项布局
+

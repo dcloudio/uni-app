@@ -57,4 +57,10 @@ function selectNext() {
 	font-size: 12px;
 	color: #007aff;
 }
+
+/* #ifdef WEB */
+.third-party-control {
+	cursor: pointer;
+}
+/* #endif */
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <view>
+  <view flatten>
     <slot></slot>
   </view>
 </template>
@@ -10,36 +10,15 @@
    * @description 折叠面板组件
    * @uniPlatform {
    *   "app": {
-   *     "android": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.21"
-   *     },
-   *     "ios": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.11"
-   *     },
-   *     "harmony": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.07"
-   *     }
+   *     "android": {"unixVaporVer": "5.21"},
+   *     "ios": {"unixVaporVer": "5.11"},
+   *     "harmony": {"unixVaporVer": "5.07"}
    *   },
    *   "mp": {
-   *     "weixin": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07"
-   *     },
-   *     "alipay": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.31"
-   *     }
+   *     "weixin": {"unixVer": "5.07"},
+   *     "alipay": {"unixVer": "5.31"}
    *   },
-   *   "web": {
-   *     "uniVer": "x",
-   *     "unixVer": "5.07"
-   *   }
+   *   "web": {"unixVer": "5.07"}
    * }
    */
   import type { ItemChildType } from '../type.ts'
@@ -59,36 +38,15 @@
      * @default true
      * @uniPlatform {
      *   "app": {
-     *     "android": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.21"
-     *     },
-     *     "ios": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.11"
-     *     },
-     *     "harmony": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.07"
-     *     }
+     *     "android": {"unixVaporVer": "5.21"},
+     *     "ios": {"unixVaporVer": "5.11"},
+     *     "harmony": {"unixVaporVer": "5.07"}
      *   },
      *   "mp": {
-     *     "weixin": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07"
-     *     },
-     *     "alipay": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.31"
-     *     }
+     *     "weixin": {"unixVer": "5.07"},
+     *     "alipay": {"unixVer": "5.31"}
      *   },
-     *   "web": {
-     *     "uniVer": "x",
-     *     "unixVer": "5.07"
-     *   }
+     *   "web": {"unixVer": "5.07"}
      * }
      */
     accordion? : boolean

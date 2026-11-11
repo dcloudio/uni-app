@@ -1,53 +1,45 @@
 <template>
-	<view>
-		<view class="section">
-			<text class="title">uni-data-checkbox 右侧对勾</text>
-			<view class="frame">
-				<uni-data-checkbox
-					v-model="componentValue"
-					mode="list"
-					icon="right"
-					:localdata="options"
-					@change="onComponentChange"
-				/>
-			</view>
-			<text class="result">当前值：{{ componentValue }}，change 次数：{{ componentChangeCount }}</text>
-		</view>
+	<text class="uni-h4">uni-data-checkbox 右侧对勾</text>
+	<view class="frame">
+		<uni-data-checkbox
+			v-model="componentValue"
+			mode="list"
+			icon="right"
+			:localdata="options"
+			@change="onComponentChange"
+		/>
+	</view>
+	<text class="result">当前值：{{ componentValue }}，change 次数：{{ componentChangeCount }}</text>
 
-		<view class="section">
-			<text class="title">radio-group + label</text>
-			<view class="frame">
-				<radio-group class="group">
-					<label
-						v-for="item in options"
-						:key="item.value"
-						class="row"
-						@click="onLabelClick(item)"
-					>
-						<text class="row-text">{{ item.text }}</text>
-						<view class="check" :class="{ 'check--selected': labelValue === item.value }"></view>
-					</label>
-				</radio-group>
-			</view>
-			<text class="result">当前值：{{ labelValue }}，click 次数：{{ labelClickCount }}</text>
-		</view>
+	<text class="uni-h4">radio-group + label</text>
+	<view class="frame">
+		<radio-group class="group">
+			<label
+				v-for="item in options"
+				:key="item.value"
+				class="row"
+				@click="onLabelClick(item)"
+			>
+				<text flatten class="row-text">{{ item.text }}</text>
+				<view flatten class="check" :class="{ 'check--selected': labelValue === item.value }"></view>
+			</label>
+		</radio-group>
+	</view>
+	<text class="result">当前值：{{ labelValue }}，click 次数：{{ labelClickCount }}</text>
 
-		<view class="section">
-			<text class="title">view + view</text>
-			<view class="frame group">
-				<view
-					v-for="item in options"
-					:key="item.value"
-					class="row"
-					@click="onViewClick(item)"
-				>
-					<text class="row-text">{{ item.text }}</text>
-					<view class="check" :class="{ 'check--selected': viewValue === item.value }"></view>
-				</view>
-			</view>
-			<text class="result">当前值：{{ viewValue }}，click 次数：{{ viewClickCount }}</text>
+	<text class="uni-h4">view + view</text>
+	<view class="frame group">
+		<view
+			v-for="item in options"
+			:key="item.value"
+			class="row"
+			@click="onViewClick(item)"
+		>
+			<text flatten class="row-text">{{ item.text }}</text>
+			<view flatten class="check" :class="{ 'check--selected': viewValue === item.value }"></view>
 		</view>
 	</view>
+	<text class="result">当前值：{{ viewValue }}，click 次数：{{ viewClickCount }}</text>
 </template>
 
 <script setup lang="ts">
@@ -89,24 +81,12 @@ page {
 	--tips-color: #0958d9;
 	--secondary-text-color: #657180;
 	--divider-color: #e5e5e5;
-	padding-top: 10px;
+	padding: 12px;
 	background-color: var(--background-color);
 }
 
-.section {
-	padding: 16px;
-	margin-bottom: 10px;
-	background-color: var(--content-background-color, #ffffff);
-}
-
-.title {
-	margin-bottom: 12px;
-	font-size: 16px;
-	font-weight: bold;
-	color: var(--text-color, #333333);
-}
-
 .frame {
+	margin-bottom: 4px;
 	border-width: 1px;
 	border-style: solid;
 	border-color: var(--divider-color, #e2e5e9);
@@ -152,7 +132,8 @@ page {
 }
 
 .result {
-	margin-top: 10px;
+	margin-top: 8px;
+	margin-bottom: 12px;
 	font-size: 13px;
 	color: var(--secondary-text-color, #657180);
 }

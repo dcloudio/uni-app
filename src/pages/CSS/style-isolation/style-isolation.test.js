@@ -4,6 +4,7 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
 const isIos = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.startsWith('harmony')
+const isMpWeixin = platformInfo.startsWith('mp-weixin')
 const isApp = isAndroid || isIos || isHarmony
 const isVapor = process.env.UNI_APP_X_DOM2 === "true"
 const PAGE_PATH = '/pages/CSS/style-isolation/style-isolation'
@@ -23,7 +24,9 @@ describe('style-isolation', () => {
 
   it('externalClasses 与内部类名字符串拼接后可更新样式', async () => {
     const container = await page.$('#external-class-concat-case')
-    const box = await container.$('.box')
+    const scope = isMpWeixin ? await page.$('.external-class-concat-component') : container
+    expect(scope).not.toBeNull()
+    const box = await scope.$('.box')
     expect(box).not.toBeNull()
     // 鸿蒙未设置的样式可能返回空串，更新后则返回默认数值。
     const styleNumber = async (property, defaultValue) => {

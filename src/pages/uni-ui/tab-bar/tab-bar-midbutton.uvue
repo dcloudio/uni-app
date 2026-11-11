@@ -25,7 +25,12 @@
 			<uni-tab-midbutton :width="60" :height="60">
 				<view class="mid-button-shell">
 					<view class="mid-button-core" hover-class="mid-button-core-hover" :hover-stop-propagation="true"
-						@click="handleMidButtonClick">
+						@click="handleMidButtonClick"
+						<!-- #ifdef WEB -->
+						:tabindex="'0'"
+						@keydown="onMidButtonKeydown"
+						<!-- #endif -->
+					>
 						<text class="mid-button-plus">+</text>
 						<text class="mid-button-label">发布</text>
 					</view>
@@ -85,6 +90,16 @@
 			icon: 'none'
 		})
 	}
+
+	// #ifdef WEB
+	function onMidButtonKeydown(event : KeyboardEvent) : void {
+		const key = event.key as string
+		if (key == 'Enter' || key == ' ') {
+			event.preventDefault()
+			handleMidButtonClick()
+		}
+	}
+	// #endif
 </script>
 
 <style>
@@ -120,6 +135,9 @@
 		justify-content: center;
 		align-items: center;
 		/* box-shadow: 0px 6px 16px rgba(255, 122, 24, 0.22); */
+		/* #ifdef WEB */
+		cursor: pointer;
+		/* #endif */
 	}
 
 	.mid-button-core-hover {

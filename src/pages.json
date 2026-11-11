@@ -1135,6 +1135,27 @@
 				},
 				// #endif
 				{
+					"path": "text-encode-decode/text-encode-decode",
+					"group": "1,0,3",
+					"style": {
+						"navigationBarTitleText": "TextEncoder / TextDecoder | 文本编解码"
+					}
+				},
+				{
+					"path": "uri-encode/uri-encode",
+					"group": "1,0,4",
+					"style": {
+						"navigationBarTitleText": "URI 编解码（encodeURI / decodeURI 等）"
+					}
+				},
+				{
+					"path": "atob-btoa/atob-btoa",
+					"group": "1,0,5",
+					"style": {
+						"navigationBarTitleText": "atob / btoa | Base64 编解码"
+					}
+				},
+				{
 					"path": "navigator/navigator",
 					"group": "1,2,0",
 					"style": {
@@ -1834,7 +1855,7 @@
 						"enablePullDownRefresh": false
 					}
 				},
-				// #ifdef ((APP-ANDROID || APP-IOS) && VUE3-VAPOR) || WEB || MP
+				// #ifdef ((APP-ANDROID || APP-HARMONY || APP-IOS) && VUE3-VAPOR) || WEB || MP
 				{
 					"path": "create-intersection-observer/create-intersection-observer",
 					"group": "1,4,0",
@@ -4075,9 +4096,24 @@
 				// #ifdef APP
 				,{
 					"path": "prefers-color-scheme/prefers-color-scheme",
-					"group": "2,24",
+					"group": "2,25",
 					"style": {
 						"navigationBarTitleText": "prefers-color-scheme | 媒体查询"
+					}
+				}
+				,{
+					"path": "media-query/media-query",
+					"group": "2,25",
+					"style": {
+						"navigationBarTitleText": "media-query | 媒体查询",
+						"pageOrientation": "auto"
+					}
+				},
+				{
+					"path": "media-query/component-only",
+					"style": {
+						"navigationBarTitleText": "组件媒体查询",
+						"pageOrientation": "auto"
 					}
 				}
 				// #endif
@@ -4452,6 +4488,18 @@
 						{
 							"id": "api.global.animationFrame",
 							"name": "animationFrame"
+						},
+						{
+							"id": "api.global.textEncoderDecoder",
+							"name": "TextEncoder / TextDecoder"
+						},
+						{
+							"id": "api.global.uriEncodeDecode",
+							"name": "URI 编解码"
+						},
+						{
+							"id": "api.global.atobBtoa",
+							"name": "atob / btoa"
 						}
 					]
 				},
@@ -5556,6 +5604,10 @@
 				{
 					"id": "css.selector",
 					"name": "选择器 selector"
+				},
+				{
+					"id": "css.media-query",
+					"name": "媒体查询"
 				}
 			]
 		}

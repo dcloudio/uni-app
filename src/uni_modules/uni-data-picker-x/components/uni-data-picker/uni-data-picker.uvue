@@ -10,19 +10,19 @@
     >
       <slot :data="dataPicker.selectedPaths" :error="dataPicker.error">
         <view class="input-value" :class="inputClass">
-          <text v-if="dataPicker.error!=null" class="error-text" :class="errorClass">{{dataPicker.error!.errMsg}}</text>
+          <text flatten v-if="dataPicker.error!=null" class="error-text" :class="errorClass">{{dataPicker.error!.errMsg}}</text>
           <scroll-view v-if="dataPicker.selectedPaths.length" class="selected-path" direction="horizontal"
             :show-scrollbar="false">
             <view class="selected-list" flatten>
               <template v-for="(item, index) in dataPicker.selectedPaths" :key="index">
-                <text class="text-color">{{item[dataPicker.mappingTextName]}}</text>
-                <text v-if="index<dataPicker.selectedPaths.length-1" class="input-split-line">{{split}}</text>
+                <text flatten class="text-color">{{item[dataPicker.mappingTextName]}}</text>
+                <text flatten v-if="index<dataPicker.selectedPaths.length-1" class="input-split-line">{{split}}</text>
               </template>
             </view>
           </scroll-view>
-          <text v-else-if="dataPicker.error==null&&!dataPicker.loading" class="placeholder">{{placeholder}}</text>
+          <text flatten v-else-if="dataPicker.error==null&&!dataPicker.loading" class="placeholder">{{placeholder}}</text>
           <view v-if="!readonly" class="arrow-area">
-            <view class="input-arrow"></view>
+            <view class="input-arrow" flatten></view>
           </view>
         </view>
       </slot>
@@ -35,13 +35,22 @@
     <view ref="coverRef" class="uni-data-tree-cover" :class="[maskClassValue, active ? 'uni-data-tree-cover-active' : '']" v-if="isOpened" @click="handleClose"></view>
     <view class="uni-data-tree-dialog"
       :class="[popupClass, active ? 'uni-data-tree-dialog-active' : '', dragTransitionOff ? 'uni-data-tree-dialog-drag' : '']"
-      :style="dialogStyle" v-if="isOpened">
+      :style="dialogStyle" v-if="isOpened"
+      <!-- #ifdef WEB -->
+      @keydown="onDialogKeydown"
+      <!-- #endif -->
+    >
       <view class="dialog-caption" @touchstart="onTitleTouchStart" @touchmove="onTitleTouchMove"
         @touchend="onTouchEnd" @touchcancel="onTouchEnd">
         <view class="dialog-title-view" flatten>
           <text class="dialog-title" flatten>{{popupTitle}}</text>
         </view>
-        <view class="dialog-close" @click="handleClose">
+        <view class="dialog-close" @click="handleClose"
+          <!-- #ifdef WEB -->
+          tabindex="0"
+          @keydown="onCloseKeydown"
+          <!-- #endif -->
+        >
           <view class="dialog-close-plus" data-id="close" flatten></view>
           <view class="dialog-close-plus dialog-close-rotate" data-id="close" flatten></view>
         </view>
@@ -61,26 +70,15 @@
    * @description 通过本地数据或 datacom 数据的级联选择组件，支持单列和多列级联选择，列数没有限制，如果屏幕显示不全，顶部tab区域会左右滚动。
    * @uniPlatform {
    *   "app": {
-   *     "android": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.33",
-   *       "unixVaporVer": "5.33"
-   *     },
-   *     "ios": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.33",
-   *       "unixVaporVer": "5.33"
-   *     },
-   *     "harmony": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.33",
-   *       "unixVaporVer": "5.33"
-   *     }
+   *     "android": {"unixVaporVer": "5.33"},
+   *     "ios": {"unixVaporVer": "5.33"},
+   *     "harmony": {"unixVaporVer": "5.33"}
    *   },
-   *   "web": {
-   *     "uniVer": "x",
-   *     "unixVer": "5.33"
-   *   }
+   *   "mp": {
+   *     "weixin": {"unixVer": "5.33"},
+   *     "alipay": {"unixVer": "5.33"}
+   *   },
+   *   "web": {"unixVer": "5.33"}
    * }
    */
 
@@ -113,43 +111,83 @@
    */
   const props = defineProps({
     ...dataPickerProps,
+    /**
+     * @description 未选择时的占位文字
+     * @default ""
+     */
     placeholder: {
       type: String,
       default: ''
     },
+    /**
+     * @description 是否只读，只读时点击输入框仅触发 inputclick
+     * @default false
+     */
     readonly: {
       type: Boolean,
       default: false
     },
+    /**
+     * @description 多级已选值之间的分隔符
+     * @default "/"
+     */
     split: {
       type: String,
       default: '/'
     },
+    /**
+     * @description 已选文字是否省略
+     * @default true
+     */
     ellipsis: {
       type: Boolean,
       default: true
     },
+    /**
+     * @description 输入框容器的 external class
+     * @default ""
+     */
     inputClass: {
       type: String,
       default: ''
     },
+    /**
+     * @description 错误提示文字的 external class
+     * @default ""
+     */
     errorClass: {
       type: String,
       default: ''
     },
+    /**
+     * @description 弹出窗口标题
+     * @default ""
+     */
     popupTitle: {
       type: String,
       default: ''
     },
+    /**
+     * @description 弹出窗口的 external class
+     * @default ""
+     */
     popupClass: {
       type: String,
       default: ''
     },
+    /**
+     * @description 遮罩层的 external class
+     * @default ""
+     */
     maskClass: {
       type: String,
       default: ''
     },
     // 已废弃，请使用 mask-class，保留以兼容旧用法
+    /**
+     * @description 遮罩层的 external class（已废弃，请使用 maskClass）
+     * @default ""
+     */
     coverClass: {
       type: String,
       default: ''
@@ -165,7 +203,41 @@
     return props.maskClass || props.coverClass
   })
 
-  const emit = defineEmits(['popupopened', 'popupclosed', 'nodeclick', 'change', 'input', 'update:modelValue', 'inputclick'])
+  const emit = defineEmits<{
+    /**
+     * @description 弹出选择窗口打开时触发
+     */
+    popupopened: [],
+    /**
+     * @description 弹出选择窗口关闭时触发
+     */
+    popupclosed: [],
+    /**
+     * @description 点击任意层级节点时触发
+     * @param {Object} node 被点击的节点数据
+     */
+    nodeclick: [node: any],
+    /**
+     * @description 选择结束后触发
+     * @param {Object} event 事件对象；event.detail.value 为已选节点数组
+     */
+    change: [event: any],
+    /**
+     * @description 输入值变化时触发
+     * @param {Object} event 事件对象
+     */
+    input: [event: any],
+    /**
+     * @description 选中值变化时更新绑定值
+     * @param {String} value 最后一级节点的值
+     */
+    'update:modelValue': [value: any],
+    /**
+     * @description 只读模式下点击输入框时触发
+     * @param {Object} event 事件对象
+     */
+    inputclick: [event: any]
+  }>()
 
   const isOpened = ref(false)
   const active = ref(false)
@@ -300,12 +372,12 @@
     return inst.getScrollTop()
   }
 
-  // 与 H5 宽屏媒体查询（min-width: 768px）保持一致，宽屏下无过渡动画
+  // 与 Web 宽屏媒体查询（min-width: 768px）保持一致，宽屏下无过渡动画
   function isWideScreenPopup() : boolean {
-    // #ifdef H5
+    // #ifdef WEB
     return uni.getWindowInfo().windowWidth >= 768
     // #endif
-    // #ifndef H5
+    // #ifndef WEB
     return false
     // #endif
   }
@@ -415,7 +487,29 @@
 
   // #ifdef WEB
   function onInputKeydown(event : KeyboardEvent) {
-    if (isOpened.value && event.key == 'Escape') {
+    const key = event.key as string
+    if (isOpened.value && key == 'Escape') {
+      event.preventDefault()
+      hide()
+      return
+    }
+    if (!isOpened.value && (key == 'Enter' || key == ' ' || key == 'ArrowDown')) {
+      event.preventDefault()
+      handleInput()
+    }
+  }
+
+  // 弹窗内的 Esc 关闭；焦点位于列表项时也会冒泡到这里
+  function onDialogKeydown(event : KeyboardEvent) {
+    if (event.key == 'Escape') {
+      event.preventDefault()
+      hide()
+    }
+  }
+
+  function onCloseKeydown(event : KeyboardEvent) {
+    const key = event.key as string
+    if (key == 'Enter' || key == ' ') {
       event.preventDefault()
       hide()
     }
@@ -633,7 +727,32 @@
     transform: rotate(-45deg);
   }
 
-  /* #ifdef H5 */
+  /* #ifdef WEB */
+  .uni-data-tree-input {
+    cursor: pointer;
+    outline: none;
+  }
+
+  .uni-data-tree-input:focus .input-value {
+    border-color: var(--tips-color, #2979ff);
+    box-shadow: 0 0 0 3px rgba(41, 121, 255, 0.24);
+  }
+
+  .uni-data-tree-cover {
+    cursor: pointer;
+  }
+
+  .dialog-close {
+    cursor: pointer;
+    outline: none;
+  }
+
+  .dialog-close:focus .dialog-close-plus {
+    background-color: var(--tips-color, #2979ff);
+  }
+  /* #endif */
+
+  /* #ifdef WEB */
   @media all and (min-width: 768px) {
     .uni-data-tree-dialog {
       position: unset;

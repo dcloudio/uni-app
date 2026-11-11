@@ -6,7 +6,7 @@
 
 	<!-- 基础用法 -->
 	<view class="section">
-		<text class="section-title">基础用法</text>
+		<text class="uni-h4">基础用法</text>
 		<text class="section-desc">v-model 双向绑定选中日期，点击左右箭头、滑动日历或点击年月选择月份。</text>
 		<view class="calendar-wrap">
 			<uni-calendar-view v-model="data.basicDate" @change="onBasicChange" @month-change="onBasicMonthChange" />
@@ -17,7 +17,7 @@
 
 	<!-- 自定义样式 -->
 	<view class="section">
-		<text class="section-title">自定义样式（externalClass）</text>
+		<text class="uni-h4">自定义样式（externalClass）</text>
 		<text class="section-desc">同时使用 year-month-class、year-month-arrow-class、week-class、week-item-class、day-class、day-selected-class 定制外观。今天默认高亮，可通过 today-class 覆盖。</text>
 		<view class="calendar-wrap">
 			<uni-calendar-view v-model="data.styleDate" year-month-class="custom-year-month"
@@ -29,7 +29,7 @@
 
 	<!-- 日期范围 -->
 	<view class="section">
-		<text class="section-title">可选日期范围</text>
+		<text class="uni-h4">可选日期范围</text>
 		<text class="section-desc">通过 min-date、max-date 限制可选范围，超出范围的日期置灰且不可点击。示例范围为今天起 30 天。</text>
 		<view class="calendar-wrap">
 			<uni-calendar-view :model-value="data.rangeDate" :min-date="minDate" :max-date="maxDate"
@@ -40,7 +40,7 @@
 
 	<!-- 节假日 -->
 	<view class="section">
-		<text class="section-title">节假日高亮</text>
+		<text class="uni-h4">节假日高亮</text>
 		<text class="section-desc">通过 holidays 传入节假日日期列表，命中的日期以橙色显示。</text>
 		<view class="calendar-wrap">
 			<uni-calendar-view v-model="data.holidayDate" date="2026-10-01" :holidays="holidays"
@@ -51,18 +51,20 @@
 
 	<!-- 日期上下方文字 -->
 	<view class="section">
-		<text class="section-title">日期上下方文字</text>
-		<text class="section-desc">通过 day-extras 在日期数字上方、下方显示节日、农历等文字。上方、下方文字样式由 day-top-class、day-bottom-class 定制，单元格样式由 day-wrap-class 定制。</text>
+		<text class="uni-h4">日期上下方文字</text>
+		<text class="section-desc">通过 day-extras 在日期数字上方、下方显示节日、节气、农历等文字。示例按当前显示月份前后各一个月动态生成数据：农历、节气、节日由算法生成（支持任意年份），中国法定节假日通过单独数据按年追加。切换月份时整体替换数组，组件自动刷新。上方、下方文字样式由 day-top-class、day-bottom-class 定制，单元格样式由 day-wrap-class 定制。</text>
 		<view class="calendar-wrap">
-			<uni-calendar-view v-model="data.extraDate" :day-extras="dayExtras" day-wrap-class="custom-day-wrap"
-				today-class="custom-today" day-top-class="custom-day-top" day-bottom-class="custom-day-bottom" />
+			<uni-calendar-view v-model="data.extraDate" :day-extras="dayExtras" @month-change="onExtrasMonthChange"
+				day-wrap-class="custom-day-wrap" today-class="custom-today" day-top-class="custom-day-top"
+				day-bottom-class="custom-day-bottom" />
 		</view>
 		<text class="section-result">选中日期：{{ data.extraDate }}</text>
+		<text class="section-result">当前 day-extras 覆盖范围：{{ extrasRangeText }}</text>
 	</view>
 
 	<!-- 一周起始日 -->
 	<view class="section">
-		<text class="section-title">一周起始日</text>
+		<text class="uni-h4">一周起始日</text>
 		<text class="section-desc">week-start 可指定一周起始日，-1 表示按语言自动适配。星期标题行固定显示。</text>
 		<view class="option-row">
 			<text v-for="(item, index) in weekStartOptions" :key="index" class="option-item"
@@ -77,7 +79,7 @@
 
 	<!-- 国际化 -->
 	<view class="section">
-		<text class="section-title">国际化</text>
+		<text class="uni-h4">国际化</text>
 		<text class="section-desc">内置 17 种语言的月份名称和星期缩写，不传 locale 时跟随系统语言。点击下方语言切换查看效果。</text>
 		<view class="locale-list">
 			<text v-for="(item, index) in localeOptions" :key="item.value" class="locale-item"
@@ -92,11 +94,12 @@
 
 	<!-- 组件方法 -->
 	<view class="section">
-		<text class="section-title">组件方法</text>
-		<text class="section-desc">通过 ref 调用 prevMonth、nextMonth、goToDate、getSelectedDate 等方法控制日历。</text>
+		<text class="uni-h4">组件方法</text>
+		<text class="section-desc">通过 ref 调用 prevMonth、nextMonth、goToMonth、goToDate、getSelectedDate 等方法控制日历。</text>
 		<view class="button-row">
 			<button class="demo-btn" size="mini" @click="onPrevMonth">上一月</button>
 			<button class="demo-btn" size="mini" @click="onNextMonth">下一月</button>
+			<button class="demo-btn" size="mini" @click="onGoToMonth">跳到 2027-06</button>
 			<button class="demo-btn" size="mini" @click="onJumpDate">跳到 2027-01-15</button>
 			<button class="demo-btn" size="mini" @click="onReadSelected">读取选中日期</button>
 		</view>
@@ -122,6 +125,13 @@
 		date : string
 		top ?: string
 		bottom ?: string
+	}
+
+	type LunarDate = {
+		year : number
+		month : number
+		day : number
+		isLeapMonth : boolean
 	}
 
 	type Data = {
@@ -164,18 +174,265 @@
 		{ label: '周一开始', value: 1 }
 	]
 
-	// 2026 年中国法定节假日（示例数据）
-	const holidays : string[] = [
-		'2026-01-01', '2026-01-02', '2026-01-03',
-		'2026-02-15', '2026-02-16', '2026-02-17', '2026-02-18',
-		'2026-02-19', '2026-02-20', '2026-02-21', '2026-02-22', '2026-02-23',
-		'2026-04-04', '2026-04-05', '2026-04-06',
-		'2026-05-01', '2026-05-02', '2026-05-03', '2026-05-04', '2026-05-05',
-		'2026-06-19', '2026-06-20', '2026-06-21',
-		'2026-09-25', '2026-09-26', '2026-09-27',
-		'2026-10-01', '2026-10-02', '2026-10-03', '2026-10-04',
-		'2026-10-05', '2026-10-06', '2026-10-07'
+	// ===== 农历数据与算法（示例实现，支持 1900-2100 年）=====
+
+	// 农历数据表：从 1900 年到 2100 年，每年一个数值
+	// 低 4 位：闰月月份（0 表示无闰月）；0x10000 位：闰月天数（1 为 30 天，0 为 29 天）
+	// 0x8000 至 0x10 位：从正月到十二月各月天数（1 为 30 天，0 为 29 天）
+	const lunarInfo : number[] = [
+		0x04bd8, 0x04ae0, 0x0a570, 0x054d5, 0x0d260, 0x0d950, 0x16554, 0x056a0, 0x09ad0, 0x055d2, // 1900-1909
+		0x04ae0, 0x0a5b6, 0x0a4d0, 0x0d250, 0x1d255, 0x0b540, 0x0d6a0, 0x0ada2, 0x095b0, 0x14977, // 1910-1919
+		0x04970, 0x0a4b0, 0x0b4b5, 0x06a50, 0x06d40, 0x1ab54, 0x02b60, 0x09570, 0x052f2, 0x04970, // 1920-1929
+		0x06566, 0x0d4a0, 0x0ea50, 0x06e95, 0x05ad0, 0x02b60, 0x186e3, 0x092e0, 0x1c8d7, 0x0c950, // 1930-1939
+		0x0d4a0, 0x1d8a6, 0x0b550, 0x056a0, 0x1a5b4, 0x025d0, 0x092d0, 0x0d2b2, 0x0a950, 0x0b557, // 1940-1949
+		0x06ca0, 0x0b550, 0x15355, 0x04da0, 0x0a5b0, 0x14573, 0x052b0, 0x0a9a8, 0x0e950, 0x06aa0, // 1950-1959
+		0x0aea6, 0x0ab50, 0x04b60, 0x0aae4, 0x0a570, 0x05260, 0x0f263, 0x0d950, 0x05b57, 0x056a0, // 1960-1969
+		0x096d0, 0x04dd5, 0x04ad0, 0x0a4d0, 0x0d4d4, 0x0d250, 0x0d558, 0x0b540, 0x0b6a0, 0x195a6, // 1970-1979
+		0x095b0, 0x049b0, 0x0a974, 0x0a4b0, 0x0b27a, 0x06a50, 0x06d40, 0x0af46, 0x0ab60, 0x09570, // 1980-1989
+		0x04af5, 0x04970, 0x064b0, 0x074a3, 0x0ea50, 0x06b58, 0x05ac0, 0x0ab60, 0x096d5, 0x092e0, // 1990-1999
+		0x0c960, 0x0d954, 0x0d4a0, 0x0da50, 0x07552, 0x056a0, 0x0abb7, 0x025d0, 0x092d0, 0x0cab5, // 2000-2009
+		0x0a950, 0x0b4a0, 0x0baa4, 0x0ad50, 0x055d9, 0x04ba0, 0x0a5b0, 0x15176, 0x052b0, 0x0a930, // 2010-2019
+		0x07954, 0x06aa0, 0x0ad50, 0x05b52, 0x04b60, 0x0a6e6, 0x0a4e0, 0x0d260, 0x0ea65, 0x0d530, // 2020-2029
+		0x05aa0, 0x076a3, 0x096d0, 0x04afb, 0x04ad0, 0x0a4d0, 0x1d0b6, 0x0d250, 0x0d520, 0x0dd45, // 2030-2039
+		0x0b5a0, 0x056d0, 0x055b2, 0x049b0, 0x0a577, 0x0a4b0, 0x0aa50, 0x1b255, 0x06d20, 0x0ada0, // 2040-2049
+		0x14b63, 0x09370, 0x049f8, 0x04970, 0x064b0, 0x168a6, 0x0ea50, 0x06b20, 0x1a6c4, 0x0aae0, // 2050-2059
+		0x0a2e0, 0x0d2e3, 0x0c960, 0x0d557, 0x0d4a0, 0x0da50, 0x05d55, 0x056a0, 0x0a6d0, 0x055d4, // 2060-2069
+		0x052d0, 0x0a9b8, 0x0a950, 0x0b4a0, 0x0b6a6, 0x0ad50, 0x055a0, 0x0aba4, 0x0a5b0, 0x052b0, // 2070-2079
+		0x0b273, 0x06930, 0x07337, 0x06aa0, 0x0ad50, 0x14b55, 0x04b60, 0x0a570, 0x054e4, 0x0d160, // 2080-2089
+		0x0e968, 0x0d520, 0x0daa0, 0x16aa6, 0x056d0, 0x04ae0, 0x0a9d4, 0x0a2d0, 0x0d150, 0x0f252, // 2090-2099
+		0x0d520 // 2100
 	]
+
+	const lunarMonthNames : string[] = ['正月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '冬月', '腊月']
+
+	const lunarDayNames : string[] = [
+		'初一', '初二', '初三', '初四', '初五', '初六', '初七', '初八', '初九', '初十',
+		'十一', '十二', '十三', '十四', '十五', '十六', '十七', '十八', '十九', '二十',
+		'廿一', '廿二', '廿三', '廿四', '廿五', '廿六', '廿七', '廿八', '廿九', '三十'
+	]
+
+	// 二十四节气名称，按公历月份顺序排列（每月两个）
+	const solarTermNames : string[] = [
+		'小寒', '大寒', '立春', '雨水', '惊蛰', '春分', '清明', '谷雨',
+		'立夏', '小满', '芒种', '夏至', '小暑', '大暑', '立秋', '处暑',
+		'白露', '秋分', '寒露', '霜降', '立冬', '小雪', '大雪', '冬至'
+	]
+
+	function lunarLeapMonth(year : number) : number {
+		return lunarInfo[year - 1900] & 0xf
+	}
+
+	function lunarLeapDays(year : number) : number {
+		if (lunarLeapMonth(year) != 0) {
+			return (lunarInfo[year - 1900] & 0x10000) != 0 ? 30 : 29
+		}
+		return 0
+	}
+
+	function lunarYearDays(year : number) : number {
+		let sum = 348
+		for (let mask = 0x8000; mask > 0x8; mask >>= 1) {
+			sum += (lunarInfo[year - 1900] & mask) != 0 ? 1 : 0
+		}
+		return sum + lunarLeapDays(year)
+	}
+
+	function lunarMonthDays(year : number, month : number) : number {
+		return (lunarInfo[year - 1900] & (0x10000 >> month)) != 0 ? 30 : 29
+	}
+
+	// 公历转农历，超出农历数据表范围（1900-2100 年）时返回 null
+	function solarToLunar(year : number, month : number, day : number) : LunarDate | null {
+		if (year < 1900 || year > 2100) {
+			return null
+		}
+		let offset = (Date.UTC(year, month - 1, day) - Date.UTC(1900, 0, 31)) / 86400000
+		if (offset < 0) {
+			return null
+		}
+		let temp = 0
+		let i : number
+		for (i = 1900; i < 2101 && offset > 0; i++) {
+			temp = lunarYearDays(i)
+			offset -= temp
+		}
+		if (offset < 0) {
+			offset += temp
+			i--
+		}
+		const lunarYear = i
+		const leap = lunarLeapMonth(lunarYear)
+		let isLeapMonth = false
+		let j : number
+		for (j = 1; j < 13 && offset > 0; j++) {
+			if (leap > 0 && j == leap + 1 && !isLeapMonth) {
+				--j
+				isLeapMonth = true
+				temp = lunarLeapDays(lunarYear)
+			} else {
+				temp = lunarMonthDays(lunarYear, j)
+			}
+			if (isLeapMonth && j == leap + 1) {
+				isLeapMonth = false
+			}
+			offset -= temp
+		}
+		if (offset == 0 && leap > 0 && j == leap + 1) {
+			if (isLeapMonth) {
+				isLeapMonth = false
+			} else {
+				isLeapMonth = true
+				--j
+			}
+		}
+		if (offset < 0) {
+			offset += temp
+			--j
+		}
+		return {
+			year: lunarYear,
+			month: j,
+			day: offset + 1,
+			isLeapMonth: isLeapMonth
+		}
+	}
+
+	// ===== 节气算法 =====
+	// 通过太阳视黄经计算二十四节气日期（天文近似算法，已与香港天文台年历核对）
+
+	const DEG_TO_RAD = Math.PI / 180
+	const MS_PER_DAY = 86400000
+	// 北京时间相对 UTC 的偏移
+	const CHINA_TIME_OFFSET_MS = 8 * 60 * 60 * 1000
+
+	// 计算某时刻（儒略日）的太阳视黄经
+	function sunLongitude(julianDay : number) : number {
+		const t = (julianDay - 2451545.0) / 36525
+		const l0 = 280.46646 + 36000.76983 * t + 0.0003032 * t * t
+		const m = 357.52911 + 35999.05029 * t - 0.0001537 * t * t
+		const mr = m * DEG_TO_RAD
+		const c = (1.914602 - 0.004817 * t - 0.000014 * t * t) * Math.sin(mr)
+			+ (0.019993 - 0.000101 * t) * Math.sin(2 * mr)
+			+ 0.000289 * Math.sin(3 * mr)
+		const omega = 125.04 - 1934.136 * t
+		let lambda = l0 + c - 0.00569 - 0.00478 * Math.sin(omega * DEG_TO_RAD)
+		lambda = lambda % 360
+		if (lambda < 0) {
+			lambda += 360
+		}
+		return lambda
+	}
+
+	// 判断某天（北京时间）是否为指定黄经对应的节气日
+	function isSolarTermDay(year : number, month : number, day : number, targetLongitude : number) : boolean {
+		const startMs = Date.UTC(year, month - 1, day) - CHINA_TIME_OFFSET_MS
+		const endMs = startMs + MS_PER_DAY
+		const startLongitude = sunLongitude(startMs / MS_PER_DAY + 2440587.5)
+		const endLongitude = sunLongitude(endMs / MS_PER_DAY + 2440587.5)
+		const advance = (endLongitude - startLongitude + 360) % 360
+		const offset = (targetLongitude - startLongitude + 360) % 360
+		return offset < advance
+	}
+
+	// 获取某月的两个节气，返回 日期 -> 节气名 的映射
+	function getMonthSolarTerms(year : number, month : number) : Map<number, string> {
+		const terms = new Map<number, string>()
+		const daysInMonth = new Date(year, month, 0).getDate()
+		for (let k = 0; k < 2; k++) {
+			const index = (month - 1) * 2 + k
+			// 节气对应太阳黄经：小寒为 285°，此后每个节气递增 15°
+			const targetLongitude = (index * 15 + 285) % 360
+			for (let day = 1; day <= daysInMonth; day++) {
+				if (isSolarTermDay(year, month, day, targetLongitude)) {
+					terms.set(day, solarTermNames[index])
+					break
+				}
+			}
+		}
+		return terms
+	}
+
+	// ===== 节日 =====
+	// 公历固定节日，返回节日名，无节日时返回空字符串
+	function getSolarFestival(month : number, day : number) : string {
+		if (month == 1 && day == 1) {
+			return '元旦'
+		}
+		if (month == 3 && day == 8) {
+			return '妇女节'
+		}
+		if (month == 5 && day == 1) {
+			return '劳动节'
+		}
+		if (month == 6 && day == 1) {
+			return '儿童节'
+		}
+		if (month == 7 && day == 1) {
+			return '建党节'
+		}
+		if (month == 8 && day == 1) {
+			return '建军节'
+		}
+		if (month == 10 && day == 1) {
+			return '国庆节'
+		}
+		return ''
+	}
+
+	// ===== 中国法定节假日数据（每年单独维护，按官方通知追加）=====
+	//
+	// 使用方法：每年国务院办公厅发布《关于 XXXX 年部分节假日安排的通知》后：
+	// 1. 参照下方格式新增对应年份的数组（如 statutoryHolidays2027），
+	//    放假日期的 top 填写节日名称（如 '春节'）或统一的放假标记（如 '休'），bottom 无需填写（由农历/节气自动生成）；
+	// 2. 将新年份数组追加到下方 statutoryHolidays 汇总列表中，如：
+	//    const statutoryHolidays : CalendarDayExtra[] = statutoryHolidays2026.concat(statutoryHolidays2027)
+	//
+	// 2026 年数据来源：《国务院办公厅关于 2026 年部分节假日安排的通知》（2025-11-04 发布，国办发明电〔2025〕7号）
+	// 调休补班日：1 月 4 日、2 月 14 日、2 月 28 日、5 月 9 日、9 月 20 日、10 月 10 日（本示例不标注补班，如需可自行追加 '班' 标记）
+	const statutoryHolidays2026 : CalendarDayExtra[] = [
+		{ date: '2026-01-01', top: '元旦' },
+		{ date: '2026-01-02', top: '休' },
+		{ date: '2026-01-03', top: '休' },
+		{ date: '2026-02-15', top: '休' },
+		{ date: '2026-02-16', top: '除夕' },
+		{ date: '2026-02-17', top: '春节' },
+		{ date: '2026-02-18', top: '休' },
+		{ date: '2026-02-19', top: '休' },
+		{ date: '2026-02-20', top: '休' },
+		{ date: '2026-02-21', top: '休' },
+		{ date: '2026-02-22', top: '休' },
+		{ date: '2026-02-23', top: '休' },
+		{ date: '2026-04-04', top: '休' },
+		{ date: '2026-04-05', top: '休' },
+		{ date: '2026-04-06', top: '休' },
+		{ date: '2026-05-01', top: '劳动节' },
+		{ date: '2026-05-02', top: '休' },
+		{ date: '2026-05-03', top: '休' },
+		{ date: '2026-05-04', top: '休' },
+		{ date: '2026-05-05', top: '休' },
+		{ date: '2026-06-19', top: '端午节' },
+		{ date: '2026-06-20', top: '休' },
+		{ date: '2026-06-21', top: '休' },
+		{ date: '2026-09-25', top: '中秋节' },
+		{ date: '2026-09-26', top: '休' },
+		{ date: '2026-09-27', top: '休' },
+		{ date: '2026-10-01', top: '国庆节' },
+		{ date: '2026-10-02', top: '休' },
+		{ date: '2026-10-03', top: '休' },
+		{ date: '2026-10-04', top: '休' },
+		{ date: '2026-10-05', top: '休' },
+		{ date: '2026-10-06', top: '休' },
+		{ date: '2026-10-07', top: '休' }
+	]
+
+	// 汇总所有已录入年份的法定节假日，新年份在下方追加
+	const statutoryHolidays : CalendarDayExtra[] = statutoryHolidays2026
+
+	// 「节假日高亮」示例使用与法定节假日相同的数据（数据只维护一处，避免不一致）
+	const holidays : string[] = []
+	for (let i = 0; i < statutoryHolidays2026.length; i++) {
+		holidays.push(statutoryHolidays2026[i].date)
+	}
 
 	function padZero(value : number) : string {
 		return value < 10 ? '0' + value.toString() : value.toString()
@@ -190,37 +447,105 @@
 	const minDate = todayText
 	const maxDate = formatDate(new Date(today.getFullYear(), today.getMonth(), today.getDate() + 30))
 
-	// 模拟农历文字（仅用于演示，真实农历需自行接入数据或算法）
-	const lunarNames : string[] = [
-		'初一', '初二', '初三', '初四', '初五', '初六', '初七', '初八', '初九', '初十',
-		'十一', '十二', '十三', '十四', '十五', '十六', '十七', '十八', '十九', '二十',
-		'廿一', '廿二', '廿三', '廿四', '廿五', '廿六', '廿七', '廿八', '廿九', '三十'
-	]
+	// ===== 按月份生成 day-extras 数据 =====
 
-	const festivalDates : string[] = ['2026-11-26', '2026-12-25', '2027-01-01']
-	const festivalNames : string[] = ['感恩节', '圣诞节', '元旦']
-
-	function getFestivalName(dateStr : string) : string {
-		for (let i = 0; i < festivalDates.length; i++) {
-			if (festivalDates[i] == dateStr) {
-				return festivalNames[i]
-			}
+	function getPrevMonth(year : number, month : number) : number[] {
+		if (month - 1 < 1) {
+			return [year - 1, 12]
 		}
-		return ''
+		return [year, month - 1]
 	}
 
+	function getNextMonth(year : number, month : number) : number[] {
+		if (month + 1 > 12) {
+			return [year + 1, 1]
+		}
+		return [year, month + 1]
+	}
+
+	// 生成某个月的日期附加文字：top 显示节日，bottom 优先显示节气，其次显示农历
 	function appendMonthExtras(list : CalendarDayExtra[], year : number, month : number) : void {
+		const monthTerms = getMonthSolarTerms(year, month)
 		const daysInMonth = new Date(year, month, 0).getDate()
 		for (let day = 1; day <= daysInMonth; day++) {
+			const lunar = solarToLunar(year, month, day)
+			let top = getSolarFestival(month, day)
+			let bottom = ''
+			if (lunar != null && lunar.month == 1 && lunar.day == 1 && !lunar.isLeapMonth) {
+				top = '春节'
+			}
+			const term = monthTerms.get(day)
+			if (term != null) {
+				bottom = term
+			} else if (lunar != null) {
+				if (lunar.day == 1) {
+					bottom = (lunar.isLeapMonth ? '闰' : '') + lunarMonthNames[lunar.month - 1]
+				} else {
+					bottom = lunarDayNames[lunar.day - 1]
+				}
+			}
+			if (top.length == 0 && bottom.length == 0) {
+				continue
+			}
 			const dateStr = formatDate(new Date(year, month - 1, day))
-			const lunar = lunarNames[(day - 1) % lunarNames.length]
-			const festival = getFestivalName(dateStr)
-			if (festival.length > 0) {
-				list.push({ date: dateStr, top: festival, bottom: lunar })
+			if (top.length == 0) {
+				list.push({ date: dateStr, bottom: bottom })
 			} else {
-				list.push({ date: dateStr, bottom: lunar })
+				list.push({ date: dateStr, top: top, bottom: bottom })
 			}
 		}
+	}
+
+	// 将法定节假日数据合并到生成的列表中，同日期以法定数据覆盖 top
+	function applyStatutoryHolidays(list : CalendarDayExtra[], year : number, month : number) : void {
+		if (statutoryHolidays.length == 0) {
+			return
+		}
+		const indexByDate = new Map<string, number>()
+		for (let i = 0; i < list.length; i++) {
+			indexByDate.set(list[i].date, i)
+		}
+		const monthPrefix = `${year}-${padZero(month)}-`
+		for (let i = 0; i < statutoryHolidays.length; i++) {
+			const holiday = statutoryHolidays[i]
+			if (holiday.date.indexOf(monthPrefix) != 0) {
+				continue
+			}
+			const index = indexByDate.get(holiday.date)
+			const top = holiday.top
+			if (index != null) {
+				if (top != null) {
+					list[index].top = top
+				}
+			} else {
+				const item : CalendarDayExtra = { date: holiday.date }
+				if (top != null) {
+					item.top = top
+				}
+				const bottom = holiday.bottom
+				if (bottom != null) {
+					item.bottom = bottom
+				}
+				list.push(item)
+			}
+		}
+	}
+
+	// 生成当前显示月份前后各一个月（共 3 个月）的 day-extras 数据
+	function buildExtras(year : number, month : number) : CalendarDayExtra[] {
+		const list : CalendarDayExtra[] = []
+		const months : number[][] = [
+			getPrevMonth(year, month),
+			[year, month],
+			getNextMonth(year, month)
+		]
+		for (let i = 0; i < months.length; i++) {
+			const y = months[i][0]
+			const m = months[i][1]
+			appendMonthExtras(list, y, m)
+			applyStatutoryHolidays(list, y, m)
+		}
+		return list
 	}
 
 	const data = reactive<Data>({
@@ -241,15 +566,30 @@
 		return localeOptions[data.localeIndex].value
 	})
 
-	const dayExtras = computed<CalendarDayExtra[]>(() : CalendarDayExtra[] => {
-		const list : CalendarDayExtra[] = []
-		const base = new Date()
-		for (let offset = -1; offset <= 1; offset++) {
-			const monthDate = new Date(base.getFullYear(), base.getMonth() + offset, 1)
-			appendMonthExtras(list, monthDate.getFullYear(), monthDate.getMonth() + 1)
-		}
-		return list
+	// day-extras 数据：跟随日历显示月份整体替换数组，组件感知变化后自动刷新
+	const dayExtras = ref<CalendarDayExtra[]>([])
+
+	const extrasYear = ref(today.getFullYear())
+	const extrasMonth = ref(today.getMonth() + 1)
+
+	const extrasRangeText = computed<string>(() : string => {
+		const prev = getPrevMonth(extrasYear.value, extrasMonth.value)
+		const next = getNextMonth(extrasYear.value, extrasMonth.value)
+		return `${prev[0]}-${padZero(prev[1])} ~ ${next[0]}-${padZero(next[1])}`
 	})
+
+	function refreshDayExtras(year : number, month : number) {
+		extrasYear.value = year
+		extrasMonth.value = month
+		dayExtras.value = buildExtras(year, month)
+	}
+
+	function onExtrasMonthChange(year : number, month : number) {
+		refreshDayExtras(year, month)
+	}
+
+	// 初始数据：当前月份及前后各一个月
+	refreshDayExtras(extrasYear.value, extrasMonth.value)
 
 	function logEvent(text : string) {
 		data.lastEvent = text
@@ -288,6 +628,10 @@
 
 	function onNextMonth() {
 		methodCalendarRef.value?.nextMonth()
+	}
+
+	function onGoToMonth() {
+		methodCalendarRef.value?.goToMonth(2027, 6)
 	}
 
 	function onJumpDate() {
@@ -335,12 +679,6 @@
 		margin-bottom: 12px;
 		padding: 12px;
 		border-radius: 10px;
-	}
-
-	.section-title {
-		font-size: 15px;
-		font-weight: bold;
-		color: var(--text-color, #333333);
 	}
 
 	.section-desc {

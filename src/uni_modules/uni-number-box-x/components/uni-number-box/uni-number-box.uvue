@@ -4,14 +4,16 @@
 			class="uni-numbox__btn uni-numbox__minus"
 			:class="btnClass"
 		<!-- #ifdef WEB -->
+			:tabindex="minusDisabled ? '-1' : '0'"
 			@pointerdown="onMinus"
+			@keydown="onMinusKeydown"
 		<!-- #endif -->
 		<!-- #ifndef WEB -->
 			@click="onMinus"
 		<!-- #endif -->
 		>
 		<!-- Chrome 133版本上有点击响应慢的bug，为规避bug在条件编译中使用 @pointerdown-->
-			<view class="uni-numbox__icon-line" :class="[iconClass, minusDisabled ? 'uni-numbox__icon-line--disabled' : '']"></view>
+			<view flatten class="uni-numbox__icon-line" :class="[iconClass, minusDisabled ? 'uni-numbox__icon-line--disabled' : '']"></view>
 		</view>
 		<input
 			class="uni-numbox__input"
@@ -26,14 +28,16 @@
 			class="uni-numbox__btn uni-numbox__plus"
 			:class="btnClass"
 			<!-- #ifdef WEB -->
+				:tabindex="plusDisabled ? '-1' : '0'"
 				@pointerdown="onPlus"
+				@keydown="onPlusKeydown"
 			<!-- #endif -->
 			<!-- #ifndef WEB -->
 				@click="onPlus"
 			<!-- #endif -->
 		>
-			<view class="uni-numbox__icon-line" :class="[iconClass, plusDisabled ? 'uni-numbox__icon-line--disabled' : '']"></view>
-			<view class="uni-numbox__icon-line uni-numbox__icon-line--vertical" :class="[iconClass, plusDisabled ? 'uni-numbox__icon-line--disabled' : '']"></view>
+			<view flatten class="uni-numbox__icon-line" :class="[iconClass, plusDisabled ? 'uni-numbox__icon-line--disabled' : '']"></view>
+			<view flatten class="uni-numbox__icon-line uni-numbox__icon-line--vertical" :class="[iconClass, plusDisabled ? 'uni-numbox__icon-line--disabled' : '']"></view>
 		</view>
 	</view>
 </template>
@@ -44,36 +48,15 @@
  * @description 带加减按钮的数字输入框，常见于购物车商品数量选择
  * @uniPlatform {
  *   "app": {
- *     "android": {
- *       "uniVer": "x",
- *       "unixVer": "5.07",
- *       "unixVaporVer": "5.21"
- *     },
- *     "ios": {
- *       "uniVer": "x",
- *       "unixVer": "5.07",
- *       "unixVaporVer": "5.11"
- *     },
- *     "harmony": {
- *       "uniVer": "x",
- *       "unixVer": "5.07",
- *       "unixVaporVer": "5.07"
- *     }
+ *     "android": {"unixVaporVer": "5.21"},
+ *     "ios": {"unixVaporVer": "5.11"},
+ *     "harmony": {"unixVaporVer": "5.07"}
  *   },
  *   "mp": {
- *     "weixin": {
- *       "uniVer": "x",
- *       "unixVer": "5.07"
- *     },
- *     "alipay": {
- *       "uniVer": "x",
- *       "unixVer": "5.31"
- *     }
+ *     "weixin": {"unixVer": "5.07"},
+ *     "alipay": {"unixVer": "5.31"}
  *   },
- *   "web": {
- *     "uniVer": "x",
- *     "unixVer": "5.07"
- *   }
+ *   "web": {"unixVer": "5.07"}
  * }
  * @property {Number} value 输入框当前值，默认值 1
  * @property {Number} modelValue v-model 绑定值，默认值 1
@@ -99,36 +82,15 @@ type Props = {
 	 * @default 1
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.21"
-	 *     },
-	 *     "ios": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.11"
-	 *     },
-	 *     "harmony": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.07"
-	 *     }
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
 	 *   },
 	 *   "mp": {
-	 *     "weixin": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07"
-	 *     },
-	 *     "alipay": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     }
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "uniVer": "x",
-	 *     "unixVer": "5.07"
-	 *   }
+	 *   "web": {"unixVer": "5.07"}
 	 * }
 	 */
 	value?: number,
@@ -137,36 +99,15 @@ type Props = {
 	 * @default 1
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.21"
-	 *     },
-	 *     "ios": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.11"
-	 *     },
-	 *     "harmony": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.07"
-	 *     }
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
 	 *   },
 	 *   "mp": {
-	 *     "weixin": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07"
-	 *     },
-	 *     "alipay": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     }
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "uniVer": "x",
-	 *     "unixVer": "5.07"
-	 *   }
+	 *   "web": {"unixVer": "5.07"}
 	 * }
 	 */
 	modelValue?: number,
@@ -175,36 +116,15 @@ type Props = {
 	 * @default 0
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.21"
-	 *     },
-	 *     "ios": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.11"
-	 *     },
-	 *     "harmony": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.07"
-	 *     }
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
 	 *   },
 	 *   "mp": {
-	 *     "weixin": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07"
-	 *     },
-	 *     "alipay": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     }
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "uniVer": "x",
-	 *     "unixVer": "5.07"
-	 *   }
+	 *   "web": {"unixVer": "5.07"}
 	 * }
 	 */
 	min?: number,
@@ -213,36 +133,15 @@ type Props = {
 	 * @default 100
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.21"
-	 *     },
-	 *     "ios": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.11"
-	 *     },
-	 *     "harmony": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.07"
-	 *     }
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
 	 *   },
 	 *   "mp": {
-	 *     "weixin": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07"
-	 *     },
-	 *     "alipay": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     }
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "uniVer": "x",
-	 *     "unixVer": "5.07"
-	 *   }
+	 *   "web": {"unixVer": "5.07"}
 	 * }
 	 */
 	max?: number,
@@ -251,36 +150,15 @@ type Props = {
 	 * @default 1
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.21"
-	 *     },
-	 *     "ios": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.11"
-	 *     },
-	 *     "harmony": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.07"
-	 *     }
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
 	 *   },
 	 *   "mp": {
-	 *     "weixin": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07"
-	 *     },
-	 *     "alipay": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     }
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "uniVer": "x",
-	 *     "unixVer": "5.07"
-	 *   }
+	 *   "web": {"unixVer": "5.07"}
 	 * }
 	 */
 	step?: number,
@@ -289,36 +167,15 @@ type Props = {
 	 * @default false
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.21"
-	 *     },
-	 *     "ios": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.11"
-	 *     },
-	 *     "harmony": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.07"
-	 *     }
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
 	 *   },
 	 *   "mp": {
-	 *     "weixin": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07"
-	 *     },
-	 *     "alipay": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     }
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "uniVer": "x",
-	 *     "unixVer": "5.07"
-	 *   }
+	 *   "web": {"unixVer": "5.07"}
 	 * }
 	 */
 	disabled?: boolean,
@@ -327,36 +184,15 @@ type Props = {
 	 * @default ""
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.21"
-	 *     },
-	 *     "ios": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.11"
-	 *     },
-	 *     "harmony": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.07"
-	 *     }
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
 	 *   },
 	 *   "mp": {
-	 *     "weixin": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07"
-	 *     },
-	 *     "alipay": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     }
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "uniVer": "x",
-	 *     "unixVer": "5.07"
-	 *   }
+	 *   "web": {"unixVer": "5.07"}
 	 * }
 	 */
 	btnClass?: string.ClassString,
@@ -365,36 +201,15 @@ type Props = {
 	 * @default ""
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.21"
-	 *     },
-	 *     "ios": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.11"
-	 *     },
-	 *     "harmony": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.07"
-	 *     }
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
 	 *   },
 	 *   "mp": {
-	 *     "weixin": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07"
-	 *     },
-	 *     "alipay": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     }
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "uniVer": "x",
-	 *     "unixVer": "5.07"
-	 *   }
+	 *   "web": {"unixVer": "5.07"}
 	 * }
 	 */
 	inputClass?: string.ClassString,
@@ -403,36 +218,15 @@ type Props = {
 	 * @default ""
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.21"
-	 *     },
-	 *     "ios": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.11"
-	 *     },
-	 *     "harmony": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.07"
-	 *     }
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
 	 *   },
 	 *   "mp": {
-	 *     "weixin": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07"
-	 *     },
-	 *     "alipay": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     }
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "uniVer": "x",
-	 *     "unixVer": "5.07"
-	 *   }
+	 *   "web": {"unixVer": "5.07"}
 	 * }
 	 */
 	iconClass?: string.ClassString
@@ -452,150 +246,70 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
 	/**
-	 * @description 值改变时触发，参数为当前值，类型为 number
+	 * @description 值改变时触发
+	 * @param {Number} value 改变后的当前值
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.21"
-	 *     },
-	 *     "ios": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.11"
-	 *     },
-	 *     "harmony": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.07"
-	 *     }
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
 	 *   },
 	 *   "mp": {
-	 *     "weixin": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07"
-	 *     },
-	 *     "alipay": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     }
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "uniVer": "x",
-	 *     "unixVer": "5.07"
-	 *   }
+	 *   "web": {"unixVer": "5.07"}
 	 * }
 	 */
 	change: [value: number]
 	/**
-	 * @description v-model 绑定值变化事件，参数为当前值，类型为 number
+	 * @description v-model 绑定值变化事件
+	 * @param {Number} value 改变后的当前值
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.21"
-	 *     },
-	 *     "ios": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.11"
-	 *     },
-	 *     "harmony": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.07"
-	 *     }
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
 	 *   },
 	 *   "mp": {
-	 *     "weixin": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07"
-	 *     },
-	 *     "alipay": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     }
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "uniVer": "x",
-	 *     "unixVer": "5.07"
-	 *   }
+	 *   "web": {"unixVer": "5.07"}
 	 * }
 	 */
 	'update:modelValue': [value: number]
 	/**
-	 * @description 输入框失焦时触发，参数为事件对象，类型为 UniInputBlurEvent
+	 * @description 输入框失焦时触发
+	 * @param {UniInputBlurEvent} event 输入框失焦事件对象
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.21"
-	 *     },
-	 *     "ios": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.11"
-	 *     },
-	 *     "harmony": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.07"
-	 *     }
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
 	 *   },
 	 *   "mp": {
-	 *     "weixin": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07"
-	 *     },
-	 *     "alipay": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     }
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "uniVer": "x",
-	 *     "unixVer": "5.07"
-	 *   }
+	 *   "web": {"unixVer": "5.07"}
 	 * }
 	 */
 	blur: [event: UniInputBlurEvent]
 	/**
-	 * @description 输入框聚焦时触发，参数为事件对象，类型为 UniInputFocusEvent
+	 * @description 输入框聚焦时触发
+	 * @param {UniInputFocusEvent} event 输入框聚焦事件对象
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.21"
-	 *     },
-	 *     "ios": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.11"
-	 *     },
-	 *     "harmony": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.07"
-	 *     }
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
 	 *   },
 	 *   "mp": {
-	 *     "weixin": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07"
-	 *     },
-	 *     "alipay": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     }
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "uniVer": "x",
-	 *     "unixVer": "5.07"
-	 *   }
+	 *   "web": {"unixVer": "5.07"}
 	 * }
 	 */
 	focus: [event: UniInputFocusEvent]
@@ -706,6 +420,26 @@ const onPlus = () : void => {
 	emitChange(newValue)
 }
 
+// #ifdef WEB
+// 减号按钮键盘操作，支持 Enter / Space 触发
+const onMinusKeydown = (event : KeyboardEvent) : void => {
+	const key = event.key as string
+	if (key == 'Enter' || key == ' ') {
+		event.preventDefault()
+		onMinus()
+	}
+}
+
+// 加号按钮键盘操作，支持 Enter / Space 触发
+const onPlusKeydown = (event : KeyboardEvent) : void => {
+	const key = event.key as string
+	if (key == 'Enter' || key == ' ') {
+		event.preventDefault()
+		onPlus()
+	}
+}
+// #endif
+
 // 失焦事件
 const onBlur = (event : UniInputBlurEvent) : void => {
 	emit('blur', event)
@@ -798,5 +532,24 @@ initValue()
 	font-size: 14px;
 	border-width: 0;
 	color: #333;
+}
+
+@media (prefers-color-scheme: dark) {
+	.uni-numbox__btn {
+		background-color: #3b3b3b;
+	}
+
+	.uni-numbox__icon-line {
+		background-color: #e5e5e5;
+	}
+
+	.uni-numbox__icon-line--disabled {
+		background-color: #6b6b6b;
+	}
+
+	.uni-numbox__input {
+		background-color: #3b3b3b;
+		color: #ffffff;
+	}
 }
 </style>

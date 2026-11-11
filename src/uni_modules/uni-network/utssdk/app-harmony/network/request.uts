@@ -2,7 +2,6 @@ import http from '@ohos.net.http'
 import buffer from '@ohos.buffer';
 import { BusinessError } from '@ohos.base'
 import {
-    Emitter,
     getCurrentMP,
 } from '@dcloudio/uni-runtime'
 import {
@@ -29,6 +28,7 @@ import {
     getCookieSync,
     setCookieSync,
 } from './cookie.uts'
+import Emitter from '../emitter.js'
 
 interface IUniRequestEmitter {
     on: (eventName: string, callback: Function) => void

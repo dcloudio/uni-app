@@ -88,7 +88,6 @@
     class="context-scroll"
     :cross-axis-count="2"
     :refresher-enabled="true"
-    :refresher-two-level-enabled="true"
     refresher-default-style="none"
   >
     <flow-item v-for="index in 8" :key="index" :type="1" class="h-80">
@@ -167,6 +166,8 @@
 
   async function triggerTwoLevel() {
     const context = await getScrollViewContext('#two-level-scroll')
+    // App 端的二级开关通过运行时属性设置。
+    context.setAnyAttribute('refresher-two-level-enabled', true)
     context.triggerTwoLevel()
   }
 

@@ -64,13 +64,12 @@ class AudioService : Service() {
 	}
 
 	private fun ensureFrescoInitialized() {
-		if (frescoInitialized) {
+		if (Fresco.hasBeenInitialized()) {
 			return
 		}
 		synchronized(AudioService::class.java) {
-			if (!frescoInitialized) {
+			if (!Fresco.hasBeenInitialized()) {
 				Fresco.initialize(applicationContext)
-				frescoInitialized = true
 			}
 		}
 	}
@@ -610,7 +609,6 @@ class AudioService : Service() {
 		const val ACTION_NEXT = "ACTION_NEXT"
 
 		const val NOTIFICATION_ID = 0x124
-		private var frescoInitialized = false
 		var audioService: AudioService? = null
 	}
 }

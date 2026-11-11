@@ -1,45 +1,57 @@
-打开web链接组件。点击后通过内置或外部浏览器打开链接，加载 `href` 属性中配置的 URL。
+# uni-link 链接组件
 
-- `target="_self"` 时，使用 `uni_modules/uni-link-x/pages/link-webview` 页面内的 `web-view` 打开链接。
-  * 注意小程序需要将域名加入应用的域名白名单。
-- `target="_blank"` 时，
-  * APP平台调用手机浏览器打开链接
-  * Web调用 `window.open(url, '_blank')`
-  * 小程序平台无法打开手机浏览器，此时会走到失败回退逻辑中
+## 用途和场景
 
-  `target="_blank"`失败时，可以通过组件属性`blank-fallback`来控制失败后的回退处理策略，`blank-fallback`属性有3个值：
+uni-link 用于在页面中展示可点击的链接文字，点击后按配置在应用内置浏览器或系统外部浏览器中打开目标 URL。适合展示帮助文档、协议条款、第三方网站等需要在应用内或应用外打开网页的场景。
 
-  1. turn-self ：使用_self方式打开。此值为默认值。也就是 `target="_blank"` 时，小程序下默认转到内置浏览器打开。
-  2. copy-link-modal ：复制链接并弹框提醒。会复制URL到剪贴板中，并弹框提示用户在外部浏览器中打开。
-  3. none ：不回退。会触发组件的error事件。
+## 使用方式（职责分工）
 
-- 开发者也可以通过条件编译组合使用，比如APP平台使用`_black`，小程序平台使用`_self`
+组件内部负责：
 
-常见失败原因：
-- 安装本组件时未在项目的pages.json中注册组件的内置页面。（HBuilderX导入本组件到项目下时会弹框提醒注册内置页面）
-- 小程序平台未将域名加入应用的域名白名单。
-- iOS运行基座未包括openSchema插件，仅在无xcode时运行会触发。打包其实不会发生此错误。
-- app平台，有些手机系统会弹框询问用户是否允许app打开浏览器，如果用户点了拒绝，这种情况没有失败回调。但有种判断方式是app的onHide生命周期是否触发，如果没有触发，那么意味着并没有启动系统浏览器。
+- 渲染带下划线的可点击文本，内容由默认插槽决定。
+- 校验 `href`，按 `target` 选择内置 `web-view` 页面或系统外部浏览器打开。
+- `target="_blank"` 打开失败时按 `blank-fallback` 执行回退策略（转 `_self`、复制链接弹框、或不回退并抛出错误）。
+- 打开失败时抛出 `error` 事件。
 
-### 基本用法
+使用者负责：
+
+- 传入 `href`，并在需要时选择 `target`（`_self` / `_blank`）与 `blank-fallback`。
+- 在项目的 `pages.json` 中注册组件自带的 `link-webview` 页面（HBuilderX 导入本组件时会弹框提醒）。
+- 小程序平台需要将域名加入应用的域名白名单。
+- 监听 `error` 事件处理打开失败。
+
+## 基本用法
 
 ```html
-<uni-link href="https://uniapp.dcloud.net.cn">uni-app x 文档
+<uni-link href="https://uniapp.dcloud.net.cn">uni-app x 文档</uni-link>
+```
+
+`target="_self"` 时使用 `uni_modules/uni-link-x/pages/link-webview` 页面内的 `web-view` 打开。`target="_blank"` 时，APP 平台调用系统浏览器打开，Web 平台调用 `window.open(url, '_blank')`，小程序平台无法打开系统浏览器，会进入失败回退逻辑。
+
+`target="_blank"` 失败时，通过 `blank-fallback` 控制回退处理策略：
+
+1. `turn-self`（默认）：改用 `_self` 方式打开。
+2. `copy-link-modal`：复制链接到剪贴板并弹框提示用户在外部浏览器中打开。
+3. `none`：不回退，触发组件的 `error` 事件。
+
+```html
+<uni-link href="https://uniapp.dcloud.net.cn" target="_blank" blank-fallback="copy-link-modal">
+  使用外部浏览器打开
 </uni-link>
 ```
 
-### Events
+在 Web 平台，组件同时支持鼠标点击与键盘操作：获得焦点后可按回车或空格打开链接。
 
-| 事件名 | 说明 | 回调参数 |
-| --- | --- | --- |
-| error | 打开失败时触发 | `message: string` |
+## 注意事项
 
-### 依赖
+- 组件内部只负责打开链接，不做跳转后的页面管理，回退策略以外的行为由使用者自行处理。
+- 打开失败的常见原因：
+  - 安装本组件时未在项目的 `pages.json` 中注册组件自带的内置页面（HBuilderX 导入时会弹框提醒注册）。
+  - 小程序平台未将域名加入应用的域名白名单。
+  - iOS 运行基座未包含 `openSchema` 插件，仅在无 Xcode 时运行会触发，正式打包不会出现。
+  - APP 平台部分手机系统会弹框询问是否允许打开浏览器，用户拒绝时没有失败回调；可借助 APP 的 `onHide` 生命周期是否触发来判断系统浏览器是否真正启动。
+- APP 平台依赖 `uts-openSchema`，已在 `uni_modules/uni-link-x/package.json` 中声明该依赖。
 
-`APP` 平台依赖 `uts-openSchema`。`uni-link` 已在 `uni_modules/uni-link-x/package.json` 中声明该依赖。
-
-组件目录下有 `pages_init.json`，会向应用的 pages.json 中注册组件中自带的内置浏览器页面。如在HBuilderX中弹框询问是否将组件中的页面注册到项目pages.json中时，请选择同意。
-
-### 示例页面
+## 示例页面
 
 `/pages/uni-ui/link/link`

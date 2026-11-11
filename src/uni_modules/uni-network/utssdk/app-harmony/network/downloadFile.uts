@@ -3,7 +3,6 @@ import fs from '@ohos.file.fs'
 import harmonyUrl from '@ohos.url'
 import {
     getEnv,
-    Emitter,
     getCurrentMP,
 } from '@dcloudio/uni-runtime'
 import {
@@ -32,6 +31,7 @@ import {
     setCookieSync
 } from './cookie.uts'
 import { BusinessError } from '@ohos.base'
+import Emitter from '../emitter.js'
 
 interface IUniDownloadFileEmitter {
     on: (eventName: string, callback: Function) => void

@@ -1,28 +1,43 @@
 <template>
 	<view v-if="(mode === 'button' || mode === 'tag') && isLocal" class="uni-data-checkbox__group" :class="groupClass">
-		<view v-for="(item, index) in dataList" :key="item._v" class="uni-data-checkbox__label" :class="[item._labelClass, labelClass, item.selected ? labelSelectedClass : '']" @click="optionClick(item)">
-			<text class="uni-data-checkbox__text" :class="[item._textClass, textClass, item.selected ? textSelectedClass : '']">{{ item._text }}</text>
-			<view v-if="icon === 'right'" class="uni-data-checkbox__icon" :class="[item._iconClass, iconClass]"></view>
+		<view v-for="(item, index) in dataList" :key="item._v" class="uni-data-checkbox__label" :class="[item._labelClass, labelClass, item.selected ? labelSelectedClass : '']" @click="optionClick(item)"
+			<!-- #ifdef WEB -->
+			:tabindex="disabled || item.disabled ? '-1' : '0'"
+			@keydown="onOptionKeydown($event, item)"
+			<!-- #endif -->
+		>
+			<text flatten class="uni-data-checkbox__text" :class="[item._textClass, textClass, item.selected ? textSelectedClass : '']">{{ item._text }}</text>
+			<view flatten v-if="icon === 'right'" class="uni-data-checkbox__icon" :class="[item._iconClass, iconClass]"></view>
 		</view>
 	</view>
 	<checkbox-group v-else-if="multiple && isLocal" class="uni-data-checkbox__group" :class="groupClass" @change="change">
-		<label v-for="(item, index) in dataList" :key="item._v" class="uni-data-checkbox__label" :class="[item._labelClass, labelClass, item.selected ? labelSelectedClass : '']" @click="onLabelClick(item)">
+		<label v-for="(item, index) in dataList" :key="item._v" class="uni-data-checkbox__label" :class="[item._labelClass, labelClass, item.selected ? labelSelectedClass : '']" @click="onLabelClick(item)"
+			<!-- #ifdef WEB -->
+			:tabindex="disabled || item.disabled ? '-1' : '0'"
+			@keydown="onOptionKeydown($event, item)"
+			<!-- #endif -->
+		>
 			<checkbox v-if="icon !== 'right'" class="uni-data-checkbox__control" :class="[item._controlClass, checkboxClass, item.selected ? checkboxSelectedClass : '']" :value="item._v" :checked="item.selected" :disabled="disabled || item.disabled" />
-			<text class="uni-data-checkbox__text" :class="[item._textClass, textClass, item.selected ? textSelectedClass : '']">{{ item._text }}</text>
-			<view v-if="icon === 'right'" class="uni-data-checkbox__icon" :class="[item._iconClass, iconClass]"></view>
+			<text flatten class="uni-data-checkbox__text" :class="[item._textClass, textClass, item.selected ? textSelectedClass : '']">{{ item._text }}</text>
+			<view flatten v-if="icon === 'right'" class="uni-data-checkbox__icon" :class="[item._iconClass, iconClass]"></view>
 		</label>
 	</checkbox-group>
 	<radio-group v-else-if="isLocal" class="uni-data-checkbox__group" :class="groupClass" @change="change">
-		<label v-for="(item, index) in dataList" :key="item._v" class="uni-data-checkbox__label" :class="[item._labelClass, labelClass, item.selected ? labelSelectedClass : '']" @click="onLabelClick(item)">
+		<label v-for="(item, index) in dataList" :key="item._v" class="uni-data-checkbox__label" :class="[item._labelClass, labelClass, item.selected ? labelSelectedClass : '']" @click="onLabelClick(item)"
+			<!-- #ifdef WEB -->
+			:tabindex="disabled || item.disabled ? '-1' : '0'"
+			@keydown="onOptionKeydown($event, item)"
+			<!-- #endif -->
+		>
 			<radio v-if="icon !== 'right'" class="uni-data-checkbox__control" :class="[item._controlClass, checkboxClass, item.selected ? checkboxSelectedClass : '']" :value="item._v" :checked="item.selected" :disabled="disabled || item.disabled" />
-			<text class="uni-data-checkbox__text" :class="[item._textClass, textClass, item.selected ? textSelectedClass : '']">{{ item._text }}</text>
-			<view v-if="icon === 'right'" class="uni-data-checkbox__icon" :class="[item._iconClass, iconClass]"></view>
+			<text flatten class="uni-data-checkbox__text" :class="[item._textClass, textClass, item.selected ? textSelectedClass : '']">{{ item._text }}</text>
+			<view flatten v-if="icon === 'right'" class="uni-data-checkbox__icon" :class="[item._iconClass, iconClass]"></view>
 		</label>
 	</radio-group>
 	<view v-else class="uni-data-checkbox__loading">
 		<loading v-if="datacom.loading"></loading>
-		<text v-else-if="datacom.errorMessage" :class="emptyTextClass">{{ datacom.errorMessage }}</text>
-		<text v-else :class="emptyTextClass">{{ emptyMessage }}</text>
+		<text flatten v-else-if="datacom.errorMessage" :class="emptyTextClass">{{ datacom.errorMessage }}</text>
+		<text flatten v-else :class="emptyTextClass">{{ emptyMessage }}</text>
 	</view>
 </template>
 
@@ -32,36 +47,15 @@
  * @description 通过本地数据或 datacom 数据渲染单选、多选选项
  * @uniPlatform {
  *   "app": {
- *     "android": {
- *       "uniVer": "x",
- *       "unixVer": "5.33",
- *       "unixVaporVer": "5.33"
- *     },
- *     "ios": {
- *       "uniVer": "x",
- *       "unixVer": "5.33",
- *       "unixVaporVer": "5.33"
- *     },
- *     "harmony": {
- *       "uniVer": "x",
- *       "unixVer": "5.33",
- *       "unixVaporVer": "5.33"
- *     }
+ *     "android": {"unixVaporVer": "5.33"},
+ *     "ios": {"unixVaporVer": "5.33"},
+ *     "harmony": {"unixVaporVer": "5.33"}
  *   },
  *   "mp": {
- *     "weixin": {
- *       "uniVer": "x",
- *       "unixVer": "5.33"
- *     },
- *     "alipay": {
- *       "uniVer": "x",
- *       "unixVer": "5.33"
- *     }
+ *     "weixin": {"unixVer": "5.33"},
+ *     "alipay": {"unixVer": "5.33"}
  *   },
- *   "web": {
- *     "uniVer": "x",
- *     "unixVer": "5.33"
- *   }
+ *   "web": {"unixVer": "5.33"}
  * }
  * @property {String} mode = [default|list|button|tag] 显示模式，默认值 default
  * @value default 默认平铺模式
@@ -77,7 +71,7 @@
  * @property {String} icon = [left|right] 选中标记位置，默认值 left
  * @value left 在选项左侧显示原生选择控件
  * @value right 隐藏左侧选择控件，在选项右侧显示选中标记
- * @property {String} emptyText 云端数据为空时显示的文字，默认值 暂无数据
+ * @property {String} emptyText 云端数据为空时显示的文字，为空时使用跟随系统语言的内置文案，默认值为空字符串
  * @property {Object} map 自定义文字字段和值字段，默认值 { text: 'text', value: 'value' }
  * @property {Boolean} disabled 是否禁用全部选项，默认值 false
  * @property {String} labelClass 选项外层容器的 external class，默认值为空字符串
@@ -175,10 +169,10 @@ const props = defineProps({
 	 */
 	icon: { type: String, default: 'left' },
 	/**
-	 * @description 云端数据为空时显示的文字
-	 * @default "暂无数据"
+	 * @description 云端数据为空时显示的文字；为空时使用跟随系统语言的内置文案
+	 * @default ""
 	 */
-	emptyText: { type: String, default: '暂无数据' },
+	emptyText: { type: String, default: '' },
 	/**
 	 * @description 自定义候选数据的文字字段和值字段
 	 * @default { text: 'text', value: 'value' }
@@ -233,14 +227,72 @@ const props = defineProps({
 
 const emit = defineEmits<{
 	/**
-	 * @description 用户选择变化时更新绑定值；单选参数为字符串或数字，多选参数为数组
+	 * @description 用户选择变化时更新绑定值
+	 * @param {Array|String|Number} value 新的值；单选为字符串或数字，多选为数组
 	 */
 	'update:modelValue': [value: any],
 	/**
-	 * @description 用户选择变化时触发；event.detail.value 为当前值，event.detail.data 为当前完整数据项
+	 * @description 用户选择变化时触发
+	 * @param {Object} event 事件对象；event.detail.value 为当前值，event.detail.data 为当前完整数据项
 	 */
 	change: [event: any]
 }>()
+
+type LocaleMessages = {
+	empty: string,
+	datacomUnavailable: string
+}
+
+function resolveLocaleType() : string {
+	const appLanguage = (uni.getAppBaseInfo().appLanguage ?? 'en').toLowerCase()
+	if (
+		appLanguage.indexOf('zh-hant') == 0 ||
+		appLanguage.indexOf('zh-tw') == 0 ||
+		appLanguage.indexOf('zh-hk') == 0 ||
+		appLanguage.indexOf('zh-mo') == 0
+	) {
+		return 'zh-Hant'
+	}
+	if (appLanguage.indexOf('zh') == 0) return 'zh-Hans'
+	if (appLanguage.indexOf('fr') == 0) return 'fr'
+	if (appLanguage.indexOf('la') == 0 || appLanguage.indexOf('lat') == 0) return 'la'
+	return 'en'
+}
+
+function getLocaleMessages() : LocaleMessages {
+	const localeType = resolveLocaleType()
+	if (localeType == 'zh-Hans') {
+		return {
+			empty: '暂无数据',
+			datacomUnavailable: 'datacom 不可用，请关联 uniCloud 服务空间并检查 HBuilder 版本'
+		}
+	}
+	if (localeType == 'zh-Hant') {
+		return {
+			empty: '暫無資料',
+			datacomUnavailable: 'datacom 不可用，請關聯 uniCloud 服務空間並檢查 HBuilder 版本'
+		}
+	}
+	if (localeType == 'fr') {
+		return {
+			empty: 'Aucune donnée',
+			datacomUnavailable: "datacom n'est pas disponible. Veuillez associer un espace uniCloud et vérifier la version de HBuilder"
+		}
+	}
+	if (localeType == 'la') {
+		return {
+			empty: 'Nulla notitia',
+			datacomUnavailable: 'datacom non praesto est. Coniunge spatium uniCloud et versionem HBuilder inspice'
+		}
+	}
+	return {
+		empty: 'No data',
+		datacomUnavailable: 'datacom is unavailable. Please link a uniCloud space and check the HBuilder version'
+	}
+}
+
+const localeMessages = getLocaleMessages()
+
 const dataList = ref([])
 const range = ref([])
 const fallbackDatacom: any = reactive({
@@ -260,12 +312,12 @@ const canUseDatacom = shouldUseDatacom && typeof uniCloud.useDatacom === 'functi
 const datacom: any = canUseDatacom ? uniCloud.useDatacom(props) : fallbackDatacom
 
 if (shouldUseDatacom && !canUseDatacom) {
-	fallbackDatacom.errorMessage = 'datacom 不可用，请关联 uniCloud 服务空间并检查 HBuilder 版本'
+	fallbackDatacom.errorMessage = localeMessages.datacomUnavailable
 }
 
 // 是否使用本地/已就绪数据；配置 datacom 且尚无数据时派生为 false（显示 loading/空态）
 const isLocal = computed(() => !(props.localdata.length === 0 && props.collection && dataList.value.length === 0))
-const emptyMessage = computed(() => isLocal.value ? '' : props.emptyText)
+const emptyMessage = computed(() => isLocal.value ? '' : (props.emptyText !== '' ? props.emptyText : localeMessages.empty))
 
 const currentValue = computed(() => props.value === '' ? props.modelValue : props.value)
 const groupClass = computed(() => props.mode === 'list' ? 'uni-data-checkbox__group--list' : props.mode === 'button' ? 'uni-data-checkbox__group--button' : '')
@@ -395,6 +447,19 @@ function onLabelClick(item) {
 	// icon 在右侧时不再渲染原生 checkbox/radio，选中改由点击手动处理
 	if (props.icon === 'right') optionClick(item)
 }
+
+// #ifdef WEB
+function onOptionKeydown(event : KeyboardEvent, item : any) {
+	if (props.disabled || item.disabled) {
+		return
+	}
+	const key = event.key as string
+	if (key == 'Enter' || key == ' ') {
+		event.preventDefault()
+		optionClick(item)
+	}
+}
+// #endif
 
 function optionClick(item) {
 	if (props.disabled || item.disabled) return
@@ -616,6 +681,36 @@ defineExpose({
 	color: var(--secondary-text-color, #999999);
 }
 
+/* #ifdef WEB */
+.uni-data-checkbox__label {
+	cursor: pointer;
+	outline: none;
+}
+
+.uni-data-checkbox__label:focus {
+	box-shadow: 0 0 0 2px rgba(41, 121, 255, 0.35);
+}
+
+.uni-data-checkbox__label--disabled {
+	cursor: not-allowed;
+}
+
+.uni-data-checkbox__label--default:hover,
+.uni-data-checkbox__label--list:hover {
+	background-color: rgba(0, 0, 0, 0.04);
+}
+
+.uni-data-checkbox__label--tag:hover,
+.uni-data-checkbox__label--button:hover {
+	opacity: 0.82;
+}
+
+.uni-data-checkbox__label--tag.uni-data-checkbox__label--tag-disabled:hover,
+.uni-data-checkbox__label--button.uni-data-checkbox__label--button-disabled:hover {
+	opacity: 1;
+}
+/* #endif */
+
 /* App 端组件内的自定义变量继承不稳定，暗黑状态直接覆盖具体属性。 */
 @media (prefers-color-scheme: dark) {
 	.uni-data-checkbox__label--list {
@@ -684,5 +779,12 @@ defineExpose({
 	.uni-data-checkbox__loading {
 		color: rgba(255, 255, 255, 0.65);
 	}
+
+	/* #ifdef WEB */
+	.uni-data-checkbox__label--default:hover,
+	.uni-data-checkbox__label--list:hover {
+		background-color: rgba(255, 255, 255, 0.06);
+	}
+	/* #endif */
 }
 </style>

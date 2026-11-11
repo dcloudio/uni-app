@@ -10,36 +10,15 @@
    * @description 选项卡容器组件
    * @uniPlatform {
    *   "app": {
-   *     "android": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.21"
-   *     },
-   *     "ios": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.11"
-   *     },
-   *     "harmony": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.07"
-   *     }
+   *     "android": {"unixVaporVer": "5.21"},
+   *     "ios": {"unixVaporVer": "5.11"},
+   *     "harmony": {"unixVaporVer": "5.07"}
    *   },
    *   "mp": {
-   *     "weixin": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07"
-   *     },
-   *     "alipay": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.31"
-   *     }
+   *     "weixin": {"unixVer": "5.07"},
+   *     "alipay": {"unixVer": "5.31"}
    *   },
-   *   "web": {
-   *     "uniVer": "x",
-   *     "unixVer": "5.07"
-   *   }
+   *   "web": {"unixVer": "5.07"}
    * }
    */
 type Props = {
@@ -47,73 +26,32 @@ type Props = {
 	 * @description 当前激活的选项卡索引
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.21"
-	 *     },
-	 *     "ios": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.11"
-	 *     },
-	 *     "harmony": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.07"
-	 *     }
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
 	 *   },
 	 *   "mp": {
-	 *     "weixin": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07"
-	 *     },
-	 *     "alipay": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     }
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "uniVer": "x",
-	 *     "unixVer": "5.07"
-	 *   }
+	 *   "web": {"unixVer": "5.07"}
 	 * }
 	 */
 	activeIndex: number,
 	/**
 	 * @description tab-content 的高度是否通到tab-bar下面
+	 * @default false
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.21"
-	 *     },
-	 *     "ios": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.11"
-	 *     },
-	 *     "harmony": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.07"
-	 *     }
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
 	 *   },
 	 *   "mp": {
-	 *     "weixin": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07"
-	 *     },
-	 *     "alipay": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     }
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "uniVer": "x",
-	 *     "unixVer": "5.07"
-	 *   }
+	 *   "web": {"unixVer": "5.07"}
 	 * }
 	 */
 	tabContentHeightFull?: boolean
@@ -128,38 +66,18 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<{
 	/**
 	 * @description 选项卡变化时触发，参数为当前激活的选项卡索引，类型为 number
+	 * @param index 当前激活的选项卡索引
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.21"
-	 *     },
-	 *     "ios": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.11"
-	 *     },
-	 *     "harmony": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.07"
-	 *     }
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
 	 *   },
 	 *   "mp": {
-	 *     "weixin": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07"
-	 *     },
-	 *     "alipay": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     }
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "uniVer": "x",
-	 *     "unixVer": "5.07"
-	 *   }
+	 *   "web": {"unixVer": "5.07"}
 	 * }
 	 */
 	change: [index: number]

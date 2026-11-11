@@ -82,7 +82,9 @@
     class="context-scroll"
     direction="vertical"
     :refresher-enabled="true"
+    <!-- #ifdef MP-WEIXIN -->
     :refresher-two-level-enabled="true"
+    <!-- #endif -->
     refresher-default-style="none"
   >
     <view v-for="index in 8" :key="index" class="context-item">
@@ -168,6 +170,8 @@
     context.triggerTwoLevel({})
     // #endif
     // #ifdef APP
+    // App 端的二级开关通过运行时属性设置。
+    context.setAnyAttribute('refresher-two-level-enabled', true)
     context.triggerTwoLevel()
     // #endif
   }

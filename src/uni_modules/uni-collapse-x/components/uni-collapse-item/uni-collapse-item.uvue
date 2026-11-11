@@ -1,12 +1,20 @@
 <template>
-  <view>
-    <view class="uni-collapse-item__title" :class="props.titleWrapClass" @click="openCollapse(!is_open)">
-      <view class="uni-collapse-item__title-main">
+  <view flatten>
+    <view class="uni-collapse-item__title"
+      :class="[props.titleWrapClass, props.disabled ? 'uni-collapse-item__title--disabled' : '']"
+      @click="openCollapse(!is_open)"
+      <!-- #ifdef WEB -->
+      :tabindex="props.disabled ? '-1' : '0'"
+      @keydown="onTitleKeydown"
+      <!-- #endif -->
+    >
+      <view class="uni-collapse-item__title-main" flatten>
         <slot name="title" :open="is_open" :disabled="props.disabled">
-          <text class="uni-collapse-item__title-text"
+          <text class="uni-collapse-item__title-text" flatten
             :class="[{'open--active': is_open, 'is-disabled': props.disabled}, props.titleClass, is_open ? props.titleOpenClass : '', props.disabled ? props.titleDisabledClass : '']">{{ props.title }}</text>
         </slot>
       </view>
+      <!-- 箭头带有旋转过渡动画，拍平后 transition 对渲染属性不生效，故不使用 flatten -->
       <view class="down_arrow"
         :class="[arrowPlatformClass, arrowStateClass, arrowDisabledClass, props.arrowClass, is_open ? props.arrowOpenClass : '', props.disabled ? props.arrowDisabledClass : '']"></view>
     </view>
@@ -26,36 +34,15 @@
    * @description 折叠面板子项组件
    * @uniPlatform {
    *   "app": {
-   *     "android": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.21"
-   *     },
-   *     "ios": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.11"
-   *     },
-   *     "harmony": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.07"
-   *     }
+   *     "android": {"unixVaporVer": "5.21"},
+   *     "ios": {"unixVaporVer": "5.11"},
+   *     "harmony": {"unixVaporVer": "5.07"}
    *   },
    *   "mp": {
-   *     "weixin": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07"
-   *     },
-   *     "alipay": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.31"
-   *     }
+   *     "weixin": {"unixVer": "5.07"},
+   *     "alipay": {"unixVer": "5.31"}
    *   },
-   *   "web": {
-   *     "uniVer": "x",
-   *     "unixVer": "5.07"
-   *   }
+   *   "web": {"unixVer": "5.07"}
    * }
    */
   import type { ItemChildType } from '../type.ts'
@@ -77,36 +64,15 @@
      * @default ""
      * @uniPlatform {
      *   "app": {
-     *     "android": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.21"
-     *     },
-     *     "ios": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.11"
-     *     },
-     *     "harmony": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.07"
-     *     }
+     *     "android": {"unixVaporVer": "5.21"},
+     *     "ios": {"unixVaporVer": "5.11"},
+     *     "harmony": {"unixVaporVer": "5.07"}
      *   },
      *   "mp": {
-     *     "weixin": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07"
-     *     },
-     *     "alipay": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.31"
-     *     }
+     *     "weixin": {"unixVer": "5.07"},
+     *     "alipay": {"unixVer": "5.31"}
      *   },
-     *   "web": {
-     *     "uniVer": "x",
-     *     "unixVer": "5.07"
-     *   }
+     *   "web": {"unixVer": "5.07"}
      * }
      */
     title? : string,
@@ -115,36 +81,15 @@
      * @default false
      * @uniPlatform {
      *   "app": {
-     *     "android": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.21"
-     *     },
-     *     "ios": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.11"
-     *     },
-     *     "harmony": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.07"
-     *     }
+     *     "android": {"unixVaporVer": "5.21"},
+     *     "ios": {"unixVaporVer": "5.11"},
+     *     "harmony": {"unixVaporVer": "5.07"}
      *   },
      *   "mp": {
-     *     "weixin": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07"
-     *     },
-     *     "alipay": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.31"
-     *     }
+     *     "weixin": {"unixVer": "5.07"},
+     *     "alipay": {"unixVer": "5.31"}
      *   },
-     *   "web": {
-     *     "uniVer": "x",
-     *     "unixVer": "5.07"
-     *   }
+     *   "web": {"unixVer": "5.07"}
      * }
      */
     open? : boolean,
@@ -153,36 +98,15 @@
      * @default false
      * @uniPlatform {
      *   "app": {
-     *     "android": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.21"
-     *     },
-     *     "ios": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.11"
-     *     },
-     *     "harmony": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.07"
-     *     }
+     *     "android": {"unixVaporVer": "5.21"},
+     *     "ios": {"unixVaporVer": "5.11"},
+     *     "harmony": {"unixVaporVer": "5.07"}
      *   },
      *   "mp": {
-     *     "weixin": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07"
-     *     },
-     *     "alipay": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.31"
-     *     }
+     *     "weixin": {"unixVer": "5.07"},
+     *     "alipay": {"unixVer": "5.31"}
      *   },
-     *   "web": {
-     *     "uniVer": "x",
-     *     "unixVer": "5.07"
-     *   }
+     *   "web": {"unixVer": "5.07"}
      * }
      */
     disabled? : boolean,
@@ -191,36 +115,15 @@
      * @default ""
      * @uniPlatform {
      *   "app": {
-     *     "android": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.21"
-     *     },
-     *     "ios": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.11"
-     *     },
-     *     "harmony": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.07"
-     *     }
+     *     "android": {"unixVaporVer": "5.21"},
+     *     "ios": {"unixVaporVer": "5.11"},
+     *     "harmony": {"unixVaporVer": "5.07"}
      *   },
      *   "mp": {
-     *     "weixin": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07"
-     *     },
-     *     "alipay": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.31"
-     *     }
+     *     "weixin": {"unixVer": "5.07"},
+     *     "alipay": {"unixVer": "5.31"}
      *   },
-     *   "web": {
-     *     "uniVer": "x",
-     *     "unixVer": "5.07"
-     *   }
+     *   "web": {"unixVer": "5.07"}
      * }
      */
     titleWrapClass? : string.ClassString,
@@ -229,36 +132,15 @@
      * @default ""
      * @uniPlatform {
      *   "app": {
-     *     "android": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.21"
-     *     },
-     *     "ios": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.11"
-     *     },
-     *     "harmony": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.07"
-     *     }
+     *     "android": {"unixVaporVer": "5.21"},
+     *     "ios": {"unixVaporVer": "5.11"},
+     *     "harmony": {"unixVaporVer": "5.07"}
      *   },
      *   "mp": {
-     *     "weixin": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07"
-     *     },
-     *     "alipay": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.31"
-     *     }
+     *     "weixin": {"unixVer": "5.07"},
+     *     "alipay": {"unixVer": "5.31"}
      *   },
-     *   "web": {
-     *     "uniVer": "x",
-     *     "unixVer": "5.07"
-     *   }
+     *   "web": {"unixVer": "5.07"}
      * }
      */
     titleClass? : string.ClassString,
@@ -267,36 +149,15 @@
      * @default ""
      * @uniPlatform {
      *   "app": {
-     *     "android": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.21"
-     *     },
-     *     "ios": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.11"
-     *     },
-     *     "harmony": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.07"
-     *     }
+     *     "android": {"unixVaporVer": "5.21"},
+     *     "ios": {"unixVaporVer": "5.11"},
+     *     "harmony": {"unixVaporVer": "5.07"}
      *   },
      *   "mp": {
-     *     "weixin": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07"
-     *     },
-     *     "alipay": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.31"
-     *     }
+     *     "weixin": {"unixVer": "5.07"},
+     *     "alipay": {"unixVer": "5.31"}
      *   },
-     *   "web": {
-     *     "uniVer": "x",
-     *     "unixVer": "5.07"
-     *   }
+     *   "web": {"unixVer": "5.07"}
      * }
      */
     titleOpenClass? : string.ClassString,
@@ -305,36 +166,15 @@
      * @default ""
      * @uniPlatform {
      *   "app": {
-     *     "android": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.21"
-     *     },
-     *     "ios": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.11"
-     *     },
-     *     "harmony": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.07"
-     *     }
+     *     "android": {"unixVaporVer": "5.21"},
+     *     "ios": {"unixVaporVer": "5.11"},
+     *     "harmony": {"unixVaporVer": "5.07"}
      *   },
      *   "mp": {
-     *     "weixin": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07"
-     *     },
-     *     "alipay": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.31"
-     *     }
+     *     "weixin": {"unixVer": "5.07"},
+     *     "alipay": {"unixVer": "5.31"}
      *   },
-     *   "web": {
-     *     "uniVer": "x",
-     *     "unixVer": "5.07"
-     *   }
+     *   "web": {"unixVer": "5.07"}
      * }
      */
     titleDisabledClass? : string.ClassString,
@@ -343,36 +183,15 @@
      * @default ""
      * @uniPlatform {
      *   "app": {
-     *     "android": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.21"
-     *     },
-     *     "ios": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.11"
-     *     },
-     *     "harmony": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.07"
-     *     }
+     *     "android": {"unixVaporVer": "5.21"},
+     *     "ios": {"unixVaporVer": "5.11"},
+     *     "harmony": {"unixVaporVer": "5.07"}
      *   },
      *   "mp": {
-     *     "weixin": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07"
-     *     },
-     *     "alipay": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.31"
-     *     }
+     *     "weixin": {"unixVer": "5.07"},
+     *     "alipay": {"unixVer": "5.31"}
      *   },
-     *   "web": {
-     *     "uniVer": "x",
-     *     "unixVer": "5.07"
-     *   }
+     *   "web": {"unixVer": "5.07"}
      * }
      */
     contentWrapClass? : string.ClassString,
@@ -381,36 +200,15 @@
      * @default ""
      * @uniPlatform {
      *   "app": {
-     *     "android": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.21"
-     *     },
-     *     "ios": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.11"
-     *     },
-     *     "harmony": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.07"
-     *     }
+     *     "android": {"unixVaporVer": "5.21"},
+     *     "ios": {"unixVaporVer": "5.11"},
+     *     "harmony": {"unixVaporVer": "5.07"}
      *   },
      *   "mp": {
-     *     "weixin": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07"
-     *     },
-     *     "alipay": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.31"
-     *     }
+     *     "weixin": {"unixVer": "5.07"},
+     *     "alipay": {"unixVer": "5.31"}
      *   },
-     *   "web": {
-     *     "uniVer": "x",
-     *     "unixVer": "5.07"
-     *   }
+     *   "web": {"unixVer": "5.07"}
      * }
      */
     arrowClass? : string.ClassString,
@@ -419,36 +217,15 @@
      * @default ""
      * @uniPlatform {
      *   "app": {
-     *     "android": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.21"
-     *     },
-     *     "ios": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.11"
-     *     },
-     *     "harmony": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.07"
-     *     }
+     *     "android": {"unixVaporVer": "5.21"},
+     *     "ios": {"unixVaporVer": "5.11"},
+     *     "harmony": {"unixVaporVer": "5.07"}
      *   },
      *   "mp": {
-     *     "weixin": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07"
-     *     },
-     *     "alipay": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.31"
-     *     }
+     *     "weixin": {"unixVer": "5.07"},
+     *     "alipay": {"unixVer": "5.31"}
      *   },
-     *   "web": {
-     *     "uniVer": "x",
-     *     "unixVer": "5.07"
-     *   }
+     *   "web": {"unixVer": "5.07"}
      * }
      */
     arrowOpenClass? : string.ClassString,
@@ -457,36 +234,15 @@
      * @default ""
      * @uniPlatform {
      *   "app": {
-     *     "android": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.21"
-     *     },
-     *     "ios": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.11"
-     *     },
-     *     "harmony": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07",
-     *       "unixVaporVer": "5.07"
-     *     }
+     *     "android": {"unixVaporVer": "5.21"},
+     *     "ios": {"unixVaporVer": "5.11"},
+     *     "harmony": {"unixVaporVer": "5.07"}
      *   },
      *   "mp": {
-     *     "weixin": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.07"
-     *     },
-     *     "alipay": {
-     *       "uniVer": "x",
-     *       "unixVer": "5.31"
-     *     }
+     *     "weixin": {"unixVer": "5.07"},
+     *     "alipay": {"unixVer": "5.31"}
      *   },
-     *   "web": {
-     *     "uniVer": "x",
-     *     "unixVer": "5.07"
-     *   }
+     *   "web": {"unixVer": "5.07"}
      * }
      */
     arrowDisabledClass? : string.ClassString
@@ -507,11 +263,59 @@
   })
 
   const emit = defineEmits<{
+    /**
+     * @description 面板展开状态变化时触发
+     * @param {Boolean} open true 表示已展开，false 表示已收起
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {"unixVaporVer": "5.21"},
+     *     "ios": {"unixVaporVer": "5.11"},
+     *     "harmony": {"unixVaporVer": "5.07"}
+     *   },
+     *   "mp": {
+     *     "weixin": {"unixVer": "5.07"},
+     *     "alipay": {"unixVer": "5.31"}
+     *   },
+     *   "web": {"unixVer": "5.07"}
+     * }
+     */
     change: [open: boolean]
   }>()
 
   defineSlots<{
+    /**
+     * @description 面板内容区
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {"unixVaporVer": "5.21"},
+     *     "ios": {"unixVaporVer": "5.11"},
+     *     "harmony": {"unixVaporVer": "5.07"}
+     *   },
+     *   "mp": {
+     *     "weixin": {"unixVer": "5.07"},
+     *     "alipay": {"unixVer": "5.31"}
+     *   },
+     *   "web": {"unixVer": "5.07"}
+     * }
+     */
     default(props : {}) : any,
+    /**
+     * @description 自定义标题区域，传入后替换默认的标题文字与箭头
+     * @param {Boolean} open 当前是否展开
+     * @param {Boolean} disabled 当前是否禁用
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {"unixVaporVer": "5.21"},
+     *     "ios": {"unixVaporVer": "5.11"},
+     *     "harmony": {"unixVaporVer": "5.07"}
+     *   },
+     *   "mp": {
+     *     "weixin": {"unixVer": "5.07"},
+     *     "alipay": {"unixVer": "5.31"}
+     *   },
+     *   "web": {"unixVer": "5.07"}
+     * }
+     */
     title(props : { open : boolean, disabled : boolean }) : any
   }>()
 
@@ -588,6 +392,20 @@
     applyOpenState(open, true, true)
   }
 
+  // #ifdef WEB
+  // web 端键盘适配：Enter、Space 切换展开状态，与鼠标点击行为保持一致
+  function onTitleKeydown(event : KeyboardEvent) {
+    if (props.disabled) {
+      return
+    }
+    const key = event.key as string
+    if (key == 'Enter' || key == ' ') {
+      event.preventDefault()
+      openCollapse(!is_open.value)
+    }
+  }
+  // #endif
+
   onMounted(() => {
     if (registerChild != null) {
       const child : ItemChildType = {
@@ -622,8 +440,55 @@
   })
 
   defineExpose({
+    /**
+     * @description 当前展开状态，true 表示已展开
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {"unixVaporVer": "5.21"},
+     *     "ios": {"unixVaporVer": "5.11"},
+     *     "harmony": {"unixVaporVer": "5.07"}
+     *   },
+     *   "mp": {
+     *     "weixin": {"unixVer": "5.07"},
+     *     "alipay": {"unixVer": "5.31"}
+     *   },
+     *   "web": {"unixVer": "5.07"}
+     * }
+     */
     is_open,
+    /**
+     * @description 直接切换内容显示状态，不做 disabled 和手风琴判断
+     * @param {Boolean} open true 表示展开，false 表示收起
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {"unixVaporVer": "5.21"},
+     *     "ios": {"unixVaporVer": "5.11"},
+     *     "harmony": {"unixVaporVer": "5.07"}
+     *   },
+     *   "mp": {
+     *     "weixin": {"unixVer": "5.07"},
+     *     "alipay": {"unixVer": "5.31"}
+     *   },
+     *   "web": {"unixVer": "5.07"}
+     * }
+     */
     openOrClose,
+    /**
+     * @description 执行展开/收起，会遵循 disabled 和手风琴逻辑，并触发 change 事件
+     * @param {Boolean} open true 表示展开，false 表示收起
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {"unixVaporVer": "5.21"},
+     *     "ios": {"unixVaporVer": "5.11"},
+     *     "harmony": {"unixVaporVer": "5.07"}
+     *   },
+     *   "mp": {
+     *     "weixin": {"unixVer": "5.07"},
+     *     "alipay": {"unixVer": "5.31"}
+     *   },
+     *   "web": {"unixVer": "5.07"}
+     * }
+     */
     openCollapse
   })
 </script>
@@ -634,7 +499,22 @@
     align-items: center;
     padding: 12px 18px;
     background-color: #ffffff;
+    /* #ifdef WEB */
+    cursor: pointer;
+    outline: none;
+    /* #endif */
   }
+
+  /* #ifdef WEB */
+  .uni-collapse-item__title--disabled {
+    cursor: not-allowed;
+  }
+
+  .uni-collapse-item__title:focus {
+    outline: 2px solid #2979ff;
+    outline-offset: -2px;
+  }
+  /* #endif */
 
   .uni-collapse-item__title-main {
     flex: 1;
@@ -735,5 +615,24 @@
 
   .uni-collapse-item__content-box {
     transition-property: opacity, transform;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .uni-collapse-item__title {
+      background-color: #2d2d2d;
+    }
+
+    .uni-collapse-item__title-text {
+      color: #ffffff;
+    }
+
+    .uni-collapse-item__content {
+      background-color: #2d2d2d;
+    }
+
+    .down_arrow {
+      border-right-color: #cbd5e1;
+      border-bottom-color: #cbd5e1;
+    }
   }
 </style>

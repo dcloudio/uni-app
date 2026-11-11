@@ -1,6 +1,6 @@
 <template>
 	<view :style="{ width: props.width + 'px', height: props.height + 'px' }" class="uni-tab-list-item-midbutton-root">
-		<view class="uni-tab-list-item-midbutton-slot">
+		<view class="uni-tab-list-item-midbutton-slot" flatten>
 			<slot></slot>
 		</view>
 	</view>
@@ -12,36 +12,15 @@
    * @description 选项卡中间悬浮按钮组件
    * @uniPlatform {
    *   "app": {
-   *     "android": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.21"
-   *     },
-   *     "ios": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.11"
-   *     },
-   *     "harmony": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.07"
-   *     }
+   *     "android": {"unixVaporVer": "5.21"},
+   *     "ios": {"unixVaporVer": "5.11"},
+   *     "harmony": {"unixVaporVer": "5.07"}
    *   },
    *   "mp": {
-   *     "weixin": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07"
-   *     },
-   *     "alipay": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.31"
-   *     }
+   *     "weixin": {"unixVer": "5.07"},
+   *     "alipay": {"unixVer": "5.31"}
    *   },
-   *   "web": {
-   *     "uniVer": "x",
-   *     "unixVer": "5.07"
-   *   }
+   *   "web": {"unixVer": "5.07"}
    * }
    */
 type Props = {
@@ -50,36 +29,15 @@ type Props = {
 	 * @default 90
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.21"
-	 *     },
-	 *     "ios": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.11"
-	 *     },
-	 *     "harmony": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.07"
-	 *     }
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
 	 *   },
 	 *   "mp": {
-	 *     "weixin": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07"
-	 *     },
-	 *     "alipay": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     }
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "uniVer": "x",
-	 *     "unixVer": "5.07"
-	 *   }
+	 *   "web": {"unixVer": "5.07"}
 	 * }
 	 */
 	width?: number,
@@ -88,36 +46,15 @@ type Props = {
 	 * @default 90
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.21"
-	 *     },
-	 *     "ios": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.11"
-	 *     },
-	 *     "harmony": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.07"
-	 *     }
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
 	 *   },
 	 *   "mp": {
-	 *     "weixin": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07"
-	 *     },
-	 *     "alipay": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     }
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "uniVer": "x",
-	 *     "unixVer": "5.07"
-	 *   }
+	 *   "web": {"unixVer": "5.07"}
 	 * }
 	 */
 	height?: number

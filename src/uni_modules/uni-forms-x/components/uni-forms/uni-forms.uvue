@@ -10,36 +10,15 @@
 	 * @description 通过 v-model 收集字段值，提供字段注册、DB Schema 兼容校验、Standard Schema 可选校验和重置能力
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.21"
-	 *     },
-	 *     "ios": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.11"
-	 *     },
-	 *     "harmony": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.07"
-	 *     }
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
 	 *   },
 	 *   "mp": {
-	 *     "weixin": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07"
-	 *     },
-	 *     "alipay": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     }
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "uniVer": "x",
-	 *     "unixVer": "5.07"
-	 *   }
+	 *   "web": {"unixVer": "5.07"}
 	 * }
 	 * @property {Object} value [已废弃] 旧版表单数据属性，默认值 null
 	 * @property {Object} modelValue 表单数据，支持 v-model，默认值 null
@@ -104,6 +83,7 @@
 		validateStandardSchema
 	} from '../validation'
 	import type { StandardSchemaRun } from '../validation'
+	import { getUniFormLocaleMessages } from '../locale'
 
 	defineOptions({
 		name: 'UniForms'
@@ -113,26 +93,86 @@
 		/**
 		 * @description [已废弃] 旧版表单数据属性，推荐使用 modelValue
 		 * @default null
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
+		 *   },
+		 *   "web": {"unixVer": "5.07"}
+		 * }
 		 */
 		value?: UniFormModel | null,
 		/**
 		 * @description 表单数据，支持 v-model 双向绑定
 		 * @default null
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
+		 *   },
+		 *   "web": {"unixVer": "5.07"}
+		 * }
 		 */
 		modelValue?: UniFormModel | null,
 		/**
 		 * @description [已废弃] 旧版表单数据属性，优先级高于 modelValue
 		 * @default null
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
+		 *   },
+		 *   "web": {"unixVer": "5.07"}
+		 * }
 		 */
 		model?: UniFormModel | null,
 		/**
 		 * @description DB Schema 风格校验规则，键为字段路径
 		 * @default {}
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
+		 *   },
+		 *   "web": {"unixVer": "5.07"}
+		 * }
 		 */
 		rules?: UniFormRules,
 		/**
 		 * @description Standard Schema 兼容对象，例如由 Valibot、Zod 等校验库创建
 		 * @default null
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
+		 *   },
+		 *   "web": {"unixVer": "5.07"}
+		 * }
 		 */
 		schema?: any,
 		/**
@@ -141,6 +181,18 @@
 		 * @value undertext 在表单项下方显示错误文字
 		 * @value toast 弹出第一条错误，并为失败项显示错误边框
 		 * @value modal 弹窗显示第一条错误
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
+		 *   },
+		 *   "web": {"unixVer": "5.07"}
+		 * }
 		 */
 		errShowType?: string,
 		/**
@@ -149,6 +201,18 @@
 		 * @value bind 表单数据变化时触发
 		 * @value blur 表单项失焦时触发
 		 * @value submit 调用 validate 或 validateField 时触发
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
+		 *   },
+		 *   "web": {"unixVer": "5.07"}
+		 * }
 		 */
 		validateTrigger?: UniFormTrigger,
 		/**
@@ -156,11 +220,35 @@
 		 * @default "left"
 		 * @value left 标签与控件单行横排
 		 * @value top 标签在控件上方，竖排显示
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
+		 *   },
+		 *   "web": {"unixVer": "5.07"}
+		 * }
 		 */
 		labelPosition?: string,
 		/**
 		 * @description 单行横排布局的标签宽度，数字按 px 处理
 		 * @default ""
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
+		 *   },
+		 *   "web": {"unixVer": "5.07"}
+		 * }
 		 */
 		labelWidth?: string | number,
 		/**
@@ -169,11 +257,35 @@
 		 * @value left 左对齐
 		 * @value center 居中对齐
 		 * @value right 右对齐
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
+		 *   },
+		 *   "web": {"unixVer": "5.07"}
+		 * }
 		 */
 		labelAlign?: string,
 		/**
 		 * @description 是否显示字段分隔线
 		 * @default false
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
+		 *   },
+		 *   "web": {"unixVer": "5.07"}
+		 * }
 		 */
 		border?: boolean
 	}
@@ -195,14 +307,53 @@
 	const emit = defineEmits<{
 		/**
 		 * @description 表单数据更新时触发，参数为更新后的表单数据
+		 * @param value 更新后的表单数据
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
+		 *   },
+		 *   "web": {"unixVer": "5.07"}
+		 * }
 		 */
 		'update:modelValue': [value: UniFormModel],
 		/**
 		 * @description 校验结果变化时触发；通过时参数为 null，未通过时为错误对象或错误数组
+		 * @param result 校验通过时为 null，未通过时为错误对象或错误数组
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
+		 *   },
+		 *   "web": {"unixVer": "5.07"}
+		 * }
 		 */
 		validate: [result: UniFormIssue | UniFormIssue[] | null],
 		/**
 		 * @description [已废弃] 调用 submit 方法时触发，推荐使用 validate 方法
+		 * @param event 事件对象，detail 中包含 value 和 errors
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
+		 *   },
+		 *   "web": {"unixVer": "5.07"}
+		 * }
 		 */
 		submit: [event: any]
 	}>()
@@ -547,7 +698,7 @@
 			})
 		} else if (props.errShowType == 'modal') {
 			uni.showModal({
-				title: '提示',
+				title: getUniFormLocaleMessages().modalTitle,
 				content: message
 			})
 		}
@@ -863,6 +1014,18 @@
 	 * @description 校验整张表单；不传 callback 时返回 Promise，通过时返回表单数据，失败时拒绝并返回错误数组
 	 * @param keepItem 未注册为表单项但需要保留在校验结果中的字段路径或字段路径数组
 	 * @param callback 校验完成回调，参数为 errors 和 data
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.07"}
+	 * }
 	 */
 	function validate(keepItem?: any, callback?: any): any {
 		if (typeof keepItem == 'function') {
@@ -890,6 +1053,18 @@
 	 * @description 校验指定字段；不传 callback 时返回 Promise
 	 * @param names 字段路径或字段路径数组
 	 * @param callback 校验完成回调，参数为 errors 和 data
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.07"}
+	 * }
 	 */
 	function validateField(names?: any, callback?: any): any {
 		if (typeof names == 'function') {
@@ -916,6 +1091,18 @@
 	/**
 	 * @description 清除指定字段的校验状态和错误信息，不传字段时清除全部
 	 * @param names 字段路径或字段路径数组
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.07"}
+	 * }
 	 */
 	function clearValidate(names?: any): void {
 		validationSequence += 1
@@ -930,6 +1117,18 @@
 	/**
 	 * @description 将指定字段恢复为表单挂载时的初始值并清除校验状态，不传字段时重置全部
 	 * @param names 字段路径或字段路径数组
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.07"}
+	 * }
 	 */
 	function resetFields(names?: any): void {
 		const requested = resolveNameList(names)
@@ -956,6 +1155,18 @@
 	/**
 	 * @description resetFields 的别名
 	 * @param names 字段路径或字段路径数组
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.07"}
+	 * }
 	 */
 	function reset(names?: any): void {
 		resetFields(names)
@@ -964,6 +1175,18 @@
 	/**
 	 * @description 动态合并表单规则；传入 null 时清除 setRules 写入的规则并恢复 rules 属性
 	 * @param rules 要合并进去的规则表；null 表示清空本地覆盖
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.07"}
+	 * }
 	 */
 	function setRules(rules: UniFormRules | null): void {
 		validationSequence += 1
@@ -982,6 +1205,18 @@
 	 * @description 设置字段值；字段已注册时同时触发该字段的强制校验
 	 * @param name 字段路径
 	 * @param value 字段值
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.07"}
+	 * }
 	 */
 	function setValue(name: UniFormPath, value: any): any {
 		const field = fields.value.find((item: UniFormFieldContext): boolean => item.key == pathKey(name))
@@ -998,6 +1233,18 @@
 	 * @param keepItem 未注册为表单项但需要保留在结果中的字段路径或字段路径数组
 	 * @param callback 校验完成回调
 	 * @param type 兼容参数
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.07"}
+	 * }
 	 */
 	function submit(keepItem?: any, callback?: any, type?: any): any {
 		if (!type) {

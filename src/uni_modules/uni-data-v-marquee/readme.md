@@ -5,15 +5,24 @@
 1. 上下轮播的公告。
 2. 搜索框中上下轮播的搜索推荐词。
 
-传统的水平跑马灯marquee，由于文字不停在变化位置，追视困难，体验不佳。定时上下滚动的文字，既吸引了眼球，又减少了追视困难。
+传统的水平跑马灯 marquee，由于文字不停在变化位置，追视困难，体验不佳。定时上下滚动的文字，既吸引了眼球，又减少了追视困难。
 
-本组件自带高性能优化，
-- 无论公告内容多少条，内部只有两个Text组件实例。
+本组件自带高性能优化：
+
+- 无论公告内容多少条，内部只有两个 Text 组件实例。
 - 组件所在页面不在栈顶时，定时器会自动停止。
 
-本组件通过 `localdata` 或 uniCloud 数据绑定一个数组，数据格式兼容以下两种数组：
+## 使用方式
 
-1. 对象数组
+组件负责：接收 `localdata` 或 uniCloud 云端数据、归一化对象数组与字符串数组、定时上下滚动、在页面不可见时暂停定时器，并在点击或切换时派发事件。
+
+使用者负责：提供数据源与滚动间隔、通过 `text-class` 定制文字样式、控制组件外层容器宽高与垂直居中、按需处理 `click` / `change` 事件。
+
+## 基本用法
+
+本组件通过 `localdata` 或 uniCloud 数据绑定一个数组，数据格式兼容以下两种数组。
+
+对象数组：
 
 ```json
 [{
@@ -22,16 +31,13 @@
 }]
 ```
 
-2. 字符串数组
+字符串数组：
 
 ```json
 ["公告1", "公告2"]
 ```
 
 数据只有一条时，不会上下滚动。数据有多条时，会按时上下滚动。滚动的间隔毫秒数，通过组件的 `interval` 属性控制。
-
-
-## 基本用法
 
 通过 `localdata` 提供本地数据（localdata 是相对于 uniCloud 云端数据的本地数据概念）。
 
@@ -54,20 +60,7 @@ const notices = [
 <uni-data-vertical-marquee :localdata="['公告1', '公告2', '公告3']" />
 ```
 
-## 属性
-
-除了绑定数据的 datacom 相关属性（`localdata`、`collection`、`field`、`where`、`orderby`、`page-size` 等），组件对外暴露以下属性：
-
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| localdata | Array | `[]` | 本地数据，支持对象数组 `[{ text, value }]` 或字符串数组 `["公告1", "公告2"]` |
-| collection | String | `''` | uniCloud 数据库集合名称；设置后且未提供 `localdata` 时使用云端数据 |
-| interval | Number | `3000` | 滚动间隔毫秒数 |
-| text-class | String | `''` | 文字 external class，用于定制文字样式 |
-
-云端查询返回的数据需要包含 `text`、`value` 字段，也可以通过 `field` 设置别名，例如 `field="name as text, code as value"`。
-
-支持绑定OpenDB的opendb-notice表（可在database菜单右键直接新建出这个表）。
+云端数据通过 `collection` 绑定集合，并可配合 `field`、`where`、`orderby`、`page-size` 等查询参数。云端查询返回的数据需要包含 `text`、`value` 字段，也可以通过 `field` 设置别名，例如 `field="name as text, code as value"`。支持绑定 OpenDB 的 opendb-notice 表（可在 database 菜单右键直接新建出这个表）。
 
 使用云端数据前，需要：
 
@@ -77,7 +70,7 @@ const notices = [
 
 只使用 `localdata` 时不需要关联 uniCloud 服务空间。`localdata` 与 `collection` 同时设置时，优先使用本地数据。
 
-## 事件
+### 点击与切换事件
 
 点击组件的文字会触发 `click` 回调，回调参数中包括点中的索引与原始数据。公告场景一般会使用，搜索框场景一般不监听。
 
@@ -109,24 +102,25 @@ function onChange(event : any) {
 </script>
 ```
 
-参数说明：
+### 调用组件方法
 
-| 字段 | 说明 |
-| --- | --- |
-| index | 当前数据项索引 |
-| data | 当前数据项原始数据（对象数组时为对象，字符串数组时为字符串） |
+通过组件 ref 可以调用 datacom 相关方法：`loadData` 加载云端数据，`refresh` 按当前查询条件重新加载云端数据，`clear` 清空当前查询结果（不会删除云数据库数据）。
 
-## 方法
+```vue
+<template>
+  <uni-data-vertical-marquee ref="marqueeRef" collection="opendb-notice" field="data as text, _id as value" />
+</template>
 
-通过组件 ref 可以调用 datacom 相关方法：
+<script setup lang="ts">
+const marqueeRef = ref<any>(null)
 
-| 方法 | 说明 |
-| --- | --- |
-| loadData | 加载云端数据 |
-| refresh | 按当前查询条件重新加载云端数据 |
-| clear | 清空当前查询结果，不会删除云数据库数据 |
+function reload() {
+  marqueeRef.value?.loadData()
+}
+</script>
+```
 
-## 自定义样式
+### 自定义样式
 
 组件根为 `view`，下面有 2 个 `text`。在组件外层通过 `text-class` 可以设置组件文字样式。
 
@@ -156,13 +150,19 @@ function onChange(event : any) {
   color: #007aff;
   font-weight: bold;
 }
+
+@media (prefers-color-scheme: dark) {
+  .marquee-text {
+    color: #91caff;
+  }
+}
 ```
 
 组件根元素为 `view`，在组件标签上写的 `class` 会作用于根元素，可用于控制组件宽度等整体样式。
 
-## 定时器与页面可见性
+## 注意事项
 
-组件会监听自己所在的页面：
-
-- 如果不在栈顶（页面被覆盖或切后台），停止定时器；恢复到栈顶时重新判断是否启动。
-- 在支持相交API的平台会额外判断组件是否位于可视区域：在可视区域运行定时器，否则关闭定时器。
+- 组件会监听自己所在的页面：如果不在栈顶（页面被覆盖或切后台），停止定时器；恢复到栈顶时重新判断是否启动。
+- 在支持相交 API 的平台会额外判断组件是否位于可视区域：在可视区域运行定时器，否则关闭定时器。
+- 数据中只有一条时不会滚动；数据为空时不渲染内容，也不会启动定时器。
+- 自定义文字颜色时需要同时考虑暗黑模式下的可读性。

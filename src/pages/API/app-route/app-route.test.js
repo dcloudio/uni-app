@@ -74,6 +74,7 @@ describe('应用路由事件', () => {
     await waitForPageReady()
     const data = await page.data('data')
     expect(data.rewriteRouteResult.replace(/\s/g, '')).toBe('rewriteRoute:ok')
+    expect(data.rewriteRouteCompleteCount).toBe(1)
     expect(data.lastNavigateToBeforePath).toBe(TARGET_ROUTE)
     expect(data.lastNavigateToAppRoutePath).toBe(TARGET_ROUTE)
     expect(data.beforeAppRouteCount).toBe(3)
@@ -93,6 +94,7 @@ describe('应用路由事件', () => {
     await waitForPageReady()
     const data = await page.data('data')
     expect(data.rewriteRouteResult.replace(/\s/g, '')).toBe('rewriteRoute:ok')
+    expect(data.rewriteRouteCompleteCount).toBe(1)
 
     // 独立入口仅重写一次，后续普通跳转不受影响。
     page = await program.navigateTo(`${TARGET_PATH}?from=normal`)

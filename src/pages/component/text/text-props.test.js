@@ -31,6 +31,34 @@ describe('text-props', () => {
   })
 
   if(!isWeb && !isMP) {
+    it('single bold character with explicit line-height is not narrower #34587', async () => {
+      try {
+        await setPageData({ singleCharacterAutoTest: true })
+        await page.waitFor('#single-character-explicit-line-height')
+        await page.waitFor(300)
+        const info = await program.callUniMethod('getWindowInfo')
+        const pixelTolerance = 1 / info.pixelRatio
+
+        for (const prefix of ['single-character', 'single-character-flat']) {
+          const explicit = await page.$('#' + prefix + '-explicit-line-height')
+          const reference = await page.$('#' + prefix + '-normal-line-height')
+          expect(explicit).not.toBeNull()
+          expect(reference).not.toBeNull()
+          expect(await explicit.text()).toBe('0')
+          expect(await reference.text()).toBe('0')
+          const actualSize = await explicit.size()
+          const referenceSize = await reference.size()
+          expect(referenceSize.width).toBeGreaterThan(0)
+          expect(Math.abs(actualSize.width - referenceSize.width))
+            .toBeLessThanOrEqual(pixelTolerance)
+          expect(Math.abs(actualSize.height - 22)).toBeLessThanOrEqual(pixelTolerance)
+        }
+      } finally {
+        await setPageData({ singleCharacterAutoTest: false })
+        await page.waitFor(100)
+      }
+    })
+
     it('max-lines v-if dynamic text', async () => {
       await setPageData({ autoTest: true, maxLinesText: '' })
       expect(await page.$('#max-lines-v-if-text')).toBeNull()

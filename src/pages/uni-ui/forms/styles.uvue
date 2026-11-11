@@ -1,79 +1,77 @@
 <template>
-	<view>
-		<view class="intro">
-			<text class="page-title">样式与属性示例</text>
-			<text class="page-desc">示例按移动端排列：标签在左，输入在右。label-width、label-align 和 border 调整这一行；标签、星号、错误文字用样式类覆盖。</text>
-		</view>
+	<view class="intro">
+		<text class="page-title">样式与属性示例</text>
+		<text class="page-desc">示例按移动端排列：标签在左，输入在右。label-width、label-align 和 border 调整这一行；标签、星号、错误文字用样式类覆盖。</text>
+	</view>
 
-		<view class="section property-section">
-			<text class="section-title">属性对照</text>
-			<view class="property-row"><text class="property-name">label-position</text><text class="property-value">left，移动端默认</text></view>
-			<view class="property-row"><text class="property-name">label-width</text><text class="property-value">数字或 CSS 宽度</text></view>
-			<view class="property-row"><text class="property-name">label-align</text><text class="property-value">left / center / right</text></view>
-			<view class="property-row"><text class="property-name">border</text><text class="property-value">控制字段分隔线</text></view>
-			<view class="property-row"><text class="property-name">class / style</text><text class="property-value">直接作用于 uni-forms 外层</text></view>
-		</view>
+	<view class="section property-section">
+		<text class="uni-h4">属性对照</text>
+		<view class="property-row"><text class="property-name">label-position</text><text class="property-value">left，移动端默认</text></view>
+		<view class="property-row"><text class="property-name">label-width</text><text class="property-value">数字或 CSS 宽度</text></view>
+		<view class="property-row"><text class="property-name">label-align</text><text class="property-value">left / center / right</text></view>
+		<view class="property-row"><text class="property-name">border</text><text class="property-value">控制字段分隔线</text></view>
+		<view class="property-row"><text class="property-name">class / style</text><text class="property-value">直接作用于 uni-forms 外层</text></view>
+	</view>
 
-		<view class="section">
-			<text class="section-title">左侧标签</text>
-			<uni-forms
-				class="left-form-surface"
-				style="border-radius: 8px;"
-				v-model="leftForm"
-				label-position="left"
-				label-width="86"
-				label-align="right"
-				border
+	<view class="section">
+		<text class="uni-h4">左侧标签</text>
+		<uni-forms
+			class="left-form-surface"
+			style="border-radius: 8px;"
+			v-model="leftForm"
+			label-position="left"
+			label-width="86"
+			label-align="right"
+			border
+		>
+			<uni-forms-item label="标题" name="title" required label-class="left-label" content-class="left-content">
+				<uni-easyinput v-model="leftForm.title" placeholder="右对齐标签" />
+			</uni-forms-item>
+			<uni-forms-item label="说明" name="description" label-class="left-label" content-class="left-content">
+				<uni-easyinput v-model="leftForm.description" placeholder="border 会显示字段分隔线" />
+			</uni-forms-item>
+		</uni-forms>
+	</view>
+
+	<view class="section section-last">
+		<text class="uni-h4">左侧标签样式</text>
+		<uni-forms
+			ref="topFormRef"
+			class="theme-form-surface"
+			style="padding: 12px; border-radius: 8px;"
+			v-model="topForm"
+			:rules="topRules"
+			label-position="left"
+			label-width="80"
+			label-align="left"
+			err-show-type="undertext"
+		>
+			<uni-forms-item
+				name="account"
+				label="账号"
+				required
+				label-class="theme-label"
+				required-class="theme-required"
+				error-message-class="theme-error"
 			>
-				<uni-forms-item label="标题" name="title" required label-class="left-label" content-class="left-content">
-					<uni-easyinput v-model="leftForm.title" placeholder="右对齐标签" />
-				</uni-forms-item>
-				<uni-forms-item label="说明" name="description" label-class="left-label" content-class="left-content">
-					<uni-easyinput v-model="leftForm.description" placeholder="border 会显示字段分隔线" />
-				</uni-forms-item>
-			</uni-forms>
-		</view>
-
-		<view class="section section-last">
-			<text class="section-title">左侧标签样式</text>
-			<uni-forms
-				ref="topFormRef"
-				class="theme-form-surface"
-				style="padding: 12px; border-radius: 8px;"
-				v-model="topForm"
-				:rules="topRules"
-				label-position="left"
-				label-width="80"
-				label-align="left"
-				err-show-type="undertext"
+				<uni-easyinput v-model="topForm.account" placeholder="观察标签、必填星号和错误文字颜色" />
+			</uni-forms-item>
+			<uni-forms-item
+				name="phone"
+				label="手机号"
+				label-class="theme-label"
+				error-message-class="theme-error"
 			>
-				<uni-forms-item
-					name="account"
-					label="账号"
-					required
-					label-class="theme-label"
-					required-class="theme-required"
-					error-message-class="theme-error"
-				>
-					<uni-easyinput v-model="topForm.account" placeholder="观察标签、必填星号和错误文字颜色" />
-				</uni-forms-item>
-				<uni-forms-item
-					name="phone"
-					label="手机号"
-					label-class="theme-label"
-					error-message-class="theme-error"
-				>
-					<uni-easyinput v-model="topForm.phone" placeholder="错误样式由 externalClasses 控制" />
-				</uni-forms-item>
-			</uni-forms>
+				<uni-easyinput v-model="topForm.phone" placeholder="错误样式由 externalClasses 控制" />
+			</uni-forms-item>
+		</uni-forms>
 
-			<view class="button-row">
-				<button class="action-button" size="mini" @click="validateTopForm">显示错误样式</button>
-				<button class="action-button secondary-button" size="mini" @click="clearTopForm">清除错误</button>
-			</view>
-			<text class="status-text">{{ statusText }}</text>
-			<text class="class-list">本例使用 label-class、required-class、error-message-class。上一例另外使用 content-class。</text>
+		<view class="button-row">
+			<button class="action-button" size="mini" @click="validateTopForm">显示错误样式</button>
+			<button class="action-button secondary-button" size="mini" @click="clearTopForm">清除错误</button>
 		</view>
+		<text class="status-text">{{ statusText }}</text>
+		<text class="class-list">本例使用 label-class、required-class、error-message-class。上一例另外使用 content-class。</text>
 	</view>
 </template>
 
@@ -166,16 +164,10 @@ page {
 	padding-bottom: 32px;
 }
 
-.page-title,
-.section-title {
+.page-title {
 	font-size: 18px;
 	font-weight: bold;
 	color: var(--text-color, #222222);
-}
-
-.section-title {
-	margin-bottom: 12px;
-	font-size: 16px;
 }
 
 .page-desc,

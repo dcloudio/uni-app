@@ -3,7 +3,7 @@
     <slot name="loading" :state="currentState">
       <loading ref="loadingRef" :paused="currentState != 2" class="uni-loading-class-buildin" :class="loadingClass" bold></loading>
     </slot>
-    <text class="uni-text-class-buildin" :class="textClass">{{ tipText }}</text>
+    <text class="uni-text-class-buildin" :class="textClass" flatten>{{ tipText }}</text>
   </view>
 </template>
 
@@ -13,36 +13,15 @@
    * @description 自定义下拉刷新组件
    * @uniPlatform {
    *   "app": {
-   *     "android": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.21"
-   *     },
-   *     "ios": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.11"
-   *     },
-   *     "harmony": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.07"
-   *     }
+   *     "android": {"unixVaporVer": "5.21"},
+   *     "ios": {"unixVaporVer": "5.11"},
+   *     "harmony": {"unixVaporVer": "5.07"}
    *   },
    *   "mp": {
-   *     "weixin": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07"
-   *     },
-   *     "alipay": {
-   *       "uniVer": "x",
-   *       "unixVer": "x"
-   *     }
+   *     "weixin": {"unixVer": "5.07"},
+   *     "alipay": {"unixVer": "x"}
    *   },
-   *   "web": {
-   *     "uniVer": "x",
-   *     "unixVer": "5.07"
-   *   }
+   *   "web": {"unixVer": "5.07"}
    * }
    */
 defineOptions({
@@ -55,36 +34,15 @@ const props = defineProps({
    * @default 0
    * @uniPlatform {
    *   "app": {
-   *     "android": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.21"
-   *     },
-   *     "ios": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.11"
-   *     },
-   *     "harmony": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.07"
-   *     }
+   *     "android": {"unixVaporVer": "5.21"},
+   *     "ios": {"unixVaporVer": "5.11"},
+   *     "harmony": {"unixVaporVer": "5.07"}
    *   },
    *   "mp": {
-   *     "weixin": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07"
-   *     },
-   *     "alipay": {
-   *       "uniVer": "x",
-   *       "unixVer": "x"
-   *     }
+   *     "weixin": {"unixVer": "5.07"},
+   *     "alipay": {"unixVer": "x"}
    *   },
-   *   "web": {
-   *     "uniVer": "x",
-   *     "unixVer": "5.07"
-   *   }
+   *   "web": {"unixVer": "5.07"}
    * }
    */
   pullingDistance: {
@@ -96,36 +54,15 @@ const props = defineProps({
    * @default false
    * @uniPlatform {
    *   "app": {
-   *     "android": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.21"
-   *     },
-   *     "ios": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.11"
-   *     },
-   *     "harmony": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.07"
-   *     }
+   *     "android": {"unixVaporVer": "5.21"},
+   *     "ios": {"unixVaporVer": "5.11"},
+   *     "harmony": {"unixVaporVer": "5.07"}
    *   },
    *   "mp": {
-   *     "weixin": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07"
-   *     },
-   *     "alipay": {
-   *       "uniVer": "x",
-   *       "unixVer": "x"
-   *     }
+   *     "weixin": {"unixVer": "5.07"},
+   *     "alipay": {"unixVer": "x"}
    *   },
-   *   "web": {
-   *     "uniVer": "x",
-   *     "unixVer": "5.07"
-   *   }
+   *   "web": {"unixVer": "5.07"}
    * }
    */
   refreshing: {
@@ -137,36 +74,15 @@ const props = defineProps({
    * @default 45
    * @uniPlatform {
    *   "app": {
-   *     "android": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.21"
-   *     },
-   *     "ios": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.11"
-   *     },
-   *     "harmony": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.07"
-   *     }
+   *     "android": {"unixVaporVer": "5.21"},
+   *     "ios": {"unixVaporVer": "5.11"},
+   *     "harmony": {"unixVaporVer": "5.07"}
    *   },
    *   "mp": {
-   *     "weixin": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07"
-   *     },
-   *     "alipay": {
-   *       "uniVer": "x",
-   *       "unixVer": "x"
-   *     }
+   *     "weixin": {"unixVer": "5.07"},
+   *     "alipay": {"unixVer": "x"}
    *   },
-   *   "web": {
-   *     "uniVer": "x",
-   *     "unixVer": "5.07"
-   *   }
+   *   "web": {"unixVer": "5.07"}
    * }
    */
   threshold: {
@@ -174,163 +90,76 @@ const props = defineProps({
     default: 45
   },
   /**
-   * @description 下拉过程中（未达到阈值）显示的提示文字
-   * @default "下拉刷新"
+   * @description 下拉过程中（未达到阈值）显示的提示文字。不传时跟随系统语言内置文案；传空字符串时不显示
+   * @default 跟随系统语言（中文简体/中文繁体/英文/法文/拉丁文）
    * @uniPlatform {
    *   "app": {
-   *     "android": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.21"
-   *     },
-   *     "ios": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.11"
-   *     },
-   *     "harmony": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.07"
-   *     }
+   *     "android": {"unixVaporVer": "5.21"},
+   *     "ios": {"unixVaporVer": "5.11"},
+   *     "harmony": {"unixVaporVer": "5.07"}
    *   },
    *   "mp": {
-   *     "weixin": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07"
-   *     },
-   *     "alipay": {
-   *       "uniVer": "x",
-   *       "unixVer": "x"
-   *     }
+   *     "weixin": {"unixVer": "5.07"},
+   *     "alipay": {"unixVer": "x"}
    *   },
-   *   "web": {
-   *     "uniVer": "x",
-   *     "unixVer": "5.07"
-   *   }
+   *   "web": {"unixVer": "5.07"}
    * }
    */
   pullingText: {
-    type: String,
-    default: '下拉刷新'
+    type: String
   },
   /**
-   * @description 下拉超过阈值后显示的提示文字
-   * @default "松手刷新"
+   * @description 下拉超过阈值后显示的提示文字。不传时跟随系统语言内置文案；传空字符串时不显示
+   * @default 跟随系统语言（中文简体/中文繁体/英文/法文/拉丁文）
    * @uniPlatform {
    *   "app": {
-   *     "android": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.21"
-   *     },
-   *     "ios": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.11"
-   *     },
-   *     "harmony": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.07"
-   *     }
+   *     "android": {"unixVaporVer": "5.21"},
+   *     "ios": {"unixVaporVer": "5.11"},
+   *     "harmony": {"unixVaporVer": "5.07"}
    *   },
    *   "mp": {
-   *     "weixin": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07"
-   *     },
-   *     "alipay": {
-   *       "uniVer": "x",
-   *       "unixVer": "x"
-   *     }
+   *     "weixin": {"unixVer": "5.07"},
+   *     "alipay": {"unixVer": "x"}
    *   },
-   *   "web": {
-   *     "uniVer": "x",
-   *     "unixVer": "5.07"
-   *   }
+   *   "web": {"unixVer": "5.07"}
    * }
    */
   loosingText: {
-    type: String,
-    default: '松手刷新'
+    type: String
   },
   /**
-   * @description 刷新中显示的提示文字
-   * @default "正在刷新"
+   * @description 刷新中显示的提示文字。不传时跟随系统语言内置文案；传空字符串时不显示
+   * @default 跟随系统语言（中文简体/中文繁体/英文/法文/拉丁文）
    * @uniPlatform {
    *   "app": {
-   *     "android": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.21"
-   *     },
-   *     "ios": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.11"
-   *     },
-   *     "harmony": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.07"
-   *     }
+   *     "android": {"unixVaporVer": "5.21"},
+   *     "ios": {"unixVaporVer": "5.11"},
+   *     "harmony": {"unixVaporVer": "5.07"}
    *   },
    *   "mp": {
-   *     "weixin": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07"
-   *     },
-   *     "alipay": {
-   *       "uniVer": "x",
-   *       "unixVer": "x"
-   *     }
+   *     "weixin": {"unixVer": "5.07"},
+   *     "alipay": {"unixVer": "x"}
    *   },
-   *   "web": {
-   *     "uniVer": "x",
-   *     "unixVer": "5.07"
-   *   }
+   *   "web": {"unixVer": "5.07"}
    * }
    */
   loadingText: {
-    type: String,
-    default: '正在刷新'
+    type: String
   },
   /**
-   * @description 刷新完成瞬间显示的提示文字，为空则不展示
+   * @description 刷新完成瞬间显示的提示文字，默认不展示
    * @default ""
    * @uniPlatform {
    *   "app": {
-   *     "android": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.21"
-   *     },
-   *     "ios": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.11"
-   *     },
-   *     "harmony": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.07"
-   *     }
+   *     "android": {"unixVaporVer": "5.21"},
+   *     "ios": {"unixVaporVer": "5.11"},
+   *     "harmony": {"unixVaporVer": "5.07"}
    *   },
    *   "mp": {
-   *     "weixin": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07"
-   *     },
-   *     "alipay": {
-   *       "uniVer": "x",
-   *       "unixVer": "x"
-   *     }
+   *     "weixin": {"unixVer": "5.07"},
+   *     "alipay": {"unixVer": "x"}
    *   },
-   *   "web": {
-   *     "uniVer": "x",
-   *     "unixVer": "5.07"
-   *   }
+   *   "web": {"unixVer": "5.07"}
    * }
    */
   completeText: {
@@ -342,36 +171,15 @@ const props = defineProps({
    * @default ""
    * @uniPlatform {
    *   "app": {
-   *     "android": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.21"
-   *     },
-   *     "ios": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.11"
-   *     },
-   *     "harmony": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.07"
-   *     }
+   *     "android": {"unixVaporVer": "5.21"},
+   *     "ios": {"unixVaporVer": "5.11"},
+   *     "harmony": {"unixVaporVer": "5.07"}
    *   },
    *   "mp": {
-   *     "weixin": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07"
-   *     },
-   *     "alipay": {
-   *       "uniVer": "x",
-   *       "unixVer": "x"
-   *     }
+   *     "weixin": {"unixVer": "5.07"},
+   *     "alipay": {"unixVer": "x"}
    *   },
-   *   "web": {
-   *     "uniVer": "x",
-   *     "unixVer": "5.07"
-   *   }
+   *   "web": {"unixVer": "5.07"}
    * }
    */
   textClass: {
@@ -383,36 +191,15 @@ const props = defineProps({
    * @default ""
    * @uniPlatform {
    *   "app": {
-   *     "android": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.21"
-   *     },
-   *     "ios": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.11"
-   *     },
-   *     "harmony": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.07"
-   *     }
+   *     "android": {"unixVaporVer": "5.21"},
+   *     "ios": {"unixVaporVer": "5.11"},
+   *     "harmony": {"unixVaporVer": "5.07"}
    *   },
    *   "mp": {
-   *     "weixin": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07"
-   *     },
-   *     "alipay": {
-   *       "uniVer": "x",
-   *       "unixVer": "x"
-   *     }
+   *     "weixin": {"unixVer": "5.07"},
+   *     "alipay": {"unixVer": "x"}
    *   },
-   *   "web": {
-   *     "uniVer": "x",
-   *     "unixVer": "5.07"
-   *   }
+   *   "web": {"unixVer": "5.07"}
    * }
    */
   loadingClass: {
@@ -420,6 +207,48 @@ const props = defineProps({
     default: ''
   }
 })
+
+type RefreshLocale = {
+  pulling : string
+  loosing : string
+  loading : string
+}
+
+function normalizeLocaleKey(language : string) : string {
+  if (language.indexOf('zh-hant') == 0 || language.indexOf('zh-tw') == 0 || language.indexOf('zh-hk') == 0 || language.indexOf('zh-mo') == 0) {
+    return 'zh-hant'
+  }
+  if (language.indexOf('zh') == 0) {
+    return 'zh-hans'
+  }
+  if (language.indexOf('fr') == 0) {
+    return 'fr'
+  }
+  if (language.indexOf('la') == 0) {
+    return 'la'
+  }
+  return 'en'
+}
+
+function resolveRefreshLocale() : RefreshLocale {
+  const appLanguage = (uni.getAppBaseInfo().appLanguage ?? 'en').toLowerCase()
+  const localeKey = normalizeLocaleKey(appLanguage)
+  if (localeKey == 'zh-hans') {
+    return { pulling: '下拉刷新', loosing: '松手刷新', loading: '正在刷新' }
+  }
+  if (localeKey == 'zh-hant') {
+    return { pulling: '下拉重新整理', loosing: '放手重新整理', loading: '正在重新整理' }
+  }
+  if (localeKey == 'fr') {
+    return { pulling: 'Tirer pour actualiser', loosing: 'Relâcher pour actualiser', loading: 'Actualisation...' }
+  }
+  if (localeKey == 'la') {
+    return { pulling: 'Trahe ad renovandum', loosing: 'Dimitte ad renovandum', loading: 'Renovatur...' }
+  }
+  return { pulling: 'Pull to refresh', loosing: 'Release to refresh', loading: 'Refreshing...' }
+}
+
+const refreshLocale = resolveRefreshLocale()
 
 // Data
 const loadingRef = ref<UniElement | null>(null)
@@ -449,17 +278,17 @@ const currentState = computed((): number => {
 const tipText = computed((): string => {
   switch (currentState.value) {
     case 0:
-      return props.pullingText
+      return props.pullingText ?? refreshLocale.pulling
     case 1:
-      return props.loosingText
+      return props.loosingText ?? refreshLocale.loosing
     case 2:
-      return props.loadingText
+      return props.loadingText ?? refreshLocale.loading
     case 3:
       return props.completeText
     case 4:
       return '' // 归位中不显示文字
     default:
-      return props.pullingText
+      return props.pullingText ?? refreshLocale.pulling
   }
 })
 
@@ -497,6 +326,21 @@ watch((): number => props.pullingDistance, (distance: number, oldDistance: numbe
   }
 })
 
+/**
+ * @description 当前下拉刷新状态：0-下拉中、1-松手可刷新、2-刷新中、3-刷新完成、4-归位中
+ * @uniPlatform {
+ *   "app": {
+ *     "android": {"unixVaporVer": "5.21"},
+ *     "ios": {"unixVaporVer": "5.11"},
+ *     "harmony": {"unixVaporVer": "5.07"}
+ *   },
+ *   "mp": {
+ *     "weixin": {"unixVer": "5.07"},
+ *     "alipay": {"unixVer": "x"}
+ *   },
+ *   "web": {"unixVer": "5.07"}
+ * }
+ */
 // 暴露状态给外部
 defineExpose({
   currentState

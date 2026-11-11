@@ -98,4 +98,11 @@ const onSelect = (index : number) => {
 
 组件根节点，默认宽度 `90px`、`flex-shrink: 0`。可通过组件上设置样式来覆盖。
 
-item为插槽内容，样式由使用者决定。
+item 为插槽内容，样式由使用者决定。
+
+## 注意事项
+
+- 组件不感知右侧主列表，滚动与滚动高亮需由页面自行编排，避免对主列表结构产生隐式约束。
+- 数据变化后需等新分段渲染完成再测量坐标（`nextTick` + 延时），否则查询会因节点不存在而静默失效。
+- Web 端导航项支持键盘操作：聚焦后 `Enter` / `Space` 触发选中，`ArrowUp` / `ArrowDown` 移动高亮。
+- 示例页面路径：`/pages/uni-ui/sidebar/sidebar.uvue`。

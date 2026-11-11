@@ -2,6 +2,7 @@
 	<view :id="anchorId" class="uni-combobox">
 		<view
 			class="uni-combobox__field"
+			style="position: relative;"
 			:class="[fieldClass, disabled ? 'uni-combobox__field--disabled' : '']"
 			@click="onFieldClick"
 			<!-- #ifdef WEB -->
@@ -9,7 +10,7 @@
 			@keydown="onInputKeydown"
 			<!-- #endif -->
 		>
-			<view v-if="inputMode" class="uni-combobox__input-slot">
+			<view v-if="inputMode" class="uni-combobox__input-slot" flatten>
 				<slot
 					name="input"
 					:value="currentValue"
@@ -27,8 +28,10 @@
 					disabled ? 'uni-combobox__result--disabled' : ''
 				]"
 				max-lines="1"
+				flatten
 			>{{ displayText }}</text>
 			<view class="uni-combobox__arrow-wrap" @click.stop="toggleOptionsByArrow">
+				<!-- 箭头带有旋转过渡动画，拍平后 transition 对渲染属性不生效，故不使用 flatten -->
 				<view class="uni-combobox__arrow" :class="[arrowClass, opened ? 'uni-combobox__arrow--open' : '']"></view>
 			</view>
 			<view v-if="disabled" class="uni-combobox__disabled-mask"></view>
@@ -62,7 +65,8 @@
 								class="uni-combobox__option uni-combobox__option--empty"
 								:class="optionTextClass"
 								max-lines="1"
-							>无匹配项</text>
+								flatten
+							>{{ emptyText }}</text>
 						</view>
 						<view
 							v-for="(item, index) in visibleOptions"
@@ -79,6 +83,7 @@
 								class="uni-combobox__option"
 								:class="[optionTextClass, index == highlightedIndex ? optionTextHighlightClass : '']"
 								max-lines="1"
+								flatten
 							>{{ item }}</text>
 						</view>
 					</view>
@@ -94,51 +99,16 @@
  * @description 默认是单选选择框，通过 input 具名插槽切换为可输入、可选择的组合框。
  * @uniPlatform {
  *   "app": {
- *     "android": {
- *       "uniVer": "x",
- *       "unixVer": "5.31",
- *       "unixVaporVer": "5.31"
- *     },
- *     "ios": {
- *       "uniVer": "x",
- *       "unixVer": "x",
- *       "unixVaporVer": "5.31"
- *     },
- *     "harmony": {
- *       "uniVer": "x",
- *       "unixVer": "x",
- *       "unixVaporVer": "5.31"
- *     }
+ *     "android": {"unixVaporVer": "5.31"},
+ *     "ios": {"unixVaporVer": "5.31"},
+ *     "harmony": {"unixVaporVer": "5.31"}
  *   },
  *   "mp": {
- *     "weixin": {
- *       "uniVer": "x",
- *       "unixVer": "5.31"
- *     },
- *     "alipay": {
- *       "uniVer": "x",
- *       "unixVer": "5.31"
- *     }
+ *     "weixin": {"unixVer": "5.31"},
+ *     "alipay": {"unixVer": "5.31"}
  *   },
- *   "web": {
- *     "uniVer": "x",
- *     "unixVer": "5.31"
- *   }
+ *   "web": {"unixVer": "5.31"}
  * }
- * @property {Array<String>} options 候选字符串数组
- * @property {String} modelValue 当前值，支持 v-model
- * @property {String} placeholder 占位文字
- * @property {Boolean} disabled 是否禁用，默认值 false
- * @property {String} arrowClass 右侧箭头自定义样式类
- * @property {String} fieldClass 非弹出区域自定义样式类
- * @property {String} optionsViewClass 候选浮层外层自定义样式类
- * @property {String} optionsContentClass 候选浮层内容自定义样式类
- * @property {String} optionTextClass 候选项文字自定义样式类
- * @property {String} optionTextHighlightClass 候选项高亮自定义样式类
- * @property {String} optionRowHighlightClass 候选项高亮行自定义样式类
- * @property {String} resultTextClass 单选模式结果文字自定义样式类
- * @event {Function} update:modelValue 值更新时触发
- * @event {Function} selectchange 从候选项选中时触发
  */
 
 defineOptions({
@@ -160,36 +130,15 @@ type Props = {
 	 * @default []
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31",
-	 *       "unixVaporVer": "5.31"
-	 *     },
-	 *     "ios": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "x",
-	 *       "unixVaporVer": "5.31"
-	 *     },
-	 *     "harmony": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "x",
-	 *       "unixVaporVer": "5.31"
-	 *     }
+	 *     "android": {"unixVaporVer": "5.31"},
+	 *     "ios": {"unixVaporVer": "5.31"},
+	 *     "harmony": {"unixVaporVer": "5.31"}
 	 *   },
 	 *   "mp": {
-	 *     "weixin": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     },
-	 *     "alipay": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     }
+	 *     "weixin": {"unixVer": "5.31"},
+	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "uniVer": "x",
-	 *     "unixVer": "5.31"
-	 *   }
+	 *   "web": {"unixVer": "5.31"}
 	 * }
 	 */
 	options? : string[],
@@ -198,36 +147,15 @@ type Props = {
 	 * @default ""
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31",
-	 *       "unixVaporVer": "5.31"
-	 *     },
-	 *     "ios": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "x",
-	 *       "unixVaporVer": "5.31"
-	 *     },
-	 *     "harmony": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "x",
-	 *       "unixVaporVer": "5.31"
-	 *     }
+	 *     "android": {"unixVaporVer": "5.31"},
+	 *     "ios": {"unixVaporVer": "5.31"},
+	 *     "harmony": {"unixVaporVer": "5.31"}
 	 *   },
 	 *   "mp": {
-	 *     "weixin": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     },
-	 *     "alipay": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     }
+	 *     "weixin": {"unixVer": "5.31"},
+	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "uniVer": "x",
-	 *     "unixVer": "5.31"
-	 *   }
+	 *   "web": {"unixVer": "5.31"}
 	 * }
 	 */
 	modelValue? : string,
@@ -236,36 +164,15 @@ type Props = {
 	 * @default ""
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31",
-	 *       "unixVaporVer": "5.31"
-	 *     },
-	 *     "ios": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "x",
-	 *       "unixVaporVer": "5.31"
-	 *     },
-	 *     "harmony": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "x",
-	 *       "unixVaporVer": "5.31"
-	 *     }
+	 *     "android": {"unixVaporVer": "5.31"},
+	 *     "ios": {"unixVaporVer": "5.31"},
+	 *     "harmony": {"unixVaporVer": "5.31"}
 	 *   },
 	 *   "mp": {
-	 *     "weixin": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     },
-	 *     "alipay": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     }
+	 *     "weixin": {"unixVer": "5.31"},
+	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "uniVer": "x",
-	 *     "unixVer": "5.31"
-	 *   }
+	 *   "web": {"unixVer": "5.31"}
 	 * }
 	 */
 	placeholder? : string,
@@ -274,42 +181,33 @@ type Props = {
 	 * @default false
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31",
-	 *       "unixVaporVer": "5.31"
-	 *     },
-	 *     "ios": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "x",
-	 *       "unixVaporVer": "5.31"
-	 *     },
-	 *     "harmony": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "x",
-	 *       "unixVaporVer": "5.31"
-	 *     }
+	 *     "android": {"unixVaporVer": "5.31"},
+	 *     "ios": {"unixVaporVer": "5.31"},
+	 *     "harmony": {"unixVaporVer": "5.31"}
 	 *   },
 	 *   "mp": {
-	 *     "weixin": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     },
-	 *     "alipay": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     }
+	 *     "weixin": {"unixVer": "5.31"},
+	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "uniVer": "x",
-	 *     "unixVer": "5.31"
-	 *   }
+	 *   "web": {"unixVer": "5.31"}
 	 * }
 	 */
 	disabled? : boolean,
 	/**
 	 * @description 非弹出区域自定义样式类
 	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.31"},
+	 *     "ios": {"unixVaporVer": "5.31"},
+	 *     "harmony": {"unixVaporVer": "5.31"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.31"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.31"}
+	 * }
 	 */
 	fieldClass? : string.ClassString,
 	/**
@@ -317,36 +215,15 @@ type Props = {
 	 * @default ""
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31",
-	 *       "unixVaporVer": "5.31"
-	 *     },
-	 *     "ios": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "x",
-	 *       "unixVaporVer": "5.31"
-	 *     },
-	 *     "harmony": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "x",
-	 *       "unixVaporVer": "5.31"
-	 *     }
+	 *     "android": {"unixVaporVer": "5.31"},
+	 *     "ios": {"unixVaporVer": "5.31"},
+	 *     "harmony": {"unixVaporVer": "5.31"}
 	 *   },
 	 *   "mp": {
-	 *     "weixin": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     },
-	 *     "alipay": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     }
+	 *     "weixin": {"unixVer": "5.31"},
+	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "uniVer": "x",
-	 *     "unixVer": "5.31"
-	 *   }
+	 *   "web": {"unixVer": "5.31"}
 	 * }
 	 */
 	arrowClass? : string.ClassString,
@@ -355,42 +232,33 @@ type Props = {
 	 * @default ""
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31",
-	 *       "unixVaporVer": "5.31"
-	 *     },
-	 *     "ios": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "x",
-	 *       "unixVaporVer": "5.31"
-	 *     },
-	 *     "harmony": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "x",
-	 *       "unixVaporVer": "5.31"
-	 *     }
+	 *     "android": {"unixVaporVer": "5.31"},
+	 *     "ios": {"unixVaporVer": "5.31"},
+	 *     "harmony": {"unixVaporVer": "5.31"}
 	 *   },
 	 *   "mp": {
-	 *     "weixin": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     },
-	 *     "alipay": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     }
+	 *     "weixin": {"unixVer": "5.31"},
+	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "uniVer": "x",
-	 *     "unixVer": "5.31"
-	 *   }
+	 *   "web": {"unixVer": "5.31"}
 	 * }
 	 */
 	optionsViewClass? : string.ClassString,
 	/**
 	 * @description 候选浮层内容自定义样式类
 	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.31"},
+	 *     "ios": {"unixVaporVer": "5.31"},
+	 *     "harmony": {"unixVaporVer": "5.31"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.31"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.31"}
+	 * }
 	 */
 	optionsContentClass? : string.ClassString,
 	/**
@@ -398,36 +266,15 @@ type Props = {
 	 * @default ""
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31",
-	 *       "unixVaporVer": "5.31"
-	 *     },
-	 *     "ios": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "x",
-	 *       "unixVaporVer": "5.31"
-	 *     },
-	 *     "harmony": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "x",
-	 *       "unixVaporVer": "5.31"
-	 *     }
+	 *     "android": {"unixVaporVer": "5.31"},
+	 *     "ios": {"unixVaporVer": "5.31"},
+	 *     "harmony": {"unixVaporVer": "5.31"}
 	 *   },
 	 *   "mp": {
-	 *     "weixin": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     },
-	 *     "alipay": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     }
+	 *     "weixin": {"unixVer": "5.31"},
+	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "uniVer": "x",
-	 *     "unixVer": "5.31"
-	 *   }
+	 *   "web": {"unixVer": "5.31"}
 	 * }
 	 */
 	optionTextClass? : string.ClassString,
@@ -436,42 +283,33 @@ type Props = {
 	 * @default ""
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31",
-	 *       "unixVaporVer": "5.31"
-	 *     },
-	 *     "ios": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "x",
-	 *       "unixVaporVer": "5.31"
-	 *     },
-	 *     "harmony": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "x",
-	 *       "unixVaporVer": "5.31"
-	 *     }
+	 *     "android": {"unixVaporVer": "5.31"},
+	 *     "ios": {"unixVaporVer": "5.31"},
+	 *     "harmony": {"unixVaporVer": "5.31"}
 	 *   },
 	 *   "mp": {
-	 *     "weixin": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     },
-	 *     "alipay": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     }
+	 *     "weixin": {"unixVer": "5.31"},
+	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "uniVer": "x",
-	 *     "unixVer": "5.31"
-	 *   }
+	 *   "web": {"unixVer": "5.31"}
 	 * }
 	 */
 	optionTextHighlightClass? : string.ClassString,
 	/**
 	 * @description 候选项高亮行自定义样式类
 	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.31"},
+	 *     "ios": {"unixVaporVer": "5.31"},
+	 *     "harmony": {"unixVaporVer": "5.31"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.31"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.31"}
+	 * }
 	 */
 	optionRowHighlightClass? : string.ClassString,
 	/**
@@ -479,36 +317,15 @@ type Props = {
 	 * @default ""
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31",
-	 *       "unixVaporVer": "5.31"
-	 *     },
-	 *     "ios": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "x",
-	 *       "unixVaporVer": "5.31"
-	 *     },
-	 *     "harmony": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "x",
-	 *       "unixVaporVer": "5.31"
-	 *     }
+	 *     "android": {"unixVaporVer": "5.31"},
+	 *     "ios": {"unixVaporVer": "5.31"},
+	 *     "harmony": {"unixVaporVer": "5.31"}
 	 *   },
 	 *   "mp": {
-	 *     "weixin": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     },
-	 *     "alipay": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     }
+	 *     "weixin": {"unixVer": "5.31"},
+	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "uniVer": "x",
-	 *     "unixVer": "5.31"
-	 *   }
+	 *   "web": {"unixVer": "5.31"}
 	 * }
 	 */
 	resultTextClass? : string.ClassString
@@ -531,76 +348,36 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
 	/**
-	 * @description 值更新时触发，参数为当前值，类型为 string
+	 * @description 值更新时触发
+	 * @param {String} value 当前值
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31",
-	 *       "unixVaporVer": "5.31"
-	 *     },
-	 *     "ios": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "x",
-	 *       "unixVaporVer": "5.31"
-	 *     },
-	 *     "harmony": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "x",
-	 *       "unixVaporVer": "5.31"
-	 *     }
+	 *     "android": {"unixVaporVer": "5.31"},
+	 *     "ios": {"unixVaporVer": "5.31"},
+	 *     "harmony": {"unixVaporVer": "5.31"}
 	 *   },
 	 *   "mp": {
-	 *     "weixin": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     },
-	 *     "alipay": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     }
+	 *     "weixin": {"unixVer": "5.31"},
+	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "uniVer": "x",
-	 *     "unixVer": "5.31"
-	 *   }
+	 *   "web": {"unixVer": "5.31"}
 	 * }
 	 */
 	'update:modelValue': [value : string],
 	/**
-	 * @description 从候选项选中时触发，参数为选中的值，类型为 string
+	 * @description 从候选项选中时触发
+	 * @param {String} value 选中的候选值
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31",
-	 *       "unixVaporVer": "5.31"
-	 *     },
-	 *     "ios": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "x",
-	 *       "unixVaporVer": "5.31"
-	 *     },
-	 *     "harmony": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "x",
-	 *       "unixVaporVer": "5.31"
-	 *     }
+	 *     "android": {"unixVaporVer": "5.31"},
+	 *     "ios": {"unixVaporVer": "5.31"},
+	 *     "harmony": {"unixVaporVer": "5.31"}
 	 *   },
 	 *   "mp": {
-	 *     "weixin": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     },
-	 *     "alipay": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     }
+	 *     "weixin": {"unixVer": "5.31"},
+	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "uniVer": "x",
-	 *     "unixVer": "5.31"
-	 *   }
+	 *   "web": {"unixVer": "5.31"}
 	 * }
 	 */
 	selectchange: [value : string]
@@ -611,36 +388,15 @@ defineSlots<{
 	 * @description 自定义输入框插槽，提供 value、input、focus 和 disabled，使用后启用可输入、可选择模式
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31",
-	 *       "unixVaporVer": "5.31"
-	 *     },
-	 *     "ios": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "x",
-	 *       "unixVaporVer": "5.31"
-	 *     },
-	 *     "harmony": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "x",
-	 *       "unixVaporVer": "5.31"
-	 *     }
+	 *     "android": {"unixVaporVer": "5.31"},
+	 *     "ios": {"unixVaporVer": "5.31"},
+	 *     "harmony": {"unixVaporVer": "5.31"}
 	 *   },
 	 *   "mp": {
-	 *     "weixin": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     },
-	 *     "alipay": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     }
+	 *     "weixin": {"unixVer": "5.31"},
+	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "uniVer": "x",
-	 *     "unixVer": "5.31"
-	 *   }
+	 *   "web": {"unixVer": "5.31"}
 	 * }
 	 */
 	input(props : {
@@ -652,6 +408,36 @@ defineSlots<{
 }>()
 
 const slots = useSlots()
+
+type LocaleType = 'zh-Hans' | 'zh-Hant' | 'en' | 'fr' | 'la'
+
+function resolveLocaleType() : LocaleType {
+	const appLanguage = (uni.getAppBaseInfo().appLanguage ?? 'en').toLowerCase()
+	if (
+		appLanguage.indexOf('zh-hant') == 0 ||
+		appLanguage.indexOf('zh-tw') == 0 ||
+		appLanguage.indexOf('zh-hk') == 0 ||
+		appLanguage.indexOf('zh-mo') == 0
+	) {
+		return 'zh-Hant'
+	}
+	if (appLanguage.indexOf('zh') == 0) return 'zh-Hans'
+	if (appLanguage.indexOf('fr') == 0) return 'fr'
+	if (appLanguage.indexOf('la') == 0 || appLanguage.indexOf('lat') == 0) return 'la'
+	return 'en'
+}
+
+// 候选项为空时的提示文案，跟随应用语言，不在组件内写死中文
+function getEmptyText() : string {
+	const localeType = resolveLocaleType()
+	if (localeType == 'zh-Hans') return '无匹配项'
+	if (localeType == 'zh-Hant') return '無符合項目'
+	if (localeType == 'fr') return 'Aucun résultat'
+	if (localeType == 'la') return 'Nulla congruentia'
+	return 'No matches'
+}
+
+const emptyText = getEmptyText()
 const anchorId = `uni_combobox_${Math.ceil(Math.random() * 10e8).toString(36)}`
 const popupId = anchorId + '_popup'
 const optionIdPrefix = `uni_combobox_option_${Math.ceil(Math.random() * 10e8).toString(36)}_`
@@ -711,7 +497,7 @@ const visibleOptions = computed(() : string[] => {
 })
 
 const optionsStyle = computed(() : string => {
-	return `left: ${popupLeft.value}px; top: ${popupTop.value}px; width: ${popupWidth.value}px; height: ${popupHeight.value}px;`
+	return `position: fixed; left: ${popupLeft.value}px; top: ${popupTop.value}px; width: ${popupWidth.value}px; height: ${popupHeight.value}px;`
 })
 
 const scrollIntoViewId = ref<string>('')
@@ -1199,8 +985,54 @@ function setInputValue(value : string) {
 }
 
 defineExpose({
+	/**
+	 * @description 设置当前值，并以过滤模式打开候选浮层
+	 * @param {String} value 要设置的字符串值
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.31"},
+	 *     "ios": {"unixVaporVer": "5.31"},
+	 *     "harmony": {"unixVaporVer": "5.31"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.31"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.31"}
+	 * }
+	 */
 	setInputValue,
+	/**
+	 * @description 打开候选浮层，展示完整候选列表
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.31"},
+	 *     "ios": {"unixVaporVer": "5.31"},
+	 *     "harmony": {"unixVaporVer": "5.31"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.31"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.31"}
+	 * }
+	 */
 	openOptions,
+	/**
+	 * @description 关闭候选浮层
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.31"},
+	 *     "ios": {"unixVaporVer": "5.31"},
+	 *     "harmony": {"unixVaporVer": "5.31"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.31"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.31"}
+	 * }
+	 */
 	closeOptions
 })
 
@@ -1394,8 +1226,13 @@ onBackPress(() : boolean => {
 
 .uni-combobox__field {
 	outline: none;
+	cursor: pointer;
 	transition-property: border-color, box-shadow;
 	transition-duration: 150ms;
+}
+
+.uni-combobox__field--disabled {
+	cursor: not-allowed;
 }
 
 .uni-combobox__field:focus {
@@ -1408,8 +1245,16 @@ onBackPress(() : boolean => {
 	box-shadow: none;
 }
 
+.uni-combobox__arrow-wrap {
+	cursor: pointer;
+}
+
 .uni-combobox__disabled-mask {
 	cursor: not-allowed;
+}
+
+.uni-combobox__option-row {
+	cursor: pointer;
 }
 
 .uni-combobox__option-row:hover {

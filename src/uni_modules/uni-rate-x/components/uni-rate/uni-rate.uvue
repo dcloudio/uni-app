@@ -4,12 +4,17 @@
     <!-- #ifdef MP -->
     :id="containerId"
     <!-- #endif -->
-    style="position: relative; align-self: flex-start;" @click="onTap">
+    style="position: relative; align-self: flex-start;" :class="props.readonly ? '' : 'rate-interactive'" @click="onTap"
+    <!-- #ifdef WEB -->
+    :tabindex="props.readonly ? '-1' : '0'"
+    @keydown="onKeydown"
+    <!-- #endif -->
+    >
     <text flatten class="stars-pos gray-stars" style="white-space: nowrap;" :class="props.starClass ?? ''" :style="props.letterSpacing ? { letterSpacing: props.letterSpacing + 'px' } : {}">{{ stars }}</text> <!-- 背景灰星-->
     <!-- Android/iOS平台不支持裁剪显示半个文字，需通过包裹一层view裁剪实现 -->
     <!-- #ifdef (APP-ANDROID || APP-IOS) && !VUE3-VAPOR -->
     <view class="stars-pos active-init-width" :style="'width:' + calculatedWidth">
-      <text v-if="props.full" class="active-color" :class="props.starActiveClass ?? ''" style="white-space: nowrap; align-self: flex-start;">★★★★★</text>
+      <text flatten v-if="props.full" class="active-color" :class="props.starActiveClass ?? ''" style="white-space: nowrap; align-self: flex-start;">★★★★★</text>
       <!-- 前景亮星，宽度根据value变化-->
     </view>
     <!-- #endif -->
@@ -25,20 +30,28 @@
 <script setup lang="ts">
 /**
  * Rate 评分
- * @description 评分组件
+ * @description 评分组件，使用 unicode 字符 ★/☆ 实现，分高性能只读版与可点击评分版
+ * @property {Number} value 当前评分，取值范围 0~5
+ * @property {Number} modelValue v-model 绑定值，支持双向绑定
+ * @property {Boolean} full 是否显示完整 5 颗星（含灰星占位）
+ * @property {Boolean} readonly 是否只读
+ * @property {Boolean} plain 灰星是否使用镂空样式
+ * @property {String} starClass 灰星（未选中）的自定义样式类
+ * @property {String} starActiveClass 亮星（选中）的自定义样式类
+ * @property {Number} letterSpacing 字间距，单位 px
+ * @event {Function} change 评分变化时触发
+ * @event {Function} update:modelValue v-model 绑定值变化时触发
  * @uniPlatform {
  *   "app": {
- *     "android": {"unixVer": "5.07",  "unixVaporVer": "5.21"},
- *     "ios": {"unixVer": "5.07",  "unixVaporVer": "5.11"},
- *     "harmony": {"unixVer": "5.07",  "unixVaporVer": "5.07"}
+ *     "android": {"unixVaporVer": "5.21"},
+ *     "ios": {"unixVaporVer": "5.11"},
+ *     "harmony": {"unixVaporVer": "5.07"}
  *   },
  *   "mp": {
  *     "weixin": {"unixVer": "5.07"},
  *     "alipay": {"unixVer": "5.31"}
  *   },
- *   "web": {
- *     "unixVer": "5.07"
- *   }
+ *   "web": {"unixVer": "5.07"}
  * }
  */
 
@@ -49,145 +62,137 @@ defineOptions({
 const props = defineProps<{
   /**
    * @description 当前评分，取值范围 0~5 的数字
+   * @default 0
    * @uniPlatform {
    *   "app": {
-   *     "android": {"unixVer": "5.07",  "unixVaporVer": "5.21"},
-   *     "ios": {"unixVer": "5.07",  "unixVaporVer": "5.11"},
-   *     "harmony": {"unixVer": "5.07",  "unixVaporVer": "5.07"}
+   *     "android": {"unixVaporVer": "5.21"},
+   *     "ios": {"unixVaporVer": "5.11"},
+   *     "harmony": {"unixVaporVer": "5.07"}
    *   },
    *   "mp": {
    *     "weixin": {"unixVer": "5.07"},
    *     "alipay": {"unixVer": "5.31"}
    *   },
-   *   "web": {
-   *     "unixVer": "5.07"
-   *   }
+   *   "web": {"unixVer": "5.07"}
    * }
    */
   value?: number,
   /**
    * @description v-model 绑定值，支持双向绑定，优先级高于 value
+   * @default 0
    * @uniPlatform {
    *   "app": {
-   *     "android": {"unixVer": "5.07",  "unixVaporVer": "5.21"},
-   *     "ios": {"unixVer": "5.07",  "unixVaporVer": "5.11"},
-   *     "harmony": {"unixVer": "5.07",  "unixVaporVer": "5.07"}
+   *     "android": {"unixVaporVer": "5.21"},
+   *     "ios": {"unixVaporVer": "5.11"},
+   *     "harmony": {"unixVaporVer": "5.07"}
    *   },
    *   "mp": {
    *     "weixin": {"unixVer": "5.07"},
    *     "alipay": {"unixVer": "5.31"}
    *   },
-   *   "web": {
-   *     "unixVer": "5.07"
-   *   }
+   *   "web": {"unixVer": "5.07"}
    * }
    */
   modelValue?: number,
   /**
    * @description 是否显示完整 5 颗星。为 true 时用灰星填充未选中位置；为 false 时仅显示亮星，性能更高但不支持点击交互
+   * @default false
    * @uniPlatform {
    *   "app": {
-   *     "android": {"unixVer": "5.07",  "unixVaporVer": "5.21"},
-   *     "ios": {"unixVer": "5.07",  "unixVaporVer": "5.11"},
-   *     "harmony": {"unixVer": "5.07",  "unixVaporVer": "5.07"}
+   *     "android": {"unixVaporVer": "5.21"},
+   *     "ios": {"unixVaporVer": "5.11"},
+   *     "harmony": {"unixVaporVer": "5.07"}
    *   },
    *   "mp": {
    *     "weixin": {"unixVer": "5.07"},
    *     "alipay": {"unixVer": "5.31"}
    *   },
-   *   "web": {
-   *     "unixVer": "5.07"
-   *   }
+   *   "web": {"unixVer": "5.07"}
    * }
    */
   full?: boolean,
   /**
    * @description 是否只读，为 true 时不响应点击评分（full 为 false 时始终只读）
+   * @default false
    * @uniPlatform {
    *   "app": {
-   *     "android": {"unixVer": "5.07",  "unixVaporVer": "5.21"},
-   *     "ios": {"unixVer": "5.07",  "unixVaporVer": "5.11"},
-   *     "harmony": {"unixVer": "5.07",  "unixVaporVer": "5.07"}
+   *     "android": {"unixVaporVer": "5.21"},
+   *     "ios": {"unixVaporVer": "5.11"},
+   *     "harmony": {"unixVaporVer": "5.07"}
    *   },
    *   "mp": {
    *     "weixin": {"unixVer": "5.07"},
    *     "alipay": {"unixVer": "5.31"}
    *   },
-   *   "web": {
-   *     "unixVer": "5.07"
-   *   }
+   *   "web": {"unixVer": "5.07"}
    * }
    */
   readonly?: boolean,
   /**
    * @description 灰星是否使用镂空样式（☆），为 false 时使用实心灰星（★）
+   * @default false
    * @uniPlatform {
    *   "app": {
-   *     "android": {"unixVer": "5.07",  "unixVaporVer": "5.21"},
-   *     "ios": {"unixVer": "5.07",  "unixVaporVer": "5.11"},
-   *     "harmony": {"unixVer": "5.07",  "unixVaporVer": "5.07"}
+   *     "android": {"unixVaporVer": "5.21"},
+   *     "ios": {"unixVaporVer": "5.11"},
+   *     "harmony": {"unixVaporVer": "5.07"}
    *   },
    *   "mp": {
    *     "weixin": {"unixVer": "5.07"},
    *     "alipay": {"unixVer": "5.31"}
    *   },
-   *   "web": {
-   *     "unixVer": "5.07"
-   *   }
+   *   "web": {"unixVer": "5.07"}
    * }
    */
   plain?: boolean,
   /**
    * @description 灰星（未选中）的自定义样式类
+   * @default ""
    * @uniPlatform {
    *   "app": {
-   *     "android": {"unixVer": "5.07",  "unixVaporVer": "5.21"},
-   *     "ios": {"unixVer": "5.07",  "unixVaporVer": "5.11"},
-   *     "harmony": {"unixVer": "5.07",  "unixVaporVer": "5.07"}
+   *     "android": {"unixVaporVer": "5.21"},
+   *     "ios": {"unixVaporVer": "5.11"},
+   *     "harmony": {"unixVaporVer": "5.07"}
    *   },
    *   "mp": {
    *     "weixin": {"unixVer": "5.07"},
    *     "alipay": {"unixVer": "5.31"}
    *   },
-   *   "web": {
-   *     "unixVer": "5.07"
-   *   }
+   *   "web": {"unixVer": "5.07"}
    * }
    */
   starClass?: string.ClassString,
   /**
    * @description 亮星（选中）的自定义样式类
+   * @default ""
    * @uniPlatform {
    *   "app": {
-   *     "android": {"unixVer": "5.07",  "unixVaporVer": "5.21"},
-   *     "ios": {"unixVer": "5.07",  "unixVaporVer": "5.11"},
-   *     "harmony": {"unixVer": "5.07",  "unixVaporVer": "5.07"}
+   *     "android": {"unixVaporVer": "5.21"},
+   *     "ios": {"unixVaporVer": "5.11"},
+   *     "harmony": {"unixVaporVer": "5.07"}
    *   },
    *   "mp": {
    *     "weixin": {"unixVer": "5.07"},
    *     "alipay": {"unixVer": "5.31"}
    *   },
-   *   "web": {
-   *     "unixVer": "5.07"
-   *   }
+   *   "web": {"unixVer": "5.07"}
    * }
    */
   starActiveClass?: string.ClassString,
   /**
    * @description 字间距 (px)
+   * @default 0
    * @uniPlatform {
    *   "app": {
-   *     "android": {"unixVer": "x",  "unixVaporVer": "5.21"},
-   *     "ios": {"unixVer": "x",  "unixVaporVer": "5.11"},
-   *     "harmony": {"unixVer": "x",  "unixVaporVer": "5.07"}
+   *     "android": {"unixVaporVer": "5.21"},
+   *     "ios": {"unixVaporVer": "5.11"},
+   *     "harmony": {"unixVaporVer": "5.07"}
    *   },
    *   "mp": {
    *     "weixin": {"unixVer": "5.07"},
    *     "alipay": {"unixVer": "5.31"}
    *   },
-   *   "web": {
-   *     "unixVer": "5.07"
-   *   }
+   *   "web": {"unixVer": "5.07"}
    * }
    */
   letterSpacing?: number
@@ -195,38 +200,36 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   /**
-   * @description 评分变化事件，参数为评分值，类型为 number
+   * @description 评分变化事件
+   * @param {Number} value 变化后的评分值
    * @uniPlatform {
    *   "app": {
-   *     "android": {"unixVer": "5.07",  "unixVaporVer": "5.21"},
-   *     "ios": {"unixVer": "5.07",  "unixVaporVer": "5.11"},
-   *     "harmony": {"unixVer": "5.07",  "unixVaporVer": "5.07"}
+   *     "android": {"unixVaporVer": "5.21"},
+   *     "ios": {"unixVaporVer": "5.11"},
+   *     "harmony": {"unixVaporVer": "5.07"}
    *   },
    *   "mp": {
    *     "weixin": {"unixVer": "5.07"},
    *     "alipay": {"unixVer": "5.31"}
    *   },
-   *   "web": {
-   *     "unixVer": "5.07"
-   *   }
+   *   "web": {"unixVer": "5.07"}
    * }
    */
   change: [value: number]
   /**
-   * @description v-model 绑定值变化事件，参数为评分值，类型为 number
+   * @description v-model 绑定值变化事件
+   * @param {Number} value 变化后的评分值
    * @uniPlatform {
    *   "app": {
-   *     "android": {"unixVer": "5.07",  "unixVaporVer": "5.21"},
-   *     "ios": {"unixVer": "5.07",  "unixVaporVer": "5.11"},
-   *     "harmony": {"unixVer": "5.07",  "unixVaporVer": "5.07"}
+   *     "android": {"unixVaporVer": "5.21"},
+   *     "ios": {"unixVaporVer": "5.11"},
+   *     "harmony": {"unixVaporVer": "5.07"}
    *   },
    *   "mp": {
    *     "weixin": {"unixVer": "5.07"},
    *     "alipay": {"unixVer": "5.31"}
    *   },
-   *   "web": {
-   *     "unixVer": "5.07"
-   *   }
+   *   "web": {"unixVer": "5.07"}
    * }
    */
   'update:modelValue': [value: number]
@@ -302,6 +305,28 @@ async function onTap(event: UniPointerEvent): Promise<void> {
   // #endif
   // #endif
 }
+
+// #ifdef WEB
+function onKeydown(event : KeyboardEvent) : void {
+  if (props.readonly == true) return
+
+  const key = event.key as string
+  let value = Math.round(currentValue.value)
+  if (key == 'ArrowRight' || key == 'ArrowUp') {
+    event.preventDefault()
+    value = Math.min(5, value + 1)
+  } else if (key == 'ArrowLeft' || key == 'ArrowDown') {
+    event.preventDefault()
+    value = Math.max(0, value - 1)
+  } else {
+    return
+  }
+
+  currentValue.value = value
+  emit('change', value)
+  emit('update:modelValue', value)
+}
+// #endif
 </script>
 
 <style>
@@ -322,4 +347,10 @@ async function onTap(event: UniPointerEvent): Promise<void> {
 .active-color {
   color: #ffca3e; /* 点亮颜色 */
 }
+/* #ifdef WEB */
+.rate-interactive {
+  cursor: pointer;
+  outline: none;
+}
+/* #endif */
 </style>

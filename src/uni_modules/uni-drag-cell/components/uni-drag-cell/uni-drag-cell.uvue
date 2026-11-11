@@ -11,6 +11,8 @@
 			@pointermove="onItemTouchMove($event, index)"
 			@pointerup="onItemTouchEnd($event, index)"
 			@pointercancel="onItemTouchEnd($event, index)"
+			:tabindex="'0'"
+			@keydown="onItemKeydown($event, index)"
 			<!-- #endif -->
 			<!-- #ifndef WEB -->
 			@touchstart.stop="onItemTouchStart($event, index)"
@@ -69,36 +71,15 @@
    * @description 可拖拽单元格组件
    * @uniPlatform {
    *   "app": {
-   *     "android": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.08",
-   *       "unixVaporVer": "5.21"
-   *     },
-   *     "ios": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.11"
-   *     },
-   *     "harmony": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.07"
-   *     }
+   *     "android": {"unixVaporVer": "5.21"},
+   *     "ios": {"unixVaporVer": "5.11"},
+   *     "harmony": {"unixVaporVer": "5.07"}
    *   },
    *   "mp": {
-   *     "weixin": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07"
-   *     },
-   *     "alipay": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.31"
-   *     }
+   *     "weixin": {"unixVer": "5.07"},
+   *     "alipay": {"unixVer": "5.31"}
    *   },
-   *   "web": {
-   *     "uniVer": "x",
-   *     "unixVer": "5.07"
-   *   }
+   *   "web": {"unixVer": "5.07"}
    * }
    */
 	// #ifdef WEB
@@ -145,38 +126,18 @@
 	const props = defineProps({
 		/**
 		 * @description 可拖拽排序的数据源，支持 v-model 双向绑定，内部会在拖拽结束后更新顺序
+		 * @default []
 		 * @uniPlatform {
 		 *   "app": {
-		 *     "android": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.08",
-		 *       "unixVaporVer": "5.21"
-		 *     },
-		 *     "ios": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07",
-		 *       "unixVaporVer": "5.11"
-		 *     },
-		 *     "harmony": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07",
-		 *       "unixVaporVer": "5.07"
-		 *     }
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
 		 *   },
 		 *   "mp": {
-		 *     "weixin": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07"
-		 *     },
-		 *     "alipay": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.31"
-		 *     }
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
 		 *   },
-		 *   "web": {
-		 *     "uniVer": "x",
-		 *     "unixVer": "5.07"
-		 *   }
+		 *   "web": {"unixVer": "5.07"}
 		 * }
 		 */
 		modelValue: {
@@ -188,36 +149,15 @@
 		 * @default 0
 		 * @uniPlatform {
 		 *   "app": {
-		 *     "android": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.08",
-		 *       "unixVaporVer": "5.21"
-		 *     },
-		 *     "ios": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07",
-		 *       "unixVaporVer": "5.11"
-		 *     },
-		 *     "harmony": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07",
-		 *       "unixVaporVer": "5.07"
-		 *     }
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
 		 *   },
 		 *   "mp": {
-		 *     "weixin": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07"
-		 *     },
-		 *     "alipay": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.31"
-		 *     }
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
 		 *   },
-		 *   "web": {
-		 *     "uniVer": "x",
-		 *     "unixVer": "5.07"
-		 *   }
+		 *   "web": {"unixVer": "5.07"}
 		 * }
 		 */
 		column: {
@@ -229,36 +169,15 @@
 		 * @default false
 		 * @uniPlatform {
 		 *   "app": {
-		 *     "android": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.08",
-		 *       "unixVaporVer": "5.21"
-		 *     },
-		 *     "ios": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07",
-		 *       "unixVaporVer": "5.11"
-		 *     },
-		 *     "harmony": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07",
-		 *       "unixVaporVer": "5.07"
-		 *     }
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
 		 *   },
 		 *   "mp": {
-		 *     "weixin": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07"
-		 *     },
-		 *     "alipay": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.31"
-		 *     }
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
 		 *   },
-		 *   "web": {
-		 *     "uniVer": "x",
-		 *     "unixVer": "5.07"
-		 *   }
+		 *   "web": {"unixVer": "5.07"}
 		 * }
 		 */
 		showClose: {
@@ -270,36 +189,15 @@
 		 * @default true
 		 * @uniPlatform {
 		 *   "app": {
-		 *     "android": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.08",
-		 *       "unixVaporVer": "5.21"
-		 *     },
-		 *     "ios": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07",
-		 *       "unixVaporVer": "5.11"
-		 *     },
-		 *     "harmony": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07",
-		 *       "unixVaporVer": "5.07"
-		 *     }
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
 		 *   },
 		 *   "mp": {
-		 *     "weixin": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07"
-		 *     },
-		 *     "alipay": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.31"
-		 *     }
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
 		 *   },
-		 *   "web": {
-		 *     "uniVer": "x",
-		 *     "unixVer": "5.07"
-		 *   }
+		 *   "web": {"unixVer": "5.07"}
 		 * }
 		 */
 		showAppend: {
@@ -311,36 +209,15 @@
 		 * @default false
 		 * @uniPlatform {
 		 *   "app": {
-		 *     "android": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.08",
-		 *       "unixVaporVer": "5.21"
-		 *     },
-		 *     "ios": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07",
-		 *       "unixVaporVer": "5.11"
-		 *     },
-		 *     "harmony": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07",
-		 *       "unixVaporVer": "5.07"
-		 *     }
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
 		 *   },
 		 *   "mp": {
-		 *     "weixin": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07"
-		 *     },
-		 *     "alipay": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.31"
-		 *     }
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
 		 *   },
-		 *   "web": {
-		 *     "uniVer": "x",
-		 *     "unixVer": "5.07"
-		 *   }
+		 *   "web": {"unixVer": "5.07"}
 		 * }
 		 */
 		handleMode: {
@@ -354,36 +231,15 @@
 		 * @description v-model 绑定值变化事件，参数为最新数组，类型为数组
 		 * @uniPlatform {
 		 *   "app": {
-		 *     "android": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.08",
-		 *       "unixVaporVer": "5.21"
-		 *     },
-		 *     "ios": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07",
-		 *       "unixVaporVer": "5.11"
-		 *     },
-		 *     "harmony": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07",
-		 *       "unixVaporVer": "5.07"
-		 *     }
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
 		 *   },
 		 *   "mp": {
-		 *     "weixin": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07"
-		 *     },
-		 *     "alipay": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.31"
-		 *     }
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
 		 *   },
-		 *   "web": {
-		 *     "uniVer": "x",
-		 *     "unixVer": "5.07"
-		 *   }
+		 *   "web": {"unixVer": "5.07"}
 		 * }
 		 */
 		'update:modelValue': [value: any[]]
@@ -391,36 +247,15 @@
 		 * @description 排序完成后、删除完成后触发，参数为最新数组，类型为数组
 		 * @uniPlatform {
 		 *   "app": {
-		 *     "android": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.08",
-		 *       "unixVaporVer": "5.21"
-		 *     },
-		 *     "ios": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07",
-		 *       "unixVaporVer": "5.11"
-		 *     },
-		 *     "harmony": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07",
-		 *       "unixVaporVer": "5.07"
-		 *     }
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
 		 *   },
 		 *   "mp": {
-		 *     "weixin": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07"
-		 *     },
-		 *     "alipay": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.31"
-		 *     }
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
 		 *   },
-		 *   "web": {
-		 *     "uniVer": "x",
-		 *     "unixVer": "5.07"
-		 *   }
+		 *   "web": {"unixVer": "5.07"}
 		 * }
 		 */
 		change: [value: any[]]
@@ -1003,6 +838,35 @@
 		event.preventDefault()
 		return true
 	}
+
+	// 键盘排序：使用方向键把当前聚焦项向前/向后移动一位，等效于拖拽排序结果
+	const reorderByKeyboard = (from : number, to : number) => {
+		if (from == to || from < 0 || from >= innerList.value.length || to < 0 || to >= innerList.value.length) {
+			return
+		}
+		const nextList = innerList.value.slice()
+		const movedItem = nextList.splice(from, 1)[0]
+		nextList.splice(to, 0, movedItem)
+		innerList.value = nextList
+		const movedId = itemIds.value.splice(from, 1)[0]
+		itemIds.value.splice(to, 0, movedId)
+		applyPreviewOrder(createIdentityOrder(innerList.value.length))
+		emitChange()
+	}
+
+	const onItemKeydown = (event : KeyboardEvent, index : number) => {
+		const key = event.key as string
+		let targetIndex = index
+		if (key == 'ArrowLeft' || key == 'ArrowUp') {
+			targetIndex = index - 1
+		} else if (key == 'ArrowRight' || key == 'ArrowDown') {
+			targetIndex = index + 1
+		} else {
+			return
+		}
+		event.preventDefault()
+		reorderByKeyboard(index, targetIndex)
+	}
 	// #endif
 
 	let currentTouchContext: TouchContext | null = null
@@ -1176,8 +1040,16 @@
 		cursor: grab;
 		touch-action: none;
 		user-select: none;
+		outline: none;
 		/* #endif */
 	}
+
+	/* #ifdef WEB */
+	.drag-cell-item:focus-visible {
+		outline: 2px solid #2979ff;
+		outline-offset: 2px;
+	}
+	/* #endif */
 
 	.drag-cell-append {
 		position: relative;

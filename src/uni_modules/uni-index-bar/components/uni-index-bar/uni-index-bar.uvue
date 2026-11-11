@@ -2,7 +2,7 @@
 	<!-- #ifdef MP-ALIPAY -->
 	<view class="index-text" ref="indexTextRef" v-bind="$attrs" @touchstart="onTouchStart" @touchmove.stop.prevent="onTouchMove"
 		@touchend="onTouchEnd">
-		<text v-for="(item, index) in indexList" :key="item" class="index-item">{{ item }}</text>
+		<text v-for="(item, index) in indexList" :key="item" flatten class="index-item">{{ item }}</text>
 	</view>
 	<!-- #endif -->
 	<!-- #ifndef MP-ALIPAY -->
@@ -11,6 +11,8 @@
 
 		<!-- #ifdef WEB -->
 		@click="onIndexClick"
+		:tabindex="'0'"
+		@keydown="onIndexKeydown"
 		<!-- #endif -->
 
 		>{{ indexs }}</text>
@@ -27,36 +29,15 @@
    * @description 索引列表组件
    * @uniPlatform {
    *   "app": {
-   *     "android": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.21"
-   *     },
-   *     "ios": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.11"
-   *     },
-   *     "harmony": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.07"
-   *     }
+   *     "android": {"unixVaporVer": "5.21"},
+   *     "ios": {"unixVaporVer": "5.11"},
+   *     "harmony": {"unixVaporVer": "5.07"}
    *   },
    *   "mp": {
-   *     "weixin": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.08"
-   *     },
-   *     "alipay": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.31"
-   *     }
+   *     "weixin": {"unixVer": "5.08"},
+   *     "alipay": {"unixVer": "5.31"}
    *   },
-   *   "web": {
-   *     "uniVer": "x",
-   *     "unixVer": "5.07"
-   *   }
+   *   "web": {"unixVer": "5.07"}
    * }
    */
 
@@ -70,36 +51,15 @@
 		 * @default "A\nB\nC\nD\nE\nF\nG\nH\nI\nJ\nK\nL\nM\nN\nO\nP\nQ\nR\nS\nT\nU\nV\nW\nX\nY\nZ"
 		 * @uniPlatform {
 		 *   "app": {
-		 *     "android": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07",
-		 *       "unixVaporVer": "5.21"
-		 *     },
-		 *     "ios": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07",
-		 *       "unixVaporVer": "5.11"
-		 *     },
-		 *     "harmony": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07",
-		 *       "unixVaporVer": "5.07"
-		 *     }
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
 		 *   },
 		 *   "mp": {
-		 *     "weixin": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.08"
-		 *     },
-		 *     "alipay": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.31"
-		 *     }
+		 *     "weixin": {"unixVer": "5.08"},
+		 *     "alipay": {"unixVer": "5.31"}
 		 *   },
-		 *   "web": {
-		 *     "uniVer": "x",
-		 *     "unixVer": "5.07"
-		 *   }
+		 *   "web": {"unixVer": "5.07"}
 		 * }
 		 */
 		indexs? : string,
@@ -108,36 +68,15 @@
 		 * @default ""
 		 * @uniPlatform {
 		 *   "app": {
-		 *     "android": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07",
-		 *       "unixVaporVer": "5.21"
-		 *     },
-		 *     "ios": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07",
-		 *       "unixVaporVer": "5.11"
-		 *     },
-		 *     "harmony": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07",
-		 *       "unixVaporVer": "5.07"
-		 *     }
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
 		 *   },
 		 *   "mp": {
-		 *     "weixin": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.08"
-		 *     },
-		 *     "alipay": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.31"
-		 *     }
+		 *     "weixin": {"unixVer": "5.08"},
+		 *     "alipay": {"unixVer": "5.31"}
 		 *   },
-		 *   "web": {
-		 *     "uniVer": "x",
-		 *     "unixVer": "5.07"
-		 *   }
+		 *   "web": {"unixVer": "5.07"}
 		 * }
 		 */
 		indicatorViewClass? : string.ClassString,
@@ -146,36 +85,15 @@
 		 * @default ""
 		 * @uniPlatform {
 		 *   "app": {
-		 *     "android": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07",
-		 *       "unixVaporVer": "5.21"
-		 *     },
-		 *     "ios": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07",
-		 *       "unixVaporVer": "5.11"
-		 *     },
-		 *     "harmony": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07",
-		 *       "unixVaporVer": "5.07"
-		 *     }
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
 		 *   },
 		 *   "mp": {
-		 *     "weixin": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.08"
-		 *     },
-		 *     "alipay": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.31"
-		 *     }
+		 *     "weixin": {"unixVer": "5.08"},
+		 *     "alipay": {"unixVer": "5.31"}
 		 *   },
-		 *   "web": {
-		 *     "uniVer": "x",
-		 *     "unixVer": "5.07"
-		 *   }
+		 *   "web": {"unixVer": "5.07"}
 		 * }
 		 */
 		indicatorTextClass? : string.ClassString
@@ -192,36 +110,15 @@
 		 * @description 选择索引时触发，参数为当前选择的索引字符，类型为 string
 		 * @uniPlatform {
 		 *   "app": {
-		 *     "android": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07",
-		 *       "unixVaporVer": "5.21"
-		 *     },
-		 *     "ios": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07",
-		 *       "unixVaporVer": "5.11"
-		 *     },
-		 *     "harmony": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07",
-		 *       "unixVaporVer": "5.07"
-		 *     }
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
 		 *   },
 		 *   "mp": {
-		 *     "weixin": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.08"
-		 *     },
-		 *     "alipay": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.31"
-		 *     }
+		 *     "weixin": {"unixVer": "5.08"},
+		 *     "alipay": {"unixVer": "5.31"}
 		 *   },
-		 *   "web": {
-		 *     "uniVer": "x",
-		 *     "unixVer": "5.07"
-		 *   }
+		 *   "web": {"unixVer": "5.07"}
 		 * }
 		 */
 		select: [index: string]
@@ -352,6 +249,36 @@
 		emit('select', cachedIndexList[idx])
 	}
 
+	// Web 端键盘操作：上下方向键切换索引，回车或空格确认选择
+	const onIndexKeydown = (e : KeyboardEvent) => {
+		updateLayout()
+		if (cachedIndexList.length == 0) {
+			return
+		}
+		const key = e.key as string
+		const currentPosition = currentIndex.value == '' ? -1 : cachedIndexList.indexOf(currentIndex.value)
+		if (key == 'ArrowDown' || key == 'ArrowUp') {
+			e.preventDefault()
+			const delta = key == 'ArrowDown' ? 1 : -1
+			let next = currentPosition < 0 ? (delta > 0 ? 0 : cachedIndexList.length - 1) : currentPosition + delta
+			if (next < 0) {
+				next = 0
+			}
+			if (next >= cachedIndexList.length) {
+				next = cachedIndexList.length - 1
+			}
+			currentIndex.value = cachedIndexList[next]
+			emit('select', currentIndex.value)
+			return
+		}
+		if (key == 'Enter' || key == ' ') {
+			e.preventDefault()
+			const target = currentPosition >= 0 ? cachedIndexList[currentPosition] : cachedIndexList[0]
+			currentIndex.value = target
+			emit('select', target)
+		}
+	}
+
 	// Web 端：测量浏览器垂直滚动条宽度，动态调整 right 值，避免与滚动条重叠
 	const getScrollbarWidth = () : number => {
 		const outer = document.createElement('div')
@@ -423,5 +350,27 @@
 		color: #ffffff;
 		text-align: center;
 		transform: rotate(-225deg);
+	}
+
+	/* #ifdef WEB */
+	.index-text {
+		cursor: pointer;
+		outline: none;
+	}
+
+	.index-text:focus {
+		outline: 1px solid #007aff;
+		outline-offset: 2px;
+	}
+	/* #endif */
+
+	@media (prefers-color-scheme: dark) {
+		.index-text {
+			color: #b0b0b0;
+		}
+
+		.indicator {
+			background-color: #8f8f8f;
+		}
 	}
 </style>

@@ -1,4 +1,12 @@
 <template>
+      <view v-if="data.singleCharacterAutoTest" style="flex-direction: row; align-items: flex-start;">
+        <text id="single-character-explicit-line-height" style="font-size: 18px; font-weight: 700; line-height: 22px;">0</text>
+        <text id="single-character-normal-line-height" style="font-size: 18px; font-weight: 700;">0</text>
+        <view flatten style="flex-direction: row; align-items: flex-start;">
+          <text id="single-character-flat-explicit-line-height" flatten style="font-size: 18px; font-weight: 700; line-height: 22px;">0</text>
+          <text id="single-character-flat-normal-line-height" flatten style="font-size: 18px; font-weight: 700;">0</text>
+        </view>
+      </view>
       <page-head :title="title"></page-head>
       <view class="uni-padding-wrap uni-common-mt">
         <view class="uni-title">
@@ -294,6 +302,7 @@ const textArr= ref(["嵌套 text 1 ","嵌套 text 2 ","嵌套 text 3 "])
 
 type DataType = {
   autoTest: boolean,
+  singleCharacterAutoTest: boolean,
   maxLinesText: string,
   nestedText: string,
   emptyText: string,
@@ -306,6 +315,7 @@ type DataType = {
 // 自动化测试
 const data = reactive({
   autoTest: false,
+  singleCharacterAutoTest: false,
   maxLinesText: '',
   nestedText: '三级节点文本',
   emptyText: '空文本',

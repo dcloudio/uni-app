@@ -1,20 +1,30 @@
 <template>
   <view class="uni-data-picker-view">
-    <text v-if="dataPicker.error!=null" class="error-text" :class="errorClass">{{dataPicker.error!.errMsg}}</text>
+    <text flatten v-if="dataPicker.error!=null" class="error-text" :class="errorClass">{{dataPicker.error!.errMsg}}</text>
     <scroll-view v-if="!dataPicker.isCloudDataList" direction="horizontal" :show-scrollbar="false">
       <view class="selected-node-list">
         <template v-for="(item, index) in dataPicker.selectedNodes">
           <text class="selected-node-item"
             :class="[tabItemClass, index==dataPicker.selectedIndex ? 'selected-node-item-active' : '']"
-            @click="dataPicker.onTabSelect(index)">
+            @click="dataPicker.onTabSelect(index)"
+            <!-- #ifdef WEB -->
+            tabindex="0"
+            @keydown="onTabKeydown($event, index)"
+            <!-- #endif -->
+          >
             {{item[dataPicker.mappingTextName]}}
           </text>
         </template>
       </view>
     </scroll-view>
-    <scroll-view ref="listView" class="list-view" :class="listViewClass" direction="vertical" @scroll="onListScroll">
-      <view class="list-item" :class="listItemClass" v-for="(item, index) in dataPicker.currentDataList" :key="index"
-        @click="dataPicker.onNodeClick(item)">
+    <scroll-view ref="listView" class="list-view" :class="listClass" @scroll="onListScroll">
+      <view class="list-item" :class="[listItemClass, index==highlightIndex ? 'list-item--highlight' : '']" v-for="(item, index) in dataPicker.currentDataList" :key="index"
+        @click="dataPicker.onNodeClick(item)"
+        <!-- #ifdef WEB -->
+        tabindex="0"
+        @keydown="onItemKeydown($event, item, index)"
+        <!-- #endif -->
+      >
         <text class="item-text" :class="[listItemTextClass,
           (item['disable'] as boolean) ? 'item-text-disabled' : '',
           item[dataPicker.mappingValueName] == dataPicker.selectedNodes[dataPicker.selectedIndex][dataPicker.mappingValueName] ? 'item-text-active' : '']"
@@ -38,26 +48,15 @@
    * @description 通过本地数据或 datacom 数据的级联选择组件，支持单列和多列级联选择，列数没有限制，如果屏幕显示不全，顶部tab区域会左右滚动。
    * @uniPlatform {
    *   "app": {
-   *     "android": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.33",
-   *       "unixVaporVer": "5.33"
-   *     },
-   *     "ios": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.33",
-   *       "unixVaporVer": "5.33"
-   *     },
-   *     "harmony": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.33",
-   *       "unixVaporVer": "5.33"
-   *     }
+   *     "android": {"unixVaporVer": "5.33"},
+   *     "ios": {"unixVaporVer": "5.33"},
+   *     "harmony": {"unixVaporVer": "5.33"}
    *   },
-   *   "web": {
-   *     "uniVer": "x",
-   *     "unixVer": "5.33"
-   *   }
+   *   "mp": {
+   *     "weixin": {"unixVer": "5.33"},
+   *     "alipay": {"unixVer": "5.33"}
+   *   },
+   *   "web": {"unixVer": "5.33"}
    * }
    */
 
@@ -75,66 +74,180 @@
    * @property {String|DBFieldString} field 查询字段，多个字段用 `,` 分割
    * @property {String} orderby 排序字段及正序倒叙设置
    * @property {String|JQLString} where 查询条件
+   * @property {Boolean} ellipsis 列表文字是否省略，默认值 true
+   * @property {String} tab-item-class 顶部层级 tab 的 external class，默认值为空字符串
+   * @property {String} list-class 列表容器的 external class，默认值为空字符串
+   * @property {String} list-item-class 列表项的 external class，默认值为空字符串
+   * @property {String} list-item-text-class 列表项文字的 external class，默认值为空字符串
+   * @property {String} list-item-check-class 选中标记的 external class，默认值为空字符串
+   * @property {String} loading-class 加载图标的 external class，默认值为空字符串
+   * @property {String} error-class 错误提示的 external class，默认值为空字符串
    * @event {Function} nodeclick 点击节点时触发此事件
    * @event {Function} change 选择结束后触发此事件
+   * @event {Function} update:modelValue 选中值变化时更新绑定值
    */
   const props = defineProps({
     ...dataPickerProps,
     // 协商内嵌到 uni-data-picker 中，默认不加载数据，由 uni-data-picker 根据参数加载数据
+    /**
+     * @description 是否内嵌在 uni-data-picker 中，内嵌时不自动加载数据
+     * @default false
+     */
     inDataPicker: {
       type: Boolean,
       default: false
     },
+    /**
+     * @description 列表文字是否省略
+     * @default true
+     */
     ellipsis: {
       type: Boolean,
       default: true
     },
+    /**
+     * @description 顶部层级 tab 的 external class
+     * @default ""
+     */
     tabItemClass: {
       type: String,
       default: ''
     },
-    listViewClass: {
+    /**
+     * @description 列表容器的 external class
+     * @default ""
+     */
+    listClass: {
       type: String,
       default: ''
     },
+    /**
+     * @description 列表项的 external class
+     * @default ""
+     */
     listItemClass: {
       type: String,
       default: ''
     },
+    /**
+     * @description 列表项文字的 external class
+     * @default ""
+     */
     listItemTextClass: {
       type: String,
       default: ''
     },
+    /**
+     * @description 选中标记的 external class
+     * @default ""
+     */
     listItemCheckClass: {
       type: String,
       default: ''
     },
+    /**
+     * @description 加载图标的 external class
+     * @default ""
+     */
     loadingClass: {
       type: String,
       default: ''
     },
+    /**
+     * @description 错误提示的 external class
+     * @default ""
+     */
     errorClass: {
       type: String,
       default: ''
     }
   })
   defineOptions({
-    externalClasses: ['tab-item-class', 'list-view-class', 'list-item-class', 'list-item-text-class', 'list-item-check-class', 'loading-class', 'error-class']
+    externalClasses: ['tab-item-class', 'list-class', 'list-item-class', 'list-item-text-class', 'list-item-check-class', 'loading-class', 'error-class']
   })
 
   const dataPicker = useDataPicker(props)
 
-  const emit = defineEmits(['nodeclick', 'change', 'update:modelValue'])
+  const emit = defineEmits<{
+    /**
+     * @description 点击节点时触发
+     * @param {Object} nodeData 被点击的节点数据
+     */
+    nodeclick: [nodeData: any],
+    /**
+     * @description 选择结束后触发
+     * @param {Object} event 事件对象；event.detail.value 为已选节点数组
+     */
+    change: [event: any],
+    /**
+     * @description 选中值变化时更新绑定值
+     * @param {String} value 最后一级节点的值
+     */
+    'update:modelValue': [value: any]
+  }>()
 
   const listView = ref<UniElement | null>(null)
   const listScrollTop = ref(0)
+  const highlightIndex = ref(-1)
+
+  watch(() => dataPicker.currentDataList, () => {
+    highlightIndex.value = -1
+  })
+
+  function findCurrentIndex() : number {
+    const list = dataPicker.currentDataList
+    const selected = dataPicker.selectedNodes[dataPicker.selectedIndex]
+    if (selected == null) {
+      return -1
+    }
+    for (let i = 0; i < list.length; i++) {
+      if (list[i][dataPicker.mappingValueName] == selected[dataPicker.mappingValueName]) {
+        return i
+      }
+    }
+    return -1
+  }
+
+  // #ifdef WEB
+  function onTabKeydown(event : KeyboardEvent, index : number) {
+    const key = event.key as string
+    if (key == 'Enter' || key == ' ') {
+      event.preventDefault()
+      dataPicker.onTabSelect(index)
+      return
+    }
+    const total = dataPicker.selectedNodes.length
+    if (key == 'ArrowRight') {
+      event.preventDefault()
+      dataPicker.onTabSelect(Math.min(total - 1, index + 1))
+    } else if (key == 'ArrowLeft') {
+      event.preventDefault()
+      dataPicker.onTabSelect(Math.max(0, index - 1))
+    }
+  }
+
+  function onItemKeydown(event : KeyboardEvent, item : UTSJSONObject, index : number) {
+    const key = event.key as string
+    const total = dataPicker.currentDataList.length
+    if (key == 'Enter' || key == ' ') {
+      event.preventDefault()
+      dataPicker.onNodeClick(item)
+      return
+    }
+    if (key == 'ArrowDown') {
+      event.preventDefault()
+      const base = highlightIndex.value < 0 ? findCurrentIndex() : highlightIndex.value
+      highlightIndex.value = Math.min(total - 1, Math.max(0, base + 1))
+    } else if (key == 'ArrowUp') {
+      event.preventDefault()
+      const base = highlightIndex.value < 0 ? findCurrentIndex() : highlightIndex.value
+      highlightIndex.value = Math.max(0, (base < 0 ? index : base) - 1)
+    }
+  }
+  // #endif
 
   function onListScroll(e : UniScrollEvent) {
     listScrollTop.value = e.detail.scrollTop
-  }
-
-  function getScrollTop() : number {
-    return listScrollTop.value
   }
 
   dataPicker.onFinish = () => {
@@ -161,11 +274,22 @@
     dataPicker.loadData()
   }
 
+  /**
+   * @description 重新加载数据，并可选传入已选节点用于回显
+   * @param {Array} selectedPaths 已选节点数组；为空时按当前值回显
+   */
   const loadData = function (selectedPaths: any) {
     if (selectedPaths.length > 0) {
       dataPicker.selectedPaths = selectedPaths
     }
     dataPicker.loadData()
+  }
+
+  /**
+   * @description 读取列表当前滚动位置
+   */
+  function getScrollTop() : number {
+    return listScrollTop.value
   }
 
   defineExpose({

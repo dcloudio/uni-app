@@ -1,42 +1,36 @@
 <template>
-	<scroll-view class="page" :class="{ 'page-dark': isDarkMode }">
-		<view class="intro" :class="{ 'surface-dark': isDarkMode }">
-			<text class="intro-text" :class="{ 'text-dark': isDarkMode }">图标组件可以减少小图片的使用，并支持自定义颜色和尺寸。</text>
-		</view>
+	<text class="intro-text">图标组件可以减少小图片的使用，并支持自定义颜色和尺寸。</text>
 
-		<view class="section-header" :class="{ 'surface-dark': isDarkMode }">
-			<text class="section-title" :class="{ 'text-dark': isDarkMode }">图标</text>
-			<view class="display-mode">
-				<text class="display-mode-text" :class="{ 'text-dark': isDarkMode }">{{ checked ? 'Unicode' : '名称' }}</text>
-				<switch class="display-mode-switch" :checked="checked" @change="change" />
-			</view>
+	<view class="section-header">
+		<text class="uni-h4">图标</text>
+		<view class="display-mode">
+			<text class="display-mode-text">{{ checked ? 'Unicode' : '名称' }}</text>
+			<switch class="display-mode-switch" :checked="checked" @change="change" />
 		</view>
+	</view>
 
-		<view class="icon-content" :class="{ 'surface-dark': isDarkMode }">
-			<view
-				v-for="(item, index) in iconlist"
-				:key="index"
-				class="icon-item"
-				@click="switchActive(index, item)"
-			>
-				<uni-icons
-					:type="item.font_class"
-					class="icon-glyph"
-					:class="{
-						'icon-glyph-active': activeIndex == index,
-						'icon-glyph-dark': isDarkMode
-					}"
-				/>
-				<text
-					class="icon-label"
-					:class="{
-						'icon-label-active': activeIndex == index,
-						'icon-label-dark': isDarkMode
-					}"
-				>{{ checked ? item.unicode : item.font_class }}</text>
-			</view>
+	<view class="icon-content">
+		<view
+			v-for="(item, index) in iconlist"
+			:key="index"
+			class="icon-item"
+			@click="switchActive(index, item)"
+			<!-- #ifdef WEB -->
+			:tabindex="'0'"
+			@keydown="onItemKeydown($event, index, item)"
+			<!-- #endif -->
+		>
+			<uni-icons
+				:type="item.font_class"
+				class="icon-glyph"
+				:class="{ 'icon-glyph-active': activeIndex == index }"
+			/>
+			<text
+				class="icon-label"
+				:class="{ 'icon-label-active': activeIndex == index }"
+			>{{ checked ? item.unicode : item.font_class }}</text>
 		</view>
-	</scroll-view>
+	</view>
 </template>
 
 <script setup lang="ts">
@@ -75,6 +69,16 @@
 		})
 	}
 
+	// #ifdef WEB
+	const onItemKeydown = (event : KeyboardEvent, index : number, item : iconType) : void => {
+		const key = event.key as string
+		if (key == 'Enter' || key == ' ') {
+			event.preventDefault()
+			switchActive(index, item)
+		}
+	}
+	// #endif
+
 	watch(isDarkMode, syncNavigationBar, { immediate: true })
 	onShow(syncNavigationBar)
 
@@ -85,18 +89,12 @@
 </script>
 
 <style>
-	.page {
-		flex: 1;
-		background-color: var(--background-color, #efeff4);
-	}
-
-	.page-dark {
-		background-color: #1a1a1a;
-	}
-
-	.intro {
+	page {
+		--background-color: #efeff4;
+		--list-background-color: #ffffff;
+		--text-color: #333333;
 		padding: 16px;
-		background-color: var(--list-background-color, #ffffff);
+		background-color: var(--background-color);
 	}
 
 	.intro-text {
@@ -107,17 +105,9 @@
 
 	.section-header {
 		margin-top: 10px;
-		padding: 12px 16px;
-		background-color: var(--list-background-color, #ffffff);
 		flex-direction: row;
 		align-items: center;
 		justify-content: space-between;
-	}
-
-	.section-title {
-		font-size: 16px;
-		font-weight: bold;
-		color: var(--text-color, #333333);
 	}
 
 	.display-mode {
@@ -137,15 +127,10 @@
 	}
 
 	.icon-content {
-		padding: 8px 0 24px;
-		background-color: var(--list-background-color, #ffffff);
+		margin-top: 8px;
 		flex-direction: row;
 		flex-wrap: wrap;
 		align-items: flex-start;
-	}
-
-	.surface-dark {
-		background-color: #2d2d2d;
 	}
 
 	.icon-item {
@@ -154,7 +139,18 @@
 		flex-direction: column;
 		align-items: stretch;
 		justify-content: flex-start;
+		/* #ifdef WEB */
+		cursor: pointer;
+		outline: none;
+		/* #endif */
 	}
+
+	/* #ifdef WEB */
+	.icon-item:focus-visible {
+		outline: 2px solid #2979ff;
+		outline-offset: -2px;
+	}
+	/* #endif */
 
 	.icon-label {
 		width: 100%;
@@ -164,10 +160,6 @@
 		text-align: center;
 		color: var(--text-color, #333333);
 		opacity: 0.65;
-	}
-
-	.icon-label-dark {
-		color: #ffffff;
 	}
 
 	.icon-label-active {
@@ -187,17 +179,16 @@
 		opacity: 0.65;
 	}
 
-	.icon-glyph-dark {
-		color: #ffffff;
-	}
-
 	.icon-glyph-active {
 		color: #007aff;
 		opacity: 1;
 	}
 
-	.text-dark {
-		color: #ffffff;
+	@media (prefers-color-scheme: dark) {
+		page {
+			--background-color: #1a1a1a;
+			--list-background-color: #2d2d2d;
+			--text-color: #ffffff;
+		}
 	}
-
 </style>

@@ -1,20 +1,22 @@
 <template>
-  <text style="text-decoration-line: underline" @click="openURL">
+  <text class="uni-link__anchor" style="text-decoration-line: underline" @click="openURL"
+    <!-- #ifdef WEB -->
+    :tabindex="'0'"
+    @keydown="onKeydown"
+    <!-- #endif -->
+  >
     <slot></slot>
   </text>
 </template>
 <script lang="ts" setup>
   /**
    * 链接
-   * @description 链接组件
+   * @description 点击后通过内置或外部浏览器打开链接，加载 href 属性中配置的 URL
    * @uniPlatform {
    *   "app": {
-   *     "android": {"unixVer": "5.07","unixVaporVer": "5.21"
-   *     },
-   *     "ios": {"unixVer": "5.07","unixVaporVer": "5.11"
-   *     },
-   *     "harmony": {"unixVer": "5.07","unixVaporVer": "5.07"
-   *     }
+   *     "android": {"unixVaporVer": "5.21"},
+   *     "ios": {"unixVaporVer": "5.11"},
+   *     "harmony": {"unixVaporVer": "5.07"}
    *   },
    *   "mp": {
    *     "weixin": {"unixVer": "5.07"},
@@ -38,9 +40,9 @@
      * @default ""
      * @uniPlatform {
      *   "app": {
-     *     "android": {"unixVer": "5.07","unixVaporVer": "5.21"},
-     *     "ios": {"unixVer": "5.07","unixVaporVer": "5.11"},
-     *     "harmony": {"unixVer": "5.07","unixVaporVer": "5.07"}
+     *     "android": {"unixVaporVer": "5.21"},
+     *     "ios": {"unixVaporVer": "5.11"},
+     *     "harmony": {"unixVaporVer": "5.07"}
      *   },
      *   "mp": {
      *     "weixin": {"unixVer": "5.07"},
@@ -55,9 +57,9 @@
      * @default "_self"
      * @uniPlatform {
      *   "app": {
-     *     "android": {"unixVer": "5.07","unixVaporVer": "5.21"},
-     *     "ios": {"unixVer": "5.07","unixVaporVer": "5.11"},
-     *     "harmony": {"unixVer": "5.07","unixVaporVer": "5.07"}
+     *     "android": {"unixVaporVer": "5.21"},
+     *     "ios": {"unixVaporVer": "5.11"},
+     *     "harmony": {"unixVaporVer": "5.07"}
      *   },
      *   "mp": {
      *     "weixin": {"unixVer": "5.07"},
@@ -72,9 +74,9 @@
      * @default "turn-self"
      * @uniPlatform {
      *   "app": {
-     *     "android": {"unixVer": "5.07","unixVaporVer": "5.21"},
-     *     "ios": {"unixVer": "5.07","unixVaporVer": "5.11"},
-     *     "harmony": {"unixVer": "5.07","unixVaporVer": "5.07"}
+     *     "android": {"unixVaporVer": "5.21"},
+     *     "ios": {"unixVaporVer": "5.11"},
+     *     "harmony": {"unixVaporVer": "5.07"}
      *   },
      *   "mp": {
      *     "weixin": {"unixVer": "5.07"},
@@ -275,7 +277,28 @@
       // #endif
     }
   }
+
+  // #ifdef WEB
+  function onKeydown(event : KeyboardEvent) {
+    const key = event.key as string
+    if (key == 'Enter' || key == ' ') {
+      event.preventDefault()
+      openURL()
+    }
+  }
+  // #endif
 </script>
 
 <style>
+  /* #ifdef WEB */
+  .uni-link__anchor {
+    cursor: pointer;
+    outline: none;
+  }
+
+  .uni-link__anchor:focus {
+    outline: 1px solid #007aff;
+    outline-offset: 2px;
+  }
+  /* #endif */
 </style>

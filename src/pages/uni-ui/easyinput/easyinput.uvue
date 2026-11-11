@@ -1,141 +1,171 @@
 <template>
-	<view>
-		<view class="intro">
-			<text class="page-title">Easyinput 增强输入框</text>
-			<text class="page-desc">支持单行、多行、密码、清空、前后插槽和自定义内部样式。</text>
-		</view>
+	<text class="page-title">Easyinput 增强输入框</text>
+	<text class="page-desc">支持单行、多行、密码、清空、前后插槽和自定义内部样式。</text>
 
-		<view class="section">
-			<text class="section-title">基础输入</text>
-			<uni-easyinput
-				v-model="data.basicValue"
-				clearable
-				placeholder="请输入内容"
-				input-class="test-basic-input"
-				icon-class="test-clear-icon"
-				@clear="onClear"
-				@change="onChange"
-				@confirm="onConfirm"
-				@blur="handleBlur"
-			/>
-			<text
-				class="result-text test-basic-result"
-				:data-change-count="data.changeCount"
-				:data-confirm-count="data.confirmCount"
-				:data-blur-count="data.blurCount"
-			>当前值：{{ data.basicValue }}</text>
-		</view>
+	<text class="uni-h4">基础输入</text>
+	<uni-easyinput
+		v-model="data.basicValue"
+		clearable
+		placeholder="请输入内容"
+		input-class="test-basic-input"
+		icon-class="test-clear-icon"
+		@clear="onClear"
+		@change="onChange"
+		@confirm="onConfirm"
+		@blur="handleBlur"
+	/>
+	<text
+		class="result-text test-basic-result"
+		:data-change-count="data.changeCount"
+		:data-confirm-count="data.confirmCount"
+		:data-blur-count="data.blurCount"
+	>当前值：{{ data.basicValue }}</text>
 
-		<view class="section">
-			<text class="section-title">外部值同步</text>
-			<view class="button-row">
-				<button class="small-button" size="mini" @click="setExternalValue(0)">设为 0</button>
-				<button class="small-button" size="mini" @click="setExternalValue(null)">设为 null</button>
-				<button class="small-button" size="mini" @click="setExternalValue('外部更新')">设为文本</button>
-			</view>
-			<uni-easyinput
-				v-model="data.externalValue"
-				value="后备值"
-				placeholder="观察外部值同步"
-				input-class="test-external-input"
-			/>
-			<text class="result-text">当前值：{{ data.externalValue == null ? 'null' : data.externalValue }}</text>
-		</view>
+	<text class="uni-h4">name：原生表单控件名称</text>
+	<uni-easyinput v-model="data.nameValue" name="account" placeholder="name 会透传给原生控件" />
+	<text class="result-text">当前值：{{ data.nameValue }}</text>
 
-		<view class="section">
-			<text class="section-title">Vue 修饰符</text>
-			<uni-easyinput
-				v-model.trim="data.modifierValue"
-				placeholder="首尾空格由 v-model.trim 处理"
-				input-class="test-modifier-input"
-			/>
-			<text class="result-text">当前值：[{{ data.modifierValue }}]</text>
-		</view>
+	<text class="uni-h4">maxlength：最大输入长度</text>
+	<uni-easyinput v-model="data.maxlengthValue" :maxlength="6" placeholder="最多输入 6 个字符" />
+	<text class="result-text">当前长度：{{ data.maxlengthValue.length }}/6</text>
 
-		<view class="section">
-			<text class="section-title">密码和清空</text>
-			<uni-easyinput
-				v-model="data.passwordValue"
-				type="password"
-				password-icon
-				clearable
-				placeholder="请输入密码"
-				input-class="test-password-input"
-				icon-class="test-password-icon"
-				@eyes="onEyes"
-			/>
-			<text class="result-text">密码显隐：{{ data.passwordVisible ? '显示' : '隐藏' }}</text>
-		</view>
-
-		<view class="section">
-			<text class="section-title">多行输入</text>
-			<uni-easyinput
-				v-model="data.textareaValue"
-				type="textarea"
-				auto-height
-				placeholder="请输入多行内容"
-				input-class="demo-textarea test-textarea"
-			/>
-			<text class="result-text">当前值：{{ data.textareaValue }}</text>
-		</view>
-
-		<view class="section">
-			<text class="section-title">状态</text>
-			<uni-easyinput
-				class="state-input"
-				value="disabled-secret"
-				type="password"
-				password-icon
-				clearable
-				disabled
-				input-class="test-disabled-input"
-				icon-class="test-disabled-icon"
-			/>
-			<uni-easyinput
-				class="state-input state-borderless"
-				v-model="data.borderlessValue"
-				placeholder="无边框（class 覆盖）"
-			/>
-		</view>
-
-		<view class="section">
-			<text class="section-title">左右插槽</text>
-			<uni-easyinput v-model="data.slotValue" placeholder="请输入域名">
-				<template #left>
-					<text class="slot-prefix">https://</text>
-				</template>
-				<template #right>
-					<text class="slot-suffix">.com</text>
-				</template>
-			</uni-easyinput>
-		</view>
-
-		<view class="section section-last">
-			<text class="section-title">自定义样式与窄布局</text>
-			<uni-easyinput
-				class="custom-root"
-				v-model="data.customValue"
-				clearable
-				placeholder="宽度受限时保持输入区域可用"
-				input-class="custom-field"
-				placeholder-class="custom-placeholder"
-				icon-class="custom-icon"
-			/>
-
-			<text class="section-title custom-title-gap">自定义图标颜色（自定义样式）</text>
-			<uni-easyinput
-				v-model="data.iconColorValue"
-				clearable
-				placeholder="示例：紫色清空图标"
-				icon-class="custom-icon-purple"
-			/>
-		</view>
+	<text class="uni-h4">focus：自动聚焦与程序控制焦点</text>
+	<uni-easyinput
+		ref="methodInputRef"
+		v-model="data.focusValue"
+		:focus="data.focusEnabled"
+		placeholder="点击下方按钮控制焦点"
+	/>
+	<view class="button-row">
+		<button class="small-button" size="mini" @click="toggleFocus">切换 focus 属性（当前：{{ data.focusEnabled ? 'true' : 'false' }}）</button>
+		<button class="small-button" size="mini" @click="callFocusInput">focusInput() 方法</button>
+		<button class="small-button" size="mini" @click="callBlurInput">blurInput() 方法</button>
 	</view>
+
+	<text class="uni-h4">confirm-type / cursor-spacing / adjust-position</text>
+	<uni-easyinput v-model="data.keyboardValue" confirm-type="search" :cursor-spacing="24" :adjust-position="true" placeholder="回车显示搜索，键盘与光标间距 24px" />
+	<text class="result-text">confirm-type=search，cursor-spacing=24，adjust-position=true</text>
+
+	<text class="uni-h4">外部值同步</text>
+	<view class="button-row">
+		<button class="small-button" size="mini" @click="setExternalValue(0)">设为 0</button>
+		<button class="small-button" size="mini" @click="setExternalValue(null)">设为 null</button>
+		<button class="small-button" size="mini" @click="setExternalValue('外部更新')">设为文本</button>
+	</view>
+	<uni-easyinput
+		v-model="data.externalValue"
+		value="后备值"
+		placeholder="观察外部值同步"
+		input-class="test-external-input"
+	/>
+	<text class="result-text">当前值：{{ data.externalValue == null ? 'null' : data.externalValue }}</text>
+
+	<text class="uni-h4">Vue 修饰符</text>
+	<uni-easyinput
+		v-model.trim="data.modifierValue"
+		placeholder="首尾空格由 v-model.trim 处理"
+		input-class="test-modifier-input"
+	/>
+	<text class="result-text">当前值：[{{ data.modifierValue }}]</text>
+
+	<text class="uni-h4">密码和清空</text>
+	<uni-easyinput
+		v-model="data.passwordValue"
+		type="password"
+		password-icon
+		clearable
+		placeholder="请输入密码"
+		input-class="test-password-input"
+		icon-class="test-password-icon"
+		@eyes="onEyes"
+	/>
+	<text class="result-text">密码显隐：{{ data.passwordVisible ? '显示' : '隐藏' }}</text>
+
+	<text class="uni-h4">多行输入</text>
+	<uni-easyinput
+		v-model="data.textareaValue"
+		type="textarea"
+		auto-height
+		placeholder="请输入多行内容"
+		input-class="demo-textarea test-textarea"
+	/>
+	<text class="result-text">当前值：{{ data.textareaValue }}</text>
+
+	<text class="uni-h4">状态</text>
+	<uni-easyinput
+		class="state-input"
+		value="disabled-secret"
+		type="password"
+		password-icon
+		clearable
+		disabled
+		input-class="test-disabled-input"
+		icon-class="test-disabled-icon"
+	/>
+	<uni-easyinput
+		class="state-input state-borderless"
+		v-model="data.borderlessValue"
+		placeholder="无边框（class 覆盖）"
+	/>
+
+	<text class="uni-h4">左右插槽</text>
+	<uni-easyinput v-model="data.slotValue" placeholder="请输入域名">
+		<template #left>
+			<text class="slot-prefix">https://</text>
+		</template>
+		<template #right>
+			<text class="slot-suffix">.com</text>
+		</template>
+	</uni-easyinput>
+
+	<text class="uni-h4">自定义样式与窄布局</text>
+	<uni-easyinput
+		class="custom-root"
+		v-model="data.customValue"
+		clearable
+		placeholder="宽度受限时保持输入区域可用"
+		input-class="custom-field"
+		placeholder-class="custom-placeholder"
+		icon-class="custom-icon"
+	/>
+
+	<text class="uni-h4">自定义图标颜色（自定义样式）</text>
+	<uni-easyinput
+		v-model="data.iconColorValue"
+		clearable
+		placeholder="示例：紫色清空图标"
+		icon-class="custom-icon-purple"
+	/>
+
+	<text class="uni-h4">事件示例</text>
+	<uni-easyinput
+		v-model="data.eventValue"
+		clearable
+		placeholder="输入或清空观察事件"
+		@update:modelValue="onUpdateModelValue"
+		@input="onInput"
+		@focus="onFocus"
+		@blur="handleBlur"
+		@confirm="onConfirm"
+		@change="onChange"
+		@clear="onClear"
+		@keyboardheightchange="onKeyboardHeightChange"
+	/>
+	<text class="result-text">update:modelValue：{{ data.eventValue }}</text>
+	<text class="result-text">input 事件次数：{{ data.inputCount }}</text>
+	<text class="result-text">focus 事件次数：{{ data.focusCount }}</text>
+	<text class="result-text">blur / change / confirm / clear 次数：{{ data.blurCount }} / {{ data.changeCount }} / {{ data.confirmCount }} / {{ data.clearCount }}</text>
+	<text class="result-text">键盘高度：{{ data.keyboardHeight }}</text>
 </template>
 
 <script setup lang="ts">
 type Data = {
 	basicValue : string,
+	nameValue : string,
+	maxlengthValue : string,
+	focusValue : string,
+	focusEnabled : boolean,
+	keyboardValue : string,
 	externalValue : string | number | null,
 	modifierValue : string,
 	passwordValue : string,
@@ -145,17 +175,26 @@ type Data = {
 	slotValue : string,
 	customValue : string,
 	iconColorValue : string,
+	eventValue : string,
 	clearCount : number,
 	eyesCount : number,
 	changeCount : number,
 	confirmCount : number,
 	blurCount : number,
+	inputCount : number,
+	focusCount : number,
+	keyboardHeight : number,
 	lastChangeValue : string,
 	lastConfirmValue : string
 }
 
 const data = reactive<Data>({
 	basicValue: '初始内容',
+	nameValue: '',
+	maxlengthValue: '',
+	focusValue: '',
+	focusEnabled: false,
+	keyboardValue: '',
 	externalValue: '初始值',
 	modifierValue: '',
 	passwordValue: '123456',
@@ -165,17 +204,49 @@ const data = reactive<Data>({
 	slotValue: '',
 	customValue: '窄布局内容',
 	iconColorValue: '',
+	eventValue: '',
 	clearCount: 0,
 	eyesCount: 0,
 	changeCount: 0,
 	confirmCount: 0,
 	blurCount: 0,
+	inputCount: 0,
+	focusCount: 0,
+	keyboardHeight: 0,
 	lastChangeValue: '',
 	lastConfirmValue: ''
 })
 
+const methodInputRef = ref<any>(null)
+
 function setExternalValue(value : string | number | null) {
 	data.externalValue = value
+}
+
+function toggleFocus() {
+	data.focusEnabled = !data.focusEnabled
+}
+
+function callFocusInput() {
+	methodInputRef.value?.focusInput()
+}
+
+function callBlurInput() {
+	methodInputRef.value?.blurInput()
+}
+
+function onUpdateModelValue(value : string) {
+	data.eventValue = value
+}
+
+function onInput(value : string) {
+	data.inputCount += 1
+	console.log('easyinput input:', value)
+}
+
+function onFocus(event : UniInputFocusEvent | UniTextareaFocusEvent) {
+	data.focusCount += 1
+	console.log('easyinput focus:', event.detail.value)
 }
 
 function onClear() {
@@ -197,13 +268,20 @@ function onConfirm(value : string) {
 	data.confirmCount += 1
 }
 
-function handleBlur(_event : UniInputBlurEvent) {
+function handleBlur(_event : UniInputBlurEvent | UniTextareaBlurEvent) {
 	data.blurCount += 1
+}
+
+function onKeyboardHeightChange(event : UniInputKeyboardHeightChangeEvent) {
+	data.keyboardHeight = event.detail.height
 }
 
 defineExpose({
 	data,
-	setExternalValue
+	setExternalValue,
+	toggleFocus,
+	callFocusInput,
+	callBlurInput
 })
 </script>
 
@@ -219,11 +297,7 @@ page {
 	--secondary-text-color: #657180;
 	--input-border-color: #dcdfe6;
 	background-color: var(--background-color);
-}
-
-.intro {
-	padding: 18px 16px;
-	background-color: var(--content-background-color, #ffffff);
+	padding: 12px;
 }
 
 .page-title {
@@ -234,35 +308,21 @@ page {
 
 .page-desc {
 	margin-top: 8px;
+	margin-bottom: 8px;
 	font-size: 14px;
 	line-height: 21px;
 	color: var(--secondary-text-color, #657180);
 }
 
-.section {
-	padding: 16px;
-	margin-top: 10px;
-	background-color: var(--content-background-color, #ffffff);
-}
-
-.section-last {
-	padding-bottom: 32px;
-}
-
-.section-title {
-	margin-bottom: 12px;
-	font-size: 16px;
-	font-weight: bold;
-	color: var(--text-color, #333333);
-}
-
 .result-text {
 	margin-top: 8px;
+	margin-bottom: 8px;
 	font-size: 13px;
 	color: var(--secondary-text-color, #657180);
 }
 
 .button-row {
+	margin-top: 10px;
 	margin-bottom: 10px;
 	flex-direction: row;
 	flex-wrap: wrap;
@@ -325,11 +385,6 @@ page {
 	color: #0f766e;
 }
 
-/* 自定义图标颜色示例：通过 icon-class 覆盖默认灰色图标 */
-.custom-title-gap {
-	margin-top: 16px;
-}
-
 .custom-icon-purple {
 	color: #7c3aed;
 }
@@ -345,6 +400,26 @@ page {
 		--content-background-color: #2d2d2d;
 		--secondary-text-color: rgba(255, 255, 255, 0.65);
 		--input-border-color: rgba(255, 255, 255, 0.18);
+	}
+
+	.custom-root {
+		background-color: #12312d;
+	}
+
+	.custom-field {
+		color: #99f6e4;
+	}
+
+	.custom-placeholder {
+		color: #5f8f89;
+	}
+
+	.custom-icon {
+		color: #5eead4;
+	}
+
+	.custom-icon-purple {
+		color: #a78bfa;
 	}
 }
 </style>

@@ -46,12 +46,6 @@ App 端使用一个 `flatten` 子 view 绘制箭头并拍平到圆形背景上�
 <uni-backarrow-circle ios-glass auto-back />
 ```
 
-### 事件
-
-| 事件 | 说明 | 回调参数 |
-| --- | --- | --- |
-| click | 点击时触发；当 `auto-back` 为 `true` 时随后返回上一页 | 无 |
-
 ### 自定义样式
 
 通过根节点的 class 或 style 可定制圆形区域样式，包括背景、位置等。

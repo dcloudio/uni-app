@@ -1,149 +1,134 @@
 <template>
-	<!-- #ifdef APP -->
-	<scroll-view class="page" style="padding: 15px;">
-	<!-- #endif -->
-		<!-- #ifndef APP -->
-		<view style="padding: 15px;">
-		<!-- #endif -->
-			<text class="page-title">drag-cell 拖拽排序组件</text>
-
-			<view class="section">
-				<text class="section-title">示例 1：标签拖拽排序</text>
-				<text class="section-desc">长按标签后可拖拽排序，点击标签可拿到 item 和 index</text>
-				<uni-drag-cell v-model="data.tagList" @change="onTagChange">
-					<template #default="{ item, index }">
-						<view class="tag-slot">
-							<view class="tag-item" @click="clickItem(item as string, index as number)">
-								<text class="tag-text">{{ item as string }}</text>
-							</view>
-						</view>
-					</template>
-				</uni-drag-cell>
-				<text class="result-text">当前顺序：{{ data.tagList.join(', ') }}</text>
+	<text class="uni-h4">示例 1：标签拖拽排序</text>
+	<text class="section-desc">长按标签后可拖拽排序，点击标签可拿到 item 和 index</text>
+	<uni-drag-cell v-model="data.tagList" @change="onTagChange">
+		<template #default="{ item, index }">
+			<view class="tag-slot">
+				<view class="tag-item" @click="clickItem(item as string, index as number)">
+					<text class="tag-text">{{ item as string }}</text>
+				</view>
 			</view>
+		</template>
+	</uni-drag-cell>
+	<text class="result-text">当前顺序：{{ data.tagList.join(', ') }}</text>
 
-			<view class="section">
-				<text class="section-title">示例 2：宫格拖拽排序（3 列）</text>
-				<text class="section-desc">长按宫格项后可拖拽排序</text>
-				<uni-drag-cell v-model="data.gridList3" :column="3" @change="onGridChange">
-					<template #default="{ item }">
-						<view class="grid-slot">
-							<view class="grid-item">
-								<text class="grid-text">{{ (item as UTSJSONObject)['name'] }}</text>
-							</view>
-						</view>
-					</template>
-				</uni-drag-cell>
-				<text class="result-text">当前顺序：{{ getGridNames(data.gridList3) }}</text>
+	<text class="uni-h4">示例 2：宫格拖拽排序（3 列）</text>
+	<text class="section-desc">长按宫格项后可拖拽排序</text>
+	<uni-drag-cell v-model="data.gridList3" :column="3" @change="onGridChange">
+		<template #default="{ item }">
+			<view class="grid-slot">
+				<view class="grid-item">
+					<text class="grid-text">{{ (item as UTSJSONObject)['name'] }}</text>
+				</view>
 			</view>
+		</template>
+	</uni-drag-cell>
+	<text class="result-text">当前顺序：{{ getGridNames(data.gridList3) }}</text>
 
-			<view class="section">
-				<text class="section-title">示例 3：列表拖拽排序（1 列）</text>
-				<text class="section-desc">长按列表项后可拖拽排序</text>
-				<uni-drag-cell v-model="data.gridList4" :column="1" @change="onGridChange">
-					<template #default="{ item }">
-						<view class="grid-slot-small">
-							<view class="grid-item-small">
-								<text class="grid-text-small">{{ (item as UTSJSONObject)['name'] }}</text>
-							</view>
-						</view>
-					</template>
-				</uni-drag-cell>
-				<text class="result-text">当前顺序：{{ getGridNames(data.gridList4) }}</text>
+	<text class="uni-h4">示例 3：列表拖拽排序（1 列）</text>
+	<text class="section-desc">长按列表项后可拖拽排序</text>
+	<uni-drag-cell v-model="data.gridList4" :column="1" @change="onGridChange">
+		<template #default="{ item }">
+			<view class="grid-slot-small">
+				<view class="grid-item-small">
+					<text class="grid-text-small">{{ (item as UTSJSONObject)['name'] }}</text>
+				</view>
 			</view>
+		</template>
+	</uni-drag-cell>
+	<text class="result-text">当前顺序：{{ getGridNames(data.gridList4) }}</text>
 
-			<view class="section">
-				<text class="section-title">示例 4：可新增并删除的标签</text>
-				<text class="section-desc">长按标签可排序，拖到底部可删除，点击 + 可输入并新增标签</text>
-				<uni-drag-cell v-model="data.deleteList" :show-close="true" :show-append="true" @change="onDeleteChange">
-					<template #default="{ item }">
-						<view class="tag-slot">
-							<view class="tag-item-delete">
-								<text class="tag-text">{{ item as string }}</text>
-							</view>
-						</view>
-					</template>
-					<template #append>
-						<view class="tag-slot">
-							<view class="tag-item-add" @click="promptAddDeleteTag">
-								<text class="tag-plus-text">+</text>
-							</view>
-						</view>
-					</template>
-				</uni-drag-cell>
-				<text class="result-text">当前顺序：{{ data.deleteList.join(', ') }}</text>
-				<text class="result-text">剩余：{{ data.deleteList.length }} 项</text>
+	<text class="uni-h4">示例 4：可新增并删除的标签</text>
+	<text class="section-desc">长按标签可排序，拖到底部可删除，点击 + 可输入并新增标签</text>
+	<uni-drag-cell v-model="data.deleteList" :show-close="true" :show-append="true" @change="onDeleteChange">
+		<template #default="{ item }">
+			<view class="tag-slot">
+				<view class="tag-item-delete">
+					<text class="tag-text">{{ item as string }}</text>
+				</view>
 			</view>
-
-			<view class="section">
-				<text class="section-title">示例 5：带删除功能的图标宫格</text>
-				<text class="section-desc">长按后可拖动图标宫格项，并支持拖到底部删除</text>
-				<uni-drag-cell v-model="data.iconGridList" :column="3" :show-close="true" @change="onIconGridChange">
-					<template #default="{ item }">
-						<view class="icon-grid-slot">
-							<view class="icon-grid-item">
-								<view class="icon-box">
-									<text class="icon-emoji">{{ (item as UTSJSONObject)['icon'] }}</text>
-								</view>
-								<text class="icon-label">{{ (item as UTSJSONObject)['label'] }}</text>
-							</view>
-						</view>
-					</template>
-				</uni-drag-cell>
-				<text class="result-text">当前顺序：{{ getIconNames(data.iconGridList) }}</text>
+		</template>
+		<template #append>
+			<view class="tag-slot">
+				<view class="tag-item-add" @click="promptAddDeleteTag">
+					<text class="tag-plus-text">+</text>
+				</view>
 			</view>
+		</template>
+	</uni-drag-cell>
+	<text class="result-text">当前顺序：{{ data.deleteList.join(', ') }}</text>
+	<text class="result-text">剩余：{{ data.deleteList.length }} 项</text>
 
-			<view class="section">
-				<text class="section-title">示例 6：九宫格图片选择</text>
-				<text class="section-desc">点击 + 选择图片，支持拖拽排序，也支持拖到底部删除</text>
-				<uni-drag-cell v-model="data.imageList" :column="3" :show-close="true"
-					:show-append="data.imageList.length < maxImageCount" @change="onImageChange">
-					<template #default="{ item, index }">
-						<view class="image-grid-slot">
-							<view class="image-grid-item" @click="previewImages(index as number)">
-								<image class="image-grid-img" :src="item" mode="aspectFill"></image>
-							</view>
-						</view>
-					</template>
-					<template #append>
-						<view class="image-grid-slot">
-							<view class="image-grid-plus" @click="chooseImages">
-								<text class="image-grid-plus-icon">+</text>
-							</view>
-						</view>
-					</template>
-				</uni-drag-cell>
-				<text class="result-text">已选择：{{ data.imageList.length }}/{{ maxImageCount }}</text>
+	<text class="uni-h4">示例 5：带删除功能的图标宫格</text>
+	<text class="section-desc">长按后可拖动图标宫格项，并支持拖到底部删除</text>
+	<uni-drag-cell v-model="data.iconGridList" :column="3" :show-close="true" @change="onIconGridChange">
+		<template #default="{ item }">
+			<view class="icon-grid-slot">
+				<view class="icon-grid-item">
+					<view class="icon-box">
+						<text class="icon-emoji">{{ (item as UTSJSONObject)['icon'] }}</text>
+					</view>
+					<text class="icon-label">{{ (item as UTSJSONObject)['label'] }}</text>
+				</view>
 			</view>
+		</template>
+	</uni-drag-cell>
+	<text class="result-text">当前顺序：{{ getIconNames(data.iconGridList) }}</text>
 
-			<view class="section">
-				<text class="section-title">示例 7：手柄拖拽排序</text>
-				<text class="section-desc">开启手柄模式后，不需要长按，只能拖动右侧手柄进行排序</text>
-				<uni-drag-cell v-model="data.handleList" :column="1" :handle-mode="true" @change="onHandleListChange">
-					<template #default="{ item, index }">
-						<view class="handle-demo-slot">
-							<view class="handle-demo-item">
-								<text class="handle-demo-index">{{ (index as number) + 1 }}</text>
-								<text class="handle-demo-text">{{ item as string }}</text>
-							</view>
-						</view>
-					</template>
-					<template #handle="{ item }">
-						<view class="handle-demo-grip">
-							<text class="handle-demo-grip-text">≡</text>
-						</view>
-					</template>
-				</uni-drag-cell>
-				<text class="result-text">当前顺序：{{ data.handleList.join(', ') }}</text>
+	<text class="uni-h4">示例 6：九宫格图片选择</text>
+	<text class="section-desc">点击 + 选择图片，支持拖拽排序，也支持拖到底部删除</text>
+	<uni-drag-cell v-model="data.imageList" :column="3" :show-close="true"
+		:show-append="data.imageList.length < maxImageCount" @change="onImageChange">
+		<template #default="{ item, index }">
+			<view class="image-grid-slot">
+				<view class="image-grid-item" @click="previewImages(index as number)">
+					<image class="image-grid-img" :src="item" mode="aspectFill"></image>
+				</view>
 			</view>
+		</template>
+		<template #append>
+			<view class="image-grid-slot">
+				<view class="image-grid-plus" @click="chooseImages">
+					<text class="image-grid-plus-icon">+</text>
+				</view>
+			</view>
+		</template>
+	</uni-drag-cell>
+	<text class="result-text">已选择：{{ data.imageList.length }}/{{ maxImageCount }}</text>
 
-			<view style="height: 50px;"></view>
-	<!-- #ifdef APP -->
-	</scroll-view>
-	<!-- #endif -->
-	<!-- #ifndef APP -->
-	</view>
-	<!-- #endif -->
+	<text class="uni-h4">示例 7：手柄拖拽排序</text>
+	<text class="section-desc">开启手柄模式后，不需要长按，只能拖动右侧手柄进行排序</text>
+	<uni-drag-cell v-model="data.handleList" :column="1" :handle-mode="true" @change="onHandleListChange">
+		<template #default="{ item, index }">
+			<view class="handle-demo-slot">
+				<view class="handle-demo-item">
+					<text class="handle-demo-index">{{ (index as number) + 1 }}</text>
+					<text class="handle-demo-text">{{ item as string }}</text>
+				</view>
+			</view>
+		</template>
+		<template #handle="{ item }">
+			<view class="handle-demo-grip">
+				<text class="handle-demo-grip-text">≡</text>
+			</view>
+		</template>
+	</uni-drag-cell>
+	<text class="result-text">当前顺序：{{ data.handleList.join(', ') }}</text>
+
+	<text class="uni-h4">示例 8：update:modelValue 事件</text>
+	<text class="section-desc">排序或删除后除 change 外也会触发 update:modelValue</text>
+	<uni-drag-cell v-model="data.updateModelList" @update:modelValue="onUpdateModelValue">
+		<template #default="{ item }">
+			<view class="tag-slot">
+				<view class="tag-item">
+					<text class="tag-text">{{ item as string }}</text>
+				</view>
+			</view>
+		</template>
+	</uni-drag-cell>
+	<text class="result-text">update:modelValue 次数：{{ data.updateModelCount }}</text>
+
+	<view style="height: 50px;"></view>
 </template>
 
 <script setup lang="ts">
@@ -156,7 +141,9 @@
 		deleteList: string[],
 		iconGridList: UTSJSONObject[],
 		imageList: string[],
-		handleList: string[]
+		handleList: string[],
+		updateModelList: string[],
+		updateModelCount: number
 	}
 
 	const data = reactive<Data>({
@@ -189,7 +176,9 @@
 			{ icon: 'Y', label: '音乐' }
 		],
 		imageList: [],
-		handleList: ['微信支付', '支付宝', 'Apple Pay']
+		handleList: ['微信支付', '支付宝', 'Apple Pay'],
+		updateModelList: ['苹果', '香蕉', '橙子'],
+		updateModelCount: 0
 	})
 
 	const clickItem = (item : string, index : number) => {
@@ -221,6 +210,11 @@
 
 	const onHandleListChange = (list : string[]) => {
 		console.log('handle list changed:', list)
+	}
+
+	const onUpdateModelValue = (list : string[]) => {
+		data.updateModelCount += 1
+		console.log('update:modelValue:', list)
 	}
 
 	const promptAddDeleteTag = () => {
@@ -337,30 +331,15 @@
 </script>
 
 <style>
-	.page {
-		flex: 1;
-	}
-
-	.page-title {
-		font-size: 24px;
-		font-weight: bold;
-		color: var(--text-color, #333333);
-		margin-bottom: 20px;
-		text-align: center;
-	}
-
-	.section {
-		margin-bottom: 30px;
-		background-color: var(--list-background-color, #ffffff);
-		border-radius: 8px;
+	page {
 		padding: 15px;
+		--text-color: #333333;
 	}
 
-	.section-title {
-		font-size: 16px;
-		font-weight: bold;
-		color: #007aff;
-		margin-bottom: 5px;
+	@media (prefers-color-scheme: dark) {
+		page {
+			--text-color: #ffffff;
+		}
 	}
 
 	.section-desc {
@@ -596,5 +575,15 @@
 		color: var(--text-color, #333333);
 		opacity: 0.7;
 		margin-top: 10px;
+		margin-bottom: 10px;
 	}
+
+	/* #ifdef WEB */
+	.tag-item,
+	.tag-item-add,
+	.image-grid-item,
+	.image-grid-plus {
+		cursor: pointer;
+	}
+	/* #endif */
 </style>

@@ -5,6 +5,22 @@
 - 通过 `type` 指定输入类型，`textarea` 渲染多行输入框、`password` 渲染密码输入框，其余透传给原生单行输入。
 - 所有布尔属性默认值均为 `false`。
 
+## 使用方式
+
+组件负责：
+
+- 包装原生 `input` / `textarea`，提供边框、聚焦态、禁用态样式
+- 按 `type` 切换单行、多行、密码输入
+- 提供清空、密码显隐图标及左右插槽
+- 通过 `input-class`、`placeholder-class`、`icon-class` 外部样式类暴露内部节点样式定制
+- 通过 `focusInput()`、`blurInput()` 方法暴露焦点控制
+
+使用者负责：
+
+- 使用 `v-model` 绑定输入内容，或用 `value` 做兼容场景
+- 监听输入、焦点、确认、清空、密码显隐等事件处理业务逻辑
+- 通过组件 `class` / `style` 或外部样式类定制样式
+
 ## 基本用法
 
 ```html
@@ -150,12 +166,3 @@ export type MyInputProps = UniEasyinputProps & {
 	label? : string
 }
 ```
-
-## 更新说明（不兼容调整）
-
-- `clearable`、`password-icon` 默认值由 `true` 调整为 `false`。
-- 移除 `input-border` 属性，默认始终显示边框，使用组件 `class` 覆盖即可。
-- 移除 `prefix-icon`、`suffix-icon`、`prefix-icon-class`、`suffix-icon-class` 及 `iconClick` 事件；清空和密码显隐图标统一用 `icon-class` 设置样式。
-- `action-icon-class` 重命名为 `icon-class`。
-- 移除 `trim` 属性，输入内容处理改用 Vue 修饰符。
-- 移除 `error-message` 和 `error-class`，输入校验和错误反馈改由 `uni-forms-item` 负责。

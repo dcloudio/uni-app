@@ -87,36 +87,15 @@
 	 * @description 提供字段路径、标签布局、错误展示和字段上下文，必须放在 uni-forms 内使用才能参与表单管理
 	 * @uniPlatform {
 	 *   "app": {
-	 *     "android": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.21"
-	 *     },
-	 *     "ios": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.11"
-	 *     },
-	 *     "harmony": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07",
-	 *       "unixVaporVer": "5.07"
-	 *     }
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
 	 *   },
 	 *   "mp": {
-	 *     "weixin": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.07"
-	 *     },
-	 *     "alipay": {
-	 *       "uniVer": "x",
-	 *       "unixVer": "5.31"
-	 *     }
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
 	 *   },
-	 *   "web": {
-	 *     "uniVer": "x",
-	 *     "unixVer": "5.07"
-	 *   }
+	 *   "web": {"unixVer": "5.07"}
 	 * }
 	 * @property {String|Array} name 表单字段路径，支持嵌套路径和数组路径，默认值为空字符串
 	 * @property {Array} rules 当前字段的 DB Schema 风格校验规则，覆盖表单中同名字段的规则，默认值 null
@@ -172,36 +151,120 @@
 		/**
 		 * @description 表单字段路径，支持点号路径、数组下标路径和路径数组；参与表单校验时必填
 		 * @default ""
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
+		 *   },
+		 *   "web": {"unixVer": "5.07"}
+		 * }
 		 */
 		name?: UniFormPath,
 		/**
 		 * @description 当前字段的 DB Schema 风格校验规则，覆盖表单中同名字段的规则
 		 * @default null
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
+		 *   },
+		 *   "web": {"unixVer": "5.07"}
+		 * }
 		 */
 		rules?: UniFormRule[] | null,
 		/**
 		 * @description 是否显示红色必填标记；字段是否必填由 rules 决定
 		 * @default false
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
+		 *   },
+		 *   "web": {"unixVer": "5.07"}
+		 * }
 		 */
 		required?: boolean,
 		/**
 		 * @description 标签文字
 		 * @default ""
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
+		 *   },
+		 *   "web": {"unixVer": "5.07"}
+		 * }
 		 */
 		label?: string,
 		/**
 		 * @description 标签下方的说明文字
 		 * @default ""
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
+		 *   },
+		 *   "web": {"unixVer": "5.07"}
+		 * }
 		 */
 		description?: string,
 		/**
 		 * @description 是否在单行横排布局的行尾显示向右箭头
 		 * @default false
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
+		 *   },
+		 *   "web": {"unixVer": "5.07"}
+		 * }
 		 */
 		showArrow?: boolean,
 		/**
 		 * @description 当前项的标签宽度，数字按 px 处理；不设置时跟随表单
 		 * @default ""
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
+		 *   },
+		 *   "web": {"unixVer": "5.07"}
+		 * }
 		 */
 		labelWidth?: string | number,
 		/**
@@ -210,6 +273,18 @@
 		 * @value left 左对齐
 		 * @value center 居中对齐
 		 * @value right 右对齐
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
+		 *   },
+		 *   "web": {"unixVer": "5.07"}
+		 * }
 		 */
 		labelAlign?: string,
 		/**
@@ -217,6 +292,18 @@
 		 * @default ""
 		 * @value left 标签与控件单行横排
 		 * @value top 标签在控件上方，竖排显示
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
+		 *   },
+		 *   "web": {"unixVer": "5.07"}
+		 * }
 		 */
 		labelPosition?: string,
 		/**
@@ -224,41 +311,137 @@
 		 * @value bind 表单数据变化时触发
 		 * @value blur 表单项失焦时触发
 		 * @value submit 调用表单校验方法时触发
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
+		 *   },
+		 *   "web": {"unixVer": "5.07"}
+		 * }
 		 */
 		validateTrigger?: UniFormTrigger,
 		/**
 		 * @description 覆盖组件内部错误信息；传入 false 时不显示错误文字
 		 * @default ""
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
+		 *   },
+		 *   "web": {"unixVer": "5.07"}
+		 * }
 		 */
 		errorMessage?: string | boolean,
 		/**
 		 * @description 标签文字的自定义样式类
 		 * @default ""
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
+		 *   },
+		 *   "web": {"unixVer": "5.07"}
+		 * }
 		 */
 		labelClass?: string.ClassString,
 		/**
 		 * @description 标签辅助说明的自定义样式类
 		 * @default ""
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
+		 *   },
+		 *   "web": {"unixVer": "5.07"}
+		 * }
 		 */
 		descriptionClass?: string.ClassString,
 		/**
 		 * @description 必填标记的自定义样式类
 		 * @default ""
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
+		 *   },
+		 *   "web": {"unixVer": "5.07"}
+		 * }
 		 */
 		requiredClass?: string.ClassString,
 		/**
 		 * @description 单行横排布局中控件区域的自定义样式类，顶部布局不使用
 		 * @default ""
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
+		 *   },
+		 *   "web": {"unixVer": "5.07"}
+		 * }
 		 */
 		contentClass?: string.ClassString,
 		/**
 		 * @description 控件下方错误文字的自定义样式类
 		 * @default ""
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
+		 *   },
+		 *   "web": {"unixVer": "5.07"}
+		 * }
 		 */
 		errorMessageClass?: string.ClassString,
 		/**
 		 * @description toast 错误提示方式下表单项错误边框的自定义样式类
 		 * @default ""
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
+		 *   },
+		 *   "web": {"unixVer": "5.07"}
+		 * }
 		 */
 		errorClass?: string.ClassString
 	}
@@ -474,6 +657,18 @@
 	 * @param force 是否忽略触发时机配置并强制校验
 	 * @param includeSchema 是否同时执行 Standard Schema 校验
 	 * @param notify 是否向表单发送 validate 事件
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.07"}
+	 * }
 	 */
 	async function validate(trigger: UniFormTrigger = 'submit', force: boolean = false, includeSchema: boolean = true, notify: boolean = true): Promise<UniFormIssue | null> {
 		if (form == null || fieldKey.value == '') {
@@ -543,6 +738,18 @@
 	/**
 	 * @description 设置当前字段的值
 	 * @param value 字段值
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.07"}
+	 * }
 	 */
 	function setValue(value: any): void {
 		if (form != null) {
@@ -555,6 +762,18 @@
 	 * @description 通知表单字段值已变化，并按 bind 触发时机执行校验
 	 * @param value 新字段值；不传时使用表单模型中的当前值
 	 * @param force 是否强制执行校验
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.07"}
+	 * }
 	 */
 	async function onFieldChange(value?: any, force: boolean = false): Promise<UniFormIssue | null> {
 		if (value !== undefined) {
@@ -566,6 +785,18 @@
 	/**
 	 * @description 通知表单字段已失焦，并按 blur 触发时机执行校验
 	 * @param value 新字段值；不传时使用表单模型中的当前值
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.07"}
+	 * }
 	 */
 	async function onFieldBlur(value?: any): Promise<UniFormIssue | null> {
 		if (value !== undefined) {
@@ -576,6 +807,18 @@
 
 	/**
 	 * @description 清除当前表单项的校验状态和错误信息
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.07"}
+	 * }
 	 */
 	function clearValidate(): void {
 		validationSequence += 1
@@ -656,6 +899,18 @@
 	/**
 	 * @description 设置当前项规则；传入 null 时恢复 rules 属性
 	 * @param rules 当前字段的规则数组
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.07"}
+	 * }
 	 */
 	function setRules(rules: UniFormRule[] | null): void {
 		localRules.value = rules

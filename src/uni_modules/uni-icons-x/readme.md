@@ -2,9 +2,25 @@
 
 适用于 uni-app x 蒸汽模式的字体图标组件。
 
-组件内部DOM结构极简，只有一个 `text` 组件。通过 `type` 指定图标名称，并可直接在组件标签上设置 `class` 或 `style` 自定义颜色、字号及其他文字样式。
+## 用途和场景
 
-在web平台，内部使用了woff2字体，减少web包体积。
+- 替代小图片，减少图片资源
+- 界面中的功能图标、状态图标
+- 需要跟随文字颜色、字号变化的图标
+
+## 使用方式
+
+组件负责：
+
+- 根据 `type` 渲染对应字形，未传入或取值不存在时不显示图标
+- 内部通过 `@font-face` 引入字体：Web 平台使用 `uniicons.woff2`，其他平台使用 `uniicons.ttf`
+
+使用者负责：
+
+- 通过 `type` 指定图标名称
+- 直接在组件标签上设置 `class` 或 `style` 自定义颜色、字号及其他文字样式
+
+组件内部 DOM 结构极简，只有一个承载字形的 `text`（App）或 `view`（Web/小程序）节点。
 
 ## 基本用法
 
@@ -15,17 +31,11 @@
 </template>
 ```
 
-## Props
-
-| 属性名 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| type | String | `''` | 图标名称，取值范围见 [属性表中的合法值](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/uni-icons.html#属性)；未传入或取值不存在时组件不显示图标 |
-
 `type` 为字符串联合类型，在 IDE 中编写 `type="..."` 时会自动提示全部可选图标名称。
 
-## 自定义颜色和字号
+### 自定义颜色和字号
 
-组件根节点是 `text`，标签上的 `class` 和 `style` 会直接作用于该节点：
+组件根节点承载字形，标签上的 `class` 和 `style` 会直接作用于该节点：
 
 ```html
 <template>
@@ -44,9 +54,9 @@
 </style>
 ```
 
-## 自定义字体
+### 自定义字体
 
-组件内部通过 `@font-face` 引入字体：Web 平台使用 `uniicons.woff2`，其他平台使用 `uniicons.ttf`。如需替换为自定义字体，可自行覆盖根节点的 `font-family`：
+如需替换为自定义字体，可自行覆盖根节点的 `font-family`：
 
 ```html
 <template>
@@ -65,6 +75,7 @@
 </style>
 ```
 
-## 样式说明
+## 注意事项
 
-通过 `style` 设置的内联样式会覆盖组件默认样式；使用全局 class 覆盖 `font-family` 时，可能需要使用 `!important`。
+- 通过 `style` 设置的内联样式会覆盖组件默认样式。
+- 使用全局 class 覆盖 `font-family` 时，可能需要使用 `!important`。

@@ -24,9 +24,9 @@ import {
     API_CLOSE_SOCKET,
 } from '../protocol.uts'
 import {
-    Emitter,
     getCurrentMP,
 } from '@dcloudio/uni-runtime'
+import Emitter from './emitter.js'
 interface IUniWebsocketEmitter {
     on: (eventName: string, callback: Function) => void
     once: (eventName: string, callback: Function) => void

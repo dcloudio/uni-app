@@ -57,7 +57,7 @@
         </view>
         <view id="external-class-concat-case" class="test-item">
           <text class="label">通过child-class自定义样式（蓝色）：</text>
-          <child-external text="蓝色样式：黄色背景蓝色描边" child-class="external-class" :box-class="data.externalBoxClass"></child-external>
+          <child-external class="external-class-concat-component" text="蓝色样式：黄色背景蓝色描边" child-class="external-class" :box-class="data.externalBoxClass"></child-external>
         </view>
         <view class="test-item">
           <text class="label">全局样式使用!important覆盖组件样式：</text>

@@ -2,7 +2,6 @@ import http from '@ohos.net.http'
 import buffer from '@ohos.buffer';
 import fs from '@ohos.file.fs'
 import {
-    Emitter,
     getCurrentMP,
 } from '@dcloudio/uni-runtime'
 import {
@@ -30,6 +29,7 @@ import {
     getCookieSync,
     setCookieSync
 } from './cookie.uts'
+import Emitter from '../emitter.js'
 
 interface IUniUploadFileEmitter {
     on: (eventName: string, callback: Function) => void

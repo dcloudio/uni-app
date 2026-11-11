@@ -1,6 +1,15 @@
 <template>
 	<list-view class="uni-sidebar" :show-scrollbar="false">
-		<list-item v-for="(item, index) in list" :key="index" @click="onItemClick(index)">
+		<list-item
+			v-for="(item, index) in list"
+			:key="index"
+			class="uni-sidebar__item"
+			@click="onItemClick(index)"
+			<!-- #ifdef WEB -->
+			:tabindex="'0'"
+			@keydown="onItemKeydown($event, index)"
+			<!-- #endif -->
+		>
 			<slot :item="item" :index="index" :active="index === displayIndex"></slot>
 		</list-item>
 	</list-view>
@@ -69,6 +78,8 @@
 	const emit = defineEmits<{
 		/**
 		 * @description 点击导航项时触发，页面据此滚动目标列表
+		 * @param index 被点击导航项的索引
+		 * @param item 被点击导航项的文本
 		 * @uniPlatform {
 		 *   "app": {
 		 *     "android": {"unixVaporVer": "5.21"},
@@ -85,6 +96,7 @@
 		select : [index : number, item : string],
 		/**
 		 * @description 高亮索引更新事件，用于 v-model:current-index
+		 * @param index 更新后的高亮索引
 		 * @uniPlatform {
 		 *   "app": {
 		 *     "android": {"unixVaporVer": "5.21"},
@@ -129,11 +141,43 @@
 		emit('update:currentIndex', index)
 		emit('select', index, props.list[index])
 	}
+
+	// #ifdef WEB
+	// 键盘操作：Enter/Space 触发点击，上下方向键移动高亮
+	const onItemKeydown = (event : KeyboardEvent, index : number) => {
+		const key = event.key as string
+		if (key == 'Enter' || key == ' ') {
+			event.preventDefault()
+			onItemClick(index)
+			return
+		}
+		if (key == 'ArrowDown') {
+			event.preventDefault()
+			if (props.list.length == 0) {
+				return
+			}
+			const next = Math.min(props.list.length - 1, displayIndex.value + 1)
+			onItemClick(next)
+			return
+		}
+		if (key == 'ArrowUp') {
+			event.preventDefault()
+			const prev = Math.max(0, displayIndex.value - 1)
+			onItemClick(prev)
+		}
+	}
+	// #endif
 </script>
 
 <style>
 	.uni-sidebar {
 		width: 90px;
 		flex-shrink: 0;
+	}
+
+	.uni-sidebar__item {
+		/* #ifdef WEB */
+		cursor: pointer;
+		/* #endif */
 	}
 </style>

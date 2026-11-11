@@ -52,6 +52,7 @@
     appRouteEvents : string[]
     lastNavigateToBeforePath : string
     lastNavigateToAppRoutePath : string
+    rewriteRouteCompleteCount : number
     rewriteRouteResult : string
   }
 
@@ -63,6 +64,7 @@
     appRouteEvents: [] as string[],
     lastNavigateToBeforePath: '',
     lastNavigateToAppRoutePath: '',
+    rewriteRouteCompleteCount: 0,
     rewriteRouteResult: ''
   } as DataType)
 
@@ -92,6 +94,9 @@
         },
         fail: (error) => {
           data.rewriteRouteResult = error.errMsg
+        },
+        complete: () => {
+          data.rewriteRouteCompleteCount++
         }
       })
     }
@@ -125,6 +130,7 @@
     data.lastNavigateToBeforePath = ''
     data.lastNavigateToAppRoutePath = ''
     data.rewriteRouteResult = ''
+    data.rewriteRouteCompleteCount = 0
   }
 
   const navigateToTarget = () => {
@@ -151,6 +157,9 @@
       },
       fail: (error) => {
         data.rewriteRouteResult = error.errMsg
+      },
+      complete: () => {
+        data.rewriteRouteCompleteCount++
       }
     })
   }

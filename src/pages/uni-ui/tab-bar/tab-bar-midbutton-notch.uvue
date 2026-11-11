@@ -25,7 +25,12 @@
 				<text class="tab-label" :class="activeIndex == 1 ? 'tab-label-active' : ''">消息</text>
 			</uni-tab-item>
 			<uni-tab-midbutton :width="106" :height="94">
-				<view class="floating-ball" hover-class="floating-ball-hover" :hover-stop-propagation="true" @click="handleMidButtonClick">
+				<view class="floating-ball" hover-class="floating-ball-hover" :hover-stop-propagation="true" @click="handleMidButtonClick"
+					<!-- #ifdef WEB -->
+					:tabindex="'0'"
+					@keydown="onMidButtonKeydown"
+					<!-- #endif -->
+				>
 					<view flatten class="floating-ball-plus" style="position: absolute;"></view>
 					<view flatten class="floating-ball-plus" style="position: absolute;transform: rotate(90deg);"></view>
 				</view>
@@ -88,6 +93,16 @@
 			icon: 'none'
 		})
 	}
+
+	// #ifdef WEB
+	function onMidButtonKeydown(event : KeyboardEvent) : void {
+		const key = event.key as string
+		if (key == 'Enter' || key == ' ') {
+			event.preventDefault()
+			handleMidButtonClick()
+		}
+	}
+	// #endif
 </script>
 
 <style>
@@ -171,6 +186,9 @@
 		border-style: solid;
 		border-color: #ffffff;
 		box-shadow: 0px 4px 10px rgba(28, 98, 183, 0.16);
+		/* #ifdef WEB */
+		cursor: pointer;
+		/* #endif */
 	}
 
 	.floating-ball-hover {

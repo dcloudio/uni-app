@@ -21,36 +21,15 @@
 		 * @default ""
 		 * @uniPlatform {
 		 *   "app": {
-		 *     "android": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07",
-		 *       "unixVaporVer": "5.21"
-		 *     },
-		 *     "ios": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07",
-		 *       "unixVaporVer": "5.21"
-		 *     },
-		 *     "harmony": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07",
-		 *       "unixVaporVer": "5.21"
-		 *     }
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.21"},
+		 *     "harmony": {"unixVaporVer": "5.21"}
 		 *   },
 		 *   "mp": {
-		 *     "weixin": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07"
-		 *     },
-		 *     "alipay": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.31"
-		 *     }
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
 		 *   },
-		 *   "web": {
-		 *     "uniVer": "x",
-		 *     "unixVer": "5.07"
-		 *   }
+		 *   "web": {"unixVer": "5.07"}
 		 * }
 		 */
 		type? : IconsType

@@ -1,6 +1,13 @@
 <template>
   <view class="content">
     <map class="map" id="map1" ref="map1" :longitude="location.longitude" :latitude="location.latitude" :scale="scale"
+      <!-- #ifdef APP || MP -->
+      :min-scale="minScale" :max-scale="maxScale" :layer-style="layerStyle"
+      :enable-poi="enablePoi" :enable-building="enableBuilding"
+      <!-- #endif -->
+      <!-- #ifdef APP-HARMONY -->
+      :enable-indoorMap="enableIndoorMap"
+      <!-- #endif -->
       :markers="markers" :include-points="includePoints" :polyline="polyline" :polygons="polygons" :circles="circles"
       :controls="controls" :show-location="showLocation" :enable-3D="enable3D" :rotate="rotate" :skew="skew"
       :show-compass="showCompass" :enable-overlooking="enableOverlooking" :enable-zoom="enableZoom"
@@ -23,6 +30,17 @@
       <boolean-data :default-value="enableScroll" title="拖动支持" @change="change_enable_scroll"></boolean-data>
       <boolean-data :default-value="enableSatellite" title="卫星图" @change="change_enable_satellite"></boolean-data>
       <boolean-data :default-value="enableTraffic" title="实时路况" @change="change_enable_traffic"></boolean-data>
+
+      <!-- #ifdef APP || MP -->
+      <input-data defaultValue="5" title="min-scale: 最小缩放级别（5 至当前最大值）" type="number" @confirm="confirm_min_scale_input"></input-data>
+      <input-data defaultValue="18" title="max-scale: 最大缩放级别（当前最小值至 18）" type="number" @confirm="confirm_max_scale_input"></input-data>
+      <input-data defaultValue="1" title="layer-style: 地图样式编号（需在地图服务商后台配置）" type="number" @confirm="confirm_layer_style_input"></input-data>
+      <boolean-data :default-value="enablePoi" title="enable-poi: 显示兴趣点" @change="change_enable_poi"></boolean-data>
+      <boolean-data :default-value="enableBuilding" title="enable-building: 显示建筑物" @change="change_enable_building"></boolean-data>
+      <!-- #endif -->
+      <!-- #ifdef APP-HARMONY -->
+      <boolean-data :default-value="enableIndoorMap" title="enable-indoorMap: 显示室内地图（需缩放至支持的建筑）" @change="change_enable_indoor_map"></boolean-data>
+      <!-- #endif -->
 
       <button class="button" @click="addControls">控件</button>
       <button class="button" @click="addMarkers">添加标记点</button>
@@ -359,6 +377,42 @@
   const confirm_scale_input = (value : number) => {
     scale.value = value
   };
+
+  // #ifdef APP || MP
+  const minScale = ref(5);
+  const maxScale = ref(18);
+  const layerStyle = ref("1");
+  const confirm_min_scale_input = (value : number) => {
+    if (value >= 5 && value <= maxScale.value) {
+      minScale.value = value
+    }
+  };
+  const confirm_max_scale_input = (value : number) => {
+    if (value >= minScale.value && value <= 18) {
+      maxScale.value = value
+    }
+  };
+  const confirm_layer_style_input = (value : number) => {
+    layerStyle.value = value.toString()
+  };
+
+  const enablePoi = ref(true);
+  const enableBuilding = ref(true);
+  const change_enable_poi = (checked : boolean) => {
+    enablePoi.value = checked
+  };
+  const change_enable_building = (checked : boolean) => {
+    enableBuilding.value = checked
+  };
+  // #endif
+
+  // #ifdef APP-HARMONY
+  const enableIndoorMap = ref(false);
+  const change_enable_indoor_map = (checked : boolean) => {
+    enableIndoorMap.value = checked
+  };
+  // #endif
+
 
   const controls = ref([] as Control[]);
   const addControls = () => {

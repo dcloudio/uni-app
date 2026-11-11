@@ -41,117 +41,232 @@ export type GetCommandOptions = {
 
 // dataPicker 属性定义，供页面/组件 defineProps 展开使用
 export const dataPickerProps = {
+  /**
+   * @description 本地候选数据；数据项默认使用 text、value、children、disable 字段
+   * @default []
+   */
   localdata: {
     type: Array as PropType<Array<UTSJSONObject>>,
     default: [] as Array<UTSJSONObject>
   },
+  /**
+   * @description uniCloud 数据库集合名称，或表名数组
+   * @default ""
+   */
   collection: {
     type: [String, Object],
     default: ''
   },
+  /**
+   * @description JQL 查询字段，多个字段用 `,` 分割；需将值字段映射为 `value`、文字字段映射为 `text`
+   * @default ""
+   */
   field: {
     type: String,
     default: ''
   },
+  /**
+   * @description 排序字段及正序倒序设置
+   * @default ""
+   */
   orderby: {
     type: String,
     default: ''
   },
+  /**
+   * @description 查询条件
+   * @default ""
+   */
   where: {
     type: [String, Object],
     default: ''
   },
+  /**
+   * @description 多次加载结果的处理方式
+   * @default "add"
+   */
   pageData: {
     type: String,
     default: 'add'
   },
+  /**
+   * @description 当前页码
+   * @default 1
+   */
   pageCurrent: {
     type: Number,
     default: 1
   },
+  /**
+   * @description 每页数据条数
+   * @default 20
+   */
   pageSize: {
     type: Number,
     default: 20
   },
+  /**
+   * @description 是否返回总数
+   * @default false
+   */
   getcount: {
     type: Boolean,
     default: false
   },
+  /**
+   * @description 树形查询配置
+   * @default ""
+   */
   gettree: {
     type: [String, Object],
     default: ''
   },
+  /**
+   * @description 按节点路径回显的查询配置
+   * @default ""
+   */
   gettreepath: {
     type: [String, Object],
     default: ''
   },
+  /**
+   * @description 树形查询的起始条件
+   * @default ""
+   */
   startwith: {
     type: String,
     default: ''
   },
+  /**
+   * @description 最大级联层级
+   * @default 10
+   */
   limitlevel: {
     type: Number,
     default: 10
   },
+  /**
+   * @description 分组字段
+   * @default ""
+   */
   groupby: {
     type: String,
     default: ''
   },
+  /**
+   * @description 分组后返回的字段
+   * @default ""
+   */
   groupField: {
     type: String,
     default: ''
   },
+  /**
+   * @description 是否对查询字段去重
+   * @default false
+   */
   distinct: {
     type: Boolean,
     default: false
   },
+  /**
+   * @description 分页查询是否去重
+   * @default false
+   */
   pageIndistinct: {
     type: Boolean,
     default: false
   },
+  /**
+   * @description JQL 外键字段
+   * @default ""
+   */
   foreignKey: {
     type: String,
     default: ''
   },
+  /**
+   * @description 数据加载时机，默认自动加载
+   * @default "auto"
+   */
   loadtime: {
     type: String,
     default: 'auto'
   },
+  /**
+   * @description 是否手动加载数据
+   * @default false
+   */
   manual: {
     type: Boolean,
     default: false
   },
+  /**
+   * @description 是否预加载数据
+   * @default false
+   */
   preload: {
     type: Boolean,
     default: false
   },
+  /**
+   * @description 是否启用分布查询
+   * @default true
+   */
   stepSearh: {
     type: Boolean,
     default: true
   },
+  /**
+   * @description 分布查询的当前字段名称
+   * @default ""
+   */
   selfField: {
     type: String,
     default: ''
   },
+  /**
+   * @description 分布查询的父字段名称
+   * @default ""
+   */
   parentField: {
     type: String,
     default: ''
   },
+  /**
+   * @description 是否多选
+   * @default false
+   */
   multiple: {
     type: Boolean,
     default: false
   },
+  /**
+   * @description 当前值的兼容属性
+   * @default ""
+   */
   value: {
     type: [String, Object],
     default: ''
   },
+  /**
+   * @description v-model 绑定值
+   * @default ""
+   */
   modelValue: {
     type: [String, Object],
     default: ''
   },
+  /**
+   * @description 自定义节点文字字段和值字段，例如 { text: 'name', value: 'id' }
+   */
   defaultProps: {
     type: Object as PropType<UTSJSONObject>,
   },
+  /**
+   * @description 层级 tab 未选择时的占位文字
+   * @default ""
+   */
   tabPlaceholder: {
     type: String,
     default: ''

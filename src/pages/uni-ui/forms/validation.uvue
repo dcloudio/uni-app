@@ -1,96 +1,94 @@
 <template>
-	<view>
-		<view class="intro">
-			<text class="page-title">完整校验示例</text>
-			<text class="page-desc">覆盖常用 DB Schema 规则、字段级方法、异步校验和回调式 API。提交时会校验整张表，失焦时只校验配置了 blur 的字段。</text>
-		</view>
+	<view class="intro">
+		<text class="page-title">完整校验示例</text>
+		<text class="page-desc">覆盖常用 DB Schema 规则、字段级方法、异步校验和回调式 API。提交时会校验整张表，失焦时只校验配置了 blur 的字段。</text>
+	</view>
 
-		<view class="section rule-summary">
-			<text class="section-title">本页规则</text>
-			<text class="rule-text">required：必填　format：类型/邮箱　pattern：正则</text>
-			<text class="rule-text">minLength / maxLength：长度　minimum / maximum：数值范围</text>
-			<text class="rule-text">range / arrayType：枚举和数组元素类型</text>
-			<text class="rule-text">validateExpr / validateFunction：自定义同步和异步校验</text>
-		</view>
+	<view class="section rule-summary">
+		<text class="uni-h4">本页规则</text>
+		<text class="rule-text">required：必填　format：类型/邮箱　pattern：正则</text>
+		<text class="rule-text">minLength / maxLength：长度　minimum / maximum：数值范围</text>
+		<text class="rule-text">range / arrayType：枚举和数组元素类型</text>
+		<text class="rule-text">validateExpr / validateFunction：自定义同步和异步校验</text>
+	</view>
 
-		<view class="section">
-			<uni-forms
-				ref="formRef"
-				v-model="formData"
-				:rules="rules"
-				validate-trigger="blur"
-				err-show-type="undertext"
-				label-position="left"
-				label-width="100"
-				border
-				@validate="onValidate"
-			>
-				<uni-forms-item name="username" label="用户名" required label-class="demo-label" error-message-class="demo-error">
-					<uni-easyinput v-model="formData.username" placeholder="3-12 个字符" clearable />
-				</uni-forms-item>
+	<view class="section">
+		<uni-forms
+			ref="formRef"
+			v-model="formData"
+			:rules="rules"
+			validate-trigger="blur"
+			err-show-type="undertext"
+			label-position="left"
+			label-width="100"
+			border
+			@validate="onValidate"
+		>
+			<uni-forms-item name="username" label="用户名" required label-class="demo-label" error-message-class="demo-error">
+				<uni-easyinput v-model="formData.username" placeholder="3-12 个字符" clearable />
+			</uni-forms-item>
 
-				<uni-forms-item name="email" label="邮箱" required label-class="demo-label" error-message-class="demo-error">
-					<uni-easyinput v-model="formData.email" placeholder="name@example.com" />
-				</uni-forms-item>
+			<uni-forms-item name="email" label="邮箱" required label-class="demo-label" error-message-class="demo-error">
+				<uni-easyinput v-model="formData.email" placeholder="name@example.com" />
+			</uni-forms-item>
 
-				<uni-forms-item name="password" label="密码" required label-class="demo-label" error-message-class="demo-error">
-					<uni-easyinput v-model="formData.password" type="password" placeholder="至少 8 位，包含字母和数字" />
-				</uni-forms-item>
+			<uni-forms-item name="password" label="密码" required label-class="demo-label" error-message-class="demo-error">
+				<uni-easyinput v-model="formData.password" type="password" placeholder="至少 8 位，包含字母和数字" />
+			</uni-forms-item>
 
-				<uni-forms-item name="confirmPassword" label="确认密码" required label-class="demo-label" error-message-class="demo-error">
-					<uni-easyinput v-model="formData.confirmPassword" type="password" placeholder="再次输入密码" />
-				</uni-forms-item>
+			<uni-forms-item name="confirmPassword" label="确认密码" required label-class="demo-label" error-message-class="demo-error">
+				<uni-easyinput v-model="formData.confirmPassword" type="password" placeholder="再次输入密码" />
+			</uni-forms-item>
 
-				<uni-forms-item name="age" label="年龄" required label-class="demo-label" error-message-class="demo-error">
-					<view class="native-input-shell">
-						<input
-							class="native-input"
-							type="number"
-							v-model="ageInput"
-							placeholder="18-120"
-							:adjust-position="false"
-							@input="onAgeInput"
-						/>
+			<uni-forms-item name="age" label="年龄" required label-class="demo-label" error-message-class="demo-error">
+				<view class="native-input-shell">
+					<input
+						class="native-input"
+						type="number"
+						v-model="ageInput"
+						placeholder="18-120"
+						:adjust-position="false"
+						@input="onAgeInput"
+					/>
+				</view>
+			</uni-forms-item>
+
+			<uni-forms-item name="role" label="角色枚举" required label-class="demo-label" error-message-class="demo-error">
+				<uni-combobox v-model="formData.role" :options="roleOptions" placeholder="请选择角色" />
+			</uni-forms-item>
+
+			<uni-forms-item name="tags" label="标签数组" required label-class="demo-label" error-message-class="demo-error">
+				<view class="tag-list">
+					<view
+						v-for="tag in tagOptions"
+						:key="tag"
+						class="tag-item"
+						:class="formData.tags.indexOf(tag) >= 0 ? 'tag-item-active' : ''"
+						@click="toggleTag(tag)"
+					>
+						<text class="tag-text">{{ tag }}</text>
 					</view>
-				</uni-forms-item>
+				</view>
+			</uni-forms-item>
 
-				<uni-forms-item name="role" label="角色枚举" required label-class="demo-label" error-message-class="demo-error">
-					<uni-combobox v-model="formData.role" :options="roleOptions" placeholder="请选择角色" />
-				</uni-forms-item>
+			<uni-forms-item name="inviteCode" label="异步邀请码" label-class="demo-label" error-message-class="demo-error">
+				<uni-easyinput v-model="formData.inviteCode" placeholder="请输入 UNI-FORM" />
+			</uni-forms-item>
+		</uni-forms>
 
-				<uni-forms-item name="tags" label="标签数组" required label-class="demo-label" error-message-class="demo-error">
-					<view class="tag-list">
-						<view
-							v-for="tag in tagOptions"
-							:key="tag"
-							class="tag-item"
-							:class="formData.tags.indexOf(tag) >= 0 ? 'tag-item-active' : ''"
-							@click="toggleTag(tag)"
-						>
-							<text class="tag-text">{{ tag }}</text>
-						</view>
-					</view>
-				</uni-forms-item>
-
-				<uni-forms-item name="inviteCode" label="异步邀请码" label-class="demo-label" error-message-class="demo-error">
-					<uni-easyinput v-model="formData.inviteCode" placeholder="请输入 UNI-FORM" />
-				</uni-forms-item>
-			</uni-forms>
-
-			<view class="button-grid">
-				<button class="action-button" size="mini" @click="validateForm">Promise 校验整表</button>
-				<button class="action-button" size="mini" @click="validateEmail">校验邮箱字段</button>
-				<button class="action-button secondary-button" size="mini" @click="validateByCallback">callback 校验</button>
-				<button class="action-button secondary-button" size="mini" @click="clearValidate">清除错误</button>
-			</view>
-			<text class="status-text">{{ statusText }}</text>
+		<view class="button-grid">
+			<button class="action-button" size="mini" @click="validateForm">Promise 校验整表</button>
+			<button class="action-button" size="mini" @click="validateEmail">校验邮箱字段</button>
+			<button class="action-button secondary-button" size="mini" @click="validateByCallback">callback 校验</button>
+			<button class="action-button secondary-button" size="mini" @click="clearValidate">清除错误</button>
 		</view>
+		<text class="status-text">{{ statusText }}</text>
+	</view>
 
-		<view class="section section-last">
-			<text class="section-title">当前值</text>
-			<text class="data-text">{{ dataText }}</text>
-			<text class="hint-text">异步邀请码示例值：UNI-FORM；年龄必须是 18 到 120 的整数。</text>
-		</view>
+	<view class="section section-last">
+		<text class="uni-h4">当前值</text>
+		<text class="data-text">{{ dataText }}</text>
+		<text class="hint-text">异步邀请码示例值：UNI-FORM；年龄必须是 18 到 120 的整数。</text>
 	</view>
 </template>
 
@@ -305,16 +303,10 @@ page {
 	padding-bottom: 32px;
 }
 
-.page-title,
-.section-title {
+.page-title {
 	font-size: 18px;
 	font-weight: bold;
 	color: var(--text-color, #222222);
-}
-
-.section-title {
-	margin-bottom: 10px;
-	font-size: 16px;
 }
 
 .page-desc,
@@ -371,6 +363,12 @@ page {
 .tag-item-active {
 	background-color: var(--tips-background-color, #d9edff);
 }
+
+/* #ifdef WEB */
+.tag-item {
+	cursor: pointer;
+}
+/* #endif */
 
 .tag-text {
 	font-size: 13px;

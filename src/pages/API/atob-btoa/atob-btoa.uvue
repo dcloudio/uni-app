@@ -1,0 +1,191 @@
+<template>
+	<page-head :title="data.title"></page-head>
+	<text class="intro">btoa 将二进制字符串编码为 Base64 ASCII 字符串；atob 对 Base64 编码字符串解码。仅支持 Latin1 范围字符，中文需先经 TextEncoder 转为 UTF-8 字节。</text>
+
+	<!-- #ifdef APP-HARMONY -->
+	<text class="tips">鸿蒙平台暂不支持 atob / btoa</text>
+	<!-- #endif -->
+	<!-- #ifdef MP -->
+	<text class="tips">当前小程序平台暂不支持 atob / btoa</text>
+	<!-- #endif -->
+
+	<text class="label">编码输入（btoa / 组合演示）：</text>
+	<input class="input-box" :value="data.encodeInput" placeholder="请输入待编码字符串" @input="onEncodeInput"></input>
+	<text class="label">解码输入（atob）：</text>
+	<input class="input-box" :value="data.decodeInput" placeholder="请输入 Base64 字符串" @input="onDecodeInput"></input>
+	<view class="btn-list">
+		<button :disabled="!data.supported" @click="testBtoa">btoa 编码</button>
+		<button :disabled="!data.supported" @click="testAtob">atob 解码</button>
+		<button :disabled="!data.supported" @click="testUtf8Combination">TextEncoder + btoa 中文组合</button>
+		<button :disabled="!data.supported" @click="testInvalidAtob">无效 Base64 异常</button>
+	</view>
+	<view class="result-list">
+		<view class="result-item">
+			<text class="result-k">btoa 结果：</text>
+			<text class="result-v">{{ data.btoaResult }}</text>
+		</view>
+		<view class="result-item">
+			<text class="result-k">atob 结果：</text>
+			<text class="result-v">{{ data.atobResult }}</text>
+		</view>
+		<view class="result-item">
+			<text class="result-k">UTF-8 组合 Base64：</text>
+			<text class="result-v">{{ data.utf8B64Result }}</text>
+		</view>
+		<view class="result-item">
+			<text class="result-k">组合解码回显：</text>
+			<text class="result-v">{{ data.utf8RoundTrip }}</text>
+		</view>
+		<view class="result-item">
+			<text class="result-k">往返一致：</text>
+			<text class="result-v">{{ data.utf8RoundTripOk }}</text>
+		</view>
+		<view class="result-item">
+			<text class="result-k">无效输入结果：</text>
+			<text class="result-v">{{ data.invalidResult }}</text>
+		</view>
+	</view>
+</template>
+
+<script setup lang="ts">
+	type DataType = {
+		title: string
+		supported: boolean
+		encodeInput: string
+		decodeInput: string
+		btoaResult: string
+		atobResult: string
+		utf8B64Result: string
+		utf8RoundTrip: string
+		utf8RoundTripOk: boolean
+		invalidResult: string
+	}
+
+	let supported = false
+	// #ifndef MP || APP-HARMONY
+	supported = true
+	// #endif
+
+	const data = reactive({
+		title: 'atob / btoa',
+		supported,
+		encodeInput: 'hello uni-app x',
+		decodeInput: 'aGVsbG8gdW5pLWFwcCB4',
+		btoaResult: '',
+		atobResult: '',
+		utf8B64Result: '',
+		utf8RoundTrip: '',
+		utf8RoundTripOk: false,
+		invalidResult: ''
+	} as DataType)
+
+	const onEncodeInput = (e : UniInputEvent) => {
+		data.encodeInput = e.detail.value
+	}
+
+	const onDecodeInput = (e : UniInputEvent) => {
+		data.decodeInput = e.detail.value
+	}
+
+	const testBtoa = () => {
+		data.btoaResult = btoa(data.encodeInput)
+	}
+
+	const testAtob = () => {
+		data.atobResult = atob(data.decodeInput)
+	}
+
+	const testUtf8Combination = () => {
+		const text = '你好 uni-app x'
+		const bytes = new TextEncoder().encode(text)
+		let binary = ''
+		for (let i = 0; i < bytes.length; i++) {
+			binary += String.fromCharCode(bytes[i])
+		}
+		const b64 = btoa(binary)
+		data.utf8B64Result = b64
+		const bin = atob(b64)
+		const arr = new Uint8Array(bin.length)
+		for (let i = 0; i < bin.length; i++) {
+			arr[i] = bin.charCodeAt(i)
+		}
+		const decoded = new TextDecoder('utf-8').decode(arr)
+		data.utf8RoundTrip = decoded
+		data.utf8RoundTripOk = decoded == text
+	}
+
+	const testInvalidAtob = () => {
+		try {
+			atob('!!!')
+			data.invalidResult = '未抛出异常'
+		} catch (e) {
+			data.invalidResult = `异常: ${(e as Error).message}`
+		}
+	}
+
+	defineExpose({
+		data,
+		testBtoa,
+		testAtob,
+		testUtf8Combination,
+		testInvalidAtob
+	})
+</script>
+
+<style>
+	page {
+		padding: 15px;
+	}
+
+	.intro {
+		font-size: 12px;
+		opacity: 0.7;
+	}
+
+	.label {
+		margin-top: 12px;
+		color: var(--text-color, #333333);
+	}
+
+	.input-box {
+		margin-top: 8px;
+		padding: 8px 10px;
+		border: 1px solid var(--border-color, #D8D8D8);
+		border-radius: 4px;
+		color: var(--text-color, #333333);
+	}
+
+	.btn-list {
+		margin-top: 12px;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.result-list {
+		margin-top: 12px;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.result-item {
+		display: flex;
+		flex-direction: row;
+		margin-top: 8px;
+	}
+
+	.result-k {
+		width: 150px;
+		color: var(--active-color, #666666);
+	}
+
+	.result-v {
+		flex: 1;
+		color: var(--text-color, #333333);
+	}
+
+	.tips {
+		margin-top: 20px;
+		font-size: 12px;
+		color: var(--tips-color, #999999);
+	}
+</style>

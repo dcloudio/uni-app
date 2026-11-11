@@ -31,6 +31,12 @@
       style="position: fixed; left: 0; right: 0; bottom: 0; height: var(--uni-safe-area-inset-bottom);"
       @touchstart="recordBottomTouch('touchstart')" @touchend="recordBottomTouch('touchend')"
       @touchcancel="recordBottomTouch('touchcancel')" @tap="recordBottomTouch('tap')" />
+    <view v-if="showTouchEndTest" id="touch-end-coordinate-test"
+      style="position: fixed; left: 20px; right: 20px; top: 100px; height: 180px; background-color: #cfe4ff;"
+      @touchstart="recordTouchEndCoordinates($event, 'start')"
+      @touchmove="recordTouchEndCoordinates($event, 'move')"
+      @touchend="recordTouchEndCoordinates($event, 'end')"
+      @touchcancel="recordTouchEndCoordinates($event, 'cancel')" />
   </scroll-view>
 </template>
 
@@ -50,6 +56,91 @@ const dragTouchId = ref(-1)
 const touchEvent = ref(null as TouchEvent | null)
 const icon = ref(null as UniElement | null)
 const showBottomTouchTest = ref(false)
+const showTouchEndTest = ref(false)
+type TouchCoordinateSample = {
+  identifier: number,
+  screenX: number,
+  screenY: number,
+  clientX: number,
+  clientY: number,
+  pageX: number,
+  pageY: number
+}
+let coordinateStart : TouchCoordinateSample | null = null
+let coordinateMove : TouchCoordinateSample | null = null
+let coordinateEnd : TouchCoordinateSample | null = null
+let coordinateMoveCount = 0
+let coordinateEndCount = 0
+let coordinateCancelled = false
+let coordinateActiveAtEnd = -1
+
+function setTouchEndTest(enabled : boolean) {
+  coordinateStart = null
+  coordinateMove = null
+  coordinateEnd = null
+  coordinateMoveCount = 0
+  coordinateEndCount = 0
+  coordinateCancelled = false
+  coordinateActiveAtEnd = -1
+  showTouchEndTest.value = enabled
+}
+
+function recordTouchEndCoordinates(event : TouchEvent, phase : string) {
+  if (phase == 'move') {
+    event.preventDefault()
+  }
+  if (phase == 'cancel') {
+    coordinateCancelled = true
+    return
+  }
+  if (event.changedTouches.length != 1 ||
+      (phase == 'start' && event.touches.length != 1)) {
+    coordinateCancelled = true
+    return
+  }
+  const touch = event.changedTouches[0]
+  const start = coordinateStart
+  if (phase != 'start' && (start == null || touch.identifier != start.identifier)) {
+    coordinateCancelled = true
+    return
+  }
+  // 保存数值快照，避免原生触点对象在后续事件中更新。
+  const sample : TouchCoordinateSample = {
+    identifier: touch.identifier,
+    screenX: touch.screenX,
+    screenY: touch.screenY,
+    clientX: touch.clientX,
+    clientY: touch.clientY,
+    pageX: touch.pageX,
+    pageY: touch.pageY
+  }
+  if (phase == 'start') {
+    coordinateStart = sample
+  } else if (phase == 'move') {
+    coordinateMove = sample
+    coordinateMoveCount++
+  } else if (phase == 'end') {
+    coordinateEnd = sample
+    coordinateEndCount++
+    coordinateActiveAtEnd = event.touches.length
+  }
+}
+
+function getTouchEndTestResult() {
+  return {
+    start: coordinateStart,
+    lastMove: coordinateMove,
+    end: coordinateEnd,
+    moveCount: coordinateMoveCount,
+    endCount: coordinateEndCount,
+    cancelled: coordinateCancelled,
+    activeAtEnd: coordinateActiveAtEnd
+  }
+}
+
+function getTouchEndTestRect() : DOMRect | null {
+  return uni.getElementById('touch-end-coordinate-test')?.getBoundingClientRect()
+}
 let bottomTouchEvents : string[] = []
 
 function setBottomTouchTest(enabled : boolean) {
@@ -161,7 +252,10 @@ onReady(() => {
 defineExpose({
   data,
   setBottomTouchTest,
-  getBottomTouchEvents
+  getBottomTouchEvents,
+  setTouchEndTest,
+  getTouchEndTestResult,
+  getTouchEndTestRect
 })
 </script>
 

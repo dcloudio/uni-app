@@ -1,66 +1,69 @@
+# uni-combox 组合框组件（已废弃）
+
 > **已废弃：** uni-combox-x 仅用于兼容已有项目。新项目请安装并使用 [uni-combobox](https://ext.dcloud.net.cn/plugin?name=uni-combobox)。
 
-uni-combox 组合框组件。
+## 用途和场景
 
-默认为单选模式，类似 select 组件，只能选择不能输入。通过具名插槽 `input` 传入 input 组件后，切换为可输入、可选择的组合模式。
+uni-combox 用于从候选列表中单选一个值，交互形态类似原生 select。适合省市区、年级、状态等选项数量有限、需要展开浮层选择的场景。
 
-### 基本用法
+默认是单选模式，只能选择不能输入。通过 `input` 具名插槽传入 input 组件后，切换为可输入、可选择的组合模式。
+
+## 使用方式（职责分工）
+
+- 组件内部负责：
+  - 渲染选择框、占位文字、右侧箭头与候选浮层。
+  - 计算浮层位置，下方空间不足且上方更充足时自动向上展开；浮层通过 `teleport` 渲染到页面层，不受组件尺寸裁剪。
+  - 默认只读选择；组合模式下按输入内容过滤候选并高亮匹配项。
+  - 全平台使用遮罩层关闭浮层，支持返回键（App/MP）关闭。
+  - web 端键盘交互：`Tab` 聚焦后可用 `ArrowUp`/`ArrowDown` 移动高亮项、`Enter` 选中、`Esc` 关闭。
+  - 候选项为空时的提示文案跟随应用语言（简体中文、繁体中文、英文、法文、拉丁文）。
+- 使用者负责：
+  - 传入候选字符串数组 `options`，并用 `v-model` 绑定当前值。
+  - 组合模式下自行提供 input（或其它输入组件）作为 `input` 插槽内容，并把插槽提供的 `value`、`input`、`focus`、`disabled` 接到输入组件上。
+  - 通过外部样式类定制各区域外观。
+  - 通过组件 ref 调用对外方法。
+
+## 基本用法
 
 ```html
 <uni-combox :options="options" placeholder="请选择" v-model="value" />
 ```
 
-### options
-
-```html
-<uni-combox :options="gradeOptions" placeholder="请选择年级" v-model="grade" />
+```ts
+const options : string[] = ['一年级', '二年级', '三年级']
+const value = ref('')
 ```
 
-### modelValue / v-model
+普通单选模式下点击组件任意位置都会打开完整候选列表，点击候选项即选中并关闭浮层。
+
+## 组合模式（可输入、可选择）
 
 ```html
-<uni-combox :options="cityOptions" v-model="city" placeholder="请选择城市" />
-```
-
-### placeholder
-
-```html
-<uni-combox :options="cityOptions" placeholder="这里展示 placeholder" v-model="value" />
-```
-
-### disabled
-
-```html
-<uni-combox :options="cityOptions" v-model="city" disabled />
-```
-
-禁用后不可输入、展开或选择候选项。
-
-### 组合模式
-
-```html
-<uni-combox :options="options" v-model="city">
-  <template #input="{ value, input, disabled }">
+<uni-combox :options="cities" v-model="city" placeholder="选择或输入城市">
+  <template #input="{ value, input, focus, disabled }">
     <input
       :value="value"
       :disabled="disabled"
       placeholder="选择或输入城市"
       @input="input"
+      @focus="focus"
     />
   </template>
 </uni-combox>
 ```
 
-输入时会打开候选浮层，并按 startsWith 规则过滤候选项。点击右侧箭头打开时展示完整候选列表，并高亮当前输入匹配项。
+输入时会打开候选浮层，并按包含关系过滤候选项。点击右侧箭头打开时展示完整候选列表，并高亮当前输入匹配项。禁用后不可输入、展开或选择候选项。
 
-### 自定义样式
+## 自定义样式
+
+选择框、箭头、浮层与候选文字均通过外部样式类定制，组件不通过属性传递内联 css，也不对外暴露 css 变量：
 
 ```html
 <uni-combox
   :options="options"
   v-model="value"
-  arrow-class="demo-arrow"
   field-class="demo-field"
+  arrow-class="demo-arrow"
   options-view-class="demo-options-view"
   options-content-class="demo-options-content"
   option-text-class="demo-option-text"
@@ -70,75 +73,48 @@ uni-combox 组合框组件。
 />
 ```
 
-也可以单独传入任意一个样式类属性。
+- `field-class`：非弹出区域（选择框本体）。
+- `arrow-class`：右侧箭头。
+- `options-view-class`：候选浮层外层。
+- `options-content-class`：候选浮层内容区。
+- `option-text-class`：候选项文字。
+- `option-text-highlight-class`：高亮候选项文字。
+- `option-row-highlight-class`：高亮候选项整行。
+- `result-text-class`：单选模式结果文字。
+
+浮层的定位、最大高度等布局由组件内部控制，外部样式类不应覆盖这些属性。
+
+## 事件与组件方法
+
+`update:modelValue` 在值更新时触发，`selectchange` 仅在从候选项中选中时触发。
 
 ```html
-<uni-combox :options="options" v-model="value" arrow-class="demo-arrow" />
-<uni-combox :options="options" v-model="value" options-view-class="demo-options-view" />
-<uni-combox :options="options" v-model="value" option-text-class="demo-option-text" />
-<uni-combox :options="options" v-model="value" option-text-highlight-class="demo-option-highlight" />
-<uni-combox :options="options" v-model="value" option-row-highlight-class="demo-option-row-highlight" />
-<uni-combox :options="options" v-model="value" result-text-class="demo-result-text" />
+<uni-combox ref="comboxRef" :options="options" v-model="value" @selectchange="onSelectChange" />
+<button @click="open">打开候选</button>
+<button @click="close">关闭候选</button>
+<button @click="setValue">设置值并过滤</button>
 ```
 
-### 事件
+```ts
+const comboxRef = ref<CallEasyMethodComponentPublicInstance | null>(null)
 
-```html
-<uni-combox
-  :options="options"
-  v-model="value"
-  @update:modelValue="onUpdateModelValue"
-  @selectchange="onSelectChange"
-/>
+function open() {
+  comboxRef.value?.openOptions()
+}
+
+function close() {
+  comboxRef.value?.closeOptions()
+}
+
+function setValue() {
+  comboxRef.value?.setInputValue('杭州')
+}
 ```
 
-### 浮层
+## 注意事项
 
-候选浮层通过 `teleport` 渲染到页面层，不受组件自身尺寸裁剪。下方空间不足且上方空间更充足时，会自动向上展开。默认最大高度为 200px。
-
-候选浮层内部使用 `scroll-view`。
-
-### External Classes
-
-| 类名 | 说明 |
-| --- | --- |
-| arrow-class | 右侧箭头样式 |
-| field-class | 非弹出区域样式 |
-| options-view-class | 候选浮层外层样式 |
-| options-content-class | 候选浮层内容样式 |
-| option-text-class | 候选项文字样式 |
-| option-text-highlight-class | 候选项高亮样式 |
-| option-row-highlight-class | 候选项高亮行样式 |
-| result-text-class | 单选模式结果文字样式 |
-
-### Props
-
-| 属性名 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| options | Array\<String\> | [] | 候选字符串数组 |
-| modelValue | String | '' | 当前值，支持 v-model |
-| placeholder | String | '' | 占位文字 |
-| disabled | Boolean | false | 是否禁用 |
-| arrowClass | String | '' | 右侧箭头自定义样式类 |
-| fieldClass | String | '' | 非弹出区域自定义样式类 |
-| optionsViewClass | String | '' | 候选浮层外层自定义样式类 |
-| optionsContentClass | String | '' | 候选浮层内容自定义样式类 |
-| optionTextClass | String | '' | 候选项文字自定义样式类 |
-| optionTextHighlightClass | String | '' | 候选项高亮自定义样式类 |
-| optionRowHighlightClass | String | '' | 候选项高亮行自定义样式类 |
-| resultTextClass | String | '' | 单选模式结果文字自定义样式类 |
-
-### Events
-
-| 事件名 | 说明 | 回调参数 |
-| --- | --- | --- |
-| update:modelValue | 值更新时触发 | value: string |
-| selectchange | 从候选项选中时触发 | value: string |
-
-### Expose
-
-| 方法名 | 说明 |
-| --- | --- |
-| setInputValue(value: string) | 设置当前值并打开过滤候选 |
-| openOptions() | 打开候选浮层 |
-| closeOptions() | 关闭候选浮层 |
+- 候选项数组变化后需整体替换数组才会刷新过滤结果，原地修改数组元素不会触发。
+- 浮层默认最大高度为 200px，候选较多时内部使用 `scroll-view` 滚动。
+- 组件已做暗黑适配；通过外部样式类自定义颜色时，请同步考虑暗黑下的可读性。
+- 新旧组件行为存在少量差异（如浮层关闭方式），存量项目迁移前建议对比示例页。
+- 示例页面路径：`/pages/uni-ui/combox/combox.uvue`。

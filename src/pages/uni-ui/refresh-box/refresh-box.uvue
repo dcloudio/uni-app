@@ -24,7 +24,7 @@
         :refreshing="data.refreshing1"
       ></uni-refresh-box> <!-- TODO web只认在组件外层使用slot="refresher"，不支持组件内根元素使用-->
     </scroll-view>
-		<text class="section-label">竖排暗黑自定义文字的下拉设置</text>
+		<text class="uni-h4">竖排暗黑自定义文字的下拉设置</text>
 		<scroll-view
 		  style="flex: 1;background-color: black;"
 		  :refresher-enabled="true"
@@ -55,7 +55,7 @@
 				loading-text="奋力加载中..."
 			></uni-refresh-box> 
 		</scroll-view>
-		<text class="section-label">slot自定义下拉图标</text>
+		<text class="uni-h4">slot自定义下拉图标</text>
 		<scroll-view
 		  style="flex: 1;"
 		  :refresher-enabled="true"
@@ -94,7 +94,7 @@
 				<!-- <image src="https://web-ext-storage.dcloud.net.cn/hello-uni-app-x/refresh-box-run.gif" style="width:20px;height:20px;"></image> -->
 			</uni-refresh-box> 
 		</scroll-view>
-		<text class="section-label">无文字，纯loading</text>
+		<text class="uni-h4">无文字，纯loading</text>
 		<scroll-view
 		  style="flex: 1;"
 		  :refresher-enabled="true"
@@ -251,10 +251,6 @@ defineExpose({
 </script>
 
 <style>
-.section-label {
-  margin: 5px;
-  color: var(--text-color, #333333);
-}
 .content-item {
   margin: 5px 10px;
 }

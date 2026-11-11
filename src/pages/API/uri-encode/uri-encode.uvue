@@ -1,0 +1,173 @@
+<template>
+	<page-head :title="data.title"></page-head>
+	<text class="intro">encodeURI / decodeURI 用于编解码完整 URI，保留 ; / ? : @ &amp; = + $ , # 等保留字符；encodeURIComponent / decodeURIComponent 用于编解码 URI 组成部分，会编码更多字符。</text>
+
+	<text class="label">编码输入：</text>
+	<input class="input-box" :value="data.encodeInput" placeholder="请输入待编码字符串" @input="onEncodeInput"></input>
+	<view class="btn-list">
+		<button @click="testEncodeURI">encodeURI</button>
+		<button @click="testEncodeURIComponent">encodeURIComponent</button>
+	</view>
+	<view class="result-list">
+		<view class="result-item">
+			<text class="result-k">encodeURI：</text>
+			<text class="result-v">{{ data.encodeURIResult }}</text>
+		</view>
+		<view class="result-item">
+			<text class="result-k">encodeURIComponent：</text>
+			<text class="result-v">{{ data.encodeURIComponentResult }}</text>
+		</view>
+	</view>
+
+	<text class="label">解码输入：</text>
+	<input class="input-box" :value="data.decodeInput" placeholder="请输入待解码字符串" @input="onDecodeInput"></input>
+	<view class="btn-list">
+		<button @click="testDecodeURI">decodeURI</button>
+		<button @click="testDecodeURIComponent">decodeURIComponent</button>
+		<button @click="testInvalidDecode">无效序列演示</button>
+	</view>
+	<view class="result-list">
+		<view class="result-item">
+			<text class="result-k">decodeURI：</text>
+			<text class="result-v">{{ data.decodeURIResult }}</text>
+		</view>
+		<view class="result-item">
+			<text class="result-k">decodeURIComponent：</text>
+			<text class="result-v">{{ data.decodeURIComponentResult }}</text>
+		</view>
+		<view class="result-item">
+			<text class="result-k">无效序列结果：</text>
+			<text class="result-v">{{ data.invalidResult }}</text>
+		</view>
+	</view>
+
+	<text class="tips">注意：返回值为 string | null。对无效字符序列，不同平台行为可能不同（如抛出 URIError 异常），建议使用 try-catch 处理。</text>
+</template>
+
+<script setup lang="ts">
+	type DataType = {
+		title: string
+		encodeInput: string
+		decodeInput: string
+		encodeURIResult: string
+		encodeURIComponentResult: string
+		decodeURIResult: string
+		decodeURIComponentResult: string
+		invalidResult: string
+	}
+
+	const data = reactive({
+		title: 'URI 编解码',
+		encodeInput: '你好;/=+22 uni-app x',
+		decodeInput: '%E4%BD%A0%E5%A5%BD;/=+22%20uni-app%20x',
+		encodeURIResult: '',
+		encodeURIComponentResult: '',
+		decodeURIResult: '',
+		decodeURIComponentResult: '',
+		invalidResult: ''
+	} as DataType)
+
+	const onEncodeInput = (e : UniInputEvent) => {
+		data.encodeInput = e.detail.value
+	}
+
+	const onDecodeInput = (e : UniInputEvent) => {
+		data.decodeInput = e.detail.value
+	}
+
+	const testEncodeURI = () => {
+		const r = encodeURI(data.encodeInput)
+		data.encodeURIResult = r == null ? 'null' : r
+	}
+
+	const testEncodeURIComponent = () => {
+		const r = encodeURIComponent(data.encodeInput)
+		data.encodeURIComponentResult = r == null ? 'null' : r
+	}
+
+	const testDecodeURI = () => {
+		const r = decodeURI(data.decodeInput)
+		data.decodeURIResult = r == null ? 'null' : r
+	}
+
+	const testDecodeURIComponent = () => {
+		const r = decodeURIComponent(data.decodeInput)
+		data.decodeURIComponentResult = r == null ? 'null' : r
+	}
+
+	const testInvalidDecode = () => {
+		try {
+			const r = decodeURI('%E4%BD')
+			data.invalidResult = r == null ? 'null（无效字符序列）' : r
+		} catch (e) {
+			data.invalidResult = `异常: ${(e as Error).message}`
+		}
+	}
+
+	defineExpose({
+		data,
+		testEncodeURI,
+		testEncodeURIComponent,
+		testDecodeURI,
+		testDecodeURIComponent,
+		testInvalidDecode
+	})
+</script>
+
+<style>
+	page {
+		padding: 15px;
+	}
+
+	.intro {
+		font-size: 12px;
+		opacity: 0.7;
+	}
+
+	.label {
+		margin-top: 12px;
+		color: var(--text-color, #333333);
+	}
+
+	.input-box {
+		margin-top: 8px;
+		padding: 8px 10px;
+		border: 1px solid var(--border-color, #D8D8D8);
+		border-radius: 4px;
+		color: var(--text-color, #333333);
+	}
+
+	.btn-list {
+		margin-top: 12px;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.result-list {
+		margin-top: 12px;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.result-item {
+		display: flex;
+		flex-direction: row;
+		margin-top: 8px;
+	}
+
+	.result-k {
+		width: 160px;
+		color: var(--active-color, #666666);
+	}
+
+	.result-v {
+		flex: 1;
+		color: var(--text-color, #333333);
+	}
+
+	.tips {
+		margin-top: 20px;
+		font-size: 12px;
+		color: var(--tips-color, #999999);
+	}
+</style>

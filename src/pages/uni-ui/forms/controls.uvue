@@ -1,65 +1,63 @@
 <template>
-	<view>
-		<view class="intro">
-			<text class="page-title">控件接入示例</text>
-			<text class="page-desc">uni-forms 不要求控件继承特定基类。只要控件通过 v-model 更新表单对象，就能参与提交校验；需要失焦即时校验时，再按需接入表单项上下文。</text>
+	<view class="intro">
+		<text class="page-title">控件接入示例</text>
+		<text class="page-desc">uni-forms 不要求控件继承特定基类。只要控件通过 v-model 更新表单对象，就能参与提交校验；需要失焦即时校验时，再按需接入表单项上下文。</text>
+	</view>
+
+	<view class="section">
+		<uni-forms
+			ref="formRef"
+			v-model="formData"
+			:rules="rules"
+			err-show-type="undertext"
+			label-position="left"
+			label-width="120"
+			border
+		>
+			<uni-forms-item name="nativeInput" label="原生 input" required label-class="demo-label" error-message-class="demo-error">
+				<input class="native-input" v-model="formData.nativeInput" placeholder="直接使用 v-model" />
+			</uni-forms-item>
+
+			<uni-forms-item name="nativeNote" label="原生 textarea" label-class="demo-label" error-message-class="demo-error">
+				<textarea class="native-textarea" v-model="formData.nativeNote" placeholder="多行文本不需要额外适配" />
+			</uni-forms-item>
+
+			<uni-forms-item name="agree" label="原生 switch" required label-class="demo-label" error-message-class="demo-error">
+				<switch :checked="formData.agree" @change="onAgreeChange" />
+			</uni-forms-item>
+
+			<uni-forms-item name="nativeCity" label="原生 picker" required label-class="demo-label" error-message-class="demo-error">
+				<picker class="picker-control" :range="cityOptions" :value="cityIndex" @change="onCityChange">
+					<view class="picker-value"><text>{{ formData.nativeCity || '请选择城市' }}</text></view>
+				</picker>
+			</uni-forms-item>
+
+			<uni-forms-item name="easyInput" label="uni-easyinput" required label-class="demo-label" error-message-class="demo-error">
+				<uni-easyinput v-model="formData.easyInput" placeholder="uni-x 组件直接接入" />
+			</uni-forms-item>
+
+			<uni-forms-item name="combobox" label="uni-combobox" required label-class="demo-label" error-message-class="demo-error">
+				<uni-combobox v-model="formData.combobox" :options="comboboxOptions" placeholder="uni-combobox 直接接入" />
+			</uni-forms-item>
+
+			<uni-forms-item name="thirdParty" label="三方组件" required label-class="demo-label" error-message-class="demo-error">
+				<thirdPartyControl v-model="formData.thirdParty" :options="thirdPartyOptions" placeholder="只实现 update:modelValue" />
+			</uni-forms-item>
+		</uni-forms>
+
+		<view class="button-row">
+			<button class="action-button" size="mini" @click="validateForm">校验接入控件</button>
+			<button class="action-button secondary-button" size="mini" @click="resetForm">重置</button>
 		</view>
+		<text class="status-text">{{ statusText }}</text>
+	</view>
 
-		<view class="section">
-			<uni-forms
-				ref="formRef"
-				v-model="formData"
-				:rules="rules"
-				err-show-type="undertext"
-				label-position="left"
-				label-width="120"
-				border
-			>
-				<uni-forms-item name="nativeInput" label="原生 input" required label-class="demo-label" error-message-class="demo-error">
-					<input class="native-input" v-model="formData.nativeInput" placeholder="直接使用 v-model" />
-				</uni-forms-item>
-
-				<uni-forms-item name="nativeNote" label="原生 textarea" label-class="demo-label" error-message-class="demo-error">
-					<textarea class="native-textarea" v-model="formData.nativeNote" placeholder="多行文本不需要额外适配" />
-				</uni-forms-item>
-
-				<uni-forms-item name="agree" label="原生 switch" required label-class="demo-label" error-message-class="demo-error">
-					<switch :checked="formData.agree" @change="onAgreeChange" />
-				</uni-forms-item>
-
-				<uni-forms-item name="nativeCity" label="原生 picker" required label-class="demo-label" error-message-class="demo-error">
-					<picker class="picker-control" :range="cityOptions" :value="cityIndex" @change="onCityChange">
-						<view class="picker-value"><text>{{ formData.nativeCity || '请选择城市' }}</text></view>
-					</picker>
-				</uni-forms-item>
-
-				<uni-forms-item name="easyInput" label="uni-easyinput" required label-class="demo-label" error-message-class="demo-error">
-					<uni-easyinput v-model="formData.easyInput" placeholder="uni-x 组件直接接入" />
-				</uni-forms-item>
-
-				<uni-forms-item name="combobox" label="uni-combobox" required label-class="demo-label" error-message-class="demo-error">
-					<uni-combobox v-model="formData.combobox" :options="comboboxOptions" placeholder="uni-combobox 直接接入" />
-				</uni-forms-item>
-
-				<uni-forms-item name="thirdParty" label="三方组件" required label-class="demo-label" error-message-class="demo-error">
-					<thirdPartyControl v-model="formData.thirdParty" :options="thirdPartyOptions" placeholder="只实现 update:modelValue" />
-				</uni-forms-item>
-			</uni-forms>
-
-			<view class="button-row">
-				<button class="action-button" size="mini" @click="validateForm">校验接入控件</button>
-				<button class="action-button secondary-button" size="mini" @click="resetForm">重置</button>
-			</view>
-			<text class="status-text">{{ statusText }}</text>
-		</view>
-
-		<view class="section section-last">
-			<text class="section-title">接入要点</text>
-			<text class="point-text">1. 输入类控件：实现 modelValue 属性和 update:modelValue 事件。</text>
-			<text class="point-text">2. 原生 picker/switch：用 change 事件把 detail.value 写回表单模型。</text>
-			<text class="point-text">3. 只使用 v-model 的三方组件可以参与 submit 校验；失焦校验属于可选增强。</text>
-			<text class="data-text">{{ dataText }}</text>
-		</view>
+	<view class="section section-last">
+		<text class="uni-h4">接入要点</text>
+		<text class="point-text">1. 输入类控件：实现 modelValue 属性和 update:modelValue 事件。</text>
+		<text class="point-text">2. 原生 picker/switch：用 change 事件把 detail.value 写回表单模型。</text>
+		<text class="point-text">3. 只使用 v-model 的三方组件可以参与 submit 校验；失焦校验属于可选增强。</text>
+		<text class="data-text">{{ dataText }}</text>
 	</view>
 </template>
 
@@ -163,16 +161,10 @@ page {
 	padding-bottom: 32px;
 }
 
-.page-title,
-.section-title {
+.page-title {
 	font-size: 18px;
 	font-weight: bold;
 	color: var(--text-color, #222222);
-}
-
-.section-title {
-	margin-bottom: 12px;
-	font-size: 16px;
 }
 
 .page-desc,

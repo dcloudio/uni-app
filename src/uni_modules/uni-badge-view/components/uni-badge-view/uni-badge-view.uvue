@@ -11,21 +11,21 @@
 			<slot></slot>
 
 			<!-- badge 文字模式 -->
-			<text v-if="text != '' && text != '0' " :class="['text', 'position', badgeClass]" :style="badgeStyle">
+			<text v-if="text != '' && text != '0' " flatten :class="['text', 'position', badgeClass]">
 				{{ text }}
 			</text>
 
 			<!-- badge 红点模式 -->
-			<view v-else-if="text != '0'" :class="['dot', 'position', badgeClass]" :style="badgeStyle"></view>
+			<view v-else-if="text != '0'" flatten :class="['dot', 'position', badgeClass]"></view>
 		</view>
 
 		<!-- 不包裹，直接显示badge 文字模式 -->
-		<text v-else-if="text != ''" :class="['text', badgeClass]" :style="badgeStyle">
+		<text v-else-if="text != ''" flatten :class="['text', badgeClass]" v-bind="$attrs">
 			{{ text }}
 		</text>
 
 		<!-- 不包裹，直接显示badge 红点模式 -->
-		<view v-else :class="['dot', badgeClass]" :style="badgeStyle"></view>
+		<view v-else flatten :class="['dot', badgeClass]" v-bind="$attrs"></view>
 	</template>
 </template>
 
@@ -35,36 +35,15 @@
    * @description 数字角标（徽章）组件
    * @uniPlatform {
    *   "app": {
-   *     "android": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.21"
-   *     },
-   *     "ios": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.11"
-   *     },
-   *     "harmony": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.07",
-   *       "unixVaporVer": "5.07"
-   *     }
+   *     "android": {"unixVaporVer": "5.21"},
+   *     "ios": {"unixVaporVer": "5.11"},
+   *     "harmony": {"unixVaporVer": "5.07"}
    *   },
    *   "mp": {
-   *     "weixin": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.08"
-   *     },
-   *     "alipay": {
-   *       "uniVer": "x",
-   *       "unixVer": "5.31"
-   *     }
+   *     "weixin": {"unixVer": "5.08"},
+   *     "alipay": {"unixVer": "5.31"}
    *   },
-   *   "web": {
-   *     "uniVer": "x",
-   *     "unixVer": "5.07"
-   *   }
+   *   "web": {"unixVer": "5.07"}
    * }
    */
 	// 禁用自动属性继承，手动控制属性绑定位置
@@ -80,111 +59,31 @@
 		 * @default ""
 		 * @uniPlatform {
 		 *   "app": {
-		 *     "android": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07",
-		 *       "unixVaporVer": "5.21"
-		 *     },
-		 *     "ios": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07",
-		 *       "unixVaporVer": "5.11"
-		 *     },
-		 *     "harmony": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07",
-		 *       "unixVaporVer": "5.07"
-		 *     }
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
 		 *   },
-		 *   "web": {
-		 *     "uniVer": "x",
-		 *     "unixVer": "5.07"
-		 *   },
+		 *   "web": {"unixVer": "5.07"},
 		 *   "mp": {
-		 *     "weixin": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07"
-		 *     },
-		 *     "alipay": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.31"
-		 *     }
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
 		 *   }
 		 * }
 		 */
 		text? : string,
 		/**
-		 * @description badge 的内联样式，用于覆盖内置 style
-		 * @default ""
-		 * @uniPlatform {
-		 *   "app": {
-		 *     "android": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07",
-		 *       "unixVaporVer": "5.21"
-		 *     },
-		 *     "ios": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07",
-		 *       "unixVaporVer": "5.11"
-		 *     },
-		 *     "harmony": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07",
-		 *       "unixVaporVer": "5.07"
-		 *     }
-		 *   },
-		 *   "web": {
-		 *     "uniVer": "x",
-		 *     "unixVer": "5.07"
-		 *   },
-		 *   "mp": {
-		 *     "weixin": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07"
-		 *     },
-		 *     "alipay": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.31"
-		 *     }
-		 *   }
-		 * }
-		 */
-		badgeStyle? : string,
-		/**
 		 * @description badge 的样式类，用于覆盖内置 class
 		 * @default ""
 		 * @uniPlatform {
 		 *   "app": {
-		 *     "android": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07",
-		 *       "unixVaporVer": "5.21"
-		 *     },
-		 *     "ios": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07",
-		 *       "unixVaporVer": "5.11"
-		 *     },
-		 *     "harmony": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07",
-		 *       "unixVaporVer": "5.07"
-		 *     }
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
 		 *   },
-		 *   "web": {
-		 *     "uniVer": "x",
-		 *     "unixVer": "5.07"
-		 *   },
+		 *   "web": {"unixVer": "5.07"},
 		 *   "mp": {
-		 *     "weixin": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07"
-		 *     },
-		 *     "alipay": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.31"
-		 *     }
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
 		 *   }
 		 * }
 		 */
@@ -194,35 +93,14 @@
 		 * @default false
 		 * @uniPlatform {
 		 *   "app": {
-		 *     "android": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07",
-		 *       "unixVaporVer": "5.21"
-		 *     },
-		 *     "ios": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07",
-		 *       "unixVaporVer": "5.11"
-		 *     },
-		 *     "harmony": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07",
-		 *       "unixVaporVer": "5.07"
-		 *     }
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
 		 *   },
-		 *   "web": {
-		 *     "uniVer": "x",
-		 *     "unixVer": "5.07"
-		 *   },
+		 *   "web": {"unixVer": "5.07"},
 		 *   "mp": {
-		 *     "weixin": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.07"
-		 *     },
-		 *     "alipay": {
-		 *       "uniVer": "x",
-		 *       "unixVer": "5.31"
-		 *     }
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
 		 *   }
 		 * }
 		 */
@@ -232,7 +110,6 @@
 	// 使用 withDefaults 设置默认值
 	const props = withDefaults(defineProps<Props>(), {
 		text: '',
-		badgeStyle: '',
 		badgeClass: '',
 		alwaysWrapWithContent: false
 	})

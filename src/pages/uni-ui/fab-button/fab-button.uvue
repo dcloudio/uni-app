@@ -1,27 +1,25 @@
 <template>
-	<view style="flex: 1;position: relative;padding: 15px 15px 0 15px;">
-		<text class="label first-label">标准uni-fab-button</text>
-		<uni-fab-button></uni-fab-button>
-		<text class="label">自定义fab样式</text>
-		<uni-fab-button class="custom-class"></uni-fab-button>
-		<text class="label">自定义plus样式</text>
-		<uni-fab-button plus-class="custom-plus-class"></uni-fab-button>
-		<text class="label">自定义fab和plus样式，变成一个16px的纯+</text>
-		<uni-fab-button class="transparent" plus-class="black-plus"></uni-fab-button>
-		<text class="label">可移动uni-fab-button</text>
-		<view class="move-fab-placeholder">
-			<view id="move-fab" class="move-fab" @touchstart="onTouchStart" @touchmove="onTouchMove" @touchend="updateMoveData" @touchcancel="updateMoveData">
-				<uni-fab-button></uni-fab-button>
-			</view>
+	<text class="uni-h4">标准uni-fab-button</text>
+	<uni-fab-button></uni-fab-button>
+	<text class="uni-h4">自定义fab样式</text>
+	<uni-fab-button class="custom-class"></uni-fab-button>
+	<text class="uni-h4">自定义plus样式</text>
+	<uni-fab-button plus-class="custom-plus-class"></uni-fab-button>
+	<text class="uni-h4">自定义fab和plus样式，变成一个16px的纯+</text>
+	<uni-fab-button class="transparent" plus-class="black-plus"></uni-fab-button>
+	<text class="uni-h4">可移动uni-fab-button</text>
+	<view class="move-fab-placeholder">
+		<view id="move-fab" class="move-fab" @touchstart="onTouchStart" @touchmove="onTouchMove" @touchend="updateMoveData" @touchcancel="updateMoveData">
+			<uni-fab-button></uni-fab-button>
 		</view>
-		<view
-			class="right-bottom"
-			:class="rightBottomFabPressed ? 'fab-pressed' : ''"
-			@touchstart="rightBottomFabPressed = true"
-			@touchend="rightBottomFabPressed = false"
-			@touchcancel="rightBottomFabPressed = false">
-			<uni-fab-button @click="handleClick"></uni-fab-button>
-		</view>
+	</view>
+	<view
+		class="right-bottom"
+		:class="rightBottomFabPressed ? 'fab-pressed' : ''"
+		@touchstart="rightBottomFabPressed = true"
+		@touchend="rightBottomFabPressed = false"
+		@touchcancel="rightBottomFabPressed = false">
+		<uni-fab-button @click="handleClick"></uni-fab-button>
 	</view>
 </template>
 
@@ -103,49 +101,62 @@
 </script>
 
 <style>
-	.label {
+	page {
+		padding: 15px 15px 0px 15px;
+		--text-color: #333333;
+	}
+
+	@media (prefers-color-scheme: dark) {
+		page {
+			--text-color: #ffffff;
+		}
+	}
+
+	.uni-h4 {
 		color: var(--text-color, #333333);
-		margin-top: 24px;
-		margin-bottom: 12px;
 	}
-	.first-label {
-		margin-top: 0;
-	}
-	.custom-class{
+
+	.custom-class {
 		background-color: green;
 		width: 20px;
 		height: 20px;
 	}
+
 	.custom-plus-class {
 		background-color: brown;
 		width: 80%;
 		height: 5px;
 		border-radius: 0px;
 	}
+
 	.transparent {
 		width: 16px;
 		height: 16px;
 		background-color: transparent;
 		box-shadow: none;
 	}
+
 	.black-plus {
 		background-color: black;
 		width: 100%;
 		height: 2px;
 		border-radius: 0px;
 	}
+
 	.move-fab-placeholder {
 		width: 56px;
 		height: 56px;
 	}
+
 	.move-fab {
 		width: 56px;
 		height: 56px;
 		align-items: center;
 		justify-content: center;
 	}
+
 	.right-bottom {
-		position: absolute;
+		position: fixed;
 		right: 38px;
 		bottom: 38px;
 		width: 56px;
@@ -159,6 +170,7 @@
 		transition-duration: 140ms;
 		transition-timing-function: cubic-bezier(0.2, 0, 0.2, 1);
 	}
+
 	.fab-pressed {
 		opacity: 0.9;
 		transform: scale(0.95);

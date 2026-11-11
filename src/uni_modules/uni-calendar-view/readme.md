@@ -1,76 +1,20 @@
 # uni-calendar-view 日历视图组件
 
+## 用途和场景
+
 uni-calendar-view 用于页面中内嵌的日历。
 
-支持左右拖动切换前后月份。支持多语言。支持在日期上下显示扩展文字。
+支持左右拖动切换前后月份，支持选择月份、选择日期、限制可选日期范围、节假日高亮，并支持在日期数字上方、下方显示扩展文字（如农历、节气、节日、入住/离店等）。内置多语言，内置复用、拍平等高性能方案。
 
-内置复用、拍平等高性能方案。
+## 使用方式（职责分工）
 
-组件支持节假日红色显示，但需要使用者传入节假日数据。因中国大陆地区每年的节假日不同，一般需等待政府公布下一年放假通知后更新数据。
-
-## 属性
-
-| 属性名 | 类型 | 默认值 | 说明 |
-|--------|------|--------|------|
-| modelValue | string | "" | 选中日期，格式 `YYYY-MM-DD`，支持 `v-model` |
-| date | string | "" | 初始显示的月份，格式 `YYYY-MM` 或 `YYYY-MM-DD`；为空时依次取 modelValue 所在月份、当前月份 |
-| minDate | string | "" | 可选的最小日期，格式 `YYYY-MM-DD`，早于该日期的日期置灰且不可点击 |
-| maxDate | string | "" | 可选的最大日期，格式 `YYYY-MM-DD`，晚于该日期的日期置灰且不可点击 |
-| holidays | Array\<string> | [] | 节假日日期列表，格式 `YYYY-MM-DD`，命中的日期高亮显示 |
-| locale | string | "" | 语言标识，如 `zh-Hans`、`zh-Hant`、`en`、`fr`、`ja` 等；为空时跟随系统语言 |
-| weekStart | number | -1 | 一周的起始日，0 为周日、1 为周一，以此类推；-1 表示按语言自动适配 |
-| dayExtras | Array\<CalendarDayExtra> | [] | 日期附加文字列表，用于在日期数字上方、下方显示农历、节日等文字，仅携带数据 |
-| yearMonthClass | string | "" | 年月标题的自定义样式类 |
-| yearMonthArrowClass | string | "" | 年月标题左右箭头的自定义样式类 |
-| weekClass | string | "" | 星期标题行容器的自定义样式类 |
-| weekItemClass | string | "" | 星期标题项的自定义样式类 |
-| dayClass | string | "" | 日期数字的自定义样式类，作用于所有日期 |
-| daySelectedClass | string | "" | 选中日期的自定义样式类，用于覆盖默认选中样式；未传 dayExtras 时作用于日期数字，传入 dayExtras 时作用于整个日期单元格（含上下方文字） |
-| todayClass | string | "" | 今天日期的自定义样式类，用于覆盖默认今天高亮样式 |
-| dayWrapClass | string | "" | 日期单元格容器的自定义样式类，仅在传入 dayExtras 时生效 |
-| dayTopClass | string | "" | 日期数字上方文字的自定义样式类 |
-| dayBottomClass | string | "" | 日期数字下方文字的自定义样式类 |
-
-## 事件
-
-| 事件名 | 说明 | 回调参数 |
-|--------|------|----------|
-| update:modelValue | 选中日期变化时触发，用于 `v-model` 双向绑定 | date: string - 选中的日期，格式 `YYYY-MM-DD` |
-| change | 点击选择日期时触发 | date: string - 选中的日期，格式 `YYYY-MM-DD` |
-| month-change | 当前显示月份变化时触发（切换箭头、滑动、选择月份、方法跳转） | year: number - 当前年份；month: number - 当前月份，1-12 |
-
-## 方法
-
-通过组件 ref 调用。
-
-| 方法名 | 说明 | 参数 |
-|--------|------|------|
-| prevMonth | 切换到上一个月 | - |
-| nextMonth | 切换到下一个月 | - |
-| goToMonth | 跳转到指定年月 | year: number, month: number |
-| goToDate | 选中并跳转到指定日期 | date: string，格式 `YYYY-MM-DD` |
-| getSelectedDate | 获取当前选中日期，未选中时返回空字符串 | - |
-
-## 外部样式类
-
-| 类名 | 说明 |
-|------|------|
-| year-month-class | 年月标题文本 |
-| year-month-arrow-class | 年月标题左右箭头 |
-| week-class | 星期标题行容器 |
-| week-item-class | 星期标题项 |
-| day-class | 所有日期数字 |
-| day-selected-class | 选中日期；未传 day-extras 时为日期数字，传入 day-extras 时为整个日期单元格（含上下方文字） |
-| today-class | 今天日期数字，今天默认高亮 |
-| day-wrap-class | 日期单元格容器，仅在传入 day-extras 时生效 |
-| day-top-class | 日期数字上方文字 |
-| day-bottom-class | 日期数字下方文字 |
-
-## 国际化
-
-内置以下语言，组件根据 `locale` 属性或系统语言自动切换月份名称、星期缩写和一周起始日：
-
-中文简体（zh-Hans）、中文繁体（zh-Hant）、英文（en）、法文（fr）、拉丁文（la）、日文（ja）、韩文（ko）、德文（de）、印尼（id）、马来（ms）、意大利（it）、葡萄牙（pt）、俄语（ru）、泰语（th）、越南语（vi）、阿拉伯语（ar）、土耳其语（tr）。
+- 组件内部负责：渲染日历网格、月份切换与滑动、日期选中态、今天与节假日高亮、按语言适配星期标题与一周起始日；对 `day-extras`、`holidays` 建立 O(1) 预索引，切换月份不重复构建。
+- 使用者负责：
+  - 通过 `v-model` 绑定选中日期（格式 `YYYY-MM-DD`）。
+  - 按需传入节假日日期列表（`holidays`）。因中国大陆地区每年的节假日不同，一般需等待政府公布下一年放假通知后更新数据。
+  - 按需传入日期附加文字（`day-extras`），只携带数据、不携带样式。
+  - 通过外部样式类定制各区域外观。
+  - 通过组件 ref 调用对外方法。
 
 ## 基本用法
 
@@ -94,6 +38,8 @@ uni-calendar-view 用于页面中内嵌的日历。
 
 ## 自定义样式
 
+组件的年月标题、切换箭头、星期行、星期项、日期、选中态、今天、以及日期上下方文字，均通过外部样式类定制：
+
 ```html
 <uni-calendar-view
   v-model="selectedDate"
@@ -103,8 +49,7 @@ uni-calendar-view 用于页面中内嵌的日历。
   week-item-class="custom-week-item"
   day-class="custom-day"
   day-selected-class="custom-day-selected"
-  today-class="custom-today"
-/>
+  today-class="custom-today" />
 ```
 
 ```css
@@ -156,8 +101,7 @@ uni-calendar-view 用于页面中内嵌的日历。
   :day-extras="dayExtras"
   day-wrap-class="custom-day-wrap"
   day-top-class="custom-day-top"
-  day-bottom-class="custom-day-bottom"
-/>
+  day-bottom-class="custom-day-bottom" />
 ```
 
 ```ts
@@ -173,30 +117,62 @@ const dayExtras : CalendarDayExtra[] = [
 ]
 ```
 
-```css
-/* 单元格容器，可调整高度、对齐等（默认高度 60px） */
-.custom-day-wrap {
-  height: 72px;
+说明：
+
+- 未传 `day-extras` 或数组为空时，组件保持单个 `text` 拍平渲染，不产生额外节点；传入后按日期预索引（Map），索引仅在数据变化时构建一次，切换月份不会重复构建。
+- 传入 `day-extras` 时，选中态样式应用于整个日期单元格，选中日期的数字与上下方文字默认显示为白色，可通过 `day-selected-class`、`day-top-class`、`day-bottom-class` 覆盖。
+- 上方、下方文字默认单行显示，超出单元格宽度的部分会被省略。
+- `day-wrap-class` 仅在传入 `day-extras` 时生效，通过它可以调整单元格高度。
+- `day-extras` 采用浅侦听刷新，变化后需整体替换数组（如 `dayExtras.value = [...]`）才会触发日历刷新；原地修改数组内元素不会自动刷新。
+
+### 数据量大时（分批加载）
+
+组件一次只渲染当前显示月份及前后各一个月，`day-extras` 只需要覆盖这 3 个月（约 126 个日期）。数据量很大时（如多年农历、房价数据），不建议一次性传入全量数据，推荐只传当前月份前后各一个月，并在 `month-change` 事件中整体替换数组：
+
+```html
+<uni-calendar-view v-model="selectedDate" :day-extras="dayExtras" @month-change="onMonthChange" />
+```
+
+```ts
+const dayExtras = ref<CalendarDayExtra[]>([])
+
+function loadExtras(year : number, month : number) {
+  const list : CalendarDayExtra[] = []
+  // 组装 year-month 所在月份及前后各一个月的数据（本地计算或按需从接口/缓存读取）
+  dayExtras.value = list
 }
 
-.custom-day-top {
-  font-size: 10px;
-  color: #ff5500;
+function onMonthChange(year : number, month : number) {
+  loadExtras(year, month)
 }
 
-.custom-day-bottom {
-  font-size: 10px;
-  color: #999999;
-}
+const today = new Date()
+loadExtras(today.getFullYear(), today.getMonth() + 1)
+```
+
+### 追加中国法定节假日数据
+
+中国法定节假日的放假安排（含调休）每年由国务院办公厅以《关于 XXXX 年部分节假日安排的通知》公布，无法通过算法推导，需要按年录入。推荐将每个年份的放假日期维护为独立的 `CalendarDayExtra` 数组，再合并进 `day-extras`：
+
+```ts
+// 官方通知发布后，按格式新增对应年份的数据
+// top 用节日名或统一标记（如“休”），bottom 无需填写（由农历/节气自动生成）
+const statutoryHolidays2026 : CalendarDayExtra[] = [
+  { date: '2026-01-01', top: '元旦' },
+  { date: '2026-01-02', top: '休' },
+  { date: '2026-02-17', top: '春节' },
+  // ...
+]
+
+// 汇总所有已录入年份，新年份在拼接处追加，如 statutoryHolidays2026.concat(statutoryHolidays2027)
+const statutoryHolidays : CalendarDayExtra[] = statutoryHolidays2026
 ```
 
 说明：
 
-- 未传 `day-extras` 或数组为空时，组件保持单个 `text` 拍平渲染，不产生额外节点；传入后按日期预索引（Map），渲染阶段无额外查找计算，上方、下方文字均为拍平的单层 `text`，兼顾性能与自定义能力。
-- 传入 `day-extras` 时，选中态样式应用于整个日期单元格（与点击单元一致），选中日期的数字与上下方文字默认显示为白色，可通过 `day-selected-class`、`day-top-class`、`day-bottom-class` 覆盖。
-- 上方、下方文字默认单行显示，超出单元格宽度的部分会被省略。
-- `day-wrap-class` 仅在传入 `day-extras` 时生效，通过它可以调整单元格高度；App 平台下日历整体高度通过 swiper 的 `auto-height` 自动跟随单元格高度，其他平台（Web、小程序）受 swiper-item 绝对定位限制，组件会在渲染后按日期网格的实际高度自动校正日历高度（默认 60px 单元格时为 360px），日期点击的命中位置始终与视觉单元格一致。
-- `dayExtras` 变化后组件会自动刷新日历数据，可按需动态更新文字。
+- 数据以中国政府网发布的国务院办公厅通知为准，需每年关注并追加新年份，历史年份无需改动、可独立维护。
+- 建议结合上一节的按需加载：只将当前显示月份附近的法定日期合并进 `day-extras`，避免随年份累积后数据量越来越大。
+- 调休补班日（如春节前后需要在周末上班的日期）如需标注，可在数据中以“班”等标记追加。
 
 ## 限制可选范围与节假日
 
@@ -217,6 +193,10 @@ const holidays = ['2026-11-26', '2026-11-27']
 ```
 
 ## 切换语言与一周起始日
+
+不传 `locale` 时跟随系统语言，内置以下语言，组件根据 `locale` 属性或系统语言自动切换月份名称、星期缩写和一周起始日：
+
+中文简体（zh-Hans）、中文繁体（zh-Hant）、英文（en）、法文（fr）、拉丁文（la）、日文（ja）、韩文（ko）、德文（de）、印尼（id）、马来（ms）、意大利（it）、葡萄牙（pt）、俄语（ru）、泰语（th）、越南语（vi）、阿拉伯语（ar）、土耳其语（tr）。
 
 ```html
 <!-- 指定语言，一周起始日跟随语言自动适配 -->
@@ -247,3 +227,9 @@ function jump() {
   calendarRef.value?.goToDate('2026-12-25')
 }
 ```
+
+## 注意事项
+
+- `day-extras` 数据量较大时请配合 `month-change` 分批加载，避免首次加载准备与传输开销过大。
+- `day-extras`、`holidays` 变化后需整体替换数组才会刷新，原地修改数组内元素不会触发刷新。
+- 示例页面路径：`/pages/uni-ui/calendar-view/calendar-view.uvue`。

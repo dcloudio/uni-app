@@ -1,71 +1,90 @@
 <template>
-  <scroll-view class="page">
-    <text class="desc">uni-data-picker-view 是不带弹窗的选择面板，可单独嵌入页面使用；下面示例会把 change、nodeclick 的触发结果实时显示在页面底部。</text>
+  <view class="intro">
+    <text class="page-title">uni-data-picker-view 级联选择面板</text>
+    <text class="page-desc">不带弹窗的选择面板，可单独嵌入页面使用；下面示例会把 change、nodeclick 的触发结果实时显示在页面底部。</text>
+  </view>
 
-    <view class="demo-section">
-      <text class="title">单列本地数据</text>
-      <view class="result-row">
-        <text class="result-label">选择结果：</text>
-        <text class="result-value" :class="cityResult == '未选择' ? 'result-value-empty' : ''">{{ cityResult }}</text>
-      </view>
-      <uni-data-picker-view class="data-picker-view" :localdata="cityList" tab-placeholder="请选择" v-model="cityValue"
-        @nodeclick="onnodeclick" @change="onCityChange">
-      </uni-data-picker-view>
-    </view>
+  <text class="uni-h4">单列本地数据</text>
+  <text class="section-desc">localdata 传入扁平数组时为单列模式。</text>
+  <view class="result-row">
+    <text class="result-label">选择结果：</text>
+    <text class="result-value" :class="cityResult == '未选择' ? 'result-value-empty' : ''">{{ cityResult }}</text>
+  </view>
+  <uni-data-picker-view class="data-picker-view" :localdata="cityList" tab-placeholder="请选择" v-model="cityValue"
+    @nodeclick="onnodeclick" @change="onCityChange">
+  </uni-data-picker-view>
 
-    <view class="demo-section">
-      <text class="title">多列本地数据（树形）</text>
-      <view class="result-row">
-        <text class="result-label">选择结果：</text>
-        <text class="result-value" :class="classResult == '未选择' ? 'result-value-empty' : ''">{{ classResult }}</text>
-      </view>
-      <uni-data-picker-view class="data-picker-view" :localdata="classDataTree" tab-placeholder="请选择"
-        v-model="classValue" @nodeclick="onnodeclick" @change="onClassChange">
-      </uni-data-picker-view>
-    </view>
+  <text class="uni-h4">多列本地数据（树形）</text>
+  <view class="result-row">
+    <text class="result-label">选择结果：</text>
+    <text class="result-value" :class="classResult == '未选择' ? 'result-value-empty' : ''">{{ classResult }}</text>
+  </view>
+  <uni-data-picker-view class="data-picker-view" :localdata="classDataTree" tab-placeholder="请选择"
+    v-model="classValue" @nodeclick="onnodeclick" @change="onClassChange">
+  </uni-data-picker-view>
 
-    <view class="demo-section">
-      <text class="title">云端数据（树形）</text>
-      <view class="result-row">
-        <text class="result-label">选择结果：</text>
-        <text class="result-value" :class="addressResult == '未选择' ? 'result-value-empty' : ''">{{ addressResult }}</text>
-      </view>
-      <uni-data-picker-view class="data-picker-view" :preload="true" :step-searh="true" self-field="code"
-        parent-field="parent_code" collection="opendb-city-china" orderby="value asc" field="code as value, name as text"
-        tab-placeholder="请选择" :page-size="50" v-model="address" @nodeclick="onnodeclick" @change="onAddressChange">
-      </uni-data-picker-view>
-    </view>
+  <text class="uni-h4">default-props 与 ellipsis</text>
+  <text class="section-desc">通过 default-props 映射 name/id 字段，ellipsis 控制列表文字是否省略。</text>
+  <view class="result-row">
+    <text class="result-label">选择结果：</text>
+    <text class="result-value" :class="mappedResult == '未选择' ? 'result-value-empty' : ''">{{ mappedResult }}</text>
+  </view>
+  <uni-data-picker-view class="data-picker-view" :localdata="mappedTree" :default-props="mappedFields"
+    :ellipsis="false" tab-placeholder="请选择" v-model="mappedValue" @nodeclick="onnodeclick"
+    @change="onMappedChange">
+  </uni-data-picker-view>
 
-    <view class="demo-section">
-      <text class="title">externalClass 自定义面板样式</text>
-      <view class="result-row">
-        <text class="result-label">选择结果：</text>
-        <text class="result-value" :class="externalResult == '未选择' ? 'result-value-empty' : ''">{{ externalResult }}</text>
-      </view>
-      <uni-data-picker-view class="data-picker-view" :preload="true" :step-searh="true" self-field="code"
-        parent-field="parent_code" collection="opendb-city-china" orderby="value asc" field="code as value, name as text"
-        tab-placeholder="请选择" :page-size="50" v-model="externalAddress" list-view-class="demo-list-view"
-        list-item-class="demo-list-item" list-item-check-class="demo-check" error-class="demo-picker-view-error"
-        @nodeclick="onnodeclick" @change="onExternalChange">
-      </uni-data-picker-view>
-    </view>
+  <text class="uni-h4">云端数据（树形）</text>
+  <text class="section-desc">配置 collection、field、self-field、parent-field、orderby、page-size 等参数查询云端数据。</text>
+  <view class="result-row">
+    <text class="result-label">选择结果：</text>
+    <text class="result-value" :class="addressResult == '未选择' ? 'result-value-empty' : ''">{{ addressResult }}</text>
+  </view>
+  <uni-data-picker-view class="data-picker-view" :preload="true" :step-searh="true" self-field="code"
+    parent-field="parent_code" collection="opendb-city-china" orderby="value asc" field="code as value, name as text"
+    tab-placeholder="请选择" :page-size="50" :page-current="1" v-model="address" @nodeclick="onnodeclick"
+    @change="onAddressChange">
+  </uni-data-picker-view>
 
-    <text class="title">事件结果</text>
-    <view class="event-panel">
-      <view class="event-row">
-        <text class="event-label">最近事件</text>
-        <text class="event-value">{{ eventState.lastEvent }}</text>
-      </view>
-      <view class="event-row">
-        <text class="event-label">change</text>
-        <text class="event-value">{{ eventState.changeValue }}</text>
-      </view>
-      <view class="event-row">
-        <text class="event-label">nodeclick</text>
-        <text class="event-value">{{ eventState.nodeClick }}</text>
-      </view>
+  <text class="uni-h4">externalClass 自定义面板样式</text>
+  <view class="result-row">
+    <text class="result-label">选择结果：</text>
+    <text class="result-value" :class="externalResult == '未选择' ? 'result-value-empty' : ''">{{ externalResult }}</text>
+  </view>
+  <uni-data-picker-view class="data-picker-view" :preload="true" :step-searh="true" self-field="code"
+    parent-field="parent_code" collection="opendb-city-china" orderby="value asc" field="code as value, name as text"
+    tab-placeholder="请选择" :page-size="50" v-model="externalAddress" tab-item-class="demo-tab"
+    list-class="demo-list" list-item-class="demo-list-item" list-item-text-class="demo-list-item-text"
+    list-item-check-class="demo-check" loading-class="demo-loading" error-class="demo-picker-view-error"
+    @nodeclick="onnodeclick" @change="onExternalChange">
+  </uni-data-picker-view>
+
+  <text class="uni-h4">组件方法</text>
+  <text class="section-desc">通过 ref 调用 loadData 重新加载并可传入已选节点回显，调用 getScrollTop 读取列表滚动位置。</text>
+  <view class="btn-row">
+    <button class="demo-btn" size="mini" @click="loadWithSelectedPaths">loadData 回显 1.2班</button>
+    <button class="demo-btn" size="mini" @click="readScrollTop">getScrollTop</button>
+  </view>
+  <text class="result-row">getScrollTop：{{ methodResult }}</text>
+  <uni-data-picker-view ref="methodPickerRef" class="data-picker-view" :localdata="classDataTree"
+    tab-placeholder="请选择" v-model="methodValue" @change="onMethodChange">
+  </uni-data-picker-view>
+
+  <text class="uni-h4">事件结果</text>
+  <view class="event-panel">
+    <view class="event-row">
+      <text class="event-label">最近事件</text>
+      <text class="event-value">{{ eventState.lastEvent }}</text>
     </view>
-  </scroll-view>
+    <view class="event-row">
+      <text class="event-label">change</text>
+      <text class="event-value">{{ eventState.changeValue }}</text>
+    </view>
+    <view class="event-row">
+      <text class="event-label">nodeclick</text>
+      <text class="event-value">{{ eventState.nodeClick }}</text>
+    </view>
+  </view>
 </template>
 
 <script setup lang="ts">
@@ -79,12 +98,19 @@
   const cityValue = ref('')
   const classValue = ref('1-2')
   const externalAddress = ref('110101')
+  const mappedValue = ref('1-2')
+  const methodValue = ref('1-2')
   const cityResult = ref('未选择')
   const classResult = ref('未选择')
   const addressResult = ref('未选择')
   const externalResult = ref('未选择')
+  const mappedResult = ref('未选择')
+  const methodResult = ref('-')
   const cityList = ref(buildCityList())
   const classDataTree = ref(buildClassDataTree())
+  const mappedTree = ref(buildMappedTree())
+  const mappedFields = { text: 'name', value: 'id' }
+  const methodPickerRef = ref<any>(null)
 
   function buildCityList() : Array<UTSJSONObject> {
     const cityNames : Array<string> = ['北京市', '上海市', '广州市', '深圳市', '杭州市', '成都市', '武汉市', '西安市', '南京市', '重庆市']
@@ -120,11 +146,50 @@
     return tree
   }
 
+  function buildMappedTree() : Array<UTSJSONObject> {
+    const tree : Array<UTSJSONObject> = []
+    for (let i = 1; i <= 3; i++) {
+      const children : Array<UTSJSONObject> = []
+      for (let j = 1; j <= 5; j++) {
+        const child : UTSJSONObject = {
+          name: `${i}.${j}班`,
+          id: `${i}-${j}`
+        }
+        children.push(child)
+      }
+      const node : UTSJSONObject = {
+        name: `${i}年级`,
+        id: `${i}-0`,
+        children: children
+      }
+      tree.push(node)
+    }
+    return tree
+  }
+
   const eventState = reactive<EventState>({
     lastEvent: '暂无',
     changeValue: '暂无',
     nodeClick: '暂无'
   })
+
+  function nodeText(node : UTSJSONObject) : string {
+    const text = node['text']
+    if (text != null) {
+      return text as string
+    }
+    const name = node['name']
+    return name != null ? name as string : ''
+  }
+
+  function nodeValue(node : UTSJSONObject) : string {
+    const value = node['value']
+    if (value != null) {
+      return value as string
+    }
+    const id = node['id']
+    return id != null ? id as string : ''
+  }
 
   function formatNodes(nodes : Array<UTSJSONObject>) : string {
     if (nodes.length == 0) {
@@ -132,7 +197,7 @@
     }
     const parts : Array<string> = []
     nodes.forEach((node : UTSJSONObject) => {
-      parts.push(`${node['text']}(${node['value']})`)
+      parts.push(`${nodeText(node)}(${nodeValue(node)})`)
     })
     return parts.join(' / ')
   }
@@ -140,7 +205,7 @@
   function onnodeclick(e : any) {
     const node = e as UTSJSONObject
     eventState.lastEvent = 'nodeclick'
-    eventState.nodeClick = `${node['text']}(${node['value']})`
+    eventState.nodeClick = `${nodeText(node)}(${nodeValue(node)})`
     console.log('nodeclick', node)
   }
 
@@ -170,35 +235,66 @@
     externalResult.value = formatNodes(e.detail.value as Array<UTSJSONObject>)
     onchange(e)
   }
+
+  function onMappedChange(e : any) {
+    mappedResult.value = formatNodes(e.detail.value as Array<UTSJSONObject>)
+    onchange(e)
+  }
+
+  function onMethodChange(e : any) {
+    onchange(e)
+  }
+
+  function loadWithSelectedPaths() : void {
+    const paths : Array<UTSJSONObject> = [
+      { text: '1年级', value: '1-0' },
+      { text: '1.2班', value: '1-2' }
+    ]
+    methodPickerRef.value?.loadData(paths)
+  }
+
+  function readScrollTop() : void {
+    const top = methodPickerRef.value?.getScrollTop()
+    methodResult.value = top != null ? String(top) : '-'
+  }
 </script>
 
 <style>
-  .page {
-    flex: 1;
-    padding: 15px;
+  page {
+    padding: 12px;
+    background-color: var(--background-color, #f5f5f5);
   }
 
-  .desc {
-    font-size: 12px;
-    line-height: 18px;
-    color: var(--text-color, #64748b);
+  .intro {
+    padding: 4px;
+    margin-bottom: 12px;
   }
 
-  .title {
-    font-size: 14px;
+  .page-title {
+    font-size: 18px;
     font-weight: bold;
-    margin: 20px 0 5px 0;
     color: var(--text-color, #333333);
   }
 
-  .demo-section {
-    padding-bottom: 20px;
-    margin-bottom: 20px;
+  .page-desc {
+    margin-top: 6px;
+    font-size: 13px;
+    line-height: 20px;
+    color: var(--secondary-text-color, #657180);
+  }
+
+  .section-desc {
+    margin-top: 4px;
+    margin-bottom: 8px;
+    font-size: 13px;
+    line-height: 20px;
+    color: var(--secondary-text-color, #657180);
   }
 
   .data-picker-view {
     height: 300px;
-    border: 1px solid #e5e5e5;
+    margin-bottom: 4px;
+    border: 1px solid var(--divider-color, #e5e5e5);
     border-radius: 5px;
   }
 
@@ -210,28 +306,42 @@
 
   .result-label {
     font-size: 13px;
-    color: #64748b;
+    color: var(--secondary-text-color, #657180);
   }
 
   .result-value {
     font-size: 13px;
     font-weight: bold;
-    color: #0084cc;
-    background-color: rgba(0, 170, 255, 0.12);
-    border: 1px solid rgba(0, 170, 255, 0.35);
+    color: var(--tips-color, #0084cc);
+    background-color: var(--tips-background-color, rgba(0, 170, 255, 0.12));
+    border: 1px solid var(--tips-border-color, rgba(0, 170, 255, 0.35));
     border-radius: 5px;
     padding: 3px 10px;
   }
 
   .result-value-empty {
     font-weight: normal;
-    color: #94a3b8;
-    background-color: rgba(148, 163, 184, 0.12);
-    border-color: rgba(148, 163, 184, 0.3);
+    color: var(--secondary-text-color, #94a3b8);
+    background-color: var(--active-background-color, rgba(148, 163, 184, 0.12));
+    border-color: var(--divider-color, rgba(148, 163, 184, 0.3));
   }
 
-  /* externalClass：自定义 uni-data-picker-view 面板 */
-  .demo-list-view {
+  .btn-row {
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+
+  .demo-btn {
+    margin-right: 8px;
+    margin-bottom: 8px;
+  }
+
+  .demo-tab {
+    font-weight: bold;
+  }
+
+  .demo-list {
     background-color: #f8fafc;
   }
 
@@ -239,8 +349,17 @@
     background-color: #f0fdf4;
   }
 
+  .demo-list-item-text {
+    font-size: 15px;
+  }
+
   .demo-check {
     border-color: #22c55e;
+  }
+
+  .demo-loading {
+    width: 36px;
+    height: 36px;
   }
 
   .demo-picker-view-error {
@@ -249,11 +368,12 @@
   }
 
   .event-panel {
-    background-color: var(--active-background-color, #f8fafc);
+    margin-top: 8px;
+    margin-bottom: 20px;
+    padding: 10px 12px;
     border: 1px solid var(--border-color, #e2e8f0);
     border-radius: 8px;
-    padding: 10px 12px;
-    margin-bottom: 20px;
+    background-color: var(--active-background-color, #f8fafc);
   }
 
   .event-row {
@@ -264,12 +384,27 @@
   .event-label {
     width: 76px;
     font-size: 13px;
-    color: #64748b;
+    color: var(--secondary-text-color, #657180);
   }
 
   .event-value {
     flex: 1;
     font-size: 13px;
     color: var(--text-color, #0f172a);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .demo-list {
+      background-color: #262626;
+    }
+
+    .demo-list-item {
+      background-color: #16351f;
+    }
+
+    .demo-picker-view-error {
+      background-color: #3a1a1c;
+      color: #ff9c6e;
+    }
   }
 </style>

@@ -1,6 +1,5 @@
 <template>
-	<view>
-		<!-- 悬浮导航：返回按钮常驻，页面滚动后显示标题与背景。 -->
+	<!-- 悬浮导航：返回按钮常驻，页面滚动后显示标题与背景。 -->
 		<view class="navigation-bar" :class="{ 'navigation-bar--scrolled': scrolled }">
 			<!-- 支付宝小程序导航栏左上角返回按钮始终存在，无法隐藏，会导致重叠 -->
 			<!-- #ifndef MP-ALIPAY -->
@@ -17,13 +16,13 @@
 
 		<view class="content">
 			<text class="description">圆形返回箭头，适配安全区，点击左上角返回按钮自动返回上一页。向下滚动页面可查看返回按钮与标题悬浮效果。</text>
-			<text class="section-title">自定义样式</text>
+			<text class="uni-h4">自定义样式</text>
 			<view class="examples">
 				<uni-backarrow-circle id="custom-blue" class="blue-arrow" @click="onCustomClick" />
 				<uni-backarrow-circle id="custom-large" class="large-arrow" @click="onCustomClick" />
 				<uni-backarrow-circle id="custom-dark" class="dark-arrow" @click="onCustomClick" />
 			</view>
-			<text class="section-title">事件</text>
+			<text class="uni-h4">事件</text>
 			<button id="event-button" type="primary" @click="onCustomClick">点击返回箭头或按钮</button>
 			<text class="event-result">{{ eventMessage }}</text>
 		</view>
@@ -33,7 +32,6 @@
 			<text class="scene-title">沉浸式顶部</text>
 			<text class="scene-text">常用于详情页、图片页等需要内容延伸到状态栏的场景，滚动后左上角返回按钮与标题保持悬浮。</text>
 		</view>
-	</view>
 </template>
 
 <script setup lang="ts">
@@ -117,11 +115,6 @@
 	.description {
 		line-height: 20px;
 		margin-bottom: 15px;
-	}
-
-	.section-title {
-		font-weight: bold;
-		margin: 8px 0;
 	}
 
 	.event-result {

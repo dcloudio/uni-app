@@ -1,122 +1,152 @@
 <template>
-  <!-- 该页面不进行暗黑适配 -->
-  <scroll-view class="page">
-    <view class="section">
-      <text class="section-title">手风琴模式</text>
-      <uni-collapse :accordion="true">
-        <uni-collapse-item title="面板 A（默认展开）" :open="data.enableOpen" @change="onPanelAChange">
-          <view class="content-box" @click="onPanelAClick">
-            <text class="content-text">手风琴模式下，同时只会保持一个面板展开。点击当前标题会自动收起其他面板。</text>
-          </view>
-        </uni-collapse-item>
-        <uni-collapse-item title="面板 B" @change="onPanelBChange">
-          <view id="panel-b" class="content-box">
-            <text class="content-text">当前项展开时，其他已展开的项会自动收起。这里用于验证切换动画和事件回调。</text>
-          </view>
-        </uni-collapse-item>
-        <uni-collapse-item title="禁用项" :disabled="true">
-          <view class="content-box">
-            <text class="content-text">禁用状态下不会响应点击，也不会触发展开或收起。</text>
-          </view>
-        </uni-collapse-item>
-      </uni-collapse>
-    </view>
-
-    <view class="section">
-      <text class="section-title">普通模式-可同时展开的分组折叠列表</text>
-      <uni-collapse :accordion="false">
-        <uni-collapse-item v-for="(group, index) in categoryGroups" :key="group.title" :title="group.title" @change="onCategoryChange(group.title, $event as boolean)">
-          <view class="category-list">
-            <view v-for="(item, itemIndex) in group.items" :key="item.title" class="category-list-item"
-              :class="{'category-list-item--last': itemIndex == group.items.length - 1}">
-              <text class="category-list-text">{{ item.title }}</text>
-              <view class="category-list-arrow"></view>
-            </view>
-          </view>
-        </uni-collapse-item>
-      </uni-collapse>
-    </view>
-
-    <view class="section">
-      <text class="section-title">externalClass 示例</text>
-      <uni-collapse :accordion="false">
-        <uni-collapse-item title="自定义标题文字" title-class="demo-title-emphasis">
-          <view class="content-box">
-            <text class="content-text">通过 title-class 可以覆盖 title 属性对应 text 组件的样式。</text>
-          </view>
-        </uni-collapse-item>
-        <uni-collapse-item title="自定义箭头样式" arrow-class="demo-arrow-large">
-          <view class="content-box">
-            <text class="content-text">通过 arrow-class 可以覆盖默认箭头 view 的尺寸、边框粗细和颜色。</text>
-          </view>
-        </uni-collapse-item>
-        <uni-collapse-item title="同时自定义标题和箭头" title-class="demo-title-accent" arrow-class="demo-arrow-accent">
-          <view class="content-box">
-            <text class="content-text">title-class 和 arrow-class 可以组合使用。</text>
-          </view>
-        </uni-collapse-item>
-      </uni-collapse>
-    </view>
-
-    <view class="section">
-      <text class="section-title">具名插槽标题</text>
-      <uni-collapse :accordion="false">
-        <uni-collapse-item>
-          <template #title="{ open, disabled }">
-            <view class="slot-title-wrap">
-              <view class="slot-title-icon" :class="{'slot-title-icon--open': open, 'slot-title-icon--disabled': disabled}"></view>
-              <text class="slot-title-text" :class="{'slot-title-text--open': open, 'slot-title-text--disabled': disabled}">消息中心</text>
-              <text class="slot-title-badge" :class="{'slot-title-badge--open': open}">{{ open ? 'OPEN' : 'CLOSE' }}</text>
-            </view>
-          </template>
-          <view class="content-box">
-            <text class="content-text">通过 #title 可以自定义标题区域结构，例如在文字前增加图标、状态徽标和辅助说明。</text>
-          </view>
-        </uni-collapse-item>
-        <uni-collapse-item>
-          <template #title="{ open }">
-            <view class="slot-title-wrap">
-              <view class="slot-title-icon slot-title-icon--secondary" :class="{'slot-title-icon--open': open}"></view>
-              <text class="slot-title-text" :class="{'slot-title-text--open': open}">设置中心</text>
-              <text class="slot-title-note">{{ open ? '当前已展开' : '点击展开配置项' }}</text>
-            </view>
-          </template>
-          <view class="content-box">
-            <text class="content-text">具名插槽会透出 open 和 disabled 状态，方便你在标题区域里联动样式。</text>
-          </view>
-        </uni-collapse-item>
-      </uni-collapse>
-    </view>
-
-    <view class="section section-dark">
-      <text class="section-title section-title-dark">暗黑模式 externalClass 示例</text>
-      <view class="dark-tip">
-        <text class="dark-tip-text">这个示例通过给 uni-collapse-item 传入 class 和 externalClass，分别定制内容区和标题区样式。</text>
+  <text class="uni-h4">手风琴模式（accordion = true）</text>
+  <text class="section-desc">同一时间只保持一个面板展开，展开新面板会自动收起其它面板。</text>
+  <uni-collapse :accordion="true">
+    <uni-collapse-item title="面板 A（默认展开）" :open="data.enableOpen" @change="onPanelAChange">
+      <view class="content-box" @click="onPanelAClick">
+        <text class="content-text">手风琴模式下，同时只会保持一个面板展开。点击当前标题会自动收起其他面板。</text>
       </view>
-      <uni-collapse :accordion="false">
-        <uni-collapse-item class="dark-collapse-item" title="暗色标题 A" :open="true" title-wrap-class="dark-title-wrap" title-class="dark-title-text" title-open-class="dark-title-text-open" content-wrap-class="dark-content-wrap" arrow-class="dark-arrow" arrow-open-class="dark-arrow-open">
-          <view class="content-box dark-content-box">
-            <text class="content-text dark-content-text">组件根节点通过 class 统一接入暗色卡片样式，标题背景、默认文字、展开态文字和箭头颜色通过 externalClass 传入。</text>
-          </view>
-        </uni-collapse-item>
-        <uni-collapse-item class="dark-collapse-item dark-collapse-item-strong" title="暗色标题 B" title-wrap-class="dark-title-wrap-strong" title-class="dark-title-text-strong" title-open-class="dark-title-text-open" content-wrap-class="dark-content-wrap" arrow-class="dark-arrow-strong" arrow-open-class="dark-arrow-open">
-          <view class="content-box dark-content-box">
-            <text class="content-text dark-content-text">你也可以继续组合不同的根容器 class、标题字重、箭头粗细和激活色样式。</text>
-          </view>
-        </uni-collapse-item>
-        <uni-collapse-item class="dark-collapse-item dark-collapse-item-muted" title="暗色禁用项" :disabled="true" title-wrap-class="dark-title-wrap-muted" title-class="dark-title-text" title-disabled-class="dark-title-text-disabled" content-wrap-class="dark-content-wrap-muted" arrow-class="dark-arrow" arrow-disabled-class="dark-arrow-disabled">
-          <view class="content-box dark-content-box dark-content-box-muted">
-            <text class="content-text dark-content-text">禁用态默认通过透明度表达状态，外部依然可以继续指定禁用态文字和箭头颜色。</text>
-          </view>
-        </uni-collapse-item>
-      </uni-collapse>
-    </view>
+    </uni-collapse-item>
+    <uni-collapse-item title="面板 B" @change="onPanelBChange">
+      <view id="panel-b" class="content-box">
+        <text class="content-text">当前项展开时，其他已展开的项会自动收起。这里用于验证切换动画和事件回调。</text>
+      </view>
+    </uni-collapse-item>
+    <uni-collapse-item title="禁用项" :disabled="true">
+      <view class="content-box">
+        <text class="content-text">禁用状态下不会响应点击，也不会触发展开或收起。</text>
+      </view>
+    </uni-collapse-item>
+  </uni-collapse>
 
-    <view class="log-section">
-      <text class="log-title">最近事件</text>
-      <text class="log-text">{{ data.lastEvent }}</text>
-    </view>
-  </scroll-view>
+  <text class="uni-h4">普通模式（accordion = false，可同时展开）</text>
+  <text class="section-desc">每个面板独立展开、独立收起，change 事件参数为当前面板的展开状态。</text>
+  <uni-collapse :accordion="false">
+    <uni-collapse-item v-for="(group, index) in categoryGroups" :key="group.title" :title="group.title"
+      @change="onCategoryChange(group.title, $event as boolean)">
+      <view class="category-list">
+        <view v-for="(item, itemIndex) in group.items" :key="item.title" class="category-list-item"
+          :class="{'category-list-item--last': itemIndex == group.items.length - 1}">
+          <text class="category-list-text">{{ item.title }}</text>
+          <view class="category-list-arrow"></view>
+        </view>
+      </view>
+    </uni-collapse-item>
+  </uni-collapse>
+
+  <text class="uni-h4">externalClass：title-class / arrow-class</text>
+  <text class="section-desc">标题文字与右侧箭头均可通过外部样式类定制，可单独使用也可组合使用。</text>
+  <uni-collapse :accordion="false">
+    <uni-collapse-item title="自定义标题文字" title-class="demo-title-emphasis">
+      <view class="content-box">
+        <text class="content-text">通过 title-class 可以覆盖 title 属性对应 text 组件的样式。</text>
+      </view>
+    </uni-collapse-item>
+    <uni-collapse-item title="自定义箭头样式" arrow-class="demo-arrow-large">
+      <view class="content-box">
+        <text class="content-text">通过 arrow-class 可以覆盖默认箭头 view 的尺寸、边框粗细和颜色。</text>
+      </view>
+    </uni-collapse-item>
+    <uni-collapse-item title="同时自定义标题和箭头" title-class="demo-title-accent" arrow-class="demo-arrow-accent">
+      <view class="content-box">
+        <text class="content-text">title-class 和 arrow-class 可以组合使用。</text>
+      </view>
+    </uni-collapse-item>
+  </uni-collapse>
+
+  <text class="uni-h4">externalClass：title-wrap-class / content-wrap-class / 状态类</text>
+  <text class="section-desc">title-wrap-class 控制标题行容器，content-wrap-class 控制内容外层容器；title-open-class、title-disabled-class、arrow-open-class、arrow-disabled-class 分别在展开态、禁用态叠加。</text>
+  <uni-collapse :accordion="false">
+    <uni-collapse-item title="全部状态类" :open="true" title-wrap-class="demo-title-wrap" title-class="demo-title-strong"
+      title-open-class="demo-title-open" title-disabled-class="demo-title-disabled" content-wrap-class="demo-content-wrap"
+      arrow-class="demo-arrow" arrow-open-class="demo-arrow-open" arrow-disabled-class="demo-arrow-disabled">
+      <view class="content-box">
+        <text class="content-text">展开态下标题与箭头会叠加 title-open-class、arrow-open-class 的样式。</text>
+      </view>
+    </uni-collapse-item>
+    <uni-collapse-item title="禁用态叠加样式" :disabled="true" title-wrap-class="demo-title-wrap"
+      title-class="demo-title-strong" title-open-class="demo-title-open" title-disabled-class="demo-title-disabled"
+      content-wrap-class="demo-content-wrap" arrow-class="demo-arrow" arrow-open-class="demo-arrow-open"
+      arrow-disabled-class="demo-arrow-disabled">
+      <view class="content-box">
+        <text class="content-text">禁用态下标题与箭头会叠加 title-disabled-class、arrow-disabled-class 的样式。</text>
+      </view>
+    </uni-collapse-item>
+  </uni-collapse>
+
+  <text class="uni-h4">title 具名插槽（插槽参数 open、disabled）</text>
+  <text class="section-desc">传入 #title 可完全替换默认标题结构，插槽提供 open 和 disabled 两个状态参数。</text>
+  <uni-collapse :accordion="false">
+    <uni-collapse-item>
+      <template #title="{ open, disabled }">
+        <view class="slot-title-wrap">
+          <view class="slot-title-icon" :class="{'slot-title-icon--open': open, 'slot-title-icon--disabled': disabled}"></view>
+          <text class="slot-title-text" :class="{'slot-title-text--open': open, 'slot-title-text--disabled': disabled}">消息中心</text>
+          <text class="slot-title-badge" :class="{'slot-title-badge--open': open}">{{ open ? 'OPEN' : 'CLOSE' }}</text>
+        </view>
+      </template>
+      <view class="content-box">
+        <text class="content-text">通过 #title 可以自定义标题区域结构，例如在文字前增加图标、状态徽标和辅助说明。</text>
+      </view>
+    </uni-collapse-item>
+    <uni-collapse-item>
+      <template #title="{ open }">
+        <view class="slot-title-wrap">
+          <view class="slot-title-icon slot-title-icon--secondary" :class="{'slot-title-icon--open': open}"></view>
+          <text class="slot-title-text" :class="{'slot-title-text--open': open}">设置中心</text>
+          <text class="slot-title-note">{{ open ? '当前已展开' : '点击展开配置项' }}</text>
+        </view>
+      </template>
+      <view class="content-box">
+        <text class="content-text">具名插槽会透出 open 和 disabled 状态，方便你在标题区域里联动样式。</text>
+      </view>
+    </uni-collapse-item>
+  </uni-collapse>
+
+  <text class="uni-h4">组件方法：openCollapse / openOrClose</text>
+  <text class="section-desc">openCollapse(open) 会遵循 disabled 与手风琴逻辑并触发 change；openOrClose(open) 只直接切换内容显示状态，不触发 change。</text>
+  <view class="button-row">
+    <button class="demo-btn" size="mini" @click="callOpenCollapse(true)">openCollapse(true)</button>
+    <button class="demo-btn" size="mini" @click="callOpenCollapse(false)">openCollapse(false)</button>
+    <button class="demo-btn" size="mini" @click="callOpenOrClose(true)">openOrClose(true)</button>
+    <button class="demo-btn" size="mini" @click="callOpenOrClose(false)">openOrClose(false)</button>
+  </view>
+  <uni-collapse :accordion="false">
+    <uni-collapse-item ref="methodItemRef" title="方法控制面板" @change="onMethodChange">
+      <view class="content-box">
+        <text class="content-text">通过 ref 调用组件方法可以控制本面板的展开状态，组件同时暴露 is_open 表示当前状态。</text>
+      </view>
+    </uni-collapse-item>
+  </uni-collapse>
+
+  <text class="uni-h4">暗黑模式 externalClass 示例</text>
+  <text class="section-desc">通过 class 与 externalClass 组合定制暗色卡片样式，与系统主题无关，始终按暗色渲染。</text>
+  <uni-collapse :accordion="false">
+    <uni-collapse-item class="dark-collapse-item" title="暗色标题 A" :open="true" title-wrap-class="dark-title-wrap"
+      title-class="dark-title-text" title-open-class="dark-title-text-open" content-wrap-class="dark-content-wrap"
+      arrow-class="dark-arrow" arrow-open-class="dark-arrow-open">
+      <view class="content-box dark-content-box">
+        <text class="content-text dark-content-text">组件根节点通过 class 统一接入暗色卡片样式，标题背景、默认文字、展开态文字和箭头颜色通过 externalClass 传入。</text>
+      </view>
+    </uni-collapse-item>
+    <uni-collapse-item class="dark-collapse-item dark-collapse-item-strong" title="暗色标题 B"
+      title-wrap-class="dark-title-wrap-strong" title-class="dark-title-text-strong" title-open-class="dark-title-text-open"
+      content-wrap-class="dark-content-wrap" arrow-class="dark-arrow-strong" arrow-open-class="dark-arrow-open">
+      <view class="content-box dark-content-box">
+        <text class="content-text dark-content-text">你也可以继续组合不同的根容器 class、标题字重、箭头粗细和激活色样式。</text>
+      </view>
+    </uni-collapse-item>
+    <uni-collapse-item class="dark-collapse-item dark-collapse-item-muted" title="暗色禁用项" :disabled="true"
+      title-wrap-class="dark-title-wrap-muted" title-class="dark-title-text" title-disabled-class="dark-title-text-disabled"
+      content-wrap-class="dark-content-wrap-muted" arrow-class="dark-arrow" arrow-disabled-class="dark-arrow-disabled">
+      <view class="content-box dark-content-box dark-content-box-muted">
+        <text class="content-text dark-content-text">禁用态默认通过透明度表达状态，外部依然可以继续指定禁用态文字和箭头颜色。</text>
+      </view>
+    </uni-collapse-item>
+  </uni-collapse>
+
+  <text class="uni-h4">最近事件（change 事件参数 open）</text>
+  <text class="log-text">{{ data.lastEvent }}</text>
 </template>
 
 <script setup lang="ts">
@@ -166,6 +196,8 @@
     enableOpen: true
   })
 
+  const methodItemRef = ref<CallEasyMethodComponentPublicInstance | null>(null)
+
   function updateEvent(panel : string, open : boolean) {
     const stateText = open ? '展开' : '收起'
     const message = `${panel}${stateText}`
@@ -185,6 +217,18 @@
     updateEvent(`${title} `, open)
   }
 
+  function onMethodChange(open : boolean) {
+    updateEvent('方法控制面板 ', open)
+  }
+
+  function callOpenCollapse(open : boolean) {
+    methodItemRef.value?.openCollapse(open)
+  }
+
+  function callOpenOrClose(open : boolean) {
+    methodItemRef.value?.openOrClose(open)
+  }
+
   const onPanelAClick = () => {
     console.log('onPanelAClick')
   }
@@ -196,46 +240,37 @@
 </script>
 
 <style>
-  .page {
-    flex: 1;
+  page {
     padding: 12px;
   }
 
-  .section {
-    margin-bottom: 12px;
-    border-radius: 8px;
-    overflow: hidden;
-    background-color: var(--list-background-color, #ffffff);
-  }
-
-  .section-title {
-    padding: 12px;
-    font-size: 14px;
-    color: var(--text-color, #333333);
-    font-weight: 500;
+  .section-desc {
+    margin-bottom: 8px;
+    font-size: 12px;
+    line-height: 18px;
+    color: var(--secondary-text-color, #999999);
   }
 
   .content-box {
-    padding: 12px;
-    background-color: var(--active-background-color, #f8fafc);
+    padding: 12px 18px;
   }
 
   .content-text {
     font-size: 13px;
-    color: var(--text-color, #475569);
-    opacity: 0.78;
     line-height: 20px;
+    color: var(--secondary-text-color, #475569);
   }
 
   .category-list {
-    background-color: var(--active-background-color, #f8fafc);
+    padding: 0px 18px;
   }
 
   .category-list-item {
+    overflow: visible;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    padding: 12px 18px;
+    padding: 12px 0px;
     border-bottom-width: 1px;
     border-bottom-style: solid;
     border-bottom-color: var(--border-color, #e2e8f0);
@@ -248,8 +283,8 @@
   .category-list-text {
     flex: 1;
     font-size: 13px;
-    color: var(--text-color, #334155);
     line-height: 20px;
+    color: var(--text-color, #334155);
   }
 
   .category-list-arrow {
@@ -290,6 +325,42 @@
     border-bottom-width: 2px;
   }
 
+  .demo-title-wrap {
+    background-color: var(--active-background-color, #f8fafc);
+  }
+
+  .demo-title-strong {
+    font-weight: 700;
+    color: var(--text-color, #1f2937);
+  }
+
+  .demo-title-open {
+    color: #2563eb;
+  }
+
+  .demo-title-disabled {
+    color: #94a3b8;
+  }
+
+  .demo-content-wrap {
+    background-color: var(--active-background-color, #f8fafc);
+  }
+
+  .demo-arrow {
+    border-right-color: #94a3b8;
+    border-bottom-color: #94a3b8;
+  }
+
+  .demo-arrow-open {
+    border-right-color: #2563eb;
+    border-bottom-color: #2563eb;
+  }
+
+  .demo-arrow-disabled {
+    border-right-color: #cbd5e1;
+    border-bottom-color: #cbd5e1;
+  }
+
   .slot-title-wrap {
     flex: 1;
     flex-direction: row;
@@ -319,8 +390,8 @@
   .slot-title-text {
     flex: 1;
     font-size: 14px;
-    color: var(--text-color, #1f2937);
     font-weight: 600;
+    color: var(--text-color, #1f2937);
   }
 
   .slot-title-text--open {
@@ -334,27 +405,30 @@
   .slot-title-badge {
     padding: 4px 8px;
     border-radius: 10px;
-    background-color: #e2e8f0;
     font-size: 11px;
     color: #475569;
+    background-color: #e2e8f0;
   }
 
   .slot-title-badge--open {
-    background-color: #dbeafe;
     color: #1d4ed8;
+    background-color: #dbeafe;
   }
 
   .slot-title-note {
     font-size: 12px;
-    color: #64748b;
+    color: var(--secondary-text-color, #64748b);
   }
 
-  .section-dark {
-    background-color: #111827;
+  .button-row {
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
   }
 
-  .section-title-dark {
-    color: #e5e7eb;
+  .demo-btn {
+    margin-right: 8px;
+    margin-bottom: 8px;
   }
 
   .dark-collapse-item {
@@ -367,16 +441,6 @@
 
   .dark-collapse-item-muted {
     background-color: #101826;
-  }
-
-  .dark-tip {
-    padding: 0px 12px 12px 12px;
-  }
-
-  .dark-tip-text {
-    font-size: 12px;
-    color: #9ca3af;
-    line-height: 18px;
   }
 
   .dark-content-box {
@@ -451,21 +515,49 @@
     border-bottom-color: #94a3b8;
   }
 
-  .log-section {
-    padding: 12px;
-    border-radius: 8px;
-    background-color: var(--list-background-color, #ffffff);
-  }
-
-  .log-title {
-    font-size: 13px;
-    color: var(--text-color, #333333);
-    font-weight: 500;
-    margin-bottom: 8px;
-  }
-
   .log-text {
     font-size: 13px;
     color: #2563eb;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .demo-title-accent {
+      color: #5eead4;
+    }
+
+    .demo-arrow-accent {
+      border-right-color: #5eead4;
+      border-bottom-color: #5eead4;
+    }
+
+    .slot-title-text--open {
+      color: #60a5fa;
+    }
+
+    .slot-title-icon--open {
+      background-color: #60a5fa;
+    }
+
+    .slot-title-icon--disabled {
+      background-color: #475569;
+    }
+
+    .slot-title-text--disabled {
+      color: #64748b;
+    }
+
+    .slot-title-badge {
+      color: #cbd5e1;
+      background-color: #334155;
+    }
+
+    .slot-title-badge--open {
+      color: #bfdbfe;
+      background-color: #1e3a8a;
+    }
+
+    .log-text {
+      color: #60a5fa;
+    }
   }
 </style>

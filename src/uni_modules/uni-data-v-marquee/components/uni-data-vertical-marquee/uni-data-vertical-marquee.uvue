@@ -5,6 +5,10 @@
       :class="textClass"
       :style="style1"
       @tap.stop="onTextTap(currentIndex)"
+      <!-- #ifdef WEB -->
+      tabindex="0"
+      @keydown="onTextKeydown($event, currentIndex)"
+      <!-- #endif -->
     >{{ currentText }}</text>
     <text
       class="uni-data-vertical-marquee__text uni-data-vertical-marquee__text--next"
@@ -12,6 +16,10 @@
       :style="style2"
       @transitionend="onTransitionEnd"
       @tap.stop="onTextTap(nextIndex)"
+      <!-- #ifdef WEB -->
+      tabindex="0"
+      @keydown="onTextKeydown($event, nextIndex)"
+      <!-- #endif -->
     >{{ nextText }}</text>
   </view>
 </template>
@@ -22,19 +30,23 @@
  * @description 绑定数组数据，上下轮播；用于公告、搜索框推荐词等场景
  * @uniPlatform {
  *   "app": {
- *     "android": { "unixVaporVer": "5.33" },
- *     "ios": { "unixVaporVer": "5.33" },
- *     "harmony": { "unixVaporVer": "5.33" }
+ *     "android": {"unixVaporVer": "5.33"},
+ *     "ios": {"unixVaporVer": "5.33"},
+ *     "harmony": {"unixVaporVer": "5.33"}
  *   },
  *   "mp": {
- *     "weixin": { "unixVer": "5.33" },
- *     "alipay": { "unixVer": "5.33" }
+ *     "weixin": {"unixVer": "5.33"},
+ *     "alipay": {"unixVer": "5.33"}
  *   },
- *   "web": { "unixVer": "5.33","unixVaporVer": "5.41" }
+ *   "web": {"unixVer": "5.33"}
  * }
  * @property {Array} localdata 本地数据，支持对象数组 [{ text, value }] 或字符串数组 ["公告1", "公告2"]，默认值 []
  * @property {String} collection uniCloud 数据库集合名称；设置后且未提供 localdata 时使用云端数据，默认值为空字符串
  * @property {Number} interval 滚动间隔毫秒数，默认值 3000
+ * @property {String} field 云端查询字段，多个字段用 `,` 分割，默认值为空字符串
+ * @property {String} orderby 云端排序字段及正序倒序设置，默认值为空字符串
+ * @property {String|Object} where 云端查询条件，默认值为空字符串
+ * @property {Number} pageSize 云端每页数据数量，默认值 20
  * @property {String} text-class 文字 external class，默认值为空字符串
  * @event {Function} click 点击文字时触发，参数为 { index, data }
  * @event {Function} change 轮播切到新的一条时触发，参数为 { index, data }
@@ -90,11 +102,13 @@ const props = defineProps({
 
 const emit = defineEmits<{
   /**
-   * @description 点击文字时触发；参数为 { index, data }
+   * @description 点击文字时触发
+   * @param {Object} event 事件对象；event.index 为数据索引，event.data 为原始数据
    */
   click: [event: any],
   /**
-   * @description 轮播切到新的一条时触发；参数为 { index, data }，仅回传索引与原始数据以降低高频开销
+   * @description 轮播切到新的一条时触发；仅回传索引与原始数据以降低高频开销
+   * @param {Object} event 事件对象；event.index 为数据索引，event.data 为原始数据
    */
   change: [event: any]
 }>()
@@ -263,6 +277,16 @@ function onTextTap(index: number) : void {
   if (index < 0 || index >= source.value.length) return
   emit('click', { index: index, data: toRaw(source.value[index]['_data']) })
 }
+
+// #ifdef WEB
+function onTextKeydown(event : KeyboardEvent, index : number) : void {
+  const key = event.key as string
+  if (key == 'Enter' || key == ' ') {
+    event.preventDefault()
+    onTextTap(index)
+  }
+}
+// #endif
 
 function emitChange(index: number) : void {
   if (index < 0 || index >= source.value.length) return
@@ -447,4 +471,19 @@ defineExpose({
   left: 0;
   top: 0;
 }
+
+/* #ifdef WEB */
+.uni-data-vertical-marquee__text {
+  cursor: pointer;
+  outline: none;
+}
+
+.uni-data-vertical-marquee__text:hover {
+  opacity: 0.82;
+}
+
+.uni-data-vertical-marquee__text:focus {
+  text-decoration: underline;
+}
+/* #endif */
 </style>

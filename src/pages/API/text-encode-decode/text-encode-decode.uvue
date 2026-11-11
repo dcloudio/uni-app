@@ -1,0 +1,199 @@
+<template>
+	<page-head :title="data.title"></page-head>
+	<text class="intro">TextEncoder 接受码位流作为输入，提供 UTF-8 字节流；TextDecoder 将字节流作为输入，解码为文本。遇到格式错误的数据时，会使用替换字符 U+FFFD（�）替换无效数据。</text>
+
+	<text class="label">输入文本：</text>
+	<input class="input-box" :value="data.input" placeholder="请输入待编码文本" @input="onInput"></input>
+
+	<view class="btn-list">
+		<button :disabled="!data.supported" @click="testEncodeDecode">encode / decode 往返</button>
+		<button :disabled="!data.supported" @click="testGbkDecode">gbk 解码对照</button>
+		<!-- #ifndef APP-IOS -->
+		<button :disabled="!data.supported" @click="testDataViewDecode">decode(DataView)</button>
+		<!-- #endif -->
+	</view>
+
+	<!-- #ifndef MP -->
+	<view class="result-list">
+		<view class="result-item">
+			<text class="result-k">encoding：</text>
+			<text class="result-v">{{ data.encoding }}</text>
+		</view>
+		<view class="result-item">
+			<text class="result-k">encode 字节：</text>
+			<text class="result-v">{{ data.encodedBytes }}</text>
+		</view>
+		<view class="result-item">
+			<text class="result-k">byteLength：</text>
+			<text class="result-v">{{ data.byteLength }}</text>
+		</view>
+		<view class="result-item">
+			<text class="result-k">decode 结果：</text>
+			<text class="result-v">{{ data.decodedText }}</text>
+		</view>
+		<view class="result-item">
+			<text class="result-k">往返一致：</text>
+			<text class="result-v">{{ data.roundTripOk }}</text>
+		</view>
+		<view class="result-item">
+			<text class="result-k">gbk 解码对照：</text>
+			<text class="result-v">{{ data.gbkResult }}</text>
+		</view>
+		<view class="result-item">
+			<text class="result-k">DataView 解码：</text>
+			<text class="result-v">{{ data.dataViewResult }}</text>
+		</view>
+	</view>
+	<!-- #endif -->
+	<!-- #ifdef MP -->
+	<text class="tips">当前小程序平台暂不支持 TextEncoder / TextDecoder</text>
+	<!-- #endif -->
+</template>
+
+<script setup lang="ts">
+	type DataType = {
+		title: string
+		supported: boolean
+		input: string
+		encoding: string
+		encodedBytes: string
+		byteLength: number
+		decodedText: string
+		roundTripOk: boolean
+		gbkResult: string
+		dataViewResult: string
+	}
+
+	let supported = false
+	// #ifndef MP
+	supported = true
+	// #endif
+
+	const data = reactive({
+		title: 'TextEncoder / TextDecoder',
+		supported,
+		input: 'hello uni-app x 你好',
+		encoding: '-',
+		encodedBytes: '',
+		byteLength: 0,
+		decodedText: '',
+		roundTripOk: false,
+		gbkResult: '',
+		dataViewResult: ''
+	} as DataType)
+
+	const onInput = (e : UniInputEvent) => {
+		data.input = e.detail.value
+	}
+
+	const testEncodeDecode = () => {
+		const encoder = new TextEncoder()
+		data.encoding = encoder.encoding
+		const bytes = encoder.encode(data.input)
+		data.encodedBytes = bytes.join(',')
+		data.byteLength = bytes.length
+		const decoded = new TextDecoder('utf-8').decode(bytes)
+		data.decodedText = decoded
+		data.roundTripOk = decoded == data.input
+	}
+
+	const toCodePointText = (s : string) : string => {
+		let result = ''
+		for (const ch of s) {
+			result += `U+${ch.codePointAt(0)!.toString(16).toUpperCase()} `
+		}
+		return result
+	}
+
+	const testGbkDecode = () => {
+		const sample = Uint8Array.of(240, 160, 174, 183)
+		try {
+			const utf8Result = new TextDecoder('utf-8').decode(sample)
+			const gbkResult = new TextDecoder('gbk').decode(sample)
+			data.gbkResult = `utf-8: ${toCodePointText(utf8Result)}| gbk: ${toCodePointText(gbkResult)}`
+		} catch (e) {
+			data.gbkResult = `当前平台不支持 gbk 解码（${(e as Error).message}）`
+		}
+	}
+
+	let testDataViewDecode : () => void = () => {
+		data.dataViewResult = '当前平台不支持 decode(DataView)'
+	}
+	// #ifndef APP-IOS
+	testDataViewDecode = () => {
+		const arrayBuffer = new ArrayBuffer(4)
+		const dataView = new DataView(arrayBuffer)
+		dataView.setInt8(0, -16)
+		dataView.setInt8(1, -96)
+		dataView.setInt8(2, -82)
+		dataView.setInt8(3, -73)
+		const decoded = new TextDecoder('utf-8').decode(dataView)
+		data.dataViewResult = `${decoded}（${toCodePointText(decoded)}）`
+	}
+	// #endif
+
+	defineExpose({
+		data,
+		testEncodeDecode,
+		testGbkDecode,
+		testDataViewDecode
+	})
+</script>
+
+<style>
+	page {
+		padding: 15px;
+	}
+
+	.intro {
+		font-size: 12px;
+		opacity: 0.7;
+	}
+
+	.label {
+		margin-top: 12px;
+		color: var(--text-color, #333333);
+	}
+
+	.input-box {
+		margin-top: 8px;
+		padding: 8px 10px;
+		border: 1px solid var(--border-color, #D8D8D8);
+		border-radius: 4px;
+		color: var(--text-color, #333333);
+	}
+
+	.btn-list {
+		margin-top: 12px;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.result-list {
+		margin-top: 15px;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.result-item {
+		display: flex;
+		flex-direction: row;
+		margin-top: 8px;
+	}
+
+	.result-k {
+		width: 110px;
+		color: var(--active-color, #666666);
+	}
+
+	.result-v {
+		flex: 1;
+		color: var(--text-color, #333333);
+	}
+
+	.tips {
+		margin-top: 20px;
+		font-size: 12px;
+		color: var(--tips-color, #999999);
+	}
+</style>

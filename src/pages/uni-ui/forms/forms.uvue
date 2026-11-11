@@ -1,97 +1,95 @@
 <template>
-	<view>
-		<view class="intro">
-			<text class="page-title">uni-forms 表单</text>
-			<text class="page-desc">通过 v-model 统一收集字段值，并支持字段校验、错误展示和表单重置。</text>
+	<view class="intro">
+		<text class="page-title">uni-forms 表单</text>
+		<text class="page-desc">通过 v-model 统一收集字段值，并支持字段校验、错误展示和表单重置。</text>
+	</view>
+
+	<view class="section demo-index">
+		<text class="uni-h4">多功能演示</text>
+		<text class="section-desc">uni-forms 的所有表单用法从这里进入，按场景查看基础接入、校验方案、控件接入和样式配置。</text>
+		<view class="demo-links">
+			<navigator class="demo-link" url="/pages/uni-ui/forms/validation">
+				<text class="demo-link-title">完整校验</text>
+				<text class="demo-link-desc">DB Schema 规则、异步校验和字段方法</text>
+			</navigator>
+			<navigator class="demo-link" url="/pages/uni-ui/forms/valibot">
+				<text class="demo-link-title">Valibot schema</text>
+				<text class="demo-link-desc">Standard Schema、异步、嵌套和原生 API</text>
+			</navigator>
+			<navigator class="demo-link" url="/pages/uni-ui/forms/controls">
+				<text class="demo-link-title">控件接入</text>
+				<text class="demo-link-desc">原生控件、uni-x 控件和三方组件</text>
+			</navigator>
+			<navigator class="demo-link" url="/pages/uni-ui/forms/styles">
+				<text class="demo-link-title">样式与属性</text>
+				<text class="demo-link-desc">布局属性和 externalClasses 样式覆盖</text>
+			</navigator>
+			<navigator class="demo-link" url="/pages/uni-ui/forms/form-item">
+				<text class="demo-link-title">表单项布局</text>
+				<text class="demo-link-desc">左标签字号、宽度、对齐、箭头和说明</text>
+			</navigator>
 		</view>
+	</view>
 
-		<view class="section demo-index">
-			<text class="section-title">多功能演示</text>
-			<text class="section-desc">uni-forms 的所有表单用法从这里进入，按场景查看基础接入、校验方案、控件接入和样式配置。</text>
-			<view class="demo-links">
-				<navigator class="demo-link" url="/pages/uni-ui/forms/validation">
-					<text class="demo-link-title">完整校验</text>
-					<text class="demo-link-desc">DB Schema 规则、异步校验和字段方法</text>
-				</navigator>
-				<navigator class="demo-link" url="/pages/uni-ui/forms/valibot">
-					<text class="demo-link-title">Valibot schema</text>
-					<text class="demo-link-desc">Standard Schema、异步、嵌套和原生 API</text>
-				</navigator>
-				<navigator class="demo-link" url="/pages/uni-ui/forms/controls">
-					<text class="demo-link-title">控件接入</text>
-					<text class="demo-link-desc">原生控件、uni-x 控件和三方组件</text>
-				</navigator>
-				<navigator class="demo-link" url="/pages/uni-ui/forms/styles">
-					<text class="demo-link-title">样式与属性</text>
-					<text class="demo-link-desc">布局属性和 externalClasses 样式覆盖</text>
-				</navigator>
-				<navigator class="demo-link" url="/pages/uni-ui/forms/form-item">
-					<text class="demo-link-title">表单项布局</text>
-					<text class="demo-link-desc">左标签字号、宽度、对齐、箭头和说明</text>
-				</navigator>
-			</view>
+	<view class="section">
+		<uni-forms
+			ref="formRef"
+			v-model="formData"
+			:rules="rules"
+			validate-trigger="blur"
+			err-show-type="undertext"
+			label-position="top"
+			label-width="80"
+			@validate="onValidate"
+		>
+			<uni-forms-item name="name" label="姓名" required label-class="demo-label" error-message-class="demo-error">
+				<uni-easyinput
+					v-model="formData.name"
+					placeholder="请输入姓名"
+					clearable
+				/>
+			</uni-forms-item>
+
+			<uni-forms-item name="city" label="城市" label-class="demo-label" error-message-class="demo-error">
+				<uni-combobox
+					v-model="formData.city"
+					:options="cityOptions"
+					placeholder="请选择城市"
+				/>
+			</uni-forms-item>
+
+			<uni-forms-item name="email" label="邮箱" label-class="demo-label" error-message-class="demo-error">
+				<uni-easyinput
+					v-model="formData.email"
+					type="text"
+					placeholder="请输入邮箱"
+				/>
+			</uni-forms-item>
+
+			<uni-forms-item name="profile.nickname" label="嵌套字段" label-class="demo-label" error-message-class="demo-error">
+				<uni-easyinput
+					v-model="formData.profile.nickname"
+					placeholder="请输入昵称"
+				/>
+			</uni-forms-item>
+		</uni-forms>
+
+		<view class="button-row">
+			<button class="action-button" size="mini" @click="validateForm">校验表单</button>
+			<button class="action-button secondary-button" size="mini" @click="resetForm">重置字段</button>
 		</view>
+		<text class="status-text">{{ statusText }}</text>
+	</view>
 
-		<view class="section">
-			<uni-forms
-				ref="formRef"
-				v-model="formData"
-				:rules="rules"
-				validate-trigger="blur"
-				err-show-type="undertext"
-				label-position="top"
-				label-width="80"
-				@validate="onValidate"
-			>
-				<uni-forms-item name="name" label="姓名" required label-class="demo-label" error-message-class="demo-error">
-					<uni-easyinput
-						v-model="formData.name"
-						placeholder="请输入姓名"
-						clearable
-					/>
-				</uni-forms-item>
-
-				<uni-forms-item name="city" label="城市" label-class="demo-label" error-message-class="demo-error">
-					<uni-combobox
-						v-model="formData.city"
-						:options="cityOptions"
-						placeholder="请选择城市"
-					/>
-				</uni-forms-item>
-
-				<uni-forms-item name="email" label="邮箱" label-class="demo-label" error-message-class="demo-error">
-					<uni-easyinput
-						v-model="formData.email"
-						type="text"
-						placeholder="请输入邮箱"
-					/>
-				</uni-forms-item>
-
-				<uni-forms-item name="profile.nickname" label="嵌套字段" label-class="demo-label" error-message-class="demo-error">
-					<uni-easyinput
-						v-model="formData.profile.nickname"
-						placeholder="请输入昵称"
-					/>
-				</uni-forms-item>
-			</uni-forms>
-
-			<view class="button-row">
-				<button class="action-button" size="mini" @click="validateForm">校验表单</button>
-				<button class="action-button secondary-button" size="mini" @click="resetForm">重置字段</button>
-			</view>
-			<text class="status-text">{{ statusText }}</text>
-		</view>
-
-		<view class="section section-last">
-			<text class="section-title">当前数据</text>
-			<text class="data-text">{{ dataText }}</text>
-			<view class="property-list">
-				<text class="property-title">本页使用的关键属性</text>
-				<text class="property-text">v-model：formData</text>
-				<text class="property-text">validate-trigger：blur</text>
-				<text class="property-text">label-position：top</text>
-				<text class="property-text">label-class / error-message-class：自定义字段样式</text>
-			</view>
+	<view class="section section-last">
+		<text class="uni-h4">当前数据</text>
+		<text class="data-text">{{ dataText }}</text>
+		<view class="property-list">
+			<text class="property-title">本页使用的关键属性</text>
+			<text class="property-text">v-model：formData</text>
+			<text class="property-text">validate-trigger：blur</text>
+			<text class="property-text">label-position：top</text>
+			<text class="property-text">label-class / error-message-class：自定义字段样式</text>
 		</view>
 	</view>
 </template>
@@ -281,15 +279,14 @@ page {
 	color: var(--secondary-text-color, #657180);
 }
 
+/* #ifdef WEB */
+.demo-link {
+	cursor: pointer;
+}
+/* #endif */
+
 .section-last {
 	padding-bottom: 32px;
-}
-
-.section-title {
-	margin-bottom: 12px;
-	font-size: 16px;
-	font-weight: bold;
-	color: var(--text-color, #333333);
 }
 
 .button-row {
