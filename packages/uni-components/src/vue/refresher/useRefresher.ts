@@ -27,6 +27,11 @@ import { RefreshStateEnum, type RefresherState } from './types'
 // 与 Refresher 的 height 0.3s 回弹保持一致。
 const REFRESHER_RESTORE_DURATION = 300
 const passiveOptions = /*#__PURE__*/ passive(true)
+// Chrome < 150 中原生滚动衔接下拉刷新会卡顿，需松手后重新下拉。
+const chromeVersion = __NODE_JS__
+  ? null
+  : navigator.userAgent.match(/Chrome\/(\d+)/)
+const canPullAfterScroll = !chromeVersion || Number(chromeVersion[1]) >= 150
 
 interface RefresherProps {
   refresherEnabled: boolean | string
@@ -67,8 +72,8 @@ interface TouchGesture {
  * scroll-view / list-view 共用的刷新状态机与 touch 生命周期。
  *
  * 刷新状态与触摸处理方分开维护：首个有效移动决定交给浏览器还是自定义下拉。
- * 原生滚动开始后，后续 touchmove 通常已不可取消。为了让一次触摸可以从
- * scrollTop > 0 滚动到顶后继续下拉，browser 手势到顶时重新记录下拉起点，
+ * 原生滚动开始后，后续 touchmove 通常已不可取消。Chrome 150 以下必须等
+ * 下一次触摸才能下拉刷新；其他环境中，browser 手势到顶时重新记录下拉起点，
  * 随后只观察 touchmove 更新刷新高度，不尝试通过 preventDefault() 接管滚动。
  */
 export function useRefresher({
@@ -138,6 +143,7 @@ export function useRefresher({
   function handleBrowserPulling(event: TouchEvent, dy: number, stepY: number) {
     const gesture = touch!
     if (
+      !canPullAfterScroll ||
       !gesture.canPull ||
       !props.refresherEnabled ||
       !isVertical.value ||
