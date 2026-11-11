@@ -2,30 +2,31 @@
 
 ## 开源示例
 
-官方有6个开源项目比较重要
+官方如下开源项目比较重要
+- [uni-app x源码仓库](https://github.com/dcloudio/uni-app)：uni_modules下有内置组件和API的实现源码。适合组件作者、uts插件作者学习。
 - [hello uni-app x](https://gitcode.com/dcloud/hello-uni-app-x)：uni内置组件和API的使用示例，也包括一些常见但复杂的模板示例
-- [uni-api](https://gitcode.com/dcloud/uni-api)：uni api的实现源码。大量uts API插件源码，适合uts插件作者学习
-- [uni-component](https://gitcode.com/dcloud/uni-component)：内置组件的实现源码。uts组件插件源码，适合uts插件作者学习
 - [hello uts](https://gitcode.com/dcloud/hello-uts)：uts的语法和内置对象的使用示例
 - [hello uvue](https://gitcode.com/dcloud/hello-uvue)：vue语法的使用示例
 - [uni-ai x](https://ext.dcloud.net.cn/plugin?name=uni-ai-x)：用于快速搭建 AI 聊天类应用的开源插件，跨平台的仿deepseek客户端
 
 这些开源项目的master分支对应着HBuilderX最新正式版，alpha分支对应着最新alpha版。
 
-关于[uni-api](https://gitcode.com/dcloud/uni-api)和[uni-component](https://gitcode.com/dcloud/uni-component)，再强调说明下：
+关于[uni-app x源码仓库](https://github.com/dcloudio/uni-app)再强调说明下：
 
-uni-app x 的组件和API，大多是uts语言开发的。和开发者做的uts插件是一样的。\
+uni-app x 的组件和API，大多是uvue、uts开发的。和开发者做的uts插件是一样的。\
 它们都符合[exi api](https://uniapp.dcloud.net.cn/api/extapi.html)规范，也就是说，把这些uni_modules复制到工程下，会替换内置API和组件的实现。
 
 所以如需修改 uni-app x 的组件和API，比如修复一些bug或添加一些功能，可以通过这种方式来实现。
 
 如果这些改动有助于其他开发者，欢迎给开源项目回提pr。
 
-在 uni-app x 的组件和API文档页面的右上角，也有每个组件和API的源码，都是链接到[uni-api](https://gitcode.com/dcloud/uni-api)和[uni-component](https://gitcode.com/dcloud/uni-component)项目。
+在 uni-app x 的组件和API文档页面的右上角，也有每个组件和API的源码，都是链接到[uni-app x源码仓库](https://github.com/dcloudio/uni-app)
 
 ## 蒸汽模式案例
 
-- uni-ai x：开源、跨平台AI聊天流式markdown渲染项目。 [下载应用](https://web-ext-storage.dcloud.net.cn/uni-app-x/uni-ai-x/uni-ai-x-portal.html)、[源码](https://ext.dcloud.net.cn/plugin?name=uni-ai-x)
+- uni-ai x：开源、跨平台 AI聊天流式markdown渲染项目。[源码](https://ext.dcloud.net.cn/plugin?name=uni-ai-x)
+	* 渲染性能比ChatGPT等闭源AI客户端更好：[uni-ai x 和ChatGPT、Gemini、豆包、DeepSeek的横评测试报告](https://doc.dcloud.net.cn/uniCloud/uni-ai-x-report.html)
+	* [下载示例应用](https://web-ext-storage.dcloud.net.cn/uni-app-x/uni-ai-x/uni-ai-x-portal.html)
 
 ### 应用商店下载量千万级
 - 抱抱海心理咨询：[Android](https://appgallery.huawei.com/app/C119009491)、[iOS](https://apps.apple.com/cn/app/%E6%8A%B1%E6%8A%B1%E6%B5%B7%E5%BF%83%E7%90%86%E5%92%A8%E8%AF%A2/id6809343318)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.dahe.psy.hmos)、微信小程序搜索"抱抱海心理"
@@ -34,10 +35,13 @@ uni-app x 的组件和API，大多是uts语言开发的。和开发者做的uts�
 ### 应用商店下载量十万级
 - 安医达：[Android](https://appgallery.huawei.com/app/C114809501)、[iOS](https://apps.apple.com/cn/app/%E5%AE%89%E5%8C%BB%E8%BE%BE/id6749573798)、微信小程序搜索"安医达"
 - 语法分析助手：[Android](https://appgallery.huawei.com/app/C106861521)、[iOS](https://apps.apple.com/cn/app/%E8%AF%AD%E6%B3%95%E5%88%86%E6%9E%90%E5%8A%A9%E6%89%8B/id1606478557)、微信小程序搜索"语法分析助手"
+	* 从老版uni-app迁移到uni-app x蒸汽模式。开发者感受：速度确实快很多。
 - 万象八字：[Android](https://appgallery.huawei.com/app/C115905187)、[iOS](https://apps.apple.com/cn/app/%E4%B8%87%E8%B1%A1%E5%85%AB%E5%AD%97/id6746738853)
 - 金股讯：[Android](https://sj.qq.com/appdetail/com.jinguxun.app)、[iOS](https://apps.apple.com/cn/app/%E9%87%91%E8%82%A1%E8%AE%AF/id1615272585)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.jinguxun.happ)
+	* 从uni-app vdom 迁移到 蒸汽模式。开发者感受：开发体验更好了。
 - 四大认证备考神器：[Andoird](https://sj.qq.com/appdetail/uni.UNIB5F0C16)、[iOS](https://apps.apple.com/cn/app/%E5%9B%9B%E5%A4%A7%E8%AE%A4%E8%AF%81%E5%A4%87%E8%80%83%E7%A5%9E%E5%99%A8/id6455939352)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=uni.beikaoshenqi.huawei)、微信小程序搜索"四大认证备考神器"
 - 鲸鲨记账：[Android](https://sj.qq.com/appdetail/com.cyqgxf.jingshajizhang)、[iOS](https://apps.apple.com/cn/app/%E9%B2%B8%E9%B2%A8%E8%AE%B0%E8%B4%A6-ai%E6%99%BA%E8%83%BD%E8%87%AA%E5%8A%A8%E8%AE%B0%E8%B4%A6%E5%AD%98%E9%92%B1%E5%BF%AB%E9%80%9F%E4%B8%93%E4%B8%9A%E5%8A%A9%E6%89%8B/id6751838395)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.cyqgxf.jingshajizhang.hm)
+	* 为了兼容鸿蒙，从flutter迁移到uni-app x蒸汽模式。开发者感受：长列表更流畅了。
 - pushplus：[Android](https://sj.qq.com/appdetail/com.perk.pushplus.app)、[iOS](https://apps.apple.com/cn/app/pushplus/id6755597125)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.perk.pushplus.app.hw)
 ### 其他
 - 黔警通：[Android](https://sj.qq.com/appdetail/com.qxnga.qjt)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=hmos.com.qxnga.qjt)
@@ -103,7 +107,6 @@ uni-app x 的组件和API，大多是uts语言开发的。和开发者做的uts�
 - 台球追分记分（工具）：[鸿蒙](https://appgallery.huawei.com/app/detail?id=zhuifen.huawei.com)
 - 学识魔方（教育）：[鸿蒙](https://appgallery.huawei.com/app/detail?id=Huangwj.XueShiMoFang.huawei)
 - 环保计算小帮手（工具）：[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.ahzx.jzssds)
-- RiceUI（组件库）：[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.rice.xui)
 - 手机数据库（工具）：[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.xingyueldh.phonedatabase)
 - 信息安全速记助手（工具）：[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.ruixiang.xxaqsjzs)
 - 都测（工具）：[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.hime.dotest)
