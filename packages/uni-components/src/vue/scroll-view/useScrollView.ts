@@ -445,6 +445,16 @@ function useScrollViewLoader(
     content.value!.removeEventListener('transitionend', __transitionEnd)
     content.value!.removeEventListener('webkitTransitionEnd', __transitionEnd)
   }
+  /**
+   * 下拉刷新卡顿的情况说明
+   * 卡顿具体场景是一次下拉过程中先触发滚动在触发下拉刷新，
+   * 不管下拉刷新是做高度动画还是transform动画都一样，哪怕把下拉刷新去了只让滚动内容transform都会卡，
+   * 这个问题在chrome 131版本存在，升级到156版本就不卡了。
+   * 要维持现有的表现的话，卡顿的问题尝试了很多方案都没法修复。
+   * 如果可以接受下拉刷新不和滚动连在一起的话，这个倒是能解决，
+   * 表现为用户在scrollTop大于0的位置持续下拉只能拉到scrollTop等于0，松手之后再次下拉才能触发下拉刷新。
+   * 当前微信开发者工具最新稳定版的webview是136版本，所以它在这个场景下也卡
+   */
   function _setRefreshState(_state: RefreshState) {
     if (!props.refresherEnabled) return
     switch (_state) {
