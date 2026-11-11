@@ -81,7 +81,8 @@ unicode直显方式的性能优于伪元素方式，尤其是text组件设置fla
 
 ### 内置字体图标 uni-icon @uniicon
 > App 平台：HBuilderX 4.33+
-> Web、小程序：HBuilderX 5.36+
+>
+> Web、小程序：HBuilderX 5.36
 
 内置组件和API用到了一些字体，同时共享出来给开发者，也可以使用这些内置字体。
 
@@ -99,21 +100,10 @@ unicode直显方式的性能优于伪元素方式，尤其是text组件设置fla
 </script>
 ```
 
-Web 和 小程序平台，内置字体为woff2格式，更有利于网络传输。
+Web 和 小程序平台，内置字体为 woff2 base64 格式，不会产生网络请求。\
 App平台为ttf格式，App包内置字体不涉及网络传输，使用ttf有更好的跨平台兼容性以及避免woff2的解压耗时。
 
-Web和小程序平台，自 HBuilderX 5.36 起仅支持以下 6 个 `uni-icon` 图标：
-
-|名称|code|Unicode|
-|:-:|:-:|:-:|
-|back|E601|`\ue601`|
-|close|E650|`\ue650`|
-|info|EA03|`\uea03`|
-|success_no_circle|EA08|`\uea08`|
-|warn|EA0F|`\uea0f`|
-|search|EA23|`\uea23`|
-
-App 平台内置 `uni-icon` 完整列表如下：
+内置 `uni-icon` 图标及其平台支持如下：
 
 <div class="iconSample">
   <div class="iconContainer">
@@ -131,6 +121,9 @@ App 平台内置 `uni-icon` 完整列表如下：
         <span class="copyText">复制</span>
       </button>
       <span class="name">{{ item.name }}</span>
+      <div class="platformList">
+        <span class="platform" v-for="platform in item.platforms" :key="platform">{{ platform }}</span>
+      </div>
     </div>
   </div>
 </div>
@@ -150,26 +143,26 @@ export default {
   data() {
     return {
       uniIconItems: [
-        { entity: '&#xE600;', code: '\\uE600', name: 'forward' },
-        { entity: '&#xE601;', code: '\\uE601', name: 'back' },
-        { entity: '&#xE602;', code: '\\uE602', name: 'share' },
-        { entity: '&#xE604;', code: '\\uE604', name: 'favorites' },
-        { entity: '&#xE605;', code: '\\uE605', name: 'home' },
-        { entity: '&#xE606;', code: '\\uE606', name: 'more' },
-        { entity: '&#xE650;', code: '\\uE650', name: 'close' },
-        { entity: '&#xE661;', code: '\\uE661', name: 'down' },
-        { entity: '&#xEA01;', code: '\\uEA01', name: 'circle' },
-        { entity: '&#xEA03;', code: '\\uEA03', name: 'info' },
-        { entity: '&#xEA04;', code: '\\uEA04', name: 'info circle' },
-        { entity: '&#xEA06;', code: '\\uEA06', name: 'success' },
-        { entity: '&#xEA07;', code: '\\uEA07', name: 'success circle' },
-        { entity: '&#xEA08;', code: '\\uEA08', name: 'success no circle' },
-        { entity: '&#xEA0B;', code: '\\uEA0B', name: 'cancel circle' },
-        { entity: '&#xEA0F;', code: '\\uEA0F', name: 'warn' },
-        { entity: '&#xEA14;', code: '\\uEA14', name: 'clear' },
-        { entity: '&#xEA19;', code: '\\uEA19', name: 'download' },
-        { entity: '&#xEA1E;', code: '\\uEA1E', name: 'waiting' },
-        { entity: '&#xEA23;', code: '\\uEA23', name: 'search' }
+        { entity: '&#xE601;', code: '\\uE601', name: 'back', platforms: ['Web 5.36', '小程序 5.36', 'App √'] },
+        { entity: '&#xE650;', code: '\\uE650', name: 'close', platforms: ['Web 5.36', '小程序 5.36', 'App √'] },
+        { entity: '&#xEA03;', code: '\\uEA03', name: 'info', platforms: ['Web 5.36', '小程序 5.36', 'App √'] },
+        { entity: '&#xEA08;', code: '\\uEA08', name: 'success_no_circle', platforms: ['Web 5.36', '小程序 5.36', 'App √'] },
+        { entity: '&#xEA0F;', code: '\\uEA0F', name: 'warn', platforms: ['Web 5.36', '小程序 5.36', 'App √'] },
+        { entity: '&#xEA23;', code: '\\uEA23', name: 'search', platforms: ['Web 5.36', '小程序 5.36', 'App √'] },
+        { entity: '&#xE600;', code: '\\uE600', name: 'forward', platforms: ['App √'] },
+        { entity: '&#xE602;', code: '\\uE602', name: 'share', platforms: ['App √'] },
+        { entity: '&#xE604;', code: '\\uE604', name: 'favorites', platforms: ['App √'] },
+        { entity: '&#xE605;', code: '\\uE605', name: 'home', platforms: ['App √'] },
+        { entity: '&#xE606;', code: '\\uE606', name: 'more', platforms: ['App √'] },
+        { entity: '&#xE661;', code: '\\uE661', name: 'down', platforms: ['App √'] },
+        { entity: '&#xEA01;', code: '\\uEA01', name: 'circle', platforms: ['App √'] },
+        { entity: '&#xEA04;', code: '\\uEA04', name: 'info circle', platforms: ['App √'] },
+        { entity: '&#xEA06;', code: '\\uEA06', name: 'success', platforms: ['App √'] },
+        { entity: '&#xEA07;', code: '\\uEA07', name: 'success circle', platforms: ['App √'] },
+        { entity: '&#xEA0B;', code: '\\uEA0B', name: 'cancel circle', platforms: ['App √'] },
+        { entity: '&#xEA14;', code: '\\uEA14', name: 'clear', platforms: ['App √'] },
+        { entity: '&#xEA19;', code: '\\uEA19', name: 'download', platforms: ['App √'] },
+        { entity: '&#xEA1E;', code: '\\uEA1E', name: 'waiting', platforms: ['App √'] }
       ]
     }
   },
@@ -316,6 +309,22 @@ export default {
   display: block;
   word-break: break-word;
 }
+.iconSample .platformList {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+}
+.iconSample .platform {
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: #eef5ff;
+  color: #1f56c5;
+  font-size: 11px;
+  line-height: 16px;
+  white-space: nowrap;
+}
 </style>
 
 ## 媒体查询 @media
@@ -339,3 +348,168 @@ HBuilderX 5.25+，App 平台蒸汽模式支持通过 `prefers-color-scheme` 媒�
 详见 [暗黑主题适配教程](https://doc.dcloud.net.cn/uni-app-x/api/theme-change.html)。
 
 目前App平台`@media`暂不支持尺寸、宽高、屏幕方向、分辨率等其他媒体特性的匹配，如需适配宽屏，请使用专门的`<match-media>组件`，[详见](../../component/match-media.md)。
+
+## 示例
+
+### 示例 
+ 示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/CSS/text/font-family-icon.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/CSS/text/font-family-icon.uvue) 
+::: preview https://hellouniappx.dcloud.net.cn/web/#/pages/CSS/text/font-family-icon
+
+> appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/CSS/text/font-family-icon
+
+>示例
+```vue
+<template>
+    <view style="align-items: center;align-self: center;">
+      <view class="iconContainer">
+        <view class="iconItem" v-for="item in uniIcons">
+          <text class="icon" :style="{'font-weight': data.fontWeight, 'font-style': data.fontStyle}">{{String.fromCharCode(parseInt(item.code,16))}}</text>
+          <text class="code">\u{{item.code}}</text>
+          <text class="name">{{item.name}}</text>
+        </view>
+      </view>
+
+    </view>
+</template>
+
+<script setup lang="ts">
+
+  type Icon = {
+    name : string,
+    code : string,
+  }
+
+  const uniIcons = ref([ //图标数据
+    {
+      'name':'back',
+      'code':'E601',
+    },
+    {
+      'name':'forward',
+      'code':'E600',
+    },
+    {
+      'name':'share',
+      'code':'E602',
+    },
+    {
+      'name':'favorites',
+      'code':'E604',
+    },
+    {
+      'name':'home',
+      'code':'E605',
+    },
+    {
+      'name':'more',
+      'code':'E606',
+    },
+    {
+      'name':'close',
+      'code':'E650',
+    },
+    {
+      'name':'down',
+      'code':'E661',
+    },
+    {
+      'name':'circle',
+      'code':'EA01',
+    },
+    {
+      'name':'warn',
+      'code':'EA0F',
+    },
+    {
+      'name':'info',
+      'code':'EA03',
+    },
+    {
+      'name':'info circle',
+      'code':'EA04',
+    },
+    {
+      'name':'success',
+      'code':'EA06',
+    },
+    {
+      'name':'success circle',
+      'code':'EA07',
+    },
+    {
+      'name':'success no circle',
+      'code':'EA08',
+    },
+    {
+      'name':'cancel circle',
+      'code':'EA0B',
+    },
+    {
+      'name':'clear',
+      'code':'EA14',
+    },
+    {
+      'name':'download',
+      'code':'EA19',
+    },
+    {
+      'name':'waitnig',
+      'code':'EA1E',
+    },
+    {
+      'name':'search',
+      'code':'EA23',
+    }
+  ] as Icon[])
+  // 自动化测试
+  const data = reactive({
+    fontWeight: 'normal',
+    fontStyle: 'normal'
+  })
+
+  const changeStyle = () => {
+    data.fontWeight = 'bold'
+    data.fontStyle = 'italic'
+  }
+
+	defineExpose({
+	  changeStyle,
+	  data
+	})
+
+</script>
+
+<style>
+.iconContainer {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.iconItem {
+  width: 100px;
+  height: 150px;
+  justify-content: center;
+  align-items: center;
+}
+.icon {
+  width: 48px;
+  height: 48px;
+  font-family: uni-icon;
+  font-size: 42px;
+  line-height: 48px;
+  color: #333;
+  margin-bottom: 8px;
+}
+.code {
+  font-size: 14px;
+  color: #f00;
+}
+.name {
+  font-size: 12px;
+  color: #000;
+}
+</style>
+
+```
+
+:::
