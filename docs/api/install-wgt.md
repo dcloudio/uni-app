@@ -166,6 +166,8 @@ uni-app 的 wgt 是zip格式。uni-app x 的 wgt 是压缩率和解压速度更�
 
 wgt热更新，只能更新前端资源，不能热更新原生底座的原生模块，不能热更新manifest相关内容。需注意前端代码与原生底座的匹配性。
 
+对于蒸汽模式字节码资源，`uni.installWgt` 会自动校验 wgt 与应用基座的 `compilerRuleVersion`，版本不一致时安装失败。HBuilderX 与编译规则版本的对应关系详见[编译规则版本](../app-vapor.md#compiler-rule-version)。
+
 举例，初始的原生包中，未包含map地图模块。如果基于该原生包安装新wgt包，新wgt包中的代码引用了map组件，那么该这部分代码在运行时会报错。
 
 打包时，HBuilder控制台会列出当前打包了哪些模块，默认是根据当前代码使用的模块来摇树决定的。如果要额外添加某些模块，需要在manifest中手动配置，配置后需重新打包才能生效。[详见](../collocation/manifest-modules.md#manual)

@@ -548,6 +548,19 @@ uni-app x 是逻辑层和视图层分离，逻辑层即script内，是uts/js。�
 
 正常情况下，使用字节码即可。
 
+### 编译规则版本@compiler-rule-version
+
+`compilerRuleVersion` 主要用于校验蒸汽模式字节码资源与应用基座的兼容性，两端版本必须完全一致。[uni.installWgt](./api/install-wgt.md#installwgt) 安装 wgt 时会自动校验，版本不一致则安装失败。
+
+下表仅列出 `compilerRuleVersion` 发生变化时对应的 HBuilderX 起始版本，未发生变化的版本不重复列出。
+
+| HBuilderX版本 | compilerRuleVersion |
+| :- | :- |
+| 5.32+ | 1 |
+| 5.36+ | 2 |
+
+HBuilderX 5.31及以前尚未引入 `compilerRuleVersion` 机制。
+
 因为最初在5.0版上线鸿蒙蒸汽模式时只有机器码，所以目前在鸿蒙上是提供了字节码或机器码2个选项。
 
 而在后续上线iOS和Android蒸汽模式时，只提供了字节码选项。
