@@ -190,14 +190,18 @@ Web(VDOM): 5.33; Web(Vapor): 5.41; 微信小程序: 5.33; 支付宝小程序: 5.
 
 
 ### 属性 
-| 名称 | 类型 | 描述 |
-| :- | :- | :- |
-| localdata | Array |   |
-| collection | string |   |
-| interval | number |   |
-| textClass | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
-| @click | Function | 点击文字时触发；参数为 { index, data } |
-| @change | Function | 轮播切到新的一条时触发；参数为 { index, data }，仅回传索引与原始数据以降低高频开销 |
+| 名称 | 类型 | 默认值 | 描述 |
+| :- | :- | :- | :- |
+| localdata | Array | \[\] | 本地数据，支持对象数组 \[{ text, value }] 或字符串数组 \["公告1", "公告2"\] |
+| collection | string | "" | uniCloud 数据库集合名称；设置后且未提供 localdata 时使用云端数据 |
+| interval | number | 3000 | 滚动间隔毫秒数 |
+| textClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 文字 external class |
+| field | string | "" | 查询字段，多个字段用 `,` 分割，支持 `oldname as newname` 别名 |
+| orderby | string | "" | 排序字段及正序倒序设置 |
+| where | string \| object | "" | 查询条件 |
+| pageSize | number | 20 | 每页数据数量 |
+| @click | Function |   | 点击文字时触发；参数为 { index, data } |
+| @change | Function |   | 轮播切到新的一条时触发；参数为 { index, data }，仅回传索引与原始数据以降低高频开销 |
 
 <!-- UTSCOMJSON.uni-data-vertical-marquee.fileFormates -->
 
