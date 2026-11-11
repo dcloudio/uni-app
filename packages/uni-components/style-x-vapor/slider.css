@@ -46,6 +46,11 @@ slider {
 
   will-change: transform;
   cursor: grab;
+  pointer-events: auto;
+}
+
+.slider-handle-wrapper {
+  pointer-events: none;
 }
 
 .slider-handle:focus-visible {

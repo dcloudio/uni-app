@@ -7,6 +7,8 @@
       <!-- #ifdef WEB -->
       @pointerdown="handlePointerDown" @pointermove="handlePointerMove" @pointerup="handlePointerUp"
       @pointercancel="handlePointerCancel" @lostpointercapture="handlePointerCancel"
+      @touchstart="handleWebTouchStart" @touchmove="handleWebTouchMove" @touchend="handleWebTouchEnd"
+      @touchcancel="handleWebTouchCancel"
       <!-- #endif -->
     >
       <!-- 背景轨道 -->
@@ -18,7 +20,7 @@
       </view>
 
       <!-- 滑块 -->
-      <view flatten ref="handleRef" style="overflow: visible; align-self: flex-start;z-index: 2;"
+      <view flatten ref="handleRef" class="slider-handle-wrapper" style="overflow: visible; align-self: flex-start;z-index: 2;"
         :style="{ width: '100%', transform: `translateX(${thumbTranslateX}%)` }">
         <view flatten
           <!-- #ifdef WEB -->
@@ -756,6 +758,7 @@
     if (props.disabled == true || activePointerId != -1 || !e.isPrimary || e.button != 0) {
       return
     }
+    e.stopPropagation()
 
     lastValue = currentValue.value
     isDragging.value = true
@@ -780,7 +783,6 @@
     if (e.pointerType == 'mouse') {
       e.preventDefault()
       focusThumb()
-      renderVisuals(calculateValue(e.clientX))
     }
   }
 
@@ -788,13 +790,34 @@
     if (e.pointerId != activePointerId || e.button != 0) {
       return
     }
+    e.stopPropagation()
 
     finishPointerInteraction(e.clientX)
   }
 
   function handlePointerCancel(e : PointerEvent) {
-    if (e.pointerId == activePointerId) resetInteractionState()
+    if (e.pointerId == activePointerId) {
+      e.stopPropagation()
+      resetInteractionState()
+    }
   }
+
+  function handleWebTouchStart(e : TouchEvent) {
+    e.stopPropagation()
+  }
+
+  function handleWebTouchMove(e : TouchEvent) {
+    e.stopPropagation()
+  }
+
+  function handleWebTouchEnd(e : TouchEvent) {
+    e.stopPropagation()
+  }
+
+  function handleWebTouchCancel(e : TouchEvent) {
+    e.stopPropagation()
+  }
+
   const sliderKeys = ['ArrowLeft', 'ArrowDown', 'ArrowRight', 'ArrowUp', 'Home', 'End', 'PageUp', 'PageDown']
   const pressedSliderKeys = new Set<string>()
 
@@ -1029,8 +1052,15 @@
     /* #ifdef WEB */
     will-change: transform;
     cursor: grab;
+    pointer-events: auto;
     /* #endif */
   }
+
+  /* #ifdef WEB */
+  .slider-handle-wrapper {
+    pointer-events: none;
+  }
+  /* #endif */
 
   /* #ifdef WEB */
   .slider-handle:focus-visible {

@@ -11269,7 +11269,7 @@ class UniSliderElement extends UniViewElement {
   }
 }
 const t0$6 = Vue.template('<span uni-text style="width: 35px;color: #888;font-size: 14px;align-self: center;margin-left: 5px;white-space: nowrap;"> ');
-const t1$2 = Vue.template("<div uni-slider uni-view class=container><div uni-view class=slider-track><div uni-view><div uni-view></div></div><div uni-view><div uni-view role=slider aria-orientation=horizontal></div></div></div>", 1);
+const t1$2 = Vue.template("<div uni-slider uni-view class=container><div uni-view class=slider-track><div uni-view><div uni-view></div></div><div uni-view class=slider-handle-wrapper><div uni-view role=slider aria-orientation=horizontal></div></div></div>", 1);
 const _uniSliderElement = { value: "SLIDER" };
 const TOUCH_THRESHOLD = 4;
 const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
@@ -11523,6 +11523,7 @@ const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
       if (props2.disabled == true || activePointerId != -1 || !e2.isPrimary || e2.button != 0) {
         return;
       }
+      e2.stopPropagation();
       lastValue = currentValue.value;
       isDragging.value = true;
       touchStartX = e2.clientX;
@@ -11542,18 +11543,32 @@ const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
       if (e2.pointerType == "mouse") {
         e2.preventDefault();
         focusThumb();
-        renderVisuals(calculateValue(e2.clientX));
       }
     }
     function handlePointerUp(e2) {
       if (e2.pointerId != activePointerId || e2.button != 0) {
         return;
       }
+      e2.stopPropagation();
       finishPointerInteraction(e2.clientX);
     }
     function handlePointerCancel(e2) {
-      if (e2.pointerId == activePointerId)
+      if (e2.pointerId == activePointerId) {
+        e2.stopPropagation();
         resetInteractionState();
+      }
+    }
+    function handleWebTouchStart(e2) {
+      e2.stopPropagation();
+    }
+    function handleWebTouchMove(e2) {
+      e2.stopPropagation();
+    }
+    function handleWebTouchEnd(e2) {
+      e2.stopPropagation();
+    }
+    function handleWebTouchCancel(e2) {
+      e2.stopPropagation();
     }
     const sliderKeys = ["ArrowLeft", "ArrowDown", "ArrowRight", "ArrowUp", "Home", "End", "PageUp", "PageDown"];
     const pressedSliderKeys = /* @__PURE__ */ new Set();
@@ -11633,6 +11648,10 @@ const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
     Vue.on(n5, "pointerup", handlePointerUp);
     Vue.on(n5, "pointercancel", handlePointerCancel);
     Vue.on(n5, "lostpointercapture", handlePointerCancel);
+    Vue.on(n5, "touchstart", handleWebTouchStart);
+    Vue.on(n5, "touchmove", handleWebTouchMove);
+    Vue.on(n5, "touchend", handleWebTouchEnd);
+    Vue.on(n5, "touchcancel", handleWebTouchCancel);
     Vue.setStaticTemplateRef(n5, containerRef, null, "containerRef");
     Vue.renderEffect(() => {
       const _props = props2;
