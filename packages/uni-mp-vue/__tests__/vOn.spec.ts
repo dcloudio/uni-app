@@ -73,6 +73,63 @@ describe('uni-mp-vue: vOn', () => {
     expect((event.currentTarget as any).dataset.get('bar')).toBe('current')
   })
 
+  it.each([
+    [194, 458],
+    [0, 0],
+  ])('uses tap touch client coordinates (%d, %d)', (clientX, clientY) => {
+    global.__X__ = true
+    const { instance } = mockCurrentInstance()
+    const event = createMPEvent('tap')
+    const touch = {
+      clientX,
+      clientY,
+      pageX: clientX + 100,
+      pageY: clientY + 636,
+      screenX: clientX + 20,
+      screenY: clientY + 50,
+    }
+    event.detail = { x: touch.pageX, y: touch.pageY }
+    event.touches = [touch]
+
+    patchMPEvent(event, instance as any)
+
+    expect(event).toMatchObject({
+      ...touch,
+      x: clientX,
+      y: clientY,
+    })
+  })
+
+  it.each([{ touches: undefined }, { touches: [] }])(
+    'falls back to tap detail coordinates with touches=$touches',
+    ({ touches }) => {
+      global.__X__ = true
+      const event = createMPEvent('tap')
+      event.detail = { x: 10, y: 20 }
+      event.touches = touches
+
+      patchMPEvent(event)
+
+      expect(event).toMatchObject({ x: 10, y: 20, clientX: 10, clientY: 20 })
+    }
+  )
+
+  it('uses Alipay tap detail client and page coordinates', () => {
+    global.__X__ = true
+    const { instance } = mockCurrentInstance('mp-alipay')
+    const event = createMPEvent('tap')
+    event.detail = { clientX: 196, clientY: 492, pageX: 196, pageY: 1079 }
+    delete event.touches
+
+    patchMPEvent(event, instance as any)
+
+    expect(event).toMatchObject({
+      ...event.detail,
+      x: 196,
+      y: 492,
+    })
+  })
+
   describe('once modifier', () => {
     it('invokes the handler only once when Once flag is set', () => {
       const { scope } = mockCurrentInstance()

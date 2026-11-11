@@ -193,11 +193,10 @@ function normalizeXEvent(
     if (ctx?.$mpPlatform === 'mp-alipay') {
       normalizeAlipayTapEventPosition(event)
     } else {
-      event.x = event.detail.x
-      event.y = event.detail.y
-      event.clientX = event.detail.x
-      event.clientY = event.detail.y
+      // 微信 tap 的 detail.x/y 包含页面滚动距离，不能直接作为窗口坐标。优先使用触点的 clientX/clientY，无触点时回退 detail。
       const touch0 = event.touches && event.touches[0]
+      event.x = event.clientX = touch0?.clientX ?? event.detail.x
+      event.y = event.clientY = touch0?.clientY ?? event.detail.y
       if (touch0) {
         event.pageX = touch0.pageX
         event.pageY = touch0.pageY
