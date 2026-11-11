@@ -7613,12 +7613,20 @@ const _sfc_main$1 = /* @__PURE__ */ vue.defineComponent({
     };
   }
 });
+var RefreshStateEnum = /* @__PURE__ */ ((RefreshStateEnum2) => {
+  RefreshStateEnum2["Idle"] = "";
+  RefreshStateEnum2["Pulling"] = "pulling";
+  RefreshStateEnum2["Refresh"] = "refresh";
+  RefreshStateEnum2["Restore"] = "restore";
+  RefreshStateEnum2["Abort"] = "abort";
+  return RefreshStateEnum2;
+})(RefreshStateEnum || {});
 const Refresher = /* @__PURE__ */ defineBuiltInComponent({
   name: "Refresher",
   props: {
     refreshState: {
       type: String,
-      default: ""
+      default: RefreshStateEnum.Idle
     },
     refresherHeight: {
       type: Number,
@@ -7649,16 +7657,16 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
         backgroundColor: props2.refresherBackground
       };
       switch (props2.refreshState) {
-        case "pulling":
+        case RefreshStateEnum.Pulling:
           style.height = props2.refresherHeight + "px";
           break;
-        case "refreshing":
+        case RefreshStateEnum.Refresh:
           style.height = props2.refresherThreshold + "px";
           style.transition = "height 0.3s";
           break;
-        case "":
-        case "refresherabort":
-        case "restore":
+        case RefreshStateEnum.Idle:
+        case RefreshStateEnum.Abort:
+        case RefreshStateEnum.Restore:
           style.height = "0px";
           style.transition = "height 0.3s";
           break;
@@ -7688,7 +7696,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-scroll-view-refresh"
       }, [vue.createVNode("div", {
         "class": "uni-scroll-view-refresh-inner"
-      }, [props2.refreshState == "pulling" ? vue.createVNode("svg", {
+      }, [props2.refreshState === RefreshStateEnum.Pulling ? vue.createVNode("svg", {
         "key": "refresh__icon",
         "style": {
           transform: "rotate(" + refreshRotate.value + "deg)"
@@ -7703,7 +7711,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
       }, null), vue.createVNode("path", {
         "d": "M0 0h24v24H0z",
         "fill": "none"
-      }, null)], 4) : null, props2.refreshState == "refreshing" ? vue.createVNode("svg", {
+      }, null)], 4) : null, props2.refreshState === RefreshStateEnum.Refresh ? vue.createVNode("svg", {
         "key": "refresh__spinner",
         "class": "uni-scroll-view-refresh__spinner",
         "width": "24",
@@ -7725,6 +7733,75 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
+const REFRESHER_RESTORE_DURATION = 300;
+function useRefresher({
+  props: props2,
+  state,
+  scrollElement,
+  isVertical,
+  trigger,
+  emit: emit2,
+  onNativeTouchMove
+}) {
+  let refreshResetTimer;
+  function clearRefreshResetTimer() {
+    clearTimeout(refreshResetTimer);
+    refreshResetTimer = void 0;
+  }
+  function setRefreshState(nextState, event = {}, dy = 0) {
+    if (state.refreshState === nextState)
+      return;
+    clearRefreshResetTimer();
+    state.refreshState = nextState;
+    switch (nextState) {
+      case RefreshStateEnum.Idle:
+        state.refresherHeight = 0;
+        break;
+      case RefreshStateEnum.Refresh:
+        state.refresherHeight = props2.refresherThreshold;
+        trigger("refresherrefresh", event, { dy });
+        emit2("update:refresherTriggered", true);
+        break;
+      case RefreshStateEnum.Restore:
+      case RefreshStateEnum.Abort:
+        state.refresherHeight = 0;
+        refreshResetTimer = setTimeout(() => {
+          setRefreshState(RefreshStateEnum.Idle);
+        }, REFRESHER_RESTORE_DURATION);
+        if (nextState === RefreshStateEnum.Restore) {
+          emit2("update:refresherTriggered", false);
+          trigger("refresherrestore", event, { dy });
+        } else {
+          trigger("refresherabort", event, { dy });
+        }
+        break;
+    }
+  }
+  vue.watch(
+    () => props2.refresherTriggered,
+    (val) => {
+      if (!props2.refresherEnabled)
+        return;
+      if (val === true) {
+        setRefreshState(RefreshStateEnum.Refresh);
+      } else if (val === false) {
+        if (state.refreshState === RefreshStateEnum.Refresh) {
+          setRefreshState(RefreshStateEnum.Restore);
+        } else if (state.refreshState === RefreshStateEnum.Pulling) {
+          setRefreshState(RefreshStateEnum.Abort);
+        }
+      }
+    }
+  );
+  vue.watch(
+    () => props2.refresherEnabled,
+    (enabled) => {
+      if (!enabled) {
+        setRefreshState(RefreshStateEnum.Idle);
+      }
+    }
+  );
+}
 const props$d = {
   direction: {
     type: [String],
@@ -7867,7 +7944,7 @@ function useScrollViewState(props2) {
     lastScrollToUpperTime: 0,
     lastScrollToLowerTime: 0,
     refresherHeight: 0,
-    refreshState: ""
+    refreshState: RefreshStateEnum.Idle
   });
   return {
     state,
@@ -7876,8 +7953,6 @@ function useScrollViewState(props2) {
   };
 }
 function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content, emit2) {
-  let beforeRefreshing = false;
-  let triggerAbort = false;
   let __transitionEnd = () => {
   };
   const realScrollX = vue.computed(() => {
@@ -7891,6 +7966,26 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
       return true;
     }
     return false;
+  });
+  useRefresher({
+    props: props2,
+    state,
+    scrollElement: main,
+    isVertical: realScrollY,
+    trigger,
+    emit: emit2,
+    onNativeTouchMove(event, dx, dy) {
+      const horizontal = Math.abs(dx) > Math.abs(dy);
+      if (horizontal ? !realScrollX.value : !realScrollY.value)
+        return;
+      const element = main.value;
+      const position = horizontal ? element.scrollLeft : element.scrollTop;
+      const max = horizontal ? element.scrollWidth - element.offsetWidth : element.scrollHeight - element.offsetHeight;
+      const delta = horizontal ? dx : dy;
+      if (delta > 0 && position > 0 || delta < 0 && position < max) {
+        event.stopPropagation();
+      }
+    }
   });
   vue.computed(() => {
     let val = Number(props2.upperThreshold);
@@ -8000,52 +8095,6 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
     content.value.removeEventListener("transitionend", __transitionEnd);
     content.value.removeEventListener("webkitTransitionEnd", __transitionEnd);
   }
-  function _setRefreshState(_state) {
-    if (!props2.refresherEnabled)
-      return;
-    switch (_state) {
-      case "refreshing":
-        state.refresherHeight = props2.refresherThreshold;
-        if (!beforeRefreshing) {
-          beforeRefreshing = true;
-          trigger("refresherpulling", {}, {
-            deltaY: state.refresherHeight,
-            dy: state.refresherHeight
-          });
-          trigger("refresherrefresh", {}, {
-            dy: touchEnd.y - touchStart.y
-          });
-          emit2("update:refresherTriggered", true);
-        }
-        break;
-      case "restore":
-      case "refresherabort":
-        beforeRefreshing = false;
-        state.refresherHeight = 0;
-        if (_state === "restore") {
-          triggerAbort = false;
-          trigger("refresherrestore", {}, {
-            dy: touchEnd.y - touchStart.y
-          });
-        }
-        if (_state === "refresherabort" && triggerAbort) {
-          triggerAbort = false;
-          trigger("refresherabort", {}, {
-            dy: touchEnd.y - touchStart.y
-          });
-        }
-        break;
-    }
-    state.refreshState = _state;
-  }
-  let touchStart = {
-    x: 0,
-    y: 0
-  };
-  let touchEnd = {
-    x: 0,
-    y: props2.refresherThreshold
-  };
   vue.watch(scrollTopNumber, (val) => {
     _scrollTopChanged(val);
   });
@@ -8056,16 +8105,6 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
     () => props2.scrollIntoView,
     (val) => {
       _scrollIntoViewChanged(val);
-    }
-  );
-  vue.watch(
-    () => props2.refresherTriggered,
-    (val) => {
-      if (val === true) {
-        _setRefreshState("refreshing");
-      } else if (val === false) {
-        _setRefreshState("restore");
-      }
     }
   );
   return {
@@ -9625,7 +9664,24 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
       rearrangeDebounce();
     });
     const trigger = useCustomEvent(rootRef, emit2);
-    handleTouchEvent(isVertical, containerRef, props2, state, trigger, emit2);
+    useRefresher({
+      props: props2,
+      state,
+      scrollElement: containerRef,
+      isVertical,
+      trigger,
+      emit: emit2,
+      onNativeTouchMove(event, dx, dy) {
+        if (!isVertical.value || Math.abs(dx) > Math.abs(dy))
+          return;
+        const element = containerRef.value;
+        const position = element.scrollTop;
+        const max = element.scrollHeight - element.offsetHeight;
+        if (dy > 0 && position > 0 || dy < 0 && position < max) {
+          event.stopPropagation();
+        }
+      }
+    });
     function resetContainerSize() {
       const containerEl = containerRef.value;
       state.containerSize = isVertical.value ? containerEl.clientHeight : containerEl.clientWidth;
@@ -9770,7 +9826,7 @@ function useListViewState(props2) {
     cacheScreenCount: 10,
     loadScreenThreshold: 8,
     refresherHeight: 0,
-    refreshState: "",
+    refreshState: RefreshStateEnum.Idle,
     lastRenderOffsetMin: 0,
     lastRenderOffsetMax: 0
   });
@@ -9905,63 +9961,6 @@ function rearrange(visibleVNode, containerRef, isVertical, state) {
   state.visibleSize = tempVisibleSize;
   state.headPlaceholderSize = tempHeadPlaceholderSize;
   state.tailPlaceholderSize = tempTailPlaceholderSize;
-}
-function handleTouchEvent(isVertical, containerRef, props2, state, trigger, emit2) {
-  let beforeRefreshing = false;
-  let triggerAbort = false;
-  let touchStart = {
-    x: 0,
-    y: 0
-  };
-  let touchEnd = {
-    x: 0,
-    y: props2.refresherThreshold
-  };
-  function _setRefreshState(_state) {
-    if (!props2.refresherEnabled)
-      return;
-    switch (_state) {
-      case "refreshing":
-        state.refresherHeight = props2.refresherThreshold;
-        if (!beforeRefreshing) {
-          beforeRefreshing = true;
-          trigger("refresherpulling", {}, {
-            deltaY: state.refresherHeight,
-            dy: state.refresherHeight
-          });
-          trigger("refresherrefresh", {}, {
-            dy: touchEnd.y - touchStart.y
-          });
-          emit2("update:refresherTriggered", true);
-        }
-        break;
-      case "restore":
-      case "refresherabort":
-        beforeRefreshing = false;
-        state.refresherHeight = 0;
-        if (_state === "restore") {
-          triggerAbort = false;
-          trigger("refresherrestore", {}, {
-            dy: touchEnd.y - touchStart.y
-          });
-        }
-        if (_state === "refresherabort" && triggerAbort) {
-          triggerAbort = false;
-          trigger("refresherabort", {}, {
-            dy: touchEnd.y - touchStart.y
-          });
-        }
-        break;
-    }
-    state.refreshState = _state;
-  }
-  vue.watch(() => props2.refresherTriggered, (val) => {
-    if (val === true) {
-      _setRefreshState("refreshing");
-    } else if (val === false) {
-      _setRefreshState("restore");
-    }
-  });
 }
 function getSize(isVertical, el) {
   var style = window.getComputedStyle(el);
