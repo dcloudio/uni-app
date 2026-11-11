@@ -103,7 +103,7 @@ Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS(VDOM) UTS 插件: 
 $forceUpdate
 
 ##### $forceUpdate 兼容性 <Help /> 
-Web(VDOM): 4.0; Web(Vapor): x; 微信小程序(VDOM): 4.41; 微信小程序(Vapor): x; Android(VDOM): √; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; iOS(VDOM) UTS 插件: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x
+Web(VDOM): 4.0; Web(Vapor): x; 微信小程序: 4.41; Android(VDOM): √; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; iOS(VDOM) UTS 插件: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x
 
 
 
@@ -202,7 +202,7 @@ Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS(VDOM) UTS 插件: 
 $forceUpdate
 
 ##### $forceUpdate 兼容性 <Help /> 
-Web(VDOM): 4.0; Web(Vapor): x; 微信小程序(VDOM): 4.41; 微信小程序(Vapor): x; Android(VDOM): √; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; iOS(VDOM) UTS 插件: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x
+Web(VDOM): 4.0; Web(Vapor): x; 微信小程序: 4.41; Android(VDOM): √; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; iOS(VDOM) UTS 插件: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x
 
 
 
