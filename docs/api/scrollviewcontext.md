@@ -1,6 +1,6 @@
 ## ScrollViewContext
 
-通过 NodesRef.node 获取的滚动上下文，适用于 scroll-view、list-view、waterflow。<br/>App 蒸汽模式已在 HBuilderX 5.34 的 Android、iOS、Harmony 验收；兼容性从该版本开始标注。<br/>微信小程序使用其平台专有的 ScrollViewContext 类型。<br/>fastDeceleration、decelerationDisabled、withinExtent 尚未实现。
+滚动组件的上下文对象，用于控制滚动位置、滚动行为、下拉刷新和下拉二级面板。<br/>通过 NodesRef.node 获取。<br/>App 蒸汽模式下适用于 scroll-view、list-view 和 waterflow。<br/>微信小程序适用于 scroll-view。
 
 ### ScrollViewContext 兼容性 <Help /> 
  Web: x; 微信小程序: √; Android(VDOM): x; Android(Vapor): 5.34; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.34
@@ -11,7 +11,7 @@
 ### ScrollViewContext 的属性值 @scrollviewcontext-values
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| bounces | boolean | 是 | Web: x; 微信小程序: √; Android(VDOM): x; Android(Vapor): 5.34; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.34 | 是否允许越界回弹。 |
+| bounces | boolean | 是 | Web: x; 微信小程序: √; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 设置滚动边界弹性 (仅在 iOS 下生效) |
 | showScrollbar | boolean | 是 | Web: x; 微信小程序: √; Android(VDOM): x; Android(Vapor): 5.34; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.34 | 是否显示滚动条。 |
 | scrollEnabled | boolean | 是 | Web: x; 微信小程序: √; Android(VDOM): x; Android(Vapor): 5.34; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.34 | 是否允许手势滚动；关闭后仍可调用滚动方法。 |
 | pagingEnabled | boolean | 是 | Web: x; 微信小程序: √; Android(VDOM): x; Android(Vapor): 5.34; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.34 | 是否按页停靠。 |
