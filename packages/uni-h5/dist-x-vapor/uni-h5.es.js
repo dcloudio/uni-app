@@ -1,7 +1,7 @@
 import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, getUniElementPage, initVaporDataset, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, LINEFEED, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, createUniDOMStringMap, parseUrl, decodedQuery, stringifyQuery as stringifyQuery$1, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, setUniElementPage, ON_UNLOAD, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, RESPONSIVE_MIN_WIDTH, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, scrollTo, onCreateVueApp } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2, onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import * as Vue from "vue";
-import { defineVaporComponent, createPlainElement, template, ref, watch, withModifiers, setAttr, getCurrentInstance, warn, unref, reactive, onMounted, onBeforeUnmount, computed, inject, onBeforeMount, nextTick, Fragment, EffectScope, createTemplateRefSetter, child, next, renderEffect, setDynamicProps, applyVShow, txt, setInsertionState, createIf, on as on$1, setBlockKey, setValue as setValue$1, setProp, setClass, setStyle, onActivated, setClassName, shallowRef, watchEffect, provide, injectHook, isReactive, markRaw, querySelectorInComponent, querySelectorAllInComponent, createFor, extend as extend$1, VaporKeepAlive, createDynamicComponent, setText, toDisplayString, onServerPrefetch, initUniPageHooks, onBeforeActivate, onBeforeDeactivate, createComponent as createComponent$1, setHtml, onUnmounted, toRaw, createKeyedFragment, createTextNode, remove as remove$1, effectScope, insert, syncSelectValue, initUniElementType, initUniElement, setHover, withComponentId, createComponentWithFallback, createSlot, setStaticTemplateRef, useAttrs as useAttrs$1, useSlots, getBlockFirstNode, isInSSRComponentSetup, normalizeUniText, queuePostFlushCb, logError, setUniPageHooksInitializer, setRealPathResolver, setNativeEventNormalizer, createVaporApp, VaporTransition, nthChild, withImageEventDetail, setImageMode, setImageSrc } from "vue";
+import { defineVaporComponent, createPlainElement, template, ref, watch, withModifiers, setAttr, getCurrentInstance, warn, unref, reactive, onMounted, onBeforeUnmount, computed, inject, onBeforeMount, nextTick, Fragment, EffectScope, createTemplateRefSetter, child, next, renderEffect, setDynamicProps, applyVShow, txt, setInsertionState, createIf, on as on$1, setBlockKey, setValue as setValue$1, setProp, setClass, setStyle, onActivated, setClassName, shallowRef, watchEffect, provide, injectHook, isReactive, markRaw, querySelectorInComponent, querySelectorAllInComponent, createFor, extend as extend$1, VaporKeepAlive, createDynamicComponent, setText, toDisplayString, onServerPrefetch, initUniPageHooks, onBeforeActivate, onBeforeDeactivate, createComponent as createComponent$1, setHtml, onUnmounted, toRaw, createKeyedFragment, createTextNode, remove as remove$1, effectScope, insert, syncSelectValue, initUniElementType, initUniElement, setHover, withComponentId, createComponentWithFallback, createSlot, setStaticTemplateRef, useAttrs as useAttrs$1, useSlots, normalizeUniText, getBlockFirstNode, isInSSRComponentSetup, queuePostFlushCb, logError, setUniPageHooksInitializer, setRealPathResolver, setNativeEventNormalizer, createVaporApp, VaporTransition, nthChild, withImageEventDetail, setImageMode, setImageSrc } from "vue";
 import { capitalize, camelize, isArray, isString, extend, remove, isPlainObject, isFunction, hyphenate, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, EMPTY_OBJ, Namespaces } from "@vue/shared";
 import { useRoute, isNavigationFailure, VaporRouterView, useRouter, createRouter, createWebHistory, createWebHashHistory } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -16109,12 +16109,11 @@ class UniCheckboxElement extends UniViewElement {
     } };
   }
 }
-const t0$w = template('<svg class=uni-checkbox-svg viewBox="0 0 32 32"><path fill=currentColor>', 0, 1);
-const t1$g = template("<div uni-checkbox uni-view role=checkbox>", 1);
-const t2$7 = template("<span uni-text>");
-const t3$5 = template("<div uni-checkbox uni-view class=uni-checkbox role=checkbox><div uni-view></div>", 1);
+const t0$w = template("<span uni-checkbox uni-text role=checkbox> ", 1);
+const t1$g = template("<span uni-text>");
+const t2$7 = template("<div uni-checkbox uni-view class=uni-checkbox role=checkbox><span uni-text> </span>", 1);
 const _uniCheckboxElement = { value: "CHECKBOX" };
-const iconPath$1 = "M1.952 18.080q-0.32-0.352-0.416-0.88t0.128-0.976l0.16-0.352q0.224-0.416 0.64-0.528t0.8 0.176l6.496 4.704q0.384 0.288 0.912 0.272t0.88-0.336l17.312-14.272q0.352-0.288 0.848-0.256t0.848 0.352l-0.416-0.416q0.32 0.352 0.32 0.816t-0.32 0.816l-18.656 18.912q-0.32 0.352-0.8 0.352t-0.8-0.32l-7.936-8.064z";
+const fontUnicode$1 = "";
 const _sfc_main$w = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "checkbox",
@@ -16225,8 +16224,13 @@ const _sfc_main$w = /* @__PURE__ */ defineVaporComponent({
     const n0 = createIf(
       () => !hasDefaultSlot,
       () => {
-        const n2 = t1$g();
+        const n2 = t0$w();
+        const x2 = txt(n2);
         initUniElement(n2, _uniCheckboxElement);
+        on$1(n2, "keydown", (e2) => unref(handleKeydown)(e2));
+        on$1(n2, "keyup", (e2) => unref(handleKeyup)(e2));
+        on$1(n2, "blur", (e2) => unref(handleBlur)(e2));
+        on$1(n2, "click", withModifiers(handleTap, ["stop"]));
         renderEffect(() => {
           const _isChecked = unref(isChecked);
           const _disabled = __props.disabled;
@@ -16242,31 +16246,22 @@ const _sfc_main$w = /* @__PURE__ */ defineVaporComponent({
           setProp(n2, "tabindex", _disabled ? -1 : 0);
           setAttr(n2, "aria-checked", _isChecked);
           setAttr(n2, "aria-disabled", _disabled);
+          setText(x2, normalizeUniText(toDisplayString(_isChecked ? fontUnicode$1 : "")));
         });
-        setInsertionState(n2);
-        createIf(() => unref(isChecked), () => {
-          const n6 = t0$w();
-          const n5 = child(n6);
-          setAttr(n5, "d", iconPath$1, true);
-          return n6;
-        });
-        on$1(n2, "keydown", (e2) => unref(handleKeydown)(e2));
-        on$1(n2, "keyup", (e2) => unref(handleKeyup)(e2));
-        on$1(n2, "blur", (e2) => unref(handleBlur)(e2));
-        on$1(n2, "click", withModifiers(handleTap, ["stop"]));
         return n2;
       },
       () => {
-        const n8 = t3$5();
-        const n13 = child(n8);
-        initUniElement(n8, _uniCheckboxElement);
+        const n4 = t2$7();
+        const n5 = child(n4);
+        initUniElement(n4, _uniCheckboxElement);
+        const x5 = txt(n5);
         renderEffect(() => {
           const _disabled = __props.disabled;
           const _isChecked = unref(isChecked);
-          setProp(n8, "tabindex", _disabled ? -1 : 0);
-          setAttr(n8, "aria-checked", _isChecked);
-          setAttr(n8, "aria-disabled", _disabled);
-          setClass(n13, ["uni-checkbox-view uni-checkbox-icon", unref(classes)(
+          setProp(n4, "tabindex", _disabled ? -1 : 0);
+          setAttr(n4, "aria-checked", _isChecked);
+          setAttr(n4, "aria-disabled", _disabled);
+          setClass(n5, ["uni-checkbox-view uni-checkbox-icon", unref(classes)(
             [_isChecked, "uni-checkbox-active"],
             [_disabled, "uni-checkbox-disabled"],
             [unref(isLabelHovered), "uni-checkbox-hover"],
@@ -16274,21 +16269,15 @@ const _sfc_main$w = /* @__PURE__ */ defineVaporComponent({
             [!_disabled && !_isChecked, __props.checkboxClass],
             [!_disabled, __props.iconClass]
           )]);
-          setStyle(n13, unref(activeStyle));
+          setStyle(n5, unref(activeStyle));
+          setText(x5, normalizeUniText(toDisplayString(_isChecked ? fontUnicode$1 : "")));
         });
-        setInsertionState(n13);
-        createIf(() => unref(isChecked), () => {
-          const n12 = t0$w();
-          const n11 = child(n12);
-          setAttr(n11, "d", iconPath$1, true);
-          return n12;
-        });
-        setInsertionState(n8, 1);
+        setInsertionState(n4, 1);
         createIf(
           () => isStringSlot,
           () => {
-            const n17 = t2$7();
-            setInsertionState(n17);
+            const n9 = t1$g();
+            setInsertionState(n9);
             createSlot(
               "default",
               null,
@@ -16296,23 +16285,23 @@ const _sfc_main$w = /* @__PURE__ */ defineVaporComponent({
               256
               /* TEXT_MODE */
             );
-            return n17;
+            return n9;
           },
           () => {
-            const n19 = createSlot();
-            return n19;
+            const n11 = createSlot();
+            return n11;
           },
-          1029
-          /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_3 */
+          517
+          /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_1 */
         );
-        on$1(n8, "keydown", (e2) => unref(handleKeydown)(e2));
-        on$1(n8, "keyup", (e2) => unref(handleKeyup)(e2));
-        on$1(n8, "blur", (e2) => unref(handleBlur)(e2));
-        on$1(n8, "click", withModifiers(handleTap, ["stop"]));
-        return n8;
+        on$1(n4, "keydown", (e2) => unref(handleKeydown)(e2));
+        on$1(n4, "keyup", (e2) => unref(handleKeyup)(e2));
+        on$1(n4, "blur", (e2) => unref(handleBlur)(e2));
+        on$1(n4, "click", withModifiers(handleTap, ["stop"]));
+        return n4;
       },
-      517
-      /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_1 */
+      261
+      /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_0 */
     );
     return n0;
   }
@@ -18349,7 +18338,7 @@ function getPickerPopupStyle(popover, windowWidth, windowHeight, contentHeight) 
 const t0$k = template("<span uni-text data-v-212d40c7> ");
 const t1$c = template("<div uni-view data-v-212d40c7><span uni-text data-v-212d40c7> </span><span uni-text data-v-212d40c7 class=uni-picker__header-btn-ok> </div>");
 const t2$6 = template("<div uni-view data-v-212d40c7 class=uni-picker__view>");
-const t3$4 = template("<div uni-view data-v-212d40c7><div uni-view data-v-212d40c7></div><div uni-view data-v-212d40c7>", 1);
+const t3$3 = template("<div uni-view data-v-212d40c7><div uni-view data-v-212d40c7></div><div uni-view data-v-212d40c7>", 1);
 const _sfc_main$k = /* @__PURE__ */ defineVaporComponent({
   __name: "picker",
   setup(__props) {
@@ -18929,7 +18918,7 @@ const _sfc_main$k = /* @__PURE__ */ defineVaporComponent({
     const _component_scroll_view = __syscom_1;
     const _component_picker_view_column = _sfc_main$i;
     const _component_picker_view = _sfc_main$j;
-    const n56 = t3$4();
+    const n56 = t3$3();
     const n0 = child(n56);
     const n55 = next(n0);
     on$1(n0, "click", close);
@@ -19740,12 +19729,11 @@ class UniRadioElement extends UniViewElement {
     } };
   }
 }
-const t0$g = template('<svg class=uni-radio-svg viewBox="0 0 32 32"><path fill=currentColor>', 0, 1);
-const t1$9 = template("<div uni-radio uni-view role=radio>", 1);
-const t2$5 = template("<span uni-text>");
-const t3$3 = template("<div uni-radio uni-view class=uni-radio role=radio><div uni-view></div>", 1);
+const t0$g = template("<span uni-radio uni-text role=radio> ", 1);
+const t1$9 = template("<span uni-text>");
+const t2$5 = template("<div uni-radio uni-view class=uni-radio role=radio><span uni-text> </span>", 1);
 const _uniRadioElement = { value: "RADIO" };
-const iconPath = "M1.952 18.080q-0.32-0.352-0.416-0.88t0.128-0.976l0.16-0.352q0.224-0.416 0.64-0.528t0.8 0.176l6.496 4.704q0.384 0.288 0.912 0.272t0.88-0.336l17.312-14.272q0.352-0.288 0.848-0.256t0.848 0.352l-0.416-0.416q0.32 0.352 0.32 0.816t-0.32 0.816l-18.656 18.912q-0.32 0.352-0.8 0.352t-0.8-0.32l-7.936-8.064z";
+const fontUnicode = "";
 const _sfc_main$g = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "radio",
@@ -19865,8 +19853,13 @@ const _sfc_main$g = /* @__PURE__ */ defineVaporComponent({
     const n0 = createIf(
       () => !hasDefaultSlot,
       () => {
-        const n2 = t1$9();
+        const n2 = t0$g();
+        const x2 = txt(n2);
         initUniElement(n2, _uniRadioElement);
+        on$1(n2, "keydown", (e2) => unref(handleKeydown)(e2));
+        on$1(n2, "keyup", (e2) => unref(handleKeyup)(e2));
+        on$1(n2, "blur", (e2) => unref(handleBlur)(e2));
+        on$1(n2, "click", withModifiers(handleTap, ["stop"]));
         renderEffect(() => {
           const _disabled = __props.disabled;
           const _isChecked = unref(isChecked);
@@ -19882,31 +19875,22 @@ const _sfc_main$g = /* @__PURE__ */ defineVaporComponent({
           setProp(n2, "tabindex", _disabled ? -1 : 0);
           setAttr(n2, "aria-checked", _isChecked);
           setAttr(n2, "aria-disabled", _disabled);
+          setText(x2, normalizeUniText(toDisplayString(_isChecked ? fontUnicode : "")));
         });
-        setInsertionState(n2);
-        createIf(() => unref(isChecked), () => {
-          const n6 = t0$g();
-          const n5 = child(n6);
-          setAttr(n5, "d", iconPath, true);
-          return n6;
-        });
-        on$1(n2, "keydown", (e2) => unref(handleKeydown)(e2));
-        on$1(n2, "keyup", (e2) => unref(handleKeyup)(e2));
-        on$1(n2, "blur", (e2) => unref(handleBlur)(e2));
-        on$1(n2, "click", withModifiers(handleTap, ["stop"]));
         return n2;
       },
       () => {
-        const n8 = t3$3();
-        const n13 = child(n8);
-        initUniElement(n8, _uniRadioElement);
+        const n4 = t2$5();
+        const n5 = child(n4);
+        initUniElement(n4, _uniRadioElement);
+        const x5 = txt(n5);
         renderEffect(() => {
           const _disabled = __props.disabled;
           const _isChecked = unref(isChecked);
-          setProp(n8, "tabindex", _disabled ? -1 : 0);
-          setAttr(n8, "aria-checked", _isChecked);
-          setAttr(n8, "aria-disabled", _disabled);
-          setClass(n13, ["uni-radio-view uni-radio-icon", unref(classes)(
+          setProp(n4, "tabindex", _disabled ? -1 : 0);
+          setAttr(n4, "aria-checked", _isChecked);
+          setAttr(n4, "aria-disabled", _disabled);
+          setClass(n5, ["uni-radio-view uni-radio-icon", unref(classes)(
             [_disabled, "uni-radio-disabled"],
             [unref(isLabelHovered), "uni-radio-hover"],
             [!_disabled && _isChecked, "uni-radio-active"],
@@ -19914,21 +19898,15 @@ const _sfc_main$g = /* @__PURE__ */ defineVaporComponent({
             [!_disabled && !_isChecked, __props.radioClass],
             [!_disabled, __props.iconClass]
           )]);
-          setStyle(n13, unref(activeStyle));
+          setStyle(n5, unref(activeStyle));
+          setText(x5, normalizeUniText(toDisplayString(_isChecked ? fontUnicode : "")));
         });
-        setInsertionState(n13);
-        createIf(() => unref(isChecked), () => {
-          const n12 = t0$g();
-          const n11 = child(n12);
-          setAttr(n11, "d", iconPath, true);
-          return n12;
-        });
-        setInsertionState(n8, 1);
+        setInsertionState(n4, 1);
         createIf(
           () => isStringSlot,
           () => {
-            const n17 = t2$5();
-            setInsertionState(n17);
+            const n9 = t1$9();
+            setInsertionState(n9);
             createSlot(
               "default",
               null,
@@ -19936,23 +19914,23 @@ const _sfc_main$g = /* @__PURE__ */ defineVaporComponent({
               256
               /* TEXT_MODE */
             );
-            return n17;
+            return n9;
           },
           () => {
-            const n19 = createSlot();
-            return n19;
+            const n11 = createSlot();
+            return n11;
           },
-          1029
-          /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_3 */
+          517
+          /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_1 */
         );
-        on$1(n8, "keydown", (e2) => unref(handleKeydown)(e2));
-        on$1(n8, "keyup", (e2) => unref(handleKeyup)(e2));
-        on$1(n8, "blur", (e2) => unref(handleBlur)(e2));
-        on$1(n8, "click", withModifiers(handleTap, ["stop"]));
-        return n8;
+        on$1(n4, "keydown", (e2) => unref(handleKeydown)(e2));
+        on$1(n4, "keyup", (e2) => unref(handleKeyup)(e2));
+        on$1(n4, "blur", (e2) => unref(handleBlur)(e2));
+        on$1(n4, "click", withModifiers(handleTap, ["stop"]));
+        return n4;
       },
-      517
-      /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_1 */
+      261
+      /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_0 */
     );
     return n0;
   }
@@ -31751,8 +31729,6 @@ const _sfc_main$5 = /* @__PURE__ */ defineVaporComponent({
       () => createIf(() => content.value.length > 0, () => {
         const n9 = withComponentId("876dbf60", () => createComponentWithFallback(_component_scroll_view, {
           class: "uni-modal-dialog__scroll",
-          "show-scrollbar": false,
-          bounces: false,
           style: () => ({ maxHeight: maxScrollHeight.value })
         }, () => {
           const n8 = t1$3();

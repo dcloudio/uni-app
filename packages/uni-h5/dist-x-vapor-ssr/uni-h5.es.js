@@ -8614,7 +8614,7 @@ class UniCheckboxElement extends UniViewElement {
     (_a = this.vm) == null ? void 0 : _a.setCheckboxChecked(val);
   }
 }
-const iconPath$1 = "M1.952 18.080q-0.32-0.352-0.416-0.88t0.128-0.976l0.16-0.352q0.224-0.416 0.64-0.528t0.8 0.176l6.496 4.704q0.384 0.288 0.912 0.272t0.88-0.336l17.312-14.272q0.352-0.288 0.848-0.256t0.848 0.352l-0.416-0.416q0.32 0.352 0.32 0.816t-0.32 0.816l-18.656 18.912q-0.32 0.352-0.8 0.352t-0.8-0.32l-7.936-8.064z";
+const fontUnicode$1 = "";
 const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "checkbox",
@@ -8716,8 +8716,8 @@ const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
     });
     return (_ctx, _push, _parent, _attrs) => {
       if (!hasDefaultSlot) {
-        _push(`<!--[0--><div${ssrRenderAttrs(mergeProps({
-          "uni-view": "",
+        _push(`<span${ssrRenderAttrs(mergeProps({
+          "uni-text": "",
           class: ["uni-checkbox-view uni-checkbox-icon", unref(classes)(
             [unref(isChecked), "uni-checkbox-active"],
             [__props.disabled, "uni-checkbox-disabled"],
@@ -8731,35 +8731,23 @@ const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
           role: "checkbox",
           "aria-checked": unref(isChecked),
           "aria-disabled": __props.disabled
-        }, _attrs))}>`);
-        if (unref(isChecked)) {
-          _push(`<svg class="uni-checkbox-svg" viewBox="0 0 32 32"><path${ssrRenderAttr("d", iconPath$1)} fill="currentColor"></path></svg>`);
-        } else {
-          _push(`<!---->`);
-        }
-        _push(`</div><!--]-->`);
+        }, _attrs))}>${ssrInterpolate(unref(isChecked) ? fontUnicode$1 : "", true)}</span>`);
       } else {
-        _push(`<!--[1--><div${ssrRenderAttrs(mergeProps({
+        _push(`<div${ssrRenderAttrs(mergeProps({
           "uni-view": "",
           class: "uni-checkbox",
           tabindex: __props.disabled ? -1 : 0,
           role: "checkbox",
           "aria-checked": unref(isChecked),
           "aria-disabled": __props.disabled
-        }, _attrs))}><div uni-view class="${ssrRenderClass([unref(classes)(
+        }, _attrs))}><span uni-text class="${ssrRenderClass([unref(classes)(
           [unref(isChecked), "uni-checkbox-active"],
           [__props.disabled, "uni-checkbox-disabled"],
           [unref(isLabelHovered), "uni-checkbox-hover"],
           [!__props.disabled && unref(isChecked), __props.checkboxActiveClass],
           [!__props.disabled && !unref(isChecked), __props.checkboxClass],
           [!__props.disabled, __props.iconClass]
-        ), "uni-checkbox-view uni-checkbox-icon"])}" style="${ssrRenderStyle(unref(activeStyle))}">`);
-        if (unref(isChecked)) {
-          _push(`<svg class="uni-checkbox-svg" viewBox="0 0 32 32"><path${ssrRenderAttr("d", iconPath$1)} fill="currentColor"></path></svg>`);
-        } else {
-          _push(`<!---->`);
-        }
-        _push(`</div>`);
+        ), "uni-checkbox-view uni-checkbox-icon"])}" style="${ssrRenderStyle(unref(activeStyle))}">${ssrInterpolate(unref(isChecked) ? fontUnicode$1 : "", true)}</span>`);
         if (isStringSlot) {
           _push(`<!--[0--><span uni-text>`);
           ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent, null, true);
@@ -8769,7 +8757,7 @@ const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
           ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent);
           _push(`<!--]-->`);
         }
-        _push(`</div><!--]-->`);
+        _push(`</div>`);
       }
     };
   }
@@ -12019,7 +12007,7 @@ class UniRadioElement extends UniViewElement {
     (_a = this.vm) == null ? void 0 : _a.setRadioChecked(val);
   }
 }
-const iconPath = "M1.952 18.080q-0.32-0.352-0.416-0.88t0.128-0.976l0.16-0.352q0.224-0.416 0.64-0.528t0.8 0.176l6.496 4.704q0.384 0.288 0.912 0.272t0.88-0.336l17.312-14.272q0.352-0.288 0.848-0.256t0.848 0.352l-0.416-0.416q0.32 0.352 0.32 0.816t-0.32 0.816l-18.656 18.912q-0.32 0.352-0.8 0.352t-0.8-0.32l-7.936-8.064z";
+const fontUnicode = "";
 const _sfc_main$8 = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "radio",
@@ -12129,8 +12117,8 @@ const _sfc_main$8 = /* @__PURE__ */ defineComponent$2({
     });
     return (_ctx, _push, _parent, _attrs) => {
       if (!hasDefaultSlot) {
-        _push(`<!--[0--><div${ssrRenderAttrs(mergeProps({
-          "uni-view": "",
+        _push(`<span${ssrRenderAttrs(mergeProps({
+          "uni-text": "",
           class: ["uni-radio-view uni-radio-icon", unref(classes)(
             [__props.disabled, "uni-radio-disabled"],
             [unref(isLabelHovered), "uni-radio-hover"],
@@ -12144,35 +12132,23 @@ const _sfc_main$8 = /* @__PURE__ */ defineComponent$2({
           role: "radio",
           "aria-checked": unref(isChecked),
           "aria-disabled": __props.disabled
-        }, _attrs))}>`);
-        if (unref(isChecked)) {
-          _push(`<svg class="uni-radio-svg" viewBox="0 0 32 32"><path${ssrRenderAttr("d", iconPath)} fill="currentColor"></path></svg>`);
-        } else {
-          _push(`<!---->`);
-        }
-        _push(`</div><!--]-->`);
+        }, _attrs))}>${ssrInterpolate(unref(isChecked) ? fontUnicode : "", true)}</span>`);
       } else {
-        _push(`<!--[1--><div${ssrRenderAttrs(mergeProps({
+        _push(`<div${ssrRenderAttrs(mergeProps({
           "uni-view": "",
           class: "uni-radio",
           tabindex: __props.disabled ? -1 : 0,
           role: "radio",
           "aria-checked": unref(isChecked),
           "aria-disabled": __props.disabled
-        }, _attrs))}><div uni-view class="${ssrRenderClass([unref(classes)(
+        }, _attrs))}><span uni-text class="${ssrRenderClass([unref(classes)(
           [__props.disabled, "uni-radio-disabled"],
           [unref(isLabelHovered), "uni-radio-hover"],
           [!__props.disabled && unref(isChecked), "uni-radio-active"],
           [!__props.disabled && unref(isChecked), __props.radioActiveClass],
           [!__props.disabled && !unref(isChecked), __props.radioClass],
           [!__props.disabled, __props.iconClass]
-        ), "uni-radio-view uni-radio-icon"])}" style="${ssrRenderStyle(unref(activeStyle))}">`);
-        if (unref(isChecked)) {
-          _push(`<svg class="uni-radio-svg" viewBox="0 0 32 32"><path${ssrRenderAttr("d", iconPath)} fill="currentColor"></path></svg>`);
-        } else {
-          _push(`<!---->`);
-        }
-        _push(`</div>`);
+        ), "uni-radio-view uni-radio-icon"])}" style="${ssrRenderStyle(unref(activeStyle))}">${ssrInterpolate(unref(isChecked) ? fontUnicode : "", true)}</span>`);
         if (isStringSlot) {
           _push(`<!--[0--><span uni-text>`);
           ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent, null, true);
@@ -12182,7 +12158,7 @@ const _sfc_main$8 = /* @__PURE__ */ defineComponent$2({
           ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent);
           _push(`<!--]-->`);
         }
-        _push(`</div><!--]-->`);
+        _push(`</div>`);
       }
     };
   }

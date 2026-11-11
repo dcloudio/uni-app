@@ -31545,8 +31545,6 @@ const _sfc_main$4 = /* @__PURE__ */ defineComponent({
                       }, null, 8, ["modelValue", "class", "auto-height", "placeholder"])) : content.value.length > 0 ? (openBlock(), createBlock(_component_scroll_view, {
                         key: 1,
                         class: "uni-modal-dialog__scroll",
-                        "show-scrollbar": false,
-                        bounces: false,
                         style: normalizeStyle({ maxHeight: maxScrollHeight.value })
                       }, {
                         default: withCtx(() => [
