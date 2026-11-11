@@ -44,7 +44,7 @@
   * [toast 轻提示](toast.md)
   * [动态加载字体](load-font-face.md)
   * [rpx转换px](rpx2px.md)
-  * [light/dart主题切换](theme-change.md)
+  * [light/dark主题切换](theme-change.md)
   * [语言和国际化](locale.md)
 * 网络
   * [概述](network-summarize.md)
