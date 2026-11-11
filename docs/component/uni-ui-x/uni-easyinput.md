@@ -9,35 +9,49 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-easyinput
 
 :::
 
-对 input 和 textarea 的常用能力进行封装，支持清空、密码显隐、前后图标及输入内容裁剪。
+包装原生 input 和 textarea，提供清空、密码显隐、左右插槽和内部样式定制
 
 # uni-easyinput 增强输入框
 
-适用于 uni-app x 的增强输入框。在原生 `input` 和 `textarea` 基础上提供清空、密码显隐、前后图标、空白裁剪和左右插槽。
+适用于 uni-app x 的增强输入框。组件包装原生 `input` 和 `textarea`，补充边框、清空、密码显隐和左右插槽等常用输入场景。
+
+- 通过 `type` 指定输入类型，`textarea` 渲染多行输入框、`password` 渲染密码输入框，其余透传给原生单行输入。
+- 所有布尔属性默认值均为 `false`。
 
 ## 基本用法
 
 ```html
-<uni-easyinput v-model="value" placeholder="请输入内容" />
+<uni-easyinput v-model="value" clearable placeholder="请输入内容" />
 ```
 
-## 输入类型
+## 单行与多行
 
 ```html
-<uni-easyinput v-model="password" type="password" placeholder="请输入密码" />
-<uni-easyinput v-model="description" type="textarea" placeholder="请输入介绍" />
+<!-- 单行密码 -->
+<uni-easyinput v-model="password" type="password" password-icon placeholder="请输入密码" />
+
+<!-- 多行文本，自动增高 -->
+<uni-easyinput v-model="description" type="textarea" auto-height placeholder="请输入介绍" />
 ```
 
-除 `password` 和 `textarea` 外，`type` 会透传给原生 `input`。
+`type="textarea"` 时渲染 `textarea`，并使用 `auto-height` 控制自动增高。
+
+组件不会裁剪输入内容。需要移除首尾空白时使用 Vue 的 `v-model.trim` 修饰符：
+
+```html
+<uni-easyinput v-model.trim="value" />
+```
 
 ## 图标和插槽
+
+清空图标由 `clearable` 控制，密码显隐图标由 `type="password"` + `password-icon` 控制，两者可同时显示。图标样式通过 `icon-class` 设置：
 
 ```html
 <uni-easyinput
 	v-model="keyword"
-	prefix-icon="search"
-	suffix-icon="compose"
-	@iconClick="onIconClick"
+	clearable
+	icon-class="my-icon"
+	@clear="onClear"
 />
 
 <uni-easyinput v-model="website">
@@ -50,8 +64,6 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-easyinput
 </uni-easyinput>
 ```
 
-密码显隐图标可以和清空图标同时使用。设置 `suffix-icon` 后，自定义后置图标替代清空图标，但不替代密码显隐图标。
-
 ## 自定义样式
 
 根节点样式直接通过组件的 `class` 或 `style` 设置；内部节点通过 external classes 设置：
@@ -62,13 +74,14 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-easyinput
 	v-model="value"
 	input-class="custom-input"
 	placeholder-class="custom-placeholder"
-	action-icon-class="custom-action-icon"
+	icon-class="custom-icon"
 />
 ```
 
 ```css
 .custom-easyinput {
 	border-radius: 0;
+	border-color: #0052cc;
 }
 
 .custom-input {
@@ -80,116 +93,121 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-easyinput
 	color: #8c939d;
 }
 
-.custom-action-icon {
+.custom-icon {
 	color: #0052cc;
 }
 ```
 
 VDOM 模式需要在 `manifest.json` 中启用样式隔离策略 2.0。定义在全局 `App.uvue` 中的 external class 覆盖组件默认样式时，部分属性可能需要使用 `!important`。
 
-## Props
+组件默认不设置 placeholder 的颜色和字号，保留原生 `input` / `textarea` 的表现；需要定制时使用 `placeholder-class`。
 
-| 属性名 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| modelValue | String / Number | - | 输入内容，支持 `v-model` |
-| value | String / Number | - | 不使用 `v-model` 时传入的内容 |
-| name | String | `''` | 原生表单控件名称 |
-| type | String | `text` | 输入类型；额外支持 `password`、`textarea` |
-| clearable | Boolean | `true` | 是否显示清空图标 |
-| autoHeight | Boolean | `false` | textarea 是否自动增高 |
-| placeholder | String | `''` | 占位文字 |
-| focus | Boolean | `false` | 是否聚焦 |
-| disabled | Boolean | `false` | 是否禁用 |
-| maxlength | Number | `140` | 最大输入长度，`-1` 表示不限制 |
-| confirmType | String | `done` | 键盘右下角按钮类型 |
-| inputBorder | Boolean | `true` | 是否显示边框 |
-| prefixIcon | String | `''` | 前置 uni-icons 图标名称 |
-| suffixIcon | String | `''` | 后置 uni-icons 图标名称 |
-| trim | Boolean / String | `false` | `both`、`left`、`right`、`start`、`end`、`all` 或 `none` |
-| cursorSpacing | Number | `0` | 光标与键盘的距离 |
-| passwordIcon | Boolean | `true` | 密码输入是否显示显隐图标 |
-| adjustPosition | Boolean | `true` | 键盘弹起时是否自动上推页面 |
-| errorMessage | String / Boolean | `false` | 是否显示错误状态，不渲染错误信息节点 |
+## 配合 uni-forms 使用
 
-## External Classes
+输入校验和错误信息由 `uni-forms-item` 负责，`uni-easyinput` 不提供错误态属性。表单项的 `name` 需要与绑定数据及校验规则的字段名一致：
 
-| 属性名 | 说明 |
-| --- | --- |
-| input-class | input 和 textarea 样式 |
-| placeholder-class | 占位文字样式 |
-| prefix-icon-class | 前置图标样式 |
-| suffix-icon-class | 后置图标样式 |
-| action-icon-class | 清空和密码显隐图标样式 |
+```vue
+<uni-forms v-model="formData" :rules="rules">
+	<uni-forms-item name="account" label="账号" required>
+		<uni-easyinput
+			v-model="formData.account"
+			clearable
+			placeholder="请输入账号"
+		/>
+	</uni-forms-item>
+</uni-forms>
+```
 
-## Events
+## 值同步与交互
 
-| 事件名 | 回调参数 | 说明 |
-| --- | --- | --- |
-| update:modelValue | `value: string` | 输入内容更新 |
-| input | `value: string` | 输入时触发 |
-| focus | 原生 focus 事件 | 聚焦时触发 |
-| blur | 原生 blur 事件 | 失焦时触发 |
-| confirm | `value: string` | 点击键盘完成按钮时触发 |
-| change | `value: string` | 失焦或点击完成按钮时触发；同一次确认后失焦不会重复触发 |
-| clear | - | 点击清空图标时触发 |
-| eyes | `visible: boolean` | 切换密码显隐时触发 |
-| iconClick | `prefix` / `suffix` | 点击前置或后置图标时触发 |
-| keyboardheightchange | 原生键盘高度事件 | 键盘高度变化时触发 |
+推荐使用 `v-model` 双向绑定输入内容。`value` 只用于不使用 `v-model` 的兼容场景；同时传入两者时，以 `modelValue` 为准，包括 `modelValue` 为 `null` 的情况。数字和 `null` 会分别显示为对应字符串和空字符串，组件更新时始终回传字符串。
 
-## Slots
+`input` 在输入内容更新时触发。`change` 在失焦或点击键盘完成按钮时触发，同一次聚焦期间相同值只触发一次。点击清空图标会同步更新绑定值并触发 `input` 和 `clear`，随后失焦不会再为同一个空值重复触发 `change`。
 
-| 名称 | 说明 |
-| --- | --- |
-| left | 输入区域左侧内容 |
-| right | 输入区域右侧内容 |
+禁用状态下不能输入，也不会执行清空和密码显隐操作。密码内容清空、组件禁用、切换到非密码类型或关闭 `password-icon` 时，组件会恢复密码隐藏状态；如果此前为显示状态，同时触发 `eyes(false)`。
 
-## Expose
+## 程序控制焦点
 
-| 方法名 | 说明 |
-| --- | --- |
-| focus() | 使内部输入框聚焦 |
-| blur() | 使内部输入框失焦 |
+需要从业务逻辑中控制焦点时，通过组件引用调用公开方法：
+
+```vue
+<template>
+	<uni-easyinput ref="easyinputRef" v-model="value" />
+	<button @click="focusInput">聚焦输入框</button>
+	<button @click="blurInput">取消聚焦</button>
+</template>
+
+<script setup lang="uts">
+const easyinputRef = ref<any>(null)
+
+function focusInput() {
+	easyinputRef.value?.focusInput()
+}
+
+function blurInput() {
+	easyinputRef.value?.blurInput()
+}
+</script>
+```
+
+组件禁用时，调用 `focusInput()` 不生效。
+
+## 在二次封装中复用属性类型
+
+组件的 Props 类型已导出，可直接与自定义属性做类型合并，便于二次封装时保留代码提示：
+
+```ts
+import { UniEasyinputProps } from '@/uni_modules/uni-easyinput-x/components/uni-easyinput/types.uts'
+
+export type MyInputProps = UniEasyinputProps & {
+	label? : string
+}
+```
+
+## 更新说明（不兼容调整）
+
+- `clearable`、`password-icon` 默认值由 `true` 调整为 `false`。
+- 移除 `input-border` 属性，默认始终显示边框，使用组件 `class` 覆盖即可。
+- 移除 `prefix-icon`、`suffix-icon`、`prefix-icon-class`、`suffix-icon-class` 及 `iconClick` 事件；清空和密码显隐图标统一用 `icon-class` 设置样式。
+- `action-icon-class` 重命名为 `icon-class`。
+- 移除 `trim` 属性，输入内容处理改用 Vue 修饰符。
+- 移除 `error-message` 和 `error-class`，输入校验和错误反馈改由 `uni-forms-item` 负责。
 
 
+
+### 兼容性 <Help />
+Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07
 
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 描述 |
 | :- | :- | :- | :- |
-| modelValue | string \| number \| null |   |   |
-| value | string \| number \| null |   |   |
-| type | string | "text" |   |
-| clearable | boolean | true |   |
-| autoHeight | boolean | false |   |
-| placeholder | string | "" |   |
-| focus | boolean | false |   |
-| disabled | boolean | false |   |
-| maxlength | number | 140 |   |
-| confirmType | string | "done" |   |
-| inputBorder | boolean | true |   |
-| prefixIcon | string | "" |   |
-| suffixIcon | string | "" |   |
-| trim | string \| boolean | false |   |
-| cursorSpacing | number | 0 |   |
-| passwordIcon | boolean | true |   |
-| adjustPosition | boolean | true |   |
-| errorMessage | string \| boolean | false |   |
-| inputClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" |   |
-| placeholderClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" |   |
-| prefixIconClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" |   |
-| suffixIconClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" |   |
-| actionIconClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" |   |
-| name | string | "" |   |
-| @input | Function |   | 输入时触发 |
-| @focus | Function |   | 聚焦时触发 |
-| @blur | Function |   | 失焦时触发 |
-| @confirm | Function |   | 点击键盘完成按钮时触发 |
-| @change | Function |   | 失焦或点击键盘完成按钮时触发 |
+| modelValue | string \| number \| null | "" | 输入内容，支持 v-model；同时传入 value 时优先使用 modelValue |
+| value | string \| number \| null | "" | 不使用 v-model 时传入的输入内容；同时传入 modelValue 时不生效，内容更新时不触发 update:value |
+| name | string | "" | 原生表单控件名称，透传给 input / textarea |
+| type | string | "text" | 输入类型。textarea 渲染多行输入框，password 渲染密码输入框，其余透传给原生单行输入 |
+| placeholder | string | "" | 占位文字 |
+| disabled | boolean | false | 是否禁用 |
+| maxlength | number | -1 | 最大输入长度，透传给 input / textarea |
+| focus | boolean | false | 是否聚焦 |
+| confirmType | string | "done" | 键盘右下角按钮类型；单行输入默认 done，多行输入在未设置或设置为 done 时使用 return |
+| cursorSpacing | number | 0 | 光标与键盘的距离，单位 px，透传给 input / textarea |
+| adjustPosition | boolean | false | 键盘弹起时是否自动上推页面，透传给 input / textarea |
+| autoHeight | boolean | false | 是否自动增高，仅当 type 为 textarea 时生效 |
+| clearable | boolean | false | 是否显示清空图标，仅对单行 input 生效 |
+| passwordIcon | boolean | false | type 为 password 时是否显示密码显隐图标 |
+| inputClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | input / textarea 的自定义样式类 |
+| placeholderClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 占位文字的自定义样式类 |
+| iconClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 清空和密码显隐图标的自定义样式类 |
+| @input | Function |   | 输入时触发，参数为当前字符串值 |
+| @focus | Function |   | 聚焦时触发，参数为原生 input 或 textarea 聚焦事件 |
+| @blur | Function |   | 失焦时触发，参数为原生 input 或 textarea 失焦事件 |
+| @confirm | Function |   | 点击键盘完成按钮时触发，参数为当前字符串值 |
+| @change | Function |   | 失焦或点击键盘完成按钮时触发，同一次聚焦期间相同值只触发一次，参数为当前字符串值 |
 | @clear | Function |   | 点击清空图标时触发 |
-| @eyes | Function |   | 切换密码显隐时触发 |
-| @iconClick | Function |   | 点击前置或后置图标时触发 |
+| @eyes | Function |   | 密码可见状态变化时触发；点击图标或可见密码因状态变化恢复隐藏时都会触发 |
 | @keyboardheightchange | Function |   | 键盘高度变化时触发 |
-| @update:modelValue | Event |   |   |
+| @update:modelValue | Event |   | 输入内容更新时触发，用于 v-model，参数为当前字符串值 |
 
 <!-- UTSCOMJSON.uni-easyinput.fileFormates -->
 
