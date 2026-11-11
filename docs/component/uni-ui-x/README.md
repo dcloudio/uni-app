@@ -72,7 +72,7 @@ uni-ui x 没有写死的颜色和文字:
 | uni-forms						| [表单](https://ext.dcloud.net.cn/plugin?name=uni-forms-x)								|
 | uni-data-vertical-marquee | [上下滚动文字组件](https://ext.dcloud.net.cn/plugin?name=uni-data-v-marquee) |
 | uni-drag-cell				| [可拖拽排序组件](https://ext.dcloud.net.cn/plugin?name=uni-drag-cell)		|
-| uni-easyinput | [增强输入框](https://ext.dcloud.net.cn/plugin?name=uni-easyinput) |
+| uni-easyinput | [增强输入框](https://ext.dcloud.net.cn/plugin?name=uni-easyinput-x) |
 | uni-expandable-text	| [可折叠文本](https://ext.dcloud.net.cn/plugin?name=uni-expandable-text)													|
 | uni-fab-button			| [uni-fab-button](https://ext.dcloud.net.cn/plugin?name=uni-fab-button)	|
 | uni-index-bar				| [uni-index-bar](https://ext.dcloud.net.cn/plugin?name=uni-index-bar)		|
@@ -112,7 +112,7 @@ uni-ui 无法直接升级 uni-ui x，组件名称、用法都有变化。
 |uni-dateformat				|日期格式化							|改用新版[uni-time-format](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/uni-time-format.html)	|
 |uni-datetime-picker	|日期选择器							|内置组件picker支持mode=date													|
 |uni-drawer						|抽屉										|改用内置组件page-container													|
-|uni-easyinput				|增强输入框							|改用内置input组件														|
+|uni-easyinput				|增强输入框							|改用新版[uni-easyinput](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/uni-easyinput.html)														|
 |uni-fab							|悬浮按钮								|改用新版[uni-fab-button](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/uni-fab-button.html)									|
 |uni-fav							|收藏按钮								|无																									|
 |uni-file-picker			|文件选择上传						|参考[uni-drag-cell](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/uni-drag-cell.html)的九宫格图片选择示例|
