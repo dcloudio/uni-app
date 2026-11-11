@@ -74,31 +74,35 @@ describe('uni-mp-vue: vOn', () => {
   })
 
   it.each([
-    [194, 458],
-    [0, 0],
-  ])('uses tap touch client coordinates (%d, %d)', (clientX, clientY) => {
-    global.__X__ = true
-    const { instance } = mockCurrentInstance()
-    const event = createMPEvent('tap')
-    const touch = {
-      clientX,
-      clientY,
-      pageX: clientX + 100,
-      pageY: clientY + 636,
-      screenX: clientX + 20,
-      screenY: clientY + 50,
+    [194, 458, 294, 1094],
+    [0, 0, 100, 636],
+    [194, 458, 194, 458],
+  ])(
+    'uses tap touch client coordinates (%d, %d) with detail (%d, %d)',
+    (clientX, clientY, detailX, detailY) => {
+      global.__X__ = true
+      const { instance } = mockCurrentInstance()
+      const event = createMPEvent('tap')
+      const touch = {
+        clientX,
+        clientY,
+        pageX: clientX + 100,
+        pageY: clientY + 636,
+        screenX: clientX + 20,
+        screenY: clientY + 50,
+      }
+      event.detail = { x: detailX, y: detailY }
+      event.touches = [touch]
+
+      patchMPEvent(event, instance as any)
+
+      expect(event).toMatchObject({
+        ...touch,
+        x: clientX,
+        y: clientY,
+      })
     }
-    event.detail = { x: touch.pageX, y: touch.pageY }
-    event.touches = [touch]
-
-    patchMPEvent(event, instance as any)
-
-    expect(event).toMatchObject({
-      ...touch,
-      x: clientX,
-      y: clientY,
-    })
-  })
+  )
 
   it.each([{ touches: undefined }, { touches: [] }])(
     'falls back to tap detail coordinates with touches=$touches',
