@@ -58,12 +58,11 @@ App标准基座里地图是腾讯地图，如需高德地图版本，请在插�
 | enable-traffic | boolean | false | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 是否开启实时路况 |
 | enable-poi | boolean | true | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 是否展示 POI 点 |
 | enable-building | boolean | false | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 是否展示建筑物 |
-| enable-indoorMap | boolean | false | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 是否展示室内地图 |
 | subkey | string |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>地图能力【个性化地图】使用的key，不支持动态修改 |
 | show-scale | boolean |   | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>显示比例尺，工具暂不支持 |
 | enable-auto-max-overlooking | boolean |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>开启最大俯视角，俯视角度从 45 度拓展到 75 度 |
 | setting | object |   | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | *(object)*<br/>配置项 |
-| enable-indoor-map | boolean | false | 微信小程序: x; 支付宝小程序: x |   |
+| enable-indoor-map | boolean | false | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 是否展示室内地图 |
 | @markertap | (event: [UniMapMarkerTapEvent](#unimapmarkertapevent)) => void |   | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 点击标记点时触发 |
 | @callouttap | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x | 点击标记点对应的气泡时触发 |
 | @controltap | (event: [UniMapControlTapEvent](#unimapcontroltapevent)) => void |   | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 点击控件时触发 |
