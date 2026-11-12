@@ -195,7 +195,7 @@ describe('Slider 原生根节点的专有 Element API', () => {
     ).toBe('50')
     expect(el.querySelector('span[uni-text]').textContent).toBe('50')
     expect(el.querySelector('.slider-track-fill').style.transform).toBe(
-      'scaleX(0.499)'
+      `scaleX(${(50 - 10) / (95 - 10)})`
     )
     expect(change).not.toHaveBeenCalled()
   })

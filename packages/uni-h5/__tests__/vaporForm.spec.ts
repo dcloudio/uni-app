@@ -294,9 +294,11 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
     }).code
     const label = evaluate(
       `import { defineProps, withDefaults, defineOptions, provide } from 'test-macros';
+      import { watch, onBeforeUnmount } from 'vue';
       ${script}
       export { ctx, handleTap, children };`,
       {
+        vue: { watch: vue.watch, onBeforeUnmount() {} },
         '../common.ts': evaluate(
           preprocess(
             fs.readFileSync(
