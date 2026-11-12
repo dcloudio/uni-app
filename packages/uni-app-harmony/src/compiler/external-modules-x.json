@@ -14,6 +14,12 @@
     "service": "location"
   },
   {
+    "type": "provider",
+    "plugin": "uni-location-amap",
+    "provider": "amap",
+    "service": "location"
+  },
+  {
     "type": "extapi",
     "plugin": "uni-map-tencent",
     "apis": [
