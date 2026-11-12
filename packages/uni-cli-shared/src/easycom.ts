@@ -6,7 +6,11 @@ import { camelize, capitalize, extend } from '@vue/shared'
 import { createFilter } from '@rollup/pluginutils'
 
 import { isBuiltInComponent, once } from '@dcloudio/uni-shared'
-import { isUniAppXAndroidNative } from './x'
+import {
+  isUniAppXAndroidNative,
+  isUniAppXAppPlatform,
+  isUniAppXVapor,
+} from './x'
 import { normalizePath } from './utils'
 import { parsePagesJson, parsePagesJsonOnce } from './json/pages'
 import { M } from './messages'
@@ -315,6 +319,7 @@ function initAutoScanEasycom(
   const isDevX =
     process.env.UNI_HX_VERSION_DEV === 'true' &&
     process.env.UNI_APP_X === 'true'
+  const isAppVapor = isUniAppXVapor() && isUniAppXAppPlatform()
   const isMp = platform.startsWith('mp-')
   const is_uni_modules =
     path.basename(path.resolve(dir, '../..')) === 'uni_modules'
@@ -332,22 +337,21 @@ function initAutoScanEasycom(
     if (!isDir(folder)) {
       return
     }
-    if (isDevX) {
-      if (
-        has_uts_sdk_dir &&
-        process.env.UNI_UTS_PLATFORM &&
-        process.env.UNI_UTS_PLATFORM !== 'web' &&
-        isBuiltInComponent(name)
-      ) {
-        // dev下，如果是内置组件，且存在utssdk目录，则判断utssdk下是否存在当前平台，如果不存在，则跳过
-        const utsSdkPlatformDir = path.resolve(
-          dir,
-          '../utssdk',
-          process.env.UNI_UTS_PLATFORM
-        )
-        if (!fs.existsSync(utsSdkPlatformDir)) {
-          return
-        }
+    if (
+      (isDevX || isAppVapor) &&
+      has_uts_sdk_dir &&
+      process.env.UNI_UTS_PLATFORM &&
+      process.env.UNI_UTS_PLATFORM !== 'web' &&
+      isBuiltInComponent(name)
+    ) {
+      // App Vapor 的平台目录过滤不区分 Dev 和 Alpha；非 Vapor 保留原有 Dev 行为。
+      const utsSdkPlatformDir = path.resolve(
+        dir,
+        '../utssdk',
+        process.env.UNI_UTS_PLATFORM
+      )
+      if (!fs.existsSync(utsSdkPlatformDir)) {
+        return
       }
     }
 

@@ -69,6 +69,13 @@ describe('h5 easycom', () => {
     return (result?.code ?? code) as string
   }
 
+  function removeProjectButtonEasycom() {
+    fs.removeSync(
+      path.join(inputDir, 'uni_modules/uni-form/components/button/button.uvue')
+    )
+    initEasycoms(inputDir, { dirs: [], platform: 'h5', isX: true })
+  }
+
   test('框架构建未初始化项目环境时，显式启用 Vapor 组件解析', () => {
     delete process.env.UNI_APP_X_DOM2
     const source = 'const n0 = _createAssetComponent("scroll-view")'
@@ -130,6 +137,9 @@ describe('h5 easycom', () => {
     ['progress', 'style-x-vapor/progress.css'],
   ])('Web Vapor 的 %s 使用实际的样式目录', (name, css) => {
     delete process.env.UNI_HX_VERSION_DEV
+    if (name === 'button') {
+      removeProjectButtonEasycom()
+    }
     const code = transform(`const n0 = _createAssetComponent("${name}")`)
     expect(code).toContain(css)
     expect(code).toContain("from '@dcloudio/uni-h5'")
@@ -254,30 +264,53 @@ describe('h5 easycom', () => {
   )
 
   test.each([true, false])(
-    'match-media 保持项目内置组件覆盖规则（HBuilderX dev=%s）',
+    'Web Vapor 在 HBuilderX dev=%s 时都优先使用项目内置组件',
     (dev) => {
       process.env.UNI_HX_VERSION_DEV = String(dev)
-      const component = path.join(
-        inputDir,
-        'uni_modules/uni-match-media/components/match-media/match-media.uvue'
-      )
-      fs.outputFileSync(component, '<template><view /></template>')
-      initEasycoms(inputDir, { dirs: [], platform: 'h5', isX: true })
-      const code = transform('const n0 = _createAssetComponent("match-media")')
-      if (dev) {
-        expect(code).toContain(
-          `import __easycom_0 from '${normalizePath(component)}';`
+      for (const name of ['match-media', 'camera']) {
+        const component = path.join(
+          inputDir,
+          `uni_modules/uni-${name}/components/${name}/${name}.uvue`
         )
-        expect(code).not.toContain("from '@dcloudio/uni-h5'")
-        expect(code).not.toContain('style-x-vapor/match-media.css')
-      } else {
-        expect(code).toContain(
-          "import { MatchMedia as __syscom_0 } from '@dcloudio/uni-h5';"
-        )
-        expect(code).not.toContain(normalizePath(component))
+        fs.outputFileSync(component, '<template><view /></template>')
+        initEasycoms(inputDir, { dirs: [], platform: 'h5', isX: true })
+        for (const command of ['serve', 'build']) {
+          for (const tag of [name, `v-uni-${name}`]) {
+            for (const helper of [
+              '_createAssetComponent',
+              '_resolveComponent',
+            ]) {
+              buildInCssSet.clear()
+              const plugin = uniEasycomPlugin({}) as any
+              plugin.configResolved({ command, build: { cssCodeSplit: true } })
+              const code = plugin.transform.call(
+                { parse: parseAst },
+                `const n0 = ${helper}("${tag}")`,
+                `${inputDir}/pages/index/index.uvue?vue&type=template`
+              ).code
+              expect(code).toContain(
+                `import __easycom_0 from '${normalizePath(component)}';`
+              )
+              expect(code).not.toContain("from '@dcloudio/uni-h5'")
+              expect(code).not.toContain('resolveEasycom(')
+              expect(code).not.toContain('.css')
+              expect(buildInCssSet.size).toBe(0)
+            }
+          }
+        }
       }
     }
   )
+
+  test('非 Vapor 非 Dev 继续优先使用框架内置组件', () => {
+    delete process.env.UNI_APP_X_DOM2
+    delete process.env.UNI_HX_VERSION_DEV
+    const code = transform('_resolveComponent("v-uni-button")')
+    expect(code).toContain(
+      "import { Button as __syscom_0 } from '@dcloudio/uni-h5';"
+    )
+    expect(code).not.toContain('uni_modules/uni-form')
+  })
 
   test('框架构建可排除仅在 Vapor 名单中的 match-media', () => {
     const plugin = uniEasycomPlugin({
@@ -353,9 +386,10 @@ describe('h5 easycom', () => {
   )
 
   test.each(['button', 'input', 'textarea'])(
-    'Vapor 沿用旧 %s 业务实现时，导入对应宿主样式',
+    'Vapor 未命中项目 %s 时，导入对应宿主样式',
     (name) => {
       delete process.env.UNI_HX_VERSION_DEV
+      removeProjectButtonEasycom()
       const code = transform(
         `const n0 = _createAssetComponent("v-uni-${name}")`
       )
@@ -374,7 +408,11 @@ describe('h5 easycom', () => {
     'Button 按宿主选择样式，非 Vapor 保留旧路径（Vapor=%s）',
     (vapor) => {
       delete process.env.UNI_HX_VERSION_DEV
-      if (!vapor) delete process.env.UNI_APP_X_DOM2
+      if (!vapor) {
+        delete process.env.UNI_APP_X_DOM2
+      } else {
+        removeProjectButtonEasycom()
+      }
       const code = transform('_resolveComponent("v-uni-button")')
       expect(code).toContain(
         `@dcloudio/uni-components/${
@@ -486,17 +524,12 @@ describe('h5 easycom', () => {
     )
   })
 
-  test('非内部 dev 模式保持内置组件优先级', () => {
+  test('Web Vapor 非 Dev 也保持项目内置组件优先级', () => {
     delete process.env.UNI_HX_VERSION_DEV
     const code = transform('const n0 = _createAssetComponent("v-uni-button")')
 
-    expect(code).toContain(
-      "import { Button as __syscom_0 } from '@dcloudio/uni-h5';"
-    )
-    expect(code).toContain('__createEasycomComponent(__syscom_0)')
-    expect(code).not.toContain(
-      'uni_modules/uni-form/components/button/button.uvue'
-    )
+    expect(code).toContain('uni_modules/uni-form/components/button/button.uvue')
+    expect(code).not.toContain("from '@dcloudio/uni-h5'")
   })
 
   test('Web Vapor 为迁移后的 progress 加载独立样式', () => {
