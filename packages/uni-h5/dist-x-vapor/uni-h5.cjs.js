@@ -5533,7 +5533,7 @@ class UniEditorElement extends UniViewElement {
     return this === UniEditorElement && value instanceof UniViewElement && value.hasAttribute("uni-editor") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$8 = { value: "EDITOR" };
+const uniTagName$7 = { value: "EDITOR" };
 const indexVapor$8 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: editorProps,
@@ -5553,7 +5553,7 @@ const indexVapor$8 = /* @__PURE__ */ defineBuiltInComponent({
       });
       return _n0;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName$8);
+    Object.defineProperty(root, "uniTagName", uniTagName$7);
     return root;
   }
 });
@@ -5623,7 +5623,7 @@ class UniIconElement extends UniViewElement {
     return this === UniIconElement && value instanceof UniViewElement && value.hasAttribute("uni-icon") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$7 = { value: "ICON" };
+const uniTagName$6 = { value: "ICON" };
 const indexVapor$7 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: iconProps,
@@ -5639,7 +5639,7 @@ const indexVapor$7 = /* @__PURE__ */ defineBuiltInComponent({
       setNodes(_x0, () => path.value && path.value.d && createSvgIconVNode(path.value.d, props2.color || path.value.c, rpx2px(props2.size)));
       return _n0;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName$7);
+    Object.defineProperty(root, "uniTagName", uniTagName$6);
     return root;
   }
 });
@@ -5834,7 +5834,7 @@ class UniMovableAreaElement extends UniViewElement {
     return this === UniMovableAreaElement && value instanceof UniViewElement && value.hasAttribute("uni-movable-area") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$6 = { value: "MOVABLE-AREA" };
+const uniTagName$5 = { value: "MOVABLE-AREA" };
 const indexVapor$6 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
@@ -5866,7 +5866,7 @@ const indexVapor$6 = /* @__PURE__ */ defineBuiltInComponent({
       Vue.renderEffect(() => _setTemplateRef(_n3, rootRef));
       return _n3;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName$6);
+    Object.defineProperty(root, "uniTagName", uniTagName$5);
     return root;
   }
 });
@@ -6832,7 +6832,7 @@ class UniMovableViewElement extends UniViewElement {
     return this === UniMovableViewElement && value instanceof UniViewElement && value.hasAttribute("uni-movable-view") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$5 = { value: "MOVABLE-VIEW" };
+const uniTagName$4 = { value: "MOVABLE-VIEW" };
 const indexVapor$5 = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
   props: movableViewProps,
@@ -6854,7 +6854,7 @@ const indexVapor$5 = /* @__PURE__ */ defineBuiltInComponent({
       Vue.renderEffect(() => _setTemplateRef(_n3, rootRef));
       return _n3;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName$5);
+    Object.defineProperty(root, "uniTagName", uniTagName$4);
     return root;
   }
 });
@@ -7232,7 +7232,7 @@ class UniRichTextElement extends UniViewElement {
     return this === UniRichTextElement && value instanceof UniViewElement && value.hasAttribute("uni-rich-text") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$4 = { value: "RICH-TEXT" };
+const uniTagName$3 = { value: "RICH-TEXT" };
 const indexVapor$4 = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: { MODE: 3 },
@@ -7249,7 +7249,7 @@ const indexVapor$4 = /* @__PURE__ */ defineBuiltInComponent({
       trigger("itemclick", e2, detail);
     }
     const result = renderRichText(props2, rootRef, triggerItemClick);
-    Object.defineProperty(result, "uniTagName", uniTagName$4);
+    Object.defineProperty(result, "uniTagName", uniTagName$3);
     return result;
   }
 });
@@ -11342,7 +11342,7 @@ const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
     props2.value;
     const currentValue = Vue.ref(props2.value);
     const isDragging = Vue.ref(false);
-    let trackWidth = 0;
+    let trackTravelWidth = 0;
     let trackLeft = 0;
     let rafId = 0;
     let ticking = false;
@@ -11363,11 +11363,16 @@ const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
     let _activeStatus = 0;
     let touchStartX = 0;
     let touchStartY = 0;
+    let thumbOffsetX = 0;
     let activePointerId = -1;
     let pointerTarget = null;
     let pointerClientX = 0;
     let pointerStartFocus = null;
     function releasePointerCapture() {
+      window.removeEventListener("pointermove", handlePointerMove, true);
+      window.removeEventListener("pointerup", handlePointerUp, true);
+      window.removeEventListener("pointercancel", handlePointerCancel, true);
+      window.removeEventListener("blur", handleWindowBlur);
       const target = pointerTarget;
       const pointerId = activePointerId;
       activePointerId = -1;
@@ -11385,6 +11390,8 @@ const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
       ticking = false;
       isDragging.value = false;
       _activeStatus = 0;
+      trackTravelWidth = 0;
+      thumbOffsetX = 0;
       lastValue = currentValue.value;
       releasePointerCapture();
     }
@@ -11432,19 +11439,35 @@ const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
       const fillScale = Math.max(0, Math.min(1, percentage));
       applyVisualPosition(percentage, fillScale);
     }
-    function calculateValue(clientX) {
-      if (trackWidth <= 0) {
-        return currentValue.value;
+    function cacheTrackGeometry(clientX, clientY) {
+      trackTravelWidth = 0;
+      trackLeft = 0;
+      thumbOffsetX = 0;
+      const containerEl = containerRef.value;
+      if (containerEl != null) {
+        const rect = containerEl.getBoundingClientRect();
+        trackTravelWidth = rect.width;
+        trackLeft = rect.left;
       }
-      const containerWidth = trackWidth;
+      const thumbEl = thumbRef.value;
+      if (thumbEl != null) {
+        const rect = thumbEl.getBoundingClientRect();
+        const thumbWidth = rect.width;
+        trackTravelWidth -= thumbWidth;
+        thumbOffsetX = clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom ? clientX - rect.left : thumbWidth / 2;
+      }
+    }
+    function calculateValue(clientX) {
+      if (trackTravelWidth <= 0)
+        return currentValue.value;
       const containerLeft = trackLeft;
       const min = Number.isFinite(props2.min) ? props2.min : 0;
       const max = Number.isFinite(props2.max) ? props2.max : min;
       if (max <= min)
         return min;
-      let currentX = clientX - containerLeft;
-      currentX = Math.max(0, Math.min(currentX, containerWidth));
-      const ratio = currentX / containerWidth;
+      let currentX = clientX - containerLeft - thumbOffsetX;
+      currentX = Math.max(0, Math.min(currentX, trackTravelWidth));
+      const ratio = currentX / trackTravelWidth;
       let newValue = lerp(min, max, ratio);
       newValue = applyStepPrecision(newValue);
       newValue = Math.max(min, Math.min(newValue, effectiveMax.value));
@@ -11470,7 +11493,9 @@ const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
         const element = thumbRef.value;
         if (element != null && element.ownerDocument.activeElement === pointerStartFocus)
           focusThumb();
-        renderVisuals(calculateValue(clientX));
+        const newValue = calculateValue(clientX);
+        if (newValue != currentValue.value)
+          renderVisuals(newValue);
       }
       const value = currentValue.value;
       const changed = lastValue !== value;
@@ -11528,18 +11553,15 @@ const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
       isDragging.value = true;
       touchStartX = e2.clientX;
       touchStartY = e2.clientY;
+      pointerClientX = e2.clientX;
       _activeStatus = e2.pointerType == "mouse" ? 1 : 0;
       activePointerId = e2.pointerId;
       const thumbEl = thumbRef.value;
       pointerStartFocus = (thumbEl == null ? void 0 : thumbEl.ownerDocument.activeElement) ?? null;
       pointerTarget = e2.currentTarget;
       pointerTarget.setPointerCapture(e2.pointerId);
-      const containerEl = containerRef.value;
-      if (containerEl != null) {
-        const rect = containerEl.getBoundingClientRect();
-        trackLeft = rect.left;
-        trackWidth = rect.width;
-      }
+      window.addEventListener("blur", handleWindowBlur);
+      cacheTrackGeometry(e2.clientX, e2.clientY);
       if (e2.pointerType == "mouse") {
         e2.preventDefault();
         focusThumb();
@@ -11558,6 +11580,14 @@ const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
         resetInteractionState();
       }
     }
+    function handleLostPointerCapture(e2) {
+      if (e2.pointerId == activePointerId) {
+        e2.stopPropagation();
+        window.addEventListener("pointermove", handlePointerMove, true);
+        window.addEventListener("pointerup", handlePointerUp, true);
+        window.addEventListener("pointercancel", handlePointerCancel, true);
+      }
+    }
     function handleWebTouchStart(e2) {
       e2.stopPropagation();
     }
@@ -11573,6 +11603,11 @@ const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
     const sliderKeys = ["ArrowLeft", "ArrowDown", "ArrowRight", "ArrowUp", "Home", "End", "PageUp", "PageDown"];
     const pressedSliderKeys = /* @__PURE__ */ new Set();
     function handleThumbBlur() {
+      pressedSliderKeys.clear();
+      if (activePointerId == -1)
+        resetInteractionState();
+    }
+    function handleWindowBlur() {
       pressedSliderKeys.clear();
       resetInteractionState();
     }
@@ -11647,7 +11682,7 @@ const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
     Vue.on(n5, "pointermove", handlePointerMove);
     Vue.on(n5, "pointerup", handlePointerUp);
     Vue.on(n5, "pointercancel", handlePointerCancel);
-    Vue.on(n5, "lostpointercapture", handlePointerCancel);
+    Vue.on(n5, "lostpointercapture", handleLostPointerCapture);
     Vue.on(n5, "touchstart", handleWebTouchStart);
     Vue.on(n5, "touchmove", handleWebTouchMove);
     Vue.on(n5, "touchend", handleWebTouchEnd);
@@ -13756,7 +13791,7 @@ class UniVideoElement extends UniViewElement {
     return this === UniVideoElement && value instanceof UniViewElement && value.hasAttribute("uni-video") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$3 = { value: "VIDEO" };
+const uniTagName$2 = { value: "VIDEO" };
 const indexVapor$3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
   props: videoProps,
@@ -13780,7 +13815,7 @@ const indexVapor$3 = /* @__PURE__ */ defineBuiltInComponent({
       return _n0;
     })();
     Object.assign(root, methods);
-    Object.defineProperty(root, "uniTagName", uniTagName$3);
+    Object.defineProperty(root, "uniTagName", uniTagName$2);
     return root;
   }
 });
@@ -13807,7 +13842,7 @@ const onWebInvokeAppService = ({ name, arg }) => {
     }
   }
 };
-const Invoke = /* @__PURE__ */ uniShared.once(
+const initWebViewBridge = /* @__PURE__ */ uniShared.once(
   () => UniServiceJSBridge.on(uniShared.ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService)
 );
 const webViewProps = {
@@ -13816,24 +13851,14 @@ const webViewProps = {
     default: ""
   }
 };
-function useWebView(props2, emit2) {
-  Invoke();
-  const rootRef = Vue.ref(null);
-  Vue.ref(null);
-  const { $attrs, $excludeAttrs, $listeners } = useAttrs({
-    excludeListeners: true
-  });
-  return { rootRef, $listeners, $excludeAttrs };
-}
-const _t0$3 = Vue.template("<div>", 1);
-class UniWebViewElement extends UniViewElement {
+const _t0$3 = Vue.template("<iframe uni-web-view uni-view class=uni-webview>", 1);
+class UniWebViewElement extends UniElement2 {
   static [Symbol.hasInstance](value) {
-    return this === UniWebViewElement && value instanceof UniViewElement && value.hasAttribute("uni-web-view") || Function.prototype[Symbol.hasInstance].call(this, value);
+    const el = value;
+    return this === UniWebViewElement && (el == null ? void 0 : el.nodeType) === 1 && el.localName === "iframe" && el.hasAttribute("uni-web-view") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$2 = { value: "WEB-VIEW" };
 const indexVapor$2 = /* @__PURE__ */ defineBuiltInComponent({
-  inheritAttrs: false,
   name: "WebView",
   props: webViewProps,
   emits: ["load"],
@@ -13842,26 +13867,22 @@ const indexVapor$2 = /* @__PURE__ */ defineBuiltInComponent({
     class: UniWebViewElement
   },
   setup(props2, { emit: emit2 }) {
-    const { rootRef, $listeners, $excludeAttrs } = useWebView();
-    const root = (() => {
+    initWebViewBridge();
+    const rootRef = Vue.ref(null);
+    const trigger = useCustomEvent(rootRef, emit2);
+    return (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
       const _n0 = _t0$3();
+      Vue.on(_n0, "load", (event) => trigger("load", event, {
+        src: props2.src,
+        url: props2.src
+      }));
       Vue.renderEffect(() => {
-        Vue.setDynamicProps(_n0, [
-          {
-            "uni-web-view": "",
-            "uni-view": "",
-            class: "uni-webview"
-          },
-          $listeners.value,
-          $excludeAttrs.value
-        ]);
+        Vue.setProp(_n0, "src", getRealPath(props2.src));
         _setTemplateRef(_n0, rootRef);
       });
       return _n0;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName$2);
-    return root;
   }
 });
 const ICON_PATH_ORIGIN = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIQAAACECAMAAABmmnOVAAAC01BMVEUAAAAAef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef96quGStdqStdpbnujMzMzCyM7Gyc7Ky83MzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMwAef8GfP0yjfNWnOp0qOKKsdyYt9mju9aZt9mMstx1qeJYnekyjvIIfP0qivVmouaWttnMzMyat9lppOUujPQKffxhoOfNzc3Y2Njh4eHp6enu7u7y8vL19fXv7+/i4uLZ2dnOzs6auNgOf/sKff15quHR0dHx8fH9/f3////j4+N6quFdn+iywdPb29vw8PD+/v7c3NyywtLa2tr29vbS0tLd3d38/Pzf39/o6Ojc7f+q0v+HwP9rsf9dqv9Hnv9Vpv/q6urj8P+Vx/9Am/8Pgf8Iff/z8/OAvP95uf/n5+c5l//V6f+52v+y1//7+/vt7e0rkP/09PTQ0NDq9P8Whf+cy//W1tbe3t7A3v/m5ubs7OxOov/r6+vk5OQiaPjKAAAAknRSTlMACBZ9oB71/jiqywJBZATT6hBukRXv+zDCAVrkDIf4JbQsTb7eVeJLbwfa8Rh4G/OlPS/6/kxQ9/xdmZudoJxNVhng7B6wtWdzAtQOipcF1329wS44doK/BAkyP1pvgZOsrbnGXArAg34G2IsD1eMRe7bi7k5YnqFT9V0csyPedQyYD3p/Fje+hDpskq/MwpRBC6yKp2MAAAQdSURBVHja7Zn1exMxGIAPHbrhDsPdneHuNtzd3d3dIbjLh93o2o4i7TpgG1Jk0g0mMNwd/gTa5rq129reHnK5e/bk/TFNk/dJ7r5894XjGAwGg8GgTZasCpDIll1+hxw5vXLJLpEboTx5ZXbIhyzkl9fB28cqUaCgrBKFkI3CcjoUKYolihWXUSI7EihRUjaHXF52CVRKLoe8eZIdUOkyMknkRw6UlcehYAFHiXK+skgURk6Ul8OhQjFnCVRRBolKqRxQ5SzUHaqgNGSj7VCmalqJnDkoS5RF6ZCbroNvufQkUD6qEuXTdUA+3hQdqiEXVKfnUKOmK4latalJ1EEuoZZ6162HJ9x/4OChw0eOHj12/MTJU6dxG7XUu751tjNnz4ET5y9ctLZTSr0beKFLl89bpuUDrqgC1RqNWqsKuqqzNFw7e51S6u3tc+OmZUJ9kCHY6ECwOkRvab51iUrqXej2HYDQsHBjWgx3Ae7dppB6N2wEcF9jdMGDUIDGTaR2aNoM9FqjG7QmaN5CWgc/gIePjG559BigpZQOrYB/4jBfRGRUtDkmJjY6KjLCofkpD62lc2gDfMpWPIuLdwyV8XEpHgaddBZ+wBuSFcwJqSN2ovmZ/dfnOvCTxqGtwzq8SEjv4EhISn48eWgnhUP7DvDSvgzxrs6vV6+FLiro2EkCic4QKkzwJsH1KYreCp0eQhfyDl1B/w4P/xa5JVJ4U03QjbRD9x7wXlgH5IE3wmMBHXoSlugFAcI6f/AkkSi8q6HQm6xDn77wEQ8djTwSj3tqAMguRTe4ikeOQyJ4YV+KfkQl+oNW5GbY4gWOWgbwJ+kwAD6Fi90MK2ZsrIeBBCUGwRXbqJ+/iJMQliIEBhOU6AJhtlG/IpHE2bqrYQg5h6HA4yQiRqwEfkGCdTCMmMRw+IbPDCQaHCsCYAQxiZHw3TbmD/ESOHgHwShiEqPhp/gggYkSztIxxCRawy/bmEniJaJtfwiEscQkxkFgRqJESqQwwHhiEuMBp3Vm8RK/cZoHEzKXhCK2QxEPpiJe0YlKCFaKCNv/cYBNUsBRPlkJSc0U+dM7E9H0ThGJbgZT/iR7yj+VqMS06Qr4+OFm2JdCxIa8lugzkJs5K6MfxAaYPUcBpYG5khZJEkUUSb7DPCnKRfPBXj6M8FwuegoLpCgXcQszVjhbJFUJUee2hBhLoYTIcYtB57KY+opSMdVqwatSlZVj05aV//CwJLMX2DluaUcwhXm4ali2XOoLjxUrPV26zFtF4f5p0Gp310+z13BUWNvbehEXona6iAtX/zVZmtfN4WixfsNky4S6gCCVVq3RPLdfSfpv3MRRZfPoLc6Xs/5bt3EyMGzE9h07/Xft2t15z6i9+zgGg8FgMBgMBoPBYDAYDAYj8/APG67Rie8pUDsAAAAASUVORK5CYII=";

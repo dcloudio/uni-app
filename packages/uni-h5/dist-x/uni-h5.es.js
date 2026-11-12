@@ -22301,7 +22301,7 @@ const onWebInvokeAppService = ({ name, arg }) => {
     }
   }
 };
-const Invoke = /* @__PURE__ */ once(
+const initWebViewBridge = /* @__PURE__ */ once(
   () => UniServiceJSBridge.on(ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService)
 );
 const webViewProps = {
@@ -22311,7 +22311,7 @@ const webViewProps = {
   }
 };
 function useWebView(props2, emit2) {
-  Invoke();
+  initWebViewBridge();
   const rootRef = ref(null);
   const iframeRef = ref(null);
   const { $attrs, $excludeAttrs, $listeners } = useAttrs({

@@ -254,6 +254,9 @@ function installWebVaporElements(realm) {
             case "canvas":
               marker = "uni-canvas";
               break;
+            case "iframe":
+              marker = "uni-web-view";
+              break;
           }
           if (marker && el.hasAttribute(marker))
             return true;
@@ -292,7 +295,8 @@ function installWebVaporElements(realm) {
     [hosts.HTMLDivElement, "uni-view", "VIEW"],
     [hosts.HTMLSpanElement, "uni-text", "TEXT"],
     [hosts.HTMLImageElement, "uni-image", "IMAGE"],
-    [hosts.HTMLCanvasElement, "uni-canvas", "CANVAS"]
+    [hosts.HTMLCanvasElement, "uni-canvas", "CANVAS"],
+    [hosts.HTMLIFrameElement, "uni-web-view", "WEB-VIEW"]
   ]) {
     const prototype = Host.prototype;
     if (!("uniTagName" in prototype)) {
@@ -13429,7 +13433,7 @@ class UniEditorElement extends UniViewElement {
     return this === UniEditorElement && value instanceof UniViewElement && value.hasAttribute("uni-editor") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$8 = { value: "EDITOR" };
+const uniTagName$7 = { value: "EDITOR" };
 const indexVapor$7 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: editorProps,
@@ -13449,7 +13453,7 @@ const indexVapor$7 = /* @__PURE__ */ defineBuiltInComponent({
       });
       return _n0;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName$8);
+    Object.defineProperty(root, "uniTagName", uniTagName$7);
     return root;
   }
 });
@@ -13519,7 +13523,7 @@ class UniIconElement extends UniViewElement {
     return this === UniIconElement && value instanceof UniViewElement && value.hasAttribute("uni-icon") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$7 = { value: "ICON" };
+const uniTagName$6 = { value: "ICON" };
 const indexVapor$6 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: iconProps,
@@ -13535,7 +13539,7 @@ const indexVapor$6 = /* @__PURE__ */ defineBuiltInComponent({
       setNodes(_x0, () => path.value && path.value.d && createSvgIconVNode(path.value.d, props2.color || path.value.c, rpx2px(props2.size)));
       return _n0;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName$7);
+    Object.defineProperty(root, "uniTagName", uniTagName$6);
     return root;
   }
 });
@@ -13734,7 +13738,7 @@ class UniMovableAreaElement extends UniViewElement {
     return this === UniMovableAreaElement && value instanceof UniViewElement && value.hasAttribute("uni-movable-area") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$6 = { value: "MOVABLE-AREA" };
+const uniTagName$5 = { value: "MOVABLE-AREA" };
 const indexVapor$5 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
@@ -13766,7 +13770,7 @@ const indexVapor$5 = /* @__PURE__ */ defineBuiltInComponent({
       renderEffect(() => _setTemplateRef(_n3, rootRef));
       return _n3;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName$6);
+    Object.defineProperty(root, "uniTagName", uniTagName$5);
     return root;
   }
 });
@@ -14913,7 +14917,7 @@ class UniMovableViewElement extends UniViewElement {
     return this === UniMovableViewElement && value instanceof UniViewElement && value.hasAttribute("uni-movable-view") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$5 = { value: "MOVABLE-VIEW" };
+const uniTagName$4 = { value: "MOVABLE-VIEW" };
 const indexVapor$4 = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
   props: movableViewProps,
@@ -14935,7 +14939,7 @@ const indexVapor$4 = /* @__PURE__ */ defineBuiltInComponent({
       renderEffect(() => _setTemplateRef(_n3, rootRef));
       return _n3;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName$5);
+    Object.defineProperty(root, "uniTagName", uniTagName$4);
     return root;
   }
 });
@@ -15313,7 +15317,7 @@ class UniRichTextElement extends UniViewElement {
     return this === UniRichTextElement && value instanceof UniViewElement && value.hasAttribute("uni-rich-text") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$4 = { value: "RICH-TEXT" };
+const uniTagName$3 = { value: "RICH-TEXT" };
 const indexVapor$3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: { MODE: 3 },
@@ -15330,7 +15334,7 @@ const indexVapor$3 = /* @__PURE__ */ defineBuiltInComponent({
       trigger("itemclick", e2, detail);
     }
     const result = renderRichText(props2, rootRef, triggerItemClick);
-    Object.defineProperty(result, "uniTagName", uniTagName$4);
+    Object.defineProperty(result, "uniTagName", uniTagName$3);
     return result;
   }
 });
@@ -20143,7 +20147,7 @@ const _sfc_main$e = /* @__PURE__ */ defineVaporComponent({
     const initialValue = props2.value;
     const currentValue = ref(props2.value);
     const isDragging = ref(false);
-    let trackWidth = 0;
+    let trackTravelWidth = 0;
     let trackLeft = 0;
     let rafId = 0;
     let ticking = false;
@@ -20164,11 +20168,16 @@ const _sfc_main$e = /* @__PURE__ */ defineVaporComponent({
     let _activeStatus = 0;
     let touchStartX = 0;
     let touchStartY = 0;
+    let thumbOffsetX = 0;
     let activePointerId = -1;
     let pointerTarget = null;
     let pointerClientX = 0;
     let pointerStartFocus = null;
     function releasePointerCapture() {
+      window.removeEventListener("pointermove", handlePointerMove, true);
+      window.removeEventListener("pointerup", handlePointerUp, true);
+      window.removeEventListener("pointercancel", handlePointerCancel, true);
+      window.removeEventListener("blur", handleWindowBlur);
       const target = pointerTarget;
       const pointerId = activePointerId;
       activePointerId = -1;
@@ -20186,6 +20195,8 @@ const _sfc_main$e = /* @__PURE__ */ defineVaporComponent({
       ticking = false;
       isDragging.value = false;
       _activeStatus = 0;
+      trackTravelWidth = 0;
+      thumbOffsetX = 0;
       lastValue = currentValue.value;
       releasePointerCapture();
     }
@@ -20233,19 +20244,35 @@ const _sfc_main$e = /* @__PURE__ */ defineVaporComponent({
       const fillScale = Math.max(0, Math.min(1, percentage));
       applyVisualPosition(percentage, fillScale);
     }
-    function calculateValue(clientX) {
-      if (trackWidth <= 0) {
-        return currentValue.value;
+    function cacheTrackGeometry(clientX, clientY) {
+      trackTravelWidth = 0;
+      trackLeft = 0;
+      thumbOffsetX = 0;
+      const containerEl = containerRef.value;
+      if (containerEl != null) {
+        const rect = containerEl.getBoundingClientRect();
+        trackTravelWidth = rect.width;
+        trackLeft = rect.left;
       }
-      const containerWidth = trackWidth;
+      const thumbEl = thumbRef.value;
+      if (thumbEl != null) {
+        const rect = thumbEl.getBoundingClientRect();
+        const thumbWidth = rect.width;
+        trackTravelWidth -= thumbWidth;
+        thumbOffsetX = clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom ? clientX - rect.left : thumbWidth / 2;
+      }
+    }
+    function calculateValue(clientX) {
+      if (trackTravelWidth <= 0)
+        return currentValue.value;
       const containerLeft = trackLeft;
       const min = Number.isFinite(props2.min) ? props2.min : 0;
       const max = Number.isFinite(props2.max) ? props2.max : min;
       if (max <= min)
         return min;
-      let currentX = clientX - containerLeft;
-      currentX = Math.max(0, Math.min(currentX, containerWidth));
-      const ratio = currentX / containerWidth;
+      let currentX = clientX - containerLeft - thumbOffsetX;
+      currentX = Math.max(0, Math.min(currentX, trackTravelWidth));
+      const ratio = currentX / trackTravelWidth;
       let newValue = lerp(min, max, ratio);
       newValue = applyStepPrecision(newValue);
       newValue = Math.max(min, Math.min(newValue, effectiveMax.value));
@@ -20271,7 +20298,9 @@ const _sfc_main$e = /* @__PURE__ */ defineVaporComponent({
         const element = thumbRef.value;
         if (element != null && element.ownerDocument.activeElement === pointerStartFocus)
           focusThumb();
-        renderVisuals(calculateValue(clientX));
+        const newValue = calculateValue(clientX);
+        if (newValue != currentValue.value)
+          renderVisuals(newValue);
       }
       const value = currentValue.value;
       const changed = lastValue !== value;
@@ -20329,18 +20358,15 @@ const _sfc_main$e = /* @__PURE__ */ defineVaporComponent({
       isDragging.value = true;
       touchStartX = e2.clientX;
       touchStartY = e2.clientY;
+      pointerClientX = e2.clientX;
       _activeStatus = e2.pointerType == "mouse" ? 1 : 0;
       activePointerId = e2.pointerId;
       const thumbEl = thumbRef.value;
       pointerStartFocus = (thumbEl == null ? void 0 : thumbEl.ownerDocument.activeElement) ?? null;
       pointerTarget = e2.currentTarget;
       pointerTarget.setPointerCapture(e2.pointerId);
-      const containerEl = containerRef.value;
-      if (containerEl != null) {
-        const rect = containerEl.getBoundingClientRect();
-        trackLeft = rect.left;
-        trackWidth = rect.width;
-      }
+      window.addEventListener("blur", handleWindowBlur);
+      cacheTrackGeometry(e2.clientX, e2.clientY);
       if (e2.pointerType == "mouse") {
         e2.preventDefault();
         focusThumb();
@@ -20359,6 +20385,14 @@ const _sfc_main$e = /* @__PURE__ */ defineVaporComponent({
         resetInteractionState();
       }
     }
+    function handleLostPointerCapture(e2) {
+      if (e2.pointerId == activePointerId) {
+        e2.stopPropagation();
+        window.addEventListener("pointermove", handlePointerMove, true);
+        window.addEventListener("pointerup", handlePointerUp, true);
+        window.addEventListener("pointercancel", handlePointerCancel, true);
+      }
+    }
     function handleWebTouchStart(e2) {
       e2.stopPropagation();
     }
@@ -20374,6 +20408,11 @@ const _sfc_main$e = /* @__PURE__ */ defineVaporComponent({
     const sliderKeys = ["ArrowLeft", "ArrowDown", "ArrowRight", "ArrowUp", "Home", "End", "PageUp", "PageDown"];
     const pressedSliderKeys = /* @__PURE__ */ new Set();
     function handleThumbBlur() {
+      pressedSliderKeys.clear();
+      if (activePointerId == -1)
+        resetInteractionState();
+    }
+    function handleWindowBlur() {
       pressedSliderKeys.clear();
       resetInteractionState();
     }
@@ -20425,7 +20464,7 @@ const _sfc_main$e = /* @__PURE__ */ defineVaporComponent({
       emit2("change", new UniSliderChangeEvent(currentValue.value));
     }
     function handleResize() {
-      trackWidth = 0;
+      trackTravelWidth = 0;
       trackLeft = 0;
       renderVisuals(currentValue.value);
     }
@@ -20535,7 +20574,7 @@ const _sfc_main$e = /* @__PURE__ */ defineVaporComponent({
     on$1(n5, "pointermove", handlePointerMove);
     on$1(n5, "pointerup", handlePointerUp);
     on$1(n5, "pointercancel", handlePointerCancel);
-    on$1(n5, "lostpointercapture", handlePointerCancel);
+    on$1(n5, "lostpointercapture", handleLostPointerCapture);
     on$1(n5, "touchstart", handleWebTouchStart);
     on$1(n5, "touchmove", handleWebTouchMove);
     on$1(n5, "touchend", handleWebTouchEnd);
@@ -23407,7 +23446,7 @@ class UniVideoElement extends UniViewElement {
     return this === UniVideoElement && value instanceof UniViewElement && value.hasAttribute("uni-video") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$3 = { value: "VIDEO" };
+const uniTagName$2 = { value: "VIDEO" };
 const indexVapor$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
   props: videoProps,
@@ -23431,7 +23470,7 @@ const indexVapor$2 = /* @__PURE__ */ defineBuiltInComponent({
     setInsertionState(root);
     insert(render(), root);
     Object.assign(root, methods);
-    Object.defineProperty(root, "uniTagName", uniTagName$3);
+    Object.defineProperty(root, "uniTagName", uniTagName$2);
     return root;
   }
 });
@@ -23458,7 +23497,7 @@ const onWebInvokeAppService = ({ name, arg }) => {
     }
   }
 };
-const Invoke = /* @__PURE__ */ once(
+const initWebViewBridge = /* @__PURE__ */ once(
   () => UniServiceJSBridge.on(ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService)
 );
 const webViewProps = {
@@ -23467,48 +23506,14 @@ const webViewProps = {
     default: ""
   }
 };
-function useWebView(props2, emit2) {
-  Invoke();
-  const rootRef = ref(null);
-  const iframeRef = ref(null);
-  const { $attrs, $excludeAttrs, $listeners } = useAttrs({
-    excludeListeners: true
-  });
-  const trigger = useCustomEvent(rootRef, emit2);
-  const renderIframe = () => {
-    const iframe = document.createElement("iframe");
-    iframe.onload = function(event) {
-      trigger("load", event, { src: props2.src, url: props2.src });
-    };
-    watchEffect(() => {
-      for (const key in $attrs.value) {
-        if (hasOwn($attrs.value, key)) {
-          const attr2 = $attrs.value[key];
-          iframe[key] = attr2;
-        }
-      }
-    });
-    watchEffect(() => {
-      iframe.src = getRealPath(props2.src);
-    });
-    iframeRef.value = iframe;
-  };
-  renderIframe();
-  onMounted(() => {
-    var _a;
-    (_a = rootRef.value) == null ? void 0 : _a.appendChild(iframeRef.value);
-  });
-  return { rootRef, $listeners, $excludeAttrs };
-}
-const _t0$5 = template("<div>", 1);
-class UniWebViewElement extends UniViewElement {
+const _t0$5 = template("<iframe uni-web-view uni-view class=uni-webview>", 1);
+class UniWebViewElement extends UniElement2 {
   static [Symbol.hasInstance](value) {
-    return this === UniWebViewElement && value instanceof UniViewElement && value.hasAttribute("uni-web-view") || Function.prototype[Symbol.hasInstance].call(this, value);
+    const el = value;
+    return this === UniWebViewElement && (el == null ? void 0 : el.nodeType) === 1 && el.localName === "iframe" && el.hasAttribute("uni-web-view") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$2 = { value: "WEB-VIEW" };
 const indexVapor$1 = /* @__PURE__ */ defineBuiltInComponent({
-  inheritAttrs: false,
   name: "WebView",
   props: webViewProps,
   emits: ["load"],
@@ -23517,26 +23522,22 @@ const indexVapor$1 = /* @__PURE__ */ defineBuiltInComponent({
     class: UniWebViewElement
   },
   setup(props2, { emit: emit2 }) {
-    const { rootRef, $listeners, $excludeAttrs } = useWebView(props2, emit2);
-    const root = (() => {
+    initWebViewBridge();
+    const rootRef = ref(null);
+    const trigger = useCustomEvent(rootRef, emit2);
+    return (() => {
       const _setTemplateRef = createTemplateRefSetter();
       const _n0 = _t0$5();
+      on$1(_n0, "load", (event) => trigger("load", event, {
+        src: props2.src,
+        url: props2.src
+      }));
       renderEffect(() => {
-        setDynamicProps(_n0, [
-          {
-            "uni-web-view": "",
-            "uni-view": "",
-            class: "uni-webview"
-          },
-          $listeners.value,
-          $excludeAttrs.value
-        ]);
+        setProp(_n0, "src", getRealPath(props2.src));
         _setTemplateRef(_n0, rootRef);
       });
       return _n0;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName$2);
-    return root;
   }
 });
 let index$6 = 0;

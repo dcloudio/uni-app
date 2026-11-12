@@ -11590,7 +11590,7 @@ const onWebInvokeAppService = ({ name, arg }) => {
     }
   }
 };
-const Invoke = /* @__PURE__ */ uniShared.once(
+const initWebViewBridge = /* @__PURE__ */ uniShared.once(
   () => UniServiceJSBridge.on(uniShared.ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService)
 );
 const webViewProps = {
@@ -11600,7 +11600,7 @@ const webViewProps = {
   }
 };
 function useWebView(props2, emit2) {
-  Invoke();
+  initWebViewBridge();
   const rootRef = vue.ref(null);
   vue.ref(null);
   const { $attrs, $excludeAttrs, $listeners } = useAttrs({

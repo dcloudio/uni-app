@@ -6097,7 +6097,7 @@ class UniEditorElement extends UniViewElement {
     return this === UniEditorElement && value instanceof UniViewElement && value.hasAttribute("uni-editor") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$8 = { value: "EDITOR" };
+const uniTagName$7 = { value: "EDITOR" };
 const indexVapor$8 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: editorProps,
@@ -6115,7 +6115,7 @@ const indexVapor$8 = /* @__PURE__ */ defineBuiltInComponent({
       id: props2.id,
       class: "ql-container"
     }, null, 512));
-    Object.defineProperty(root, "uniTagName", uniTagName$8);
+    Object.defineProperty(root, "uniTagName", uniTagName$7);
     return root;
   }
 });
@@ -6188,7 +6188,7 @@ class UniIconElement extends UniViewElement {
     return this === UniIconElement && value instanceof UniViewElement && value.hasAttribute("uni-icon") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$7 = { value: "ICON" };
+const uniTagName$6 = { value: "ICON" };
 const indexVapor$7 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: iconProps,
@@ -6199,7 +6199,7 @@ const indexVapor$7 = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2) {
     const path = useIcon(props2);
     const root = (openBlock(), createBlock("div", _hoisted_1$3, [normalizeVNode(() => path.value && path.value.d && createSvgIconVNode(path.value.d, props2.color || path.value.c, rpx2px(props2.size)))]));
-    Object.defineProperty(root, "uniTagName", uniTagName$7);
+    Object.defineProperty(root, "uniTagName", uniTagName$6);
     return root;
   }
 });
@@ -6397,7 +6397,7 @@ class UniMovableAreaElement extends UniViewElement {
     return this === UniMovableAreaElement && value instanceof UniViewElement && value.hasAttribute("uni-movable-area") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$6 = { value: "MOVABLE-AREA" };
+const uniTagName$5 = { value: "MOVABLE-AREA" };
 const indexVapor$6 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
@@ -6414,7 +6414,7 @@ const indexVapor$6 = /* @__PURE__ */ defineBuiltInComponent({
       "uni-view": "",
       ref: rootRef
     }, $attrs.value, $excludeAttrs.value, _listeners), [createVNode(ResizeSensor), normalizeVNode(() => movableViewItems)], 16));
-    Object.defineProperty(root, "uniTagName", uniTagName$6);
+    Object.defineProperty(root, "uniTagName", uniTagName$5);
     return root;
   }
 });
@@ -7560,7 +7560,7 @@ class UniMovableViewElement extends UniViewElement {
     return this === UniMovableViewElement && value instanceof UniViewElement && value.hasAttribute("uni-movable-view") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$5 = { value: "MOVABLE-VIEW" };
+const uniTagName$4 = { value: "MOVABLE-VIEW" };
 const indexVapor$5 = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
   props: movableViewProps,
@@ -7576,7 +7576,7 @@ const indexVapor$5 = /* @__PURE__ */ defineBuiltInComponent({
       "uni-view": "",
       ref: rootRef
     }, [createVNode(ResizeSensor), normalizeVNode(() => slots.default && slots.default())], 512));
-    Object.defineProperty(root, "uniTagName", uniTagName$5);
+    Object.defineProperty(root, "uniTagName", uniTagName$4);
     return root;
   }
 });
@@ -7954,7 +7954,7 @@ class UniRichTextElement extends UniViewElement {
     return this === UniRichTextElement && value instanceof UniViewElement && value.hasAttribute("uni-rich-text") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$4 = { value: "RICH-TEXT" };
+const uniTagName$3 = { value: "RICH-TEXT" };
 const indexVapor$4 = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: { MODE: 3 },
@@ -7971,7 +7971,7 @@ const indexVapor$4 = /* @__PURE__ */ defineBuiltInComponent({
       trigger("itemclick", e2, detail);
     }
     const result = renderRichText(props2, rootRef, triggerItemClick);
-    Object.defineProperty(result, "uniTagName", uniTagName$4);
+    Object.defineProperty(result, "uniTagName", uniTagName$3);
     return result;
   }
 });
@@ -8787,12 +8787,12 @@ const _sfc_main$n = /* @__PURE__ */ defineComponent$2({
   __vapor: true,
   setup(__props, { emit: __emit }) {
     const props2 = __props;
-    class UniCustomEvent2 {
+    class UniCustomEvent3 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniCheckboxGroupChangeEvent extends UniCustomEvent2 {
+    class UniCheckboxGroupChangeEvent extends UniCustomEvent3 {
       constructor(value) {
         super("change", { value });
       }
@@ -9024,17 +9024,17 @@ const _sfc_main$l = /* @__PURE__ */ defineComponent$2({
   __vapor: true,
   setup(__props, { expose: __expose, emit: __emit }) {
     const props2 = __props;
-    class UniCustomEvent2 {
+    class UniCustomEvent3 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniFormSubmitEvent extends UniCustomEvent2 {
+    class UniFormSubmitEvent extends UniCustomEvent3 {
       constructor(value) {
         super("submit", { value });
       }
     }
-    class UniFormResetEvent extends UniCustomEvent2 {
+    class UniFormResetEvent extends UniCustomEvent3 {
       constructor() {
         super("reset", {});
       }
@@ -10319,26 +10319,26 @@ const _sfc_main$d = /* @__PURE__ */ defineComponent$2({
     const multiSelectorChangeEventName = `${baseEventName}_multiSelector_change`;
     const timeChangeEventName = `${baseEventName}_time_change`;
     const columnChangeEventName = `${baseEventName}_column_change`;
-    class UniCustomEvent2 {
+    class UniCustomEvent3 {
       constructor(type, options) {
         this.detail = options.detail;
       }
     }
-    class UniPickerCancelEvent extends UniCustomEvent2 {
+    class UniPickerCancelEvent extends UniCustomEvent3 {
       constructor() {
         super("cancel", {
           detail: {}
         });
       }
     }
-    class UniPickerChangeEvent extends UniCustomEvent2 {
+    class UniPickerChangeEvent extends UniCustomEvent3 {
       constructor(value) {
         super("change", {
           detail: { value }
         });
       }
     }
-    class UniPickerColumnChangeEvent extends UniCustomEvent2 {
+    class UniPickerColumnChangeEvent extends UniCustomEvent3 {
       constructor(column, value) {
         super("columnchange", {
           detail: { value, column }
@@ -11597,12 +11597,12 @@ const _sfc_main$b = /* @__PURE__ */ defineComponent$2({
   __vapor: true,
   setup(__props, { emit: __emit }) {
     const props2 = __props;
-    class UniCustomEvent2 {
+    class UniCustomEvent3 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniPickerViewChangeEvent extends UniCustomEvent2 {
+    class UniPickerViewChangeEvent extends UniCustomEvent3 {
       constructor(value) {
         super("change", { value });
       }
@@ -11878,12 +11878,12 @@ const _sfc_main$9 = /* @__PURE__ */ defineComponent$2({
   __vapor: true,
   setup(__props, { emit: __emit }) {
     const props2 = __props;
-    class UniCustomEvent2 {
+    class UniCustomEvent3 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniProgressActiveendEvent extends UniCustomEvent2 {
+    class UniProgressActiveendEvent extends UniCustomEvent3 {
       constructor(type, curPercent) {
         super(type, { curPercent });
       }
@@ -12187,12 +12187,12 @@ const _sfc_main$7 = /* @__PURE__ */ defineComponent$2({
   emits: ["change"],
   __vapor: true,
   setup(__props, { emit: __emit }) {
-    class UniCustomEvent2 {
+    class UniCustomEvent3 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniRadioGroupChangeEvent extends UniCustomEvent2 {
+    class UniRadioGroupChangeEvent extends UniCustomEvent3 {
       constructor(value) {
         super("change", { value });
       }
@@ -12252,6 +12252,16 @@ _sfc_main$7.setup = (props2, ctx) => {
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-form/components/radio-group/radio-group.vue");
   return _sfc_setup$7 ? _sfc_setup$7(props2, ctx) : void 0;
 };
+let UniCustomEvent$1 = class UniCustomEvent {
+  constructor(type, detail) {
+    this.detail = detail;
+  }
+};
+class UniSliderChangeEvent extends UniCustomEvent$1 {
+  constructor(value) {
+    super("change", { value });
+  }
+}
 class UniSliderElement extends UniViewElement {
   constructor() {
     super(...arguments);
@@ -12270,6 +12280,7 @@ class UniSliderElement extends UniViewElement {
     (_a = this.vm) == null ? void 0 : _a.renderVisuals(val);
   }
 }
+const TOUCH_THRESHOLD = 4;
 const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "slider",
@@ -12302,6 +12313,7 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
   emits: ["change", "changing"],
   __vapor: true,
   setup(__props, { expose: __expose, emit: __emit }) {
+    const emit2 = __emit;
     const attrs = useAttrs$1();
     const id = attrs.id ?? "";
     let unregisterLabelTarget = null;
@@ -12342,7 +12354,13 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
     const initialValue = props2.value;
     const currentValue = ref(props2.value);
     const isDragging = ref(false);
-    props2.step;
+    let trackTravelWidth = 0;
+    let trackLeft = 0;
+    let rafId = 0;
+    let ticking = false;
+    let cachedDecimalPlaces = -1;
+    let cachedStep = props2.step;
+    let lastValue = 0;
     const thumbTranslateX = ref(0);
     const trackActiveScaleX = ref(0);
     const effectiveMax = computed(() => {
@@ -12354,21 +12372,69 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
         return min;
       return min + Math.floor(range / step) * step;
     });
+    let _activeStatus = 0;
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let thumbOffsetX = 0;
     let activePointerId = -1;
     let pointerTarget = null;
+    let pointerClientX = 0;
+    let pointerStartFocus = null;
     function releasePointerCapture() {
+      window.removeEventListener("pointermove", handlePointerMove, true);
+      window.removeEventListener("pointerup", handlePointerUp, true);
+      window.removeEventListener("pointercancel", handlePointerCancel, true);
+      window.removeEventListener("blur", handleWindowBlur);
       const target = pointerTarget;
       const pointerId = activePointerId;
       activePointerId = -1;
       pointerTarget = null;
+      pointerStartFocus = null;
       if (target != null && target.hasPointerCapture(pointerId)) {
         target.releasePointerCapture(pointerId);
       }
     }
     function resetInteractionState() {
+      if (rafId != 0) {
+        cancelAnimationFrame(rafId);
+        rafId = 0;
+      }
+      ticking = false;
       isDragging.value = false;
-      currentValue.value;
+      _activeStatus = 0;
+      trackTravelWidth = 0;
+      thumbOffsetX = 0;
+      lastValue = currentValue.value;
       releasePointerCapture();
+    }
+    function lerp(start, end, t2) {
+      const clampedT = Math.max(0, Math.min(1, t2));
+      return start * (1 - clampedT) + end * clampedT;
+    }
+    function getDecimalPlaces(num) {
+      if (!Number.isFinite(num) || num == 0)
+        return 0;
+      if (cachedStep == num && cachedDecimalPlaces != -1) {
+        return cachedDecimalPlaces;
+      }
+      const parts = num.toString().toLowerCase().split("e");
+      const decimalIndex = parts[0].indexOf(".");
+      const mantissaDecimalPlaces = decimalIndex == -1 ? 0 : parts[0].length - decimalIndex - 1;
+      const exponent = parts.length > 1 ? Number(parts[1]) : 0;
+      cachedStep = num;
+      cachedDecimalPlaces = Math.max(0, mantissaDecimalPlaces - exponent);
+      return cachedDecimalPlaces;
+    }
+    function applyStepPrecision(value) {
+      let result = value;
+      if (props2.step > 0) {
+        result = Math.round(result / props2.step) * props2.step;
+        const decimalPlaces = getDecimalPlaces(props2.step);
+        if (decimalPlaces > 0) {
+          result = parseFloat(result.toFixed(decimalPlaces));
+        }
+      }
+      return result;
     }
     function applyVisualPosition(percentage, fillScale) {
       thumbTranslateX.value = percentage * 100;
@@ -12385,7 +12451,110 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
       const fillScale = Math.max(0, Math.min(1, percentage));
       applyVisualPosition(percentage, fillScale);
     }
+    function calculateValue(clientX) {
+      if (trackTravelWidth <= 0)
+        return currentValue.value;
+      const containerLeft = trackLeft;
+      const min = Number.isFinite(props2.min) ? props2.min : 0;
+      const max = Number.isFinite(props2.max) ? props2.max : min;
+      if (max <= min)
+        return min;
+      let currentX = clientX - containerLeft - thumbOffsetX;
+      currentX = Math.max(0, Math.min(currentX, trackTravelWidth));
+      const ratio = currentX / trackTravelWidth;
+      let newValue = lerp(min, max, ratio);
+      newValue = applyStepPrecision(newValue);
+      newValue = Math.max(min, Math.min(newValue, effectiveMax.value));
+      return newValue;
+    }
+    function focusThumb() {
+      if (props2.disabled)
+        return;
+      const element = thumbRef.value;
+      if (element != null && element.ownerDocument.activeElement !== element)
+        element.focus({ preventScroll: true });
+    }
+    function finishPointerInteraction(clientX) {
+      if (props2.disabled) {
+        resetInteractionState();
+        return;
+      }
+      if (_activeStatus != -1) {
+        const element = thumbRef.value;
+        if (element != null && element.ownerDocument.activeElement === pointerStartFocus)
+          focusThumb();
+        const newValue = calculateValue(clientX);
+        if (newValue != currentValue.value)
+          renderVisuals(newValue);
+      }
+      const value = currentValue.value;
+      const changed = lastValue !== value;
+      resetInteractionState();
+      if (changed)
+        emit2("change", new UniSliderChangeEvent(value));
+    }
+    function handlePointerMove(e2) {
+      if (e2.pointerId != activePointerId || props2.disabled == true) {
+        return;
+      }
+      if (e2.pointerType == "mouse" && (e2.buttons & 1) == 0) {
+        finishPointerInteraction(e2.clientX);
+        return;
+      }
+      if (_activeStatus == 0) {
+        const deltaX = Math.abs(e2.clientX - touchStartX);
+        const deltaY = Math.abs(e2.clientY - touchStartY);
+        if (deltaX <= TOUCH_THRESHOLD && deltaY <= TOUCH_THRESHOLD)
+          return;
+        _activeStatus = deltaX > deltaY ? 1 : -1;
+      }
+      if (_activeStatus != 1)
+        return;
+      if (e2.cancelable) {
+        e2.preventDefault();
+      }
+      e2.stopPropagation();
+      pointerClientX = e2.clientX;
+      if (ticking == false) {
+        ticking = true;
+        const pointerId = activePointerId;
+        const frameId = requestAnimationFrame(() => {
+          if (rafId != frameId)
+            return;
+          rafId = 0;
+          ticking = false;
+          if (activePointerId != pointerId || props2.disabled)
+            return;
+          const newValue = calculateValue(pointerClientX);
+          if (newValue === currentValue.value)
+            return;
+          renderVisuals(newValue);
+          emit2("changing", new UniSliderChangeEvent(currentValue.value));
+        });
+        rafId = frameId;
+      }
+    }
+    function handlePointerUp(e2) {
+      if (e2.pointerId != activePointerId || e2.button != 0) {
+        return;
+      }
+      e2.stopPropagation();
+      finishPointerInteraction(e2.clientX);
+    }
+    function handlePointerCancel(e2) {
+      if (e2.pointerId == activePointerId) {
+        e2.stopPropagation();
+        resetInteractionState();
+      }
+    }
+    const pressedSliderKeys = /* @__PURE__ */ new Set();
+    function handleWindowBlur() {
+      pressedSliderKeys.clear();
+      resetInteractionState();
+    }
     function handleResize() {
+      trackTravelWidth = 0;
+      trackLeft = 0;
       renderVisuals(currentValue.value);
     }
     renderVisuals(currentValue.value);
@@ -12710,13 +12879,13 @@ _sfc_main$4.setup = (props2, ctx) => {
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-list-view/components/sticky-section/sticky-section.vue");
   return _sfc_setup$4 ? _sfc_setup$4(props2, ctx) : void 0;
 };
-class UniCustomEvent {
+class UniCustomEvent2 {
   constructor(type, detail) {
     this.type = type;
     this.detail = detail;
   }
 }
-class UniSwiperChangeEvent extends UniCustomEvent {
+class UniSwiperChangeEvent extends UniCustomEvent2 {
   constructor(current, source, currentItemId) {
     const detail = { current, source };
     if (currentItemId != null) {
@@ -12725,12 +12894,12 @@ class UniSwiperChangeEvent extends UniCustomEvent {
     super("change", detail);
   }
 }
-class UniSwiperTransitionEvent extends UniCustomEvent {
+class UniSwiperTransitionEvent extends UniCustomEvent2 {
   constructor(dx, dy) {
     super("transition", { dx, dy });
   }
 }
-class UniSwiperAnimationFinishEvent extends UniCustomEvent {
+class UniSwiperAnimationFinishEvent extends UniCustomEvent2 {
   constructor(current, source, currentItemId) {
     const detail = { current, source };
     if (currentItemId != null) {
@@ -14973,7 +15142,7 @@ class UniVideoElement extends UniViewElement {
     return this === UniVideoElement && value instanceof UniViewElement && value.hasAttribute("uni-video") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$3 = { value: "VIDEO" };
+const uniTagName$2 = { value: "VIDEO" };
 const indexVapor$3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
   props: videoProps,
@@ -14991,7 +15160,7 @@ const indexVapor$3 = /* @__PURE__ */ defineBuiltInComponent({
       id: props2.id
     }, [normalizeVNode(() => render())], 512));
     Object.assign(root, methods);
-    Object.defineProperty(root, "uniTagName", uniTagName$3);
+    Object.defineProperty(root, "uniTagName", uniTagName$2);
     return root;
   }
 });
@@ -15018,7 +15187,7 @@ const onWebInvokeAppService = ({ name, arg }) => {
     }
   }
 };
-const Invoke = /* @__PURE__ */ once(
+const initWebViewBridge = /* @__PURE__ */ once(
   () => UniServiceJSBridge.on(ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService)
 );
 const webViewProps = {
@@ -15027,47 +15196,13 @@ const webViewProps = {
     default: ""
   }
 };
-function useWebView(props2, emit2) {
-  Invoke();
-  const rootRef = ref(null);
-  const iframeRef = ref(null);
-  const { $attrs, $excludeAttrs, $listeners } = useAttrs({
-    excludeListeners: true
-  });
-  const trigger = useCustomEvent(rootRef, emit2);
-  const renderIframe = () => {
-    const iframe = document.createElement("iframe");
-    iframe.onload = function(event) {
-      trigger("load", event, { src: props2.src, url: props2.src });
-    };
-    watchEffect(() => {
-      for (const key in $attrs.value) {
-        if (hasOwn($attrs.value, key)) {
-          const attr2 = $attrs.value[key];
-          iframe[key] = attr2;
-        }
-      }
-    });
-    watchEffect(() => {
-      iframe.src = getRealPath(props2.src);
-    });
-    iframeRef.value = iframe;
-  };
-  onMounted(renderIframe);
-  onMounted(() => {
-    var _a;
-    (_a = rootRef.value) == null ? void 0 : _a.appendChild(iframeRef.value);
-  });
-  return { rootRef, $listeners, $excludeAttrs };
-}
-class UniWebViewElement extends UniViewElement {
+class UniWebViewElement extends UniElement2 {
   static [Symbol.hasInstance](value) {
-    return this === UniWebViewElement && value instanceof UniViewElement && value.hasAttribute("uni-web-view") || Function.prototype[Symbol.hasInstance].call(this, value);
+    const el = value;
+    return this === UniWebViewElement && (el == null ? void 0 : el.nodeType) === 1 && el.localName === "iframe" && el.hasAttribute("uni-web-view") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$2 = { value: "WEB-VIEW" };
 const indexVapor$2 = /* @__PURE__ */ defineBuiltInComponent({
-  inheritAttrs: false,
   name: "WebView",
   props: webViewProps,
   emits: ["load"],
@@ -15076,14 +15211,15 @@ const indexVapor$2 = /* @__PURE__ */ defineBuiltInComponent({
     class: UniWebViewElement
   },
   setup(props2, { emit: emit2 }) {
-    const { rootRef, $listeners, $excludeAttrs } = useWebView(props2, emit2);
-    const root = (openBlock(), createBlock("div", mergeProps({
+    initWebViewBridge();
+    const rootRef = ref(null);
+    return openBlock(), createBlock("iframe", {
       "uni-web-view": "",
       "uni-view": "",
-      class: "uni-webview"
-    }, $listeners.value, $excludeAttrs.value, { ref: rootRef }), null, 16));
-    Object.defineProperty(root, "uniTagName", uniTagName$2);
-    return root;
+      class: "uni-webview",
+      src: getRealPath(props2.src),
+      ref: rootRef
+    }, null, 512);
   }
 });
 function createCallout(maps2) {

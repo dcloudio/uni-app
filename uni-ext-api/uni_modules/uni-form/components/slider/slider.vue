@@ -6,7 +6,7 @@
       <!-- #endif -->
       <!-- #ifdef WEB -->
       @pointerdown="handlePointerDown" @pointermove="handlePointerMove" @pointerup="handlePointerUp"
-      @pointercancel="handlePointerCancel" @lostpointercapture="handlePointerCancel"
+      @pointercancel="handlePointerCancel" @lostpointercapture="handleLostPointerCapture"
       @touchstart="handleWebTouchStart" @touchmove="handleWebTouchMove" @touchend="handleWebTouchEnd"
       @touchcancel="handleWebTouchCancel"
       <!-- #endif -->
@@ -388,7 +388,7 @@
   const currentValue = ref(props.value)
   const isDragging = ref(false)
   // 轨道尺寸缓存
-  let trackWidth = 0
+  let trackTravelWidth = 0
   let trackLeft = 0
   let rafId = 0
   let ticking = false
@@ -420,6 +420,8 @@
   let touchStartX = 0 // 触摸起始 X 坐标
   let touchStartY = 0 // 触摸起始 Y 坐标
   const TOUCH_THRESHOLD = 4 // 触摸阈值（像素）
+  // 手势开始时缓存，避免首次渲染等待布局测量。
+  let thumbOffsetX = 0
 
   // #ifdef WEB
   let activePointerId = -1
@@ -428,6 +430,10 @@
   let pointerStartFocus : Element | null = null
 
   function releasePointerCapture() {
+    window.removeEventListener('pointermove', handlePointerMove, true)
+    window.removeEventListener('pointerup', handlePointerUp, true)
+    window.removeEventListener('pointercancel', handlePointerCancel, true)
+    window.removeEventListener('blur', handleWindowBlur)
     const target = pointerTarget
     const pointerId = activePointerId
     activePointerId = -1
@@ -448,6 +454,8 @@
     isDragging.value = false
     _activeStatus = 0
     isTouchActive = false
+    trackTravelWidth = 0
+    thumbOffsetX = 0
     lastValue = currentValue.value
     // #ifdef WEB
     releasePointerCapture()
@@ -548,25 +556,43 @@
 
   }
 
+  function cacheTrackGeometry(clientX : number, clientY : number) {
+    trackTravelWidth = 0
+    trackLeft = 0
+    thumbOffsetX = 0
+    const containerEl = containerRef.value
+    if (containerEl != null) {
+      const rect = containerEl.getBoundingClientRect()
+      trackTravelWidth = rect.width
+      trackLeft = rect.left
+    }
+    const thumbEl = thumbRef.value
+    if (thumbEl != null) {
+      const rect = thumbEl.getBoundingClientRect()
+      const thumbWidth = rect.width
+      trackTravelWidth -= thumbWidth
+      thumbOffsetX = clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom
+        ? clientX - rect.left
+        : thumbWidth / 2
+    }
+  }
+
   // 计算新值
   function calculateValue(clientX : number) : number {
-    if (trackWidth <= 0) {
-      return currentValue.value
-    }
+    if (trackTravelWidth <= 0) return currentValue.value
 
-    const containerWidth = trackWidth
     const containerLeft = trackLeft
     const min = Number.isFinite(props.min) ? props.min : 0
     const max = Number.isFinite(props.max) ? props.max : min
     if (max <= min) return min
 
-    let currentX = clientX - containerLeft
+    let currentX = clientX - containerLeft - thumbOffsetX
 
     // 边界检查
-    currentX = Math.max(0, Math.min(currentX, containerWidth))
+    currentX = Math.max(0, Math.min(currentX, trackTravelWidth))
 
     // 计算比例
-    const ratio = currentX / containerWidth
+    const ratio = currentX / trackTravelWidth
 
     // 使用线性插值计算实际值
     let newValue = lerp(min, max, ratio)
@@ -597,13 +623,7 @@
       touchStartY = e.touches[0].clientY
       latestTouchClientX = touchStartX
 
-      // 缓存轨道尺寸
-      const containerEl = containerRef.value
-      if (containerEl != null) {
-        const rect = containerEl.getBoundingClientRect()
-        trackWidth = rect.width
-        trackLeft = rect.left
-      }
+      cacheTrackGeometry(touchStartX, touchStartY)
     }
   }
 
@@ -612,7 +632,7 @@
     const hasSliderInteraction = isTouchActive && _activeStatus != -1
     if (!props.disabled && hasSliderInteraction && e.changedTouches.length > 0) {
       const newValue = calculateValue(e.changedTouches[0].clientX)
-      renderVisuals(newValue)
+      if (newValue != currentValue.value) renderVisuals(newValue)
     }
 
     const value = currentValue.value
@@ -703,7 +723,8 @@
       const element = thumbRef.value as HTMLElement | null
       // 手势期间焦点已转给其他控件时，不在松开时将焦点抢回。
       if (element != null && element.ownerDocument.activeElement === pointerStartFocus) focusThumb()
-      renderVisuals(calculateValue(clientX))
+      const newValue = calculateValue(clientX)
+      if (newValue != currentValue.value) renderVisuals(newValue)
     }
     const value = currentValue.value
     const changed = lastValue !== value
@@ -764,21 +785,17 @@
     isDragging.value = true
     touchStartX = e.clientX
     touchStartY = e.clientY
+    pointerClientX = e.clientX
     _activeStatus = e.pointerType == 'mouse' ? 1 : 0
     activePointerId = e.pointerId
     const thumbEl = thumbRef.value as HTMLElement | null
     pointerStartFocus = thumbEl?.ownerDocument.activeElement ?? null
     pointerTarget = e.currentTarget as HTMLElement
-    // 捕获后即使指针移出轨道也能继续拖动，无需给 window 添加监听。
+    // 正常拖动使用指针捕获，捕获丢失后才通过窗口监听继续接收手势。
     pointerTarget.setPointerCapture(e.pointerId)
+    window.addEventListener('blur', handleWindowBlur)
 
-    // 缓存轨道尺寸
-    const containerEl = containerRef.value
-    if (containerEl != null) {
-      const rect = containerEl.getBoundingClientRect()
-      trackLeft = rect.left
-      trackWidth = rect.width
-    }
+    cacheTrackGeometry(e.clientX, e.clientY)
 
     if (e.pointerType == 'mouse') {
       e.preventDefault()
@@ -802,6 +819,15 @@
     }
   }
 
+  function handleLostPointerCapture(e : PointerEvent) {
+    if (e.pointerId == activePointerId) {
+      e.stopPropagation()
+      window.addEventListener('pointermove', handlePointerMove, true)
+      window.addEventListener('pointerup', handlePointerUp, true)
+      window.addEventListener('pointercancel', handlePointerCancel, true)
+    }
+  }
+
   function handleWebTouchStart(e : TouchEvent) {
     e.stopPropagation()
   }
@@ -822,6 +848,11 @@
   const pressedSliderKeys = new Set<string>()
 
   function handleThumbBlur() {
+    pressedSliderKeys.clear()
+    if (activePointerId == -1) resetInteractionState()
+  }
+
+  function handleWindowBlur() {
     pressedSliderKeys.clear()
     resetInteractionState()
   }
@@ -886,7 +917,7 @@
   // 窗口resize处理
   function handleResize() {
     // 清除缓存的尺寸，强制重新计算
-    trackWidth = 0
+    trackTravelWidth = 0
     trackLeft = 0
     // 重新渲染当前值
     renderVisuals(currentValue.value)
