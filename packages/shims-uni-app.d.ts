@@ -260,6 +260,9 @@ declare namespace UniNamespace {
     backgroundColorContent?: string
     navigationStyle?: 'default' | 'custom'
     maxWidth?: string | number
+    topWindow?: boolean
+    leftWindow?: boolean
+    rightWindow?: boolean
     // app-plus
     scrollIndicator?: 'none'
     animationType?: string
@@ -280,9 +283,6 @@ declare namespace UniNamespace {
     tabBarIndex?: number
     tabBarText?: string
     windowTop?: number
-    topWindow?: boolean
-    leftWindow?: boolean
-    rightWindow?: boolean
     eventChannel?: any
     // 目前 app-harmony 专用
     isNVueStyle?: boolean
