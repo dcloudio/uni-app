@@ -542,9 +542,7 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9.0; iOS: 
           </view>
         </view>
       </view>
-      <!-- #ifndef MP-ALIPAY -->
       <button type="primary" @click="goto">前往storage管理器</button>
-      <!-- #endif -->
     </view>
 </template>
 
@@ -965,13 +963,11 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9.0; iOS: 
     data.jest_saveObjectArraySyncResult = dataSync[0].a
   }
 
-  // #ifndef MP-ALIPAY
   const goto = () => {
     uni.navigateTo({
       url:"/pages/API/storage/storagemanage"
     })
   }
-  // #endif
 
   defineExpose({
     data,

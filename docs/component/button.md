@@ -261,7 +261,7 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.
 
 <template>
   <view class="main">
-    <button id="testButton" :loading="data.loading" :disabled="data.disabled_boolean"
+    <button :hover-start-time="100" id="testButton" :loading="data.loading" :disabled="data.disabled_boolean"
       :size="data.size_enum[data.size_enum_current].name" :type="data.type_enum[data.type_enum_current].name"
       :plain="data.plain_boolean" @touchstart="button_touchstart" @touchmove="button_touchmove"
       @touchcancel="button_touchcancel" @touchend="button_touchend" @tap="button_tap" @click="button_click"

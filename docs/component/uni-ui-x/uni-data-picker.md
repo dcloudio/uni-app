@@ -426,7 +426,7 @@ Web: 5.33; Android: 5.33; iOS: 5.33; HarmonyOS: 5.33
     <view class="uni-px-5 uni-pb-5">
       <uni-data-picker placeholder="请选择班级" popup-title="请选择" tab-placeholder="请选择" :localdata="classDataTree"
         v-model="externalClassValue" input-class="demo-picker-input" error-class="demo-picker-error"
-        popup-class="demo-picker-popup" cover-class="demo-picker-cover" @change="onchange"
+        popup-class="demo-picker-popup" mask-class="demo-picker-mask" @change="onchange"
         @nodeclick="onnodeclick" @popupopened="onpopupopened" @popupclosed="onpopupclosed"></uni-data-picker>
     </view>
 
@@ -631,7 +631,7 @@ Web: 5.33; Android: 5.33; iOS: 5.33; HarmonyOS: 5.33
     border-top-right-radius: 16px;
   }
 
-  .demo-picker-cover {
+  .demo-picker-mask {
     background-color: rgba(34, 197, 94, 0.25);
   }
 

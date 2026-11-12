@@ -542,6 +542,7 @@ onNestedPreScroll(event: NestedPreScrollEvent) {
     scrollDirection: string;
     // 自动化测试
     isScrollTest: string;
+    isScrollendTest: string;
     isScrolltolowerTest: string;
     isScrolltoupperTest: string;
     scrollDetailTest: UniScrollEventDetail | null;
@@ -557,6 +558,7 @@ onNestedPreScroll(event: NestedPreScrollEvent) {
     scrollDirection: "vertical",
     // 自动化测试
     isScrollTest: '',
+    isScrollendTest: '',
     isScrolltolowerTest: '',
     isScrolltoupperTest: '',
     scrollDetailTest: null as UniScrollEventDetail | null,
@@ -575,6 +577,9 @@ onNestedPreScroll(event: NestedPreScrollEvent) {
     switch (eventName) {
       case 'scroll':
         data.isScrollTest = result
+        break;
+      case 'scrollend':
+        data.isScrollendTest = result
         break;
       case 'scrolltolower':
         data.isScrolltolowerTest = result + `-${e.direction}`

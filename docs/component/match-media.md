@@ -103,6 +103,10 @@ Web: 4.71; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.71; iOS: 
         <match-media :min-width="300" :max-width="900" :min-height="400" :max-height="800" orientation="portrait">
           <view class="demo-box">竖屏 且宽度在 300px ~ 900px，高度在 400px ~ 800px 时显示</view>
         </match-media>
+
+        <match-media :minWidth="300" :minHeight="600">
+          <view class="demo-box">页面宽度 ≥ 300px 且高度 ≥ 600px 时显示</view>
+        </match-media>
       </view>
     </view>
   </view>
