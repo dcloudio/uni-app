@@ -42,6 +42,6 @@ uni-app x 实现Cookie共享的API和组件的情况如下
 
 ## 注意事项
 
-- Android 端访问 HTTP 接口（包括使用 IP 地址的接口）时，可能因系统限制明文流量而报 `Cleartext HTTP traffic to ... not permitted` 错误。包含真机运行模块的标准基座和自定义基座已配置允许明文流量，但发行 release 包时需单独检查配置。建议正式环境使用 HTTPS；如需使用 HTTP，请在 AndroidManifest.xml 的 `<application>` 节点中配置 `android:usesCleartextTraffic="true"`；若同时配置了 `android:networkSecurityConfig`，还需在对应的网络安全配置中允许目标地址的明文流量，修改后重新打包安装。
+- Android 端访问 HTTP 接口时，可能因系统限制明文流量而报 `Cleartext HTTP traffic to ... not permitted` 错误。包含真机运行模块的标准基座和自定义基座已配置允许明文流量，但发行 release 包时需单独检查配置。建议正式环境使用 HTTPS；如需使用 HTTP，可通过 `android:usesCleartextTraffic="true"` 允许明文流量，或配置 `android:networkSecurityConfig`，具体参考[网络安全配置文档](https://doc.dcloud.net.cn/uni-app-x/tutorial/app-sec-android.html#未配置网络安全属性漏洞)。
 
 
