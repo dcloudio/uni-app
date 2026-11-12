@@ -10484,7 +10484,9 @@ const SVG_NS = "http://www.w3.org/2000/svg";
 const MATHML_NS = "http://www.w3.org/1998/Math/MathML";
 /*@__NO_SIDE_EFFECTS__*/
 function createElement(tagName, ns) {
-	return ns ? document.createElementNS(ns === 1 ? SVG_NS : MATHML_NS, tagName) : document.createElement(tagName);
+	const el = ns ? document.createElementNS(ns === 1 ? SVG_NS : MATHML_NS, tagName) : document.createElement(tagName);
+	setElementOwner(el);
+	return el;
 }
 let t;
 function parseTemplate(html, ns) {
@@ -10597,6 +10599,9 @@ function updateLastLocatedLogicalChild(parent, from, to, logicalIndexOffset = 0)
 		insertionParent.$llc = to;
 		insertionParent.$lli += logicalIndexOffset;
 	}
+}
+function setElementOwner(node) {
+	if (currentInstance && node.nodeType === 1) (0, _vue_shared.def)(node, "__vueParentComponent", currentInstance, true);
 }
 //#endregion
 //#region packages/runtime-vapor/src/renderContext.ts
@@ -10861,6 +10866,7 @@ function adoptTemplateImpl(node, template, ns, nested = false, target = parseAdo
 	else if (!matchesAdoptTarget(node, target)) node = handleMismatch(node, template, ns, target, nested);
 	else if (target.type === 3) hydrateTextNode(node, template);
 	advanceHydrationNode(node);
+	setElementOwner(node);
 	return node;
 }
 function nextLogicalSibling(node) {
@@ -19862,6 +19868,7 @@ function template(html, flags = 0, ns) {
 				adopted = target;
 				if (!node) node = adopted.cloneNode(true);
 				advanceHydrationNode(adopted);
+				setElementOwner(adopted);
 			} else adopted = adoptTemplate(currentHydrationNode, html, ns, !!hydrationCursor, adoptTarget || (adoptTarget = parseAdoptTarget(html, isStatic)));
 			if (root) adopted.$root = rootMeta || (rootMeta = createRootMeta());
 			exitHydrationCursor(hydrationCursor);
@@ -19874,6 +19881,7 @@ function template(html, flags = 0, ns) {
 			if (ids) prototype = getStampedTemplate(prototype, ids);
 		}
 		const ret = cloneTemplate(prototype);
+		setElementOwner(ret);
 		if (root) ret.$root = rootMeta || (rootMeta = createRootMeta());
 		return ret;
 	};
