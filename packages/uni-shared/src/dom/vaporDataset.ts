@@ -15,6 +15,7 @@ export function initVaporDataset(window: Window) {
     HTMLSpanElement: { prototype: HTMLElement }
     HTMLImageElement: { prototype: HTMLElement }
     HTMLCanvasElement: { prototype: HTMLElement }
+    HTMLIFrameElement: { prototype: HTMLElement }
   }
   const prototype = realm.HTMLElement.prototype
   if (installed.has(prototype)) return
@@ -26,6 +27,7 @@ export function initVaporDataset(window: Window) {
     [realm.HTMLSpanElement, 'uni-text'],
     [realm.HTMLImageElement, 'uni-image'],
     [realm.HTMLCanvasElement, 'uni-canvas'],
+    [realm.HTMLIFrameElement, 'uni-web-view'],
   ] as const) {
     if (Object.getOwnPropertyDescriptor(Host.prototype, 'dataset')) continue
     Object.defineProperty(Host.prototype, 'dataset', {

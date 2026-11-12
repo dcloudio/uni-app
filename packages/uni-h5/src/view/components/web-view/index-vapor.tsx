@@ -1,43 +1,47 @@
+import { type Ref, ref } from 'vue'
 import {
-  UniViewElement,
+  type EmitEvent,
+  UniElement,
   defineBuiltInComponent,
+  useCustomEvent,
 } from '@dcloudio/uni-components'
-import { useWebView, webViewProps } from './useWebView'
+import { getRealPath } from '@dcloudio/uni-platform'
+import { initWebViewBridge, webViewProps } from './useWebView'
 
 // 只提供逻辑类型，根节点由模板创建，不构造或注册 Custom Element。
-export class UniWebViewElement extends UniViewElement {
+export class UniWebViewElement extends UniElement {
   static [Symbol.hasInstance](value: unknown): boolean {
+    const el = value as Element | null | undefined
     return (
       (this === UniWebViewElement &&
-        value instanceof UniViewElement &&
-        (value as Element).hasAttribute('uni-web-view')) ||
+        el?.nodeType === 1 &&
+        el.localName === 'iframe' &&
+        el.hasAttribute('uni-web-view')) ||
       Function.prototype[Symbol.hasInstance].call(this, value)
     )
   }
 }
 
-const uniTagName = { value: 'WEB-VIEW' }
-
 export default /*#__PURE__*/ defineBuiltInComponent({
-  inheritAttrs: false,
   name: 'WebView',
   props: webViewProps,
   emits: ['load'],
   rootElement: { name: 'uni-web-view', class: UniWebViewElement },
   setup(props, { emit }) {
-    const { rootRef, $listeners, $excludeAttrs } = useWebView(props, emit)
-    const root = (
-      <div
+    initWebViewBridge()
+    const rootRef: Ref<HTMLElement | null> = ref(null)
+    const trigger = useCustomEvent<EmitEvent<typeof emit>>(rootRef, emit)
+    return (
+      <iframe
         uni-web-view=""
         uni-view=""
         class="uni-webview"
-        {...$listeners.value}
-        {...$excludeAttrs.value}
+        src={getRealPath(props.src)}
+        onLoad={(event: Event) =>
+          trigger('load', event, { src: props.src, url: props.src })
+        }
         ref={rootRef}
       />
     )
-    // 在外部 ref 可见前标记类型，iframe 和通信逻辑继续复用旧实现。
-    Object.defineProperty(root, 'uniTagName', uniTagName)
-    return root
   },
 })

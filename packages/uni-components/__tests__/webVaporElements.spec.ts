@@ -176,6 +176,13 @@ describe('Web Vapor 原生宿主 Element', () => {
         dom.window.HTMLCanvasElement,
       ],
       [
+        'iframe',
+        'uni-web-view',
+        'WEB-VIEW',
+        UniElement,
+        dom.window.HTMLIFrameElement,
+      ],
+      [
         'span',
         'uni-text',
         'TEXT',
@@ -317,6 +324,7 @@ describe('Web Vapor 原生宿主 Element', () => {
     ['div', 'uni-view'],
     ['span', 'uni-text'],
     ['img', 'uni-image'],
+    ['iframe', 'uni-web-view'],
   ])('基础宿主 %s 的 dataset 保留类型，与手动属性操作独立', (tag, marker) => {
     install()
     const el = document.createElement(tag)
