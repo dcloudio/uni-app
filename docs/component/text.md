@@ -990,6 +990,36 @@ HBuilderX 4.51版本+ text组件嵌套时，子组件支持点击事件响应。
             </text>
           </text>
         </view>
+
+        <!-- #ifdef VUE3-VAPOR -->
+        <view class="uni-title">
+          <text class="uni-subtitle-text">Text属性交叉测试</text>
+        </view>
+        <view class="text-cross-column">
+          <view class="text-compare-column text-cross-item">
+            <text class="uni-subtitle-text">user-select + max-lines + flatten</text>
+            <view class="text-box">
+              <text id="text-cross-user-select" class="text-cross-test" user-select max-lines="2" flatten>
+                可选择的长文本内容<text>用于验证 user-select、flatten 和 max-lines 属性同时使用时的渲染与布局行为，继续补充文本内容触发两行限制。</text>
+              </text>
+            </view>
+          </view>
+          <view class="text-compare-column text-cross-item">
+            <text class="uni-subtitle-text">max-lines + flatten + hover</text>
+            <view class="text-box">
+              <text id="text-cross-hover" class="text-cross-test"
+                max-lines="2"
+                flatten
+                hover-class="is-cross-hover"
+                hover-start-time="50"
+                hover-stay-time="3000"
+              >
+                可按压的长文本内容<text>用于验证 flatten、max-lines 和 hover 属性同时使用时的渲染与布局行为，继续补充文本内容触发两行限制。</text>
+              </text>
+            </view>
+          </view>
+        </view>
+        <!-- #endif -->
       </view>
     </view>
 </template>
@@ -1207,6 +1237,27 @@ defineExpose({
 
   .is-parent-hover {
     background-color: #aa0000;
+  }
+
+  .text-cross-test {
+    width: 100%;
+    font-size: 15px;
+    line-height: 27px;
+    color: var(--text-color, #353535);
+    text-align: center;
+  }
+
+  .is-cross-hover {
+    background-color: #aa0000;
+  }
+
+  .text-cross-column {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .text-cross-item {
+    width: 100%;
   }
 </style>
 

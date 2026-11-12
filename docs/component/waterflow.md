@@ -628,6 +628,11 @@ scroll-view开启嵌套模式后，waterflow 可作为内层滚动视图与外�
           item高度自适应
         </button>
       </navigator>
+      <navigator url="/pages/component/waterflow/waterflow-refresher-props">
+        <button type="primary" class="button">
+          下拉刷新属性
+        </button>
+      </navigator>
     </view>
 
     <view class="scroll-view_bottom-fixed"></view>

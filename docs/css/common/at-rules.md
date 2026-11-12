@@ -384,6 +384,7 @@ HBuilderX 5.25+，App 平台蒸汽模式支持通过 `prefers-color-scheme` 媒�
       'name':'back',
       'code':'E601',
     },
+    // #ifndef WEB || MP
     {
       'name':'forward',
       'code':'E600',
@@ -404,10 +405,12 @@ HBuilderX 5.25+，App 平台蒸汽模式支持通过 `prefers-color-scheme` 媒�
       'name':'more',
       'code':'E606',
     },
+    // #endif
     {
       'name':'close',
       'code':'E650',
     },
+    // #ifndef WEB || MP
     {
       'name':'down',
       'code':'E661',
@@ -416,6 +419,7 @@ HBuilderX 5.25+，App 平台蒸汽模式支持通过 `prefers-color-scheme` 媒�
       'name':'circle',
       'code':'EA01',
     },
+    // #endif
     {
       'name':'warn',
       'code':'EA0F',
@@ -424,6 +428,7 @@ HBuilderX 5.25+，App 平台蒸汽模式支持通过 `prefers-color-scheme` 媒�
       'name':'info',
       'code':'EA03',
     },
+    // #ifndef WEB || MP
     {
       'name':'info circle',
       'code':'EA04',
@@ -436,10 +441,12 @@ HBuilderX 5.25+，App 平台蒸汽模式支持通过 `prefers-color-scheme` 媒�
       'name':'success circle',
       'code':'EA07',
     },
+    // #endif
     {
       'name':'success no circle',
       'code':'EA08',
     },
+    // #ifndef WEB || MP
     {
       'name':'cancel circle',
       'code':'EA0B',
@@ -456,6 +463,7 @@ HBuilderX 5.25+，App 平台蒸汽模式支持通过 `prefers-color-scheme` 媒�
       'name':'waitnig',
       'code':'EA1E',
     },
+    // #endif
     {
       'name':'search',
       'code':'EA23',

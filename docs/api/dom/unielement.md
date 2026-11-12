@@ -264,7 +264,6 @@ app平台 getAttribute 不支持获取 class、style 属性， uvue/vue 页面�
           <text class="node-info-item-v">{{data.rectInfo.bottom}}</text>
         </view>
       </view>
-      <!-- #ifndef MP-ALIPAY -->
       <scroll-view ref="scrollViewRef" class="scroll-view_H" direction="horizontal">
         <view class="scroll-view-item_H uni-bg-red"><text class="text">A</text></view>
         <view class="scroll-view-item_H uni-bg-green"><text class="text">B</text></view>
@@ -278,7 +277,6 @@ app平台 getAttribute 不支持获取 class、style 属性， uvue/vue 页面�
       <view id="scaledView" style="transform: scale(2);background-color: green;width: 50px;height: 50px;margin-top: 45px;margin-left: 25px;"></view>
 
       <button type="default" @click="handleGetScaledViewSize" style="margin-top: 30px;">获取scale后的view尺寸信息</button>
-      <!-- #endif -->
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
@@ -386,12 +384,12 @@ app平台 getAttribute 不支持获取 class、style 属性， uvue/vue 页面�
 
   function scrollTo() {
     if (scrollViewRef.value != null) {
-      // #ifdef MP-WEIXIN
+      // #ifdef MP
       scrollViewRef.value!.scrollTo({
         left: 200
       })
       // #endif
-      // #ifndef MP-WEIXIN
+      // #ifndef MP
       scrollViewRef.value!.scrollTo(200,0)
       // #endif
     }
@@ -421,10 +419,15 @@ app平台 getAttribute 不支持获取 class、style 属性， uvue/vue 页面�
     return ""
   }
 
-  const handleGetScaledViewSize = () => {
+  const handleGetScaledViewSize = async () => {
     const element = uni.getElementById("scaledView")
     if (element != null) {
+      // #ifndef MP
       const rect = element.getBoundingClientRect()
+      // #endif
+      // #ifdef MP
+      const rect = await element.getBoundingClientRectAsync()
+      // #endif
       data.scaledViewWidth = rect.width
       data.scaledViewHeight = rect.height
       console.log("scaledView size : ", data.scaledViewWidth, data.scaledViewHeight);
@@ -997,6 +1000,13 @@ Web: 4.41; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.41; Andro
       </view>
     </view>
 
+    <!-- 自动化测试时创建，三个节点使用完全相同的布局参数。 -->
+    <view v-if="data.showTextRectRegression" class="text-rect-fixture">
+      <text id="rect-regression-normal" class="text-rect-target" :flatten="false">拍平文本尺寸测试。拍平文本尺寸测试。</text>
+      <text id="rect-regression-flat" class="text-rect-target" flatten>拍平文本尺寸测试。拍平文本尺寸测试。</text>
+      <text id="rect-regression-hidden-flat" class="text-rect-target text-rect-hidden" flatten>拍平文本尺寸测试。拍平文本尺寸测试。</text>
+    </view>
+
     <!-- #endif -->
  </view>
 </template>
@@ -1017,6 +1027,7 @@ Web: 4.41; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.41; Andro
 
   type DataType = {
     rectInfo: DomRectType,
+    showTextRectRegression: boolean,
   }
 
   type SyncDataType = {
@@ -1063,6 +1074,7 @@ Web: 4.41; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.41; Andro
 
   const data = reactive<DataType>({
     rectInfo: createEmptyRectInfo(),
+    showTextRectRegression: false,
   })
 
   const syncData = reactive<SyncDataType>({
@@ -1091,6 +1103,14 @@ Web: 4.41; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.41; Andro
     const element = uni.getElementById(elementId)!
     const rect = element.getBoundingClientRect()
     syncData[dataKey] = createRectInfo(rect)
+  }
+
+  function getTextRectRegressionInfo() {
+    return {
+      normal: createRectInfo(uni.getElementById('rect-regression-normal')!.getBoundingClientRect()),
+      flat: createRectInfo(uni.getElementById('rect-regression-flat')!.getBoundingClientRect()),
+      hiddenFlat: createRectInfo(uni.getElementById('rect-regression-hidden-flat')!.getBoundingClientRect())
+    }
   }
 
   function getViewRect() {
@@ -1144,6 +1164,7 @@ Web: 4.41; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.41; Andro
     getShadowBugRect,
     getViewRectFlat,
     getTextRectFlat,
+    getTextRectRegressionInfo,
     getImageRectFlat,
     getScrollViewRect,
     getCustomComponentRect
@@ -1151,6 +1172,28 @@ Web: 4.41; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.41; Andro
 </script>
 
 <style>
+  .text-rect-fixture {
+    position: fixed;
+    left: 24px;
+    top: 80px;
+    width: 240px;
+    height: 120px;
+  }
+
+  .text-rect-target {
+    position: absolute;
+    left: 8px;
+    top: 12px;
+    width: 220px;
+    padding: 8px;
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  .text-rect-hidden {
+    visibility: hidden;
+  }
+
   .page {
     --rect-divider-color: #e0e0e0;
     --rect-title-color: #333;

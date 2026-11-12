@@ -404,16 +404,16 @@ Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 
 >示例
 ```vue
 <template>
-	<scroll-view class="flex-1 bg-page-f5f5f5 page" :class="{ 'page-dark': isDarkMode }">
-		<view class="u-p-16 bg-content-background-fff intro">
-			<text class="fw-bold color-text-222 fs-18 page-title">uni-forms 表单</text>
-			<text class="fs-13 lh-21 color-secondary-text-657180 page-desc">通过 v-model 统一收集字段值，并支持字段校验、错误展示和表单重置。</text>
+	<view>
+		<view class="intro">
+			<text class="page-title">uni-forms 表单</text>
+			<text class="page-desc">通过 v-model 统一收集字段值，并支持字段校验、错误展示和表单重置。</text>
 		</view>
 
-		<view class="u-p-16 bg-content-background-fff mt-10 section demo-index">
-			<text class="fw-bold color-text-222 mb-12 fs-16 section-title">多功能演示</text>
-			<text class="fs-13 lh-21 color-secondary-text-657180 section-desc">uni-forms 的所有表单用法从这里进入，按场景查看基础接入、校验方案、控件接入和样式配置。</text>
-			<view class="flex-dir-row flex-wrap-wrap demo-links">
+		<view class="section demo-index">
+			<text class="section-title">多功能演示</text>
+			<text class="section-desc">uni-forms 的所有表单用法从这里进入，按场景查看基础接入、校验方案、控件接入和样式配置。</text>
+			<view class="demo-links">
 				<navigator class="demo-link" url="/pages/uni-ui/forms/validation">
 					<text class="demo-link-title">完整校验</text>
 					<text class="demo-link-desc">DB Schema 规则、异步校验和字段方法</text>
@@ -437,7 +437,7 @@ Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 
 			</view>
 		</view>
 
-		<view class="u-p-16 bg-content-background-fff mt-10 section">
+		<view class="section">
 			<uni-forms
 				ref="formRef"
 				v-model="formData"
@@ -456,7 +456,6 @@ Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 
 					/>
 				</uni-forms-item>
 
-				<!-- #ifndef (APP-IOS || APP-HARMONY) && !VUE3-VAPOR -->
 				<uni-forms-item name="city" label="城市" label-class="demo-label" error-message-class="demo-error">
 					<uni-combobox
 						v-model="formData.city"
@@ -464,7 +463,6 @@ Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 
 						placeholder="请选择城市"
 					/>
 				</uni-forms-item>
-				<!-- #endif -->
 
 				<uni-forms-item name="email" label="邮箱" label-class="demo-label" error-message-class="demo-error">
 					<uni-easyinput
@@ -482,46 +480,28 @@ Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 
 				</uni-forms-item>
 			</uni-forms>
 
-			<view class="flex-dir-row button-row">
-				<button class="mr-10 color-fff bg-007aff action-button" size="mini" @click="validateForm">校验表单</button>
-				<button class="mr-10 color-fff bg-007aff color-text-333 bg-active-e9eef5 action-button secondary-button" size="mini" @click="resetForm">重置字段</button>
+			<view class="button-row">
+				<button class="action-button" size="mini" @click="validateForm">校验表单</button>
+				<button class="action-button secondary-button" size="mini" @click="resetForm">重置字段</button>
 			</view>
-			<text class="mt-8 fs-14 color-007aff status-text">{{ statusText }}</text>
+			<text class="status-text">{{ statusText }}</text>
 		</view>
 
-		<view class="u-p-16 bg-content-background-fff mt-10 pb-32 section section-last">
-			<text class="fw-bold color-text-222 mb-12 fs-16 section-title">当前数据</text>
+		<view class="section section-last">
+			<text class="section-title">当前数据</text>
 			<text class="data-text">{{ dataText }}</text>
 			<view class="property-list">
 				<text class="property-title">本页使用的关键属性</text>
 				<text class="property-text">v-model：formData</text>
 				<text class="property-text">validate-trigger：blur</text>
-				<text class="property-text">label-position：left</text>
+				<text class="property-text">label-position：top</text>
 				<text class="property-text">label-class / error-message-class：自定义字段样式</text>
 			</view>
 		</view>
-	</scroll-view>
+	</view>
 </template>
 
 <script setup lang="ts">
-import { state } from '@/store/index.ts'
-
-const isDarkMode = computed((): boolean => state.isDarkMode)
-
-/** 暗黑模式下同步导航栏颜色，与图标示例页保持一致 */
-function syncNavigationBar(): void {
-	// #ifdef APP
-	const dark = isDarkMode.value
-	uni.setNavigationBarColor({
-		frontColor: dark ? '#ffffff' : '#000000',
-		backgroundColor: dark ? '#1a1a1a' : '#efeff4'
-	})
-	// #endif
-}
-
-watch(isDarkMode, syncNavigationBar, { immediate: true })
-onShow(syncNavigationBar)
-
 type FormData = {
 	name : string,
 	city : string,
@@ -624,17 +604,47 @@ defineExpose({
 </script>
 
 <style>
+page {
+	--list-background-color: #ffffff;
+	--background-color: #f5f5f5;
+	--active-color: #a0a0a0;
+	--active-background-color: #f8f8f8;
+	--text-color: #333333;
+	--arrow-color: #999999;
+	--tips-color: #0958d9;
+	--tips-background-color: #e6f4ff;
+	--content-background-color: #ffffff;
+	--secondary-text-color: #657180;
+	--input-border-color: #dcdfe6;
+	--divider-color: #e5e5e5;
+	--forms-error-background-color: #fff2f0;
+	background-color: var(--background-color);
+}
+
 .intro {
 	padding: 18px 16px;
+	background-color: var(--content-background-color, #ffffff);
 }
 
 .page-title {
 	font-size: 20px;
+	font-weight: bold;
+	color: var(--text-color, #222222);
 }
 
 .page-desc {
 	margin-top: 8px;
 	font-size: 14px;
+	line-height: 21px;
+	color: var(--secondary-text-color, #657180);
+}
+
+.section {
+	padding: 16px;
+	margin-top: 10px;
+	background-color: var(--content-background-color, #ffffff);
+	box-sizing: border-box;
+	width: 100%;
 }
 
 .demo-index {
@@ -643,7 +653,14 @@ defineExpose({
 
 .section-desc {
 	margin-bottom: 10px;
+	font-size: 13px;
 	line-height: 20px;
+	color: var(--secondary-text-color, #657180);
+}
+
+.demo-links {
+	flex-direction: row;
+	flex-wrap: wrap;
 }
 
 .demo-link {
@@ -652,6 +669,8 @@ defineExpose({
 	margin: 0 2% 10px 0;
 	border-radius: 6px;
 	background-color: var(--active-background-color, #f3f7fc);
+	box-sizing: border-box;
+	min-width: 0;
 }
 
 .demo-link-title {
@@ -667,16 +686,36 @@ defineExpose({
 	color: var(--secondary-text-color, #657180);
 }
 
+.section-last {
+	padding-bottom: 32px;
+}
+
 .section-title {
+	margin-bottom: 12px;
+	font-size: 16px;
+	font-weight: bold;
 	color: var(--text-color, #333333);
 }
 
 .button-row {
+	flex-direction: row;
 	margin-top: 8px;
+}
+
+.action-button {
+	margin-right: 10px;
+	color: #ffffff;
+	background-color: #007aff;
+}
+
+.secondary-button {
+	color: var(--text-color, #333333);
+	background-color: var(--active-background-color, #e9eef5);
 }
 
 .status-text {
 	margin-top: 12px;
+	font-size: 14px;
 	color: var(--secondary-text-color, #657180);
 }
 
@@ -713,6 +752,24 @@ defineExpose({
 .demo-error {
 	font-weight: bold;
 	color: #dd524d;
+}
+
+@media (prefers-color-scheme: dark) {
+	page {
+		--list-background-color: #2d2d2d;
+		--background-color: #1a1a1a;
+		--active-color: #8f8f8f;
+		--active-background-color: #3b3b3b;
+		--text-color: #ffffff;
+		--arrow-color: #ffffff;
+		--tips-color: #91caff;
+		--tips-background-color: #0b1b3a;
+		--content-background-color: #2d2d2d;
+		--secondary-text-color: rgba(255, 255, 255, 0.65);
+		--input-border-color: rgba(255, 255, 255, 0.18);
+		--divider-color: rgba(255, 255, 255, 0.12);
+		--forms-error-background-color: #3a1a1c;
+	}
 }
 </style>
 

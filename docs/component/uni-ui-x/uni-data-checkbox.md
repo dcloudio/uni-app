@@ -453,7 +453,7 @@ Web: 5.33; 微信小程序: 5.33; 支付宝小程序: 5.33; Android: 5.33; iOS: 
 >示例
 ```vue
 <template>
-	<scroll-view class="page" :class="{ 'page-dark': isDarkMode }">
+	<view>
 		<view class="intro">
 			<text class="page-title">uni-data-checkbox 数据选择器</text>
 			<text class="page-desc">使用本地数据完成单选、多选、选择约束和多种展示模式，并通过 external class 调整选项样式。</text>
@@ -602,27 +602,10 @@ Web: 5.33; 微信小程序: 5.33; 支付宝小程序: 5.33; Android: 5.33; iOS: 
 			/>
 			<text class="result-text result-standalone">当前值：{{ JSON.stringify(disabledValues) }}</text>
 		</view>
-	</scroll-view>
+	</view>
 </template>
 
 <script setup lang="ts">
-import { state } from '@/store/index.ts'
-
-const isDarkMode = computed(() : boolean => state.isDarkMode)
-
-function syncNavigationBar() : void {
-	// #ifdef APP
-	const dark = isDarkMode.value
-	uni.setNavigationBarColor({
-		frontColor: dark ? '#ffffff' : '#000000',
-		backgroundColor: dark ? '#1a1a1a' : '#efeff4'
-	})
-	// #endif
-}
-
-watch(isDarkMode, syncNavigationBar, { immediate: true })
-onShow(syncNavigationBar)
-
 const sex = [
 	{ text: '男', value: 0 },
 	{ text: '女', value: 1 },
@@ -715,16 +698,19 @@ defineExpose({
 </script>
 
 <style>
-.page {
-	flex: 1;
-	background-color: var(--background-color, #f5f5f5);
+page {
+	--background-color: #f5f5f5;
+	--active-background-color: #f8f8f8;
+	--text-color: #333333;
+	--tips-color: #0958d9;
+	--tips-background-color: #e6f4ff;
+	--content-background-color: #ffffff;
+	--secondary-text-color: #657180;
+	--input-border-color: #dcdfe6;
+	--divider-color: #e5e5e5;
 	--data-checkbox-demo-error-color: #dd524d;
+	background-color: var(--background-color);
 }
-
-.page-dark {
-	--data-checkbox-demo-error-color: #ff7875;
-}
-
 .intro {
 	padding: 18px 16px;
 	background-color: var(--content-background-color, #ffffff);
@@ -868,7 +854,16 @@ defineExpose({
 }
 
 @media (prefers-color-scheme: dark) {
-	.page {
+	page {
+		--background-color: #1a1a1a;
+		--active-background-color: #3b3b3b;
+		--text-color: #ffffff;
+		--tips-color: #91caff;
+		--tips-background-color: #0b1b3a;
+		--content-background-color: #2d2d2d;
+		--secondary-text-color: rgba(255, 255, 255, 0.65);
+		--input-border-color: rgba(255, 255, 255, 0.18);
+		--divider-color: rgba(255, 255, 255, 0.12);
 		--data-checkbox-demo-error-color: #ff7875;
 	}
 }

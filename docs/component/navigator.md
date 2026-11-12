@@ -123,9 +123,6 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.
     <navigator id="reLaunch" class="navigator" open-type="navigateBack">
       <button type="default">返回上一页navigateBack</button>
     </navigator>
-    <!-- <navigator id="reLaunch" class="navigator" open-type="exit">
-      <button type="default">退出应用（仅Android和小程序生效）</button>
-    </navigator> -->
     <navigator id="navigateToErrorPage" class="navigator" url="/pages/error-page/error-page">
       <button type="default"> 打开不存在的页面 </button>
     </navigator>

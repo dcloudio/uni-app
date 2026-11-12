@@ -143,7 +143,7 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
         <view class="uni-list-cell-db">
           <picker class="picker-selector--test uni-picker-container-wrap" @change="bindPickerChange" :value="data.index"
             :range="data.selectorArray" range-key="name">
-            <view class="uni-input picker-selector--value uni-picker-text">{{data.selectorArray[data.index].name}}</view>
+            <text class="uni-input picker-selector--value uni-picker-text">{{data.selectorArray[data.index].name}}</text>
           </picker>
         </view>
       </view>
@@ -159,9 +159,9 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
         <view class="uni-list-cell-db">
           <picker class="picker-multi--test uni-picker-container-wrap"  mode="multiSelector" @columnchange="bindMultiPickerColumnChange"
             :value="data.multiIndex" :range="data.multiArray">
-            <view class="uni-input picker-multi--value uni-picker-text">
+            <text class="uni-input picker-multi--value uni-picker-text">
               {{data.multiArray[0][data.multiIndex[0]]}}，{{data.multiArray[1][data.multiIndex[1]]}}，{{data.multiArray[2][data.multiIndex[2]]}}
-            </view>
+            </text>
           </picker>
         </view>
       </view>
@@ -178,7 +178,7 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
         <view class="uni-list-cell-db">
           <picker class="picker-time--test uni-picker-container-wrap" mode="time" :value="data.time" start="09:01" end="21:01"
             @change="bindTimeChange">
-            <view class="uni-input uni-picker-text">{{data.time}}</view>
+            <text class="uni-input uni-picker-text">{{data.time}}</text>
           </picker>
         </view>
       </view>
@@ -194,7 +194,7 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
         <view class="uni-list-cell-db">
           <picker class="picker-date-day--test uni-picker-container-wrap" mode="date" :value="data.dayDate" :start="data.startDate"
             :end="data.endDate" @change="bindDayDateChange">
-            <view class="uni-input uni-picker-text">{{data.dayDate}}</view>
+            <text class="uni-input uni-picker-text">{{data.dayDate}}</text>
           </picker>
         </view>
       </view>
@@ -210,7 +210,7 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
         <view class="uni-list-cell-db">
           <picker class="picker-date-month--test uni-picker-container-wrap" mode="date" fields="month" :value="data.monthDate"
             :start="data.startDate" :end="data.endDate" @change="bindMonthDateChange">
-            <view class="uni-input uni-picker-text">{{data.monthDate}}</view>
+            <text class="uni-input uni-picker-text">{{data.monthDate}}</text>
           </picker>
         </view>
       </view>
@@ -226,7 +226,7 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
         <view class="uni-list-cell-db">
           <picker class="picker-date-year--test uni-picker-container-wrap" mode="date" fields="year" :value="data.yearDate"
             :start="data.startDate" :end="data.endDate" @change="bindYearDateChange">
-            <view class="uni-input uni-picker-text">{{data.yearDate}}</view>
+            <text class="uni-input uni-picker-text">{{data.yearDate}}</text>
           </picker>
         </view>
       </view>
@@ -244,16 +244,16 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
           <!-- #ifndef MP-WEIXIN -->
           <picker class="picker-city--test uni-picker-container-wrap picker-city-wrap" mode="multiSelector" @change="bindCityPickerChange"
             @cancel="resetCityPicker" @columnchange="bindCityPickerColumnChange" :value="data.cityIndex" :range="data.cityArray">
-            <view class="uni-input picker-city--value uni-picker-text picker-city-text">
+            <text class="uni-input picker-city--value uni-picker-text picker-city-text">
               {{getCityDisplayText()}}
-            </view>
+            </text>
           </picker>
           <!-- #endif -->
           <!-- #ifdef MP-WEIXIN -->
           <picker class="picker-city--test uni-picker-container-wrap" mode="region" @change="bindRegionChange" :value="data.region">
-            <view class="uni-input picker-city--value uni-picker-text">
+            <text class="uni-input picker-city--value uni-picker-text">
               {{data.region[0]}}{{data.region[1] ? '，' : ''}}{{data.region[1]}}{{data.region[2] ? '，' : ''}}{{data.region[2]}}
-            </view>
+            </text>
           </picker>
           <!-- #endif -->
         </view>
@@ -271,7 +271,7 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
         <view class="uni-list-cell-db">
           <picker class="picker-disabled--test uni-picker-container-wrap" @change="bindPickerChange" disabled :value="data.index"
             :range="data.selectorArray" range-key="name">
-            <view class="uni-input picker-disabled--value uni-picker-text">{{data.selectorArray[data.index].name}}</view>
+            <text class="uni-input picker-disabled--value uni-picker-text">{{data.selectorArray[data.index].name}}</text>
           </picker>
         </view>
       </view>
@@ -608,6 +608,7 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
   }
 
   .uni-picker-text {
+    color: var(--text-color, #333333);
     line-height: 25px;
     height: 25px;
     padding: 8px 13px;

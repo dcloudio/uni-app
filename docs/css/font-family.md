@@ -104,7 +104,7 @@ font-family: <family-name>;
         </view>
       </view>
     </view>
-    <!-- #ifdef APP -->
+    <!-- #ifdef APP || WEB || MP -->
     <view style="margin: 24px 12px;">
       <button type="default" @click="openUniIcon">内置字体图标uni-icon示例</button>
     </view>

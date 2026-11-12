@@ -175,7 +175,7 @@ uni-app x并不需要这套机制，开发者的代码就是原生代码，执�
       <text>当前应用隐私授权状态:</text>
       <text>{{ appPrivacy }}</text>
     </view>
-    <!-- #ifdef MP-WEIXIN -->
+    <!-- #ifdef MP -->
     <view class="item-box">
       <text>隐私授权协议的名称:</text>
       <text>{{ privacyContractName }}</text>
@@ -210,7 +210,7 @@ uni-app x并不需要这套机制，开发者的代码就是原生代码，执�
 		uni.getPrivacySetting({
 			success: (res) => {
 				appPrivacy.value = res.needAuthorization ? "未同意" : "已同意"
-				// #ifdef MP-WEIXIN
+				// #ifdef MP
 				privacyContractName.value = res.privacyContractName
 				// #endif
 			}

@@ -255,17 +255,20 @@ APP 蒸汽模式注意事项：
       <text class="dialog-page-text">bottom: </text><text id="page-safe-area-insets-bottom" class="dialog-page-text">{{data.safeAreaInsets!.bottom}}</text><text class="dialog-page-text">,</text>
       <text class="dialog-page-text">left: </text><text id="page-safe-area-insets-left" class="dialog-page-text">{{data.safeAreaInsets!.left}}</text><text class="dialog-page-text">}</text>
     </view>
-    <!-- #ifdef APP-ANDROID || APP-IOS || APP-HARMONY || WEB -->
     <view class="uni-common-mt flex-row" v-if="data.width != null"><text class="dialog-page-text">width: </text><text id="page-width" class="dialog-page-text">{{data.width!}}</text>
     </view>
     <view class="uni-common-mt flex-row" v-if="data.height != null"><text class="dialog-page-text">height: </text><text id="page-height" class="dialog-page-text">{{data.height!}}</text>
     </view>
     <view class="uni-common-mt flex-row" v-if="data.statusBarHeight != null"><text class="dialog-page-text">statusBarHeight: </text><text id="page-statusBarHeight" class="dialog-page-text">{{data.statusBarHeight!}}</text>
     </view>
-    <!-- #endif -->
     <button class="uni-common-mt" id="go-next-page" @click="goNextPage">
       go next page
     </button>
+    <!-- #ifdef WEB -->
+    <button class="uni-common-mt" id="go-window-offset-page" @click="goWindowOffsetPage">
+      弹窗窗口变量与页面滚动测试
+    </button>
+    <!-- #endif -->
     <button class="uni-common-mt" id="open-dialog1" @click="openDialog1">
       open dialog 1
     </button>
@@ -376,11 +379,9 @@ APP 蒸汽模式注意事项：
     const currentPage = getCurrentPages()[getCurrentPages().length - 1]
     data.pageBody = currentPage.pageBody;
     data.safeAreaInsets = currentPage.safeAreaInsets
-    // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY || WEB
     data.width = currentPage.width
     data.height = currentPage.height
     data.statusBarHeight = currentPage.statusBarHeight
-    // #endif
   })
 
   onPageHide(() => {
@@ -396,6 +397,13 @@ APP 蒸汽模式注意事项：
       url: '/pages/API/dialog-page/next-page'
     })
   }
+  // #ifdef WEB
+  const goWindowOffsetPage = () => {
+    uni.navigateTo({
+      url: '/pages/API/dialog-page/dialog-window-offset'
+    })
+  }
+  // #endif
   const openDialog1 = () => {
     uni.openDialogPage({
       url: '/pages/API/dialog-page/dialog-1?name=dialog1',

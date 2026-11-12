@@ -87,76 +87,64 @@ Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 
 >示例
 ```vue
 <template>
-	<!-- #ifdef APP -->
-	<scroll-view class="uni-theme-root" style="flex: 1;padding: 15px 15px 30px 15px;">
-	<!-- #endif -->
-	<!-- #ifndef APP -->
-	<view class="uni-theme-root" style="padding: 15px 15px 30px 15px;">
-	<!-- #endif -->
-		<text class="desc">评分组件用于商品评价打分、服务态度评价、用户满意度等场景。\n
-		高性能模式仅有一个text组件，不可修改评分，适合长列表中显示的场景。\n
-		普通模式可以通过点击星星进行评分，且专门调大字号、调宽间距以适合点击。
-		</text>
-		
-		<text class="title">只读评分文字</text>
-		<text style="color: #ffca3e;">★★★★</text>
-		
-		<text class="title">高性能：只读，不显示灰星，不支持小数</text>
-			<uni-rate :value="3.6"/>
-		<text class="title">只读，显示灰星</text>
-			<uni-rate full readonly/>
-		<text class="title">只读，小数4.3</text>
-			<uni-rate full readonly :value="4.3"/>
-		<text class="title">只读，value大于5超限测试</text>
-			<uni-rate full readonly :value="100"/>
-		<text class="title">只读，value小于0超限测试</text>
-			<uni-rate full readonly :value="-1"/>
-		<text class="title">未选中的星星为镂空状态" </text>
-			<uni-rate full :value="3.5" :plain="true" star-class="tap-rate-star" star-active-class="tap-rate-star" />
-		<text class="title">未选中的星星为实心且响应change事件</text>
-			<uni-rate full star-class="tap-rate-star" star-active-class="tap-rate-star" @change="onRateChange" />
-		<text class="title">响应点击并双向绑定响应式变量</text>
-			<uni-rate full v-model="data.vModelRateValue" star-class="tap-rate-star" star-active-class="tap-rate-star" />
-			<text>{{data.vModelRateValue}}</text>
-		<text class="title">只读，不触发change" </text>
-			<uni-rate readonly :value="5" @change="onRateChange" />
-		<text class="title">高性能只读，自定义大小和颜色（style方式）</text>
-			<uni-rate style="font-size: 32px" star-active-style="color:red" :value="4.6" />
-			<!-- 仅高性能版，因为单层，可以在组件的style属性上写作用于text的样式。但规范的写法是使用star-active-style -->
-		<text class="title">高性能只读，自定义间隔letter-space（class方式）" </text>
-			<uni-rate :value="4" star-active-class="star-active-class"/>
-		<text class="title">自定义默认颜色和选中颜色 class方式</text>
-			<uni-rate :value="3" full star-class="custom-default tap-rate-star" star-active-class="custom-selected tap-rate-star"/>
-		<text class="title">自定义默认颜色和选中颜色 style方式</text>
-			<uni-rate :value="3" full star-style="color:lightgreen;letter-spacing:8px" star-active-style="color:green"/>
-		<text class="title">只读，程序动态赋值，不触发change</text>
-			<uni-rate :value="data.rateValue" @change="onRateChange"/>
-	<!-- #ifdef APP -->
-	</scroll-view>
-	<!-- #endif -->
-	<!-- #ifndef APP -->
-	</view>
-	<!-- #endif -->
+	<text class="desc">
+	评分组件用于商品评价打分、服务态度评价、用户满意度等场景。\n
+	高性能模式仅有一个text组件，不可修改评分，适合长列表中显示的场景。\n
+	普通模式可以通过点击星星进行评分，且专门调大字号、调宽间距以适合点击。
+	</text>
+
+	<text class="title">高性能：只读，不显示灰星，不支持小数</text>
+		<uni-rate :value="3.6"/>
+	<text class="title">只读，显示灰星</text>
+		<uni-rate full readonly/>
+	<text class="title">只读，小数4.3</text>
+		<uni-rate full readonly :value="4.3"/>
+	<text class="title">只读，value大于5超限测试</text>
+		<uni-rate full readonly :value="100"/>
+	<text class="title">只读，value小于0超限测试</text>
+		<uni-rate full readonly :value="-1"/>
+	<text class="title">未选中的星星为镂空状态 + letterSpaceing组件属性</text>
+		<uni-rate full :value="3.5" :plain="true" :letter-spacing="10" star-class="big-font" star-active-class="big-font" />
+	<text class="title">未选中的星星为实心且响应change事件</text>
+		<uni-rate full :letter-spacing="10" star-class="big-font" star-active-class="big-font" @change="onRateChange" />
+	<text class="title">响应点击并双向绑定响应式变量</text>
+		<uni-rate full :letter-spacing="10" v-model="data.vModelRateValue" star-class="big-font" star-active-class="big-font" />
+		<text>{{data.vModelRateValue}}</text>
+	<text class="title">向右偏移 100px，点击评分</text>
+		<view id="rate-offset-test" class="offset-rate">
+			<uni-rate full v-model="data.offsetRateValue" :letter-spacing="10" star-class="big-font" star-active-class="big-font" />
+		</view>
+		<text class="desc">当前评分：{{ data.offsetRateValue }}</text>
+	<text class="title">只读，不触发change" </text>
+		<uni-rate readonly :value="5" @change="onRateChange" />
+	<text class="title">高性能只读，自定义大小和颜色（style方式），此时小数不生效</text>
+		<uni-rate style="font-size: 32px;color:red" :value="4.6" />
+		<!-- 仅高性能版，因为单层，可以在组件的style属性上写作用于text的样式。但规范的写法是使用externalClass -->
+	<text class="title">高性能只读，自定义间隔letter-spacing（class方式）" </text>
+		<uni-rate :value="4" star-active-class="big-letter-spacing"/>
+	<text class="title">自定义默认颜色和选中颜色 class方式</text>
+		<uni-rate :value="3" full star-class="custom-default big-font" star-active-class="custom-selected big-font"/>
+	<text class="title">只读，程序动态赋值，不触发change</text>
+		<uni-rate :value="data.rateValue" @change="onRateChange"/>
 </template>
 <script setup lang="ts">
 	type Data = {
 		vModelRateValue: number
 		rateValue: number
+		offsetRateValue: number
 	}
 
 	const data = reactive<Data>({
 		vModelRateValue: 0,
-		rateValue: 0
+		rateValue: 0,
+		offsetRateValue: 0
 	})
+
 	let interval = 0
-	
-	/* onReady(() => {
-		console.log(getCurrentInstance()!.proxy!.$page.$nativePage);
-	}) */
 
 	function onRateChange(value: number) {
 		console.log('onRateChange received value:', value, 'type:', typeof value)
-		
+
 		// 检查值是否有效
 		if (isNaN(value)) {
 			console.error('Invalid value received:', value)
@@ -166,7 +154,7 @@ Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 
 			})
 			return
 		}
-		
+
 		uni.showToast({
 			title: 'rate改变:' + value,
 			position: "bottom"
@@ -193,6 +181,13 @@ Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 
 	})
 </script>
 <style>
+page{
+	padding: 10px;
+}
+.offset-rate {
+	margin-left: 100px;
+	align-self: flex-start;
+}
 .desc {
 	color: var(--text-color, #333333);
 }
@@ -207,12 +202,14 @@ Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 
 	margin-top: 10px;
 	color: var(--text-color, #333333);
 }
-.star-active-class{
+/* .star-active-class{
 	letter-spacing: 5px;
+} */
+.big-letter-spacing{
+	letter-spacing: 10px;
 }
-.tap-rate-star{
-	font-size: 32px;
-	letter-spacing: 8px;
+.big-font{
+	font-size: 24px;
 }
 </style>
 
