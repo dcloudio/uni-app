@@ -5018,7 +5018,8 @@ const PublicInstanceProxyHandlers = {
 		else if (ctx !== _vue_shared.EMPTY_OBJ && (0, _vue_shared.hasOwn)(ctx, key)) {
 			accessCache[key] = 4;
 			return ctx[key];
-		} else if (globalProperties = appContext.config.globalProperties, (0, _vue_shared.hasOwn)(globalProperties, key)) return globalProperties[key];
+		} else if (instance.exposed && (0, _vue_shared.hasOwn)(instance.exposed, key)) return instance.exposed[key];
+		else if (globalProperties = appContext.config.globalProperties, (0, _vue_shared.hasOwn)(globalProperties, key)) return globalProperties[key];
 		else if (currentRenderingInstance && (!(0, _vue_shared.isString)(key) || key.indexOf("__v") !== 0)) {
 			if (data !== _vue_shared.EMPTY_OBJ && isReservedPrefix(key[0]) && (0, _vue_shared.hasOwn)(data, key)) warn$1(`Property ${JSON.stringify(key)} must be accessed via $data because it starts with a reserved character ("$" or "_") and is not proxied on the render context.`);
 			else if (instance === currentRenderingInstance) warn$1(`Property ${JSON.stringify(key)} was accessed during render but is not defined on instance.`);

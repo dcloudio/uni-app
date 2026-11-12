@@ -5032,7 +5032,8 @@ const PublicInstanceProxyHandlers = {
 		else if (ctx !== EMPTY_OBJ && hasOwn(ctx, key)) {
 			accessCache[key] = 4;
 			return ctx[key];
-		} else if (globalProperties = appContext.config.globalProperties, hasOwn(globalProperties, key)) return globalProperties[key];
+		} else if (instance.exposed && hasOwn(instance.exposed, key)) return instance.exposed[key];
+		else if (globalProperties = appContext.config.globalProperties, hasOwn(globalProperties, key)) return globalProperties[key];
 		else if (!!(process.env.NODE_ENV !== "production") && currentRenderingInstance && (!isString(key) || key.indexOf("__v") !== 0)) {
 			if (data !== EMPTY_OBJ && isReservedPrefix(key[0]) && hasOwn(data, key)) warn$1(`Property ${JSON.stringify(key)} must be accessed via $data because it starts with a reserved character ("$" or "_") and is not proxied on the render context.`);
 			else if (instance === currentRenderingInstance) warn$1(`Property ${JSON.stringify(key)} was accessed during render but is not defined on instance.`);
