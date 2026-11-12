@@ -90,39 +90,78 @@ export function genEncryptUTSModuleCode(
   return ''
 }
 
-// 目前该函数仅在云端使用（目前仅限iOS/web），云端编译时，提交上来的uni_modules是过滤好的
-export function parseUniModulesWithComponents(
+export function isUtsSdkModule(
+  module: string,
+  inputDir: string,
+  platform: typeof process.env.UNI_UTS_PLATFORM
+) {
+  return !!resolveUniModuleNativeEntry(
+    path.resolve(inputDir, 'uni_modules', module),
+    platform
+  )
+}
+
+export function resolveUniModuleNativeEntry(
+  pluginDir: string,
+  platform: typeof process.env.UNI_UTS_PLATFORM
+) {
+  const utssdkDir = path.resolve(pluginDir, 'utssdk')
+  return [
+    path.resolve(utssdkDir, platform, 'index.uts'),
+    path.resolve(utssdkDir, 'index.uts'),
+  ].find((filename) => fs.existsSync(filename))
+}
+
+export interface UniModuleEntry {
+  kind: 'utssdk' | 'easycom'
+  nativeEntry: string
+  jsEntry: string
+}
+
+// 目前该函数仅在云端使用，云端编译时，提交上来的uni_modules是过滤好的
+export function parseUniModules(
   inputDir: string,
   platform: typeof process.env.UNI_UTS_PLATFORM
 ) {
   const modulesDir = path.resolve(inputDir, 'uni_modules')
-  const uniModules: Record<string, string> = {}
+  const uniModules: Record<string, UniModuleEntry> = {}
   if (fs.existsSync(modulesDir)) {
-    fs.readdirSync(modulesDir).forEach((uniModuleDir) => {
-      if (
-        !fs.existsSync(path.resolve(modulesDir, uniModuleDir, 'package.json'))
-      ) {
+    fs.readdirSync(modulesDir).forEach((pluginId) => {
+      if (!fs.existsSync(path.resolve(modulesDir, pluginId, 'package.json'))) {
         return
       }
-      let code = genEncryptUTSModuleCode(uniModuleDir, inputDir, platform)
-      if (code) {
+      const pluginDir = path.resolve(modulesDir, pluginId)
+      const nativeEntry = resolveUniModuleNativeEntry(pluginDir, platform)
+      if (nativeEntry) {
         // uts插件
-        uniModules[uniModuleDir] = code
+        uniModules[pluginId] = {
+          kind: 'utssdk',
+          nativeEntry,
+          jsEntry:
+            (platform === 'app-android' || platform === 'app-ios') &&
+            !isUniAppXAndroidNative(platform)
+              ? `import '@/uni_modules/${pluginId}?uts-proxy'`
+              : genEncryptUTSModuleCode(pluginId, inputDir, platform),
+        }
       } else {
         const codes: string[] = []
         // 前端组件插件
-        if (hasIndexFile(path.resolve(inputDir, 'uni_modules', uniModuleDir))) {
+        if (hasIndexFile(path.resolve(inputDir, 'uni_modules', pluginId))) {
           codes.push(`export * from './index'`)
         }
         // 解析加密的 easyCom 插件列表
-        const components = parseEasyComComponents(uniModuleDir, inputDir, false)
+        const components = parseEasyComComponents(pluginId, inputDir, false)
         if (Object.keys(components).length) {
           codes.push(
-            genEncryptEasyComModuleCode(uniModuleDir, platform, components)
+            genEncryptEasyComModuleCode(pluginId, platform, components)
           )
         }
         if (codes.length) {
-          uniModules[uniModuleDir] = codes.join(`\n`)
+          uniModules[pluginId] = {
+            kind: 'easycom',
+            nativeEntry: path.resolve(pluginDir, 'index.module.uts'),
+            jsEntry: codes.join(`\n`),
+          }
         }
       }
     })
@@ -205,16 +244,20 @@ export function findCloudEncryptUniModules(
   const uniModules: Record<string, EncryptPackageJson | undefined> = {}
   const modulesDir = path.resolve(inputDir, 'uni_modules')
   if (fs.existsSync(modulesDir)) {
-    fs.readdirSync(modulesDir).forEach((uniModuleDir) => {
-      const uniModuleRootDir = path.resolve(modulesDir, uniModuleDir)
+    fs.readdirSync(modulesDir).forEach((pluginId) => {
+      const uniModuleRootDir = path.resolve(modulesDir, pluginId)
       if (!fs.existsSync(path.resolve(uniModuleRootDir, 'encrypt'))) {
         return
       }
       const utssdkDir = path.resolve(uniModuleRootDir, 'utssdk')
       let type: 'utssdk' | 'easycom' | '' = ''
       if (fs.existsSync(utssdkDir)) {
-        // app-android 和 app-ios 不能云编译 utssdk 插件，而是需要自定义基座
-        if (platform === 'app-android' || platform === 'app-ios') {
+        // 产出wgt时，utssdk类型也需要云端编译，需要生成对应的registerUTSPlugin代码
+        // 运行时 app-android 和 app-ios 不能云编译 utssdk 插件，而是需要自定义基座编译下发内容
+        if (
+          process.env.UNI_APP_PRODUCTION_TYPE !== 'WGT' &&
+          (platform === 'app-android' || platform === 'app-ios')
+        ) {
           return
         }
         // 其他平台必须有平台index.uts或根目录index.uts
@@ -240,15 +283,11 @@ export function findCloudEncryptUniModules(
         return
       }
       const pkg = require(path.resolve(uniModuleRootDir, 'package.json'))
-      uniModules[uniModuleDir] = findEncryptUniModuleCache(
-        uniModuleDir,
-        cacheDir,
-        {
-          version: pkg.version,
-          env: initCheckEnv(),
-        }
-      )
-      uniModulesEncryptTypes.set(uniModuleDir, type)
+      uniModules[pluginId] = findEncryptUniModuleCache(pluginId, cacheDir, {
+        version: pkg.version,
+        env: initCheckEnv(),
+      })
+      uniModulesEncryptTypes.set(pluginId, type)
     })
   }
   return uniModules

@@ -61,7 +61,10 @@ declare namespace NodeJS {
     UNI_APP_X_SETUP?: string
     UNI_APP_X_UVUE_SCRIPT_ENGINE?: 'native' | 'js'
     UNI_APP_X_HARMONY_SCRIPT_ENGINE?: 'arkts' | 'jsvm'
-
+    /**
+     * - uni_modules 云端编译（包括前端插件、utssdk插件）
+     * - ext-api 内部插件编译
+     */
     UNI_COMPILE_TARGET?: 'uni_modules' | 'ext-api'
     UNI_COMPILE_CLOUD_DIR?: string
     UNI_MODULES_ENCRYPT_CACHE_DIR?: string

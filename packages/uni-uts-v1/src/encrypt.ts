@@ -1,5 +1,6 @@
 import path, { join, relative } from 'path'
 import fs from 'fs-extra'
+import os from 'os'
 import type { APP_PLATFORM } from './manifest/utils'
 import {
   normalizePath,
@@ -63,7 +64,17 @@ function createWebpackCommonjsCode(pluginRelativeDir: string) {
 module.exports = uni.requireUTSPlugin('${normalizePath(pluginRelativeDir)}')
 `
 }
-
+/**
+ * 分为如下场景
+ * - 运行
+ *  + 使用自定义基座下发的 js 文件，此处拼接上注册代码
+ * - 云打包
+ *  + 云端直接编译加密插件 + 应用本身
+ * - 生成wgt
+ *  + 先编译加密插件下发 js 注册代码，此处带上注册代码（注意和运行读取js的方式不同）
+ * - 生成本地打包资源
+ *  + 不支持使用加密插件
+ */
 export async function compileEncrypt(
   pluginDir: string,
   isX = false
@@ -87,13 +98,12 @@ export async function compileEncrypt(
     : isRollup
     ? createRollupCommonjsCode(pluginDir, pluginRelativeDir)
     : createWebpackCommonjsCode(pluginRelativeDir)
-  if (process.env.NODE_ENV !== 'development') {
-    // 生成wgt，无需复制加密插件目录
-    const needCopy = !(process.env.UNI_APP_PRODUCTION_TYPE === 'WGT')
-    if (needCopy) {
-      // 复制插件目录
-      fs.copySync(pluginDir, join(outputDir, pluginRelativeDir))
-    }
+  if (
+    process.env.NODE_ENV !== 'development' &&
+    process.env.UNI_APP_PRODUCTION_TYPE !== 'WGT'
+  ) {
+    // 复制插件目录
+    fs.copySync(pluginDir, join(outputDir, pluginRelativeDir))
     return {
       dir: outputPluginDir,
       errMsg: '',
@@ -107,26 +117,46 @@ export async function compileEncrypt(
     }
   }
   const cacheDir = process.env.HX_DEPENDENCIES_DIR!
+  const pluginId = path.basename(pluginDir)
   if (!isNative) {
-    // 读取缓存目录的 js code
-    const indexJsPath = resolveJsCodeCacheFilename(
-      utsPlatform,
-      cacheDir,
-      pluginRelativeDir
-    )
-    if (fs.existsSync(indexJsPath)) {
-      code = fs.readFileSync(indexJsPath, 'utf-8') + code
-    } else {
-      console.error(
-        `uts插件[${path.basename(pluginDir)}]不存在，请重新打包自定义基座`
+    if (process.env.UNI_APP_PRODUCTION_TYPE === 'WGT') {
+      // 读取缓存目录的 js code
+      const indexJsPath = resolveProdEncryptedJsCodeCacheFileName(
+        process.env.UNI_MODULES_ENCRYPT_CACHE_DIR!,
+        pluginId
       )
+      if (
+        resolveHBuilderXPluginPath('uni_helpers') &&
+        fs.existsSync(indexJsPath)
+      ) {
+        const { DUMB } = requireUniHelpers()
+        const tempIndexJsPath = join(
+          os.tmpdir(),
+          `${pluginId}.${Date.now()}.index.module.js`
+        )
+        DUMB(pluginId, indexJsPath, tempIndexJsPath)
+        code = fs.readFileSync(tempIndexJsPath, 'utf-8') + code
+        fs.unlinkSync(tempIndexJsPath)
+      } else {
+        console.error(`uts插件[${pluginId}]编译失败`)
+      }
+    } else {
+      // 读取缓存目录的 js code
+      const indexJsPath = resolveJsCodeCacheFilename(
+        utsPlatform,
+        cacheDir,
+        pluginRelativeDir
+      )
+      if (fs.existsSync(indexJsPath)) {
+        code = fs.readFileSync(indexJsPath, 'utf-8') + code
+      } else {
+        console.error(`uts插件[${pluginId}]不存在，请重新打包自定义基座`)
+      }
     }
   } else {
     const jarPath = resolveJarCacheFilename(cacheDir, pluginRelativeDir)
     if (!fs.existsSync(jarPath)) {
-      console.error(
-        `uts插件[${path.basename(pluginDir)}]不存在，请重新打包自定义基座`
-      )
+      console.error(`uts插件[${pluginId}]不存在，请重新打包自定义基座`)
     }
   }
   return {
@@ -148,6 +178,13 @@ export function resolveJsCodeCacheFilename(
   pluginRelativeDir: string
 ) {
   return join(cacheDir, platform, 'uts', pluginRelativeDir, 'index.js')
+}
+
+export function resolveProdEncryptedJsCodeCacheFileName(
+  encryptCacheDir: string,
+  pluginId: string
+) {
+  return join(encryptCacheDir, 'uni_modules', pluginId, 'index.module.js')
 }
 
 function resolveJarCacheFilename(cacheDir: string, pluginRelativeDir: string) {

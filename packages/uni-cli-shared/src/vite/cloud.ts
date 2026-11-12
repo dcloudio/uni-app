@@ -7,10 +7,7 @@ import type {
   ResolveFn,
   ResolvedConfig,
 } from 'vite'
-import {
-  initCheckEnv,
-  parseUniModulesWithComponents,
-} from '../uni_modules.cloud'
+import { initCheckEnv, parseUniModules } from '../uni_modules.cloud'
 import { cleanUrl } from './plugins/vitejs/utils'
 import type { CssUrlReplacer } from './plugins/vitejs/plugins/css'
 import { resolveUTSCompiler } from '../uts'
@@ -21,6 +18,7 @@ import {
   createAppAndroidUniModulesSyncFilePreprocessorOnce,
   createAppHarmonyUniModulesSyncFilePreprocessorOnce,
   createAppIosUniModulesSyncFilePreprocessorOnce,
+  getCompiledUniModule,
 } from './plugins/uts/uni_modules'
 import { removePlugins } from './utils'
 import { findChangedJsonFiles } from '../json'
@@ -84,13 +82,15 @@ export function uniEncryptUniModulesPlugin(): Plugin {
   const isMp = process.env.UNI_UTS_PLATFORM.startsWith('mp-')
   const useUniAppXAndroidNative = isUniAppXAndroidNative()
   const encryptModuleOutputFiles: string[] = []
+  const virtualEntries = new Map<string, string>()
   return {
     name: 'uni:encrypt-uni-modules',
     apply: 'build',
     config() {
       const build = initEncryptUniModulesBuildOptions(
         process.env.UNI_UTS_PLATFORM,
-        process.env.UNI_INPUT_DIR
+        process.env.UNI_INPUT_DIR,
+        virtualEntries
       )
       Object.keys(build.rollupOptions?.input || {}).forEach((key) => {
         encryptModuleOutputFiles.push(key + '.js')
@@ -114,6 +114,9 @@ export function uniEncryptUniModulesPlugin(): Plugin {
       resolvedConfig = config
     },
     resolveId(id, importer) {
+      if (virtualEntries.has(id)) {
+        return id
+      }
       if (!useUniAppXAndroidNative) {
         if (resolvedConfig.assetsInclude(cleanUrl(id))) {
           id = normalizePath(id)
@@ -128,6 +131,9 @@ export function uniEncryptUniModulesPlugin(): Plugin {
       }
     },
     load(id) {
+      if (virtualEntries.has(id)) {
+        return virtualEntries.get(id)
+      }
       if (!useUniAppXAndroidNative) {
         if (resolvedConfig.assetsInclude(cleanUrl(id))) {
           return {
@@ -151,6 +157,8 @@ export function uniEncryptUniModulesPlugin(): Plugin {
           }
           delete bundle[fileName]
           const pkg = `uni_modules/${uniModuleId}/package.json`
+          const compiledModule = getCompiledUniModule(uniModuleId)
+          const components: string[] = compiledModule?.meta?.components || []
           bundle[pkg] = {
             type: 'asset',
             fileName: pkg,
@@ -162,6 +170,19 @@ export function uniEncryptUniModulesPlugin(): Plugin {
               process.env.UNI_INPUT_DIR,
               {
                 env: initCheckEnv(),
+                ...(compiledModule
+                  ? {
+                      apis: compiledModule.inject_apis,
+                      scopedSlots: compiledModule.scoped_slots,
+                      customElements: compiledModule.custom_elements,
+                      components,
+                      modules: resolveUTSCompiler().parseInjectModules(
+                        compiledModule.inject_apis,
+                        {},
+                        components
+                      ),
+                    }
+                  : {}),
               }
             ),
           }
@@ -224,6 +245,9 @@ export function uniEncryptUniModulesPlugin(): Plugin {
         const uniModulesDir = path.resolve(tscOutputDir, 'uni_modules')
         if (fs.existsSync(uniModulesDir)) {
           for (const plugin of fs.readdirSync(uniModulesDir)) {
+            if (getCompiledUniModule(plugin)) {
+              continue
+            }
             const indexFileName = path.join(
               uniModulesDir,
               plugin,
@@ -243,6 +267,9 @@ export function uniEncryptUniModulesPlugin(): Plugin {
       const tempUniModules: string[] = []
       if (fs.existsSync(tempUniModulesDir)) {
         fs.readdirSync(tempUniModulesDir).forEach((uniModuleDir) => {
+          if (getCompiledUniModule(uniModuleDir)) {
+            return
+          }
           if (
             fs.existsSync(
               path.join(tempUniModulesDir, uniModuleDir, 'index.module.uts')
@@ -356,7 +383,7 @@ function createExternal(config: ResolvedConfig) {
     if (source.startsWith('@dcloudio/')) {
       return true
     }
-    if (source.startsWith('@/uni_modules/')) {
+    if (source.startsWith('@/uni_modules/') && !source.includes('?uts-proxy')) {
       return true
     }
     // 相对目录
@@ -389,9 +416,10 @@ function initEncryptUniModulesAlias(): AliasOptions {
 
 function initEncryptUniModulesBuildOptions(
   platform: typeof process.env.UNI_UTS_PLATFORM,
-  inputDir: string
+  inputDir: string,
+  virtualEntries: Map<string, string>
 ): BuildOptions {
-  const modules = parseUniModulesWithComponents(inputDir, platform)
+  const modules = parseUniModules(inputDir, platform)
   const moduleNames = Object.keys(modules)
   if (!moduleNames.length) {
     throw new Error('No encrypt uni_modules found')
@@ -401,8 +429,20 @@ function initEncryptUniModulesBuildOptions(
   moduleNames.forEach((module) => {
     const moduleDir = path.resolve(inputDir, 'uni_modules', module)
     const indexEncryptFile = path.resolve(moduleDir, 'index.module.uts')
-    if (modules[module]) {
-      fs.writeFileSync(indexEncryptFile, modules[module])
+    const entry = modules[module]
+    if (entry.jsEntry) {
+      if (
+        entry.kind === 'utssdk' &&
+        (platform === 'app-android' || platform === 'app-ios') &&
+        !isUniAppXAndroidNative(platform)
+      ) {
+        // 代理入口仅供 Vite 使用，不能作为原生 module 的输入文件。
+        const virtualId = `\0uni-module:${module}.js`
+        virtualEntries.set(virtualId, entry.jsEntry)
+        input[module + '.module'] = virtualId
+        return
+      }
+      fs.writeFileSync(indexEncryptFile, entry.jsEntry)
       // 输出 xxx.module ，确保相对路径的准确性，因为真正引用的时候，是从 @/uni_modules/xxx 引入的
       input[module + '.module'] = indexEncryptFile
     }

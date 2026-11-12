@@ -29,8 +29,8 @@ export {
   TestB 
 }
   ",
-  "test-uts1": "export * from './utssdk/index.uts'",
-  "test-uts2": "export * from './utssdk/app-ios/index.uts'",
+  "test-uts1": "import '@/uni_modules/test-uts1?uts-proxy'",
+  "test-uts2": "import '@/uni_modules/test-uts2?uts-proxy'",
 }
 `;
 
@@ -82,8 +82,8 @@ export {
   TestB 
 }
   ",
-  "test-uts1": "export * from './utssdk/index.uts'",
-  "test-uts2": "export * from './utssdk/app-android/index.uts'",
+  "test-uts1": "import '@/uni_modules/test-uts1?uts-proxy'",
+  "test-uts2": "import '@/uni_modules/test-uts2?uts-proxy'",
 }
 `;
 
