@@ -1196,9 +1196,7 @@ export interface Uni {
    *		}
    *	});
    * ```
-   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/show-action-sheet.html#showactionsheet
-   * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/show-action-sheet.html#showactionsheet
-   * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/prompt.html#showactionsheet
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/action-sheet.html#showactionsheet
    * @uniPlatform {
    *  "app": {
    *    "android": {
@@ -1262,8 +1260,7 @@ export interface Uni {
    * ```typescript
    *	uni.hideActionSheet();
    * ```
-   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/hide-action-sheet.html#hideactionsheet
-   * @tutorial_uni_app https://doc.dcloud.net.cn/uni-app-x/api/hide-action-sheet.html#hideactionsheet
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/action-sheet.html#hideactionsheet
    * @uniPlatform {
    *  "app": {
    *    "android": {
