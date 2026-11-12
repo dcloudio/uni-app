@@ -616,6 +616,7 @@
 				"navigationBarTitleText": "联系人详情"
 			}
 		},
+		// #endif
 		// #ifdef APP
 		{
 			"path": "pages/component/unicloud-db/unicloud-db/datacom/datacom",
@@ -624,7 +625,6 @@
 				"navigationBarTitleText": "datacom"
 			}
 		},
-		// #endif
 		// #endif
 		{
 			"path": "pages/component/global-properties/global-properties",
@@ -773,6 +773,14 @@
 			"path": "pages/component/waterflow/waterflow-fit-height",
 			"style": {
 				"navigationBarTitleText": "waterflow | 瀑布流容器"
+			}
+		},
+		// #endif
+		// #ifdef APP-ANDROID || APP-HARMONY || APP-IOS
+		{
+			"path": "pages/component/waterflow/waterflow-refresher-props",
+			"style": {
+				"navigationBarTitleText": "waterflow | 下拉刷新属性"
 			}
 		},
 		// #endif
@@ -1179,7 +1187,7 @@
 				},
 				{
 					"path": "app-route/app-route",
-					"group": "1,2,4",
+					"group": "1,2,1",
 					"style": {
 						"navigationBarTitleText": "appRoute | 应用路由事件"
 					}
@@ -1252,15 +1260,13 @@
 						"navigationBarTitleText": "storage | key-value本地数据存储"
 					}
 				},
-				// #ifndef MP-ALIPAY
 				{
 					"path": "storage/storagemanage",
 					"style": {
 						"navigationBarTitleText": "storage管理器"
 					}
 				},
-				// #endif
-				// #ifdef APP-ANDROID || APP-HARMONY || APP-IOS || MP-WEIXIN
+				// #ifdef APP-ANDROID || APP-HARMONY || APP-IOS || MP
 				{
 					"path": "env/env",
 					"group": "1,1,0",
@@ -1613,6 +1619,35 @@
 						"navigationBarTitleText": "uni.pageScrollTo | 将页面滚动到指定位置"
 					}
 				},
+				// #ifdef APP || MP-WEIXIN
+				{
+					"path": "scroll-view-context/scroll-view-context",
+					"group": "1,2,9",
+					"style": {
+						"navigationBarTitleText": "ScrollViewContext | 滚动上下文"
+					}
+				},
+				{
+					"path": "scroll-view-context/scroll-view",
+					"style": {
+						"navigationBarTitleText": "ScrollViewContext | scroll-view"
+					}
+				},
+				{
+					"path": "scroll-view-context/list-view",
+					"style": {
+						"navigationBarTitleText": "ScrollViewContext | list-view"
+					}
+				},
+				// #ifdef APP
+				{
+					"path": "scroll-view-context/waterflow",
+					"style": {
+						"navigationBarTitleText": "ScrollViewContext | waterflow"
+					}
+				},
+				// #endif
+				// #endif
 				{
 					"path": "event-bus/event-bus",
 					"group": "1,1,1",
@@ -1845,7 +1880,6 @@
 					}
 				},
 				// #endif
-				// #ifndef MP-ALIPAY
 				{
 					"path": "theme-change/theme-change",
 					"group": "1,4,7",
@@ -1854,7 +1888,6 @@
 						"enablePullDownRefresh": false
 					}
 				},
-				// #endif
 				// #ifdef WEB || MP
 				{
 					"path": "create-intersection-observer/create-intersection-observer",
@@ -1931,7 +1964,7 @@
 					}
 				},
 				// #endif
-				// #ifdef APP-ANDROID || APP-HARMONY || APP-IOS || MP-WEIXIN
+				// #ifdef APP-ANDROID || APP-HARMONY || APP-IOS || MP
 				{
 					"path": "privacy/privacy",
 					"group": "1,1,9",
@@ -1969,6 +2002,22 @@
 					"group": "1,2,2",
 					"style": {
 						"navigationBarTitleText": "dialogPage"
+					}
+				},
+				// #endif
+				// #ifdef WEB
+				{
+					"path": "dialog-page/dialog-window-offset",
+					"style": {
+						"navigationBarTitleText": "弹窗窗口变量测试",
+						"navigationStyle": "default",
+						"disableScroll": false
+					}
+				},
+				{
+					"path": "dialog-page/dialog-window-offset-content",
+					"style": {
+						"navigationStyle": "custom"
 					}
 				},
 				// #endif
@@ -2352,7 +2401,7 @@
 				// #ifdef APP-ANDROID || APP-HARMONY || APP-IOS || MP-WEIXIN || MP-ALIPAY
 				{
 					"path": "phoneContact/addPhoneContact",
-					"group": "1,6,10",
+					"group": "1,6,10,0",
 					"style": {
 						"navigationBarTitleText": "addPhoneContact"
 					}
@@ -2361,7 +2410,7 @@
 				// #ifdef APP-ANDROID || APP-HARMONY || APP-IOS || MP-WEIXIN || MP-ALIPAY
 				{
 					"path": "phoneContact/chooseContact",
-					"group": "1,6,10",
+					"group": "1,6,10,1",
 					"style": {
 						"navigationBarTitleText": "chooseContact"
 					}
@@ -2380,6 +2429,29 @@
 					"group": "1,6,26",
 					"style": {
 						"navigationBarTitleText": "vibrate | 振动"
+					}
+				},
+				// #endif
+				// #ifdef APP-IOS || APP-ANDROID
+				{
+					"path": "bluetooth-general/bluetooth-general",
+					"group": "1,6,27,0",
+					"style": {
+						"navigationBarTitleText": "general | 蓝牙-通用"
+					}
+				},
+				{
+					"path": "bluetooth-ble/bluetooth-ble",
+					"group": "1,6,27,1",
+					"style": {
+						"navigationBarTitleText": "ble | 低功耗蓝牙",
+						"disableScroll": true
+					}
+				},
+				{
+					"path": "bluetooth-benchmark/bluetooth-benchmark",
+					"style": {
+						"navigationBarTitleText": "ble | 综合性能测试"
 					}
 				},
 				// #endif
@@ -2852,7 +2924,7 @@
 					}
 				},
 				// #endif
-				// #ifdef WEB || MP-WEIXIN || (APP && VUE3-VAPOR)
+				// #ifdef WEB || MP || (APP && VUE3-VAPOR)
 				{
 					"path": "echarts-miniprogram/echarts-miniprogram",
 					"style": {
@@ -3002,6 +3074,9 @@
 					"path": "combobox/combobox",
 					"style": {
 						"navigationBarTitleText": "uni-combobox"
+						// #ifdef MP-ALIPAY
+						,"allowsBounceVertical": "NO"
+						// #endif
 					}
 				},
 				// #endif
@@ -3039,6 +3114,21 @@
 						// #ifdef MP-ALIPAY
 						,"allowsBounceVertical": "NO"
 						// #endif
+					}
+				},
+				{
+					"path": "backarrow-circle/backarrow-circle",
+					"style": {
+						// #ifndef MP-ALIPAY
+						"navigationBarTitleText": "uni-backarrow-circle",
+						"navigationStyle": "custom"
+						// #endif
+						// #ifdef MP-ALIPAY
+						,
+						"transparentTitle": "always",
+						"allowsBounceVertical": "NO"
+						// #endif
+						,"navigationBarTextStyle":"black"
 					}
 				},
 				{
@@ -3142,9 +3232,51 @@
 					}
 				},
 				{
+					"path": "easyinput/easyinput",
+					"style": {
+						"navigationBarTitleText": "Easyinput 增强输入框"
+					}
+				},
+				{
+					"path": "forms/forms",
+					"style": {
+						"navigationBarTitleText": "uni-forms 表单"
+					}
+				},
+				{
+					"path": "forms/validation",
+					"style": {
+						"navigationBarTitleText": "uni-forms 校验"
+					}
+				},
+				{
+					"path": "forms/valibot",
+					"style": {
+						"navigationBarTitleText": "uni-forms Valibot"
+					}
+				},
+				{
+					"path": "forms/controls",
+					"style": {
+						"navigationBarTitleText": "uni-forms 控件接入"
+					}
+				},
+				{
+					"path": "forms/styles",
+					"style": {
+						"navigationBarTitleText": "uni-forms 样式与属性"
+					}
+				},
+				{
 					"path": "forms/form-item",
 					"style": {
 						"navigationBarTitleText": "表单项布局"
+					}
+				},
+				{
+					"path": "sidebar/sidebar",
+					"style": {
+						"navigationBarTitleText": "uni-sidebar"
 					}
 				},
 				{
@@ -3163,6 +3295,12 @@
 					"path": "data-checkbox/alipay-label-event",
 					"style": {
 						"navigationBarTitleText": "label 点击验证"
+					}
+				},
+				{
+					"path": "data-vertical-marquee/data-vertical-marquee",
+					"style": {
+						"navigationBarTitleText": "uni-data-vertical-marquee"
 					}
 				},
 				// #ifdef VUE3-VAPOR || MP
@@ -3829,7 +3967,7 @@
 						"navigationBarTitleText": "url 函数"
 					}
 				},
-				// #ifdef VUE3-VAPOR
+				// #ifdef VUE3-VAPOR || WEB
 				{
 					"path": "function/calc",
 					"group": "2,21",
@@ -3861,8 +3999,7 @@
 					}
 				}
 				// #ifdef VUE3-VAPOR
-				,
-				{
+				,{
 					"path": "prefers-color-scheme/prefers-color-scheme",
 					"group": "2,23",
 					"style": {
@@ -3871,8 +4008,7 @@
 				}
 				// #endif
 				// #ifdef WEB
-				,
-				{
+				,{
 					"path": "page-body-scope/page-body-scope",
 					"group": "2,23",
 					"style": {
@@ -4300,7 +4436,10 @@
 							"id": "api.page.navigator",
 							"name": "navigator"
 						},
-						null,
+						{
+							"id": "api.page.app-route",
+							"name": "app-route"
+						},
 						{
 							"id": "api.page.dialogPage",
 							"name": "dialogPage"
@@ -4310,8 +4449,8 @@
 							"name": "uni.setNavigationBarColor"
 						},
 						{
-							"id": "api.page.appRoute",
-							"name": "appRoute"
+							"id": "api.page.setNavigationBarTitle",
+							"name": "uni.setNavigationBarTitle"
 						},
 						null,
 						null,
@@ -4322,6 +4461,10 @@
 						{
 							"id": "api.page.pageScrollTo",
 							"name": "uni.pageScrollTo"
+						},
+						{
+							"id": "api.page.ScrollViewContext",
+							"name": "ScrollViewContext"
 						}
 					]
 				},
@@ -4458,7 +4601,7 @@
 						},
 						{
 							"id": "api.device.contact",
-							"name": "contact | 手机联系人",
+							"name": "contact",
 							"children": [
 								{
 									"id": "api.device.contact.addPhoneContact",
@@ -4530,6 +4673,132 @@
 						{
 							"id": "api.device.vibrate",
 							"name": "vibrate"
+						},
+						{
+							"id": "api.device.bluetooth",
+							"name": "bluetooth",
+							"children": [
+								{
+									"id": "api.device.bluetooth.general",
+									"name": "general",
+									"children": [
+										{
+											"id": "api.device.bluetooth.general.openBluetoothAdapter",
+											"name": "uni.openBluetoothAdapter"
+										},
+										{
+											"id": "api.device.bluetooth.general.closeBluetoothAdapter",
+											"name": "uni.closeBluetoothAdapter"
+										},
+										{
+											"id": "api.device.bluetooth.general.getBluetoothAdapterState",
+											"name": "uni.getBluetoothAdapterState"
+										},
+										{
+											"id": "api.device.bluetooth.general.onBluetoothAdapterStateChange",
+											"name": "uni.onBluetoothAdapterStateChange"
+										},
+										{
+											"id": "api.device.bluetooth.general.offBluetoothAdapterStateChange",
+											"name": "uni.offBluetoothAdapterStateChange"
+										},
+										{
+											"id": "api.device.bluetooth.general.startBluetoothDevicesDiscovery",
+											"name": "uni.startBluetoothDevicesDiscovery"
+										},
+										{
+											"id": "api.device.bluetooth.general.stopBluetoothDevicesDiscovery",
+											"name": "uni.stopBluetoothDevicesDiscovery"
+										},
+										{
+											"id": "api.device.bluetooth.general.onBluetoothDeviceFound",
+											"name": "uni.onBluetoothDeviceFound"
+										},
+										{
+											"id": "api.device.bluetooth.general.offBluetoothDeviceFound",
+											"name": "uni.offBluetoothDeviceFound"
+										},
+										{
+											"id": "api.device.bluetooth.general.getBluetoothDevices",
+											"name": "uni.getBluetoothDevices"
+										},
+										{
+											"id": "api.device.bluetooth.general.getConnectedBluetoothDevices",
+											"name": "uni.getConnectedBluetoothDevices"
+										}
+									]
+								},
+								{
+									"id": "api.device.bluetooth.ble",
+									"name": "ble",
+									"children": [
+										{
+											"id": "api.device.bluetooth.ble.createBLEConnection",
+											"name": "uni.createBLEConnection"
+										},
+										{
+											"id": "api.device.bluetooth.ble.closeBLEConnection",
+											"name": "uni.closeBLEConnection"
+										},
+										{
+											"id": "api.device.bluetooth.ble.onBLEConnectionStateChange",
+											"name": "uni.onBLEConnectionStateChange"
+										},
+										{
+											"id": "api.device.bluetooth.ble.offBLEConnectionStateChange",
+											"name": "uni.offBLEConnectionStateChange"
+										},
+										{
+											"id": "api.device.bluetooth.ble.getBLEDeviceRSSI",
+											"name": "uni.getBLEDeviceRSSI"
+										},
+										{
+											"id": "api.device.bluetooth.ble.getBLEMTU",
+											"name": "uni.getBLEMTU"
+										},
+										{
+											"id": "api.device.bluetooth.ble.setBLEMTU",
+											"name": "uni.setBLEMTU"
+										},
+										{
+											"id": "api.device.bluetooth.ble.onBLEMTUChange",
+											"name": "uni.onBLEMTUChange"
+										},
+										{
+											"id": "api.device.bluetooth.ble.offBLEMTUChange",
+											"name": "uni.offBLEMTUChange"
+										},
+										{
+											"id": "api.device.bluetooth.ble.getBLEDeviceServices",
+											"name": "uni.getBLEDeviceServices"
+										},
+										{
+											"id": "api.device.bluetooth.ble.getBLEDeviceCharacteristics",
+											"name": "uni.getBLEDeviceCharacteristics"
+										},
+										{
+											"id": "api.device.bluetooth.ble.readBLECharacteristicValue",
+											"name": "uni.readBLECharacteristicValue"
+										},
+										{
+											"id": "api.device.bluetooth.ble.writeBLECharacteristicValue",
+											"name": "uni.writeBLECharacteristicValue"
+										},
+										{
+											"id": "api.device.bluetooth.ble.notifyBLECharacteristicValueChange",
+											"name": "uni.notifyBLECharacteristicValueChange"
+										},
+										{
+											"id": "api.device.bluetooth.ble.onBLECharacteristicValueChange",
+											"name": "uni.onBLECharacteristicValueChange"
+										},
+										{
+											"id": "api.device.bluetooth.ble.offBLECharacteristicValueChange",
+											"name": "uni.offBLECharacteristicValueChange"
+										}
+									]
+								}
+							]
 						}
 					]
 				},

@@ -1,0 +1,895 @@
+<template>
+	<view class="panel contract-panel">
+		<view class="panel-head">
+			<view class="panel-copy">
+				<text class="panel-title">逐个 API 多场景测试</text>
+				<text class="panel-subtitle">{{ props.apis.length }} 个 API · {{ props.categories.length }} 类</text>
+			</view>
+			<button class="clear-button" size="mini" @click="emit('clearResults')">清空</button>
+		</view>
+		<view class="hint-card">
+			<text class="hint-text">逐个核对单个 API 的实际行为是否符合场景预估行为：选 API → 按场景准备前置条件 → 执行用例 → 比对错误码、errMsg 与 success/fail
+				回调时序，给出通过或失败。</text>
+		</view>
+		<view class="run-bar" :class="props.running ? 'picker-disabled' : ''" @click="toggleApiPicker">
+			<view class="run-copy">
+				<text class="run-title">{{ props.selectedApiName }}</text>
+				<text class="run-subtitle">{{ props.selectedCategory }} · {{ props.cases.length }} 个 Case</text>
+			</view>
+			<text class="disclosure-arrow" :class="apiPickerExpanded ? 'disclosure-arrow-expanded' : ''">›</text>
+		</view>
+		<view v-if="apiPickerExpanded" class="api-picker-options">
+			<view class="category-list">
+				<view v-for="category in props.categories" :key="category" class="category-tab"
+					:class="props.selectedCategory == category ? 'category-tab-selected' : ''" @click="chooseCategory(category)">
+					<text class="category-label"
+						:class="props.selectedCategory == category ? 'category-label-active' : ''">{{ category }}
+						{{ categoryCount(category) }}</text>
+				</view>
+			</view>
+			<view class="api-list">
+				<view v-for="api in props.visibleApis" :key="api.name" class="api-row"
+					:class="props.selectedApiName == api.name ? 'api-row-selected' : ''" @click="chooseApi(api.name)">
+					<view class="api-dot" :class="props.selectedApiName == api.name ? 'api-dot-active' : ''"></view>
+					<text class="api-name">{{ api.name }}</text>
+					<text class="api-selection"
+						:class="props.selectedApiName == api.name ? 'api-selection-active' : ''">{{ props.selectedApiName == api.name ? '已选' : '' }}</text>
+				</view>
+			</view>
+		</view>
+		<view v-if="needsTargetDevice()" class="target-field">
+			<view class="target-header">
+				<text class="target-title">目标设备 ID</text>
+				<button class="paste-action" size="mini" :disabled="props.running || props.preparationBusy"
+					@click="emit('pasteDeviceId')">粘贴</button>
+			</view>
+			<textarea class="target-input" :value="props.deviceIdText.length > 0 ? props.deviceIdText : props.targetDeviceId"
+				:disabled="props.running || props.preparationBusy" :maxlength="-1" placeholder="设备 ID"
+				@input="emit('deviceIdChange', $event.detail.value)" />
+		</view>
+		<view v-for="(caseItem, index) in props.cases" :key="caseItem.caseId" class="case-card">
+			<view class="case-main" @click="toggleCaseDetails(caseItem)">
+				<text class="case-index">{{ caseIndexText(index) }}</text>
+				<view class="case-copy">
+					<view class="case-title-row">
+						<text class="case-title">{{ caseItem.title }}</text>
+						<text v-if="caseItem.fixture.length > 0" class="case-manual-tag">只依赖人工验证</text>
+					</view>
+					<text class="case-detail">{{ caseItem.detail }}{{ expectedCodeText(caseItem) }}</text>
+				</view>
+				<text class="case-status case-summary-status"
+					:class="statusClass(props.resultStatus(caseItem))">{{ statusText(props.resultStatus(caseItem)) }}</text>
+				<button class="case-action" :class="!props.canRunCase(caseItem) ? 'case-action-disabled' : ''" size="mini"
+					@click.stop="props.canRunCase(caseItem) && emit('runCase', caseItem)">{{ props.resultStatus(caseItem) == 'RUNNING' ? '执行中' : '执行' }}</button>
+				<text class="disclosure-arrow" :class="isCaseExpanded(caseItem) ? 'disclosure-arrow-expanded' : ''">›</text>
+			</view>
+			<view class="detail-toggle" @click="toggleCaseDetails(caseItem)">
+				<text class="detail-toggle-text">{{ isCaseExpanded(caseItem) ? '收起详情' : '查看详情' }}</text>
+			</view>
+			<view v-if="isCaseExpanded(caseItem)" class="case-details">
+				<text class="case-id">{{ caseItem.caseId }}</text>
+				<text class="case-id">参数：{{ props.parameterText(caseItem) }}</text>
+				<view class="preconditions">
+					<text class="precondition-heading">测试先决条件</text>
+					<view v-for="condition in props.preconditions(caseItem)" :key="condition.key" class="precondition-item">
+						<view class="precondition-row">
+							<text class="precondition-state"
+								:class="condition.met ? 'status-pass' : 'status-blocked'">{{ preconditionStateText(condition) }}</text>
+							<text class="precondition-title">{{ condition.title }}</text>
+							<button v-if="!condition.met && condition.preparation != 'none'" class="prepare-action" size="mini"
+								:disabled="props.running"
+								@click="emit('prepare', condition.preparation, caseItem)">{{ condition.actionText }}</button>
+						</view>
+						<text class="precondition-detail">{{ condition.detail }}</text>
+					</view>
+				</view>
+				<view v-if="caseItem.fixture.length > 0" class="fixture-row">
+					<view class="fixture-anno">
+						<text class="fixture-anno-tag">人工操作</text>
+						<text class="fixture-anno-text">按上方受控条件准备环境</text>
+					</view>
+					<view class="fixture-confirm" @click="emit('confirmFixture', caseItem)">
+						<view class="fixture-box" :class="fixtureMet(caseItem) ? 'fixture-box-on' : ''">
+							<text class="fixture-box-tick">{{ fixtureMet(caseItem) ? '✓' : '' }}</text>
+						</view>
+						<text class="fixture-confirm-text">条件已确认</text>
+					</view>
+				</view>
+				<view class="case-result-row">
+					<text class="case-status"
+						:class="statusClass(props.resultStatus(caseItem))">{{ statusText(props.resultStatus(caseItem)) }}</text>
+					<text class="case-message">{{ resultMessage(caseItem) }}</text>
+				</view>
+				<view v-if="caseResult(caseItem) != null">
+					<text class="trace-line evidence-line">{{ caseResult(caseItem)!.runId }} ·
+						{{ caseResult(caseItem)!.platform }} · 实际 {{ caseResult(caseItem)!.actualOutcome }}</text>
+					<text class="trace-line evidence-line">提交参数：{{ caseResult(caseItem)!.parameters }}</text>
+					<view class="evidence-head">
+						<view class="detail-toggle" @click="toggleEvidence(caseItem)">
+							<text
+								class="detail-toggle-text">{{ expandedEvidenceCase == caseItem.caseId ? '收起证据' : '原始结果与准备条件' }}</text>
+						</view>
+					</view>
+					<view v-if="expandedEvidenceCase == caseItem.caseId" class="evidence-body">
+						<view class="evidence-block">
+							<view class="evidence-block-head">
+								<text class="evidence-label">原始结果</text>
+								<button class="evidence-copy" size="mini"
+									@click="emit('copyText', caseResult(caseItem)!.rawResult)">复制</button>
+							</view>
+							<text class="trace-line evidence-line">{{ caseResult(caseItem)!.rawResult }}</text>
+						</view>
+						<view class="evidence-block">
+							<view class="evidence-block-head">
+								<text class="evidence-label">准备条件</text>
+								<button class="evidence-copy" size="mini"
+									@click="emit('copyText', caseResult(caseItem)!.setup)">复制</button>
+							</view>
+							<text class="trace-line evidence-line">{{ caseResult(caseItem)!.setup }}</text>
+						</view>
+					</view>
+				</view>
+			</view>
+		</view>
+		<view v-if="props.cases.length == 0" class="empty-state">
+			<text class="empty-title">事件监听接口</text>
+			<button class="events-action" size="mini" :disabled="props.running"
+				@click="emit('prepare', 'events', null)">事件测试</button>
+		</view>
+	</view>
+</template>
+
+<script setup lang="ts">
+	import { ref, watch } from 'vue'
+	import { BleContractApi, BleContractCase, BleContractCategory, BleContractPrecondition, BleContractPreparation, BleContractResult, BleContractStatus } from '../../logic/BleWorkspaceTypes.ts'
+
+	type ApiContractPanelProps = {
+		apis : BleContractApi[],
+		categories : BleContractCategory[],
+		selectedCategory : BleContractCategory,
+		visibleApis : BleContractApi[],
+		selectedApiName : string,
+		cases : BleContractCase[],
+		results : BleContractResult[],
+		running : boolean,
+		resultStatus : (caseItem : BleContractCase) => BleContractStatus | null,
+		preconditions : (caseItem : BleContractCase) => BleContractPrecondition[],
+		canRunCase : (caseItem : BleContractCase) => boolean,
+		parameterText : (caseItem : BleContractCase) => string,
+		deviceIdText : string,
+		targetDeviceId : string,
+		preparationBusy : boolean
+	}
+
+	const props = defineProps<ApiContractPanelProps>()
+	const emit = defineEmits<{
+		selectApi : [name: string],
+		selectCategory : [category: BleContractCategory],
+		prepare : [preparation: BleContractPreparation, caseItem: BleContractCase | null],
+		runCase : [caseItem: BleContractCase],
+		clearResults : [],
+		deviceIdChange : [value: string],
+		pasteDeviceId : [],
+		confirmFixture : [caseItem: BleContractCase],
+		copyText : [text: string]
+	}>()
+	const apiPickerExpanded = ref(false)
+	const expandedCaseIds = ref([] as string[])
+	const expandedEvidenceCase = ref('')
+	watch(() : string => props.selectedApiName, () => {
+		expandedCaseIds.value = [] as string[]
+		expandedEvidenceCase.value = ''
+	})
+	function toggleApiPicker() { if (!props.running) apiPickerExpanded.value = !apiPickerExpanded.value }
+	function chooseApi(name : string) {
+		if (props.running) return
+		emit('selectApi', name)
+		apiPickerExpanded.value = false
+	}
+	function chooseCategory(category : BleContractCategory) { if (!props.running) emit('selectCategory', category) }
+	function needsTargetDevice() : boolean { return props.cases.some((item : BleContractCase) : boolean => item.requiresDevice) }
+	function isCaseExpanded(caseItem : BleContractCase) : boolean { return expandedCaseIds.value.indexOf(caseItem.caseId) >= 0 }
+	function toggleCaseDetails(caseItem : BleContractCase) {
+		if (isCaseExpanded(caseItem)) expandedCaseIds.value = expandedCaseIds.value.filter((id : string) : boolean => id != caseItem.caseId)
+		else expandedCaseIds.value.push(caseItem.caseId)
+	}
+	function caseResult(caseItem : BleContractCase) : BleContractResult | null {
+		return props.results.find((item : BleContractResult) : boolean => item.caseId == caseItem.caseId) ?? null
+	}
+	function fixtureMet(caseItem : BleContractCase) : boolean {
+		return props.preconditions(caseItem).some((condition : BleContractPrecondition) : boolean => condition.key == 'fixture' && condition.met)
+	}
+	function toggleEvidence(caseItem : BleContractCase) { expandedEvidenceCase.value = expandedEvidenceCase.value == caseItem.caseId ? '' : caseItem.caseId }
+
+	function categoryCount(category : BleContractCategory) : number {
+		return props.apis.filter((api : BleContractApi) : boolean => api.category == category).length
+	}
+
+	function caseIndexText(index : number) : string {
+		const n = index + 1
+		return n < 10 ? '0' + n.toString() : n.toString()
+	}
+
+	function preconditionStateText(condition : BleContractPrecondition) : string {
+		if (condition.key == 'fixture') return condition.met ? '已确认' : '未确认'
+		return condition.met ? '满足' : '未满足'
+	}
+
+	function statusText(status : BleContractStatus | null) : string {
+		if (status == 'RUNNING') return '执行中'
+		if (status == 'INCONCLUSIVE') return '已中止'
+		if (status == 'PASS') return '通过'
+		if (status == 'FAIL') return '失败'
+		if (status == 'BLOCKED') return '阻塞'
+		if (status == 'UNSUPPORTED') return '不支持'
+		if (status == 'CLEANUP_FAILED') return '清理失败'
+		return '待执行'
+	}
+
+	function statusClass(status : BleContractStatus | null) : string {
+		if (status == null) return 'status-idle'
+		return 'status-' + status!.toLowerCase()
+	}
+
+	function resultMessage(caseItem : BleContractCase) : string {
+		const result = props.results.find((item : BleContractResult) : boolean => item.caseId == caseItem.caseId)
+		if (result == null) return caseItem.expectedMessage.length > 0 ? '预期：' + caseItem.expectedMessage : '尚未执行'
+		const code = result!.actualErrCode == null ? '' : ' · 实际 errCode=' + result!.actualErrCode!.toString()
+		return result!.detail + (result!.actualMessage.length > 0 ? ' · ' + result!.actualMessage : '') + code
+	}
+
+	function expectedCodeText(caseItem : BleContractCase) : string {
+		return caseItem.expectedErrCode == null ? '' : ' · 预期 errCode=' + caseItem.expectedErrCode!.toString()
+	}
+</script>
+
+<style>
+	.target-field {
+		margin-top: 12px;
+		padding: 10px;
+		background-color: #eaf0f4;
+		border-bottom-width: 1px;
+		border-style: solid;
+		border-bottom-color: #d5e0e5;
+	}
+
+	.target-header {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.target-title {
+		flex: 1;
+		color: #243743;
+		font-size: 11px;
+		font-weight: 600;
+	}
+
+	.target-input {
+		width: 100%;
+		height: 44px;
+		margin-top: 8px;
+		padding: 0;
+		color: #243743;
+		font-family: monospace;
+		font-size: 12px;
+		line-height: 20px;
+	}
+
+	.paste-action {
+		flex: none;
+		width: 64px;
+		height: 32px;
+		margin: 0;
+		padding: 0;
+		border-width: 1px;
+		border-style: solid;
+		border-color: #a9c9ed;
+		border-radius: 5px;
+		background-color: #ffffff;
+		color: #2875d6;
+		font-size: 11px;
+		line-height: 30px;
+	}
+
+	.fixture-row {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		margin-top: 6px;
+	}
+
+	.fixture-anno {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		flex: 1;
+		min-width: 0;
+	}
+
+	.fixture-anno-tag {
+		flex: none;
+		margin-right: 6px;
+		padding: 2px 6px;
+		border-radius: 4px;
+		background-color: #fff2e0;
+		color: #b96d10;
+		font-size: 9px;
+		font-weight: 600;
+	}
+
+	.fixture-anno-text {
+		flex: 1;
+		min-width: 0;
+		color: #8a7a63;
+		font-size: 9px;
+	}
+
+	.fixture-confirm {
+		flex: none;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		margin-left: 8px;
+	}
+
+	.fixture-box {
+		flex: none;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		width: 18px;
+		height: 18px;
+		border-width: 1px;
+		border-style: solid;
+		border-color: #9aa8b2;
+		border-radius: 4px;
+		background-color: #ffffff;
+	}
+
+	.fixture-box-on {
+		border-color: #2875d6;
+		background-color: #2875d6;
+	}
+
+	.fixture-box-tick {
+		color: #ffffff;
+		font-size: 12px;
+		line-height: 14px;
+	}
+
+	.fixture-confirm-text {
+		color: #5a6b76;
+		font-size: 9px;
+	}
+
+	.panel {
+		padding: 15px 10px 24px;
+	}
+
+	.contract-panel {
+		padding-top: 13px;
+	}
+
+	.panel-head {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.panel-copy {
+		flex: 1;
+		min-width: 0;
+	}
+
+	.panel-title {
+		font-size: 19px;
+		font-weight: 600;
+	}
+
+	.panel-subtitle {
+		margin-top: 3px;
+		color: #71838d;
+		font-size: 10px;
+	}
+
+	.hint-card {
+		margin-top: 9px;
+		padding: 10px 12px;
+		border-width: 1px;
+		border-style: solid;
+		border-color: #f0dcb8;
+		border-radius: 7px;
+		background-color: #fff4df;
+	}
+
+	.hint-text {
+		color: #8a6a2a;
+		font-size: 9px;
+		line-height: 14px;
+	}
+
+	.clear-button {
+		margin: 0;
+		padding: 0 12px;
+		height: 30px;
+		line-height: 28px;
+		border-width: 1px;
+		border-style: solid;
+		border-color: #a9c9ed;
+		border-radius: 5px;
+		background-color: #ffffff;
+		color: #2875d6;
+		font-size: 10px;
+	}
+
+	.category-list {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		margin-top: 2px;
+	}
+
+	.category-tab {
+		padding: 7px 12px;
+		margin-right: 6px;
+		margin-bottom: 6px;
+		border-width: 1px;
+		border-style: solid;
+		border-color: #dbe4ea;
+		border-radius: 15px;
+		background-color: #ffffff;
+	}
+
+	.category-tab-selected {
+		border-color: #2875d6;
+		background-color: #2875d6;
+	}
+
+	.category-label {
+		color: #5a6b76;
+		font-size: 11px;
+	}
+
+	.category-label-active {
+		color: #ffffff;
+		font-weight: 600;
+	}
+
+	.api-list {
+		margin-top: 6px;
+		border-width: 1px;
+		border-style: solid;
+		border-color: #e2e9ee;
+		border-radius: 7px;
+		background-color: #ffffff;
+		overflow: hidden;
+	}
+
+	.api-row {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		min-height: 34px;
+		padding: 6px 10px;
+		border-bottom-width: 1px;
+		border-style: solid;
+		border-bottom-color: #eef2f5;
+	}
+
+	.api-row-selected {
+		background-color: #eaf4ff;
+	}
+
+	.api-dot {
+		flex: none;
+		width: 6px;
+		height: 6px;
+		margin-right: 8px;
+		border-radius: 3px;
+		background-color: #d5e0e5;
+	}
+
+	.api-dot-active {
+		background-color: #2875d6;
+	}
+
+	.api-name {
+		flex: 1;
+		min-width: 0;
+		color: #243743;
+		font-family: monospace;
+		font-size: 11px;
+		font-weight: 700;
+	}
+
+	.api-selection {
+		flex: none;
+		width: 32px;
+		margin-left: 4px;
+		color: #a9b4bc;
+		font-size: 9px;
+		text-align: right;
+	}
+
+	.api-selection-active {
+		color: #2875d6;
+	}
+
+	.run-bar {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		min-height: 56px;
+		margin-top: 10px;
+		padding: 10px 12px;
+		border-width: 1px;
+		border-style: solid;
+		border-color: #cfe0f3;
+		border-radius: 8px;
+		background-color: #f4f9ff;
+	}
+
+	.picker-disabled {
+		opacity: 0.6;
+	}
+
+	.api-picker-options {
+		margin-top: 8px;
+		padding: 10px;
+		border-width: 1px;
+		border-style: solid;
+		border-color: #e2e9ee;
+		border-radius: 8px;
+		background-color: #f8fafb;
+	}
+
+	.disclosure-arrow {
+		flex: none;
+		width: 16px;
+		margin-left: 6px;
+		text-align: center;
+		color: #71838c;
+		font-size: 22px;
+	}
+
+	.disclosure-arrow-expanded {
+		transform: rotate(90deg);
+	}
+
+	.run-copy {
+		flex: 1;
+		min-width: 0;
+	}
+
+	.run-title {
+		color: #162734;
+		font-family: monospace;
+		font-size: 13px;
+		font-weight: 700;
+	}
+
+	.run-subtitle {
+		margin-top: 4px;
+		color: #71838c;
+		font-size: 9px;
+	}
+
+	.case-card {
+		margin-top: 8px;
+		padding: 10px;
+		border-width: 1px;
+		border-style: solid;
+		border-color: #d5e0e5;
+		border-radius: 7px;
+		background-color: #fff;
+	}
+
+	.case-main {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		min-height: 44px;
+	}
+
+	.case-summary-status {
+		flex: none;
+		margin-left: 6px;
+		text-align: right;
+	}
+
+	.case-index {
+		flex: none;
+		width: 22px;
+		margin-right: 8px;
+		color: #a9b4bc;
+		font-family: monospace;
+		font-size: 11px;
+		font-weight: 600;
+		text-align: center;
+	}
+
+	.detail-toggle {
+		padding-top: 6px;
+		padding-bottom: 2px;
+	}
+
+	.detail-toggle-text {
+		color: #2875d6;
+		font-size: 10px;
+	}
+
+	.evidence-head {
+		margin-top: 6px;
+	}
+
+	.evidence-body {
+		margin-top: 8px;
+		padding: 8px 10px;
+		border-radius: 6px;
+		background-color: #f4f7f9;
+	}
+
+	.evidence-block {
+		margin-top: 10px;
+	}
+
+	.evidence-block-head {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.evidence-label {
+		color: #5a6b76;
+		font-size: 9px;
+		font-weight: 600;
+	}
+
+	.evidence-copy {
+		flex: none;
+		height: 24px;
+		margin: 0;
+		padding: 0 10px;
+		border-width: 1px;
+		border-style: solid;
+		border-color: #a9c9ed;
+		border-radius: 4px;
+		background-color: #ffffff;
+		color: #2875d6;
+		font-size: 9px;
+		line-height: 22px;
+	}
+
+	.case-details {
+		margin-top: 8px;
+		padding-top: 6px;
+		border-top-width: 1px;
+		border-style: solid;
+		border-top-color: #edf1f3;
+	}
+
+	.case-copy {
+		flex: 1;
+		min-width: 0;
+	}
+
+	.case-title-row {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+	}
+
+	.case-title {
+		flex: 1;
+		min-width: 0;
+		color: #243743;
+		font-size: 11px;
+		font-weight: 600;
+	}
+
+	.case-manual-tag {
+		flex: none;
+		margin-left: 6px;
+		padding: 1px 5px;
+		border-radius: 3px;
+		background-color: #fff2e0;
+		color: #b96d10;
+		font-size: 8px;
+		font-weight: 600;
+	}
+
+	.case-id {
+		margin-top: 4px;
+		color: #71838c;
+		font-family: monospace;
+		font-size: 8px;
+	}
+
+	.case-detail {
+		margin-top: 4px;
+		color: #81939b;
+		font-size: 9px;
+	}
+
+	.case-action {
+		flex: none;
+		width: 60px;
+		height: 32px;
+		margin: 0 0 0 8px;
+		padding: 0;
+		border-width: 1px;
+		border-style: solid;
+		border-color: #a9c9ed;
+		border-radius: 5px;
+		background-color: #f2f8ff;
+		color: #2875d6;
+		font-size: 10px;
+		line-height: 30px;
+	}
+
+	.case-action-disabled {
+		pointer-events: none;
+		border-color: #dbe4ea;
+		background-color: #f4f7f9;
+		color: #7f8d98;
+	}
+
+	.preconditions {
+		margin-top: 10px;
+		padding-top: 8px;
+		border-top-width: 1px;
+		border-style: solid;
+		border-top-color: #edf1f3;
+	}
+
+	.precondition-heading {
+		color: #243743;
+		font-size: 10px;
+		font-weight: 600;
+	}
+
+	.precondition-item {
+		margin-top: 7px;
+	}
+
+	.precondition-row {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		min-height: 28px;
+	}
+
+	.precondition-state {
+		width: 38px;
+		font-size: 9px;
+	}
+
+	.precondition-title {
+		flex: 1;
+		color: #243743;
+		font-size: 10px;
+	}
+
+	.precondition-detail {
+		margin-top: 2px;
+		margin-left: 38px;
+		color: #71838c;
+		font-size: 9px;
+	}
+
+	.prepare-action {
+		flex: none;
+		width: 76px;
+		height: 28px;
+		margin: 0 0 0 6px;
+		padding: 0;
+		border-width: 0;
+		border-radius: 4px;
+		background-color: #eaf4ff;
+		color: #2875d6;
+		font-size: 9px;
+		line-height: 28px;
+	}
+
+	.case-result-row {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		margin-top: 8px;
+		padding-top: 7px;
+		border-top-width: 1px;
+		border-style: solid;
+		border-top-color: #edf1f3;
+	}
+
+	.case-status {
+		min-width: 38px;
+		font-size: 8px;
+	}
+
+	.status-idle {
+		color: #83949d;
+	}
+
+	.status-running {
+		color: #2875d6;
+	}
+
+	.status-inconclusive {
+		color: #71838c;
+	}
+
+	.status-pass {
+		color: #26945c;
+	}
+
+	.status-fail {
+		color: #c65353;
+	}
+
+	.status-blocked {
+		color: #b96d10;
+	}
+
+	.status-unsupported {
+		color: #71838c;
+	}
+
+	.status-cleanup_failed {
+		color: #c65353;
+	}
+
+	.case-message {
+		flex: 1;
+		margin-left: 8px;
+		color: #71838c;
+		font-size: 8px;
+	}
+
+	.trace-line {
+		margin-top: 6px;
+		color: #aabdc5;
+		font-family: monospace;
+		font-size: 8px;
+	}
+
+	.evidence-line {
+		color: #596c75;
+	}
+
+	.empty-state {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		padding: 35px 10px;
+		text-align: center;
+	}
+
+	.empty-title {
+		margin-bottom: 12px;
+		color: #71838c;
+		font-size: 11px;
+	}
+
+	.events-action {
+		width: 150px;
+		height: 36px;
+		margin: 0;
+		padding: 0;
+		border-width: 1px;
+		border-style: solid;
+		border-color: #2875d6;
+		border-radius: 6px;
+		background-color: #2875d6;
+		color: #ffffff;
+		font-size: 12px;
+		line-height: 34px;
+	}
+</style>

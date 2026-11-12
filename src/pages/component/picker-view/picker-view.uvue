@@ -23,8 +23,10 @@
     <!-- #ifndef MP-ALIPAY -->
     <boolean-data :value="false" title="设置选择器中间选中框的样式" @change="setIndicatorStyle"></boolean-data>
     <!-- #endif -->
-    <!-- #ifdef WEB || MP-WEIXIN -->
+    <!-- #ifdef WEB || MP-WEIXIN || APP -->
     <boolean-data :value="false" title="设置选择器中间选中框的类名" @change="setIndicatorClass"></boolean-data>
+    <!-- #endif -->
+    <!-- #ifdef WEB || MP-WEIXIN -->
     <boolean-data :value="false" title="设置蒙层的样式" @change="setMaskStyle"></boolean-data>
     <boolean-data :value="false" title="设置蒙层的类名" @change="setMaskClass"></boolean-data>
     <!-- #endif -->

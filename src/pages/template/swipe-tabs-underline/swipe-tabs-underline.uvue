@@ -87,11 +87,11 @@ function updateTabIndicator(current_index : number, move_to_index : number, perc
   // #endif
   const scroll_x = x - swiperWidth.value / 2
   // app 平台后续支持 scrollTo()
-  // #ifndef MP-WEIXIN
+  // #ifndef MP
   tabScroll.value!.scrollLeft = scroll_x > 0 ? scroll_x : 0
   scrollLeft.value = scroll_x > 0 ? scroll_x : 0
   // #endif
-  // #ifdef MP-WEIXIN
+  // #ifdef MP
   tabScroll.value!.scrollTo({
     left: scroll_x
   })

@@ -1,0 +1,77 @@
+<template>
+  <view id="window-offset-dialog" class="w-full h-full bg-black-a30 d-flex justify-center items-center">
+    <view class="w-80pct u-p-10 bg-list-fff radius-6">
+      <text class="fs-14 lh-22 color-text-333">此弹窗使用自定义导航栏，不应修改父页面的窗口变量。</text>
+      <button class="mt-10" @click="closeDialog">关闭弹窗</button>
+    </view>
+  </view>
+</template>
+
+<script setup lang="ts">
+  function closeDialog() {
+    uni.closeDialogPage()
+  }
+</script>
+
+<style>
+  page {
+    background-color: transparent;
+  }
+
+  /* alpha 分支局部补齐 dev 示例依赖的工具类。 */
+.lh-22 {
+  line-height: 22px;
+}
+
+.bg-list-fff {
+  background-color: var(--list-background-color,#ffffff);
+}
+
+.d-flex {
+  display: flex;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.fs-14 {
+  font-size: 14px;
+}
+
+.mt-10 {
+  margin-top: 10px;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.h-full {
+  height: 100%;
+}
+
+.bg-black-a30 {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.w-80pct {
+  width: 80%;
+}
+
+.u-p-10 {
+  padding: 10px;
+}
+
+.radius-6 {
+  border-radius: 6px;
+}
+
+.color-text-333 {
+  color: var(--text-color, #333333);
+}
+</style>

@@ -32,7 +32,7 @@
         </slot>
       </view>
     </view>
-    <view ref="coverRef" class="uni-data-tree-cover" :class="[coverClass, active ? 'uni-data-tree-cover-active' : '']" v-if="isOpened" @click="handleClose"></view>
+    <view ref="coverRef" class="uni-data-tree-cover" :class="[maskClassValue, active ? 'uni-data-tree-cover-active' : '']" v-if="isOpened" @click="handleClose"></view>
     <view class="uni-data-tree-dialog"
       :class="[popupClass, active ? 'uni-data-tree-dialog-active' : '', dragTransitionOff ? 'uni-data-tree-dialog-drag' : '']"
       :style="dialogStyle" v-if="isOpened">
@@ -56,17 +56,43 @@
 </template>
 
 <script setup lang="ts">
+  /**
+   * DataPicker 级联选择
+   * @description 通过本地数据或 datacom 数据的级联选择组件，支持单列和多列级联选择，列数没有限制，如果屏幕显示不全，顶部tab区域会左右滚动。
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.33",
+   *       "unixVaporVer": "5.33"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.33",
+   *       "unixVaporVer": "5.33"
+   *     },
+   *     "harmony": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.33",
+   *       "unixVaporVer": "5.33"
+   *     }
+   *   },
+   *   "web": {
+   *     "uniVer": "x",
+   *     "unixVer": "5.33"
+   *   }
+   * }
+   */
+
   import { dataPickerProps, useDataPicker } from "../uni-data-picker-view/uni-data-picker.ts"
 
   /**
-   * DataPicker 级联选择
-   * @description 支持单列、和多列级联选择。列数没有限制，如果屏幕显示不全，顶部tab区域会左右滚动。
-   * @tutorial https://ext.dcloud.net.cn/plugin?id=xxx
+   * @tutorial https://ext.dcloud.net.cn/plugin?id=uni-data-picker-x
    * @property {String} popup-title 弹出窗口标题
    * @property {String} popup-class 弹出窗口自定义样式类名
-   * @property {String} cover-class 遮罩层自定义样式类名
+   * @property {String} mask-class 遮罩层自定义样式类名
+   * @property {String} cover-class 遮罩层自定义样式类名（已废弃，请使用 mask-class）
    * @property {Array} localdata 本地数据，参考
-   * @property {Boolean} border = [true|false] 是否有边框
    * @property {Boolean} readonly = [true|false] 是否仅读
    * @property {Boolean} preload = [true|false] 是否预加载数据
    * @value true 开启预加载数据，点击弹出窗口后显示已加载数据
@@ -80,8 +106,10 @@
    * @property {String|DBFieldString} field 查询字段，多个字段用 `,` 分割
    * @property {String} orderby 排序字段及正序倒叙设置
    * @property {String|JQLString} where 查询条件
-   * @event {Function} popupshow 弹出的选择窗口打开时触发此事件
-   * @event {Function} popuphide 弹出的选择窗口关闭时触发此事件
+   * @event {Function} nodeclick 点击节点时触发此事件
+   * @event {Function} change 选择结束后触发此事件
+   * @event {Function} popupopened 弹出的选择窗口打开时触发此事件
+   * @event {Function} popupclosed 弹出的选择窗口关闭时触发此事件
    */
   const props = defineProps({
     ...dataPickerProps,
@@ -117,16 +145,25 @@
       type: String,
       default: ''
     },
+    maskClass: {
+      type: String,
+      default: ''
+    },
+    // 已废弃，请使用 mask-class，保留以兼容旧用法
     coverClass: {
       type: String,
       default: ''
     }
   })
   defineOptions({
-    externalClasses: ['input-class', 'error-class', 'popup-class', 'cover-class']
+    externalClasses: ['input-class', 'error-class', 'popup-class', 'mask-class', 'cover-class']
   })
 
   const dataPicker = useDataPicker(props)
+
+  const maskClassValue = computed(() : string => {
+    return props.maskClass || props.coverClass
+  })
 
   const emit = defineEmits(['popupopened', 'popupclosed', 'nodeclick', 'change', 'input', 'update:modelValue', 'inputclick'])
 
@@ -433,12 +470,14 @@
     flex-direction: row;
     align-items: center;
     flex-wrap: nowrap;
-    padding: 5px 5px;
-    padding-right: 5px;
+    padding: 8px 10px;
     overflow: hidden;
     min-height: 28px;
-    border: 1px solid #e5e5e5;
-    border-radius: 5px;
+    background-color: var(--content-background-color, #ffffff);
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--input-border-color, #dcdfe6);
+    border-radius: 6px;
   }
 
   .selected-path {
@@ -463,18 +502,19 @@
 
   .text-color {
     font-size: 14px;
-    color: #333;
+    color: var(--text-color, #333333);
   }
 
   .placeholder {
-    color: grey;
     font-size: 14px;
+    color: var(--secondary-text-color, #999999);
   }
 
   .input-split-line {
     opacity: .5;
     margin-left: 1px;
     margin-right: 1px;
+    color: var(--secondary-text-color, #999999);
   }
 
   .arrow-area {
@@ -489,8 +529,12 @@
   .input-arrow {
     width: 8px;
     height: 8px;
-    border-left: 2px solid #999;
-    border-bottom: 2px solid #999;
+    border-left-width: 2px;
+    border-left-style: solid;
+    border-left-color: var(--arrow-color, #999999);
+    border-bottom-width: 2px;
+    border-bottom-style: solid;
+    border-bottom-color: var(--arrow-color, #999999);
   }
 
   .uni-data-tree-cover {
@@ -518,8 +562,9 @@
     right: 0;
     bottom: 0;
     height: 80%;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
+    background-color: var(--content-background-color, #ffffff);
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
     flex-direction: column;
     z-index: 102;
     overflow: hidden;
@@ -546,7 +591,10 @@
   .dialog-caption {
     position: relative;
     flex-direction: row;
-    background-color: #ffffff;
+    background-color: var(--content-background-color, #ffffff);
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: var(--divider-color, #eeeeee);
   }
 
   .dialog-title-view {
@@ -556,6 +604,9 @@
   .dialog-title {
     align-self: center;
     padding: 0 10px;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-color, #333333);
     line-height: 44px;
   }
 
@@ -572,7 +623,7 @@
   .dialog-close-plus {
     width: 16px;
     height: 2px;
-    background-color: #666;
+    background-color: var(--secondary-text-color, #999999);
     border-radius: 2px;
     transform: rotate(45deg);
   }
@@ -588,7 +639,7 @@
       position: unset;
       height: auto;
       width: 100%;
-      min-height: 200px;
+      min-height: 150px;
       max-height: 50vh;
       overflow: unset;
       /* 宽屏下不使用滑入/滑出动画，直接显示 */
@@ -613,23 +664,46 @@
 
   @media (prefers-color-scheme: dark) {
     .input-value {
-      border-color: #646464;
-    }
-
-    .input-split-line {
-      color: #999;
+      background-color: #2d2d2d;
+      border-color: rgba(255, 255, 255, 0.18);
     }
 
     .text-color {
-      color: #ccc;
+      color: #ffffff;
+    }
+
+    .placeholder {
+      color: rgba(255, 255, 255, 0.65);
+    }
+
+    .input-split-line {
+      color: rgba(255, 255, 255, 0.65);
+    }
+
+    .input-arrow {
+      border-left-color: #ffffff;
+      border-bottom-color: #ffffff;
+    }
+
+    .error-text {
+      color: #ff7875;
+    }
+
+    .uni-data-tree-dialog {
+      background-color: #2d2d2d;
     }
 
     .dialog-caption {
-      background-color: #2b2b2b;
+      background-color: #2d2d2d;
+      border-bottom-color: rgba(255, 255, 255, 0.12);
     }
 
     .dialog-title {
-      color: #ccc;
+      color: #ffffff;
+    }
+
+    .dialog-close-plus {
+      background-color: #cccccc;
     }
   }
 </style>

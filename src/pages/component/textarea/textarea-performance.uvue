@@ -1,43 +1,37 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1">
+  <view class="page-container">
+    <!-- #ifndef MP -->
+    <fps />
     <!-- #endif -->
-    <view class="page-container">
-      <!-- #ifndef MP -->
-      <fps />
-      <!-- #endif -->
-      <!-- 控制按钮区域 -->
-      <view class="control-panel padding-2 flex-row flex-wrap">
-        <button @click="clearValue" size="mini" class="ml-2">清空内容</button>
-        <button
-          @click="toggleDisabled"
-          :type="sharedDisabled ? 'primary' : 'default'"
-          size="mini"
-          class="ml-2"
-        >
-          {{ sharedDisabled ? "启用" : "禁用" }}输入
-        </button>
-        <text class="current-value"
-          >值: {{ sharedValue == "" ? "(空)" : sharedValue }}</text
-        >
-      </view>
-
-      <!-- 100个textarea组件 -->
-      <view class="padding-2 flex-row flex-wrap">
-        <template v-for="index in 100" :key="index">
-          <textarea
-            :value="sharedValue"
-            :placeholder="index.toString()"
-            :disabled="sharedDisabled"
-            @input="onInput"
-            class="item padding-2"
-          />
-        </template>
-      </view>
+    <!-- 控制按钮区域 -->
+    <view class="control-panel padding-2 flex-row flex-wrap">
+      <button @click="clearValue" size="mini" class="ml-2">清空内容</button>
+      <button
+        @click="toggleDisabled"
+        :type="sharedDisabled ? 'primary' : 'default'"
+        size="mini"
+        class="ml-2"
+      >
+        {{ sharedDisabled ? "启用" : "禁用" }}输入
+      </button>
+      <text class="current-value"
+        >值: {{ sharedValue == "" ? "(空)" : sharedValue }}</text
+      >
     </view>
-    <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
+
+    <!-- 100个textarea组件 -->
+    <view class="padding-2 flex-row flex-wrap">
+      <template v-for="index in 100" :key="index">
+        <textarea
+          :value="sharedValue"
+          :placeholder="index.toString()"
+          :disabled="sharedDisabled"
+          @input="onInput"
+          class="item padding-2"
+        />
+      </template>
+    </view>
+  </view>
 </template>
 
 <script setup lang="ts">

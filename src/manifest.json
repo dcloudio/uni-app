@@ -2,8 +2,8 @@
 	"name": "Hello uni-app x",
 	"appid": "__UNI__HelloUniAppX",
 	"description": "",
-	"versionName": "2.3.3",
-	"versionCode": 20303,
+	"versionName": "2.3.6",
+	"versionCode": 20306,
 	"uni-app-x": {
 		"vapor": true,
 		"styleIsolationVersion": "2"

@@ -1,5 +1,6 @@
 import Activity from 'android.app.Activity';
 import Intent from 'android.content.Intent';
+import Uri from 'android.net.Uri';
 import Bundle from 'android.os.Bundle';
 import PackageManager from 'android.content.pm.PackageManager';
 import ConstantsAPI from 'com.tencent.mm.opensdk.constants.ConstantsAPI';
@@ -9,6 +10,7 @@ import IWXAPIEventHandler from 'com.tencent.mm.opensdk.openapi.IWXAPIEventHandle
 import WXAPIFactory from 'com.tencent.mm.opensdk.openapi.WXAPIFactory';
 import IWXAPI from 'com.tencent.mm.opensdk.openapi.IWXAPI';
 import SendAuth from 'com.tencent.mm.opensdk.modelmsg.SendAuth';
+import ShowMessageFromWX from 'com.tencent.mm.opensdk.modelmsg.ShowMessageFromWX';
 
 export class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 
@@ -55,6 +57,21 @@ export class WXEntryActivity extends Activity implements IWXAPIEventHandler {
     }
 
     override onReq(req : BaseReq) {
+        if (req instanceof ShowMessageFromWX.Req) {
+            const intent = new Intent();
+            // #ifdef VUE3-VAPOR
+            intent.setClassName(this.getPackageName(), 'io.dcloud.uniappxv.UniLaunchProxyActivity');
+            // #endif
+            // #ifndef VUE3-VAPOR
+            intent.setClassName(this.getPackageName(), 'io.dcloud.uniapp.UniLaunchProxyActivity');
+            // #endif
+            const ext = req.message?.messageExt;
+            if (ext != null && ext.length > 0) {
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(ext));
+            }
+            this.startActivity(intent);
+        }
         this.finish();
         this.overridePendingTransition(0, 0);
     }

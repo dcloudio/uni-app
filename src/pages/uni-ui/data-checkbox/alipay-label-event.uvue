@@ -1,5 +1,5 @@
 <template>
-	<scroll-view class="page">
+	<view>
 		<view class="section">
 			<text class="title">uni-data-checkbox 右侧对勾</text>
 			<view class="frame">
@@ -47,7 +47,7 @@
 			</view>
 			<text class="result">当前值：{{ viewValue }}，click 次数：{{ viewClickCount }}</text>
 		</view>
-	</scroll-view>
+	</view>
 </template>
 
 <script setup lang="ts">
@@ -82,10 +82,15 @@ const onViewClick = (item) => {
 </script>
 
 <style>
-.page {
-	flex: 1;
+page {
+	--background-color: #f5f5f5;
+	--content-background-color: #ffffff;
+	--text-color: #333333;
+	--tips-color: #0958d9;
+	--secondary-text-color: #657180;
+	--divider-color: #e5e5e5;
 	padding-top: 10px;
-	background-color: var(--background-color, #f5f5f5);
+	background-color: var(--background-color);
 }
 
 .section {
@@ -150,5 +155,16 @@ const onViewClick = (item) => {
 	margin-top: 10px;
 	font-size: 13px;
 	color: var(--secondary-text-color, #657180);
+}
+
+@media (prefers-color-scheme: dark) {
+	page {
+		--background-color: #1a1a1a;
+		--content-background-color: #2d2d2d;
+		--text-color: #ffffff;
+		--tips-color: #91caff;
+		--secondary-text-color: rgba(255, 255, 255, 0.65);
+		--divider-color: rgba(255, 255, 255, 0.12);
+	}
 }
 </style>

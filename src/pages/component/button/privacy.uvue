@@ -41,20 +41,31 @@
   const hrefPrivacy = 'https://dcloud.io/license/hello-uni-app-x.html'
 
   function agree() {
-    if (currentPage != null) {
-      uni.closeDialogPage({
-        dialogPage: currentPage
-      })
-    }
+    closeThisPage()
   }
 
   function reject() {
     uni.resetPrivacyAuthorization()
-    if (currentPage != null) {
+    closeThisPage()
+  }
+
+  function closeThisPage() {
+    if (currentPage == null) {
+      return
+    }
+    // #ifdef APP
+    setTimeout(() => {
+      // app 平台发行模式下关闭自身概率崩溃
       uni.closeDialogPage({
         dialogPage: currentPage
       })
-    }
+    }, 1)
+    // #endif
+    // #ifndef APP
+    uni.closeDialogPage({
+      dialogPage: currentPage
+    })
+    // #endif
   }
 
   function hrefClick(href : string) {

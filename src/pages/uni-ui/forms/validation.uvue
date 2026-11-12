@@ -1,0 +1,441 @@
+<template>
+	<view>
+		<view class="intro">
+			<text class="page-title">完整校验示例</text>
+			<text class="page-desc">覆盖常用 DB Schema 规则、字段级方法、异步校验和回调式 API。提交时会校验整张表，失焦时只校验配置了 blur 的字段。</text>
+		</view>
+
+		<view class="section rule-summary">
+			<text class="section-title">本页规则</text>
+			<text class="rule-text">required：必填　format：类型/邮箱　pattern：正则</text>
+			<text class="rule-text">minLength / maxLength：长度　minimum / maximum：数值范围</text>
+			<text class="rule-text">range / arrayType：枚举和数组元素类型</text>
+			<text class="rule-text">validateExpr / validateFunction：自定义同步和异步校验</text>
+		</view>
+
+		<view class="section">
+			<uni-forms
+				ref="formRef"
+				v-model="formData"
+				:rules="rules"
+				validate-trigger="blur"
+				err-show-type="undertext"
+				label-position="left"
+				label-width="100"
+				border
+				@validate="onValidate"
+			>
+				<uni-forms-item name="username" label="用户名" required label-class="demo-label" error-message-class="demo-error">
+					<uni-easyinput v-model="formData.username" placeholder="3-12 个字符" clearable />
+				</uni-forms-item>
+
+				<uni-forms-item name="email" label="邮箱" required label-class="demo-label" error-message-class="demo-error">
+					<uni-easyinput v-model="formData.email" placeholder="name@example.com" />
+				</uni-forms-item>
+
+				<uni-forms-item name="password" label="密码" required label-class="demo-label" error-message-class="demo-error">
+					<uni-easyinput v-model="formData.password" type="password" placeholder="至少 8 位，包含字母和数字" />
+				</uni-forms-item>
+
+				<uni-forms-item name="confirmPassword" label="确认密码" required label-class="demo-label" error-message-class="demo-error">
+					<uni-easyinput v-model="formData.confirmPassword" type="password" placeholder="再次输入密码" />
+				</uni-forms-item>
+
+				<uni-forms-item name="age" label="年龄" required label-class="demo-label" error-message-class="demo-error">
+					<view class="native-input-shell">
+						<input
+							class="native-input"
+							type="number"
+							v-model="ageInput"
+							placeholder="18-120"
+							:adjust-position="false"
+							@input="onAgeInput"
+						/>
+					</view>
+				</uni-forms-item>
+
+				<uni-forms-item name="role" label="角色枚举" required label-class="demo-label" error-message-class="demo-error">
+					<uni-combobox v-model="formData.role" :options="roleOptions" placeholder="请选择角色" />
+				</uni-forms-item>
+
+				<uni-forms-item name="tags" label="标签数组" required label-class="demo-label" error-message-class="demo-error">
+					<view class="tag-list">
+						<view
+							v-for="tag in tagOptions"
+							:key="tag"
+							class="tag-item"
+							:class="formData.tags.indexOf(tag) >= 0 ? 'tag-item-active' : ''"
+							@click="toggleTag(tag)"
+						>
+							<text class="tag-text">{{ tag }}</text>
+						</view>
+					</view>
+				</uni-forms-item>
+
+				<uni-forms-item name="inviteCode" label="异步邀请码" label-class="demo-label" error-message-class="demo-error">
+					<uni-easyinput v-model="formData.inviteCode" placeholder="请输入 UNI-FORM" />
+				</uni-forms-item>
+			</uni-forms>
+
+			<view class="button-grid">
+				<button class="action-button" size="mini" @click="validateForm">Promise 校验整表</button>
+				<button class="action-button" size="mini" @click="validateEmail">校验邮箱字段</button>
+				<button class="action-button secondary-button" size="mini" @click="validateByCallback">callback 校验</button>
+				<button class="action-button secondary-button" size="mini" @click="clearValidate">清除错误</button>
+			</view>
+			<text class="status-text">{{ statusText }}</text>
+		</view>
+
+		<view class="section section-last">
+			<text class="section-title">当前值</text>
+			<text class="data-text">{{ dataText }}</text>
+			<text class="hint-text">异步邀请码示例值：UNI-FORM；年龄必须是 18 到 120 的整数。</text>
+		</view>
+	</view>
+</template>
+
+<script setup lang="ts">
+type FormData = {
+	username : string,
+	email : string,
+	password : string,
+	confirmPassword : string,
+	age : number | null,
+	role : string,
+	tags : string[],
+	inviteCode : string
+}
+
+const formRef = ref<any>(null)
+const formData = ref<FormData>({
+	username: '',
+	email: '',
+	password: '',
+	confirmPassword: '',
+	age: null,
+	role: '',
+	tags: [],
+	inviteCode: ''
+})
+
+const roleOptions : string[] = ['管理员', '编辑', '访客']
+const tagOptions : string[] = ['uni-app', '表单', '跨端']
+const statusText = ref<string>('等待校验')
+const dataText = computed<string>(() : string => JSON.stringify(formData.value))
+const ageInput = ref<string>('')
+
+const rules = {
+	username: {
+		label: '用户名',
+		rules: [
+			{ required: true, errorMessage: '请输入用户名', trigger: 'blur' },
+			{ minLength: 3, maxLength: 12, errorMessage: '用户名长度为 3-12 个字符', trigger: 'blur' },
+			{ pattern: '^[a-zA-Z][a-zA-Z0-9_]*$', errorMessage: '须以字母开头，只能包含字母、数字和下划线', trigger: 'blur' }
+		]
+	},
+	email: {
+		label: '邮箱',
+		rules: [
+			{ required: true, errorMessage: '请输入邮箱地址', trigger: 'blur' },
+			{ format: 'email', errorMessage: '请输入正确的邮箱地址', trigger: 'blur' }
+		]
+	},
+	password: {
+		label: '密码',
+		rules: [
+			{ required: true, errorMessage: '请输入密码', trigger: 'blur' },
+			{ minLength: 8, errorMessage: '密码至少 8 位', trigger: 'blur' },
+			{ pattern: '^(?=.*[A-Za-z])(?=.*[0-9]).+$', errorMessage: '密码必须同时包含字母和数字', trigger: 'submit' }
+		]
+	},
+	confirmPassword: {
+		label: '确认密码',
+		rules: [{
+			required: true,
+			validateExpr: (value : any, allData : any) : boolean => value == allData.password,
+			errorMessage: '两次输入的密码不一致',
+			trigger: 'blur'
+		}]
+	},
+	age: {
+		label: '年龄',
+		rules: [
+			{ required: true, errorMessage: '请输入年龄', trigger: 'submit' },
+			{ format: 'int', errorMessage: '年龄必须是整数', trigger: 'submit' },
+			{ minimum: 18, maximum: 120, errorMessage: '年龄必须是 18-120 的整数', trigger: 'submit' }
+		]
+	},
+	role: {
+		label: '角色',
+		rules: [
+			{ required: true, errorMessage: '请选择角色', trigger: 'submit' },
+			{ range: roleOptions, errorMessage: '请选择有效角色', trigger: 'submit' }
+		]
+	},
+	tags: {
+		label: '标签',
+		rules: [
+			{ required: true, errorMessage: '请选择标签', trigger: 'submit' },
+			{ format: 'array', errorMessage: '标签值必须是数组', trigger: 'submit' },
+			{ arrayType: 'string', errorMessage: '标签值必须是字符串数组', trigger: 'submit' },
+			{ minLength: 1, errorMessage: '至少选择一个标签', trigger: 'submit' }
+		]
+	},
+	inviteCode: {
+		label: '邀请码',
+		rules: [{
+			validateFunction: async (_rule : any, value : any) => {
+				await new Promise((resolve) => setTimeout(resolve, 120))
+				if (value != 'UNI-FORM') {
+					return '邀请码无效，请输入 UNI-FORM'
+				}
+			},
+			errorMessage: '邀请码无效，请输入 UNI-FORM',
+			trigger: 'submit'
+		}]
+	}
+}
+
+function onAgeInput(event : any) {
+	const value = event?.detail?.value ?? ''
+	ageInput.value = value.toString()
+	formData.value.age = value == '' ? null : Number(value)
+}
+
+function toggleTag(tag : string) {
+	const next = formData.value.tags.slice()
+	const index = next.indexOf(tag)
+	if (index >= 0) {
+		next.splice(index, 1)
+	} else {
+		next.push(tag)
+	}
+	formData.value.tags = next
+}
+
+async function validateForm() {
+	prepareValidation()
+	try {
+		await formRef.value.validate()
+		statusText.value = 'Promise 校验通过'
+	} catch (errors) {
+		const list = errors as any[]
+		statusText.value = list != null && list.length > 0 ? list[0].errorMessage : '校验未通过'
+	}
+}
+
+async function validateEmail() {
+	prepareValidation()
+	try {
+		await formRef.value.validateField('email')
+		statusText.value = '邮箱字段校验通过'
+	} catch (errors) {
+		const list = errors as any[]
+		statusText.value = list != null && list.length > 0 ? list[0].errorMessage : '邮箱校验未通过'
+	}
+}
+
+function validateByCallback() {
+	prepareValidation()
+	formRef.value.validate((errors : any, data : any) => {
+		if (errors != null && errors.length > 0) {
+			statusText.value = 'callback：' + errors[0].errorMessage
+			return
+		}
+		statusText.value = 'callback 校验通过：' + JSON.stringify(data)
+	})
+}
+
+function clearValidate() {
+	prepareValidation()
+	formRef.value.clearValidate()
+	statusText.value = '已清除全部错误'
+}
+
+function prepareValidation() {
+	uni.hideKeyboard()
+}
+
+watch(() : number | null => formData.value.age, (value : number | null) => {
+	const nextValue = value == null ? '' : value.toString()
+	if (ageInput.value != nextValue) {
+		ageInput.value = nextValue
+	}
+})
+
+function onValidate(result : any) {
+	if (result == null) {
+		return
+	}
+	const list = Array.isArray(result) ? result : [result]
+	if (list.length > 0 && list[0].errorMessage != null) {
+		statusText.value = list[0].errorMessage
+	}
+}
+</script>
+
+<style>
+page {
+	--list-background-color: #ffffff;
+	--background-color: #f5f5f5;
+	--active-color: #a0a0a0;
+	--active-background-color: #f8f8f8;
+	--text-color: #333333;
+	--arrow-color: #999999;
+	--tips-background-color: #e6f4ff;
+	--content-background-color: #ffffff;
+	--secondary-text-color: #657180;
+	--input-border-color: #dcdfe6;
+	--divider-color: #e5e5e5;
+	--forms-error-background-color: #fff2f0;
+	background-color: var(--background-color);
+}
+
+.intro,
+.section {
+	padding: 16px;
+	background-color: var(--content-background-color, #ffffff);
+}
+
+.section {
+	margin-top: 10px;
+}
+
+.section-last {
+	padding-bottom: 32px;
+}
+
+.page-title,
+.section-title {
+	font-size: 18px;
+	font-weight: bold;
+	color: var(--text-color, #222222);
+}
+
+.section-title {
+	margin-bottom: 10px;
+	font-size: 16px;
+}
+
+.page-desc,
+.rule-text,
+.hint-text {
+	font-size: 13px;
+	line-height: 21px;
+	color: var(--secondary-text-color, #657180);
+}
+
+.rule-summary {
+	padding-bottom: 12px;
+}
+
+.native-input-shell {
+	width: 100%;
+	height: 36px;
+	min-height: 36px;
+	flex-direction: row;
+	align-items: center;
+	border-width: 1px;
+	border-style: solid;
+	border-color: var(--input-border-color, #d8dfe8);
+	border-radius: 4px;
+	box-sizing: border-box;
+	background-color: var(--list-background-color, #ffffff);
+}
+
+.native-input {
+	flex: 1;
+	width: 100%;
+	height: 34px;
+	min-height: 0;
+	padding: 0 10px;
+	font-size: 14px;
+	line-height: 34px;
+	color: var(--text-color, #333333);
+	box-sizing: border-box;
+	background-color: transparent;
+}
+
+.tag-list {
+	flex-direction: row;
+	flex-wrap: wrap;
+}
+
+.tag-item {
+	padding: 6px 12px;
+	margin: 0 8px 8px 0;
+	border-radius: 14px;
+	background-color: var(--active-background-color, #eef2f7);
+}
+
+.tag-item-active {
+	background-color: var(--tips-background-color, #d9edff);
+}
+
+.tag-text {
+	font-size: 13px;
+	color: var(--text-color, #4d5b6a);
+}
+
+.button-grid {
+	flex-direction: row;
+	flex-wrap: wrap;
+	margin-top: 8px;
+}
+
+.action-button {
+	width: 48%;
+	margin: 0 2% 8px 0;
+	color: #ffffff;
+	background-color: #007aff;
+}
+
+.secondary-button {
+	color: var(--text-color, #333333);
+	background-color: var(--active-background-color, #e9eef5);
+}
+
+.status-text {
+	margin-top: 8px;
+	font-size: 14px;
+	color: #007aff;
+}
+
+.data-text {
+	font-size: 12px;
+	line-height: 20px;
+	color: var(--secondary-text-color, #657180);
+}
+
+.hint-text {
+	margin-top: 10px;
+	font-size: 12px;
+}
+
+.demo-label {
+	font-weight: bold;
+	color: #007aff;
+}
+
+.demo-error {
+	font-weight: bold;
+	color: #dd524d;
+}
+
+@media (prefers-color-scheme: dark) {
+	page {
+		--list-background-color: #2d2d2d;
+		--background-color: #1a1a1a;
+		--active-color: #8f8f8f;
+		--active-background-color: #3b3b3b;
+		--text-color: #ffffff;
+		--arrow-color: #ffffff;
+		--tips-background-color: #0b1b3a;
+		--content-background-color: #2d2d2d;
+		--secondary-text-color: rgba(255, 255, 255, 0.65);
+		--input-border-color: rgba(255, 255, 255, 0.18);
+		--divider-color: rgba(255, 255, 255, 0.12);
+		--forms-error-background-color: #3a1a1c;
+	}
+}
+</style>

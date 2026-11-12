@@ -1,0 +1,546 @@
+<template>
+	<view class="page">
+		<view class="status-band">
+			<view class="title-row">
+				<view>
+					<text class="page-title">BLE 调试台</text>
+					<text class="page-subtitle">多设备全链路测试</text>
+				</view>
+				<view class="adapter-dot" :class="adapterOpened && adapterAvailable ? 'dot-online' : 'dot-offline'"></view>
+			</view>
+			<view class="status-grid">
+				<view class="status-item">
+					<text class="status-label">适配器</text>
+					<text class="status-value">{{ adapterOpened ? (adapterAvailable ? '可用' : adapterState) : '未初始化' }}</text>
+				</view>
+				<view class="status-item">
+					<text class="status-label">扫描</text>
+					<text class="status-value">{{ scanControlActive ? '进行中' : '已停止' }}</text>
+				</view>
+				<view class="status-item">
+					<text class="status-label">连接</text>
+					<text class="status-value">{{ connectedCount }} 台</text>
+				</view>
+			</view>
+			<view class="adapter-actions">
+				<view class="adapter-action adapter-action-primary"
+					:class="adapterOpenDisabled || contractRunning ? 'adapter-action-disabled' : ''"
+					@click="!contractRunning && openAdapter()">
+					<text
+						class="adapter-action-primary-text">{{ adapterOperation == 'open' ? '初始化中' : (adapterOpened ? '已初始化' : '初始化') }}</text>
+				</view>
+				<view class="adapter-action" :class="adapterQueryDisabled || contractRunning ? 'adapter-action-disabled' : ''"
+					@click="!contractRunning && queryAdapterState()">
+					<text class="adapter-action-text">{{ adapterOperation == 'query' ? '查询中' : '查询状态' }}</text>
+				</view>
+				<view class="adapter-action adapter-action-release adapter-action-last"
+					:class="adapterReleaseDisabled || contractRunning ? 'adapter-action-disabled' : ''"
+					@click="!contractRunning && releaseAdapter()">
+					<text class="adapter-action-release-text">{{ adapterOperation == 'close' ? '释放中' : '释放' }}</text>
+				</view>
+			</view>
+		</view>
+		<view class="steps">
+			<view v-for="(step, index) in steps" :key="step" class="step" :class="activeStep == index ? 'step-active' : ''"
+				@click="!contractRunning && selectStep(index)">
+				<text class="step-label" :class="activeStep == index ? 'step-label-active' : ''">{{ step }}</text>
+			</view>
+		</view>
+		<view v-if="activeStep == 2" class="sub-tabs">
+			<view class="sub-tab" :class="testTab == 'concurrency' ? 'sub-tab-active' : ''"
+				@click="selectTestTab('concurrency')">
+				<text class="sub-tab-label" :class="testTab == 'concurrency' ? 'sub-tab-label-active' : ''">多设备并发测试</text>
+			</view>
+			<view class="sub-tab" :class="testTab == 'contract' ? 'sub-tab-active' : ''" @click="selectTestTab('contract')">
+				<text class="sub-tab-label" :class="testTab == 'contract' ? 'sub-tab-label-active' : ''">单 API 多场景测试</text>
+			</view>
+		</view>
+		<scroll-view class="content" direction="vertical" :show-scrollbar="true">
+			<WorkbenchDevicePanel v-if="activeStep == 0" :adapter-opened="adapterOpened" :discovering="scanControlActive"
+				:devices="panelDevices" :connected-device-id="panelConnectedDeviceId"
+				:connected-device-ids="connectedIds" :scan-services-text="scanServicesText"
+				:scan-interval-text="scanIntervalText"
+				:scan-duration-text="scanDurationText" :scan-remaining-seconds="scanRemainingSeconds"
+				:allow-duplicates="allowDuplicates" :ignore-unknown-devices="ignoreUnknown"
+				:filter-connectable-devices="filterConnectable" :scan-pending="scanPending"
+				:connecting-ids="connectingIds" :query-pending="queryPending"
+				@scan-services-change="scanServicesText = $event"
+				@scan-interval-change="scanIntervalText = $event" @scan-duration-change="scanDurationText = $event"
+				@duplicate-change="allowDuplicates = $event" @ignore-unknown-change="ignoreUnknown = $event"
+				@filter-connectable-change="filterConnectable = $event" @start-discovery="startDiscovery"
+				@stop-discovery="stopDiscovery" @get-cached-devices="getCachedDevices"
+				@get-connected-devices="getConnectedDevices" @toggle-device-details="toggleDeviceDetails"
+				@connect-device="connect" @copy-device-id="workspace.copyDeviceId" />
+
+			<GattWorkbench v-if="activeStep == 1" :connected-ids="connectedIds" :devices="devices"
+				:selected-device-id="selectedDeviceId" :current-device-name="currentDeviceName"
+				:device-selector-open="deviceSelectorOpen" :connection-pending="connectionPending"
+				:task-editor-return-to-concurrency="taskEditorReturnToConcurrency" :current-rssi="currentRSSI"
+				:current-mtu="currentMTU" :services="services" :characteristic-count="characteristicCount" :gatt-busy="gattBusy"
+				:selected-service-id="selectedServiceId" :selected-characteristic-id="selectedCharacteristicId"
+				:selected-characteristic-name="selectedCharacteristicName" :notifying="notifying"
+				:value-display-mode="valueDisplayMode" :utf8-supported="utf8Supported" :last-value-time="lastValueTime"
+				:last-value-display="lastValueDisplay" :last-value-meta="lastValueMeta" :can-read="canRead"
+				:can-notify="canNotify" :io-busy="ioBusy" :notify-busy="notifyBusy"
+				:selected-path-has-running-task="selectedPathHasRunningTask" :write-mode="writeMode"
+				:write-payload-mode="writePayloadMode" :write-hex="writeHex" :write-utf8="writeUtf8"
+				:write-payload-summary="writePayloadSummary" :write-payload-hex-preview="writePayloadHexPreview"
+				:mtu-text="mtuText" :can-write-with-response="canWriteWithResponse"
+				:can-write-without-response="canWriteWithoutResponse" :can-write="canWrite"
+				:available-task-kinds="availableTaskKinds" @toggle-device-selector="toggleDeviceSelector"
+				@disconnect="disconnectSelected" @switch-device="switchCurrentDevice" @refresh-gatt="refreshGatt"
+				@select-service="selectService" @select-characteristic="selectCharacteristic"
+				@select-value-display-mode="selectValueDisplayMode" @copy-last-value="copyLastValue" @read-value="readValue"
+				@toggle-notify="toggleNotify" @write-payload-mode-change="writePayloadMode = $event"
+				@paste-write-payload="pasteWritePayload" @write-hex-change="writeHex = $event"
+				@write-utf8-change="writeUtf8 = $event" @select-write-mode="selectWriteMode" @write-value="writeValue"
+				@open-task-editor="openTaskEditor" />
+
+			<ConcurrencyPanel v-if="activeStep == 2 && testTab == 'concurrency'" :tasks="tasks" :connected-ids="connectedIds"
+				:subtitle="concurrencySubtitle" :total-tasks="totalTasks" :running-tasks="runningTasks"
+				:passed-tasks="passedTasks" :failed-tasks="failedTasks" @run-all="runAllTasks"
+				@toggle-pause="toggleDeviceTaskPause" @remove-item="removeTaskItem" @open-picker="openTaskPickerForDevice"
+				@rebind="rebindDeviceTasks" @remove-task="removeTask" />
+
+			<ApiContractPanel v-if="activeStep == 2 && testTab == 'contract'" :apis="contractApis"
+				:selected-api-name="contractSelectedApiName" :categories="contractCategories"
+				:selected-category="contractSelectedCategory" :visible-apis="contractVisibleApis" :cases="contractCases"
+				:results="contractResults" :running="contractRunning" :result-status="contractResultStatus"
+				:preconditions="contractPreconditions" :can-run-case="canRunContractCase"
+				:parameter-text="contractWorkspace.parameterText" :device-id-text="contractWorkspace.deviceIdText.value"
+				:target-device-id="contractWorkspace.targetDeviceId.value" :preparation-busy="workspace.contractBusy.value"
+				@paste-device-id="contractWorkspace.pasteDeviceId"
+				@device-id-change="contractWorkspace.deviceIdText.value = $event"
+				@confirm-fixture="contractWorkspace.confirmFixture" @select-category="selectContractCategory"
+				@prepare="prepareContract" @select-api="selectContractApi" @run-case="runContractCase"
+				@clear-results="clearContractResults" @copy-text="copyContractText" />
+
+			<EventProbePanel v-if="activeStep == 3" :event-rows="eventRows" :listener-uses-ids="listenerUsesIds"
+				@clear-listeners="clearListeners" @toggle-listener="toggleEventListener" @toggle-event-logs="toggleEventLogs"
+				@clear-event-logs="clearEventLogs" />
+			<LogPanel v-if="activeStep == 4" :logs="logs" :visible-log-devices="visibleLogDevices"
+				:log-filter-mode="logFilterMode" :selected-log-device-id="selectedLogDeviceId" @clear-logs="clearLogs"
+				@set-log-filter="setLogFilter" @select-log-device="selectLogDevice" />
+			<view class="bottom-space"></view>
+		</scroll-view>
+
+		<TaskEditorSheet v-if="taskEditorOpen" :current-device-name="currentDeviceName" :service-id="selectedServiceId"
+			:characteristic-id="selectedCharacteristicId" :available-task-kinds="availableTaskKinds"
+			:task-draft-kind="taskDraftKind" :can-write-with-response="canWriteWithResponse"
+			:can-write-without-response="canWriteWithoutResponse" :write-mode="writeMode"
+			:write-payload-summary="writePayloadSummary" :write-payload-hex-preview="writePayloadHexPreview"
+			:task-write-verification-text="taskWriteVerificationText" :task-draft-notify-type-label="taskDraftNotifyTypeLabel"
+			:task-draft-count-text="taskDraftCountText" :task-draft-timeout-text="taskDraftTimeoutText"
+			:task-draft-expected-hex="taskDraftExpectedHex" :task-draft-conflict-reason="taskDraftConflictReason"
+			:task-editor-error="taskEditorError" @close="closeTaskEditor" @confirm="confirmTaskEditor"
+			@select-kind="selectTaskDraftKind" @select-write-mode="selectWriteMode"
+			@count-text-change="taskDraftCountText = $event" @timeout-text-change="taskDraftTimeoutText = $event"
+			@expected-hex-change="taskDraftExpectedHex = $event" @paste-expected-hex="pasteExpectedHex" />
+	</view>
+</template>
+
+<script setup lang="ts">
+	import WorkbenchDevicePanel from './components/WorkbenchDevicePanel/WorkbenchDevicePanel.uvue'
+	import LogPanel from './components/LogPanel/LogPanel.uvue'
+	import TaskEditorSheet from './components/TaskEditorSheet/TaskEditorSheet.uvue'
+	import ConcurrencyPanel from './components/ConcurrencyPanel/ConcurrencyPanel.uvue'
+	import EventProbePanel from './components/EventProbePanel/EventProbePanel.uvue'
+	import GattWorkbench from './components/GattWorkbench/GattWorkbench.uvue'
+	import ApiContractPanel from './components/ApiContractPanel/ApiContractPanel.uvue'
+	import { createBleWorkbenchController } from './logic/BleWorkbenchController.ts'
+	import { createBleContractController } from './logic/BleContractController.ts'
+	import { BleContractContext } from './logic/BleContractController.ts'
+	import { startBleApiForTest as startBleApiForTestBridge, readBleApiResult as readBleApiResultBridge } from './logic/BleTestBridge.ts'
+
+	const workspace = createBleWorkbenchController()
+	const contractWorkspace = createBleContractController({
+		adapterOpened: workspace.adapterOpened,
+		connectedIds: workspace.connectedIds,
+		selectedDeviceId: workspace.selectedDeviceId,
+		selectedServiceId: workspace.selectedServiceId,
+		selectedCharacteristicId: workspace.selectedCharacteristicId,
+		devices: workspace.devices,
+		services: workspace.services,
+		adapterAvailable: workspace.adapterAvailable,
+		discovering: workspace.scanControlActive,
+		workbenchBusy: workspace.contractBusy,
+		canRead: workspace.canRead,
+		canWriteWithResponse: workspace.canWriteWithResponse,
+		canWriteWithoutResponse: workspace.canWriteWithoutResponse,
+		canNotification: workspace.canNotification,
+		notifying: workspace.notifying,
+		openAdapter: workspace.openAdapter,
+		closeAdapter: workspace.releaseAdapter,
+		queryAdapterState: workspace.queryAdapterState,
+		startDiscovery: workspace.startDiscovery,
+		stopDiscovery: workspace.stopDiscovery,
+		toggleNotify: workspace.toggleNotify,
+		disconnect: workspace.disconnect,
+		selectStep: workspace.selectStep,
+		makeSuccessHandler: workspace.makeContractSuccessHandler,
+		getDisconnectEpoch: workspace.getContractDisconnectEpoch
+	})
+	const {
+		steps,
+		testTab,
+		listenerUsesIds,
+		utf8Supported,
+		activeStep,
+		adapterAvailable,
+		adapterOpened,
+		adapterState,
+		adapterOperation,
+		scanServicesText,
+		scanIntervalText,
+		scanDurationText,
+		scanRemainingSeconds,
+		connectedServicesText,
+		allowDuplicates,
+		ignoreUnknown,
+		filterConnectable,
+		devices,
+		connectedIds,
+		selectedDeviceId,
+		deviceSelectorOpen,
+		selectedServiceId,
+		selectedCharacteristicId,
+		selectedCharacteristicName,
+		services,
+		currentRSSI,
+		currentMTU,
+		notifying,
+		writeHex,
+		writeUtf8,
+		writePayloadMode,
+		writeMode,
+		valueDisplayMode,
+		lastValueTime,
+		mtuText,
+		scanPending,
+		queryPending,
+		gattBusy,
+		ioBusy,
+		notifyBusy,
+		logs,
+		logFilterMode,
+		selectedLogDeviceId,
+		tasks,
+		taskEditorOpen,
+		taskEditorReturnToConcurrency,
+		taskDraftKind,
+		taskDraftCountText,
+		taskDraftTimeoutText,
+		taskDraftExpectedHex,
+		taskEditorError,
+		eventRows,
+		panelDevices,
+		connectedCount,
+		panelConnectedDeviceId,
+		currentDeviceName,
+		connectionPending,
+		connectingIds,
+		characteristicCount,
+		canRead,
+		canWriteWithResponse,
+		canWriteWithoutResponse,
+		canWrite,
+		canNotify,
+		taskDraftNotifyTypeLabel,
+		taskWriteVerificationText,
+		selectedPathHasRunningTask,
+		writePayloadSummary,
+		writePayloadHexPreview,
+		totalTasks,
+		runningTasks,
+		passedTasks,
+		failedTasks,
+		concurrencySubtitle,
+		availableTaskKinds,
+		taskDraftConflictReason,
+		scanControlActive,
+		adapterOpenDisabled,
+		adapterQueryDisabled,
+		adapterReleaseDisabled,
+		lastValueDisplay,
+		lastValueMeta,
+		visibleLogDevices,
+		selectStep,
+		selectTestTab,
+		clearLogs,
+		setLogFilter,
+		selectLogDevice,
+		toggleDeviceDetails,
+		startDiscovery,
+		stopDiscovery,
+		getCachedDevices,
+		getConnectedDevices,
+		connect,
+		disconnectSelected,
+		toggleDeviceSelector,
+		switchCurrentDevice,
+		openAdapter,
+		queryAdapterState,
+		releaseAdapter,
+		refreshGatt,
+		selectService,
+		selectCharacteristic,
+		selectWriteMode,
+		selectValueDisplayMode,
+		copyLastValue,
+		pasteWritePayload,
+		pasteExpectedHex,
+		readValue,
+		writeValue,
+		toggleNotify,
+		selectTaskDraftKind,
+		openTaskEditor,
+		closeTaskEditor,
+		confirmTaskEditor,
+		openTaskPickerForDevice,
+		runAllTasks,
+		toggleDeviceTaskPause,
+		rebindDeviceTasks,
+		removeTaskItem,
+		removeTask,
+		toggleEventListener,
+		clearListeners,
+		toggleEventLogs,
+		clearEventLogs,
+		onPageLoad,
+		onPageUnload
+	} = workspace
+	const contractApis = contractWorkspace.apis
+	const contractCategories = contractWorkspace.categories
+	const contractSelectedCategory = contractWorkspace.selectedCategory
+	const contractVisibleApis = contractWorkspace.visibleApis
+	const selectContractCategory = contractWorkspace.selectCategory
+	const contractPreconditions = contractWorkspace.preconditions
+	const canRunContractCase = contractWorkspace.canRunCase
+	const prepareContract = contractWorkspace.prepare
+	const contractSelectedApiName = contractWorkspace.selectedApiName
+	const contractCases = contractWorkspace.cases
+	const contractResults = contractWorkspace.results
+	const contractRunning = contractWorkspace.running
+	const selectContractApi = contractWorkspace.selectApi
+	const runContractCase = contractWorkspace.runCase
+	const clearContractResults = contractWorkspace.clearResults
+	const copyContractText = contractWorkspace.copyText
+	const contractResultStatus = contractWorkspace.resultStatus
+	const startBleApiForTest = (payload : UTSJSONObject) : UTSJSONObject => {
+		try {
+			return startBleApiForTestBridge(payload)
+		} catch (error) {
+			const failure = {}
+			failure['token'] = ''
+			failure['syncError'] = JSON.stringify(error) ?? 'sync error'
+			return failure
+		}
+	}
+	const readBleApiResult = (payload : UTSJSONObject) : UTSJSONObject | null => {
+		try {
+			return readBleApiResultBridge(payload)
+		} catch (error) {
+			const failure = {}
+			failure['syncError'] = JSON.stringify(error) ?? 'sync error'
+			return failure
+		}
+	}
+	defineExpose({ startBleApiForTest, readBleApiResult })
+	onReady(onPageLoad)
+	onUnload(() => { contractWorkspace.dispose(); onPageUnload() })
+</script>
+
+<style>
+	.page {
+		flex: 1;
+		background-color: #f3f6f8;
+		color: #162734;
+	}
+
+	.status-band {
+		padding: 20px 18px 16px;
+		background-color: #18212b;
+	}
+
+	.title-row,
+	.status-grid {
+		display: flex;
+		flex-direction: row;
+	}
+
+	.title-row {
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.page-title {
+		color: #ffffff;
+		font-size: 24px;
+		font-weight: 700;
+	}
+
+	.page-subtitle {
+		margin-top: 4px;
+		color: #9fb0bf;
+		font-size: 12px;
+	}
+
+	.adapter-dot {
+		width: 12px;
+		height: 12px;
+		border-radius: 6px;
+	}
+
+	.dot-online {
+		background-color: #35c26b;
+	}
+
+	.dot-offline {
+		background-color: #e45b5b;
+	}
+
+	.status-grid {
+		margin-top: 18px;
+	}
+
+	.status-item {
+		flex: 1;
+	}
+
+	.status-label {
+		color: #8394a3;
+		font-size: 11px;
+	}
+
+	.status-value {
+		margin-top: 4px;
+		color: #f7fafc;
+		font-size: 14px;
+	}
+
+	.adapter-actions {
+		display: flex;
+		flex-direction: row;
+		margin-top: 16px;
+	}
+
+	.adapter-action {
+		display: flex;
+		flex: 1;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		height: 34px;
+		margin-right: 8px;
+		border-width: 1px;
+		border-color: #c9d1d8;
+		border-radius: 5px;
+		background-color: #ffffff;
+	}
+
+	.adapter-action-primary {
+		border-color: #1677ff;
+		background-color: #1677ff;
+	}
+
+	.adapter-action-release {
+		border-color: #566574;
+		background-color: #313e49;
+	}
+
+	.adapter-action-last {
+		margin-right: 0;
+	}
+
+	.adapter-action-disabled {
+		opacity: 0.45;
+	}
+
+	.adapter-action-text {
+		color: #263442;
+		font-size: 13px;
+	}
+
+	.adapter-action-primary-text,
+	.adapter-action-release-text {
+		color: #ffffff;
+		font-size: 13px;
+	}
+
+	.steps {
+		display: flex;
+		flex-direction: row;
+		height: 48px;
+		background-color: #ffffff;
+		border-bottom-width: 1px;
+		border-bottom-color: #dce2e7;
+	}
+
+	.step {
+		flex: 1;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		border-bottom-width: 3px;
+		border-bottom-color: transparent;
+	}
+
+	.step-active {
+		border-bottom-color: #1677ff;
+	}
+
+	.step-label {
+		color: #64717d;
+		font-size: 14px;
+	}
+
+	.step-label-active {
+		color: #1677ff;
+		font-weight: 600;
+	}
+
+	.sub-tabs {
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		height: 40px;
+		background-color: #ffffff;
+		border-bottom-width: 1px;
+		border-style: solid;
+		border-bottom-color: #e5ebef;
+	}
+
+	.sub-tab {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		height: 40px;
+		margin: 0 16px;
+		border-bottom-width: 2px;
+		border-bottom-color: transparent;
+	}
+
+	.sub-tab-active {
+		border-bottom-color: #1677ff;
+	}
+
+	.sub-tab-label {
+		color: #64717d;
+		font-size: 13px;
+	}
+
+	.sub-tab-label-active {
+		color: #1677ff;
+		font-weight: 600;
+	}
+
+	.content {
+		flex: 1;
+	}
+
+	.bottom-space {
+		height: 30px;
+	}
+</style>

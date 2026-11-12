@@ -55,9 +55,9 @@
           <text class="label">默认样式（橙色）：</text>
           <child-external text="默认样式：紫色背景和描边"></child-external>
         </view>
-        <view class="test-item">
+        <view id="external-class-concat-case" class="test-item">
           <text class="label">通过child-class自定义样式（蓝色）：</text>
-          <child-external text="蓝色样式：黄色背景蓝色描边" child-class="external-class" box-class="external-custom-box"></child-external>
+          <child-external class="external-class-concat-component" text="蓝色样式：黄色背景蓝色描边" child-class="external-class" :box-class="data.externalBoxClass"></child-external>
         </view>
         <view class="test-item">
           <text class="label">全局样式使用!important覆盖组件样式：</text>
@@ -166,6 +166,7 @@
 
   type DataType = {
     stay_time: number;
+    externalBoxClass: string;
     childViewRect: DOMRect | null;
     childView: UniElement | null;
   }
@@ -173,6 +174,7 @@
   // 使用reactive解决ref数据在自动化测试中无法访问
   const data = reactive({
     stay_time: 1000,
+    externalBoxClass: 'external-custom-box',
     childViewRect: null,
     childView:null,
   } as DataType)
@@ -241,6 +243,14 @@
   .custom-style-green {
     background-color: #cbf1db !important;
     border-color: #8bc399 !important;
+  }
+
+  .concat-opacity {
+    opacity: 0.5;
+  }
+
+  .concat-radius {
+    border-top-left-radius: 12px;
   }
 
   /* externalClasses自定义样式 */

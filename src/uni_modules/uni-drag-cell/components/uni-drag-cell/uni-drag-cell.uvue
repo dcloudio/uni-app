@@ -6,10 +6,19 @@
 			:key="itemIds.length > index ? itemIds[index] : index"
 			class="drag-cell-item"
 			:style="getItemStyle(index)"
+			<!-- #ifdef WEB -->
+			@pointerdown.stop="onItemTouchStart($event, index)"
+			@pointermove="onItemTouchMove($event, index)"
+			@pointerup="onItemTouchEnd($event, index)"
+			@pointercancel="onItemTouchEnd($event, index)"
+			<!-- #endif -->
+			<!-- #ifndef WEB -->
 			@touchstart.stop="onItemTouchStart($event, index)"
 			@touchmove="onItemTouchMove($event, index)"
 			@touchend="onItemTouchEnd($event, index)"
-			@touchcancel="onItemTouchEnd($event, index)">
+			@touchcancel="onItemTouchEnd($event, index)"
+			<!-- #endif -->
+			>
 			<view class="drag-cell-item-inner">
 				<view class="drag-cell-slot-content">
 					<slot :item="item" :index="index"></slot>
@@ -18,9 +27,17 @@
 					v-if="handleModeEnabled"
 					class="drag-cell-handle"
 					:class="getHandleClass(index)"
+					<!-- #ifdef WEB -->
+					@pointerdown.stop="onHandleTouchStart($event, index)"
+					@pointerup.stop="onHandleTouchEnd($event, index)"
+					@pointercancel.stop="onHandleTouchEnd($event, index)"
+					<!-- #endif -->
+					<!-- #ifndef WEB -->
 					@touchstart.stop="onHandleTouchStart($event, index)"
 					@touchend.stop="onHandleTouchEnd($event, index)"
-					@touchcancel.stop="onHandleTouchEnd($event, index)">
+					@touchcancel.stop="onHandleTouchEnd($event, index)"
+					<!-- #endif -->
+					>
 					<!-- 此处item、index参数除传递参数之外，还会激活编译到小程序的scopedSlot特殊处理逻辑，使外部使用时能正常循环创建插槽内容。需要注意的是使用此插槽是也需要声明参数来激活特殊逻辑 -->
 					<slot name="handle" :item="item" :index="index"></slot>
 				</view>
@@ -84,6 +101,13 @@
    *   }
    * }
    */
+	// #ifdef WEB
+	type DragInputEvent = PointerEvent
+	// #endif
+	// #ifndef WEB
+	type DragInputEvent = UniTouchEvent
+	// #endif
+
 	type ItemLayout = {
 		left: number,
 		pageTop: number,
@@ -979,25 +1003,49 @@
 		})
 	}
 
+	const getDragPoint = (event : DragInputEvent) => {
+		// #ifdef WEB
+		return event
+		// #endif
+		// #ifndef WEB
+		return event.touches[0]
+		// #endif
+	}
+
+	// #ifdef WEB
+	const capturePointer = (event : PointerEvent) : boolean => {
+		if (event.isPrimary != true || event.button != 0) {
+			return false
+		}
+		const target = event.currentTarget as HTMLElement
+		target.setPointerCapture(event.pointerId)
+		event.preventDefault()
+		return true
+	}
+	// #endif
+
 	let currentTouchContext: TouchContext | null = null
-	const onItemTouchStart = (event : any, index : number) => {
+	const onItemTouchStart = (event : DragInputEvent, index : number) => {
 		if (handleModeEnabled.value == true) {
 			return
 		}
 		if (dragging.value == true) {
 			return
 		}
+		// #ifdef WEB
+		if (capturePointer(event) != true) {
+			return
+		}
+		// #endif
 		currentTouchContext = new TouchContext(index)
-		const touchEvent = event as UniTouchEvent
-		const touch = touchEvent.touches[0]
+		const touch = getDragPoint(event)
 		scheduleLongPress(currentTouchContext!, touch.clientX, touch.clientY)
 	}
 
-	const onItemTouchMove = (event : any, index : number) => {
-		const touchEvent = event as UniTouchEvent
-		const touch = touchEvent.touches[0]
+	const onItemTouchMove = (event : DragInputEvent, index : number) => {
+		const touch = getDragPoint(event)
 		if (dragging.value == true) {
-			touchEvent.preventDefault()
+			event.preventDefault()
 			if (index != activeIndex.value) {
 				return
 			}
@@ -1018,12 +1066,16 @@
 		}
 	}
 
-	const onHandleTouchStart = (event : any, index : number) => {
+	const onHandleTouchStart = (event : DragInputEvent, index : number) => {
 		if (handleModeEnabled.value != true) {
 			return
 		}
-		const touchEvent = event as UniTouchEvent
-		const touch = touchEvent.touches[0]
+		// #ifdef WEB
+		if (capturePointer(event) != true) {
+			return
+		}
+		// #endif
+		const touch = getDragPoint(event)
 		currentTouchContext = new TouchContext(index)
 		beginHandleDrag(currentTouchContext!, touch.clientX, touch.clientY)
 	}
@@ -1152,6 +1204,8 @@
 		overflow: visible;
 		/* #ifdef WEB */
 		cursor: grab;
+		touch-action: none;
+		user-select: none;
 		/* #endif */
 	}
 

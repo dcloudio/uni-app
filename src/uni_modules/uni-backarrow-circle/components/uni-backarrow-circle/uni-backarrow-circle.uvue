@@ -1,0 +1,169 @@
+<template>
+  <!-- 圆形背景承载点击区域，箭头由旋转边框绘制。 -->
+  <!-- #ifdef APP-IOS -->
+  <glass-effect-view v-if="props.iosGlass" class="back-circle back-circle-glass" glass-style="clear" tint-color="transparent" :interactive="true" @click="handleClick">
+    <view class="back-arrow" flatten></view>
+  </glass-effect-view>
+  <!-- #endif -->
+  <view
+    <!-- #ifdef APP-IOS -->
+    v-else
+    <!-- #endif -->
+    class="back-circle" hover-class="back-circle-hover" @click="handleClick">
+    <!-- #ifdef APP -->
+    <view class="back-arrow" flatten></view>
+    <!-- #endif -->
+  </view>
+</template>
+
+<script lang="ts" setup>
+  /**
+   * BackArrowCircle 圆形返回按钮
+   * @description 带圆形背景的返回箭头组件，使用旋转边框绘制箭头，支持暗黑模式与 CSS 变量定制箭头颜色、线宽；默认只触发 click，开启 autoBack 后自动返回上一页。
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {"unixVaporVer": "5.33"},
+   *     "ios": {"unixVaporVer": "5.33"},
+   *     "harmony": {"unixVaporVer": "5.33"}
+   *   },
+   *   "mp": {
+   *     "weixin": {"unixVer": "5.33"},
+   *     "alipay": {"unixVer": "5.33"}
+   *   },
+   *   "web": {"unixVer": "5.33","unixVaporVer": "5.33"}
+   * }
+   * @property {Boolean} autoBack 点击后是否自动调用 uni.navigateBack({}) 返回上一页，默认值 false
+   * @property {Boolean} iosGlass 仅 iOS：使用 glass-effect-view 液态玻璃背景，默认值 false
+   * @event {Function} click 点击时触发，无参数；当 autoBack 为 true 时随后返回上一页
+   */
+
+  const props = withDefaults(defineProps<{
+    /**
+     * @description 点击后是否自动调用 uni.navigateBack({}) 返回上一页
+     * @default false
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {"unixVaporVer": "5.33"},
+     *     "ios": {"unixVaporVer": "5.33"},
+     *     "harmony": {"unixVaporVer": "5.33"}
+     *   },
+     *   "mp": {
+     *     "weixin": {"unixVer": "5.33"},
+     *     "alipay": {"unixVer": "5.33"}
+     *   },
+     *   "web": {"unixVer": "5.33","unixVaporVer": "5.33"}
+     * }
+     */
+    autoBack?: boolean
+    /**
+     * @description 仅 iOS 使用 glass-effect-view 液态玻璃背景，并启用按下交互效果
+     * @default false
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {"unixVaporVer": "x"},
+     *     "ios": {"unixVaporVer": "5.33"},
+     *     "harmony": {"unixVaporVer": "x"}
+     *   },
+     *   "mp": {
+     *     "weixin": {"unixVer": "x"},
+     *     "alipay": {"unixVer": "x"}
+     *   },
+     *   "web": {"unixVer": "x","unixVaporVer": "x"}
+     * }
+     */
+    iosGlass?: boolean
+  }>(), {
+    autoBack: false,
+    iosGlass: false
+  })
+
+  const emit = defineEmits(['click'])
+  const handleClick = () => {
+    emit('click')
+    if (props.autoBack) {
+      uni.navigateBack({})
+    }
+  }
+</script>
+
+<style>
+  .back-circle {
+    width: 28px;
+    height: 28px;
+    border-radius: 14px;
+    background-color: rgba(206, 206, 206, 0.6);
+    justify-content: center;
+    align-items: center;
+    margin-left: calc(var(--uni-safe-area-inset-left, 0px) + 12px);
+    /* #ifdef MP */
+    margin-top: var(--status-bar-height);
+    /* #endif */
+    /* #ifndef MP */
+    margin-top: var(--uni-safe-area-inset-top);
+    /* #endif */
+    /* 将旋转边框绘制的箭头向右微调，使其在圆形背景内视觉居中。 */
+    padding-left: 4px;
+  }
+
+  /* 按下时的点击态：整体降低不透明度，兼容自定义背景色，不覆盖外部样式。 */
+  .back-circle-hover {
+    opacity: 0.6;
+  }
+
+  /* #ifdef APP-IOS */
+  .back-circle-glass {
+    background-color: transparent;
+  }
+  /* #endif */
+
+  /* Web 端鼠标悬浮态：轻微上移配合阴影，独立 translate 保留外部 transform 缩放。 */
+  /* #ifdef WEB */
+  .back-circle {
+    transition: translate 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .back-circle:hover {
+    translate: 0 -2px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  }
+  /* #endif */
+
+  /* 通过根节点上的 CSS 变量定制箭头颜色和线宽。 */
+  /* #ifdef WEB || MP */
+  .back-circle::after,
+  /* #endif */
+  .back-arrow {
+    width: 12px;
+    height: 12px;
+    transform: rotate(45deg);
+    border-left: var(--uni-backarrow-circle-width, 2px) solid var(--uni-backarrow-circle-color, #ffffff);
+    border-bottom: var(--uni-backarrow-circle-width, 2px) solid var(--uni-backarrow-circle-color, #ffffff);
+  }
+
+  /* #ifdef WEB || MP */
+  .back-circle::after {
+    content: '';
+    box-sizing: border-box;
+  }
+  /* #endif */
+
+  @media (prefers-color-scheme: dark) {
+    .back-circle {
+      background-color: rgba(80, 80, 80, 0.45);
+    }
+
+    /* #ifdef WEB */
+    .back-circle:hover {
+      box-shadow: 0 2px 8px rgba(255, 255, 255, 0.18);
+    }
+    /* #endif */
+
+    /* #ifdef WEB || MP */
+    .back-circle::after,
+    /* #endif */
+    .back-arrow {
+      border-left-color: var(--uni-backarrow-circle-color, #ffffff);
+      border-bottom-color: var(--uni-backarrow-circle-color, #ffffff);
+    }
+  }
+</style>

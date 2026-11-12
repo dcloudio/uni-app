@@ -48,14 +48,8 @@ const MapUniErrors : Map<MapErrorCode, string> = new Map([
 @UTSiOS.keyword("fileprivate")
 // #endif
 export function getErrcode(errCode : number) : MapErrorCode {
-	// #ifdef APP-HARMONY
-	const res : string | null = MapUniErrors[errCode];
+	const res : string | null = MapUniErrors.get(errCode as MapErrorCode);
 	return (res == null ? 500012 : errCode) as MapErrorCode;
-	// #endif
-	// #ifndef APP-HARMONY
-	const res = MapUniErrors[errCode];
-	return res == null ? 500012 : errCode;
-	// #endif
 }
 
 
@@ -67,7 +61,7 @@ export class MapContextFailImpl extends UniError implements MapContextFail {
 		super();
 		this.errSubject = UniMapErrorSubject;
 		this.errCode = errCode;
-		this.errMsg = MapUniErrors[errCode] ?? "";
+		this.errMsg = MapUniErrors.get(errCode) ?? "";
 	}
 }
 

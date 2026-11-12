@@ -1,0 +1,439 @@
+import {
+  BluetoothAdapterStateChangeCallback, BluetoothAdapterStateChangeResult,
+  BluetoothDevice, BluetoothDeviceFoundCallback, BluetoothDeviceFoundResult,
+  BLEConnectionStateChangeCallback, BLEConnectionStateChangeResult,
+  BLEMTUChangeCallback, BLEMTUChangeResult,
+  BLECharacteristicValueChangeCallback, BLECharacteristicValueChangeResult,
+  OpenBluetoothAdapter, OpenBluetoothAdapterOptions, OpenBluetoothAdapterSuccess,
+  CloseBluetoothAdapter, CloseBluetoothAdapterOptions, CloseBluetoothAdapterSuccess,
+  OnBluetoothAdapterStateChange, OffBluetoothAdapterStateChange,
+  StartBluetoothDevicesDiscovery, StartBluetoothDevicesDiscoveryOptions, StartBluetoothDevicesDiscoverySuccess,
+  StopBluetoothDevicesDiscovery, StopBluetoothDevicesDiscoveryOptions, StopBluetoothDevicesDiscoverySuccess,
+  OnBluetoothDeviceFound, OffBluetoothDeviceFound,
+  GetBluetoothDevices, GetBluetoothDevicesOptions, GetBluetoothDevicesSuccess,
+  GetBluetoothAdapterState, GetBluetoothAdapterStateOptions, GetBluetoothAdapterStateSuccess,
+  GetConnectedBluetoothDevices, GetConnectedBluetoothDevicesOptions, GetConnectedBluetoothDevicesSuccess,
+  ConnectedBluetoothDevice, WriteBLECharacteristicValue, WriteBLECharacteristicValueOptions,
+  SetBLEMTU, SetBLEMTUOptions, SetBLEMTUSuccess,
+  ReadBLECharacteristicValue, ReadBLECharacteristicValueOptions,
+  OnBLEMTUChange, OffBLEMTUChange, OnBLEConnectionStateChange, OffBLEConnectionStateChange,
+  OnBLECharacteristicValueChange, OffBLECharacteristicValueChange,
+  NotifyBLECharacteristicValueChange, NotifyBLECharacteristicValueChangeOptions,
+  GetBLEMTU, GetBLEMTUOptions, GetBLEMTUSuccess,
+  GetBLEDeviceServices, GetBLEDeviceServicesOptions, GetBLEDeviceServicesSuccess, BLEService,
+  GetBLEDeviceRSSI, GetBLEDeviceRSSIOptions, GetBLEDeviceRSSISuccess,
+  GetBLEDeviceCharacteristics, GetBLEDeviceCharacteristicsOptions, GetBLEDeviceCharacteristicsSuccess, BLECharacteristic,
+  CreateBLEConnection, CreateBLEConnectionOptions, CloseBLEConnection, CloseBLEConnectionOptions,
+  BLEOperationSuccess
+} from '../interface.uts'
+import { BluetoothFailImpl } from '../unierror.uts'
+import { BluetoothImpl, BleDevice, GattService, GattCharacteristic } from 'uts.sdk.modules.uniBluetooth'
+import BluetoothGattCharacteristic from 'android.bluetooth.BluetoothGattCharacteristic'
+import Build from 'android.os.Build'
+
+const bluetoothImpl = new BluetoothImpl()
+
+function requestPermission(permission: string, callback: (granted: boolean) => void): void {
+  const activity = UTSAndroid.getUniActivity()
+  if (activity == null) {
+    callback(false)
+    return
+  }
+  // 跳过权限库对宿主其他 Nearby 权限声明的校验，仍正常申请系统权限。
+  UTSAndroid.requestSystemPermission(activity, [permission], (granted: boolean, _permissions: string[]): void => {
+    callback(granted)
+  }, (_granted: boolean, _permissions: string[]): void => {
+    callback(false)
+  }, true)
+}
+
+function device(snapshot: BleDevice): BluetoothDevice {
+  const serviceData: UTSJSONObject = {}
+  snapshot.serviceData.forEach((entry): void => {
+    serviceData[entry.uuid] = entry.value
+  })
+  const serviceUUIDs: string[] = []
+  snapshot.advertisServiceUUIDs.forEach((uuid: string): void => { serviceUUIDs.push(uuid) })
+  const result: BluetoothDevice = {
+    deviceId: snapshot.deviceId,
+    name: snapshot.name,
+    RSSI: snapshot.rssi,
+    advertisData: snapshot.advertisData,
+    advertisServiceUUIDs: serviceUUIDs,
+    localName: snapshot.localName,
+    serviceData: serviceData
+  }
+  if (snapshot.connectable != null) result.connectable = snapshot.connectable!
+  return result
+}
+
+let nextListenerId = 0
+const adapterListeners: Map<number, BluetoothAdapterStateChangeCallback> = new Map()
+const deviceListeners: Map<number, BluetoothDeviceFoundCallback> = new Map()
+const connectionListeners: Map<number, BLEConnectionStateChangeCallback> = new Map()
+const mtuListeners: Map<number, BLEMTUChangeCallback> = new Map()
+const valueListeners: Map<number, BLECharacteristicValueChangeCallback> = new Map()
+
+function addListener<T>(listeners: Map<number, T>, listener: T): number {
+  nextListenerId++
+  listeners.set(nextListenerId, listener)
+  return nextListenerId
+}
+
+function removeListener<T>(listeners: Map<number, T>, listener?: number | T | null): void {
+  if (listener != null && typeof listener == 'number') listeners.delete(listener as number)
+  else listeners.clear()
+}
+
+export const openBluetoothAdapter: OpenBluetoothAdapter = function (options: OpenBluetoothAdapterOptions): void {
+  const callback = (granted: boolean): void => {
+    const code = granted ? bluetoothImpl.open() : 1509602
+    if (code != 0) {
+      const error = new BluetoothFailImpl('openBluetoothAdapter', code)
+      options.fail?.(error)
+      options.complete?.(error)
+      return
+    }
+    const result: OpenBluetoothAdapterSuccess = { errMsg: 'openBluetoothAdapter:ok' }
+    options.success?.(result)
+    options.complete?.(result)
+  }
+  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) requestPermission('android.permission.BLUETOOTH_CONNECT', callback)
+  else callback(true)
+}
+
+export const closeBluetoothAdapter: CloseBluetoothAdapter = function (options: CloseBluetoothAdapterOptions): void {
+  const code = bluetoothImpl.close()
+  if (code != 0) {
+    const error = new BluetoothFailImpl('closeBluetoothAdapter', code)
+    options.fail?.(error)
+    options.complete?.(error)
+    return
+  }
+  const result: CloseBluetoothAdapterSuccess = { errMsg: 'closeBluetoothAdapter:ok' }
+  options.success?.(result)
+  options.complete?.(result)
+}
+
+export const onBluetoothAdapterStateChange: OnBluetoothAdapterStateChange = function (listener: BluetoothAdapterStateChangeCallback): number {
+  const id = addListener(adapterListeners, listener)
+  bluetoothImpl.setAdapterListener((available: boolean, discovering: boolean): void => {
+    const result: BluetoothAdapterStateChangeResult = { available: available, discovering: discovering }
+    adapterListeners.forEach((callback: BluetoothAdapterStateChangeCallback, _key: number): void => { callback(result) })
+  })
+  return id
+}
+
+export const offBluetoothAdapterStateChange: OffBluetoothAdapterStateChange = function (listener?: number | BluetoothAdapterStateChangeCallback | null): void {
+  removeListener(adapterListeners, listener)
+  if (adapterListeners.size == 0) bluetoothImpl.setAdapterListener(null)
+}
+
+export const startBluetoothDevicesDiscovery: StartBluetoothDevicesDiscovery = function (options: StartBluetoothDevicesDiscoveryOptions): void {
+  let deniedCode = 1509602
+  const callback = (granted: boolean): void => {
+    let code = deniedCode
+    if (granted) {
+      const services = options.services == null ? null : options.services!
+      const allowDuplicates = options.allowDuplicatesKey ?? false
+      const interval = options.interval == null ? 0 : options.interval!.toInt()
+      const powerLevel = options.powerLevel == null ? null : options.powerLevel!
+      code = bluetoothImpl.startScan(services, allowDuplicates, interval, powerLevel)
+    }
+    if (code != 0) {
+      const error = new BluetoothFailImpl('startBluetoothDevicesDiscovery', code)
+      options.fail?.(error)
+      options.complete?.(error)
+      return
+    }
+    const result: StartBluetoothDevicesDiscoverySuccess = { errMsg: 'startBluetoothDevicesDiscovery:ok' }
+    options.success?.(result)
+    options.complete?.(result)
+  }
+  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+    requestPermission('android.permission.BLUETOOTH_SCAN', (granted: boolean): void => {
+      if (!granted) callback(false)
+      else {
+        deniedCode = 1509008
+        requestPermission('android.permission.ACCESS_FINE_LOCATION', callback)
+      }
+    })
+  } else if (Build.VERSION.SDK_INT >= 23) {
+    deniedCode = 1509008
+    requestPermission('android.permission.ACCESS_FINE_LOCATION', callback)
+  } else callback(true)
+}
+
+export const stopBluetoothDevicesDiscovery: StopBluetoothDevicesDiscovery = function (options: StopBluetoothDevicesDiscoveryOptions): void {
+  const code = bluetoothImpl.stopScan()
+  if (code != 0) {
+    const error = new BluetoothFailImpl('stopBluetoothDevicesDiscovery', code)
+    options.fail?.(error)
+    options.complete?.(error)
+    return
+  }
+  const result: StopBluetoothDevicesDiscoverySuccess = { errMsg: 'stopBluetoothDevicesDiscovery:ok' }
+  options.success?.(result)
+  options.complete?.(result)
+}
+
+export const onBluetoothDeviceFound: OnBluetoothDeviceFound = function (listener: BluetoothDeviceFoundCallback): number {
+  const id = addListener(deviceListeners, listener)
+  bluetoothImpl.setDeviceListener((snapshot: BleDevice): void => {
+    const result: BluetoothDeviceFoundResult = { devices: [device(snapshot)] }
+    deviceListeners.forEach((callback: BluetoothDeviceFoundCallback, _key: number): void => { callback(result) })
+  })
+  return id
+}
+
+export const offBluetoothDeviceFound: OffBluetoothDeviceFound = function (listener?: number | BluetoothDeviceFoundCallback | null): void {
+  removeListener(deviceListeners, listener)
+  if (deviceListeners.size == 0) bluetoothImpl.setDeviceListener(null)
+}
+
+export const getBluetoothDevices: GetBluetoothDevices = function (options: GetBluetoothDevicesOptions): void {
+  const code = bluetoothImpl.check()
+  if (code != 0 && code != 1509603) {
+    const error = new BluetoothFailImpl('getBluetoothDevices', code)
+    options.fail?.(error)
+    options.complete?.(error)
+    return
+  }
+  const devices: BluetoothDevice[] = []
+  bluetoothImpl.discoveredDevices().forEach((snapshot: BleDevice): void => { devices.push(device(snapshot)) })
+  const result: GetBluetoothDevicesSuccess = { errMsg: 'getBluetoothDevices:ok', devices: devices }
+  options.success?.(result)
+  options.complete?.(result)
+}
+
+export const getBluetoothAdapterState: GetBluetoothAdapterState = function (options: GetBluetoothAdapterStateOptions): void {
+  const code = bluetoothImpl.check()
+  if (code != 0 && code != 1509603) {
+    const error = new BluetoothFailImpl('getBluetoothAdapterState', code)
+    options.fail?.(error)
+    options.complete?.(error)
+    return
+  }
+  const result: GetBluetoothAdapterStateSuccess = {
+    errMsg: 'getBluetoothAdapterState:ok', available: bluetoothImpl.isAvailable(), discovering: bluetoothImpl.isDiscovering()
+  }
+  options.success?.(result)
+  options.complete?.(result)
+}
+
+export const getConnectedBluetoothDevices: GetConnectedBluetoothDevices = function (options: GetConnectedBluetoothDevicesOptions): void {
+  const connectedResult = bluetoothImpl.connectedDevices(options.services)
+  const code = connectedResult.first
+  if (code != 0) {
+    const error = new BluetoothFailImpl('getConnectedBluetoothDevices', code)
+    options.fail?.(error)
+    options.complete?.(error)
+    return
+  }
+  const snapshots = connectedResult.second
+  const devices: ConnectedBluetoothDevice[] = []
+  snapshots.forEach((item): void => { devices.push({ deviceId: item.deviceId, name: item.name }) })
+  const result: GetConnectedBluetoothDevicesSuccess = { errMsg: 'getConnectedBluetoothDevices:ok', devices: devices }
+  options.success?.(result)
+  options.complete?.(result)
+}
+
+export const createBLEConnection: CreateBLEConnection = function (options: CreateBLEConnectionOptions): void {
+  bluetoothImpl.connect(options.deviceId, options.timeout == null ? null : options.timeout!.toInt(), (code: Int): void => {
+    // 对已连接设备重复连接按幂等成功处理（与微信一致）。
+    if (code != 0 && code != 1509007) {
+      const error = new BluetoothFailImpl('createBLEConnection', code)
+      options.fail?.(error)
+      options.complete?.(error)
+      return
+    }
+    const result: BLEOperationSuccess = { errMsg: 'createBLEConnection:ok' }
+    options.success?.(result)
+    options.complete?.(result)
+  })
+}
+
+export const closeBLEConnection: CloseBLEConnection = function (options: CloseBLEConnectionOptions): void {
+  const code = bluetoothImpl.disconnect(options.deviceId)
+  if (code != 0) {
+    const error = new BluetoothFailImpl('closeBLEConnection', code)
+    options.fail?.(error)
+    options.complete?.(error)
+    return
+  }
+  const result: BLEOperationSuccess = { errMsg: 'closeBLEConnection:ok' }
+  options.success?.(result)
+  options.complete?.(result)
+}
+
+export const getBLEDeviceServices: GetBLEDeviceServices = function (options: GetBLEDeviceServicesOptions): void {
+  const servicesResult = bluetoothImpl.services(options.deviceId)
+  const code = servicesResult.first
+  if (code != 0) {
+    const error = new BluetoothFailImpl('getBLEDeviceServices', code)
+    options.fail?.(error)
+    options.complete?.(error)
+    return
+  }
+  const services: BLEService[] = []
+  servicesResult.second.forEach((item: GattService): void => { services.push({ uuid: item.uuid, isPrimary: item.isPrimary }) })
+  const result: GetBLEDeviceServicesSuccess = { errMsg: 'getBLEDeviceServices:ok', services: services }
+  options.success?.(result)
+  options.complete?.(result)
+}
+
+export const getBLEDeviceCharacteristics: GetBLEDeviceCharacteristics = function (options: GetBLEDeviceCharacteristicsOptions): void {
+  const characteristicsResult = bluetoothImpl.characteristics(options.deviceId, options.serviceId)
+  const code = characteristicsResult.first
+  if (code != 0) {
+    const error = new BluetoothFailImpl('getBLEDeviceCharacteristics', code)
+    options.fail?.(error)
+    options.complete?.(error)
+    return
+  }
+  const characteristics: BLECharacteristic[] = []
+  characteristicsResult.second.forEach((item: GattCharacteristic): void => {
+    const props = item.properties
+    characteristics.push({ uuid: item.uuid, properties: {
+      read: (props & BluetoothGattCharacteristic.PROPERTY_READ) != 0,
+      write: (props & BluetoothGattCharacteristic.PROPERTY_WRITE) != 0,
+      notify: (props & BluetoothGattCharacteristic.PROPERTY_NOTIFY) != 0,
+      indicate: (props & BluetoothGattCharacteristic.PROPERTY_INDICATE) != 0,
+      writeNoResponse: (props & BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE) != 0,
+      writeDefault: (props & BluetoothGattCharacteristic.PROPERTY_WRITE) != 0
+    } })
+  })
+  const result: GetBLEDeviceCharacteristicsSuccess = { errMsg: 'getBLEDeviceCharacteristics:ok', characteristics: characteristics }
+  options.success?.(result)
+  options.complete?.(result)
+}
+
+export const getBLEDeviceRSSI: GetBLEDeviceRSSI = function (options: GetBLEDeviceRSSIOptions): void {
+  bluetoothImpl.readRssi(options.deviceId, (code: Int, rssi: Int): void => {
+    if (code != 0) {
+      const error = new BluetoothFailImpl('getBLEDeviceRSSI', code)
+      options.fail?.(error)
+      options.complete?.(error)
+      return
+    }
+    const result: GetBLEDeviceRSSISuccess = { errMsg: 'getBLEDeviceRSSI:ok', RSSI: rssi }
+    options.success?.(result)
+    options.complete?.(result)
+  })
+}
+
+export const getBLEMTU: GetBLEMTU = function (options: GetBLEMTUOptions): void {
+  const mtuResult = bluetoothImpl.mtu(options.deviceId)
+  const code = mtuResult.first
+  if (code != 0) {
+    const error = new BluetoothFailImpl('getBLEMTU', code)
+    options.fail?.(error)
+    options.complete?.(error)
+    return
+  }
+  const result: GetBLEMTUSuccess = { errMsg: 'getBLEMTU:ok', mtu: mtuResult.second }
+  options.success?.(result)
+  options.complete?.(result)
+}
+
+export const setBLEMTU: SetBLEMTU = function (options: SetBLEMTUOptions): void {
+  bluetoothImpl.requestMtu(options.deviceId, options.mtu.toInt(), (code: Int, mtu: Int): void => {
+    if (code != 0) {
+      const error = new BluetoothFailImpl('setBLEMTU', code)
+      options.fail?.(error)
+      options.complete?.(error)
+      return
+    }
+    const result: SetBLEMTUSuccess = { errMsg: 'setBLEMTU:ok', mtu: mtu }
+    options.success?.(result)
+    options.complete?.(result)
+  })
+}
+
+export const readBLECharacteristicValue: ReadBLECharacteristicValue = function (options: ReadBLECharacteristicValueOptions): void {
+  bluetoothImpl.read(options.deviceId, options.serviceId, options.characteristicId, (code: Int): void => {
+    if (code != 0) {
+      const error = new BluetoothFailImpl('readBLECharacteristicValue', code)
+      options.fail?.(error)
+      options.complete?.(error)
+      return
+    }
+    const result: BLEOperationSuccess = { errMsg: 'readBLECharacteristicValue:ok' }
+    options.success?.(result)
+    options.complete?.(result)
+  })
+}
+
+export const writeBLECharacteristicValue: WriteBLECharacteristicValue = function (options: WriteBLECharacteristicValueOptions): void {
+  bluetoothImpl.write(options.deviceId, options.serviceId, options.characteristicId, options.value,
+    options.writeType == null ? null : options.writeType!, (code: Int): void => {
+      if (code != 0) {
+        const error = new BluetoothFailImpl('writeBLECharacteristicValue', code)
+        options.fail?.(error)
+        options.complete?.(error)
+        return
+      }
+      const result: BLEOperationSuccess = { errMsg: 'writeBLECharacteristicValue:ok' }
+      options.success?.(result)
+      options.complete?.(result)
+    })
+}
+
+export const notifyBLECharacteristicValueChange: NotifyBLECharacteristicValueChange = function (options: NotifyBLECharacteristicValueChangeOptions): void {
+  bluetoothImpl.notify(options.deviceId, options.serviceId, options.characteristicId, options.state,
+    options.type == null ? null : options.type!, (code: Int): void => {
+      if (code != 0) {
+        const error = new BluetoothFailImpl('notifyBLECharacteristicValueChange', code)
+        options.fail?.(error)
+        options.complete?.(error)
+        return
+      }
+      const result: BLEOperationSuccess = { errMsg: 'notifyBLECharacteristicValueChange:ok' }
+      options.success?.(result)
+      options.complete?.(result)
+    })
+}
+
+export const onBLEConnectionStateChange: OnBLEConnectionStateChange = function (listener: BLEConnectionStateChangeCallback): number {
+  const id = addListener(connectionListeners, listener)
+  bluetoothImpl.setConnectionListener((deviceId: string, connected: boolean): void => {
+    const result: BLEConnectionStateChangeResult = { deviceId: deviceId, connected: connected }
+    connectionListeners.forEach((callback: BLEConnectionStateChangeCallback, _key: number): void => { callback(result) })
+  })
+  return id
+}
+
+export const offBLEConnectionStateChange: OffBLEConnectionStateChange = function (listener?: number | BLEConnectionStateChangeCallback | null): void {
+  removeListener(connectionListeners, listener)
+  if (connectionListeners.size == 0) bluetoothImpl.setConnectionListener(null)
+}
+
+export const onBLEMTUChange: OnBLEMTUChange = function (listener: BLEMTUChangeCallback): number {
+  const id = addListener(mtuListeners, listener)
+  bluetoothImpl.setMtuListener((deviceId: string, mtu: Int): void => {
+    const result: BLEMTUChangeResult = { deviceId: deviceId, mtu: mtu }
+    mtuListeners.forEach((callback: BLEMTUChangeCallback, _key: number): void => { callback(result) })
+  })
+  return id
+}
+
+export const offBLEMTUChange: OffBLEMTUChange = function (listener?: number | BLEMTUChangeCallback | null): void {
+  removeListener(mtuListeners, listener)
+  if (mtuListeners.size == 0) bluetoothImpl.setMtuListener(null)
+}
+
+export const onBLECharacteristicValueChange: OnBLECharacteristicValueChange = function (listener: BLECharacteristicValueChangeCallback): number {
+  const id = addListener(valueListeners, listener)
+  bluetoothImpl.setValueListener((deviceId: string, serviceId: string, characteristicId: string, value: ArrayBuffer): void => {
+    const result: BLECharacteristicValueChangeResult = {
+      deviceId: deviceId, serviceId: serviceId, characteristicId: characteristicId, value: value
+    }
+    valueListeners.forEach((callback: BLECharacteristicValueChangeCallback, _key: number): void => { callback(result) })
+  })
+  return id
+}
+
+export const offBLECharacteristicValueChange: OffBLECharacteristicValueChange = function (listener?: number | BLECharacteristicValueChangeCallback | null): void {
+  removeListener(valueListeners, listener)
+  if (valueListeners.size == 0) bluetoothImpl.setValueListener(null)
+}

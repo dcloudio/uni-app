@@ -1,0 +1,128 @@
+<template>
+  <!-- #ifdef APP -->
+  <view class="waterflow-page">
+  <!-- #endif -->
+    <page-head title="下拉刷新的waterflow属性示例"></page-head>
+    <view class="uni-margin-wrap">
+      <waterflow id="refresher-waterflow" style="width: 100%; height: 100%;" :cross-axis-count="2" :main-axis-gap="10"
+        :cross-axis-gap="10" :refresher-enabled="refresherEnabled"
+        <!-- #ifdef APP-ANDROID && VUE3-VAPOR -->
+        :android-refresher-color="getAndroidRefresherColorBinding()"
+        <!-- #endif -->
+        :refresher-triggered="refresherTriggered" @refresherpulling="refresherpulling"
+        @refresherrefresh="refresherrefresh" @refresherrestore="refresherrestore" @refresherabort="refresherabort">
+        <flow-item v-for="(item, index) in items" :key="index" class="item" :type="1">
+          <text class="uni-text">{{item}}</text>
+        </flow-item>
+        <flow-item slot="refresher" id="refresher" :type="2" class="refresh-box">
+          <text class="tip-text">正在刷新...</text>
+        </flow-item>
+      </waterflow>
+    </view>
+  <!-- #ifdef APP -->
+  </view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="ts">
+  const items = ref<string[]>([])
+  const refresherEnabled = ref(true)
+  const refresherTriggered = ref(false)
+
+  // #ifdef APP-ANDROID && VUE3-VAPOR
+  const androidRefresherColor = ref("#000000" as string | null)
+
+  function getAndroidRefresherColorBinding() : any {
+    return androidRefresherColor.value
+  }
+
+  // 自动化测试专用
+  function setAndroidRefresherColorForTest(value : string | null) {
+    androidRefresherColor.value = value
+  }
+
+  // 自动化测试专用
+  function getAndroidRefresherColorForTest() : string | null {
+    return androidRefresherColor.value
+  }
+  // #endif
+
+  // 自动化测试专用
+  function getBoundingClientRectForTest() : DOMRect {
+    return uni.getElementById('refresher-waterflow')?.getBoundingClientRect()!
+  }
+
+  onLoad(() => {
+    for (let i = 0; i < 12; i++) {
+      items.value.push("item" + i)
+    }
+  })
+
+  function refresherpulling() {
+    console.log("下拉刷新控件被下拉")
+  }
+
+  function refresherrefresh() {
+    console.log("下拉刷新被触发")
+    refresherTriggered.value = true
+    setTimeout(() => {
+      refresherTriggered.value = false
+    }, 1500)
+  }
+
+  function refresherrestore() {
+    console.log("下拉刷新被复位")
+  }
+
+  function refresherabort() {
+    console.log("下拉刷新被中止")
+  }
+
+  defineExpose({
+    getBoundingClientRectForTest,
+    // #ifdef APP-ANDROID && VUE3-VAPOR
+    getAndroidRefresherColorForTest,
+    setAndroidRefresherColorForTest,
+    // #endif
+  })
+</script>
+
+<style>
+  .waterflow-page {
+    flex: 1;
+    flex-direction: column;
+  }
+
+  .uni-margin-wrap {
+    flex: 1;
+    margin: 0 25px 25px 25px;
+  }
+
+  .item {
+    height: 120px;
+    width: 100%;
+    background-color: azure;
+    border-width: 1px;
+    border-style: solid;
+    border-color: chocolate;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .uni-text {
+    color: black;
+    font-size: 20px;
+  }
+
+  .refresh-box {
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    height: 45px;
+  }
+
+  .tip-text {
+    color: #888888;
+    font-size: 12px;
+  }
+</style>

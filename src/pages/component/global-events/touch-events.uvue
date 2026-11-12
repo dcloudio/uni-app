@@ -27,6 +27,10 @@
         <text>screenX: {{ touch.screenX }}, screenY: {{ touch.screenY }}</text>
       </template>
     </view>
+    <view v-if="showBottomTouchTest" id="bottom-touch-test"
+      style="position: fixed; left: 0; right: 0; bottom: 0; height: var(--uni-safe-area-inset-bottom);"
+      @touchstart="recordBottomTouch('touchstart')" @touchend="recordBottomTouch('touchend')"
+      @touchcancel="recordBottomTouch('touchcancel')" @tap="recordBottomTouch('tap')" />
   </scroll-view>
 </template>
 
@@ -45,6 +49,22 @@ const lastY = ref(0)
 const dragTouchId = ref(-1)
 const touchEvent = ref(null as TouchEvent | null)
 const icon = ref(null as UniElement | null)
+const showBottomTouchTest = ref(false)
+let bottomTouchEvents : string[] = []
+
+function setBottomTouchTest(enabled : boolean) {
+  bottomTouchEvents = []
+  showBottomTouchTest.value = enabled
+}
+
+function recordBottomTouch(type : string) {
+  bottomTouchEvents.push(type)
+}
+
+function getBottomTouchEvents() : string[] {
+  return bottomTouchEvents.slice()
+}
+
 const data = reactive({
   touchTargets: "",
   touchTargetsCount: 0,
@@ -139,7 +159,9 @@ onReady(() => {
 })
 
 defineExpose({
-  data
+  data,
+  setBottomTouchTest,
+  getBottomTouchEvents
 })
 </script>
 

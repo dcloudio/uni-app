@@ -94,9 +94,7 @@
           </view>
         </view>
       </view>
-      <!-- #ifndef MP-ALIPAY -->
       <button type="primary" @click="goto">前往storage管理器</button>
-      <!-- #endif -->
     </view>
 </template>
 
@@ -517,13 +515,11 @@
     data.jest_saveObjectArraySyncResult = dataSync[0].a
   }
 
-  // #ifndef MP-ALIPAY
   const goto = () => {
     uni.navigateTo({
       url:"/pages/API/storage/storagemanage"
     })
   }
-  // #endif
 
   defineExpose({
     data,

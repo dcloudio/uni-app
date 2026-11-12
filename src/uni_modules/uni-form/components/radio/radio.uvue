@@ -20,9 +20,9 @@
 </template>
 
 <script lang="uts" setup>
-  import { LABEL_KEY, RADIO_GROUP_KEY, buildPointerEvent, toStringOrEmpty } from '../common.uts'
+  import { LABEL_KEY, RADIO_GROUP_KEY, dispatchLabelClick, registerLabelTarget, toStringOrEmpty } from '../common.uts'
   import { UniRadioElement } from './global.uts'
-  import { LabelContext } from '../types.uts'
+  import { ActivatableChild, LabelContext } from '../types.uts'
 
   interface InjectedRadioGroupContext {
     selectedValue: Ref<string | null>
@@ -83,7 +83,8 @@
      */
     value?: string;
     /**
-     * 单选框图标的类名
+     * 单选框图标区域的公共类名
+     * @deprecated 已废弃，请使用 radioClass 和 radioActiveClass
      * @uniPlatform {
        "app": {
          "ios": {
@@ -116,7 +117,7 @@
      */
     iconClass?: string.ClassString;
     /**
-     * 单选框的类名
+     * 单选框未选中的类名
      * @uniPlatform {
        "app": {
          "ios": {
@@ -213,6 +214,7 @@
   const isChecked = ref(false)
   const groupCtx = inject<InjectedRadioGroupContext | null>(RADIO_GROUP_KEY, null)
   const labelCtx = inject<LabelContext | null>(LABEL_KEY, null)
+  let unregisterLabelTarget: (() => void) | null = null
 
   // TODO 需编译器修复
   const fontUnicode = '\ueA08'
@@ -267,14 +269,19 @@
       }
     }
     // Register with label if present
+    const target: ActivatableChild = {
+      id: id || toStringOrEmpty(props.value),
+      activate: (event: UniPointerEvent) => {
+        const element = proxy?.$el
+        if (element != null) dispatchLabelClick(element, event)
+      },
+      getDisabled: () => props.disabled
+    }
     if (labelCtx != null) {
-      labelCtx.register({
-        id: id || toStringOrEmpty(props.value),
-        activate: (event: UniPointerEvent) => {
-          proxy?.$el?.dispatchEvent('click', buildPointerEvent(event))
-        },
-        getDisabled: () => props.disabled
-      })
+      labelCtx.register(target)
+    }
+    if (id != null && id.length > 0) {
+      unregisterLabelTarget = registerLabelTarget(id, target)
     }
   })
 
@@ -282,6 +289,8 @@
     if (labelCtx != null) {
       labelCtx.unregister(id || toStringOrEmpty(props.value))
     }
+    unregisterLabelTarget?.()
+    unregisterLabelTarget = null
   })
 
   defineExpose({

@@ -20,6 +20,180 @@
     <enum-data :items="data.items" title="appTheme" @change="radioChange"></enum-data>
     <!-- #endif -->
 
+    <view class="mt-15">
+      <text class="fs-15 fw-bold color-text-333">input / textarea 默认颜色</text>
+      <text class="mt-10 color-text-333">切换主题观察默认文字和背景色，清空内容后观察 placeholder 字体颜色。</text>
+      <!-- 仅设置布局，保留组件默认的文字、背景和 placeholder 颜色。 -->
+      <input class="theme-input" v-model="preview.defaultInputValue" placeholder="input 默认 placeholder 颜色" />
+      <textarea class="theme-textarea" v-model="preview.defaultTextareaValue" placeholder="textarea 默认 placeholder 颜色" />
+    </view>
+
+    <view class="theme-section">
+      <text class="fs-15 fw-bold color-text-333">text 默认文字颜色</text>
+      <text class="theme-hint">切换主题观察默认文字颜色，暗黑模式下预期为白色。</text>
+      <!-- 不给待验证的 text 设置文字色，避免覆盖组件默认值。 -->
+      <view id="theme-default-view" class="theme-sample">
+        <text id="theme-default-text">text 默认文字颜色。</text>
+      </view>
+    </view>
+
+    <view class="theme-section">
+      <text class="fs-15 fw-bold color-text-333">导航栏 / TabBar</text>
+      <text class="theme-hint">观察顶部原生导航栏，并通过下方入口查看原生 TabBar。两者使用应用当前配置，可与规范目标色对照。</text>
+      <text class="theme-hint">规范目标：浅色背景 #FFFFFF、前景黑色；深色背景 #1C1C1E、前景白色。TabBar 顶部分隔线：浅色 #CCCCCC、深色 #49494B。</text>
+      <navigator url="/pages/tabBar/component" open-type="switchTab" class="mt-10">
+        <button id="theme-open-tabbar">查看原生 TabBar</button>
+      </navigator>
+    </view>
+
+    <view class="theme-section">
+      <text class="fs-15 fw-bold color-text-333">combox / uni-combobox 组合框</text>
+      <text class="theme-hint">观察输入区域、文字、箭头和候选浮层；暗黑表单背景预期为 #3B3B3B，placeholder 在两种主题下均为 #757575。</text>
+      <text class="theme-hint">uni-combox（兼容组件）</text>
+      <view id="theme-combox-placeholder" class="mt-10">
+        <uni-combox v-model="preview.comboxPlaceholder" :options="preview.options" placeholder="uni-combox 默认 placeholder" />
+      </view>
+      <text class="theme-hint">uni-combobox</text>
+      <view id="theme-combobox-placeholder" class="mt-10">
+        <uni-combobox v-model="preview.comboboxPlaceholder" :options="preview.options" placeholder="请选择，观察默认 placeholder" />
+      </view>
+      <view id="theme-combobox-value" class="mt-10">
+        <uni-combobox v-model="preview.comboboxValue" :options="preview.options" />
+      </view>
+      <view id="theme-combobox-disabled" class="mt-10">
+        <uni-combobox model-value="禁用状态" :options="preview.options" disabled />
+      </view>
+    </view>
+
+    <view class="theme-section">
+      <text class="fs-15 fw-bold color-text-333">rich-text 默认颜色</text>
+      <text class="theme-hint">切换主题观察 rich-text 的默认文字颜色。</text>
+      <rich-text id="theme-rich-text-default" class="theme-sample" nodes="<p>rich-text 默认文字颜色。</p>" />
+    </view>
+
+    <!-- #ifndef MP-ALIPAY -->
+    <view class="theme-section">
+      <text class="fs-15 fw-bold color-text-333">editor 默认颜色</text>
+      <text class="theme-hint">输入文字和清空内容，观察默认文字、背景及 placeholder 颜色。默认 placeholder 预期为 #757575。</text>
+      <editor id="theme-editor-default" class="theme-editor theme-sample" placeholder="editor 默认 placeholder 颜色" />
+    </view>
+    <!-- #endif -->
+
+    <view class="theme-section">
+      <text class="fs-15 fw-bold color-text-333">picker 选择器</text>
+      <text class="theme-hint">分别打开普通、日期和时间选择器，检查弹出面板、选项、取消及确定按钮的主题颜色。</text>
+      <picker id="theme-picker-selector" class="mt-10" :range="preview.options" :value="preview.pickerIndex" @change="onPickerChange">
+        <view class="theme-sample"><text>普通选择：{{ preview.options[preview.pickerIndex] }}</text></view>
+      </picker>
+      <picker id="theme-picker-date" mode="date" :value="preview.date" @change="onDateChange">
+        <view class="theme-sample"><text>日期选择：{{ preview.date }}</text></view>
+      </picker>
+      <picker id="theme-picker-time" mode="time" :value="preview.time" @change="onTimeChange">
+        <view class="theme-sample"><text>时间选择：{{ preview.time }}</text></view>
+      </picker>
+    </view>
+
+    <view class="theme-section">
+      <text class="fs-15 fw-bold color-text-333">picker-view / picker-view-column</text>
+      <text class="theme-hint">上下滚动，检查默认文字、选中区域、分隔线和上下遮罩颜色。</text>
+      <picker-view id="theme-picker-view" class="theme-picker-view mt-10" :value="preview.pickerViewValue" indicator-style="height: 40px" @change="onPickerViewChange">
+        <picker-view-column>
+          <view v-for="option in preview.options" :key="option" class="theme-picker-item">
+            <text>{{ option }}</text>
+          </view>
+        </picker-view-column>
+      </picker-view>
+    </view>
+
+    <view class="theme-section">
+      <text class="fs-15 fw-bold color-text-333">checkbox</text>
+      <text class="theme-hint">点击切换选中状态，检查未选中、选中和禁用状态的边框、背景与勾选颜色。</text>
+      <checkbox-group>
+        <label class="theme-choice-row"><checkbox value="checked" :checked="true" /><text>默认选中</text></label>
+        <label class="theme-choice-row"><checkbox value="unchecked" /><text>默认未选中</text></label>
+        <label class="theme-choice-row"><checkbox value="disabled-checked" :checked="true" disabled /><text>禁用且选中</text></label>
+        <label class="theme-choice-row"><checkbox value="disabled" disabled /><text>禁用且未选中</text></label>
+      </checkbox-group>
+    </view>
+
+    <view class="theme-section">
+      <text class="fs-15 fw-bold color-text-333">radio</text>
+      <text class="theme-hint">切换选项，检查未选中、选中和禁用状态的边框、背景与选中标记。</text>
+      <radio-group>
+        <label class="theme-choice-row"><radio value="checked" :checked="true" /><text>默认选中</text></label>
+        <label class="theme-choice-row"><radio value="unchecked" /><text>默认未选中</text></label>
+      </radio-group>
+      <radio-group>
+        <label class="theme-choice-row"><radio value="disabled-checked" :checked="true" disabled /><text>禁用且选中</text></label>
+        <label class="theme-choice-row"><radio value="disabled" disabled /><text>禁用且未选中</text></label>
+      </radio-group>
+    </view>
+
+    <view class="theme-section">
+      <text class="fs-15 fw-bold color-text-333">button</text>
+      <text class="theme-hint">检查默认、primary、warn、镂空、禁用及加载状态的文字、背景和边框颜色。</text>
+      <button class="mt-10">默认按钮</button>
+      <button type="primary" class="mt-10">primary 按钮</button>
+      <button type="warn" class="mt-10">warn 按钮</button>
+      <button plain class="mt-10">plain 按钮</button>
+      <button disabled class="mt-10">默认禁用按钮</button>
+      <button type="primary" disabled class="mt-10">primary 禁用按钮</button>
+      <button type="warn" disabled class="mt-10">warn 禁用按钮</button>
+      <button loading class="mt-10">loading 按钮</button>
+    </view>
+
+    <view class="theme-section">
+      <text class="fs-15 fw-bold color-text-333">switch</text>
+      <text class="theme-hint">点击开关，检查开、关及禁用状态的轨道和滑块颜色。</text>
+      <view class="theme-choice-row"><switch :checked="true" /><text>开启</text></view>
+      <view class="theme-choice-row"><switch /><text>关闭</text></view>
+      <view class="theme-choice-row"><switch :checked="true" disabled /><text>禁用且开启</text></view>
+      <view class="theme-choice-row"><switch disabled /><text>禁用且关闭</text></view>
+    </view>
+
+    <view class="theme-section">
+      <text class="fs-15 fw-bold color-text-333">slider</text>
+      <text class="theme-hint">拖动滑块，检查默认轨道、已选区域、滑块和数值文字；对照禁用状态。</text>
+      <slider id="theme-slider-default" class="mt-10" :value="40" show-value />
+      <slider id="theme-slider-disabled" class="mt-10" :value="60" show-value disabled />
+    </view>
+
+    <view class="theme-section">
+      <text class="fs-15 fw-bold color-text-333">scroll-view 滚动条与默认下拉刷新</text>
+      <text class="theme-hint">滚动此页和下方区域，观察页面及 scroll-view 的默认滚动条；从区域顶部下拉或点击按钮查看刷新指示器，约 1.5 秒后结束。</text>
+      <!-- 不设置 refresher-default-style / refresher-background，让组件自行适配主题。 -->
+      <scroll-view id="theme-scroll-view" class="theme-scroll-preview theme-sample" direction="vertical" :show-scrollbar="true"
+        :refresher-enabled="true" :refresher-triggered="preview.scrollRefreshing" @refresherrefresh="onScrollRefresh">
+        <view v-for="index in 12" :key="index" class="theme-scroll-item"><text>scroll-view 默认颜色 {{ index }}</text></view>
+      </scroll-view>
+      <button id="theme-refresh-scroll" class="mt-10" @click="refreshScrollView">显示 scroll-view 默认刷新指示器</button>
+      <text class="theme-hint">refresherrefresh 事件次数：{{ preview.scrollRefreshCount }}</text>
+    </view>
+
+    <!-- #ifndef MP-ALIPAY -->
+    <view class="theme-section">
+      <text class="fs-15 fw-bold color-text-333">list-view 默认下拉刷新</text>
+      <text class="theme-hint">从列表顶部下拉或点击按钮，检查默认刷新指示器是否随主题变化；约 1.5 秒后结束。</text>
+      <list-view id="theme-list-view" class="theme-scroll-preview theme-sample" :show-scrollbar="true"
+        :refresher-enabled="true" :refresher-triggered="preview.listRefreshing" @refresherrefresh="onListRefresh">
+        <list-item v-for="index in 12" :key="index" class="theme-scroll-item"><text>list-view 默认颜色 {{ index }}</text></list-item>
+      </list-view>
+      <button id="theme-refresh-list" class="mt-10" @click="refreshListView">显示 list-view 默认刷新指示器</button>
+      <text class="theme-hint">refresherrefresh 事件次数：{{ preview.listRefreshCount }}</text>
+    </view>
+    <!-- #endif -->
+
+    <view class="theme-section">
+      <text class="fs-15 fw-bold color-text-333">loading</text>
+      <text class="theme-hint">默认 loading 在暗黑模式下预期为白色；对照普通、bold 和 paused 状态。</text>
+      <view class="theme-choice-row"><loading /><text class="u-ml-10">默认 loading</text></view>
+      <view class="theme-choice-row"><loading bold /><text class="u-ml-10">bold loading</text></view>
+      <view class="theme-choice-row"><loading paused /><text class="u-ml-10">paused loading</text></view>
+      <!-- #ifdef APP-IOS -->
+      <view class="theme-choice-row"><loading :ios-spinner="true" /><text class="u-ml-10">iOS 雪花</text></view>
+      <view class="theme-choice-row"><loading :ios-spinner="false" /><text class="u-ml-10">iOS loading 圈</text></view>
+      <!-- #endif -->
+    </view>
   </view>
 </template>
 
@@ -49,6 +223,69 @@
       { value: 2, name: 'auto', checked: false }
     ] as ItemType[]
   } as Data)
+
+  // 新增组件的演示状态独立于主题 API，保留现有 data 和自动化调用方式。
+  const preview = reactive({
+    defaultInputValue: 'input 默认文字颜色',
+    defaultTextareaValue: 'textarea 默认文字颜色',
+    options: ['选项一', '选项二', '选项三', '选项四', '选项五'],
+    comboxPlaceholder: '',
+    comboboxPlaceholder: '',
+    comboboxValue: '选项二',
+    pickerIndex: 0,
+    date: '2026-01-01',
+    time: '12:00',
+    pickerViewValue: [0] as number[],
+    scrollRefreshing: false,
+    listRefreshing: false,
+    scrollRefreshCount: 0,
+    listRefreshCount: 0
+  })
+
+  let scrollRefreshTimer = 0
+  let listRefreshTimer = 0
+
+  function onPickerChange(event : UniPickerChangeEvent) {
+    preview.pickerIndex = event.detail.value as number
+  }
+
+  function onDateChange(event : UniPickerChangeEvent) {
+    preview.date = event.detail.value as string
+  }
+
+  function onTimeChange(event : UniPickerChangeEvent) {
+    preview.time = event.detail.value as string
+  }
+
+  function onPickerViewChange(event : UniPickerViewChangeEvent) {
+    preview.pickerViewValue = event.detail.value
+  }
+
+  function refreshScrollView() {
+    if (preview.scrollRefreshing) return
+    preview.scrollRefreshing = true
+    scrollRefreshTimer = setTimeout(() => {
+      preview.scrollRefreshing = false
+    }, 1500)
+  }
+
+  function refreshListView() {
+    if (preview.listRefreshing) return
+    preview.listRefreshing = true
+    listRefreshTimer = setTimeout(() => {
+      preview.listRefreshing = false
+    }, 1500)
+  }
+
+  function onScrollRefresh() {
+    preview.scrollRefreshCount++
+    refreshScrollView()
+  }
+
+  function onListRefresh() {
+    preview.listRefreshCount++
+    refreshListView()
+  }
 
   function bindOsThemeChange() : number {
     return uni.onOsThemeChange((res : OsThemeChangeResult) => {
@@ -113,6 +350,8 @@
   })
 
   onUnload(() => {
+    clearTimeout(scrollRefreshTimer)
+    clearTimeout(listRefreshTimer)
     // #ifdef APP
     uni.offAppThemeChange(data.appThemeChangeId)
     uni.offOsThemeChange(data.osThemeChangeId)
@@ -124,6 +363,7 @@
 
   defineExpose({
     data,
+    preview,
     setAppTheme,
     radioChange
   })
@@ -135,4 +375,77 @@
     flex-direction: row;
     justify-content: space-between;
   }
+
+  .mt-15 { margin-top: 15px; }
+  .mt-10 { margin-top: 10px; }
+  .mb-15 { margin-bottom: 15px; }
+  .fs-15 { font-size: 15px; }
+  .fw-bold { font-weight: bold; }
+  .color-text-333 { color: var(--text-color, #333333); }
+  .u-ml-10 { margin-left: 10px; }
+
+
+.theme-input {
+  height: 40px;
+  margin-top: 10px;
+  padding: 0px 10px;
+}
+
+.theme-textarea {
+  width: 100%;
+  height: 80px;
+  margin-top: 10px;
+  padding: 10px;
+}
+
+/* 组件样例仅设置布局，不覆盖组件的默认颜色。 */
+.theme-section {
+  margin-top: 20px;
+  margin-bottom: 15px;
+}
+
+.theme-hint {
+  margin-top: 10px;
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--text-color, #333333);
+}
+
+.theme-sample {
+  margin-top: 10px;
+  padding: 10px;
+}
+
+.theme-editor {
+  height: 120px;
+  min-height: 0px;
+}
+
+.theme-picker-view {
+  width: 100%;
+  height: 200px;
+}
+
+.theme-picker-item {
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+}
+
+.theme-choice-row {
+  flex-direction: row;
+  align-items: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.theme-scroll-preview {
+  height: 180px;
+}
+
+.theme-scroll-item {
+  height: 48px;
+  padding: 10px;
+}
+
 </style>

@@ -1,0 +1,139 @@
+<template>
+	<list-view class="uni-sidebar" :show-scrollbar="false">
+		<list-item v-for="(item, index) in list" :key="index" @click="onItemClick(index)">
+			<slot :item="item" :index="index" :active="index === displayIndex"></slot>
+		</list-item>
+	</list-view>
+</template>
+
+<script setup lang="ts">
+/**
+ * sidebar
+ * @description 侧边导航组件，基于 list-view / list-item 实现，仅负责渲染导航项与抛出交互事件。
+ * @uniPlatform {
+ *   "app": {
+ *     "android": {"unixVaporVer": "5.21"},
+ *     "ios": {"unixVaporVer": "5.11"},
+ *     "harmony": {"unixVaporVer": "5.07"}
+ *   },
+ *   "mp": {
+ *     "weixin": {"unixVer": "5.07"},
+ *     "alipay": {"unixVer": "5.31"}
+ *   },
+ *   "web": {"unixVer": "5.07"}
+ * }
+ */
+
+	/**
+	 * 侧边滚动导航
+	 * @description 受控导航条：展示导航项并抛出点击意图，滚动与滚动高亮由页面编排
+	 */
+	type Props = {
+		/**
+		 * @description 导航数据，数组每一项与目标列表中的分段按索引一一对应
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
+		 *   },
+		 *   "web": {"unixVer": "5.07"}
+		 * }
+		 */
+		list : string[],
+		/**
+		 * @description 当前高亮索引。传入时为受控模式（推荐搭配 v-model:current-index），
+		 * 点击只抛出变更请求，高亮由绑定值决定；不传时为非受控模式，点击后组件内部维护高亮。
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
+		 *   },
+		 *   "web": {"unixVer": "5.07"}
+		 * }
+		 */
+		currentIndex ?: number
+	}
+
+	const props = defineProps<Props>()
+
+	const emit = defineEmits<{
+		/**
+		 * @description 点击导航项时触发，页面据此滚动目标列表
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
+		 *   },
+		 *   "web": {"unixVer": "5.07"}
+		 * }
+		 */
+		select : [index : number, item : string],
+		/**
+		 * @description 高亮索引更新事件，用于 v-model:current-index
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {"unixVaporVer": "5.21"},
+		 *     "ios": {"unixVaporVer": "5.11"},
+		 *     "harmony": {"unixVaporVer": "5.07"}
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {"unixVer": "5.07"},
+		 *     "alipay": {"unixVer": "5.31"}
+		 *   },
+		 *   "web": {"unixVer": "5.07"}
+		 * }
+		 */
+		'update:currentIndex' : [index : number]
+	}>()
+
+	defineSlots<{
+		default(props : { item : string, index : number, active : boolean }) : any
+	}>()
+
+	defineOptions({
+		name: 'uni-sidebar'
+	})
+
+	// 非受控模式下由组件内部维护的高亮索引
+	const internalIndex = ref(0)
+
+	const isControlled = computed(() : boolean => props.currentIndex != null)
+
+	const displayIndex = computed(() : number => {
+		const controlled = props.currentIndex
+		if (controlled != null) {
+			return controlled
+		}
+		return internalIndex.value
+	})
+
+	const onItemClick = (index : number) => {
+		if (!isControlled.value) {
+			internalIndex.value = index
+		}
+		emit('update:currentIndex', index)
+		emit('select', index, props.list[index])
+	}
+</script>
+
+<style>
+	.uni-sidebar {
+		width: 90px;
+		flex-shrink: 0;
+	}
+</style>

@@ -5,10 +5,10 @@
         :lower-threshold="props.lowerThreshold" :scroll-left="props.scrollLeft"
         :refresher-enabled="props.refresherEnabled" :refresher-threshold="props.refresherThreshold"
         :refresher-max-drag-distance="props.refresherMaxDragDistance" :refresher-background="props.refresherBackground"
-        :refresher-triggered="props.refresherTriggered" :custom-nested-scroll="props.customNestedScroll"
-        :nested-scroll-child="props.nestedScrollChild" :associative-container="props.associativeContainer"
+        :refresher-triggered="props.refresherTriggered" :associative-container="props.associativeContainer"
         :enable-back-to-top="props.enableBackToTop" :refresher-default-style="props.refresherDefaultStyle"
-        :android-scrollbar-draggable="props.androidScrollbarDraggable" :waterflow-id="waterflowId satisfies number"
+        :android-scrollbar-draggable="props.androidScrollbarDraggable" :android-refresher-color="props.androidRefresherColor"
+        :waterflow-id="waterflowId satisfies number"
         change:waterflow-id="recycleWaterflowCpp.setWaterflowId" :list="keyList satisfies string[]"
         change:list="recycleWaterflowCpp.updateList" :cross-axis-count="realCrossAxisCount satisfies number"
         :main-axis-gap="realMainAxisGap satisfies number" :cross-axis-gap="realCrossAxisGap satisfies number"
@@ -125,20 +125,16 @@ const props = defineProps({
         type: [Boolean, String],
         default: true
     },
-    customNestedScroll: {
-        type: [Boolean, String],
-        default: false
-    },
-    nestedScrollChild: {
-        type: String,
-        default: ''
-    },
     /**
      * @internal
      */
     androidScrollbarDraggable: {
         type: [Boolean, String],
         default: false
+    },
+    androidRefresherColor: {
+        type: String,
+        default: ''
     }
 })
 

@@ -562,6 +562,8 @@
 	}
 
 	.edit-type-radio {
+		flex-direction: row;
+		align-items: center;
 		margin-right: 12px;
 		margin-bottom: 6px;
 	}

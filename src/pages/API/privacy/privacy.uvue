@@ -5,7 +5,7 @@
       <text>当前应用隐私授权状态:</text>
       <text>{{ appPrivacy }}</text>
     </view>
-    <!-- #ifdef MP-WEIXIN -->
+    <!-- #ifdef MP -->
     <view class="item-box">
       <text>隐私授权协议的名称:</text>
       <text>{{ privacyContractName }}</text>
@@ -40,7 +40,7 @@
 		uni.getPrivacySetting({
 			success: (res) => {
 				appPrivacy.value = res.needAuthorization ? "未同意" : "已同意"
-				// #ifdef MP-WEIXIN
+				// #ifdef MP
 				privacyContractName.value = res.privacyContractName
 				// #endif
 			}

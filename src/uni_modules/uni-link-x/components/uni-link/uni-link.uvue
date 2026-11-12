@@ -164,7 +164,7 @@
      *   }
      * }
      */
-    blankFallback: 'turn-self' | 'copy-link-modal' | 'none'
+    blankFallback?: 'turn-self' | 'copy-link-modal' | 'none'
   }
 
   type LocaleType = 'zh-Hans' | 'zh-Hant' | 'en' | 'fr' | 'la'

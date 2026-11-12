@@ -52,7 +52,9 @@ namespace recycle_waterflow {
         virtual float getItemSize(const std::string key) { return -1.0; };
 
         virtual float getItemCrossAxisSize() { return -1.0; };
-        std::unordered_map<std::string, IRecycleFlowItem *> itemInstanceMap;
+        // Lock ownership while cross-thread cleanup is pending.
+        // 异步注销期间，读取方通过 lock() 保持列表项存活。
+        std::unordered_map<std::string, std::weak_ptr<IRecycleFlowItem>> itemInstanceMap;
     };
     // common end
 
@@ -71,11 +73,9 @@ namespace recycle_waterflow {
 
         void removeInstance(std::string key);
 
-        IRecycleWaterflow *getRecycleWaterflow();
+        std::shared_ptr<IRecycleWaterflow> getRecycleWaterflow();
 
         void startObserve();
-
-        void stopObserve();
 
         bool isCurrentElementAttached();
 

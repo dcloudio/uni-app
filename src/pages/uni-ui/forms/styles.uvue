@@ -1,0 +1,275 @@
+<template>
+	<view>
+		<view class="intro">
+			<text class="page-title">样式与属性示例</text>
+			<text class="page-desc">示例按移动端排列：标签在左，输入在右。label-width、label-align 和 border 调整这一行；标签、星号、错误文字用样式类覆盖。</text>
+		</view>
+
+		<view class="section property-section">
+			<text class="section-title">属性对照</text>
+			<view class="property-row"><text class="property-name">label-position</text><text class="property-value">left，移动端默认</text></view>
+			<view class="property-row"><text class="property-name">label-width</text><text class="property-value">数字或 CSS 宽度</text></view>
+			<view class="property-row"><text class="property-name">label-align</text><text class="property-value">left / center / right</text></view>
+			<view class="property-row"><text class="property-name">border</text><text class="property-value">控制字段分隔线</text></view>
+			<view class="property-row"><text class="property-name">class / style</text><text class="property-value">直接作用于 uni-forms 外层</text></view>
+		</view>
+
+		<view class="section">
+			<text class="section-title">左侧标签</text>
+			<uni-forms
+				class="left-form-surface"
+				style="border-radius: 8px;"
+				v-model="leftForm"
+				label-position="left"
+				label-width="86"
+				label-align="right"
+				border
+			>
+				<uni-forms-item label="标题" name="title" required label-class="left-label" content-class="left-content">
+					<uni-easyinput v-model="leftForm.title" placeholder="右对齐标签" />
+				</uni-forms-item>
+				<uni-forms-item label="说明" name="description" label-class="left-label" content-class="left-content">
+					<uni-easyinput v-model="leftForm.description" placeholder="border 会显示字段分隔线" />
+				</uni-forms-item>
+			</uni-forms>
+		</view>
+
+		<view class="section section-last">
+			<text class="section-title">左侧标签样式</text>
+			<uni-forms
+				ref="topFormRef"
+				class="theme-form-surface"
+				style="padding: 12px; border-radius: 8px;"
+				v-model="topForm"
+				:rules="topRules"
+				label-position="left"
+				label-width="80"
+				label-align="left"
+				err-show-type="undertext"
+			>
+				<uni-forms-item
+					name="account"
+					label="账号"
+					required
+					label-class="theme-label"
+					required-class="theme-required"
+					error-message-class="theme-error"
+				>
+					<uni-easyinput v-model="topForm.account" placeholder="观察标签、必填星号和错误文字颜色" />
+				</uni-forms-item>
+				<uni-forms-item
+					name="phone"
+					label="手机号"
+					label-class="theme-label"
+					error-message-class="theme-error"
+				>
+					<uni-easyinput v-model="topForm.phone" placeholder="错误样式由 externalClasses 控制" />
+				</uni-forms-item>
+			</uni-forms>
+
+			<view class="button-row">
+				<button class="action-button" size="mini" @click="validateTopForm">显示错误样式</button>
+				<button class="action-button secondary-button" size="mini" @click="clearTopForm">清除错误</button>
+			</view>
+			<text class="status-text">{{ statusText }}</text>
+			<text class="class-list">本例使用 label-class、required-class、error-message-class。上一例另外使用 content-class。</text>
+		</view>
+	</view>
+</template>
+
+<script setup lang="ts">
+const leftForm = ref({
+	title: '',
+	description: ''
+})
+
+const topForm = ref({
+	account: '',
+	phone: ''
+})
+
+const topFormRef = ref<any>(null)
+
+const topRules = {
+	account: { label: '账号', rules: [{ required: true, errorMessage: '请输入账号' }] },
+	phone: { label: '手机号', rules: [{ pattern: '^1[3-9]\\d{9}$', errorMessage: '手机号格式不正确' }] }
+}
+
+const statusText = ref<string>('点击校验查看错误样式')
+
+async function validateTopForm() {
+	try {
+		await topFormRef.value.validate()
+		statusText.value = '校验通过'
+	} catch (errors) {
+		statusText.value = '错误样式已展示'
+	}
+}
+
+function clearTopForm() {
+	topFormRef.value.clearValidate()
+	statusText.value = '已清除错误'
+}
+</script>
+
+<style>
+page {
+	--list-background-color: #ffffff;
+	--background-color: #f5f5f5;
+	--active-color: #a0a0a0;
+	--active-background-color: #f8f8f8;
+	--text-color: #333333;
+	--arrow-color: #999999;
+	--content-background-color: #ffffff;
+	--secondary-text-color: #657180;
+	--input-border-color: #dcdfe6;
+	--divider-color: #e5e5e5;
+	--forms-error-background-color: #fff2f0;
+	--left-surface-background: #f8fbff;
+	--left-label-color: #44546a;
+	--theme-surface-background: #fffaf2;
+	--theme-label-color: #8b5e34;
+	background-color: var(--background-color);
+}
+
+@media (prefers-color-scheme: dark) {
+	page {
+		--list-background-color: #2d2d2d;
+		--background-color: #1a1a1a;
+		--active-color: #8f8f8f;
+		--active-background-color: #3b3b3b;
+		--text-color: #ffffff;
+		--arrow-color: #ffffff;
+		--content-background-color: #2d2d2d;
+		--secondary-text-color: rgba(255, 255, 255, 0.65);
+		--input-border-color: rgba(255, 255, 255, 0.18);
+		--divider-color: rgba(255, 255, 255, 0.12);
+		--forms-error-background-color: #3a1a1c;
+		--left-surface-background: #1c2838;
+		--left-label-color: #d3e0f0;
+		--theme-surface-background: #32281e;
+		--theme-label-color: #f0d0a6;
+	}
+}
+
+.intro,
+.section {
+	padding: 16px;
+	background-color: var(--content-background-color, #ffffff);
+}
+
+.section {
+	margin-top: 10px;
+}
+
+.section-last {
+	padding-bottom: 32px;
+}
+
+.page-title,
+.section-title {
+	font-size: 18px;
+	font-weight: bold;
+	color: var(--text-color, #222222);
+}
+
+.section-title {
+	margin-bottom: 12px;
+	font-size: 16px;
+}
+
+.page-desc,
+.class-list {
+	font-size: 13px;
+	line-height: 21px;
+	color: var(--secondary-text-color, #657180);
+}
+
+.property-section {
+	padding-bottom: 10px;
+}
+
+.property-row {
+	min-height: 30px;
+	padding: 5px 0;
+	flex-direction: row;
+	justify-content: space-between;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: var(--divider-color, #eef1f5);
+}
+
+.property-name {
+	font-size: 13px;
+	font-weight: bold;
+	color: #007aff;
+}
+
+.property-value {
+	font-size: 13px;
+	color: var(--secondary-text-color, #657180);
+}
+
+.left-form-surface {
+	padding: 6px 12px;
+	background-color: var(--left-surface-background, #f8fbff);
+}
+
+.left-label {
+	font-size: 14px;
+	font-weight: bold;
+	color: var(--left-label-color, #44546a);
+}
+
+.left-content {
+	padding-left: 8px;
+}
+
+.theme-form-surface {
+	background-color: var(--theme-surface-background, #fffaf2);
+}
+
+.theme-label {
+	font-size: 15px;
+	font-weight: bold;
+	color: var(--theme-label-color, #8b5e34);
+}
+
+.theme-required {
+	font-size: 16px;
+	color: #e56b6f;
+}
+
+.theme-error {
+	font-size: 12px;
+	font-weight: bold;
+	color: #d9485f;
+}
+
+.button-row {
+	flex-direction: row;
+	margin-top: 12px;
+}
+
+.action-button {
+	margin-right: 10px;
+	color: #ffffff;
+	background-color: #007aff;
+}
+
+.secondary-button {
+	color: var(--text-color, #333333);
+	background-color: var(--active-background-color, #e9eef5);
+}
+
+.status-text {
+	margin-top: 8px;
+	font-size: 14px;
+	color: #007aff;
+}
+
+.class-list {
+	margin-top: 10px;
+	font-size: 12px;
+}
+</style>

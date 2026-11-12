@@ -21,7 +21,7 @@ function runCheckUpdate(component : any | null, checkUpdateOptions ?: CheckUpdat
   return new Promise<UniUpgradeCenterResult>((resolve, reject) => {
     manager.checkUpdate(checkUpdateOptions).then((event : UpdateCheckEvent) => {
       if (event.hasUpdate && event.packageInfo !== null) {
-        manager.showUpdate(event.packageInfo, component).then(resolve).catch(reject)
+        manager.showUpdate(event.packageInfo, component, event.taskContext).then(resolve).catch(reject)
         return
       }
       if (event.result !== null && event.result.code <= 0) {

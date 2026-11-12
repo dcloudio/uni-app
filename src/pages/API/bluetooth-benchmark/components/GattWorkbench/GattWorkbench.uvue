@@ -1,0 +1,717 @@
+<template>
+	<view class="panel gatt-panel">
+		<view class="device-context">
+			<view class="device-selector" :class="props.connectedIds.length == 0 ? 'control-disabled' : ''"
+				@click="emit('toggleDeviceSelector')">
+				<view class="context-dot"></view>
+				<view class="context-copy"><text class="context-label">当前设备</text><text
+						class="context-name">{{ props.currentDeviceName }}</text></view>
+				<text class="context-chevron">{{ props.deviceSelectorOpen ? '⌃' : '⌄' }}</text>
+			</view>
+			<button class="disconnect-action"
+				:class="props.selectedDeviceId == '' || props.connectionPending ? 'control-disabled' : ''" size="mini"
+				@click.stop="emit('disconnect', props.selectedDeviceId)">断开</button>
+		</view>
+		<view v-if="props.deviceSelectorOpen" class="device-selector-menu">
+			<view v-for="deviceId in props.connectedIds" :key="deviceId" class="device-selector-option"
+				:class="props.selectedDeviceId == deviceId ? 'device-selector-selected' : ''"
+				@click="emit('switchDevice', deviceId)">
+				<view class="option-dot"></view>
+				<view class="option-copy"><text class="option-name">{{ displayDeviceName(deviceId) }}</text><text
+						class="option-id">{{ deviceId }}</text></view>
+				<text v-if="props.selectedDeviceId == deviceId" class="option-check">✓</text>
+			</view>
+		</view>
+		<view v-if="props.taskEditorReturnToConcurrency" class="task-picker-hint"><text>请选择一个 GATT
+				特征，然后点击“加入批量任务”；保存后会返回批量页。</text></view>
+
+		<view class="panel-head gatt-head">
+			<view><text class="panel-title gatt-title">GATT 工作台</text><text
+					class="rssi-line">{{ props.currentRssi == 0 ? '--' : props.currentRssi.toString() }} dBm · MTU
+					{{ props.currentMtu == 0 ? '--' : props.currentMtu.toString() }} · {{ props.services.length }} 服务 /
+					{{ props.characteristicCount }} 特征</text></view>
+			<button class="refresh-button" :class="props.selectedDeviceId == '' || props.gattBusy ? 'control-disabled' : ''"
+				size="mini" @click="emit('refreshGatt')">↻ 重新发现</button>
+		</view>
+
+		<view v-if="props.selectedDeviceId == ''" class="gatt-empty"><text>请先在发现页连接设备</text></view>
+		<view v-else class="service-list gatt-service-list">
+			<view v-for="service in props.services" :key="service.uuid" class="service-block gatt-service-block">
+				<view class="service-row gatt-service-row" @click="emit('selectService', service.uuid)">
+					<view class="service-copy"><text class="service-icon">□</text>
+						<view><text class="service-uuid gatt-service-uuid">{{ shortUUID(service.uuid) }}</text><text
+								class="service-kind gatt-service-kind">{{ service.isPrimary ? '主服务' : '次级服务' }} ·
+								{{ service.characteristics.length }} 特征</text></view>
+					</view>
+					<text class="service-chevron">{{ props.selectedServiceId == service.uuid ? '⌃' : '⌄' }}</text>
+				</view>
+				<view v-if="props.selectedServiceId == service.uuid">
+					<view v-for="characteristic in service.characteristics" :key="characteristic.uuid"
+						class="characteristic-row gatt-characteristic-row"
+						:class="props.selectedCharacteristicId == characteristic.uuid ? 'characteristic-selected' : ''"
+						@click="emit('selectCharacteristic', characteristic)">
+						<view class="characteristic-copy"><text
+								class="characteristic-uuid gatt-characteristic-uuid">{{ shortUUID(characteristic.uuid) }}</text><text
+								class="characteristic-name gatt-characteristic-name">{{ characteristic.name }}</text></view>
+						<view class="property-row"><text v-for="property in characteristic.properties" :key="property"
+								class="property gatt-property">{{ propertyLabel(property) }}</text></view>
+					</view>
+				</view>
+			</view>
+		</view>
+
+		<view class="console gatt-console">
+			<view class="console-head">
+				<view><text class="console-caption gatt-console-caption">{{ shortUUID(props.selectedServiceId) }} /
+						{{ shortUUID(props.selectedCharacteristicId) }}</text><text
+						class="console-title gatt-console-title">{{ props.selectedCharacteristicName }}</text></view><text
+					class="notify-state gatt-notify-state"
+					:class="props.notifying ? 'notify-on' : ''">{{ props.notifying ? '● Notify 中' : '通知关闭' }}</text>
+			</view>
+			<view class="format-action-row">
+				<view class="segmented value-format-selector"><text class="segment-option"
+						:class="props.valueDisplayMode == 'hex' ? 'segment-selected' : ''"
+						@click="emit('selectValueDisplayMode', 'hex')">HEX</text><text v-if="props.utf8Supported"
+						class="segment-option" :class="props.valueDisplayMode == 'utf8' ? 'segment-selected' : ''"
+						@click="emit('selectValueDisplayMode', 'utf8')">UTF-8</text></view>
+				<button class="clipboard-button" :class="props.lastValueTime == '--' ? 'control-disabled' : ''" size="mini"
+					@click="emit('copyLastValue')">复制</button>
+			</view>
+			<view class="value-box gatt-value-box"><text class="value-label">最近值 · {{ props.lastValueTime }}</text><text
+					class="value-hex gatt-value-hex">{{ props.lastValueDisplay }}</text><text
+					class="value-meta">{{ props.lastValueMeta }}</text></view>
+			<view class="action-row">
+				<button class="small-button action-button"
+					:class="!props.canRead || props.ioBusy || props.selectedPathHasRunningTask ? 'control-disabled' : ''"
+					size="mini" @click="emit('readValue')">{{ props.ioBusy ? '处理中' : '读取' }}</button>
+				<button class="small-button action-button action-button-last notify-button"
+					:class="!props.canNotify || props.notifyBusy || props.selectedPathHasRunningTask ? 'control-disabled' : (props.notifying ? 'notify-button-on' : '')"
+					size="mini" @click="emit('toggleNotify')">{{ props.notifying ? '关闭通知' : '开启通知' }}</button>
+			</view>
+		</view>
+
+		<view class="console gatt-console write-console">
+			<view class="console-head">
+				<view><text class="console-caption">写入目标</text><text
+						class="console-title">{{ shortUUID(props.selectedServiceId) }} /
+						{{ shortUUID(props.selectedCharacteristicId) }}</text></view><text
+					class="write-mode-tag">{{ props.writeMode == 'write' ? 'WRITE' : 'WRITE NR' }}</text>
+			</view>
+			<view class="format-action-row">
+				<view class="segmented write-format-selector"><text class="segment-option"
+						:class="props.writePayloadMode == 'hex' ? 'segment-selected' : ''"
+						@click="emit('writePayloadModeChange', 'hex')">HEX</text><text v-if="props.utf8Supported"
+						class="segment-option" :class="props.writePayloadMode == 'utf8' ? 'segment-selected' : ''"
+						@click="emit('writePayloadModeChange', 'utf8')">UTF-8</text></view>
+				<button class="clipboard-button" size="mini" @click="emit('pasteWritePayload')">粘贴</button>
+			</view>
+			<textarea v-if="props.writePayloadMode == 'hex'" class="write-input gatt-write-input" :value="props.writeHex"
+				placeholder="01 02 03 A0 FF" @input="onWriteHexInput"></textarea>
+			<textarea v-else class="write-input gatt-write-input write-text-input" :value="props.writeUtf8"
+				placeholder="输入 UTF-8 文本" @input="onWriteUtf8Input"></textarea>
+			<text class="write-preview-label">待发送 · {{ props.writePayloadSummary }}</text>
+			<text class="write-preview-hex">{{ props.writePayloadHexPreview }}</text>
+			<text class="payload-note">{{ props.mtuText }}</text>
+			<view class="write-footer">
+				<view class="segmented"><text v-if="props.canWriteWithResponse" class="segment-option"
+						:class="props.writeMode == 'write' ? 'segment-selected' : ''"
+						@click="emit('selectWriteMode', 'write')">有回复</text><text v-if="props.canWriteWithoutResponse"
+						class="segment-option" :class="props.writeMode == 'writeNoResponse' ? 'segment-selected' : ''"
+						@click="emit('selectWriteMode', 'writeNoResponse')">无回复</text></view>
+				<button class="small-button primary write-button"
+					:class="!props.canWrite || props.ioBusy || props.selectedPathHasRunningTask ? 'control-disabled' : ''"
+					size="mini" @click="emit('writeValue')">写入</button>
+			</view>
+		</view>
+		<button class="concurrency-entry"
+			:class="props.selectedCharacteristicId == '' || props.availableTaskKinds.length == 0 ? 'control-disabled' : ''"
+			size="mini" @click="emit('openTaskEditor', props.taskEditorReturnToConcurrency)">加入批量任务</button>
+	</view>
+</template>
+
+<script setup lang="ts">
+	import { TaskKind, TestCharacteristic, TestDevice, TestService, ValueDisplayMode, WriteMode, WritePayloadMode } from '../../logic/BleWorkspaceTypes.ts'
+	import { shortUUID } from '../../logic/BleUuid.ts'
+
+	type GattWorkbenchProps = {
+		connectedIds : string[], devices : TestDevice[], selectedDeviceId : string, currentDeviceName : string,
+		deviceSelectorOpen : boolean, connectionPending : boolean, taskEditorReturnToConcurrency : boolean,
+		currentRssi : number, currentMtu : number, services : TestService[], characteristicCount : number, gattBusy : boolean,
+		selectedServiceId : string, selectedCharacteristicId : string, selectedCharacteristicName : string,
+		notifying : boolean, valueDisplayMode : ValueDisplayMode, utf8Supported : boolean, lastValueTime : string,
+		lastValueDisplay : string, lastValueMeta : string, canRead : boolean, canNotify : boolean, ioBusy : boolean,
+		notifyBusy : boolean, selectedPathHasRunningTask : boolean, writeMode : WriteMode, writePayloadMode : WritePayloadMode,
+		writeHex : string, writeUtf8 : string, writePayloadSummary : string, writePayloadHexPreview : string, mtuText : string,
+		canWriteWithResponse : boolean, canWriteWithoutResponse : boolean, canWrite : boolean, availableTaskKinds : TaskKind[]
+	}
+
+	const props = defineProps<GattWorkbenchProps>()
+	const emit = defineEmits<{
+		toggleDeviceSelector : [], disconnect : [deviceId: string], switchDevice : [deviceId: string], refreshGatt : [],
+		selectService : [serviceId: string], selectCharacteristic : [item: TestCharacteristic],
+		selectValueDisplayMode : [mode: ValueDisplayMode], copyLastValue : [], readValue : [], toggleNotify : [],
+		writePayloadModeChange : [mode: WritePayloadMode], pasteWritePayload : [], writeHexChange : [value: string],
+		writeUtf8Change : [value: string], selectWriteMode : [mode: WriteMode], writeValue : [], openTaskEditor : [returnToConcurrency: boolean]
+	}>()
+
+	function propertyLabel(property : string) : string { if (property == 'READ') return 'R'; if (property == 'WRITE') return 'W'; if (property == 'WRITE NR') return 'WN'; if (property == 'NOTIFY') return 'N'; if (property == 'INDICATE') return 'I'; return property }
+	function deviceTitle(device : TestDevice) : string { const name = device.name == null ? '' : device.name!.trim(); return name.length > 0 ? name : (device.localName.length > 0 ? device.localName : '未知设备') }
+	function displayDeviceName(deviceId : string) : string { const device = props.devices.find((item : TestDevice) => item.deviceId == deviceId); return device == null ? deviceId : deviceTitle(device!) }
+	function onWriteHexInput(event : UniInputEvent) : void { emit('writeHexChange', event.detail.value) }
+	function onWriteUtf8Input(event : UniInputEvent) : void { emit('writeUtf8Change', event.detail.value) }
+</script>
+
+<style>
+	.panel {
+		padding: 15px 10px 24px;
+	}
+
+	.panel-head {
+		display: flex;
+		flex-direction: row;
+		align-items: flex-start;
+		justify-content: space-between;
+	}
+
+	.panel-title {
+		font-size: 19px;
+		font-weight: 600;
+	}
+
+	.gatt-panel {
+		padding-top: 9px;
+	}
+
+	.control-disabled {
+		opacity: 0.42;
+	}
+
+	.device-context {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		min-height: 46px;
+		padding: 5px 9px;
+		border-width: 1px;
+		border-color: #2a9b63;
+		border-radius: 7px;
+		background-color: #ffffff;
+	}
+
+	.device-selector {
+		flex: 1;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		min-width: 0;
+	}
+
+	.context-dot,
+	.option-dot {
+		width: 7px;
+		height: 7px;
+		border-radius: 4px;
+		background-color: #20a465;
+	}
+
+	.context-copy {
+		flex: 1;
+		min-width: 0;
+		margin-left: 7px;
+	}
+
+	.context-label {
+		color: #7b8c96;
+		font-size: 8px;
+		line-height: 11px;
+	}
+
+	.context-name {
+		margin-top: 2px;
+		color: #182731;
+		font-size: 11px;
+		line-height: 15px;
+		font-weight: 600;
+		text-overflow: ellipsis;
+	}
+
+	.context-chevron {
+		margin-left: 6px;
+		color: #70828d;
+		font-size: 12px;
+	}
+
+	.disconnect-action {
+		flex: none;
+		height: 28px;
+		line-height: 26px;
+		margin: 0 0 0 10px;
+		padding: 0 12px;
+		border-width: 1px;
+		border-color: #e3b7b7;
+		border-radius: 5px;
+		background-color: #ffffff;
+		color: #d34a4a;
+		font-size: 10px;
+	}
+
+	.device-selector-menu {
+		margin-top: 4px;
+		overflow: hidden;
+		border-width: 1px;
+		border-color: #cddbe2;
+		border-radius: 7px;
+		background-color: #ffffff;
+	}
+
+	.device-selector-option {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		min-height: 45px;
+		padding: 7px 10px;
+		border-bottom-width: 1px;
+		border-bottom-color: #e6edf0;
+	}
+
+	.device-selector-selected {
+		background-color: #edf6ff;
+	}
+
+	.option-copy {
+		flex: 1;
+		min-width: 0;
+		margin-left: 8px;
+	}
+
+	.option-name {
+		color: #182731;
+		font-size: 10px;
+		font-weight: 600;
+	}
+
+	.option-id {
+		margin-top: 2px;
+		color: #7b8c96;
+		font-family: monospace;
+		font-size: 7px;
+		text-overflow: ellipsis;
+	}
+
+	.option-check {
+		color: #2875d6;
+		font-size: 12px;
+	}
+
+	.task-picker-hint {
+		margin-top: 8px;
+		padding: 8px 9px;
+		border-width: 1px;
+		border-color: #b8d3f4;
+		border-radius: 6px;
+		background-color: #edf5ff;
+		color: #2875d6;
+		font-size: 9px;
+		line-height: 14px;
+	}
+
+	.gatt-head {
+		margin-top: 11px;
+		align-items: center;
+	}
+
+	.gatt-title {
+		font-size: 16px;
+	}
+
+	.rssi-line {
+		margin-top: 8px;
+		color: #71838c;
+		font-size: 9px;
+	}
+
+	.refresh-button {
+		flex: none;
+		height: 30px;
+		line-height: 28px;
+		margin: 0 0 0 8px;
+		padding: 0 12px;
+		border-width: 1px;
+		border-color: #c4d3da;
+		border-radius: 6px;
+		background-color: #ffffff;
+		color: #2875d6;
+		font-size: 10px;
+	}
+
+	.gatt-empty {
+		margin-top: 10px;
+		padding: 34px 12px;
+		border-width: 1px;
+		border-color: #d5e0e5;
+		border-radius: 7px;
+		background-color: #ffffff;
+		color: #71838c;
+		font-size: 10px;
+		text-align: center;
+	}
+
+	.gatt-service-list {
+		margin-top: 9px;
+		overflow: hidden;
+		border-width: 1px;
+		border-color: #d5e0e5;
+		border-radius: 7px;
+		background-color: #ffffff;
+	}
+
+	.gatt-service-block {
+		border-top-width: 0;
+		border-bottom-width: 1px;
+		border-bottom-color: #e5ecef;
+	}
+
+	.service-row,
+	.characteristic-row {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.gatt-service-row {
+		min-height: 42px;
+		padding: 7px 9px;
+		background-color: #ffffff;
+	}
+
+	.service-copy {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		min-width: 0;
+	}
+
+	.service-icon {
+		width: 18px;
+		color: #2875d6;
+		font-size: 11px;
+	}
+
+	.service-uuid,
+	.characteristic-uuid {
+		font-family: monospace;
+	}
+
+	.gatt-service-uuid {
+		color: #172731;
+		font-size: 9px;
+		font-weight: 600;
+	}
+
+	.service-kind,
+	.characteristic-name {
+		margin-top: 3px;
+		color: #82939b;
+	}
+
+	.gatt-service-kind {
+		margin-top: 2px;
+		font-size: 7px;
+	}
+
+	.service-chevron {
+		color: #71838c;
+		font-size: 11px;
+	}
+
+	.gatt-characteristic-row {
+		min-height: 39px;
+		padding: 6px 9px 6px 28px;
+		border-top: 1px solid #edf1f3;
+	}
+
+	.characteristic-selected {
+		background-color: #e9f4ff;
+		box-shadow: inset 3px 0 #2875d6;
+	}
+
+	.characteristic-copy {
+		flex: 1;
+		min-width: 0;
+	}
+
+	.gatt-characteristic-uuid {
+		color: #172731;
+		font-size: 9px;
+		font-weight: 600;
+	}
+
+	.gatt-characteristic-name {
+		margin-top: 2px;
+		font-size: 7px;
+	}
+
+	.property-row {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: flex-end;
+	}
+
+	.property {
+		border-radius: 3px;
+		background-color: #edf4ff;
+		color: #2875d6;
+	}
+
+	.gatt-property {
+		margin-left: 3px;
+		padding: 2px 4px;
+		font-size: 7px;
+	}
+
+	.console {
+		margin-top: 9px;
+		border: 1px solid #d5e0e5;
+		border-radius: 7px;
+		background-color: #fff;
+	}
+
+	.gatt-console {
+		padding: 9px;
+	}
+
+	.console-head {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+	}
+
+	.console-caption,
+	.value-label {
+		color: #71838c;
+		font-size: 8px;
+	}
+
+	.console-title {
+		margin-top: 3px;
+		font-size: 12px;
+	}
+
+	.gatt-console-caption {
+		font-size: 7px;
+	}
+
+	.gatt-console-title {
+		font-size: 11px;
+		font-weight: 600;
+	}
+
+	.notify-state {
+		color: #81939b;
+	}
+
+	.gatt-notify-state {
+		font-size: 8px;
+	}
+
+	.notify-on {
+		color: #2b9a64;
+	}
+
+	.format-action-row {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		margin-top: 7px;
+	}
+
+	.segmented {
+		display: flex;
+		flex-direction: row;
+		flex: 1;
+		padding: 3px;
+		border-radius: 5px;
+		background-color: #e8eef1;
+	}
+
+	.segment-option {
+		flex: 1;
+		padding: 7px 4px;
+		color: #71838c;
+		font-size: 9px;
+		text-align: center;
+	}
+
+	.segment-selected {
+		border-radius: 4px;
+		background-color: #fff;
+		color: #2875d6;
+	}
+
+	.value-format-selector,
+	.write-format-selector {
+		margin-top: 0;
+	}
+
+	.clipboard-button {
+		flex: none;
+		width: 48px;
+		height: 32px;
+		line-height: 30px;
+		margin: 0 0 0 7px;
+		padding: 0;
+		border-width: 1px;
+		border-color: #c4d3da;
+		border-radius: 6px;
+		background-color: #ffffff;
+		color: #2875d6;
+		font-size: 10px;
+	}
+
+	.value-box {
+		border-radius: 6px;
+		background-color: #142633;
+		color: #fff;
+	}
+
+	.gatt-value-box {
+		margin-top: 7px;
+		padding: 9px;
+	}
+
+	.value-hex {
+		color: #8fc5ff;
+		font-family: monospace;
+	}
+
+	.gatt-value-hex {
+		margin: 7px 0;
+		font-size: 12px;
+	}
+
+	.value-meta {
+		color: #aabdc5;
+		font-size: 8px;
+	}
+
+	.action-row,
+	.write-footer {
+		display: flex;
+		flex-direction: row;
+		margin-top: 8px;
+	}
+
+	.small-button {
+		height: 30px;
+		line-height: 28px;
+		margin: 0;
+		padding: 0 12px;
+		border-width: 1px;
+		border-color: #c4d3da;
+		border-radius: 6px;
+		background-color: #ffffff;
+		color: #40545f;
+		font-size: 10px;
+	}
+
+	.action-button {
+		flex: 1;
+		height: 30px;
+		margin-right: 6px;
+		padding: 0 5px;
+	}
+
+	.action-button-last {
+		margin-right: 0;
+	}
+
+	.notify-button-on {
+		border-color: #2a9b63;
+		color: #18834d;
+	}
+
+	.write-console {
+		margin-bottom: 4px;
+	}
+
+	.write-mode-tag {
+		padding: 3px 5px;
+		border-radius: 3px;
+		background-color: #edf2f5;
+		color: #71838c;
+		font-size: 7px;
+	}
+
+	.write-input {
+		width: 100%;
+		padding: 8px;
+		border: 1px solid #cbd8de;
+		border-radius: 5px;
+		background-color: #f8fafb;
+		font-family: monospace;
+		font-size: 10px;
+	}
+
+	.gatt-write-input {
+		min-height: 54px;
+		margin-top: 7px;
+	}
+
+	.write-text-input {
+		font-family: sans-serif;
+	}
+
+	.write-preview-label {
+		margin-top: 8px;
+		color: #71838c;
+		font-size: 8px;
+	}
+
+	.write-preview-hex {
+		margin-top: 4px;
+		color: #2875d6;
+		font-family: monospace;
+		font-size: 9px;
+	}
+
+	.payload-note {
+		margin-top: 8px;
+		color: #83949d;
+		font-size: 8px;
+	}
+
+	.write-footer {
+		align-items: center;
+		margin-top: 7px;
+	}
+
+	.primary {
+		border-color: #2875d6;
+		background-color: #2875d6;
+		color: #fff;
+	}
+
+	.write-button {
+		flex: none;
+		min-width: 68px;
+		height: 32px;
+		line-height: 30px;
+		margin: 0 0 0 7px;
+	}
+
+	.concurrency-entry {
+		height: 40px;
+		line-height: 38px;
+		margin: 9px 0 0;
+		padding: 0 12px;
+		border-width: 1px;
+		border-color: #2875d6;
+		border-radius: 6px;
+		background-color: #edf5ff;
+		color: #2875d6;
+		font-size: 11px;
+		font-weight: 600;
+	}
+</style>

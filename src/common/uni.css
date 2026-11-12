@@ -361,3 +361,47 @@
 .margin-10{
   margin: 10px;
 }
+
+.fw-bold {
+  font-weight: bold;
+}
+
+.fs-15 {
+  font-size: 15px;
+}
+
+.mt-15 {
+  margin-top: 15px;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.mt-10 {
+  margin-top: 10px;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.u-p-15 {
+  padding: 15px;
+}
+
+.h-80 {
+  height: 80px;
+}
+
+.fs-18 {
+  font-size: 18px;
+}
+
+.color-text-333 {
+  color: var(--text-color, #333333);
+}
+
+.pb-safe-area-inset-bottom {
+  padding-bottom: var(--uni-safe-area-inset-bottom);
+}

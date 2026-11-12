@@ -8,16 +8,44 @@
 import UIKit
 
 public class UniInputView : UITextField {
+
+    public func setEditorCursorColor(_ color: UIColor?) {
+        tintColor = color
+    }
     
     public var padding = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     public var holdKeyboardEnabled = false
     private lazy var suppressedKeyboardView = UIView(frame: .zero)
-    private lazy var outsideTapGesture: UITapGestureRecognizer = {
-        let gesture = UITapGestureRecognizer(target: self, action: #selector(handleOutsideTap(_:)))
-        gesture.cancelsTouchesInView = false
-        return gesture
-    }()
-    private weak var outsideTapHostView: UIView?
+    private weak var keyboardDismissCoordinator: UniEditorKeyboardDismissCoordinator?
+
+    override open func becomeFirstResponder() -> Bool {
+        let becameFirstResponder = super.becomeFirstResponder()
+        if becameFirstResponder {
+            activateKeyboardDismissCoordinator()
+        }
+        return becameFirstResponder
+    }
+
+    override open func resignFirstResponder() -> Bool {
+        let resignedFirstResponder = super.resignFirstResponder()
+        if resignedFirstResponder {
+            deactivateKeyboardDismissCoordinator()
+        }
+        return resignedFirstResponder
+    }
+
+    override open func didMoveToWindow() {
+        super.didMoveToWindow()
+        if isFirstResponder {
+            activateKeyboardDismissCoordinator()
+        }
+    }
+
+    override open func didMoveToSuperview() {
+        super.didMoveToSuperview()
+        guard isFirstResponder, let window else { return }
+        UniEditorKeyboardDismissCoordinator.coordinator(for: window).refresh(editor: self)
+    }
     
     override open func textRect(forBounds bounds: CGRect) -> CGRect {
         return bounds.inset(by: padding)
@@ -31,16 +59,6 @@ public class UniInputView : UITextField {
         return bounds.inset(by: padding)
     }
 
-    override open func didMoveToWindow() {
-        super.didMoveToWindow()
-        updateOutsideTapHost()
-    }
-
-    override open func didMoveToSuperview() {
-        super.didMoveToSuperview()
-        updateOutsideTapHost()
-    }
-
     public func setSelectionRange(start: Int, end: Int) {
         let textCount = text?.count ?? 0
         let normalizedStart = max(0, min(start, textCount))
@@ -51,10 +69,11 @@ public class UniInputView : UITextField {
     }
 
     public func setWritingDirectionRTL(_ isRTL: Bool) {
+        let currentTextAlignment = textAlignment
         semanticContentAttribute = isRTL ? .forceRightToLeft : .forceLeftToRight
 
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.alignment = textAlignment
+        paragraphStyle.alignment = currentTextAlignment
         paragraphStyle.baseWritingDirection = isRTL ? .rightToLeft : .leftToRight
         var attributes = defaultTextAttributes
         attributes[.paragraphStyle] = paragraphStyle
@@ -63,6 +82,11 @@ public class UniInputView : UITextField {
         if let range = textRange(from: beginningOfDocument, to: endOfDocument) {
             setBaseWritingDirection(isRTL ? .rightToLeft : .leftToRight, for: range)
         }
+
+        // On iOS 18, updating writing-direction attributes may reset an
+        // explicitly configured alignment. Keep direction and alignment
+        // independent so editing and non-editing states render consistently.
+        textAlignment = currentTextAlignment
     }
 
     public func caretBottomOffset() -> CGFloat {
@@ -82,49 +106,25 @@ public class UniInputView : UITextField {
         }
     }
 
+    private func activateKeyboardDismissCoordinator() {
+        guard let window else { return }
+        let coordinator = UniEditorKeyboardDismissCoordinator.coordinator(for: window)
+        if keyboardDismissCoordinator !== coordinator {
+            keyboardDismissCoordinator?.deactivate(editor: self)
+            keyboardDismissCoordinator = coordinator
+        }
+        coordinator.activate(editor: self) { [weak self] in
+            self?.holdKeyboardEnabled ?? false
+        }
+    }
+
+    private func deactivateKeyboardDismissCoordinator() {
+        keyboardDismissCoordinator?.deactivate(editor: self)
+        keyboardDismissCoordinator = nil
+    }
+
     deinit {
-        outsideTapHostView?.removeGestureRecognizer(outsideTapGesture)
+        deactivateKeyboardDismissCoordinator()
     }
 
-    @objc private func handleOutsideTap(_ gesture: UITapGestureRecognizer) {
-        guard isFirstResponder, !holdKeyboardEnabled else { return }
-        guard let hostView = outsideTapHostView else {
-            resignFirstResponder()
-            return
-        }
-        let hostPoint = gesture.location(in: hostView)
-        if let targetView = hostView.hitTest(hostPoint, with: nil), shouldKeepKeyboardForTap(on: targetView) {
-            return
-        }
-        let point = convert(hostPoint, from: hostView)
-        if bounds.contains(point) {
-            return
-        }
-        resignFirstResponder()
-    }
-
-    private func shouldKeepKeyboardForTap(on targetView: UIView) -> Bool {
-        var currentView: UIView? = targetView
-        while let view = currentView {
-            if view === self {
-                return true
-            }
-            if view is UITextField || view is UITextView {
-                return true
-            }
-            currentView = view.superview
-        }
-        return false
-    }
-
-    private func updateOutsideTapHost() {
-        var hostView = superview
-        while let nextHostView = hostView?.superview {
-            hostView = nextHostView
-        }
-        guard outsideTapHostView !== hostView else { return }
-        outsideTapHostView?.removeGestureRecognizer(outsideTapGesture)
-        outsideTapHostView = hostView
-        outsideTapHostView?.addGestureRecognizer(outsideTapGesture)
-    }
 }

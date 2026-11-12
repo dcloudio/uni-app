@@ -1,0 +1,60 @@
+import { UniBluetoothErrorCode, BluetoothFail } from './interface.uts'
+
+export type BluetoothApiName =
+	'openBluetoothAdapter' |
+	'closeBluetoothAdapter' |
+	'startBluetoothDevicesDiscovery' |
+	'stopBluetoothDevicesDiscovery' |
+	'getBluetoothDevices' |
+	'getBluetoothAdapterState' |
+	'getConnectedBluetoothDevices' |
+	'writeBLECharacteristicValue' |
+	'setBLEMTU' |
+	'readBLECharacteristicValue' |
+	'notifyBLECharacteristicValueChange' |
+	'getBLEMTU' |
+	'getBLEDeviceServices' |
+	'getBLEDeviceRSSI' |
+	'getBLEDeviceCharacteristics' |
+	'createBLEConnection' |
+	'closeBLEConnection'
+
+export const BluetoothUniErrors: Map<number, string> = new Map([
+	[1500101, 'bluetooth adapter is not initialized'],
+	[1500102, 'bluetooth adapter is unavailable'],
+	[1500103, 'service not found'],
+	[1500104, 'call system bluetooth capability failed, see cause'],
+	[1500105, 'the platform or system does not support this BLE capability or operation'],
+	[1509000, 'unknown BLE error'],
+	[1509001, 'connection failed'],
+	[1509002, 'characteristic not found'],
+	[1509003, 'no connection'],
+	[1509004, 'property not supported'],
+	[1509005, 'operation timed out'],
+	[1509006, 'device not found'],
+	[1509007, 'already connected'],
+	[1509008, 'location permission is denied (Android BLE scan)'],
+	[1509010, 'wait for bluetooth state change timeout (iOS)'],
+	[1509601, 'invalid parameter'],
+	[1509602, 'bluetooth permission is denied'],
+	[1509603, 'bluetooth is powered off'],
+	[1509604, 'BLE device is not connectable'],
+	[1510102, 'reach max bluetooth background count']
+])
+
+export class BluetoothFailImpl extends UniError implements BluetoothFail {
+	override errCode: UniBluetoothErrorCode
+	constructor(
+		apiName: BluetoothApiName,
+		errCode: UniBluetoothErrorCode,
+		cause: SourceError | null = null
+	) {
+		super()
+		this.errSubject = `uni-bluetooth-${apiName}`
+		this.errCode = errCode
+		this.errMsg = `${apiName}:fail ${BluetoothUniErrors.get(errCode) ?? ''}`
+		if (cause != null) {
+			this.cause = cause
+		}
+	}
+}

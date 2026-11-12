@@ -1,0 +1,286 @@
+<template>
+	<view>
+		<view class="intro">
+			<text class="page-title">控件接入示例</text>
+			<text class="page-desc">uni-forms 不要求控件继承特定基类。只要控件通过 v-model 更新表单对象，就能参与提交校验；需要失焦即时校验时，再按需接入表单项上下文。</text>
+		</view>
+
+		<view class="section">
+			<uni-forms
+				ref="formRef"
+				v-model="formData"
+				:rules="rules"
+				err-show-type="undertext"
+				label-position="left"
+				label-width="120"
+				border
+			>
+				<uni-forms-item name="nativeInput" label="原生 input" required label-class="demo-label" error-message-class="demo-error">
+					<input class="native-input" v-model="formData.nativeInput" placeholder="直接使用 v-model" />
+				</uni-forms-item>
+
+				<uni-forms-item name="nativeNote" label="原生 textarea" label-class="demo-label" error-message-class="demo-error">
+					<textarea class="native-textarea" v-model="formData.nativeNote" placeholder="多行文本不需要额外适配" />
+				</uni-forms-item>
+
+				<uni-forms-item name="agree" label="原生 switch" required label-class="demo-label" error-message-class="demo-error">
+					<switch :checked="formData.agree" @change="onAgreeChange" />
+				</uni-forms-item>
+
+				<uni-forms-item name="nativeCity" label="原生 picker" required label-class="demo-label" error-message-class="demo-error">
+					<picker class="picker-control" :range="cityOptions" :value="cityIndex" @change="onCityChange">
+						<view class="picker-value"><text>{{ formData.nativeCity || '请选择城市' }}</text></view>
+					</picker>
+				</uni-forms-item>
+
+				<uni-forms-item name="easyInput" label="uni-easyinput" required label-class="demo-label" error-message-class="demo-error">
+					<uni-easyinput v-model="formData.easyInput" placeholder="uni-x 组件直接接入" />
+				</uni-forms-item>
+
+				<uni-forms-item name="combobox" label="uni-combobox" required label-class="demo-label" error-message-class="demo-error">
+					<uni-combobox v-model="formData.combobox" :options="comboboxOptions" placeholder="uni-combobox 直接接入" />
+				</uni-forms-item>
+
+				<uni-forms-item name="thirdParty" label="三方组件" required label-class="demo-label" error-message-class="demo-error">
+					<thirdPartyControl v-model="formData.thirdParty" :options="thirdPartyOptions" placeholder="只实现 update:modelValue" />
+				</uni-forms-item>
+			</uni-forms>
+
+			<view class="button-row">
+				<button class="action-button" size="mini" @click="validateForm">校验接入控件</button>
+				<button class="action-button secondary-button" size="mini" @click="resetForm">重置</button>
+			</view>
+			<text class="status-text">{{ statusText }}</text>
+		</view>
+
+		<view class="section section-last">
+			<text class="section-title">接入要点</text>
+			<text class="point-text">1. 输入类控件：实现 modelValue 属性和 update:modelValue 事件。</text>
+			<text class="point-text">2. 原生 picker/switch：用 change 事件把 detail.value 写回表单模型。</text>
+			<text class="point-text">3. 只使用 v-model 的三方组件可以参与 submit 校验；失焦校验属于可选增强。</text>
+			<text class="data-text">{{ dataText }}</text>
+		</view>
+	</view>
+</template>
+
+<script setup lang="ts">
+import thirdPartyControl from './third-party-control.uvue'
+
+type FormData = {
+	nativeInput : string,
+	nativeNote : string,
+	agree : boolean,
+	nativeCity : string,
+	easyInput : string,
+	combobox : string,
+	thirdParty : string
+}
+
+const formRef = ref<any>(null)
+const formData = ref<FormData>({
+	nativeInput: '',
+	nativeNote: '',
+	agree: false,
+	nativeCity: '',
+	easyInput: '',
+	combobox: '',
+	thirdParty: ''
+})
+
+const cityOptions : string[] = ['北京', '上海', '广州', '深圳']
+const comboboxOptions : string[] = ['Web', 'iOS', 'Android', 'HarmonyOS']
+const thirdPartyOptions : string[] = ['普通', '重要', '紧急']
+const cityIndex = ref<number>(0)
+const statusText = ref<string>('等待校验')
+const dataText = computed<string>(() : string => JSON.stringify(formData.value))
+
+const rules = {
+	nativeInput: { label: '原生 input', rules: [{ required: true, errorMessage: '请输入原生 input 内容' }] },
+	agree: {
+		label: '原生 switch',
+		rules: [{ validateFunction: (_rule : any, value : any) : string | void => value ? undefined : '请先打开开关并同意协议' }]
+	},
+	nativeCity: { label: '原生 picker', rules: [{ required: true, errorMessage: '请选择城市' }] },
+	easyInput: { label: 'uni-easyinput', rules: [{ required: true, errorMessage: '请输入 easyinput 内容' }] },
+	combobox: { label: 'uni-combobox', rules: [{ required: true, errorMessage: '请选择 combobox 选项' }] },
+	thirdParty: { label: '三方组件', rules: [{ required: true, errorMessage: '请点击三方组件选择一个值' }] }
+}
+
+function onAgreeChange(event : any) {
+	formData.value.agree = Boolean(event.detail.value)
+}
+
+function onCityChange(event : any) {
+	const index = Number(event.detail.value)
+	cityIndex.value = index
+	formData.value.nativeCity = cityOptions[index] || ''
+}
+
+async function validateForm() {
+	try {
+		await formRef.value.validate()
+		statusText.value = '所有控件均已通过校验'
+	} catch (errors) {
+		const list = errors as any[]
+		statusText.value = list != null && list.length > 0 ? list[0].errorMessage : '校验未通过'
+	}
+}
+
+function resetForm() {
+	formRef.value.resetFields()
+	cityIndex.value = 0
+	statusText.value = '已恢复初始值'
+}
+</script>
+
+<style>
+page {
+	--list-background-color: #ffffff;
+	--background-color: #f5f5f5;
+	--active-color: #a0a0a0;
+	--active-background-color: #f8f8f8;
+	--text-color: #333333;
+	--arrow-color: #999999;
+	--content-background-color: #ffffff;
+	--secondary-text-color: #657180;
+	--input-border-color: #dcdfe6;
+	--divider-color: #e5e5e5;
+	--forms-error-background-color: #fff2f0;
+	background-color: var(--background-color);
+}
+
+.intro,
+.section {
+	padding: 16px;
+	background-color: var(--content-background-color, #ffffff);
+}
+
+.section {
+	margin-top: 10px;
+}
+
+.section-last {
+	padding-bottom: 32px;
+}
+
+.page-title,
+.section-title {
+	font-size: 18px;
+	font-weight: bold;
+	color: var(--text-color, #222222);
+}
+
+.section-title {
+	margin-bottom: 12px;
+	font-size: 16px;
+}
+
+.page-desc,
+.point-text {
+	font-size: 13px;
+	line-height: 21px;
+	color: var(--secondary-text-color, #657180);
+}
+
+.native-input,
+.native-textarea,
+.picker-control {
+	flex: 1;
+	width: 100%;
+	font-size: 14px;
+	color: var(--text-color, #333333);
+	box-sizing: border-box;
+}
+
+.native-input,
+.native-textarea {
+	background-color: var(--list-background-color, #ffffff);
+}
+
+.native-input {
+	min-height: 38px;
+	padding: 0 10px;
+	border-width: 1px;
+	border-style: solid;
+	border-color: var(--input-border-color, #d8dfe8);
+	border-radius: 4px;
+}
+
+.native-textarea {
+	min-height: 76px;
+	padding: 8px 10px;
+	border-width: 1px;
+	border-style: solid;
+	border-color: var(--input-border-color, #d8dfe8);
+	border-radius: 4px;
+}
+
+.picker-value {
+	min-height: 38px;
+	padding: 0 10px;
+	border-width: 1px;
+	border-style: solid;
+	border-color: var(--input-border-color, #d8dfe8);
+	border-radius: 4px;
+	justify-content: center;
+}
+
+.button-row {
+	flex-direction: row;
+	margin-top: 10px;
+}
+
+.action-button {
+	margin-right: 10px;
+	color: #ffffff;
+	background-color: #007aff;
+}
+
+.secondary-button {
+	color: var(--text-color, #333333);
+	background-color: var(--active-background-color, #e9eef5);
+}
+
+.status-text {
+	margin-top: 8px;
+	font-size: 14px;
+	color: #007aff;
+}
+
+.point-text {
+	margin-bottom: 6px;
+}
+
+.data-text {
+	margin-top: 12px;
+	font-size: 12px;
+	line-height: 20px;
+	color: var(--secondary-text-color, #657180);
+}
+
+.demo-label {
+	font-weight: bold;
+	color: #007aff;
+}
+
+.demo-error {
+	font-weight: bold;
+	color: #dd524d;
+}
+
+@media (prefers-color-scheme: dark) {
+	page {
+		--list-background-color: #2d2d2d;
+		--background-color: #1a1a1a;
+		--active-color: #8f8f8f;
+		--active-background-color: #3b3b3b;
+		--text-color: #ffffff;
+		--arrow-color: #ffffff;
+		--content-background-color: #2d2d2d;
+		--secondary-text-color: rgba(255, 255, 255, 0.65);
+		--input-border-color: rgba(255, 255, 255, 0.18);
+		--divider-color: rgba(255, 255, 255, 0.12);
+		--forms-error-background-color: #3a1a1c;
+	}
+}
+</style>

@@ -1,0 +1,93 @@
+{
+  "id": "uni-backarrow-circle",
+  "displayName": "uni-backarrow-circle 圆形返回按钮",
+  "version": "1.0.3",
+  "description": "带圆形透明背景的返回箭头组件。适用于顶部沉浸时左上角独立返回",
+  "isExt": true,
+  "extUrl": "https://ext.dcloud.net.cn/plugin?id=30536",
+  "keywords": [
+    "uni-ui",
+    "uni-app-x",
+    "返回",
+    "箭头",
+    "自定义返回按钮"
+],
+  "repository": "https://gitcode.com/dcloud/uni-ui-x",
+  "engines": {
+    "HBuilderX": "^5.33",
+    "uni-app-x": "^5.33",
+    "uni-app": ""
+  },
+  "directories": {
+    "example": "../../temps/example_temps"
+  },
+  "dcloudext": {
+    "sale": {
+      "regular": {
+        "price": "0.00"
+      },
+      "sourcecode": {
+        "price": "0.00"
+      }
+    },
+    "contact": {
+      "qq": ""
+    },
+    "declaration": {
+      "ads": "无",
+      "data": "无",
+      "permissions": "无"
+    },
+    "type": "component-vue",
+    "darkmode": "√",
+    "i18n": "x",
+    "widescreen": "√",
+    "npmurl": "",
+    "vapor": "√"
+  },
+  "uni_modules": {
+    "dependencies": [],
+    "encrypt": [],
+    "platforms": {
+      "cloud": {
+        "tcb": "x",
+        "aliyun": "x",
+        "alipay": "x"
+      },
+      "client": {
+        "uni-app-x": {
+          "web": {
+            "safari": {
+                "extVersion": "1.0.3",
+                "minVersion": ""
+            },
+            "chrome": {
+                "extVersion": "1.0.3",
+                "minVersion": ""
+            }
+          },
+          "app": {
+            "android": {
+                "extVersion": "1.0.3",
+                "minVersion": ""
+            },
+            "ios": {
+                "extVersion": "1.0.3",
+                "minVersion": ""
+            },
+            "harmony": {
+                "extVersion": "1.0.3",
+                "minVersion": ""
+            }
+          },
+          "mp": {
+            "weixin": {
+                "extVersion": "1.0.3",
+                "minVersion": ""
+            }
+          }
+        }
+      }
+    }
+  }
+}

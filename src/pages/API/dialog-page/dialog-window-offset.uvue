@@ -1,0 +1,180 @@
+<template>
+  <view id="window-offset-root" class="window-offset-root d-flex flex-dir-column bg-page-fff">
+    <scroll-view class="flex-1 h-0 min-h-0 bg-list-fff" direction="vertical" :show-scrollbar="true">
+      <view class="u-p-15">
+        <text class="mb-15 fs-14 lh-22 color-text-333">本页保留默认导航栏，允许页面滚动。打开、关闭弹窗后，应仍然只有内容区域可以滚动，底栏位置保持不变。</text>
+        <text class="mb-15 fs-14 lh-22 color-text-333">初始 --window-top: {{ initialWindowTop }}；--window-bottom: {{ initialWindowBottom }}</text>
+        <text class="mb-15 fs-14 lh-22 color-text-333">{{ result }}</text>
+        <button id="show-modal" class="mb-15" @click="openModal">打开 uni.showModal</button>
+        <button id="open-dialog" class="mb-15" @click="openDialog">打开自定义 dialogPage</button>
+        <button class="mb-15" @click="updateResult">读取当前窗口变量</button>
+        <text v-for="item in 20" :key="item" class="window-offset-row h-40 justify-center fs-14 color-text-333">内部滚动内容 {{ item }}</text>
+      </view>
+    </scroll-view>
+    <view id="window-offset-footer" class="window-offset-footer u-h-50 items-center justify-center bg-active-f8f8f8 border-t-style-solid border-t-color-border border-t-width-1">
+      <text class="fs-14 color-text-333">固定底栏：弹窗关闭后不应随整页滑动</text>
+    </view>
+  </view>
+</template>
+
+<script setup lang="ts">
+  const initialWindowTop = ref('')
+  const initialWindowBottom = ref('')
+  const result = ref('等待打开弹窗')
+
+  function getWindowState() {
+    const style = getComputedStyle(document.documentElement)
+    const root = document.getElementById('window-offset-root')!.getBoundingClientRect()
+    const footer = document.getElementById('window-offset-footer')!.getBoundingClientRect()
+    const scrollingElement = document.scrollingElement!
+    return {
+      windowTop: style.getPropertyValue('--window-top').trim(),
+      windowBottom: style.getPropertyValue('--window-bottom').trim(),
+      rootTop: root.top,
+      rootHeight: root.height,
+      footerTop: footer.top,
+      footerBottom: footer.bottom,
+      viewportHeight: window.innerHeight,
+      scrollHeight: scrollingElement.scrollHeight,
+      clientHeight: scrollingElement.clientHeight,
+      scrollTop: scrollingElement.scrollTop,
+      modalVisible: document.querySelector('uni-page[data-type="systemDialog"] .uni-modal-dialog__action--confirm') != null,
+      dialogVisible: document.getElementById('window-offset-dialog') != null
+    }
+  }
+
+  function updateResult() {
+    const current = getWindowState()
+    result.value = `当前 --window-top: ${current.windowTop}；--window-bottom: ${current.windowBottom}`
+  }
+
+  function openModal() {
+    uni.showModal({
+      title: '窗口变量回归测试',
+      content: '关闭弹窗后，父页面的窗口变量、可视高度和底栏位置应保持不变。',
+      complete: () => {
+        updateResult()
+      }
+    })
+  }
+
+  function openDialog() {
+    uni.openDialogPage({
+      url: '/pages/API/dialog-page/dialog-window-offset-content',
+      animationType: 'none'
+    })
+  }
+
+  onReady(() => {
+    const current = getWindowState()
+    initialWindowTop.value = current.windowTop
+    initialWindowBottom.value = current.windowBottom
+  })
+
+  // 自动化测试：直接读取浏览器的窗口变量和布局，避免用缓存的页面数据代替实际结果。
+  function scrollPage() {
+    window.scrollTo(0, 100)
+  }
+
+  function closePopups() {
+    uni.hideModal({ modalPage: null })
+    uni.closeDialogPage()
+  }
+
+  defineExpose({ getWindowState, openModal, openDialog, scrollPage, closePopups })
+</script>
+
+<style>
+  .window-offset-root {
+    height: calc(100vh - var(--window-top, 0px) - var(--window-bottom, 0px));
+  }
+
+  .window-offset-row {
+    flex-shrink: 0;
+  }
+
+  .window-offset-footer {
+    flex-shrink: 0;
+  }
+
+  /* alpha 分支局部补齐 dev 示例依赖的工具类。 */
+.mb-15 {
+  margin-bottom: 15px;
+}
+
+.lh-22 {
+  line-height: 22px;
+}
+
+.bg-list-fff {
+  background-color: var(--list-background-color,#ffffff);
+}
+
+.d-flex {
+  display: flex;
+}
+
+.flex-dir-column {
+  flex-direction: column;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.bg-active-f8f8f8 {
+  background-color: var(--active-background-color,#f8f8f8);
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.fs-14 {
+  font-size: 14px;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.u-p-15 {
+  padding: 15px;
+}
+
+.min-h-0 {
+  min-height: 0;
+}
+
+.color-text-333 {
+  color: var(--text-color, #333333);
+}
+
+.h-40 {
+  height: 40px;
+}
+
+.border-t-style-solid {
+  border-top-style: solid;
+}
+
+.border-t-color-border {
+  border-top-color: var(--border-color);
+}
+
+.border-t-width-1 {
+  border-top-width: 1px;
+}
+
+.u-h-50 {
+  height: 50px;
+}
+
+.h-0 {
+  height: 0;
+}
+
+.bg-page-fff {
+  background-color: var(--background-color, #ffffff);
+}
+</style>

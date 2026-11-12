@@ -1,0 +1,364 @@
+<template>
+	<view class="panel log-panel">
+		<view class="panel-head log-head">
+			<view class="log-head-copy">
+				<text class="panel-title log-title">实时日志</text>
+				<text class="panel-subtitle">跨设备、API 与特征值聚合 · {{ props.logs.length }} 条</text>
+			</view>
+			<button class="log-clear" size="mini" @click="emit('clearLogs')">清空</button>
+		</view>
+		<view class="log-filter-list">
+			<view class="log-filter-chip" :class="props.logFilterMode == 'all' ? 'log-filter-selected' : ''"
+				@click="emit('setLogFilter', 'all')">
+				<text class="log-filter-text">全部 {{ props.logs.length }}</text>
+			</view>
+			<view v-for="device in props.visibleLogDevices" :key="device.deviceId" class="log-filter-chip log-device-chip"
+				:class="props.logFilterMode == 'device' && props.selectedLogDeviceId == device.deviceId ? 'log-filter-selected' : ''"
+				@click="emit('selectLogDevice', device.deviceId)">
+				<view class="log-device-dot" :class="'log-state-' + device.state"></view>
+				<text class="log-filter-text">{{ logDeviceLabel(device) }} {{ deviceLogCount(device.deviceId) }}</text>
+			</view>
+			<view class="log-filter-chip log-fail-filter"
+				:class="props.logFilterMode == 'fail' ? 'log-filter-fail-selected' : ''" @click="emit('setLogFilter', 'fail')">
+				<text class="log-filter-text log-fail-filter-text">失败 {{ failedLogCount }}</text>
+			</view>
+		</view>
+		<view class="log-list">
+			<view v-for="(log, index) in filteredLogs" :key="log.id" class="log-row" :class="logRowClass(log, index)">
+				<text class="log-time">{{ log.time }}</text>
+				<text class="log-kind" :class="log.kind">{{ log.kind.toUpperCase() }}</text>
+				<text v-if="logSlot(log) != ''" class="log-slot"
+					:class="logSlot(log) == 'A' ? 'log-slot-a' : 'log-slot-b'">{{ logSlot(log) }}</text>
+				<view class="log-copy">
+					<text class="log-api">{{ log.api }}</text>
+					<text class="log-detail">{{ logDisplayDetail(log) }}</text>
+				</view>
+			</view>
+			<view v-if="filteredLogs.length == 0" class="log-empty">
+				<text class="log-empty-title">{{ logEmptyTitle }}</text>
+				<text class="log-empty-note">后续 success、fail 和 event 会实时显示在这里</text>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script setup lang="ts">
+	import { LogDeviceContext, LogFilterMode, TestLog } from '../../logic/BleWorkspaceTypes.ts'
+	import { shortUUID } from '../../logic/BleUuid.ts'
+
+	type LogPanelProps = {
+		logs : TestLog[],
+		visibleLogDevices : LogDeviceContext[],
+		logFilterMode : LogFilterMode,
+		selectedLogDeviceId : string
+	}
+
+	const props = defineProps<LogPanelProps>()
+	const emit = defineEmits<{
+		clearLogs : []
+		setLogFilter : [mode: LogFilterMode]
+		selectLogDevice : [deviceId: string]
+	}>()
+
+	const failedLogCount = computed(() : number => props.logs.filter((log : TestLog) : boolean => log.kind == 'fail').length)
+	const filteredLogs = computed(() : TestLog[] => {
+		if (props.logFilterMode == 'fail') return props.logs.filter((log : TestLog) : boolean => log.kind == 'fail')
+		if (props.logFilterMode == 'device') return props.logs.filter((log : TestLog) : boolean => log.deviceId == props.selectedLogDeviceId)
+		return props.logs
+	})
+	const logEmptyTitle = computed(() : string => {
+		if (props.logFilterMode == 'fail') return '暂无失败日志'
+		if (props.logFilterMode == 'device') return '该设备暂无日志'
+		return '暂无日志'
+	})
+
+	function deviceIdSuffix(deviceId : string) : string {
+		if (deviceId.length <= 4) return deviceId
+		return deviceId.substring(deviceId.length - 4)
+	}
+	function logDeviceLabel(device : LogDeviceContext) : string {
+		return device.name + ' · ' + deviceIdSuffix(device.deviceId)
+	}
+	function deviceLogCount(deviceId : string) : number {
+		let count = 0
+		props.logs.forEach((log : TestLog) => { if (log.deviceId == deviceId) count++ })
+		return count
+	}
+	function logRowClass(log : TestLog, index : number) : string {
+		if (log.kind == 'fail') return 'log-row-fail'
+		return index % 2 == 1 ? 'log-row-alt' : ''
+	}
+	function logSlot(log : TestLog) : string {
+		const detail = log.detail
+		const index = detail.indexOf('监听')
+		if (index < 0) return ''
+		const value = detail.substring(index + 2, index + 3)
+		return value == 'A' || value == 'B' ? value : ''
+	}
+	function logDisplayDetail(log : TestLog) : string {
+		if (log.scope == 'global') return log.detail
+		let result = log.deviceName + ' · ' + deviceIdSuffix(log.deviceId)
+		if (log.api == 'createBLEConnection' && log.attemptNo > 0) result += ' · 尝试 #' + log.attemptNo.toString()
+		if (log.serviceId.length > 0) result += ' · ' + shortUUID(log.serviceId)
+		if (log.characteristicId.length > 0) result += ' / ' + shortUUID(log.characteristicId)
+		if (log.detail.length > 0) result += ' · ' + log.detail
+		return result
+	}
+</script>
+
+<style>
+	.panel {
+		padding: 15px 10px 24px;
+	}
+
+	.panel-head {
+		display: flex;
+		flex-direction: row;
+		align-items: flex-start;
+		justify-content: space-between;
+	}
+
+	.panel-title {
+		font-size: 19px;
+		font-weight: 600;
+	}
+
+	.panel-subtitle {
+		margin-top: 3px;
+		color: #71838d;
+		font-size: 10px;
+	}
+
+	.log-panel {
+		padding-top: 14px;
+	}
+
+	.log-head {
+		align-items: center;
+	}
+
+	.log-head-copy {
+		flex: 1;
+		min-width: 0;
+	}
+
+	.log-title {
+		font-size: 19px;
+	}
+
+	.log-clear {
+		flex: none;
+		height: 32px;
+		margin: 0;
+		padding: 0 14px;
+		border-width: 1px;
+		border-style: solid;
+		border-color: #a9c9ed;
+		border-radius: 6px;
+		background-color: #ffffff;
+		color: #2875d6;
+		font-size: 12px;
+		line-height: 30px;
+	}
+
+	.log-filter-list {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		margin-top: 12px;
+	}
+
+	.log-filter-chip {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		height: 30px;
+		margin-right: 6px;
+		margin-bottom: 6px;
+		padding: 0 10px;
+		border-width: 1px;
+		border-style: solid;
+		border-color: #cad8df;
+		border-radius: 15px;
+		background-color: #ffffff;
+	}
+
+	.log-filter-selected {
+		border-color: #2875d6;
+		background-color: #edf5ff;
+	}
+
+	.log-fail-filter {
+		border-color: #e3b9b9;
+	}
+
+	.log-filter-fail-selected {
+		border-color: #d95656;
+		background-color: #fff0f0;
+	}
+
+	.log-filter-text {
+		color: #50636e;
+		font-size: 11px;
+		white-space: nowrap;
+	}
+
+	.log-fail-filter-text {
+		color: #c65353;
+	}
+
+	.log-device-dot {
+		width: 7px;
+		height: 7px;
+		margin-right: 6px;
+		border-radius: 4px;
+		background-color: #95a3aa;
+	}
+
+	.log-state-connected {
+		background-color: #20a465;
+	}
+
+	.log-state-connecting {
+		background-color: #2875d6;
+	}
+
+	.log-state-disconnecting {
+		background-color: #c98a22;
+	}
+
+	.log-state-failed {
+		background-color: #d95656;
+	}
+
+	.log-state-disconnected {
+		background-color: #95a3aa;
+	}
+
+	.log-list {
+		overflow: hidden;
+		min-height: 360px;
+		margin-top: 6px;
+		border-width: 1px;
+		border-style: solid;
+		border-color: #d5e0e5;
+		border-radius: 8px;
+		background-color: #ffffff;
+	}
+
+	.log-row {
+		display: flex;
+		flex-direction: row;
+		align-items: flex-start;
+		min-height: 54px;
+		padding: 10px 10px;
+		border-bottom-width: 1px;
+		border-bottom-color: #e3eaed;
+		background-color: #ffffff;
+	}
+
+	.log-row-fail {
+		background-color: #fff2f2;
+	}
+
+	.log-row-alt {
+		background-color: #f6f9fb;
+	}
+
+	.log-time {
+		flex-shrink: 0;
+		width: 78px;
+		color: #52636d;
+		font-family: monospace;
+		font-size: 9px;
+		font-weight: 600;
+		line-height: 14px;
+	}
+
+	.log-kind {
+		flex-shrink: 0;
+		width: 44px;
+		margin-right: 6px;
+		font-size: 9px;
+		font-weight: 700;
+		line-height: 14px;
+	}
+
+	.log-kind.success {
+		color: #25905b;
+	}
+
+	.log-kind.fail {
+		color: #c65353;
+	}
+
+	.log-kind.event {
+		color: #2875d6;
+	}
+
+	.log-slot {
+		flex-shrink: 0;
+		width: 16px;
+		margin-right: 6px;
+		border-radius: 4px;
+		font-size: 9px;
+		font-weight: 700;
+		text-align: center;
+		line-height: 14px;
+	}
+
+	.log-slot-a {
+		background-color: #e3efff;
+		color: #1a63b8;
+	}
+
+	.log-slot-b {
+		background-color: #efe6fb;
+		color: #6a3fb5;
+	}
+
+	.log-copy {
+		flex: 1;
+		min-width: 0;
+	}
+
+	.log-api {
+		padding: 2px 6px;
+		border-radius: 4px;
+		background-color: #edf0f2;
+		color: #263944;
+		font-family: monospace;
+		font-size: 10px;
+		font-weight: 600;
+		line-height: 14px;
+	}
+
+	.log-detail {
+		margin-top: 4px;
+		color: #566771;
+		font-size: 10px;
+		line-height: 15px;
+	}
+
+	.log-empty {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		min-height: 280px;
+		padding: 30px 12px;
+	}
+
+	.log-empty-title {
+		color: #50636e;
+		font-size: 13px;
+		font-weight: 600;
+	}
+
+	.log-empty-note {
+		margin-top: 6px;
+		color: #95a3aa;
+		font-size: 11px;
+	}
+</style>

@@ -23,6 +23,7 @@
       'name':'back',
       'code':'E601',
     },
+    // #ifndef WEB || MP
     {
       'name':'forward',
       'code':'E600',
@@ -43,10 +44,12 @@
       'name':'more',
       'code':'E606',
     },
+    // #endif
     {
       'name':'close',
       'code':'E650',
     },
+    // #ifndef WEB || MP
     {
       'name':'down',
       'code':'E661',
@@ -55,6 +58,7 @@
       'name':'circle',
       'code':'EA01',
     },
+    // #endif
     {
       'name':'warn',
       'code':'EA0F',
@@ -63,6 +67,7 @@
       'name':'info',
       'code':'EA03',
     },
+    // #ifndef WEB || MP
     {
       'name':'info circle',
       'code':'EA04',
@@ -75,10 +80,12 @@
       'name':'success circle',
       'code':'EA07',
     },
+    // #endif
     {
       'name':'success no circle',
       'code':'EA08',
     },
+    // #ifndef WEB || MP
     {
       'name':'cancel circle',
       'code':'EA0B',
@@ -95,6 +102,7 @@
       'name':'waitnig',
       'code':'EA1E',
     },
+    // #endif
     {
       'name':'search',
       'code':'EA23',

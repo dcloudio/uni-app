@@ -4,6 +4,7 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
 const isIos = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.startsWith('harmony')
+const isMpWeixin = platformInfo.startsWith('mp-weixin')
 const isApp = isAndroid || isIos || isHarmony
 const isVapor = process.env.UNI_APP_X_DOM2 === "true"
 const PAGE_PATH = '/pages/CSS/style-isolation/style-isolation'
@@ -20,6 +21,35 @@ describe('style-isolation', () => {
     expect(image).toSaveImageSnapshot();
   });
 
+
+  it('externalClasses 与内部类名字符串拼接后可更新样式', async () => {
+    const container = await page.$('#external-class-concat-case')
+    const scope = isMpWeixin ? await page.$('.external-class-concat-component') : container
+    expect(scope).not.toBeNull()
+    const box = await scope.$('.box')
+    expect(box).not.toBeNull()
+    // 鸿蒙未设置的样式可能返回空串，更新后则返回默认数值。
+    const styleNumber = async (property, defaultValue) => {
+      const value = await box.style(property)
+      return value === '' ? defaultValue : parseFloat(value)
+    }
+    const cases = [
+      ['concat-opacity', 0.5, 0],
+      ['concat-opacity concat-radius', 0.5, 12],
+      ['concat-radius', 1, 12],
+      ['', 1, 0],
+    ]
+    try {
+      for (const [externalBoxClass, opacity, radius] of cases) {
+        await page.setData({ data: { externalBoxClass } })
+        await page.waitFor(100)
+        expect(await styleNumber('opacity', 1)).toBe(opacity)
+        expect(await styleNumber('border-top-left-radius', 0)).toBe(radius)
+      }
+    } finally {
+      await page.setData({ data: { externalBoxClass: 'external-custom-box' } })
+    }
+  })
 
   it('自定义组件hover-class透传', async () => {
     const childHoverEl = await page.$('.view-class')

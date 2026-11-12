@@ -1,21 +1,22 @@
 {
 	"id": "uni-drag-cell",
 	"displayName": "uni-drag-cell",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "可拖拽排序组件",
 	"isExt": true,
-  "extUrl": "https://ext.dcloud.net.cn/plugin?id=27845",
+	"extUrl": "https://ext.dcloud.net.cn/plugin?id=27845",
 	"keywords": [
         "uni-drag-cell",
         "uni-app-x",
-        "uni-app x",
+        "uni-app",
+        "x",
         "组件"
     ],
 	"repository": "https://gitcode.com/dcloud/uni-ui-x",
 	"engines": {
 		"HBuilderX": "^5.08",
-        "uni-app-x": "^5.08",
-        "uni-app": ""
+		"uni-app-x": "^5.08",
+		"uni-app": ""
 	},
 	"directories": {
 		"example": "../../temps/example_temps"
@@ -40,8 +41,9 @@
 		},
 		"darkmode": "x",
 		"i18n": "x",
-        "widescreen": "x",
-        "npmurl": ""
+		"widescreen": "x",
+		"npmurl": "",
+		"vapor": "√"
 	},
 	"uni_modules": {
 		"dependencies": [],

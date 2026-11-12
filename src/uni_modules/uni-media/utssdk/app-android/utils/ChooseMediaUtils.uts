@@ -352,7 +352,7 @@ function openCameraForVideo(option : ChooseVideoOptions, compressed : boolean) {
 		let intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
 		intent.putExtra(MediaStore.EXTRA_OUTPUT, picUri);
 		if (option.maxDuration != null && option.maxDuration! > 0) {
-			intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, option.maxDuration!);
+			intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, option.maxDuration!.toInt());
 		}
 		if (option.camera != null && option.camera! == "front") {
 			intent.putExtra("android.intent.extras.CAMERA_FACING", 1);//前置摄像
@@ -478,10 +478,10 @@ function openGalleryActivity(count : number, type : number, compressed : boolean
 	} else {
 		albumIntent.setClassName(getUniActivity()!!, "io.dcloud.uts.dmcbig.mediapicker.PickerActivity");
 	}
-	albumIntent.putExtra(/* SELECT_MODE = */"select_mode",/* PICKER_IMAGE_VIDEO = */type)
+	albumIntent.putExtra(/* SELECT_MODE = */"select_mode",/* PICKER_IMAGE_VIDEO = */type.toInt())
 	albumIntent.putExtra(/* SINGLE_SELECT = */"single_select", false)
 	albumIntent.putExtra(/* COMPRESSED = */"COMPRESSED", compressed)
-	albumIntent.putExtra(/* MAX_SELECT_COUNT = */"max_select_count", count)
+	albumIntent.putExtra(/* MAX_SELECT_COUNT = */"max_select_count", count.toInt())
 	// albumIntent.putExtra(/* DEFAULT_SELECTED_LIST = */"default_list",null); // 暂未对非uni的属性进行支持
 	// albumIntent.putExtra(/* SELECTED_MAX_CALLBACK_ID = */"select_max_cb_id","") // 暂未对非uni的属性进行支持
 	// albumIntent.putExtra(/* DONE_BUTTON_TEXT = */"done_button_text","")  // 暂未对非uni的属性进行支持
@@ -494,7 +494,7 @@ function openGalleryActivity(count : number, type : number, compressed : boolean
 		albumIntent.putExtra(/* IMAGE_CROP = */"image_crop", JSON.stringify(crop))
 		albumIntent.putExtra(/* MAX_SELECT_COUNT = */"max_select_count", 1)  // 编辑模式下只能选中一个
 	}
-	albumIntent.putExtra("page_orientation", getOrientation(pageOrientation))
+	albumIntent.putExtra("page_orientation", getOrientation(pageOrientation).toInt())
 	albumIntent.putExtra("copy_privacy_path", !UTSAndroid.isUniAppX())
 	getUniActivity()!!.startActivityForResult(albumIntent, GALLERY_MEDIA_PICKER_RESULT.toInt())
 }

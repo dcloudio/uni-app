@@ -9,7 +9,7 @@
 			</uni-forms-item>
 		</view>
 	</uni-forms>
-	<text class="uni-subtitle-text">分组标题</text>
+	<text class="color-888 fs-12 fw-bold u-mt-5">分组标题</text>
 	<uni-forms>
 		<view class="uni-card uni-card-color">
 			<uni-forms-item label="用户名" label-class="label-class label-width" class="underline">

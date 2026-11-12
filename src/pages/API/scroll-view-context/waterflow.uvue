@@ -1,0 +1,198 @@
+<template>
+  <text class="fs-18 fw-bold color-text-333">属性</text>
+  <waterflow id="property-scroll" class="context-scroll" :cross-axis-count="2">
+    <flow-item v-for="index in 8" :key="index" :type="1" class="h-80">
+      <view class="context-item">
+        <text>条目 {{ index }}</text>
+      </view>
+    </flow-item>
+  </waterflow>
+  <!-- #ifdef APP-IOS -->
+  <boolean-data
+    id="property-bounces"
+    title="bounces（边界回弹，仅 iOS）"
+    :value="data.bounces"
+    @change="changeBounces"
+  />
+  <!-- #endif -->
+  <boolean-data
+    id="property-showScrollbar"
+    title="showScrollbar（显示滚动条）"
+    :value="data.showScrollbar"
+    @change="changeShowScrollbar"
+  />
+  <boolean-data
+    id="property-scrollEnabled"
+    title="scrollEnabled（允许手势滚动）"
+    :value="data.scrollEnabled"
+    @change="changeScrollEnabled"
+  />
+  <boolean-data
+    id="property-pagingEnabled"
+    title="pagingEnabled（分页滚动）"
+    :value="data.pagingEnabled"
+    @change="changePagingEnabled"
+  />
+
+  <text class="fs-18 fw-bold color-text-333 mt-15">方法</text>
+
+  <!-- scrollTo：使用自己的滚动容器。 -->
+  <text class="fs-15 fw-bold color-text-333 mt-15">scrollTo</text>
+  <waterflow id="scroll-to" class="context-scroll" :cross-axis-count="2">
+    <flow-item v-for="index in 8" :key="index" :type="1" class="h-80">
+      <view class="context-item">
+        <text>条目 {{ index }}</text>
+      </view>
+    </flow-item>
+  </waterflow>
+  <button id="call-scroll-to" class="mt-10" @click="scrollTo">滚动到 top = 120</button>
+
+  <!-- scrollIntoView：使用自己的滚动容器。 -->
+  <text class="fs-15 fw-bold color-text-333 mt-15">scrollIntoView</text>
+  <waterflow id="scroll-into-view" class="context-scroll" :cross-axis-count="2">
+    <flow-item v-for="index in 8" :key="index" :type="1" class="h-80">
+      <view
+        :id="index == 3 ? 'scroll-into-view-target' : 'into-item-' + index"
+        class="context-item"
+      >
+        <text>{{ index == 3 ? '目标条目' : '条目 ' + index }}</text>
+      </view>
+    </flow-item>
+  </waterflow>
+  <button id="call-scroll-into-view" class="mt-10" @click="scrollIntoView">定位到目标条目</button>
+
+  <!-- triggerRefresh / closeRefresh：共用一个滚动容器。 -->
+  <text class="fs-15 fw-bold color-text-333 mt-15">triggerRefresh / closeRefresh</text>
+  <waterflow
+    id="refresh-scroll"
+    class="context-scroll"
+    :cross-axis-count="2"
+    :refresher-enabled="true"
+  >
+    <flow-item v-for="index in 8" :key="index" :type="1" class="h-80">
+      <view class="context-item">
+        <text>条目 {{ index }}</text>
+      </view>
+    </flow-item>
+  </waterflow>
+  <button id="call-trigger-refresh" class="mt-10" @click="triggerRefresh">
+    调用 triggerRefresh
+  </button>
+
+  <button id="call-close-refresh" class="mt-10" @click="closeRefresh">调用 closeRefresh</button>
+
+  <!-- triggerTwoLevel / closeTwoLevel：共用一个滚动容器。 -->
+  <text class="fs-15 fw-bold color-text-333 mt-15">triggerTwoLevel / closeTwoLevel</text>
+  <waterflow
+    id="two-level-scroll"
+    class="context-scroll"
+    :cross-axis-count="2"
+    :refresher-enabled="true"
+    refresher-default-style="none"
+  >
+    <flow-item v-for="index in 8" :key="index" :type="1" class="h-80">
+      <view class="context-item">
+        <text>条目 {{ index }}</text>
+      </view>
+    </flow-item>
+    <flow-item slot="refresher" :type="2" class="context-refresher">
+      <view class="context-refresher items-center justify-center"><text>二级面板</text></view>
+    </flow-item>
+  </waterflow>
+  <button id="call-trigger-two-level" class="mt-10" @click="triggerTwoLevel">
+    调用 triggerTwoLevel
+  </button>
+
+  <button id="call-close-two-level" class="mt-10" @click="closeTwoLevel">调用 closeTwoLevel</button>
+</template>
+
+<script setup lang="ts">
+  import { getScrollViewContext } from './scroll-view-context'
+
+  const data = reactive({
+    // #ifdef APP-IOS
+    bounces: true,
+    // #endif
+    showScrollbar: true,
+    scrollEnabled: true,
+    pagingEnabled: false
+  })
+
+  // #ifdef APP-IOS
+  async function changeBounces(value: boolean) {
+    const context = await getScrollViewContext('#property-scroll')
+    context.bounces = value
+    data.bounces = context.bounces
+  }
+  // #endif
+
+  async function changeShowScrollbar(value: boolean) {
+    const context = await getScrollViewContext('#property-scroll')
+    context.showScrollbar = value
+    data.showScrollbar = context.showScrollbar
+  }
+
+  async function changeScrollEnabled(value: boolean) {
+    const context = await getScrollViewContext('#property-scroll')
+    context.scrollEnabled = value
+    data.scrollEnabled = context.scrollEnabled
+  }
+
+  async function changePagingEnabled(value: boolean) {
+    const context = await getScrollViewContext('#property-scroll')
+    context.pagingEnabled = value
+    data.pagingEnabled = context.pagingEnabled
+  }
+
+  async function scrollTo() {
+    const context = await getScrollViewContext('#scroll-to')
+    context.scrollTo({ top: 120 })
+  }
+
+  async function scrollIntoView() {
+    const context = await getScrollViewContext('#scroll-into-view')
+    context.scrollIntoView('#scroll-into-view-target')
+  }
+
+  async function triggerRefresh() {
+    const context = await getScrollViewContext('#refresh-scroll')
+    context.triggerRefresh()
+  }
+
+  async function closeRefresh() {
+    const context = await getScrollViewContext('#refresh-scroll')
+    context.closeRefresh()
+  }
+
+  async function triggerTwoLevel() {
+    const context = await getScrollViewContext('#two-level-scroll')
+    // App 端的二级开关通过运行时属性设置。
+    context.setAnyAttribute('refresher-two-level-enabled', true)
+    context.triggerTwoLevel()
+  }
+
+  async function closeTwoLevel() {
+    const context = await getScrollViewContext('#two-level-scroll')
+    context.closeTwoLevel()
+  }
+
+  defineExpose({
+    data,
+    // #ifdef APP-IOS
+    changeBounces,
+    // #endif
+    changeShowScrollbar,
+    changeScrollEnabled,
+    changePagingEnabled,
+    scrollTo,
+    scrollIntoView,
+    triggerRefresh,
+    closeRefresh,
+    triggerTwoLevel,
+    closeTwoLevel
+  })
+</script>
+
+<style>
+  @import './scroll-view-context.css';
+</style>

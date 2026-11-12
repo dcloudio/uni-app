@@ -105,4 +105,44 @@ describe('component-native-scroll-view-refresher', () => {
       expect(1).toBe(1)
     }
   });
+
+  if (isAndroid || isIos || isHarmony) {
+    it('refresher-max-drag-distance 限制下拉事件距离为 100px', async () => {
+      page = await program.reLaunch('/pages/component/scroll-view/scroll-view-refresher')
+      await page.waitFor('scroll-view')
+      await page.waitFor(500)
+      const windowInfo = await program.callUniMethod('getWindowInfo')
+      const navigationOffset = windowInfo.safeAreaInsets.top + 44
+      const maxDistance = 100
+      const tolerance = 2
+
+      try {
+        const rect = await page.callMethod('startRefresherMaxDragDistanceTest', maxDistance)
+        await page.waitFor(150)
+        const x = Math.round(rect.left + rect.width / 2)
+        const startY = Math.round(rect.top + navigationOffset + 20)
+        const endY = Math.floor(Math.min(
+          rect.bottom + navigationOffset - 20,
+          windowInfo.screenHeight - windowInfo.safeAreaInsets.bottom - 20
+        ))
+        expect(endY - startY).toBeGreaterThan(maxDistance * 2)
+
+        await program.swipe({
+          startPoint: { x, y: startY },
+          endPoint: { x, y: endY },
+          duration: 1000
+        })
+        await page.waitFor(200)
+
+        const result = await page.callMethod('getRefresherMaxDragDistanceTestResult')
+        expect(result.pullingEvents).toBeGreaterThan(0)
+        expect(result.maxPullingDistance).toBeGreaterThanOrEqual(maxDistance - tolerance)
+        expect(result.maxPullingDistance).toBeLessThanOrEqual(maxDistance + tolerance)
+      } finally {
+        await page.callMethod('stopRefresherMaxDragDistanceTest')
+        await setPageData({ refresherTriggered: false })
+        await page.waitFor(1800)
+      }
+    }, 30000)
+  }
 });

@@ -22,7 +22,7 @@
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   const inputPath = ref<string>('/static/logo.png')
   const inputResult = ref<string>('')
   const outputResult = ref<string>('')

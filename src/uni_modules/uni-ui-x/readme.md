@@ -63,6 +63,7 @@ uni-ui x 没有写死的颜色和文字:
 | uni-data-checkbox | [数据选择器](https://ext.dcloud.net.cn/plugin?name=uni-data-checkbox-x) |
 | uni-forms | [表单](https://ext.dcloud.net.cn/plugin?name=uni-forms-x) |
 | uni-drag-cell | [可拖拽排序组件](https://ext.dcloud.net.cn/plugin?name=uni-drag-cell) |
+| uni-easyinput | [增强输入框](https://ext.dcloud.net.cn/plugin?name=uni-easyinput-x) |
 | uni-expandable-text | [可折叠文本](https://ext.dcloud.net.cn/plugin?name=uni-expandable-text) |
 | uni-fab-button | [uni-fab-button](https://ext.dcloud.net.cn/plugin?name=uni-fab-button) |
 | uni-index-bar | [uni-index-bar](https://ext.dcloud.net.cn/plugin?name=uni-index-bar) |
@@ -95,7 +96,7 @@ uni-ui x 没有写死的颜色和文字:
 |uni-dateformat				|日期格式化							|改用uni-time-format																	|
 |uni-datetime-picker	|日期选择器							|内置组件picker支持mode=date													|
 |uni-drawer						|抽屉										|改用内置组件page-container													|
-|uni-easyinput				|增强输入框							|无																									|
+|uni-easyinput				|增强输入框							|改用[uni-easyinput](https://ext.dcloud.net.cn/plugin?name=uni-easyinput-x)																									|
 |uni-fab							|悬浮按钮								|改用uni-fab-button																	|
 |uni-fav							|收藏按钮								|无																									|
 |uni-file-picker			|文件选择上传						|无																									|

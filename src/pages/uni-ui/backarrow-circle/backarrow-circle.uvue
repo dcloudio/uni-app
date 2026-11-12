@@ -1,0 +1,216 @@
+<template>
+	<view>
+		<!-- 悬浮导航：返回按钮常驻，页面滚动后显示标题与背景。 -->
+		<view class="navigation-bar" :class="{ 'navigation-bar--scrolled': scrolled }">
+			<!-- 支付宝小程序导航栏左上角返回按钮始终存在，无法隐藏，会导致重叠 -->
+			<!-- #ifndef MP-ALIPAY -->
+			<uni-backarrow-circle id="default-back" class="navigation-back" :class="{ 'navigation-back--scrolled': scrolled }" ios-glass auto-back @click="onBackClick" />
+			<!-- #endif -->
+			<text class="navigation-title" :class="{ 'navigation-title--show': scrolled }" :style="{ marginRight: titleRightSpace + 'px' }">uni-backarrow-circle</text>
+		</view>
+
+		<!-- 沉浸式顶部：背景延伸到状态栏下方，内容可滚动并从顶部穿过。 -->
+		<view class="hero">
+			<text class="hero-title">uni-backarrow-circle</text>
+			<text class="hero-subtitle">顶部沉浸式圆形返回按钮</text>
+		</view>
+
+		<view class="content">
+			<text class="description">圆形返回箭头，适配安全区，点击左上角返回按钮自动返回上一页。向下滚动页面可查看返回按钮与标题悬浮效果。</text>
+			<text class="section-title">自定义样式</text>
+			<view class="examples">
+				<uni-backarrow-circle id="custom-blue" class="blue-arrow" @click="onCustomClick" />
+				<uni-backarrow-circle id="custom-large" class="large-arrow" @click="onCustomClick" />
+				<uni-backarrow-circle id="custom-dark" class="dark-arrow" @click="onCustomClick" />
+			</view>
+			<text class="section-title">事件</text>
+			<button id="event-button" type="primary" @click="onCustomClick">点击返回箭头或按钮</button>
+			<text class="event-result">{{ eventMessage }}</text>
+		</view>
+
+		<!-- 用于演示长页面滚动：内容延伸后返回按钮与标题保持悬浮。 -->
+		<view class="scene">
+			<text class="scene-title">沉浸式顶部</text>
+			<text class="scene-text">常用于详情页、图片页等需要内容延伸到状态栏的场景，滚动后左上角返回按钮与标题保持悬浮。</text>
+		</view>
+	</view>
+</template>
+
+<script setup lang="ts">
+	const eventMessage = ref('尚未触发 click 事件')
+	const scrolled = ref(false)
+	const titleRightSpace = ref(0)
+	// #ifdef MP
+	titleRightSpace.value = 96
+	// #endif
+	// #ifdef MP-WEIXIN
+	function updateTitleRightSpace() {
+		const capsule = uni.getMenuButtonBoundingClientRect()
+		const windowWidth = uni.getWindowInfo().windowWidth
+		if (capsule.width > 0 && capsule.left > 0 && capsule.left < windowWidth) {
+			// 胶囊左侧额外留出 8px，标题只使用返回按钮与胶囊之间的空间。
+			titleRightSpace.value = windowWidth - capsule.left + 8
+		}
+	}
+	onReady(updateTitleRightSpace)
+	onResize(() => {
+		updateTitleRightSpace()
+	})
+	// #endif
+
+	onPageScroll((e: OnPageScrollOptions) => {
+		scrolled.value = e.scrollTop > 10
+	})
+
+	function onBackClick() {
+		eventMessage.value = '默认返回按钮触发了 click'
+	}
+
+	function onCustomClick() {
+		eventMessage.value = '自定义返回按钮触发了 click'
+		uni.showToast({ title: '点击了返回箭头', icon: 'none' })
+	}
+</script>
+
+<style>
+	.hero {
+		height: calc(var(--status-bar-height, 0px) + 160px);
+		background-color: #007aff;
+		justify-content: flex-end;
+		padding: 15px;
+	}
+
+	.hero-title {
+		color: #ffffff;
+		font-size: 22px;
+		font-weight: bold;
+	}
+
+	.hero-subtitle {
+		color: rgba(255, 255, 255, 0.85);
+		font-size: 13px;
+		margin-top: 4px;
+	}
+
+	.content,
+	.scene {
+		flex-direction: column;
+		padding: 15px;
+	}
+
+	.scene {
+		height: 630px;
+		justify-content: center;
+	}
+
+	.scene-title {
+		font-size: 18px;
+		font-weight: bold;
+		margin-bottom: 8px;
+	}
+
+	.scene-text {
+		font-size: 14px;
+		line-height: 20px;
+	}
+
+	.description {
+		line-height: 20px;
+		margin-bottom: 15px;
+	}
+
+	.section-title {
+		font-weight: bold;
+		margin: 8px 0;
+	}
+
+	.event-result {
+		margin-top: 15px;
+	}
+
+	.examples {
+		flex-direction: row;
+		align-items: center;
+		height: 100px;
+		padding-left: 30px;
+	}
+
+	/* 内容区展示按钮无需再次避让屏幕安全区。 */
+	.blue-arrow,
+	.large-arrow,
+	.dark-arrow {
+		margin: 0;
+	}
+
+	.blue-arrow {
+		background-color: #e5f1ff;
+		--uni-backarrow-circle-color: #007aff;
+		--uni-backarrow-circle-width: 3px;
+	}
+
+	.large-arrow,
+	.dark-arrow {
+		margin-left: 40px;
+	}
+
+	.large-arrow {
+		transform: scale(1.25);
+		--uni-backarrow-circle-width: 3px;
+	}
+
+	.dark-arrow {
+		background-color: #333;
+		--uni-backarrow-circle-color: #fff;
+	}
+
+	/* 悬浮导航：固定在页面顶部，覆盖在内容之上，安全区由自身内边距处理。 */
+	.navigation-bar {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		flex-direction: row;
+		align-items: center;
+		background-color: transparent;
+		z-index: 10;
+		height: calc(var(--status-bar-height, 0px) + 48px);
+		/* #ifdef MP */
+		padding-top: var(--status-bar-height, 0px);
+		/* #endif */
+		/* #ifndef MP */
+		padding-top: var(--uni-safe-area-inset-top, 0px);
+		/* #endif */
+	}
+
+	/* 返回按钮在悬浮行内垂直居中，安全区已由导航行内边距处理。 */
+	.navigation-back {
+		margin-top: 0;
+		flex-shrink: 0;
+		--uni-backarrow-circle-color: #ffffff;
+	}
+
+	.navigation-back--scrolled {
+		--uni-backarrow-circle-color: #1a1a1a;
+	}
+
+	.navigation-title {
+		flex: 1;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		text-align: center;
+		font-size: 17px;
+		font-weight: bold;
+		color: #1a1a1a;
+		opacity: 0;
+	}
+
+	.navigation-title--show {
+		opacity: 1;
+	}
+
+	/* 滚动后悬浮导航显示背景与分割线。 */
+	.navigation-bar--scrolled {
+		background-color: #ffffff;
+		border-bottom: 1px solid #ececec;
+	}
+</style>

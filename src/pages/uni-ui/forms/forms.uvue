@@ -1,0 +1,369 @@
+<template>
+	<view>
+		<view class="intro">
+			<text class="page-title">uni-forms 表单</text>
+			<text class="page-desc">通过 v-model 统一收集字段值，并支持字段校验、错误展示和表单重置。</text>
+		</view>
+
+		<view class="section demo-index">
+			<text class="section-title">多功能演示</text>
+			<text class="section-desc">uni-forms 的所有表单用法从这里进入，按场景查看基础接入、校验方案、控件接入和样式配置。</text>
+			<view class="demo-links">
+				<navigator class="demo-link" url="/pages/uni-ui/forms/validation">
+					<text class="demo-link-title">完整校验</text>
+					<text class="demo-link-desc">DB Schema 规则、异步校验和字段方法</text>
+				</navigator>
+				<navigator class="demo-link" url="/pages/uni-ui/forms/valibot">
+					<text class="demo-link-title">Valibot schema</text>
+					<text class="demo-link-desc">Standard Schema、异步、嵌套和原生 API</text>
+				</navigator>
+				<navigator class="demo-link" url="/pages/uni-ui/forms/controls">
+					<text class="demo-link-title">控件接入</text>
+					<text class="demo-link-desc">原生控件、uni-x 控件和三方组件</text>
+				</navigator>
+				<navigator class="demo-link" url="/pages/uni-ui/forms/styles">
+					<text class="demo-link-title">样式与属性</text>
+					<text class="demo-link-desc">布局属性和 externalClasses 样式覆盖</text>
+				</navigator>
+				<navigator class="demo-link" url="/pages/uni-ui/forms/form-item">
+					<text class="demo-link-title">表单项布局</text>
+					<text class="demo-link-desc">左标签字号、宽度、对齐、箭头和说明</text>
+				</navigator>
+			</view>
+		</view>
+
+		<view class="section">
+			<uni-forms
+				ref="formRef"
+				v-model="formData"
+				:rules="rules"
+				validate-trigger="blur"
+				err-show-type="undertext"
+				label-position="top"
+				label-width="80"
+				@validate="onValidate"
+			>
+				<uni-forms-item name="name" label="姓名" required label-class="demo-label" error-message-class="demo-error">
+					<uni-easyinput
+						v-model="formData.name"
+						placeholder="请输入姓名"
+						clearable
+					/>
+				</uni-forms-item>
+
+				<uni-forms-item name="city" label="城市" label-class="demo-label" error-message-class="demo-error">
+					<uni-combobox
+						v-model="formData.city"
+						:options="cityOptions"
+						placeholder="请选择城市"
+					/>
+				</uni-forms-item>
+
+				<uni-forms-item name="email" label="邮箱" label-class="demo-label" error-message-class="demo-error">
+					<uni-easyinput
+						v-model="formData.email"
+						type="text"
+						placeholder="请输入邮箱"
+					/>
+				</uni-forms-item>
+
+				<uni-forms-item name="profile.nickname" label="嵌套字段" label-class="demo-label" error-message-class="demo-error">
+					<uni-easyinput
+						v-model="formData.profile.nickname"
+						placeholder="请输入昵称"
+					/>
+				</uni-forms-item>
+			</uni-forms>
+
+			<view class="button-row">
+				<button class="action-button" size="mini" @click="validateForm">校验表单</button>
+				<button class="action-button secondary-button" size="mini" @click="resetForm">重置字段</button>
+			</view>
+			<text class="status-text">{{ statusText }}</text>
+		</view>
+
+		<view class="section section-last">
+			<text class="section-title">当前数据</text>
+			<text class="data-text">{{ dataText }}</text>
+			<view class="property-list">
+				<text class="property-title">本页使用的关键属性</text>
+				<text class="property-text">v-model：formData</text>
+				<text class="property-text">validate-trigger：blur</text>
+				<text class="property-text">label-position：top</text>
+				<text class="property-text">label-class / error-message-class：自定义字段样式</text>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script setup lang="ts">
+type FormData = {
+	name : string,
+	city : string,
+	email : string,
+	profile : {
+		nickname : string
+	}
+}
+
+type FormRule = {
+	label : string,
+	rules : Array<{
+		required? : boolean,
+		format? : string,
+		pattern? : string,
+		errorMessage : string,
+		trigger? : 'bind' | 'blur' | 'submit'
+	}>
+}
+
+const formRef = ref<any>(null)
+const formData = ref<FormData>({
+	name: '',
+	city: '',
+	email: '',
+	profile: {
+		nickname: ''
+	}
+})
+
+const cityOptions : string[] = ['北京', '上海', '广州', '深圳', '杭州', '成都']
+
+const rules = {
+	name: {
+		label: '姓名',
+		rules: [{ required: true, errorMessage: '请输入姓名', trigger: 'blur' }]
+	},
+	city: {
+		label: '城市',
+		rules: [{ required: true, errorMessage: '请选择城市', trigger: 'submit' }]
+	},
+	email: {
+		label: '邮箱',
+		rules: [
+			{ required: true, errorMessage: '请输入邮箱地址', trigger: 'blur' },
+			{ format: 'email', errorMessage: '请输入正确的邮箱地址', trigger: 'blur' }
+		]
+	},
+	'profile.nickname': {
+		label: '嵌套字段',
+		rules: [{ required: true, errorMessage: '请输入昵称', trigger: 'blur' }]
+	}
+}
+
+const statusText = ref<string>('等待校验')
+const dataText = computed<string>(() : string => JSON.stringify(formData.value))
+
+async function validateForm() {
+	try {
+		await formRef.value.validate()
+		statusText.value = '校验通过'
+	} catch (errors) {
+		const list = errors as any[]
+		statusText.value = list != null && list.length > 0 ? list[0].errorMessage : '校验未通过'
+	}
+}
+
+function resetForm() {
+	formRef.value.resetFields()
+	statusText.value = '已重置为初始值'
+}
+
+/**
+ * 填入一组可以通过当前示例规则的值，供 HBuilderX 自动化测试调用。
+ */
+function setDemoValues(): void {
+	formData.value.name = '张三'
+	formData.value.city = '北京'
+	formData.value.email = 'name@example.com'
+	formData.value.profile.nickname = '小张'
+}
+
+function onValidate(result : any) {
+	if (result == null) {
+		return
+	}
+	const list = Array.isArray(result) ? result : [result]
+	if (list.length > 0 && list[0].errorMessage != null) {
+		statusText.value = list[0].errorMessage
+	}
+}
+
+defineExpose({
+	formData,
+	statusText,
+	validateForm,
+	resetForm,
+	setDemoValues
+})
+</script>
+
+<style>
+page {
+	--list-background-color: #ffffff;
+	--background-color: #f5f5f5;
+	--active-color: #a0a0a0;
+	--active-background-color: #f8f8f8;
+	--text-color: #333333;
+	--arrow-color: #999999;
+	--tips-color: #0958d9;
+	--tips-background-color: #e6f4ff;
+	--content-background-color: #ffffff;
+	--secondary-text-color: #657180;
+	--input-border-color: #dcdfe6;
+	--divider-color: #e5e5e5;
+	--forms-error-background-color: #fff2f0;
+	background-color: var(--background-color);
+}
+
+.intro {
+	padding: 18px 16px;
+	background-color: var(--content-background-color, #ffffff);
+}
+
+.page-title {
+	font-size: 20px;
+	font-weight: bold;
+	color: var(--text-color, #222222);
+}
+
+.page-desc {
+	margin-top: 8px;
+	font-size: 14px;
+	line-height: 21px;
+	color: var(--secondary-text-color, #657180);
+}
+
+.section {
+	padding: 16px;
+	margin-top: 10px;
+	background-color: var(--content-background-color, #ffffff);
+	box-sizing: border-box;
+	width: 100%;
+}
+
+.demo-index {
+	padding-bottom: 8px;
+}
+
+.section-desc {
+	margin-bottom: 10px;
+	font-size: 13px;
+	line-height: 20px;
+	color: var(--secondary-text-color, #657180);
+}
+
+.demo-links {
+	flex-direction: row;
+	flex-wrap: wrap;
+}
+
+.demo-link {
+	width: 48%;
+	padding: 12px;
+	margin: 0 2% 10px 0;
+	border-radius: 6px;
+	background-color: var(--active-background-color, #f3f7fc);
+	box-sizing: border-box;
+	min-width: 0;
+}
+
+.demo-link-title {
+	font-size: 15px;
+	font-weight: bold;
+	color: #007aff;
+}
+
+.demo-link-desc {
+	margin-top: 5px;
+	font-size: 12px;
+	line-height: 18px;
+	color: var(--secondary-text-color, #657180);
+}
+
+.section-last {
+	padding-bottom: 32px;
+}
+
+.section-title {
+	margin-bottom: 12px;
+	font-size: 16px;
+	font-weight: bold;
+	color: var(--text-color, #333333);
+}
+
+.button-row {
+	flex-direction: row;
+	margin-top: 8px;
+}
+
+.action-button {
+	margin-right: 10px;
+	color: #ffffff;
+	background-color: #007aff;
+}
+
+.secondary-button {
+	color: var(--text-color, #333333);
+	background-color: var(--active-background-color, #e9eef5);
+}
+
+.status-text {
+	margin-top: 12px;
+	font-size: 14px;
+	color: var(--secondary-text-color, #657180);
+}
+
+.data-text {
+	font-size: 13px;
+	line-height: 20px;
+	color: var(--secondary-text-color, #657180);
+}
+
+.property-list {
+	padding-top: 16px;
+	margin-top: 16px;
+	border-top: 1px solid var(--divider-color, #e5e5e5);
+}
+
+.property-title {
+	margin-bottom: 6px;
+	font-size: 14px;
+	font-weight: bold;
+	color: var(--text-color, #333333);
+}
+
+.property-text {
+	font-size: 12px;
+	line-height: 20px;
+	color: var(--secondary-text-color, #657180);
+}
+
+.demo-label {
+	font-weight: bold;
+	color: #007aff;
+}
+
+.demo-error {
+	font-weight: bold;
+	color: #dd524d;
+}
+
+@media (prefers-color-scheme: dark) {
+	page {
+		--list-background-color: #2d2d2d;
+		--background-color: #1a1a1a;
+		--active-color: #8f8f8f;
+		--active-background-color: #3b3b3b;
+		--text-color: #ffffff;
+		--arrow-color: #ffffff;
+		--tips-color: #91caff;
+		--tips-background-color: #0b1b3a;
+		--content-background-color: #2d2d2d;
+		--secondary-text-color: rgba(255, 255, 255, 0.65);
+		--input-border-color: rgba(255, 255, 255, 0.18);
+		--divider-color: rgba(255, 255, 255, 0.12);
+		--forms-error-background-color: #3a1a1c;
+	}
+}
+</style>

@@ -5,10 +5,7 @@
 	<!-- #ifdef VUE3-VAPOR -->
 	<view ref="mapElem" class="uni-root">
 	<!-- #endif -->
-		<!-- #ifndef APP-HARMONY -->
 		<native-view @init="onObjectInit" @updated="onMapLoadedCallback" @tapNative="onMapTapCallback" @markertap="onMapMarkerTap" @poitap="onMapPoiTap" @regionchange="onMapRegionChange" @controltap="onMapControlTap" @callouttap="onMapCalloutTap" @anchorpointtap="onMapAnchorPointTap" style="width: 100%;height: 100%;"></native-view>
-		<!-- #endif -->
-
 	<!-- #ifdef VUE3-VAPOR -->
 	</view>
 	<!-- #endif -->
@@ -20,9 +17,7 @@
 <script setup lang="uts">
 	import { AmapMap, UniAmapElement, AmapMarker } from "@/uni_modules/uni-map-amap";
 	import type { AmapLocationObject, Circle, Control, Polygon, Polyline } from "@/uni_modules/uni-map-amap/utssdk/interface";
-	// #ifndef APP-HARMONY
 	import { UniMapUpdatedEvent, UniMapUpdatedEventDetail, UniMapTapEvent, UniMapTapEventDetail, UniMapRegionChangeEvent, UniMapRegionChangeEventDetail, UniMapControlTapEvent, UniMapControlTapEventDetail, UniMapPoiTapEvent, UniMapPoiTapEventDetail, UniMapAnchorPointTapEvent, UniMapAnchorPointTapEventDetail, UniMapMarkerTapEvent, UniMapMarkerTapEventDetail, UniMapCalloutTapEvent, UniMapCalloutTapEventDetail } from './global.uts';
-	// #endif
 
 	const mapElem = ref<UniAmapElement | null>(null)
 	const props = withDefaults(defineProps<{
@@ -106,8 +101,13 @@
 		map?.setShowLocation(props.showLocation)
 		map?.setEnableTraffic(props.enableTraffic)
 		// theme 为 satellite 时同样开启卫星图；放在 setLayerStyle 之后，避免 layerStyle 默认值("1")覆盖 theme（对齐腾讯 map.uvue）
+		// #ifdef APP-ANDROID || APP-IOS
 		const satellite = props.theme == "satellite"
 		map?.setEnableSatellite(satellite || props.enableSatellite)
+		// #endif
+		// #ifdef APP-HARMONY
+		map?.setEnableSatellite(props.enableSatellite)
+		// #endif
 		map?.setEnableZoom(props.enableZoom)
 		map?.setEnableRotate(props.enableRotate)
 		map?.setEnableScroll(props.enableScroll)
@@ -115,7 +115,6 @@
 		if (props.markers != null) {
 			map?.setMarkers(props.markers)
 		}
-		// #ifndef APP-HARMONY
 		map?.setEnableOverlooking(props.enableOverlooking)
 		map?.setEnableBuilding(props.enable3D || props.enableBuilding)
 		map?.setShowScale(props.showScale)
@@ -145,7 +144,6 @@
 		if (props.includePoints != null) {
 			map?.setIncludePoints(props.includePoints!, false)
 		}
-		// #endif
 	}
 
 	watchEffect(() => {
@@ -155,7 +153,6 @@
 		map?.setCenter(latitude, longitude, true)
 	})
 
-	// #ifndef APP-HARMONY
 	watchEffect(() => {
 		const polylines = props.polylines
 		if (polylines == null) {
@@ -234,7 +231,6 @@
 			map?.setControls(controls)
 		}
 	})
-	// #endif
 
 	watchEffect(() => {
 		const scale = props.scale
@@ -312,7 +308,6 @@
 		}, 200);
 	}
 
-	// #ifndef APP-HARMONY
 	function onMapLoadedCallback(customEvent : UniNativeViewEvent) {
 		const detail : UniMapUpdatedEventDetail = {}
 		const event = new UniMapUpdatedEvent(customEvent.type, detail)
@@ -320,9 +315,7 @@
 		event.currentTarget = mapElem.value!
 		emit("updated", event)
 	}
-	// #endif
 
-	// #ifndef APP-HARMONY
 	function getDetailNumber(detail : any, key : string) : number | null {
 		return (detail as UTSJSONObject)[key] as number | null
 	}
@@ -368,9 +361,7 @@
 		event.currentTarget = mapElem.value!
 		emit("regionchange", event)
 	}
-	// #endif
 
-	// #ifndef APP-HARMONY
 	function onMapControlTap(customEvent : UniNativeViewEvent) {
 		const eventDetail : UniMapControlTapEventDetail = {
 			controlId: getDetailNumber(customEvent.detail, "controlId")
@@ -464,7 +455,6 @@
 		event.currentTarget = mapElem.value!
 		emit("callouttap", event)
 	}
-	// #endif
 
 	onUnmounted(() => {
 		map?.destroy()

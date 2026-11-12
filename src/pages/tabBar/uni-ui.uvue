@@ -83,18 +83,39 @@
     },
     // #ifndef (APP-IOS || APP-HARMONY) && !VUE3-VAPOR
     {
-      id: 'combox',
-      name: 'uni-combox 组合框',
+      id: 'combobox',
+      name: 'uni-combobox 组合框',
       open: false,
-      url: '/pages/uni-ui/combox/combox',
+      url: '/pages/uni-ui/combobox/combobox',
       pages: [] as Page[]
     },
     // #endif
+    {
+      id: 'data-checkbox',
+      name: 'uni-data-checkbox 数据选择器',
+      open: false,
+      url: '/pages/uni-ui/data-checkbox/data-checkbox',
+      pages: [] as Page[]
+    },
+    {
+      id: 'data-vertical-marquee',
+      name: 'uni-data-vertical-marquee 上下滚动文字',
+      open: false,
+      url: '/pages/uni-ui/data-vertical-marquee/data-vertical-marquee',
+      pages: [] as Page[]
+    },
     {
       id: 'drag-cell',
       name: 'uni-drag-cell 拖拽排序',
       open: false,
       url: '/pages/uni-ui/drag-cell/drag-cell',
+      pages: [] as Page[]
+    },
+    {
+      id: 'easyinput',
+      name: 'uni-easyinput 增强输入框',
+      open: false,
+      url: '/pages/uni-ui/easyinput/easyinput',
       pages: [] as Page[]
     },
     // #ifdef VUE3-VAPOR || MP
@@ -111,6 +132,13 @@
       name: 'uni-fab-button 悬浮按钮',
       open: false,
       url: '/pages/uni-ui/fab-button/fab-button',
+      pages: [] as Page[]
+    },
+    {
+      id: 'forms',
+      name: 'uni-forms 表单',
+      open: false,
+      url: '/pages/uni-ui/forms/forms',
       pages: [] as Page[]
     },
     {

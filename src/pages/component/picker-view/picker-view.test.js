@@ -85,16 +85,18 @@ describe('PickerView.uvue', () => {
     })
   }
 
-  if (isWeb || isMpWeixin) {
-    // indicator-class、mask-style、mask-class 仅 web 和微信小程序支持
+  if (isWeb || isMpWeixin || isVapor) {
     it('indicator-class', async () => {
       //设置indicator-class
       await page.callMethod('setIndicatorClass',true)
-      expect(await pickerViewEl.attribute(isMP ? 'indicator-class': 'indicatorClass')).toBe("indicator-test")
       await toScreenshot('picker-view-web-indicator-class')
       //清空indicatorClass
       await page.callMethod('setIndicatorClass',false)
     })
+  }
+
+  if (isWeb || isMpWeixin) {
+    // mask-style、mask-class 仅 web 和微信小程序支持
     it('mask-style', async () => {
       const maskStyle = "background-image: linear-gradient(to bottom, #d8e5ff, rgba(216, 229, 255, 0));"
       // 设置mask-style

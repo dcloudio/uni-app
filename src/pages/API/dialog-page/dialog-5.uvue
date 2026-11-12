@@ -28,14 +28,18 @@
         <text class="dialog-text">left: </text>
         <text id="page-safe-area-insets-left" class="dialog-text">{{safeAreaInsets!.left}}</text><text class="dialog-text">}</text>
       </view>
-      <!-- #ifdef APP-ANDROID || APP-IOS || WEB -->
-      <view class="uni-common-mt flex-row dialog-text" v-if="width != null">width: <text class="dialog-text">{{width!}}</text>
+      <view class="uni-common-mt flex-row dialog-text" v-if="width != null">
+      <text class="dialog-text">width: </text>
+      <text class="dialog-text">{{width!}}</text>
       </view>
-      <view class="uni-common-mt flex-row dialog-text" v-if="height != null">height: <text class="dialog-text">{{height!}}</text>
+      <view class="uni-common-mt flex-row dialog-text" v-if="height != null">
+      <text class="dialog-text">height: </text>
+      <text class="dialog-text">{{height!}}</text>
       </view>
-      <view class="uni-common-mt flex-row dialog-text" v-if="statusBarHeight != null">statusBarHeight: <text class="dialog-text">{{statusBarHeight!}}</text>
+      <view class="uni-common-mt flex-row dialog-text" v-if="statusBarHeight != null">
+      <text class="dialog-text">statusBarHeight: </text>
+      <text class="dialog-text">{{statusBarHeight!}}</text>
       </view>
-      <!-- #endif -->
       <button class="mt-10" @click="closeThisDialog">
         closeThisDialog
       </button>
@@ -61,11 +65,9 @@
   onReady(() => {
     pageBody.value = currentPage.pageBody;
     safeAreaInsets.value = currentPage.safeAreaInsets
-    // #ifdef APP-ANDROID || APP-IOS || WEB
     width.value = currentPage.width
     height.value = currentPage.height
     statusBarHeight.value = currentPage.statusBarHeight
-    // #endif
   })
 
   onUnload(() => {

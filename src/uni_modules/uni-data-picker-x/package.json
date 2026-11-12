@@ -1,8 +1,9 @@
 {
   "id": "uni-data-picker-x",
   "displayName": "uni-data-picker-x 数据驱动的picker选择器",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "单列、多列级联选择器，常用于省市区城市选择、公司部门选择、多级分类等场景",
+  "isExt": true,
   "keywords": [
     "uni-ui",
     "uniui",

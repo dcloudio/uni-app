@@ -350,7 +350,7 @@
       pages: [] as Page[],
     },
     // #endif
-    // #ifdef WEB || MP-WEIXIN || (APP && VUE3-VAPOR)
+    // #ifdef WEB || MP || (APP && VUE3-VAPOR)
     {
       id: 'echarts-miniprogram',
       url: 'echarts-miniprogram',

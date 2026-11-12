@@ -28,6 +28,23 @@
      */
     indicatorStyle?: string;
     /**
+     * 指示器类
+     * @uniPlatform {
+       "app": {
+         "ios": {
+           "unixVaporVer": "5.36"
+         },
+         "android": {
+           "unixVaporVer": "5.36"
+         },
+        "harmony": {
+           "unixVaporVer": "5.36"
+         }
+       }
+     }
+     */
+    indicatorClass?: string.ClassString;
+    /**
      * 遮罩类
      * @uniPlatform {
        "app": {
@@ -132,6 +149,7 @@
 
   const props = withDefaults(defineProps<PickerViewProps>(), {
     indicatorStyle: '',
+    indicatorClass: '',
     maskClass: '',
     maskTopStyle: '',
     maskBottomStyle: '',
@@ -165,7 +183,7 @@
     rootElement: {
       class: UniPickerViewElement
     },
-    externalClasses: ['mask-class']
+    externalClasses: ['mask-class', 'indicator-class']
   })
 
   const emit = defineEmits<{
@@ -218,6 +236,16 @@
     syncFromProp(normalizeValue(newValue))
   }, { deep: true })
 
+  watch(itemHeight, () => {
+    setTimeout(() => {
+      // indicatorStyle 高度变化只调整滚动位置，不重置选中值或触发 change。
+      for (let i = 0; i < columns.length; i++) {
+        const api = columns[i]
+        api.setScrollTop(api.getIndex())
+      }
+    }, 0)
+  }, { flush: 'post' })
+
   function registerColumn(api: PickerViewColumnApi): number {
     columns.push(api)
     const idx = columns.length - 1
@@ -246,6 +274,7 @@
     itemHeight: () => itemHeight.value,
     containerPaddingPx: () => containerPaddingPx.value,
     maskClass: () => props.maskClass,
+    indicatorClass: () => props.indicatorClass,
     maskTopStyle: () => maskTopInlineStyle.value,
     maskBottomStyle: () => maskBottomInlineStyle.value,
     indicatorStyle: () => indicatorInlineStyle.value,

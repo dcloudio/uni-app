@@ -1,6 +1,7 @@
+## 1.0.2 (2026-11-09)
+- 调整弹出层 class 命名，`cover-class` 重命名为 `mask-class`，同时保留对旧属性 `cover-class` 的兼容（`cover-class` 已废弃，建议改用 `mask-class`）
+## 1.0.1 (2026-11-06)
+- 大屏时使用横排
+- 优化视觉效果，对齐 uni-ui-x 风格
 ## 1.0.0 (2026-10-30)
 - 发布
-- 支持 `externalClass` 自定义输入框和选择面板样式
-- 新增 `popup-class`、`cover-class` 扩展类自定义弹出框和遮罩层样式
-- 补全 `v-model` 回写和 `nodeclick` 事件透传
-- 完善使用文档，补充示例、Props、Events、Slots 和 Expose 说明

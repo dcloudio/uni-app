@@ -74,12 +74,14 @@ extends UniNativeViewElementImpl {
 
 export class NativeWebView {
 	webViewImpl : NativeWebViewImpl | null = null;
-	private activityCallback : WebViewActivityCallback | null = null;
+	private activityResultCallback : ((requestCode : Int, resultCode : Int, data : Intent | null) => void) | null = null;
 
 	constructor(element : UniNativeViewElement) {
 		this.webViewImpl = new NativeWebViewImpl(element.getAndroidActivity()!);
-		this.activityCallback = new WebViewActivityCallback(this.webViewImpl!);
-		UTSAndroid.onActivityCallback(this.activityCallback!);
+		this.activityResultCallback = (requestCode : Int, resultCode : Int, data : Intent | null) => {
+			this.webViewImpl?.handleOnActivityResult(requestCode, resultCode, data);
+		};
+		UTSAndroid.onAppActivityResult(this.activityResultCallback!);
 		element.bindAndroidView(this.webViewImpl!);
 		// #ifndef VUE3-VAPOR
 		(element.parentElement as UniWebViewElement | null)?.setNativeWebView(this);
@@ -254,31 +256,13 @@ export class NativeWebView {
 	}
 
 	destroy() {
-		if (this.activityCallback != null) {
-			UTSAndroid.offActivityCallback(this.activityCallback!);
-      		this.activityCallback!.destroy();
-			this.activityCallback = null;
+		if (this.activityResultCallback != null) {
+			UTSAndroid.offAppActivityResult(this.activityResultCallback!);
+			this.activityResultCallback = null;
 		}
 		this.webViewImpl?.destroy();
     	this.webViewImpl = null;
 		UTSAndroid.destroyInstance(this)
-	}
-}
-
-class WebViewActivityCallback extends UniActivityCallback {
-	private webview : NativeWebViewImpl | null = null;
-
-	constructor(webview : NativeWebViewImpl) {
-		super();
-		this.webview = webview;
-	}
-
-	override onActivityResult(params : UniActivityParams, requestCode : Int, resultCode : Int, data : Intent | null) {
-		this.webview?.handleOnActivityResult(requestCode, resultCode, data);
-	}
-  
-	destroy() {
-		this.webview = null;
 	}
 }
 

@@ -1,7 +1,7 @@
 <template>
   <view class="container">
     <page-head title="scroll-view 默认下拉刷新"></page-head>
-    <scroll-view class="scroll" refresher-enabled=true :refresher-triggered="data.refresherTriggered"
+    <scroll-view ref="refresherScrollViewRef" class="scroll" refresher-enabled=true :refresher-triggered="data.refresherTriggered"
       @refresherrefresh="onRefresherrefresh" @refresherabort="onRefresherabort" @refresherrestore="onRefresherrestore"
       @refresherpulling="onRefresherpulling" @scrolltolower="onScrolltolower" :show-scrollbar="data.showScrollbar">
       <view v-for="key in scrollData" :key="key">
@@ -29,6 +29,35 @@
     onRefresherabortTest: string,
     onRefresherrestoreTest: string,
     onRefresherpullingTest: string,
+  }
+
+  const refresherScrollViewRef = ref<UniScrollViewElement | null>(null)
+  let refresherDragTestActive = false
+  let refresherDragTestPullingEvents = 0
+  let refresherDragTestMaxPullingDistance = 0
+
+  // 自动化测试专用：保存下拉事件的最大距离，不增加页面展示内容。
+  function startRefresherMaxDragDistanceTest(distance: number): DOMRect {
+    const element = refresherScrollViewRef.value
+    if (element == null) throw new Error('scroll-view is not ready')
+    element.setAttribute('refresher-max-drag-distance', distance)
+    refresherDragTestPullingEvents = 0
+    refresherDragTestMaxPullingDistance = 0
+    refresherDragTestActive = true
+    return element.getBoundingClientRect()
+  }
+
+  function getRefresherMaxDragDistanceTestResult() {
+    return {
+      pullingEvents: refresherDragTestPullingEvents,
+      maxPullingDistance: refresherDragTestMaxPullingDistance
+    }
+  }
+
+  function stopRefresherMaxDragDistanceTest() {
+    refresherDragTestActive = false
+    // 0 恢复未配置上限时的行为，不影响本页面默认系统刷新。
+    refresherScrollViewRef.value?.setAttribute('refresher-max-drag-distance', 0)
   }
 
   const scrollData = ref([] as Array<string>)
@@ -105,6 +134,10 @@
     } as RefresherEventTest, 'refresherrestore')
   }
   function onRefresherpulling(e : UniRefresherEvent) {
+    if (refresherDragTestActive) {
+      refresherDragTestPullingEvents++
+      refresherDragTestMaxPullingDistance = Math.max(refresherDragTestMaxPullingDistance, e.detail.dy)
+    }
     console.log("onRefresherpulling------下拉刷新控件被下拉-dy=" + e.detail.dy)
     checkEventTest({
       type: e.type,
@@ -133,7 +166,10 @@
 
   defineExpose({
     data,
-    setPageStyle
+    setPageStyle,
+    startRefresherMaxDragDistanceTest,
+    getRefresherMaxDragDistanceTestResult,
+    stopRefresherMaxDragDistanceTest
   })
 </script>
 

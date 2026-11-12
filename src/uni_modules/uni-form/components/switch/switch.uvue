@@ -25,9 +25,9 @@
 </template>
 
 <script lang="uts" setup>
-  import { FORM_KEY, LABEL_KEY, buildPointerEvent } from '../common.uts'
+  import { FORM_KEY, LABEL_KEY, dispatchLabelClick, registerLabelTarget } from '../common.uts'
   import { UniSwitchElement } from './global.uts'
-  import { FormContext, LabelContext } from '../types.uts'
+  import { ActivatableChild, FormContext, LabelContext } from '../types.uts'
 
   interface SwitchProps {
     /**
@@ -231,6 +231,7 @@
 
   const formCtx = inject<FormContext | null>(FORM_KEY, null)
   const labelCtx = inject<LabelContext | null>(LABEL_KEY, null)
+  let unregisterLabelTarget: (() => void) | null = null
 
   const isChecked = ref(props.checked)
   const initialChecked = ref(false)
@@ -255,14 +256,19 @@
       })
     }
     // register with label if available
+    const target: ActivatableChild = {
+      id: id || props.name,
+      activate: (event: UniPointerEvent) => {
+        const element = proxy?.$el
+        if (element != null) dispatchLabelClick(element, event)
+      },
+      getDisabled: () => props.disabled
+    }
     if (labelCtx != null) {
-      labelCtx.register({
-        id: id || props.name,
-        activate: (event: UniPointerEvent) => {
-          proxy?.$el?.dispatchEvent('click', buildPointerEvent(event))
-        },
-        getDisabled: () => props.disabled
-      })
+      labelCtx.register(target)
+    }
+    if (id != null && id.length > 0) {
+      unregisterLabelTarget = registerLabelTarget(id, target)
     }
 
     enableTransition.value = true
@@ -275,6 +281,8 @@
     if (labelCtx != null) {
       labelCtx.unregister(id || props.name)
     }
+    unregisterLabelTarget?.()
+    unregisterLabelTarget = null
   })
 
   const handleTap = () => {

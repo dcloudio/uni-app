@@ -1,0 +1,422 @@
+<template>
+	<view class="panel event-panel">
+		<view class="panel-head event-head">
+			<view class="event-head-copy">
+				<text class="panel-title event-panel-title">事件订阅</text>
+				<text class="panel-subtitle">A / B 双监听 · ID、callback、null 与 off() 解绑</text>
+			</view>
+			<button class="head-action" size="mini" @click="emit('clearListeners')">全部移除</button>
+		</view>
+		<view v-for="event in props.eventRows" :key="event.key" class="event-card"
+			:class="!event.supported ? 'event-card-disabled' : ''">
+			<view class="event-title-row">
+				<view class="event-status-dot" :class="eventDotClass(event.key)"></view>
+				<view class="event-title-copy">
+					<text class="event-name">{{ event.name }}</text>
+					<text class="event-api">{{ event.api }}{{ event.platform.length > 0 ? ' · ' + event.platform : '' }}</text>
+				</view>
+				<text class="event-total">{{ event.aCount + event.bCount }} 次</text>
+			</view>
+			<view class="listener-row">
+				<view class="listener-info">
+					<text class="listener-slot">A</text>
+					<text class="listener-meta">{{ listenerStateText(event.aId) }} · {{ event.aCount }} 次</text>
+				</view>
+				<button class="listener-action" :class="listenerActionClass(event, 'A')" size="mini"
+					@click="emit('toggleListener', event, 'A')">{{ listenerActionLabel(event, 'A') }}</button>
+			</view>
+			<view class="listener-row">
+				<view class="listener-info">
+					<text class="listener-slot">B</text>
+					<text class="listener-meta">{{ listenerStateText(event.bId) }} · {{ event.bCount }} 次</text>
+				</view>
+				<button class="listener-action" :class="listenerActionClass(event, 'B')" size="mini"
+					@click="emit('toggleListener', event, 'B')">{{ listenerActionLabel(event, 'B') }}</button>
+			</view>
+			<view class="log-bar">
+				<button class="log-toggle" size="mini"
+					@click="emit('toggleEventLogs', event)">{{ logToggleLabel(event) }}</button>
+				<button class="log-clear" size="mini" :class="event.logs.length == 0 ? 'log-clear-disabled' : ''"
+					@click="emit('clearEventLogs', event)">清除</button>
+			</view>
+			<view v-if="event.logOpen" class="event-log-list">
+				<view v-for="(log, logIndex) in recentEventLogs(event)" :key="logIndex" class="event-log-item">
+					<text class="event-log-slot" :class="logSlotClass(log.slot)">{{ log.slot }}</text>
+					<text class="event-log-time">{{ log.time }}</text>
+					<text class="event-log-detail">{{ log.detail }}</text>
+				</view>
+				<text v-if="event.logs.length == 0" class="event-log-empty">暂无日志</text>
+				<text v-else-if="event.logs.length > recentLogLimit" class="event-log-more">仅显示最近
+					{{ recentLogLimit }} 条 · 更多请查看日志</text>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script setup lang="ts">
+	import { EventRow, EventProbeLog } from '../../logic/BleWorkspaceTypes.ts'
+
+	type EventProbePanelProps = {
+		eventRows : EventRow[],
+		listenerUsesIds : boolean
+	}
+
+	const props = defineProps<EventProbePanelProps>()
+	const emit = defineEmits<{
+		clearListeners : [],
+		toggleListener : [row: EventRow, slot: string],
+		toggleEventLogs : [row: EventRow],
+		clearEventLogs : [row: EventRow]
+	}>()
+
+	function logSlotClass(slot : string) : string {
+		if (slot == 'A') return 'event-log-slot-a'
+		if (slot == 'B') return 'event-log-slot-b'
+		return 'event-log-slot-ab'
+	}
+
+	const recentLogLimit = 5
+
+	function recentEventLogs(row : EventRow) : EventProbeLog[] {
+		const source = row.logs.length <= recentLogLimit ? row.logs : row.logs.slice(row.logs.length - recentLogLimit)
+		const result = [] as EventProbeLog[]
+		for (let index = source.length - 1; index >= 0; index--) result.push(source[index])
+		return result
+	}
+
+	function eventDotClass(key : string) : string {
+		if (key == 'adapter' || key == 'connection') return 'event-dot-green'
+		if (key == 'mtu') return 'event-dot-amber'
+		return 'event-dot-blue'
+	}
+
+	function listenerRegistered(id : number | null) : boolean {
+		return id != null && id != 0
+	}
+
+	function listenerActionLabel(row : EventRow, slot : string) : string {
+		if (!row.supported) return '仅 Android'
+		const id = slot == 'A' ? row.aId : row.bId
+		if (!listenerRegistered(id)) return 'on ' + slot
+		if (slot == 'A') return props.listenerUsesIds ? 'off ID' : 'off callback'
+		if (row.bOffMode == 'null') return 'off null'
+		if (row.bOffMode == 'omitted') return 'off()'
+		return 'off callback'
+	}
+
+	function listenerActionClass(row : EventRow, slot : string) : string {
+		if (!row.supported) return 'listener-action-disabled'
+		const id = slot == 'A' ? row.aId : row.bId
+		return listenerRegistered(id) ? 'listener-action-off' : 'listener-action-on'
+	}
+
+	function logToggleLabel(row : EventRow) : string {
+		return '回调日志 · ' + row.logs.length.toString() + ' 条 ' + (row.logOpen ? '⌄' : '›')
+	}
+
+	function listenerStateText(id : number | null) : string {
+		if (!listenerRegistered(id)) return '未注册'
+		return props.listenerUsesIds ? 'ID ' + id!.toString() : '已注册'
+	}
+</script>
+
+<style>
+	.panel {
+		padding: 15px 10px 24px;
+	}
+
+	.panel-head {
+		display: flex;
+		flex-direction: row;
+		align-items: flex-start;
+		justify-content: space-between;
+	}
+
+	.panel-title {
+		font-size: 19px;
+		font-weight: 600;
+	}
+
+	.panel-subtitle {
+		margin-top: 3px;
+		color: #71838d;
+		font-size: 10px;
+	}
+
+	.event-panel {
+		padding-top: 13px;
+	}
+
+	.event-head {
+		align-items: center;
+	}
+
+	.event-panel-title {
+		font-size: 18px;
+	}
+
+	.event-head-copy {
+		display: flex;
+		flex-direction: column;
+		flex: 1;
+		min-width: 0;
+	}
+
+	.head-action {
+		flex: none;
+		height: 28px;
+		line-height: 26px;
+		margin: 0 0 0 10px;
+		padding: 0 12px;
+		border-width: 1px;
+		border-color: #e3b7b7;
+		border-radius: 5px;
+		background-color: #ffffff;
+		color: #d34a4a;
+		font-size: 10px;
+		font-weight: 600;
+	}
+
+	.event-card {
+		overflow: hidden;
+		margin-top: 9px;
+		padding: 0;
+		border: 1px solid #d5e0e5;
+		border-radius: 7px;
+		background-color: #fff;
+	}
+
+	.event-card-disabled {
+		opacity: 0.62;
+	}
+
+	.event-title-row {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		min-height: 38px;
+		padding: 7px 9px;
+	}
+
+	.event-status-dot {
+		width: 6px;
+		height: 6px;
+		margin-right: 7px;
+		border-radius: 3px;
+		background-color: #2875d6;
+	}
+
+	.event-dot-green {
+		background-color: #20945d;
+	}
+
+	.event-dot-blue {
+		background-color: #2875d6;
+	}
+
+	.event-dot-amber {
+		background-color: #b96d10;
+	}
+
+	.event-title-copy {
+		display: flex;
+		flex-direction: column;
+		flex: 1;
+		min-width: 0;
+	}
+
+	.event-name {
+		color: #1c2e39;
+		font-size: 12px;
+		font-weight: 600;
+	}
+
+	.event-api {
+		margin-top: 3px;
+		color: #8a9aa2;
+		font-family: monospace;
+		font-size: 8px;
+	}
+
+	.event-total {
+		margin-left: 7px;
+		color: #74868f;
+		font-size: 9px;
+		line-height: 17px;
+	}
+
+	.listener-row {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		min-height: 28px;
+		padding: 3px 9px;
+		border-top-width: 1px;
+		border-top-color: #e6edf0;
+	}
+
+	.listener-info {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		flex: 1;
+		min-width: 0;
+	}
+
+	.listener-slot {
+		width: 16px;
+		color: #637780;
+		font-family: monospace;
+		font-size: 8px;
+	}
+
+	.listener-meta {
+		color: #637780;
+		font-family: monospace;
+		font-size: 8px;
+	}
+
+	.listener-action {
+		flex: none;
+		min-width: 62px;
+		height: 26px;
+		line-height: 24px;
+		margin: 0;
+		padding: 0 10px;
+		border-width: 1px;
+		border-color: #cdd9e0;
+		border-radius: 4px;
+		background-color: #ffffff;
+		color: #d34a4a;
+		font-size: 10px;
+	}
+
+	.listener-action-on {
+		border-color: #a9c9ed;
+		background-color: #eef5ff;
+		color: #2875d6;
+	}
+
+	.listener-action-off {
+		border-color: #cdd9e0;
+		background-color: #ffffff;
+		color: #d34a4a;
+	}
+
+	.listener-action-disabled {
+		border-color: #dde4e8;
+		background-color: #f4f6f7;
+		color: #9aa7b0;
+	}
+
+	.log-bar {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		padding: 7px 9px;
+		border-top-width: 1px;
+		border-top-color: #e6edf0;
+	}
+
+	.log-toggle {
+		flex: 1;
+		height: 28px;
+		line-height: 26px;
+		margin: 0;
+		padding: 0 10px;
+		border-width: 1px;
+		border-color: #d3dde3;
+		border-radius: 4px;
+		background-color: #f6f9fb;
+		color: #40545f;
+		font-size: 10px;
+		text-align: left;
+	}
+
+	.log-clear {
+		flex: none;
+		min-width: 50px;
+		height: 28px;
+		line-height: 26px;
+		margin: 0 0 0 8px;
+		padding: 0 10px;
+		border-width: 1px;
+		border-color: #e3b7b7;
+		border-radius: 4px;
+		background-color: #ffffff;
+		color: #d34a4a;
+		font-size: 10px;
+	}
+
+	.log-clear-disabled {
+		border-color: #dde4e8;
+		background-color: #f4f6f7;
+		color: #9aa7b0;
+	}
+
+	.event-log-list {
+		display: flex;
+		flex-direction: column;
+		padding: 2px 9px 4px;
+		border-top-width: 1px;
+		border-top-color: #e6edf0;
+		background-color: #f7f9fa;
+	}
+
+	.event-log-item {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		padding: 2px 0;
+	}
+
+	.event-log-slot {
+		width: 14px;
+		margin-right: 6px;
+		border-radius: 2px;
+		color: #ffffff;
+		font-family: monospace;
+		font-size: 7px;
+		line-height: 11px;
+		text-align: center;
+	}
+
+	.event-log-slot-a {
+		background-color: #2875d6;
+	}
+
+	.event-log-slot-b {
+		background-color: #20945d;
+	}
+
+	.event-log-slot-ab {
+		background-color: #b96d10;
+	}
+
+	.event-log-time {
+		margin-right: 6px;
+		color: #84949c;
+		font-family: monospace;
+		font-size: 8px;
+	}
+
+	.event-log-detail {
+		flex: 1;
+		color: #52646e;
+		font-family: monospace;
+		font-size: 8px;
+	}
+
+	.event-log-empty {
+		padding: 4px 0;
+		color: #8a9aa2;
+		font-size: 8px;
+	}
+
+	.event-log-more {
+		padding: 3px 0 1px;
+		color: #8a9aa2;
+		font-size: 8px;
+	}
+</style>

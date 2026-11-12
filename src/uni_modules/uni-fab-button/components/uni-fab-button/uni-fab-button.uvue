@@ -131,7 +131,7 @@
 </script>
 <style>
 	.fab {
-		position: relative; 
+		position: relative;
 		width: 44px;
 		height: 44px;
 		background-color: #007AFF;

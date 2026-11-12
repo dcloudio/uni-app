@@ -391,8 +391,8 @@ export interface Uni {
    *    },
    *    "alipay": {
    *      "hostVer": "√",
-   *      "uniVer": "√",
-   *      "unixVer": "5.31"
+   *      "uniVer": "x",
+   *      "unixVer": "5.36"
    *    },
    *    "baidu": {
    *      "hostVer": "x",
@@ -462,8 +462,8 @@ export interface Uni {
    *    },
    *    "alipay": {
    *      "hostVer": "√",
-   *      "uniVer": "√",
-   *      "unixVer": "5.31"
+   *      "uniVer": "x",
+   *      "unixVer": "5.36"
    *    },
    *    "baidu": {
    *      "hostVer": "x",

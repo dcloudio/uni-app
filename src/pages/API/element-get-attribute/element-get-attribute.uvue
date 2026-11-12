@@ -56,7 +56,6 @@
           <text class="node-info-item-v">{{data.rectInfo.bottom}}</text>
         </view>
       </view>
-      <!-- #ifndef MP-ALIPAY -->
       <scroll-view ref="scrollViewRef" class="scroll-view_H" direction="horizontal">
         <view class="scroll-view-item_H uni-bg-red"><text class="text">A</text></view>
         <view class="scroll-view-item_H uni-bg-green"><text class="text">B</text></view>
@@ -70,7 +69,6 @@
       <view id="scaledView" style="transform: scale(2);background-color: green;width: 50px;height: 50px;margin-top: 45px;margin-left: 25px;"></view>
 
       <button type="default" @click="handleGetScaledViewSize" style="margin-top: 30px;">获取scale后的view尺寸信息</button>
-      <!-- #endif -->
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
@@ -178,12 +176,12 @@
 
   function scrollTo() {
     if (scrollViewRef.value != null) {
-      // #ifdef MP-WEIXIN
+      // #ifdef MP
       scrollViewRef.value!.scrollTo({
         left: 200
       })
       // #endif
-      // #ifndef MP-WEIXIN
+      // #ifndef MP
       scrollViewRef.value!.scrollTo(200,0)
       // #endif
     }
@@ -213,10 +211,15 @@
     return ""
   }
 
-  const handleGetScaledViewSize = () => {
+  const handleGetScaledViewSize = async () => {
     const element = uni.getElementById("scaledView")
     if (element != null) {
+      // #ifndef MP
       const rect = element.getBoundingClientRect()
+      // #endif
+      // #ifdef MP
+      const rect = await element.getBoundingClientRectAsync()
+      // #endif
       data.scaledViewWidth = rect.width
       data.scaledViewHeight = rect.height
       console.log("scaledView size : ", data.scaledViewWidth, data.scaledViewHeight);

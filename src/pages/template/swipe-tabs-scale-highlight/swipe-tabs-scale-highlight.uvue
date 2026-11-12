@@ -68,10 +68,10 @@ function updateTabIndicator(current_index : number, move_to_index : number, perc
   const target_x = lerpNumber(current_node.offsetLeft, move_to_node.offsetLeft, percentage)
   const center_x = target_x + move_to_node.offsetWidth / 2 - swiperWidth / 2
   // app 平台后续支持 scrollTo()
-  // #ifndef MP-WEIXIN
+  // #ifndef MP
   tabScroll.value!.scrollLeft = center_x
   // #endif
-  // #ifdef MP-WEIXIN
+  // #ifdef MP
   tabScroll.value!.scrollTo({
     left: center_x
   })

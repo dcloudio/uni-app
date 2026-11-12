@@ -2,7 +2,8 @@ import { EditText, TextView } from 'android.widget'
 import { InputType, TextWatcher, InputFilter, Editable, TextPaint } from 'android.text'
 import PasswordTransformationMethod from 'android.text.method.PasswordTransformationMethod'
 import HideReturnsTransformationMethod from 'android.text.method.HideReturnsTransformationMethod'
-import { View, Gravity, KeyEvent, ViewTreeObserver, MotionEvent, WindowInsets } from 'android.view'
+import { View, Gravity, KeyEvent, ViewTreeObserver, MotionEvent, WindowInsets, WindowInsetsAnimation } from 'android.view'
+import DecelerateInterpolator from 'android.view.animation.DecelerateInterpolator'
 import ViewGroup from 'android.view.ViewGroup'
 import { InputMethodManager, EditorInfo } from 'android.view.inputmethod'
 import { Context } from 'android.content'
@@ -227,6 +228,80 @@ class UniAndroidEditorTouchCache {
 interface UniAndroidKeyboardClient {
 	getKeyboardLogicalWindowHeight(): number
 	onKeyboardHeightChangedFromManager(height: number, duration: number): void
+	/** API 30+：系统 IME 动画即将开始，进入"由系统动画驱动位移"模式 */
+	onKeyboardAnimationBegin(): void
+	/** API 30+：系统 IME 动画进度，0 = 未让开，1 = 完全让开 */
+	onKeyboardAnimationProgress(progress: number): void
+	/** API 30+：IME 动画结束。hidden 表示键盘已收起（需要复位），否则只是弹出动画结束（保留让开状态） */
+	onKeyboardAnimationEnd(hidden: boolean): void
+}
+
+/**
+ * API 30+：系统 IME 动画回调。
+ * 键盘动画的时长与缓动曲线完全由系统给出（getInterpolatedFraction），
+ * 用它驱动"让出空间"的位移，才能真正和键盘贴合。
+ */
+class UniAndroidImeAnimationCallback extends WindowInsetsAnimation.Callback {
+	private active: boolean = false
+	private hiding: boolean = false
+	private onBegin: () => void
+	private onProgressHandler: (progress: number) => void
+	private onEndHandler: (hidden: boolean) => void
+	private isKeyboardShown: () => boolean
+
+	constructor(
+		onBegin: () => void,
+		onProgressHandler: (progress: number) => void,
+		onEndHandler: (hidden: boolean) => void,
+		isKeyboardShown: () => boolean
+	) {
+		super(WindowInsetsAnimation.Callback.DISPATCH_MODE_CONTINUE_ON_SUBTREE)
+		this.onBegin = onBegin
+		this.onProgressHandler = onProgressHandler
+		this.onEndHandler = onEndHandler
+		this.isKeyboardShown = isKeyboardShown
+	}
+
+	override onPrepare(animation: WindowInsetsAnimation) {
+		if ((animation.getTypeMask() & WindowInsets.Type.ime()) == 0) {
+			return
+		}
+		// 键盘已经弹起时，说明这次是"收起"动画，进度方向相反
+		this.hiding = this.isKeyboardShown()
+		this.active = true
+		this.onBegin()
+	}
+
+	override onProgress(insets: WindowInsets, runningAnimations: MutableList<WindowInsetsAnimation>): WindowInsets {
+		if (!this.active) {
+			return insets
+		}
+		let fraction = 1.0
+		for (let i = 0; i < runningAnimations.size; i++) {
+			const runningAnimation = runningAnimations[i.toInt()]
+			if ((runningAnimation.getTypeMask() & WindowInsets.Type.ime()) != 0) {
+				fraction = runningAnimation.getInterpolatedFraction()
+				break
+			}
+		}
+		this.onProgressHandler(this.hiding ? 1 - fraction : fraction)
+		return insets
+	}
+
+	override onEnd(animation: WindowInsetsAnimation) {
+		if ((animation.getTypeMask() & WindowInsets.Type.ime()) == 0) {
+			return
+		}
+		const hiding = this.hiding
+		this.active = false
+		if (hiding) {
+			this.onProgressHandler(0)
+			this.onEndHandler(true)
+			return
+		}
+		this.onProgressHandler(1)
+		this.onEndHandler(false)
+	}
 }
 
 class UniAndroidKeyboardManager {
@@ -243,10 +318,13 @@ class UniAndroidKeyboardManager {
 	private keyboardShowRunnable: Runnable | null = null
 	private keyboardHideRunnable: Runnable | null = null
 	private destroyed: boolean = false
+	/** API 30+：系统 IME 动画回调，用于让内容位移与键盘动画完全同步 */
+	private insetsAnimationCallback: WindowInsetsAnimation.Callback | null = null
 
 	private constructor(rootView: View) {
 		this.rootView = rootView
 		this.observeKeyboardLayout()
+		this.observeImeAnimation()
 	}
 
 	static acquire(rootView: View, client: UniAndroidKeyboardClient): UniAndroidKeyboardManager {
@@ -379,6 +457,43 @@ class UniAndroidKeyboardManager {
 		this.rootView.getViewTreeObserver().addOnGlobalLayoutListener(this.globalLayoutListener!)
 	}
 
+	/**
+	 * API 30+：接入系统 IME 动画回调。
+	 * 键盘动画的时长与缓动曲线完全由系统给出（getDurationMillis / getInterpolatedFraction），
+	 * 用它驱动"让出空间"的位移，才能真正和键盘贴合；低于 API 30 没有这个能力，走固定时长兜底。
+	 */
+	private observeImeAnimation() {
+		if (Build.VERSION.SDK_INT < 30) {
+			return
+		}
+		const self = this
+		this.insetsAnimationCallback = new UniAndroidImeAnimationCallback(
+			(): void => { self.dispatchKeyboardAnimationBegin() },
+			(progress: number): void => { self.dispatchKeyboardAnimationProgress(progress) },
+			(hidden: boolean): void => { self.dispatchKeyboardAnimationEnd(hidden) },
+			(): boolean => { return self.keyboardHeight > 0 }
+		)
+		this.rootView.setWindowInsetsAnimationCallback(this.insetsAnimationCallback!)
+	}
+
+	private dispatchKeyboardAnimationBegin() {
+		if (this.activeClient != null) {
+			this.activeClient.onKeyboardAnimationBegin()
+		}
+	}
+
+	private dispatchKeyboardAnimationProgress(progress: number) {
+		if (this.activeClient != null) {
+			this.activeClient.onKeyboardAnimationProgress(progress)
+		}
+	}
+
+	private dispatchKeyboardAnimationEnd(hidden: boolean) {
+		if (this.activeClient != null) {
+			this.activeClient.onKeyboardAnimationEnd(hidden)
+		}
+	}
+
 	private dispatchKeyboardHeightChanged(height: number, duration: number) {
 		if (this.activeClient != null) {
 			this.activeClient.onKeyboardHeightChangedFromManager(height, duration)
@@ -400,6 +515,10 @@ class UniAndroidKeyboardManager {
 
 	private destroy() {
 		this.destroyed = true
+		if (this.insetsAnimationCallback != null) {
+			this.rootView.setWindowInsetsAnimationCallback(null)
+			this.insetsAnimationCallback = null
+		}
 		if (this.globalLayoutListener != null) {
 			this.rootView.getViewTreeObserver().removeOnGlobalLayoutListener(this.globalLayoutListener!)
 		}
@@ -501,6 +620,33 @@ function applyAndroidCursorDrawable(editText: EditText, cursorDrawable: Gradient
 }
 
 
+/**
+ * 键盘上推时"让出空间"的过渡时长（毫秒）。
+ * 系统 IME 动画约 250ms；若同帧内瞬间平移到位，会出现「内容先跳、键盘再滑上来」的割裂感，
+ * 这里让位移和键盘一起滑动，观感更贴合。
+ */
+const ANDROID_KEYBOARD_ADJUST_ANIMATION_DURATION: Long = 250
+
+/**
+ * 带动画地平移页面 body。
+ * @param fromY 起始平移量：调用方在测量前会先复位，所以要显式传入复位前的值，避免先闪一下再动
+ * @param toY 目标平移量
+ */
+function animateAndroidAdjustPageBody(view: View | null, fromY: number, toY: number) {
+	if (view == null) return
+	view.animate().cancel()
+	if (Math.abs(fromY - toY) < 0.5) {
+		view.setTranslationY(toY.toFloat())
+		return
+	}
+	view.setTranslationY(fromY.toFloat())
+	view.animate()
+		.translationY(toY.toFloat())
+		.setDuration(ANDROID_KEYBOARD_ADJUST_ANIMATION_DURATION)
+		.setInterpolator(new DecelerateInterpolator())
+		.start()
+}
+
 class UniAndroidAdjustPositionParentSnapshot {
 	index: number = -1
 	y: number = 0
@@ -523,15 +669,7 @@ class UniAndroidAdjustPositionPlan {
 
 type UniAndroidCursorBottomOffsetResolver = (elementHeight: number) => number
 
-function shouldTraceAndroidInputAdjust(tagName: string): boolean {
-	return tagName.toUpperCase() == 'INPUT'
-}
-
 function logAndroidInputAdjust(message: string) {
-}
-
-function shouldTraceAndroidTextareaAdjust(tagName: string): boolean {
-	return tagName.toUpperCase() == 'TEXTAREA'
 }
 
 function logAndroidTextareaAdjust(message: string) {
@@ -646,6 +784,41 @@ function isScrollAbleTagName(tagName: string): boolean {
 		|| normalizedTagName.indexOf('WEBVIEW') >= 0
 }
 
+/**
+ * 是否为输入框组件自身的根节点（padding/边框所在的盒子）。
+ * input 的 native view 只是 EditText 本体（padding 已被清空为 0），
+ * 用户设置的 padding/边框都落在组件根节点这一层，因此"上推到边框底部"需要用它。
+ */
+function isInputBoxTagName(tagName: string): boolean {
+	const normalizedTagName = tagName.toUpperCase()
+	return normalizedTagName == 'INPUT' || normalizedTagName == 'TEXTAREA'
+}
+
+/**
+ * 求输入框的"可视盒"（含 padding/边框的盒子）：
+ * 只走到输入框组件自身的根节点为止，找不到更大的盒子就返回输入框自身矩形。
+ * 不能一路向上取"更大的祖先"，否则会取到 v-for 包裹层、页面容器等布局节点，
+ * 使目标矩形失真（露出整块页面 / 上推量算错）。
+ * 上推（resolveAdjustTargetRect）与系统滚动（revealFocusedInput）共用同一判定。
+ */
+function resolveInputBoxRect(element: UniNativeViewElement, elementRect: DOMRect): DOMRect {
+	let currentElement = element.parentElement
+	while (currentElement != null) {
+		if (isInputBoxTagName(currentElement.tagName)) {
+			const boxRect = currentElement.getBoundingClientRect()
+			if (boxRect.height > elementRect.height) {
+				return boxRect
+			}
+			return elementRect
+		}
+		if (isScrollAbleTagName(currentElement.tagName)) {
+			break
+		}
+		currentElement = currentElement.parentElement
+	}
+	return elementRect
+}
+
 class UniAndroidAdjustPositionHelper {
 	private static activeHelper: UniAndroidAdjustPositionHelper | null = null
 	private static sessionPageBodyView: View | null = null
@@ -654,8 +827,6 @@ class UniAndroidAdjustPositionHelper {
 	private resolveCursorBottomOffset: UniAndroidCursorBottomOffsetResolver = (elementHeight: number): number => {
 		return Math.max(0, elementHeight)
 	}
-	private useLargerAncestorRect: boolean = true
-	private preferFarthestLargerAncestorRect: boolean = false
 	private allowRootTranslateAfterParentScroll: boolean = false
 	private traceCategory: string = ''
 	private adjustDistanceReduction: number = 0
@@ -663,6 +834,14 @@ class UniAndroidAdjustPositionHelper {
 	private hasCollectedScrollAbleParents: boolean = false
 	private resetPosition: () => void = () => {}
 	private hasLocalAdjustment: boolean = false
+	/** 本次调整前页面 body 的实际平移量（测量前会先复位，用它作为动画起点，避免闪动） */
+	private pageBodyStartTranslationY: number = 0
+	/** API 30+：是否由系统 IME 动画驱动位移（此时不使用固定时长过渡） */
+	private systemAnimationActive: boolean = false
+	/** 系统动画进度：0 = 未让开，1 = 完全让开 */
+	private systemAnimationProgress: number = 1
+	/** 会话中"完全让开"时的页面 body 位移（负数，向上） */
+	private pageBodyShownTranslationY: number = 0
 
 	constructor(element: UniNativeViewElement, resolveCursorBottomOffset: UniAndroidCursorBottomOffsetResolver) {
 		this.element = element
@@ -677,12 +856,41 @@ class UniAndroidAdjustPositionHelper {
 		this.adjustDistanceReduction = Math.max(0, value)
 	}
 
-	setUseLargerAncestorRect(value: boolean) {
-		this.useLargerAncestorRect = value
+	/** API 30+：进入"由系统 IME 动画驱动位移"模式 */
+	setSystemAnimationActive(value: boolean) {
+		this.systemAnimationActive = value
+		if (value) {
+			this.systemAnimationProgress = 0
+		}
 	}
 
-	setPreferFarthestLargerAncestorRect(value: boolean) {
-		this.preferFarthestLargerAncestorRect = value
+	/** API 30+：按系统动画进度应用位移（0 = 未让开，1 = 完全让开） */
+	setSystemAnimationProgress(progress: number) {
+		this.systemAnimationProgress = progress
+		if (!this.systemAnimationActive) {
+			return
+		}
+		const view = UniAndroidAdjustPositionHelper.sessionPageBodyView
+		if (view == null) {
+			return
+		}
+		view.animate().cancel()
+		view.setTranslationY((this.pageBodyShownTranslationY * progress).toFloat())
+	}
+
+	/** API 30+：收起动画结束，复位会话状态 */
+	finalizeSystemAnimation() {
+		const view = UniAndroidAdjustPositionHelper.sessionPageBodyView
+		if (view != null) {
+			view.animate().cancel()
+		}
+		this.systemAnimationActive = false
+		this.systemAnimationProgress = 0
+		// 复位滚动父级（页面 body 的位移由 clearSharedSessionState 统一归位）
+		this.resetPosition()
+		this.clearLocalResetPosition()
+		this.pageBodyShownTranslationY = 0
+		this.clearSharedSessionState(true)
 	}
 
 	setAllowRootTranslateAfterParentScroll(value: boolean) {
@@ -693,14 +901,9 @@ class UniAndroidAdjustPositionHelper {
 		this.traceCategory = value
 	}
 
-	private shouldTrace(): boolean {
-		return shouldTraceAndroidInputAdjust(this.element.tagName)
-			|| shouldTraceAndroidTextareaAdjust(this.element.tagName)
-	}
-
 	private trace(message: string) {
 		const tagName = this.element.tagName
-		if (this.traceCategory == 'textarea' || shouldTraceAndroidTextareaAdjust(tagName)) {
+		if (this.traceCategory == 'textarea') {
 			logAndroidTextareaAdjust('helper tag=' + tagName + ' ' + message)
 			return
 		}
@@ -715,6 +918,9 @@ class UniAndroidAdjustPositionHelper {
 	adjustForKeyboardHeight(keyboardHeight: number, cursorSpacing: number) {
 		this.collectScrollAbleParents()
 		this.captureSessionPageBodyIfNeeded()
+		// 测量前会先把平移复位，这里先记住复位前的实际位置，作为本次过渡动画的起点
+		const sessionPageBodyView = UniAndroidAdjustPositionHelper.sessionPageBodyView
+		this.pageBodyStartTranslationY = sessionPageBodyView != null ? sessionPageBodyView.getTranslationY() : 0.0
 		if (UniAndroidAdjustPositionHelper.activeHelper != null && UniAndroidAdjustPositionHelper.activeHelper !== this) {
 			UniAndroidAdjustPositionHelper.activeHelper!.clearLocalResetPosition()
 		}
@@ -762,7 +968,10 @@ class UniAndroidAdjustPositionHelper {
 			snapshot.scrollHeight = parentElement.scrollHeight
 			parentSnapshots.push(snapshot)
 		}
-		const maxAdjustDistance = Math.max(0, boundingClientRect.y - boundingClientRect.height)
+		// 上推上限：只以目标盒子顶部为界（平移后盒顶不越过窗口顶部）。
+		// 不能再减盒子高度：盒子高度 >= 自身 y 位置时（高 textarea、大 padding 的输入框）
+		// 会被钳成 0，导致明明被键盘遮挡却完全不上推、光标看不见。
+		const maxAdjustDistance = Math.max(0, boundingClientRect.y)
 		const plan = createAndroidAdjustPositionPlan(
 			adjustWindowHeight,
 			keyboardHeight,
@@ -859,7 +1068,15 @@ class UniAndroidAdjustPositionHelper {
 			const pageBodyView = UniAndroidAdjustPositionHelper.sessionPageBodyView
 			const pageBodyOriginTranslationY = UniAndroidAdjustPositionHelper.sessionPageBodyOriginTranslationY
 			const rootTranslateYPx = convertAndroidLogicalToNativePx(plan.rootTranslateY, nativeWindowHeight, logicalWindowHeight)
-			pageBodyView?.setTranslationY((-rootTranslateYPx).toFloat())
+			const targetTranslationY = -rootTranslateYPx
+			this.pageBodyShownTranslationY = targetTranslationY
+			if (this.systemAnimationActive) {
+				// 由系统 IME 动画驱动：按当前进度落位，后续每帧由 setSystemAnimationProgress 推进
+				pageBodyView?.animate().cancel()
+				pageBodyView?.setTranslationY((targetTranslationY * this.systemAnimationProgress).toFloat())
+			} else {
+				animateAndroidAdjustPageBody(pageBodyView, this.pageBodyStartTranslationY, targetTranslationY)
+			}
 			this.trace('applyPageBodyTranslation logical=' + plan.rootTranslateY + ' native=' + rootTranslateYPx)
 			this.resetPosition = () => {
 				for (let i = 0; i < plan.parentPlans.length; i++) {
@@ -869,7 +1086,12 @@ class UniAndroidAdjustPositionHelper {
 					const restoreScrollTop = this.resolveRestoreScrollTop(parentPlan.index, parentSnapshot, restorePlan)
 					parentElement.scrollTo(parentSnapshot.scrollLeft * logicalToNativeScale, restoreScrollTop * logicalToNativeScale)
 				}
-				pageBodyView?.setTranslationY(pageBodyOriginTranslationY.toFloat())
+				if (this.systemAnimationActive) {
+					pageBodyView?.animate().cancel()
+					pageBodyView?.setTranslationY((this.pageBodyShownTranslationY * this.systemAnimationProgress).toFloat())
+				} else {
+					animateAndroidAdjustPageBody(pageBodyView, pageBodyView != null ? pageBodyView.getTranslationY() : 0.0, pageBodyOriginTranslationY.toFloat())
+				}
 			}
 		} else {
 			this.resetPosition = () => {
@@ -903,12 +1125,24 @@ class UniAndroidAdjustPositionHelper {
 		}
 	}
 
+	/** 兜底强制复位：忽略"驱动中"状态 */
+	forceResetSessionPosition() {
+		this.systemAnimationActive = false
+		this.resetSessionPosition()
+	}
+
 	resetSessionPosition() {
+		if (this.systemAnimationActive) {
+			// 收起动画由系统驱动：这里只清掉本地复位回调，等动画结束（finalizeSystemAnimation）再真正复位
+			this.clearLocalResetPosition()
+			return
+		}
 		this.resetElementPosition()
 		this.clearSharedSessionState(true)
 	}
 
 	destroy() {
+		this.systemAnimationActive = false
 		this.resetSessionPosition()
 		this.scrollAbleParents.length = 0
 		this.hasCollectedScrollAbleParents = false
@@ -933,44 +1167,17 @@ class UniAndroidAdjustPositionHelper {
 	}
 
 	private resolveAdjustTargetRect(elementRect: DOMRect): DOMRect {
-		if (!this.useLargerAncestorRect) {
-			return elementRect
-		}
-		let currentElement = this.element.parentElement
-		let depth = 0
-		let matchedRect: DOMRect | null = null
-		let matchedTag = ''
-		let matchedDepth = -1
-		while (currentElement != null) {
-			const currentRect = currentElement.getBoundingClientRect()
-			if (currentRect.height > elementRect.height) {
-				matchedRect = currentRect
-				matchedTag = currentElement.tagName
-				matchedDepth = depth
-				if (!this.preferFarthestLargerAncestorRect) {
-					break
-				}
-			}
-			if (isScrollAbleTagName(currentElement.tagName)) {
-				break
-			}
-			currentElement = currentElement.parentElement
-			depth += 1
-		}
-		if (matchedRect != null) {
+		const boxRect = resolveInputBoxRect(this.element, elementRect)
+		if (boxRect.height > elementRect.height) {
 			this.trace(
 				'resolveAdjustTargetRect tag=' + this.element.tagName
 					+ ' elementY=' + elementRect.y
 					+ ' elementHeight=' + elementRect.height
-					+ ' ancestorDepth=' + matchedDepth
-					+ ' ancestorTag=' + matchedTag
-					+ ' ancestorY=' + matchedRect.y
-					+ ' ancestorHeight=' + matchedRect.height
-					+ ' preferFarthest=' + this.preferFarthestLargerAncestorRect
+					+ ' boxY=' + boxRect.y
+					+ ' boxHeight=' + boxRect.height
 			)
-			return matchedRect
 		}
-		return elementRect
+		return boxRect
 	}
 
 	private resolveNativeWindowHeight(): number {
@@ -1269,6 +1476,23 @@ export class NativeInputView implements UniAndroidKeyboardClient {
 		return this.element.uniPage.height
 	}
 
+	onKeyboardAnimationBegin() {
+		this.adjustPositionHelper?.setSystemAnimationActive(true)
+	}
+
+	onKeyboardAnimationProgress(progress: number) {
+		this.adjustPositionHelper?.setSystemAnimationProgress(progress)
+	}
+
+	onKeyboardAnimationEnd(hidden: boolean) {
+		if (hidden) {
+			this.adjustPositionHelper?.finalizeSystemAnimation()
+			return
+		}
+		// 弹出动画结束：结束"驱动中"状态，但保留让开位移
+		this.adjustPositionHelper?.setSystemAnimationActive(false)
+	}
+
 	onKeyboardHeightChangedFromManager(height: number, duration: number) {
 		this.keyboardHeight = height
 		if (this.pendingFocusDispatch && height > 0) {
@@ -1278,6 +1502,13 @@ export class NativeInputView implements UniAndroidKeyboardClient {
 		this.dispatchKeyboardHeightChange(height, duration)
 		if (height <= 0) {
 			this.adjustPositionHelper?.resetSessionPosition()
+			// 兜底：万一系统没有回调收起动画（动画被取消等），超时后强制复位，避免页面卡在让开位置
+			const self = this
+			setTimeout(() => {
+				if (self.keyboardHeight <= 0) {
+					self.adjustPositionHelper?.forceResetSessionPosition()
+				}
+			}, 800)
 			return
 		}
 		if (this.adjustPosition && this.isFocusing) {
@@ -1634,7 +1865,8 @@ export class NativeInputView implements UniAndroidKeyboardClient {
 					const cursor = self.editText?.getSelectionStart() ?? 0
 					self.trace('focus hasFocus=false keyboardHeight=' + self.keyboardHeight + ' adjustPosition=' + self.adjustPosition + ' cursorSpacing=' + self.cursorSpacing + ' cursor=' + cursor)
 					self.keyboardManager?.notifyBlur(self)
-					self.adjustPositionHelper?.resetElementPosition()
+					// 不在这里立即复位：交给键盘收起动画按进度回落（点屏外收起时才能和键盘同步），
+					// 复位由键盘高度归 0 的分支或动画结束时的 finalize 完成
 					
 					// 触发 blur 事件
 					self.dispatchBlur(currentValue, cursor)
@@ -1794,7 +2026,7 @@ export class NativeInputView implements UniAndroidKeyboardClient {
 		const rect = new Rect()
 		this.editText!.getDrawingRect(rect)
 		const elementRect = this.element.getBoundingClientRect()
-		const inputRect = this.resolveInputVisualRect(elementRect)
+		const inputRect = resolveInputBoxRect(this.element, elementRect)
 		const nativeWindowHeight = this.resolveNativeWindowHeight()
 		const logicalWindowHeight = this.getKeyboardLogicalWindowHeight()
 		const extraTop = elementRect.y - inputRect.y
@@ -1806,23 +2038,6 @@ export class NativeInputView implements UniAndroidKeyboardClient {
 			rect.bottom += Math.ceil(convertAndroidLogicalToNativePx(extraBottom, nativeWindowHeight, logicalWindowHeight)).toInt()
 		}
 		this.editText!.requestRectangleOnScreen(rect, true)
-	}
-
-	private resolveInputVisualRect(elementRect: DOMRect): DOMRect {
-		let currentElement = this.element.parentElement
-		while (currentElement != null) {
-			if (isScrollAbleTagName(currentElement.tagName)) {
-				break
-			}
-			const currentRect = currentElement.getBoundingClientRect()
-			const currentBottom = currentRect.y + currentRect.height
-			const elementBottom = elementRect.y + elementRect.height
-			if (currentRect.y < elementRect.y || currentBottom > elementBottom || currentRect.height > elementRect.height) {
-				return currentRect
-			}
-			currentElement = currentElement.parentElement
-		}
-		return elementRect
 	}
 
 	getValue(): string {
@@ -2595,6 +2810,8 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 	private pendingSelectionApply: boolean = false
 	private cursorSpacing: number = 0
 	private autoHeight: boolean = false
+	private minHeight: number = -1
+	private maxHeight: number = -1
 	private hasReceivedAutoHeightProp: boolean = false
 	private isBatchUpdating: boolean = false
 	private pendingBatchHeightRefresh: boolean = false
@@ -2632,7 +2849,6 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 		this.adjustPositionHelper = new UniAndroidAdjustPositionHelper(this.element, (elementHeight: number): number => {
 			return Math.max(0, elementHeight)
 		})
-		this.adjustPositionHelper?.setUseLargerAncestorRect(true)
 		this.adjustPositionHelper?.setAllowRootTranslateAfterParentScroll(true)
 		this.adjustPositionHelper?.setTraceCategory('textarea')
 		this.bindView()
@@ -2649,6 +2865,23 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 		return this.element.uniPage.height
 	}
 
+	onKeyboardAnimationBegin() {
+		this.adjustPositionHelper?.setSystemAnimationActive(true)
+	}
+
+	onKeyboardAnimationProgress(progress: number) {
+		this.adjustPositionHelper?.setSystemAnimationProgress(progress)
+	}
+
+	onKeyboardAnimationEnd(hidden: boolean) {
+		if (hidden) {
+			this.adjustPositionHelper?.finalizeSystemAnimation()
+			return
+		}
+		// 弹出动画结束：结束"驱动中"状态，但保留让开位移
+		this.adjustPositionHelper?.setSystemAnimationActive(false)
+	}
+
 	onKeyboardHeightChangedFromManager(height: number, duration: number) {
 		this.keyboardHeight = height
 		if (this.pendingFocusDispatch && height > 0) {
@@ -2658,6 +2891,13 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 		this.dispatchKeyboardHeightChange(height, duration)
 		if (height <= 0) {
 			this.adjustPositionHelper?.resetSessionPosition()
+			// 兜底：万一系统没有回调收起动画（动画被取消等），超时后强制复位，避免页面卡在让开位置
+			const self = this
+			setTimeout(() => {
+				if (self.keyboardHeight <= 0) {
+					self.adjustPositionHelper?.forceResetSessionPosition()
+				}
+			}, 800)
 			return
 		}
 		if (this.adjustPosition && this.isFocusing) {
@@ -2782,7 +3022,7 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 					UniAndroidEditorTouchCache.recordNativeTouch(self.element)
 				}
 				const parent = v.getParent()
-				const canScroll = !self.autoHeight && self.isTextareaContentScrollable()
+				const canScroll = self.isTextareaContentScrollable()
 				if (canScroll) {
 					switch (action) {
 						case MotionEvent.ACTION_DOWN:
@@ -2803,7 +3043,7 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 	}
 
 	private isTextareaContentScrollable(): boolean {
-		if (this.editText == null || this.autoHeight) return false
+		if (this.editText == null) return false
 		return this.calculateContentHeight() > this.resolveTextareaHeight() + 1
 	}
 
@@ -2902,7 +3142,8 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 					const cursor = self.editText?.getSelectionStart() ?? 0
 					self.trace('focus hasFocus=false keyboardHeight=' + self.keyboardHeight + ' adjustPosition=' + self.adjustPosition + ' cursorSpacing=' + self.cursorSpacing + ' cursor=' + cursor)
 					self.keyboardManager?.notifyBlur(self)
-					self.adjustPositionHelper?.resetElementPosition()
+					// 不在这里立即复位：交给键盘收起动画按进度回落（点屏外收起时才能和键盘同步），
+					// 复位由键盘高度归 0 的分支或动画结束时的 finalize 完成
 					self.dispatchBlur(currentValue, cursor)
 					if (self.beginEditValue != currentValue) {
 						self.dispatchChange(currentValue)
@@ -3131,7 +3372,22 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 		this.autoHeight = toBoolean(value)
 		this.trace('updateAutoHeight autoHeight=' + this.autoHeight)
 		if (this.editText != null) {
-			this.editText!.setVerticalScrollBarEnabled(!this.autoHeight)
+			this.editText!.setVerticalScrollBarEnabled(!this.autoHeight || this.maxHeight >= 0)
+		}
+		this.refreshTextareaHeightForTextLayoutChange()
+	}
+
+	updateMinHeight(value: string) {
+		const height = parsePixelStyleValue(value)
+		this.minHeight = height == null ? -1 : height
+		this.refreshTextareaHeightForTextLayoutChange()
+	}
+
+	updateMaxHeight(value: string) {
+		const height = parsePixelStyleValue(value)
+		this.maxHeight = height == null ? -1 : height
+		if (this.editText != null) {
+			this.editText!.setVerticalScrollBarEnabled(!this.autoHeight || this.maxHeight >= 0)
 		}
 		this.refreshTextareaHeightForTextLayoutChange()
 	}
@@ -3501,25 +3757,40 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 		return Math.max(0, nativeContentHeight)
 	}
 
-	private resolveTextareaHeight(): number {
-		if (this.autoHeight) {
-			return this.calculateContentHeight()
+	private resolveClampedAutoHeight(contentHeight: number): number {
+		let height = contentHeight
+		if (this.minHeight >= 0 && height < this.minHeight) {
+			height = this.minHeight
 		}
+		if (this.maxHeight >= 0 && height > this.maxHeight) {
+			height = this.maxHeight
+		}
+		return height
+	}
+
+	private resolveTextareaHeight(): number {
 		const editText = this.editText
-		const nativeHeight = editText?.getHeight() ?? editText?.getMeasuredHeight() ?? 0
+		let nativeHeight = editText?.getHeight() ?? 0
+		if (nativeHeight <= 0) {
+			nativeHeight = editText?.getMeasuredHeight() ?? 0
+		}
 		if (nativeHeight > 0) {
-			return convertAndroidNativePxToLogicalPx(
+			const actual = convertAndroidNativePxToLogicalPx(
 				nativeHeight,
 				this.resolveNativeWindowHeight(),
 				this.getKeyboardLogicalWindowHeight()
 			)
+			// flex 可将 auto-height 的可视高度限制在内容高度以内。
+			return this.autoHeight ? Math.min(actual, this.resolveClampedAutoHeight(this.calculateContentHeight())) : actual
 		}
-		return 0
+		return this.autoHeight ? this.resolveClampedAutoHeight(this.calculateContentHeight()) : 0
 	}
 
 	private resolveMeasuredTextareaHeight(res: UniNativeMeasureSpecification): number {
 		const heightMode = res.heightMode.toString()
-		if (heightMode == 'Exactly') {
+		// auto-height 时高度只由内容（及 min/max-height）决定，不接受父容器的测量约束：
+		// 否则内容会被父容器压回去（如 scroll-view 场景），父容器拿不到溢出高度、无法滚动。
+		if (heightMode == 'Exactly' && !this.autoHeight) {
 			return Math.max(0, res.height)
 		}
 		if (!this.autoHeight) {
@@ -3529,8 +3800,19 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 		if (height <= 0) {
 			height = this.calculateContentNativeHeightForMeasureWidth(0)
 		}
-		if (heightMode == 'AtMost' && res.height >= 0) {
-			height = Math.min(height, res.height)
+		const nativeWindowHeight = this.resolveNativeWindowHeight()
+		const logicalWindowHeight = this.getKeyboardLogicalWindowHeight()
+		if (this.minHeight >= 0) {
+			const nativeMinHeight = convertAndroidLogicalToNativePx(this.minHeight, nativeWindowHeight, logicalWindowHeight)
+			if (height < nativeMinHeight) {
+				height = nativeMinHeight
+			}
+		}
+		if (this.maxHeight >= 0) {
+			const nativeMaxHeight = convertAndroidLogicalToNativePx(this.maxHeight, nativeWindowHeight, logicalWindowHeight)
+			if (height > nativeMaxHeight) {
+				height = nativeMaxHeight
+			}
 		}
 		return Math.max(0, height)
 	}
@@ -3546,7 +3828,8 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 
 	private ensureCursorVisibleAfterLayout() {
 		const editText = this.editText
-		if (editText == null || this.autoHeight) return
+		if (editText == null) return
+		if (this.autoHeight && !this.isTextareaContentScrollable()) return
 		const self = this
 		editText.post(class implements Runnable {
 			override run() {
@@ -3557,7 +3840,8 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 
 	private scrollCursorIntoView() {
 		const editText = this.editText
-		if (this.destroyed || editText == null || this.autoHeight) return
+		if (this.destroyed || editText == null) return
+		if (this.autoHeight && !this.isTextareaContentScrollable()) return
 		const layout = editText.getLayout()
 		if (layout == null) return
 		const selectionEnd = editText.getSelectionEnd()

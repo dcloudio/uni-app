@@ -119,7 +119,7 @@
 	</view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 	import { checkPlatform, objectAssign, getWeixinCode, getAlipayCode } from "../../js_sdk/js_sdk"
 
 	// Props

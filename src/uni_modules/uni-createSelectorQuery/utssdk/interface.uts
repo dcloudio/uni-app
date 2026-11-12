@@ -439,6 +439,41 @@ export interface NodesRef {
      * }
      */
     node(callback: (result: any) => void): SelectorQuery
+
+    /**
+     * 省略 callback，在 exec 回调的查询结果中获取节点实例。
+     * App 蒸汽模式 HBuilderX 5.34 起支持。
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "uniVer": "x",
+     *      "unixVer": "x",
+     *      "unixVaporVer": "5.34"
+     *    },
+     *    "ios": {
+     *      "uniVer": "x",
+     *      "unixVer": "x",
+     *      "unixVaporVer": "5.34"
+     *    },
+     *    "harmony": {
+     *      "uniVer": "x",
+     *      "unixVer": "x",
+     *      "unixVaporVer": "5.34"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.41"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  }
+     * }
+     */
+    node(): SelectorQuery
 }
 
 export interface SelectorQuery {
