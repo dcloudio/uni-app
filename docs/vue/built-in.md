@@ -1305,7 +1305,7 @@ export default {
   - `<input>`
   - `<textarea>`
 
-- 修饰符 <Badge text="仅 Android"/>
+- 修饰符
   - `.lazy` - 监听 `change` 事件而不是 `input` 事件
   - `.number` - 将输入的合法字符串转为数字
   - `.trim` - 移除输入内容两端空格
