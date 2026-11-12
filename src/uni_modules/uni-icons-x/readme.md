@@ -13,7 +13,7 @@
 组件负责：
 
 - 根据 `type` 渲染对应字形，未传入或取值不存在时不显示图标
-- 内部通过 `@font-face` 引入字体：Web 平台使用 `uniicons.woff2`，其他平台使用 `uniicons.ttf`
+- 内部通过 `@font-face` 引入字体：Web/小程序使用 `uniicons.woff2`，App 使用 `uniicons.ttf`
 
 使用者负责：
 
@@ -79,3 +79,7 @@
 
 - 通过 `style` 设置的内联样式会覆盖组件默认样式。
 - 使用全局 class 覆盖 `font-family` 时，可能需要使用 `!important`。
+
+## 图标维护
+
+字体、名称映射、类型和 Web/小程序伪类由仓库内的图标工具统一维护。伪类自动生成到 `uni-icons.css`，并只在 `WEB || MP` 条件下加载；App 使用 `icons.ts` 和 TTF。不要直接编辑字体文件、映射或生成的 CSS。环境准备、维护页面、兼容性规则和操作流程见 [`tools/uni-icons/README.md`](../../tools/uni-icons/README.md)。

@@ -14,8 +14,6 @@ export interface Uni {
      * 4.31+ 开始支持返回事件监听器 id, 用于 off 事件监听器。
      *
      * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/event-bus.html#on
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/event-bus.html#on
-     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/window/communication.html#on
      * @uniPlatform
       {
         "app": {
@@ -79,8 +77,6 @@ export interface Uni {
      * 4.13+ 开始支持第二个参数为可选，如果仅提供事件名，则移除该事件的所有监听器。
      * 4.31+ 开始第二个参数的类型由 `Function | null` 调整为 `any | null`, 支持传入 `uni.$on`、`uni.$once` 返回的事件监听器 id, 移除指定事件监听器。
      * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/event-bus.html#off
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/event-bus.html#off
-     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/window/communication.html#off
      * @uniPlatform
       {
         "app": {
@@ -144,8 +140,6 @@ export interface Uni {
      * 4.31+ 开始支持返回事件监听器 id, 用于 off 事件监听器。
      *
      * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/event-bus.html#once
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/event-bus.html#once
-     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/window/communication.html#once
      * @uniPlatform
       {
         "app": {
@@ -208,8 +202,6 @@ export interface Uni {
      * 触发自定义事件，附加的参数会传递给事件监听器。
      * 在iOS平台UTS环境下或者UTS和JS通信时参数仅支持基础类型、string、Array、UTSJSONObject,其中Array，UTSJSONObject也仅支持包含上述类型,on和emit类型需匹配否则会产生异常
      * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/event-bus.html#emit
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/event-bus.html#emit
-     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/window/communication.html#emit
      * @uniPlatform
       {
         "app": {

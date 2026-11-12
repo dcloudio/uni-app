@@ -5,6 +5,9 @@
       <view class="summary">
         <text class="viewport">当前视口：{{ viewportWidth }} × {{ viewportHeight }} px</text>
         <text class="description">旋转设备或调整窗口，观察下方条件和布局变化。</text>
+        <!-- #ifdef WEB -->
+        <text class="description">Web 按浏览器布局视口匹配，包含页面导航栏和 tabBar 所在区域。</text>
+        <!-- #endif -->
         <text class="description">绿色“条件满足”，灰色“条件不满足”；灰色不代表测试失败。状态由 CSS 控制。</text>
       </view>
 
@@ -159,25 +162,29 @@
       <button size="mini" @click="setComponentVisible(!componentVisible)">
         {{ componentVisible ? '移除组件' : '添加组件' }}
       </button>
-      <media-query-component v-if="componentVisible" />
-      <navigator class="component-link" url="./component-only">
-        <text class="link-text">单独验证：页面无媒体查询，仅组件包含媒体查询 →</text>
-      </navigator>
+      <media-query-component v-if="componentVisible" id="media-query-component" />
+      <view class="scenario-links">
+        <navigator class="scenario-link" url="./component-only" hover-class="none">
+          <button class="scenario-button">页面无媒体查询时的组件样式 →</button>
+          <text class="scenario-description">验证组件内的媒体查询能独立生效，并随视口变化更新</text>
+        </navigator>
+      </view>
     </view>
   </scroll-view>
 </template>
 
 <script setup lang="ts">
   import MediaQueryComponent from './media-query-component.uvue'
+  import { getMediaViewport } from './viewport.uts'
 
   const viewportWidth = ref(0)
   const viewportHeight = ref(0)
   const componentVisible = ref(false)
 
   function updateViewport() {
-    const info = uni.getWindowInfo()
-    viewportWidth.value = info.windowWidth
-    viewportHeight.value = info.windowHeight
+    const viewport = getMediaViewport()
+    viewportWidth.value = viewport.width
+    viewportHeight.value = viewport.height
   }
 
   function setComponentVisible(visible : boolean) {
@@ -186,7 +193,7 @@
 
   onReady(updateViewport)
   onResize(updateViewport)
-  defineExpose({ setComponentVisible })
+  defineExpose({ setComponentVisible, getMediaViewport })
 </script>
 
 <style>
@@ -200,8 +207,10 @@
   .columns { flex-direction: column; }
   .card { padding: 16px; margin: 4px; border-radius: 8px; background-color: #dbeafe; }
   .card-title { font-size: 16px; color: #1e40af; }
-  .component-link { margin-top: 16px; }
-  .link-text { font-size: 14px; color: #2563eb; }
+  .scenario-links { margin-top: 16px; }
+  .scenario-link { padding: 12px; margin-bottom: 8px; border-radius: 8px; background-color: #ffffff; }
+  .scenario-button { width: 100%; margin: 0; border: 0; border-radius: 8px; background-color: #eff6ff; color: #1d4ed8; font-size: 15px; }
+  .scenario-description { margin-top: 8px; font-size: 13px; color: #64748b; }
   .condition { padding: 12px; margin-bottom: 8px; border-radius: 8px; background-color: #ffffff; }
   .condition-title { font-size: 15px; color: #1f2937; margin-bottom: 4px; }
   .syntax { font-size: 12px; color: #64748b; margin-bottom: 8px; }

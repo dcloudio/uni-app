@@ -1,9 +1,7 @@
 export interface Uni {
     /**
       * 获取 APP 授权设置。
-      * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-app-authorize-setting.html
-      * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/get-app-authorize-setting.html
-      * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/system/getappauthorizesetting.html
+      * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-app-authorize-setting.html#getappauthorizesetting
       * @uniPlatform
       * {
       * 	"app": {
@@ -106,7 +104,7 @@ export type GetAppAuthorizeSettingResult = {
      */
     'not determined' |
     /**
-     * Android平台：表示没有配置[相册相关权限](https://doc.dcloud.net.cn/uni-app-x/native/permission/android_permission_adapter.html)，[权限配置详情](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html#permissions)；iOS平台：当前应用没有配置相册权限描述
+     * Android平台：表示没有配置[相册相关权限](https://doc.dcloud.net.cn/uni-app-x/native/permission/android_permission_adapter.html)，[权限配置详情](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#permissions)；iOS平台：当前应用没有配置相册权限描述
      */
     'config error',
     /**
@@ -150,7 +148,7 @@ export type GetAppAuthorizeSettingResult = {
      */
     'not determined' |
     /**
-     * Android平台：表示没有配置[蓝牙相关权限](https://doc.dcloud.net.cn/uni-app-x/native/permission/android_permission_adapter.html)，[权限配置详情](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html#permissions)；iOS平台：当前应用没有配置蓝牙权限描述
+     * Android平台：表示没有配置[蓝牙相关权限](https://doc.dcloud.net.cn/uni-app-x/native/permission/android_permission_adapter.html)，[权限配置详情](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#permissions)；iOS平台：当前应用没有配置蓝牙权限描述
      */
     'config error',
     /**
@@ -194,7 +192,7 @@ export type GetAppAuthorizeSettingResult = {
      */
     'not determined' |
     /**
-     * Android平台：表示没有配置 `android.permission.CAMERA` 权限，[权限配置详情](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html#permissions)；iOS平台：当前应用没有配置相机权限描述
+     * Android平台：表示没有配置 `android.permission.CAMERA` 权限，[权限配置详情](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#permissions)；iOS平台：当前应用没有配置相机权限描述
      */
     'config error',
     /**
@@ -238,7 +236,7 @@ export type GetAppAuthorizeSettingResult = {
      */
     'not determined' |
     /**
-     * Android平台：表示没有配置 `android.permission.ACCESS_COARSE_LOCATION` 权限，[权限配置详情](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html#permissions)；iOS平台：当前应用没有配置定位权限描述
+     * Android平台：表示没有配置 `android.permission.ACCESS_COARSE_LOCATION` 权限，[权限配置详情](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#permissions)；iOS平台：当前应用没有配置定位权限描述
      */
     'config error',
     /**
@@ -340,7 +338,7 @@ export type GetAppAuthorizeSettingResult = {
      */
     'not determined' |
     /**
-     * Android平台：表示没有配置 `android.permission.RECORD_AUDIO` 权限，[权限配置详情](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html#permissions)；iOS平台：当前应用没有配置麦克风权限描述
+     * Android平台：表示没有配置 `android.permission.RECORD_AUDIO` 权限，[权限配置详情](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#permissions)；iOS平台：当前应用没有配置麦克风权限描述
      */
     'config error',
     /**

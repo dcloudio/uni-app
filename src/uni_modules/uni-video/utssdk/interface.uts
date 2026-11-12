@@ -585,8 +585,6 @@ export interface Uni {
      * @uniVueVersion 2,3
      * @return {VideoContext} video组件上下文对象
      *
-     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/media/video-context.html#createvideocontext
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/create-video-context.html#createvideocontext
      * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/create-video-context.html#createvideocontext
      * @tutorial_weixin https://developers.weixin.qq.com/miniprogram/dev/api/media/video/VideoContext.html
      */

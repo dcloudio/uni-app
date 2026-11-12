@@ -905,38 +905,60 @@ class UniInternalWebView @JvmOverloads constructor(
         }
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
+                downX = event.x
+                downY = event.y
                 lastX = event.x
                 lastY = event.y
                 parent?.requestDisallowInterceptTouchEvent(true)
             }
             MotionEvent.ACTION_MOVE -> {
-                val deltaX = abs(event.x - lastX)
-                val deltaY = abs(event.y - lastY)
-                when (mNestedScrollType) {
-                    "all" -> {
-                        if (scrollY <= 0 && event.y > lastY && deltaY > deltaX * 2
-                            || scrollY + height + NativeWebViewImpl.REACH_BOTTOM_THRESHOLD >= contentHeight * mScale && event.y < lastY && deltaY > deltaX * 2
-                            || scrollX <= 0 && event.x > lastX && deltaX > deltaY * 2
-                            || scrollX + width + NativeWebViewImpl.REACH_BOTTOM_THRESHOLD >= mContentWidth * mScale && event.x < lastX && deltaX > deltaY * 2) {
-                            parent?.requestDisallowInterceptTouchEvent(false)
-                        }
+                lastX = event.x
+                lastY = event.y
+            }
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                downX = lastX
+                downY = lastY
+            }
+        }
+        return super.dispatchTouchEvent(event)
+    }
+
+    override fun overScrollBy(
+        deltaX: Int, deltaY: Int, scrollX: Int, scrollY: Int,
+        scrollRangeX: Int, scrollRangeY: Int, maxOverScrollX: Int, maxOverScrollY: Int,
+        isTouchEvent: Boolean
+    ): Boolean {
+        val clamped = super.overScrollBy(
+            deltaX, deltaY, scrollX, scrollY, scrollRangeX, scrollRangeY,
+            maxOverScrollX, maxOverScrollY, isTouchEvent
+        )
+        if (mAssociativeContainer != "nested-scroll-view") {
+            val totalScrollX = abs(lastX - downX)
+            val totalScrollY = abs(lastY - downY)
+            when (mNestedScrollType) {
+                "all" -> {
+                    if (deltaY > 0 && lastY < downY && scrollY + deltaY > scrollRangeY && totalScrollY > totalScrollX * 2
+                        || deltaY < 0 && lastY > downY && scrollY + deltaY < 0 && totalScrollY > totalScrollX * 2
+                        || deltaX > 0 && lastX < downX && scrollX + deltaX > scrollRangeX && totalScrollX > totalScrollY * 2
+                        || deltaX < 0 && lastX > downX && scrollX + deltaX < 0 && totalScrollX > totalScrollY * 2) {
+                        parent?.requestDisallowInterceptTouchEvent(false)
                     }
-                    "horizontal" -> {
-                        if (scrollX <= 0 && event.x > lastX && deltaX > deltaY * 2
-                            || scrollX + width + NativeWebViewImpl.REACH_BOTTOM_THRESHOLD >= mContentWidth * mScale && event.x < lastX && deltaX > deltaY * 2) {
-                            parent?.requestDisallowInterceptTouchEvent(false)
-                        }
+                }
+                "horizontal" -> {
+                    if (deltaX > 0 && lastX < downX && scrollX + deltaX > scrollRangeX && totalScrollX > totalScrollY * 2
+                        || deltaX < 0 && lastX > downX && scrollX + deltaX < 0 && totalScrollX > totalScrollY * 2) {
+                        parent?.requestDisallowInterceptTouchEvent(false)
                     }
-                    "vertical" -> {
-                        if (scrollY <= 0 && event.y > lastY && deltaY > deltaX * 2
-                            || scrollY + height + NativeWebViewImpl.REACH_BOTTOM_THRESHOLD >= contentHeight * mScale && event.y < lastY && deltaY > deltaX * 2) {
-                            parent?.requestDisallowInterceptTouchEvent(false)
-                        }
+                }
+                "vertical" -> {
+                    if (deltaY > 0 && lastY < downY && scrollY + deltaY > scrollRangeY && totalScrollY > totalScrollX * 2
+                        || deltaY < 0 && lastY > downY && scrollY + deltaY < 0 && totalScrollY > totalScrollX * 2) {
+                        parent?.requestDisallowInterceptTouchEvent(false)
                     }
                 }
             }
         }
-        return super.dispatchTouchEvent(event)
+        return clamped
     }
 
     fun registerContentHeightObserver() {

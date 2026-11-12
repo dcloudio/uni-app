@@ -7,7 +7,7 @@ import android.view.View
 import android.widget.FrameLayout
 import com.amap.api.maps.AMap
 import com.amap.api.maps.CameraUpdateFactory
-import com.amap.api.maps.MapView
+import com.amap.api.maps.TextureMapView
 import com.amap.api.maps.model.CameraPosition
 import com.amap.api.maps.model.LatLng
 import com.amap.api.maps.model.LatLngBounds
@@ -41,7 +41,7 @@ import uts.sdk.modules.uniMapAmap.polyline.PolylineModel
 // 定位采用独立定位源（LocationSource + AMapLocationClient），与腾讯插件一致：
 // 地图只负责展示蓝点，定位由定位 SDK 主动上报（可先回最后已知位置，冷启动更快上屏）
 class AmapMapImpl : IInternalMap, LocationSource, AMapLocationListener {
-    private var mapView: MapView? = null
+    private var mapView: TextureMapView? = null
     private var mapTouchHostLayout: MapTouchHostLayout? = null
     private var mZoomLevel = 16f
     private var circleManager: CircleManager? = null
@@ -78,7 +78,7 @@ class AmapMapImpl : IInternalMap, LocationSource, AMapLocationListener {
 		MapsInitializer.updatePrivacyAgree(context, true)
 		AMapLocationClient.updatePrivacyShow(context, true, true)
 		AMapLocationClient.updatePrivacyAgree(context, true)
-        mapView = MapView(context)
+        mapView = TextureMapView(context)
 		mapView!!.onCreate(/* p0 = */ Bundle())
         mapTouchHostLayout = MapTouchHostLayout(context).also { host ->
             host.addView(
@@ -252,7 +252,7 @@ class AmapMapImpl : IInternalMap, LocationSource, AMapLocationListener {
     }
 
     override fun onStart() {
-        // 高德地图 MapView 没有 onStart 方法
+        // 高德地图 TextureMapView 没有 onStart 方法
     }
 
     override fun onResume() {
@@ -264,7 +264,7 @@ class AmapMapImpl : IInternalMap, LocationSource, AMapLocationListener {
     }
 
     override fun onStop() {
-        // 高德地图 MapView 没有 onStop 方法
+        // 高德地图 TextureMapView 没有 onStop 方法
     }
 
     override fun onDestroy() {
@@ -729,4 +729,3 @@ class AmapMapImpl : IInternalMap, LocationSource, AMapLocationListener {
     }
 
 }
-

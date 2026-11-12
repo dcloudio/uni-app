@@ -1,9 +1,21 @@
 <script setup lang="ts">
   import { state, setEventCallbackNum } from '@/store/index.ts'
-  import { ItemType } from '@/components/enum-data-checkbox/enum-data-checkbox-types'
+
+  const colorOptions = ref(['#09BB07', '#EBEBEB', 'black', 'white', 'gray', 'red', 'green', 'blue'])
+  const activeModeOptions = ref([
+    { value: 0, text: '从头播放' },
+    { value: 1, text: '接续播放' }
+  ])
+  const percent = ref(0)
+  const strokeWidth = ref(6)
+  const showInfo = ref(false)
+  const active = ref(false)
+  const duration = ref(30)
+  const activeMode = ref(0)
+  const activeColor = ref('#09BB07')
+  const backgroundColor = ref('#EBEBEB')
 
   type DataType = {
-    title: string;
     pgList: number[];
     curPercent: number;
     showInfo: boolean;
@@ -11,21 +23,10 @@
     fontSize: number;
     strokeWidth: number;
     backgroundColor: string;
-    // 组件属性 autotest
-    active_boolean: boolean;
-    show_info_boolean: boolean;
-    duration_input: number;
-    percent_input: number;
-    stroke_width_input: number;
-    activeColor_input: string;
-    backgroundColor_input: string;
-    active_mode_enum: ItemType[];
-    active_mode_enum_current: number;
   }
 
-  // 使用reactive包装数据，避免ref数据在自动化测试中无法获取的问题
+  // 保留默认用法示例的 data 结构，供现有自动化测试读取。
   const data = reactive({
-    title: 'progress',
     pgList: [0, 0, 0, 0] as number[],
     curPercent: 0,
     showInfo: true,
@@ -33,16 +34,6 @@
     fontSize: 16,
     strokeWidth: 3,
     backgroundColor: '#EBEBEB',
-    // 组件属性 autotest
-    active_boolean: false,
-    show_info_boolean: false,
-    duration_input: 30,
-    percent_input: 0,
-    stroke_width_input: 6,
-    activeColor_input: "#09BB07",
-    backgroundColor_input: "#EBEBEB",
-    active_mode_enum: [{ "value": 0, "name": "backwards" }, { "value": 1, "name": "forwards" }] as ItemType[],
-    active_mode_enum_current: 0
   } as DataType)
 
   // 自动化测试
@@ -75,14 +66,6 @@
   const progress_touchcancel = () => { console.log("手指触摸动作被打断，如来电提醒，弹窗") }
   const progress_touchend = () => { console.log("手指触摸动作结束") }
   const progress_tap = () => { console.log("手指触摸后马上离开") }
-  const change_active_boolean = (checked : boolean) => { data.active_boolean = checked }
-  const change_show_info_boolean = (checked : boolean) => { data.show_info_boolean = checked }
-  const confirm_duration_input = (value : number) => { data.duration_input = value }
-  const confirm_percent_input = (value : number) => { data.percent_input = value }
-  const confirm_stroke_width_input = (value : number) => { data.stroke_width_input = value }
-  const confirm_activeColor_input = (value : string) => { data.activeColor_input = value }
-  const confirm_backgroundColor_input = (value : string) => { data.backgroundColor_input = value }
-  const radio_change_active_mode_enum = (checked : number) => { data.active_mode_enum_current = checked }
 
   defineExpose({
     data,
@@ -94,84 +77,77 @@
 </script>
 
 <template>
-  <view class="main">
-    <progress active-color="#09BB07" :duration="data.duration_input" :percent="data.percent_input" :show-info="data.show_info_boolean"
-      :stroke-width="data.stroke_width_input" :activeColor="data.activeColor_input" :backgroundColor="data.backgroundColor_input"
-      :active="data.active_boolean" :active-mode="data.active_mode_enum[data.active_mode_enum_current].name"
+  <uni-card title="进度预览">
+    <progress id="progress-preview" class="preview" :duration="duration" :percent="percent"
+      :show-info="showInfo" :stroke-width="strokeWidth" :active-color="activeColor" :background-color="backgroundColor"
+      :active="active" :active-mode="activeMode == 0 ? 'backwards' : 'forwards'"
       @touchstart="progress_touchstart" @touchmove="progress_touchmove" @touchcancel="progress_touchcancel"
-      @touchend="progress_touchend" @tap="progress_tap" style="width: 80%">
-    </progress>
-  </view>
+      @touchend="progress_touchend" @tap="progress_tap" />
+  </uni-card>
 
-  <scroll-view style="flex: 1">
-    <view class="content">
-      <page-head title="组件属性"></page-head>
-      <boolean-data :value="false" title="进度条从左往右的动画" @change="change_active_boolean"></boolean-data>
-      <boolean-data :value="false" title="在进度条右侧显示百分比" @change="change_show_info_boolean"></boolean-data>
-      <!-- #ifndef MP-ALIPAY -->
-      <input-data defaultValue="30" title="进度增加1%所需毫秒数" type="number" @confirm="confirm_duration_input"></input-data>
-      <!-- #endif -->
-      <input-data defaultValue="0" title="百分比0~100" type="number" @confirm="confirm_percent_input"></input-data>
-      <input-data defaultValue="6" title="进度条线的宽度，单位px" type="number"
-        @confirm="confirm_stroke_width_input"></input-data>
-      <input-data defaultValue="#09BB07" title="已选择的进度条的颜色" type="text"
-        @confirm="confirm_activeColor_input"></input-data>
-      <input-data defaultValue="#EBEBEB" title="未选择的进度条的颜色" type="text"
-        @confirm="confirm_backgroundColor_input"></input-data>
-      <!-- #ifndef MP_ALIPAY -->
-      <enum-data-checkbox :items="data.active_mode_enum" title="backwards: 动画从头播；forwards：动画从上次结束点接着播"
-        @change="radio_change_active_mode_enum"></enum-data-checkbox>
-      <!-- #endif -->
-    </view>
+  <uni-card title="进度与显示">
+    <uni-data-slider control-id="progress-percent" label="进度（%）" v-model="percent" live />
+    <uni-data-slider control-id="progress-stroke-width" label="线宽（px）" v-model="strokeWidth" :max="10" live />
+    <uni-data-switch control-id="progress-show-info" label="显示百分比" v-model="showInfo" />
+  </uni-card>
 
-    <view>
-      <page-head title="默认及使用"></page-head>
-      <view class="uni-padding-wrap uni-common-mt">
-        <view class="progress-box">
-          <progress :percent="data.pgList[0]" :active="true" :border-radius="data.borderRadius" :show-info="data.showInfo"
-            :font-size="data.fontSize" :stroke-width="data.strokeWidth" :background-color="data.backgroundColor" class="progress p"
-            @activeend="activeend" />
-        </view>
-        <view class="progress-box">
-          <progress :percent="data.pgList[1]" :stroke-width="3" class="progress p1" />
-        </view>
-        <view class="progress-box">
-          <progress :percent="data.pgList[2]" :stroke-width="3" class="progress p2" />
-        </view>
-        <view class="progress-box">
-          <progress :percent="data.pgList[3]" activeColor="#10AEFF" :stroke-width="3" class="progress p3" />
-        </view>
-        <view class="progress-control">
-          <button type="primary" @click="setProgress" class="button">
-            设置进度
-          </button>
-          <button type="warn" @click="clearProgress" class="button">
-            清除进度
-          </button>
-        </view>
-      </view>
-    </view>
-
-    <!-- #ifdef APP && VUE3-VAPOR -->
-      <navigator class="uni-common-mb" url="/pages/template/progress-100/progress-100">
-        <button>组件性能测试</button>
-      </navigator>
+  <uni-card title="动画设置">
+    <uni-data-switch control-id="progress-active" label="启用动画" v-model="active" />
+    <!-- #ifndef MP-ALIPAY -->
+    <uni-data-slider control-id="progress-duration" label="每增加 1% 的耗时（ms）" v-model="duration" :min="1" />
+    <enum-data-checkbox id="progress-active-mode" title="播放方式" v-model="activeMode" :items="activeModeOptions" :show-toast="false" />
     <!-- #endif -->
-  </scroll-view>
+  </uni-card>
+
+  <uni-card title="颜色设置">
+    <uni-data-combobox control-id="progress-active-color" label="已完成进度" v-model="activeColor"
+      :options="colorOptions" placeholder="请选择颜色" />
+    <uni-data-combobox control-id="progress-background-color" label="未完成进度" v-model="backgroundColor"
+      :options="colorOptions" placeholder="请选择颜色" />
+  </uni-card>
+
+  <uni-card title="默认用法示例">
+    <progress id="progress-default" :percent="data.pgList[0]" :active="true" :border-radius="data.borderRadius" :show-info="data.showInfo"
+      :font-size="data.fontSize" :stroke-width="data.strokeWidth" :background-color="data.backgroundColor" class="progress progress-box p"
+      @activeend="activeend" />
+    <progress id="progress-plain" :percent="data.pgList[1]" :stroke-width="3" class="progress progress-box p1" />
+    <progress id="progress-plain-second" :percent="data.pgList[2]" :stroke-width="3" class="progress progress-box p2" />
+    <progress id="progress-blue" :percent="data.pgList[3]" active-color="#10AEFF" :stroke-width="3" class="progress progress-box p3" />
+    <view class="progress-actions">
+      <button id="progress-set" @click="setProgress" class="action-button">设置进度</button>
+      <button id="progress-clear" @click="clearProgress" class="action-button">清除进度</button>
+    </view>
+  </uni-card>
+
+  <!-- #ifdef (APP && VUE3-VAPOR) || WEB -->
+  <navigator class="button" url="/pages/template/progress-100/progress-100">
+    <button>组件性能测试</button>
+  </navigator>
+  <!-- #endif -->
 </template>
 
 <style>
-  .main {
-    max-height: 250px;
-    padding: 5px 0;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-    flex-direction: row;
-    justify-content: center;
+  page {
+    padding: 8px;
+  }
+
+  .preview {
+    margin: 12px 0 8px;
   }
 
   .progress-box {
-    height: 25px;
-    margin-bottom: 30px;
+    height: 20px;
+    margin-top: 12px;
+  }
+
+  .progress-actions {
+    flex-direction: row;
+    margin-top: 12px;
+  }
+
+  .action-button {
+    flex: 1;
+    margin: 0 4px;
   }
 
   .button {

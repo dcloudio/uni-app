@@ -2,9 +2,7 @@ export interface Uni {
   /**
    * 登录
    *
-	* @tutorial https://doc.dcloud.net.cn/uni-app-x/api/sign-in.html
-	* @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/sign-in.html
-   * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/plugins/login.html#login
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/sign-in.html#login
    *
    * @uniPlatform {
    *  "app": {
@@ -68,9 +66,7 @@ export interface Uni {
   /**
    * 获取用户信息
    *
-	* @tutorial https://doc.dcloud.net.cn/uni-app-x/api/sign-in.html#getuserinfo
-	* @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/sign-in.html#getuserinfo
-   * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/plugins/login.html#getuserinfo
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/sign-in.html#getuserinfo
    *
    * @uniPlatform {
    *  "app": {

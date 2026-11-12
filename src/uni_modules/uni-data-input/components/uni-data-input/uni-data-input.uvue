@@ -1,0 +1,69 @@
+<script setup lang="ts">
+  defineOptions({
+    name: 'UniDataInput',
+    styleIsolation: 'app',
+    inheritAttrs: false
+  })
+
+  interface Props {
+    /** 表单项的标签文字。 */
+    label: string;
+    /** 参与 uni-forms 表单管理时使用的字段名。 */
+    name?: string;
+    /** 原生 input 的 ID，用于定位实际输入控件。 */
+    controlId?: string;
+    /** 输入框当前内容，通过 v-model 双向绑定。 */
+    modelValue?: string;
+    /** 原生 input 的输入类型，用于指定输入方式和键盘。 */
+    type?: string;
+    /** 输入内容为空时显示的提示文字。 */
+    placeholder?: string;
+    /** 是否禁用输入框。 */
+    disabled?: boolean;
+  }
+
+  withDefaults(defineProps<Props>(), {
+    name: '',
+    controlId: '',
+    modelValue: '',
+    type: 'text',
+    placeholder: '',
+    disabled: false
+  })
+
+  const emit = defineEmits<{
+    'update:modelValue': [value: string];
+    input: [event: UniInputEvent];
+  }>()
+
+  function onInput(event: UniInputEvent) {
+    emit('update:modelValue', event.detail.value)
+    emit('input', event)
+  }
+</script>
+
+<template>
+  <uni-forms-item :label="label" :name="name" :label-width="104" content-class="uni-data-input-content">
+    <input :id="controlId" class="uni-data-input-control" :value="modelValue" :type="type"
+      :placeholder="placeholder" :disabled="disabled" @input="onInput" />
+  </uni-forms-item>
+</template>
+
+<style>
+  .uni-data-input-content {
+    flex-direction: row;
+    align-items: center;
+    min-height: 40px;
+  }
+
+  .uni-data-input-control {
+    flex: 1;
+    min-width: 0;
+    height: 40px;
+    padding: 0 8px;
+    background-color: transparent;
+    border-bottom: 1px solid var(--border-color, rgba(0, 0, 0, 0.06));
+    color: var(--text-color, #333333);
+    text-align: right;
+  }
+</style>

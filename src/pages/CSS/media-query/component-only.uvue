@@ -1,27 +1,29 @@
 <template>
   <scroll-view class="page">
     <view class="content">
-      <text class="title">仅组件包含媒体查询</text>
-      <text class="description">这个页面没有 @media 样式。点击添加，验证组件自身的媒体查询是否生效。</text>
-      <text class="description">绿色表示条件满足，灰色表示条件不满足。旋转设备后观察变化，再移除并重新添加组件。</text>
+      <text class="title">页面无媒体查询时的组件样式</text>
+      <text class="description">页面自身没有 @media，只有下方组件包含媒体查询。进入页面即可检查组件样式是否正常生效。</text>
+      <text class="description">绿色表示条件满足，灰色表示条件不满足。旋转设备或调整窗口，观察组件样式是否随视口变化更新。</text>
+      <text class="description">附加验证：可移除并重新添加组件，检查它是否按当前视口匹配样式。</text>
       <button size="mini" @click="setComponentVisible(!componentVisible)">
         {{ componentVisible ? '移除组件' : '添加组件' }}
       </button>
-      <media-query-component v-if="componentVisible" />
+      <media-query-component v-if="componentVisible" id="media-query-component" />
     </view>
   </scroll-view>
 </template>
 
 <script setup lang="ts">
   import MediaQueryComponent from './media-query-component.uvue'
+  import { getMediaViewport } from './viewport.uts'
 
-  const componentVisible = ref(false)
+  const componentVisible = ref(true)
 
   function setComponentVisible(visible : boolean) {
     componentVisible.value = visible
   }
 
-  defineExpose({ setComponentVisible })
+  defineExpose({ setComponentVisible, getMediaViewport })
 </script>
 
 <style>

@@ -1,0 +1,52 @@
+<script setup lang="ts">
+  defineOptions({
+    name: 'UniDataSwitch',
+    styleIsolation: 'app',
+    inheritAttrs: false
+  })
+
+  interface Props {
+    /** 表单项的标签文字。 */
+    label: string;
+    /** 参与 uni-forms 表单管理时使用的字段名。 */
+    name?: string;
+    /** 原生 switch 的 ID，用于定位实际开关控件。 */
+    controlId?: string;
+    /** 开关当前的选中状态，通过 v-model 双向绑定。 */
+    modelValue?: boolean;
+    /** 是否禁用开关。 */
+    disabled?: boolean;
+  }
+
+  withDefaults(defineProps<Props>(), {
+    name: '',
+    controlId: '',
+    modelValue: false,
+    disabled: false
+  })
+
+  const emit = defineEmits<{
+    'update:modelValue': [value: boolean];
+    change: [event: UniSwitchChangeEvent];
+  }>()
+
+  function onChange(event: UniSwitchChangeEvent) {
+    emit('update:modelValue', event.detail.value)
+    emit('change', event)
+  }
+</script>
+
+<template>
+  <uni-forms-item :label="label" :name="name" :label-width="104" content-class="uni-data-switch-content">
+    <switch :id="controlId" :checked="modelValue" :disabled="disabled" @change="onChange" />
+  </uni-forms-item>
+</template>
+
+<style>
+  .uni-data-switch-content {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    min-height: 40px;
+  }
+</style>

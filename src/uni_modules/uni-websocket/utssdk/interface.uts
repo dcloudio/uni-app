@@ -1,8 +1,6 @@
 export interface Uni {
   /**
     * 创建一个 WebSocket 连接。
-    * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/request/websocket.html#connectsocket
-    * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#connectsocket
     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#connectsocket
     * @uniPlatform
     {
@@ -73,8 +71,6 @@ export interface Uni {
     * @description
     * 监听WebSocket连接打开事件。
     * @deprecated 已废弃，使用 SocketTask 的 onOpen 替换。
-    * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/request/websocket.html#onsocketopen
-    * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#onsocketopen
     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#onsocketopen
     * @uniPlatform
     {
@@ -141,8 +137,6 @@ export interface Uni {
   /**
     * 监听WebSocket错误。
     * @deprecated 已废弃，使用 SocketTask 的 onError 替换。
-    * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/request/websocket.html#onsocketerror
-    * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#onsocketerror
     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#onsocketerror
     * @uniPlatform
     {
@@ -209,8 +203,6 @@ export interface Uni {
   /**
     * 通过 WebSocket 连接发送数据，需要先 uni.connectSocket，并在 uni.onSocketOpen 回调之后才能发送。
     * @deprecated 已废弃，使用 SocketTask 的 send 替换。
-    * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/request/websocket.html#sendsocketmessage
-    * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#sendsocketmessage
     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#sendsocketmessage
     * @uniPlatform
     {
@@ -277,8 +269,6 @@ export interface Uni {
   /**
     * 监听WebSocket接受到服务器的消息事件。
     * @deprecated 已废弃，使用 SocketTask 的 onMessage 替换。
-    * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/request/websocket.html#onsocketmessage
-    * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#onsocketmessage
     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#onsocketmessage
     * @uniPlatform
     {
@@ -345,8 +335,6 @@ export interface Uni {
   /**
     * 关闭 WebSocket 连接。
     * @deprecated 已废弃，使用 SocketTask 的 close 替换。
-    * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/request/websocket.html#closesocket
-    * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#closesocket
     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#closesocket
     * @uniPlatform
     {
@@ -411,8 +399,6 @@ export interface Uni {
   /**
     * 监听WebSocket关闭。
     * @deprecated 已废弃，使用 SocketTask 的 onClose 替换。
-    * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/request/websocket.html#onsocketclose
-    * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#onsocketclose
     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#onsocketclose
     * @uniPlatform
     {
@@ -1024,8 +1010,6 @@ export type OnSocketMessageCallbackResult = {
 export interface SocketTask {
   /**
     * 通过 WebSocket 连接发送数据
-    * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/request/socket-task.html#sockettask-send
-    * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#send
     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#send
     * @uniPlatform
     {
@@ -1089,8 +1073,6 @@ export interface SocketTask {
 
   /**
     * 关闭 WebSocket 连接
-    * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/request/socket-task.html#sockettask-close
-    * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#close
     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#close
     * @uniPlatform
     {
@@ -1154,8 +1136,6 @@ export interface SocketTask {
 
   /**
     * 监听 WebSocket 连接打开事件
-    * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/request/socket-task.html#sockettask-onopen
-    * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#onopen
     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#onopen
     * @uniPlatform
     {
@@ -1219,8 +1199,6 @@ export interface SocketTask {
 
   /**
     * 监听 WebSocket 连接关闭事件
-    * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/request/socket-task.html#sockettask-onclose
-    * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#onclose
     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#onclose
     * @uniPlatform
     {
@@ -1287,8 +1265,6 @@ export interface SocketTask {
     * onError()
     * @description
     * 监听 WebSocket 错误
-    * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/request/socket-task.html#sockettask-onerror
-    * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#onerror
     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#onerror
     * @uniPlatform
     {
@@ -1353,8 +1329,6 @@ export interface SocketTask {
 
   /**
     * 监听 WebSocket 接受到服务器的消息事件
-    *  @tutorial_uni_app https://uniapp.dcloud.net.cn/api/request/socket-task.html#sockettask-onmessage
-    *  @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#onmessage
     *  @tutorial https://doc.dcloud.net.cn/uni-app-x/api/websocket-global.html#onmessage
     * @uniPlatform
     {

@@ -433,7 +433,6 @@ function getLocationImpl(options : GetLocationOptions) {
 	let timeoutMill : number = 6000;
 	/**
 	 * 只有设置超出3000ms 才会认为有效
-	 * https://uniapp.dcloud.net.cn/api/location/location.html#getlocation
 	 */
 	if (options.highAccuracyExpireTime != null && options.highAccuracyExpireTime! >= 3000 && options.isHighAccuracy == true) {
 		timeoutMill = options.highAccuracyExpireTime!

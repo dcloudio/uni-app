@@ -1,7 +1,7 @@
 {
   "id": "uni-map-amap",
   "displayName": "uni-map-amap",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "uni-map-amap - 高德地图 UTS 插件",
   "keywords": [
     "uni-map-amap",
@@ -117,7 +117,7 @@
               "minVersion": "13"
             },
             "harmony": {
-              "extVersion": "1.5.0",
+              "extVersion": "1.5.1",
               "minVersion": "20"
             }
           },

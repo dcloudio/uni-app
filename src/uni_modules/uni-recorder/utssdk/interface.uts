@@ -2,8 +2,6 @@ export interface Uni {
 	/**
 	 * 录音管理
 	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#getrecordermanager
-	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#getrecordermanager
-	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/media/record-manager.html
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
@@ -754,8 +752,6 @@ export interface RecorderManager {
 	/**
 	 * 开始录音
 	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#start
-	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#start
-	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/media/record-manager.html
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
@@ -811,8 +807,6 @@ export interface RecorderManager {
 	/**
 	 * 暂停录音,App-Android平台在Android 7.0及以后版本支持
 	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#pause
-	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#pause
-	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/media/record-manager.html
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
@@ -869,8 +863,6 @@ export interface RecorderManager {
 	/**
 	 * 继续录音，App-Android平台在Android 7.0及以后版本支持
 	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#resume
-	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#resume
-	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/media/record-manager.html
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
@@ -927,8 +919,6 @@ export interface RecorderManager {
 	/**
 	 * 停止录音
 	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#stop
-	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#stop
-	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/media/record-manager.html
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
@@ -984,8 +974,6 @@ export interface RecorderManager {
 	/**
 	 * 录音开始事件
 	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#onstart
-	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#onstart
-	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/media/record-manager.html
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
@@ -1041,9 +1029,7 @@ export interface RecorderManager {
 
 	/**
 	 * 取消监听录音开始事件
-	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#onstart
-	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#onstart
-	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/media/record-manager.html
+	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#offstart
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
@@ -1098,8 +1084,6 @@ export interface RecorderManager {
 	/**
 	 * 录音暂停事件,App-Android平台在Android 7.0及以后版本支持
 	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#onpause
-	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#onpause
-	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/media/record-manager.html
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
@@ -1156,9 +1140,7 @@ export interface RecorderManager {
 
 	/**
 	 * 取消监听录音暂停事件
-	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#onpause
-	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#onpause
-	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/media/record-manager.html
+	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#offpause
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
@@ -1215,8 +1197,6 @@ export interface RecorderManager {
 	/**
 	 * 录音停止事件，会回调文件地址
 	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#onstop
-	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#onstop
-	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/media/record-manager.html
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
@@ -1272,9 +1252,7 @@ export interface RecorderManager {
 
 	/**
 	 * 取消监听录音停止事件
-	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#onstop
-	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#onstop
-	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/media/record-manager.html
+	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#offstop
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
@@ -1329,8 +1307,6 @@ export interface RecorderManager {
 	/**
 	 * 已录制完指定帧大小的文件，会回调录音分片结果数据。如果设置了 frameSize ，则会回调此事件
 	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#onframerecorded
-	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#onframerecorded
-	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/media/record-manager.html
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
@@ -1385,9 +1361,7 @@ export interface RecorderManager {
 
 	/**
 	 * 取消监听帧回调事件
-	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#onframerecorded
-	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#onframerecorded
-	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/media/record-manager.html
+	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#offframerecorded
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
@@ -1443,8 +1417,6 @@ export interface RecorderManager {
 	/**
 	 * 录音错误事件, 会回调错误信息
 	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#onerror
-	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#onerror
-	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/media/record-manager.html
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
@@ -1500,9 +1472,7 @@ export interface RecorderManager {
 
 	/**
 	 * 取消监听录音错误事件
-	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#onerror
-	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#onerror
-	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/media/record-manager.html
+	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#offerror
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
@@ -1558,8 +1528,6 @@ export interface RecorderManager {
 	/**
 	 * 监听录音继续事件,App-Android平台在Android 7.0及以后版本支持
 	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#onresume
-	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#onresume
-	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/media/record-manager.html
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
@@ -1616,9 +1584,7 @@ export interface RecorderManager {
 
 	/**
 	 * 取消监听录音继续事件
-	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#onresume
-	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#onresume
-	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/media/record-manager.html
+	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#offresume
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
@@ -1675,8 +1641,6 @@ export interface RecorderManager {
 	/**
 	 * 监听录音因为受到系统占用而被中断开始事件
 	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#oninterruptionbegin
-	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#oninterruptionbegin
-	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/media/record-manager.html
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
@@ -1735,9 +1699,7 @@ export interface RecorderManager {
 
 	/**
 	 * 取消监听录音因为受到系统占用而被中断开始事件
-	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#oninterruptionbegin
-	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#oninterruptionbegin
-	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/media/record-manager.html
+	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#offinterruptionbegin
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
@@ -1795,8 +1757,6 @@ export interface RecorderManager {
 	/**
 	 * 监听录音中断结束事件
 	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#oninterruptionend
-	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#oninterruptionend
-	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/media/record-manager.html
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
@@ -1855,9 +1815,7 @@ export interface RecorderManager {
 
 	/**
 	 * 取消监听录音中断结束事件
-	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#oninterruptionend
-	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#oninterruptionend
-	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/media/record-manager.html
+	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-recorder-manager.html#offinterruptionend
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {

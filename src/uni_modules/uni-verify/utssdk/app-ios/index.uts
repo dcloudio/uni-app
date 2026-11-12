@@ -8,7 +8,7 @@ import {
 import { UniVerifyManagerPreLoginFailImpl, UniVerifyManagerLoginFailImpl, UniVerifyManagerSourceError } from '../unierror.uts';
 import { checkPermission, getPermissionCheckResult } from '../permission.uts';
 import { GeYanSdk, GyOneLoginPro, GyContentModel } from "GeYanSdk" assert { type: "implementationOnly" };
-import {  NSDictionary, Bundle , NSMutableDictionary } from "Foundation"
+import {  NSDictionary, Bundle , NSMutableDictionary, NSNumber } from "Foundation"
 import { DispatchQueue } from 'Dispatch';
 import { UTSiOS } from "DCloudUTSFoundation";
 import { verifyOptions } from './utils.uts';
@@ -72,9 +72,11 @@ class UniVerifyManagerImpl implements UniVerifyManager {
 		GeYanSdk.setPreLoginTimeout(30)
 		GeYanSdk.start(withAppId = this.GYAppId, withCallback = (isSuccess, error, gyUid) : void => {
 			if (isSuccess) {
-				console.debug("初始化成功，用户ID " + (gyUid as string));
+				const userId = gyUid ?? "";
+				console.debug("初始化成功，用户ID " + userId);
 			} else {
-				console.debug("初始化失败，错误信息: " + (error?.localizedDescription as string) ?? "未知错误");
+				const errorMessage = error?.localizedDescription ?? "未知错误";
+				console.debug("初始化失败，错误信息: " + errorMessage);
 			}
 		});
 	}
@@ -163,23 +165,44 @@ class UniVerifyManagerImpl implements UniVerifyManager {
 	}
 
 	private getNumberValue(result: NSDictionary, key: string, defaultValue: number) : number {
-		const numberValue : number | null = result[key] as number | null;
-		if (numberValue != null) {
-			return numberValue!;
+		const value : any | null = result[key];
+		if (value == null) return defaultValue;
+
+		// NSDictionary 中的 Objective-C 数值（包括 Bool）会桥接为 NSNumber。
+		if (value instanceof NSNumber) {
+			return value as number;
 		}
-		const stringValue : string | null = result[key] as string | null;
-		if (stringValue != null) {
-			const parsedValue = parseInt(stringValue!);
-			if (parsedValue == parsedValue) {
-				return parsedValue;
-			}
+		if (typeof value == "number") {
+			return value as number;
+		}
+		if (typeof value == "boolean") {
+			return (value as boolean) ? 1 : 0;
+		}
+		if (typeof value == "string") {
+			const stringValue = (value as string).trim();
+			if (stringValue.length == 0) return defaultValue;
+			const parsedValue = parseInt(stringValue);
+			if (!isNaN(parsedValue)) return parsedValue;
 		}
 		return defaultValue;
 	}
 
 	private getStringValue(result: NSDictionary, key: string, defaultValue: string) : string {
-		const stringValue : string | null = result[key] as string | null;
-		return stringValue ?? defaultValue;
+		const value : any | null = result[key];
+		if (value == null) return defaultValue;
+		if (typeof value == "string") {
+			return value as string;
+		}
+		if (value instanceof NSNumber) {
+			return (value as NSNumber).stringValue;
+		}
+		if (typeof value == "number") {
+			return (value as number).toString();
+		}
+		if (typeof value == "boolean") {
+			return (value as boolean).toString();
+		}
+		return defaultValue;
 	}
 	
 	private getSourceError(result: NSDictionary) : UniVerifyManagerSourceError{
@@ -187,7 +210,11 @@ class UniVerifyManagerImpl implements UniVerifyManager {
 		const operatorType = this.getNumberValue(result, "operatorType", 0);
 		let operatorCause : SourceError | null = null;
 		let message = "";
-		const metaData : NSDictionary | null = result["metadata"] as NSDictionary | null;
+		const metaDataValue : any | null = result["metadata"];
+		let metaData : NSDictionary | null = null;
+		if (metaDataValue instanceof NSDictionary) {
+			metaData = metaDataValue as NSDictionary;
+		}
 		if (metaData != null){
 			//构造运营商信息 cause
 			const subCode = this.getNumberValue(metaData!, "resultCode", code);

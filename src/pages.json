@@ -4101,6 +4101,8 @@
 						"navigationBarTitleText": "prefers-color-scheme | 媒体查询"
 					}
 				}
+				// #endif
+				// #ifdef APP || WEB || MP
 				,{
 					"path": "media-query/media-query",
 					"group": "2,25",

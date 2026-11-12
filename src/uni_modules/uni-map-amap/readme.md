@@ -1,6 +1,6 @@
 # uni-map-amap
 
-当前版本：`1.5.0`
+当前版本：`1.5.1`
 
 `uni-map-amap` 是基于高德地图原生 SDK 实现的 uni-app x 地图组件。
 自 `1.1.0` 起支持 iOS，iOS 功能与 Android 之前保持一致；

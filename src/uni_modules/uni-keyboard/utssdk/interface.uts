@@ -123,19 +123,17 @@ export interface Uni {
 	/**
 	 * 隐藏键盘
 	 *
-	* @tutorial_uni_app https://uniapp.dcloud.net.cn/api/key.html#hidekeyboard
-	* @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/keyboard.html#hidekeyboard
-	* @tutorial https://doc.dcloud.net.cn/uni-app-x/api/keyboard.html#hidekeyboard
+	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/keyboard.html#hidekeyboard
 	 * @uniPlatform {
 	 *    "app": {
 	 *      "android": {
-	*        "uniVer": "√",
-	*        "unixVer": "4.71"
-	*      },
+	 *        "uniVer": "√",
+	 *        "unixVer": "4.71"
+	 *      },
 	 *      "ios": {
-	*        "uniVer": "√",
-	*        "unixVer": "4.71"
-	*      },
+	 *        "uniVer": "√",
+	 *        "unixVer": "4.71"
+	 *      },
 	 *      "harmony": {
 	 *        "uniVer": "4.23",
 	 *        "unixVer": "4.61",
@@ -181,19 +179,18 @@ export interface Uni {
 
 	/**
 	 * 监听键盘高度变化事件
-	* @tutorial_uni_app https://uniapp.dcloud.net.cn/api/key.html#onkeyboardheightchange
-	* @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/keyboard.html#onkeyboardheightchange
-	* @tutorial https://uniapp.dcloud.net.cn/api/key.html#onkeyboardheightchange
+	 *
+	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/keyboard.html#onkeyboardheightchange
 	 * @uniPlatform {
 	 *    "app": {
 	 *      "android": {
-	*        "uniVer": "√",
-	*        "unixVer": "4.71"
-	*      },
+	 *        "uniVer": "√",
+	 *        "unixVer": "4.71"
+	 *      },
 	 *      "ios": {
-	*        "uniVer": "√",
-	*        "unixVer": "4.71"
-	*      },
+	 *        "uniVer": "√",
+	 *        "unixVer": "4.71"
+	 *      },
 	 *      "harmony": {
 	 *        "uniVer": "5.08",
 	 *        "unixVer": "5.08",
@@ -239,19 +236,18 @@ export interface Uni {
 
 	/**
 	 * 移除键盘高度变化事件的监听函数
-	* @tutorial_uni_app https://uniapp.dcloud.net.cn/api/key.html#offkeyboardheightchange
-	* @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/keyboard.html#offkeyboardheightchange
-	* @tutorial https://uniapp.dcloud.net.cn/api/key.html#offkeyboardheightchange
+	 *
+	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/keyboard.html#offkeyboardheightchange
 	 * @uniPlatform {
 	 *    "app": {
 	 *      "android": {
-	*        "uniVer": "√",
-	*        "unixVer": "4.71"
-	*      },
+	 *        "uniVer": "√",
+	 *        "unixVer": "4.71"
+	 *      },
 	 *      "ios": {
-	*        "uniVer": "√",
-	*        "unixVer": "4.71"
-	*      },
+	 *        "uniVer": "√",
+	 *        "unixVer": "4.71"
+	 *      },
 	 *      "harmony": {
 	 *        "uniVer": "5.08",
 	 *        "unixVer": "5.08",

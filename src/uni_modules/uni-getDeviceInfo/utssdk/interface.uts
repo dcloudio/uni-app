@@ -1237,31 +1237,29 @@ export type GetDeviceInfo = (options?: GetDeviceInfoOptions | null) => GetDevice
 
 export interface Uni {
     /**
-      * GetDeviceInfo(Object object)
-      * @description
-      * 获取设备信息
-      * @param {GetDeviceInfoOptions} options [options=包含所有字段的过滤对象] 过滤的字段对象, 不传参数默认为获取全部字段。
-      * @return {object}
-      * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-device-info.html
-      * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/get-device-info.html
-      * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/system/getDeviceInfo.html
-      * @uniPlatform
-      * {
-      * 	"app": {
-      * 		"android": {
-      * 			"uniVer": "√",
-      * 			"unixVer": "3.9+"
-      * 		},
-      * 		"ios": {
-      * 			"uniVer": "√",
-      * 			"unixVer": "4.11"
-      * 		},
+     * GetDeviceInfo(Object object)
+     * @description
+     * 获取设备信息
+     * @param {GetDeviceInfoOptions} options [options=包含所有字段的过滤对象] 过滤的字段对象, 不传参数默认为获取全部字段。
+     * @return {object}
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-device-info.html#getdeviceinfo
+     * @uniPlatform
+     * {
+     * 	"app": {
+     * 		"android": {
+     * 			"uniVer": "√",
+     * 			"unixVer": "3.9+"
+     * 		},
+     * 		"ios": {
+     * 			"uniVer": "√",
+     * 			"unixVer": "4.11"
+     * 		},
      *    "harmony": {
      *      "uniVer": "4.23",
      *      "unixVer": "4.61",
      *      "unixVaporVer": "5.0"
      *    }
-      * 	},
+     * 	},
      *  "mp": {
      *    "weixin": {
      *        "uniVer": "√",
@@ -1290,25 +1288,23 @@ export interface Uni {
      *        "uniVer": "√",
      *    }
      *  },
-    *   "web": {
-    *     "uniVer": "√",
-    *     "unixVer": "4.0"
-    *   }
-      * }
-    * @example
+     *   "web": {
+     *     "uniVer": "√",
+     *     "unixVer": "4.0"
+     *   }
+     * }
+     * @example
        ```typescript
         uni.getDeviceInfo({
           filter:[]
         })
        ```
-      */
+     */
     getDeviceInfo(options?: GetDeviceInfoOptions | null): GetDeviceInfoResult;
 
 	/**
 	 * 判断当前是否是模拟器，Android设备上会采集传感器信息。
-   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/is-simulator.html
-   * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/is-simulator.html
-	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/tutorial/app-sec-api.html#issimulator
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/is-simulator.html#issimulator
 	 * @uniPlatform
 	 * {
 	 * 	"app": {

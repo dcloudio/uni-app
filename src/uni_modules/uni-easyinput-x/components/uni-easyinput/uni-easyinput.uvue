@@ -53,6 +53,7 @@
 			@keyboardheightchange="onKeyboardHeightChange"
 		/>
 
+		<!-- #ifndef MP-WEIXIN -->
 		<uni-icons
 			v-if="showEyeIcon"
 			class="uni-easyinput__icon"
@@ -75,6 +76,28 @@
 			@keydown="onClearKeydown"
 			<!-- #endif -->
 		></uni-icons>
+		<!-- #endif -->
+
+		<!-- #ifdef MP-WEIXIN -->
+		<view
+			v-if="showEyeIcon"
+			class="uni-easyinput__icon uni-easyinput__icon-action"
+			:class="iconActionClass"
+			@click="onEyes"
+		>
+			<uni-icons
+				:type="passwordVisible ? 'eye-slash-filled' : 'eye-filled'"
+			></uni-icons>
+		</view>
+		<view
+			v-if="showClearIcon"
+			class="uni-easyinput__icon uni-easyinput__icon-action"
+			:class="iconActionClass"
+			@click="onClear"
+		>
+			<uni-icons type="clear"></uni-icons>
+		</view>
+		<!-- #endif -->
 
 		<slot name="right"></slot>
 	</view>
@@ -609,6 +632,15 @@
 		background-color: transparent;
 		font-size: 22px;
 	}
+
+	/* #ifdef MP-WEIXIN */
+	.uni-easyinput__icon-action {
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		flex-shrink: 0;
+	}
+	/* #endif */
 
 	/* #ifdef WEB */
 	.uni-easyinput__icon {

@@ -110,9 +110,7 @@ export interface Uni {
 	/**
 	 * 创建一个监听权限申请的对象。
 	 * @description 创建一个监听权限申请的对象。
-	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/create-request-permission-listener.html
-	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/create-request-permission-listener.html
-	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/system/create-request-permission-listener.html
+	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/create-request-permission-listener.html#createrequestpermissionlistener
 	 * @uniPlatform {
 	 *  "app": {
 	 *		"android": {

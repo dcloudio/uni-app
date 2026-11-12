@@ -2,8 +2,7 @@ export type OnShowOptions = {
     /**
      * 本次启动时页面的路径
      *
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-enter-options-sync.html
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/get-enter-options-sync.html
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/launch.html#getenteroptionssync
      * @uniPlatform {
      *  "app": {
      *    "android": {
@@ -60,8 +59,7 @@ export type OnShowOptions = {
     /**
      * 本次启动时的Scheme。返回值与App.onShow的回调参数一致
      *
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-enter-options-sync.html
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/get-enter-options-sync.html
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/launch.html#getenteroptionssync
      * @uniPlatform {
      *  "app": {
      *    "android": {
@@ -118,8 +116,7 @@ export type OnShowOptions = {
     /**
      * 本次启动时的appLink。返回值与App.onShow的回调参数一致
      *
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-enter-options-sync.html
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/get-enter-options-sync.html
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/launch.html#getenteroptionssync
      * @uniPlatform {
      *  "app": {
      *    "android": {
@@ -176,9 +173,7 @@ export type OnShowOptions = {
     /**
      * 启动时的 query 参数
      *
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-enter-options-sync.html
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/get-enter-options-sync.html
-     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/getEnterOptionsSync.html
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/launch.html#getenteroptionssync
      * @uniPlatform {
      *  "app": {
      *    "android": {
@@ -240,9 +235,7 @@ export interface Uni {
     /**
      * 获取本次启动时的参数。返回值与App.onShow的回调参数一致
      *
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-enter-options-sync.html
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/get-enter-options-sync.html
-     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/getEnterOptionsSync.html
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/launch.html#getenteroptionssync
      * @uniPlatform {
      *  "app": {
      *    "android": {
@@ -256,7 +249,7 @@ export interface Uni {
      *      "unixVaporVer": "5.11"
      *    },
      *    "harmony": {
-   *      "uniVer": "4.31",
+     *      "uniVer": "4.31",
      *      "unixVer": "4.61",
      *      "unixVaporVer": "5.0"
      *    }

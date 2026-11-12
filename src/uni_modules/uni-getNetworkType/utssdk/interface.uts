@@ -5,9 +5,7 @@ export interface Uni {
    * 获取网络类型
    * @param {GetNetworkTypeOptions} options
    * @return {void}
-   * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/system/network.html#getnetworktype
-   * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/get-network-type.html
-   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-network-type.html
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-network-type.html#getnetworktype
    * @uniPlatform {
    * 	"app": {
    * 		"android": {
@@ -70,9 +68,7 @@ export interface Uni {
   /**
    * 监听网络状态变化
    *
-   * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/system/network.html#onnetworkstatuschange
-   * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/network-status-change.html
-   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/network-status-change.html
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/network-status-change.html#onnetworkstatuschange
    * @uniPlatform {
    * 	"app": {
    * 		"android": {
@@ -128,9 +124,7 @@ export interface Uni {
   /**
    * 取消监听网络状态变化
    *
-   * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/system/network.html#offnetworkstatuschange
-   * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/network-status-change.html
-   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/network-status-change.html
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/network-status-change.html#offnetworkstatuschange
    * @uniPlatform {
    * 	"app": {
    * 		"android": {

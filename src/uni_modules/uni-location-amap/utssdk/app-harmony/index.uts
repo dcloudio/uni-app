@@ -1,0 +1,177 @@
+import type { UniLocationAmapProvider } from '../interface.uts'
+import { AmapLocationDriver, AmapFix } from './AmapLocationDriver.ets'
+import { AmapLocationFailure } from './AmapLocationEnvironment.ets'
+import {
+  IGetLocationFail, GetLocationOptions, GetLocationSuccess, LocationErrorCode,
+  OnLocationChangeCallback, OnLocationChangeErrorCallback,
+  StartLocationUpdateOptions, StartLocationUpdateBackgroundOptions, StartLocationUpdateSuccess,
+  StopLocationUpdateOptions, StopLocationUpdateSuccess
+} from '@dcloudio/uni-app-x-vapor-runtime'
+
+class LocationFailure extends UniError implements IGetLocationFail {
+  override errCode : LocationErrorCode
+  constructor(code : number, message : string) {
+    super()
+    this.errCode = code as LocationErrorCode
+    this.errSubject = 'uni-location'
+    this.errMsg = message
+  }
+}
+
+function asUniError(error : Error) : LocationFailure {
+  const code = error instanceof AmapLocationFailure ? error.code : 1505602
+  return new LocationFailure(code, error.message)
+}
+
+function asLocation(fix : AmapFix) : GetLocationSuccess {
+  return {
+    latitude: fix.latitude, longitude: fix.longitude, speed: fix.speed,
+    accuracy: fix.accuracy, horizontalAccuracy: fix.horizontalAccuracy,
+    verticalAccuracy: fix.verticalAccuracy, altitude: fix.altitude, address: fix.address
+  } as GetLocationSuccess
+}
+
+// uni-location installs its two forwarding callbacks *inside* start.success.
+// Keep the first fix/error for this start, independently of the previous session.
+class UpdateForwarder {
+  onFix : OnLocationChangeCallback | null = null
+  onError : OnLocationChangeErrorCallback | null = null
+  firstFix : GetLocationSuccess | null = null
+  firstError : LocationFailure | null = null
+
+  receive(fix : AmapFix) : void {
+    const result = asLocation(fix)
+    if (this.onFix != null) this.onFix!(result)
+    else if (this.firstFix == null) this.firstFix = result
+  }
+
+  failed(error : AmapLocationFailure) : void {
+    const result = new LocationFailure(error.code, error.message)
+    if (this.onError != null) this.onError!(result)
+    else if (this.firstError == null) this.firstError = result
+  }
+}
+
+export class UniLocationAmapProviderImpl implements UniLocationAmapProvider {
+  id : string = 'amap'
+  description : string = '高德定位'
+  isAppExist : boolean = true
+  private driver : AmapLocationDriver | null = null
+  private events : UpdateForwarder | null = null
+  private epoch : number = 0
+
+  private getDriver() : AmapLocationDriver {
+    if (this.driver == null) {
+      const driver = new AmapLocationDriver(UTSHarmony.getUIAbilityContext())
+      uni.onPrivacyAuthorizationChange((state) => {
+        if (state.needAuthorization) {
+          this.epoch++
+          try { driver.revokePrivacy() } finally { this.events = null }
+        }
+      })
+      this.driver = driver
+    }
+    return this.driver!
+  }
+
+  getLocation(options : GetLocationOptions) : void {
+    const fail = (result : LocationFailure) : void => {
+      options.fail?.(result)
+      options.complete?.(result)
+    }
+    if (options.type != null && options.type != 'gcj02') {
+      fail(new LocationFailure(1505607, '高德定位仅支持 gcj02'))
+      return
+    }
+    const high = options.isHighAccuracy == true
+    const requested = options.highAccuracyExpireTime ?? 3000
+    const timeout = high ? Math.max(3000, Number.isFinite(requested) ? requested : 3000) : 10000
+    try {
+      this.getDriver().single(high, timeout, options.geocode == true, options.altitude == true).then((fix : AmapFix) => {
+        const result = asLocation(fix)
+        options.success?.(result)
+        options.complete?.(result)
+      }, (e : Error) => { fail(asUniError(e)) })
+    } catch (e) { fail(asUniError(e as Error)) }
+  }
+
+  startLocationUpdate(options : StartLocationUpdateOptions) : void {
+    this.start(options.type, false, () => {
+      const result = {} as StartLocationUpdateSuccess
+      options.success?.(result)
+      options.complete?.(result)
+    }, (e : LocationFailure) => { options.fail?.(e); options.complete?.(e) })
+  }
+
+  startLocationUpdateBackground(options : StartLocationUpdateBackgroundOptions) : void {
+    this.start(options.type, true, () => {
+      const result = {} as StartLocationUpdateSuccess
+      options.success?.(result)
+      options.complete?.(result)
+    }, (e : LocationFailure) => { options.fail?.(e); options.complete?.(e) })
+  }
+
+  private start(type : string | null, background : boolean, success : () => void,
+    fail : (error : LocationFailure) => void) : void {
+    if (type != null && type != 'gcj02') {
+      fail(new LocationFailure(1505607, '高德定位仅支持 gcj02'))
+      return
+    }
+    const generation = this.epoch
+    const bridge = new UpdateForwarder()
+    try {
+      this.getDriver().start(background, (fix : AmapFix) => {
+        if (generation == this.epoch) bridge.receive(fix)
+      }, (error : AmapLocationFailure) => {
+        bridge.failed(error)
+      }).then(() => {
+        if (generation != this.epoch) {
+          fail(new LocationFailure(1505602, '持续定位启动已取消'))
+          return
+        }
+        this.events = bridge
+        success()
+      }, (error : Error) => { fail(asUniError(error)) })
+    } catch (e) { fail(asUniError(e as Error)) }
+  }
+
+  onLocationChange(listener : OnLocationChangeCallback) : number {
+    const bridge = this.events
+    if (bridge != null) {
+      bridge.onFix = listener
+      const first = bridge.firstFix
+      bridge.firstFix = null
+      if (first != null) listener(first)
+    }
+    return 0
+  }
+
+  onLocationChangeError(listener : OnLocationChangeErrorCallback) : number {
+    const bridge = this.events
+    if (bridge != null) {
+      bridge.onError = listener
+      const first = bridge.firstError
+      bridge.firstError = null
+      if (first != null) listener(first)
+    }
+    return 0
+  }
+
+  stopLocationUpdate(options : StopLocationUpdateOptions) : void {
+    this.epoch++
+    this.events = null
+    const success = () : void => {
+      const result = {} as StopLocationUpdateSuccess
+      options.success?.(result)
+      options.complete?.(result)
+    }
+    const fail = (e : Error) : void => {
+      const error = asUniError(e)
+      options.fail?.(error)
+      options.complete?.(error)
+    }
+    if (this.driver == null) { success(); return }
+    try { this.driver!.stop().then(success, fail) }
+    catch (e) { fail(e as Error) }
+  }
+}

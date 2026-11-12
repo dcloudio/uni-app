@@ -2,8 +2,6 @@ export interface Uni {
     /**
      * 分享
      *
-     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/plugins/share.html
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/share.html
      * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/share.html
      * @uniPlatform {
      *    "app": {

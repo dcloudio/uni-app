@@ -516,9 +516,7 @@ export interface Uni {
     /**
      * 为 tabBar 某一项的右上角添加文本
      *
-     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/tabbar.html#settabbarbadge
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/set-tabbar.html#settabbarbadge
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/set-tabbar.html#settabbarbadge
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/set-tab-bar.html#settabbarbadge
      * @uniPlatform {
      *  "app": {
      *    "android": {
@@ -577,9 +575,7 @@ export interface Uni {
     /**
      * 移除 tabBar 某一项右上角的文本
      *
-     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/tabbar.html#removetabbarbadge
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/set-tabbar.html#removetabbarbadge
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/set-tabbar.html#removetabbarbadge
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/set-tab-bar.html#removetabbarbadge
      * @uniPlatform {
      *  "app": {
      *    "android": {
@@ -638,9 +634,7 @@ export interface Uni {
     /**
      * 动态设置 tabBar 某一项的内容
      *
-     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/tabbar.html#settabbaritem
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/set-tabbar.html#settabbaritem
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/set-tabbar.html#settabbaritem
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/set-tab-bar.html#settabbaritem
      * @uniPlatform {
      *  "app": {
      *    "android": {
@@ -699,9 +693,7 @@ export interface Uni {
     /**
      * 动态设置 tabBar 的整体样式
      *
-     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/tabbar.html#settabbarstyle
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/set-tabbar.html#settabbarstyle
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/set-tabbar.html#settabbarstyle
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/set-tab-bar.html#settabbarstyle
      * @uniPlatform {
      *  "app": {
      *    "android": {
@@ -760,9 +752,7 @@ export interface Uni {
     /**
      * 隐藏 tabBar
      *
-     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/tabbar.html#hidetabbar
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/set-tabbar.html#hidetabbar
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/set-tabbar.html#hidetabbar
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/set-tab-bar.html#hidetabbar
      * @uniPlatform {
      *  "app": {
      *    "android": {
@@ -821,9 +811,7 @@ export interface Uni {
     /**
      * 显示 tabBar
      *
-     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/tabbar.html#showtabbar
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/set-tabbar.html#showtabbar
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/set-tabbar.html#showtabbar
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/set-tab-bar.html#showtabbar
      * @uniPlatform {
      *  "app": {
      *    "android": {
@@ -882,9 +870,7 @@ export interface Uni {
     /**
      * 显示 tabBar 某一项的右上角的红点
      *
-     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/tabbar.html#showtabbarreddot
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/set-tabbar.html#showtabbarreddot
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/set-tabbar.html#showtabbarreddot
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/set-tab-bar.html#showtabbarreddot
      * @uniPlatform {
      *  "app": {
      *    "android": {
@@ -943,9 +929,7 @@ export interface Uni {
     /**
      * 隐藏 tabBar 某一项的右上角的红点
      *
-     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/tabbar.html#hidetabbarreddot
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/set-tabbar.html#hidetabbarreddot
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/set-tabbar.html#hidetabbarreddot
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/set-tab-bar.html#hidetabbarreddot
      * @uniPlatform {
      *  "app": {
      *    "android": {
@@ -1003,9 +987,7 @@ export interface Uni {
     ): Promise<HideTabBarRedDotSuccess> | null
     /**
      * 监听中间按钮的点击事件
-     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/tabbar.html#ontabbarmidbuttontap
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/on-tab-bar-mid-button-tap.html
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/on-tab-bar-mid-button-tap.html
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/on-tab-bar-mid-button-tap.html#ontabbarmidbuttontap
      * @uniPlatform {
      *  "app": {
      *    "android": {

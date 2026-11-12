@@ -25,7 +25,7 @@ object KeyboardAnimationNative {
     // 当前持有的 WindowInsetsAnimationCompat.Callback
     private var animationCallback: WindowInsetsAnimationCompat.Callback? = null
 
-    // 当前注册的业务回调（单回调，多回调与 id 映射由 UTS 胶水层维护）
+    // 当前注册的业务回调（原生命中单回调；多监听的分发由 UTS 胶水层维护）
     private var keyboardCallback: ((Number, String) -> Unit)? = null
 
     // 记录动画过程中最后一次上报的键盘高度，用于 onEnd 兜底
@@ -36,13 +36,16 @@ object KeyboardAnimationNative {
 
     /**
      * 注册键盘动画进度回调
+     *
+     * @return 是否注册成功。当没有可用的 UniActivity / decorView 时返回 false，
+     *         调用方应据此保留「未注册」状态，以便后续重新尝试注册。
      */
-    fun onKeyboardAnimationChangeKotlin(callback: (height: Number, state: String) -> Unit) {
+    fun onKeyboardAnimationChangeKotlin(callback: (height: Number, state: String) -> Unit): Boolean {
         // 先清理旧引用，避免重复注册造成回调叠加或内存泄漏
         offKeyboardAnimationChangeKotlin()
 
-        val activity: Activity = UTSAndroid.getUniActivity() ?: return
-        val view: View = activity.window?.decorView ?: return
+        val activity: Activity = UTSAndroid.getUniActivity() ?: return false
+        val view: View = activity.window?.decorView ?: return false
 
         keyboardCallback = callback
         decorView = view
@@ -104,6 +107,7 @@ object KeyboardAnimationNative {
 
         animationCallback = cb
         ViewCompat.setWindowInsetsAnimationCallback(view, cb)
+        return true
     }
 
     /**

@@ -68,8 +68,6 @@ export interface Uni {
   /**
    * 申请系统权限
    * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/request-system-permission.html
-	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/request-system-permission.html
-	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/plugins/request-system-permission.html
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {

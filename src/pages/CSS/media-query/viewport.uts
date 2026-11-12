@@ -1,0 +1,10 @@
+export function getMediaViewport() {
+  // Web 媒体查询使用浏览器布局视口，不扣除 uni-app 的导航栏和 tabBar。
+  // #ifdef WEB
+  return { width: window.innerWidth, height: window.innerHeight }
+  // #endif
+  // #ifndef WEB
+  const info = uni.getWindowInfo()
+  return { width: info.windowWidth, height: info.windowHeight }
+  // #endif
+}

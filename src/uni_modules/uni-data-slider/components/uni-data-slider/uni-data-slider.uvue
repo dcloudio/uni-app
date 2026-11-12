@@ -1,0 +1,89 @@
+<script setup lang="ts">
+  defineOptions({
+    name: 'UniDataSlider',
+    styleIsolation: 'app',
+    inheritAttrs: false
+  })
+
+  interface Props {
+    /** 表单项的标签文字。 */
+    label: string;
+    /** 参与 uni-forms 表单管理时使用的字段名。 */
+    name?: string;
+    /** 原生 slider 的 ID，用于定位实际滑块控件。 */
+    controlId?: string;
+    /** 滑块当前值，通过 v-model 双向绑定。 */
+    modelValue?: number;
+    /** 滑块范围的最小值。 */
+    min?: number;
+    /** 滑块范围的最大值。 */
+    max?: number;
+    /** 滑块每次调整数值的步长。 */
+    step?: number;
+    /** 是否在滑块旁显示当前数值。 */
+    showValue?: boolean;
+    /** 是否禁用滑块。 */
+    disabled?: boolean;
+    /** 是否在 changing 时实时回写 v-model；关闭时仅在 change 时回写。 */
+    live?: boolean;
+  }
+
+  const props = withDefaults(defineProps<Props>(), {
+    name: '',
+    controlId: '',
+    modelValue: 0,
+    min: 0,
+    max: 100,
+    step: 1,
+    showValue: true,
+    disabled: false,
+    live: false
+  })
+
+  const emit = defineEmits<{
+    'update:modelValue': [value: number];
+    change: [event: UniSliderChangeEvent];
+    changing: [event: UniSliderChangeEvent];
+  }>()
+
+  function onChange(event: UniSliderChangeEvent) {
+    emit('update:modelValue', event.detail.value)
+    emit('change', event)
+  }
+
+  function onChanging(event: UniSliderChangeEvent) {
+    if (props.live) emit('update:modelValue', event.detail.value)
+    emit('changing', event)
+  }
+</script>
+
+<template>
+  <uni-forms-item :label="label" :name="name" label-position="top" class="uni-data-slider-item">
+    <slider :id="controlId" class="uni-data-slider-control" :value="modelValue"
+      :min="min" :max="max" :step="step" :show-value="showValue" :disabled="disabled" @change="onChange"
+      @changing="onChanging" />
+  </uni-forms-item>
+</template>
+
+<style>
+  .uni-data-slider-item {
+    align-items: center;
+    justify-content: center;
+  }
+
+  .uni-data-slider-control {
+    /* #ifndef MP */
+    width: 100%;
+    /* #endif */
+    /* #ifdef MP */
+    /* 小程序上的 slider 圆球会超出 slider 的宽度 */
+    width: 80%;
+    /* #endif */
+    /* uni-forms-item 会裁剪 slider 小球的阴影 */
+    margin: 0 0 4px 4px;
+    /* #ifdef MP-ALIPAY */
+    /* 支付宝小程序上，.uni-data-slider-item 的居中样式不生效 */
+    margin-left: 10%;
+    /* #endif */
+  }
+</style>

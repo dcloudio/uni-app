@@ -1,0 +1,8 @@
+{
+  "string": [
+    {
+      "name": "uni_location_amap_permission_reason",
+      "value": "用于在您使用定位功能时获取当前位置"
+    }
+  ]
+}

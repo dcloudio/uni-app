@@ -1,0 +1,24 @@
+<script setup lang="ts">
+  defineOptions({
+    styleIsolation: 'app',
+    inheritAttrs: false
+  })
+
+  withDefaults(defineProps<{ title?: string }>(), { title: '' })
+</script>
+
+<template>
+  <text v-if="title != ''" class="uni-h4">{{ title }}</text>
+  <view class="uni-card-content" v-bind="$attrs">
+    <slot></slot>
+  </view>
+</template>
+
+<style>
+  .uni-card-content {
+    padding: 10px 14px;
+    margin-bottom: 8px;
+    border-radius: 10px;
+    background-color: var(--list-background-color, #ffffff);
+  }
+</style>

@@ -95,8 +95,7 @@ function ensureKeyboardAnimationListener() : void {
 	if (animationListenerRegistered) {
 		return
 	}
-	animationListenerRegistered = true
-	KeyboardAnimationNative.onKeyboardAnimationChangeKotlin((height : number, state : string) => {
+	const registered = KeyboardAnimationNative.onKeyboardAnimationChangeKotlin((height : number, state : string) => {
 		const result : OnKeyboardAnimationChangeCallbackResult = {
 			height: UTSAndroid.devicePX2px(height),
 			state: state as 'start' | 'running' | 'end'
@@ -105,6 +104,11 @@ function ensureKeyboardAnimationListener() : void {
 			callback(result)
 		})
 	})
+	// 只有原生注册成功才置位；否则保留 false，后续 on 可重新尝试注册，
+	// 避免 Activity 尚未就绪时永久卡在「已注册但未生效」状态。
+	if (registered) {
+		animationListenerRegistered = true
+	}
 }
 
 export const onKeyboardAnimationChange : OnKeyboardAnimationChange = function (callback : OnKeyboardAnimationChangeCallback) : void {
@@ -113,15 +117,13 @@ export const onKeyboardAnimationChange : OnKeyboardAnimationChange = function (c
 }
 
 export const offKeyboardAnimationChange : OffKeyboardAnimationChange = function (callback ?: OnKeyboardAnimationChangeCallback | null) {
-	if (callback == null) {
-		animationCallbacks = []
-	} else {
-		const index = animationCallbacks.indexOf(callback)
-		if (index > -1) {
-			animationCallbacks.splice(index, 1)
-		}
-	}
-	if (animationCallbacks.length == 0 && animationListenerRegistered) {
+	// 跨 JS 与原生（Kotlin）边界时，同一个 JS 函数每次传入都会生成新的原生对象引用，
+	// 无法用 Array.indexOf(callback) 精确匹配已注册的监听。若匹配失败，
+	// animationCallbacks 不会清空，原生监听既无法释放（泄漏已销毁 Activity），
+	// 又重新进入页面时被 ensureKeyboardAnimationListener 跳过（不再回调）。
+	// 因此这里统一注销全部监听，确保原生监听被释放并可重新绑定到新 Activity。
+	animationCallbacks = []
+	if (animationListenerRegistered) {
 		KeyboardAnimationNative.offKeyboardAnimationChangeKotlin()
 		animationListenerRegistered = false
 	}

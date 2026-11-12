@@ -2442,8 +2442,6 @@ export interface Uni {
     /**
      * 保留当前页面，跳转到应用内的某个页面
      *
-     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/router.html#navigateto
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/navigator.html#navigateto
      * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/navigator.html#navigateto
      * @uniPlatform {
      *  "app": {
@@ -2500,8 +2498,6 @@ export interface Uni {
     /**
      * 关闭当前页面，跳转到应用内的某个页面
      *
-     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/router.html#redirectto
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/navigator.html#redirectto
      * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/navigator.html#redirectto
      * @uniPlatform {
      *  "app": {
@@ -2558,8 +2554,6 @@ export interface Uni {
     /**
      * 关闭所有页面，打开到应用内的某个页面
      *
-     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/router.html#relaunch
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/navigator.html#relaunch
      * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/navigator.html#relaunch
      * @uniPlatform {
      *  "app": {
@@ -2616,8 +2610,6 @@ export interface Uni {
     /**
      * 跳转到 tabBar 页面，并关闭其他所有非 tabBar 页面
      *
-     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/router.html#switchtab
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/navigator.html#switchtab
      * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/navigator.html#switchtab
      * @uniPlatform {
      *  "app": {
@@ -2675,8 +2667,6 @@ export interface Uni {
     /**
      * 关闭当前页面，返回上一页面或多级页面
      *
-     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/router.html#navigateback
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/navigator.html#navigateback
      * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/navigator.html#navigateback
      * @uniPlatform {
      *  "app": {

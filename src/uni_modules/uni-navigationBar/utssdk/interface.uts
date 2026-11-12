@@ -594,9 +594,7 @@ export interface Uni {
     /**
      * 设置导航条、状态栏颜色
      *
-     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/navigationbar.html#setnavigationbarcolor
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/set-navigation-bar-color.html
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/set-navigation-bar-color.html
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/set-navigation-bar-color.html#setnavigationbarcolor
      * @uniPlatform {
      *  "app": {
      *    "android": {
@@ -654,9 +652,7 @@ export interface Uni {
     /**
      * 动态设置当前页面的标题
      *
-     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/navigationbar.html#setnavigationbartitle
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/set-navigation-bar-title.html
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/set-navigation-bar-title.html
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/set-navigation-bar-title.html#setnavigationbartitle
      * @uniPlatform {
      *  "app": {
      *    "android": {
@@ -714,9 +710,7 @@ export interface Uni {
     /**
      * 在当前页面显示导航条加载动画
      *
-     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/navigationbar.html#shownavigationbarloading
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/navigator-bar-loading.html
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/navigator-bar-loading.html
+     * @tutorial doc.dcloud.net.cn/uni-app-x/api/navigator-bar-loading.html#shownavigationbarloading
      * @uniPlatform {
      *  "app": {
      *    "android": {
@@ -772,9 +766,7 @@ export interface Uni {
     /**
      * 隐藏导航条加载动画
      *
-     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/navigationbar.html#hidenavigationbarloading
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/navigator-bar-loading.html
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/navigator-bar-loading.html
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/navigator-bar-loading.html#hidenavigationbarloading
      * @uniPlatform {
      *  "app": {
      *    "android": {

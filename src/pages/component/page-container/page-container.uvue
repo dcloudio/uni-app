@@ -185,6 +185,84 @@
         </view>
       </view>
     </page-container>
+    <!-- duration、z-index、生命周期和遮罩点击 -->
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-title uni-common-mt">
+        <text class="uni-title-text"> 动画时长 </text>
+      </view>
+      <slider id="duration-slider" :value="exampleData.containerDuration" :min="0" :max="2000" :step="100"
+        @changing="changeContainerDuration" @change="changeContainerDuration"></slider>
+      <text class="uni-info uni-btn-v">duration：{{ exampleData.containerDuration }}ms（0–2000ms）</text>
+      <button class="mt-5" @click="exampleData.durationContainerShow = true">打开属性示例弹层</button>
+    </view>
+
+    <page-container id="duration-test-container" :show="exampleData.durationContainerShow" position="bottom"
+      :duration="exampleData.containerDuration" @afterleave="exampleData.durationContainerShow = false">
+      <view class="container">
+        <text class="container-title">动画时长测试</text>
+        <text class="container-content">当前动画时长：{{ exampleData.containerDuration }}ms</text>
+        <button type="primary" @click="exampleData.durationContainerShow = false">关闭容器</button>
+      </view>
+    </page-container>
+
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-title uni-common-mt">
+        <text class="uni-title-text"> z-index 重叠对比 </text>
+      </view>
+      <text class="uni-info uni-btn-v">A 打开后自动打开 B。B=100 时 A 在上，B=300 时 B 在上。</text>
+      <button id="open-z-index-low" :disabled="exampleData.zIndexAShow || exampleData.zIndexBShow" @click="openZIndexExample(100)">打开 A=200、B=100</button>
+      <button id="open-z-index-high" class="mt-5" :disabled="exampleData.zIndexAShow || exampleData.zIndexBShow" @click="openZIndexExample(300)">打开 A=200、B=300</button>
+      <text id="z-index-hit-result">最近点击：{{ exampleData.zIndexHit }}</text>
+    </view>
+
+    <page-container id="z-index-layer-a" :show="exampleData.zIndexAShow" position="bottom" :overlay="false" :z-index="200"
+      custom-style="width: 85%; left: 0; right: auto;" @afterenter="openZIndexLayerB" @afterleave="closeZIndexExample">
+      <view class="uni-container z-index-card-a" @click="exampleData.zIndexHit = 'A（蓝色）'">
+        <text class="uni-h3 z-index-card-text">A（蓝色）z-index=200</text>
+        <text class="uni-common-mb z-index-card-text">点击两层重叠空白区域，测试弹层响应</text>
+        <text class="uni-common-mb z-index-card-text">最近点击：{{ exampleData.zIndexHit }}</text>
+        <button size="mini" @click.stop="toggleZIndexLayerB">切换 B 层级（当前 {{ exampleData.zIndexBValue }}）</button>
+        <button class="mt-5" size="mini" @click.stop="closeZIndexExample">关闭两层</button>
+      </view>
+    </page-container>
+    <page-container id="z-index-layer-b" :show="exampleData.zIndexBShow" position="bottom" :overlay="false" :z-index="exampleData.zIndexBValue"
+      custom-style="width: 85%; left: auto; right: 0;" @afterenter="exampleData.zIndexBReady = true" @afterleave="closeZIndexExample">
+      <view class="uni-container z-index-card-b" @click="exampleData.zIndexHit = 'B（橙色）'">
+        <text class="uni-h3 z-index-card-text">B（橙色）z-index={{ exampleData.zIndexBValue }}</text>
+        <text class="uni-common-mb z-index-card-text">点击两层重叠空白区域，测试弹层响应</text>
+        <text class="uni-common-mb z-index-card-text">最近点击：{{ exampleData.zIndexHit }}</text>
+        <button size="mini" @click.stop="toggleZIndexLayerB">切换 B 层级（当前 {{ exampleData.zIndexBValue }}）</button>
+        <button class="mt-5" size="mini" @click.stop="closeZIndexExample">关闭两层</button>
+      </view>
+    </page-container>
+
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-title uni-common-mt">
+        <text class="uni-title-text"> 弹层生命周期事件 </text>
+      </view>
+      <button id="open-event-container" :disabled="exampleData.eventContainerShow" @click="openEventContainer">打开事件测试弹层</button>
+      <text class="uni-info uni-btn-v">打开后关闭弹层，查看事件顺序；重新打开会清空记录。</text>
+      <text class="uni-info uni-btn-v">预期：beforeenter → enter → afterenter → beforeleave → leave → afterleave</text>
+      <text class="uni-info uni-btn-v">点击遮罩额外触发 clickoverlay。</text>
+      <text id="container-event-log">{{ exampleData.eventContainerLog.join(' → ') }}</text>
+    </view>
+
+    <page-container id="event-test-container" :show="exampleData.eventContainerShow" position="bottom" :duration="500"
+      @clickoverlay="recordContainerEvent('clickoverlay')"
+      @beforeenter="recordContainerEvent('beforeenter')"
+      @enter="recordContainerEvent('enter')"
+      @afterenter="recordContainerEvent('afterenter')"
+      @beforeleave="recordContainerEvent('beforeleave')"
+      @leave="recordContainerEvent('leave')"
+      @afterleave="onEventContainerAfterLeave">
+      <view class="container">
+        <text class="container-title">生命周期事件测试</text>
+        <text class="container-content">{{ exampleData.eventContainerLog.join(' → ') }}</text>
+        <button id="close-event-container" type="primary" @click="closeEventContainer">关闭并观察退出事件</button>
+      </view>
+    </page-container>
+
+    <!-- 新增示例结束 -->
   </scroll-view>
 </template>
 
@@ -470,7 +548,64 @@
     showStackedPop3.value = false
   }
 
+  // zIndex、duration属性与事件示例
+  // 自动化读取使用 reactive，避免 ref 状态无法访问。
+  const exampleData = reactive({
+    zIndexAShow: false,
+    zIndexBShow: false,
+    zIndexBReady: false,
+    zIndexBValue: 100,
+    zIndexHit: '尚未点击',
+    eventContainerShow: false,
+    eventContainerLog: [] as string[],
+    durationContainerShow: false,
+    containerDuration: 300,
+  })
+  const openZIndexExample = (value : number) => {
+    exampleData.zIndexBReady = false
+    exampleData.zIndexBValue = value
+    exampleData.zIndexHit = '尚未点击'
+    exampleData.zIndexAShow = true
+  }
+  const openZIndexLayerB = () => {
+    if (exampleData.zIndexAShow) exampleData.zIndexBShow = true
+  }
+  const toggleZIndexLayerB = () => {
+    exampleData.zIndexBValue = exampleData.zIndexBValue == 100 ? 300 : 100
+  }
+  const closeZIndexExample = () => {
+    exampleData.zIndexAShow = false
+    exampleData.zIndexBShow = false
+  }
+
+  const openEventContainer = () => {
+    exampleData.eventContainerLog = []
+    exampleData.eventContainerShow = true
+  }
+  const closeEventContainer = () => {
+    exampleData.eventContainerShow = false
+  }
+  const recordContainerEvent = (name : string) => {
+    exampleData.eventContainerLog.push(name)
+    console.log('page-container lifecycle:', name)
+  }
+  const onEventContainerAfterLeave = () => {
+    recordContainerEvent('afterleave')
+    exampleData.eventContainerShow = false
+  }
+
+  const changeContainerDuration = (event : UniSliderChangeEvent) => {
+    exampleData.containerDuration = event.detail.value
+  }
+
   defineExpose({
+    exampleData,
+    changeContainerDuration,
+    openZIndexExample,
+    toggleZIndexLayerB,
+    closeZIndexExample,
+    openEventContainer,
+    closeEventContainer,
     data,
     showContainer,
     navigateBack
@@ -592,5 +727,16 @@
     .align-arrow {
       border-bottom-color: #2d2d2d;
     }
+  }
+  .z-index-card-a {
+    height: 320px;
+    background-color: #cce5ff;
+  }
+  .z-index-card-b {
+    height: 260px;
+    background-color: #ffd6a3;
+  }
+  .z-index-card-text {
+    color: #222222;
   }
 </style>

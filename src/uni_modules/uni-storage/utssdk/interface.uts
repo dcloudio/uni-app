@@ -247,8 +247,6 @@ export interface Uni {
      * 将数据存储在本地storage存储中指定的 key 中，会覆盖掉原来该 key 对应的内容，这是一个异步接口。
      *
      * @param {SetStorageOptions} options
-     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/storage/storage.html#setstorage
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/storage.html#setstorage
      * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/storage.html#setstorage
      * @uniPlatform {
      *    "app": {
@@ -309,8 +307,6 @@ export interface Uni {
      *
      * @param {string} key  本地storage存储中的指定的 key
      * @param {any} data  需要存储的内容，只支持能通过 JSON.stringify 序列化的对象
-     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/storage/storage.html#setstoragesync
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/storage.html#setstoragesync
      * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/storage.html#setstoragesync
      * @uniPlatform {
      *    "app": {
@@ -370,8 +366,6 @@ export interface Uni {
      * 从本地存储中异步获取指定 key 对应的内容。
      *
      * @param {GetStorageOptions} options
-     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/storage/storage.html#getstorage
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/storage.html#getstorage
      * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/storage.html#getstorage
      * @uniPlatform {
      *    "app": {
@@ -431,8 +425,6 @@ export interface Uni {
      * 从本地存储中同步获取指定 key 对应的内容。
      *
      * @param {string} key  本地存储中的指定的 key
-     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/storage/storage.html#getstoragesync
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/storage.html#getstoragesync
      * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/storage.html#getstoragesync
      * @uniPlatform {
      *    "app": {
@@ -492,8 +484,6 @@ export interface Uni {
      * 异步获取当前 storage 的相关信息。
      *
      * @param {GetStorageInfoOptions} options
-     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/storage/storage.html#getstorageinfo
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/storage.html#getstorageinfo
      * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/storage.html#getstorageinfo
      * @uniPlatform {
      *    "app": {
@@ -552,8 +542,6 @@ export interface Uni {
      * uni.getStorageInfoSync函数定义
      * 同步获取当前 storage 的相关信息。
      *
-     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/storage/storage.html#getstorageinfosync
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/storage.html#getstorageinfosync
      * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/storage.html#getstorageinfosync
      *
      * @uniPlatform {
@@ -615,8 +603,6 @@ export interface Uni {
      *
      * @param {RemoveStorageOptions} options
      *
-     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/storage/storage.html#removestorage
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/storage.html#removestorage
      * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/storage.html#removestorage
      *
      * @uniPlatform {
@@ -678,8 +664,6 @@ export interface Uni {
      *
      * @param {string} key  本地存储中的指定的 key
      *
-     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/storage/storage.html#removestoragesync
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/storage.html#removestoragesync
      * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/storage.html#removestoragesync
      *
      * @uniPlatform {
@@ -739,8 +723,6 @@ export interface Uni {
      * uni.clearStorage函数定义
      * 清除本地数据存储。
      *
-     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/storage/storage.html#clearstorage
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/storage.html#clearstorage
      * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/storage.html#clearstorage
      *
      * @uniPlatform {
@@ -800,8 +782,6 @@ export interface Uni {
      * uni.clearStorageSync函数定义
      * 清除本地数据存储。
      *
-     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/storage/storage.html#clearstoragesync
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/storage.html#clearstoragesync
      * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/storage.html#clearstoragesync
      *
      * @uniPlatform {

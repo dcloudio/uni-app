@@ -1,5 +1,18 @@
 @import "./cssvar.css";
 
+/* #ifndef WEB */
+page {
+  padding-bottom: calc(8px + var(--uni-safe-area-inset-bottom, 0px));
+}
+/* #endif */
+
+/* #ifdef WEB */
+page::after {
+  content: '';
+  padding-bottom: calc(8px + var(--uni-safe-area-inset-bottom, 0px));
+}
+/* #endif */
+
 .scroll-view_bottom-fixed {
   height: var(--uni-safe-area-inset-bottom, 20px);
   min-height: 20px;

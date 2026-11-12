@@ -1,0 +1,71 @@
+<script setup lang="ts">
+  defineOptions({
+    name: 'UniDataCombobox',
+    styleIsolation: 'app',
+    inheritAttrs: false
+  })
+
+  interface Props {
+    /** 表单项的标签文字。 */
+    label: string;
+    /** 参与 uni-forms 表单管理时使用的字段名。 */
+    name?: string;
+    /** 外层表单项的 ID；同时设置 controlId 时，以 controlId 为准。 */
+    id?: string;
+    /** 外层表单项的定位 ID，不覆盖底层组合框用于定位弹层的内部 ID。 */
+    controlId?: string;
+    /** 组合框当前值，通过 v-model 双向绑定。 */
+    modelValue?: string;
+    /** 组合框下拉面板的候选文字列表。 */
+    options?: string[];
+    /** 当前值为空时显示的提示文字。 */
+    placeholder?: string;
+    /** 是否禁用组合框。 */
+    disabled?: boolean;
+  }
+
+  withDefaults(defineProps<Props>(), {
+    name: '',
+    id: '',
+    controlId: '',
+    modelValue: '',
+    options: () => [],
+    placeholder: '',
+    disabled: false
+  })
+
+  const emit = defineEmits<{
+    'update:modelValue': [value: string];
+    selectchange: [value: string];
+  }>()
+</script>
+
+<template>
+  <uni-forms-item :id="controlId || id" :label="label" :name="name" :label-width="104" content-class="uni-data-combobox-content">
+    <!-- ID 放在表单项上，避免覆盖 uni-combobox 内部定位弹层的 anchorId。 -->
+    <!-- 小程序会静态声明具名插槽，需在组件级分支，避免空 input 插槽让底层误判为输入模式。 -->
+    <uni-combobox v-if="$slots.input" class="uni-data-combobox-control" :model-value="modelValue" :options="options"
+      :placeholder="placeholder" :disabled="disabled" @update:modelValue="emit('update:modelValue', $event)"
+      @selectchange="emit('selectchange', $event)">
+      <template #input="slotProps">
+        <slot name="input" :value="slotProps.value" :input="slotProps.input" :focus="slotProps.focus" :disabled="slotProps.disabled"></slot>
+      </template>
+    </uni-combobox>
+    <uni-combobox v-else class="uni-data-combobox-control" :model-value="modelValue" :options="options"
+      :placeholder="placeholder" :disabled="disabled" @update:modelValue="emit('update:modelValue', $event)"
+      @selectchange="emit('selectchange', $event)" />
+  </uni-forms-item>
+</template>
+
+<style>
+  .uni-data-combobox-content {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    min-height: 40px;
+  }
+
+  .uni-data-combobox-control {
+    width: 100%;
+  }
+</style>

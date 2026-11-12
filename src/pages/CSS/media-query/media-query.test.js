@@ -1,5 +1,7 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLowerCase()
 const isApp = ['android', 'ios', 'harmony'].some(name => platformInfo.startsWith(name))
+const isWeb = platformInfo.startsWith('web')
+const isMpWeixin = platformInfo.startsWith('mp-weixin')
 const isVapor = process.env.UNI_APP_X_DOM2 === 'true'
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW === 'true'
 const PAGE_PATH = '/pages/CSS/media-query/media-query'
@@ -10,18 +12,18 @@ const RATIO_PRECISION = 1 / 64
 jest.setTimeout(60000)
 
 describe('css-media-query', () => {
-  if (!isApp || !isVapor || isAppWebView) {
-    it('仅支持 App 蒸汽模式', () => { expect(1).toBe(1) })
+  if ((!isApp && !isWeb && !isMpWeixin) || (isApp && (!isVapor || isAppWebView))) {
+    it.skip('仅支持 App 蒸汽模式、Web 和微信小程序', () => {})
     return
   }
 
   let page
   let originalOrientation
+  let canRotate = false
   let orientationChanged = false
 
   async function readViewport() {
-    const { windowWidth, windowHeight } = await program.callUniMethod('getWindowInfo')
-    return { width: windowWidth, height: windowHeight }
+    return await page.callMethod('getMediaViewport')
   }
 
   async function getViewport() {
@@ -31,23 +33,41 @@ describe('css-media-query', () => {
     return viewport
   }
 
-  async function expectMatch(id, matches) {
+  async function readDisplays(id, inComponent) {
+    if (isMpWeixin && inComponent) {
+      // 微信自动化工具无法定位当前组件的外层节点，使用原生查询读取组件内的计算样式。
+      const styles = await program.evaluate((id) => {
+        const pages = getCurrentPages()
+        const component = pages[pages.length - 1].selectComponent('#media-query-component')
+        if (component == null) return null
+        return new Promise(resolve => {
+          const query = uni.createSelectorQuery().in(component)
+          query.select('#' + id).fields({ computedStyle: ['display'] })
+          query.select('#' + id + '-unmatched').fields({ computedStyle: ['display'] })
+          query.exec(resolve)
+        })
+      }, id)
+      expect(styles).not.toBeNull()
+      expect(styles[0]).not.toBeNull()
+      expect(styles[1]).not.toBeNull()
+      return styles.map(style => style.display)
+    }
     const element = await page.$('#' + id)
     expect(element).not.toBeNull()
     const unmatched = await page.$('#' + id + '-unmatched')
     expect(unmatched).not.toBeNull()
-    const expected = matches ? 'flex' : 'none'
-    const expectedUnmatched = matches ? 'none' : 'flex'
+    return [await element.style('display'), await unmatched.style('display')]
+  }
+
+  async function expectMatch(id, matches, inComponent = false) {
+    const expected = matches ? ['flex', 'none'] : ['none', 'flex']
     let actual
-    let actualUnmatched
     for (let i = 0; i < 40; i++) {
-      actual = await element.style('display')
-      actualUnmatched = await unmatched.style('display')
-      if (actual === expected && actualUnmatched === expectedUnmatched) return
+      actual = await readDisplays(id, inComponent)
+      if (actual[0] === expected[0] && actual[1] === expected[1]) return
       await page.waitFor(100)
     }
-    expect(actual).toBe(expected)
-    expect(actualUnmatched).toBe(expectedUnmatched)
+    expect({ id, displays: actual }).toEqual({ id, displays: expected })
   }
 
   async function expectPageRules() {
@@ -83,19 +103,29 @@ describe('css-media-query', () => {
 
   async function expectComponentRules() {
     const { width, height } = await getViewport()
-    await expectMatch('component-width', width >= 600)
-    await expectMatch('component-height', height >= 500)
-    await expectMatch('component-portrait', height >= width)
-    await expectMatch('component-aspect-ratio', width >= height - RATIO_PRECISION)
+    await expectMatch('component-width', width >= 600, true)
+    await expectMatch('component-height', height >= 500, true)
+    await expectMatch('component-portrait', height >= width, true)
+    await expectMatch('component-aspect-ratio', width >= height - RATIO_PRECISION, true)
+  }
+
+  async function isComponentVisible() {
+    if (isMpWeixin) {
+      return await program.evaluate(() => {
+        const pages = getCurrentPages()
+        return pages[pages.length - 1].selectComponent('#media-query-component') != null
+      })
+    }
+    return await page.$('#component-width') !== null
+  }
+
+  async function waitForComponent(visible) {
+    await page.waitFor(async () => await isComponentVisible() === visible, 5000)
   }
 
   async function setComponentVisible(visible) {
     await page.callMethod('setComponentVisible', visible)
-    if (visible) {
-      await page.waitFor('#component-width')
-    } else {
-      await page.waitFor(async () => await page.$('#component-width') === null)
-    }
+    await waitForComponent(visible)
   }
 
   async function rotate(orientation) {
@@ -118,8 +148,17 @@ describe('css-media-query', () => {
   }
 
   beforeAll(async () => {
-    const systemInfo = await program.systemInfo()
-    originalOrientation = systemInfo.deviceOrientation
+    // 旋转 API 仅支持 Android、iOS 模拟器，不支持真机及 HarmonyOS。
+    if (platformInfo.startsWith('android') || platformInfo.startsWith('ios')) {
+      const deviceInfo = await program.callUniMethod('getDeviceInfo')
+      canRotate = deviceInfo.isSimulator === true
+    }
+    if (canRotate) {
+      const systemInfo = await program.systemInfo()
+      originalOrientation = systemInfo.deviceOrientation
+    } else {
+      console.warn('当前设备未覆盖自动旋转；仍验证首次媒体匹配、组件挂载及重新挂载。视口变化需手动验证。')
+    }
   })
 
   beforeEach(async () => {
@@ -134,8 +173,16 @@ describe('css-media-query', () => {
     }
   })
 
-  it('首次加载应用方向、宽高、宽高比、范围和组合条件', async () => {
+  it('首次加载匹配方向、宽高、宽高比、范围和组合条件；支持的模拟器追加旋转验证', async () => {
     await expectPageRules()
+    if (canRotate) {
+      await setComponentVisible(true)
+      for (const orientation of ['portrait', 'landscapeLeft', 'portrait']) {
+        await rotate(orientation)
+        await expectPageRules()
+        await expectComponentRules()
+      }
+    }
   })
 
   it('动态挂载和移除组件时使用当前媒体环境', async () => {
@@ -146,27 +193,19 @@ describe('css-media-query', () => {
     await expectComponentRules()
   })
 
-  it('旋转后页面和组件按实际视口更新方向、宽高、宽高比及组合条件', async () => {
-    await setComponentVisible(true)
-    for (const orientation of ['portrait', 'landscapeLeft', 'portrait']) {
-      await rotate(orientation)
-      await expectPageRules()
-      await expectComponentRules()
-    }
-  })
-
-  it('页面没有媒体查询时，动态组件仍能匹配和更新', async () => {
+  it('页面没有媒体查询时，组件首次显示及重新挂载正常匹配；支持的模拟器追加旋转验证', async () => {
     page = await program.reLaunch(COMPONENT_ONLY_PATH)
     await page.waitFor('button')
-    expect(await page.$('#component-width')).toBeNull()
-    await setComponentVisible(true)
+    await waitForComponent(true)
     await expectComponentRules()
-    await rotate('portrait')
-    await expectComponentRules()
-    await rotate('landscapeLeft')
-    await expectComponentRules()
+    if (canRotate) {
+      await rotate('portrait')
+      await expectComponentRules()
+      await rotate('landscapeLeft')
+      await expectComponentRules()
+    }
     await setComponentVisible(false)
-    await rotate('portrait')
+    if (canRotate) await rotate('portrait')
     await setComponentVisible(true)
     await expectComponentRules()
   })
