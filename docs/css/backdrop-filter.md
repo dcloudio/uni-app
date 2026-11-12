@@ -320,3 +320,7 @@ backdrop-filter: none | <filter-function-list>;
 
 ## tips
 毛玻璃并非iOS液态玻璃，iOS液态玻璃另见[文档](../component/glass-effect-view.md)
+
+## 注意事项
+
+- Android 端，无法取样 `SurfaceView`、`GLSurfaceView` 等使用独立 Surface 渲染的内容，叠加在其上的元素取到的背景会是空白、看不到模糊效果，这类场景需要渲染方改用 `TextureView`（如地图组件、CameraX `PreviewView` 的 COMPATIBLE 模式）。
