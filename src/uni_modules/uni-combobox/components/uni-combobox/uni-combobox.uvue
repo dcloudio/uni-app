@@ -1,99 +1,104 @@
 <template>
-	<view :id="anchorId" class="uni-combobox">
-		<view
-			class="uni-combobox__field"
-			style="position: relative;"
-			:class="[fieldClass, disabled ? 'uni-combobox__field--disabled' : '']"
-			@click="onFieldClick"
-			<!-- #ifdef WEB -->
-			:tabindex="disabled ? '-1' : '0'"
-			@keydown="onInputKeydown"
-			<!-- #endif -->
-		>
-			<view v-if="inputMode" class="uni-combobox__input-slot" flatten>
-				<slot
-					name="input"
-					:value="currentValue"
-					:input="onInput"
-					:focus="onInputFocus"
-					:disabled="disabled"
-				></slot>
-			</view>
-			<text
-				v-else
-				class="uni-combobox__result"
-				:class="[
-					resultTextClass,
-					currentValue == '' ? 'uni-combobox__result--placeholder' : '',
-					disabled ? 'uni-combobox__result--disabled' : ''
-				]"
-				max-lines="1"
-				flatten
-			>{{ displayText }}</text>
-			<view class="uni-combobox__arrow-wrap" @click.stop="toggleOptionsByArrow">
-				<!-- 箭头带有旋转过渡动画，拍平后 transition 对渲染属性不生效，故不使用 flatten -->
-				<view class="uni-combobox__arrow" :class="[arrowClass, opened ? 'uni-combobox__arrow--open' : '']"></view>
-			</view>
-			<view v-if="disabled" class="uni-combobox__disabled-mask"></view>
+	<view
+		ref="anchorRef"
+		class="uni-combobox__field"
+		style="position: relative;"
+		:class="[fieldClass, disabled ? 'uni-combobox__field--disabled' : '']"
+		@click.stop="onFieldClick"
+		<!-- #ifdef WEB -->
+		:tabindex="disabled ? '-1' : '0'"
+		@keydown="onInputKeydown"
+		<!-- #endif -->
+		<!-- #ifdef MP-ALIPAY -->
+		:id="anchorId"
+		<!-- #endif -->
+	>
+		<view v-if="inputMode" class="uni-combobox__input-slot" flatten>
+			<slot
+				name="input"
+				:value="currentValue"
+				:input="onInput"
+				:focus="onInputFocus"
+				:disabled="disabled"
+			></slot>
 		</view>
-        <!-- #ifdef WEB || (APP-ANDROID && !VUE3-VAPOR) -->
-        <teleport v-if="opened && popupReady" to="body">
-		<!-- #endif -->
-		<!-- #ifndef WEB || (APP-ANDROID && !VUE3-VAPOR) -->
-        <teleport v-if="opened && popupReady" to="page">
-		<!-- #endif -->
-			<!-- #ifdef MP -->
-			<view class="uni-combobox__mask" @click="closeOptions"></view>
-			<!-- #endif -->
-			<view
-				:id="popupId"
-				class="uni-combobox__options"
-				:class="optionsViewClass"
-				:style="optionsStyle"
-			>
-				<scroll-view
-					direction="vertical"
-					class="uni-combobox__options-scroll"
-					:scroll-into-view="scrollIntoViewId"
-				>
-					<view class="uni-combobox__options-content" :class="optionsContentClass">
-						<view
-							v-if="visibleOptions.length == 0"
-							class="uni-combobox__option-row"
-						>
-							<text
-								class="uni-combobox__option uni-combobox__option--empty"
-								:class="optionTextClass"
-								max-lines="1"
-								flatten
-							>{{ emptyText }}</text>
-						</view>
-						<view
-							v-for="(item, index) in visibleOptions"
-							:id="getOptionId(index)"
-							:key="item + '_' + index.toString()"
-							class="uni-combobox__option-row"
-							:class="[
-								index == highlightedIndex ? 'uni-combobox__option-row--highlight' : '',
-								index == highlightedIndex ? optionRowHighlightClass : ''
-							]"
-							@click.stop="selectOption(index)"
-						>
-							<text
-								class="uni-combobox__option"
-								:class="[optionTextClass, index == highlightedIndex ? optionTextHighlightClass : '']"
-								max-lines="1"
-								flatten
-							>{{ item }}</text>
-						</view>
-					</view>
-				</scroll-view>
-			</view>
-		</teleport>
+		<text
+			v-else
+			class="uni-combobox__result"
+			:class="[
+				resultTextClass,
+				currentValue == '' ? 'uni-combobox__result--placeholder' : '',
+				disabled ? 'uni-combobox__result--disabled' : ''
+			]"
+			flatten
+		>{{ displayText }}</text>
+		<view class="uni-combobox__arrow-wrap" @click.stop="toggleOptions">
+			<!-- 箭头带有旋转过渡动画，拍平后 transition 对渲染属性不生效，故不使用 flatten -->
+			<view class="uni-combobox__arrow" :class="[arrowClass, opened ? 'uni-combobox__arrow--open' : '']"></view>
+		</view>
+		<view v-if="disabled" class="uni-combobox__disabled-mask"></view>
 	</view>
+	<!-- #ifdef WEB || (APP-ANDROID && !VUE3-VAPOR) -->
+	<teleport v-if="opened && popupReady" to="body">
+	<!-- #endif -->
+	<!-- #ifndef WEB || (APP-ANDROID && !VUE3-VAPOR) -->
+	<teleport v-if="opened && popupReady" to="page">
+	<!-- #endif -->
+	<!-- #ifdef MP -->
+	<view class="uni-combobox__mask" @click="closeOptions"></view>
+	<!-- #endif -->
+		<view
+			ref="popupRef"
+			class="uni-combobox__options"
+			:class="optionsViewClass"
+			:style="optionsStyle"
+			@click.stop
+		>
+			<scroll-view
+				direction="vertical"
+				class="uni-combobox__options-scroll"
+				:scroll-into-view="scrollIntoViewId"
+			>
+				<view class="uni-combobox__options-content" :class="optionsContentClass">
+					<view
+						v-if="visibleOptions.length == 0"
+						class="uni-combobox__option-row"
+					>
+						<text
+							class="uni-combobox__option uni-combobox__option--empty"
+							:class="optionTextClass"
+							flatten
+						>{{ emptyText }}</text>
+					</view>
+					<view
+						v-for="(item, index) in visibleOptions"
+						:id="getOptionId(index)"
+						:key="item + '_' + index.toString()"
+						class="uni-combobox__option-row"
+						:class="[
+							index == highlightedIndex ? 'uni-combobox__option-row--highlight' : '',
+							index == highlightedIndex ? optionRowHighlightClass : ''
+						]"
+						@click.stop="selectOption(index)"
+					>
+						<text
+							class="uni-combobox__option"
+							:class="[optionTextClass, index == highlightedIndex ? optionTextHighlightClass : '']"
+							flatten
+						>{{ item }}</text>
+					</view>
+				</view>
+			</scroll-view>
+		</view>
+	</teleport>
 </template>
 
 <script setup lang="ts">
+// #ifdef APP
+import { createPageClickSubscription } from './page-click'
+import type { PageClickSubscription } from './page-click'
+// #endif
+
 /**
  * Combox 组合框
  * @description 默认是单选选择框，通过 input 具名插槽切换为可输入、可选择的组合框。
@@ -385,7 +390,7 @@ const emit = defineEmits<{
 
 defineSlots<{
 	/**
-	 * @description 自定义输入框插槽，提供 value、input、focus 和 disabled，使用后启用可输入、可选择模式
+	 * @description 自定义输入框插槽，提供 value、input、focus 和 disabled，使用后启用可输入、可选择模式。
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {"unixVaporVer": "5.31"},
@@ -438,12 +443,15 @@ function getEmptyText() : string {
 }
 
 const emptyText = getEmptyText()
-const anchorId = `uni_combobox_${Math.ceil(Math.random() * 10e8).toString(36)}`
-const popupId = anchorId + '_popup'
+// #ifdef MP-ALIPAY
+const anchorId = `uni_combobox_${getCurrentInstance()!.uid}`
+// #endif
+const anchorRef = ref<UniElement | null>(null)
+const popupRef = ref<UniElement | null>(null)
 const optionIdPrefix = `uni_combobox_option_${Math.ceil(Math.random() * 10e8).toString(36)}_`
 const defaultOptionHeight = 36
 // #ifdef WEB
-const pcOptionHeight = 32
+const compactOptionHeight = 32
 // #endif
 const defaultMaxOptionsHeight = 200
 const popupBorderHeight = 2
@@ -452,8 +460,8 @@ const popupGap = 4
 
 function getOptionHeight() : number {
 	// #ifdef WEB
-	if (uni.getWindowInfo().windowWidth >= 768) {
-		return pcOptionHeight
+	if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+		return compactOptionHeight
 	}
 	// #endif
 	return defaultOptionHeight
@@ -581,7 +589,7 @@ function applyPopupRect(rect : DOMRect) {
 }
 
 function updatePosition() {
-	const element = uni.getElementById(anchorId)
+	const element = anchorRef.value
 	if (element == null) {
 		return
 	}
@@ -600,7 +608,7 @@ function updatePosition() {
 function updatePositionThenOpen() {
 	const requestId = positionRequestId + 1
 	positionRequestId = requestId
-	const element = uni.getElementById(anchorId)
+	const element = anchorRef.value
 	if (element == null) {
 		if (isUnmounted || requestId != positionRequestId) {
 			return
@@ -636,20 +644,22 @@ function updatePositionThenOpen() {
 // #ifdef WEB
 let webInteractionListening = false
 
-function isWebTargetInside(target : EventTarget | null, id : string) : boolean {
-	const element = document.getElementById(id)
-	return element != null && target instanceof Node && element.contains(target)
+function isWebTargetInsideCombobox(target : EventTarget | null, popupOnly : boolean = false) : boolean {
+	if (!(target instanceof Node)) return false
+	const element = target instanceof Element ? target : target.parentElement
+	const selector = popupOnly ? '.uni-combobox__options' : '.uni-combobox__field, .uni-combobox__options'
+	return element != null && element.closest(selector) != null
 }
 
 function onWebOutsidePress(event : Event) {
-	if (isWebTargetInside(event.target, anchorId) || isWebTargetInside(event.target, popupId)) {
-		return
+	// 捕获阶段会先于模板的 click.stop 执行，任一组合框内部交互都不关闭其他实例。
+	if (!isWebTargetInsideCombobox(event.target)) {
+		closeOptions()
 	}
-	closeOptions()
 }
 
 function onWebOutsideScroll(event : Event) {
-	if (!isWebTargetInside(event.target, popupId)) {
+	if (!isWebTargetInsideCombobox(event.target, true)) {
 		closeOptions()
 	}
 }
@@ -662,6 +672,8 @@ type PageInteractionListener = {
 	callback : UniCallbackWrapper
 }
 const pageInteractionListeners : PageInteractionListener[] = []
+const appInstance = getCurrentInstance()!
+let pageClickSubscription : PageClickSubscription | null = null
 
 let appAnchorRect : DOMRect | null = null
 let appInteractionActive = false
@@ -678,7 +690,7 @@ function onAppAncestorScroll(_event : UniEvent) {
 		appScrollCheckAgain = true
 		return
 	}
-	const anchor = uni.getElementById(anchorId)
+	const anchor = anchorRef.value
 	if (anchor == null) {
 		return
 	}
@@ -739,6 +751,8 @@ function onAppOutsideClick(event : UniPointerEvent) {
 // 只在组件卸载时注销原生监听，避免在原生事件分发过程中移除当前回调。
 function disposeAppInteractionListeners() {
 	appInteractionActive = false
+	pageClickSubscription?.dispose()
+	pageClickSubscription = null
 	pageInteractionListeners.forEach((listener : PageInteractionListener) => {
 		listener.element.removeEventListener(listener.type, listener.callback)
 	})
@@ -769,10 +783,11 @@ function startPageInteractionListeners() {
 	// #endif
 	// #ifdef APP
 	appInteractionActive = true
-	if (pageInteractionListeners.length > 0) {
+	if (pageClickSubscription != null) {
+		pageClickSubscription.activate()
 		return
 	}
-	const anchor = uni.getElementById(anchorId)
+	const anchor = anchorRef.value
 	if (anchor == null) {
 		return
 	}
@@ -784,10 +799,9 @@ function startPageInteractionListeners() {
 		root = parent
 		parent = parent.parentElement
 	}
-	// App 只监听 click 和祖先滚动，不向页面根节点动态注册 touch 事件。
-	addPageInteractionListener(root, 'click', (event : UniEvent) => {
-		onAppOutsideClick(event as UniPointerEvent)
-	})
+	// 同页组合框共用一个原生 click 监听，避免多实例向 BODY 重复注册时丢失回调。
+	pageClickSubscription = createPageClickSubscription(appInstance.proxy!.$page, root, onAppOutsideClick)
+	pageClickSubscription.activate()
 	// #endif
 }
 
@@ -803,6 +817,7 @@ function stopPageInteractionListeners() {
 	}
 	// #endif
 	// #ifdef APP
+	pageClickSubscription?.deactivate()
 	appInteractionActive = false
 	appScrollCheckRequest = -1
 	appScrollCheckAgain = false
@@ -831,7 +846,7 @@ function closeOptions() {
 	popupReady.value = false
 }
 
-function toggleOptionsByArrow(event : UniPointerEvent) {
+function toggleOptions(event : UniPointerEvent) {
 	// #ifdef APP
 	appOpeningClickTime = event.timeStamp
 	// #endif
@@ -853,10 +868,13 @@ function onFieldClick(event : UniPointerEvent) {
 		return
 	}
 	if (inputMode.value) {
-		openOptionsWithMode(true)
+		// 点击输入框调整光标时保持当前列表和滚动位置。
+		if (!opened.value) {
+			openOptionsWithMode(true)
+		}
 		return
 	}
-	openOptions()
+	toggleOptions(event)
 }
 
 function onInput(event : UniInputEvent) {
@@ -869,7 +887,7 @@ function onInput(event : UniInputEvent) {
 }
 
 function onInputFocus(_event : UniInputFocusEvent) {
-	if (props.disabled) {
+	if (props.disabled || opened.value) {
 		return
 	}
 	openOptionsWithMode(true)
@@ -1073,10 +1091,6 @@ onBackPress(() : boolean => {
 </script>
 
 <style>
-.uni-combobox {
-	width: 100%;
-}
-
 .uni-combobox__field {
 	position: relative;
 	width: 100%;
@@ -1084,7 +1098,7 @@ onBackPress(() : boolean => {
 	height: 40px;
 	border: 1px solid #d1d5db;
 	border-radius: 5px;
-	background-color: transparent;
+	background-color: #FFFFFF;
 	flex-direction: row;
 	align-items: center;
 }
@@ -1122,6 +1136,7 @@ onBackPress(() : boolean => {
 	font-size: 14px;
 	color: #1f2937;
 	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 .uni-combobox__result--disabled {
@@ -1205,6 +1220,7 @@ onBackPress(() : boolean => {
 	font-size: 14px;
 	color: #18181b;
 	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 .uni-combobox__option--empty {
@@ -1213,7 +1229,7 @@ onBackPress(() : boolean => {
 }
 
 /* #ifdef WEB */
-@media (min-width: 768px) {
+@media (hover: hover) and (pointer: fine) {
 	.uni-combobox__option-row {
 		height: 32px;
 	}
@@ -1264,6 +1280,7 @@ onBackPress(() : boolean => {
 
 @media (prefers-color-scheme: dark) {
 	.uni-combobox__field {
+		background-color: #3b3b3b;
 		border-color: rgba(255, 255, 255, 0.18);
 	}
 

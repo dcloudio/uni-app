@@ -306,7 +306,7 @@ export type DataPickerInstance = {
   loadCloudDataList : () => void
   loadCloudDataTree : () => void
   loadCloudDataNode : (nodeData : UTSJSONObject) => void
-  loadCloudDataPath : () => void
+  loadCloudDataPath : (callback ?: () => void) => void
 }
 
 // dataPicker props 参数类型
@@ -517,7 +517,12 @@ export function useDataPicker(props : DataPickerPropsType) : DataPickerInstance 
   function loadCloudDataList() {
     loadCloudData(null, (data : Array<UTSJSONObject>) => {
       treeData.value = data
-      pushSelectedNodes(data)
+      if (selectedPaths.value.length > 0) {
+        pushSelectedTreeNodes(selectedPaths.value, data)
+      }
+      if (selectedPages.value.length == 0) {
+        pushSelectedNodes(data)
+      }
     })
   }
 
@@ -558,9 +563,10 @@ export function useDataPicker(props : DataPickerPropsType) : DataPickerInstance 
     })
   }
 
-  // 回显 Cloud Tree Path
-  function loadCloudDataPath() {
+  // 回显 Cloud Tree Path，callback 在回显路径解析完成后触发
+  function loadCloudDataPath(callback ?: () => void) {
     if (!hasCloudDataValue.value) {
+      callback?.()
       return
     }
 
@@ -594,6 +600,7 @@ export function useDataPicker(props : DataPickerPropsType) : DataPickerInstance 
 
     loadCloudData(command, (data : Array<UTSJSONObject>) => {
       extractTreePath(data, selectedPaths.value)
+      callback?.()
     })
   }
 
@@ -616,10 +623,10 @@ export function useDataPicker(props : DataPickerPropsType) : DataPickerInstance 
     loading.value = true
 
     getCommand(options).then((response : UniCloudDBGetResult) => {
+      loading.value = false
       callback?.(response.data)
     }).catch((err : any | null) => {
       error.value = err as UniCloudError
-    }).finally(() => {
       loading.value = false
     })
   }

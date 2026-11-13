@@ -1176,7 +1176,8 @@ watch(() : string => props.date, (value : string) => {
 	}
 })
 
-watch(() : number => props.weekStart, () => {
+// 一周起始日也可能随 locale 变化，标题与日期网格需同步刷新。
+watch(() : number => effectiveWeekStart.value, () => {
 	refreshAllMonths()
 })
 

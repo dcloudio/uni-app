@@ -278,6 +278,11 @@ export type LoadFontFaceOptions = {
      *          "uniVer": "√",
      *          "unixVer": "4.10",
      *          "unixVaporVer": "5.11"
+     *      },
+     *      "harmony": {
+     *          "uniVer": "4.23",
+     *          "unixVer": "4.61",
+     *          "unixVaporVer": "5.0"
      *      }
      *  },
      *  "mp": {
@@ -328,6 +333,11 @@ export type LoadFontFaceOptions = {
      *          "uniVer": "√",
      *          "unixVer": "4.10",
      *          "unixVaporVer": "5.11"
+     *      },
+     *      "harmony": {
+     *          "uniVer": "4.23",
+     *          "unixVer": "4.61",
+     *          "unixVaporVer": "5.0"
      *      }
      *  },
      *  "mp": {
@@ -378,6 +388,11 @@ export type LoadFontFaceOptions = {
      *          "uniVer": "√",
      *          "unixVer": "4.10",
      *          "unixVaporVer": "5.11"
+     *      },
+     *      "harmony": {
+     *          "uniVer": "4.23",
+     *          "unixVer": "4.61",
+     *          "unixVaporVer": "5.0"
      *      }
      *  },
      *  "mp": {

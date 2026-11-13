@@ -51,12 +51,51 @@
         <text>\n可放缩</text>
       </view>
       <movable-area scale-area>
-        <movable-view direction="all" @scale="onScale" scale scale-min="0.5" scale-max="4"
+        <movable-view direction="all" @scale="onScale" scale :scale-min="0.5" :scale-max="4"
           :scale-value="scale">text</movable-view>
       </movable-area>
       <view @tap="tap2" class="uni-link uni-center uni-common-mt" style="padding-bottom:40px;">
         点击这里放大3倍
       </view>
+
+      <view class="uni-title uni-common-mt">
+        <text>示例 8：damping 阻尼与 animation 动画开关</text>
+      </view>
+      <text class="uni-common-mb">点击按钮移动三组方块，对比阻尼大小与关闭动画的效果。</text>
+      <button class="uni-common-mb" @click="moveComparison">切换目标位置</button>
+      <text>damping=10，animation=true</text>
+      <movable-area class="uni-common-mb">
+        <movable-view direction="all" :x="comparisonX" :y="comparisonY" :damping="10" :animation="true">阻尼 10</movable-view>
+      </movable-area>
+      <text>damping=80，animation=true</text>
+      <movable-area class="uni-common-mb">
+        <movable-view direction="all" :x="comparisonX" :y="comparisonY" :damping="80" :animation="true">阻尼 80</movable-view>
+      </movable-area>
+      <text>animation=false</text>
+      <movable-area class="uni-common-mb">
+        <movable-view direction="all" :x="comparisonX" :y="comparisonY" :animation="false">无动画</movable-view>
+      </movable-area>
+
+      <view class="uni-title uni-common-mt">
+        <text>示例 9：friction 惯性摩擦</text>
+      </view>
+      <text class="uni-common-mb">快速拖动后松手，对比惯性滑动；摩擦越大，停止越快。</text>
+      <text>friction=1</text>
+      <movable-area class="uni-common-mb">
+        <movable-view direction="horizontal" inertia :friction="1">摩擦 1</movable-view>
+      </movable-area>
+      <text>friction=10</text>
+      <movable-area class="uni-common-mb">
+        <movable-view direction="horizontal" inertia :friction="10">摩擦 10</movable-view>
+      </movable-area>
+
+      <view class="uni-title uni-common-mt">
+        <text>示例 10：disabled 禁用拖动</text>
+      </view>
+      <button class="uni-common-mb" @click="dragDisabled = !dragDisabled">{{ dragDisabled ? '启用拖动' : '禁用拖动' }}</button>
+      <movable-area class="uni-common-mb">
+        <movable-view direction="all" :disabled="dragDisabled">{{ dragDisabled ? '已禁用' : '可拖动' }}</movable-view>
+      </movable-area>
     </view>
 </template>
 
@@ -95,6 +134,14 @@
 
   const onScale = (e) => {
     old.scale = e.detail.scale
+  }
+
+  const comparisonX = ref(0)
+  const comparisonY = ref(0)
+  const dragDisabled = ref(true)
+  const moveComparison = () => {
+    comparisonX.value = comparisonX.value == 0 ? 100 : 0
+    comparisonY.value = comparisonY.value == 0 ? 60 : 0
   }
 
   defineExpose({

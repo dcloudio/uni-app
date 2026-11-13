@@ -27,7 +27,6 @@
 					currentValue == '' ? 'uni-combox__result--placeholder' : '',
 					disabled ? 'uni-combox__result--disabled' : ''
 				]"
-				max-lines="1"
 				flatten
 			>{{ displayText }}</text>
 			<view class="uni-combox__arrow-wrap" @click.stop="toggleOptionsByArrow">
@@ -62,7 +61,6 @@
 								<text
 									class="uni-combox__option uni-combox__option--empty"
 									:class="optionTextClass"
-									max-lines="1"
 									flatten
 								>{{ emptyText }}</text>
 							</view>
@@ -80,7 +78,6 @@
 								<text
 									class="uni-combox__option"
 									:class="[optionTextClass, index == highlightedIndex ? optionTextHighlightClass : '']"
-									max-lines="1"
 									flatten
 								>{{ item }}</text>
 							</view>
@@ -929,6 +926,7 @@ onBackPress(() : boolean => {
 	font-size: 14px;
 	color: #1f2937;
 	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 .uni-combox__result--disabled {
@@ -1018,6 +1016,7 @@ onBackPress(() : boolean => {
 	font-size: 14px;
 	color: #18181b;
 	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 .uni-combox__option--empty {

@@ -1,113 +1,82 @@
 <template>
-	<view class="intro">
-		<text class="page-title">uni-calendar-view 日历视图</text>
-		<text class="page-desc">内嵌在页面中的日历，支持月份切换、日期选择、日期范围限制、节假日高亮和多语言。</text>
-	</view>
-
 	<!-- 基础用法 -->
-	<view class="section">
-		<text class="uni-h4">基础用法</text>
-		<text class="section-desc">v-model 双向绑定选中日期，点击左右箭头、滑动日历或点击年月选择月份。</text>
-		<view class="calendar-wrap">
-			<uni-calendar-view v-model="data.basicDate" @change="onBasicChange" @month-change="onBasicMonthChange" />
-		</view>
-		<text class="section-result">选中日期：{{ data.basicDate }}</text>
-		<text class="section-result">最近事件：{{ data.lastEvent }}</text>
+	<text class="uni-h4">基础用法</text>
+	<text class="uni-info">v-model 双向绑定选中日期，点击左右箭头、滑动日历或点击年月选择月份。</text>
+	<view class="test-basic-calendar-wrap">
+		<uni-calendar-view v-model="data.basicDate" @change="onBasicChange" @month-change="onBasicMonthChange" />
 	</view>
+	<text class="uni-log">选中日期：{{ data.basicDate }}</text>
+	<text class="uni-log">最近事件：{{ data.lastEvent }}</text>
 
 	<!-- 自定义样式 -->
-	<view class="section">
-		<text class="uni-h4">自定义样式（externalClass）</text>
-		<text class="section-desc">同时使用 year-month-class、year-month-arrow-class、week-class、week-item-class、day-class、day-selected-class 定制外观。今天默认高亮，可通过 today-class 覆盖。</text>
-		<view class="calendar-wrap">
-			<uni-calendar-view v-model="data.styleDate" year-month-class="custom-year-month"
-				year-month-arrow-class="custom-arrow" week-class="custom-week" week-item-class="custom-week-item"
-				day-class="custom-day" day-selected-class="custom-day-selected" today-class="custom-today" />
-		</view>
-		<text class="section-result">选中日期：{{ data.styleDate }}</text>
-	</view>
+	<text class="uni-h4">自定义样式（externalClass）</text>
+	<text class="uni-info">同时使用
+		year-month-class、year-month-arrow-class、week-class、week-item-class、day-class、day-selected-class 定制外观。今天默认高亮，可通过
+		today-class 覆盖。</text>
+	<uni-calendar-view v-model="data.styleDate" year-month-class="custom-year-month" year-month-arrow-class="custom-arrow"
+		week-class="custom-week" week-item-class="custom-week-item" day-class="custom-day"
+		day-selected-class="custom-day-selected" today-class="custom-today" />
+	<text class="uni-log">选中日期：{{ data.styleDate }}</text>
 
 	<!-- 日期范围 -->
-	<view class="section">
-		<text class="uni-h4">可选日期范围</text>
-		<text class="section-desc">通过 min-date、max-date 限制可选范围，超出范围的日期置灰且不可点击。示例范围为今天起 30 天。</text>
-		<view class="calendar-wrap">
-			<uni-calendar-view :model-value="data.rangeDate" :min-date="minDate" :max-date="maxDate"
-				@change="onRangeChange" />
-		</view>
-		<text class="section-result">选中日期：{{ data.rangeDate }}</text>
-	</view>
+	<text class="uni-h4">可选日期范围</text>
+	<text class="uni-info">通过 min-date、max-date 限制可选范围，超出范围的日期置灰且不可点击。示例范围为今天起 30 天。</text>
+	<uni-calendar-view :model-value="data.rangeDate" :min-date="minDate" :max-date="maxDate" @change="onRangeChange" />
+	<text class="uni-log">选中日期：{{ data.rangeDate }}</text>
 
 	<!-- 节假日 -->
-	<view class="section">
-		<text class="uni-h4">节假日高亮</text>
-		<text class="section-desc">通过 holidays 传入节假日日期列表，命中的日期以橙色显示。</text>
-		<view class="calendar-wrap">
-			<uni-calendar-view v-model="data.holidayDate" date="2026-10-01" :holidays="holidays"
-				@change="onHolidayChange" />
-		</view>
-		<text class="section-result">选中日期：{{ data.holidayDate }}</text>
-	</view>
+	<text class="uni-h4">节假日高亮</text>
+	<text class="uni-info">通过 holidays 传入节假日日期列表，命中的日期以橙色显示。</text>
+	<uni-calendar-view v-model="data.holidayDate" date="2026-10-01" :holidays="holidays" @change="onHolidayChange" />
+	<text class="uni-log">选中日期：{{ data.holidayDate }}</text>
 
 	<!-- 日期上下方文字 -->
-	<view class="section">
-		<text class="uni-h4">日期上下方文字</text>
-		<text class="section-desc">通过 day-extras 在日期数字上方、下方显示节日、节气、农历等文字。示例按当前显示月份前后各一个月动态生成数据：农历、节气、节日由算法生成（支持任意年份），中国法定节假日通过单独数据按年追加。切换月份时整体替换数组，组件自动刷新。上方、下方文字样式由 day-top-class、day-bottom-class 定制，单元格样式由 day-wrap-class 定制。</text>
-		<view class="calendar-wrap">
-			<uni-calendar-view v-model="data.extraDate" :day-extras="dayExtras" @month-change="onExtrasMonthChange"
-				day-wrap-class="custom-day-wrap" today-class="custom-today" day-top-class="custom-day-top"
-				day-bottom-class="custom-day-bottom" />
-		</view>
-		<text class="section-result">选中日期：{{ data.extraDate }}</text>
-		<text class="section-result">当前 day-extras 覆盖范围：{{ extrasRangeText }}</text>
-	</view>
+	<text class="uni-h4">日期上下方文字（以下以万年历为例）</text>
+	<text class="uni-info">通过 day-extras
+		在日期数字上方、下方显示节日、节气、农历等文字。示例按当前显示月份前后各一个月动态生成数据：农历、节气、节日由算法生成（支持任意年份），中国法定节假日通过单独数据按年追加。切换月份时整体替换数组，组件自动刷新。上方、下方文字样式由
+		day-top-class、day-bottom-class 定制，单元格样式由 day-wrap-class 定制。</text>
+	<uni-calendar-view v-model="data.extraDate" :day-extras="dayExtras" @month-change="onExtrasMonthChange"
+		day-wrap-class="custom-day-wrap" today-class="custom-today" day-top-class="custom-day-top"
+		day-bottom-class="custom-day-bottom" />
+	<text class="uni-log">选中日期：{{ data.extraDate }}</text>
+	<text class="uni-log">当前 day-extras 覆盖范围：{{ extrasRangeText }}</text>
 
 	<!-- 一周起始日 -->
-	<view class="section">
-		<text class="uni-h4">一周起始日</text>
-		<text class="section-desc">week-start 可指定一周起始日，-1 表示按语言自动适配。星期标题行固定显示。</text>
-		<view class="option-row">
-			<text v-for="(item, index) in weekStartOptions" :key="index" class="option-item"
-				:class="item.value == data.weekStartMode ? 'option-item--active' : ''"
-				@click="onWeekStartSelect(item.value)">{{ item.label }}</text>
-		</view>
-		<view class="calendar-wrap">
-			<uni-calendar-view v-model="data.weekStartDate" :week-start="data.weekStartMode" />
-		</view>
-		<text class="section-result">选中日期：{{ data.weekStartDate }}</text>
+	<text class="uni-h4">一周起始日</text>
+	<text class="uni-info">week-start 可指定一周起始日，-1 表示按语言自动适配。星期标题行固定显示。</text>
+	<view class="option-row">
+		<text v-for="(item, index) in weekStartOptions" :key="index" class="option-item"
+			:class="item.value == data.weekStartMode ? 'option-item--active' : ''"
+			@click="onWeekStartSelect(item.value)">{{ item.label }}</text>
 	</view>
+	<view class="test-weekStart-calendar-wrap">
+		<uni-calendar-view v-model="data.weekStartDate" :week-start="data.weekStartMode" />
+	</view>
+	<text class="uni-log">选中日期：{{ data.weekStartDate }}</text>
 
 	<!-- 国际化 -->
-	<view class="section">
-		<text class="uni-h4">国际化</text>
-		<text class="section-desc">内置 17 种语言的月份名称和星期缩写，不传 locale 时跟随系统语言。点击下方语言切换查看效果。</text>
-		<view class="locale-list">
-			<text v-for="(item, index) in localeOptions" :key="item.value" class="locale-item"
-				:class="index == data.localeIndex ? 'locale-item--active' : ''"
-				@click="onLocaleSelect(index)">{{ item.label }}</text>
-		</view>
-		<view class="calendar-wrap">
-			<uni-calendar-view v-model="data.localeDate" :locale="activeLocale" />
-		</view>
-		<text class="section-result">当前语言：{{ localeOptions[data.localeIndex].label }}</text>
+	<text class="uni-h4">国际化</text>
+	<text class="uni-info">内置 17 种语言的月份名称和星期缩写，不传 locale 时跟随系统语言。点击下方语言切换查看效果。</text>
+	<view class="locale-list">
+		<text v-for="(item, index) in localeOptions" :key="item.value" class="locale-item"
+			:class="index == data.localeIndex ? 'locale-item--active' : ''"
+			@click="onLocaleSelect(index)">{{ item.label }}</text>
 	</view>
+	<uni-calendar-view v-model="data.localeDate" :locale="activeLocale" />
+	<text class="uni-log">当前语言：{{ localeOptions[data.localeIndex].label }}</text>
 
 	<!-- 组件方法 -->
-	<view class="section">
-		<text class="uni-h4">组件方法</text>
-		<text class="section-desc">通过 ref 调用 prevMonth、nextMonth、goToMonth、goToDate、getSelectedDate 等方法控制日历。</text>
-		<view class="button-row">
-			<button class="demo-btn" size="mini" @click="onPrevMonth">上一月</button>
-			<button class="demo-btn" size="mini" @click="onNextMonth">下一月</button>
-			<button class="demo-btn" size="mini" @click="onGoToMonth">跳到 2027-06</button>
-			<button class="demo-btn" size="mini" @click="onJumpDate">跳到 2027-01-15</button>
-			<button class="demo-btn" size="mini" @click="onReadSelected">读取选中日期</button>
-		</view>
-		<view class="calendar-wrap">
-			<uni-calendar-view ref="methodCalendarRef" v-model="data.methodDate" />
-		</view>
-		<text class="section-result">选中日期：{{ data.methodDate }}</text>
+	<text class="uni-h4">组件方法</text>
+	<text class="uni-info">通过 ref 调用 prevMonth、nextMonth、goToMonth、goToDate、getSelectedDate 等方法控制日历。</text>
+	<view class="button-row">
+		<button class="demo-btn" size="mini" @click="onPrevMonth">上一月</button>
+		<button class="demo-btn" size="mini" @click="onNextMonth">下一月</button>
+		<button class="demo-btn" size="mini" @click="onGoToMonth">跳到 2027-06</button>
+		<button class="demo-btn" size="mini" @click="onJumpDate">跳到 2027-01-15</button>
+		<button class="demo-btn" size="mini" @click="onReadSelected">读取选中日期</button>
 	</view>
+	<uni-calendar-view ref="methodCalendarRef" v-model="data.methodDate" />
+	<text class="uni-log">选中日期：{{ data.methodDate }}</text>
 </template>
 
 <script setup lang="ts">
@@ -653,54 +622,6 @@
 </script>
 
 <style>
-	page {
-		padding: 12px;
-	}
-
-	.intro {
-		margin-bottom: 12px;
-		padding: 4px;
-	}
-
-	.page-title {
-		font-size: 18px;
-		font-weight: bold;
-		color: var(--text-color, #333333);
-	}
-
-	.page-desc {
-		margin-top: 6px;
-		font-size: 12px;
-		line-height: 18px;
-		color: var(--secondary-text-color, #999999);
-	}
-
-	.section {
-		margin-bottom: 12px;
-		padding: 12px;
-		border-radius: 10px;
-	}
-
-	.section-desc {
-		margin-top: 4px;
-		margin-bottom: 8px;
-		font-size: 12px;
-		line-height: 18px;
-		color: var(--secondary-text-color, #999999);
-	}
-
-	.section-result {
-		margin-top: 8px;
-		font-size: 13px;
-		line-height: 18px;
-		color: #1976d2;
-	}
-
-	.calendar-wrap {
-		border-radius: 8px;
-		overflow: hidden;
-	}
-
 	.option-row {
 		flex-direction: row;
 		flex-wrap: wrap;

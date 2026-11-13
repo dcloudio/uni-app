@@ -5,359 +5,217 @@
 export type iconType = {
 	font_class : string
 	unicode : string
+	provider : string
+	base : string
+	rotate : number
 }
 
-export const iconlist = [
-  {
-    "font_class": "left",
-    "unicode": "e6b7"
-  },
-  {
-    "font_class": "up",
-    "unicode": "e6b6"
-  },
-  {
-    "font_class": "bottom",
-    "unicode": "e6b8"
-  },
-  {
-    "font_class": "right",
-    "unicode": "e6b5"
-  },
-  {
-    "font_class": "arrow-left",
-    "unicode": "e6bc"
-  },
-  {
-    "font_class": "arrow-up",
-    "unicode": "e6bd"
-  },
-  {
-    "font_class": "arrow-down",
-    "unicode": "e6be"
-  },
-  {
-    "font_class": "arrow-right",
-    "unicode": "e6bb"
-  },
-  {
-    "font_class": "top",
-    "unicode": "e6b6"
-  },
-  {
-    "font_class": "down",
-    "unicode": "e6b8"
-  },
-  {
-    "font_class": "first-page",
-    "unicode": "e777"
-  },
-  {
-    "font_class": "last-page",
-    "unicode": "e778"
-  },
-  {
-    "font_class": "home",
-    "unicode": "e662"
-  },
-  {
-    "font_class": "home-filled",
-    "unicode": "e663"
-  },
-  {
-    "font_class": "eye",
-    "unicode": "e651"
-  },
-  {
-    "font_class": "eye-filled",
-    "unicode": "e66a"
-  },
-  {
-    "font_class": "eye-slash",
-    "unicode": "e6b3"
-  },
-  {
-    "font_class": "eye-slash-filled",
-    "unicode": "e6b4"
-  },
-  {
-    "font_class": "camera",
-    "unicode": "e65a"
-  },
-  {
-    "font_class": "camera-filled",
-    "unicode": "e658"
-  },
-  {
-    "font_class": "images",
-    "unicode": "e650"
-  },
-  {
-    "font_class": "images-filled",
-    "unicode": "e64b"
-  },
-  {
-    "font_class": "contact",
-    "unicode": "e693"
-  },
-  {
-    "font_class": "contact-filled",
-    "unicode": "e695"
-  },
-  {
-    "font_class": "person",
-    "unicode": "e699"
-  },
-  {
-    "font_class": "person-filled",
-    "unicode": "e69d"
-  },
-  {
-    "font_class": "chatbubble",
-    "unicode": "e697"
-  },
-  {
-    "font_class": "chatbubble-filled",
-    "unicode": "e694"
-  },
-  {
-    "font_class": "more",
-    "unicode": "e64d"
-  },
-  {
-    "font_class": "more-filled",
-    "unicode": "e64e"
-  },
-  {
-    "font_class": "checkbox",
-    "unicode": "e62b"
-  },
-  {
-    "font_class": "checkbox-filled",
-    "unicode": "e62c"
-  },
-  {
-    "font_class": "checkmarkempty",
-    "unicode": "e65c"
-  },
-  {
-    "font_class": "circle",
-    "unicode": "e65b"
-  },
-  {
-    "font_class": "circle-filled",
-    "unicode": "e65e"
-  },
-  {
-    "font_class": "close",
-    "unicode": "e673"
-  },
-  {
-    "font_class": "closeempty",
-    "unicode": "e66c"
-  },
-  {
-    "font_class": "clear",
-    "unicode": "e66d"
-  },
-  {
-    "font_class": "plus",
-    "unicode": "e676"
-  },
-  {
-    "font_class": "plus-filled",
-    "unicode": "e6c7"
-  },
-  {
-    "font_class": "plusempty",
-    "unicode": "e67b"
-  },
-  {
-    "font_class": "minus",
-    "unicode": "e66f"
-  },
-  {
-    "font_class": "minus-filled",
-    "unicode": "e67d"
-  },
-  {
-    "font_class": "help",
-    "unicode": "e679"
-  },
-  {
-    "font_class": "help-filled",
-    "unicode": "e674"
-  },
-  {
-    "font_class": "info",
-    "unicode": "e669"
-  },
-  {
-    "font_class": "info-filled",
-    "unicode": "e649"
-  },
-  {
-    "font_class": "hand-up",
-    "unicode": "e63f"
-  },
-  {
-    "font_class": "hand-up-filled",
-    "unicode": "e63e"
-  },
-  {
-    "font_class": "hand-down",
-    "unicode": "e63d"
-  },
-  {
-    "font_class": "hand-down-filled",
-    "unicode": "e63c"
-  },
-  {
-    "font_class": "heart",
-    "unicode": "e639"
-  },
-  {
-    "font_class": "heart-filled",
-    "unicode": "e641"
-  },
-  {
-    "font_class": "star",
-    "unicode": "e688"
-  },
-  {
-    "font_class": "star-filled",
-    "unicode": "e68f"
-  },
-  {
-    "font_class": "starhalf",
-    "unicode": "e683"
-  },
-  {
-    "font_class": "mic",
-    "unicode": "e671"
-  },
-  {
-    "font_class": "mic-filled",
-    "unicode": "e677"
-  },
-  {
-    "font_class": "micoff",
-    "unicode": "e67e"
-  },
-  {
-    "font_class": "micoff-filled",
-    "unicode": "e6b0"
-  },
-  {
-    "font_class": "sound",
-    "unicode": "e684"
-  },
-  {
-    "font_class": "sound-filled",
-    "unicode": "e686"
-  },
-  {
-    "font_class": "sound-slash",
-    "unicode": "e81f"
-  },
-  {
-    "font_class": "sound-slash-filled",
-    "unicode": "e820"
-  },
-  {
-    "font_class": "paperplane",
-    "unicode": "e672"
-  },
-  {
-    "font_class": "paperplane-filled",
-    "unicode": "e675"
-  },
-  {
-    "font_class": "cloud-upload",
-    "unicode": "e645"
-  },
-  {
-    "font_class": "cloud-upload-filled",
-    "unicode": "e648"
-  },
-  {
-    "font_class": "download",
-    "unicode": "e68d"
-  },
-  {
-    "font_class": "location",
-    "unicode": "e6ae"
-  },
-  {
-    "font_class": "location-filled",
-    "unicode": "e6af"
-  },
-  {
-    "font_class": "map-pin",
-    "unicode": "e6ad"
-  },
-  {
-    "font_class": "map-pin-ellipse",
-    "unicode": "e6ac"
-  },
-  {
-    "font_class": "sidebar",
-    "unicode": "e81c"
-  },
-  {
-    "font_class": "copy",
-    "unicode": "e81d"
-  },
-  {
-    "font_class": "share",
-    "unicode": "e81e"
-  },
-  {
-    "font_class": "logout",
-    "unicode": "e821"
-  },
-  {
-    "font_class": "bars",
-    "unicode": "e627"
-  },
-  {
-    "font_class": "compose",
-    "unicode": "e67f"
-  },
-  {
-    "font_class": "font",
-    "unicode": "e6a3"
-  },
-  {
-    "font_class": "gear",
-    "unicode": "e664"
-  },
-  {
-    "font_class": "list",
-    "unicode": "e644"
-  },
-  {
-    "font_class": "pulldown",
-    "unicode": "e632"
-  },
-  {
-    "font_class": "reload",
-    "unicode": "e6b2"
-  },
-  {
-    "font_class": "scan",
-    "unicode": "e62a"
-  },
-  {
-    "font_class": "search",
-    "unicode": "e654"
-  },
-  {
-    "font_class": "spinner-cycle",
-    "unicode": "e68a"
-  },
-  {
-    "font_class": "trash",
-    "unicode": "e687"
-  }
-]
+/* #ifdef APP */
+export const builtinIconList = [
+	{ font_class: 'left', unicode: 'e601', provider: 'builtin', base: 'uni-icon', rotate: 0 },
+	{ font_class: 'top', unicode: 'e601', provider: 'builtin', base: 'uni-icon', rotate: 90 },
+	{ font_class: 'right', unicode: 'e601', provider: 'builtin', base: 'uni-icon', rotate: 180 },
+	{ font_class: 'bottom', unicode: 'e601', provider: 'builtin', base: 'uni-icon', rotate: -90 },
+	{ font_class: 'home', unicode: 'e605', provider: 'builtin', base: 'uni-icon', rotate: 0 },
+	{ font_class: 'more-filled', unicode: 'e606', provider: 'builtin', base: 'uni-icon', rotate: 0 },
+	{ font_class: 'checkbox', unicode: 'ea07', provider: 'builtin', base: 'uni-icon', rotate: 0 },
+	{ font_class: 'checkbox-filled', unicode: 'ea06', provider: 'builtin', base: 'uni-icon', rotate: 0 },
+	{ font_class: 'checkmarkempty', unicode: 'ea08', provider: 'builtin', base: 'uni-icon', rotate: 0 },
+	{ font_class: 'circle', unicode: 'ea01', provider: 'builtin', base: 'uni-icon', rotate: 0 },
+	{ font_class: 'close', unicode: 'ea0b', provider: 'builtin', base: 'uni-icon', rotate: 0 },
+	{ font_class: 'closeempty', unicode: 'e650', provider: 'builtin', base: 'uni-icon', rotate: 0 },
+	{ font_class: 'clear', unicode: 'ea14', provider: 'builtin', base: 'uni-icon', rotate: 0 },
+	{ font_class: 'plus', unicode: 'ea0b', provider: 'builtin', base: 'uni-icon', rotate: 45 },
+	{ font_class: 'plus-filled', unicode: 'ea14', provider: 'builtin', base: 'uni-icon', rotate: 45 },
+	{ font_class: 'plusempty', unicode: 'e650', provider: 'builtin', base: 'uni-icon', rotate: 45 },
+	{ font_class: 'info', unicode: 'ea04', provider: 'builtin', base: 'uni-icon', rotate: 0 },
+	{ font_class: 'info-filled', unicode: 'ea03', provider: 'builtin', base: 'uni-icon', rotate: 0 },
+	{ font_class: 'star', unicode: 'e604', provider: 'builtin', base: 'uni-icon', rotate: 0 },
+	{ font_class: 'search', unicode: 'ea23', provider: 'builtin', base: 'uni-icon', rotate: 0 },
+] as iconType[]
+
+export const transformIconList = [
+	{ font_class: 'left', unicode: 'e601', provider: 'builtin', base: 'uni-icon', rotate: 0 },
+	{ font_class: 'top', unicode: 'e601', provider: 'builtin', base: 'uni-icon', rotate: 90 },
+	{ font_class: 'right', unicode: 'e601', provider: 'builtin', base: 'uni-icon', rotate: 180 },
+	{ font_class: 'bottom', unicode: 'e601', provider: 'builtin', base: 'uni-icon', rotate: -90 },
+	{ font_class: 'closeempty', unicode: 'e650', provider: 'builtin', base: 'uni-icon', rotate: 0 },
+	{ font_class: 'plusempty', unicode: 'e650', provider: 'builtin', base: 'uni-icon', rotate: 45 },
+	{ font_class: 'close', unicode: 'ea0b', provider: 'builtin', base: 'uni-icon', rotate: 0 },
+	{ font_class: 'plus', unicode: 'ea0b', provider: 'builtin', base: 'uni-icon', rotate: 45 },
+	{ font_class: 'clear', unicode: 'ea14', provider: 'builtin', base: 'uni-icon', rotate: 0 },
+	{ font_class: 'plus-filled', unicode: 'ea14', provider: 'builtin', base: 'uni-icon', rotate: 45 },
+	{ font_class: 'arrow-left', unicode: 'e6bc', provider: 'custom', base: 'arrow-left', rotate: 0 },
+	{ font_class: 'arrow-up', unicode: 'e6bc', provider: 'custom', base: 'arrow-left', rotate: 90 },
+	{ font_class: 'arrow-right', unicode: 'e6bc', provider: 'custom', base: 'arrow-left', rotate: 180 },
+	{ font_class: 'arrow-down', unicode: 'e6bc', provider: 'custom', base: 'arrow-left', rotate: -90 },
+	{ font_class: 'first-page', unicode: 'e777', provider: 'custom', base: 'first-page', rotate: 0 },
+	{ font_class: 'last-page', unicode: 'e777', provider: 'custom', base: 'first-page', rotate: 180 },
+] as iconType[]
+
+export const extensionIconList = [
+	{ font_class: 'home-filled', unicode: 'e663', provider: 'custom', base: 'home-filled', rotate: 0 },
+	{ font_class: 'eye', unicode: 'e651', provider: 'custom', base: 'eye', rotate: 0 },
+	{ font_class: 'eye-filled', unicode: 'e66a', provider: 'custom', base: 'eye-filled', rotate: 0 },
+	{ font_class: 'eye-slash', unicode: 'e6b4', provider: 'custom', base: 'eye-slash-filled', rotate: 0 },
+	{ font_class: 'eye-slash-filled', unicode: 'e6b4', provider: 'custom', base: 'eye-slash-filled', rotate: 0 },
+	{ font_class: 'camera', unicode: 'e65a', provider: 'custom', base: 'camera', rotate: 0 },
+	{ font_class: 'camera-filled', unicode: 'e658', provider: 'custom', base: 'camera-filled', rotate: 0 },
+	{ font_class: 'images', unicode: 'e650', provider: 'custom', base: 'images', rotate: 0 },
+	{ font_class: 'images-filled', unicode: 'e64b', provider: 'custom', base: 'images-filled', rotate: 0 },
+	{ font_class: 'contact', unicode: 'e693', provider: 'custom', base: 'contact', rotate: 0 },
+	{ font_class: 'contact-filled', unicode: 'e695', provider: 'custom', base: 'contact-filled', rotate: 0 },
+	{ font_class: 'person', unicode: 'e699', provider: 'custom', base: 'person', rotate: 0 },
+	{ font_class: 'person-filled', unicode: 'e69d', provider: 'custom', base: 'person-filled', rotate: 0 },
+	{ font_class: 'chatbubble', unicode: 'e697', provider: 'custom', base: 'chatbubble', rotate: 0 },
+	{ font_class: 'chatbubble-filled', unicode: 'e694', provider: 'custom', base: 'chatbubble-filled', rotate: 0 },
+	{ font_class: 'more', unicode: 'e64d', provider: 'custom', base: 'more', rotate: 0 },
+	{ font_class: 'circle-filled', unicode: 'e65e', provider: 'custom', base: 'circle-filled', rotate: 0 },
+	{ font_class: 'minus', unicode: 'e66f', provider: 'custom', base: 'minus', rotate: 0 },
+	{ font_class: 'minus-filled', unicode: 'e67d', provider: 'custom', base: 'minus-filled', rotate: 0 },
+	{ font_class: 'help', unicode: 'e679', provider: 'custom', base: 'help', rotate: 0 },
+	{ font_class: 'help-filled', unicode: 'e674', provider: 'custom', base: 'help-filled', rotate: 0 },
+	{ font_class: 'hand-up', unicode: 'e63f', provider: 'custom', base: 'hand-up', rotate: 0 },
+	{ font_class: 'hand-up-filled', unicode: 'e63e', provider: 'custom', base: 'hand-up-filled', rotate: 0 },
+	{ font_class: 'hand-down', unicode: 'e63d', provider: 'custom', base: 'hand-down', rotate: 0 },
+	{ font_class: 'hand-down-filled', unicode: 'e63c', provider: 'custom', base: 'hand-down-filled', rotate: 0 },
+	{ font_class: 'heart', unicode: 'e639', provider: 'custom', base: 'heart', rotate: 0 },
+	{ font_class: 'heart-filled', unicode: 'e641', provider: 'custom', base: 'heart-filled', rotate: 0 },
+	{ font_class: 'star-filled', unicode: 'e68f', provider: 'custom', base: 'star-filled', rotate: 0 },
+	{ font_class: 'starhalf', unicode: 'e683', provider: 'custom', base: 'starhalf', rotate: 0 },
+	{ font_class: 'mic', unicode: 'e671', provider: 'custom', base: 'mic', rotate: 0 },
+	{ font_class: 'mic-filled', unicode: 'e677', provider: 'custom', base: 'mic-filled', rotate: 0 },
+	{ font_class: 'micoff', unicode: 'e67e', provider: 'custom', base: 'micoff', rotate: 0 },
+	{ font_class: 'micoff-filled', unicode: 'e6b0', provider: 'custom', base: 'micoff-filled', rotate: 0 },
+	{ font_class: 'sound', unicode: 'e684', provider: 'custom', base: 'sound', rotate: 0 },
+	{ font_class: 'sound-filled', unicode: 'e686', provider: 'custom', base: 'sound-filled', rotate: 0 },
+	{ font_class: 'sound-slash', unicode: 'e81f', provider: 'custom', base: 'sound-slash', rotate: 0 },
+	{ font_class: 'sound-slash-filled', unicode: 'e820', provider: 'custom', base: 'sound-slash-filled', rotate: 0 },
+	{ font_class: 'paperplane', unicode: 'e672', provider: 'custom', base: 'paperplane', rotate: 0 },
+	{ font_class: 'paperplane-filled', unicode: 'e675', provider: 'custom', base: 'paperplane-filled', rotate: 0 },
+	{ font_class: 'cloud-upload', unicode: 'e645', provider: 'custom', base: 'cloud-upload', rotate: 0 },
+	{ font_class: 'cloud-upload-filled', unicode: 'e648', provider: 'custom', base: 'cloud-upload-filled', rotate: 0 },
+	{ font_class: 'download', unicode: 'e68d', provider: 'custom', base: 'download', rotate: 0 },
+	{ font_class: 'location', unicode: 'e6ae', provider: 'custom', base: 'location', rotate: 0 },
+	{ font_class: 'location-filled', unicode: 'e6af', provider: 'custom', base: 'location-filled', rotate: 0 },
+	{ font_class: 'map-pin', unicode: 'e6ad', provider: 'custom', base: 'map-pin', rotate: 0 },
+	{ font_class: 'map-pin-ellipse', unicode: 'e6ac', provider: 'custom', base: 'map-pin-ellipse', rotate: 0 },
+	{ font_class: 'sidebar', unicode: 'e81c', provider: 'custom', base: 'sidebar', rotate: 0 },
+	{ font_class: 'copy', unicode: 'e81d', provider: 'custom', base: 'copy', rotate: 0 },
+	{ font_class: 'share', unicode: 'e81e', provider: 'custom', base: 'share', rotate: 0 },
+	{ font_class: 'logout', unicode: 'e821', provider: 'custom', base: 'logout', rotate: 0 },
+	{ font_class: 'bars', unicode: 'e627', provider: 'custom', base: 'bars', rotate: 0 },
+	{ font_class: 'compose', unicode: 'e67f', provider: 'custom', base: 'compose', rotate: 0 },
+	{ font_class: 'font', unicode: 'e6a3', provider: 'custom', base: 'font', rotate: 0 },
+	{ font_class: 'gear', unicode: 'e664', provider: 'custom', base: 'gear', rotate: 0 },
+	{ font_class: 'list', unicode: 'e644', provider: 'custom', base: 'list', rotate: 0 },
+	{ font_class: 'pulldown', unicode: 'e632', provider: 'custom', base: 'pulldown', rotate: 0 },
+	{ font_class: 'reload', unicode: 'e6b2', provider: 'custom', base: 'reload', rotate: 0 },
+	{ font_class: 'scan', unicode: 'e62a', provider: 'custom', base: 'scan', rotate: 0 },
+	{ font_class: 'spinner-cycle', unicode: 'e68a', provider: 'custom', base: 'spinner-cycle', rotate: 0 },
+	{ font_class: 'trash', unicode: 'e687', provider: 'custom', base: 'trash', rotate: 0 },
+] as iconType[]
+/* #endif */
+
+/* #ifdef WEB || MP */
+export const builtinIconList = [
+	{ font_class: 'left', unicode: 'e601', provider: 'builtin', base: 'uni-icon', rotate: 0 },
+	{ font_class: 'top', unicode: 'e601', provider: 'builtin', base: 'uni-icon', rotate: 90 },
+	{ font_class: 'right', unicode: 'e601', provider: 'builtin', base: 'uni-icon', rotate: 180 },
+	{ font_class: 'bottom', unicode: 'e601', provider: 'builtin', base: 'uni-icon', rotate: -90 },
+	{ font_class: 'checkmarkempty', unicode: 'ea08', provider: 'builtin', base: 'uni-icon', rotate: 0 },
+	{ font_class: 'closeempty', unicode: 'e650', provider: 'builtin', base: 'uni-icon', rotate: 0 },
+	{ font_class: 'plusempty', unicode: 'e650', provider: 'builtin', base: 'uni-icon', rotate: 45 },
+	{ font_class: 'info-filled', unicode: 'ea03', provider: 'builtin', base: 'uni-icon', rotate: 0 },
+	{ font_class: 'search', unicode: 'ea23', provider: 'builtin', base: 'uni-icon', rotate: 0 },
+] as iconType[]
+
+export const transformIconList = [
+	{ font_class: 'left', unicode: 'e601', provider: 'builtin', base: 'uni-icon', rotate: 0 },
+	{ font_class: 'top', unicode: 'e601', provider: 'builtin', base: 'uni-icon', rotate: 90 },
+	{ font_class: 'right', unicode: 'e601', provider: 'builtin', base: 'uni-icon', rotate: 180 },
+	{ font_class: 'bottom', unicode: 'e601', provider: 'builtin', base: 'uni-icon', rotate: -90 },
+	{ font_class: 'closeempty', unicode: 'e650', provider: 'builtin', base: 'uni-icon', rotate: 0 },
+	{ font_class: 'plusempty', unicode: 'e650', provider: 'builtin', base: 'uni-icon', rotate: 45 },
+	{ font_class: 'close', unicode: 'e673', provider: 'custom', base: 'close', rotate: 0 },
+	{ font_class: 'plus', unicode: 'e673', provider: 'custom', base: 'close', rotate: 45 },
+	{ font_class: 'clear', unicode: 'e66d', provider: 'custom', base: 'clear', rotate: 0 },
+	{ font_class: 'plus-filled', unicode: 'e66d', provider: 'custom', base: 'clear', rotate: 45 },
+	{ font_class: 'arrow-left', unicode: 'e6bc', provider: 'custom', base: 'arrow-left', rotate: 0 },
+	{ font_class: 'arrow-up', unicode: 'e6bc', provider: 'custom', base: 'arrow-left', rotate: 90 },
+	{ font_class: 'arrow-right', unicode: 'e6bc', provider: 'custom', base: 'arrow-left', rotate: 180 },
+	{ font_class: 'arrow-down', unicode: 'e6bc', provider: 'custom', base: 'arrow-left', rotate: -90 },
+	{ font_class: 'first-page', unicode: 'e777', provider: 'custom', base: 'first-page', rotate: 0 },
+	{ font_class: 'last-page', unicode: 'e777', provider: 'custom', base: 'first-page', rotate: 180 },
+] as iconType[]
+
+export const extensionIconList = [
+	{ font_class: 'home', unicode: 'e662', provider: 'custom', base: 'home', rotate: 0 },
+	{ font_class: 'home-filled', unicode: 'e663', provider: 'custom', base: 'home-filled', rotate: 0 },
+	{ font_class: 'eye', unicode: 'e651', provider: 'custom', base: 'eye', rotate: 0 },
+	{ font_class: 'eye-filled', unicode: 'e66a', provider: 'custom', base: 'eye-filled', rotate: 0 },
+	{ font_class: 'eye-slash', unicode: 'e6b4', provider: 'custom', base: 'eye-slash-filled', rotate: 0 },
+	{ font_class: 'eye-slash-filled', unicode: 'e6b4', provider: 'custom', base: 'eye-slash-filled', rotate: 0 },
+	{ font_class: 'camera', unicode: 'e65a', provider: 'custom', base: 'camera', rotate: 0 },
+	{ font_class: 'camera-filled', unicode: 'e658', provider: 'custom', base: 'camera-filled', rotate: 0 },
+	{ font_class: 'images', unicode: 'e650', provider: 'custom', base: 'images', rotate: 0 },
+	{ font_class: 'images-filled', unicode: 'e64b', provider: 'custom', base: 'images-filled', rotate: 0 },
+	{ font_class: 'contact', unicode: 'e693', provider: 'custom', base: 'contact', rotate: 0 },
+	{ font_class: 'contact-filled', unicode: 'e695', provider: 'custom', base: 'contact-filled', rotate: 0 },
+	{ font_class: 'person', unicode: 'e699', provider: 'custom', base: 'person', rotate: 0 },
+	{ font_class: 'person-filled', unicode: 'e69d', provider: 'custom', base: 'person-filled', rotate: 0 },
+	{ font_class: 'chatbubble', unicode: 'e697', provider: 'custom', base: 'chatbubble', rotate: 0 },
+	{ font_class: 'chatbubble-filled', unicode: 'e694', provider: 'custom', base: 'chatbubble-filled', rotate: 0 },
+	{ font_class: 'more', unicode: 'e64d', provider: 'custom', base: 'more', rotate: 0 },
+	{ font_class: 'more-filled', unicode: 'e64e', provider: 'custom', base: 'more-filled', rotate: 0 },
+	{ font_class: 'checkbox', unicode: 'e62b', provider: 'custom', base: 'checkbox', rotate: 0 },
+	{ font_class: 'checkbox-filled', unicode: 'e62c', provider: 'custom', base: 'checkbox-filled', rotate: 0 },
+	{ font_class: 'circle', unicode: 'e65b', provider: 'custom', base: 'circle', rotate: 0 },
+	{ font_class: 'circle-filled', unicode: 'e65e', provider: 'custom', base: 'circle-filled', rotate: 0 },
+	{ font_class: 'minus', unicode: 'e66f', provider: 'custom', base: 'minus', rotate: 0 },
+	{ font_class: 'minus-filled', unicode: 'e67d', provider: 'custom', base: 'minus-filled', rotate: 0 },
+	{ font_class: 'help', unicode: 'e679', provider: 'custom', base: 'help', rotate: 0 },
+	{ font_class: 'help-filled', unicode: 'e674', provider: 'custom', base: 'help-filled', rotate: 0 },
+	{ font_class: 'info', unicode: 'e669', provider: 'custom', base: 'info', rotate: 0 },
+	{ font_class: 'hand-up', unicode: 'e63f', provider: 'custom', base: 'hand-up', rotate: 0 },
+	{ font_class: 'hand-up-filled', unicode: 'e63e', provider: 'custom', base: 'hand-up-filled', rotate: 0 },
+	{ font_class: 'hand-down', unicode: 'e63d', provider: 'custom', base: 'hand-down', rotate: 0 },
+	{ font_class: 'hand-down-filled', unicode: 'e63c', provider: 'custom', base: 'hand-down-filled', rotate: 0 },
+	{ font_class: 'heart', unicode: 'e639', provider: 'custom', base: 'heart', rotate: 0 },
+	{ font_class: 'heart-filled', unicode: 'e641', provider: 'custom', base: 'heart-filled', rotate: 0 },
+	{ font_class: 'star', unicode: 'e688', provider: 'custom', base: 'star', rotate: 0 },
+	{ font_class: 'star-filled', unicode: 'e68f', provider: 'custom', base: 'star-filled', rotate: 0 },
+	{ font_class: 'starhalf', unicode: 'e683', provider: 'custom', base: 'starhalf', rotate: 0 },
+	{ font_class: 'mic', unicode: 'e671', provider: 'custom', base: 'mic', rotate: 0 },
+	{ font_class: 'mic-filled', unicode: 'e677', provider: 'custom', base: 'mic-filled', rotate: 0 },
+	{ font_class: 'micoff', unicode: 'e67e', provider: 'custom', base: 'micoff', rotate: 0 },
+	{ font_class: 'micoff-filled', unicode: 'e6b0', provider: 'custom', base: 'micoff-filled', rotate: 0 },
+	{ font_class: 'sound', unicode: 'e684', provider: 'custom', base: 'sound', rotate: 0 },
+	{ font_class: 'sound-filled', unicode: 'e686', provider: 'custom', base: 'sound-filled', rotate: 0 },
+	{ font_class: 'sound-slash', unicode: 'e81f', provider: 'custom', base: 'sound-slash', rotate: 0 },
+	{ font_class: 'sound-slash-filled', unicode: 'e820', provider: 'custom', base: 'sound-slash-filled', rotate: 0 },
+	{ font_class: 'paperplane', unicode: 'e672', provider: 'custom', base: 'paperplane', rotate: 0 },
+	{ font_class: 'paperplane-filled', unicode: 'e675', provider: 'custom', base: 'paperplane-filled', rotate: 0 },
+	{ font_class: 'cloud-upload', unicode: 'e645', provider: 'custom', base: 'cloud-upload', rotate: 0 },
+	{ font_class: 'cloud-upload-filled', unicode: 'e648', provider: 'custom', base: 'cloud-upload-filled', rotate: 0 },
+	{ font_class: 'download', unicode: 'e68d', provider: 'custom', base: 'download', rotate: 0 },
+	{ font_class: 'location', unicode: 'e6ae', provider: 'custom', base: 'location', rotate: 0 },
+	{ font_class: 'location-filled', unicode: 'e6af', provider: 'custom', base: 'location-filled', rotate: 0 },
+	{ font_class: 'map-pin', unicode: 'e6ad', provider: 'custom', base: 'map-pin', rotate: 0 },
+	{ font_class: 'map-pin-ellipse', unicode: 'e6ac', provider: 'custom', base: 'map-pin-ellipse', rotate: 0 },
+	{ font_class: 'sidebar', unicode: 'e81c', provider: 'custom', base: 'sidebar', rotate: 0 },
+	{ font_class: 'copy', unicode: 'e81d', provider: 'custom', base: 'copy', rotate: 0 },
+	{ font_class: 'share', unicode: 'e81e', provider: 'custom', base: 'share', rotate: 0 },
+	{ font_class: 'logout', unicode: 'e821', provider: 'custom', base: 'logout', rotate: 0 },
+	{ font_class: 'bars', unicode: 'e627', provider: 'custom', base: 'bars', rotate: 0 },
+	{ font_class: 'compose', unicode: 'e67f', provider: 'custom', base: 'compose', rotate: 0 },
+	{ font_class: 'font', unicode: 'e6a3', provider: 'custom', base: 'font', rotate: 0 },
+	{ font_class: 'gear', unicode: 'e664', provider: 'custom', base: 'gear', rotate: 0 },
+	{ font_class: 'list', unicode: 'e644', provider: 'custom', base: 'list', rotate: 0 },
+	{ font_class: 'pulldown', unicode: 'e632', provider: 'custom', base: 'pulldown', rotate: 0 },
+	{ font_class: 'reload', unicode: 'e6b2', provider: 'custom', base: 'reload', rotate: 0 },
+	{ font_class: 'scan', unicode: 'e62a', provider: 'custom', base: 'scan', rotate: 0 },
+	{ font_class: 'spinner-cycle', unicode: 'e68a', provider: 'custom', base: 'spinner-cycle', rotate: 0 },
+	{ font_class: 'trash', unicode: 'e687', provider: 'custom', base: 'trash', rotate: 0 },
+] as iconType[]
+/* #endif */

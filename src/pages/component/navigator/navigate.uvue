@@ -1,9 +1,15 @@
 <template>
   <page-head :title="title"></page-head>
+  <view class="uni-padding-wrap uni-common-mt">
+    <navigator id="navigate-back-one" open-type="navigateBack" :delta="1">
+      <button type="default">delta=1：返回 navigator 示例页</button>
+    </navigator>
+    <navigator class="uni-common-mt" id="navigate-back-two" open-type="navigateBack" :delta="2">
+      <button type="default">delta=2：返回两层（不足时返回首页）</button>
+    </navigator>
+  </view>
 </template>
 
 <script setup lang="ts">
-
-
 const title = ref('新建的页面')
 </script>

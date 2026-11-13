@@ -19,8 +19,8 @@
   <!-- #ifdef APP -->
    ref="richTextNativeRef"
    :selectable="isSelectable"
-   :selection-handle-color="props.selectionHandleColor"
-   :selection-background-color="props.selectionBackgroundColor"
+   :selection-handle-color="selectionHandleColor"
+   :selection-background-color="selectionBackgroundColor"
    :disable-split-screen-render="isInRecycleContainer"
    @selectionchange="onSelectionChange"
   <!-- #endif -->
@@ -129,54 +129,12 @@
       }
      */
     userSelect : boolean
-    /**
-     * 选择区域高亮手柄颜色
-     * @uniPlatform {
-        "app": {
-          "android": {
-            "unixVer": "x",
-            "unixVaporVer": "5.21"
-          },
-          "ios": {
-            "unixVer": "x",
-            "unixVaporVer": "5.22"
-          },
-          "harmony": {
-            "unixVer": "x",
-            "unixVaporVer": "x"
-          }
-        }
-      }
-     */
-    selectionHandleColor : string
-    /**
-     * 选择区域高亮背景颜色
-     * @uniPlatform {
-        "app": {
-          "android": {
-            "unixVer": "x",
-            "unixVaporVer": "5.21"
-          },
-          "ios": {
-            "unixVer": "x",
-            "unixVaporVer": "5.22"
-          },
-          "harmony": {
-            "unixVer": "x",
-            "unixVaporVer": "x"
-          }
-        }
-      }
-     */
-    selectionBackgroundColor : string
   }
   const props = withDefaults(defineProps<RichTextProps1>(), {
     nodes: '',
     mode: 'web',
     selectable: false,
-    userSelect: false,
-    selectionHandleColor: '#4285F4FF',
-    selectionBackgroundColor: '#33B5E566',
+    userSelect: false
   })
 
   // 事件定义
@@ -238,11 +196,12 @@
   } as UseComputedStyleOptions)
   const selectionStyle = useComputedStyle({
     pseudoElement: '::selection',
-    properties: ['color', 'background-color'],
+    properties: ['color', 'background-color', 'caret-color'],
     filterProperties: false
   } as UseComputedStyleOptions)
   const selectionColor = computed<string | null>(() => selectionStyle.get('color')?.toString() ?? null)
-  const selectionBackgroundColor = computed<string | null>(() => selectionStyle.get('background-color')?.toString() ?? null)
+  const selectionBackgroundColor = computed<string | null>(() => selectionStyle.get('background-color')?.toString() ?? '#33B5E566')
+  const selectionHandleColor = computed<string | null>(() => selectionStyle.get('caret-color')?.toString() ?? '#4285F4FF')
   const nativeStyle = computed(() : Map<string, any> => {
     const result = new Map<string, any>()
     style.forEach((value, key) => {

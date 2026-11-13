@@ -3,13 +3,6 @@ const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
 
 describe('component-native-sticky-header', () => {
-  if (isMP) {
-  	it('skip', () => {
-  		expect(1).toBe(1)
-  	})
-  	return
-  }
-
   let page
   const screenshotParams = { fullPage: true }
 

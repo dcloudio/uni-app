@@ -1,6 +1,6 @@
 <template>
   <text class="uni-h4">手风琴模式（accordion = true）</text>
-  <text class="section-desc">同一时间只保持一个面板展开，展开新面板会自动收起其它面板。</text>
+  <text class="uni-info">同一时间只保持一个面板展开，展开新面板会自动收起其它面板。</text>
   <uni-collapse :accordion="true">
     <uni-collapse-item title="面板 A（默认展开）" :open="data.enableOpen" @change="onPanelAChange">
       <view class="content-box" @click="onPanelAClick">
@@ -20,7 +20,7 @@
   </uni-collapse>
 
   <text class="uni-h4">普通模式（accordion = false，可同时展开）</text>
-  <text class="section-desc">每个面板独立展开、独立收起，change 事件参数为当前面板的展开状态。</text>
+  <text class="uni-info">每个面板独立展开、独立收起，change 事件参数为当前面板的展开状态。</text>
   <uni-collapse :accordion="false">
     <uni-collapse-item v-for="(group, index) in categoryGroups" :key="group.title" :title="group.title"
       @change="onCategoryChange(group.title, $event as boolean)">
@@ -35,7 +35,7 @@
   </uni-collapse>
 
   <text class="uni-h4">externalClass：title-class / arrow-class</text>
-  <text class="section-desc">标题文字与右侧箭头均可通过外部样式类定制，可单独使用也可组合使用。</text>
+  <text class="uni-info">标题文字与右侧箭头均可通过外部样式类定制，可单独使用也可组合使用。</text>
   <uni-collapse :accordion="false">
     <uni-collapse-item title="自定义标题文字" title-class="demo-title-emphasis">
       <view class="content-box">
@@ -55,7 +55,7 @@
   </uni-collapse>
 
   <text class="uni-h4">externalClass：title-wrap-class / content-wrap-class / 状态类</text>
-  <text class="section-desc">title-wrap-class 控制标题行容器，content-wrap-class 控制内容外层容器；title-open-class、title-disabled-class、arrow-open-class、arrow-disabled-class 分别在展开态、禁用态叠加。</text>
+  <text class="uni-info">title-wrap-class 控制标题行容器，content-wrap-class 控制内容外层容器；title-open-class、title-disabled-class、arrow-open-class、arrow-disabled-class 分别在展开态、禁用态叠加。</text>
   <uni-collapse :accordion="false">
     <uni-collapse-item title="全部状态类" :open="true" title-wrap-class="demo-title-wrap" title-class="demo-title-strong"
       title-open-class="demo-title-open" title-disabled-class="demo-title-disabled" content-wrap-class="demo-content-wrap"
@@ -75,7 +75,7 @@
   </uni-collapse>
 
   <text class="uni-h4">title 具名插槽（插槽参数 open、disabled）</text>
-  <text class="section-desc">传入 #title 可完全替换默认标题结构，插槽提供 open 和 disabled 两个状态参数。</text>
+  <text class="uni-info">传入 #title 可完全替换默认标题结构，插槽提供 open 和 disabled 两个状态参数。</text>
   <uni-collapse :accordion="false">
     <uni-collapse-item>
       <template #title="{ open, disabled }">
@@ -104,12 +104,12 @@
   </uni-collapse>
 
   <text class="uni-h4">组件方法：openCollapse / openOrClose</text>
-  <text class="section-desc">openCollapse(open) 会遵循 disabled 与手风琴逻辑并触发 change；openOrClose(open) 只直接切换内容显示状态，不触发 change。</text>
+  <text class="uni-info">openCollapse(open) 会遵循 disabled 与手风琴逻辑并触发 change；openOrClose(open) 只直接切换内容显示状态，不触发 change。</text>
   <view class="button-row">
-    <button class="demo-btn" size="mini" @click="callOpenCollapse(true)">openCollapse(true)</button>
-    <button class="demo-btn" size="mini" @click="callOpenCollapse(false)">openCollapse(false)</button>
-    <button class="demo-btn" size="mini" @click="callOpenOrClose(true)">openOrClose(true)</button>
-    <button class="demo-btn" size="mini" @click="callOpenOrClose(false)">openOrClose(false)</button>
+    <button class="uni-margin-right-bottom-md" size="mini" @click="callOpenCollapse(true)">openCollapse(true)</button>
+    <button class="uni-margin-right-bottom-md" size="mini" @click="callOpenCollapse(false)">openCollapse(false)</button>
+    <button class="uni-margin-right-bottom-md" size="mini" @click="callOpenOrClose(true)">openOrClose(true)</button>
+    <button class="uni-margin-right-bottom-md" size="mini" @click="callOpenOrClose(false)">openOrClose(false)</button>
   </view>
   <uni-collapse :accordion="false">
     <uni-collapse-item ref="methodItemRef" title="方法控制面板" @change="onMethodChange">
@@ -119,8 +119,8 @@
     </uni-collapse-item>
   </uni-collapse>
 
-  <text class="uni-h4">暗黑模式 externalClass 示例</text>
-  <text class="section-desc">通过 class 与 externalClass 组合定制暗色卡片样式，与系统主题无关，始终按暗色渲染。</text>
+  <text class="uni-h4">自定义特殊暗黑模式 externalClass 示例</text>
+  <text class="uni-info">通过 class 与 externalClass 组合定制暗色卡片样式，与系统主题无关，始终按暗色渲染。</text>
   <uni-collapse :accordion="false">
     <uni-collapse-item class="dark-collapse-item" title="暗色标题 A" :open="true" title-wrap-class="dark-title-wrap"
       title-class="dark-title-text" title-open-class="dark-title-text-open" content-wrap-class="dark-content-wrap"
@@ -146,7 +146,7 @@
   </uni-collapse>
 
   <text class="uni-h4">最近事件（change 事件参数 open）</text>
-  <text class="log-text">{{ data.lastEvent }}</text>
+  <text class="uni-log">{{ data.lastEvent }}</text>
 </template>
 
 <script setup lang="ts">
@@ -240,17 +240,6 @@
 </script>
 
 <style>
-  page {
-    padding: 12px;
-  }
-
-  .section-desc {
-    margin-bottom: 8px;
-    font-size: 12px;
-    line-height: 18px;
-    color: var(--secondary-text-color, #999999);
-  }
-
   .content-box {
     padding: 12px 18px;
   }
@@ -426,11 +415,6 @@
     margin-bottom: 8px;
   }
 
-  .demo-btn {
-    margin-right: 8px;
-    margin-bottom: 8px;
-  }
-
   .dark-collapse-item {
     background-color: #111827;
   }
@@ -515,10 +499,6 @@
     border-bottom-color: #94a3b8;
   }
 
-  .log-text {
-    font-size: 13px;
-    color: #2563eb;
-  }
 
   @media (prefers-color-scheme: dark) {
     .demo-title-accent {
@@ -554,10 +534,6 @@
     .slot-title-badge--open {
       color: #bfdbfe;
       background-color: #1e3a8a;
-    }
-
-    .log-text {
-      color: #60a5fa;
     }
   }
 </style>

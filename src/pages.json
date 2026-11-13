@@ -247,7 +247,6 @@
 			}
 		},
 		// #endif
-		// #ifdef APP-ANDROID || APP-HARMONY || APP-IOS || WEB
 		{
 			"path": "pages/component/sticky-section/sticky-section",
 			"group": "0,1,10,1",
@@ -256,7 +255,6 @@
 				"disableScroll": true
 			}
 		},
-		// #endif
 		// #ifdef APP-ANDROID || APP-HARMONY || APP-IOS
 		{
 			"path": "pages/component/sticky-section/sticky-section-push-pinned-header",
@@ -266,7 +264,6 @@
 			}
 		},
 		// #endif
-		// #ifdef APP-ANDROID || APP-HARMONY || APP-IOS || WEB
 		{
 			"path": "pages/component/sticky-header/sticky-header",
 			"group": "0,1,10,0",
@@ -276,7 +273,6 @@
 				"disableScroll": true
 			}
 		},
-		// #endif
 		{
 			"path": "pages/component/text/text",
 			"group": "0,2,1",

@@ -271,7 +271,14 @@
   }
 
   if (!props.inDataPicker) {
-    dataPicker.loadData()
+    if (dataPicker.isCloudData && dataPicker.hasCloudDataValue) {
+      // 直接使用时没有弹窗打开时机，需先回显已选路径，再加载列表数据
+      dataPicker.loadCloudDataPath(() => {
+        dataPicker.loadData()
+      })
+    } else {
+      dataPicker.loadData()
+    }
   }
 
   /**
@@ -282,6 +289,8 @@
     if (selectedPaths.length > 0) {
       dataPicker.selectedPaths = selectedPaths
     }
+    dataPicker.selectedNodes = []
+    dataPicker.selectedPages = []
     dataPicker.loadData()
   }
 

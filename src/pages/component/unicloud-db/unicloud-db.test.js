@@ -13,7 +13,7 @@ describe('unicloud-db', () => {
   let page
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
-    await page.waitFor(500)
+    await page.waitFor('view')
   })
   it('check udb ref methods', async () => {
     const res = await page.callMethod('checkUdbRefMethods')

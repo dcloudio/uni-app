@@ -75,11 +75,45 @@
 </style>
 ```
 
+## 图标调整
+
+图标名称和使用方式保持不变。组件优先使用当前平台支持的 uni-app x [内置图标](https://doc.dcloud.net.cn/uni-app-x/css/common/at-rules.html#uniicon)。
+
+### 内置图标
+
+| `type` | 内置图标 | 支持平台 |
+| --- | --- | --- |
+| `left` | `back` | App、Web、小程序 |
+| `closeempty` | `close` | App、Web、小程序 |
+| `checkmarkempty` | `success_no_circle` | App、Web、小程序 |
+| `info-filled` | `info` | App、Web、小程序 |
+| `search` | `search` | App、Web、小程序 |
+| `checkbox` | `success circle` | App |
+| `checkbox-filled` | `success` | App |
+| `close` | `cancel circle` | App |
+| `clear` | `clear` | App |
+| `info` | `info circle` | App |
+| `circle` | `circle` | App |
+| `star` | `favorites` | App |
+| `home` | `home` | App |
+| `more-filled` | `more` | App |
+
+### 通过 transform 实现的图标
+
+| `type` | 基础图标 | 处理方式 |
+| --- | --- | --- |
+| `top`、`up` | `left` | 旋转 90° |
+| `right` | `left` | 旋转 180° |
+| `bottom`、`down` | `left` | 旋转 -90° |
+| `plusempty` | `closeempty` | 旋转 45° |
+| `plus` | `close` | 旋转 45° |
+| `plus-filled` | `clear` | 旋转 45° |
+| `arrow-up` | `arrow-left` | 旋转 90° |
+| `arrow-right` | `arrow-left` | 旋转 180° |
+| `arrow-down` | `arrow-left` | 旋转 -90° |
+| `last-page`、`skip-right-line` | `first-page` | 旋转 180° |
+
 ## 注意事项
 
 - 通过 `style` 设置的内联样式会覆盖组件默认样式。
 - 使用全局 class 覆盖 `font-family` 时，可能需要使用 `!important`。
-
-## 图标维护
-
-字体、名称映射、类型和 Web/小程序伪类由仓库内的图标工具统一维护。伪类自动生成到 `uni-icons.css`，并只在 `WEB || MP` 条件下加载；App 使用 `icons.ts` 和 TTF。不要直接编辑字体文件、映射或生成的 CSS。环境准备、维护页面、兼容性规则和操作流程见 [`tools/uni-icons/README.md`](../../tools/uni-icons/README.md)。

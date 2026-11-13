@@ -4,7 +4,7 @@
 	</uni-badge-view>
 	<!-- 动态badge -->
 	<text class="uni-h4">badge动态设置text属性：</text>
-	<text class="label" style="margin-bottom: 10px;">输入0不显示badge，空字符串显示红点，输入其他显示文字</text>
+	<text class="uni-info">输入0不显示badge，空字符串显示红点，输入其他显示文字</text>
 	<input v-model="data.dynamicBadgeText" placeholder="输入badge text属性" class="demo-input" />
 	<uni-badge-view :text="data.dynamicBadgeText">
 		<view style="width: 20px;height: 20px;background-color: green;"></view>
@@ -35,7 +35,7 @@
 	<text class="uni-h4">文字样式：</text>
 	<uni-badge-view text="3">
 		<view style="width: 80px;">
-			<text class="label">20px区域</text>
+			<text>20px区域</text>
 		</view>
 	</uni-badge-view>
 
@@ -140,14 +140,6 @@
 </script>
 
 <style>
-	page {
-		padding: 20px 5px 5px;
-	}
-
-	.label {
-		color: var(--text-color, #333333);
-	}
-
 	.demo-input {
 		border-width: 1px;
 		border-style: solid;
@@ -156,7 +148,9 @@
 		width: 200px;
 		height: 24px;
 		padding-left: 2px;
-		color: var(--text-color, #333333);
+		/* #ifdef uniVersion <5.36 */
+		color: var(--text-color, #333333); /* 高版本已经自动适配暗黑,无需额外写代码*/
+		/* #endif */
 	}
 
 	.align-self-start {

@@ -23,6 +23,7 @@ import fs from '@ohos.file.fs';
 import photoAccessHelper from '@ohos.file.photoAccessHelper'
 import common from '@ohos.app.ability.common';
 import fileUri from '@ohos.file.fileuri';
+import { _getImageInfo, _getVideoInfo } from './media.uts'
 
 async function saveUri(src: string, dest: string) {
     const srcFile = fs.openSync(src, fs.OpenMode.READ_ONLY)
@@ -61,6 +62,22 @@ function fileExists(filePath: string): boolean {
     }
 }
 
+/**
+ * 根据 mimeType 获取文件扩展名（不带 `.` 前缀）
+ * 参考：uni-network/utssdk/app-harmony/network/mime.uts
+ */
+function getExtensionByMimeType(mimeType: string): string {
+    if (!mimeType) {
+        return ''
+    }
+    try {
+        const rawMimeType = mimeType.split(';')[0].trim().toLowerCase()
+        return (UTSHarmony.getExtensionFromMimeType(rawMimeType) as string | null) ?? ''
+    } catch (error) {
+        return ''
+    }
+}
+
 async function saveMediaToAlbum(fromUri: string, type: 'image' | 'video'): Promise<string | ISaveMediaError> {
     // unifile:// 协议路径（如 unifile://cache/xxx.png）会在此转为真实路径；
     // fileUri.getUriFromPath 仅支持绝对路径，直接传入 unifile:// 会报 Invalid argument
@@ -73,7 +90,22 @@ async function saveMediaToAlbum(fromUri: string, type: 'image' | 'video'): Promi
 
     const fileNameParts = fileName.split('.')
     const title = fileNameParts[0]
-    const fileNameExtension = fileNameParts.pop()!
+    let fileNameExtension = fileNameParts.length > 1 ? fileNameParts.pop()! : ''
+    if (!fileNameExtension) {
+        // 文件名无后缀时，读取文件信息获取 mimeType，再根据 mimeType 获取扩展名
+        try {
+            if (type === 'image') {
+                fileNameExtension = (await _getImageInfo(realPath)).type ?? ''
+            } else {
+                const videoInfo = await _getVideoInfo(realPath)
+                fileNameExtension = getExtensionByMimeType(videoInfo.type ?? '')
+            }
+        } catch (ignored) {
+        }
+        if (!fileNameExtension) {
+            fileNameExtension = type === 'image' ? 'png' : 'mp4'
+        }
+    }
     const photoCreationConfigs: Array<photoAccessHelper.PhotoCreationConfig> = [
         {
             title, // 鸿蒙文档上说可选，但实际不可选，另外其中也不可包含`.`

@@ -1,32 +1,27 @@
 <template>
-  <view class="intro">
-    <text class="page-title">uni-combobox 组合框</text>
-    <text class="page-desc">默认单选模式只能从候选项中选择；传入 input 插槽后，可输入并按输入内容过滤候选项。</text>
-  </view>
-
-  <text class="uni-h4">options：候选字符串数组</text>
+  <text class="uni-h4">仅选择 options：候选字符串数组</text>
   <uni-combobox
     :options="gradeOptions"
     placeholder="请选择年级"
     v-model="optionsValue"
   />
-  <text class="result-text">当前选择：{{ optionsValue }}</text>
+  <text class="uni-log">当前选择：{{ optionsValue }}</text>
 
-  <text class="uni-h4">placeholder：占位文字</text>
+  <text class="uni-h4">仅选择 placeholder演示</text>
+  <text class="uni-info">未选择时展示占位文字</text>
   <uni-combobox
     :options="cityOptions"
     placeholder="这里展示 placeholder"
     v-model="placeholderValue"
   />
-  <text class="result-text">未选择时展示占位文字</text>
 
-  <text class="uni-h4">modelValue / v-model：双向绑定</text>
+  <text class="uni-h4">仅选择 modelValue / v-model：双向绑定</text>
   <uni-combobox
     :options="cityOptions"
     v-model="modelValue"
     placeholder="请选择城市"
   />
-  <text class="result-text">当前选择：{{ modelValue }}</text>
+  <text class="uni-log">当前选择：{{ modelValue }}</text>
 
   <text class="uni-h4">disabled：禁用状态</text>
   <uni-combobox
@@ -34,10 +29,10 @@
     v-model="disabledValue"
     disabled
   />
-  <text class="result-text">禁用时不可展开或修改：{{ disabledValue }}</text>
+  <text class="uni-log">禁用时不可展开或修改：{{ disabledValue }}</text>
 
   <text class="uni-h4">input 插槽：可输入可选择</text>
-  <text class="section-desc">插槽提供 value、input、focus、disabled 四个参数，输入时按包含关系过滤候选。</text>
+  <text class="uni-info">插槽提供 value、input、focus、disabled 四个参数，输入时按包含关系过滤候选。</text>
   <uni-combobox
     :options="cityOptions"
     v-model="city"
@@ -49,13 +44,14 @@
         class="custom-input"
         :value="value"
         :disabled="disabled"
+        :confirm-hold="true"
         placeholder="选择或输入城市"
         @focus="focus"
         @input="input"
       />
     </template>
   </uni-combobox>
-  <text class="result-text">当前输入：{{ city }}</text>
+  <text class="uni-log">当前输入：{{ city }}</text>
 
   <text class="uni-h4">field-class：选择框样式</text>
   <uni-combobox
@@ -64,7 +60,7 @@
     v-model="borderlessValue"
     placeholder="无边框组合框"
   />
-  <text class="result-text">当前选择：{{ borderlessValue }}</text>
+  <text class="uni-log">当前选择：{{ borderlessValue }}</text>
 
   <text class="uni-h4">arrow-class：右侧箭头样式</text>
   <uni-combobox
@@ -73,7 +69,7 @@
     v-model="arrowClassValue"
     arrow-class="demo-arrow"
   />
-  <text class="result-text">当前选择：{{ arrowClassValue }}</text>
+  <text class="uni-log">当前选择：{{ arrowClassValue }}</text>
 
   <text class="uni-h4">options-view-class：候选浮层样式</text>
   <uni-combobox
@@ -82,7 +78,7 @@
     v-model="optionsViewClassValue"
     options-view-class="demo-options-view"
   />
-  <text class="result-text">当前选择：{{ optionsViewClassValue }}</text>
+  <text class="uni-log">当前选择：{{ optionsViewClassValue }}</text>
 
   <text class="uni-h4">options-content-class：浮层内容样式</text>
   <uni-combobox
@@ -91,7 +87,7 @@
     v-model="optionsContentClassValue"
     options-content-class="demo-options-content"
   />
-  <text class="result-text">当前选择：{{ optionsContentClassValue }}</text>
+  <text class="uni-log">当前选择：{{ optionsContentClassValue }}</text>
 
   <text class="uni-h4">option-text-class：候选项文字样式</text>
   <uni-combobox
@@ -100,7 +96,7 @@
     v-model="optionTextClassValue"
     option-text-class="demo-option-text"
   />
-  <text class="result-text">当前选择：{{ optionTextClassValue }}</text>
+  <text class="uni-log">当前选择：{{ optionTextClassValue }}</text>
 
   <text class="uni-h4">option-text-highlight-class：高亮项文字样式</text>
   <uni-combobox
@@ -108,7 +104,7 @@
     v-model="optionTextHighlightClassValue"
     option-text-highlight-class="demo-option-highlight"
   />
-  <text class="result-text">打开后当前匹配项会使用高亮文字样式：{{ optionTextHighlightClassValue }}</text>
+  <text class="uni-log">打开后当前匹配项会使用高亮文字样式：{{ optionTextHighlightClassValue }}</text>
 
   <text class="uni-h4">option-row-highlight-class：高亮项背景样式</text>
   <uni-combobox
@@ -117,7 +113,7 @@
     options-content-class="demo-full-highlight-content"
     option-row-highlight-class="demo-option-row-highlight"
   />
-  <text class="result-text">打开后当前选中项背景铺满候选区域并去除圆角：{{ optionRowHighlightValue }}</text>
+  <text class="uni-log">打开后当前选中项背景铺满候选区域并去除圆角：{{ optionRowHighlightValue }}</text>
 
   <text class="uni-h4">result-text-class：单选结果文字样式</text>
   <uni-combobox
@@ -125,7 +121,7 @@
     v-model="resultTextClassValue"
     result-text-class="demo-result-text"
   />
-  <text class="result-text">当前选择：{{ resultTextClassValue }}</text>
+  <text class="uni-log">当前选择：{{ resultTextClassValue }}</text>
 
   <text class="uni-h4">大量候选</text>
   <uni-combobox
@@ -133,7 +129,7 @@
     placeholder="请选择编号"
     v-model="largeValue"
   />
-  <text class="result-text">当前选择：{{ largeValue }}</text>
+  <text class="uni-log">当前选择：{{ largeValue }}</text>
 
   <text class="uni-h4">update:modelValue：值更新时触发</text>
   <uni-combobox
@@ -142,7 +138,7 @@
     placeholder="请选择城市"
     @update:modelValue="onUpdateModelValue"
   />
-  <text class="result-text">事件值：{{ updateEventText }}</text>
+  <text class="uni-log">事件值：{{ updateEventText }}</text>
 
   <text class="uni-h4">selectchange：从候选项选中时触发</text>
   <uni-combobox
@@ -151,17 +147,17 @@
     placeholder="请选择状态"
     @selectchange="onSelectChange"
   />
-  <text class="result-text">事件值：{{ selectEventText }}</text>
+  <text class="uni-log">事件值：{{ selectEventText }}</text>
 
   <text class="uni-h4">组件方法：setInputValue / openOptions / closeOptions</text>
-  <text class="section-desc">通过 ref 调用 openOptions 打开候选、closeOptions 关闭候选、setInputValue 设置值并以过滤模式打开。</text>
+  <text class="uni-info">通过 ref 调用 openOptions 打开候选、closeOptions 关闭候选、setInputValue 设置值并以过滤模式打开。</text>
   <view class="button-row">
     <button class="demo-btn" size="mini" @click="callOpenOptions">openOptions()</button>
     <button class="demo-btn" size="mini" @click="callCloseOptions">closeOptions()</button>
     <button class="demo-btn" size="mini" @click="callSetInputValue">setInputValue('杭州')</button>
   </view>
   <uni-combobox ref="comboboxRef" :options="cityOptions" v-model="methodValue" placeholder="通过方法控制" />
-  <text class="result-text">当前值：{{ methodValue }}</text>
+  <text class="uni-log">当前值：{{ methodValue }}</text>
 </template>
 
 <script setup lang="ts">
@@ -205,6 +201,7 @@ const cityOptions: string[] = [
 	'广州',
 	'深圳',
 	'杭州',
+	'南昌',
 	'南京',
 	'苏州',
 	'成都',
@@ -258,41 +255,6 @@ function callSetInputValue() {
 </script>
 
 <style>
-page {
-	padding: 16px;
-}
-
-.intro {
-	margin-bottom: 12px;
-}
-
-.page-title {
-	font-size: 18px;
-	font-weight: bold;
-	color: var(--text-color, #1f2937);
-	margin-bottom: 6px;
-}
-
-.page-desc {
-	font-size: 13px;
-	line-height: 20px;
-	color: var(--secondary-text-color, #64748b);
-}
-
-.section-desc {
-	margin-bottom: 8px;
-	font-size: 12px;
-	line-height: 18px;
-	color: var(--secondary-text-color, #999999);
-}
-
-.result-text {
-	margin-top: 8px;
-	margin-bottom: 4px;
-	font-size: 13px;
-	color: var(--secondary-text-color, #64748b);
-}
-
 .custom-input {
 	flex: 1;
 	width: 100%;

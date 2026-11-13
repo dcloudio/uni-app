@@ -92,6 +92,11 @@ function getDownloadFilePath(options: GetDownloadFilePathOptions): string {
         const ext = lookupExt(contentType) || ''
         const now = Date.now()
         realFileName = ext ? '' + now + '.' + ext : '' + now
+    } else if (realFileName.indexOf('.') === -1 && contentType) {
+        const ext = lookupExt(contentType) || ''
+        if (ext) {
+            realFileName = realFileName + '.' + ext
+        }
     }
     const lastIndexOfDot = realFileName.lastIndexOf('.')
     const realFileNameExt = realFileName.substring(lastIndexOfDot + 1)

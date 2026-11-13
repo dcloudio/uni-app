@@ -1,40 +1,101 @@
 <template>
   <page-head :title="title"></page-head>
   <view class="uni-padding-wrap uni-common-mt">
-    <navigator id="navigate" class="navigator" url="navigate?title=navigate">
+    <navigator id="navigate" class="uni-common-mb" url="navigate?title=navigate">
       <button type="default">跳转到新页面</button>
     </navigator>
-    <navigator id="redirect" class="navigator" url="redirect?title=redirect" open-type="redirect">
+    <navigator id="redirect" class="uni-common-mb" url="redirect?title=redirect" open-type="redirect">
       <button type="default">在当前页打开redirect</button>
     </navigator>
-    <navigator id="switchTab" class="navigator" url="/pages/tabBar/template" open-type="switchTab">
+    <navigator id="switchTab" class="uni-common-mb" url="/pages/tabBar/template" open-type="switchTab">
       <button type="default">切换到模板选项卡switchTab</button>
     </navigator>
-    <navigator id="reLaunch" class="navigator" url="/pages/tabBar/component" open-type="reLaunch">
+    <navigator id="reLaunch" class="uni-common-mb" url="/pages/tabBar/component" open-type="reLaunch">
       <button type="default">关闭所有页面回首页reLaunch</button>
     </navigator>
-    <navigator id="reLaunch" class="navigator" open-type="navigateBack">
+    <navigator id="reLaunch" class="uni-common-mb" open-type="navigateBack">
       <button type="default">返回上一页navigateBack</button>
     </navigator>
-    <navigator id="navigateToErrorPage" class="navigator" url="/pages/error-page/error-page">
+    <navigator id="navigateToErrorPage" class="uni-common-mb" url="/pages/error-page/error-page">
       <button type="default"> 打开不存在的页面 </button>
     </navigator>
-    <navigator id="navigateToErrorPage" class="navigator">
+    <navigator id="navigateToErrorPage" class="uni-common-mb">
       <button type="default"> 未指定URL的跳转 </button>
     </navigator>
     <navigator style="flex-direction: row;justify-content: space-between;">
       <text>两端对齐样式测试</text>
       <view style="width: 20px;height: 20px; background-color: aqua;"></view>
     </navigator>
+
+    <!-- #ifdef !MP -->
+    <navigator id="navigate-animation" class="uni-common-mb" url="navigate?title=animation" open-type="navigate" animation-type="slide-in-right" :animation-duration="600">
+      <button type="default">跳转动画：600ms（App 从右侧滑入）</button>
+    </navigator>
+    <!-- #endif -->
+    <!-- #ifdef APP -->
+    <navigator id="navigate-animation" class="uni-common-mb" url="navigate?title=animation" open-type="navigate"
+      animation-type="zoom-fade-out">
+      <button type="default">跳转动画：zoom-fade-out</button>
+    </navigator>
+    <!-- #endif -->
+    <view class="uni-common-mb hover-parent" hover-class="navigator-parent-hover">
+      <text>长按下方区域：150ms 后出现点击态，松开保留 800ms</text>
+      <navigator id="navigate-hover" class="uni-container hover-example" url="navigate?title=hover"
+        hover-class="navigator-pressed" :hover-start-time="150" :hover-stay-time="800"
+        <!-- #ifndef MP-ALIPAY -->
+        :hover-stop-propagation="true"
+        <!-- #endif -->
+      >
+        <text>自定义点击态（App、Web、微信阻止父级点击态）</text>
+      </navigator>
+    </view>
+
+    <!-- #ifdef MP-WEIXIN -->
+    <navigator id="navigate-self" class="uni-common-mb" target="self" url="navigate?title=target-self">
+      <button type="default">target=self：在当前应用中跳转</button>
+    </navigator>
+    <view class="uni-common-mb">
+      <text>跳转其他小程序</text>
+      <navigator id="navigate-mini-program" target="miniProgram"
+        open-type="navigate" app-id="wx999bf02c8e05dfc9" path="pages/tabBar/component/component"
+        @success="onMiniProgramSuccess" @fail="onMiniProgramFail" @complete="onMiniProgramComplete">
+        <button type="default">target=miniProgram：打开目标小程序</button>
+      </navigator>
+      <text>跳转事件：{{ miniProgramEvents }}</text>
+    </view>
+    <!-- #endif -->
   </view>
 </template>
 
 <script setup lang="ts">
   const title = ref('navigator')
+  // #ifdef MP-WEIXIN
+  const miniProgramEvents = ref('等待跳转')
+  const onMiniProgramSuccess = () => {
+    miniProgramEvents.value = 'success'
+  }
+  const onMiniProgramFail = () => {
+    miniProgramEvents.value = 'fail'
+  }
+  const onMiniProgramComplete = () => {
+    miniProgramEvents.value += ' → complete'
+  }
+  // #endif
 </script>
 
 <style>
-  .navigator {
-    margin-bottom: 15px;
+  .hover-parent {
+    padding: 10px;
+    background-color: #eeeeee;
+  }
+  .hover-example {
+    background-color: #ffffff;
+  }
+  .navigator-parent-hover {
+    background-color: #ffcc99;
+  }
+  .navigator-pressed {
+    background-color: #cce5ff;
+    opacity: 0.6;
   }
 </style>

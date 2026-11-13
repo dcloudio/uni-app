@@ -1,10 +1,5 @@
 <template>
-	<!-- #ifdef APP -->
-	<text style="font-family: UniIconsFontFamily;">{{ type != null ? uniIconsMap[type] : '' }}</text>
-	<!-- #endif -->
-	<!-- #ifdef WEB || MP -->
-	<view style="font-family: UniIconsFontFamily;" :class="type ? 'uni-icon-' + type : ''"></view>
-	<!-- #endif -->
+	<text :class="iconClass">{{ iconText }}</text>
 </template>
 
 <script setup lang="ts">
@@ -12,7 +7,7 @@
 	import { uniIconsMap, IconsType } from './icons.ts'
 	// #endif
 	// #ifdef WEB || MP
-	import { IconsType } from './icons.ts'
+	import { uniIconsWebMap, IconsType } from './icons.ts'
 	// #endif
 
 	type Props = {
@@ -26,22 +21,37 @@
 		 *     "harmony": {"unixVaporVer": "5.21"}
 		 *   },
 		 *   "mp": {
-		 *     "weixin": {"unixVer": "5.07"},
-		 *     "alipay": {"unixVer": "5.31"}
+		 *     "weixin": {"unixVer": "5.36"},
+		 *     "alipay": {"unixVer": "5.36"}
 		 *   },
-		 *   "web": {"unixVer": "5.07"}
+		 *   "web": {"unixVer": "5.36"}
 		 * }
 		 */
 		type? : IconsType
 	}
-	defineProps<Props>()
+	const props = defineProps<Props>()
+
+	const iconText = computed(() : string => {
+		const iconType = props.type
+		if (iconType == null) return ''
+		// #ifdef APP
+		return uniIconsMap[iconType]
+		// #endif
+		// #ifdef WEB || MP
+		return uniIconsWebMap[iconType]
+		// #endif
+	})
+
+	const iconClass = computed(() : string => {
+		const iconType = props.type
+		if (iconType == null) return ''
+		return `uni-icons uni-icon-${iconType}`
+	})
 
 </script>
 
 <style>
-	/* #ifdef WEB || MP */
 	@import './uni-icons.css';
-	/* #endif */
 	@font-face {
 		font-family: UniIconsFontFamily;
 		/* #ifdef WEB || MP */

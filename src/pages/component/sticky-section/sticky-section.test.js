@@ -5,13 +5,6 @@ const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 const isVapor = process.env.UNI_APP_X_DOM2 === "true"
 
 describe('component-native-sticky-section', () => {
-  if (isMP) {
-  	it('skip', () => {
-  		expect(1).toBe(1)
-  	})
-  	return
-  }
-
   let page
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/sticky-section/sticky-section')

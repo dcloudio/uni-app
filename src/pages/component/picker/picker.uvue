@@ -8,7 +8,11 @@
         <text class="uni-list-cell-left">当前选择</text>
         <view class="uni-list-cell-db">
           <picker class="picker-selector--test uni-picker-container-wrap" @change="bindPickerChange" :value="data.index"
-            :range="data.selectorArray" range-key="name">
+            :range="data.selectorArray" range-key="name"
+            <!-- #ifndef MP-ALIPAY -->
+            @cancel="onPickerCancel"
+            <!-- #endif -->
+          >
             <text class="uni-input picker-selector--value uni-picker-text">{{data.selectorArray[data.index].name}}</text>
           </picker>
         </view>
@@ -307,6 +311,12 @@
   function bindRegionChange(e : UniPickerChangeEvent) {
     console.log('picker发送选择改变，携带值为', e.detail.value)
     data.region = e.detail.value
+  }
+  // #endif
+
+  // #ifndef MP-ALIPAY
+  const onPickerCancel = () => {
+    console.log('picker取消选择')
   }
   // #endif
 
