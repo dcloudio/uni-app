@@ -97,45 +97,59 @@ export function initPageInstance(mpPageInstance: MPComponentInstance) {
   if (__X__) {
     Object.assign(mpPageInstance, {
       get width(): number {
-        if (__PLATFORM__ === 'mp-toutiao') {
-          return __GLOBAL__.getSystemInfoSync().windowWidth
-        }
-        return __GLOBAL__.getWindowInfo().windowWidth
+        const windowInfo =
+          __PLATFORM__ === 'mp-toutiao'
+            ? __GLOBAL__.getSystemInfoSync()
+            : __GLOBAL__.getWindowInfo()
+        return windowInfo.windowWidth
       },
       get height(): number {
-        const windowInfo = __GLOBAL__.getWindowInfo()
+        const windowInfo =
+          __PLATFORM__ === 'mp-toutiao'
+            ? __GLOBAL__.getSystemInfoSync()
+            : __GLOBAL__.getWindowInfo()
         // 某些版本的微信小程序开发工具获取tabBar页面的screenTop不对，其数值包含了tabBar高度及底部安全区，如果有开发者问起让他使用真机测试即可。
         // TODO 抖音小程序没有 getWindowInfo 方法，暂时无法获取 screenTop
-        return windowInfo.windowHeight + windowInfo.screenTop
+        return windowInfo.windowHeight + (windowInfo.screenTop || 0)
       },
       get statusBarHeight(): number {
-        if (__PLATFORM__ === 'mp-toutiao') {
-          return __GLOBAL__.getSystemInfoSync().statusBarHeight
-        }
-        return __GLOBAL__.getWindowInfo().statusBarHeight
+        const windowInfo =
+          __PLATFORM__ === 'mp-toutiao'
+            ? __GLOBAL__.getSystemInfoSync()
+            : __GLOBAL__.getWindowInfo()
+        return windowInfo.statusBarHeight
       },
       get safeAreaInsets() {
-        const windowInfo = __GLOBAL__.getWindowInfo()
+        const windowInfo =
+          __PLATFORM__ === 'mp-toutiao'
+            ? __GLOBAL__.getSystemInfoSync()
+            : __GLOBAL__.getWindowInfo()
         const screenBottom =
           windowInfo.screenHeight -
-          windowInfo.screenTop -
+          (windowInfo.screenTop || 0) -
           windowInfo.windowHeight
         const safeAreaBottom =
           windowInfo.screenHeight - windowInfo.safeArea.bottom
         return {
-          top: Math.max(0, windowInfo.statusBarHeight - windowInfo.screenTop),
+          top: Math.max(
+            0,
+            windowInfo.statusBarHeight - (windowInfo.screenTop || 0)
+          ),
           left: 0,
           right: 0,
           bottom: Math.max(0, safeAreaBottom - screenBottom), // 无法计算，
         }
       },
       get pageBody() {
-        const windowInfo = __GLOBAL__.getWindowInfo()
+        const windowInfo =
+          __PLATFORM__ === 'mp-toutiao'
+            ? __GLOBAL__.getSystemInfoSync()
+            : __GLOBAL__.getWindowInfo()
         return {
-          top: windowInfo.screenTop,
+          top: windowInfo.screenTop || 0,
           left: 0,
           right: windowInfo.windowWidth,
-          bottom: windowInfo.windowHeight + windowInfo.screenTop,
+          bottom: windowInfo.windowHeight + (windowInfo.screenTop || 0),
           width: windowInfo.windowWidth,
           height: windowInfo.windowHeight,
         }
@@ -151,11 +165,16 @@ export function updateCssVariables() {
     return
   }
 
-  const windowInfo = __GLOBAL__.getWindowInfo()
+  const windowInfo =
+    __PLATFORM__ === 'mp-toutiao'
+      ? __GLOBAL__.getSystemInfoSync()
+      : __GLOBAL__.getWindowInfo()
   // iOS 页面切换期间窗口指标可能短暂不一致，页面底部到屏幕底部的距离不应为负数
   const screenBottom = Math.max(
     0,
-    windowInfo.screenHeight - windowInfo.screenTop - windowInfo.windowHeight
+    windowInfo.screenHeight -
+      (windowInfo.screenTop || 0) -
+      windowInfo.windowHeight
   )
   const safeAreaBottom = windowInfo.screenHeight - windowInfo.safeArea.bottom
 

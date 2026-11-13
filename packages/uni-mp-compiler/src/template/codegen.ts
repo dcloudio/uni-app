@@ -40,7 +40,12 @@ import { type ForElementNode, isForElementNode } from '../transforms/vFor'
 import { type IfElementNode, isIfElementNode } from '../transforms/vIf'
 import { findSlotName } from '../transforms/vSlot'
 import type { TransformContext } from '../transform'
-import { ATTR_ELEMENT_ID, ATTR_VUE_PROPS } from '../transforms/utils'
+import {
+  ATTR_ELEMENT_ID,
+  ATTR_VUE_PROPS,
+  FRAGMENT_EVENTS,
+  type FragmentEvent,
+} from '../transforms/utils'
 
 export interface TemplateCodegenContext {
   isX?: boolean
@@ -242,7 +247,8 @@ function genVElse({ push, directive }: TemplateCodegenContext) {
 
 function genVFor(
   node: ForElementNode,
-  { push, directive }: TemplateCodegenContext
+  { push, directive }: TemplateCodegenContext,
+  removeKey = true
 ) {
   const { sourceCode, valueAlias, indexAlias } = node.vFor
   push(` ${directive}for="${sourceCode}"`)
@@ -256,7 +262,9 @@ function genVFor(
   if (keyProp) {
     const key = ((keyProp as DirectiveNode).exp as SimpleExpressionNode).content
     push(` ${directive}key="${key.includes('.') ? key.split('.')[1] : key}"`)
-    node.props.splice(node.props.indexOf(keyProp), 1)
+    if (removeKey) {
+      node.props.splice(node.props.indexOf(keyProp), 1)
+    }
   }
 }
 
@@ -399,6 +407,9 @@ function genTemplate(node: TemplateNode, context: TemplateCodegenContext) {
 }
 
 function genComponent(node: ComponentNode, context: TemplateCodegenContext) {
+  if (isFragmentComponent(node, context)) {
+    return genFragmentComponent(node, context)
+  }
   if (context.component?.getPropertySync) {
     return genElement(node, context)
   }
@@ -422,6 +433,85 @@ function genComponent(node: ComponentNode, context: TemplateCodegenContext) {
     condition: (prop.exp as SimpleExpressionNode).content,
   }
   return genElement(node, context)
+}
+
+function isFragmentComponent(
+  node: ComponentNode,
+  context: TemplateCodegenContext
+) {
+  return (
+    !!context.component?.fragment &&
+    isUserComponent(node, context) &&
+    Array.isArray((node as any)[FRAGMENT_EVENTS]) &&
+    (node as any)[FRAGMENT_EVENTS].length > 0
+  )
+}
+
+function genFragmentComponent(
+  node: ComponentNode,
+  context: TemplateCodegenContext
+) {
+  const { push } = context
+  const events = (node as any)[FRAGMENT_EVENTS] as FragmentEvent[]
+  const hasVIf = isIfElementNode(node)
+  const hasVFor = isForElementNode(node)
+  const hasVIfAndVFor = hasVIf && hasVFor
+  const slotProp = node.props.find(
+    (prop) =>
+      (isDirectiveNode(prop) && prop.name === 'slot') ||
+      (isAttributeNode(prop) && prop.name === 'slot') ||
+      (isDirectiveNode(prop) &&
+        prop.name === 'bind' &&
+        prop.arg?.type === NodeTypes.SIMPLE_EXPRESSION &&
+        prop.arg.content === 'slot')
+  ) as DirectiveNode | ReturnType<typeof createAttributeNode> | undefined
+  const keyProp = hasVFor ? findProp(node, 'key', true) : undefined
+  const componentNode = {
+    ...node,
+    props: node.props.filter((prop) => prop !== slotProp && prop !== keyProp),
+    // 结构指令和 key 绑定在 wrapper 上。
+    vIf: undefined,
+    vFor: undefined,
+  } as ComponentNode
+  delete (componentNode as any)[FRAGMENT_EVENTS]
+
+  if (hasVIfAndVFor) {
+    push(`<block`)
+    genVIfCode(node, context)
+    push(`>`)
+  }
+  push(`<view`)
+  if (!hasVIfAndVFor && hasVIf) {
+    genVIfCode(node, context)
+  }
+  if (hasVFor) {
+    genVFor(node, context, false)
+  }
+  if (slotProp) {
+    if (isDirectiveNode(slotProp)) {
+      genDirectiveNode(slotProp, node, false, context)
+    } else if (slotProp.value) {
+      push(` slot="${slotProp.value.content}"`)
+    } else {
+      push(` slot`)
+    }
+  }
+  push(` style="display: contents"`)
+  events.forEach((event) => {
+    const name = (context.event?.format || formatMiniProgramEvent)(event.name, {
+      isCatch:
+        event.modifiers.includes('stop') || event.modifiers.includes('prevent'),
+      isCapture: event.modifiers.includes('capture'),
+      isComponent: false,
+    })
+    push(` ${name}="{{${event.handler}}}"`)
+  })
+  push(`>`)
+  genComponent(componentNode, context)
+  push(`</view>`)
+  if (hasVIfAndVFor) {
+    push(`</block>`)
+  }
 }
 
 function isLazyElement(node: ElementNode, context: TemplateCodegenContext) {
