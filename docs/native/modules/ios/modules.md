@@ -433,6 +433,23 @@ xcodebuild -create-xcframework -framework 真机路径/DCloudUTSExtAPI.framework
 ## 主工程配置
 根据资源文件中的`manifest.json`文件包含的模块名称，根据下述相关模块文档向`主工程`添加依赖以及工程配置
 
+## uni-bluetooth
+
+### Info.plist
+1. 添加`蓝牙访问权限描述(NSBluetoothAlwaysUsageDescription)`
+```
+<dict>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>用于发现并连接附近的蓝牙设备</string>
+</dict>
+```
+![](https://web-ext-storage.dcloud.net.cn/native/doc/iOS/uni_bluetooth_permission.png)
+
+### Capability
+
+如需在后台保持蓝牙连接，还需添加`Background Modes`，勾选`Uses Bluetooth LE accessories`选项。
+![](https://web-ext-storage.dcloud.net.cn/native/doc/iOS/backgroundmodes_bluetooth.png)
+
 ## uni-oauth-apple
 
 ### Info.plist
