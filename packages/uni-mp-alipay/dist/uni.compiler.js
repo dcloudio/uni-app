@@ -221,6 +221,10 @@ const transformMPBuiltInTagOptions = {
         'sticky-header': 'view',
         'sticky-section': 'view',
     },
+    classAdd: {
+        'sticky-header': 'uni-sticky-header',
+        'sticky-section': 'uni-sticky-section',
+    },
 };
 const transformMPBuiltInTag = uniCliShared.createMPBuiltInTagTransform(transformMPBuiltInTagOptions);
 

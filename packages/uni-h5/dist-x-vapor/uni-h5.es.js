@@ -18347,6 +18347,7 @@ const _sfc_main$k = /* @__PURE__ */ defineVaporComponent({
   __name: "picker",
   setup(__props) {
     const show = ref(false);
+    ref(0);
     const readyEventName = ref("");
     const optionsEventName = ref("");
     const cancelEventName = ref("");

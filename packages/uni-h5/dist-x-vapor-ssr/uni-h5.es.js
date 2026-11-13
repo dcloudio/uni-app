@@ -10625,6 +10625,7 @@ const _sfc_main$c = /* @__PURE__ */ defineComponent$2({
   __vapor: true,
   setup(__props) {
     const show = ref(false);
+    ref(0);
     const readyEventName = ref("");
     const optionsEventName = ref("");
     const cancelEventName = ref("");

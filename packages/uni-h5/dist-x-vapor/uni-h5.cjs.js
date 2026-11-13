@@ -9634,6 +9634,7 @@ const _sfc_main$c = /* @__PURE__ */ Vue.defineVaporComponent({
   __name: "picker",
   setup(__props) {
     const show = Vue.ref(false);
+    Vue.ref(0);
     const readyEventName = Vue.ref("");
     const optionsEventName = Vue.ref("");
     const cancelEventName = Vue.ref("");

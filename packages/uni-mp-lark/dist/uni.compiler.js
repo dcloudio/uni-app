@@ -35,9 +35,21 @@ const transformMPBuiltInTagOptions = {
                 value: 'true',
             },
         ],
+        'list-view': [
+            {
+                name: 'enhanced',
+                value: 'true',
+            },
+        ],
     },
     tagRename: {
         'list-view': 'scroll-view',
+        'sticky-section': 'view',
+        'sticky-header': 'view',
+    },
+    classAdd: {
+        'sticky-header': 'uni-sticky-header',
+        'sticky-section': 'uni-sticky-section',
     },
 };
 const transformMPBuiltInTag = uniCliShared.createMPBuiltInTagTransform(transformMPBuiltInTagOptions);
