@@ -1,6 +1,11 @@
 import { camelize } from '@vue/shared'
 import { isAttributeNode, isDirectiveNode, isElementNode } from '../../../vite'
-import { createAttributeNode, isPropNameEquals, renameProp } from '../../utils'
+import {
+  addStaticClass,
+  createAttributeNode,
+  isPropNameEquals,
+  renameProp,
+} from '../../utils'
 import {
   type RootNode,
   type TemplateChildNode,
@@ -18,6 +23,7 @@ export interface TransformMPBuiltInTagOptions {
     }[]
   >
   tagRename?: Record<string, string>
+  classAdd?: Record<string, string>
 }
 
 export const defaultTransformMPBuiltInTagOptions: TransformMPBuiltInTagOptions =
@@ -72,9 +78,25 @@ export const defaultTransformMPBuiltInTagOptions: TransformMPBuiltInTagOptions =
           value: 'true',
         },
       ],
+      'list-view': [
+        {
+          name: 'enable-flex',
+          value: 'true',
+        },
+        {
+          name: 'enhanced',
+          value: 'true',
+        },
+      ],
     },
     tagRename: {
       'list-view': 'scroll-view',
+      'sticky-section': 'view',
+      'sticky-header': 'view',
+    },
+    classAdd: {
+      'sticky-header': 'uni-sticky-header',
+      'sticky-section': 'uni-sticky-section',
     },
   }
 
@@ -88,8 +110,8 @@ export function createMPBuiltInTagTransform(
     if (!isElementNode(node)) {
       return
     }
-    if (options.tagRename && node.tag in options.tagRename) {
-      node.tag = options.tagRename[node.tag]
+    if (options.classAdd && node.tag in options.classAdd) {
+      addStaticClass(node, options.classAdd[node.tag])
     }
     if (options.propRename && node.tag in options.propRename) {
       const propMap = options.propRename[node.tag]
@@ -118,6 +140,9 @@ export function createMPBuiltInTagTransform(
         }
         node.props.push(createAttributeNode(name, value))
       })
+    }
+    if (options.tagRename && node.tag in options.tagRename) {
+      node.tag = options.tagRename[node.tag]
     }
   }
 }

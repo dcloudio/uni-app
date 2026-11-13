@@ -48,6 +48,10 @@ const transformMPBuiltInTagOptions: TransformMPBuiltInTagOptions = {
     'sticky-header': 'view',
     'sticky-section': 'view',
   },
+  classAdd: {
+    'sticky-header': 'uni-sticky-header',
+    'sticky-section': 'uni-sticky-section',
+  },
 }
 
 export const transformMPBuiltInTag = createMPBuiltInTagTransform(
