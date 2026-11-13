@@ -7,6 +7,9 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-index-bar
 
 > issues: https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-index-bar
 
+
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-index-bar/components/uni-index-bar
+
 :::
 
 索引列表组件

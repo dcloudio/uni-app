@@ -7,6 +7,9 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-collapse-
 
 > issues: https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-collapse
 
+
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-collapse-x/components/uni-collapse
+
 :::
 
 折叠面板组件
@@ -621,6 +624,9 @@ Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 
 ## uni-collapse-item
 
 > issues: https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-collapse-item
+
+
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-collapse-x/components/uni-collapse-item
 
 :::
 

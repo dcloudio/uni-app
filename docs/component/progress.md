@@ -28,12 +28,10 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.
 | border-radius | number | 0 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS(Vapor): 5.0 | 进度条圆角 |
 | font-size | number | 12 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS(Vapor): 5.0 | 进度条字体大小 |
 | stroke-width | number | 3 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 进度条宽度 |
-| activeColor | string([string.ColorString](/uts/data-type.md#ide-string)) | "#09BB07" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 已选择的进度条的颜色 |
-| backgroundColor | string([string.ColorString](/uts/data-type.md#ide-string)) | "#EBEBEB" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 未选择的进度条的颜色 |
+| activeColor | string([string.ColorString](/uts/data-type.md#ide-string)) | "#007aff" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): 3.9; Android(Vapor): 5.0; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.21 | 已选择的进度条的颜色 |
+| background-color | string([string.ColorString](/uts/data-type.md#ide-string)) | "#EBEBEB" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): 3.9; Android(Vapor): 5.0; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.21 | 未选择的进度条的颜色 |
 | active | boolean | false | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 是否启用动画 |
 | active-mode | string | "backwards" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 动画模式 |
-| background-color | string | "#ebebeb" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 | 未选择的进度条的颜色 |
-| active-color | string | "#007aff" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 | 已选择的进度条的颜色 |
 | @activeend | (event: [UniProgressActiveendEvent](#uniprogressactiveendevent)) => void |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 动画完成事件 |
 | ~~color~~ | string |   | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>进度条颜色（请使用activeColor） |
 

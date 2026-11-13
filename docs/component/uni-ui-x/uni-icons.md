@@ -8,7 +8,7 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-icons-x
 > issues: https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-icons
 
 
-> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-icons/components/uni-icons
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-icons-x/components/uni-icons
 
 :::
 
