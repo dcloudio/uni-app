@@ -7,9 +7,6 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-number-bo
 
 > issues: https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-number-box
 
-
-> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-number-box-x/components/uni-number-box
-
 :::
 
 带加减按钮的数字输入框，常见于购物车商品数量选择

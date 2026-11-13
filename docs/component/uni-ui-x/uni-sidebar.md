@@ -7,9 +7,6 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-sidebar
 
 > issues: https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-sidebar
 
-
-> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-sidebar/components/uni-sidebar
-
 :::
 
 侧边导航组件，基于 list-view / list-item 实现，仅负责渲染导航项与抛出交互事件。

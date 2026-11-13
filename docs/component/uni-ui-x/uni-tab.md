@@ -104,9 +104,6 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 
 > issues: https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-tab
 
-
-> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-tab-bar/components/uni-tab
-
 :::
 
 选项卡容器组件
@@ -1222,9 +1219,6 @@ Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 
 
 > issues: https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-tab-item
 
-
-> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-tab-bar/components/uni-tab-item
-
 :::
 
 选项卡项组件
@@ -1261,9 +1255,6 @@ Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 
 
 > issues: https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-tab-content
 
-
-> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-tab-bar/components/uni-tab-content
-
 :::
 
 选项卡内容组件
@@ -1295,9 +1286,6 @@ Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 
 ## uni-tab-midbutton
 
 > issues: https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-tab-midbutton
-
-
-> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-tab-bar/components/uni-tab-midbutton
 
 :::
 

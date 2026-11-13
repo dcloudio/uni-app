@@ -5,9 +5,6 @@
 
 > issues: https://issues.dcloud.net.cn/?mid=component.media.animation-view
 
-
-> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-animation-view/components/animation-view
-
 :::
 
 Lottie 动画

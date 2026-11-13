@@ -7,9 +7,6 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-forms-x
 
 > issues: https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-forms
 
-
-> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-forms-x/components/uni-forms
-
 :::
 
 通过 v-model 收集字段值，提供字段注册、DB Schema 兼容校验、Standard Schema 可选校验和重置能力
@@ -784,9 +781,6 @@ page {
 ## uni-forms-item
 
 > issues: https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-forms-item
-
-
-> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-forms-x/components/uni-forms-item
 
 :::
 

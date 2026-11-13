@@ -7,9 +7,6 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-drag-cell
 
 > issues: https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-drag-cell
 
-
-> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-drag-cell/components/uni-drag-cell
-
 :::
 
 可拖拽单元格组件

@@ -7,9 +7,6 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-data-v-ma
 
 > issues: https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-data-vertical-marquee
 
-
-> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-data-v-marquee/components/uni-data-vertical-marquee
-
 :::
 
 绑定数组数据，上下轮播；用于公告、搜索框推荐词等场景
