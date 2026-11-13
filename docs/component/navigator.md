@@ -34,8 +34,8 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.
 | animation-duration | number | 300 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 当 open-type="navigateTo" 或 open-type="navigateBack" 时有效，窗口的显示/关闭动画的持续时间。 |
 | hover-class | string |   | Web: 4.41; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: -; iOS: -; HarmonyOS: - | 指定按下去的样式类。当 hover-class="none" 时，没有点击态效果 |
 | hover-stop-propagation | boolean |   | Web: 4.41; 微信小程序: 4.41; 支付宝小程序: x; Android: -; iOS: -; HarmonyOS: - | 指定是否阻止本节点的祖先节点出现点击态 |
-| hover-start-time | number |   | Web: 4.41; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: -; iOS: -; HarmonyOS: - | 按住后多久出现点击态，单位毫秒 |
-| hover-stay-time | number |   | Web: 4.41; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: -; iOS: -; HarmonyOS: - | 手指松开后点击态保留时间，单位毫秒 |
+| hover-start-time | number |   | Web: 4.41; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 按住后多久出现点击态，单位毫秒 |
+| hover-stay-time | number |   | Web: 4.41; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 手指松开后点击态保留时间，单位毫秒 |
 | render-link | boolean | true | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 是否给 navigator 组件加一层 a 标签控制 ssr 渲染 |
 | short-link | string |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>当`target="miniProgram"`时有效，当传递该参数后，可以不传 app-id 和 path。链接可以通过【小程序菜单】->【复制链接】获取。 |
 | @success | string |   | Web: 4.41; 微信小程序: 4.41; 支付宝小程序: x; Android: -; iOS: -; HarmonyOS: - | *(string)*<br/>当`target="miniProgram"`且`open-type="navigate/navigateBack"`时有效，跳转小程序成功 |
