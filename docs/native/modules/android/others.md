@@ -1333,6 +1333,13 @@ defaultConfig {
 
 :::
 
+### uni-bluetooth
+
+<table>
+  <tr><th>属性</th><th>内容</th></tr>
+  <tr><td>本地依赖库</td><td>uni-bluetooth-release.aar</td></tr>
+</table>
+
 ## 仅蒸汽模式（Vapor）支持的模块
 
 以下模块仅支持 蒸汽模式（Vapor），VDOM模式不包含。
