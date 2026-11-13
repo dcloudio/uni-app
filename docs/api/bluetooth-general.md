@@ -91,6 +91,9 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 
 > issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.general.openBluetoothAdapter
 
+
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
+
 :::
 
 初始化蓝牙模块，建议与 uni.closeBluetoothAdapter 成对调用。
@@ -183,6 +186,9 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 
 > issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.general.closeBluetoothAdapter
 
+
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
+
 :::
 
 关闭蓝牙模块并释放相关系统资源，建议与 uni.openBluetoothAdapter 成对调用。
@@ -262,6 +268,9 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 ## uni.getBluetoothAdapterState(options) @getbluetoothadapterstate
 
 > issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.general.getBluetoothAdapterState
+
+
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
 
 :::
 
@@ -344,6 +353,9 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 
 > issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.general.onBluetoothAdapterStateChange
 
+
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
+
 :::
 
 监听蓝牙适配器状态变化事件。
@@ -386,6 +398,9 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 
 > issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.general.offBluetoothAdapterStateChange
 
+
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
+
 :::
 
 移除蓝牙适配器状态变化监听函数。传入监听 ID 时移除对应监听，否则移除全部监听。
@@ -421,6 +436,9 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 ## uni.startBluetoothDevicesDiscovery(options) @startbluetoothdevicesdiscovery
 
 > issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.general.startBluetoothDevicesDiscovery
+
+
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
 
 :::
 
@@ -514,6 +532,9 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 
 > issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.general.stopBluetoothDevicesDiscovery
 
+
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
+
 :::
 
 停止搜寻附近的蓝牙外围设备。
@@ -594,6 +615,9 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 
 > issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.general.onBluetoothDeviceFound
 
+
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
+
 :::
 
 监听搜索到新设备的事件。回调上报的设备会加入 uni.getBluetoothDevices 返回的设备列表。
@@ -648,6 +672,9 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 
 > issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.general.offBluetoothDeviceFound
 
+
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
+
 :::
 
 移除搜索到新设备的事件监听。传入监听 ID 时移除对应监听，否则移除全部监听。
@@ -695,6 +722,9 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 ## uni.getBluetoothDevices(options) @getbluetoothdevices
 
 > issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.general.getBluetoothDevices
+
+
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
 
 :::
 
@@ -788,6 +818,9 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 ## uni.getConnectedBluetoothDevices(options) @getconnectedbluetoothdevices
 
 > issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.general.getConnectedBluetoothDevices
+
+
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
 
 :::
 

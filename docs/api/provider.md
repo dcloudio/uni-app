@@ -142,7 +142,7 @@ getProvider的同步方法
 ### UniProvider 兼容性 <Help /> 
  Android: 4.18; iOS: 4.18
 
-<!-- CUSTOMTYPEJSON.UniProvider.example -->
+
 
 ## 示例
 

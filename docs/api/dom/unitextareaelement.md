@@ -24,4 +24,4 @@ UniTextareaElement -- Extends --> UniElement
 | value | string | 是 | Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25 | 输入框的初始内容 |
 
 
-<!-- CUSTOMTYPEJSON.UniTextareaElement.example -->
+

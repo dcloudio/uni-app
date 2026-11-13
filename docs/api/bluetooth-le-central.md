@@ -76,6 +76,9 @@ GATT 还区分 **客户端（Client）** 和 **服务端（Server）**：客户�
 
 > issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.ble.createBLEConnection
 
+
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
+
 :::
 
 创建 BLE 连接。
@@ -185,6 +188,9 @@ GATT 还区分 **客户端（Client）** 和 **服务端（Server）**：客户�
 
 > issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.ble.closeBLEConnection
 
+
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
+
 :::
 
 关闭 BLE 连接。
@@ -266,6 +272,9 @@ GATT 还区分 **客户端（Client）** 和 **服务端（Server）**：客户�
 
 > issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.ble.onBLEConnectionStateChange
 
+
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
+
 :::
 
 监听蓝牙低功耗连接状态改变事件。包括开发者主动连接或断开连接，设备丢失，连接异常断开等等。
@@ -308,6 +317,9 @@ GATT 还区分 **客户端（Client）** 和 **服务端（Server）**：客户�
 
 > issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.ble.offBLEConnectionStateChange
 
+
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
+
 :::
 
 移除 BLE 连接状态变化监听。传 ID 删除对应监听，否则清空全部监听。
@@ -343,6 +355,9 @@ GATT 还区分 **客户端（Client）** 和 **服务端（Server）**：客户�
 ## uni.getBLEDeviceRSSI(options) @getbledevicerssi
 
 > issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.ble.getBLEDeviceRSSI
+
+
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
 
 :::
 
@@ -424,6 +439,9 @@ GATT 还区分 **客户端（Client）** 和 **服务端（Server）**：客户�
 ## uni.getBLEMTU(options) @getblemtu
 
 > issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.ble.getBLEMTU
+
+
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
 
 :::
 
@@ -520,6 +538,9 @@ GATT 还区分 **客户端（Client）** 和 **服务端（Server）**：客户�
 
 > issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.ble.setBLEMTU
 
+
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
+
 :::
 
 设置最大传输单元，仅 Android 支持。
@@ -606,6 +627,9 @@ iOS 不支持主动设置 MTU，当前插件调用此接口会执行 `fail` 和 
 
 > issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.ble.onBLEMTUChange
 
+
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
+
 :::
 
 监听 MTU 变化，仅 Android 支持。
@@ -648,6 +672,9 @@ iOS 不支持主动设置 MTU，当前插件调用此接口会执行 `fail` 和 
 
 > issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.ble.offBLEMTUChange
 
+
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
+
 :::
 
 移除 MTU 变化监听，仅 Android 支持。传 ID 删除对应监听，否则清空全部监听。
@@ -683,6 +710,9 @@ iOS 不支持主动设置 MTU，当前插件调用此接口会执行 `fail` 和 
 ## uni.getBLEDeviceServices(options) @getbledeviceservices
 
 > issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.ble.getBLEDeviceServices
+
+
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
 
 :::
 
@@ -771,6 +801,9 @@ iOS 不支持主动设置 MTU，当前插件调用此接口会执行 `fail` 和 
 ## uni.getBLEDeviceCharacteristics(options) @getbledevicecharacteristics
 
 > issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.ble.getBLEDeviceCharacteristics
+
+
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
 
 :::
 
@@ -872,6 +905,9 @@ iOS 不支持主动设置 MTU，当前插件调用此接口会执行 `fail` 和 
 
 > issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.ble.readBLECharacteristicValue
 
+
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
+
 :::
 
 读取蓝牙低功耗设备特征值的二进制数据。注意：必须设备的特征支持 read 才可以成功调用；读取结果通过 onBLECharacteristicValueChange 返回。
@@ -960,6 +996,9 @@ iOS 不支持主动设置 MTU，当前插件调用此接口会执行 `fail` 和 
 ## uni.writeBLECharacteristicValue(options) @writeblecharacteristicvalue
 
 > issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.ble.writeBLECharacteristicValue
+
+
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
 
 :::
 
@@ -1059,6 +1098,9 @@ iOS 不支持主动设置 MTU，当前插件调用此接口会执行 `fail` 和 
 
 > issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.ble.notifyBLECharacteristicValueChange
 
+
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
+
 :::
 
 启用蓝牙低功耗设备特征值变化时的 notify 功能，订阅特征。注意：必须设备的特征支持 notify 或者 indicate 才可以成功调用。另外，必须先启用 uni.notifyBLECharacteristicValueChange 才能监听到设备 characteristicValueChange 事件。
@@ -1157,6 +1199,9 @@ iOS 不支持主动设置 MTU，当前插件调用此接口会执行 `fail` 和 
 
 > issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.ble.onBLECharacteristicValueChange
 
+
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
+
 :::
 
 监听蓝牙低功耗设备的特征值变化事件。必须先调用 uni.notifyBLECharacteristicValueChange 接口才能接收到设备推送的 notification。
@@ -1200,6 +1245,9 @@ iOS 不支持主动设置 MTU，当前插件调用此接口会执行 `fail` 和 
 ## uni.offBLECharacteristicValueChange(listener?) @offblecharacteristicvaluechange
 
 > issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.ble.offBLECharacteristicValueChange
+
+
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
 
 :::
 

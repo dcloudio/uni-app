@@ -11,7 +11,7 @@ Path2D用来声明路径，用来在canvas中根据需要创建可以保留并�
 ### Path2D 兼容性 <Help /> 
  Android: 4.25; iOS: 4.25; HarmonyOS: 4.61
 
-<!-- CUSTOMTYPEJSON.Path2D.example -->
+
 
 ### Path2D 的方法 @path2d-methods
 #### closePath(): void @closepath

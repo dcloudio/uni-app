@@ -11,11 +11,13 @@
 
 
 ### 构造函数
+UniResizeObserver 构造函数
 | 名称 | 类型 | 必备 | 描述 |
 | :- | :- | :- | :- |
 | callback | (entries: Array&lt;[UniResizeObserverEntry](#uniresizeobserverentry-values)&gt;) => void | 是 | 每当监视的元素调整大小时，回调该函数 |
 
 ### 构造函数
+UniResizeObserver 构造函数
 | 名称 | 类型 | 必备 | 描述 |
 | :- | :- | :- | :- |
 | callback | (entries: Array&lt;[UniResizeObserverEntry](#uniresizeobserverentry-values)&gt;, observer: [UniResizeObserver](/api/uniresizeobserver.md)) => void | 是 | 每当监视的元素调整大小时，回调该函数 |

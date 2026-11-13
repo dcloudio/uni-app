@@ -160,7 +160,7 @@ Android: x; iOS: x; HarmonyOS: 4.61
 
 
 
-<!-- CUSTOMTYPEJSON.UniNativeViewElement.example -->
+
 
 ## tips
 

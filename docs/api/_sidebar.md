@@ -1,5 +1,8 @@
 * [概述](README.md)
 * 全局
+  * [全局方法](functions.md)
+  * [TextDecoder](textdecoder.md)
+  * [TextEncoder](textencoder.md)
   * [获取当前应用实例](get-app.md)
   * [获取当前页面栈](get-current-pages.md)
   * [动画帧](animation-frame.md)

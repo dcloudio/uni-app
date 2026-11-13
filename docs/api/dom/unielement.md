@@ -96,7 +96,7 @@ Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.0; Android
 
 
 
-#### insertBefore(newChild: UniElement): UniElement \| null @insertbefore
+#### insertBefore(newChild: UniElement): UniElement \| null @insertbefore_1
 
 将一个元素添加到指定父元素的子元素列表的末尾处 功能等同于appendChild
 
@@ -604,7 +604,7 @@ if(element != null) {
 + 安卓平台页面渲染时元素才会构建View，所以元素刚创建就获取View大概率是null，推荐页面onReady时获取。
 + 安卓平台获取的原生View尽可能的避免设置View的background属性，会导致元素background、border、boxshadow css效果失效或设置的background不生效，与设置background时机有关。
 
-#### getAndroidView\<T>(): T \| null @getandroidview
+#### getAndroidView\<T>(): T \| null @getandroidview_1
 
 获取元素android原生view 通过泛型定义view类型 可能返回null
 
@@ -2812,7 +2812,7 @@ Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS
 
 
 
-#### getHarmonyController\<T>(): T \| null @getharmonycontroller
+#### getHarmonyController\<T>(): T \| null @getharmonycontroller_1
 
 鸿蒙原生组件控制器，可以控制组件的状态。通过泛型定义view类型，可能返回null
 
