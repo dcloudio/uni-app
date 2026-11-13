@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-ssr v3.6.0-rc.14
+  * @vue/compiler-ssr v3.6.0-rc.15
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -79,8 +79,11 @@ function processIfBranch(branch, context, disableNestedFragments = false, index 
 		childContext.pushStringPart(`<!--]-->`);
 		return (0, _vue_compiler_dom.createBlockStatement)(childContext.body);
 	}
-	const { children } = branch;
-	return processChildrenAsStatement(branch, context, !disableNestedFragments && (children.length !== 1 || children[0].type !== 1) && !(children.length === 1 && children[0].type === 11));
+	return processChildrenAsStatement(branch, context, !disableNestedFragments && !isBareBranch(branch));
+}
+/** Whether a branch renders as it is: its sole element or v-for, unwrapped. */
+function isBareBranch({ children }) {
+	return children.length === 1 && (children[0].type === 1 || children[0].type === 11);
 }
 /**
 * Whether two branches of a chain could start with the same node. Branches
@@ -181,6 +184,9 @@ function ssrProcessSuspense(node, context) {
 //#endregion
 //#region packages/compiler-ssr/src/transforms/ssrTransformElement.ts
 const rawChildrenMap = /* @__PURE__ */ new WeakMap();
+const ssrTransformStyle = (node, context) => {
+	if (node.type === 1 && node.tagType !== 0) (0, _vue_compiler_dom.transformStyle)(node, context);
+};
 const ssrTransformElement = (node, context) => {
 	if (node.type !== 1 || node.tagType !== 0) return;
 	return function ssrPostTransformElement() {
@@ -196,6 +202,7 @@ const ssrTransformElement = (node, context) => {
 		}
 		const needMergeProps = hasDynamicVBind || hasCustomDir;
 		if (needMergeProps) {
+			(0, _vue_compiler_dom.transformStyle)(node, context);
 			const { props, directives } = (0, _vue_compiler_dom.buildProps)(node, context, node.props, false, false, true);
 			if (props || directives.length) {
 				const mergedProps = buildSSRProps(props, directives, context);
@@ -228,6 +235,8 @@ const ssrTransformElement = (node, context) => {
 		let dynamicClassBinding = void 0;
 		let staticClassBinding = void 0;
 		let dynamicStyleBinding = void 0;
+		let staticStyleBinding = void 0;
+		let staticStyleIndex = -1;
 		for (let i = 0; i < node.props.length; i++) {
 			const prop = node.props[i];
 			if (node.tag === "input" && isTrueFalseValue(prop)) continue;
@@ -254,7 +263,16 @@ const ssrTransformElement = (node, context) => {
 								if (attrName === "class") openTag.push(` class="`, dynamicClassBinding = (0, _vue_compiler_dom.createCallExpression)(context.helper(SSR_RENDER_CLASS), [value]), `"`);
 								else if (attrName === "style") {
 									if (dynamicStyleBinding) mergeCall(dynamicStyleBinding, value);
-									else openTag.push(` style="`, dynamicStyleBinding = (0, _vue_compiler_dom.createCallExpression)(context.helper(SSR_RENDER_STYLE), [value]), `"`);
+									else {
+										dynamicStyleBinding = (0, _vue_compiler_dom.createCallExpression)(context.helper(SSR_RENDER_STYLE), [staticStyleBinding ? (0, _vue_compiler_dom.createArrayExpression)([staticStyleBinding, value]) : value]);
+										const parts = [
+											` style="`,
+											dynamicStyleBinding,
+											`"`
+										];
+										if (staticStyleBinding) openTag.splice(staticStyleIndex, 1, ...parts);
+										else openTag.push(...parts);
+									}
 								} else {
 									attrName = node.tag.indexOf("-") > 0 ? attrName : _vue_shared.propsToAttrMap[attrName] || attrName.toLowerCase();
 									if ((0, _vue_shared.isBooleanAttr)(attrName)) openTag.push((0, _vue_compiler_dom.createConditionalExpression)((0, _vue_compiler_dom.createCallExpression)(context.helper(SSR_INCLUDE_BOOLEAN_ATTR), [value]), (0, _vue_compiler_dom.createSimpleExpression)(" " + attrName, true), (0, _vue_compiler_dom.createSimpleExpression)("", true), false));
@@ -276,6 +294,16 @@ const ssrTransformElement = (node, context) => {
 				else if (!needMergeProps) {
 					if (name === "key" || name === "ref") continue;
 					if (name === "class" && prop.value) staticClassBinding = JSON.stringify(prop.value.content);
+					if (name === "style" && prop.value) {
+						const style = (0, _vue_shared.parseStringStyle)(prop.value.content);
+						if (dynamicStyleBinding) mergeCall(dynamicStyleBinding, JSON.stringify(style));
+						else {
+							staticStyleBinding = JSON.stringify(style);
+							staticStyleIndex = openTag.length;
+							openTag.push(` style="${(0, _vue_shared.escapeHtml)((0, _vue_shared.stringifyStyle)(style))}"`);
+						}
+						continue;
+					}
 					openTag.push(` ${prop.name}` + (prop.value ? `="${(0, _vue_shared.escapeHtml)(prop.value.content)}"` : ``));
 				}
 			}
@@ -481,6 +509,16 @@ const ssrTransformComponent = (node, context) => {
 		]);
 	};
 };
+/**
+* Whether the server render of `node` begins with markup of its own: a
+* Teleport opens with its markers, a TransitionGroup with its tag or range,
+* a Suspense in a vapor component with its slot's range, an appearing
+* Transition with its `<template>`.
+*/
+function beginsWithOwnMarkup(node) {
+	const component = componentTypeMap.get(node);
+	return component === _vue_compiler_dom.TELEPORT || component === _vue_compiler_dom.TRANSITION_GROUP || component === _vue_compiler_dom.SUSPENSE || component === _vue_compiler_dom.TRANSITION && !!(0, _vue_compiler_dom.findProp)(node, "appear", false, true);
+}
 function ssrProcessComponent(node, context, parent) {
 	const component = componentTypeMap.get(node);
 	if (!node.ssrCodegenNode) {
@@ -640,7 +678,11 @@ function ssrCodegenTransform(ast, options) {
 			ast.helpers.add(helper);
 		});
 	}
-	processChildren(ast, context, ast.children.length > 1 && ast.children.some((c) => !(0, _vue_compiler_dom.isText)(c)));
+	const isFragment = ast.children.length > 1 && ast.children.some((c) => !(0, _vue_compiler_dom.isText)(c));
+	const vaporRange = !!options.vapor && (isFragment || opensRange(ast.children[0]));
+	if (vaporRange) context.pushStringPart(`<!--{-->`);
+	processChildren(ast, context, isFragment && !options.vapor);
+	if (vaporRange) context.pushStringPart(`<!--}-->`);
 	ast.codegenNode = (0, _vue_compiler_dom.createBlockStatement)(context.body);
 	ast.ssrHelpers = Array.from(/* @__PURE__ */ new Set([...Array.from(ast.helpers).filter((h) => h in ssrHelpers), ...context.helpers]));
 	ast.helpers = new Set(Array.from(ast.helpers).filter((h) => !(h in ssrHelpers)));
@@ -678,6 +720,16 @@ function createSSRTransformContext(root, options, helpers = /* @__PURE__ */ new 
 			body.push(statement);
 		}
 	};
+}
+/** Whether the server render of `node` may begin with a component's range. */
+function opensRange(node) {
+	if (!node) return false;
+	if (node.type === 1) return node.tagType === 1 && !beginsWithOwnMarkup(node);
+	if (node.type === 9) {
+		const [branch] = node.branches;
+		return node.branches.length === 1 && isBareBranch(branch) && opensRange(branch.children[0]);
+	}
+	return false;
 }
 function createChildContext(parent, withSlotScopeId = parent.withSlotScopeId) {
 	return createSSRTransformContext(parent.root, parent.options, parent.helpers, withSlotScopeId);
@@ -894,7 +946,7 @@ function compile(source, options = {}) {
 			ssrTransformElement,
 			ssrTransformComponent,
 			_vue_compiler_dom.trackSlotScopes,
-			_vue_compiler_dom.transformStyle,
+			ssrTransformStyle,
 			...options.nodeTransforms || []
 		],
 		directiveTransforms: {

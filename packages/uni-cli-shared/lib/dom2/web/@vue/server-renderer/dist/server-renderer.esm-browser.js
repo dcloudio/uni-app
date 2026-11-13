@@ -1,5 +1,5 @@
 /**
-  * @vue/server-renderer v3.6.0-rc.14
+  * @vue/server-renderer v3.6.0-rc.15
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -57,10 +57,18 @@ const isIntegerKey = (key) => isString(key) && key !== "NaN" && key[0] !== "-" &
 const isReservedProp = /*@__PURE__*/ makeMap(",key,ref,ref_for,ref_key,onVnodeBeforeMount,onVnodeMounted,onVnodeBeforeUpdate,onVnodeUpdated,onVnodeBeforeUnmount,onVnodeUnmounted");
 const isBuiltInTag = /*#__PURE__*/ makeMap("slot,component");
 const isBuiltInDirective = /*@__PURE__*/ makeMap("bind,cloak,else-if,else,for,html,if,model,on,once,pre,show,slot,text,memo");
+const STRING_CACHE_MAX_SIZE = 1e4;
 const cacheStringFunction = (fn) => {
-	const cache = Object.create(null);
+	let cache = Object.create(null);
+	let size = 0;
 	return ((str) => {
-		return cache[str] || (cache[str] = fn(str));
+		const hit = cache[str];
+		if (hit !== void 0) return hit;
+		if (++size > STRING_CACHE_MAX_SIZE) {
+			cache = Object.create(null);
+			size = 1;
+		}
+		return cache[str] = fn(str);
 	});
 };
 const camelizeRE = /-(\w)/g;
@@ -68,22 +76,22 @@ const camelizeReplacer = (_, c) => c ? c.toUpperCase() : "";
 /**
 * @private
 */
-const camelize = cacheStringFunction((str) => str.replace(camelizeRE, camelizeReplacer));
+const camelize = /*@__PURE__*/ cacheStringFunction((str) => str.replace(camelizeRE, camelizeReplacer));
 const hyphenateRE = /\B([A-Z])/g;
 /**
 * @private
 */
-const hyphenate = cacheStringFunction((str) => str.replace(hyphenateRE, "-$1").toLowerCase());
+const hyphenate = /*@__PURE__*/ cacheStringFunction((str) => str.replace(hyphenateRE, "-$1").toLowerCase());
 /**
 * @private
 */
-const capitalize = cacheStringFunction((str) => {
+const capitalize = /*@__PURE__*/ cacheStringFunction((str) => {
 	return str.charAt(0).toUpperCase() + str.slice(1);
 });
 /**
 * @private
 */
-const toHandlerKey = cacheStringFunction((str) => {
+const toHandlerKey = /*@__PURE__*/ cacheStringFunction((str) => {
 	return str ? `on${capitalize(str)}` : ``;
 });
 /**
@@ -199,26 +207,11 @@ const isMathMLTag = /*@__PURE__*/ makeMap(MATH_TAGS);
 * Do NOT use in runtime code paths unless behind `__DEV__` flag.
 */
 const isVoidTag = /*@__PURE__*/ makeMap(VOID_TAGS);
-//#endregion
-//#region packages/shared/src/domAttrConfig.ts
-/**
-* On the client we only need to offer special cases for boolean attributes that
-* have different names from their corresponding dom properties:
-* - itemscope -> N/A
-* - allowfullscreen -> allowFullscreen
-* - formnovalidate -> formNoValidate
-* - ismap -> isMap
-* - nomodule -> noModule
-* - novalidate -> noValidate
-* - playsinline -> playsInline
-* - readonly -> readOnly
-*/
-const specialBooleanAttrs = `itemscope,allowfullscreen,formnovalidate,ismap,nomodule,novalidate,playsinline,readonly`;
-const isSpecialBooleanAttr = /*@__PURE__*/ makeMap(specialBooleanAttrs);
+const isSpecialBooleanAttr = /*@__PURE__*/ makeMap("itemscope,allowfullscreen,disablepictureinpicture,disableremoteplayback,formnovalidate,ismap,nomodule,novalidate,playsinline,readonly");
 /**
 * The full list is needed during SSR to produce the correct initial markup.
 */
-const isBooleanAttr = /*@__PURE__*/ makeMap(specialBooleanAttrs + ",async,autofocus,autoplay,controls,default,defer,disabled,inert,loop,open,required,reversed,scoped,seamless,checked,muted,multiple,selected");
+const isBooleanAttr = /*@__PURE__*/ makeMap("itemscope,allowfullscreen,disablepictureinpicture,disableremoteplayback,formnovalidate,ismap,nomodule,novalidate,playsinline,readonly,async,autofocus,autoplay,controls,default,defer,disabled,inert,loop,open,required,reversed,scoped,seamless,checked,muted,multiple,selected");
 /**
 * Boolean attributes should be included if the value is truthy or ''.
 * e.g. `<select multiple>` compiles to `{ multiple: '' }`
@@ -227,12 +220,10 @@ function includeBooleanAttr(value) {
 	return !!value || value === "";
 }
 const unsafeAttrCharRE = /[>/="'\u0009\u000a\u000c\u000d\u0020]/;
-const attrValidationCache = {};
 function isSSRSafeAttrName(name) {
-	if (attrValidationCache.hasOwnProperty(name)) return attrValidationCache[name];
 	const isUnsafe = unsafeAttrCharRE.test(name);
 	if (isUnsafe) console.error(`unsafe attribute name: ${name}`);
-	return attrValidationCache[name] = !isUnsafe;
+	return !isUnsafe;
 }
 const propsToAttrMap = {
 	acceptCharset: "accept-charset",
@@ -470,41 +461,6 @@ function normalizeCssVarValue(value) {
 	return String(value);
 }
 //#endregion
-//#region packages/reactivity/src/debug.ts
-const triggerEventInfos = [];
-function onTrack(sub, debugInfo) {
-	if (sub.onTrack) sub.onTrack(extend({ effect: sub }, debugInfo));
-}
-function onTrigger(sub) {
-	if (sub.onTrigger) {
-		const debugInfo = triggerEventInfos[triggerEventInfos.length - 1];
-		sub.onTrigger(extend({ effect: sub }, debugInfo));
-	}
-}
-function setupOnTrigger(target) {
-	Object.defineProperty(target.prototype, "onTrigger", {
-		get() {
-			return this._onTrigger;
-		},
-		set(val) {
-			if (val && !this._onTrigger) setupFlagsHandler(this);
-			this._onTrigger = val;
-		}
-	});
-}
-function setupFlagsHandler(target) {
-	target._flags = target.flags;
-	Object.defineProperty(target, "flags", {
-		get() {
-			return target._flags;
-		},
-		set(value) {
-			if (!(target._flags & 48) && !!(value & 48)) onTrigger(this);
-			target._flags = value;
-		}
-	});
-}
-//#endregion
 //#region packages/reactivity/src/warning.ts
 function warn$2(msg, ...args) {
 	console.warn(`[Vue warn] ${msg}`, ...args);
@@ -514,13 +470,7 @@ function warn$2(msg, ...args) {
 const notifyBuffer = [];
 let batchDepth = 0;
 let activeSub = void 0;
-let runDepth = 0;
-function incRunDepth() {
-	++runDepth;
-}
-function decRunDepth() {
-	--runDepth;
-}
+const CHECKING = 512;
 let globalVersion = 0;
 let notifyIndex = 0;
 let notifyBufferLength = 0;
@@ -569,6 +519,7 @@ function unlink(link, sub = link.sub) {
 	const nextDep = link.nextDep;
 	const nextSub = link.nextSub;
 	const prevSub = link.prevSub;
+	link.prevDep = link.nextDep = link.prevSub = link.nextSub = void 0;
 	if (nextDep !== void 0) nextDep.prevDep = prevDep;
 	else sub.depsTail = prevDep;
 	if (prevDep !== void 0) prevDep.nextDep = nextDep;
@@ -576,7 +527,7 @@ function unlink(link, sub = link.sub) {
 	if (nextSub !== void 0) nextSub.prevSub = prevSub;
 	else dep.subsTail = prevSub;
 	if (prevSub !== void 0) prevSub.nextSub = nextSub;
-	else if ((dep.subs = nextSub) === void 0) {
+	else if ((dep.subs = nextSub) === void 0 && dep.flags & 1) {
 		let toRemove = dep.deps;
 		if (toRemove !== void 0) {
 			do
@@ -594,14 +545,12 @@ function propagate(link) {
 		const sub = link.sub;
 		let flags = sub.flags;
 		if (flags & 3) {
-			if (!(flags & 60)) {
-				sub.flags = flags | 32;
-				if (runDepth) sub.flags |= 8;
-			} else if (!(flags & 12)) flags = 0;
+			if (!(flags & 44)) sub.flags = flags | 32;
+			else if (!(flags & 12)) flags = 0;
 			else if (!(flags & 4)) sub.flags = flags & -9 | 32;
 			else if (!(flags & 48) && isValidLink(link, sub)) {
 				sub.flags = flags | 40;
-				flags &= 1;
+				flags = sub === activeSub || activeSub === void 0 ? 0 : flags & 1;
 			} else flags = 0;
 			if (flags & 2) notifyBuffer[notifyBufferLength++] = sub;
 			if (flags & 1) {
@@ -637,7 +586,7 @@ function propagate(link) {
 function startTracking(sub) {
 	++globalVersion;
 	sub.depsTail = void 0;
-	sub.flags = sub.flags & -57 | 4;
+	sub.flags = sub.flags & -569 | 4;
 	return setActiveSub(sub);
 }
 function endTracking(sub, prevSub) {
@@ -645,8 +594,11 @@ function endTracking(sub, prevSub) {
 	activeSub = prevSub;
 	const depsTail = sub.depsTail;
 	let toRemove = depsTail !== void 0 ? depsTail.nextDep : sub.deps;
-	while (toRemove !== void 0) toRemove = unlink(toRemove, sub);
-	sub.flags &= -5;
+	while (toRemove !== void 0) {
+		unlink(toRemove, sub);
+		toRemove = depsTail !== void 0 ? depsTail.nextDep : sub.deps;
+	}
+	if ((sub.flags &= -5) & 8) markRecursed(sub);
 }
 function flush() {
 	let hasError = false;
@@ -668,45 +620,67 @@ function flush() {
 	if (hasError) throw error;
 }
 function checkDirty(link, sub) {
+	try {
+		return walkDirty(link, sub);
+	} catch (err) {
+		markStale(sub);
+		throw err;
+	}
+}
+function walkDirty(link, sub) {
+	const root = sub;
 	let stack;
 	let checkDepth = 0;
+	let staleDepth = 0;
+	let staleFloor = 0;
 	top: do {
 		const dep = link.dep;
 		const depFlags = dep.flags;
 		let dirty = false;
 		if (sub.flags & 16) dirty = true;
 		else if ((depFlags & 17) === 17) {
-			const subs = dep.subs;
 			if (dep.update()) {
-				if (subs.nextSub !== void 0) shallowPropagate(subs);
+				const subs = dep.subs;
+				if (subs !== void 0 && (subs !== link || subs.nextSub !== void 0)) shallowPropagate(subs);
 				dirty = true;
 			}
 		} else if ((depFlags & 33) === 33) {
-			stack = {
-				value: link,
-				prev: stack
-			};
-			link = dep.deps;
-			sub = dep;
-			++checkDepth;
-			continue;
+			const depth = dep === root ? 0 : depFlags & CHECKING ? checkingDepth(dep, stack, checkDepth) : -1;
+			if (depth < 0) {
+				if (link.nextSub !== void 0 || link.prevSub !== void 0) dep.flags = depFlags | CHECKING;
+				stack = {
+					value: link,
+					prev: stack
+				};
+				link = dep.deps;
+				sub = dep;
+				++checkDepth;
+				continue;
+			}
+			if (depth < checkDepth) {
+				staleFloor = staleDepth && staleFloor < depth ? staleFloor : depth;
+				staleDepth = checkDepth;
+			}
 		}
 		if (!dirty && link.nextDep !== void 0) {
 			link = link.nextDep;
 			continue;
 		}
 		while (checkDepth) {
+			const stale = checkDepth === staleDepth;
+			if (stale && --staleDepth === staleFloor) staleDepth = 0;
 			--checkDepth;
 			link = stack.value;
 			stack = stack.prev;
 			if (dirty) {
-				const subs = sub.subs;
 				if (sub.update()) {
-					if (subs.nextSub !== void 0) shallowPropagate(subs);
+					const subs = sub.subs;
+					if (subs !== void 0 && (subs !== link || subs.nextSub !== void 0)) shallowPropagate(subs);
 					sub = link.sub;
 					continue;
 				}
-			} else sub.flags &= -33;
+			} else if (stale) sub.flags = sub.flags & -545 | 16;
+			else sub.flags &= -545;
 			sub = link.sub;
 			if (link.nextDep !== void 0) {
 				link = link.nextDep;
@@ -714,8 +688,20 @@ function checkDirty(link, sub) {
 			}
 			dirty = false;
 		}
-		return dirty && !!sub.flags;
+		return (dirty || !!(sub.flags & 16)) && !!sub.flags;
 	} while (true);
+}
+function checkingDepth(dep, stack, depth) {
+	for (; stack !== void 0; stack = stack.prev, --depth) if (stack.value.dep === dep) return depth;
+	return -1;
+}
+function markStale(sub) {
+	const nodes = [sub];
+	do {
+		sub = nodes.pop();
+		sub.flags = sub.flags & -33 | 16;
+		for (let link = sub.deps; link !== void 0; link = link.nextDep) if (link.dep.flags & 32) nodes.push(link.dep);
+	} while (nodes.length);
 }
 function shallowPropagate(link) {
 	do {
@@ -733,6 +719,71 @@ function isValidLink(checkLink, sub) {
 		link = link.prevDep;
 	}
 	return false;
+}
+function markRecursed(sub) {
+	const nodes = [sub];
+	do {
+		sub = nodes.pop();
+		for (let link = sub.deps; link !== void 0; link = link.nextDep) {
+			const dep = link.dep;
+			if ((dep.flags & 40) === 32) {
+				dep.flags |= 8;
+				nodes.push(dep);
+			}
+		}
+	} while (nodes.length);
+}
+//#endregion
+//#region packages/reactivity/src/debug.ts
+const triggered = [];
+function onTrack(sub, debugInfo) {
+	if (sub.onTrack) sub.onTrack(extend({ effect: sub }, debugInfo));
+}
+function onTrigger(sub, debugInfo) {
+	if (sub.onTrigger) sub.onTrigger(extend({ effect: sub }, debugInfo));
+}
+function startTrigger() {
+	triggered.push([]);
+}
+function endTrigger(debugInfo) {
+	const subs = triggered.pop();
+	if (subs.length) {
+		startBatch();
+		try {
+			for (let i = 0; i < subs.length; i++) {
+				const sub = subs[i];
+				if (sub.flags & 3) onTrigger(sub, debugInfo);
+			}
+		} finally {
+			endBatch();
+		}
+	}
+}
+function setupOnTrigger(target) {
+	Object.defineProperty(target.prototype, "onTrigger", {
+		get() {
+			return this._onTrigger;
+		},
+		set(val) {
+			if (val && !this._onTrigger) setupFlagsHandler(this);
+			this._onTrigger = val;
+		}
+	});
+}
+function setupFlagsHandler(target) {
+	target._flags = target.flags;
+	Object.defineProperty(target, "flags", {
+		get() {
+			return target._flags;
+		},
+		set(value) {
+			if (!(target._flags & 48) && !!(value & 48)) {
+				if (triggered.length) triggered[triggered.length - 1].push(this);
+				else onTrigger(this);
+			}
+			target._flags = value;
+		}
+	});
 }
 //#endregion
 //#region packages/reactivity/src/dep.ts
@@ -793,20 +844,12 @@ function trigger(target, type, key, newValue, oldValue, oldTarget) {
 	if (!depsMap) return;
 	const run = (dep) => {
 		if (dep !== void 0 && dep.subs !== void 0) {
-			triggerEventInfos.push({
-				target,
-				type,
-				key,
-				newValue,
-				oldValue,
-				oldTarget
-			});
 			propagate(dep.subs);
 			shallowPropagate(dep.subs);
-			triggerEventInfos.pop();
 		}
 	};
 	startBatch();
+	startTrigger();
 	if (type === "clear") depsMap.forEach(run);
 	else {
 		const targetIsArray = isArray(target);
@@ -836,6 +879,14 @@ function trigger(target, type, key, newValue, oldValue, oldTarget) {
 			}
 		}
 	}
+	endTrigger({
+		target,
+		type,
+		key,
+		newValue,
+		oldValue,
+		oldTarget
+	});
 	endBatch();
 }
 //#endregion
@@ -1046,7 +1097,7 @@ function noTracking(self, method, args = []) {
 //#endregion
 //#region packages/reactivity/src/baseHandlers.ts
 const isNonTrackableKeys = /*@__PURE__*/ makeMap(`__proto__,__v_isRef,__isVue`);
-const builtInSymbols = new Set(/*@__PURE__*/ Object.getOwnPropertyNames(Symbol).filter((key) => key !== "arguments" && key !== "caller").map((key) => Symbol[key]).filter(isSymbol));
+const builtInSymbols = /*@__PURE__*/ new Set(/*@__PURE__*/ Object.getOwnPropertyNames(Symbol).filter((key) => key !== "arguments" && key !== "caller").map((key) => Symbol[key]).filter(isSymbol));
 function hasOwnProperty(key) {
 	if (!isSymbol(key)) key = String(key);
 	const obj = /* @__PURE__ */ toRaw(this);
@@ -1640,6 +1691,10 @@ var ReactiveEffect = class {
 	get active() {
 		return !(this.flags & 1024);
 	}
+	/** @internal */
+	get running() {
+		return !!(this.flags & 4);
+	}
 	pause() {
 		this.flags |= 256;
 	}
@@ -1653,11 +1708,9 @@ var ReactiveEffect = class {
 		if (!this.active) return this.fn();
 		cleanup(this);
 		const prevSub = startTracking(this);
-		incRunDepth();
 		try {
 			return this.fn();
 		} finally {
-			decRunDepth();
 			endTracking(this, prevSub);
 			const flags = this.flags;
 			if ((flags & 136) === 136) {
@@ -1680,9 +1733,9 @@ var ReactiveEffect = class {
 		if (flags & 16) return true;
 		if (flags & 32) {
 			if (checkDirty(this.deps, this)) {
-				this.flags = flags | 16;
+				if (this.active) this.flags |= 16;
 				return true;
-			} else this.flags = flags & -33;
+			} else this.flags &= -33;
 		}
 		return false;
 	}
@@ -1728,8 +1781,10 @@ var EffectScope = class {
 		const flags = this.flags;
 		if (flags & 256) {
 			this.flags = flags & -257;
-			for (let link = this.deps; link !== void 0; link = link.nextDep) {
-				const dep = link.dep;
+			const deps = [];
+			for (let link = this.deps; link !== void 0; link = link.nextDep) deps.push(link.dep);
+			for (let i = 0; i < deps.length; i++) {
+				const dep = deps[i];
 				if ("resume" in dep) dep.resume();
 			}
 		}
@@ -1758,8 +1813,10 @@ var EffectScope = class {
 		while (dep !== void 0) {
 			const node = dep.dep;
 			if ("stop" in node) {
-				dep = dep.nextDep;
+				const prev = dep.prevDep;
 				node.stop();
+				const next = prev !== void 0 ? prev.nextDep : this.deps;
+				dep = next === dep ? dep.nextDep : next;
 			} else dep = unlink(dep, this);
 		}
 		cleanup(this);
@@ -1774,6 +1831,7 @@ function setCurrentScope(scope) {
 }
 //#endregion
 //#region packages/reactivity/src/computed.ts
+const FAILED = 64;
 /**
 * @private exported by @vue/reactivity for Vue core use, but not exported from
 * the main vue package
@@ -1822,12 +1880,24 @@ var ComputedRefImpl = class {
 	}
 	get value() {
 		const flags = this.flags;
-		if (flags & 16 || flags & 32 && checkDirty(this.deps, this)) {
-			if (this.update()) {
-				const subs = this.subs;
-				if (subs !== void 0) shallowPropagate(subs);
-			}
-		} else if (flags & 32) this.flags = flags & -33;
+		try {
+			if (flags & 16 || flags & 32 && checkDirty(this.deps, this)) {
+				if (this.update()) {
+					const subs = this.subs;
+					if (subs !== void 0) shallowPropagate(subs);
+				}
+			} else if (flags & 32) this.flags = flags & -33;
+		} catch (err) {
+			if (activeSub !== void 0) {
+				onTrack(activeSub, {
+					target: this,
+					type: "get",
+					key: "value"
+				});
+				link(this, activeSub);
+			} else if (activeEffectScope !== void 0) link(this, activeEffectScope);
+			throw err;
+		}
 		if (activeSub !== void 0) {
 			onTrack(activeSub, {
 				target: this,
@@ -1835,7 +1905,18 @@ var ComputedRefImpl = class {
 				key: "value"
 			});
 			link(this, activeSub);
-		} else if (activeEffectScope !== void 0) link(this, activeEffectScope);
+		} else if (activeEffectScope !== void 0) {
+			if (activeEffectScope.active) link(this, activeEffectScope);
+			else if (this.subs === void 0) {
+				let dep = this.deps;
+				if (dep !== void 0) {
+					do
+						dep = unlink(dep, this);
+					while (dep !== void 0);
+					this.flags |= 16;
+				}
+			}
+		}
 		return this._value;
 	}
 	set value(newValue) {
@@ -1847,11 +1928,15 @@ var ComputedRefImpl = class {
 		try {
 			const oldValue = this._value;
 			const newValue = this.fn(oldValue);
-			if (hasChanged(oldValue, newValue)) {
+			if (hasChanged(oldValue, newValue) || this.flags & FAILED) {
 				this._value = newValue;
+				this.flags &= -65;
 				return true;
 			}
 			return false;
+		} catch (err) {
+			this.flags |= FAILED;
+			throw err;
 		} finally {
 			endTracking(this, prevSub);
 		}
@@ -1872,6 +1957,7 @@ function computed$1(getterOrOptions, debugOptions, isSSR = false) {
 		cRef.onTrack = debugOptions.onTrack;
 		cRef.onTrigger = debugOptions.onTrigger;
 	}
+	if (isSSR && activeEffectScope !== void 0) link(cRef, activeEffectScope);
 	return cRef;
 }
 //#endregion
@@ -2187,7 +2273,7 @@ function callWithAsyncErrorHandling(fn, instance, type, args) {
 	if (isFunction(fn)) {
 		const res = callWithErrorHandling(fn, instance, type, args);
 		if (res && isPromise(res)) res.catch((err) => {
-			handleError(err, instance, type);
+			handleError(err, instance, type, void 0, true);
 		});
 		return res;
 	}
@@ -2197,7 +2283,7 @@ function callWithAsyncErrorHandling(fn, instance, type, args) {
 		return values;
 	} else warn$1(`Invalid value type passed to callWithAsyncErrorHandling(): ${typeof fn}`);
 }
-function handleError(err, instance, type, throwInDev = true) {
+function handleError(err, instance, type, throwInDev = true, isAsyncError = false) {
 	const { errorHandler, throwUnhandledErrorInProduction } = instance && instance.appContext.config || EMPTY_OBJ;
 	if (instance) {
 		let cur = instance.parent;
@@ -2205,7 +2291,7 @@ function handleError(err, instance, type, throwInDev = true) {
 		const errorInfo = ErrorTypeStrings[type];
 		while (cur) {
 			const errorCapturedHooks = cur.ec;
-			if (errorCapturedHooks) {
+			if (errorCapturedHooks && !cur.isUnmounted && (!isAsyncError || cur.scope.active)) {
 				for (let i = 0; i < errorCapturedHooks.length; i++) if (errorCapturedHooks[i](err, exposedInstance, errorInfo) === false) return;
 			}
 			cur = cur.parent;
@@ -2561,7 +2647,25 @@ function reload(id, newComp) {
 			if (instance.root.ce && instance !== instance.root) instance.root.ce._removeChildStyle(oldComp);
 		}
 		parents.forEach((parent) => {
-			queueJob(() => {
+			const children = instances.filter((instance) => instance.parent === parent);
+			const update = () => {
+				if (!parent.scope.active) return;
+				const activeChildren = children.filter((instance) => instance.scope.active);
+				if (!activeChildren.length) return;
+				const pending = activeChildren.find((instance) => instance.asyncDep && !instance.asyncResolved) || locateUnresolvedAsyncRoot(parent);
+				if (pending) {
+					pending.asyncDep.catch(NOOP).then(() => {
+						if (parent.scope.active && (pending.asyncResolved || !pending.scope.active)) queueJob(update);
+					});
+					return;
+				}
+				for (const instance of activeChildren) {
+					const oldComp = normalizeClassComponent(instance.type);
+					let dirtyInstances = hmrDirtyComponents.get(oldComp);
+					if (!dirtyInstances) hmrDirtyComponents.set(oldComp, dirtyInstances = /* @__PURE__ */ new Set());
+					dirtyInstances.add(instance);
+					hmrDirtyComponentsMode.set(oldComp, !!isVapor);
+				}
 				runWithHmrUpdating(() => {
 					if (parent.vapor) parent.hmrRerender();
 					else {
@@ -2572,7 +2676,12 @@ function reload(id, newComp) {
 						}
 					}
 				});
-			});
+				queuePostFlushCb(() => {
+					hmrDirtyComponents.clear();
+					hmrDirtyComponentsMode.clear();
+				});
+			};
+			queueJob(update);
 		});
 	}
 	queuePostFlushCb(() => {
@@ -2719,18 +2828,35 @@ function validateDirectiveName(name) {
 	if (isBuiltInDirective(name)) warn$1("Do not use built-in directive ids as custom directive id: " + name);
 }
 function invokeDirectiveHook(vnode, prevVNode, instance, name) {
-	const bindings = vnode.dirs;
+	let hookVNode = vnode;
+	if (name === "beforeMount") vnode._mount = vnode;
+	else if (name === "beforeUpdate") {
+		const mount = prevVNode && prevVNode._mount;
+		if (mount) {
+			mount._latest = vnode;
+			vnode._mount = mount;
+		}
+	} else if (name === "mounted") {
+		const latest = vnode._latest;
+		vnode._mount = vnode._latest = void 0;
+		if (latest) {
+			hookVNode = latest;
+			latest._mount = void 0;
+		}
+	}
+	const bindings = hookVNode.dirs;
 	const oldBindings = prevVNode && prevVNode.dirs;
 	for (let i = 0; i < bindings.length; i++) {
-		const binding = bindings[i];
+		let binding = bindings[i];
 		if (oldBindings) binding.oldValue = oldBindings[i].value;
+		else if (name === "mounted" && binding.oldValue !== void 0) binding = extend({}, binding, { oldValue: void 0 });
 		let hook = binding.dir[name];
 		if (hook) {
 			const prevSub = setActiveSub();
 			callWithAsyncErrorHandling(hook, instance, 8, [
 				vnode.el,
 				binding,
-				vnode,
+				hookVNode,
 				prevVNode
 			]);
 			setActiveSub(prevSub);
@@ -2859,7 +2985,7 @@ function createPathGetter(ctx, path) {
 	};
 }
 //#endregion
-//#region node_modules/.pnpm/@dcloudio+uni-shared@3.0.0-alpha-5030220261016003/node_modules/@dcloudio/uni-shared/dist/uni-shared.es.js
+//#region ../uni-app-next/packages/uni-shared/dist/uni-shared.es.js
 const ON_SHOW = "onShow";
 const ON_HIDE = "onHide";
 const ON_LOAD = "onLoad";
@@ -2982,9 +3108,14 @@ function setTransitionHooks(vnode, hooks) {
 			return setTransitionHooks(isTeleport(subTree.type) ? getInnerChild(subTree) || subTree : subTree, hooks);
 		}
 	} else if (vnode.shapeFlag & 128) {
-		const contentHooks = vnode.ssContent.transition = hooks.clone(vnode.ssContent);
-		const fallbackHooks = vnode.ssFallback.transition = hooks.clone(vnode.ssFallback);
-		return vnode.suspense && vnode.suspense.activeBranch === vnode.ssFallback ? fallbackHooks : contentHooks;
+		const suspense = vnode.suspense;
+		if (suspense) {
+			const branch = suspense.isHydrating ? suspense.pendingBranch : suspense.activeBranch;
+			if (branch) return setTransitionHooks(branch, hooks.clone(branch));
+		} else {
+			vnode.ssContent.transition = hooks.clone(vnode.ssContent);
+			vnode.ssFallback.transition = hooks.clone(vnode.ssFallback);
+		}
 	} else {
 		vnode.transition = hooks;
 		if (vnode.type === Fragment && isArray(vnode.children)) {
@@ -3156,9 +3287,8 @@ function registerKeepAliveHook(hook, type, target = getCurrentGenericInstance())
 }
 function injectToKeepAliveRoot(hook, type, target, keepAliveRoot) {
 	const injected = injectHook(type, hook, keepAliveRoot, true);
-	onUnmounted(() => {
-		remove(keepAliveRoot[type], injected);
-	}, target);
+	const removal = injectHook("um", () => remove(keepAliveRoot[type], injected), target);
+	removal.flags = 8;
 }
 function invokeKeepAliveHooks(hooks) {
 	for (let i = 0; i < hooks.length; i++) {
@@ -3267,6 +3397,11 @@ function renderSlot(slots, name, props, fallback, noSlotted, branchKey) {
 			ret.props = extend({}, ret.props, { key: branchKey });
 			ret.key = branchKey;
 		}
+		if (isBlockTreeEnabled <= 0) {
+			if (!ret.vs.props) ret.vs.props = ret.props;
+			ret.props = ret.key != null ? { key: ret.key } : null;
+			ret.vs.attrs = EMPTY_OBJ;
+		}
 		if (!noSlotted && ret.scopeId) ret.slotScopeIds = [ret.scopeId + "-s"];
 		return ret;
 	}
@@ -3355,41 +3490,43 @@ const getDevRootFragmentEl = (i) => {
 let publicPropertiesMap;
 let vaporPublicPropertiesMap;
 const getPublicPropertiesMap = (vapor = false) => {
-	if (!publicPropertiesMap) publicPropertiesMap = extend(Object.create(null), {
-		$: (i) => i,
-		$el: (i) => i.vapor ? i.getRootElement() : getDevRootFragmentEl(i),
-		$data: (i) => i.data,
-		$props: (i) => /* @__PURE__ */ shallowReadonly(i.props),
-		$attrs: (i) => /* @__PURE__ */ shallowReadonly(i.attrs),
-		$slots: (i) => /* @__PURE__ */ shallowReadonly(i.slots),
-		$refs: (i) => /* @__PURE__ */ shallowReadonly(i.refs),
-		$parent: (i) => getPublicInstance(i.parent),
-		$root: (i) => getPublicInstance(i.root),
-		$page: (i) => i.page || null,
-		$host: (i) => i.ce,
-		$emit: (i) => i.emit,
-		$options: (i) => resolveMergedOptions(i),
-		$forceUpdate: (i) => i.f || (i.f = () => {
-			queueJob(i.update);
-		}),
-		$nextTick: (i) => i.n || (i.n = nextTick.bind(i.proxy)),
-		$watch: (i) => instanceWatch.bind(i)
-	});
-	if (vapor) {
-		if (!vaporPublicPropertiesMap) {
-			vaporPublicPropertiesMap = extend(Object.create(null), publicPropertiesMap, { $callMethod: (i) => (methodName, ...args) => {
+	let map = vapor ? vaporPublicPropertiesMap : publicPropertiesMap;
+	if (!map) {
+		map = extend(Object.create(null), {
+			$: (i) => i,
+			$el: (i) => i.vapor ? i.getRootElement() : getDevRootFragmentEl(i),
+			$data: (i) => i.data,
+			$props: (i) => /* @__PURE__ */ shallowReadonly(i.props),
+			$attrs: (i) => /* @__PURE__ */ shallowReadonly(i.attrs),
+			$slots: (i) => /* @__PURE__ */ shallowReadonly(i.slots),
+			$refs: (i) => /* @__PURE__ */ shallowReadonly(i.refs),
+			$parent: (i) => getPublicInstance(i.parent),
+			$root: (i) => getPublicInstance(i.root),
+			$page: (i) => i.page || null,
+			$host: (i) => i.ce,
+			$emit: (i) => i.emit,
+			$options: (i) => resolveMergedOptions(i),
+			$nextTick: (i) => i.n || (i.n = nextTick.bind(i.proxy))
+		});
+		if (vapor) {
+			map.$callMethod = (i) => (methodName, ...args) => {
 				const proxy = getComponentPublicInstance(i) || i.proxy;
 				if (!proxy) return null;
 				const method = proxy[methodName];
 				if (method) return method(...args);
 				console.error(`method ${methodName} not found`);
 				return null;
-			} });
-			delete vaporPublicPropertiesMap.$forceUpdate;
+			};
+			vaporPublicPropertiesMap = map;
+		} else {
+			map.$watch = (i) => instanceWatch.bind(i);
+			map.$forceUpdate = (i) => i.f || (i.f = () => {
+				queueJob(i.update);
+			});
+			publicPropertiesMap = map;
 		}
-		return vaporPublicPropertiesMap;
 	}
-	return publicPropertiesMap;
+	return map;
 };
 const isReservedPrefix = (key) => key === "_" || key === "$";
 const hasSetupBinding = (state, key) => state !== EMPTY_OBJ && !state.__isScriptSetup && hasOwn(state, key);
@@ -3432,7 +3569,8 @@ const PublicInstanceProxyHandlers = {
 		else if (ctx !== EMPTY_OBJ && hasOwn(ctx, key)) {
 			accessCache[key] = 4;
 			return ctx[key];
-		} else if (globalProperties = appContext.config.globalProperties, hasOwn(globalProperties, key)) return globalProperties[key];
+		} else if (instance.exposed && hasOwn(instance.exposed, key)) return instance.exposed[key];
+		else if (globalProperties = appContext.config.globalProperties, hasOwn(globalProperties, key)) return globalProperties[key];
 		else if (currentRenderingInstance && (!isString(key) || key.indexOf("__v") !== 0)) {
 			if (data !== EMPTY_OBJ && isReservedPrefix(key[0]) && hasOwn(data, key)) warn$1(`Property ${JSON.stringify(key)} must be accessed via $data because it starts with a reserved character ("$" or "_") and is not proxied on the render context.`);
 			else if (instance === currentRenderingInstance) warn$1(`Property ${JSON.stringify(key)} was accessed during render but is not defined on instance.`);
@@ -4782,8 +4920,10 @@ function baseCreateRenderer(options, createHydrationFns) {
 		def(el, "__vnode", vnode, true);
 		def(el, "__vueParentComponent", parentComponent, true);
 		if (dirs) invokeDirectiveHook(vnode, null, parentComponent, "beforeMount");
-		if (transition) performTransitionEnter(el, transition, () => hostInsert(el, container, anchor), parentSuspense);
-		else hostInsert(el, container, anchor);
+		if (transition) {
+			if (!needTransition(parentSuspense, transition) && !transition.persisted) el[deferredEnterKey] = true;
+			performTransitionEnter(el, transition, () => hostInsert(el, container, anchor), parentSuspense);
+		} else hostInsert(el, container, anchor);
 		if ((vnodeHook = props && props.onVnodeMounted) || dirs) {
 			const isHmr = isHmrUpdating;
 			queuePostRenderEffect(() => {
@@ -5043,16 +5183,20 @@ function baseCreateRenderer(options, createHydrationFns) {
 			} else {
 				let { next, bu, u, parent, vnode } = instance;
 				{
-					const nonHydratedAsyncRoot = locateNonHydratedAsyncRoot(instance);
-					if (nonHydratedAsyncRoot) {
+					const unresolvedAsyncRoot = locateUnresolvedAsyncRoot(instance);
+					if (unresolvedAsyncRoot) {
 						if (next) {
 							next.el = vnode.el;
 							updateComponentPreRender(instance, next, optimized);
 						}
-						nonHydratedAsyncRoot.asyncDep.then(() => {
-							queuePostRenderEffect(() => {
-								if (!instance.isUnmounted) instance.update();
-							}, void 0, parentSuspense);
+						unresolvedAsyncRoot.asyncDep.then(() => {
+							const retry = () => {
+								if (instance.effect.flags & 1024) return;
+								if (parentSuspense && parentSuspense.pendingBranch) queuePostRenderEffect(retry, void 0, parentSuspense);
+								else instance.update();
+							};
+							retry.flags = 24;
+							queuePostRenderEffect(retry, void 0, parentSuspense);
 						});
 						return;
 					}
@@ -5075,7 +5219,7 @@ function baseCreateRenderer(options, createHydrationFns) {
 				const prevTree = instance.subTree;
 				instance.subTree = nextTree;
 				startMeasure(instance, `patch`);
-				patch(prevTree, nextTree, hostParentNode(prevTree.el), getNextHostNode(prevTree), instance, parentSuspense, namespace);
+				patch(prevTree, nextTree, hostParentNode(prevTree.el || resolveAsyncComponentPlaceholder(prevTree)), getNextHostNode(prevTree), instance, parentSuspense, namespace);
 				endMeasure(instance, `patch`);
 				next.el = nextTree.el;
 				if (originNext === null) updateHOCHostEl(instance, nextTree.el);
@@ -5278,9 +5422,7 @@ function baseCreateRenderer(options, createHydrationFns) {
 		}
 		if (cacheIndex != null && (!vnode.ctx || vnode.ctx === parentComponent)) parentComponent.renderCache[cacheIndex] = void 0;
 		if (shapeFlag & 256) {
-			if (isVaporInteropEnabled && isVaporComponent(vnode.type)) getVaporInterface(parentComponent, vnode).deactivate(vnode, parentComponent.ctx.getStorageContainer(), parentSuspense);
-			else parentComponent.ctx.deactivate(vnode);
-			return;
+			if (parentComponent.ctx.deactivate(vnode)) return;
 		}
 		if (isVaporInteropEnabled && shapeFlag & 6 && isVaporComponent(type)) {
 			getVaporInterface(parentComponent, vnode).unmount(vnode, doRemove, parentSuspense);
@@ -5360,12 +5502,14 @@ function baseCreateRenderer(options, createHydrationFns) {
 		if (effect) {
 			effect.stop();
 			unmount(subTree, instance, parentSuspense, doRemove);
-		} else if (instance.vnode.el && subTree) {
+		} else if (subTree) {
 			subTree.transition = instance.vnode.transition;
 			unmount(subTree, instance, parentSuspense, doRemove);
 		}
 		if (um) queuePostRenderEffect(um, void 0, parentSuspense);
-		queuePostRenderEffect(() => instance.isUnmounted = true, void 0, parentSuspense);
+		const markUnmounted = () => instance.isUnmounted = true;
+		markUnmounted.flags = 8;
+		queuePostRenderEffect(markUnmounted, void 0, parentSuspense);
 		devtoolsComponentRemoved(instance);
 	};
 	const unmountChildren = (children, parentComponent, parentSuspense, doRemove = false, optimized = false, start = 0) => {
@@ -5479,11 +5623,11 @@ function traverseStaticChildren(n1, n2, shallow = false) {
 		c2.el && (c2.el.__vnode = c2);
 	}
 }
-function locateNonHydratedAsyncRoot(instance) {
+function locateUnresolvedAsyncRoot(instance) {
 	const subComponent = instance.subTree && instance.subTree.component;
 	if (subComponent) {
 		if (subComponent.asyncDep && !subComponent.asyncResolved) return subComponent;
-		else return locateNonHydratedAsyncRoot(subComponent);
+		else return locateUnresolvedAsyncRoot(subComponent);
 	}
 }
 function invalidateMount(hooks) {
@@ -5553,12 +5697,15 @@ function getInheritedScopeIds(vnode, parentComponent, includeVaporRootIds = true
 function resolveAsyncComponentPlaceholder(anchorVnode) {
 	if (anchorVnode.placeholder) return anchorVnode.placeholder;
 	const instance = anchorVnode.component;
-	if (instance) return resolveAsyncComponentPlaceholder(instance.subTree);
+	if (instance && instance.subTree) return resolveAsyncComponentPlaceholder(instance.subTree);
+	const suspense = anchorVnode.suspense;
+	if (suspense && suspense.activeBranch) return resolveAsyncComponentPlaceholder(suspense.activeBranch);
 	return null;
 }
 //#endregion
 //#region packages/runtime-core/src/components/Suspense.ts
 const isSuspense = (type) => type.__isSuspense;
+const deferredEnterKey = Symbol("_deferredEnter");
 function queueEffectWithSuspense(fn, id, suspense) {
 	if (suspense && suspense.pendingBranch) {
 		if (isArray(fn)) suspense.effects.push(...fn);
@@ -5749,7 +5896,8 @@ function _createVNode(type, props = null, children = null, patchFlag = 0, dynami
 }
 function guardReactiveProps(props) {
 	if (!props) return null;
-	return /* @__PURE__ */ isProxy(props) || isInternalObject(props) ? extend({}, props) : props;
+	if (/* @__PURE__ */ isProxy(props)) return extend({}, props);
+	return isInternalObject(props) ? extend({}, props[rawAttrsKey] || props) : props;
 }
 function cloneVNode(vnode, extraProps, mergeRef = false, cloneTransition = false) {
 	const { props, ref, patchFlag, children, transition } = vnode;
@@ -5848,6 +5996,17 @@ function normalizeVNode$1(child) {
 function cloneIfMounted(child) {
 	return child.el === null && child.patchFlag !== -1 || child.memo ? child : cloneVNode(child);
 }
+let deferElementSlots = false;
+/**
+* While enabled, compiled default slots passed as children of plain elements
+* are kept on the vnode so the server renderer can render them in push mode.
+* @internal
+*/
+function setDeferElementSlots$1(value) {
+	const prev = deferElementSlots;
+	deferElementSlots = value;
+	return prev;
+}
 function normalizeChildren(vnode, children) {
 	let type = 0;
 	const { shapeFlag } = vnode;
@@ -5856,6 +6015,11 @@ function normalizeChildren(vnode, children) {
 	else if (typeof children === "object") {
 		if (shapeFlag & 65) {
 			const slot = children.default;
+			if (deferElementSlots && slot && slot._c && shapeFlag & 1) {
+				vnode.children = children;
+				vnode.shapeFlag |= 32;
+				return;
+			}
 			if (slot) {
 				slot._c && (slot._d = false);
 				normalizeChildren(vnode, slot());
@@ -6106,7 +6270,8 @@ function setupStatefulComponent(instance, isSSR) {
 					setInSSRSetupState(false);
 				}
 			}).catch((e) => {
-				handleError(e, instance, 0);
+				handleError(e, instance, 0, void 0, true);
+				instance.ssrRender = (_, push) => push("<!---->");
 			});
 			else {
 				instance.asyncDep = setupResult;
@@ -6148,11 +6313,16 @@ function finishComponentSetup(instance, isSSR, skipOptions) {
 		else warn$1(`Component is missing template or render function: `, Component);
 	}
 }
+/**
+* Read through the setup context `attrs` proxy to get the raw attrs object.
+* @internal
+*/
+const rawAttrsKey = Symbol();
 const attrsProxyHandlers = {
 	get(target, key) {
 		markAttrsAccessed();
 		track(target, "get", "");
-		return target[key];
+		return key === rawAttrsKey ? target : target[key];
 	},
 	set() {
 		warn$1(`setupContext.attrs is readonly.`);
@@ -6249,7 +6419,7 @@ const computed = (getterOrOptions, debugOptions) => {
 };
 //#endregion
 //#region packages/runtime-core/src/index.ts
-const version = "3.6.0-rc.14";
+const version = "3.6.0-rc.15";
 const warn = warn$1;
 /**
 * SSR utils for \@vue/server-renderer. Only exposed in ssr-possible builds.
@@ -6268,7 +6438,8 @@ const ssrUtils = {
 	popWarningContext: popWarningContext$1,
 	VaporSlot: VaporSlot$1,
 	rawVaporSlotKey: rawVaporSlotKey$2,
-	invokeSlotFallback: invokeSlotFallback$1
+	invokeSlotFallback: invokeSlotFallback$1,
+	setDeferElementSlots: setDeferElementSlots$1
 };
 //#endregion
 //#region packages/runtime-dom/src/nodeOps.ts
@@ -6761,15 +6932,15 @@ const vModelSelect = {
 		vModelSelectInit(el, value, number);
 		el[assignKey] = getModelAssigner(vnode);
 	},
-	mounted(el, { value }) {
-		vModelSetSelected(el, value);
+	mounted(el, { value, modifiers: { number } }) {
+		vModelSetSelected(el, value, number);
 	},
 	beforeUpdate(el, { value }, vnode) {
 		el._modelValue = value;
 		el[assignKey] = getModelAssigner(vnode);
 	},
-	updated(el, { value }) {
-		vModelSetSelected(el, value);
+	updated(el, { value, modifiers: { number } }) {
+		vModelSetSelected(el, value, number);
 	}
 };
 /**
@@ -6804,14 +6975,14 @@ function isSameSelectValue(value, assignedValue, multiple) {
 /**
 * @internal
 */
-const vModelSetSelected = (el, value) => {
+const vModelSetSelected = (el, value, number = false) => {
 	el._modelValue = value;
 	const pending = el._pendingValue;
 	el._pendingValue = void 0;
 	if (pending && pending[0] === el.multiple && isSameSelectValue(value, pending[1], pending[0])) return;
-	setSelected(el, value);
+	setSelected(el, value, number);
 };
-function setSelected(el, value) {
+function setSelected(el, value, number) {
 	const isMultiple = el.multiple;
 	const isArrayValue = isArray(value);
 	if (isMultiple && !isArrayValue && !isSet(value)) {
@@ -6826,7 +6997,7 @@ function setSelected(el, value) {
 				const optionType = typeof optionValue;
 				if (optionType === "string" || optionType === "number") option.selected = value.some((v) => String(v) === String(optionValue));
 				else option.selected = looseIndexOf(value, optionValue) > -1;
-			} else option.selected = value.has(optionValue);
+			} else option.selected = value.has(optionValue) || number && typeof optionValue === "string" && value.has(looseToNumber(optionValue));
 		} else if (looseEqual(getValue(option), value)) {
 			if (el.selectedIndex !== i) el.selectedIndex = i;
 			return;
@@ -7218,7 +7389,15 @@ function ssrCompile(template, instance) {
 }
 //#endregion
 //#region packages/server-renderer/src/render.ts
-const { createComponentInstance, setCurrentRenderingInstance, setupComponent, renderComponentRoot, isVNode: isVNode$2, normalizeVNode, pushWarningContext, popWarningContext, VaporSlot, rawVaporSlotKey, invokeSlotFallback } = ssrUtils;
+const { createComponentInstance, setCurrentRenderingInstance, setupComponent, renderComponentRoot, isVNode: isVNode$2, normalizeVNode, pushWarningContext, popWarningContext, VaporSlot, rawVaporSlotKey, invokeSlotFallback, setDeferElementSlots } = ssrUtils;
+function renderRoot(instance) {
+	const prev = setDeferElementSlots(true);
+	try {
+		return renderComponentRoot(instance);
+	} finally {
+		setDeferElementSlots(prev);
+	}
+}
 function cleanupContext(context) {
 	let firstError;
 	if (context.__watcherHandles) {
@@ -7332,7 +7511,7 @@ function renderComponentSubTree(instance, slotScopeId) {
 	const comp = instance.type;
 	const { getBuffer, push } = createBuffer();
 	if (isFunction(comp)) {
-		let root = renderComponentRoot(instance);
+		let root = renderRoot(instance);
 		if (!comp.props) {
 			for (const key in instance.attrs) if (key.startsWith(`data-v-`)) (root.props || (root.props = {}))[key] = ``;
 		}
@@ -7370,7 +7549,7 @@ function renderComponentSubTree(instance, slotScopeId) {
 			} finally {
 				setCurrentRenderingInstance(prev);
 			}
-		} else if (instance.render && instance.render !== NOOP) renderVNode(push, instance.subTree = renderComponentRoot(instance), instance, slotScopeId);
+		} else if (instance.render && instance.render !== NOOP) renderVNode(push, instance.subTree = renderRoot(instance), instance, slotScopeId);
 		else {
 			const componentName = comp.name || comp.__file || `<Anonymous>`;
 			warn(`Component ${componentName} is missing template or render function.`);
@@ -7476,9 +7655,20 @@ function renderElementVNode(push, vnode, parentComponent, slotScopeId, renderChi
 			if (renderChildren) renderChildren();
 			else if (shapeFlag & 8) push(escapeHtml(children));
 			else if (shapeFlag & 16) renderVNodeChildren(push, children, parentComponent, slotScopeId);
+			else if (shapeFlag & 32) renderElementSlot(push, children.default, parentComponent, slotScopeId);
 		}
 		push(`</${tag}>`);
 	}
+}
+function renderElementSlot(push, slot, parentComponent, slotScopeId) {
+	let ret;
+	try {
+		ret = slot(void 0, push, parentComponent, slotScopeId ? " " + slotScopeId.trim() : "");
+	} catch (err) {
+		handleError(err, parentComponent, 1);
+	}
+	if (isArray(ret)) renderVNodeChildren(push, ret, parentComponent, slotScopeId);
+	else if (ret != null) renderVNode(push, normalizeVNode(ret), parentComponent, slotScopeId);
 }
 function applySSRDirectives(vnode, rawProps, dirs) {
 	const toMerge = [];

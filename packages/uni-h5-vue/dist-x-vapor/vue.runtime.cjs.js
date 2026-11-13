@@ -1,5 +1,5 @@
 /**
-  * vue v3.6.0-rc.14
+  * vue v3.6.0-rc.15
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -9,41 +9,6 @@ Object.defineProperties(exports, {
 });
 let _vue_shared = require("@vue/shared");
 let _dcloudio_uni_shared = require("@dcloudio/uni-shared");
-//#region packages/reactivity/src/debug.ts
-const triggerEventInfos = [];
-function onTrack(sub, debugInfo) {
-	if (sub.onTrack) sub.onTrack((0, _vue_shared.extend)({ effect: sub }, debugInfo));
-}
-function onTrigger(sub) {
-	if (sub.onTrigger) {
-		const debugInfo = triggerEventInfos[triggerEventInfos.length - 1];
-		sub.onTrigger((0, _vue_shared.extend)({ effect: sub }, debugInfo));
-	}
-}
-function setupOnTrigger(target) {
-	Object.defineProperty(target.prototype, "onTrigger", {
-		get() {
-			return this._onTrigger;
-		},
-		set(val) {
-			if (val && !this._onTrigger) setupFlagsHandler(this);
-			this._onTrigger = val;
-		}
-	});
-}
-function setupFlagsHandler(target) {
-	target._flags = target.flags;
-	Object.defineProperty(target, "flags", {
-		get() {
-			return target._flags;
-		},
-		set(value) {
-			if (!(target._flags & 48) && !!(value & 48)) onTrigger(this);
-			target._flags = value;
-		}
-	});
-}
-//#endregion
 //#region packages/reactivity/src/warning.ts
 function warn$2(msg, ...args) {
 	console.warn(`[Vue warn] ${msg}`, ...args);
@@ -53,13 +18,7 @@ function warn$2(msg, ...args) {
 const notifyBuffer = [];
 let batchDepth = 0;
 let activeSub = void 0;
-let runDepth = 0;
-function incRunDepth() {
-	++runDepth;
-}
-function decRunDepth() {
-	--runDepth;
-}
+const CHECKING = 512;
 let globalVersion = 0;
 let notifyIndex = 0;
 let notifyBufferLength = 0;
@@ -108,6 +67,7 @@ function unlink(link, sub = link.sub) {
 	const nextDep = link.nextDep;
 	const nextSub = link.nextSub;
 	const prevSub = link.prevSub;
+	link.prevDep = link.nextDep = link.prevSub = link.nextSub = void 0;
 	if (nextDep !== void 0) nextDep.prevDep = prevDep;
 	else sub.depsTail = prevDep;
 	if (prevDep !== void 0) prevDep.nextDep = nextDep;
@@ -115,7 +75,7 @@ function unlink(link, sub = link.sub) {
 	if (nextSub !== void 0) nextSub.prevSub = prevSub;
 	else dep.subsTail = prevSub;
 	if (prevSub !== void 0) prevSub.nextSub = nextSub;
-	else if ((dep.subs = nextSub) === void 0) {
+	else if ((dep.subs = nextSub) === void 0 && dep.flags & 1) {
 		let toRemove = dep.deps;
 		if (toRemove !== void 0) {
 			do
@@ -133,14 +93,12 @@ function propagate(link) {
 		const sub = link.sub;
 		let flags = sub.flags;
 		if (flags & 3) {
-			if (!(flags & 60)) {
-				sub.flags = flags | 32;
-				if (runDepth) sub.flags |= 8;
-			} else if (!(flags & 12)) flags = 0;
+			if (!(flags & 44)) sub.flags = flags | 32;
+			else if (!(flags & 12)) flags = 0;
 			else if (!(flags & 4)) sub.flags = flags & -9 | 32;
 			else if (!(flags & 48) && isValidLink(link, sub)) {
 				sub.flags = flags | 40;
-				flags &= 1;
+				flags = sub === activeSub || activeSub === void 0 ? 0 : flags & 1;
 			} else flags = 0;
 			if (flags & 2) notifyBuffer[notifyBufferLength++] = sub;
 			if (flags & 1) {
@@ -176,7 +134,7 @@ function propagate(link) {
 function startTracking(sub) {
 	++globalVersion;
 	sub.depsTail = void 0;
-	sub.flags = sub.flags & -57 | 4;
+	sub.flags = sub.flags & -569 | 4;
 	return setActiveSub(sub);
 }
 function endTracking(sub, prevSub) {
@@ -184,8 +142,11 @@ function endTracking(sub, prevSub) {
 	activeSub = prevSub;
 	const depsTail = sub.depsTail;
 	let toRemove = depsTail !== void 0 ? depsTail.nextDep : sub.deps;
-	while (toRemove !== void 0) toRemove = unlink(toRemove, sub);
-	sub.flags &= -5;
+	while (toRemove !== void 0) {
+		unlink(toRemove, sub);
+		toRemove = depsTail !== void 0 ? depsTail.nextDep : sub.deps;
+	}
+	if ((sub.flags &= -5) & 8) markRecursed(sub);
 }
 function flush() {
 	let hasError = false;
@@ -207,45 +168,67 @@ function flush() {
 	if (hasError) throw error;
 }
 function checkDirty(link, sub) {
+	try {
+		return walkDirty(link, sub);
+	} catch (err) {
+		markStale(sub);
+		throw err;
+	}
+}
+function walkDirty(link, sub) {
+	const root = sub;
 	let stack;
 	let checkDepth = 0;
+	let staleDepth = 0;
+	let staleFloor = 0;
 	top: do {
 		const dep = link.dep;
 		const depFlags = dep.flags;
 		let dirty = false;
 		if (sub.flags & 16) dirty = true;
 		else if ((depFlags & 17) === 17) {
-			const subs = dep.subs;
 			if (dep.update()) {
-				if (subs.nextSub !== void 0) shallowPropagate(subs);
+				const subs = dep.subs;
+				if (subs !== void 0 && (subs !== link || subs.nextSub !== void 0)) shallowPropagate(subs);
 				dirty = true;
 			}
 		} else if ((depFlags & 33) === 33) {
-			stack = {
-				value: link,
-				prev: stack
-			};
-			link = dep.deps;
-			sub = dep;
-			++checkDepth;
-			continue;
+			const depth = dep === root ? 0 : depFlags & CHECKING ? checkingDepth(dep, stack, checkDepth) : -1;
+			if (depth < 0) {
+				if (link.nextSub !== void 0 || link.prevSub !== void 0) dep.flags = depFlags | CHECKING;
+				stack = {
+					value: link,
+					prev: stack
+				};
+				link = dep.deps;
+				sub = dep;
+				++checkDepth;
+				continue;
+			}
+			if (depth < checkDepth) {
+				staleFloor = staleDepth && staleFloor < depth ? staleFloor : depth;
+				staleDepth = checkDepth;
+			}
 		}
 		if (!dirty && link.nextDep !== void 0) {
 			link = link.nextDep;
 			continue;
 		}
 		while (checkDepth) {
+			const stale = checkDepth === staleDepth;
+			if (stale && --staleDepth === staleFloor) staleDepth = 0;
 			--checkDepth;
 			link = stack.value;
 			stack = stack.prev;
 			if (dirty) {
-				const subs = sub.subs;
 				if (sub.update()) {
-					if (subs.nextSub !== void 0) shallowPropagate(subs);
+					const subs = sub.subs;
+					if (subs !== void 0 && (subs !== link || subs.nextSub !== void 0)) shallowPropagate(subs);
 					sub = link.sub;
 					continue;
 				}
-			} else sub.flags &= -33;
+			} else if (stale) sub.flags = sub.flags & -545 | 16;
+			else sub.flags &= -545;
 			sub = link.sub;
 			if (link.nextDep !== void 0) {
 				link = link.nextDep;
@@ -253,8 +236,20 @@ function checkDirty(link, sub) {
 			}
 			dirty = false;
 		}
-		return dirty && !!sub.flags;
+		return (dirty || !!(sub.flags & 16)) && !!sub.flags;
 	} while (true);
+}
+function checkingDepth(dep, stack, depth) {
+	for (; stack !== void 0; stack = stack.prev, --depth) if (stack.value.dep === dep) return depth;
+	return -1;
+}
+function markStale(sub) {
+	const nodes = [sub];
+	do {
+		sub = nodes.pop();
+		sub.flags = sub.flags & -33 | 16;
+		for (let link = sub.deps; link !== void 0; link = link.nextDep) if (link.dep.flags & 32) nodes.push(link.dep);
+	} while (nodes.length);
 }
 function shallowPropagate(link) {
 	do {
@@ -272,6 +267,71 @@ function isValidLink(checkLink, sub) {
 		link = link.prevDep;
 	}
 	return false;
+}
+function markRecursed(sub) {
+	const nodes = [sub];
+	do {
+		sub = nodes.pop();
+		for (let link = sub.deps; link !== void 0; link = link.nextDep) {
+			const dep = link.dep;
+			if ((dep.flags & 40) === 32) {
+				dep.flags |= 8;
+				nodes.push(dep);
+			}
+		}
+	} while (nodes.length);
+}
+//#endregion
+//#region packages/reactivity/src/debug.ts
+const triggered = [];
+function onTrack(sub, debugInfo) {
+	if (sub.onTrack) sub.onTrack((0, _vue_shared.extend)({ effect: sub }, debugInfo));
+}
+function onTrigger(sub, debugInfo) {
+	if (sub.onTrigger) sub.onTrigger((0, _vue_shared.extend)({ effect: sub }, debugInfo));
+}
+function startTrigger() {
+	triggered.push([]);
+}
+function endTrigger(debugInfo) {
+	const subs = triggered.pop();
+	if (subs.length) {
+		startBatch();
+		try {
+			for (let i = 0; i < subs.length; i++) {
+				const sub = subs[i];
+				if (sub.flags & 3) onTrigger(sub, debugInfo);
+			}
+		} finally {
+			endBatch();
+		}
+	}
+}
+function setupOnTrigger(target) {
+	Object.defineProperty(target.prototype, "onTrigger", {
+		get() {
+			return this._onTrigger;
+		},
+		set(val) {
+			if (val && !this._onTrigger) setupFlagsHandler(this);
+			this._onTrigger = val;
+		}
+	});
+}
+function setupFlagsHandler(target) {
+	target._flags = target.flags;
+	Object.defineProperty(target, "flags", {
+		get() {
+			return target._flags;
+		},
+		set(value) {
+			if (!(target._flags & 48) && !!(value & 48)) {
+				if (triggered.length) triggered[triggered.length - 1].push(this);
+				else onTrigger(this);
+			}
+			target._flags = value;
+		}
+	});
 }
 //#endregion
 //#region packages/reactivity/src/dep.ts
@@ -311,17 +371,17 @@ function trackDep(dep, target = dep, key = "value") {
 function triggerDep(dep, target = dep, key = "value", newValue, oldValue) {
 	const subs = dep.subs;
 	if (subs !== void 0) {
-		triggerEventInfos.push({
+		startTrigger();
+		propagate(subs);
+		shallowPropagate(subs);
+		endTrigger({
 			target,
 			type: "set",
 			key,
 			newValue,
 			oldValue
 		});
-		propagate(subs);
-		shallowPropagate(subs);
 		if (!batchDepth) flush();
-		triggerEventInfos.pop();
 	}
 }
 const targetMap = /* @__PURE__ */ new WeakMap();
@@ -365,20 +425,12 @@ function trigger(target, type, key, newValue, oldValue, oldTarget) {
 	if (!depsMap) return;
 	const run = (dep) => {
 		if (dep !== void 0 && dep.subs !== void 0) {
-			triggerEventInfos.push({
-				target,
-				type,
-				key,
-				newValue,
-				oldValue,
-				oldTarget
-			});
 			propagate(dep.subs);
 			shallowPropagate(dep.subs);
-			triggerEventInfos.pop();
 		}
 	};
 	startBatch();
+	startTrigger();
 	if (type === "clear") depsMap.forEach(run);
 	else {
 		const targetIsArray = (0, _vue_shared.isArray)(target);
@@ -408,6 +460,14 @@ function trigger(target, type, key, newValue, oldValue, oldTarget) {
 			}
 		}
 	}
+	endTrigger({
+		target,
+		type,
+		key,
+		newValue,
+		oldValue,
+		oldTarget
+	});
 	endBatch();
 }
 function getDepFromReactive(object, key) {
@@ -622,7 +682,7 @@ function noTracking(self, method, args = []) {
 //#endregion
 //#region packages/reactivity/src/baseHandlers.ts
 const isNonTrackableKeys = /*@__PURE__*/ (0, _vue_shared.makeMap)(`__proto__,__v_isRef,__isVue`);
-const builtInSymbols = new Set(/*@__PURE__*/ Object.getOwnPropertyNames(Symbol).filter((key) => key !== "arguments" && key !== "caller").map((key) => Symbol[key]).filter(_vue_shared.isSymbol));
+const builtInSymbols = /*@__PURE__*/ new Set(/*@__PURE__*/ Object.getOwnPropertyNames(Symbol).filter((key) => key !== "arguments" && key !== "caller").map((key) => Symbol[key]).filter(_vue_shared.isSymbol));
 function hasOwnProperty(key) {
 	if (!(0, _vue_shared.isSymbol)(key)) key = String(key);
 	const obj = /* @__PURE__ */ toRaw(this);
@@ -1206,16 +1266,16 @@ var RefImpl = class {
 			this._value = !useDirectValue && this._wrap ? this._wrap(newValue) : newValue;
 			const subs = this.subs;
 			if (subs !== void 0) {
-				triggerEventInfos.push({
+				startTrigger();
+				propagate(subs);
+				endTrigger({
 					target: this,
 					type: "set",
 					key: "value",
 					newValue,
 					oldValue
 				});
-				propagate(subs);
 				if (!batchDepth) flush();
-				triggerEventInfos.pop();
 			}
 		}
 	}
@@ -1252,8 +1312,10 @@ var RefImpl = class {
 function triggerRef(ref) {
 	const dep = ref.dep;
 	if (dep !== void 0 && dep.subs !== void 0) {
+		startTrigger();
 		propagate(dep.subs);
 		shallowPropagate(dep.subs);
+		endTrigger();
 		if (!batchDepth) flush();
 	}
 }
@@ -1444,6 +1506,10 @@ var ReactiveEffect = class {
 	get active() {
 		return !(this.flags & 1024);
 	}
+	/** @internal */
+	get running() {
+		return !!(this.flags & 4);
+	}
 	pause() {
 		this.flags |= 256;
 	}
@@ -1457,11 +1523,9 @@ var ReactiveEffect = class {
 		if (!this.active) return this.fn();
 		cleanup(this);
 		const prevSub = startTracking(this);
-		incRunDepth();
 		try {
 			return this.fn();
 		} finally {
-			decRunDepth();
 			endTracking(this, prevSub);
 			const flags = this.flags;
 			if ((flags & 136) === 136) {
@@ -1484,9 +1548,9 @@ var ReactiveEffect = class {
 		if (flags & 16) return true;
 		if (flags & 32) {
 			if (checkDirty(this.deps, this)) {
-				this.flags = flags | 16;
+				if (this.active) this.flags |= 16;
 				return true;
-			} else this.flags = flags & -33;
+			} else this.flags &= -33;
 		}
 		return false;
 	}
@@ -1498,20 +1562,17 @@ function effect(fn, options) {
 	if (options) {
 		const { onStop, scheduler } = options;
 		if (onStop) {
-			options.onStop = void 0;
 			const stop = e.stop.bind(e);
 			e.stop = () => {
 				stop();
 				onStop();
 			};
 		}
-		if (scheduler) {
-			options.scheduler = void 0;
-			e.notify = () => {
-				if (!(e.flags & 256)) scheduler();
-			};
-		}
-		(0, _vue_shared.extend)(e, options);
+		if (scheduler) e.notify = () => {
+			if (!(e.flags & 1280)) scheduler();
+		};
+		e.onTrack = options.onTrack;
+		e.onTrigger = options.onTrigger;
 	}
 	try {
 		e.run();
@@ -1611,8 +1672,10 @@ var EffectScope = class {
 		const flags = this.flags;
 		if (flags & 256) {
 			this.flags = flags & -257;
-			for (let link = this.deps; link !== void 0; link = link.nextDep) {
-				const dep = link.dep;
+			const deps = [];
+			for (let link = this.deps; link !== void 0; link = link.nextDep) deps.push(link.dep);
+			for (let i = 0; i < deps.length; i++) {
+				const dep = deps[i];
 				if ("resume" in dep) dep.resume();
 			}
 		}
@@ -1641,8 +1704,10 @@ var EffectScope = class {
 		while (dep !== void 0) {
 			const node = dep.dep;
 			if ("stop" in node) {
-				dep = dep.nextDep;
+				const prev = dep.prevDep;
 				node.stop();
+				const next = prev !== void 0 ? prev.nextDep : this.deps;
+				dep = next === dep ? dep.nextDep : next;
 			} else dep = unlink(dep, this);
 		}
 		cleanup(this);
@@ -1683,11 +1748,14 @@ function setCurrentScope(scope) {
 * @see {@link https://vuejs.org/api/reactivity-advanced.html#onscopedispose}
 */
 function onScopeDispose(fn, failSilently = false) {
-	if (activeEffectScope !== void 0) activeEffectScope.cleanups[activeEffectScope.cleanupsLength++] = fn;
-	else if (!failSilently) warn$2("onScopeDispose() is called when there is no active effect scope to be associated with.");
+	if (activeEffectScope !== void 0) {
+		if (activeEffectScope.active) activeEffectScope.cleanups[activeEffectScope.cleanupsLength++] = fn;
+		else fn();
+	} else if (!failSilently) warn$2("onScopeDispose() is called when there is no active effect scope to be associated with.");
 }
 //#endregion
 //#region packages/reactivity/src/computed.ts
+const FAILED = 64;
 /**
 * @private exported by @vue/reactivity for Vue core use, but not exported from
 * the main vue package
@@ -1736,12 +1804,24 @@ var ComputedRefImpl = class {
 	}
 	get value() {
 		const flags = this.flags;
-		if (flags & 16 || flags & 32 && checkDirty(this.deps, this)) {
-			if (this.update()) {
-				const subs = this.subs;
-				if (subs !== void 0) shallowPropagate(subs);
-			}
-		} else if (flags & 32) this.flags = flags & -33;
+		try {
+			if (flags & 16 || flags & 32 && checkDirty(this.deps, this)) {
+				if (this.update()) {
+					const subs = this.subs;
+					if (subs !== void 0) shallowPropagate(subs);
+				}
+			} else if (flags & 32) this.flags = flags & -33;
+		} catch (err) {
+			if (activeSub !== void 0) {
+				onTrack(activeSub, {
+					target: this,
+					type: "get",
+					key: "value"
+				});
+				link(this, activeSub);
+			} else if (activeEffectScope !== void 0) link(this, activeEffectScope);
+			throw err;
+		}
 		if (activeSub !== void 0) {
 			onTrack(activeSub, {
 				target: this,
@@ -1749,7 +1829,18 @@ var ComputedRefImpl = class {
 				key: "value"
 			});
 			link(this, activeSub);
-		} else if (activeEffectScope !== void 0) link(this, activeEffectScope);
+		} else if (activeEffectScope !== void 0) {
+			if (activeEffectScope.active) link(this, activeEffectScope);
+			else if (this.subs === void 0) {
+				let dep = this.deps;
+				if (dep !== void 0) {
+					do
+						dep = unlink(dep, this);
+					while (dep !== void 0);
+					this.flags |= 16;
+				}
+			}
+		}
 		return this._value;
 	}
 	set value(newValue) {
@@ -1761,11 +1852,15 @@ var ComputedRefImpl = class {
 		try {
 			const oldValue = this._value;
 			const newValue = this.fn(oldValue);
-			if ((0, _vue_shared.hasChanged)(oldValue, newValue)) {
+			if ((0, _vue_shared.hasChanged)(oldValue, newValue) || this.flags & FAILED) {
 				this._value = newValue;
+				this.flags &= -65;
 				return true;
 			}
 			return false;
+		} catch (err) {
+			this.flags |= FAILED;
+			throw err;
 		} finally {
 			endTracking(this, prevSub);
 		}
@@ -1786,6 +1881,7 @@ function computed$1(getterOrOptions, debugOptions, isSSR = false) {
 		cRef.onTrack = debugOptions.onTrack;
 		cRef.onTrigger = debugOptions.onTrigger;
 	}
+	if (isSSR && activeEffectScope !== void 0) link(cRef, activeEffectScope);
 	return cRef;
 }
 //#endregion
@@ -2167,7 +2263,7 @@ function callWithAsyncErrorHandling(fn, instance, type, args) {
 	if ((0, _vue_shared.isFunction)(fn)) {
 		const res = callWithErrorHandling(fn, instance, type, args);
 		if (res && (0, _vue_shared.isPromise)(res)) res.catch((err) => {
-			handleError(err, instance, type);
+			handleError(err, instance, type, void 0, true);
 		});
 		return res;
 	}
@@ -2177,7 +2273,7 @@ function callWithAsyncErrorHandling(fn, instance, type, args) {
 		return values;
 	} else warn$1(`Invalid value type passed to callWithAsyncErrorHandling(): ${typeof fn}`);
 }
-function handleError(err, instance, type, throwInDev = true) {
+function handleError(err, instance, type, throwInDev = true, isAsyncError = false) {
 	const { errorHandler, throwUnhandledErrorInProduction } = instance && instance.appContext.config || _vue_shared.EMPTY_OBJ;
 	if (instance) {
 		let cur = instance.parent;
@@ -2185,7 +2281,7 @@ function handleError(err, instance, type, throwInDev = true) {
 		const errorInfo = ErrorTypeStrings$1[type];
 		while (cur) {
 			const errorCapturedHooks = cur.ec;
-			if (errorCapturedHooks) {
+			if (errorCapturedHooks && !cur.isUnmounted && (!isAsyncError || cur.scope.active)) {
 				for (let i = 0; i < errorCapturedHooks.length; i++) if (errorCapturedHooks[i](err, exposedInstance, errorInfo) === false) return;
 			}
 			cur = cur.parent;
@@ -2223,7 +2319,9 @@ const SchedulerJobFlags = {
 	"DISPOSED": 4,
 	"4": "DISPOSED",
 	"REQUEUE_ON_SUSPENSE_DISCARD": 8,
-	"8": "REQUEUE_ON_SUSPENSE_DISCARD"
+	"8": "REQUEUE_ON_SUSPENSE_DISCARD",
+	"FLUSH_ON_SUSPENSE_RESOLVE": 16,
+	"16": "FLUSH_ON_SUSPENSE_RESOLVE"
 };
 const jobs = [];
 let postJobs = [];
@@ -2551,7 +2649,25 @@ function reload(id, newComp) {
 			if (instance.root.ce && instance !== instance.root) instance.root.ce._removeChildStyle(oldComp);
 		}
 		parents.forEach((parent) => {
-			queueJob(() => {
+			const children = instances.filter((instance) => instance.parent === parent);
+			const update = () => {
+				if (!parent.scope.active) return;
+				const activeChildren = children.filter((instance) => instance.scope.active);
+				if (!activeChildren.length) return;
+				const pending = activeChildren.find((instance) => instance.asyncDep && !instance.asyncResolved) || locateUnresolvedAsyncRoot(parent);
+				if (pending) {
+					pending.asyncDep.catch(_vue_shared.NOOP).then(() => {
+						if (parent.scope.active && (pending.asyncResolved || !pending.scope.active)) queueJob(update);
+					});
+					return;
+				}
+				for (const instance of activeChildren) {
+					const oldComp = normalizeClassComponent(instance.type);
+					let dirtyInstances = hmrDirtyComponents.get(oldComp);
+					if (!dirtyInstances) hmrDirtyComponents.set(oldComp, dirtyInstances = /* @__PURE__ */ new Set());
+					dirtyInstances.add(instance);
+					hmrDirtyComponentsMode.set(oldComp, !!isVapor);
+				}
 				runWithHmrUpdating(() => {
 					if (parent.vapor) parent.hmrRerender();
 					else {
@@ -2562,7 +2678,12 @@ function reload(id, newComp) {
 						}
 					}
 				});
-			});
+				queuePostFlushCb(() => {
+					hmrDirtyComponents.clear();
+					hmrDirtyComponentsMode.clear();
+				});
+			};
+			queueJob(update);
 		});
 	}
 	queuePostFlushCb(() => {
@@ -2759,18 +2880,35 @@ function withDirectives(vnode, directives) {
 	return vnode;
 }
 function invokeDirectiveHook(vnode, prevVNode, instance, name) {
-	const bindings = vnode.dirs;
+	let hookVNode = vnode;
+	if (name === "beforeMount") vnode._mount = vnode;
+	else if (name === "beforeUpdate") {
+		const mount = prevVNode && prevVNode._mount;
+		if (mount) {
+			mount._latest = vnode;
+			vnode._mount = mount;
+		}
+	} else if (name === "mounted") {
+		const latest = vnode._latest;
+		vnode._mount = vnode._latest = void 0;
+		if (latest) {
+			hookVNode = latest;
+			latest._mount = void 0;
+		}
+	}
+	const bindings = hookVNode.dirs;
 	const oldBindings = prevVNode && prevVNode.dirs;
 	for (let i = 0; i < bindings.length; i++) {
-		const binding = bindings[i];
+		let binding = bindings[i];
 		if (oldBindings) binding.oldValue = oldBindings[i].value;
+		else if (name === "mounted" && binding.oldValue !== void 0) binding = (0, _vue_shared.extend)({}, binding, { oldValue: void 0 });
 		let hook = binding.dir[name];
 		if (hook) {
 			const prevSub = setActiveSub();
 			callWithAsyncErrorHandling(hook, instance, 8, [
 				vnode.el,
 				binding,
-				vnode,
+				hookVNode,
 				prevVNode
 			]);
 			setActiveSub(prevSub);
@@ -3213,7 +3351,15 @@ const BaseTransitionImpl = {
 			const { mode } = rawProps;
 			checkTransitionMode(mode);
 			return prepareTransitionSwitch(instance.subTree, child, rawProps, state, instance, mode === "out-in" ? resumeAfterLeave || (resumeAfterLeave = () => {
-				if (!(instance.effect.flags & 1024)) instance.update();
+				if (!(instance.effect.flags & 1024)) {
+					if (instance.effect.running) {
+						const job = () => {
+							if (!(instance.effect.flags & 1024)) instance.update();
+						};
+						job.i = instance;
+						queueJob(job);
+					} else instance.update();
+				}
 			}) : _vue_shared.NOOP);
 		};
 	}
@@ -3243,7 +3389,7 @@ function getLeavingNodesForType$1(state, vnode) {
 	}
 	return leavingVNodesCache;
 }
-function resolveTransitionHooks(vnode, props, state, instance, postClone) {
+function resolveTransitionHooks(vnode, props, state, instance) {
 	const key = String(vnode.key);
 	const leavingVNodesCache = getLeavingNodesForType$1(state, vnode);
 	const hooks = baseResolveTransitionHooks({
@@ -3266,9 +3412,7 @@ function resolveTransitionHooks(vnode, props, state, instance, postClone) {
 			}
 		},
 		cloneHooks: (vnode) => {
-			const hooks = resolveTransitionHooks(vnode, props, state, instance, postClone);
-			if (postClone) postClone(hooks);
-			return hooks;
+			return resolveTransitionHooks(vnode, props, state, instance);
 		}
 	}, props, state, instance);
 	if (isVaporInteropEnabled && vnode.type === VaporSlot) (0, _vue_shared.extend)(hooks, {
@@ -3306,7 +3450,7 @@ function baseResolveTransitionHooks(context, props, state, instance) {
 			callHook(hook, [el]);
 		},
 		enter(el) {
-			if (!isHmrUpdating && isLeaving()) return;
+			if (!isHmrUpdating && isLeaving(el)) return;
 			let hook = onEnter;
 			let afterHook = onAfterEnter;
 			let cancelHook = onEnterCancelled;
@@ -3350,7 +3494,19 @@ function baseResolveTransitionHooks(context, props, state, instance) {
 			else done();
 		},
 		clone(node) {
-			return cloneHooks ? cloneHooks(node) : hooks;
+			if (!cloneHooks) return hooks;
+			const cloned = cloneHooks(node);
+			cloned.afterLeave = () => {
+				if (hooks.afterLeave) hooks.afterLeave();
+			};
+			cloned.delayLeave = (el, earlyRemove, delayedLeave) => {
+				if (hooks.delayLeave) hooks.delayLeave(el, earlyRemove, delayedLeave);
+				else delayedLeave();
+			};
+			cloned.delayedLeave = () => {
+				if (hooks.delayedLeave) hooks.delayedLeave();
+			};
+			return cloned;
 		}
 	};
 	return hooks;
@@ -3385,10 +3541,7 @@ function prepareTransitionSwitch(previous, next, props, state, instance, resumeA
 	if (state.isLeaving) return emptyPlaceholder(next);
 	const nextInner = getInnerChild$1(next);
 	if (!nextInner) return emptyPlaceholder(next);
-	let enterHooks = resolveTransitionHooks(nextInner, props, state, instance, (hooks) => {
-		if (delayedLeaveSource) forwardDelayedLeave(hooks, delayedLeaveSource);
-		enterHooks = hooks;
-	});
+	const enterHooks = resolveTransitionHooks(nextInner, props, state, instance);
 	if (delayedLeaveSource) forwardDelayedLeave(enterHooks, delayedLeaveSource);
 	if (nextInner.type !== Comment$1) setTransitionHooks(nextInner, enterHooks);
 	const mode = props.mode;
@@ -3472,9 +3625,14 @@ function setTransitionHooks(vnode, hooks) {
 			return setTransitionHooks(isTeleport(subTree.type) ? getInnerChild$1(subTree) || subTree : subTree, hooks);
 		}
 	} else if (vnode.shapeFlag & 128) {
-		const contentHooks = vnode.ssContent.transition = hooks.clone(vnode.ssContent);
-		const fallbackHooks = vnode.ssFallback.transition = hooks.clone(vnode.ssFallback);
-		return vnode.suspense && vnode.suspense.activeBranch === vnode.ssFallback ? fallbackHooks : contentHooks;
+		const suspense = vnode.suspense;
+		if (suspense) {
+			const branch = suspense.isHydrating ? suspense.pendingBranch : suspense.activeBranch;
+			if (branch) return setTransitionHooks(branch, hooks.clone(branch));
+		} else {
+			vnode.ssContent.transition = hooks.clone(vnode.ssContent);
+			vnode.ssFallback.transition = hooks.clone(vnode.ssFallback);
+		}
 	} else {
 		vnode.transition = hooks;
 		if (vnode.type === Fragment && (0, _vue_shared.isArray)(vnode.children)) {
@@ -3700,7 +3858,7 @@ const getContainerType = (container) => {
 };
 const isComment$1 = (node) => node.nodeType === 8;
 /** The data of a comment opening a range a hydration steps over as one. */
-const isRangeStart$1 = (data) => data === "[" || data === "(" || (0, _vue_shared.isVaporBranchStart)(data);
+const isRangeStart$1 = (data) => data === "[" || data === "(" || (0, _vue_shared.isVaporRangeStart)(data);
 function createHydrationFunctions(rendererInternals) {
 	const { mt: mountComponent, p: patch, o: { patchProp, createText, nextSibling, parentNode, remove, insert, createComment } } = rendererInternals;
 	const hydrate = (vnode, container) => {
@@ -3720,7 +3878,7 @@ function createHydrationFunctions(rendererInternals) {
 	};
 	const hydrateNode = (node, vnode, parentComponent, parentSuspense, slotScopeIds, optimized = false) => {
 		optimized = optimized || !!vnode.dynamicChildren;
-		const isFragmentStart = isComment$1(node) && (node.data === "[" || node.data === "(" || isVaporInteropEnabled && (0, _vue_shared.isVaporBranchStart)(node.data));
+		const isFragmentStart = isComment$1(node) && (node.data === "[" || node.data === "(" || isVaporInteropEnabled && (0, _vue_shared.isVaporRangeStart)(node.data));
 		const onMismatch = () => handleMismatch(node, vnode, parentComponent, parentSuspense, slotScopeIds, isFragmentStart);
 		const { type, ref, shapeFlag, patchFlag } = vnode;
 		let domType = node.nodeType;
@@ -3909,10 +4067,11 @@ function createHydrationFunctions(rendererInternals) {
 		const container = parentNode(node);
 		const first = nextSibling(node);
 		const next = isVaporInteropEnabled && vnode.vo && node.data === "(" ? getVaporInterface(parentComponent, vnode).hydrateSlotOutlet(vnode, node, parentComponent, parentSuspense, slotScopeIds) : hydrateChildren(first, vnode, container, parentComponent, parentSuspense, slotScopeIds, optimized);
-		if (next && isComment$1(next) && next.data === (node.data === "(" ? ")" : "]")) return nextSibling(vnode.anchor = next);
+		const close = isVaporInteropEnabled ? (0, _vue_shared.rangeCloseOf)(node.data) : node.data === "(" ? ")" : "]";
+		if (next && isComment$1(next) && next.data === close) return nextSibling(vnode.anchor = next);
 		else {
 			logMismatchError();
-			insert(vnode.anchor = createComment(`]`), container, next);
+			insert(vnode.anchor = createComment(close), container, next);
 			return next;
 		}
 	};
@@ -3934,13 +4093,13 @@ function createHydrationFunctions(rendererInternals) {
 		const container = parentNode(node);
 		remove(node);
 		patch(null, vnode, container, next, parentComponent, parentSuspense, getContainerType(container), slotScopeIds);
-		if (parentComponent && parentComponent.vnode) {
+		if (parentComponent && parentComponent.vnode && parentComponent.vnode.el === node) {
 			parentComponent.vnode.el = vnode.el;
 			updateHOCHostEl(parentComponent, vnode.el);
 		}
 		return next;
 	};
-	const locateClosingAnchor = (node, open = node && isComment$1(node) && node.data === "(" ? "(" : "[", close = open === "(" ? ")" : "]") => {
+	const locateClosingAnchor = (node, open = node && isComment$1(node) && (node.data === "(" || isVaporInteropEnabled && node.data === "{") ? node.data : "[", close = isVaporInteropEnabled ? (0, _vue_shared.rangeCloseOf)(open) : open === "(" ? ")" : "]") => {
 		let match = 0;
 		while (node) {
 			node = nextSibling(node);
@@ -3976,7 +4135,7 @@ const resourceProps = /*@__PURE__*/ new Set([
 ]);
 function isUnchangedResourceProp(el, key, clientValue) {
 	if (!resourceProps.has(key)) return false;
-	return el.getAttribute(key) === (clientValue == null ? null : `${clientValue}`);
+	return Element.prototype.getAttribute.call(el, key) === (clientValue == null ? null : `${clientValue}`);
 }
 /**
 * Dev only
@@ -4022,7 +4181,7 @@ function getAttributeMismatch(el, key, clientValue) {
 	let actual;
 	let expected;
 	if (key === "hidden") {
-		actual = normalizeHiddenValue(el.getAttribute(key));
+		actual = normalizeHiddenValue(Element.prototype.getAttribute.call(el, key));
 		expected = normalizeHiddenValue(clientValue);
 	} else if ((0, _vue_shared.isBooleanAttr)(key)) {
 		actual = el.hasAttribute(key);
@@ -4031,7 +4190,7 @@ function getAttributeMismatch(el, key, clientValue) {
 		actual = el.hasAttribute(key);
 		expected = false;
 	} else {
-		if (el.hasAttribute(key)) actual = el.getAttribute(key);
+		if (el.hasAttribute(key)) actual = Element.prototype.getAttribute.call(el, key);
 		else if (key === "value" && el.tagName === "TEXTAREA") actual = el.value;
 		else actual = false;
 		expected = (0, _vue_shared.isRenderableAttrValue)(clientValue) ? String(clientValue) : false;
@@ -4215,7 +4374,7 @@ const hydrateOnInteraction = (interactions = []) => (hydrate, forEach) => {
 function forEachElement(node, cb) {
 	if (isComment$1(node) && isRangeStart$1(node.data)) {
 		const open = node.data;
-		const close = open === "(" ? ")" : "]";
+		const close = (0, _vue_shared.rangeCloseOf)(open);
 		let depth = 1;
 		let next = node.nextSibling;
 		while (next) {
@@ -4252,7 +4411,7 @@ function defineAsyncComponent(source) {
 			if (resolvedComp) return () => createInnerComp$1(resolvedComp, instance);
 			const onError = (err) => {
 				setPendingRequest(null);
-				handleError(err, instance, 13, !errorComponent);
+				handleError(err, instance, 13, !errorComponent, true);
 			};
 			if (suspensible && instance.suspense || isInSSRComponentSetup) return load().then((comp) => {
 				return () => createInnerComp$1(comp, instance);
@@ -4333,10 +4492,12 @@ const useAsyncComponentState = (delay = 200, timeout, onError, instance = curren
 	const delayed = /* @__PURE__ */ ref(!!delay);
 	let timeoutTimer;
 	let delayTimer;
-	if (instance) onUnmounted(() => {
-		if (timeoutTimer != null) clearTimeout(timeoutTimer);
-		if (delayTimer != null) clearTimeout(delayTimer);
-	}, instance);
+	if (instance) instance.scope.run(() => {
+		onScopeDispose(() => {
+			if (timeoutTimer != null) clearTimeout(timeoutTimer);
+			if (delayTimer != null) clearTimeout(delayTimer);
+		});
+	});
 	if (delay) delayTimer = setTimeout(() => {
 		if (instance && instance.isUnmounted) return;
 		delayed.value = false;
@@ -4371,7 +4532,12 @@ function performAsyncHydrate(el, instance, hydrate, getResolvedComp, load, hydra
 			}
 			return;
 		}
-		if (!el.parentNode || wasConnected && !el.isConnected) return;
+		if (!el.parentNode) return;
+		if (wasConnected && !el.isConnected) {
+			let current = instance;
+			while (current && !current.isDeactivated) current = current.parent;
+			if (!current) return;
+		}
 		hydrate();
 	};
 	const doHydrate = hydrateStrategy ? () => {
@@ -4429,7 +4595,11 @@ const KeepAlive = /*@__PURE__*/ withKeepAliveEnabled({
 			activate(vnode, container, anchor, renderer, keepAliveInstance, parentSuspense, namespace, optimized);
 		};
 		sharedContext.deactivate = (vnode) => {
-			deactivate(vnode, storageContainer, renderer, keepAliveInstance, parentSuspense);
+			const cached = sharedContext.getCachedComponent(vnode);
+			if (!cached || cached.component !== vnode.component) return false;
+			if (isVaporInteropEnabled && isVaporComponent$1(vnode.type)) getVaporInterface(keepAliveInstance, vnode).deactivate(vnode, storageContainer, parentSuspense);
+			else deactivate(vnode, storageContainer, renderer, keepAliveInstance, parentSuspense);
+			return true;
 		};
 		function unmount(vnode) {
 			resetShapeFlag(vnode);
@@ -4461,11 +4631,15 @@ const KeepAlive = /*@__PURE__*/ withKeepAliveEnabled({
 		let pendingCacheKey = null;
 		const cacheSubtree = () => {
 			if (pendingCacheKey != null) {
-				if (isSuspense(keepAliveInstance.subTree.type)) queuePostRenderEffect(() => {
-					const vnode = getInnerChild(keepAliveInstance.subTree);
-					if (vnode.component) cache.set(pendingCacheKey, vnode);
-				}, void 0, keepAliveInstance.subTree.suspense);
-				else cache.set(pendingCacheKey, getInnerChild(keepAliveInstance.subTree));
+				if (isSuspense(keepAliveInstance.subTree.type)) {
+					const cacheInnerChild = () => {
+						const vnode = getInnerChild(keepAliveInstance.subTree);
+						if (vnode.component) cache.set(pendingCacheKey, vnode);
+					};
+					const suspense = keepAliveInstance.subTree.suspense;
+					if (suspense.pendingBranch) queuePostRenderEffect(cacheInnerChild, void 0, suspense);
+					else cacheInnerChild();
+				} else cache.set(pendingCacheKey, getInnerChild(keepAliveInstance.subTree));
 			}
 		};
 		onMounted(cacheSubtree);
@@ -4578,9 +4752,8 @@ function registerKeepAliveHook(hook, type, target = getCurrentGenericInstance())
 }
 function injectToKeepAliveRoot(hook, type, target, keepAliveRoot) {
 	const injected = injectHook(type, hook, keepAliveRoot, true);
-	onUnmounted(() => {
-		(0, _vue_shared.remove)(keepAliveRoot[type], injected);
-	}, target);
+	const removal = injectHook("um", () => (0, _vue_shared.remove)(keepAliveRoot[type], injected), target);
+	removal.flags = 8;
 }
 function invokeKeepAliveHooks(hooks) {
 	for (let i = 0; i < hooks.length; i++) {
@@ -4835,6 +5008,11 @@ function renderSlot(slots, name, props, fallback, noSlotted, branchKey) {
 			ret.vs.props = ret.props;
 			ret.props = (0, _vue_shared.extend)({}, ret.props, { key: branchKey });
 			ret.key = branchKey;
+		}
+		if (isBlockTreeEnabled <= 0) {
+			if (!ret.vs.props) ret.vs.props = ret.props;
+			ret.props = ret.key != null ? { key: ret.key } : null;
+			ret.vs.attrs = _vue_shared.EMPTY_OBJ;
 		}
 		if (!noSlotted && ret.scopeId) ret.slotScopeIds = [ret.scopeId + "-s"];
 		return ret;
@@ -6673,8 +6851,10 @@ function baseCreateRenderer(options, createHydrationFns) {
 		(0, _vue_shared.def)(el, "__vnode", vnode, true);
 		(0, _vue_shared.def)(el, "__vueParentComponent", parentComponent, true);
 		if (dirs) invokeDirectiveHook(vnode, null, parentComponent, "beforeMount");
-		if (transition) performTransitionEnter(el, transition, () => hostInsert(el, container, anchor), parentSuspense);
-		else hostInsert(el, container, anchor);
+		if (transition) {
+			if (!needTransition(parentSuspense, transition) && !transition.persisted) el[deferredEnterKey] = true;
+			performTransitionEnter(el, transition, () => hostInsert(el, container, anchor), parentSuspense);
+		} else hostInsert(el, container, anchor);
 		if ((vnodeHook = props && props.onVnodeMounted) || dirs) {
 			const isHmr = isHmrUpdating;
 			queuePostRenderEffect(() => {
@@ -6934,16 +7114,20 @@ function baseCreateRenderer(options, createHydrationFns) {
 			} else {
 				let { next, bu, u, parent, vnode } = instance;
 				{
-					const nonHydratedAsyncRoot = locateNonHydratedAsyncRoot(instance);
-					if (nonHydratedAsyncRoot) {
+					const unresolvedAsyncRoot = locateUnresolvedAsyncRoot(instance);
+					if (unresolvedAsyncRoot) {
 						if (next) {
 							next.el = vnode.el;
 							updateComponentPreRender(instance, next, optimized);
 						}
-						nonHydratedAsyncRoot.asyncDep.then(() => {
-							queuePostRenderEffect(() => {
-								if (!instance.isUnmounted) instance.update();
-							}, void 0, parentSuspense);
+						unresolvedAsyncRoot.asyncDep.then(() => {
+							const retry = () => {
+								if (instance.effect.flags & 1024) return;
+								if (parentSuspense && parentSuspense.pendingBranch) queuePostRenderEffect(retry, void 0, parentSuspense);
+								else instance.update();
+							};
+							retry.flags = 24;
+							queuePostRenderEffect(retry, void 0, parentSuspense);
 						});
 						return;
 					}
@@ -6966,7 +7150,7 @@ function baseCreateRenderer(options, createHydrationFns) {
 				const prevTree = instance.subTree;
 				instance.subTree = nextTree;
 				startMeasure(instance, `patch`);
-				patch(prevTree, nextTree, hostParentNode(prevTree.el), getNextHostNode(prevTree), instance, parentSuspense, namespace);
+				patch(prevTree, nextTree, hostParentNode(prevTree.el || resolveAsyncComponentPlaceholder(prevTree)), getNextHostNode(prevTree), instance, parentSuspense, namespace);
 				endMeasure(instance, `patch`);
 				next.el = nextTree.el;
 				if (originNext === null) updateHOCHostEl(instance, nextTree.el);
@@ -7169,9 +7353,7 @@ function baseCreateRenderer(options, createHydrationFns) {
 		}
 		if (cacheIndex != null && (!vnode.ctx || vnode.ctx === parentComponent)) parentComponent.renderCache[cacheIndex] = void 0;
 		if (shapeFlag & 256) {
-			if (isVaporInteropEnabled && isVaporComponent$1(vnode.type)) getVaporInterface(parentComponent, vnode).deactivate(vnode, parentComponent.ctx.getStorageContainer(), parentSuspense);
-			else parentComponent.ctx.deactivate(vnode);
-			return;
+			if (parentComponent.ctx.deactivate(vnode)) return;
 		}
 		if (isVaporInteropEnabled && shapeFlag & 6 && isVaporComponent$1(type)) {
 			getVaporInterface(parentComponent, vnode).unmount(vnode, doRemove, parentSuspense);
@@ -7251,12 +7433,14 @@ function baseCreateRenderer(options, createHydrationFns) {
 		if (effect) {
 			effect.stop();
 			unmount(subTree, instance, parentSuspense, doRemove);
-		} else if (instance.vnode.el && subTree) {
+		} else if (subTree) {
 			subTree.transition = instance.vnode.transition;
 			unmount(subTree, instance, parentSuspense, doRemove);
 		}
 		if (um) queuePostRenderEffect(um, void 0, parentSuspense);
-		queuePostRenderEffect(() => instance.isUnmounted = true, void 0, parentSuspense);
+		const markUnmounted = () => instance.isUnmounted = true;
+		markUnmounted.flags = 8;
+		queuePostRenderEffect(markUnmounted, void 0, parentSuspense);
 		devtoolsComponentRemoved(instance);
 	};
 	const unmountChildren = (children, parentComponent, parentSuspense, doRemove = false, optimized = false, start = 0) => {
@@ -7370,11 +7554,11 @@ function traverseStaticChildren(n1, n2, shallow = false) {
 		c2.el && (c2.el.__vnode = c2);
 	}
 }
-function locateNonHydratedAsyncRoot(instance) {
+function locateUnresolvedAsyncRoot(instance) {
 	const subComponent = instance.subTree && instance.subTree.component;
 	if (subComponent) {
 		if (subComponent.asyncDep && !subComponent.asyncResolved) return subComponent;
-		else return locateNonHydratedAsyncRoot(subComponent);
+		else return locateUnresolvedAsyncRoot(subComponent);
 	}
 }
 function invalidateMount(hooks) {
@@ -7444,7 +7628,9 @@ function getInheritedScopeIds(vnode, parentComponent, includeVaporRootIds = true
 function resolveAsyncComponentPlaceholder(anchorVnode) {
 	if (anchorVnode.placeholder) return anchorVnode.placeholder;
 	const instance = anchorVnode.component;
-	if (instance) return resolveAsyncComponentPlaceholder(instance.subTree);
+	if (instance && instance.subTree) return resolveAsyncComponentPlaceholder(instance.subTree);
+	const suspense = anchorVnode.suspense;
+	if (suspense && suspense.activeBranch) return resolveAsyncComponentPlaceholder(suspense.activeBranch);
 	return null;
 }
 //#endregion
@@ -7456,17 +7642,22 @@ function withSuspenseEnabled(value) {
 	return value;
 }
 let suspenseId = 0;
+const deferredEnterKey = Symbol("_deferredEnter");
 const Suspense = /*@__PURE__*/ withSuspenseEnabled({
 	name: "Suspense",
 	__isSuspense: true,
 	process(n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized, rendererInternals) {
 		if (n1 == null) mountSuspense(n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized, rendererInternals);
 		else {
-			if (parentSuspense && parentSuspense.deps > 0 && !n1.suspense.isInFallback && !parentSuspense.isHydrating) {
-				n2.suspense = n1.suspense;
-				n2.suspense.vnode = n2;
-				n2.el = n1.el;
-				return;
+			const suspense = n1.suspense;
+			if (parentSuspense && parentSuspense.deps > 0 && !parentSuspense.isHydrating) {
+				const owner = suspense.parentComponent;
+				if (!!owner && owner.suspense === parentSuspense && owner.suspenseId !== parentSuspense.pendingId ? parentSuspense.pendingBranch && !isSameVNodeType(n2.ssContent, suspense.pendingBranch || suspense.activeBranch) : !suspense.isInFallback) {
+					n2.suspense = suspense;
+					suspense.vnode = n2;
+					n2.el = n1.el;
+					return;
+				}
 			}
 			patchSuspense(n1, n2, container, anchor, parentComponent, namespace, slotScopeIds, optimized, rendererInternals);
 		}
@@ -7477,6 +7668,36 @@ const Suspense = /*@__PURE__*/ withSuspenseEnabled({
 function triggerEvent(vnode, name) {
 	const eventListener = vnode.props && vnode.props[name];
 	if ((0, _vue_shared.isFunction)(eventListener)) eventListener();
+}
+function enterDeferred(suspense, branch) {
+	const enters = [];
+	collectDeferredEnters(branch, enters, true);
+	if (isVaporInteropEnabled) {
+		const { parentComponent } = suspense;
+		const vapor = parentComponent && parentComponent.appContext.vapor;
+		if (vapor) vapor.enterDeferred(suspense, enters);
+	}
+	if (enters.length) queuePostFlushCb(enters);
+}
+function collectDeferredEnters(vnode, enters, isRoot) {
+	const { el, transition, children, shapeFlag } = vnode;
+	if (shapeFlag & 6) {
+		const subTree = vnode.component.subTree;
+		if (subTree) collectDeferredEnters(subTree, enters, isRoot);
+		return;
+	}
+	if (shapeFlag & 192) return;
+	if (shapeFlag & 1) {
+		if (!isRoot && el && el[deferredEnterKey]) {
+			el[deferredEnterKey] = void 0;
+			if (transition && !transition.persisted) {
+				transition.beforeEnter(el);
+				enters.push(() => transition.enter(el));
+			}
+		}
+		isRoot = false;
+	}
+	if (shapeFlag & 16) for (let i = 0; i < children.length; i++) collectDeferredEnters(children[i], enters, isRoot);
 }
 function mountSuspense(vnode, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized, rendererInternals) {
 	const { p: patch, o: { createElement } } = rendererInternals;
@@ -7517,11 +7738,7 @@ function patchSuspense(n1, n2, container, anchor, parentComponent, namespace, sl
 				suspense.activeBranch = pendingBranch;
 			} else unmount(pendingBranch, parentComponent, suspense);
 			suspense.deps = 0;
-			for (let i = 0; i < suspense.effects.length; i++) {
-				const effect = suspense.effects[i];
-				if (effect.flags & 8) queuePostFlushCb(effect);
-			}
-			suspense.effects.length = 0;
+			discardEffects(suspense);
 			suspense.hiddenContainer = createElement("div");
 			if (isInFallback) {
 				patch(null, newBranch, suspense.hiddenContainer, null, parentComponent, suspense, namespace, slotScopeIds, optimized);
@@ -7544,14 +7761,14 @@ function patchSuspense(n1, n2, container, anchor, parentComponent, namespace, sl
 	} else {
 		triggerEvent(n2, "onPending");
 		suspense.pendingBranch = newBranch;
-		if (newBranch.shapeFlag & 512) suspense.pendingId = newBranch.component.suspenseId;
-		else suspense.pendingId = suspenseId++;
+		suspense.pendingId = suspenseId++;
 		patch(null, newBranch, suspense.hiddenContainer, null, parentComponent, suspense, namespace, slotScopeIds, optimized);
 		if (suspense.deps <= 0) suspense.resolve();
 		else {
-			const { timeout, pendingId } = suspense;
-			if (timeout > 0) setTimeout(() => {
-				if (suspense.pendingId === pendingId) suspense.fallback(newFallback);
+			const { timeout } = suspense;
+			if (timeout > 0) suspense.timeoutTimer = setTimeout(() => {
+				suspense.timeoutTimer = void 0;
+				suspense.fallback(suspense.vnode.ssFallback);
 			}, timeout);
 			else if (timeout === 0) suspense.fallback(newFallback);
 		}
@@ -7587,6 +7804,7 @@ function createSuspenseBoundary(vnode, parentSuspense, parentComponent, containe
 		deps: 0,
 		pendingId: suspenseId++,
 		timeout: typeof timeout === "number" ? timeout : -1,
+		timeoutTimer: void 0,
 		activeBranch: null,
 		isFallbackMountPending: false,
 		pendingBranch: null,
@@ -7604,26 +7822,39 @@ function createSuspenseBoundary(vnode, parentSuspense, parentComponent, containe
 				delayEnter = activeBranch && pendingBranch.transition && pendingBranch.transition.mode === "out-in";
 				let hasUpdatedAnchor = false;
 				if (delayEnter) activeBranch.transition.afterLeave = () => {
-					if (pendingId === suspense.pendingId) {
+					if (pendingId === suspense.pendingId && !suspense.isUnmounted) {
+						enterDeferred(suspense, pendingBranch);
 						move(pendingBranch, container, anchor === initialAnchor && !hasUpdatedAnchor ? next(activeBranch) : anchor, 0, parentComponent);
 						queuePostFlushCb(effects);
 						if (isInFallback && vnode.ssFallback) vnode.ssFallback.el = null;
 					}
 				};
 				if (activeBranch && !suspense.isFallbackMountPending) {
-					if (parentNode(activeBranch.el) === container) {
+					if (parentNode(activeBranch.el || resolveAsyncComponentPlaceholder(activeBranch)) === container) {
 						anchor = next(activeBranch);
 						hasUpdatedAnchor = true;
 					}
 					unmount(activeBranch, parentComponent, suspense, true);
 					if (!delayEnter && isInFallback && vnode.ssFallback) queuePostRenderEffect(() => vnode.ssFallback.el = null, void 0, suspense);
 				}
-				if (!delayEnter) move(pendingBranch, container, anchor, 0, parentComponent);
+				if (!delayEnter) {
+					enterDeferred(suspense, pendingBranch);
+					move(pendingBranch, container, anchor, 0, parentComponent);
+				}
 			}
+			clearTimeout(suspense.timeoutTimer);
+			suspense.timeoutTimer = void 0;
 			suspense.isFallbackMountPending = false;
 			setActiveBranch(suspense, pendingBranch);
 			suspense.pendingBranch = null;
 			suspense.isInFallback = false;
+			let kept = 0;
+			for (let i = 0; i < effects.length; i++) {
+				const effect = effects[i];
+				if (effect.flags & 16) queuePostFlushCb(effect);
+				else effects[kept++] = effect;
+			}
+			effects.length = kept;
 			let parent = suspense.parent;
 			let hasUnresolvedAncestor = false;
 			while (parent) {
@@ -7646,13 +7877,13 @@ function createSuspenseBoundary(vnode, parentSuspense, parentComponent, containe
 			triggerEvent(vnode, "onResolve");
 		},
 		fallback(fallbackVNode) {
-			if (!suspense.pendingBranch) return;
+			if (suspense.isUnmounted || !suspense.pendingBranch) return;
 			const { vnode, activeBranch, parentComponent, container, namespace } = suspense;
 			triggerEvent(vnode, "onFallback");
 			const anchor = next(activeBranch);
 			const mountFallback = () => {
 				suspense.isFallbackMountPending = false;
-				if (!suspense.isInFallback) return;
+				if (suspense.isUnmounted || !suspense.isInFallback) return;
 				const latestFallback = suspense.vnode.ssFallback;
 				patch(null, latestFallback, container, anchor, parentComponent, null, namespace, slotScopeIds, optimized);
 				setActiveBranch(suspense, latestFallback);
@@ -7676,24 +7907,52 @@ function createSuspenseBoundary(vnode, parentSuspense, parentComponent, containe
 		registerDep(instance, onResolve) {
 			const isInPendingSuspense = !!suspense.pendingBranch;
 			if (isInPendingSuspense) suspense.deps++;
+			const render = (setupResult) => {
+				instance.asyncResolved = true;
+				onResolve(setupResult);
+			};
 			instance.asyncDep.catch((err) => {
-				handleError(err, instance, 0);
+				handleError(err, instance, 0, false, true);
+				return () => null;
 			}).then((asyncSetupResult) => {
-				if (instance.isUnmounted || suspense.isUnmounted || suspense.pendingId !== instance.suspenseId) return;
+				if (instance.isUnmounted || suspense.isUnmounted) return;
+				const isPendingDep = isInPendingSuspense && suspense.pendingId === instance.suspenseId;
 				setCurrentInstance(null, void 0);
 				if (!instance.scope.active) {
-					if (isInPendingSuspense && --suspense.deps === 0) suspense.resolve();
+					if (isPendingDep && --suspense.deps === 0) suspense.resolve();
 					return;
 				}
-				instance.asyncResolved = true;
-				onResolve(asyncSetupResult);
-				if (isInPendingSuspense && --suspense.deps === 0) suspense.resolve();
+				if (!isPendingDep && suspense.pendingBranch) {
+					const job = () => {
+						if (instance.isUnmounted || suspense.isUnmounted || !instance.scope.active) return;
+						if (suspense.pendingBranch) queueEffectWithSuspense(job, void 0, suspense);
+						else render(asyncSetupResult);
+					};
+					job.flags = 24;
+					queueEffectWithSuspense(job, void 0, suspense);
+					return;
+				}
+				render(asyncSetupResult);
+				if (isPendingDep && --suspense.deps === 0) suspense.resolve();
 			});
 		},
 		unmount(parentSuspense, doRemove) {
 			suspense.isUnmounted = true;
+			clearTimeout(suspense.timeoutTimer);
+			suspense.timeoutTimer = void 0;
+			if (parentSuspenseId !== void 0) {
+				const parent = suspense.parent;
+				const pendingId = parentSuspenseId;
+				parentSuspenseId = void 0;
+				queuePostFlushCb(() => {
+					if (parent.pendingId === pendingId && !parent.isUnmounted && --parent.deps === 0) parent.resolve();
+				});
+			}
 			if (suspense.activeBranch) unmount(suspense.activeBranch, parentComponent, parentSuspense, doRemove);
-			if (suspense.pendingBranch) unmount(suspense.pendingBranch, parentComponent, parentSuspense, doRemove);
+			if (suspense.pendingBranch) {
+				unmount(suspense.pendingBranch, parentComponent, suspense, doRemove);
+				discardEffects(suspense);
+			}
 		}
 	};
 	return suspense;
@@ -7733,6 +7992,14 @@ function normalizeSuspenseSlot(s) {
 	s = normalizeVNode(s);
 	if (block && !s.dynamicChildren) s.dynamicChildren = block.filter((c) => c !== s);
 	return s;
+}
+function discardEffects(suspense) {
+	const { effects } = suspense;
+	for (let i = 0; i < effects.length; i++) {
+		const effect = effects[i];
+		if (effect.flags & 8) queuePostFlushCb(effect);
+	}
+	effects.length = 0;
 }
 function queueEffectWithSuspense(fn, id, suspense) {
 	if (suspense && suspense.pendingBranch) {
@@ -7958,7 +8225,8 @@ function _createVNode(type, props = null, children = null, patchFlag = 0, dynami
 }
 function guardReactiveProps(props) {
 	if (!props) return null;
-	return /* @__PURE__ */ isProxy(props) || isInternalObject(props) ? (0, _vue_shared.extend)({}, props) : props;
+	if (/* @__PURE__ */ isProxy(props)) return (0, _vue_shared.extend)({}, props);
+	return isInternalObject(props) ? (0, _vue_shared.extend)({}, props[rawAttrsKey] || props) : props;
 }
 function cloneVNode(vnode, extraProps, mergeRef = false, cloneTransition = false) {
 	const { props, ref, patchFlag, children, transition } = vnode;
@@ -8071,6 +8339,17 @@ function normalizeVNode(child) {
 function cloneIfMounted(child) {
 	return child.el === null && child.patchFlag !== -1 || child.memo ? child : cloneVNode(child);
 }
+let deferElementSlots = false;
+/**
+* While enabled, compiled default slots passed as children of plain elements
+* are kept on the vnode so the server renderer can render them in push mode.
+* @internal
+*/
+function setDeferElementSlots(value) {
+	const prev = deferElementSlots;
+	deferElementSlots = value;
+	return prev;
+}
 function normalizeChildren(vnode, children) {
 	let type = 0;
 	const { shapeFlag } = vnode;
@@ -8079,6 +8358,11 @@ function normalizeChildren(vnode, children) {
 	else if (typeof children === "object") {
 		if (shapeFlag & 65) {
 			const slot = children.default;
+			if (deferElementSlots && slot && slot._c && shapeFlag & 1) {
+				vnode.children = children;
+				vnode.shapeFlag |= 32;
+				return;
+			}
 			if (slot) {
 				slot._c && (slot._d = false);
 				normalizeChildren(vnode, slot());
@@ -8364,7 +8648,8 @@ function setupStatefulComponent(instance, isSSR) {
 					setInSSRSetupState(false);
 				}
 			}).catch((e) => {
-				handleError(e, instance, 0);
+				handleError(e, instance, 0, void 0, true);
+				instance.ssrRender = (_, push) => push("<!---->");
 			});
 			else {
 				instance.asyncDep = setupResult;
@@ -8435,11 +8720,16 @@ function finishComponentSetup(instance, isSSR, skipOptions) {
 		else warn$1(`Component is missing template or render function: `, Component);
 	}
 }
+/**
+* Read through the setup context `attrs` proxy to get the raw attrs object.
+* @internal
+*/
+const rawAttrsKey = Symbol();
 const attrsProxyHandlers = {
 	get(target, key) {
 		markAttrsAccessed();
 		track(target, "get", "");
-		return target[key];
+		return key === rawAttrsKey ? target : target[key];
 	},
 	set() {
 		warn$1(`setupContext.attrs is readonly.`);
@@ -8737,7 +9027,7 @@ function isMemoSame(cached, memo) {
 }
 //#endregion
 //#region packages/runtime-core/src/index.ts
-const version = "3.6.0-rc.14";
+const version = "3.6.0-rc.15";
 const warn = warn$1;
 /**
 * Runtime error messages. Only exposed in dev or esm builds.
@@ -8763,7 +9053,8 @@ const ssrUtils = {
 	popWarningContext,
 	VaporSlot,
 	rawVaporSlotKey,
-	invokeSlotFallback
+	invokeSlotFallback,
+	setDeferElementSlots
 };
 /**
 * @internal only exposed in compat builds
@@ -9520,7 +9811,7 @@ var VueElementBase = class VueElementBase extends BaseClass {
 			}
 			this._styleAnchors.delete(this._def);
 			this._applyStyles(newStyles);
-			if (!this._instance.vapor) this._instance = null;
+			this._instance = null;
 			this._update();
 		};
 		const dispatch = (event, args) => {
@@ -10133,15 +10424,15 @@ const vModelSelect = {
 		vModelSelectInit(el, value, number);
 		el[assignKey] = getModelAssigner(vnode);
 	},
-	mounted(el, { value }) {
-		vModelSetSelected(el, value);
+	mounted(el, { value, modifiers: { number } }) {
+		vModelSetSelected(el, value, number);
 	},
 	beforeUpdate(el, { value }, vnode) {
 		el._modelValue = value;
 		el[assignKey] = getModelAssigner(vnode);
 	},
-	updated(el, { value }) {
-		vModelSetSelected(el, value);
+	updated(el, { value, modifiers: { number } }) {
+		vModelSetSelected(el, value, number);
 	}
 };
 /**
@@ -10176,14 +10467,14 @@ function isSameSelectValue(value, assignedValue, multiple) {
 /**
 * @internal
 */
-const vModelSetSelected = (el, value) => {
+const vModelSetSelected = (el, value, number = false) => {
 	el._modelValue = value;
 	const pending = el._pendingValue;
 	el._pendingValue = void 0;
 	if (pending && pending[0] === el.multiple && isSameSelectValue(value, pending[1], pending[0])) return;
-	setSelected(el, value);
+	setSelected(el, value, number);
 };
-function setSelected(el, value) {
+function setSelected(el, value, number) {
 	const isMultiple = el.multiple;
 	const isArrayValue = (0, _vue_shared.isArray)(value);
 	if (isMultiple && !isArrayValue && !(0, _vue_shared.isSet)(value)) {
@@ -10198,7 +10489,7 @@ function setSelected(el, value) {
 				const optionType = typeof optionValue;
 				if (optionType === "string" || optionType === "number") option.selected = value.some((v) => String(v) === String(optionValue));
 				else option.selected = (0, _vue_shared.looseIndexOf)(value, optionValue) > -1;
-			} else option.selected = value.has(optionValue);
+			} else option.selected = value.has(optionValue) || number && typeof optionValue === "string" && value.has((0, _vue_shared.looseToNumber)(optionValue));
 		} else if ((0, _vue_shared.looseEqual)(getValue(option), value)) {
 			if (el.selectedIndex !== i) el.selectedIndex = i;
 			return;
@@ -10790,12 +11081,12 @@ let parseAdoptTarget;
 const isRangeStart = (node) => {
 	if (node.nodeType !== 8) return false;
 	const data = node.data;
-	return data === "[" || data === "(" || (0, _vue_shared.isVaporBranchStart)(data);
+	return data === "[" || data === "(" || (0, _vue_shared.isVaporRangeStart)(data);
 };
 const isRangeEnd = (node) => {
 	if (node.nodeType !== 8) return false;
 	const data = node.data;
-	return data === "]" || data === ")";
+	return data === "]" || data === ")" || data === "}";
 };
 const isComment = (node, data) => node.nodeType === 8 && node.data === data;
 /** An SSR marker bounding a unit: a fragment, a slot fallback or a teleport. */
@@ -10872,7 +11163,7 @@ function adoptTemplateImpl(node, template, ns, nested = false, target = parseAdo
 function nextLogicalSibling(node) {
 	if (node.nodeType === 8) {
 		const data = node.data;
-		if (data === "[" || data === "(" || (0, _vue_shared.isVaporBranchStart)(data)) node = locateEndAnchor(node, data);
+		if (data === "[" || data === "(" || (0, _vue_shared.isVaporRangeStart)(data)) node = locateEndAnchor(node, data);
 		else if (data === "teleport start") node = locateEndAnchor(node, data, "teleport end");
 	}
 	return skipUntrackedAnchors(node.nextSibling);
@@ -10905,7 +11196,7 @@ function locateHydrationNodeImpl(claim, isBlankText) {
 function locateFragmentEnd(node) {
 	return node && isRangeStart(node) ? locateEndAnchor(node) : null;
 }
-function locateEndAnchor(node, open = node.data, close = open === "(" ? ")" : "]") {
+function locateEndAnchor(node, open = node.data, close = (0, _vue_shared.rangeCloseOf)(open)) {
 	if (node.$fe) return node.$fe;
 	const stack = [node];
 	while ((node = /* @__PURE__ */ _next(node)) && stack.length > 0) if (node.nodeType === 8) {
@@ -10928,7 +11219,7 @@ function locateEndAnchor(node, open = node.data, close = open === "(" ? ")" : "]
 function locateClaimedEnd(start) {
 	if (start.$fe) return start.$fe;
 	const node = currentHydrationNode;
-	if (node && isComment(node, start.data === "(" ? ")" : "]") && !isClaimedAnchor(node)) return start.$fe = node;
+	if (node && isComment(node, (0, _vue_shared.rangeCloseOf)(start.data)) && !isClaimedAnchor(node)) return start.$fe = node;
 	return locateEndAnchor(start);
 }
 /**
@@ -11315,6 +11606,19 @@ function runWithUnmountSuspense(suspense, fn) {
 */
 function resolveUnmountSuspense(fallback) {
 	return currentUnmountSuspense === void 0 ? fallback : currentUnmountSuspense;
+}
+const deferredEnters = /* @__PURE__ */ new WeakMap();
+function deferEnter(suspense, target) {
+	const container = suspense.hiddenContainer;
+	const targets = deferredEnters.get(container);
+	if (targets) targets.add(target);
+	else deferredEnters.set(container, /* @__PURE__ */ new Set([target]));
+}
+function takeDeferredEnters(suspense) {
+	const container = suspense.hiddenContainer;
+	const targets = deferredEnters.get(container);
+	if (targets) deferredEnters.delete(container);
+	return targets;
 }
 //#endregion
 //#region packages/runtime-vapor/src/vdomSlotOwner.ts
@@ -12314,6 +12618,10 @@ let ownsTransitionMode;
 let resolveOutletLeave;
 let deferSlotRootFlip;
 let isTransitionEnabled = false;
+let isTransitionDefined = false;
+function markTransitionDefined() {
+	isTransitionDefined = true;
+}
 function registerTransitionHooks(applyHooks, applyLeaveHooks, deferBranchUpdate, removeBranch, ownsMode, awaitLeaving, resolveLeave, deferFlip) {
 	deferSlotRootFlip = deferFlip;
 	isTransitionEnabled = true;
@@ -12353,15 +12661,16 @@ function setAttr(el, key, value, isSVG = false, forceHydrate = true, removed = f
 	}
 	if (key === "true-value") el._trueValue = value;
 	else if (key === "false-value") el._falseValue = value;
+	const cacheKey = `$a$${key}`;
 	if (isHydrating$1 && !isRecreatedNode(el)) {
 		attributeHasMismatch(el, key, value);
 		if (skipHydratedWrite(el, key, value, forceHydrate)) {
-			el[`$${key}`] = value;
+			el[cacheKey] = value;
 			return;
 		}
 	}
-	if (value !== el[`$${key}`]) {
-		el[`$${key}`] = value;
+	if (value !== el[cacheKey]) {
+		el[cacheKey] = value;
 		if (isSVG && key.startsWith("xlink:")) {
 			if (value != null) el.setAttributeNS(xlinkNS, key, value);
 			else el.removeAttributeNS(xlinkNS, key.slice(6, key.length));
@@ -12631,6 +12940,16 @@ function setDynamicEvents(el, events) {
 	patchDynamicProps(el, toHandlers(events, true));
 }
 function patchDynamicProps(el, props, isSVG, staticKeys) {
+	if (el._isVueCE) {
+		el._beginPatch();
+		try {
+			doPatchDynamicProps(el, props, isSVG, staticKeys);
+		} finally {
+			el._endPatch();
+		}
+	} else doPatchDynamicProps(el, props, isSVG, staticKeys);
+}
+function doPatchDynamicProps(el, props, isSVG, staticKeys) {
 	const cacheKey = `$dprops${isApplyingFallthroughProps ? "$" : ""}`;
 	const prevProps = el[cacheKey];
 	const nextProps = Object.create(null);
@@ -12665,7 +12984,7 @@ function setDynamicProp(el, key, value, isSVG = false, forceHydrate = false, rem
 		else if (key === "textContent") setElementText(el, value, forceHydrate);
 		else if (key === "value" && (0, _vue_shared.canSetValueDirectly)(el.tagName)) setValue(el, value, forceHydrate);
 		else {
-			if ((0, _vue_shared.isNativeOn)(rawKey)) el[`$${key}`] = value;
+			if ((0, _vue_shared.isNativeOn)(rawKey)) el[`$a$${key}`] = value;
 			setDOMProp(el, key, value, forceHydrate);
 		}
 	} else if (el._isVueCE && (shouldSetAsPropForVueCE(el, key) || el._def.__asyncLoader && (/[A-Z]/.test(key) || !(0, _vue_shared.isString)(value)))) setDOMProp(el, (0, _vue_shared.camelize)(key), value, forceHydrate, key);
@@ -12922,6 +13241,7 @@ function commitSlotFallback(state, rendered, scope) {
 	exposeSlotFallback(state, block);
 }
 function exposeSlotFallback(state, block) {
+	if (isKeepAliveEnabled$1 && state.keepAliveCtx) state.keepAliveCtx.cacheBlock(block);
 	beforeExpose(state, block);
 	insertActiveSlotFallback(state, void 0, state.getParentNode(), state.getAnchor());
 }
@@ -13055,6 +13375,8 @@ function locateSlotEndAnchor() {
 function withHydratingSlotBoundary(fn) {
 	const claim = createFragmentClaim();
 	locateHydrationNode(claim);
+	const node = currentHydrationNode;
+	if (claim.start && node && isRangeEnd(node)) locateEndAnchor(claim.start);
 	const prev = currentSlotClaim;
 	currentSlotClaim = claim;
 	try {
@@ -13176,11 +13498,15 @@ function planFromBlockBoundary(frag) {
 		parent: close.parentNode,
 		next: close
 	};
-	const node = findBlockBoundary(frag.nodes);
+	const { parentNode, nextNode } = findBlockBoundary(frag.nodes);
+	if (nextNode && isComment(nextNode, "}") && isFragmentBlock(frag.nodes)) return {
+		kind: "reuse",
+		node: nextNode
+	};
 	return {
 		kind: "create",
-		parent: node.parentNode,
-		next: node.nextNode
+		parent: parentNode,
+		next: nextNode
 	};
 }
 function resolveDynamicAnchor(frag, isEmpty) {
@@ -13322,6 +13648,7 @@ const rawSlotsOwnerMap = /* @__PURE__ */ new WeakMap();
 const rawSlotWrappersCache = /* @__PURE__ */ new WeakMap();
 function normalizeRawSlots(rawSlots) {
 	if (!rawSlots) return rawSlots;
+	if (rawSlots === _vue_shared.EMPTY_OBJ) return;
 	const normalized = (0, _vue_shared.isFunction)(rawSlots) ? { default: rawSlots } : rawSlots;
 	if (!rawSlotsOwnerMap.has(normalized)) rawSlotsOwnerMap.set(normalized, getScopeOwner());
 	return normalized;
@@ -13469,12 +13796,13 @@ function getSlotProp(rawProps, key) {
 	}
 	return (0, _vue_shared.hasOwn)(rawProps, key) ? resolveSource(rawProps[key]) : Object.prototype[key];
 }
-const slotPropsProto = /*@__PURE__*/ Object.getPrototypeOf(/*@__PURE__*/ createInternalObject());
+let slotPropsProto;
+const getSlotPropsProto = () => slotPropsProto || (slotPropsProto = Object.getPrototypeOf(createInternalObject()));
 const slotPropsProxyHandlers = {
 	get: getSlotProp,
 	has: hasAttrFromRawProps,
 	ownKeys: getKeysFromRawProps,
-	getPrototypeOf: () => slotPropsProto,
+	getPrototypeOf: getSlotPropsProto,
 	getOwnPropertyDescriptor(target, key) {
 		if (hasAttrFromRawProps(target, key)) return {
 			configurable: true,
@@ -13511,7 +13839,8 @@ function createSlot(name = "default", rawProps, fallback, flags = 0) {
 		fragment = withRenderContext(outletCtx, () => instance.appContext.vdom.slot(interopSlotsSource, name, slotProps, instance, {
 			fallback,
 			flags,
-			adoptAnchor: _insertionAnchor
+			adoptAnchor: _insertionAnchor,
+			insertionParent: _insertionParent
 		}));
 	} else {
 		if (once && fallback) {
@@ -13522,7 +13851,7 @@ function createSlot(name = "default", rawProps, fallback, flags = 0) {
 		const ce = instance.ce || isAsyncComponentEnabled && instance.parent && isAsyncWrapper(instance.parent) && instance.parent.ce;
 		isCustomElementSlot = !!(ce && ce._hasShadowRoot());
 		const needsSlotFragment = !isCustomElementSlot && (!!boundary || shouldUseSlotFragment(rawSlots, name, fallback));
-		const outlet = withRenderContext(isCustomElementSlot ? deriveSlotBoundary(outletCtx, null) : outletCtx, () => needsSlotFragment ? new SlotFragment(flags, _insertionAnchor) : new DynamicFragment(132, "slot", false, false, _insertionAnchor));
+		const outlet = withRenderContext(isCustomElementSlot ? deriveSlotBoundary(outletCtx, null) : outletCtx, () => needsSlotFragment ? new SlotFragment(flags, _insertionAnchor, _insertionParent) : new DynamicFragment(132, "slot", false, false, _insertionAnchor, _insertionParent));
 		const slotFragment = needsSlotFragment ? outlet : void 0;
 		fragment = outlet;
 		const isDynamicName = (0, _vue_shared.isFunction)(name);
@@ -13750,11 +14079,14 @@ var VaporFragment = class {
 	}
 };
 var RenderContextFragment = class extends VaporFragment {
-	constructor(nodes, flags = 1) {
+	constructor(nodes, flags = 1, insertionParent) {
 		super(nodes, flags);
 		this.renderInstance = currentInstance;
 		this.ctx = currentRenderContext;
-		if (isKeepAliveEnabled$1) this.keepAliveCtx = getKeepAliveContext(currentInstance);
+		if (isKeepAliveEnabled$1) {
+			const keepAliveCtx = this.keepAliveCtx = getKeepAliveContext(currentInstance);
+			if (keepAliveCtx && (insertionParent || keepAliveCtx.inUncachedBranch)) this.uncached = true;
+		}
 	}
 	get slotBoundary() {
 		return this.ctx.slotBoundary;
@@ -13767,6 +14099,17 @@ var RenderContextFragment = class extends VaporFragment {
 	}
 };
 function runWithRenderCtx(fragment, fn, scope) {
+	if (isKeepAliveEnabled$1 && fragment.uncached) {
+		const keepAliveCtx = fragment.keepAliveCtx;
+		if (!keepAliveCtx.inUncachedBranch) {
+			keepAliveCtx.inUncachedBranch = true;
+			try {
+				return runWithRenderCtx(fragment, fn, scope);
+			} finally {
+				keepAliveCtx.inUncachedBranch = false;
+			}
+		}
+	}
 	if (scope === void 0 && currentInstance === fragment.renderInstance) return withRenderContext(fragment.ctx, fn);
 	const prevInstance = setCurrentInstance(fragment.renderInstance, scope);
 	try {
@@ -13819,8 +14162,8 @@ function isBranchHeld(frag) {
 	return frag.__vf & 1024 ? frag.boundary.isHolding() : !!(frag.__vf & 2048) && frag.slotBoundary.isHolding();
 }
 var DynamicFragment = class extends RenderContextFragment {
-	constructor(flags = 0, anchorLabel, keyed = false, slotRoot = false, adoptAnchor) {
-		super(EMPTY_BLOCK, 2 | flags | (slotRoot && currentRenderContext.slotBoundary ? SLOT_ROOT : 0));
+	constructor(flags = 0, anchorLabel, keyed = false, slotRoot = false, adoptAnchor, insertionParent) {
+		super(EMPTY_BLOCK, 2 | flags | (slotRoot && currentRenderContext.slotBoundary ? SLOT_ROOT : 0), insertionParent);
 		this.everUpdated = false;
 		if (keyed) this.keyed = true;
 		this.anchorLabel = anchorLabel;
@@ -13849,7 +14192,7 @@ var DynamicFragment = class extends RenderContextFragment {
 			if (isUpdate) {
 				if (this.__vf & 2048) this.wasValid = isValidSlot(this);
 				const bu = this.bu;
-				if (bu) for (let i = 0; i < bu.length; i++) bu[i]();
+				if (bu) for (let i = 0; i < bu.length; i++) bu[i](this.nodes);
 			}
 			if (transition && parent && deferBranchUpdateDuringLeave(this, render, key, noScope, branchKey, prevKey)) return;
 			let removePrevious;
@@ -13888,7 +14231,7 @@ var DynamicFragment = class extends RenderContextFragment {
 			}
 			if (this.scopeIdOwners) applyScopeIdOwners(this.scopeIdOwners);
 			if (parent) {
-				insert(this.nodes, parent, this.anchor);
+				insert(this.nodes, parent, this.anchor, this.ctx.suspense);
 				if (removePrevious && keepAliveCtx) keepAliveCtx.cacheBlock(this);
 			}
 		} else {
@@ -13918,8 +14261,8 @@ var DynamicFragment = class extends RenderContextFragment {
 	}
 };
 var SlotFragment = class extends DynamicFragment {
-	constructor(flags = 0, adoptAnchor) {
-		super(1156, "slot", false, false, adoptAnchor);
+	constructor(flags = 0, adoptAnchor, insertionParent) {
+		super(1156, "slot", false, false, adoptAnchor, insertionParent);
 		this.disposed = false;
 		this.activeFallback = null;
 		this.holdsContent = true;
@@ -14148,7 +14491,10 @@ function insertNode(block, parent, anchor = null, parentSuspense) {
 				transition.beforeEnter(block);
 				insert();
 				queuePostRenderEffect(() => transition.enter(block), void 0, parentSuspense);
-			} else performTransitionEnter(block, transition, insert, parentSuspense);
+			} else {
+				if (isSuspenseEnabled$1 && parentSuspense && parentSuspense.pendingBranch && !transition.persisted) deferEnter(parentSuspense, block);
+				performTransitionEnter(block, transition, insert, parentSuspense);
+			}
 		} else if (block !== anchor) parent.insertBefore(block, anchor);
 	}
 }
@@ -14169,8 +14515,10 @@ function insertFragment(block, parent, anchor = null, parentSuspense) {
 		anchor = blockAnchor;
 	}
 	if (isTransitionEnabled && block.leaving) return;
-	if (block.insert) block.insert(parent, anchor, parentSuspense, block.$transition);
-	else insert(block.nodes, parent, anchor, parentSuspense);
+	if (block.insert) {
+		if (isSuspenseEnabled$1 && isInteropEnabled && parentSuspense && parentSuspense.pendingBranch && isInteropFragment(block)) deferEnter(parentSuspense, block);
+		block.insert(parent, anchor, parentSuspense, block.$transition);
+	} else insert(block.nodes, parent, anchor, parentSuspense);
 }
 function move(block, parent, anchor = null, moveType = 1, parentComponent, parentSuspense) {
 	if (block instanceof Node) {
@@ -14312,8 +14660,12 @@ function getBlockFirstNode(block) {
 function findBlockBoundary(block) {
 	const boundaryBlock = isVaporComponent(block) ? getComponentPhysicalBlock(block) : block;
 	const lastChild = findLastChild(boundaryBlock);
+	if (!lastChild) return {
+		parentNode: null,
+		nextNode: null
+	};
 	let { parentNode, nextSibling: nextNode } = lastChild;
-	if (nextNode && isRangeEnd(nextNode) && isFragmentBlock(boundaryBlock) && !isRangeEnd(lastChild) && !(lastChild.nodeType === 3 && !lastChild.data)) nextNode = nextNode.nextSibling;
+	if (nextNode && isRangeEnd(nextNode) && nextNode.data !== "}" && isFragmentBlock(boundaryBlock) && !isRangeEnd(lastChild) && !(lastChild.nodeType === 3 && !lastChild.data)) nextNode = nextNode.nextSibling;
 	return {
 		parentNode,
 		nextNode
@@ -14380,8 +14732,12 @@ function hmrRerender(instance) {
 		if (parent) return parent.hmrRerender();
 		if (!instance.parent && !instance.ce) return instance.hmrReload(instance.type);
 	}
-	const { parentNode, nextNode: anchor } = findBlockBoundary(instance.block);
-	const parent = parentNode;
+	const [parent, anchor] = findPlace(instance);
+	if (!parent) {
+		let owner = instance.parent;
+		while (owner && !owner.vapor) owner = owner.parent;
+		return owner.hmrRerender();
+	}
 	if (instance.renderScope) instance.renderScope.stop();
 	const transitions = isTransitionEnabled ? /* @__PURE__ */ new Map() : void 0;
 	if (transitions) takeTransitionHooks(instance.block, transitions);
@@ -14409,6 +14765,13 @@ function hmrRerender(instance) {
 		} else if (!state.isUnmounting) state.refresh(hooks);
 	});
 }
+function findPlace(instance) {
+	const { parentNode, nextNode } = findBlockBoundary(instance.block);
+	if (parentNode) return [parentNode, nextNode];
+	const vnode = isInteropEnabled && instance.interopVNode;
+	if (vnode) return [vnode.anchor.parentNode, vnode.anchor];
+	return [instance.parent ? null : instance.appContext.app._container, null];
+}
 function takeTransitionHooks(block, taken) {
 	if ((0, _vue_shared.isArray)(block)) for (const b of block) takeTransitionHooks(b, taken);
 	else if (isVaporComponent(block)) {
@@ -14429,7 +14792,7 @@ function hmrReload(instance, newComp) {
 		parentInstance.hmrRerender();
 		return;
 	}
-	const { parentNode, nextNode: anchor } = findBlockBoundary(instance.block);
+	const [parentNode, anchor] = findPlace(instance);
 	const parent = parentNode;
 	unmountComponent(instance, parent);
 	const prev = setCurrentInstance(parentInstance);
@@ -14468,7 +14831,7 @@ function createComponent(component, rawProps, rawSlots, isSingleRoot, once, appC
 	const _insertionAnchor = insertionAnchor;
 	let hydration = null;
 	let pendingAsyncHydration = false;
-	if (isHydrating$1) hydration = enterComponentHydration(component);
+	if (isHydrating$1) hydration = enterComponentHydration(!(isInteropEnabled && useVdomInterop(component, appContext)) && !wrapsComponent(component));
 	else resetInsertionState();
 	const prevCtx = currentRenderContext;
 	try {
@@ -14487,11 +14850,9 @@ function createComponent(component, rawProps, rawSlots, isSingleRoot, once, appC
 			};
 		}
 		const key = (isKeepAliveEnabled$1 || isTransitionEnabled) && rawProps ? resolveSource(rawProps.key) : void 0;
-		let keepAliveCtx = null;
-		if (isKeepAliveEnabled$1 && currentInstance && currentInstance.vapor && isKeepAlive(currentInstance)) {
-			const ctx = currentInstance.ctx;
-			keepAliveCtx = ctx;
-			const cached = !managedMount && ctx.getCachedComponent(component, key);
+		const keepAliveCtx = isKeepAliveEnabled$1 && !_insertionParent && currentInstance && currentInstance.vapor && isKeepAlive(currentInstance) && !currentInstance.ctx.inUncachedBranch ? currentInstance.ctx : null;
+		if (keepAliveCtx) {
+			const cached = !managedMount && keepAliveCtx.getCachedComponent(component, key);
 			if (cached) {
 				if (isVaporComponent(cached) && cached.inputScope) {
 					cached.rawProps = rawProps || _vue_shared.EMPTY_OBJ;
@@ -14516,10 +14877,17 @@ function createComponent(component, rawProps, rawSlots, isSingleRoot, once, appC
 		if (isTeleportEnabled && isVaporTeleport(component)) {
 			const frag = component.process(rawProps, normalizeRawSlots(rawSlots), _insertionAnchor);
 			if (key !== void 0) frag.$key = key;
+			trackDevtoolsTeleport(frag);
 			if (_insertionParent) {
-				onScopeDispose(() => frag.disposeTarget(), true);
+				onScopeDispose(() => {
+					untrackDevtoolsTeleport(frag);
+					frag.disposeTarget();
+				}, true);
 				registerNestedVDOMCleanup(frag);
-			} else onScopeDispose(() => frag.scheduleTargetDispose(), true);
+			} else onScopeDispose(() => {
+				untrackDevtoolsTeleport(frag);
+				frag.scheduleTargetDispose();
+			}, true);
 			if (!isHydrating$1) {
 				if (_insertionParent) insert(frag, _insertionParent, _insertionAnchor, currentRenderContext.suspense);
 			} else frag.hydrate();
@@ -14546,10 +14914,6 @@ function createComponent(component, rawProps, rawSlots, isSingleRoot, once, appC
 			instance.hasFallthrough = true;
 		}
 		if (asyncBoundary) markAsyncBoundary(instance);
-		if (isKeepAliveEnabled$1 && !(isAsyncComponentEnabled && isAsyncWrapper(instance))) {
-			keepAliveCtx || (keepAliveCtx = getKeepAliveContext(currentInstance));
-			if (keepAliveCtx) keepAliveCtx.processShapeFlag(instance);
-		}
 		const outerCtx = currentRenderContext;
 		setRenderContext(deriveRenderContext(outerCtx, null, outerCtx.slotBoundary, null, outerCtx.suspense));
 		let hasWarningContext = false;
@@ -14582,8 +14946,7 @@ function createComponent(component, rawProps, rawSlots, isSingleRoot, once, appC
 				else setupComponent(instance, component);
 				if (isHydrating$1 && isSuspenseEnabled$1 && instance.suspense && instance.asyncDep) {
 					const pendingBlock = [];
-					const { claim, cursor } = hydration;
-					let node = claim && claim.start || cursor.start;
+					let node = hydration.cursor.start;
 					const hydrationNext = nextLogicalSibling(node);
 					do {
 						pendingBlock.push(node);
@@ -14598,7 +14961,7 @@ function createComponent(component, rawProps, rawSlots, isSingleRoot, once, appC
 			if (hasWarningContext) popWarningContext();
 			if (hasInitMeasure) endMeasure(instance, "init");
 		}
-		if (keepAliveCtx) instance.unmountScope = getCurrentScope();
+		if (isKeepAliveEnabled$1 && getKeepAliveContext(currentInstance)) instance.unmountScope = getCurrentScope();
 		registerUnmount(instance);
 		if (_insertionParent) registerNestedVDOMCleanup(instance);
 		if (!managedMount && (_insertionParent || isHydrating$1)) mountComponent(instance, _insertionParent, _insertionAnchor);
@@ -14609,20 +14972,31 @@ function createComponent(component, rawProps, rawSlots, isSingleRoot, once, appC
 	}
 }
 /**
-* Open a component's SSR range: locate its start and claim its markers.
-* Shared by creation and by the deferred render of an async setup, which
-* re-enters the range once setup has settled.
+* Open a component's SSR range: claim the `{` under the cursor, if `claims`,
+* and its close. A vapor component's server render begins with a node of
+* its own or with a range of its own, so a range at the cursor is the
+* component's. Shared by creation and by the deferred render of an async
+* setup, which re-enters the range once setup has settled.
 */
-function enterComponentHydration(component) {
-	const claim = component.__multiRoot ? createFragmentClaim() : void 0;
-	const cursor = enterHydrationCursor(claim);
-	const close = claim && claim.start ? locateEndAnchor(claim.start) : null;
-	if (close) claimAnchor(close);
+function enterComponentHydration(claims) {
+	const cursor = enterHydrationCursor();
+	const start = cursor.start;
+	let close = null;
+	if (claims && start && isComment(start, "{")) {
+		setCurrentHydrationNode(start.nextSibling);
+		if (close = locateEndAnchor(start)) claimAnchor(close);
+	}
 	return {
-		claim,
 		cursor,
 		close
 	};
+}
+/**
+* A runtime wrapper around a user component (the async wrapper, KeepAlive,
+* Transition): its server render is the component's inside.
+*/
+function wrapsComponent(component) {
+	return isAsyncComponentEnabled && !!component.__asyncLoader || isKeepAliveEnabled$1 && !!component.__isKeepAlive || isTransitionDefined && isVaporTransition(component);
 }
 /**
 * Hand the cursor back; with `finalizeBoundary` the unclaimed tail of the
@@ -14638,6 +15012,7 @@ function exitComponentHydration({ close, cursor }, finalizeBoundary) {
 function setupComponent(instance, component) {
 	const prevInstance = setCurrentInstance(instance);
 	const prevSub = setActiveSub();
+	const prevRendering = setCurrentRenderingInstance(null);
 	const setupFn = (0, _vue_shared.isFunction)(component) ? component : component.setup;
 	const setupResult = setupFn ? (isHydrating$1 ? hydrateBlockWithErrorHandling(setupFn, instance, 0, [instance.props, instance]) : callWithErrorHandling(setupFn, instance, 0, [instance.props, instance])) || _vue_shared.EMPTY_OBJ : component.__cssModules || _vue_shared.EMPTY_OBJ;
 	const isAsyncSetup = (0, _vue_shared.isPromise)(setupResult);
@@ -14650,6 +15025,7 @@ function setupComponent(instance, component) {
 			warn(`Component <${name}>: setup function returned a promise, but no <Suspense> boundary was found in the parent component tree. A component with async setup() must be nested in a <Suspense> in order to be rendered.`);
 		}
 	} else handleSetupResult(setupResult, component, instance);
+	setCurrentRenderingInstance(prevRendering);
 	setActiveSub(prevSub);
 	restoreCurrentInstance(prevInstance);
 }
@@ -14784,7 +15160,7 @@ var VaporComponentInstance = class {
 		this.block = null;
 		this.scope = new EffectScope(true);
 		this.emit = emit.bind(null, this);
-		this.expose = expose.bind(null, this);
+		this.expose = exposeVapor.bind(null, this);
 		this.refs = _vue_shared.EMPTY_OBJ;
 		this.emitted = this.exposed = this.exposeProxy = this.propsDefaults = null;
 		this.suspense = null;
@@ -14980,7 +15356,7 @@ function mountComponent(instance, parent, anchor) {
 					mountComponent(instance, parentNode, nextNode);
 				};
 				if (hydrating) hydrateNode(getBlockFirstNode(pendingBlock), () => {
-					const hydration = enterComponentHydration(component);
+					const hydration = enterComponentHydration(true);
 					try {
 						withDeferredHydrationBoundary(renderAndMount);
 					} finally {
@@ -15037,6 +15413,16 @@ function mountComponent(instance, parent, anchor) {
 	endMeasure(instance, `mount`);
 	devtoolsComponentAdded(instance);
 }
+function trackDevtoolsTeleport(frag) {
+	var _ref;
+	const owner = frag.renderInstance;
+	if (!owner || !owner.vapor) return;
+	((_ref = owner).teleports || (_ref.teleports = /* @__PURE__ */ new Set())).add(frag);
+}
+function untrackDevtoolsTeleport(frag) {
+	const owner = frag.renderInstance;
+	if (owner && owner.teleports) owner.teleports.delete(frag);
+}
 function registerUnmount(instance) {
 	const scope = instance.unmountScope;
 	onScopeDispose(() => {
@@ -15087,6 +15473,10 @@ function unmountComponent(instance, parentNode, parentSuspense = instance.suspen
 		if (instance.block) remove(instance.block, parentNode);
 	}
 }
+function exposeVapor(instance, exposed) {
+	instance.exposeProxy = null;
+	expose(instance, exposed);
+}
 function getExposed(instance) {
 	if (instance.exposed) {
 		const publicPropertiesMap = getPublicPropertiesMap(true);
@@ -15128,6 +15518,18 @@ function getRootElement(block, visitor) {
 		const single = singleRootOf(block);
 		return single === void 0 ? void 0 : getRootElement(single, visitor);
 	}
+}
+/**
+* Hooks a disposed binding left on its root chain. A kept-alive chain outlives
+* the branch render that bound it, so the next binding to register takes
+* their place.
+*/
+const staleRootHooks = /* @__PURE__ */ new WeakSet();
+function registerRootHook(hooks, hook) {
+	if (hooks.includes(hook)) return;
+	const i = isKeepAliveEnabled$1 ? hooks.findIndex((h) => staleRootHooks.has(h)) : -1;
+	if (i < 0) hooks.push(hook);
+	else hooks[i] = hook;
 }
 function singleRootOf(nodes) {
 	let single;
@@ -15291,7 +15693,7 @@ function deferRootChainRenderEffects(instance) {
 			if (holder.deferredRootUpdates !== state || state.pendingRoot) return;
 			settleDeferredRootUpdates(state);
 		};
-		flushJob.flags = 8;
+		flushJob.flags = 24;
 		const state = {
 			effects: [],
 			owners: [],
@@ -15438,8 +15840,9 @@ function defineVaporAsyncComponent(source) {
 				}
 			} else nodes = el;
 			const prev = setCurrentInstance(instance);
+			let frag;
 			try {
-				const frag = new DynamicFragment(0, "async component");
+				frag = new DynamicFragment(0, "async component");
 				frag.nodes = nodes;
 				instance.block = frag;
 			} finally {
@@ -15447,7 +15850,11 @@ function defineVaporAsyncComponent(source) {
 			}
 			instance.isMounted = true;
 			setCurrentHydrationNode(nextLogicalSibling(el));
-			performAsyncHydrate(el, instance, () => hydrateNode(el, () => withDeferredHydrationBoundary(hydrate), isInteropEnabled ? getInteropHydrationBoundary(instance, el.parentNode) : null), getResolvedComp, load, hydrateStrategy, false);
+			const keepAliveCtx = isKeepAliveEnabled$1 && frag.keepAliveCtx;
+			performAsyncHydrate(el, instance, () => hydrateNode(el, () => withDeferredHydrationBoundary(hydrate), isInteropEnabled ? getInteropHydrationBoundary(instance, el.parentNode) : null), getResolvedComp, keepAliveCtx ? () => load().then((comp) => {
+				if (!instance.isUnmounted) keepAliveCtx.cacheBlock(instance);
+				return comp;
+			}) : load, hydrateStrategy, false);
 		},
 		get __asyncResolved() {
 			return getResolvedComp();
@@ -15476,7 +15883,7 @@ function defineVaporAsyncComponent(source) {
 			}
 			const onError = (err) => {
 				setPendingRequest(null);
-				handleError(err, instance, 13, !errorComponent);
+				handleError(err, instance, 13, !errorComponent, true);
 			};
 			if (suspensible && instance.suspense) {
 				const renderBranch = (render) => {
@@ -15495,7 +15902,8 @@ function defineVaporAsyncComponent(source) {
 			const { loaded, error, delayed } = useAsyncComponentState(delay, timeout, onError, instance);
 			load().then(() => {
 				if (instance.isUnmounted) return;
-				loaded.value = true;
+				if (isKeepAliveEnabled$1 && frag.keepAliveCtx) frag.keepAliveCtx.cacheBlock(instance);
+				if (!instance.isUnmounted) loaded.value = true;
 			}).catch((err) => {
 				if (instance.isUnmounted) {
 					setPendingRequest(null);
@@ -15519,7 +15927,6 @@ function defineVaporAsyncComponent(source) {
 					key = 3;
 				}
 				frag.update(render, key);
-				if (isKeepAliveEnabled$1 && frag.keepAliveCtx) frag.keepAliveCtx.cacheBlock();
 			});
 			return frag;
 		}
@@ -15590,6 +15997,7 @@ const hydrateTransitionImpl = (suspense) => {
 	}
 };
 const decorate$1 = (t) => {
+	markTransitionDefined();
 	t.displayName = displayName;
 	t.props = TransitionPropsValidators;
 	t.__vapor = true;
@@ -15599,7 +16007,8 @@ const VaporTransition = /*@__PURE__*/ decorate$1((props, { slots, expose }) => {
 	expose();
 	ensureTransitionHooksRegistered();
 	const instance = currentInstance;
-	const performAppear = isHydrating$1 ? hydrateTransitionImpl(instance.suspense) : void 0;
+	let performAppear = isHydrating$1 ? hydrateTransitionImpl(instance.suspense) : void 0;
+	if (!props.appear) performAppear = void 0;
 	const state = useTransitionState();
 	const { mode } = props;
 	checkTransitionMode(mode);
@@ -15608,7 +16017,6 @@ const VaporTransition = /*@__PURE__*/ decorate$1((props, { slots, expose }) => {
 		return resolvedProps.value[key];
 	} });
 	state.refresh = (hooks) => applyTransitionHooksImpl(state.root, hooks, void 0, true);
-	const shouldPerformAppear = !!props.appear && !!performAppear;
 	if (instance.rawSlots.$) {
 		const frag = new DynamicFragment(0, "transition");
 		if (isHydrating$1) locateHydrationNode();
@@ -15620,7 +16028,10 @@ const VaporTransition = /*@__PURE__*/ decorate$1((props, { slots, expose }) => {
 			const prevNodes = frag.nodes;
 			frag.update(slots.default);
 			if (isMounted && frag.nodes === prevNodes && !state.isLeaving) frag.$transition = applyTransitionHooksImpl(frag.nodes, frag.$transition, void 0, true);
-			if (!isMounted && shouldPerformAppear) performAppear(frag, frag.$transition);
+			if (performAppear) {
+				performAppear(frag, frag.$transition);
+				performAppear = void 0;
+			}
 			isMounted = true;
 		});
 		return frag;
@@ -15639,7 +16050,10 @@ const VaporTransition = /*@__PURE__*/ decorate$1((props, { slots, expose }) => {
 		const appliedHooks = applyTransitionHooksImpl(children, hooks, void 0, isMounted);
 		if (!isMounted) {
 			isMounted = true;
-			if (shouldPerformAppear) performAppear(children, appliedHooks);
+			if (performAppear) {
+				performAppear(children, appliedHooks);
+				performAppear = void 0;
+			}
 		}
 	});
 	return children;
@@ -15652,7 +16066,6 @@ function getTransitionType(block) {
 		const type = block.getTransitionType();
 		if (type !== void 0) return type;
 	}
-	return block;
 }
 function getLeavingNodesForType(state, block) {
 	const { leavingNodes } = state;
@@ -15665,30 +16078,28 @@ function getLeavingNodesForType(state, block) {
 	return nodes;
 }
 function markLeavingBlock(block, state) {
-	getLeavingNodesForType(state, block)[String(block.$tkey)] = block;
+	markLeaving(getLeavingNodesForType(state, block), block, block.$tkey);
 }
-const getTransitionHooksContext = (block, state) => {
-	const key = String(block.$tkey);
-	const leavingNodes = getLeavingNodesForType(state, block);
+function hooksContext(leavingNodes, rawKey) {
+	const key = String(rawKey);
 	return {
-		isLeaving: () => leavingNodes[key] === block,
-		setLeavingNodeCache: () => {
-			leavingNodes[key] = block;
-		},
-		unsetLeavingNodeCache: () => {
-			if (leavingNodes[key] === block) delete leavingNodes[key];
+		isLeaving: (el) => leavingNodes[key] === el,
+		setLeavingNodeCache: (el) => markLeaving(leavingNodes, el, rawKey),
+		unsetLeavingNodeCache: (el) => {
+			if (leavingNodes[key] === el) delete leavingNodes[key];
 		},
 		earlyRemove: () => {
-			const leavingNode = leavingNodes[key];
-			if (leavingNode && leavingNode.$tkey === block.$tkey) {
-				const el = getTransitionElement(leavingNode);
-				if (el && el[leaveCbKey]) el[leaveCbKey]();
-			}
+			const leavingEl = leavingNodes[key];
+			if (leavingEl && leavingEl.$lkey === rawKey && leavingEl[leaveCbKey]) leavingEl[leaveCbKey]();
 		}
 	};
-};
+}
+function markLeaving(leavingNodes, el, rawKey) {
+	leavingNodes[String(rawKey)] = el;
+	el.$lkey = rawKey;
+}
 function resolveTransitionHooks$1(block, props, state, instance) {
-	const hooks = baseResolveTransitionHooks(getTransitionHooksContext(block, state), props, state, instance);
+	const hooks = baseResolveTransitionHooks(hooksContext(getLeavingNodesForType(state, block), block.$tkey), props, state, instance);
 	hooks.__vapor = true;
 	hooks.persisted = hooks.persisted || !!state.persisted;
 	hooks.state = state;
@@ -15805,14 +16216,14 @@ function applyTransitionLeaveHooksImpl(block, enterHooks, afterLeaveCb, unpaired
 	else if (mode === "in-out") leavingHooks.delayLeave = (block, earlyRemove, delayedLeave) => {
 		const leavingNodes = getLeavingNodesForType(state, leavingBlock);
 		const leavingKey = String(leavingBlock.$tkey);
-		leavingNodes[leavingKey] = leavingBlock;
+		markLeaving(leavingNodes, block, leavingBlock.$tkey);
 		const delayedLeaveCb = createDelayedLeave(leavingBlock, delayedLeave);
 		block[leaveCbKey] = () => {
 			delayedLeaveCb(true);
 			earlyRemove();
 			block[leaveCbKey] = void 0;
 			leavingBlock.$transition = void 0;
-			if (leavingNodes[leavingKey] === leavingBlock) delete leavingNodes[leavingKey];
+			if (leavingNodes[leavingKey] === block) delete leavingNodes[leavingKey];
 		};
 		if (unpaired) {
 			if (!block[enterCbKey]) releaseDelayedLeave(enterHooks);
@@ -16386,7 +16797,7 @@ const VaporTransitionGroup = /*@__PURE__*/ decorate(/* @__PURE__ */ defineVaporC
 					applyGroupTransitionHooks(block, propsProxy, state, instance, onUpdateOwner);
 					slottedBlock = block;
 					if (container) {
-						if (!isHydrating$1) insert(block, container);
+						if (!isHydrating$1) insert(block, container, null, instance.suspense);
 						registerNestedVDOMCleanup(block);
 						return container;
 					}
@@ -16523,10 +16934,13 @@ function applyGroupTransitionHooks(block, props, state, instance, onUpdateOwner,
 	}
 	fragments.forEach(([frag, ctx]) => {
 		const hooks = resolveTransitionHooks$1(frag, props, state, instance);
-		hooks.applyGroup = (block, props, state, instance) => applyGroupTransitionHooks(block, props, state, instance, onUpdateOwner, contentKeyContext(frag, ctx));
+		hooks.applyGroup = groupApplier(frag, ctx, onUpdateOwner);
 		frag.$transition = hooks;
 	});
 	return children;
+}
+function groupApplier(frag, ctx, onUpdateOwner) {
+	return (block, props, state, instance) => applyGroupTransitionHooks(block, props, state, instance, onUpdateOwner, contentKeyContext(frag, ctx));
 }
 function trackTransitionGroupUpdate(owner, instance, updateHooks) {
 	if (trackedTransitionGroupOwners.has(owner)) return;
@@ -16579,13 +16993,16 @@ function invalidatePendingRef(el) {
 /**
 * Synchronously clear the ref for an element being deactivated by KeepAlive.
 * In VDOM core, refs are cleared during unmount before the deactivation check.
-* Since Vapor's KeepAlive retains scopes (skipping onScopeDispose), we need
-* this explicit sync cleanup path.
+* Vapor's KeepAlive pauses the branch scope instead, so this is the explicit
+* sync path; the scope's disposer runs later and must not clear it again.
 */
 function unsetRef(el) {
 	invalidatePendingRef(el);
 	const c = refCleanups.get(el);
-	if (c) c.fn();
+	if (c) {
+		c.fn();
+		c.fn = _vue_shared.NOOP;
+	}
 }
 const VaporKeepAlive = /*@__PURE__*/ withKeepAliveEnabled$1(/* @__PURE__ */ defineVaporComponent({
 	name: "VaporKeepAlive",
@@ -16609,8 +17026,6 @@ const VaporKeepAlive = /*@__PURE__*/ withKeepAliveEnabled$1(/* @__PURE__ */ defi
 		cache: Object
 	},
 	setup(props, { slots, expose }) {
-		let exposed;
-		expose(exposed);
 		if (!slots.default) return;
 		const keepAliveInstance = currentInstance;
 		const cache = /* @__PURE__ */ new Map();
@@ -16667,27 +17082,39 @@ const VaporKeepAlive = /*@__PURE__*/ withKeepAliveEnabled$1(/* @__PURE__ */ defi
 			}
 			if (isCurrent) current = block;
 		};
+		const isOnCacheRootChain = (block) => {
+			let node = keepAliveInstance.block;
+			while (node && node !== block) node = isFragment(node) ? rootChainChild(node) : isAsyncComponentEnabled && isVaporComponent(node) && isAsyncWrapper(node) ? node.block : void 0;
+			return !!node;
+		};
 		const cacheBlock = (block = keepAliveInstance.block) => {
 			if (isDynamicFragment(block)) {
 				const transition = block.$transition;
 				if (isVaporTransitionHooks(transition) && transition.mode === "out-in" && transition.state.isLeaving) return;
 			}
-			const [innerBlock, interop, branchKey] = getInnerBlock(block);
+			const [innerBlock, interop] = getInnerBlock(block);
 			if (!innerBlock) return;
-			const cacheKey = resolveCacheKeyFromBlock(innerBlock, interop, branchKey);
+			const { currentBlock, currentKey } = getCurrentBlockState();
+			const cacheKey = currentBlock === innerBlock ? currentKey : cacheKeyOf(innerBlock);
+			if (cacheKey === false) return;
 			if (!shouldCache(innerBlock, props, interop)) {
 				if (cache.has(cacheKey)) pruneCacheEntry(cacheKey);
 				return;
 			}
 			setShapeFlag(innerBlock, interop, cache.has(cacheKey));
-			const { currentBlock, currentKey } = getCurrentBlockState();
-			innerCacheBlock(cacheKey, innerBlock, currentBlock === innerBlock || currentKey === cacheKey);
+			innerCacheBlock(cacheKey, innerBlock, currentKey === cacheKey);
+		};
+		const cacheKeyOf = (block) => {
+			for (const [key, cached] of cache) if (cached === block) return key;
+			return false;
 		};
 		const processShapeFlag = (block, requireKeptAlive = false) => {
 			const [innerBlock, interop, branchKey] = getInnerBlock(block);
 			if (!innerBlock || requireKeptAlive && !isKeptAlive(innerBlock, interop) || !shouldCache(innerBlock, props, interop)) return false;
 			const cacheKey = resolveCacheKeyFromBlock(innerBlock, interop, branchKey);
+			const hydrated = isHydrating$1 && !isKeptAlive(innerBlock, interop) ? getInstanceFromCache(innerBlock) : void 0;
 			setShapeFlag(innerBlock, interop, cache.has(cacheKey));
+			if (hydrated && hydrated.isMounted && hydrated.a) queuePostRenderEffect(hydrated.a, void 0, hydrated.suspense);
 			return cacheKey;
 		};
 		const pruneCache = (filter) => {
@@ -16698,7 +17125,7 @@ const VaporKeepAlive = /*@__PURE__*/ withKeepAliveEnabled$1(/* @__PURE__ */ defi
 				if (name && !filter(name)) pruneCacheEntry(key);
 			});
 		};
-		const deleteScope = (key) => {
+		const stopScope = (key) => {
 			const scope = keptAliveScopes.get(key);
 			if (scope) {
 				keptAliveScopes.delete(key);
@@ -16706,15 +17133,12 @@ const VaporKeepAlive = /*@__PURE__*/ withKeepAliveEnabled$1(/* @__PURE__ */ defi
 					keptAliveScopes.delete(k);
 					break;
 				}
+				scope.stop();
 			}
-			return scope;
 		};
 		const cacheScope = (cacheKey, scopeLookupKey, scope) => {
 			const prevScope = keptAliveScopes.get(cacheKey);
-			if (prevScope && prevScope !== scope) {
-				const staleScope = deleteScope(cacheKey);
-				if (staleScope) staleScope.stop();
-			}
+			if (prevScope && prevScope !== scope) stopScope(cacheKey);
 			keptAliveScopes.set(cacheKey, scope);
 			if (scopeLookupKey !== cacheKey) keptAliveScopes.set(scopeLookupKey, scope);
 		};
@@ -16723,7 +17147,7 @@ const VaporKeepAlive = /*@__PURE__*/ withKeepAliveEnabled$1(/* @__PURE__ */ defi
 			if (cached && (!current || cached !== current)) {
 				unsetShapeFlag(cached);
 				const parentNode = findBlockBoundary(cached).parentNode;
-				if (parentNode) remove(cached, parentNode);
+				remove(cached, parentNode || void 0);
 			} else if (current) unsetShapeFlag(current);
 			cache.delete(key);
 			keys.delete(key);
@@ -16733,8 +17157,7 @@ const VaporKeepAlive = /*@__PURE__*/ withKeepAliveEnabled$1(/* @__PURE__ */ defi
 				externalCacheState.entryByKey.delete(key);
 				externalCacheState.keyByEntry.delete(externalEntry);
 			}
-			const scope = deleteScope(key);
-			if (scope) scope.stop();
+			stopScope(key);
 		};
 		const pruneExternalCacheEntry = externalCache && externalCacheState ? (cached) => {
 			if (!externalCacheState.keyByEntry.has(cached)) return;
@@ -16761,7 +17184,7 @@ const VaporKeepAlive = /*@__PURE__*/ withKeepAliveEnabled$1(/* @__PURE__ */ defi
 			};
 		};
 		onBeforeUnmount(() => {
-			const { currentBlock, interop, currentKey } = getCurrentBlockState();
+			const { currentBlock, currentKey } = getCurrentBlockState();
 			const deactivateCached = (cached) => {
 				unsetShapeFlag(cached);
 				const instance = getInstanceFromCache(cached);
@@ -16782,7 +17205,7 @@ const VaporKeepAlive = /*@__PURE__*/ withKeepAliveEnabled$1(/* @__PURE__ */ defi
 				const parentNode = findBlockBoundary(cached).parentNode;
 				remove(cached, parentNode || void 0);
 			});
-			if (!matched && currentBlock && isKeptAlive(currentBlock, interop)) deactivateCached(currentBlock);
+			if (!matched && currentBlock) unsetShapeFlag(currentBlock);
 			keptAliveScopes.forEach((scope) => scope.stop());
 			keptAliveScopes.clear();
 			cache.clear();
@@ -16796,6 +17219,7 @@ const VaporKeepAlive = /*@__PURE__*/ withKeepAliveEnabled$1(/* @__PURE__ */ defi
 			}
 		});
 		const keepAliveCtx = {
+			inUncachedBranch: false,
 			getStorageContainer: () => storageContainer,
 			getCachedComponent: (comp, key) => {
 				if (isInteropEnabled && isVNode(comp)) {
@@ -16834,15 +17258,14 @@ const VaporKeepAlive = /*@__PURE__*/ withKeepAliveEnabled$1(/* @__PURE__ */ defi
 			},
 			runBranchRender(frag, fn, useScope, removePrevious) {
 				const fragKey = getFragmentKey(frag);
-				const cachedScope = useScope ? deleteScope(fragKey !== null && fragKey !== void 0 ? fragKey : frag.current) : void 0;
-				frag.scope = useScope ? cachedScope || new EffectScope() : void 0;
-				if (cachedScope) cachedScope.resume();
+				if (useScope && frag === rootFragment) stopScope(fragKey !== null && fragKey !== void 0 ? fragKey : frag.current);
+				frag.scope = useScope ? new EffectScope() : void 0;
 				let incomingCacheKey = false;
 				const run = () => {
 					try {
 						fn();
 					} finally {
-						incomingCacheKey = processShapeFlag(frag.nodes);
+						incomingCacheKey = isOnCacheRootChain(frag) ? processShapeFlag(frag.nodes) : false;
 					}
 				};
 				try {
@@ -16852,7 +17275,6 @@ const VaporKeepAlive = /*@__PURE__*/ withKeepAliveEnabled$1(/* @__PURE__ */ defi
 					if (removePrevious) removePrevious();
 				}
 			},
-			processShapeFlag,
 			cacheBlock
 		};
 		if (isInteropEnabled) keepAliveCtx.clearCurrent = (block) => {
@@ -16869,6 +17291,7 @@ const VaporKeepAlive = /*@__PURE__*/ withKeepAliveEnabled$1(/* @__PURE__ */ defi
 				return children;
 			}
 		}
+		processShapeFlag(children);
 		return children;
 	}
 }));
@@ -16890,8 +17313,11 @@ const shouldCache = (block, props, interop = false) => {
 };
 function setShapeFlag(block, interop, cached) {
 	if (interop && isInteropEnabled) {
-		if (cached) block.vnode.shapeFlag |= 512;
-		block.vnode.shapeFlag |= 256;
+		const vnode = block.vnode;
+		if (cached) vnode.shapeFlag |= 512;
+		vnode.shapeFlag |= 256;
+		const inner = vnode.component;
+		if (isVaporComponent(inner)) setShapeFlag(inner, false, cached);
 	} else {
 		if (cached) block.shapeFlag |= 512;
 		block.shapeFlag |= 256;
@@ -16920,26 +17346,37 @@ function getInnerBlock(block, branchKey = currentCacheKey) {
 		false,
 		branchKey
 	];
-	else if (isInteropEnabled && isInteropFragment(block)) {
-		const vnode = block.vnode;
-		return vnode && vnode.shapeFlag & 132 ? [
-			block,
-			true,
-			branchKey
-		] : [
-			void 0,
-			false,
-			branchKey
-		];
-	} else if (isFragment(block)) {
+	else if (isFragment(block)) {
 		var _getFragmentKey;
-		return getInnerBlock(block.nodes, (_getFragmentKey = getFragmentKey(block)) !== null && _getFragmentKey !== void 0 ? _getFragmentKey : branchKey);
+		const next = rootChainChild(block);
+		if (next) return getInnerBlock(next, (_getFragmentKey = getFragmentKey(block)) !== null && _getFragmentKey !== void 0 ? _getFragmentKey : branchKey);
+		if (isInteropEnabled && isInteropFragment(block)) {
+			const vnode = block.vnode;
+			if (vnode && vnode.shapeFlag & 132) return [
+				block,
+				true,
+				branchKey
+			];
+		}
 	}
 	return [
 		void 0,
 		false,
 		branchKey
 	];
+}
+function rootChainChild(frag) {
+	if (isTeleportEnabled && isTeleportFragment(frag)) return void 0;
+	if (isSlotResolver(frag)) return resolveExposedSlotNodes(frag);
+	if (isInteropEnabled && isInteropFragment(frag)) {
+		const state = frag.slotState;
+		if (state) {
+			const exposed = resolveExposedSlotNodes(state);
+			if (exposed === state.activeFallback) return exposed;
+		}
+		return;
+	}
+	return frag.nodes;
 }
 function getInstanceFromCache(cached) {
 	if (isVaporComponent(cached)) return cached;
@@ -17111,6 +17548,9 @@ const vaporInteropImpl = {
 		});
 		setRenderContext(prevCtx);
 		const pendingSetup = isPendingInteropSetup(instance);
+		registerAfterInteropSetup(instance, pendingSetup, () => {
+			if (!instance.exposed) instance.exposed = {};
+		});
 		const rootEl = !pendingSetup && resolveInteropRootEl(instance);
 		if (rootEl) vnode.el = rootEl;
 		const asyncWrapper = isAsyncWrapper(vnode);
@@ -17311,14 +17751,14 @@ const vaporInteropImpl = {
 			if (performAppear && hooks) performAppear(vnode.vb, hooks);
 			const fragmentAnchor = isFragment(vnode.vb) && vnode.vb.anchor;
 			let anchor = fragmentAnchor || currentHydrationNode;
-			const wrapped = isRangeStart(node) && isRangeEnd(anchor);
+			const wrapped = isRangeStart(node) && !!anchor && isRangeEnd(anchor) && locateEndAnchor(node) === anchor;
 			if (!fragmentAnchor && !wrapped) {
 				createdAnchor = true;
 				resumeNode = anchor && /* @__PURE__ */ parentNode(anchor) === container ? anchor : null;
 				anchor = /* @__PURE__ */ createTextNode();
 				container.insertBefore(anchor, resumeNode);
 			}
-			if (isRangeStart(node) && isRangeEnd(anchor)) {
+			if (wrapped) {
 				vnode.el = node;
 				vnode.anchor = anchor;
 			} else vnode.anchor = vnode.el = anchor;
@@ -17358,6 +17798,23 @@ const vaporInteropImpl = {
 	hasTransitionChild(vnode) {
 		return isTransitionEnabled && !!findTransitionBlock(vnode.vb || getVaporInstance(vnode).block);
 	},
+	enterDeferred(suspense, enters) {
+		if (!isSuspenseEnabled) return;
+		const targets = takeDeferredEnters(suspense);
+		if (!targets) return;
+		const container = suspense.hiddenContainer;
+		for (const target of targets) if (target instanceof Element) {
+			const transition = target.$transition;
+			if (transition && !transition.persisted && target.parentNode !== container && container.contains(target)) {
+				transition.beforeEnter(target);
+				enters.push(() => transition.enter(target));
+			}
+		} else {
+			const vnode = target.vnode;
+			const el = vnode && vnode.el;
+			if (el && container.contains(el)) collectDeferredEnters(vnode, enters, el.parentNode === container);
+		}
+	},
 	activate(vnode, container, anchor, parentComponent, parentSuspense) {
 		if (!isKeepAliveEnabled) return;
 		const cached = parentComponent.ctx.getCachedComponent(vnode);
@@ -17383,7 +17840,7 @@ const vaporInteropImpl = {
 	}
 };
 const vaporSlotPropsProxyHandler = {
-	getPrototypeOf: () => slotPropsProto,
+	getPrototypeOf: getSlotPropsProto,
 	get(target, key) {
 		return target.value[key];
 	},
@@ -17402,6 +17859,7 @@ const vaporSlotPropsProxyHandler = {
 };
 const vaporSlotWrappersCache = /* @__PURE__ */ new WeakMap();
 const vaporSlotsProxyHandler = {
+	getPrototypeOf: getSlotPropsProto,
 	get(target, key) {
 		const slot = (0, _vue_shared.isString)(key) && !isInternalSlotKey(key) ? getSlot(target, key) : target[key];
 		if ((0, _vue_shared.isFunction)(slot)) {
@@ -17412,8 +17870,12 @@ const vaporSlotsProxyHandler = {
 			if (cached && cached.slot === slot) return cached.wrapped;
 			const wrapped = (props) => {
 				const vnode = renderSlot({ [key]: slot }, key, props);
-				vnode.vs.props = vnode.props;
-				vnode.vs.attrs = _vue_shared.EMPTY_OBJ;
+				const vs = vnode.vs;
+				if (!vs.attrs) {
+					vs.props = vnode.props;
+					vnode.props = vnode.key != null ? { key: vnode.key } : null;
+					vs.attrs = _vue_shared.EMPTY_OBJ;
+				}
 				return [vnode];
 			};
 			wrapped[rawVaporSlotKey] = slot;
@@ -17439,10 +17901,6 @@ function resolveVNodeRange(vnode) {
 	const { type, shapeFlag, el, anchor } = vnode;
 	if (shapeFlag & 64 && el && anchor && anchor !== el) return [el, anchor];
 	if ((type === Static || type === Fragment) && anchor) return el && anchor !== el ? [el, anchor] : [anchor, anchor];
-	if (shapeFlag & 6) {
-		const subTree = vnode.component && vnode.component.subTree;
-		if (subTree) return resolveVNodeRange(subTree);
-	}
 }
 function resolveVNodeNodes(vnode, liveSlot) {
 	if (vnode.component && isVaporComponent(vnode.component)) {
@@ -17462,6 +17920,10 @@ function resolveVNodeNodes(vnode, liveSlot) {
 			anchor
 		] : [vb, anchor];
 	}
+	if (vnode.shapeFlag & 6) {
+		const subTree = vnode.component && vnode.component.subTree;
+		if (subTree) return resolveVNodeNodes(subTree);
+	}
 	const vnodeRange = resolveVNodeRange(vnode);
 	if (vnodeRange) {
 		if (vnode.type === Fragment && vnodeRange[0] !== vnodeRange[1] && (liveSlot === void 0 ? hasVaporSlot(vnode) : liveSlot)) {
@@ -17480,10 +17942,6 @@ function resolveVNodeNodes(vnode, liveSlot) {
 		}
 		return nodeRange;
 	}
-	if (vnode.shapeFlag & 6) {
-		const subTree = vnode.component && vnode.component.subTree;
-		if (subTree) return resolveVNodeNodes(subTree);
-	}
 	return vnode.el;
 }
 function removeAttachedNodes(block, parent) {
@@ -17496,7 +17954,7 @@ function trackFragmentVNodeUpdates(frag, vnode, syncNodes) {
 	const vShow = dirs && dirs.find((binding) => binding.dir === interopVShow && binding.value.frag === frag);
 	if (vShow && (!vnode.dirs || !vnode.dirs.includes(vShow))) vnode.dirs = vnode.dirs ? vnode.dirs.concat(vShow) : [vShow];
 	vnode.ibu = () => {
-		if (frag.bu) frag.bu.forEach((hook) => hook());
+		if (frag.bu) frag.bu.forEach((hook) => hook(frag.nodes));
 	};
 	vnode.iu = () => {
 		syncNodes();
@@ -17543,7 +18001,11 @@ const interopVShow = {
 function setInteropVShow(frag, apply) {
 	const vnode = frag.vnode;
 	const dirs = vnode.dirs;
-	if (dirs && dirs.some((binding) => binding.dir === interopVShow && binding.value.frag === frag)) return;
+	const owner = dirs && dirs.find((binding) => binding.dir === interopVShow && binding.value.frag === frag);
+	if (owner) {
+		if (staleRootHooks.has(owner.value.apply)) owner.value.apply = apply;
+		return;
+	}
 	const binding = {
 		dir: interopVShow,
 		instance: null,
@@ -17627,8 +18089,9 @@ function createVNodeFragment(vnode) {
 * the vnode live here so the dynamic component only sees a block.
 */
 function mountDynamicVNode(internals, vnode, parentComponent, isSingleRoot, rawProps, once) {
-	if (isKeepAliveEnabled$1 && parentComponent && isKeepAlive(parentComponent)) {
-		const cached = parentComponent.ctx.getCachedComponent(vnode.type, vnode.key);
+	const keepAliveCtx = isKeepAliveEnabled$1 && parentComponent && isKeepAlive(parentComponent) ? parentComponent.ctx : null;
+	if (keepAliveCtx && !keepAliveCtx.inUncachedBranch) {
+		const cached = keepAliveCtx.getCachedComponent(vnode.type, vnode.key);
 		if (cached) {
 			if (cached.patchVNode) cached.patchVNode(vnode);
 			return cached;
@@ -17660,10 +18123,7 @@ function mountDynamicVNode(internals, vnode, parentComponent, isSingleRoot, rawP
 }
 function shouldConsumeFragmentStart(vnode) {
 	if (vnode.type === Fragment) return false;
-	if (vnode.shapeFlag & 6) {
-		const type = vnode.type;
-		return !!type.__vapor && !type.__multiRoot;
-	}
+	if (vnode.shapeFlag & 6) return !!vnode.type.__vapor;
 	return true;
 }
 /**
@@ -17679,6 +18139,7 @@ function mountVNode(internals, vnode, parentComponent, getExtraProps, staticExtr
 			cloned.key = base.key;
 			cloned.props.key = (_base$key = base.key) !== null && _base$key !== void 0 ? _base$key : void 0;
 		}
+		cloned.ref = base.ref;
 		return cloned;
 	};
 	vnode = withExtraProps(baseVNode);
@@ -17689,6 +18150,7 @@ function mountVNode(internals, vnode, parentComponent, getExtraProps, staticExtr
 	let mountedAnchor = null;
 	let namespace;
 	let isUnmounted = false;
+	let isDeactivated = false;
 	const unmount = (parentNode, transition) => {
 		if (isUnmounted) {
 			if (parentNode) {
@@ -17702,6 +18164,8 @@ function mountVNode(internals, vnode, parentComponent, getExtraProps, staticExtr
 		if (isKeepAliveEnabled$1 && vnode.shapeFlag & 256) {
 			const keepAliveCtx = parentComponent.ctx;
 			keepAliveCtx.clearCurrent(frag);
+			isDeactivated = true;
+			if (frag.inputScope) frag.inputScope.pause();
 			const storageContainer = keepAliveCtx.getStorageContainer();
 			if (vnode.type.__vapor) {
 				deactivate$1(vnode.component, storageContainer, parentSuspense);
@@ -17709,6 +18173,7 @@ function mountVNode(internals, vnode, parentComponent, getExtraProps, staticExtr
 			} else deactivate(vnode, storageContainer, internals, parentComponent, parentSuspense);
 		} else {
 			isUnmounted = true;
+			if (frag.inputScope) frag.inputScope.stop();
 			internals.um(vnode, parentComponent, parentSuspense, !!parentNode);
 		}
 		if (vnode.anchor && parentNode && vnode.anchor.parentNode === parentNode) remove(vnode.anchor, parentNode);
@@ -17728,8 +18193,10 @@ function mountVNode(internals, vnode, parentComponent, getExtraProps, staticExtr
 		if (isHydrating$1) return;
 		if (parentSuspense !== void 0) suspense = parentSuspense;
 		const operationSuspense = suspense;
-		if (isKeepAliveEnabled$1 && vnode.shapeFlag & 512) {
+		if (isKeepAliveEnabled$1 && isDeactivated) {
+			isDeactivated = false;
 			if (isTransitionEnabled && transition) setTransitionHooks(vnode, transition);
+			if (frag.inputScope) frag.inputScope.resume();
 			if (vnode.type.__vapor) {
 				activate$1(vnode.component, parentNode, anchor, operationSuspense);
 				insert(vnode.anchor, parentNode, anchor);
@@ -17760,7 +18227,7 @@ function mountVNode(internals, vnode, parentComponent, getExtraProps, staticExtr
 		const next = withExtraProps(baseVNode);
 		if (!mountedParentNode) return;
 		const previous = vnode;
-		if (isTransitionEnabled && frag.$transition) setTransitionHooks(next, frag.$transition);
+		if (isTransitionEnabled && frag.$transition) setTransitionHooks(next, contentTransitionHooks(frag, previous, next));
 		if (previous.vaporScopeIds) setVNodeVaporScopeIds(next, previous.vaporScopeIds);
 		next.shapeFlag |= previous.shapeFlag & 768;
 		vnode = next;
@@ -17783,9 +18250,29 @@ function mountVNode(internals, vnode, parentComponent, getExtraProps, staticExtr
 			setActiveSub(prevSub);
 		}
 	};
-	if (getExtraProps && !staticExtraProps) renderEffect(update);
+	if (getExtraProps && !staticExtraProps) {
+		const inputScope = frag.inputScope = effectScope(true);
+		inputScope.run(() => renderEffect(update));
+		onScopeDispose(() => {
+			if (!isMounted) inputScope.stop();
+		}, true);
+	}
 	frag.remove = unmount;
 	return frag;
+}
+function contentTransitionHooks(frag, previous, next) {
+	const hooks = frag.$transition;
+	if (!isVaporTransitionHooks(hooks) || previous.type !== Fragment) return hooks;
+	const type = getInteropTransitionType(previous);
+	const nextType = getInteropTransitionType(next);
+	if (type !== nextType) {
+		if (frag.$ttype === type) frag.$ttype = nextType;
+		frag.vnode = next;
+		const fresh = resolveTransitionHooks$1(frag, hooks.props, hooks.state, hooks.instance);
+		fresh.delayedLeave = hooks.delayedLeave;
+		return frag.$transition = fresh;
+	}
+	return hooks;
 }
 /**
 * Mount vdom component in vapor
@@ -17800,6 +18287,8 @@ function createVDOMComponent(internals, component, parentComponent, rawProps, ra
 	let shouldRefreshRef = false;
 	let refreshRefJob;
 	let isMounted = false;
+	let isUnmounted = false;
+	let isDeactivated = false;
 	let cells;
 	const isolated = rawSlots && isolateSlotSources(rawSlots);
 	if (isolated) {
@@ -17844,6 +18333,7 @@ function createVDOMComponent(internals, component, parentComponent, rawProps, ra
 			}
 		}
 		vnode = createVNode(comp, rawValues);
+		vnode.ref = null;
 	} catch (error) {
 		if (inputScope) inputScope.stop();
 		throw error;
@@ -17856,16 +18346,9 @@ function createVDOMComponent(internals, component, parentComponent, rawProps, ra
 		if (!isMounted && inputScope) inputScope.stop();
 	}, true);
 	const keepAliveCtx = isKeepAliveEnabled$1 ? getKeepAliveContext(parentComponent) : null;
-	if (keepAliveCtx) {
-		keepAliveCtx.processShapeFlag(frag);
-		if (component.__asyncLoader) {
-			let disposed = false;
-			onScopeDispose(() => disposed = true);
-			component.__asyncLoader().then(() => {
-				if (!disposed) keepAliveCtx.cacheBlock(frag);
-			}).catch(_vue_shared.NOOP);
-		}
-	}
+	if (keepAliveCtx && component.__asyncLoader) component.__asyncLoader().then(() => {
+		if (!isUnmounted) keepAliveCtx.cacheBlock(frag);
+	}).catch(_vue_shared.NOOP);
 	vnode.vi = (instance) => {
 		const prev = currentInstance;
 		simpleSetCurrentInstance(parentComponent);
@@ -17916,7 +18399,6 @@ function createVDOMComponent(internals, component, parentComponent, rawProps, ra
 			vnode.shapeFlag |= 32;
 		}
 	};
-	let isUnmounted = false;
 	let isDomRemoved = false;
 	const removeDom = (parentNode) => {
 		if (!parentNode || isDomRemoved) return;
@@ -17935,6 +18417,7 @@ function createVDOMComponent(internals, component, parentComponent, rawProps, ra
 			if (rawRef) setRef(rawRef, null, null, vnode, true);
 			if (frag.inputScope) frag.inputScope.pause();
 			keepAliveCtx.clearCurrent(frag);
+			isDeactivated = true;
 			deactivate(vnode, keepAliveCtx.getStorageContainer(), internals, parentComponent, parentSuspense);
 			return;
 		}
@@ -17956,7 +18439,8 @@ function createVDOMComponent(internals, component, parentComponent, rawProps, ra
 		if (isHydrating$1) return;
 		if (parentSuspense !== void 0) suspense = parentSuspense;
 		const operationSuspense = suspense;
-		if (isKeepAliveEnabled$1 && vnode.shapeFlag & 512) {
+		if (isKeepAliveEnabled$1 && isDeactivated) {
+			isDeactivated = false;
 			if (frag.inputScope) frag.inputScope.resume();
 			if (isTransitionEnabled && transition) setTransitionHooks(vnode, transition);
 			withSlotBoundary(null, () => activate(vnode, parentNode, anchor, internals, parentComponent, operationSuspense, void 0, false));
@@ -18077,13 +18561,13 @@ function installInteropTransitionAccessor(state, frag) {
 	});
 }
 function renderVDOMSlot(internals, slotsRef, name, props, parentComponent, options = _vue_shared.EMPTY_OBJ) {
-	const { fallback, flags = 0, adoptAnchor } = options;
+	const { fallback, flags = 0, adoptAnchor, insertionParent } = options;
 	const once = !!(flags & 2);
 	const textMode = !!(flags & 256);
 	const forwarded = (0, _vue_shared.isForwardedSlot)(flags);
 	let suspense = currentRenderContext.suspense || parentComponent.suspense;
 	const mountParent = currentInstance || parentComponent;
-	const frag = createInteropFragment(EMPTY_BLOCK, null, 128);
+	const frag = createInteropFragment(EMPTY_BLOCK, null, 128, insertionParent);
 	const slotBoundary = frag.slotBoundary;
 	const content = new InteropContentState();
 	const scope = effectScope();
@@ -18144,6 +18628,8 @@ function renderVDOMSlot(internals, slotsRef, name, props, parentComponent, optio
 		}
 	});
 	installInteropTransitionAccessor(slotResolutionState, frag);
+	frag.slotState = slotResolutionState;
+	slotResolutionState.keepAliveCtx = frag.keepAliveCtx;
 	localFallback = fallback ? once ? () => withOnce(() => fallback(internals, parentComponent)) : () => fallback(internals, parentComponent) : void 0;
 	const place = (parentNode, anchor, parentSuspense, moveType) => {
 		if (isHydrating$1) return;
@@ -18230,7 +18716,7 @@ function renderVDOMSlot(internals, slotsRef, name, props, parentComponent, optio
 	function notifyBeforeUpdate() {
 		if (isMounted) {
 			if (reportsValidity) wasExposedValid = isValidSlot(frag);
-			if (frag.bu) frag.bu.forEach((hook) => hook());
+			if (frag.bu) frag.bu.forEach((hook) => hook(frag.nodes));
 		}
 	}
 	function recheckAfterContentUpdate() {
@@ -18576,6 +19062,10 @@ function createFallback(state, depth, parentComponent, vnode) {
 			const children = outlet && invokeSlotFallback(outlet.fallback, outlet.owner);
 			if (children == null) return EMPTY_VNODES;
 			const rows = normalizeInteropSlotValue(children);
+			const fallthrough = state.fallthrough;
+			const attrs = fallthrough && fallthrough.attrs;
+			const root = attrs && Object.keys(attrs).length && filterSingleRoot(rows, false);
+			if (root && root.shapeFlag & 7) rows[rows.indexOf(root)] = cloneVNode(root, attrs);
 			return group ? getTransitionRawChildren(rows, false, fallbackKey) : rows;
 		}, parentComponent, group);
 		if (isHydrating$1 && frag.hydrate) frag.hydrate();
@@ -18853,7 +19343,7 @@ function syncInteropRoot(instance) {
 }
 function invokeInteropDirsHook(instance, el, vnode, name, prevVNode = null) {
 	if (!vnode.dirs) return;
-	invokeDirectiveHook(vnode.el === el ? vnode : (0, _vue_shared.extend)({}, vnode, { el }), prevVNode, instance.parent, name);
+	invokeDirectiveHook((0, _vue_shared.extend)({}, vnode, { el }), prevVNode, instance.parent, name);
 }
 function queueInteropDirsJob(instance, job, suspense = instance.suspense) {
 	queuePostRenderEffect(job, void 0, suspense);
@@ -18931,7 +19421,7 @@ function mountInteropDirsRoot(instance, owner, el) {
 	owner.el = el;
 	invokeInteropDirsHook(instance, el, vnode, "created");
 	invokeInteropDirsHook(instance, el, vnode, "beforeMount");
-	queueInteropDirsJob(instance, () => invokeInteropDirsHook(instance, el, vnode, "mounted"));
+	queueInteropDirsJob(instance, () => invokeInteropDirsHook(instance, el, owner.el === el ? owner.vnode : vnode, "mounted"));
 }
 function unmountInteropDirs(instance, state, comp) {
 	const owners = state.dirsOwners;
@@ -19104,7 +19594,7 @@ function createVNodeChildrenFragment(internals, render, parentComponent, group) 
 		if (isMounted && frag.u) frag.u.forEach((hook) => hook(frag.nodes));
 	};
 	const notifyBeforeUpdate = () => {
-		if (isMounted && frag.bu) frag.bu.forEach((hook) => hook());
+		if (isMounted && frag.bu) frag.bu.forEach((hook) => hook(frag.nodes));
 	};
 	const renderContent = () => {
 		const prev = currentInstance;
@@ -19447,8 +19937,8 @@ function interopGetTransitionType() {
 function interopGetTransitionElement() {
 	return isTransitionEnabled && this.vnode ? getInteropTransitionElement(this.vnode) : void 0;
 }
-function createInteropFragment(nodes = EMPTY_BLOCK, vnode = null, extraFlags = 0) {
-	const frag = new RenderContextFragment(nodes, 64 | extraFlags);
+function createInteropFragment(nodes = EMPTY_BLOCK, vnode = null, extraFlags = 0, insertionParent) {
+	const frag = new RenderContextFragment(nodes, 64 | extraFlags, insertionParent);
 	frag.vnode = vnode;
 	frag.hasVDOMContent = interopHasVDOMContent;
 	frag.setKey = interopSetKey;
@@ -19514,6 +20004,7 @@ var TeleportFragment = class extends RenderContextFragment {
 			advanceHydrationNode(this.anchor);
 		};
 		this.rawSlots = slots;
+		if (isKeepAliveEnabled$1 && this.keepAliveCtx) this.uncached = true;
 		this.anchor = isHydrating$1 ? void 0 : resolveFragmentAnchor(adoptAnchor, "teleport end");
 		const propsProxy = new Proxy(props, rawPropsProxyHandlers);
 		renderEffect(() => {
@@ -19537,7 +20028,7 @@ var TeleportFragment = class extends RenderContextFragment {
 		if (instance) instance.isUpdating = true;
 		try {
 			this.childrenInitialized = true;
-			renderEffect(() => withRenderContext(this.ctx, () => {
+			renderEffect(() => this.runWithRenderCtx(() => {
 				const prevScope = this.scope;
 				if (prevScope) prevScope.stop();
 				const scope = this.scope = new EffectScope();
@@ -19598,6 +20089,10 @@ var TeleportFragment = class extends RenderContextFragment {
 			this.mountToTargetJob = void 0;
 			if (!this.anchor) return;
 			if (this.isDisabled) {
+				if (isSuspenseEnabled$1 && this.mountState.location === 0) {
+					this.ensureChildrenInitialized();
+					this.mount(this.parent, this.anchor, 1);
+				}
 				if (!this.targetAnchor) this.prepareTarget();
 			} else this.mountToTarget();
 		};
@@ -19613,6 +20108,13 @@ var TeleportFragment = class extends RenderContextFragment {
 	}
 	handlePropsUpdate() {
 		if (!this.parent || isHydrating$1) return;
+		if (isSuspenseEnabled$1 && this.mountState.location === 0) {
+			const suspense = this.parentSuspense !== void 0 ? this.parentSuspense : this.ctx.suspense;
+			if (suspense && suspense.pendingBranch) {
+				this.queueTargetUpdate();
+				return;
+			}
+		}
 		if (this.isDisabled) {
 			this.ensureChildrenInitialized();
 			this.mount(this.parent, this.anchor, 1);
@@ -19778,7 +20280,15 @@ var VaporElement = class extends VueElementBase {
 			this._app.mount(this._root);
 		}, getNextUid());
 	}
-	_update() {}
+	_update() {
+		if (!this._instance) {
+			const app = this._app;
+			unmountComponent(app._ceComponent, this._root);
+			this._createComponent();
+			mountComponent(app._ceComponent, this._root);
+			app._instance = app._ceComponent;
+		}
+	}
 	_unmount() {
 		if (this._app) this._app.unmount();
 		if (this._instance && this._instance.ce) this._instance.ce = void 0;
@@ -19940,7 +20450,7 @@ function createIf(condition, b1, b2, flags = 1) {
 		const index = flags >> 8;
 		const keyed = index > 0;
 		const keyBase = keyed ? (index - 1) * 2 : 0;
-		const dynamicFragment = new DynamicFragment(256, "if", keyed, !!(flags & 128), _insertionAnchor);
+		const dynamicFragment = new DynamicFragment(256, "if", keyed, !!(flags & 128), _insertionAnchor, _insertionParent);
 		anchor = dynamicFragment.anchor;
 		frag = dynamicFragment;
 		renderEffect(() => {
@@ -19965,6 +20475,7 @@ function createIf(condition, b1, b2, flags = 1) {
 		if (start && currentHydrationNode === start && isComment(start, "")) advanceHydrationNode(start);
 	}
 	finishBlockCreation(frag, anchor, hydrationCursor, _insertionParent, _insertionAnchor);
+	hydrationCursor = null;
 	return frag;
 }
 function decodeIfShape(shape, ok) {
@@ -20025,7 +20536,7 @@ function createIfChain(select, blocks, branchFlags, flags) {
 		}
 	} else {
 		const keyBase = ((flags >> 8) - 1) * 2;
-		const dynamicFragment = new DynamicFragment(256, "if", true, !!(flags & 128), _insertionAnchor);
+		const dynamicFragment = new DynamicFragment(256, "if", true, !!(flags & 128), _insertionAnchor, _insertionParent);
 		anchor = dynamicFragment.anchor;
 		frag = dynamicFragment;
 		renderEffect(() => {
@@ -20048,6 +20559,7 @@ function createIfChain(select, blocks, branchFlags, flags) {
 		if (start && currentHydrationNode === start && isComment(start, "")) advanceHydrationNode(start);
 	}
 	finishBlockCreation(frag, anchor, hydrationCursor, _insertionParent, _insertionAnchor);
+	hydrationCursor = null;
 	return frag;
 }
 //#endregion
@@ -20067,7 +20579,7 @@ function createKeyedFragment(key, render, trackSlotBoundary = false) {
 	const _insertionAnchor = insertionAnchor;
 	if (!isHydrating$1) resetInsertionState();
 	const hydrationCursor = isHydrating$1 ? captureHydrationCursor() : null;
-	const frag = new DynamicFragment(0, "keyed", true, trackSlotBoundary, _insertionAnchor);
+	const frag = new DynamicFragment(0, "keyed", true, trackSlotBoundary, _insertionAnchor, _insertionParent);
 	if (isHydrating$1) locateHydrationNode();
 	renderEffect(() => frag.update(render, key()));
 	finishBlockCreation(frag, frag.anchor, hydrationCursor, _insertionParent, _insertionAnchor);
@@ -20130,7 +20642,7 @@ const createFor = (src, renderItem, getKey, flags = 0) => {
 		const wasMounted = isMounted;
 		let wasValid;
 		if (wasMounted && slotBoundary) wasValid = isValidSlot(frag);
-		if (wasMounted && frag.bu) for (let i = 0; i < frag.bu.length; i++) frag.bu[i]();
+		if (wasMounted && frag.bu) for (let i = 0; i < frag.bu.length; i++) frag.bu[i](frag.nodes);
 		if (!wasMounted) {
 			isMounted = true;
 			if (isHydrating$1) hydrateList(source, newLength);
@@ -20272,7 +20784,8 @@ const createFor = (src, renderItem, getKey, flags = 0) => {
 	};
 	const needKey = renderItem.length > 1;
 	const needIndex = renderItem.length > 2;
-	const insertForBlock = isSingleNode ? (block, anchor) => insertNode(block.nodes, parent, anchor) : isFragment ? (block, anchor) => insertFragment(block.nodes, parent, anchor) : (block, anchor) => insert(block.nodes, parent, anchor);
+	const suspense = ctx.suspense;
+	const insertForBlock = isSingleNode ? (block, anchor) => insertNode(block.nodes, parent, anchor, suspense) : isFragment ? (block, anchor) => insertFragment(block.nodes, parent, anchor, suspense) : (block, anchor) => insert(block.nodes, parent, anchor, suspense);
 	const removeForBlock = isSingleNode ? (block) => removeNode(block.nodes, parent) : isFragment ? (block) => removeFragment(block.nodes, parent) : (block) => remove(block.nodes, parent);
 	const mount = (source, idx, anchor) => {
 		const keys = source.keys;
@@ -20372,6 +20885,7 @@ const createFor = (src, renderItem, getKey, flags = 0) => {
 	});
 	if (isHydrating$1 && currentHydrationNode === parentAnchor) advanceHydrationNode(parentAnchor);
 	finishBlockCreation(frag, parentAnchor, hydrationCursor, _insertionParent, _insertionAnchor);
+	hydrationClaim = void 0;
 	return frag;
 };
 /**
@@ -20649,8 +21163,9 @@ function getTemplateRefUpdateFragment(el) {
 * wrapper's mutable `block`, so the resolved fragment is compared by identity
 * rather than with a "registered once" flag.
 */
-function registerFragmentRefUpdate(el, registeredFrag, reapply) {
+function registerFragmentRefUpdate(el, state, reapply) {
 	const frag = getTemplateRefUpdateFragment(el);
+	const registeredFrag = state && state.registeredFrag;
 	if (frag && registeredFrag !== frag) {
 		if (isDynamicFragment(el)) {
 			let nestedFrag;
@@ -20669,12 +21184,20 @@ function registerFragmentRefUpdate(el, registeredFrag, reapply) {
 					(0, _vue_shared.remove)(nestedFrag.u, onAsyncUpdate);
 					nestedFrag = void 0;
 				}
+				if (state) state.registeredFrag = void 0;
 			});
 			nestedFrag = syncNestedAsyncRefUpdate(frag, void 0, onAsyncUpdate);
-		} else (frag.u || (frag.u = [])).push(() => {
-			if (isVaporComponent(el) && el.isDeactivated) return;
-			reapply();
-		});
+		} else {
+			const onUpdate = () => {
+				if (isVaporComponent(el) && el.isDeactivated) return;
+				reapply();
+			};
+			(frag.u || (frag.u = [])).push(onUpdate);
+			onScopeDispose(() => {
+				(0, _vue_shared.remove)(frag.u, onUpdate);
+				if (state) state.registeredFrag = void 0;
+			});
+		}
 		return frag;
 	}
 	return registeredFrag;
@@ -20716,7 +21239,7 @@ function setTemplateRefWithState(instance, el, state, ref, refFor, refKey) {
 	state.ref = ref;
 	state.refFor = refFor;
 	state.refKey = refKey;
-	state.registeredFrag = registerFragmentRefUpdate(el, state.registeredFrag, () => {
+	state.registeredFrag = registerFragmentRefUpdate(el, state, () => {
 		setRef$1(instance, state.suspense, el, state.ref, state.oldRef, state.refFor, state.refKey, state.oldRefKey);
 		state.oldRef = state.ref;
 		state.oldRefKey = state.ref != null ? state.refKey : void 0;
@@ -20901,7 +21424,7 @@ function createDynamicComponent(getter, rawProps, rawSlots, flags = 0, key) {
 		return block;
 	}
 	const hydrationCursor = isHydrating$1 ? captureHydrationCursor() : null;
-	const frag = new DynamicFragment(0, "dynamic-component", false, slotRoot, _insertionAnchor);
+	const frag = new DynamicFragment(0, "dynamic-component", false, slotRoot, _insertionAnchor, _insertionParent);
 	if (isHydrating$1) locateHydrationNode();
 	let lastKey;
 	let lastBranch;
@@ -20984,9 +21507,10 @@ function applyVShow(target, source) {
 	let updating;
 	let pendingSetups;
 	let applyInTransition;
+	let disposed = false;
 	const visitor = {
 		onComponent(instance) {
-			register(instance.hmrRootHooks || (instance.hmrRootHooks = []), apply);
+			registerRootHook(instance.hmrRootHooks || (instance.hmrRootHooks = []), apply);
 			if (isSuspenseEnabled$1 && instance.asyncDep && !instance.asyncResolved) {
 				if (!(pendingSetups || (pendingSetups = /* @__PURE__ */ new WeakSet())).has(instance)) {
 					pendingSetups.add(instance);
@@ -21000,17 +21524,18 @@ function applyVShow(target, source) {
 		},
 		onDynamicFragment(frag) {
 			if (!inTransition && isSlotOutletFragment(frag)) return slotRoot = true;
-			register(frag.bm || (frag.bm = []), inTransition ? applyInTransition || (applyInTransition = (nodes) => apply(nodes, false, true)) : apply);
+			registerRootHook(frag.bm || (frag.bm = []), inTransition ? applyInTransition || (applyInTransition = (nodes) => apply(nodes, false, true)) : apply);
 		}
 	};
 	if (isInteropEnabled) visitor.onInteropFragment = (frag) => {
 		if (isSlotOutletFragment(frag)) return slotRoot = true;
 		if (frag.vnode) setInteropVShow(frag, apply);
 		if (isTransitionEnabled && frag.$transition) transition = frag.$transition;
-		register(frag.u || (frag.u = []), apply);
+		registerRootHook(frag.u || (frag.u = []), apply);
 		if (!isValidBlock(frag.nodes)) unresolved = true;
 	};
 	const apply = (nodes, update, transitionSlot) => {
+		if (disposed) return;
 		transition = void 0;
 		unresolved = slotRoot = false;
 		updating = update;
@@ -21020,14 +21545,17 @@ function applyVShow(target, source) {
 		else if (slotRoot || !unresolved && isValidBlock(nodes)) warn("v-show used on component with non-single-element root node and will be ignored.");
 	};
 	target.$vshow |= 2;
+	if (isKeepAliveEnabled$1 && !(target instanceof Element)) onScopeDispose(() => {
+		disposed = true;
+		value = void 0;
+		staleRootHooks.add(apply);
+		if (applyInTransition) staleRootHooks.add(applyInTransition);
+	}, true);
 	renderEffect(() => {
 		value = source();
 		apply(target, ran);
 		ran = true;
 	});
-}
-function register(hooks, hook) {
-	if (!hooks.includes(hook)) hooks.push(hook);
 }
 function setDisplay(el, value, transition, updating) {
 	const hidden = !value;
@@ -21081,14 +21609,23 @@ function writeDisplay(el, value) {
 //#endregion
 //#region packages/runtime-vapor/src/directives/vModel.ts
 function ensureMounted(cb) {
-	if (currentInstance.isMounted) cb();
+	const instance = currentInstance;
+	if (instance.isMounted) cb();
 	else {
 		let scope = getCurrentScope();
 		const run = inOnce ? () => withOnce(cb) : cb;
 		onMounted(() => {
 			const currentScope = scope;
 			scope = void 0;
-			if (currentScope.active) currentScope.run(run);
+			if (currentScope.active) {
+				const prevUpdating = instance.isUpdating;
+				instance.isUpdating = true;
+				try {
+					currentScope.run(run);
+				} finally {
+					instance.isUpdating = prevUpdating;
+				}
+			}
 		});
 	}
 }
@@ -21115,20 +21652,28 @@ const applyCheckboxModel = (el, get, set) => {
 };
 const applyRadioModel = (el, get, set) => {
 	el.addEventListener("change", () => set(getValue(el)));
+	const hydrating = isHydrating$1 && !isRecreatedNode(el);
 	ensureMounted(() => {
 		let value;
+		let initial = true;
 		renderEffect(() => {
-			if (value !== (value = get())) el.checked = (0, _vue_shared.looseEqual)(value, getValue(el));
+			const oldValue = value;
+			if ((value = get()) !== oldValue || initial) {
+				const checked = (0, _vue_shared.looseEqual)(value, getValue(el));
+				if (checked || !initial || value !== void 0 || hydrating) el.checked = checked;
+				initial = false;
+			}
 		});
 	});
 };
 const applySelectModel = (el, get, set, modifiers) => {
-	vModelSelectInit(el, get(), modifiers && modifiers.number, set);
+	const number = modifiers && modifiers.number;
+	vModelSelectInit(el, get(), number, set);
 	if (inOnce) {
-		ensureMounted(() => vModelSetSelected(el, get()));
+		ensureMounted(() => vModelSetSelected(el, get(), number));
 		return;
 	}
-	const update = () => vModelSetSelected(el, get());
+	const update = () => vModelSetSelected(el, get(), number);
 	registerSelectUpdate(update);
 	ensureMounted(() => {
 		update();
@@ -21160,10 +21705,7 @@ function withVaporDirectives(node, dirs) {
 	const visitor = {
 		onDynamicFragment: track,
 		onComponent(block) {
-			{
-				const hooks = block.hmrRootHooks || (block.hmrRootHooks = []);
-				if (!hooks.includes(applyDirectives)) hooks.push(applyDirectives);
-			}
+			registerRootHook(block.hmrRootHooks || (block.hmrRootHooks = []), applyDirectives);
 			if (isSuspenseEnabled$1 && block.asyncDep && !block.asyncResolved) {
 				pending = true;
 				if (!(pendingSetups || (pendingSetups = /* @__PURE__ */ new WeakSet())).has(block)) {
@@ -21190,15 +21732,14 @@ function withVaporDirectives(node, dirs) {
 		}
 	}
 	function track(frag) {
-		const u = frag.u || (frag.u = []);
-		if (u.includes(applyDirectives)) return;
-		u.push(applyDirectives);
-		if (isDynamicFragment(frag)) (frag.bu || (frag.bu = [])).push(() => {
-			if (currentElement && getRootElement(frag.nodes) === currentElement) {
-				currentElement = null;
-				stopDirectiveScope();
-			}
-		});
+		registerRootHook(frag.u || (frag.u = []), applyDirectives);
+		if (isDynamicFragment(frag)) registerRootHook(frag.bu || (frag.bu = []), release);
+	}
+	function release(nodes) {
+		if (currentElement && getRootElement(nodes) === currentElement) {
+			currentElement = null;
+			stopDirectiveScope();
+		}
 	}
 	function applyDirectives() {
 		if (disposed) return;
@@ -21230,6 +21771,11 @@ function withVaporDirectives(node, dirs) {
 	onScopeDispose(() => {
 		disposed = true;
 		stopDirectiveScope();
+		currentElement = null;
+		if (isKeepAliveEnabled$1) {
+			staleRootHooks.add(applyDirectives);
+			staleRootHooks.add(release);
+		}
 	}, true);
 	applyDirectives();
 }
@@ -21674,9 +22220,24 @@ function initUniElement(root, tagName) {
 	Object.defineProperty(root, "uniTagName", tagName);
 	const instance = getCurrentInstance();
 	if (!instance) return;
+	if (instance.type.props) {
+		root.__uniProps = instance.props;
+		root.getAttribute = getUniAttribute;
+	}
 	const options = instance.type;
 	const initialize = options.rootElement && initializers.get(options.rootElement.class);
 	if (initialize) initialize(root, instance.exposed);
+}
+function getUniAttribute(name) {
+	const props = this.__uniProps;
+	if (props && typeof name === "string") {
+		const key = (0, _vue_shared.camelize)(name);
+		if ((0, _vue_shared.hasOwn)(props, key)) {
+			const value = props[key];
+			if (value != null) return value + "";
+		}
+	}
+	return Element.prototype.getAttribute.apply(this, arguments);
 }
 //#endregion
 //#region packages/runtime-vapor-web/src/apiCreateRecycleFor.ts
@@ -21781,7 +22342,7 @@ const createRecycleFor = (recycleContext, src, renderItem, getKey, getType, flag
 		const wasMounted = isMounted;
 		let wasValid;
 		if (wasMounted && slotBoundary) wasValid = isValidSlot(frag);
-		if (wasMounted && frag.bu) for (let i = 0; i < frag.bu.length; i++) frag.bu[i]();
+		if (wasMounted && frag.bu) for (let i = 0; i < frag.bu.length; i++) frag.bu[i](frag.nodes);
 		if (!wasMounted) {
 			isMounted = true;
 			if (isHydrating$1) hydrateList(source, newLength);
@@ -22490,6 +23051,7 @@ exports.checkTransitionMode = checkTransitionMode;
 exports.child = child;
 exports.claimAnchor = claimAnchor;
 exports.cloneVNode = cloneVNode;
+exports.collectDeferredEnters = collectDeferredEnters;
 exports.compatUtils = compatUtils;
 exports.compile = compile;
 exports.computed = computed;
