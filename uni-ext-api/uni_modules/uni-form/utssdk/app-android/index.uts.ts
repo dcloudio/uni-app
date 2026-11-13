@@ -12,6 +12,8 @@ import { GradientDrawable, Drawable } from 'android.graphics.drawable'
 import { Build } from 'android.os'
 import { TypedValue } from 'android.util'
 import WeakReference from 'java.lang.ref.WeakReference'
+import ScrollingView from 'androidx.core.view.ScrollingView'
+import ValueHelper from 'io.dcloud.uniappxv.utils.ValueHelper'
 
 function toBoolean(value: any): boolean {
 	if (typeof value == 'boolean') {
@@ -243,6 +245,7 @@ interface UniAndroidKeyboardClient {
  */
 class UniAndroidImeAnimationCallback extends WindowInsetsAnimation.Callback {
 	private active: boolean = false
+	private currentAnimation: WindowInsetsAnimation | null = null
 	private hiding: boolean = false
 	private onBegin: () => void
 	private onProgressHandler: (progress: number) => void
@@ -268,6 +271,7 @@ class UniAndroidImeAnimationCallback extends WindowInsetsAnimation.Callback {
 		}
 		// 键盘已经弹起时，说明这次是"收起"动画，进度方向相反
 		this.hiding = this.isKeyboardShown()
+		this.currentAnimation = animation
 		this.active = true
 		this.onBegin()
 	}
@@ -277,23 +281,27 @@ class UniAndroidImeAnimationCallback extends WindowInsetsAnimation.Callback {
 			return insets
 		}
 		let fraction = 1.0
+		let foundAnimation = false
 		for (let i = 0; i < runningAnimations.size; i++) {
 			const runningAnimation = runningAnimations[i.toInt()]
-			if ((runningAnimation.getTypeMask() & WindowInsets.Type.ime()) != 0) {
+			if (runningAnimation === this.currentAnimation) {
 				fraction = runningAnimation.getInterpolatedFraction()
+				foundAnimation = true
 				break
 			}
 		}
+		if (!foundAnimation) return insets
 		this.onProgressHandler(this.hiding ? 1 - fraction : fraction)
 		return insets
 	}
 
 	override onEnd(animation: WindowInsetsAnimation) {
-		if ((animation.getTypeMask() & WindowInsets.Type.ime()) == 0) {
+		if (animation !== this.currentAnimation) {
 			return
 		}
 		const hiding = this.hiding
 		this.active = false
+		this.currentAnimation = null
 		if (hiding) {
 			this.onProgressHandler(0)
 			this.onEndHandler(true)
@@ -311,6 +319,7 @@ class UniAndroidKeyboardManager {
 	private clients: UniAndroidKeyboardClient[] = []
 	private activeClient: UniAndroidKeyboardClient | null = null
 	private pendingBlurClient: UniAndroidKeyboardClient | null = null
+	private animationClient: UniAndroidKeyboardClient | null = null
 	private keyboardHeight: number = 0
 	private lastRawKeyboardHeight: number = -1
 	private lastDispatchedKeyboardHeight: number = 0
@@ -372,6 +381,9 @@ class UniAndroidKeyboardManager {
 	}
 
 	unregisterClient(client: UniAndroidKeyboardClient) {
+		if (this.animationClient === client) {
+			this.animationClient = null
+		}
 		for (let i = this.clients.length - 1; i >= 0; i--) {
 			if (this.clients[i] === client) {
 				this.clients.splice(i, 1)
@@ -477,21 +489,18 @@ class UniAndroidKeyboardManager {
 	}
 
 	private dispatchKeyboardAnimationBegin() {
-		if (this.activeClient != null) {
-			this.activeClient.onKeyboardAnimationBegin()
-		}
+		this.animationClient = this.activeClient ?? this.pendingBlurClient
+		this.animationClient?.onKeyboardAnimationBegin()
 	}
 
 	private dispatchKeyboardAnimationProgress(progress: number) {
-		if (this.activeClient != null) {
-			this.activeClient.onKeyboardAnimationProgress(progress)
-		}
+		this.animationClient?.onKeyboardAnimationProgress(progress)
 	}
 
 	private dispatchKeyboardAnimationEnd(hidden: boolean) {
-		if (this.activeClient != null) {
-			this.activeClient.onKeyboardAnimationEnd(hidden)
-		}
+		const client = this.animationClient
+		this.animationClient = null
+		client?.onKeyboardAnimationEnd(hidden)
 	}
 
 	private dispatchKeyboardHeightChanged(height: number, duration: number) {
@@ -531,6 +540,7 @@ class UniAndroidKeyboardManager {
 		this.clients.length = 0
 		this.activeClient = null
 		this.pendingBlurClient = null
+		this.animationClient = null
 		this.keyboardHeight = 0
 		this.lastRawKeyboardHeight = -1
 		this.lastDispatchedKeyboardHeight = 0
@@ -821,10 +831,24 @@ function resolveInputBoxRect(element: UniNativeViewElement, elementRect: DOMRect
 	return elementRect
 }
 
+type UniAndroidAdjustPositionParentRestore = {
+	scrollLeft: number
+	scrollTop: number
+	expectedScrollLeft: number
+	expectedScrollTop: number
+	pendingScrollLeft: number | null
+	pendingScrollTop: number | null
+}
+
 class UniAndroidAdjustPositionHelper {
 	private static activeHelper: UniAndroidAdjustPositionHelper | null = null
+	private sessionGeneration: number = 0
+	private animationSessionGeneration: number = -1
+	private pendingSessionReset: boolean = false
 	private static sessionPageBodyView: View | null = null
 	private static sessionPageBodyOriginTranslationY: number = 0
+	/** 恢复值为原生像素，expected/pending 为实际位置/待生效目标的逻辑坐标。 */
+	private static sessionParentRestores: Map<UniElement, UniAndroidAdjustPositionParentRestore> = new Map()
 	private element: UniNativeViewElement
 	private resolveCursorBottomOffset: UniAndroidCursorBottomOffsetResolver = (elementHeight: number): number => {
 		return Math.max(0, elementHeight)
@@ -835,7 +859,6 @@ class UniAndroidAdjustPositionHelper {
 	private scrollAbleParents: UniElement[] = []
 	private hasCollectedScrollAbleParents: boolean = false
 	private resetPosition: () => void = () => {}
-	private hasLocalAdjustment: boolean = false
 	/** 本次调整前页面 body 的实际平移量（测量前会先复位，用它作为动画起点，避免闪动） */
 	private pageBodyStartTranslationY: number = 0
 	/** API 30+：是否由系统 IME 动画驱动位移（此时不使用固定时长过渡） */
@@ -860,14 +883,22 @@ class UniAndroidAdjustPositionHelper {
 
 	/** API 30+：进入"由系统 IME 动画驱动位移"模式 */
 	setSystemAnimationActive(value: boolean) {
+		if (!this.ownsSession() || (!value && this.animationSessionGeneration != this.sessionGeneration)) {
+			return
+		}
 		this.systemAnimationActive = value
 		if (value) {
+			this.pendingSessionReset = false
+			this.animationSessionGeneration = this.sessionGeneration
 			this.systemAnimationProgress = 0
 		}
 	}
 
 	/** API 30+：按系统动画进度应用位移（0 = 未让开，1 = 完全让开） */
 	setSystemAnimationProgress(progress: number) {
+		if (!this.ownsSession() || this.animationSessionGeneration != this.sessionGeneration) {
+			return
+		}
 		this.systemAnimationProgress = progress
 		if (!this.systemAnimationActive) {
 			return
@@ -882,17 +913,11 @@ class UniAndroidAdjustPositionHelper {
 
 	/** API 30+：收起动画结束，复位会话状态 */
 	finalizeSystemAnimation() {
-		const view = UniAndroidAdjustPositionHelper.sessionPageBodyView
-		if (view != null) {
-			view.animate().cancel()
+		if (!this.ownsSession() || this.animationSessionGeneration != this.sessionGeneration) {
+			return
 		}
-		this.systemAnimationActive = false
-		this.systemAnimationProgress = 0
-		// 复位滚动父级（页面 body 的位移由 clearSharedSessionState 统一归位）
-		this.resetPosition()
 		this.clearLocalResetPosition()
-		this.pageBodyShownTranslationY = 0
-		this.clearSharedSessionState(true)
+		this.clearSharedSessionState()
 	}
 
 	setAllowRootTranslateAfterParentScroll(value: boolean) {
@@ -912,23 +937,63 @@ class UniAndroidAdjustPositionHelper {
 		logAndroidInputAdjust('helper tag=' + tagName + ' ' + message)
 	}
 
-	prepareForEditing() {
+	prepareForEditing(keyboardHeight: number) {
 		this.collectScrollAbleParents()
+		const previousHelper = UniAndroidAdjustPositionHelper.activeHelper
+		const pageBodyView = this.resolvePageBodyView()
+		if (previousHelper != null) {
+			if (UniAndroidAdjustPositionHelper.sessionPageBodyView !== pageBodyView) {
+				// 跨页时必须由旧负责人恢复旧页面，再交接所有权。
+				previousHelper.forceResetSessionPosition(previousHelper.sessionGeneration)
+			} else if (previousHelper !== this) {
+				// 同页保留已有父级滚动，作为新输入的测量基线。
+				this.pageBodyShownTranslationY = previousHelper.pageBodyShownTranslationY
+				previousHelper.clearLocalResetPosition()
+			}
+			previousHelper.systemAnimationActive = false
+		}
+		UniAndroidAdjustPositionHelper.activeHelper = this
+		this.sessionGeneration += 1
+		this.pendingSessionReset = false
+		this.systemAnimationActive = false
+		pageBodyView?.animate().cancel()
 		this.captureSessionPageBodyIfNeeded()
+		if (keyboardHeight <= 0) {
+			// 旧动画与超时已失去归属，由新负责人完成收尾并保留编辑所有权。
+			this.resetSessionPosition()
+		}
 	}
 
-	adjustForKeyboardHeight(keyboardHeight: number, cursorSpacing: number) {
+	getSessionGeneration(): number {
+		return this.sessionGeneration
+	}
+
+	private ownsSession(): boolean {
+		return UniAndroidAdjustPositionHelper.activeHelper === this
+	}
+
+	keyboardHeightBecamePositive() {
+		if (!this.ownsSession()) return
+		this.sessionGeneration += 1
+		if (this.pendingSessionReset) {
+			this.systemAnimationActive = false
+		} else if (this.systemAnimationActive) {
+			// 正在弹出的动画仍属本次编辑；旧收起动画则不得续用。
+			this.animationSessionGeneration = this.sessionGeneration
+		}
+		this.pendingSessionReset = false
+	}
+
+	adjustForKeyboardHeight(keyboardHeight: number, cursorSpacing: number, sessionGeneration: number = this.sessionGeneration) {
+		if (!this.ownsSession() || sessionGeneration != this.sessionGeneration) return
 		this.collectScrollAbleParents()
 		this.captureSessionPageBodyIfNeeded()
 		// 测量前会先把平移复位，这里先记住复位前的实际位置，作为本次过渡动画的起点
 		const sessionPageBodyView = UniAndroidAdjustPositionHelper.sessionPageBodyView
 		this.pageBodyStartTranslationY = sessionPageBodyView != null ? sessionPageBodyView.getTranslationY() : 0.0
-		if (UniAndroidAdjustPositionHelper.activeHelper != null && UniAndroidAdjustPositionHelper.activeHelper !== this) {
-			UniAndroidAdjustPositionHelper.activeHelper!.clearLocalResetPosition()
-		}
+		this.resetElementPosition(false)
 		this.restoreSessionPageBodyTranslation()
-		UniAndroidAdjustPositionHelper.activeHelper = this
-		this.resetElementPosition()
+		this.pageBodyShownTranslationY = 0
 		if (keyboardHeight <= 0) {
 			return
 		}
@@ -1051,8 +1116,24 @@ class UniAndroidAdjustPositionHelper {
 			const parentElement = this.scrollAbleParents[parentPlan.index]
 			const nativeScrollLeft = parentElement.scrollLeft * logicalToNativeScale
 			const nativeScrollTop = parentPlan.scrollTop * logicalToNativeScale
+			let restore = UniAndroidAdjustPositionHelper.sessionParentRestores.get(parentElement)
+			const externallyScrolled = restore != null && !this.matchesExpectedParentScroll(parentElement, restore)
+			if (restore == null || externallyScrolled) {
+				const parentSnapshot = parentSnapshots[parentPlan.index]
+				restore = {
+					scrollLeft: parentSnapshot.scrollLeft * logicalToNativeScale,
+					scrollTop: (externallyScrolled ? parentSnapshot.scrollTop : this.resolveRestoreScrollTop(parentPlan.index, parentSnapshot, restorePlan)) * logicalToNativeScale,
+					expectedScrollLeft: parentSnapshot.scrollLeft,
+					expectedScrollTop: parentSnapshot.scrollTop,
+					pendingScrollLeft: null,
+					pendingScrollTop: null
+				}
+				UniAndroidAdjustPositionHelper.sessionParentRestores.set(parentElement, restore)
+			}
 			this.trace('applyParentScroll index=' + parentPlan.index + ' logicalTop=' + parentPlan.scrollTop + ' nativeTop=' + nativeScrollTop)
-			parentElement.scrollTo(nativeScrollLeft, nativeScrollTop)
+			if (restore != null) {
+				this.scrollParentTo(parentElement, restore, nativeScrollLeft, nativeScrollTop)
+			}
 		}
 		const adjustedElementRect = this.element.getBoundingClientRect()
 		const adjustedTargetRect = this.resolveAdjustTargetRect(adjustedElementRect)
@@ -1068,7 +1149,6 @@ class UniAndroidAdjustPositionHelper {
 
 		if (plan.rootTranslateY > 0) {
 			const pageBodyView = UniAndroidAdjustPositionHelper.sessionPageBodyView
-			const pageBodyOriginTranslationY = UniAndroidAdjustPositionHelper.sessionPageBodyOriginTranslationY
 			const rootTranslateYPx = convertAndroidLogicalToNativePx(plan.rootTranslateY, nativeWindowHeight, logicalWindowHeight)
 			const targetTranslationY = -rootTranslateYPx
 			this.pageBodyShownTranslationY = targetTranslationY
@@ -1080,33 +1160,83 @@ class UniAndroidAdjustPositionHelper {
 				animateAndroidAdjustPageBody(pageBodyView, this.pageBodyStartTranslationY, targetTranslationY)
 			}
 			this.trace('applyPageBodyTranslation logical=' + plan.rootTranslateY + ' native=' + rootTranslateYPx)
-			this.resetPosition = () => {
-				for (let i = 0; i < plan.parentPlans.length; i++) {
-					const parentPlan = plan.parentPlans[i]
-					const parentElement = this.scrollAbleParents[parentPlan.index]
-					const parentSnapshot = parentSnapshots[parentPlan.index]
-					const restoreScrollTop = this.resolveRestoreScrollTop(parentPlan.index, parentSnapshot, restorePlan)
-					parentElement.scrollTo(parentSnapshot.scrollLeft * logicalToNativeScale, restoreScrollTop * logicalToNativeScale)
+		}
+		this.resetPosition = () => {
+			for (let i = 0; i < plan.parentPlans.length; i++) {
+				const parentPlan = plan.parentPlans[i]
+				const parentElement = this.scrollAbleParents[parentPlan.index]
+				const restore = UniAndroidAdjustPositionHelper.sessionParentRestores.get(parentElement)
+				if (restore == null) continue
+				if (!this.matchesExpectedParentScroll(parentElement, restore)) {
+					// 外部滚动接管了当前位置，本地旧闭包也不得回滚它。
+					restore.expectedScrollLeft = parentElement.scrollLeft
+					restore.expectedScrollTop = parentElement.scrollTop
+					restore.scrollLeft = restore.expectedScrollLeft * logicalToNativeScale
+					restore.scrollTop = restore.expectedScrollTop * logicalToNativeScale
+					restore.pendingScrollLeft = null
+					restore.pendingScrollTop = null
+					continue
 				}
-				if (this.systemAnimationActive) {
-					pageBodyView?.animate().cancel()
-					pageBodyView?.setTranslationY((this.pageBodyShownTranslationY * this.systemAnimationProgress).toFloat())
-				} else {
-					animateAndroidAdjustPageBody(pageBodyView, pageBodyView != null ? pageBodyView.getTranslationY() : 0.0, pageBodyOriginTranslationY.toFloat())
-				}
+				const parentSnapshot = parentSnapshots[parentPlan.index]
+				const restoreScrollTop = this.resolveRestoreScrollTop(parentPlan.index, parentSnapshot, restorePlan)
+				this.scrollParentTo(parentElement, restore, parentSnapshot.scrollLeft * logicalToNativeScale, restoreScrollTop * logicalToNativeScale)
 			}
-		} else {
-			this.resetPosition = () => {
-				for (let i = 0; i < plan.parentPlans.length; i++) {
-					const parentPlan = plan.parentPlans[i]
-					const parentElement = this.scrollAbleParents[parentPlan.index]
-					const parentSnapshot = parentSnapshots[parentPlan.index]
-					const restoreScrollTop = this.resolveRestoreScrollTop(parentPlan.index, parentSnapshot, restorePlan)
-					parentElement.scrollTo(parentSnapshot.scrollLeft * logicalToNativeScale, restoreScrollTop * logicalToNativeScale)
+		}
+	}
+
+	private scrollParentTo(parent: UniElement, restore: UniAndroidAdjustPositionParentRestore, scrollLeft: number, scrollTop: number) {
+		const previousLeft = parent.scrollLeft
+		const previousTop = parent.scrollTop
+		parent.scrollTo(scrollLeft, scrollTop, 0)
+		restore.expectedScrollLeft = parent.scrollLeft
+		restore.expectedScrollTop = parent.scrollTop
+		const targetLeft = ValueHelper.value2dip(scrollLeft.toInt())
+		const targetTop = ValueHelper.value2dip(scrollTop.toInt())
+		const pending = restore.expectedScrollLeft == previousLeft && restore.expectedScrollTop == previousTop
+			&& (restore.expectedScrollLeft != targetLeft || restore.expectedScrollTop != targetTop)
+		restore.pendingScrollLeft = pending ? targetLeft : null
+		restore.pendingScrollTop = pending ? targetTop : null
+	}
+
+	private matchesExpectedParentScroll(parent: UniElement, restore: UniAndroidAdjustPositionParentRestore): boolean {
+		const scrollLeft = parent.scrollLeft
+		const scrollTop = parent.scrollTop
+		if (scrollLeft == restore.expectedScrollLeft && scrollTop == restore.expectedScrollTop) return true
+		const pendingLeft = restore.pendingScrollLeft
+		const pendingTop = restore.pendingScrollTop
+		if (pendingLeft == null || pendingTop == null) return false
+		if (scrollLeft == pendingLeft && scrollTop == pendingTop) {
+			restore.expectedScrollLeft = scrollLeft
+			restore.expectedScrollTop = scrollTop
+			restore.pendingScrollLeft = null
+			restore.pendingScrollTop = null
+			return true
+		}
+		let scrollView = parent.getAndroidView<View>()
+		if (scrollView instanceof ViewGroup && !(scrollView instanceof ScrollingView)) {
+			const container = scrollView as ViewGroup
+			scrollView = null
+			for (let index = 0; index < container.getChildCount(); index++) {
+				const child = container.getChildAt(index.toInt())
+				if (!(child instanceof ScrollingView)) continue
+				const scrollingChild = child as ScrollingView
+				if (ValueHelper.value2dip(scrollingChild.computeHorizontalScrollRange()) == parent.scrollWidth
+					&& ValueHelper.value2dip(scrollingChild.computeVerticalScrollRange()) == parent.scrollHeight) {
+					scrollView = child
+					break
 				}
 			}
 		}
-		this.hasLocalAdjustment = true
+		if (scrollView == null || !(scrollView instanceof ScrollingView)) return false
+		const scrollingView = scrollView as ScrollingView
+		const nativeView = scrollView as View
+		const viewportWidth = nativeView.getWidth() - nativeView.getPaddingLeft() - nativeView.getPaddingRight()
+		const viewportHeight = nativeView.getHeight() - nativeView.getPaddingTop() - nativeView.getPaddingBottom()
+		const maxScrollLeft = ValueHelper.value2dip(Math.max(0, scrollingView.computeHorizontalScrollRange() - viewportWidth))
+		const maxScrollTop = ValueHelper.value2dip(Math.max(0, scrollingView.computeVerticalScrollRange() - viewportHeight))
+		const clampedLeft = Math.max(0, Math.min(pendingLeft, maxScrollLeft))
+		const clampedTop = Math.max(0, Math.min(pendingTop, maxScrollTop))
+		return scrollLeft == clampedLeft && scrollTop == clampedTop
 	}
 
 	private resolveRestoreScrollTop(parentIndex: number, parentSnapshot: UniAndroidAdjustPositionParentSnapshot, restorePlan: UniAndroidAdjustPositionPlan): number {
@@ -1119,47 +1249,66 @@ class UniAndroidAdjustPositionHelper {
 		return parentSnapshot.scrollTop
 	}
 
-	resetElementPosition() {
+	resetElementPosition(endAdjustment: boolean = true) {
+		if (!this.ownsSession()) return
+		if (endAdjustment) {
+			// 禁用避让必须结束动画目标；测量前的临时复位仍保留系统动画。
+			this.pageBodyShownTranslationY = 0
+			this.systemAnimationActive = false
+			this.systemAnimationProgress = 0
+			this.animationSessionGeneration = -1
+		}
 		this.resetPosition()
 		this.clearLocalResetPosition()
-		if (UniAndroidAdjustPositionHelper.activeHelper === this) {
-			UniAndroidAdjustPositionHelper.activeHelper = null
+		const view = UniAndroidAdjustPositionHelper.sessionPageBodyView
+		if (this.systemAnimationActive) {
+			view?.animate().cancel()
+			view?.setTranslationY((this.pageBodyShownTranslationY * this.systemAnimationProgress).toFloat())
+		} else {
+			animateAndroidAdjustPageBody(view, view?.getTranslationY() ?? 0.0, UniAndroidAdjustPositionHelper.sessionPageBodyOriginTranslationY)
 		}
 	}
 
 	/** 兜底强制复位：忽略"驱动中"状态 */
-	forceResetSessionPosition() {
+	forceResetSessionPosition(sessionGeneration: number) {
+		if (!this.ownsSession() || sessionGeneration != this.sessionGeneration) return
 		this.systemAnimationActive = false
 		this.resetSessionPosition()
 	}
 
-	resetSessionPosition() {
+	resetSessionPosition(sessionGeneration: number = this.sessionGeneration) {
+		if (!this.ownsSession() || sessionGeneration != this.sessionGeneration) return
+		this.pendingSessionReset = true
+		this.clearLocalResetPosition()
 		if (this.systemAnimationActive) {
 			// 收起动画由系统驱动：这里只清掉本地复位回调，等动画结束（finalizeSystemAnimation）再真正复位
-			this.clearLocalResetPosition()
 			return
 		}
-		this.resetElementPosition()
-		this.clearSharedSessionState(true)
+		this.clearSharedSessionState()
 	}
 
 	destroy() {
 		this.systemAnimationActive = false
 		this.resetSessionPosition()
+		if (this.ownsSession()) {
+			UniAndroidAdjustPositionHelper.activeHelper = null
+		}
+		this.sessionGeneration += 1
+		this.clearLocalResetPosition()
 		this.scrollAbleParents.length = 0
 		this.hasCollectedScrollAbleParents = false
 	}
 
 	private clearLocalResetPosition() {
 		this.resetPosition = () => {}
-		this.hasLocalAdjustment = false
 	}
 
 	private captureSessionPageBodyIfNeeded() {
+		if (!this.ownsSession()) return
 		const pageBodyView = this.resolvePageBodyView()
 		if (UniAndroidAdjustPositionHelper.sessionPageBodyView != null
 			&& UniAndroidAdjustPositionHelper.sessionPageBodyView !== pageBodyView) {
-			this.clearSharedSessionState(true)
+			this.clearSharedSessionState()
 		}
 		if (UniAndroidAdjustPositionHelper.sessionPageBodyView != null) {
 			return
@@ -1192,23 +1341,35 @@ class UniAndroidAdjustPositionHelper {
 	}
 
 	private restoreSessionPageBodyTranslation() {
+		if (!this.ownsSession()) return
 		if (UniAndroidAdjustPositionHelper.sessionPageBodyView == null) {
 			return
 		}
+		UniAndroidAdjustPositionHelper.sessionPageBodyView!.animate().cancel()
 		UniAndroidAdjustPositionHelper.sessionPageBodyView!.setTranslationY(
 			UniAndroidAdjustPositionHelper.sessionPageBodyOriginTranslationY.toFloat()
 		)
 	}
 
-	private clearSharedSessionState(restorePageBodyTranslation: boolean) {
-		if (restorePageBodyTranslation) {
-			this.restoreSessionPageBodyTranslation()
-		}
+	private clearSharedSessionState() {
+		if (!this.ownsSession()) return
+		// 只恢复仍处于 helper 最后写入位置的父级，保留用户或业务接管的滚动。
+		UniAndroidAdjustPositionHelper.sessionParentRestores.forEach((restore: UniAndroidAdjustPositionParentRestore, parent: UniElement) => {
+			if (this.matchesExpectedParentScroll(parent, restore)) {
+				parent.scrollTo(restore.scrollLeft, restore.scrollTop, 0)
+			}
+		})
+		UniAndroidAdjustPositionHelper.sessionParentRestores.clear()
+		this.restoreSessionPageBodyTranslation()
 		UniAndroidAdjustPositionHelper.sessionPageBodyView = null
 		UniAndroidAdjustPositionHelper.sessionPageBodyOriginTranslationY = 0
-		if (UniAndroidAdjustPositionHelper.activeHelper === this) {
-			UniAndroidAdjustPositionHelper.activeHelper = null
-		}
+		// 清理位移资源不释放编辑所有权；只有焦点接管或销毁才能更换负责人。
+		this.sessionGeneration += 1
+		this.pageBodyShownTranslationY = 0
+		this.pendingSessionReset = false
+		this.systemAnimationActive = false
+		this.systemAnimationProgress = 0
+		this.animationSessionGeneration = -1
 	}
 
 	private resolvePageBodyView(): View | null {
@@ -1501,25 +1662,28 @@ export class NativeInputView implements UniAndroidKeyboardClient {
 
 	onKeyboardHeightChangedFromManager(height: number, duration: number) {
 		this.keyboardHeight = height
+		const helper = this.adjustPositionHelper
+		if (height > 0) helper?.keyboardHeightBecamePositive()
+		const sessionGeneration = helper?.getSessionGeneration() ?? -1
 		if (this.pendingFocusDispatch && height > 0) {
 			this.pendingFocusDispatch = false
 			this.dispatchFocus(height, this.editText?.getText()?.toString() ?? "")
 		}
 		this.dispatchKeyboardHeightChange(height, duration)
 		if (height <= 0) {
-			this.adjustPositionHelper?.resetSessionPosition()
+			helper?.resetSessionPosition(sessionGeneration)
 			// 兜底：万一系统没有回调收起动画（动画被取消等），超时后强制复位，避免页面卡在让开位置
 			const self = this
 			setTimeout(() => {
 				if (self.keyboardHeight <= 0) {
-					self.adjustPositionHelper?.forceResetSessionPosition()
+					helper?.forceResetSessionPosition(sessionGeneration)
 				}
 			}, 800)
 			return
 		}
 		if (this.adjustPosition && this.isFocusing) {
 			this.trace('keyboardManager invokingAdjust keyboardHeight=' + height + ' cursorSpacing=' + this.cursorSpacing)
-			this.adjustPositionHelper?.adjustForKeyboardHeight(height, this.cursorSpacing)
+			helper?.adjustForKeyboardHeight(height, this.cursorSpacing, sessionGeneration)
 			this.trace('keyboardManager invokedAdjust keyboardHeight=' + height + ' cursorSpacing=' + this.cursorSpacing)
 		}
 	}
@@ -1855,7 +2019,10 @@ export class NativeInputView implements UniAndroidKeyboardClient {
 					self.ensureKeyboardLayoutObserver()
 					self.keyboardManager?.setFocusedClient(self)
 					self.keyboardHeight = self.keyboardManager?.getKeyboardHeight() ?? self.keyboardHeight
-					self.adjustPositionHelper?.prepareForEditing()
+					self.adjustPositionHelper?.prepareForEditing(self.keyboardHeight)
+					if (!self.adjustPosition) {
+						self.adjustPositionHelper?.resetElementPosition()
+					}
 					if (!self.isInsideListView()) {
 						self.revealFocusedInput()
 					}
@@ -2920,25 +3087,28 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 
 	onKeyboardHeightChangedFromManager(height: number, duration: number) {
 		this.keyboardHeight = height
+		const helper = this.adjustPositionHelper
+		if (height > 0) helper?.keyboardHeightBecamePositive()
+		const sessionGeneration = helper?.getSessionGeneration() ?? -1
 		if (this.pendingFocusDispatch && height > 0) {
 			this.pendingFocusDispatch = false
 			this.dispatchFocus(height, this.editText?.getText()?.toString() ?? '')
 		}
 		this.dispatchKeyboardHeightChange(height, duration)
 		if (height <= 0) {
-			this.adjustPositionHelper?.resetSessionPosition()
+			helper?.resetSessionPosition(sessionGeneration)
 			// 兜底：万一系统没有回调收起动画（动画被取消等），超时后强制复位，避免页面卡在让开位置
 			const self = this
 			setTimeout(() => {
 				if (self.keyboardHeight <= 0) {
-					self.adjustPositionHelper?.forceResetSessionPosition()
+					helper?.forceResetSessionPosition(sessionGeneration)
 				}
 			}, 800)
 			return
 		}
 		if (this.adjustPosition && this.isFocusing) {
 			this.trace('keyboardManager invokingAdjust keyboardHeight=' + height + ' cursorSpacing=' + this.cursorSpacing)
-			this.adjustPositionHelper?.adjustForKeyboardHeight(height, this.cursorSpacing)
+			helper?.adjustForKeyboardHeight(height, this.cursorSpacing, sessionGeneration)
 			this.trace('keyboardManager invokedAdjust keyboardHeight=' + height + ' cursorSpacing=' + this.cursorSpacing)
 		}
 	}
@@ -3165,7 +3335,10 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 					self.ensureKeyboardLayoutObserver()
 					self.keyboardManager?.setFocusedClient(self)
 					self.keyboardHeight = self.keyboardManager?.getKeyboardHeight() ?? self.keyboardHeight
-					self.adjustPositionHelper?.prepareForEditing()
+					self.adjustPositionHelper?.prepareForEditing(self.keyboardHeight)
+					if (!self.adjustPosition) {
+						self.adjustPositionHelper?.resetElementPosition()
+					}
 					self.dispatchFocusWhenReady()
 					if (self.keyboardHeight > 0 && self.adjustPosition) {
 						self.trace('focus invokingAdjust keyboardHeight=' + self.keyboardHeight + ' cursorSpacing=' + self.cursorSpacing)
