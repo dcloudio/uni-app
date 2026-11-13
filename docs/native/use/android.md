@@ -57,6 +57,10 @@ uni-openAppAuthorizeSetting-release.aar，uni-prompt-release.aar，uni-rpx2px-re
 
 ![](https://web-ext-storage.dcloud.net.cn/native/doc/android/main_libs_vapor_v2.png)
 
+::: warning 注意
+HBuilderX 5.36-alpha 起，如果应用启用了 v8-icu 模块，需要将 app-runtime-release.aar 替换为 app-runtime-withicu-release.aar。详情参考[启用包含ICU功能的JS引擎](../../collocation/manifest-android.md#v8icu)。
+:::
+
 ::: details VDOM模式
 
 将uts-runtime-release.aar，android-gif-drawable-1.2.28.aar，app-common-release.aar，app-runtime-release.aar，breakpad-build-release.aar，dcloud-layout-release.aar，
@@ -280,6 +284,34 @@ uni-getSystemInfo-release.aar，uni-rpx2px-release.aar，uni-theme-release.aar�
 		additionalParameters += listOf("--auto-add-overlay")
 		ignoreAssetsPattern = "!.svn:!.git:.*:!CVS:!thumbs.db:!picasa.ini:!*.scc:*~"
 	}
+	```
+
+	:::
+
+- 配置UTSHooksClassArray
+
+	::: warning 注意
+	该配置从 HBuilderX 5.36-alpha 起需要添加。
+	:::
+
+	将崩溃模块的hook添加到defaultConfig节点下。
+
+	::: preview
+
+	> build.gradle
+
+	```groovy
+    defaultConfig {
+        buildConfigField 'String[]', 'UTSHooksClassArray', '{\"uts.sdk.modules.DCloudUniCrash.CrashHook\"}'
+    }
+	```
+
+	> build.gradle.kts
+
+	```groovy
+    defaultConfig {
+        buildConfigField("String[]", "UTSHooksClassArray", "{\"uts.sdk.modules.DCloudUniCrash.CrashHook\"}")
+    }
 	```
 
 	:::
