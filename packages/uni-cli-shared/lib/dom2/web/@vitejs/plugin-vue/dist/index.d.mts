@@ -43,6 +43,8 @@ interface Options {
    * Use custom compiler-sfc instance. Can be used to force a specific version.
    */
   compiler?: typeof _compiler;
+  /** fixed by uts: Web 定制 compiler-sfc 的默认脚本语言，不覆盖显式 lang。 */
+  defaultScriptLang?: 'js' | 'ts' | 'uts';
   /**
    * Requires @vitejs/plugin-vue@^5.1.0
    */

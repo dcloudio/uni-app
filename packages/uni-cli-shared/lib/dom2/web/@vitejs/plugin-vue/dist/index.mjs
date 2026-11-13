@@ -46,11 +46,12 @@ function parseVueRequest(id) {
 const cache = /* @__PURE__ */ new Map();
 const hmrCache = /* @__PURE__ */ new Map();
 const prevCache = /* @__PURE__ */ new Map();
-function createDescriptor(filename, source, { root, isProduction, sourceMap, compiler, template, features }, hmr = false) {
+function createDescriptor(filename, source, { root, isProduction, sourceMap, compiler, template, features, defaultScriptLang }, hmr = false) {
 	const { descriptor, errors } = compiler.parse(source, {
 		filename,
 		sourceMap,
-		templateParseOptions: template?.compilerOptions
+		templateParseOptions: template?.compilerOptions,
+		...defaultScriptLang ? { defaultScriptLang } : {}
 	});
 	const normalizedPath = normalizePath(path.relative(root, filename));
 	const componentIdGenerator = features?.componentIdGenerator;

@@ -44,6 +44,65 @@ const miniProgramUasm = {
 
 describe('uni-app x standard script', () => {
   test.each([
+    ['js', '/pages/[index]/index.uvue'],
+    ['ts', '/pages/[index]/index.uvue'],
+    ['ts', 'C:\\project\\pages\\[index]\\index.uvue'],
+    ['ts', '\\\\server\\share\\pages\\[index]\\index.uvue'],
+  ] as const)(
+    '隐式 %s 仍转换宏、UASM 和 Worker，并保留原始映射（%s）',
+    (defaultScriptLang, filename) => {
+      const source = `<script setup>const value = definePlugin(() => uni.loadUasm('uni_modules/test-uasm')); uni.createWorker('workers/helloWorkerTask.uts'); console.log(value)</script>`
+      const result = transformUniAppXStandardScript(source, filename, ts, {
+        defaultScriptLang,
+        uasm,
+        workers,
+      })!
+      expect(result.code).not.toContain('definePlugin')
+      expect(result.code).toContain('loader: () => import(')
+      expect(result.code).toContain('workers/helloWorkerTask.js')
+      expect(result.code).toContain('<script setup>')
+      expect(result.map.sourcesContent).toEqual([source])
+      const consumer = new SourceMapConsumer(result.map as any)
+      expect(
+        consumer.originalPositionFor({
+          line: 1,
+          column: result.code.indexOf('console.log'),
+        })
+      ).toMatchObject({ line: 1, column: source.indexOf('console.log') })
+    }
+  )
+
+  test('默认语言不覆盖显式语言，隐式 UTS 留给 UTS 编译链', () => {
+    const body = 'const value = defineMixin({ value: 1 })'
+    for (const source of [
+      `<script setup>${body}</script>`,
+      `<script setup lang="uts">${body}</script>`,
+    ]) {
+      expect(
+        transformUniAppXStandardScript(source, '/page.uvue', ts, {
+          defaultScriptLang: 'uts',
+        })
+      ).toBeUndefined()
+    }
+    expect(
+      transformUniAppXStandardScript(
+        `<script setup lang="ts">${body}</script>`,
+        '/page.uvue',
+        ts,
+        { defaultScriptLang: 'uts' }
+      )?.code
+    ).not.toContain('defineMixin')
+    expect(
+      transformUniAppXStandardScript(
+        `<script setup lang="uts">${body}</script>`,
+        '/page.uvue',
+        ts,
+        { defaultScriptLang: 'ts' }
+      )
+    ).toBeUndefined()
+  })
+
+  test.each([
     ['/src/index.ts', 'module'],
     ['/src/index.js?v=1', 'module'],
     ['/pages/index/index.uvue', 'sfc'],

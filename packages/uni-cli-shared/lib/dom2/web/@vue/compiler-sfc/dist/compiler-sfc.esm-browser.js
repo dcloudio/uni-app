@@ -23335,7 +23335,7 @@ function parse(source, options = {}) {
 	const sourceKey = genCacheKey(source, _objectSpread2(_objectSpread2({}, options), {}, { compiler: { parse: (_options$compiler = options.compiler) === null || _options$compiler === void 0 ? void 0 : _options$compiler.parse } }));
 	const cache = parseCache$1.get(sourceKey);
 	if (cache) return cache;
-	const { sourceMap = true, filename = DEFAULT_FILENAME, sourceRoot = "", pad = false, ignoreEmpty = true, compiler = src_exports$2, templateParseOptions = {} } = options;
+	const { sourceMap = true, filename = DEFAULT_FILENAME, sourceRoot = "", pad = false, ignoreEmpty = true, compiler = src_exports$2, templateParseOptions = {}, defaultScriptLang } = options;
 	const descriptor = {
 		filename,
 		source,
@@ -23408,6 +23408,12 @@ function parse(source, options = {}) {
 		}
 	}
 	if (!descriptor.template && !descriptor.script && !descriptor.scriptSetup) errors.push(/* @__PURE__ */ new SyntaxError(`At least one <template> or <script> is required in a single file component. ${descriptor.filename}`));
+	if (defaultScriptLang) {
+		for (const script of [descriptor.script, descriptor.scriptSetup]) if (script && !hasOwn(script.attrs, "lang")) {
+			script.lang = defaultScriptLang;
+			script.attrs.lang = defaultScriptLang;
+		}
+	}
 	if (descriptor.scriptSetup) {
 		if (descriptor.scriptSetup.src) {
 			errors.push(/* @__PURE__ */ new SyntaxError("<script setup> cannot use the \"src\" attribute because its syntax will be ambiguous outside of the component."));

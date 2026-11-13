@@ -3,6 +3,7 @@ import basicSsl from '@vitejs/plugin-basic-ssl'
 import {
   UNI_EASYCOM_EXCLUDE,
   enableSourceMap,
+  getUniAppXVaporScriptLang,
   getWorkers,
   initUasmWebTransformOptions,
   initUts2jsExtApiOptions,
@@ -54,6 +55,7 @@ if (
 }
 
 export default () => {
+  const isWebVapor = isUniAppXWebVapor()
   const isNewStyleIsolation =
     process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2'
   const uasm =
@@ -69,19 +71,24 @@ export default () => {
       ? [
           uniDecryptUniModulesPlugin(),
           uniUasmPlugin(),
-          uniUTSUVueJavaScriptPlugin(),
+          uniUTSUVueJavaScriptPlugin({
+            useSfcDescriptorTransform: isWebVapor,
+          }),
           // H5 的标准 JS/TS 不走 uts2js，脚本宏和 UASM 必须在标准 plugin-vue 前完成转换。
           uniAppXStandardScriptPlugin({
+            defaultScriptLang: isWebVapor
+              ? getUniAppXVaporScriptLang(process.env.UNI_INPUT_DIR)
+              : undefined,
             uasm,
             workers: {
               ...initWorkerTransformOptions(),
               rewriteRootDir: undefined,
             },
           }),
-          ...(isUniAppXWebVapor() ? [uniWebVaporElementPlugin()] : []),
+          ...(isWebVapor ? [uniWebVaporElementPlugin()] : []),
           resolveUTSCompiler().uts2js({
             platform: 'web',
-            dom2: isUniAppXWebVapor(),
+            dom2: isWebVapor,
             excludeStandardTypeScript: true,
             inputDir: process.env.UNI_INPUT_DIR,
             version: process.env.UNI_COMPILER_VERSION,

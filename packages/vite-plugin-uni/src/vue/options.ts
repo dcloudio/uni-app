@@ -157,6 +157,9 @@ export function initPluginVueOptions(
     // plugin-vue 的 compiler 是完整 SFC compiler；显式传入 Web Vapor 定制版，
     // 避免从项目根目录解析到标准 Vue compiler-sfc。
     vueOptions.compiler = require('vue/compiler-sfc')
+    ;(vueOptions as any).defaultScriptLang = getUniAppXVaporScriptLang(
+      options.inputDir
+    )
     if (ssrPreTagTransforms) {
       Object.assign(compilerOptions, { ssrPreTagTransforms })
     }

@@ -213,31 +213,39 @@ describe('initPluginVueOptions', () => {
     })
   })
 
-  test('Web Vapor 显式传入定制 SFC compiler', () => {
-    process.env.UNI_APP_X = 'true'
-    process.env.UNI_APP_X_DOM2 = 'true'
-    process.env.UNI_APP_X_VAPOR = 'true'
-    process.env.UNI_PLATFORM = 'h5'
-    process.env.UNI_UTS_PLATFORM = 'web'
-    process.env.UNI_INPUT_DIR = inputDir
-    const options = {
-      base: '/',
-      command: 'serve',
-      platform: 'h5',
-      inputDir,
-      outputDir: '/dist',
-      assetsDir: 'assets',
-    } as any
+  test.each(['serve', 'build'])(
+    'Web Vapor 传入定制解析器及默认语言（%s）',
+    (command) => {
+      process.env.UNI_APP_X = 'true'
+      process.env.UNI_APP_X_DOM2 = 'true'
+      process.env.UNI_APP_X_VAPOR = 'true'
+      process.env.UNI_PLATFORM = 'h5'
+      process.env.UNI_UTS_PLATFORM = 'web'
+      process.env.UNI_INPUT_DIR = inputDir
+      const options = {
+        base: '/',
+        command,
+        platform: 'h5',
+        inputDir,
+        outputDir: '/dist',
+        assetsDir: 'assets',
+      } as any
 
-    const vueOptions = initPluginVueOptions(options, initPluginUniOptions([]))
+      const vueOptions = initPluginVueOptions(options, initPluginUniOptions([]))
 
-    expect(
-      (vueOptions.features as typeof vueOptions.features & { vapor?: boolean })
-        ?.vapor
-    ).toBe(true)
-    expect(vueOptions.compiler).toBe(require('vue/compiler-sfc'))
-    expect(vueOptions.template).not.toHaveProperty('vaporCompiler')
-  })
+      expect(
+        (
+          vueOptions.features as typeof vueOptions.features & {
+            vapor?: boolean
+          }
+        )?.vapor
+      ).toBe(true)
+      expect(vueOptions.compiler).toBe(require('vue/compiler-sfc'))
+      expect((vueOptions as any).defaultScriptLang).toBe('ts')
+      expect(vueOptions).not.toHaveProperty('uniAppXVaporSfcTransform')
+      expect(vueOptions.template).not.toHaveProperty('vaporCompiler')
+    }
+  )
 
   test.each([
     'web',

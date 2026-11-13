@@ -7,6 +7,7 @@ import { parse } from '@vue/compiler-sfc'
 import type { ExistingRawSourceMap } from 'rollup'
 import MagicString from 'magic-string'
 import type { Plugin } from 'vite'
+import type { UniAppXVaporScriptLang } from '../../../json'
 import { resolveUTSCompiler } from '../../../uts'
 import {
   createUniAppXScriptMacrosTransformer,
@@ -31,6 +32,7 @@ interface SourceEdit {
 }
 
 export interface UniAppXStandardScriptPluginOptions {
+  defaultScriptLang?: UniAppXVaporScriptLang
   uasm?: UasmTransformOptions
   workers?: WorkerTransformPluginOptions
 }
@@ -179,13 +181,15 @@ export function transformUniAppXStandardScript(
       return
     }
     for (const block of [descriptor.script, descriptor.scriptSetup]) {
-      if (!block || block.src || (block.lang !== 'js' && block.lang !== 'ts')) {
+      // Web Vapor 不再改写 script 标签，前置转换也必须使用相同的默认语言。
+      const lang = block?.lang ?? options.defaultScriptLang
+      if (!block || block.src || (lang !== 'js' && lang !== 'ts')) {
         continue
       }
       collectStandardScriptEdits(
         block.content,
         filename,
-        block.lang,
+        lang,
         block.loc.start.offset,
         typescript,
         options,
@@ -223,7 +227,7 @@ export function uniAppXStandardScriptPlugin(
     name: 'uni:app-x-standard-script',
     enforce: 'pre',
     transform(code, id) {
-      // 该插件只由非 DOM2 平台安装，在标准 plugin-vue 前处理原始 SFC。
+      // Web（含 Vapor）和小程序在 plugin-vue 前处理原始 SFC。
       return transformUniAppXStandardScript(code, id, typescript, options)
     },
   }
