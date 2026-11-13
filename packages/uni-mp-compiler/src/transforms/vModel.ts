@@ -83,9 +83,20 @@ export const transformModel: DirectiveTransform = (
     )
   }
 
-  if (dir.modifiers.length) {
+  // 仅 uni-app-x 微信小程序将原生 input 的 .lazy 绑定到 change
+  const useChangeEvent =
+    tag === 'input' &&
+    context.isX &&
+    process.env.UNI_PLATFORM === 'mp-weixin' &&
+    dir.modifiers.includes('lazy')
+  // 启用 change 时，lazy 已在编译期处理；trim、number 等修饰符仍交给运行时
+  const modelModifiers = useChangeEvent
+    ? dir.modifiers.filter((modifier) => modifier !== 'lazy')
+    : dir.modifiers
+
+  if (modelModifiers.length) {
     const arg = dir.arg
-    const modifiers = dir.modifiers
+    const modifiers = modelModifiers
       .map((m) => (isSimpleIdentifier(m) ? m : JSON.stringify(m)) + `: true`)
       .join(`, `)
     const modifiersKey = arg
@@ -109,36 +120,42 @@ export const transformModel: DirectiveTransform = (
   return transformElementVModel(
     baseResult.props,
     node,
-    context
+    context,
+    useChangeEvent ? 'change' : 'input'
   ) as unknown as DirectiveTransformResult
 }
 
-function findInputDirectiveNode(props: (AttributeNode | DirectiveNode)[]) {
+function findInputDirectiveNode(
+  props: (AttributeNode | DirectiveNode)[],
+  event: string
+) {
   return props.find(
     (prop) =>
       prop.type === NodeTypes.DIRECTIVE &&
       prop.name === 'on' &&
       prop.arg?.type === NodeTypes.SIMPLE_EXPRESSION &&
-      prop.arg.content === 'input'
+      prop.arg.content === event
   ) as DirectiveNode | undefined
 }
 
 function transformElementVModel(
   props: Property[],
   node: ElementNode,
-  context: TransformContext
+  context: TransformContext,
+  event: string
 ) {
   const dirs = transformVModel(props, node, context, {
     isComponent: false,
     binding: 'value',
-    event: 'input',
+    event,
     formatEventCode(code) {
       return code.replace(/=\s\$event/g, `= $event.detail.value`)
     },
   })
   if (dirs.length === 2) {
+    // 按实际的模型更新事件合并，避免 .lazy 的赋值被并入用户的 @input 中。
     // 快手小程序的 input v-model 被转换到 data-e-o 中，补充到 data-e-o 中
-    const inputExp = findDatasetEventOpts(node)
+    const inputExp = findDatasetEventOpts(node, event)
     if (inputExp) {
       inputExp.children[2] = combineVOn(
         dirs[1].exp!,
@@ -148,9 +165,9 @@ function transformElementVModel(
       )
       dirs.length = 1
     } else {
-      const inputDir = findInputDirectiveNode(node.props)
+      const inputDir = findInputDirectiveNode(node.props, event)
       if (inputDir && inputDir.exp) {
-        // 合并到已有的 input 事件中
+        // 合并到对应事件中，先更新 v-model，再执行用户的事件处理器
         inputDir.exp = combineVOn(dirs[1].exp!, inputDir.exp, node, context)
         dirs.length = 1
       }
@@ -195,7 +212,7 @@ function transformElementVModel(
  * @param node
  * @returns
  */
-function findDatasetEventOpts(node: ElementNode) {
+function findDatasetEventOpts(node: ElementNode, event: string) {
   const eventOptsProp = findProp(
     node,
     ATTR_DATASET_EVENT_OPTS,
@@ -217,7 +234,7 @@ function findDatasetEventOpts(node: ElementNode) {
     if (childExp.type !== NodeTypes.COMPOUND_EXPRESSION) {
       continue
     }
-    if (childExp.children[0] !== `'input'`) {
+    if (childExp.children[0] !== `'${event}'`) {
       continue
     }
     const inputExp = childExp.children[2]
