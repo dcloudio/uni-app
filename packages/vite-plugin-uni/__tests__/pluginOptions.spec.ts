@@ -106,6 +106,7 @@ describe('initPluginVueOptions', () => {
     ['harmony-vdom', 'app-harmony', false, false, ['typescript', 'decorators']],
     ['harmony-vapor', 'app-harmony', true, true, undefined],
     ['web', 'web', false, false, ['decorators']],
+    ['web-vapor', 'web', true, true, undefined],
     ['mp', 'mp-weixin', false, false, ['decorators']],
   ] as const)(
     'injects the script transform for %s',

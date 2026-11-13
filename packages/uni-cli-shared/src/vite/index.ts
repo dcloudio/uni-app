@@ -23,6 +23,7 @@ export interface CopyOptions {
 
 interface UniVitePluginUniOptions {
   compiler?: TemplateCompiler
+  // 保留 Vapor 命名以兼容 App DOM2；实际承载的是 compileScript 后的标准脚本转换。
   uniAppXVaporScriptTransform?: (input: {
     code: string
     id: string

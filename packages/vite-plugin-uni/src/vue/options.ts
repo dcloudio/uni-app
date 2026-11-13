@@ -338,7 +338,7 @@ export function initPluginVueOptions(
       }
     }
     if (isDom2) {
-      // 该扩展点依赖定制 plugin-vue，仅用于 compileScript 后的 DOM2 SharedData 等转换。
+      // 定制 plugin-vue 在 compileScript 后执行平台脚本转换，保留各平台的内联策略。
       ;(vueOptions as any).uniAppXVaporScriptTransform =
         uniPluginOptions.uniAppXVaporScriptTransform
       const utsPlatform =

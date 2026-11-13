@@ -1,6 +1,18 @@
 import { Plugin, ViteDevServer } from "vite";
 import * as _compiler from "vue/compiler-sfc";
-import { SFCScriptCompileOptions, SFCStyleCompileOptions, SFCTemplateCompileOptions } from "vue/compiler-sfc";
+import { SFCScriptBlock, SFCScriptCompileOptions, SFCStyleCompileOptions, SFCTemplateCompileOptions } from "vue/compiler-sfc";
+//#region src/uniAppXVapor.d.ts
+interface UniAppXVaporScriptTransformInput {
+  code: string;
+  id: string;
+  lang?: string;
+}
+interface UniAppXVaporScriptTransformResult {
+  code: string;
+  map?: SFCScriptBlock['map'];
+}
+type UniAppXVaporScriptTransform = (input: UniAppXVaporScriptTransformInput) => UniAppXVaporScriptTransformResult | undefined;
+//#endregion
 //#region src/utils/query.d.ts
 interface VueQuery {
   vue?: boolean;
@@ -45,6 +57,8 @@ interface Options {
   compiler?: typeof _compiler;
   /** fixed by uts: Web 定制 compiler-sfc 的默认脚本语言，不覆盖显式 lang。 */
   defaultScriptLang?: 'js' | 'ts' | 'uts';
+  /** fixed by uts: 在脚本编译后、TS 转译前执行转换，不改变模块内联策略。 */
+  uniAppXVaporScriptTransform?: UniAppXVaporScriptTransform;
   /**
    * Requires @vitejs/plugin-vue@^5.1.0
    */

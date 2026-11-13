@@ -254,68 +254,6 @@ function canReuseAST(version) {
 	return false;
 }
 //#endregion
-//#region src/script.ts
-let clientCache = /* @__PURE__ */ new WeakMap();
-let ssrCache = /* @__PURE__ */ new WeakMap();
-const typeDepToSFCMap = /* @__PURE__ */ new Map();
-function invalidateScript(filename) {
-	const desc = cache.get(filename);
-	if (desc) {
-		clientCache.delete(desc);
-		ssrCache.delete(desc);
-	}
-}
-function getResolvedScript(descriptor, ssr) {
-	return (ssr ? ssrCache : clientCache).get(descriptor);
-}
-function setResolvedScript(descriptor, script, ssr) {
-	(ssr ? ssrCache : clientCache).set(descriptor, script);
-}
-function clearScriptCache() {
-	clientCache = /* @__PURE__ */ new WeakMap();
-	ssrCache = /* @__PURE__ */ new WeakMap();
-}
-function isUseInlineTemplate(descriptor, options) {
-	return !options.devServer && !options.devToolsEnabled && !!descriptor.scriptSetup && !descriptor.template?.src;
-}
-const scriptIdentifier = `_sfc_main`;
-function resolveScript(descriptor, options, ssr, customElement) {
-	if (!descriptor.script && !descriptor.scriptSetup) return null;
-	const cached = getResolvedScript(descriptor, ssr);
-	if (cached) return cached;
-	const extraOptions = options.script?.extraOptions?.(descriptor);
-	const resolved = options.compiler.compileScript(descriptor, {
-		...options.script,
-		...extraOptions,
-		id: descriptor.id,
-		isProd: options.isProduction,
-		inlineTemplate: isUseInlineTemplate(descriptor, options),
-		templateOptions: resolveTemplateCompilerOptions(descriptor, options, descriptor.filename, ssr),
-		sourceMap: options.sourceMap,
-		genDefaultAs: canInlineMain(descriptor, options) ? scriptIdentifier : void 0,
-		customElement,
-		vapor: isVaporMode(descriptor, options),
-		propsDestructure: options.features?.propsDestructure ?? options.script?.propsDestructure
-	});
-	if (!options.isProduction && resolved?.deps) {
-		for (const [key, sfcs] of typeDepToSFCMap) if (sfcs.has(descriptor.filename) && !resolved.deps.includes(key)) sfcs.delete(descriptor.filename);
-		for (const dep of resolved.deps) {
-			const existingSet = typeDepToSFCMap.get(dep);
-			if (!existingSet) typeDepToSFCMap.set(dep, /* @__PURE__ */ new Set([descriptor.filename]));
-			else existingSet.add(descriptor.filename);
-		}
-	}
-	setResolvedScript(descriptor, resolved, ssr);
-	return resolved;
-}
-function canInlineMain(descriptor, options) {
-	if (descriptor.script?.src || descriptor.scriptSetup?.src) return false;
-	const lang = descriptor.script?.lang || descriptor.scriptSetup?.lang;
-	if (!lang || lang === "js") return true;
-	if (lang === "ts" && options.devServer) return true;
-	return false;
-}
-//#endregion
 //#region ../../node_modules/.pnpm/@jridgewell+sourcemap-codec@1.5.5/node_modules/@jridgewell/sourcemap-codec/dist/sourcemap-codec.mjs
 var comma = ",".charCodeAt(0);
 var semicolon = ";".charCodeAt(0);
@@ -657,6 +595,10 @@ function resolver(mapUrl, sourceRoot) {
 	return (source) => resolve(prefix + (source || ""), from);
 }
 var COLUMN$1 = 0;
+var SOURCES_INDEX$1 = 1;
+var SOURCE_LINE$1 = 2;
+var SOURCE_COLUMN$1 = 3;
+var NAMES_INDEX$1 = 4;
 function maybeSort(mappings, owned) {
 	const unsortedIndex = nextUnsortedSegmentLine(mappings, 0);
 	if (unsortedIndex === mappings.length) return mappings;
@@ -679,6 +621,29 @@ function sortSegments(line, owned) {
 function sortComparator(a, b) {
 	return a[COLUMN$1] - b[COLUMN$1];
 }
+var found = false;
+function binarySearch(haystack, needle, low, high) {
+	while (low <= high) {
+		const mid = low + (high - low >> 1);
+		const cmp = haystack[mid][COLUMN$1] - needle;
+		if (cmp === 0) {
+			found = true;
+			return mid;
+		}
+		if (cmp < 0) low = mid + 1;
+		else high = mid - 1;
+	}
+	found = false;
+	return low - 1;
+}
+function upperBound(haystack, needle, index) {
+	for (let i = index + 1; i < haystack.length; index = i++) if (haystack[i][COLUMN$1] !== needle) break;
+	return index;
+}
+function lowerBound(haystack, needle, index) {
+	for (let i = index - 1; i >= 0; index = i--) if (haystack[i][COLUMN$1] !== needle) break;
+	return index;
+}
 function memoizedState() {
 	return {
 		lastKey: -1,
@@ -686,9 +651,27 @@ function memoizedState() {
 		lastIndex: -1
 	};
 }
+function memoizedBinarySearch(haystack, needle, state, key) {
+	const { lastKey, lastNeedle, lastIndex } = state;
+	let low = 0;
+	let high = haystack.length - 1;
+	if (key === lastKey) {
+		if (needle === lastNeedle) {
+			found = lastIndex !== -1 && haystack[lastIndex][COLUMN$1] === needle;
+			return lastIndex;
+		}
+		if (needle >= lastNeedle) low = lastIndex === -1 ? 0 : lastIndex;
+		else high = lastIndex;
+	}
+	state.lastKey = key;
+	state.lastNeedle = needle;
+	return state.lastIndex = binarySearch(haystack, needle, low, high);
+}
 function parse(map) {
 	return typeof map === "string" ? JSON.parse(map) : map;
 }
+var LINE_GTR_ZERO = "`line` must be greater than 0 (lines start at line 1)";
+var COL_GTR_EQ_ZERO = "`column` must be greater than or equal to 0 (columns start at column 0)";
 var TraceMap = class {
 	constructor(map, mapUrl) {
 		const isString = typeof map === "string";
@@ -725,6 +708,21 @@ function decodedMappings(map) {
 	var _a;
 	return (_a = cast$1(map))._decoded || (_a._decoded = decode(cast$1(map)._encoded));
 }
+function originalPositionFor(map, needle) {
+	let { line, column, bias } = needle;
+	line--;
+	if (line < 0) throw new Error(LINE_GTR_ZERO);
+	if (column < 0) throw new Error(COL_GTR_EQ_ZERO);
+	const decoded = decodedMappings(map);
+	if (line >= decoded.length) return OMapping(null, null, null, null);
+	const segments = decoded[line];
+	const index = traceSegmentInternal(segments, cast$1(map)._decodedMemo, line, column, bias || 1);
+	if (index === -1) return OMapping(null, null, null, null);
+	const segment = segments[index];
+	if (segment.length === 1) return OMapping(null, null, null, null);
+	const { names, resolvedSources } = map;
+	return OMapping(resolvedSources[segment[SOURCES_INDEX$1]], segment[SOURCE_LINE$1] + 1, segment[SOURCE_COLUMN$1], segment.length === 5 ? names[segment[NAMES_INDEX$1]] : null);
+}
 function eachMapping(map, cb) {
 	const decoded = decodedMappings(map);
 	const { names, resolvedSources } = map;
@@ -754,6 +752,21 @@ function eachMapping(map, cb) {
 			});
 		}
 	}
+}
+function OMapping(source, line, column, name) {
+	return {
+		source,
+		line,
+		column,
+		name
+	};
+}
+function traceSegmentInternal(segments, memo, line, column, bias) {
+	let index = memoizedBinarySearch(segments, column, memo, line);
+	if (found) index = (bias === -1 ? upperBound : lowerBound)(segments, column, index);
+	else if (bias === -1) index++;
+	if (index === -1 || index === segments.length) return -1;
+	return index;
 }
 //#endregion
 //#region ../../node_modules/.pnpm/@jridgewell+gen-mapping@0.3.13/node_modules/@jridgewell/gen-mapping/dist/gen-mapping.mjs
@@ -797,6 +810,11 @@ function cast2(map) {
 }
 function addMapping(map, mapping) {
 	return addMappingInternal(false, map, mapping);
+}
+function setSourceContent(map, source, content) {
+	const { _sources: sources, _sourcesContent: sourcesContent } = cast2(map);
+	const index = put(sources, source);
+	sourcesContent[index] = content;
 }
 function toDecodedMap(map) {
 	const { _mappings: mappings, _sources: sources, _sourcesContent: sourcesContent, _names: names, _ignoreList: ignoreList } = cast2(map);
@@ -890,6 +908,164 @@ function addMappingInternal(skipable, map, mapping) {
 	const { generated, source, original, name, content } = mapping;
 	if (!source) return addSegmentInternal(skipable, map, generated.line - 1, generated.column, null, null, null, null, null);
 	return addSegmentInternal(skipable, map, generated.line - 1, generated.column, source, original.line - 1, original.column, name, content);
+}
+//#endregion
+//#region src/uniAppXVapor.ts
+function shouldApplyUniAppXVaporScriptTransform(descriptor, transform) {
+	const lang = descriptor.scriptSetup?.lang;
+	return !!(transform && descriptor.scriptSetup && (lang === "js" || lang === "ts") && !descriptor.script?.src && !descriptor.scriptSetup.src);
+}
+function getPosition(source, line, column) {
+	let pos = 0;
+	for (let currentLine = 1; currentLine < line; currentLine++) {
+		const lineEnd = source.indexOf("\n", pos);
+		if (lineEnd < 0) return source.length;
+		pos = lineEnd + 1;
+	}
+	return Math.min(pos + column, source.length);
+}
+function remapTransformError(error, code, map, descriptor) {
+	if (error instanceof Error && map && typeof error.pos === "number") {
+		const transformError = error;
+		const generated = getLineAndColumn(code, transformError.pos);
+		const original = originalPositionFor(new TraceMap(map), generated);
+		if (original.source && original.line != null && original.column != null) {
+			transformError.id = original.source;
+			transformError.pos = getPosition(descriptor.source, original.line, original.column);
+			transformError.loc = {
+				file: original.source,
+				line: original.line,
+				column: original.column
+			};
+		}
+	}
+	throw error;
+}
+function getLineAndColumn(source, pos) {
+	const lines = source.slice(0, pos).split("\n");
+	return {
+		line: lines.length,
+		column: lines[lines.length - 1].length
+	};
+}
+function mergeSourceMaps(compileScriptMap, transformMap) {
+	const compileScriptTracer = new TraceMap(compileScriptMap);
+	const transformTracer = new TraceMap(transformMap);
+	const gen = new GenMapping({
+		file: transformMap.file || compileScriptMap.file,
+		sourceRoot: compileScriptMap.sourceRoot
+	});
+	compileScriptTracer.sources.forEach((source, index) => {
+		const content = compileScriptTracer.sourcesContent?.[index];
+		if (content != null) setSourceContent(gen, source || "", content);
+	});
+	eachMapping(transformTracer, (mapping) => {
+		if (!mapping.source) return;
+		const original = originalPositionFor(compileScriptTracer, {
+			line: mapping.originalLine,
+			column: mapping.originalColumn
+		});
+		if (!original.source || original.line == null || original.column == null) return;
+		addMapping(gen, {
+			source: original.source,
+			original: {
+				line: original.line,
+				column: original.column
+			},
+			generated: {
+				line: mapping.generatedLine,
+				column: mapping.generatedColumn
+			},
+			name: original.name || mapping.name || ""
+		});
+	});
+	return toEncodedMap(gen);
+}
+function applyUniAppXVaporScriptTransform(resolved, descriptor, transform, getSourceMap) {
+	if (!shouldApplyUniAppXVaporScriptTransform(descriptor, transform)) return resolved;
+	let result;
+	try {
+		result = transform({
+			code: resolved.content,
+			id: descriptor.filename,
+			lang: resolved.lang
+		});
+	} catch (error) {
+		remapTransformError(error, resolved.content, resolved.map || getSourceMap?.(), descriptor);
+	}
+	if (!result) return resolved;
+	resolved = {
+		...resolved,
+		content: result.code
+	};
+	if (result.map && resolved.map) resolved.map = mergeSourceMaps(resolved.map, result.map);
+	return resolved;
+}
+//#endregion
+//#region src/script.ts
+let clientCache = /* @__PURE__ */ new WeakMap();
+let ssrCache = /* @__PURE__ */ new WeakMap();
+const typeDepToSFCMap = /* @__PURE__ */ new Map();
+function invalidateScript(filename) {
+	const desc = cache.get(filename);
+	if (desc) {
+		clientCache.delete(desc);
+		ssrCache.delete(desc);
+	}
+}
+function getResolvedScript(descriptor, ssr) {
+	return (ssr ? ssrCache : clientCache).get(descriptor);
+}
+function setResolvedScript(descriptor, script, ssr) {
+	(ssr ? ssrCache : clientCache).set(descriptor, script);
+}
+function clearScriptCache() {
+	clientCache = /* @__PURE__ */ new WeakMap();
+	ssrCache = /* @__PURE__ */ new WeakMap();
+}
+function isUseInlineTemplate(descriptor, options) {
+	return !options.devServer && !options.devToolsEnabled && !!descriptor.scriptSetup && !descriptor.template?.src;
+}
+const scriptIdentifier = `_sfc_main`;
+function resolveScript(descriptor, options, ssr, customElement) {
+	if (!descriptor.script && !descriptor.scriptSetup) return null;
+	const cached = getResolvedScript(descriptor, ssr);
+	if (cached) return cached;
+	const extraOptions = options.script?.extraOptions?.(descriptor);
+	const compileScriptOptions = {
+		...options.script,
+		...extraOptions,
+		id: descriptor.id,
+		isProd: options.isProduction,
+		inlineTemplate: isUseInlineTemplate(descriptor, options),
+		templateOptions: resolveTemplateCompilerOptions(descriptor, options, descriptor.filename, ssr),
+		sourceMap: options.sourceMap,
+		genDefaultAs: canInlineMain(descriptor, options) ? scriptIdentifier : void 0,
+		customElement,
+		vapor: isVaporMode(descriptor, options),
+		propsDestructure: options.features?.propsDestructure ?? options.script?.propsDestructure
+	};
+	const resolved = applyUniAppXVaporScriptTransform(options.compiler.compileScript(descriptor, compileScriptOptions), descriptor, options.uniAppXVaporScriptTransform, options.sourceMap ? void 0 : () => options.compiler.compileScript(descriptor, {
+		...compileScriptOptions,
+		sourceMap: true
+	}).map);
+	if (!options.isProduction && resolved?.deps) {
+		for (const [key, sfcs] of typeDepToSFCMap) if (sfcs.has(descriptor.filename) && !resolved.deps.includes(key)) sfcs.delete(descriptor.filename);
+		for (const dep of resolved.deps) {
+			const existingSet = typeDepToSFCMap.get(dep);
+			if (!existingSet) typeDepToSFCMap.set(dep, /* @__PURE__ */ new Set([descriptor.filename]));
+			else existingSet.add(descriptor.filename);
+		}
+	}
+	setResolvedScript(descriptor, resolved, ssr);
+	return resolved;
+}
+function canInlineMain(descriptor, options) {
+	if (descriptor.script?.src || descriptor.scriptSetup?.src) return false;
+	const lang = descriptor.script?.lang || descriptor.scriptSetup?.lang;
+	if (!lang || lang === "js") return true;
+	if (lang === "ts" && options.devServer) return true;
+	return false;
 }
 //#endregion
 //#region ../../node_modules/.pnpm/obug@3.0.0/node_modules/obug/dist/core.js

@@ -3,9 +3,15 @@ import { SourceMapConsumer } from 'source-map-js'
 import {
   resolveUniAppXStandardScriptRequest,
   transformUniAppXStandardScript,
+  uniAppXScriptTransformPlugin,
+  uniAppXStandardScriptPlugin,
 } from '../src/vite/plugins/uts/standardScript'
 import { createLoadUasmTransformer } from '../src/uasm'
 import { createWorkerTransformer } from '../src/workers'
+
+jest.mock('../src/uts', () => ({
+  resolveUTSCompiler: () => ({ getTypeScript: () => require('typescript') }),
+}))
 
 const uasm = {
   resolve(modulePath: string) {
@@ -43,25 +49,66 @@ const miniProgramUasm = {
 }
 
 describe('uni-app x standard script', () => {
+  test.each(['js', 'ts'])(
+    'Web Vapor 的 %s SFC 只在编译后转换，独立模块单独处理',
+    (lang) => {
+      const plugin = uniAppXScriptTransformPlugin({
+        uasm,
+        workers,
+      })
+      const body = `const plugin = definePlugin(() => {}); uni.loadUasm('uni_modules/test-uasm'); uni.createWorker('workers/helloWorkerTask.uts')`
+      const source = `<script setup lang="${lang}">${body}</script>`
+      const transform = plugin.transform as Function
+      expect(transform(source, '/page.uvue')).toBeUndefined()
+      const postTransform = plugin.uni!.uniAppXVaporScriptTransform!
+      const result = postTransform({ code: body, id: '/page.uvue', lang })!
+      expect(result.code).not.toContain('definePlugin')
+      expect(result.code).toContain('loader: () => import(')
+      expect(result.code).toContain('workers/helloWorkerTask.js')
+      expect(result.map!.sources).toEqual(['/page.uvue'])
+      expect(transform(body, `/module.${lang}`).code).toBe(result.code)
+      expect(
+        postTransform({ code: body, id: '/page.uvue', lang: 'uts' })
+      ).toBeUndefined()
+      expect(
+        transform(body, `/page.uvue?vue&type=script&lang.${lang}`)
+      ).toBeUndefined()
+    }
+  )
+
+  test('普通 Web、小程序等默认入口继续前置转换 SFC', () => {
+    const plugin = uniAppXStandardScriptPlugin()
+    expect(plugin.uni?.uniAppXVaporScriptTransform).toBeUndefined()
+    expect(
+      (plugin.transform as Function)(
+        '<script setup lang="ts">const plugin = definePlugin(() => {})</script>',
+        '/page.uvue'
+      ).code
+    ).not.toContain('definePlugin')
+  })
+
   test.each([
     ['js', '/pages/[index]/index.uvue'],
     ['ts', '/pages/[index]/index.uvue'],
     ['ts', 'C:\\project\\pages\\[index]\\index.uvue'],
     ['ts', '\\\\server\\share\\pages\\[index]\\index.uvue'],
   ] as const)(
-    '隐式 %s 仍转换宏、UASM 和 Worker，并保留原始映射（%s）',
-    (defaultScriptLang, filename) => {
-      const source = `<script setup>const value = definePlugin(() => uni.loadUasm('uni_modules/test-uasm')); uni.createWorker('workers/helloWorkerTask.uts'); console.log(value)</script>`
-      const result = transformUniAppXStandardScript(source, filename, ts, {
-        defaultScriptLang,
+    '后置 %s 转换保留脚本映射及跨平台标识符（%s）',
+    (lang, filename) => {
+      const source = `const value = definePlugin(() => uni.loadUasm('uni_modules/test-uasm')); uni.createWorker('workers/helloWorkerTask.uts'); console.log(value)`
+      const plugin = uniAppXScriptTransformPlugin({
         uasm,
         workers,
+      })
+      const result = plugin.uni!.uniAppXVaporScriptTransform!({
+        code: source,
+        id: filename,
+        lang,
       })!
       expect(result.code).not.toContain('definePlugin')
       expect(result.code).toContain('loader: () => import(')
       expect(result.code).toContain('workers/helloWorkerTask.js')
-      expect(result.code).toContain('<script setup>')
-      expect(result.map.sourcesContent).toEqual([source])
+      expect(result.map!.sourcesContent).toEqual([source])
       const consumer = new SourceMapConsumer(result.map as any)
       expect(
         consumer.originalPositionFor({
@@ -72,34 +119,42 @@ describe('uni-app x standard script', () => {
     }
   )
 
-  test('默认语言不覆盖显式语言，隐式 UTS 留给 UTS 编译链', () => {
+  test('Web Vapor 前置入口不补充默认语言，UTS 留给 UTS 编译链', () => {
     const body = 'const value = defineMixin({ value: 1 })'
     for (const source of [
       `<script setup>${body}</script>`,
       `<script setup lang="uts">${body}</script>`,
     ]) {
       expect(
-        transformUniAppXStandardScript(source, '/page.uvue', ts, {
-          defaultScriptLang: 'uts',
-        })
+        transformUniAppXStandardScript(source, '/page.uvue', ts)
       ).toBeUndefined()
     }
     expect(
       transformUniAppXStandardScript(
         `<script setup lang="ts">${body}</script>`,
         '/page.uvue',
-        ts,
-        { defaultScriptLang: 'uts' }
+        ts
       )?.code
     ).not.toContain('defineMixin')
     expect(
       transformUniAppXStandardScript(
         `<script setup lang="uts">${body}</script>`,
         '/page.uvue',
-        ts,
-        { defaultScriptLang: 'ts' }
+        ts
       )
     ).toBeUndefined()
+  })
+
+  test('保留旧 defaultScriptLang 调用方的兼容行为', () => {
+    const body = 'const value = defineMixin({ value: 1 })'
+    expect(
+      transformUniAppXStandardScript(
+        `<script setup>${body}</script>`,
+        '/page.uvue',
+        ts,
+        { defaultScriptLang: 'ts' }
+      )?.code
+    ).not.toContain('defineMixin')
   })
 
   test.each([

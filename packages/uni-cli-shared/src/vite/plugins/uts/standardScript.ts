@@ -6,7 +6,7 @@ import type {
 import { parse } from '@vue/compiler-sfc'
 import type { ExistingRawSourceMap } from 'rollup'
 import MagicString from 'magic-string'
-import type { Plugin } from 'vite'
+import type { UniVitePlugin } from '../../index'
 import type { UniAppXVaporScriptLang } from '../../../json'
 import { resolveUTSCompiler } from '../../../uts'
 import {
@@ -32,6 +32,7 @@ interface SourceEdit {
 }
 
 export interface UniAppXStandardScriptPluginOptions {
+  /** @deprecated Web Vapor 默认语言由 compiler-sfc 负责，此字段仅保留旧调用方兼容性。 */
   defaultScriptLang?: UniAppXVaporScriptLang
   uasm?: UasmTransformOptions
   workers?: WorkerTransformPluginOptions
@@ -116,7 +117,6 @@ function collectStandardScriptEdits(
     )
   }
   if (transformUasm) {
-    // H5、MP 的 UASM 调用不依赖 compileScript 产物，在原始脚本阶段处理即可继续使用标准 plugin-vue。
     transformers.push(
       options.uasm!.createLoadUasmTransformer({
         ...options.uasm!,
@@ -181,7 +181,6 @@ export function transformUniAppXStandardScript(
       return
     }
     for (const block of [descriptor.script, descriptor.scriptSetup]) {
-      // Web Vapor 不再改写 script 标签，前置转换也必须使用相同的默认语言。
       const lang = block?.lang ?? options.defaultScriptLang
       if (!block || block.src || (lang !== 'js' && lang !== 'ts')) {
         continue
@@ -197,6 +196,14 @@ export function transformUniAppXStandardScript(
       )
     }
   }
+  return applyStandardScriptEdits(code, filename, edits)
+}
+
+function applyStandardScriptEdits(
+  code: string,
+  filename: string,
+  edits: SourceEdit[]
+): { code: string; map: ExistingRawSourceMap } | undefined {
   if (!edits.length) {
     return
   }
@@ -219,16 +226,81 @@ export function transformUniAppXStandardScript(
   }
 }
 
+/**
+ * 兼容现有平台的前置脚本插件，在 plugin-vue 之前处理 SFC 和独立 JS/TS 模块。
+ * Web Vapor 使用 uniAppXScriptTransformPlugin，避免前置改写 SFC 破坏 compileScript 映射。
+ */
 export function uniAppXStandardScriptPlugin(
   options: UniAppXStandardScriptPluginOptions = {}
-): Plugin {
+): UniVitePlugin {
   const typescript = resolveUTSCompiler().getTypeScript()
   return {
     name: 'uni:app-x-standard-script',
     enforce: 'pre',
     transform(code, id) {
-      // Web（含 Vapor）和小程序在 plugin-vue 前处理原始 SFC。
+      // 普通 Web、小程序及其他平台继续在 plugin-vue 前处理 SFC 和独立模块。
       return transformUniAppXStandardScript(code, id, typescript, options)
+    },
+  }
+}
+
+/**
+ * 创建标准 JS/TS 脚本转换函数。
+ *
+ * SFC 由定制 plugin-vue 在 compileScript 后调用此函数，独立模块则由
+ * uniAppXScriptTransformPlugin 直接调用。转换逻辑不依赖具体平台，便于后续 MP 复用。
+ */
+export function createUniAppXScriptTransform(
+  options: UniAppXStandardScriptPluginOptions = {}
+): NonNullable<
+  NonNullable<UniVitePlugin['uni']>['uniAppXVaporScriptTransform']
+> {
+  const typescript = resolveUTSCompiler().getTypeScript()
+  return createUniAppXScriptTransformWithTypeScript(options, typescript)
+}
+
+function createUniAppXScriptTransformWithTypeScript(
+  options: UniAppXStandardScriptPluginOptions,
+  typescript: TypeScriptCompiler
+): NonNullable<
+  NonNullable<UniVitePlugin['uni']>['uniAppXVaporScriptTransform']
+> {
+  return ({ code, id, lang }) => {
+    if (lang !== 'js' && lang !== 'ts') return
+    const edits: SourceEdit[] = []
+    collectStandardScriptEdits(code, id, lang, 0, typescript, options, edits)
+    return applyStandardScriptEdits(code, cleanUrl(id), edits)
+  }
+}
+
+/**
+ * 为标准脚本平台提供统一的脚本转换入口：
+ * - SFC 通过 uniAppXVaporScriptTransform 交给定制 plugin-vue 后置处理；
+ * - 独立 JS/TS 模块仍在本插件的 transform 钩子中直接处理。
+ */
+export function uniAppXScriptTransformPlugin(
+  options: UniAppXStandardScriptPluginOptions = {}
+): UniVitePlugin {
+  const typescript = resolveUTSCompiler().getTypeScript()
+  const transform = createUniAppXScriptTransformWithTypeScript(
+    options,
+    typescript
+  )
+  return {
+    // 保留原内部名称，避免外部按 Vite 插件名查找时产生兼容性问题。
+    name: 'uni:app-x-vapor-script',
+    enforce: 'pre',
+    uni: {
+      uniAppXVaporScriptTransform: transform,
+    },
+    transform(code, id) {
+      if (resolveUniAppXStandardScriptRequest(id) !== 'module') return
+      const filename = cleanUrl(id)
+      return transform({
+        code,
+        id: filename,
+        lang: /\.js$/i.test(filename) ? 'js' : 'ts',
+      })
     },
   }
 }
