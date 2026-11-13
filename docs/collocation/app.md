@@ -150,7 +150,9 @@ Web: x; 微信小程序: x; 支付宝小程序: x; Android: 3.9; iOS: x; Harmony
 
 无法监听异步逻辑（例如：`setTimeout`）中的错误和应用初始化之前、 App 崩溃等错误。
 
-onError里打印的错误，是拦截转发的。可能会丢失错误堆栈，导致无法精准定位问题所在代码行号。真机运行时尽量避免全局监听onError。
+在 HBuilderX 5.15 之前，onError里打印的错误，是拦截转发的。可能会丢失错误堆栈，导致无法精准定位问题所在代码行号。真机运行时尽量避免全局监听onError。
+
+在 HBuilderX 5.15+ 之后，真机运行时，即使全局监听了onError，HBuilderX 控制台也会正常输出错误堆栈，方便定位问题。
 
 :::
 #### onError 兼容性 <Help /> 
