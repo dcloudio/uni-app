@@ -1,6 +1,6 @@
 <template>
   <view>
-    <slot :data="dataList" :loading="loading" :hasMore="hasMore" :pagination="pagination" :error="error" />
+    <slot :options="options" :data="dataList" :loading="loading" :hasMore="hasMore" :pagination="pagination" :error="error" />
   </view>
 </template>
 
@@ -26,6 +26,7 @@
   }>()
 
   interface UniCloudDBProps {
+    options : any;
     collection : String | any;
     field : String;
     orderby : String;
@@ -50,6 +51,7 @@
   }
 
   const props = withDefaults(defineProps<UniCloudDBProps>(), {
+    options: {},
     collection: '',
     field : '',
     orderby : '',
