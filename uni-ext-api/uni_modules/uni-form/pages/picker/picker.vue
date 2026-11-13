@@ -77,7 +77,9 @@
 	}
 
 	const show = ref(false)
+	// #ifdef APP
 	const bottomSafeArea = ref(0)
+	// #endif
 	const readyEventName = ref('')
 	const optionsEventName = ref('')
 	const cancelEventName = ref('')
