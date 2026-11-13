@@ -236,6 +236,20 @@ label {
   letter-spacing: 0;
 }
 
+/* #ifdef MP */
+input,
+textarea {
+  background-color: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  input,
+  textarea {
+    background-color: #3b3b3b;
+  }
+}
+/* #endif */
+
 rich-text {
   line-height: 1.5;
 }
