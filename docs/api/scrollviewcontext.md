@@ -18,40 +18,6 @@
 
 
 
-
-### 示例 
- 示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/API/scroll-view-context/scroll-view-context.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/API/scroll-view-context/scroll-view-context.uvue) 
->
-> 该 API 不支持 Web，请运行 hello uni-app x 到 App 平台体验 
-
-::: preview
-> appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/API/scroll-view-context/scroll-view-context
-```uvue
-<template>
-  <page-head title="ScrollViewContext"></page-head>
-  <page-intro
-    content="属性开关控制顶部滚动容器。刷新与二级面板的打开、关闭分别共用一个容器。"
-  ></page-intro>
-  <view class="u-p-15 pb-safe-area-inset-bottom">
-    <button id="open-scroll-view" class="mt-15" @click="openExample('scroll-view')">
-      scroll-view
-    </button>
-    <button id="open-list-view" style="margin-top: 15px;" @click="openExample('list-view')">list-view</button>
-    <!-- #ifdef APP -->
-    <button id="open-waterflow" style="margin-top: 15px;" @click="openExample('waterflow')">waterflow</button>
-    <!-- #endif -->
-  </view>
-</template>
-
-<script setup lang="ts">
-  function openExample(container: string) {
-    uni.navigateTo({ url: '/pages/API/scroll-view-context/' + container })
-  }
-</script>
-
-```
-:::
-
 ### ScrollViewContext 的方法 @scrollviewcontext-methods
 #### scrollTo(options: ScrollViewScrollToOptions): void @scrollto
 
@@ -265,3 +231,36 @@ Web: x; 微信小程序: √; Android(VDOM): x; Android(Vapor): 5.36; iOS(VDOM):
 
 
 
+
+### 示例 
+ 示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/API/scroll-view-context/scroll-view-context.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/API/scroll-view-context/scroll-view-context.uvue) 
+>
+> 该 API 不支持 Web，请运行 hello uni-app x 到 App 平台体验 
+
+::: preview
+> appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/API/scroll-view-context/scroll-view-context
+```uvue
+<template>
+  <page-head title="ScrollViewContext"></page-head>
+  <page-intro
+    content="属性开关控制顶部滚动容器。刷新与二级面板的打开、关闭分别共用一个容器。"
+  ></page-intro>
+  <view class="u-p-15 pb-safe-area-inset-bottom">
+    <button id="open-scroll-view" class="mt-15" @click="openExample('scroll-view')">
+      scroll-view
+    </button>
+    <button id="open-list-view" style="margin-top: 15px;" @click="openExample('list-view')">list-view</button>
+    <!-- #ifdef APP -->
+    <button id="open-waterflow" style="margin-top: 15px;" @click="openExample('waterflow')">waterflow</button>
+    <!-- #endif -->
+  </view>
+</template>
+
+<script setup lang="ts">
+  function openExample(container: string) {
+    uni.navigateTo({ url: '/pages/API/scroll-view-context/' + container })
+  }
+</script>
+
+```
+:::

@@ -1,60 +1,52 @@
-### requestAnimationFrame(callback)@requestanimationframe
+## requestAnimationFrame(callback: (timestamp: number) => void): number @requestanimationframe
 
 在下一次重绘之前，调用用户提供的回调函数
 
-**参数**
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| callback | (timestamp: number) => void | 是 | 
+### requestAnimationFrame 兼容性 <Help /> 
+Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.25; iOS: 4.25; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61
 
 
-**返回值**
-| 类型 |
-| :- |
-| number | 
+### 参数 
+
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| callback | (timestamp: number) => void | 是 | 微信小程序: x; 支付宝小程序: x | 下一次重绘前执行的回调函数，timestamp 为时间戳。 | 
 
 
-<!-- UTSJSON.Global.requestAnimationFrame.test -->
-
-**兼容性 <Help />**
-
-| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.25 | 4.25 | 4.61 | x |
 
 
-**参见** 
+### 返回值 
 
- [相关 Bug](https://issues.dcloud.net.cn/?mid=uts.globleMethods.requestAnimationFrame)
+| 类型 | 描述 |
+| :- | :- |
+| number | 动画帧请求 ID，可用于 cancelAnimationFrame。 |
+ 
 
-### cancelAnimationFrame(taskId) @cancelanimationframe
+
+
+
+
+## cancelAnimationFrame(taskId: number): void @cancelanimationframe
 
 取消一个先前通过调用 requestAnimationFrame() 方法添加到计划中的动画帧请求
 
-**参数**
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| taskId | number | 是 | 
+### cancelAnimationFrame 兼容性 <Help /> 
+Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.25; iOS: 4.25; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61
 
 
-**返回值**
-| 类型 |
-| :- |
-| void | 
+### 参数 
+
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| taskId | number | 是 | 微信小程序: x; 支付宝小程序: x | requestAnimationFrame 返回的请求 ID。 | 
 
 
-<!-- UTSJSON.Global.cancelAnimationFrame.test -->
-
-**兼容性 <Help />**
-
-| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.25 | 4.25 | 4.61 | x |
 
 
-**参见** 
 
- [相关 Bug](https://issues.dcloud.net.cn/?mid=uts.globleMethods.cancelAnimationFrame)
+
+
+
 
 ### 示例 
  示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/API/animation-frame/animation-frame.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/API/animation-frame/animation-frame.uvue) 
