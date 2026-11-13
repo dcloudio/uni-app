@@ -22,7 +22,7 @@ Image -- Extends --> UniImageElement
 ### Image 兼容性 <Help /> 
  Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61
 
-<!-- CUSTOMTYPEJSON.Image.example -->
+
 
 **提示**
 

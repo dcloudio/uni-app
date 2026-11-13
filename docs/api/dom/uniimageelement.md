@@ -34,4 +34,4 @@ UniImageElement -- Extends --> UniElement
 
 <!-- CUSTOMTYPEJSON.UniImageElement.methods.onload.tutorial -->
 
-<!-- CUSTOMTYPEJSON.UniImageElement.example -->
+

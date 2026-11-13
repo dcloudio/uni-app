@@ -183,7 +183,7 @@ Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61
 ### CanvasRenderingContext2D 兼容性 <Help /> 
  Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61
 
-<!-- CUSTOMTYPEJSON.CanvasRenderingContext2D.example -->
+
 
 ### CanvasRenderingContext2D 的方法 @canvasrenderingcontext2d-methods
 
@@ -308,7 +308,7 @@ Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61
 
 
 
-#### clip(path: Path2D): void @clip
+#### clip(path: Path2D): void @clip_1
 
 将当前创建的路径设置为当前剪切路径
 
@@ -327,7 +327,7 @@ Web: 4.0; Android: x; iOS: x; HarmonyOS: 4.61
 
 
 
-#### clip(fillRule: string): void @clip
+#### clip(fillRule: string): void @clip_2
 
 将当前创建的路径设置为当前剪切路径
 
@@ -346,7 +346,7 @@ Web: 4.0; Android: x; iOS: x; HarmonyOS: x
 
 
 
-#### clip(path: Path2D, fillRule: string): void @clip
+#### clip(path: Path2D, fillRule: string): void @clip_3
 
 将当前创建的路径设置为当前剪切路径
 
@@ -553,7 +553,7 @@ Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61
 
 
 
-#### drawImage(imageResource: Image, dx: number, dy: number, dWidth: number, dHeight: number): void @drawimage
+#### drawImage(imageResource: Image, dx: number, dy: number, dWidth: number, dHeight: number): void @drawimage_1
 
 绘制图像到画布
 
@@ -576,7 +576,7 @@ Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61
 
 
 
-#### drawImage(imageResource: Image, sx: number, sy: number, sWidth: number, sHeight: number, dx: number, dy: number, dWidth: number, dHeight: number): void @drawimage
+#### drawImage(imageResource: Image, sx: number, sy: number, sWidth: number, sHeight: number, dx: number, dy: number, dWidth: number, dHeight: number): void @drawimage_2
 
 绘制图像到画布
 
@@ -643,7 +643,7 @@ Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61
 
 
 
-#### fill(fillRule: "nonzero" \| "evenodd"): void @fill
+#### fill(fillRule: "nonzero" \| "evenodd"): void @fill_1
 
 对当前路径中的内容进行填充
 
@@ -669,7 +669,7 @@ Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61
 
 
 
-#### fill(path: Path2D): void @fill
+#### fill(path: Path2D): void @fill_2
 
 对指定路径中的内容进行填充
 
@@ -688,7 +688,7 @@ Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61
 
 
 
-#### fill(path: Path2D, fillRule: "nonzero" \| "evenodd"): void @fill
+#### fill(path: Path2D, fillRule: "nonzero" \| "evenodd"): void @fill_3
 
 对指定路径中的内容进行填充
 
@@ -840,7 +840,7 @@ Web: 4.0; Android: x; iOS: x; HarmonyOS: x
 
 
 
-#### isPointInPath(x: number, y: number, fillRule: string): boolean @ispointinpath
+#### isPointInPath(x: number, y: number, fillRule: string): boolean @ispointinpath_1
 
 判断在当前路径中是否包含检测点
 
@@ -867,7 +867,7 @@ Web: 4.0; Android: x; iOS: x; HarmonyOS: x
 
 
 
-#### isPointInPath(path: Path2D, x: number, y: number): boolean @ispointinpath
+#### isPointInPath(path: Path2D, x: number, y: number): boolean @ispointinpath_2
 
 判断在当前路径中是否包含检测点
 
@@ -894,7 +894,7 @@ Web: 4.0; Android: x; iOS: x; HarmonyOS: x
 
 
 
-#### isPointInPath(path: Path2D, x: number, y: number, fillRule: string): boolean @ispointinpath
+#### isPointInPath(path: Path2D, x: number, y: number, fillRule: string): boolean @ispointinpath_3
 
 判断在当前路径中是否包含检测点
 
@@ -1067,7 +1067,7 @@ Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61
 
 
 
-#### putImageData(imageData: ImageData, x: number, y: number, dirtyX: number, dirtyY: number, dirtyWidth: number, dirtyHeight: number): void @putimagedata
+#### putImageData(imageData: ImageData, x: number, y: number, dirtyX: number, dirtyY: number, dirtyWidth: number, dirtyHeight: number): void @putimagedata_1
 
 将数据从已有的 ImageData 对象绘制到位图的方法。如果提供了一个绘制过的矩形，则只绘制该矩形的像素。此方法不受画布转换矩阵的影响
 
@@ -1305,7 +1305,7 @@ Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61
 
 
 
-#### stroke(path: Path2D): void @stroke
+#### stroke(path: Path2D): void @stroke_1
 
 画出指定路径的边框。默认颜色色为黑色
 

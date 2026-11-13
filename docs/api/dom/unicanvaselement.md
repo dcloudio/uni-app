@@ -23,7 +23,7 @@ UniCanvasElement -- Extends --> UniElement
 ### UniCanvasElement 兼容性 <Help /> 
  Web: 4.21; 微信小程序: x; 支付宝小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61
 
-<!-- CUSTOMTYPEJSON.UniCanvasElement.example -->
+
 
 ### UniCanvasElement 的方法 @unicanvaselement-methods
 #### getContext(contentType: string): CanvasRenderingContext2D \| null @getcontext
@@ -70,7 +70,7 @@ Web: 4.21; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; Harmon
 
 
 
-#### toBlob(callback: BlobCallback, type: string): void @toblob
+#### toBlob(callback: BlobCallback, type: string): void @toblob_1
 
 
 
@@ -88,7 +88,7 @@ Web: 4.21; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; Harmon
 
 
 
-#### toBlob(callback: BlobCallback, type: string, quality: number): void @toblob
+#### toBlob(callback: BlobCallback, type: string, quality: number): void @toblob_2
 
 
 

@@ -29,7 +29,7 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.51; iOS: 4
 
 
 
-#### ~~setProperty(name: string \| string.cssPropertyString, value: any): void~~ @setproperty
+#### ~~setProperty(name: string \| string.cssPropertyString, value: any): void~~ @setproperty_1
 
 对CSS指定样式设置一个新值，如有此样式已存在则更新。  **已废弃，仅为了向下兼容保留**
 

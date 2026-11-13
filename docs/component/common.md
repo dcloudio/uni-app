@@ -916,11 +916,13 @@ defineExpose({
 
 
 ### 构造函数
+创建一个新的事件对象
 | 名称 | 类型 | 必备 | 描述 |
 | :- | :- | :- | :- |
 | type | string | 是 | 事件的名称 |
 
 ### 构造函数
+创建一个新的事件对象
 | 名称 | 类型 | 必备 | 描述 |
 | :- | :- | :- | :- |
 | type | string | 是 | 事件的名称 |
@@ -1028,7 +1030,7 @@ UniPointerEvent -- Extends --> UniEvent
 | screenY | number | 是 | 相对于屏幕顶部的距离，不包括滚动距离。 |
 
 
-<!-- CUSTOMTYPEJSON.UniPointerEvent.example -->
+
 
 ## UniTouchEvent
 
@@ -1126,7 +1128,7 @@ UniPointerEvent -- Extends --> UniEvent
 | screenY | number | 是 | 相对于屏幕顶部的距离，不包括滚动距离。 |
 
 
-<!-- CUSTOMTYPEJSON.UniMouseEvent.example -->
+
 
 ## UniKeyEvent
 
@@ -1150,7 +1152,7 @@ UniKeyEvent -- Extends --> UniEvent
 
 
 
-<!-- CUSTOMTYPEJSON.UniKeyEvent.example -->
+
 
 ## UniNativeViewEvent
 
@@ -1186,7 +1188,7 @@ UniNativeViewEvent -- Extends --> UniCustomEvent
 ### UniNativeViewEvent 兼容性 <Help /> 
  Android: 4.31; iOS: 4.31; HarmonyOS: 4.61
 
-<!-- CUSTOMTYPEJSON.UniNativeViewEvent.example -->
+
 
 ## UniVideoEvent
 
@@ -1208,7 +1210,7 @@ video 通用事件，组件Event接口无法直接继承UniEvent
 
 
 
-<!-- CUSTOMTYPEJSON.UniVideoEvent.example -->
+
 
 ### UniVideoEvent 的方法 @univideoevent-methods
 #### stopPropagation(): void @stoppropagation
