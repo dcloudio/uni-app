@@ -88,7 +88,7 @@ declare namespace NodeJS {
     UNI_APP_SOURCEMAP?: 'true' | 'false' // 是否生成 sourcemap
     UNI_APP_PACK_TYPE?: 'release' | 'debug' // 打包类型
     UNI_APP_PLATFORM?: 'android' | 'ios' | 'harmony' // 运行时，可能传入了 UNI_APP_PLATFORM = 'android'|'ios'|'harmony'
-    UNI_APP_PRODUCTION_TYPE?: 'WGT' // 发行类型
+    UNI_APP_PRODUCTION_TYPE?: 'WGT' | 'LOCAL_PACKAGING' // 发行类型
     UNI_APP_X_TARGET_ARCHS?: string // 当前运行设备支持的 ABI 列表，值为按优先级排序的 JSON 数组字符串
     UNI_APP_X_CACHE_DIR: string // 当前运行/发行平台的缓存目录，如：unpackage/cache/.app-android
     UNI_APP_X_DOM2?: 'true' // 内部 DOM2 模式状态

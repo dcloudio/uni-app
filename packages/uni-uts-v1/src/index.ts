@@ -320,6 +320,11 @@ export async function compile(
 
   let errMsg = ''
   if (process.env.NODE_ENV !== 'development' || isCompileUniModules) {
+    // 正式发行、本地打包资源和 WGT 不更新基座调试缓存清单。
+    const shouldGenManifest =
+      process.env.UNI_APP_PACK_TYPE !== 'release' &&
+      process.env.UNI_APP_PRODUCTION_TYPE !== 'LOCAL_PACKAGING' &&
+      process.env.UNI_APP_PRODUCTION_TYPE !== 'WGT'
     // WGT 的 Android 蒸汽模式仍需转译 UTS，以获取生成代理代码所需的桥接信息。
     // 其他 WGT 模式及已前置编译的 ext-api 无需再次编译。
     if (
@@ -430,14 +435,16 @@ export async function compile(
             cacheDir,
             pkg.is_uni_modules
           )
-          genManifestFile('app-android', {
-            pluginDir,
-            env,
-            cacheDir,
-            pluginRelativeDir,
-            is_uni_modules: pkg.is_uni_modules,
-            deps: result?.deps,
-          })
+          if (shouldGenManifest) {
+            genManifestFile('app-android', {
+              pluginDir,
+              env,
+              cacheDir,
+              pluginRelativeDir,
+              is_uni_modules: pkg.is_uni_modules,
+              deps: result?.deps,
+            })
+          }
         }
       }
     }
@@ -492,14 +499,16 @@ export async function compile(
             cacheDir,
             pkg.is_uni_modules
           )
-          genManifestFile('app-ios', {
-            pluginDir,
-            env,
-            cacheDir,
-            pluginRelativeDir,
-            is_uni_modules: pkg.is_uni_modules,
-            deps: result?.deps,
-          })
+          if (shouldGenManifest) {
+            genManifestFile('app-ios', {
+              pluginDir,
+              env,
+              cacheDir,
+              pluginRelativeDir,
+              is_uni_modules: pkg.is_uni_modules,
+              deps: result?.deps,
+            })
+          }
         }
       }
     }
