@@ -7,6 +7,9 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-backarrow
 
 > issues: https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-backarrow-circle
 
+
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-backarrow-circle/components/uni-backarrow-circle
+
 :::
 
 带圆形背景的返回箭头组件，使用旋转边框绘制箭头，支持暗黑模式与 CSS 变量定制箭头颜色、线宽；默认只触发 click，开启 autoBack 后自动返回上一页。

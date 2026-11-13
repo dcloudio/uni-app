@@ -7,6 +7,9 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-combox-x
 
 > issues: https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-combox
 
+
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-combox-x/components/uni-combox
+
 :::
 
 默认是单选选择框，通过 input 具名插槽切换为可输入、可选择的组合框。
