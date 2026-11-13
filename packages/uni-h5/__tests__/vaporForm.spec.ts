@@ -141,11 +141,11 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
     nativeElements.installWebVaporElements(dom.window)
     inputElement = evaluate(
       await preprocess('vue/input/element-vapor.ts', true),
-      { '../web-vapor-elements': nativeElements }
+      { vue, '../web-vapor-elements': nativeElements }
     )
     textareaElement = evaluate(
       await preprocess('vue/textarea/element-vapor.ts', true),
-      { '../web-vapor-elements': nativeElements }
+      { vue, '../web-vapor-elements': nativeElements }
     )
     const builtIn = evaluate(await preprocess('helpers/component.ts', true), {
       '@vue/shared': shared,

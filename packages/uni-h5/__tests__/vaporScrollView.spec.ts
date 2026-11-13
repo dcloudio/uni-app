@@ -145,7 +145,7 @@ describe('Web Vapor ScrollView 原生宿主', () => {
     elements.installWebVaporElements(dom.window)
     scrollElement = evaluate(
       await preprocess('vue/scroll-view/element-vapor.ts'),
-      { '../web-vapor-elements': elements }
+      { vue, '../web-vapor-elements': elements }
     )
     const component = evaluate(await preprocess('helpers/component.ts'), {
       '@vue/shared': shared,
@@ -278,6 +278,28 @@ describe('Web Vapor ScrollView 原生宿主', () => {
     Object.defineProperty(event, 'timeStamp', { value: time })
     main.dispatchEvent(event)
   }
+
+  test('getAttribute 读取 props 默认值和更新值，保持 DOM 属性独立', async () => {
+    const threshold = vue.ref(80)
+    const { root, instance } = mount({ upperThreshold: () => threshold.value })
+    expect(root.__uniProps).toBe(instance.props)
+    expect(root.getAttribute('upper-threshold')).toBe('80')
+    expect(root.getAttribute('lower-threshold')).toBe('50')
+    expect(root.getAttribute('scroll-with-animation')).toBe('false')
+    root.setAttribute('upper-threshold', 'dom')
+    expect(root.getAttribute('upper-threshold')).toBe('80')
+    expect(Element.prototype.getAttribute.call(root, 'upper-threshold')).toBe(
+      'dom'
+    )
+    const method = root.getAttribute
+    threshold.value = 120
+    await vue.nextTick()
+    expect(root.getAttribute).toBe(method)
+    expect(root.getAttribute('upperThreshold')).toBe('120')
+    expect(document.createElement('div').getAttribute).toBe(
+      Element.prototype.getAttribute
+    )
+  })
 
   test('根节点直接承载插槽，原生属性和方法在 ref 首次可见时可用', async () => {
     const init = jest.spyOn(scrollElement, 'initScrollViewElement')

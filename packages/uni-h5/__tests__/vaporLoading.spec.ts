@@ -209,11 +209,15 @@ describe('Loading 的真实 Web Vapor 编译与元素行为', () => {
     const { ref, paused, bold, app } = mount()
     await vue.nextTick()
     const spinner = ref.value.firstElementChild
+    expect(ref.value.getAttribute('paused')).toBe('false')
+    expect(ref.value.getAttribute('bold')).toBe('false')
     expect(spinner.style.width).toBe('24px')
     expect(spinner.style.borderWidth).toBe('1.5px')
     paused.value = true
     bold.value = true
     await vue.nextTick()
+    expect(ref.value.getAttribute('paused')).toBe('true')
+    expect(ref.value.getAttribute('bold')).toBe('true')
     expect(spinner.classList.contains('__uni-loading__paused')).toBe(true)
     expect(spinner.style.borderWidth).toBe('3px')
     size = 32

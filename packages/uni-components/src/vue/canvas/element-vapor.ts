@@ -1,3 +1,5 @@
+// @ts-expect-error 当前 Vue 类型尚未升级到 3.6，Vapor runtime 已导出该方法
+import { initUniElement } from 'vue'
 import { UniElement } from '../../helpers/UniElement'
 
 // 只提供逻辑类型与公开成员，根节点是原生 canvas，不构造或注册 Custom Element。
@@ -20,11 +22,13 @@ export class UniCanvasElement extends UniElement {
   declare toDataURL: HTMLCanvasElement['toDataURL']
 }
 
-export function initCanvasElement(root: object) {
+const uniTagName = { value: 'CANVAS' }
+
+export function initCanvasElement(root: Element) {
   // 根节点直接提供原生绘图和尺寸能力，不再读取内部子节点或代理宽高属性。
+  initUniElement(root, uniTagName)
   const canvas = root as HTMLCanvasElement
   Object.defineProperties(root, {
-    uniTagName: { value: 'CANVAS' },
     // 方法只绑定一次，保留原生参数、返回值和异常行为。
     getContext: { value: canvas.getContext.bind(canvas) },
     toBlob: { value: canvas.toBlob.bind(canvas) },

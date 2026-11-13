@@ -1,3 +1,5 @@
+// @ts-expect-error 当前 Vue 类型尚未升级到 3.6，Vapor runtime 已导出该方法
+import { initUniElement } from 'vue'
 import { type Ref, ref } from 'vue'
 import {
   type EmitEvent,
@@ -22,6 +24,8 @@ export class UniWebViewElement extends UniElement {
   }
 }
 
+const uniTagName = { value: 'WEB-VIEW' }
+
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'WebView',
   props: webViewProps,
@@ -31,7 +35,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     initWebViewBridge()
     const rootRef: Ref<HTMLElement | null> = ref(null)
     const trigger = useCustomEvent<EmitEvent<typeof emit>>(rootRef, emit)
-    return (
+    const root = (
       <iframe
         uni-web-view=""
         uni-view=""
@@ -43,5 +47,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         ref={rootRef}
       />
     )
+    initUniElement(root, uniTagName)
+    return root
   },
 })
