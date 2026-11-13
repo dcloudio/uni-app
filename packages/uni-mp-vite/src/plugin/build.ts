@@ -29,6 +29,7 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import type { GetManualChunk, GetModuleInfo, PreRenderedChunk } from 'rollup'
 import {
+  getSubPackageRootByFilename,
   getSubPackages,
   isUniComponentUrl,
   isUniPageUrl,
@@ -45,6 +46,8 @@ import {
   parseIndependentRoot,
   withoutIndependentRoot,
 } from '../plugins/independentUtils'
+
+import { resolveSingleSubpackage } from '../plugins/subpackageChunks'
 
 const debugChunk = debug('uni:chunk')
 
@@ -248,14 +251,51 @@ function isVueJs(id: string) {
 
 const chunkFileNameBlackList = ['main', 'pages.json', 'manifest.json']
 
+function resolveDataChunkType(filename: string, optimize: boolean) {
+  if (DEFAULT_ASSETS_RE.test(filename)) return 'assets'
+  if (optimize && filename.endsWith('.json')) return 'json'
+}
+
+// Page and component scripts must match their companion JSON filenames.
+function avoidEntryFilename(name: string) {
+  while (hasJsonFile(name)) name += '-helper'
+  return name
+}
+
+type ManualChunkApi = Parameters<GetManualChunk>[1]
+
+// uni-app x JSON modules can import runtime helpers (e.g. UTSJSONObject).
+// Keep their vendor dependencies with the data, so loading JSON never has to
+// initialize an unrelated vendor module that consumes that JSON first.
+function collectJsonDependencies({
+  getModuleIds,
+  getModuleInfo,
+}: ManualChunkApi) {
+  const dependencies = new Set<string>()
+  for (const id of getModuleIds()) {
+    if (resolveDataChunkType(id.split('?')[0], true) !== 'json') continue
+    const info = getModuleInfo(id)
+    if (!info?.isIncluded) continue
+    for (const imported of info.importedIds) dependencies.add(imported)
+  }
+  for (const id of dependencies) {
+    for (const imported of getModuleInfo(id)?.importedIds || []) {
+      dependencies.add(imported)
+    }
+  }
+  return dependencies
+}
+
 function createMoveToVendorChunkFn(): GetManualChunk | undefined {
   // 云端编译时，不拆分文件
   if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
     return undefined
   }
-  const cache = new Map<string, boolean>()
   const inputDir = normalizePath(process.env.UNI_INPUT_DIR)
-  return (id, { getModuleInfo }) => {
+  const resolveVendorChunk = createResolveVendorChunkFn(inputDir)
+  const jsonDependencies = new WeakMap<ManualChunkApi, Set<string>>()
+  return (id, api) => {
+    const { getModuleInfo } = api
     const independentRoot = parseIndependentRoot(id)
     const idWithoutIndependentRoot = independentRoot
       ? withoutIndependentRoot(id)
@@ -270,11 +310,28 @@ function createMoveToVendorChunkFn(): GetManualChunk | undefined {
       debugChunk(chunkName, normalizedId)
       return chunkName
     }
-    // 处理资源文件
-    if (DEFAULT_ASSETS_RE.test(filename)) {
-      const chunkName = independentRoot
-        ? resolveIndependentCommonChunkName(independentRoot, 'assets')
-        : 'common/assets'
+    const optimizeSubpackages =
+      isUniAppX() && getSubPackages().hasOptimizationSubPackages
+    // Do not force tree-shaken type-only modules into empty manual chunks.
+    const moduleInfo = optimizeSubpackages ? getModuleInfo(id) : null
+    if (
+      moduleInfo?.isIncluded === false &&
+      !moduleInfo.isEntry &&
+      !moduleInfo.dynamicImporters.length
+    ) {
+      return
+    }
+    const subpackageRoot =
+      !independentRoot && optimizeSubpackages
+        ? resolveSingleSubpackage(id, getModuleInfo, inputDir, (importer) =>
+            resolveVendorChunk(importer, getModuleInfo, true)
+          )
+        : undefined
+    const dataChunk = resolveDataChunkType(filename, optimizeSubpackages)
+    if (dataChunk) {
+      const root = independentRoot || subpackageRoot
+      const name = (root ? root + '/' : '') + 'common/' + dataChunk
+      const chunkName = optimizeSubpackages ? avoidEntryFilename(name) : name
       debugChunk(chunkName, normalizedId)
       return chunkName
     }
@@ -293,24 +350,66 @@ function createMoveToVendorChunkFn(): GetManualChunk | undefined {
           !chunkFileNameBlackList.includes(chunkFileName) &&
           !hasJsonFile(chunkFileName) // 无同名的page,component
         ) {
-          const normalizedChunkFileName = independentRoot
+          let normalizedChunkFileName = independentRoot
             ? resolveIndependentCommonChunkName(independentRoot, chunkFileName)
+            : subpackageRoot && !chunkFileName.startsWith(subpackageRoot + '/')
+            ? `${subpackageRoot}/${chunkFileName}`
             : chunkFileName
+          if (subpackageRoot && normalizedChunkFileName !== chunkFileName) {
+            normalizedChunkFileName = avoidEntryFilename(
+              normalizedChunkFileName
+            )
+          }
           debugChunk(normalizedChunkFileName, normalizedId)
           return normalizedChunkFileName
         }
         return
       }
-      if (independentRoot) {
-        const chunkName = resolveIndependentCommonChunkName(
-          independentRoot,
-          'vendor'
-        )
-        debugChunk(chunkName, normalizedId)
-        return chunkName
+    }
+    const vendorChunk =
+      independentRoot && EXTNAME_JS_RE.test(filename)
+        ? 'common/vendor'
+        : resolveVendorChunk(id, getModuleInfo, optimizeSubpackages)
+    if (vendorChunk) {
+      let chunkName = independentRoot
+        ? resolveIndependentCommonChunkName(independentRoot, 'vendor')
+        : vendorChunk
+      if (optimizeSubpackages) {
+        // Rollup supplies a fresh API for each output, including watch rebuilds.
+        let dependencies = jsonDependencies.get(api)
+        if (!dependencies) {
+          dependencies = collectJsonDependencies(api)
+          jsonDependencies.set(api, dependencies)
+        }
+        if (dependencies.has(id)) {
+          chunkName = avoidEntryFilename(chunkName.replace(/vendor$/, 'json'))
+        }
+      }
+      debugChunk(chunkName, id)
+      return chunkName
+    }
+  }
+}
+
+// Share the forced vendor placement policy with dependency ownership analysis.
+// A consumer that is emitted in main pins its dependencies there, regardless
+// of which page originally imported that consumer.
+function createResolveVendorChunkFn(inputDir: string) {
+  const cache = new Map<string, boolean>()
+  return (
+    id: string,
+    getModuleInfo: GetModuleInfo,
+    optimize: boolean
+  ): string | undefined => {
+    const normalizedId = normalizePath(id)
+    const filename = normalizedId.split('?')[0]
+    if (resolveDataChunkType(filename, optimize)) return
+    if (EXTNAME_JS_RE.test(filename)) {
+      if (filename.startsWith(inputDir) && !filename.includes('node_modules')) {
+        return
       }
       const { hasOptimizationSubPackages, subPackages } = getSubPackages()
-      // 处理子包引用的 node_modules 中的文件
+      // Preserve the existing placement of subpackage-local npm dependencies.
       if (
         hasOptimizationSubPackages &&
         subPackages.length &&
@@ -319,9 +418,7 @@ function createMoveToVendorChunkFn(): GetManualChunk | undefined {
         !filename.startsWith(inputDir + '/node_modules')
       ) {
         const moduleInfo = getModuleInfo(id)
-        if (!moduleInfo || !moduleInfo.importers.length) {
-          return
-        }
+        if (!moduleInfo || !moduleInfo.importers.length) return
         const matchSubPackages = new Set(
           subPackages.filter((subPackagePath) =>
             moduleInfo.importers.some((importer) =>
@@ -333,22 +430,16 @@ function createMoveToVendorChunkFn(): GetManualChunk | undefined {
           return `${matchSubPackages.values().next().value}common/vendor`
         }
       }
-      // 非项目内的 js 资源，均打包到 vendor
-      debugChunk('common/vendor', normalizedId)
       return 'common/vendor'
     }
     if (
       isVueJs(normalizedId) ||
       (normalizedId.includes('node_modules') &&
         !isCSSRequest(normalizedId) &&
-        // 使用原始路径，格式化的可能找不到模块信息 https://github.com/dcloudio/uni-app/issues/3425
+        // Keep the original ID for module graph lookups (e.g. query suffixes).
         staticImportedByEntry(id, getModuleInfo, cache))
     ) {
-      const chunkName = independentRoot
-        ? resolveIndependentCommonChunkName(independentRoot, 'vendor')
-        : 'common/vendor'
-      debugChunk(chunkName, id)
-      return chunkName
+      return 'common/vendor'
     }
   }
 }
@@ -464,6 +555,13 @@ function createChunkFileNames(
           resolveIndependentCommonChunkName(independentRoot, chunkFileName) +
           '.js'
         )
+      }
+      // A dynamic JS facade must keep the package selected by manualChunks.
+      if (
+        !isMiniProgramEntry &&
+        getSubPackageRootByFilename(chunk.name, inputDir)
+      ) {
+        return chunk.name + '.js'
       }
       if (componentPackageRoot) {
         return (
