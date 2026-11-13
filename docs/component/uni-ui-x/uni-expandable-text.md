@@ -3,9 +3,6 @@
 
 > issues: https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-expandable-text
 
-
-> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-expandable-text/components/uni-expandable-text
-
 :::
 
 按指定行数截断文本，并在文本溢出时显示展开/收起触发器。

@@ -7,9 +7,6 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-data-chec
 
 > issues: https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-data-checkbox
 
-
-> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-data-checkbox-x/components/uni-data-checkbox
-
 :::
 
 通过本地数据或 datacom 数据渲染单选、多选选项

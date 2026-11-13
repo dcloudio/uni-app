@@ -6,7 +6,7 @@
 > issues: https://issues.dcloud.net.cn/?mid=component.canvas.canvas
 
 
-> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-canvas/components/canvas
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-canvas-dom2/components/canvas
 
 :::
 

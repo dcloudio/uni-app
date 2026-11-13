@@ -7,9 +7,6 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-data-pick
 
 > issues: https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-data-picker
 
-
-> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-data-picker-x/components/uni-data-picker
-
 :::
 
 通过本地数据或 datacom 数据的级联选择组件，支持单列和多列级联选择，列数没有限制，如果屏幕显示不全，顶部tab区域会左右滚动。
@@ -671,9 +668,6 @@ Web: 5.33; Android: 5.33; iOS: 5.33; HarmonyOS: 5.33
 ## uni-data-picker-view
 
 > issues: https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-data-picker-view
-
-
-> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-data-picker-x/components/uni-data-picker-view
 
 :::
 

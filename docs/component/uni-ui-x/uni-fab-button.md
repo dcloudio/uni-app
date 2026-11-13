@@ -7,9 +7,6 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-fab-butto
 
 > issues: https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-fab-button
 
-
-> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-fab-button/components/uni-fab-button
-
 :::
 
 悬浮加号按钮组件

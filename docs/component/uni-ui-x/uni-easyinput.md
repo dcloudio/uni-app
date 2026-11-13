@@ -7,9 +7,6 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-easyinput
 
 > issues: https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-easyinput
 
-
-> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-easyinput-x/components/uni-easyinput
-
 :::
 
 包装原生 input 和 textarea，提供清空、密码显隐、左右插槽和内部样式定制
