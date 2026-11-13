@@ -144,14 +144,40 @@ describe('Web Vapor 标签选择器', () => {
     )
   })
 
-  test('page 背景提升与 rpx 转换仍走原流程', async () => {
+  test('page 背景和 CSS 变量保留在页面滚动容器，继续转换 rpx', async () => {
     const output = await css(
       'page { background: red; --color:blue; width:10rpx }'
     )
-    expect(output).toContain('uni-page-body')
-    expect(output).toContain('body { background: red; --color:blue }')
+    const rules = postcss.parse(output).nodes as postcss.Rule[]
+    expect(rules.map((rule) => rule.selector)).toEqual(['uni-page-body'])
+    expect(output).toContain('background: red; --color:blue')
     expect(output).not.toContain('10rpx')
   })
+
+  test('嵌套规则和组合选择器中的 page 样式也不提升到 body', async () => {
+    expect(
+      await css(
+        '@media (min-width: 768px) { page[data-v-test], .panel { background-color: var(--page-bg); --page-bg: red } }'
+      )
+    ).toBe(
+      '@media (min-width: 768px) { uni-page-body[data-v-test], .panel { background-color: var(--page-bg); --page-bg: red } }'
+    )
+  })
+
+  test.each([
+    ['false', 'true'],
+    ['true', undefined],
+  ] as const)(
+    '非蒸汽 Web 保留背景和变量提升：X=%s、DOM2=%s',
+    async (x, dom2) => {
+      process.env.UNI_APP_X = x
+      if (dom2) process.env.UNI_APP_X_DOM2 = dom2
+      else delete process.env.UNI_APP_X_DOM2
+      expect(await css('page { background: red; --color:blue }')).toBe(
+        'uni-page-body { background: red; --color:blue }\nbody { background: red; --color:blue }'
+      )
+    }
+  )
 
   test.each([
     ['h5', 'true', undefined, 'uni-view'],

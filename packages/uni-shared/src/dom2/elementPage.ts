@@ -5,7 +5,8 @@ export function setUniElementPage(pageElement: Element, page: unknown): void {
 }
 
 export function getUniElementPage<T>(element: Element): T | null {
-  const pageElement = element.closest('uni-page')
+  const pageElement =
+    element.closest('uni-page') || element.closest('uni-page-body')
   return pageElement
     ? (uniElementPageMap.get(pageElement) as T | undefined) ?? null
     : null

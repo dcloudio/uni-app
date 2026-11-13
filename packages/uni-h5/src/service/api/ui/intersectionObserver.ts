@@ -9,6 +9,8 @@ import {
   querySelectorAllInComponent,
   querySelectorInComponent,
 } from 'vue'
+import { getPageBody } from '../../../helpers/pageBody'
+import { normalizePageSelector } from '../../../helpers/pageSelector'
 // 观察器跟随组件实例保存，避免根节点切换后无法断开连接。
 const componentObservers = new WeakMap<
   VaporComponentInstance,
@@ -26,9 +28,33 @@ export function addIntersectionObserver(
   const instance = component.$ as unknown as VaporComponentInstance
   const observer = requestComponentObserver(
     {
-      querySelector: (selector) => querySelectorInComponent(instance, selector),
-      querySelectorAll: (selector) =>
-        querySelectorAllInComponent(instance, selector),
+      querySelector(selector) {
+        const normalizedSelector = normalizePageSelector(selector)
+        const pageBody =
+          normalizedSelector !== selector &&
+          component.$.$pageInstance === component.$
+            ? getPageBody(component.$)
+            : undefined
+        return pageBody
+          ? pageBody.matches(normalizedSelector)
+            ? pageBody
+            : pageBody.querySelector(normalizedSelector)
+          : querySelectorInComponent(instance, normalizedSelector)
+      },
+      querySelectorAll(selector) {
+        const normalizedSelector = normalizePageSelector(selector)
+        const pageBody =
+          normalizedSelector !== selector &&
+          component.$.$pageInstance === component.$
+            ? getPageBody(component.$)
+            : undefined
+        return pageBody
+          ? [
+              ...(pageBody.matches(normalizedSelector) ? [pageBody] : []),
+              ...pageBody.querySelectorAll(normalizedSelector),
+            ]
+          : querySelectorAllInComponent(instance, normalizedSelector)
+      },
     },
     options,
     callback

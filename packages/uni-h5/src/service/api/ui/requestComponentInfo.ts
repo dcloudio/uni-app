@@ -6,6 +6,8 @@ import {
   querySelectorInComponent,
 } from 'vue'
 import { getScrollViewContext } from '@dcloudio/uni-components'
+import { getPageBody } from '../../../helpers/pageBody'
+import { normalizePageSelector } from '../../../helpers/pageSelector'
 //#endif
 import { isArray } from '@vue/shared'
 import { createUniDOMStringMap, getCustomDataset } from '@dcloudio/uni-shared'
@@ -22,8 +24,11 @@ function createDatasetSnapshot(dataset: Record<string, any>) {
   return __X__ ? createUniDOMStringMap(dataset) : dataset
 }
 
-function getRootInfo(fields: NodeField) {
+function getRootInfo(fields: NodeField, page: ComponentPublicInstance) {
   const info: SelectorQueryNodeInfo = {}
+  //#if _X_VAPOR_
+  const root = getPageBody(page.$) || document.documentElement
+  //#endif
   if (fields.id) {
     info.id = ''
   }
@@ -37,16 +42,28 @@ function getRootInfo(fields: NodeField) {
     info.bottom = 0
   }
   if (fields.size) {
+    //#if _X_VAPOR_
+    info.width = root.clientWidth
+    info.height = root.clientHeight
+    //#else
     info.width = document.documentElement.clientWidth
     info.height = document.documentElement.clientHeight
+    //#endif
   }
   if (fields.scrollOffset) {
+    //#if _X_VAPOR_
+    info.scrollLeft = root.scrollLeft
+    info.scrollTop = root.scrollTop
+    info.scrollHeight = root.scrollHeight
+    info.scrollWidth = root.scrollWidth
+    //#else
     const documentElement = document.documentElement
     const body = document.body
     info.scrollLeft = documentElement.scrollLeft || body.scrollLeft || 0
     info.scrollTop = documentElement.scrollTop || body.scrollTop || 0
     info.scrollHeight = documentElement.scrollHeight || body.scrollHeight || 0
     info.scrollWidth = documentElement.scrollWidth || body.scrollWidth || 0
+    //#endif
   }
   return info
 }
@@ -350,14 +367,29 @@ function getNodesInfo(
   fields: NodeField
 ): SelectorQueryNodeInfo | SelectorQueryNodeInfo[] | null {
   //#if _X_VAPOR_
-  const instance = (component || pageVm).$ as unknown as VaporComponentInstance
+  const owner = (component || pageVm).$
+  const instance = owner as unknown as VaporComponentInstance
+  const normalizedSelector = normalizePageSelector(selector)
+  const pageBody =
+    normalizedSelector !== selector &&
+    (!component || component === pageVm || owner.$pageInstance === owner)
+      ? getPageBody(owner)
+      : undefined
   if (single) {
-    const node = querySelectorInComponent(instance, selector)
+    const node = pageBody
+      ? pageBody.matches(normalizedSelector)
+        ? pageBody
+        : pageBody.querySelector(normalizedSelector)
+      : querySelectorInComponent(instance, normalizedSelector)
     return node ? getNodeInfo(node as HTMLElement, fields) : null
   }
-  return querySelectorAllInComponent(instance, selector).map((node) =>
-    getNodeInfo(node as HTMLElement, fields)
-  )
+  const nodes = pageBody
+    ? [
+        ...(pageBody.matches(normalizedSelector) ? [pageBody] : []),
+        ...pageBody.querySelectorAll(normalizedSelector),
+      ]
+    : querySelectorAllInComponent(instance, normalizedSelector)
+  return nodes.map((node) => getNodeInfo(node as HTMLElement, fields))
   //#else
   const selfElement = findElm(component, pageVm)
   const parentElement = selfElement.parentElement
@@ -415,7 +447,7 @@ export function requestComponentInfo(
   const result: Array<SelectorQueryNodeInfo | null> = []
   reqs.forEach(({ component, selector, single, fields }) => {
     if (component === null) {
-      result.push(getRootInfo(fields))
+      result.push(getRootInfo(fields, page))
     } else {
       result.push(getNodesInfo(page, component, selector, single, fields))
     }

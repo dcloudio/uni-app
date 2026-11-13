@@ -176,7 +176,11 @@ export function usePageRefresh(refreshRef: Ref, pageMeta = usePageMeta()) {
       return
     }
     let { deltaY } = ev as any
-    if ((document.documentElement.scrollTop || document.body.scrollTop) !== 0) {
+    const scrollTop =
+      __X__ && __VAPOR__
+        ? (ev.currentTarget as HTMLElement).scrollTop
+        : document.documentElement.scrollTop || document.body.scrollTop
+    if (scrollTop !== 0) {
       touchId = null
       return
     }

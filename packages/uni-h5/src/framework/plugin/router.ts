@@ -46,7 +46,13 @@ export function initRouter(app: App) {
   //#endif
 
   router.beforeEach((to, from) => {
-    if (to && from && to.meta.isTabBar && from.meta.isTabBar) {
+    if (
+      !(__X__ && __VAPOR__) &&
+      to &&
+      from &&
+      to.meta.isTabBar &&
+      from.meta.isTabBar
+    ) {
       // tabbar 跳 tabbar
       saveTabBarScrollPosition(from.meta.tabBarIndex)
     }
@@ -74,6 +80,10 @@ const scrollBehavior: RouterOptions['scrollBehavior'] = (
   from,
   savedPosition
 ) => {
+  if (__X__ && __VAPOR__) {
+    // 每个缓存页保留自己的区域滚动位置，路由不再保存或恢复 window 滚动。
+    return false
+  }
   if (savedPosition) {
     return savedPosition
   } else {

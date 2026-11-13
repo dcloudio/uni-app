@@ -240,9 +240,19 @@ export function setupPage(comp: any, path: string) {
       // 动态监听子组件 onReachBottom, onPageScroll的hook，从而初始化pageScroll逻辑
       instance.onReachBottom = reactive([])
       instance.onPageScroll = reactive([])
+      const scrollWatchOptions = { once: true }
+      //#if _X_VAPOR_
+      scrollWatchOptions.once = false
+      //#endif
       watch(
         [instance.onReachBottom, instance.onPageScroll],
         () => {
+          //#if _X_VAPOR_
+          if (__VAPOR__) {
+            initPageScrollListener(instance, pageMeta)
+            return
+          }
+          //#endif
           const currentPage = __X__
             ? (getCurrentPage() as unknown as UniPage).vm
             : getCurrentPage()
@@ -250,7 +260,7 @@ export function setupPage(comp: any, path: string) {
             initPageScrollListener(instance, pageMeta)
           }
         },
-        { once: true }
+        scrollWatchOptions
       )
       onBeforeMount(() => {
         onPageShow(instance, pageMeta)
@@ -265,7 +275,7 @@ export function setupPage(comp: any, path: string) {
       onMounted(() => {
         if (__X__) {
           const pageInstance = getPageInstanceByChild(instance)
-          if (isDialogPageInstance(pageInstance)) {
+          if (!__VAPOR__ && isDialogPageInstance(pageInstance)) {
             useBackgroundColorContent(instance.proxy)
           }
           dialogPageTriggerParentHide(instance.proxy?.$page as UniDialogPage)

@@ -190,6 +190,10 @@ describe('Web Vapor Canvas 原生宿主', () => {
           getContextInfo: () => undefined,
           getScrollViewContext: () => undefined,
         },
+        '../../../helpers/pageBody': { getPageBody: () => undefined },
+        '../../../helpers/pageSelector': jest.requireActual(
+          '../src/helpers/pageSelector'
+        ),
       })
     ).requestComponentInfo
     createCanvasContextAsync = (

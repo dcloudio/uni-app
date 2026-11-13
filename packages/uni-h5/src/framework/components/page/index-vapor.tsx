@@ -6,11 +6,12 @@ import {
   inject,
   provide,
   ref,
+  shallowRef,
 } from 'vue'
 import { useDocumentTitle } from '../../../helpers/useDocumentTitle'
-import { useBackgroundColorContent } from '../../../helpers/useBackgroundColorContent'
 import { providePageMeta, usePageRoute } from '../../setup/provide'
 import { getStateId } from '../../../helpers/dom'
+import { usePageBodyScrollPosition } from '../../../helpers/pageBody'
 import { dialogPageRenderer } from './dialogPageRenderer-vapor'
 import PageHead from './pageHead-vapor'
 import usePageBody from './pageBody-vapor'
@@ -27,11 +28,19 @@ import {
 // 功能开关保留为 JS 条件表达式，使项目发行时能裁剪关闭的分支及其组件依赖。
 export default /*#__PURE__*/ defineSystemComponent({
   name: 'Page',
+  inheritAttrs: false,
   setup() {
     const pageStyle = {} as Record<string, any>
     let pageMeta = providePageMeta(getStateId())
     const navigationBar = pageMeta.navigationBar
     const currentInstance = getCurrentInstance()!
+    const pageBody = shallowRef<HTMLElement | null>(null)
+    // Teleport 先于正文 ref 创建，目标需能随正文挂载重新求值。
+    Object.defineProperty(currentInstance, '__pageBodyEl', {
+      configurable: true,
+      get: () => pageBody.value,
+    })
+    usePageBodyScrollPosition(currentInstance)
     const attrs = currentInstance.attrs
     const routeComponent = currentInstance.type as VaporPageRouteComponent
     const PageComponent = routeComponent.__uniPageComponent as DefineComponent
@@ -75,7 +84,6 @@ export default /*#__PURE__*/ defineSystemComponent({
         assignDialogPage(currentInstance, parentInstance, currentInstance)
       }
     } else {
-      useBackgroundColorContent(pageMeta)
       provide('parentInstance', currentInstance)
     }
 
@@ -106,18 +114,33 @@ export default /*#__PURE__*/ defineSystemComponent({
       }
     }
 
-    const renderPageBody = usePageBody(pageMeta, () => (
-      <PageComponent {...pageProps} ref={'page'}></PageComponent>
-    ))
+    ;(currentInstance as any).__pageBodyId = pageMeta.id
+    const renderPageBody = usePageBody(
+      pageMeta,
+      () => <PageComponent {...pageProps} ref={'page'}></PageComponent>,
+      {
+        attrs,
+        style: pageStyle,
+        onElement(element) {
+          pageBody.value = element
+        },
+      }
+    )
 
     return () => (
-      <uni-page data-page={pageMeta.route} style={pageStyle}>
+      <>
         {__UNI_FEATURE_NAVIGATIONBAR__ && (
-          <PageHead v-if={navigationBar.style !== 'custom'} />
+          <PageHead
+            v-if={
+              !isDialogPageInstance(currentInstance) &&
+              navigationBar.style !== 'custom'
+            }
+            ref={'pageHead'}
+          />
         )}
         {renderPageBody()}
         {dialogPageRenderer.value?.(currentInstance)}
-      </uni-page>
+      </>
     )
   },
 })
