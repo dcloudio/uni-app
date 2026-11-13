@@ -29,6 +29,122 @@ describe('Web Vapor 独立组件样式', () => {
     expect(code).toContain('img:where([uni-image])')
   })
 
+  test('页面通过 flex 占满导航栏和 tabBar 剩余空间，dialogPage 覆盖窗口', () => {
+    const code = read('framework/uvue-vapor.css')
+    const rules = new Map<string, Record<string, string>>()
+    postcss.parse(code).walkRules((rule) => {
+      for (const selector of rule.selectors) {
+        const normalizedSelector = selector.replace(/\s+/g, ' ')
+        const declarations = rules.get(normalizedSelector) || {}
+        rule.walkDecls((decl) => {
+          declarations[decl.prop] = decl.value
+        })
+        rules.set(normalizedSelector, declarations)
+      }
+    })
+    expect(rules.get('html')).toMatchObject({
+      'overscroll-behavior': 'none',
+      overflow: 'hidden',
+    })
+    expect(rules.get('body')).toMatchObject({
+      display: 'flex',
+      'flex-direction': 'column',
+      'overscroll-behavior': 'none',
+      overflow: 'hidden',
+    })
+    for (const selector of ['#app', 'uni-app', 'uni-app uni-main']) {
+      expect(rules.get(selector)).toMatchObject({
+        display: 'flex',
+        'flex-direction': 'column',
+        flex: '1',
+        'min-height': '0',
+      })
+    }
+    expect(rules.get('uni-app uni-content')).toMatchObject({
+      flex: '1',
+      height: 'auto',
+      'min-height': '0',
+    })
+    expect(rules.get('uni-app uni-page-body')).toMatchObject({
+      position: 'relative',
+      flex: '1',
+      'min-height': '0',
+      'overflow-y': 'auto',
+      'overflow-x': 'hidden',
+    })
+    for (const property of [
+      'top',
+      'right',
+      'bottom',
+      'left',
+      'overscroll-behavior',
+    ]) {
+      expect(rules.get('uni-app uni-page-body')).not.toHaveProperty(property)
+    }
+    expect(rules.get('uni-app uni-page-head')).toMatchObject({
+      position: 'relative',
+      'flex-shrink': '0',
+      'z-index': '998',
+    })
+    expect(rules.get('uni-app uni-page-head .uni-page-head')).toMatchObject({
+      position: 'absolute',
+      top: '0',
+      right: '0',
+      left: '0',
+    })
+    expect(rules.get('uni-app uni-page-refresh')).toMatchObject({
+      position: 'absolute',
+      'z-index': '997',
+      'pointer-events': 'none',
+    })
+    expect(
+      rules.get("uni-app uni-page-head[uni-page-head-type='default']")?.order
+    ).toBe('-2')
+    for (const position of ['top', 'bottom']) {
+      expect(
+        rules.get(`uni-app uni-tabbar.uni-tabbar-${position}`)
+      ).toMatchObject({
+        position: 'relative',
+        'flex-shrink': '0',
+      })
+    }
+    expect(rules.get('uni-app uni-tabbar.uni-tabbar-top')?.order).toBe('-1')
+    for (const position of ['top', 'bottom']) {
+      expect(
+        rules.get(`uni-app uni-tabbar.uni-tabbar-${position} .uni-tabbar`)
+      ).toMatchObject({
+        position: 'absolute',
+        right: '0',
+        left: '0',
+      })
+    }
+    expect(
+      rules.get(
+        'uni-app.uni-app--showtabbar.uni-app--tabbar-top uni-page-refresh:not([data-type])'
+      )?.top
+    ).toContain('--tab-bar-height')
+    expect(rules.get('uni-app uni-page-body[data-type]')).toMatchObject({
+      '--background-color-content': 'transparent',
+      'background-color': 'var(--background-color-content)',
+      position: 'fixed',
+      'z-index': 'calc(999 + var(--uni-dialog-page-index, 0) * 3)',
+      top: '0',
+      right: '0',
+      bottom: '0',
+      left: '0',
+    })
+    expect(code).not.toContain('data-page-head')
+    expect(rules.has('uni-app uni-page-head[data-type]')).toBe(false)
+    expect(rules.get('uni-app uni-page-refresh[data-type]')?.position).toBe(
+      'fixed'
+    )
+    expect(rules.get('uni-app uni-page-refresh[data-type]')?.['z-index']).toBe(
+      'calc(1000 + var(--uni-dialog-page-index, 0) * 3)'
+    )
+    expect(code).not.toContain('uni-page-wrapper')
+    expect(code).not.toContain('uni-page-body::after')
+  })
+
   test.each(['input', 'textarea', 'video'])(
     '%s 独立样式保留旧实现的内部规则，不再依赖旧 CSS',
     (name) => {

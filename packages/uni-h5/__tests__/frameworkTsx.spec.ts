@@ -184,7 +184,9 @@ describe('框架 TSX 动态行为', () => {
         '../../setup/provide': {
           usePageMeta: () => ({ navigationBar, isQuit: false }),
         },
-        './transparent': {},
+        './transparent': {
+          usePageHeadTransparentBackgroundColor: (color: string) => color,
+        },
         '../../../helpers/theme': {
           useTheme: (x: any) => x,
           parseTheme: (x: any) => x,
@@ -209,6 +211,20 @@ describe('框架 TSX 动态行为', () => {
       expect(host.querySelector('.uni-page-head__title')!.textContent).toBe(
         '新标题'
       )
+      expect(host.querySelector('.uni-placeholder')).not.toBeNull()
+      for (const type of ['transparent', 'float']) {
+        navigationBar.type = type
+        await vue.nextTick()
+        expect(host.querySelector('.uni-placeholder')).toBeNull()
+        expect(
+          host
+            .querySelector('uni-page-head')!
+            .getAttribute('uni-page-head-type')
+        ).toBe(type)
+      }
+      navigationBar.type = 'default'
+      await vue.nextTick()
+      expect(host.querySelector('.uni-placeholder')).not.toBeNull()
       navigationBar.loading = true
       await vue.nextTick()
       expect(
@@ -276,6 +292,11 @@ describe('框架 TSX 动态行为', () => {
       })
       const host = mount(Component, vapor)
       const first = host.querySelector('.uni-tabbar__item')
+      const placeholder = host.querySelector('.uni-placeholder') as HTMLElement
+      expect(placeholder.style.height).toBe('50px')
+      tabBar.height = '60px'
+      await vue.nextTick()
+      expect(placeholder.style.height).toBe('60px')
       tabBar.list[0].text = '修改'
       await vue.nextTick()
       expect(host.querySelector('.uni-tabbar__item')).toBe(first)
@@ -306,8 +327,17 @@ describe('框架 TSX 动态行为', () => {
     '页面正文保留刷新事件、安全区和响应式内容（Vapor=%s）',
     async (vapor) => {
       vue = vapor ? vaporVue : vdomVue
-      const meta = vue.reactive({ enablePullDownRefresh: true })
+      global.__VAPOR__ = vapor
+      global.__UNI_FEATURE_PULL_DOWN_REFRESH__ = true
+      const meta = vue.reactive({
+        route: 'pages/body',
+        enablePullDownRefresh: true,
+        disableScroll: false,
+        navigationBar: { style: 'custom' },
+      })
       const onTouchstart = jest.fn()
+      const onElement = jest.fn()
+      const background = jest.fn()
       let refreshRef: any
       let resize: () => void
       const safeArea = jest.fn(() => ({ top: 1, left: 2, right: 3, bottom: 4 }))
@@ -318,14 +348,14 @@ describe('框架 TSX 动态行为', () => {
                 props: ['onResize'],
                 setup(props: any) {
                   resize = props.onResize
-                  return []
+                  return document.createElement('resize-stub')
                 },
               })
             : vue.defineComponent({
                 props: ['onResize'],
                 setup(props: any) {
                   resize = props.onResize
-                  return () => null
+                  return () => vue.h('resize-stub')
                 },
               }),
         },
@@ -341,6 +371,9 @@ describe('框架 TSX 动态行为', () => {
           },
         },
         '../../../helpers/safeArea': { getSafeAreaInsets: safeArea },
+        '../../../helpers/useBackgroundColorContent': {
+          useBackgroundColorContent: background,
+        },
       })
       Component.__scopeId = 'data-v-page-body'
       const text = vue.ref('正文')
@@ -348,13 +381,17 @@ describe('框架 TSX 动态行为', () => {
       const Parent = vapor
         ? vue.defineVaporComponent({
             setup: () =>
-              Component(meta, () => {
-                const element = slotTemplate()
-                vue.renderEffect(() => {
-                  element.textContent = text.value
-                })
-                return element
-              })(),
+              Component(
+                meta,
+                () => {
+                  const element = slotTemplate()
+                  vue.renderEffect(() => {
+                    element.textContent = text.value
+                  })
+                  return element
+                },
+                { style: { color: 'red' }, onElement }
+              )(),
           })
         : vue.defineComponent({
             setup: () => () =>
@@ -364,8 +401,32 @@ describe('框架 TSX 动态行为', () => {
           })
       const host = mount(Parent, vapor)
       await vue.nextTick()
-      const wrapper = host.querySelector('uni-page-wrapper') as HTMLElement
-      expect(host.querySelector('uni-page-body')!.textContent).toBe('正文')
+      const body = host.querySelector('uni-page-body') as HTMLElement
+      const wrapper = host.querySelector(
+        'uni-page-wrapper'
+      ) as HTMLElement | null
+      const scrollContainer = vapor ? body : wrapper!
+      expect(!!wrapper).toBe(!vapor)
+      expect(host.querySelector('uni-page')).toBeNull()
+      expect(body.textContent).toBe('正文')
+      expect(host.querySelector('resize-stub')!.parentElement).toBe(
+        scrollContainer
+      )
+      if (vapor) {
+        expect(body.getAttribute('data-page')).toBe(meta.route)
+        expect(body.style.color).toBe('red')
+        expect(onElement).toHaveBeenCalledWith(body)
+        expect(background).toHaveBeenCalledWith(
+          meta,
+          expect.objectContaining({ value: body })
+        )
+        meta.disableScroll = true
+        await vue.nextTick()
+        expect(body.style.overflowY).toBe('hidden')
+        meta.disableScroll = false
+        await vue.nextTick()
+        expect(body.style.overflowY).not.toBe('hidden')
+      }
       const slotElement = host.querySelector('uni-page-body span')!
       expect(slotElement.hasAttribute('data-v-page-body-s')).toBe(!vapor)
       text.value = '更新正文'
@@ -373,20 +434,228 @@ describe('框架 TSX 动态行为', () => {
       expect(slotElement.textContent).toBe('更新正文')
       expect(refreshRef.value).toBeTruthy()
       resize!()
-      expect(safeArea).toHaveBeenCalledWith(wrapper)
-      expect(wrapper.style.getPropertyValue('--uni-safe-area-inset-top')).toBe(
-        '1px'
-      )
-      wrapper.dispatchEvent(new window.Event('touchstart'))
+      expect(safeArea).toHaveBeenCalledWith(scrollContainer)
+      for (const [side, value] of Object.entries({
+        top: 1,
+        left: 2,
+        right: 3,
+        bottom: 4,
+      })) {
+        expect(
+          scrollContainer.style.getPropertyValue(
+            `--uni-safe-area-inset-${side}`
+          )
+        ).toBe(`${value}px`)
+      }
+      scrollContainer.dispatchEvent(new window.Event('touchstart'))
       expect(onTouchstart).toHaveBeenCalledTimes(1)
       meta.enablePullDownRefresh = false
       await vue.nextTick()
-      wrapper.dispatchEvent(new window.Event('touchstart'))
+      scrollContainer.dispatchEvent(new window.Event('touchstart'))
       expect(onTouchstart).toHaveBeenCalledTimes(1)
       meta.enablePullDownRefresh = true
       await vue.nextTick()
-      wrapper.dispatchEvent(new window.Event('touchstart'))
+      scrollContainer.dispatchEvent(new window.Event('touchstart'))
       expect(onTouchstart).toHaveBeenCalledTimes(2)
+    }
+  )
+
+  test('页面背景按 bodyRef 隔离，挂载前和主题更新时不写共享 body', async () => {
+    const previous = document.body.style.getPropertyValue(
+      '--background-color-content'
+    )
+    document.body.style.setProperty('--background-color-content', 'shared-body')
+    const themeCallbacks: (() => void)[] = []
+    let dark = false
+    const { useBackgroundColorContent } = evaluateFramework(
+      fs.readFileSync(
+        path.join(
+          root,
+          'packages/uni-h5/src/helpers/useBackgroundColorContent.ts'
+        ),
+        'utf8'
+      ),
+      {
+        vue,
+        './theme': {
+          onThemeChange: (callback: () => void) =>
+            themeCallbacks.push(callback),
+          parseTheme: ({ backgroundColorContent }: any) => ({
+            backgroundColorContent:
+              backgroundColorContent === '@first'
+                ? dark
+                  ? '#111111'
+                  : '#eeeeee'
+                : backgroundColorContent,
+          }),
+        },
+      }
+    )
+    const firstMeta = vue.reactive({ backgroundColorContent: '@first' })
+    const secondMeta = vue.reactive({ backgroundColorContent: 'blue' })
+    const Component = vue.defineVaporComponent({
+      setup() {
+        return [firstMeta, secondMeta].map((meta: any) => {
+          const bodyRef = vue.ref(null)
+          useBackgroundColorContent(meta, bodyRef)
+          expect(
+            document.body.style.getPropertyValue('--background-color-content')
+          ).toBe('shared-body')
+          const element = document.createElement('uni-page-body')
+          bodyRef.value = element
+          return element
+        })
+      },
+    })
+    try {
+      const host = mount(Component, true)
+      await vue.nextTick()
+      const [first, second] = Array.from(
+        host.querySelectorAll('uni-page-body')
+      ) as HTMLElement[]
+      const color = (element: HTMLElement) =>
+        element.style.getPropertyValue('--background-color-content')
+      expect(color(first)).toBe('#eeeeee')
+      expect(color(second)).toBe('blue')
+      dark = true
+      themeCallbacks.forEach((callback) => callback())
+      expect(color(first)).toBe('#111111')
+      expect(color(second)).toBe('blue')
+      secondMeta.backgroundColorContent = 'red'
+      await vue.nextTick()
+      expect(color(first)).toBe('#111111')
+      expect(color(second)).toBe('red')
+      firstMeta.backgroundColorContent = ''
+      await vue.nextTick()
+      expect(color(first)).toBe('transparent')
+      expect(color(document.body)).toBe('shared-body')
+
+      const Legacy = vue.defineVaporComponent({
+        setup() {
+          useBackgroundColorContent({ backgroundColorContent: 'green' })
+          return document.createElement('aside')
+        },
+      })
+      mount(Legacy, true)
+      expect(color(document.body)).toBe('green')
+    } finally {
+      if (previous) {
+        document.body.style.setProperty('--background-color-content', previous)
+      } else {
+        document.body.style.removeProperty('--background-color-content')
+      }
+    }
+  })
+
+  test.each([undefined, 'custom', 'default'])(
+    '普通和系统弹页不显示导航栏，普通页面保留导航栏（navigationStyle=%s）',
+    async (navigationStyle) => {
+      Object.assign(global, {
+        __VAPOR__: true,
+        __UNI_FEATURE_NAVIGATIONBAR__: true,
+        __UNI_FEATURE_PULL_DOWN_REFRESH__: false,
+        __uniRoutes: [
+          {
+            path: '/dialog',
+            meta: {
+              navigationBar: { type: 'default', style: navigationStyle },
+            },
+          },
+        ],
+      })
+      const instances: any[] = []
+      const usePageBody = load('page/pageBody', true, {
+        '@dcloudio/uni-components': { ResizeSensor: stub(true, 'resize-stub') },
+        './page-refresh/component.vue': {},
+        './page-refresh': {},
+        '../../../helpers/safeArea': {},
+        '../../../helpers/useBackgroundColorContent': {
+          useBackgroundColorContent: () => {},
+        },
+      })
+      let dialogId = 10
+      const Component = load('page/index-vapor', true, {
+        './dialogPageRenderer-vapor': { dialogPageRenderer: vue.ref(null) },
+        '../../setup/provide': {
+          providePageMeta: () =>
+            vue.reactive({ route: 'parent', navigationBar: {} }),
+          usePageRoute: () => ({ query: {} }),
+        },
+        '../../../helpers/useDocumentTitle': {
+          useDocumentTitle: () => instances.push(vue.getCurrentInstance()),
+        },
+        '../../../helpers/useBackgroundColorContent': {
+          useBackgroundColorContent: () => {},
+        },
+        '../../../helpers/dom': { getStateId: () => 1 },
+        '../../../helpers/pageBody': { usePageBodyScrollPosition: () => {} },
+        '../../setup/page': { createDialogPageId: () => ++dialogId },
+        '@dcloudio/uni-core': {
+          SYSTEM_DIALOG_TAG: 'system-dialog',
+          isDialogPageInstance: (instance: any) =>
+            !!instance.attrs['data-type'],
+          isNormalDialogPageInstance: (instance: any) =>
+            instance.attrs['data-type'] === 'dialog',
+          isSystemDialogPageInstance: (instance: any) =>
+            instance.attrs['data-type'] === 'system-dialog',
+        },
+        './pageHead-vapor': { default: stub(true, 'uni-page-head') },
+        './pageBody-vapor': { default: usePageBody },
+      })
+      Component.__uniPageComponent = stub(true, 'dialog-content')
+      const firstDialog = {},
+        secondDialog = {}
+      const parentInstance = {
+        $dialogPages: vue.ref([firstDialog]),
+        $systemDialogPages: vue.ref([secondDialog]),
+      }
+      const Parent = vue.defineVaporComponent({
+        setup() {
+          vue.provide('parentInstance', parentInstance)
+          return ['dialog', 'system-dialog', undefined].map((type, index) =>
+            vue.createComponent(Component, {
+              route: () => '/dialog',
+              'data-type': () => type,
+              class: () => `dialog-${index}`,
+              style: () => ({
+                '--uni-dialog-page-index': index,
+              }),
+            })
+          )
+        },
+      })
+      const host = mount(Parent, true)
+      await vue.nextTick()
+      const bodies = host.querySelectorAll('uni-page-body')
+      expect(bodies).toHaveLength(3)
+      expect(host.querySelector('uni-page')).toBeNull()
+      expect(host.querySelector('uni-page-wrapper')).toBeNull()
+      for (const [index, type] of ['dialog', 'system-dialog'].entries()) {
+        const body = bodies[index] as HTMLElement
+        expect(body.getAttribute('data-page')).toBe('/dialog')
+        expect(body.getAttribute('data-type')).toBe(type)
+        expect(body.classList.contains(`dialog-${index}`)).toBe(true)
+        expect(body.style.getPropertyValue('--uni-dialog-page-index')).toBe(
+          String(index)
+        )
+        expect(body.querySelector('dialog-content')).not.toBeNull()
+        expect(instances[index].__pageBodyEl).toBe(body)
+        expect(body.hasAttribute('data-page-head')).toBe(false)
+        expect(instances[index].refs.pageHead).toBeUndefined()
+        expect(instances[index].$parentInstance).toBe(parentInstance)
+        expect(instances[index].$dialogPage).toBe(
+          (index
+            ? parentInstance.$systemDialogPages
+            : parentInstance.$dialogPages
+          ).value[0]
+        )
+      }
+      expect(instances[0].__pageBodyEl).not.toBe(instances[1].__pageBodyEl)
+      const heads = host.querySelectorAll('uni-page-head')
+      expect(heads).toHaveLength(1)
+      expect(instances[2].refs.pageHead.$el).toBe(heads[0])
+      expect(heads[0].nextElementSibling).toBe(bodies[2])
+      expect(heads[0].hasAttribute('data-type')).toBe(false)
     }
   )
 
@@ -410,6 +679,9 @@ describe('框架 TSX 动态行为', () => {
         './page-refresh/component.vue': {},
         './page-refresh': {},
         '../../../helpers/safeArea': {},
+        '../../../helpers/useBackgroundColorContent': {
+          useBackgroundColorContent: () => {},
+        },
       })
       const renderDialogPages = evaluateFramework(
         fs.readFileSync(
@@ -455,6 +727,7 @@ describe('框架 TSX 动态行为', () => {
           useBackgroundColorContent: () => {},
         },
         '../../../helpers/dom': { getStateId: () => 1 },
+        '../../../helpers/pageBody': { usePageBodyScrollPosition: () => {} },
         '../../setup/page': {},
         '@dcloudio/uni-shared': { stringifyQuery: () => '' },
         '@dcloudio/uni-core': {
@@ -469,6 +742,11 @@ describe('框架 TSX 动态行为', () => {
       const host = mount(Component, true)
       await vue.nextTick()
       expect(host.querySelector('main')!.textContent).toBe(query.message)
+      expect(host.querySelector('uni-page')).toBeNull()
+      expect(host.querySelector('uni-page-wrapper')).toBeNull()
+      const pageBody = host.querySelector('uni-page-body')!
+      expect(pageBody.getAttribute('data-page')).toBe('index')
+      expect(pageInstance.__pageBodyEl).toBe(pageBody)
       expect(pageInstance.refs.page).toBeTruthy()
       const originalPageRef = pageInstance.refs.page
       const originalPageElement = host.querySelector('main')
@@ -498,12 +776,22 @@ describe('框架 TSX 动态行为', () => {
       pageInstance.$dialogPages.value.push(first)
       await vue.nextTick()
       const firstElement = host.querySelector('aside')
+      expect(
+        (firstElement as HTMLElement).style.getPropertyValue(
+          '--uni-dialog-page-index'
+        )
+      ).toBe('0')
       // 再次打开不重建已启用的渲染区域。
       rendererState.dialogPageRenderer.value = renderDialogPages
       pageInstance.$systemDialogPages.value.push(second)
       await vue.nextTick()
       expect(host.querySelector('aside')).toBe(firstElement)
       expect(host.querySelectorAll('aside')).toHaveLength(2)
+      expect(
+        host
+          .querySelectorAll('aside')[1]
+          .style.getPropertyValue('--uni-dialog-page-index')
+      ).toBe('1')
       expect(mounts).toBe(2)
       pageInstance.$systemDialogPages.value.pop()
       await vue.nextTick()
@@ -545,7 +833,7 @@ describe('框架 TSX 动态行为', () => {
       Object.assign(global, {
         __UNI_FEATURE_PAGES__: true,
         __UNI_FEATURE_RESPONSIVE__: responsive,
-        __UNI_FEATURE_TABBAR__: false,
+        __UNI_FEATURE_TABBAR__: true,
         __UNI_FEATURE_TOPWINDOW__: responsive,
         __UNI_FEATURE_LEFTWINDOW__: false,
         __UNI_FEATURE_RIGHTWINDOW__: false,
@@ -559,7 +847,15 @@ describe('框架 TSX 动态行为', () => {
         matches: true,
         addEventListener: jest.fn(),
       })) as any
-      const route = vue.reactive({ path: '/a', meta: { route: 'a' } })
+      const route = vue.reactive({
+        path: '/a',
+        meta: { route: 'a', isTabBar: true },
+      })
+      const tabBar = vue.reactive({
+        shown: true,
+        height: '50px',
+        position: 'bottom',
+      })
       const routeKey = vue.computed(() => route.path)
       let mounts = 0
       const Page = vue.defineVaporComponent({
@@ -599,7 +895,7 @@ describe('框架 TSX 动态行为', () => {
           getRouteOptions: () => ({ meta: {} }),
         },
         '@dcloudio/uni-shared': { RESPONSIVE_MIN_WIDTH: 768 },
-        '../../setup/state': {},
+        '../../setup/state': { useTabBar: () => tabBar },
         '../../setup/page': {
           getCurrentBasePages: () => [],
           useKeepAliveRoute: () => ({ routeKey, isTabBar: vue.ref(false) }),
@@ -607,10 +903,32 @@ describe('框架 TSX 动态行为', () => {
         '../../setup/provide': { usePageRoute: () => route },
         '../../../helpers/dom': { checkMinWidth: () => true },
         './state': { setLayoutState: () => {} },
-        './tabBar-vapor': {},
+        './tabBar-vapor': { default: stub(true, 'uni-tabbar') },
       })
       const host = mount(Component, true)
       await vue.nextTick()
+      const tab = host.querySelector('uni-tabbar') as HTMLElement
+      expect(tab.parentElement!.tagName).toBe(
+        responsive ? 'UNI-MAIN' : 'UNI-APP'
+      )
+      tabBar.shown = false
+      await vue.nextTick()
+      expect(tab.style.display).toBe('none')
+      expect(
+        host.querySelector('uni-app')!.classList.contains('uni-app--showtabbar')
+      ).toBe(false)
+      tabBar.shown = true
+      await vue.nextTick()
+      expect(tab.style.display).not.toBe('none')
+      expect(host.querySelector('uni-tabbar')).toBe(tab)
+      const root = host.querySelector('uni-app')!
+      expect(root.classList.contains('uni-app--tabbar-top')).toBe(false)
+      tabBar.position = 'top'
+      await vue.nextTick()
+      expect(root.classList.contains('uni-app--tabbar-top')).toBe(true)
+      tabBar.position = 'bottom'
+      await vue.nextTick()
+      expect(root.classList.contains('uni-app--tabbar-top')).toBe(false)
       const first = host.querySelector('article')
       expect(first!.textContent).toBe('/a')
       route.path = '/b'

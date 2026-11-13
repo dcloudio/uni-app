@@ -76,6 +76,12 @@ describe('SelectorQuery 模式兼容', () => {
           getWindowOffset: () => ({ top: 5, topWindowHeight: 10 }),
         },
         '@dcloudio/uni-components': { getContextInfo: () => undefined },
+        '../../../helpers/pageBody': {
+          getPageBody: (instance: any) => instance.__pageBodyEl,
+        },
+        '../../../helpers/pageSelector': jest.requireActual(
+          '../src/helpers/pageSelector'
+        ),
       }
       new Function('require', 'module', 'exports', output)(
         (id: string) => imports[id],
@@ -110,6 +116,85 @@ describe('SelectorQuery 模式兼容', () => {
     apps.push(app)
     return { vm: app._instance.proxy, nodes: nodes as HTMLElement[] }
   }
+
+  test('page 查询包含本页正文和 Teleport 后代，弹页与子组件范围独立', () => {
+    function page(name: string) {
+      const result = mount('<section><i class="target"></i></section>')
+      const body = document.createElement('uni-page-body')
+      body.id = name
+      result.nodes[0].parentNode!.insertBefore(body, result.nodes[0])
+      body.append(...result.nodes)
+      const teleported = document.createElement('b')
+      teleported.className = 'target teleported'
+      body.appendChild(teleported)
+      result.vm.$.__pageBodyEl = body
+      result.vm.$.$pageInstance = result.vm.$
+      return { ...result, body, teleported }
+    }
+    const parent = page('parent')
+    const dialog = page('dialog')
+    const child = mount('<div class="target child"></div>')
+    parent.body.append(...child.nodes)
+    child.vm.$.$pageInstance = parent.vm.$
+    const callback = jest.fn()
+    query(
+      parent.vm,
+      [
+        { selector: 'page', single: true, fields: { node: true } },
+        { selector: 'page', single: false, fields: { node: true } },
+        { selector: 'page .target', single: false, fields: { node: true } },
+        { selector: 'page .teleported', single: true, fields: { node: true } },
+        { selector: '.teleported', single: true, fields: { node: true } },
+        {
+          component: parent.vm,
+          selector: 'page',
+          single: true,
+          fields: { node: true },
+        },
+        {
+          component: child.vm,
+          selector: 'page',
+          single: true,
+          fields: { node: true },
+        },
+        {
+          component: child.vm,
+          selector: 'page .target',
+          single: false,
+          fields: { node: true },
+        },
+      ],
+      callback
+    )
+    expect(callback).toHaveBeenCalledWith([
+      { node: parent.body },
+      [{ node: parent.body }],
+      [
+        { node: parent.nodes[0].firstElementChild },
+        { node: parent.teleported },
+        { node: child.nodes[0] },
+      ],
+      { node: parent.teleported },
+      null,
+      { node: parent.body },
+      null,
+      [{ node: child.nodes[0] }],
+    ])
+    callback.mockClear()
+    query(
+      dialog.vm,
+      [{ selector: 'page .teleported', single: true, fields: { node: true } }],
+      callback
+    )
+    expect(callback).toHaveBeenCalledWith([{ node: dialog.teleported }])
+    callback.mockClear()
+    legacyQuery(
+      { $el: parent.body },
+      [{ selector: 'page', single: true, fields: { node: true } }],
+      callback
+    )
+    expect(callback).toHaveBeenCalledWith([null])
+  })
 
   test('多根节点、查询作用域、空结果与队列位置保持一致', () => {
     const page = mount('<div class="hit" id="page" />')

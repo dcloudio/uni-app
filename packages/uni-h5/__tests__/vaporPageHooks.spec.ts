@@ -331,6 +331,7 @@ describe('Web 弹窗不覆盖父页窗口变量', () => {
     const tabBar = { shown: true, height: '50px' }
     const globals = {
       __X__: true,
+      __VAPOR__: vapor,
       __DEV__: false,
       __NODE_JS__: false,
       __PLATFORM__: 'h5',
@@ -344,7 +345,7 @@ describe('Web 弹窗不覆盖父页窗口变量', () => {
     const vue = {
       getCurrentInstance: () => instance,
       reactive: (value: any) => value,
-      watch: () => {},
+      watch: () => () => {},
       nextTick: (callback: Function) => callback(),
       onBeforeMount: (callback: Function) =>
         lifecycle.beforeMount.push(callback),
@@ -353,6 +354,7 @@ describe('Web 弹窗不覆盖父页窗口变量', () => {
         lifecycle.activate.push(callback),
       onBeforeDeactivate: () => {},
       onBeforeUnmount: (callback: Function) => lifecycle.unmount.push(callback),
+      onScopeDispose: () => {},
       withModifiers: (callback: Function) => callback,
     }
     const dialogHelpers = await load(
@@ -404,6 +406,10 @@ describe('Web 弹窗不覆盖父页窗口变量', () => {
         '../../service/api/route/utils': {},
         '../../helpers/cssVar': cssHelpers,
         '../../helpers/dom': { getStateId: () => 1 },
+        '../../helpers/pageBody': {
+          getPageBody: (value: any) =>
+            core.getPageInstanceByChild(value)?.__pageBodyEl,
+        },
         './utils': { getScopeId: (value: any) => value.type.__scopeId },
         '../../x/service/api/route/utils': {},
         '../../x/framework/setup/page': {},
@@ -447,13 +453,18 @@ describe('Web 弹窗不覆盖父页窗口变量', () => {
       { ...globals, getCurrentPages: () => [parentPage] }
     )
     function createPage(meta: any, type?: 'dialog' | 'systemDialog') {
-      const pageRoot = document.createElement('uni-page')
-      pageRoot.appendChild(document.createElement('uni-page-body'))
+      const pageRoot = document.createElement(
+        vapor ? 'uni-page-body' : 'uni-page'
+      )
+      if (!vapor) {
+        pageRoot.appendChild(document.createElement('uni-page-body'))
+      }
       document.body.appendChild(pageRoot)
       const layout = {
         type: { name: 'Page' },
         attrs: { 'data-type': type, route: 'uni:modal?title=test' },
         proxy: { $el: pageRoot },
+        __pageBodyEl: vapor ? pageRoot : undefined,
       }
       const vm = { $basePage: { meta }, $page: null as any }
       instance = {
@@ -462,6 +473,7 @@ describe('Web 弹窗不覆盖父页窗口变量', () => {
         root: { type: {} },
         proxy: vm,
         attrs: {},
+        scope: { run: (callback: Function) => callback() },
       }
       pageMeta = meta
       lifecycle = { beforeMount: [], mounted: [], activate: [], unmount: [] }
@@ -488,6 +500,7 @@ describe('Web 弹窗不覆盖父页窗口变量', () => {
       setupPage({ setup: () => {} }, 'pages/test').setup({}, {})
       return {
         page,
+        element: pageRoot,
         mount: () => {
           hooks.beforeMount.forEach((callback) => callback())
           hooks.mounted.forEach((callback) => callback())
@@ -507,6 +520,7 @@ describe('Web 弹窗不覆盖父页窗口变量', () => {
       createPage,
       tabBar,
       style: document.documentElement.style,
+      body: document.body,
       variables: () =>
         ['--window-top', '--window-bottom'].map((name) =>
           document.documentElement.style.getPropertyValue(name)
@@ -521,9 +535,15 @@ describe('Web 弹窗不覆盖父页窗口变量', () => {
       const harness = await createPageHarness(vapor)
       let write: jest.SpyInstance | undefined
       try {
-        harness
-          .createPage({ navigationBar: { type: 'default' }, isTabBar: true })
-          .mount()
+        const parent = harness.createPage({
+          navigationBar: { type: 'default' },
+          isTabBar: true,
+        })
+        parent.mount()
+        if (vapor) {
+          expect(parent.element.hasAttribute('data-v-parent')).toBe(true)
+          expect(harness.body.hasAttribute('data-v-parent')).toBe(false)
+        }
         const parentVariables = harness.variables()
         expect(parentVariables).toEqual([
           'calc(44px + env(safe-area-inset-top))',
@@ -541,6 +561,11 @@ describe('Web 弹窗不覆盖父页窗口变量', () => {
           expect(harness.variables()).toEqual(parentVariables)
           dialog.mount()
           dialog.activate()
+          if (vapor) {
+            expect(dialog.element.hasAttribute('data-v-dialog')).toBe(true)
+            expect(parent.element.hasAttribute('data-v-parent')).toBe(true)
+            expect(harness.body.hasAttribute('data-v-dialog')).toBe(false)
+          }
           expect(harness.variables()).toEqual(parentVariables)
           return dialog
         })

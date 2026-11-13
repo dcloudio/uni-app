@@ -7,6 +7,7 @@ import {
   transformPageHead as transformSharedPageHead,
   transformTapToClick,
   transformUniH5Jsx,
+  transformWebVaporTeleport,
 } from '@dcloudio/uni-cli-shared'
 import {
   UVUE_WEB_BUILT_IN_CUSTOM_ELEMENTS,
@@ -42,6 +43,8 @@ if (process.env.UNI_APP_X === 'true') {
   nodeTransforms.splice(nodeTransforms.indexOf(transformMatchMedia), 1)
   if (!isUniAppXWebVapor()) {
     nodeTransforms.push(transformCustomElement)
+  } else {
+    nodeTransforms.push(transformWebVaporTeleport)
   }
   if (process.env.UNI_UTS_PLATFORM === 'web') {
     nodeTransforms.push(transformAttributePart)

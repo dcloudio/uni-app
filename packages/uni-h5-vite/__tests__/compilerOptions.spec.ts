@@ -29,7 +29,7 @@ describe('h5 compiler options', () => {
     process.env.UNI_APP_X_VAPOR = 'true'
 
     const { compilerOptions } = require('../src/plugin/uni')
-    const { transformMatchMedia } =
+    const { transformMatchMedia, transformWebVaporTeleport } =
       require('@dcloudio/uni-cli-shared') as typeof import('@dcloudio/uni-cli-shared')
     const { transformCustomElement } =
       require('../src/plugin/transforms/transformCustomElement') as typeof import('../src/plugin/transforms/transformCustomElement')
@@ -37,6 +37,7 @@ describe('h5 compiler options', () => {
       require('../src/plugin/transforms/transformPageHead') as typeof import('../src/plugin/transforms/transformPageHead')
 
     expect(compilerOptions.nodeTransforms).not.toContain(transformMatchMedia)
+    expect(compilerOptions.nodeTransforms).toContain(transformWebVaporTeleport)
     expect(compilerOptions.nodeTransforms).not.toContain(transformCustomElement)
     expect(compilerOptions.ssrPreTagTransforms).toContain(transformPageHead)
     expect(compilerOptions.isCustomElement('match-media')).toBe(false)
@@ -55,12 +56,15 @@ describe('h5 compiler options', () => {
     delete process.env.UNI_APP_X_VAPOR
 
     const { compilerOptions } = require('../src/plugin/uni')
-    const { transformMatchMedia } =
+    const { transformMatchMedia, transformWebVaporTeleport } =
       require('@dcloudio/uni-cli-shared') as typeof import('@dcloudio/uni-cli-shared')
     const { transformCustomElement } =
       require('../src/plugin/transforms/transformCustomElement') as typeof import('../src/plugin/transforms/transformCustomElement')
 
     expect(compilerOptions.nodeTransforms).not.toContain(transformMatchMedia)
+    expect(compilerOptions.nodeTransforms).not.toContain(
+      transformWebVaporTeleport
+    )
     expect(compilerOptions.nodeTransforms).toContain(transformCustomElement)
     expect(compilerOptions.isCustomElement('match-media')).toBe(true)
 

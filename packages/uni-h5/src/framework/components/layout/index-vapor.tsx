@@ -110,19 +110,16 @@ export default /*#__PURE__*/ defineSystemComponent({
       }
       return <FirstPageComponent />
     }
+    function renderTabBar() {
+      if (__UNI_FEATURE_TABBAR__) {
+        return <TabBar v-show={unref(showTabBar)}></TabBar>
+      }
+    }
+
     function renderLayout() {
       if (__UNI_FEATURE_RESPONSIVE__) {
         return (
-          <uni-layout
-            class={{
-              'uni-app--showtopwindow':
-                __UNI_FEATURE_TOPWINDOW__ && layoutState.showTopWindow,
-              'uni-app--showleftwindow':
-                __UNI_FEATURE_LEFTWINDOW__ && layoutState.showLeftWindow,
-              'uni-app--showrightwindow':
-                __UNI_FEATURE_RIGHTWINDOW__ && layoutState.showRightWindow,
-            }}
-          >
+          <>
             {__UNI_FEATURE_TOPWINDOW__ && TopWindow && (
               <uni-top-window
                 v-show={
@@ -148,7 +145,10 @@ export default /*#__PURE__*/ defineSystemComponent({
               </uni-top-window>
             )}
             <uni-content>
-              <uni-main>{renderPage()}</uni-main>
+              <uni-main>
+                {renderPage()}
+                {renderTabBar()}
+              </uni-main>
               {__UNI_FEATURE_LEFTWINDOW__ && LeftWindow && (
                 <uni-left-window
                   v-show={
@@ -197,15 +197,19 @@ export default /*#__PURE__*/ defineSystemComponent({
                 </uni-right-window>
               )}
             </uni-content>
-          </uni-layout>
+          </>
         )
       }
-      return renderPage()
+      return (
+        <>
+          {renderPage()}
+          {renderTabBar()}
+        </>
+      )
     }
     return () => (
       <uni-app ref={rootRef} class={clazz.value}>
         {renderLayout()}
-        {__UNI_FEATURE_TABBAR__ && <TabBar v-show={unref(showTabBar)}></TabBar>}
       </uni-app>
     )
   },
@@ -216,6 +220,8 @@ function useAppClass(showTabBar?: ComputedRef<boolean>) {
   return computed(() => {
     return {
       'uni-app--showtabbar': showTabBar && showTabBar.value,
+      'uni-app--tabbar-top':
+        __UNI_FEATURE_TABBAR__ && useTabBar()!.position === 'top',
       'uni-app--maxwidth': showMaxWidth.value,
     }
   })
@@ -408,14 +414,21 @@ function useState() {
     () => layoutState.marginWidth,
     (value) => updateCssVar({ '--window-margin': value + 'px' })
   )
+  // API 侧窗覆盖正文，只有常驻侧窗参与主区域的宽度分配。
   watch(
-    () => layoutState.leftWindowWidth + layoutState.marginWidth,
+    () =>
+      (layoutState.showLeftWindow && !layoutState.apiShowLeftWindow
+        ? layoutState.leftWindowWidth
+        : 0) + layoutState.marginWidth,
     (value) => {
       updateCssVar({ '--window-left': value + 'px' })
     }
   )
   watch(
-    () => layoutState.rightWindowWidth + layoutState.marginWidth,
+    () =>
+      (layoutState.showRightWindow && !layoutState.apiShowRightWindow
+        ? layoutState.rightWindowWidth
+        : 0) + layoutState.marginWidth,
     (value) => {
       updateCssVar({ '--window-right': value + 'px' })
     }

@@ -187,6 +187,10 @@ describe('Web Vapor Canvas 原生宿主', () => {
           getWindowOffset: () => ({ top: 0, topWindowHeight: 0 }),
         },
         '@dcloudio/uni-components': { getContextInfo: () => undefined },
+        '../../../helpers/pageBody': { getPageBody: () => undefined },
+        '../../../helpers/pageSelector': jest.requireActual(
+          '../src/helpers/pageSelector'
+        ),
       })
     ).requestComponentInfo
     createCanvasContextAsync = (

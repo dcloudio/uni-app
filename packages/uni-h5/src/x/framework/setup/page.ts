@@ -1,5 +1,10 @@
 import safeAreaInsets from 'safe-area-insets'
 import { type ComponentPublicInstance, markRaw, watchEffect } from 'vue'
+//#if _X_VAPOR_
+import { onMounted } from 'vue'
+import { getPageBody } from '../../../helpers/pageBody'
+import { normalizePageSelector } from '../../../helpers/pageSelector'
+//#endif
 import {
   getCurrentPage,
   getLastDialogPage,
@@ -69,13 +74,34 @@ function getPageElement(page: UniPage): HTMLElement {
       }
     }
   }
+  //#if _X_VAPOR_
+  const pageEle = page.vm && getPageBody(page.vm.$)
+  //#else
   const pageEle = document.querySelector(
     `uni-page[data-page="${page.vm?.route}"]`
   )
+  //#endif
   if (!pageEle) {
     throw new Error('page not found')
   }
   return pageEle as HTMLElement
+}
+
+function getPageBodyElement(page: UniPage): HTMLElement {
+  const pageElement = getPageElement(page)
+  //#if _X_VAPOR_
+  return pageElement
+  //#else
+  return pageElement.querySelector('uni-page-wrapper') as HTMLElement
+  //#endif
+}
+
+function getQueryPageBody(page: UniPage): HTMLElement | null {
+  //#if _X_VAPOR_
+  return (page.vm && getPageBody(page.vm.$)) || null
+  //#else
+  return document.querySelector<HTMLElement>('uni-page-body')
+  //#endif
 }
 
 class UniPageImpl implements UniPage {
@@ -93,14 +119,21 @@ class UniPageImpl implements UniPage {
   }
 
   get height(): number {
+    //#if _X_VAPOR_
+    const pageHead = (
+      this.vm?.$pageLayoutInstance?.refs.pageHead as
+        | ComponentPublicInstance
+        | undefined
+    )?.$el
+    //#else
     const pageEle = getPageElement(this)
     const pageHead = pageEle.querySelector('uni-page-head')
+    //#endif
     return this.pageBody.height + (pageHead ? pageHead.clientHeight : 0)
   }
 
   get pageBody() {
-    const pageEle = getPageElement(this)
-    const pageBody = pageEle.querySelector('uni-page-wrapper') as HTMLElement
+    const pageBody = getPageBodyElement(this)
     const pageWrapperInfo = getPageWrapperInfo(pageBody)
     return {
       top: pageWrapperInfo.top,
@@ -112,8 +145,7 @@ class UniPageImpl implements UniPage {
     }
   }
   get safeAreaInsets(): UniSafeAreaInsets {
-    const pageEle = getPageElement(this)
-    const pageBody = pageEle.querySelector('uni-page-wrapper') as HTMLElement
+    const pageBody = getPageBodyElement(this)
     return getSafeAreaInsets(pageBody)
   }
   getPageStyle(): UTSJSONObject {
@@ -193,7 +225,7 @@ class UniPageImpl implements UniPage {
     if (currentPage !== this) {
       return null
     }
-    const uniPageBody = document.querySelector('uni-page-body')
+    const uniPageBody = getQueryPageBody(this)
     return uniPageBody
       ? (uniPageBody.querySelector(`#${id}`) as unknown as UniElement)
       : null
@@ -203,10 +235,29 @@ class UniPageImpl implements UniPage {
       return null
     }
     const currentPage = getCurrentPage() as unknown as UniPage
+    //#if _X_VAPOR_
+    if (
+      currentPage !== this &&
+      (!currentPage || currentPage !== this.getParentPage())
+    ) {
+      return null
+    }
+    //#else
     if (currentPage !== this) {
       return null
     }
-    const uniPageBody = document.querySelector('uni-page-body')
+    //#endif
+    const uniPageBody = getQueryPageBody(this)
+    //#if _X_VAPOR_
+    const normalizedSelector = normalizePageSelector(selector)
+    if (
+      normalizedSelector !== selector &&
+      uniPageBody?.matches(normalizedSelector)
+    ) {
+      return uniPageBody as unknown as UniElement
+    }
+    selector = normalizedSelector
+    //#endif
     return uniPageBody
       ? (uniPageBody.querySelector(selector) as unknown as UniElement)
       : null
@@ -217,13 +268,32 @@ class UniPageImpl implements UniPage {
       return res
     }
     const currentPage = getCurrentPage() as unknown as UniPage
+    //#if _X_VAPOR_
+    if (
+      currentPage !== this &&
+      (!currentPage || currentPage !== this.getParentPage())
+    ) {
+      return res
+    }
+    //#else
     if (currentPage !== this) {
       return res
     }
-    const uniPageBody = document.querySelector('uni-page-body')
+    //#endif
+    const uniPageBody = getQueryPageBody(this)
     if (!uniPageBody) {
       return res
     }
+    //#if _X_VAPOR_
+    const normalizedSelector = normalizePageSelector(selector)
+    if (
+      normalizedSelector !== selector &&
+      uniPageBody.matches(normalizedSelector)
+    ) {
+      res.push(uniPageBody as unknown as UniElement)
+    }
+    selector = normalizedSelector
+    //#endif
     const nodeList = uniPageBody.querySelectorAll(selector)
     nodeList.forEach((node) => {
       res.push(node as unknown as UniElement)
@@ -244,7 +314,7 @@ class UniPageImpl implements UniPage {
     if (currentPage !== this) {
       return null
     }
-    return document.querySelector('uni-page-body') as unknown as UniElement
+    return getQueryPageBody(this) as unknown as UniElement
   }
   getParentPage: () => UniPage | null = () => null
   getDialogPages(): UniPage[] {
@@ -325,9 +395,13 @@ export class UniDialogPageImpl extends UniPageImpl implements UniDialogPage {
     if (currentPage !== this.getParentPage()) {
       return null
     }
+    //#if _X_VAPOR_
+    const uniPageBody = getQueryPageBody(this)
+    //#else
     const uniPageBody = document.querySelector(
       `uni-page[data-page="${this.vm?.route}"] uni-page-body`
     )
+    //#endif
     return uniPageBody
       ? (uniPageBody.querySelector(`#${id}`) as unknown as UniElement)
       : null
@@ -340,9 +414,13 @@ export class UniDialogPageImpl extends UniPageImpl implements UniDialogPage {
     if (currentPage !== this.getParentPage()) {
       return null
     }
+    //#if _X_VAPOR_
+    return getQueryPageBody(this) as unknown as UniElement
+    //#else
     return document.querySelector(
       `uni-page[data-page="${this.vm?.route}"] uni-page-body`
     ) as unknown as UniElement
+    //#endif
   }
   constructor({
     route,
@@ -436,21 +514,33 @@ export function initXPage(
     // fix dialogPage $basePage.fullPath
     vm.$basePage.fullPath = vm.$basePage.path
   }
+  //#if _X_VAPOR_
+  if (!__NODE_JS__) {
+    onMounted(() => {
+      const pageElement = getPageBody(vm.$)
+      pageElement && setUniElementPage(pageElement, vm.$.page)
+    })
+  }
+  //#else
   const pageElement = pageInstance.proxy?.$el
   if (!__NODE_JS__ && pageElement instanceof Element) {
     setUniElementPage(pageElement, vm.$.page)
   }
+  //#endif
 }
 
 export function useBackgroundColorContent(vm: ComponentPublicInstance | null) {
   vm &&
     watchEffect(() => {
+      //#if _X_VAPOR_
+      const uniPageBody = getPageBody(vm.$)
+      //#else
       const uniPageBody = document.querySelector(
         `uni-page[data-page="${vm.route}"] uni-page-body`
       )
+      //#endif
       if (uniPageBody && vm.$basePage.meta.backgroundColorContent) {
-        // @ts-expect-error
-        uniPageBody.style.backgroundColor =
+        ;(uniPageBody as HTMLElement).style.backgroundColor =
           vm.$basePage.meta.backgroundColorContent
       }
     })

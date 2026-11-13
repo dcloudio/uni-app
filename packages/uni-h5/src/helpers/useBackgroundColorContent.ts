@@ -1,29 +1,41 @@
-import { onActivated, watchEffect } from 'vue'
+import { type Ref, onActivated, watchEffect } from 'vue'
 import { onThemeChange, parseTheme } from './theme'
 
-export function updateBackgroundColorContent(backgroundColorContent: string) {
+export function updateBackgroundColorContent(
+  backgroundColorContent: string,
+  element?: HTMLElement
+) {
   if (__NODE_JS__) {
     return
   }
+  element = element || document.body
   if (backgroundColorContent) {
-    document.body.style.setProperty(
+    element.style.setProperty(
       '--background-color-content',
       backgroundColorContent
     )
   } else {
-    document.body.style.removeProperty('--background-color-content')
+    element.style.removeProperty('--background-color-content')
   }
 }
 
-export function useBackgroundColorContent(pageMeta: UniApp.PageRouteMeta) {
+export function useBackgroundColorContent(
+  pageMeta: UniApp.PageRouteMeta,
+  pageBody?: Ref<HTMLElement | null>
+) {
   function update() {
+    if (__NODE_JS__ || (pageBody && !pageBody.value)) {
+      return
+    }
+    const element = pageBody ? pageBody.value! : document.body
     if (pageMeta.backgroundColorContent) {
       updateBackgroundColorContent(
         parseTheme({ backgroundColorContent: pageMeta.backgroundColorContent })
-          .backgroundColorContent
+          .backgroundColorContent,
+        element
       )
     } else {
-      updateBackgroundColorContent('transparent')
+      updateBackgroundColorContent('transparent', element)
     }
   }
 

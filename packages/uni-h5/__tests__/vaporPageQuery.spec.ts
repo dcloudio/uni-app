@@ -41,6 +41,7 @@ describe('Vapor 页面查询参数', () => {
           type: { __uniPageComponent: {} },
         }),
         ref: (value: unknown) => ({ value }),
+        shallowRef: (value: unknown) => ({ value }),
         provide: () => {},
       },
       '../../setup/provide': {
@@ -56,6 +57,7 @@ describe('Vapor 页面查询参数', () => {
         useBackgroundColorContent: () => {},
       },
       '../../../helpers/dom': { getStateId: () => 1 },
+      '../../../helpers/pageBody': { usePageBodyScrollPosition: () => {} },
       '@dcloudio/uni-core': { isDialogPageInstance: () => false },
       '@dcloudio/uni-shared': {},
       '../../setup/page': {},
@@ -104,6 +106,7 @@ describe('Vapor 页面查询参数', () => {
         '../../service/api/route/utils': {},
         '../../helpers/cssVar': {},
         '../../helpers/dom': { getStateId: () => 1 },
+        '../../helpers/pageBody': {},
         './utils': {},
         '../../x/service/api/route/utils': {},
         '../../x/framework/setup/page': { initXPage },

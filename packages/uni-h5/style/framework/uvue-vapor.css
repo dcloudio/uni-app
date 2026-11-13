@@ -7,19 +7,80 @@
 html,
 body {
   font-family: -apple-system, HelveticaNeue;
+  overscroll-behavior: none;
+  overflow: hidden;
 }
 
-body,
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+#app,
+uni-app,
+uni-app uni-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+}
+
+uni-app,
+uni-app uni-main {
+  position: relative;
+}
+
+uni-app uni-content {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  height: auto;
+}
+
+uni-app uni-top-window {
+  flex-shrink: 0;
+}
+
+uni-app uni-tabbar.uni-tabbar-top,
+uni-app uni-tabbar.uni-tabbar-bottom {
+  position: relative;
+  left: auto;
+  right: auto;
+  flex-shrink: 0;
+}
+
+uni-app uni-tabbar.uni-tabbar-top {
+  order: -1;
+}
+
+uni-app uni-tabbar.uni-tabbar-top .uni-tabbar,
+uni-app uni-tabbar.uni-tabbar-bottom .uni-tabbar {
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+
+uni-app uni-tabbar.uni-tabbar-top .uni-tabbar {
+  top: 0;
+}
+
 uni-page-body {
   background-color: var(--background-color-content);
 }
 
 uni-app uni-page-body {
-  height: 100%;
-  overflow: visible;
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  height: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
-uni-app uni-page-body,
 uni-app uni-top-window,
 uni-app uni-left-window,
 uni-app uni-right-window {
@@ -31,20 +92,59 @@ uni-app uni-right-window .uni-right-window {
   height: 100%;
 }
 
-uni-app.uni-app--showtabbar uni-page-body::after {
-  content: '';
-  display: block;
-  width: 100%;
-  height: var(--tab-bar-height);
-  height: calc(var(--tab-bar-height) + constant(safe-area-inset-bottom));
-  height: calc(var(--tab-bar-height) + env(safe-area-inset-bottom));
-  min-height: var(--tab-bar-height);
-  min-height: calc(var(--tab-bar-height) + constant(safe-area-inset-bottom));
-  min-height: calc(var(--tab-bar-height) + env(safe-area-inset-bottom));
+/* 弹页覆盖整个窗口，不显示导航栏。 */
+uni-app uni-page-body[data-type] {
+  --background-color-content: transparent;
+  background-color: var(--background-color-content);
+  position: fixed;
+  z-index: calc(999 + var(--uni-dialog-page-index, 0) * 3);
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
 }
 
-uni-app.uni-app--showtabbar uni-page-wrapper::after {
-  display: none;
+/* 刷新层覆盖页面区域，导航栏和 tabBar 通过已有占位节点参与布局。 */
+uni-app uni-page-refresh {
+  position: absolute;
+  z-index: 997;
+  pointer-events: none;
+  top: 0;
+  right: 0;
+  left: 0;
+  width: auto;
+}
+
+uni-app uni-page-head {
+  position: relative;
+  flex-shrink: 0;
+  z-index: 998;
+}
+
+uni-app uni-page-head[uni-page-head-type='default'] {
+  order: -2;
+}
+
+uni-app uni-page-head .uni-page-head {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+}
+
+uni-app.uni-app--showtabbar.uni-app--tabbar-top
+  uni-page-refresh:not([data-type]) {
+  top: var(--tab-bar-height);
+  top: calc(var(--tab-bar-height) + constant(safe-area-inset-bottom));
+  top: calc(var(--tab-bar-height) + env(safe-area-inset-bottom));
+}
+
+uni-app uni-page-refresh[data-type] {
+  position: fixed;
+  z-index: calc(1000 + var(--uni-dialog-page-index, 0) * 3);
+  top: 0;
+  right: 0;
+  left: 0;
 }
 
 /* input 布局对齐 App 端 */

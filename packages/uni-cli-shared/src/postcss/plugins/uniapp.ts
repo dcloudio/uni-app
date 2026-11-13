@@ -113,7 +113,9 @@ function walkRules(options: TransformOptions) {
     rule.selector = selectorParser((selectors) =>
       selectors.walk((selector) => transform(selector, state, options))
     ).processSync(rule.selector)
-    state.body && createBodyRule(rule)
+    if (state.body && !options.vapor) {
+      createBodyRule(rule)
+    }
   }
 }
 

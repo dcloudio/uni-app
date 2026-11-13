@@ -96,6 +96,12 @@ describe('IntersectionObserver 组件范围查询', () => {
       vue,
       '@dcloudio/uni-api': helper,
       '../../../platform/dom': { findElem: (vm: any) => vm.$el },
+      '../../../helpers/pageBody': {
+        getPageBody: (instance: any) => instance.__pageBodyEl,
+      },
+      '../../../helpers/pageSelector': jest.requireActual(
+        '../src/helpers/pageSelector'
+      ),
     }
     const file = 'packages/uni-h5/src/service/api/ui/intersectionObserver.ts'
     api = await load(file, true, imports)
@@ -158,6 +164,92 @@ describe('IntersectionObserver 组件范围查询', () => {
     })
     return observers[observers.length - 1]
   }
+
+  function mountPage() {
+    const { vm, host, nodes } = mountHtml(
+      '<section><i class="hit"></i></section>'
+    )
+    const body = document.createElement('uni-page-body')
+    body.dataset.page = 'pages/shared-route'
+    host.appendChild(body)
+    body.appendChild(nodes[0])
+    const teleported = document.createElement('aside')
+    teleported.className = 'hit'
+    body.appendChild(teleported)
+    vm.$.$pageInstance = vm.$
+    vm.$.__pageBodyEl = body
+    return { vm, body, target: nodes[0].firstElementChild, teleported }
+  }
+
+  test('page 可观察正文自身，并作为 page 后代批量观察的相对根', () => {
+    const { vm, body, target, teleported } = mountPage()
+    expect(observe(vm, { selector: 'page' }).observe.mock.calls).toEqual([
+      [body],
+    ])
+    const observer = observe(
+      vm,
+      {
+        selector: 'page .hit',
+        relativeToSelector: 'page',
+        observeAll: true,
+      },
+      2
+    )
+    expect(observer.options.root).toBe(body)
+    expect(observer.observe.mock.calls).toEqual([[target], [teleported]])
+  })
+
+  test('同一路由普通页和弹页的 page 观察目标保持独立', () => {
+    const parent = mountPage()
+    const dialog = mountPage()
+    dialog.body.dataset.type = 'dialog'
+    const parentObserver = observe(parent.vm, {
+      selector: 'page .hit',
+      relativeToSelector: 'page',
+      observeAll: true,
+    })
+    const dialogObserver = observe(dialog.vm, {
+      selector: 'page .hit',
+      relativeToSelector: 'page',
+      observeAll: true,
+    })
+    expect(parentObserver.options.root).toBe(parent.body)
+    expect(dialogObserver.options.root).toBe(dialog.body)
+    expect(parentObserver.observe.mock.calls).toEqual([
+      [parent.target],
+      [parent.teleported],
+    ])
+    expect(dialogObserver.observe.mock.calls).toEqual([
+      [dialog.target],
+      [dialog.teleported],
+    ])
+  })
+
+  test('子组件的 page 后代选择器不扩大查询范围', () => {
+    const { vm, target } = mountPage()
+    vm.$.$pageInstance = {}
+    const observer = observe(vm, {
+      selector: 'page .hit',
+      observeAll: true,
+    })
+    expect(observer.observe.mock.calls).toEqual([[target]])
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => {})
+    expect(observe(vm, { selector: 'page' }, 2).observe).not.toHaveBeenCalled()
+    expect(warn).toHaveBeenCalledTimes(1)
+  })
+
+  test('Window 没有页面正文引用时仍按组件范围查询', () => {
+    const { vm, nodes } = mountHtml(
+      '<uni-page-body><i class="hit"></i></uni-page-body>'
+    )
+    vm.$.$pageInstance = vm.$
+    const observer = observe(vm, {
+      selector: 'page .hit',
+      relativeToSelector: 'page',
+    })
+    expect(observer.options.root).toBe(nodes[0])
+    expect(observer.observe.mock.calls).toEqual([[nodes[0].firstElementChild]])
+  })
 
   test('单个查询跳过文本和注释，匹配后续根元素的复合选择器', () => {
     const { vm, nodes } = mountHtml(

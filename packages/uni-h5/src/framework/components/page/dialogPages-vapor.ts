@@ -11,6 +11,7 @@ export function renderDialogPages(currentInstance: ComponentInternalInstance) {
     component: UniDialogPage['$component']
     type: string
     route: string
+    style: { '--uni-dialog-page-index': number }
   }
 
   function getDialogPages(): DialogPageInfo[] {
@@ -29,26 +30,20 @@ export function renderDialogPages(currentInstance: ComponentInternalInstance) {
       const bId = b.page.vm?.$basePage?.id || Number.MAX_SAFE_INTEGER
       return aId - bId
     })
-    return pages.map(({ page, type }) => ({
+    return pages.map(({ page, type }, index) => ({
       component: page.$component,
       type,
       route: `${page.route}${stringifyQuery(page.options)}`,
+      // 同一弹页的各根节点共享索引，具体层级由 CSS 统一定义。
+      style: { '--uni-dialog-page-index': index },
     }))
   }
 
-  const dialogPageStyle = {
-    position: 'fixed',
-    zIndex: 999,
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
-  }
   return createFor(
     () => getDialogPages(),
     (dialogPage: { value: DialogPageInfo }) =>
       createDynamicComponent(() => dialogPage.value.component, {
-        style: () => dialogPageStyle,
+        style: () => dialogPage.value.style,
         'data-type': () => dialogPage.value.type,
         route: () => dialogPage.value.route,
       }),

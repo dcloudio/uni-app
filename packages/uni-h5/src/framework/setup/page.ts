@@ -5,6 +5,7 @@ import {
   type VNode,
   computed,
   nextTick,
+  onScopeDispose,
   watch,
 } from 'vue'
 import { ShapeFlags } from '@vue/shared'
@@ -36,6 +37,9 @@ import {
 import { updateCurPageCssVar } from '../../helpers/cssVar'
 import { getStateId } from '../../helpers/dom'
 import { getScopeId } from './utils'
+//#if _X_VAPOR_
+import { getPageBody } from '../../helpers/pageBody'
+//#endif
 //#if _X_ && !_NODE_JS_
 import { clearDialogPages } from '../../x/service/api/route/utils'
 //#endif
@@ -318,10 +322,14 @@ export function onPageShow(
   const isDialogPage =
     __X__ && isDialogPageInstance(getPageInstanceByChild(instance))
   updateCurPageBodyScopeId(instance)
-  updateBodyScopeId(instance)
+  if (!(__X__ && __VAPOR__)) {
+    updateBodyScopeId(instance)
+  }
   updateCurPageAttrs(pageMeta)
   if (!isDialogPage) {
     updateCurPageCssVar(pageMeta)
+  }
+  if ((__X__ && __VAPOR__) || !isDialogPage) {
     initPageScrollListener(instance, pageMeta)
   }
 }
@@ -335,7 +343,10 @@ export function onPageReady(instance: ComponentInternalInstance) {
 function updateCurPageBodyScopeId(instance: ComponentInternalInstance) {
   const pageRoot = getPageInstanceByChild(instance)?.proxy
     ?.$el as Element | null
-  const pageBodyEl = pageRoot?.querySelector('uni-page-body')
+  const pageBodyEl =
+    __X__ && __VAPOR__
+      ? getPageBody(instance)
+      : pageRoot?.querySelector('uni-page-body')
   if (!pageBodyEl) {
     return false
   }
@@ -384,10 +395,93 @@ const passiveOptions = supportsPassive
 
 let curScrollListener: (evt: Event) => any
 
+//#if _X_VAPOR_
+const pageScrollCleanups = new WeakMap<ComponentInternalInstance, () => void>()
+
+function initVaporPageScrollListener(
+  instance: ComponentInternalInstance,
+  pageMeta: UniApp.PageRouteMeta
+) {
+  const previousCleanup = pageScrollCleanups.get(instance)
+  previousCleanup?.()
+  let disposed = false
+  let removeListeners: (() => void) | undefined
+  const cleanup = () => {
+    disposed = true
+    removeListeners?.()
+  }
+  pageScrollCleanups.set(instance, cleanup)
+  if (!previousCleanup) {
+    instance.scope.run(() =>
+      onScopeDispose(() => {
+        pageScrollCleanups.get(instance)?.()
+        pageScrollCleanups.delete(instance)
+      })
+    )
+  }
+
+  // 首次 onPageShow 在正文挂载前执行，等待本页 ref 和布局完成。
+  nextTick(() => {
+    if (disposed || instance.isUnmounted) {
+      return
+    }
+    const pageBody = getPageBody(instance)
+    if (!pageBody) {
+      return
+    }
+    const { onPageScroll, onReachBottom } = instance
+    const navigationBarTransparent =
+      pageMeta.navigationBar.type === 'transparent'
+    const opts: CreateScrollListenerOptions = { scrollElement: pageBody }
+    const pageId = getPage$BasePage(instance.proxy!).id
+    if (onPageScroll?.length || navigationBarTransparent) {
+      opts.onPageScroll = createOnPageScroll(
+        pageId,
+        onPageScroll,
+        navigationBarTransparent
+      )
+    }
+    if (onReachBottom?.length) {
+      opts.onReachBottom = () =>
+        UniViewJSBridge.publishHandler(ON_REACH_BOTTOM, {}, pageId)
+    }
+    let listener: ReturnType<typeof createScrollListener> | undefined
+    const stopWatch = watch(
+      [() => pageMeta.disableScroll, () => pageMeta.onReachBottomDistance],
+      ([disableScroll, onReachBottomDistance]) => {
+        if (listener) {
+          pageBody.removeEventListener('scroll', listener)
+          listener.dispose()
+        }
+        if (!disableScroll && (opts.onPageScroll || opts.onReachBottom)) {
+          opts.onReachBottomDistance =
+            onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE
+          listener = createScrollListener(opts)
+          pageBody.addEventListener('scroll', listener)
+        }
+      },
+      { immediate: true }
+    )
+    removeListeners = () => {
+      stopWatch()
+      if (listener) {
+        pageBody.removeEventListener('scroll', listener)
+        listener.dispose()
+      }
+    }
+  })
+}
+//#endif
+
 export function initPageScrollListener(
   instance: ComponentInternalInstance,
   pageMeta: UniApp.PageRouteMeta
 ) {
+  //#if _X_VAPOR_
+  if (__VAPOR__) {
+    return initVaporPageScrollListener(instance, pageMeta)
+  }
+  //#endif
   document.removeEventListener('touchmove', disableScrollListener)
   if (curScrollListener) {
     document.removeEventListener('scroll', curScrollListener)
