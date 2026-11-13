@@ -1,6 +1,6 @@
 {
   "name": "@vitejs/plugin-vue",
-  "version": "6.0.9",
+  "version": "6.0.11",
   "type": "module",
   "license": "MIT",
   "author": "Evan You",
@@ -36,7 +36,7 @@
   "homepage": "https://github.com/vitejs/vite-plugin-vue/tree/main/packages/plugin-vue#readme",
   "peerDependencies": {
     "vite": "^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0",
-    "vue": "^3.2.25"
+    "vue": "^3.2.25 || ^3.6.0-rc.15"
   },
   "devDependencies": {
     "@babel/types": "^7.29.7",

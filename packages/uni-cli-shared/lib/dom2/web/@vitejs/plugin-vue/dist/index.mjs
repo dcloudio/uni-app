@@ -8,7 +8,7 @@ import crypto from "node:crypto";
 import { isatty } from "node:tty";
 import { formatWithOptions, inspect } from "node:util";
 //#region package.json
-var version = "6.0.9";
+var version = "6.0.11";
 //#endregion
 //#region src/compiler.ts
 function resolveCompiler(root) {
@@ -149,7 +149,6 @@ function isVaporMode(descriptor, options) {
 async function transformTemplateAsModule(code, filename, descriptor, options, pluginContext, ssr, customElement) {
 	const result = compile(code, filename, descriptor, options, pluginContext, ssr, customElement);
 	let returnCode = result.code;
-	returnCode += `\nexport const multiRoot = ${JSON.stringify(result.multiRoot)}`;
 	if (options.devServer && options.devServer.config.server.hmr !== false && !ssr && !options.isProduction) returnCode += `\nimport.meta.hot.accept(({ render }) => {
       __VUE_HMR_RUNTIME__.rerender(${JSON.stringify(descriptor.id)}, render)
     })`;
@@ -249,7 +248,7 @@ function resolveTemplateCompilerOptions(descriptor, options, filename, ssr) {
 function canReuseAST(version) {
 	if (version) {
 		const [_, minor, patch] = version.split(".").map(Number);
-		if (minor >= 4 && patch >= 3) return true;
+		if (minor > 4 || minor === 4 && patch >= 3) return true;
 	}
 	return false;
 }
@@ -1042,7 +1041,7 @@ function resolveScript(descriptor, options, ssr, customElement) {
 		sourceMap: options.sourceMap,
 		genDefaultAs: canInlineMain(descriptor, options) ? scriptIdentifier : void 0,
 		customElement,
-		vapor: isVaporMode(descriptor, options),
+		vapor: !!descriptor.scriptSetup && isVaporMode(descriptor, options),
 		propsDestructure: options.features?.propsDestructure ?? options.script?.propsDestructure
 	};
 	const resolved = applyUniAppXVaporScriptTransform(options.compiler.compileScript(descriptor, compileScriptOptions), descriptor, options.uniAppXVaporScriptTransform, options.sourceMap ? void 0 : () => options.compiler.compileScript(descriptor, {
@@ -1410,6 +1409,7 @@ async function handleHotUpdate({ file, modules, read }, options, customElement, 
 		}
 	}
 	const updateType = [];
+	if (scriptChanged) updateType.push(`script`);
 	if (needRerender) {
 		updateType.push(`template`);
 		if (!templateModule) affectedModules.add(mainModule);
@@ -1525,14 +1525,11 @@ async function transformMain(code, filename, options, pluginContext, ssr, custom
 	}
 	const attachedProps = [];
 	const hasScoped = descriptor.styles.some((s) => s.scoped);
-	const isTemplateOnlyVapor = !descriptor.script && !descriptor.scriptSetup && isVaporMode(descriptor, options);
 	const { code: scriptCode, map: scriptMap } = await genScriptCode(descriptor, options, pluginContext, ssr, customElement);
 	const hasTemplateImport = descriptor.template && !isUseInlineTemplate(descriptor, options);
-	const isTemplateInlined = !!descriptor.template && (!descriptor.template.lang || descriptor.template.lang === "html") && !descriptor.template.src;
 	let templateCode = "";
 	let templateMap = void 0;
-	let templateMultiRoot;
-	if (hasTemplateImport) ({code: templateCode, map: templateMap, multiRoot: templateMultiRoot} = await genTemplateCode(descriptor, options, pluginContext, ssr, customElement));
+	if (hasTemplateImport) ({code: templateCode, map: templateMap} = await genTemplateCode(descriptor, options, pluginContext, ssr, customElement));
 	if (hasTemplateImport) attachedProps.push(ssr ? ["ssrRender", "_sfc_ssrRender"] : ["render", "_sfc_render"]);
 	else if (prevDescriptor && !isEqualBlock(descriptor.template, prevDescriptor.template)) attachedProps.push([ssr ? "ssrRender" : "render", "() => {}"]);
 	const stylesCode = await genStyleCode(descriptor, pluginContext, customElement, attachedProps);
@@ -1540,7 +1537,6 @@ async function transformMain(code, filename, options, pluginContext, ssr, custom
 	const output = [
 		scriptCode,
 		templateCode,
-		isTemplateOnlyVapor ? `${scriptIdentifier}.__multiRoot = ${isTemplateInlined ? templateMultiRoot : "_sfc_multiRoot"}` : "",
 		stylesCode,
 		customBlocksCode
 	];
@@ -1622,21 +1618,15 @@ async function transformMain(code, filename, options, pluginContext, ssr, custom
 async function genTemplateCode(descriptor, options, pluginContext, ssr, customElement) {
 	const template = descriptor.template;
 	const hasScoped = descriptor.styles.some((style) => style.scoped);
-	const needsMultiRoot = !descriptor.script && !descriptor.scriptSetup && isVaporMode(descriptor, options);
-	if ((!template.lang || template.lang === "html") && !template.src) {
-		const result = transformTemplateInMain(template.content, descriptor, options, pluginContext, ssr, customElement);
-		return {
-			...result,
-			multiRoot: needsMultiRoot ? result.multiRoot : void 0
-		};
-	} else {
+	if ((!template.lang || template.lang === "html") && !template.src) return transformTemplateInMain(template.content, descriptor, options, pluginContext, ssr, customElement);
+	else {
 		if (template.src) await linkSrcToDescriptor(template.src, descriptor, pluginContext, hasScoped);
 		const src = template.src || descriptor.filename;
 		const query = `?vue&type=template${template.src ? hasScoped ? `&src=${descriptor.id}` : "&src=true" : ""}${hasScoped ? `&scoped=${descriptor.id}` : ``}${attrsToQuery(template.attrs, "js", true)}`;
 		const request = JSON.stringify(src + query);
 		const renderFnName = ssr ? "ssrRender" : "render";
 		return {
-			code: `import { ${renderFnName} as _sfc_${renderFnName}${needsMultiRoot ? ", multiRoot as _sfc_multiRoot" : ""} } from ${request}`,
+			code: `import { ${renderFnName} as _sfc_${renderFnName} } from ${request}`,
 			map: void 0
 		};
 	}
