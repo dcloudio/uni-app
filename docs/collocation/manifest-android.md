@@ -818,7 +818,7 @@ Google V8 引擎通过 Android NDK 编译为 .so 动态链接库，且需要针�
   在正则表达式开启 u 或 v 标志（Unicode Mode）时，依赖 Unicode 属性匹配（Unicode Property Escapes）的功能会受到影响：  
   例如 \p{UnicodeProperty} 或 \p{Script=Han}（用于匹配汉字、特定语种字符集或 Emoji 属性分类）等语法，因缺乏 ICU 提供的 UCD 数据库支持，会导致引擎抛出 SyntaxError 或无法正确识别非 ASCII 字符的属性。  
 
-#### 启用包含ICU功能的JS引擎
+#### 启用包含ICU功能的JS引擎 @v8icu
 
 > HBuilder5.36 及以上版本支持配置启用包含 ICU 功能的 V8 JS引擎，启用后上面列出的限制或禁用特性可正常使用，同时安装包将会增大，压缩.so文件的情况每个cpu类型约增加1.1M，不压缩.so文件的情况每个cpu类型约增加2.8M。
 
