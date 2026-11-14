@@ -99,6 +99,9 @@ import {
 import { useBackgroundColorContent } from '../../x/framework/setup/page'
 //#endif
 import { getPageProxyId } from '@dcloudio/uni-core'
+//#if !_X_VAPOR_
+import { initAsyncPageActivated } from './keepAlive'
+//#endif
 
 interface SetupComponentOptions {
   type?: 'app' | 'page' | 'window'
@@ -232,6 +235,12 @@ export function setupPage(comp: any, path: string) {
       if (__NODE_JS__) {
         return query
       }
+      //#if !_X_VAPOR_
+      // dialogPage 渲染在父页面内，不能派发父页面的 activated
+      if (!__X__ || !isDialogPageInstance(getPageInstanceByChild(instance))) {
+        initAsyncPageActivated(instance)
+      }
+      //#endif
       const pageMeta = usePageMeta()
       // 弹窗和父页共享 document，窗口偏移仍由普通页面维护。
       if (!__X__ || !isDialogPageInstance(getPageInstanceByChild(instance))) {
