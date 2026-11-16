@@ -42339,7 +42339,7 @@ function getObjectOrArrayExpressionKeys(value) {
 	return [];
 }
 //#endregion
-//#region node_modules/.pnpm/@jridgewell+sourcemap-codec@1.6.0/node_modules/@jridgewell/sourcemap-codec/dist/sourcemap-codec.mjs
+//#region node_modules/.pnpm/@jridgewell+sourcemap-codec@1.5.5/node_modules/@jridgewell/sourcemap-codec/dist/sourcemap-codec.mjs
 init__polyfill_node_buffer();
 var comma = ",".charCodeAt(0);
 var semicolon = ";".charCodeAt(0);
@@ -42351,16 +42351,16 @@ for (let i = 0; i < chars.length; i++) {
 	intToChar[i] = c;
 	charToInt[c] = i;
 }
-function encodeInteger(builder, num) {
+function encodeInteger(builder, num, relative) {
+	let delta = num - relative;
+	delta = delta < 0 ? -delta << 1 | 1 : delta << 1;
 	do {
-		let clamped = num & 31;
-		num >>>= 5;
-		if (num > 0) clamped |= 32;
+		let clamped = delta & 31;
+		delta >>>= 5;
+		if (delta > 0) clamped |= 32;
 		builder.write(intToChar[clamped]);
-	} while (num > 0);
-}
-function encodeSign(num) {
-	return num < 0 ? -num << 1 | 1 : num << 1;
+	} while (delta > 0);
+	return num;
 }
 var bufLength = 16384;
 var td = typeof TextDecoder !== "undefined" ? /* @__PURE__ */ new TextDecoder() : typeof Buffer$1 !== "undefined" ? { decode(buf) {
@@ -42403,18 +42403,13 @@ function encode(decoded) {
 		for (let j = 0; j < line.length; j++) {
 			const segment = line[j];
 			if (j > 0) writer.write(comma);
-			encodeInteger(writer, encodeSign(segment[0] - genColumn));
-			genColumn = segment[0];
+			genColumn = encodeInteger(writer, segment[0], genColumn);
 			if (segment.length === 1) continue;
-			encodeInteger(writer, encodeSign(segment[1] - sourcesIndex));
-			encodeInteger(writer, encodeSign(segment[2] - sourceLine));
-			encodeInteger(writer, encodeSign(segment[3] - sourceColumn));
-			sourcesIndex = segment[1];
-			sourceLine = segment[2];
-			sourceColumn = segment[3];
+			sourcesIndex = encodeInteger(writer, segment[1], sourcesIndex);
+			sourceLine = encodeInteger(writer, segment[2], sourceLine);
+			sourceColumn = encodeInteger(writer, segment[3], sourceColumn);
 			if (segment.length === 4) continue;
-			encodeInteger(writer, encodeSign(segment[4] - namesIndex));
-			namesIndex = segment[4];
+			namesIndex = encodeInteger(writer, segment[4], namesIndex);
 		}
 	}
 	return writer.flush();

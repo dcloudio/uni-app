@@ -253,12 +253,13 @@ class UniInputElement extends UniViewElement {
     return {};
   }
 }
+const uniTagName$a = { value: "INPUT" };
 const descriptors$1 = /* @__PURE__ */ (() => ({
-  uniTagName: { value: "INPUT" },
   focus: Object.getOwnPropertyDescriptor(UniInputElement.prototype, "focus"),
   value: Object.getOwnPropertyDescriptor(UniInputElement.prototype, "value")
 }))();
 function initInputElement(root) {
+  Vue.initUniElement(root, uniTagName$a);
   Object.defineProperties(root, descriptors$1);
 }
 const isEnableLocale = /* @__PURE__ */ uniShared.once(
@@ -2204,8 +2205,8 @@ class UniTextareaElement extends UniViewElement {
     return {};
   }
 }
+const uniTagName$9 = { value: "TEXTAREA" };
 const descriptors = /* @__PURE__ */ (() => ({
-  uniTagName: { value: "TEXTAREA" },
   focus: Object.getOwnPropertyDescriptor(
     UniTextareaElement.prototype,
     "focus"
@@ -2215,6 +2216,7 @@ function setValue(value) {
   this.querySelector("textarea").value = value;
 }
 function initTextareaElement(root, state) {
+  Vue.initUniElement(root, uniTagName$9);
   Object.defineProperties(root, descriptors);
   Object.defineProperty(root, "value", {
     get: () => state.value,
@@ -5533,7 +5535,7 @@ class UniEditorElement extends UniViewElement {
     return this === UniEditorElement && value instanceof UniViewElement && value.hasAttribute("uni-editor") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$7 = { value: "EDITOR" };
+const uniTagName$8 = { value: "EDITOR" };
 const indexVapor$8 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: editorProps,
@@ -5553,7 +5555,7 @@ const indexVapor$8 = /* @__PURE__ */ defineBuiltInComponent({
       });
       return _n0;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName$7);
+    Vue.initUniElement(root, uniTagName$8);
     return root;
   }
 });
@@ -5623,7 +5625,7 @@ class UniIconElement extends UniViewElement {
     return this === UniIconElement && value instanceof UniViewElement && value.hasAttribute("uni-icon") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$6 = { value: "ICON" };
+const uniTagName$7 = { value: "ICON" };
 const indexVapor$7 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: iconProps,
@@ -5639,7 +5641,7 @@ const indexVapor$7 = /* @__PURE__ */ defineBuiltInComponent({
       setNodes(_x0, () => path.value && path.value.d && createSvgIconVNode(path.value.d, props2.color || path.value.c, rpx2px(props2.size)));
       return _n0;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName$6);
+    Vue.initUniElement(root, uniTagName$7);
     return root;
   }
 });
@@ -5834,7 +5836,7 @@ class UniMovableAreaElement extends UniViewElement {
     return this === UniMovableAreaElement && value instanceof UniViewElement && value.hasAttribute("uni-movable-area") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$5 = { value: "MOVABLE-AREA" };
+const uniTagName$6 = { value: "MOVABLE-AREA" };
 const indexVapor$6 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
@@ -5866,7 +5868,7 @@ const indexVapor$6 = /* @__PURE__ */ defineBuiltInComponent({
       Vue.renderEffect(() => _setTemplateRef(_n3, rootRef));
       return _n3;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName$5);
+    Vue.initUniElement(root, uniTagName$6);
     return root;
   }
 });
@@ -6832,7 +6834,7 @@ class UniMovableViewElement extends UniViewElement {
     return this === UniMovableViewElement && value instanceof UniViewElement && value.hasAttribute("uni-movable-view") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$4 = { value: "MOVABLE-VIEW" };
+const uniTagName$5 = { value: "MOVABLE-VIEW" };
 const indexVapor$5 = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
   props: movableViewProps,
@@ -6854,7 +6856,7 @@ const indexVapor$5 = /* @__PURE__ */ defineBuiltInComponent({
       Vue.renderEffect(() => _setTemplateRef(_n3, rootRef));
       return _n3;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName$4);
+    Vue.initUniElement(root, uniTagName$5);
     return root;
   }
 });
@@ -7232,7 +7234,7 @@ class UniRichTextElement extends UniViewElement {
     return this === UniRichTextElement && value instanceof UniViewElement && value.hasAttribute("uni-rich-text") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$3 = { value: "RICH-TEXT" };
+const uniTagName$4 = { value: "RICH-TEXT" };
 const indexVapor$4 = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: { MODE: 3 },
@@ -7249,7 +7251,7 @@ const indexVapor$4 = /* @__PURE__ */ defineBuiltInComponent({
       trigger("itemclick", e2, detail);
     }
     const result = renderRichText(props2, rootRef, triggerItemClick);
-    Object.defineProperty(result, "uniTagName", uniTagName$3);
+    Vue.initUniElement(result, uniTagName$4);
     return result;
   }
 });
@@ -9176,7 +9178,6 @@ const _sfc_main$e = /* @__PURE__ */ Vue.defineVaporComponent({
     closeOnSlideDown: { type: Boolean, default: false }
   },
   emits: ["beforeenter", "enter", "afterenter", "beforeleave", "leave", "afterleave", "clickoverlay"],
-  __multiRoot: true,
   setup(__props, { emit: __emit }) {
     const props2 = __props;
     const emits2 = __emit;
@@ -13791,7 +13792,7 @@ class UniVideoElement extends UniViewElement {
     return this === UniVideoElement && value instanceof UniViewElement && value.hasAttribute("uni-video") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$2 = { value: "VIDEO" };
+const uniTagName$3 = { value: "VIDEO" };
 const indexVapor$3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
   props: videoProps,
@@ -13815,7 +13816,7 @@ const indexVapor$3 = /* @__PURE__ */ defineBuiltInComponent({
       return _n0;
     })();
     Object.assign(root, methods);
-    Object.defineProperty(root, "uniTagName", uniTagName$2);
+    Vue.initUniElement(root, uniTagName$3);
     return root;
   }
 });
@@ -13858,6 +13859,7 @@ class UniWebViewElement extends UniElement2 {
     return this === UniWebViewElement && (el == null ? void 0 : el.nodeType) === 1 && el.localName === "iframe" && el.hasAttribute("uni-web-view") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
+const uniTagName$2 = { value: "WEB-VIEW" };
 const indexVapor$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "WebView",
   props: webViewProps,
@@ -13870,7 +13872,7 @@ const indexVapor$2 = /* @__PURE__ */ defineBuiltInComponent({
     initWebViewBridge();
     const rootRef = Vue.ref(null);
     const trigger = useCustomEvent(rootRef, emit2);
-    return (() => {
+    const root = (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
       const _n0 = _t0$3();
       Vue.on(_n0, "load", (event) => trigger("load", event, {
@@ -13883,6 +13885,8 @@ const indexVapor$2 = /* @__PURE__ */ defineBuiltInComponent({
       });
       return _n0;
     })();
+    Vue.initUniElement(root, uniTagName$2);
+    return root;
   }
 });
 const ICON_PATH_ORIGIN = "data:image/png;base64,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";
@@ -15105,7 +15109,7 @@ const indexVapor$1 = /* @__PURE__ */ defineBuiltInComponent({
       });
       return _n3;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName$1);
+    Vue.initUniElement(root, uniTagName$1);
     return root;
   }
 });
@@ -15813,7 +15817,7 @@ const indexVapor = /* @__PURE__ */ defineBuiltInComponent({
       }, 265);
       return _n6;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName);
+    Vue.initUniElement(root, uniTagName);
     return root;
   }
 });

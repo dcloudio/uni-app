@@ -1,7 +1,7 @@
 import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, getUniElementPage, initVaporDataset, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, LINEFEED, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, createUniDOMStringMap, parseUrl, decodedQuery, stringifyQuery as stringifyQuery$1, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, setUniElementPage, ON_UNLOAD, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, RESPONSIVE_MIN_WIDTH, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, scrollTo, onCreateVueApp } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2, onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import * as Vue from "vue";
-import { defineVaporComponent, createPlainElement, template, ref, watch, withModifiers, setAttr, getCurrentInstance, warn, unref, reactive, onMounted, onBeforeUnmount, computed, inject, onBeforeMount, nextTick, Fragment, EffectScope, createTemplateRefSetter, child, next, renderEffect, setDynamicProps, applyVShow, txt, setInsertionState, createIf, on as on$1, setBlockKey, setValue as setValue$1, setProp, setClass, setStyle, onActivated, setClassName, shallowRef, watchEffect, provide, injectHook, isReactive, markRaw, querySelectorInComponent, querySelectorAllInComponent, createFor, extend as extend$1, VaporKeepAlive, createDynamicComponent, setText, toDisplayString, onServerPrefetch, initUniPageHooks, onBeforeActivate, onBeforeDeactivate, createComponent as createComponent$1, setHtml, onUnmounted, toRaw, createKeyedFragment, createTextNode, remove as remove$1, effectScope, insert, syncSelectValue, initUniElementType, initUniElement, setHover, withComponentId, createComponentWithFallback, createSlot, setStaticTemplateRef, useAttrs as useAttrs$1, useSlots, normalizeUniText, getBlockFirstNode, isInSSRComponentSetup, queuePostFlushCb, logError, setUniPageHooksInitializer, setRealPathResolver, setNativeEventNormalizer, createVaporApp, VaporTransition, nthChild, withImageEventDetail, setImageMode, setImageSrc } from "vue";
+import { defineVaporComponent, createPlainElement, initUniElement, template, ref, watch, withModifiers, setAttr, getCurrentInstance, warn, unref, reactive, onMounted, onBeforeUnmount, computed, inject, onBeforeMount, nextTick, Fragment, EffectScope, createTemplateRefSetter, child, next, renderEffect, setDynamicProps, applyVShow, txt, setInsertionState, createIf, on as on$1, setBlockKey, setValue as setValue$1, setProp, setClass, setStyle, onActivated, setClassName, shallowRef, watchEffect, provide, injectHook, isReactive, markRaw, querySelectorInComponent, querySelectorAllInComponent, createFor, extend as extend$1, VaporKeepAlive, createDynamicComponent, setText, toDisplayString, onServerPrefetch, initUniPageHooks, onBeforeActivate, onBeforeDeactivate, createComponent as createComponent$1, setHtml, onUnmounted, toRaw, createKeyedFragment, createTextNode, remove as remove$1, effectScope, insert, syncSelectValue, initUniElementType, setHover, withComponentId, createComponentWithFallback, createSlot, setStaticTemplateRef, useAttrs as useAttrs$1, useSlots, normalizeUniText, getBlockFirstNode, isInSSRComponentSetup, queuePostFlushCb, logError, setUniPageHooksInitializer, setRealPathResolver, setNativeEventNormalizer, createVaporApp, VaporTransition, nthChild, withImageEventDetail, setImageMode, setImageSrc } from "vue";
 import { capitalize, camelize, isArray, isString, extend, remove, isPlainObject, isFunction, hyphenate, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, EMPTY_OBJ, Namespaces } from "@vue/shared";
 import { useRoute, isNavigationFailure, VaporRouterView, useRouter, createRouter, createWebHistory, createWebHashHistory } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -88,10 +88,11 @@ class UniCanvasElement extends UniElement2 {
     return {};
   }
 }
+const uniTagName$c = { value: "CANVAS" };
 function initCanvasElement(root) {
+  initUniElement(root, uniTagName$c);
   const canvas = root;
   Object.defineProperties(root, {
-    uniTagName: { value: "CANVAS" },
     // 方法只绑定一次，保留原生参数、返回值和异常行为。
     getContext: { value: canvas.getContext.bind(canvas) },
     toBlob: { value: canvas.toBlob.bind(canvas) },
@@ -337,12 +338,13 @@ class UniInputElement extends UniViewElement {
     return {};
   }
 }
+const uniTagName$b = { value: "INPUT" };
 const descriptors$1 = /* @__PURE__ */ (() => ({
-  uniTagName: { value: "INPUT" },
   focus: Object.getOwnPropertyDescriptor(UniInputElement.prototype, "focus"),
   value: Object.getOwnPropertyDescriptor(UniInputElement.prototype, "value")
 }))();
 function initInputElement(root) {
+  initUniElement(root, uniTagName$b);
   Object.defineProperties(root, descriptors$1);
 }
 const isEnableLocale = /* @__PURE__ */ once(
@@ -3184,8 +3186,8 @@ class UniTextareaElement extends UniViewElement {
     return {};
   }
 }
+const uniTagName$a = { value: "TEXTAREA" };
 const descriptors = /* @__PURE__ */ (() => ({
-  uniTagName: { value: "TEXTAREA" },
   focus: Object.getOwnPropertyDescriptor(
     UniTextareaElement.prototype,
     "focus"
@@ -3195,6 +3197,7 @@ function setValue(value) {
   this.querySelector("textarea").value = value;
 }
 function initTextareaElement(root, state) {
+  initUniElement(root, uniTagName$a);
   Object.defineProperties(root, descriptors);
   Object.defineProperty(root, "value", {
     get: () => state.value,
@@ -13433,7 +13436,7 @@ class UniEditorElement extends UniViewElement {
     return this === UniEditorElement && value instanceof UniViewElement && value.hasAttribute("uni-editor") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$7 = { value: "EDITOR" };
+const uniTagName$9 = { value: "EDITOR" };
 const indexVapor$7 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: editorProps,
@@ -13453,7 +13456,7 @@ const indexVapor$7 = /* @__PURE__ */ defineBuiltInComponent({
       });
       return _n0;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName$7);
+    initUniElement(root, uniTagName$9);
     return root;
   }
 });
@@ -13523,7 +13526,7 @@ class UniIconElement extends UniViewElement {
     return this === UniIconElement && value instanceof UniViewElement && value.hasAttribute("uni-icon") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$6 = { value: "ICON" };
+const uniTagName$8 = { value: "ICON" };
 const indexVapor$6 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: iconProps,
@@ -13539,7 +13542,7 @@ const indexVapor$6 = /* @__PURE__ */ defineBuiltInComponent({
       setNodes(_x0, () => path.value && path.value.d && createSvgIconVNode(path.value.d, props2.color || path.value.c, rpx2px(props2.size)));
       return _n0;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName$6);
+    initUniElement(root, uniTagName$8);
     return root;
   }
 });
@@ -13738,7 +13741,7 @@ class UniMovableAreaElement extends UniViewElement {
     return this === UniMovableAreaElement && value instanceof UniViewElement && value.hasAttribute("uni-movable-area") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$5 = { value: "MOVABLE-AREA" };
+const uniTagName$7 = { value: "MOVABLE-AREA" };
 const indexVapor$5 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
@@ -13770,7 +13773,7 @@ const indexVapor$5 = /* @__PURE__ */ defineBuiltInComponent({
       renderEffect(() => _setTemplateRef(_n3, rootRef));
       return _n3;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName$5);
+    initUniElement(root, uniTagName$7);
     return root;
   }
 });
@@ -14917,7 +14920,7 @@ class UniMovableViewElement extends UniViewElement {
     return this === UniMovableViewElement && value instanceof UniViewElement && value.hasAttribute("uni-movable-view") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$4 = { value: "MOVABLE-VIEW" };
+const uniTagName$6 = { value: "MOVABLE-VIEW" };
 const indexVapor$4 = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
   props: movableViewProps,
@@ -14939,7 +14942,7 @@ const indexVapor$4 = /* @__PURE__ */ defineBuiltInComponent({
       renderEffect(() => _setTemplateRef(_n3, rootRef));
       return _n3;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName$4);
+    initUniElement(root, uniTagName$6);
     return root;
   }
 });
@@ -15317,7 +15320,7 @@ class UniRichTextElement extends UniViewElement {
     return this === UniRichTextElement && value instanceof UniViewElement && value.hasAttribute("uni-rich-text") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$3 = { value: "RICH-TEXT" };
+const uniTagName$5 = { value: "RICH-TEXT" };
 const indexVapor$3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: { MODE: 3 },
@@ -15334,7 +15337,7 @@ const indexVapor$3 = /* @__PURE__ */ defineBuiltInComponent({
       trigger("itemclick", e2, detail);
     }
     const result = renderRichText(props2, rootRef, triggerItemClick);
-    Object.defineProperty(result, "uniTagName", uniTagName$3);
+    initUniElement(result, uniTagName$5);
     return result;
   }
 });
@@ -15346,11 +15349,9 @@ class UniScrollViewElement extends UniViewElement {
     return {};
   }
 }
+const uniTagName$4 = { value: "SCROLL-VIEW", configurable: true };
 function initScrollViewElement(root) {
-  Object.defineProperty(root, "uniTagName", {
-    value: "SCROLL-VIEW",
-    configurable: true
-  });
+  initUniElement(root, uniTagName$4);
 }
 const SCROLL_END_DELAY = 100;
 const passiveOptions = { passive: true };
@@ -17639,7 +17640,6 @@ const _sfc_main$m = /* @__PURE__ */ defineVaporComponent({
     closeOnSlideDown: { type: Boolean, default: false }
   },
   emits: ["beforeenter", "enter", "afterenter", "beforeleave", "leave", "afterleave", "clickoverlay"],
-  __multiRoot: true,
   setup(__props, { emit: __emit }) {
     const props2 = __props;
     const emits2 = __emit;
@@ -23446,7 +23446,7 @@ class UniVideoElement extends UniViewElement {
     return this === UniVideoElement && value instanceof UniViewElement && value.hasAttribute("uni-video") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$2 = { value: "VIDEO" };
+const uniTagName$3 = { value: "VIDEO" };
 const indexVapor$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
   props: videoProps,
@@ -23470,7 +23470,7 @@ const indexVapor$2 = /* @__PURE__ */ defineBuiltInComponent({
     setInsertionState(root);
     insert(render(), root);
     Object.assign(root, methods);
-    Object.defineProperty(root, "uniTagName", uniTagName$2);
+    initUniElement(root, uniTagName$3);
     return root;
   }
 });
@@ -23513,6 +23513,7 @@ class UniWebViewElement extends UniElement2 {
     return this === UniWebViewElement && (el == null ? void 0 : el.nodeType) === 1 && el.localName === "iframe" && el.hasAttribute("uni-web-view") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
+const uniTagName$2 = { value: "WEB-VIEW" };
 const indexVapor$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "WebView",
   props: webViewProps,
@@ -23525,7 +23526,7 @@ const indexVapor$1 = /* @__PURE__ */ defineBuiltInComponent({
     initWebViewBridge();
     const rootRef = ref(null);
     const trigger = useCustomEvent(rootRef, emit2);
-    return (() => {
+    const root = (() => {
       const _setTemplateRef = createTemplateRefSetter();
       const _n0 = _t0$5();
       on$1(_n0, "load", (event) => trigger("load", event, {
@@ -23538,6 +23539,8 @@ const indexVapor$1 = /* @__PURE__ */ defineBuiltInComponent({
       });
       return _n0;
     })();
+    initUniElement(root, uniTagName$2);
+    return root;
   }
 });
 let index$6 = 0;
@@ -25840,7 +25843,7 @@ const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
       });
       return _n3;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName$1);
+    initUniElement(root, uniTagName$1);
     return root;
   }
 });
@@ -26562,7 +26565,7 @@ const indexVapor = /* @__PURE__ */ defineBuiltInComponent({
       }, 265);
       return _n6;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName);
+    initUniElement(root, uniTagName);
     return root;
   }
 });
@@ -30968,9 +30971,10 @@ const _sfc_main$6 = /* @__PURE__ */ defineVaporComponent({
       setInsertionState(n16, 1);
       const _on_focus = () => isFocus.value = true;
       const _on_confirm = () => poiSearch("poiSearch");
+      const _on_update_modelValue = (_value) => searchValue.value = _value;
       withComponentId("f5b8b00e", () => createComponentWithFallback(_component_input, {
         modelValue: () => searchValue.value,
-        "onUpdate:modelValue": () => (_value) => searchValue.value = _value,
+        "onUpdate:modelValue": () => _on_update_modelValue,
         type: "text",
         placeholder: () => languageCom.value["search"],
         class: () => ["uni-choose-location-poi-search-input uni-choose-location-icons", [darkClassCom.value]],
@@ -31732,9 +31736,10 @@ const _sfc_main$5 = /* @__PURE__ */ defineVaporComponent({
     createIf(
       () => editable.value,
       () => {
+        const _on_update_modelValue = (_value) => content.value = _value;
         const n6 = withComponentId("876dd6da", () => createComponentWithFallback(_component_textarea, {
           modelValue: () => content.value,
-          "onUpdate:modelValue": () => (_value) => content.value = _value,
+          "onUpdate:modelValue": () => _on_update_modelValue,
           class: "uni-modal-dialog__textarea",
           "placeholder-class": "uni-modal-dialog__textarea-placeholder",
           focus: true,
@@ -33074,7 +33079,6 @@ const t1 = template("<div uni-view data-v-212d40c7>");
 const t2 = template("<div uni-view data-v-212d40c7 class=uni-preview-image-default-indicator-layout>");
 const _sfc_main$2 = /* @__PURE__ */ defineVaporComponent({
   __name: "previewImage",
-  __multiRoot: true,
   setup(__props) {
     const urls = ref(null);
     const current = ref(0);

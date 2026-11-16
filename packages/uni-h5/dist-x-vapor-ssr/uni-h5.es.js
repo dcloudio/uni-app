@@ -1,9 +1,9 @@
 import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, getUniElementPage, once, getEnvLocale, I18N_JSON_DELIMITERS, Emitter, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, normalizeTarget, passive, LINEFEED, parseQuery, NAVBAR_HEIGHT, ON_THEME_CHANGE, removeLeadingSlash, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, decodedQuery, UNI_SSR_TITLE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, PRIMARY_COLOR, debounce, ON_LOAD, ON_READY, ON_UNLOAD, ON_RESIZE, ON_WEB_INVOKE_APP_SERVICE, callOptions, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2 } from "@dcloudio/uni-shared";
-import { defineVaporComponent, createPlainElement, openBlock, createBlock, ref, watch, setAttr, template, getCurrentInstance, warn, unref, reactive, onMounted, onBeforeUnmount, computed, inject, onBeforeMount, nextTick, isVNode, createElementBlock, Fragment, createElementVNode, Comment, Text, cloneVNode, renderList, createVNode, defineComponent as defineComponent$2, mergeProps, withDirectives, vShow, onActivated, shallowRef, watchEffect, provide, isReactive, createFor, createCommentVNode, VaporKeepAlive, createDynamicComponent, useSSRContext, onServerPrefetch, ssrContextKey, markRaw, onUnmounted, toRaw, createKeyedFragment, createTextNode, renderEffect, setText, remove, setDynamicProps, effectScope, insert, syncSelectValue, useAttrs as useAttrs$1, useSlots, withCtx, renderSlot, isInSSRComponentSetup, injectHook, toDisplayString, queuePostFlushCb, logError } from "vue";
+import { defineVaporComponent, createPlainElement, openBlock, createBlock, ref, watch, initUniElement, setAttr, template, getCurrentInstance, warn, unref, reactive, onMounted, onBeforeUnmount, computed, inject, onBeforeMount, nextTick, isVNode, createElementBlock, Fragment, createElementVNode, Comment, Text, cloneVNode, renderList, createVNode, defineComponent as defineComponent$2, mergeProps, withDirectives, vShow, onActivated, shallowRef, watchEffect, provide, isReactive, createFor, createCommentVNode, VaporKeepAlive, createDynamicComponent, useSSRContext, onServerPrefetch, ssrContextKey, markRaw, onUnmounted, toRaw, createKeyedFragment, createTextNode, renderEffect, setText, remove, setDynamicProps, effectScope, insert, syncSelectValue, resolveComponent, withCtx, renderSlot, useAttrs as useAttrs$1, useSlots, createTextVNode, toDisplayString, isInSSRComponentSetup, injectHook, withModifiers, queuePostFlushCb, logError } from "vue";
 import { capitalize, camelize, isArray, isString, extend, isFunction, hyphenate, hasOwn, isPlainObject, isObject, toRawType, makeMap as makeMap$1, isPromise, EMPTY_OBJ, Namespaces } from "@vue/shared";
 import { useRoute, VaporRouterView, useRouter, createRouter, createMemoryHistory } from "vue-router";
-import { ssrRenderAttrs, ssrInterpolate, ssrRenderComponent, ssrRenderStyle, ssrRenderAttr, ssrRenderClass, ssrRenderSlot, ssrRenderList } from "vue/server-renderer";
+import { ssrRenderAttrs, ssrInterpolate, ssrRenderComponent, ssrRenderStyle, ssrRenderAttr, ssrRenderSlot, ssrRenderList } from "vue/server-renderer";
 import safeAreaInsets from "safe-area-insets";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 const realGlobal = getGlobal();
@@ -231,12 +231,13 @@ class UniInputElement extends UniViewElement {
     this.querySelector("input").value = value;
   }
 }
+const uniTagName$a = { value: "INPUT" };
 const descriptors$1 = /* @__PURE__ */ (() => ({
-  uniTagName: { value: "INPUT" },
   focus: Object.getOwnPropertyDescriptor(UniInputElement.prototype, "focus"),
   value: Object.getOwnPropertyDescriptor(UniInputElement.prototype, "value")
 }))();
 function initInputElement(root) {
+  initUniElement(root, uniTagName$a);
   Object.defineProperties(root, descriptors$1);
 }
 const isEnableLocale = /* @__PURE__ */ once(
@@ -1952,8 +1953,8 @@ class UniTextareaElement extends UniViewElement {
     (_a = this.querySelector("textarea")) == null ? void 0 : _a.focus(options);
   }
 }
+const uniTagName$9 = { value: "TEXTAREA" };
 const descriptors = /* @__PURE__ */ (() => ({
-  uniTagName: { value: "TEXTAREA" },
   focus: Object.getOwnPropertyDescriptor(
     UniTextareaElement.prototype,
     "focus"
@@ -1963,6 +1964,7 @@ function setValue(value) {
   this.querySelector("textarea").value = value;
 }
 function initTextareaElement(root, state) {
+  initUniElement(root, uniTagName$9);
   Object.defineProperties(root, descriptors);
   Object.defineProperty(root, "value", {
     get: () => state.value,
@@ -6097,7 +6099,7 @@ class UniEditorElement extends UniViewElement {
     return this === UniEditorElement && value instanceof UniViewElement && value.hasAttribute("uni-editor") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$7 = { value: "EDITOR" };
+const uniTagName$8 = { value: "EDITOR" };
 const indexVapor$8 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: editorProps,
@@ -6115,7 +6117,7 @@ const indexVapor$8 = /* @__PURE__ */ defineBuiltInComponent({
       id: props2.id,
       class: "ql-container"
     }, null, 512));
-    Object.defineProperty(root, "uniTagName", uniTagName$7);
+    initUniElement(root, uniTagName$8);
     return root;
   }
 });
@@ -6188,7 +6190,7 @@ class UniIconElement extends UniViewElement {
     return this === UniIconElement && value instanceof UniViewElement && value.hasAttribute("uni-icon") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$6 = { value: "ICON" };
+const uniTagName$7 = { value: "ICON" };
 const indexVapor$7 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: iconProps,
@@ -6199,7 +6201,7 @@ const indexVapor$7 = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2) {
     const path = useIcon(props2);
     const root = (openBlock(), createBlock("div", _hoisted_1$3, [normalizeVNode(() => path.value && path.value.d && createSvgIconVNode(path.value.d, props2.color || path.value.c, rpx2px(props2.size)))]));
-    Object.defineProperty(root, "uniTagName", uniTagName$6);
+    initUniElement(root, uniTagName$7);
     return root;
   }
 });
@@ -6397,7 +6399,7 @@ class UniMovableAreaElement extends UniViewElement {
     return this === UniMovableAreaElement && value instanceof UniViewElement && value.hasAttribute("uni-movable-area") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$5 = { value: "MOVABLE-AREA" };
+const uniTagName$6 = { value: "MOVABLE-AREA" };
 const indexVapor$6 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
@@ -6414,7 +6416,7 @@ const indexVapor$6 = /* @__PURE__ */ defineBuiltInComponent({
       "uni-view": "",
       ref: rootRef
     }, $attrs.value, $excludeAttrs.value, _listeners), [createVNode(ResizeSensor), normalizeVNode(() => movableViewItems)], 16));
-    Object.defineProperty(root, "uniTagName", uniTagName$5);
+    initUniElement(root, uniTagName$6);
     return root;
   }
 });
@@ -7560,7 +7562,7 @@ class UniMovableViewElement extends UniViewElement {
     return this === UniMovableViewElement && value instanceof UniViewElement && value.hasAttribute("uni-movable-view") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$4 = { value: "MOVABLE-VIEW" };
+const uniTagName$5 = { value: "MOVABLE-VIEW" };
 const indexVapor$5 = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
   props: movableViewProps,
@@ -7576,7 +7578,7 @@ const indexVapor$5 = /* @__PURE__ */ defineBuiltInComponent({
       "uni-view": "",
       ref: rootRef
     }, [createVNode(ResizeSensor), normalizeVNode(() => slots.default && slots.default())], 512));
-    Object.defineProperty(root, "uniTagName", uniTagName$4);
+    initUniElement(root, uniTagName$5);
     return root;
   }
 });
@@ -7954,7 +7956,7 @@ class UniRichTextElement extends UniViewElement {
     return this === UniRichTextElement && value instanceof UniViewElement && value.hasAttribute("uni-rich-text") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$3 = { value: "RICH-TEXT" };
+const uniTagName$4 = { value: "RICH-TEXT" };
 const indexVapor$4 = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: { MODE: 3 },
@@ -7971,7 +7973,7 @@ const indexVapor$4 = /* @__PURE__ */ defineBuiltInComponent({
       trigger("itemclick", e2, detail);
     }
     const result = renderRichText(props2, rootRef, triggerItemClick);
-    Object.defineProperty(result, "uniTagName", uniTagName$3);
+    initUniElement(result, uniTagName$4);
     return result;
   }
 });
@@ -8353,6 +8355,37 @@ function createLabelHoverState() {
   }
   return { isLabelHovered, setLabelHovered };
 }
+function createSpaceKeyHandlers(isDisabled) {
+  let spacePressed = false;
+  function handleKeydown(event) {
+    if (event.key !== " " || event.target !== event.currentTarget || event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) {
+      return;
+    }
+    event.preventDefault();
+    if (!event.repeat) {
+      spacePressed = !isDisabled();
+    }
+  }
+  function handleKeyup(event) {
+    var _a;
+    if (event.key !== " " || event.target !== event.currentTarget) {
+      return;
+    }
+    const shouldActivate = spacePressed;
+    spacePressed = false;
+    if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) {
+      return;
+    }
+    event.preventDefault();
+    if (shouldActivate && !isDisabled()) {
+      (_a = event.currentTarget) == null ? void 0 : _a.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+    }
+  }
+  function handleBlur() {
+    spacePressed = false;
+  }
+  return { handleKeydown, handleKeyup, handleBlur };
+}
 class UniButtonElement extends UniTextElement {
   constructor() {
     super(...arguments);
@@ -8399,16 +8432,40 @@ const _sfc_main$p = /* @__PURE__ */ defineComponent$2({
   emits: ["click"],
   __vapor: true,
   setup(__props, { expose: __expose, emit: __emit }) {
+    const emit2 = __emit;
     const props2 = __props;
     const mouseHoverEnabled = computed(() => {
       const hoverClass = props2.hoverClass == null ? DEFAULT_BUTTON_HOVER_CLASS_NAME : `${props2.hoverClass}`.replace(/^\^+/, "");
       return !props2.disabled && !props2.loading && hoverClass === DEFAULT_BUTTON_HOVER_CLASS_NAME;
     });
+    const spaceKeys = createSpaceKeyHandlers(() => props2.disabled);
     const pressedKeys = reactive(/* @__PURE__ */ new Set());
     const keyboardHoverClass = computed(
       () => pressedKeys.size > 0 && !props2.disabled && hoverClasses.value !== "none" ? hoverClasses.value : ""
     );
+    function handleKeydown(event) {
+      var _a;
+      const key = event.key;
+      if (key !== "Enter" && key !== " " || event.target !== event.currentTarget || event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey)
+        return;
+      if (!props2.disabled && !event.repeat)
+        pressedKeys.add(key);
+      if (key === " ") {
+        spaceKeys.handleKeydown(event);
+        return;
+      }
+      event.preventDefault();
+      if (!props2.disabled && !event.repeat) {
+        (_a = event.currentTarget) == null ? void 0 : _a.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+      }
+    }
+    function handleKeyup(event) {
+      if (event.target === event.currentTarget)
+        pressedKeys.delete(event.key);
+      spaceKeys.handleKeyup(event);
+    }
     function handleBlur() {
+      spaceKeys.handleBlur();
       pressedKeys.clear();
     }
     watch(() => pressedKeys.size > 0, (pressed, _, onCleanup) => {
@@ -8456,7 +8513,7 @@ const _sfc_main$p = /* @__PURE__ */ defineComponent$2({
       }
       return style;
     });
-    inject(FORM_KEY, null);
+    const formCtx = inject(FORM_KEY, null);
     const enableTransition = ref(false);
     onMounted(() => {
       enableTransition.value = true;
@@ -8504,6 +8561,26 @@ const _sfc_main$p = /* @__PURE__ */ defineComponent$2({
       }
       return classes2.join(" ");
     });
+    const checkFormAndSubmitOrReset = () => {
+      if (props2.formType != "submit" && props2.formType != "reset") {
+        return;
+      }
+      if (formCtx == null) {
+        return;
+      }
+      if (props2.formType == "submit") {
+        formCtx.submit();
+      } else if (props2.formType == "reset") {
+        formCtx.reset();
+      }
+    };
+    const handleTap = (event) => {
+      if (props2.disabled) {
+        return;
+      }
+      emit2("click", event);
+      checkFormAndSubmitOrReset();
+    };
     __expose({
       getValue() {
         if (textRef.value == null) {
@@ -8516,9 +8593,11 @@ const _sfc_main$p = /* @__PURE__ */ defineComponent$2({
       }
     });
     return (_ctx, _push, _parent, _attrs) => {
+      const _component_view = resolveComponent("view");
+      const _component_text = resolveComponent("text");
       if (__props.loading && !__props.disabled) {
-        _push(`<div${ssrRenderAttrs(mergeProps({
-          "uni-view": "",
+        _push(`<!--[0-->`);
+        _push(ssrRenderComponent(_component_view, mergeProps({
           class: ["uni-button", unref(classes)(
             [unref(buttonType) == "default", "uni-button-type-default_view"],
             [unref(buttonType) == "primary", "uni-button-type-primary_view"],
@@ -8537,27 +8616,78 @@ const _sfc_main$p = /* @__PURE__ */ defineComponent$2({
             unref(keyboardHoverClass)
           )],
           style: { "display": "flex", "justify-content": "center", "flex-direction": "row", "align-items": "center" },
+          "hover-class": __props.disabled ? "none" : unref(hoverClasses),
+          "hover-start-time": __props.hoverStartTime,
+          "hover-stay-time": __props.hoverStayTime,
+          "hover-stop-propagation": __props.hoverStopPropagation,
           ref_key: "loadingRootRef",
           ref: loadingRootRef,
           tabindex: __props.disabled ? -1 : 0,
           role: "button",
           "aria-disabled": __props.disabled,
-          "data-mouse-hover": unref(mouseHoverEnabled)
-        }, _attrs))}>`);
-        _push(ssrRenderComponent(unref(__props["loading"]), {
-          class: ["uni-button-loading-icon", unref(classes)(
-            [unref(buttonType) == "default", "uni-loading-default"],
-            [__props.plain && unref(buttonType) == "primary", "uni-loading-plain-primary"],
-            [__props.plain && unref(buttonType) == "warn", "uni-loading-plain-warn"],
-            __props.loadingClass || "uni-button-loading-color-inherit"
-          )]
-        }, null, _parent));
-        _push(`<span uni-text style="${ssrRenderStyle(unref(loadingTextStyle))}" class="${ssrRenderClass([__props.loadingTextClass || "", "uni-button-loading-text"])}">`);
-        ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent, null, true);
-        _push(`</span></div>`);
+          "data-mouse-hover": unref(mouseHoverEnabled),
+          onKeydown: handleKeydown,
+          onKeyup: handleKeyup,
+          onBlur: handleBlur,
+          onClick: handleTap
+        }, _attrs), {
+          default: withCtx((_, _push2, _parent2, _scopeId) => {
+            if (_push2) {
+              _push2(ssrRenderComponent(unref(__props["loading"]), {
+                class: ["uni-button-loading-icon", unref(classes)(
+                  [unref(buttonType) == "default", "uni-loading-default"],
+                  [__props.plain && unref(buttonType) == "primary", "uni-loading-plain-primary"],
+                  [__props.plain && unref(buttonType) == "warn", "uni-loading-plain-warn"],
+                  __props.loadingClass || "uni-button-loading-color-inherit"
+                )]
+              }, null, _parent2, _scopeId));
+              _push2(ssrRenderComponent(_component_text, {
+                ref_key: "textRef",
+                ref: textRef,
+                class: ["uni-button-loading-text", __props.loadingTextClass || ""],
+                style: unref(loadingTextStyle)
+              }, {
+                default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+                  if (_push3) {
+                    ssrRenderSlot(_ctx.$slots, "default", {}, null, _push3, _parent3, _scopeId2);
+                  } else {
+                    return [
+                      renderSlot(_ctx.$slots, "default")
+                    ];
+                  }
+                }),
+                _: 3
+              }, _parent2, _scopeId));
+            } else {
+              return [
+                createVNode(unref(__props["loading"]), {
+                  class: ["uni-button-loading-icon", unref(classes)(
+                    [unref(buttonType) == "default", "uni-loading-default"],
+                    [__props.plain && unref(buttonType) == "primary", "uni-loading-plain-primary"],
+                    [__props.plain && unref(buttonType) == "warn", "uni-loading-plain-warn"],
+                    __props.loadingClass || "uni-button-loading-color-inherit"
+                  )]
+                }, null, 8, ["class"]),
+                createVNode(_component_text, {
+                  ref_key: "textRef",
+                  ref: textRef,
+                  class: ["uni-button-loading-text", __props.loadingTextClass || ""],
+                  style: unref(loadingTextStyle)
+                }, {
+                  default: withCtx(() => [
+                    renderSlot(_ctx.$slots, "default")
+                  ]),
+                  _: 3
+                }, 8, ["style", "class"])
+              ];
+            }
+          }),
+          _: 3
+        }, _parent));
+        _push(`<!--]-->`);
       } else {
-        _push(`<span${ssrRenderAttrs(mergeProps({
-          "uni-text": "",
+        _push(`<!--[1-->`);
+        _push(ssrRenderComponent(_component_text, mergeProps({
           ref_key: "textRef",
           ref: textRef,
           class: ["uni-button uni-button-text", unref(classes)(
@@ -8577,13 +8707,31 @@ const _sfc_main$p = /* @__PURE__ */ defineComponent$2({
             [__props.size == "default", "uni-button-text-size-default"],
             unref(keyboardHoverClass)
           )],
+          "hover-class": __props.disabled ? "none" : unref(hoverClasses),
+          "hover-start-time": __props.hoverStartTime,
+          "hover-stay-time": __props.hoverStayTime,
+          "hover-stop-propagation": __props.hoverStopPropagation,
           tabindex: __props.disabled ? -1 : 0,
           role: "button",
           "aria-disabled": __props.disabled,
-          "data-mouse-hover": unref(mouseHoverEnabled)
-        }, _attrs))}>`);
-        ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent, null, true);
-        _push(`</span>`);
+          "data-mouse-hover": unref(mouseHoverEnabled),
+          onKeydown: handleKeydown,
+          onKeyup: handleKeyup,
+          onBlur: handleBlur,
+          onClick: handleTap
+        }, _attrs), {
+          default: withCtx((_, _push2, _parent2, _scopeId) => {
+            if (_push2) {
+              ssrRenderSlot(_ctx.$slots, "default", {}, null, _push2, _parent2, _scopeId);
+            } else {
+              return [
+                renderSlot(_ctx.$slots, "default")
+              ];
+            }
+          }),
+          _: 3
+        }, _parent));
+        _push(`<!--]-->`);
       }
     };
   }
@@ -8639,6 +8787,7 @@ const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
   setup(__props, { expose: __expose }) {
     var _a, _b;
     const props2 = __props;
+    const { handleKeydown, handleKeyup, handleBlur } = createSpaceKeyHandlers(() => props2.disabled);
     const { isLabelHovered, setLabelHovered } = createLabelHoverState();
     let unregisterLabelChild = null;
     const attrs = useAttrs$1();
@@ -8706,6 +8855,15 @@ const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
       unregisterLabelTarget == null ? void 0 : unregisterLabelTarget();
       unregisterLabelTarget = null;
     });
+    const handleTap = () => {
+      if (props2.disabled) {
+        return;
+      }
+      isChecked.value = !isChecked.value;
+      if (group != null) {
+        group.toggle(toStringOrEmpty(props2.value), isChecked.value, true);
+      }
+    };
     __expose({
       getCheckboxChecked: () => {
         return isChecked.value;
@@ -8715,9 +8873,11 @@ const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
       }
     });
     return (_ctx, _push, _parent, _attrs) => {
+      const _component_text = resolveComponent("text");
+      const _component_view = resolveComponent("view");
       if (!hasDefaultSlot) {
-        _push(`<span${ssrRenderAttrs(mergeProps({
-          "uni-text": "",
+        _push(`<!--[0-->`);
+        _push(ssrRenderComponent(_component_text, mergeProps({
           class: ["uni-checkbox-view uni-checkbox-icon", unref(classes)(
             [unref(isChecked), "uni-checkbox-active"],
             [__props.disabled, "uni-checkbox-disabled"],
@@ -8728,36 +8888,113 @@ const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
           )],
           style: unref(activeStyle),
           tabindex: __props.disabled ? -1 : 0,
+          onKeydown: unref(handleKeydown),
+          onKeyup: unref(handleKeyup),
+          onBlur: unref(handleBlur),
           role: "checkbox",
           "aria-checked": unref(isChecked),
-          "aria-disabled": __props.disabled
-        }, _attrs))}>${ssrInterpolate(unref(isChecked) ? fontUnicode$1 : "", true)}</span>`);
+          "aria-disabled": __props.disabled,
+          onClick: handleTap
+        }, _attrs), {
+          default: withCtx((_, _push2, _parent2, _scopeId) => {
+            if (_push2) {
+              _push2(`${ssrInterpolate(unref(isChecked) ? fontUnicode$1 : "")}`);
+            } else {
+              return [
+                createTextVNode(toDisplayString(unref(isChecked) ? fontUnicode$1 : ""), 1)
+              ];
+            }
+          }),
+          _: 1
+        }, _parent));
+        _push(`<!--]-->`);
       } else {
-        _push(`<div${ssrRenderAttrs(mergeProps({
-          "uni-view": "",
+        _push(`<!--[1-->`);
+        _push(ssrRenderComponent(_component_view, mergeProps({
           class: "uni-checkbox",
           tabindex: __props.disabled ? -1 : 0,
+          onKeydown: unref(handleKeydown),
+          onKeyup: unref(handleKeyup),
+          onBlur: unref(handleBlur),
           role: "checkbox",
           "aria-checked": unref(isChecked),
-          "aria-disabled": __props.disabled
-        }, _attrs))}><span uni-text class="${ssrRenderClass([unref(classes)(
-          [unref(isChecked), "uni-checkbox-active"],
-          [__props.disabled, "uni-checkbox-disabled"],
-          [unref(isLabelHovered), "uni-checkbox-hover"],
-          [!__props.disabled && unref(isChecked), __props.checkboxActiveClass],
-          [!__props.disabled && !unref(isChecked), __props.checkboxClass],
-          [!__props.disabled, __props.iconClass]
-        ), "uni-checkbox-view uni-checkbox-icon"])}" style="${ssrRenderStyle(unref(activeStyle))}">${ssrInterpolate(unref(isChecked) ? fontUnicode$1 : "", true)}</span>`);
-        if (isStringSlot) {
-          _push(`<!--[0--><span uni-text>`);
-          ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent, null, true);
-          _push(`</span><!--]-->`);
-        } else {
-          _push(`<!--[1-->`);
-          ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent);
-          _push(`<!--]-->`);
-        }
-        _push(`</div>`);
+          "aria-disabled": __props.disabled,
+          onClick: handleTap
+        }, _attrs), {
+          default: withCtx((_, _push2, _parent2, _scopeId) => {
+            if (_push2) {
+              _push2(ssrRenderComponent(_component_text, {
+                class: ["uni-checkbox-view uni-checkbox-icon", unref(classes)(
+                  [unref(isChecked), "uni-checkbox-active"],
+                  [__props.disabled, "uni-checkbox-disabled"],
+                  [unref(isLabelHovered), "uni-checkbox-hover"],
+                  [!__props.disabled && unref(isChecked), __props.checkboxActiveClass],
+                  [!__props.disabled && !unref(isChecked), __props.checkboxClass],
+                  [!__props.disabled, __props.iconClass]
+                )],
+                style: unref(activeStyle)
+              }, {
+                default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+                  if (_push3) {
+                    _push3(`${ssrInterpolate(unref(isChecked) ? fontUnicode$1 : "")}`);
+                  } else {
+                    return [
+                      createTextVNode(toDisplayString(unref(isChecked) ? fontUnicode$1 : ""), 1)
+                    ];
+                  }
+                }),
+                _: 1
+              }, _parent2, _scopeId));
+              if (isStringSlot) {
+                _push2(`<!--[0-->`);
+                _push2(ssrRenderComponent(_component_text, null, {
+                  default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+                    if (_push3) {
+                      ssrRenderSlot(_ctx.$slots, "default", {}, null, _push3, _parent3, _scopeId2);
+                    } else {
+                      return [
+                        renderSlot(_ctx.$slots, "default")
+                      ];
+                    }
+                  }),
+                  _: 3
+                }, _parent2, _scopeId));
+                _push2(`<!--]-->`);
+              } else {
+                _push2(`<!--[1-->`);
+                ssrRenderSlot(_ctx.$slots, "default", {}, null, _push2, _parent2, _scopeId);
+                _push2(`<!--]-->`);
+              }
+            } else {
+              return [
+                createVNode(_component_text, {
+                  class: ["uni-checkbox-view uni-checkbox-icon", unref(classes)(
+                    [unref(isChecked), "uni-checkbox-active"],
+                    [__props.disabled, "uni-checkbox-disabled"],
+                    [unref(isLabelHovered), "uni-checkbox-hover"],
+                    [!__props.disabled && unref(isChecked), __props.checkboxActiveClass],
+                    [!__props.disabled && !unref(isChecked), __props.checkboxClass],
+                    [!__props.disabled, __props.iconClass]
+                  )],
+                  style: unref(activeStyle)
+                }, {
+                  default: withCtx(() => [
+                    createTextVNode(toDisplayString(unref(isChecked) ? fontUnicode$1 : ""), 1)
+                  ]),
+                  _: 1
+                }, 8, ["class", "style"]),
+                isStringSlot ? (openBlock(), createBlock(_component_text, { key: 0 }, {
+                  default: withCtx(() => [
+                    renderSlot(_ctx.$slots, "default")
+                  ]),
+                  _: 3
+                })) : renderSlot(_ctx.$slots, "default", {}, void 0, void 0, 1)
+              ];
+            }
+          }),
+          _: 3
+        }, _parent));
+        _push(`<!--]-->`);
       }
     };
   }
@@ -8881,9 +9118,21 @@ const _sfc_main$n = /* @__PURE__ */ defineComponent$2({
       elementOrderCounter = 0;
     });
     return (_ctx, _push, _parent, _attrs) => {
-      _push(`<div${ssrRenderAttrs(mergeProps({ "uni-view": "" }, _attrs))}>`);
-      ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent);
-      _push(`</div>`);
+      const _component_view = resolveComponent("view");
+      _push(`<!--{-->`);
+      _push(ssrRenderComponent(_component_view, _attrs, {
+        default: withCtx((_, _push2, _parent2, _scopeId) => {
+          if (_push2) {
+            ssrRenderSlot(_ctx.$slots, "default", {}, null, _push2, _parent2, _scopeId);
+          } else {
+            return [
+              renderSlot(_ctx.$slots, "default")
+            ];
+          }
+        }),
+        _: 3
+      }, _parent));
+      _push(`<!--}-->`);
     };
   }
 });
@@ -8987,15 +9236,26 @@ const _sfc_main$m = /* @__PURE__ */ defineComponent$2({
     });
     __expose({ recycleHooks });
     return (_ctx, _push, _parent, _attrs) => {
-      _push(`<div${ssrRenderAttrs(mergeProps({
-        "uni-view": "",
+      const _component_view = resolveComponent("view");
+      _push(`<!--{-->`);
+      _push(ssrRenderComponent(_component_view, mergeProps({
         ref_key: "element",
         ref: element,
         class: "uni-flow-item",
         style: { "position": "absolute", "top": "0", "left": "0", "width": "0px" }
-      }, _attrs))}>`);
-      ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent);
-      _push(`</div>`);
+      }, _attrs), {
+        default: withCtx((_, _push2, _parent2, _scopeId) => {
+          if (_push2) {
+            ssrRenderSlot(_ctx.$slots, "default", {}, null, _push2, _parent2, _scopeId);
+          } else {
+            return [
+              renderSlot(_ctx.$slots, "default")
+            ];
+          }
+        }),
+        _: 3
+      }, _parent));
+      _push(`<!--}-->`);
     };
   }
 });
@@ -9076,12 +9336,21 @@ const _sfc_main$l = /* @__PURE__ */ defineComponent$2({
     provide(FORM_KEY, ctx);
     __expose({ submit, reset });
     return (_ctx, _push, _parent, _attrs) => {
-      _push(`<div${ssrRenderAttrs(mergeProps({
-        "uni-view": "",
-        class: "uni-form"
-      }, _attrs))}>`);
-      ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent);
-      _push(`</div>`);
+      const _component_view = resolveComponent("view");
+      _push(`<!--{-->`);
+      _push(ssrRenderComponent(_component_view, mergeProps({ class: "uni-form" }, _attrs), {
+        default: withCtx((_, _push2, _parent2, _scopeId) => {
+          if (_push2) {
+            ssrRenderSlot(_ctx.$slots, "default", {}, null, _push2, _parent2, _scopeId);
+          } else {
+            return [
+              renderSlot(_ctx.$slots, "default")
+            ];
+          }
+        }),
+        _: 3
+      }, _parent));
+      _push(`<!--}-->`);
     };
   }
 });
@@ -9110,6 +9379,7 @@ const _sfc_main$k = /* @__PURE__ */ defineComponent$2({
   __vapor: true,
   setup(__props) {
     const props2 = __props;
+    const { handleKeydown, handleKeyup, handleBlur } = createSpaceKeyHandlers(() => props2.disabled);
     const children = [];
     function register2(child) {
       const index2 = child.id ? children.findIndex((c) => c.id === child.id) : -1;
@@ -9161,6 +9431,10 @@ const _sfc_main$k = /* @__PURE__ */ defineComponent$2({
       hoverTarget = next;
       (_b = hoverTarget == null ? void 0 : hoverTarget.setLabelHovered) == null ? void 0 : _b.call(hoverTarget, hoverSource, true);
     }
+    function handleMouseenter() {
+      mouseInside = true;
+      syncLabelHover();
+    }
     function handleMouseleave() {
       mouseInside = false;
       syncLabelHover();
@@ -9171,15 +9445,55 @@ const _sfc_main$k = /* @__PURE__ */ defineComponent$2({
       unsubscribeLabelTargets();
       handleMouseleave();
     });
+    const handleTap = (event) => {
+      var _a;
+      const eventTarget = event.target;
+      const element = (eventTarget == null ? void 0 : eventTarget.nodeType) === 1 ? eventTarget : eventTarget == null ? void 0 : eventTarget.parentElement;
+      if (element == null ? void 0 : element.closest("uni-button, [uni-button], .uni-button")) {
+        return;
+      }
+      const classList = ((_a = event.target) == null ? void 0 : _a.classList) ? event.target.classList : [];
+      for (let i = 0; i < classList.length; i++) {
+        if (/^uni-(checkbox|radio|switch)/.test(classList[i])) {
+          return;
+        }
+      }
+      if (props2.disabled) {
+        return;
+      }
+      const target = findTarget();
+      if (target == null)
+        return;
+      if (target.getDisabled && target.getDisabled())
+        return;
+      target.activate(event);
+    };
     return (_ctx, _push, _parent, _attrs) => {
-      _push(`<div${ssrRenderAttrs(mergeProps({
-        "uni-view": "",
+      const _component_view = resolveComponent("view");
+      _push(`<!--{-->`);
+      _push(ssrRenderComponent(_component_view, mergeProps({
         tabindex: __props.disabled ? -1 : 0,
+        onKeydown: unref(handleKeydown),
+        onKeyup: unref(handleKeyup),
+        onBlur: unref(handleBlur),
+        onMouseenter: handleMouseenter,
+        onMouseleave: handleMouseleave,
         class: "uni-label",
-        "aria-disabled": __props.disabled
-      }, _attrs))}>`);
-      ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent);
-      _push(`</div>`);
+        "aria-disabled": __props.disabled,
+        onClick: handleTap
+      }, _attrs), {
+        default: withCtx((_, _push2, _parent2, _scopeId) => {
+          if (_push2) {
+            ssrRenderSlot(_ctx.$slots, "default", {}, null, _push2, _parent2, _scopeId);
+          } else {
+            return [
+              renderSlot(_ctx.$slots, "default")
+            ];
+          }
+        }),
+        _: 3
+      }, _parent));
+      _push(`<!--}-->`);
     };
   }
 });
@@ -9279,15 +9593,26 @@ const _sfc_main$j = /* @__PURE__ */ defineComponent$2({
     });
     __expose({ recycleHooks });
     return (_ctx, _push, _parent, _attrs) => {
-      _push(`<div${ssrRenderAttrs(mergeProps({
-        "uni-view": "",
+      const _component_view = resolveComponent("view");
+      _push(`<!--{-->`);
+      _push(ssrRenderComponent(_component_view, mergeProps({
         ref_key: "element",
         ref: element,
         class: "uni-list-item",
         style: { "position": "absolute", "top": "0", "left": "0", "width": "100%" }
-      }, _attrs))}>`);
-      ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent);
-      _push(`</div>`);
+      }, _attrs), {
+        default: withCtx((_, _push2, _parent2, _scopeId) => {
+          if (_push2) {
+            ssrRenderSlot(_ctx.$slots, "default", {}, null, _push2, _parent2, _scopeId);
+          } else {
+            return [
+              renderSlot(_ctx.$slots, "default")
+            ];
+          }
+        }),
+        _: 3
+      }, _parent));
+      _push(`<!--}-->`);
     };
   }
 });
@@ -9696,6 +10021,8 @@ const _sfc_main$i = /* @__PURE__ */ defineComponent$2({
     __expose({ renderRange, updateList, updateListIds, updateRenderInfo });
     return (_ctx, _push, _parent, _attrs) => {
       const _component_scroll_view = __syscom_0;
+      const _component_view = resolveComponent("view");
+      _push(`<!--{-->`);
       _push(ssrRenderComponent(_component_scroll_view, mergeProps({
         ref_key: "scrollElement",
         ref: scrollElement,
@@ -9712,44 +10039,97 @@ const _sfc_main$i = /* @__PURE__ */ defineComponent$2({
         }),
         default: withCtx((_, _push2, _parent2, _scopeId) => {
           if (_push2) {
-            _push2(`<div uni-view${_scopeId}>`);
-            ssrRenderSlot(_ctx.$slots, "header", {}, null, _push2, _parent2, _scopeId);
-            _push2(`</div><div uni-view style="${ssrRenderStyle({ "position": "relative", "overflow": "visible", "overflow-anchor": "none" })}"${_scopeId}><div uni-view style="${ssrRenderStyle({ "width": "1px", "flex-shrink": "0" })}"${_scopeId}></div>`);
-            ssrRenderSlot(_ctx.$slots, "default", {}, null, _push2, _parent2, _scopeId);
-            _push2(`</div><div uni-view${_scopeId}>`);
-            ssrRenderSlot(_ctx.$slots, "footer", {}, null, _push2, _parent2, _scopeId);
-            _push2(`</div>`);
+            _push2(ssrRenderComponent(_component_view, {
+              ref_key: "headerElement",
+              ref: headerElement
+            }, {
+              default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+                if (_push3) {
+                  ssrRenderSlot(_ctx.$slots, "header", {}, null, _push3, _parent3, _scopeId2);
+                } else {
+                  return [
+                    renderSlot(_ctx.$slots, "header")
+                  ];
+                }
+              }),
+              _: 3
+            }, _parent2, _scopeId));
+            _push2(ssrRenderComponent(_component_view, {
+              ref_key: "bodyElement",
+              ref: bodyElement,
+              style: { "position": "relative", "overflow": "visible", "overflow-anchor": "none" }
+            }, {
+              default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+                if (_push3) {
+                  _push3(ssrRenderComponent(_component_view, {
+                    ref_key: "placeholderElement",
+                    ref: placeholderElement,
+                    style: { "width": "1px", "flex-shrink": "0" }
+                  }, null, _parent3, _scopeId2));
+                  ssrRenderSlot(_ctx.$slots, "default", {}, null, _push3, _parent3, _scopeId2);
+                } else {
+                  return [
+                    createVNode(_component_view, {
+                      ref_key: "placeholderElement",
+                      ref: placeholderElement,
+                      style: { "width": "1px", "flex-shrink": "0" }
+                    }, null, 512),
+                    renderSlot(_ctx.$slots, "default")
+                  ];
+                }
+              }),
+              _: 3
+            }, _parent2, _scopeId));
+            _push2(ssrRenderComponent(_component_view, null, {
+              default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+                if (_push3) {
+                  ssrRenderSlot(_ctx.$slots, "footer", {}, null, _push3, _parent3, _scopeId2);
+                } else {
+                  return [
+                    renderSlot(_ctx.$slots, "footer")
+                  ];
+                }
+              }),
+              _: 3
+            }, _parent2, _scopeId));
           } else {
             return [
-              createVNode("div", {
-                "uni-view": "",
+              createVNode(_component_view, {
                 ref_key: "headerElement",
                 ref: headerElement
-              }, [
-                renderSlot(_ctx.$slots, "header")
-              ], 512),
-              createVNode("div", {
-                "uni-view": "",
+              }, {
+                default: withCtx(() => [
+                  renderSlot(_ctx.$slots, "header")
+                ]),
+                _: 3
+              }, 512),
+              createVNode(_component_view, {
                 ref_key: "bodyElement",
                 ref: bodyElement,
                 style: { "position": "relative", "overflow": "visible", "overflow-anchor": "none" }
-              }, [
-                createVNode("div", {
-                  "uni-view": "",
-                  ref_key: "placeholderElement",
-                  ref: placeholderElement,
-                  style: { "width": "1px", "flex-shrink": "0" }
-                }, null, 512),
-                renderSlot(_ctx.$slots, "default")
-              ], 512),
-              createVNode("div", { "uni-view": "" }, [
-                renderSlot(_ctx.$slots, "footer")
-              ])
+              }, {
+                default: withCtx(() => [
+                  createVNode(_component_view, {
+                    ref_key: "placeholderElement",
+                    ref: placeholderElement,
+                    style: { "width": "1px", "flex-shrink": "0" }
+                  }, null, 512),
+                  renderSlot(_ctx.$slots, "default")
+                ]),
+                _: 3
+              }, 512),
+              createVNode(_component_view, null, {
+                default: withCtx(() => [
+                  renderSlot(_ctx.$slots, "footer")
+                ]),
+                _: 3
+              })
             ];
           }
         }),
         _: 3
       }, _parent));
+      _push(`<!--}-->`);
     };
   }
 });
@@ -9830,13 +10210,32 @@ const _sfc_main$h = /* @__PURE__ */ defineComponent$2({
     const LoadingRef = ref(null);
     const loadingStyle = reactive(useLoadingStyle(LoadingRef, computed(() => props2.bold)));
     return (_ctx, _push, _parent, _attrs) => {
-      _push(`<div${ssrRenderAttrs(mergeProps({
-        "uni-view": "",
+      const _component_view = resolveComponent("view");
+      _push(`<!--{-->`);
+      _push(ssrRenderComponent(_component_view, mergeProps({
         class: "default __uni_loading_container__",
         ref_key: "LoadingRef",
         ref: LoadingRef,
         style: { "display": "flex" }
-      }, _attrs))}><div uni-view class="${ssrRenderClass([{ "__uni-loading__paused": props2.paused }, "__uni-loading__ __loading-4-3__"])}" style="${ssrRenderStyle(loadingStyle)}"></div></div>`);
+      }, _attrs), {
+        default: withCtx((_, _push2, _parent2, _scopeId) => {
+          if (_push2) {
+            _push2(ssrRenderComponent(_component_view, {
+              class: ["__uni-loading__ __loading-4-3__", { "__uni-loading__paused": props2.paused }],
+              style: loadingStyle
+            }, null, _parent2, _scopeId));
+          } else {
+            return [
+              createVNode(_component_view, {
+                class: ["__uni-loading__ __loading-4-3__", { "__uni-loading__paused": props2.paused }],
+                style: loadingStyle
+              }, null, 8, ["class", "style"])
+            ];
+          }
+        }),
+        _: 1
+      }, _parent));
+      _push(`<!--}-->`);
     };
   }
 });
@@ -9955,11 +10354,23 @@ const _sfc_main$g = /* @__PURE__ */ defineComponent$2({
       });
     }
     return (_ctx, _push, _parent, _attrs) => {
-      _push(`<div${ssrRenderAttrs(mergeProps({ "uni-view": "" }, _attrs, {
+      const _component_view = resolveComponent("view");
+      _push(`<!--{-->`);
+      _push(ssrRenderComponent(_component_view, mergeProps({
         style: unref(show) ? null : { display: "none" }
-      }))}>`);
-      ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent);
-      _push(`</div>`);
+      }, _attrs), {
+        default: withCtx((_, _push2, _parent2, _scopeId) => {
+          if (_push2) {
+            ssrRenderSlot(_ctx.$slots, "default", {}, null, _push2, _parent2, _scopeId);
+          } else {
+            return [
+              renderSlot(_ctx.$slots, "default")
+            ];
+          }
+        }),
+        _: 3
+      }, _parent));
+      _push(`<!--}-->`);
     };
   }
 });
@@ -9991,17 +10402,88 @@ const _sfc_main$f = /* @__PURE__ */ defineComponent$2({
   __vapor: true,
   setup(__props) {
     var _a;
+    const props2 = __props;
     const slots = useSlots();
     const isStringSlot = ((_a = slots["default"]) == null ? void 0 : _a["returnType"]) === "string";
+    const handleTap = () => {
+      const url = props2.url;
+      const openType = props2.openType;
+      const onFail = (res) => {
+        console.error(res.errMsg);
+      };
+      switch (openType) {
+        case "navigate":
+          uni.navigateTo({
+            url,
+            animationType: props2.animationType || "pop-in",
+            animationDuration: props2.animationDuration,
+            fail: onFail
+          });
+          break;
+        case "navigateBack":
+          uni.navigateBack({
+            delta: props2.delta,
+            animationType: props2.animationType || "pop-out",
+            animationDuration: props2.animationDuration,
+            fail: onFail
+          });
+          break;
+        case "redirect":
+          uni.redirectTo({
+            url,
+            fail: onFail
+          });
+          break;
+        case "reLaunch":
+          uni.reLaunch({
+            url,
+            fail: onFail
+          });
+          break;
+        case "switchTab":
+          uni.switchTab({
+            url,
+            fail: onFail
+          });
+          break;
+        default:
+          console.log("<navigator/> openType attribute invalid");
+          break;
+      }
+    };
     return (_ctx, _push, _parent, _attrs) => {
+      const _component_text = resolveComponent("text");
+      const _component_view = resolveComponent("view");
       if (isStringSlot) {
-        _push(`<span${ssrRenderAttrs(mergeProps({ "uni-text": "" }, _attrs))}>`);
-        ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent, null, true);
-        _push(`</span>`);
+        _push(`<!--[0-->`);
+        _push(ssrRenderComponent(_component_text, mergeProps({ onClick: handleTap }, _attrs), {
+          default: withCtx((_, _push2, _parent2, _scopeId) => {
+            if (_push2) {
+              ssrRenderSlot(_ctx.$slots, "default", {}, null, _push2, _parent2, _scopeId);
+            } else {
+              return [
+                renderSlot(_ctx.$slots, "default")
+              ];
+            }
+          }),
+          _: 3
+        }, _parent));
+        _push(`<!--]-->`);
       } else {
-        _push(`<div${ssrRenderAttrs(mergeProps({ "uni-view": "" }, _attrs))}>`);
-        ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent);
-        _push(`</div>`);
+        _push(`<!--[1-->`);
+        _push(ssrRenderComponent(_component_view, mergeProps({ onClick: handleTap }, _attrs), {
+          default: withCtx((_, _push2, _parent2, _scopeId) => {
+            if (_push2) {
+              ssrRenderSlot(_ctx.$slots, "default", {}, null, _push2, _parent2, _scopeId);
+            } else {
+              return [
+                renderSlot(_ctx.$slots, "default")
+              ];
+            }
+          }),
+          _: 3
+        }, _parent));
+        _push(`<!--]-->`);
       }
     };
   }
@@ -10016,6 +10498,8 @@ class UniVueElement extends Object {
 }
 class UniPageContainerElement extends UniVueElement {
 }
+const MAX_SLIDER_DISTANCE = 100;
+const MIN_SLIDER_VELOCITY = 0.3;
 const _sfc_main$e = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "page-container",
@@ -10047,6 +10531,9 @@ const _sfc_main$e = /* @__PURE__ */ defineComponent$2({
     const isEntered = ref(false);
     const transitionType = ref(null);
     let transitionVersion = 0;
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchStartTime = 0;
     let isDragging = false;
     const translateValue = ref(0);
     const isSlideClosing = ref(false);
@@ -10224,6 +10711,97 @@ const _sfc_main$e = /* @__PURE__ */ defineComponent$2({
         closeContainer();
       }
     });
+    function onClickOverlay(event) {
+      if (isAnimating.value) {
+        return;
+      }
+      emits2("clickoverlay", event);
+      nextTick(() => {
+        closeContainer();
+      });
+    }
+    function onTouchStart(e2) {
+      if (!props2.closeOnSlideDown) {
+        return;
+      }
+      if (e2.touches.length > 0) {
+        const { clientX, clientY } = e2.touches[0];
+        touchStartX = clientX;
+        touchStartY = clientY;
+        touchStartTime = Date.now();
+        isDragging = false;
+      }
+    }
+    function onTouchMove(e2) {
+      if (!props2.closeOnSlideDown) {
+        e2.preventDefault();
+        e2.stopPropagation();
+        return;
+      }
+      if (e2.touches.length > 0) {
+        const { clientX, clientY } = e2.touches[0];
+        const deltaX = clientX - touchStartX;
+        const deltaY = clientY - touchStartY;
+        let shouldDrag = false;
+        let dragValue = 0;
+        switch (props2.position) {
+          case "bottom":
+            if (deltaY > 0) {
+              shouldDrag = true;
+              dragValue = deltaY;
+            }
+            break;
+          case "top":
+            if (deltaY < 0) {
+              shouldDrag = true;
+              dragValue = deltaY;
+            }
+            break;
+          case "left":
+            if (deltaX < 0) {
+              shouldDrag = true;
+              dragValue = deltaX;
+            }
+            break;
+          case "right":
+            if (deltaX > 0) {
+              shouldDrag = true;
+              dragValue = deltaX;
+            }
+            break;
+        }
+        if (shouldDrag) {
+          isDragging = true;
+          translateValue.value = dragValue;
+          e2.preventDefault();
+          e2.stopPropagation();
+        }
+      }
+    }
+    function onTouchEnd() {
+      if (!props2.closeOnSlideDown) {
+        return;
+      }
+      if (isDragging) {
+        const deltaTime = Date.now() - touchStartTime;
+        const velocity = Math.abs(translateValue.value) / deltaTime;
+        const shouldClose = Math.abs(translateValue.value) > MAX_SLIDER_DISTANCE || velocity > MIN_SLIDER_VELOCITY;
+        if (shouldClose) {
+          resetDragState();
+          closeContainer();
+        } else {
+          resetDragState();
+        }
+      }
+    }
+    function onTouchCancel() {
+      if (!props2.closeOnSlideDown) {
+        return;
+      }
+      if (isDragging) {
+        resetDragState();
+      }
+    }
     function onKeydown(event) {
       if (showPageContainer.value && (event.key == "Escape" || event.key == "Esc")) {
         closeContainer();
@@ -10241,20 +10819,43 @@ const _sfc_main$e = /* @__PURE__ */ defineComponent$2({
       clearTransitionTimer();
     });
     return (_ctx, _push, _parent, _attrs) => {
-      _push(`<!--[-->`);
+      const _component_view = resolveComponent("view");
+      _push(`<!--{-->`);
       if (__props.overlay && unref(showPageContainer)) {
-        _push(`<div uni-view class="uni-page-container-overlay" style="${ssrRenderStyle([unref(overlayStyleMap), __props.overlayStyle])}"></div>`);
+        _push(ssrRenderComponent(_component_view, {
+          class: "uni-page-container-overlay",
+          style: [unref(overlayStyleMap), __props.overlayStyle],
+          onClick: onClickOverlay,
+          onTouchmove: () => {
+          }
+        }, null, _parent));
       } else {
         _push(`<!---->`);
       }
       if (unref(showPageContainer)) {
-        _push(`<div uni-view class="${ssrRenderClass([unref(popupClasses), "uni-page-container-popup"])}" style="${ssrRenderStyle([unref(innerStyleMap), __props.customStyle])}">`);
-        ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent);
-        _push(`</div>`);
+        _push(ssrRenderComponent(_component_view, {
+          class: ["uni-page-container-popup", unref(popupClasses)],
+          style: [unref(innerStyleMap), __props.customStyle],
+          onTouchstart: onTouchStart,
+          onTouchmove: onTouchMove,
+          onTouchend: onTouchEnd,
+          onTouchcancel: onTouchCancel
+        }, {
+          default: withCtx((_, _push2, _parent2, _scopeId) => {
+            if (_push2) {
+              ssrRenderSlot(_ctx.$slots, "default", {}, null, _push2, _parent2, _scopeId);
+            } else {
+              return [
+                renderSlot(_ctx.$slots, "default")
+              ];
+            }
+          }),
+          _: 3
+        }, _parent));
       } else {
         _push(`<!---->`);
       }
-      _push(`<!--]-->`);
+      _push(`<!--}-->`);
     };
   }
 });
@@ -10281,6 +10882,7 @@ class UniPickerElement extends UniViewElement {
     (_a = this.vm) == null ? void 0 : _a.setPickerValue(val);
   }
 }
+const OPEN_LOCK_DURATION = 300;
 const DEFAULT_START_YEAR = 1970;
 const DEFAULT_END_YEAR = 2099;
 const _sfc_main$d = /* @__PURE__ */ defineComponent$2({
@@ -10355,7 +10957,7 @@ const _sfc_main$d = /* @__PURE__ */ defineComponent$2({
     let unregisterLabelTarget = null;
     const innerValue = ref(props2.value);
     const initialValue = ref("");
-    ref(false);
+    const isOpening = ref(false);
     watch(() => props2.value, (value) => {
       innerValue.value = value;
       if (props2.mode == "multiSelector") {
@@ -10366,6 +10968,28 @@ const _sfc_main$d = /* @__PURE__ */ defineComponent$2({
         });
       }
     }, { deep: true });
+    function handleClick() {
+      if (props2.disabled) {
+        return;
+      }
+      if (isOpening.value) {
+        return;
+      }
+      isOpening.value = true;
+      uni.openDialogPage({
+        url: `uni:picker?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&cancelEventName=${cancelEventName}&selectorChangeEventName=${selectorChangeEventName}&multiSelectorChangeEventName=${multiSelectorChangeEventName}&timeChangeEventName=${timeChangeEventName}&columnChangeEventName=${columnChangeEventName}`,
+        success() {
+          setTimeout(() => {
+            isOpening.value = false;
+          }, OPEN_LOCK_DURATION);
+        },
+        fail() {
+          isOpening.value = false;
+          uni.$off(readyEventName);
+          uni.$off(optionsEventName);
+        }
+      });
+    }
     function getPopover() {
       const element = proxy == null ? void 0 : proxy.$el;
       if (element == null)
@@ -10578,9 +11202,21 @@ const _sfc_main$d = /* @__PURE__ */ defineComponent$2({
       }
     });
     return (_ctx, _push, _parent, _attrs) => {
-      _push(`<div${ssrRenderAttrs(mergeProps({ "uni-view": "" }, _attrs))}>`);
-      ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent);
-      _push(`</div>`);
+      const _component_view = resolveComponent("view");
+      _push(`<!--{-->`);
+      _push(ssrRenderComponent(_component_view, mergeProps({ onClick: handleClick }, _attrs), {
+        default: withCtx((_, _push2, _parent2, _scopeId) => {
+          if (_push2) {
+            ssrRenderSlot(_ctx.$slots, "default", {}, null, _push2, _parent2, _scopeId);
+          } else {
+            return [
+              renderSlot(_ctx.$slots, "default")
+            ];
+          }
+        }),
+        _: 3
+      }, _parent));
+      _push(`<!--}-->`);
     };
   }
 });
@@ -10825,6 +11461,12 @@ const _sfc_main$c = /* @__PURE__ */ defineComponent$2({
           uni.$emit(timeChangeEventName.value, selectedDate.value);
           break;
       }
+      closeDialog();
+    };
+    const close = () => {
+      if (closing)
+        return;
+      uni.$emit(cancelEventName.value);
       closeDialog();
     };
     const closeDialog = () => {
@@ -11191,359 +11833,1174 @@ const _sfc_main$c = /* @__PURE__ */ defineComponent$2({
       }
     });
     return (_ctx, _push, _parent, _attrs) => {
+      const _component_view = resolveComponent("view");
       const _component_scroll_view = __syscom_0;
+      const _component_text = resolveComponent("text");
       const _component_picker_view = _sfc_main$b;
       const _component_picker_view_column = _sfc_main$a;
-      _push(`<div${ssrRenderAttrs(mergeProps({
-        "uni-view": "",
+      _push(`<!--{-->`);
+      _push(ssrRenderComponent(_component_view, mergeProps({
         ref_key: "containerRef",
         ref: containerRef,
         class: ["uni-picker__container", ["uni-picker-theme--" + unref(theme), { "uni-picker__container--desktop": unref(isDesktop) }]]
-      }, _attrs))}><div uni-view class="${ssrRenderClass([{ "picker__ani-show": unref(show), "picker__mask--dark": unref(theme) == "dark" }, "uni-picker__mask"])}"></div><div uni-view class="${ssrRenderClass([[unref(show) ? "picker__ani-box-show" : "", "inner-box--" + unref(theme), { "uni-picker__inner-box--desktop": unref(isDesktop) }], "uni-picker__inner-box"])}" style="${ssrRenderStyle(unref(popupStyle).content)}">`);
-      if (unref(isSelect)) {
-        _push(`<!--[0-->`);
-        _push(ssrRenderComponent(_component_scroll_view, {
-          ref_key: "selectRef",
-          ref: selectRef,
-          class: "uni-picker__select",
-          direction: "vertical",
-          "show-scrollbar": true
-        }, {
-          default: withCtx((_, _push2, _parent2, _scopeId) => {
-            if (_push2) {
-              _push2(`<!--[-->`);
-              ssrRenderList(unref(range), (item, selectorIdx) => {
-                _push2(`<span uni-text class="${ssrRenderClass([{ "uni-picker__select-item--selected": unref(eventValue)[0] == selectorIdx }, "uni-picker__select-item"])}"${_scopeId}>${ssrInterpolate(unref(rangeKey) ? item[unref(rangeKey)] : item, true)}</span>`);
-              });
-              _push2(`<!--]-->`);
-            } else {
-              return [
-                (openBlock(true), createBlock(Fragment, null, renderList(unref(range), (item, selectorIdx) => {
-                  return openBlock(), createBlock("span", {
-                    "uni-text": "",
-                    key: selectorIdx,
-                    class: ["uni-picker__select-item", { "uni-picker__select-item--selected": unref(eventValue)[0] == selectorIdx }],
-                    onClick: ($event) => selectItem(selectorIdx)
-                  }, toDisplayString(unref(rangeKey) ? item[unref(rangeKey)] : item), 11, ["onClick"]);
-                }), 128))
-              ];
-            }
-          }),
-          _: 1
-        }, _parent));
-        _push(`<!--]-->`);
-      } else {
-        _push(`<!--[1--><div uni-view class="${ssrRenderClass([["header-btn--" + unref(theme)], "uni-picker__header-btn"])}"><span uni-text class="${ssrRenderClass([["header-btn-cannel--" + unref(theme)], "uni-picker__header-btn-cancel"])}">${ssrInterpolate(unref(cancelText), true)}</span><span uni-text class="uni-picker__header-btn-ok">${ssrInterpolate(unref(confirmText), true)}</span></div><div uni-view class="uni-picker__view">`);
-        _push(ssrRenderComponent(_component_picker_view, {
-          style: { "flex": "1" },
-          onChange: handleChange,
-          "mask-top-style": unref(maskTopStyle),
-          "mask-bottom-style": unref(maskBottomStyle),
-          indicatorStyle: unref(indicatorStyle),
-          value: unref(value)
-        }, {
-          default: withCtx((_, _push2, _parent2, _scopeId) => {
-            if (_push2) {
-              if (unref(mode) == "selector") {
-                _push2(ssrRenderComponent(_component_picker_view_column, null, {
-                  default: withCtx((_2, _push3, _parent3, _scopeId2) => {
-                    if (_push3) {
-                      _push3(`<!--[-->`);
-                      ssrRenderList(unref(range), (item, selectorIdx) => {
-                        _push3(`<span uni-text class="${ssrRenderClass([["view-item--" + unref(theme)], "uni-picker__view-item"])}" flatten${_scopeId2}>${ssrInterpolate(unref(rangeKey) ? item[unref(rangeKey)] : item, true)}</span>`);
-                      });
-                      _push3(`<!--]-->`);
-                    } else {
-                      return [
+      }, _attrs), {
+        default: withCtx((_, _push2, _parent2, _scopeId) => {
+          if (_push2) {
+            _push2(ssrRenderComponent(_component_view, {
+              class: ["uni-picker__mask", { "picker__ani-show": unref(show), "picker__mask--dark": unref(theme) == "dark" }],
+              onClick: close
+            }, null, _parent2, _scopeId));
+            _push2(ssrRenderComponent(_component_view, {
+              class: ["uni-picker__inner-box", [unref(show) ? "picker__ani-box-show" : "", "inner-box--" + unref(theme), { "uni-picker__inner-box--desktop": unref(isDesktop) }]],
+              style: unref(popupStyle).content
+            }, {
+              default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+                if (_push3) {
+                  if (unref(isSelect)) {
+                    _push3(`<!--[0-->`);
+                    _push3(ssrRenderComponent(_component_scroll_view, {
+                      ref_key: "selectRef",
+                      ref: selectRef,
+                      class: "uni-picker__select",
+                      direction: "vertical",
+                      "show-scrollbar": true
+                    }, {
+                      default: withCtx((_3, _push4, _parent4, _scopeId3) => {
+                        if (_push4) {
+                          _push4(`<!--[-->`);
+                          ssrRenderList(unref(range), (item, selectorIdx) => {
+                            _push4(ssrRenderComponent(_component_text, {
+                              key: selectorIdx,
+                              class: ["uni-picker__select-item", { "uni-picker__select-item--selected": unref(eventValue)[0] == selectorIdx }],
+                              onClick: ($event) => selectItem(selectorIdx)
+                            }, {
+                              default: withCtx((_4, _push5, _parent5, _scopeId4) => {
+                                if (_push5) {
+                                  _push5(`${ssrInterpolate(unref(rangeKey) ? item[unref(rangeKey)] : item)}`);
+                                } else {
+                                  return [
+                                    createTextVNode(toDisplayString(unref(rangeKey) ? item[unref(rangeKey)] : item), 1)
+                                  ];
+                                }
+                              }),
+                              _: 2
+                            }, _parent4, _scopeId3));
+                          });
+                          _push4(`<!--]-->`);
+                        } else {
+                          return [
+                            (openBlock(true), createBlock(Fragment, null, renderList(unref(range), (item, selectorIdx) => {
+                              return openBlock(), createBlock(_component_text, {
+                                key: selectorIdx,
+                                class: ["uni-picker__select-item", { "uni-picker__select-item--selected": unref(eventValue)[0] == selectorIdx }],
+                                onClick: ($event) => selectItem(selectorIdx)
+                              }, {
+                                default: withCtx(() => [
+                                  createTextVNode(toDisplayString(unref(rangeKey) ? item[unref(rangeKey)] : item), 1)
+                                ]),
+                                _: 2
+                              }, 1032, ["class", "onClick"]);
+                            }), 128))
+                          ];
+                        }
+                      }),
+                      _: 1
+                    }, _parent3, _scopeId2));
+                    _push3(`<!--]-->`);
+                  } else {
+                    _push3(`<!--[1-->`);
+                    _push3(ssrRenderComponent(_component_view, {
+                      class: ["uni-picker__header-btn", ["header-btn--" + unref(theme)]],
+                      onClick: () => {
+                      }
+                    }, {
+                      default: withCtx((_3, _push4, _parent4, _scopeId3) => {
+                        if (_push4) {
+                          _push4(ssrRenderComponent(_component_text, {
+                            class: ["uni-picker__header-btn-cancel", ["header-btn-cannel--" + unref(theme)]],
+                            onClick: close
+                          }, {
+                            default: withCtx((_4, _push5, _parent5, _scopeId4) => {
+                              if (_push5) {
+                                _push5(`${ssrInterpolate(unref(cancelText))}`);
+                              } else {
+                                return [
+                                  createTextVNode(toDisplayString(unref(cancelText)), 1)
+                                ];
+                              }
+                            }),
+                            _: 1
+                          }, _parent4, _scopeId3));
+                          _push4(ssrRenderComponent(_component_text, {
+                            class: "uni-picker__header-btn-ok",
+                            onClick: confirm
+                          }, {
+                            default: withCtx((_4, _push5, _parent5, _scopeId4) => {
+                              if (_push5) {
+                                _push5(`${ssrInterpolate(unref(confirmText))}`);
+                              } else {
+                                return [
+                                  createTextVNode(toDisplayString(unref(confirmText)), 1)
+                                ];
+                              }
+                            }),
+                            _: 1
+                          }, _parent4, _scopeId3));
+                        } else {
+                          return [
+                            createVNode(_component_text, {
+                              class: ["uni-picker__header-btn-cancel", ["header-btn-cannel--" + unref(theme)]],
+                              onClick: close
+                            }, {
+                              default: withCtx(() => [
+                                createTextVNode(toDisplayString(unref(cancelText)), 1)
+                              ]),
+                              _: 1
+                            }, 8, ["class"]),
+                            createVNode(_component_text, {
+                              class: "uni-picker__header-btn-ok",
+                              onClick: confirm
+                            }, {
+                              default: withCtx(() => [
+                                createTextVNode(toDisplayString(unref(confirmText)), 1)
+                              ]),
+                              _: 1
+                            })
+                          ];
+                        }
+                      }),
+                      _: 1
+                    }, _parent3, _scopeId2));
+                    _push3(ssrRenderComponent(_component_view, { class: "uni-picker__view" }, {
+                      default: withCtx((_3, _push4, _parent4, _scopeId3) => {
+                        if (_push4) {
+                          _push4(ssrRenderComponent(_component_picker_view, {
+                            style: { "flex": "1" },
+                            onChange: handleChange,
+                            "mask-top-style": unref(maskTopStyle),
+                            "mask-bottom-style": unref(maskBottomStyle),
+                            indicatorStyle: unref(indicatorStyle),
+                            value: unref(value)
+                          }, {
+                            default: withCtx((_4, _push5, _parent5, _scopeId4) => {
+                              if (_push5) {
+                                if (unref(mode) == "selector") {
+                                  _push5(ssrRenderComponent(_component_picker_view_column, null, {
+                                    default: withCtx((_5, _push6, _parent6, _scopeId5) => {
+                                      if (_push6) {
+                                        _push6(`<!--[-->`);
+                                        ssrRenderList(unref(range), (item, selectorIdx) => {
+                                          _push6(ssrRenderComponent(_component_text, {
+                                            class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
+                                            flatten: ""
+                                          }, {
+                                            default: withCtx((_6, _push7, _parent7, _scopeId6) => {
+                                              if (_push7) {
+                                                _push7(`${ssrInterpolate(unref(rangeKey) ? item[unref(rangeKey)] : item)}`);
+                                              } else {
+                                                return [
+                                                  createTextVNode(toDisplayString(unref(rangeKey) ? item[unref(rangeKey)] : item), 1)
+                                                ];
+                                              }
+                                            }),
+                                            _: 2
+                                          }, _parent6, _scopeId5));
+                                        });
+                                        _push6(`<!--]-->`);
+                                      } else {
+                                        return [
+                                          (openBlock(true), createBlock(Fragment, null, renderList(unref(range), (item, selectorIdx) => {
+                                            return openBlock(), createBlock(_component_text, {
+                                              key: selectorIdx,
+                                              class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
+                                              flatten: ""
+                                            }, {
+                                              default: withCtx(() => [
+                                                createTextVNode(toDisplayString(unref(rangeKey) ? item[unref(rangeKey)] : item), 1)
+                                              ]),
+                                              _: 2
+                                            }, 1032, ["class"]);
+                                          }), 128))
+                                        ];
+                                      }
+                                    }),
+                                    _: 1
+                                  }, _parent5, _scopeId4));
+                                } else {
+                                  _push5(`<!---->`);
+                                }
+                                if (unref(mode) == "multiSelector") {
+                                  _push5(`<!--[-->`);
+                                  ssrRenderList(unref(range), (item, multiIdx) => {
+                                    _push5(ssrRenderComponent(_component_picker_view_column, null, {
+                                      default: withCtx((_5, _push6, _parent6, _scopeId5) => {
+                                        if (_push6) {
+                                          _push6(`<!--[-->`);
+                                          ssrRenderList(item, (column, colIdx) => {
+                                            _push6(ssrRenderComponent(_component_text, {
+                                              class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
+                                              flatten: ""
+                                            }, {
+                                              default: withCtx((_6, _push7, _parent7, _scopeId6) => {
+                                                if (_push7) {
+                                                  _push7(`${ssrInterpolate(unref(rangeKey) ? column[unref(rangeKey)] : column)}`);
+                                                } else {
+                                                  return [
+                                                    createTextVNode(toDisplayString(unref(rangeKey) ? column[unref(rangeKey)] : column), 1)
+                                                  ];
+                                                }
+                                              }),
+                                              _: 2
+                                            }, _parent6, _scopeId5));
+                                          });
+                                          _push6(`<!--]-->`);
+                                        } else {
+                                          return [
+                                            (openBlock(true), createBlock(Fragment, null, renderList(item, (column, colIdx) => {
+                                              return openBlock(), createBlock(_component_text, {
+                                                key: colIdx,
+                                                class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
+                                                flatten: ""
+                                              }, {
+                                                default: withCtx(() => [
+                                                  createTextVNode(toDisplayString(unref(rangeKey) ? column[unref(rangeKey)] : column), 1)
+                                                ]),
+                                                _: 2
+                                              }, 1032, ["class"]);
+                                            }), 128))
+                                          ];
+                                        }
+                                      }),
+                                      _: 2
+                                    }, _parent5, _scopeId4));
+                                  });
+                                  _push5(`<!--]-->`);
+                                } else {
+                                  _push5(`<!---->`);
+                                }
+                                if (unref(mode) == "time") {
+                                  _push5(`<!--[-->`);
+                                  _push5(ssrRenderComponent(_component_picker_view_column, null, {
+                                    default: withCtx((_5, _push6, _parent6, _scopeId5) => {
+                                      if (_push6) {
+                                        _push6(`<!--[-->`);
+                                        ssrRenderList(unref(hours), (h, hIdx) => {
+                                          _push6(ssrRenderComponent(_component_text, {
+                                            key: h,
+                                            class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
+                                            flatten: ""
+                                          }, {
+                                            default: withCtx((_6, _push7, _parent7, _scopeId6) => {
+                                              if (_push7) {
+                                                _push7(`${ssrInterpolate(h)}`);
+                                              } else {
+                                                return [
+                                                  createTextVNode(toDisplayString(h), 1)
+                                                ];
+                                              }
+                                            }),
+                                            _: 2
+                                          }, _parent6, _scopeId5));
+                                        });
+                                        _push6(`<!--]-->`);
+                                      } else {
+                                        return [
+                                          (openBlock(true), createBlock(Fragment, null, renderList(unref(hours), (h, hIdx) => {
+                                            return openBlock(), createBlock(_component_text, {
+                                              key: h,
+                                              class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
+                                              flatten: ""
+                                            }, {
+                                              default: withCtx(() => [
+                                                createTextVNode(toDisplayString(h), 1)
+                                              ]),
+                                              _: 2
+                                            }, 1032, ["class"]);
+                                          }), 128))
+                                        ];
+                                      }
+                                    }),
+                                    _: 1
+                                  }, _parent5, _scopeId4));
+                                  _push5(ssrRenderComponent(_component_picker_view_column, null, {
+                                    default: withCtx((_5, _push6, _parent6, _scopeId5) => {
+                                      if (_push6) {
+                                        _push6(`<!--[-->`);
+                                        ssrRenderList(unref(minutes), (m, mIdx) => {
+                                          _push6(ssrRenderComponent(_component_text, {
+                                            key: m,
+                                            class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
+                                            flatten: ""
+                                          }, {
+                                            default: withCtx((_6, _push7, _parent7, _scopeId6) => {
+                                              if (_push7) {
+                                                _push7(`${ssrInterpolate(m)}`);
+                                              } else {
+                                                return [
+                                                  createTextVNode(toDisplayString(m), 1)
+                                                ];
+                                              }
+                                            }),
+                                            _: 2
+                                          }, _parent6, _scopeId5));
+                                        });
+                                        _push6(`<!--]-->`);
+                                      } else {
+                                        return [
+                                          (openBlock(true), createBlock(Fragment, null, renderList(unref(minutes), (m, mIdx) => {
+                                            return openBlock(), createBlock(_component_text, {
+                                              key: m,
+                                              class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
+                                              flatten: ""
+                                            }, {
+                                              default: withCtx(() => [
+                                                createTextVNode(toDisplayString(m), 1)
+                                              ]),
+                                              _: 2
+                                            }, 1032, ["class"]);
+                                          }), 128))
+                                        ];
+                                      }
+                                    }),
+                                    _: 1
+                                  }, _parent5, _scopeId4));
+                                  _push5(`<!--]-->`);
+                                } else {
+                                  _push5(`<!---->`);
+                                }
+                                if (unref(mode) == "date") {
+                                  _push5(`<!--[-->`);
+                                  _push5(ssrRenderComponent(_component_picker_view_column, null, {
+                                    default: withCtx((_5, _push6, _parent6, _scopeId5) => {
+                                      if (_push6) {
+                                        _push6(`<!--[-->`);
+                                        ssrRenderList(unref(years), (year) => {
+                                          _push6(ssrRenderComponent(_component_text, {
+                                            key: year,
+                                            class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
+                                            flatten: ""
+                                          }, {
+                                            default: withCtx((_6, _push7, _parent7, _scopeId6) => {
+                                              if (_push7) {
+                                                _push7(`${ssrInterpolate(year)}${ssrInterpolate(unref(yearText))}`);
+                                              } else {
+                                                return [
+                                                  createTextVNode(toDisplayString(year) + toDisplayString(unref(yearText)), 1)
+                                                ];
+                                              }
+                                            }),
+                                            _: 2
+                                          }, _parent6, _scopeId5));
+                                        });
+                                        _push6(`<!--]-->`);
+                                      } else {
+                                        return [
+                                          (openBlock(true), createBlock(Fragment, null, renderList(unref(years), (year) => {
+                                            return openBlock(), createBlock(_component_text, {
+                                              key: year,
+                                              class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
+                                              flatten: ""
+                                            }, {
+                                              default: withCtx(() => [
+                                                createTextVNode(toDisplayString(year) + toDisplayString(unref(yearText)), 1)
+                                              ]),
+                                              _: 2
+                                            }, 1032, ["class"]);
+                                          }), 128))
+                                        ];
+                                      }
+                                    }),
+                                    _: 1
+                                  }, _parent5, _scopeId4));
+                                  if (unref(fields) != "year") {
+                                    _push5(ssrRenderComponent(_component_picker_view_column, null, {
+                                      default: withCtx((_5, _push6, _parent6, _scopeId5) => {
+                                        if (_push6) {
+                                          _push6(`<!--[-->`);
+                                          ssrRenderList(unref(monthsText), (month) => {
+                                            _push6(ssrRenderComponent(_component_text, {
+                                              key: month,
+                                              class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
+                                              flatten: ""
+                                            }, {
+                                              default: withCtx((_6, _push7, _parent7, _scopeId6) => {
+                                                if (_push7) {
+                                                  _push7(`${ssrInterpolate(formatSingle(month))}${ssrInterpolate(unref(monthText))}`);
+                                                } else {
+                                                  return [
+                                                    createTextVNode(toDisplayString(formatSingle(month)) + toDisplayString(unref(monthText)), 1)
+                                                  ];
+                                                }
+                                              }),
+                                              _: 2
+                                            }, _parent6, _scopeId5));
+                                          });
+                                          _push6(`<!--]-->`);
+                                        } else {
+                                          return [
+                                            (openBlock(true), createBlock(Fragment, null, renderList(unref(monthsText), (month) => {
+                                              return openBlock(), createBlock(_component_text, {
+                                                key: month,
+                                                class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
+                                                flatten: ""
+                                              }, {
+                                                default: withCtx(() => [
+                                                  createTextVNode(toDisplayString(formatSingle(month)) + toDisplayString(unref(monthText)), 1)
+                                                ]),
+                                                _: 2
+                                              }, 1032, ["class"]);
+                                            }), 128))
+                                          ];
+                                        }
+                                      }),
+                                      _: 1
+                                    }, _parent5, _scopeId4));
+                                  } else {
+                                    _push5(`<!---->`);
+                                  }
+                                  if (unref(fields) == "day") {
+                                    _push5(ssrRenderComponent(_component_picker_view_column, null, {
+                                      default: withCtx((_5, _push6, _parent6, _scopeId5) => {
+                                        if (_push6) {
+                                          _push6(`<!--[-->`);
+                                          ssrRenderList(unref(days), (day) => {
+                                            _push6(ssrRenderComponent(_component_text, {
+                                              key: day,
+                                              class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
+                                              flatten: ""
+                                            }, {
+                                              default: withCtx((_6, _push7, _parent7, _scopeId6) => {
+                                                if (_push7) {
+                                                  _push7(`${ssrInterpolate(formatSingle(day))}${ssrInterpolate(unref(dayText))}`);
+                                                } else {
+                                                  return [
+                                                    createTextVNode(toDisplayString(formatSingle(day)) + toDisplayString(unref(dayText)), 1)
+                                                  ];
+                                                }
+                                              }),
+                                              _: 2
+                                            }, _parent6, _scopeId5));
+                                          });
+                                          _push6(`<!--]-->`);
+                                        } else {
+                                          return [
+                                            (openBlock(true), createBlock(Fragment, null, renderList(unref(days), (day) => {
+                                              return openBlock(), createBlock(_component_text, {
+                                                key: day,
+                                                class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
+                                                flatten: ""
+                                              }, {
+                                                default: withCtx(() => [
+                                                  createTextVNode(toDisplayString(formatSingle(day)) + toDisplayString(unref(dayText)), 1)
+                                                ]),
+                                                _: 2
+                                              }, 1032, ["class"]);
+                                            }), 128))
+                                          ];
+                                        }
+                                      }),
+                                      _: 1
+                                    }, _parent5, _scopeId4));
+                                  } else {
+                                    _push5(`<!---->`);
+                                  }
+                                  _push5(`<!--]-->`);
+                                } else {
+                                  _push5(`<!---->`);
+                                }
+                              } else {
+                                return [
+                                  unref(mode) == "selector" ? (openBlock(), createBlock(_component_picker_view_column, { key: 0 }, {
+                                    default: withCtx(() => [
+                                      (openBlock(true), createBlock(Fragment, null, renderList(unref(range), (item, selectorIdx) => {
+                                        return openBlock(), createBlock(_component_text, {
+                                          key: selectorIdx,
+                                          class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
+                                          flatten: ""
+                                        }, {
+                                          default: withCtx(() => [
+                                            createTextVNode(toDisplayString(unref(rangeKey) ? item[unref(rangeKey)] : item), 1)
+                                          ]),
+                                          _: 2
+                                        }, 1032, ["class"]);
+                                      }), 128))
+                                    ]),
+                                    _: 1
+                                  })) : createCommentVNode("", true),
+                                  unref(mode) == "multiSelector" ? (openBlock(true), createBlock(Fragment, { key: 1 }, renderList(unref(range), (item, multiIdx) => {
+                                    return openBlock(), createBlock(_component_picker_view_column, { key: multiIdx }, {
+                                      default: withCtx(() => [
+                                        (openBlock(true), createBlock(Fragment, null, renderList(item, (column, colIdx) => {
+                                          return openBlock(), createBlock(_component_text, {
+                                            key: colIdx,
+                                            class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
+                                            flatten: ""
+                                          }, {
+                                            default: withCtx(() => [
+                                              createTextVNode(toDisplayString(unref(rangeKey) ? column[unref(rangeKey)] : column), 1)
+                                            ]),
+                                            _: 2
+                                          }, 1032, ["class"]);
+                                        }), 128))
+                                      ]),
+                                      _: 2
+                                    }, 1024);
+                                  }), 128)) : createCommentVNode("", true),
+                                  unref(mode) == "time" ? (openBlock(), createBlock(Fragment, { key: 2 }, [
+                                    createVNode(_component_picker_view_column, null, {
+                                      default: withCtx(() => [
+                                        (openBlock(true), createBlock(Fragment, null, renderList(unref(hours), (h, hIdx) => {
+                                          return openBlock(), createBlock(_component_text, {
+                                            key: h,
+                                            class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
+                                            flatten: ""
+                                          }, {
+                                            default: withCtx(() => [
+                                              createTextVNode(toDisplayString(h), 1)
+                                            ]),
+                                            _: 2
+                                          }, 1032, ["class"]);
+                                        }), 128))
+                                      ]),
+                                      _: 1
+                                    }),
+                                    createVNode(_component_picker_view_column, null, {
+                                      default: withCtx(() => [
+                                        (openBlock(true), createBlock(Fragment, null, renderList(unref(minutes), (m, mIdx) => {
+                                          return openBlock(), createBlock(_component_text, {
+                                            key: m,
+                                            class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
+                                            flatten: ""
+                                          }, {
+                                            default: withCtx(() => [
+                                              createTextVNode(toDisplayString(m), 1)
+                                            ]),
+                                            _: 2
+                                          }, 1032, ["class"]);
+                                        }), 128))
+                                      ]),
+                                      _: 1
+                                    })
+                                  ], 64)) : createCommentVNode("", true),
+                                  unref(mode) == "date" ? (openBlock(), createBlock(Fragment, { key: 3 }, [
+                                    createVNode(_component_picker_view_column, null, {
+                                      default: withCtx(() => [
+                                        (openBlock(true), createBlock(Fragment, null, renderList(unref(years), (year) => {
+                                          return openBlock(), createBlock(_component_text, {
+                                            key: year,
+                                            class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
+                                            flatten: ""
+                                          }, {
+                                            default: withCtx(() => [
+                                              createTextVNode(toDisplayString(year) + toDisplayString(unref(yearText)), 1)
+                                            ]),
+                                            _: 2
+                                          }, 1032, ["class"]);
+                                        }), 128))
+                                      ]),
+                                      _: 1
+                                    }),
+                                    unref(fields) != "year" ? (openBlock(), createBlock(_component_picker_view_column, { key: 0 }, {
+                                      default: withCtx(() => [
+                                        (openBlock(true), createBlock(Fragment, null, renderList(unref(monthsText), (month) => {
+                                          return openBlock(), createBlock(_component_text, {
+                                            key: month,
+                                            class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
+                                            flatten: ""
+                                          }, {
+                                            default: withCtx(() => [
+                                              createTextVNode(toDisplayString(formatSingle(month)) + toDisplayString(unref(monthText)), 1)
+                                            ]),
+                                            _: 2
+                                          }, 1032, ["class"]);
+                                        }), 128))
+                                      ]),
+                                      _: 1
+                                    })) : createCommentVNode("", true),
+                                    unref(fields) == "day" ? (openBlock(), createBlock(_component_picker_view_column, { key: 1 }, {
+                                      default: withCtx(() => [
+                                        (openBlock(true), createBlock(Fragment, null, renderList(unref(days), (day) => {
+                                          return openBlock(), createBlock(_component_text, {
+                                            key: day,
+                                            class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
+                                            flatten: ""
+                                          }, {
+                                            default: withCtx(() => [
+                                              createTextVNode(toDisplayString(formatSingle(day)) + toDisplayString(unref(dayText)), 1)
+                                            ]),
+                                            _: 2
+                                          }, 1032, ["class"]);
+                                        }), 128))
+                                      ]),
+                                      _: 1
+                                    })) : createCommentVNode("", true)
+                                  ], 64)) : createCommentVNode("", true)
+                                ];
+                              }
+                            }),
+                            _: 1
+                          }, _parent4, _scopeId3));
+                        } else {
+                          return [
+                            createVNode(_component_picker_view, {
+                              style: { "flex": "1" },
+                              onChange: handleChange,
+                              "mask-top-style": unref(maskTopStyle),
+                              "mask-bottom-style": unref(maskBottomStyle),
+                              indicatorStyle: unref(indicatorStyle),
+                              value: unref(value)
+                            }, {
+                              default: withCtx(() => [
+                                unref(mode) == "selector" ? (openBlock(), createBlock(_component_picker_view_column, { key: 0 }, {
+                                  default: withCtx(() => [
+                                    (openBlock(true), createBlock(Fragment, null, renderList(unref(range), (item, selectorIdx) => {
+                                      return openBlock(), createBlock(_component_text, {
+                                        key: selectorIdx,
+                                        class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
+                                        flatten: ""
+                                      }, {
+                                        default: withCtx(() => [
+                                          createTextVNode(toDisplayString(unref(rangeKey) ? item[unref(rangeKey)] : item), 1)
+                                        ]),
+                                        _: 2
+                                      }, 1032, ["class"]);
+                                    }), 128))
+                                  ]),
+                                  _: 1
+                                })) : createCommentVNode("", true),
+                                unref(mode) == "multiSelector" ? (openBlock(true), createBlock(Fragment, { key: 1 }, renderList(unref(range), (item, multiIdx) => {
+                                  return openBlock(), createBlock(_component_picker_view_column, { key: multiIdx }, {
+                                    default: withCtx(() => [
+                                      (openBlock(true), createBlock(Fragment, null, renderList(item, (column, colIdx) => {
+                                        return openBlock(), createBlock(_component_text, {
+                                          key: colIdx,
+                                          class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
+                                          flatten: ""
+                                        }, {
+                                          default: withCtx(() => [
+                                            createTextVNode(toDisplayString(unref(rangeKey) ? column[unref(rangeKey)] : column), 1)
+                                          ]),
+                                          _: 2
+                                        }, 1032, ["class"]);
+                                      }), 128))
+                                    ]),
+                                    _: 2
+                                  }, 1024);
+                                }), 128)) : createCommentVNode("", true),
+                                unref(mode) == "time" ? (openBlock(), createBlock(Fragment, { key: 2 }, [
+                                  createVNode(_component_picker_view_column, null, {
+                                    default: withCtx(() => [
+                                      (openBlock(true), createBlock(Fragment, null, renderList(unref(hours), (h, hIdx) => {
+                                        return openBlock(), createBlock(_component_text, {
+                                          key: h,
+                                          class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
+                                          flatten: ""
+                                        }, {
+                                          default: withCtx(() => [
+                                            createTextVNode(toDisplayString(h), 1)
+                                          ]),
+                                          _: 2
+                                        }, 1032, ["class"]);
+                                      }), 128))
+                                    ]),
+                                    _: 1
+                                  }),
+                                  createVNode(_component_picker_view_column, null, {
+                                    default: withCtx(() => [
+                                      (openBlock(true), createBlock(Fragment, null, renderList(unref(minutes), (m, mIdx) => {
+                                        return openBlock(), createBlock(_component_text, {
+                                          key: m,
+                                          class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
+                                          flatten: ""
+                                        }, {
+                                          default: withCtx(() => [
+                                            createTextVNode(toDisplayString(m), 1)
+                                          ]),
+                                          _: 2
+                                        }, 1032, ["class"]);
+                                      }), 128))
+                                    ]),
+                                    _: 1
+                                  })
+                                ], 64)) : createCommentVNode("", true),
+                                unref(mode) == "date" ? (openBlock(), createBlock(Fragment, { key: 3 }, [
+                                  createVNode(_component_picker_view_column, null, {
+                                    default: withCtx(() => [
+                                      (openBlock(true), createBlock(Fragment, null, renderList(unref(years), (year) => {
+                                        return openBlock(), createBlock(_component_text, {
+                                          key: year,
+                                          class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
+                                          flatten: ""
+                                        }, {
+                                          default: withCtx(() => [
+                                            createTextVNode(toDisplayString(year) + toDisplayString(unref(yearText)), 1)
+                                          ]),
+                                          _: 2
+                                        }, 1032, ["class"]);
+                                      }), 128))
+                                    ]),
+                                    _: 1
+                                  }),
+                                  unref(fields) != "year" ? (openBlock(), createBlock(_component_picker_view_column, { key: 0 }, {
+                                    default: withCtx(() => [
+                                      (openBlock(true), createBlock(Fragment, null, renderList(unref(monthsText), (month) => {
+                                        return openBlock(), createBlock(_component_text, {
+                                          key: month,
+                                          class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
+                                          flatten: ""
+                                        }, {
+                                          default: withCtx(() => [
+                                            createTextVNode(toDisplayString(formatSingle(month)) + toDisplayString(unref(monthText)), 1)
+                                          ]),
+                                          _: 2
+                                        }, 1032, ["class"]);
+                                      }), 128))
+                                    ]),
+                                    _: 1
+                                  })) : createCommentVNode("", true),
+                                  unref(fields) == "day" ? (openBlock(), createBlock(_component_picker_view_column, { key: 1 }, {
+                                    default: withCtx(() => [
+                                      (openBlock(true), createBlock(Fragment, null, renderList(unref(days), (day) => {
+                                        return openBlock(), createBlock(_component_text, {
+                                          key: day,
+                                          class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
+                                          flatten: ""
+                                        }, {
+                                          default: withCtx(() => [
+                                            createTextVNode(toDisplayString(formatSingle(day)) + toDisplayString(unref(dayText)), 1)
+                                          ]),
+                                          _: 2
+                                        }, 1032, ["class"]);
+                                      }), 128))
+                                    ]),
+                                    _: 1
+                                  })) : createCommentVNode("", true)
+                                ], 64)) : createCommentVNode("", true)
+                              ]),
+                              _: 1
+                            }, 8, ["mask-top-style", "mask-bottom-style", "indicatorStyle", "value"])
+                          ];
+                        }
+                      }),
+                      _: 1
+                    }, _parent3, _scopeId2));
+                    _push3(`<!--]-->`);
+                  }
+                } else {
+                  return [
+                    unref(isSelect) ? (openBlock(), createBlock(_component_scroll_view, {
+                      key: 0,
+                      ref_key: "selectRef",
+                      ref: selectRef,
+                      class: "uni-picker__select",
+                      direction: "vertical",
+                      "show-scrollbar": true
+                    }, {
+                      default: withCtx(() => [
                         (openBlock(true), createBlock(Fragment, null, renderList(unref(range), (item, selectorIdx) => {
-                          return openBlock(), createBlock("span", {
+                          return openBlock(), createBlock(_component_text, {
                             key: selectorIdx,
-                            "uni-text": "",
-                            class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
-                            flatten: ""
-                          }, toDisplayString(unref(rangeKey) ? item[unref(rangeKey)] : item), 3);
+                            class: ["uni-picker__select-item", { "uni-picker__select-item--selected": unref(eventValue)[0] == selectorIdx }],
+                            onClick: ($event) => selectItem(selectorIdx)
+                          }, {
+                            default: withCtx(() => [
+                              createTextVNode(toDisplayString(unref(rangeKey) ? item[unref(rangeKey)] : item), 1)
+                            ]),
+                            _: 2
+                          }, 1032, ["class", "onClick"]);
                         }), 128))
-                      ];
-                    }
-                  }),
-                  _: 1
-                }, _parent2, _scopeId));
-              } else {
-                _push2(`<!---->`);
-              }
-              if (unref(mode) == "multiSelector") {
-                _push2(`<!--[-->`);
-                ssrRenderList(unref(range), (item, multiIdx) => {
-                  _push2(ssrRenderComponent(_component_picker_view_column, null, {
-                    default: withCtx((_2, _push3, _parent3, _scopeId2) => {
-                      if (_push3) {
-                        _push3(`<!--[-->`);
-                        ssrRenderList(item, (column, colIdx) => {
-                          _push3(`<span uni-text class="${ssrRenderClass([["view-item--" + unref(theme)], "uni-picker__view-item"])}" flatten${_scopeId2}>${ssrInterpolate(unref(rangeKey) ? column[unref(rangeKey)] : column, true)}</span>`);
-                        });
-                        _push3(`<!--]-->`);
-                      } else {
-                        return [
-                          (openBlock(true), createBlock(Fragment, null, renderList(item, (column, colIdx) => {
-                            return openBlock(), createBlock("span", {
-                              key: colIdx,
-                              "uni-text": "",
-                              class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
-                              flatten: ""
-                            }, toDisplayString(unref(rangeKey) ? column[unref(rangeKey)] : column), 3);
-                          }), 128))
-                        ];
-                      }
-                    }),
-                    _: 2
-                  }, _parent2, _scopeId));
-                });
-                _push2(`<!--]-->`);
-              } else {
-                _push2(`<!---->`);
-              }
-              if (unref(mode) == "time") {
-                _push2(`<!--[-->`);
-                _push2(ssrRenderComponent(_component_picker_view_column, null, {
-                  default: withCtx((_2, _push3, _parent3, _scopeId2) => {
-                    if (_push3) {
-                      _push3(`<!--[-->`);
-                      ssrRenderList(unref(hours), (h, hIdx) => {
-                        _push3(`<span uni-text class="${ssrRenderClass([["view-item--" + unref(theme)], "uni-picker__view-item"])}" flatten${_scopeId2}>${ssrInterpolate(h, true)}</span>`);
-                      });
-                      _push3(`<!--]-->`);
-                    } else {
-                      return [
-                        (openBlock(true), createBlock(Fragment, null, renderList(unref(hours), (h, hIdx) => {
-                          return openBlock(), createBlock("span", {
-                            "uni-text": "",
-                            key: h,
-                            class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
-                            flatten: ""
-                          }, toDisplayString(h), 3);
-                        }), 128))
-                      ];
-                    }
-                  }),
-                  _: 1
-                }, _parent2, _scopeId));
-                _push2(ssrRenderComponent(_component_picker_view_column, null, {
-                  default: withCtx((_2, _push3, _parent3, _scopeId2) => {
-                    if (_push3) {
-                      _push3(`<!--[-->`);
-                      ssrRenderList(unref(minutes), (m, mIdx) => {
-                        _push3(`<span uni-text class="${ssrRenderClass([["view-item--" + unref(theme)], "uni-picker__view-item"])}" flatten${_scopeId2}>${ssrInterpolate(m, true)}</span>`);
-                      });
-                      _push3(`<!--]-->`);
-                    } else {
-                      return [
-                        (openBlock(true), createBlock(Fragment, null, renderList(unref(minutes), (m, mIdx) => {
-                          return openBlock(), createBlock("span", {
-                            "uni-text": "",
-                            key: m,
-                            class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
-                            flatten: ""
-                          }, toDisplayString(m), 3);
-                        }), 128))
-                      ];
-                    }
-                  }),
-                  _: 1
-                }, _parent2, _scopeId));
-                _push2(`<!--]-->`);
-              } else {
-                _push2(`<!---->`);
-              }
-              if (unref(mode) == "date") {
-                _push2(`<!--[-->`);
-                _push2(ssrRenderComponent(_component_picker_view_column, null, {
-                  default: withCtx((_2, _push3, _parent3, _scopeId2) => {
-                    if (_push3) {
-                      _push3(`<!--[-->`);
-                      ssrRenderList(unref(years), (year) => {
-                        _push3(`<span uni-text class="${ssrRenderClass([["view-item--" + unref(theme)], "uni-picker__view-item"])}" flatten${_scopeId2}>${ssrInterpolate(year, true)}${ssrInterpolate(unref(yearText), true)}</span>`);
-                      });
-                      _push3(`<!--]-->`);
-                    } else {
-                      return [
-                        (openBlock(true), createBlock(Fragment, null, renderList(unref(years), (year) => {
-                          return openBlock(), createBlock("span", {
-                            "uni-text": "",
-                            key: year,
-                            class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
-                            flatten: ""
-                          }, toDisplayString(year) + toDisplayString(unref(yearText)), 3);
-                        }), 128))
-                      ];
-                    }
-                  }),
-                  _: 1
-                }, _parent2, _scopeId));
-                if (unref(fields) != "year") {
-                  _push2(ssrRenderComponent(_component_picker_view_column, null, {
-                    default: withCtx((_2, _push3, _parent3, _scopeId2) => {
-                      if (_push3) {
-                        _push3(`<!--[-->`);
-                        ssrRenderList(unref(monthsText), (month) => {
-                          _push3(`<span uni-text class="${ssrRenderClass([["view-item--" + unref(theme)], "uni-picker__view-item"])}" flatten${_scopeId2}>${ssrInterpolate(formatSingle(month), true)}${ssrInterpolate(unref(monthText), true)}</span>`);
-                        });
-                        _push3(`<!--]-->`);
-                      } else {
-                        return [
-                          (openBlock(true), createBlock(Fragment, null, renderList(unref(monthsText), (month) => {
-                            return openBlock(), createBlock("span", {
-                              "uni-text": "",
-                              key: month,
-                              class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
-                              flatten: ""
-                            }, toDisplayString(formatSingle(month)) + toDisplayString(unref(monthText)), 3);
-                          }), 128))
-                        ];
-                      }
-                    }),
-                    _: 1
-                  }, _parent2, _scopeId));
-                } else {
-                  _push2(`<!---->`);
+                      ]),
+                      _: 1
+                    }, 512)) : (openBlock(), createBlock(Fragment, { key: 1 }, [
+                      createVNode(_component_view, {
+                        class: ["uni-picker__header-btn", ["header-btn--" + unref(theme)]],
+                        onClick: withModifiers(() => {
+                        }, ["stop"])
+                      }, {
+                        default: withCtx(() => [
+                          createVNode(_component_text, {
+                            class: ["uni-picker__header-btn-cancel", ["header-btn-cannel--" + unref(theme)]],
+                            onClick: close
+                          }, {
+                            default: withCtx(() => [
+                              createTextVNode(toDisplayString(unref(cancelText)), 1)
+                            ]),
+                            _: 1
+                          }, 8, ["class"]),
+                          createVNode(_component_text, {
+                            class: "uni-picker__header-btn-ok",
+                            onClick: confirm
+                          }, {
+                            default: withCtx(() => [
+                              createTextVNode(toDisplayString(unref(confirmText)), 1)
+                            ]),
+                            _: 1
+                          })
+                        ]),
+                        _: 1
+                      }, 8, ["class", "onClick"]),
+                      createVNode(_component_view, { class: "uni-picker__view" }, {
+                        default: withCtx(() => [
+                          createVNode(_component_picker_view, {
+                            style: { "flex": "1" },
+                            onChange: handleChange,
+                            "mask-top-style": unref(maskTopStyle),
+                            "mask-bottom-style": unref(maskBottomStyle),
+                            indicatorStyle: unref(indicatorStyle),
+                            value: unref(value)
+                          }, {
+                            default: withCtx(() => [
+                              unref(mode) == "selector" ? (openBlock(), createBlock(_component_picker_view_column, { key: 0 }, {
+                                default: withCtx(() => [
+                                  (openBlock(true), createBlock(Fragment, null, renderList(unref(range), (item, selectorIdx) => {
+                                    return openBlock(), createBlock(_component_text, {
+                                      key: selectorIdx,
+                                      class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
+                                      flatten: ""
+                                    }, {
+                                      default: withCtx(() => [
+                                        createTextVNode(toDisplayString(unref(rangeKey) ? item[unref(rangeKey)] : item), 1)
+                                      ]),
+                                      _: 2
+                                    }, 1032, ["class"]);
+                                  }), 128))
+                                ]),
+                                _: 1
+                              })) : createCommentVNode("", true),
+                              unref(mode) == "multiSelector" ? (openBlock(true), createBlock(Fragment, { key: 1 }, renderList(unref(range), (item, multiIdx) => {
+                                return openBlock(), createBlock(_component_picker_view_column, { key: multiIdx }, {
+                                  default: withCtx(() => [
+                                    (openBlock(true), createBlock(Fragment, null, renderList(item, (column, colIdx) => {
+                                      return openBlock(), createBlock(_component_text, {
+                                        key: colIdx,
+                                        class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
+                                        flatten: ""
+                                      }, {
+                                        default: withCtx(() => [
+                                          createTextVNode(toDisplayString(unref(rangeKey) ? column[unref(rangeKey)] : column), 1)
+                                        ]),
+                                        _: 2
+                                      }, 1032, ["class"]);
+                                    }), 128))
+                                  ]),
+                                  _: 2
+                                }, 1024);
+                              }), 128)) : createCommentVNode("", true),
+                              unref(mode) == "time" ? (openBlock(), createBlock(Fragment, { key: 2 }, [
+                                createVNode(_component_picker_view_column, null, {
+                                  default: withCtx(() => [
+                                    (openBlock(true), createBlock(Fragment, null, renderList(unref(hours), (h, hIdx) => {
+                                      return openBlock(), createBlock(_component_text, {
+                                        key: h,
+                                        class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
+                                        flatten: ""
+                                      }, {
+                                        default: withCtx(() => [
+                                          createTextVNode(toDisplayString(h), 1)
+                                        ]),
+                                        _: 2
+                                      }, 1032, ["class"]);
+                                    }), 128))
+                                  ]),
+                                  _: 1
+                                }),
+                                createVNode(_component_picker_view_column, null, {
+                                  default: withCtx(() => [
+                                    (openBlock(true), createBlock(Fragment, null, renderList(unref(minutes), (m, mIdx) => {
+                                      return openBlock(), createBlock(_component_text, {
+                                        key: m,
+                                        class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
+                                        flatten: ""
+                                      }, {
+                                        default: withCtx(() => [
+                                          createTextVNode(toDisplayString(m), 1)
+                                        ]),
+                                        _: 2
+                                      }, 1032, ["class"]);
+                                    }), 128))
+                                  ]),
+                                  _: 1
+                                })
+                              ], 64)) : createCommentVNode("", true),
+                              unref(mode) == "date" ? (openBlock(), createBlock(Fragment, { key: 3 }, [
+                                createVNode(_component_picker_view_column, null, {
+                                  default: withCtx(() => [
+                                    (openBlock(true), createBlock(Fragment, null, renderList(unref(years), (year) => {
+                                      return openBlock(), createBlock(_component_text, {
+                                        key: year,
+                                        class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
+                                        flatten: ""
+                                      }, {
+                                        default: withCtx(() => [
+                                          createTextVNode(toDisplayString(year) + toDisplayString(unref(yearText)), 1)
+                                        ]),
+                                        _: 2
+                                      }, 1032, ["class"]);
+                                    }), 128))
+                                  ]),
+                                  _: 1
+                                }),
+                                unref(fields) != "year" ? (openBlock(), createBlock(_component_picker_view_column, { key: 0 }, {
+                                  default: withCtx(() => [
+                                    (openBlock(true), createBlock(Fragment, null, renderList(unref(monthsText), (month) => {
+                                      return openBlock(), createBlock(_component_text, {
+                                        key: month,
+                                        class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
+                                        flatten: ""
+                                      }, {
+                                        default: withCtx(() => [
+                                          createTextVNode(toDisplayString(formatSingle(month)) + toDisplayString(unref(monthText)), 1)
+                                        ]),
+                                        _: 2
+                                      }, 1032, ["class"]);
+                                    }), 128))
+                                  ]),
+                                  _: 1
+                                })) : createCommentVNode("", true),
+                                unref(fields) == "day" ? (openBlock(), createBlock(_component_picker_view_column, { key: 1 }, {
+                                  default: withCtx(() => [
+                                    (openBlock(true), createBlock(Fragment, null, renderList(unref(days), (day) => {
+                                      return openBlock(), createBlock(_component_text, {
+                                        key: day,
+                                        class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
+                                        flatten: ""
+                                      }, {
+                                        default: withCtx(() => [
+                                          createTextVNode(toDisplayString(formatSingle(day)) + toDisplayString(unref(dayText)), 1)
+                                        ]),
+                                        _: 2
+                                      }, 1032, ["class"]);
+                                    }), 128))
+                                  ]),
+                                  _: 1
+                                })) : createCommentVNode("", true)
+                              ], 64)) : createCommentVNode("", true)
+                            ]),
+                            _: 1
+                          }, 8, ["mask-top-style", "mask-bottom-style", "indicatorStyle", "value"])
+                        ]),
+                        _: 1
+                      })
+                    ], 64))
+                  ];
                 }
-                if (unref(fields) == "day") {
-                  _push2(ssrRenderComponent(_component_picker_view_column, null, {
-                    default: withCtx((_2, _push3, _parent3, _scopeId2) => {
-                      if (_push3) {
-                        _push3(`<!--[-->`);
-                        ssrRenderList(unref(days), (day) => {
-                          _push3(`<span uni-text class="${ssrRenderClass([["view-item--" + unref(theme)], "uni-picker__view-item"])}" flatten${_scopeId2}>${ssrInterpolate(formatSingle(day), true)}${ssrInterpolate(unref(dayText), true)}</span>`);
-                        });
-                        _push3(`<!--]-->`);
-                      } else {
-                        return [
-                          (openBlock(true), createBlock(Fragment, null, renderList(unref(days), (day) => {
-                            return openBlock(), createBlock("span", {
-                              "uni-text": "",
-                              key: day,
-                              class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
-                              flatten: ""
-                            }, toDisplayString(formatSingle(day)) + toDisplayString(unref(dayText)), 3);
-                          }), 128))
-                        ];
-                      }
-                    }),
-                    _: 1
-                  }, _parent2, _scopeId));
-                } else {
-                  _push2(`<!---->`);
-                }
-                _push2(`<!--]-->`);
-              } else {
-                _push2(`<!---->`);
-              }
-            } else {
-              return [
-                unref(mode) == "selector" ? (openBlock(), createBlock(_component_picker_view_column, { key: 0 }, {
-                  default: withCtx(() => [
-                    (openBlock(true), createBlock(Fragment, null, renderList(unref(range), (item, selectorIdx) => {
-                      return openBlock(), createBlock("span", {
-                        key: selectorIdx,
-                        "uni-text": "",
-                        class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
-                        flatten: ""
-                      }, toDisplayString(unref(rangeKey) ? item[unref(rangeKey)] : item), 3);
-                    }), 128))
-                  ]),
-                  _: 1
-                })) : createCommentVNode("", true),
-                unref(mode) == "multiSelector" ? (openBlock(true), createBlock(Fragment, { key: 1 }, renderList(unref(range), (item, multiIdx) => {
-                  return openBlock(), createBlock(_component_picker_view_column, { key: multiIdx }, {
+              }),
+              _: 1
+            }, _parent2, _scopeId));
+          } else {
+            return [
+              createVNode(_component_view, {
+                class: ["uni-picker__mask", { "picker__ani-show": unref(show), "picker__mask--dark": unref(theme) == "dark" }],
+                onClick: close
+              }, null, 8, ["class"]),
+              createVNode(_component_view, {
+                class: ["uni-picker__inner-box", [unref(show) ? "picker__ani-box-show" : "", "inner-box--" + unref(theme), { "uni-picker__inner-box--desktop": unref(isDesktop) }]],
+                style: unref(popupStyle).content
+              }, {
+                default: withCtx(() => [
+                  unref(isSelect) ? (openBlock(), createBlock(_component_scroll_view, {
+                    key: 0,
+                    ref_key: "selectRef",
+                    ref: selectRef,
+                    class: "uni-picker__select",
+                    direction: "vertical",
+                    "show-scrollbar": true
+                  }, {
                     default: withCtx(() => [
-                      (openBlock(true), createBlock(Fragment, null, renderList(item, (column, colIdx) => {
-                        return openBlock(), createBlock("span", {
-                          key: colIdx,
-                          "uni-text": "",
-                          class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
-                          flatten: ""
-                        }, toDisplayString(unref(rangeKey) ? column[unref(rangeKey)] : column), 3);
-                      }), 128))
-                    ]),
-                    _: 2
-                  }, 1024);
-                }), 128)) : createCommentVNode("", true),
-                unref(mode) == "time" ? (openBlock(), createBlock(Fragment, { key: 2 }, [
-                  createVNode(_component_picker_view_column, null, {
-                    default: withCtx(() => [
-                      (openBlock(true), createBlock(Fragment, null, renderList(unref(hours), (h, hIdx) => {
-                        return openBlock(), createBlock("span", {
-                          "uni-text": "",
-                          key: h,
-                          class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
-                          flatten: ""
-                        }, toDisplayString(h), 3);
+                      (openBlock(true), createBlock(Fragment, null, renderList(unref(range), (item, selectorIdx) => {
+                        return openBlock(), createBlock(_component_text, {
+                          key: selectorIdx,
+                          class: ["uni-picker__select-item", { "uni-picker__select-item--selected": unref(eventValue)[0] == selectorIdx }],
+                          onClick: ($event) => selectItem(selectorIdx)
+                        }, {
+                          default: withCtx(() => [
+                            createTextVNode(toDisplayString(unref(rangeKey) ? item[unref(rangeKey)] : item), 1)
+                          ]),
+                          _: 2
+                        }, 1032, ["class", "onClick"]);
                       }), 128))
                     ]),
                     _: 1
-                  }),
-                  createVNode(_component_picker_view_column, null, {
-                    default: withCtx(() => [
-                      (openBlock(true), createBlock(Fragment, null, renderList(unref(minutes), (m, mIdx) => {
-                        return openBlock(), createBlock("span", {
-                          "uni-text": "",
-                          key: m,
-                          class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
-                          flatten: ""
-                        }, toDisplayString(m), 3);
-                      }), 128))
-                    ]),
-                    _: 1
-                  })
-                ], 64)) : createCommentVNode("", true),
-                unref(mode) == "date" ? (openBlock(), createBlock(Fragment, { key: 3 }, [
-                  createVNode(_component_picker_view_column, null, {
-                    default: withCtx(() => [
-                      (openBlock(true), createBlock(Fragment, null, renderList(unref(years), (year) => {
-                        return openBlock(), createBlock("span", {
-                          "uni-text": "",
-                          key: year,
-                          class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
-                          flatten: ""
-                        }, toDisplayString(year) + toDisplayString(unref(yearText)), 3);
-                      }), 128))
-                    ]),
-                    _: 1
-                  }),
-                  unref(fields) != "year" ? (openBlock(), createBlock(_component_picker_view_column, { key: 0 }, {
-                    default: withCtx(() => [
-                      (openBlock(true), createBlock(Fragment, null, renderList(unref(monthsText), (month) => {
-                        return openBlock(), createBlock("span", {
-                          "uni-text": "",
-                          key: month,
-                          class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
-                          flatten: ""
-                        }, toDisplayString(formatSingle(month)) + toDisplayString(unref(monthText)), 3);
-                      }), 128))
-                    ]),
-                    _: 1
-                  })) : createCommentVNode("", true),
-                  unref(fields) == "day" ? (openBlock(), createBlock(_component_picker_view_column, { key: 1 }, {
-                    default: withCtx(() => [
-                      (openBlock(true), createBlock(Fragment, null, renderList(unref(days), (day) => {
-                        return openBlock(), createBlock("span", {
-                          "uni-text": "",
-                          key: day,
-                          class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
-                          flatten: ""
-                        }, toDisplayString(formatSingle(day)) + toDisplayString(unref(dayText)), 3);
-                      }), 128))
-                    ]),
-                    _: 1
-                  })) : createCommentVNode("", true)
-                ], 64)) : createCommentVNode("", true)
-              ];
-            }
-          }),
-          _: 1
-        }, _parent));
-        _push(`</div><!--]-->`);
-      }
-      _push(`</div></div>`);
+                  }, 512)) : (openBlock(), createBlock(Fragment, { key: 1 }, [
+                    createVNode(_component_view, {
+                      class: ["uni-picker__header-btn", ["header-btn--" + unref(theme)]],
+                      onClick: withModifiers(() => {
+                      }, ["stop"])
+                    }, {
+                      default: withCtx(() => [
+                        createVNode(_component_text, {
+                          class: ["uni-picker__header-btn-cancel", ["header-btn-cannel--" + unref(theme)]],
+                          onClick: close
+                        }, {
+                          default: withCtx(() => [
+                            createTextVNode(toDisplayString(unref(cancelText)), 1)
+                          ]),
+                          _: 1
+                        }, 8, ["class"]),
+                        createVNode(_component_text, {
+                          class: "uni-picker__header-btn-ok",
+                          onClick: confirm
+                        }, {
+                          default: withCtx(() => [
+                            createTextVNode(toDisplayString(unref(confirmText)), 1)
+                          ]),
+                          _: 1
+                        })
+                      ]),
+                      _: 1
+                    }, 8, ["class", "onClick"]),
+                    createVNode(_component_view, { class: "uni-picker__view" }, {
+                      default: withCtx(() => [
+                        createVNode(_component_picker_view, {
+                          style: { "flex": "1" },
+                          onChange: handleChange,
+                          "mask-top-style": unref(maskTopStyle),
+                          "mask-bottom-style": unref(maskBottomStyle),
+                          indicatorStyle: unref(indicatorStyle),
+                          value: unref(value)
+                        }, {
+                          default: withCtx(() => [
+                            unref(mode) == "selector" ? (openBlock(), createBlock(_component_picker_view_column, { key: 0 }, {
+                              default: withCtx(() => [
+                                (openBlock(true), createBlock(Fragment, null, renderList(unref(range), (item, selectorIdx) => {
+                                  return openBlock(), createBlock(_component_text, {
+                                    key: selectorIdx,
+                                    class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
+                                    flatten: ""
+                                  }, {
+                                    default: withCtx(() => [
+                                      createTextVNode(toDisplayString(unref(rangeKey) ? item[unref(rangeKey)] : item), 1)
+                                    ]),
+                                    _: 2
+                                  }, 1032, ["class"]);
+                                }), 128))
+                              ]),
+                              _: 1
+                            })) : createCommentVNode("", true),
+                            unref(mode) == "multiSelector" ? (openBlock(true), createBlock(Fragment, { key: 1 }, renderList(unref(range), (item, multiIdx) => {
+                              return openBlock(), createBlock(_component_picker_view_column, { key: multiIdx }, {
+                                default: withCtx(() => [
+                                  (openBlock(true), createBlock(Fragment, null, renderList(item, (column, colIdx) => {
+                                    return openBlock(), createBlock(_component_text, {
+                                      key: colIdx,
+                                      class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
+                                      flatten: ""
+                                    }, {
+                                      default: withCtx(() => [
+                                        createTextVNode(toDisplayString(unref(rangeKey) ? column[unref(rangeKey)] : column), 1)
+                                      ]),
+                                      _: 2
+                                    }, 1032, ["class"]);
+                                  }), 128))
+                                ]),
+                                _: 2
+                              }, 1024);
+                            }), 128)) : createCommentVNode("", true),
+                            unref(mode) == "time" ? (openBlock(), createBlock(Fragment, { key: 2 }, [
+                              createVNode(_component_picker_view_column, null, {
+                                default: withCtx(() => [
+                                  (openBlock(true), createBlock(Fragment, null, renderList(unref(hours), (h, hIdx) => {
+                                    return openBlock(), createBlock(_component_text, {
+                                      key: h,
+                                      class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
+                                      flatten: ""
+                                    }, {
+                                      default: withCtx(() => [
+                                        createTextVNode(toDisplayString(h), 1)
+                                      ]),
+                                      _: 2
+                                    }, 1032, ["class"]);
+                                  }), 128))
+                                ]),
+                                _: 1
+                              }),
+                              createVNode(_component_picker_view_column, null, {
+                                default: withCtx(() => [
+                                  (openBlock(true), createBlock(Fragment, null, renderList(unref(minutes), (m, mIdx) => {
+                                    return openBlock(), createBlock(_component_text, {
+                                      key: m,
+                                      class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
+                                      flatten: ""
+                                    }, {
+                                      default: withCtx(() => [
+                                        createTextVNode(toDisplayString(m), 1)
+                                      ]),
+                                      _: 2
+                                    }, 1032, ["class"]);
+                                  }), 128))
+                                ]),
+                                _: 1
+                              })
+                            ], 64)) : createCommentVNode("", true),
+                            unref(mode) == "date" ? (openBlock(), createBlock(Fragment, { key: 3 }, [
+                              createVNode(_component_picker_view_column, null, {
+                                default: withCtx(() => [
+                                  (openBlock(true), createBlock(Fragment, null, renderList(unref(years), (year) => {
+                                    return openBlock(), createBlock(_component_text, {
+                                      key: year,
+                                      class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
+                                      flatten: ""
+                                    }, {
+                                      default: withCtx(() => [
+                                        createTextVNode(toDisplayString(year) + toDisplayString(unref(yearText)), 1)
+                                      ]),
+                                      _: 2
+                                    }, 1032, ["class"]);
+                                  }), 128))
+                                ]),
+                                _: 1
+                              }),
+                              unref(fields) != "year" ? (openBlock(), createBlock(_component_picker_view_column, { key: 0 }, {
+                                default: withCtx(() => [
+                                  (openBlock(true), createBlock(Fragment, null, renderList(unref(monthsText), (month) => {
+                                    return openBlock(), createBlock(_component_text, {
+                                      key: month,
+                                      class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
+                                      flatten: ""
+                                    }, {
+                                      default: withCtx(() => [
+                                        createTextVNode(toDisplayString(formatSingle(month)) + toDisplayString(unref(monthText)), 1)
+                                      ]),
+                                      _: 2
+                                    }, 1032, ["class"]);
+                                  }), 128))
+                                ]),
+                                _: 1
+                              })) : createCommentVNode("", true),
+                              unref(fields) == "day" ? (openBlock(), createBlock(_component_picker_view_column, { key: 1 }, {
+                                default: withCtx(() => [
+                                  (openBlock(true), createBlock(Fragment, null, renderList(unref(days), (day) => {
+                                    return openBlock(), createBlock(_component_text, {
+                                      key: day,
+                                      class: ["uni-picker__view-item", ["view-item--" + unref(theme)]],
+                                      flatten: ""
+                                    }, {
+                                      default: withCtx(() => [
+                                        createTextVNode(toDisplayString(formatSingle(day)) + toDisplayString(unref(dayText)), 1)
+                                      ]),
+                                      _: 2
+                                    }, 1032, ["class"]);
+                                  }), 128))
+                                ]),
+                                _: 1
+                              })) : createCommentVNode("", true)
+                            ], 64)) : createCommentVNode("", true)
+                          ]),
+                          _: 1
+                        }, 8, ["mask-top-style", "mask-bottom-style", "indicatorStyle", "value"])
+                      ]),
+                      _: 1
+                    })
+                  ], 64))
+                ]),
+                _: 1
+              }, 8, ["class", "style"])
+            ];
+          }
+        }),
+        _: 1
+      }, _parent));
+      _push(`<!--}-->`);
     };
   }
 });
@@ -11701,14 +13158,25 @@ const _sfc_main$b = /* @__PURE__ */ defineComponent$2({
       columns.splice(0, columns.length);
     });
     return (_ctx, _push, _parent, _attrs) => {
-      _push(`<div${ssrRenderAttrs(mergeProps({
-        "uni-view": "",
+      const _component_view = resolveComponent("view");
+      _push(`<!--{-->`);
+      _push(ssrRenderComponent(_component_view, mergeProps({
         ref_key: "pickViewRef",
         ref: pickViewRef,
         class: "uni-picker-view"
-      }, _attrs))}>`);
-      ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent);
-      _push(`</div>`);
+      }, _attrs), {
+        default: withCtx((_, _push2, _parent2, _scopeId) => {
+          if (_push2) {
+            ssrRenderSlot(_ctx.$slots, "default", {}, null, _push2, _parent2, _scopeId);
+          } else {
+            return [
+              renderSlot(_ctx.$slots, "default")
+            ];
+          }
+        }),
+        _: 3
+      }, _parent));
+      _push(`<!--}-->`);
     };
   }
 });
@@ -11747,12 +13215,38 @@ const _sfc_main$a = /* @__PURE__ */ defineComponent$2({
     const rootRef = ref(null);
     const contentRef = ref(null);
     const scrollWithAnimation = ref(false);
+    let keyboardTargetIndex = null;
+    function clearKeyboardTarget() {
+      keyboardTargetIndex = null;
+    }
+    function handleKeydown(event) {
+      var _a;
+      if (event.target !== event.currentTarget || event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || event.key !== "ArrowUp" && event.key !== "ArrowDown") {
+        return;
+      }
+      event.preventDefault();
+      const itemCount = ((_a = contentRef.value) == null ? void 0 : _a.children.length) ?? 0;
+      if (itemCount === 0 || scrollViewRef.value == null) {
+        return;
+      }
+      const step = event.key === "ArrowUp" ? -1 : 1;
+      const targetIndex = Math.max(0, Math.min(itemCount - 1, selectedIndex.value + step));
+      if (targetIndex === selectedIndex.value) {
+        return;
+      }
+      keyboardTargetIndex = targetIndex;
+      setScrollTop(targetIndex);
+      ctx == null ? void 0 : ctx.onColumnIndexChange(columnIndex, targetIndex);
+    }
     let isAdjusting = false;
     let columnIndex = -1;
     function setScrollTop(idx) {
       var _a;
       if (idx < 0) {
         idx = 0;
+      }
+      if (keyboardTargetIndex != null && keyboardTargetIndex !== idx) {
+        clearKeyboardTarget();
       }
       selectedIndex.value = idx;
       const scrollTop = Math.max(0, idx * itemHeight.value);
@@ -11781,11 +13275,24 @@ const _sfc_main$a = /* @__PURE__ */ defineComponent$2({
       }
     }
     function onScrollEnd(e2) {
+      var _a;
       isScrolling.value = false;
       if (isAdjusting) {
         return;
       }
       const top = Math.max(e2.detail.scrollTop, 0);
+      if (keyboardTargetIndex != null) {
+        const itemCount = ((_a = contentRef.value) == null ? void 0 : _a.children.length) ?? 0;
+        if (keyboardTargetIndex < itemCount) {
+          if (Math.abs(top - keyboardTargetIndex * itemHeight.value) > EPSILON) {
+            setScrollTop(keyboardTargetIndex);
+          } else {
+            clearKeyboardTarget();
+          }
+          return;
+        }
+        clearKeyboardTarget();
+      }
       const idx = Math.round(top / itemHeight.value);
       const valueChanged = selectedIndex.value !== idx;
       if (Math.abs(top - idx * itemHeight.value) > EPSILON) {
@@ -11801,46 +13308,148 @@ const _sfc_main$a = /* @__PURE__ */ defineComponent$2({
         ctx == null ? void 0 : ctx.onColumnIndexChange(columnIndex, idx);
       }
     }
+    function handleClick(e2) {
+      var _a, _b;
+      if (!rootRef.value || !scrollViewRef.value || isScrolling.value) {
+        return;
+      }
+      const { top, height } = rootRef.value.getBoundingClientRect();
+      const y = e2.clientY - top;
+      let containerPadding = 0;
+      const paddingStr = containerPaddingPx.value;
+      if (paddingStr.includes("%")) {
+        containerPadding = parseFloat(paddingStr) / 100 * height;
+      } else {
+        containerPadding = parseFloat(paddingStr);
+      }
+      const currentScrollTop = scrollViewRef.value.scrollTop;
+      const actualY = y + currentScrollTop - containerPadding;
+      const targetIndex = Math.floor(actualY / itemHeight.value);
+      const itemCount = (_b = (_a = contentRef.value) == null ? void 0 : _a.children) == null ? void 0 : _b.length;
+      const isIndexValid = targetIndex >= 0 && (itemCount ? targetIndex < itemCount : true);
+      if (isIndexValid && targetIndex !== selectedIndex.value) {
+        setScrollTop(targetIndex);
+        ctx == null ? void 0 : ctx.onColumnIndexChange(columnIndex, targetIndex);
+      }
+    }
     return (_ctx, _push, _parent, _attrs) => {
+      const _component_view = resolveComponent("view");
       const _component_scroll_view = __syscom_0;
-      _push(`<div${ssrRenderAttrs(mergeProps({
-        "uni-view": "",
+      _push(`<!--{-->`);
+      _push(ssrRenderComponent(_component_view, mergeProps({
         class: "picker-view-column",
         ref_key: "rootRef",
         ref: rootRef,
-        tabindex: "0"
-      }, _attrs))}>`);
-      _push(ssrRenderComponent(_component_scroll_view, {
-        ref_key: "scrollViewRef",
-        ref: scrollViewRef,
-        class: "picker-view-scroll",
-        direction: "vertical",
-        "show-scrollbar": false,
-        "scroll-with-animation": unref(scrollWithAnimation),
-        onScrollend: onScrollEnd,
-        onScroll
-      }, {
+        tabindex: "0",
+        onKeydown: handleKeydown,
+        onMousedown: clearKeyboardTarget,
+        onTouchstart: clearKeyboardTarget,
+        onWheel: clearKeyboardTarget,
+        onClick: handleClick
+      }, _attrs), {
         default: withCtx((_, _push2, _parent2, _scopeId) => {
           if (_push2) {
-            _push2(`<div uni-view style="${ssrRenderStyle({ "padding-top": unref(containerPaddingPx), "padding-bottom": unref(containerPaddingPx) })}"${_scopeId}>`);
-            ssrRenderSlot(_ctx.$slots, "default", {}, null, _push2, _parent2, _scopeId);
-            _push2(`</div>`);
+            _push2(ssrRenderComponent(_component_scroll_view, {
+              ref_key: "scrollViewRef",
+              ref: scrollViewRef,
+              class: "picker-view-scroll",
+              direction: "vertical",
+              "show-scrollbar": false,
+              "scroll-with-animation": unref(scrollWithAnimation),
+              onScrollend: onScrollEnd,
+              onScroll
+            }, {
+              default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+                if (_push3) {
+                  _push3(ssrRenderComponent(_component_view, {
+                    ref_key: "contentRef",
+                    ref: contentRef,
+                    style: { "padding-top": unref(containerPaddingPx), "padding-bottom": unref(containerPaddingPx) }
+                  }, {
+                    default: withCtx((_3, _push4, _parent4, _scopeId3) => {
+                      if (_push4) {
+                        ssrRenderSlot(_ctx.$slots, "default", {}, null, _push4, _parent4, _scopeId3);
+                      } else {
+                        return [
+                          renderSlot(_ctx.$slots, "default")
+                        ];
+                      }
+                    }),
+                    _: 3
+                  }, _parent3, _scopeId2));
+                } else {
+                  return [
+                    createVNode(_component_view, {
+                      ref_key: "contentRef",
+                      ref: contentRef,
+                      style: { "padding-top": unref(containerPaddingPx), "padding-bottom": unref(containerPaddingPx) }
+                    }, {
+                      default: withCtx(() => [
+                        renderSlot(_ctx.$slots, "default")
+                      ]),
+                      _: 3
+                    }, 8, ["style"])
+                  ];
+                }
+              }),
+              _: 3
+            }, _parent2, _scopeId));
+            _push2(ssrRenderComponent(_component_view, {
+              class: ["uni-picker-view-mask uni-picker-view-mask-top", unref(maskClass)],
+              style: unref(maskTopInlineStyle)
+            }, null, _parent2, _scopeId));
+            _push2(ssrRenderComponent(_component_view, {
+              class: ["uni-picker-view-indicator", unref(indicatorClass)],
+              style: unref(indicatorInlineStyle)
+            }, null, _parent2, _scopeId));
+            _push2(ssrRenderComponent(_component_view, {
+              class: ["uni-picker-view-mask uni-picker-view-mask-bottom", unref(maskClass)],
+              style: unref(maskBottomInlineStyle)
+            }, null, _parent2, _scopeId));
           } else {
             return [
-              createVNode("div", {
-                "uni-view": "",
-                ref_key: "contentRef",
-                ref: contentRef,
-                style: { "padding-top": unref(containerPaddingPx), "padding-bottom": unref(containerPaddingPx) }
-              }, [
-                renderSlot(_ctx.$slots, "default")
-              ], 4)
+              createVNode(_component_scroll_view, {
+                ref_key: "scrollViewRef",
+                ref: scrollViewRef,
+                class: "picker-view-scroll",
+                direction: "vertical",
+                "show-scrollbar": false,
+                "scroll-with-animation": unref(scrollWithAnimation),
+                onScrollend: onScrollEnd,
+                onScroll
+              }, {
+                default: withCtx(() => [
+                  createVNode(_component_view, {
+                    ref_key: "contentRef",
+                    ref: contentRef,
+                    style: { "padding-top": unref(containerPaddingPx), "padding-bottom": unref(containerPaddingPx) }
+                  }, {
+                    default: withCtx(() => [
+                      renderSlot(_ctx.$slots, "default")
+                    ]),
+                    _: 3
+                  }, 8, ["style"])
+                ]),
+                _: 3
+              }, 8, ["scroll-with-animation"]),
+              createVNode(_component_view, {
+                class: ["uni-picker-view-mask uni-picker-view-mask-top", unref(maskClass)],
+                style: unref(maskTopInlineStyle)
+              }, null, 8, ["class", "style"]),
+              createVNode(_component_view, {
+                class: ["uni-picker-view-indicator", unref(indicatorClass)],
+                style: unref(indicatorInlineStyle)
+              }, null, 8, ["class", "style"]),
+              createVNode(_component_view, {
+                class: ["uni-picker-view-mask uni-picker-view-mask-bottom", unref(maskClass)],
+                style: unref(maskBottomInlineStyle)
+              }, null, 8, ["class", "style"])
             ];
           }
         }),
         _: 3
       }, _parent));
-      _push(`<div uni-view class="${ssrRenderClass([unref(maskClass), "uni-picker-view-mask uni-picker-view-mask-top"])}" style="${ssrRenderStyle(unref(maskTopInlineStyle))}"></div><div uni-view class="${ssrRenderClass([unref(indicatorClass), "uni-picker-view-indicator"])}" style="${ssrRenderStyle(unref(indicatorInlineStyle))}"></div><div uni-view class="${ssrRenderClass([unref(maskClass), "uni-picker-view-mask uni-picker-view-mask-bottom"])}" style="${ssrRenderStyle(unref(maskBottomInlineStyle))}"></div></div>`);
+      _push(`<!--}-->`);
     };
   }
 });
@@ -11971,16 +13580,88 @@ const _sfc_main$9 = /* @__PURE__ */ defineComponent$2({
       clearTimer();
     });
     return (_ctx, _push, _parent, _attrs) => {
-      _push(`<div${ssrRenderAttrs(mergeProps({
-        "uni-view": "",
-        class: "uni-progress"
-      }, _attrs))}><div uni-view class="uni-progress-background" style="${ssrRenderStyle(unref(backgroundStyle))}"><div uni-view class="uni-progress-fill" style="${ssrRenderStyle(unref(foregroundStyle))}"></div></div>`);
-      if (__props.showInfo) {
-        _push(`<span uni-text class="uni-progress-value" style="${ssrRenderStyle(unref(fontStyle))}">${ssrInterpolate(unref(percentText), true)}</span>`);
-      } else {
-        _push(`<!---->`);
-      }
-      _push(`</div>`);
+      const _component_view = resolveComponent("view");
+      const _component_text = resolveComponent("text");
+      _push(`<!--{-->`);
+      _push(ssrRenderComponent(_component_view, mergeProps({ class: "uni-progress" }, _attrs), {
+        default: withCtx((_, _push2, _parent2, _scopeId) => {
+          if (_push2) {
+            _push2(ssrRenderComponent(_component_view, {
+              class: "uni-progress-background",
+              style: unref(backgroundStyle)
+            }, {
+              default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+                if (_push3) {
+                  _push3(ssrRenderComponent(_component_view, {
+                    ref_key: "fillRef",
+                    ref: fillRef,
+                    class: "uni-progress-fill",
+                    style: unref(foregroundStyle)
+                  }, null, _parent3, _scopeId2));
+                } else {
+                  return [
+                    createVNode(_component_view, {
+                      ref_key: "fillRef",
+                      ref: fillRef,
+                      class: "uni-progress-fill",
+                      style: unref(foregroundStyle)
+                    }, null, 8, ["style"])
+                  ];
+                }
+              }),
+              _: 1
+            }, _parent2, _scopeId));
+            if (__props.showInfo) {
+              _push2(ssrRenderComponent(_component_text, {
+                class: "uni-progress-value",
+                style: unref(fontStyle)
+              }, {
+                default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+                  if (_push3) {
+                    _push3(`${ssrInterpolate(unref(percentText))}`);
+                  } else {
+                    return [
+                      createTextVNode(toDisplayString(unref(percentText)), 1)
+                    ];
+                  }
+                }),
+                _: 1
+              }, _parent2, _scopeId));
+            } else {
+              _push2(`<!---->`);
+            }
+          } else {
+            return [
+              createVNode(_component_view, {
+                class: "uni-progress-background",
+                style: unref(backgroundStyle)
+              }, {
+                default: withCtx(() => [
+                  createVNode(_component_view, {
+                    ref_key: "fillRef",
+                    ref: fillRef,
+                    class: "uni-progress-fill",
+                    style: unref(foregroundStyle)
+                  }, null, 8, ["style"])
+                ]),
+                _: 1
+              }, 8, ["style"]),
+              __props.showInfo ? (openBlock(), createBlock(_component_text, {
+                key: 0,
+                class: "uni-progress-value",
+                style: unref(fontStyle)
+              }, {
+                default: withCtx(() => [
+                  createTextVNode(toDisplayString(unref(percentText)), 1)
+                ]),
+                _: 1
+              }, 8, ["style"])) : createCommentVNode("", true)
+            ];
+          }
+        }),
+        _: 1
+      }, _parent));
+      _push(`<!--}-->`);
     };
   }
 });
@@ -12032,6 +13713,7 @@ const _sfc_main$8 = /* @__PURE__ */ defineComponent$2({
   setup(__props, { expose: __expose }) {
     var _a, _b;
     const props2 = __props;
+    const { handleKeydown, handleKeyup, handleBlur } = createSpaceKeyHandlers(() => props2.disabled);
     const { isLabelHovered, setLabelHovered } = createLabelHoverState();
     let unregisterLabelChild = null;
     const attrs = useAttrs$1();
@@ -12077,6 +13759,16 @@ const _sfc_main$8 = /* @__PURE__ */ defineComponent$2({
         setChecked(value, false);
       }, { immediate: true });
     }
+    const handleTap = () => {
+      if (props2.disabled || isChecked.value) {
+        return;
+      }
+      if (groupCtx != null) {
+        groupCtx.change(toStringOrEmpty(props2.value));
+      } else {
+        setChecked(true, false);
+      }
+    };
     onMounted(() => {
       if (groupCtx != null && props2.checked) {
         if (groupCtx.selectedValue.value == null || groupCtx.selectedValue.value.length == 0) {
@@ -12116,9 +13808,11 @@ const _sfc_main$8 = /* @__PURE__ */ defineComponent$2({
       }
     });
     return (_ctx, _push, _parent, _attrs) => {
+      const _component_text = resolveComponent("text");
+      const _component_view = resolveComponent("view");
       if (!hasDefaultSlot) {
-        _push(`<span${ssrRenderAttrs(mergeProps({
-          "uni-text": "",
+        _push(`<!--[0-->`);
+        _push(ssrRenderComponent(_component_text, mergeProps({
           class: ["uni-radio-view uni-radio-icon", unref(classes)(
             [__props.disabled, "uni-radio-disabled"],
             [unref(isLabelHovered), "uni-radio-hover"],
@@ -12129,36 +13823,113 @@ const _sfc_main$8 = /* @__PURE__ */ defineComponent$2({
           )],
           style: unref(activeStyle),
           tabindex: __props.disabled ? -1 : 0,
+          onKeydown: unref(handleKeydown),
+          onKeyup: unref(handleKeyup),
+          onBlur: unref(handleBlur),
           role: "radio",
           "aria-checked": unref(isChecked),
-          "aria-disabled": __props.disabled
-        }, _attrs))}>${ssrInterpolate(unref(isChecked) ? fontUnicode : "", true)}</span>`);
+          "aria-disabled": __props.disabled,
+          onClick: handleTap
+        }, _attrs), {
+          default: withCtx((_, _push2, _parent2, _scopeId) => {
+            if (_push2) {
+              _push2(`${ssrInterpolate(unref(isChecked) ? fontUnicode : "")}`);
+            } else {
+              return [
+                createTextVNode(toDisplayString(unref(isChecked) ? fontUnicode : ""), 1)
+              ];
+            }
+          }),
+          _: 1
+        }, _parent));
+        _push(`<!--]-->`);
       } else {
-        _push(`<div${ssrRenderAttrs(mergeProps({
-          "uni-view": "",
+        _push(`<!--[1-->`);
+        _push(ssrRenderComponent(_component_view, mergeProps({
           class: "uni-radio",
           tabindex: __props.disabled ? -1 : 0,
+          onKeydown: unref(handleKeydown),
+          onKeyup: unref(handleKeyup),
+          onBlur: unref(handleBlur),
           role: "radio",
           "aria-checked": unref(isChecked),
-          "aria-disabled": __props.disabled
-        }, _attrs))}><span uni-text class="${ssrRenderClass([unref(classes)(
-          [__props.disabled, "uni-radio-disabled"],
-          [unref(isLabelHovered), "uni-radio-hover"],
-          [!__props.disabled && unref(isChecked), "uni-radio-active"],
-          [!__props.disabled && unref(isChecked), __props.radioActiveClass],
-          [!__props.disabled && !unref(isChecked), __props.radioClass],
-          [!__props.disabled, __props.iconClass]
-        ), "uni-radio-view uni-radio-icon"])}" style="${ssrRenderStyle(unref(activeStyle))}">${ssrInterpolate(unref(isChecked) ? fontUnicode : "", true)}</span>`);
-        if (isStringSlot) {
-          _push(`<!--[0--><span uni-text>`);
-          ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent, null, true);
-          _push(`</span><!--]-->`);
-        } else {
-          _push(`<!--[1-->`);
-          ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent);
-          _push(`<!--]-->`);
-        }
-        _push(`</div>`);
+          "aria-disabled": __props.disabled,
+          onClick: handleTap
+        }, _attrs), {
+          default: withCtx((_, _push2, _parent2, _scopeId) => {
+            if (_push2) {
+              _push2(ssrRenderComponent(_component_text, {
+                class: ["uni-radio-view uni-radio-icon", unref(classes)(
+                  [__props.disabled, "uni-radio-disabled"],
+                  [unref(isLabelHovered), "uni-radio-hover"],
+                  [!__props.disabled && unref(isChecked), "uni-radio-active"],
+                  [!__props.disabled && unref(isChecked), __props.radioActiveClass],
+                  [!__props.disabled && !unref(isChecked), __props.radioClass],
+                  [!__props.disabled, __props.iconClass]
+                )],
+                style: unref(activeStyle)
+              }, {
+                default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+                  if (_push3) {
+                    _push3(`${ssrInterpolate(unref(isChecked) ? fontUnicode : "")}`);
+                  } else {
+                    return [
+                      createTextVNode(toDisplayString(unref(isChecked) ? fontUnicode : ""), 1)
+                    ];
+                  }
+                }),
+                _: 1
+              }, _parent2, _scopeId));
+              if (isStringSlot) {
+                _push2(`<!--[0-->`);
+                _push2(ssrRenderComponent(_component_text, null, {
+                  default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+                    if (_push3) {
+                      ssrRenderSlot(_ctx.$slots, "default", {}, null, _push3, _parent3, _scopeId2);
+                    } else {
+                      return [
+                        renderSlot(_ctx.$slots, "default")
+                      ];
+                    }
+                  }),
+                  _: 3
+                }, _parent2, _scopeId));
+                _push2(`<!--]-->`);
+              } else {
+                _push2(`<!--[1-->`);
+                ssrRenderSlot(_ctx.$slots, "default", {}, null, _push2, _parent2, _scopeId);
+                _push2(`<!--]-->`);
+              }
+            } else {
+              return [
+                createVNode(_component_text, {
+                  class: ["uni-radio-view uni-radio-icon", unref(classes)(
+                    [__props.disabled, "uni-radio-disabled"],
+                    [unref(isLabelHovered), "uni-radio-hover"],
+                    [!__props.disabled && unref(isChecked), "uni-radio-active"],
+                    [!__props.disabled && unref(isChecked), __props.radioActiveClass],
+                    [!__props.disabled && !unref(isChecked), __props.radioClass],
+                    [!__props.disabled, __props.iconClass]
+                  )],
+                  style: unref(activeStyle)
+                }, {
+                  default: withCtx(() => [
+                    createTextVNode(toDisplayString(unref(isChecked) ? fontUnicode : ""), 1)
+                  ]),
+                  _: 1
+                }, 8, ["class", "style"]),
+                isStringSlot ? (openBlock(), createBlock(_component_text, { key: 0 }, {
+                  default: withCtx(() => [
+                    renderSlot(_ctx.$slots, "default")
+                  ]),
+                  _: 3
+                })) : renderSlot(_ctx.$slots, "default", {}, void 0, void 0, 1)
+              ];
+            }
+          }),
+          _: 3
+        }, _parent));
+        _push(`<!--]-->`);
       }
     };
   }
@@ -12211,6 +13982,30 @@ const _sfc_main$7 = /* @__PURE__ */ defineComponent$2({
       setSelectedValue(val);
       emit2("change", new UniRadioGroupChangeEvent(val));
     }
+    function handleKeydown(event) {
+      const direction2 = event.key === "ArrowUp" || event.key === "ArrowLeft" ? -1 : event.key === "ArrowDown" || event.key === "ArrowRight" ? 1 : 0;
+      if (direction2 === 0 || event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) {
+        return;
+      }
+      const target = event.target;
+      const group = event.currentTarget;
+      if (!(target instanceof Object) || !(group instanceof Object) || !target.matches('[role="radio"]') || target.closest('[role="radiogroup"]') !== group) {
+        return;
+      }
+      const radios = Array.from(group.querySelectorAll('[role="radio"]')).filter(
+        (radio) => radio.getAttribute("aria-disabled") !== "true" && radio.closest('[role="radiogroup"]') === group
+      );
+      const index2 = radios.indexOf(target);
+      if (index2 < 0) {
+        return;
+      }
+      event.preventDefault();
+      const next = radios[(index2 + direction2 + radios.length) % radios.length];
+      if (next !== target) {
+        next.focus();
+        next.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+      }
+    }
     const ctx = {
       selectedValue,
       change,
@@ -12237,12 +14032,24 @@ const _sfc_main$7 = /* @__PURE__ */ defineComponent$2({
       }
     });
     return (_ctx, _push, _parent, _attrs) => {
-      _push(`<div${ssrRenderAttrs(mergeProps({
-        "uni-view": "",
-        role: "radiogroup"
-      }, _attrs))}>`);
-      ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent);
-      _push(`</div>`);
+      const _component_view = resolveComponent("view");
+      _push(`<!--{-->`);
+      _push(ssrRenderComponent(_component_view, mergeProps({
+        role: "radiogroup",
+        onKeydown: handleKeydown
+      }, _attrs), {
+        default: withCtx((_, _push2, _parent2, _scopeId) => {
+          if (_push2) {
+            ssrRenderSlot(_ctx.$slots, "default", {}, null, _push2, _parent2, _scopeId);
+          } else {
+            return [
+              renderSlot(_ctx.$slots, "default")
+            ];
+          }
+        }),
+        _: 3
+      }, _parent));
+      _push(`<!--}-->`);
     };
   }
 });
@@ -12318,10 +14125,10 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
     const id = attrs.id ?? "";
     let unregisterLabelTarget = null;
     const props2 = __props;
-    ref(null);
+    const containerRef = ref(null);
     const backgroundRef = ref(null);
     const fillRef = ref(null);
-    ref(null);
+    const handleRef = ref(null);
     const thumbRef = ref(null);
     function setColor(element, color) {
       if (element == null)
@@ -12451,6 +14258,24 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
       const fillScale = Math.max(0, Math.min(1, percentage));
       applyVisualPosition(percentage, fillScale);
     }
+    function cacheTrackGeometry(clientX, clientY) {
+      trackTravelWidth = 0;
+      trackLeft = 0;
+      thumbOffsetX = 0;
+      const containerEl = containerRef.value;
+      if (containerEl != null) {
+        const rect = containerEl.getBoundingClientRect();
+        trackTravelWidth = rect.width;
+        trackLeft = rect.left;
+      }
+      const thumbEl = thumbRef.value;
+      if (thumbEl != null) {
+        const rect = thumbEl.getBoundingClientRect();
+        const thumbWidth = rect.width;
+        trackTravelWidth -= thumbWidth;
+        thumbOffsetX = clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom ? clientX - rect.left : thumbWidth / 2;
+      }
+    }
     function calculateValue(clientX) {
       if (trackTravelWidth <= 0)
         return currentValue.value;
@@ -12473,6 +14298,10 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
       const element = thumbRef.value;
       if (element != null && element.ownerDocument.activeElement !== element)
         element.focus({ preventScroll: true });
+    }
+    function handleThumbClick(e2) {
+      if (e2.detail == 0)
+        focusThumb();
     }
     function finishPointerInteraction(clientX) {
       if (props2.disabled) {
@@ -12534,6 +14363,29 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
         rafId = frameId;
       }
     }
+    function handlePointerDown(e2) {
+      if (props2.disabled == true || activePointerId != -1 || !e2.isPrimary || e2.button != 0) {
+        return;
+      }
+      e2.stopPropagation();
+      lastValue = currentValue.value;
+      isDragging.value = true;
+      touchStartX = e2.clientX;
+      touchStartY = e2.clientY;
+      pointerClientX = e2.clientX;
+      _activeStatus = e2.pointerType == "mouse" ? 1 : 0;
+      activePointerId = e2.pointerId;
+      const thumbEl = thumbRef.value;
+      pointerStartFocus = (thumbEl == null ? void 0 : thumbEl.ownerDocument.activeElement) ?? null;
+      pointerTarget = e2.currentTarget;
+      pointerTarget.setPointerCapture(e2.pointerId);
+      window.addEventListener("blur", handleWindowBlur);
+      cacheTrackGeometry(e2.clientX, e2.clientY);
+      if (e2.pointerType == "mouse") {
+        e2.preventDefault();
+        focusThumb();
+      }
+    }
     function handlePointerUp(e2) {
       if (e2.pointerId != activePointerId || e2.button != 0) {
         return;
@@ -12547,10 +14399,83 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
         resetInteractionState();
       }
     }
+    function handleLostPointerCapture(e2) {
+      if (e2.pointerId == activePointerId) {
+        e2.stopPropagation();
+        window.addEventListener("pointermove", handlePointerMove, true);
+        window.addEventListener("pointerup", handlePointerUp, true);
+        window.addEventListener("pointercancel", handlePointerCancel, true);
+      }
+    }
+    function handleWebTouchStart(e2) {
+      e2.stopPropagation();
+    }
+    function handleWebTouchMove(e2) {
+      e2.stopPropagation();
+    }
+    function handleWebTouchEnd(e2) {
+      e2.stopPropagation();
+    }
+    function handleWebTouchCancel(e2) {
+      e2.stopPropagation();
+    }
+    const sliderKeys = ["ArrowLeft", "ArrowDown", "ArrowRight", "ArrowUp", "Home", "End", "PageUp", "PageDown"];
     const pressedSliderKeys = /* @__PURE__ */ new Set();
+    function handleThumbBlur() {
+      pressedSliderKeys.clear();
+      if (activePointerId == -1)
+        resetInteractionState();
+    }
     function handleWindowBlur() {
       pressedSliderKeys.clear();
       resetInteractionState();
+    }
+    function getKeyboardDecimalPlaces(value) {
+      const parts = value.toString().split("e");
+      const fraction = parts[0].split(".")[1] ?? "";
+      return Math.max(0, fraction.length - Number(parts[1] ?? "0"));
+    }
+    function ownsKeyboardEvent(e2) {
+      const element = thumbRef.value;
+      return !props2.disabled && element != null && e2.target === element && e2.currentTarget === element && element.ownerDocument.activeElement === element && !e2.defaultPrevented && !e2.isComposing && !e2.altKey && !e2.ctrlKey && !e2.metaKey && sliderKeys.includes(e2.key);
+    }
+    function handleKeyUp(e2) {
+      const handled = pressedSliderKeys.delete(e2.key);
+      const element = thumbRef.value;
+      if (handled && element != null && e2.target === element && e2.currentTarget === element)
+        e2.stopPropagation();
+    }
+    function handleKeyDown(e2) {
+      if (!ownsKeyboardEvent(e2))
+        return;
+      pressedSliderKeys.add(e2.key);
+      e2.preventDefault();
+      e2.stopPropagation();
+      if (isDragging.value || !Number.isFinite(props2.step) || props2.step <= 0)
+        return;
+      const min = Number.isFinite(props2.min) ? props2.min : 0;
+      let newValue = currentValue.value;
+      if (e2.key == "ArrowLeft" || e2.key == "ArrowDown") {
+        newValue -= props2.step;
+      } else if (e2.key == "ArrowRight" || e2.key == "ArrowUp") {
+        newValue += props2.step;
+      } else if (e2.key == "PageUp") {
+        newValue += props2.step * 10;
+      } else if (e2.key == "PageDown") {
+        newValue -= props2.step * 10;
+      } else if (e2.key == "Home") {
+        newValue = min;
+      } else if (e2.key == "End") {
+        newValue = effectiveMax.value;
+      }
+      newValue = min + Math.round((newValue - min) / props2.step) * props2.step;
+      const precision = Math.min(100, Math.max(getKeyboardDecimalPlaces(min), getKeyboardDecimalPlaces(props2.step)));
+      newValue = parseFloat(newValue.toFixed(precision));
+      newValue = Math.max(min, Math.min(newValue, effectiveMax.value));
+      if (newValue === currentValue.value)
+        return;
+      renderVisuals(newValue);
+      emit2("change", new UniSliderChangeEvent(currentValue.value));
     }
     function handleResize() {
       trackTravelWidth = 0;
@@ -12645,16 +14570,263 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
       getCurrentValue: () => currentValue.value
     });
     return (_ctx, _push, _parent, _attrs) => {
-      _push(`<div${ssrRenderAttrs(mergeProps({
-        "uni-view": "",
-        class: "container"
-      }, _attrs))}><div uni-view class="slider-track"><div uni-view class="${ssrRenderClass([props2.trackClass, "slider-track-bg"])}"><div uni-view class="${ssrRenderClass([props2.trackActiveClass, "slider-track-fill"])}" style="${ssrRenderStyle({ transform: `scaleX(${unref(trackActiveScaleX)})` })}"></div></div><div uni-view class="slider-handle-wrapper" style="${ssrRenderStyle([{ "overflow": "visible", "align-self": "flex-start", "z-index": "2" }, { width: "100%", transform: `translateX(${unref(thumbTranslateX)}%)` }])}"><div uni-view${ssrRenderAttr("tabindex", props2.disabled ? -1 : 0)} role="slider"${ssrRenderAttr("aria-disabled", props2.disabled)} aria-orientation="horizontal"${ssrRenderAttr("aria-valuenow", unref(currentValue))}${ssrRenderAttr("aria-valuemin", Number.isFinite(props2.min) ? props2.min : 0)}${ssrRenderAttr("aria-valuemax", unref(effectiveMax))} class="${ssrRenderClass([props2.thumbClass, "slider-handle"])}" style="${ssrRenderStyle({ transform: `translateX(-${unref(thumbTranslateX)}%)` })}"></div></div></div>`);
-      if (props2.showValue) {
-        _push(`<span uni-text flatten style="${ssrRenderStyle({ "width": "35px", "color": "#888", "font-size": "14px", "align-self": "center", "margin-left": "5px", "white-space": "nowrap" })}">${ssrInterpolate(unref(currentValue), true)}</span>`);
-      } else {
-        _push(`<!---->`);
-      }
-      _push(`</div>`);
+      const _component_view = resolveComponent("view");
+      const _component_text = resolveComponent("text");
+      _push(`<!--{-->`);
+      _push(ssrRenderComponent(_component_view, mergeProps({ class: "container" }, _attrs), {
+        default: withCtx((_, _push2, _parent2, _scopeId) => {
+          if (_push2) {
+            _push2(ssrRenderComponent(_component_view, {
+              ref_key: "containerRef",
+              ref: containerRef,
+              class: "slider-track",
+              onPointerdown: handlePointerDown,
+              onPointermove: handlePointerMove,
+              onPointerup: handlePointerUp,
+              onPointercancel: handlePointerCancel,
+              onLostpointercapture: handleLostPointerCapture,
+              onTouchstart: handleWebTouchStart,
+              onTouchmove: handleWebTouchMove,
+              onTouchend: handleWebTouchEnd,
+              onTouchcancel: handleWebTouchCancel
+            }, {
+              default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+                if (_push3) {
+                  _push3(ssrRenderComponent(_component_view, {
+                    flatten: "",
+                    ref_key: "backgroundRef",
+                    ref: backgroundRef,
+                    class: ["slider-track-bg", props2.trackClass]
+                  }, {
+                    default: withCtx((_3, _push4, _parent4, _scopeId3) => {
+                      if (_push4) {
+                        _push4(ssrRenderComponent(_component_view, {
+                          flatten: "",
+                          ref_key: "fillRef",
+                          ref: fillRef,
+                          class: ["slider-track-fill", props2.trackActiveClass],
+                          style: { transform: `scaleX(${unref(trackActiveScaleX)})` }
+                        }, null, _parent4, _scopeId3));
+                      } else {
+                        return [
+                          createVNode(_component_view, {
+                            flatten: "",
+                            ref_key: "fillRef",
+                            ref: fillRef,
+                            class: ["slider-track-fill", props2.trackActiveClass],
+                            style: { transform: `scaleX(${unref(trackActiveScaleX)})` }
+                          }, null, 8, ["class", "style"])
+                        ];
+                      }
+                    }),
+                    _: 1
+                  }, _parent3, _scopeId2));
+                  _push3(ssrRenderComponent(_component_view, {
+                    flatten: "",
+                    ref_key: "handleRef",
+                    ref: handleRef,
+                    class: "slider-handle-wrapper",
+                    style: [{ "overflow": "visible", "align-self": "flex-start", "z-index": "2" }, { width: "100%", transform: `translateX(${unref(thumbTranslateX)}%)` }]
+                  }, {
+                    default: withCtx((_3, _push4, _parent4, _scopeId3) => {
+                      if (_push4) {
+                        _push4(ssrRenderComponent(_component_view, {
+                          flatten: "",
+                          tabindex: props2.disabled ? -1 : 0,
+                          role: "slider",
+                          "aria-disabled": props2.disabled,
+                          "aria-orientation": "horizontal",
+                          "aria-valuenow": unref(currentValue),
+                          "aria-valuemin": Number.isFinite(props2.min) ? props2.min : 0,
+                          "aria-valuemax": unref(effectiveMax),
+                          onKeydown: handleKeyDown,
+                          onKeyup: handleKeyUp,
+                          onBlur: handleThumbBlur,
+                          onClick: handleThumbClick,
+                          ref_key: "thumbRef",
+                          ref: thumbRef,
+                          class: ["slider-handle", props2.thumbClass],
+                          style: { transform: `translateX(-${unref(thumbTranslateX)}%)` }
+                        }, null, _parent4, _scopeId3));
+                      } else {
+                        return [
+                          createVNode(_component_view, {
+                            flatten: "",
+                            tabindex: props2.disabled ? -1 : 0,
+                            role: "slider",
+                            "aria-disabled": props2.disabled,
+                            "aria-orientation": "horizontal",
+                            "aria-valuenow": unref(currentValue),
+                            "aria-valuemin": Number.isFinite(props2.min) ? props2.min : 0,
+                            "aria-valuemax": unref(effectiveMax),
+                            onKeydown: handleKeyDown,
+                            onKeyup: handleKeyUp,
+                            onBlur: handleThumbBlur,
+                            onClick: handleThumbClick,
+                            ref_key: "thumbRef",
+                            ref: thumbRef,
+                            class: ["slider-handle", props2.thumbClass],
+                            style: { transform: `translateX(-${unref(thumbTranslateX)}%)` }
+                          }, null, 8, ["tabindex", "aria-disabled", "aria-valuenow", "aria-valuemin", "aria-valuemax", "class", "style"])
+                        ];
+                      }
+                    }),
+                    _: 1
+                  }, _parent3, _scopeId2));
+                } else {
+                  return [
+                    createVNode(_component_view, {
+                      flatten: "",
+                      ref_key: "backgroundRef",
+                      ref: backgroundRef,
+                      class: ["slider-track-bg", props2.trackClass]
+                    }, {
+                      default: withCtx(() => [
+                        createVNode(_component_view, {
+                          flatten: "",
+                          ref_key: "fillRef",
+                          ref: fillRef,
+                          class: ["slider-track-fill", props2.trackActiveClass],
+                          style: { transform: `scaleX(${unref(trackActiveScaleX)})` }
+                        }, null, 8, ["class", "style"])
+                      ]),
+                      _: 1
+                    }, 8, ["class"]),
+                    createVNode(_component_view, {
+                      flatten: "",
+                      ref_key: "handleRef",
+                      ref: handleRef,
+                      class: "slider-handle-wrapper",
+                      style: [{ "overflow": "visible", "align-self": "flex-start", "z-index": "2" }, { width: "100%", transform: `translateX(${unref(thumbTranslateX)}%)` }]
+                    }, {
+                      default: withCtx(() => [
+                        createVNode(_component_view, {
+                          flatten: "",
+                          tabindex: props2.disabled ? -1 : 0,
+                          role: "slider",
+                          "aria-disabled": props2.disabled,
+                          "aria-orientation": "horizontal",
+                          "aria-valuenow": unref(currentValue),
+                          "aria-valuemin": Number.isFinite(props2.min) ? props2.min : 0,
+                          "aria-valuemax": unref(effectiveMax),
+                          onKeydown: handleKeyDown,
+                          onKeyup: handleKeyUp,
+                          onBlur: handleThumbBlur,
+                          onClick: handleThumbClick,
+                          ref_key: "thumbRef",
+                          ref: thumbRef,
+                          class: ["slider-handle", props2.thumbClass],
+                          style: { transform: `translateX(-${unref(thumbTranslateX)}%)` }
+                        }, null, 8, ["tabindex", "aria-disabled", "aria-valuenow", "aria-valuemin", "aria-valuemax", "class", "style"])
+                      ]),
+                      _: 1
+                    }, 8, ["style"])
+                  ];
+                }
+              }),
+              _: 1
+            }, _parent2, _scopeId));
+            if (props2.showValue) {
+              _push2(ssrRenderComponent(_component_text, {
+                flatten: "",
+                style: { "width": "35px", "color": "#888", "font-size": "14px", "align-self": "center", "margin-left": "5px", "white-space": "nowrap" }
+              }, {
+                default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+                  if (_push3) {
+                    _push3(`${ssrInterpolate(unref(currentValue))}`);
+                  } else {
+                    return [
+                      createTextVNode(toDisplayString(unref(currentValue)), 1)
+                    ];
+                  }
+                }),
+                _: 1
+              }, _parent2, _scopeId));
+            } else {
+              _push2(`<!---->`);
+            }
+          } else {
+            return [
+              createVNode(_component_view, {
+                ref_key: "containerRef",
+                ref: containerRef,
+                class: "slider-track",
+                onPointerdown: handlePointerDown,
+                onPointermove: handlePointerMove,
+                onPointerup: handlePointerUp,
+                onPointercancel: handlePointerCancel,
+                onLostpointercapture: handleLostPointerCapture,
+                onTouchstart: handleWebTouchStart,
+                onTouchmove: handleWebTouchMove,
+                onTouchend: handleWebTouchEnd,
+                onTouchcancel: handleWebTouchCancel
+              }, {
+                default: withCtx(() => [
+                  createVNode(_component_view, {
+                    flatten: "",
+                    ref_key: "backgroundRef",
+                    ref: backgroundRef,
+                    class: ["slider-track-bg", props2.trackClass]
+                  }, {
+                    default: withCtx(() => [
+                      createVNode(_component_view, {
+                        flatten: "",
+                        ref_key: "fillRef",
+                        ref: fillRef,
+                        class: ["slider-track-fill", props2.trackActiveClass],
+                        style: { transform: `scaleX(${unref(trackActiveScaleX)})` }
+                      }, null, 8, ["class", "style"])
+                    ]),
+                    _: 1
+                  }, 8, ["class"]),
+                  createVNode(_component_view, {
+                    flatten: "",
+                    ref_key: "handleRef",
+                    ref: handleRef,
+                    class: "slider-handle-wrapper",
+                    style: [{ "overflow": "visible", "align-self": "flex-start", "z-index": "2" }, { width: "100%", transform: `translateX(${unref(thumbTranslateX)}%)` }]
+                  }, {
+                    default: withCtx(() => [
+                      createVNode(_component_view, {
+                        flatten: "",
+                        tabindex: props2.disabled ? -1 : 0,
+                        role: "slider",
+                        "aria-disabled": props2.disabled,
+                        "aria-orientation": "horizontal",
+                        "aria-valuenow": unref(currentValue),
+                        "aria-valuemin": Number.isFinite(props2.min) ? props2.min : 0,
+                        "aria-valuemax": unref(effectiveMax),
+                        onKeydown: handleKeyDown,
+                        onKeyup: handleKeyUp,
+                        onBlur: handleThumbBlur,
+                        onClick: handleThumbClick,
+                        ref_key: "thumbRef",
+                        ref: thumbRef,
+                        class: ["slider-handle", props2.thumbClass],
+                        style: { transform: `translateX(-${unref(thumbTranslateX)}%)` }
+                      }, null, 8, ["tabindex", "aria-disabled", "aria-valuenow", "aria-valuemin", "aria-valuemax", "class", "style"])
+                    ]),
+                    _: 1
+                  }, 8, ["style"])
+                ]),
+                _: 1
+              }, 512),
+              props2.showValue ? (openBlock(), createBlock(_component_text, {
+                key: 0,
+                flatten: "",
+                style: { "width": "35px", "color": "#888", "font-size": "14px", "align-self": "center", "margin-left": "5px", "white-space": "nowrap" }
+              }, {
+                default: withCtx(() => [
+                  createTextVNode(toDisplayString(unref(currentValue)), 1)
+                ]),
+                _: 1
+              })) : createCommentVNode("", true)
+            ];
+          }
+        }),
+        _: 1
+      }, _parent));
+      _push(`<!--}-->`);
     };
   }
 });
@@ -12693,15 +14865,26 @@ const _sfc_main$5 = /* @__PURE__ */ defineComponent$2({
       updateHeaderSize(0);
     });
     return (_ctx, _push, _parent, _attrs) => {
-      _push(`<div${ssrRenderAttrs(mergeProps({
-        "uni-view": "",
+      const _component_view = resolveComponent("view");
+      _push(`<!--{-->`);
+      _push(ssrRenderComponent(_component_view, mergeProps({
         ref_key: "element",
         ref: element,
         class: "uni-sticky-header",
         style: { "position": "sticky", "top": "0", "width": "100%", "z-index": "1" }
-      }, _attrs))}>`);
-      ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent);
-      _push(`</div>`);
+      }, _attrs), {
+        default: withCtx((_, _push2, _parent2, _scopeId) => {
+          if (_push2) {
+            ssrRenderSlot(_ctx.$slots, "default", {}, null, _push2, _parent2, _scopeId);
+          } else {
+            return [
+              renderSlot(_ctx.$slots, "default")
+            ];
+          }
+        }),
+        _: 3
+      }, _parent));
+      _push(`<!--}-->`);
     };
   }
 });
@@ -12861,15 +15044,36 @@ const _sfc_main$4 = /* @__PURE__ */ defineComponent$2({
     });
     __expose({ renderRange, updateList, updateListIds, updateRenderInfo });
     return (_ctx, _push, _parent, _attrs) => {
-      _push(`<div${ssrRenderAttrs(mergeProps({
-        "uni-view": "",
+      const _component_view = resolveComponent("view");
+      _push(`<!--{-->`);
+      _push(ssrRenderComponent(_component_view, mergeProps({
         ref_key: "element",
         ref: element,
         class: "uni-sticky-section",
         style: { "position": "relative", "overflow": "visible" }
-      }, _attrs))}>`);
-      ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent);
-      _push(`<div uni-view style="${ssrRenderStyle({ "width": "1px", "flex-shrink": "0" })}"></div></div>`);
+      }, _attrs), {
+        default: withCtx((_, _push2, _parent2, _scopeId) => {
+          if (_push2) {
+            ssrRenderSlot(_ctx.$slots, "default", {}, null, _push2, _parent2, _scopeId);
+            _push2(ssrRenderComponent(_component_view, {
+              ref_key: "placeholderElement",
+              ref: placeholderElement,
+              style: { "width": "1px", "flex-shrink": "0" }
+            }, null, _parent2, _scopeId));
+          } else {
+            return [
+              renderSlot(_ctx.$slots, "default"),
+              createVNode(_component_view, {
+                ref_key: "placeholderElement",
+                ref: placeholderElement,
+                style: { "width": "1px", "flex-shrink": "0" }
+              }, null, 512)
+            ];
+          }
+        }),
+        _: 3
+      }, _parent));
+      _push(`<!--}-->`);
     };
   }
 });
@@ -12922,6 +15126,7 @@ function parsePxRpx(margin) {
 }
 class UniSwiperElement extends UniViewElement {
 }
+const DIRECTION_LOCK_THRESHOLD = 5;
 const _sfc_main$3 = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "swiper",
@@ -12964,7 +15169,7 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent$2({
     const autoPlayTimer = ref(0);
     let resizeObserver = null;
     let translate_value = 0;
-    let dragging = false, prevMargin = parsePxRpx(props2.previousMargin), nextMargin = parsePxRpx(props2.nextMargin), sliderItemSize = 0, firstSliderPosition = "start", lastSliderPosition = "end", initHasFixedHeight = false, initd = false, animationFrameId = 0, animationStartTranslate = 0, animationTargetTranslate = 0, lastAnimationTranslate = 0, animationStartTime = 0, animationSource = "", sequenceStartTranslate = 0, needInitAfterAnimate = false, lastSliderCount = 0, lastSliderItemSize = 0, destroyFlag = false;
+    let touchStartX = 0, touchStartY = 0, touchStartTime = 0, dragging = false, touchMoving = false, activeTouchId = -1, touchStartTranslate = 0, gestureStartTranslate = 0, prevMargin = parsePxRpx(props2.previousMargin), nextMargin = parsePxRpx(props2.nextMargin), sliderItemSize = 0, firstSliderPosition = "start", lastSliderPosition = "end", maxTranslate = 0, minTranslate = 0, initHasFixedHeight = false, initd = false, animationFrameId = 0, animationStartTranslate = 0, animationTargetTranslate = 0, lastAnimationTranslate = 0, animationStartTime = 0, animationSource = "", sequenceStartTranslate = 0, touchDirectionLocked = false, touchDirection = "", needInitAfterAnimate = false, touchInterruptedAnimation = false, lastSliderCount = 0, lastSliderItemSize = 0, destroyFlag = false;
     const slots = useSlots();
     const hasCustomIndicator = computed(() => {
       return slots["indicator"] != null;
@@ -13026,6 +15231,40 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent$2({
       }
       return style;
     };
+    function findTouchByIdentifier(touches, identifier) {
+      for (let i = 0; i < touches.length; i++) {
+        const touch = touches[i];
+        if (touch.identifier == identifier) {
+          return touch;
+        }
+      }
+      return null;
+    }
+    function getStartTouch(e2) {
+      if (e2.changedTouches.length > 0) {
+        return e2.changedTouches[0];
+      }
+      if (e2.touches.length > 0) {
+        return e2.touches[0];
+      }
+      return null;
+    }
+    function getActiveTouch(e2) {
+      if (activeTouchId < 0) {
+        return null;
+      }
+      let touch = findTouchByIdentifier(e2.changedTouches, activeTouchId);
+      if (touch != null) {
+        return touch;
+      }
+      return findTouchByIdentifier(e2.touches, activeTouchId);
+    }
+    function handoffActiveTouch(touch) {
+      activeTouchId = touch.identifier;
+      touchStartX = touch.pageX;
+      touchStartY = touch.pageY;
+      touchStartTranslate = translate_value;
+    }
     function stopAnimationFrame() {
       if (animationFrameId > 0) {
         cancelAnimationFrame(animationFrameId);
@@ -13338,6 +15577,10 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent$2({
         animating.value = false;
         stopAnimationFrame();
         dragging = false;
+        touchMoving = false;
+        touchDirectionLocked = false;
+        touchDirection = "";
+        touchInterruptedAnimation = false;
         if (isSupportCircular()) {
           updateItemPositions();
           firstSliderPosition = "start";
@@ -13387,6 +15630,10 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent$2({
         autoPlayTimer.value = 0;
       }
     }
+    const handleIndicatorClick = (index2) => {
+      const direction2 = getSlideDirection(index2);
+      slideTo(index2, "click", direction2);
+    };
     function updateWrapperHeight(index2) {
       if (sliders == null)
         return;
@@ -13403,7 +15650,27 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent$2({
       sliderCount.value = sliders ? sliders.length : 0;
     }
     function updateMinTranslate() {
-      -(sliderCount.value - 1) * sliderItemSize;
+      minTranslate = -(sliderCount.value - 1) * sliderItemSize;
+    }
+    function getTouchMoveMaxTranslate() {
+      if (isSupportCircular() && lastSliderPosition == "start") {
+        return sliderItemSize;
+      }
+      return maxTranslate;
+    }
+    function getTouchMoveMinTranslate() {
+      if (isSupportCircular() && firstSliderPosition == "end") {
+        return -(sliderCount.value * sliderItemSize);
+      }
+      return minTranslate;
+    }
+    function fixIndex(index2) {
+      if (index2 < 0) {
+        return props2.circular ? sliderCount.value - 1 : 0;
+      } else if (index2 >= sliderCount.value) {
+        return props2.circular ? 0 : sliderCount.value - 1;
+      }
+      return index2;
     }
     function getSlideDirection(targetIndex) {
       const count = sliderCount.value;
@@ -13599,6 +15866,8 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent$2({
           animating.value = false;
           stopAnimationFrame();
           dragging = false;
+          touchMoving = false;
+          touchInterruptedAnimation = false;
           updateItemPositions();
           firstSliderPosition = "start";
           lastSliderPosition = "end";
@@ -13631,6 +15900,234 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent$2({
       updateWrapperHeight(currentIndex.value);
       startAutoPlay();
     }
+    const onTouchStart = (e2) => {
+      if (destroyFlag)
+        return;
+      if (props2.disableTouch)
+        return;
+      e2.stopPropagation();
+      const startTouch = getStartTouch(e2);
+      if (startTouch == null)
+        return;
+      if (dragging && activeTouchId >= 0 && findTouchByIdentifier(e2.touches, activeTouchId) != null) {
+        return;
+      }
+      stopAutoPlay();
+      const wasAnimating = animating.value;
+      touchInterruptedAnimation = wasAnimating;
+      if (animating.value) {
+        animating.value = false;
+        stopAnimationFrame();
+        if (isSupportCircular()) {
+          updateItemPositions();
+          firstSliderPosition = "start";
+          lastSliderPosition = "end";
+        }
+        translate_value = getInterruptedTranslate();
+        updateContainerTransform();
+      }
+      const oldTranslate = translate_value;
+      resetSlidersPosition();
+      const translateDelta = translate_value - oldTranslate;
+      handoffActiveTouch(startTouch);
+      touchStartTime = Date.now();
+      gestureStartTranslate = translate_value;
+      dragging = true;
+      touchMoving = false;
+      touchDirectionLocked = false;
+      touchDirection = "";
+      if (!wasAnimating) {
+        sequenceStartTranslate = translate_value;
+        startTouch.pageX;
+        startTouch.pageY;
+      } else {
+        sequenceStartTranslate += translateDelta;
+      }
+    };
+    const onTouchMove = (e2) => {
+      if (destroyFlag)
+        return;
+      if (props2.disableTouch)
+        return;
+      e2.stopPropagation();
+      if (!dragging)
+        return;
+      const t2 = getActiveTouch(e2);
+      if (t2 == null)
+        return;
+      touchMoving = true;
+      const dx = t2.pageX - touchStartX;
+      const dy = t2.pageY - touchStartY;
+      const delta = props2.vertical ? dy : dx;
+      const currentTranslate = touchStartTranslate + delta;
+      const overallDelta = currentTranslate - touchStartTranslate;
+      const overallDirection = overallDelta > 0 ? -1 : 1;
+      const absDx = Math.abs(dx);
+      const absDy = Math.abs(dy);
+      if (!touchDirectionLocked) {
+        const totalDistance = Math.sqrt(dx * dx + dy * dy);
+        if (totalDistance >= DIRECTION_LOCK_THRESHOLD) {
+          const angle = Math.atan2(absDy, absDx) * 180 / Math.PI;
+          if (!props2.vertical) {
+            if (angle < 30) {
+              touchDirection = "horizontal";
+            } else if (angle > 45) {
+              touchDirection = "vertical";
+            } else {
+              touchDirection = "vertical";
+            }
+          } else {
+            if (angle > 60) {
+              touchDirection = "vertical";
+            } else if (angle < 45) {
+              touchDirection = "horizontal";
+            } else {
+              touchDirection = "horizontal";
+            }
+          }
+          touchDirectionLocked = true;
+        }
+      }
+      if (touchDirectionLocked) {
+        if (!props2.vertical) {
+          if (touchDirection === "horizontal") {
+            e2.preventDefault();
+          } else {
+            return;
+          }
+        } else {
+          if (touchDirection === "vertical") {
+            const canSwipe = isSupportCircular() || delta > 0 && currentIndex.value > 0 || delta < 0 && currentIndex.value < sliderCount.value - 1;
+            if (!canSwipe) {
+              return;
+            }
+          } else {
+            return;
+          }
+        }
+      } else {
+        return;
+      }
+      if (isSupportCircular()) {
+        const visualIndex = Math.round(-touchStartTranslate / sliderItemSize);
+        const targetIndex = fixIndex(visualIndex + overallDirection);
+        adjustSliderPosition(targetIndex, overallDirection);
+      }
+      const touchMoveMaxTranslate = getTouchMoveMaxTranslate();
+      const touchMoveMinTranslate = getTouchMoveMinTranslate();
+      const atBoundary = !props2.circular && props2.disableBounce && sliderCount.value > 0 && (currentTranslate > maxTranslate && delta > 0 || currentTranslate < minTranslate && delta < 0);
+      if (!atBoundary) {
+        e2.preventDefault();
+      }
+      if (delta != 0) {
+        const totalTranslateChange = currentTranslate - sequenceStartTranslate;
+        dispatchTransitionEvent(totalTranslateChange);
+      }
+      if (props2.disableBounce) {
+        if (currentTranslate > touchMoveMaxTranslate) {
+          translate_value = touchMoveMaxTranslate;
+          updateContainerTransform();
+          return;
+        }
+        if (currentTranslate < touchMoveMinTranslate) {
+          translate_value = touchMoveMinTranslate;
+          updateContainerTransform();
+          return;
+        }
+      } else {
+        if (currentTranslate > touchMoveMaxTranslate) {
+          const overScroll = currentTranslate - touchMoveMaxTranslate;
+          translate_value = touchMoveMaxTranslate + overScroll * 0.3;
+          updateContainerTransform();
+          return;
+        }
+        if (currentTranslate < touchMoveMinTranslate) {
+          const overScroll = currentTranslate - touchMoveMinTranslate;
+          translate_value = touchMoveMinTranslate + overScroll * 0.3;
+          updateContainerTransform();
+          return;
+        }
+      }
+      translate_value = currentTranslate;
+      updateContainerTransform();
+    };
+    const onTouchEnd = (e2) => {
+      if (destroyFlag)
+        return;
+      if (props2.disableTouch)
+        return;
+      e2.stopPropagation();
+      if (!dragging)
+        return;
+      const activeChangedTouch = activeTouchId >= 0 ? findTouchByIdentifier(e2.changedTouches, activeTouchId) : null;
+      if (activeChangedTouch == null) {
+        return;
+      }
+      if (e2.touches.length > 0) {
+        handoffActiveTouch(e2.touches[0]);
+        return;
+      }
+      dragging = false;
+      activeTouchId = -1;
+      if (!touchMoving) {
+        if (touchInterruptedAnimation) {
+          slideTo(currentIndex.value, "touch", 0);
+        }
+        touchMoving = false;
+        startAutoPlay();
+        return;
+      }
+      touchMoving = false;
+      if (!touchDirectionLocked) {
+        if (touchInterruptedAnimation) {
+          slideTo(currentIndex.value, "touch", 0);
+        }
+        startAutoPlay();
+        return;
+      }
+      const isDirectionMatched = !props2.vertical && touchDirection === "horizontal" || props2.vertical && touchDirection === "vertical";
+      if (!isDirectionMatched) {
+        if (touchInterruptedAnimation) {
+          slideTo(currentIndex.value, "touch", 0);
+        }
+        startAutoPlay();
+        return;
+      }
+      const dt = Date.now() - touchStartTime;
+      const totalDelta = translate_value - gestureStartTranslate;
+      const abs = Math.abs(totalDelta);
+      const source = "touch";
+      const direction2 = totalDelta < 0 ? 1 : totalDelta > 0 ? -1 : 0;
+      const shouldChange = dt < 300 && abs > 30 || abs > 100;
+      if (!shouldChange) {
+        slideTo(currentIndex.value, source, direction2);
+        return;
+      }
+      let nextIndex = currentIndex.value;
+      if (isSupportCircular()) {
+        if (totalDelta > 0) {
+          nextIndex = (currentIndex.value - 1 + sliderCount.value) % sliderCount.value;
+        } else if (totalDelta < 0) {
+          nextIndex = (currentIndex.value + 1) % sliderCount.value;
+        }
+      } else {
+        if (!props2.disableBounce && (translate_value > maxTranslate || translate_value < minTranslate)) {
+          if (translate_value > maxTranslate) {
+            nextIndex = 0;
+          } else if (translate_value < minTranslate) {
+            nextIndex = sliderCount.value - 1;
+          }
+        } else {
+          if (totalDelta > 0 && currentIndex.value > 0) {
+            nextIndex = currentIndex.value - 1;
+          } else if (totalDelta < 0 && currentIndex.value < sliderCount.value - 1) {
+            nextIndex = currentIndex.value + 1;
+          }
+        }
+      }
+      slideTo(nextIndex, source, direction2);
+      startAutoPlay();
+    };
     const handleSwiperItemMounted = () => {
       if (initd && !destroyFlag) {
         init();
@@ -13708,32 +16205,158 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent$2({
       }
     });
     return (_ctx, _push, _parent, _attrs) => {
-      _push(`<div${ssrRenderAttrs(mergeProps({
-        "uni-view": "",
+      const _component_view = resolveComponent("view");
+      _push(`<!--{-->`);
+      _push(ssrRenderComponent(_component_view, mergeProps({
         ref_key: "wrapper",
         ref: wrapper,
-        class: "uni-swiper-wrapper"
-      }, _attrs))}><div uni-view class="${ssrRenderClass([__props.vertical ? "uni-swiper-container_vertical" : "uni-swiper-container_horizontal", "uni-swiper-container"])}">`);
-      ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent);
-      _push(`</div><div uni-view class="${ssrRenderClass([
-        __props.vertical ? "uni-swiper-indicator_vertical" : "uni-swiper-indicator_horizontal",
-        "uni-swiper-indicator"
-      ])}">`);
-      ssrRenderSlot(_ctx.$slots, "indicator", {}, null, _push, _parent);
-      if (__props.indicatorDots && !unref(hasCustomIndicator)) {
-        _push(`<!--[-->`);
-        ssrRenderList(unref(sliderCount), (i) => {
-          _push(`<div uni-view class="${ssrRenderClass([[
-            __props.indicatorClass,
-            { active: unref(currentIndex) == i - 1 },
-            { [__props.indicatorActiveClass]: unref(currentIndex) == i - 1 }
-          ], "uni-swiper-indicator-item"])}" style="${ssrRenderStyle(mergeStyle(unref(currentIndex) == i - 1))}"></div>`);
-        });
-        _push(`<!--]-->`);
-      } else {
-        _push(`<!---->`);
-      }
-      _push(`</div></div>`);
+        class: "uni-swiper-wrapper",
+        onTouchstart: onTouchStart,
+        onTouchmove: onTouchMove,
+        onTouchend: onTouchEnd,
+        onTouchcancel: onTouchEnd
+      }, _attrs), {
+        default: withCtx((_, _push2, _parent2, _scopeId) => {
+          if (_push2) {
+            _push2(ssrRenderComponent(_component_view, {
+              class: ["uni-swiper-container", __props.vertical ? "uni-swiper-container_vertical" : "uni-swiper-container_horizontal"]
+            }, {
+              default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+                if (_push3) {
+                  ssrRenderSlot(_ctx.$slots, "default", {}, null, _push3, _parent3, _scopeId2);
+                } else {
+                  return [
+                    renderSlot(_ctx.$slots, "default")
+                  ];
+                }
+              }),
+              _: 3
+            }, _parent2, _scopeId));
+            _push2(ssrRenderComponent(_component_view, {
+              class: [
+                "uni-swiper-indicator",
+                __props.vertical ? "uni-swiper-indicator_vertical" : "uni-swiper-indicator_horizontal"
+              ]
+            }, {
+              default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+                if (_push3) {
+                  ssrRenderSlot(_ctx.$slots, "indicator", {}, null, _push3, _parent3, _scopeId2);
+                  if (__props.indicatorDots && !unref(hasCustomIndicator)) {
+                    _push3(`<!--[-->`);
+                    ssrRenderList(unref(sliderCount), (i) => {
+                      _push3(ssrRenderComponent(_component_view, {
+                        key: i,
+                        class: ["uni-swiper-indicator-item", [
+                          __props.indicatorClass,
+                          { active: unref(currentIndex) == i - 1 },
+                          { [__props.indicatorActiveClass]: unref(currentIndex) == i - 1 }
+                        ]],
+                        style: mergeStyle(unref(currentIndex) == i - 1),
+                        onTouchstart: (e2) => {
+                          e2.stopPropagation();
+                        },
+                        onTouchmove: (e2) => {
+                          e2.stopPropagation();
+                          e2.preventDefault();
+                        },
+                        onTouchend: (e2) => {
+                          e2.stopPropagation();
+                        },
+                        onTouchcancel: (e2) => {
+                          e2.stopPropagation();
+                        },
+                        onClick: ($event) => handleIndicatorClick(i - 1)
+                      }, null, _parent3, _scopeId2));
+                    });
+                    _push3(`<!--]-->`);
+                  } else {
+                    _push3(`<!---->`);
+                  }
+                } else {
+                  return [
+                    renderSlot(_ctx.$slots, "indicator"),
+                    __props.indicatorDots && !unref(hasCustomIndicator) ? (openBlock(true), createBlock(Fragment, { key: 0 }, renderList(unref(sliderCount), (i) => {
+                      return openBlock(), createBlock(_component_view, {
+                        key: i,
+                        class: ["uni-swiper-indicator-item", [
+                          __props.indicatorClass,
+                          { active: unref(currentIndex) == i - 1 },
+                          { [__props.indicatorActiveClass]: unref(currentIndex) == i - 1 }
+                        ]],
+                        style: mergeStyle(unref(currentIndex) == i - 1),
+                        onTouchstart: (e2) => {
+                          e2.stopPropagation();
+                        },
+                        onTouchmove: (e2) => {
+                          e2.stopPropagation();
+                          e2.preventDefault();
+                        },
+                        onTouchend: (e2) => {
+                          e2.stopPropagation();
+                        },
+                        onTouchcancel: (e2) => {
+                          e2.stopPropagation();
+                        },
+                        onClick: ($event) => handleIndicatorClick(i - 1)
+                      }, null, 8, ["class", "style", "onTouchstart", "onTouchmove", "onTouchend", "onTouchcancel", "onClick"]);
+                    }), 128)) : createCommentVNode("", true)
+                  ];
+                }
+              }),
+              _: 3
+            }, _parent2, _scopeId));
+          } else {
+            return [
+              createVNode(_component_view, {
+                class: ["uni-swiper-container", __props.vertical ? "uni-swiper-container_vertical" : "uni-swiper-container_horizontal"]
+              }, {
+                default: withCtx(() => [
+                  renderSlot(_ctx.$slots, "default")
+                ]),
+                _: 3
+              }, 8, ["class"]),
+              createVNode(_component_view, {
+                class: [
+                  "uni-swiper-indicator",
+                  __props.vertical ? "uni-swiper-indicator_vertical" : "uni-swiper-indicator_horizontal"
+                ]
+              }, {
+                default: withCtx(() => [
+                  renderSlot(_ctx.$slots, "indicator"),
+                  __props.indicatorDots && !unref(hasCustomIndicator) ? (openBlock(true), createBlock(Fragment, { key: 0 }, renderList(unref(sliderCount), (i) => {
+                    return openBlock(), createBlock(_component_view, {
+                      key: i,
+                      class: ["uni-swiper-indicator-item", [
+                        __props.indicatorClass,
+                        { active: unref(currentIndex) == i - 1 },
+                        { [__props.indicatorActiveClass]: unref(currentIndex) == i - 1 }
+                      ]],
+                      style: mergeStyle(unref(currentIndex) == i - 1),
+                      onTouchstart: (e2) => {
+                        e2.stopPropagation();
+                      },
+                      onTouchmove: (e2) => {
+                        e2.stopPropagation();
+                        e2.preventDefault();
+                      },
+                      onTouchend: (e2) => {
+                        e2.stopPropagation();
+                      },
+                      onTouchcancel: (e2) => {
+                        e2.stopPropagation();
+                      },
+                      onClick: ($event) => handleIndicatorClick(i - 1)
+                    }, null, 8, ["class", "style", "onTouchstart", "onTouchmove", "onTouchend", "onTouchcancel", "onClick"]);
+                  }), 128)) : createCommentVNode("", true)
+                ]),
+                _: 3
+              }, 8, ["class"])
+            ];
+          }
+        }),
+        _: 3
+      }, _parent));
+      _push(`<!--}-->`);
     };
   }
 });
@@ -13778,23 +16401,53 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent$2({
       });
     });
     return (_ctx, _push, _parent, _attrs) => {
-      _push(`<div${ssrRenderAttrs(mergeProps({
-        "uni-view": "",
+      const _component_view = resolveComponent("view");
+      _push(`<!--{-->`);
+      _push(ssrRenderComponent(_component_view, mergeProps({
         class: "uni-swiper-item",
         style: { "position": "absolute", "visibility": "hidden" },
         ref_key: "swiperItem",
         ref: swiperItem
-      }, _attrs))}>`);
-      if (unref(autoHeight)) {
-        _push(`<!--[0--><div uni-view class="uni-swiper-item-content">`);
-        ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent);
-        _push(`</div><!--]-->`);
-      } else {
-        _push(`<!--[1-->`);
-        ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent);
-        _push(`<!--]-->`);
-      }
-      _push(`</div>`);
+      }, _attrs), {
+        default: withCtx((_, _push2, _parent2, _scopeId) => {
+          if (_push2) {
+            if (unref(autoHeight)) {
+              _push2(`<!--[0-->`);
+              _push2(ssrRenderComponent(_component_view, { class: "uni-swiper-item-content" }, {
+                default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+                  if (_push3) {
+                    ssrRenderSlot(_ctx.$slots, "default", {}, null, _push3, _parent3, _scopeId2);
+                  } else {
+                    return [
+                      renderSlot(_ctx.$slots, "default")
+                    ];
+                  }
+                }),
+                _: 3
+              }, _parent2, _scopeId));
+              _push2(`<!--]-->`);
+            } else {
+              _push2(`<!--[1-->`);
+              ssrRenderSlot(_ctx.$slots, "default", {}, null, _push2, _parent2, _scopeId);
+              _push2(`<!--]-->`);
+            }
+          } else {
+            return [
+              unref(autoHeight) ? (openBlock(), createBlock(_component_view, {
+                key: 0,
+                class: "uni-swiper-item-content"
+              }, {
+                default: withCtx(() => [
+                  renderSlot(_ctx.$slots, "default")
+                ]),
+                _: 3
+              })) : renderSlot(_ctx.$slots, "default", {}, void 0, void 0, 1)
+            ];
+          }
+        }),
+        _: 3
+      }, _parent));
+      _push(`<!--}-->`);
     };
   }
 });
@@ -13846,9 +16499,21 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent$2({
   setup(__props, { expose: __expose, emit: __emit }) {
     var _a;
     const props2 = __props;
+    const { handleKeydown, handleKeyup, handleBlur } = createSpaceKeyHandlers(() => props2.disabled);
     const attrs = useAttrs$1();
     const id = attrs.id;
     const proxy = (_a = getCurrentInstance()) == null ? void 0 : _a.proxy;
+    class UniCustomEvent3 {
+      constructor(type, detail) {
+        this.detail = detail;
+      }
+    }
+    class UniSwitchChangeEvent extends UniCustomEvent3 {
+      constructor(value) {
+        super("change", { value });
+      }
+    }
+    const emit2 = __emit;
     const formCtx = inject(FORM_KEY, null);
     const labelCtx = inject(LABEL_KEY, null);
     let unregisterLabelTarget = null;
@@ -13906,6 +16571,13 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent$2({
       unregisterLabelTarget == null ? void 0 : unregisterLabelTarget();
       unregisterLabelTarget = null;
     });
+    const handleTap = () => {
+      if (props2.disabled) {
+        return;
+      }
+      setChecked(!isChecked.value);
+      emit2("change", new UniSwitchChangeEvent(isChecked.value));
+    };
     __expose({
       getSwitchChecked: () => {
         return isChecked.value;
@@ -13915,8 +16587,9 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent$2({
       }
     });
     return (_ctx, _push, _parent, _attrs) => {
-      _push(`<div${ssrRenderAttrs(mergeProps({
-        "uni-view": "",
+      const _component_view = resolveComponent("view");
+      _push(`<!--{-->`);
+      _push(ssrRenderComponent(_component_view, mergeProps({
         class: ["uni-switch", unref(classes)(
           [unref(enableTransition), "transition-enabled"],
           [__props.disabled, "uni-switch-disabled"],
@@ -13925,14 +16598,38 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent$2({
         )],
         style: unref(activeStyle),
         tabindex: __props.disabled ? -1 : 0,
+        onKeydown: unref(handleKeydown),
+        onKeyup: unref(handleKeyup),
+        onBlur: unref(handleBlur),
         role: "switch",
         "aria-checked": unref(isChecked),
-        "aria-disabled": __props.disabled
-      }, _attrs))}><div uni-view class="${ssrRenderClass([unref(classes)(
-        [unref(enableTransition), "thumb-transition-enabled"],
-        [unref(isChecked), "uni-switch-active-thumb"],
-        [unref(isChecked), __props.thumbActiveClass, __props.thumbClass]
-      ), "uni-switch-thumb"])}"></div></div>`);
+        "aria-disabled": __props.disabled,
+        onClick: handleTap
+      }, _attrs), {
+        default: withCtx((_, _push2, _parent2, _scopeId) => {
+          if (_push2) {
+            _push2(ssrRenderComponent(_component_view, {
+              class: ["uni-switch-thumb", unref(classes)(
+                [unref(enableTransition), "thumb-transition-enabled"],
+                [unref(isChecked), "uni-switch-active-thumb"],
+                [unref(isChecked), __props.thumbActiveClass, __props.thumbClass]
+              )]
+            }, null, _parent2, _scopeId));
+          } else {
+            return [
+              createVNode(_component_view, {
+                class: ["uni-switch-thumb", unref(classes)(
+                  [unref(enableTransition), "thumb-transition-enabled"],
+                  [unref(isChecked), "uni-switch-active-thumb"],
+                  [unref(isChecked), __props.thumbActiveClass, __props.thumbClass]
+                )]
+              }, null, 8, ["class"])
+            ];
+          }
+        }),
+        _: 1
+      }, _parent));
+      _push(`<!--}-->`);
     };
   }
 });
@@ -14224,6 +16921,8 @@ const _sfc_main = /* @__PURE__ */ defineComponent$2({
     __expose({ renderRange, updateList, updateListIds, updateRenderInfo });
     return (_ctx, _push, _parent, _attrs) => {
       const _component_scroll_view = __syscom_0;
+      const _component_view = resolveComponent("view");
+      _push(`<!--{-->`);
       _push(ssrRenderComponent(_component_scroll_view, mergeProps({
         ref_key: "scrollElement",
         ref: scrollElement,
@@ -14241,30 +16940,49 @@ const _sfc_main = /* @__PURE__ */ defineComponent$2({
         }),
         default: withCtx((_, _push2, _parent2, _scopeId) => {
           if (_push2) {
-            _push2(`<div uni-view style="${ssrRenderStyle({ "position": "relative", "overflow-anchor": "none" })}"${_scopeId}>`);
-            ssrRenderSlot(_ctx.$slots, "default", {}, null, _push2, _parent2, _scopeId);
-            _push2(`<div uni-view style="${ssrRenderStyle({ "width": "1px", "flex-shrink": "0" })}"${_scopeId}></div></div>`);
+            _push2(ssrRenderComponent(_component_view, { style: { "position": "relative", "overflow-anchor": "none" } }, {
+              default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+                if (_push3) {
+                  ssrRenderSlot(_ctx.$slots, "default", {}, null, _push3, _parent3, _scopeId2);
+                  _push3(ssrRenderComponent(_component_view, {
+                    ref_key: "placeholderElement",
+                    ref: placeholderElement,
+                    style: { "width": "1px", "flex-shrink": "0" }
+                  }, null, _parent3, _scopeId2));
+                } else {
+                  return [
+                    renderSlot(_ctx.$slots, "default"),
+                    createVNode(_component_view, {
+                      ref_key: "placeholderElement",
+                      ref: placeholderElement,
+                      style: { "width": "1px", "flex-shrink": "0" }
+                    }, null, 512)
+                  ];
+                }
+              }),
+              _: 3
+            }, _parent2, _scopeId));
             ssrRenderSlot(_ctx.$slots, "load-more", {}, null, _push2, _parent2, _scopeId);
           } else {
             return [
-              createVNode("div", {
-                "uni-view": "",
-                style: { "position": "relative", "overflow-anchor": "none" }
-              }, [
-                renderSlot(_ctx.$slots, "default"),
-                createVNode("div", {
-                  "uni-view": "",
-                  ref_key: "placeholderElement",
-                  ref: placeholderElement,
-                  style: { "width": "1px", "flex-shrink": "0" }
-                }, null, 512)
-              ]),
+              createVNode(_component_view, { style: { "position": "relative", "overflow-anchor": "none" } }, {
+                default: withCtx(() => [
+                  renderSlot(_ctx.$slots, "default"),
+                  createVNode(_component_view, {
+                    ref_key: "placeholderElement",
+                    ref: placeholderElement,
+                    style: { "width": "1px", "flex-shrink": "0" }
+                  }, null, 512)
+                ]),
+                _: 3
+              }),
               renderSlot(_ctx.$slots, "load-more")
             ];
           }
         }),
         _: 3
       }, _parent));
+      _push(`<!--}-->`);
     };
   }
 });
@@ -15142,7 +17860,7 @@ class UniVideoElement extends UniViewElement {
     return this === UniVideoElement && value instanceof UniViewElement && value.hasAttribute("uni-video") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$2 = { value: "VIDEO" };
+const uniTagName$3 = { value: "VIDEO" };
 const indexVapor$3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
   props: videoProps,
@@ -15160,7 +17878,7 @@ const indexVapor$3 = /* @__PURE__ */ defineBuiltInComponent({
       id: props2.id
     }, [normalizeVNode(() => render())], 512));
     Object.assign(root, methods);
-    Object.defineProperty(root, "uniTagName", uniTagName$2);
+    initUniElement(root, uniTagName$3);
     return root;
   }
 });
@@ -15202,6 +17920,7 @@ class UniWebViewElement extends UniElement2 {
     return this === UniWebViewElement && (el == null ? void 0 : el.nodeType) === 1 && el.localName === "iframe" && el.hasAttribute("uni-web-view") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
+const uniTagName$2 = { value: "WEB-VIEW" };
 const indexVapor$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "WebView",
   props: webViewProps,
@@ -15213,13 +17932,15 @@ const indexVapor$2 = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2, { emit: emit2 }) {
     initWebViewBridge();
     const rootRef = ref(null);
-    return openBlock(), createBlock("iframe", {
+    const root = (openBlock(), createBlock("iframe", {
       "uni-web-view": "",
       "uni-view": "",
       class: "uni-webview",
       src: getRealPath(props2.src),
       ref: rootRef
-    }, null, 512);
+    }, null, 512));
+    initUniElement(root, uniTagName$2);
+    return root;
   }
 });
 function createCallout(maps2) {
@@ -16856,7 +19577,7 @@ const indexVapor$1 = /* @__PURE__ */ defineBuiltInComponent({
       normalizeVNode(() => props2.polygons.map((item) => (openBlock(), createBlock(MapPolygon, item, null, 16)))),
       createVNode("div", _hoisted_1, [normalizeVNode(() => slots.default && slots.default())])
     ], 512));
-    Object.defineProperty(root, "uniTagName", uniTagName$1);
+    initUniElement(root, uniTagName$1);
     return root;
   }
 });
@@ -17556,7 +20277,7 @@ const indexVapor = /* @__PURE__ */ defineBuiltInComponent({
       key: 0,
       class: "uni-ad-custom-material"
     }, [normalizeVNode(() => renderCustomMaterial())])) : normalizeVNode(() => null)], 16));
-    Object.defineProperty(root, "uniTagName", uniTagName);
+    initUniElement(root, uniTagName);
     return root;
   }
 });
