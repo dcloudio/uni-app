@@ -241,11 +241,38 @@ input,
 textarea {
   background-color: transparent;
 }
+/* #endif */
 
+/* #ifdef MP-WEIXIN */
+input .input-placeholder {
+  color: #808080;
+}
+textarea .textarea-placeholder {
+  color: #808080;
+}
 @media (prefers-color-scheme: dark) {
-  input,
-  textarea {
-    background-color: transparent;
+  input .input-placeholder {
+    color: #5f5f5f;
+  }
+  textarea .textarea-placeholder {
+    color: #5f5f5f;
+  }
+}
+/* #endif */
+
+/* #ifdef MP-ALIPAY */
+input .a-input-placeholder {
+  color: #808080;
+}
+textarea .a-textarea-placeholder {
+  color: #808080;
+}
+@media (prefers-color-scheme: dark) {
+  input .a-input-placeholder {
+    color: #5f5f5f;
+  }
+  textarea .a-textarea-placeholder {
+    color: #5f5f5f;
   }
 }
 /* #endif */
