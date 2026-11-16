@@ -1149,12 +1149,12 @@ defineExpose({
 
 ```
 
-**平台差异**
+## 默认样式@defaultstyle
 
-- web、小程序、app-harmony 端的swiper-item为绝对定位，无法撑开swiper。所以swiper组件的默认高度为150px。
-- app-android和iOS的swiper目前默认会以内容高度撑开作为其高度。如果要多端拉齐应自行设置swiper的style里的高度。后续Android和iOS的swiper也会统一为其他平台的方式。
+- web、小程序、app 蒸汽模式、app-harmony vdom模式 的swiper-item为绝对定位，无法撑开swiper。所以swiper组件的默认高度为150px。
+- app-android和iOS的vdom模式的swiper默认会以内容高度撑开作为其高度。
 
-:::warning 注意
+## 蒸汽模式注意
 - 使用 `auto-height` 属性时，`swiper-item` 组件外层容器和 slot 内容之间会增加一层 `view`，这会导致设置在 `swiper-item` 上的布局样式无法直接影响插槽内的元素（比如 `align-items: center`），请注意避免影响布局。
 - 蒸汽模式不再支持 `rebound` 属性，如需控制是否回弹效果，请使用 `disable-bounce` 属性。
 - 蒸汽模式不再支持 `indicator-color` 和 `indicator-active-color` 属性，如需自定义指示点颜色及其他样式，请使用 `indicator-style`、`indicator-class` 和 `indicator-active-style`、`indicator-active-class` 属性。

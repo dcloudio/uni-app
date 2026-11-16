@@ -107,7 +107,7 @@ HBuilderX5.0版本开始 app-andorid/app-ios平台调整 [white-space](../css/wh
 app-andorid/app-ios平台避免使用 `space` 属性处理空格，存在以下平台差异：
 - app-android平台配置了 `space` 属性将只处理空格转换，忽略 white-space 样式值，即按 white-space: keep 处理。
 - app-ios平台配置了 `space` 属性将先处理空格转换，再根据 white-space 属性值处理空白字符。
-后续统一会废弃 	`space` 属性，推荐统一改用css white-space 来处理空白字符。
+蒸汽模式已废弃 `space` 属性，推荐统一改用css white-space 来处理空白字符。
 
 **App-Harmony平台**
 蒸汽模式（Vapor） [white-space](../css/white-space.md) 样式控制空白字符处理逻辑与 W3C 规范一致，默认值为 `keep`。
