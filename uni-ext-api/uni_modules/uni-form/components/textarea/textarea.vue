@@ -259,6 +259,9 @@
 	 }
 	 */
 		value ?: string;
+		/**
+	  * @internal
+	  */
 		valueModifiers ?: ModelModifiers;
 		/**
 	 * @uniPlatform {
@@ -535,6 +538,7 @@
 	// #endif
 
 	const emit = defineEmits<{
+		// @internal
 		(e : 'update:value', value : string) : void
 		(e : 'input', value : UniInputEvent) : void
 		(e : 'focus', value : UniTextareaFocusEvent) : void
