@@ -1,5 +1,7 @@
 import {
+  addMiniProgramPageJson,
   clearMiniProgramComponentStyleIsolation,
+  resetMiniProgramJsonFiles,
   updateMiniProgramComponentStyleIsolation,
 } from '@dcloudio/uni-cli-shared'
 import { assert } from './testUtils'
@@ -25,11 +27,13 @@ describe('mp-alipay: styleIsolation 2.0 class attributes', () => {
     process.env.UNI_APP_X = 'true'
     process.env.UNI_APP_STYLE_ISOLATION_VERSION = '2'
     process.env.UNI_INPUT_DIR = '/src'
+    addMiniProgramPageJson('pages/index/index', {})
     updateMiniProgramComponentStyleIsolation(pageFilename, 'app', true)
     updateMiniProgramComponentStyleIsolation(componentFilename, 'isolated')
   })
 
   afterEach(() => {
+    resetMiniProgramJsonFiles()
     restoreEnv('UNI_PLATFORM', originalPlatform)
     restoreEnv('UNI_APP_X', originalAppX)
     restoreEnv('UNI_APP_STYLE_ISOLATION_VERSION', originalVersion)
@@ -41,27 +45,27 @@ describe('mp-alipay: styleIsolation 2.0 class attributes', () => {
   test('静态原生 class 属性按页面作用域展开并保留特殊值', () => {
     assert(
       '<view hover-class="active"/><view hover-class="none"/>',
-      "<view hover-class=\"active -a-active -p-active\" style=\"{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}\"/><view hover-class=\"none\" style=\"{{'--status-bar-height:' + c + ';' + ('--uni-safe-area-inset-bottom:' + d)}}\"/>",
+      '<page-meta page-style="{{a}}"/><view hover-class="active -a-active -p-active"/><view hover-class="none"/>',
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\`, c: \`\${_ctx.u_s_b_h}px\`, d: \`\${_ctx.u_s_a_i_b}px\` }
+  const __returned__ = { a: _s({ '--status-bar-height': \`\${_ctx.u_s_b_h}px\`, '--uni-safe-area-inset-bottom': \`\${_ctx.u_s_a_i_b}px\` }) }
   return __returned__
 }`,
       { filename: pageFilename, isX: true }
     )
     assert(
       '<input placeholder-class="placeholder muted"/><input placeholder-class=""/><view placeholder-class="placeholder"/>',
-      "<input placeholder-class=\"placeholder -a-placeholder -p-placeholder muted -a-muted -p-muted\" style=\"{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}\"/><input placeholder-class=\"\" style=\"{{'--status-bar-height:' + c + ';' + ('--uni-safe-area-inset-bottom:' + d)}}\"/><view placeholder-class=\"placeholder\" style=\"{{'--status-bar-height:' + e + ';' + ('--uni-safe-area-inset-bottom:' + f)}}\"/>",
+      '<page-meta page-style="{{a}}"/><input placeholder-class="placeholder -a-placeholder -p-placeholder muted -a-muted -p-muted"/><input placeholder-class=""/><view placeholder-class="placeholder"/>',
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\`, c: \`\${_ctx.u_s_b_h}px\`, d: \`\${_ctx.u_s_a_i_b}px\`, e: \`\${_ctx.u_s_b_h}px\`, f: \`\${_ctx.u_s_a_i_b}px\` }
+  const __returned__ = { a: _s({ '--status-bar-height': \`\${_ctx.u_s_b_h}px\`, '--uni-safe-area-inset-bottom': \`\${_ctx.u_s_a_i_b}px\` }) }
   return __returned__
 }`,
       { filename: pageFilename, isX: true }
     )
     assert(
       '<picker-view indicator-class="indicator" mask-class="mask muted"/><view indicator-class="indicator" mask-class="mask"/>',
-      '<picker-view indicator-class="indicator -a-indicator -p-indicator" mask-class="mask -a-mask -p-mask muted -a-muted -p-muted" style="{{\'--status-bar-height:\' + a + \';\' + (\'--uni-safe-area-inset-bottom:\' + b)}}"/><view indicator-class="indicator" mask-class="mask" style="{{\'--status-bar-height:\' + c + \';\' + (\'--uni-safe-area-inset-bottom:\' + d)}}"/>',
+      '<page-meta page-style="{{a}}"/><picker-view indicator-class="indicator -a-indicator -p-indicator" mask-class="mask -a-mask -p-mask muted -a-muted -p-muted"/><view indicator-class="indicator" mask-class="mask"/>',
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\`, c: \`\${_ctx.u_s_b_h}px\`, d: \`\${_ctx.u_s_a_i_b}px\` }
+  const __returned__ = { a: _s({ '--status-bar-height': \`\${_ctx.u_s_b_h}px\`, '--uni-safe-area-inset-bottom': \`\${_ctx.u_s_a_i_b}px\` }) }
   return __returned__
 }`,
       { filename: pageFilename, isX: true }
@@ -71,27 +75,27 @@ describe('mp-alipay: styleIsolation 2.0 class attributes', () => {
   test('动态原生 class 属性复用 helper 并使用当前作用域 mask', () => {
     assert(
       "<view :hover-class=\"enabled ? 'active' : 'none'\"/>",
-      "<view hover-class=\"{{uV.h(a,3)}}\" style=\"{{'--status-bar-height:' + b + ';' + ('--uni-safe-area-inset-bottom:' + c)}}\"/>",
+      '<page-meta page-style="{{a}}"/><view hover-class="{{uV.h(b,3)}}"/>',
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _ctx.enabled ? 'active' : 'none', b: \`\${_ctx.u_s_b_h}px\`, c: \`\${_ctx.u_s_a_i_b}px\` }
+  const __returned__ = { a: _s({ '--status-bar-height': \`\${_ctx.u_s_b_h}px\`, '--uni-safe-area-inset-bottom': \`\${_ctx.u_s_a_i_b}px\` }), b: _ctx.enabled ? 'active' : 'none' }
   return __returned__
 }`,
       { filename: pageFilename, isX: true }
     )
     assert(
       '<textarea :placeholder-class="placeholderClass"/>',
-      "<textarea placeholder-class=\"{{uV.c(a,4)}}\" style=\"{{'--status-bar-height:' + b + ';' + ('--uni-safe-area-inset-bottom:' + c)}}\"/>",
+      '<textarea placeholder-class="{{uV.c(a,4)}}"/>',
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _ctx.placeholderClass, b: \`\${_ctx.u_s_b_h}px\`, c: \`\${_ctx.u_s_a_i_b}px\` }
+  const __returned__ = { a: _ctx.placeholderClass }
   return __returned__
 }`,
       { filename: componentFilename, isX: true }
     )
     assert(
       '<picker-view :indicator-class="indicatorClass" :mask-class="maskClass"/>',
-      '<picker-view indicator-class="{{uV.c(a,4)}}" mask-class="{{uV.c(b,4)}}" style="{{\'--status-bar-height:\' + c + \';\' + (\'--uni-safe-area-inset-bottom:\' + d)}}"/>',
+      '<picker-view indicator-class="{{uV.c(a,4)}}" mask-class="{{uV.c(b,4)}}"/>',
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _ctx.indicatorClass, b: _ctx.maskClass, c: \`\${_ctx.u_s_b_h}px\`, d: \`\${_ctx.u_s_a_i_b}px\` }
+  const __returned__ = { a: _ctx.indicatorClass, b: _ctx.maskClass }
   return __returned__
 }`,
       { filename: componentFilename, isX: true }
@@ -102,9 +106,9 @@ describe('mp-alipay: styleIsolation 2.0 class attributes', () => {
     process.env.UNI_PLATFORM = 'mp-weixin'
     assert(
       '<view :hover-class="hoverClass"/><input :placeholder-class="placeholderClass"/><picker-view :indicator-class="indicatorClass" :mask-class="maskClass"/>',
-      "<view hover-class=\"{{a}}\" style=\"{{'--status-bar-height:' + b + ';' + ('--uni-safe-area-inset-bottom:' + c)}}\"/><input placeholder-class=\"{{d}}\" style=\"{{'--status-bar-height:' + e + ';' + ('--uni-safe-area-inset-bottom:' + f)}}\"/><picker-view indicator-class=\"{{g}}\" mask-class=\"{{h}}\" style=\"{{'--status-bar-height:' + i + ';' + ('--uni-safe-area-inset-bottom:' + j)}}\"/>",
+      '<page-meta page-style="{{a}}"/><view hover-class="{{b}}"/><input placeholder-class="{{c}}"/><picker-view indicator-class="{{d}}" mask-class="{{e}}"/>',
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _ctx.hoverClass, b: \`\${_ctx.u_s_b_h}px\`, c: \`\${_ctx.u_s_a_i_b}px\`, d: _ctx.placeholderClass, e: \`\${_ctx.u_s_b_h}px\`, f: \`\${_ctx.u_s_a_i_b}px\`, g: _ctx.indicatorClass, h: _ctx.maskClass, i: \`\${_ctx.u_s_b_h}px\`, j: \`\${_ctx.u_s_a_i_b}px\` }
+  const __returned__ = { a: _s({ '--status-bar-height': \`\${_ctx.u_s_b_h}px\`, '--uni-safe-area-inset-bottom': \`\${_ctx.u_s_a_i_b}px\` }), b: _ctx.hoverClass, c: _ctx.placeholderClass, d: _ctx.indicatorClass, e: _ctx.maskClass }
   return __returned__
 }`,
       { filename: pageFilename, isX: true }
@@ -115,9 +119,9 @@ describe('mp-alipay: styleIsolation 2.0 class attributes', () => {
     Reflect.set(process.env, 'UNI_APP_STYLE_ISOLATION_VERSION', '1')
     assert(
       '<picker-view :indicator-class="indicatorClass" :mask-class="maskClass"/>',
-      '<picker-view indicator-class="{{a}}" mask-class="{{b}}" style="{{\'--status-bar-height:\' + c + \';\' + (\'--uni-safe-area-inset-bottom:\' + d)}}"/>',
+      '<page-meta page-style="{{a}}"/><picker-view indicator-class="{{b}}" mask-class="{{c}}"/>',
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _ctx.indicatorClass, b: _ctx.maskClass, c: \`\${_ctx.u_s_b_h}px\`, d: \`\${_ctx.u_s_a_i_b}px\` }
+  const __returned__ = { a: _s({ '--status-bar-height': \`\${_ctx.u_s_b_h}px\`, '--uni-safe-area-inset-bottom': \`\${_ctx.u_s_a_i_b}px\` }), b: _ctx.indicatorClass, c: _ctx.maskClass }
   return __returned__
 }`,
       { filename: pageFilename, isX: true }

@@ -135,6 +135,20 @@ describe('mp-alipay: transform component', () => {
 })
 
 describe('mp-alipay: transform component x', () => {
+  const originalPlatform = process.env.UNI_PLATFORM
+
+  beforeEach(() => {
+    process.env.UNI_PLATFORM = 'mp-alipay'
+  })
+
+  afterEach(() => {
+    if (originalPlatform === undefined) {
+      Reflect.deleteProperty(process.env, 'UNI_PLATFORM')
+    } else {
+      process.env.UNI_PLATFORM = originalPlatform
+    }
+  })
+
   test(`scroll-view`, () => {
     const platform = process.env.UNI_PLATFORM
     const appX = process.env.UNI_APP_X
@@ -143,9 +157,9 @@ describe('mp-alipay: transform component x', () => {
     try {
       assert(
         `<scroll-view id="scroll"/>`,
-        `<scroll-view id="scroll" style="{{'--status-bar-height:' + b + ';' + ('--uni-safe-area-inset-bottom:' + c)}}" change:eS="{{uV.sS}}" eS="{{$eS[a]}}" change:eA="{{uV.sA}}" eA="{{$eA[a]}}" change:eR="{{uV.sR}}" eR="{{$eR[a]}}"/>`,
+        `<scroll-view id="scroll" change:eS="{{uV.sS}}" eS="{{$eS[a]}}" change:eA="{{uV.sA}}" eA="{{$eA[a]}}" change:eR="{{uV.sR}}" eR="{{$eR[a]}}"/>`,
         `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _sei('scroll', 'scroll-view'), b: \`\${_ctx.u_s_b_h}px\`, c: \`\${_ctx.u_s_a_i_b}px\` }
+  const __returned__ = { a: _sei('scroll', 'scroll-view') }
   return __returned__
 }`,
         {
@@ -169,9 +183,9 @@ describe('mp-alipay: transform component x', () => {
   test(`canvas`, () => {
     assert(
       `<canvas/>`,
-      `<canvas style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}" type="2d"/>`,
+      `<canvas type="2d"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
+  const __returned__ = {}
   return __returned__
 }`,
       {
@@ -182,9 +196,9 @@ describe('mp-alipay: transform component x', () => {
 
     assert(
       `<canvas id="myCanvas"/>`,
-      `<canvas id="myCanvas" style="{{'--status-bar-height:' + b + ';' + ('--uni-safe-area-inset-bottom:' + c)}}" type="2d" change:eS="{{uV.sS}}" eS=\"{{$eS[a]}}\" change:eA="{{uV.sA}}" eA=\"{{$eA[a]}}\"/>`,
+      `<canvas id="myCanvas" type="2d" change:eS="{{uV.sS}}" eS="{{$eS[a]}}" change:eA="{{uV.sA}}" eA="{{$eA[a]}}"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _sei('myCanvas', 'canvas'), b: \`\${_ctx.u_s_b_h}px\`, c: \`\${_ctx.u_s_a_i_b}px\` }
+  const __returned__ = { a: _sei('myCanvas', 'canvas') }
   return __returned__
 }`,
       {
@@ -195,9 +209,9 @@ describe('mp-alipay: transform component x', () => {
 
     assert(
       `<canvas canvas-id="myCanvas"/>`,
-      `<canvas id="myCanvas" style="{{'--status-bar-height:' + b + ';' + ('--uni-safe-area-inset-bottom:' + c)}}" type="2d" change:eS="{{uV.sS}}" eS=\"{{$eS[a]}}\" change:eA="{{uV.sA}}" eA=\"{{$eA[a]}}\"/>`,
+      `<canvas id="myCanvas" type="2d" change:eS="{{uV.sS}}" eS="{{$eS[a]}}" change:eA="{{uV.sA}}" eA="{{$eA[a]}}"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _sei('myCanvas', 'canvas'), b: \`\${_ctx.u_s_b_h}px\`, c: \`\${_ctx.u_s_a_i_b}px\` }
+  const __returned__ = { a: _sei('myCanvas', 'canvas') }
   return __returned__
 }`,
       {
@@ -208,9 +222,9 @@ describe('mp-alipay: transform component x', () => {
 
     assert(
       `<canvas type="2d"/>`,
-      `<canvas type="2d" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
+      `<canvas type="2d"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
+  const __returned__ = {}
   return __returned__
 }`,
       {
@@ -221,9 +235,9 @@ describe('mp-alipay: transform component x', () => {
 
     assert(
       `<canvas type="webgl"/>`,
-      `<canvas type="webgl" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
+      `<canvas type="webgl"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
+  const __returned__ = {}
   return __returned__
 }`,
       {
@@ -236,9 +250,9 @@ describe('mp-alipay: transform component x', () => {
   test(`checkbox`, () => {
     assert(
       `<checkbox fore-color="#FF0000"/>`,
-      `<checkbox color="#FF0000" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
+      `<checkbox color="#FF0000"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
+  const __returned__ = {}
   return __returned__
 }`,
       {
@@ -249,9 +263,9 @@ describe('mp-alipay: transform component x', () => {
 
     assert(
       `<checkbox fore-color="#FF0000"/>`,
-      `<checkbox color="#FF0000" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
+      `<checkbox color="#FF0000"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
+  const __returned__ = {}
   return __returned__
 }`,
       {
@@ -264,9 +278,9 @@ describe('mp-alipay: transform component x', () => {
   test(`radio`, () => {
     assert(
       `<radio active-background-color="#FF0000"/>`,
-      `<radio color="#FF0000" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
+      `<radio color="#FF0000"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
+  const __returned__ = {}
   return __returned__
 }`,
       {
@@ -277,9 +291,9 @@ describe('mp-alipay: transform component x', () => {
 
     assert(
       `<radio color="#FF0000"/>`,
-      `<radio color="#FF0000" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
+      `<radio color="#FF0000"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
+  const __returned__ = {}
   return __returned__
 }`,
       {
@@ -292,9 +306,9 @@ describe('mp-alipay: transform component x', () => {
   test(`switch`, () => {
     assert(
       `<switch active-background-color="#FF0000"/>`,
-      `<switch color="#FF0000" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
+      `<switch color="#FF0000"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
+  const __returned__ = {}
   return __returned__
 }`,
       {
@@ -305,9 +319,9 @@ describe('mp-alipay: transform component x', () => {
 
     assert(
       `<switch color="#FF0000"/>`,
-      `<switch color="#FF0000" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
+      `<switch color="#FF0000"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
+  const __returned__ = {}
   return __returned__
 }`,
       {
@@ -320,9 +334,9 @@ describe('mp-alipay: transform component x', () => {
   test(`slider`, () => {
     assert(
       `<slider active-background-color="#FF0000" fore-color="#FF0000"/>`,
-      `<slider active-color="#FF0000" handle-color="#FF0000" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
+      `<slider active-color="#FF0000" handle-color="#FF0000"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
+  const __returned__ = {}
   return __returned__
 }`,
       {
@@ -333,9 +347,9 @@ describe('mp-alipay: transform component x', () => {
 
     assert(
       `<slider block-color="#00FF00" block-size="20"/>`,
-      `<slider handle-color="#00FF00" handle-size="20" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
+      `<slider handle-color="#00FF00" handle-size="20"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
+  const __returned__ = {}
   return __returned__
 }`,
       {
@@ -348,9 +362,9 @@ describe('mp-alipay: transform component x', () => {
   test(`picker`, () => {
     assert(
       `<picker header-text="请选择"/>`,
-      `<picker title="请选择" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
+      `<picker title="请选择"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
+  const __returned__ = {}
   return __returned__
 }`,
       {
@@ -361,9 +375,9 @@ describe('mp-alipay: transform component x', () => {
 
     assert(
       `<picker :header-text="pickerTitle"/>`,
-      `<picker title="{{a}}" style="{{'--status-bar-height:' + b + ';' + ('--uni-safe-area-inset-bottom:' + c)}}"/>`,
+      `<picker title="{{a}}"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _ctx.pickerTitle, b: \`\${_ctx.u_s_b_h}px\`, c: \`\${_ctx.u_s_a_i_b}px\` }
+  const __returned__ = { a: _ctx.pickerTitle }
   return __returned__
 }`,
       {
@@ -376,9 +390,9 @@ describe('mp-alipay: transform component x', () => {
   test(`scroll-view`, () => {
     assert(
       `<list-view/>`,
-      `<scroll-view style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
+      `<scroll-view/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
+  const __returned__ = {}
   return __returned__
 }`,
       {
@@ -432,9 +446,9 @@ describe('mp-alipay: transform component x', () => {
   test(`text`, () => {
     assert(
       `<text user-select/>`,
-      `<text selectable style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
+      `<text selectable/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
+  const __returned__ = {}
   return __returned__
 }`,
       {
@@ -445,9 +459,9 @@ describe('mp-alipay: transform component x', () => {
 
     assert(
       `<text :user-select="false"/>`,
-      `<text selectable="{{false}}" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
+      `<text selectable="{{false}}"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
+  const __returned__ = {}
   return __returned__
 }`,
       {
@@ -482,9 +496,9 @@ describe('mp-alipay: transform component x', () => {
     test('single root', () => {
       assert(
         `<teleport to="#foo" disabled defer></teleport>`,
-        `<root-portal enable="{{false}}" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"></root-portal>`,
+        `<root-portal enable="{{false}}"></root-portal>`,
         `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
+  const __returned__ = {}
   return __returned__
 }`,
         {
@@ -495,9 +509,9 @@ describe('mp-alipay: transform component x', () => {
 
       assert(
         `<teleport to="#foo" disabled defer><view class="content"/></teleport>`,
-        `<root-portal enable="{{false}}" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"><view class="a-page" style="height:auto"><view class="content"/></view></root-portal>`,
+        `<root-portal enable="{{false}}"><view class="a-page" style="height:auto"><view class="content"/></view></root-portal>`,
         `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
+  const __returned__ = {}
   return __returned__
 }`,
         {
@@ -510,9 +524,9 @@ describe('mp-alipay: transform component x', () => {
     test('multiple roots', () => {
       assert(
         `<teleport to="#foo" disabled defer><view/><view/></teleport>`,
-        `<root-portal enable="{{false}}" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"><view class="a-page" style="height:auto"><view/><view/></view></root-portal>`,
+        `<root-portal enable="{{false}}"><view class="a-page" style="height:auto"><view/><view/></view></root-portal>`,
         `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
+  const __returned__ = {}
   return __returned__
 }`,
         {
