@@ -573,4 +573,4 @@
 
 
 ### tips
-- 和微信小程序平台不同，app 平台调用 `uni.onGyroscopeChange` 时不会自动启动陀螺仪，需要调用 `uni.startGyroscope()` 才能正常启动陀螺仪。这个问题会在后续版本处理，app 平台在 `5.09+` 版本中将和微信小程序行为保持一致。
+- `5.09+` 版本以前，app 平台调用 `uni.onGyroscopeChange` 时不会自动启动陀螺仪，需要调用 `uni.startGyroscope()` 才能正常启动陀螺仪。

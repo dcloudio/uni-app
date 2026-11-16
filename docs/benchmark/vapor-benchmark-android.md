@@ -145,7 +145,7 @@ hello uni-app x 中包括拍平和非拍平2部分数据。原生示例中包括
 
 如下为Perfetto的截图，cpu7即为超大核，可以看出超大核基本没有工作，这种数据才可以使用。
 
-![](static/4050-hello-flatten-optimized-device1-r1.png)
+![](../static/4050-hello-flatten-optimized-device1-r1.png)
 
 一旦超大核被调用，uni-app x 的数据会在几十ms，原生会在100多ms。但这种情况不稳定，不适合作为严谨的benchmark来比较。
 

@@ -285,7 +285,7 @@ if (view != null && view instanceof UITextField) {
 }
 ```
 
-+ iOS平台、以及Android平台的蒸汽模式，uvue 页面中使用 js 驱动，无法处理原生类型，getIOSView 或 getAndroidView 方法需要在 uts 插件中使用。
++ iOS、Android平台的蒸汽模式，uvue 页面中使用 js 驱动，无法处理原生类型，getIOSView 或 getAndroidView 方法需要在 uts 插件中使用。
 
 更多示例请参考 uts 插件 [uts-get-native-view](https://gitcode.com/dcloud/hello-uni-app-x/blob/alpha/uni_modules/uts-get-native-view/utssdk/app-ios/index.uts)
 
@@ -1209,28 +1209,30 @@ web平台的inputmode的浏览器兼容性如下： Chrome >= 66、Edge >= 79、
 
 同时使用 inputmode 和 comfirm-type 时，若设值冲突，键盘右下角按键类型由 comfirm-type 决定。
 
-## placeholder-style和placeholder-class说明
-- uni-app x 4.41前，App平台(VDOM 模式)仅支持`color`、`font-size`、`font-weight`。
-- uni-app x 4.41后，App平台(VDOM 模式)新增支持`font-family`、`font-style`、`text-align`，其中`text-align`仅App-Android平台支持，App-iOS平台的placeholder位置取决于input的`text-align`。
-- placeholder-style的`font-size`样式不支持rpx单位。
+## 默认样式和自定义样式
+- input组件默认 width （宽度）为 100%；字号默认16px；默认无边框；
+- HBuilder 5.36 起，App 平台蒸汽模式下，input 组件的默认输入文字颜色随应用主题自动切换。light主题下，文字颜色为 `#000000`；dark主题下，默认文字颜色为 `#ffffff`。
+- 目前各平台、各版本input默认背景色未统一，建议显式设置背景色。后续会统一背景色为透明。
+- HBuilder 5.36 起，App 平台蒸汽模式下，input 组件支持通过 CSS `caret-color` 自定义光标颜色，例如 `style="caret-color: red"`，也可在 `class` 中设置，并支持 CSS 变量和媒体查询。若同时设置 `cursor-color` 组件属性，则优先使用 `cursor-color` 的值。
 
+### placeholder-style和placeholder-class说明
+- 目前各平台、各版本input默认place-holder文字颜色未统一，建议显式设置背景色。后续会统一颜色为light下#808080、dark下#5f5f5f。
+- App平台 VDOM模式 支持的css有限：`color`、`font-size`、`font-weight`、`font-family`、`font-style`、`text-align`，其中`text-align`仅App-Android平台支持，App-iOS平台的placeholder位置取决于input的`text-align`。`font-size`样式不支持rpx单位。
+- App平台 蒸汽模式 支持的css和普通文字css相同
+
+## 相关API
+uni-app x 提供了隐藏软键盘、监听软键盘变化的API [详情](https://doc.dcloud.net.cn/uni-app-x/api/keyboard.html#hidekeyboard)
 
 ## Tips
-
-- HBuilderX 5.36 起，App 平台蒸汽模式下，input 组件支持通过 CSS `caret-color` 自定义光标颜色，例如 `style="caret-color: red"`，也可在 `class` 中设置，并支持 CSS 变量和媒体查询。若同时设置 `cursor-color` 属性，则优先使用 `cursor-color` 的值。
-- HBuilderX 5.36 起，App 平台蒸汽模式下，input 组件的默认背景色和输入文字颜色随应用主题自动切换。亮色主题下，默认背景色为 `#ffffff`，文字颜色为 `#000000`；暗黑主题下，默认背景色为 `#3b3b3b`，文字颜色为 `#ffffff`。通过 `class` 或 `style` 自定义 `background-color`、`color` 后，以自定义样式为准，对应颜色需自行适配主题，详见[暗黑主题适配教程](../api/theme-change.md)。
+- html规范中input不仅是输入框，还有radio、checkbox、时间、日期、文件选择功能。但在uni-app规范中，input仅仅是输入框，其type属性代表不同的输入框。其他功能有单独的组件或API：[radio组件](radio-group.md)、[checkbox组件](checkbox-group.md)、[图片选择](../api/choose-image.md)、[视频选择](../api/choose-video.md)等。
 - 支付宝小程序二级页面设置 `focus` 为 `true` 时不会自动聚焦
 - 支付宝小程序 `type="number"` 且 `maxlength="-1"` 时不会触发 `input` 事件，也不能通过 CSS 修改光标颜色
-- html规范中input不仅是输入框，还有radio、checkbox、时间、日期、文件选择功能。但在uni-app规范中，input仅仅是输入框，其type属性代表不同的输入框。其他功能有单独的组件或API：[radio组件](radio-group.md)、[checkbox组件](checkbox-group.md)、[图片选择](../api/choose-image.md)、[视频选择](../api/choose-video.md)等。
-- input组件默认 width （宽度）为 100%。
 - 从uni-app x 4.0起，App-Android平台 input 点击输入框外的屏幕会自动收起软键盘。
-- 从uni-app x 4.0起，App-Android平台 input 的 font-size 默认值统一为 16px。
 - `Web` 平台，iOS 自带键盘的智能标点功能会导致：在 type 为 `number`、`digit` 时，连续输入两次 `.` 后，在第三次输入 `.` 时，会触发两次 deleteContentBackward（删除） 的输入外加一次 insertText 为 `…`（三个点） 的输入。会导致表现异常，关闭智能标点功能后正常。
 - 如需输入负数，不推荐使用type=number或digit，这2个类型在不同平台表现不同，比如微信小程序上不允许输入负数，app不同rom也有差异。这类需求推荐设置type为text，自行写正则校验数据。在支持的平台，可以通过input-mode设置默认弹出键盘样式。
 - `微信小程序` 平台，如果不设置高度，在一些复杂布局的情况下会可能会出现placeholder高度不正确的问题，暂时通过手动设置样式 height 解决，示例: height: 28px
-- 小程序的input还有一些限制，比如光标颜色cursor-color，微信小程序Android版非skyline仅支持default和green，iOS版仅支持十六进制颜色值 [详见](https://developers.weixin.qq.com/miniprogram/dev/component/input.html)
+- 小程序的input有一些限制，比如光标颜色cursor-color，微信小程序Android版非skyline仅支持default和green，iOS版仅支持十六进制颜色值 [详见](https://developers.weixin.qq.com/miniprogram/dev/component/input.html)
 - 如需模拟输入框，比如一些验证码输入框、连续扫码，在插件市场搜索[模拟输入框](https://ext.dcloud.net.cn/search?q=%E6%A8%A1%E6%8B%9F%E8%BE%93%E5%85%A5%E6%A1%86&orderBy=Relevance&uni-appx=1)
 - 如需自定义软键盘，比如车牌键盘，在插件市场搜索[自定义键盘](https://ext.dcloud.net.cn/search?q=%E8%87%AA%E5%AE%9A%E4%B9%89%E9%94%AE%E7%9B%98&orderBy=Relevance&uni-appx=1)
-- 如需hideKeyBoard隐藏软键盘，在插件市场搜索[hideKeyBoard](https://ext.dcloud.net.cn/search?q=hideKeyBoard&orderBy=Relevance&uni-appx=1)
 - css变量的支持程度，需另见 [css变量文档](../css/common/function.md) 
 - 所有 boolean 类型的属性，只有设置为布尔类型的 false 才会关闭该属性，其他任何值（包括字符串 "false"）都会被当做 true 处理（微信小程序中空字符串会被视为 false）。
