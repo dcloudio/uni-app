@@ -236,16 +236,16 @@ label {
   letter-spacing: 0;
 }
 
-/* #ifdef MP */
+/* #ifndef MP-WEIXIN */
 input,
 textarea {
-  background-color: #ffffff;
+  background-color: transparent;
 }
 
 @media (prefers-color-scheme: dark) {
   input,
   textarea {
-    background-color: #3b3b3b;
+    background-color: transparent;
   }
 }
 /* #endif */
