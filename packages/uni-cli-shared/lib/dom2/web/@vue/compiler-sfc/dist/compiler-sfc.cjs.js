@@ -1431,7 +1431,7 @@ function parse(source, options = {}) {
 	});
 	const cache = parseCache$1.get(sourceKey);
 	if (cache) return cache;
-	const { sourceMap = true, filename = DEFAULT_FILENAME, sourceRoot = "", pad = false, ignoreEmpty = true, compiler = _vue_compiler_dom, templateParseOptions = {}, defaultScriptLang } = options;
+	const { sourceMap = true, filename = DEFAULT_FILENAME, sourceRoot = "", pad = false, ignoreEmpty = true, compiler = _dcloudio_compiler_vapor_web, templateParseOptions = {}, defaultScriptLang } = options;
 	const descriptor = {
 		filename,
 		source,
