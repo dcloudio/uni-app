@@ -89,7 +89,7 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 ::: sourceCode
 ## uni.openBluetoothAdapter(options) @openbluetoothadapter
 
-> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.general.openBluetoothAdapter
+> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.bluetooth-general.openBluetoothAdapter
 
 
 > 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
@@ -184,7 +184,7 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 ::: sourceCode
 ## uni.closeBluetoothAdapter(options) @closebluetoothadapter
 
-> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.general.closeBluetoothAdapter
+> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.bluetooth-general.closeBluetoothAdapter
 
 
 > 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
@@ -267,7 +267,7 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 ::: sourceCode
 ## uni.getBluetoothAdapterState(options) @getbluetoothadapterstate
 
-> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.general.getBluetoothAdapterState
+> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.bluetooth-general.getBluetoothAdapterState
 
 
 > 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
@@ -351,7 +351,7 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 ::: sourceCode
 ## uni.onBluetoothAdapterStateChange(callback) @onbluetoothadapterstatechange
 
-> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.general.onBluetoothAdapterStateChange
+> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.bluetooth-general.onBluetoothAdapterStateChange
 
 
 > 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
@@ -396,7 +396,7 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 ::: sourceCode
 ## uni.offBluetoothAdapterStateChange(listener?) @offbluetoothadapterstatechange
 
-> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.general.offBluetoothAdapterStateChange
+> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.bluetooth-general.offBluetoothAdapterStateChange
 
 
 > 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
@@ -435,7 +435,7 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 ::: sourceCode
 ## uni.startBluetoothDevicesDiscovery(options) @startbluetoothdevicesdiscovery
 
-> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.general.startBluetoothDevicesDiscovery
+> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.bluetooth-general.startBluetoothDevicesDiscovery
 
 
 > 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
@@ -530,7 +530,7 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 ::: sourceCode
 ## uni.stopBluetoothDevicesDiscovery(options) @stopbluetoothdevicesdiscovery
 
-> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.general.stopBluetoothDevicesDiscovery
+> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.bluetooth-general.stopBluetoothDevicesDiscovery
 
 
 > 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
@@ -613,7 +613,7 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 ::: sourceCode
 ## uni.onBluetoothDeviceFound(listener) @onbluetoothdevicefound
 
-> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.general.onBluetoothDeviceFound
+> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.bluetooth-general.onBluetoothDeviceFound
 
 
 > 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
@@ -670,7 +670,7 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 ::: sourceCode
 ## uni.offBluetoothDeviceFound(listener?) @offbluetoothdevicefound
 
-> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.general.offBluetoothDeviceFound
+> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.bluetooth-general.offBluetoothDeviceFound
 
 
 > 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
@@ -721,7 +721,7 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 ::: sourceCode
 ## uni.getBluetoothDevices(options) @getbluetoothdevices
 
-> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.general.getBluetoothDevices
+> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.bluetooth-general.getBluetoothDevices
 
 
 > 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
@@ -817,7 +817,7 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 ::: sourceCode
 ## uni.getConnectedBluetoothDevices(options) @getconnectedbluetoothdevices
 
-> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.general.getConnectedBluetoothDevices
+> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.bluetooth-general.getConnectedBluetoothDevices
 
 
 > 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth

@@ -74,7 +74,7 @@ GATT 还区分 **客户端（Client）** 和 **服务端（Server）**：客户�
 ::: sourceCode
 ## uni.createBLEConnection(options) @createbleconnection
 
-> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.ble.createBLEConnection
+> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.bluetooth-ble.createBLEConnection
 
 
 > 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
@@ -186,7 +186,7 @@ GATT 还区分 **客户端（Client）** 和 **服务端（Server）**：客户�
 ::: sourceCode
 ## uni.closeBLEConnection(options) @closebleconnection
 
-> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.ble.closeBLEConnection
+> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.bluetooth-ble.closeBLEConnection
 
 
 > 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
@@ -270,7 +270,7 @@ GATT 还区分 **客户端（Client）** 和 **服务端（Server）**：客户�
 ::: sourceCode
 ## uni.onBLEConnectionStateChange(listener) @onbleconnectionstatechange
 
-> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.ble.onBLEConnectionStateChange
+> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.bluetooth-ble.onBLEConnectionStateChange
 
 
 > 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
@@ -315,7 +315,7 @@ GATT 还区分 **客户端（Client）** 和 **服务端（Server）**：客户�
 ::: sourceCode
 ## uni.offBLEConnectionStateChange(listener?) @offbleconnectionstatechange
 
-> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.ble.offBLEConnectionStateChange
+> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.bluetooth-ble.offBLEConnectionStateChange
 
 
 > 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
@@ -354,7 +354,7 @@ GATT 还区分 **客户端（Client）** 和 **服务端（Server）**：客户�
 ::: sourceCode
 ## uni.getBLEDeviceRSSI(options) @getbledevicerssi
 
-> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.ble.getBLEDeviceRSSI
+> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.bluetooth-ble.getBLEDeviceRSSI
 
 
 > 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
@@ -438,7 +438,7 @@ GATT 还区分 **客户端（Client）** 和 **服务端（Server）**：客户�
 ::: sourceCode
 ## uni.getBLEMTU(options) @getblemtu
 
-> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.ble.getBLEMTU
+> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.bluetooth-ble.getBLEMTU
 
 
 > 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
@@ -536,7 +536,7 @@ GATT 还区分 **客户端（Client）** 和 **服务端（Server）**：客户�
 ::: sourceCode
 ## uni.setBLEMTU(options) @setblemtu
 
-> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.ble.setBLEMTU
+> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.bluetooth-ble.setBLEMTU
 
 
 > 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
@@ -625,7 +625,7 @@ iOS 不支持主动设置 MTU，当前插件调用此接口会执行 `fail` 和 
 ::: sourceCode
 ## uni.onBLEMTUChange(listener) @onblemtuchange
 
-> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.ble.onBLEMTUChange
+> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.bluetooth-ble.onBLEMTUChange
 
 
 > 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
@@ -670,7 +670,7 @@ iOS 不支持主动设置 MTU，当前插件调用此接口会执行 `fail` 和 
 ::: sourceCode
 ## uni.offBLEMTUChange(listener?) @offblemtuchange
 
-> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.ble.offBLEMTUChange
+> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.bluetooth-ble.offBLEMTUChange
 
 
 > 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
@@ -709,7 +709,7 @@ iOS 不支持主动设置 MTU，当前插件调用此接口会执行 `fail` 和 
 ::: sourceCode
 ## uni.getBLEDeviceServices(options) @getbledeviceservices
 
-> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.ble.getBLEDeviceServices
+> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.bluetooth-ble.getBLEDeviceServices
 
 
 > 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
@@ -800,7 +800,7 @@ iOS 不支持主动设置 MTU，当前插件调用此接口会执行 `fail` 和 
 ::: sourceCode
 ## uni.getBLEDeviceCharacteristics(options) @getbledevicecharacteristics
 
-> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.ble.getBLEDeviceCharacteristics
+> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.bluetooth-ble.getBLEDeviceCharacteristics
 
 
 > 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
@@ -903,7 +903,7 @@ iOS 不支持主动设置 MTU，当前插件调用此接口会执行 `fail` 和 
 ::: sourceCode
 ## uni.readBLECharacteristicValue(options) @readblecharacteristicvalue
 
-> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.ble.readBLECharacteristicValue
+> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.bluetooth-ble.readBLECharacteristicValue
 
 
 > 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
@@ -995,7 +995,7 @@ iOS 不支持主动设置 MTU，当前插件调用此接口会执行 `fail` 和 
 ::: sourceCode
 ## uni.writeBLECharacteristicValue(options) @writeblecharacteristicvalue
 
-> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.ble.writeBLECharacteristicValue
+> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.bluetooth-ble.writeBLECharacteristicValue
 
 
 > 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
@@ -1096,7 +1096,7 @@ iOS 不支持主动设置 MTU，当前插件调用此接口会执行 `fail` 和 
 ::: sourceCode
 ## uni.notifyBLECharacteristicValueChange(options) @notifyblecharacteristicvaluechange
 
-> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.ble.notifyBLECharacteristicValueChange
+> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.bluetooth-ble.notifyBLECharacteristicValueChange
 
 
 > 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
@@ -1197,7 +1197,7 @@ iOS 不支持主动设置 MTU，当前插件调用此接口会执行 `fail` 和 
 ::: sourceCode
 ## uni.onBLECharacteristicValueChange(listener) @onblecharacteristicvaluechange
 
-> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.ble.onBLECharacteristicValueChange
+> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.bluetooth-ble.onBLECharacteristicValueChange
 
 
 > 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
@@ -1244,7 +1244,7 @@ iOS 不支持主动设置 MTU，当前插件调用此接口会执行 `fail` 和 
 ::: sourceCode
 ## uni.offBLECharacteristicValueChange(listener?) @offblecharacteristicvaluechange
 
-> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.ble.offBLECharacteristicValueChange
+> issues: https://issues.dcloud.net.cn/?mid=api.device.bluetooth.bluetooth-ble.offBLECharacteristicValueChange
 
 
 > 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-bluetooth
