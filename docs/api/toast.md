@@ -51,9 +51,9 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| "top" | Web: 5.32; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 居上显示 |
-| "center" | Web: 5.32; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 居中显示 |
-| "bottom" | Web: 5.32; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 居底显示 |
+| "top" | Web: 5.32; 微信小程序: x; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 居上显示 |
+| "center" | Web: 5.32; 微信小程序: x; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 居中显示 |
+| "bottom" | Web: 5.32; 微信小程序: x; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 居底显示 |
 
 #### ShowToastFail 的属性值 @showtoastfail-values 
 

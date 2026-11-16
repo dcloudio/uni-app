@@ -361,4 +361,4 @@ border-style: <line-style>{1,4};
 
 ## 注意事项
 
-* 单独设置某个边的border-style的时候，比如`border-top-style`与其他边样式不同时，并且设置的边的颜色`border-top-color`不同时，就会导致以`solid`样式进行绘制，这是一个绘制的Bug，后续会解决。
+* 在VDOM下，单独设置某个边的border-style的时候，比如`border-top-style`与其他边样式不同时，并且设置的边的颜色`border-top-color`不同时，就会导致以`solid`样式进行绘制，这是一个绘制的Bug，注意Vapor模式下已无此问题。

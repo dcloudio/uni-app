@@ -31,9 +31,9 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: √; iOS: 4.
 | family | string | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: √; iOS: 4.10; HarmonyOS: 4.61 | 定义的字体名称 |
 | source | [string.FontURIString](/uts/data-type.md#ide-string) | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: √; iOS: 4.10; HarmonyOS: 4.61 | 字体资源的地址, App-Android 平台不支持 woff、woff2 格式字体文件 |
 | desc | **LoadFontFaceOptionDesc** | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: 4.10; HarmonyOS: x | 可选的字体描述符 |
-| success | (result: [LoadFontFaceSuccess](#loadfontfacesuccess-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: √; iOS: 4.10 | 接口调用成功的回调函数 |
-| fail | (error: [LoadFontFaceFail](#loadfontfacefail-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: √; iOS: 4.10 | 接口调用失败的回调函数 |
-| complete | (res: [LoadFontFaceComplete](#loadfontfacecomplete-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: √; iOS: 4.10 | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| success | (result: [LoadFontFaceSuccess](#loadfontfacesuccess-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: √; iOS: 4.10; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
+| fail | (error: [LoadFontFaceFail](#loadfontfacefail-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: √; iOS: 4.10; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
+| complete | (res: [LoadFontFaceComplete](#loadfontfacecomplete-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: √; iOS: 4.10; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） |
 | scopes | Array&lt;any&gt; | 否 | 微信小程序: 4.41 | 字体作用范围，可选值为 webview / native / skyline，默认全选，设置 native 可在 Canvas 2D 下使用<br/> | 
 
 ##### desc 的属性描述
