@@ -33,8 +33,6 @@ const CSS_VARS = '__cssVars()'
 const STATUS_BAR_HEIGHT_VAR = '--status-bar-height'
 const UNI_SAFE_AREA_INSET_BOTTOM_VAR = '--uni-safe-area-inset-bottom'
 const UNIT = 'px'
-// 这些元素没有子节点，无需注入供子节点继承的状态栏和安全区 CSS 变量
-const LEAF_ELEMENT_TAGS = ['input', 'textarea']
 
 export const transformRoot: NodeTransform = (node, context) => {
   if (node.type !== NodeTypes.ROOT) {
@@ -108,7 +106,7 @@ function addStatusBarStyle(node: ElementNode, context: TransformContext) {
 }
 
 function traverseChildren(node: ElementNode, context: TransformContext) {
-  if (isUserComponent(node, context) || LEAF_ELEMENT_TAGS.includes(node.tag)) {
+  if (isUserComponent(node, context)) {
     return
   }
   if (node.tag !== 'template' && node.tag !== 'slot') {
