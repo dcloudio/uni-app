@@ -322,7 +322,7 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.
 | mp-kuaishou | object |  | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 快手小程序特有配置 |
 | mp-jd | object |  | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 设置编译到 mp-jd 平台的特定样式 |
 | mp-lark | object |  | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 飞书小程序特有配置 |
-| usingComponents | object |  | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 引用小程序组件，参考 [小程序组件https://uniapp.dcloud.net.cn/tutorial/miniprogram-subject.html#小程序自定义组件支持)。 |
+| usingComponents | object |  | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 引用小程序组件，参考 [小程序组件](https://uniapp.dcloud.net.cn/tutorial/miniprogram-subject.html#小程序自定义组件支持)。 |
 | leftWindow | boolean | true | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 当存在 leftWindow时，当前页面是否显示 leftWindow |
 | topWindow | boolean | true | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 当存在 topWindow时，当前页面是否显示 topWindow |
 | rightWindow | boolean | true | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 当存在 rightWindow时，当前页面是否显示 rightWindow |
@@ -751,7 +751,7 @@ Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; Har
 | mp-kuaishou | object |  | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 快手小程序特有配置 |
 | mp-jd | object |  | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 设置编译到 mp-jd 平台的特定样式 |
 | mp-lark | object |  | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 飞书小程序特有配置 |
-| usingComponents | object |  | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 引用小程序组件，参考 [小程序组件https://uniapp.dcloud.net.cn/tutorial/miniprogram-subject.html#小程序自定义组件支持)。 |
+| usingComponents | object |  | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 引用小程序组件，参考 [小程序组件](https://uniapp.dcloud.net.cn/tutorial/miniprogram-subject.html#小程序自定义组件支持)。 |
 | leftWindow | boolean | true | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 当存在 leftWindow时，当前页面是否显示 leftWindow |
 | topWindow | boolean | true | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 当存在 topWindow时，当前页面是否显示 topWindow |
 | rightWindow | boolean | true | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 当存在 rightWindow时，当前页面是否显示 rightWindow |
