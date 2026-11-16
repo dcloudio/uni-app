@@ -29,7 +29,7 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.
 | password | boolean | false | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 是否是密码类型 |
 | placeholder | string | "" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 输入框为空时占位符 |
 | placeholder-style | string | "" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 指定 placeholder 的样式 |
-| placeholder-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 指定 placeholder 的样式类 |
+| placeholder-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 指定 placeholder 的样式类 |
 | maxlength | string \| number | -1 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 最大输入长度，0和正数为合法值，非法值的时候不限制最大长度 |
 | cursor-spacing | number | 0 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 指定光标与键盘的距离，单位 px 。取 input 距离底部的距离和 cursor-spacing 指定的距离的最小值作为光标与键盘的距离 |
 | cursor-color | string([string.ColorString](/uts/data-type.md#ide-string)) | "" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.99; iOS: 4.11; HarmonyOS: 4.61 | 指定光标颜色 |

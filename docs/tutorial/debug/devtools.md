@@ -63,7 +63,7 @@ HBuilderX 会打开独立的 DevTools 窗口。应用尚未连接时，窗口会
 ::: warning 当前限制
 Elements 当前使用页面快照，页面内新增、删除或修改节点后不会自动同步。请点击窗口左上角的刷新按钮查看最新内容。切换页面不需要手动刷新。
 
-Android、iOS 平台的 `view`、`text`、`image` 和 `scroll-view`，目前仅显示已设置的 `id` 和 `class` 属性，其他属性将在后续版本中完善。
+Android、iOS 平台的 `view`、`text`、`image` 和 `scroll-view`，HBuilder 5.33 之前仅显示已设置的 `id` 和 `class` 属性，HBuilderX 5.33+ 支持显示所有属性。
 :::
 
 刷新后 DevTools 会按照节点路径恢复此前展开的内容。节点结构发生较大变化时，无法匹配的节点需要重新展开。
