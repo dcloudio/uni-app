@@ -53,6 +53,47 @@ describe('compiler: root', () => {
       { isX: true }
     )
   })
+  test.each(['input', 'textarea'])(
+    'x: root %s skips status bar and safe area CSS variables',
+    (tag) => {
+      assert(
+        `<${tag}/>`,
+        `<${tag}/>`,
+        `(_ctx, _cache) => { "raw js"
+  const __returned__ = {}
+  return __returned__
+}`,
+        { isX: true }
+      )
+      assert(
+        `<${tag} style="color:red"/>`,
+        `<${tag} style="color:red"/>`,
+        `(_ctx, _cache) => { "raw js"
+  const __returned__ = {}
+  return __returned__
+}`,
+        { isX: true }
+      )
+      assert(
+        `<${tag} :style="foo"/>`,
+        `<${tag} style="{{a}}"/>`,
+        `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: _s(_ctx.foo) }
+  return __returned__
+}`,
+        { isX: true }
+      )
+      assert(
+        `<template v-if="ok"><${tag}/></template>`,
+        `<block wx:if="{{a}}"><${tag}/></block>`,
+        `(_ctx, _cache) => { "raw js"
+  const __returned__ = _e({ a: _ctx.ok }, _ctx.ok ? {} : {})
+  return __returned__
+}`,
+        { isX: true }
+      )
+    }
+  )
   test('root with static style', () => {
     assert(
       `<view style="color:red"/>`,
