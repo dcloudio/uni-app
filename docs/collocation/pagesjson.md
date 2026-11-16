@@ -351,7 +351,6 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.
 	* 系统导航栏的背景颜色与backgroundColorContent颜色一致，导航栏的前景色会根据backgroundColorContent颜色自动适配 (4.21版本开始支持)
 	* tabBar页面的系统导航栏背景颜色取值策略[参考](#tabbar-tips)
 	* 系统导航栏为全面屏手势时，HBuilderX4.31版本调整页面内容可以渲染到手势指示条区域（低版本页面内容会自动避开手势指示条区域），如需适配可以通过[uni.getWindowInfo](../api/get-window-info.md)获取安全区域底部插入位置信息进行适配
-	* HBuilderX4.41版本起，App-Android平台支持配置页面内容是否渲染到虚拟按键区域，但横屏时会默认渲染到该区域且无法修改此行为，属于当前版本遗留问题，后续修复。
 
 **style示例**
 ```javascript
