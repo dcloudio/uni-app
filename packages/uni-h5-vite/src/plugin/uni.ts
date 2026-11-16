@@ -58,7 +58,14 @@ export const compilerOptions = {
 export function createUni(): UniVitePlugin['uni'] {
   return {
     copyOptions: {
-      assets: ['hybrid/html/**/*', 'uni_modules/*/hybrid/html/**/*'],
+      assets: [
+        'hybrid/html/**/*',
+        'uni_modules/*/hybrid/html/**/*',
+        // UASM 的 Worker、WASM 及依赖在发行时整体复制，开发时由 Vite 提供访问。
+        ...(process.env.UNI_APP_X === 'true'
+          ? ['uni_modules/*/uasm/web/workers/**/*']
+          : []),
+      ],
     },
     compilerOptions,
     jsxOptions: {
