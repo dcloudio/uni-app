@@ -186,12 +186,12 @@ Web: x; 微信小程序: x; 支付宝小程序: 5.31; Android: x; iOS: x; Harmon
 | :- | :- | :- | :- | :- |
 | allowsBounceVertical | 'YES' \| 'NO' | "YES" | 否 | 是否允许向下拉拽。支持 YES / NO |
 | transparentTitle | 'always' \| 'auto' \| 'none' | "none" | 否 | 导航栏透明设置。支持 always 一直透明 / auto 滑动自适应 / none 不透明 |
-| titlePenetrate | 'YES' \| 'NO' | "No" | 否 | 导航栏点击穿透 |
-| showTitleLoading | 'YES' \| 'NO' | "No" | 否 | 是否进入时显示导航栏的 loading。支持 YES / NO |
+| titlePenetrate | 'YES' \| 'NO' | "NO" | 否 | 导航栏点击穿透 |
+| showTitleLoading | 'YES' \| 'NO' | "NO" | 否 | 是否进入时显示导航栏的 loading。支持 YES / NO |
 | titleImage | string |  | 否 | 导航栏图片地址，替换导航栏标题，必须为https的图片链接地址 |
 | backgroundImageUrl | string ([string.ImageURIString](/uts/data-type.md#ide-string)) |  | 否 | 下拉露出显示的背景图链接 |
 | backgroundImageColor | string ([string.ColorString](/uts/data-type.md#ide-string)) |  | 否 | 下拉露出显示的背景图底色 |
-| gestureBack | 'YES' \| 'NO' | "No" | 否 | 支付宝小程序 iOS 用，是否支持手势返回。支持 YES / NO |
+| gestureBack | 'YES' \| 'NO' | "NO" | 否 | 支付宝小程序 iOS 用，是否支持手势返回。支持 YES / NO |
 | enableScrollBar | 'YES' \| 'NO' | "YES" | 否 | 支付宝小程序 Android 用，是否显示 WebView 滚动条。支持 YES / NO。 |
 
 支付宝小程序默认开启页面回弹，可能影响触摸事件；可以将 `allowsBounceVertical` 配置为 `NO` 关闭页面回弹。
@@ -404,12 +404,12 @@ Web: x; 微信小程序: x; 支付宝小程序: 5.31; Android: x; iOS: x; Harmon
 | :- | :- | :- | :- | :- |
 | allowsBounceVertical | 'YES' \| 'NO' | "YES" | 否 | 是否允许向下拉拽。支持 YES / NO |
 | transparentTitle | 'always' \| 'auto' \| 'none' | "none" | 否 | 导航栏透明设置。支持 always 一直透明 / auto 滑动自适应 / none 不透明 |
-| titlePenetrate | 'YES' \| 'NO' | "No" | 否 | 导航栏点击穿透 |
-| showTitleLoading | 'YES' \| 'NO' | "No" | 否 | 是否进入时显示导航栏的 loading。支持 YES / NO |
+| titlePenetrate | 'YES' \| 'NO' | "NO" | 否 | 导航栏点击穿透 |
+| showTitleLoading | 'YES' \| 'NO' | "NO" | 否 | 是否进入时显示导航栏的 loading。支持 YES / NO |
 | titleImage | string |  | 否 | 导航栏图片地址，替换导航栏标题，必须为https的图片链接地址 |
 | backgroundImageUrl | string ([string.ImageURIString](/uts/data-type.md#ide-string)) |  | 否 | 下拉露出显示的背景图链接 |
 | backgroundImageColor | string ([string.ColorString](/uts/data-type.md#ide-string)) |  | 否 | 下拉露出显示的背景图底色 |
-| gestureBack | 'YES' \| 'NO' | "No" | 否 | 支付宝小程序 iOS 用，是否支持手势返回。支持 YES / NO |
+| gestureBack | 'YES' \| 'NO' | "NO" | 否 | 支付宝小程序 iOS 用，是否支持手势返回。支持 YES / NO |
 | enableScrollBar | 'YES' \| 'NO' | "YES" | 否 | 支付宝小程序 Android 用，是否显示 WebView 滚动条。支持 YES / NO。 |
 
 
