@@ -1,0 +1,2268 @@
+<template>
+	<view style="position: relative;">
+		<!-- 触发区，默认插槽可替换 -->
+		<view class="cp-trigger" ref="anchorRef" @click="onTriggerClick"
+			<!-- #ifdef WEB -->
+			:tabindex="props.disabled ? '-1' : '0'"
+			@keydown="onTriggerKeydown"
+			<!-- #endif -->
+		>
+			<slot :start="committedStart" :end="committedEnd" :text="displayText">
+				<view class="uni-field-default" :class="[props.inputClass, props.disabled ? 'cp-trigger-disabled' : '']">
+					<text flatten class="uni-result-text"
+						:class="hasDisplayValue ? 'cp-trigger-value' : 'cp-trigger-placeholder'">{{ displayText }}</text>
+					<text class="uni-down-arrow-iconfont" :class="props.arrowClass">{{'\uE601'}}</text>
+					<!-- <view class="uni-arrow-wrap" flatten>
+						<view class="uni-arrow" flatten></view>
+					</view> -->
+				</view>
+			</slot>
+		</view>
+
+		<!-- 遮罩，宽屏下无过渡动画 -->
+		<view v-if="isOpened" class="cp-mask" :class="[props.maskClass, active ? 'cp-mask-active' : '']"
+			@click="close" />
+
+		<!-- 弹层 -->
+		<view v-if="isOpened" class="cp-popup"
+			:class="[props.popClass, active ? 'cp-popup-active' : '', dragTransitionOff ? 'cp-popup-dragging' : '']"
+			:style="popupStyle">
+			<view class="cp-header" @touchstart="onHeaderTouchStart" @touchmove="onHeaderTouchMove"
+				@touchend="onTouchEnd" @touchcancel="onTouchEnd">
+				<view class="cp-close" :class="[props.cancelClass, props.confirm ? 'cp-close-cancel' : '']" @click="close"
+					<!-- #ifdef WEB -->
+					tabindex="0"
+					@keydown="onCloseKeydown"
+					<!-- #endif -->
+				>
+					<template v-if="props.confirm">
+						<text flatten class="cp-cancel-text">{{ cancelText }}</text>
+					</template>
+					<template v-else>
+						<view class="cp-close-line" flatten></view>
+						<view class="cp-close-line cp-close-line-rotate" flatten></view>
+					</template>
+				</view>
+				<view class="cp-title-wrap" :class="props.confirm ? 'cp-title-wrap-confirm' : ''">
+					<slot name="title">
+						<text flatten class="cp-title">{{ props.title }}</text>
+					</slot>
+				</view>
+				<view v-if="props.confirm" class="cp-confirm-action" @click="onConfirmClick"
+					<!-- #ifdef WEB -->
+					tabindex="0"
+					@keydown="onConfirmKeydown"
+					<!-- #endif -->
+				>
+					<text flatten class="cp-confirm-text">{{ confirmText }}</text>
+				</view>
+			</view>
+
+			<view class="cp-body" @touchstart="onBodyTouchStart" @touchmove="onBodyTouchMove"
+				@touchend="onTouchEnd" @touchcancel="onTouchEnd">
+				<scroll-view class="cp-scroll" :show-scrollbar="false" @scroll="onBodyScroll">
+					<view :class="[props.range ? 'cp-calendars-range' : 'cp-calendars-single', isWideLayout ? 'cp-calendars-wide' : '']">
+						<!-- 单日选择：一个日历 -->
+						<view v-if="!props.range" class="cp-cal cp-cal-single">
+							<uni-calendar-view :date="firstMonth" :compact="compactMode" :model-value="selectedDate"
+								:min-date="props.minDate" :max-date="props.maxDate" :locale="props.locale"
+								:week-start="props.weekStart" :holidays="props.holidays" :day-extras="props.dayExtras"
+								:year-month-class="props.yearMonthClass"
+								:year-month-arrow-class="props.yearMonthArrowClass" :week-class="props.weekClass"
+								:week-item-class="props.weekItemClass" :day-class="props.dayClass"
+								:day-selected-class="props.daySelectedClass"
+								@update:model-value="onViewModelValueUpdate" />
+						</view>
+
+						<!-- 范围选择：两个日历共享同一份区间，各自独立翻月 -->
+						<!-- 传入首尾插槽时使用带插槽透传的日历；未传入时使用无插槽版本，避免影响标签文案回退 -->
+						<!-- 微信小程序同名插槽只接受第一个，故按当前展示月份把首尾插槽排他地路由到对应日历 -->
+						<template v-if="props.range && hasRangeSlots">
+							<view class="cp-cal cp-cal-range" :class="isWideLayout ? 'cp-cal-wide' : ''">
+								<uni-calendar-view :date="firstMonth" range :compact="compactMode" :range-start="rangeStart"
+									:range-end="rangeEnd" :min-date="props.minDate" :max-date="props.maxDate"
+									:locale="props.locale" :week-start="props.weekStart" :holidays="props.holidays"
+									:day-extras="props.dayExtras" :range-start-label="props.rangeStartLabel"
+									:range-end-label="props.rangeEndLabel" :range-class="props.rangeClass"
+									:range-label-class="props.rangeLabelClass" :year-month-class="props.yearMonthClass"
+									:year-month-arrow-class="props.yearMonthArrowClass" :week-class="props.weekClass"
+									:week-item-class="props.weekItemClass" :day-class="props.dayClass"
+									:day-selected-class="props.daySelectedClass"
+									@update:range-start="onViewRangeStartUpdate"
+									@update:range-end="onViewRangeEndUpdate" @range-change="onRangeChange"
+									@month-change="onFirstPaneMonthChange">
+									<template v-if="hasStartSlot" #range-start="slotProps">
+										<slot v-if="!startOwnedBySecond" name="range-start" :date="slotProps.date"
+											:start="slotProps.start" :end="slotProps.end" />
+										<view v-else class="cp-range-label-filler" flatten></view>
+									</template>
+									<template v-if="hasEndSlot" #range-end="slotProps">
+										<slot v-if="!endOwnedBySecond" name="range-end" :date="slotProps.date"
+											:start="slotProps.start" :end="slotProps.end" />
+										<view v-else class="cp-range-label-filler" flatten></view>
+									</template>
+								</uni-calendar-view>
+							</view>
+							<view class="cp-cal cp-cal-range" :class="isWideLayout ? 'cp-cal-wide cp-cal-wide-second' : ''">
+								<uni-calendar-view :date="secondMonth" range :compact="compactMode" :range-start="rangeStart"
+									:range-end="rangeEnd" :min-date="props.minDate" :max-date="props.maxDate"
+									:locale="props.locale" :week-start="props.weekStart" :holidays="props.holidays"
+									:day-extras="props.dayExtras" :range-start-label="props.rangeStartLabel"
+									:range-end-label="props.rangeEndLabel" :range-class="props.rangeClass"
+									:range-label-class="props.rangeLabelClass" :year-month-class="props.yearMonthClass"
+									:year-month-arrow-class="props.yearMonthArrowClass" :week-class="props.weekClass"
+									:week-item-class="props.weekItemClass" :day-class="props.dayClass"
+									:day-selected-class="props.daySelectedClass"
+									@update:range-start="onViewRangeStartUpdate"
+									@update:range-end="onViewRangeEndUpdate" @range-change="onRangeChange"
+									@month-change="onSecondPaneMonthChange">
+									<template v-if="hasStartSlot" #range-start="slotProps">
+										<slot v-if="startOwnedBySecond" name="range-start" :date="slotProps.date"
+											:start="slotProps.start" :end="slotProps.end" />
+										<view v-else class="cp-range-label-filler" flatten></view>
+									</template>
+									<template v-if="hasEndSlot" #range-end="slotProps">
+										<slot v-if="endOwnedBySecond" name="range-end" :date="slotProps.date"
+											:start="slotProps.start" :end="slotProps.end" />
+										<view v-else class="cp-range-label-filler" flatten></view>
+									</template>
+								</uni-calendar-view>
+							</view>
+						</template>
+						<template v-if="props.range && !hasRangeSlots">
+							<view class="cp-cal cp-cal-range" :class="isWideLayout ? 'cp-cal-wide' : ''">
+								<uni-calendar-view :date="firstMonth" range :compact="compactMode" :range-start="rangeStart"
+									:range-end="rangeEnd" :min-date="props.minDate" :max-date="props.maxDate"
+									:locale="props.locale" :week-start="props.weekStart" :holidays="props.holidays"
+									:day-extras="props.dayExtras" :range-start-label="props.rangeStartLabel"
+									:range-end-label="props.rangeEndLabel" :range-class="props.rangeClass"
+									:range-label-class="props.rangeLabelClass" :year-month-class="props.yearMonthClass"
+									:year-month-arrow-class="props.yearMonthArrowClass" :week-class="props.weekClass"
+									:week-item-class="props.weekItemClass" :day-class="props.dayClass"
+									:day-selected-class="props.daySelectedClass"
+									@update:range-start="onViewRangeStartUpdate"
+									@update:range-end="onViewRangeEndUpdate" @range-change="onRangeChange" />
+							</view>
+							<view class="cp-cal cp-cal-range" :class="isWideLayout ? 'cp-cal-wide cp-cal-wide-second' : ''">
+								<uni-calendar-view :date="secondMonth" range :compact="compactMode" :range-start="rangeStart"
+									:range-end="rangeEnd" :min-date="props.minDate" :max-date="props.maxDate"
+									:locale="props.locale" :week-start="props.weekStart" :holidays="props.holidays"
+									:day-extras="props.dayExtras" :range-start-label="props.rangeStartLabel"
+									:range-end-label="props.rangeEndLabel" :range-class="props.rangeClass"
+									:range-label-class="props.rangeLabelClass" :year-month-class="props.yearMonthClass"
+									:year-month-arrow-class="props.yearMonthArrowClass" :week-class="props.weekClass"
+									:week-item-class="props.weekItemClass" :day-class="props.dayClass"
+									:day-selected-class="props.daySelectedClass"
+									@update:range-start="onViewRangeStartUpdate"
+									@update:range-end="onViewRangeEndUpdate" @range-change="onRangeChange" />
+							</view>
+						</template>
+					</view>
+				</scroll-view>
+			</view>
+
+			<!-- 确认模式底部预览区 -->
+			<view v-if="props.confirm" flatten class="cp-footer":class="props.previewResultClass">
+				<text v-if="!props.range" flatten class="cp-preview-text"
+					:class="props.previewResultTextClass">{{ selectedDate }}</text>
+				<template v-else>
+					<text flatten class="cp-preview-text"
+						:class="props.previewResultTextClass">{{ rangeStart }}</text>
+					<text flatten class="cp-preview-text"
+						:class="props.previewResultTextClass">{{ rangeEnd }}</text>
+				</template>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script setup lang="ts">
+/**
+ * 日历选择器
+ * @description 点击触发区弹出日历弹层，支持单日选择与首尾日期范围选择；手机端（含宽屏与 Pad）统一为底部弹层，Web 宽屏（宽度不小于 700px）为锚定触发区的弹层，支持返回键与下拉关闭
+ * @uniPlatform {
+ *   "app": {
+ *     "android": {"unixVaporVer": "5.35"},
+ *     "ios": {"unixVaporVer": "5.35"},
+ *     "harmony": {"unixVaporVer": "5.35"}
+ *   },
+ *   "mp": {
+ *     "weixin": {"unixVer": "5.35"},
+ *     "alipay": {"unixVer": "5.35"}
+ *   },
+ *   "web": {"unixVer": "5.35"}
+ * }
+ */
+
+type CalendarDayExtra = {
+	/**
+	 * @description 日期，格式 YYYY-MM-DD
+	 */
+	date : string
+	/**
+	 * @description 日期数字上方显示的文字
+	 */
+	top ?: string
+	/**
+	 * @description 日期数字下方显示的文字
+	 */
+	bottom ?: string
+}
+
+type CalendarRange = {
+	/**
+	 * @description 范围开始日期，格式 YYYY-MM-DD
+	 */
+	start : string
+	/**
+	 * @description 范围结束日期，格式 YYYY-MM-DD
+	 */
+	end : string
+}
+
+type PickerLocaleMessages = {
+	/**
+	 * @description 确定按钮文字
+	 */
+	confirm : string
+	/**
+	 * @description 取消按钮文字
+	 */
+	cancel : string
+}
+
+type Props = {
+	/**
+	 * @description 是否开启日期范围选择
+	 * @default false
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.35"},
+	 *     "ios": {"unixVaporVer": "5.35"},
+	 *     "harmony": {"unixVaporVer": "5.35"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.35"},
+	 *     "alipay": {"unixVer": "5.35"}
+	 *   },
+	 *   "web": {"unixVer": "5.35"}
+	 * }
+	 */
+	range ?: boolean
+	/**
+	 * @description 单选值，格式 YYYY-MM-DD，支持 v-model；range 为 true 时忽略
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.35"},
+	 *     "ios": {"unixVaporVer": "5.35"},
+	 *     "harmony": {"unixVaporVer": "5.35"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.35"},
+	 *     "alipay": {"unixVer": "5.35"}
+	 *   },
+	 *   "web": {"unixVer": "5.35"}
+	 * }
+	 */
+	modelValue ?: string
+	/**
+	 * @description 范围开始日期，格式 YYYY-MM-DD，支持 v-model:range-start
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.35"},
+	 *     "ios": {"unixVaporVer": "5.35"},
+	 *     "harmony": {"unixVaporVer": "5.35"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.35"},
+	 *     "alipay": {"unixVer": "5.35"}
+	 *   },
+	 *   "web": {"unixVer": "5.35"}
+	 * }
+	 */
+	rangeStart ?: string
+	/**
+	 * @description 范围结束日期，格式 YYYY-MM-DD，支持 v-model:range-end
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.35"},
+	 *     "ios": {"unixVaporVer": "5.35"},
+	 *     "harmony": {"unixVaporVer": "5.35"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.35"},
+	 *     "alipay": {"unixVer": "5.35"}
+	 *   },
+	 *   "web": {"unixVer": "5.35"}
+	 * }
+	 */
+	rangeEnd ?: string
+	/**
+	 * @description 未选择日期时的占位文字，组件不提供内置文案
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.35"},
+	 *     "ios": {"unixVaporVer": "5.35"},
+	 *     "harmony": {"unixVaporVer": "5.35"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.35"},
+	 *     "alipay": {"unixVer": "5.35"}
+	 *   },
+	 *   "web": {"unixVer": "5.35"}
+	 * }
+	 */
+	placeholder ?: string
+	/**
+	 * @description 弹层标题文字，组件不提供内置文案
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.35"},
+	 *     "ios": {"unixVaporVer": "5.35"},
+	 *     "harmony": {"unixVaporVer": "5.35"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.35"},
+	 *     "alipay": {"unixVer": "5.35"}
+	 *   },
+	 *   "web": {"unixVer": "5.35"}
+	 * }
+	 */
+	title ?: string
+	/**
+	 * @description 语言标识，透传给日历视图
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.35"},
+	 *     "ios": {"unixVaporVer": "5.35"},
+	 *     "harmony": {"unixVaporVer": "5.35"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.35"},
+	 *     "alipay": {"unixVer": "5.35"}
+	 *   },
+	 *   "web": {"unixVer": "5.35"}
+	 * }
+	 */
+	locale ?: string
+	/**
+	 * @description 一周起始日，透传给日历视图；-1 表示按语言自动适配
+	 * @default -1
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.35"},
+	 *     "ios": {"unixVaporVer": "5.35"},
+	 *     "harmony": {"unixVaporVer": "5.35"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.35"},
+	 *     "alipay": {"unixVer": "5.35"}
+	 *   },
+	 *   "web": {"unixVer": "5.35"}
+	 * }
+	 */
+	weekStart ?: number
+	/**
+	 * @description 可选的最小日期，格式 YYYY-MM-DD，透传给日历视图
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.35"},
+	 *     "ios": {"unixVaporVer": "5.35"},
+	 *     "harmony": {"unixVaporVer": "5.35"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.35"},
+	 *     "alipay": {"unixVer": "5.35"}
+	 *   },
+	 *   "web": {"unixVer": "5.35"}
+	 * }
+	 */
+	minDate ?: string
+	/**
+	 * @description 可选的最大日期，格式 YYYY-MM-DD，透传给日历视图
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.35"},
+	 *     "ios": {"unixVaporVer": "5.35"},
+	 *     "harmony": {"unixVaporVer": "5.35"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.35"},
+	 *     "alipay": {"unixVer": "5.35"}
+	 *   },
+	 *   "web": {"unixVer": "5.35"}
+	 * }
+	 */
+	maxDate ?: string
+	/**
+	 * @description 节假日日期列表，格式 YYYY-MM-DD，透传给日历视图
+	 * @default []
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.35"},
+	 *     "ios": {"unixVaporVer": "5.35"},
+	 *     "harmony": {"unixVaporVer": "5.35"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.35"},
+	 *     "alipay": {"unixVer": "5.35"}
+	 *   },
+	 *   "web": {"unixVer": "5.35"}
+	 * }
+	 */
+	holidays ?: string[]
+	/**
+	 * @description 日期附加文字列表，透传给日历视图
+	 * @default []
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.35"},
+	 *     "ios": {"unixVaporVer": "5.35"},
+	 *     "harmony": {"unixVaporVer": "5.35"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.35"},
+	 *     "alipay": {"unixVer": "5.35"}
+	 *   },
+	 *   "web": {"unixVer": "5.35"}
+	 * }
+	 */
+	dayExtras ?: CalendarDayExtra[]
+	/**
+	 * @description 范围开始日期上方的标签文字，透传给日历视图
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.35"},
+	 *     "ios": {"unixVaporVer": "5.35"},
+	 *     "harmony": {"unixVaporVer": "5.35"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.35"},
+	 *     "alipay": {"unixVer": "5.35"}
+	 *   },
+	 *   "web": {"unixVer": "5.35"}
+	 * }
+	 */
+	rangeStartLabel ?: string
+	/**
+	 * @description 范围结束日期上方的标签文字，透传给日历视图
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.35"},
+	 *     "ios": {"unixVaporVer": "5.35"},
+	 *     "harmony": {"unixVaporVer": "5.35"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.35"},
+	 *     "alipay": {"unixVer": "5.35"}
+	 *   },
+	 *   "web": {"unixVer": "5.35"}
+	 * }
+	 */
+	rangeEndLabel ?: string
+	/**
+	 * @description 是否开启确认模式：弹层底部显示已选日期预览（范围模式分别显示开始与结束日期），左上角变为取消、右上角为确定；点击确定才提交选择并关闭弹层，点取消、遮罩、返回键等关闭方式不会提交选择
+	 * @default false
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.35"},
+	 *     "ios": {"unixVaporVer": "5.35"},
+	 *     "harmony": {"unixVaporVer": "5.35"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.35"},
+	 *     "alipay": {"unixVer": "5.35"}
+	 *   },
+	 *   "web": {"unixVer": "5.35"}
+	 * }
+	 */
+	confirm ?: boolean
+	/**
+	 * @description 是否禁用触发区
+	 * @default false
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.35"},
+	 *     "ios": {"unixVaporVer": "5.35"},
+	 *     "harmony": {"unixVaporVer": "5.35"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.35"},
+	 *     "alipay": {"unixVer": "5.35"}
+	 *   },
+	 *   "web": {"unixVer": "5.35"}
+	 * }
+	 */
+	disabled ?: boolean
+	/**
+	 * @description 弹层容器的样式类，作用于弹层根节点
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.35"},
+	 *     "ios": {"unixVaporVer": "5.35"},
+	 *     "harmony": {"unixVaporVer": "5.35"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.35"},
+	 *     "alipay": {"unixVer": "5.35"}
+	 *   },
+	 *   "web": {"unixVer": "5.35"}
+	 * }
+	 */
+	popClass ?: string.ClassString
+	/**
+	 * @description 遮罩层的样式类
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.35"},
+	 *     "ios": {"unixVaporVer": "5.35"},
+	 *     "harmony": {"unixVaporVer": "5.35"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.35"},
+	 *     "alipay": {"unixVer": "5.35"}
+	 *   },
+	 *   "web": {"unixVer": "5.35"}
+	 * }
+	 */
+	maskClass ?: string.ClassString
+	/**
+	 * @description 默认触发区的样式类，仅在使用默认触发区时生效
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.35"},
+	 *     "ios": {"unixVaporVer": "5.35"},
+	 *     "harmony": {"unixVaporVer": "5.35"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.35"},
+	 *     "alipay": {"unixVer": "5.35"}
+	 *   },
+	 *   "web": {"unixVer": "5.35"}
+	 * }
+	 */
+	inputClass ?: string.ClassString
+	/**
+	 * @description 弹层关闭按钮的样式类
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.35"},
+	 *     "ios": {"unixVaporVer": "5.35"},
+	 *     "harmony": {"unixVaporVer": "5.35"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.35"},
+	 *     "alipay": {"unixVer": "5.35"}
+	 *   },
+	 *   "web": {"unixVer": "5.35"}
+	 * }
+	 */
+	cancelClass ?: string.ClassString
+	/**
+	 * @description 确认模式底部预览结果区域的样式类，仅 confirm 为 true 时生效
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.35"},
+	 *     "ios": {"unixVaporVer": "5.35"},
+	 *     "harmony": {"unixVaporVer": "5.35"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.35"},
+	 *     "alipay": {"unixVer": "5.35"}
+	 *   },
+	 *   "web": {"unixVer": "5.35"}
+	 * }
+	 */
+	previewResultClass ?: string.ClassString
+	/**
+	 * @description 确认模式底部预览结果文字的样式类，仅 confirm 为 true 时生效
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.35"},
+	 *     "ios": {"unixVaporVer": "5.35"},
+	 *     "harmony": {"unixVaporVer": "5.35"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.35"},
+	 *     "alipay": {"unixVer": "5.35"}
+	 *   },
+	 *   "web": {"unixVer": "5.35"}
+	 * }
+	 */
+	previewResultTextClass ?: string.ClassString
+	/**
+	 * @description 日历年月标题的样式类，透传给日历视图
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.35"},
+	 *     "ios": {"unixVaporVer": "5.35"},
+	 *     "harmony": {"unixVaporVer": "5.35"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.35"},
+	 *     "alipay": {"unixVer": "5.35"}
+	 *   },
+	 *   "web": {"unixVer": "5.35"}
+	 * }
+	 */
+	yearMonthClass ?: string.ClassString
+	/**
+	 * @description 日历年月切换箭头的样式类，透传给日历视图
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.35"},
+	 *     "ios": {"unixVaporVer": "5.35"},
+	 *     "harmony": {"unixVaporVer": "5.35"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.35"},
+	 *     "alipay": {"unixVer": "5.35"}
+	 *   },
+	 *   "web": {"unixVer": "5.35"}
+	 * }
+	 */
+	yearMonthArrowClass ?: string.ClassString
+	/**
+	 * @description 日历星期标题行的样式类，透传给日历视图
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.35"},
+	 *     "ios": {"unixVaporVer": "5.35"},
+	 *     "harmony": {"unixVaporVer": "5.35"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.35"},
+	 *     "alipay": {"unixVer": "5.35"}
+	 *   },
+	 *   "web": {"unixVer": "5.35"}
+	 * }
+	 */
+	weekClass ?: string.ClassString
+	/**
+	 * @description 日历星期标题项的样式类，透传给日历视图
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.35"},
+	 *     "ios": {"unixVaporVer": "5.35"},
+	 *     "harmony": {"unixVaporVer": "5.35"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.35"},
+	 *     "alipay": {"unixVer": "5.35"}
+	 *   },
+	 *   "web": {"unixVer": "5.35"}
+	 * }
+	 */
+	weekItemClass ?: string.ClassString
+	/**
+	 * @description 日历日期单元格的样式类，透传给日历视图
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.35"},
+	 *     "ios": {"unixVaporVer": "5.35"},
+	 *     "harmony": {"unixVaporVer": "5.35"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.35"},
+	 *     "alipay": {"unixVer": "5.35"}
+	 *   },
+	 *   "web": {"unixVer": "5.35"}
+	 * }
+	 */
+	dayClass ?: string.ClassString
+	/**
+	 * @description 日历选中日期的样式类，透传给日历视图
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.35"},
+	 *     "ios": {"unixVaporVer": "5.35"},
+	 *     "harmony": {"unixVaporVer": "5.35"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.35"},
+	 *     "alipay": {"unixVer": "5.35"}
+	 *   },
+	 *   "web": {"unixVer": "5.35"}
+	 * }
+	 */
+	daySelectedClass ?: string.ClassString
+	/**
+	 * @description 范围内中间日期的样式类，透传给日历视图
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.35"},
+	 *     "ios": {"unixVaporVer": "5.35"},
+	 *     "harmony": {"unixVaporVer": "5.35"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.35"},
+	 *     "alipay": {"unixVer": "5.35"}
+	 *   },
+	 *   "web": {"unixVer": "5.35"}
+	 * }
+	 */
+	rangeClass ?: string.ClassString
+	/**
+	 * @description 范围首尾标签容器的样式类，透传给日历视图
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.35"},
+	 *     "ios": {"unixVaporVer": "5.35"},
+	 *     "harmony": {"unixVaporVer": "5.35"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.35"},
+	 *     "alipay": {"unixVer": "5.35"}
+	 *   },
+	 *   "web": {"unixVer": "5.35"}
+	 * }
+	 */
+	rangeLabelClass ?: string.ClassString
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	range: false,
+	modelValue: '',
+	rangeStart: '',
+	rangeEnd: '',
+	placeholder: '',
+	title: '',
+	locale: '',
+	weekStart: -1,
+	minDate: '',
+	maxDate: '',
+	holidays: () : string[] => [] as string[],
+	dayExtras: () : CalendarDayExtra[] => [] as CalendarDayExtra[],
+	rangeStartLabel: '',
+	rangeEndLabel: '',
+	confirm: false,
+	disabled: false,
+	popClass: '',
+	maskClass: '',
+	inputClass: '',
+	cancelClass: '',
+	previewResultClass: '',
+	previewResultTextClass: '',
+	yearMonthClass: '',
+	yearMonthArrowClass: '',
+	weekClass: '',
+	weekItemClass: '',
+	dayClass: '',
+	daySelectedClass: '',
+	rangeClass: '',
+	rangeLabelClass: ''
+})
+
+const emit = defineEmits<{
+	/**
+	 * @description 单选值变化时触发，用于 v-model 双向绑定
+	 * @param date 选中的日期，格式 YYYY-MM-DD
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.35"},
+	 *     "ios": {"unixVaporVer": "5.35"},
+	 *     "harmony": {"unixVaporVer": "5.35"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.35"},
+	 *     "alipay": {"unixVer": "5.35"}
+	 *   },
+	 *   "web": {"unixVer": "5.35"}
+	 * }
+	 */
+	'update:modelValue': [date: string]
+	/**
+	 * @description 范围开始日期变化时触发，用于 v-model:range-start 双向绑定
+	 * @param date 范围开始日期，格式 YYYY-MM-DD，清空时为空字符串
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.35"},
+	 *     "ios": {"unixVaporVer": "5.35"},
+	 *     "harmony": {"unixVaporVer": "5.35"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.35"},
+	 *     "alipay": {"unixVer": "5.35"}
+	 *   },
+	 *   "web": {"unixVer": "5.35"}
+	 * }
+	 */
+	'update:rangeStart': [date: string]
+	/**
+	 * @description 范围结束日期变化时触发，用于 v-model:range-end 双向绑定
+	 * @param date 范围结束日期，格式 YYYY-MM-DD，清空时为空字符串
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.35"},
+	 *     "ios": {"unixVaporVer": "5.35"},
+	 *     "harmony": {"unixVaporVer": "5.35"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.35"},
+	 *     "alipay": {"unixVer": "5.35"}
+	 *   },
+	 *   "web": {"unixVer": "5.35"}
+	 * }
+	 */
+	'update:rangeEnd': [date: string]
+	/**
+	 * @description 选择完成时触发；单选模式参数为日期字符串，范围模式参数为包含 start、end 的对象
+	 * @param value 单选为日期字符串，范围选择为 { start, end } 对象
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.35"},
+	 *     "ios": {"unixVaporVer": "5.35"},
+	 *     "harmony": {"unixVaporVer": "5.35"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.35"},
+	 *     "alipay": {"unixVer": "5.35"}
+	 *   },
+	 *   "web": {"unixVer": "5.35"}
+	 * }
+	 */
+	change: [value: string | CalendarRange]
+	/**
+	 * @description 弹层打开时触发
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.35"},
+	 *     "ios": {"unixVaporVer": "5.35"},
+	 *     "harmony": {"unixVaporVer": "5.35"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.35"},
+	 *     "alipay": {"unixVer": "5.35"}
+	 *   },
+	 *   "web": {"unixVer": "5.35"}
+	 * }
+	 */
+	popupopened: []
+	/**
+	 * @description 弹层关闭时触发
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.35"},
+	 *     "ios": {"unixVaporVer": "5.35"},
+	 *     "harmony": {"unixVaporVer": "5.35"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.35"},
+	 *     "alipay": {"unixVer": "5.35"}
+	 *   },
+	 *   "web": {"unixVer": "5.35"}
+	 * }
+	 */
+	popupclosed: []
+}>()
+
+defineSlots<{
+	/**
+	 * @description 自定义触发区，未提供时使用默认触发区
+	 * @param start 范围开始日期
+	 * @param end 范围结束日期
+	 * @param text 当前展示文字
+	 */
+	default(props : { start : string, end : string, text : string }) : any
+	/**
+	 * @description 自定义弹层标题
+	 */
+	title() : any
+	/**
+	 * @description 自定义范围开始日期上方的标签
+	 * @param date 当前日期
+	 * @param start 范围开始日期
+	 * @param end 范围结束日期
+	 */
+	'range-start'(props : { date : string, start : string, end : string }) : any
+	/**
+	 * @description 自定义范围结束日期上方的标签
+	 * @param date 当前日期
+	 * @param start 范围开始日期
+	 * @param end 范围结束日期
+	 */
+	'range-end'(props : { date : string, start : string, end : string }) : any
+}>()
+
+defineOptions({
+	name: 'uni-calendar-picker',
+	externalClasses: [
+		'pop-class',
+		'mask-class',
+		'input-class',
+		'cancel-class',
+		'preview-result-class',
+		'preview-result-text-class',
+		'year-month-class',
+		'year-month-arrow-class',
+		'week-class',
+		'week-item-class',
+		'day-class',
+		'day-selected-class',
+		'range-class',
+		'range-label-class'
+	]
+})
+
+const slots = useSlots()
+
+const hasStartSlot = computed<boolean>(() : boolean => {
+	return slots['range-start'] != null
+})
+
+const hasEndSlot = computed<boolean>(() : boolean => {
+	return slots['range-end'] != null
+})
+
+const hasRangeSlots = computed<boolean>(() : boolean => {
+	return hasStartSlot.value || hasEndSlot.value
+})
+
+// 日历是否需要三段式单元格布局（日期附加文字或范围首尾标签），与日历视图内部的判断保持一致
+const hasCellLayout = computed<boolean>(() : boolean => {
+	if (props.dayExtras.length > 0) {
+		return true
+	}
+	if (!props.range) {
+		return false
+	}
+	return hasRangeSlots.value || props.rangeStartLabel.length > 0 || props.rangeEndLabel.length > 0
+})
+
+const pickerLocaleMessages = computed<PickerLocaleMessages>(() : PickerLocaleMessages => {
+	const locale = props.locale
+	let key = 'en'
+	if (locale != null && locale.length > 0) {
+		key = normalizePickerLocaleKey(locale.toLowerCase())
+	} else {
+		const appLanguage = (uni.getAppBaseInfo().appLanguage ?? 'en').toLowerCase()
+		key = normalizePickerLocaleKey(appLanguage)
+	}
+	if (key == 'zh-hans') {
+		return {
+			confirm: '确定',
+			cancel: '取消'
+		}
+	}
+	if (key == 'zh-hant') {
+		return {
+			confirm: '確定',
+			cancel: '取消'
+		}
+	}
+	if (key == 'fr') {
+		return {
+			confirm: 'Confirmer',
+			cancel: 'Annuler'
+		}
+	}
+	if (key == 'la') {
+		return {
+			confirm: 'Confirma',
+			cancel: 'Annulla'
+		}
+	}
+	return {
+		confirm: 'Confirm',
+		cancel: 'Cancel'
+	}
+})
+
+const confirmText = computed<string>(() : string => {
+	return pickerLocaleMessages.value.confirm
+})
+
+const cancelText = computed<string>(() : string => {
+	return pickerLocaleMessages.value.cancel
+})
+
+// 紧凑弹层模式：0 = 普通，1 = 纯文本紧凑（单元格 36），2 = 三段式紧凑（单元格 44）
+const compactMode = ref(0)
+
+// 宽屏布局状态：App 与小程序的 @media 不支持宽度媒体特性，改用运行时计算并在打开时固定
+const isWideLayout = ref(false)
+
+function padZero(value : number) : string {
+	return value < 10 ? '0' + value.toString() : value.toString()
+}
+
+function normalizePickerLocaleKey(language : string) : string {
+	if (language.indexOf('zh-hant') == 0 || language.indexOf('zh-tw') == 0 ||
+		language.indexOf('zh-hk') == 0 || language.indexOf('zh-mo') == 0) {
+		return 'zh-hant'
+	}
+	if (language.indexOf('zh') == 0) {
+		return 'zh-hans'
+	}
+	if (language.indexOf('fr') == 0) {
+		return 'fr'
+	}
+	if (language.indexOf('la') == 0) {
+		return 'la'
+	}
+	return 'en'
+}
+
+function normalizeDate(value : string) : string {
+	if (value == null || value.length < 10) {
+		return ''
+	}
+	const parts = value.split('-')
+	if (parts.length < 3) {
+		return ''
+	}
+	const year = parseInt(parts[0])
+	const month = parseInt(parts[1])
+	const day = parseInt(parts[2])
+	if (isNaN(year) || isNaN(month) || isNaN(day)) {
+		return ''
+	}
+	if (month < 1 || month > 12 || day < 1 || day > 31) {
+		return ''
+	}
+	return value
+}
+
+function todayMonthKey() : string {
+	const today = new Date()
+	return `${today.getFullYear()}-${padZero(today.getMonth() + 1)}`
+}
+
+function toMonthKey(date : string) : string {
+	const normalized = normalizeDate(date)
+	if (normalized.length == 0) {
+		return ''
+	}
+	return normalized.substring(0, 7)
+}
+
+function nextMonthKey(monthKey : string) : string {
+	if (monthKey.length < 7) {
+		return todayMonthKey()
+	}
+	const parts = monthKey.split('-')
+	const year = parseInt(parts[0])
+	const month = parseInt(parts[1])
+	if (isNaN(year) || isNaN(month)) {
+		return todayMonthKey()
+	}
+	if (month >= 12) {
+		return `${year + 1}-01`
+	}
+	return `${year}-${padZero(month + 1)}`
+}
+
+const initialStart = normalizeDate(props.rangeStart)
+const initialEnd = normalizeDate(props.rangeEnd)
+const rangeStart = ref(initialStart)
+const rangeEnd = ref(initialEnd)
+const selectedDate = ref(props.range ? '' : normalizeDate(props.modelValue))
+
+// 已提交值：触发区展示与确认模式取消回退都以它为准；非确认模式下选择即提交
+const committedStart = ref(initialStart)
+const committedEnd = ref(initialEnd)
+const committedDate = ref(selectedDate.value)
+
+const firstMonth = ref('')
+const secondMonth = ref('')
+
+// 两个日历当前实际展示的月份（由 month-change 事件跟踪），仅用于首尾插槽的归属路由
+const firstPaneMonth = ref('')
+const secondPaneMonth = ref('')
+
+// 范围开始日期是否应在第二个日历内渲染首插槽；两个日历展示同月时归属第一个日历
+const startOwnedBySecond = computed<boolean>(() : boolean => {
+	const monthKey = toMonthKey(rangeStart.value)
+	if (monthKey.length == 0) {
+		return false
+	}
+	return monthKey == secondPaneMonth.value && monthKey != firstPaneMonth.value
+})
+
+// 范围结束日期是否应在第二个日历内渲染尾插槽；两个日历展示同月时归属第一个日历
+const endOwnedBySecond = computed<boolean>(() : boolean => {
+	const monthKey = toMonthKey(rangeEnd.value)
+	if (monthKey.length == 0) {
+		return false
+	}
+	return monthKey == secondPaneMonth.value && monthKey != firstPaneMonth.value
+})
+
+function resolveFirstMonth() : string {
+	if (props.range) {
+		const startMonth = toMonthKey(rangeStart.value)
+		if (startMonth.length > 0) {
+			return startMonth
+		}
+		const endMonth = toMonthKey(rangeEnd.value)
+		if (endMonth.length > 0) {
+			return endMonth
+		}
+		return todayMonthKey()
+	}
+	const selectedMonth = toMonthKey(selectedDate.value)
+	if (selectedMonth.length > 0) {
+		return selectedMonth
+	}
+	return todayMonthKey()
+}
+
+// 第二个日历优先展示结束日期所在月，使已有初始值时两个日历分别落在开始月与结束月；
+// 结束月缺失或与开始月相同时回退到开始月的下一个月
+function resolveSecondMonth(first : string) : string {
+	if (props.range) {
+		const endMonth = toMonthKey(rangeEnd.value)
+		if (endMonth.length > 0 && endMonth != first) {
+			return endMonth
+		}
+	}
+	return nextMonthKey(first)
+}
+
+function resetCalendarMonths() {
+	const first = resolveFirstMonth()
+	firstMonth.value = first
+	secondMonth.value = resolveSecondMonth(first)
+	firstPaneMonth.value = first
+	secondPaneMonth.value = secondMonth.value
+}
+
+// 第一个日历翻月时同步其展示月份，供首尾插槽归属路由使用
+function onFirstPaneMonthChange(year : number, month : number) {
+	firstPaneMonth.value = `${year}-${padZero(month)}`
+}
+
+// 第二个日历翻月时同步其展示月份，供首尾插槽归属路由使用
+function onSecondPaneMonthChange(year : number, month : number) {
+	secondPaneMonth.value = `${year}-${padZero(month)}`
+}
+
+const hasDisplayValue = computed<boolean>(() : boolean => {
+	if (props.range) {
+		return committedStart.value.length > 0 || committedEnd.value.length > 0
+	}
+	return committedDate.value.length > 0
+})
+
+const displayText = computed<string>(() : string => {
+	if (props.range) {
+		const start = committedStart.value
+		const end = committedEnd.value
+		if (start.length > 0 && end.length > 0) {
+			return start + ' ~ ' + end
+		}
+		if (start.length > 0) {
+			return start
+		}
+		if (end.length > 0) {
+			return end
+		}
+		return props.placeholder
+	}
+	if (committedDate.value.length > 0) {
+		return committedDate.value
+	}
+	return props.placeholder
+})
+
+const isOpened = ref(false)
+const active = ref(false)
+const popupStyle = ref('')
+const dragTransitionOff = ref(false)
+
+// 触发区元素，宽屏时弹层锚定在其下方或上方
+const anchorRef = ref<UniElement | null>(null)
+
+const POPUP_DURATION = 250
+const DRAG_CLOSE_THRESHOLD = 60
+// 宽屏弹层宽度（px）：单日历与双日历
+const WIDE_POPUP_WIDTH_SINGLE = 380
+const WIDE_POPUP_WIDTH_RANGE = 640
+// 宽屏弹层最大高度、与触发区间距、与视口边缘间距（px）
+const WIDE_POPUP_MAX_HEIGHT = 560
+const WIDE_POPUP_GAP = 4
+const WIDE_VIEWPORT_GAP = 16
+let startY = 0
+let hasStart = false
+let dragging = false
+let animating = false
+let curOffset = 0
+let lastY = 0
+let lastY2 = 0
+let bodyScrollTop = 0
+// 确认模式本次交互是否已经点击过确定并提交
+let committed = false
+
+// 宽屏弹层锚定位置（px），在弹层展示前计算完成
+let widePopupLeft = 0
+let widePopupTop = 0
+let widePopupWidth = 0
+let widePopupHeight = 0
+let widePopupReady = false
+// 锚定定位请求序号，用于丢弃过期的异步测量结果
+let positionRequestId = 0
+
+// 宽屏阈值（px）：达到该宽度后范围选择使用左右横排布局，Web 宽屏同时改为锚定弹层
+function isWideScreenLayout() : boolean {
+	return uni.getWindowInfo().windowWidth >= 700
+}
+
+// 是否使用锚定触发区的弹层：仅 Web 宽屏使用；App 与小程序（含宽屏、Pad）统一从底部弹出
+function isAnchoredPopup() : boolean {
+	// #ifdef WEB
+	return isWideScreenLayout()
+	// #endif
+	// #ifndef WEB
+	return false
+	// #endif
+}
+
+// 紧凑模式下弹层高度，百分比
+const COMPACT_POPUP_HEIGHT = 98
+// 弹层头部高度（px），与 .cp-header 保持一致
+const POPUP_HEADER_HEIGHT = 44
+// 确认模式底部预览区高度估算（px）
+const POPUP_FOOTER_HEIGHT = 60
+// 纯文本紧凑模式单个日历高度估算：年月标题行 64 + 星期标题行 35 + 6 行单元格（36px）
+const COMPACT_CALENDAR_HEIGHT = 64 + 35 + 6 * 36
+// 三段式紧凑模式单个日历高度估算：单元格 44px
+const COMPACT_CELL_CALENDAR_HEIGHT = 64 + 35 + 6 * 44
+
+// 窄屏范围选择时，按可用空间选择紧凑模式；空间不足时返回 0 保持滚动布局
+function computeCompactMode() : number {
+	if (!props.range || isWideScreenLayout()) {
+		return 0
+	}
+	const windowInfo = uni.getWindowInfo()
+	const popupHeight = windowInfo.windowHeight * COMPACT_POPUP_HEIGHT / 100
+	let available = popupHeight - POPUP_HEADER_HEIGHT
+	if (props.confirm) {
+		available -= POPUP_FOOTER_HEIGHT
+	}
+	if (hasCellLayout.value) {
+		if (available >= COMPACT_CELL_CALENDAR_HEIGHT * 2) {
+			return 2
+		}
+		return 0
+	}
+	if (available >= COMPACT_CALENDAR_HEIGHT * 2) {
+		return 1
+	}
+	return 0
+}
+
+function resetDrag() {
+	startY = 0
+	hasStart = false
+	dragging = false
+	curOffset = 0
+	lastY = 0
+	lastY2 = 0
+}
+
+function getTouchY(touch : Touch) : number {
+	if (touch.screenY > 0) {
+		return touch.screenY
+	}
+	if (touch.clientY > 0) {
+		return touch.clientY
+	}
+	return touch.pageY
+}
+
+function buildPopupStyle() {
+	let style = ''
+	if (isAnchoredPopup() && widePopupReady) {
+		// 宽屏弹层锚定触发区，四个方向都用数值定位，避免引擎对过约束边距的解析差异
+		const windowInfo = uni.getWindowInfo()
+		const right = windowInfo.windowWidth - widePopupLeft - widePopupWidth
+		const bottom = windowInfo.windowHeight - widePopupTop - widePopupHeight
+		style += 'position: fixed; left: ' + widePopupLeft.toFixed(2) + 'px; top: ' + widePopupTop.toFixed(2) +
+			'px; width: ' + widePopupWidth.toFixed(2) + 'px; height: ' + widePopupHeight.toFixed(2) +
+			'px; right: ' + right.toFixed(2) + 'px; bottom: ' + bottom.toFixed(2) + 'px; transform: translateY(0);'
+	} else if (compactMode.value > 0) {
+		// 紧凑模式按内容高度展示两个日历，空间不足时最多 98% 并内部滚动
+		style += 'height: auto; max-height: ' + COMPACT_POPUP_HEIGHT.toString() + '%;'
+	}
+	if (curOffset > 0) {
+		style += 'transform: translateY(' + curOffset.toFixed(2) + 'px);'
+	}
+	popupStyle.value = style
+}
+
+// 根据触发区位置计算宽屏弹层锚定矩形：优先展示在触发区下方，下方空间不足且上方更大时改为上方
+function applyWidePopupRect(rect : DOMRect | null) {
+	const windowInfo = uni.getWindowInfo()
+	const winWidth = windowInfo.windowWidth
+	const winHeight = windowInfo.windowHeight
+	const gap = WIDE_VIEWPORT_GAP
+	const desiredWidth = props.range ? WIDE_POPUP_WIDTH_RANGE : WIDE_POPUP_WIDTH_SINGLE
+	let width = desiredWidth
+	const maxWidth = winWidth - gap * 2
+	if (width > maxWidth) {
+		width = maxWidth
+	}
+	let left = (winWidth - width) / 2
+	let top = gap
+	let height = winHeight - gap * 2
+	if (height > WIDE_POPUP_MAX_HEIGHT) {
+		height = WIDE_POPUP_MAX_HEIGHT
+	}
+	if (rect != null) {
+		const rectTop = rect.top != null ? rect.top : 0
+		const rectLeft = rect.left != null ? rect.left : 0
+		const rectHeight = rect.height != null ? rect.height : 0
+		const rectBottom = rect.bottom != null ? rect.bottom : rectTop + rectHeight
+		left = rectLeft
+		const maxLeft = winWidth - width - gap
+		if (left > maxLeft) {
+			left = maxLeft
+		}
+		if (left < gap) {
+			left = gap
+		}
+		const belowSpace = winHeight - rectBottom - WIDE_POPUP_GAP - gap
+		const aboveSpace = rectTop - WIDE_POPUP_GAP - gap
+		const preferBelow = belowSpace >= aboveSpace
+		height = preferBelow ? belowSpace : aboveSpace
+		if (height > WIDE_POPUP_MAX_HEIGHT) {
+			height = WIDE_POPUP_MAX_HEIGHT
+		}
+		if (height > winHeight - gap * 2) {
+			height = winHeight - gap * 2
+		}
+		if (height < 1) {
+			height = 1
+		}
+		top = preferBelow ? rectBottom + WIDE_POPUP_GAP : rectTop - WIDE_POPUP_GAP - height
+		const maxTop = winHeight - height - gap
+		if (top > maxTop) {
+			top = maxTop
+		}
+		if (top < gap) {
+			top = gap
+		}
+	}
+	widePopupLeft = left
+	widePopupTop = top
+	widePopupWidth = width
+	widePopupHeight = height
+	widePopupReady = true
+}
+
+function openPopupNow() {
+	buildPopupStyle()
+	isOpened.value = true
+	nextTick(() => {
+		if (isOpened.value) {
+			active.value = true
+		}
+	})
+}
+
+// 宽屏打开：先异步测量触发区位置，再展示弹层，避免弹层从底部弹跳
+function openWide() {
+	const requestId = positionRequestId + 1
+	positionRequestId = requestId
+	const element = anchorRef.value
+	if (element != null) {
+		const rectPromise = element.getBoundingClientRectAsync()
+		if (rectPromise != null) {
+			rectPromise.then((rect : DOMRect) => {
+				if (requestId != positionRequestId || isOpened.value) {
+					return
+				}
+				applyWidePopupRect(rect)
+				openPopupNow()
+			})
+			return
+		}
+	}
+	applyWidePopupRect(null)
+	openPopupNow()
+}
+
+function applyOffset(offset : number) {
+	curOffset = offset
+	buildPopupStyle()
+}
+
+function clearDragStyle() {
+	curOffset = 0
+	dragTransitionOff.value = false
+	buildPopupStyle()
+}
+
+function open() {
+	if (isOpened.value) {
+		return
+	}
+	// #ifdef WEB
+	startWebScrollLock()
+	// #endif
+	resetDrag()
+	resetCalendarMonths()
+	bodyScrollTop = 0
+	committed = false
+	isWideLayout.value = isWideScreenLayout()
+	compactMode.value = computeCompactMode()
+	if (isAnchoredPopup()) {
+		// 宽屏：锚定触发区展示，无过渡动画
+		openWide()
+		emit('popupopened')
+		return
+	}
+	buildPopupStyle()
+	isOpened.value = true
+	nextTick(() => {
+		animating = true
+		setTimeout(() => {
+			if (!isOpened.value) {
+				animating = false
+				return
+			}
+			active.value = true
+			setTimeout(() => {
+				animating = false
+			}, POPUP_DURATION)
+		}, 20)
+	})
+	emit('popupopened')
+}
+
+function close() {
+	if (!isOpened.value || !active.value) {
+		return
+	}
+	positionRequestId++
+	animating = true
+	clearDragStyle()
+	active.value = false
+	const delay = isAnchoredPopup() ? 0 : POPUP_DURATION + 50
+	setTimeout(() => {
+		animating = false
+		resetDrag()
+		if (props.confirm && !committed) {
+			restoreCommittedValues()
+		}
+		committed = false
+		isOpened.value = false
+		// #ifdef WEB
+		stopWebScrollLock()
+		// #endif
+		emit('popupclosed')
+	}, delay)
+}
+
+// 确认模式下未点击确定关闭弹层时，把内部选择回退到已提交值
+function restoreCommittedValues() {
+	if (props.range) {
+		rangeStart.value = committedStart.value
+		rangeEnd.value = committedEnd.value
+		return
+	}
+	selectedDate.value = committedDate.value
+}
+
+function resume() {
+	clearDragStyle()
+	dragging = false
+	curOffset = 0
+}
+
+function onTriggerClick() {
+	if (props.disabled) {
+		return
+	}
+	open()
+}
+
+function onViewModelValueUpdate(date : string) {
+	selectedDate.value = date
+	if (props.confirm) {
+		return
+	}
+	committedDate.value = date
+	emit('update:modelValue', date)
+	emit('change', date)
+	close()
+}
+
+function onViewRangeStartUpdate(date : string) {
+	rangeStart.value = date
+	if (props.confirm) {
+		return
+	}
+	committedStart.value = date
+	emit('update:rangeStart', date)
+}
+
+function onViewRangeEndUpdate(date : string) {
+	rangeEnd.value = date
+	if (props.confirm) {
+		return
+	}
+	committedEnd.value = date
+	emit('update:rangeEnd', date)
+}
+
+function onRangeChange(start : string, end : string) {
+	if (start.length == 0 || end.length == 0) {
+		return
+	}
+	if (props.confirm) {
+		return
+	}
+	const value : CalendarRange = {
+		start: start,
+		end: end
+	}
+	emit('change', value)
+	close()
+}
+
+// 确认模式点击确定：提交当前选择并关闭弹层；选择与已提交值一致时不重复触发
+function onConfirmClick() {
+	if (props.range) {
+		const start = rangeStart.value
+		const end = rangeEnd.value
+		if (start != committedStart.value || end != committedEnd.value) {
+			const value : CalendarRange = {
+				start: start,
+				end: end
+			}
+			committedStart.value = start
+			committedEnd.value = end
+			emit('update:rangeStart', start)
+			emit('update:rangeEnd', end)
+			emit('change', value)
+		}
+	} else {
+		if (selectedDate.value != committedDate.value) {
+			committedDate.value = selectedDate.value
+			emit('update:modelValue', selectedDate.value)
+			emit('change', selectedDate.value)
+		}
+	}
+	committed = true
+	close()
+}
+
+function onBodyScroll(e : UniScrollEvent) {
+	bodyScrollTop = e.detail.scrollTop
+}
+
+function onHeaderTouchStart(_e : TouchEvent) {
+	if (animating || isAnchoredPopup()) {
+		return
+	}
+	resetDrag()
+	dragTransitionOff.value = true
+}
+
+function onBodyTouchStart(e : TouchEvent) {
+	onHeaderTouchStart(e)
+}
+
+function handleDragMove(touchY : number, allowDrag : boolean) {
+	if (animating || isAnchoredPopup()) {
+		return
+	}
+	lastY2 = lastY
+	lastY = touchY
+	if (!allowDrag) {
+		// 弹层内容未滚动到顶部时不接管手势
+		if (bodyScrollTop > 0.01 && !dragging) {
+			return
+		}
+	}
+	if (!hasStart) {
+		startY = touchY
+		hasStart = true
+	}
+	const offset = touchY - startY
+	if (offset > 0) {
+		dragging = true
+		applyOffset(offset)
+	} else if (curOffset > 0) {
+		let back = startY - touchY
+		if (back > curOffset) {
+			back = 0
+			dragging = false
+		}
+		applyOffset(back)
+	}
+}
+
+function onHeaderTouchMove(e : TouchEvent) {
+	if (animating || isAnchoredPopup()) {
+		return
+	}
+	handleDragMove(getTouchY(e.touches[0]), true)
+	// #ifdef WEB
+	if (dragging) {
+		e.preventDefault()
+	}
+	// #endif
+}
+
+function onBodyTouchMove(e : TouchEvent) {
+	if (animating || isAnchoredPopup()) {
+		return
+	}
+	handleDragMove(getTouchY(e.touches[0]), false)
+	// #ifdef WEB
+	if (dragging) {
+		e.preventDefault()
+	}
+	// #endif
+}
+
+function onTouchEnd(_e : TouchEvent) {
+	if (animating || isAnchoredPopup()) {
+		return
+	}
+	if (!dragging && curOffset <= 0) {
+		clearDragStyle()
+		resetDrag()
+		return
+	}
+	let shouldClose = curOffset > DRAG_CLOSE_THRESHOLD
+	if (!shouldClose) {
+		shouldClose = curOffset > 0 && (lastY - lastY2) > 3
+	}
+	if (shouldClose) {
+		close()
+	} else if (curOffset > 0) {
+		resume()
+	} else {
+		clearDragStyle()
+		resetDrag()
+	}
+}
+
+// #ifdef WEB
+function onTriggerKeydown(event : KeyboardEvent) {
+	const key = event.key as string
+	if (!isOpened.value && (key == 'Enter' || key == ' ' || key == 'ArrowDown')) {
+		event.preventDefault()
+		onTriggerClick()
+	}
+}
+
+// Esc 关闭通过全局监听处理，保证切换月份等操作导致焦点离开弹层后仍能关闭
+function onDocumentKeydown(event : KeyboardEvent) {
+	if (!isOpened.value) {
+		return
+	}
+	if (event.key == 'Escape') {
+		event.preventDefault()
+		close()
+	}
+}
+
+function onCloseKeydown(event : KeyboardEvent) {
+	const key = event.key as string
+	if (key == 'Enter' || key == ' ') {
+		event.preventDefault()
+		close()
+	}
+}
+
+function onConfirmKeydown(event : KeyboardEvent) {
+	const key = event.key as string
+	if (key == 'Enter' || key == ' ') {
+		event.preventDefault()
+		onConfirmClick()
+	}
+}
+
+// 阻止弹层滚动到边缘后继续带动背后页面滚动（Web 滚动穿透）
+let lockTouchX = 0
+let lockTouchY = 0
+let lockTouchReady = false
+
+// 判断事件目标向上最近的纵向滚动容器在指定方向（deltaY 正数向下）是否还能滚动
+function canScrollVertically(target : EventTarget | null, deltaY : number) : boolean {
+	if (!(target instanceof Element)) {
+		return false
+	}
+	let node : Element | null = target
+	while (node != null && node != document.body && node != document.documentElement) {
+		const element = node as HTMLElement
+		const overflowY = window.getComputedStyle(element).overflowY
+		if ((overflowY == 'auto' || overflowY == 'scroll' || overflowY == 'overlay') &&
+			element.scrollHeight > element.clientHeight + 1) {
+			if (deltaY < 0) {
+				return element.scrollTop > 0
+			}
+			if (deltaY > 0) {
+				return element.scrollTop + element.clientHeight < element.scrollHeight - 1
+			}
+			return true
+		}
+		node = node.parentElement
+	}
+	return false
+}
+
+function onWebWheel(event : WheelEvent) {
+	if (!isOpened.value || event.deltaY == 0) {
+		return
+	}
+	if (!canScrollVertically(event.target, event.deltaY)) {
+		event.preventDefault()
+	}
+}
+
+function onWebTouchStart(event : TouchEvent) {
+	const touch = event.touches[0]
+	if (touch == null) {
+		lockTouchReady = false
+		return
+	}
+	lockTouchX = touch.clientX
+	lockTouchY = touch.clientY
+	lockTouchReady = true
+}
+
+function onWebTouchMove(event : TouchEvent) {
+	if (!isOpened.value) {
+		return
+	}
+	const touch = event.touches[0]
+	if (touch == null) {
+		return
+	}
+	if (!lockTouchReady) {
+		lockTouchX = touch.clientX
+		lockTouchY = touch.clientY
+		lockTouchReady = true
+		return
+	}
+	const dx = touch.clientX - lockTouchX
+	const dy = touch.clientY - lockTouchY
+	lockTouchX = touch.clientX
+	lockTouchY = touch.clientY
+	// 横向手势交给日历内部 swiper，避免影响切换月份
+	if (Math.abs(dy) <= Math.abs(dx)) {
+		return
+	}
+	// 手指下滑对应内容向上滚动，换算成 wheel 的 deltaY 方向
+	if (!canScrollVertically(event.target, -dy)) {
+		event.preventDefault()
+	}
+}
+
+let webScrollLockActive = false
+
+function startWebScrollLock() {
+	if (webScrollLockActive) {
+		return
+	}
+	webScrollLockActive = true
+	document.addEventListener('wheel', onWebWheel, { capture: true, passive: false })
+	document.addEventListener('touchstart', onWebTouchStart, { capture: true, passive: true })
+	document.addEventListener('touchmove', onWebTouchMove, { capture: true, passive: false })
+}
+
+function stopWebScrollLock() {
+	if (!webScrollLockActive) {
+		return
+	}
+	webScrollLockActive = false
+	document.removeEventListener('wheel', onWebWheel, true)
+	document.removeEventListener('touchstart', onWebTouchStart, true)
+	document.removeEventListener('touchmove', onWebTouchMove, true)
+}
+
+onMounted(() => {
+	document.addEventListener('keydown', onDocumentKeydown, true)
+})
+
+onUnmounted(() => {
+	document.removeEventListener('keydown', onDocumentKeydown, true)
+	stopWebScrollLock()
+})
+// #endif
+
+// #ifndef WEB
+onBackPress(() => {
+	if (isOpened.value) {
+		close()
+		return true
+	}
+	return false
+})
+// #endif
+
+function clearRange() {
+	if (props.range) {
+		rangeStart.value = ''
+		rangeEnd.value = ''
+		committedStart.value = ''
+		committedEnd.value = ''
+		emit('update:rangeStart', '')
+		emit('update:rangeEnd', '')
+		return
+	}
+	selectedDate.value = ''
+	committedDate.value = ''
+	emit('update:modelValue', '')
+}
+
+watch(() : boolean => props.range, () => {
+	if (props.range) {
+		rangeStart.value = normalizeDate(props.rangeStart)
+		rangeEnd.value = normalizeDate(props.rangeEnd)
+		committedStart.value = rangeStart.value
+		committedEnd.value = rangeEnd.value
+		return
+	}
+	rangeStart.value = ''
+	rangeEnd.value = ''
+	committedStart.value = ''
+	committedEnd.value = ''
+})
+
+watch(() : string => props.modelValue, (value : string) => {
+	if (props.range) {
+		return
+	}
+	const next = normalizeDate(value)
+	committedDate.value = next
+	if (next == selectedDate.value) {
+		return
+	}
+	selectedDate.value = next
+})
+
+watch(() : string => props.rangeStart, (value : string) => {
+	const next = normalizeDate(value)
+	committedStart.value = next
+	if (next == rangeStart.value) {
+		return
+	}
+	rangeStart.value = next
+})
+
+watch(() : string => props.rangeEnd, (value : string) => {
+	const next = normalizeDate(value)
+	committedEnd.value = next
+	if (next == rangeEnd.value) {
+		return
+	}
+	rangeEnd.value = next
+})
+
+defineExpose({
+	/**
+	 * 打开弹层
+	 */
+	open,
+	/**
+	 * 关闭弹层
+	 */
+	close,
+	/**
+	 * 清空当前值；范围模式清空首尾日期，单选模式清空选中日期
+	 */
+	clearRange
+})
+</script>
+
+<style>
+	.uni-down-arrow-iconfont{
+		font-family: uni-icon;
+		transform: rotate(-90deg);
+		font-weight: bold;
+		font-size: 18px;
+	}
+	.cp-trigger {
+		position: relative;
+	}
+
+	.uni-field-default {
+		flex-direction: row;
+		padding: 8px 10px;
+		background-color: #ffffff;
+		border-width: 1px;
+		border-style: solid;
+		border-color: var(--input-border-color, #dcdfe6);
+		border-radius: 5px;
+	}
+
+	.cp-trigger-disabled {
+		opacity: 0.5;
+	}
+
+	.uni-result-text {
+		flex: 1;
+		font-size: 14px;
+		/* #ifdef uniVersion <5.41 */
+		color: var(--text-color, #333333);
+		/* #endif */
+	}
+
+	.cp-trigger-value {
+		color: var(--text-color, #333333);
+	}
+
+	.cp-trigger-placeholder {
+		color: var(--secondary-text-color, #999999);
+	}
+
+	/* .uni-arrow-wrap {
+		padding: 0 12px;
+		margin-left: auto;
+		justify-content: center;
+		transform: rotate(-45deg);
+		transform-origin: center;
+	}
+
+	.uni-arrow {
+		width: 8px;
+		height: 8px;
+		border-left-width: 2px;
+		border-left-style: solid;
+		border-left-color: var(--arrow-color, #999999);
+		border-bottom-width: 2px;
+		border-bottom-style: solid;
+		border-bottom-color: var(--arrow-color, #999999);
+	} */
+
+	.cp-mask {
+		position: fixed;
+		left: 0;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		background-color: rgba(0, 0, 0, 0.4);
+		flex-direction: column;
+		z-index: 100;
+		opacity: 0;
+		transition-property: opacity;
+		transition-duration: 250ms;
+		transition-timing-function: ease-out;
+	}
+
+	.cp-mask-active {
+		opacity: 1;
+	}
+
+	.cp-popup {
+		position: fixed;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		height: 80%;
+		background-color: var(--content-background-color, #ffffff);
+		border-top-left-radius: 12px;
+		border-top-right-radius: 12px;
+		flex-direction: column;
+		z-index: 102;
+		overflow: hidden;
+		transform: translateY(100%);
+		transition-property: transform;
+		transition-duration: 250ms;
+		transition-timing-function: ease-out;
+	}
+
+	.cp-popup-active {
+		transform: translateY(0);
+	}
+
+	.cp-popup-dragging {
+		transition-duration: 0ms;
+	}
+
+	.cp-header {
+		position: relative;
+		flex-direction: row;
+		align-items: center;
+		height: 44px;
+		background-color: var(--content-background-color, #ffffff);
+		border-bottom-width: 1px;
+		border-bottom-style: solid;
+		border-bottom-color: var(--divider-color, #eeeeee);
+	}
+
+	.cp-close {
+		position: absolute;
+		left: 0;
+		top: 0;
+		bottom: 0;
+		width: 44px;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		z-index: 2;
+	}
+
+	.cp-close-line {
+		width: 16px;
+		height: 2px;
+		background-color: var(--secondary-text-color, #999999);
+		border-radius: 2px;
+		transform: rotate(45deg);
+	}
+
+	.cp-close-line-rotate {
+		position: absolute;
+		transform: rotate(-45deg);
+	}
+
+	/* 确认模式：左上角关闭按钮变为取消文字 */
+	.cp-close-cancel {
+		width: auto;
+		padding-left: 16px;
+		padding-right: 16px;
+	}
+
+	.cp-cancel-text {
+		font-size: 15px;
+		color: var(--tips-color, #2979ff);
+	}
+
+	/* 确认模式：右上角确定按钮 */
+	.cp-confirm-action {
+		position: absolute;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		padding-left: 16px;
+		padding-right: 16px;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		z-index: 2;
+	}
+
+	.cp-confirm-text {
+		font-size: 15px;
+		font-weight: 500;
+		color: var(--tips-color, #2979ff);
+	}
+
+	.cp-title-wrap {
+		flex: 1;
+		height: 44px;
+		flex-direction: row;
+		align-items: center;
+		padding-left: 44px;
+		padding-right: 44px;
+		overflow: hidden;
+	}
+
+	.cp-title {
+		width: 100%;
+		line-height: 44px;
+		font-size: 15px;
+		font-weight: 500;
+		text-align: center;
+		color: var(--text-color, #333333);
+	}
+
+	.cp-title-wrap-confirm {
+		padding-left: 76px;
+		padding-right: 76px;
+	}
+
+	.cp-body {
+		flex: 1;
+		flex-direction: column;
+		overflow: hidden;
+	}
+
+	.cp-scroll {
+		flex: 1;
+	}
+
+	/* 确认模式底部预览区 */
+	.cp-footer {
+		flex-direction: row;
+		height: 28px;
+		align-items: center;
+		padding: 10px 16px;
+		background-color: var(--content-background-color, #ffffff);
+		border-top-width: 1px;
+		border-top-style: solid;
+		border-top-color: var(--divider-color, #eeeeee);
+	}
+
+	.cp-preview-text {
+		flex: 1;
+		text-align: center;
+	}
+
+
+	.cp-cal {
+		width: 100%;
+	}
+
+	/* 首尾插槽未归属当前日历时占据的占位内容，保证日历视图两侧的插槽通道状态一致 */
+	.cp-range-label-filler {
+		width: 0px;
+		height: 0px;
+	}
+
+	/* #ifdef WEB */
+	.cp-trigger {
+		cursor: pointer;
+		outline: none;
+	}
+
+	.cp-trigger-disabled {
+		cursor: default;
+	}
+
+	.cp-trigger:focus .uni-field-default {
+		border-color: var(--tips-color, #2979ff);
+		box-shadow: 0 0 0 3px rgba(41, 121, 255, 0.24);
+	}
+
+	.cp-mask {
+		cursor: pointer;
+	}
+
+	.cp-close {
+		cursor: pointer;
+		outline: none;
+	}
+
+	.cp-close:focus .cp-close-line {
+		background-color: var(--tips-color, #2979ff);
+	}
+
+	.cp-close-cancel:focus .cp-cancel-text {
+		opacity: 0.7;
+	}
+
+	.cp-confirm-action {
+		cursor: pointer;
+		outline: none;
+	}
+
+	.cp-confirm-action:focus .cp-confirm-text {
+		opacity: 0.7;
+	}
+	/* #endif */
+
+	/* #ifdef WEB */
+	/* Web 宽屏：弹层由组件内联样式锚定触发区，关闭过渡与遮罩淡入 */
+	@media all and (min-width: 700px) {
+		.cp-popup {
+			border-radius: 12px;
+			transition-duration: 0ms;
+		}
+
+		.cp-mask {
+			opacity: 1;
+			transition-duration: 0ms;
+		}
+	}
+	/* #endif */
+
+	/* 宽屏（含手机端与 Pad）：范围选择两个日历左右横排，中间以细分隔线分开 */
+	.cp-calendars-wide {
+		flex-direction: row;
+		align-items: stretch;
+	}
+
+	.cp-cal-wide {
+		flex: 1;
+	}
+
+	/* 第二个日历左侧的细竖线，作为两个日历的分隔线 */
+	.cp-cal-wide-second {
+		border-left-width: 1px;
+		border-left-style: solid;
+		border-left-color: var(--divider-color, #eeeeee);
+	}
+
+	@media (prefers-color-scheme: dark) {
+		.uni-field-default {
+			background-color: #3b3b3b;
+			border-color: rgba(255, 255, 255, 0.18);
+		}
+
+		.uni-result-text {
+			color: #ffffff;
+		}
+
+		.cp-trigger-value {
+			color: #ffffff;
+		}
+
+		.cp-trigger-placeholder {
+			color: rgba(255, 255, 255, 0.65);
+		}
+
+		/* .uni-arrow {
+			border-left-color: #ffffff;
+			border-bottom-color: #ffffff;
+		} */
+
+		.cp-popup {
+			background-color: #2d2d2d;
+		}
+
+		.cp-header {
+			background-color: #2d2d2d;
+			border-bottom-color: rgba(255, 255, 255, 0.12);
+		}
+
+		.cp-title {
+			color: #ffffff;
+		}
+
+		.cp-close-line {
+			background-color: #cccccc;
+		}
+
+		.cp-cancel-text {
+			color: #64b5f6;
+		}
+
+		.cp-confirm-text {
+			color: #64b5f6;
+		}
+
+		.cp-footer {
+			background-color: #2d2d2d;
+			border-top-color: rgba(255, 255, 255, 0.12);
+		}
+
+		.cp-preview-text {
+			color: #ffffff;
+		}
+
+		.cp-cal-wide-second {
+			border-left-color: rgba(255, 255, 255, 0.12);
+		}
+	}
+</style>

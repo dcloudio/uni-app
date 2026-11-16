@@ -75,6 +75,34 @@
 			}
 		},
 		// #endif
+		// #ifdef APP || MP-WEIXIN
+		{
+			"path": "pages/component/scroll-view/scroll-view-context/scroll-view-context",
+			"style": {
+				"navigationBarTitleText": "ScrollViewContext | 滚动容器上下文"
+			}
+		},
+		{
+			"path": "pages/component/scroll-view/scroll-view-context/scroll-view",
+			"style": {
+				"navigationBarTitleText": "ScrollViewContext | scroll-view"
+			}
+		},
+		{
+			"path": "pages/component/scroll-view/scroll-view-context/list-view",
+			"style": {
+				"navigationBarTitleText": "ScrollViewContext | list-view"
+			}
+		},
+		// #ifdef APP
+		{
+			"path": "pages/component/scroll-view/scroll-view-context/waterflow",
+			"style": {
+				"navigationBarTitleText": "ScrollViewContext | waterflow"
+			}
+		},
+		// #endif
+		// #endif
 		{
 			"path": "pages/component/swiper/swiper",
 			"group": "0,1,3",
@@ -1592,35 +1620,6 @@
 						"navigationBarTitleText": "uni.pageScrollTo | 将页面滚动到指定位置"
 					}
 				},
-				// #ifdef APP || MP-WEIXIN
-				{
-					"path": "scroll-view-context/scroll-view-context",
-					"group": "1,2,9",
-					"style": {
-						"navigationBarTitleText": "ScrollViewContext | 滚动上下文"
-					}
-				},
-				{
-					"path": "scroll-view-context/scroll-view",
-					"style": {
-						"navigationBarTitleText": "ScrollViewContext | scroll-view"
-					}
-				},
-				{
-					"path": "scroll-view-context/list-view",
-					"style": {
-						"navigationBarTitleText": "ScrollViewContext | list-view"
-					}
-				},
-				// #ifdef APP
-				{
-					"path": "scroll-view-context/waterflow",
-					"style": {
-						"navigationBarTitleText": "ScrollViewContext | waterflow"
-					}
-				},
-				// #endif
-				// #endif
 				{
 					"path": "event-bus/event-bus",
 					"group": "1,1,1",
@@ -3416,6 +3415,12 @@
 					"style": {
 						"navigationBarTitleText": "calendar-view"
 					}
+				},
+				{
+					"path": "calendar-picker/calendar-picker",
+					"style": {
+						"navigationBarTitleText": "calendar-picker"
+					}
 				}
 			]
 		},
@@ -4075,6 +4080,13 @@
 					}
 				},
 				{
+					"path": "style-isolation/style-isolation-media",
+					"group": "2,23",
+					"style": {
+						"navigationBarTitleText": "style-isolation 媒体查询"
+					}
+				},
+				{
 					"path": "specificity/specificity",
 					"group": "2,23",
 					"style": {
@@ -4089,12 +4101,12 @@
 						"backgroundColorContent": "#ffffff"
 					}
 				}
-				// #ifdef APP
+				// #ifdef APP || WEB || MP
 				,{
 					"path": "prefers-color-scheme/prefers-color-scheme",
 					"group": "2,25",
 					"style": {
-						"navigationBarTitleText": "prefers-color-scheme | 媒体查询"
+						"navigationBarTitleText": "深浅色主题"
 					}
 				}
 				// #endif
@@ -4103,14 +4115,26 @@
 					"path": "media-query/media-query",
 					"group": "2,25",
 					"style": {
-						"navigationBarTitleText": "media-query | 媒体查询",
+						"navigationBarTitleText": "视口适配",
 						"pageOrientation": "auto"
 					}
-				},
-				{
-					"path": "media-query/component-only",
+				}
+				// #endif
+				// #ifdef APP || WEB || MP-WEIXIN
+				,{
+					"path": "media-query/pointer-hover",
+					"group": "2,25",
 					"style": {
-						"navigationBarTitleText": "组件媒体查询",
+						"navigationBarTitleText": "输入设备"
+					}
+				}
+				// #endif
+				// #ifdef APP || WEB || MP
+				,{
+					"path": "media-query/component-only",
+					"group": "2,25",
+					"style": {
+						"navigationBarTitleText": "仅组件包含媒体查询",
 						"pageOrientation": "auto"
 					}
 				}
@@ -4587,10 +4611,6 @@
 						{
 							"id": "api.page.pageScrollTo",
 							"name": "uni.pageScrollTo"
-						},
-						{
-							"id": "api.page.ScrollViewContext",
-							"name": "ScrollViewContext"
 						}
 					]
 				},

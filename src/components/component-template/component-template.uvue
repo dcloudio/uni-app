@@ -1,0 +1,119 @@
+<script setup lang="ts">
+  import { isEditableAttribute, filterSyntaxAttributes, getTemplateInputType } from './types'
+  import type { ComponentSyntax, TemplateAttribute, TemplateDescription, TemplateValue, TemplateModel, TemplateChange, TemplateControl, TemplateInputType } from './types'
+
+  defineOptions({ name: 'ComponentTemplate', styleIsolation: 'app', inheritAttrs: false })
+
+  interface Props {
+    /** 描述属性的语法数据，模板不根据组件名称选择渲染逻辑。 */
+    syntax: ComponentSyntax;
+    /** 页面持有的完整属性值；模板只读取，通过 change 通知页面回写。 */
+    modelValue: TemplateModel;
+    /** 页面提供的数值范围、步长和实时更新配置。 */
+    controls?: { [name: string]: TemplateControl };
+    /** 页面提供的颜色候选项。 */
+    colorOptions?: string[];
+    /** 属性控件的 ID 前缀。 */
+    controlPrefix?: string;
+    /** 标题，省略时使用语法名称。 */
+    title?: string;
+  }
+
+  const props = withDefaults(defineProps<Props>(), {
+    controlPrefix: 'component-template', title: '', controls: () => ({}), colorOptions: () => []
+  })
+  const emit = defineEmits<{ change: [change: TemplateChange] }>()
+  const filteredSyntax = computed(() => filterSyntaxAttributes(props.syntax))
+  const unsupportedProperties = computed(() => (filteredSyntax.value.attributes ?? [])
+    .filter((attribute) => isEditableAttribute(attribute) && getTemplateInputType(attribute) == null))
+  const properties = computed(() => {
+    const attributes = (filteredSyntax.value.attributes ?? [])
+      .filter((attribute) => isEditableAttribute(attribute) && getTemplateInputType(attribute) != null)
+    const grouped: TemplateAttribute[] = []
+    for (const type of ['switch', 'slider', 'combobox', 'input']) {
+      for (const attribute of attributes) {
+        if (typeOf(attribute) == type) grouped.push(attribute)
+      }
+    }
+    return grouped
+  })
+
+  function description(value: TemplateDescription | undefined): string {
+    return typeof value == 'string' ? value : (value?.value ?? '')
+  }
+
+  function id(name: string): string {
+    return props.controlPrefix + '-' + name
+  }
+
+  function valueOf(attribute: TemplateAttribute): TemplateValue {
+    return props.modelValue[attribute.name] ?? ''
+  }
+
+  function typeOf(attribute: TemplateAttribute): TemplateInputType {
+    return getTemplateInputType(attribute) ?? 'input'
+  }
+
+  function optionsOf(attribute: TemplateAttribute): string[] {
+    if (attribute.values != null && attribute.values.length > 0) return attribute.values.map((item) => item.name)
+    const current = String(valueOf(attribute))
+    return current == '' || props.colorOptions.includes(current) ? props.colorOptions : [current].concat(props.colorOptions)
+  }
+
+  function controlOf(attribute: TemplateAttribute): TemplateControl {
+    return props.controls[attribute.name] ?? {}
+  }
+
+  function unsupportedOf(attribute: TemplateAttribute): string {
+    return attribute.unsupportedPlatforms?.join('、') ?? ''
+  }
+
+  function updateValue(name: string, value: TemplateValue) {
+    emit('change', { name, value })
+  }
+</script>
+
+<template>
+  <text class="uni-h4">{{ title || syntax.name }}</text>
+  <text v-if="description(syntax.description) != ''" class="uni-comment">{{ description(syntax.description) }}</text>
+  <slot name="preview"></slot>
+  <slot name="actions"></slot>
+  <view v-if="properties.length > 0" :id="id('properties')" class="component-template-card">
+    <view v-for="(attribute, index) in properties" :key="attribute.name" :id="id(attribute.name + '-example')"
+      class="component-template-field" :class="index == properties.length - 1 ? 'component-template-field-last' : ''">
+      <text v-if="description(attribute.description) != ''" class="uni-h4">{{ description(attribute.description) }}</text>
+      <text v-if="unsupportedOf(attribute) != ''" class="uni-comment">不支持的平台：{{ unsupportedOf(attribute) }}</text>
+      <form-item :type="typeOf(attribute)" :control-id="id(attribute.name)" :label="attribute.name"
+        :model-value="valueOf(attribute)" :options="optionsOf(attribute)" :min="controlOf(attribute).min"
+        :max="controlOf(attribute).max" :step="controlOf(attribute).step" :live="controlOf(attribute).live"
+        @update:modelValue="updateValue(attribute.name, $event)" />
+    </view>
+  </view>
+  <view v-for="attribute in unsupportedProperties" :key="attribute.name" class="component-template-unsupported">
+    <text class="uni-comment">
+      {{ attribute.name }}（{{ attribute.docType ?? attribute.type ?? '未声明类型' }}）需要页面提供专用控件。
+    </text>
+    <text v-if="unsupportedOf(attribute) != ''" class="uni-comment">不支持的平台：{{ unsupportedOf(attribute) }}</text>
+  </view>
+  <slot name="properties"></slot>
+  <slot name="events"></slot>
+</template>
+
+<style>
+  .component-template-card {
+    padding: 10px 14px;
+    margin-bottom: 8px;
+    margin-top: 8px;
+    border-radius: 10px;
+    background-color: var(--list-background-color, #ffffff);
+  }
+
+  .component-template-field {
+    padding: 2px 0 6px;
+    border-bottom: 1px solid var(--border-color, rgba(0, 0, 0, 0.06));
+  }
+
+  .component-template-field-last {
+    border-bottom-width: 0;
+  }
+</style>

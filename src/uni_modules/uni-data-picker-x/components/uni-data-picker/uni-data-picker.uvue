@@ -534,8 +534,6 @@
 </script>
 
 <style>
-  @import url("../uni-data-picker-view/uni-data-picker-view.css");
-
   .uni-data-tree {
     position: relative;
   }
@@ -567,10 +565,10 @@
     padding: 8px 10px;
     overflow: hidden;
     min-height: 28px;
-    background-color: var(--content-background-color, #ffffff);
+    background-color: #ffffff;
     border-width: 1px;
     border-style: solid;
-    border-color: var(--input-border-color, #dcdfe6);
+    border-color: #dcdfe6;
     border-radius: 6px;
   }
 
@@ -596,19 +594,19 @@
 
   .text-color {
     font-size: 14px;
-    color: var(--text-color, #333333);
+    color: #333333;
   }
 
   .placeholder {
     font-size: 14px;
-    color: var(--secondary-text-color, #999999);
+    color: #657180;
   }
 
   .input-split-line {
     opacity: .5;
     margin-left: 1px;
     margin-right: 1px;
-    color: var(--secondary-text-color, #999999);
+    color: #657180;
   }
 
   .arrow-area {
@@ -625,10 +623,10 @@
     height: 8px;
     border-left-width: 2px;
     border-left-style: solid;
-    border-left-color: var(--arrow-color, #999999);
+    border-left-color: #999999;
     border-bottom-width: 2px;
     border-bottom-style: solid;
-    border-bottom-color: var(--arrow-color, #999999);
+    border-bottom-color: #999999;
   }
 
   .uni-data-tree-cover {
@@ -656,7 +654,7 @@
     right: 0;
     bottom: 0;
     height: 80%;
-    background-color: var(--content-background-color, #ffffff);
+    background-color: #ffffff;
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;
     flex-direction: column;
@@ -685,10 +683,10 @@
   .dialog-caption {
     position: relative;
     flex-direction: row;
-    background-color: var(--content-background-color, #ffffff);
+    background-color: #ffffff;
     border-bottom-width: 1px;
     border-bottom-style: solid;
-    border-bottom-color: var(--divider-color, #eeeeee);
+    border-bottom-color: #e5e5e5;
   }
 
   .dialog-title-view {
@@ -700,7 +698,7 @@
     padding: 0 10px;
     font-size: 15px;
     font-weight: 500;
-    color: var(--text-color, #333333);
+    color: #333333;
     line-height: 44px;
   }
 
@@ -717,7 +715,7 @@
   .dialog-close-plus {
     width: 16px;
     height: 2px;
-    background-color: var(--secondary-text-color, #999999);
+    background-color: #657180;
     border-radius: 2px;
     transform: rotate(45deg);
   }
@@ -734,7 +732,7 @@
   }
 
   .uni-data-tree-input:focus .input-value {
-    border-color: var(--tips-color, #2979ff);
+    border-color: #0958d9;
     box-shadow: 0 0 0 3px rgba(41, 121, 255, 0.24);
   }
 
@@ -748,7 +746,7 @@
   }
 
   .dialog-close:focus .dialog-close-plus {
-    background-color: var(--tips-color, #2979ff);
+    background-color: #0958d9;
   }
   /* #endif */
 
@@ -824,5 +822,15 @@
     .dialog-close-plus {
       background-color: #cccccc;
     }
+
+    /* #ifdef WEB */
+    .uni-data-tree-input:focus .input-value {
+      border-color: #91caff;
+    }
+
+    .dialog-close:focus .dialog-close-plus {
+      background-color: #91caff;
+    }
+    /* #endif */
   }
 </style>

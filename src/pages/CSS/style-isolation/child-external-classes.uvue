@@ -11,8 +11,10 @@
   defineOptions({
     inheritAttrs: false,
     externalClasses: ['child-class', 'box-class']
-    // TODO: Web端样式隔离下，externalClasses使用App.uvue中的全局class时，
-    // 目前需要显式配置styleIsolation: 'app'，待修复后移除此兼容配置。
+    // TODO: Web 端 externalClasses 目前只补来源组件的作用域，缺少 App 作用域，
+    // 导致内部元素无法匹配 App.uvue 中定义的外部 class。
+    // 临时用 styleIsolation: 'app' 绕过此缺陷；它会允许 App 样式影响整个组件，
+    // 并非 externalClasses 的使用要求。修复后应移除此配置，验证默认隔离下的行为。
     // #ifdef WEB
     ,styleIsolation: 'app'
     // #endif

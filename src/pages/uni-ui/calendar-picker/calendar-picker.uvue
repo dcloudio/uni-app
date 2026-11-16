@@ -1,0 +1,547 @@
+<template>
+	<!-- 基础用法（单选） -->
+	<text class="uni-h4">基础用法（单选）</text>
+	<text class="uni-info">点击触发区弹出日历，选择日期后自动关闭弹层。placeholder、title 文案均由使用者传入，组件不含内置文案；本示例不使用任何外部样式类。</text>
+	<uni-calendar-picker v-model="data.basicDate" placeholder="请选择日期" title="选择日期" @change="onSingleChange"
+		@popupopened="onPopupOpened" @popupclosed="onPopupClosed" />
+	<text class="uni-log">单选值：{{ data.basicDate.length > 0 ? data.basicDate : '未选择' }}</text>
+
+	<!-- 自定义样式（单选） -->
+	<text class="uni-h4">自定义样式（单选）</text>
+	<text class="uni-info">通过 externalClass 定制单选外观：input-class 触发区、pop-class 弹层、mask-class 遮罩、cancel-class 关闭按钮、day-class
+		日期、day-selected-class 选中态。</text>
+	<uni-calendar-picker v-model="data.styleDate" placeholder="自定义样式" title="自定义样式"
+		input-class="custom-input" pop-class="custom-pop" mask-class="custom-mask" cancel-class="custom-cancel"
+		day-class="custom-day" day-selected-class="custom-selected" @change="onSingleChange" />
+	<text class="uni-log">单选值：{{ data.styleDate.length > 0 ? data.styleDate : '未选择' }}</text>
+
+	<!-- 范围选择 -->
+	<text class="uni-h4">范围选择</text>
+	<text class="uni-info">开启 range 后弹层内上下排列两个日历，共享同一份区间数据，可在一个日历中依次选择首尾，也可分别在两个日历中选择。开始和结束日期都选中后自动关闭并触发
+		change；range-start-label、range-end-label 为首尾日期上方的标签文案；本示例不使用任何外部样式类。</text>
+	<uni-calendar-picker range v-model:range-start="data.rangeStart" v-model:range-end="data.rangeEnd"
+		placeholder="请选择入住和离店日期" title="选择日期范围" range-start-label="入住" range-end-label="离店"
+		@change="onRangeChange" @update:range-start="onRangeStartUpdate" @update:range-end="onRangeEndUpdate" />
+	<text class="uni-log">范围：{{ rangeText(data.rangeStart, data.rangeEnd) }}</text>
+
+	<!-- 自定义样式（范围） -->
+	<text class="uni-h4">自定义样式（范围）</text>
+	<text class="uni-info">范围模式下可继续使用 year-month-class 年月标题、year-month-arrow-class 翻月箭头、week-class 星期行、week-item-class
+		星期项、range-class 区间中段、range-label-class 首尾标签、day-selected-class 首尾选中态等外部样式类；首尾选中态铺满整个单元格且不设圆角，由组件内置的首尾单侧圆角与区间中段连成整条。</text>
+	<uni-calendar-picker range v-model:range-start="data.styledRangeStart" v-model:range-end="data.styledRangeEnd"
+		placeholder="请选择入住和离店日期" title="自定义范围样式" range-start-label="入住" range-end-label="离店"
+		year-month-class="custom-year-month" year-month-arrow-class="custom-arrow" week-class="custom-week"
+		week-item-class="custom-week-item" range-class="custom-range" range-label-class="custom-range-label"
+		day-class="custom-day" day-selected-class="custom-range-selected" @change="onRangeChange" />
+	<text class="uni-log">范围：{{ rangeText(data.styledRangeStart, data.styledRangeEnd) }}</text>
+
+	<!-- 确认模式（单选） -->
+	<text class="uni-h4">确认模式（单选）</text>
+	<text class="uni-info">开启 confirm 后，弹层底部显示已选日期预览，左上角为取消、右上角为确定；点击确定才提交选择并关闭弹层，点取消、遮罩、返回键等关闭方式不会提交选择。确定与取消文字内置简体中文、繁体中文、英文、法文、拉丁文五种语言的国际化；本示例不使用任何外部样式类。</text>
+	<uni-calendar-picker v-model="data.confirmDate" placeholder="请选择日期" title="选择日期" confirm
+		@change="onSingleChange" />
+	<text class="uni-log">单选值：{{ data.confirmDate.length > 0 ? data.confirmDate : '未选择' }}</text>
+
+	<!-- 自定义样式（单选 + 确认模式） -->
+	<text class="uni-h4">自定义样式（单选 + 确认模式）</text>
+	<text class="uni-info">确认模式下可用 preview-result-class 定制底部预览区、preview-result-text-class 定制预览文字，并可同时叠加取消按钮、日期选中态等样式类。</text>
+	<uni-calendar-picker v-model="data.styledConfirmDate" placeholder="自定义确认样式" title="自定义确认样式" confirm
+		preview-result-class="custom-preview" preview-result-text-class="custom-preview-text"
+		cancel-class="custom-cancel" day-selected-class="custom-selected" @change="onSingleChange" />
+	<text class="uni-log">单选值：{{ data.styledConfirmDate.length > 0 ? data.styledConfirmDate : '未选择' }}</text>
+
+	<!-- 确认模式（范围） -->
+	<text class="uni-h4">确认模式（范围）</text>
+	<text class="uni-info">范围模式下开启 confirm，底部预览区分别显示开始与结束日期，点击确定才提交区间；本示例不使用任何外部样式类。</text>
+	<uni-calendar-picker range v-model:range-start="data.confirmStart" v-model:range-end="data.confirmEnd"
+		placeholder="请选择入住和离店日期" title="选择日期范围" confirm @change="onRangeChange" />
+	<text class="uni-log">范围：{{ rangeText(data.confirmStart, data.confirmEnd) }}</text>
+
+	<!-- 自定义样式（范围 + 确认模式） -->
+	<text class="uni-h4">自定义样式（范围 + 确认模式）</text>
+	<text class="uni-info">范围与确认模式可组合使用全部样式类：预览区、首尾标签、区间中段、选中态等可一起定制。</text>
+	<uni-calendar-picker range v-model:range-start="data.styledConfirmStart" v-model:range-end="data.styledConfirmEnd"
+		placeholder="请选择入住和离店日期" title="自定义确认范围" confirm range-start-label="入住" range-end-label="离店"
+		preview-result-class="custom-preview" preview-result-text-class="custom-preview-text"
+		range-class="custom-range" range-label-class="custom-range-label" day-selected-class="custom-range-selected"
+		@change="onRangeChange" />
+	<text class="uni-log">范围：{{ rangeText(data.styledConfirmStart, data.styledConfirmEnd) }}</text>
+
+	<!-- 范围首尾标签插槽 -->
+	<text class="uni-h4">范围首尾标签插槽</text>
+	<text class="uni-info">通过 range-start、range-end 插槽自定义首尾日期上方的标签内容，插槽参数包含 date、start、end；插槽优先于
+		range-start-label、range-end-label 文案。</text>
+	<uni-calendar-picker range v-model:range-start="data.slotRangeStart" v-model:range-end="data.slotRangeEnd"
+		placeholder="请选择日期范围" title="自定义首尾标签" @change="onRangeChange">
+		<template #range-start="slotProps">
+			<text flatten class="custom-range-slot custom-range-slot-start">{{ slotProps.date.length > 0 ? '入住' : '' }}</text>
+		</template>
+		<template #range-end="slotProps">
+			<text flatten class="custom-range-slot custom-range-slot-end">{{ slotProps.date.length > 0 ? '离店' : '' }}</text>
+		</template>
+	</uni-calendar-picker>
+	<text class="uni-log">范围：{{ rangeText(data.slotRangeStart, data.slotRangeEnd) }}</text>
+
+	<!-- 快捷选择（标题插槽） -->
+	<text class="uni-h4">快捷选择（标题插槽）</text>
+	<text class="uni-info">通过 title 插槽可在弹层顶部放置快捷选项。示例提供近 7 天、近 30 天、近 90 天、近 365 天、本周、本月、本季度、本年，点击后更新区间并关闭弹层。</text>
+	<uni-calendar-picker ref="quickPickerRef" range v-model:range-start="data.quickStart"
+		v-model:range-end="data.quickEnd" placeholder="请选择日期范围" @change="onRangeChange">
+		<template #title>
+			<scroll-view class="quick-scroll" direction="horizontal" :show-scrollbar="false">
+				<view class="quick-row">
+					<text v-for="(item, index) in quickOptions" :key="index" class="quick-item"
+						@click="onQuickSelect(item.key)">{{ item.label }}</text>
+				</view>
+			</scroll-view>
+		</template>
+	</uni-calendar-picker>
+	<text class="uni-log">范围：{{ rangeText(data.quickStart, data.quickEnd) }}</text>
+
+	<!-- 可选范围、节假日与附加文字 -->
+	<text class="uni-h4">可选范围、节假日与附加文字</text>
+	<text class="uni-info">min-date、max-date 限制可选范围；holidays 高亮节假日；day-extras 在日期上下方显示附加文字；locale、week-start
+		透传给日历，示例指定英文与周一开始。</text>
+	<uni-calendar-picker range v-model:range-start="data.limitedStart" v-model:range-end="data.limitedEnd"
+		placeholder="请选择日期范围" title="可选范围与节假日" :min-date="minDate" :max-date="maxDate"
+		:holidays="holidays" :day-extras="dayExtras" locale="en" :week-start="1" @change="onRangeChange" />
+	<text class="uni-log">范围：{{ rangeText(data.limitedStart, data.limitedEnd) }}</text>
+
+	<!-- 禁用 -->
+	<text class="uni-h4">禁用</text>
+	<text class="uni-info">disabled 禁用触发区，点击不会打开弹层。</text>
+	<uni-calendar-picker v-model="data.disabledDate" placeholder="禁用状态" title="禁用状态" disabled />
+	<text class="uni-log">禁用值：{{ data.disabledDate.length > 0 ? data.disabledDate : '未选择' }}</text>
+
+	<!-- 默认触发区插槽 -->
+	<text class="uni-h4">默认触发区插槽</text>
+	<text class="uni-info">default 插槽可完全自定义触发区，插槽参数包含 start、end、text。</text>
+	<uni-calendar-picker range v-model:range-start="data.customStart" v-model:range-end="data.customEnd"
+		@change="onRangeChange">
+		<template #default="slotProps">
+			<view class="custom-trigger" flatten>
+				<text class="custom-trigger-label" flatten>日期范围</text>
+				<text class="custom-trigger-text">{{ slotProps.text.length > 0 ? slotProps.text : '点击选择' }}</text>
+			</view>
+		</template>
+	</uni-calendar-picker>
+	<text class="uni-log">范围：{{ rangeText(data.customStart, data.customEnd) }}</text>
+
+	<!-- 组件方法 -->
+	<text class="uni-h4">组件方法</text>
+	<text class="uni-info">通过 ref 调用 open、close、clearRange 方法。</text>
+	<view class="button-row">
+		<button class="demo-btn" size="mini" @click="onOpenPicker">打开弹层</button>
+		<button class="demo-btn" size="mini" @click="onClosePicker">关闭弹层</button>
+		<button class="demo-btn" size="mini" @click="onClearPickerRange">清空范围</button>
+	</view>
+	<uni-calendar-picker ref="methodPickerRef" range v-model:range-start="data.methodStart"
+		v-model:range-end="data.methodEnd" placeholder="请选择日期范围" title="组件方法" />
+	<text class="uni-log">范围：{{ rangeText(data.methodStart, data.methodEnd) }}</text>
+
+	<!-- 事件日志 -->
+	<text class="uni-h4">事件日志</text>
+	<text class="uni-log">{{ data.lastEvent }}</text>
+</template>
+
+<script setup lang="ts">
+	type CalendarDayExtra = {
+		date : string
+		top ?: string
+		bottom ?: string
+	}
+
+	type CalendarRange = {
+		start : string
+		end : string
+	}
+
+	type QuickOption = {
+		label : string
+		key : string
+	}
+
+	type Data = {
+		basicDate : string
+		styleDate : string
+		rangeStart : string
+		rangeEnd : string
+		styledRangeStart : string
+		styledRangeEnd : string
+		confirmDate : string
+		styledConfirmDate : string
+		confirmStart : string
+		confirmEnd : string
+		styledConfirmStart : string
+		styledConfirmEnd : string
+		slotRangeStart : string
+		slotRangeEnd : string
+		quickStart : string
+		quickEnd : string
+		limitedStart : string
+		limitedEnd : string
+		disabledDate : string
+		customStart : string
+		customEnd : string
+		methodStart : string
+		methodEnd : string
+		lastEvent : string
+	}
+
+	function padZero(value : number) : string {
+		return value < 10 ? '0' + value.toString() : value.toString()
+	}
+
+	function formatDate(date : Date) : string {
+		return `${date.getFullYear()}-${padZero(date.getMonth() + 1)}-${padZero(date.getDate())}`
+	}
+
+	function addDays(date : Date, offset : number) : Date {
+		return new Date(date.getFullYear(), date.getMonth(), date.getDate() + offset)
+	}
+
+	const today = new Date()
+	const todayText = formatDate(today)
+	const minDate = todayText
+	const maxDate = formatDate(addDays(today, 60))
+
+	const holidays : string[] = [
+		formatDate(addDays(today, 10)),
+		formatDate(addDays(today, 20))
+	]
+
+	const dayExtras : CalendarDayExtra[] = [
+		{ date: formatDate(addDays(today, 3)), top: '特价', bottom: '¥299' },
+		{ date: formatDate(addDays(today, 4)), bottom: '¥399' }
+	]
+
+	const quickOptions : QuickOption[] = [
+		{ label: '近7天', key: 'last7' },
+		{ label: '近30天', key: 'last30' },
+		{ label: '近90天', key: 'last90' },
+		{ label: '近365天', key: 'last365' },
+		{ label: '本周', key: 'week' },
+		{ label: '本月', key: 'month' },
+		{ label: '本季度', key: 'quarter' },
+		{ label: '本年', key: 'year' }
+	]
+
+	const data = reactive<Data>({
+		basicDate: '',
+		styleDate: '',
+		rangeStart: '',
+		rangeEnd: '',
+		styledRangeStart: '',
+		styledRangeEnd: '',
+		confirmDate: '',
+		styledConfirmDate: '',
+		confirmStart: '',
+		confirmEnd: '',
+		styledConfirmStart: '',
+		styledConfirmEnd: '',
+		slotRangeStart: '',
+		slotRangeEnd: '',
+		quickStart: '',
+		quickEnd: '',
+		limitedStart: '',
+		limitedEnd: '',
+		disabledDate: '',
+		customStart: '',
+		customEnd: '',
+		methodStart: '',
+		methodEnd: '',
+		lastEvent: '暂无事件'
+	})
+
+	const quickPickerRef = ref<CallEasyMethodComponentPublicInstance | null>(null)
+	const methodPickerRef = ref<CallEasyMethodComponentPublicInstance | null>(null)
+
+	function rangeText(start : string, end : string) : string {
+		const startText = start.length > 0 ? start : '未选择'
+		const endText = end.length > 0 ? end : '未选择'
+		return `${startText} ~ ${endText}`
+	}
+
+	function logEvent(text : string) {
+		data.lastEvent = text
+	}
+
+	function onSingleChange(value : any) {
+		logEvent(`change：${value as string}`)
+	}
+
+	function onRangeChange(value : any) {
+		const range = value as CalendarRange
+		logEvent(`change：${range.start} ~ ${range.end}`)
+	}
+
+	function onRangeStartUpdate(date : string) {
+		logEvent(`update:range-start：${date.length > 0 ? date : '空'}`)
+	}
+
+	function onRangeEndUpdate(date : string) {
+		logEvent(`update:range-end：${date.length > 0 ? date : '空'}`)
+	}
+
+	function onPopupOpened() {
+		logEvent('popupopened')
+	}
+
+	function onPopupClosed() {
+		logEvent('popupclosed')
+	}
+
+	function onQuickSelect(key : string) {
+		let start = today
+		let end = today
+		if (key == 'last7') {
+			start = addDays(today, -6)
+		} else if (key == 'last30') {
+			start = addDays(today, -29)
+		} else if (key == 'last90') {
+			start = addDays(today, -89)
+		} else if (key == 'last365') {
+			start = addDays(today, -364)
+		} else if (key == 'week') {
+			const day = today.getDay()
+			const diff = (day + 6) % 7
+			start = addDays(today, -diff)
+			end = addDays(start, 6)
+		} else if (key == 'month') {
+			start = new Date(today.getFullYear(), today.getMonth(), 1)
+			end = new Date(today.getFullYear(), today.getMonth() + 1, 0)
+		} else if (key == 'quarter') {
+			const quarterStartMonth = Math.floor(today.getMonth() / 3) * 3
+			start = new Date(today.getFullYear(), quarterStartMonth, 1)
+			end = new Date(today.getFullYear(), quarterStartMonth + 3, 0)
+		} else if (key == 'year') {
+			start = new Date(today.getFullYear(), 0, 1)
+			end = new Date(today.getFullYear(), 11, 31)
+		}
+		data.quickStart = formatDate(start)
+		data.quickEnd = formatDate(end)
+		logEvent(`快捷选择：${data.quickStart} ~ ${data.quickEnd}`)
+		quickPickerRef.value?.close()
+	}
+
+	function onOpenPicker() {
+		methodPickerRef.value?.open()
+	}
+
+	function onClosePicker() {
+		methodPickerRef.value?.close()
+	}
+
+	function onClearPickerRange() {
+		methodPickerRef.value?.clearRange()
+		logEvent('clearRange')
+	}
+
+	defineExpose({
+		data
+	})
+</script>
+
+<style>
+	.button-row {
+		flex-direction: row;
+		flex-wrap: wrap;
+		margin-bottom: 8px;
+	}
+
+	.demo-btn {
+		margin-right: 8px;
+		margin-bottom: 8px;
+		font-size: 12px;
+	}
+
+	/* 快捷选择标题插槽：横向滚动 */
+	.quick-scroll {
+		flex: 1;
+		flex-direction: row;
+		overflow: hidden;
+	}
+
+	.quick-row {
+		flex-direction: row;
+		flex-wrap: nowrap;
+		align-items: center;
+		height: 44px;
+	}
+
+	.quick-item {
+		flex-shrink: 0;
+		margin-right: 8px;
+		padding: 4px 10px;
+		border-radius: 12px;
+		font-size: 12px;
+		color: var(--text-color, #333333);
+		background-color: var(--active-background-color, #f2f3f5);
+	}
+
+	/* #ifdef WEB */
+	.quick-item {
+		cursor: pointer;
+	}
+
+	.custom-trigger {
+		cursor: pointer;
+	}
+	/* #endif */
+
+	/* 范围首尾标签插槽 */
+	.custom-range-slot {
+		width: 100%;
+		height: 14px;
+		line-height: 14px;
+		font-size: 10px;
+		text-align: center;
+		color: #ffffff;
+	}
+
+	.custom-range-slot-start {
+		color: #ffffff;
+	}
+
+	.custom-range-slot-end {
+		color: #ffffff;
+	}
+
+	/* 默认触发区插槽 */
+	.custom-trigger {
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		padding: 10px 12px;
+		border-width: 1px;
+		border-style: solid;
+		border-color: #7c3aed;
+		border-radius: 6px;
+		background-color: #f3e8ff;
+	}
+
+	.custom-trigger-label {
+		font-size: 13px;
+		color: #7c3aed;
+	}
+
+	.custom-trigger-text {
+		font-size: 14px;
+		color: #7c3aed;
+		font-weight: bold;
+	}
+
+	/* externalClass 自定义样式（范围） */
+	.custom-year-month {
+		color: #7c3aed;
+		font-weight: bold;
+	}
+
+	.custom-arrow {
+		color: #7c3aed;
+	}
+
+	.custom-week {
+		border-radius: 6px;
+		background-color: #f3e8ff;
+	}
+
+	.custom-week-item {
+		color: #7c3aed;
+		opacity: 1;
+	}
+
+	.custom-range {
+		background-color: rgba(124, 58, 237, 0.16);
+	}
+
+	/* 范围首尾选中态：整格铺满、不加圆角，交给组件内置的首尾单侧圆角，与 range-class 连成整条 */
+	.custom-range-selected {
+		background-color: #7c3aed;
+	}
+
+	.custom-range-label {
+		color: #7c3aed;
+		font-weight: bold;
+	}
+
+	/* 确认模式预览区自定义样式 */
+	.custom-preview {
+		padding: 6px 10px;
+		border-radius: 8px;
+		background-color: #f3e8ff;
+	}
+
+	.custom-preview-text {
+		color: #7c3aed;
+		font-weight: bold;
+	}
+
+	/* externalClass 自定义样式（单选） */
+	.custom-input {
+		border-color: #7c3aed;
+		border-radius: 16px;
+	}
+
+	.custom-pop {
+		border-top-left-radius: 20px;
+		border-top-right-radius: 20px;
+	}
+
+	.custom-mask {
+		background-color: rgba(0, 0, 0, 0.55);
+	}
+
+	.custom-cancel {
+		background-color: rgba(124, 58, 237, 0.1);
+	}
+
+	.custom-selected {
+		background-color: #7c3aed;
+		border-radius: 30px;
+	}
+
+	.custom-day {
+		font-weight: 500;
+	}
+
+	@media (prefers-color-scheme: dark) {
+		.custom-trigger {
+			background-color: rgba(124, 58, 237, 0.18);
+			border-color: #a78bfa;
+		}
+
+		.custom-trigger-label {
+			color: #a78bfa;
+		}
+
+		.custom-trigger-text {
+			color: #a78bfa;
+		}
+
+		.quick-item {
+			color: #ffffff;
+			background-color: #3b3b3b;
+		}
+
+		.custom-week {
+			background-color: #3b2a55;
+		}
+
+		.custom-week-item {
+			color: #a78bfa;
+		}
+
+		.custom-range {
+			background-color: rgba(124, 58, 237, 0.4);
+		}
+
+		.custom-preview {
+			background-color: #3b2a55;
+		}
+
+		.custom-preview-text {
+			color: #a78bfa;
+		}
+	}
+</style>

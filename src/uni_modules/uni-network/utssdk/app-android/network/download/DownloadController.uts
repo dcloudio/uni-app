@@ -398,11 +398,6 @@ class SimpleDownloadCallback implements Callback {
 
 		if (TextUtils.isEmpty(fileName)) {
 			fileName = System.currentTimeMillis().toString()
-			const contentType = response.header("content-type")
-			let type = MimeTypeMap.getSingleton().getExtensionFromMimeType(contentType);
-			if (type != null) {
-				fileName += "." + type;
-			}
 		}
 
 		fileName = URLDecoder.decode(fileName, "UTF-8")
@@ -415,7 +410,22 @@ class SimpleDownloadCallback implements Callback {
 			fileName = subFileName + System.currentTimeMillis()
 		}
 
-		
+		// 自动命名缺少扩展名时，根据响应类型补齐，再处理文件重名。
+		if (fileName.indexOf('.') < 0) {
+			let contentType = response.header("content-type") ?? ""
+			const parameterIndex = contentType.indexOf(';')
+			if (parameterIndex >= 0) {
+				contentType = contentType.substring(0, parameterIndex)
+			}
+			contentType = contentType.trim().toLowerCase()
+			if (contentType.length > 0 && contentType != "application/octet-stream") {
+				const type = MimeTypeMap.getSingleton().getExtensionFromMimeType(contentType)
+				if (type != null && type.length > 0) {
+					fileName += "." + type
+				}
+			}
+		}
+
 		if (new File(targetPath + fileName).exists()) {
 			const index = fileName.lastIndexOf(".");
 			let tFileName = fileName;

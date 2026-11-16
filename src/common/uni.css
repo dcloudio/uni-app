@@ -1,18 +1,5 @@
 @import "./cssvar.css";
 
-/* #ifndef WEB */
-page {
-  padding-bottom: calc(8px + var(--uni-safe-area-inset-bottom, 0px));
-}
-/* #endif */
-
-/* #ifdef WEB */
-page::after {
-  content: '';
-  padding-bottom: calc(8px + var(--uni-safe-area-inset-bottom, 0px));
-}
-/* #endif */
-
 .scroll-view_bottom-fixed {
   height: var(--uni-safe-area-inset-bottom, 20px);
   min-height: 20px;
@@ -38,6 +25,22 @@ page::after {
 .uni-h4 {
   font-weight: bold;
   margin: 8px 0;
+}
+
+.uni-comment {
+  display: block;
+  margin: 6px 0;
+  color: var(--active-color, #888888);
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.uni-log {
+  display: block;
+  margin: 6px 0;
+  color: var(--text-color, #333333);
+  line-height: 20px;
+  word-break: break-all;
 }
 .uni-theme-text{
 	color: var(--text-color);

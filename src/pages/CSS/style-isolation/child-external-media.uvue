@@ -1,0 +1,48 @@
+<template>
+  <view class="media-host">
+    <view :id="props.targetId" class="media-root" :class="props.mediaClass">
+      <text class="media-text">{{ props.label }}</text>
+    </view>
+  </view>
+</template>
+
+<script setup lang="ts">
+  type Props = {
+    targetId: string;
+    label: string;
+    mediaClass?: string.ClassString;
+  }
+
+  const props = withDefaults(defineProps<Props>(), {
+    mediaClass: ''
+  })
+
+  defineOptions({
+    externalClasses: ['media-class']
+  })
+</script>
+
+<style>
+  .media-root {
+    height: 56px;
+    margin: 8px 0;
+    padding: 12px;
+    border: 2px solid #90a4ae;
+    background-color: #fafafa;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .media-text {
+    color: #263238;
+    font-size: 14px;
+  }
+
+  /* 组件内部媒体查询规则。 */
+  @media (min-width: 0px) {
+    .media-root {
+      background-color: #90caf9;
+      border-color: #1976d2;
+    }
+  }
+</style>

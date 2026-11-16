@@ -3,7 +3,6 @@ const isAndroid = platformInfo.startsWith('android')
 const isIos = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.startsWith('harmony')
 const isApp = isAndroid || isIos || isHarmony
-const isMPWeiXin = platformInfo.startsWith('mp-weixin')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 const properties = [
@@ -11,7 +10,7 @@ const properties = [
   ['scrollEnabled', 'changeScrollEnabled', true],
   ['pagingEnabled', 'changePagingEnabled', false]
 ]
-if (isIos || isMPWeiXin) properties.unshift(['bounces', 'changeBounces', true])
+if (isIos) properties.unshift(['bounces', 'changeBounces', true])
 const methodIds = [
   ['scroll-to', ['scroll-to']],
   ['scroll-into-view', ['scroll-into-view']],
@@ -21,7 +20,7 @@ const methodIds = [
 
 jest.setTimeout(30000)
 
-describe(`ScrollViewContext/scroll-view`, () => {
+describe(`ScrollViewContext/waterflow`, () => {
   if (!isApp || isAppWebView) {
     it('skip', () => {
       expect(1).toBe(1)
@@ -31,7 +30,7 @@ describe(`ScrollViewContext/scroll-view`, () => {
 
   let page
   beforeEach(async () => {
-    page = await program.reLaunch(`/pages/API/scroll-view-context/scroll-view`)
+    page = await program.reLaunch(`/pages/component/scroll-view/scroll-view-context/waterflow`)
     await page.waitFor(500)
   })
 

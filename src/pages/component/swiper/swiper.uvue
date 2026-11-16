@@ -108,11 +108,11 @@
         <!-- #endif -->
       </view>
       <!-- #ifndef WEB -->
-      <view class="uni-title p-10-0 color-text-333">
+      <view class="uni-title">
         <text>easing-function</text>
         <swiper id="easing-function-swiper" class="h-80" easing-function="linear">
-          <swiper-item><view class="w-full h-80 background-f76260"></view></swiper-item>
-          <swiper-item><view class="w-full h-80 background-007aff"></view></swiper-item>
+          <swiper-item><view class="w-full h-80 uni-bg-red"></view></swiper-item>
+          <swiper-item><view class="w-full h-80 uni-bg-blue"></view></swiper-item>
         </swiper>
       </view>
       <!-- #endif -->
@@ -377,28 +377,12 @@
 </script>
 
 <style>
-  .p-10-0 {
-    padding: 10px 0;
-  }
-
   .w-full {
     width: 100%;
   }
 
-  .background-f76260 {
-    background: #F76260;
-  }
-
-  .background-007aff {
-    background: #007AFF;
-  }
-
   .h-80 {
     height: 80px;
-  }
-
-  .color-text-333 {
-    color: var(--text-color, #333333);
   }
 
   .swiper {

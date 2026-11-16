@@ -194,6 +194,7 @@
     properties: ['font-family', 'line-height', 'font-size', 'color'],
     filterProperties: false
   } as UseComputedStyleOptions)
+  // #ifndef APP-ANDROID && !VUE3-VAPOR
   const selectionStyle = useComputedStyle({
     pseudoElement: '::selection',
     properties: ['color', 'background-color', 'caret-color'],
@@ -202,6 +203,7 @@
   const selectionColor = computed<string | null>(() => selectionStyle.get('color')?.toString() ?? null)
   const selectionBackgroundColor = computed<string | null>(() => selectionStyle.get('background-color')?.toString() ?? '#33B5E566')
   const selectionHandleColor = computed<string | null>(() => selectionStyle.get('caret-color')?.toString() ?? '#4285F4FF')
+  // #endif
   const nativeStyle = computed(() : Map<string, any> => {
     const result = new Map<string, any>()
     style.forEach((value, key) => {
@@ -329,7 +331,9 @@
 		margin: 0;
 	}
 	</style>
+	<!-- #ifndef APP-ANDROID && !VUE3-VAPOR -->
 	<style id="rich-text-selection-style">::selection {}</style>
+	<!-- #endif -->
 	<script>
 		function postMessage(m) {
 			window.__uniapp_x_.postMessage(JSON.stringify(m));
@@ -349,6 +353,7 @@
 				document.documentElement.style.webkitTouchCallout = 'none';
 			}
 		}
+		// #ifndef APP-ANDROID && !VUE3-VAPOR
 		function updateSelectionStyle(color, backgroundColor) {
 			var rule = document.getElementById('rich-text-selection-style').sheet.cssRules[0].style;
 			if (color) {
@@ -364,6 +369,7 @@
 		}
 		// 初始选区样式立即应用，不等待图片加载，也不在 onload 中覆盖后续动态更新。
 		updateSelectionStyle(${JSON.stringify(selectionColor.value)}, ${JSON.stringify(selectionBackgroundColor.value)})
+		// #endif
 		window.onload = function () {
 			var aTags = document.getElementsByTagName('a');
 			for (var i = 0; i < aTags.length; i++) {
@@ -429,12 +435,14 @@
     }
   }
 
+  // #ifndef APP-ANDROID && !VUE3-VAPOR
   function updateSelectionStyle() {
     if (!isNative && isWebviewLoaded) {
       // 初始空白页尚无此方法；内容加载完成后会再次同步最新的计算样式。
       webviewRef.value?.evalJS(`if (typeof updateSelectionStyle === 'function') { updateSelectionStyle(${JSON.stringify(selectionColor.value)}, ${JSON.stringify(selectionBackgroundColor.value)}) }`)
     }
   }
+  // #endif
 
   // #ifdef APP && VUE3-VAPOR
   /**
@@ -537,8 +545,10 @@
     loadHtmlContent(true)
   })
 
+  // #ifndef APP-ANDROID && !VUE3-VAPOR
   // 选区样式单独更新，不重载 HTML，以保留内容及当前选区。
   watch([selectionColor, selectionBackgroundColor], updateSelectionStyle)
+  // #endif
 
   /**
    * 监听 selectable 属性变化
@@ -605,7 +615,9 @@
       isWebviewLoaded = true
       loadHtmlContent(false)
     }
+    // #ifndef APP-ANDROID && !VUE3-VAPOR
     updateSelectionStyle()
+    // #endif
   }
 
   /**

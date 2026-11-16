@@ -1,0 +1,178 @@
+<template>
+  <view class="pointer-hover">
+    <text class="section-title">主要输入设备</text>
+    <view class="condition">
+      <text class="condition-title">主要输入设备：不是定点设备</text>
+      <text class="syntax">@media (pointer: none)</text>
+      <text id="pointer-none" class="status matched pointer-none">条件满足</text>
+      <text id="pointer-none-unmatched" class="status unmatched pointer-none-unmatched">条件不满足</text>
+    </view>
+    <view class="condition">
+      <text class="condition-title">主要输入设备：精度有限的定点设备（例如触屏）</text>
+      <text class="syntax">@media (pointer: coarse)</text>
+      <text id="pointer-coarse" class="status matched pointer-coarse">条件满足</text>
+      <text id="pointer-coarse-unmatched" class="status unmatched pointer-coarse-unmatched">条件不满足</text>
+    </view>
+    <view class="condition">
+      <text class="condition-title">主要输入设备：精确的定点设备（例如鼠标）</text>
+      <text class="syntax">@media (pointer: fine)</text>
+      <text id="pointer-fine" class="status matched pointer-fine">条件满足</text>
+      <text id="pointer-fine-unmatched" class="status unmatched pointer-fine-unmatched">条件不满足</text>
+    </view>
+    <view class="condition">
+      <text class="condition-title">主要输入设备：无法方便地悬停</text>
+      <text class="syntax">@media (hover: none)</text>
+      <text id="hover-none" class="status matched hover-none">条件满足</text>
+      <text id="hover-none-unmatched" class="status unmatched hover-none-unmatched">条件不满足</text>
+    </view>
+    <view class="condition">
+      <text class="condition-title">主要输入设备：可以方便地悬停</text>
+      <text class="syntax">@media (hover: hover)</text>
+      <text id="hover-hover" class="status matched hover-hover">条件满足</text>
+      <text id="hover-hover-unmatched" class="status unmatched hover-hover-unmatched">条件不满足</text>
+    </view>
+    <text class="section-title">任意输入设备</text>
+    <view class="condition">
+      <text class="condition-title">不存在定点设备</text>
+      <text class="syntax">@media (any-pointer: none)</text>
+      <text id="any-pointer-none" class="status matched any-pointer-none">条件满足</text>
+      <text id="any-pointer-none-unmatched" class="status unmatched any-pointer-none-unmatched">条件不满足</text>
+    </view>
+    <view class="condition">
+      <text class="condition-title">存在精度有限的定点设备</text>
+      <text class="syntax">@media (any-pointer: coarse)</text>
+      <text id="any-pointer-coarse" class="status matched any-pointer-coarse">条件满足</text>
+      <text id="any-pointer-coarse-unmatched" class="status unmatched any-pointer-coarse-unmatched">条件不满足</text>
+    </view>
+    <view class="condition">
+      <text class="condition-title">存在精确的定点设备</text>
+      <text class="syntax">@media (any-pointer: fine)</text>
+      <text id="any-pointer-fine" class="status matched any-pointer-fine">条件满足</text>
+      <text id="any-pointer-fine-unmatched" class="status unmatched any-pointer-fine-unmatched">条件不满足</text>
+    </view>
+    <view class="condition">
+      <text class="condition-title">不存在支持悬停的输入设备</text>
+      <text class="syntax">@media (any-hover: none)</text>
+      <text id="any-hover-none" class="status matched any-hover-none">条件满足</text>
+      <text id="any-hover-none-unmatched" class="status unmatched any-hover-none-unmatched">条件不满足</text>
+    </view>
+    <view class="condition">
+      <text class="condition-title">存在支持悬停的输入设备</text>
+      <text class="syntax">@media (any-hover: hover)</text>
+      <text id="any-hover-hover" class="status matched any-hover-hover">条件满足</text>
+      <text id="any-hover-hover-unmatched" class="status unmatched any-hover-hover-unmatched">条件不满足</text>
+    </view>
+    <text class="section-title">无值和组合条件</text>
+    <view class="condition">
+      <text class="condition-title">无值：主要输入设备是定点设备</text>
+      <text class="syntax">@media (pointer)</text>
+      <text id="pointer-boolean" class="status matched pointer-boolean">条件满足</text>
+      <text id="pointer-boolean-unmatched" class="status unmatched pointer-boolean-unmatched">条件不满足</text>
+    </view>
+    <view class="condition">
+      <text class="condition-title">无值：主要输入设备支持悬停</text>
+      <text class="syntax">@media (hover)</text>
+      <text id="hover-boolean" class="status matched hover-boolean">条件满足</text>
+      <text id="hover-boolean-unmatched" class="status unmatched hover-boolean-unmatched">条件不满足</text>
+    </view>
+    <view class="condition">
+      <text class="condition-title">无值：存在定点设备</text>
+      <text class="syntax">@media (any-pointer)</text>
+      <text id="any-pointer-boolean" class="status matched any-pointer-boolean">条件满足</text>
+      <text id="any-pointer-boolean-unmatched" class="status unmatched any-pointer-boolean-unmatched">条件不满足</text>
+    </view>
+    <view class="condition">
+      <text class="condition-title">无值：存在支持悬停的输入设备</text>
+      <text class="syntax">@media (any-hover)</text>
+      <text id="any-hover-boolean" class="status matched any-hover-boolean">条件满足</text>
+      <text id="any-hover-boolean-unmatched" class="status unmatched any-hover-boolean-unmatched">条件不满足</text>
+    </view>
+    <view class="condition">
+      <text class="condition-title">取反：主要输入设备不是精确的定点设备</text>
+      <text class="syntax">@media not (pointer: fine)</text>
+      <text id="not-fine" class="status matched not-fine">条件满足</text>
+      <text id="not-fine-unmatched" class="status unmatched not-fine-unmatched">条件不满足</text>
+    </view>
+    <view class="condition">
+      <text class="condition-title">组合：同时存在精度有限和精确的定点设备</text>
+      <text class="syntax">@media (any-pointer: coarse) and (any-pointer: fine)</text>
+      <text id="mixed-pointer" class="status matched mixed-pointer">条件满足</text>
+      <text id="mixed-pointer-unmatched" class="status unmatched mixed-pointer-unmatched">条件不满足</text>
+    </view>
+  </view>
+</template>
+
+<style>
+  .section-title { font-size: 18px; font-weight: bold; color: #111827; margin-top: 20px; margin-bottom: 8px; }
+  .condition { padding: 12px; margin-bottom: 8px; border-radius: 8px; background-color: #ffffff; }
+  .condition-title { font-size: 15px; color: #1f2937; margin-bottom: 4px; }
+  .syntax { font-size: 12px; color: #64748b; margin-bottom: 8px; }
+  .status { align-self: flex-start; padding: 4px 8px; border-radius: 4px; font-size: 13px; }
+  .matched { display: none; background-color: #dcfce7; color: #166534; }
+  .unmatched { display: flex; background-color: #f1f5f9; color: #475569; }
+
+  @media (pointer: none) {
+    .pointer-none { display: flex; }
+    .pointer-none-unmatched { display: none; }
+  }
+  @media (pointer: coarse) {
+    .pointer-coarse { display: flex; }
+    .pointer-coarse-unmatched { display: none; }
+  }
+  @media (pointer: fine) {
+    .pointer-fine { display: flex; }
+    .pointer-fine-unmatched { display: none; }
+  }
+  @media (hover: none) {
+    .hover-none { display: flex; }
+    .hover-none-unmatched { display: none; }
+  }
+  @media (hover: hover) {
+    .hover-hover { display: flex; }
+    .hover-hover-unmatched { display: none; }
+  }
+  @media (any-pointer: none) {
+    .any-pointer-none { display: flex; }
+    .any-pointer-none-unmatched { display: none; }
+  }
+  @media (any-pointer: coarse) {
+    .any-pointer-coarse { display: flex; }
+    .any-pointer-coarse-unmatched { display: none; }
+  }
+  @media (any-pointer: fine) {
+    .any-pointer-fine { display: flex; }
+    .any-pointer-fine-unmatched { display: none; }
+  }
+  @media (any-hover: none) {
+    .any-hover-none { display: flex; }
+    .any-hover-none-unmatched { display: none; }
+  }
+  @media (any-hover: hover) {
+    .any-hover-hover { display: flex; }
+    .any-hover-hover-unmatched { display: none; }
+  }
+  @media (pointer) {
+    .pointer-boolean { display: flex; }
+    .pointer-boolean-unmatched { display: none; }
+  }
+  @media (hover) {
+    .hover-boolean { display: flex; }
+    .hover-boolean-unmatched { display: none; }
+  }
+  @media (any-pointer) {
+    .any-pointer-boolean { display: flex; }
+    .any-pointer-boolean-unmatched { display: none; }
+  }
+  @media (any-hover) {
+    .any-hover-boolean { display: flex; }
+    .any-hover-boolean-unmatched { display: none; }
+  }
+  @media not (pointer: fine) {
+    .not-fine { display: flex; }
+    .not-fine-unmatched { display: none; }
+  }
+  @media (any-pointer: coarse) and (any-pointer: fine) {
+    .mixed-pointer { display: flex; }
+    .mixed-pointer-unmatched { display: none; }
+  }
+</style>

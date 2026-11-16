@@ -195,6 +195,97 @@ const maxDate = '2026-12-31'
 const holidays = ['2026-11-26', '2026-11-27']
 ```
 
+## 日期范围选择
+
+设置 `range` 后进入范围选择模式。用 `v-model:range-start`、`v-model:range-end` 双向绑定首尾日期；开启范围模式后 `modelValue` 与 `change` 不再生效，统一使用 `range-change` 判断是否完成选择。
+
+选择规则：
+
+- 首次点击设置开始日期。
+- 已有开始日期时，点击更晚的日期设置结束日期；点击更早的日期会把开始日期前移。
+- 首尾都已选择时，点击区间端点以外的任意日期会重新开始选择；点击结束日期会取消结束日期，回到只选开始的状态。
+- 点击已选中的开始日期不会清空，避免误触；清空请调用 `clearRange()` 或由外层提供清空按钮。
+
+```html
+<uni-calendar-view
+  range
+  v-model:range-start="rangeStart"
+  v-model:range-end="rangeEnd"
+  range-start-label="入住"
+  range-end-label="离店"
+  :min-date="minDate"
+  :max-date="maxDate"
+  range-class="custom-range"
+  @range-change="onRangeChange" />
+```
+
+```ts
+const rangeStart = ref('')
+const rangeEnd = ref('')
+
+function onRangeChange(start : string, end : string) {
+  // start、end 同时非空表示范围选择完成
+  if (start.length > 0 && end.length > 0) {
+    console.log('选择完成：', start, end)
+  }
+}
+```
+
+### 首尾标签
+
+首尾日期上方可以显示标签，例如入住、离店。有两种方式：
+
+1. 使用 `range-start-label`、`range-end-label` 传入纯文本。
+2. 使用 `range-start`、`range-end` 插槽完全自定义内容，插槽参数为 `{ date, start, end }`。
+
+插槽优先于文案属性。标签与 `day-extras` 的 `top` 文字冲突时，标签优先，该日期格不显示 `topText`，`bottomText` 不受影响；标签与上方附加文字同高，不会改变日期网格高度。
+
+```html
+<uni-calendar-view range v-model:range-start="rangeStart" v-model:range-end="rangeEnd">
+  <template #range-start="slotProps">
+    <text class="my-range-label">入住</text>
+  </template>
+  <template #range-end="slotProps">
+    <text class="my-range-label">离店</text>
+  </template>
+</uni-calendar-view>
+```
+
+### 区间样式
+
+- 首尾日期复用选中样式，可通过 `day-selected-class` 定制。
+- 中间日期（不含首尾）默认使用浅色背景，可通过 `range-class` 覆盖背景色。
+- 首尾标签容器可通过 `range-label-class` 定制。
+- 中间日期若被 `min-date`、`max-date` 判定为禁用，不绘制区间背景，也不会阻断首尾选择。业务上若要求区间连通，请使用 `min-date`、`max-date` 约束，而不是依赖禁用日期。
+
+```css
+.custom-range {
+  background-color: rgba(124, 58, 237, 0.16);
+}
+```
+
+### 范围相关方法
+
+```ts
+const calendarRef = ref<CallEasyMethodComponentPublicInstance | null>(null)
+
+// 整体设置范围；非法日期会被置空，开始日期晚于结束日期时丢弃结束日期
+calendarRef.value?.setRange('2026-11-10', '2026-11-20')
+
+// 清空范围
+calendarRef.value?.clearRange()
+
+// 读取范围，返回 { start, end }
+const range = calendarRef.value?.getRange()
+```
+
+说明：
+
+- 外部修改 `range-start`、`range-end` 时只更新高亮，不主动切换月份。
+- `min-date`、`max-date` 变化后，已越界的范围端点会被清空并触发对应更新事件。
+- 两个日历共享同一份 `range-start`、`range-end` 时，可以分别在两个日历中选择开始和结束日期。
+- `goToDate()` 在范围模式下会跳转到目标日期所在月份，并当作一次普通点击处理。
+
 ## 切换语言与一周起始日
 
 不传 `locale` 时跟随系统语言，内置以下语言，组件根据 `locale` 属性或系统语言自动切换月份名称、星期缩写和一周起始日：
@@ -235,3 +326,5 @@ function jump() {
 
 - `day-extras` 数据量较大时请配合 `month-change` 分批加载，避免首次加载准备与传输开销过大。
 - `day-extras`、`holidays` 变化后需整体替换数组才会刷新，原地修改数组内元素不会触发刷新。
+- 范围模式下不会触发 `change` 与 `update:modelValue`，请使用 `range-change`、`update:range-start`、`update:range-end`。
+- `range-start-label`、`range-end-label` 的文案由使用者传入，组件不做国际化，便于按业务显示入住、离店等自定义文字。

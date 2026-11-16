@@ -287,6 +287,7 @@
     properties: ['caret-color', 'color'],
     filterProperties: true
   } as UseComputedStyleOptions)
+  // #ifndef APP-ANDROID && !VUE3-VAPOR
   const selectionStyle = useComputedStyle({
     pseudoElement: '::selection',
     properties: ['color', 'background-color'],
@@ -294,6 +295,7 @@
   } as UseComputedStyleOptions)
   const selectionColor = computed<string | null>(() => selectionStyle.get('color')?.toString() ?? null)
   const selectionBackgroundColor = computed<string | null>(() => selectionStyle.get('background-color')?.toString() ?? null)
+  // #endif
   const computedCaretColor = computed<string | null>(() => computedStyle.get('caret-color')?.toString() ?? null)
   const computedTextColor = computed<string | null>(() => computedStyle.get('color')?.toString() ?? null)
   const caretColor = computed<string>(() => {
@@ -334,11 +336,13 @@
     }
   }
 
+  // #ifndef APP-ANDROID && !VUE3-VAPOR
   function updateSelectionStyle() {
     if (isReady) {
       evalJS(`editorSetSelectionStyle(${JSON.stringify(selectionColor.value)}, ${JSON.stringify(selectionBackgroundColor.value)})`)
     }
   }
+  // #endif
 
   /**
    * 生成唯一的回调 ID
@@ -420,7 +424,9 @@
         // 编辑器初始化完成
         isReady = true
         updateEditorStyle()
+        // #ifndef APP-ANDROID && !VUE3-VAPOR
         updateSelectionStyle()
+        // #endif
         emit('ready')
         break
 
@@ -558,8 +564,10 @@
       type: props.type,
       caretColor: caretColor.value,
       textColor: textColor.value,
+      // #ifndef APP-ANDROID && !VUE3-VAPOR
       selectionColor: selectionColor.value,
       selectionBackgroundColor: selectionBackgroundColor.value
+      // #endif
     }
 
     evalJS(`editorInit(${JSON.stringify(config)})`)
@@ -872,7 +880,9 @@
 
   watch(caretColor, updateEditorStyle)
   watch(textColor, updateEditorStyle)
+  // #ifndef APP-ANDROID && !VUE3-VAPOR
   watch([selectionColor, selectionBackgroundColor], updateSelectionStyle)
+  // #endif
 
   // #ifndef VUE3-VAPOR
   const __UNIEDITOR_FORMAT_EVENT_NAME__ = createEditorEventName('format', eventSeed)

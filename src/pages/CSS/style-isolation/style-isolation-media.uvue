@@ -1,0 +1,127 @@
+<template>
+  <view id="media-page-ready" class="media-isolation-page">
+    <text class="page-title">媒体查询与样式隔离</text>
+    <text class="page-description">看色块即可判断结果：蓝色=组件内部媒体查询，紫色=外部媒体查询覆盖。</text>
+
+    <view class="legend">
+      <view class="legend-item">
+        <view class="legend-color internal-color"></view>
+        <text class="legend-text">蓝色背景：组件内部媒体查询生效</text>
+      </view>
+      <view class="legend-item">
+        <view class="legend-color external-color"></view>
+        <text class="legend-text">紫色背景：外部媒体查询覆盖成功</text>
+      </view>
+      <view class="legend-item">
+        <view class="legend-color invalid-color"></view>
+        <text class="legend-text">红色背景：不应出现的错误结果</text>
+      </view>
+    </view>
+
+    <text class="case-title">1. 组件内部 @media 命中：应显示蓝色</text>
+    <child-external-media
+      id="media-internal"
+      target-id="media-internal-target"
+      label="内部 @media 生效"
+    />
+
+    <text class="case-title">2. 外部 @media + external class：应覆盖为紫色</text>
+    <child-external-media
+      id="media-external-active"
+      target-id="media-external-active-target"
+      media-class="external-media-active"
+      label="外部 @media 覆盖内部样式"
+    />
+
+    <text class="case-title">3. 外部 @media 条件不满足：应保持蓝色</text>
+    <child-external-media
+      id="media-external-inactive"
+      target-id="media-external-inactive-target"
+      media-class="external-media-inactive"
+      label="外部条件不满足，内部样式保留"
+    />
+  </view>
+</template>
+
+<script setup lang="ts">
+  import childExternalMedia from './child-external-media.uvue'
+</script>
+
+<style>
+  .media-isolation-page {
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+  }
+
+  .page-title {
+    margin-bottom: 8px;
+    font-size: 20px;
+    font-weight: bold;
+  }
+
+  .page-description {
+    margin-bottom: 12px;
+    color: #607d8b;
+    font-size: 13px;
+  }
+
+  .case-title {
+    margin-top: 16px;
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  .legend {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 8px;
+  }
+
+  .legend-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+
+  .legend-color {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    margin-right: 8px;
+  }
+
+  .legend-text {
+    flex: 1;
+    min-width: 0;
+    font-size: 13px;
+    line-height: 20px;
+  }
+
+  .internal-color {
+    background-color: #90caf9;
+  }
+
+  .external-color {
+    background-color: #ce93d8;
+  }
+
+  .invalid-color {
+    background-color: #c62828;
+  }
+
+  /* 组件外部定义的媒体查询规则，匹配绑定 external class 的内部元素。 */
+  @media (min-width: 0px) {
+    .external-media-active {
+      background-color: #ce93d8 !important;
+    }
+  }
+
+  /* 不满足的媒体条件不能覆盖组件内部媒体查询结果。 */
+  @media (min-width: 100000px) {
+    .external-media-inactive {
+      background-color: #c62828 !important;
+    }
+  }
+</style>

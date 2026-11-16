@@ -22,22 +22,39 @@
 				:id="calendarGridIdPrefix + index"
 				<!-- #endif -->
 				class="calendar-grid" :class="index == 0 ? 'calendar-grid-measure' : ''" @click="onCalendarClick">
-				<!-- 无自定义文字时保持单 text 拍平渲染，避免额外节点 -->
-				<template v-if="hasDayExtras">
+				<!-- 需要单元格布局时（day-extras 或范围首尾标签）使用三段式单元格 -->
+				<template v-if="hasCellLayout">
 					<view v-for="(day, dayIndex) in item.days" :key="dayIndex" flatten class="day-cell" :class="[
 						props.dayWrapClass,
+						props.compact == 2 ? 'day-cell-cp' : '',
+						day.rangePos == 3 && !day.isDisabled ? 'day-range' : '',
+						day.rangePos == 3 && !day.isDisabled ? 'day-range-wrap' : '',
+						day.rangePos == 3 && !day.isDisabled ? props.rangeClass : '',
 						day.isSelected ? 'day-selected' : '',
-						day.isSelected ? 'day-selected-wrap' : '',
+						day.isSelected ? (props.compact == 2 ? 'day-selected-wrap-cp' : 'day-selected-wrap') : '',
+						day.rangePos == 1 ? (props.compact == 2 ? 'day-range-start-wrap-cp' : 'day-range-start-wrap') : '',
+						day.rangePos == 2 ? (props.compact == 2 ? 'day-range-end-wrap-cp' : 'day-range-end-wrap') : '',
 						day.isSelected ? props.daySelectedClass : '',
 						day.day > 0 && !day.isDisabled ? 'day-clickable' : ''
 					]">
-						<text flatten class="day-extra-text" :class="[
+						<view v-if="(day.rangePos == 1 && (hasStartSlot || props.rangeStartLabel.length > 0)) || (day.rangePos == 2 && (hasEndSlot || props.rangeEndLabel.length > 0))"
+							class="day-slot" :class="[props.rangeLabelClass, props.compact == 2 ? 'day-slot-cp' : '']">
+							<slot v-if="day.rangePos == 1 && hasStartSlot" name="range-start" :date="day.date"
+								:start="rangeStart" :end="rangeEnd" />
+							<slot v-else-if="day.rangePos == 2 && hasEndSlot" name="range-end" :date="day.date"
+								:start="rangeStart" :end="rangeEnd" />
+							<text flatten v-else class="day-range-label"
+								:class="day.isSelected ? 'day-selected-text' : ''">{{ day.rangePos == 1 ? props.rangeStartLabel : props.rangeEndLabel }}</text>
+						</view>
+						<text v-else flatten class="day-extra-text" :class="[
 							props.dayTopClass,
+							props.compact == 2 ? 'day-extra-text-cp' : '',
 							day.isDisabled ? 'day-extra-disabled' : '',
 							day.isSelected ? 'day-selected-text' : ''
 						]">{{ day.topText }}</text>
 						<text flatten class="day-text day-text-inner" :class="[
 							props.dayClass,
+							props.compact == 2 ? 'day-text-inner-cp' : '',
 							day.day == 0 ? 'day-empty' : '',
 							day.isToday ? 'day-today' : '',
 							day.isToday ? props.todayClass : '',
@@ -47,21 +64,29 @@
 						]">{{ day.day > 0 ? day.day : '' }}</text>
 						<text flatten class="day-extra-text" :class="[
 							props.dayBottomClass,
+							props.compact == 2 ? 'day-extra-text-cp' : '',
 							day.isDisabled ? 'day-extra-disabled' : '',
 							day.isSelected ? 'day-selected-text' : ''
 						]">{{ day.bottomText }}</text>
 					</view>
 				</template>
 				<template v-else>
+					<!-- 无额外布局时保持单 text 拍平渲染，避免新增节点 -->
 					<text flatten v-for="(day, dayIndex) in item.days" :key="dayIndex" class="day-text" :class="[
 						props.dayClass,
+						props.compact == 1 ? 'day-text-cp' : '',
 						day.day == 0 ? 'day-empty' : '',
 						day.isToday ? 'day-today' : '',
 						day.isToday ? props.todayClass : '',
 						day.isWeekend || day.isHoliday ? 'day-holiday' : '',
 						day.isDisabled ? 'day-disabled' : '',
+						day.rangePos == 3 && !day.isDisabled ? 'day-range' : '',
+						day.rangePos == 3 && !day.isDisabled ? (props.compact == 1 ? 'day-range-normal-cp' : 'day-range-normal') : '',
+						day.rangePos == 3 && !day.isDisabled ? props.rangeClass : '',
 						day.isSelected ? 'day-selected' : '',
-						day.isSelected ? 'day-selected-normal' : '',
+						day.isSelected ? (props.compact == 1 ? 'day-selected-normal-cp' : 'day-selected-normal') : '',
+						day.rangePos == 1 ? (props.compact == 1 ? 'day-range-start-text-cp' : 'day-range-start-text') : '',
+						day.rangePos == 2 ? (props.compact == 1 ? 'day-range-end-text-cp' : 'day-range-end-text') : '',
 						day.isSelected ? props.daySelectedClass : '',
 						day.day > 0 && !day.isDisabled ? 'day-clickable' : ''
 					]">{{ day.day > 0 ? day.day : '' }}</text>
@@ -100,7 +125,9 @@ defineOptions({
 		'today-class',
 		'day-wrap-class',
 		'day-top-class',
-		'day-bottom-class'
+		'day-bottom-class',
+		'range-class',
+		'range-label-class'
 	]
 })
 
@@ -426,6 +453,142 @@ type Props = {
 	 * }
 	 */
 	dayWrapClass?: string.ClassString
+	/**
+	 * @description 是否开启日期范围选择。开启后忽略 model-value，改用 range-start / range-end
+	 * @default false
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.26"},
+	 *     "ios": {"unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVaporVer": "5.26"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.26"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.26"}
+	 * }
+	 */
+	range?: boolean
+	/**
+	 * @description 范围开始日期，格式 YYYY-MM-DD，支持 v-model:range-start
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.26"},
+	 *     "ios": {"unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVaporVer": "5.26"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.26"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.26"}
+	 * }
+	 */
+	rangeStart?: string
+	/**
+	 * @description 范围结束日期，格式 YYYY-MM-DD，支持 v-model:range-end
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.26"},
+	 *     "ios": {"unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVaporVer": "5.26"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.26"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.26"}
+	 * }
+	 */
+	rangeEnd?: string
+	/**
+	 * @description 范围开始日期上方显示的标签文字，未提供 range-start 插槽时生效；文案由使用者传入，组件不做国际化
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.26"},
+	 *     "ios": {"unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVaporVer": "5.26"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.26"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.26"}
+	 * }
+	 */
+	rangeStartLabel?: string
+	/**
+	 * @description 范围结束日期上方显示的标签文字，未提供 range-end 插槽时生效；文案由使用者传入，组件不做国际化
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.26"},
+	 *     "ios": {"unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVaporVer": "5.26"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.26"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.26"}
+	 * }
+	 */
+	rangeEndLabel?: string
+	/**
+	 * @description 范围中间日期（不含首尾）的样式类
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.26"},
+	 *     "ios": {"unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVaporVer": "5.26"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.26"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.26"}
+	 * }
+	 */
+	rangeClass?: string.ClassString
+	/**
+	 * @description 范围首尾标签容器的样式类
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.26"},
+	 *     "ios": {"unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVaporVer": "5.26"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.26"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.26"}
+	 * }
+	 */
+	rangeLabelClass?: string.ClassString
+	/**
+	 * @description 紧凑模式：0 = 普通，1 = 纯文本布局紧凑（行高 36px），2 = 三段式单元格布局紧凑（单元格 44px）。用于窄屏下同时完整展示两个日历
+	 * @default 0
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.26"},
+	 *     "ios": {"unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVaporVer": "5.26"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.26"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.26"}
+	 * }
+	 */
+	compact?: number
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -446,7 +609,15 @@ const props = withDefaults(defineProps<Props>(), {
 	todayClass: '',
 	dayTopClass: '',
 	dayBottomClass: '',
-	dayWrapClass: ''
+	dayWrapClass: '',
+	range: false,
+	rangeStart: '',
+	rangeEnd: '',
+	rangeStartLabel: '',
+	rangeEndLabel: '',
+	rangeClass: '',
+	rangeLabelClass: '',
+	compact: 0
 })
 
 const emit = defineEmits<{
@@ -502,6 +673,58 @@ const emit = defineEmits<{
 	 * }
 	 */
 	'month-change': [year: number, month: number]
+	/**
+	 * @description 范围开始日期变化时触发，用于 v-model:range-start 双向绑定
+	 * @param date 范围开始日期，格式 YYYY-MM-DD，清空时为空字符串
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.26"},
+	 *     "ios": {"unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVaporVer": "5.26"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.26"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.26"}
+	 * }
+	 */
+	'update:rangeStart': [date: string]
+	/**
+	 * @description 范围结束日期变化时触发，用于 v-model:range-end 双向绑定
+	 * @param date 范围结束日期，格式 YYYY-MM-DD，清空时为空字符串
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.26"},
+	 *     "ios": {"unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVaporVer": "5.26"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.26"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.26"}
+	 * }
+	 */
+	'update:rangeEnd': [date: string]
+	/**
+	 * @description 范围任一端的日期变化后触发，开始与结束同时非空表示范围选择完成；range 为 true 时不会触发 change
+	 * @param start 范围开始日期，格式 YYYY-MM-DD，未选择时为空字符串
+	 * @param end 范围结束日期，格式 YYYY-MM-DD，未选择时为空字符串
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.26"},
+	 *     "ios": {"unixVaporVer": "5.26"},
+	 *     "harmony": {"unixVaporVer": "5.26"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.26"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.26"}
+	 * }
+	 */
+	'range-change': [start: string, end: string]
 }>()
 
 type DayInfo = {
@@ -515,6 +738,10 @@ type DayInfo = {
 	weekday: number
 	topText: string
 	bottomText: string
+	/**
+	 * 范围位置：0 = 无，1 = 区间开始，2 = 区间结束，3 = 区间中间，4 = 首尾同日
+	 */
+	rangePos: number
 }
 
 type MonthItem = {
@@ -522,6 +749,11 @@ type MonthItem = {
 	year: number
 	month: number
 	days: DayInfo[]
+}
+
+type CalendarRange = {
+	start: string
+	end: string
 }
 
 type LocaleMessages = {
@@ -806,19 +1038,66 @@ const pickerValue = computed<string>(() : string => {
 	return `${currentYear.value}-${padZero(currentMonth.value)}`
 })
 
+const slots = useSlots()
+
+const hasStartSlot = computed<boolean>(() : boolean => {
+	return slots['range-start'] != null
+})
+
+const hasEndSlot = computed<boolean>(() : boolean => {
+	return slots['range-end'] != null
+})
+
 const hasDayExtras = computed<boolean>(() : boolean => {
 	return props.dayExtras.length > 0
 })
 
+const hasRangeLabels = computed<boolean>(() : boolean => {
+	return hasStartSlot.value || hasEndSlot.value ||
+		props.rangeStartLabel.length > 0 || props.rangeEndLabel.length > 0
+})
+
+// 需要三段式单元格布局：有日期附加文字，或范围模式且启用了首尾标签
+const hasCellLayout = computed<boolean>(() : boolean => {
+	return hasDayExtras.value || (props.range && hasRangeLabels.value)
+})
+
 function resolveInitialSelectedDate() : string {
+	if (props.range) {
+		return ''
+	}
 	const value = props.modelValue
 	return parseDateKey(value) != null ? value : ''
+}
+
+/**
+ * 解析并规整范围首尾：非法日期置空，start > end 时丢弃 end
+ */
+function resolveInitialRange() : string[] {
+	let start = parseDateKey(props.rangeStart) != null ? props.rangeStart : ''
+	let end = parseDateKey(props.rangeEnd) != null ? props.rangeEnd : ''
+	if (start.length > 0 && end.length > 0 && start > end) {
+		end = ''
+	}
+	return [start, end]
 }
 
 function resolveInitialMonth() : number[] {
 	const dateMonth = parseMonthKey(props.date)
 	if (dateMonth != null) {
 		return dateMonth
+	}
+	if (props.range) {
+		const startMonth = parseMonthKey(props.rangeStart)
+		if (startMonth != null) {
+			return startMonth
+		}
+		const endMonth = parseMonthKey(props.rangeEnd)
+		if (endMonth != null) {
+			return endMonth
+		}
+		const rangeToday = new Date()
+		return [rangeToday.getFullYear(), rangeToday.getMonth() + 1]
 	}
 	const modelMonth = parseMonthKey(props.modelValue)
 	if (modelMonth != null) {
@@ -829,6 +1108,9 @@ function resolveInitialMonth() : number[] {
 }
 
 const selectedDate = ref(resolveInitialSelectedDate())
+const initialRange = resolveInitialRange()
+const rangeStart = ref(initialRange[0])
+const rangeEnd = ref(initialRange[1])
 const initialMonth = resolveInitialMonth()
 const currentYear = ref(initialMonth[0])
 const currentMonth = ref(initialMonth[1])
@@ -884,7 +1166,8 @@ function createEmptyDay() : DayInfo {
 		isDisabled: false,
 		weekday: 0,
 		topText: '',
-		bottomText: ''
+		bottomText: '',
+		rangePos: 0
 	}
 }
 
@@ -900,6 +1183,28 @@ function buildDayExtrasMap() : void {
 		}
 	}
 	dayExtrasMap = map
+}
+
+/**
+ * 计算日期在范围中的位置：0 = 无，1 = 区间开始，2 = 区间结束，3 = 区间中间，4 = 首尾同日
+ */
+function computeRangePos(date : string, start : string, end : string) : number {
+	if (start.length == 0 && end.length == 0) {
+		return 0
+	}
+	if (start.length > 0 && end.length > 0 && start == end && date == start) {
+		return 4
+	}
+	if (start.length > 0 && date == start) {
+		return 1
+	}
+	if (end.length > 0 && date == end) {
+		return 2
+	}
+	if (start.length > 0 && end.length > 0 && date > start && date < end) {
+		return 3
+	}
+	return 0
 }
 
 function generateMonthDays(year : number, month : number) : DayInfo[] {
@@ -919,6 +1224,7 @@ function generateMonthDays(year : number, month : number) : DayInfo[] {
 		const date = new Date(year, month - 1, day)
 		const dateStr = toDateKey(year, month, day)
 		const weekday = date.getDay()
+		const rangePos = props.range ? computeRangePos(dateStr, rangeStart.value, rangeEnd.value) : 0
 
 		let topText = ''
 		let bottomText = ''
@@ -938,13 +1244,14 @@ function generateMonthDays(year : number, month : number) : DayInfo[] {
 			day: day,
 			date: dateStr,
 			isToday: isTodayDate(year, month, day),
-			isSelected: dateStr == selectedDate.value,
+			isSelected: props.range ? (rangePos == 1 || rangePos == 2 || rangePos == 4) : dateStr == selectedDate.value,
 			isWeekend: weekday == 0 || weekday == 6,
 			isHoliday: isHolidayDate(dateStr),
 			isDisabled: isDateDisabled(dateStr),
 			weekday: weekday,
 			topText: topText,
-			bottomText: bottomText
+			bottomText: bottomText,
+			rangePos: rangePos
 		})
 	}
 
@@ -1034,12 +1341,104 @@ function updateSelectedStateOptimized(oldDate : string, newDate : string) {
 	}
 }
 
+/**
+ * 就地重算 3 个月缓存中的范围位置与选中态，不重建对象、不重建索引
+ */
+function syncRangeState() {
+	if (!props.range) {
+		return
+	}
+	const start = rangeStart.value
+	const end = rangeEnd.value
+	for (let i = 0; i < swiperItems.value.length; i++) {
+		const item = swiperItems.value[i]
+		for (let j = 0; j < item.days.length; j++) {
+			const day = item.days[j]
+			if (day.day == 0) {
+				continue
+			}
+			const pos = computeRangePos(day.date, start, end)
+			day.rangePos = pos
+			day.isSelected = pos == 1 || pos == 2 || pos == 4
+		}
+	}
+}
+
+/**
+ * 范围选择状态机：未选 -> 选开始 -> 选结束；S2 状态点击其他日期重新开始
+ */
+function selectRangeDate(date : string) {
+	const start = rangeStart.value
+	const end = rangeEnd.value
+	if (start.length == 0 && end.length == 0) {
+		rangeStart.value = date
+		syncRangeState()
+		emit('update:rangeStart', date)
+		emit('range-change', date, '')
+		return
+	}
+	if (start.length > 0 && end.length == 0) {
+		if (date == start) {
+			return
+		}
+		if (date > start) {
+			rangeEnd.value = date
+			syncRangeState()
+			emit('update:rangeEnd', date)
+			emit('range-change', start, date)
+		} else {
+			rangeStart.value = date
+			syncRangeState()
+			emit('update:rangeStart', date)
+			emit('range-change', date, '')
+		}
+		return
+	}
+	if (start.length > 0 && end.length > 0) {
+		if (date == start) {
+			return
+		}
+		if (date == end) {
+			rangeEnd.value = ''
+			syncRangeState()
+			emit('update:rangeEnd', '')
+			emit('range-change', start, '')
+			return
+		}
+		rangeStart.value = date
+		rangeEnd.value = ''
+		syncRangeState()
+		emit('update:rangeStart', date)
+		emit('update:rangeEnd', '')
+		emit('range-change', date, '')
+		return
+	}
+	// 仅外部设置了结束日期：点击结束日期取消结束，点击其他日期重新开始
+	if (date == end) {
+		rangeEnd.value = ''
+		syncRangeState()
+		emit('update:rangeEnd', '')
+		emit('range-change', '', '')
+		return
+	}
+	rangeStart.value = date
+	rangeEnd.value = ''
+	syncRangeState()
+	emit('update:rangeStart', date)
+	emit('update:rangeEnd', '')
+	emit('range-change', date, '')
+}
+
 function selectDate(date : string) {
 	const parts = parseDateKey(date)
 	if (parts == null) {
 		return
 	}
 	if (isDateDisabled(date)) {
+		return
+	}
+	if (props.range) {
+		selectRangeDate(date)
 		return
 	}
 	if (date == selectedDate.value) {
@@ -1050,6 +1449,69 @@ function selectDate(date : string) {
 	updateSelectedStateOptimized(oldDate, date)
 	emit('update:modelValue', date)
 	emit('change', date)
+}
+
+/**
+ * 整体设置范围：非法日期置空，start > end 时丢弃 end
+ */
+function setRange(start : string, end : string) {
+	let nextStart = parseDateKey(start) != null ? start : ''
+	let nextEnd = parseDateKey(end) != null ? end : ''
+	if (nextStart.length > 0 && nextEnd.length > 0 && nextStart > nextEnd) {
+		nextEnd = ''
+	}
+	const changed = nextStart != rangeStart.value || nextEnd != rangeEnd.value
+	rangeStart.value = nextStart
+	rangeEnd.value = nextEnd
+	syncRangeState()
+	if (changed) {
+		emit('update:rangeStart', nextStart)
+		emit('update:rangeEnd', nextEnd)
+		emit('range-change', nextStart, nextEnd)
+	}
+}
+
+/**
+ * 清空范围首尾
+ */
+function clearRange() {
+	rangeStart.value = ''
+	rangeEnd.value = ''
+	syncRangeState()
+	emit('update:rangeStart', '')
+	emit('update:rangeEnd', '')
+	emit('range-change', '', '')
+}
+
+function getRange() : CalendarRange {
+	return {
+		start: rangeStart.value,
+		end: rangeEnd.value
+	}
+}
+
+/**
+ * min/max 变化后清除已越界的范围端点
+ */
+function clearOutOfRangeRange() {
+	if (!props.range) {
+		return
+	}
+	const startInvalid = rangeStart.value.length > 0 && isDateDisabled(rangeStart.value)
+	const endInvalid = rangeEnd.value.length > 0 && isDateDisabled(rangeEnd.value)
+	if (!startInvalid && !endInvalid) {
+		return
+	}
+	if (startInvalid) {
+		rangeStart.value = ''
+		emit('update:rangeStart', '')
+	}
+	if (endInvalid) {
+		rangeEnd.value = ''
+		emit('update:rangeEnd', '')
+	}
+	syncRangeState()
+	emit('range-change', rangeStart.value, rangeEnd.value)
 }
 
 function goToMonth(year : number, month : number) {
@@ -1150,6 +1612,9 @@ async function onCalendarClick(e : UniPointerEvent) : Promise<void> {
 }
 
 watch(() : string => props.modelValue, (value : string) => {
+	if (props.range) {
+		return
+	}
 	if (value == selectedDate.value) {
 		return
 	}
@@ -1176,6 +1641,31 @@ watch(() : string => props.date, (value : string) => {
 	}
 })
 
+// 外部变更范围端点：值相等直接返回，避免两个日历实例之间回环；不主动跳月
+watch(() : string => props.rangeStart, (value : string) => {
+	const nextStart = parseDateKey(value) != null ? value : ''
+	if (nextStart == rangeStart.value) {
+		return
+	}
+	rangeStart.value = nextStart
+	syncRangeState()
+})
+
+watch(() : string => props.rangeEnd, (value : string) => {
+	const nextEnd = parseDateKey(value) != null ? value : ''
+	if (nextEnd == rangeEnd.value) {
+		return
+	}
+	rangeEnd.value = nextEnd
+	syncRangeState()
+})
+
+// 切换单选/范围模式时重建日期数据
+watch(() : boolean => props.range, () => {
+	selectedDate.value = resolveInitialSelectedDate()
+	refreshAllMonths()
+})
+
 // 一周起始日也可能随 locale 变化，标题与日期网格需同步刷新。
 watch(() : number => effectiveWeekStart.value, () => {
 	refreshAllMonths()
@@ -1192,10 +1682,12 @@ watch(() : string[] => props.holidays, () => {
 })
 
 watch(() : string => props.minDate, () => {
+	clearOutOfRangeRange()
 	refreshAllMonths()
 })
 
 watch(() : string => props.maxDate, () => {
+	clearOutOfRangeRange()
 	refreshAllMonths()
 })
 
@@ -1232,7 +1724,11 @@ onMounted(() => {
 	syncSwiperSize()
 })
 
-watch(() : boolean => hasDayExtras.value, () => {
+watch(() : boolean => hasCellLayout.value, () => {
+	syncSwiperSize()
+})
+
+watch(() : number => props.compact, () => {
 	syncSwiperSize()
 })
 /* #endif */
@@ -1262,11 +1758,31 @@ defineExpose({
 	 */
 	goToDate,
 	/**
-	 * 获取当前选中日期，未选中时返回空字符串
+	 * 获取当前选中日期，未选中时返回空字符串；范围模式下优先返回开始日期，其次返回结束日期
 	 */
 	getSelectedDate: () : string => {
+		if (props.range) {
+			if (rangeStart.value.length > 0) {
+				return rangeStart.value
+			}
+			return rangeEnd.value
+		}
 		return selectedDate.value
-	}
+	},
+	/**
+	 * 整体设置日期范围，非法日期会被置空，开始日期晚于结束日期时丢弃结束日期
+	 * @param start 范围开始日期，格式 YYYY-MM-DD
+	 * @param end 范围结束日期，格式 YYYY-MM-DD
+	 */
+	setRange,
+	/**
+	 * 清空日期范围
+	 */
+	clearRange,
+	/**
+	 * 获取当前日期范围
+	 */
+	getRange
 })
 </script>
 
@@ -1415,7 +1931,167 @@ defineExpose({
 		border-radius: 12px;
 	}
 
-	/* 选中时单元格内文字颜色 */
+	/* 范围中间日期背景（两种布局共用） */
+	.day-range {
+		background-color: rgba(25, 118, 210, 0.12);
+	}
+
+	/* 纯文本布局：区间中间日期，与选中日期同高同边距 */
+	.day-range-normal {
+		height: 40px;
+		line-height: 40px;
+		margin-top: 10px;
+		margin-bottom: 10px;
+	}
+
+	/* 纯文本布局：首尾日期，与选中日期同高同边距，单侧收圆角 */
+	.day-range-start-text {
+		height: 40px;
+		line-height: 40px;
+		margin-top: 10px;
+		margin-bottom: 10px;
+		border-top-left-radius: 30px;
+		border-bottom-left-radius: 30px;
+		border-top-right-radius: 0px;
+		border-bottom-right-radius: 0px;
+	}
+
+	.day-range-end-text {
+		height: 40px;
+		line-height: 40px;
+		margin-top: 10px;
+		margin-bottom: 10px;
+		border-top-left-radius: 0px;
+		border-bottom-left-radius: 0px;
+		border-top-right-radius: 30px;
+		border-bottom-right-radius: 30px;
+	}
+
+	/* 单元格布局：区间中间整格铺满，保持直角以拼接成连续条 */
+	.day-range-wrap {
+		border-radius: 0px;
+	}
+
+	/* 单元格布局：首尾日期单侧收圆角 */
+	.day-range-start-wrap {
+		border-top-left-radius: 12px;
+		border-bottom-left-radius: 12px;
+		border-top-right-radius: 0px;
+		border-bottom-right-radius: 0px;
+	}
+
+	.day-range-end-wrap {
+		border-top-left-radius: 0px;
+		border-bottom-left-radius: 0px;
+		border-top-right-radius: 12px;
+		border-bottom-right-radius: 12px;
+	}
+
+	/* 紧凑模式（纯文本布局）：行高 36px = 28 + 上下各 4，单元格高度与普通模式保持一致居中 */
+	.day-text-cp {
+		height: 28px;
+		line-height: 28px;
+		margin-top: 4px;
+		margin-bottom: 4px;
+	}
+
+	.day-selected-normal-cp {
+		height: 28px;
+		line-height: 28px;
+		margin-top: 4px;
+		margin-bottom: 4px;
+		border-radius: 14px;
+	}
+
+	.day-range-normal-cp {
+		height: 28px;
+		line-height: 28px;
+		margin-top: 4px;
+		margin-bottom: 4px;
+	}
+
+	.day-range-start-text-cp {
+		height: 28px;
+		line-height: 28px;
+		margin-top: 4px;
+		margin-bottom: 4px;
+		border-top-left-radius: 14px;
+		border-bottom-left-radius: 14px;
+		border-top-right-radius: 0px;
+		border-bottom-right-radius: 0px;
+	}
+
+	.day-range-end-text-cp {
+		height: 28px;
+		line-height: 28px;
+		margin-top: 4px;
+		margin-bottom: 4px;
+		border-top-left-radius: 0px;
+		border-bottom-left-radius: 0px;
+		border-top-right-radius: 14px;
+		border-bottom-right-radius: 14px;
+	}
+
+	/* 紧凑模式（三段式单元格布局）：单元格 44px，日期 20 + 上下各 10（额外信息/标签） */
+	.day-cell-cp {
+		height: 44px;
+	}
+
+	.day-text-inner-cp {
+		height: 20px;
+		line-height: 20px;
+	}
+
+	.day-extra-text-cp {
+		height: 10px;
+		line-height: 10px;
+	}
+
+	.day-selected-wrap-cp {
+		border-radius: 8px;
+	}
+
+	.day-range-start-wrap-cp {
+		border-top-left-radius: 8px;
+		border-bottom-left-radius: 8px;
+		border-top-right-radius: 0px;
+		border-bottom-right-radius: 0px;
+	}
+
+	.day-range-end-wrap-cp {
+		border-top-left-radius: 0px;
+		border-bottom-left-radius: 0px;
+		border-top-right-radius: 8px;
+		border-bottom-right-radius: 8px;
+	}
+
+	/* 范围首尾标签容器，与上方附加文字同高，不改变单元格高度 */
+	.day-slot {
+		width: 100%;
+		height: 14px;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		overflow: hidden;
+	}
+
+	.day-slot-cp {
+		height: 10px;
+	}
+
+	.day-range-label {
+		width: 100%;
+		height: 14px;
+		line-height: 14px;
+		font-size: 10px;
+		text-align: center;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		color: var(--text-color, #999999);
+	}
+
+	/* 选中时单元格内文字颜色，需位于 today / 节假日 / 标签颜色之后 */
 	.day-selected-text {
 		color: #ffffff;
 	}
@@ -1427,6 +2103,14 @@ defineExpose({
 
 		.day-selected {
 			color: #ffffff;
+		}
+
+		.day-selected-text {
+			color: #ffffff;
+		}
+
+		.day-range {
+			background-color: rgba(100, 181, 246, 0.22);
 		}
 	}
 </style>

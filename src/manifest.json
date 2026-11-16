@@ -30,7 +30,7 @@
 		"usingComponents": true,
 		"resizable": true,
 		"frameset": true,
-		"libVersion": "3.7.1",
+		"libVersion": "3.7.12",
 		"requiredPrivateInfos": [
 			"getLocation",
 			"onLocationChange",

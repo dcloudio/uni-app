@@ -1,10 +1,8 @@
 <template>
-  <scroll-view class="page">
+  <scroll-view class="page" :scroll-top="scrollTop">
     <view class="content">
-      <text class="title">页面无媒体查询时的组件样式</text>
-      <text class="description">页面自身没有 @media，只有下方组件包含媒体查询。进入页面即可检查组件样式是否正常生效。</text>
-      <text class="description">绿色表示条件满足，灰色表示条件不满足。旋转设备或调整窗口，观察组件样式是否随视口变化更新。</text>
-      <text class="description">附加验证：可移除并重新添加组件，检查它是否按当前视口匹配样式。</text>
+      <text class="title">仅组件包含媒体查询</text>
+      <text class="description">页面没有 @media，只有下方组件使用。调整窗口宽度或重新添加组件，检查条件是否正确匹配。</text>
       <button size="mini" @click="setComponentVisible(!componentVisible)">
         {{ componentVisible ? '移除组件' : '添加组件' }}
       </button>
@@ -23,7 +21,14 @@
     componentVisible.value = visible
   }
 
-  defineExpose({ setComponentVisible, getMediaViewport })
+  const scrollTop = ref(0)
+
+  // 自动化截图分段滚动，避免依赖各端不同的元素滚动接口。
+  function setScrollTop(value : number) {
+    scrollTop.value = value
+  }
+
+  defineExpose({ setScrollTop, setComponentVisible, getMediaViewport })
 </script>
 
 <style>

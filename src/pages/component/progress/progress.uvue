@@ -1,19 +1,60 @@
 <script setup lang="ts">
   import { state, setEventCallbackNum } from '@/store/index.ts'
+  import progressSyntax from './progress-syntax.json'
+  import { createTemplateModel, resetTemplateModel, updateTemplateModel, filterSyntaxAttributes } from '@/components/component-template/types'
+  import type { TemplateValue, TemplateChange, TemplateControl } from '@/components/component-template/types'
 
-  const colorOptions = ref(['#09BB07', '#EBEBEB', 'black', 'white', 'gray', 'red', 'green', 'blue'])
-  const activeModeOptions = ref([
-    { value: 0, text: '从头播放' },
-    { value: 1, text: '接续播放' }
-  ])
-  const percent = ref(0)
-  const strokeWidth = ref(6)
-  const showInfo = ref(false)
-  const active = ref(false)
-  const duration = ref(30)
-  const activeMode = ref(0)
-  const activeColor = ref('#09BB07')
-  const backgroundColor = ref('#EBEBEB')
+  const syntax = ref(filterSyntaxAttributes(progressSyntax))
+  const supportsActiveend = computed(() => syntax.value.attributes?.some((attribute) => attribute.name == '[event]activeend') === true)
+
+  interface ProgressProperties {
+    [name: string]: TemplateValue;
+    duration: number;
+    percent: number;
+    'show-info': boolean;
+    'border-radius': number;
+    'font-size': number;
+    'stroke-width': number;
+    activeColor: string;
+    'background-color': string;
+    active: boolean;
+    'active-mode': string;
+  }
+
+  const progressProps = createTemplateModel(syntax.value) as ProgressProperties
+  const colorOptions = ref(['black', 'white', 'gray', 'red', 'green', 'blue'])
+  const controls = ref<{ [name: string]: TemplateControl }>({
+    duration: { min: 1, max: 100, step: 1, live: true },
+    percent: { min: 0, max: 100, step: 1, live: true },
+    'border-radius': { min: 0, max: 40, step: 1, live: true },
+    'font-size': { min: 0, max: 40, step: 1, live: true },
+    'stroke-width': { min: 0, max: 40, step: 1, live: true }
+  })
+  const previewLogs = ref<{ [name: string]: string }>({})
+
+  function updateProgressProperty(change: TemplateChange) {
+    updateTemplateModel(progressProps, change)
+  }
+
+  function resetProgressProps() {
+    resetTemplateModel(progressProps, syntax.value)
+    previewLogs.value = {}
+  }
+
+  async function runPreviewAnimation() {
+    progressProps.active = true
+    progressProps.percent = 0
+    await nextTick()
+    progressProps.percent = 70
+  }
+
+  function onPreviewActiveEnd(event: UniProgressActiveendEvent) {
+    previewLogs.value.activeend = 'activeend：curPercent=' + event.detail.curPercent
+  }
+
+  function onPreviewGeneralEvent(name: string) {
+    previewLogs.value.general = name + '：已触发'
+  }
 
   type DataType = {
     pgList: number[];
@@ -61,52 +102,43 @@
     }
     data.curPercent = e.detail.curPercent
   }
-  const progress_touchstart = () => { console.log("手指触摸动作开始") }
-  const progress_touchmove = () => { console.log("手指触摸后移动") }
-  const progress_touchcancel = () => { console.log("手指触摸动作被打断，如来电提醒，弹窗") }
-  const progress_touchend = () => { console.log("手指触摸动作结束") }
-  const progress_tap = () => { console.log("手指触摸后马上离开") }
 
-  defineExpose({
-    data,
-    getEventCallbackNum,
-    setEventCallbackNumTest,
-    setProgress,
-    clearProgress,
-  })
+  defineExpose({ data, getEventCallbackNum, setEventCallbackNumTest, setProgress, clearProgress })
 </script>
 
 <template>
-  <uni-card title="进度预览">
-    <progress id="progress-preview" class="preview" :duration="duration" :percent="percent"
-      :show-info="showInfo" :stroke-width="strokeWidth" :active-color="activeColor" :background-color="backgroundColor"
-      :active="active" :active-mode="activeMode == 0 ? 'backwards' : 'forwards'"
-      @touchstart="progress_touchstart" @touchmove="progress_touchmove" @touchcancel="progress_touchcancel"
-      @touchend="progress_touchend" @tap="progress_tap" />
-  </uni-card>
+  <component-template title="progress 属性与事件示例" :syntax="syntax" :model-value="progressProps"
+    :controls="controls" :color-options="colorOptions" control-prefix="progress" @change="updateProgressProperty">
+    <template #preview>
+      <view class="uni-card">
+        <progress id="progress-preview" class="preview" :duration="progressProps.duration" :percent="progressProps.percent"
+          :show-info="progressProps['show-info']" :border-radius="progressProps['border-radius']"
+          :font-size="progressProps['font-size']" :stroke-width="progressProps['stroke-width']"
+          :active-color="progressProps.activeColor" :background-color="progressProps['background-color']"
+          :active="progressProps.active" :active-mode="progressProps['active-mode']"
+          @activeend="onPreviewActiveEnd" @touchstart="onPreviewGeneralEvent('touchstart')"
+          @touchmove="onPreviewGeneralEvent('touchmove')" @touchend="onPreviewGeneralEvent('touchend')"
+          @touchcancel="onPreviewGeneralEvent('touchcancel')" @tap="onPreviewGeneralEvent('tap')" />
+      </view>
+    </template>
+    <template #actions>
+      <button id="progress-reset" @click="resetProgressProps">重置示例</button>
+    </template>
+    <template #events>
+      <text class="uni-h4">事件</text>
+      <view class="uni-card">
+        <template v-if="supportsActiveend">
+          <button id="progress-event-activeend-run" @click="runPreviewAnimation">触发 activeend</button>
+          <text id="progress-event-activeend-log" class="uni-log">{{ previewLogs.activeend ?? '尚未触发' }}</text>
+        </template>
+        <text class="uni-comment">可触摸上方进度条，查看通用触摸与点击事件。</text>
+        <text id="progress-general-log" class="uni-log">{{ previewLogs.general ?? '尚未触发通用事件' }}</text>
+      </view>
+    </template>
+  </component-template>
 
-  <uni-card title="进度与显示">
-    <uni-data-slider control-id="progress-percent" label="进度（%）" v-model="percent" live />
-    <uni-data-slider control-id="progress-stroke-width" label="线宽（px）" v-model="strokeWidth" :max="10" live />
-    <uni-data-switch control-id="progress-show-info" label="显示百分比" v-model="showInfo" />
-  </uni-card>
-
-  <uni-card title="动画设置">
-    <uni-data-switch control-id="progress-active" label="启用动画" v-model="active" />
-    <!-- #ifndef MP-ALIPAY -->
-    <uni-data-slider control-id="progress-duration" label="每增加 1% 的耗时（ms）" v-model="duration" :min="1" />
-    <enum-data-checkbox id="progress-active-mode" title="播放方式" v-model="activeMode" :items="activeModeOptions" :show-toast="false" />
-    <!-- #endif -->
-  </uni-card>
-
-  <uni-card title="颜色设置">
-    <uni-data-combobox control-id="progress-active-color" label="已完成进度" v-model="activeColor"
-      :options="colorOptions" placeholder="请选择颜色" />
-    <uni-data-combobox control-id="progress-background-color" label="未完成进度" v-model="backgroundColor"
-      :options="colorOptions" placeholder="请选择颜色" />
-  </uni-card>
-
-  <uni-card title="默认用法示例">
+  <text class="uni-h4">默认用法示例</text>
+  <view class="uni-card">
     <progress id="progress-default" :percent="data.pgList[0]" :active="true" :border-radius="data.borderRadius" :show-info="data.showInfo"
       :font-size="data.fontSize" :stroke-width="data.strokeWidth" :background-color="data.backgroundColor" class="progress progress-box p"
       @activeend="activeend" />
@@ -117,10 +149,10 @@
       <button id="progress-set" @click="setProgress" class="action-button">设置进度</button>
       <button id="progress-clear" @click="clearProgress" class="action-button">清除进度</button>
     </view>
-  </uni-card>
+  </view>
 
   <!-- #ifdef (APP && VUE3-VAPOR) || WEB -->
-  <navigator class="button" url="/pages/template/progress-100/progress-100">
+  <navigator class="performance-link" url="/pages/template/progress-100/progress-100">
     <button>组件性能测试</button>
   </navigator>
   <!-- #endif -->
@@ -128,11 +160,20 @@
 
 <style>
   page {
-    padding: 8px;
+    padding-top: 8px;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .uni-card {
+    padding: 6px 8px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    background-color: var(--list-background-color, #ffffff);
   }
 
   .preview {
-    margin: 12px 0 8px;
+    margin: 12px 0;
   }
 
   .progress-box {
@@ -150,7 +191,7 @@
     margin: 0 4px;
   }
 
-  .button {
+  .performance-link {
     margin-top: 10px;
   }
 </style>

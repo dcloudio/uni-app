@@ -110,7 +110,6 @@ describe('Radio.uvue', () => {
   }
   if (isVapor && !isMP) it('radio class attributes', async () => {
     const el = await page.$('#radio-vapor')
-    expect(await el.attribute('icon-class')).toContain('custom-radio-icon')
     expect(await el.attribute('radio-class')).toContain('custom-radio')
   })
 

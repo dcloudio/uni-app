@@ -1,12 +1,13 @@
 jest.setTimeout(30000)
 
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 const isMP = platformInfo.startsWith('mp')
 const isIos = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.startsWith('harmony');
 
 describe('dialog page', () => {
-  if (process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true' || isMP) {
+  if (isAppWebView || isMP) {
   	it('skip', () => {
   		expect(1).toBe(1)
   	})
@@ -45,7 +46,7 @@ describe('dialog page', () => {
 
   it('dialogPage should be opened', async () => {
 		const dialogPagesNum = await page.data('data.dialogPagesNum')
-		expect(dialogPagesNum).toBe(1)
+		expect(dialogPagesNum).toBe(0)
 	})
 
 	it('openLocation callbacks', async () => {

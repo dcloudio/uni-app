@@ -11,17 +11,17 @@ describe('movable-view.uvue', () => {
   it('移动至 (30px, 30px)', async () => {
     page = await program.reLaunch('/pages/component/movable-view/movable-view')
     await page.waitFor('view');
-    expect((await page.data('x'))._value).toBe(0)
-    expect((await page.data('y'))._value).toBe(0)
+    expect(await page.data('x')).toBe(0)
+    expect(await page.data('y')).toBe(0)
     await page.callMethod('tap')
     await page.waitFor(500);
-    expect((await page.data('x'))._value).toBe(30)
-    expect((await page.data('y'))._value).toBe(30)
+    expect(await page.data('x')).toBe(30)
+    expect(await page.data('y')).toBe(30)
   })
   it('放大3倍', async () => {
-    expect((await page.data('scale'))._value).toBe(2)
+    expect(await page.data('scale')).toBe(2)
     await page.callMethod('tap2')
     await page.waitFor(500);
-    expect((await page.data('scale'))._value).toBe(3)
+    expect(await page.data('scale')).toBe(3)
   })
 })

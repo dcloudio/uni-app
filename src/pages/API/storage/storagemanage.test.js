@@ -125,7 +125,7 @@ describe('Storage管理器页面-多类型新增', () => {
       const editValueType = await page.data('editValueType')
       if (isWeb && editValueType._value != 'String') {
         // 获取 ref 的 value 属性
-        expect(editValue._value).toBe(valueTypeDefaultMap.get(editValueType._value))
+        expect(editValue).toBe(valueTypeDefaultMap.get(editValueType))
       }
     }
     // 关闭弹窗

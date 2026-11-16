@@ -1,5 +1,8 @@
 <template>
   <view class="page">
+    <!-- #ifndef APP -->
+    <text class="uni-theme-text">切换系统或宿主的深浅色主题，观察页面与组件中的样式变化。</text>
+    <!-- #endif -->
     <text class="title2 uni-theme-text">组件</text>
     <view_text></view_text>
     <text class="title2 uni-theme-text" style="margin-top: 30px;">页面</text>
@@ -14,6 +17,7 @@
       <text class="night dark-scheme">夜间样式：\n系统为深色时会变化</text>
     </view>
 
+    <!-- #ifdef APP -->
     <view class="flex-row" style="margin-top: 30px;">
       <text class="uni-theme-text">osTheme:</text>
       <text class="uni-theme-text" id="theme">{{ data.osTheme }}</text>
@@ -23,11 +27,13 @@
       <text class="uni-theme-text" id="theme">{{ data.appTheme }}</text>
     </view>
     <enum-data-checkbox :items="themeItems" title="设置应用主题" @change="radioChange"></enum-data-checkbox>
+    <!-- #endif -->
   </view>
 </template>
 
 <script setup lang="ts">
   import view_text from './view_text.uvue'
+  // #ifdef APP
   import { ItemType } from '@/components/enum-data-checkbox/enum-data-checkbox-types'
   type PageData = {
     osThemeChangeId : number;
@@ -77,17 +83,10 @@
   }
 
   function bindAppThemeChange() : number {
-    // #ifdef APP
     return uni.onAppThemeChange((res : AppThemeChangeResult) => {
       console.log(res);
       data.appTheme = res.appTheme
     })
-    // #endif
-    // #ifdef WEB || MP
-    return uni.onHostThemeChange((res : OnHostThemeChangeCallbackResult) => {
-      data.appTheme = res.hostTheme
-    })
-    // #endif
   }
 
   function setAppTheme(value : string) {
@@ -118,21 +117,15 @@
         syncCurrentTheme(res.appTheme!)
       }
     })
-    // #ifdef APP
     data.osThemeChangeId = bindOsThemeChange()
-    // #endif
     data.appThemeChangeId = bindAppThemeChange()
   })
 
   onUnload(() => {
-    // #ifdef APP
     uni.offAppThemeChange(data.appThemeChangeId)
     uni.offOsThemeChange(data.osThemeChangeId)
-    // #endif
-    // #ifdef WEB || MP
-    uni.offHostThemeChange(data.appThemeChangeId)
-    // #endif
   })
+  // #endif
 </script>
 
 <style>
@@ -146,7 +139,7 @@
   }
 
   .title2 {
-    font-size: 16;
+    font-size: 16px;
     font-weight: bold;
   }
 

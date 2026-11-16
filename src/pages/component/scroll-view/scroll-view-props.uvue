@@ -18,6 +18,9 @@
       </view>
     </scroll-view>
     <scroll-view v-else direction="vertical" :scroll-top="data.scrollTop" :scroll-left="data.scrollLeft"
+      <!-- #ifdef APP-ANDROID && VUE3-VAPOR -->
+      :android-scrollbar-draggable="androidScrollbarDraggable"
+      <!-- #endif -->
       :upper-threshold="data.upperThreshold" :lower-threshold="data.lowerThreshold" :scroll-into-view="data.scrollIntoView"
       :enable-back-to-top="data.enableBackToTop" :scroll-with-animation="data.scrollWithAnimation" :show-scrollbar="data.showScrollbar"
       :bounces="data.bounces" @scrolltoupper="scrolltoupper" @touchmove="onTouchMove" @scrolltolower="scrolltolower"
@@ -39,6 +42,8 @@
         @change="handleBouncesChange"></boolean-data>
       <!-- #endif -->
       <!-- #ifdef APP-ANDROID && VUE3-VAPOR -->
+      <boolean-data :value="androidScrollbarDraggable" :disabled="!data.showScrollbar || data.scrollX"
+        title="允许拖动滚动条（仅竖向）" @change="changeAndroidScrollbarDraggable"></boolean-data>
       <boolean-data :value="data.androidOverscroll" :disabled="!data.bounces"
         title="是否开启弹簧回弹效果（仅Android蒸汽模式）" @change="handleAndroidOverscrollChange"></boolean-data>
       <!-- #endif -->
@@ -120,6 +125,13 @@ const data = reactive({
   upperThreshold: 50,
   lowerThreshold: 50,
 } as DataType)
+
+// #ifdef APP-ANDROID && VUE3-VAPOR
+const androidScrollbarDraggable = ref(false)
+function changeAndroidScrollbarDraggable(value : boolean) {
+  androidScrollbarDraggable.value = value
+}
+// #endif
 
 const scrollViewXRef = ref<UniScrollViewElement | null>(null)
 const scrollViewYRef = ref<UniScrollViewElement | null>(null)

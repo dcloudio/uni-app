@@ -1,9 +1,9 @@
 <template>
 	<view
 		ref="anchorRef"
-		class="uni-combobox__field"
+		class="uni-field-default"
 		style="position: relative;"
-		:class="[fieldClass, disabled ? 'uni-combobox__field--disabled' : '']"
+		:class="[fieldClass, disabled ? 'uni-field-default--disabled' : '']"
 		@click.stop="onFieldClick"
 		<!-- #ifdef WEB -->
 		:tabindex="disabled ? '-1' : '0'"
@@ -24,18 +24,22 @@
 		</view>
 		<text
 			v-else
-			class="uni-combobox__result"
+			class="uni-field-result"
 			:class="[
 				resultTextClass,
-				currentValue == '' ? 'uni-combobox__result--placeholder' : '',
-				disabled ? 'uni-combobox__result--disabled' : ''
+				currentValue == '' ? 'uni-field-result--placeholder' : '',
+				disabled ? 'uni-field-result--disabled' : ''
 			]"
 			flatten
 		>{{ displayText }}</text>
+		<!-- #ifdef uniVersion>=5.36 -->
+		<text class="uni-down-arrow-iconfont" :class="props.arrowClass">{{'\uE601'}}</text>
+		<!-- #endif -->
+		<!-- #ifdef uniVersion<5.36 -->
 		<view class="uni-combobox__arrow-wrap" @click.stop="toggleOptions">
-			<!-- 箭头带有旋转过渡动画，拍平后 transition 对渲染属性不生效，故不使用 flatten -->
-			<view class="uni-combobox__arrow" :class="[arrowClass, opened ? 'uni-combobox__arrow--open' : '']"></view>
+			<view class="uni-combobox__arrow" :class="[arrowClass, opened ? 'uni-combobox__arrow--open' : '']" flatten></view>
 		</view>
+		<!-- #endif -->
 		<view v-if="disabled" class="uni-combobox__disabled-mask"></view>
 	</view>
 	<!-- #ifdef WEB || (APP-ANDROID && !VUE3-VAPOR) -->
@@ -47,49 +51,34 @@
 	<!-- #ifdef MP -->
 	<view class="uni-combobox__mask" @click="closeOptions"></view>
 	<!-- #endif -->
-		<view
+		<scroll-view
 			ref="popupRef"
-			class="uni-combobox__options"
-			:class="optionsViewClass"
+			class="uni-combox-pop"
+			:class="[optionsViewClass, optionsContentClass]"
 			:style="optionsStyle"
+			:scroll-into-view="scrollIntoViewId"
 			@click.stop
 		>
-			<scroll-view
-				direction="vertical"
-				class="uni-combobox__options-scroll"
-				:scroll-into-view="scrollIntoViewId"
-			>
-				<view class="uni-combobox__options-content" :class="optionsContentClass">
-					<view
-						v-if="visibleOptions.length == 0"
-						class="uni-combobox__option-row"
-					>
-						<text
-							class="uni-combobox__option uni-combobox__option--empty"
-							:class="optionTextClass"
-							flatten
-						>{{ emptyText }}</text>
-					</view>
-					<view
-						v-for="(item, index) in visibleOptions"
-						:id="getOptionId(index)"
-						:key="item + '_' + index.toString()"
-						class="uni-combobox__option-row"
-						:class="[
-							index == highlightedIndex ? 'uni-combobox__option-row--highlight' : '',
-							index == highlightedIndex ? optionRowHighlightClass : ''
-						]"
-						@click.stop="selectOption(index)"
-					>
-						<text
-							class="uni-combobox__option"
-							:class="[optionTextClass, index == highlightedIndex ? optionTextHighlightClass : '']"
-							flatten
-						>{{ item }}</text>
-					</view>
-				</view>
-			</scroll-view>
-		</view>
+			<text
+				v-if="visibleOptions.length == 0"
+				class="uni-combox-pop__empty"
+				:class="optionTextClass"
+				flatten
+			>{{ emptyText }}</text>
+			<text
+				v-for="(item, index) in visibleOptions"
+				:id="getOptionId(index)"
+				:key="item + '_' + index.toString()"
+				class="uni-combox-pop__item"
+				:class="[
+					optionTextClass,
+					index == highlightedIndex ? 'uni-combox-pop__item--highlight' : '',
+					index == highlightedIndex ? optionTextHighlightClass : '',
+					index == highlightedIndex ? optionRowHighlightClass : ''
+				]"
+				@click.stop="selectOption(index)"
+			>{{ item }}</text>
+		</scroll-view>
 	</teleport>
 </template>
 
@@ -647,7 +636,7 @@ let webInteractionListening = false
 function isWebTargetInsideCombobox(target : EventTarget | null, popupOnly : boolean = false) : boolean {
 	if (!(target instanceof Node)) return false
 	const element = target instanceof Element ? target : target.parentElement
-	const selector = popupOnly ? '.uni-combobox__options' : '.uni-combobox__field, .uni-combobox__options'
+	const selector = popupOnly ? '.uni-combox-pop' : '.uni-field-default, .uni-combox-pop'
 	return element != null && element.closest(selector) != null
 }
 
@@ -869,8 +858,9 @@ function onFieldClick(event : UniPointerEvent) {
 	}
 	if (inputMode.value) {
 		// 点击输入框调整光标时保持当前列表和滚动位置。
+		// 仅因聚焦/点击打开时展示完整候选并高亮当前值，输入时才切换为过滤模式。
 		if (!opened.value) {
-			openOptionsWithMode(true)
+			openOptions()
 		}
 		return
 	}
@@ -890,7 +880,8 @@ function onInputFocus(_event : UniInputFocusEvent) {
 	if (props.disabled || opened.value) {
 		return
 	}
-	openOptionsWithMode(true)
+	// 初始聚焦时展示完整候选并高亮当前选择，避免默认值把列表过滤成一项。
+	openOptions()
 }
 
 function onInputBlur() {
@@ -1091,19 +1082,36 @@ onBackPress(() : boolean => {
 </script>
 
 <style>
-.uni-combobox__field {
+/* #ifdef uniVersion>=5.36 */
+.uni-down-arrow-iconfont{
+	font-family: uni-icon;
+	transform: rotate(-90deg);
+	font-weight: bold;
+	font-size: 18px;
+}
+/* #endif */
+/* #ifdef uniVersion>=5.36 && WEB */
+/* .uni-down-arrow-iconfont:hover{
+	background-color: #f5f5f5;
+}
+@media (prefers-color-scheme: dark) {
+	.uni-down-arrow-iconfont:hover{
+		background-color: #1d1d1d;
+	}
+} */
+/* #endif */
+.uni-field-default {
 	position: relative;
+	flex-direction: row;
 	width: 100%;
-	box-sizing: border-box;
-	height: 40px;
+	padding: 8px 12px;
 	border: 1px solid #d1d5db;
 	border-radius: 5px;
 	background-color: #FFFFFF;
-	flex-direction: row;
 	align-items: center;
 }
 
-.uni-combobox__field--disabled {
+.uni-field-default--disabled {
 	background-color: #f7f6f6;
 }
 
@@ -1118,35 +1126,26 @@ onBackPress(() : boolean => {
 
 .uni-combobox__input-slot {
 	flex: 1;
-	height: 22px;
-	box-sizing: border-box;
 	flex-direction: row;
 	align-items: center;
-	padding: 0 10px;
-	margin: 0;
 }
 
-.uni-combobox__result {
+.uni-field-result {
 	flex: 1;
-	height: 22px;
-	line-height: 22px;
-	box-sizing: border-box;
-	padding: 0 10px;
-	margin: 0;
 	font-size: 14px;
 	color: #1f2937;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 }
 
-.uni-combobox__result--disabled {
+.uni-field-result--disabled {
 	color: #d5d5d5;
 }
 
-.uni-combobox__result--placeholder {
+.uni-field-result--placeholder {
 	color: #757575;
 }
-
+/* #ifdef uniVersion <5.36 */
 .uni-combobox__arrow-wrap {
 	width: 28px;
 	height: 40px;
@@ -1163,6 +1162,7 @@ onBackPress(() : boolean => {
 	transition-property: transform;
 	transition-duration: 150ms;
 }
+/* #endif */
 
 /* #ifdef MP */
 .uni-combobox__mask {
@@ -1177,7 +1177,7 @@ onBackPress(() : boolean => {
 
 /* #endif */
 
-.uni-combobox__options {
+.uni-combox-pop {
 	position: fixed;
 	box-sizing: border-box;
 	background-color: #ffffff;
@@ -1188,75 +1188,56 @@ onBackPress(() : boolean => {
 	overflow: hidden;
 }
 
-.uni-combobox__options-scroll {
+.uni-combox-pop__item {
 	width: 100%;
-	height: 100%;
-	box-sizing: border-box;
-}
-
-.uni-combobox__options-content {
-	width: 100%;
-	box-sizing: border-box;
-}
-
-.uni-combobox__option-row {
-	width: 100%;
-	box-sizing: border-box;
 	height: 36px;
-	flex-direction: row;
-	align-items: center;
-}
-
-.uni-combobox__option-row--highlight {
-	background-color: #f4f4f5;
-}
-
-.uni-combobox__option {
-	flex: 1;
-	height: 36px;
+	padding: 0px 12px; /* 内层设padding,而不是外层设padding,以便让hover效果左右通满*/
 	line-height: 36px;
-	padding-left: 8px;
-	padding-right: 8px;
 	font-size: 14px;
-	color: #18181b;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 }
 
-.uni-combobox__option--empty {
+.uni-combox-pop__item--highlight {
+	background-color: #f4f4f5;
+}
+
+.uni-combox-pop__empty {
+	width: 100%;
+	box-sizing: border-box;
+	height: 36px;
+	line-height: 36px;
+	font-size: 14px;
 	color: #71717a;
 	text-align: center;
 }
 
 /* #ifdef WEB */
 @media (hover: hover) and (pointer: fine) {
-	.uni-combobox__option-row {
-		height: 32px;
-	}
-
-	.uni-combobox__option {
+	.uni-combox-pop__item {
 		height: 32px;
 		line-height: 32px;
 	}
 }
 
-.uni-combobox__field {
+.uni-field-default {
 	outline: none;
 	cursor: pointer;
 	transition-property: border-color, box-shadow;
 	transition-duration: 150ms;
 }
 
-.uni-combobox__field--disabled {
+.uni-field-default--disabled {
 	cursor: not-allowed;
 }
 
-.uni-combobox__field:focus {
-	border-color: #2979ff;
-	box-shadow: 0 0 0 3px rgba(41, 121, 255, 0.24);
+.uni-field-default:focus,
+.uni-field-default:focus-within {
+	border-color: #496bec;
 }
 
-.uni-combobox__field--disabled:focus {
+.uni-field-default--disabled:focus,
+.uni-field-default--disabled:focus-within {
 	border-color: #d1d5db;
 	box-shadow: none;
 }
@@ -1269,42 +1250,42 @@ onBackPress(() : boolean => {
 	cursor: not-allowed;
 }
 
-.uni-combobox__option-row {
+.uni-combox-pop__item {
 	cursor: pointer;
 }
 
-.uni-combobox__option-row:hover {
+.uni-combox-pop__item:hover {
 	background-color: #f4f4f5;
 }
 /* #endif */
 
 @media (prefers-color-scheme: dark) {
-	.uni-combobox__field {
+	.uni-field-default {
 		background-color: #3b3b3b;
 		border-color: rgba(255, 255, 255, 0.18);
 	}
 
-	.uni-combobox__field--disabled {
+	.uni-field-default--disabled {
 		background-color: #3b3b3b;
 	}
 
-	.uni-combobox__result {
+	.uni-field-result {
 		color: #ffffff;
 	}
 
-	.uni-combobox__result--disabled {
+	.uni-field-result--disabled {
 		color: #8f8f8f;
 	}
 
-	.uni-combobox__result--placeholder {
+	.uni-field-result--placeholder {
 		color: #757575;
 	}
 
-	.uni-combobox__option {
+	.uni-combox-pop__item {
 		color: #fafafa;
 	}
 
-	.uni-combobox__option--empty {
+	.uni-combox-pop__empty {
 		color: #a1a1aa;
 	}
 
@@ -1313,29 +1294,30 @@ onBackPress(() : boolean => {
 		border-bottom-color: #a1a1aa;
 	}
 
-	.uni-combobox__options {
-		background-color: #232323;
+	.uni-combox-pop {
+		background-color: #3b3b3b;
 		border-color: rgba(255, 255, 255, 0.12);
 		box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
 	}
 
-	.uni-combobox__option-row--highlight {
+	.uni-combox-pop__item--highlight {
 		background-color: #27272a;
 	}
 
 	/* #ifdef WEB */
-	.uni-combobox__field:focus {
-		border-color: #2979ff;
-		box-shadow: 0 0 0 3px rgba(41, 121, 255, 0.32);
+	.uni-field-default:focus,
+	.uni-field-default:focus-within {
+		border-color: #496bec
 	}
 
-	.uni-combobox__field--disabled:focus {
+	.uni-field-default--disabled:focus,
+	.uni-field-default--disabled:focus-within {
 		border-color: rgba(255, 255, 255, 0.18);
 		box-shadow: none;
 	}
 
-	.uni-combobox__option-row:hover {
-		background-color: #27272a;
+	.uni-combox-pop__item:hover {
+		background-color: #454545;
 	}
 	/* #endif */
 }

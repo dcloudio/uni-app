@@ -357,11 +357,6 @@
 		cursor: pointer;
 		outline: none;
 	}
-
-	.index-text:focus {
-		outline: 1px solid #007aff;
-		outline-offset: 2px;
-	}
 	/* #endif */
 
 	@media (prefers-color-scheme: dark) {

@@ -120,7 +120,7 @@
           </picker>
           <!-- #endif -->
           <!-- #ifdef MP-WEIXIN -->
-          <picker class="picker-city--test uni-picker-container-wrap" mode="region" @change="bindRegionChange" :value="data.region">
+          <picker class="picker-city--test uni-picker-container-wrap" mode="region" @change="bindRegionChange" :value="data.region" custom-item="不限">
             <text class="uni-input picker-city--value uni-picker-text">
               {{data.region[0]}}{{data.region[1] ? '，' : ''}}{{data.region[1]}}{{data.region[2] ? '，' : ''}}{{data.region[2]}}
             </text>

@@ -65,6 +65,35 @@
 	<uni-calendar-view v-model="data.localeDate" :locale="activeLocale" />
 	<text class="uni-log">当前语言：{{ localeOptions[data.localeIndex].label }}</text>
 
+	<!-- 日期范围选择 -->
+	<text class="uni-h4">日期范围选择（range）</text>
+	<text class="uni-info">开启 range 后通过 v-model:range-start、v-model:range-end
+		双向绑定首尾日期：首次点击设置开始日期，再次点击设置结束日期。首尾标签可使用 range-start-label、range-end-label 文案，也可使用同名插槽自定义；中间区间样式通过
+		range-class 定制。</text>
+	<uni-calendar-view ref="viewRangeCalendarRef" range v-model:range-start="data.viewRangeStart"
+		v-model:range-end="data.viewRangeEnd" range-start-label="入住" range-end-label="离店"
+		range-class="custom-range" range-label-class="custom-range-label" :min-date="minDate" :max-date="maxDate"
+		@range-change="onViewRangeChange" />
+	<text class="uni-log">范围：{{ data.viewRangeStart.length > 0 ? data.viewRangeStart : '未选择' }} ~ {{ data.viewRangeEnd.length > 0 ? data.viewRangeEnd : '未选择' }}</text>
+	<view class="button-row">
+		<button class="demo-btn" size="mini" @click="onSetRange">设置范围</button>
+		<button class="demo-btn" size="mini" @click="onClearViewRange">清空范围</button>
+		<button class="demo-btn" size="mini" @click="onReadViewRange">读取范围</button>
+	</view>
+
+	<!-- 范围首尾标签插槽 -->
+	<text class="uni-h4">范围首尾标签插槽</text>
+	<text class="uni-info">通过 range-start、range-end 插槽自定义首尾日期上方的标签，插槽参数包含 date、start、end；插槽优先于文案属性。</text>
+	<uni-calendar-view range v-model:range-start="data.slotRangeStart" v-model:range-end="data.slotRangeEnd">
+		<template #range-start="slotProps">
+			<text class="custom-slot-label custom-slot-start">{{ slotProps.date.length > 0 ? '入' : '' }}</text>
+		</template>
+		<template #range-end="slotProps">
+			<text class="custom-slot-label custom-slot-end">{{ slotProps.date.length > 0 ? '离' : '' }}</text>
+		</template>
+	</uni-calendar-view>
+	<text class="uni-log">范围：{{ data.slotRangeStart.length > 0 ? data.slotRangeStart : '未选择' }} ~ {{ data.slotRangeEnd.length > 0 ? data.slotRangeEnd : '未选择' }}</text>
+
 	<!-- 组件方法 -->
 	<text class="uni-h4">组件方法</text>
 	<text class="uni-info">通过 ref 调用 prevMonth、nextMonth、goToMonth、goToDate、getSelectedDate 等方法控制日历。</text>
@@ -115,6 +144,10 @@
 		weekStartMode : number
 		localeIndex : number
 		lastEvent : string
+		viewRangeStart : string
+		viewRangeEnd : string
+		slotRangeStart : string
+		slotRangeEnd : string
 	}
 
 	const localeOptions : LocaleOption[] = [
@@ -528,7 +561,11 @@
 		methodDate: todayText,
 		weekStartMode: -1,
 		localeIndex: 0,
-		lastEvent: '暂无事件'
+		lastEvent: '暂无事件',
+		viewRangeStart: '',
+		viewRangeEnd: '',
+		slotRangeStart: '',
+		slotRangeEnd: ''
 	})
 
 	const activeLocale = computed<string>(() : string => {
@@ -614,6 +651,37 @@
 			title: text,
 			icon: 'none'
 		})
+	}
+
+	const viewRangeCalendarRef = ref<CallEasyMethodComponentPublicInstance | null>(null)
+
+	const rangeDemoStart = todayText
+	const rangeDemoEnd = formatDate(new Date(today.getFullYear(), today.getMonth(), today.getDate() + 5))
+
+	function onViewRangeChange(start : string, end : string) {
+		logEvent(`range-change：${start.length > 0 ? start : '未选择'} ~ ${end.length > 0 ? end : '未选择'}`)
+	}
+
+	function onSetRange() {
+		viewRangeCalendarRef.value?.setRange(rangeDemoStart, rangeDemoEnd)
+		logEvent(`setRange：${rangeDemoStart} ~ ${rangeDemoEnd}`)
+	}
+
+	function onClearViewRange() {
+		viewRangeCalendarRef.value?.clearRange()
+		logEvent('clearRange')
+	}
+
+	function onReadViewRange() {
+		const range = viewRangeCalendarRef.value?.getRange()
+		if (range != null) {
+			const start = range.start as string
+			const end = range.end as string
+			uni.showToast({
+				title: `${start.length > 0 ? start : '未选择'} ~ ${end.length > 0 ? end : '未选择'}`,
+				icon: 'none'
+			})
+		}
 	}
 
 	defineExpose({
@@ -727,5 +795,42 @@
 		font-size: 10px;
 		color: #999999;
 		opacity: 1;
+	}
+
+	/* 范围选择 externalClass */
+	.custom-range {
+		background-color: rgba(124, 58, 237, 0.16);
+	}
+
+	.custom-range-label {
+		color: #7c3aed;
+		font-weight: bold;
+	}
+
+	.custom-slot-label {
+		width: 100%;
+		height: 14px;
+		line-height: 14px;
+		font-size: 10px;
+		text-align: center;
+		color: #ffffff;
+	}
+
+	.custom-slot-start {
+		color: #ffffff;
+	}
+
+	.custom-slot-end {
+		color: #ffffff;
+	}
+
+	@media (prefers-color-scheme: dark) {
+		.custom-range {
+			background-color: rgba(167, 139, 250, 0.28);
+		}
+
+		.custom-range-label {
+			color: #a78bfa;
+		}
 	}
 </style>

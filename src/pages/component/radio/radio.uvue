@@ -215,7 +215,11 @@
         <radio-group class="uni-row radio-group">
           <!-- #ifdef !VUE3-VAPOR || (VUE3-VAPOR && MP) -->
           <view style="transform: scale(0.7); margin-right: 15px" class="radio">
-            <radio value="r1" :checked="true" color="#FFCC33" />
+            <radio value="r1" :checked="true" foreColor="#FFCC33"
+              <!-- #ifdef MP -->
+              color="#FFCC33"
+              <!-- #endif -->
+            />
             <text>选中</text>
           </view>
           <view style="transform: scale(0.7)" class="radio"><radio value="r2" color="#FFCC33" /><text>未选中</text></view>
@@ -225,7 +229,7 @@
             <radio value="r1" :checked="true" radio-active-class="radio-active" />
             <text>选中</text>
           </view>
-          <view style="transform: scale(0.7)" class="radio"><radio value="r2" id="radio-vapor" icon-class="custom-radio-icon" radio-class="custom-radio" radio-active-class="radio-active" /><text>未选中</text></view>
+          <view style="transform: scale(0.7)" class="radio"><radio value="r2" id="radio-vapor" radio-class="custom-radio" radio-active-class="radio-active" /><text>未选中</text></view>
           <!-- #endif -->
         </radio-group>
       </view>
@@ -322,6 +326,5 @@
     border-color: #FFCC33;
   }
   /* #endif */
-.custom-radio-icon { color: #ff4b19; }
 .custom-radio { border-width: 5px; }
 </style>

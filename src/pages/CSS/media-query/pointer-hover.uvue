@@ -1,0 +1,42 @@
+<template>
+  <scroll-view class="page" :scroll-top="scrollTop">
+    <view class="content">
+      <text class="title">输入设备</text>
+      <view class="summary">
+        <text class="description">连接或断开鼠标、触控板，观察下方绿色与灰色状态切换。状态由 CSS 控制，不根据最近一次点击或触摸判断。</text>
+        <!-- #ifdef APP -->
+        <text class="description">App 采用触屏优先策略：触屏为主要输入设备时，连接鼠标后 pointer: coarse、hover: none 仍满足；any-pointer: coarse 和 any-pointer: fine 可同时满足，any-hover: hover 也可满足。</text>
+        <!-- #endif -->
+        <!-- #ifdef WEB -->
+        <text class="description">Web 的主要输入设备由浏览器决定，结果可能与 App 不同。</text>
+        <!-- #endif -->
+        <!-- #ifdef MP-WEIXIN -->
+        <text class="description">微信小程序的匹配结果由宿主渲染引擎决定，请分别在开发者工具和真机上验证。</text>
+        <!-- #endif -->
+        <text class="description">可将应用切到后台，插拔外设后再返回，确认状态更新。没有外设变化时，前后台切换不应改变结果。</text>
+      </view>
+      <pointer-hover-component id="pointer-hover-component" />
+    </view>
+  </scroll-view>
+</template>
+
+<script setup lang="ts">
+  import PointerHoverComponent from './pointer-hover-component.uvue'
+
+  const scrollTop = ref(0)
+
+  // 自动化截图分段滚动，避免依赖各端不同的元素滚动接口。
+  function setScrollTop(value : number) {
+    scrollTop.value = value
+  }
+
+  defineExpose({ setScrollTop })
+</script>
+
+<style>
+  .page { flex: 1; background-color: #f5f6f8; }
+  .content { padding: 16px; }
+  .title { font-size: 22px; font-weight: bold; color: #111827; margin-bottom: 12px; }
+  .summary { padding: 12px; border-radius: 8px; background-color: #eff6ff; }
+  .description { font-size: 14px; color: #475569; margin-bottom: 8px; }
+</style>

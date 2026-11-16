@@ -1,11 +1,6 @@
 <template>
-	<view class="intro">
-		<text class="page-title">uni-data-checkbox 数据选择器</text>
-		<text class="page-desc">使用本地数据完成单选、多选、选择约束和多种展示模式，并通过 external class 调整选项样式。</text>
-	</view>
-
 	<text class="uni-h4">单选与事件</text>
-	<text class="section-desc">数字 0 作为有效默认值，同时监听 modelValue 和 change。</text>
+	<text class="uni-info">数字 0 作为有效默认值，同时监听 modelValue 和 change。</text>
 	<uni-data-checkbox
 		v-model="sexValue"
 		:localdata="sex"
@@ -14,13 +9,11 @@
 		@update:modelValue="onUpdate"
 		@change="onChange"
 	/>
-	<view class="result-block">
-		<text class="result-text">当前值：{{ sexValue }}</text>
-		<text class="event-text">最近事件：{{ latestEvent }}</text>
-	</view>
+		<text class="uni-log">当前值：{{ sexValue }} \n
+		最近事件：{{ latestEvent }}</text>
 
 	<text class="uni-h4">多选与事件</text>
-	<text class="section-desc">支持数组模型和默认选中项。</text>
+	<text class="uni-info">支持数组模型和默认选中项。</text>
 	<uni-data-checkbox
 		v-model="sexMultiValue"
 		:localdata="hobby"
@@ -30,13 +23,11 @@
 		@update:modelValue="onMultiUpdate"
 		@change="onMultiChange"
 	/>
-	<view class="result-block">
-		<text class="result-text">当前值：{{ JSON.stringify(sexMultiValue) }}</text>
-		<text class="event-text">最近事件：{{ latestMultiEvent }}</text>
-	</view>
+		<text class="uni-log">当前值：{{ JSON.stringify(sexMultiValue) }}\n
+		最近事件：{{ latestMultiEvent }}</text>
 
 	<text class="uni-h4">选择数量限制</text>
-	<text class="section-desc">最多选择 3 项，数据中的 disable 可单独禁用选项。</text>
+	<text class="uni-info">最多选择 3 项，数据中的 disable 可单独禁用选项。</text>
 	<uni-data-checkbox
 		v-model="sexMultiMaxValue"
 		:localdata="hobbyMore"
@@ -44,15 +35,15 @@
 		multiple
 		label-class="demo-inline-label"
 	/>
-	<text class="result-text result-standalone">当前值：{{ JSON.stringify(sexMultiMaxValue) }}</text>
+	<text class="uni-log">当前值：{{ JSON.stringify(sexMultiMaxValue) }}</text>
 
 	<text class="uni-h4">Button 模式</text>
-	<text class="section-desc">mode 为 button 时以分段按钮展示选项。</text>
+	<text class="uni-info">mode 为 button 时以分段按钮展示选项。</text>
 	<uni-data-checkbox v-model="buttonValue" mode="button" :localdata="buttonOptions" />
-	<text class="result-text result-standalone">当前值：{{ buttonValue }}</text>
+	<text class="uni-log">当前值：{{ buttonValue }}</text>
 
 	<text class="uni-h4">Tag 模式与字段映射</text>
-	<text class="section-desc">使用 map 映射 name/code 字段，并限制选择 1 至 3 项。</text>
+	<text class="uni-info">使用 map 映射 name/code 字段，并限制选择 1 至 3 项。</text>
 	<uni-data-checkbox
 		v-model="tagValue"
 		mode="tag"
@@ -64,10 +55,9 @@
 		label-class="demo-tag-label"
 		text-class="demo-tag-text test-map-text"
 	/>
-	<text class="result-text result-standalone">当前值：{{ JSON.stringify(tagValue) }}</text>
+	<text class="uni-log">当前值：{{ JSON.stringify(tagValue) }}</text>
 
-	<text class="uni-h4">List 模式与图标位置</text>
-	<text class="subsection-title">默认图标</text>
+	<text class="uni-h4">List 模式默认图标</text>
 	<view class="list-frame">
 		<uni-data-checkbox
 			v-model="listValue"
@@ -80,7 +70,7 @@
 		/>
 	</view>
 
-	<text class="subsection-title subsection-spaced">右侧对勾</text>
+	<text class="uni-h4">List 模式右侧对勾</text>
 	<view class="list-frame">
 		<uni-data-checkbox
 			v-model="listRightValue"
@@ -94,7 +84,7 @@
 		/>
 	</view>
 
-	<text class="subsection-title subsection-spaced">左右对齐</text>
+	<text class="uni-h4">List 模式左右对齐</text>
 	<view class="list-frame">
 		<uni-data-checkbox
 			v-model="listAlignValue"
@@ -108,12 +98,12 @@
 	</view>
 
 	<text class="uni-h4">value 兼容属性</text>
-	<text class="section-desc">不使用 v-model 时，可通过 value 传入当前值，并监听 update:modelValue 更新。</text>
+	<text class="uni-info">不使用 v-model 时，可通过 value 传入当前值，并监听 update:modelValue 更新。</text>
 	<uni-data-checkbox :value="compatValue" :localdata="sex" @update:modelValue="onCompatUpdate" />
-	<text class="result-text result-standalone">当前值：{{ compatValue }}</text>
+	<text class="uni-log">当前值：{{ compatValue }}</text>
 
 	<text class="uni-h4">checkbox-class 与 checkbox-selected-class</text>
-	<text class="section-desc">external class 可分别定制原生选择控件与选中态控件。</text>
+	<text class="uni-info">external class 可分别定制原生选择控件与选中态控件。</text>
 	<uni-data-checkbox
 		v-model="controlClassValue"
 		:localdata="hobby"
@@ -121,10 +111,10 @@
 		checkbox-class="demo-checkbox"
 		checkbox-selected-class="demo-checkbox-selected"
 	/>
-	<text class="result-text result-standalone">当前值：{{ JSON.stringify(controlClassValue) }}</text>
+	<text class="uni-log">当前值：{{ JSON.stringify(controlClassValue) }}</text>
 
 	<text class="uni-h4">禁用状态与外部样式</text>
-	<text class="section-desc">组合全局 disabled、数据项 disabled、min/max 与 external class。</text>
+	<text class="uni-info">组合全局 disabled、数据项 disabled、min/max 与 external class。</text>
 	<uni-data-checkbox
 		v-model="disabledValues"
 		multiple
@@ -137,10 +127,10 @@
 		label-class="demo-inline-label"
 		label-selected-class="test-default-selected"
 	/>
-	<text class="result-text result-standalone">当前值：{{ JSON.stringify(disabledValues) }}</text>
+	<text class="uni-log">当前值：{{ JSON.stringify(disabledValues) }}</text>
 
 	<text class="uni-h4">云端数据与 datacom 参数</text>
-	<text class="section-desc">不传 localdata 并设置 collection 后使用 uniCloud 数据，可通过 field、where、orderby、分页、树形等参数查询。需关联服务空间。</text>
+	<text class="uni-info">不传 localdata 并设置 collection 后使用 uniCloud 数据，可通过 field、where、orderby、分页、树形等参数查询。需关联服务空间。</text>
 	<uni-data-checkbox
 		ref="cloudCheckbox"
 		collection="opendb-city-china"
@@ -164,9 +154,9 @@
 		@change="onChange"
 	/>
 	<view class="btn-row">
-		<button class="demo-btn" size="mini" @click="loadCloudData">loadData</button>
-		<button class="demo-btn" size="mini" @click="refreshCloudData">refresh</button>
-		<button class="demo-btn" size="mini" @click="clearCloudData">clear</button>
+		<button class="uni-margin-r-b-md" size="mini" @click="loadCloudData">loadData</button>
+		<button class="uni-margin-r-b-md" size="mini" @click="refreshCloudData">refresh</button>
+		<button class="uni-margin-r-b-md" size="mini" @click="clearCloudData">clear</button>
 	</view>
 </template>
 
@@ -285,9 +275,7 @@ defineExpose({
 
 <style>
 page {
-	--background-color: #f5f5f5;
 	--active-background-color: #f8f8f8;
-	--text-color: #333333;
 	--tips-color: #0958d9;
 	--tips-background-color: #e6f4ff;
 	--content-background-color: #ffffff;
@@ -295,66 +283,6 @@ page {
 	--input-border-color: #dcdfe6;
 	--divider-color: #e5e5e5;
 	--data-checkbox-demo-error-color: #dd524d;
-	padding: 12px;
-	background-color: var(--background-color);
-}
-
-.intro {
-	padding: 4px;
-	margin-bottom: 12px;
-}
-
-.page-title {
-	font-size: 18px;
-	font-weight: bold;
-	color: var(--text-color, #222222);
-}
-
-.page-desc {
-	margin-top: 6px;
-	font-size: 13px;
-	line-height: 20px;
-	color: var(--secondary-text-color, #657180);
-}
-
-.section-desc {
-	margin-top: 4px;
-	margin-bottom: 8px;
-	font-size: 13px;
-	line-height: 20px;
-	color: var(--secondary-text-color, #657180);
-}
-
-.subsection-title {
-	margin-top: 12px;
-	margin-bottom: 8px;
-	font-size: 13px;
-	font-weight: bold;
-	color: var(--secondary-text-color, #657180);
-}
-
-.subsection-spaced {
-	margin-top: 18px;
-}
-
-.result-block,
-.result-standalone {
-	margin-top: 10px;
-}
-
-.result-block {
-	flex-direction: column;
-}
-
-.result-text,
-.event-text {
-	font-size: 13px;
-	line-height: 20px;
-	color: var(--secondary-text-color, #657180);
-}
-
-.event-text {
-	margin-top: 2px;
 }
 
 .list-frame {
@@ -430,14 +358,8 @@ page {
 	margin-top: 12px;
 }
 
-.demo-btn {
-	margin-right: 8px;
-	margin-bottom: 8px;
-}
-
 @media (prefers-color-scheme: dark) {
 	page {
-		--background-color: #1a1a1a;
 		--active-background-color: #3b3b3b;
 		--text-color: #ffffff;
 		--tips-color: #91caff;

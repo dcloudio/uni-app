@@ -137,8 +137,11 @@ describe('test swiper', () => {
     expect(await page.data('data.isAnimationfinishTest')).toBe('animationfinish:Success')
   });
 
-  it('easing-function attribute', async () => {
-    const swiper = await page.$('#easing-function-swiper')
-    expect(await swiper.attribute('easing-function')).toBe('linear')
-  })
+  if(!isWeb){
+    it('easing-function attribute', async () => {
+      const swiper = await page.$('#easing-function-swiper')
+      expect(await swiper.attribute('easing-function')).toBe('linear')
+    })
+  }
+
 });

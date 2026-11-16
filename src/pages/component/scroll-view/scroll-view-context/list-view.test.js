@@ -31,7 +31,7 @@ describe(`ScrollViewContext/list-view`, () => {
 
   let page
   beforeEach(async () => {
-    page = await program.reLaunch(`/pages/API/scroll-view-context/list-view`)
+    page = await program.reLaunch(`/pages/component/scroll-view/scroll-view-context/list-view`)
     await page.waitFor(500)
   })
 

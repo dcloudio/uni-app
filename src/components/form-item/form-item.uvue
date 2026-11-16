@@ -1,0 +1,176 @@
+<script setup lang="ts">
+  defineOptions({
+    name: 'FormItem',
+    styleIsolation: 'app',
+    inheritAttrs: false
+  })
+
+  type FormItemType = 'input' | 'switch' | 'slider' | 'combobox'
+  type FormValue = string | number | boolean
+
+  interface Props {
+    /** 控件类型。 */
+    type: FormItemType;
+    /** 表单项的标签文字。 */
+    label: string;
+    /** 参与 uni-forms 管理时使用的字段名。 */
+    name?: string;
+    /** 实际原生控件的 ID；组合框的 ID 作用于外层表单项。 */
+    controlId?: string;
+    /** 当前控件值，通过 v-model 双向绑定。 */
+    modelValue?: FormValue;
+    /** input 的输入类型。 */
+    inputType?: string;
+    /** input 或组合框的占位文字。 */
+    placeholder?: string;
+    /** 组合框候选项。 */
+    options?: string[];
+    /** slider 的最小值。 */
+    min?: number;
+    /** slider 的最大值。 */
+    max?: number;
+    /** slider 的步长。 */
+    step?: number;
+    /** slider 是否显示当前值。 */
+    showValue?: boolean;
+    /** 是否在 changing 时实时回写 slider 值。 */
+    live?: boolean;
+    /** 是否禁用控件。 */
+    disabled?: boolean;
+  }
+
+  const props = withDefaults(defineProps<Props>(), {
+    name: '',
+    controlId: '',
+    modelValue: '',
+    inputType: 'text',
+    placeholder: '',
+    options: () : string[] => [],
+    min: 0,
+    max: 100,
+    step: 1,
+    showValue: true,
+    live: false,
+    disabled: false
+  })
+
+  const emit = defineEmits<{
+    'update:modelValue': [value: FormValue];
+    input: [event: UniInputEvent];
+    change: [event: UniSwitchChangeEvent | UniSliderChangeEvent];
+    changing: [event: UniSliderChangeEvent];
+    selectchange: [value: string];
+  }>()
+
+  function inputValue() : string {
+    return typeof props.modelValue == 'string' ? props.modelValue : String(props.modelValue)
+  }
+
+  function switchValue() : boolean {
+    return props.modelValue == true
+  }
+
+  function sliderValue() : number {
+    return typeof props.modelValue == 'number' ? props.modelValue : Number(props.modelValue)
+  }
+
+  function onInput(event : UniInputEvent) {
+    emit('update:modelValue', event.detail.value)
+    emit('input', event)
+  }
+
+  function onSwitchChange(event : UniSwitchChangeEvent) {
+    emit('update:modelValue', event.detail.value)
+    emit('change', event)
+  }
+
+  function onSliderChange(event : UniSliderChangeEvent) {
+    emit('update:modelValue', event.detail.value)
+    emit('change', event)
+  }
+
+  function onSliderChanging(event : UniSliderChangeEvent) {
+    if (props.live) emit('update:modelValue', event.detail.value)
+    emit('changing', event)
+  }
+
+  function onComboboxUpdate(value : string) {
+    emit('update:modelValue', value)
+  }
+
+  function onComboboxSelect(value : string) {
+    emit('selectchange', value)
+  }
+</script>
+
+<template>
+  <uni-forms-item v-if="type == 'input'" class="form-item-compact" :label="label" :name="name" :label-width="104" content-class="form-item-input-content">
+    <input :id="controlId" class="form-item-input-control" :value="inputValue()" :type="inputType"
+      :placeholder="placeholder" :disabled="disabled" @input="onInput" />
+  </uni-forms-item>
+  <uni-forms-item v-else-if="type == 'switch'" class="form-item-compact" :label="label" :name="name" :label-width="104" content-class="form-item-switch-content">
+    <switch :id="controlId" :checked="switchValue()" :disabled="disabled" @change="onSwitchChange" />
+  </uni-forms-item>
+  <uni-forms-item v-else-if="type == 'slider'" :label="label" :name="name" label-position="top" label-class="form-item-slider-label" class="form-item-compact form-item-slider-item">
+    <slider :id="controlId" class="form-item-slider-control" :value="sliderValue()" :min="min" :max="max"
+      :step="step" :show-value="showValue" :disabled="disabled" @change="onSliderChange" @changing="onSliderChanging" />
+  </uni-forms-item>
+  <uni-forms-item v-else :id="controlId" class="form-item-compact" :label="label" :name="name" :label-width="104" content-class="form-item-combobox-content">
+    <uni-combobox class="form-item-combobox-control" :model-value="inputValue()" :options="options"
+      :placeholder="placeholder" :disabled="disabled" @update:modelValue="onComboboxUpdate"
+      @selectchange="onComboboxSelect" />
+  </uni-forms-item>
+</template>
+
+<style>
+  .form-item-compact {
+    padding-top: 2px;
+    padding-bottom: 2px;
+  }
+
+  .form-item-input-content,
+  .form-item-switch-content,
+  .form-item-combobox-content {
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    min-height: 36px;
+  }
+
+  .form-item-input-control {
+    flex: 1;
+    min-width: 0;
+    height: 36px;
+    padding: 0 6px;
+    background-color: transparent;
+    border-bottom: 1px solid var(--border-color, rgba(0, 0, 0, 0.06));
+    color: var(--text-color, #333333);
+    text-align: right;
+  }
+
+  .form-item-slider-item {
+    align-items: center;
+    justify-content: center;
+  }
+
+  .form-item-slider-label {
+    margin-top: 2px;
+    margin-bottom: 4px;
+  }
+
+  .form-item-slider-control,
+  .form-item-combobox-control {
+    width: 100%;
+  }
+
+  .form-item-slider-control {
+    margin: 0 0 4px 4px;
+    /* #ifdef MP-WEIXIN */
+    padding-left: 14px;
+    /* #endif */
+    /* #ifdef MP-ALIPAY */
+    box-sizing: border-box;
+    padding: 0 11px;
+    /* #endif */
+  }
+</style>
