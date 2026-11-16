@@ -67,9 +67,10 @@
 <script setup lang="ts">
 	// #ifdef APP-IOS || APP-HARMONY || APP-ANDROID
 	import SelectionStyle from "../selection-style.vue"
+	import { useEditorColor } from "../editor-color.ts"
 	// #endif
 	// #ifdef APP-IOS || APP-HARMONY
-	import { resolveEditorCaretColor, useEditorColor } from "../editor-color.ts"
+	import { resolveEditorCaretColor } from "../editor-color.ts"
 	// #endif
 	import {
 		// #ifdef APP-ANDROID || APP-IOS
@@ -101,7 +102,6 @@
 	// #endif
 	import { LABEL_KEY, dispatchLabelClick, registerLabelTarget } from "../common.ts"
 	import { ActivatableChild, LabelContext } from "../types.ts"
-	import { useFormThemeIsDark, resolveFormTokens, FormThemeTokens } from "../theme.ts"
 
 	const keyboardHeight = ref(0)
 	const isFocusing = ref(false)
@@ -161,19 +161,12 @@
 		],
 		filterProperties: true
 	})
-	// #ifdef APP-IOS || APP-HARMONY
+	// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
 	const valueColor = useEditorColor(style)
 	// #endif
 
 	// #ifdef APP-ANDROID
-	// 暗黑默认值：开发者未设置 color（useComputedStyle 读到 null）时，使用主题默认色
-	const isDarkTheme = useFormThemeIsDark()
-	const formThemeTokens = computed(() : FormThemeTokens => resolveFormTokens(isDarkTheme.value))
-	const resolvedTextColor = computed(() : string => {
-		const styleColor = style.get('color')
-		return (styleColor == null || styleColor == '') ? formThemeTokens.value.inputText : styleColor
-	})
-	watch(resolvedTextColor, (value : string) => {
+	watch(valueColor, (value : string) => {
 		inputView?.updateColor(value)
 	})
 	// #endif
@@ -546,7 +539,7 @@
 	// #ifdef APP-ANDROID
 	function syncAndroidInputStyleProps() {
 		inputView?.updateFontSize(rpx2px(style.get('font-size')))
-		inputView?.updateColor(resolvedTextColor.value)
+		inputView?.updateColor(valueColor.value)
 		inputView?.updateSelectionColor(selectionColor.value)
 		inputView?.updateLetterSpacing(rpx2px(style.get('letter-spacing')))
 		inputView?.updateFontWeight(style.get('font-weight'))
@@ -862,7 +855,7 @@
 		inputView = new NativeInputView(
 			e.detail.element,
 			rpx2px(style.get('font-size')),
-			resolvedTextColor.value,
+			valueColor.value,
 			rpx2px(style.get('letter-spacing')),
 			style.get('font-weight'),
 			style.get('font-style'),
@@ -1636,14 +1629,6 @@
 		/* #ifdef APP-IOS || APP-HARMONY */
 		justify-content: center;
 		/* #endif */
-		/* 暗黑适配：表单默认背景色（开发者用 class/style 可覆盖，页面样式优先级更高） */
-		background-color: #ffffff;
-	}
-
-	@media (prefers-color-scheme: dark) {
-		.uni-input-wrapper {
-			background-color: #3b3b3b;
-		}
 	}
 
 	.uni-input-container {
@@ -1660,7 +1645,12 @@
 		transform: translateY(-50%);
 		left: 0;
 		right: 0;
-		color: #757575;
+		color: #808080;
 		white-space: nowrap;
+	}
+	@media (prefers-color-scheme: dark) {
+		.uni-input-placeholder {
+			color: #5f5f5f;
+		}
 	}
 </style>
