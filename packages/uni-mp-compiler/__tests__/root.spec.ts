@@ -345,6 +345,7 @@ describe.each(['mp-weixin', 'mp-alipay'] as const)(
       root: '/src',
       filename: '/src/pages/index.uvue',
       hashId: 'test',
+      comments: true,
       isCustomElement: createIsCustomElement(['page-meta', 'navigation-bar']),
     }
 
@@ -385,6 +386,43 @@ describe.each(['mp-weixin', 'mp-alipay'] as const)(
       assert(
         '<page-meta background-color="#fff"><navigation-bar title="test"/></page-meta><view/>',
         '<page-meta background-color="#fff" page-style="{{a}}"><navigation-bar title="test"/></page-meta><view/>',
+        `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: _s({ '--status-bar-height': \`\${_ctx.u_s_b_h}px\`, '--uni-safe-area-inset-bottom': \`\${_ctx.u_s_a_i_b}px\` }) }
+  return __returned__
+}`,
+        options
+      )
+    })
+
+    test('reuse page-meta after a leading comment', () => {
+      assert(
+        '<!-- header --><page-meta page-style="color:red"/><view/>',
+        '<page-meta page-style="{{a}}"/><view/>',
+        `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: _s(['color:red', { '--status-bar-height': \`\${_ctx.u_s_b_h}px\`, '--uni-safe-area-inset-bottom': \`\${_ctx.u_s_a_i_b}px\` }]) }
+  return __returned__
+}`,
+        options
+      )
+    })
+
+    test('reuse page-meta after leading comments and blank text', () => {
+      const preserveWhitespaceOptions = { ...options, whitespace: 'preserve' }
+      assert(
+        '<!-- header --> <!-- settings --><page-meta page-style="color:red"/><view/>',
+        ' <page-meta page-style="{{a}}"/><view/>',
+        `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: _s(['color:red', { '--status-bar-height': \`\${_ctx.u_s_b_h}px\`, '--uni-safe-area-inset-bottom': \`\${_ctx.u_s_a_i_b}px\` }]) }
+  return __returned__
+}`,
+        preserveWhitespaceOptions
+      )
+    })
+
+    test('prepend page-meta to a comments-only template', () => {
+      assert(
+        '<!-- header --><!-- settings -->',
+        '<page-meta page-style="{{a}}"/>',
         `(_ctx, _cache) => { "raw js"
   const __returned__ = { a: _s({ '--status-bar-height': \`\${_ctx.u_s_b_h}px\`, '--uni-safe-area-inset-bottom': \`\${_ctx.u_s_a_i_b}px\` }) }
   return __returned__
