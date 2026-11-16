@@ -38,9 +38,9 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.
 | hover-stay-time | number |   | Web: 4.41; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 手指松开后点击态保留时间，单位毫秒 |
 | render-link | boolean | true | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 是否给 navigator 组件加一层 a 标签控制 ssr 渲染 |
 | short-link | string |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>当`target="miniProgram"`时有效，当传递该参数后，可以不传 app-id 和 path。链接可以通过【小程序菜单】->【复制链接】获取。 |
-| @success | string |   | Web: 4.41; 微信小程序: 4.41; 支付宝小程序: x; Android: -; iOS: -; HarmonyOS: - | *(string)*<br/>当`target="miniProgram"`且`open-type="navigate/navigateBack"`时有效，跳转小程序成功 |
-| @fail | string |   | Web: 4.41; 微信小程序: 4.41; 支付宝小程序: x; Android: -; iOS: -; HarmonyOS: - | *(string)*<br/>当`target="miniProgram"`且`open-type="navigate/navigateBack"`时有效，跳转小程序失败 |
-| @complete | string |   | Web: 4.41; 微信小程序: 4.41; 支付宝小程序: x; Android: -; iOS: -; HarmonyOS: - | *(string)*<br/>当`target="miniProgram"`且`open-type="navigate/navigateBack"`时有效，跳转小程序完成 |
+| @success | string |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: -; iOS: -; HarmonyOS: - | *(string)*<br/>当`target="miniProgram"`且`open-type="navigate/navigateBack"`时有效，跳转小程序成功 |
+| @fail | string |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: -; iOS: -; HarmonyOS: - | *(string)*<br/>当`target="miniProgram"`且`open-type="navigate/navigateBack"`时有效，跳转小程序失败 |
+| @complete | string |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: -; iOS: -; HarmonyOS: - | *(string)*<br/>当`target="miniProgram"`且`open-type="navigate/navigateBack"`时有效，跳转小程序完成 |
 
 #### target 的属性描述
 
