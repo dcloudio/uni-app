@@ -509,6 +509,13 @@ export declare function isForwardedSlot(flags: number): boolean;
  * and `<!--]-->` closes it like a fragment.
  */
 export declare function isVaporBranchStart(data: string): boolean;
+/**
+ * The data of a comment opening a range only a vapor server render emits:
+ * `<!--{-->` around the render of a component, or a v-if branch's.
+ */
+export declare function isVaporRangeStart(data: string): boolean;
+/** The data of the comment closing the range `open` opens. */
+export declare function rangeCloseOf(open: string): string;
 export declare function slotNotifiesBoundary(flags: number): boolean;
 /**
  * Per-slot-function metadata attached by the compiler as `fn._`.

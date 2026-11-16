@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-core v3.6.0-rc.14
+  * @vue/compiler-core v3.6.0-rc.15
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -2209,7 +2209,11 @@ function getLoc(start, end) {
 	};
 }
 function cloneLoc(loc) {
-	return getLoc(loc.start.offset, loc.end.offset);
+	return {
+		start: extend({}, loc.start),
+		end: extend({}, loc.end),
+		source: loc.source
+	};
 }
 function setLocEnd(loc, end) {
 	loc.end = tokenizer.getPos(end);
