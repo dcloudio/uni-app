@@ -13,6 +13,7 @@ import {
 import {
   createBindDirectiveNode,
   isAttributeNode,
+  isCommentNode,
   isElementNode,
   isMiniProgramPageFile,
   isSimpleExpressionNode,
@@ -63,7 +64,12 @@ export const transformRoot: NodeTransform = (node, context) => {
     usePageMeta &&
     isMiniProgramPageFile(context.filename, process.env.UNI_INPUT_DIR)
   ) {
-    let firstChild = node.children[0]
+    // page-meta 是唯一的首个根元素，不与 v-if、v-else、v-for 一起使用
+    let firstChild = node.children.find(
+      (child) =>
+        !isCommentNode(child) &&
+        (child.type !== NodeTypes.TEXT || child.content.trim())
+    )
     if (
       !firstChild ||
       !isElementNode(firstChild) ||
