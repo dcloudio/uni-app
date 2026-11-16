@@ -37,7 +37,7 @@ font-family: <family-name>;
 | monospace | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 等宽字体，即字体中每个字宽度相同。<br/>        例如：Fira Mono、DejaVu Sans Mono、Menlo、Consolas、Liberation Mono、Monaco、Lucida Console、monospace。 |
 | sans-serif | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 无衬线字体，即笔画结尾是平滑的字体。<br/>        例如：Open Sans、Fira Sans、Lucida Sans、Lucida Sans Unicode、Trebuchet MS、Liberation Sans、Nimbus Sans L、sans-serif。 |
 | serif | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 带衬线字体，笔画结尾有特殊的装饰线或衬线。<br/>        例如：Lucida Bright、Lucida Fax、Palatino、Palatino Linotype、Palladio、URW Palladio、serif。 |
-| uni-icon | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | uni-app x 内置字体图标 uni-icon |
+| uni-icon | Web: 5.33; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | uni-app x 内置字体图标 uni-icon |
 
 
 
