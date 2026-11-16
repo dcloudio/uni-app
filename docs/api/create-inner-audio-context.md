@@ -889,7 +889,7 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.33; iOS: 4
 | :- | :- | :- | :- |  :-: | :- |
 | mixWithOther | boolean | 否 | true | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.73; iOS: 4.81; HarmonyOS: x | 是否与其他音频混播，设置为 true 之后，不会终止其他应用或应用内的音频； 设置为false之后，会暂停背景音频和三方app音频 |
 | speakerOn | boolean | 否 | true | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.0; iOS: 5.0; HarmonyOS: x | true 代表用扬声器播放，false 代表听筒播放 |
-| obeyMuteSwitch | boolean | 否 | true | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: 5.0; HarmonyOS: x | （仅在 iOS 生效）是否遵循静音开关，设置为 false 之后，即使是在静音模式下，也能播放声音 |
+| obeyMuteSwitch | boolean | 否 | true | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: 5.0; HarmonyOS: x | （仅在 iOS 生效）是否遵循静音开关，设置为 false 之后，即使是在静音模式下，也能播放声音 |
 | success | (result: SetInnerAudioOptionSuccess) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.73; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
 | fail | (result: [SetInnerAudioOptionFail](#setinneraudiooptionfail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.73; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
 | complete | (result: any) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.73; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 

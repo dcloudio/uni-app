@@ -795,7 +795,7 @@ VDOM模式的长列表性能要弱于蒸汽模式很多。推荐升级蒸汽模�
 
 蒸汽模式下由于list-item组件的复用机制，在触发滚动前可能并不能准确获取到滚动目标list-item组件的位置，因此使用scrollTop等方式滚动可能并不能得到预期的效果。使用scroll-into-view属性时list-view内部会计算预估位置，无动画时滚动到预估位置再进行渲染，有动画时会在滚动期间持续调整目标位置以使最终位置准确。iOS平台scroll-into-view不支持带动画滚动。
 
-#### Web平台
+#### Web平台VDOM模式
 
 + web平台仅渲染当前屏幕及上下一定距离的内容，滚动高度为空白容器占位，因此如果使用dom API获取list-item内的元素可能无法取到。
 + scroll-with-animation属性在safari 15.4以下版本不支持

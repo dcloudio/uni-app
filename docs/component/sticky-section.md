@@ -57,13 +57,18 @@
 
 preload属性用于控制sticky-section组件的预加载行为，默认值为false。设置为true时，sticky-section组件会在滚动到该section之前就进行渲染，从而避免或减少滚动到该section时出现空白或闪烁的情况。例如在index-bar这种直接跳转到某个section的场景下，设置preload为true可以提升用户体验。参考：[uni-ui-x index-bar示例](https://gitcode.com/dcloud/uni-ui-x/blob/dev/pages/uni-ui/index-bar/index-bar.uvue)
 
-#### 注意事项  
+#### 蒸汽模式注意事项
+
++ 不支持padding属性，需要使用样式设置padding
++ sticky-section内的list-item必须使用v-for、不能使用v-if，且此v-for必须有key
++ sticky-section内只能包含一个sticky-header，且必须是第一个子元素
+
+#### VDOM注意事项  
 
 + Android平台、iOS平台sticky-section组件支持存放多个sticky-header子组件，多个sticky-header滚动吸顶时，后一个sticky-header会停靠在前一个sticky-header的末尾处, 仅限于同一个sticky-section父容器。多个sticky-section吸顶停靠通过push-pinned-header控制。  
 + `sticky-section` 组件，不支持设置css样式，不要通过 class 和 style 设置样式  
 + Android平台 `sticky-section` 组件作为 list-view 的子元素时需要注意，sticky-section子元素仅支持sticky-header、list-item，其他元素无法正常显示
 + 鸿蒙平台暂不支持 `padding` 属性，可通过设置子元素样式来实现类似效果  
-+ 蒸汽模式 sticky-section内的list-item必须使用v-for、不能使用v-if，且此v-for必须有key
 
 ### 子组件 @children-tags
 支持所有组件
