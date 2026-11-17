@@ -148,18 +148,42 @@ var VueCompilerDOM = (function(exports) {
 	}
 	//#endregion
 	//#region packages/shared/src/normalizeProp.ts
-	const listDelimiterRE = /;(?![^(]*\))/g;
 	const propertyDelimiterRE = /:([^]+)/;
 	const styleCommentRE = /"(?:[^"\\]|\\[^])*"|'(?:[^'\\]|\\[^])*'|\\[^]|\/\*[^]*?\*\//g;
 	function parseStringStyle(cssText) {
 		const ret = {};
-		cssText.replace(styleCommentRE, (match) => match.startsWith("/*") ? "" : match).split(listDelimiterRE).forEach((item) => {
+		splitCssText(cssText.replace(styleCommentRE, (match) => match.startsWith("/*") ? "" : match), ";").forEach((item) => {
 			if (item) {
 				const tmp = item.split(propertyDelimiterRE);
 				tmp.length > 1 && (ret[tmp[0].trim()] = tmp[1].trim());
 			}
 		});
 		return ret;
+	}
+	function splitCssText(value, separator) {
+		if (!/['"\\()[\]{}\/]/.test(value)) return value.split(separator);
+		const parts = [];
+		let start = 0;
+		let quote = "";
+		const brackets = [];
+		for (let i = 0; i < value.length; i++) {
+			const char = value[i];
+			if (char === "\\") i++;
+			else if (quote) {
+				if (char === quote) quote = "";
+			} else if (char === "\"" || char === "'") quote = char;
+			else if (char === "/" && value[i + 1] === "*") {
+				const end = value.indexOf("*/", i + 2);
+				i = end < 0 ? value.length : end + 1;
+			} else if (char === "(" || char === "[" || char === "{") brackets.push(char === "(" ? ")" : char === "[" ? "]" : "}");
+			else if (char === brackets[brackets.length - 1]) brackets.pop();
+			else if (char === separator && brackets.length === 0) {
+				parts.push(value.slice(start, i));
+				start = i + 1;
+			}
+		}
+		parts.push(value.slice(start));
+		return parts;
 	}
 	//#endregion
 	//#region packages/shared/src/domTagConfig.ts

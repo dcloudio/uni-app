@@ -319,18 +319,56 @@ function normalizeStyle(value) {
 		return res;
 	} else if (isString(value) || isObject(value)) return value;
 }
-const listDelimiterRE = /;(?![^(]*\))/g;
 const propertyDelimiterRE = /:([^]+)/;
 const styleCommentRE = /"(?:[^"\\]|\\[^])*"|'(?:[^'\\]|\\[^])*'|\\[^]|\/\*[^]*?\*\//g;
 function parseStringStyle(cssText) {
 	const ret = {};
-	cssText.replace(styleCommentRE, (match) => match.startsWith("/*") ? "" : match).split(listDelimiterRE).forEach((item) => {
+	splitCssText(cssText.replace(styleCommentRE, (match) => match.startsWith("/*") ? "" : match), ";").forEach((item) => {
 		if (item) {
 			const tmp = item.split(propertyDelimiterRE);
 			tmp.length > 1 && (ret[tmp[0].trim()] = tmp[1].trim());
 		}
 	});
 	return ret;
+}
+function parseStylePriority(value) {
+	if (!value.includes("!")) return {
+		value: value.trim(),
+		important: false
+	};
+	const parts = splitCssText(value, "!");
+	const suffix = parts[parts.length - 1].replace(styleCommentRE, (match) => match.startsWith("/*") ? " " : match);
+	const important = parts.length > 1 && /^\s*important\s*$/i.test(suffix);
+	if (important) parts.pop();
+	return {
+		value: parts.join("!").trim(),
+		important
+	};
+}
+function splitCssText(value, separator) {
+	if (!/['"\\()[\]{}\/]/.test(value)) return value.split(separator);
+	const parts = [];
+	let start = 0;
+	let quote = "";
+	const brackets = [];
+	for (let i = 0; i < value.length; i++) {
+		const char = value[i];
+		if (char === "\\") i++;
+		else if (quote) {
+			if (char === quote) quote = "";
+		} else if (char === "\"" || char === "'") quote = char;
+		else if (char === "/" && value[i + 1] === "*") {
+			const end = value.indexOf("*/", i + 2);
+			i = end < 0 ? value.length : end + 1;
+		} else if (char === "(" || char === "[" || char === "{") brackets.push(char === "(" ? ")" : char === "[" ? "]" : "}");
+		else if (char === brackets[brackets.length - 1]) brackets.pop();
+		else if (char === separator && brackets.length === 0) {
+			parts.push(value.slice(start, i));
+			start = i + 1;
+		}
+	}
+	parts.push(value.slice(start));
+	return parts;
 }
 function stringifyStyle(styles) {
 	if (!styles) return "";
@@ -821,4 +859,4 @@ const VaporSingleRoot = {
 	"2": "SLOT"
 };
 //#endregion
-export { EMPTY_ARR, EMPTY_OBJ, NO, NOOP, Namespaces, PatchFlagNames, PatchFlags, ShapeFlags, SlotFlags, TemplateFlags, VaporBlockShape, VaporDynamicComponentFlags, VaporIfFlags, VaporSingleRoot, VaporSlotFlags, VaporSlotStability, VaporVForFlags, YES, camelize, canSetValueDirectly, capitalize, cssVarNameEscapeSymbolsRE, def, escapeHtml, escapeHtmlComment, extend, genCacheKey, genPropsAccessExp, generateCodeFrame, getEscapedCssVarName, getGlobalThis, getModifierPropName, getSequence, hasChanged, hasOwn, hyphenate, includeBooleanAttr, invokeArrayFns, isAlwaysCloseTag, isArray, isBooleanAttr, isBuiltInDirective, isBuiltInTag, isDate, isFormattingTag, isForwardedSlot, isFunction, isGloballyAllowed, isGloballyWhitelisted, isHTMLTag, isIntegerKey, isKnownHtmlAttr, isKnownMathMLAttr, isKnownSvgAttr, isMap, isMathMLTag, isModelListener, isNativeOn, isObject, isOn, isPlainObject, isPromise, isRegExp, isRenderableAttrValue, isReservedProp, isSSRSafeAttrName, isSVGTag, isSet, isSpecialBooleanAttr, isString, isSymbol, isVaporBranchStart, isVaporRangeStart, isVoidTag, looseEqual, looseIndexOf, looseToNumber, makeMap, normalizeClass, normalizeCssVarValue, normalizeProps, normalizeStyle, objectToString, parseStringStyle, propsToAttrMap, rangeCloseOf, remove, shouldSetAsAttr, slotFlagsText, slotNotifiesBoundary, stringifyStyle, toDisplayString, toHandlerKey, toNumber, toRawType, toTypeString };
+export { EMPTY_ARR, EMPTY_OBJ, NO, NOOP, Namespaces, PatchFlagNames, PatchFlags, ShapeFlags, SlotFlags, TemplateFlags, VaporBlockShape, VaporDynamicComponentFlags, VaporIfFlags, VaporSingleRoot, VaporSlotFlags, VaporSlotStability, VaporVForFlags, YES, camelize, canSetValueDirectly, capitalize, cssVarNameEscapeSymbolsRE, def, escapeHtml, escapeHtmlComment, extend, genCacheKey, genPropsAccessExp, generateCodeFrame, getEscapedCssVarName, getGlobalThis, getModifierPropName, getSequence, hasChanged, hasOwn, hyphenate, includeBooleanAttr, invokeArrayFns, isAlwaysCloseTag, isArray, isBooleanAttr, isBuiltInDirective, isBuiltInTag, isDate, isFormattingTag, isForwardedSlot, isFunction, isGloballyAllowed, isGloballyWhitelisted, isHTMLTag, isIntegerKey, isKnownHtmlAttr, isKnownMathMLAttr, isKnownSvgAttr, isMap, isMathMLTag, isModelListener, isNativeOn, isObject, isOn, isPlainObject, isPromise, isRegExp, isRenderableAttrValue, isReservedProp, isSSRSafeAttrName, isSVGTag, isSet, isSpecialBooleanAttr, isString, isSymbol, isVaporBranchStart, isVaporRangeStart, isVoidTag, looseEqual, looseIndexOf, looseToNumber, makeMap, normalizeClass, normalizeCssVarValue, normalizeProps, normalizeStyle, objectToString, parseStringStyle, parseStylePriority, propsToAttrMap, rangeCloseOf, remove, shouldSetAsAttr, slotFlagsText, slotNotifiesBoundary, stringifyStyle, toDisplayString, toHandlerKey, toNumber, toRawType, toTypeString };
