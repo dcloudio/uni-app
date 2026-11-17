@@ -1472,7 +1472,11 @@ export class NativeInputView implements UITextFieldDelegate {
 	}
 
 	updateColor(value: string) {
-		if (this.textField == null || value == null || value == '') return
+		if (this.textField == null) return
+		if (value == null || value == '') {
+			this.textField!.textColor = UIColor.black
+			return
+		}
 		this.textField!.textColor = UTSiOS.colorWithString(value)
 	}
 
@@ -1870,8 +1874,7 @@ export class NativeTextareaView implements UITextViewDelegate {
 	}
 
 	updateColor(value: string) {
-		if (value == null || value == '') return
-		this.textColor = UTSiOS.colorWithString(value)
+		this.textColor = value == null || value == '' ? UIColor.black : UTSiOS.colorWithString(value)
 		this.applyTextStyles()
 	}
 

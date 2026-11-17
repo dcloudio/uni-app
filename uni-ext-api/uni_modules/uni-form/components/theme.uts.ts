@@ -1,28 +1,25 @@
-/**
- * uni-form 暗黑主题（当前仅 Android 生效）
- *
- * 设计要点：
- * 1. 模块级单例：整个 App 只注册一次主题监听，组件只读共享的响应式状态；
- * 2. 同步初始化：组件 setup 时即可拿到正确的 isDark，避免首帧闪烁；
- * 3. 仅在 APP-ANDROID 下注册监听，其他平台恒为亮色，不改变现有行为。
- */
+import { onBeforeUnmount, ref } from 'vue'
 
+/**
+ * Android、iOS、Harmony 共用的表单主题状态。
+ * 首次使用时同步初始化；组件共享主题监听，最后一个组件卸载时释放监听。
+ */
 
 /**
  * 组件默认值令牌：开发者未显式设置时使用。
- * 注意：input 背景色由组件内 CSS `@media` 控制（见 input.uvue 的 .uni-input-wrapper），
- * 因为背景属于 CSS 渲染，开发者用 class 即可覆盖；文字色是原生绘制，必须由 JS 下发。
+ * input、textarea 默认背景透明；文字色由原生绘制，主题默认色需下发到原生控件。
+ * 明亮主题不覆盖文字色，空字符串表示恢复原生默认值。
  */
 export type FormThemeTokens = {
 	inputText : string
 }
 
 export const FORM_THEME_LIGHT : FormThemeTokens = {
-	inputText: '#000000'
+	inputText: ''
 }
 
 export const FORM_THEME_DARK : FormThemeTokens = {
-	inputText: '#ffffff'
+	inputText: '#d1d1d1'
 }
 
 export function resolveFormTokens(isDark : boolean) : FormThemeTokens {
@@ -31,20 +28,22 @@ export function resolveFormTokens(isDark : boolean) : FormThemeTokens {
 
 const isDarkTheme = ref(false)
 let formThemeInitialized = false
+let formThemeUsers = 0
+let appThemeListener: number | null = null
+let osThemeListener: number | null = null
 
-function resolveIsDark() : boolean {
-	// #ifdef APP-ANDROID
-	const appTheme = uni.getAppBaseInfo().appTheme
+function resolveIsDark(appTheme: string | null): boolean {
+	// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
 	if (appTheme == 'light') {
 		return false
 	}
 	if (appTheme == 'dark') {
 		return true
 	}
-	// appTheme 为 auto 时，由系统主题决定
+	// appTheme 为 auto 或未设置时，由系统主题决定
 	return uni.getDeviceInfo().osTheme == 'dark'
 	// #endif
-	// #ifndef APP-ANDROID
+	// #ifndef APP-ANDROID || APP-IOS || APP-HARMONY
 	return false
 	// #endif
 }
@@ -54,12 +53,12 @@ export function initFormTheme() : void {
 		return
 	}
 	formThemeInitialized = true
-	// #ifdef APP-ANDROID
-	isDarkTheme.value = resolveIsDark()
-	uni.onAppThemeChange((res : AppThemeChangeResult) => {
-		isDarkTheme.value = res.appTheme == 'dark'
+	// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
+	isDarkTheme.value = resolveIsDark(uni.getAppBaseInfo().appTheme ?? null)
+	appThemeListener = uni.onAppThemeChange((res: AppThemeChangeResult) => {
+		isDarkTheme.value = resolveIsDark(res.appTheme)
 	})
-	uni.onOsThemeChange((res : OsThemeChangeResult) => {
+	osThemeListener = uni.onOsThemeChange((res: OsThemeChangeResult) => {
 		const appTheme = uni.getAppBaseInfo().appTheme
 		if (appTheme == 'auto' || appTheme == null) {
 			isDarkTheme.value = res.osTheme == 'dark'
@@ -68,8 +67,25 @@ export function initFormTheme() : void {
 	// #endif
 }
 
-/** 组件统一入口：幂等初始化，返回共享的主题状态 */
+/** 组件统一入口：返回共享主题状态，并管理监听的生命周期。 */
 export function useFormThemeIsDark() : Ref<boolean> {
 	initFormTheme()
+	formThemeUsers++
+	onBeforeUnmount(() => {
+		if (--formThemeUsers != 0) {
+			return
+		}
+		// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
+		if (appThemeListener != null) {
+			uni.offAppThemeChange(appThemeListener)
+			appThemeListener = null
+		}
+		if (osThemeListener != null) {
+			uni.offOsThemeChange(osThemeListener)
+			osThemeListener = null
+		}
+		// #endif
+		formThemeInitialized = false
+	})
 	return isDarkTheme
 }

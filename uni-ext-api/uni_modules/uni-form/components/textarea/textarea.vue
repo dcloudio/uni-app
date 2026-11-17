@@ -33,8 +33,11 @@
 	<!-- #endif -->
 </template>
 <script setup lang="uts">
+	// #ifdef APP-IOS || APP-HARMONY || APP-ANDROID
+	import { useEditorColor } from "../editor-color.uts"
+	// #endif
 	// #ifdef APP-IOS || APP-HARMONY
-	import { resolveEditorCaretColor, useEditorColor } from "../editor-color.uts"
+	import { resolveEditorCaretColor } from "../editor-color.uts"
 	// #endif
 	import {
 		NativeTextareaView,
@@ -53,7 +56,6 @@
 	// #endif
 	import { LABEL_KEY, dispatchLabelClick, registerLabelTarget } from "../common.uts"
 	import { ActivatableChild, LabelContext } from "../types.uts"
-	import { useFormThemeIsDark, resolveFormTokens, FormThemeTokens } from "../theme.uts"
 
 	const keyboardHeight = ref(0)
 	const isFocusing = ref(false)
@@ -108,18 +110,8 @@
 		],
 		filterProperties: true
 	})
-	// #ifdef APP-IOS || APP-HARMONY
+	// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
 	const valueColor = useEditorColor(style)
-	// #endif
-
-	// #ifdef APP-ANDROID
-	// 暗黑默认值：开发者未设置 color（useComputedStyle 读到 null）时，使用主题默认色
-	const isDarkTheme = useFormThemeIsDark()
-	const formThemeTokens = computed(() : FormThemeTokens => resolveFormTokens(isDarkTheme.value))
-	const resolvedTextColor = computed(() : string => {
-		const styleColor = style.get('color')
-		return (styleColor == null || styleColor == '') ? formThemeTokens.value.inputText : styleColor
-	})
 	// #endif
 
 	const rpx2px = (value : string) : string => {
@@ -523,7 +515,7 @@
 	// #ifdef APP-ANDROID
 	function syncAndroidTextareaStyleProps() {
 		textareaView?.updateFontSize(rpx2px(style.get('font-size')))
-		textareaView?.updateColor(resolvedTextColor.value)
+		textareaView?.updateColor(valueColor.value)
 		textareaView?.updateCursorColor(resolvedCursorColor.value)
 		textareaView?.updateLineHeight(rpx2px(style.get('line-height')))
 		textareaView?.updateLetterSpacing(rpx2px(style.get('letter-spacing')))
@@ -584,7 +576,7 @@
 	watch(() => style.get('font-size'), (value : string) => {
 		textareaView?.updateFontSize(rpx2px(value))
 	})
-	watch(resolvedTextColor, (value : string) => {
+	watch(valueColor, (value : string) => {
 		textareaView?.updateColor(value)
 	})
 	watch(() => style.get('line-height'), (value : string) => {
@@ -771,11 +763,6 @@
 				case 'font-size':
 					textareaView.updateFontSize(typeof value == 'string' ? rpx2px(value) : undefined)
 					break
-				// #ifdef APP-ANDROID
-				case 'color':
-					textareaView.updateColor(value as string)
-					break
-				// #endif
 				case 'line-height':
 					textareaView.updateLineHeight(rpx2px(value as string))
 					break
@@ -1219,14 +1206,6 @@
 		/* #ifdef APP-ANDROID */
 		height: 150px;
 		/* #endif */
-		/* 暗黑适配：表单默认背景色（开发者用 class/style 可覆盖，页面样式优先级更高） */
-		background-color: #ffffff;
-	}
-
-	@media (prefers-color-scheme: dark) {
-		.uni-textarea-wrapper {
-			background-color: #3b3b3b;
-		}
 	}
 
 	.uni-textarea-container {
@@ -1239,7 +1218,12 @@
 		position: absolute;
 		top: 0;
 		left: 0;
-		color: #757575;
+		color: #808080;
 		font-size: var(--uni-textarea-placeholder-font-size, 16px);
+	}
+	@media (prefers-color-scheme: dark) {
+		.uni-textarea-placeholder {
+			color: #5f5f5f;
+		}
 	}
 </style>
