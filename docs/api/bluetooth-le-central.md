@@ -1282,7 +1282,7 @@ iOS 不支持主动设置 MTU，当前插件调用此接口会执行 `fail` 和 
 
 
 
-<!-- UTSAPIJSON.ble.example -->
+<!-- UTSAPIJSON.bluetooth-bluetooth-ble.tutorial -->
 
 
 ## 通用类型
