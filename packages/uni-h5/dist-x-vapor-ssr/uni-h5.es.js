@@ -8066,7 +8066,7 @@ function useScrollView(props2, { emit: emit2, expose }) {
     () => props2.direction === "vertical" || props2.direction === "all"
   );
   const rootStyle = computed(
-    () => `overflow-x:${scrollX.value ? "auto" : "hidden"};overflow-y:${scrollY.value ? "auto" : "hidden"};`
+    () => `overflow-x:${scrollX.value ? "auto" : "hidden"};overflow-y:${scrollY.value ? "auto" : "hidden"};scroll-behavior:${props2.scrollWithAnimation ? "smooth" : "auto"};`
   );
   const scrollBarClassName = computed(
     () => props2.showScrollbar === false ? "uni-scroll-view-scrollbar-hidden" : ""
@@ -8077,11 +8077,7 @@ function useScrollView(props2, { emit: emit2, expose }) {
   let lastLowerTime = 0;
   function scrollTo(options) {
     var _a;
-    (_a = rootRef.value) == null ? void 0 : _a.scrollTo(
-      Object.assign(options, {
-        behavior: props2.scrollWithAnimation ? "smooth" : "instant"
-      })
-    );
+    (_a = rootRef.value) == null ? void 0 : _a.scrollTo(options);
   }
   function scrollIntoView(id) {
     const root = rootRef.value;

@@ -196,9 +196,13 @@
      }
      */
     showValue ?: boolean
-    /** 滑块左侧已选择部分的线条颜色 */
+    /** 
+     * 滑块左侧已选择部分的线条颜色
+     * @defaultValue #007aff
+     */
     activeColor ?: string.ColorString
     /** 滑块左侧已选择部分的线条颜色，优先级高于 activeColor
+     * @defaultValue #007aff
      * @uniPlatform {
        "app": {
          "ios": {
@@ -215,6 +219,7 @@
     */
     activeBackgroundColor ?: string.ColorString
     /** 背景条的颜色
+     * @defaultValue #e9e9e9
      * @uniPlatform {
        "app": {
          "ios": {
@@ -231,6 +236,7 @@
     */
     backgroundColor ?: string.ColorString
     /** 滑块的大小，取值范围为 12 到 28，单位为 px；未设置时使用 thumbClass 或默认样式
+     * @defaultValue 28
      * @uniPlatform {
        "app": {
          "ios": {
@@ -246,9 +252,13 @@
      }
     */
     blockSize ?: number | null
-    /** 滑块的颜色 (使用foreColor替代) */
+    /** 
+     * 滑块的颜色 (使用foreColor替代)
+     * @defaultValue #ffffff
+     */
     blockColor ?: string.ColorString
     /** 滑块的颜色
+     * @defaultValue #ffffff
      * @uniPlatform {
        "app": {
          "ios": {
