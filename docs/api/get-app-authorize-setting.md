@@ -39,7 +39,7 @@
 | notificationAlertAuthorized | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: 4.11 | 允许 App 通知带有提醒的开关（仅 iOS 支持）<br/> |
 | notificationBadgeAuthorized | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: 4.11 | 允许 App 通知带有标记的开关（仅 iOS 支持）<br/> |
 | notificationSoundAuthorized | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: 4.11 | 允许 App 通知带有声音的开关（仅 iOS 支持）<br/> |
-| phoneCalendarAuthorized | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 允许读写日历的开关（仅微信小程序支持）<br/> |
+| phoneCalendarAuthorized | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 允许读写日历的开关（仅微信小程序、支付宝小程序支持）<br/> |
 | readPhoneCalendarAuthorized | string | 否 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 允许读日历的开关（仅鸿蒙支持）<br/> |
 | writePhoneCalendarAuthorized | string | 否 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 允许写日历的开关（仅鸿蒙支持）<br/> |
 | pasteboardAuthorized | string | 否 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 允许读取剪切版（仅鸿蒙支持）<br/> |

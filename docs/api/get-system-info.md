@@ -90,12 +90,12 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 | osHarmonySDKAPIVersion | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: √; iOS: x; HarmonyOS: 4.61 | 鸿蒙系统软件API版本<br/> |
 | osHarmonyDisplayVersion | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: √; iOS: x; HarmonyOS: 4.61 | 产品版本，关于本机信息内的软件版本<br/> |
 | appTheme | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61 | 当前App的主题<br/> |
-| hostTheme | string | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 宿主主题（仅 web、微信小程序支持）<br/> |
-| hostVersion | string | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 宿主版本（仅 web、微信小程序支持）<br/> |
-| hostLanguage | string | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 宿主语言（仅 web、微信小程序支持）<br/> |
-| hostName | string | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 宿主名称（仅 web、微信小程序支持）<br/> |
-| hostSDKVersion | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 宿主 SDKVersion（仅 web、微信小程序支持）<br/> |
-| hostFontSizeSetting | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 宿主字体大小设置（仅 web、微信小程序支持）<br/> |
+| hostTheme | string | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 宿主主题（仅 web、微信小程序、支付宝小程序支持）<br/> |
+| hostVersion | string | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 宿主版本（仅 web、微信小程序、支付宝小程序支持）<br/> |
+| hostLanguage | string | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 宿主语言（仅 web、微信小程序、支付宝小程序支持）<br/> |
+| hostName | string | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 宿主名称（仅 web、微信小程序、支付宝小程序支持）<br/> |
+| hostSDKVersion | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 宿主 SDKVersion（仅 web、微信小程序、支付宝小程序支持）<br/> |
+| hostFontSizeSetting | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 宿主字体大小设置（仅 web、微信小程序、支付宝小程序支持）<br/> |
 | albumAuthorized | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25 | 需要基础库： `2.6.0`<br/><br/>允许微信使用相册的开关（仅 iOS 有效）<br/> |
 | benchmarkLevel | number | 否 | 微信小程序: 4.41 | 需要基础库： `1.8.0`<br/><br/>设备性能等级（仅 Android）。取值为：-2 或 0（该设备无法运行小游戏），-1（性能未知），>=1（设备性能值，该值越高，设备性能越好）<br> 注意：性能等级当前仅反馈真机机型，暂不支持 IDE 模拟器机型<br/> |
 | bluetoothEnabled | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25 | 需要基础库： `2.6.0`<br/><br/>蓝牙的系统开关<br/> |
@@ -508,12 +508,12 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.
 | osHarmonySDKAPIVersion | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: √; iOS: x; HarmonyOS: 4.61 | 鸿蒙系统软件API版本<br/> |
 | osHarmonyDisplayVersion | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: √; iOS: x; HarmonyOS: 4.61 | 产品版本，关于本机信息内的软件版本<br/> |
 | appTheme | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61 | 当前App的主题<br/> |
-| hostTheme | string | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 宿主主题（仅 web、微信小程序支持）<br/> |
-| hostVersion | string | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 宿主版本（仅 web、微信小程序支持）<br/> |
-| hostLanguage | string | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 宿主语言（仅 web、微信小程序支持）<br/> |
-| hostName | string | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 宿主名称（仅 web、微信小程序支持）<br/> |
-| hostSDKVersion | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 宿主 SDKVersion（仅 web、微信小程序支持）<br/> |
-| hostFontSizeSetting | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 宿主字体大小设置（仅 web、微信小程序支持）<br/> |
+| hostTheme | string | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 宿主主题（仅 web、微信小程序、支付宝小程序支持）<br/> |
+| hostVersion | string | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 宿主版本（仅 web、微信小程序、支付宝小程序支持）<br/> |
+| hostLanguage | string | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 宿主语言（仅 web、微信小程序、支付宝小程序支持）<br/> |
+| hostName | string | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 宿主名称（仅 web、微信小程序、支付宝小程序支持）<br/> |
+| hostSDKVersion | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 宿主 SDKVersion（仅 web、微信小程序、支付宝小程序支持）<br/> |
+| hostFontSizeSetting | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 宿主字体大小设置（仅 web、微信小程序、支付宝小程序支持）<br/> |
 | albumAuthorized | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25 | 需要基础库： `2.6.0`<br/><br/>允许微信使用相册的开关（仅 iOS 有效）<br/> |
 | benchmarkLevel | number | 否 | 微信小程序: 4.41 | 需要基础库： `1.8.0`<br/><br/>设备性能等级（仅 Android）。取值为：-2 或 0（该设备无法运行小游戏），-1（性能未知），>=1（设备性能值，该值越高，设备性能越好）<br> 注意：性能等级当前仅反馈真机机型，暂不支持 IDE 模拟器机型<br/> |
 | bluetoothEnabled | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25 | 需要基础库： `2.6.0`<br/><br/>蓝牙的系统开关<br/> |
