@@ -44,7 +44,7 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.
 | poster | string |   | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 视频封面的图片网络资源地址，如果 controls 属性值为 false 则设置 poster 无效 |
 | show-mute-btn | boolean | false | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 是否显示静音按钮 |
 | title | string |   | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 视频的标题，全屏时在顶部展示 |
-| play-btn-position | string |   | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 播放按钮的位置 |
+| play-btn-position | string |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 播放按钮的位置 |
 | enable-play-gesture | boolean | false | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 是否开启播放手势，即双击切换播放、暂停 |
 | auto-pause-if-navigate | boolean |   | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 当跳转到其它页面时，是否自动暂停本页面的视频 |
 | auto-pause-if-open-native | boolean |   | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 当跳转到其它小程序宿主原生页面时，是否自动暂停本页面的视频 |
