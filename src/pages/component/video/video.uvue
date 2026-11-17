@@ -10,7 +10,12 @@
       :vslide-gesture="data.vslideGesture" :vslide-gesture-in-fullscreen="data.vslideGestureInFullscreen"
       :http-cache="data.httpCache" :danmu-list="data.danmuList" @play="onPlay" @pause="onPause"
       @ended="onEnded" @timeupdate="onTimeUpdate" @waiting="onWaiting" @error="onError" @progress="onProgress"
-      @fullscreenclick="onFullScreenClick" @controlstoggle="onControlsToggle" @fullscreenchange="onFullScreenChange">
+      @fullscreenclick="onFullScreenClick" @controlstoggle="onControlsToggle" @fullscreenchange="onFullScreenChange"
+      <!-- #ifdef WEB || MP-WEIXIN -->
+      :auto-pause-if-navigate="autoPauseIfNavigate"
+      @loadedmetadata="onLoadedMetadata"
+      <!-- #endif -->
+    >
 
       <image v-if="data.subCompEnable && data.subCompShow" class="img-fast-backward"
         src="../../../static/test-video/fast-backward.png" @tap.stop="fastBackward"></image>
@@ -171,6 +176,12 @@
       <boolean-data title="设置是否对http、https视频源开启本地缓存（仅 Android、iOS 平台，播放前设置有效）" :value="data.httpCache"
         @change="onHttpCacheChange"></boolean-data>
       <!-- #endif -->
+      <!-- #ifdef WEB || MP-WEIXIN -->
+      <boolean-data title="跳转页面时自动暂停" :value="autoPauseIfNavigate" @change="onAutoPauseIfNavigateChange"></boolean-data>
+      <navigator url="/pages/component/video/video-format">
+        <button class="uni-btn">跳转页面观察自动暂停</button>
+      </navigator>
+      <!-- #endif -->
     </scroll-view>
   </view>
 </template>
@@ -248,6 +259,7 @@
     eventProgress: UTSJSONObject | null;
     eventFullscreenclick: UTSJSONObject | null;
     eventControlstoggle: UTSJSONObject | null;
+    eventLoadedmetadata: UTSJSONObject | null;
     eventParentTouchstart: UTSJSONObject | null;
     eventParentTouchmove: UTSJSONObject | null;
     eventParentTouchend: UTSJSONObject | null;
@@ -354,6 +366,7 @@
     eventProgress: null,
     eventFullscreenclick: null,
     eventControlstoggle: null,
+    eventLoadedmetadata: null,
     eventParentTouchstart: null,
     eventParentTouchmove: null,
     eventParentTouchend: null,
@@ -696,6 +709,23 @@
     fullscreenShowFullscreenBtn.value = !data.subCompControlsShow // 不显示全屏按钮，返回手势或者右上角退出全屏
     fullscreenShowDanmuBtn.value = !data.subCompControlsShow
   })
+
+  // #ifdef WEB || MP-WEIXIN
+  const autoPauseIfNavigate = ref(true)
+
+  const onAutoPauseIfNavigateChange = (value : boolean) => {
+    autoPauseIfNavigate.value = value
+  }
+  const onLoadedMetadata = (event : UniVideoLoadedMetadataEvent) => {
+    console.log('loadedmetadata', event)
+    data.eventLoadedmetadata = {
+      type: event.type,
+      width: event.detail.width,
+      height: event.detail.height,
+      duration: event.detail.duration
+    }
+  }
+  // #endif
 
   // 事件
   const onPlay = (res : UniEvent) => {

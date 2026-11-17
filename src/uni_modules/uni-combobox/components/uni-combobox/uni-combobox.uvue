@@ -1,12 +1,12 @@
 <template>
 	<view
 		ref="anchorRef"
-		class="uni-field-default"
+		class="uni-field-default uni-combobox__field"
 		style="position: relative;"
-		:class="[fieldClass, disabled ? 'uni-field-default--disabled' : '']"
+		:class="[fieldClass, inputMode ? 'uni-combobox__field--input' : '', disabled ? 'uni-field-default--disabled' : '']"
 		@click.stop="onFieldClick"
 		<!-- #ifdef WEB -->
-		:tabindex="disabled ? '-1' : '0'"
+		:tabindex="disabled || inputMode ? '-1' : '0'"
 		@keydown="onInputKeydown"
 		<!-- #endif -->
 		<!-- #ifdef MP-ALIPAY -->
@@ -471,6 +471,9 @@ const popupWidth = ref<number>(0)
 const popupHeight = ref<number>(getOptionHeight() + popupBorderHeight)
 const keyboardHeight = ref<number>(0)
 let positionRequestId = 0
+// #ifdef APP
+let positionMeasureId = 0
+// #endif
 let isUnmounted = false
 
 const inputMode = computed(() : boolean => {
@@ -558,6 +561,23 @@ function applyPopupRect(rect : DOMRect) {
 	const optionHeight = getOptionHeight()
 	const optionCount = Math.max(1, visibleOptions.value.length)
 	const expectedHeight = Math.min(defaultMaxOptionsHeight, optionCount * optionHeight) + popupBorderHeight
+	// #ifdef APP
+	// 上推尚未结束时，锚点可能仍在键盘后方。上下展开都限制在可见区域内。
+	const viewportTop = Math.min(viewportGap, windowHeight)
+	const viewportBottom = Math.max(viewportTop, windowHeight - viewportGap)
+	const belowTop = Math.max(viewportTop, Math.min(rectBottom + popupGap, viewportBottom))
+	const aboveBottom = Math.max(viewportTop, Math.min(rectTop - popupGap, viewportBottom))
+	const belowSpace = viewportBottom - belowTop
+	const aboveSpace = aboveBottom - viewportTop
+
+	let height = Math.min(expectedHeight, belowSpace)
+	let top = belowTop
+	if (belowSpace < expectedHeight && aboveSpace > belowSpace) {
+		height = Math.min(expectedHeight, aboveSpace)
+		top = aboveBottom - height
+	}
+	// #endif
+	// #ifndef APP
 	const minOptionsHeight = optionHeight + popupBorderHeight
 	const belowSpace = windowHeight - rectBottom - viewportGap
 	const aboveSpace = rectTop - viewportGap
@@ -570,6 +590,7 @@ function applyPopupRect(rect : DOMRect) {
 	} else {
 		height = Math.max(minOptionsHeight, Math.min(expectedHeight, belowSpace - popupGap))
 	}
+	// #endif
 
 	popupLeft.value = rectLeft
 	popupTop.value = top
@@ -577,6 +598,32 @@ function applyPopupRect(rect : DOMRect) {
 	popupHeight.value = height
 }
 
+// #ifdef APP
+function updatePosition(onComplete : (() => void) | null = null) {
+	const element = anchorRef.value
+	if (isUnmounted || !opened.value || !popupReady.value || element == null) {
+		onComplete?.()
+		return
+	}
+	const requestId = positionRequestId
+	const measureId = ++positionMeasureId
+	const rectPromise = element.getBoundingClientRectAsync()
+	if (rectPromise == null) {
+		onComplete?.()
+		return
+	}
+	rectPromise.then((rect : DOMRect) => {
+		if (!isUnmounted && opened.value && requestId == positionRequestId && measureId == positionMeasureId) {
+			applyPopupRect(rect)
+		}
+		onComplete?.()
+	}, (_error : any) => {
+		onComplete?.()
+	})
+}
+
+// #endif
+// #ifndef APP
 function updatePosition() {
 	const element = anchorRef.value
 	if (element == null) {
@@ -594,9 +641,55 @@ function updatePosition() {
 	})
 }
 
+// #endif
+
+// #ifdef APP
+let keyboardPositionTimer = 0
+let keyboardPositionVersion = 0
+let keyboardPositionUntil = 0
+let keyboardPositionTracking = false
+
+function stopKeyboardPositionTracking() {
+	keyboardPositionVersion += 1
+	keyboardPositionTracking = false
+	if (keyboardPositionTimer != 0) {
+		clearTimeout(keyboardPositionTimer)
+		keyboardPositionTimer = 0
+	}
+}
+
+function trackKeyboardPosition(version : number) {
+	if (isUnmounted || version != keyboardPositionVersion) return
+	keyboardPositionTimer = 0
+	// 串行测量，避免原生测量慢于采样间隔时不断丢弃结果。
+	updatePosition(() => {
+		if (isUnmounted || version != keyboardPositionVersion) return
+		if (Date.now() >= keyboardPositionUntil) {
+			stopKeyboardPositionTracking()
+			return
+		}
+		keyboardPositionTimer = setTimeout(() => {
+			trackKeyboardPosition(version)
+		}, 32)
+	})
+}
+
+function startKeyboardPositionTracking() {
+	stopKeyboardPositionTracking()
+	keyboardPositionTracking = true
+	// 键盘通知、原生上推和回落并不同步；短时间连续跟踪，并在结束时再测一次。
+	// 不常驻轮询，关闭、页面隐藏和卸载都会取消。
+	keyboardPositionUntil = Date.now() + 1000
+	trackKeyboardPosition(keyboardPositionVersion)
+}
+// #endif
+
 function updatePositionThenOpen() {
 	const requestId = positionRequestId + 1
 	positionRequestId = requestId
+	// #ifdef APP
+	positionMeasureId += 1
+	// #endif
 	const element = anchorRef.value
 	if (element == null) {
 		if (isUnmounted || requestId != positionRequestId) {
@@ -674,6 +767,9 @@ function onAppAncestorScroll(_event : UniEvent) {
 	if (!opened.value || !popupReady.value || appAnchorRect == null) {
 		return
 	}
+	// 键盘自动滚动时由连续测量跟随锚点，不按用户滚动关闭。
+	if (keyboardPositionTracking) return
+	const keyboardVersion = keyboardPositionVersion
 	const requestId = positionRequestId
 	if (appScrollCheckRequest == requestId) {
 		appScrollCheckAgain = true
@@ -695,6 +791,7 @@ function onAppAncestorScroll(_event : UniEvent) {
 			return
 		}
 		appScrollCheckRequest = -1
+		if (keyboardPositionTracking || keyboardVersion != keyboardPositionVersion) return
 		const anchorRect = appAnchorRect
 		if (anchorRect == null) {
 			return
@@ -716,6 +813,17 @@ function onAppAncestorScroll(_event : UniEvent) {
 			appScrollCheckAgain = false
 		}
 	})
+}
+
+function onAppPageTouchMove(event : UniEvent) {
+	// 保留用户主动滚动页面时关闭的行为，不影响候选列表自身滚动。
+	if (!keyboardPositionTracking) return
+	let target = event.target as UniElement | null
+	while (target != null) {
+		if (target == popupRef.value) return
+		target = target.parentElement
+	}
+	closeOptions()
 }
 
 function isPointInside(x : number, y : number, left : number, top : number, width : number, height : number) : boolean {
@@ -788,6 +896,7 @@ function startPageInteractionListeners() {
 		root = parent
 		parent = parent.parentElement
 	}
+	addPageInteractionListener(root, 'touchmove', onAppPageTouchMove)
 	// 同页组合框共用一个原生 click 监听，避免多实例向 BODY 重复注册时丢失回调。
 	pageClickSubscription = createPageClickSubscription(appInstance.proxy!.$page, root, onAppOutsideClick)
 	pageClickSubscription.activate()
@@ -817,6 +926,12 @@ function openOptionsWithMode(filter : boolean) {
 	if (props.disabled) {
 		return
 	}
+	// 从 focus 开始跟踪，覆盖先发生自动上推、后收到键盘通知的情况。
+	// #ifdef APP
+	if (!opened.value && inputMode.value) {
+		startKeyboardPositionTracking()
+	}
+	// #endif
 	filterEnabled.value = filter
 	syncHighlight()
 	popupReady.value = false
@@ -829,8 +944,14 @@ function openOptions() {
 }
 
 function closeOptions() {
+	// #ifdef APP
+	stopKeyboardPositionTracking()
+	// #endif
 	stopPageInteractionListeners()
 	positionRequestId += 1
+	// #ifdef APP
+	positionMeasureId += 1
+	// #endif
 	opened.value = false
 	popupReady.value = false
 }
@@ -906,11 +1027,16 @@ function onKeyboardHeightChange(res : OnKeyboardHeightChangeCallbackResult) {
 	}
 	keyboardHeight.value = Math.max(0, res.height)
 	if (opened.value) {
+		// #ifdef APP
+		startKeyboardPositionTracking()
+		// #endif
+		// #ifndef APP
 		nextTick(() => {
 			if (!isUnmounted && opened.value) {
 				updatePosition()
 			}
 		})
+		// #endif
 	}
 }
 
@@ -1220,7 +1346,7 @@ onBackPress(() : boolean => {
 	}
 }
 
-.uni-field-default {
+.uni-combobox__field {
 	outline: none;
 	cursor: pointer;
 	transition-property: border-color, box-shadow;
@@ -1231,15 +1357,15 @@ onBackPress(() : boolean => {
 	cursor: not-allowed;
 }
 
-.uni-field-default:focus,
-.uni-field-default:focus-within {
-	border-color: #496bec;
+.uni-combobox__field--input:not(.uni-field-default--disabled) {
+	cursor: text;
 }
 
-.uni-field-default--disabled:focus,
-.uni-field-default--disabled:focus-within {
-	border-color: #d1d5db;
-	box-shadow: none;
+/* 单选在键盘置焦时提示；插槽输入框置焦时由整个外框显示焦点环。 */
+.uni-combobox__field:not(.uni-field-default--disabled):focus-visible,
+.uni-combobox__field--input:not(.uni-field-default--disabled):focus-within {
+	border-color: #a1a1a1;
+	box-shadow: 0 0 0 3px rgba(161, 161, 161, 0.5);
 }
 
 .uni-combobox__arrow-wrap {
@@ -1305,15 +1431,10 @@ onBackPress(() : boolean => {
 	}
 
 	/* #ifdef WEB */
-	.uni-field-default:focus,
-	.uni-field-default:focus-within {
-		border-color: #496bec
-	}
-
-	.uni-field-default--disabled:focus,
-	.uni-field-default--disabled:focus-within {
-		border-color: rgba(255, 255, 255, 0.18);
-		box-shadow: none;
+	.uni-combobox__field:not(.uni-field-default--disabled):focus-visible,
+	.uni-combobox__field--input:not(.uni-field-default--disabled):focus-within {
+		border-color: #737373;
+		box-shadow: 0 0 0 3px rgba(115, 115, 115, 0.5);
 	}
 
 	.uni-combox-pop__item:hover {

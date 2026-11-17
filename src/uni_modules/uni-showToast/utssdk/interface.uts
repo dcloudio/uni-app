@@ -166,7 +166,7 @@ export type Icon =
    */
   "error" |
   /**
-   * 显示错误图标，此时title文本无长度显示，支付宝、抖音小程序生效
+   * 显示错误图标，此时title文本无长度显示
    * @uniPlatform
     {
       "app": {
@@ -230,7 +230,7 @@ export type Icon =
    */
   "fail" |
   /**
-   * 显示异常图标，此时title文本无长度显示，支付宝小程序生效
+   * 显示异常图标，此时title文本无长度显示
    * @uniPlatform
     {
       "app": {

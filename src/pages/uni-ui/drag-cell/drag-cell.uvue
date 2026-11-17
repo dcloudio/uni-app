@@ -1,6 +1,6 @@
 <template>
 	<text class="uni-h4">示例 1：标签拖拽排序</text>
-	<text class="section-desc">长按标签后可拖拽排序，点击标签可拿到 item 和 index</text>
+	<text class="uni-info">长按标签后可拖拽排序，点击标签可拿到 item 和 index</text>
 	<uni-drag-cell v-model="data.tagList" @change="onTagChange">
 		<template #default="{ item, index }">
 			<view class="tag-slot">
@@ -10,10 +10,10 @@
 			</view>
 		</template>
 	</uni-drag-cell>
-	<text class="result-text">当前顺序：{{ data.tagList.join(', ') }}</text>
+	<text class="uni-log">当前顺序：{{ data.tagList.join(', ') }}</text>
 
 	<text class="uni-h4">示例 2：宫格拖拽排序（3 列）</text>
-	<text class="section-desc">长按宫格项后可拖拽排序</text>
+	<text class="uni-info">长按宫格项后可拖拽排序</text>
 	<uni-drag-cell v-model="data.gridList3" :column="3" @change="onGridChange">
 		<template #default="{ item }">
 			<view class="grid-slot">
@@ -23,10 +23,10 @@
 			</view>
 		</template>
 	</uni-drag-cell>
-	<text class="result-text">当前顺序：{{ getGridNames(data.gridList3) }}</text>
+	<text class="uni-log">当前顺序：{{ getGridNames(data.gridList3) }}</text>
 
 	<text class="uni-h4">示例 3：列表拖拽排序（1 列）</text>
-	<text class="section-desc">长按列表项后可拖拽排序</text>
+	<text class="uni-info">长按列表项后可拖拽排序</text>
 	<uni-drag-cell v-model="data.gridList4" :column="1" @change="onGridChange">
 		<template #default="{ item }">
 			<view class="grid-slot-small">
@@ -36,10 +36,10 @@
 			</view>
 		</template>
 	</uni-drag-cell>
-	<text class="result-text">当前顺序：{{ getGridNames(data.gridList4) }}</text>
+	<text class="uni-log">当前顺序：{{ getGridNames(data.gridList4) }}</text>
 
 	<text class="uni-h4">示例 4：可新增并删除的标签</text>
-	<text class="section-desc">长按标签可排序，拖到底部可删除，点击 + 可输入并新增标签</text>
+	<text class="uni-info">长按标签可排序，拖到底部可删除，点击 + 可输入并新增标签</text>
 	<uni-drag-cell v-model="data.deleteList" :show-close="true" :show-append="true" @change="onDeleteChange">
 		<template #default="{ item }">
 			<view class="tag-slot">
@@ -56,11 +56,11 @@
 			</view>
 		</template>
 	</uni-drag-cell>
-	<text class="result-text">当前顺序：{{ data.deleteList.join(', ') }}</text>
-	<text class="result-text">剩余：{{ data.deleteList.length }} 项</text>
+	<text class="uni-log">当前顺序：{{ data.deleteList.join(', ') }}</text>
+	<text class="uni-log">剩余：{{ data.deleteList.length }} 项</text>
 
 	<text class="uni-h4">示例 5：带删除功能的图标宫格</text>
-	<text class="section-desc">长按后可拖动图标宫格项，并支持拖到底部删除</text>
+	<text class="uni-info">长按后可拖动图标宫格项，并支持拖到底部删除</text>
 	<uni-drag-cell v-model="data.iconGridList" :column="3" :show-close="true" @change="onIconGridChange">
 		<template #default="{ item }">
 			<view class="icon-grid-slot">
@@ -73,10 +73,10 @@
 			</view>
 		</template>
 	</uni-drag-cell>
-	<text class="result-text">当前顺序：{{ getIconNames(data.iconGridList) }}</text>
+	<text class="uni-log">当前顺序：{{ getIconNames(data.iconGridList) }}</text>
 
 	<text class="uni-h4">示例 6：九宫格图片选择</text>
-	<text class="section-desc">点击 + 选择图片，支持拖拽排序，也支持拖到底部删除</text>
+	<text class="uni-info">点击 + 选择图片，支持拖拽排序，也支持拖到底部删除</text>
 	<uni-drag-cell v-model="data.imageList" :column="3" :show-close="true"
 		:show-append="data.imageList.length < maxImageCount" @change="onImageChange">
 		<template #default="{ item, index }">
@@ -94,10 +94,10 @@
 			</view>
 		</template>
 	</uni-drag-cell>
-	<text class="result-text">已选择：{{ data.imageList.length }}/{{ maxImageCount }}</text>
+	<text class="uni-log">已选择：{{ data.imageList.length }}/{{ maxImageCount }}</text>
 
 	<text class="uni-h4">示例 7：手柄拖拽排序</text>
-	<text class="section-desc">开启手柄模式后，不需要长按，只能拖动右侧手柄进行排序</text>
+	<text class="uni-info">开启手柄模式后，不需要长按，只能拖动右侧手柄进行排序</text>
 	<uni-drag-cell v-model="data.handleList" :column="1" :handle-mode="true" @change="onHandleListChange">
 		<template #default="{ item, index }">
 			<view class="handle-demo-slot">
@@ -113,10 +113,10 @@
 			</view>
 		</template>
 	</uni-drag-cell>
-	<text class="result-text">当前顺序：{{ data.handleList.join(', ') }}</text>
+	<text class="uni-log">当前顺序：{{ data.handleList.join(', ') }}</text>
 
 	<text class="uni-h4">示例 8：update:modelValue 事件</text>
-	<text class="section-desc">排序或删除后除 change 外也会触发 update:modelValue</text>
+	<text class="uni-info">排序或删除后除 change 外也会触发 update:modelValue</text>
 	<uni-drag-cell v-model="data.updateModelList" @update:modelValue="onUpdateModelValue">
 		<template #default="{ item }">
 			<view class="tag-slot">
@@ -126,7 +126,7 @@
 			</view>
 		</template>
 	</uni-drag-cell>
-	<text class="result-text">update:modelValue 次数：{{ data.updateModelCount }}</text>
+	<text class="uni-log">update:modelValue 次数：{{ data.updateModelCount }}</text>
 
 	<view style="height: 50px;"></view>
 </template>
@@ -331,24 +331,6 @@
 </script>
 
 <style>
-	page {
-		padding: 15px;
-		--text-color: #333333;
-	}
-
-	@media (prefers-color-scheme: dark) {
-		page {
-			--text-color: #ffffff;
-		}
-	}
-
-	.section-desc {
-		font-size: 12px;
-		color: var(--text-color, #333333);
-		opacity: 0.7;
-		margin-bottom: 15px;
-	}
-
 	.tag-slot {
 		padding-right: 10px;
 		padding-bottom: 10px;
@@ -437,8 +419,6 @@
 	}
 
 	.grid-text-small {
-		color: #333333;
-		font-size: 16px;
 		font-weight: bold;
 	}
 
@@ -473,12 +453,10 @@
 	.icon-emoji {
 		font-size: 24px;
 		font-weight: bold;
-		color: var(--text-color, #333333);
 	}
 
 	.icon-label {
 		font-size: 12px;
-		color: var(--text-color, #333333);
 	}
 
 	.image-grid-slot {
@@ -551,7 +529,6 @@
 	}
 
 	.handle-demo-text {
-		color: var(--text-color, #333333);
 		font-size: 14px;
 	}
 
@@ -565,17 +542,8 @@
 	}
 
 	.handle-demo-grip-text {
-		color: var(--arrow-color, #999999);
 		font-size: 24px;
 		font-weight: bold;
-	}
-
-	.result-text {
-		font-size: 12px;
-		color: var(--text-color, #333333);
-		opacity: 0.7;
-		margin-top: 10px;
-		margin-bottom: 10px;
 	}
 
 	/* #ifdef WEB */

@@ -97,6 +97,15 @@
       pages: [] as Page[],
     },
     {
+      id: 'sticky-section-reverse',
+      url: 'sticky-section-reverse',
+      name: 'sticky-section倒序渲染测试',
+      open: false,
+      pages: [] as Page[],
+    },
+    // #endif
+    // #ifdef (APP || WEB) && VUE3-VAPOR
+    {
       id: 'long-list-perf',
       url: 'long-list-perf',
       name: '死亡长列表',
@@ -107,13 +116,6 @@
       id: 'waterflow-perf',
       url: 'waterflow-perf',
       name: 'waterflow滚动加载长列表',
-      open: false,
-      pages: [] as Page[],
-    },
-    {
-      id: 'sticky-section-reverse',
-      url: 'sticky-section-reverse',
-      name: 'sticky-section倒序渲染测试',
       open: false,
       pages: [] as Page[],
     },

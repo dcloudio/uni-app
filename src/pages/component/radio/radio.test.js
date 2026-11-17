@@ -106,11 +106,7 @@ describe('Radio.uvue', () => {
     it('externalClasses', async () => {
       const radio = await page.$('#radio-vapor')
       expect(await radio.attribute('radio-active-class')).toContain('radio-active')
+      expect(await radio.attribute('radio-class')).toContain('custom-radio')
     })
   }
-  if (isVapor && !isMP) it('radio class attributes', async () => {
-    const el = await page.$('#radio-vapor')
-    expect(await el.attribute('radio-class')).toContain('custom-radio')
-  })
-
 })

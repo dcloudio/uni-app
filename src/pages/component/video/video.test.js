@@ -440,3 +440,23 @@ describe('component-native-video', () => {
     });
   }
 });
+
+if (isWeb || platformInfo.startsWith('mp-weixin')) {
+  describe('video loadedmetadata', () => {
+    it('test event loadedmetadata', async () => {
+      const page = await program.reLaunch('/pages/component/video/video');
+      await page.$('.video');
+      const deadline = Date.now() + 10000;
+      await page.waitFor(async () => {
+        return (await page.data('data.eventLoadedmetadata')) != null || Date.now() >= deadline;
+      });
+      const event = await page.data('data.eventLoadedmetadata');
+      expect(event).not.toBeNull();
+      expect(event.type).toBe('loadedmetadata');
+      expect(event.width).toBeGreaterThan(0);
+      expect(event.height).toBeGreaterThan(0);
+      expect(event.duration).toBeGreaterThan(0);
+      expect(Number.isFinite(event.duration)).toBe(true);
+    });
+  });
+}

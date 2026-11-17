@@ -1263,7 +1263,7 @@ export type HideToastCompleteCallback = (res: any) => void
 
 export type HideToastOptions = {
   /**
-   * 是否关闭所有类型的 toast，默认不关闭。仅鸿蒙平台支持。
+   * 是否关闭所有类型的 toast，默认不关闭。
    * @uniPlatform
     {
       "app": {

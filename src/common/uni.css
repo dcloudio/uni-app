@@ -28,7 +28,6 @@
 }
 
 .uni-comment {
-  display: block;
   margin: 6px 0;
   color: var(--active-color, #888888);
   font-size: 13px;
@@ -36,7 +35,6 @@
 }
 
 .uni-log {
-  display: block;
   margin: 6px 0;
   color: var(--text-color, #333333);
   line-height: 20px;

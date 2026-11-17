@@ -3654,7 +3654,7 @@ export type GetSystemInfoResult = {
    */
   appTheme?: 'light' | 'dark' | 'auto' | null,
   /**
-   * 宿主主题（仅 web、微信小程序支持）
+   * 宿主主题（仅 web、微信小程序、支付宝小程序支持）
    *
    * @uniPlatform {
    * 	"app": {
@@ -3707,7 +3707,7 @@ export type GetSystemInfoResult = {
    */
   hostTheme?: 'light' | 'dark' | null,
   /**
-   * 宿主版本（仅 web、微信小程序支持）
+   * 宿主版本（仅 web、微信小程序、支付宝小程序支持）
    *
    * @uniPlatform {
    * 	"app": {
@@ -3760,7 +3760,7 @@ export type GetSystemInfoResult = {
    */
   hostVersion?: string | null,
   /**
-   * 宿主语言（仅 web、微信小程序支持）
+   * 宿主语言（仅 web、微信小程序、支付宝小程序支持）
    *
    * @uniPlatform {
    * 	"app": {
@@ -3813,7 +3813,7 @@ export type GetSystemInfoResult = {
    */
   hostLanguage?: string | null,
   /**
-   * 宿主名称（仅 web、微信小程序支持）
+   * 宿主名称（仅 web、微信小程序、支付宝小程序支持）
    *
    * @uniPlatform {
    * 	"app": {
@@ -3866,7 +3866,7 @@ export type GetSystemInfoResult = {
    */
   hostName?: string | null,
   /**
-   * 宿主 SDKVersion（仅 web、微信小程序支持）
+   * 宿主 SDKVersion（仅 web、微信小程序、支付宝小程序支持）
    *
    * @uniPlatform {
    * 	"app": {
@@ -3919,7 +3919,7 @@ export type GetSystemInfoResult = {
    */
   hostSDKVersion?: string | null,
   /**
-   * 宿主字体大小设置（仅 web、微信小程序支持）
+   * 宿主字体大小设置（仅 web、微信小程序、支付宝小程序支持）
    *
    * @uniPlatform {
    * 	"app": {

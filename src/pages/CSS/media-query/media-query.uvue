@@ -1,18 +1,18 @@
 <template>
   <scroll-view class="page" :scroll-top="scrollTop">
     <view class="content">
-      <text class="title">视口适配</text>
+      <text class="title">视口尺寸与方向</text>
       <view class="summary">
         <text class="viewport">当前视口：{{ viewportWidth }} × {{ viewportHeight }} px</text>
         <text class="description">旋转设备或调整窗口，观察下方条件和布局变化。</text>
-        <!-- #ifdef WEB -->
-        <text class="description">Web 按浏览器布局视口匹配，包含页面导航栏和 tabBar 所在区域。</text>
-        <!-- #endif -->
+        <text class="description">App 按页面内容区域的宽高匹配，原生导航栏和 tabBar 占用的空间按实际布局扣除。</text>
+        <text class="description">Web 按浏览器布局视口匹配，包含 uni-app x 绘制的导航栏和 tabBar 所在区域。</text>
+        <text class="description">小程序按宿主提供的页面显示区域宽高匹配。</text>
         <text class="description">绿色“条件满足”，灰色“条件不满足”；灰色不代表测试失败。状态由 CSS 控制。</text>
       </view>
 
       <text class="section-title">视口方向</text>
-      <text class="description">按页面可用宽高判断，不读取设备方向。下方两项始终只有一项满足；正方形属于纵向。</text>
+      <text class="description">按视口宽高判断，不读取设备方向。下方两项始终只有一项满足；正方形属于纵向。</text>
       <view class="condition">
         <text class="condition-title">纵向：高度 ≥ 宽度</text>
         <text class="syntax">@media (orientation: portrait)</text>
@@ -27,7 +27,7 @@
       </view>
 
       <text class="section-title">视口宽高比</text>
-      <text class="description">宽高比 = 页面可用宽度 ÷ 高度。1/1 表示正方形，16/9 表示宽 16 份、高 9 份；判断的是页面视口，不是卡片尺寸。</text>
+      <text class="description">宽高比 = 视口宽度 ÷ 高度。1/1 表示正方形，16/9 表示宽 16 份、高 9 份。</text>
       <text class="description">旋转后观察 ≥ 1/1 和 ≤ 1/1 的状态切换；正方形时两项都满足。</text>
       <view class="condition">
         <text class="condition-title">正方形：宽度 = 高度</text>

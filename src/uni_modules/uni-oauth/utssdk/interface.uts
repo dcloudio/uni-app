@@ -1363,8 +1363,8 @@ export type GetUserInfoSuccess = {
    *        "unixVer": "4.41"
    *    },
    *    "alipay": {
-   *        "uniVer": "√",
-   *        "unixVer": "5.31"
+   *        "uniVer": "x",
+   *        "unixVer": "x"
    *    },
    *    "baidu": {
    *        "hostVer": "x",
@@ -1426,8 +1426,8 @@ export type GetUserInfoSuccess = {
    *        "unixVer": "4.41"
    *    },
    *    "alipay": {
-   *        "uniVer": "√",
-   *        "unixVer": "5.31"
+   *        "uniVer": "x",
+   *        "unixVer": "x"
    *    },
    *    "baidu": {
    *        "hostVer": "x",
@@ -1489,8 +1489,8 @@ export type GetUserInfoSuccess = {
    *        "unixVer": "4.41"
    *    },
    *    "alipay": {
-   *        "uniVer": "√",
-   *        "unixVer": "5.31"
+   *        "uniVer": "x",
+   *        "unixVer": "x"
    *    },
    *    "baidu": {
    *        "hostVer": "x",
@@ -1757,8 +1757,8 @@ export type GetUserInfoOptions = {
    *        "unixVer": "4.41"
    *    },
    *    "alipay": {
-   *        "uniVer": "√",
-   *        "unixVer": "5.31"
+   *        "uniVer": "x",
+   *        "unixVer": "x"
    *    },
    *    "baidu": {
    *        "hostVer": "x",
@@ -1821,8 +1821,8 @@ export type GetUserInfoOptions = {
    *        "unixVer": "4.41"
    *    },
    *    "alipay": {
-   *        "uniVer": "√",
-   *        "unixVer": "5.31"
+   *        "uniVer": "x",
+   *        "unixVer": "x"
    *    },
    *    "baidu": {
    *        "hostVer": "x",

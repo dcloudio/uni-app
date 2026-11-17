@@ -82,18 +82,23 @@
 				"navigationBarTitleText": "ScrollViewContext | 滚动容器上下文"
 			}
 		},
+		// #endif
+		// #ifdef APP || MP-WEIXIN
 		{
 			"path": "pages/component/scroll-view/scroll-view-context/scroll-view",
 			"style": {
 				"navigationBarTitleText": "ScrollViewContext | scroll-view"
 			}
 		},
+		// #endif
+		// #ifdef APP || MP-WEIXIN
 		{
 			"path": "pages/component/scroll-view/scroll-view-context/list-view",
 			"style": {
 				"navigationBarTitleText": "ScrollViewContext | list-view"
 			}
 		},
+		// #endif
 		// #ifdef APP
 		{
 			"path": "pages/component/scroll-view/scroll-view-context/waterflow",
@@ -101,7 +106,6 @@
 				"navigationBarTitleText": "ScrollViewContext | waterflow"
 			}
 		},
-		// #endif
 		// #endif
 		{
 			"path": "pages/component/swiper/swiper",
@@ -2693,8 +2697,7 @@
 						"disableScroll": true
 						// #endif
 						// #ifdef MP-ALIPAY
-						,
-						"transparentTitle": "always",
+						,"transparentTitle": "always",
 						"allowsBounceVertical": "NO"
 						// #endif
 					}
@@ -3217,11 +3220,10 @@
 						"navigationStyle": "custom"
 						// #endif
 						// #ifdef MP-ALIPAY
-						,
-						"transparentTitle": "always",
+						,"transparentTitle": "always",
 						"allowsBounceVertical": "NO"
 						// #endif
-						,"navigationBarTextStyle":"black"
+						,"navigationBarTextStyle": "black"
 					}
 				},
 				{
@@ -3323,14 +3325,14 @@
 					"style": {
 						"navigationBarTitleText": "Icons 图标"
 					}
-				}
-				,{
+				},
+				{
 					"path": "easyinput/easyinput",
 					"style": {
 						"navigationBarTitleText": "Easyinput 增强输入框"
 					}
-				}
-				,{
+				},
+				{
 					"path": "forms/forms",
 					"style": {
 						"navigationBarTitleText": "uni-forms 表单"
@@ -4115,7 +4117,7 @@
 					"path": "media-query/media-query",
 					"group": "2,25",
 					"style": {
-						"navigationBarTitleText": "视口适配",
+						"navigationBarTitleText": "视口尺寸与方向",
 						"pageOrientation": "auto"
 					}
 				}
@@ -4125,7 +4127,7 @@
 					"path": "media-query/pointer-hover",
 					"group": "2,25",
 					"style": {
-						"navigationBarTitleText": "输入设备"
+						"navigationBarTitleText": "指针与悬停"
 					}
 				}
 				// #endif
@@ -4174,12 +4176,10 @@
 		"backgroundColor": "@backgroundColor",
 		"backgroundTextStyle": "@backgroundTextStyle"
 		// #ifdef APP
-		,
-		"animationDuration": 150
+		,"animationDuration": 150
 		// #endif
 		// #ifdef WEB
-		,
-		"rpxCalcMaxDeviceWidth": 9999
+		,"rpxCalcMaxDeviceWidth": 9999
 		// #endif
 	},
 	"uniIdRouter": {
@@ -4334,10 +4334,6 @@
 									"name": "nested-scroll-body"
 								}
 							]
-						},
-						{
-							"id": "component.view-container.share-element",
-							"name": "share-element"
 						}
 					]
 				},
@@ -4825,124 +4821,12 @@
 							"name": "bluetooth",
 							"children": [
 								{
-									"id": "api.device.bluetooth.general",
-									"name": "general",
-									"children": [
-										{
-											"id": "api.device.bluetooth.general.openBluetoothAdapter",
-											"name": "uni.openBluetoothAdapter"
-										},
-										{
-											"id": "api.device.bluetooth.general.closeBluetoothAdapter",
-											"name": "uni.closeBluetoothAdapter"
-										},
-										{
-											"id": "api.device.bluetooth.general.getBluetoothAdapterState",
-											"name": "uni.getBluetoothAdapterState"
-										},
-										{
-											"id": "api.device.bluetooth.general.onBluetoothAdapterStateChange",
-											"name": "uni.onBluetoothAdapterStateChange"
-										},
-										{
-											"id": "api.device.bluetooth.general.offBluetoothAdapterStateChange",
-											"name": "uni.offBluetoothAdapterStateChange"
-										},
-										{
-											"id": "api.device.bluetooth.general.startBluetoothDevicesDiscovery",
-											"name": "uni.startBluetoothDevicesDiscovery"
-										},
-										{
-											"id": "api.device.bluetooth.general.stopBluetoothDevicesDiscovery",
-											"name": "uni.stopBluetoothDevicesDiscovery"
-										},
-										{
-											"id": "api.device.bluetooth.general.onBluetoothDeviceFound",
-											"name": "uni.onBluetoothDeviceFound"
-										},
-										{
-											"id": "api.device.bluetooth.general.offBluetoothDeviceFound",
-											"name": "uni.offBluetoothDeviceFound"
-										},
-										{
-											"id": "api.device.bluetooth.general.getBluetoothDevices",
-											"name": "uni.getBluetoothDevices"
-										},
-										{
-											"id": "api.device.bluetooth.general.getConnectedBluetoothDevices",
-											"name": "uni.getConnectedBluetoothDevices"
-										}
-									]
+									"id": "api.device.bluetooth.bluetooth-general",
+									"name": "general"
 								},
 								{
-									"id": "api.device.bluetooth.ble",
-									"name": "ble",
-									"children": [
-										{
-											"id": "api.device.bluetooth.ble.createBLEConnection",
-											"name": "uni.createBLEConnection"
-										},
-										{
-											"id": "api.device.bluetooth.ble.closeBLEConnection",
-											"name": "uni.closeBLEConnection"
-										},
-										{
-											"id": "api.device.bluetooth.ble.onBLEConnectionStateChange",
-											"name": "uni.onBLEConnectionStateChange"
-										},
-										{
-											"id": "api.device.bluetooth.ble.offBLEConnectionStateChange",
-											"name": "uni.offBLEConnectionStateChange"
-										},
-										{
-											"id": "api.device.bluetooth.ble.getBLEDeviceRSSI",
-											"name": "uni.getBLEDeviceRSSI"
-										},
-										{
-											"id": "api.device.bluetooth.ble.getBLEMTU",
-											"name": "uni.getBLEMTU"
-										},
-										{
-											"id": "api.device.bluetooth.ble.setBLEMTU",
-											"name": "uni.setBLEMTU"
-										},
-										{
-											"id": "api.device.bluetooth.ble.onBLEMTUChange",
-											"name": "uni.onBLEMTUChange"
-										},
-										{
-											"id": "api.device.bluetooth.ble.offBLEMTUChange",
-											"name": "uni.offBLEMTUChange"
-										},
-										{
-											"id": "api.device.bluetooth.ble.getBLEDeviceServices",
-											"name": "uni.getBLEDeviceServices"
-										},
-										{
-											"id": "api.device.bluetooth.ble.getBLEDeviceCharacteristics",
-											"name": "uni.getBLEDeviceCharacteristics"
-										},
-										{
-											"id": "api.device.bluetooth.ble.readBLECharacteristicValue",
-											"name": "uni.readBLECharacteristicValue"
-										},
-										{
-											"id": "api.device.bluetooth.ble.writeBLECharacteristicValue",
-											"name": "uni.writeBLECharacteristicValue"
-										},
-										{
-											"id": "api.device.bluetooth.ble.notifyBLECharacteristicValueChange",
-											"name": "uni.notifyBLECharacteristicValueChange"
-										},
-										{
-											"id": "api.device.bluetooth.ble.onBLECharacteristicValueChange",
-											"name": "uni.onBLECharacteristicValueChange"
-										},
-										{
-											"id": "api.device.bluetooth.ble.offBLECharacteristicValueChange",
-											"name": "uni.offBLECharacteristicValueChange"
-										}
-									]
+									"id": "api.device.bluetooth.bluetooth-ble",
+									"name": "ble"
 								}
 							]
 						}
@@ -5625,7 +5509,7 @@
 				},
 				{
 					"id": "css.media-query",
-					"name": "媒体查询"
+					"name": "@media | 媒体查询"
 				}
 			]
 		}
