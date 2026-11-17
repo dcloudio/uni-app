@@ -1478,7 +1478,7 @@ atob() 函数会对经过 Base64 编码的字符串进行解码
 
 >UTS
 ```uts
-      // #ifdef APP-ANDROID
+      // #ifdef APP-ANDROID || APP-IOS || WEB
       console.log(atob("")) // '';
       console.log(atob('aGVsbG8gd29ybGQ=')) // 'hello world';
       console.log(atob("QC0xMjM0NTY3ODkwcXdlcnR5dWlvcGFzZGZnaGprbHp4Y3Zibm0tUVdFUlRZVUlPUEFTREZHSEpLTFpYQ1ZCTk1ALTEyMzQ1Njc4OTBxd2VydHl1aW9wYXNkZmdoamtsenhjdmJubS1RV0VSVFlVSU9QQVNERkdISktMWlhDVkJOTUAtMTIzNDU2Nzg5MHF3ZXJ0eXVpb3Bhc2RmZ2hqa2x6eGN2Ym5tLVFXRVJUWVVJT1BBU0RGR0hKS0xaWENWQk5NQC0xMjM0NTY3ODkwcXdlcnR5dWlvcGFzZGZnaGprbHp4Y3Zibm0tUVdFUlRZVUlPUEFTREZHSEpLTFpYQ1ZCTk1ALTEyMzQ1Njc4OTBxd2VydHl1aW9wYXNkZmdoamtsenhjdmJubS1RV0VSVFlVSU9QQVNERkdISktMWlhDVkJOTQ==")) // '@-1234567890qwertyuiopasdfghjklzxcvbnm-QWERTYUIOPASDFGHJKLZXCVBNM@-1234567890qwertyuiopasdfghjklzxcvbnm-QWERTYUIOPASDFGHJKLZXCVBNM@-1234567890qwertyuiopasdfghjklzxcvbnm-QWERTYUIOPASDFGHJKLZXCVBNM@-1234567890qwertyuiopasdfghjklzxcvbnm-QWERTYUIOPASDFGHJKLZXCVBNM@-1234567890qwertyuiopasdfghjklzxcvbnm-QWERTYUIOPASDFGHJKLZXCVBNM';
@@ -1490,7 +1490,7 @@ atob() 函数会对经过 Base64 编码的字符串进行解码
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-Web: √; Android: 4.25; iOS: 4.61; HarmonyOS: x
+Web: √; Android(VDOM): 4.25; Android(Vapor): 4.81; iOS: 4.61; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.43
 
 
 **uni-app 兼容性 <Help />**
@@ -1526,7 +1526,7 @@ btoa() 方法可以将一个二进制字符串（例如，将字符串中的每�
 
 >UTS
 ```uts
-      // #ifdef APP-ANDROID
+      // #ifdef APP-ANDROID || APP-IOS || WEB
       console.log(btoa("")) // '';
       console.log(btoa("hello world")) // 'aGVsbG8gd29ybGQ=';
       console.log(btoa("@-1234567890qwertyuiopasdfghjklzxcvbnm-QWERTYUIOPASDFGHJKLZXCVBNM@-1234567890qwertyuiopasdfghjklzxcvbnm-QWERTYUIOPASDFGHJKLZXCVBNM@-1234567890qwertyuiopasdfghjklzxcvbnm-QWERTYUIOPASDFGHJKLZXCVBNM@-1234567890qwertyuiopasdfghjklzxcvbnm-QWERTYUIOPASDFGHJKLZXCVBNM@-1234567890qwertyuiopasdfghjklzxcvbnm-QWERTYUIOPASDFGHJKLZXCVBNM")) // 'QC0xMjM0NTY3ODkwcXdlcnR5dWlvcGFzZGZnaGprbHp4Y3Zibm0tUVdFUlRZVUlPUEFTREZHSEpLTFpYQ1ZCTk1ALTEyMzQ1Njc4OTBxd2VydHl1aW9wYXNkZmdoamtsenhjdmJubS1RV0VSVFlVSU9QQVNERkdISktMWlhDVkJOTUAtMTIzNDU2Nzg5MHF3ZXJ0eXVpb3Bhc2RmZ2hqa2x6eGN2Ym5tLVFXRVJUWVVJT1BBU0RGR0hKS0xaWENWQk5NQC0xMjM0NTY3ODkwcXdlcnR5dWlvcGFzZGZnaGprbHp4Y3Zibm0tUVdFUlRZVUlPUEFTREZHSEpLTFpYQ1ZCTk1ALTEyMzQ1Njc4OTBxd2VydHl1aW9wYXNkZmdoamtsenhjdmJubS1RV0VSVFlVSU9QQVNERkdISktMWlhDVkJOTQ==';
@@ -1538,7 +1538,7 @@ btoa() 方法可以将一个二进制字符串（例如，将字符串中的每�
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-Web: √; Android: 4.25; iOS: 4.61; HarmonyOS: x
+Web: √; Android(VDOM): 4.25; Android(Vapor): 4.81; iOS: 4.61; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.43
 
 
 **uni-app 兼容性 <Help />**
