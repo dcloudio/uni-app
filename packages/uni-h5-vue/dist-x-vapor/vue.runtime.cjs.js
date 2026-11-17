@@ -11908,8 +11908,9 @@ function resolveFunctionSource(source) {
 	const parent = currentInstance && currentInstance.parent;
 	if (parent) {
 		const prev = setCurrentInstance(parent, getCurrentScope());
+		let cache;
 		try {
-			source._cache = /* @__PURE__ */ computed$1((oldValue) => {
+			cache = source._cache = /* @__PURE__ */ computed$1((oldValue) => {
 				const prevInner = setCurrentInstance(parent);
 				try {
 					return stabilizeDynamicSourceValue(oldValue, source());
@@ -11921,7 +11922,7 @@ function resolveFunctionSource(source) {
 		} finally {
 			restoreCurrentInstance(prev);
 		}
-		return source._cache.value;
+		return cache.value;
 	}
 	return source();
 }
