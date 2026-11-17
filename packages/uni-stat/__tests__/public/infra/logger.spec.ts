@@ -13,6 +13,7 @@ describe('infra/logger', () => {
   beforeEach(() => {
     envBackup = process.env.UNI_STAT_DEBUG
     uniBackup = (globalThis as { uni?: unknown }).uni
+    logger.setReportingEnabled(true)
     logger.setDebug(undefined)
     logger.setMuteNonDebug(false)
     delete (globalThis as { plus?: unknown }).plus
@@ -31,6 +32,7 @@ describe('infra/logger', () => {
     }
     logger.setDebug(undefined)
     logger.setMuteNonDebug(undefined)
+    logger.setReportingEnabled(true)
     delete (globalThis as { plus?: unknown }).plus
     if (uniBackup === undefined) {
       delete (globalThis as { uni?: unknown }).uni
@@ -92,6 +94,20 @@ describe('infra/logger', () => {
     logger.setDebug(false)
     logger.debug('off')
     expect(logSpy).not.toHaveBeenCalled()
+  })
+
+  test('服务端统计关闭时屏蔽 SDK 的全部日志级别', () => {
+    logger.setDebug(true)
+    logger.setReportingEnabled(false)
+    logger.debug('d')
+    logger.info('i')
+    logger.warn('w')
+    logger.error('e')
+
+    expect(logSpy).not.toHaveBeenCalled()
+    expect(infoSpy).not.toHaveBeenCalled()
+    expect(warnSpy).not.toHaveBeenCalled()
+    expect(errSpy).not.toHaveBeenCalled()
   })
 
   test('NODE_ENV=test 时默认屏蔽 info/warn/error', () => {

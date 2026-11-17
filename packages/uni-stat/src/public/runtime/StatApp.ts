@@ -50,6 +50,7 @@ import { setReportTitle } from '../domain/title'
 import { tryRun } from '../infra/safe'
 import { isVaporStatRuntime } from '../infra/uniRuntime'
 import { isNetworkOffline, onNetworkOnline } from './networkGate'
+import { isReportEnabled } from './reportGate'
 import { getCurrentStatPageContext } from './lifecycleHooks'
 
 import * as queue from '../pipeline/queue'
@@ -407,6 +408,7 @@ export class StatApp {
     this.deferReportsUntilSession = false
     this.deferredReportsWarningShown = false
     this.installed = false
+    logger.setReportingEnabled(true)
   }
 
   /**
@@ -533,6 +535,7 @@ export class StatApp {
         flush: queue.flush,
         rollback: queue.rollback,
         shouldFlush: queue.shouldFlush,
+        size: queue.size,
       },
       serializer: { handleData },
       selectChannel: () =>
@@ -566,6 +569,15 @@ export class StatApp {
       nowSec,
       firstFlushDeferMs: this.resolveFirstFlushDeferMs(),
       isNetworkOffline,
+      isReportEnabled: () =>
+        isReportEnabled({
+          appId: cfg.ak,
+          usv: STAT_VERSION_PUBLIC,
+          nowMs,
+        }).then((enabled) => {
+          if (this.installed) logger.setReportingEnabled(enabled)
+          return enabled
+        }),
     }
 
     return Object.assign(base, patch)

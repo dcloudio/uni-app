@@ -88,6 +88,7 @@ function installAppWithSpyReporter(): {
       skipRecoverRetry: true,
       collectorDepsPatch: {
         isNetworkOffline: async () => false,
+        isReportEnabled: () => true,
       },
     }
   )
@@ -800,7 +801,10 @@ describe('runtime/lifecycleHooks', () => {
           skipInterceptors: true,
           skipMigration: true,
           skipRecoverRetry: true,
-          collectorDepsPatch: { firstFlushDeferMs: 0 },
+          collectorDepsPatch: {
+            firstFlushDeferMs: 0,
+            isReportEnabled: () => true,
+          },
         }
       )
       const reportSpy = jest.spyOn(app.getCollector()!, 'report')

@@ -15,7 +15,10 @@ import {
   __resetStatApp,
   getStatApp,
 } from '../../../src/public/runtime/StatApp'
-import { APP_CHANNEL_FIRST_FLUSH_DELAY_MS } from '../../../src/public/config'
+import {
+  APP_CHANNEL_FIRST_FLUSH_DELAY_MS,
+  REPORT_CONTROL_CACHE_TTL_MS,
+} from '../../../src/public/config'
 import { installMockUni, restoreMockUni } from '../helpers/mockUni'
 import { installMockPlus, restoreMockPlus } from '../helpers/mockPlus'
 import * as queueMod from '../../../src/public/pipeline/queue'
@@ -27,6 +30,8 @@ import { __resetCache as resetDevice } from '../../../src/public/adapter/device'
 import { __resetCache as resetPackage } from '../../../src/public/adapter/package'
 import { __resetCache as resetSystem } from '../../../src/public/adapter/system'
 import { logger } from '../../../src/public/infra/logger'
+import { storage } from '../../../src/public/infra/storage'
+import { __resetReportGate } from '../../../src/public/runtime/reportGate'
 
 import type { Channel, ReportPayload } from '../../../src/public/pipeline/types'
 
@@ -44,6 +49,7 @@ function fakeChannel(name: '1.0' | '2.0' = '1.0'): FakeChannel {
 }
 
 function resetAllModules(): void {
+  storage.__resetCache()
   queueMod.__reset()
   retryMod.__reset()
   sessionMod.__resetState()
@@ -52,6 +58,7 @@ function resetAllModules(): void {
   resetDevice()
   resetPackage()
   resetSystem()
+  __resetReportGate()
   __resetStatApp()
 }
 
@@ -276,6 +283,63 @@ describe('runtime/StatApp', () => {
     c.report({ lt: '21', custom: { e_n: 'foo', e_v: 'bar' } })
     await c.flush(true)
     expect(http.send).toHaveBeenCalledTimes(1)
+  })
+
+  test('服务端开关关闭时不入队；缓存刷新并重新开启后恢复发送', async () => {
+    let enabled: 0 | 1 = 0
+    const request = jest.fn(
+      (opts: {
+        success?: (res: {
+          statusCode: number
+          data: { ret: number; enable: 0 | 1 }
+        }) => void
+      }) => {
+        opts.success?.({ statusCode: 200, data: { ret: 0, enable: enabled } })
+      }
+    )
+    installMockUni({ platform: 'h5', patch: { request } })
+    try {
+      storage.__resetCache()
+      const app = getStatApp()
+      const http = fakeChannel('1.0')
+      app.install(
+        { version: '1', ak: '__UNI__REPORT_GATE', reportIntervalSec: 0 },
+        {
+          channels: { http, cloud: null },
+          skipInterceptors: true,
+          skipMigration: true,
+          skipRecoverRetry: true,
+          collectorDepsPatch: { firstFlushDeferMs: 60_000 },
+        }
+      )
+
+      app.report('gate_probe', 'disabled')
+      await app.getCollector()!.flush(true)
+      expect(request).toHaveBeenCalledTimes(1)
+      expect(http.send).not.toHaveBeenCalled()
+      expect(queueMod.size()).toBe(0)
+      expect(storage.get('queue')).toBeUndefined()
+
+      enabled = 1
+      storage.set(
+        'report:control-checked-at',
+        Date.now() - REPORT_CONTROL_CACHE_TTL_MS - 1
+      )
+      app.report('gate_probe', 'refresh-switch')
+      await new Promise<void>((resolve) => setTimeout(resolve, 0))
+      expect(request).toHaveBeenCalledTimes(2)
+      expect(storage.get('report:control-status')).toBe(1)
+      expect(http.send).not.toHaveBeenCalled()
+      expect(queueMod.size()).toBe(0)
+
+      app.report('gate_probe', 'enabled')
+      await app.getCollector()!.flush(true)
+      expect(http.send).toHaveBeenCalledTimes(1)
+      expect(queueMod.size()).toBe(0)
+      expect(storage.get('queue')).toBeUndefined()
+    } finally {
+      restoreMockUni()
+    }
   })
 
   test('report("title", value) → 写 reportTitle，不入队、不发请求', async () => {

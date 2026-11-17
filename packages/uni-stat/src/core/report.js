@@ -49,7 +49,10 @@ import {
   gateSend,
   initReportNetwork,
   persistPending,
+  resumeReportNetwork,
+  setReportNetworkForeground,
   toWirePayload,
+  updateReportNetworkState,
 } from './reportNetwork.js'
 const eport_Interval = get_report_Interval(OPERATING_TIME)
 
@@ -224,6 +227,9 @@ export default class Report {
    * 进入应用触发
    */
   applicationShow(appShowOptions = {}) {
+    if (setReportNetworkForeground(true, get_platform_name() === 'n')) {
+      resumeReportNetwork()
+    }
     // 通过 __licationHide 判断保证是进入后台后在次进入应用，避免重复上报数据
     if (this.__licationHide) {
       const scene = get_scene(appShowOptions && appShowOptions.scene)
@@ -261,6 +267,7 @@ export default class Report {
    * @param {Object} type
    */
   applicationHide(self, type) {
+    setReportNetworkForeground(false, get_platform_name() === 'n')
     if (!self) {
       // 表示应用切换到后台 ，此时需要从页面栈获取页面实例
       self = get_page_vm()
@@ -538,6 +545,7 @@ export default class Report {
   getNetworkInfo(type) {
     uni.getNetworkType({
       success: (result) => {
+        updateReportNetworkState(result)
         this.statData.net = result.networkType
         this.getLocation(type)
       },
