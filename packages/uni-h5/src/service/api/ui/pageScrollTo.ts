@@ -11,6 +11,57 @@ import { getCurrentPage } from '@dcloudio/uni-core'
 import { getPageBody } from '../../../helpers/pageBody'
 import { normalizePageSelector } from '../../../helpers/pageSelector'
 
+const pageScrollFrames = new WeakMap<HTMLElement, number>()
+
+function animatePageBodyScroll(
+  pageBody: HTMLElement,
+  top: number,
+  duration: number
+) {
+  const previousFrame = pageScrollFrames.get(pageBody)
+  if (previousFrame !== undefined) {
+    cancelAnimationFrame(previousFrame)
+    pageScrollFrames.delete(pageBody)
+  }
+  top = Math.max(
+    0,
+    Math.min(top, pageBody.scrollHeight - pageBody.clientHeight)
+  )
+  if (duration <= 0 || !Number.isFinite(duration)) {
+    pageBody.scrollTo({ top, behavior: 'instant' })
+    return
+  }
+  const startTop = pageBody.scrollTop
+  if (startTop === top) {
+    return
+  }
+  const startTime = performance.now()
+  let expectedTop = startTop
+  function step(time: number) {
+    // 用户滚动、内容锚定或页面卸载后，不再覆盖新的滚动位置。
+    if (
+      !pageBody.isConnected ||
+      Math.abs(pageBody.scrollTop - expectedTop) > 1
+    ) {
+      pageScrollFrames.delete(pageBody)
+      return
+    }
+    const progress = Math.min(1, Math.max(0, (time - startTime) / duration))
+    pageBody.scrollTo({
+      top: startTop + (top - startTop) * progress,
+      // 逐帧写入必须跳过原生平滑滚动，包括业务 CSS 的 scroll-behavior。
+      behavior: 'instant',
+    })
+    expectedTop = pageBody.scrollTop
+    if (progress < 1) {
+      pageScrollFrames.set(pageBody, requestAnimationFrame(step))
+    } else {
+      pageScrollFrames.delete(pageBody)
+    }
+  }
+  pageScrollFrames.set(pageBody, requestAnimationFrame(step))
+}
+
 function scrollPageBodyTo(
   pageBody: HTMLElement,
   top: number,
@@ -35,10 +86,7 @@ function scrollPageBodyTo(
           pageBody.clientTop +
           pageBody.scrollTop
   }
-  pageBody.scrollTo({
-    top: top + offsetTop,
-    behavior: duration > 0 ? 'smooth' : 'instant',
-  })
+  animatePageBodyScroll(pageBody, top + offsetTop, duration)
 }
 //#endif
 

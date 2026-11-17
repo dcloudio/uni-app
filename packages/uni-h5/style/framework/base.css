@@ -15,6 +15,11 @@
 
 html,
 body {
+  /*
+   * TODO: Web Vapor 使用 uni-page-body 区域滚动时，Firefox 点击不可选正文后，
+   * 若焦点仍在 body 且区域内没有选区，PageDown 会以已禁止滚动的文档根节点为目标。
+   * 聚焦滚动区域或允许文本选择可恢复滚动，待评估区域焦点策略。
+   */
   -webkit-user-select: none;
   user-select: none;
   width: 100%;
