@@ -53,7 +53,6 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.
 | @keyboardheightchange | (event: [UniInputKeyboardHeightChangeEvent](#uniinputkeyboardheightchangeevent)) => void |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 键盘高度发生变化的时候触发此事件，event.detail = {height: height, duration: duration} |
 | @focus | (event: [UniTextareaFocusEvent](#unitextareafocusevent)) => void |   | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 输入框聚焦时触发，event.detail = { value, height }，height 为键盘高度，在基础库 1.9.90 起支持 |
 | @change | (event: [UniInputChangeEvent](#uniinputchangeevent)) => void |   | Web: 4.81; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.73; iOS: 4.73; HarmonyOS: 4.73 | 非聚焦状态内容改变时触发（仅组件失去焦点时且用户输入改变内容才触发） |
-| @update:value | Event |   | 微信小程序: x; 支付宝小程序: x |   |
 
 #### confirm-type 的属性描述
 
