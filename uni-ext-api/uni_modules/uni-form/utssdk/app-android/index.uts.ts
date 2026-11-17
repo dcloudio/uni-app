@@ -14,6 +14,7 @@ import { TypedValue } from 'android.util'
 import WeakReference from 'java.lang.ref.WeakReference'
 import ScrollingView from 'androidx.core.view.ScrollingView'
 import ValueHelper from 'io.dcloud.uniappxv.utils.ValueHelper'
+import IntArray from 'kotlin.IntArray'
 
 function toBoolean(value: any): boolean {
 	if (typeof value == 'boolean') {
@@ -679,7 +680,7 @@ class UniAndroidAdjustPositionPlan {
 	rootTranslateY: number = 0
 }
 
-type UniAndroidCursorBottomOffsetResolver = (elementHeight: number) => number
+type UniAndroidCursorBottomOffsetResolver = (elementHeight: number, availableHeight: number) => number
 
 function logAndroidInputAdjust(message: string) {
 }
@@ -747,7 +748,7 @@ function createAndroidAdjustPositionPlan(
 
 	if (parents.length > 0) {
 		const lastParent = parents[parents.length - 1]
-		if (windowHeight - lastParent.y - targetBottomOffset >= keyboardHeight) {
+		if (windowHeight - lastParent.y - targetBottomOffset >= keyboardHeight || targetBottomOffset > Math.max(0, windowHeight - keyboardHeight)) {
 			for (let i = 0; i < parents.length; i++) {
 				const parent = parents[i]
 				const canMoreScrollDistance = parent.scrollHeight - parent.scrollTop - parent.height
@@ -850,14 +851,13 @@ class UniAndroidAdjustPositionHelper {
 	/** 恢复值为原生像素，expected/pending 为实际位置/待生效目标的逻辑坐标。 */
 	private static sessionParentRestores: Map<UniElement, UniAndroidAdjustPositionParentRestore> = new Map()
 	private element: UniNativeViewElement
-	private resolveCursorBottomOffset: UniAndroidCursorBottomOffsetResolver = (elementHeight: number): number => {
+	private resolveCursorBottomOffset: UniAndroidCursorBottomOffsetResolver = (elementHeight: number, availableHeight: number): number => {
 		return Math.max(0, elementHeight)
 	}
 	private allowRootTranslateAfterParentScroll: boolean = false
 	private traceCategory: string = ''
 	private adjustDistanceReduction: number = 0
 	private scrollAbleParents: UniElement[] = []
-	private hasCollectedScrollAbleParents: boolean = false
 	private resetPosition: () => void = () => {}
 	/** 本次调整前页面 body 的实际平移量（测量前会先复位，用它作为动画起点，避免闪动） */
 	private pageBodyStartTranslationY: number = 0
@@ -908,7 +908,7 @@ class UniAndroidAdjustPositionHelper {
 			return
 		}
 		view.animate().cancel()
-		view.setTranslationY((this.pageBodyShownTranslationY * progress).toFloat())
+		view.setTranslationY((UniAndroidAdjustPositionHelper.sessionPageBodyOriginTranslationY + this.pageBodyShownTranslationY * progress).toFloat())
 	}
 
 	/** API 30+：收起动画结束，复位会话状态 */
@@ -938,7 +938,6 @@ class UniAndroidAdjustPositionHelper {
 	}
 
 	prepareForEditing(keyboardHeight: number) {
-		this.collectScrollAbleParents()
 		const previousHelper = UniAndroidAdjustPositionHelper.activeHelper
 		const pageBodyView = this.resolvePageBodyView()
 		if (previousHelper != null) {
@@ -984,9 +983,8 @@ class UniAndroidAdjustPositionHelper {
 		this.pendingSessionReset = false
 	}
 
-	adjustForKeyboardHeight(keyboardHeight: number, cursorSpacing: number, sessionGeneration: number = this.sessionGeneration) {
+	adjustForKeyboardHeight(keyboardHeight: number, cursorSpacing: number, sessionGeneration: number = this.sessionGeneration, animated: boolean = true) {
 		if (!this.ownsSession() || sessionGeneration != this.sessionGeneration) return
-		this.collectScrollAbleParents()
 		this.captureSessionPageBodyIfNeeded()
 		// 测量前会先把平移复位，这里先记住复位前的实际位置，作为本次过渡动画的起点
 		const sessionPageBodyView = UniAndroidAdjustPositionHelper.sessionPageBodyView
@@ -1002,20 +1000,34 @@ class UniAndroidAdjustPositionHelper {
 		const pageBodyTop = this.element.uniPage.pageBody.top
 		const pageBodyBottom = this.element.uniPage.pageBody.bottom
 		const pageBodyHeight = this.element.uniPage.pageBody.height
+		let adjustWindowHeight: number = pageBodyHeight
+		let adjustKeyboardHeight: number = keyboardHeight
+		if (sessionPageBodyView != null) {
+			const location = new IntArray(2)
+			const visibleRect = new Rect()
+			sessionPageBodyView.getLocationOnScreen(location)
+			sessionPageBodyView.getWindowVisibleDisplayFrame(visibleRect)
+			// DOMRect 相对 BODY；用同一屏幕坐标系求键盘遮住的 BODY 高度。
+			const nativeBodyHeight = sessionPageBodyView.getHeight()
+			const visibleHeight = Math.max(0, Math.min(nativeBodyHeight, visibleRect.bottom - location[1]))
+			adjustWindowHeight = ValueHelper.value2dip(nativeBodyHeight)
+			adjustKeyboardHeight = ValueHelper.value2dip(nativeBodyHeight - visibleHeight)
+		}
 		const elementRect = this.element.getBoundingClientRect()
 		const boundingClientRect = this.resolveAdjustTargetRect(elementRect)
-		const resolvedCursorBottomOffset = this.resolveCursorBottomOffset(boundingClientRect.height)
+		const availableHeight = Math.max(0, adjustWindowHeight - adjustKeyboardHeight)
+		const resolvedCursorBottomOffset = this.resolveCursorBottomOffset(boundingClientRect.height, availableHeight)
 		const maxCursorBottomOffset = Math.max(0, boundingClientRect.height)
 		const cursorBottomOffset = maxCursorBottomOffset > 0
 			? Math.min(Math.max(0, resolvedCursorBottomOffset), maxCursorBottomOffset)
 			: Math.max(0, resolvedCursorBottomOffset)
-		const maxSafeSpacing = Math.max(0, pageBodyHeight - keyboardHeight - cursorBottomOffset)
+		this.collectScrollAbleParents(cursorBottomOffset > availableHeight)
+		const maxSafeSpacing = Math.max(0, adjustWindowHeight - adjustKeyboardHeight - cursorBottomOffset)
 		const effectiveCursorSpacing = Math.min(Math.max(0, cursorSpacing), maxSafeSpacing)
 		const elementBottom = boundingClientRect.y + boundingClientRect.height
-		const adjustWindowHeight = pageBodyHeight
 		const allowRootTranslate = boundingClientRect.height > 0 && boundingClientRect.y < adjustWindowHeight && elementBottom > 0
 		const nativeWindowHeight = this.resolveNativeWindowHeight()
-		const logicalToNativeScale = resolveAndroidLogicalToNativeScale(nativeWindowHeight, logicalWindowHeight)
+		const logicalToNativeScale = ValueHelper.value2px(1)
 		const rectYPx = convertAndroidLogicalToNativePx(boundingClientRect.y, nativeWindowHeight, logicalWindowHeight)
 		const rectHeightPx = convertAndroidLogicalToNativePx(boundingClientRect.height, nativeWindowHeight, logicalWindowHeight)
 		const keyboardHeightPx = convertAndroidLogicalToNativePx(keyboardHeight, nativeWindowHeight, logicalWindowHeight)
@@ -1035,13 +1047,11 @@ class UniAndroidAdjustPositionHelper {
 			snapshot.scrollHeight = parentElement.scrollHeight
 			parentSnapshots.push(snapshot)
 		}
-		// 上推上限：只以目标盒子顶部为界（平移后盒顶不越过窗口顶部）。
-		// 不能再减盒子高度：盒子高度 >= 自身 y 位置时（高 textarea、大 padding 的输入框）
-		// 会被钳成 0，导致明明被键盘遮挡却完全不上推、光标看不见。
-		const maxAdjustDistance = Math.max(0, boundingClientRect.y)
+		// 高输入框无法完整容纳时，允许盒顶越界以保证当前编辑行可见。
+		const maxAdjustDistance = Math.max(0, boundingClientRect.y + Math.max(0, cursorBottomOffset - availableHeight))
 		const plan = createAndroidAdjustPositionPlan(
 			adjustWindowHeight,
-			keyboardHeight,
+			adjustKeyboardHeight,
 			boundingClientRect.y,
 			cursorBottomOffset,
 			effectiveCursorSpacing,
@@ -1149,15 +1159,18 @@ class UniAndroidAdjustPositionHelper {
 
 		if (plan.rootTranslateY > 0) {
 			const pageBodyView = UniAndroidAdjustPositionHelper.sessionPageBodyView
-			const rootTranslateYPx = convertAndroidLogicalToNativePx(plan.rootTranslateY, nativeWindowHeight, logicalWindowHeight)
+			const rootTranslateYPx = plan.rootTranslateY * logicalToNativeScale
 			const targetTranslationY = -rootTranslateYPx
 			this.pageBodyShownTranslationY = targetTranslationY
 			if (this.systemAnimationActive) {
 				// 由系统 IME 动画驱动：按当前进度落位，后续每帧由 setSystemAnimationProgress 推进
 				pageBodyView?.animate().cancel()
-				pageBodyView?.setTranslationY((targetTranslationY * this.systemAnimationProgress).toFloat())
+				pageBodyView?.setTranslationY((UniAndroidAdjustPositionHelper.sessionPageBodyOriginTranslationY + targetTranslationY * this.systemAnimationProgress).toFloat())
+			} else if (animated) {
+				animateAndroidAdjustPageBody(pageBodyView, this.pageBodyStartTranslationY, UniAndroidAdjustPositionHelper.sessionPageBodyOriginTranslationY + targetTranslationY)
 			} else {
-				animateAndroidAdjustPageBody(pageBodyView, this.pageBodyStartTranslationY, targetTranslationY)
+				pageBodyView?.animate().cancel()
+				pageBodyView?.setTranslationY((UniAndroidAdjustPositionHelper.sessionPageBodyOriginTranslationY + targetTranslationY).toFloat())
 			}
 			this.trace('applyPageBodyTranslation logical=' + plan.rootTranslateY + ' native=' + rootTranslateYPx)
 		}
@@ -1263,7 +1276,7 @@ class UniAndroidAdjustPositionHelper {
 		const view = UniAndroidAdjustPositionHelper.sessionPageBodyView
 		if (this.systemAnimationActive) {
 			view?.animate().cancel()
-			view?.setTranslationY((this.pageBodyShownTranslationY * this.systemAnimationProgress).toFloat())
+			view?.setTranslationY((UniAndroidAdjustPositionHelper.sessionPageBodyOriginTranslationY + this.pageBodyShownTranslationY * this.systemAnimationProgress).toFloat())
 		} else {
 			animateAndroidAdjustPageBody(view, view?.getTranslationY() ?? 0.0, UniAndroidAdjustPositionHelper.sessionPageBodyOriginTranslationY)
 		}
@@ -1296,7 +1309,6 @@ class UniAndroidAdjustPositionHelper {
 		this.sessionGeneration += 1
 		this.clearLocalResetPosition()
 		this.scrollAbleParents.length = 0
-		this.hasCollectedScrollAbleParents = false
 	}
 
 	private clearLocalResetPosition() {
@@ -1374,27 +1386,32 @@ class UniAndroidAdjustPositionHelper {
 
 	private resolvePageBodyView(): View | null {
 		let currentElement: UniElement | null = this.element
-		let bodyElement: UniElement | null = currentElement
 		while (currentElement?.parentElement != null) {
-			bodyElement = currentElement
 			currentElement = currentElement.parentElement
 		}
-		return bodyElement?.getAndroidView<View>() ?? null
+		// fixed 内容会重挂到 BODY，业务根节点不再是它的原生祖先。
+		return currentElement?.getAndroidView<View>() ?? null
 	}
 
-	private collectScrollAbleParents() {
-		if (this.hasCollectedScrollAbleParents) {
-			return
-		}
+	private collectScrollAbleParents(includePage: boolean = false) {
+		this.scrollAbleParents.length = 0
 
 		let currentParent = this.element.parentElement
 		while (currentParent != null) {
-			if (isScrollAbleTagName(currentParent.tagName)) {
-				this.scrollAbleParents.push(currentParent)
+			if (isScrollAbleTagName(currentParent.tagName) || (includePage && currentParent.tagName.toUpperCase() == 'PAGE')) {
+				// fixed 重挂后，逻辑上的外层滚动容器不能再移动当前输入框。
+				const parentView = currentParent.getAndroidView<View>()
+				let nativeParent = this.element.getAndroidView<View>()?.getParent()
+				while (nativeParent instanceof View) {
+					if (nativeParent === parentView) {
+						this.scrollAbleParents.push(currentParent)
+						break
+					}
+					nativeParent = (nativeParent as View).getParent()
+				}
 			}
 			currentParent = currentParent.parentElement
 		}
-		this.hasCollectedScrollAbleParents = true
 	}
 }
 
@@ -1549,7 +1566,7 @@ export class NativeInputView implements UniAndroidKeyboardClient {
 			}
 			parentElement = parentElement.parentElement
 		}
-		this.adjustPositionHelper = new UniAndroidAdjustPositionHelper(this.element, (elementHeight: number): number => {
+		this.adjustPositionHelper = new UniAndroidAdjustPositionHelper(this.element, (elementHeight: number, availableHeight: number): number => {
 			return Math.max(0, elementHeight)
 		})
 		this.adjustPositionHelper?.setAllowRootTranslateAfterParentScroll(true)
@@ -2997,9 +3014,22 @@ export class UniInputElement extends UniViewElementImpl {
 }
 
 
+class UniAndroidTextareaEditText extends EditText {
+	cursorScrollDeferred: boolean = false
+
+	constructor(context: Context) {
+		super(context)
+	}
+
+	override bringPointIntoView(offset: Int): Boolean {
+		if (this.cursorScrollDeferred) return false
+		return super.bringPointIntoView(offset)
+	}
+}
+
 export class NativeTextareaView implements UniAndroidKeyboardClient {
 	private element: UniNativeViewElement
-	private editText: EditText | null = null
+	private editText: UniAndroidTextareaEditText | null = null
 	private maxLength: number = -1
 	private beginEditValue: string = ''
 	private isFocusing: boolean = false
@@ -3042,6 +3072,9 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 	private focusRequestRevision: number = 0
 	private blurFocusSink: View | null = null
 	private destroyed: boolean = false
+	private heightChangeListener: View.OnLayoutChangeListener | null = null
+	private heightAdjustRunnable: Runnable | null = null
+	private heightLayoutCallbackId: number | null = null
 
 	constructor(element: UniNativeViewElement) {
 		this.element = element
@@ -3053,14 +3086,15 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 			}
 			parentElement = parentElement.parentElement
 		}
-		this.adjustPositionHelper = new UniAndroidAdjustPositionHelper(this.element, (elementHeight: number): number => {
+		this.adjustPositionHelper = new UniAndroidAdjustPositionHelper(this.element, (elementHeight: number, availableHeight: number): number => {
 			return Math.max(0, elementHeight)
 		})
 		this.adjustPositionHelper?.setAllowRootTranslateAfterParentScroll(true)
 		this.adjustPositionHelper?.setTraceCategory('textarea')
 		this.bindView()
 		this.element.setMeasureCallback((res: UniNativeMeasureSpecification): UniNativeMeasureSize => {
-			return UniNativeMeasureSize(res.width, this.resolveMeasuredTextareaHeight(res).toFloat())
+			const height = this.resolveMeasuredTextareaHeight(res)
+			return UniNativeMeasureSize(res.width, height.toFloat())
 		})
 	}
 
@@ -3129,8 +3163,9 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 		return decorView?.getHeight() ?? 0
 	}
 
-	private resolveCursorBottomOffset(elementHeight: number): number {
+	private resolveCursorBottomOffset(elementHeight: number, availableHeight: number): number {
 		const targetBottomOffset = Math.max(0, elementHeight)
+		if (targetBottomOffset <= availableHeight) return targetBottomOffset
 		if (this.editText == null) {
 			this.trace('resolveCursorBottomOffset elementHeight=' + elementHeight + ' targetBottomOffset=' + targetBottomOffset + ' reason=noEditText')
 			return targetBottomOffset
@@ -3141,7 +3176,7 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 			return targetBottomOffset
 		}
 
-		let selectionStart = this.editText!.getSelectionStart()
+		let selectionStart = this.editText!.getSelectionEnd()
 		if (selectionStart < 0) {
 			selectionStart = this.editText!.getText()?.length ?? 0
 		}
@@ -3150,7 +3185,9 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 		const lineBottom = layout.getLineBottom(line)
 		const paddingTop = this.editText!.getTotalPaddingTop()
 		const scrollY = this.editText!.getScrollY()
-		const cursorBottomOffset = lineBottom + paddingTop - scrollY
+		const elementRect = this.element.getBoundingClientRect()
+		const boxRect = resolveInputBoxRect(this.element, elementRect)
+		const cursorBottomOffset = elementRect.y - boxRect.y + ValueHelper.value2dip(lineBottom + paddingTop - scrollY)
 		const clampedCursorBottomOffset = cursorBottomOffset > 0
 			? Math.min(cursorBottomOffset, targetBottomOffset)
 			: 0
@@ -3163,16 +3200,16 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 				+ ' scrollY=' + scrollY
 				+ ' cursorBottomOffset=' + clampedCursorBottomOffset
 				+ ' targetBottomOffset=' + targetBottomOffset
-				+ ' returnValue=' + targetBottomOffset
+				+ ' returnValue=' + clampedCursorBottomOffset
 		)
-		return targetBottomOffset
+		return clampedCursorBottomOffset
 	}
 
 	private bindView() {
 		const activity = this.element.getAndroidActivity()
 		if (activity == null) return
 
-		this.editText = new EditText(activity)
+		this.editText = new UniAndroidTextareaEditText(activity)
 		this.editText!.setBackgroundColor(Color.TRANSPARENT)
 		this.defaultSelectionColor = this.editText!.getHighlightColor()
 		this.cursorDrawable = createAndroidCursorDrawable(this.editText!, Color.parseColor(this.defaultCursorColor))
@@ -3193,14 +3230,28 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 		this.editText!.setOverScrollMode(View.OVER_SCROLL_IF_CONTENT_SCROLLS)
 		this.editText!.setScrollContainer(true)
 		this.setTouchScrollListener()
-		this.adjustPositionHelper?.setCursorBottomOffsetResolver((elementHeight: number): number => {
-			return this.resolveCursorBottomOffset(elementHeight)
+		this.adjustPositionHelper?.setCursorBottomOffsetResolver((elementHeight: number, availableHeight: number): number => {
+			return this.resolveCursorBottomOffset(elementHeight, availableHeight)
 		})
 		this.addTextWatcher()
 		this.setFocusChangeListener()
 		this.setEditorActionListener()
 		this.element.bindAndroidView(this.editText!)
+		this.observeTextareaHeight()
 		this.ensureKeyboardLayoutObserver()
+	}
+
+	private observeTextareaHeight() {
+		const editText = this.editText
+		if (editText == null) return
+		const self = this
+		this.heightChangeListener = new (class implements View.OnLayoutChangeListener {
+			override onLayoutChange(v: View, left: Int, top: Int, right: Int, bottom: Int, oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int) {
+				if (bottom - top <= 0 || bottom - top == oldBottom - oldTop) return
+				self.ensureCursorVisibleAfterLayout(true)
+			}
+		})
+		editText.addOnLayoutChangeListener(this.heightChangeListener!)
 	}
 
 	/**
@@ -3262,7 +3313,9 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 		if (this.editText == null) return
 		const self = this
 		this.editText!.addTextChangedListener(new (class implements TextWatcher {
-			override beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+			override beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+				if (self.autoHeight && self.editText != null) self.editText!.cursorScrollDeferred = true
+			}
 			override onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
 			override afterTextChanged(s: Editable) {
 				if (s == null) return
@@ -3275,8 +3328,8 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 				}
 				const cursor = self.editText?.getSelectionStart() ?? 0
 				self.dispatchInput(text, cursor, false)
-				self.refreshTextareaHeightForTextLayoutChange()
 				self.ensureCursorVisibleAfterLayout()
+				self.refreshTextareaHeightForTextLayoutChange()
 			}
 		}))
 	}
@@ -3854,9 +3907,17 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 		this.pendingFocusDispatch = false
 		const editText = this.editText
 		if (editText != null) {
+			if (this.heightChangeListener != null) editText.removeOnLayoutChangeListener(this.heightChangeListener!)
+			if (this.heightAdjustRunnable != null) editText.removeCallbacks(this.heightAdjustRunnable!)
 			editText.setOnFocusChangeListener(null)
 			editText.setOnEditorActionListener(null)
 			editText.setOnTouchListener(null)
+		}
+		this.heightChangeListener = null
+		this.heightAdjustRunnable = null
+		if (this.heightLayoutCallbackId != null) {
+			this.element.uniPage.offLayoutChange(this.heightLayoutCallbackId!)
+			this.heightLayoutCallbackId = null
 		}
 		this.keyboardManager?.unregisterClient(this)
 		this.keyboardManager = null
@@ -4069,22 +4130,54 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 		editText.invalidate()
 	}
 
-	private ensureCursorVisibleAfterLayout() {
+	private ensureCursorVisibleAfterLayout(layoutReady: boolean = false) {
 		const editText = this.editText
-		if (editText == null) return
-		if (this.autoHeight && !this.isTextareaContentScrollable()) return
+		if (this.destroyed || editText == null) return
+		if (!this.autoHeight && this.heightAdjustRunnable != null) editText.removeCallbacks(this.heightAdjustRunnable!)
 		const self = this
-		editText.post(class implements Runnable {
+		const helper = this.adjustPositionHelper
+		const generation = helper?.getSessionGeneration() ?? -1
+		this.heightAdjustRunnable = new (class implements Runnable {
 			override run() {
+				if (self.destroyed || self.editText !== editText || self.heightAdjustRunnable !== this) return
+				self.heightAdjustRunnable = null
 				self.scrollCursorIntoView()
+				if (self.isFocusing && self.adjustPosition && self.keyboardHeight > 0) {
+					helper?.adjustForKeyboardHeight(self.keyboardHeight, self.cursorSpacing, generation, false)
+				}
+				if (self.heightAdjustRunnable == null) editText.cursorScrollDeferred = false
 			}
 		})
+		if (this.autoHeight) {
+			editText.cursorScrollDeferred = true
+			const afterLayout = () => {
+				editText.postOnAnimation(new (class implements Runnable {
+					override run() {
+						self.heightAdjustRunnable?.run()
+					}
+				}))
+			}
+			if (layoutReady) {
+				afterLayout()
+			} else if (this.heightLayoutCallbackId == null) {
+				this.heightLayoutCallbackId = this.element.uniPage.onLayoutChange((result) => {
+					if (self.heightLayoutCallbackId != null) self.element.uniPage.offLayoutChange(self.heightLayoutCallbackId!)
+					self.heightLayoutCallbackId = null
+					afterLayout()
+				})
+			}
+		} else {
+			editText.post(this.heightAdjustRunnable!)
+		}
 	}
 
 	private scrollCursorIntoView() {
 		const editText = this.editText
 		if (this.destroyed || editText == null) return
-		if (this.autoHeight && !this.isTextareaContentScrollable()) return
+		if (this.autoHeight && !this.isTextareaContentScrollable()) {
+			editText.scrollTo(editText.getScrollX(), 0)
+			return
+		}
 		const layout = editText.getLayout()
 		if (layout == null) return
 		const selectionEnd = editText.getSelectionEnd()

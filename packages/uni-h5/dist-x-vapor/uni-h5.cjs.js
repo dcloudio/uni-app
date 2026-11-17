@@ -8553,8 +8553,10 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
     let fastScrollOffset = 0;
     let lastScrollTimestamp = 0;
     let lastScrollOffset = 0;
-    let cachedSizeStart = 200;
-    let cachedSizeEnd = 200;
+    let maxItemSize = 100;
+    let originalCachedSize = maxItemSize * 2;
+    let cachedSizeStart = originalCachedSize;
+    let cachedSizeEnd = originalCachedSize;
     let scrolling = false;
     let scrollEndTimer;
     let queued = false;
@@ -8618,6 +8620,14 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
       const item = store.keyItemMap.get(key);
       if (!item || item.size === height)
         return;
+      if (height > maxItemSize) {
+        maxItemSize = height;
+        originalCachedSize = maxItemSize * 2;
+        if (cachedSizeStart > 0)
+          cachedSizeStart = originalCachedSize;
+        if (cachedSizeEnd > 0)
+          cachedSizeEnd = originalCachedSize;
+      }
       item.size = height;
       store.rebuildItemOffsetsFrom(item.index + 1);
       if (scrolling && !scrollTarget && sizeChangeAnchorKey) {
@@ -8771,8 +8781,8 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
       const elapsed = timestamp - lastScrollTimestamp;
       const delta = offset - lastScrollOffset;
       realScrollOffset = offset;
-      cachedSizeStart = scrollTarget ? 0 : 200;
-      cachedSizeEnd = 200;
+      cachedSizeStart = scrollTarget ? 0 : originalCachedSize;
+      cachedSizeEnd = originalCachedSize;
       const fast = sectionMap.size === 0 && !scrollTarget && lastScrollTimestamp > 0 && elapsed > 0 && Math.abs(delta / elapsed) > 15 && offset > 1 && offset < element.scrollHeight - size - 1;
       if (fast) {
         if (delta > 0)
@@ -8803,10 +8813,10 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
       scrollOffset = realScrollOffset;
       fastScrollOffset = 0;
       lastScrollTimestamp = 0;
+      cachedSizeStart = originalCachedSize;
+      cachedSizeEnd = originalCachedSize;
       updateRenderList();
       scrollTarget = void 0;
-      cachedSizeStart = 200;
-      cachedSizeEnd = 200;
       updateScrollAnchorItem();
     }
     new ResizeObserver((entries2) => {

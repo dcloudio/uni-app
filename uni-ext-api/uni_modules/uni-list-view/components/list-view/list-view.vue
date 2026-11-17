@@ -299,8 +299,10 @@ defineExpose({
     let fastScrollOffset = 0
     let lastScrollTimestamp = 0
     let lastScrollOffset = 0
-    let cachedSizeStart = 200
-    let cachedSizeEnd = 200
+    let maxItemSize = 100
+    let originalCachedSize = maxItemSize * 2
+    let cachedSizeStart = originalCachedSize
+    let cachedSizeEnd = originalCachedSize
     let scrolling = false
     let scrollEndTimer : ReturnType<typeof setTimeout> | undefined
     let queued = false
@@ -368,6 +370,13 @@ defineExpose({
     function updateItemSize(key : string, height : number) {
         const item = store.keyItemMap.get(key)
         if (!item || item.size === height) return
+        if (height > maxItemSize) {
+            maxItemSize = height
+            originalCachedSize = maxItemSize * 2
+            // 与 C++ 一致，快滚或目标定位期间已关闭的缓冲区保持为 0。
+            if (cachedSizeStart > 0) cachedSizeStart = originalCachedSize
+            if (cachedSizeEnd > 0) cachedSizeEnd = originalCachedSize
+        }
         item.size = height
         store.rebuildItemOffsetsFrom(item.index + 1)
         if (scrolling && !scrollTarget && sizeChangeAnchorKey) {
@@ -558,8 +567,8 @@ defineExpose({
         const elapsed = timestamp - lastScrollTimestamp
         const delta = offset - lastScrollOffset
         realScrollOffset = offset
-        cachedSizeStart = scrollTarget ? 0 : 200
-        cachedSizeEnd = 200
+        cachedSizeStart = scrollTarget ? 0 : originalCachedSize
+        cachedSizeEnd = originalCachedSize
         const fast =
             sectionMap.size === 0 &&
             !scrollTarget &&
@@ -596,10 +605,10 @@ defineExpose({
         scrollOffset = realScrollOffset
         fastScrollOffset = 0
         lastScrollTimestamp = 0
+        cachedSizeStart = originalCachedSize
+        cachedSizeEnd = originalCachedSize
         updateRenderList()
         scrollTarget = undefined
-        cachedSizeStart = 200
-        cachedSizeEnd = 200
         updateScrollAnchorItem()
     }
 
