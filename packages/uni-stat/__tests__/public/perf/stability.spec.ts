@@ -116,6 +116,7 @@ function installApp(opts: {
       skipInterceptors: true,
       skipMigration: true,
       skipRecoverRetry: opts.skipRecoverRetry ?? true,
+      collectorDepsPatch: { isReportEnabled: () => true },
     }
   )
   return { app, http }

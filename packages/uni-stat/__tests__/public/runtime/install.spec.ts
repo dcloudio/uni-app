@@ -25,6 +25,7 @@ import {
   installPublicStat,
 } from '../../../src/public/runtime/install'
 import { __resetLifecycleState } from '../../../src/public/runtime/lifecycleHooks'
+import { __resetReportGate } from '../../../src/public/runtime/reportGate'
 import { installMockUni, restoreMockUni } from '../helpers/mockUni'
 import { installMockPlus, restoreMockPlus } from '../helpers/mockPlus'
 import { storage } from '../../../src/public/infra/storage'
@@ -42,6 +43,7 @@ function resetAll(): void {
   resetPackage()
   resetSystem()
   __resetLifecycleState()
+  __resetReportGate()
   __resetStatApp()
   storage.__resetCache()
 }
@@ -370,6 +372,32 @@ describe('runtime/install', () => {
     expect(cfg.pageInactiveTimeoutSec).toBe(1800)
   })
 
+  test('I12 服务端关闭时不打印启动日志', async () => {
+    const request = jest.fn(
+      (opts: {
+        success?: (res: {
+          statusCode: number
+          data: { ret: number; enable: number }
+        }) => void
+      }) => {
+        opts.success?.({ statusCode: 200, data: { ret: 0, enable: 0 } })
+      }
+    )
+    installMockUni({ platform: 'h5', patch: { request } })
+    const consoleLog = jest.spyOn(console, 'log').mockImplementation()
+    try {
+      logger.setDebug(true)
+      installPublicStat({ skipVueMixin: true, skipUniReport: true })
+      await new Promise<void>((resolve) => setTimeout(resolve, 0))
+      expect(request).toHaveBeenCalledTimes(1)
+      expect(consoleLog).not.toHaveBeenCalled()
+    } finally {
+      logger.setDebug(undefined)
+      consoleLog.mockRestore()
+      restoreMockUni()
+    }
+  })
+
   test('I13 Vue3：resolveUniRuntime 可用时通过 onCreateVueApp 注入 mixin', () => {
     const mixinApplied = jest.fn()
     const prev = (globalThis as unknown as { uni?: unknown }).uni
@@ -392,7 +420,7 @@ describe('runtime/install', () => {
     }
   })
 
-  test('I14 Vue3：H5 空桩 global.uni={} 且无 onCreateVueApp 时告警', () => {
+  test('I14 Vue3：H5 空桩 global.uni={} 且无 onCreateVueApp 时告警', async () => {
     const prev = (globalThis as unknown as { uni?: unknown }).uni
     const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {})
     jest.useFakeTimers()
@@ -400,6 +428,7 @@ describe('runtime/install', () => {
       logger.setMuteNonDebug(false)
       ;(globalThis as unknown as { uni: unknown }).uni = {}
       installPublicStat({ skipUniReport: true })
+      for (let i = 0; i < 6; i++) await Promise.resolve()
       jest.advanceTimersByTime(50 * 21)
       const warned = warnSpy.mock.calls.some((args) =>
         String(args.join(' ')).includes('onCreateVueApp 在重试后仍不可用')

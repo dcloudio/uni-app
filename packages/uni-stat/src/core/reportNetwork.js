@@ -20,6 +20,8 @@ const META_KEYS = ['_pendingId', '_netAttempts', '_inflight', '_httpRetry']
 
 let watcherInstalled = false
 let flushing = false
+let networkState = null
+let appForeground = true
 /** @type {null | ((optionsData: any) => void)} */
 let dispatchSend = null
 
@@ -29,6 +31,40 @@ let dispatchSend = null
 function isOffline(networkType, isConnected) {
   if (isConnected === false) return true
   return networkType === 'none'
+}
+
+/**
+ * 记录其它统计链路或网络变化回调已经取得的网络状态，避免发送前重复查询。
+ */
+export function updateReportNetworkState(res) {
+  if (!res || typeof res !== 'object') return
+  networkState = {
+    networkType: res.networkType,
+    isConnected: res.isConnected,
+  }
+}
+
+/**
+ * 同步 App 前后台状态；前台恢复时只清理离线快照，让下一次主动冲刷安全重探。
+ * @returns {boolean} 是否需要在前台主动恢复待发数据
+ */
+export function setReportNetworkForeground(foreground, manageAppLifecycle = true) {
+  if (!manageAppLifecycle) {
+    appForeground = true
+    return false
+  }
+  const wasForeground = appForeground
+  appForeground = foreground
+  let clearedOffline = false
+  if (
+    foreground &&
+    networkState &&
+    isOffline(networkState.networkType, networkState.isConnected)
+  ) {
+    networkState = null
+    clearedOffline = true
+  }
+  return foreground && (!wasForeground || clearedOffline)
 }
 
 /**
@@ -146,6 +182,7 @@ function installWatcher() {
   }
   watcherInstalled = true
   uni.onNetworkStatusChange(function onNetworkStatusChangePrivate(res) {
+    updateReportNetworkState(res)
     if (isOffline(res && res.networkType, res && res.isConnected)) return
     flushPending()
   })
@@ -188,13 +225,31 @@ function flushPending() {
 /**
  * 先 getNetworkType，有网再冲刷；无网则继续等待监听。
  */
-function tryFlushWhenOnline() {
+function tryFlushWhenOnline(forceProbe) {
+  if (!readPending().length) return
+  if (!forceProbe && networkState) {
+    if (isOffline(networkState.networkType, networkState.isConnected)) return
+    flushPending()
+    return
+  }
+  // 后台没有可复用状态时不主动查询原生网络；直接交给既有发送/失败回写处理。
+  if (!appForeground) {
+    if (
+      networkState &&
+      isOffline(networkState.networkType, networkState.isConnected)
+    ) {
+      return
+    }
+    flushPending()
+    return
+  }
   if (typeof uni === 'undefined' || typeof uni.getNetworkType !== 'function') {
     flushPending()
     return
   }
   uni.getNetworkType({
     success: function (res) {
+      updateReportNetworkState(res)
       if (isOffline(res && res.networkType, res && res.isConnected)) return
       flushPending()
     },
@@ -223,7 +278,7 @@ export function initReportNetwork(sendFn, opts) {
  * 服务空间就绪后 / 需要主动冲刷时调用。
  */
 export function resumeReportNetwork() {
-  tryFlushWhenOnline()
+  tryFlushWhenOnline(true)
 }
 
 /**
@@ -234,12 +289,25 @@ export function resumeReportNetwork() {
  */
 export function gateSend(optionsData, sendFn) {
   installWatcher()
+  if (networkState) {
+    if (isOffline(networkState.networkType, networkState.isConnected)) {
+      persistPending(optionsData)
+      return
+    }
+    sendFn(optionsData)
+    return
+  }
+  if (!appForeground) {
+    sendFn(optionsData)
+    return
+  }
   if (typeof uni === 'undefined' || typeof uni.getNetworkType !== 'function') {
     sendFn(optionsData)
     return
   }
   uni.getNetworkType({
     success: function (res) {
+      updateReportNetworkState(res)
       if (isOffline(res && res.networkType, res && res.isConnected)) {
         persistPending(optionsData)
         return

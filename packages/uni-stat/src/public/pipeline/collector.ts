@@ -14,7 +14,11 @@
  *   - 错误吞掉 + 日志：collector 层异常**不应**抛回到生命周期回调，避免污染业务页面。
  */
 
-import { BATCH_MAX_EVENTS, BATCH_REQUESTS_MAX_BYTES } from '../config'
+import {
+  BATCH_MAX_EVENTS,
+  BATCH_REQUESTS_MAX_BYTES,
+  QUEUE_MAX_EVENTS,
+} from '../config'
 import {
   logCollect,
   logNoChannel,
@@ -55,6 +59,8 @@ export interface CollectorDeps {
     flush: () => Bucket | undefined
     rollback: (snapshot: Bucket) => void
     shouldFlush: (force?: boolean) => boolean
+    /** 当前待发事件数；生产环境用于空队列时跳过网络探测。 */
+    size?: () => number
   }
   /** 序列化器。 */
   serializer: { handleData: (bucket: Bucket) => string }
@@ -106,6 +112,11 @@ export interface CollectorDeps {
    * 由 runtime/networkGate 注入；缺省视为有网（兼容旧测试）。
    */
   isNetworkOffline?: () => Promise<boolean>
+  /**
+   * 可选：服务端上报开关。返回 false 时新事件不入持久队列，flush / recoverRetry
+   * 不摘取已有队列。查询异常由 collector fail-open。
+   */
+  isReportEnabled?: () => boolean | Promise<boolean>
 }
 
 export interface CollectorAPI {
@@ -140,6 +151,21 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
   let deferredFlushTimer: ReturnType<typeof setTimeout> | null = null
   /** 合并冷启动与网络恢复同时触发的续传，避免同一 payload 重复发送。 */
   let recoveringRetry: Promise<void> | undefined
+  /** 合并自动 flush / app hide / 网络恢复等并发入口。 */
+  let flushing: Promise<void> | undefined
+  /** flush 进行中又收到任意 flush 请求时，完成后再检查一次队列。 */
+  let flushAfterCurrent = false
+  /** flush 进行中又收到强制 flush 时，完成后再检查一次新入队数据。 */
+  let forceFlushAfterCurrent = false
+  /** 服务端开关尚未返回时暂存已构建事件；不打印、不落盘。 */
+  let pendingReports: StatData[] = []
+  /** undefined 表示首次服务端开关查询尚未完成。 */
+  let reportEnabled: boolean | undefined = deps.isReportEnabled
+    ? undefined
+    : true
+  /** 合并采集、flush、续传并发触发的服务端开关查询。 */
+  let checkingReportGate: Promise<boolean> | undefined
+  let destroyed = false
 
   /** 取消已安排的延迟首 flush（`flush(true)` 等显式调用前使用）。 */
   function cancelDeferredFlush(): void {
@@ -158,7 +184,7 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
       deferredFlushTimer = setTimeout(() => {
         deferredFlushTimer = null
         firstFlushDone = true
-        void flushImpl(false).catch((e) =>
+        void runFlush(false).catch((e) =>
           logger.warn('[uni统计 2.0] auto-flush failed', e)
         )
       }, deferMs)
@@ -166,7 +192,7 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
     }
 
     firstFlushDone = true
-    void flushImpl(false).catch((e) =>
+    void runFlush(false).catch((e) =>
       logger.warn('[uni统计 2.0] auto-flush failed', e)
     )
   }
@@ -177,8 +203,8 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
    * 不再附加 pid（上一会话 sid）：参数文档无该字段，新会话信息由 lt=1 自身的
    * `sid / cst / fvts / lvts / tvc` 表达。
    */
-  function report(input: ReportInput): void {
-    tryRun(() => {
+  function prepareReport(input: ReportInput): StatData | undefined {
+    return tryRun(() => {
       const t = typeof input.t === 'number' ? input.t : deps.nowSec()
       const snap = deps.session.getSnapshot()
       let sessionForCtx: SessionSnapshot | undefined
@@ -196,7 +222,12 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
         t,
         session: sessionForCtx,
       }) as EventContext
-      const data = deps.builder.build(ctx)
+      return deps.builder.build(ctx)
+    }, undefined)
+  }
+
+  function enqueueReport(data: StatData): void {
+    tryRun(() => {
       // 调试日志打印完整对象（含空串）；入队发送侧去掉 '' 键以缩短 image URL
       logCollect(data)
       deps.queue.enqueue(omitEmptyStringFieldsForUpload(data))
@@ -204,6 +235,63 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
         triggerAutoFlush()
       }
     }, undefined as void)
+  }
+
+  function applyReportEnabled(enabled: boolean): boolean {
+    reportEnabled = enabled
+    if (!enabled || destroyed) {
+      pendingReports = []
+      return enabled
+    }
+    const pending = pendingReports
+    pendingReports = []
+    for (const data of pending) enqueueReport(data)
+    return enabled
+  }
+
+  /** 服务端开关查询异常时 fail-open，避免控制接口故障阻断统计上报。 */
+  function checkReportEnabled(): boolean | Promise<boolean> {
+    if (!deps.isReportEnabled) return true
+    if (checkingReportGate) return checkingReportGate
+
+    let result: boolean | Promise<boolean>
+    try {
+      result = deps.isReportEnabled()
+    } catch {
+      return applyReportEnabled(true)
+    }
+    if (result === true || result === false) {
+      return applyReportEnabled(result)
+    }
+    const current = Promise.resolve(result)
+      .then(
+        (value) => value !== false,
+        () => true
+      )
+      .then(applyReportEnabled)
+    checkingReportGate = current
+    const clear = (): void => {
+      if (checkingReportGate === current) checkingReportGate = undefined
+    }
+    void current.then(clear, clear)
+    return current
+  }
+
+  function report(input: ReportInput): void {
+    if (destroyed) return
+    if (reportEnabled === true) {
+      const data = prepareReport(input)
+      if (data) enqueueReport(data)
+      return
+    }
+    // 首次未知或当前关闭时，只在内存里暂存到本轮开关判断结束：仍关闭则静默
+    // 丢弃；缓存刷新后已开启则保留当前触发事件，避免重新开启后的首条数据丢失。
+    const data = prepareReport(input)
+    if (data) {
+      if (pendingReports.length >= QUEUE_MAX_EVENTS) pendingReports.shift()
+      pendingReports.push(data)
+    }
+    void checkReportEnabled()
   }
 
   /**
@@ -278,6 +366,14 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
    */
   async function flushImpl(force = false): Promise<void> {
     if (!deps.queue.shouldFlush(force)) return
+    // 显式 flush 可能紧跟首次 report；先等开关结果，让允许上报时的内存暂存
+    // 完成入队，也确保关闭态不会继续触发网络探测。
+    if (checkingReportGate && !(await checkingReportGate)) return
+    // force=true 时 shouldFlush 恒为 true；先判空可避免网络恢复、重复 hide 等入口
+    // 在没有任何待发事件时仍调用 getNetworkType。
+    if (deps.queue.size && deps.queue.size() === 0) return
+    const enabled = checkReportEnabled()
+    if (enabled !== true && (enabled === false || !(await enabled))) return
     // 无网：不摘队列，等网络恢复后再 flush（公有版门闸）
     if (deps.isNetworkOffline) {
       let offline = false
@@ -424,6 +520,10 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
    * 串行执行，失败的条目保留在队列里（不动 _id），调用方会在下次冷启再次重放。
    */
   async function recoverRetryImpl(): Promise<void> {
+    const enabled = checkReportEnabled()
+    if (enabled !== true && (enabled === false || !(await enabled))) return
+    const items = deps.retry.loadAll()
+    if (items.length === 0) return
     if (deps.isNetworkOffline) {
       let offline = false
       try {
@@ -436,8 +536,6 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
         return
       }
     }
-    const items = deps.retry.loadAll()
-    if (items.length === 0) return
     const channel = deps.selectChannel()
     if (!channel) {
       logger.warn('[uni统计 2.0] 续传重试跳过：当前无可用上报线路')
@@ -502,17 +600,43 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
     return current
   }
 
+  function runFlush(force = false): Promise<void> {
+    if (flushing) {
+      flushAfterCurrent = true
+      if (force) forceFlushAfterCurrent = true
+      return flushing
+    }
+
+    const current = (async (): Promise<void> => {
+      let nextForce = force
+      do {
+        flushAfterCurrent = false
+        forceFlushAfterCurrent = false
+        await flushImpl(nextForce)
+        nextForce = forceFlushAfterCurrent
+      } while (flushAfterCurrent)
+    })()
+    flushing = current
+    const clear = (): void => {
+      if (flushing === current) flushing = undefined
+    }
+    void current.then(clear, clear)
+    return current
+  }
+
   /**
    * 对外 flush：显式调用（含 `flush(true)`）立即发送，并取消尚未触发的延迟首 flush。
    */
-  async function flush(force = false): Promise<void> {
+  function flush(force = false): Promise<void> {
     cancelDeferredFlush()
     firstFlushDone = true
-    return flushImpl(force)
+    return runFlush(force)
   }
 
   /** 取消延迟首 flush 定时器，防止 collector 被弃后仍触发幽灵 flush。 */
   function destroy(): void {
+    destroyed = true
+    pendingReports = []
     cancelDeferredFlush()
     // 置为「已完成首 flush」，即便有残留闭包再次调用 triggerAutoFlush 也不会重排定时器。
     firstFlushDone = true

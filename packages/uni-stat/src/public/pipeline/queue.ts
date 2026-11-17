@@ -250,6 +250,9 @@ export function rollback(snapshot: Bucket): void {
  * 当前桶内事件总数（按 lt 加总）。
  */
 export function size(): number {
+  // 冷启时 collector 会先用 size() 判空，再决定是否执行 flush()。这里必须
+  // 与 flush/enqueue 一样先恢复持久化镜像，否则 storage 中有数据也会被误判为空。
+  restoreOnce()
   let n = 0
   for (const lt of Object.keys(state.bucket)) {
     n += state.bucket[lt].length

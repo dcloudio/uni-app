@@ -32,6 +32,9 @@ import { logBoot } from '../infra/debugLog'
 import { logger } from '../infra/logger'
 import { getGlobalObject, resolveUniRuntime } from '../infra/uniRuntime'
 import { tryRun } from '../infra/safe'
+import { nowMs } from '../infra/time'
+import { STAT_VERSION_PUBLIC } from '../config'
+import { isReportEnabled } from './reportGate'
 
 import type { LifecycleOptions } from './lifecycleHooks'
 
@@ -248,6 +251,8 @@ let vueMixinRetryTimer: ReturnType<typeof setTimeout> | undefined
 
 /** install 是否已经触发过（不论成功失败）。 */
 let bootstrapped = false
+/** 使 reset / 热重载前发出的异步开关结果失效。 */
+let bootstrapGeneration = 0
 /** 已注册到全局的 unbind，便于 __reset。 */
 let lastUnbind: (() => void) | undefined
 /** 晚就绪时重试 `uni.onAppShow` 的定时器。 */
@@ -276,6 +281,9 @@ export interface InstallOptions {
 export function installPublicStat(opts: InstallOptions = {}): void {
   if (bootstrapped) return
   bootstrapped = true
+  const generation = ++bootstrapGeneration
+  // 服务端开关确认前保持 SDK 自身静默；fail-open / enable=1 后恢复。
+  logger.setReportingEnabled(false)
 
   // 优先级：opts.config（手动覆盖） > manifest.uniStatistics（plugin 注入） > 默认值。
   // 这样业务/灰度同学既能在 manifest 里改超时阈值（生产路径），
@@ -300,46 +308,57 @@ export function installPublicStat(opts: InstallOptions = {}): void {
     undefined
   )
 
-  // 启动摘要：与生命周期解耦，保证 StatApp.install 完成后立刻可打印（不依赖 uni 是否已挂载）。
-  tryRun(() => {
-    const cfgBoot = app.getConfig()
-    const appName = process.env.UNI_APP_NAME || ''
-    const injected = parseInjectedUniStatistics()
-    const bootBase: Parameters<typeof logBoot>[0] = {
-      channel: cfgBoot?.version ?? 'image',
-      reportIntervalSec: cfgBoot?.reportIntervalSec ?? 0,
-      ak: cfgBoot?.ak ?? '',
-      appName,
-      debugFromManifest:
-        process.env.UNI_STAT_DEBUG === 'true' ||
-        (process.env.UNI_STAT_DEBUG as unknown) === true,
-    }
-    // 仅当 manifest 显式配置了超时项时才在 debug 启动摘要中展示（默认值 300/1800 不刷屏）。
-    if (injected != null) {
-      if (
-        injected.backgroundTimeout != null ||
-        injected.backgroundTimeoutSec != null
-      ) {
-        bootBase.backgroundTimeoutSec = cfgBoot?.backgroundTimeoutSec
-      }
-      if (
-        injected.pageInactiveTimeout != null ||
-        injected.pageInactiveTimeoutSec != null
-      ) {
-        bootBase.pageInactiveTimeoutSec = cfgBoot?.pageInactiveTimeoutSec
-      }
-    }
-    // #ifndef VUE3
-    logBoot(Object.assign({}, bootBase, { vueMode: 'Vue2' }))
-    // #endif
-    // #ifdef VUE3
-    logBoot(
-      Object.assign({}, bootBase, {
-        vueMode: opts.vapor ? 'Vapor' : 'Vue3',
-      })
-    )
-    // #endif
-  }, undefined)
+  // 启动摘要必须等待服务端开关：关闭态对用户应完全静默。
+  const cfgBoot = app.getConfig()
+  void isReportEnabled({
+    appId: cfgBoot?.ak ?? '',
+    usv: STAT_VERSION_PUBLIC,
+    nowMs,
+  })
+    .catch(() => true)
+    .then((enabled) => {
+      if (!bootstrapped || generation !== bootstrapGeneration) return
+      logger.setReportingEnabled(enabled)
+      if (!enabled) return
+      tryRun(() => {
+        const appName = process.env.UNI_APP_NAME || ''
+        const injected = parseInjectedUniStatistics()
+        const bootBase: Parameters<typeof logBoot>[0] = {
+          channel: cfgBoot?.version ?? 'image',
+          reportIntervalSec: cfgBoot?.reportIntervalSec ?? 0,
+          ak: cfgBoot?.ak ?? '',
+          appName,
+          debugFromManifest:
+            process.env.UNI_STAT_DEBUG === 'true' ||
+            (process.env.UNI_STAT_DEBUG as unknown) === true,
+        }
+        // 仅当 manifest 显式配置了超时项时才在 debug 启动摘要中展示（默认值 300/1800 不刷屏）。
+        if (injected != null) {
+          if (
+            injected.backgroundTimeout != null ||
+            injected.backgroundTimeoutSec != null
+          ) {
+            bootBase.backgroundTimeoutSec = cfgBoot?.backgroundTimeoutSec
+          }
+          if (
+            injected.pageInactiveTimeout != null ||
+            injected.pageInactiveTimeoutSec != null
+          ) {
+            bootBase.pageInactiveTimeoutSec = cfgBoot?.pageInactiveTimeoutSec
+          }
+        }
+        // #ifndef VUE3
+        logBoot(Object.assign({}, bootBase, { vueMode: 'Vue2' }))
+        // #endif
+        // #ifdef VUE3
+        logBoot(
+          Object.assign({}, bootBase, {
+            vueMode: opts.vapor ? 'Vapor' : 'Vue3',
+          })
+        )
+        // #endif
+      }, undefined)
+    })
 
   /**
    * 装配 vue mixin 与 uni 生命周期；与 logBoot 解耦，便于在 uni 晚就绪时延后执行。
@@ -542,6 +561,8 @@ function mountUniReport(app: ReturnType<typeof getStatApp>): void {
 
 /** 仅供测试：重置 install 哨兵；调用方应同时调 `__resetStatApp()`。 */
 export function __resetInstall(): void {
+  bootstrapGeneration++
+  logger.setReportingEnabled(true)
   if (uniHookRetryTimer) {
     clearTimeout(uniHookRetryTimer)
     uniHookRetryTimer = undefined

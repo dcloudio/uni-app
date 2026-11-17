@@ -24,6 +24,9 @@ const TAG = '[uni统计 2.0]'
 
 let runtimeDebug: boolean | undefined
 
+/** 服务端统计开关未确认或已关闭时，屏蔽 SDK 自身全部日志。 */
+let reportingEnabled = true
+
 /**
  * 是否屏蔽 info / warn / error。
  * `undefined`：自动——`NODE_ENV === 'test'` 时默认屏蔽，避免 Jest 用例预期失败路径刷屏。
@@ -130,6 +133,7 @@ function emitConsole(
   method: 'log' | 'info' | 'warn' | 'error',
   args: unknown[]
 ): void {
+  if (!reportingEnabled) return
   if (method !== 'log' && isNonDebugMuted()) return
   const fn = console[method]
   if (!preferSingleLineConsole()) {
@@ -154,6 +158,7 @@ function emitConsole(
  *      （历史插件兼容路径）。
  */
 function isDebug(): boolean {
+  if (!reportingEnabled) return false
   if (runtimeDebug !== undefined) return runtimeDebug
   const v = process.env.UNI_STAT_DEBUG as unknown
   return v === 'true' || v === true
@@ -164,6 +169,10 @@ function isDebug(): boolean {
  */
 function setDebug(value: boolean | undefined): void {
   runtimeDebug = value
+}
+
+function setReportingEnabled(value: boolean): void {
+  reportingEnabled = value
 }
 
 export const logger = {
@@ -187,4 +196,5 @@ export const logger = {
   setDebug,
   isDebug,
   setMuteNonDebug,
+  setReportingEnabled,
 }

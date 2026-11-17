@@ -129,6 +129,89 @@ describe('reportNetwork (private)', () => {
     expect(otherSend).not.toHaveBeenCalled()
   })
 
+  test('复用已采集的网络状态，gateSend 不重复 getNetworkType', () => {
+    const getNetworkType = jest.fn((opts) => getNetworkTypeImpl(opts))
+    global.uni.getNetworkType = getNetworkType
+    const {
+      gateSend,
+      initReportNetwork,
+      updateReportNetworkState,
+    } = require('../../src/core/reportNetwork.js')
+    const sendFn = jest.fn()
+    initReportNetwork(sendFn, { flushOnInit: false })
+    updateReportNetworkState({ networkType: 'wifi', isConnected: true })
+
+    gateSend({ requests: 'lt=3', t: 4 }, sendFn)
+    expect(sendFn).toHaveBeenCalledTimes(1)
+    expect(getNetworkType).not.toHaveBeenCalled()
+  })
+
+  test('后台无快照时不调用 getNetworkType，沿用通道失败兜底', () => {
+    const getNetworkType = jest.fn((opts) => getNetworkTypeImpl(opts))
+    global.uni.getNetworkType = getNetworkType
+    const {
+      gateSend,
+      initReportNetwork,
+      setReportNetworkForeground,
+    } = require('../../src/core/reportNetwork.js')
+    const sendFn = jest.fn()
+    initReportNetwork(sendFn, { flushOnInit: false })
+    setReportNetworkForeground(false)
+
+    gateSend({ requests: 'lt=3', t: 5 }, sendFn)
+    expect(sendFn).toHaveBeenCalledTimes(1)
+    expect(getNetworkType).not.toHaveBeenCalled()
+  })
+
+  test('前台恢复时离线快照失效并重新探测', () => {
+    const getNetworkType = jest.fn((opts) => getNetworkTypeImpl(opts))
+    global.uni.getNetworkType = getNetworkType
+    const {
+      gateSend,
+      initReportNetwork,
+      setReportNetworkForeground,
+    } = require('../../src/core/reportNetwork.js')
+    const sendFn = jest.fn()
+    initReportNetwork(sendFn, { flushOnInit: false })
+
+    getNetworkTypeImpl = (opts) => {
+      opts.success({ networkType: 'none', isConnected: false })
+    }
+    gateSend({ requests: 'offline', t: 6 }, sendFn)
+    expect(sendFn).not.toHaveBeenCalled()
+    expect(getNetworkType).toHaveBeenCalledTimes(1)
+
+    setReportNetworkForeground(false)
+    getNetworkTypeImpl = (opts) => {
+      opts.success({ networkType: 'wifi', isConnected: true })
+    }
+    expect(setReportNetworkForeground(true)).toBe(true)
+    gateSend({ requests: 'foreground', t: 7 }, sendFn)
+    expect(sendFn).toHaveBeenCalledTimes(1)
+    expect(getNetworkType).toHaveBeenCalledTimes(2)
+  })
+
+  test('后台无快照形成待发后，回前台会主动探测并恢复', () => {
+    const getNetworkType = jest.fn((opts) => getNetworkTypeImpl(opts))
+    global.uni.getNetworkType = getNetworkType
+    const {
+      initReportNetwork,
+      persistPending,
+      resumeReportNetwork,
+      setReportNetworkForeground,
+    } = require('../../src/core/reportNetwork.js')
+    const sendFn = jest.fn()
+    initReportNetwork(sendFn, { flushOnInit: false })
+
+    setReportNetworkForeground(false)
+    persistPending({ requests: 'background-failed', t: 8 })
+    expect(setReportNetworkForeground(true)).toBe(true)
+    resumeReportNetwork()
+
+    expect(getNetworkType).toHaveBeenCalledTimes(1)
+    expect(sendFn).toHaveBeenCalledTimes(1)
+  })
+
   test('toWirePayload 剥离内部字段', () => {
     const { toWirePayload } = require('../../src/core/reportNetwork.js')
     const wire = toWirePayload({
