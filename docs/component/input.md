@@ -60,7 +60,6 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.
 | @change | (event: [UniInputChangeEvent](#uniinputchangeevent)) => void |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.73; iOS: 4.73; HarmonyOS: 4.73 | 非聚焦状态内容改变时触发（仅组件失去焦点时且用户输入改变内容才触发），event.detail = {value: value} |
 | @confirm | (event: [UniInputConfirmEvent](#uniinputconfirmevent)) => void |   | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 点击完成按钮时触发，event.detail = {value: value} |
 | @nicknamereview | eventhandle |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>用户昵称审核完毕后触发，仅在 type 为 "nickname" 时有效，event.detail = { pass, timeout } |
-| @update:value | Event |   |   |   |
 | ~~inputmode~~ | none \| text \| decimal \| numeric \| tel \| search \| email \| url | "text" | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 是一个枚举属性，它提供了用户在编辑元素或其内容时可能输入的数据类型的提示。在符合条件的高版本webview里，uni-app的 web 和 app-vue 平台中可使用本属性。(自 5.0+ 废弃，推荐使用 type，同时配置以 inputmode 为准) |
 
 #### type 的属性描述
