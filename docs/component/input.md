@@ -53,7 +53,6 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.
 | controlled | boolean |   | Web: x; 微信小程序: x; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 是否为受控组件。为 true 时，value 内容会完全受 setData 控制 |
 | always-system | boolean |   | Web: x; 微信小程序: x; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 是否强制使用系统键盘和 Web-view 创建的 input 元素。为 true 时，confirm-type、confirm-hold 可能失效 |
 | always-embed | boolean |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 强制 input 处于同层状态，默认 focus 时 input 会切到非同层状态 (仅在 iOS 下生效) |
-| value-modifiers | ModelModifiers |   |   |   |
 | @input | (event: [UniInputEvent](#uniinputevent)) => void |   | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 当键盘输入时，触发input事件，event.detail = {value, cursor}，处理函数可以直接 return 一个字符串，将替换输入框的内容。 |
 | @focus | (event: [UniInputFocusEvent](#uniinputfocusevent)) => void |   | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 输入框聚焦时触发，event.detail = { value, height }，height 为键盘高度 |
 | @blur | (event: [UniInputBlurEvent](#uniinputblurevent)) => void |   | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 输入框失去焦点时触发，event.detail = {value: value} |
