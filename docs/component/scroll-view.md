@@ -522,6 +522,15 @@ onNestedPreScroll(event: NestedPreScrollEvent) {
         </button>
       </navigator>
       <view class="uni-common-pb"></view>
+
+      <!-- #ifndef WEB -->
+      <navigator url="/pages/component/scroll-view/scroll-view-context/scroll-view-context" hover-class="none">
+        <button type="primary" class="button">
+          滚动上下文示例
+        </button>
+      </navigator>
+      <view class="uni-common-pb"></view>
+      <!-- #endif -->
       <!-- #endif -->
     </view>
 </template>
