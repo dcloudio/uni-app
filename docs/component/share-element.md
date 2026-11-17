@@ -32,9 +32,9 @@
 | :- | :- | :- |  :-: | :- |
 | share-key | string |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.51; Android(Vapor): x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | 映射标记，页面内唯一 |
 | easing-function | string | "ease-out" | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android(VDOM): 4.51; Android(Vapor): x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | `css`缓动函数 |
-| shuttle-on-push | string | "to" | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | 指定 push 阶段的飞跃物 |
-| shuttle-on-pop | string | "to" | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | 指定 pop 阶段的飞跃物 |
-| transition-on-gesture | boolean | false | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | 手势返回时是否进行动画 |
+| shuttle-on-push | string | "to" | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | 指定 push 阶段的飞跃物 |
+| shuttle-on-pop | string | "to" | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | 指定 pop 阶段的飞跃物 |
+| transition-on-gesture | boolean | false | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | 手势返回时是否进行动画 |
 | key | string |   | 微信小程序: 4.41; 支付宝小程序: x | *(string)*<br/>映射标记，页面内唯一 |
 | transform | boolean |   | 微信小程序: 4.41; 支付宝小程序: x | *(boolean)*<br/>是否进行动画 |
 | duration | number |   | 微信小程序: 4.41; 支付宝小程序: x | *(number)*<br/>动画时长，单位毫秒 |
@@ -54,15 +54,15 @@
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| from | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | push 阶段采用源页面节点作为飞跃物 |
-| to | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | push 阶段采用目标页面节点作为飞跃物 |
+| from | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | push 阶段采用源页面节点作为飞跃物 |
+| to | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | push 阶段采用目标页面节点作为飞跃物 |
 
 #### shuttle-on-pop 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| from | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | pop 阶段采用源页面节点作为飞跃物 |
-| to | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | pop 阶段采用目标页面节点作为飞跃物 |
+| from | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | pop 阶段采用源页面节点作为飞跃物 |
+| to | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | pop 阶段采用目标页面节点作为飞跃物 |
 
 
 ### 指定飞跃物
