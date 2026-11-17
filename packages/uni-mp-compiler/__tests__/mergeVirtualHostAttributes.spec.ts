@@ -97,7 +97,7 @@ describe('compiler: options with mergeVirtualHostAttributes', () => {
   test('root node hidden with mergeVirtualHostAttributes', () => {
     assert(
       `<image :hidden="hidden"/>`,
-      `<image hidden=\"{{(ahh === undefined ? a : ahh) || false}}\" class=\"{{[ahc]}}\" style=\"{{ahs}}\" id=\"{{b}}\"/>`,
+      `<image hidden=\"{{(ahh === undefined || ahh === '' ? a : ahh) || false}}\" class=\"{{[ahc]}}\" style=\"{{ahs}}\" id=\"{{b}}\"/>`,
       `(_ctx, _cache) => {
   return { a: _ctx.hidden, b: _gei(_ctx, '') }
 }`,
@@ -105,7 +105,7 @@ describe('compiler: options with mergeVirtualHostAttributes', () => {
     )
     assert(
       `<image :hidden="!show"/>`,
-      `<image hidden=\"{{(ahh === undefined ? a : ahh) || false}}\" class=\"{{[ahc]}}\" style=\"{{ahs}}\" id=\"{{b}}\"/>`,
+      `<image hidden=\"{{(ahh === undefined || ahh === '' ? a : ahh) || false}}\" class=\"{{[ahc]}}\" style=\"{{ahs}}\" id=\"{{b}}\"/>`,
       `(_ctx, _cache) => {
   return { a: !_ctx.show, b: _gei(_ctx, '') }
 }`,
@@ -113,7 +113,7 @@ describe('compiler: options with mergeVirtualHostAttributes', () => {
     )
     assert(
       `<image :hidden="false"/>`,
-      `<image hidden=\"{{(ahh === undefined ? false : ahh) || false}}\" class=\"{{[ahc]}}\" style=\"{{ahs}}\" id=\"{{a}}\"/>`,
+      `<image hidden=\"{{(ahh === undefined || ahh === '' ? false : ahh) || false}}\" class=\"{{[ahc]}}\" style=\"{{ahs}}\" id=\"{{a}}\"/>`,
       `(_ctx, _cache) => {
   return { a: _gei(_ctx, '') }
 }`,
@@ -121,7 +121,7 @@ describe('compiler: options with mergeVirtualHostAttributes', () => {
     )
     assert(
       `<image hidden/>`,
-      `<image class="{{[ahc]}}" style="{{ahs}}" hidden="{{(ahh === undefined ? true : ahh) || false}}" id="{{a}}"/>`,
+      `<image class="{{[ahc]}}" style="{{ahs}}" hidden="{{(ahh === undefined || ahh === '' ? true : ahh) || false}}" id="{{a}}"/>`,
       `(_ctx, _cache) => {
   return { a: _gei(_ctx, '') }
 }`,
@@ -129,7 +129,7 @@ describe('compiler: options with mergeVirtualHostAttributes', () => {
     )
     assert(
       `<image v-show="show"/>`,
-      `<image class=\"{{[ahc]}}\" style=\"{{ahs}}\" hidden=\"{{(ahh === undefined ? !a : ahh) || false}}\" id=\"{{b}}\"/>`,
+      `<image class=\"{{[ahc]}}\" style=\"{{ahs}}\" hidden=\"{{(ahh === undefined || ahh === '' ? !a : ahh) || false}}\" id=\"{{b}}\"/>`,
       `(_ctx, _cache) => {
   return { a: _ctx.show, b: _gei(_ctx, '') }
 }`,
@@ -224,7 +224,7 @@ describe('compiler: options with mergeVirtualHostAttributes', () => {
     )
     assert(
       `<custom-view v-show="show"><image /></custom-view>`,
-      `<custom-view u-s=\"{{['d']}}\" u-i=\"2a9ec0b0-0\" class=\"{{[ahc]}}\" ahc=\"{{[ahc]}}\" style=\"{{ahs}}\" ahs=\"{{ahs}}\" hidden=\"{{(ahh === undefined ? !a : ahh) || false}}\" ahh=\"{{(ahh === undefined ? !a : ahh) || false}}\" id=\"{{b}}\" ahid=\"{{b}}\"><image/></custom-view>`,
+      `<custom-view u-s=\"{{['d']}}\" u-i=\"2a9ec0b0-0\" class=\"{{[ahc]}}\" ahc=\"{{[ahc]}}\" style=\"{{ahs}}\" ahs=\"{{ahs}}\" hidden=\"{{(ahh === undefined || ahh === '' ? !a : ahh) || false}}\" ahh=\"{{(ahh === undefined || ahh === '' ? !a : ahh) || false}}\" id=\"{{b}}\" ahid=\"{{b}}\"><image/></custom-view>`,
       `(_ctx, _cache) => {
   return { a: _ctx.show, b: _gei(_ctx, '') }
 }`,
