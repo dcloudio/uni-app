@@ -25,13 +25,23 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     const path = useIcon(props)
     const root = (
       <div uni-icon="" uni-view="">
-        {path.value &&
-          path.value.d &&
+        {path.value?.f ? (
+          <i
+            class="uni-icon-font"
+            style={{
+              color: props.color || path.value.c,
+              fontSize: rpx2px(props.size) + 'px',
+            }}
+          >
+            {path.value.f}
+          </i>
+        ) : path.value?.d ? (
           createSvgIconVNode(
             path.value.d,
             props.color || path.value.c,
             rpx2px(props.size)
-          )}
+          )
+        ) : null}
       </div>
     )
     // Icon 没有专有方法，只需在外部 ref 可见前标记一次组件类型。

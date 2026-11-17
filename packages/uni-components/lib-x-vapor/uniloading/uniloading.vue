@@ -1,6 +1,7 @@
 <template>
 
 
+
   <uni-loading-element class="default __uni_loading_container__" ref="LoadingRef" style="display: flex;">
     <view class="__uni-loading__ __loading-4-3__" :class="{ '__uni-loading__paused': props.paused }" :style="loadingStyle"></view>
   </uni-loading-element>
@@ -66,7 +67,6 @@ defineOptions({
   }
 });
 
-// 当没有设置显式颜色时，遵循系统主题
 
 
 const LoadingRef = ref<HTMLElement | null>(null)

@@ -178,6 +178,9 @@ describe('框架 TSX 动态行为', () => {
           ICON_PATH_BACK: 'back',
           ICON_PATH_CLOSE: 'close',
           ICON_PATH_SEARCH: 'search',
+          ICON_FONT_BACK: '\ue601',
+          ICON_FONT_CLOSE: '\ue650',
+          ICON_FONT_SEARCH: '\uea23',
           invokeHook: jest.fn(),
         },
         '@dcloudio/uni-shared': {},
@@ -200,10 +203,9 @@ describe('框架 TSX 动态行为', () => {
       expect(backPath.getAttribute('fill')).toBe('none')
       expect(backPath.getAttribute('stroke-width')).toBe('2')
       expect(
-        host
-          .querySelector('.uni-page-head-btn-select svg path')!
-          .getAttribute('stroke-width')
-      ).toBe('2')
+        host.querySelector('.uni-page-head-btn-select .uni-icon-font')!
+          .textContent
+      ).toBe('\ue601')
       navigationBar.titleText = '新标题'
       await vue.nextTick()
       expect(host.querySelector('.uni-page-head__title')!.textContent).toBe(

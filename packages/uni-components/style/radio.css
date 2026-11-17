@@ -41,7 +41,8 @@ uni-radio[disabled] {
   }
 }
 
-.uni-radio-input svg {
+.uni-radio-input svg,
+.uni-radio-input .uni-icon-font {
   color: #ffffff;
   font-size: 18px;
   position: absolute;
@@ -55,7 +56,8 @@ uni-radio[disabled] {
   border-color: #d1d1d1;
 }
 
-.uni-radio-input.uni-radio-input-disabled svg {
+.uni-radio-input.uni-radio-input-disabled svg,
+.uni-radio-input.uni-radio-input-disabled .uni-icon-font {
   color: #adadad;
 }
 
@@ -70,7 +72,8 @@ uni-radio[disabled] {
     border-color: #373737;
   }
 
-  uni-radio .uni-radio-input.uni-radio-input-disabled svg {
+  uni-radio .uni-radio-input.uni-radio-input-disabled svg,
+  uni-radio .uni-radio-input.uni-radio-input-disabled .uni-icon-font {
     color: #6b6b6b;
   }
 }

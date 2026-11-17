@@ -49,6 +49,13 @@ describe('Web Vapor Icon 原生宿主', () => {
   const apps: any[] = []
   const globals = new Map<string, any>()
   const upx2px = jest.fn((value: number) => value / 2)
+  const toRgb = (color: string) => {
+    const value = color.slice(1)
+    return `rgb(${parseInt(value.slice(0, 2), 16)}, ${parseInt(
+      value.slice(2, 4),
+      16
+    )}, ${parseInt(value.slice(4), 16)})`
+  }
 
   beforeAll(async () => {
     const { JSDOM } = jest.requireActual('jsdom')
@@ -204,14 +211,25 @@ describe('Web Vapor Icon 原生宿主', () => {
   }
 
   test.each([
-    ['success', 'SUCCESS', '#007aff'],
     ['success_no_circle', 'SUCCESS_NO_CIRCLE', '#007aff'],
     ['info', 'INFO', '#10aeff'],
     ['warn', 'WARN', '#f76260'],
+    ['search', 'SEARCH', '#b2b2b2'],
+  ])('%s 使用内置字体、默认颜色与尺寸', (type, key, color) => {
+    const { root } = mount({ type: () => type })
+    const font = root.querySelector('i')!
+    expect(root.querySelector('svg')).toBeNull()
+    expect(font.className).toContain('uni-icon-font')
+    expect(font.textContent).toBe(icons['ICON_FONT_' + key])
+    expect(font.style.fontSize).toBe('23px')
+    expect(font.style.color).toBe(toRgb(color))
+  })
+
+  test.each([
+    ['success', 'SUCCESS', '#007aff'],
     ['waiting', 'WAITING', '#10aeff'],
     ['cancel', 'CANCEL', '#f43530'],
     ['download', 'DOWNLOAD', '#007aff'],
-    ['search', 'SEARCH', '#b2b2b2'],
     ['clear', 'CLEAR', '#b2b2b2'],
   ])('%s 保留 SVG 路径、默认颜色与尺寸', (type, key, color) => {
     const { root } = mount({ type: () => type })
@@ -287,30 +305,41 @@ describe('Web Vapor Icon 原生宿主', () => {
     props.size = '40rpx'
     props.color = '#123456'
     await vue.nextTick()
-    let svg = root.querySelector('svg')!
-    expect(root.querySelectorAll('svg')).toHaveLength(1)
-    expect(svg.getAttribute('width')).toBe('20')
-    expect(svg.getAttribute('height')).toBe('20')
+    let font = root.querySelector('i')!
+    expect(root.querySelectorAll('svg')).toHaveLength(0)
+    expect(font.textContent).toBe(icons.ICON_FONT_WARN)
+    expect(font.style.fontSize).toBe('20px')
+    expect(font.style.color).toBe('rgb(18, 52, 86)')
     expect(upx2px).toHaveBeenCalledWith(40)
-    expect(svg.querySelector('path')!.getAttribute('d')).toBe(
-      icons.ICON_PATH_WARN
-    )
-    expect(svg.querySelector('path')!.getAttribute('fill')).toBe('#123456')
     for (const type of ['unknown', '', 'info']) {
       props.type = type
       await vue.nextTick()
-      expect(root.querySelectorAll('svg')).toHaveLength(type === 'info' ? 1 : 0)
+      expect(root.querySelectorAll('svg')).toHaveLength(0)
+      expect(root.querySelectorAll('i')).toHaveLength(type === 'info' ? 1 : 0)
       expect(node.value).toBe(root)
     }
     props.color = ''
+    props.type = 'waiting'
     props.size = '32px'
     await vue.nextTick()
-    svg = root.querySelector('svg')!
+    const svg = root.querySelector('svg')!
     expect(svg.getAttribute('width')).toBe('32')
     expect(svg.querySelector('path')!.getAttribute('fill')).toBe('#10aeff')
     expect(Object.getOwnPropertyDescriptor(root, 'uniTagName')).toEqual(
       descriptor
     )
+  })
+
+  test('X 构建不保留六个字体图标对应的 SVG 路径', async () => {
+    const code = await preprocess(components + 'vue/icon/useIcon.ts')
+    expect(code).toContain('ICON_FONT_SUCCESS_NO_CIRCLE')
+    expect(code).toContain('ICON_FONT_INFO')
+    expect(code).toContain('ICON_FONT_WARN')
+    expect(code).toContain('ICON_FONT_SEARCH')
+    expect(code).not.toContain('ICON_PATH_SUCCESS_NO_CIRCLE')
+    expect(code).not.toContain('ICON_PATH_INFO')
+    expect(code).not.toContain('ICON_PATH_WARN')
+    expect(code).not.toContain('ICON_PATH_SEARCH')
   })
 
   test('非 Vapor 保留旧宿主、mounted 绑定及 SVG helper', async () => {

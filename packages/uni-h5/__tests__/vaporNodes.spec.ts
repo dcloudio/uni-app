@@ -63,10 +63,6 @@ describe('Web Vapor 手写节点', () => {
     ['packages/uni-h5/src/service/api/ui/popup/utils.ts', 'createBlock'],
     ['packages/uni-core/src/helpers/icon-vdom.ts', 'createVNode'],
     [
-      'packages/uni-h5/src/service/api/ui/popup/toast-vdom.tsx',
-      'createSvgIconVNode',
-    ],
-    [
       'packages/uni-components/src/helpers/component-vdom.ts',
       'createElementBlock',
     ],

@@ -1,27 +1,55 @@
 import { type ExtractPropTypes, computed } from 'vue'
 import { PRIMARY_COLOR } from '@dcloudio/uni-shared'
 import {
+  ICON_FONT_INFO,
+  ICON_FONT_SEARCH,
+  ICON_FONT_SUCCESS_NO_CIRCLE,
+  ICON_FONT_WARN,
   ICON_PATH_CANCEL,
   ICON_PATH_CLEAR,
   ICON_PATH_DOWNLOAD,
+  ICON_PATH_SUCCESS,
+  ICON_PATH_WAITING,
+} from '@dcloudio/uni-core'
+//#if !_X_
+import {
   ICON_PATH_INFO,
   ICON_PATH_SEARCH,
-  ICON_PATH_SUCCESS,
   ICON_PATH_SUCCESS_NO_CIRCLE,
-  ICON_PATH_WAITING,
   ICON_PATH_WARN,
 } from '@dcloudio/uni-core'
+//#endif
 
 const INFO_COLOR = '#10aeff'
 const WARN_COLOR = '#f76260'
 const GREY_COLOR = '#b2b2b2'
 const CANCEL_COLOR = '#f43530'
 
+type Icon = {
+  c: string
+  d?: string
+  f?: string
+}
+
 const ICONS = {
   success: {
     d: ICON_PATH_SUCCESS,
     c: PRIMARY_COLOR,
   },
+  //#if _X_
+  success_no_circle: {
+    f: ICON_FONT_SUCCESS_NO_CIRCLE,
+    c: PRIMARY_COLOR,
+  },
+  info: {
+    f: ICON_FONT_INFO,
+    c: INFO_COLOR,
+  },
+  warn: {
+    f: ICON_FONT_WARN,
+    c: WARN_COLOR,
+  },
+  //#else
   success_no_circle: {
     d: ICON_PATH_SUCCESS_NO_CIRCLE,
     c: PRIMARY_COLOR,
@@ -34,6 +62,7 @@ const ICONS = {
     d: ICON_PATH_WARN,
     c: WARN_COLOR,
   },
+  //#endif
   waiting: {
     d: ICON_PATH_WAITING,
     c: INFO_COLOR,
@@ -46,10 +75,17 @@ const ICONS = {
     d: ICON_PATH_DOWNLOAD,
     c: PRIMARY_COLOR,
   },
+  //#if _X_
+  search: {
+    f: ICON_FONT_SEARCH,
+    c: GREY_COLOR,
+  },
+  //#else
   search: {
     d: ICON_PATH_SEARCH,
     c: GREY_COLOR,
   },
+  //#endif
   clear: {
     d: ICON_PATH_CLEAR,
     c: GREY_COLOR,
@@ -73,5 +109,7 @@ export const iconProps = {
 }
 
 export function useIcon(props: ExtractPropTypes<typeof iconProps>) {
-  return computed(() => ICONS[props.type as keyof typeof ICONS])
+  return computed(
+    () => ICONS[props.type as keyof typeof ICONS] as Icon | undefined
+  )
 }

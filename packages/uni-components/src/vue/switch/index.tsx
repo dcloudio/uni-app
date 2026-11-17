@@ -16,10 +16,7 @@ import { type UniLabelCtx, uniLabelKey } from '../label'
 import { useListeners } from '../../helpers/useListeners'
 import { useBooleanAttr } from '../../helpers/useBooleanAttr'
 import { UniElement } from '../../helpers/UniElement'
-import {
-  ICON_PATH_SUCCESS_NO_CIRCLE,
-  createSvgIconVNode,
-} from '@dcloudio/uni-core'
+import { createSuccessNoCircleIconVNode } from '../icon/createIcon'
 
 const props = {
   name: {
@@ -159,11 +156,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
             <div v-show={type === 'checkbox'} class="uni-checkbox-input">
               {realCheckValue
-                ? createSvgIconVNode(
-                    ICON_PATH_SUCCESS_NO_CIRCLE,
-                    props.color,
-                    22
-                  )
+                ? createSuccessNoCircleIconVNode(props.color, 22)
                 : ''}
             </div>
           </div>

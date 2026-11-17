@@ -24,15 +24,23 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     })
     //#endif
     return () => {
+      const icon = path.value
+      const size = rpx2px(props.size)
       return (
         <uni-icon ref={rootRef}>
-          {path.value &&
-            path.value.d &&
-            createSvgIconVNode(
-              path.value.d,
-              props.color || path.value.c,
-              rpx2px(props.size)
-            )}
+          {icon?.f ? (
+            <i
+              class="uni-icon-font"
+              style={{
+                color: props.color || icon.c,
+                fontSize: size + 'px',
+              }}
+            >
+              {icon.f}
+            </i>
+          ) : icon?.d ? (
+            createSvgIconVNode(icon.d, props.color || icon.c, size)
+          ) : null}
         </uni-icon>
       )
     }

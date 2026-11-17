@@ -10,10 +10,7 @@ import { uniFormKey } from '../form'
 import type { UniFormCtx } from '../form'
 import { uniLabelKey } from '../label'
 import type { UniLabelCtx } from '../label'
-import {
-  ICON_PATH_SUCCESS_NO_CIRCLE,
-  createSvgIconVNode,
-} from '@dcloudio/uni-core'
+import { createSuccessNoCircleIconVNode } from '../icon/createIcon'
 
 const props = {
   checked: {
@@ -201,8 +198,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             style={radioStyle}
           >
             {realCheckValue
-              ? createSvgIconVNode(
-                  ICON_PATH_SUCCESS_NO_CIRCLE,
+              ? createSuccessNoCircleIconVNode(
                   props.disabled ? 'currentColor' : iconColor,
                   18
                 )

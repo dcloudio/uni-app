@@ -30,7 +30,8 @@ uni-checkbox[disabled] {
   position: relative;
 }
 
-.uni-checkbox-input svg {
+.uni-checkbox-input svg,
+.uni-checkbox-input .uni-icon-font {
   color: #007aff;
   font-size: 22px;
   position: absolute;
@@ -49,7 +50,8 @@ uni-checkbox[disabled] {
   background-color: #e1e1e1;
 }
 
-.uni-checkbox-input.uni-checkbox-input-disabled svg {
+.uni-checkbox-input.uni-checkbox-input-disabled svg,
+.uni-checkbox-input.uni-checkbox-input-disabled .uni-icon-font {
   color: #adadad;
 }
 
@@ -68,7 +70,8 @@ uni-checkbox-group {
     border-color: #373737;
   }
 
-  uni-checkbox .uni-checkbox-input.uni-checkbox-input-disabled svg {
+  uni-checkbox .uni-checkbox-input.uni-checkbox-input-disabled svg,
+  uni-checkbox .uni-checkbox-input.uni-checkbox-input-disabled .uni-icon-font {
     color: #6b6b6b;
   }
 }

@@ -120,7 +120,12 @@ uni-page-head {
   transform: scale(0.7) translate(40%, -40%);
 }
 
-.uni-page-head-btn-select svg {
+.uni-page-head-btn-select .uni-icon-font {
+  display: inline-block;
+}
+
+.uni-page-head-btn-select svg,
+.uni-page-head-btn-select .uni-icon-font {
   vertical-align: middle;
   margin-left: 2px;
   transform: rotate(270deg) scale(0.8);
