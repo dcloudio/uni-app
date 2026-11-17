@@ -300,9 +300,11 @@ defineExpose({
     let lastScrollTimestamp = 0
     let lastScrollOffset = 0
     let maxItemSize = 100
-    let originalCachedSize = maxItemSize * 2
-    let cachedSizeStart = originalCachedSize
-    let cachedSizeEnd = originalCachedSize
+    // Web 原生滚动与 JS 渲染、布局并不同步；缓冲缩到 0 可能使 item 更频繁地回收、重建，
+    // 缩小已就绪内容的覆盖范围，放大快速滚动时出现空白的风险。
+    // 因此快滚、scroll-into-view 等阶段也始终保留双向缓冲，大小为历史最大实测 item 高度的倍数。
+    const cachedSizeMultiplier = 4
+    let cachedSize = maxItemSize * cachedSizeMultiplier
     let scrolling = false
     let scrollEndTimer : ReturnType<typeof setTimeout> | undefined
     let queued = false
@@ -372,10 +374,7 @@ defineExpose({
         if (!item || item.size === height) return
         if (height > maxItemSize) {
             maxItemSize = height
-            originalCachedSize = maxItemSize * 2
-            // 与 C++ 一致，快滚或目标定位期间已关闭的缓冲区保持为 0。
-            if (cachedSizeStart > 0) cachedSizeStart = originalCachedSize
-            if (cachedSizeEnd > 0) cachedSizeEnd = originalCachedSize
+            cachedSize = maxItemSize * cachedSizeMultiplier
         }
         item.size = height
         store.rebuildItemOffsetsFrom(item.index + 1)
@@ -439,7 +438,6 @@ defineExpose({
         if (scrollTarget) {
             pendingScrollId = ''
             maintainInitialScrollBottom = false
-            cachedSizeStart = 0
             targetOffset = -1
         }
     }
@@ -505,7 +503,7 @@ defineExpose({
             0,
             scrollOffset -
             headerSize -
-            cachedSizeStart +
+            cachedSize +
             itemSizeChangedCompensation +
             0.2,
         )
@@ -513,7 +511,7 @@ defineExpose({
             scrollOffset -
             headerSize +
             size +
-            cachedSizeEnd +
+            cachedSize +
             itemSizeChangedCompensation -
             0.2
         store.updateItemOffset(fastScrollOffset - itemSizeChangedCompensation)
@@ -567,8 +565,6 @@ defineExpose({
         const elapsed = timestamp - lastScrollTimestamp
         const delta = offset - lastScrollOffset
         realScrollOffset = offset
-        cachedSizeStart = scrollTarget ? 0 : originalCachedSize
-        cachedSizeEnd = originalCachedSize
         const fast =
             sectionMap.size === 0 &&
             !scrollTarget &&
@@ -578,8 +574,6 @@ defineExpose({
             offset > 1 &&
             offset < element.scrollHeight - size - 1
         if (fast) {
-            if (delta > 0) cachedSizeStart = 0
-            else cachedSizeEnd = 0
             scrollOffset += Math.sign(delta) * Math.min(Math.abs(delta), 120)
             fastScrollOffset = offset - scrollOffset
         } else {
@@ -605,8 +599,6 @@ defineExpose({
         scrollOffset = realScrollOffset
         fastScrollOffset = 0
         lastScrollTimestamp = 0
-        cachedSizeStart = originalCachedSize
-        cachedSizeEnd = originalCachedSize
         updateRenderList()
         scrollTarget = undefined
         updateScrollAnchorItem()

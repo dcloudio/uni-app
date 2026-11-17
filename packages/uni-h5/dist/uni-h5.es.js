@@ -27780,11 +27780,17 @@ function usePageHeadTransparent(headRef, {
     }
     if (alpha > 0.5 && A <= 0.5) {
       iconElemsPaths.forEach(function(iconElemPath) {
-        iconElemPath.setAttribute("fill", titleColor);
+        iconElemPath.setAttribute(
+          iconElemPath.getAttribute("fill") === "none" ? "stroke" : "fill",
+          titleColor
+        );
       });
     } else if (alpha <= 0.5 && A > 0.5) {
       iconElemsPaths.forEach(function(iconElemPath) {
-        iconElemPath.setAttribute("fill", "#fff");
+        iconElemPath.setAttribute(
+          iconElemPath.getAttribute("fill") === "none" ? "stroke" : "fill",
+          "#fff"
+        );
       });
     }
     A = alpha;

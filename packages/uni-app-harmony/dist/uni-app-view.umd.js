@@ -14453,6 +14453,9 @@
     }
     return getFieldsValue;
   }
+  function createSuccessNoCircleIconVNode(color, size2) {
+    return createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, color, size2);
+  }
   var props$q = {
     checked: {
       type: [Boolean, String],
@@ -14581,7 +14584,7 @@
             "uni-checkbox-input-disabled": props2.disabled
           }],
           "style": checkboxStyle.value
-        }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "currentColor" : props2.foreColor || props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["id", "onClick"]);
+        }, [realCheckValue ? createSuccessNoCircleIconVNode(props2.disabled ? "currentColor" : props2.foreColor || props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["id", "onClick"]);
       };
     }
   });
@@ -15783,9 +15786,17 @@
       var rootRef = ref(null);
       var path = useIcon(props2);
       return () => {
+        var icon = path.value;
+        var size2 = rpx2px(props2.size);
         return createVNode("uni-icon", {
           "ref": rootRef
-        }, [path.value && path.value.d && createSvgIconVNode(path.value.d, props2.color || path.value.c, rpx2px(props2.size))], 512);
+        }, [icon !== null && icon !== void 0 && icon.f ? createVNode("i", {
+          "class": "uni-icon-font",
+          "style": {
+            color: props2.color || icon.c,
+            fontSize: size2 + "px"
+          }
+        }, [icon.f], 4) : icon !== null && icon !== void 0 && icon.d ? createSvgIconVNode(icon.d, props2.color || icon.c, size2) : null], 512);
       };
     }
   });
@@ -19815,7 +19826,7 @@
             "uni-radio-input-disabled": props2.disabled
           }],
           "style": radioStyle
-        }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "currentColor" : iconColor, 18) : ""], 6), slots.default && slots.default()], 4)], 16, ["id", "onClick"]);
+        }, [realCheckValue ? createSuccessNoCircleIconVNode(props2.disabled ? "currentColor" : iconColor, 18) : ""], 6), slots.default && slots.default()], 4)], 16, ["id", "onClick"]);
       };
     }
   });
@@ -22206,7 +22217,7 @@
           "style": switchInputStyle
         }, null, 6), [[vShow, type === "switch"]]), withDirectives(createVNode("div", {
           "class": "uni-checkbox-input"
-        }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.color, 22) : ""], 512), [[vShow, type === "checkbox"]])])], 16, ["id", "onClick"]);
+        }, [realCheckValue ? createSuccessNoCircleIconVNode(props2.color, 22) : ""], 512), [[vShow, type === "checkbox"]])])], 16, ["id", "onClick"]);
       };
     }
   });

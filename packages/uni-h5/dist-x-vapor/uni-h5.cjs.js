@@ -8572,6 +8572,7 @@ class RecycleListItemDataStore {
 const t0$i = Vue.template("<div uni-view></div>");
 const t1$9 = Vue.template('<div uni-view style="position: relative; overflow: visible; overflow-anchor: none"><div uni-view style="width: 1px; flex-shrink: 0;"></div></div>');
 const _uniListViewElement = { value: "LIST-VIEW" };
+const cachedSizeMultiplier = 4;
 const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "list-view",
@@ -8605,9 +8606,7 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
     let lastScrollTimestamp = 0;
     let lastScrollOffset = 0;
     let maxItemSize = 100;
-    let originalCachedSize = maxItemSize * 2;
-    let cachedSizeStart = originalCachedSize;
-    let cachedSizeEnd = originalCachedSize;
+    let cachedSize = maxItemSize * cachedSizeMultiplier;
     let scrolling = false;
     let scrollEndTimer;
     let queued = false;
@@ -8673,11 +8672,7 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
         return;
       if (height > maxItemSize) {
         maxItemSize = height;
-        originalCachedSize = maxItemSize * 2;
-        if (cachedSizeStart > 0)
-          cachedSizeStart = originalCachedSize;
-        if (cachedSizeEnd > 0)
-          cachedSizeEnd = originalCachedSize;
+        cachedSize = maxItemSize * cachedSizeMultiplier;
       }
       item.size = height;
       store.rebuildItemOffsetsFrom(item.index + 1);
@@ -8738,7 +8733,6 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
       if (scrollTarget) {
         pendingScrollId = "";
         maintainInitialScrollBottom = false;
-        cachedSizeStart = 0;
         targetOffset = -1;
       }
     }
@@ -8781,9 +8775,9 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
       }
       const min = Math.max(
         0,
-        scrollOffset - headerSize - cachedSizeStart + itemSizeChangedCompensation + 0.2
+        scrollOffset - headerSize - cachedSize + itemSizeChangedCompensation + 0.2
       );
-      const max = scrollOffset - headerSize + size + cachedSizeEnd + itemSizeChangedCompensation - 0.2;
+      const max = scrollOffset - headerSize + size + cachedSize + itemSizeChangedCompensation - 0.2;
       store.updateItemOffset(fastScrollOffset - itemSizeChangedCompensation);
       updateRenderInfo(...store.getRenderRange(min, max));
       for (const section of sections) {
@@ -8832,14 +8826,8 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
       const elapsed = timestamp - lastScrollTimestamp;
       const delta = offset - lastScrollOffset;
       realScrollOffset = offset;
-      cachedSizeStart = scrollTarget ? 0 : originalCachedSize;
-      cachedSizeEnd = originalCachedSize;
       const fast = sectionMap.size === 0 && !scrollTarget && lastScrollTimestamp > 0 && elapsed > 0 && Math.abs(delta / elapsed) > 15 && offset > 1 && offset < element.scrollHeight - size - 1;
       if (fast) {
-        if (delta > 0)
-          cachedSizeStart = 0;
-        else
-          cachedSizeEnd = 0;
         scrollOffset += Math.sign(delta) * Math.min(Math.abs(delta), 120);
         fastScrollOffset = offset - scrollOffset;
       } else {
@@ -8864,8 +8852,6 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
       scrollOffset = realScrollOffset;
       fastScrollOffset = 0;
       lastScrollTimestamp = 0;
-      cachedSizeStart = originalCachedSize;
-      cachedSizeEnd = originalCachedSize;
       updateRenderList();
       scrollTarget = void 0;
       updateScrollAnchorItem();
