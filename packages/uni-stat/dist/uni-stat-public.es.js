@@ -397,6 +397,8 @@ function resolveUniRuntime() {
  */
 const TAG = '[uni统计 2.0]';
 let runtimeDebug;
+/** 服务端统计开关未确认或已关闭时，屏蔽 SDK 自身全部日志。 */
+let reportingEnabled = true;
 /**
  * 是否屏蔽 info / warn / error。
  * `undefined`：自动——`NODE_ENV === 'test'` 时默认屏蔽，避免 Jest 用例预期失败路径刷屏。
@@ -502,6 +504,8 @@ function setMuteNonDebug(value) {
  * 输出到 console：Android/iOS 真机整行单参；其余平台 `TAG` + 多参。
  */
 function emitConsole(method, args) {
+    if (!reportingEnabled)
+        return;
     if (method !== 'log' && isNonDebugMuted())
         return;
     const fn = console[method];
@@ -526,6 +530,8 @@ function emitConsole(method, args) {
  *      （历史插件兼容路径）。
  */
 function isDebug() {
+    if (!reportingEnabled)
+        return false;
     if (runtimeDebug !== undefined)
         return runtimeDebug;
     const v = process.env.UNI_STAT_DEBUG;
@@ -536,6 +542,9 @@ function isDebug() {
  */
 function setDebug(value) {
     runtimeDebug = value;
+}
+function setReportingEnabled(value) {
+    reportingEnabled = value;
 }
 const logger = {
     debug(...args) {
@@ -559,6 +568,7 @@ const logger = {
     setDebug,
     isDebug,
     setMuteNonDebug,
+    setReportingEnabled,
 };
 
 /**
@@ -2260,6 +2270,705 @@ function getPushClientId(opts = {}) {
 }
 
 /**
+ * 系统信息适配。
+ *
+ * 私有版的痛点（参考缺陷清单 #14、#18）：
+ *   - `utils/util.js` 顶层 `export const sys = uni.getSystemInfoSync()`：模块加载即执行
+ *     `uni.getSystemInfoSync`，SSR / 单测 / nvue 早期阶段会直接抛错。
+ *   - `lang / ww / wh` 等"可变"字段被一同缓存，用户切换系统语言或旋转屏幕后字段失真。
+ *
+ * 公有版职责：
+ *   1. `getSystemInfo()` 懒加载 + 缓存（不可变字段：brand/md/sv/v/ut/on …）。
+ *   2. `getLocaleAndScreen()` 实时取（lang + ww/wh + sw/sh + pr）—— 修复缺陷 #18。
+ *   3. SSR/单测：任一 API 不存在或抛错时，返回安全空对象，绝不抛。
+ *   4. `__resetCache()`：仅供测试，重置缓存。
+ *
+ * 小程序新基础库对 `getSystemInfoSync` 做了能力拆分，部分字段为空或恒为 0。
+ * 因此优先通过 `uni.getDeviceInfo / getAppBaseInfo / getWindowInfo` 取对应信息，
+ * 再以 `uni.getSystemInfoSync` 合并兜底（与 uni-app 运行时、uni-api 侧实践一致）。
+ *
+ * **小程序注意**：`uni` 常由构建注入在模块作用域，仅读 `globalThis.uni` 会取不到
+ * 任何 API；必须通过 `resolveUniRuntime()` 与 `package.ts` 等 adapter 对齐。
+ * 微信系再叠一层 `wx.getDeviceInfo / getAppBaseInfo / getWindowInfo`（与 `uni-api`
+ * `upx2px` 一致），避免 `uni` 代理未就绪时宽高全 0。
+ */
+let cachedStatic = null;
+/**
+ * 解析 `uni` 根对象：优先 `globalThis.uni`，再回退宿主注入的模块级 `uni`。
+ *
+ * @see `infra/uniRuntime.ts` 说明（小程序上仅读 globalThis 会静默失败）。
+ */
+function getUni$7() {
+    const u = resolveUniRuntime();
+    return u != null && typeof u === 'object' ? u : undefined;
+}
+/**
+ * 微信系宿主上再取一层原生拆分 API，与 `uni` 合并结果再叠加以补全字段。
+ *
+ * @returns 已按 sync→device→app→window 合并过的一条快照；非微信系返回 `null`。
+ */
+function mergeWxHostSnapshots() {
+    const raw = getRawPlatform();
+    if (raw !== 'mp-weixin' && raw !== 'mp-qq')
+        return null;
+    const wxHost = getGlobalObject().wx;
+    if (!wxHost)
+        return null;
+    const sync = typeof wxHost.getSystemInfoSync === 'function'
+        ? tryRun(() => wxHost.getSystemInfoSync(), null)
+        : null;
+    const device = typeof wxHost.getDeviceInfo === 'function'
+        ? tryRun(() => wxHost.getDeviceInfo(), null)
+        : null;
+    const appBase = typeof wxHost.getAppBaseInfo === 'function'
+        ? tryRun(() => wxHost.getAppBaseInfo(), null)
+        : null;
+    const windowInfo = typeof wxHost.getWindowInfo === 'function'
+        ? tryRun(() => wxHost.getWindowInfo(), null)
+        : null;
+    return mergeSystemSnapshots(sync, device, appBase, windowInfo);
+}
+/**
+ * 从左到右浅合并多个快照：后者非 `undefined` / `null` 的键覆盖前者。
+ *
+ * 合并顺序为「sync → device → appBase → window」，使拆分 API 覆盖宿主裁剪后的
+ * `getSystemInfoSync` 残缺字段。
+ */
+function mergeSystemSnapshots(...parts) {
+    const out = {};
+    for (const p of parts) {
+        if (!p)
+            continue;
+        for (const k of Object.keys(p)) {
+            const v = p[k];
+            if (v !== undefined && v !== null)
+                out[k] = v;
+        }
+    }
+    return out;
+}
+/**
+ * 聚合当前运行时的系统信息：先 `getSystemInfoSync` 打底，再叠拆分 API。
+ *
+ * 各 API 均经 `tryRun` 包裹，任一失败不影响其余来源。
+ */
+function mergedSystemInfo() {
+    const u = getUni$7();
+    const sync = u && typeof u.getSystemInfoSync === 'function'
+        ? tryRun(() => u.getSystemInfoSync(), null)
+        : null;
+    const device = u && typeof u.getDeviceInfo === 'function'
+        ? tryRun(() => u.getDeviceInfo(), null)
+        : null;
+    const appBase = u && typeof u.getAppBaseInfo === 'function'
+        ? tryRun(() => u.getAppBaseInfo(), null)
+        : null;
+    const windowInfo = u && typeof u.getWindowInfo === 'function'
+        ? tryRun(() => u.getWindowInfo(), null)
+        : null;
+    const fromUni = mergeSystemSnapshots(sync, device, appBase, windowInfo);
+    const fromWx = mergeWxHostSnapshots();
+    const merged = fromWx ? mergeSystemSnapshots(fromUni, fromWx) : fromUni;
+    return merged;
+}
+/**
+ * 读取 H5 运行时 `__uniConfig.appVersion`（manifest.versionName）。
+ *
+ * H5 发行摇树时模块加载期 `window.uni` 可能仍是 `{}` 空桩，`resolveUniRuntime`
+ * 无法调用 `getAppBaseInfo`；此时 `__uniConfig` 仍已由构建注入，可作为应用版本兜底。
+ */
+function resolveUniConfigAppVersion() {
+    return tryRun(() => {
+        const cfg = getGlobalObject().__uniConfig;
+        return typeof (cfg === null || cfg === void 0 ? void 0 : cfg.appVersion) === 'string' ? cfg.appVersion : '';
+    }, '');
+}
+/**
+ * 读取构建期注入的 `UNI_APP_VERSION_NAME`（manifest.versionName）。
+ *
+ * 须**直接**访问 `process.env.UNI_APP_VERSION_NAME`，以便 Vite define 静态替换；
+ * 经中间变量读取会导致发行包内始终为空（与 `install.ts#parseInjectedUniStatistics` 同理）。
+ */
+function resolveBuildTimeAppVersion() {
+    const raw = process.env.UNI_APP_VERSION_NAME;
+    return typeof raw === 'string' ? raw : '';
+}
+/**
+ * 解析上行用的应用版本 `appVersion`（对应 statData 字段 `v` 的主要回退来源）。
+ *
+ * 优先级：App 原生 `plus.runtime.version` → uni 拆分 API → H5 `__uniConfig` → 构建期 env。
+ */
+function resolveAppVersionForStat(plus, sys) {
+    var _a;
+    const fromPlus = (_a = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _a === void 0 ? void 0 : _a.version;
+    if (typeof fromPlus === 'string' && fromPlus)
+        return fromPlus;
+    const fromSys = sys.appVersion;
+    if (typeof fromSys === 'string' && fromSys)
+        return fromSys;
+    const fromUniConfig = resolveUniConfigAppVersion();
+    if (fromUniConfig)
+        return fromUniConfig;
+    return resolveBuildTimeAppVersion();
+}
+/**
+ * 组装上行 `on`：优先厂商定制系统名（ROM），否则退回操作系统名 `osName`。
+ *
+ * App 端 `uni.getDeviceInfo` 会带出 `romName`/`romVersion`（见 uni-app-plus 原生 systemInfo）；
+ * 微信等小程序沙箱通常无 ROM 字段，此时与仅 `osName` 一致。
+ *
+ * @param sys `mergedSystemInfo()` 合并结果
+ * @returns 去首尾空白后的展示串；均无则空串
+ */
+function buildOnForStat(sys) {
+    const rom = typeof sys.romName === 'string' ? sys.romName.trim() : '';
+    if (rom) {
+        const romVer = typeof sys.romVersion === 'string' ? sys.romVersion.trim() : '';
+        return romVer ? `${rom} ${romVer}`.trim() : rom;
+    }
+    return typeof sys.osName === 'string' ? sys.osName.trim() : '';
+}
+/**
+ * 取静态系统信息（懒加载 + 缓存）。
+ *
+ * 字段映射策略：
+ *   - `brand / md`：优先 `deviceBrand`/`deviceModel`（拆分 API），再退化 `brand`/`model`。
+ *   - `sv / v / sdkVersion`：优先 `osVersion`、`hostVersion`、`hostSDKVersion`，兼容旧字段。
+ *   - `osP`：由 `platform` / `osName` / `system` 经 `normalizeStatOsP` 得到，供上行 `p`。
+ *   - `mpvHostVersion`：`hostVersion ?? version`，与私有版 `sys.version` 同源。
+ *   - `on`：`buildOnForStat`（优先 `romName`/`romVersion`，否则 `osName`），供上行 `on`。
+ *   - `appVersion`：见 `resolveAppVersionForStat`（H5 发行空桩时回退 `__uniConfig` / 构建 env）。
+ *   - 缺失统一空字符串或 0，避免上行 JSON 丢字段语义。
+ */
+function getSystemInfo() {
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t;
+    if (cachedStatic)
+        return cachedStatic;
+    const sys = mergedSystemInfo();
+    const plus = getGlobalObject().plus;
+    const appVersion = resolveAppVersionForStat(plus, sys);
+    cachedStatic = {
+        brand: (_b = (_a = sys.deviceBrand) !== null && _a !== void 0 ? _a : sys.brand) !== null && _b !== void 0 ? _b : '',
+        md: (_d = (_c = sys.deviceModel) !== null && _c !== void 0 ? _c : sys.model) !== null && _d !== void 0 ? _d : '',
+        sv: (_f = (_e = sys.osVersion) !== null && _e !== void 0 ? _e : sys.system) !== null && _f !== void 0 ? _f : '',
+        v: (_h = (_g = sys.hostVersion) !== null && _g !== void 0 ? _g : sys.version) !== null && _h !== void 0 ? _h : '',
+        ut: ((_j = sys.deviceType) !== null && _j !== void 0 ? _j : 'unknown'),
+        appVersion,
+        appWgtVersion: (_p = (_o = (_l = (_k = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _k === void 0 ? void 0 : _k.appWgtVersion) !== null && _l !== void 0 ? _l : (_m = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _m === void 0 ? void 0 : _m.appWgtRevision) !== null && _o !== void 0 ? _o : sys.appWgtVersion) !== null && _p !== void 0 ? _p : '',
+        mpvHostVersion: ((_r = (_q = sys.hostVersion) !== null && _q !== void 0 ? _q : sys.version) !== null && _r !== void 0 ? _r : '').trim(),
+        on: buildOnForStat(sys),
+        sdkVersion: (_t = (_s = sys.hostSDKVersion) !== null && _s !== void 0 ? _s : sys.SDKVersion) !== null && _t !== void 0 ? _t : '',
+        statusBarHeight: typeof sys.statusBarHeight === 'number' ? sys.statusBarHeight : 0,
+        osP: normalizeStatOsP({
+            platform: sys.platform,
+            osName: sys.osName,
+            system: sys.system,
+        }),
+    };
+    return cachedStatic;
+}
+/**
+ * 取实时字段（lang / 窗口尺寸 / 屏幕尺寸 / dpr）。
+ *
+ * 每次调用重新走拆分 API + sync 合并，不复用缓存，避免旋转屏、改语言后失真。
+ */
+function getLocaleAndScreen() {
+    var _a, _b;
+    const sys = mergedSystemInfo();
+    const prRaw = typeof sys.pixelRatio === 'number'
+        ? sys.pixelRatio
+        : typeof sys.devicePixelRatio === 'number'
+            ? sys.devicePixelRatio
+            : 1;
+    return {
+        lang: ((_b = (_a = sys.hostLanguage) !== null && _a !== void 0 ? _a : sys.language) !== null && _b !== void 0 ? _b : '').replace(/_/g, '-'),
+        ww: typeof sys.windowWidth === 'number' ? sys.windowWidth : 0,
+        wh: typeof sys.windowHeight === 'number' ? sys.windowHeight : 0,
+        sw: typeof sys.screenWidth === 'number' ? sys.screenWidth : 0,
+        sh: typeof sys.screenHeight === 'number' ? sys.screenHeight : 0,
+        pr: prRaw > 0 ? prRaw : 1,
+    };
+}
+
+/**
+ * 网络类型适配。
+ *
+ * 公有版要求（`03-公有版架构设计.md` §5.9）：
+ *   - 返回 `Promise<NetResult>`，失败一律给默认值，**绝不**中断上报链路（修复缺陷 #10）。
+ *   - 提供 `onChange` 订阅，便于会话上下文里"网络切换 → 触发一次 sessionDirty"。
+ *
+ * 字段映射：上行字段 `net`，与私有版字段保持一致；可选值：
+ *   `wifi | 2g | 3g | 4g | 5g | ethernet | unknown | none`。
+ */
+const DEFAULT_RESULT = { net: 'unknown', raw: '' };
+/** 已知映射；命中外的统一归 unknown。 */
+const NET_MAP = {
+    wifi: 'wifi',
+    '2g': '2g',
+    '3g': '3g',
+    '4g': '4g',
+    '5g': '5g',
+    ethernet: 'ethernet',
+    none: 'none',
+    unknown: 'unknown',
+};
+function getUni$6() {
+    const u = resolveUniRuntime();
+    return u != null && typeof u === 'object' ? u : undefined;
+}
+/**
+ * 把 uni 原始 networkType 字符串归一化为 `NetType`。
+ *
+ * 抽出独立函数，便于上层直接复用（例如 `onChange` 回调里也要做归一）。
+ */
+function normalizeNet(raw) {
+    var _a;
+    if (typeof raw !== 'string' || raw.length === 0)
+        return 'unknown';
+    return (_a = NET_MAP[raw.toLowerCase()]) !== null && _a !== void 0 ? _a : 'unknown';
+}
+/**
+ * 异步取当前网络类型。
+ *
+ * 一律 resolve（永不 reject）：
+ *   - uni 缺失 / 调用抛错 / fail 回调 / 超时 → resolve(`{ net: 'unknown', raw: '' }`）。
+ *   - 默认 1500ms 超时；防止 H5 端 navigator.connection 卡住采集链路。
+ */
+function getNet(timeoutMs = 1500) {
+    return new Promise((resolve) => {
+        const u = getUni$6();
+        if (!u || typeof u.getNetworkType !== 'function') {
+            resolve(DEFAULT_RESULT);
+            return;
+        }
+        let settled = false;
+        const finish = (r) => {
+            if (settled)
+                return;
+            settled = true;
+            resolve(r);
+        };
+        const timer = setTimeout(() => finish(DEFAULT_RESULT), timeoutMs);
+        tryRun(() => u.getNetworkType({
+            success: (res) => {
+                var _a;
+                clearTimeout(timer);
+                const raw = (_a = res === null || res === void 0 ? void 0 : res.networkType) !== null && _a !== void 0 ? _a : '';
+                finish({ net: normalizeNet(raw), raw });
+            },
+            fail: () => {
+                clearTimeout(timer);
+                finish(DEFAULT_RESULT);
+            },
+        }), undefined);
+    });
+}
+/**
+ * 订阅网络变化。返回 unsubscribe 函数，方便测试与运行时解绑。
+ *
+ * 注意：私有版直接调 `uni.onNetworkStatusChange` 但没有解绑，导致 nvue 多次 install 时
+ * 会注册多个回调（缺陷 #16）。公有版返回 unsubscribe 强制调用方持有；
+ * `runtime/install.ts` 会保证 install 多次时复用单实例。
+ */
+function onChange(cb) {
+    const u = getUni$6();
+    if (!u || typeof u.onNetworkStatusChange !== 'function') {
+        return () => {
+            /* noop */
+        };
+    }
+    const wrapped = (res) => {
+        var _a;
+        const raw = (_a = res === null || res === void 0 ? void 0 : res.networkType) !== null && _a !== void 0 ? _a : '';
+        const net = (res === null || res === void 0 ? void 0 : res.isConnected) === false ? 'none' : normalizeNet(raw);
+        tryRun(() => cb({ net, raw }), undefined);
+    };
+    // 注册本身也兜底：个别端 onNetworkStatusChange 同步抛错不应冒泡到调用方（与解绑对称）。
+    tryRun(() => u.onNetworkStatusChange(wrapped), undefined);
+    return () => {
+        if (typeof u.offNetworkStatusChange === 'function') {
+            tryRun(() => u.offNetworkStatusChange(wrapped), undefined);
+        }
+    };
+}
+
+/**
+ * 包信息适配（公有版新增字段 `tdaid / pkn / an`）。
+ *
+ * 详细矩阵参考 `04-字段字典与平台获取矩阵.md` §3。本模块职责：
+ *   - 启动时调用一次 `getPackageInfo()`，结果常驻内存；不入 storage。
+ *   - 每端分支独立函数，便于单测精准 mock。
+ *   - 任意端、任意 API 抛错 → 一律降级为 `''`，**绝不**抛出。
+ *
+ * 字段语义提示：
+ *   - `mpn`：兼容字段；各端「原生包名或小程序 appid」的统一口径（与文档 `mpn` 对齐）。
+ *   - `tdaid`：第三方平台 appid（如微信小程序 appid）。
+ *   - `pkn`：原生包名 / bundleId（App）；小程序无独立包名时为空串，**不与** tdaid 混填。
+ *   - `an`：应用展示名（App = plus.runtime.appname；小程序/H5 = `process.env.UNI_APP_NAME` 等）。
+ */
+let cached$1 = null;
+function getUni$5() {
+    const u = resolveUniRuntime();
+    return u != null && typeof u === 'object' ? u : undefined;
+}
+function getPlus() {
+    return getGlobalObject().plus;
+}
+function getAppBaseInfo() {
+    return tryRun(() => { var _a, _b, _c; return (_c = (_b = (_a = getUni$5()) === null || _a === void 0 ? void 0 : _a.getAppBaseInfo) === null || _b === void 0 ? void 0 : _b.call(_a)) !== null && _c !== void 0 ? _c : {}; }, {});
+}
+/**
+ * 取小程序系列的 tdaid。各端 API 不同：
+ *   - 微信/QQ：`uni.getAccountInfoSync().miniProgram.appId`（基础库 ≥ 1.10.0）。
+ *   - 支付宝：`my.getAppIdSync()`（部分版本可用）。
+ *   - 头条/飞书：`tt.getEnvInfoSync().microapp.appId`。
+ *   - 百度：`swan.getEnvInfoSync().common.appKey` 兜底。
+ *   - 其他端：暂时返回 ''；后续真机探测后再补。
+ *
+ * 任何分支抛错都返回 ''。
+ */
+function getMpTdaid(platform) {
+    const u = getUni$5();
+    switch (platform) {
+        case 'wx':
+        case 'qq': {
+            if (typeof (u === null || u === void 0 ? void 0 : u.getAccountInfoSync) === 'function') {
+                const id = tryRun(() => { var _a, _b; return (_b = (_a = u.getAccountInfoSync().miniProgram) === null || _a === void 0 ? void 0 : _a.appId) !== null && _b !== void 0 ? _b : ''; }, '');
+                if (id)
+                    return id;
+            }
+            const wxHost = getGlobalObject().wx;
+            if (typeof (wxHost === null || wxHost === void 0 ? void 0 : wxHost.getAccountInfoSync) === 'function') {
+                const id2 = tryRun(() => { var _a, _b; return (_b = (_a = wxHost.getAccountInfoSync().miniProgram) === null || _a === void 0 ? void 0 : _a.appId) !== null && _b !== void 0 ? _b : ''; }, '');
+                if (id2)
+                    return id2;
+            }
+            const envId = process.env.UNI_APP_ID;
+            return typeof envId === 'string' ? envId : '';
+        }
+        case 'ali':
+        case 'dt': {
+            const my = getGlobalObject().my;
+            if (!my)
+                return '';
+            const v1 = tryRun(() => { var _a, _b; return (_b = (_a = my.getAppIdSync) === null || _a === void 0 ? void 0 : _a.call(my)) !== null && _b !== void 0 ? _b : ''; }, '');
+            if (v1)
+                return v1;
+            return tryRun(() => { var _a, _b, _c; return (_c = (_b = (_a = my.getAccountInfoSync) === null || _a === void 0 ? void 0 : _a.call(my).miniProgram) === null || _b === void 0 ? void 0 : _b.appId) !== null && _c !== void 0 ? _c : ''; }, '');
+        }
+        case 'tt':
+        case 'lark': {
+            const tt = getGlobalObject().tt;
+            return tryRun(() => { var _a, _b, _c; return (_c = (_b = (_a = tt === null || tt === void 0 ? void 0 : tt.getEnvInfoSync) === null || _a === void 0 ? void 0 : _a.call(tt).microapp) === null || _b === void 0 ? void 0 : _b.appId) !== null && _c !== void 0 ? _c : ''; }, '');
+        }
+        case 'bd': {
+            const swan = getGlobalObject().swan;
+            return tryRun(() => { var _a, _b, _c; return (_c = (_b = (_a = swan === null || swan === void 0 ? void 0 : swan.getEnvInfoSync) === null || _a === void 0 ? void 0 : _a.call(swan).common) === null || _b === void 0 ? void 0 : _b.appKey) !== null && _c !== void 0 ? _c : ''; }, '');
+        }
+        default:
+            return '';
+    }
+}
+/**
+ * App 端 packageName / bundleId。
+ *
+ * Android 走 `plus.android.runtimeMainActivity().getPackageName()`；
+ * iOS 走 `plus.ios.bundleId`，缺失时退化 `plus.runtime.appid`；
+ * HarmonyOS 暂时取 `plus.runtime.appid` 兜底（待 OS API 稳定后扩展）。
+ */
+function getAppPkn() {
+    var _a, _b, _c;
+    const plus = getPlus();
+    if (!plus)
+        return '';
+    const osName = (_c = (_b = (_a = plus.os) === null || _a === void 0 ? void 0 : _a.name) === null || _b === void 0 ? void 0 : _b.toLowerCase()) !== null && _c !== void 0 ? _c : '';
+    if (osName.includes('android')) {
+        return tryRun(() => { var _a, _b, _c, _d, _e; return (_e = (_d = (_c = (_b = (_a = plus.android) === null || _a === void 0 ? void 0 : _a.runtimeMainActivity) === null || _b === void 0 ? void 0 : _b.call(_a)) === null || _c === void 0 ? void 0 : _c.getPackageName) === null || _d === void 0 ? void 0 : _d.call(_c)) !== null && _e !== void 0 ? _e : ''; }, '');
+    }
+    if (osName === 'ios' || osName === 'iphone os') {
+        const v = tryRun(() => { var _a, _b; return (_b = (_a = plus.ios) === null || _a === void 0 ? void 0 : _a.bundleId) !== null && _b !== void 0 ? _b : ''; }, '');
+        return v || tryRun(() => { var _a, _b; return (_b = (_a = plus.runtime) === null || _a === void 0 ? void 0 : _a.appid) !== null && _b !== void 0 ? _b : ''; }, '');
+    }
+    return tryRun(() => { var _a, _b; return (_b = (_a = plus.runtime) === null || _a === void 0 ? void 0 : _a.appid) !== null && _b !== void 0 ? _b : ''; }, '');
+}
+/**
+ * 取 plus.runtime.appname / plus.runtime.name。
+ *
+ * 旧版本 plus 上字段名不一致，两个都试一次。
+ */
+function getAppName() {
+    const plus = getPlus();
+    if (!plus)
+        return '';
+    return (tryRun(() => { var _a, _b; return (_b = (_a = plus.runtime) === null || _a === void 0 ? void 0 : _a.appname) !== null && _b !== void 0 ? _b : ''; }, '') ||
+        tryRun(() => { var _a, _b; return (_b = (_a = plus.runtime) === null || _a === void 0 ? void 0 : _a.name) !== null && _b !== void 0 ? _b : ''; }, ''));
+}
+/**
+ * 取编译期注入的 UNI_APP_NAME。
+ *
+ * `plugin/index.ts` 后续会读取 `manifest.json#name` 注入此字段；当前若未注入返回 ''。
+ */
+function getEnvAppName() {
+    var _a;
+    return (_a = process.env.UNI_APP_NAME) !== null && _a !== void 0 ? _a : '';
+}
+/**
+ * 取 H5 端应用名：优先编译期注入，回退 `document.title`。
+ */
+function getH5AppName() {
+    const env = getEnvAppName();
+    if (env)
+        return env;
+    return tryRun(() => {
+        var _a, _b;
+        return (_b = (_a = getGlobalObject().document) === null || _a === void 0 ? void 0 : _a.title) !== null && _b !== void 0 ? _b : '';
+    }, '');
+}
+/**
+ * 启动时获取一次包信息；结果缓存于内存。
+ *
+ * 所有字段保证返回 `string`；缺失统一为 `''`，符合 `domain/statData.ts` 的字段处理约定。
+ */
+function getPackageInfo() {
+    if (cached$1)
+        return cached$1;
+    const platform = getPlatform();
+    let mpn = '';
+    let tdaid = '';
+    let pkn = '';
+    let an = '';
+    if (isApp()) {
+        const base = getAppBaseInfo();
+        if (isVaporStatRuntime()) {
+            // uni-app x Vapor 不提供 plus，只读取当前已公开的 getAppBaseInfo 字段。
+            tdaid = base.appId || '';
+            pkn =
+                base.packageName ||
+                    base.bundleId ||
+                    base.bundleName ||
+                    base.hostPackageName ||
+                    '';
+            an = base.appName || getEnvAppName();
+        }
+        else {
+            tdaid =
+                tryRun(() => { var _a, _b, _c; return (_c = (_b = (_a = getPlus()) === null || _a === void 0 ? void 0 : _a.runtime) === null || _b === void 0 ? void 0 : _b.appid) !== null && _c !== void 0 ? _c : ''; }, '') || base.appId || '';
+            pkn = getAppPkn() || base.hostPackageName || tdaid;
+            an = getAppName() || base.appName || getEnvAppName();
+        }
+        mpn = pkn || tdaid;
+    }
+    else if (isMp()) {
+        tdaid = getMpTdaid(platform);
+        pkn = '';
+        an = getEnvAppName();
+        mpn =
+            tdaid ||
+                (typeof process.env.UNI_APP_ID === 'string' ? process.env.UNI_APP_ID : '');
+    }
+    else if (isH5()) {
+        tdaid = '';
+        pkn = '';
+        an = getH5AppName();
+        mpn = '';
+    }
+    else {
+        // unknown / 快应用等：尝试 env 注入即可
+        tdaid = '';
+        pkn = '';
+        an = getEnvAppName();
+        mpn = '';
+    }
+    cached$1 = { mpn, tdaid, pkn, an };
+    return cached$1;
+}
+
+/**
+ * App 渠道包标识适配（对齐私有版 `utils/pageInfo.js#get_channel`）。
+ *
+ * VDOM App 读取 `plus.runtime.channel`；Vapor App 不提供 plus，改读
+ * `uni.getAppBaseInfo().channel`。
+ *
+ * 职责：
+ *   - App 端按 VDOM / Vapor 选择对应渠道 API。
+ *   - 若构建期平台变量缺失但运行时已存在 `plus.runtime`，也信任原生运行时作为 App 信号。
+ *   - 任意 API 缺失 / 抛错 → 降级 `''`，不阻断 install。
+ *   - 返回值统一为 `string`（原生偶发返回数字时转为字符串）。
+ */
+/**
+ * 将原生渠道值规范为上行用的字符串。
+ *
+ * @param value `plus.runtime.channel` 原值。
+ * @returns 非空字符串；无法识别时返回 `''`。
+ */
+function normalizeChannelValue(value) {
+    if (typeof value === 'string')
+        return value;
+    if (typeof value === 'number' && Number.isFinite(value))
+        return String(value);
+    return '';
+}
+/**
+ * 读取 App 渠道包标识。
+ *
+ * 与私有版 `get_channel()` 对齐：仅原生 App 有意义；小程序 / H5 恒为 `''`。
+ *
+ * @returns 渠道字符串；未配置或读取失败时为 `''`。
+ */
+function getAppChannel() {
+    if (isVaporStatRuntime()) {
+        if (!isApp())
+            return '';
+        const u = resolveUniRuntime();
+        return normalizeChannelValue(tryRun(() => { var _a; return (_a = u === null || u === void 0 ? void 0 : u.getAppBaseInfo) === null || _a === void 0 ? void 0 : _a.call(u).channel; }, undefined));
+    }
+    const plus = getGlobalObject().plus;
+    if (!isApp() && !(plus === null || plus === void 0 ? void 0 : plus.runtime))
+        return '';
+    const raw = tryRun(() => { var _a; return (_a = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _a === void 0 ? void 0 : _a.channel; }, undefined);
+    return normalizeChannelValue(raw);
+}
+
+/**
+ * H5 / Web 平台适配。
+ *
+ * 职责：采集仅 Web 端有意义的上行字段原料（如含协议的页面域名 `domain`）。
+ * 非 H5 或运行时无 `window.location` 时一律返回空串，不抛错。
+ */
+const EMPTY_WEB_INFO = { domain: '' };
+let cached = null;
+/**
+ * 从 `location` 解析上行 `domain`（`https://host` / `http://host` 形式）。
+ *
+ * 仅 `http:` / `https:` 协议有效；`file:` 等返回空串。
+ */
+function readWebDomainFromLocation(loc) {
+    const protocol = typeof loc.protocol === 'string' ? loc.protocol.toLowerCase() : '';
+    if (protocol !== 'http:' && protocol !== 'https:')
+        return '';
+    if (typeof loc.origin === 'string' && loc.origin.trim()) {
+        return loc.origin.trim();
+    }
+    const host = typeof loc.host === 'string' && loc.host.trim()
+        ? loc.host.trim()
+        : typeof loc.hostname === 'string'
+            ? loc.hostname.trim()
+            : '';
+    if (!host)
+        return '';
+    return `${protocol}//${host}`;
+}
+/**
+ * 读取 H5 页面 Web 信息。
+ *
+ * 非 H5、SSR 或无 `location` 时 `domain` 为空串。
+ * 结果在进程内缓存（SPA 内 origin 通常不变）。
+ */
+function getWebInfo() {
+    if (!isH5())
+        return EMPTY_WEB_INFO;
+    if (cached !== null)
+        return cached;
+    cached = tryRun(() => {
+        const win = getGlobalObject();
+        const loc = win.location;
+        if (!loc)
+            return EMPTY_WEB_INFO;
+        return { domain: readWebDomainFromLocation(loc) };
+    }, EMPTY_WEB_INFO);
+    return cached;
+}
+
+/**
+ * 公有版网络门闸（仅 `src/public` 使用，不与私有版 core 共用）。
+ *
+ * 能力：
+ *   1. `isNetworkOffline()`：基于 `uni.getNetworkType` 判断当前是否无网；
+ *   2. `onNetworkOnline(cb)`：基于 `uni.onNetworkStatusChange`，在恢复有网时回调。
+ *
+ * 判定：`net === 'none'` 为无网；`unknown` **不**当无网（避免误挂起）。
+ */
+let observedNetwork;
+let probingNetwork;
+let appForeground = true;
+/**
+ * 根据 NetResult 判断是否无网。
+ */
+function isOfflineNetResult(r) {
+    return r.net === 'none';
+}
+/**
+ * 先检查当前网络是否不可用。
+ */
+function isNetworkOffline() {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (observedNetwork)
+            return isOfflineNetResult(observedNetwork);
+        // App 已进入后台且没有可复用快照时，不主动触发原生网络查询。按 unknown/有网
+        // 继续走通道自身的失败重试，避免后台 getNetworkType 引发宿主崩溃。
+        if (isApp() && !appForeground && !probingNetwork)
+            return false;
+        if (!probingNetwork) {
+            const current = getNet();
+            probingNetwork = current;
+            const clear = () => {
+                if (probingNetwork === current)
+                    probingNetwork = undefined;
+            };
+            void current.then(clear, clear);
+        }
+        const r = yield probingNetwork;
+        // App 端原生 getNetworkType 在后台频繁调用可能不稳定。首次主动探测后复用快照，
+        // 后续网络切换由 onNetworkStatusChange 覆盖；非 App 端保持按需探测的旧语义。
+        if (isApp() && !observedNetwork)
+            observedNetwork = r;
+        return isOfflineNetResult(r);
+    });
+}
+/**
+ * 同步 App 前后台状态。
+ *
+ * 前台恢复时仅让离线快照失效：下一次 flush 会在前台安全地重新探测并恢复积压；
+ * 在线/unknown 快照继续复用，正常前后台切换不会增加 getNetworkType 调用。
+ *
+ * @returns 是否需要在前台主动补一次 flush / retry 恢复。
+ */
+function setNetworkForeground(foreground) {
+    if (!isApp())
+        return false;
+    const wasForeground = appForeground;
+    appForeground = foreground;
+    let clearedOffline = false;
+    if (foreground && observedNetwork && isOfflineNetResult(observedNetwork)) {
+        observedNetwork = undefined;
+        clearedOffline = true;
+    }
+    return foreground && (!wasForeground || clearedOffline);
+}
+/**
+ * 监听网络恢复为可用。返回 unsubscribe。
+ *
+ * @param cb 变为有网时触发（wifi/4g/...）；无网变化不触发。
+ */
+function onNetworkOnline(cb) {
+    // 新一轮订阅不能沿用上次 install 遗留的状态；首次 flush 会主动探测一次。
+    observedNetwork = undefined;
+    appForeground = true;
+    const off = onChange((r) => {
+        // 变化事件已经携带完整网络状态，后续 flush 直接复用，避免回调内再次
+        // getNetworkType，尤其避免 App 进入后台后的原生网络查询风暴。
+        observedNetwork = r;
+        if (isOfflineNetResult(r))
+            return;
+        cb();
+    });
+    return () => {
+        off();
+        observedNetwork = undefined;
+    };
+}
+
+/**
  * 生命周期 → collector 调度桥。
  *
  * 把 vue mixin / `uni.onAppShow|onAppHide` / push clientId 这些"运行时事件源"
@@ -2504,6 +3213,7 @@ function scheduleDeferredTitleSnapshot() {
  *   4. 兜底 onLaunch options 可能携带 scene / path（小程序）；path 透传成 lt=1 的 url。
  */
 function handleLaunch(app, options = {}, opts = {}, eventTimeSec) {
+    setNetworkForeground(true);
     const c = safeCollector(app);
     if (!c)
         return;
@@ -2593,6 +3303,17 @@ function tryConsumeBackgroundResume(app, options = {}, _opts = {}, _from = 'unkn
  *   3. 无 pending 时仅处理 scene 变化等（少见）。
  */
 function handleAppShow(app, options = {}, opts = {}, eventTimeSec, trustedAppShow = false) {
+    if (setNetworkForeground(true)) {
+        const c = safeCollector(app);
+        if (c) {
+            void c
+                .recoverRetry()
+                .catch((e) => logger.warn('[uni统计 2.0] retry after foreground failed', e));
+            void c
+                .flush(true)
+                .catch((e) => logger.warn('[uni统计 2.0] flush after network recheck failed', e));
+        }
+    }
     if (tryConsumeBackgroundResume(app, options, opts, 'handleAppShow', eventTimeSec, trustedAppShow))
         return;
     const c = safeCollector(app);
@@ -2630,6 +3351,7 @@ function handleAppShow(app, options = {}, opts = {}, eventTimeSec, trustedAppSho
  *   4. 进入后台后强制 flush（force=true），尽量在被 kill 前送出。
  */
 function handleAppHide(app, opts = {}, eventTimeSec) {
+    setNetworkForeground(false);
     if (state$1.pendingBackgroundResume)
         return;
     const c = safeCollector(app);
@@ -2892,7 +3614,7 @@ function handleError(app, e, eventTimeSec, rethrow = true) {
         }, 0);
     }, undefined);
 }
-function getUni$7() {
+function getUni$4() {
     const u = resolveUniRuntime();
     return u != null && typeof u === 'object' ? u : undefined;
 }
@@ -2944,7 +3666,7 @@ const uniAppHookRegistry = {
 function tryBindUniAppLifecycle(app, opts = {}) {
     if (!shouldBindUniAppLifecycle())
         return false;
-    const u = getUni$7();
+    const u = getUni$4();
     if (!u)
         return false;
     if (!uniAppHookRegistry.showBound && typeof u.onAppShow === 'function') {
@@ -2963,7 +3685,7 @@ function tryBindUniAppLifecycle(app, opts = {}) {
 function unbindUniAppLifecycle() {
     if (!uniAppHookRegistry.showBound && !uniAppHookRegistry.hideBound)
         return;
-    const cur = getUni$7();
+    const cur = getUni$4();
     if (uniAppHookRegistry.showBound &&
         uniAppHookRegistry.appShowCb &&
         (cur === null || cur === void 0 ? void 0 : cur.offAppShow)) {
@@ -3175,6 +3897,17 @@ const IMAGE_REPORT_DEFAULTS = {
     // projectId: '9fad19a2-b7f1-47f5-87ff-8621f545ab61',
     // topicId: '99b55c91-ed80-406e-b205-e9d18aca744d',
 };
+/**
+ * 服务端上报开关查询地址；返回 `{ ret: 0, enable: 0 | 1 }`。
+ *
+ * 开关仍由旧统计服务维护，不能复用 image 采集域名：采集域名的同路径接口不会
+ * 返回控制台配置的实时状态。
+ */
+const REPORT_CONTROL_URL = STAT_URL;
+/** 服务端上报开关本地缓存时长（与旧公有版保持一致：24 小时）。 */
+const REPORT_CONTROL_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
+/** 服务端上报开关单次查询超时。查询失败时按旧逻辑默认允许上报。 */
+const REPORT_CONTROL_TIMEOUT_MS = 10000;
 /**
  * uni-app appid。优先取构建期 `process.env.UNI_APP_ID`；未注入时返回 `''`，
  * 由调用方决定是否上报为 `'default'`。
@@ -3754,6 +4487,21 @@ function createCollector(deps) {
     let deferredFlushTimer = null;
     /** 合并冷启动与网络恢复同时触发的续传，避免同一 payload 重复发送。 */
     let recoveringRetry;
+    /** 合并自动 flush / app hide / 网络恢复等并发入口。 */
+    let flushing;
+    /** flush 进行中又收到任意 flush 请求时，完成后再检查一次队列。 */
+    let flushAfterCurrent = false;
+    /** flush 进行中又收到强制 flush 时，完成后再检查一次新入队数据。 */
+    let forceFlushAfterCurrent = false;
+    /** 服务端开关尚未返回时暂存已构建事件；不打印、不落盘。 */
+    let pendingReports = [];
+    /** undefined 表示首次服务端开关查询尚未完成。 */
+    let reportEnabled = deps.isReportEnabled
+        ? undefined
+        : true;
+    /** 合并采集、flush、续传并发触发的服务端开关查询。 */
+    let checkingReportGate;
+    let destroyed = false;
     /** 取消已安排的延迟首 flush（`flush(true)` 等显式调用前使用）。 */
     function cancelDeferredFlush() {
         if (deferredFlushTimer == null)
@@ -3773,12 +4521,12 @@ function createCollector(deps) {
             deferredFlushTimer = setTimeout(() => {
                 deferredFlushTimer = null;
                 firstFlushDone = true;
-                void flushImpl(false).catch((e) => logger.warn('[uni统计 2.0] auto-flush failed', e));
+                void runFlush(false).catch((e) => logger.warn('[uni统计 2.0] auto-flush failed', e));
             }, deferMs);
             return;
         }
         firstFlushDone = true;
-        void flushImpl(false).catch((e) => logger.warn('[uni统计 2.0] auto-flush failed', e));
+        void runFlush(false).catch((e) => logger.warn('[uni统计 2.0] auto-flush failed', e));
     }
     /**
      * 构造 EventContext 并入队。
@@ -3786,8 +4534,8 @@ function createCollector(deps) {
      * 不再附加 pid（上一会话 sid）：参数文档无该字段，新会话信息由 lt=1 自身的
      * `sid / cst / fvts / lvts / tvc` 表达。
      */
-    function report(input) {
-        tryRun(() => {
+    function prepareReport(input) {
+        return tryRun(() => {
             const t = typeof input.t === 'number' ? input.t : deps.nowSec();
             const snap = deps.session.getSnapshot();
             let sessionForCtx;
@@ -3805,7 +4553,11 @@ function createCollector(deps) {
                 t,
                 session: sessionForCtx,
             });
-            const data = deps.builder.build(ctx);
+            return deps.builder.build(ctx);
+        }, undefined);
+    }
+    function enqueueReport(data) {
+        tryRun(() => {
             // 调试日志打印完整对象（含空串）；入队发送侧去掉 '' 键以缩短 image URL
             logCollect(data);
             deps.queue.enqueue(omitEmptyStringFieldsForUpload(data));
@@ -3813,6 +4565,64 @@ function createCollector(deps) {
                 triggerAutoFlush();
             }
         }, undefined);
+    }
+    function applyReportEnabled(enabled) {
+        reportEnabled = enabled;
+        if (!enabled || destroyed) {
+            pendingReports = [];
+            return enabled;
+        }
+        const pending = pendingReports;
+        pendingReports = [];
+        for (const data of pending)
+            enqueueReport(data);
+        return enabled;
+    }
+    /** 服务端开关查询异常时 fail-open，避免控制接口故障阻断统计上报。 */
+    function checkReportEnabled() {
+        if (!deps.isReportEnabled)
+            return true;
+        if (checkingReportGate)
+            return checkingReportGate;
+        let result;
+        try {
+            result = deps.isReportEnabled();
+        }
+        catch (_a) {
+            return applyReportEnabled(true);
+        }
+        if (result === true || result === false) {
+            return applyReportEnabled(result);
+        }
+        const current = Promise.resolve(result)
+            .then((value) => value !== false, () => true)
+            .then(applyReportEnabled);
+        checkingReportGate = current;
+        const clear = () => {
+            if (checkingReportGate === current)
+                checkingReportGate = undefined;
+        };
+        void current.then(clear, clear);
+        return current;
+    }
+    function report(input) {
+        if (destroyed)
+            return;
+        if (reportEnabled === true) {
+            const data = prepareReport(input);
+            if (data)
+                enqueueReport(data);
+            return;
+        }
+        // 首次未知或当前关闭时，只在内存里暂存到本轮开关判断结束：仍关闭则静默
+        // 丢弃；缓存刷新后已开启则保留当前触发事件，避免重新开启后的首条数据丢失。
+        const data = prepareReport(input);
+        if (data) {
+            if (pendingReports.length >= QUEUE_MAX_EVENTS)
+                pendingReports.shift();
+            pendingReports.push(data);
+        }
+        void checkReportEnabled();
     }
     /**
      * flush 前补运行时字段。
@@ -3892,6 +4702,17 @@ function createCollector(deps) {
         return __awaiter(this, arguments, void 0, function* (force = false) {
             var _a, _b, _c, _d, _e;
             if (!deps.queue.shouldFlush(force))
+                return;
+            // 显式 flush 可能紧跟首次 report；先等开关结果，让允许上报时的内存暂存
+            // 完成入队，也确保关闭态不会继续触发网络探测。
+            if (checkingReportGate && !(yield checkingReportGate))
+                return;
+            // force=true 时 shouldFlush 恒为 true；先判空可避免网络恢复、重复 hide 等入口
+            // 在没有任何待发事件时仍调用 getNetworkType。
+            if (deps.queue.size && deps.queue.size() === 0)
+                return;
+            const enabled = checkReportEnabled();
+            if (enabled !== true && (enabled === false || !(yield enabled)))
                 return;
             // 无网：不摘队列，等网络恢复后再 flush（公有版门闸）
             if (deps.isNetworkOffline) {
@@ -4028,6 +4849,12 @@ function createCollector(deps) {
      */
     function recoverRetryImpl() {
         return __awaiter(this, void 0, void 0, function* () {
+            const enabled = checkReportEnabled();
+            if (enabled !== true && (enabled === false || !(yield enabled)))
+                return;
+            const items = deps.retry.loadAll();
+            if (items.length === 0)
+                return;
             if (deps.isNetworkOffline) {
                 let offline = false;
                 try {
@@ -4041,9 +4868,6 @@ function createCollector(deps) {
                     return;
                 }
             }
-            const items = deps.retry.loadAll();
-            if (items.length === 0)
-                return;
             const channel = deps.selectChannel();
             if (!channel) {
                 logger.warn('[uni统计 2.0] 续传重试跳过：当前无可用上报线路');
@@ -4108,18 +4932,42 @@ function createCollector(deps) {
         void current.then(clear, clear);
         return current;
     }
+    function runFlush(force = false) {
+        if (flushing) {
+            flushAfterCurrent = true;
+            if (force)
+                forceFlushAfterCurrent = true;
+            return flushing;
+        }
+        const current = (() => __awaiter(this, void 0, void 0, function* () {
+            let nextForce = force;
+            do {
+                flushAfterCurrent = false;
+                forceFlushAfterCurrent = false;
+                yield flushImpl(nextForce);
+                nextForce = forceFlushAfterCurrent;
+            } while (flushAfterCurrent);
+        }))();
+        flushing = current;
+        const clear = () => {
+            if (flushing === current)
+                flushing = undefined;
+        };
+        void current.then(clear, clear);
+        return current;
+    }
     /**
      * 对外 flush：显式调用（含 `flush(true)`）立即发送，并取消尚未触发的延迟首 flush。
      */
-    function flush() {
-        return __awaiter(this, arguments, void 0, function* (force = false) {
-            cancelDeferredFlush();
-            firstFlushDone = true;
-            return flushImpl(force);
-        });
+    function flush(force = false) {
+        cancelDeferredFlush();
+        firstFlushDone = true;
+        return runFlush(force);
     }
     /** 取消延迟首 flush 定时器，防止 collector 被弃后仍触发幽灵 flush。 */
     function destroy() {
+        destroyed = true;
+        pendingReports = [];
         cancelDeferredFlush();
         // 置为「已完成首 flush」，即便有残留闭包再次调用 triggerAutoFlush 也不会重排定时器。
         firstFlushDone = true;
@@ -4140,7 +4988,7 @@ function createCollector(deps) {
  *   - `send(payload)`：成功 resolve；3 次重试全失败抛错（供 retry.persist 落盘）。
  *   - 不缓存任何状态；每次 `send` 是无状态的。
  */
-function getUni$6() {
+function getUni$3() {
     const u = resolveUniRuntime();
     return u != null && typeof u === 'object' ? u : undefined;
 }
@@ -4186,7 +5034,7 @@ function createHttpChannel(opts = {}) {
             if (tryImageRequest(payload, h5Url))
                 return Promise.resolve();
         }
-        const u = getUni$6();
+        const u = getUni$3();
         if (!u || typeof u.request !== 'function') {
             return Promise.reject(new Error('uni.request unavailable'));
         }
@@ -4228,7 +5076,7 @@ function createHttpChannel(opts = {}) {
     return {
         name: '1.0',
         available() {
-            const u = getUni$6();
+            const u = getUni$3();
             return !!(u && typeof u.request === 'function');
         },
         send(payload) {
@@ -4270,7 +5118,7 @@ const WEBTRACK_BEACON_PATH = '/WebTrack.gif';
 /**
  * 解析运行时 `uni.request` API。
  */
-function getUni$5() {
+function getUni$2() {
     const u = resolveUniRuntime();
     return u != null && typeof u === 'object' ? u : undefined;
 }
@@ -4551,7 +5399,7 @@ function createImageChannel(opts = {}) {
      * `uni.request` GET `/WebTrack`（官方普通 GET，非信标）。
      */
     function webTrackGetViaRequest(url) {
-        const u = getUni$5();
+        const u = getUni$2();
         if (!u || typeof u.request !== 'function') {
             return Promise.reject(new PermanentChannelError('当前环境无法完成统计上报'));
         }
@@ -4605,7 +5453,7 @@ function createImageChannel(opts = {}) {
      */
     function onceH5(payload) {
         const g = getGlobalObject();
-        const u = getUni$5();
+        const u = getUni$2();
         const hasRequest = !!(u && typeof u.request === 'function');
         if (preferBeacon && typeof g.fetch === 'function') {
             return fetchBeaconAwait(preflightUrl(payload, WEBTRACK_BEACON_PATH), timeoutMs);
@@ -4898,514 +5746,6 @@ function createStatDataBuilder(deps) {
     return { build };
 }
 
-/**
- * App 渠道包标识适配（对齐私有版 `utils/pageInfo.js#get_channel`）。
- *
- * VDOM App 读取 `plus.runtime.channel`；Vapor App 不提供 plus，改读
- * `uni.getAppBaseInfo().channel`。
- *
- * 职责：
- *   - App 端按 VDOM / Vapor 选择对应渠道 API。
- *   - 若构建期平台变量缺失但运行时已存在 `plus.runtime`，也信任原生运行时作为 App 信号。
- *   - 任意 API 缺失 / 抛错 → 降级 `''`，不阻断 install。
- *   - 返回值统一为 `string`（原生偶发返回数字时转为字符串）。
- */
-/**
- * 将原生渠道值规范为上行用的字符串。
- *
- * @param value `plus.runtime.channel` 原值。
- * @returns 非空字符串；无法识别时返回 `''`。
- */
-function normalizeChannelValue(value) {
-    if (typeof value === 'string')
-        return value;
-    if (typeof value === 'number' && Number.isFinite(value))
-        return String(value);
-    return '';
-}
-/**
- * 读取 App 渠道包标识。
- *
- * 与私有版 `get_channel()` 对齐：仅原生 App 有意义；小程序 / H5 恒为 `''`。
- *
- * @returns 渠道字符串；未配置或读取失败时为 `''`。
- */
-function getAppChannel() {
-    if (isVaporStatRuntime()) {
-        if (!isApp())
-            return '';
-        const u = resolveUniRuntime();
-        return normalizeChannelValue(tryRun(() => { var _a; return (_a = u === null || u === void 0 ? void 0 : u.getAppBaseInfo) === null || _a === void 0 ? void 0 : _a.call(u).channel; }, undefined));
-    }
-    const plus = getGlobalObject().plus;
-    if (!isApp() && !(plus === null || plus === void 0 ? void 0 : plus.runtime))
-        return '';
-    const raw = tryRun(() => { var _a; return (_a = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _a === void 0 ? void 0 : _a.channel; }, undefined);
-    return normalizeChannelValue(raw);
-}
-
-/**
- * 系统信息适配。
- *
- * 私有版的痛点（参考缺陷清单 #14、#18）：
- *   - `utils/util.js` 顶层 `export const sys = uni.getSystemInfoSync()`：模块加载即执行
- *     `uni.getSystemInfoSync`，SSR / 单测 / nvue 早期阶段会直接抛错。
- *   - `lang / ww / wh` 等"可变"字段被一同缓存，用户切换系统语言或旋转屏幕后字段失真。
- *
- * 公有版职责：
- *   1. `getSystemInfo()` 懒加载 + 缓存（不可变字段：brand/md/sv/v/ut/on …）。
- *   2. `getLocaleAndScreen()` 实时取（lang + ww/wh + sw/sh + pr）—— 修复缺陷 #18。
- *   3. SSR/单测：任一 API 不存在或抛错时，返回安全空对象，绝不抛。
- *   4. `__resetCache()`：仅供测试，重置缓存。
- *
- * 小程序新基础库对 `getSystemInfoSync` 做了能力拆分，部分字段为空或恒为 0。
- * 因此优先通过 `uni.getDeviceInfo / getAppBaseInfo / getWindowInfo` 取对应信息，
- * 再以 `uni.getSystemInfoSync` 合并兜底（与 uni-app 运行时、uni-api 侧实践一致）。
- *
- * **小程序注意**：`uni` 常由构建注入在模块作用域，仅读 `globalThis.uni` 会取不到
- * 任何 API；必须通过 `resolveUniRuntime()` 与 `package.ts` 等 adapter 对齐。
- * 微信系再叠一层 `wx.getDeviceInfo / getAppBaseInfo / getWindowInfo`（与 `uni-api`
- * `upx2px` 一致），避免 `uni` 代理未就绪时宽高全 0。
- */
-let cachedStatic = null;
-/**
- * 解析 `uni` 根对象：优先 `globalThis.uni`，再回退宿主注入的模块级 `uni`。
- *
- * @see `infra/uniRuntime.ts` 说明（小程序上仅读 globalThis 会静默失败）。
- */
-function getUni$4() {
-    const u = resolveUniRuntime();
-    return u != null && typeof u === 'object' ? u : undefined;
-}
-/**
- * 微信系宿主上再取一层原生拆分 API，与 `uni` 合并结果再叠加以补全字段。
- *
- * @returns 已按 sync→device→app→window 合并过的一条快照；非微信系返回 `null`。
- */
-function mergeWxHostSnapshots() {
-    const raw = getRawPlatform();
-    if (raw !== 'mp-weixin' && raw !== 'mp-qq')
-        return null;
-    const wxHost = getGlobalObject().wx;
-    if (!wxHost)
-        return null;
-    const sync = typeof wxHost.getSystemInfoSync === 'function'
-        ? tryRun(() => wxHost.getSystemInfoSync(), null)
-        : null;
-    const device = typeof wxHost.getDeviceInfo === 'function'
-        ? tryRun(() => wxHost.getDeviceInfo(), null)
-        : null;
-    const appBase = typeof wxHost.getAppBaseInfo === 'function'
-        ? tryRun(() => wxHost.getAppBaseInfo(), null)
-        : null;
-    const windowInfo = typeof wxHost.getWindowInfo === 'function'
-        ? tryRun(() => wxHost.getWindowInfo(), null)
-        : null;
-    return mergeSystemSnapshots(sync, device, appBase, windowInfo);
-}
-/**
- * 从左到右浅合并多个快照：后者非 `undefined` / `null` 的键覆盖前者。
- *
- * 合并顺序为「sync → device → appBase → window」，使拆分 API 覆盖宿主裁剪后的
- * `getSystemInfoSync` 残缺字段。
- */
-function mergeSystemSnapshots(...parts) {
-    const out = {};
-    for (const p of parts) {
-        if (!p)
-            continue;
-        for (const k of Object.keys(p)) {
-            const v = p[k];
-            if (v !== undefined && v !== null)
-                out[k] = v;
-        }
-    }
-    return out;
-}
-/**
- * 聚合当前运行时的系统信息：先 `getSystemInfoSync` 打底，再叠拆分 API。
- *
- * 各 API 均经 `tryRun` 包裹，任一失败不影响其余来源。
- */
-function mergedSystemInfo() {
-    const u = getUni$4();
-    const sync = u && typeof u.getSystemInfoSync === 'function'
-        ? tryRun(() => u.getSystemInfoSync(), null)
-        : null;
-    const device = u && typeof u.getDeviceInfo === 'function'
-        ? tryRun(() => u.getDeviceInfo(), null)
-        : null;
-    const appBase = u && typeof u.getAppBaseInfo === 'function'
-        ? tryRun(() => u.getAppBaseInfo(), null)
-        : null;
-    const windowInfo = u && typeof u.getWindowInfo === 'function'
-        ? tryRun(() => u.getWindowInfo(), null)
-        : null;
-    const fromUni = mergeSystemSnapshots(sync, device, appBase, windowInfo);
-    const fromWx = mergeWxHostSnapshots();
-    const merged = fromWx ? mergeSystemSnapshots(fromUni, fromWx) : fromUni;
-    return merged;
-}
-/**
- * 读取 H5 运行时 `__uniConfig.appVersion`（manifest.versionName）。
- *
- * H5 发行摇树时模块加载期 `window.uni` 可能仍是 `{}` 空桩，`resolveUniRuntime`
- * 无法调用 `getAppBaseInfo`；此时 `__uniConfig` 仍已由构建注入，可作为应用版本兜底。
- */
-function resolveUniConfigAppVersion() {
-    return tryRun(() => {
-        const cfg = getGlobalObject().__uniConfig;
-        return typeof (cfg === null || cfg === void 0 ? void 0 : cfg.appVersion) === 'string' ? cfg.appVersion : '';
-    }, '');
-}
-/**
- * 读取构建期注入的 `UNI_APP_VERSION_NAME`（manifest.versionName）。
- *
- * 须**直接**访问 `process.env.UNI_APP_VERSION_NAME`，以便 Vite define 静态替换；
- * 经中间变量读取会导致发行包内始终为空（与 `install.ts#parseInjectedUniStatistics` 同理）。
- */
-function resolveBuildTimeAppVersion() {
-    const raw = process.env.UNI_APP_VERSION_NAME;
-    return typeof raw === 'string' ? raw : '';
-}
-/**
- * 解析上行用的应用版本 `appVersion`（对应 statData 字段 `v` 的主要回退来源）。
- *
- * 优先级：App 原生 `plus.runtime.version` → uni 拆分 API → H5 `__uniConfig` → 构建期 env。
- */
-function resolveAppVersionForStat(plus, sys) {
-    var _a;
-    const fromPlus = (_a = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _a === void 0 ? void 0 : _a.version;
-    if (typeof fromPlus === 'string' && fromPlus)
-        return fromPlus;
-    const fromSys = sys.appVersion;
-    if (typeof fromSys === 'string' && fromSys)
-        return fromSys;
-    const fromUniConfig = resolveUniConfigAppVersion();
-    if (fromUniConfig)
-        return fromUniConfig;
-    return resolveBuildTimeAppVersion();
-}
-/**
- * 组装上行 `on`：优先厂商定制系统名（ROM），否则退回操作系统名 `osName`。
- *
- * App 端 `uni.getDeviceInfo` 会带出 `romName`/`romVersion`（见 uni-app-plus 原生 systemInfo）；
- * 微信等小程序沙箱通常无 ROM 字段，此时与仅 `osName` 一致。
- *
- * @param sys `mergedSystemInfo()` 合并结果
- * @returns 去首尾空白后的展示串；均无则空串
- */
-function buildOnForStat(sys) {
-    const rom = typeof sys.romName === 'string' ? sys.romName.trim() : '';
-    if (rom) {
-        const romVer = typeof sys.romVersion === 'string' ? sys.romVersion.trim() : '';
-        return romVer ? `${rom} ${romVer}`.trim() : rom;
-    }
-    return typeof sys.osName === 'string' ? sys.osName.trim() : '';
-}
-/**
- * 取静态系统信息（懒加载 + 缓存）。
- *
- * 字段映射策略：
- *   - `brand / md`：优先 `deviceBrand`/`deviceModel`（拆分 API），再退化 `brand`/`model`。
- *   - `sv / v / sdkVersion`：优先 `osVersion`、`hostVersion`、`hostSDKVersion`，兼容旧字段。
- *   - `osP`：由 `platform` / `osName` / `system` 经 `normalizeStatOsP` 得到，供上行 `p`。
- *   - `mpvHostVersion`：`hostVersion ?? version`，与私有版 `sys.version` 同源。
- *   - `on`：`buildOnForStat`（优先 `romName`/`romVersion`，否则 `osName`），供上行 `on`。
- *   - `appVersion`：见 `resolveAppVersionForStat`（H5 发行空桩时回退 `__uniConfig` / 构建 env）。
- *   - 缺失统一空字符串或 0，避免上行 JSON 丢字段语义。
- */
-function getSystemInfo() {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t;
-    if (cachedStatic)
-        return cachedStatic;
-    const sys = mergedSystemInfo();
-    const plus = getGlobalObject().plus;
-    const appVersion = resolveAppVersionForStat(plus, sys);
-    cachedStatic = {
-        brand: (_b = (_a = sys.deviceBrand) !== null && _a !== void 0 ? _a : sys.brand) !== null && _b !== void 0 ? _b : '',
-        md: (_d = (_c = sys.deviceModel) !== null && _c !== void 0 ? _c : sys.model) !== null && _d !== void 0 ? _d : '',
-        sv: (_f = (_e = sys.osVersion) !== null && _e !== void 0 ? _e : sys.system) !== null && _f !== void 0 ? _f : '',
-        v: (_h = (_g = sys.hostVersion) !== null && _g !== void 0 ? _g : sys.version) !== null && _h !== void 0 ? _h : '',
-        ut: ((_j = sys.deviceType) !== null && _j !== void 0 ? _j : 'unknown'),
-        appVersion,
-        appWgtVersion: (_p = (_o = (_l = (_k = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _k === void 0 ? void 0 : _k.appWgtVersion) !== null && _l !== void 0 ? _l : (_m = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _m === void 0 ? void 0 : _m.appWgtRevision) !== null && _o !== void 0 ? _o : sys.appWgtVersion) !== null && _p !== void 0 ? _p : '',
-        mpvHostVersion: ((_r = (_q = sys.hostVersion) !== null && _q !== void 0 ? _q : sys.version) !== null && _r !== void 0 ? _r : '').trim(),
-        on: buildOnForStat(sys),
-        sdkVersion: (_t = (_s = sys.hostSDKVersion) !== null && _s !== void 0 ? _s : sys.SDKVersion) !== null && _t !== void 0 ? _t : '',
-        statusBarHeight: typeof sys.statusBarHeight === 'number' ? sys.statusBarHeight : 0,
-        osP: normalizeStatOsP({
-            platform: sys.platform,
-            osName: sys.osName,
-            system: sys.system,
-        }),
-    };
-    return cachedStatic;
-}
-/**
- * 取实时字段（lang / 窗口尺寸 / 屏幕尺寸 / dpr）。
- *
- * 每次调用重新走拆分 API + sync 合并，不复用缓存，避免旋转屏、改语言后失真。
- */
-function getLocaleAndScreen() {
-    var _a, _b;
-    const sys = mergedSystemInfo();
-    const prRaw = typeof sys.pixelRatio === 'number'
-        ? sys.pixelRatio
-        : typeof sys.devicePixelRatio === 'number'
-            ? sys.devicePixelRatio
-            : 1;
-    return {
-        lang: ((_b = (_a = sys.hostLanguage) !== null && _a !== void 0 ? _a : sys.language) !== null && _b !== void 0 ? _b : '').replace(/_/g, '-'),
-        ww: typeof sys.windowWidth === 'number' ? sys.windowWidth : 0,
-        wh: typeof sys.windowHeight === 'number' ? sys.windowHeight : 0,
-        sw: typeof sys.screenWidth === 'number' ? sys.screenWidth : 0,
-        sh: typeof sys.screenHeight === 'number' ? sys.screenHeight : 0,
-        pr: prRaw > 0 ? prRaw : 1,
-    };
-}
-
-/**
- * 包信息适配（公有版新增字段 `tdaid / pkn / an`）。
- *
- * 详细矩阵参考 `04-字段字典与平台获取矩阵.md` §3。本模块职责：
- *   - 启动时调用一次 `getPackageInfo()`，结果常驻内存；不入 storage。
- *   - 每端分支独立函数，便于单测精准 mock。
- *   - 任意端、任意 API 抛错 → 一律降级为 `''`，**绝不**抛出。
- *
- * 字段语义提示：
- *   - `mpn`：兼容字段；各端「原生包名或小程序 appid」的统一口径（与文档 `mpn` 对齐）。
- *   - `tdaid`：第三方平台 appid（如微信小程序 appid）。
- *   - `pkn`：原生包名 / bundleId（App）；小程序无独立包名时为空串，**不与** tdaid 混填。
- *   - `an`：应用展示名（App = plus.runtime.appname；小程序/H5 = `process.env.UNI_APP_NAME` 等）。
- */
-let cached$1 = null;
-function getUni$3() {
-    const u = resolveUniRuntime();
-    return u != null && typeof u === 'object' ? u : undefined;
-}
-function getPlus() {
-    return getGlobalObject().plus;
-}
-function getAppBaseInfo() {
-    return tryRun(() => { var _a, _b, _c; return (_c = (_b = (_a = getUni$3()) === null || _a === void 0 ? void 0 : _a.getAppBaseInfo) === null || _b === void 0 ? void 0 : _b.call(_a)) !== null && _c !== void 0 ? _c : {}; }, {});
-}
-/**
- * 取小程序系列的 tdaid。各端 API 不同：
- *   - 微信/QQ：`uni.getAccountInfoSync().miniProgram.appId`（基础库 ≥ 1.10.0）。
- *   - 支付宝：`my.getAppIdSync()`（部分版本可用）。
- *   - 头条/飞书：`tt.getEnvInfoSync().microapp.appId`。
- *   - 百度：`swan.getEnvInfoSync().common.appKey` 兜底。
- *   - 其他端：暂时返回 ''；后续真机探测后再补。
- *
- * 任何分支抛错都返回 ''。
- */
-function getMpTdaid(platform) {
-    const u = getUni$3();
-    switch (platform) {
-        case 'wx':
-        case 'qq': {
-            if (typeof (u === null || u === void 0 ? void 0 : u.getAccountInfoSync) === 'function') {
-                const id = tryRun(() => { var _a, _b; return (_b = (_a = u.getAccountInfoSync().miniProgram) === null || _a === void 0 ? void 0 : _a.appId) !== null && _b !== void 0 ? _b : ''; }, '');
-                if (id)
-                    return id;
-            }
-            const wxHost = getGlobalObject().wx;
-            if (typeof (wxHost === null || wxHost === void 0 ? void 0 : wxHost.getAccountInfoSync) === 'function') {
-                const id2 = tryRun(() => { var _a, _b; return (_b = (_a = wxHost.getAccountInfoSync().miniProgram) === null || _a === void 0 ? void 0 : _a.appId) !== null && _b !== void 0 ? _b : ''; }, '');
-                if (id2)
-                    return id2;
-            }
-            const envId = process.env.UNI_APP_ID;
-            return typeof envId === 'string' ? envId : '';
-        }
-        case 'ali':
-        case 'dt': {
-            const my = getGlobalObject().my;
-            if (!my)
-                return '';
-            const v1 = tryRun(() => { var _a, _b; return (_b = (_a = my.getAppIdSync) === null || _a === void 0 ? void 0 : _a.call(my)) !== null && _b !== void 0 ? _b : ''; }, '');
-            if (v1)
-                return v1;
-            return tryRun(() => { var _a, _b, _c; return (_c = (_b = (_a = my.getAccountInfoSync) === null || _a === void 0 ? void 0 : _a.call(my).miniProgram) === null || _b === void 0 ? void 0 : _b.appId) !== null && _c !== void 0 ? _c : ''; }, '');
-        }
-        case 'tt':
-        case 'lark': {
-            const tt = getGlobalObject().tt;
-            return tryRun(() => { var _a, _b, _c; return (_c = (_b = (_a = tt === null || tt === void 0 ? void 0 : tt.getEnvInfoSync) === null || _a === void 0 ? void 0 : _a.call(tt).microapp) === null || _b === void 0 ? void 0 : _b.appId) !== null && _c !== void 0 ? _c : ''; }, '');
-        }
-        case 'bd': {
-            const swan = getGlobalObject().swan;
-            return tryRun(() => { var _a, _b, _c; return (_c = (_b = (_a = swan === null || swan === void 0 ? void 0 : swan.getEnvInfoSync) === null || _a === void 0 ? void 0 : _a.call(swan).common) === null || _b === void 0 ? void 0 : _b.appKey) !== null && _c !== void 0 ? _c : ''; }, '');
-        }
-        default:
-            return '';
-    }
-}
-/**
- * App 端 packageName / bundleId。
- *
- * Android 走 `plus.android.runtimeMainActivity().getPackageName()`；
- * iOS 走 `plus.ios.bundleId`，缺失时退化 `plus.runtime.appid`；
- * HarmonyOS 暂时取 `plus.runtime.appid` 兜底（待 OS API 稳定后扩展）。
- */
-function getAppPkn() {
-    var _a, _b, _c;
-    const plus = getPlus();
-    if (!plus)
-        return '';
-    const osName = (_c = (_b = (_a = plus.os) === null || _a === void 0 ? void 0 : _a.name) === null || _b === void 0 ? void 0 : _b.toLowerCase()) !== null && _c !== void 0 ? _c : '';
-    if (osName.includes('android')) {
-        return tryRun(() => { var _a, _b, _c, _d, _e; return (_e = (_d = (_c = (_b = (_a = plus.android) === null || _a === void 0 ? void 0 : _a.runtimeMainActivity) === null || _b === void 0 ? void 0 : _b.call(_a)) === null || _c === void 0 ? void 0 : _c.getPackageName) === null || _d === void 0 ? void 0 : _d.call(_c)) !== null && _e !== void 0 ? _e : ''; }, '');
-    }
-    if (osName === 'ios' || osName === 'iphone os') {
-        const v = tryRun(() => { var _a, _b; return (_b = (_a = plus.ios) === null || _a === void 0 ? void 0 : _a.bundleId) !== null && _b !== void 0 ? _b : ''; }, '');
-        return v || tryRun(() => { var _a, _b; return (_b = (_a = plus.runtime) === null || _a === void 0 ? void 0 : _a.appid) !== null && _b !== void 0 ? _b : ''; }, '');
-    }
-    return tryRun(() => { var _a, _b; return (_b = (_a = plus.runtime) === null || _a === void 0 ? void 0 : _a.appid) !== null && _b !== void 0 ? _b : ''; }, '');
-}
-/**
- * 取 plus.runtime.appname / plus.runtime.name。
- *
- * 旧版本 plus 上字段名不一致，两个都试一次。
- */
-function getAppName() {
-    const plus = getPlus();
-    if (!plus)
-        return '';
-    return (tryRun(() => { var _a, _b; return (_b = (_a = plus.runtime) === null || _a === void 0 ? void 0 : _a.appname) !== null && _b !== void 0 ? _b : ''; }, '') ||
-        tryRun(() => { var _a, _b; return (_b = (_a = plus.runtime) === null || _a === void 0 ? void 0 : _a.name) !== null && _b !== void 0 ? _b : ''; }, ''));
-}
-/**
- * 取编译期注入的 UNI_APP_NAME。
- *
- * `plugin/index.ts` 后续会读取 `manifest.json#name` 注入此字段；当前若未注入返回 ''。
- */
-function getEnvAppName() {
-    var _a;
-    return (_a = process.env.UNI_APP_NAME) !== null && _a !== void 0 ? _a : '';
-}
-/**
- * 取 H5 端应用名：优先编译期注入，回退 `document.title`。
- */
-function getH5AppName() {
-    const env = getEnvAppName();
-    if (env)
-        return env;
-    return tryRun(() => {
-        var _a, _b;
-        return (_b = (_a = getGlobalObject().document) === null || _a === void 0 ? void 0 : _a.title) !== null && _b !== void 0 ? _b : '';
-    }, '');
-}
-/**
- * 启动时获取一次包信息；结果缓存于内存。
- *
- * 所有字段保证返回 `string`；缺失统一为 `''`，符合 `domain/statData.ts` 的字段处理约定。
- */
-function getPackageInfo() {
-    if (cached$1)
-        return cached$1;
-    const platform = getPlatform();
-    let mpn = '';
-    let tdaid = '';
-    let pkn = '';
-    let an = '';
-    if (isApp()) {
-        const base = getAppBaseInfo();
-        if (isVaporStatRuntime()) {
-            // uni-app x Vapor 不提供 plus，只读取当前已公开的 getAppBaseInfo 字段。
-            tdaid = base.appId || '';
-            pkn =
-                base.packageName ||
-                    base.bundleId ||
-                    base.bundleName ||
-                    base.hostPackageName ||
-                    '';
-            an = base.appName || getEnvAppName();
-        }
-        else {
-            tdaid =
-                tryRun(() => { var _a, _b, _c; return (_c = (_b = (_a = getPlus()) === null || _a === void 0 ? void 0 : _a.runtime) === null || _b === void 0 ? void 0 : _b.appid) !== null && _c !== void 0 ? _c : ''; }, '') || base.appId || '';
-            pkn = getAppPkn() || base.hostPackageName || tdaid;
-            an = getAppName() || base.appName || getEnvAppName();
-        }
-        mpn = pkn || tdaid;
-    }
-    else if (isMp()) {
-        tdaid = getMpTdaid(platform);
-        pkn = '';
-        an = getEnvAppName();
-        mpn =
-            tdaid ||
-                (typeof process.env.UNI_APP_ID === 'string' ? process.env.UNI_APP_ID : '');
-    }
-    else if (isH5()) {
-        tdaid = '';
-        pkn = '';
-        an = getH5AppName();
-        mpn = '';
-    }
-    else {
-        // unknown / 快应用等：尝试 env 注入即可
-        tdaid = '';
-        pkn = '';
-        an = getEnvAppName();
-        mpn = '';
-    }
-    cached$1 = { mpn, tdaid, pkn, an };
-    return cached$1;
-}
-
-/**
- * H5 / Web 平台适配。
- *
- * 职责：采集仅 Web 端有意义的上行字段原料（如含协议的页面域名 `domain`）。
- * 非 H5 或运行时无 `window.location` 时一律返回空串，不抛错。
- */
-const EMPTY_WEB_INFO = { domain: '' };
-let cached = null;
-/**
- * 从 `location` 解析上行 `domain`（`https://host` / `http://host` 形式）。
- *
- * 仅 `http:` / `https:` 协议有效；`file:` 等返回空串。
- */
-function readWebDomainFromLocation(loc) {
-    const protocol = typeof loc.protocol === 'string' ? loc.protocol.toLowerCase() : '';
-    if (protocol !== 'http:' && protocol !== 'https:')
-        return '';
-    if (typeof loc.origin === 'string' && loc.origin.trim()) {
-        return loc.origin.trim();
-    }
-    const host = typeof loc.host === 'string' && loc.host.trim()
-        ? loc.host.trim()
-        : typeof loc.hostname === 'string'
-            ? loc.hostname.trim()
-            : '';
-    if (!host)
-        return '';
-    return `${protocol}//${host}`;
-}
-/**
- * 读取 H5 页面 Web 信息。
- *
- * 非 H5、SSR 或无 `location` 时 `domain` 为空串。
- * 结果在进程内缓存（SPA 内 origin 通常不变）。
- */
-function getWebInfo() {
-    if (!isH5())
-        return EMPTY_WEB_INFO;
-    if (cached !== null)
-        return cached;
-    cached = tryRun(() => {
-        const win = getGlobalObject();
-        const loc = win.location;
-        if (!loc)
-            return EMPTY_WEB_INFO;
-        return { domain: readWebDomainFromLocation(loc) };
-    }, EMPTY_WEB_INFO);
-    return cached;
-}
-
 const registry = new Map();
 /**
  * 本模块每个 api 最近一次装入 uni 的 fanout 引用。
@@ -5435,7 +5775,7 @@ function add(api, handlers) {
             if (prev) {
                 try {
                     // 精准移除本模块的 fanout，保留第三方在同一 api 上的拦截器。
-                    getUni$2().removeInterceptor(api, prev);
+                    getUni$1().removeInterceptor(api, prev);
                 }
                 catch (_a) {
                     // 即使解绑失败也应保证下次重装时不带本次 handlers
@@ -5504,7 +5844,7 @@ function reinstall(api) {
         return;
     const fanout = buildFanout(set);
     try {
-        const uni = getUni$2();
+        const uni = getUni$1();
         const prev = installedFanout.get(api);
         if (prev) {
             try {
@@ -5521,7 +5861,7 @@ function reinstall(api) {
         // uni 不可用（例如 nvue 早期阶段）：保留 registry 与 installedFanout，等下次 reinstall 再试
     }
 }
-function getUni$2() {
+function getUni$1() {
     const raw = resolveUniRuntime();
     const u = raw != null && typeof raw === 'object'
         ? raw
@@ -5820,141 +6160,146 @@ function selectChannel(opts) {
 }
 
 /**
- * 网络类型适配。
+ * 公有版服务端上报门闸。
  *
- * 公有版要求（`03-公有版架构设计.md` §5.9）：
- *   - 返回 `Promise<NetResult>`，失败一律给默认值，**绝不**中断上报链路（修复缺陷 #10）。
- *   - 提供 `onChange` 订阅，便于会话上下文里"网络切换 → 触发一次 sessionDirty"。
+ * 与旧公有版 `is_report_data` 保持相同语义：
+ *   - 首次发送前按 appid 查询服务端 `{ ret, enable }`；
+ *   - 查询结果缓存 24 小时；缓存过期时先沿用旧值，并在后台刷新；
+ *   - 接口失败、超时或响应非法时 fail-open，默认允许上报。
  *
- * 字段映射：上行字段 `net`，与私有版字段保持一致；可选值：
- *   `wifi | 2g | 3g | 4g | 5g | ethernet | unknown | none`。
+ * 与旧实现的差异仅在控制流：`enable=0` 明确返回 `false`，不再通过永不结束的
+ * Promise 阻塞调用链，避免 collector 的 flush 状态永久悬挂。
  */
-const DEFAULT_RESULT = { net: 'unknown', raw: '' };
-/** 已知映射；命中外的统一归 unknown。 */
-const NET_MAP = {
-    wifi: 'wifi',
-    '2g': '2g',
-    '3g': '3g',
-    '4g': '4g',
-    '5g': '5g',
-    ethernet: 'ethernet',
-    none: 'none',
-    unknown: 'unknown',
-};
-function getUni$1() {
-    const u = resolveUniRuntime();
-    return u != null && typeof u === 'object' ? u : undefined;
-}
-/**
- * 把 uni 原始 networkType 字符串归一化为 `NetType`。
- *
- * 抽出独立函数，便于上层直接复用（例如 `onChange` 回调里也要做归一）。
- */
-function normalizeNet(raw) {
+const REPORT_STATUS_KEY = 'report:control-status';
+const REPORT_STATUS_TIME_KEY = 'report:control-checked-at';
+/** 不同 appid / 控制地址之间不得共享正在进行的请求结果。 */
+const refreshing = new Map();
+function refreshKey(opts) {
     var _a;
-    if (typeof raw !== 'string' || raw.length === 0)
-        return 'unknown';
-    return (_a = NET_MAP[raw.toLowerCase()]) !== null && _a !== void 0 ? _a : 'unknown';
+    return `${(_a = opts.url) !== null && _a !== void 0 ? _a : REPORT_CONTROL_URL}\n${opts.appId}\n${opts.usv}`;
 }
-/**
- * 异步取当前网络类型。
- *
- * 一律 resolve（永不 reject）：
- *   - uni 缺失 / 调用抛错 / fail 回调 / 超时 → resolve(`{ net: 'unknown', raw: '' }`）。
- *   - 默认 1500ms 超时；防止 H5 端 navigator.connection 卡住采集链路。
- */
-function getNet(timeoutMs = 1500) {
-    return new Promise((resolve) => {
-        const u = getUni$1();
-        if (!u || typeof u.getNetworkType !== 'function') {
-            resolve(DEFAULT_RESULT);
-            return;
+function getRequest() {
+    const raw = resolveUniRuntime();
+    const u = raw != null && typeof raw === 'object' ? raw : undefined;
+    return typeof (u === null || u === void 0 ? void 0 : u.request) === 'function' ? u.request : undefined;
+}
+function normalizeStatus(value) {
+    if (value === 0 || value === '0')
+        return 0;
+    if (value === 1 || value === '1')
+        return 1;
+    return undefined;
+}
+function normalizeTime(value) {
+    const n = typeof value === 'number' ? value : Number(value);
+    return Number.isFinite(n) && n > 0 ? n : undefined;
+}
+function parseResponse(data) {
+    let value = data;
+    if (typeof value === 'string') {
+        try {
+            value = JSON.parse(value);
         }
+        catch (_a) {
+            return undefined;
+        }
+    }
+    if (!value || typeof value !== 'object' || Array.isArray(value)) {
+        return undefined;
+    }
+    const response = value;
+    if (response.ret !== 0)
+        return undefined;
+    return normalizeStatus(response.enable);
+}
+function requestStatus(opts, requestedAt) {
+    var _a, _b;
+    const request = (_a = opts.request) !== null && _a !== void 0 ? _a : getRequest();
+    if (!request)
+        return Promise.resolve(undefined);
+    const timeoutMs = (_b = opts.timeoutMs) !== null && _b !== void 0 ? _b : REPORT_CONTROL_TIMEOUT_MS;
+    return new Promise((resolve) => {
+        var _a;
         let settled = false;
-        const finish = (r) => {
+        const finish = (status) => {
             if (settled)
                 return;
             settled = true;
-            resolve(r);
+            clearTimeout(timer);
+            resolve(status);
         };
-        const timer = setTimeout(() => finish(DEFAULT_RESULT), timeoutMs);
-        tryRun(() => u.getNetworkType({
-            success: (res) => {
-                var _a;
-                clearTimeout(timer);
-                const raw = (_a = res === null || res === void 0 ? void 0 : res.networkType) !== null && _a !== void 0 ? _a : '';
-                finish({ net: normalizeNet(raw), raw });
-            },
-            fail: () => {
-                clearTimeout(timer);
-                finish(DEFAULT_RESULT);
-            },
-        }), undefined);
-    });
-}
-/**
- * 订阅网络变化。返回 unsubscribe 函数，方便测试与运行时解绑。
- *
- * 注意：私有版直接调 `uni.onNetworkStatusChange` 但没有解绑，导致 nvue 多次 install 时
- * 会注册多个回调（缺陷 #16）。公有版返回 unsubscribe 强制调用方持有；
- * `runtime/install.ts` 会保证 install 多次时复用单实例。
- */
-function onChange(cb) {
-    const u = getUni$1();
-    if (!u || typeof u.onNetworkStatusChange !== 'function') {
-        return () => {
-            /* noop */
-        };
-    }
-    const wrapped = (res) => {
-        var _a;
-        const raw = (_a = res === null || res === void 0 ? void 0 : res.networkType) !== null && _a !== void 0 ? _a : '';
-        const net = (res === null || res === void 0 ? void 0 : res.isConnected) === false ? 'none' : normalizeNet(raw);
-        tryRun(() => cb({ net, raw }), undefined);
-    };
-    // 注册本身也兜底：个别端 onNetworkStatusChange 同步抛错不应冒泡到调用方（与解绑对称）。
-    tryRun(() => u.onNetworkStatusChange(wrapped), undefined);
-    return () => {
-        if (typeof u.offNetworkStatusChange === 'function') {
-            tryRun(() => u.offNetworkStatusChange(wrapped), undefined);
+        const timer = setTimeout(() => finish(undefined), timeoutMs);
+        try {
+            request({
+                url: (_a = opts.url) !== null && _a !== void 0 ? _a : REPORT_CONTROL_URL,
+                method: 'GET',
+                data: {
+                    usv: opts.usv,
+                    conf: JSON.stringify({ ak: opts.appId }),
+                    // 控制接口链路存在按完整 URL 缓存的中间层；固定查询串会在控制台
+                    // 切换后继续命中旧值。时间戳只用于去缓存，不参与服务端判定。
+                    t: String(requestedAt),
+                },
+                timeout: timeoutMs,
+                success: (res) => {
+                    const statusCode = res === null || res === void 0 ? void 0 : res.statusCode;
+                    if (typeof statusCode === 'number' &&
+                        (statusCode < 200 || statusCode >= 300)) {
+                        finish(undefined);
+                        return;
+                    }
+                    finish(parseResponse(res === null || res === void 0 ? void 0 : res.data));
+                },
+                fail: () => finish(undefined),
+            });
         }
-    };
-}
-
-/**
- * 公有版网络门闸（仅 `src/public` 使用，不与私有版 core 共用）。
- *
- * 能力：
- *   1. `isNetworkOffline()`：基于 `uni.getNetworkType` 判断当前是否无网；
- *   2. `onNetworkOnline(cb)`：基于 `uni.onNetworkStatusChange`，在恢复有网时回调。
- *
- * 判定：`net === 'none'` 为无网；`unknown` **不**当无网（避免误挂起）。
- */
-/**
- * 根据 NetResult 判断是否无网。
- */
-function isOfflineNetResult(r) {
-    return r.net === 'none';
-}
-/**
- * 先检查当前网络是否不可用。
- */
-function isNetworkOffline() {
-    return __awaiter(this, void 0, void 0, function* () {
-        const r = yield getNet();
-        return isOfflineNetResult(r);
+        catch (_b) {
+            finish(undefined);
+        }
     });
 }
+function refreshStatus(opts, checkedAt) {
+    const key = refreshKey(opts);
+    const inFlight = refreshing.get(key);
+    if (inFlight)
+        return inFlight;
+    const current = requestStatus(opts, checkedAt).then((status) => {
+        if (status === undefined)
+            return true;
+        storage.batchSet({
+            [REPORT_STATUS_KEY]: status,
+            [REPORT_STATUS_TIME_KEY]: checkedAt,
+        });
+        return status === 1;
+    });
+    refreshing.set(key, current);
+    const clear = () => {
+        if (refreshing.get(key) === current)
+            refreshing.delete(key);
+    };
+    void current.then(clear, clear);
+    return current;
+}
 /**
- * 监听网络恢复为可用。返回 unsubscribe。
+ * 判断服务端当前是否允许上报。
  *
- * @param cb 变为有网时触发（wifi/4g/...）；无网变化不触发。
+ * 有缓存时立即使用缓存；缓存超过 24 小时则后台刷新，刷新结果从下一次发送开始生效。
+ * 无缓存时等待首次查询完成，确保服务端关闭可以在第一批数据发送前生效。
  */
-function onNetworkOnline(cb) {
-    return onChange((r) => {
-        if (isOfflineNetResult(r))
-            return;
-        cb();
+function isReportEnabled(opts) {
+    return __awaiter(this, void 0, void 0, function* () {
+        var _a, _b;
+        const now = ((_a = opts.nowMs) !== null && _a !== void 0 ? _a : Date.now)();
+        const status = normalizeStatus(storage.get(REPORT_STATUS_KEY));
+        const checkedAt = normalizeTime(storage.get(REPORT_STATUS_TIME_KEY));
+        if (status === undefined) {
+            return refreshStatus(opts, now);
+        }
+        const ttl = (_b = opts.cacheTtlMs) !== null && _b !== void 0 ? _b : REPORT_CONTROL_CACHE_TTL_MS;
+        if (checkedAt === undefined || now - checkedAt > ttl) {
+            void refreshStatus(opts, now);
+        }
+        return status === 1;
     });
 }
 
@@ -6180,6 +6525,9 @@ function rollback(snapshot) {
  * 当前桶内事件总数（按 lt 加总）。
  */
 function size() {
+    // 冷启时 collector 会先用 size() 判空，再决定是否执行 flush()。这里必须
+    // 与 flush/enqueue 一样先恢复持久化镜像，否则 storage 中有数据也会被误判为空。
+    restoreOnce();
     let n = 0;
     for (const lt of Object.keys(state.bucket)) {
         n += state.bucket[lt].length;
@@ -6569,6 +6917,7 @@ class StatApp {
         this.deferReportsUntilSession = false;
         this.deferredReportsWarningShown = false;
         this.installed = false;
+        logger.setReportingEnabled(true);
     }
     /**
      * 解析上行渠道字段 `ch`。
@@ -6687,6 +7036,7 @@ class StatApp {
                 flush: flush,
                 rollback: rollback,
                 shouldFlush: shouldFlush,
+                size: size,
             },
             serializer: { handleData },
             selectChannel: () => selectChannel({
@@ -6719,6 +7069,15 @@ class StatApp {
             nowSec,
             firstFlushDeferMs: this.resolveFirstFlushDeferMs(),
             isNetworkOffline,
+            isReportEnabled: () => isReportEnabled({
+                appId: cfg.ak,
+                usv: STAT_VERSION_PUBLIC,
+                nowMs,
+            }).then((enabled) => {
+                if (this.installed)
+                    logger.setReportingEnabled(enabled);
+                return enabled;
+            }),
         };
         return Object.assign(base, patch);
     }
@@ -6955,6 +7314,8 @@ let vueMixinMounted = false;
 let vueMixinRetryTimer;
 /** install 是否已经触发过（不论成功失败）。 */
 let bootstrapped = false;
+/** 使 reset / 热重载前发出的异步开关结果失效。 */
+let bootstrapGeneration = 0;
 /** 已注册到全局的 unbind，便于 __reset。 */
 let lastUnbind;
 /** 晚就绪时重试 `uni.onAppShow` 的定时器。 */
@@ -6965,9 +7326,13 @@ let uniHookRetryTimer;
  * 失败任意子步骤都吞掉日志，不抛回。
  */
 function installPublicStat(opts = {}) {
+    var _a;
     if (bootstrapped)
         return;
     bootstrapped = true;
+    const generation = ++bootstrapGeneration;
+    // 服务端开关确认前保持 SDK 自身静默；fail-open / enable=1 后恢复。
+    logger.setReportingEnabled(false);
     // 优先级：opts.config（手动覆盖） > manifest.uniStatistics（plugin 注入） > 默认值。
     // 这样业务/灰度同学既能在 manifest 里改超时阈值（生产路径），
     // 也能用 installPublicStat({ config: {...} }) 在测试环境强行覆盖（接入调试）。
@@ -6978,40 +7343,53 @@ function installPublicStat(opts = {}) {
     tryRun(() => app.install(finalConfig, Object.assign({}, opts.overrides, {
         deferReportsUntilSession: opts.vapor === true,
     })), undefined);
-    // 启动摘要：与生命周期解耦，保证 StatApp.install 完成后立刻可打印（不依赖 uni 是否已挂载）。
-    tryRun(() => {
-        var _a, _b, _c;
-        const cfgBoot = app.getConfig();
-        const appName = process.env.UNI_APP_NAME || '';
-        const injected = parseInjectedUniStatistics();
-        const bootBase = {
-            channel: (_a = cfgBoot === null || cfgBoot === void 0 ? void 0 : cfgBoot.version) !== null && _a !== void 0 ? _a : 'image',
-            reportIntervalSec: (_b = cfgBoot === null || cfgBoot === void 0 ? void 0 : cfgBoot.reportIntervalSec) !== null && _b !== void 0 ? _b : 0,
-            ak: (_c = cfgBoot === null || cfgBoot === void 0 ? void 0 : cfgBoot.ak) !== null && _c !== void 0 ? _c : '',
-            appName,
-            debugFromManifest: process.env.UNI_STAT_DEBUG === 'true' ||
-                process.env.UNI_STAT_DEBUG === true,
-        };
-        // 仅当 manifest 显式配置了超时项时才在 debug 启动摘要中展示（默认值 300/1800 不刷屏）。
-        if (injected != null) {
-            if (injected.backgroundTimeout != null ||
-                injected.backgroundTimeoutSec != null) {
-                bootBase.backgroundTimeoutSec = cfgBoot === null || cfgBoot === void 0 ? void 0 : cfgBoot.backgroundTimeoutSec;
+    // 启动摘要必须等待服务端开关：关闭态对用户应完全静默。
+    const cfgBoot = app.getConfig();
+    void isReportEnabled({
+        appId: (_a = cfgBoot === null || cfgBoot === void 0 ? void 0 : cfgBoot.ak) !== null && _a !== void 0 ? _a : '',
+        usv: STAT_VERSION_PUBLIC,
+        nowMs,
+    })
+        .catch(() => true)
+        .then((enabled) => {
+        if (!bootstrapped || generation !== bootstrapGeneration)
+            return;
+        logger.setReportingEnabled(enabled);
+        if (!enabled)
+            return;
+        tryRun(() => {
+            var _a, _b, _c;
+            const appName = process.env.UNI_APP_NAME || '';
+            const injected = parseInjectedUniStatistics();
+            const bootBase = {
+                channel: (_a = cfgBoot === null || cfgBoot === void 0 ? void 0 : cfgBoot.version) !== null && _a !== void 0 ? _a : 'image',
+                reportIntervalSec: (_b = cfgBoot === null || cfgBoot === void 0 ? void 0 : cfgBoot.reportIntervalSec) !== null && _b !== void 0 ? _b : 0,
+                ak: (_c = cfgBoot === null || cfgBoot === void 0 ? void 0 : cfgBoot.ak) !== null && _c !== void 0 ? _c : '',
+                appName,
+                debugFromManifest: process.env.UNI_STAT_DEBUG === 'true' ||
+                    process.env.UNI_STAT_DEBUG === true,
+            };
+            // 仅当 manifest 显式配置了超时项时才在 debug 启动摘要中展示（默认值 300/1800 不刷屏）。
+            if (injected != null) {
+                if (injected.backgroundTimeout != null ||
+                    injected.backgroundTimeoutSec != null) {
+                    bootBase.backgroundTimeoutSec = cfgBoot === null || cfgBoot === void 0 ? void 0 : cfgBoot.backgroundTimeoutSec;
+                }
+                if (injected.pageInactiveTimeout != null ||
+                    injected.pageInactiveTimeoutSec != null) {
+                    bootBase.pageInactiveTimeoutSec = cfgBoot === null || cfgBoot === void 0 ? void 0 : cfgBoot.pageInactiveTimeoutSec;
+                }
             }
-            if (injected.pageInactiveTimeout != null ||
-                injected.pageInactiveTimeoutSec != null) {
-                bootBase.pageInactiveTimeoutSec = cfgBoot === null || cfgBoot === void 0 ? void 0 : cfgBoot.pageInactiveTimeoutSec;
-            }
-        }
-        // #ifndef VUE3
-        logBoot(Object.assign({}, bootBase, { vueMode: 'Vue2' }));
-        // #endif
-        // #ifdef VUE3
-        logBoot(Object.assign({}, bootBase, {
-            vueMode: opts.vapor ? 'Vapor' : 'Vue3',
-        }));
-        // #endif
-    }, undefined);
+            // #ifndef VUE3
+            logBoot(Object.assign({}, bootBase, { vueMode: 'Vue2' }));
+            // #endif
+            // #ifdef VUE3
+            logBoot(Object.assign({}, bootBase, {
+                vueMode: opts.vapor ? 'Vapor' : 'Vue3',
+            }));
+            // #endif
+        }, undefined);
+    });
     /**
      * 装配 vue mixin 与 uni 生命周期；与 logBoot 解耦，便于在 uni 晚就绪时延后执行。
      */
@@ -7197,6 +7575,8 @@ function mountUniReport(app) {
 }
 /** 仅供测试：重置 install 哨兵；调用方应同时调 `__resetStatApp()`。 */
 function __resetInstall() {
+    bootstrapGeneration++;
+    logger.setReportingEnabled(true);
     if (uniHookRetryTimer) {
         clearTimeout(uniHookRetryTimer);
         uniHookRetryTimer = undefined;

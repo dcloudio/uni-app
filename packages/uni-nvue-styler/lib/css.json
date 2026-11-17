@@ -8645,8 +8645,8 @@
               }
             },
             "web": {
-              "uniVer": "x",
-              "unixVer": "x"
+              "uniVer": "√",
+              "unixVer": "5.33"
             }
           }
         }

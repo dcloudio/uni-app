@@ -1,3 +1,5 @@
+// @ts-expect-error 当前 Vue 类型尚未升级到 3.6，Vapor runtime 已导出该方法
+import { initUniElement } from 'vue'
 import { queuePostFlushCb } from 'vue'
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
 import { adProps, useAd } from './useAd'
@@ -73,7 +75,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       </div>
     )
     // 标记宿主类型，SDK 和事件目标仍使用原来的内部广告容器。
-    Object.defineProperty(root, 'uniTagName', uniTagName)
+    initUniElement(root, uniTagName)
     return root
   },
 })

@@ -45,7 +45,12 @@ declare enum SchedulerJobFlags {
    * Requeue a Suspense effect if its pending branch is discarded.
    * @internal
    */
-  REQUEUE_ON_SUSPENSE_DISCARD = 8
+  REQUEUE_ON_SUSPENSE_DISCARD = 8,
+  /**
+   * A post job buffered by a suspense boundary is queued as soon as that
+   * boundary resolves.
+   */
+  FLUSH_ON_SUSPENSE_RESOLVE = 16
 }
 export interface SchedulerJob extends Function {
   order?: number;
@@ -555,6 +560,7 @@ export interface SuspenseBoundary {
   deps: number;
   pendingId: number;
   timeout: number;
+  timeoutTimer: ReturnType<typeof setTimeout> | undefined;
   isInFallback: boolean;
   isHydrating: boolean;
   isUnmounted: boolean;
@@ -632,13 +638,13 @@ export declare const BaseTransition: {
   };
 };
 export interface TransitionHooksContext {
-  isLeaving: () => boolean;
+  isLeaving: (node: any) => boolean;
   setLeavingNodeCache: (node: any) => void;
   unsetLeavingNodeCache: (node: any) => void;
   earlyRemove: () => void;
   cloneHooks?: (node: any) => TransitionHooks;
 }
-export declare function resolveTransitionHooks(vnode: VNode, props: BaseTransitionProps<any>, state: TransitionState, instance: GenericComponentInstance, postClone?: (hooks: TransitionHooks) => void): TransitionHooks;
+export declare function resolveTransitionHooks(vnode: VNode, props: BaseTransitionProps<any>, state: TransitionState, instance: GenericComponentInstance): TransitionHooks;
 export declare function setTransitionHooks(vnode: VNode, hooks: TransitionHooks): TransitionHooks;
 export declare function getTransitionRawChildren(children: VNode[], keepComment?: boolean, parentKey?: VNode["key"]): VNode[];
 //#endregion
@@ -731,7 +737,7 @@ export interface KeepAliveProps {
 export interface KeepAliveContext extends ComponentRenderContext {
   renderer: RendererInternals;
   activate: (vnode: VNode, container: RendererElement, anchor: RendererNode | null, namespace: ElementNamespace, optimized: boolean) => void;
-  deactivate: (vnode: VNode) => void;
+  deactivate: (vnode: VNode) => boolean;
   getCachedComponent: (vnode: VNode) => VNode;
   getStorageContainer: () => RendererElement;
 }
@@ -1452,10 +1458,6 @@ export interface ComponentInternalOptions {
    */
   __vapor?: boolean;
   /**
-   * whether this vapor component has multiple root nodes
-   */
-  __multiRoot?: boolean;
-  /**
    * indicates keep-alive component
    */
   __isKeepAlive?: boolean;
@@ -1719,7 +1721,7 @@ export declare enum ErrorCodes {
 type ErrorTypes = LifecycleHooks | ErrorCodes | WatchErrorCodes;
 export declare function callWithErrorHandling(fn: Function, instance: GenericComponentInstance | null | undefined, type: ErrorTypes, args?: unknown[]): any;
 export declare function callWithAsyncErrorHandling(fn: Function | Function[], instance: GenericComponentInstance | null, type: ErrorTypes, args?: unknown[]): any;
-export declare function handleError(err: unknown, instance: GenericComponentInstance | null | undefined, type: ErrorTypes, throwInDev?: boolean): void;
+export declare function handleError(err: unknown, instance: GenericComponentInstance | null | undefined, type: ErrorTypes, throwInDev?: boolean, isAsyncError?: boolean): void;
 export declare function logError(err: unknown, type: ErrorTypes, instance: GenericComponentInstance | null | undefined, throwInDev?: boolean, throwInProd?: boolean): void;
 //#endregion
 //#region temp/packages/runtime-core/src/customFormatter.d.ts

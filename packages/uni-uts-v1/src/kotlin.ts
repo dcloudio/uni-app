@@ -141,7 +141,10 @@ export async function runKotlinProd(
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
   const result = await compile(filename, {
-    inputDir: isModule ? uvueOutDir('app-android') : inputDir,
+    inputDir:
+      isModule && (!isPlugin || process.env.UNI_APP_X_TSC === 'true')
+        ? uvueOutDir('app-android')
+        : inputDir,
     outputDir,
     noEmit,
     sourceMap: !!sourceMap,
@@ -190,8 +193,8 @@ export async function runKotlinProd(
       addPluginInjectApis(result.inject_apis)
     }
   }
-  // module 模式，不需要处理资源
-  if (!isModule) {
+  // 前端组件 module 的资源由 Vite 处理，utssdk module 仍需生成原生插件资源。
+  if (!isModule || isPlugin) {
     genUTSPlatformResource(filename, {
       isX,
       pluginId: uniModuleId,
@@ -633,8 +636,8 @@ export async function compile(
   const componentsCode = genComponentsCode(filename, components, isX)
   const { package: pluginPackage, id: pluginId } = parseKotlinPackage(filename)
   const input: UTSInputOptions = {
-    root: resolveBundleInputRoot('app-android', inputDir),
-    filename: resolveBundleInputFileName('app-android', filename),
+    root: resolveBundleInputRoot('app-android', inputDir, isModule),
+    filename: resolveBundleInputFileName('app-android', filename, isModule),
     pluginId: isPlugin ? pluginId : '',
     paths: {
       vue: 'io.dcloud.uniapp.vue',

@@ -129,9 +129,9 @@ uni-app canvas:where([uni-canvas]) {
   justify-content: normal;
 }
 
-/* WebView 保留旧宿主的 flex 布局和字体继承，iframe 继续占满宿主。 */
-uni-app div:where([uni-web-view]) {
-  flex: 1;
+/* WebView 直接使用 iframe，保留 flex 布局和字体继承。 */
+uni-app iframe:where([uni-web-view]) {
+  display: block;
   font-size: inherit;
   text-align: inherit;
   overflow: visible;
@@ -254,12 +254,13 @@ div:where([uni-textarea]) {
 }
 
 /*
- * Web Vapor 使用原生 div、span、img、canvas 承载 view、text、image、canvas。
+ * Web Vapor 使用原生 div、span、img、canvas、iframe 承载组件。
  * 复合组件使用 view/text/image 作为根节点时，也复用对应基础规则。
  */
 
 div:where([uni-view]),
 canvas:where([uni-canvas]),
+iframe:where([uni-web-view]),
 span:where([uni-text]),
 img:where([uni-image]) {
   position: relative;
@@ -311,6 +312,7 @@ img:where([uni-image]) {
 /* 基础节点的 hidden 优先于业务 display 样式。 */
 div:where([uni-view][hidden]),
 canvas:where([uni-canvas][hidden]),
+iframe:where([uni-web-view][hidden]),
 span:where([uni-text][hidden]),
 img:where([uni-image][hidden]) {
   display: none !important;

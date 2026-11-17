@@ -20351,12 +20351,20 @@
       };
     }
   }));
+  var RefreshStateEnum = /* @__PURE__ */ ((RefreshStateEnum2) => {
+    RefreshStateEnum2["Idle"] = "";
+    RefreshStateEnum2["Pulling"] = "pulling";
+    RefreshStateEnum2["Refresh"] = "refresh";
+    RefreshStateEnum2["Restore"] = "restore";
+    RefreshStateEnum2["Abort"] = "abort";
+    return RefreshStateEnum2;
+  })(RefreshStateEnum || {});
   const Refresher = /* @__PURE__ */ defineBuiltInComponent({
     name: "Refresher",
     props: {
       refreshState: {
         type: String,
-        default: ""
+        default: RefreshStateEnum.Idle
       },
       refresherHeight: {
         type: Number,
@@ -20388,16 +20396,16 @@
           backgroundColor: props2.refresherBackground
         };
         switch (props2.refreshState) {
-          case "pulling":
+          case RefreshStateEnum.Pulling:
             style.height = props2.refresherHeight + "px";
             break;
-          case "refreshing":
+          case RefreshStateEnum.Refresh:
             style.height = props2.refresherThreshold + "px";
             style.transition = "height 0.3s";
             break;
-          case "":
-          case "refresherabort":
-          case "restore":
+          case RefreshStateEnum.Idle:
+          case RefreshStateEnum.Abort:
+          case RefreshStateEnum.Restore:
             style.height = "0px";
             style.transition = "height 0.3s";
             break;
@@ -20427,7 +20435,7 @@
           "class": "uni-scroll-view-refresh"
         }, [createVNode("div", {
           "class": "uni-scroll-view-refresh-inner"
-        }, [props2.refreshState == "pulling" ? createVNode("svg", {
+        }, [props2.refreshState === RefreshStateEnum.Pulling ? createVNode("svg", {
           "key": "refresh__icon",
           "style": {
             transform: "rotate(" + refreshRotate.value + "deg)"
@@ -20442,7 +20450,7 @@
         }, null), createVNode("path", {
           "d": "M0 0h24v24H0z",
           "fill": "none"
-        }, null)], 4) : null, props2.refreshState == "refreshing" ? createVNode("svg", {
+        }, null)], 4) : null, props2.refreshState === RefreshStateEnum.Refresh ? createVNode("svg", {
           "key": "refresh__spinner",
           "class": "uni-scroll-view-refresh__spinner",
           "width": "24",
@@ -20524,7 +20532,249 @@
       waitingForTouchEnd = false;
     };
   }
+  var REFRESHER_RESTORE_DURATION = 300;
   var passiveOptions = /* @__PURE__ */ passive(true);
+  var chromeVersion = navigator.userAgent.match(/Chrome\/(\d+)/);
+  var canPullAfterScroll = !chromeVersion || Number(chromeVersion[1]) >= 150;
+  function useRefresher(_ref) {
+    var {
+      props: props2,
+      state,
+      scrollElement,
+      isVertical,
+      trigger: trigger2,
+      emit: emit2,
+      onNativeTouchMove
+    } = _ref;
+    var touch = null;
+    var refreshResetTimer;
+    function clearRefreshResetTimer() {
+      clearTimeout(refreshResetTimer);
+      refreshResetTimer = void 0;
+    }
+    function setRefreshState(nextState) {
+      var event = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
+      var dy = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : touch ? touch.y - touch.startY : 0;
+      if (state.refreshState === nextState)
+        return;
+      clearRefreshResetTimer();
+      state.refreshState = nextState;
+      switch (nextState) {
+        case RefreshStateEnum.Idle:
+          state.refresherHeight = 0;
+          if (touch) {
+            touch.pullStartY = scrollElement.value.scrollTop <= 0 ? touch.y : null;
+          }
+          break;
+        case RefreshStateEnum.Refresh:
+          state.refresherHeight = props2.refresherThreshold;
+          trigger2("refresherrefresh", event, {
+            dy
+          });
+          emit2("update:refresherTriggered", true);
+          break;
+        case RefreshStateEnum.Restore:
+        case RefreshStateEnum.Abort:
+          state.refresherHeight = 0;
+          refreshResetTimer = setTimeout(() => {
+            setRefreshState(RefreshStateEnum.Idle);
+          }, REFRESHER_RESTORE_DURATION);
+          if (nextState === RefreshStateEnum.Restore) {
+            emit2("update:refresherTriggered", false);
+            trigger2("refresherrestore", event, {
+              dy
+            });
+          } else {
+            trigger2("refresherabort", event, {
+              dy
+            });
+          }
+          break;
+      }
+    }
+    function updatePulling(event, dy) {
+      var gesture = touch;
+      if (gesture.pullStartY === null)
+        return;
+      state.refresherHeight = Math.max(0, gesture.y - gesture.pullStartY);
+      if (state.refresherHeight > 0) {
+        trigger2("refresherpulling", event, {
+          deltaY: dy,
+          dy
+        });
+      }
+    }
+    function handleBrowserPulling(event, dy, stepY) {
+      var gesture = touch;
+      if (!canPullAfterScroll || !gesture.canPull || !props2.refresherEnabled || !isVertical.value || state.refreshState !== RefreshStateEnum.Idle && state.refreshState !== RefreshStateEnum.Pulling) {
+        return;
+      }
+      if (scrollElement.value.scrollTop > 0) {
+        gesture.pullStartY = null;
+        if (state.refreshState === RefreshStateEnum.Pulling) {
+          state.refresherHeight = 0;
+        }
+        return;
+      }
+      if (gesture.pullStartY === null) {
+        gesture.pullStartY = gesture.y;
+        return;
+      }
+      if (state.refreshState === RefreshStateEnum.Idle) {
+        if (stepY <= 0 || gesture.y <= gesture.pullStartY) {
+          gesture.pullStartY = gesture.y;
+          return;
+        }
+        setRefreshState(RefreshStateEnum.Pulling, event, dy);
+      }
+      updatePulling(event, dy);
+    }
+    function handleRefresherTouchMove(event, dx, dy, stepY) {
+      var gesture = touch;
+      if (gesture.handledBy === "undecided") {
+        if (dx === 0 && dy === 0)
+          return false;
+        if (Math.abs(dx) > Math.abs(dy) || scrollElement.value.scrollTop > 0 || gesture.pullStartY === null || state.refreshState === RefreshStateEnum.Idle && dy < 0) {
+          if (Math.abs(dx) > Math.abs(dy))
+            gesture.canPull = false;
+          gesture.handledBy = "browser";
+        } else {
+          gesture.handledBy = "refresher";
+        }
+      }
+      if (gesture.handledBy === "browser") {
+        handleBrowserPulling(event, dy, stepY);
+        return false;
+      }
+      if (state.refreshState === RefreshStateEnum.Refresh && dy < 0) {
+        gesture.handledBy = "browser";
+        setRefreshState(RefreshStateEnum.Restore, event, dy);
+        return false;
+      }
+      if (event.cancelable === false) {
+        gesture.handledBy = "browser";
+        if (state.refreshState === RefreshStateEnum.Pulling) {
+          setRefreshState(RefreshStateEnum.Abort, event, dy);
+        }
+        return false;
+      }
+      event.preventDefault();
+      if (state.refreshState === RefreshStateEnum.Idle) {
+        if (gesture.pullStartY === null || gesture.y <= gesture.pullStartY) {
+          gesture.pullStartY = gesture.y;
+        } else {
+          setRefreshState(RefreshStateEnum.Pulling, event, dy);
+        }
+      }
+      if (state.refreshState === RefreshStateEnum.Pulling) {
+        updatePulling(event, dy);
+      }
+      return true;
+    }
+    function finishTouch(event, cancelled) {
+      if (!touch)
+        return;
+      var gesture = touch;
+      var point = Array.from(event.changedTouches).find((point2) => point2.identifier === gesture.identifier);
+      if (!point && !cancelled)
+        return;
+      touch = null;
+      disableScrollBounce({
+        disable: false
+      });
+      if (state.refreshState === RefreshStateEnum.Pulling) {
+        setRefreshState(!cancelled && state.refresherHeight >= props2.refresherThreshold ? RefreshStateEnum.Refresh : RefreshStateEnum.Abort, event, (point ? point.pageY : gesture.y) - gesture.startY);
+      }
+    }
+    function handleTouchStart(event) {
+      if (touch)
+        finishTouch(event, true);
+      if (event.touches.length !== 1)
+        return;
+      var point = event.touches[0];
+      var canPull = !!(props2.refresherEnabled && isVertical.value);
+      touch = {
+        identifier: point.identifier,
+        startX: point.pageX,
+        startY: point.pageY,
+        y: point.pageY,
+        pullStartY: scrollElement.value.scrollTop <= 0 ? point.pageY : null,
+        canPull,
+        handledBy: canPull ? "undecided" : "browser"
+      };
+      disableScrollBounce({
+        disable: true
+      });
+    }
+    function handleTouchMove(event) {
+      if (!touch)
+        return;
+      if (event.touches.length !== 1 || event.touches[0].identifier !== touch.identifier) {
+        finishTouch(event, true);
+        return;
+      }
+      var point = event.touches[0];
+      var dx = point.pageX - touch.startX;
+      var dy = point.pageY - touch.startY;
+      var stepY = point.pageY - touch.y;
+      touch.y = point.pageY;
+      if (!handleRefresherTouchMove(event, dx, dy, stepY)) {
+        onNativeTouchMove(event, dx, dy);
+      }
+    }
+    function handleTouchEnd(event) {
+      finishTouch(event, false);
+    }
+    function handleTouchCancel(event) {
+      finishTouch(event, true);
+    }
+    var removeListeners;
+    onMounted(() => {
+      var element = scrollElement.value;
+      element.addEventListener("touchstart", handleTouchStart, passiveOptions);
+      element.addEventListener("touchmove", handleTouchMove, passive(false));
+      element.addEventListener("touchend", handleTouchEnd, passiveOptions);
+      element.addEventListener("touchcancel", handleTouchCancel, passiveOptions);
+      removeListeners = () => {
+        element.removeEventListener("touchstart", handleTouchStart);
+        element.removeEventListener("touchmove", handleTouchMove);
+        element.removeEventListener("touchend", handleTouchEnd);
+        element.removeEventListener("touchcancel", handleTouchCancel);
+      };
+      initScrollBounce();
+    });
+    onBeforeUnmount(() => {
+      clearRefreshResetTimer();
+      if (touch)
+        disableScrollBounce({
+          disable: false
+        });
+      touch = null;
+      removeListeners == null ? void 0 : removeListeners();
+    });
+    watch(() => props2.refresherTriggered, (val) => {
+      if (!props2.refresherEnabled)
+        return;
+      if (val === true) {
+        setRefreshState(RefreshStateEnum.Refresh);
+      } else if (val === false) {
+        if (state.refreshState === RefreshStateEnum.Refresh) {
+          setRefreshState(RefreshStateEnum.Restore);
+        } else if (state.refreshState === RefreshStateEnum.Pulling) {
+          setRefreshState(RefreshStateEnum.Abort);
+        }
+      }
+    });
+    watch(() => props2.refresherEnabled, (enabled) => {
+      if (!enabled) {
+        setRefreshState(RefreshStateEnum.Idle);
+        if (touch) {
+          touch.handledBy = "browser";
+          touch.canPull = false;
+        }
+      }
+    });
+  }
   var props$i = {
     direction: {
       type: [String],
@@ -20660,7 +20910,7 @@
       lastScrollToUpperTime: 0,
       lastScrollToLowerTime: 0,
       refresherHeight: 0,
-      refreshState: ""
+      refreshState: RefreshStateEnum.Idle
     });
     return {
       state,
@@ -20669,9 +20919,6 @@
     };
   }
   function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, trigger2, rootRef, main, content, emit2) {
-    var beforeRefreshing = false;
-    var toUpperNumber = 0;
-    var triggerAbort = false;
     var __transitionEnd = () => {
     };
     var realScrollX = computed(() => {
@@ -20679,6 +20926,26 @@
     });
     var realScrollY = computed(() => {
       return props2.scrollY;
+    });
+    useRefresher({
+      props: props2,
+      state,
+      scrollElement: main,
+      isVertical: realScrollY,
+      trigger: trigger2,
+      emit: emit2,
+      onNativeTouchMove(event, dx, dy) {
+        var horizontal = Math.abs(dx) > Math.abs(dy);
+        if (horizontal ? !realScrollX.value : !realScrollY.value)
+          return;
+        var element = main.value;
+        var position = horizontal ? element.scrollLeft : element.scrollTop;
+        var max2 = horizontal ? element.scrollWidth - element.offsetWidth : element.scrollHeight - element.offsetHeight;
+        var delta = horizontal ? dx : dy;
+        if (delta > 0 && position > 0 || delta < 0 && position < max2) {
+          event.stopPropagation();
+        }
+      }
     });
     var upperThresholdNumber = computed(() => {
       var val = Number(props2.upperThreshold);
@@ -20840,52 +21107,6 @@
       content.value.removeEventListener("transitionend", __transitionEnd);
       content.value.removeEventListener("webkitTransitionEnd", __transitionEnd);
     }
-    function _setRefreshState(_state) {
-      if (!props2.refresherEnabled)
-        return;
-      switch (_state) {
-        case "refreshing":
-          state.refresherHeight = props2.refresherThreshold;
-          if (!beforeRefreshing) {
-            beforeRefreshing = true;
-            trigger2("refresherpulling", {}, {
-              deltaY: state.refresherHeight,
-              dy: state.refresherHeight
-            });
-            trigger2("refresherrefresh", {}, {
-              dy: touchEnd.y - touchStart.y
-            });
-            emit2("update:refresherTriggered", true);
-          }
-          break;
-        case "restore":
-        case "refresherabort":
-          beforeRefreshing = false;
-          state.refresherHeight = toUpperNumber = 0;
-          if (_state === "restore") {
-            triggerAbort = false;
-            trigger2("refresherrestore", {}, {
-              dy: touchEnd.y - touchStart.y
-            });
-          }
-          if (_state === "refresherabort" && triggerAbort) {
-            triggerAbort = false;
-            trigger2("refresherabort", {}, {
-              dy: touchEnd.y - touchStart.y
-            });
-          }
-          break;
-      }
-      state.refreshState = _state;
-    }
-    var touchStart = {
-      x: 0,
-      y: 0
-    };
-    var touchEnd = {
-      x: 0,
-      y: props2.refresherThreshold
-    };
     onMounted(() => {
       nextTick(() => {
         _scrollTopChanged(scrollTopNumber.value);
@@ -20897,112 +21118,10 @@
         event.stopPropagation();
         _handleScroll(event);
       };
-      var needStop = null;
-      var __handleTouchMove = function(event) {
-        if (touchStart === null)
-          return;
-        var x = event.touches[0].pageX;
-        var y = event.touches[0].pageY;
-        var _main = main.value;
-        if (Math.abs(x - touchStart.x) > Math.abs(y - touchStart.y)) {
-          if (realScrollX.value) {
-            if (_main.scrollLeft === 0 && x > touchStart.x) {
-              needStop = false;
-              return;
-            } else if (_main.scrollWidth === _main.offsetWidth + _main.scrollLeft && x < touchStart.x) {
-              needStop = false;
-              return;
-            }
-            needStop = true;
-          } else {
-            needStop = false;
-          }
-        } else {
-          if (realScrollY.value) {
-            if (_main.scrollTop === 0 && y > touchStart.y) {
-              needStop = false;
-              if (props2.refresherEnabled && event.cancelable !== false)
-                event.preventDefault();
-            } else if (_main.scrollHeight === _main.offsetHeight + _main.scrollTop && y < touchStart.y) {
-              needStop = false;
-              return;
-            } else {
-              needStop = true;
-            }
-          } else {
-            needStop = false;
-          }
-        }
-        if (needStop) {
-          event.stopPropagation();
-        }
-        if (_main.scrollTop === 0 && event.touches.length === 1) {
-          _setRefreshState("pulling");
-        }
-        if (props2.refresherEnabled && state.refreshState === "pulling") {
-          var dy = y - touchStart.y;
-          if (toUpperNumber === 0) {
-            toUpperNumber = y;
-          }
-          if (!beforeRefreshing) {
-            state.refresherHeight = y - toUpperNumber;
-            if (state.refresherHeight > 0) {
-              triggerAbort = true;
-              trigger2("refresherpulling", event, {
-                deltaY: dy,
-                dy
-              });
-            }
-          } else {
-            state.refresherHeight = dy + props2.refresherThreshold;
-            triggerAbort = false;
-          }
-        }
-      };
-      var __handleTouchStart = function(event) {
-        if (event.touches.length === 1) {
-          disableScrollBounce({
-            disable: true
-          });
-          touchStart = {
-            x: event.touches[0].pageX,
-            y: event.touches[0].pageY
-          };
-        }
-      };
-      var __handleTouchEnd = function(event) {
-        touchEnd = {
-          x: event.changedTouches[0].pageX,
-          y: event.changedTouches[0].pageY
-        };
-        disableScrollBounce({
-          disable: false
-        });
-        if (state.refresherHeight >= props2.refresherThreshold) {
-          _setRefreshState("refreshing");
-        } else {
-          _setRefreshState("refresherabort");
-        }
-        touchStart = {
-          x: 0,
-          y: 0
-        };
-        touchEnd = {
-          x: 0,
-          y: props2.refresherThreshold
-        };
-      };
-      main.value.addEventListener("touchstart", __handleTouchStart, passiveOptions);
-      main.value.addEventListener("touchmove", __handleTouchMove, passive(false));
       main.value.addEventListener("scroll", __handleScroll, passive(false));
-      main.value.addEventListener("touchend", __handleTouchEnd, passiveOptions);
       var removeScrollendListener = onScrollend(main.value, _handleScrollEnd);
-      initScrollBounce();
       onBeforeUnmount(() => {
-        main.value.removeEventListener("touchstart", __handleTouchStart);
-        main.value.removeEventListener("touchmove", __handleTouchMove);
         main.value.removeEventListener("scroll", __handleScroll);
-        main.value.removeEventListener("touchend", __handleTouchEnd);
         removeScrollendListener();
       });
     });
@@ -21018,13 +21137,6 @@
     });
     watch(() => props2.scrollIntoView, (val) => {
       _scrollIntoViewChanged(val);
-    });
-    watch(() => props2.refresherTriggered, (val) => {
-      if (val === true) {
-        _setRefreshState("refreshing");
-      } else if (val === false) {
-        _setRefreshState("restore");
-      }
     });
     return {
       realScrollX,

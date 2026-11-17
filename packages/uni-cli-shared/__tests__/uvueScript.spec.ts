@@ -122,6 +122,31 @@ describe('uniUTSUVueJavaScriptPlugin', () => {
     ).toBeUndefined()
   })
 
+  test.each(['h5', 'web'] as const)(
+    'Web Vapor 将默认语言交给解析器（%s）',
+    (platform) => {
+      process.env.UNI_APP_X_DOM2 = 'true'
+      process.env.UNI_PLATFORM = platform
+      process.env.UNI_UTS_PLATFORM = 'web'
+      const plugin = uniUTSUVueJavaScriptPlugin({
+        useSfcDescriptorTransform: true,
+      })
+      for (const command of ['serve', 'build']) {
+        if (typeof plugin.configResolved === 'function')
+          plugin.configResolved({ command, plugins: [] } as any)
+        for (const extension of ['vue', 'uvue']) {
+          expect(
+            getTransform(plugin).call(
+              {} as any,
+              '<script setup>console.log(1)</script>',
+              `/[pages]/index.${extension}`
+            )
+          ).toBeUndefined()
+        }
+      }
+    }
+  )
+
   test('keeps normal and external JavaScript scripts unchanged in DOM2', () => {
     process.env.UNI_APP_X_DOM2 = 'true'
     const transform = getTransform(uniUTSUVueJavaScriptPlugin())

@@ -158,6 +158,20 @@ export const IMAGE_REPORT_DEFAULTS: ImageReportDefaults = {
 }
 
 /**
+ * 服务端上报开关查询地址；返回 `{ ret: 0, enable: 0 | 1 }`。
+ *
+ * 开关仍由旧统计服务维护，不能复用 image 采集域名：采集域名的同路径接口不会
+ * 返回控制台配置的实时状态。
+ */
+export const REPORT_CONTROL_URL = STAT_URL
+
+/** 服务端上报开关本地缓存时长（与旧公有版保持一致：24 小时）。 */
+export const REPORT_CONTROL_CACHE_TTL_MS = 24 * 60 * 60 * 1000
+
+/** 服务端上报开关单次查询超时。查询失败时按旧逻辑默认允许上报。 */
+export const REPORT_CONTROL_TIMEOUT_MS = 10_000
+
+/**
  * uni-app appid。优先取构建期 `process.env.UNI_APP_ID`；未注入时返回 `''`，
  * 由调用方决定是否上报为 `'default'`。
  */

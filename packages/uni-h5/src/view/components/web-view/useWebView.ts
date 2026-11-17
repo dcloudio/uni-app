@@ -16,7 +16,7 @@ import { getRealPath } from '@dcloudio/uni-platform'
 import { ON_WEB_INVOKE_APP_SERVICE, once } from '@dcloudio/uni-shared'
 import { onWebInvokeAppService } from '../../../service/onWebInvokeAppService'
 
-const Invoke = /*#__PURE__*/ once(() =>
+export const initWebViewBridge = /*#__PURE__*/ once(() =>
   UniServiceJSBridge.on(ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService)
 )
 
@@ -33,7 +33,7 @@ export function useWebView(
   props: ExtractPropTypes<typeof webViewProps>,
   emit: SetupContext<['load']>['emit']
 ) {
-  Invoke()
+  initWebViewBridge()
   const rootRef: RootRef = ref(null)
   const iframeRef: RootRef = ref(null)
   const { $attrs, $excludeAttrs, $listeners } = useAttrs({

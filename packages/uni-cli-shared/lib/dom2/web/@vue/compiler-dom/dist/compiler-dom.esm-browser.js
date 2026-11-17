@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-dom v3.6.0-rc.14
+  * @vue/compiler-dom v3.6.0-rc.15
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -34,10 +34,18 @@ const isSymbol = (val) => typeof val === "symbol";
 const isObject = (val) => val !== null && typeof val === "object";
 const isReservedProp = /*@__PURE__*/ makeMap(",key,ref,ref_for,ref_key,onVnodeBeforeMount,onVnodeMounted,onVnodeBeforeUpdate,onVnodeUpdated,onVnodeBeforeUnmount,onVnodeUnmounted");
 const isBuiltInDirective = /*@__PURE__*/ makeMap("bind,cloak,else-if,else,for,html,if,model,on,once,pre,show,slot,text,memo");
+const STRING_CACHE_MAX_SIZE = 1e4;
 const cacheStringFunction = (fn) => {
-	const cache = Object.create(null);
+	let cache = Object.create(null);
+	let size = 0;
 	return ((str) => {
-		return cache[str] || (cache[str] = fn(str));
+		const hit = cache[str];
+		if (hit !== void 0) return hit;
+		if (++size > STRING_CACHE_MAX_SIZE) {
+			cache = Object.create(null);
+			size = 1;
+		}
+		return cache[str] = fn(str);
 	});
 };
 const camelizeRE = /-(\w)/g;
@@ -45,17 +53,17 @@ const camelizeReplacer = (_, c) => c ? c.toUpperCase() : "";
 /**
 * @private
 */
-const camelize = cacheStringFunction((str) => str.replace(camelizeRE, camelizeReplacer));
+const camelize = /*@__PURE__*/ cacheStringFunction((str) => str.replace(camelizeRE, camelizeReplacer));
 /**
 * @private
 */
-const capitalize = cacheStringFunction((str) => {
+const capitalize = /*@__PURE__*/ cacheStringFunction((str) => {
 	return str.charAt(0).toUpperCase() + str.slice(1);
 });
 /**
 * @private
 */
-const toHandlerKey = cacheStringFunction((str) => {
+const toHandlerKey = /*@__PURE__*/ cacheStringFunction((str) => {
 	return str ? `on${capitalize(str)}` : ``;
 });
 /**
@@ -2391,7 +2399,11 @@ function getLoc(start, end) {
 	};
 }
 function cloneLoc(loc) {
-	return getLoc(loc.start.offset, loc.end.offset);
+	return {
+		start: extend({}, loc.start),
+		end: extend({}, loc.end),
+		source: loc.source
+	};
 }
 function setLocEnd(loc, end) {
 	loc.end = tokenizer.getPos(end);

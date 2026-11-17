@@ -253,12 +253,13 @@ class UniInputElement extends UniViewElement {
     return {};
   }
 }
+const uniTagName$a = { value: "INPUT" };
 const descriptors$1 = /* @__PURE__ */ (() => ({
-  uniTagName: { value: "INPUT" },
   focus: Object.getOwnPropertyDescriptor(UniInputElement.prototype, "focus"),
   value: Object.getOwnPropertyDescriptor(UniInputElement.prototype, "value")
 }))();
 function initInputElement(root) {
+  Vue.initUniElement(root, uniTagName$a);
   Object.defineProperties(root, descriptors$1);
 }
 const isEnableLocale = /* @__PURE__ */ uniShared.once(
@@ -2204,8 +2205,8 @@ class UniTextareaElement extends UniViewElement {
     return {};
   }
 }
+const uniTagName$9 = { value: "TEXTAREA" };
 const descriptors = /* @__PURE__ */ (() => ({
-  uniTagName: { value: "TEXTAREA" },
   focus: Object.getOwnPropertyDescriptor(
     UniTextareaElement.prototype,
     "focus"
@@ -2215,6 +2216,7 @@ function setValue(value) {
   this.querySelector("textarea").value = value;
 }
 function initTextareaElement(root, state) {
+  Vue.initUniElement(root, uniTagName$9);
   Object.defineProperties(root, descriptors);
   Object.defineProperty(root, "value", {
     get: () => state.value,
@@ -5553,7 +5555,7 @@ const indexVapor$8 = /* @__PURE__ */ defineBuiltInComponent({
       });
       return _n0;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName$8);
+    Vue.initUniElement(root, uniTagName$8);
     return root;
   }
 });
@@ -5639,7 +5641,7 @@ const indexVapor$7 = /* @__PURE__ */ defineBuiltInComponent({
       setNodes(_x0, () => path.value && path.value.d && createSvgIconVNode(path.value.d, props2.color || path.value.c, rpx2px(props2.size)));
       return _n0;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName$7);
+    Vue.initUniElement(root, uniTagName$7);
     return root;
   }
 });
@@ -5866,7 +5868,7 @@ const indexVapor$6 = /* @__PURE__ */ defineBuiltInComponent({
       Vue.renderEffect(() => _setTemplateRef(_n3, rootRef));
       return _n3;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName$6);
+    Vue.initUniElement(root, uniTagName$6);
     return root;
   }
 });
@@ -6854,7 +6856,7 @@ const indexVapor$5 = /* @__PURE__ */ defineBuiltInComponent({
       Vue.renderEffect(() => _setTemplateRef(_n3, rootRef));
       return _n3;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName$5);
+    Vue.initUniElement(root, uniTagName$5);
     return root;
   }
 });
@@ -7249,7 +7251,7 @@ const indexVapor$4 = /* @__PURE__ */ defineBuiltInComponent({
       trigger("itemclick", e2, detail);
     }
     const result = renderRichText(props2, rootRef, triggerItemClick);
-    Object.defineProperty(result, "uniTagName", uniTagName$4);
+    Vue.initUniElement(result, uniTagName$4);
     return result;
   }
 });
@@ -7281,18 +7283,14 @@ function useScrollView(props2, { emit: emit2, expose }) {
     () => props2.direction === "vertical" || props2.direction === "all"
   );
   const rootStyle = Vue.computed(
-    () => `overflow-x:${scrollX.value ? "auto" : "hidden"};overflow-y:${scrollY.value ? "auto" : "hidden"};`
+    () => `overflow-x:${scrollX.value ? "auto" : "hidden"};overflow-y:${scrollY.value ? "auto" : "hidden"};scroll-behavior:${props2.scrollWithAnimation ? "smooth" : "auto"};`
   );
   const scrollBarClassName = Vue.computed(
     () => props2.showScrollbar === false ? "uni-scroll-view-scrollbar-hidden" : ""
   );
   function scrollTo(options) {
     var _a;
-    (_a = rootRef.value) == null ? void 0 : _a.scrollTo(
-      Object.assign(options, {
-        behavior: props2.scrollWithAnimation ? "smooth" : "instant"
-      })
-    );
+    (_a = rootRef.value) == null ? void 0 : _a.scrollTo(options);
   }
   function scrollIntoView(id) {
     const root = rootRef.value;
@@ -8538,7 +8536,6 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
   },
   setup(__props, { expose: __expose }) {
     const props2 = __props;
-    Vue.useAttrs();
     const scrollElement = Vue.ref(null);
     const headerElement = Vue.ref(null);
     const bodyElement = Vue.ref(null);
@@ -8556,8 +8553,10 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
     let fastScrollOffset = 0;
     let lastScrollTimestamp = 0;
     let lastScrollOffset = 0;
-    let cachedSizeStart = 200;
-    let cachedSizeEnd = 200;
+    let maxItemSize = 100;
+    let originalCachedSize = maxItemSize * 2;
+    let cachedSizeStart = originalCachedSize;
+    let cachedSizeEnd = originalCachedSize;
     let scrolling = false;
     let scrollEndTimer;
     let queued = false;
@@ -8621,6 +8620,14 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
       const item = store.keyItemMap.get(key);
       if (!item || item.size === height)
         return;
+      if (height > maxItemSize) {
+        maxItemSize = height;
+        originalCachedSize = maxItemSize * 2;
+        if (cachedSizeStart > 0)
+          cachedSizeStart = originalCachedSize;
+        if (cachedSizeEnd > 0)
+          cachedSizeEnd = originalCachedSize;
+      }
       item.size = height;
       store.rebuildItemOffsetsFrom(item.index + 1);
       if (scrolling && !scrollTarget && sizeChangeAnchorKey) {
@@ -8684,9 +8691,11 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
         targetOffset = -1;
       }
     }
-    function scrollToOffset(offset) {
+    function scrollToOffset(offset, followScrollBehavior = false) {
       const element = scrollElement.value;
-      element.scrollTo(0, offset);
+      element.scrollTo(
+        followScrollBehavior ? { top: offset } : { top: offset, behavior: "instant" }
+      );
       realScrollOffset = element.scrollTop;
       scrollOffset = realScrollOffset;
       fastScrollOffset = 0;
@@ -8703,9 +8712,7 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
         const offset = section ? section.offsetTop + (key ? section.getItemOffset(key) : 0) : item ? item.offset : -1;
         if (offset >= 0 && targetOffset !== offset + headerSize) {
           targetOffset = offset + headerSize;
-          scrollToOffset(
-            targetOffset
-          );
+          scrollToOffset(targetOffset, true);
         }
       } else if (!sections.length && !scrolling) {
         if (props2.initialScrollBottom && maintainInitialScrollBottom && listDataStatus === 1) {
@@ -8774,8 +8781,8 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
       const elapsed = timestamp - lastScrollTimestamp;
       const delta = offset - lastScrollOffset;
       realScrollOffset = offset;
-      cachedSizeStart = scrollTarget ? 0 : 200;
-      cachedSizeEnd = 200;
+      cachedSizeStart = scrollTarget ? 0 : originalCachedSize;
+      cachedSizeEnd = originalCachedSize;
       const fast = sectionMap.size === 0 && !scrollTarget && lastScrollTimestamp > 0 && elapsed > 0 && Math.abs(delta / elapsed) > 15 && offset > 1 && offset < element.scrollHeight - size - 1;
       if (fast) {
         if (delta > 0)
@@ -8806,10 +8813,10 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
       scrollOffset = realScrollOffset;
       fastScrollOffset = 0;
       lastScrollTimestamp = 0;
+      cachedSizeStart = originalCachedSize;
+      cachedSizeEnd = originalCachedSize;
       updateRenderList();
       scrollTarget = void 0;
-      cachedSizeStart = 200;
-      cachedSizeEnd = 200;
       updateScrollAnchorItem();
     }
     new ResizeObserver((entries2) => {
@@ -9176,7 +9183,6 @@ const _sfc_main$e = /* @__PURE__ */ Vue.defineVaporComponent({
     closeOnSlideDown: { type: Boolean, default: false }
   },
   emits: ["beforeenter", "enter", "afterenter", "beforeleave", "leave", "afterleave", "clickoverlay"],
-  __multiRoot: true,
   setup(__props, { emit: __emit }) {
     const props2 = __props;
     const emits2 = __emit;
@@ -11290,12 +11296,12 @@ const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
     value: { default: 0, type: Number },
     disabled: { type: Boolean, default: false },
     showValue: { type: Boolean, default: false },
-    activeColor: { default: "", type: null },
-    activeBackgroundColor: { default: "", type: null },
-    backgroundColor: { default: "", type: null },
-    blockSize: { default: null, type: [Number, null] },
-    blockColor: { default: "", type: null },
-    foreColor: { default: "", type: null },
+    activeColor: { default: "#007aff", type: null },
+    activeBackgroundColor: { default: "#007aff", type: null },
+    backgroundColor: { default: "#e9e9e9", type: null },
+    blockSize: { default: 28, type: [Number, null] },
+    blockColor: { default: "#ffffff", type: null },
+    foreColor: { default: "#ffffff", type: null },
     trackClass: { default: "", type: null },
     trackActiveClass: { default: "", type: null },
     thumbClass: { default: "", type: null }
@@ -11342,7 +11348,7 @@ const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
     props2.value;
     const currentValue = Vue.ref(props2.value);
     const isDragging = Vue.ref(false);
-    let trackWidth = 0;
+    let trackTravelWidth = 0;
     let trackLeft = 0;
     let rafId = 0;
     let ticking = false;
@@ -11363,11 +11369,16 @@ const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
     let _activeStatus = 0;
     let touchStartX = 0;
     let touchStartY = 0;
+    let thumbOffsetX = 0;
     let activePointerId = -1;
     let pointerTarget = null;
     let pointerClientX = 0;
     let pointerStartFocus = null;
     function releasePointerCapture() {
+      window.removeEventListener("pointermove", handlePointerMove, true);
+      window.removeEventListener("pointerup", handlePointerUp, true);
+      window.removeEventListener("pointercancel", handlePointerCancel, true);
+      window.removeEventListener("blur", handleWindowBlur);
       const target = pointerTarget;
       const pointerId = activePointerId;
       activePointerId = -1;
@@ -11385,6 +11396,8 @@ const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
       ticking = false;
       isDragging.value = false;
       _activeStatus = 0;
+      trackTravelWidth = 0;
+      thumbOffsetX = 0;
       lastValue = currentValue.value;
       releasePointerCapture();
     }
@@ -11432,19 +11445,35 @@ const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
       const fillScale = Math.max(0, Math.min(1, percentage));
       applyVisualPosition(percentage, fillScale);
     }
-    function calculateValue(clientX) {
-      if (trackWidth <= 0) {
-        return currentValue.value;
+    function cacheTrackGeometry(clientX, clientY) {
+      trackTravelWidth = 0;
+      trackLeft = 0;
+      thumbOffsetX = 0;
+      const containerEl = containerRef.value;
+      if (containerEl != null) {
+        const rect = containerEl.getBoundingClientRect();
+        trackTravelWidth = rect.width;
+        trackLeft = rect.left;
       }
-      const containerWidth = trackWidth;
+      const thumbEl = thumbRef.value;
+      if (thumbEl != null) {
+        const rect = thumbEl.getBoundingClientRect();
+        const thumbWidth = rect.width;
+        trackTravelWidth -= thumbWidth;
+        thumbOffsetX = clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom ? clientX - rect.left : thumbWidth / 2;
+      }
+    }
+    function calculateValue(clientX) {
+      if (trackTravelWidth <= 0)
+        return currentValue.value;
       const containerLeft = trackLeft;
       const min = Number.isFinite(props2.min) ? props2.min : 0;
       const max = Number.isFinite(props2.max) ? props2.max : min;
       if (max <= min)
         return min;
-      let currentX = clientX - containerLeft;
-      currentX = Math.max(0, Math.min(currentX, containerWidth));
-      const ratio = currentX / containerWidth;
+      let currentX = clientX - containerLeft - thumbOffsetX;
+      currentX = Math.max(0, Math.min(currentX, trackTravelWidth));
+      const ratio = currentX / trackTravelWidth;
       let newValue = lerp(min, max, ratio);
       newValue = applyStepPrecision(newValue);
       newValue = Math.max(min, Math.min(newValue, effectiveMax.value));
@@ -11470,7 +11499,9 @@ const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
         const element = thumbRef.value;
         if (element != null && element.ownerDocument.activeElement === pointerStartFocus)
           focusThumb();
-        renderVisuals(calculateValue(clientX));
+        const newValue = calculateValue(clientX);
+        if (newValue != currentValue.value)
+          renderVisuals(newValue);
       }
       const value = currentValue.value;
       const changed = lastValue !== value;
@@ -11528,18 +11559,15 @@ const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
       isDragging.value = true;
       touchStartX = e2.clientX;
       touchStartY = e2.clientY;
+      pointerClientX = e2.clientX;
       _activeStatus = e2.pointerType == "mouse" ? 1 : 0;
       activePointerId = e2.pointerId;
       const thumbEl = thumbRef.value;
       pointerStartFocus = (thumbEl == null ? void 0 : thumbEl.ownerDocument.activeElement) ?? null;
       pointerTarget = e2.currentTarget;
       pointerTarget.setPointerCapture(e2.pointerId);
-      const containerEl = containerRef.value;
-      if (containerEl != null) {
-        const rect = containerEl.getBoundingClientRect();
-        trackLeft = rect.left;
-        trackWidth = rect.width;
-      }
+      window.addEventListener("blur", handleWindowBlur);
+      cacheTrackGeometry(e2.clientX, e2.clientY);
       if (e2.pointerType == "mouse") {
         e2.preventDefault();
         focusThumb();
@@ -11558,6 +11586,14 @@ const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
         resetInteractionState();
       }
     }
+    function handleLostPointerCapture(e2) {
+      if (e2.pointerId == activePointerId) {
+        e2.stopPropagation();
+        window.addEventListener("pointermove", handlePointerMove, true);
+        window.addEventListener("pointerup", handlePointerUp, true);
+        window.addEventListener("pointercancel", handlePointerCancel, true);
+      }
+    }
     function handleWebTouchStart(e2) {
       e2.stopPropagation();
     }
@@ -11573,6 +11609,11 @@ const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
     const sliderKeys = ["ArrowLeft", "ArrowDown", "ArrowRight", "ArrowUp", "Home", "End", "PageUp", "PageDown"];
     const pressedSliderKeys = /* @__PURE__ */ new Set();
     function handleThumbBlur() {
+      pressedSliderKeys.clear();
+      if (activePointerId == -1)
+        resetInteractionState();
+    }
+    function handleWindowBlur() {
       pressedSliderKeys.clear();
       resetInteractionState();
     }
@@ -11647,7 +11688,7 @@ const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
     Vue.on(n5, "pointermove", handlePointerMove);
     Vue.on(n5, "pointerup", handlePointerUp);
     Vue.on(n5, "pointercancel", handlePointerCancel);
-    Vue.on(n5, "lostpointercapture", handlePointerCancel);
+    Vue.on(n5, "lostpointercapture", handleLostPointerCapture);
     Vue.on(n5, "touchstart", handleWebTouchStart);
     Vue.on(n5, "touchmove", handleWebTouchMove);
     Vue.on(n5, "touchend", handleWebTouchEnd);
@@ -13780,7 +13821,7 @@ const indexVapor$3 = /* @__PURE__ */ defineBuiltInComponent({
       return _n0;
     })();
     Object.assign(root, methods);
-    Object.defineProperty(root, "uniTagName", uniTagName$3);
+    Vue.initUniElement(root, uniTagName$3);
     return root;
   }
 });
@@ -13807,7 +13848,7 @@ const onWebInvokeAppService = ({ name, arg }) => {
     }
   }
 };
-const Invoke = /* @__PURE__ */ uniShared.once(
+const initWebViewBridge = /* @__PURE__ */ uniShared.once(
   () => UniServiceJSBridge.on(uniShared.ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService)
 );
 const webViewProps = {
@@ -13816,24 +13857,15 @@ const webViewProps = {
     default: ""
   }
 };
-function useWebView(props2, emit2) {
-  Invoke();
-  const rootRef = Vue.ref(null);
-  Vue.ref(null);
-  const { $attrs, $excludeAttrs, $listeners } = useAttrs({
-    excludeListeners: true
-  });
-  return { rootRef, $listeners, $excludeAttrs };
-}
-const _t0$3 = Vue.template("<div>", 1);
-class UniWebViewElement extends UniViewElement {
+const _t0$3 = Vue.template("<iframe uni-web-view uni-view class=uni-webview>", 1);
+class UniWebViewElement extends UniElement2 {
   static [Symbol.hasInstance](value) {
-    return this === UniWebViewElement && value instanceof UniViewElement && value.hasAttribute("uni-web-view") || Function.prototype[Symbol.hasInstance].call(this, value);
+    const el = value;
+    return this === UniWebViewElement && (el == null ? void 0 : el.nodeType) === 1 && el.localName === "iframe" && el.hasAttribute("uni-web-view") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
 const uniTagName$2 = { value: "WEB-VIEW" };
 const indexVapor$2 = /* @__PURE__ */ defineBuiltInComponent({
-  inheritAttrs: false,
   name: "WebView",
   props: webViewProps,
   emits: ["load"],
@@ -13842,25 +13874,23 @@ const indexVapor$2 = /* @__PURE__ */ defineBuiltInComponent({
     class: UniWebViewElement
   },
   setup(props2, { emit: emit2 }) {
-    const { rootRef, $listeners, $excludeAttrs } = useWebView();
+    initWebViewBridge();
+    const rootRef = Vue.ref(null);
+    const trigger = useCustomEvent(rootRef, emit2);
     const root = (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
       const _n0 = _t0$3();
+      Vue.on(_n0, "load", (event) => trigger("load", event, {
+        src: props2.src,
+        url: props2.src
+      }));
       Vue.renderEffect(() => {
-        Vue.setDynamicProps(_n0, [
-          {
-            "uni-web-view": "",
-            "uni-view": "",
-            class: "uni-webview"
-          },
-          $listeners.value,
-          $excludeAttrs.value
-        ]);
+        Vue.setProp(_n0, "src", getRealPath(props2.src));
         _setTemplateRef(_n0, rootRef);
       });
       return _n0;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName$2);
+    Vue.initUniElement(root, uniTagName$2);
     return root;
   }
 });
@@ -15084,7 +15114,7 @@ const indexVapor$1 = /* @__PURE__ */ defineBuiltInComponent({
       });
       return _n3;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName$1);
+    Vue.initUniElement(root, uniTagName$1);
     return root;
   }
 });
@@ -15792,7 +15822,7 @@ const indexVapor = /* @__PURE__ */ defineBuiltInComponent({
       }, 265);
       return _n6;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName);
+    Vue.initUniElement(root, uniTagName);
     return root;
   }
 });

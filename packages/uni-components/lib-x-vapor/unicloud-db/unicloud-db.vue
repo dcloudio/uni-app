@@ -1,6 +1,6 @@
 <template>
   <view>
-    <slot :data="dataList" :loading="loading" :hasMore="hasMore" :pagination="pagination" :error="error" />
+    <slot :options="options" :data="dataList" :loading="loading" :hasMore="hasMore" :pagination="pagination" :error="error" />
   </view>
 </template>
 
@@ -26,6 +26,7 @@
   }>()
 
   interface UniCloudDBProps {
+    options : any;
     collection : String | any;
     field : String;
     orderby : String;
@@ -34,6 +35,7 @@
     pageCurrent : Number;
     pageSize : Number;
     getcount : Boolean;
+    getone : Boolean;
     gettree : String | any;
     gettreepath : Boolean;
     startwith : String;
@@ -49,6 +51,7 @@
   }
 
   const props = withDefaults(defineProps<UniCloudDBProps>(), {
+    options: {},
     collection: '',
     field : '',
     orderby : '',
@@ -57,6 +60,7 @@
     pageCurrent : 1,
     pageSize : 20,
     getcount : false,
+    getone : false,
     gettree : '',
     gettreepath : false,
     startwith : '',
@@ -228,6 +232,8 @@
       const data = res.data
       const count = res.count
 
+      const data2 = props.getone ? (data.length ? data[0] : undefined) : data
+
       isEnded.value = (count != null) ? (pagination.value.current * pagination.value.size >= count) : (data.length < props.pageSize)
       hasMore.value = !isEnded.value
 
@@ -235,10 +241,10 @@
         pagination.value.count = count
       }
 
-      _dispatchEvent(EVENT_LOAD, data)
+      _dispatchEvent(EVENT_LOAD, data2)
 
-      if (loadAfterClear || props.pageData == PAGE_MODE_REPLACE) {
-        dataList.value = data
+      if (loadAfterClear || props.getone || props.pageData == PAGE_MODE_REPLACE) {
+        dataList.value = data2
       } else {
         dataList.value.push(...data)
       }

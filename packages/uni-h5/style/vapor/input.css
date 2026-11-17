@@ -75,11 +75,11 @@
 }
 
 div:where([uni-input]) {
-  background-color: #ffffff;
+  color: #000000;
 }
 
 .uni-input-placeholder {
-  color: #757575;
+  color: #808080;
 }
 
 @layer uni-field-selection {
@@ -94,8 +94,11 @@ div:where([uni-input]) {
 
 @media (prefers-color-scheme: dark) {
   div:where([uni-input]) {
-    color: #ffffff;
-    background-color: #3b3b3b;
+    color: #d1d1d1;
+  }
+
+  .uni-input-placeholder {
+    color: #5f5f5f;
   }
 }
 

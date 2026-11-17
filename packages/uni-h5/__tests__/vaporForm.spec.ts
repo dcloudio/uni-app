@@ -141,11 +141,11 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
     nativeElements.installWebVaporElements(dom.window)
     inputElement = evaluate(
       await preprocess('vue/input/element-vapor.ts', true),
-      { '../web-vapor-elements': nativeElements }
+      { vue, '../web-vapor-elements': nativeElements }
     )
     textareaElement = evaluate(
       await preprocess('vue/textarea/element-vapor.ts', true),
-      { '../web-vapor-elements': nativeElements }
+      { vue, '../web-vapor-elements': nativeElements }
     )
     const builtIn = evaluate(await preprocess('helpers/component.ts', true), {
       '@vue/shared': shared,
@@ -294,9 +294,11 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
     }).code
     const label = evaluate(
       `import { defineProps, withDefaults, defineOptions, provide } from 'test-macros';
+      import { watch, onBeforeUnmount } from 'vue';
       ${script}
       export { ctx, handleTap, children };`,
       {
+        vue: { watch: vue.watch, onBeforeUnmount() {} },
         '../common.ts': evaluate(
           preprocess(
             fs.readFileSync(

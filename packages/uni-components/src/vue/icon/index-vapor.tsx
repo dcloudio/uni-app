@@ -1,3 +1,5 @@
+// @ts-expect-error 当前 Vue 类型尚未升级到 3.6，Vapor runtime 已导出该方法
+import { initUniElement } from 'vue'
 import { createSvgIconVNode, rpx2px } from '@dcloudio/uni-core'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { UniViewElement } from '../web-vapor-elements'
@@ -44,8 +46,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         ) : null}
       </div>
     )
-    // Icon 没有专有方法，只需在外部 ref 可见前标记一次组件类型。
-    Object.defineProperty(root, 'uniTagName', uniTagName)
+    // 在外部 ref 可见前初始化根节点身份和 props 读取。
+    initUniElement(root, uniTagName)
     return root
   },
 })

@@ -1,5 +1,5 @@
 import { extend, isArray } from '@vue/shared'
-import { extname, join, relative, resolve } from 'path'
+import { extname, isAbsolute, join, relative, resolve } from 'path'
 
 import { resolveAndroidDepFiles } from './kotlin'
 import { resolveIOSDepFiles } from './swift'
@@ -168,6 +168,9 @@ export interface UTSPluginCompilerOptions {
   isX: boolean
   isPlugin: boolean
   isSingleThread: boolean
+  /** module 构建的真实原生入口，与 Vite 的 JS 代理入口分别解析。 */
+  module?: { nativeEntry: string }
+  proxyCodeFormat?: 'es' | 'cjs'
   isExtApi?: boolean
   extApis?: Record<string, [string, string]>
   transform?: UTSOutputOptions['transform']
@@ -222,26 +225,40 @@ export async function compile(
   const outputDir = process.env.UNI_OUTPUT_DIR
   const utsPlatform = process.env.UNI_UTS_PLATFORM
 
+  const uvueInputDir =
+    isCompileUniModules && process.env.UNI_APP_X_UVUE_DIR
+      ? uvueOutDir(utsPlatform === 'app-ios' ? 'app-ios' : 'app-android')
+      : ''
+  const uvueRelativeDir = uvueInputDir && relative(uvueInputDir, pluginDir)
+  const isUVueInput =
+    !!uvueRelativeDir &&
+    !isAbsolute(uvueRelativeDir) &&
+    !normalizePath(uvueRelativeDir).startsWith('../') &&
+    uvueRelativeDir !== '..'
   const pluginRelativeDir = relative(
-    isCompileUniModules ? uvueOutDir('app-android') : inputDir,
+    isUVueInput ? uvueInputDir : inputDir,
     pluginDir
   )
   const outputPluginDir = normalizePath(join(outputDir, pluginRelativeDir))
 
-  const indexModuleFilename = isModule(pluginDir)
+  const indexModuleFilename = compilerOptions.module
+    ? normalizePath(compilerOptions.module.nativeEntry)
+    : isModule(pluginDir)
     ? normalizePath(join(pluginDir, 'index.module.uts'))
     : ''
 
-  if (indexModuleFilename) {
+  if (indexModuleFilename && !compilerOptions.module) {
     isPlugin = false
   }
 
-  const androidComponents = indexModuleFilename
-    ? {}
-    : resolveAndroidComponents(pluginDir, pkg.is_uni_modules)
-  const iosComponents = indexModuleFilename
-    ? {}
-    : resolveIOSComponents(pluginDir, pkg.is_uni_modules)
+  const androidComponents =
+    indexModuleFilename && !isPlugin
+      ? {}
+      : resolveAndroidComponents(pluginDir, pkg.is_uni_modules)
+  const iosComponents =
+    indexModuleFilename && !isPlugin
+      ? {}
+      : resolveIOSComponents(pluginDir, pkg.is_uni_modules)
 
   const customElements = resolveCustomElements(pluginDir)
 
@@ -268,7 +285,10 @@ export async function compile(
       iosComponents,
       customElements,
       format:
-        process.env.UNI_UTS_JS_CODE_FORMAT === 'cjs' ? FORMATS.CJS : FORMATS.ES,
+        (compilerOptions.proxyCodeFormat ||
+          process.env.UNI_UTS_JS_CODE_FORMAT) === 'cjs'
+          ? FORMATS.CJS
+          : FORMATS.ES,
       pluginRelativeDir,
       moduleName,
       moduleType: process.env.UNI_UTS_MODULE_TYPE || '',
@@ -292,13 +312,19 @@ export async function compile(
     pluginDir,
     proxyCodeOptions
   )
+  const needProxyCode = !isCompileUniModules || !!compilerOptions.module
   let code =
-    isCompileUniModules || useProxyCodeV2
+    !needProxyCode || useProxyCodeV2
       ? ''
       : await genProxyCode(pluginDir, decls, proxyCodeOptions)
 
   let errMsg = ''
   if (process.env.NODE_ENV !== 'development' || isCompileUniModules) {
+    // 正式发行、本地打包资源和 WGT 不更新基座调试缓存清单。
+    const shouldGenManifest =
+      process.env.UNI_APP_PACK_TYPE !== 'release' &&
+      process.env.UNI_APP_PRODUCTION_TYPE !== 'LOCAL_PACKAGING' &&
+      process.env.UNI_APP_PRODUCTION_TYPE !== 'WGT'
     // WGT 的 Android 蒸汽模式仍需转译 UTS，以获取生成代理代码所需的桥接信息。
     // 其他 WGT 模式及已前置编译的 ext-api 无需再次编译。
     if (
@@ -366,11 +392,12 @@ export async function compile(
           sourceMap: !!sourceMap,
           hookClass: proxyCodeOptions.androidHookClass || '',
           uniModules: uni_modules || [],
-          outFilename: indexModuleFilename
-            ? normalizePath(
-                join(pluginRelativeDir, 'utssdk', 'app-android', 'index.kt')
-              )
-            : '',
+          outFilename:
+            indexModuleFilename && !isPlugin
+              ? normalizePath(
+                  join(pluginRelativeDir, 'utssdk', 'app-android', 'index.kt')
+                )
+              : '',
           noEmit: isWgtProxyCode,
         })
         if (result) {
@@ -380,11 +407,10 @@ export async function compile(
           if (!isWgtProxyCode && result.scoped_slots) {
             scoped_slots.push(...result.scoped_slots)
           }
-          const custom_elements = result.custom_elements || {}
-          Object.keys(custom_elements).forEach((key) => {
-            custom_elements[key] = custom_elements[key]
-          })
-          if (useProxyCodeV2 && hasUTSBridgeCode(result.uts_bridge)) {
+          if (!isWgtProxyCode) {
+            Object.assign(custom_elements, result.custom_elements)
+          }
+          if (needProxyCode && useProxyCodeV2 && result.uts_bridge) {
             code =
               (await genProxyCodeV2(
                 result.uts_bridge,
@@ -409,14 +435,16 @@ export async function compile(
             cacheDir,
             pkg.is_uni_modules
           )
-          genManifestFile('app-android', {
-            pluginDir,
-            env,
-            cacheDir,
-            pluginRelativeDir,
-            is_uni_modules: pkg.is_uni_modules,
-            deps: result?.deps,
-          })
+          if (shouldGenManifest) {
+            genManifestFile('app-android', {
+              pluginDir,
+              env,
+              cacheDir,
+              pluginRelativeDir,
+              is_uni_modules: pkg.is_uni_modules,
+              deps: result?.deps,
+            })
+          }
         }
       }
     }
@@ -444,6 +472,7 @@ export async function compile(
           isX,
           isSingleThread,
           isPlugin: true, // iOS 目前仅有 plugin 模式
+          isModule: !!indexModuleFilename,
           isExtApi,
           extApis,
           transform: await initCompilerOptionsTransform(
@@ -470,14 +499,16 @@ export async function compile(
             cacheDir,
             pkg.is_uni_modules
           )
-          genManifestFile('app-ios', {
-            pluginDir,
-            env,
-            cacheDir,
-            pluginRelativeDir,
-            is_uni_modules: pkg.is_uni_modules,
-            deps: result?.deps,
-          })
+          if (shouldGenManifest) {
+            genManifestFile('app-ios', {
+              pluginDir,
+              env,
+              cacheDir,
+              pluginRelativeDir,
+              is_uni_modules: pkg.is_uni_modules,
+              deps: result?.deps,
+            })
+          }
         }
       }
     }
@@ -696,7 +727,7 @@ export async function compile(
             }
           }
           if (isSuccess) {
-            if (useProxyCodeV2 && hasUTSBridgeCode(res.uts_bridge)) {
+            if (useProxyCodeV2 && res.uts_bridge) {
               code =
                 (await genProxyCodeV2(
                   res.uts_bridge,

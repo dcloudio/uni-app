@@ -104,10 +104,10 @@ export function uniUTSUVueJavaScriptPlugin(
       if (!isVueSfcFile(id)) {
         return
       }
-      // fixed by uts App DOM2 在 plugin-vue 的 descriptor 阶段处理 vapor/lang，避免重复改写 SFC 和 sourcemap。
+      // App DOM2 通过 descriptor hook、Web Vapor 通过解析参数补语言，均不改写源文本。
       if (
         options.useSfcDescriptorTransform &&
-        isAppDom2 &&
+        (isAppDom2 || isUniAppXWebVapor()) &&
         standardScriptSupported
       ) {
         return

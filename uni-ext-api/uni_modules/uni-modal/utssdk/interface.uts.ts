@@ -1311,9 +1311,7 @@ export interface Uni {
 	    }
 	  });
 	  ```
-	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/prompt.html#showmodal
-	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/modal.html
-	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/modal.html
+	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/modal.html#showmodal
 	 * @uniPlatform
 	  {
 	    "app": {
@@ -1382,8 +1380,6 @@ export interface Uni {
 			}
 		});
 	  ```
-	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/prompt.html#hidemodal
-	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/modal.html#hidemodal
 	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/modal.html#hidemodal
 	 * @uniPlatform
 	  {

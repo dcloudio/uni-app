@@ -96,6 +96,8 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
     process.env.UNI_HX_VERSION_DEV === 'true' &&
     process.env.UNI_APP_X === 'true'
   const isWebVapor = options.vapor ?? isUniAppXWebVapor()
+  // Vapor 和 HBuilderX Dev 都优先使用项目 easycom，框架内置组件作为兜底。
+  const preferEasycom = isWebVapor || isDevX
   const excludedComponents = new Set(options.excludeBuiltInComponents)
   const isBuiltInComponent = (name: string) => {
     name = name.replace(COMPONENT_PREFIX, '')
@@ -146,14 +148,13 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
         /_resolveComponent\("(.+?)"(, true)?\)/g,
         (str, name) => {
           if (name && !name.startsWith('_')) {
-            // 为了兼容性，仅处理dev模式
-            if (!isDevX) {
+            if (!preferEasycom) {
               const result = buildInComponent()
               if (result) {
                 return result
               }
             }
-            if (isDevX && name.startsWith('v-uni-')) {
+            if (preferEasycom && name.startsWith('v-uni-')) {
               name = name.replace('v-uni-', '')
             }
             const source = matchEasycom(name)
@@ -188,7 +189,7 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
                 )
               )
             }
-            if (isDevX) {
+            if (preferEasycom) {
               const result = buildInComponent()
               if (result) {
                 return result

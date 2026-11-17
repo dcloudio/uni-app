@@ -20,10 +20,12 @@ describe('h5 pages.json page route', () => {
     inputDir = fs.mkdtempSync(path.join(os.tmpdir(), 'uni-h5-pages-json-'))
     fs.mkdirSync(path.join(inputDir, 'pages/index'), { recursive: true })
     fs.writeFileSync(path.join(inputDir, 'manifest.json'), '{}')
-    fs.writeFileSync(
-      path.join(inputDir, 'pages/index/index.uvue'),
-      '<template><view /></template>'
-    )
+    for (const ext of ['vue', 'uvue']) {
+      fs.writeFileSync(
+        path.join(inputDir, `pages/index/index.${ext}`),
+        '<template><view /></template>'
+      )
+    }
     process.env.UNI_APP_X = 'true'
     process.env.UNI_INPUT_DIR = inputDir
     process.env.UNI_PLATFORM = 'h5'
@@ -45,7 +47,15 @@ describe('h5 pages.json page route', () => {
     })
   })
 
-  function transform(vapor: boolean, ssr = false, navigationBuild = false) {
+  function transform(
+    vapor: boolean,
+    ssr = false,
+    navigationBuild = false,
+    pagesJson: Record<string, unknown> = {
+      pages: [{ path: 'pages/index/index', style: {} }],
+      topWindow: { path: 'windows/top' },
+    }
+  ) {
     if (vapor) {
       process.env.UNI_APP_X_DOM2 = 'true'
       process.env.UNI_APP_X_VAPOR = 'true'
@@ -63,14 +73,107 @@ describe('h5 pages.json page route', () => {
     })
     return plugin.transform.call(
       {},
-      JSON.stringify({
-        pages: [{ path: 'pages/index/index', style: {} }],
-        topWindow: { path: 'windows/top' },
-      }),
+      JSON.stringify(pagesJson),
       path.join(inputDir, PAGES_JSON_JS),
       ssr ? { ssr: true } : undefined
     ).code as string
   }
+
+  describe.each([
+    { name: 'uni-app Vue3', uniAppX: false, vapor: false },
+    { name: 'uni-app x VDOM', uniAppX: true, vapor: false },
+    { name: 'uni-app x Vapor', uniAppX: true, vapor: true },
+  ])('$name 窗口显隐配置', ({ uniAppX, vapor }) => {
+    test.each([
+      [undefined, undefined, undefined],
+      [false, undefined, false],
+      [true, undefined, true],
+      [false, true, true],
+      [true, false, false],
+      [false, false, false],
+      [true, true, true],
+      [undefined, false, false],
+      [undefined, true, true],
+    ])('全局=%s，页面=%s，路由=%s', (globalValue, pageValue, expected) => {
+      if (!uniAppX) {
+        delete process.env.UNI_APP_X
+      }
+      const windowStyle = (value: boolean | undefined) => ({
+        topWindow: value,
+        leftWindow: value,
+        rightWindow: value,
+      })
+      const code = transform(vapor, false, false, {
+        pages: [{ path: 'pages/index/index', style: windowStyle(pageValue) }],
+        globalStyle: {
+          ...windowStyle(globalValue),
+          backgroundColor: '#123456',
+        },
+      })
+      const meta = JSON.parse(code.match(/^  meta: (.+)$/m)![1])
+      for (const key of ['topWindow', 'leftWindow', 'rightWindow']) {
+        expect(meta[key]).toBe(expected)
+        if (expected === undefined) {
+          expect(meta).not.toHaveProperty(key)
+        }
+      }
+      expect(meta).not.toHaveProperty('backgroundColor')
+    })
+
+    test('平台专属配置和分包页面继承窗口显隐，页面之间互不影响', () => {
+      if (!uniAppX) {
+        delete process.env.UNI_APP_X
+      }
+      fs.mkdirSync(path.join(inputDir, 'sub'))
+      for (const name of ['index', 'detail']) {
+        fs.writeFileSync(
+          path.join(inputDir, 'sub', `${name}.${uniAppX ? 'uvue' : 'vue'}`),
+          '<template><view /></template>'
+        )
+      }
+      const code = transform(vapor, false, false, {
+        globalStyle: {
+          topWindow: true,
+          web: { topWindow: false, leftWindow: false, rightWindow: true },
+        },
+        pages: [
+          {
+            path: 'pages/index/index',
+            style: { web: { leftWindow: true, rightWindow: false } },
+          },
+        ],
+        subPackages: [
+          {
+            root: 'sub',
+            pages: [
+              { path: 'index', style: {} },
+              { path: 'detail', style: { h5: { topWindow: true } } },
+            ],
+          },
+        ],
+      })
+      const metas = Array.from(code.matchAll(/^  meta: (.+)$/gm), (match) =>
+        JSON.parse(match[1])
+      )
+      expect(metas).toEqual([
+        expect.objectContaining({
+          topWindow: false,
+          leftWindow: true,
+          rightWindow: false,
+        }),
+        expect.objectContaining({
+          topWindow: false,
+          leftWindow: false,
+          rightWindow: true,
+        }),
+        expect.objectContaining({
+          topWindow: true,
+          leftWindow: false,
+          rightWindow: true,
+        }),
+      ])
+    })
+  })
 
   test.each([false, true])(
     '导航栏发行入口不全量加载 Loading 样式（Vapor=%s）',

@@ -8,7 +8,7 @@ declare namespace NodeJS {
     UNI_NODE_ENV: 'production' | 'development' | 'test'
     UNI_SUB_PLATFORM: 'quickapp-webview-huawei' | 'quickapp-webview-union'
     UNI_UTS_PLATFORM: 'app-android' | 'app-ios' | 'web' | UniApp.PLATFORM
-
+    // 云端编译加密插件时会传递cjs
     UNI_UTS_JS_CODE_FORMAT?: 'cjs' | 'es'
     UNI_UTS_MODULE_TYPE?: 'built-in' | ''
     UNI_UTS_MODULE_PREFIX?: string
@@ -61,7 +61,10 @@ declare namespace NodeJS {
     UNI_APP_X_SETUP?: string
     UNI_APP_X_UVUE_SCRIPT_ENGINE?: 'native' | 'js'
     UNI_APP_X_HARMONY_SCRIPT_ENGINE?: 'arkts' | 'jsvm'
-
+    /**
+     * - uni_modules 云端编译（包括前端插件、utssdk插件）
+     * - ext-api 内部插件编译
+     */
     UNI_COMPILE_TARGET?: 'uni_modules' | 'ext-api'
     UNI_COMPILE_CLOUD_DIR?: string
     UNI_MODULES_ENCRYPT_CACHE_DIR?: string
@@ -85,7 +88,7 @@ declare namespace NodeJS {
     UNI_APP_SOURCEMAP?: 'true' | 'false' // 是否生成 sourcemap
     UNI_APP_PACK_TYPE?: 'release' | 'debug' // 打包类型
     UNI_APP_PLATFORM?: 'android' | 'ios' | 'harmony' // 运行时，可能传入了 UNI_APP_PLATFORM = 'android'|'ios'|'harmony'
-    UNI_APP_PRODUCTION_TYPE?: 'WGT' // 发行类型
+    UNI_APP_PRODUCTION_TYPE?: 'WGT' | 'LOCAL_PACKAGING' // 发行类型
     UNI_APP_X_TARGET_ARCHS?: string // 当前运行设备支持的 ABI 列表，值为按优先级排序的 JSON 数组字符串
     UNI_APP_X_CACHE_DIR: string // 当前运行/发行平台的缓存目录，如：unpackage/cache/.app-android
     UNI_APP_X_DOM2?: 'true' // 内部 DOM2 模式状态

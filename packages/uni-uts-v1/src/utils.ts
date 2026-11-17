@@ -1322,12 +1322,15 @@ export function requireUniHelpers() {
 
 export function resolveBundleInputRoot(
   platform: UTSPluginPlatform,
-  root: string
+  root: string,
+  isModule = false
 ) {
   if (
     process.env.UNI_APP_X_TSC === 'true' &&
-    // 云端uni_modules编译，传入的已经是真实地址
-    (isNormalCompileTarget() || process.env.UNI_COMPILE_TARGET === 'ext-api')
+    // module 可传入源目录入口，其余云端 uni_modules 调用已经使用转换后的地址。
+    (isNormalCompileTarget() ||
+      process.env.UNI_COMPILE_TARGET === 'ext-api' ||
+      isModule)
   ) {
     return uvueOutDir(platform)
   }
@@ -1336,12 +1339,15 @@ export function resolveBundleInputRoot(
 
 export function resolveBundleInputFileName(
   platform: UTSPluginPlatform,
-  fileName: string
+  fileName: string,
+  isModule = false
 ) {
   if (
     process.env.UNI_APP_X_TSC === 'true' &&
-    // 云端uni_modules编译，传入的已经是真实地址 uni-cli-shared/vite/cloud.ts:190
-    (isNormalCompileTarget() || process.env.UNI_COMPILE_TARGET === 'ext-api')
+    // module 可传入源目录入口，其余云端 uni_modules 调用已经使用转换后的地址。
+    (isNormalCompileTarget() ||
+      process.env.UNI_COMPILE_TARGET === 'ext-api' ||
+      isModule)
   ) {
     const uvueDir = normalizePath(uvueOutDir(platform))
     if (!fileName.startsWith(uvueDir)) {

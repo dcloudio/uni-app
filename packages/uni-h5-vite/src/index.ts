@@ -13,6 +13,7 @@ import {
   isUniAppXWebVapor,
   isVueSfcFile,
   resolveUTSCompiler,
+  uniAppXScriptTransformPlugin,
   uniAppXStandardScriptPlugin,
   uniCssScopedPlugin,
   uniDecryptUniModulesPlugin,
@@ -54,10 +55,15 @@ if (
 }
 
 export default () => {
+  const isWebVapor = isUniAppXWebVapor()
   const isNewStyleIsolation =
     process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2'
   const uasm =
     process.env.UNI_APP_X === 'true' ? initUasmWebTransformOptions() : undefined
+  // Web Vapor 的 SFC 交给定制 plugin-vue 后置转换，普通 Web 保持原前置链路。
+  const scriptPlugin = isWebVapor
+    ? uniAppXScriptTransformPlugin
+    : uniAppXStandardScriptPlugin
   // 从 manifest.json 的 h5.devServer 中解析 HTTPS 扩展配置，按需注入 basic-ssl 插件。
   const h5BasicSslPlugin = resolveH5BasicSslPlugin()
   return [
@@ -69,19 +75,20 @@ export default () => {
       ? [
           uniDecryptUniModulesPlugin(),
           uniUasmPlugin(),
-          uniUTSUVueJavaScriptPlugin(),
-          // H5 的标准 JS/TS 不走 uts2js，脚本宏和 UASM 必须在标准 plugin-vue 前完成转换。
-          uniAppXStandardScriptPlugin({
+          uniUTSUVueJavaScriptPlugin({
+            useSfcDescriptorTransform: isWebVapor,
+          }),
+          scriptPlugin({
             uasm,
             workers: {
               ...initWorkerTransformOptions(),
               rewriteRootDir: undefined,
             },
           }),
-          ...(isUniAppXWebVapor() ? [uniWebVaporElementPlugin()] : []),
+          ...(isWebVapor ? [uniWebVaporElementPlugin()] : []),
           resolveUTSCompiler().uts2js({
             platform: 'web',
-            dom2: isUniAppXWebVapor(),
+            dom2: isWebVapor,
             excludeStandardTypeScript: true,
             inputDir: process.env.UNI_INPUT_DIR,
             version: process.env.UNI_COMPILER_VERSION,

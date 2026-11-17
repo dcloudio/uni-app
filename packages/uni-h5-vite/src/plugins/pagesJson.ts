@@ -342,8 +342,20 @@ function generateRoutes(
   config: ResolvedConfig,
   isWebVapor: boolean
 ) {
+  const pagesRouteOptions = normalizePagesRoute(pagesJson)
+  // 布局直接读取路由 meta，仅补齐窗口显隐的全局配置，页面配置优先。
+  for (const key of ['topWindow', 'leftWindow', 'rightWindow'] as const) {
+    const value = pagesJson.globalStyle?.[key]
+    if (value !== undefined) {
+      for (const { meta } of pagesRouteOptions) {
+        if (meta[key] === undefined) {
+          meta[key] = value
+        }
+      }
+    }
+  }
   const routesCode = [
-    ...generatePagesRoute(normalizePagesRoute(pagesJson), config, isWebVapor),
+    ...generatePagesRoute(pagesRouteOptions, config, isWebVapor),
   ].join(',')
   if (isWebVapor) {
     return `

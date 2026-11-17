@@ -31,6 +31,12 @@ var ExternalModules = [
 	},
 	{
 		type: "provider",
+		plugin: "uni-location-amap",
+		provider: "amap",
+		service: "location"
+	},
+	{
+		type: "provider",
 		plugin: "uni-oauth-huawei",
 		provider: "huawei",
 		service: "oauth"
@@ -99,6 +105,12 @@ var ExternalModulesX = [
 		type: "provider",
 		plugin: "uni-location-system",
 		provider: "system",
+		service: "location"
+	},
+	{
+		type: "provider",
+		plugin: "uni-location-amap",
+		provider: "amap",
 		service: "location"
 	},
 	{
@@ -185,6 +197,12 @@ var ExternalModulesVapor = [
 		type: "provider",
 		plugin: "uni-location-system",
 		provider: "system",
+		service: "location"
+	},
+	{
+		type: "provider",
+		plugin: "uni-location-amap",
+		provider: "amap",
 		service: "location"
 	},
 	{

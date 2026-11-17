@@ -84,6 +84,7 @@ export async function runSwiftProd(
     isX,
     isSingleThread,
     isPlugin,
+    isModule,
     isExtApi,
     extApis,
     transform,
@@ -288,6 +289,7 @@ export async function compile(
     isX,
     isSingleThread,
     isPlugin,
+    isModule,
     isExtApi,
     extApis,
     transform,
@@ -299,8 +301,8 @@ export async function compile(
   const componentsCode = genComponentsCode(filename, components, isX)
   const { namespace, id: pluginId } = parseSwiftPackage(filename)
   const input: UTSInputOptions = {
-    root: resolveBundleInputRoot('app-ios', inputDir),
-    filename: resolveBundleInputFileName('app-ios', filename),
+    root: resolveBundleInputRoot('app-ios', inputDir, isModule),
+    filename: resolveBundleInputFileName('app-ios', filename, isModule),
     pluginId,
     paths: {},
     uniModules,

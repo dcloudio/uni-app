@@ -16,7 +16,7 @@ import {
   normalizePercent,
 } from './length'
 import { normalizeNumber } from './number'
-import { normalizeString } from './string'
+import { normalizeFontFamily } from './fontFamily'
 import { normalizeShorthandLength } from './shorthandLength'
 import { normalizeTransform } from './transform'
 import { normalizeInterval, normalizeTransitionDelay } from './interval'
@@ -191,7 +191,7 @@ const NVUE_PROP_NAME_GROUPS: Record<string, Record<string, Normalize>> = {
 const uvueNormalizeMap: Record<string, Normalize> = {
   backdropFilter: normalizeBackdropFilter,
   transform: normalizeTransform,
-  fontFamily: normalizeString,
+  fontFamily: normalizeFontFamily,
   textDecoration: normalizeDefault,
   boxShadow: normalizeDefault,
   textShadow: normalizeDefault,

@@ -58,6 +58,14 @@ describe('Web Vapor WebView 原生宿主', () => {
     dom = new JSDOM('<!DOCTYPE html><body></body>', {
       url: 'https://example.test/',
     })
+    const style = dom.window.document.createElement('style')
+    style.textContent = [
+      'packages/uni-h5/style/framework/uvue-vapor.css',
+      'packages/uni-h5/style/vapor/web-view.css',
+    ]
+      .map((file) => fs.readFileSync(path.join(root, file), 'utf8'))
+      .join('\n')
+    dom.window.document.head.appendChild(style)
     for (const name of [
       'window',
       'document',
@@ -170,7 +178,13 @@ describe('Web Vapor WebView 原生宿主', () => {
     const module = evaluate(compiled, {
       vue,
       '/vue-jsx/vapor': evaluate(fs.readFileSync(runtime, 'utf8'), { vue }),
-      '@dcloudio/uni-components': { ...helper, ...elements },
+      '@dcloudio/uni-components': {
+        ...helper,
+        ...elements,
+        ...event,
+        UniElement,
+      },
+      '@dcloudio/uni-platform': { getRealPath },
       './useWebView': business,
     })
     WebView = module.default
@@ -192,7 +206,7 @@ describe('Web Vapor WebView 原生宿主', () => {
   })
   function mount(props: Record<string, Function> = {}) {
     const node = vue.shallowRef()
-    const host = document.createElement('div')
+    const host = document.createElement('uni-app')
     document.body.appendChild(host)
     const app = vue.createVaporApp(
       vue.defineVaporComponent({
@@ -204,7 +218,7 @@ describe('Web Vapor WebView 原生宿主', () => {
           vue.setStaticTemplateRef(component, node)
           vue.onMounted(() => {
             expect(node.value.uniTagName).toBe('WEB-VIEW')
-            expect(node.value.firstElementChild.tagName).toBe('IFRAME')
+            expect(node.value.tagName).toBe('IFRAME')
           })
           return component
         },
@@ -220,7 +234,7 @@ describe('Web Vapor WebView 原生宿主', () => {
     app.mount(host)
     return {
       element: node.value,
-      iframe: node.value.firstElementChild as HTMLIFrameElement,
+      iframe: node.value as HTMLIFrameElement,
       node,
       app,
     }
@@ -228,9 +242,11 @@ describe('Web Vapor WebView 原生宿主', () => {
 
   test('根节点 ref、逻辑类型和原生属性 API 正常，多实例只注册一次通信', () => {
     const { element, iframe } = mount()
-    expect(element.tagName).toBe('DIV')
+    expect(element).toBe(iframe)
+    expect(element.tagName).toBe('IFRAME')
+    expect(element).toBeInstanceOf(dom.window.HTMLIFrameElement)
     expect(element).toBeInstanceOf(UniElement)
-    expect(element).toBeInstanceOf(elements.UniViewElement)
+    expect(element).not.toBeInstanceOf(elements.UniViewElement)
     expect(element).toBeInstanceOf(UniWebViewElement)
     class Derived extends UniWebViewElement {}
     expect(element).not.toBeInstanceOf(Derived)
@@ -240,7 +256,15 @@ describe('Web Vapor WebView 原生宿主', () => {
     )
     expect(element.attachVmProps).toBeUndefined()
     expect(customElements.get('uni-web-view')).toBeUndefined()
-    expect(iframe.hasAttribute('uni-view')).toBe(false)
+    expect(element.hasAttribute('uni-web-view')).toBe(true)
+    expect(element.hasAttribute('uni-view')).toBe(true)
+    expect(element.childElementCount).toBe(0)
+    expect(element.getPage()).toBeNull()
+    expect(element.uniPage).toBeNull()
+    expect(element.getBoundingClientRectAsync).toBe(
+      UniElement.prototype.getBoundingClientRectAsync
+    )
+    expect(element.dataset).toBeInstanceOf(Map)
     const second = mount()
     expect(second.iframe).not.toBe(iframe)
     expect(bridgeOn).toHaveBeenCalledTimes(1)
@@ -252,11 +276,12 @@ describe('Web Vapor WebView 原生宿主', () => {
     expect(navigateTo).toHaveBeenCalledWith({ url: '/pages/test' })
   })
 
-  test('class、style 和事件保留在宿主，其他属性仍传给 iframe 并响应更新', async () => {
+  test('class、style、事件和其他属性直接应用于 iframe 并响应更新', async () => {
     const state = vue.reactive({
       title: '初始标题',
       class: 'first',
       width: '200px',
+      allowFullscreen: true,
     })
     const click = jest.fn()
     const { element, iframe } = mount({
@@ -264,27 +289,44 @@ describe('Web Vapor WebView 原生宿主', () => {
       title: () => state.title,
       class: () => state.class,
       style: () => ({ width: state.width }),
+      allowFullscreen: () => state.allowFullscreen,
       onClick: () => click,
     })
     expect(iframe.id).toBe('webview')
     expect(iframe.title).toBe('初始标题')
-    expect(element.id).toBe('')
+    expect(element.id).toBe('webview')
     expect(element.classList.contains('uni-webview')).toBe(true)
     expect(element.classList.contains('first')).toBe(true)
     expect(element.style.width).toBe('200px')
-    expect(iframe.className).toBe('')
-    expect(iframe.style.width).toBe('')
+    expect(iframe.allowFullscreen).toBe(true)
     element.click()
     expect(click).toHaveBeenCalledTimes(1)
     state.title = '更新标题'
     state.class = 'second'
     state.width = '300px'
+    state.allowFullscreen = false
     await vue.nextTick()
     expect(iframe.title).toBe('更新标题')
     expect(element.classList.contains('first')).toBe(false)
     expect(element.classList.contains('second')).toBe(true)
     expect(element.style.width).toBe('300px')
-    expect(element.firstElementChild).toBe(iframe)
+    expect(iframe.allowFullscreen).toBe(false)
+    expect(element.childElementCount).toBe(0)
+  })
+
+  test('iframe 保留默认尺寸、无边框和 hidden 样式', async () => {
+    const hidden = vue.ref(false)
+    const { iframe } = mount({ hidden: () => hidden.value })
+    const style = dom.window.getComputedStyle(iframe)
+    expect(style.display).toBe('block')
+    expect(style.width).toBe('100%')
+    expect(style.height).toBe('100%')
+    expect(style.borderTopStyle).toBe('')
+    expect(style.boxSizing).toBe('border-box')
+    expect(style.flexGrow).toBe('1')
+    hidden.value = true
+    await vue.nextTick()
+    expect(dom.window.getComputedStyle(iframe).display).toBe('none')
   })
 
   test('src 更新复用 iframe，load 事件的目标和 detail 保持旧协议', async () => {
@@ -306,7 +348,7 @@ describe('Web Vapor WebView 原生宿主', () => {
     expect(getRealPath).toHaveBeenLastCalledWith('/second')
     expect(iframe.getAttribute('src')).toBe('/second')
     expect(node.value).toBe(element)
-    expect(element.firstElementChild).toBe(iframe)
+    expect(element).toBe(iframe)
     iframe.dispatchEvent(new dom.window.Event('load'))
     expect(load.mock.calls[load.mock.calls.length - 1][0].detail).toEqual({
       src: '/second',

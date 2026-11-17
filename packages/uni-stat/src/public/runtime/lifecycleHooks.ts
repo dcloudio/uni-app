@@ -59,6 +59,7 @@ import { logger } from '../infra/logger'
 import { resolveUniRuntime } from '../infra/uniRuntime'
 import { clampUrlrefStaySec, nowSec } from '../infra/time'
 import { tryRun } from '../infra/safe'
+import { setNetworkForeground } from './networkGate'
 
 import type { CollectorAPI } from '../pipeline/collector'
 import type { StatApp } from './StatApp'
@@ -447,6 +448,7 @@ export function handleLaunch(
   opts: LifecycleOptions = {},
   eventTimeSec?: number
 ): void {
+  setNetworkForeground(true)
   const c = safeCollector(app)
   if (!c) return
   const now = resolveEventTimeSec(eventTimeSec)
@@ -571,6 +573,21 @@ export function handleAppShow(
   eventTimeSec?: number,
   trustedAppShow = false
 ): void {
+  if (setNetworkForeground(true)) {
+    const c = safeCollector(app)
+    if (c) {
+      void c
+        .recoverRetry()
+        .catch((e) =>
+          logger.warn('[uni统计 2.0] retry after foreground failed', e)
+        )
+      void c
+        .flush(true)
+        .catch((e) =>
+          logger.warn('[uni统计 2.0] flush after network recheck failed', e)
+        )
+    }
+  }
   if (
     tryConsumeBackgroundResume(
       app,
@@ -631,6 +648,7 @@ export function handleAppHide(
   opts: LifecycleOptions = {},
   eventTimeSec?: number
 ): void {
+  setNetworkForeground(false)
   if (state.pendingBackgroundResume) return
   const c = safeCollector(app)
   if (!c) return

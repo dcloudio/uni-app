@@ -1,3 +1,5 @@
+// @ts-expect-error 当前 Vue 类型尚未升级到 3.6，Vapor runtime 已导出该方法
+import { initUniElement } from 'vue'
 import { type Ref, type SetupContext, ref } from 'vue'
 import {
   UniViewElement,
@@ -64,8 +66,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         </div>
       </div>
     )
-    // 在 SDK 初始化和外部 ref 可见前标记类型，不包装原生 DOM API。
-    Object.defineProperty(root, 'uniTagName', uniTagName)
+    // 在 SDK 初始化和外部 ref 可见前初始化根节点身份和 props 读取。
+    initUniElement(root, uniTagName)
     return root
   },
 })

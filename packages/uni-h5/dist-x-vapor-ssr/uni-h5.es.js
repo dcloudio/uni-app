@@ -1,6 +1,6 @@
 import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, getUniElementPage, once, getEnvLocale, I18N_JSON_DELIMITERS, Emitter, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, normalizeTarget, passive, LINEFEED, parseQuery, NAVBAR_HEIGHT, ON_THEME_CHANGE, removeLeadingSlash, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, decodedQuery, UNI_SSR_TITLE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, PRIMARY_COLOR, debounce, ON_LOAD, ON_READY, ON_UNLOAD, ON_RESIZE, ON_WEB_INVOKE_APP_SERVICE, callOptions, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2 } from "@dcloudio/uni-shared";
-import { defineVaporComponent, createPlainElement, openBlock, createBlock, ref, watch, setAttr, template, getCurrentInstance, warn, unref, reactive, onMounted, onBeforeUnmount, computed, inject, onBeforeMount, nextTick, isVNode, createElementBlock, Fragment, createElementVNode, Comment, Text, cloneVNode, renderList, createVNode, defineComponent as defineComponent$2, mergeProps, withDirectives, vShow, onActivated, shallowRef, watchEffect, provide, isReactive, createFor, createCommentVNode, VaporKeepAlive, createDynamicComponent, useSSRContext, onServerPrefetch, ssrContextKey, markRaw, onUnmounted, toRaw, createKeyedFragment, createTextNode, renderEffect, setText, remove, setDynamicProps, effectScope, insert, syncSelectValue, useAttrs as useAttrs$1, useSlots, withCtx, renderSlot, isInSSRComponentSetup, injectHook, toDisplayString, queuePostFlushCb, logError } from "vue";
+import { defineVaporComponent, createPlainElement, openBlock, createBlock, ref, watch, initUniElement, setAttr, template, getCurrentInstance, warn, unref, reactive, onMounted, onBeforeUnmount, computed, inject, onBeforeMount, nextTick, isVNode, createElementBlock, Fragment, createElementVNode, Comment, Text, cloneVNode, renderList, createVNode, defineComponent as defineComponent$2, mergeProps, withDirectives, vShow, onActivated, shallowRef, watchEffect, provide, isReactive, createFor, createCommentVNode, VaporKeepAlive, createDynamicComponent, useSSRContext, onServerPrefetch, ssrContextKey, markRaw, onUnmounted, toRaw, createKeyedFragment, createTextNode, renderEffect, setText, remove, setDynamicProps, effectScope, insert, syncSelectValue, useAttrs as useAttrs$1, useSlots, withCtx, renderSlot, isInSSRComponentSetup, injectHook, toDisplayString, queuePostFlushCb, logError } from "vue";
 import { capitalize, camelize, isArray, isString, extend, isFunction, hyphenate, hasOwn, isPlainObject, isObject, toRawType, makeMap as makeMap$1, isPromise, EMPTY_OBJ, Namespaces } from "@vue/shared";
 import { useRoute, VaporRouterView, useRouter, createRouter, createMemoryHistory } from "vue-router";
 import { ssrRenderAttrs, ssrInterpolate, ssrRenderComponent, ssrRenderStyle, ssrRenderAttr, ssrRenderClass, ssrRenderSlot, ssrRenderList } from "vue/server-renderer";
@@ -231,12 +231,13 @@ class UniInputElement extends UniViewElement {
     this.querySelector("input").value = value;
   }
 }
+const uniTagName$a = { value: "INPUT" };
 const descriptors$1 = /* @__PURE__ */ (() => ({
-  uniTagName: { value: "INPUT" },
   focus: Object.getOwnPropertyDescriptor(UniInputElement.prototype, "focus"),
   value: Object.getOwnPropertyDescriptor(UniInputElement.prototype, "value")
 }))();
 function initInputElement(root) {
+  initUniElement(root, uniTagName$a);
   Object.defineProperties(root, descriptors$1);
 }
 const isEnableLocale = /* @__PURE__ */ once(
@@ -1952,8 +1953,8 @@ class UniTextareaElement extends UniViewElement {
     (_a = this.querySelector("textarea")) == null ? void 0 : _a.focus(options);
   }
 }
+const uniTagName$9 = { value: "TEXTAREA" };
 const descriptors = /* @__PURE__ */ (() => ({
-  uniTagName: { value: "TEXTAREA" },
   focus: Object.getOwnPropertyDescriptor(
     UniTextareaElement.prototype,
     "focus"
@@ -1963,6 +1964,7 @@ function setValue(value) {
   this.querySelector("textarea").value = value;
 }
 function initTextareaElement(root, state) {
+  initUniElement(root, uniTagName$9);
   Object.defineProperties(root, descriptors);
   Object.defineProperty(root, "value", {
     get: () => state.value,
@@ -6115,7 +6117,7 @@ const indexVapor$8 = /* @__PURE__ */ defineBuiltInComponent({
       id: props2.id,
       class: "ql-container"
     }, null, 512));
-    Object.defineProperty(root, "uniTagName", uniTagName$8);
+    initUniElement(root, uniTagName$8);
     return root;
   }
 });
@@ -6199,7 +6201,7 @@ const indexVapor$7 = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2) {
     const path = useIcon(props2);
     const root = (openBlock(), createBlock("div", _hoisted_1$3, [normalizeVNode(() => path.value && path.value.d && createSvgIconVNode(path.value.d, props2.color || path.value.c, rpx2px(props2.size)))]));
-    Object.defineProperty(root, "uniTagName", uniTagName$7);
+    initUniElement(root, uniTagName$7);
     return root;
   }
 });
@@ -6414,7 +6416,7 @@ const indexVapor$6 = /* @__PURE__ */ defineBuiltInComponent({
       "uni-view": "",
       ref: rootRef
     }, $attrs.value, $excludeAttrs.value, _listeners), [createVNode(ResizeSensor), normalizeVNode(() => movableViewItems)], 16));
-    Object.defineProperty(root, "uniTagName", uniTagName$6);
+    initUniElement(root, uniTagName$6);
     return root;
   }
 });
@@ -7576,7 +7578,7 @@ const indexVapor$5 = /* @__PURE__ */ defineBuiltInComponent({
       "uni-view": "",
       ref: rootRef
     }, [createVNode(ResizeSensor), normalizeVNode(() => slots.default && slots.default())], 512));
-    Object.defineProperty(root, "uniTagName", uniTagName$5);
+    initUniElement(root, uniTagName$5);
     return root;
   }
 });
@@ -7971,7 +7973,7 @@ const indexVapor$4 = /* @__PURE__ */ defineBuiltInComponent({
       trigger("itemclick", e2, detail);
     }
     const result = renderRichText(props2, rootRef, triggerItemClick);
-    Object.defineProperty(result, "uniTagName", uniTagName$4);
+    initUniElement(result, uniTagName$4);
     return result;
   }
 });
@@ -8064,7 +8066,7 @@ function useScrollView(props2, { emit: emit2, expose }) {
     () => props2.direction === "vertical" || props2.direction === "all"
   );
   const rootStyle = computed(
-    () => `overflow-x:${scrollX.value ? "auto" : "hidden"};overflow-y:${scrollY.value ? "auto" : "hidden"};`
+    () => `overflow-x:${scrollX.value ? "auto" : "hidden"};overflow-y:${scrollY.value ? "auto" : "hidden"};scroll-behavior:${props2.scrollWithAnimation ? "smooth" : "auto"};`
   );
   const scrollBarClassName = computed(
     () => props2.showScrollbar === false ? "uni-scroll-view-scrollbar-hidden" : ""
@@ -8075,11 +8077,7 @@ function useScrollView(props2, { emit: emit2, expose }) {
   let lastLowerTime = 0;
   function scrollTo(options) {
     var _a;
-    (_a = rootRef.value) == null ? void 0 : _a.scrollTo(
-      Object.assign(options, {
-        behavior: props2.scrollWithAnimation ? "smooth" : "instant"
-      })
-    );
+    (_a = rootRef.value) == null ? void 0 : _a.scrollTo(options);
   }
   function scrollIntoView(id) {
     const root = rootRef.value;
@@ -8787,12 +8785,12 @@ const _sfc_main$n = /* @__PURE__ */ defineComponent$2({
   __vapor: true,
   setup(__props, { emit: __emit }) {
     const props2 = __props;
-    class UniCustomEvent2 {
+    class UniCustomEvent3 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniCheckboxGroupChangeEvent extends UniCustomEvent2 {
+    class UniCheckboxGroupChangeEvent extends UniCustomEvent3 {
       constructor(value) {
         super("change", { value });
       }
@@ -9024,17 +9022,17 @@ const _sfc_main$l = /* @__PURE__ */ defineComponent$2({
   __vapor: true,
   setup(__props, { expose: __expose, emit: __emit }) {
     const props2 = __props;
-    class UniCustomEvent2 {
+    class UniCustomEvent3 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniFormSubmitEvent extends UniCustomEvent2 {
+    class UniFormSubmitEvent extends UniCustomEvent3 {
       constructor(value) {
         super("submit", { value });
       }
     }
-    class UniFormResetEvent extends UniCustomEvent2 {
+    class UniFormResetEvent extends UniCustomEvent3 {
       constructor() {
         super("reset", {});
       }
@@ -9381,7 +9379,6 @@ const _sfc_main$i = /* @__PURE__ */ defineComponent$2({
   __vapor: true,
   setup(__props, { expose: __expose }) {
     const props2 = __props;
-    useAttrs$1();
     const scrollElement = ref(null);
     const headerElement = ref(null);
     const bodyElement = ref(null);
@@ -9399,8 +9396,10 @@ const _sfc_main$i = /* @__PURE__ */ defineComponent$2({
     let fastScrollOffset = 0;
     let lastScrollTimestamp = 0;
     let lastScrollOffset = 0;
-    let cachedSizeStart = 200;
-    let cachedSizeEnd = 200;
+    let maxItemSize = 100;
+    let originalCachedSize = maxItemSize * 2;
+    let cachedSizeStart = originalCachedSize;
+    let cachedSizeEnd = originalCachedSize;
     let scrolling = false;
     let scrollEndTimer;
     let queued = false;
@@ -9464,6 +9463,14 @@ const _sfc_main$i = /* @__PURE__ */ defineComponent$2({
       const item = store.keyItemMap.get(key);
       if (!item || item.size === height)
         return;
+      if (height > maxItemSize) {
+        maxItemSize = height;
+        originalCachedSize = maxItemSize * 2;
+        if (cachedSizeStart > 0)
+          cachedSizeStart = originalCachedSize;
+        if (cachedSizeEnd > 0)
+          cachedSizeEnd = originalCachedSize;
+      }
       item.size = height;
       store.rebuildItemOffsetsFrom(item.index + 1);
       if (scrolling && !scrollTarget && sizeChangeAnchorKey) {
@@ -9527,9 +9534,11 @@ const _sfc_main$i = /* @__PURE__ */ defineComponent$2({
         targetOffset = -1;
       }
     }
-    function scrollToOffset(offset) {
+    function scrollToOffset(offset, followScrollBehavior = false) {
       const element = scrollElement.value;
-      element.scrollTo(0, offset);
+      element.scrollTo(
+        followScrollBehavior ? { top: offset } : { top: offset, behavior: "instant" }
+      );
       realScrollOffset = element.scrollTop;
       scrollOffset = realScrollOffset;
       fastScrollOffset = 0;
@@ -9546,9 +9555,7 @@ const _sfc_main$i = /* @__PURE__ */ defineComponent$2({
         const offset = section ? section.offsetTop + (key ? section.getItemOffset(key) : 0) : item ? item.offset : -1;
         if (offset >= 0 && targetOffset !== offset + headerSize) {
           targetOffset = offset + headerSize;
-          scrollToOffset(
-            targetOffset
-          );
+          scrollToOffset(targetOffset, true);
         }
       } else if (!sections.length && !scrolling) {
         if (props2.initialScrollBottom && maintainInitialScrollBottom && listDataStatus === 1) {
@@ -9617,8 +9624,8 @@ const _sfc_main$i = /* @__PURE__ */ defineComponent$2({
       const elapsed = timestamp - lastScrollTimestamp;
       const delta = offset - lastScrollOffset;
       realScrollOffset = offset;
-      cachedSizeStart = scrollTarget ? 0 : 200;
-      cachedSizeEnd = 200;
+      cachedSizeStart = scrollTarget ? 0 : originalCachedSize;
+      cachedSizeEnd = originalCachedSize;
       const fast = sectionMap.size === 0 && !scrollTarget && lastScrollTimestamp > 0 && elapsed > 0 && Math.abs(delta / elapsed) > 15 && offset > 1 && offset < element.scrollHeight - size - 1;
       if (fast) {
         if (delta > 0)
@@ -9649,10 +9656,10 @@ const _sfc_main$i = /* @__PURE__ */ defineComponent$2({
       scrollOffset = realScrollOffset;
       fastScrollOffset = 0;
       lastScrollTimestamp = 0;
+      cachedSizeStart = originalCachedSize;
+      cachedSizeEnd = originalCachedSize;
       updateRenderList();
       scrollTarget = void 0;
-      cachedSizeStart = 200;
-      cachedSizeEnd = 200;
       updateScrollAnchorItem();
     }
     const resizeObserver = new ResizeObserver((entries2) => {
@@ -9696,6 +9703,7 @@ const _sfc_main$i = /* @__PURE__ */ defineComponent$2({
     __expose({ renderRange, updateList, updateListIds, updateRenderInfo });
     return (_ctx, _push, _parent, _attrs) => {
       const _component_scroll_view = __syscom_0;
+      _push(`<!--{-->`);
       _push(ssrRenderComponent(_component_scroll_view, mergeProps({
         ref_key: "scrollElement",
         ref: scrollElement,
@@ -9714,7 +9722,7 @@ const _sfc_main$i = /* @__PURE__ */ defineComponent$2({
           if (_push2) {
             _push2(`<div uni-view${_scopeId}>`);
             ssrRenderSlot(_ctx.$slots, "header", {}, null, _push2, _parent2, _scopeId);
-            _push2(`</div><div uni-view style="${ssrRenderStyle({ "position": "relative", "overflow": "visible", "overflow-anchor": "none" })}"${_scopeId}><div uni-view style="${ssrRenderStyle({ "width": "1px", "flex-shrink": "0" })}"${_scopeId}></div>`);
+            _push2(`</div><div uni-view style="position:relative;overflow:visible;overflow-anchor:none;"${_scopeId}><div uni-view style="width:1px;flex-shrink:0;"${_scopeId}></div>`);
             ssrRenderSlot(_ctx.$slots, "default", {}, null, _push2, _parent2, _scopeId);
             _push2(`</div><div uni-view${_scopeId}>`);
             ssrRenderSlot(_ctx.$slots, "footer", {}, null, _push2, _parent2, _scopeId);
@@ -9750,6 +9758,7 @@ const _sfc_main$i = /* @__PURE__ */ defineComponent$2({
         }),
         _: 3
       }, _parent));
+      _push(`<!--}-->`);
     };
   }
 });
@@ -10241,7 +10250,7 @@ const _sfc_main$e = /* @__PURE__ */ defineComponent$2({
       clearTransitionTimer();
     });
     return (_ctx, _push, _parent, _attrs) => {
-      _push(`<!--[-->`);
+      _push(`<!--{-->`);
       if (__props.overlay && unref(showPageContainer)) {
         _push(`<div uni-view class="uni-page-container-overlay" style="${ssrRenderStyle([unref(overlayStyleMap), __props.overlayStyle])}"></div>`);
       } else {
@@ -10254,7 +10263,7 @@ const _sfc_main$e = /* @__PURE__ */ defineComponent$2({
       } else {
         _push(`<!---->`);
       }
-      _push(`<!--]-->`);
+      _push(`<!--}-->`);
     };
   }
 });
@@ -10319,26 +10328,26 @@ const _sfc_main$d = /* @__PURE__ */ defineComponent$2({
     const multiSelectorChangeEventName = `${baseEventName}_multiSelector_change`;
     const timeChangeEventName = `${baseEventName}_time_change`;
     const columnChangeEventName = `${baseEventName}_column_change`;
-    class UniCustomEvent2 {
+    class UniCustomEvent3 {
       constructor(type, options) {
         this.detail = options.detail;
       }
     }
-    class UniPickerCancelEvent extends UniCustomEvent2 {
+    class UniPickerCancelEvent extends UniCustomEvent3 {
       constructor() {
         super("cancel", {
           detail: {}
         });
       }
     }
-    class UniPickerChangeEvent extends UniCustomEvent2 {
+    class UniPickerChangeEvent extends UniCustomEvent3 {
       constructor(value) {
         super("change", {
           detail: { value }
         });
       }
     }
-    class UniPickerColumnChangeEvent extends UniCustomEvent2 {
+    class UniPickerColumnChangeEvent extends UniCustomEvent3 {
       constructor(column, value) {
         super("columnchange", {
           detail: { value, column }
@@ -11597,12 +11606,12 @@ const _sfc_main$b = /* @__PURE__ */ defineComponent$2({
   __vapor: true,
   setup(__props, { emit: __emit }) {
     const props2 = __props;
-    class UniCustomEvent2 {
+    class UniCustomEvent3 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniPickerViewChangeEvent extends UniCustomEvent2 {
+    class UniPickerViewChangeEvent extends UniCustomEvent3 {
       constructor(value) {
         super("change", { value });
       }
@@ -11878,12 +11887,12 @@ const _sfc_main$9 = /* @__PURE__ */ defineComponent$2({
   __vapor: true,
   setup(__props, { emit: __emit }) {
     const props2 = __props;
-    class UniCustomEvent2 {
+    class UniCustomEvent3 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniProgressActiveendEvent extends UniCustomEvent2 {
+    class UniProgressActiveendEvent extends UniCustomEvent3 {
       constructor(type, curPercent) {
         super(type, { curPercent });
       }
@@ -12187,12 +12196,12 @@ const _sfc_main$7 = /* @__PURE__ */ defineComponent$2({
   emits: ["change"],
   __vapor: true,
   setup(__props, { emit: __emit }) {
-    class UniCustomEvent2 {
+    class UniCustomEvent3 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniRadioGroupChangeEvent extends UniCustomEvent2 {
+    class UniRadioGroupChangeEvent extends UniCustomEvent3 {
       constructor(value) {
         super("change", { value });
       }
@@ -12252,6 +12261,16 @@ _sfc_main$7.setup = (props2, ctx) => {
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-form/components/radio-group/radio-group.vue");
   return _sfc_setup$7 ? _sfc_setup$7(props2, ctx) : void 0;
 };
+let UniCustomEvent$1 = class UniCustomEvent {
+  constructor(type, detail) {
+    this.detail = detail;
+  }
+};
+class UniSliderChangeEvent extends UniCustomEvent$1 {
+  constructor(value) {
+    super("change", { value });
+  }
+}
 class UniSliderElement extends UniViewElement {
   constructor() {
     super(...arguments);
@@ -12270,6 +12289,7 @@ class UniSliderElement extends UniViewElement {
     (_a = this.vm) == null ? void 0 : _a.renderVisuals(val);
   }
 }
+const TOUCH_THRESHOLD = 4;
 const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "slider",
@@ -12289,12 +12309,12 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
     value: { default: 0, type: Number },
     disabled: { type: Boolean, default: false },
     showValue: { type: Boolean, default: false },
-    activeColor: { default: "", type: null },
-    activeBackgroundColor: { default: "", type: null },
-    backgroundColor: { default: "", type: null },
-    blockSize: { default: null, type: [Number, null] },
-    blockColor: { default: "", type: null },
-    foreColor: { default: "", type: null },
+    activeColor: { default: "#007aff", type: null },
+    activeBackgroundColor: { default: "#007aff", type: null },
+    backgroundColor: { default: "#e9e9e9", type: null },
+    blockSize: { default: 28, type: [Number, null] },
+    blockColor: { default: "#ffffff", type: null },
+    foreColor: { default: "#ffffff", type: null },
     trackClass: { default: "", type: null },
     trackActiveClass: { default: "", type: null },
     thumbClass: { default: "", type: null }
@@ -12302,6 +12322,7 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
   emits: ["change", "changing"],
   __vapor: true,
   setup(__props, { expose: __expose, emit: __emit }) {
+    const emit2 = __emit;
     const attrs = useAttrs$1();
     const id = attrs.id ?? "";
     let unregisterLabelTarget = null;
@@ -12342,7 +12363,13 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
     const initialValue = props2.value;
     const currentValue = ref(props2.value);
     const isDragging = ref(false);
-    props2.step;
+    let trackTravelWidth = 0;
+    let trackLeft = 0;
+    let rafId = 0;
+    let ticking = false;
+    let cachedDecimalPlaces = -1;
+    let cachedStep = props2.step;
+    let lastValue = 0;
     const thumbTranslateX = ref(0);
     const trackActiveScaleX = ref(0);
     const effectiveMax = computed(() => {
@@ -12354,21 +12381,69 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
         return min;
       return min + Math.floor(range / step) * step;
     });
+    let _activeStatus = 0;
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let thumbOffsetX = 0;
     let activePointerId = -1;
     let pointerTarget = null;
+    let pointerClientX = 0;
+    let pointerStartFocus = null;
     function releasePointerCapture() {
+      window.removeEventListener("pointermove", handlePointerMove, true);
+      window.removeEventListener("pointerup", handlePointerUp, true);
+      window.removeEventListener("pointercancel", handlePointerCancel, true);
+      window.removeEventListener("blur", handleWindowBlur);
       const target = pointerTarget;
       const pointerId = activePointerId;
       activePointerId = -1;
       pointerTarget = null;
+      pointerStartFocus = null;
       if (target != null && target.hasPointerCapture(pointerId)) {
         target.releasePointerCapture(pointerId);
       }
     }
     function resetInteractionState() {
+      if (rafId != 0) {
+        cancelAnimationFrame(rafId);
+        rafId = 0;
+      }
+      ticking = false;
       isDragging.value = false;
-      currentValue.value;
+      _activeStatus = 0;
+      trackTravelWidth = 0;
+      thumbOffsetX = 0;
+      lastValue = currentValue.value;
       releasePointerCapture();
+    }
+    function lerp(start, end, t2) {
+      const clampedT = Math.max(0, Math.min(1, t2));
+      return start * (1 - clampedT) + end * clampedT;
+    }
+    function getDecimalPlaces(num) {
+      if (!Number.isFinite(num) || num == 0)
+        return 0;
+      if (cachedStep == num && cachedDecimalPlaces != -1) {
+        return cachedDecimalPlaces;
+      }
+      const parts = num.toString().toLowerCase().split("e");
+      const decimalIndex = parts[0].indexOf(".");
+      const mantissaDecimalPlaces = decimalIndex == -1 ? 0 : parts[0].length - decimalIndex - 1;
+      const exponent = parts.length > 1 ? Number(parts[1]) : 0;
+      cachedStep = num;
+      cachedDecimalPlaces = Math.max(0, mantissaDecimalPlaces - exponent);
+      return cachedDecimalPlaces;
+    }
+    function applyStepPrecision(value) {
+      let result = value;
+      if (props2.step > 0) {
+        result = Math.round(result / props2.step) * props2.step;
+        const decimalPlaces = getDecimalPlaces(props2.step);
+        if (decimalPlaces > 0) {
+          result = parseFloat(result.toFixed(decimalPlaces));
+        }
+      }
+      return result;
     }
     function applyVisualPosition(percentage, fillScale) {
       thumbTranslateX.value = percentage * 100;
@@ -12385,7 +12460,110 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
       const fillScale = Math.max(0, Math.min(1, percentage));
       applyVisualPosition(percentage, fillScale);
     }
+    function calculateValue(clientX) {
+      if (trackTravelWidth <= 0)
+        return currentValue.value;
+      const containerLeft = trackLeft;
+      const min = Number.isFinite(props2.min) ? props2.min : 0;
+      const max = Number.isFinite(props2.max) ? props2.max : min;
+      if (max <= min)
+        return min;
+      let currentX = clientX - containerLeft - thumbOffsetX;
+      currentX = Math.max(0, Math.min(currentX, trackTravelWidth));
+      const ratio = currentX / trackTravelWidth;
+      let newValue = lerp(min, max, ratio);
+      newValue = applyStepPrecision(newValue);
+      newValue = Math.max(min, Math.min(newValue, effectiveMax.value));
+      return newValue;
+    }
+    function focusThumb() {
+      if (props2.disabled)
+        return;
+      const element = thumbRef.value;
+      if (element != null && element.ownerDocument.activeElement !== element)
+        element.focus({ preventScroll: true });
+    }
+    function finishPointerInteraction(clientX) {
+      if (props2.disabled) {
+        resetInteractionState();
+        return;
+      }
+      if (_activeStatus != -1) {
+        const element = thumbRef.value;
+        if (element != null && element.ownerDocument.activeElement === pointerStartFocus)
+          focusThumb();
+        const newValue = calculateValue(clientX);
+        if (newValue != currentValue.value)
+          renderVisuals(newValue);
+      }
+      const value = currentValue.value;
+      const changed = lastValue !== value;
+      resetInteractionState();
+      if (changed)
+        emit2("change", new UniSliderChangeEvent(value));
+    }
+    function handlePointerMove(e2) {
+      if (e2.pointerId != activePointerId || props2.disabled == true) {
+        return;
+      }
+      if (e2.pointerType == "mouse" && (e2.buttons & 1) == 0) {
+        finishPointerInteraction(e2.clientX);
+        return;
+      }
+      if (_activeStatus == 0) {
+        const deltaX = Math.abs(e2.clientX - touchStartX);
+        const deltaY = Math.abs(e2.clientY - touchStartY);
+        if (deltaX <= TOUCH_THRESHOLD && deltaY <= TOUCH_THRESHOLD)
+          return;
+        _activeStatus = deltaX > deltaY ? 1 : -1;
+      }
+      if (_activeStatus != 1)
+        return;
+      if (e2.cancelable) {
+        e2.preventDefault();
+      }
+      e2.stopPropagation();
+      pointerClientX = e2.clientX;
+      if (ticking == false) {
+        ticking = true;
+        const pointerId = activePointerId;
+        const frameId = requestAnimationFrame(() => {
+          if (rafId != frameId)
+            return;
+          rafId = 0;
+          ticking = false;
+          if (activePointerId != pointerId || props2.disabled)
+            return;
+          const newValue = calculateValue(pointerClientX);
+          if (newValue === currentValue.value)
+            return;
+          renderVisuals(newValue);
+          emit2("changing", new UniSliderChangeEvent(currentValue.value));
+        });
+        rafId = frameId;
+      }
+    }
+    function handlePointerUp(e2) {
+      if (e2.pointerId != activePointerId || e2.button != 0) {
+        return;
+      }
+      e2.stopPropagation();
+      finishPointerInteraction(e2.clientX);
+    }
+    function handlePointerCancel(e2) {
+      if (e2.pointerId == activePointerId) {
+        e2.stopPropagation();
+        resetInteractionState();
+      }
+    }
+    const pressedSliderKeys = /* @__PURE__ */ new Set();
+    function handleWindowBlur() {
+      pressedSliderKeys.clear();
+      resetInteractionState();
+    }
     function handleResize() {
+      trackTravelWidth = 0;
+      trackLeft = 0;
       renderVisuals(currentValue.value);
     }
     renderVisuals(currentValue.value);
@@ -12481,7 +12659,7 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
         class: "container"
       }, _attrs))}><div uni-view class="slider-track"><div uni-view class="${ssrRenderClass([props2.trackClass, "slider-track-bg"])}"><div uni-view class="${ssrRenderClass([props2.trackActiveClass, "slider-track-fill"])}" style="${ssrRenderStyle({ transform: `scaleX(${unref(trackActiveScaleX)})` })}"></div></div><div uni-view class="slider-handle-wrapper" style="${ssrRenderStyle([{ "overflow": "visible", "align-self": "flex-start", "z-index": "2" }, { width: "100%", transform: `translateX(${unref(thumbTranslateX)}%)` }])}"><div uni-view${ssrRenderAttr("tabindex", props2.disabled ? -1 : 0)} role="slider"${ssrRenderAttr("aria-disabled", props2.disabled)} aria-orientation="horizontal"${ssrRenderAttr("aria-valuenow", unref(currentValue))}${ssrRenderAttr("aria-valuemin", Number.isFinite(props2.min) ? props2.min : 0)}${ssrRenderAttr("aria-valuemax", unref(effectiveMax))} class="${ssrRenderClass([props2.thumbClass, "slider-handle"])}" style="${ssrRenderStyle({ transform: `translateX(-${unref(thumbTranslateX)}%)` })}"></div></div></div>`);
       if (props2.showValue) {
-        _push(`<span uni-text flatten style="${ssrRenderStyle({ "width": "35px", "color": "#888", "font-size": "14px", "align-self": "center", "margin-left": "5px", "white-space": "nowrap" })}">${ssrInterpolate(unref(currentValue), true)}</span>`);
+        _push(`<span uni-text flatten style="width:35px;color:#888;font-size:14px;align-self:center;margin-left:5px;white-space:nowrap;">${ssrInterpolate(unref(currentValue), true)}</span>`);
       } else {
         _push(`<!---->`);
       }
@@ -12700,7 +12878,7 @@ const _sfc_main$4 = /* @__PURE__ */ defineComponent$2({
         style: { "position": "relative", "overflow": "visible" }
       }, _attrs))}>`);
       ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent);
-      _push(`<div uni-view style="${ssrRenderStyle({ "width": "1px", "flex-shrink": "0" })}"></div></div>`);
+      _push(`<div uni-view style="width:1px;flex-shrink:0;"></div></div>`);
     };
   }
 });
@@ -12710,13 +12888,13 @@ _sfc_main$4.setup = (props2, ctx) => {
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-list-view/components/sticky-section/sticky-section.vue");
   return _sfc_setup$4 ? _sfc_setup$4(props2, ctx) : void 0;
 };
-class UniCustomEvent {
+class UniCustomEvent2 {
   constructor(type, detail) {
     this.type = type;
     this.detail = detail;
   }
 }
-class UniSwiperChangeEvent extends UniCustomEvent {
+class UniSwiperChangeEvent extends UniCustomEvent2 {
   constructor(current, source, currentItemId) {
     const detail = { current, source };
     if (currentItemId != null) {
@@ -12725,12 +12903,12 @@ class UniSwiperChangeEvent extends UniCustomEvent {
     super("change", detail);
   }
 }
-class UniSwiperTransitionEvent extends UniCustomEvent {
+class UniSwiperTransitionEvent extends UniCustomEvent2 {
   constructor(dx, dy) {
     super("transition", { dx, dy });
   }
 }
-class UniSwiperAnimationFinishEvent extends UniCustomEvent {
+class UniSwiperAnimationFinishEvent extends UniCustomEvent2 {
   constructor(current, source, currentItemId) {
     const detail = { current, source };
     if (currentItemId != null) {
@@ -14055,6 +14233,7 @@ const _sfc_main = /* @__PURE__ */ defineComponent$2({
     __expose({ renderRange, updateList, updateListIds, updateRenderInfo });
     return (_ctx, _push, _parent, _attrs) => {
       const _component_scroll_view = __syscom_0;
+      _push(`<!--{-->`);
       _push(ssrRenderComponent(_component_scroll_view, mergeProps({
         ref_key: "scrollElement",
         ref: scrollElement,
@@ -14072,9 +14251,9 @@ const _sfc_main = /* @__PURE__ */ defineComponent$2({
         }),
         default: withCtx((_, _push2, _parent2, _scopeId) => {
           if (_push2) {
-            _push2(`<div uni-view style="${ssrRenderStyle({ "position": "relative", "overflow-anchor": "none" })}"${_scopeId}>`);
+            _push2(`<div uni-view style="position:relative;overflow-anchor:none;"${_scopeId}>`);
             ssrRenderSlot(_ctx.$slots, "default", {}, null, _push2, _parent2, _scopeId);
-            _push2(`<div uni-view style="${ssrRenderStyle({ "width": "1px", "flex-shrink": "0" })}"${_scopeId}></div></div>`);
+            _push2(`<div uni-view style="width:1px;flex-shrink:0;"${_scopeId}></div></div>`);
             ssrRenderSlot(_ctx.$slots, "load-more", {}, null, _push2, _parent2, _scopeId);
           } else {
             return [
@@ -14096,6 +14275,7 @@ const _sfc_main = /* @__PURE__ */ defineComponent$2({
         }),
         _: 3
       }, _parent));
+      _push(`<!--}-->`);
     };
   }
 });
@@ -14991,7 +15171,7 @@ const indexVapor$3 = /* @__PURE__ */ defineBuiltInComponent({
       id: props2.id
     }, [normalizeVNode(() => render())], 512));
     Object.assign(root, methods);
-    Object.defineProperty(root, "uniTagName", uniTagName$3);
+    initUniElement(root, uniTagName$3);
     return root;
   }
 });
@@ -15018,7 +15198,7 @@ const onWebInvokeAppService = ({ name, arg }) => {
     }
   }
 };
-const Invoke = /* @__PURE__ */ once(
+const initWebViewBridge = /* @__PURE__ */ once(
   () => UniServiceJSBridge.on(ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService)
 );
 const webViewProps = {
@@ -15027,47 +15207,14 @@ const webViewProps = {
     default: ""
   }
 };
-function useWebView(props2, emit2) {
-  Invoke();
-  const rootRef = ref(null);
-  const iframeRef = ref(null);
-  const { $attrs, $excludeAttrs, $listeners } = useAttrs({
-    excludeListeners: true
-  });
-  const trigger = useCustomEvent(rootRef, emit2);
-  const renderIframe = () => {
-    const iframe = document.createElement("iframe");
-    iframe.onload = function(event) {
-      trigger("load", event, { src: props2.src, url: props2.src });
-    };
-    watchEffect(() => {
-      for (const key in $attrs.value) {
-        if (hasOwn($attrs.value, key)) {
-          const attr2 = $attrs.value[key];
-          iframe[key] = attr2;
-        }
-      }
-    });
-    watchEffect(() => {
-      iframe.src = getRealPath(props2.src);
-    });
-    iframeRef.value = iframe;
-  };
-  onMounted(renderIframe);
-  onMounted(() => {
-    var _a;
-    (_a = rootRef.value) == null ? void 0 : _a.appendChild(iframeRef.value);
-  });
-  return { rootRef, $listeners, $excludeAttrs };
-}
-class UniWebViewElement extends UniViewElement {
+class UniWebViewElement extends UniElement2 {
   static [Symbol.hasInstance](value) {
-    return this === UniWebViewElement && value instanceof UniViewElement && value.hasAttribute("uni-web-view") || Function.prototype[Symbol.hasInstance].call(this, value);
+    const el = value;
+    return this === UniWebViewElement && (el == null ? void 0 : el.nodeType) === 1 && el.localName === "iframe" && el.hasAttribute("uni-web-view") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
 const uniTagName$2 = { value: "WEB-VIEW" };
 const indexVapor$2 = /* @__PURE__ */ defineBuiltInComponent({
-  inheritAttrs: false,
   name: "WebView",
   props: webViewProps,
   emits: ["load"],
@@ -15076,13 +15223,16 @@ const indexVapor$2 = /* @__PURE__ */ defineBuiltInComponent({
     class: UniWebViewElement
   },
   setup(props2, { emit: emit2 }) {
-    const { rootRef, $listeners, $excludeAttrs } = useWebView(props2, emit2);
-    const root = (openBlock(), createBlock("div", mergeProps({
+    initWebViewBridge();
+    const rootRef = ref(null);
+    const root = (openBlock(), createBlock("iframe", {
       "uni-web-view": "",
       "uni-view": "",
-      class: "uni-webview"
-    }, $listeners.value, $excludeAttrs.value, { ref: rootRef }), null, 16));
-    Object.defineProperty(root, "uniTagName", uniTagName$2);
+      class: "uni-webview",
+      src: getRealPath(props2.src),
+      ref: rootRef
+    }, null, 512));
+    initUniElement(root, uniTagName$2);
     return root;
   }
 });
@@ -16720,7 +16870,7 @@ const indexVapor$1 = /* @__PURE__ */ defineBuiltInComponent({
       normalizeVNode(() => props2.polygons.map((item) => (openBlock(), createBlock(MapPolygon, item, null, 16)))),
       createVNode("div", _hoisted_1, [normalizeVNode(() => slots.default && slots.default())])
     ], 512));
-    Object.defineProperty(root, "uniTagName", uniTagName$1);
+    initUniElement(root, uniTagName$1);
     return root;
   }
 });
@@ -17420,7 +17570,7 @@ const indexVapor = /* @__PURE__ */ defineBuiltInComponent({
       key: 0,
       class: "uni-ad-custom-material"
     }, [normalizeVNode(() => renderCustomMaterial())])) : normalizeVNode(() => null)], 16));
-    Object.defineProperty(root, "uniTagName", uniTagName);
+    initUniElement(root, uniTagName);
     return root;
   }
 });

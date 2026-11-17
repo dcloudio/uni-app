@@ -1,5 +1,5 @@
 /**
-  * @vue/shared v3.6.0-rc.14
+  * @vue/shared v3.6.0-rc.15
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -66,10 +66,18 @@ const isIntegerKey = (key) => isString(key) && key !== "NaN" && key[0] !== "-" &
 const isReservedProp = /*@__PURE__*/ makeMap(",key,ref,ref_for,ref_key,onVnodeBeforeMount,onVnodeMounted,onVnodeBeforeUpdate,onVnodeUpdated,onVnodeBeforeUnmount,onVnodeUnmounted");
 const isBuiltInTag = /*#__PURE__*/ makeMap("slot,component");
 const isBuiltInDirective = /*@__PURE__*/ makeMap("bind,cloak,else-if,else,for,html,if,model,on,once,pre,show,slot,text,memo");
+const STRING_CACHE_MAX_SIZE = 1e4;
 const cacheStringFunction = (fn) => {
-	const cache = Object.create(null);
+	let cache = Object.create(null);
+	let size = 0;
 	return ((str) => {
-		return cache[str] || (cache[str] = fn(str));
+		const hit = cache[str];
+		if (hit !== void 0) return hit;
+		if (++size > STRING_CACHE_MAX_SIZE) {
+			cache = Object.create(null);
+			size = 1;
+		}
+		return cache[str] = fn(str);
 	});
 };
 const camelizeRE = /-(\w)/g;
@@ -77,22 +85,22 @@ const camelizeReplacer = (_, c) => c ? c.toUpperCase() : "";
 /**
 * @private
 */
-const camelize = cacheStringFunction((str) => str.replace(camelizeRE, camelizeReplacer));
+const camelize = /*@__PURE__*/ cacheStringFunction((str) => str.replace(camelizeRE, camelizeReplacer));
 const hyphenateRE = /\B([A-Z])/g;
 /**
 * @private
 */
-const hyphenate = cacheStringFunction((str) => str.replace(hyphenateRE, "-$1").toLowerCase());
+const hyphenate = /*@__PURE__*/ cacheStringFunction((str) => str.replace(hyphenateRE, "-$1").toLowerCase());
 /**
 * @private
 */
-const capitalize = cacheStringFunction((str) => {
+const capitalize = /*@__PURE__*/ cacheStringFunction((str) => {
 	return str.charAt(0).toUpperCase() + str.slice(1);
 });
 /**
 * @private
 */
-const toHandlerKey = cacheStringFunction((str) => {
+const toHandlerKey = /*@__PURE__*/ cacheStringFunction((str) => {
 	return str ? `on${capitalize(str)}` : ``;
 });
 /**
@@ -398,26 +406,11 @@ const isFormattingTag = /*@__PURE__*/ makeMap(FORMATTING_TAGS);
 * Do NOT use in runtime code paths unless behind `__DEV__` flag.
 */
 const isAlwaysCloseTag = /*@__PURE__*/ makeMap(ALWAYS_CLOSE_TAGS);
-//#endregion
-//#region packages/shared/src/domAttrConfig.ts
-/**
-* On the client we only need to offer special cases for boolean attributes that
-* have different names from their corresponding dom properties:
-* - itemscope -> N/A
-* - allowfullscreen -> allowFullscreen
-* - formnovalidate -> formNoValidate
-* - ismap -> isMap
-* - nomodule -> noModule
-* - novalidate -> noValidate
-* - playsinline -> playsInline
-* - readonly -> readOnly
-*/
-const specialBooleanAttrs = `itemscope,allowfullscreen,formnovalidate,ismap,nomodule,novalidate,playsinline,readonly`;
-const isSpecialBooleanAttr = /*@__PURE__*/ makeMap(specialBooleanAttrs);
+const isSpecialBooleanAttr = /*@__PURE__*/ makeMap("itemscope,allowfullscreen,disablepictureinpicture,disableremoteplayback,formnovalidate,ismap,nomodule,novalidate,playsinline,readonly");
 /**
 * The full list is needed during SSR to produce the correct initial markup.
 */
-const isBooleanAttr = /*@__PURE__*/ makeMap(specialBooleanAttrs + ",async,autofocus,autoplay,controls,default,defer,disabled,inert,loop,open,required,reversed,scoped,seamless,checked,muted,multiple,selected");
+const isBooleanAttr = /*@__PURE__*/ makeMap("itemscope,allowfullscreen,disablepictureinpicture,disableremoteplayback,formnovalidate,ismap,nomodule,novalidate,playsinline,readonly,async,autofocus,autoplay,controls,default,defer,disabled,inert,loop,open,required,reversed,scoped,seamless,checked,muted,multiple,selected");
 /**
 * Boolean attributes should be included if the value is truthy or ''.
 * e.g. `<select multiple>` compiles to `{ multiple: '' }`
@@ -426,12 +419,10 @@ function includeBooleanAttr(value) {
 	return !!value || value === "";
 }
 const unsafeAttrCharRE = /[>/="'\u0009\u000a\u000c\u000d\u0020]/;
-const attrValidationCache = {};
 function isSSRSafeAttrName(name) {
-	if (attrValidationCache.hasOwnProperty(name)) return attrValidationCache[name];
 	const isUnsafe = unsafeAttrCharRE.test(name);
 	if (isUnsafe) console.error(`unsafe attribute name: ${name}`);
-	return attrValidationCache[name] = !isUnsafe;
+	return !isUnsafe;
 }
 const propsToAttrMap = {
 	acceptCharset: "accept-charset",
@@ -801,6 +792,17 @@ function isVaporBranchStart(data) {
 	}
 	return true;
 }
+/**
+* The data of a comment opening a range only a vapor server render emits:
+* `<!--{-->` around the render of a component, or a v-if branch's.
+*/
+function isVaporRangeStart(data) {
+	return data === "{" || isVaporBranchStart(data);
+}
+/** The data of the comment closing the range `open` opens. */
+function rangeCloseOf(open) {
+	return open === "(" ? ")" : open === "{" ? "}" : "]";
+}
 function slotNotifiesBoundary(flags) {
 	return isForwardedSlot(flags) && !(flags & 2);
 }
@@ -908,6 +910,7 @@ exports.isSpecialBooleanAttr = isSpecialBooleanAttr;
 exports.isString = isString;
 exports.isSymbol = isSymbol;
 exports.isVaporBranchStart = isVaporBranchStart;
+exports.isVaporRangeStart = isVaporRangeStart;
 exports.isVoidTag = isVoidTag;
 exports.looseEqual = looseEqual;
 exports.looseIndexOf = looseIndexOf;
@@ -921,6 +924,7 @@ exports.normalizeUniText = normalizeUniText;
 exports.objectToString = objectToString;
 exports.parseStringStyle = parseStringStyle;
 exports.propsToAttrMap = propsToAttrMap;
+exports.rangeCloseOf = rangeCloseOf;
 exports.remove = remove;
 exports.shouldSetAsAttr = shouldSetAsAttr;
 exports.slotFlagsText = slotFlagsText;

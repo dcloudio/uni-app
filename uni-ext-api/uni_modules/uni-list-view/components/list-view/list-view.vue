@@ -261,7 +261,6 @@ defineExpose({
         onMounted,
         provide,
         ref,
-        useAttrs,
         watch,
     } from 'vue'
     import { UniListViewElement } from '../../common/element'
@@ -283,7 +282,6 @@ defineExpose({
         scrollAnchoring: { type: [Boolean, String], default: false },
         initialScrollBottom: { type: [Boolean, String], default: false },
     })
-    const attrs = useAttrs()
     const scrollElement = ref<UniScrollViewElement | null>(null)
     const headerElement = ref<UniViewElement | null>(null)
     const bodyElement = ref<UniViewElement | null>(null)
@@ -301,8 +299,10 @@ defineExpose({
     let fastScrollOffset = 0
     let lastScrollTimestamp = 0
     let lastScrollOffset = 0
-    let cachedSizeStart = 200
-    let cachedSizeEnd = 200
+    let maxItemSize = 100
+    let originalCachedSize = maxItemSize * 2
+    let cachedSizeStart = originalCachedSize
+    let cachedSizeEnd = originalCachedSize
     let scrolling = false
     let scrollEndTimer : ReturnType<typeof setTimeout> | undefined
     let queued = false
@@ -314,7 +314,6 @@ defineExpose({
     let scrollTarget : { key : string; section ?: SectionState } | undefined
     let pendingScrollId = props.scrollIntoView
     let targetOffset = -1
-    let targetStarted = 0
     let itemSizeChangedCompensation = 0
     let sizeChangeAnchorKey : string | undefined
     let sizeChangeAnchorOffset = 0
@@ -371,6 +370,13 @@ defineExpose({
     function updateItemSize(key : string, height : number) {
         const item = store.keyItemMap.get(key)
         if (!item || item.size === height) return
+        if (height > maxItemSize) {
+            maxItemSize = height
+            originalCachedSize = maxItemSize * 2
+            // 与 C++ 一致，快滚或目标定位期间已关闭的缓冲区保持为 0。
+            if (cachedSizeStart > 0) cachedSizeStart = originalCachedSize
+            if (cachedSizeEnd > 0) cachedSizeEnd = originalCachedSize
+        }
         item.size = height
         store.rebuildItemOffsetsFrom(item.index + 1)
         if (scrolling && !scrollTarget && sizeChangeAnchorKey) {
@@ -435,13 +441,25 @@ defineExpose({
             maintainInitialScrollBottom = false
             cachedSizeStart = 0
             targetOffset = -1
-            targetStarted = Date.now()
         }
     }
 
-    function scrollToOffset(offset : number) {
+    /**
+     * 对应 recycle_list.cpp 的 scrollTo(offset, duration)。web 平台无法指定 duration，
+     * 与 cpp 内 iOS 的实现一致，只区分有动画和无动画：
+     * - 定位 scroll-into-view 目标时与 cpp 直接调用 element scrollTo 相同，不传 behavior，
+     *   由 scroll-view 依据开发者 scroll-with-animation 生成的 CSS scroll-behavior 决定
+     *   是否平滑滚动
+     * - 内部滚动（尺寸补偿、滚动锚定、初始滚动到底部）等价于 cpp 传入 duration 0，
+     *   必须显式无动画，否则用户开启 scroll-with-animation 后会跟随 CSS 变成平滑滚动
+     */
+    function scrollToOffset(offset : number, followScrollBehavior = false) {
         const element = scrollElement.value!
-        element.scrollTo(0, offset)
+        element.scrollTo(
+            followScrollBehavior
+                ? { top: offset }
+                : { top: offset, behavior: 'instant' },
+        )
         realScrollOffset = element.scrollTop
         scrollOffset = realScrollOffset
         fastScrollOffset = 0
@@ -463,9 +481,8 @@ defineExpose({
                     : -1
             if (offset >= 0 && targetOffset !== offset + headerSize) {
                 targetOffset = offset + headerSize
-                scrollToOffset(
-                    targetOffset
-                )
+                // 与 cpp setScrollIntoViewKey 一致，定位目标时遵循开发者 scroll-with-animation 设置。
+                scrollToOffset(targetOffset, true)
             }
         } else if (!sections.length && !scrolling) {
             if (
@@ -550,8 +567,8 @@ defineExpose({
         const elapsed = timestamp - lastScrollTimestamp
         const delta = offset - lastScrollOffset
         realScrollOffset = offset
-        cachedSizeStart = scrollTarget ? 0 : 200
-        cachedSizeEnd = 200
+        cachedSizeStart = scrollTarget ? 0 : originalCachedSize
+        cachedSizeEnd = originalCachedSize
         const fast =
             sectionMap.size === 0 &&
             !scrollTarget &&
@@ -588,10 +605,10 @@ defineExpose({
         scrollOffset = realScrollOffset
         fastScrollOffset = 0
         lastScrollTimestamp = 0
+        cachedSizeStart = originalCachedSize
+        cachedSizeEnd = originalCachedSize
         updateRenderList()
         scrollTarget = undefined
-        cachedSizeStart = 200
-        cachedSizeEnd = 200
         updateScrollAnchorItem()
     }
 

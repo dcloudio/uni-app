@@ -1,4 +1,5 @@
 import { parse } from '../src'
+import { decodeFontFamily } from '../src/utils/fontFamily'
 
 const PROPERTY_DOCS_BASE_URL = 'https://doc.dcloud.net.cn/uni-app-x/css'
 const SELECTOR_DOCS_URL = `${PROPERTY_DOCS_BASE_URL}/common/selector.html#selector`
@@ -105,4 +106,49 @@ describe('uvue-styler: dom2 warning documentation', () => {
       'ERROR: property value `abc` is not supported for `width` (supported values are: `number`|`pixel`|`percent`|`auto`)'
     )
   })
+})
+
+test.each([
+  [true, "O'Reilly"],
+  [false, 'OReilly'],
+])('字体解码仅调整 DOM2，保留非 DOM2 原有行为：%s', async (dom2, name) => {
+  const { code, messages } = await parse(
+    `.foo { font-family: "O'Reilly"; } @font-face { font-family: "O'Reilly"; src: url('/font.ttf'); }`,
+    { type: 'uvue', platform: 'app-android', dom2 }
+  )
+  expect(messages).toEqual([])
+  const result = JSON.parse(code)
+  expect(result.foo[''].fontFamily).toBe(name)
+  expect(result['@FONT-FACE'][0].fontFamily).toBe(name)
+})
+
+test.each([
+  ["'scs-iconfont'", 'scs-iconfont'],
+  ['"My Font"', 'My Font'],
+  ['sans-serif', 'sans-serif'],
+  ["  'My Font'  ", 'My Font'],
+  [String.raw`'scs\2d iconfont'`, 'scs-iconfont'],
+  [String.raw`'My\'Font'`, "My'Font"],
+  [String.raw`'My\\41Font'`, String.raw`My\41Font`],
+  [String.raw`'\5b8b\4f53'`, '宋体'],
+  [String.raw`'\1f600'`, '😀'],
+  [String.raw`'\E9'`, 'é'],
+  [String.raw`'\0\d800\110000'`, '���'],
+  [String.raw`'\000041B'`, 'AB'],
+  ["'A\\\r\nB'", 'AB'],
+  ["'A\\\nB\\\rC\\\fD'", 'ABCD'],
+  ["'\\41\r\nB'", 'AB'],
+  ["'\\41\tB'", 'AB'],
+  ["'A!importantB'", 'A!importantB'],
+  ["'  My Font  '", '  My Font  '],
+  ["\t\n\r\f 'My Font' \t\n\r\f", 'My Font'],
+  ['\u00a0Arial\u00a0', '\u00a0Arial\u00a0'],
+  ['\vArial\v', '\vArial\v'],
+  ["'", "'"],
+  ["''", ''],
+  ['Arial\\', 'Arial\\'],
+  ["var(--font, 'scs-iconfont')", "var(--font, 'scs-iconfont')"],
+  ["env(--font, 'scs-iconfont')", "env(--font, 'scs-iconfont')"],
+])('字体解码与原生变量结果使用相同规则：%s', (value, expected) => {
+  expect(decodeFontFamily(value)).toBe(expected)
 })

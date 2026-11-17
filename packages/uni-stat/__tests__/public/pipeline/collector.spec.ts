@@ -1,4 +1,5 @@
 import { createCollector } from '../../../src/public/pipeline/collector'
+import { logger } from '../../../src/public/infra/logger'
 
 import {
   type Channel,
@@ -18,6 +19,7 @@ interface MockedDeps extends CollectorDeps {
     flush: jest.Mock
     rollback: jest.Mock
     shouldFlush: jest.Mock
+    size: jest.Mock
   }
   serializer: { handleData: jest.Mock }
   selectChannel: jest.Mock
@@ -39,6 +41,7 @@ interface MockedDeps extends CollectorDeps {
   nowMs: jest.Mock
   nowSec: jest.Mock
   genPayloadId: jest.Mock
+  isReportEnabled: jest.Mock
 }
 
 function makeDeps(overrides: Partial<MockedDeps> = {}): MockedDeps {
@@ -64,6 +67,7 @@ function makeDeps(overrides: Partial<MockedDeps> = {}): MockedDeps {
         flush: jest.fn<Bucket | undefined, []>(),
         rollback: jest.fn(),
         shouldFlush: jest.fn(() => false),
+        size: jest.fn(() => 1),
       },
       serializer: { handleData: jest.fn(() => '[]') },
       selectChannel: jest.fn(() => channel),
@@ -86,6 +90,7 @@ function makeDeps(overrides: Partial<MockedDeps> = {}): MockedDeps {
       nowMs: jest.fn(() => 1700000000_000),
       nowSec: jest.fn(() => 1700000000),
       genPayloadId: jest.fn(() => 'p-fixed'),
+      isReportEnabled: jest.fn(() => true),
     },
     overrides
   ) as MockedDeps
@@ -246,6 +251,40 @@ describe('pipeline/collector', () => {
       expect(deps.isNetworkOffline).toHaveBeenCalled()
       expect(deps.queue.flush).not.toHaveBeenCalled()
       expect(deps.selectChannel).not.toHaveBeenCalled()
+    })
+
+    test('isReportEnabled=false → 不入队、不探测网络、不发送', async () => {
+      const consoleLog = jest.spyOn(console, 'log').mockImplementation()
+      logger.setDebug(true)
+      const isNetworkOffline = jest.fn(async () => false)
+      const deps = makeDeps({
+        isReportEnabled: jest.fn(async () => false),
+        isNetworkOffline,
+      })
+      deps.queue.shouldFlush.mockReturnValue(true)
+      const c = createCollector(deps)
+      c.report({ lt: '21' })
+      await c.flush(true)
+      expect(deps.isReportEnabled).toHaveBeenCalledTimes(1)
+      expect(deps.queue.enqueue).not.toHaveBeenCalled()
+      expect(isNetworkOffline).not.toHaveBeenCalled()
+      expect(deps.queue.flush).not.toHaveBeenCalled()
+      expect(deps.selectChannel).not.toHaveBeenCalled()
+      expect(consoleLog).not.toHaveBeenCalled()
+      logger.setDebug(undefined)
+      consoleLog.mockRestore()
+    })
+
+    test('isReportEnabled 查询异常 → fail-open，继续发送', async () => {
+      const deps = makeDeps({
+        isReportEnabled: jest.fn(async () => Promise.reject(new Error('x'))),
+      })
+      deps.queue.shouldFlush.mockReturnValue(true)
+      deps.queue.flush.mockReturnValue({ '1': [{ lt: '1' } as StatData] })
+      const channel = deps.selectChannel()!
+      const c = createCollector(deps)
+      await c.flush(true)
+      expect(channel.send).toHaveBeenCalledTimes(1)
     })
 
     test('shouldFlush=false 且 force=false → no-op', async () => {
@@ -572,14 +611,135 @@ describe('pipeline/collector', () => {
       await c.flush(true)
       expect(deps.queue.flush).toHaveBeenCalled()
     })
+
+    test('空队列强制 flush 不探测网络', async () => {
+      const isNetworkOffline = jest.fn(() => Promise.resolve(false))
+      const deps = makeDeps({
+        isNetworkOffline,
+        queue: {
+          enqueue: jest.fn(),
+          flush: jest.fn(() => undefined),
+          rollback: jest.fn(),
+          shouldFlush: jest.fn(() => true),
+          size: jest.fn(() => 0),
+        } as MockedDeps['queue'],
+      })
+      const c = createCollector(deps)
+      await c.flush(true)
+      expect(isNetworkOffline).not.toHaveBeenCalled()
+      expect(deps.queue.flush).not.toHaveBeenCalled()
+    })
+
+    test('并发强制 flush 合并网络探测，完成后仅检查一次空队列', async () => {
+      let finishProbe: ((offline: boolean) => void) | undefined
+      let pending = 1
+      const isNetworkOffline = jest.fn(
+        () =>
+          new Promise<boolean>((resolve) => {
+            finishProbe = resolve
+          })
+      )
+      const deps = makeDeps({
+        isNetworkOffline,
+        queue: {
+          enqueue: jest.fn(),
+          flush: jest.fn(() => {
+            pending = 0
+            return { '3': [{ lt: '3' } as StatData] }
+          }),
+          rollback: jest.fn(),
+          shouldFlush: jest.fn(() => true),
+          size: jest.fn(() => pending),
+        } as MockedDeps['queue'],
+      })
+      const c = createCollector(deps)
+      const first = c.flush(true)
+      const second = c.flush(true)
+      expect(second).toBe(first)
+      expect(isNetworkOffline).toHaveBeenCalledTimes(1)
+
+      finishProbe?.(false)
+      await first
+      expect(isNetworkOffline).toHaveBeenCalledTimes(1)
+      expect(deps.queue.flush).toHaveBeenCalledTimes(1)
+    })
+
+    test('普通 flush 进行中新增事件，完成后自动尾随发送', async () => {
+      let pending = 1
+      let finishFirstSend: (() => void) | undefined
+      let notifyFirstSendStarted: (() => void) | undefined
+      const firstSendStarted = new Promise<void>((resolve) => {
+        notifyFirstSendStarted = resolve
+      })
+      const send = jest
+        .fn<Promise<void>, [ReportPayload]>()
+        .mockImplementationOnce(
+          () =>
+            new Promise<void>((resolve) => {
+              finishFirstSend = resolve
+              notifyFirstSendStarted?.()
+            })
+        )
+        .mockResolvedValue(undefined)
+      const channel: Channel = {
+        name: 'image',
+        available: () => true,
+        send,
+      }
+      const deps = makeDeps({
+        selectChannel: jest.fn(() => channel),
+        queue: {
+          enqueue: jest.fn(),
+          flush: jest.fn(() => {
+            if (pending === 0) return undefined
+            pending = 0
+            return { '21': [{ lt: '21' } as StatData] }
+          }),
+          rollback: jest.fn(),
+          shouldFlush: jest.fn(() => true),
+          size: jest.fn(() => pending),
+        } as MockedDeps['queue'],
+      })
+      const c = createCollector(deps)
+      const first = c.flush(false)
+      await firstSendStarted
+
+      pending = 1
+      const second = c.flush(false)
+      expect(second).toBe(first)
+      finishFirstSend?.()
+      await first
+
+      expect(deps.queue.flush).toHaveBeenCalledTimes(2)
+      expect(send).toHaveBeenCalledTimes(2)
+      expect(pending).toBe(0)
+    })
   })
 
   describe('recoverRetry()', () => {
     test('队列为空 → 不调 channel', async () => {
       const deps = makeDeps()
+      const isNetworkOffline = jest.fn(() => Promise.resolve(false))
+      deps.isNetworkOffline = isNetworkOffline
       const c = createCollector(deps)
       await c.recoverRetry()
       expect(deps.selectChannel).not.toHaveBeenCalled()
+      expect(isNetworkOffline).not.toHaveBeenCalled()
+    })
+
+    test('isReportEnabled=false → 不发送、不消费 retry 队列', async () => {
+      const deps = makeDeps({
+        isReportEnabled: jest.fn(async () => false),
+      })
+      deps.retry.loadAll.mockReturnValue([
+        { usv: '3', t: 1, requests: '[]', _id: 'a' },
+      ])
+      const c = createCollector(deps)
+      await c.recoverRetry()
+      expect(deps.isReportEnabled).toHaveBeenCalledTimes(1)
+      expect(deps.selectChannel).not.toHaveBeenCalled()
+      expect(deps.retry.ack).not.toHaveBeenCalled()
+      expect(deps.retry.markAttempt).not.toHaveBeenCalled()
     })
 
     test('全部成功 → 全部 ack', async () => {

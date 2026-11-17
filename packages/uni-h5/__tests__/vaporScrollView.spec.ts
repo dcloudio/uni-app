@@ -145,7 +145,7 @@ describe('Web Vapor ScrollView 原生宿主', () => {
     elements.installWebVaporElements(dom.window)
     scrollElement = evaluate(
       await preprocess('vue/scroll-view/element-vapor.ts'),
-      { '../web-vapor-elements': elements }
+      { vue, '../web-vapor-elements': elements }
     )
     const component = evaluate(await preprocess('helpers/component.ts'), {
       '@vue/shared': shared,
@@ -279,6 +279,28 @@ describe('Web Vapor ScrollView 原生宿主', () => {
     main.dispatchEvent(event)
   }
 
+  test('getAttribute 读取 props 默认值和更新值，保持 DOM 属性独立', async () => {
+    const threshold = vue.ref(80)
+    const { root, instance } = mount({ upperThreshold: () => threshold.value })
+    expect(root.__uniProps).toBe(instance.props)
+    expect(root.getAttribute('upper-threshold')).toBe('80')
+    expect(root.getAttribute('lower-threshold')).toBe('50')
+    expect(root.getAttribute('scroll-with-animation')).toBe('false')
+    root.setAttribute('upper-threshold', 'dom')
+    expect(root.getAttribute('upper-threshold')).toBe('80')
+    expect(Element.prototype.getAttribute.call(root, 'upper-threshold')).toBe(
+      'dom'
+    )
+    const method = root.getAttribute
+    threshold.value = 120
+    await vue.nextTick()
+    expect(root.getAttribute).toBe(method)
+    expect(root.getAttribute('upperThreshold')).toBe('120')
+    expect(document.createElement('div').getAttribute).toBe(
+      Element.prototype.getAttribute
+    )
+  })
+
   test('根节点直接承载插槽，原生属性和方法在 ref 首次可见时可用', async () => {
     const init = jest.spyOn(scrollElement, 'initScrollViewElement')
     const payload = { id: 1 }
@@ -345,7 +367,7 @@ describe('Web Vapor ScrollView 原生宿主', () => {
     expect(init).toHaveBeenCalledTimes(1)
   })
 
-  test('双向 props 和带冒号的 scrollIntoView 一次提交原生滚动，动画只影响 props', async () => {
+  test('双向 props 和带冒号的 scrollIntoView 一次提交原生滚动，动画由根节点样式控制', async () => {
     const direction = vue.ref('all')
     const props = vue.reactive({
       top: '25',
@@ -372,6 +394,7 @@ describe('Web Vapor ScrollView 原生宿主', () => {
     )
     await vue.nextTick()
     expect([root.scrollTop, root.scrollLeft]).toEqual([25, 15])
+    expect(root.style.scrollBehavior).toBe('auto')
     nativeScrollTo.mockClear()
     props.top = 50
     props.left = 30
@@ -380,7 +403,6 @@ describe('Web Vapor ScrollView 原生宿主', () => {
     expect(nativeScrollTo).toHaveBeenLastCalledWith({
       top: 50,
       left: 30,
-      behavior: 'instant',
     })
     root.getBoundingClientRect = () => ({ top: 10, left: 20 } as DOMRect)
     Object.defineProperties(root, {
@@ -396,8 +418,8 @@ describe('Web Vapor ScrollView 原生宿主', () => {
     expect(nativeScrollTo).toHaveBeenLastCalledWith({
       top: 145,
       left: 67,
-      behavior: 'smooth',
     })
+    expect(root.style.scrollBehavior).toBe('smooth')
     expect([root.scrollTop, root.scrollLeft]).toEqual([145, 67])
     nativeScrollTo.mockClear()
     props.animation = true
@@ -408,7 +430,6 @@ describe('Web Vapor ScrollView 原生宿主', () => {
     expect(nativeScrollTo).toHaveBeenLastCalledWith({
       top: 900,
       left: 900,
-      behavior: 'smooth',
     })
     expect([root.scrollTop, root.scrollLeft]).toEqual([600, 400])
     expect(root.style.transform).toBe('')
@@ -429,8 +450,8 @@ describe('Web Vapor ScrollView 原生宿主', () => {
     expect(nativeScrollTo).toHaveBeenCalledTimes(1)
     expect(nativeScrollTo).toHaveBeenLastCalledWith({
       top: 90,
-      behavior: 'instant',
     })
+    expect(root.style.scrollBehavior).toBe('auto')
     expect([root.scrollTop, root.scrollLeft]).toEqual([90, 0])
   })
 

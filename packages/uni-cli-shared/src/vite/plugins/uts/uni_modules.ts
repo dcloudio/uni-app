@@ -34,6 +34,7 @@ import {
   type CloudCompileParams,
   checkEncryptUniModules,
   resolveEncryptUniModule,
+  resolveUniModuleNativeEntry,
 } from '../../../uni_modules.cloud'
 import { isUniAppXJsEngine } from '../../../x'
 import { createWorkerTransformer } from '../../../workers'
@@ -249,6 +250,11 @@ const createUniXAppHarmonyUniModulesSyncFilePreprocessorOnce = once(() => {
 })
 
 const utsModuleCaches = new Map<string, () => Promise<void | CompileResult>>()
+const compiledUniModules = new Map<string, CompileResult>()
+
+export function getCompiledUniModule(pluginId: string) {
+  return compiledUniModules.get(pluginId)
+}
 
 interface UniUTSPluginOptions {
   x?: boolean
@@ -612,10 +618,16 @@ export function uniUTSAppUniModulesPlugin(
       return autoImports
     }
 
-    return compiler.compile(pluginDir, {
+    const nativeEntry =
+      process.env.UNI_COMPILE_TARGET === 'uni_modules'
+        ? resolveUniModuleNativeEntry(pluginDir, process.env.UNI_UTS_PLATFORM)
+        : undefined
+    const result = await compiler.compile(pluginDir, {
       isX: !!options.x,
       isSingleThread: !!options.isSingleThread,
       isPlugin: true,
+      module: nativeEntry ? { nativeEntry } : undefined,
+      proxyCodeFormat: nativeEntry ? 'cjs' : undefined,
       isExtApi,
       extApis: options.extApis,
       sourceMap: enableSourceMap(),
@@ -650,6 +662,10 @@ export function uniUTSAppUniModulesPlugin(
       ),
       // harmonyPreprocessor: createAppHarmonyUniModulesSyncFilePreprocessorOnce(!!options.x),
     })
+    if (nativeEntry && result) {
+      compiledUniModules.set(pluginId, result)
+    }
+    return result
   }
 
   utsPluginsCompiler = async (plugins, pluginContext) => {
@@ -744,6 +760,9 @@ export function uniUTSAppUniModulesPlugin(
     name: 'uni:uts-uni_modules',
     apply: 'build',
     enforce: 'pre',
+    buildStart() {
+      compiledUniModules.clear()
+    },
     async configResolved() {
       if (uniXKotlinCompiler) {
         await uniXKotlinCompiler.init()

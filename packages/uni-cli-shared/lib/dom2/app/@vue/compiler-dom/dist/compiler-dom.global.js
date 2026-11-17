@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-dom v3.6.0-rc.14
+  * @vue/compiler-dom v3.6.0-rc.15
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -36,10 +36,18 @@ var VueCompilerDOM = (function(exports) {
 	const isObject = (val) => val !== null && typeof val === "object";
 	const isReservedProp = /*@__PURE__*/ makeMap(",key,ref,ref_for,ref_key,__cid,onVnodeBeforeMount,onVnodeMounted,onVnodeBeforeUpdate,onVnodeUpdated,onVnodeBeforeUnmount,onVnodeUnmounted");
 	const isBuiltInDirective = /*@__PURE__*/ makeMap("bind,cloak,else-if,else,for,html,if,model,on,once,pre,show,slot,text,memo");
+	const STRING_CACHE_MAX_SIZE = 1e4;
 	const cacheStringFunction = (fn) => {
-		const cache = Object.create(null);
+		let cache = Object.create(null);
+		let size = 0;
 		return ((str) => {
-			return cache[str] || (cache[str] = fn(str));
+			const hit = cache[str];
+			if (hit !== void 0) return hit;
+			if (++size > STRING_CACHE_MAX_SIZE) {
+				cache = Object.create(null);
+				size = 1;
+			}
+			return cache[str] = fn(str);
 		});
 	};
 	const camelizeRE = /-(\w)/g;
@@ -47,17 +55,17 @@ var VueCompilerDOM = (function(exports) {
 	/**
 	* @private
 	*/
-	const camelize = cacheStringFunction((str) => str.replace(camelizeRE, camelizeReplacer));
+	const camelize = /*@__PURE__*/ cacheStringFunction((str) => str.replace(camelizeRE, camelizeReplacer));
 	/**
 	* @private
 	*/
-	const capitalize = cacheStringFunction((str) => {
+	const capitalize = /*@__PURE__*/ cacheStringFunction((str) => {
 		return str.charAt(0).toUpperCase() + str.slice(1);
 	});
 	/**
 	* @private
 	*/
-	const toHandlerKey = cacheStringFunction((str) => {
+	const toHandlerKey = /*@__PURE__*/ cacheStringFunction((str) => {
 		return str ? `on${capitalize(str)}` : ``;
 	});
 	/**
@@ -140,18 +148,42 @@ var VueCompilerDOM = (function(exports) {
 	}
 	//#endregion
 	//#region packages/shared/src/normalizeProp.ts
-	const listDelimiterRE = /;(?![^(]*\))/g;
 	const propertyDelimiterRE = /:([^]+)/;
 	const styleCommentRE = /"(?:[^"\\]|\\[^])*"|'(?:[^'\\]|\\[^])*'|\\[^]|\/\*[^]*?\*\//g;
 	function parseStringStyle(cssText) {
 		const ret = {};
-		cssText.replace(styleCommentRE, (match) => match.startsWith("/*") ? "" : match).split(listDelimiterRE).forEach((item) => {
+		splitCssText(cssText.replace(styleCommentRE, (match) => match.startsWith("/*") ? "" : match), ";").forEach((item) => {
 			if (item) {
 				const tmp = item.split(propertyDelimiterRE);
 				tmp.length > 1 && (ret[tmp[0].trim()] = tmp[1].trim());
 			}
 		});
 		return ret;
+	}
+	function splitCssText(value, separator) {
+		if (!/['"\\()[\]{}\/]/.test(value)) return value.split(separator);
+		const parts = [];
+		let start = 0;
+		let quote = "";
+		const brackets = [];
+		for (let i = 0; i < value.length; i++) {
+			const char = value[i];
+			if (char === "\\") i++;
+			else if (quote) {
+				if (char === quote) quote = "";
+			} else if (char === "\"" || char === "'") quote = char;
+			else if (char === "/" && value[i + 1] === "*") {
+				const end = value.indexOf("*/", i + 2);
+				i = end < 0 ? value.length : end + 1;
+			} else if (char === "(" || char === "[" || char === "{") brackets.push(char === "(" ? ")" : char === "[" ? "]" : "}");
+			else if (char === brackets[brackets.length - 1]) brackets.pop();
+			else if (char === separator && brackets.length === 0) {
+				parts.push(value.slice(start, i));
+				start = i + 1;
+			}
+		}
+		parts.push(value.slice(start));
+		return parts;
 	}
 	//#endregion
 	//#region packages/shared/src/domTagConfig.ts
@@ -2383,7 +2415,11 @@ var VueCompilerDOM = (function(exports) {
 		};
 	}
 	function cloneLoc(loc) {
-		return getLoc(loc.start.offset, loc.end.offset);
+		return {
+			start: extend({}, loc.start),
+			end: extend({}, loc.end),
+			source: loc.source
+		};
 	}
 	function setLocEnd(loc, end) {
 		loc.end = tokenizer.getPos(end);

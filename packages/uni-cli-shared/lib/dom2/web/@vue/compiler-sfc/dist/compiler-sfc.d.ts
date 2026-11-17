@@ -163,6 +163,8 @@ export declare function compileScript(sfc: SFCDescriptor, options: SFCScriptComp
 //#region temp/packages/compiler-sfc/src/parse.d.ts
 export interface SFCParseOptions {
   filename?: string;
+  /** fixed by uts: 未声明 lang 的脚本默认语言；参与解析缓存键，不改写源文本。 */
+  defaultScriptLang?: "js" | "ts" | "uts";
   sourceMap?: boolean;
   sourceRoot?: string;
   pad?: boolean | "line" | "space";

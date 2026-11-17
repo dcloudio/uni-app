@@ -227,6 +227,17 @@ describe('pipeline/queue', () => {
       expect(snap['11']).toHaveLength(1)
     })
 
+    test('冷启 size() 能发现 storage 中的待发事件', () => {
+      handle.storage.setStorageSync('UNI_STAT_DATA:default:queue', {
+        '21': [makeEvt('21', { e: 'recovered-before-flush' })],
+      })
+      storage.__resetCache()
+
+      expect(size()).toBe(1)
+      const snap = flush()!
+      expect((snap['21'][0] as { e: string }).e).toBe('recovered-before-flush')
+    })
+
     test('冷启脏数据（非对象） → 忽略', () => {
       handle.storage.setStorageSync('UNI_STAT_DATA:default:queue', 'not-obj')
       storage.__resetCache()

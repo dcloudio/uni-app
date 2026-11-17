@@ -7,7 +7,7 @@ import {
   findCloudEncryptUniModules,
   findUploadEncryptUniModulesFiles,
   getUniModulesEncryptType,
-  parseUniModulesWithComponents,
+  parseUniModules,
   resolveEncryptUniModule,
   validateCloudCompileAppInfo,
 } from '../src/uni_modules.cloud'
@@ -60,6 +60,37 @@ describe('uni_modules:uni-ext-api', () => {
 })
 describe('uni_modules:cloud', () => {
   const inputDir = path.resolve(__dirname, 'examples/cloud')
+  // 保留原有入口代码快照，路径信息单独验证，避免写入机器相关的绝对路径。
+  function parseUniModulesWithComponents(
+    inputDir: string,
+    platform: typeof process.env.UNI_UTS_PLATFORM
+  ) {
+    return Object.fromEntries(
+      Object.entries(parseUniModules(inputDir, platform)).map(([id, entry]) => [
+        id,
+        entry.jsEntry,
+      ])
+    )
+  }
+
+  test('原生入口与 JS 代理入口分别解析，其他平台继续导出真实 UTS', () => {
+    const modules = parseUniModules(inputDir, 'app-ios')
+    expect(modules['test-uts2']).toEqual({
+      kind: 'utssdk',
+      nativeEntry: path.join(
+        inputDir,
+        'uni_modules/test-uts2/utssdk/app-ios/index.uts'
+      ),
+      jsEntry: "import '@/uni_modules/test-uts2?uts-proxy'",
+    })
+    expect(modules['test-easycom'].kind).toBe('easycom')
+    expect(parseUniModules(inputDir, 'web')['test-uts2'].jsEntry).toBe(
+      "export * from './utssdk/web/index.uts'"
+    )
+    expect(parseUniModules(inputDir, 'mp-weixin')['test-uts2'].jsEntry).toBe(
+      "export * from './utssdk/mp-weixin/index.uts'"
+    )
+  })
   test('parseUniModulesWithComponents', () => {
     expect(
       parseUniModulesWithComponents(inputDir, 'app-android')

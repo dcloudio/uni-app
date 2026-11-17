@@ -133,6 +133,23 @@ button {
   /* min-width: 0px; */
   border-width: medium;
 }
+
+slider {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  flex-shrink: 0;
+  flex-grow: 0;
+  flex-basis: auto;
+  align-items: stretch;
+  align-content: stretch;
+  justify-content: flex-start;
+  min-height: 0px;
+  min-width: 0px;
+  border-width: medium;
+}
+
 /* #endif */
 
 ad-draw[hidden],
@@ -236,6 +253,47 @@ label {
   letter-spacing: 0;
 }
 
+/* #ifndef MP-WEIXIN */
+input,
+textarea {
+  background-color: transparent;
+}
+/* #endif */
+
+/* #ifdef MP-WEIXIN */
+input .input-placeholder {
+  color: #808080;
+}
+textarea .textarea-placeholder {
+  color: #808080;
+}
+@media (prefers-color-scheme: dark) {
+  input .input-placeholder {
+    color: #5f5f5f;
+  }
+  textarea .textarea-placeholder {
+    color: #5f5f5f;
+  }
+}
+/* #endif */
+
+/* #ifdef MP-ALIPAY */
+input .a-input-placeholder {
+  color: #808080;
+}
+textarea .a-textarea-placeholder {
+  color: #808080;
+}
+@media (prefers-color-scheme: dark) {
+  input .a-input-placeholder {
+    color: #5f5f5f;
+  }
+  textarea .a-textarea-placeholder {
+    color: #5f5f5f;
+  }
+}
+/* #endif */
+
 rich-text {
   line-height: 1.5;
 }
@@ -244,12 +302,14 @@ progress {
   flex-direction: row;
   align-items: center;
 }
+
 /* #ifndef MP-ALIPAY */
 radio,
 checkbox {
   flex-direction: row;
   align-items: center;
 }
+
 /* #endif */
 /* #ifdef MP-WEIXIN */
 /*
@@ -269,3 +329,14 @@ radio .wx-radio-wrapper {
 }
 
 /* #endif */
+
+.uni-sticky-header {
+  position: sticky;
+  top: 0px;
+  z-index: 1;
+}
+
+.uni-sticky-section {
+  /* 使用overflow: clip避免其拥有滚动机制，阻止sticky-header吸顶 */
+  overflow: clip;
+}

@@ -1,3 +1,5 @@
+// @ts-expect-error 当前 Vue 类型尚未升级到 3.6，Vapor runtime 已导出该方法
+import { initUniElement } from 'vue'
 //#if !_NODE_JS_
 import {
   // @ts-expect-error 当前 Vue 类型尚未升级到 3.6，Vapor runtime 已导出该方法
@@ -68,7 +70,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     //#endif
     // 只挂载已有方法，不增加包装；内部 video 与全屏容器继续通过原有 ref 访问。
     Object.assign(root, methods)
-    Object.defineProperty(root, 'uniTagName', uniTagName)
+    initUniElement(root, uniTagName)
     return root
   },
 })

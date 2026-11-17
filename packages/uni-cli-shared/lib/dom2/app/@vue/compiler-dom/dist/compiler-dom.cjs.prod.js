@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-dom v3.6.0-rc.14
+  * @vue/compiler-dom v3.6.0-rc.15
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -356,7 +356,7 @@ const stringifyStatic = (children, context, parent) => {
 	for (; i < children.length; i++) {
 		const child = children[i];
 		if (isParentCached || getCachedNode(child)) {
-			const result = analyzeNode(child);
+			const result = analyzeNode(child, context);
 			if (result) {
 				nc += result[0];
 				ec += result[1];
@@ -386,7 +386,7 @@ const isNonStringifiable = /*@__PURE__*/ (0, _vue_shared.makeMap)(`caption,thead
 *   - nc is the number of nodes inside
 *   - ec is the number of element with bindings inside
 */
-function analyzeNode(node) {
+function analyzeNode(node, context) {
 	if (node.type === 1 && isNonStringifiable(node.tag)) return false;
 	if (node.type === 1 && (0, _vue_compiler_core.findDir)(node, "once", true)) return false;
 	if (node.type === 12) return [1, 0];
@@ -405,6 +405,7 @@ function analyzeNode(node) {
 			if (p.type === 7 && p.name === "bind") {
 				if (p.arg && (p.arg.type === 8 || p.arg.isStatic && !isStringifiableAttr(p.arg.content, node.ns))) return bail();
 				if (p.exp && (p.exp.type === 8 || p.exp.constType < 3)) return bail();
+				if (p.arg && p.arg.isStatic && ((0, _vue_shared.isBooleanAttr)(p.arg.content) || p.arg.content === "hidden") && context.isCustomElement(node.tag)) return bail();
 				if (isOptionTag && (0, _vue_compiler_core.isStaticArgOf)(p.arg, "value") && p.exp && !p.exp.isStatic) return bail();
 			}
 		}
@@ -449,11 +450,10 @@ function stringifyElement(node, context) {
 					res += ` ${p.arg.content}="__VUE_EXP_START__${exp.content}__VUE_EXP_END__"`;
 					continue;
 				}
-				if (((0, _vue_shared.isBooleanAttr)(p.arg.content) || p.arg.content === "hidden") && exp.content === "false") continue;
 				let evaluated = evaluateConstant(exp);
 				if (evaluated != null) {
-					const arg = p.arg && p.arg.content;
-					if (arg === "hidden" && typeof evaluated === "number" && !(0, _vue_shared.includeBooleanAttr)(evaluated)) continue;
+					const arg = p.arg.content;
+					if (((0, _vue_shared.isBooleanAttr)(arg) || arg === "hidden") && !(0, _vue_shared.includeBooleanAttr)(evaluated)) continue;
 					if (arg === "class") evaluated = (0, _vue_shared.normalizeClass)(evaluated);
 					else if (arg === "style") evaluated = (0, _vue_shared.stringifyStyle)((0, _vue_shared.normalizeStyle)(evaluated));
 					res += ` ${p.arg.content}="${(0, _vue_shared.escapeHtml)(evaluated)}"`;

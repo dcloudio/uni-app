@@ -1,3 +1,5 @@
+// @ts-expect-error 当前 Vue 类型尚未升级到 3.6，Vapor runtime 已导出该方法
+import { initUniElement } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { UniViewElement } from '../web-vapor-elements'
 import { editorEmit, editorProps, useEditor } from './useEditor'
@@ -35,8 +37,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         class="ql-container"
       />
     )
-    // 在外部 ref 和 Quill 初始化可见前设置一次类型标识，不包装原生属性 API。
-    Object.defineProperty(root, 'uniTagName', uniTagName)
+    // 在外部 ref 和 Quill 初始化可见前初始化根节点身份和 props 读取。
+    initUniElement(root, uniTagName)
     return root
   },
 })

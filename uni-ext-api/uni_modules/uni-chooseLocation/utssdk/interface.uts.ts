@@ -349,9 +349,7 @@ export interface Uni {
         }
       });
      * ```
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/choose-location.html
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/choose-location.html
-     * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/location/location.html#chooselocation
+     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/choose-location.html#chooselocation
      * @uniPlatform {
      *  "app": {
      *    "android": {

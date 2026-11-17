@@ -63,7 +63,10 @@ jest.mock('../../src/core/reportNetwork.js', () => ({
   gateSend: jest.fn(),
   initReportNetwork: jest.fn(),
   persistPending: jest.fn(),
+  resumeReportNetwork: jest.fn(),
+  setReportNetworkForeground: jest.fn(() => false),
   toWirePayload: (value) => value,
+  updateReportNetworkState: jest.fn(),
 }))
 
 function createReport() {

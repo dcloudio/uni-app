@@ -331,6 +331,8 @@ function resolveUniRuntime() {
  */
 const TAG = '[uni统计 2.0]';
 let runtimeDebug;
+/** 服务端统计开关未确认或已关闭时，屏蔽 SDK 自身全部日志。 */
+let reportingEnabled = true;
 /**
  * 是否屏蔽 info / warn / error。
  * `undefined`：自动——`NODE_ENV === 'test'` 时默认屏蔽，避免 Jest 用例预期失败路径刷屏。
@@ -436,6 +438,8 @@ function setMuteNonDebug(value) {
  * 输出到 console：Android/iOS 真机整行单参；其余平台 `TAG` + 多参。
  */
 function emitConsole(method, args) {
+    if (!reportingEnabled)
+        return;
     if (method !== 'log' && isNonDebugMuted())
         return;
     const fn = console[method];
@@ -460,6 +464,8 @@ function emitConsole(method, args) {
  *      （历史插件兼容路径）。
  */
 function isDebug() {
+    if (!reportingEnabled)
+        return false;
     if (runtimeDebug !== undefined)
         return runtimeDebug;
     const v = process.env.UNI_STAT_DEBUG;
@@ -470,6 +476,9 @@ function isDebug() {
  */
 function setDebug(value) {
     runtimeDebug = value;
+}
+function setReportingEnabled(value) {
+    reportingEnabled = value;
 }
 const logger = {
     debug(...args) {
@@ -493,6 +502,7 @@ const logger = {
     setDebug,
     isDebug,
     setMuteNonDebug,
+    setReportingEnabled,
 };
 
 /**
@@ -1371,6 +1381,8 @@ const META_KEYS = ['_pendingId', '_netAttempts', '_inflight', '_httpRetry'];
 
 let watcherInstalled = false;
 let flushing = false;
+let networkState = null;
+let appForeground = true;
 /** @type {null | ((optionsData: any) => void)} */
 let dispatchSend = null;
 
@@ -1380,6 +1392,40 @@ let dispatchSend = null;
 function isOffline(networkType, isConnected) {
   if (isConnected === false) return true
   return networkType === 'none'
+}
+
+/**
+ * 记录其它统计链路或网络变化回调已经取得的网络状态，避免发送前重复查询。
+ */
+function updateReportNetworkState(res) {
+  if (!res || typeof res !== 'object') return
+  networkState = {
+    networkType: res.networkType,
+    isConnected: res.isConnected,
+  };
+}
+
+/**
+ * 同步 App 前后台状态；前台恢复时只清理离线快照，让下一次主动冲刷安全重探。
+ * @returns {boolean} 是否需要在前台主动恢复待发数据
+ */
+function setReportNetworkForeground(foreground, manageAppLifecycle = true) {
+  if (!manageAppLifecycle) {
+    appForeground = true;
+    return false
+  }
+  const wasForeground = appForeground;
+  appForeground = foreground;
+  let clearedOffline = false;
+  if (
+    foreground &&
+    networkState &&
+    isOffline(networkState.networkType, networkState.isConnected)
+  ) {
+    networkState = null;
+    clearedOffline = true;
+  }
+  return foreground && (!wasForeground || clearedOffline)
 }
 
 /**
@@ -1497,6 +1543,7 @@ function installWatcher() {
   }
   watcherInstalled = true;
   uni.onNetworkStatusChange(function onNetworkStatusChangePrivate(res) {
+    updateReportNetworkState(res);
     if (isOffline(res && res.networkType, res && res.isConnected)) return
     flushPending();
   });
@@ -1539,13 +1586,31 @@ function flushPending() {
 /**
  * 先 getNetworkType，有网再冲刷；无网则继续等待监听。
  */
-function tryFlushWhenOnline() {
+function tryFlushWhenOnline(forceProbe) {
+  if (!readPending().length) return
+  if (!forceProbe && networkState) {
+    if (isOffline(networkState.networkType, networkState.isConnected)) return
+    flushPending();
+    return
+  }
+  // 后台没有可复用状态时不主动查询原生网络；直接交给既有发送/失败回写处理。
+  if (!appForeground) {
+    if (
+      networkState &&
+      isOffline(networkState.networkType, networkState.isConnected)
+    ) {
+      return
+    }
+    flushPending();
+    return
+  }
   if (typeof uni === 'undefined' || typeof uni.getNetworkType !== 'function') {
     flushPending();
     return
   }
   uni.getNetworkType({
     success: function (res) {
+      updateReportNetworkState(res);
       if (isOffline(res && res.networkType, res && res.isConnected)) return
       flushPending();
     },
@@ -1574,7 +1639,7 @@ function initReportNetwork(sendFn, opts) {
  * 服务空间就绪后 / 需要主动冲刷时调用。
  */
 function resumeReportNetwork() {
-  tryFlushWhenOnline();
+  tryFlushWhenOnline(true);
 }
 
 /**
@@ -1585,12 +1650,25 @@ function resumeReportNetwork() {
  */
 function gateSend(optionsData, sendFn) {
   installWatcher();
+  if (networkState) {
+    if (isOffline(networkState.networkType, networkState.isConnected)) {
+      persistPending(optionsData);
+      return
+    }
+    sendFn(optionsData);
+    return
+  }
+  if (!appForeground) {
+    sendFn(optionsData);
+    return
+  }
   if (typeof uni === 'undefined' || typeof uni.getNetworkType !== 'function') {
     sendFn(optionsData);
     return
   }
   uni.getNetworkType({
     success: function (res) {
+      updateReportNetworkState(res);
       if (isOffline(res && res.networkType, res && res.isConnected)) {
         persistPending(optionsData);
         return
@@ -1769,6 +1847,9 @@ class Report {
    * 进入应用触发
    */
   applicationShow(appShowOptions = {}) {
+    if (setReportNetworkForeground(true, get_platform_name() === 'n')) {
+      resumeReportNetwork();
+    }
     // 通过 __licationHide 判断保证是进入后台后在次进入应用，避免重复上报数据
     if (this.__licationHide) {
       const scene = get_scene(appShowOptions && appShowOptions.scene);
@@ -1806,6 +1887,7 @@ class Report {
    * @param {Object} type
    */
   applicationHide(self, type) {
+    setReportNetworkForeground(false, get_platform_name() === 'n');
     if (!self) {
       // 表示应用切换到后台 ，此时需要从页面栈获取页面实例
       self = get_page_vm();
@@ -2068,6 +2150,7 @@ class Report {
   getNetworkInfo(type) {
     uni.getNetworkType({
       success: (result) => {
+        updateReportNetworkState(result);
         this.statData.net = result.networkType;
         this.getLocation(type);
       },

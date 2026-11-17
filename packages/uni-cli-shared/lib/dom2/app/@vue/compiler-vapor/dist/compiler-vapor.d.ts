@@ -165,7 +165,7 @@ declare const vModelSelectInit: (el: HTMLSelectElement & {
  */
 declare const vModelSetSelected: (el: HTMLSelectElement & {
   _pendingValue?: [multiple: boolean, value: any];
-}, value: any) => void;
+}, value: any, number?: boolean) => void;
 /**
  * @internal retrieve raw value set via :value bindings
  */
@@ -20678,6 +20678,7 @@ interface DelHTMLAttributes extends HTMLAttributes {
   datetime?: string | undefined;
 }
 interface DialogHTMLAttributes extends HTMLAttributes {
+  closedby?: "any" | "closerequest" | "none" | undefined;
   open?: Booleanish | undefined;
   onClose?: ((payload: Event) => void) | undefined;
   onCancel?: ((payload: Event) => void) | undefined;
@@ -21847,9 +21848,40 @@ interface RenderContext {
 interface VaporKeepAliveContext {
   prepareBranchRemoval(frag: DynamicFragment, scope: EffectScope$1, prevKey: any): boolean;
   runBranchRender(frag: DynamicFragment, fn: () => void, useScope: boolean, removePrevious?: () => void): void;
-  processShapeFlag(block: Block): any | false;
   cacheBlock(block?: Block): void;
   getStorageContainer(): ParentNode;
+  inUncachedBranch: boolean;
+}
+//#endregion
+//#region packages/runtime-vapor/src/slotFragment.d.ts
+interface RenderedSlotFallback {
+  block: Block;
+  boundary: SlotBoundaryContext;
+  adopted: boolean;
+}
+interface SlotResolutionState {
+  boundary: SlotBoundaryContext;
+  activeFallback: Block | null;
+  keepAliveCtx?: VaporKeepAliveContext | null;
+  renderedFallbacks?: RenderedSlotFallback[];
+  fallbackScope?: EffectScope$1;
+  fallbackChainStale?: boolean;
+  held?: "leaving" | "placing" | "entering";
+  holdsContent?: boolean;
+  lastNodesValid?: boolean;
+  pendingRecheck: boolean;
+  isReconciling: boolean;
+  $transition?: VaporTransitionHooks;
+  getContent(): Block;
+  getParentNode(): ParentNode | null;
+  getAnchor(): Node | null;
+  isBusy(): boolean;
+  isDisposed(): boolean;
+  isContentValid(): boolean;
+  syncNodes(): void;
+  notifyExposedValidityChange(): void;
+  bm?: ((nodes: Block) => void)[];
+  awaitLeavingRoot?(cb: () => void): boolean;
 }
 //#endregion
 //#region packages/runtime-vapor/src/fragment.d.ts
@@ -21869,6 +21901,7 @@ declare class VaporFragment<T extends Block = Block> implements TransitionOption
   anchor?: Node;
   isBlockValid?: (componentAsValid?: boolean) => boolean;
   getContent?(): Block;
+  slotState?: SlotResolutionState;
   awaitLeavingRoot?(cb: () => void): boolean;
   slotName?: string;
   insert?(parent: ParentNode, anchor: Node | null, parentSuspense?: SuspenseBoundary | null, transitionHooks?: TransitionHooks): void;
@@ -21902,7 +21935,7 @@ declare class VaporFragment<T extends Block = Block> implements TransitionOption
   /** beforeUnmount */
   bum?: (() => void)[];
   /** beforeUpdate */
-  bu?: (() => void)[];
+  bu?: ((nodes: Block) => void)[];
   /** updated */
   u?: ((nodes: Block) => void)[];
   constructor(nodes: T, flags?: number);
@@ -21910,8 +21943,9 @@ declare class VaporFragment<T extends Block = Block> implements TransitionOption
 declare class RenderContextFragment<T extends Block = Block> extends VaporFragment<T> {
   readonly renderInstance: GenericComponentInstance$1 | null;
   readonly keepAliveCtx?: VaporKeepAliveContext | null;
+  uncached?: boolean;
   ctx: RenderContext;
-  constructor(nodes: T, flags?: number);
+  constructor(nodes: T, flags?: number, insertionParent?: ParentNode);
   get slotBoundary(): SlotBoundaryContext | null;
   get slotScopeIds(): string[] | null;
   protected runWithRenderCtx<R>(fn: () => R, scope?: EffectScope$1): R;
@@ -21942,7 +21976,7 @@ declare class DynamicFragment extends RenderContextFragment {
   scopeIdOwners?: VaporComponentInstance[];
   wasValid?: boolean;
   everUpdated: boolean;
-  constructor(flags?: number, anchorLabel?: string, keyed?: boolean, slotRoot?: boolean, adoptAnchor?: Node);
+  constructor(flags?: number, anchorLabel?: string, keyed?: boolean, slotRoot?: boolean, adoptAnchor?: Node, insertionParent?: ParentNode);
   protected get autoHydrate(): boolean;
   update(render?: BlockFn, key?: any, noScope?: boolean, branchKey?: any): void;
   renderBranch(render: BlockFn | undefined, transition: VaporTransitionHooks | undefined, parent: ParentNode | null, key: any, noScope: boolean, notifyUpdated: boolean, removePrevious?: () => void, branchKey?: any): void;
@@ -21979,6 +22013,7 @@ interface TransitionOptions {
   $vshow?: VShowFlags;
   $tkey?: any;
   $ttype?: any;
+  $lkey?: any;
   $keyCtx?: KeyContext;
   $removing?: VaporTransitionHooks;
   $rendered?: VaporTransitionHooks;
@@ -22085,6 +22120,49 @@ declare function defineVaporComponent<TypeProps, RuntimePropsOptions extends Com
   __typeEl?: TypeBlock;
 } & ThisType<void>): DefineVaporComponent<RuntimePropsOptions, RuntimePropsKeys, InferredProps, ResolvedEmits, RuntimeEmitsKeys, Slots, Exposed extends VaporRenderResult ? Record<string, any> : Exposed, TypeBlock, TypeRefs, unknown extends TypeProps ? true : false>;
 //#endregion
+//#region packages/runtime-vapor/src/components/Teleport.d.ts
+declare class TeleportFragment extends RenderContextFragment {
+  anchor?: Node;
+  private resolvedProps?;
+  private rawSlots?;
+  isDisabled?: boolean;
+  private childrenInitialized;
+  private readonly childrenScope;
+  scope?: EffectScope$1;
+  target?: ParentNode | null;
+  targetAnchor?: Node | null;
+  targetStart?: Node | null;
+  placeholder?: Node;
+  private mountState;
+  private mountToTargetJob?;
+  private parentSuspense?;
+  constructor(props: LooseRawProps, slots?: RawSlots | null, adoptAnchor?: Node);
+  get parent(): ParentNode | null;
+  get scopeOwner(): GenericComponentInstance$1 | null;
+  private initChildren;
+  private ensureChildrenInitialized;
+  private bindChildren;
+  private handleChildrenUpdate;
+  private mount;
+  private prepareTargetAnchors;
+  private prepareTarget;
+  private queueTargetUpdate;
+  private mountToTarget;
+  private handlePropsUpdate;
+  insert(container: ParentNode, anchor: Node | null, parentSuspense?: SuspenseBoundary | null): void;
+  move(container: ParentNode, anchor: Node | null, _moveType: MoveType, _parentComponent?: VaporComponentInstance, parentSuspense?: SuspenseBoundary | null): void;
+  private cancelMountToTarget;
+  disposeTarget(): void;
+  scheduleTargetDispose(): void;
+  dispose: () => void;
+  remove(): void;
+  private hydrateTargetAnchors;
+  private hydrateDisabledTeleport;
+  private mountChildren;
+  hydrate: () => void;
+}
+declare const VaporTeleport: DefineVaporSetupFnComponent<TeleportProps>;
+//#endregion
 //#region packages/runtime-vapor/src/component.d.ts
 type VaporComponent = FunctionalVaporComponent<any> | VaporComponentOptions | DefineVaporComponent;
 type FunctionalVaporComponent<Props = {}, Emits extends EmitsOptions$1 = {}, Slots extends StaticSlots = StaticSlots, Exposed extends Record<string, any> = Record<string, any>> = ((props: Props & EmitsToProps$1<Emits>, ctx: {
@@ -22158,6 +22236,11 @@ declare class VaporComponentInstance<Props extends Record<string, any> = {}, Emi
   parent: GenericComponentInstance$1 | null;
   appContext: GenericAppContext;
   block: TypeBlock;
+  /**
+   * @internal
+   * Dev / devtools only: teleports rendered by this instance.
+   */
+  teleports?: Set<TeleportFragment>;
   pendingBlock?: Node | Node[];
   scope: EffectScope;
   rawProps: RawProps;
@@ -22276,9 +22359,6 @@ type VaporDirective<HostElement extends Element = Element, Value = any, Modifier
 type AnyVaporDirective = VaporDirective<any>;
 type VaporDirectiveArguments = Array<[AnyVaporDirective | undefined] | [AnyVaporDirective | undefined, () => any] | [AnyVaporDirective | undefined, (() => any) | undefined, argument: () => any] | [AnyVaporDirective | undefined, value: (() => any) | undefined, argument: (() => any) | undefined, modifiers: DirectiveModifiers]>;
 declare function withVaporDirectives(node: Element | VaporComponentInstance | VaporFragment, dirs: VaporDirectiveArguments): void;
-//#endregion
-//#region packages/runtime-vapor/src/components/Teleport.d.ts
-declare const VaporTeleport: DefineVaporSetupFnComponent<TeleportProps>;
 //#endregion
 //#region packages/runtime-vapor/src/components/KeepAlive.d.ts
 declare const VaporKeepAlive: DefineVaporComponent<{}, string, KeepAliveProps>;

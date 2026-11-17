@@ -1,5 +1,5 @@
 /**
-  * @vue/server-renderer v3.6.0-rc.14
+  * @vue/server-renderer v3.6.0-rc.15
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -338,7 +338,15 @@ function ssrCompile(template, instance) {
 }
 //#endregion
 //#region packages/server-renderer/src/render.ts
-const { createComponentInstance, setCurrentRenderingInstance, setupComponent, renderComponentRoot, isVNode: isVNode$2, normalizeVNode, pushWarningContext, popWarningContext, VaporSlot, rawVaporSlotKey, invokeSlotFallback } = _vue_runtime_dom.ssrUtils;
+const { createComponentInstance, setCurrentRenderingInstance, setupComponent, renderComponentRoot, isVNode: isVNode$2, normalizeVNode, pushWarningContext, popWarningContext, VaporSlot, rawVaporSlotKey, invokeSlotFallback, setDeferElementSlots } = _vue_runtime_dom.ssrUtils;
+function renderRoot(instance) {
+	const prev = setDeferElementSlots(true);
+	try {
+		return renderComponentRoot(instance);
+	} finally {
+		setDeferElementSlots(prev);
+	}
+}
 function cleanupContext(context) {
 	let firstError;
 	if (context.__watcherHandles) {
@@ -452,7 +460,7 @@ function renderComponentSubTree(instance, slotScopeId) {
 	const comp = instance.type;
 	const { getBuffer, push } = createBuffer();
 	if ((0, _vue_shared.isFunction)(comp)) {
-		let root = renderComponentRoot(instance);
+		let root = renderRoot(instance);
 		if (!comp.props) {
 			for (const key in instance.attrs) if (key.startsWith(`data-v-`)) (root.props || (root.props = {}))[key] = ``;
 		}
@@ -490,7 +498,7 @@ function renderComponentSubTree(instance, slotScopeId) {
 			} finally {
 				setCurrentRenderingInstance(prev);
 			}
-		} else if (instance.render && instance.render !== _vue_shared.NOOP) renderVNode(push, instance.subTree = renderComponentRoot(instance), instance, slotScopeId);
+		} else if (instance.render && instance.render !== _vue_shared.NOOP) renderVNode(push, instance.subTree = renderRoot(instance), instance, slotScopeId);
 		else {
 			const componentName = comp.name || comp.__file || `<Anonymous>`;
 			(0, _vue_runtime_dom.warn)(`Component ${componentName} is missing template or render function.`);
@@ -596,9 +604,20 @@ function renderElementVNode(push, vnode, parentComponent, slotScopeId, renderChi
 			if (renderChildren) renderChildren();
 			else if (shapeFlag & 8) push((0, _vue_shared.escapeHtml)(children));
 			else if (shapeFlag & 16) renderVNodeChildren(push, children, parentComponent, slotScopeId);
+			else if (shapeFlag & 32) renderElementSlot(push, children.default, parentComponent, slotScopeId);
 		}
 		push(`</${tag}>`);
 	}
+}
+function renderElementSlot(push, slot, parentComponent, slotScopeId) {
+	let ret;
+	try {
+		ret = slot(void 0, push, parentComponent, slotScopeId ? " " + slotScopeId.trim() : "");
+	} catch (err) {
+		(0, _vue_runtime_dom.handleError)(err, parentComponent, 1);
+	}
+	if ((0, _vue_shared.isArray)(ret)) renderVNodeChildren(push, ret, parentComponent, slotScopeId);
+	else if (ret != null) renderVNode(push, normalizeVNode(ret), parentComponent, slotScopeId);
 }
 function applySSRDirectives(vnode, rawProps, dirs) {
 	const toMerge = [];

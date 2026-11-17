@@ -366,8 +366,6 @@ export interface Uni {
 	 * 	}
 	 * })
 	 * ```
-	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/media/image.html#unipreviewimageobject
-	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/preview-image.html
 	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/preview-image.html
 	 * @autotest {
 	   generated:false
@@ -435,8 +433,6 @@ export interface Uni {
 	 * 	}
 	 * })
 	 * ```
-	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/media/image.html#closepreviewimage
-	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/preview-image.html#closepreviewimage
 	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/preview-image.html#closepreviewimage
 	 * @autotest {
 	   generated:false

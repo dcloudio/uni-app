@@ -15,6 +15,12 @@
   },
   {
     "type": "provider",
+    "plugin": "uni-location-amap",
+    "provider": "amap",
+    "service": "location"
+  },
+  {
+    "type": "provider",
     "plugin": "uni-oauth-huawei",
     "provider": "huawei",
     "service": "oauth"

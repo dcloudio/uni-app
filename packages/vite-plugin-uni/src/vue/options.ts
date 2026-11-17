@@ -157,6 +157,9 @@ export function initPluginVueOptions(
     // plugin-vue 的 compiler 是完整 SFC compiler；显式传入 Web Vapor 定制版，
     // 避免从项目根目录解析到标准 Vue compiler-sfc。
     vueOptions.compiler = require('vue/compiler-sfc')
+    ;(vueOptions as any).defaultScriptLang = getUniAppXVaporScriptLang(
+      options.inputDir
+    )
     if (ssrPreTagTransforms) {
       Object.assign(compilerOptions, { ssrPreTagTransforms })
     }
@@ -335,7 +338,7 @@ export function initPluginVueOptions(
       }
     }
     if (isDom2) {
-      // 该扩展点依赖定制 plugin-vue，仅用于 compileScript 后的 DOM2 SharedData 等转换。
+      // 定制 plugin-vue 在 compileScript 后执行平台脚本转换，保留各平台的内联策略。
       ;(vueOptions as any).uniAppXVaporScriptTransform =
         uniPluginOptions.uniAppXVaporScriptTransform
       const utsPlatform =

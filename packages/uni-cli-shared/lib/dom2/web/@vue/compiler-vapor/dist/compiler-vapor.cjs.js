@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-vapor v3.6.0-rc.14
+  * @vue/compiler-vapor v3.6.0-rc.15
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -170,7 +170,7 @@ function wrapTemplate(node, dirs) {
 	const reserved = [];
 	const pass = [];
 	node.props.forEach((prop) => {
-		if (prop.type === 7 && (dirs.includes(prop.name) || prop.name === "bind" && prop.arg && prop.arg.type === 4 && prop.arg.content === "key" && dirs.includes("key"))) {
+		if (prop.type === 7 && (dirs.includes(prop.name) || prop.name === "bind" && (0, _vue_compiler_dom.isStaticArgOf)(prop.arg, "key") && dirs.includes("key"))) {
 			reserved.push(prop);
 			if (prop.name === "bind" && node.tagType === 2) pass.push(prop);
 		} else pass.push(prop);
@@ -943,13 +943,20 @@ function genExpression(node, context, assignment, asParams = false) {
 	const ids = [];
 	const parentStackMap = /* @__PURE__ */ new Map();
 	const parentStack = [];
-	(0, _vue_compiler_dom.walkIdentifiers)(ast, (id, _, __, isReference, isLocal) => {
+	const knownIds = Object.create(null);
+	let localsMap;
+	(0, _vue_compiler_dom.walkIdentifiers)(ast, (id, parent, __, isReference, isLocal) => {
 		if (isLocal) {
 			if (!id.typeAnnotation && !id.optional) return;
 		} else if (!isReference) return;
 		ids.push(id);
 		parentStackMap.set(id, parentStack.slice());
-	}, asParams, parentStack);
+		if (inline && parent && parent.type === "AssignmentExpression" && parent.left === id) {
+			const locals = {};
+			for (const name in knownIds) locals[name] = null;
+			(localsMap || (localsMap = /* @__PURE__ */ new Map())).set(id, locals);
+		}
+	}, asParams, parentStack, knownIds);
 	if (ids.length) {
 		const [frag, push] = buildCodeFragment();
 		let lastEnd = 0;
@@ -972,7 +979,7 @@ function genExpression(node, context, assignment, asParams = false) {
 				start: (0, _vue_compiler_dom.advancePositionWithClone)(node.loc.start, source, start),
 				end: (0, _vue_compiler_dom.advancePositionWithClone)(node.loc.start, source, end),
 				source
-			}, isMemberTarget ? void 0 : assignment, id, parent, parentStack, node));
+			}, isMemberTarget ? void 0 : assignment, id, parent, parentStack, node, localsMap && localsMap.get(id)));
 			lastEnd = end;
 		});
 		if (lastEnd < content.length) push([content.slice(lastEnd), -3]);
@@ -990,7 +997,7 @@ function genExpression(node, context, assignment, asParams = false) {
 		loc
 	]];
 }
-function genIdentifier(raw, context, loc, assignment, id, parent, parentStack, sourceNode) {
+function genIdentifier(raw, context, loc, assignment, id, parent, parentStack, sourceNode, locals) {
 	const { options, helper, identifiers } = context;
 	const { inline, bindingMetadata } = options;
 	let name = raw;
@@ -1042,7 +1049,7 @@ function genIdentifier(raw, context, loc, assignment, id, parent, parentStack, s
 				return [
 					prefix,
 					`${helper("isRef")}(${raw}) ? ${raw}.value ${operator} `,
-					genExpression(rightExp, context),
+					context.withId(() => genExpression(rightExp, context), locals),
 					` : `,
 					[
 						raw,
@@ -2486,7 +2493,8 @@ function genCreateComponent(operation, context) {
 	const slotDeclarations = [];
 	const rawSlots = genRawSlots(slots, context, slotDeclarations);
 	const [ids, handlers] = processInlineHandlers(props, context);
-	const rawProps = context.withId(() => genRawProps(props, context, true), ids);
+	const modelHandlers = [];
+	const rawProps = context.withId(() => genRawProps(props, context, true, modelHandlers), ids);
 	const inlineHandlers = handlers.reduce((acc, { name, value }) => {
 		const handler = genEventHandler(context, [value]);
 		return [
@@ -2499,6 +2507,7 @@ function genCreateComponent(operation, context) {
 	return [
 		NEWLINE,
 		inlineHandlers,
+		modelHandlers,
 		slotDeclarations.length ? genMulti([
 			"let ",
 			NEWLINE,
@@ -2584,14 +2593,14 @@ function processInlineHandlers(props, context) {
 	}
 	return [ids, handlers];
 }
-function genRawProps(props, context, directStaticLiteralProps = false) {
+function genRawProps(props, context, directStaticLiteralProps = false, modelHandlers) {
 	const staticProps = props[0];
 	if ((0, _vue_shared.isArray)(staticProps)) {
 		if (!staticProps.length && props.length === 1) return;
-		return genStaticProps(staticProps, context, genDynamicProps$1(props.slice(1), context, directStaticLiteralProps), directStaticLiteralProps);
-	} else if (props.length) return genStaticProps([], context, genDynamicProps$1(props, context, directStaticLiteralProps), directStaticLiteralProps);
+		return genStaticProps(staticProps, context, genDynamicProps$1(props.slice(1), context, directStaticLiteralProps, modelHandlers), directStaticLiteralProps, modelHandlers);
+	} else if (props.length) return genStaticProps([], context, genDynamicProps$1(props, context, directStaticLiteralProps, modelHandlers), directStaticLiteralProps);
 }
-function genStaticProps(props, context, dynamicProps, directStaticLiteralProps = false) {
+function genStaticProps(props, context, dynamicProps, directStaticLiteralProps = false, modelHandlers) {
 	const args = [];
 	const handlerGroups = createHandlerGroups(args, "() => ", DELIMITERS_ARRAY_NEWLINE);
 	for (const prop of props) {
@@ -2622,9 +2631,16 @@ function genStaticProps(props, context, dynamicProps, directStaticLiteralProps =
 		args.push(genProp(prop, context, true, true, directStaticLiteralProps && isDirectStaticLiteralProp(prop, context)));
 		if (prop.model) {
 			if (prop.key.isStatic) {
-				const keyName = `onUpdate:${(0, _vue_shared.camelize)(prop.key.content)}`;
+				const name = (0, _vue_shared.camelize)(prop.key.content);
+				const keyName = `onUpdate:${name}`;
 				const keyFrag = [JSON.stringify(keyName)];
-				handlerGroups.add(keyName, keyFrag, genModelHandler(prop.values[0], context));
+				let handler = genModelHandler(prop.values[0], context);
+				if (modelHandlers) {
+					const handlerName = getUniqueHandlerName(context, `_on_update_${name}`);
+					modelHandlers.push(`const ${handlerName} = `, handler, NEWLINE);
+					handler = [handlerName];
+				}
+				handlerGroups.add(keyName, keyFrag, handler);
 			} else {
 				const keyFrag = [
 					"[\"onUpdate:\" + ",
@@ -2653,13 +2669,13 @@ function genStaticProps(props, context, dynamicProps, directStaticLiteralProps =
 	if (dynamicProps) args.push([`$: `, dynamicProps]);
 	return genMulti(args.length > 1 ? DELIMITERS_OBJECT_NEWLINE : DELIMITERS_OBJECT, ...args);
 }
-function genDynamicProps$1(props, context, directStaticLiteralProps = false) {
+function genDynamicProps$1(props, context, directStaticLiteralProps = false, modelHandlers) {
 	const { helper } = context;
 	const frags = [];
 	for (const p of props) {
 		let expr;
 		if ((0, _vue_shared.isArray)(p)) {
-			if (p.length) frags.push(genStaticProps(p, context, void 0, directStaticLiteralProps));
+			if (p.length) frags.push(genStaticProps(p, context, void 0, directStaticLiteralProps, modelHandlers));
 			continue;
 		} else if (p.kind === 1) {
 			if (p.model) {
@@ -3986,6 +4002,18 @@ function transformComponentElement(node, propsResult, staticKey, root, context, 
 			if (builtInTag) {
 				tag = builtInTag;
 				asset = false;
+			}
+			if (builtInTag === "VaporKeepAlive") {
+				const slots = context.slots.find((slots) => slots.slotType === 0);
+				const block = slots && slots.slots.default;
+				if (block && block.returns.length > 1) {
+					const { children } = node;
+					context.options.onError((0, _vue_compiler_dom.createCompilerError)(47, {
+						start: children[0].loc.start,
+						end: children[children.length - 1].loc.end,
+						source: ""
+					}));
+				}
 			}
 			let slotScopeNamespace;
 			const dotIndex = tag.indexOf(".");
@@ -5592,7 +5620,7 @@ const transformSlotOutlet = (node, context) => {
 	return () => {
 		exitBlock && exitBlock();
 		let flags = 0;
-		if (context.options.scopeId && !context.options.slotted) flags |= 1;
+		if (context.options.scopeId && context.options.slotted === false) flags |= 1;
 		if (context.inVOnce) flags |= 2;
 		if (node.__uniTextSlot) flags |= 256;
 		context.dynamic.operation = {
@@ -5764,7 +5792,7 @@ function createSlotBlock(slotNode, dir, context) {
 }
 function isNonWhitespaceContent(node) {
 	if (node.type !== 2) return true;
-	return !!node.content.trim();
+	return !(0, _vue_compiler_dom.isAllWhitespace)(node.content);
 }
 //#endregion
 //#region packages/compiler-vapor/src/transforms/transformTransition.ts

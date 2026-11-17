@@ -11,7 +11,7 @@
 	<!-- #ifndef WEB -->
 	<view class="uni-picker__container" :class="['uni-picker-theme--'+theme]">
 		<view class="uni-picker__mask" :class="{'picker__ani-show': show, 'picker__mask--dark': theme == 'dark'}" @click="close"></view>
-		<view class="uni-picker__inner-box" :class="[show?'picker__ani-box-show':'','inner-box--'+theme]">
+		<view class="uni-picker__inner-box" :class="[show?'picker__ani-box-show':'','inner-box--'+theme]" :style="{ height: `${300 + bottomSafeArea}px` }">
 	<!-- #endif -->
 			<view class="uni-picker__header-btn" :class="['header-btn--'+theme]" @click.stop>
 				<text class="uni-picker__header-btn-cancel" :class="['header-btn-cannel--'+theme]" @click="close">{{ cancelText }}</text>
@@ -56,6 +56,9 @@
 					</template>
 				</picker-view>
 			</view>
+			<!-- #ifdef APP -->
+			<view :style="{ height: `${bottomSafeArea}px` }"></view>
+			<!-- #endif -->
 			<!-- #ifdef WEB -->
 			</template>
 			<!-- #endif -->
@@ -74,6 +77,9 @@
 	}
 
 	const show = ref(false)
+	// #ifdef APP
+	const bottomSafeArea = ref(0)
+	// #endif
 	const readyEventName = ref('')
 	const optionsEventName = ref('')
 	const cancelEventName = ref('')
@@ -734,7 +740,20 @@
 		// #endif
 	})
 
+	// #ifdef APP
+	function updateBottomSafeArea() {
+		bottomSafeArea.value = uni.getWindowInfo().safeAreaInsets.bottom
+	}
+
+	onResize(() => {
+		updateBottomSafeArea()
+	})
+	// #endif
+
 	onReady(() => {
+		// #ifdef APP
+		updateBottomSafeArea()
+		// #endif
 		show.value = true
 	})
 
