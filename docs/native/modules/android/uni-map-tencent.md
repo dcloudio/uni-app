@@ -25,9 +25,10 @@ allprojects {
 
 ```groovy
 dependencies {
-    implementation 'com.tencent.map:tencent-map-vector-sdk:5.6.0'
-    implementation 'com.tencent.map:sdk-utilities:1.0.9'
-    implementation 'com.tencent.map.geolocation:TencentLocationSdk-openplatform:7.5.4.3'
+    implementation 'com.tencent.map:tencent-map-vector-sdk:6.13.0.260731.bb0666d5.209828299'
+    implementation 'com.tencent.openmap:foundation:0.9.1.6875646'
+    implementation 'com.tencent.map:sdk-utilities:1.0.12'
+	implementation 'com.tencent.map.geolocation:TencentLocationSdk-openplatform:7.5.4.3'
     implementation 'com.github.bumptech.glide:glide:4.16.0'
 }
 ```
@@ -36,8 +37,9 @@ dependencies {
 
 ```groovy
 dependencies {
-    implementation("com.tencent.map:tencent-map-vector-sdk:5.6.0")
-    implementation("com.tencent.map:sdk-utilities:1.0.9")
+    implementation("com.tencent.map:tencent-map-vector-sdk:6.13.0.260731.bb0666d5.209828299")
+    implementation("com.tencent.openmap:foundation:0.9.1.6875646")
+    implementation("com.tencent.map:sdk-utilities:1.0.12")
     implementation("com.tencent.map.geolocation:TencentLocationSdk-openplatform:7.5.4.3")
     implementation("com.github.bumptech.glide:glide:4.16.0")
 }
