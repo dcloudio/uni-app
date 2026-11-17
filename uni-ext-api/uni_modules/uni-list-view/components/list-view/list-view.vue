@@ -261,7 +261,6 @@ defineExpose({
         onMounted,
         provide,
         ref,
-        useAttrs,
         watch,
     } from 'vue'
     import { UniListViewElement } from '../../common/element'
@@ -283,7 +282,6 @@ defineExpose({
         scrollAnchoring: { type: [Boolean, String], default: false },
         initialScrollBottom: { type: [Boolean, String], default: false },
     })
-    const attrs = useAttrs()
     const scrollElement = ref<UniScrollViewElement | null>(null)
     const headerElement = ref<UniViewElement | null>(null)
     const bodyElement = ref<UniViewElement | null>(null)
@@ -314,7 +312,6 @@ defineExpose({
     let scrollTarget : { key : string; section ?: SectionState } | undefined
     let pendingScrollId = props.scrollIntoView
     let targetOffset = -1
-    let targetStarted = 0
     let itemSizeChangedCompensation = 0
     let sizeChangeAnchorKey : string | undefined
     let sizeChangeAnchorOffset = 0
@@ -435,13 +432,25 @@ defineExpose({
             maintainInitialScrollBottom = false
             cachedSizeStart = 0
             targetOffset = -1
-            targetStarted = Date.now()
         }
     }
 
-    function scrollToOffset(offset : number) {
+    /**
+     * 对应 recycle_list.cpp 的 scrollTo(offset, duration)。web 平台无法指定 duration，
+     * 与 cpp 内 iOS 的实现一致，只区分有动画和无动画：
+     * - 定位 scroll-into-view 目标时与 cpp 直接调用 element scrollTo 相同，不传 behavior，
+     *   由 scroll-view 依据开发者 scroll-with-animation 生成的 CSS scroll-behavior 决定
+     *   是否平滑滚动
+     * - 内部滚动（尺寸补偿、滚动锚定、初始滚动到底部）等价于 cpp 传入 duration 0，
+     *   必须显式无动画，否则用户开启 scroll-with-animation 后会跟随 CSS 变成平滑滚动
+     */
+    function scrollToOffset(offset : number, followScrollBehavior = false) {
         const element = scrollElement.value!
-        element.scrollTo(0, offset)
+        element.scrollTo(
+            followScrollBehavior
+                ? { top: offset }
+                : { top: offset, behavior: 'instant' },
+        )
         realScrollOffset = element.scrollTop
         scrollOffset = realScrollOffset
         fastScrollOffset = 0
@@ -463,9 +472,8 @@ defineExpose({
                     : -1
             if (offset >= 0 && targetOffset !== offset + headerSize) {
                 targetOffset = offset + headerSize
-                scrollToOffset(
-                    targetOffset
-                )
+                // 与 cpp setScrollIntoViewKey 一致，定位目标时遵循开发者 scroll-with-animation 设置。
+                scrollToOffset(targetOffset, true)
             }
         } else if (!sections.length && !scrolling) {
             if (

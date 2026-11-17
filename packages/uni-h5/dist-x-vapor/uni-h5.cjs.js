@@ -8536,7 +8536,6 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
   },
   setup(__props, { expose: __expose }) {
     const props2 = __props;
-    Vue.useAttrs();
     const scrollElement = Vue.ref(null);
     const headerElement = Vue.ref(null);
     const bodyElement = Vue.ref(null);
@@ -8682,9 +8681,11 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
         targetOffset = -1;
       }
     }
-    function scrollToOffset(offset) {
+    function scrollToOffset(offset, followScrollBehavior = false) {
       const element = scrollElement.value;
-      element.scrollTo(0, offset);
+      element.scrollTo(
+        followScrollBehavior ? { top: offset } : { top: offset, behavior: "instant" }
+      );
       realScrollOffset = element.scrollTop;
       scrollOffset = realScrollOffset;
       fastScrollOffset = 0;
@@ -8701,9 +8702,7 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
         const offset = section ? section.offsetTop + (key ? section.getItemOffset(key) : 0) : item ? item.offset : -1;
         if (offset >= 0 && targetOffset !== offset + headerSize) {
           targetOffset = offset + headerSize;
-          scrollToOffset(
-            targetOffset
-          );
+          scrollToOffset(targetOffset, true);
         }
       } else if (!sections.length && !scrolling) {
         if (props2.initialScrollBottom && maintainInitialScrollBottom && listDataStatus === 1) {
