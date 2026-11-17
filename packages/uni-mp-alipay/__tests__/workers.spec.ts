@@ -54,47 +54,60 @@ describe('Alipay workers app option', () => {
     }
   })
 
-  test('writes UASM worker paths to app json', () => {
-    process.env.UNI_APP_X = 'true'
-    const inputDir = fs.mkdtempSync(
-      path.join(os.tmpdir(), 'uni-alipay-uasm-workers-')
-    )
-    process.env.UNI_INPUT_DIR = inputDir
-
-    try {
-      fs.mkdirSync(path.join(inputDir, 'uni_modules/zstd/uasm/mp-alipay'), {
-        recursive: true,
-      })
-      fs.mkdirSync(path.join(inputDir, 'uni_modules/zstd/workers/mp-alipay'), {
-        recursive: true,
-      })
-      fs.writeFileSync(
-        path.join(inputDir, 'uni_modules/zstd/uasm/mp-alipay/zstd.js'),
-        'export default function createModule() {}'
+  test.each([false, true])(
+    'writes UASM worker paths to app json (new: %s)',
+    (useNewDir) => {
+      process.env.UNI_APP_X = 'true'
+      const inputDir = fs.mkdtempSync(
+        path.join(os.tmpdir(), 'uni-alipay-uasm-workers-')
       )
-      fs.writeFileSync(
-        path.join(inputDir, 'uni_modules/zstd/workers/mp-alipay/zstd.js'),
-        'var Module=moduleArg;'
-      )
-      fs.writeFileSync(
-        path.join(
-          inputDir,
-          'uni_modules/zstd/workers/mp-alipay/zstd-in-worker.js'
-        ),
-        'import { createZstdModule } from "./zstd.js"'
-      )
+      process.env.UNI_INPUT_DIR = inputDir
 
-      const appJson: Record<string, unknown> = {}
-      options.json!.formatAppJson!(appJson, {}, {})
+      try {
+        fs.mkdirSync(path.join(inputDir, 'uni_modules/zstd/uasm/mp-alipay'), {
+          recursive: true,
+        })
+        fs.mkdirSync(
+          path.join(inputDir, 'uni_modules/zstd/workers/mp-alipay'),
+          {
+            recursive: true,
+          }
+        )
+        fs.writeFileSync(
+          path.join(inputDir, 'uni_modules/zstd/uasm/mp-alipay/zstd.js'),
+          'export default function createModule() {}'
+        )
+        fs.writeFileSync(
+          path.join(inputDir, 'uni_modules/zstd/workers/mp-alipay/zstd.js'),
+          'var Module=moduleArg;'
+        )
+        fs.writeFileSync(
+          path.join(
+            inputDir,
+            'uni_modules/zstd/workers/mp-alipay/zstd-in-worker.js'
+          ),
+          'import { createZstdModule } from "./zstd.js"'
+        )
+        const workerDir = 'uni_modules/zstd/uasm/mp-alipay/workers'
+        if (useNewDir) {
+          fs.mkdirSync(path.join(inputDir, workerDir), { recursive: true })
+          for (const file of ['zstd.js', 'zstd-in-worker.js', 'zstd.wasm.br']) {
+            fs.writeFileSync(path.join(inputDir, workerDir, file), '')
+          }
+        }
 
-      expect(appJson.workers).toEqual([
-        'workers/mp-alipay/zstd-in-worker.js',
-        'workers/mp-alipay/zstd.js',
-      ])
-    } finally {
-      fs.rmSync(inputDir, { recursive: true, force: true })
+        const appJson: Record<string, unknown> = {}
+        options.json!.formatAppJson!(appJson, {}, {})
+
+        expect(appJson.workers).toEqual([
+          `${useNewDir ? workerDir : 'workers/mp-alipay'}/zstd-in-worker.js`,
+          `${useNewDir ? workerDir : 'workers/mp-alipay'}/zstd.js`,
+        ])
+      } finally {
+        fs.rmSync(inputDir, { recursive: true, force: true })
+      }
     }
-  })
+  )
 })
 
 function writeWorker(inputDir: string, file: string, className: string) {
