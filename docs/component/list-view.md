@@ -28,7 +28,7 @@ list-view和scroll-view都是滚动组件，list适用于长列表场景，其�
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| direction | string | "vertical" | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 滚动方向，可取值 none、horizontal、vertical，默认值vertical。注：iOS 平台仅支持vertical |
+| direction | string | "vertical" | Web: 4.02; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 滚动方向，可取值 none、horizontal、vertical，默认值vertical。注：iOS 平台仅支持vertical |
 | bounces | boolean \| string | true | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 控制是否回弹效果 优先级高于rebound |
 | android-overscroll | boolean \| string | false | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS: x; HarmonyOS: x | Android平台是否开启弹簧回弹效果，开启后默认下拉刷新使用圆弧loading样式（推动页面内容），否则默认下拉刷新使用Android系统悬浮圆环样式（不推动页面内容） |
 | android-refresher-color | string([string.ColorString](/uts/data-type.md#ide-string)) |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.33; iOS: x; HarmonyOS: x | 设置 Android 平台 scroll-view 默认下拉刷新样式的前景颜色，优先级高于 refresher-default-style  |
