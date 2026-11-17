@@ -905,6 +905,9 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 
 
 
+<!-- UTSAPIJSON.bluetooth-bluetooth-general.tutorial -->
+
+
 ## 通用类型
 
 
