@@ -107,7 +107,7 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| allType | boolean | 否 | Web: 5.32; 微信小程序: x; 支付宝小程序: x; Android: 5.31; iOS: 5.31; HarmonyOS: 5.31 | 是否关闭所有类型的 toast，默认不关闭。仅鸿蒙平台支持。 |
+| allType | boolean | 否 | Web: 5.32; 微信小程序: x; 支付宝小程序: x; Android: 5.31; iOS: 5.31; HarmonyOS: 5.31 | 是否关闭所有类型的 toast，默认不关闭。 |
 | success | (res: [HideToastSuccess](#hidetoastsuccess-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.31; iOS: 5.31; HarmonyOS: 5.31 | 成功回调函数定义 |
 | fail | (res: [HideToastFail](#hidetoastfail-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.31; iOS: 5.31; HarmonyOS: 5.31 | 失败回调函数定义 |
 | complete | (res: any) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.31; iOS: 5.31; HarmonyOS: 5.31 | 完成回调函数定义 |

@@ -241,8 +241,8 @@ export class UniOAuthWeixinProviderImpl implements UniOAuthWeixinProvider {
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | provider | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 授权登录服务提供商，通过uni.getProvider获取 |
-| withCredentials | boolean | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 是否带上登录态信息，仅微信小程序生效。 |
-| lang | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 指定返回用户信息的语言，zh_CN 简体中文，zh_TW 繁体中文，en 英文。默认为en，仅微信小程序生效。 |
+| withCredentials | boolean | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 是否带上登录态信息，仅微信小程序生效。 |
+| lang | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 指定返回用户信息的语言，zh_CN 简体中文，zh_TW 繁体中文，en 英文。默认为en，仅微信小程序生效。 |
 | timeout | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 超时时间，单位 ms |
 | success | (result: [GetUserInfoSuccess](#getuserinfosuccess-values)) => void | 否 | Web: x; Android: x; iOS: x | 接口调用成功的回调函数 |
 | fail | (result: [GetUserInfoFail](#getuserinfofail-values)) => void | 否 | Web: x; Android: x; iOS: x | 接口调用失败的回调函数 |
@@ -265,9 +265,9 @@ export class UniOAuthWeixinProviderImpl implements UniOAuthWeixinProvider {
 | :- | :- | :- |  :-: | :- |
 | userInfo | **UserInfo** | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: 4.61 | 用户信息对象，不包含 openid 等敏感信息 |
 | rawData | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 不包括敏感信息的原始数据字符串，用于计算签名。 |
-| signature | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 使用 sha1( rawData + sessionkey ) 得到字符串，用于校验用户信息，仅微信小程序生效。 |
-| encryptedData | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 包括敏感数据在内的完整用户信息的加密数据，详细见加密数据解密算法，仅微信小程序生效。 |
-| iv | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 加密算法的初始向量，详细见加密数据解密算法，仅微信小程序生效。 |
+| signature | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 使用 sha1( rawData + sessionkey ) 得到字符串，用于校验用户信息，仅微信小程序生效。 |
+| encryptedData | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 包括敏感数据在内的完整用户信息的加密数据，详细见加密数据解密算法，仅微信小程序生效。 |
+| iv | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 加密算法的初始向量，详细见加密数据解密算法，仅微信小程序生效。 |
 | errMsg | string | 是 | Web: x; Android: x; iOS: x | 描述信息 |
 
 #### userInfo 的属性描述
