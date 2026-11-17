@@ -71,11 +71,11 @@
 }
 
 div:where([uni-textarea]) {
-  background-color: #ffffff;
+  color: #000000;
 }
 
 .uni-textarea-placeholder {
-  color: #757575;
+  color: #808080;
 }
 
 @layer uni-field-selection {
@@ -90,8 +90,11 @@ div:where([uni-textarea]) {
 
 @media (prefers-color-scheme: dark) {
   div:where([uni-textarea]) {
-    color: #ffffff;
-    background-color: #3b3b3b;
+    color: #d1d1d1;
+  }
+
+  .uni-textarea-placeholder {
+    color: #5f5f5f;
   }
 }
 

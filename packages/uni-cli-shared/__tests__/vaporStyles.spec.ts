@@ -73,7 +73,7 @@ describe('Web Vapor 独立组件样式', () => {
       expect(code).toContain('@layer uni-field-selection')
       expect(code).toContain('[data-uni-selection]::selection')
       expect(code).toContain('@media (prefers-color-scheme: dark)')
-      expect(code).toContain('color: #757575')
+      expect(code).toContain('color: #808080')
       expect(code).toContain('caret-color: inherit')
       expect(code).toContain('cursor: inherit')
     }
