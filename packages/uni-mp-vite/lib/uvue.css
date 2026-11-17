@@ -134,6 +134,22 @@ button {
   border-width: medium;
 }
 
+slider {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  flex-shrink: 0;
+  flex-grow: 0;
+  flex-basis: auto;
+  align-items: stretch;
+  align-content: stretch;
+  justify-content: flex-start;
+  min-height: 0px;
+  min-width: 0px;
+  border-width: medium;
+}
+
 /* #endif */
 
 ad-draw[hidden],
