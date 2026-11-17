@@ -153,9 +153,9 @@ describe('compiler: transform v-model', () => {
     test('input v-model.lazy', () => {
       assert(
         `<input v-model.lazy="model" />`,
-        `<input value="{{a}}" bindchange="{{b}}"/>`,
+        `<input style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}" value="{{c}}" bindchange="{{d}}"/>`,
         `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _ctx.model, b: _o($event => _ctx.model = $event.detail.value, "4c") }
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\`, c: _ctx.model, d: _o($event => _ctx.model = $event.detail.value, "4c") }
   return __returned__
 }`,
         { isX: true }
@@ -165,9 +165,9 @@ describe('compiler: transform v-model', () => {
     test('input without lazy', () => {
       assert(
         `<input v-model="model" />`,
-        `<input value="{{a}}" bindinput="{{b}}"/>`,
+        `<input style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}" value="{{c}}" bindinput="{{d}}"/>`,
         `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _ctx.model, b: _o($event => _ctx.model = $event.detail.value, "64") }
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\`, c: _ctx.model, d: _o($event => _ctx.model = $event.detail.value, "64") }
   return __returned__
 }`,
         { isX: true }
@@ -187,36 +187,36 @@ describe('compiler: transform v-model', () => {
     test('input v-model.lazy + v-on', () => {
       assert(
         `<input v-model.lazy="model" @input="onInput" @change="onChange" />`,
-        `<input bindinput="{{a}}" bindchange="{{b}}" value="{{c}}"/>`,
+        `<input bindinput="{{a}}" bindchange="{{b}}" style="{{'--status-bar-height:' + c + ';' + ('--uni-safe-area-inset-bottom:' + d)}}" value="{{e}}"/>`,
         `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _o(_ctx.onInput, "6a"), b: _o([$event => _ctx.model = $event.detail.value, _ctx.onChange], "11"), c: _ctx.model }
+  const __returned__ = { a: _o(_ctx.onInput, "6a"), b: _o([$event => _ctx.model = $event.detail.value, _ctx.onChange], "11"), c: \`\${_ctx.u_s_b_h}px\`, d: \`\${_ctx.u_s_a_i_b}px\`, e: _ctx.model }
   return __returned__
 }`,
         { isX: true }
       )
       assert(
         `<input @input="onInput" @change="onChange" v-model.lazy="model" />`,
-        `<input bindinput="{{a}}" bindchange="{{b}}" value="{{c}}"/>`,
+        `<input bindinput="{{a}}" bindchange="{{b}}" style="{{'--status-bar-height:' + c + ';' + ('--uni-safe-area-inset-bottom:' + d)}}" value="{{e}}"/>`,
         `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _o(_ctx.onInput, "ee"), b: _o([$event => _ctx.model = $event.detail.value, _ctx.onChange], "11"), c: _ctx.model }
+  const __returned__ = { a: _o(_ctx.onInput, "ee"), b: _o([$event => _ctx.model = $event.detail.value, _ctx.onChange], "11"), c: \`\${_ctx.u_s_b_h}px\`, d: \`\${_ctx.u_s_a_i_b}px\`, e: _ctx.model }
   return __returned__
 }`,
         { isX: true }
       )
       assert(
         `<input @change="onChange" v-model.lazy="model" @input="onInput" />`,
-        `<input bindchange="{{a}}" bindinput="{{b}}" value="{{c}}"/>`,
+        `<input bindchange="{{a}}" bindinput="{{b}}" style="{{'--status-bar-height:' + c + ';' + ('--uni-safe-area-inset-bottom:' + d)}}" value="{{e}}"/>`,
         `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _o([$event => _ctx.model = $event.detail.value, _ctx.onChange], "11"), b: _o(_ctx.onInput, "ab"), c: _ctx.model }
+  const __returned__ = { a: _o([$event => _ctx.model = $event.detail.value, _ctx.onChange], "11"), b: _o(_ctx.onInput, "ab"), c: \`\${_ctx.u_s_b_h}px\`, d: \`\${_ctx.u_s_a_i_b}px\`, e: _ctx.model }
   return __returned__
 }`,
         { isX: true }
       )
       assert(
         `<input v-model.lazy="model" @input="onInput" />`,
-        `<input bindinput="{{a}}" value="{{b}}" bindchange="{{c}}"/>`,
+        `<input bindinput="{{a}}" style="{{'--status-bar-height:' + b + ';' + ('--uni-safe-area-inset-bottom:' + c)}}" value="{{d}}" bindchange="{{e}}"/>`,
         `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _o(_ctx.onInput, "6a"), b: _ctx.model, c: _o($event => _ctx.model = $event.detail.value, "4c") }
+  const __returned__ = { a: _o(_ctx.onInput, "6a"), b: \`\${_ctx.u_s_b_h}px\`, c: \`\${_ctx.u_s_a_i_b}px\`, d: _ctx.model, e: _o($event => _ctx.model = $event.detail.value, "4c") }
   return __returned__
 }`,
         { isX: true }
@@ -226,27 +226,27 @@ describe('compiler: transform v-model', () => {
     test('input v-model.lazy with trim and number', () => {
       assert(
         `<input v-model.lazy.trim="model" @change="onChange" />`,
-        `<input bindchange="{{a}}" value="{{b}}"/>`,
+        `<input bindchange="{{a}}" style="{{'--status-bar-height:' + b + ';' + ('--uni-safe-area-inset-bottom:' + c)}}" value="{{d}}"/>`,
         `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _o([_m($event => _ctx.model = $event.detail.value, { trim: true }), _ctx.onChange], "69"), b: _ctx.model }
+  const __returned__ = { a: _o([_m($event => _ctx.model = $event.detail.value, { trim: true }), _ctx.onChange], "69"), b: \`\${_ctx.u_s_b_h}px\`, c: \`\${_ctx.u_s_a_i_b}px\`, d: _ctx.model }
   return __returned__
 }`,
         { isX: true }
       )
       assert(
         `<input v-model.lazy.number="model" @change="onChange" />`,
-        `<input bindchange="{{a}}" value="{{b}}"/>`,
+        `<input bindchange="{{a}}" style="{{'--status-bar-height:' + b + ';' + ('--uni-safe-area-inset-bottom:' + c)}}" value="{{d}}"/>`,
         `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _o([_m($event => _ctx.model = $event.detail.value, { number: true }), _ctx.onChange], "37"), b: _ctx.model }
+  const __returned__ = { a: _o([_m($event => _ctx.model = $event.detail.value, { number: true }), _ctx.onChange], "37"), b: \`\${_ctx.u_s_b_h}px\`, c: \`\${_ctx.u_s_a_i_b}px\`, d: _ctx.model }
   return __returned__
 }`,
         { isX: true }
       )
       assert(
         `<input v-model.lazy.trim.number="model" />`,
-        `<input value="{{a}}" bindchange="{{b}}"/>`,
+        `<input style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}" value="{{c}}" bindchange="{{d}}"/>`,
         `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _ctx.model, b: _o(_m($event => _ctx.model = $event.detail.value, { trim: true, number: true }), "f1") }
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\`, c: _ctx.model, d: _o(_m($event => _ctx.model = $event.detail.value, { trim: true, number: true }), "f1") }
   return __returned__
 }`,
         { isX: true }
@@ -269,9 +269,9 @@ describe('compiler: transform v-model', () => {
     test('input v-model.lazy with setup ref', () => {
       assert(
         `<input v-model.lazy="model" />`,
-        `<input value="{{a}}" bindchange="{{b}}"/>`,
+        `<input style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}" value="{{c}}" bindchange="{{d}}"/>`,
         `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: model.value, b: _o($event => model.value = $event.detail.value, "6d") }
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\`, c: model.value, d: _o($event => model.value = $event.detail.value, "6d") }
   return __returned__
 }`,
         { isX: true, bindingMetadata: { model: BindingTypes.SETUP_REF } }
