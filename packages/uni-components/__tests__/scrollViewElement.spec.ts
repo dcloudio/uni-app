@@ -1,5 +1,11 @@
 import { initScrollViewElement } from '../src/vue/scroll-view/element-vapor'
 
+jest.mock('vue', () => ({
+  initUniElement(root: object, descriptor: PropertyDescriptor) {
+    Object.defineProperty(root, 'uniTagName', descriptor)
+  },
+}))
+
 jest.mock('../src/vue/web-vapor-elements', () => ({
   UniViewElement: class {},
 }))

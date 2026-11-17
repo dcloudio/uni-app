@@ -404,7 +404,7 @@ describe('mp-alipay: transform component x', () => {
 
     assert(
       `<sticky-header/>`,
-      `<view style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
+      `<view class="uni-sticky-header" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
       `(_ctx, _cache) => { "raw js"
   const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
   return __returned__
@@ -417,7 +417,7 @@ describe('mp-alipay: transform component x', () => {
 
     assert(
       `<sticky-section/>`,
-      `<view style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
+      `<view class="uni-sticky-section" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
       `(_ctx, _cache) => { "raw js"
   const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
   return __returned__

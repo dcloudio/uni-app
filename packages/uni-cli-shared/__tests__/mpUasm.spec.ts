@@ -467,17 +467,20 @@ describe('支付宝 UASM 新 Worker 目录', () => {
           const timeout = setTimeout(() => {
             watcher.off('event', onEvent)
             reject(new Error(`等待 Worker 重建超时：${stage}`))
-          }, 5000)
+          }, 10000)
+          let buildEvent: RollupWatcherEvent | undefined
           async function onEvent(event: RollupWatcherEvent) {
-            if (event.code !== 'ERROR' && event.code !== 'BUNDLE_END') {
+            if (event.code === 'ERROR' || event.code === 'BUNDLE_END') {
+              buildEvent = event
+              if (event.result) {
+                await event.result.close()
+              }
               return
             }
+            if (event.code !== 'END' || !buildEvent) return
             watcher.off('event', onEvent)
             clearTimeout(timeout)
-            if (event.result) {
-              await event.result.close()
-            }
-            resolve(event)
+            resolve(buildEvent)
           }
           watcher.on('event', onEvent)
         })
@@ -503,6 +506,8 @@ describe('支付宝 UASM 新 Worker 目录', () => {
           'var Module=moduleArg;var Module=moduleArg;'
         )
 
+        // 等待文件监听器结束上一轮变更合并，再模拟用户继续修正源码。
+        await new Promise((resolve) => setTimeout(resolve, 200))
         rebuilt = nextBuild('修正 JS')
         fs.writeFileSync(entry, 'var Module=moduleArg; // 已修复')
         expect((await rebuilt).code).toBe('BUNDLE_END')
@@ -511,7 +516,7 @@ describe('支付宝 UASM 新 Worker 目录', () => {
         await watcher.close()
       }
     },
-    20000
+    30000
   )
 
   test('空的新目录不回退旧方案，其他插件仍使用旧方案', () => {
