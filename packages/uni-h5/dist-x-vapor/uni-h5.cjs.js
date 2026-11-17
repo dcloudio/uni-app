@@ -820,14 +820,15 @@ const createSvgIconVNode = createSvgIcon;
 const ICON_PATH_CANCEL = "M20.928 10.176l-4.928 4.928-4.928-4.928-0.896 0.896 4.928 4.928-4.928 4.928 0.896 0.896 4.928-4.928 4.928 4.928 0.896-0.896-4.928-4.928 4.928-4.928-0.896-0.896zM16 2.080q-3.776 0-7.040 1.888-3.136 1.856-4.992 4.992-1.888 3.264-1.888 7.040t1.888 7.040q1.856 3.136 4.992 4.992 3.264 1.888 7.040 1.888t7.040-1.888q3.136-1.856 4.992-4.992 1.888-3.264 1.888-7.040t-1.888-7.040q-1.856-3.136-4.992-4.992-3.264-1.888-7.040-1.888zM16 28.64q-3.424 0-6.4-1.728-2.848-1.664-4.512-4.512-1.728-2.976-1.728-6.4t1.728-6.4q1.664-2.848 4.512-4.512 2.976-1.728 6.4-1.728t6.4 1.728q2.848 1.664 4.512 4.512 1.728 2.976 1.728 6.4t-1.728 6.4q-1.664 2.848-4.512 4.512-2.976 1.728-6.4 1.728z";
 const ICON_PATH_CLEAR = "M16 0q-4.352 0-8.064 2.176-3.616 2.144-5.76 5.76-2.176 3.712-2.176 8.064t2.176 8.064q2.144 3.616 5.76 5.76 3.712 2.176 8.064 2.176t8.064-2.176q3.616-2.144 5.76-5.76 2.176-3.712 2.176-8.064t-2.176-8.064q-2.144-3.616-5.76-5.76-3.712-2.176-8.064-2.176zM22.688 21.408q0.32 0.32 0.304 0.752t-0.336 0.736-0.752 0.304-0.752-0.32l-5.184-5.376-5.376 5.184q-0.32 0.32-0.752 0.304t-0.736-0.336-0.304-0.752 0.32-0.752l5.376-5.184-5.184-5.376q-0.32-0.32-0.304-0.752t0.336-0.752 0.752-0.304 0.752 0.336l5.184 5.376 5.376-5.184q0.32-0.32 0.752-0.304t0.752 0.336 0.304 0.752-0.336 0.752l-5.376 5.184 5.184 5.376z";
 const ICON_PATH_DOWNLOAD = "M15.808 1.696q-3.776 0-7.072 1.984-3.2 1.888-5.088 5.152-1.952 3.392-1.952 7.36 0 3.776 1.952 7.072 1.888 3.2 5.088 5.088 3.296 1.952 7.072 1.952 3.968 0 7.36-1.952 3.264-1.888 5.152-5.088 1.984-3.296 1.984-7.072 0-4-1.984-7.36-1.888-3.264-5.152-5.152-3.36-1.984-7.36-1.984zM20.864 18.592l-3.776 4.928q-0.448 0.576-1.088 0.576t-1.088-0.576l-3.776-4.928q-0.448-0.576-0.24-0.992t0.944-0.416h2.976v-8.928q0-0.256 0.176-0.432t0.4-0.176h1.216q0.224 0 0.4 0.176t0.176 0.432v8.928h2.976q0.736 0 0.944 0.416t-0.24 0.992z";
-const ICON_PATH_INFO = "M15.808 0.128q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.176 3.776-2.176 8.16 0 4.224 2.176 7.872 2.080 3.552 5.632 5.632 3.648 2.176 7.872 2.176 4.384 0 8.16-2.176 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.416-2.176-8.16-2.112-3.616-5.728-5.728-3.744-2.176-8.16-2.176zM16.864 23.776q0 0.064-0.064 0.064h-1.568q-0.096 0-0.096-0.064l-0.256-11.328q0-0.064 0.064-0.064h2.112q0.096 0 0.064 0.064l-0.256 11.328zM16 10.88q-0.576 0-0.976-0.4t-0.4-0.96 0.4-0.96 0.976-0.4 0.976 0.4 0.4 0.96-0.4 0.96-0.976 0.4z";
-const ICON_PATH_SEARCH = "M20.928 22.688q-1.696 1.376-3.744 2.112-2.112 0.768-4.384 0.768-3.488 0-6.464-1.728-2.88-1.696-4.576-4.608-1.76-2.976-1.76-6.464t1.76-6.464q1.696-2.88 4.576-4.576 2.976-1.76 6.464-1.76t6.464 1.76q2.912 1.696 4.608 4.576 1.728 2.976 1.728 6.464 0 2.272-0.768 4.384-0.736 2.048-2.112 3.744l9.312 9.28-1.824 1.824-9.28-9.312zM12.8 23.008q2.784 0 5.184-1.376 2.304-1.376 3.68-3.68 1.376-2.4 1.376-5.184t-1.376-5.152q-1.376-2.336-3.68-3.68-2.4-1.408-5.184-1.408t-5.152 1.408q-2.336 1.344-3.68 3.68-1.408 2.368-1.408 5.152t1.408 5.184q1.344 2.304 3.68 3.68 2.368 1.376 5.152 1.376zM12.8 23.008v0z";
-const ICON_PATH_SUCCESS_NO_CIRCLE = "M1.952 18.080q-0.32-0.352-0.416-0.88t0.128-0.976l0.16-0.352q0.224-0.416 0.64-0.528t0.8 0.176l6.496 4.704q0.384 0.288 0.912 0.272t0.88-0.336l17.312-14.272q0.352-0.288 0.848-0.256t0.848 0.352l-0.416-0.416q0.32 0.352 0.32 0.816t-0.32 0.816l-18.656 18.912q-0.32 0.352-0.8 0.352t-0.8-0.32l-7.936-8.064z";
 const ICON_PATH_SUCCESS = "M15.808 0.16q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM24.832 11.328l-11.264 11.104q-0.032 0.032-0.112 0.032t-0.112-0.032l-5.216-5.376q-0.096-0.128 0-0.288l0.704-0.96q0.032-0.064 0.112-0.064t0.112 0.032l4.256 3.264q0.064 0.032 0.144 0.032t0.112-0.032l10.336-8.608q0.064-0.064 0.144-0.064t0.112 0.064l0.672 0.672q0.128 0.128 0 0.224z";
 const ICON_PATH_WAITING = "M15.84 0.096q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM23.008 21.92l-0.512 0.896q-0.096 0.128-0.224 0.064l-8-3.808q-0.096-0.064-0.16-0.128-0.128-0.096-0.128-0.288l0.512-12.096q0-0.064 0.048-0.112t0.112-0.048h1.376q0.064 0 0.112 0.048t0.048 0.112l0.448 10.848 6.304 4.256q0.064 0.064 0.080 0.128t-0.016 0.128z";
-const ICON_PATH_WARN = "M15.808 0.16q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM15.136 8.672h1.728q0.128 0 0.224 0.096t0.096 0.256l-0.384 10.24q0 0.064-0.048 0.112t-0.112 0.048h-1.248q-0.096 0-0.144-0.048t-0.048-0.112l-0.384-10.24q0-0.16 0.096-0.256t0.224-0.096zM16 23.328q-0.48 0-0.832-0.352t-0.352-0.848 0.352-0.848 0.832-0.352 0.832 0.352 0.352 0.848-0.352 0.848-0.832 0.352z";
 const ICON_PATH_BACK = "M20 25L11 16L20 7";
-const ICON_PATH_CLOSE = "M17.25 16.156l7.375-7.313q0.281-0.281 0.281-0.641t-0.281-0.641q-0.25-0.25-0.625-0.25t-0.625 0.25l-7.375 7.344-7.313-7.344q-0.25-0.25-0.625-0.25t-0.625 0.25q-0.281 0.25-0.281 0.625t0.281 0.625l7.313 7.344-7.375 7.344q-0.281 0.25-0.281 0.625t0.281 0.625q0.125 0.125 0.281 0.188t0.344 0.063q0.156 0 0.328-0.063t0.297-0.188l7.375-7.344 7.375 7.406q0.125 0.156 0.297 0.219t0.328 0.063q0.188 0 0.344-0.078t0.281-0.203q0.281-0.25 0.281-0.609t-0.281-0.641l-7.375-7.406z";
+const ICON_FONT_BACK = "";
+const ICON_FONT_CLOSE = "";
+const ICON_FONT_INFO = "";
+const ICON_FONT_SUCCESS_NO_CIRCLE = "";
+const ICON_FONT_WARN = "";
+const ICON_FONT_SEARCH = "";
 function useCurrentPageId() {
   {
     const { $pageInstance } = Vue.getCurrentInstance();
@@ -2032,7 +2033,7 @@ function createNodes(...values) {
   return resolveValues(values);
 }
 const _t0$g = Vue.template("<input tabindex=-1>");
-const _t1$6 = Vue.template("<input>");
+const _t1$7 = Vue.template("<input>");
 const _t2$5 = Vue.template("<form action novalidate class=uni-input-form> ");
 const _t3$5 = Vue.template("<div uni-input uni-view><div class=uni-input-wrapper> <div> </div>", 1);
 const _t4$5 = Vue.template("<div>", 1);
@@ -2070,7 +2071,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         });
         return _n2;
       }, () => {
-        const _n4 = _t1$6();
+        const _n4 = _t1$7();
         Vue.setBlockKey(_n4, "input");
         Vue.on(_n4, "input", Vue.withModifiers(onInput, ["stop"]));
         Vue.on(_n4, "keyup", onKeyUpEnter);
@@ -2346,7 +2347,7 @@ function useTextarea(props2, { emit: emit2, expose }) {
   };
 }
 const _t0$e = Vue.template("<textarea tabindex=-1>");
-const _t1$5 = Vue.template("<textarea>");
+const _t1$6 = Vue.template("<textarea>");
 const _t2$4 = Vue.template("<form action class=uni-input-form> ");
 const _t3$4 = Vue.template("<div uni-textarea uni-view><div class=uni-textarea-wrapper> <div> </div><div class=uni-textarea-line> </div><div> </div>", 1);
 const _t4$4 = Vue.template("<div>", 1);
@@ -2389,7 +2390,7 @@ const indexVapor$9 = /* @__PURE__ */ defineBuiltInComponent({
         });
         return _n2;
       }, () => {
-        const _n4 = _t1$5();
+        const _n4 = _t1$6();
         Vue.setBlockKey(_n4, "textarea");
         Vue.on(_n4, "keydown", onKeyDownEnter);
         Vue.on(_n4, "keyup", onKeyUpEnter);
@@ -3783,7 +3784,7 @@ function getRealPath(filePath) {
   return filePath;
 }
 const _t0$d = Vue.template("<div class=uni-tabbar><div class=uni-tabbar-border></div> </div>");
-const _t1$4 = Vue.template("<div class=uni-placeholder>");
+const _t1$5 = Vue.template("<div class=uni-placeholder>");
 const _t2$3 = Vue.template("<div class=uni-tabbar__iconfont> ");
 const _t3$3 = Vue.template("<div>");
 const _t4$3 = Vue.template("<img>");
@@ -3864,7 +3865,7 @@ const TabBar = /* @__PURE__ */ defineSystemComponent({
         const _n2 = _t0$d();
         const _n0 = Vue.child(_n2);
         const _n1 = Vue.next(_n0, true);
-        const _n3 = _t1$4();
+        const _n3 = _t1$5();
         setNodes(_n1, () => Vue.createFor(() => visibleList.value, (item, index2) => (() => {
           const _n02 = _t7$1();
           const _n12 = Vue.child(_n02, true);
@@ -4086,7 +4087,7 @@ function getIconClass(item) {
   return "uni-tabbar__icon" + (item.text ? " uni-tabbar__icon__diff" : "");
 }
 const _t0$c = Vue.template("<div class=uni-top-window></div>");
-const _t1$3 = Vue.template("<div class=uni-top-window--placeholder>");
+const _t1$4 = Vue.template("<div class=uni-top-window--placeholder>");
 const _t2$2 = Vue.template("<div class=uni-mask>");
 const _t3$2 = Vue.template("<div class=uni-left-window>");
 const _t4$2 = Vue.template("<div class=uni-right-window>");
@@ -4152,7 +4153,7 @@ const LayoutComponent = /* @__PURE__ */ defineSystemComponent({
                   "navigation-bar-title-text": () => layoutState.navigationBarTitleText,
                   $: [() => windowState.value]
                 });
-                const _n3 = _t1$3();
+                const _n3 = _t1$4();
                 Vue.renderEffect(() => {
                   _setTemplateRef(_n1, topWindowRef);
                   Vue.setStyle(_n3, { height: layoutState.topWindowHeight + "px" });
@@ -4755,27 +4756,47 @@ function usePageHeadTransparent(headRef, {
   Vue.computed(() => hexToRgba(backgroundColor));
 }
 let NavigationBarLoading;
-const _t0$b = Vue.template("<img class=uni-page-head__title_image>");
-const _t1$2 = Vue.template("<div class=uni-page-head-bd><div class=uni-page-head__title>", 1);
-const _t2$1 = Vue.template('<div class=uni-page-head-search><div><div class=uni-page-head-search-icon><svg width=20 height=20 viewBox="0 0 32 32"><path></div> </div>', 1);
-const _t3$1 = Vue.template("<div><div class=uni-page-head-hd> </div> <div class=uni-page-head-ft> </div></div>");
-const _t4$1 = Vue.template('<div class=uni-page-head-btn><svg width=26 height=26 viewBox="0 0 32 32"><path fill=none stroke-width=2 stroke-linecap=round>', 1);
-const _t5 = Vue.template('<svg viewBox="0 0 32 32"><path>', false, 1);
-const _t6 = Vue.template('<span><i class=uni-btn-icon></i><svg width=14 height=14 viewBox="0 0 32 32"><path fill=none stroke=#000 stroke-width=2 stroke-linecap=round>');
-const _t7 = Vue.template("<i class=uni-btn-icon>");
-const _t8 = Vue.template("<div>", 1);
-const _t9 = Vue.template('<span><i class=uni-btn-icon></i><svg width=14 height=14 viewBox="0 0 32 32"><path fill=#000>');
+const _t0$b = Vue.template("<i class=uni-icon-font> ", 1);
+const _t1$3 = Vue.template("<img class=uni-page-head__title_image>");
+const _t2$1 = Vue.template("<div class=uni-page-head-bd><div class=uni-page-head__title>", 1);
+const _t3$1 = Vue.template("<div class=uni-page-head-search><div><div class=uni-page-head-search-icon> </div> </div>", 1);
+const _t4$1 = Vue.template("<div><div class=uni-page-head-hd> </div> <div class=uni-page-head-ft> </div></div>");
+const _t5 = Vue.template('<div class=uni-page-head-btn><svg width=26 height=26 viewBox="0 0 32 32"><path fill=none stroke-width=2 stroke-linecap=round>', 1);
+const _t6 = Vue.template('<svg viewBox="0 0 32 32"><path>', false, 1);
+const _t7 = Vue.template("<span><i class=uni-btn-icon></i> ");
+const _t8 = Vue.template("<i class=uni-btn-icon>");
+const _t9 = Vue.template("<div>", 1);
 const ICON_PATHS = {
   none: "",
   forward: "M11 7.844q-0.25-0.219-0.25-0.578t0.25-0.578q0.219-0.25 0.563-0.25t0.563 0.25l9.656 9.125q0.125 0.125 0.188 0.297t0.063 0.328q0 0.188-0.063 0.359t-0.188 0.297l-9.656 9.125q-0.219 0.25-0.563 0.25t-0.563-0.25q-0.25-0.219-0.25-0.578t0.25-0.609l9.063-8.594-9.063-8.594z",
-  back: ICON_PATH_BACK,
-  select: ICON_PATH_BACK,
+  back: "",
+  select: "",
+  search: "",
   share: "M26.563 24.844q0 0.125-0.109 0.234t-0.234 0.109h-17.938q-0.125 0-0.219-0.109t-0.094-0.234v-13.25q0-0.156 0.094-0.25t0.219-0.094h5.5v-1.531h-6q-0.531 0-0.906 0.391t-0.375 0.922v14.375q0 0.531 0.375 0.922t0.906 0.391h18.969q0.531 0 0.891-0.391t0.359-0.953v-5.156h-1.438v4.625zM29.813 10.969l-5.125-5.375-1.031 1.094 3.438 3.594-3.719 0.031q-2.313 0.188-4.344 1.125t-3.578 2.422-2.5 3.453-1.109 4.188l-0.031 0.25h1.469v-0.219q0.156-1.875 1-3.594t2.25-3.063 3.234-2.125 3.828-0.906l0.188-0.031 3.313-0.031-3.438 3.625 1.031 1.063 5.125-5.375-0.031-0.063 0.031-0.063z",
   favorite: "M27.594 13.375q-0.063-0.188-0.219-0.313t-0.344-0.156l-7.094-0.969-3.219-6.406q-0.094-0.188-0.25-0.281t-0.375-0.094q-0.188 0-0.344 0.094t-0.25 0.281l-3.125 6.438-7.094 1.094q-0.188 0.031-0.344 0.156t-0.219 0.313q-0.031 0.188 0.016 0.375t0.172 0.313l5.156 4.969-1.156 7.063q-0.031 0.188 0.047 0.375t0.234 0.313q0.094 0.063 0.188 0.094t0.219 0.031q0.063 0 0.141-0.031t0.172-0.063l6.313-3.375 6.375 3.313q0.063 0.031 0.141 0.047t0.172 0.016q0.188 0 0.344-0.094t0.25-0.281q0.063-0.094 0.078-0.234t-0.016-0.234q0-0.031 0-0.063l-1.25-6.938 5.094-5.031q0.156-0.156 0.203-0.344t-0.016-0.375zM11.469 19.063q0.031-0.188-0.016-0.344t-0.172-0.281l-4.406-4.25 6.063-0.906q0.156-0.031 0.297-0.125t0.203-0.25l2.688-5.531 2.75 5.5q0.063 0.156 0.203 0.25t0.297 0.125l6.094 0.844-4.375 4.281q-0.125 0.125-0.172 0.297t-0.016 0.328l1.063 6.031-5.438-2.813q-0.156-0.094-0.328-0.078t-0.297 0.078l-5.438 2.875 1-6.031z",
   home: "M23.719 16.5q-0.313 0-0.531 0.219t-0.219 0.5v7.063q0 0.219-0.172 0.391t-0.391 0.172h-12.344q-0.25 0-0.422-0.172t-0.172-0.391v-7.063q0-0.281-0.219-0.5t-0.531-0.219q-0.281 0-0.516 0.219t-0.234 0.5v7.063q0.031 0.844 0.625 1.453t1.438 0.609h12.375q0.844 0 1.453-0.609t0.609-1.453v-7.063q0-0.125-0.063-0.266t-0.156-0.234q-0.094-0.125-0.234-0.172t-0.297-0.047zM26.5 14.875l-8.813-8.813q-0.313-0.313-0.688-0.453t-0.781-0.141-0.781 0.141-0.656 0.422l-8.813 8.844q-0.188 0.219-0.188 0.516t0.219 0.484q0.094 0.125 0.234 0.172t0.297 0.047q0.125 0 0.25-0.047t0.25-0.141l8.781-8.781q0.156-0.156 0.406-0.156t0.406 0.156l8.813 8.781q0.219 0.188 0.516 0.188t0.516-0.219q0.188-0.188 0.203-0.484t-0.172-0.516z",
   menu: "M8.938 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM16.188 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM23.469 18.313q0.844 0 1.453-0.609t0.609-1.453-0.609-1.453-1.453-0.609q-0.875 0-1.484 0.609t-0.609 1.453 0.609 1.453 1.484 0.609z",
-  close: ICON_PATH_CLOSE
+  close: ""
 };
+const ICON_FONTS = {
+  back: ICON_FONT_BACK,
+  select: ICON_FONT_BACK,
+  close: ICON_FONT_CLOSE,
+  search: ICON_FONT_SEARCH
+};
+function createPageHeadIconTsx(type, color, size) {
+  const font = ICON_FONTS[type];
+  return font ? (() => {
+    const _n0 = _t0$b();
+    const _x0 = Vue.txt(_n0);
+    setNodes(_x0, () => font);
+    Vue.renderEffect(() => Vue.setStyle(_n0, {
+      color,
+      fontSize: typeof size === "number" ? size + "px" : size
+    }));
+    return _n0;
+  })() : null;
+}
 const PageHead = /* @__PURE__ */ defineSystemComponent({
   name: "PageHead",
   setup() {
@@ -4800,7 +4821,7 @@ const PageHead = /* @__PURE__ */ defineSystemComponent({
     __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" && usePageHeadTransparent(headRef, pageMeta);
     function renderTitle() {
       return (() => {
-        const _n8 = _t1$2();
+        const _n8 = _t2$1();
         const _n7 = Vue.child(_n8);
         Vue.renderEffect(() => Vue.setStyle(_n7, {
           fontSize: navigationBar.titleSize,
@@ -4811,7 +4832,7 @@ const PageHead = /* @__PURE__ */ defineSystemComponent({
           const _n2 = createComponent(NavigationBarLoading, { style: "display: inline-block; width: 20px; height: 20px; margin-top: 7px;" });
           return _n2;
         }, () => Vue.createIf(() => navigationBar.titleImage, () => {
-          const _n4 = _t0$b();
+          const _n4 = _t1$3();
           Vue.renderEffect(() => Vue.setProp(_n4, "src", navigationBar.titleImage));
           return _n4;
         }, () => {
@@ -4824,11 +4845,12 @@ const PageHead = /* @__PURE__ */ defineSystemComponent({
     function renderTitleOrSearch() {
       if (__UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__) {
         return navigationBar.searchInput ? (() => {
-          const _n8 = _t2$1();
+          const _n8 = _t3$1();
           const _n2 = Vue.child(_n8);
-          let _p0 = Vue.child(_n2);
-          const _n0 = Vue.child(Vue.child(_p0));
-          const _n1 = Vue.next(_p0, true);
+          const _n0 = Vue.child(_n2);
+          const _n1 = Vue.next(_n0, true);
+          const _x0 = Vue.txt(_n0);
+          setNodes(_x0, () => createPageHeadIconTsx("search", navigationBar.searchInput.placeholderColor, 20));
           setNodes(_n1, () => !(Vue.unref(searchText) || Vue.unref(searchComposing)) && (() => {
             const _n02 = createNodes(() => navigationBar.searchInput.placeholder);
             return _n02;
@@ -4840,8 +4862,6 @@ const PageHead = /* @__PURE__ */ defineSystemComponent({
             });
             Vue.setStyle(_n2, { color: navigationBar.searchInput.placeholderColor });
             Vue.setClass(_n2, ["uni-page-head-search-placeholder", `uni-page-head-search-placeholder-${Vue.unref(searchFocus) || Vue.unref(searchText) ? "left" : navigationBar.searchInput.align}`]);
-            Vue.setAttr(_n0, "d", ICON_PATH_SEARCH, true);
-            Vue.setAttr(_n0, "fill", navigationBar.searchInput.placeholderColor, true);
           });
           Vue.setInsertionState(_n8, 1);
           Vue.createIf(() => navigationBar.searchInput.disabled, () => {
@@ -4876,13 +4896,13 @@ const PageHead = /* @__PURE__ */ defineSystemComponent({
     return () => (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
       const _n5 = Vue.createPlainElement("uni-page-head", { "uni-page-head-type": () => navigationBar.type || "default" }, () => {
-        const _n3 = _t3$1();
+        const _n3 = _t4$1();
         const _n0 = Vue.child(_n3);
         const _n1 = Vue.next(_n0, true);
         const _n2 = Vue.next(_n1);
         const _x0 = Vue.txt(_n0);
         setNodes(_x0, () => __UNI_FEATURE_PAGES__ && !pageMeta.isQuit && (() => {
-          const _n02 = _t4$1();
+          const _n02 = _t5();
           const _n12 = Vue.child(Vue.child(_n02));
           Vue.on(_n02, "click", onPageHeadBackButton);
           Vue.renderEffect(() => {
@@ -4892,7 +4912,7 @@ const PageHead = /* @__PURE__ */ defineSystemComponent({
           return _n02;
         })(), () => __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ && buttons && (() => {
           const _n02 = createNodes(() => Vue.createFor(() => buttons.left, (button) => (() => {
-            const _n03 = _t8();
+            const _n03 = _t9();
             Vue.on(_n03, "click", button.value.onClick);
             Vue.renderEffect(() => {
               Vue.setClass(_n03, button.value.btnClass);
@@ -4901,7 +4921,7 @@ const PageHead = /* @__PURE__ */ defineSystemComponent({
             });
             Vue.setInsertionState(_n03);
             Vue.createIf(() => button.value.btnIconPath, () => {
-              const _n42 = _t5();
+              const _n42 = _t6();
               const _n32 = Vue.child(_n42);
               Vue.renderEffect(() => {
                 Vue.setAttr(_n42, "width", getSvgSize(button.value.iconStyle.fontSize), true);
@@ -4910,24 +4930,27 @@ const PageHead = /* @__PURE__ */ defineSystemComponent({
                 Vue.setAttr(_n32, "fill", getSvgColor(button.value.iconStyle.color), true);
               });
               return _n42;
+            }, () => Vue.createIf(() => button.value.btnIconType && ICON_FONTS[button.value.btnIconType], () => {
+              const _n6 = createNodes(() => createPageHeadIconTsx(button.value.btnIconType, button.value.iconStyle.color || "currentColor", button.value.iconStyle.fontSize || 27));
+              return _n6;
             }, () => Vue.createIf(() => button.value.btnSelect, () => {
-              const _n8 = _t6();
-              const _n6 = Vue.child(_n8);
-              const _n7 = Vue.child(Vue.next(_n6));
-              Vue.renderEffect(() => {
-                Vue.setStyle(_n8, button.value.iconStyle);
-                Vue.setHtml(_n6, button.value.btnText);
-                Vue.setAttr(_n7, "d", ICON_PATHS.select, true);
-              });
-              return _n8;
-            }, () => {
               const _n10 = _t7();
+              const _n8 = Vue.child(_n10);
+              const _n9 = Vue.next(_n8, true);
+              setNodes(_n9, () => createPageHeadIconTsx("select", "currentColor", 14));
               Vue.renderEffect(() => {
                 Vue.setStyle(_n10, button.value.iconStyle);
-                Vue.setHtml(_n10, button.value.btnText);
+                Vue.setHtml(_n8, button.value.btnText);
               });
               return _n10;
-            }, 513), 261);
+            }, () => {
+              const _n122 = _t8();
+              Vue.renderEffect(() => {
+                Vue.setStyle(_n122, button.value.iconStyle);
+                Vue.setHtml(_n122, button.value.btnText);
+              });
+              return _n122;
+            }, 769), 514), 261);
             return _n03;
           })(), (button, index2) => index2, 8));
           return _n02;
@@ -4936,7 +4959,7 @@ const PageHead = /* @__PURE__ */ defineSystemComponent({
         const _x2 = Vue.txt(_n2);
         setNodes(_x2, () => __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ && buttons && (() => {
           const _n02 = createNodes(() => Vue.createFor(() => buttons.right, (button) => (() => {
-            const _n03 = _t8();
+            const _n03 = _t9();
             Vue.on(_n03, "click", button.value.onClick);
             Vue.renderEffect(() => {
               Vue.setClass(_n03, button.value.btnClass);
@@ -4945,7 +4968,7 @@ const PageHead = /* @__PURE__ */ defineSystemComponent({
             });
             Vue.setInsertionState(_n03);
             Vue.createIf(() => button.value.btnIconPath, () => {
-              const _n42 = _t5();
+              const _n42 = _t6();
               const _n32 = Vue.child(_n42);
               Vue.renderEffect(() => {
                 Vue.setAttr(_n42, "width", getSvgSize(button.value.iconStyle.fontSize), true);
@@ -4954,30 +4977,33 @@ const PageHead = /* @__PURE__ */ defineSystemComponent({
                 Vue.setAttr(_n32, "fill", getSvgColor(button.value.iconStyle.color), true);
               });
               return _n42;
+            }, () => Vue.createIf(() => button.value.btnIconType && ICON_FONTS[button.value.btnIconType], () => {
+              const _n6 = createNodes(() => createPageHeadIconTsx(button.value.btnIconType, button.value.iconStyle.color || "currentColor", button.value.iconStyle.fontSize || 27));
+              return _n6;
             }, () => Vue.createIf(() => button.value.btnSelect, () => {
-              const _n8 = _t9();
-              const _n6 = Vue.child(_n8);
-              const _n7 = Vue.child(Vue.next(_n6));
-              Vue.renderEffect(() => {
-                Vue.setStyle(_n8, button.value.iconStyle);
-                Vue.setHtml(_n6, button.value.btnText);
-                Vue.setAttr(_n7, "d", ICON_PATHS.select, true);
-              });
-              return _n8;
-            }, () => {
               const _n10 = _t7();
+              const _n8 = Vue.child(_n10);
+              const _n9 = Vue.next(_n8, true);
+              setNodes(_n9, () => createPageHeadIconTsx("select", "currentColor", 14));
               Vue.renderEffect(() => {
                 Vue.setStyle(_n10, button.value.iconStyle);
-                Vue.setHtml(_n10, button.value.btnText);
+                Vue.setHtml(_n8, button.value.btnText);
               });
               return _n10;
-            }, 513), 261);
+            }, () => {
+              const _n122 = _t8();
+              Vue.renderEffect(() => {
+                Vue.setStyle(_n122, button.value.iconStyle);
+                Vue.setHtml(_n122, button.value.btnText);
+              });
+              return _n122;
+            }, 769), 514), 261);
             return _n03;
           })(), (button, index2) => index2, 8));
           return _n02;
         })());
         const _n4 = createNodes(() => navigationBar.type !== "transparent" && navigationBar.type !== "float" && (() => {
-          const _n02 = _t8();
+          const _n02 = _t9();
           Vue.renderEffect(() => Vue.setClassName(_n02, 1 | (navigationBar.titlePenetrate ? 2 : 0), [" uni-placeholder", " uni-placeholder-titlePenetrate"]));
           return _n02;
         })());
@@ -5089,6 +5115,7 @@ function usePageHeadButton(pageId, index2, btn, isTransparent) {
     },
     btnText: "",
     btnIconPath: ICON_PATHS[btn.type],
+    btnIconType: btn.type,
     badgeText: btn.badgeText,
     iconStyle,
     onClick() {
@@ -5569,15 +5596,15 @@ const ICONS = {
     c: uniShared.PRIMARY_COLOR
   },
   success_no_circle: {
-    d: ICON_PATH_SUCCESS_NO_CIRCLE,
+    f: ICON_FONT_SUCCESS_NO_CIRCLE,
     c: uniShared.PRIMARY_COLOR
   },
   info: {
-    d: ICON_PATH_INFO,
+    f: ICON_FONT_INFO,
     c: INFO_COLOR
   },
   warn: {
-    d: ICON_PATH_WARN,
+    f: ICON_FONT_WARN,
     c: WARN_COLOR
   },
   waiting: {
@@ -5593,7 +5620,7 @@ const ICONS = {
     c: uniShared.PRIMARY_COLOR
   },
   search: {
-    d: ICON_PATH_SEARCH,
+    f: ICON_FONT_SEARCH,
     c: GREY_COLOR
   },
   clear: {
@@ -5617,9 +5644,12 @@ const iconProps = {
   }
 };
 function useIcon(props2) {
-  return Vue.computed(() => ICONS[props2.type]);
+  return Vue.computed(
+    () => ICONS[props2.type]
+  );
 }
-const _t0$9 = Vue.template("<div uni-icon uni-view> ", 1);
+const _t0$9 = Vue.template("<i class=uni-icon-font> ");
+const _t1$2 = Vue.template("<div uni-icon uni-view>", 1);
 class UniIconElement extends UniViewElement {
   static [Symbol.hasInstance](value) {
     return this === UniIconElement && value instanceof UniViewElement && value.hasAttribute("uni-icon") || Function.prototype[Symbol.hasInstance].call(this, value);
@@ -5636,10 +5666,31 @@ const indexVapor$7 = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2) {
     const path = useIcon(props2);
     const root = (() => {
-      const _n0 = _t0$9();
-      const _x0 = Vue.txt(_n0);
-      setNodes(_x0, () => path.value && path.value.d && createSvgIconVNode(path.value.d, props2.color || path.value.c, rpx2px(props2.size)));
-      return _n0;
+      const _n7 = _t1$2();
+      Vue.setInsertionState(_n7);
+      Vue.createIf(() => {
+        var _a;
+        return (_a = path.value) == null ? void 0 : _a.f;
+      }, () => {
+        const _n2 = _t0$9();
+        const _x2 = Vue.txt(_n2);
+        setNodes(_x2, () => path.value.f);
+        Vue.renderEffect(() => Vue.setStyle(_n2, {
+          color: props2.color || path.value.c,
+          fontSize: rpx2px(props2.size) + "px"
+        }));
+        return _n2;
+      }, () => Vue.createIf(() => {
+        var _a;
+        return (_a = path.value) == null ? void 0 : _a.d;
+      }, () => {
+        const _n4 = createNodes(() => createSvgIconVNode(path.value.d, props2.color || path.value.c, rpx2px(props2.size)));
+        return _n4;
+      }, () => {
+        const _n6 = createNodes(null);
+        return _n6;
+      }, 514), 261);
+      return _n7;
     })();
     Vue.initUniElement(root, uniTagName$7);
     return root;
