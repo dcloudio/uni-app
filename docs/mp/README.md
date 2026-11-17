@@ -204,6 +204,7 @@ align-items
 - 组件和 API 的支付宝平台限制请参阅对应组件和API文档
 - 支付宝小程序支持暗黑模式，需要通过 `themeLocation` 指定 `theme.json`，详见[暗黑主题适配教程](../api/theme-change.md)。
 - 支付宝小程序不支持完全自定义导航栏，`navigationStyle: "custom"` 不生效，详见[pages.json 页面配置](../collocation/pagesjson.md)。
+- HBuilderX 5.37 起，input 和 textarea 组件的背景色为 `transparent`；placeholder 的文字颜色在亮色模式下为 `#808080`，暗黑模式下为 `#5f5f5f`。
 
 ## 开发和调试
 

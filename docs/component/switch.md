@@ -24,7 +24,7 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.
 | :- | :- | :- |  :-: | :- |
 | name | string |   | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 表单的控件名称，作为键值对的一部分与表单(form组件)一同提交 |
 | checked | boolean | false | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 当前是否选中，可用来设置默认选中 |
-| type | string |   | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 样式，有效值：switch, checkbox |
+| type | string |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 样式，有效值：switch, checkbox |
 | backgroundColor | string([string.ColorString](/uts/data-type.md#ide-string)) |   | Web: 4.18; 微信小程序: x; 支付宝小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61 | switch 的关闭状态背景颜色 |
 | activeBackgroundColor | string([string.ColorString](/uts/data-type.md#ide-string)) |   | Web: 4.18; 微信小程序: x; 支付宝小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61 | switch 的开启状态背景颜色 |
 | foreColor | string([string.ColorString](/uts/data-type.md#ide-string)) |   | Web: 4.18; 微信小程序: x; 支付宝小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61 | switch 的滑块背景颜色 |
@@ -40,8 +40,8 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| switch | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x |
-| checkbox | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x |
+| switch | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x |
+| checkbox | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x |
 
 type为checkbox只有微信小程序和Web平台支持。一般建议使用标准的[checkbox组件](checkbox-group.md)
 

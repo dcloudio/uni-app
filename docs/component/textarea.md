@@ -27,7 +27,7 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.
 | value | string | "" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 输入框的初始内容 |
 | placeholder | string | "" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 输入框为空时占位符 |
 | placeholder-style | string | "" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 指定 placeholder 的样式 |
-| placeholder-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 指定 placeholder 的样式类 |
+| placeholder-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: x; 微信小程序: x; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 指定 placeholder 的样式类 |
 | maxlength | string \| number | -1 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 最大输入长度，0和正数为合法值，非法值的时候不限制最大长度 |
 | auto-focus | boolean | false | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 自动获取焦点，与`focus`属性对比，此属性只会首次生效。 |
 | focus | boolean | false | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 获取焦点 |
