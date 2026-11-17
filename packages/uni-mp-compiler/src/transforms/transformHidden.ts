@@ -6,6 +6,7 @@ import {
   identifier,
   isIdentifier,
   logicalExpression,
+  stringLiteral,
   unaryExpression,
 } from '@babel/types'
 import {
@@ -76,10 +77,19 @@ export function rewriteHidden(
       hiddenBindingExpr = logicalExpression(
         '||',
         conditionalExpression(
-          binaryExpression(
-            '===',
-            identifier(VIRTUAL_HOST_HIDDEN),
-            identifier('undefined')
+          // 未传入时运行时默认值为 ''，同时兼容页面上的 undefined。
+          logicalExpression(
+            '||',
+            binaryExpression(
+              '===',
+              identifier(VIRTUAL_HOST_HIDDEN),
+              identifier('undefined')
+            ),
+            binaryExpression(
+              '===',
+              identifier(VIRTUAL_HOST_HIDDEN),
+              stringLiteral('')
+            )
           ),
           res,
           identifier(VIRTUAL_HOST_HIDDEN)
