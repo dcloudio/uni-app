@@ -50,7 +50,7 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.
 | 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- | :- |
 | navigationBarBackgroundColor | string ([string.ColorString](/uts/data-type.md#ide-string)) | `app`: #F8F8F8<br/>`web`: #F8F8F8<br/>`mp-weixin、mp-qq、mp-baidu、mp-toutiao、mp-lark、mp-jd`: #000000<br/>`mp-alipay、mp-kuaishou`: #ffffff | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 导航栏背景颜色（同状态栏背景色） |
-| navigationBarTextStyle | string ([string.ThemeJsonString](/uts/data-type.md#ide-string)) | "black" | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 导航栏标题颜色，仅支持 black/white（支付宝小程序不支持，请使用 [my.setNavigationBar](https://opendocs.alipay.com/mini/api/xwq8e6)）。 |
+| navigationBarTextStyle | string ([string.ThemeJsonString](/uts/data-type.md#ide-string)) | "black" | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 导航栏标题颜色，仅支持 black/white |
 | navigationBarTitleText | string |  | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 导航栏标题文字内容 |
 | navigationStyle | 'default' \| 'custom' | "default" | 否 | Web: 4.0; 微信小程序: √; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 导航栏样式，仅支持 default/custom。custom即取消默认的原生导航栏，需看[使用注意](https://uniapp.dcloud.net.cn/collocation/pages.html#customnav)。 |
 | backgroundColor | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android(VDOM): 3.99; Android(Vapor): 5.25; iOS(VDOM): 4.18; iOS(Vapor): 5.25; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.31 | 下拉刷新显示出来的窗口的背景色（无下拉刷新时，此颜色无效果） |
