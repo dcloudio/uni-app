@@ -47,7 +47,8 @@ export function useScrollView(
   const rootStyle = computed(
     () =>
       `overflow-x:${scrollX.value ? 'auto' : 'hidden'};` +
-      `overflow-y:${scrollY.value ? 'auto' : 'hidden'};`
+      `overflow-y:${scrollY.value ? 'auto' : 'hidden'};` +
+      `scroll-behavior:${props.scrollWithAnimation ? 'smooth' : 'auto'};`
   )
   const scrollBarClassName = computed(() =>
     props.showScrollbar === false ? 'uni-scroll-view-scrollbar-hidden' : ''
@@ -59,11 +60,7 @@ export function useScrollView(
   let lastLowerTime = 0
 
   function scrollTo(options: ScrollToOptions) {
-    rootRef.value?.scrollTo(
-      Object.assign(options, {
-        behavior: props.scrollWithAnimation ? 'smooth' : 'instant',
-      })
-    )
+    rootRef.value?.scrollTo(options)
   }
 
   function scrollIntoView(id: string) {

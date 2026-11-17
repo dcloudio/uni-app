@@ -367,7 +367,7 @@ describe('Web Vapor ScrollView 原生宿主', () => {
     expect(init).toHaveBeenCalledTimes(1)
   })
 
-  test('双向 props 和带冒号的 scrollIntoView 一次提交原生滚动，动画只影响 props', async () => {
+  test('双向 props 和带冒号的 scrollIntoView 一次提交原生滚动，动画由根节点样式控制', async () => {
     const direction = vue.ref('all')
     const props = vue.reactive({
       top: '25',
@@ -394,6 +394,7 @@ describe('Web Vapor ScrollView 原生宿主', () => {
     )
     await vue.nextTick()
     expect([root.scrollTop, root.scrollLeft]).toEqual([25, 15])
+    expect(root.style.scrollBehavior).toBe('auto')
     nativeScrollTo.mockClear()
     props.top = 50
     props.left = 30
@@ -402,7 +403,6 @@ describe('Web Vapor ScrollView 原生宿主', () => {
     expect(nativeScrollTo).toHaveBeenLastCalledWith({
       top: 50,
       left: 30,
-      behavior: 'instant',
     })
     root.getBoundingClientRect = () => ({ top: 10, left: 20 } as DOMRect)
     Object.defineProperties(root, {
@@ -418,8 +418,8 @@ describe('Web Vapor ScrollView 原生宿主', () => {
     expect(nativeScrollTo).toHaveBeenLastCalledWith({
       top: 145,
       left: 67,
-      behavior: 'smooth',
     })
+    expect(root.style.scrollBehavior).toBe('smooth')
     expect([root.scrollTop, root.scrollLeft]).toEqual([145, 67])
     nativeScrollTo.mockClear()
     props.animation = true
@@ -430,7 +430,6 @@ describe('Web Vapor ScrollView 原生宿主', () => {
     expect(nativeScrollTo).toHaveBeenLastCalledWith({
       top: 900,
       left: 900,
-      behavior: 'smooth',
     })
     expect([root.scrollTop, root.scrollLeft]).toEqual([600, 400])
     expect(root.style.transform).toBe('')
@@ -451,8 +450,8 @@ describe('Web Vapor ScrollView 原生宿主', () => {
     expect(nativeScrollTo).toHaveBeenCalledTimes(1)
     expect(nativeScrollTo).toHaveBeenLastCalledWith({
       top: 90,
-      behavior: 'instant',
     })
+    expect(root.style.scrollBehavior).toBe('auto')
     expect([root.scrollTop, root.scrollLeft]).toEqual([90, 0])
   })
 
