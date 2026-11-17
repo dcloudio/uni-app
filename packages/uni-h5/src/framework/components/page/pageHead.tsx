@@ -209,13 +209,13 @@ function createButtonsTsx(btns: PageHeadButton[]) {
           ) : btnIconType && __X__ && ICON_FONTS[btnIconType] ? (
             createPageHeadIconTsx(
               btnIconType,
-              iconStyle.color || '#000',
+              iconStyle.color || 'currentColor',
               iconStyle.fontSize || 27
             )
           ) : btnSelect ? (
             <span style={iconStyle}>
               <i class="uni-btn-icon" v-html={btnText} />
-              {createPageHeadIconTsx('select', '#000', 14)}
+              {createPageHeadIconTsx('select', 'currentColor', 14)}
             </span>
           ) : (
             <i class="uni-btn-icon" style={iconStyle} v-html={btnText} />

@@ -268,7 +268,7 @@ export default /*#__PURE__*/ defineSystemComponent({
                         ICON_FONTS[button.value.btnIconType] ? (
                         createPageHeadIconTsx(
                           button.value.btnIconType,
-                          button.value.iconStyle.color || '#000',
+                          button.value.iconStyle.color || 'currentColor',
                           button.value.iconStyle.fontSize || 27
                         )
                       ) : button.value.btnSelect ? (
@@ -278,7 +278,7 @@ export default /*#__PURE__*/ defineSystemComponent({
                             innerHTML={button.value.btnText}
                           ></i>
                           //#if _X_
-                          {createPageHeadIconTsx('select', '#000', 14)}
+                          {createPageHeadIconTsx('select', 'currentColor', 14)}
                           //#else
                           <svg width="14" height="14" viewBox="0 0 32 32">
                             <path
@@ -335,7 +335,7 @@ export default /*#__PURE__*/ defineSystemComponent({
                         ICON_FONTS[button.value.btnIconType] ? (
                         createPageHeadIconTsx(
                           button.value.btnIconType,
-                          button.value.iconStyle.color || '#000',
+                          button.value.iconStyle.color || 'currentColor',
                           button.value.iconStyle.fontSize || 27
                         )
                       ) : button.value.btnSelect ? (
@@ -345,7 +345,7 @@ export default /*#__PURE__*/ defineSystemComponent({
                             innerHTML={button.value.btnText}
                           ></i>
                           //#if _X_
-                          {createPageHeadIconTsx('select', '#000', 14)}
+                          {createPageHeadIconTsx('select', 'currentColor', 14)}
                           //#else
                           <svg width="14" height="14" viewBox="0 0 32 32">
                             <path d={ICON_PATHS.select} fill="#000"></path>

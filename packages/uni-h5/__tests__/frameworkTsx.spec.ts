@@ -156,6 +156,13 @@ describe('框架 TSX 动态行为', () => {
         buttons: [
           { text: '按钮', float: 'right' },
           { text: '选择', float: 'left', type: 'none', select: true },
+          {
+            text: '自定义颜色',
+            float: 'right',
+            type: 'none',
+            select: true,
+            color: '#123456',
+          },
         ],
       })
       const Component = load('page/pageHead', vapor, {
@@ -206,6 +213,29 @@ describe('框架 TSX 动态行为', () => {
         host.querySelector('.uni-page-head-btn-select .uni-icon-font')!
           .textContent
       ).toBe('\ue601')
+      const selectIcon = host.querySelector<HTMLElement>(
+        '.uni-page-head-hd .uni-page-head-btn-select .uni-icon-font'
+      )!
+      const customSelectIcon = host.querySelector<HTMLElement>(
+        '.uni-page-head-ft .uni-page-head-btn-select .uni-icon-font'
+      )!
+      expect(selectIcon.style.color.toLowerCase()).toBe('currentcolor')
+      expect(customSelectIcon.style.color.toLowerCase()).toBe('currentcolor')
+      expect((customSelectIcon.parentElement as HTMLElement).style.color).toBe(
+        'rgb(18, 52, 86)'
+      )
+      for (const color of ['#ffffff', '#000000']) {
+        navigationBar.titleColor = color
+        await vue.nextTick()
+        expect(backPath.getAttribute('stroke')).toBe(color)
+        expect(
+          host.querySelector<HTMLElement>('.uni-page-head')!.style.color
+        ).toBe(color === '#ffffff' ? 'rgb(255, 255, 255)' : 'rgb(0, 0, 0)')
+        expect(selectIcon.style.color.toLowerCase()).toBe('currentcolor')
+        expect(
+          (customSelectIcon.parentElement as HTMLElement).style.color
+        ).toBe('rgb(18, 52, 86)')
+      }
       navigationBar.titleText = '新标题'
       await vue.nextTick()
       expect(host.querySelector('.uni-page-head__title')!.textContent).toBe(
