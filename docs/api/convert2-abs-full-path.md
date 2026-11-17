@@ -39,15 +39,13 @@ Android: 5.32; iOS: 5.32; HarmonyOS: 5.32
 uni.convert2AbsFullPath('/static/logo.png')
 ```
 
-返回值为绝对路径，各平台结果如下：
+返回值为绝对[路径](https://doc.dcloud.net.cn/uni-app-x/api/file-system-spec.html#package)，各平台结果如下：
 
 | 平台 | 返回值 |
 | --- | --- |
 | Android | `/data/data/<package-name>/apps/<appid>/www/static/logo.png` |
 | iOS | `/var/mobile/Containers/.../Documents/uni-app-x/apps/<appid>/www/static/logo.png` |
 | Harmony | `/data/storage/el1/bundle/.../resfile/uni-app-x/apps/<appid>/www/static/logo.png` |
-
-当入参路径不是使用 `uni.env.`（如 `uni.env.USER_DATA_PATH`、`uni.env.CACHE_PATH` 等）拼接的路径时，转换后返回的是应用 www 目录下的路径，该目录为只读目录，不可写入。
 
 
 
