@@ -10,7 +10,8 @@ import { normalizePageSelector } from '../src/helpers/pageSelector'
 describe('Web Vapor 页面区域滚动', () => {
   let dom: any
   const globals = new Map<string, any>()
-  const callbacks: FrameRequestCallback[] = []
+  const callbacks = new Map<number, FrameRequestCallback>()
+  let frameId = 0
   const scrollTo = jest.fn()
   const getCurrentPage = jest.fn()
   const getPageBody = jest.fn((instance) => instance.body)
@@ -33,8 +34,11 @@ describe('Web Vapor 页面区域滚动', () => {
       globals.set(name, (global as any)[name])
       ;(global as any)[name] = dom.window[name]
     }
-    global.requestAnimationFrame = (callback) => callbacks.push(callback)
-    global.cancelAnimationFrame = jest.fn()
+    global.requestAnimationFrame = (callback) => {
+      callbacks.set(++frameId, callback)
+      return frameId
+    }
+    global.cancelAnimationFrame = jest.fn((id) => callbacks.delete(id))
 
     const code = ts.transpileModule(
       fs.readFileSync(
@@ -105,7 +109,7 @@ describe('Web Vapor 页面区域滚动', () => {
   beforeEach(() => {
     jest.useFakeTimers()
     jest.clearAllMocks()
-    callbacks.length = 0
+    callbacks.clear()
     document.body.innerHTML = ''
   })
 
@@ -121,8 +125,10 @@ describe('Web Vapor 页面区域滚动', () => {
     dom.window.close()
   })
 
-  function frame() {
-    callbacks.splice(0).forEach((callback) => callback(0))
+  function frame(time = performance.now()) {
+    const pending = [...callbacks.values()]
+    callbacks.clear()
+    pending.forEach((callback) => callback(time))
   }
 
   function createBody(height = 200, scrollHeight = 1000) {
@@ -141,30 +147,107 @@ describe('Web Vapor 页面区域滚动', () => {
     return body
   }
 
-  test('pageScrollTo 使用当前页原生滚动，duration 决定是否平滑滚动', () => {
+  test('pageScrollTo 即时定位当前页，并约束在有效滚动范围内', () => {
     const other = createBody()
     other.scrollTop = 30
     const body = createBody()
     pageScrollTo({ scrollTop: 900, duration: 0 }, { resolve })
     expect(body.scrollTo).toHaveBeenLastCalledWith({
-      top: 900,
+      top: 800,
       behavior: 'instant',
     })
     pageScrollTo({ scrollTop: -10, duration: 0 }, { resolve })
     expect(body.scrollTo).toHaveBeenLastCalledWith({
-      top: -10,
+      top: 0,
       behavior: 'instant',
     })
-    pageScrollTo({ scrollTop: 100, duration: 20 }, { resolve })
-    expect(body.scrollTo).toHaveBeenLastCalledWith({
-      top: 100,
-      behavior: 'smooth',
-    })
-    expect(callbacks).toHaveLength(0)
+    expect(callbacks.size).toBe(0)
     expect(other.scrollTop).toBe(30)
     expect(other.scrollTo).not.toHaveBeenCalled()
     expect(document.documentElement.scrollTop).toBe(0)
     expect(scrollTo).not.toHaveBeenCalled()
+  })
+
+  test.each([100, 800])(
+    'duration=%d 按实际帧时间推进，并在指定时长到达目标',
+    (duration) => {
+      const body = createBody()
+      pageScrollTo({ scrollTop: 600, duration }, { resolve })
+      expect(resolve).toHaveBeenCalledTimes(1)
+      expect(body.scrollTop).toBe(0)
+      frame(duration / 2)
+      expect(body.scrollTop).toBe(300)
+      frame(duration)
+      expect(body.scrollTop).toBe(600)
+      expect(callbacks.size).toBe(0)
+      expect(body.scrollTo).toHaveBeenLastCalledWith({
+        top: 600,
+        behavior: 'instant',
+      })
+    }
+  )
+
+  test('丢帧时按已流逝时间完成，而非延长到固定帧数', () => {
+    const body = createBody()
+    pageScrollTo({ scrollTop: 600, duration: 100 }, { resolve })
+    frame(150)
+    expect(body.scrollTop).toBe(600)
+    expect(callbacks.size).toBe(0)
+  })
+
+  test('即时请求取消本页未完成的动画', () => {
+    const body = createBody()
+    pageScrollTo({ scrollTop: 600, duration: 200 }, { resolve })
+    frame(50)
+    expect(body.scrollTop).toBe(150)
+    pageScrollTo({ scrollTop: 320, duration: 0 }, { resolve })
+    frame(200)
+    expect(body.scrollTop).toBe(320)
+    expect(callbacks.size).toBe(0)
+  })
+
+  test('新动画从当前位置开始，并取消旧动画', () => {
+    const body = createBody()
+    pageScrollTo({ scrollTop: 600, duration: 200 }, { resolve })
+    jest.advanceTimersByTime(50)
+    frame()
+    expect(body.scrollTop).toBe(150)
+    pageScrollTo({ scrollTop: 500, duration: 100 }, { resolve })
+    jest.advanceTimersByTime(50)
+    frame()
+    expect(body.scrollTop).toBe(325)
+    jest.advanceTimersByTime(50)
+    frame()
+    expect(body.scrollTop).toBe(500)
+    expect(callbacks.size).toBe(0)
+  })
+
+  test('不同页面的动画互不取消', () => {
+    const first = createBody()
+    pageScrollTo({ scrollTop: 400, duration: 200 }, { resolve })
+    const second = createBody()
+    pageScrollTo({ scrollTop: 500, duration: 100 }, { resolve })
+    frame(100)
+    expect(first.scrollTop).toBe(200)
+    expect(second.scrollTop).toBe(500)
+    frame(200)
+    expect(first.scrollTop).toBe(400)
+    expect(second.scrollTop).toBe(500)
+  })
+
+  test('外部滚动或页面卸载后停止动画', () => {
+    const body = createBody()
+    pageScrollTo({ scrollTop: 600, duration: 200 }, { resolve })
+    frame(50)
+    body.scrollTop = 220
+    frame(100)
+    expect(body.scrollTop).toBe(220)
+    expect(callbacks.size).toBe(0)
+    pageScrollTo({ scrollTop: 600, duration: 200 }, { resolve })
+    body.remove()
+    frame(200)
+    expect(body.scrollTop).toBe(220)
+    expect(callbacks.size).toBe(0)
   })
 
   test('selector 在当前页面查找，坐标扣除正文位置并应用 offsetTop', () => {
@@ -219,7 +302,7 @@ describe('Web Vapor 页面区域滚动', () => {
       top: 150,
       behavior: 'instant',
     })
-    expect(callbacks).toHaveLength(0)
+    expect(callbacks.size).toBe(0)
   })
 
   test('非蒸汽模式继续使用原有 document 滚动实现', () => {

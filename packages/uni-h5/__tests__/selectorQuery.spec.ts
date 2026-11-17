@@ -1,3 +1,4 @@
+import fs from 'fs'
 import path from 'path'
 import ts from 'typescript'
 import jscc from 'rollup-plugin-jscc'
@@ -20,6 +21,9 @@ describe('SelectorQuery 模式兼容', () => {
   let vue: any
   let query: Function
   let legacyQuery: Function
+  let currentPage: any
+  let createSelectorQuery: Function
+  let loadSelectorQuery: (platform: string, request?: Function) => Function
   const apps: any[] = []
   const globals = new Map<string, any>()
 
@@ -92,10 +96,55 @@ describe('SelectorQuery 模式兼容', () => {
     }
     query = await load(true)
     legacyQuery = await load(false)
+
+    // 连通公共 API 与 H5 查询实现，覆盖 in() 在请求发出前改变页面归属的行为。
+    const selectorQueryCode = ts.transpileModule(
+      fs.readFileSync(
+        path.join(
+          root,
+          'packages/uni-api/src/service/ui/createSelectorQuery.ts'
+        ),
+        'utf8'
+      ),
+      { compilerOptions: { module: ts.ModuleKind.CommonJS } }
+    ).outputText
+    loadSelectorQuery = (platform, request = query) => {
+      const exports = {} as any
+      const imports: Record<string, any> = {
+        '@vue/shared': {
+          isArray: Array.isArray,
+          isFunction: (v: any) => typeof v === 'function',
+        },
+        '@dcloudio/uni-shared': jest.requireActual('@dcloudio/uni-shared'),
+        '@dcloudio/uni-core': {
+          getCurrentPageVm: () => currentPage,
+          getPageIdByVm: () => 1,
+        },
+        '@dcloudio/uni-platform': { requestComponentInfo: request },
+        '../../helpers/api': {
+          defineSyncApi: (_name: string, fn: Function) => fn,
+        },
+        '../context/canvas': {},
+        '../context/editor': {},
+        '../context/createMapContext': {},
+        '../context/createVideoContext': {},
+      }
+      new Function('require', 'exports', '__PLATFORM__', selectorQueryCode)(
+        (id: string) => {
+          if (!(id in imports)) throw new Error('缺少测试依赖：' + id)
+          return imports[id]
+        },
+        exports,
+        platform
+      )
+      return exports.createSelectorQuery
+    }
+    createSelectorQuery = loadSelectorQuery('h5')
   })
   afterEach(() => {
     apps.forEach((app) => app.unmount())
     apps.length = 0
+    currentPage = undefined
     document.body.innerHTML = ''
   })
   afterAll(() => {
@@ -116,6 +165,112 @@ describe('SelectorQuery 模式兼容', () => {
     apps.push(app)
     return { vm: app._instance.proxy, nodes: nodes as HTMLElement[] }
   }
+
+  function mountQueryPage(
+    app: ReturnType<typeof mount>,
+    id: string,
+    scrollTop: number
+  ) {
+    const page = mount(`<section><i id="${id}" class="hit"></i></section>`)
+    const body = document.createElement('uni-page-body')
+    body.append(...page.nodes)
+    app.nodes[0].appendChild(body)
+    const dimensions = {
+      clientWidth: 320,
+      clientHeight: 400,
+      scrollLeft: 2,
+      scrollTop,
+      scrollWidth: 600,
+      scrollHeight: 1500,
+    }
+    for (const [name, value] of Object.entries(dimensions)) {
+      Object.defineProperty(body, name, { value })
+    }
+    page.vm.$.__pageBodyEl = body
+    page.vm.$.$pageInstance = page.vm.$
+    page.vm.$.root = app.vm.$
+    return { ...page, body }
+  }
+
+  test.each(['page', 'child', 'internal-page', 'internal-child'])(
+    'in(%s) 的视口读取正文滚动区域，普通节点查询保留组件作用域',
+    (scope) => {
+      const app = mount('<main></main>')
+      const page = mountQueryPage(app, 'page-hit', 120)
+      const child = mount('<b id="child-hit" class="hit"></b>')
+      page.nodes[0].append(...child.nodes)
+      child.vm.$.$pageInstance = page.vm.$
+      child.vm.$.root = app.vm.$
+      currentPage = page.vm
+      const owner = scope.includes('child') ? child : page
+      const component = scope.startsWith('internal-') ? owner.vm.$ : owner.vm
+      const selector = createSelectorQuery().in(component)
+      selector.selectViewport().fields({ size: true, scrollOffset: true })
+      selector.selectAll('.hit').fields({ id: true })
+      const callback = jest.fn()
+      selector.exec(callback)
+      expect(callback).toHaveBeenCalledWith([
+        {
+          width: 320,
+          height: 400,
+          scrollLeft: 2,
+          scrollTop: 120,
+          scrollWidth: 600,
+          scrollHeight: 1500,
+        },
+        scope.includes('child')
+          ? [{ id: 'child-hit' }]
+          : [{ id: 'page-hit' }, { id: 'child-hit' }],
+      ])
+    }
+  )
+
+  test.each(['cached-page', 'dialog'])(
+    '当前页面变化后 in(%s) 仍查询所属页，未绑定组件的请求不会扩大到 App',
+    (kind) => {
+      const app = mount('<main></main>')
+      currentPage = mountQueryPage(app, 'current-hit', 10).vm
+      const target = mountQueryPage(app, 'target-hit', 500)
+      if (kind === 'dialog') target.body.dataset.type = 'dialog'
+      const selector = createSelectorQuery()
+      selector.selectAll('.hit').fields({ id: true })
+      selector.in(target.vm).selectViewport().scrollOffset()
+      selector.select('page').fields({ node: true })
+      selector.in().selectAll('.hit').fields({ id: true })
+      const callback = jest.fn()
+      selector.exec(callback)
+      expect(callback).toHaveBeenCalledWith([
+        [{ id: 'target-hit' }],
+        {
+          id: '',
+          dataset: expect.any(Map),
+          scrollLeft: 2,
+          scrollTop: 500,
+          scrollWidth: 600,
+          scrollHeight: 1500,
+        },
+        { node: target.body },
+        [{ id: 'target-hit' }],
+      ])
+    }
+  )
+
+  test('非 H5 平台保留通过 $root 绑定请求页面的行为', () => {
+    const app = mount('<main></main>')
+    const page = mountQueryPage(app, 'page-hit', 120)
+    currentPage = page.vm
+    const request = jest.fn((_page, _reqs, callback) => callback([]))
+    loadSelectorQuery('app', request)()
+      .in(page.vm.$)
+      .selectViewport()
+      .scrollOffset()
+      .exec()
+    expect(request).toHaveBeenCalledWith(
+      app.vm,
+      expect.any(Array),
+      expect.any(Function)
+    )
+  })
 
   test('page 查询包含本页正文和 Teleport 后代，弹页与子组件范围独立', () => {
     function page(name: string) {
