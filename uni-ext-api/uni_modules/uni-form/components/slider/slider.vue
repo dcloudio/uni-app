@@ -336,15 +336,16 @@
     value: 0,
     disabled: false,
     showValue: false,
-    activeColor: '',
-    activeBackgroundColor: '',
-    backgroundColor: '',
-    blockSize: null,
-    blockColor: '',
-    foreColor: '',
+    activeBackgroundColor: '#007aff',
+    backgroundColor: '#e9e9e9',
+    blockSize: 28,
+    foreColor: '#ffffff',
     trackClass: '',
     trackActiveClass: '',
-    thumbClass: ''
+    thumbClass: '',
+    // 已废弃
+    activeColor: '#007aff',
+    blockColor: '#ffffff',
   })
 
   // Refs
