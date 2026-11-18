@@ -31,9 +31,14 @@ uni-app x 的组件和API，大多是uvue、uts开发的。和开发者做的uts
 ### 应用商店下载量千万级
 - 抱抱海心理咨询：[Android](https://appgallery.huawei.com/app/C119009491)、[iOS](https://apps.apple.com/cn/app/%E6%8A%B1%E6%8A%B1%E6%B5%B7%E5%BF%83%E7%90%86%E5%92%A8%E8%AF%A2/id6809343318)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.dahe.psy.hmos)、微信小程序搜索"抱抱海心理"
 ### 应用商店下载量百万级
+- 有鑫花：[Android](https://appgallery.huawei.com/app/C114779183)、[iOS](https://apps.apple.com/cn/app/%E6%9C%89%E9%91%AB%E8%8A%B1-%E5%88%86%E6%9C%9F%E8%B4%B7%E6%AC%BE%E4%BF%A1%E7%94%A8%E5%80%9F%E9%92%B1%E5%B9%B3%E5%8F%B0/id6747799597?uo=4)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.example.yxqb)
+- 甘肃高速：[Android](https://appgallery.huawei.com/app/C100175291)、[iOS](https://apps.apple.com/cn/app/%E7%94%98%E8%82%83%E9%AB%98%E9%80%9F/id1335568345)
 - 京大大回收：[Android](https://appgallery.huawei.com/app/C108165699)、[iOS](https://apps.apple.com/cn/app/%E4%BA%AC%E5%A4%A7%E5%A4%A7%E5%9B%9E%E6%94%B6-%E4%B8%93%E4%B8%9A%E8%B4%AD%E7%89%A9%E5%8D%A1%E7%A4%BC%E5%93%81%E5%8D%A1%E5%88%B8%E5%9B%9E%E6%94%B6%E5%B9%B3%E5%8F%B0/id6748420409?uo=4)、微信小程序搜索"京大大回收"
+- 轻匿提问箱：[Android](https://appgallery.huawei.com/app/C105080643)、[iOS](https://apps.apple.com/cn/app/%E8%BD%BB%E5%8C%BF%E6%8F%90%E9%97%AE%E7%AE%B1/id6544789356)
 ### 应用商店下载量十万级
+- 机车圈：[Andoird](https://sj.qq.com/appdetail/com.hzmodi.motocircle)、[iOS](https://apps.apple.com/cn/app/%E6%9C%BA%E8%BD%A6%E5%9C%88-%E4%B8%93%E4%B8%9A%E6%91%A9%E6%89%98%E8%BD%A6%E4%BF%9D%E5%85%BB%E6%9C%8D%E5%8A%A1/id1569815582?uo=4)、微信小程序搜索"机车圈"
 - 安医达：[Android](https://appgallery.huawei.com/app/C114809501)、[iOS](https://apps.apple.com/cn/app/%E5%AE%89%E5%8C%BB%E8%BE%BE/id6749573798)、微信小程序搜索"安医达"
+- U易：[Android](https://sj.qq.com/appdetail/com.zdtc.ue.school)、[iOS](https://apps.apple.com/cn/app/u%E6%98%93-%E7%94%A8%E7%A7%91%E6%8A%80%E5%88%9B%E9%80%A0%E6%99%BA%E6%85%A7%E6%A0%A1%E5%9B%AD%E6%9C%8D%E5%8A%A1%E5%B9%B3%E5%8F%B0/id1267759713)
 - 语法分析助手：[Android](https://appgallery.huawei.com/app/C106861521)、[iOS](https://apps.apple.com/cn/app/%E8%AF%AD%E6%B3%95%E5%88%86%E6%9E%90%E5%8A%A9%E6%89%8B/id1606478557)、微信小程序搜索"语法分析助手"
 	* 从老版uni-app迁移到uni-app x蒸汽模式。开发者感受：速度确实快很多。
 - 万象八字：[Android](https://appgallery.huawei.com/app/C115905187)、[iOS](https://apps.apple.com/cn/app/%E4%B8%87%E8%B1%A1%E5%85%AB%E5%AD%97/id6746738853)
@@ -46,8 +51,11 @@ uni-app x 的组件和API，大多是uvue、uts开发的。和开发者做的uts
 ### 其他
 - 黔警通：[Android](https://sj.qq.com/appdetail/com.qxnga.qjt)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=hmos.com.qxnga.qjt)
 - 发票匣：[Android](https://sj.qq.com/appdetail/com.juxiang.fapiaoxia)、[iOS](https://apps.apple.com/cn/app/%E5%8F%91%E7%A5%A8%E5%8C%A3/id6593679748)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.juxiang.hfapiaoxia&amp;channelId=SHARE&amp;source=appshare)
+- 白丁友记：[Android](https://appgallery.huawei.com/app/C105342087)、[iOS](https://apps.apple.com/cn/app/%E7%99%BD%E4%B8%81%E5%8F%8B%E8%AE%B0-%E7%AC%94%E5%8F%8B%E5%86%99%E4%BF%A1-%E5%8C%BF%E5%90%8D%E6%A0%91%E6%B4%9E/id1597540766)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=uni.app.UNIF5E920A)
+- 赶海潮汐表：[Android](https://appgallery.huawei.com/app/C112002783)、[iOS](https://apps.apple.com/cn/app/%E8%B5%B6%E6%B5%B7%E6%BD%AE%E6%B1%90%E8%A1%A8-%E5%85%A8%E7%90%83%E6%B2%BF%E6%B5%B7%E5%9F%8E%E5%B8%82%E6%B8%AF%E5%8F%A3%E6%B5%B7%E6%BD%AE%E8%A1%A8%E6%9F%A5%E8%AF%A2app/id6670746728)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=cc.xiaoan.chaoxicxhm)
 - 名流健康：[Android](https://appgallery.huawei.com/app/C117491537)、[iOS](https://apps.apple.com/cn/app/%E5%90%8D%E6%B5%81%E5%81%A5%E5%BA%B7/id6772873103)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.mljk.hmmingliujiankang)
 - 时欢：[Android](https://sj.qq.com/appdetail/com.yunyuinteractive.bts)
+- 小钉快跑商城：[Android](https://appgallery.huawei.com/app/C116810051)、[iOS](https://apps.apple.com/cn/app/%E5%B0%8F%E9%92%89%E5%BF%AB%E8%B7%91%E5%95%86%E5%9F%8E/id1473104097)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.jzt.tddmall)
 - AI名车宝典：[Android](https://sj.qq.com/appdetail/com.mcbd.aimcbd.util)、[iOS](https://apps.apple.com/cn/app/ai%E5%90%8D%E8%BD%A6%E5%AE%9D%E5%85%B8/id6446267335)
 - 中维商城：[Android](https://sj.qq.com/appdetail/com.wx45.app)
 - 阑珊处：[Android](https://app.mi.com/details?id=cn.minisns.lanshanchu)、[iOS](https://apps.apple.com/cn/app/%E9%98%91%E7%8F%8A%E5%A4%84/id6479599905)
