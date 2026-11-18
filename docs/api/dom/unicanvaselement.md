@@ -110,8 +110,8 @@ Web: 4.21; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; Harmon
 #### toDataURL(type?: string, encoderOptions?: any): string @todataurl
 
 返回一个包含图片展示的 data URI (iOS平台不支持webp格式)
-如果画布的高度或宽度是 0，那么会返回字符串“data:,”。
-如果传入的类型非“image/png”，但是返回的值以“data:image/png”开头，那么该传入的类型是不支持的。
+如果画布的高度或宽度是 0,那么会返回字符串“data:,”。
+如果传入的类型非“image/png”,但是返回的值以“data:image/png”开头,那么该传入的类型是不支持的。
 
 ##### toDataURL 兼容性 <Help /> 
 Web: 4.21; 微信小程序: x; 支付宝小程序: x; Android: 4.25; iOS: 4.25; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61
