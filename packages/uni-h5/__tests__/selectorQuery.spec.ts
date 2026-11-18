@@ -1,3 +1,4 @@
+import fs from 'fs'
 import path from 'path'
 import ts from 'typescript'
 import jscc from 'rollup-plugin-jscc'
@@ -15,11 +16,32 @@ const file = path.join(
   'packages/uni-h5/src/service/api/ui/requestComponentInfo.ts'
 )
 
+function evaluate(source: string, imports: Record<string, any>) {
+  const output = ts.transpileModule(source, {
+    compilerOptions: {
+      module: ts.ModuleKind.CommonJS,
+      target: ts.ScriptTarget.ES2020,
+    },
+  }).outputText
+  const module = { exports: {} as any }
+  new Function('require', 'module', 'exports', output)(
+    (id: string) => {
+      if (!(id in imports)) throw new Error('缺少测试依赖：' + id)
+      return imports[id]
+    },
+    module,
+    module.exports
+  )
+  return module.exports
+}
+
 describe('SelectorQuery 模式兼容', () => {
   let dom: any
   let vue: any
   let query: Function
   let legacyQuery: Function
+  let scrollContexts: any
+  let createSelectorQuery: Function
   const apps: any[] = []
   const globals = new Map<string, any>()
 
@@ -51,6 +73,16 @@ describe('SelectorQuery 模式兼容', () => {
     vue = jest.requireActual(
       path.join(root, 'packages/uni-h5-vue/dist-x-vapor/vue.runtime.cjs.js')
     )
+    scrollContexts = evaluate(
+      fs.readFileSync(
+        path.join(
+          root,
+          'packages/uni-components/src/vue/scroll-view/ScrollViewContext.ts'
+        ),
+        'utf8'
+      ),
+      {}
+    )
     async function load(vapor: boolean) {
       const plugin = jscc({
         values: { _X_: 1, _X_VAPOR_: +vapor, _NODE_JS_: 0 },
@@ -75,7 +107,10 @@ describe('SelectorQuery 模式兼容', () => {
         '@dcloudio/uni-core': {
           getWindowOffset: () => ({ top: 5, topWindowHeight: 10 }),
         },
-        '@dcloudio/uni-components': { getContextInfo: () => undefined },
+        '@dcloudio/uni-components': {
+          getContextInfo: () => undefined,
+          getScrollViewContext: scrollContexts.getScrollViewContext,
+        },
       }
       new Function('require', 'module', 'exports', output)(
         (id: string) => imports[id],
@@ -86,6 +121,32 @@ describe('SelectorQuery 模式兼容', () => {
     }
     query = await load(true)
     legacyQuery = await load(false)
+    const Context = class {}
+    createSelectorQuery = evaluate(
+      fs.readFileSync(
+        path.join(
+          root,
+          'packages/uni-api/src/service/ui/createSelectorQuery.ts'
+        ),
+        'utf8'
+      ),
+      {
+        '@vue/shared': {
+          isArray: Array.isArray,
+          isFunction: (fn: any) => typeof fn === 'function',
+        },
+        '@dcloudio/uni-shared': { resolveComponentInstance: (vm: any) => vm },
+        '@dcloudio/uni-core': { getPageIdByVm: () => 1 },
+        '@dcloudio/uni-platform': { requestComponentInfo: query },
+        '../../helpers/api': {
+          defineSyncApi: (_name: string, fn: Function) => fn,
+        },
+        '../context/canvas': { CanvasContext: Context },
+        '../context/editor': { EditorContext: Context },
+        '../context/createMapContext': { MapContext: Context },
+        '../context/createVideoContext': { VideoContext: Context },
+      }
+    ).createSelectorQuery
   })
   afterEach(() => {
     apps.forEach((app) => app.unmount())
@@ -243,6 +304,189 @@ describe('SelectorQuery 模式兼容', () => {
     dataset.clear()
     expect(snapshot.size).toBe(3)
   })
+
+  test('node 首次请求才创建 Context，fields 与后续查询复用实例，滚动字段仍取自宿主', () => {
+    const { vm, nodes } = mount(
+      '<div id="scroll" uni-scroll-view></div><canvas id="canvas"></canvas>' +
+        '<div id="plain"></div><div id="unregistered" uni-scroll-view></div>'
+    )
+    const host = nodes[0]
+    const nativeScrollTo = host.scrollTo
+    Object.defineProperties(host, {
+      scrollLeft: { value: 12 },
+      scrollTop: { value: 34 },
+      scrollWidth: { value: 400 },
+      scrollHeight: { value: 800 },
+    })
+    const controller = {
+      scrollEnabled: true,
+      showScrollbar: true,
+      pagingEnabled: false,
+      scrollTo: jest.fn(),
+      scrollIntoView: jest.fn(),
+    }
+    const defineProperty = jest.spyOn(Object, 'defineProperty')
+    const createdContexts = () =>
+      defineProperty.mock.calls.filter(
+        ([target, name]) =>
+          target instanceof scrollContexts.ScrollViewContext &&
+          name === '__v_skip'
+      )
+    const unregister = scrollContexts.registerScrollViewContext(
+      host,
+      controller
+    )
+    try {
+      expect(createdContexts()).toHaveLength(0)
+      const offset = jest.fn()
+      createSelectorQuery(vm)
+        .select('#scroll')
+        .fields({ scrollOffset: true }, offset)
+        .exec()
+      expect(offset).toHaveBeenCalledWith({
+        scrollLeft: 12,
+        scrollTop: 34,
+        scrollWidth: 400,
+        scrollHeight: 800,
+      })
+      expect(createdContexts()).toHaveLength(0)
+      const node = jest.fn()
+      const fields = jest.fn()
+      const all = jest.fn()
+      const result = jest.fn()
+      const selector = createSelectorQuery(vm)
+      selector.select('#scroll').node(node)
+      selector
+        .select('#scroll')
+        .fields({ node: true, scrollOffset: true }, fields)
+      selector.selectAll('div').node(all)
+      expect(createdContexts()).toHaveLength(0)
+      selector.exec(result)
+      const context = node.mock.calls[0][0].node
+      expect(context).toBeInstanceOf(scrollContexts.ScrollViewContext)
+      expect(createdContexts()).toHaveLength(1)
+      expect(scrollContexts.getScrollViewContext(host)).toBe(context)
+      expect(node).toHaveBeenCalledWith({ node: context })
+      expect(fields).toHaveBeenCalledWith({
+        node: context,
+        scrollLeft: 12,
+        scrollTop: 34,
+        scrollWidth: 400,
+        scrollHeight: 800,
+      })
+      expect(all).toHaveBeenCalledWith([
+        { node: context },
+        { node: nodes[2] },
+        { node: nodes[3] },
+      ])
+      expect(result.mock.calls[0][0][0].node).toBe(context)
+      expect(result.mock.calls[0][0][1].node).toBe(context)
+      expect(context).not.toBe(host)
+      expect(host.scrollTo).toBe(nativeScrollTo)
+      context.scrollTo({ top: 80, animated: true })
+      expect(controller.scrollTo).toHaveBeenCalledWith({
+        top: 80,
+        animated: true,
+      })
+      const canvas = jest.fn()
+      createSelectorQuery(vm).select('#canvas').node(canvas).exec()
+      expect(canvas).toHaveBeenCalledWith({ node: nodes[1] })
+      expect(scrollContexts.getScrollViewContext(nodes[2])).toBeUndefined()
+      expect(scrollContexts.getScrollViewContext(nodes[3])).toBeUndefined()
+      expect(createdContexts()).toHaveLength(1)
+    } finally {
+      unregister()
+      defineProperty.mockRestore()
+    }
+    const after = jest.fn()
+    createSelectorQuery(vm).select('#scroll').node(after).exec()
+    expect(after).toHaveBeenCalledWith({ node: host })
+  })
+
+  test('未获取 Context 就注销，不会在注册、注销或后续查询时创建实例', () => {
+    const host = document.createElement('div')
+    const defineProperty = jest.spyOn(Object, 'defineProperty')
+    const controller = {
+      scrollEnabled: true,
+      showScrollbar: true,
+      pagingEnabled: false,
+      scrollTo: jest.fn(),
+      scrollIntoView: jest.fn(),
+    }
+    const unregister = scrollContexts.registerScrollViewContext(
+      host,
+      controller
+    )
+    try {
+      unregister()
+      expect(scrollContexts.getScrollViewContext(host)).toBeUndefined()
+      expect(
+        defineProperty.mock.calls.filter(
+          ([target, name]) =>
+            target instanceof scrollContexts.ScrollViewContext &&
+            name === '__v_skip'
+        )
+      ).toHaveLength(0)
+    } finally {
+      unregister()
+      defineProperty.mockRestore()
+    }
+  })
+
+  test.each([false, true])(
+    '重新注册令旧 Context 失效，旧注销不删除新实例，同一 controller=%s',
+    (reuseController) => {
+      const host = document.createElement('div')
+      const controller = {
+        scrollEnabled: true,
+        showScrollbar: true,
+        pagingEnabled: false,
+        scrollTo: jest.fn(),
+        scrollIntoView: jest.fn(),
+      }
+      const replacement = reuseController
+        ? controller
+        : { ...controller, scrollTo: jest.fn(), scrollIntoView: jest.fn() }
+      const unregister = scrollContexts.registerScrollViewContext(
+        host,
+        controller
+      )
+      const previous = scrollContexts.getScrollViewContext(host)
+      const unregisterReplacement = scrollContexts.registerScrollViewContext(
+        host,
+        replacement
+      )
+      try {
+        previous.scrollEnabled = false
+        previous.showScrollbar = false
+        previous.pagingEnabled = true
+        previous.scrollTo({ top: 80 })
+        previous.scrollIntoView('.target')
+        expect(controller.scrollEnabled).toBe(true)
+        expect(controller.showScrollbar).toBe(true)
+        expect(controller.pagingEnabled).toBe(false)
+        expect(controller.scrollTo).not.toHaveBeenCalled()
+        expect(controller.scrollIntoView).not.toHaveBeenCalled()
+
+        const current = scrollContexts.getScrollViewContext(host)
+        expect(current).not.toBe(previous)
+        unregister()
+        expect(scrollContexts.getScrollViewContext(host)).toBe(current)
+        current.scrollTo({ top: 120 })
+        expect(replacement.scrollTo).toHaveBeenCalledWith({ top: 120 })
+
+        unregisterReplacement()
+        expect(scrollContexts.getScrollViewContext(host)).toBeUndefined()
+        current.scrollTo({ top: 160 })
+        current.scrollIntoView('.target')
+        expect(replacement.scrollTo).toHaveBeenCalledTimes(1)
+        expect(replacement.scrollIntoView).not.toHaveBeenCalled()
+      } finally {
+        unregister()
+        unregisterReplacement()
+      }
+    }
+  )
 
   test('旧模式保持外壳查找内部节点的行为', () => {
     const host = document.createElement('div')

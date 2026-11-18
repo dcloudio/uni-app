@@ -48,6 +48,9 @@ describe('Web Vapor ScrollView 原生宿主', () => {
   let ScrollView: any
   let elements: any
   let scrollElement: any
+  let scrollContexts: any
+  let usePageRefresh: Function
+  let refreshHook: jest.Mock
   let UniElement: any
   let nativeScrollTo: jest.Mock
   const apps: any[] = []
@@ -185,10 +188,15 @@ describe('Web Vapor ScrollView 原生宿主', () => {
         ],
         { input: await preprocess(file), encoding: 'utf8' }
       )
+    scrollContexts = evaluate(
+      await preprocess('vue/scroll-view/ScrollViewContext.ts'),
+      {}
+    )
     const state = evaluate(
       await preprocess('vue/scroll-view/useScrollView-vapor.ts'),
       {
         vue,
+        './ScrollViewContext': scrollContexts,
         '../../helpers/scrollend': evaluate(
           await preprocess('helpers/scrollend.ts'),
           { '@dcloudio/uni-shared': uniShared }
@@ -202,6 +210,30 @@ describe('Web Vapor ScrollView 原生宿主', () => {
         ),
       }
     )
+    refreshHook = jest.fn()
+    usePageRefresh = evaluate(
+      fs.readFileSync(
+        path.join(
+          root,
+          'packages/uni-h5/src/framework/components/page/page-refresh/index.ts'
+        ),
+        'utf8'
+      ),
+      {
+        vue,
+        '@dcloudio/uni-core': { invokeHook: refreshHook },
+        '@dcloudio/uni-api': {
+          API_START_PULL_DOWN_REFRESH: 'startPullDownRefresh',
+          API_STOP_PULL_DOWN_REFRESH: 'stopPullDownRefresh',
+        },
+        '@dcloudio/uni-components': {
+          useSubscribe: () => {},
+          withWebEvent: (handler: Function) => handler,
+        },
+        '../../../setup/provide': {},
+        '@dcloudio/uni-shared': uniShared,
+      }
+    ).usePageRefresh
     ScrollView = evaluate(await compile('vue/scroll-view/index-vapor.tsx'), {
       vue,
       '/vue-jsx/vapor': jsx,
@@ -227,11 +259,12 @@ describe('Web Vapor ScrollView 原生宿主', () => {
     })
   })
 
-  function mount(props = {}, slots = {}, active?: any) {
+  function mount(props = {}, slots = {}, active?: any, setupPage?: () => void) {
     const node = vue.shallowRef()
     let instance: any
     const Page = vue.defineVaporComponent({
       setup() {
+        setupPage?.()
         instance = vue.createComponent(ScrollView, props, slots)
         vue.setStaticTemplateRef(instance, node)
         vue.onMounted(() => expect(node.value.uniTagName).toBe('SCROLL-VIEW'))
@@ -277,6 +310,12 @@ describe('Web Vapor ScrollView 原生宿主', () => {
     const event = new dom.window.Event('scroll', { bubbles: true })
     Object.defineProperty(event, 'timeStamp', { value: time })
     main.dispatchEvent(event)
+  }
+
+  function scrollEnd(main: HTMLElement) {
+    if ('onscrollend' in main)
+      main.dispatchEvent(new dom.window.Event('scrollend'))
+    else jest.advanceTimersByTime(100)
   }
 
   test('getAttribute 读取 props 默认值和更新值，保持 DOM 属性独立', async () => {
@@ -455,6 +494,380 @@ describe('Web Vapor ScrollView 原生宿主', () => {
     expect([root.scrollTop, root.scrollLeft]).toEqual([90, 0])
   })
 
+  test('Context 动画参数独立于根节点的 scrollWithAnimation 默认行为', async () => {
+    const animation = vue.ref(true)
+    const { root } = mount({
+      direction: () => 'all',
+      scrollWithAnimation: () => animation.value,
+    })
+    await vue.nextTick()
+    const context = scrollContexts.getScrollViewContext(root)
+    expect(context).toBeDefined()
+    expect(root.style.scrollBehavior).toBe('smooth')
+    nativeScrollTo.mockClear()
+    context.scrollTo({ top: 80, left: 30, animated: false })
+    expect(nativeScrollTo).toHaveBeenLastCalledWith({
+      top: 80,
+      left: 30,
+      behavior: 'instant',
+    })
+    animation.value = false
+    await vue.nextTick()
+    expect(root.style.scrollBehavior).toBe('auto')
+    context.scrollTo({ top: 120, animated: true })
+    expect(nativeScrollTo).toHaveBeenLastCalledWith({
+      top: 120,
+      behavior: 'smooth',
+    })
+    expect(root.scrollTo).toBe(dom.window.HTMLElement.prototype.scrollTo)
+  })
+
+  test('内层实际滚动不触发外层分页，滚动链到外层后按实际位移分页', async () => {
+    jest.useFakeTimers()
+    const inner = vue.shallowRef()
+    const onEnd = jest.fn()
+    const { root } = mount(
+      { onScrollend: () => onEnd },
+      {
+        default: () => {
+          const instance = vue.createComponent(ScrollView)
+          vue.setStaticTemplateRef(instance, inner)
+          return instance
+        },
+      }
+    )
+    await vue.nextTick()
+    scrollContexts.getScrollViewContext(root).pagingEnabled = true
+    scroll(root, 145, 0, 100)
+    scrollEnd(root)
+    nativeScrollTo.mockClear()
+    onEnd.mockClear()
+    const computedStyle = jest.spyOn(dom.window, 'getComputedStyle')
+
+    inner.value.dispatchEvent(
+      new dom.window.WheelEvent('wheel', { bubbles: true, deltaY: 145 })
+    )
+    scroll(inner.value, 145, 0, 300)
+    expect(computedStyle).not.toHaveBeenCalled()
+    scrollEnd(inner.value)
+    expect(inner.value.scrollTop).toBe(145)
+    expect(root.scrollTop).toBe(145)
+    expect(nativeScrollTo).not.toHaveBeenCalled()
+    expect(onEnd).not.toHaveBeenCalled()
+
+    scroll(inner.value, 600, 0, 600)
+    scrollEnd(inner.value)
+    inner.value.dispatchEvent(
+      new dom.window.WheelEvent('wheel', { bubbles: true, deltaY: 200 })
+    )
+    scroll(root, 345, 0, 900)
+    scrollEnd(root)
+    expect(root.scrollTop).toBe(400)
+    expect(nativeScrollTo).toHaveBeenCalledTimes(1)
+    expect(nativeScrollTo).toHaveBeenLastCalledWith({
+      top: 400,
+      behavior: 'smooth',
+    })
+    scroll(root, 400, 0, 1200)
+    scrollEnd(root)
+    expect(onEnd).toHaveBeenCalledTimes(1)
+    expect(onEnd.mock.calls[0][0].detail.scrollTop).toBe(400)
+  })
+
+  test('原生滚动条拖动保留实际位置，正常派发结束且不建立分页意图', async () => {
+    jest.useFakeTimers()
+    const onEnd = jest.fn()
+    const { root } = mount({ onScrollend: () => onEnd })
+    await vue.nextTick()
+    scrollContexts.getScrollViewContext(root).pagingEnabled = true
+    nativeScrollTo.mockClear()
+    root.getBoundingClientRect = () =>
+      ({ left: 0, top: 0, width: 220, height: 220 } as DOMRect)
+    function pointer(type: string) {
+      const event = new dom.window.MouseEvent(type, {
+        bubbles: true,
+        button: 0,
+        clientX: 210,
+        clientY: 100,
+      })
+      Object.defineProperties(event, {
+        pointerId: { value: 1 },
+        pointerType: { value: 'mouse' },
+      })
+      root.dispatchEvent(event)
+    }
+
+    pointer('pointerdown')
+    scroll(root, 145, 0, 300)
+    pointer('pointerup')
+    scrollEnd(root)
+    expect(root.scrollTop).toBe(145)
+    expect(nativeScrollTo).not.toHaveBeenCalled()
+    expect(onEnd).toHaveBeenCalledTimes(1)
+    expect(onEnd.mock.calls[0][0].detail.scrollTop).toBe(145)
+  })
+
+  test.each(['input', 'textarea'])(
+    '%s 内按键不建立分页意图，容器 PageDown 仍正常分页',
+    async (tag) => {
+      jest.useFakeTimers()
+      const editor = document.createElement(tag)
+      const { root } = mount({}, { default: () => editor })
+      await vue.nextTick()
+      scrollContexts.getScrollViewContext(root).pagingEnabled = true
+      nativeScrollTo.mockClear()
+      editor.dispatchEvent(
+        new dom.window.KeyboardEvent('keydown', {
+          bubbles: true,
+          key: 'PageDown',
+        })
+      )
+      scroll(root, 145, 0, 300)
+      scrollEnd(root)
+      expect(root.scrollTop).toBe(145)
+      expect(nativeScrollTo).not.toHaveBeenCalled()
+
+      root.dispatchEvent(
+        new dom.window.KeyboardEvent('keydown', {
+          bubbles: true,
+          key: 'PageDown',
+        })
+      )
+      scroll(root, 345, 0, 600)
+      scrollEnd(root)
+      expect(root.scrollTop).toBe(400)
+      expect(nativeScrollTo).toHaveBeenCalledTimes(1)
+      expect(nativeScrollTo).toHaveBeenLastCalledWith({
+        top: 400,
+        behavior: 'smooth',
+      })
+    }
+  )
+
+  test.each([
+    [
+      'flex column-reverse LTR',
+      'vertical',
+      'flex',
+      'column-reverse',
+      'ltr',
+      -1,
+    ],
+    [
+      'inline-flex row-reverse LTR',
+      'horizontal',
+      'inline-flex',
+      'row-reverse',
+      'ltr',
+      -1,
+    ],
+    ['flex row-reverse RTL', 'horizontal', 'flex', 'row-reverse', 'rtl', 1],
+    ['flex row LTR', 'horizontal', 'flex', 'row', 'ltr', 1],
+    ['flex row RTL', 'horizontal', 'flex', 'row', 'rtl', -1],
+    ['flex column RTL', 'vertical', 'flex', 'column', 'rtl', 1],
+    ['block row-reverse LTR', 'horizontal', 'block', 'row-reverse', 'ltr', 1],
+    [
+      'flex row wrap-reverse LTR',
+      'vertical',
+      'flex',
+      'row',
+      'ltr',
+      -1,
+      'wrap-reverse',
+    ],
+    [
+      'flex row-reverse wrap-reverse LTR',
+      'vertical',
+      'flex',
+      'row-reverse',
+      'ltr',
+      -1,
+      'wrap-reverse',
+    ],
+    [
+      'flex column wrap-reverse LTR',
+      'horizontal',
+      'flex',
+      'column',
+      'ltr',
+      -1,
+      'wrap-reverse',
+    ],
+    [
+      'inline-flex column-reverse wrap-reverse LTR',
+      'horizontal',
+      'inline-flex',
+      'column-reverse',
+      'ltr',
+      -1,
+      'wrap-reverse',
+    ],
+    [
+      'flex column wrap-reverse RTL',
+      'horizontal',
+      'flex',
+      'column',
+      'rtl',
+      1,
+      'wrap-reverse',
+    ],
+    [
+      'block row wrap-reverse LTR',
+      'vertical',
+      'block',
+      'row',
+      'ltr',
+      1,
+      'wrap-reverse',
+    ],
+    ['flex row wrap LTR', 'vertical', 'flex', 'row', 'ltr', 1, 'wrap'],
+  ] as const)(
+    '%s 分页从原点和回滚时均按实际坐标方向吸附',
+    async (
+      _name,
+      direction,
+      display,
+      flexDirection,
+      textDirection,
+      sign,
+      flexWrap: string = 'nowrap'
+    ) => {
+      jest.useFakeTimers()
+      const onEnd = jest.fn()
+      const { root } = mount({ direction, onScrollend: () => onEnd })
+      await vue.nextTick()
+      Object.assign(root.style, {
+        display,
+        flexDirection,
+        flexWrap,
+        direction: textDirection,
+      })
+      const horizontal = direction === 'horizontal'
+      const property = horizontal ? 'scrollLeft' : 'scrollTop'
+      const option = horizontal ? 'left' : 'top'
+      Object.defineProperty(root, horizontal ? 'scrollWidth' : 'scrollHeight', {
+        configurable: true,
+        value: 1000,
+      })
+      // JSDOM 没有反向布局；只模拟该宿主的原生坐标范围，不改默认滚动 mock。
+      const scrollTo = jest.fn((options: ScrollToOptions) => {
+        const position = options[option]
+        if (position !== undefined) {
+          root[property] =
+            sign < 0
+              ? Math.max(-800, Math.min(0, position))
+              : Math.max(0, Math.min(800, position))
+        }
+      })
+      Object.defineProperty(root, 'scrollTo', {
+        configurable: true,
+        value: scrollTo,
+      })
+      scrollContexts.getScrollViewContext(root).pagingEnabled = true
+
+      function scrollPosition(position: number, time: number) {
+        scroll(root, horizontal ? 0 : position, horizontal ? position : 0, time)
+      }
+      function scrollEnd() {
+        if ('onscrollend' in root)
+          root.dispatchEvent(new dom.window.Event('scrollend'))
+        else jest.advanceTimersByTime(100)
+      }
+      function wheel(delta: number) {
+        root.dispatchEvent(
+          new dom.window.WheelEvent('wheel', {
+            bubbles: true,
+            deltaX: horizontal ? delta : 0,
+            deltaY: horizontal ? 0 : delta,
+          })
+        )
+      }
+
+      wheel(sign * 145)
+      scrollPosition(sign * 145, 300)
+      scrollEnd()
+      expect(scrollTo).toHaveBeenLastCalledWith({
+        [option]: sign * 200,
+        behavior: 'smooth',
+      })
+      expect(root[property]).toBe(sign * 200)
+      expect(onEnd).not.toHaveBeenCalled()
+      scrollPosition(sign * 200, 600)
+      scrollEnd()
+      expect(onEnd).toHaveBeenCalledTimes(1)
+      expect(onEnd.mock.calls[0][0].detail[property]).toBe(sign * 200)
+
+      scrollPosition(sign * 500, 900)
+      scrollEnd()
+      scrollTo.mockClear()
+      onEnd.mockClear()
+      wheel(-sign * 145)
+      scrollPosition(sign * 355, 1200)
+      scrollEnd()
+      expect(scrollTo).toHaveBeenCalledTimes(1)
+      expect(scrollTo).toHaveBeenCalledWith({
+        [option]: sign * 400,
+        behavior: 'smooth',
+      })
+      expect(root[property]).toBe(sign * 400)
+      expect(onEnd).not.toHaveBeenCalled()
+      scrollPosition(sign * 400, 1500)
+      scrollEnd()
+      expect(onEnd).toHaveBeenCalledTimes(1)
+      expect(onEnd.mock.calls[0][0].detail[property]).toBe(sign * 400)
+    }
+  )
+
+  test.each([
+    ['column-reverse', 'column-reverse', 'nowrap'],
+    ['row wrap-reverse', 'row', 'wrap-reverse'],
+  ])(
+    '%s 触摸从原点进入负坐标，手势归属和分页使用同一方向',
+    async (_name, flexDirection, flexWrap) => {
+      jest.useFakeTimers()
+      const { root } = mount()
+      await vue.nextTick()
+      Object.assign(root.style, {
+        display: 'flex',
+        flexDirection,
+        flexWrap,
+        direction: 'ltr',
+      })
+      const scrollTo = jest.fn((options: ScrollToOptions) => {
+        if (options.top !== undefined)
+          root.scrollTop = Math.max(-600, Math.min(0, options.top))
+      })
+      Object.defineProperty(root, 'scrollTo', {
+        configurable: true,
+        value: scrollTo,
+      })
+      scrollContexts.getScrollViewContext(root).pagingEnabled = true
+
+      function touch(type: string, y: number) {
+        const event = new dom.window.Event(type, { bubbles: true })
+        const point = { identifier: 1, pageX: 0, pageY: y }
+        Object.defineProperties(event, {
+          touches: { value: type === 'touchend' ? [] : [point] },
+          changedTouches: { value: [point] },
+        })
+        const stop = jest.spyOn(event, 'stopPropagation')
+        root.dispatchEvent(event)
+        return stop
+      }
+
+      touch('touchstart', 100)
+      expect(touch('touchmove', 120)).toHaveBeenCalledTimes(1)
+      scroll(root, -145, 0, 300)
+      touch('touchend', 120)
+      if ('onscrollend' in root)
+        root.dispatchEvent(new dom.window.Event('scrollend'))
+      else jest.advanceTimersByTime(100)
+      expect(scrollTo).toHaveBeenCalledTimes(1)
+      expect(scrollTo).toHaveBeenCalledWith({ top: -200, behavior: 'smooth' })
+      expect(root.scrollTop).toBe(-200)
+    }
+  )
+
   test('不存在的 scrollIntoView 不移动，非法 ID 输出错误且不抛选择器异常', async () => {
     const target = vue.ref('')
     mount({ scrollIntoView: () => target.value })
@@ -565,6 +978,8 @@ describe('Web Vapor ScrollView 原生宿主', () => {
     }
     touch('touchstart', 100)
     expect(touch('touchmove', 120)).not.toHaveBeenCalled()
+    // 尚未越过起点时反转，仍应按当前增量恢复内部滚动。
+    expect(touch('touchmove', 110)).toHaveBeenCalledTimes(1)
     expect(touch('touchmove', 80)).toHaveBeenCalledTimes(1)
     root.scrollTop = 600
     expect(touch('touchmove', 80)).not.toHaveBeenCalled()
@@ -576,6 +991,71 @@ describe('Web Vapor ScrollView 原生宿主', () => {
     touch('touchend', 80)
     expect(touch('touchmove', 60)).not.toHaveBeenCalled()
   })
+
+  test.each([1, 0])(
+    '默认纵向滚动中的横向抖动不会触发父页下拉刷新，纵向增量=%s',
+    async (jitterY) => {
+      const refreshElement = document.createElement('div')
+      refreshElement.innerHTML =
+        '<div class="uni-page-refresh"><div class="uni-page-refresh-inner"></div></div>'
+      let handlers: any
+      const { root, host } = mount({ scrollTop: 200 }, {}, undefined, () => {
+        handlers = usePageRefresh(
+          { value: { $el: refreshElement } },
+          {
+            id: 1,
+            enablePullDownRefresh: true,
+            pullToRefresh: { range: 50, height: 50 },
+          }
+        )
+      })
+      await vue.nextTick()
+      host.appendChild(refreshElement)
+      host.addEventListener('touchstart', handlers.onTouchstartPassive, {
+        passive: true,
+      })
+      host.addEventListener('touchmove', handlers.onTouchmove)
+      host.addEventListener('touchend', handlers.onTouchend)
+
+      function touch(type: string, x: number, y: number) {
+        const event = new dom.window.Event(type, {
+          bubbles: true,
+          cancelable: true,
+        })
+        const point = { identifier: 1, pageX: x, pageY: y }
+        Object.defineProperties(event, {
+          touches: { value: type === 'touchend' ? [] : [point] },
+          changedTouches: { value: [point] },
+        })
+        root.dispatchEvent(event)
+        return event
+      }
+
+      touch('touchstart', 0, 100)
+      touch('touchmove', 0, 120)
+      const firstJitter = touch('touchmove', 3, 120 + jitterY)
+      touch('touchmove', 3, 180)
+      const secondJitter = touch('touchmove', 6, 180 + jitterY)
+      touch('touchend', 6, 180 + jitterY)
+
+      expect(firstJitter.defaultPrevented).toBe(false)
+      expect(secondJitter.defaultPrevented).toBe(false)
+      expect(refreshElement.className).toBe('')
+      expect(refreshHook).not.toHaveBeenCalled()
+      expect(root.scrollTop).toBe(200)
+
+      // 内层到达顶部后，真实父页刷新逻辑仍能接管新的下拉手势。
+      root.scrollTop = 0
+      touch('touchstart', 0, 100)
+      touch('touchmove', 0, 120)
+      touch('touchmove', 0, 180)
+      touch('touchend', 0, 180)
+      expect(
+        refreshElement.classList.contains('uni-page-refresh--refreshing')
+      ).toBe(true)
+      expect(refreshHook).toHaveBeenCalledWith(1, 'onPullDownRefresh')
+    }
+  )
 
   test('方向、滚动条、业务样式和插槽更新保持同一个根节点', async () => {
     const props = vue.reactive({

@@ -5,6 +5,7 @@ import {
   querySelectorAllInComponent,
   querySelectorInComponent,
 } from 'vue'
+import { getScrollViewContext } from '@dcloudio/uni-components'
 //#endif
 import { isArray } from '@vue/shared'
 import { createUniDOMStringMap, getCustomDataset } from '@dcloudio/uni-shared'
@@ -58,7 +59,7 @@ function getNodeInfo(
   const { top, topWindowHeight } = getWindowOffset()
   if (fields.node) {
     //#if _X_VAPOR_
-    info.node = el
+    info.node = getScrollViewContext(el) || el
     //#else
     // TODO
     const tagName = el.tagName.split('-')[1] || el.tagName

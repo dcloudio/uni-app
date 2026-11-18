@@ -2,6 +2,7 @@ export * from './vue/index-x-vapor'
 
 export { useOn, useSubscribe } from './helpers/useSubscribe'
 export { useContextInfo, getContextInfo } from './helpers/useContextInfo'
+export { getScrollViewContext } from './vue/scroll-view/ScrollViewContext'
 export {
   withWebEvent,
   useCustomEvent,

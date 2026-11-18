@@ -7,6 +7,9 @@ export * from './vue/index'
 
 export { useOn, useSubscribe } from './helpers/useSubscribe'
 export { useContextInfo, getContextInfo } from './helpers/useContextInfo'
+// #if _X_VAPOR_
+export { getScrollViewContext } from './vue/scroll-view/ScrollViewContext'
+// #endif
 export {
   withWebEvent,
   useCustomEvent,

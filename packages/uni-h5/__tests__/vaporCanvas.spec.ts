@@ -186,7 +186,10 @@ describe('Web Vapor Canvas 原生宿主', () => {
         '@dcloudio/uni-core': {
           getWindowOffset: () => ({ top: 0, topWindowHeight: 0 }),
         },
-        '@dcloudio/uni-components': { getContextInfo: () => undefined },
+        '@dcloudio/uni-components': {
+          getContextInfo: () => undefined,
+          getScrollViewContext: () => undefined,
+        },
       })
     ).requestComponentInfo
     createCanvasContextAsync = (
