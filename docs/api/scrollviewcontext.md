@@ -5,6 +5,31 @@
 ### ScrollViewContext 兼容性 <Help /> 
  Web: x; 微信小程序: √; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.36; iOS(VDOM): x; iOS(Vapor): 5.36; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.36
 
+### 适用组件
+
+- App 蒸汽模式：[scroll-view](../component/scroll-view.md)、[list-view](../component/list-view.md)、[waterflow](../component/waterflow.md)。
+- 微信小程序：[scroll-view](../component/scroll-view.md)。
+
+### 获取方式
+
+通过 [uni.createSelectorQuery()](./create-selector-query.md) 选中滚动组件，调用 `NodesRef.node()` 并执行 `exec()`，在回调结果的 `node` 属性中获取 `ScrollViewContext` 对象。
+
+在组件渲染完成后获取，例如在页面的 `onReady` 中获取 id 为 `scroll-view` 的组件：
+
+```ts
+onReady(() => {
+  uni.createSelectorQuery()
+    .select('#scroll-view')
+    .node((result) => {
+      if (result != null) {
+        const scrollViewContext = result.node as ScrollViewContext
+        scrollViewContext.scrollTo({ top: 100, animated: true })
+      }
+    })
+    .exec()
+})
+```
+
 
 
 
@@ -223,7 +248,6 @@ Web: x; 微信小程序: √; 支付宝小程序: x; Android(VDOM): x; Android(V
 | "ease-in" | Web: x; 支付宝小程序: x |
 | "ease-out" | Web: x; 支付宝小程序: x |
 | "ease-in-out" | Web: x; 支付宝小程序: x | 
-
 
 
 
