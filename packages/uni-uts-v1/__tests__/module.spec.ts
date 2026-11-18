@@ -4,6 +4,7 @@ import { join } from 'path'
 import { compile } from '../src/index'
 import { getCompiler } from '../src/compiler'
 import { runKotlinProd } from '../src/kotlin'
+import { normalizePath } from '../src/shared'
 import * as utils from '../src/utils'
 
 jest.mock('../src/compiler', () => ({ getCompiler: jest.fn() }))
@@ -93,7 +94,7 @@ describe('uni_modules native module proxy', () => {
       proxyCodeFormat: 'cjs',
     })
     expect(runProd).toHaveBeenCalledTimes(1)
-    expect(runProd.mock.calls[0][0]).toBe(nativeEntry)
+    expect(runProd.mock.calls[0][0]).toBe(normalizePath(nativeEntry))
     expect(runProd.mock.calls[0][1]).toMatchObject({
       isModule: true,
       isPlugin: true,
@@ -151,7 +152,7 @@ describe('uni_modules native module proxy', () => {
       isSingleThread: true,
     })
     expect(runProd.mock.calls[0][0]).toBe(
-      join(uvuePluginDir, 'index.module.uts')
+      normalizePath(join(uvuePluginDir, 'index.module.uts'))
     )
     expect(runProd.mock.calls[0][1]).toMatchObject({
       isModule: true,
@@ -196,7 +197,7 @@ describe('uni_modules native module proxy', () => {
       expect(bundle.mock.calls[0][1]).toMatchObject({
         input: {
           root: join(uvueDir, 'app-android'),
-          filename: join(uvuePluginDir, 'utssdk/index.uts'),
+          filename: normalizePath(join(uvuePluginDir, 'utssdk/index.uts')),
         },
         output: { isModule: true, isPlugin: true },
       })
