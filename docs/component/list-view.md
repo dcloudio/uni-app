@@ -680,7 +680,8 @@ VDOM模式下，app平台list-view仅对渲染层复用，不会对vue数据层�
 - list-view下仅第一个在list-item上的v-for支持复用，其他list-item会被当做view对待。
 - list-item的**v-for必须要有:key属性**，否则不会复用，此时list-item也会被当做view对待
 - list-item不支持设置margin样式
-- 不支持横向滚动
+- list-item不支持设置position样式，可能会导致排版异常
+- list-view不支持横向滚动
 
 ### 列表性能优化@performance
 
