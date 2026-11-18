@@ -47,7 +47,6 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.
 | associative-container | string |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.25; iOS: 5.25; HarmonyOS: 5.25 | 关联的滚动容器 |
 | disable-user-select-menu | boolean | false | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.81; iOS: 4.84; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 设置是否禁用文本选择时弹出的系统菜单 |
 | ios-allows-inline-media-playback | boolean | false | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: 5.08; HarmonyOS: x | 设置是否允许内联播放(禁止使用系统播放器全屏播放) |
-| dark-mode | boolean | true | 微信小程序: x; 支付宝小程序: x; HarmonyOS(Vapor): x |   |
 | @message | (event: [UniWebViewMessageEvent](#uniwebviewmessageevent)) => void |   | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 网页向应用 postMessage 时触发。e.detail = { data } |
 | @error | (event: [UniWebViewErrorEvent](#uniwebviewerrorevent)) => void |   | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 网页加载错误时触发。e.detail = { errSubject, errCode, errMsg, url, fullUrl, src } |
 | @load | (event: [UniWebViewLoadEvent](#uniwebviewloadevent)) => void |   | Web: 4.72; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 网页加载完成后触发。e.detail = { url, src } |
@@ -55,7 +54,6 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.
 | @download | (event: [UniWebViewDownloadEvent](#uniwebviewdownloadevent)) => void |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 点击网页中可下载链接时触发。e.detail = { url, userAgent, contentDisposition, mimetype, contentLength } |
 | @contentheightchange | (event: [UniWebViewContentHeightChangeEvent](#uniwebviewcontentheightchangeevent)) => void |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.63; iOS: 4.63; HarmonyOS: 4.63 | 网页内容高度变化时触发。e.detail = { height } |
 | @didterminate | (event: [UniWebViewDidTerminateEvent](#uniwebviewdidterminateevent)) => void |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: 5.0; HarmonyOS: x | 检测到web-view压后台再回来出现白屏时触发 |
-| @onWebViewServiceMessage | Event |   | 微信小程序: x; 支付宝小程序: x; HarmonyOS(Vapor): 5.0 |   |
 | ~~@loaded~~ | (event: [UniWebViewLoadEvent](#uniwebviewloadevent)) => void |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 网页加载完成后触发。e.detail = { url, src }。已废弃，请改用load |
 
 #### android-nested-scroll 的属性描述
