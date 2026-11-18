@@ -7770,9 +7770,11 @@ function updateCurPageAttrs(pageMeta) {
 function onPageShow(instance2, pageMeta) {
   updateCurPageBodyScopeId(instance2);
   updateBodyScopeId(instance2);
-  updateCurPageCssVar(pageMeta);
   updateCurPageAttrs(pageMeta);
-  initPageScrollListener(instance2, pageMeta);
+  {
+    updateCurPageCssVar(pageMeta);
+    initPageScrollListener(instance2, pageMeta);
+  }
 }
 function onPageReady(instance2) {
   if (!updateCurPageBodyScopeId(instance2) && process.env.NODE_ENV !== "production") {
@@ -17592,7 +17594,9 @@ function setupPage(comp, path) {
       getPage$BasePage(instance2.proxy).options = query;
       instance2.proxy.options = query;
       const pageMeta = usePageMeta();
-      updateCurPageCssVar(pageMeta);
+      {
+        updateCurPageCssVar(pageMeta);
+      }
       instance2.onReachBottom = reactive([]);
       instance2.onPageScroll = reactive([]);
       watch(
