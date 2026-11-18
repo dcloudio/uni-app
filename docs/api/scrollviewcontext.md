@@ -40,6 +40,8 @@ onReady(() => {
 | showScrollbar | boolean | 是 | Web: x; 微信小程序: √; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.36; iOS(VDOM): x; iOS(Vapor): 5.36; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.36 | 是否显示滚动条。 |
 | scrollEnabled | boolean | 是 | Web: x; 微信小程序: √; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.36; iOS(VDOM): x; iOS(Vapor): 5.36; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.36 | 是否允许手势滚动；关闭后仍可调用滚动方法。 |
 | pagingEnabled | boolean | 是 | Web: x; 微信小程序: √; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.36; iOS(VDOM): x; iOS(Vapor): 5.36; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.36 | 是否按页停靠。 |
+| fastDeceleration | boolean | 是 | Web: x; 微信小程序: √; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 设置滚动减速速率。仅微信小程序 iOS 下生效。 |
+| decelerationDisabled | boolean | 是 | Web: x; 微信小程序: √; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 取消滚动惯性。仅微信小程序 iOS 下生效。 |
 
 
 
@@ -67,8 +69,8 @@ Web: x; 微信小程序: √; 支付宝小程序: x; Android(VDOM): x; Android(V
 | top | number | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.36; iOS(VDOM): x; iOS(Vapor): 5.36; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.36 | 垂直滚动位置，单位 px。 |
 | left | number | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.36; iOS(VDOM): x; iOS(Vapor): 5.36; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.36 | 水平滚动位置，单位 px。 |
 | animated | boolean | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.36; iOS(VDOM): x; iOS(Vapor): 5.36; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.36 | 未指定且未传 duration、velocity 时，使用组件的 scroll-with-animation 配置。 |
-| duration | number | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.36; iOS(VDOM): x; iOS(Vapor): 5.36; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.36 | 动画时长，单位 ms；显式启用动画时默认 300，小于或等于 0 时立即定位。 |
-| velocity | number | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.36; iOS(VDOM): x; iOS(Vapor): 5.36; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.36 | 动画初始速度，单位 px/s；负值按 0 处理。 | 
+| duration | number | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.36; iOS(VDOM): x; iOS(Vapor): 5.36; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.36 | 动画时长，单位 ms；显式启用动画时默认 300，小于或等于 0 时立即定位。<br/>微信小程序：WebView 仅 iOS，Skyline 需基础库 3.14.3+。 |
+| velocity | number | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.36; iOS(VDOM): x; iOS(Vapor): 5.36; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.36 | 动画初始速度，单位 px/s；负值按 0 处理。<br/>微信小程序：WebView 仅 iOS，Skyline 需基础库 3.14.3+。 | 
 
 
 
@@ -81,7 +83,8 @@ Web: x; 微信小程序: √; 支付宝小程序: x; Android(VDOM): x; Android(V
 
 scrollIntoView
 
-滚动到当前容器内已渲染的目标节点。虚拟列表和瀑布流中的目标须已渲染。
+滚动到当前容器内的目标节点。App 平台 `list-view` 和 `waterflow` 中的目标需已渲染。
+微信小程序 options 仅支持 Skyline（基础库 3.1.0+）。
 
 ##### scrollIntoView 兼容性 <Help /> 
 Web: x; 微信小程序: √; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.36; iOS(VDOM): x; iOS(Vapor): 5.36; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.36
@@ -91,16 +94,17 @@ Web: x; 微信小程序: √; 支付宝小程序: x; Android(VDOM): x; Android(V
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| selector | string | 是 | Web: x; 支付宝小程序: x |  |
-| options | **ScrollViewScrollIntoViewOptions** | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.36; iOS(VDOM): x; iOS(Vapor): 5.36; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.36 | 滚动至容器内目标节点时的配置。 |
+| selector | string | 是 | Web: x; 支付宝小程序: x | 元素选择器 |
+| options | **ScrollViewScrollIntoViewOptions** | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.36; iOS(VDOM): x; iOS(Vapor): 5.36; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.36 | 滚动至容器内目标节点时的配置。 微信小程序仅支持 Skyline（基础库 3.1.0+）。 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| alignment | string | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.36; iOS(VDOM): x; iOS(Vapor): 5.36; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.36 | 目标与容器视口的对齐方式；默认从起始位置对齐。 |
-| offset | number | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.36; iOS(VDOM): x; iOS(Vapor): 5.36; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.36 | 对齐位置的偏移量，单位 px。 |
-| animated | boolean | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.36; iOS(VDOM): x; iOS(Vapor): 5.36; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.36 | 是否使用动画；传入 options 且未指定时默认 true。 | 
+| alignment | string | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.36; iOS(VDOM): x; iOS(Vapor): 5.36; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.36 | 目标与容器视口的对齐方式；默认从起始位置对齐。<br/>微信小程序仅支持 Skyline（基础库 3.1.0+）。 |
+| offset | number | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.36; iOS(VDOM): x; iOS(Vapor): 5.36; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.36 | 对齐位置的偏移量，单位 px，默认 0。<br/>微信小程序仅支持 Skyline（基础库 3.1.0+）。 |
+| animated | boolean | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.36; iOS(VDOM): x; iOS(Vapor): 5.36; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.36 | 是否启用滚动动画，默认 true。<br/>微信小程序仅支持 Skyline（基础库 3.1.0+）。 |
+| withinExtent | boolean | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 是否仅跳转到 cacheExtent 范围内的目标节点，默认 false。<br/>仅微信小程序 Skyline 支持（基础库 3.1.0+）。 | 
 
 ##### alignment 的属性描述
 
