@@ -3,7 +3,7 @@
 TextEncoder 接受码位流作为输入，并提供 UTF-8 字节流作为输出。<br/>[MDN Reference](https://developer.mozilla.org/docs/Web/API/TextEncoder)
 
 ### TextEncoder 兼容性 <Help /> 
- Web: √; 微信小程序: x; 支付宝小程序: x
+ Web: √; 微信小程序: x; 支付宝小程序: x; Android: 4.31; iOS: 4.71; HarmonyOS: 4.71
 
 
 
