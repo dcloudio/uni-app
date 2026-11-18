@@ -100,7 +100,9 @@ describe('uni_modules native module proxy', () => {
       isPlugin: true,
       outFilename: '',
     })
-    expect(result?.dir).toBe(join(root, 'output/uni_modules/test-uts'))
+    expect(result?.dir).toBe(
+      normalizePath(join(root, 'output/uni_modules/test-uts'))
+    )
     expect(result?.code).toContain('methodId: 17')
     expect(result?.code).toContain(
       "uni.registerUTSPlugin('uni_modules/test-uts', exports)"
@@ -160,7 +162,9 @@ describe('uni_modules native module proxy', () => {
       outFilename: 'uni_modules/test-uts/utssdk/app-android/index.kt',
     })
     expect(result?.code).toBe('')
-    expect(result?.dir).toBe(join(root, 'output/uni_modules/test-uts'))
+    expect(result?.dir).toBe(
+      normalizePath(join(root, 'output/uni_modules/test-uts'))
+    )
   })
 
   test.each(['methods', 'constants'])(
