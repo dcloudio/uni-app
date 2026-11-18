@@ -130,10 +130,10 @@ Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.65; iOS: 4.65
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| data | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.65; iOS: 4.65 | 要加载的html字符串，注意：这里是编码过的字符串 |
+| data | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.65; iOS: 4.65 | 要加载的html字符串,注意：这里是编码过的字符串 |
 | baseURL | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.65; iOS: 4.65 | 页面的基础URL, 可选 |
-| mimeType | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.65; iOS: 4.65 | 加载的页面内容类型，默认值为"text/html"，可选 |
-| encoding | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.65; iOS: 4.65 | 页面内容的编码类型，默认值为"utf-8"，可选 | 
+| mimeType | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.65; iOS: 4.65 | 加载的页面内容类型,默认值为"text/html",可选 |
+| encoding | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.65; iOS: 4.65 | 页面内容的编码类型,默认值为"utf-8",可选 | 
 
 
 

@@ -1,6 +1,6 @@
 ## UniElement
 
-所有组件的 DOM 元素对象基类，描述了 UVUE DOM 元素所普通具有的属性和方法。
+所有组件的 DOM 元素对象基类,描述了 UVUE DOM 元素所普通具有的属性和方法。
 
 ### UniElement 兼容性 <Help /> 
  Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61
@@ -11,28 +11,28 @@
 ### UniElement 的属性值 @unielement-values
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| id | string | 是 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; iOS(Vapor) UTS 插件: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 只读属性，当前元素的标识符 |
-| isConnected | boolean | 是 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; iOS(Vapor) UTS 插件: x; HarmonyOS: 4.61 | 只读属性，当前元素是否与 DOM 树连接 |
-| attributes | Map\<string, any> | 是 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.0; Android(Vapor): 5.31; iOS(VDOM): 4.11; iOS(Vapor): 5.31; iOS(VDOM) UTS 插件: 4.25; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.31 | 只读属性，当前元素上所有属性元素的集合 |
-| classList | Array&lt;string&gt; | 是 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 | 只读属性，当前元素 class 属性的动态集合 |
-| dataset | any | 是 | Web: 4.0; 微信小程序: 4.41 仅在event对象内的target上可用; 支付宝小程序: 5.31; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 | 只读属性，当前元素上自定义数据属性（data-*）的集合 |
-| children | Array&lt;[UniElement](/api/dom/unielement.md)&gt; | 是 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，当前元素包含的子元素的集合 |
-| firstChild | [UniElement](/api/dom/unielement.md) | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，当前元素的第一个子元素，如果元素是无子元素，则返回 null |
-| lastChild | [UniElement](/api/dom/unielement.md) | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，当前元素的最后一个子元素，如果没有子元素，则返回 null |
-| parentElement | [UniElement](/api/dom/unielement.md) | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，当前元素在 DOM 树中的父元素，如果没有父元素（如未添加到DOM树中），则返回null。 |
-| nextElementSibling | [UniElement](/api/dom/unielement.md) | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，当前元素在 DOM 树中紧跟在其后面的同级元素，如果当前元素为最后一个元素，则返回 null |
-| offsetLeft | number | 是 | Web: 4.0; 微信小程序: 4.41 仅在event对象内的target上可用; 支付宝小程序: 5.31; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，当前元素左上角相对于其定位父元素内边框（Border内侧）左边缘的逻辑像素值 |
-| offsetTop | number | 是 | Web: 4.0; 微信小程序: 4.41 仅在event对象内的target上可用; 支付宝小程序: 5.31; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，当前元素外边框左上角相对于其定位父元素内边框（Border内侧）顶部边缘的逻辑像素值 |
-| offsetWidth | number | 是 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，当前元素的布局宽度逻辑像素值，包含border、padding区域 |
-| offsetHeight | number | 是 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，当前元素的布局高度逻辑像素值，包含border、padding区域 |
-| style | [CSSStyleDeclaration](/api/dom/cssstyledeclaration.md) | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，当前元素的CSS样式对象 |
-| scrollWidth | number | 是 | Web: 4.0; 微信小程序: 5.13; 支付宝小程序: 5.31; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，当前元素的可滚动内容总宽度，仅scroll-view、list-view、waterflow等可滚动组件支持，其他组件返回视图宽度 |
-| scrollHeight | number | 是 | Web: 4.0; 微信小程序: 5.13; 支付宝小程序: 5.31; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，当前元素可滚动内容的总高度，仅scroll-view、list-view、waterflow等可滚动组件支持，其他组件返回视图高度 |
-| scrollLeft | number | 是 | Web: 4.0; 微信小程序: 5.13; 支付宝小程序: 5.31; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 获取或修改当前元素横向滚动的逻辑像素值，仅scroll-view、list-view等可滚动组件支持，其他组件修改无效、获取时返回 0 |
-| scrollTop | number | 是 | Web: 4.0; 微信小程序: 5.13; 支付宝小程序: 5.31; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 获取或修改当前元素竖向滚动逻辑像素值，仅scroll-view、list-view、waterflow等可滚动组件支持，其他组件修改无效、获取时返回 0 |
-| tagName | string | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，获取当前元素的标签名 |
-| uniPage | [UniPage](/api/unipage.md) | 是 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.61; iOS: 4.61; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 | 只读属性，当前元素所属的页面对象 |
-| innerHTML | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.84; Android(Vapor): x; iOS: x; HarmonyOS: x | 只读属性，当前元素内部所有子元素（不包括注释节点）的 HTML 内容 |
+| id | string | 是 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; iOS(Vapor) UTS 插件: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 只读属性,当前元素的标识符 |
+| isConnected | boolean | 是 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; iOS(Vapor) UTS 插件: x; HarmonyOS: 4.61 | 只读属性,当前元素是否与 DOM 树连接 |
+| attributes | Map\<string, any> | 是 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.0; Android(Vapor): 5.31; iOS(VDOM): 4.11; iOS(Vapor): 5.31; iOS(VDOM) UTS 插件: 4.25; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.31 | 只读属性,当前元素上所有属性元素的集合 |
+| classList | Array&lt;string&gt; | 是 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 | 只读属性,当前元素 class 属性的动态集合 |
+| dataset | any | 是 | Web: 4.0; 微信小程序: 4.41 仅在event对象内的target上可用; 支付宝小程序: 5.31; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 | 只读属性,当前元素上自定义数据属性（data-*）的集合 |
+| children | Array&lt;[UniElement](/api/dom/unielement.md)&gt; | 是 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性,当前元素包含的子元素的集合 |
+| firstChild | [UniElement](/api/dom/unielement.md) | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性,当前元素的第一个子元素,如果元素是无子元素,则返回 null |
+| lastChild | [UniElement](/api/dom/unielement.md) | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性,当前元素的最后一个子元素,如果没有子元素,则返回 null |
+| parentElement | [UniElement](/api/dom/unielement.md) | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性,当前元素在 DOM 树中的父元素,如果没有父元素（如未添加到DOM树中）,则返回null。 |
+| nextElementSibling | [UniElement](/api/dom/unielement.md) | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性,当前元素在 DOM 树中紧跟在其后面的同级元素,如果当前元素为最后一个元素,则返回 null |
+| offsetLeft | number | 是 | Web: 4.0; 微信小程序: 4.41 仅在event对象内的target上可用; 支付宝小程序: 5.31; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性,当前元素左上角相对于其定位父元素内边框（Border内侧）左边缘的逻辑像素值 |
+| offsetTop | number | 是 | Web: 4.0; 微信小程序: 4.41 仅在event对象内的target上可用; 支付宝小程序: 5.31; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性,当前元素外边框左上角相对于其定位父元素内边框（Border内侧）顶部边缘的逻辑像素值 |
+| offsetWidth | number | 是 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性,当前元素的布局宽度逻辑像素值,包含border、padding区域 |
+| offsetHeight | number | 是 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性,当前元素的布局高度逻辑像素值,包含border、padding区域 |
+| style | [CSSStyleDeclaration](/api/dom/cssstyledeclaration.md) | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性,当前元素的CSS样式对象 |
+| scrollWidth | number | 是 | Web: 4.0; 微信小程序: 5.13; 支付宝小程序: 5.31; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性,当前元素的可滚动内容总宽度,仅scroll-view、list-view、waterflow等可滚动组件支持,其他组件返回视图宽度 |
+| scrollHeight | number | 是 | Web: 4.0; 微信小程序: 5.13; 支付宝小程序: 5.31; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性,当前元素可滚动内容的总高度,仅scroll-view、list-view、waterflow等可滚动组件支持,其他组件返回视图高度 |
+| scrollLeft | number | 是 | Web: 4.0; 微信小程序: 5.13; 支付宝小程序: 5.31; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 获取或修改当前元素横向滚动的逻辑像素值,仅scroll-view、list-view等可滚动组件支持,其他组件修改无效、获取时返回 0 |
+| scrollTop | number | 是 | Web: 4.0; 微信小程序: 5.13; 支付宝小程序: 5.31; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 获取或修改当前元素竖向滚动逻辑像素值,仅scroll-view、list-view、waterflow等可滚动组件支持,其他组件修改无效、获取时返回 0 |
+| tagName | string | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性,获取当前元素的标签名 |
+| uniPage | [UniPage](/api/unipage.md) | 是 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.61; iOS: 4.61; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 | 只读属性,当前元素所属的页面对象 |
+| innerHTML | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.84; Android(Vapor): x; iOS: x; HarmonyOS: x | 只读属性,当前元素内部所有子元素（不包括注释节点）的 HTML 内容 |
 
 
 #### dataset@dataset
@@ -53,7 +53,7 @@
 
 #### appendChild(aChild: UniElement): void @appendchild
 
-将一个元素添加到指定父元素的子元素列表的末尾处。如果将被插入的元素已经存在于当前文档的文档树中，那么将会它从原先的位置移动到新的位置。
+将一个元素添加到指定父元素的子元素列表的末尾处。如果将被插入的元素已经存在于当前文档的文档树中,那么将会它从原先的位置移动到新的位置。
 
 ##### appendChild 兼容性 <Help /> 
 Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.0; Android(Vapor): x; Android(VDOM) UTS 插件: 5.23; iOS(VDOM): 4.11; iOS(Vapor): x; iOS(VDOM) UTS 插件: 4.25; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x; HarmonyOS(VDOM) UTS 插件: 5.23
@@ -72,7 +72,7 @@ Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.0; Android
 
 #### insertBefore(newChild: UniElement, refChild?: UniElement): UniElement \| null @insertbefore
 
-在参考元素之前插入一个拥有指定父元素的子元素。如果给定的子元素是对文档中现有元素的引用，insertBefore() 会将其从当前位置移动到新位置。
+在参考元素之前插入一个拥有指定父元素的子元素。如果给定的子元素是对文档中现有元素的引用,insertBefore() 会将其从当前位置移动到新位置。
 
 ##### insertBefore 兼容性 <Help /> 
 Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.0; Android(Vapor): x; Android(VDOM) UTS 插件: 5.23; iOS(VDOM): 4.11; iOS(Vapor): x; iOS(VDOM) UTS 插件: 4.25; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x; HarmonyOS(VDOM) UTS 插件: 5.23
@@ -90,7 +90,7 @@ Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.0; Android
 
 | 类型 | 描述 | 必备 |
 | :- | :- | :- |
-| [UniElement](/api/dom/unielement.md) | 所有组件的 DOM 元素对象基类，描述了 UVUE DOM 元素所普通具有的属性和方法。 | 否 |
+| [UniElement](/api/dom/unielement.md) | 所有组件的 DOM 元素对象基类,描述了 UVUE DOM 元素所普通具有的属性和方法。 | 否 |
  
 
 
@@ -115,7 +115,7 @@ Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.0; Android
 
 | 类型 | 描述 | 必备 |
 | :- | :- | :- |
-| [UniElement](/api/dom/unielement.md) | 所有组件的 DOM 元素对象基类，描述了 UVUE DOM 元素所普通具有的属性和方法。 | 否 |
+| [UniElement](/api/dom/unielement.md) | 所有组件的 DOM 元素对象基类,描述了 UVUE DOM 元素所普通具有的属性和方法。 | 否 |
  
 
 
@@ -123,7 +123,7 @@ Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.0; Android
 
 #### setAttribute(key: string, value: string): void @setattribute
 
-设置指定元素上的某个属性值。如果设置的属性已经存在，则更新该属性值；否则使用指定的名称和值添加一个新的属性。
+设置指定元素上的某个属性值。如果设置的属性已经存在,则更新该属性值；否则使用指定的名称和值添加一个新的属性。
 
 ##### setAttribute 兼容性 <Help /> 
 Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.0; Android(VDOM) UTS 插件: 5.23; iOS(VDOM): 4.11; iOS(Vapor): x; iOS(VDOM) UTS 插件: 4.25; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x; HarmonyOS(VDOM) UTS 插件: 5.23
@@ -170,7 +170,7 @@ Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.0; Android(VDOM) U
 
 #### getAttribute(key: string): string \| null @getattribute
 
-获取元素指定的属性值，如果指定的属性不存在则返回null。
+获取元素指定的属性值,如果指定的属性不存在则返回null。
 
 ##### getAttribute 兼容性 <Help /> 
 Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): 4.0; Android(Vapor): 5.23; Android UTS 插件: 5.23; iOS(VDOM): 4.11; iOS(Vapor): x; iOS(VDOM) UTS 插件: 4.25; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x; HarmonyOS(VDOM) UTS 插件: 5.23
@@ -498,7 +498,7 @@ app平台 getAttribute 不支持获取 class、style 属性， uvue/vue 页面�
 
 #### getAnyAttribute(key: string): any \| null @getanyattribute
 
-返回元素上一个指定的属性值。如果指定的属性不存在，则返回 null
+返回元素上一个指定的属性值。如果指定的属性不存在,则返回 null
 
 ##### getAnyAttribute 兼容性 <Help /> 
 Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.0; Android(VDOM) UTS 插件: 5.23; iOS(VDOM): 4.11; iOS(Vapor): x; iOS(VDOM) UTS 插件: 4.25; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x; HarmonyOS(VDOM) UTS 插件: 5.23
@@ -523,7 +523,7 @@ Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.0; Android(VDOM) U
 
 #### hasAttribute(key: string): boolean @hasattribute
 
-返回该元素是否包含有指定的属性，属性存在则返回true，否则返回false。
+返回该元素是否包含有指定的属性,属性存在则返回true,否则返回false。
 
 ##### hasAttribute 兼容性 <Help /> 
 Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.0; Android(Vapor): x; Android(VDOM) UTS 插件: 5.23; iOS(VDOM): 4.11; iOS(Vapor): x; iOS(VDOM) UTS 插件: 4.25; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x; HarmonyOS(VDOM) UTS 插件: 5.23
@@ -548,7 +548,7 @@ Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.0; Android
 
 #### removeAttribute(key: string): void @removeattribute
 
-从元素中删除一个属性，如果指定的属性不存在，则不做任何操作，也不会产生错误。
+从元素中删除一个属性,如果指定的属性不存在,则不做任何操作,也不会产生错误。
 
 ##### removeAttribute 兼容性 <Help /> 
 Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.0; Android(VDOM) UTS 插件: x; iOS(VDOM): 4.11; iOS(Vapor): 5.21; iOS(VDOM) UTS 插件: 4.25; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.21; HarmonyOS(VDOM) UTS 插件: 5.23
@@ -1371,7 +1371,7 @@ Web: 4.41; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.41; Andro
 
 #### getDrawableContext(): DrawableContext \| null @getdrawablecontext
 
-获取组件的绘制对象，仅uvue页面中的 view 组件支持，其它组件不支持则返回null。
+获取组件的绘制对象,仅uvue页面中的 view 组件支持,其它组件不支持则返回null。
 
 ##### getDrawableContext 兼容性 <Help /> 
 Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 3.9; Android(Vapor): x; Android(VDOM) UTS 插件: 5.23; iOS(VDOM): 4.11; iOS(Vapor): x; iOS(VDOM) UTS 插件: 4.25; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x; HarmonyOS(VDOM) UTS 插件: 5.23
@@ -1446,7 +1446,7 @@ if (view != null && view instanceof WKWebView) {
 
 #### addEventListener\<T extends UniEvent, R>(type: string, callback: (event: T) => R): UniCallbackWrapper @addeventlistener
 
-将指定的监听器注册到元素对象上，当该对象触发指定的事件时，指定的回调函数就会被执行。
+将指定的监听器注册到元素对象上,当该对象触发指定的事件时,指定的回调函数就会被执行。
 
 ##### addEventListener 兼容性 <Help /> 
 Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.0; Android(Vapor) UTS 插件: x; iOS: 4.11; iOS(Vapor) UTS 插件: x; HarmonyOS: 5.23; HarmonyOS(Vapor) UTS 插件: x
@@ -1457,7 +1457,7 @@ Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.0; Android(Vapor
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | type | string | 是 | 微信小程序: x; 支付宝小程序: x | 事件类型 |
-| callback | (event: T) => R | 是 | 微信小程序: x; 支付宝小程序: x | 事件监听器 T表示event类型，R表示返回值类型 | 
+| callback | (event: T) => R | 是 | 微信小程序: x; 支付宝小程序: x | 事件监听器 T表示event类型,R表示返回值类型 | 
 
 
 ##### 返回值 
@@ -1492,7 +1492,7 @@ Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.0; Android(VDOM)
 
 #### removeChild(aChild: UniElement): UniElement \| null @removechild
 
-从元素中删除一个子元素，返回删除的元素。
+从元素中删除一个子元素,返回删除的元素。
 
 ##### removeChild 兼容性 <Help /> 
 Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.0; Android(Vapor): x; Android(VDOM) UTS 插件: 5.23; iOS(VDOM): 4.11; iOS(Vapor): x; iOS(VDOM) UTS 插件: 4.25; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x; HarmonyOS(VDOM) UTS 插件: 5.23
@@ -1509,7 +1509,7 @@ Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.0; Android
 
 | 类型 | 描述 | 必备 |
 | :- | :- | :- |
-| [UniElement](/api/dom/unielement.md) | 所有组件的 DOM 元素对象基类，描述了 UVUE DOM 元素所普通具有的属性和方法。 | 否 |
+| [UniElement](/api/dom/unielement.md) | 所有组件的 DOM 元素对象基类,描述了 UVUE DOM 元素所普通具有的属性和方法。 | 否 |
  
 
 
@@ -1531,7 +1531,7 @@ Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.0; Android
 
 #### dispatchEvent(value: UniEvent): void @dispatchevent
 
-向一个指定的事件目标派发一个 Event，并以合适的顺序（同步地）调用此事件的监听器回调函数。
+向一个指定的事件目标派发一个 Event,并以合适的顺序（同步地）调用此事件的监听器回调函数。
 
 ##### dispatchEvent 兼容性 <Help /> 
 Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61
@@ -1592,7 +1592,7 @@ Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.0; Android
 
 #### querySelector(selector: string.cssSelectorString): UniElement \| null @queryselector
 
-返回文档中与指定选择器或选择器组匹配的第一个 Element对象。如果找不到匹配项，则返回null
+返回文档中与指定选择器或选择器组匹配的第一个 Element对象。如果找不到匹配项,则返回null
 
 ##### querySelector 兼容性 <Help /> 
 Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.0; Android(Vapor): 5.23; Android(VDOM) UTS 插件: 5.23; iOS(VDOM): 4.11; iOS(Vapor): 5.23; iOS(VDOM) UTS 插件: 4.25; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.23; HarmonyOS(VDOM) UTS 插件: 5.23
@@ -1609,7 +1609,7 @@ Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.0; Android
 
 | 类型 | 描述 | 必备 |
 | :- | :- | :- |
-| [UniElement](/api/dom/unielement.md) | 所有组件的 DOM 元素对象基类，描述了 UVUE DOM 元素所普通具有的属性和方法。 | 否 |
+| [UniElement](/api/dom/unielement.md) | 所有组件的 DOM 元素对象基类,描述了 UVUE DOM 元素所普通具有的属性和方法。 | 否 |
  
 
 
@@ -1674,8 +1674,8 @@ Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.0; Android
 
 #### takeSnapshot(options: TakeSnapshotOptions): void @takesnapshot
 
-对当前组件进行截图，调用此方法会将当前组件（包含子节点）渲染结果导出成图片。
-成功会返回图片对应的临时文件路径，目前默认png格式
+对当前组件进行截图,调用此方法会将当前组件（包含子节点）渲染结果导出成图片。
+成功会返回图片对应的临时文件路径,目前默认png格式
 
 
 ##### takeSnapshot 兼容性 <Help /> 
@@ -2149,7 +2149,7 @@ Web: 4.31; 微信小程序: x; 支付宝小程序: x; Android: 4.31; iOS: 4.31; 
 
 #### animate(keyframes: UniAnimationKeyframe \| UniAnimationKeyframe\[], options: UniAnimationOption \| number): UniAnimation \| null @animate
 
-创建一个新的动画并应用于元素，然后立即执行动画。
+创建一个新的动画并应用于元素,然后立即执行动画。
 
 ::: warning 注意
 - 鸿蒙平台VDOM模式不支持返回动画实例监听事件或操作动画状态，仅支持调用后按传入参数执行动画
@@ -2196,7 +2196,7 @@ Web: √; 微信小程序: 4.53; 支付宝小程序: 5.31; Android: 4.51; Androi
 | borderRightColor | Array&lt;any&gt; | 否 | Web: √; 微信小程序: √; 支付宝小程序: 5.31; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制右边框颜色属性的过渡效果 |
 | transform | Array&lt;any&gt; | 否 | Web: √; 微信小程序: √; 支付宝小程序: 5.31; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制变换属性的过渡效果 |
 | transformOrigin | Array&lt;any&gt; | 否 | Web: √; 微信小程序: x; 支付宝小程序: x; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制元素变形的原点的过渡效果 |
-| offset | number | 否 | Web: √; 微信小程序: x; 支付宝小程序: x; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 关键帧的偏移量。为0.0和1.0之间的数字。如果此值缺失，则关键帧将在相邻关键帧之间均匀分布。 |
+| offset | number | 否 | Web: √; 微信小程序: x; 支付宝小程序: x; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 关键帧的偏移量。为0.0和1.0之间的数字。如果此值缺失,则关键帧将在相邻关键帧之间均匀分布。 |
 
 #### options 的属性描述
 
@@ -2207,7 +2207,7 @@ Web: √; 微信小程序: 4.53; 支付宝小程序: 5.31; Android: 4.51; Androi
 | duration | number | 否 | 0 | Web: √; 微信小程序: √; 支付宝小程序: 5.31; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 动画时长 |
 | easing | string | 否 | linear | Web: √; 微信小程序: √; 支付宝小程序: 5.31; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 动画曲线。 |
 | fill | string | 否 |  | Web: √; 微信小程序: x; 支付宝小程序: x; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 决定动画效果是否应在播放前反映在元素中 |
-| iterations | number | 否 | 1 | Web: √; 微信小程序: √; 支付宝小程序: 5.31; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 动画重复的次数。当设置为`Infinity`时，动画将一直重复执行。 | 
+| iterations | number | 否 | 1 | Web: √; 微信小程序: √; 支付宝小程序: 5.31; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 动画重复的次数。当设置为`Infinity`时,动画将一直重复执行。 | 
 
 ##### direction 的属性描述
 
@@ -2814,7 +2814,7 @@ Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS
 
 #### getHarmonyController\<T>(): T \| null @getharmonycontroller_1
 
-鸿蒙原生组件控制器，可以控制组件的状态。通过泛型定义view类型，可能返回null
+鸿蒙原生组件控制器,可以控制组件的状态。通过泛型定义view类型,可能返回null
 
 ##### getHarmonyController 兼容性 <Help /> 
 Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x
@@ -2864,7 +2864,7 @@ Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.61; Android(VDOM) 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | "hide" | Web: x; 微信小程序: x; 支付宝小程序: x | 隐藏所有系统状态栏和底部导航栏 |
-| "show" | Web: x; 微信小程序: x; 支付宝小程序: x | 隐藏顶部系统状态栏，显示底部系统导航栏 |
+| "show" | Web: x; 微信小程序: x; 支付宝小程序: x | 隐藏顶部系统状态栏,显示底部系统导航栏 |
 | "auto" | Web: x; 微信小程序: x; 支付宝小程序: x | 系统默认行为 |
 
 ##### orientation 的属性描述
@@ -2872,7 +2872,7 @@ Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.61; Android(VDOM) 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | "auto" | Web: x; 微信小程序: x; 支付宝小程序: x | 根据重力感应自动调整 |
-| "landscape" | Web: x; 微信小程序: x; 支付宝小程序: x | 固定为横屏，会根据重力调整方向 |
+| "landscape" | Web: x; 微信小程序: x; 支付宝小程序: x | 固定为横屏,会根据重力调整方向 |
 | "landscape-secondary" | Web: x; 微信小程序: x; 支付宝小程序: x | 固定为反向横屏 |
 | "landscape-primary" | Web: x; 微信小程序: x; 支付宝小程序: x | 固定为正向横屏 |
 | "portrait" | Web: x; 微信小程序: x; 支付宝小程序: x | 固定为竖屏 |

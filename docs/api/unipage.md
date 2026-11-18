@@ -421,7 +421,7 @@ Web: 4.31; 微信小程序: x; 支付宝小程序: x; Android: 4.31; iOS: 4.31; 
 
 | 类型 | 描述 | 必备 |
 | :- | :- | :- |
-| [UniElement](/api/dom/unielement.md) | 所有组件的 DOM 元素对象基类，描述了 UVUE DOM 元素所普通具有的属性和方法。 | 否 |
+| [UniElement](/api/dom/unielement.md) | 所有组件的 DOM 元素对象基类,描述了 UVUE DOM 元素所普通具有的属性和方法。 | 否 |
  
 
 
@@ -505,7 +505,7 @@ Web: 4.31; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; Harmon
 
 | 类型 | 描述 | 必备 |
 | :- | :- | :- |
-| [UniElement](/api/dom/unielement.md) | 所有组件的 DOM 元素对象基类，描述了 UVUE DOM 元素所普通具有的属性和方法。 | 否 |
+| [UniElement](/api/dom/unielement.md) | 所有组件的 DOM 元素对象基类,描述了 UVUE DOM 元素所普通具有的属性和方法。 | 否 |
  
 
 
@@ -584,7 +584,7 @@ Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS
 
 | 类型 | 描述 |
 | :- | :- |
-| [UniElement](/api/dom/unielement.md) | 所有组件的 DOM 元素对象基类，描述了 UVUE DOM 元素所普通具有的属性和方法。 |
+| [UniElement](/api/dom/unielement.md) | 所有组件的 DOM 元素对象基类,描述了 UVUE DOM 元素所普通具有的属性和方法。 |
  
 
 
@@ -816,7 +816,7 @@ Web: 5.0; 微信小程序: x; 支付宝小程序: x; Android: 5.0; iOS: 5.0; iOS
 
 | 类型 | 描述 | 必备 |
 | :- | :- | :- |
-| [UniElement](/api/dom/unielement.md) | 所有组件的 DOM 元素对象基类，描述了 UVUE DOM 元素所普通具有的属性和方法。 | 否 |
+| [UniElement](/api/dom/unielement.md) | 所有组件的 DOM 元素对象基类,描述了 UVUE DOM 元素所普通具有的属性和方法。 | 否 |
  
 
 
