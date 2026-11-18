@@ -1,6 +1,6 @@
 ## ScrollViewContext
 
-滚动组件的上下文对象，用于控制滚动位置、滚动行为、下拉刷新和下拉二级面板。<br/>通过 NodesRef.node 获取。<br/>App 蒸汽模式下适用于 scroll-view、list-view 和 waterflow。<br/>微信小程序适用于 scroll-view。
+滚动组件的上下文对象，用于控制滚动位置、滚动行为、下拉刷新和下拉二级面板。
 
 ### ScrollViewContext 兼容性 <Help /> 
  Web: x; 微信小程序: √; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.36; iOS(VDOM): x; iOS(Vapor): 5.36; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.36
