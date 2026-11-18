@@ -506,7 +506,7 @@
     left: 0;
     bottom: 0;
     opacity: 0;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.55);
     /* #ifndef VUE3-VAPOR */
     transition: opacity 0.1s;
     /* #endif */
