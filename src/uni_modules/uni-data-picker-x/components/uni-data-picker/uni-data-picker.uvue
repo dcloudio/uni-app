@@ -653,17 +653,17 @@
     left: 0;
     right: 0;
     bottom: 0;
-    height: 80%;
+    height: 85%;
     background-color: #ffffff;
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;
-    flex-direction: column;
-    z-index: 102;
+    z-index: 500;
     overflow: hidden;
     transform: translateY(100%);
     transition-property: transform;
     transition-duration: 250ms;
     transition-timing-function: ease-out;
+    flex-direction: column;
   }
 
   .uni-data-tree-dialog-active {

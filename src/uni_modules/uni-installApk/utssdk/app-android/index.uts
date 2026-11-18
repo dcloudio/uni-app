@@ -13,7 +13,9 @@ export function installApk(options : InstallApkOptions) : void {
   const context = UTSAndroid.getAppContext() as Context
   var filePath = UTSAndroid.convert2AbsFullPath(options.filePath)
   var apkFile : File | null = null;
+  var isAssetFile = false
   if (filePath.startsWith("/android_asset/")) {
+    isAssetFile = true
     filePath = filePath.replace("/android_asset/", "")
     apkFile = copyAssetFileToPrivateDir(context, filePath)
   } else {
@@ -26,17 +28,40 @@ export function installApk(options : InstallApkOptions) : void {
     options.complete?.(error)
     return
   }
+  const sourceFile = apkFile!!
+  if (!isAssetFile && Build.VERSION.SDK_INT < 24) {
+    const privateDir = new File(context.getApplicationInfo().dataDir).getCanonicalPath()
+    if (sourceFile.getCanonicalPath().startsWith(privateDir + "/")) {
+      UTSAndroid.getDispatcher('io').async((_) => {
+        const installFile = copyFileToExternalCache(context, sourceFile)
+        UTSAndroid.getDispatcher('main').async((_) => {
+          if (installFile == null) {
+            const error = new InstallApkFailImpl(1300002)
+            options.fail?.(error)
+            options.complete?.(error)
+            return
+          }
+          startInstallApk(context, installFile, options)
+        }, null)
+      }, null)
+      return
+    }
+  }
+  startInstallApk(context, sourceFile, options)
+}
+
+function startInstallApk(context : Context, apkFile : File, options : InstallApkOptions) : void {
   const intent = new Intent()
   intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
   intent.setAction(Intent.ACTION_VIEW)
 
   if (Build.VERSION.SDK_INT >= 24) {
     const authority = context.getPackageName() + ".dc.fileprovider"
-    const apkUri = FileProvider.getUriForFile(context, authority, apkFile!!)
+    const apkUri = FileProvider.getUriForFile(context, authority, apkFile)
     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
     intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
   } else {
-    intent.setDataAndType(Uri.fromFile(apkFile!!), "application/vnd.android.package-archive");
+    intent.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive");
   }
 
   context.startActivity(intent)
@@ -47,6 +72,29 @@ export function installApk(options : InstallApkOptions) : void {
   options.complete?.(success)
 }
 
+function copyFileToExternalCache(context : Context, sourceFile : File) : File | null {
+  var outFile : File | null = null
+  try {
+    if (!sourceFile.isFile()) {
+      return null
+    }
+    const cacheDir = context.getExternalCacheDir()
+    if (cacheDir == null) {
+      return null
+    }
+    const directory = new File(cacheDir, "apk-install")
+    if (!directory.isDirectory() && !directory.mkdirs() && !directory.isDirectory()) {
+      return null
+    }
+    outFile = new File(directory, "install.apk")
+    sourceFile.copyTo(outFile, true)
+    return outFile
+  } catch (e : Exception) {
+    outFile?.delete()
+    e.printStackTrace()
+  }
+  return null
+}
 
 function copyAssetFileToPrivateDir(context : Context, fileName : string) : File | null {
   try {
@@ -74,12 +122,12 @@ function copyAssetFileToPrivateDir(context : Context, fileName : string) : File 
 
     inputStream.close()
     outputStream.close()
-	
-	
+
+
 	if (Build.VERSION.SDK_INT < 24) {
 		changePermissionRecursive(new File(context.getCacheDir().getPath() + "/apks/"))
 	}
-	
+
     return outFile
   } catch (e : Exception) {
     e.printStackTrace()

@@ -63,6 +63,11 @@
   </scroll-view>
   <!-- #endif -->
 
+  <!-- #ifdef WEB -->
+  <navigator class="web-props-entry" url="/pages/component/web-view/web-view-props">
+    <button size="mini" type="primary">Web 属性测试</button>
+  </navigator>
+  <!-- #endif -->
   <view class="scroll-view_bottom-fixed"></view>
 </template>
 
@@ -370,6 +375,14 @@
 </script>
 
 <style>
+  /* #ifdef WEB */
+  .web-props-entry {
+    position: fixed;
+    right: 15px;
+    bottom: 20px;
+    z-index: 9999;
+  }
+  /* #endif */
   .margin-left-5 {
     margin-left: 5px;
   }

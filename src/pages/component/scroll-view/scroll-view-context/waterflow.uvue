@@ -80,30 +80,6 @@
   </button>
 
   <button id="call-close-refresh" class="mt-10" @click="closeRefresh">调用 closeRefresh</button>
-
-  <!-- triggerTwoLevel / closeTwoLevel：共用一个滚动容器。 -->
-  <text class="fs-15 fw-bold color-text-333 mt-15">triggerTwoLevel / closeTwoLevel</text>
-  <waterflow
-    id="two-level-scroll"
-    class="context-scroll"
-    :cross-axis-count="2"
-    :refresher-enabled="true"
-    refresher-default-style="none"
-  >
-    <flow-item v-for="index in 8" :key="index" :type="1" class="h-80">
-      <view class="context-item">
-        <text>条目 {{ index }}</text>
-      </view>
-    </flow-item>
-    <flow-item slot="refresher" :type="2" class="context-refresher">
-      <view class="context-refresher items-center justify-center"><text>二级面板</text></view>
-    </flow-item>
-  </waterflow>
-  <button id="call-trigger-two-level" class="mt-10" @click="triggerTwoLevel">
-    调用 triggerTwoLevel
-  </button>
-
-  <button id="call-close-two-level" class="mt-10" @click="closeTwoLevel">调用 closeTwoLevel</button>
 </template>
 
 <script setup lang="ts">
@@ -164,18 +140,6 @@
     context.closeRefresh()
   }
 
-  async function triggerTwoLevel() {
-    const context = await getScrollViewContext('#two-level-scroll')
-    // App 端的二级开关通过运行时属性设置。
-    context.setAnyAttribute('refresher-two-level-enabled', true)
-    context.triggerTwoLevel()
-  }
-
-  async function closeTwoLevel() {
-    const context = await getScrollViewContext('#two-level-scroll')
-    context.closeTwoLevel()
-  }
-
   defineExpose({
     data,
     // #ifdef APP-IOS
@@ -187,9 +151,7 @@
     scrollTo,
     scrollIntoView,
     triggerRefresh,
-    closeRefresh,
-    triggerTwoLevel,
-    closeTwoLevel
+    closeRefresh
   })
 </script>
 

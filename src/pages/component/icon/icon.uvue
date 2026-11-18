@@ -1,0 +1,297 @@
+<template>
+	<view class="icon-page">
+		<page-head title="icon 图标"></page-head>
+		<view class="icon-page-body">
+			<view class="icon-section">
+				<view class="icon-section-head">
+					<text class="icon-section-title">默认类型</text>
+					<text class="icon-section-desc">内置 9 种图标</text>
+				</view>
+				<view class="icon-grid">
+					<view v-for="type in iconTypes" :key="type" class="icon-cell">
+						<view class="icon-tile">
+							<icon :id="'icon-' + type" :type="type" :size="32" />
+						</view>
+						<text class="icon-name">{{ type }}</text>
+					</view>
+				</view>
+			</view>
+
+			<view class="icon-section">
+				<view class="icon-section-head">
+					<text class="icon-section-title">不同尺寸</text>
+					<text class="icon-section-desc">16 - 64 px</text>
+				</view>
+				<view class="icon-grid">
+					<view v-for="size in sizes" :key="size" class="icon-cell">
+						<view class="icon-size-tile">
+							<icon type="success_no_circle" :size="size" />
+						</view>
+						<text class="icon-name">{{ size }}px</text>
+					</view>
+				</view>
+			</view>
+
+			<view class="icon-section">
+				<view class="icon-section-head">
+					<text class="icon-section-title">不同颜色</text>
+					<text class="icon-section-desc">color 属性</text>
+				</view>
+				<view class="icon-grid">
+					<view v-for="color in colors" :key="color" class="icon-cell">
+						<view class="icon-tile">
+							<icon type="info" :size="32" :color="color" />
+						</view>
+						<text class="icon-name">{{ color }}</text>
+					</view>
+				</view>
+			</view>
+
+			<view class="icon-section">
+				<view class="icon-section-head">
+					<text class="icon-section-title">动态切换</text>
+					<text class="icon-section-desc">调整类型、尺寸与颜色</text>
+				</view>
+
+				<view class="icon-preview-stage">
+					<icon id="icon-preview" :type="iconTypes[typeIndex]" :size="previewSize" :color="previewColor" />
+				</view>
+				<view class="icon-preview-meta">
+					<text class="icon-preview-type">{{ iconTypes[typeIndex] }}</text>
+					<text class="icon-preview-spec">{{ previewSize }}px · {{ previewColor === '' ? '默认色' : previewColor }}</text>
+				</view>
+
+				<picker id="icon-type-picker" :range="iconTypes" :value="typeIndex" @change="changeType">
+					<view class="icon-field">
+						<text class="icon-field-label">类型</text>
+						<view class="icon-field-right">
+							<text class="icon-field-value">{{ iconTypes[typeIndex] }}</text>
+							<text class="icon-field-arrow">›</text>
+						</view>
+					</view>
+				</picker>
+
+				<view class="icon-field">
+					<text class="icon-field-label">尺寸</text>
+					<view class="icon-slider-wrap">
+						<slider id="icon-size-slider" :min="16" :max="64" :value="previewSize" show-value @changing="changeSize" @change="changeSize" />
+					</view>
+				</view>
+
+				<view class="icon-field icon-field-last">
+					<text class="icon-field-label">颜色</text>
+					<radio-group id="icon-color-group" class="icon-color-options" @change="changeColor">
+						<label class="icon-color-option">
+							<radio value="" :checked="previewColor === ''" />
+							<text class="icon-color-name">默认</text>
+						</label>
+						<label v-for="color in colors" :key="color" class="icon-color-option">
+							<radio :value="color" :checked="previewColor === color" />
+							<text class="icon-color-name">{{ color }}</text>
+						</label>
+					</radio-group>
+				</view>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script setup lang="uts">
+	const iconTypes : string[] = ['success', 'success_no_circle', 'info', 'warn', 'waiting', 'cancel', 'download', 'search', 'clear']
+	const sizes : number[] = [16, 23, 32, 48, 64]
+	const colors : string[] = ['#007aff', '#e64340', '#09bb07']
+	const typeIndex = ref(0)
+	const previewSize = ref(32)
+	const previewColor = ref('')
+
+	const changeType = (event : UniPickerChangeEvent) => {
+		typeIndex.value = event.detail.value as number
+	}
+	const changeSize = (event : UniSliderChangeEvent) => {
+		previewSize.value = event.detail.value as number
+	}
+	const changeColor = (event : UniRadioGroupChangeEvent) => {
+		previewColor.value = event.detail.value as string
+	}
+</script>
+
+<style>
+	.icon-page {
+		padding-bottom: 24px;
+	}
+
+	.icon-page-body {
+		padding: 0 15px;
+	}
+
+	.icon-section {
+		background-color: var(--list-background-color, #ffffff);
+		border-radius: 12px;
+		padding: 16px;
+		margin-top: 12px;
+	}
+
+	.icon-section-head {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 12px;
+	}
+
+	.icon-section-title {
+		font-size: 16px;
+		font-weight: bold;
+		color: var(--text-color, #333333);
+	}
+
+	.icon-section-desc {
+		font-size: 12px;
+		color: var(--active-color, #a0a0a0);
+	}
+
+	.icon-grid {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+	}
+
+	.icon-cell {
+		width: 33.33%;
+		padding: 8px 4px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.icon-tile {
+		width: 52px;
+		height: 52px;
+		border-radius: 14px;
+		background-color: var(--background-color, #efeff4);
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.icon-size-tile {
+		width: 52px;
+		height: 64px;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+    overflow: visible;
+	}
+
+	.icon-name {
+		margin-top: 6px;
+		font-size: 11px;
+		color: var(--active-color, #a0a0a0);
+		text-align: center;
+		word-break: break-all;
+	}
+
+	.icon-preview-stage {
+		height: 120px;
+		border-radius: 12px;
+		background-color: var(--background-color, #efeff4);
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.icon-preview-meta {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		margin: 10px 0 4px 0;
+	}
+
+	.icon-preview-type {
+		font-size: 14px;
+		font-weight: bold;
+		color: var(--text-color, #333333);
+	}
+
+	.icon-preview-spec {
+		margin-left: 8px;
+		font-size: 12px;
+		color: var(--active-color, #a0a0a0);
+	}
+
+	.icon-field {
+		min-height: 48px;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		border-bottom: 1px solid var(--border-color, rgba(0, 0, 0, .06));
+	}
+
+	.icon-field-last {
+		border-bottom-color: transparent;
+	}
+
+	.icon-field-label {
+		width: 56px;
+		font-size: 14px;
+		color: var(--text-color, #333333);
+	}
+
+	.icon-field-right {
+		flex: 1;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: flex-end;
+	}
+
+	.icon-field-value {
+		font-size: 14px;
+		color: var(--active-color, #a0a0a0);
+	}
+
+	.icon-field-arrow {
+		margin-left: 6px;
+		font-size: 16px;
+		color: var(--arrow-color, #999999);
+	}
+
+	.icon-slider-wrap {
+		flex: 1;
+	}
+
+	.icon-color-options {
+		flex: 1;
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: flex-end;
+	}
+
+	.icon-color-option {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		margin: 4px 0 4px 12px;
+	}
+
+	.icon-color-name {
+		margin-left: 2px;
+		font-size: 13px;
+		color: var(--text-color, #333333);
+	}
+
+	@media (prefers-color-scheme: dark) {
+		.icon-tile {
+			background-color: rgba(255, 255, 255, 0.08);
+		}
+
+		.icon-preview-stage {
+			background-color: rgba(255, 255, 255, 0.06);
+		}
+	}
+</style>

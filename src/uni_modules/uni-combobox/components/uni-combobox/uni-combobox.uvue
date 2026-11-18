@@ -1,12 +1,12 @@
 <template>
 	<view
 		ref="anchorRef"
-		class="uni-field-default uni-combobox__field"
+		class="uni-field-default"
 		style="position: relative;"
-		:class="[fieldClass, inputMode ? 'uni-combobox__field--input' : '', disabled ? 'uni-field-default--disabled' : '']"
+		:class="[fieldClass, disabled ? 'uni-field-default--disabled' : '']"
 		@click.stop="onFieldClick"
 		<!-- #ifdef WEB -->
-		:tabindex="disabled || inputMode ? '-1' : '0'"
+		:tabindex="disabled ? '-1' : '0'"
 		@keydown="onInputKeydown"
 		<!-- #endif -->
 		<!-- #ifdef MP-ALIPAY -->
@@ -28,7 +28,8 @@
 			:class="[
 				resultTextClass,
 				currentValue == '' ? 'uni-field-result--placeholder' : '',
-				disabled ? 'uni-field-result--disabled' : ''
+				disabled ? 'uni-field-result--disabled' : '',
+				currentValue == '' ? placeholderClass : ''
 			]"
 			flatten
 		>{{ displayText }}</text>
@@ -52,8 +53,10 @@
 	<view class="uni-combobox__mask" @click="closeOptions"></view>
 	<!-- #endif -->
 		<scroll-view
+			<!-- #ifdef APP || WEB -->
 			ref="popupRef"
-			class="uni-combox-pop"
+			<!-- #endif -->
+			class="uni-dropdown"
 			:class="[optionsViewClass, optionsContentClass]"
 			:style="optionsStyle"
 			:scroll-into-view="scrollIntoViewId"
@@ -61,7 +64,7 @@
 		>
 			<text
 				v-if="visibleOptions.length == 0"
-				class="uni-combox-pop__empty"
+				class="uni-combobox-pop__empty"
 				:class="optionTextClass"
 				flatten
 			>{{ emptyText }}</text>
@@ -69,10 +72,10 @@
 				v-for="(item, index) in visibleOptions"
 				:id="getOptionId(index)"
 				:key="item + '_' + index.toString()"
-				class="uni-combox-pop__item"
+				class="uni-combobox-pop__item"
 				:class="[
 					optionTextClass,
-					index == highlightedIndex ? 'uni-combox-pop__item--highlight' : '',
+					index == highlightedIndex ? 'uni-combobox-pop__item--highlight' : '',
 					index == highlightedIndex ? optionTextHighlightClass : '',
 					index == highlightedIndex ? optionRowHighlightClass : ''
 				]"
@@ -83,9 +86,10 @@
 </template>
 
 <script setup lang="ts">
+import { activatePopup, deactivatePopup } from './active-popup'
+import type { ComboboxPopup } from './active-popup'
 // #ifdef APP
-import { createPageClickSubscription } from './page-click'
-import type { PageClickSubscription } from './page-click'
+import { listenToPopupPage } from './active-popup'
 // #endif
 
 /**
@@ -109,6 +113,7 @@ defineOptions({
 	externalClasses: [
 		'arrow-class',
 		'field-class',
+		'placeholder-class',
 		'options-view-class',
 		'options-content-class',
 		'option-text-class',
@@ -170,6 +175,23 @@ type Props = {
 	 * }
 	 */
 	placeholder? : string,
+	/**
+	 * @description 单选模式下无选中值时，占位文字的自定义样式类
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.31"},
+	 *     "ios": {"unixVaporVer": "5.31"},
+	 *     "harmony": {"unixVaporVer": "5.31"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.31"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.31"}
+	 * }
+	 */
+	placeholderClass? : string.ClassString,
 	/**
 	 * @description 是否禁用
 	 * @default false
@@ -329,6 +351,7 @@ const props = withDefaults(defineProps<Props>(), {
 	options: () : string[] => [] as string[],
 	modelValue: '',
 	placeholder: '',
+	placeholderClass: '',
 	disabled: false,
 	arrowClass: '',
 	fieldClass: '',
@@ -432,11 +455,21 @@ function getEmptyText() : string {
 }
 
 const emptyText = getEmptyText()
+const instance = getCurrentInstance()!
+const popup : ComboboxPopup = {
+	close: closeOptions,
+	// #ifdef APP
+	onPageInteraction: onAppPageInteraction
+	// #endif
+}
+let popupPage : UniPage | null = null
 // #ifdef MP-ALIPAY
-const anchorId = `uni_combobox_${getCurrentInstance()!.uid}`
+const anchorId = `uni_combobox_${instance.uid}`
 // #endif
 const anchorRef = ref<UniElement | null>(null)
+// #ifdef APP || WEB
 const popupRef = ref<UniElement | null>(null)
+// #endif
 const optionIdPrefix = `uni_combobox_option_${Math.ceil(Math.random() * 10e8).toString(36)}_`
 const defaultOptionHeight = 36
 // #ifdef WEB
@@ -718,6 +751,10 @@ function updatePositionThenOpen() {
 		popupReady.value = true
 		opened.value = true
 		refreshScrollTarget()
+	}, (_error : any) => {
+		if (!isUnmounted && requestId == positionRequestId) {
+			closeOptions()
+		}
 	})
 }
 
@@ -726,39 +763,32 @@ function updatePositionThenOpen() {
 // #ifdef WEB
 let webInteractionListening = false
 
-function isWebTargetInsideCombobox(target : EventTarget | null, popupOnly : boolean = false) : boolean {
-	if (!(target instanceof Node)) return false
-	const element = target instanceof Element ? target : target.parentElement
-	const selector = popupOnly ? '.uni-combox-pop' : '.uni-field-default, .uni-combox-pop'
-	return element != null && element.closest(selector) != null
+function isWebEventInside(event : Event, element : UniElement | null) : boolean {
+	return element instanceof Node && event.target instanceof Node && element.contains(event.target)
 }
 
-function onWebOutsidePress(event : Event) {
-	// 捕获阶段会先于模板的 click.stop 执行，任一组合框内部交互都不关闭其他实例。
-	if (!isWebTargetInsideCombobox(event.target)) {
+function onWebOutsideInteraction(event : Event) {
+	if (!isWebEventInside(event, anchorRef.value) && !isWebEventInside(event, popupRef.value)) {
 		closeOptions()
 	}
 }
 
 function onWebOutsideScroll(event : Event) {
-	if (!isWebTargetInsideCombobox(event.target, true)) {
+	if (!isWebEventInside(event, popupRef.value)) {
 		closeOptions()
 	}
 }
 // #endif
 
 // #ifdef APP
-type PageInteractionListener = {
+type AppScrollListener = {
 	element : UniElement,
-	type : string,
 	callback : UniCallbackWrapper
 }
-const pageInteractionListeners : PageInteractionListener[] = []
-const appInstance = getCurrentInstance()!
-let pageClickSubscription : PageClickSubscription | null = null
+const appScrollListeners : AppScrollListener[] = []
+let appPageRoot : UniElement | null = null
 
 let appAnchorRect : DOMRect | null = null
-let appInteractionActive = false
 let appOpeningClickTime = -1
 let appScrollCheckRequest = -1
 let appScrollCheckAgain = false
@@ -815,28 +845,24 @@ function onAppAncestorScroll(_event : UniEvent) {
 	})
 }
 
-function onAppPageTouchMove(event : UniEvent) {
-	// 保留用户主动滚动页面时关闭的行为，不影响候选列表自身滚动。
-	if (!keyboardPositionTracking) return
+function isAppEventInside(event : UniEvent, includeAnchor : boolean) : boolean {
+	const popupElement = popupRef.value
+	const anchorElement = includeAnchor ? anchorRef.value : null
 	let target = event.target as UniElement | null
 	while (target != null) {
-		if (target == popupRef.value) return
+		if (target == popupElement || target == anchorElement) return true
 		target = target.parentElement
 	}
-	closeOptions()
+	return false
 }
 
 function isPointInside(x : number, y : number, left : number, top : number, width : number, height : number) : boolean {
 	return x >= left && x <= left + width && y >= top && y <= top + height
 }
 
-function onAppOutsideClick(event : UniPointerEvent) {
-	// 监听在打开菜单的 click 中注册，该事件仍会继续冒泡到页面根节点。
-	if (event.timeStamp == appOpeningClickTime) {
-		return
-	}
-	const x = event.clientX
-	const y = event.clientY
+function closeOnAppOutsidePress(event : UniEvent, x : number, y : number) {
+	if (isAppEventInside(event, true)) return
+	// 原生事件可能把候选列表内的点击重定向到页面容器。
 	const inOptions = popupReady.value && isPointInside(x, y, popupLeft.value, popupTop.value, popupWidth.value, popupHeight.value)
 	const rect = appAnchorRect
 	const inAnchor = rect != null && isPointInside(x, y, rect.left, rect.top, rect.width, rect.height)
@@ -845,69 +871,70 @@ function onAppOutsideClick(event : UniPointerEvent) {
 	}
 }
 
-// 只在组件卸载时注销原生监听，避免在原生事件分发过程中移除当前回调。
-function disposeAppInteractionListeners() {
-	appInteractionActive = false
-	pageClickSubscription?.dispose()
-	pageClickSubscription = null
-	pageInteractionListeners.forEach((listener : PageInteractionListener) => {
-		listener.element.removeEventListener(listener.type, listener.callback)
-	})
-	pageInteractionListeners.length = 0
+function onAppPageInteraction(event : UniEvent) {
+	// touchstart 先于 click，外部控件使用 click.stop 时也能收起浮层。
+	if (event.type == 'touchstart') {
+		const touches = (event as UniTouchEvent).changedTouches
+		if (touches.length > 0) {
+			const touch = touches[0]
+			closeOnAppOutsidePress(event, touch.clientX, touch.clientY)
+		}
+		return
+	}
+	if (event.type == 'touchmove') {
+		// 键盘定位期间仍允许滚动候选列表，手动滚动页面则关闭浮层。
+		if (keyboardPositionTracking && !isAppEventInside(event, false)) {
+			closeOptions()
+		}
+		return
+	}
+	// 保留非触摸点击的支持，并忽略触发本次展开的点击。
+	const click = event as UniPointerEvent
+	if (click.timeStamp != appOpeningClickTime) {
+		closeOnAppOutsidePress(event, click.clientX, click.clientY)
+	}
 }
 
-function addPageInteractionListener(element : UniElement, type : string, handler : (event : UniEvent) => void) {
-	const callback = element.addEventListener(type, (event : UniEvent) => {
-		if (!isUnmounted && appInteractionActive) {
-			handler(event)
-		}
-	})
-	pageInteractionListeners.push({ element, type, callback })
-}
 // #endif
 
-function startPageInteractionListeners() {
+function startPageInteractionListeners(page : UniPage) {
 	// #ifdef WEB
 	if (webInteractionListening) {
 		return
 	}
 	webInteractionListening = true
-	document.addEventListener('pointerdown', onWebOutsidePress, { capture: true, passive: true })
-	document.addEventListener('click', onWebOutsidePress, true)
+	document.addEventListener('pointerdown', onWebOutsideInteraction, { capture: true, passive: true })
+	document.addEventListener('click', onWebOutsideInteraction, true)
+	document.addEventListener('focusin', onWebOutsideInteraction, true)
 	document.addEventListener('touchmove', onWebOutsideScroll, { capture: true, passive: true })
 	document.addEventListener('wheel', onWebOutsideScroll, { capture: true, passive: true })
 	document.addEventListener('scroll', onWebOutsideScroll, { capture: true, passive: true })
 	// #endif
 	// #ifdef APP
-	appInteractionActive = true
-	if (pageClickSubscription != null) {
-		pageClickSubscription.activate()
-		return
+	let root = appPageRoot
+	if (root == null) {
+		root = anchorRef.value
+		if (root == null) return
+		let parent = root.parentElement
+		while (parent != null) {
+			// scroll 不冒泡，逐一监听祖先，兼容嵌套 scroll-view/list-view。
+			const callback = parent.addEventListener('scroll', onAppAncestorScroll)
+			appScrollListeners.push({ element: parent, callback })
+			root = parent
+			parent = parent.parentElement
+		}
+		appPageRoot = root
 	}
-	const anchor = anchorRef.value
-	if (anchor == null) {
-		return
-	}
-	let root = anchor
-	let parent = anchor.parentElement
-	while (parent != null) {
-		// scroll 不冒泡，逐一监听祖先，兼容嵌套 scroll-view/list-view。
-		addPageInteractionListener(parent, 'scroll', onAppAncestorScroll)
-		root = parent
-		parent = parent.parentElement
-	}
-	addPageInteractionListener(root, 'touchmove', onAppPageTouchMove)
-	// 同页组合框共用一个原生 click 监听，避免多实例向 BODY 重复注册时丢失回调。
-	pageClickSubscription = createPageClickSubscription(appInstance.proxy!.$page, root, onAppOutsideClick)
-	pageClickSubscription.activate()
+	listenToPopupPage(page, root)
 	// #endif
 }
 
 function stopPageInteractionListeners() {
 	// #ifdef WEB
 	if (webInteractionListening) {
-		document.removeEventListener('pointerdown', onWebOutsidePress, true)
-		document.removeEventListener('click', onWebOutsidePress, true)
+		document.removeEventListener('pointerdown', onWebOutsideInteraction, true)
+		document.removeEventListener('click', onWebOutsideInteraction, true)
+		document.removeEventListener('focusin', onWebOutsideInteraction, true)
 		document.removeEventListener('touchmove', onWebOutsideScroll, true)
 		document.removeEventListener('wheel', onWebOutsideScroll, true)
 		document.removeEventListener('scroll', onWebOutsideScroll, true)
@@ -915,17 +942,19 @@ function stopPageInteractionListeners() {
 	}
 	// #endif
 	// #ifdef APP
-	pageClickSubscription?.deactivate()
-	appInteractionActive = false
 	appScrollCheckRequest = -1
 	appScrollCheckAgain = false
 	// #endif
 }
 
 function openOptionsWithMode(filter : boolean) {
-	if (props.disabled) {
+	if (props.disabled || isUnmounted) {
 		return
 	}
+	// 在异步测量之前切换，旧实例即使还在定位也会取消展开。
+	const page = instance.proxy!.$page
+	popupPage = page
+	activatePopup(page, popup)
 	// 从 focus 开始跟踪，覆盖先发生自动上推、后收到键盘通知的情况。
 	// #ifdef APP
 	if (!opened.value && inputMode.value) {
@@ -935,7 +964,7 @@ function openOptionsWithMode(filter : boolean) {
 	filterEnabled.value = filter
 	syncHighlight()
 	popupReady.value = false
-	startPageInteractionListeners()
+	startPageInteractionListeners(page)
 	updatePositionThenOpen()
 }
 
@@ -944,6 +973,11 @@ function openOptions() {
 }
 
 function closeOptions() {
+	const page = popupPage
+	if (page != null) {
+		deactivatePopup(page, popup)
+		popupPage = null
+	}
 	// #ifdef APP
 	stopKeyboardPositionTracking()
 	// #endif
@@ -1012,7 +1046,10 @@ onBeforeUnmount(() => {
 	isUnmounted = true
 	closeOptions()
 	// #ifdef APP
-	disposeAppInteractionListeners()
+	appScrollListeners.forEach((listener : AppScrollListener) => {
+		listener.element.removeEventListener('scroll', listener.callback)
+	})
+	appScrollListeners.length = 0
 	// #endif
 })
 
@@ -1231,7 +1268,7 @@ onBackPress(() : boolean => {
 	flex-direction: row;
 	width: 100%;
 	padding: 8px 12px;
-	border: 1px solid #d1d5db;
+	border: 1px solid #e5e5e5;
 	border-radius: 5px;
 	background-color: #FFFFFF;
 	align-items: center;
@@ -1269,7 +1306,7 @@ onBackPress(() : boolean => {
 }
 
 .uni-field-result--placeholder {
-	color: #757575;
+	color: #808080;
 }
 /* #ifdef uniVersion <5.36 */
 .uni-combobox__arrow-wrap {
@@ -1291,30 +1328,35 @@ onBackPress(() : boolean => {
 /* #endif */
 
 /* #ifdef MP */
+/* 触发器在遮罩上方，点击另一个组合框时直接切换。 */
+.uni-field-default:not(.uni-field-default--disabled) {
+	z-index: 99;
+}
+
 .uni-combobox__mask {
 	position: fixed;
 	left: 0;
 	top: 0;
 	right: 0;
 	bottom: 0;
-	z-index: 999;
+	z-index: 98;
 	background-color: rgba(0, 0, 0, 0);
 }
 
 /* #endif */
 
-.uni-combox-pop {
+.uni-dropdown {
 	position: fixed;
 	box-sizing: border-box;
 	background-color: #ffffff;
-	border: 1px solid #e4e4e7;
+	border: 1px solid #e5e5e5;
 	border-radius: 8px;
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-	z-index: 1000;
+	z-index: 100;
 	overflow: hidden;
 }
 
-.uni-combox-pop__item {
+.uni-combobox-pop__item {
 	width: 100%;
 	height: 36px;
 	padding: 0px 12px; /* 内层设padding,而不是外层设padding,以便让hover效果左右通满*/
@@ -1324,11 +1366,11 @@ onBackPress(() : boolean => {
 	white-space: nowrap;
 }
 
-.uni-combox-pop__item--highlight {
+.uni-combobox-pop__item--highlight {
 	background-color: #f4f4f5;
 }
 
-.uni-combox-pop__empty {
+.uni-combobox-pop__empty {
 	width: 100%;
 	box-sizing: border-box;
 	height: 36px;
@@ -1340,13 +1382,13 @@ onBackPress(() : boolean => {
 
 /* #ifdef WEB */
 @media (hover: hover) and (pointer: fine) {
-	.uni-combox-pop__item {
+	.uni-combobox-pop__item {
 		height: 32px;
 		line-height: 32px;
 	}
 }
 
-.uni-combobox__field {
+.uni-field-default {
 	outline: none;
 	cursor: pointer;
 	transition-property: border-color, box-shadow;
@@ -1357,15 +1399,15 @@ onBackPress(() : boolean => {
 	cursor: not-allowed;
 }
 
-.uni-combobox__field--input:not(.uni-field-default--disabled) {
-	cursor: text;
+.uni-field-default:focus,
+.uni-field-default:focus-within {
+	border-color: #496bec;
 }
 
-/* 单选在键盘置焦时提示；插槽输入框置焦时由整个外框显示焦点环。 */
-.uni-combobox__field:not(.uni-field-default--disabled):focus-visible,
-.uni-combobox__field--input:not(.uni-field-default--disabled):focus-within {
-	border-color: #a1a1a1;
-	box-shadow: 0 0 0 3px rgba(161, 161, 161, 0.5);
+.uni-field-default--disabled:focus,
+.uni-field-default--disabled:focus-within {
+	border-color: #e5e5e5;
+	box-shadow: none;
 }
 
 .uni-combobox__arrow-wrap {
@@ -1376,11 +1418,11 @@ onBackPress(() : boolean => {
 	cursor: not-allowed;
 }
 
-.uni-combox-pop__item {
+.uni-combobox-pop__item {
 	cursor: pointer;
 }
 
-.uni-combox-pop__item:hover {
+.uni-combobox-pop__item:hover {
 	background-color: #f4f4f5;
 }
 /* #endif */
@@ -1388,7 +1430,7 @@ onBackPress(() : boolean => {
 @media (prefers-color-scheme: dark) {
 	.uni-field-default {
 		background-color: #3b3b3b;
-		border-color: rgba(255, 255, 255, 0.18);
+		border-color: #373737;
 	}
 
 	.uni-field-default--disabled {
@@ -1404,14 +1446,14 @@ onBackPress(() : boolean => {
 	}
 
 	.uni-field-result--placeholder {
-		color: #757575;
+		color: #5f5f5f;
 	}
 
-	.uni-combox-pop__item {
+	.uni-combobox-pop__item {
 		color: #fafafa;
 	}
 
-	.uni-combox-pop__empty {
+	.uni-combobox-pop__empty {
 		color: #a1a1aa;
 	}
 
@@ -1420,24 +1462,29 @@ onBackPress(() : boolean => {
 		border-bottom-color: #a1a1aa;
 	}
 
-	.uni-combox-pop {
+	.uni-dropdown {
 		background-color: #3b3b3b;
-		border-color: rgba(255, 255, 255, 0.12);
+		border-color: #373737;
 		box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
 	}
 
-	.uni-combox-pop__item--highlight {
+	.uni-combobox-pop__item--highlight {
 		background-color: #27272a;
 	}
 
 	/* #ifdef WEB */
-	.uni-combobox__field:not(.uni-field-default--disabled):focus-visible,
-	.uni-combobox__field--input:not(.uni-field-default--disabled):focus-within {
-		border-color: #737373;
-		box-shadow: 0 0 0 3px rgba(115, 115, 115, 0.5);
+	.uni-field-default:focus,
+	.uni-field-default:focus-within {
+		border-color: #496bec
 	}
 
-	.uni-combox-pop__item:hover {
+	.uni-field-default--disabled:focus,
+	.uni-field-default--disabled:focus-within {
+		border-color: #373737;
+		box-shadow: none;
+	}
+
+	.uni-combobox-pop__item:hover {
 		background-color: #454545;
 	}
 	/* #endif */

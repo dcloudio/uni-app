@@ -138,7 +138,7 @@ export type InstallWgt = (options: InstallWgtOptions) => void
 
 export interface Uni {
   /**
-   * 安装wgt包   
+   * 安装wgt包，HBuilderX 5.41 版本上新增支持 wgt 的差量更新功能
    * @param {InstallWgtOptions} options 参数
    * 
    * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/install-wgt.html#installWgt

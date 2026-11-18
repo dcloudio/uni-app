@@ -601,7 +601,7 @@
     return classes.join(' ')
   })
 
-  const checkFormAndSubmitOrReset = () => {
+  const checkFormAndSubmitOrReset = (event : UniPointerEvent) => {
     if (props.formType != 'submit' && props.formType != 'reset') {
       return
     }
@@ -609,9 +609,9 @@
       return
     }
     if (props.formType == 'submit') {
-      formCtx.submit()
+      formCtx.submit(event)
     } else if (props.formType == 'reset') {
-      formCtx.reset()
+      formCtx.reset(event)
     }
   }
 
@@ -631,7 +631,7 @@
     }
 
     emit('click', event)
-    checkFormAndSubmitOrReset()
+    checkFormAndSubmitOrReset(event)
     // #ifndef WEB
     checkOpenType()
     // #endif

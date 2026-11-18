@@ -15,7 +15,10 @@ uni-combobox 是可输入可选择的组合组件。其弹出层悬浮在组件�
   - 渲染选择框、占位文字、右侧箭头与候选浮层。
   - 计算浮层位置，下方空间不足且上方更充足时自动向上展开；浮层通过 `teleport` 渲染到页面层，不受组件尺寸裁剪。
   - 默认只读选择；组合模式下按输入内容过滤候选并高亮匹配项。
-  - 关闭交互：点击组件外部、页面滚动、按 Esc、返回键（App/MP）都会关闭浮层。
+  - 同一页面最多展开一个组合框。打开另一个组合框时，当前浮层会自动关闭。
+  - 点击浮层和触发器以外的区域会关闭浮层。Web 端键盘焦点移到组件外时也会关闭。
+  - 小程序点击另一个组合框的触发器可直接切换，点击空白处由透明遮罩关闭浮层。
+  - 页面滚动、按 Esc、返回键（App/MP）也会关闭浮层。
   - web 端键盘交互：`Tab` 聚焦后可用 `ArrowUp`/`ArrowDown` 移动高亮项、`Enter` 选中、`Esc` 关闭。
   - 候选项为空时的提示文案跟随应用语言（简体中文、繁体中文、英文、法文、拉丁文）。
 - 使用者负责：
@@ -74,6 +77,7 @@ const value = ref('')
   option-text-highlight-class="demo-option-highlight"
   option-row-highlight-class="demo-option-row-highlight"
   result-text-class="demo-result-text"
+  placeholder-class="demo-placeholder-text"
 />
 ```
 
@@ -84,7 +88,8 @@ const value = ref('')
 - `option-text-class`：候选项文字。
 - `option-text-highlight-class`：高亮候选项文字。
 - `option-row-highlight-class`：高亮候选项整行。
-- `result-text-class`：单选模式结果文字。
+- `result-text-class`：单选模式的结果文字和占位文字。
+- `placeholder-class`：仅在单选模式未选中任何值时应用于占位文字。使用 `input` 插槽时，在插槽内的输入组件上设置 `placeholder-class`。
 
 浮层的定位、最大高度等布局由组件内部控制，外部样式类不应覆盖这些属性。
 

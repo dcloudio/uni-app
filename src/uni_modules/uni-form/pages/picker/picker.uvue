@@ -1,7 +1,7 @@
 <template>
 	<!-- #ifdef WEB -->
 	<view ref="containerRef" class="uni-picker__container" :class="['uni-picker-theme--'+theme, {'uni-picker__container--desktop': isDesktop}]">
-		<view class="uni-picker__mask" :class="{'picker__ani-show': show, 'picker__mask--dark': theme == 'dark'}" @click="close"></view>
+		<view class="uni-picker__mask" :class="{'picker__ani-show': show}" @click="close"></view>
 		<view class="uni-picker__inner-box" :class="[show?'picker__ani-box-show':'','inner-box--'+theme, {'uni-picker__inner-box--desktop': isDesktop}]" :style="popupStyle.content">
 			<scroll-view v-if="isSelect" ref="selectRef" class="uni-picker__select" direction="vertical" :show-scrollbar="true">
 				<text v-for="(item, selectorIdx) in range" :key="selectorIdx" class="uni-picker__select-item" :class="{'uni-picker__select-item--selected': eventValue[0] == selectorIdx}" @click="selectItem(selectorIdx)">{{rangeKey ? item[rangeKey] : item}}</text>
@@ -10,7 +10,7 @@
 	<!-- #endif -->
 	<!-- #ifndef WEB -->
 	<view class="uni-picker__container" :class="['uni-picker-theme--'+theme]">
-		<view class="uni-picker__mask" :class="{'picker__ani-show': show, 'picker__mask--dark': theme == 'dark'}" @click="close"></view>
+		<view class="uni-picker__mask" :class="{'picker__ani-show': show}" @click="close"></view>
 		<view class="uni-picker__inner-box" :class="[show?'picker__ani-box-show':'','inner-box--'+theme]" :style="{ height: `${300 + bottomSafeArea}px` }">
 	<!-- #endif -->
 			<view class="uni-picker__header-btn" :class="['header-btn--'+theme]" @click.stop>
@@ -780,14 +780,10 @@
 
 	.uni-picker__mask {
 		flex: 1;
-		background-color: rgba(0, 0, 0, .3);
+		background-color: rgba(0, 0, 0, .55);
 		opacity: 0;
 		transition-property: opacity;
 		transition-duration: 0.3s;
-	}
-
-	.picker__mask--dark {
-		background-color: rgba(0, 0, 0, .6);
 	}
 
 	.picker__ani-show {

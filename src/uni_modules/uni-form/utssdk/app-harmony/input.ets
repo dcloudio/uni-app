@@ -50,7 +50,7 @@ export function InputBuilder(options: UniInputOptions) {
 		.enterKeyType(options.enterKeyType)
 		.enabled(options.enabled)
 		.maxLength(options.maxLength)
-		.caretColor(options.caretColor)
+		.caretStyle({ color: options.caretColor })
 		.selectedBackgroundColor(options.selectedBackgroundColor)
 		.caretPosition(options.caretPosition)
 		.fontSize(options.fontSize)

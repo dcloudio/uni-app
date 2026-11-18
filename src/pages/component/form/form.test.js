@@ -76,6 +76,31 @@ describe('form', () => {
     // 微信小程序reset和app、web表现不一致。暂时屏蔽reset测试例，后续如果拉齐再放开
     return
   }
+  it('disabled：禁用后提交和重置失效', async () => {
+    await changeData(page)
+    const btnSubmit = await page.$('.btn-submit')
+    const btnReset = await page.$('.btn-reset')
+    await page.setData({ data: { formDisabled: true } })
+    await page.waitFor(100)
+
+    await btnSubmit.tap()
+    await page.waitFor(100)
+    expect(await page.data('data.testVerifySubmit')).toBe(false)
+    await btnReset.tap()
+    await page.waitFor(100)
+    expect(await page.data('data.testVerifyReset')).toBe(false)
+
+    await page.setData({ data: { formDisabled: false } })
+    await page.waitFor(100)
+    await btnSubmit.tap()
+    await page.waitFor(100)
+    expect(await page.data('data.testVerifySubmit')).toBe(true)
+    expect((await page.data('data.formData')).nickname).toBe(CHANGE_NICK_NAME)
+    await btnReset.tap()
+    await page.waitFor(100)
+    expect(await page.data('data.testVerifyReset')).toBe(true)
+    expect(await page.data('data.formData')).toEqual({})
+  })
   it('reset', async () => {
     await changeData(page)
 

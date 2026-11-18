@@ -75,7 +75,7 @@
 			}
 		},
 		// #endif
-		// #ifdef APP || MP-WEIXIN
+		// #ifdef APP || MP-WEIXIN || (WEB && VUE3-VAPOR)
 		{
 			"path": "pages/component/scroll-view/scroll-view-context/scroll-view-context",
 			"style": {
@@ -83,7 +83,7 @@
 			}
 		},
 		// #endif
-		// #ifdef APP || MP-WEIXIN
+		// #ifdef APP || MP-WEIXIN || (WEB && VUE3-VAPOR)
 		{
 			"path": "pages/component/scroll-view/scroll-view-context/scroll-view",
 			"style": {
@@ -91,7 +91,7 @@
 			}
 		},
 		// #endif
-		// #ifdef APP || MP-WEIXIN
+		// #ifdef APP || MP-WEIXIN || (WEB && VUE3-VAPOR)
 		{
 			"path": "pages/component/scroll-view/scroll-view-context/list-view",
 			"style": {
@@ -305,6 +305,15 @@
 				"disableScroll": true
 			}
 		},
+		// #ifdef WEB || MP
+		{
+			"path": "pages/component/icon/icon",
+			"group": "0,2,0",
+			"style": {
+				"navigationBarTitleText": "icon | 图标"
+			}
+		},
+		// #endif
 		{
 			"path": "pages/component/text/text",
 			"group": "0,2,1",
@@ -562,6 +571,14 @@
 				"disableScroll": true
 			}
 		},
+		// #ifdef WEB
+		{
+			"path": "pages/component/web-view/web-view-props",
+			"style": {
+				"navigationBarTitleText": "web-view Web 属性"
+			}
+		},
+		// #endif
 		{
 			"path": "pages/component/web-view/web-view-scroll",
 			"style": {
@@ -4341,7 +4358,10 @@
 					"id": "component.basic-content",
 					"name": "基础内容",
 					"children": [
-						null,
+						{
+							"id": "component.basic-content.icon",
+							"name": "icon"
+						},
 						{
 							"id": "component.basic-content.text",
 							"name": "text"
@@ -5098,7 +5118,7 @@
 		},
 		{
 			"id": "CSS",
-			"name": "组件",
+			"name": "CSS",
 			"children": [
 				{
 					"id": "css.properties.width",

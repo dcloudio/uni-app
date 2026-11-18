@@ -1,6 +1,6 @@
 <template>
   <list-view @scrolltolower="onScrollTolower" style="flex:1" show-scrollbar=false>
-    <list-item v-for="index in listcount" :key="index" :type="(index != 0 && index%10 == 6) ? 0:1">
+    <list-item v-for="index in listcount" :key="index" :type="(index != 0 && index%10 == 6) ? index:1">
       <!-- #ifndef MP -->
       <ad v-if="index != 0 && index%10 == 6" adpid="1111111111" @load="onAdLoad" @error="onAdError" @close="onAdClose"></ad>
       <!-- #endif -->

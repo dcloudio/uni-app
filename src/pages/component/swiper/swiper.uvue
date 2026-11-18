@@ -110,7 +110,13 @@
       <!-- #ifndef WEB -->
       <view class="uni-title">
         <text>easing-function</text>
-        <swiper id="easing-function-swiper" class="h-80" easing-function="linear">
+        <radio-group class="uni-list" @change="easingFunctionChange">
+          <label v-for="(item, index) in data.easingFunctionOptions" :key="item" class="easing-option uni-list-cell-padding">
+            <radio :value="item" :checked="data.easingFunction == item" />
+            <text>{{item}} {{data.easingFunctionDescriptions[index]}}</text>
+          </label>
+        </radio-group>
+        <swiper id="easing-function-swiper" class="h-80" :easing-function="data.easingFunction">
           <swiper-item><view class="w-full h-80 uni-bg-red"></view></swiper-item>
           <swiper-item><view class="w-full h-80 uni-bg-blue"></view></swiper-item>
         </swiper>
@@ -148,6 +154,9 @@
     swiperChangeSelect: boolean;
     currentValChange: number;
     autoplayForDefault: boolean;
+    easingFunction: string;
+    easingFunctionOptions: string[];
+    easingFunctionDescriptions: string[];
     circularForDefault: boolean;
     // 自动化测试
     changeDetailTest: UniSwiperChangeEventDetail | null;
@@ -183,6 +192,9 @@
     swiperChangeSelect: false,
     currentValChange: 0,
     autoplayForDefault: false,
+    easingFunction: 'linear',
+    easingFunctionOptions: ['default', 'linear', 'easeInCubic', 'easeOutCubic', 'easeInOutCubic'],
+    easingFunctionDescriptions: ['默认缓动函数', '线性动画', '缓入动画', '缓出动画', '缓入缓出动画'],
     circularForDefault: false,
     // 自动化测试
     changeDetailTest: null as UniSwiperChangeEventDetail | null,
@@ -366,6 +378,10 @@
     data.autoplayForDefault = value
   }
 
+  const easingFunctionChange = (e : UniRadioGroupChangeEvent) => {
+    data.easingFunction = e.detail.value
+  }
+
   const circularForDefaultChange = (value : boolean) => {
     data.circularForDefault = value
   }
@@ -377,6 +393,13 @@
 </script>
 
 <style>
+  .easing-option {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: auto;
+  }
+
   .w-full {
     width: 100%;
   }

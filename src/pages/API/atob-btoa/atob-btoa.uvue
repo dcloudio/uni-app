@@ -1,23 +1,25 @@
 <template>
 	<page-head :title="data.title"></page-head>
-	<text class="intro">btoa 将二进制字符串编码为 Base64 ASCII 字符串；atob 对 Base64 编码字符串解码。仅支持 Latin1 范围字符，中文需先经 TextEncoder 转为 UTF-8 字节。</text>
+	<text class="intro">btoa 将二进制字符串编码为 Base64 ASCII 字符串，atob 将其解码。二进制字符串仅支持 Latin1 范围字符，中文需先转为 UTF-8 字节。</text>
 
 	<!-- #ifdef APP-HARMONY -->
 	<text class="tips">鸿蒙平台暂不支持 atob / btoa</text>
 	<!-- #endif -->
 	<!-- #ifdef MP -->
-	<text class="tips">当前小程序平台暂不支持 atob / btoa</text>
+	<text v-if="!data.supported" class="tips">当前小程序平台暂不支持 atob / btoa</text>
 	<!-- #endif -->
 
-	<text class="label">编码输入（btoa / 组合演示）：</text>
+	<text class="label">编码输入（btoa）：</text>
 	<input class="input-box" :value="data.encodeInput" placeholder="请输入待编码字符串" @input="onEncodeInput"></input>
 	<text class="label">解码输入（atob）：</text>
 	<input class="input-box" :value="data.decodeInput" placeholder="请输入 Base64 字符串" @input="onDecodeInput"></input>
 	<view class="btn-list">
 		<button :disabled="!data.supported" @click="testBtoa">btoa 编码</button>
 		<button :disabled="!data.supported" @click="testAtob">atob 解码</button>
+		<!-- #ifndef MP -->
 		<button :disabled="!data.supported" @click="testUtf8Combination">TextEncoder + btoa 中文组合</button>
 		<button :disabled="!data.supported" @click="testInvalidAtob">无效 Base64 异常</button>
+		<!-- #endif -->
 	</view>
 	<view class="result-list">
 		<view class="result-item">
@@ -28,6 +30,7 @@
 			<text class="result-k">atob 结果：</text>
 			<text class="result-v">{{ data.atobResult }}</text>
 		</view>
+		<!-- #ifndef MP -->
 		<view class="result-item">
 			<text class="result-k">UTF-8 组合 Base64：</text>
 			<text class="result-v">{{ data.utf8B64Result }}</text>
@@ -44,6 +47,7 @@
 			<text class="result-k">无效输入结果：</text>
 			<text class="result-v">{{ data.invalidResult }}</text>
 		</view>
+		<!-- #endif -->
 	</view>
 </template>
 
@@ -62,7 +66,7 @@
 	}
 
 	let supported = false
-	// #ifndef MP || APP-HARMONY
+	// #ifdef APP-ANDROID || APP-IOS || WEB || MP-ALIPAY
 	supported = true
 	// #endif
 
@@ -95,6 +99,7 @@
 		data.atobResult = atob(data.decodeInput)
 	}
 
+	// #ifndef MP
 	const testUtf8Combination = () => {
 		const text = '你好 uni-app x'
 		const bytes = new TextEncoder().encode(text)
@@ -122,13 +127,16 @@
 			data.invalidResult = `异常: ${(e as Error).message}`
 		}
 	}
+	// #endif
 
 	defineExpose({
 		data,
 		testBtoa,
 		testAtob,
+		// #ifndef MP
 		testUtf8Combination,
 		testInvalidAtob
+		// #endif
 	})
 </script>
 
@@ -149,7 +157,8 @@
 
 	.input-box {
 		margin-top: 8px;
-		padding: 8px 10px;
+		height: 36px;
+		padding: 0 10px;
 		border: 1px solid var(--border-color, #D8D8D8);
 		border-radius: 4px;
 		color: var(--text-color, #333333);

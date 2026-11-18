@@ -1,5 +1,5 @@
 <template>
-      <form @submit="onFormSubmit" @reset="onFormReset">
+      <form :disabled="data.formDisabled" @submit="onFormSubmit" @reset="onFormReset">
         <view class="uni-form-item">
           <text class="title">姓名</text>
           <input class="uni-input form-input" name="nickname" :value="data.nickname" placeholder="请输入姓名" :maxlength="-1" />
@@ -94,6 +94,11 @@
       </form>
       <view class="result">提交的表单数据</view>
       <textarea class="textarea" :value="formDataText" :maxlength="-1" :auto-height="true"></textarea>
+      <view class="uni-form-item flex-row">
+        <text class="picker-title">禁用表单</text>
+        <switch class="form-switch" :checked="data.formDisabled" @change="onFormDisabledChange" />
+        <text class="form-switch-tip">开启后提交/重置失效</text>
+      </view>
 </template>
 
 <script setup lang="ts">
@@ -122,6 +127,7 @@
     age: number;
     loves: string[];
     switch: boolean;
+    formDisabled: boolean;
     timeZoneIndex: number;
     timeZoneList: string[];
     multiArray: string[][];
@@ -156,6 +162,7 @@
     age: 18,
     loves: ['0'],
     switch: true,
+    formDisabled: false,
     timeZoneIndex: 0,
     timeZoneList: ['中国', '美国', '巴西', '日本'],
     multiArray: [
@@ -254,6 +261,10 @@
 
     // 仅测试
     data.testVerifyReset = (e.type == 'reset' && (e.target?.tagName ?? '') == "FORM")
+  }
+
+  const onFormDisabledChange = (e: UniSwitchChangeEvent) => {
+    data.formDisabled = e.detail.value
   }
 
   defineExpose({
@@ -358,6 +369,16 @@
 
   .form-text {
     color: var(--text-color, #333333);
+  }
+
+  .form-switch {
+    margin-left: 15px;
+  }
+
+  .form-switch-tip {
+    margin-left: 10px;
+    font-size: 12px;
+    color: #8f8f94;
   }
 
   .uni-picker-select-value {

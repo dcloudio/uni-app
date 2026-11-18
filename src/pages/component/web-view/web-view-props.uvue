@@ -1,0 +1,48 @@
+<template>
+  <web-view id="web-view-props" :key="webAllow + webSandbox" src="/hybrid/html/props.html"
+    :style="webViewStyle" :allow="webAllow" :sandbox="webSandbox" :fullscreen="data.fullscreen"></web-view>
+  <view class="uni-padding-wrap uni-common-mt">
+    <boolean-data :value="data.allowFullscreen" title="allow：允许网页请求浏览器全屏"
+      @change="changeAllowFullscreen"></boolean-data>
+    <boolean-data :value="data.allowModals" title="sandbox：允许网页弹窗"
+      @change="changeAllowModals"></boolean-data>
+    <boolean-data :value="data.fullscreen" title="fullscreen：铺满页面"
+      @change="changeFullscreen"></boolean-data>
+    <text class="uni-info">切换权限后网页会重新加载。点击网页内按钮查看效果；浏览器全屏可按 Esc 退出。</text>
+  </view>
+  <button v-if="data.fullscreen" class="fullscreen-exit" size="mini" @click="changeFullscreen(false)">退出铺满页面</button>
+</template>
+
+<script setup lang="ts">
+  const data = reactive({
+    allowFullscreen: false,
+    allowModals: false,
+    fullscreen: false
+  })
+
+  const webAllow = computed(() : string => data.allowFullscreen ? 'fullscreen *' : "fullscreen 'none'")
+  const webSandbox = computed(() : string => data.allowModals
+    ? 'allow-scripts allow-same-origin allow-modals' : 'allow-scripts allow-same-origin')
+  const webViewStyle = computed(() => data.fullscreen ? {} : { width: '100%', height: '320px', flex: 'none' })
+
+  const changeAllowFullscreen = (value : boolean) => {
+    data.allowFullscreen = value
+  }
+  const changeAllowModals = (value : boolean) => {
+    data.allowModals = value
+  }
+  const changeFullscreen = (value : boolean) => {
+    data.fullscreen = value
+  }
+
+  defineExpose({ data })
+</script>
+
+<style>
+  .fullscreen-exit {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    z-index: 9999;
+  }
+</style>

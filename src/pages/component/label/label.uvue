@@ -46,11 +46,29 @@
       </view>
     </view>
 
+    <!-- #ifdef APP || WEB -->
+    <view class="uni-form-item uni-column">
+      <text class="title">禁用 label 联动</text>
+      <text class="uni-info label">禁用 label 联动后，点击文字不会切换复选框状态，直接点击复选框仍可勾选或取消勾选。</text>
+      <view class="uni-list">
+        <boolean-data :value="data.labelDisabledExample" title="禁用 label 联动"
+          @change="changeLabelDisabledExample"></boolean-data>
+        <checkbox-group class="label-disabled-row uni-list-cell-pd label" @change="checkboxDisabledChange">
+          <checkbox id="label-disabled-checkbox" value="disabled-example" />
+          <label id="label-disabled-example" class="label-2-text" for="label-disabled-checkbox" :disabled="data.labelDisabledExample">
+            <text class="label-disabled-text">点击这里切换复选框</text>
+          </label>
+        </checkbox-group>
+      </view>
+    </view>
+    <!-- #endif -->
+
     <!-- #ifdef APP && VUE3-VAPOR -->
       <navigator class="uni-common-mb" url="/pages/template/label-100/label-100">
         <button>组件性能测试</button>
       </navigator>
     <!-- #endif -->
+
 </template>
 <script setup lang="ts">
   type controlItem = {
@@ -65,6 +83,8 @@
     radioItems: controlItem[];
     hidden: boolean;
     checkboxValue: string[];
+    labelDisabledExample: boolean;
+    checkboxDisabledValue: string[];
     checkboxForValue: string[];
     radioValue: string;
   }
@@ -94,6 +114,8 @@
     ],
     hidden: false,
     checkboxValue: [] as string[],
+    labelDisabledExample: true,
+    checkboxDisabledValue: [] as string[],
     checkboxForValue: [] as string[],
     radioValue: ''
   } as DataType)
@@ -110,6 +132,14 @@
     console.log(e.detail.value)
     data.radioValue = e.detail.value
   }
+  // #ifdef APP || WEB
+  const checkboxDisabledChange = (e : UniCheckboxGroupChangeEvent) => {
+    data.checkboxDisabledValue = e.detail.value
+  }
+  const changeLabelDisabledExample = (value : boolean) => {
+    data.labelDisabledExample = value
+  }
+  // #endif
 
   defineExpose({
     data
@@ -124,6 +154,8 @@
 
   .label-3 {
     padding: 0;
+    width: auto;
+    align-self: stretch;
   }
 
   .label-2-text {
@@ -146,5 +178,13 @@
 
   .label {
     margin: 0 10px;
+  }
+  .label-disabled-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+  .label-disabled-text {
+    white-space: nowrap;
   }
 </style>

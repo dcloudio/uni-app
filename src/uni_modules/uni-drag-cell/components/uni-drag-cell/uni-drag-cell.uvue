@@ -7,6 +7,7 @@
 			class="drag-cell-item"
 			:style="getItemStyle(index)"
 			<!-- #ifdef WEB -->
+			:class="handleModeEnabled ? '' : 'drag-cell-item-draggable'"
 			@pointerdown.stop="onItemTouchStart($event, index)"
 			@pointermove="onItemTouchMove($event, index)"
 			@pointerup="onItemTouchEnd($event, index)"
@@ -1007,11 +1008,16 @@
 		transform-origin: center center;
 		overflow: visible;
 		/* #ifdef WEB */
-		cursor: grab;
 		touch-action: none;
 		user-select: none;
 		/* #endif */
 	}
+
+	/* #ifdef WEB */
+	.drag-cell-item-draggable {
+		cursor: grab;
+	}
+	/* #endif */
 
 	.drag-cell-append {
 		position: relative;

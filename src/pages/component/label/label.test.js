@@ -1,6 +1,7 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isWeb = platformInfo.startsWith('web')
 const isHarmony = platformInfo.startsWith('harmony')
+const isApp = isHarmony || platformInfo.startsWith('android') || platformInfo.startsWith('ios')
 const isVapor = process.env.UNI_APP_X_DOM2 == 'true'
 
 let page;
@@ -47,4 +48,22 @@ describe('label.uvue', () => {
     await labelText.tap()
     expect(await getData('checkboxForValue')).toEqual(['for1'])
   })
+  if (isApp || isWeb) {
+    it('disabled：禁用文字联动不影响复选框直接操作', async () => {
+      const checkbox = await page.$('#label-disabled-checkbox')
+      const labelText = await page.$('#label-disabled-example')
+      await labelText.tap()
+      await page.waitFor(100)
+      expect(await getData('checkboxDisabledValue')).toEqual([])
+      await checkbox.tap()
+      await page.waitFor(100)
+      expect(await getData('checkboxDisabledValue')).toEqual(['disabled-example'])
+      await page.setData({ data: { labelDisabledExample: false } })
+      await page.waitFor(100)
+      await labelText.tap()
+      await page.waitFor(100)
+      expect(await getData('checkboxDisabledValue')).toEqual([])
+    })
+  }
+
 })

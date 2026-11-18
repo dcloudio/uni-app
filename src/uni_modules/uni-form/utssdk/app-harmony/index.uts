@@ -177,8 +177,6 @@ const CONFIRM_TYPES = new Map<string, EnterKeyType>([
 	['done', EnterKeyType.Done],
 ])
 
-const defaultCursorColor = '#007DFF'
-
 interface SelectionData {
 	start: number,
 	end: number
@@ -499,7 +497,7 @@ class NativeInputFileView {
 	}
 
 	updateCursorColor(value: string) {
-		this.params.caretColor = UTSHarmony.colorWithString(value == '' ? defaultCursorColor : value)
+		this.params.caretColor = value == '' ? undefined : UTSHarmony.colorWithString(value)
 		this.updateParams()
 	}
 

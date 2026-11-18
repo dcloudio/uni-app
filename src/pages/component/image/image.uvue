@@ -7,7 +7,14 @@
         <text class="uni-title-text">image样式大合集</text>
         <text class="uni-subtitle-text uni-common-mb">右边为拍平</text>
         <view class="styled-image-row">
-          <image class="styled-image" mode="aspectFill" :src="data.imageSrc" lazy-load></image>
+          <image class="styled-image" mode="aspectFill" :src="data.imageSrc"
+            <!-- #ifdef APP-IOS || MP -->
+            lazy-load
+            <!-- #endif -->
+            <!-- #ifdef WEB -->
+            draggable
+            <!-- #endif -->
+          ></image>
           <image class="styled-image" mode="aspectFill" :src="data.imageSrc" flatten></image>
         </view>
 

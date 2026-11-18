@@ -587,7 +587,7 @@
 	}
 
 	.uni-easyinput--focused {
-		border-color: #2979ff;
+		border-color: #496bec;
 	}
 
 	.uni-easyinput--disabled {
@@ -649,12 +649,12 @@
 	}
 
 	.uni-easyinput__icon:focus-visible {
-		outline: 2px solid #2979ff;
+		outline: 2px solid #496bec;
 		outline-offset: 1px;
 	}
 	/* #endif */
 
 	.uni-easyinput__icon--focused {
-		color: #2979ff;
+		color: #496bec;
 	}
 </style>

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>web-view 属性示例</title>
+  <style>
+    body { margin: 0; padding: 20px; font: 16px/1.6 sans-serif; background: #fff; color: #333; }
+    h1 { margin: 0 0 12px; font-size: 20px; }
+    button { margin: 0 8px 12px 0; padding: 8px 12px; }
+    #result { margin: 0; overflow-wrap: anywhere; }
+  </style>
+</head>
+<body>
+  <h1>网页权限演示</h1>
+  <p>在下方切换权限后，点击按钮比较效果。</p>
+  <button id="fullscreen">请求浏览器全屏</button>
+  <button id="modal">打开弹窗</button>
+  <p id="result" role="status">等待操作</p>
+  <script>
+    const result = document.getElementById('result');
+    document.getElementById('fullscreen').addEventListener('click', async () => {
+      try {
+        await document.documentElement.requestFullscreen();
+        result.textContent = '已进入浏览器全屏，按 Esc 退出。';
+      } catch (error) {
+        result.textContent = '全屏请求失败：' + error.message;
+      }
+    });
+    document.getElementById('modal').addEventListener('click', () => {
+      result.textContent = '已请求弹窗：允许时会显示对话框，禁用时浏览器会拦截。';
+      window.alert('sandbox 已允许网页弹窗');
+    });
+  </script>
+</body>
+</html>

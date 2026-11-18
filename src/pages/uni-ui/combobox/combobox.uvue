@@ -195,7 +195,7 @@
 	}
 
 	.custom-placeholder {
-		color: #757575
+		color: #808080;
 	}
 
 	.borderless-combobox {
@@ -257,6 +257,10 @@
 	}
 
 	@media (prefers-color-scheme: dark) {
+		.custom-placeholder {
+			color: #5f5f5f;
+		}
+
 		.demo-option-row-highlight {
 			background-color: #3b3b3b;
 		}
