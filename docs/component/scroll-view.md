@@ -371,7 +371,7 @@ VDOM模式的scroll-view嵌套滚动需要更多手工工作。而蒸汽模式�
 下面的示例代码，在一个scroll-view中嵌套了一个list-view。在list-view上设置了custom-nested-scroll="true"。
 
 ```html
-<scroll-view style="height: 100%;" rebound ="false" nested-scroll-child="listview" @startnestedscroll="onStartNestedScroll" @nestedprescroll="onNestedPreScroll"
+<scroll-view style="height: 100%;" :bounces="false" nested-scroll-child="listview" @startnestedscroll="onStartNestedScroll" @nestedprescroll="onNestedPreScroll"
 	@stopnestedscroll="onStopNestedScroll">
 		...
 		<view style="height: 100px;">停靠视图</view>

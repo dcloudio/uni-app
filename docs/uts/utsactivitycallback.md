@@ -3385,7 +3385,7 @@ uvue代码
   <scroll-view style="flex: 1">
     <view>
       <view class="uni-padding-wrap uni-common-mt">
-        <view class="text-box" scroll-y="true">
+        <view class="text-box">
           <text>{{ text }}</text>
         </view>
       </view>
@@ -3396,7 +3396,7 @@ uvue代码
         </view>
       </view>
       <view class="uni-padding-wrap uni-common-mt">
-        <view class="text-box" scroll-y="true">
+        <view class="text-box">
           <text>{{ cbText }}</text>
         </view>
       </view>

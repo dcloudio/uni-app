@@ -752,7 +752,7 @@ VDOM模式的长列表性能要弱于蒸汽模式很多。推荐升级蒸汽模�
 ```html
 	<template>
 	  <view class="content">
-		<list-view ref="listView" class="list" :scroll-y="true">
+		<list-view ref="listView" class="list" direction="vertical">
 		  <list-item v-for="(item,index) in list" :key="item" class="content-item1" type=1>
 			<text class="text">title-{{item}}</text>
 			<text class="text">content-{{item}}</text>
