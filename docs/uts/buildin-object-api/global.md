@@ -1490,7 +1490,7 @@ atob() 函数会对经过 Base64 编码的字符串进行解码
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-Web: √; Android(VDOM): 4.25; Android(Vapor): 4.81; iOS: 4.61; HarmonyOS: x
+Web: √; Android: 4.25; iOS: 4.61; HarmonyOS: x
 
 
 **uni-app 兼容性 <Help />**
@@ -1538,7 +1538,7 @@ btoa() 方法可以将一个二进制字符串（例如，将字符串中的每�
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-Web: √; Android(VDOM): 4.25; Android(Vapor): 4.81; iOS: 4.61; HarmonyOS: x
+Web: √; Android: 4.25; iOS: 4.61; HarmonyOS: x
 
 
 **uni-app 兼容性 <Help />**
