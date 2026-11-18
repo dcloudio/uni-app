@@ -5,7 +5,7 @@
 atob() 函数会对经过 Base64 编码的字符串进行解码
 
 ### atob 兼容性 <Help /> 
-Web: √; 微信小程序: x; 支付宝小程序: 5.31; Android(VDOM): 4.25; Android(Vapor): 4.81; iOS: 4.61; HarmonyOS: x
+Web: √; 微信小程序: x; 支付宝小程序: 5.31; Android: 4.25; iOS: 4.61; HarmonyOS: x
 
 
 ### 参数 
@@ -32,7 +32,7 @@ Web: √; 微信小程序: x; 支付宝小程序: 5.31; Android(VDOM): 4.25; And
 btoa() 方法可以将一个二进制字符串（例如，将字符串中的每一个字节都视为一个二进制数据字节）编码为 Base64 编码的 ASCII 字符串
 
 ### btoa 兼容性 <Help /> 
-Web: √; 微信小程序: x; 支付宝小程序: 5.31; Android(VDOM): 4.25; Android(Vapor): 4.81; iOS: 4.61; HarmonyOS: x
+Web: √; 微信小程序: x; 支付宝小程序: 5.31; Android: 4.25; iOS: 4.61; HarmonyOS: x
 
 
 ### 参数 
