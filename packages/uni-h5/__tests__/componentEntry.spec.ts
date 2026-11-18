@@ -23,13 +23,15 @@ async function compileEntry(file: string, vapor: boolean, node: boolean) {
 
 describe('Web 框架组件入口', () => {
   test.each([
-    [false, false],
-    [false, true],
-    [true, false],
-    [true, true],
+    [false, false, true],
+    [false, true, true],
+    [true, false, undefined],
+    [true, false, false],
+    [true, false, true],
+    [true, true, true],
   ])(
-    'Vapor 跳过旧视图插件，保留原生事件入口（Vapor=%s，Node=%s）',
-    async (vapor, node) => {
+    'X Web 按模式初始化原生事件和文档配色（Vapor=%s，Node=%s，darkmode=%s）',
+    async (vapor, node, darkmode) => {
       const code = await compileEntry(
         'src/framework/plugin/index.ts',
         vapor,
@@ -52,12 +54,15 @@ describe('Web 框架组件入口', () => {
         './router': { initRouter: jest.fn() },
       }
       const exports: any = {}
+      const style = { colorScheme: '' }
       new Function(
         'require',
         'exports',
         '__UNI_FEATURE_PAGES__',
         '__VAPOR__',
         '__DEV__',
+        'document',
+        '__uniConfig',
         ts.transpileModule(code, {
           compilerOptions: { module: ts.ModuleKind.CommonJS },
         }).outputText
@@ -69,7 +74,9 @@ describe('Web 框架组件入口', () => {
         exports,
         false,
         vapor,
-        false
+        false,
+        { documentElement: { style } },
+        { darkmode }
       )
       const app = { config: {} }
       exports.default.install(app)
@@ -83,6 +90,9 @@ describe('Web 框架组件入口', () => {
       } else {
         expect(setNativeEventNormalizer).not.toHaveBeenCalled()
       }
+      expect(style.colorScheme).toBe(
+        node ? '' : darkmode ? 'light dark' : 'light'
+      )
     }
   )
 

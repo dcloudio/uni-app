@@ -57,7 +57,13 @@ describe('Web 框架默认告警处理器', () => {
         '../../platform': {},
         './router': {},
       },
-      { __DEV__: dev, __VAPOR__: vapor, __UNI_FEATURE_PAGES__: false }
+      {
+        __DEV__: dev,
+        __VAPOR__: vapor,
+        __UNI_FEATURE_PAGES__: false,
+        __uniConfig: {},
+        document: { documentElement: { style: {} } },
+      }
     )
     const app = { config: { warnHandler: undefined as Function | undefined } }
     plugin.install(app)
