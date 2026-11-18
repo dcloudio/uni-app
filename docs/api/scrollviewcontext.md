@@ -136,14 +136,14 @@ Web: x; 微信小程序: √; 支付宝小程序: x; Android(VDOM): x; Android(V
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **ScrollViewRefreshOptions** | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.36; iOS(VDOM): x; iOS(Vapor): 5.36; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.36 | triggerRefresh、triggerTwoLevel、closeTwoLevel 的动画配置。 |
+| options | **ScrollViewRefreshOptions** | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | triggerRefresh、triggerTwoLevel、closeTwoLevel 的动画配置。 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| duration | number | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.36; iOS(VDOM): x; iOS(Vapor): 5.36; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.36 | 动画时长，单位 ms；刷新默认 300，二级面板默认 500。 |
-| easingFunction | string | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.36; iOS(VDOM): x; iOS(Vapor): 5.36; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.36 | 动画曲线，默认 ease。 |
+| duration | number | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 动画时长，单位 ms；刷新默认 300，二级面板默认 500。 |
+| easingFunction | string | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 动画曲线，默认 ease。 |
 
 ##### easingFunction 的属性描述
 
@@ -187,21 +187,21 @@ triggerTwoLevel
 打开下拉二级面板。
 
 ##### triggerTwoLevel 兼容性 <Help /> 
-Web: x; 微信小程序: √; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.36; iOS(VDOM): x; iOS(Vapor): 5.36; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.36
+Web: x; 微信小程序: √; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x
 
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **ScrollViewRefreshOptions** | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.36; iOS(VDOM): x; iOS(Vapor): 5.36; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.36 | triggerRefresh、triggerTwoLevel、closeTwoLevel 的动画配置。 |
+| options | **ScrollViewRefreshOptions** | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | triggerRefresh、triggerTwoLevel、closeTwoLevel 的动画配置。 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| duration | number | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.36; iOS(VDOM): x; iOS(Vapor): 5.36; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.36 | 动画时长，单位 ms；刷新默认 300，二级面板默认 500。 |
-| easingFunction | string | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.36; iOS(VDOM): x; iOS(Vapor): 5.36; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.36 | 动画曲线，默认 ease。 |
+| duration | number | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 动画时长，单位 ms；刷新默认 300，二级面板默认 500。 |
+| easingFunction | string | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 动画曲线，默认 ease。 |
 
 ##### easingFunction 的属性描述
 
@@ -227,21 +227,21 @@ closeTwoLevel
 关闭下拉二级面板。
 
 ##### closeTwoLevel 兼容性 <Help /> 
-Web: x; 微信小程序: √; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.36; iOS(VDOM): x; iOS(Vapor): 5.36; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.36
+Web: x; 微信小程序: √; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x
 
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **ScrollViewRefreshOptions** | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.36; iOS(VDOM): x; iOS(Vapor): 5.36; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.36 | triggerRefresh、triggerTwoLevel、closeTwoLevel 的动画配置。 |
+| options | **ScrollViewRefreshOptions** | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | triggerRefresh、triggerTwoLevel、closeTwoLevel 的动画配置。 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| duration | number | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.36; iOS(VDOM): x; iOS(Vapor): 5.36; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.36 | 动画时长，单位 ms；刷新默认 300，二级面板默认 500。 |
-| easingFunction | string | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.36; iOS(VDOM): x; iOS(Vapor): 5.36; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.36 | 动画曲线，默认 ease。 |
+| duration | number | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 动画时长，单位 ms；刷新默认 300，二级面板默认 500。 |
+| easingFunction | string | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 动画曲线，默认 ease。 |
 
 ##### easingFunction 的属性描述
 
