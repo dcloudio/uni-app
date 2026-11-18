@@ -9031,8 +9031,14 @@ const _sfc_main$l = /* @__PURE__ */ defineComponent$2({
   __vapor: true,
   setup(__props, { expose: __expose, emit: __emit }) {
     const props2 = __props;
+    const rootRef = ref(null);
     class UniCustomEvent3 {
       constructor(type, detail) {
+        this.timeStamp = 0;
+        const target = rootRef.value;
+        this.type = type;
+        this.target = target;
+        this.currentTarget = target;
         this.detail = detail;
       }
     }
@@ -9060,7 +9066,7 @@ const _sfc_main$l = /* @__PURE__ */ defineComponent$2({
       }
       fields.delete(name);
     }
-    function submit() {
+    function submit(event) {
       if (props2.disabled) {
         return;
       }
@@ -9068,16 +9074,20 @@ const _sfc_main$l = /* @__PURE__ */ defineComponent$2({
       fields.forEach((field, name) => {
         data[name] = field.getValue();
       });
-      emit2("submit", new UniFormSubmitEvent(data));
+      const submitEvent = new UniFormSubmitEvent(data);
+      submitEvent.timeStamp = (event == null ? void 0 : event.timeStamp) ?? performance.now();
+      emit2("submit", submitEvent);
     }
-    function reset() {
+    function reset(event) {
       if (props2.disabled) {
         return;
       }
       fields.forEach((field) => {
         field.reset && field.reset();
       });
-      emit2("reset", new UniFormResetEvent());
+      const resetEvent = new UniFormResetEvent();
+      resetEvent.timeStamp = (event == null ? void 0 : event.timeStamp) ?? performance.now();
+      emit2("reset", resetEvent);
     }
     const ctx = { registerField, unregisterField, submit, reset };
     provide(FORM_KEY, ctx);
@@ -9085,7 +9095,9 @@ const _sfc_main$l = /* @__PURE__ */ defineComponent$2({
     return (_ctx, _push, _parent, _attrs) => {
       _push(`<div${ssrRenderAttrs(mergeProps({
         "uni-view": "",
-        class: "uni-form"
+        class: "uni-form",
+        ref_key: "rootRef",
+        ref: rootRef
       }, _attrs))}>`);
       ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent);
       _push(`</div>`);
@@ -11203,7 +11215,7 @@ const _sfc_main$c = /* @__PURE__ */ defineComponent$2({
         ref_key: "containerRef",
         ref: containerRef,
         class: ["uni-picker__container", ["uni-picker-theme--" + unref(theme), { "uni-picker__container--desktop": unref(isDesktop) }]]
-      }, _attrs))}><div uni-view class="${ssrRenderClass([{ "picker__ani-show": unref(show), "picker__mask--dark": unref(theme) == "dark" }, "uni-picker__mask"])}"></div><div uni-view class="${ssrRenderClass([[unref(show) ? "picker__ani-box-show" : "", "inner-box--" + unref(theme), { "uni-picker__inner-box--desktop": unref(isDesktop) }], "uni-picker__inner-box"])}" style="${ssrRenderStyle(unref(popupStyle).content)}">`);
+      }, _attrs))}><div uni-view class="${ssrRenderClass([{ "picker__ani-show": unref(show) }, "uni-picker__mask"])}"></div><div uni-view class="${ssrRenderClass([[unref(show) ? "picker__ani-box-show" : "", "inner-box--" + unref(theme), { "uni-picker__inner-box--desktop": unref(isDesktop) }], "uni-picker__inner-box"])}" style="${ssrRenderStyle(unref(popupStyle).content)}">`);
       if (unref(isSelect)) {
         _push(`<!--[0-->`);
         _push(ssrRenderComponent(_component_scroll_view, {
@@ -11551,7 +11563,7 @@ const _sfc_main$c = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _style_0 = "\n.uni-picker__container {\n		flex: 1;\n}\n.uni-picker__mask {\n		flex: 1;\n		background-color: rgba(0, 0, 0, .3);\n		opacity: 0;\n		transition-property: opacity;\n		transition-duration: 0.3s;\n}\n.picker__mask--dark {\n		background-color: rgba(0, 0, 0, .6);\n}\n.picker__ani-show {\n		opacity: 1;\n}\n.uni-picker__inner-box {\n		position: absolute;\n		bottom: 0;\n		left: 0;\n		right: 0;\n		height: 300px;\n		transform: translateY(100%);\n		transition-property: transform;\n		transition-duration: 0.2s;\n}\n.picker__ani-box-show {\n		transform: translateY(0%);\n}\n.uni-picker__header-btn {\n		flex-direction: row;\n		justify-content: space-between;\n		border-bottom: 1px #f7f7f7 solid;\n}\n.uni-picker__header-btn-cancel {\n		font-size: 14px;\n		padding: 15px;\n		background-color: transparent;\n}\n.uni-picker__header-btn-ok {\n		font-size: 14px;\n		padding: 15px;\n		color: #007aff;\n}\n.uni-picker__view {\n		position: relative;\n		flex: 1;\n}\n.uni-picker__view-item {\n		width: 100%;\n		text-align: center;\n		height: 50px;\n		line-height: 50px;\n}\n.inner-box--light {\n		background-color: #fff;\n}\n.header-btn-cannel--light {\n		color: #000;\n}\n.inner-box--dark {\n		background-color: #232323;\n}\n.header-btn-cannel--dark {\n		color: rgba(255, 255, 255, .8);\n}\n.view-item--dark {\n		color: rgba(255, 255, 255, .8);\n}\n.header-btn--dark {\n		border-color: rgba(255, 255, 255, .05);\n}\n.uni-picker__mask {\n		/* 建立滚动容器，通过 CSS 阻止遮罩上的滚动传递到背景页面。 */\n		overflow: auto;\n		overscroll-behavior: none;\n		touch-action: none;\n}\n.uni-picker__container--desktop .uni-picker__mask {\n		background-color: transparent;\n}\n.uni-picker__inner-box--desktop {\n		transform: none;\n		opacity: 0;\n		border-radius: 5px;\n		box-shadow: 0 0 20px 5px rgba(0, 0, 0, .3);\n		transition-property: opacity;\n}\n.uni-picker__inner-box--desktop.picker__ani-box-show {\n		transform: none;\n		opacity: 1;\n}\n.uni-picker__inner-box--desktop .uni-picker__header-btn {\n		flex-shrink: 0;\n}\n.uni-picker__inner-box--desktop .uni-picker__view {\n		min-height: 0;\n		overflow: hidden;\n		border-radius: 0 0 5px 5px;\n}\n.uni-picker__select {\n		height: 100%;\n		box-sizing: border-box;\n		padding: 6px 0;\n		border-radius: 5px;\n		overscroll-behavior: contain;\n}\n.uni-picker__select .uni-scroll-view {\n		overscroll-behavior: contain;\n}\n.uni-picker__select-item {\n		flex-shrink: 0;\n		height: 34px;\n		line-height: 34px;\n		padding: 0 10px;\n		text-align: center;\n		color: #555;\n		white-space: nowrap;\n		text-overflow: ellipsis;\n		overflow: hidden;\n		cursor: pointer;\n}\n.uni-picker__select-item:hover {\n		background-color: #f6f6f6;\n}\n.uni-picker-theme--dark .uni-picker__select-item {\n		color: rgba(255, 255, 255, .8);\n}\n.uni-picker-theme--dark .uni-picker__select-item:hover {\n		background-color: rgba(255, 255, 255, .1);\n}\n.uni-picker__select-item.uni-picker__select-item--selected {\n		color: #007aff;\n}\n\n";
+const _style_0 = "\n.uni-picker__container {\n		flex: 1;\n}\n.uni-picker__mask {\n		flex: 1;\n		background-color: rgba(0, 0, 0, .55);\n		opacity: 0;\n		transition-property: opacity;\n		transition-duration: 0.3s;\n}\n.picker__ani-show {\n		opacity: 1;\n}\n.uni-picker__inner-box {\n		position: absolute;\n		bottom: 0;\n		left: 0;\n		right: 0;\n		height: 300px;\n		transform: translateY(100%);\n		transition-property: transform;\n		transition-duration: 0.2s;\n}\n.picker__ani-box-show {\n		transform: translateY(0%);\n}\n.uni-picker__header-btn {\n		flex-direction: row;\n		justify-content: space-between;\n		border-bottom: 1px #f7f7f7 solid;\n}\n.uni-picker__header-btn-cancel {\n		font-size: 14px;\n		padding: 15px;\n		background-color: transparent;\n}\n.uni-picker__header-btn-ok {\n		font-size: 14px;\n		padding: 15px;\n		color: #007aff;\n}\n.uni-picker__view {\n		position: relative;\n		flex: 1;\n}\n.uni-picker__view-item {\n		width: 100%;\n		text-align: center;\n		height: 50px;\n		line-height: 50px;\n}\n.inner-box--light {\n		background-color: #fff;\n}\n.header-btn-cannel--light {\n		color: #000;\n}\n.inner-box--dark {\n		background-color: #232323;\n}\n.header-btn-cannel--dark {\n		color: rgba(255, 255, 255, .8);\n}\n.view-item--dark {\n		color: rgba(255, 255, 255, .8);\n}\n.header-btn--dark {\n		border-color: rgba(255, 255, 255, .05);\n}\n.uni-picker__mask {\n		/* 建立滚动容器，通过 CSS 阻止遮罩上的滚动传递到背景页面。 */\n		overflow: auto;\n		overscroll-behavior: none;\n		touch-action: none;\n}\n.uni-picker__container--desktop .uni-picker__mask {\n		background-color: transparent;\n}\n.uni-picker__inner-box--desktop {\n		transform: none;\n		opacity: 0;\n		border-radius: 5px;\n		box-shadow: 0 0 20px 5px rgba(0, 0, 0, .3);\n		transition-property: opacity;\n}\n.uni-picker__inner-box--desktop.picker__ani-box-show {\n		transform: none;\n		opacity: 1;\n}\n.uni-picker__inner-box--desktop .uni-picker__header-btn {\n		flex-shrink: 0;\n}\n.uni-picker__inner-box--desktop .uni-picker__view {\n		min-height: 0;\n		overflow: hidden;\n		border-radius: 0 0 5px 5px;\n}\n.uni-picker__select {\n		height: 100%;\n		box-sizing: border-box;\n		padding: 6px 0;\n		border-radius: 5px;\n		overscroll-behavior: contain;\n}\n.uni-picker__select .uni-scroll-view {\n		overscroll-behavior: contain;\n}\n.uni-picker__select-item {\n		flex-shrink: 0;\n		height: 34px;\n		line-height: 34px;\n		padding: 0 10px;\n		text-align: center;\n		color: #555;\n		white-space: nowrap;\n		text-overflow: ellipsis;\n		overflow: hidden;\n		cursor: pointer;\n}\n.uni-picker__select-item:hover {\n		background-color: #f6f6f6;\n}\n.uni-picker-theme--dark .uni-picker__select-item {\n		color: rgba(255, 255, 255, .8);\n}\n.uni-picker-theme--dark .uni-picker__select-item:hover {\n		background-color: rgba(255, 255, 255, .1);\n}\n.uni-picker__select-item.uni-picker__select-item--selected {\n		color: #007aff;\n}\n\n";
 const _export_sfc = (sfc, props2) => {
   const target = sfc.__vccOpts || sfc;
   for (const [key, val] of props2) {

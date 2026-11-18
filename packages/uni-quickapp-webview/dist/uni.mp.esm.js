@@ -133,7 +133,10 @@ function initBaseInstance(instance, options) {
     instance.slots = {};
     if (isArray(options.slots) && options.slots.length) {
         options.slots.forEach((name) => {
-            instance.slots[name] = true;
+            // 与 uS observer 一致，初始化时忽略空转发占位，不改变已有的动态同步机制。
+            if (name != null) {
+                instance.slots[name] = true;
+            }
         });
         if (instance.slots[SLOT_DEFAULT_NAME]) {
             instance.slots.default = true;
@@ -464,7 +467,10 @@ function initDefaultProps(options, isBehavior = false) {
             const $slots = Object.create(null);
             newVal &&
                 newVal.forEach((slotName) => {
-                    $slots[slotName] = true;
+                    // 编译器用 null 表示缺失的转发来源；不能将占位值转换成插槽名。
+                    if (slotName != null) {
+                        $slots[slotName] = true;
+                    }
                 });
             this.setData({
                 $slots,

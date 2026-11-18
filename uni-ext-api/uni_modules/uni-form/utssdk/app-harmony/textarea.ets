@@ -49,7 +49,7 @@ export function TextareaBuilder(options: UniTextareaOptions) {
 		.enterKeyType(options.enterKeyType)
 		.enabled(options.enabled)
 		.maxLength(options.maxLength)
-		.caretColor(options.caretColor)
+		.caretStyle({ color: options.caretColor })
 		.selectedBackgroundColor(options.selectedBackgroundColor)
 		.barState(options.autoHeight ? BarState.Off : BarState.Auto)
 		.fontSize(options.fontSize)

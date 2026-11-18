@@ -15998,7 +15998,7 @@ const _sfc_main$x = /* @__PURE__ */ defineVaporComponent({
       }
       return classes2.join(" ");
     });
-    const checkFormAndSubmitOrReset = () => {
+    const checkFormAndSubmitOrReset = (event) => {
       if (props2.formType != "submit" && props2.formType != "reset") {
         return;
       }
@@ -16006,9 +16006,9 @@ const _sfc_main$x = /* @__PURE__ */ defineVaporComponent({
         return;
       }
       if (props2.formType == "submit") {
-        formCtx.submit();
+        formCtx.submit(event);
       } else if (props2.formType == "reset") {
-        formCtx.reset();
+        formCtx.reset(event);
       }
     };
     const handleTap = (event) => {
@@ -16016,7 +16016,7 @@ const _sfc_main$x = /* @__PURE__ */ defineVaporComponent({
         return;
       }
       emit2("click", event);
-      checkFormAndSubmitOrReset();
+      checkFormAndSubmitOrReset(event);
     };
     __expose({
       getValue() {
@@ -16615,8 +16615,14 @@ const _sfc_main$t = /* @__PURE__ */ defineVaporComponent({
   emits: ["submit", "reset"],
   setup(__props, { expose: __expose, emit: __emit }) {
     const props2 = __props;
+    const rootRef = ref(null);
     class UniCustomEvent3 {
       constructor(type, detail) {
+        this.timeStamp = 0;
+        const target = rootRef.value;
+        this.type = type;
+        this.target = target;
+        this.currentTarget = target;
         this.detail = detail;
       }
     }
@@ -16644,7 +16650,7 @@ const _sfc_main$t = /* @__PURE__ */ defineVaporComponent({
       }
       fields.delete(name);
     }
-    function submit() {
+    function submit(event) {
       if (props2.disabled) {
         return;
       }
@@ -16652,16 +16658,20 @@ const _sfc_main$t = /* @__PURE__ */ defineVaporComponent({
       fields.forEach((field, name) => {
         data[name] = field.getValue();
       });
-      emit2("submit", new UniFormSubmitEvent(data));
+      const submitEvent = new UniFormSubmitEvent(data);
+      submitEvent.timeStamp = (event == null ? void 0 : event.timeStamp) ?? performance.now();
+      emit2("submit", submitEvent);
     }
-    function reset() {
+    function reset(event) {
       if (props2.disabled) {
         return;
       }
       fields.forEach((field) => {
         field.reset && field.reset();
       });
-      emit2("reset", new UniFormResetEvent());
+      const resetEvent = new UniFormResetEvent();
+      resetEvent.timeStamp = (event == null ? void 0 : event.timeStamp) ?? performance.now();
+      emit2("reset", resetEvent);
     }
     const ctx = { registerField, unregisterField, submit, reset };
     provide(FORM_KEY, ctx);
@@ -16670,6 +16680,7 @@ const _sfc_main$t = /* @__PURE__ */ defineVaporComponent({
     initUniElement(n0, _uniFormElement);
     setInsertionState(n0);
     createSlot();
+    setStaticTemplateRef(n0, rootRef, null, "rootRef");
     return n0;
   }
 });
@@ -18979,7 +18990,7 @@ const _sfc_main$k = /* @__PURE__ */ defineVaporComponent({
       const _isDesktop = unref(isDesktop);
       const _show = unref(show);
       setClass(n56, ["uni-picker__container", ["uni-picker-theme--" + _theme, { "uni-picker__container--desktop": _isDesktop }]]);
-      setClassName(n0, (_show ? 1 : 0) | (_theme == "dark" ? 2 : 0), [" picker__ani-show", " picker__mask--dark"], "uni-picker__mask");
+      setClassName(n0, _show ? 1 : 0, " picker__ani-show", "uni-picker__mask");
       setClass(n55, ["uni-picker__inner-box", [_show ? "picker__ani-box-show" : "", "inner-box--" + _theme, { "uni-picker__inner-box--desktop": _isDesktop }]]);
       setStyle(n55, unref(popupStyle).content);
     });
@@ -18987,7 +18998,7 @@ const _sfc_main$k = /* @__PURE__ */ defineVaporComponent({
     createIf(
       () => unref(isSelect),
       () => {
-        const n6 = withComponentId("3e32089c", () => createComponentWithFallback(_component_scroll_view, {
+        const n6 = withComponentId("3e320992", () => createComponentWithFallback(_component_scroll_view, {
           class: "uni-picker__select",
           direction: "vertical",
           "show-scrollbar": true
@@ -19037,7 +19048,7 @@ const _sfc_main$k = /* @__PURE__ */ defineVaporComponent({
           setText(x9, normalizeUniText(toDisplayString(unref(confirmText))));
         });
         setInsertionState(n54);
-        withComponentId("3bf71206", () => createComponentWithFallback(_component_picker_view, {
+        withComponentId("3bf70f00", () => createComponentWithFallback(_component_picker_view, {
           style: { "flex": "1" },
           onChange: () => handleChange,
           "mask-top-style": () => unref(maskTopStyle),
@@ -19048,7 +19059,7 @@ const _sfc_main$k = /* @__PURE__ */ defineVaporComponent({
           const n11 = createIf(
             () => unref(mode) == "selector",
             () => {
-              const n16 = withComponentId("3bf719c2", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
+              const n16 = withComponentId("3bf716bc", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
                 const n13 = createFor(
                   () => unref(range),
                   (_for_item0, _for_key0) => {
@@ -19083,7 +19094,7 @@ const _sfc_main$k = /* @__PURE__ */ defineVaporComponent({
               const n19 = createFor(
                 () => unref(range),
                 (_for_item0, _for_key0) => {
-                  const n24 = withComponentId("3bf728cb-" + _for_key0.value, () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
+                  const n24 = withComponentId("3bf725c5-" + _for_key0.value, () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
                     const n21 = createFor(
                       () => _for_item0.value,
                       (_for_item1, _for_key1) => {
@@ -19121,7 +19132,7 @@ const _sfc_main$k = /* @__PURE__ */ defineVaporComponent({
           const n25 = createIf(
             () => unref(mode) == "time",
             () => {
-              const n30 = withComponentId("3bf7837a", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
+              const n30 = withComponentId("3bf782ff", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
                 const n27 = createFor(
                   () => unref(hours),
                   (_for_item0, _for_key0) => {
@@ -19142,7 +19153,7 @@ const _sfc_main$k = /* @__PURE__ */ defineVaporComponent({
                 _: 1
                 /* NON_STABLE */
               })));
-              const n34 = withComponentId("3bf78ac3", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
+              const n34 = withComponentId("3bf78a48", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
                 const n31 = createFor(
                   () => unref(minutes),
                   (_for_item0, _for_key0) => {
@@ -19172,7 +19183,7 @@ const _sfc_main$k = /* @__PURE__ */ defineVaporComponent({
           const n35 = createIf(
             () => unref(mode) == "date",
             () => {
-              const n40 = withComponentId("3bf7954e", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
+              const n40 = withComponentId("3bf7925d", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
                 const n37 = createFor(
                   () => unref(years),
                   (_for_item0) => {
@@ -19194,7 +19205,7 @@ const _sfc_main$k = /* @__PURE__ */ defineVaporComponent({
                 /* NON_STABLE */
               })));
               const n41 = createIf(() => unref(fields) != "year", () => {
-                const n46 = withComponentId("3bf79ccf", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
+                const n46 = withComponentId("3bf799c9", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
                   const n43 = createFor(
                     () => unref(monthsText),
                     (_for_item0) => {
@@ -19218,7 +19229,7 @@ const _sfc_main$k = /* @__PURE__ */ defineVaporComponent({
                 return n46;
               });
               const n47 = createIf(() => unref(fields) == "day", () => {
-                const n52 = withComponentId("3bf7f3bd", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
+                const n52 = withComponentId("3bf7f342", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
                   const n49 = createFor(
                     () => unref(days),
                     (_for_item0) => {
@@ -19261,7 +19272,7 @@ const _sfc_main$k = /* @__PURE__ */ defineVaporComponent({
     return n56;
   }
 });
-const _style_0$8 = "\n.uni-picker__container {\n		flex: 1;\n}\n.uni-picker__mask {\n		flex: 1;\n		background-color: rgba(0, 0, 0, .3);\n		opacity: 0;\n		transition-property: opacity;\n		transition-duration: 0.3s;\n}\n.picker__mask--dark {\n		background-color: rgba(0, 0, 0, .6);\n}\n.picker__ani-show {\n		opacity: 1;\n}\n.uni-picker__inner-box {\n		position: absolute;\n		bottom: 0;\n		left: 0;\n		right: 0;\n		height: 300px;\n		transform: translateY(100%);\n		transition-property: transform;\n		transition-duration: 0.2s;\n}\n.picker__ani-box-show {\n		transform: translateY(0%);\n}\n.uni-picker__header-btn {\n		flex-direction: row;\n		justify-content: space-between;\n		border-bottom: 1px #f7f7f7 solid;\n}\n.uni-picker__header-btn-cancel {\n		font-size: 14px;\n		padding: 15px;\n		background-color: transparent;\n}\n.uni-picker__header-btn-ok {\n		font-size: 14px;\n		padding: 15px;\n		color: #007aff;\n}\n.uni-picker__view {\n		position: relative;\n		flex: 1;\n}\n.uni-picker__view-item {\n		width: 100%;\n		text-align: center;\n		height: 50px;\n		line-height: 50px;\n}\n.inner-box--light {\n		background-color: #fff;\n}\n.header-btn-cannel--light {\n		color: #000;\n}\n.inner-box--dark {\n		background-color: #232323;\n}\n.header-btn-cannel--dark {\n		color: rgba(255, 255, 255, .8);\n}\n.view-item--dark {\n		color: rgba(255, 255, 255, .8);\n}\n.header-btn--dark {\n		border-color: rgba(255, 255, 255, .05);\n}\n.uni-picker__mask {\n		/* 建立滚动容器，通过 CSS 阻止遮罩上的滚动传递到背景页面。 */\n		overflow: auto;\n		overscroll-behavior: none;\n		touch-action: none;\n}\n.uni-picker__container--desktop .uni-picker__mask {\n		background-color: transparent;\n}\n.uni-picker__inner-box--desktop {\n		transform: none;\n		opacity: 0;\n		border-radius: 5px;\n		box-shadow: 0 0 20px 5px rgba(0, 0, 0, .3);\n		transition-property: opacity;\n}\n.uni-picker__inner-box--desktop.picker__ani-box-show {\n		transform: none;\n		opacity: 1;\n}\n.uni-picker__inner-box--desktop .uni-picker__header-btn {\n		flex-shrink: 0;\n}\n.uni-picker__inner-box--desktop .uni-picker__view {\n		min-height: 0;\n		overflow: hidden;\n		border-radius: 0 0 5px 5px;\n}\n.uni-picker__select {\n		height: 100%;\n		box-sizing: border-box;\n		padding: 6px 0;\n		border-radius: 5px;\n		overscroll-behavior: contain;\n}\n.uni-picker__select .uni-scroll-view {\n		overscroll-behavior: contain;\n}\n.uni-picker__select-item {\n		flex-shrink: 0;\n		height: 34px;\n		line-height: 34px;\n		padding: 0 10px;\n		text-align: center;\n		color: #555;\n		white-space: nowrap;\n		text-overflow: ellipsis;\n		overflow: hidden;\n		cursor: pointer;\n}\n.uni-picker__select-item:hover {\n		background-color: #f6f6f6;\n}\n.uni-picker-theme--dark .uni-picker__select-item {\n		color: rgba(255, 255, 255, .8);\n}\n.uni-picker-theme--dark .uni-picker__select-item:hover {\n		background-color: rgba(255, 255, 255, .1);\n}\n.uni-picker__select-item.uni-picker__select-item--selected {\n		color: #007aff;\n}\n\n";
+const _style_0$8 = "\n.uni-picker__container {\n		flex: 1;\n}\n.uni-picker__mask {\n		flex: 1;\n		background-color: rgba(0, 0, 0, .55);\n		opacity: 0;\n		transition-property: opacity;\n		transition-duration: 0.3s;\n}\n.picker__ani-show {\n		opacity: 1;\n}\n.uni-picker__inner-box {\n		position: absolute;\n		bottom: 0;\n		left: 0;\n		right: 0;\n		height: 300px;\n		transform: translateY(100%);\n		transition-property: transform;\n		transition-duration: 0.2s;\n}\n.picker__ani-box-show {\n		transform: translateY(0%);\n}\n.uni-picker__header-btn {\n		flex-direction: row;\n		justify-content: space-between;\n		border-bottom: 1px #f7f7f7 solid;\n}\n.uni-picker__header-btn-cancel {\n		font-size: 14px;\n		padding: 15px;\n		background-color: transparent;\n}\n.uni-picker__header-btn-ok {\n		font-size: 14px;\n		padding: 15px;\n		color: #007aff;\n}\n.uni-picker__view {\n		position: relative;\n		flex: 1;\n}\n.uni-picker__view-item {\n		width: 100%;\n		text-align: center;\n		height: 50px;\n		line-height: 50px;\n}\n.inner-box--light {\n		background-color: #fff;\n}\n.header-btn-cannel--light {\n		color: #000;\n}\n.inner-box--dark {\n		background-color: #232323;\n}\n.header-btn-cannel--dark {\n		color: rgba(255, 255, 255, .8);\n}\n.view-item--dark {\n		color: rgba(255, 255, 255, .8);\n}\n.header-btn--dark {\n		border-color: rgba(255, 255, 255, .05);\n}\n.uni-picker__mask {\n		/* 建立滚动容器，通过 CSS 阻止遮罩上的滚动传递到背景页面。 */\n		overflow: auto;\n		overscroll-behavior: none;\n		touch-action: none;\n}\n.uni-picker__container--desktop .uni-picker__mask {\n		background-color: transparent;\n}\n.uni-picker__inner-box--desktop {\n		transform: none;\n		opacity: 0;\n		border-radius: 5px;\n		box-shadow: 0 0 20px 5px rgba(0, 0, 0, .3);\n		transition-property: opacity;\n}\n.uni-picker__inner-box--desktop.picker__ani-box-show {\n		transform: none;\n		opacity: 1;\n}\n.uni-picker__inner-box--desktop .uni-picker__header-btn {\n		flex-shrink: 0;\n}\n.uni-picker__inner-box--desktop .uni-picker__view {\n		min-height: 0;\n		overflow: hidden;\n		border-radius: 0 0 5px 5px;\n}\n.uni-picker__select {\n		height: 100%;\n		box-sizing: border-box;\n		padding: 6px 0;\n		border-radius: 5px;\n		overscroll-behavior: contain;\n}\n.uni-picker__select .uni-scroll-view {\n		overscroll-behavior: contain;\n}\n.uni-picker__select-item {\n		flex-shrink: 0;\n		height: 34px;\n		line-height: 34px;\n		padding: 0 10px;\n		text-align: center;\n		color: #555;\n		white-space: nowrap;\n		text-overflow: ellipsis;\n		overflow: hidden;\n		cursor: pointer;\n}\n.uni-picker__select-item:hover {\n		background-color: #f6f6f6;\n}\n.uni-picker-theme--dark .uni-picker__select-item {\n		color: rgba(255, 255, 255, .8);\n}\n.uni-picker-theme--dark .uni-picker__select-item:hover {\n		background-color: rgba(255, 255, 255, .1);\n}\n.uni-picker__select-item.uni-picker__select-item--selected {\n		color: #007aff;\n}\n\n";
 const _export_sfc = (sfc, props2) => {
   const target = sfc.__vccOpts || sfc;
   for (const [key, val] of props2) {
@@ -26979,6 +26990,7 @@ const index = {
   install(app) {
     setRealPathResolver(getRealPath);
     setNativeEventNormalizer(normalizeVaporNativeEvent);
+    document.documentElement.style.colorScheme = __uniConfig.darkmode ? "light dark" : "light";
     initApp(app);
     initServicePlugin(app);
     if ((process.env.NODE_ENV !== "production" || false) && !app.config.warnHandler) {

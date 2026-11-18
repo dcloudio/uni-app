@@ -21314,6 +21314,7 @@ function initHistory() {
 }
 const index$c = {
   install(app) {
+    document.documentElement.style.colorScheme = __uniConfig.darkmode ? "light dark" : "light";
     initApp(app);
     initViewPlugin(app);
     initServicePlugin(app);

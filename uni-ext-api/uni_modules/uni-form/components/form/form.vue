@@ -1,5 +1,9 @@
 <template>
-  <view class="uni-form">
+  <view class="uni-form"
+    <!-- #ifdef WEB -->
+    ref="rootRef"
+    <!-- #endif -->
+  >
     <slot></slot>
   </view>
 </template>
@@ -49,10 +53,20 @@
   })
 
   // #ifdef WEB
+  const rootRef = ref<UniElement | null>(null)
+
   class UniCustomEvent<T> {
+    type : string
+    timeStamp : number = 0
+    target : UniElement | null
+    currentTarget : UniElement | null
     detail : T
+
     constructor(type : string, detail : T) {
-      // this.type = type
+      const target = rootRef.value
+      this.type = type
+      this.target = target
+      this.currentTarget = target
       this.detail = detail
     }
   }
@@ -92,7 +106,7 @@
     fields.delete(name)
   }
 
-  function submit() {
+  function submit(event?: UniPointerEvent) {
     if (props.disabled) {
       return
     }
@@ -101,10 +115,14 @@
     fields.forEach((field, name) => {
       data[name] = field.getValue()
     })
-    emit('submit', new UniFormSubmitEvent(data))
+    const submitEvent = new UniFormSubmitEvent(data)
+    // #ifdef WEB
+    submitEvent.timeStamp = event?.timeStamp ?? performance.now()
+    // #endif
+    emit('submit', submitEvent)
   }
 
-  function reset() {
+  function reset(event?: UniPointerEvent) {
     if (props.disabled) {
       return
     }
@@ -112,7 +130,11 @@
     fields.forEach((field) => {
       field.reset && field.reset()
     })
-    emit('reset', new UniFormResetEvent())
+    const resetEvent = new UniFormResetEvent()
+    // #ifdef WEB
+    resetEvent.timeStamp = event?.timeStamp ?? performance.now()
+    // #endif
+    emit('reset', resetEvent)
   }
 
   const ctx : FormContext = { registerField, unregisterField, submit, reset }

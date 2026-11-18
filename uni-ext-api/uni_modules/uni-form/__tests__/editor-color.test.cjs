@@ -228,15 +228,20 @@ test('caret-color supports CSS updates, legacy prop precedence and removal', () 
   assert.equal(resolveEditorCaretColor('', ''), '')
 })
 
+function nativeMethod(source, viewName, methodName) {
+  const classStart = source.indexOf(`class ${viewName} `)
+  assert.ok(classStart >= 0, `${viewName} was not found`)
+  const classSource = source.slice(classStart).match(/^class [^\r\n]*\{[\s\S]*?^\}/m)?.[0]
+  assert.ok(classSource, `${viewName} class body was not found`)
+  const method = classSource.match(new RegExp(`^\\t${methodName}\\([^\\r\\n]*\\)\\s*\\{[\\s\\S]*?^\\t\\}`, 'm'))?.[0]
+  assert.ok(method, `${viewName}.${methodName} was not found`)
+  return method
+}
+
 function createNativeEditor(platform, viewName) {
   const filename = path.join(__dirname, '../utssdk', platform, 'index.uts')
   const source = fs.readFileSync(filename, 'utf8')
-  const classStart = source.indexOf(`export class ${viewName} `)
-  assert.ok(classStart >= 0, `${viewName} was not found in ${filename}`)
-  const classSource = source.slice(classStart).match(/^export class [^\r\n]*\{[\s\S]*?^\}/m)?.[0]
-  assert.ok(classSource, `${viewName} class body was not found in ${filename}`)
-  const method = classSource.match(/^\tupdateColor\([^\r\n]*\)\s*\{[\s\S]*?^\t\}/m)?.[0]
-  assert.ok(method, `${viewName}.updateColor was not found in ${filename}`)
+  const method = nativeMethod(source, viewName, 'updateColor')
   const defaultColor = 'native:black'
   const parsed = []
   const parseColor = value => {
@@ -294,6 +299,108 @@ for (const platform of ['app-android', 'app-ios']) {
       }
     })
   }
+}
+
+function createHarmonyCaretEditor(viewName) {
+  const filename = path.join(__dirname, '../utssdk/app-harmony/index.uts')
+  const source = fs.readFileSync(filename, 'utf8')
+  const methods = [
+    nativeMethod(source, 'NativeInputFileView', 'updateCursorColor'),
+    nativeMethod(source, viewName, 'updateParams'),
+  ]
+  const parsed = []
+  const NativeEditor = vm.runInNewContext(transpile(`class NativeEditor {\n${methods.join('\n')}\n}\nNativeEditor`), {
+    UTSHarmony: {
+      colorWithString(value) {
+        parsed.push(value)
+        return `native:${value}`
+      },
+    },
+  }, { filename })
+  const view = new NativeEditor()
+  view.params = { key: 'editor' }
+  view._params = { key: 'editor' }
+  const updates = []
+  view.harmonyBuilderNode = { update(params) { updates.push({ ...params }) } }
+  return { view, parsed, updates }
+}
+
+for (const viewName of ['NativeInputView', 'NativeTextareaView']) {
+  test(`APP-HARMONY/${viewName}: an unset caret color forwards the native default`, () => {
+    const editor = createHarmonyCaretEditor(viewName)
+    editor.view.updateCursorColor('')
+    assert.equal(editor.updates.length, 1)
+    assert.ok(Object.hasOwn(editor.updates[0], 'caretColor'))
+    assert.equal(editor.updates[0].caretColor, undefined)
+    assert.deepEqual(editor.parsed, [])
+  })
+
+  test(`APP-HARMONY/${viewName}: CSS and legacy caret changes clear the retained native color`, () => {
+    const editor = createHarmonyCaretEditor(viewName)
+    const { resolveEditorCaretColor } = createEditorModule({ appTheme: 'dark' }, 'APP-HARMONY')
+    for (const [css, legacy, expected] of [
+      ['#ff0000', '', 'native:#ff0000'],
+      ['#00ff00', '', 'native:#00ff00'],
+      ['', '', undefined],
+      ['#ff0000', '#007aff', 'native:#007aff'],
+      ['#00ff00', '#007aff', 'native:#007aff'],
+      ['#00ff00', '', 'native:#00ff00'],
+      ['', '', undefined],
+    ]) {
+      editor.view.updateCursorColor(resolveEditorCaretColor(css, legacy))
+      const update = editor.updates.at(-1)
+      assert.ok(Object.hasOwn(update, 'caretColor'))
+      assert.equal(update.caretColor, expected)
+      assert.equal(editor.view.params.caretColor, expected)
+      assert.equal(editor.view._params.caretColor, expected)
+    }
+    assert.deepEqual(editor.parsed, ['#ff0000', '#00ff00', '#007aff', '#007aff', '#00ff00'])
+  })
+}
+
+for (const [component, builderName, viewName] of [
+  ['input', 'InputBuilder', 'NativeInputView'],
+  ['textarea', 'TextareaBuilder', 'NativeTextareaView'],
+]) {
+  test(`APP-HARMONY ${component} builder forwards an explicit caret style reset to ArkUI`, () => {
+    const filename = path.join(__dirname, '../utssdk/app-harmony', `${component}.ets`)
+    const source = fs.readFileSync(filename, 'utf8')
+    const builder = source.match(new RegExp(`^export function ${builderName}\\([^\\r\\n]*\\)\\s*\\{[\\s\\S]*?^\\}`, 'm'))?.[0]
+    assert.ok(builder, `${builderName} was not found`)
+    const styles = []
+    const directColors = []
+    const modifiers = new Proxy({}, {
+      get(_, name) {
+        return value => {
+          if (name === 'caretStyle') styles.push(value)
+          if (name === 'caretColor') directColors.push(value)
+          return modifiers
+        }
+      },
+    })
+    const render = vm.runInNewContext(transpile(`${builder.replace(/^export /, '')}\n${builderName}`), {
+      TextArea: () => modifiers,
+      TextInput: () => modifiers,
+      Color: { Transparent: 'transparent' },
+      BarState: { Off: 'off', Auto: 'auto' },
+      TextareaDirectionModifier: class {},
+      TextInputDirectionModifier: class {},
+    }, { filename })
+    const editor = createHarmonyCaretEditor(viewName)
+    const update = editor.view.harmonyBuilderNode.update
+    editor.view.harmonyBuilderNode.update = params => {
+      update(params)
+      render(params)
+    }
+    editor.view.updateCursorColor('#e91e63')
+    editor.view.updateCursorColor('')
+    assert.deepEqual(directColors, [])
+    assert.equal(styles.length, 2)
+    assert.ok(Object.hasOwn(styles[0], 'color'))
+    assert.equal(styles[0].color, 'native:#e91e63')
+    assert.ok(Object.hasOwn(styles[1], 'color'))
+    assert.equal(styles[1].color, undefined)
+  })
 }
 
 function initializeAndroidTextarea(editor, native, style) {

@@ -979,7 +979,6 @@
     overflow: hidden;
     min-height: 200px;
     color: #000000;
-    caret-color: #3393E2;
   }
 
   @media (prefers-color-scheme: dark) {

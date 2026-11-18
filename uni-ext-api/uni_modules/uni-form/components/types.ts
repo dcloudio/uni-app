@@ -34,8 +34,8 @@ export type FormField = {
 export type FormContext = {
   registerField: (field: FormField) => void
   unregisterField: (name: string) => void
-  submit: () => void
-  reset: () => void
+  submit: (event?: UniPointerEvent) => void
+  reset: (event?: UniPointerEvent) => void
 }
 
 export type PickerViewColumnApi = {

@@ -18,6 +18,7 @@ input、textarea 默认无边框，两种主题下的背景均透明。placehold
 
 iOS、鸿蒙的 input、textarea 支持通过 CSS `caret-color` 设置光标颜色，支持 CSS 变量和媒体查询。
 同时设置 `cursor-color` 时优先使用该属性；移除后回退到 `caret-color`，两者均未设置时恢复系统默认光标颜色。
+鸿蒙 input、textarea 均使用 ArkUI 原生默认光标色；移除所有自定义光标颜色后恢复原生默认值。
 
 ### input / textarea selection-class
 
