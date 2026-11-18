@@ -320,7 +320,7 @@ Web: 4.0; Android: x; iOS: x; HarmonyOS: 4.61
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| path | [Path2D](/api/path2d.md) | 是 | Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | Path2D用来声明路径，用来在canvas中根据需要创建可以保留并重用的路径, 此路径会被CanvasRenderingContext2D对象使用 | 
+| path | [Path2D](/api/path2d.md) | 是 | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | Path2D用来声明路径，用来在canvas中根据需要创建可以保留并重用的路径, 此路径会被CanvasRenderingContext2D对象使用 | 
 
 
 
@@ -358,7 +358,7 @@ Web: 4.0; Android: x; iOS: x; HarmonyOS: x
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| path | [Path2D](/api/path2d.md) | 是 | Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | Path2D用来声明路径，用来在canvas中根据需要创建可以保留并重用的路径, 此路径会被CanvasRenderingContext2D对象使用 |
+| path | [Path2D](/api/path2d.md) | 是 | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | Path2D用来声明路径，用来在canvas中根据需要创建可以保留并重用的路径, 此路径会被CanvasRenderingContext2D对象使用 |
 | fillRule | string | 是 | Android: x; iOS: x; HarmonyOS: x |  | 
 
 
@@ -681,7 +681,7 @@ Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| path | [Path2D](/api/path2d.md) | 是 | Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 填充路径 | 
+| path | [Path2D](/api/path2d.md) | 是 | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 填充路径 | 
 
 
 
@@ -700,7 +700,7 @@ Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| path | [Path2D](/api/path2d.md) | 是 | Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 填充路径 |
+| path | [Path2D](/api/path2d.md) | 是 | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 填充路径 |
 | fillRule | string | 是 |   | 填充当前或已存在的路径的方法。采取非零环绕(nonzero)或者奇偶环绕(evenodd)规则 |
 
 #### fillRule 的属性描述
@@ -879,7 +879,7 @@ Web: 4.0; Android: x; iOS: x; HarmonyOS: x
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| path | [Path2D](/api/path2d.md) | 是 | Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | Path2D应用的路径 |
+| path | [Path2D](/api/path2d.md) | 是 | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | Path2D应用的路径 |
 | x | number | 是 | Android: x; iOS: x; HarmonyOS: x | 检测点的 X 坐标 |
 | y | number | 是 | Android: x; iOS: x; HarmonyOS: x | 检测点的 Y 坐标 | 
 
@@ -906,7 +906,7 @@ Web: 4.0; Android: x; iOS: x; HarmonyOS: x
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| path | [Path2D](/api/path2d.md) | 是 | Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | Path2D应用的路径 |
+| path | [Path2D](/api/path2d.md) | 是 | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | Path2D应用的路径 |
 | x | number | 是 | Android: x; iOS: x; HarmonyOS: x | 检测点的 X 坐标 |
 | y | number | 是 | Android: x; iOS: x; HarmonyOS: x | 检测点的 Y 坐标 |
 | fillRule | string | 是 | Android: x; iOS: x; HarmonyOS: x | 用来决定点在路径内还是在路径外的算法 | 
@@ -1317,7 +1317,7 @@ Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| path | [Path2D](/api/path2d.md) | 是 | Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 
+| path | [Path2D](/api/path2d.md) | 是 | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 
 
 
 
