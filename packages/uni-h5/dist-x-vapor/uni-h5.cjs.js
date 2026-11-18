@@ -7327,6 +7327,13 @@ const props$5 = {
 const emits = ["scroll", "scrollend", "scrolltoupper", "scrolltolower"];
 function useScrollView(props2, { emit: emit2, expose }) {
   const rootRef = Vue.ref(null);
+  const controller = Vue.reactive({
+    scrollEnabled: true,
+    showScrollbar: props2.showScrollbar !== false,
+    pagingEnabled: false,
+    scrollTo: contextScrollTo,
+    scrollIntoView: scrollIntoViewSelector
+  });
   const scrollX = Vue.computed(
     () => props2.direction === "horizontal" || props2.direction === "all"
   );
@@ -7334,14 +7341,83 @@ function useScrollView(props2, { emit: emit2, expose }) {
     () => props2.direction === "vertical" || props2.direction === "all"
   );
   const rootStyle = Vue.computed(
-    () => `overflow-x:${scrollX.value ? "auto" : "hidden"};overflow-y:${scrollY.value ? "auto" : "hidden"};scroll-behavior:${props2.scrollWithAnimation ? "smooth" : "auto"};`
+    () => `overflow-x:${controller.scrollEnabled && scrollX.value ? "auto" : "hidden"};overflow-y:${controller.scrollEnabled && scrollY.value ? "auto" : "hidden"};scroll-behavior:${props2.scrollWithAnimation ? "smooth" : "auto"};`
   );
   const scrollBarClassName = Vue.computed(
-    () => props2.showScrollbar === false ? "uni-scroll-view-scrollbar-hidden" : ""
+    () => controller.showScrollbar ? "" : "uni-scroll-view-scrollbar-hidden"
   );
+  let initialPositionPending = true;
+  let pagingInputTimer;
+  function clearPagingInput() {
+    if (pagingInputTimer !== void 0)
+      clearTimeout(pagingInputTimer);
+    pagingInputTimer = void 0;
+  }
+  function resetPaging() {
+    clearPagingInput();
+  }
+  function initialPosition() {
+    const position = {};
+    if (scrollX.value)
+      position.left = Number(props2.scrollLeft) || 0;
+    if (scrollY.value)
+      position.top = Number(props2.scrollTop) || 0;
+    return position;
+  }
+  function cacheScrollPosition(root) {
+    root.scrollTop;
+    root.scrollLeft;
+  }
   function scrollTo(options) {
-    var _a;
-    (_a = rootRef.value) == null ? void 0 : _a.scrollTo(options);
+    const root = rootRef.value;
+    if (!root)
+      return;
+    resetPaging();
+    root.scrollTo(options);
+    cacheScrollPosition(root);
+  }
+  function contextScrollTo(options) {
+    const position = {
+      behavior: options.animated ? "smooth" : "instant"
+    };
+    if (scrollX.value && Number.isFinite(options.left))
+      position.left = options.left;
+    if (scrollY.value && Number.isFinite(options.top))
+      position.top = options.top;
+    if (position.left === void 0 && position.top === void 0)
+      return;
+    const target = initialPositionPending ? Object.assign(initialPosition(), position) : position;
+    initialPositionPending = false;
+    scrollTo(target);
+  }
+  function scrollToElement(element) {
+    const root = rootRef.value;
+    const rootRect = root.getBoundingClientRect();
+    const rect = element.getBoundingClientRect();
+    const options = {};
+    if (scrollX.value) {
+      options.left = root.scrollLeft + rect.left - rootRect.left - root.clientLeft;
+    }
+    if (scrollY.value) {
+      options.top = root.scrollTop + rect.top - rootRect.top - root.clientTop;
+    }
+    if (options.left !== void 0 || options.top !== void 0)
+      scrollTo(options);
+  }
+  function scrollIntoViewSelector(selector) {
+    const root = rootRef.value;
+    if (!root || !selector)
+      return;
+    let element;
+    try {
+      element = root.querySelector(selector);
+    } catch {
+      return;
+    }
+    if (element) {
+      initialPositionPending = false;
+      scrollToElement(element);
+    }
   }
   function scrollIntoView(id) {
     const root = rootRef.value;
@@ -7354,17 +7430,7 @@ function useScrollView(props2, { emit: emit2, expose }) {
     const element = root.querySelector(`[id="${id}"]`);
     if (!element)
       return;
-    const rootRect = root.getBoundingClientRect();
-    const rect = element.getBoundingClientRect();
-    const options = {};
-    if (scrollX.value) {
-      options.left = root.scrollLeft + rect.left - rootRect.left - root.clientLeft;
-    }
-    if (scrollY.value) {
-      options.top = root.scrollTop + rect.top - rootRect.top - root.clientTop;
-    }
-    if (options.left !== void 0 || options.top !== void 0)
-      scrollTo(options);
+    scrollToElement(element);
   }
   Vue.watch(
     () => [props2.scrollTop, props2.scrollLeft],
@@ -7380,6 +7446,19 @@ function useScrollView(props2, { emit: emit2, expose }) {
     { flush: "post" }
   );
   Vue.watch(() => props2.scrollIntoView, scrollIntoView, { flush: "post" });
+  Vue.watch(
+    () => props2.showScrollbar,
+    (value) => {
+      controller.showScrollbar = value !== false;
+    }
+  );
+  Vue.watch(
+    () => [controller.scrollEnabled, controller.pagingEnabled, props2.direction],
+    () => {
+      resetPaging();
+    },
+    { flush: "sync" }
+  );
   expose({ $getMain: () => rootRef.value });
   return { rootRef, rootStyle, scrollBarClassName };
 }

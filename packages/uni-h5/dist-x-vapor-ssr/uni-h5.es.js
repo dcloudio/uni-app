@@ -1,6 +1,6 @@
 import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, getUniElementPage, once, getEnvLocale, I18N_JSON_DELIMITERS, Emitter, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, normalizeTarget, passive, LINEFEED, parseQuery, NAVBAR_HEIGHT, ON_THEME_CHANGE, removeLeadingSlash, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, decodedQuery, UNI_SSR_TITLE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, PRIMARY_COLOR, debounce, ON_LOAD, ON_READY, ON_UNLOAD, ON_RESIZE, ON_WEB_INVOKE_APP_SERVICE, callOptions, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2 } from "@dcloudio/uni-shared";
-import { defineVaporComponent, createPlainElement, openBlock, createBlock, ref, watch, initUniElement, setAttr, template, getCurrentInstance, warn, unref, reactive, onMounted, onBeforeUnmount, computed, inject, onBeforeMount, nextTick, isVNode, createElementBlock, Fragment, createElementVNode, Comment, Text, cloneVNode, renderList, createVNode, defineComponent as defineComponent$2, mergeProps, withDirectives, vShow, onActivated, shallowRef, watchEffect, provide, isReactive, createFor, createCommentVNode, VaporKeepAlive, createDynamicComponent, useSSRContext, onServerPrefetch, ssrContextKey, markRaw, onUnmounted, toRaw, createKeyedFragment, createTextNode, renderEffect, setText, remove, setDynamicProps, effectScope, insert, syncSelectValue, useAttrs as useAttrs$1, useSlots, withCtx, renderSlot, isInSSRComponentSetup, injectHook, toDisplayString, queuePostFlushCb, logError } from "vue";
+import { defineVaporComponent, createPlainElement, openBlock, createBlock, ref, watch, initUniElement, setAttr, template, getCurrentInstance, warn, unref, reactive, onMounted, onBeforeUnmount, computed, inject, onBeforeMount, nextTick, isVNode, createElementBlock, Fragment, createElementVNode, Comment, Text, cloneVNode, renderList, createVNode, defineComponent as defineComponent$2, mergeProps, withDirectives, vShow, onActivated, shallowRef, watchEffect, provide, isReactive, createFor, createCommentVNode, VaporKeepAlive, createDynamicComponent, useSSRContext, onServerPrefetch, ssrContextKey, markRaw, onUnmounted, toRaw, createKeyedFragment, createTextNode, renderEffect, setText, remove, setDynamicProps, effectScope, insert, syncSelectValue, onDeactivated, useAttrs as useAttrs$1, useSlots, withCtx, renderSlot, isInSSRComponentSetup, injectHook, toDisplayString, queuePostFlushCb, logError } from "vue";
 import { capitalize, camelize, isArray, isString, extend, isFunction, hyphenate, hasOwn, isPlainObject, isObject, toRawType, makeMap as makeMap$1, isPromise, EMPTY_OBJ, Namespaces } from "@vue/shared";
 import { useRoute, VaporRouterView, useRouter, createRouter, createMemoryHistory } from "vue-router";
 import { ssrRenderAttrs, ssrInterpolate, ssrRenderComponent, ssrRenderStyle, ssrRenderAttr, ssrRenderClass, ssrRenderSlot, ssrRenderList } from "vue/server-renderer";
@@ -2250,6 +2250,22 @@ function useContextInfo(_id) {
     };
   });
   return `${type}.${id}`;
+}
+const registrations = /* @__PURE__ */ new WeakMap();
+const controllers = /* @__PURE__ */ new WeakMap();
+function registerScrollViewContext(root, controller) {
+  var _a;
+  const previous = (_a = registrations.get(root)) == null ? void 0 : _a.context;
+  if (previous)
+    controllers.delete(previous);
+  const registration = { controller };
+  registrations.set(root, registration);
+  return () => {
+    if (registration.context)
+      controllers.delete(registration.context);
+    if (registrations.get(root) === registration)
+      registrations.delete(root);
+  };
 }
 function entries(obj) {
   return Object.keys(obj).map((key) => [key, obj[key]]);
@@ -8065,9 +8081,28 @@ function threshold(value) {
   const number = Number(value);
   return isNaN(number) ? 50 : number;
 }
+function isScrollReversed(style, horizontal) {
+  const flexReversed = ((style == null ? void 0 : style.display) === "flex" || (style == null ? void 0 : style.display) === "inline-flex") && // 主轴由 flex-direction 反转，交叉轴由 wrap-reverse 反转。
+  (style.flexDirection === (horizontal ? "row-reverse" : "column-reverse") || style.flexWrap === "wrap-reverse" && style.flexDirection.startsWith(horizontal ? "column" : "row"));
+  return horizontal ? (style == null ? void 0 : style.direction) === "rtl" !== flexReversed : flexReversed;
+}
+function canScroll(element, horizontal, delta, reverse) {
+  const size = horizontal ? element.clientWidth : element.clientHeight;
+  const total = horizontal ? element.scrollWidth : element.scrollHeight;
+  const extent = Math.max(0, total - size);
+  const current = horizontal ? element.scrollLeft : element.scrollTop;
+  return delta < 0 ? current > (reverse ? -extent : 0) : delta > 0 && current < (reverse ? 0 : extent);
+}
 function useScrollView(props2, { emit: emit2, expose }) {
   const rootRef = ref(null);
   const trigger = useCustomEvent(rootRef, emit2);
+  const controller = reactive({
+    scrollEnabled: true,
+    showScrollbar: props2.showScrollbar !== false,
+    pagingEnabled: false,
+    scrollTo: contextScrollTo,
+    scrollIntoView: scrollIntoViewSelector
+  });
   const scrollX = computed(
     () => props2.direction === "horizontal" || props2.direction === "all"
   );
@@ -8075,18 +8110,96 @@ function useScrollView(props2, { emit: emit2, expose }) {
     () => props2.direction === "vertical" || props2.direction === "all"
   );
   const rootStyle = computed(
-    () => `overflow-x:${scrollX.value ? "auto" : "hidden"};overflow-y:${scrollY.value ? "auto" : "hidden"};scroll-behavior:${props2.scrollWithAnimation ? "smooth" : "auto"};`
+    () => `overflow-x:${controller.scrollEnabled && scrollX.value ? "auto" : "hidden"};overflow-y:${controller.scrollEnabled && scrollY.value ? "auto" : "hidden"};scroll-behavior:${props2.scrollWithAnimation ? "smooth" : "auto"};`
   );
   const scrollBarClassName = computed(
-    () => props2.showScrollbar === false ? "uni-scroll-view-scrollbar-hidden" : ""
+    () => controller.showScrollbar ? "" : "uni-scroll-view-scrollbar-hidden"
   );
   let lastScrollTop = 0;
   let lastScrollLeft = 0;
+  let restoreScrollTop = 0;
+  let restoreScrollLeft = 0;
   let lastUpperTime = 0;
   let lastLowerTime = 0;
+  let pagingUserScroll = false;
+  let initialPositionPending = true;
+  let deactivated = false;
+  let pagingInput;
+  let pagingInputTimer;
+  function clearPagingInput() {
+    pagingInput = void 0;
+    if (pagingInputTimer !== void 0)
+      clearTimeout(pagingInputTimer);
+    pagingInputTimer = void 0;
+  }
+  function resetPaging() {
+    clearPagingInput();
+    pagingUserScroll = false;
+  }
+  function initialPosition() {
+    const position = {};
+    if (scrollX.value)
+      position.left = Number(props2.scrollLeft) || 0;
+    if (scrollY.value)
+      position.top = Number(props2.scrollTop) || 0;
+    return position;
+  }
+  function cacheScrollPosition(root) {
+    if (deactivated)
+      return;
+    restoreScrollTop = root.scrollTop;
+    restoreScrollLeft = root.scrollLeft;
+  }
   function scrollTo(options) {
-    var _a;
-    (_a = rootRef.value) == null ? void 0 : _a.scrollTo(options);
+    const root = rootRef.value;
+    if (!root)
+      return;
+    resetPaging();
+    root.scrollTo(options);
+    cacheScrollPosition(root);
+  }
+  function contextScrollTo(options) {
+    const position = {
+      behavior: options.animated ? "smooth" : "instant"
+    };
+    if (scrollX.value && Number.isFinite(options.left))
+      position.left = options.left;
+    if (scrollY.value && Number.isFinite(options.top))
+      position.top = options.top;
+    if (position.left === void 0 && position.top === void 0)
+      return;
+    const target = initialPositionPending ? Object.assign(initialPosition(), position) : position;
+    initialPositionPending = false;
+    scrollTo(target);
+  }
+  function scrollToElement(element) {
+    const root = rootRef.value;
+    const rootRect = root.getBoundingClientRect();
+    const rect = element.getBoundingClientRect();
+    const options = {};
+    if (scrollX.value) {
+      options.left = root.scrollLeft + rect.left - rootRect.left - root.clientLeft;
+    }
+    if (scrollY.value) {
+      options.top = root.scrollTop + rect.top - rootRect.top - root.clientTop;
+    }
+    if (options.left !== void 0 || options.top !== void 0)
+      scrollTo(options);
+  }
+  function scrollIntoViewSelector(selector) {
+    const root = rootRef.value;
+    if (!root || !selector)
+      return;
+    let element;
+    try {
+      element = root.querySelector(selector);
+    } catch {
+      return;
+    }
+    if (element) {
+      initialPositionPending = false;
+      scrollToElement(element);
+    }
   }
   function scrollIntoView(id) {
     const root = rootRef.value;
@@ -8099,17 +8212,7 @@ function useScrollView(props2, { emit: emit2, expose }) {
     const element = root.querySelector(`[id="${id}"]`);
     if (!element)
       return;
-    const rootRect = root.getBoundingClientRect();
-    const rect = element.getBoundingClientRect();
-    const options = {};
-    if (scrollX.value) {
-      options.left = root.scrollLeft + rect.left - rootRect.left - root.clientLeft;
-    }
-    if (scrollY.value) {
-      options.top = root.scrollTop + rect.top - rootRect.top - root.clientTop;
-    }
-    if (options.left !== void 0 || options.top !== void 0)
-      scrollTo(options);
+    scrollToElement(element);
   }
   function detail(root) {
     return {
@@ -8133,9 +8236,15 @@ function useScrollView(props2, { emit: emit2, expose }) {
   }
   function handleScroll(event) {
     const root = rootRef.value;
-    if (event.target !== root)
+    if (event.target !== root || deactivated)
       return;
     event.stopPropagation();
+    if (pagingInput == null ? void 0 : pagingInput.event.defaultPrevented)
+      clearPagingInput();
+    if ((pagingInput == null ? void 0 : pagingInput.x) && root.scrollLeft !== lastScrollLeft || (pagingInput == null ? void 0 : pagingInput.y) && root.scrollTop !== lastScrollTop) {
+      pagingUserScroll = true;
+      clearPagingInput();
+    }
     trigger("scroll", event, detail(root));
     if (scrollY.value) {
       checkBoundary(
@@ -8161,29 +8270,119 @@ function useScrollView(props2, { emit: emit2, expose }) {
     }
     lastScrollTop = root.scrollTop;
     lastScrollLeft = root.scrollLeft;
+    restoreScrollTop = lastScrollTop;
+    restoreScrollLeft = lastScrollLeft;
   }
   function handleScrollEnd(event) {
-    if (event.target === rootRef.value) {
-      trigger("scrollend", event, detail(rootRef.value));
+    var _a;
+    const root = rootRef.value;
+    if (event.target !== root || deactivated)
+      return;
+    clearPagingInput();
+    if (pagingUserScroll && controller.pagingEnabled && controller.scrollEnabled) {
+      pagingUserScroll = false;
+      const position = { behavior: "smooth" };
+      const style = (_a = root.ownerDocument.defaultView) == null ? void 0 : _a.getComputedStyle(root);
+      if (scrollX.value) {
+        const left = pagePosition(
+          root.scrollLeft,
+          root.clientWidth,
+          root.scrollWidth,
+          isScrollReversed(style, true)
+        );
+        if (Math.abs(left - root.scrollLeft) > 0.5)
+          position.left = left;
+      }
+      if (scrollY.value) {
+        const top = pagePosition(
+          root.scrollTop,
+          root.clientHeight,
+          root.scrollHeight,
+          isScrollReversed(style, false)
+        );
+        if (Math.abs(top - root.scrollTop) > 0.5)
+          position.top = top;
+      }
+      if (position.left !== void 0 || position.top !== void 0) {
+        root.scrollTo(position);
+        return;
+      }
+    }
+    trigger("scrollend", event, detail(root));
+  }
+  function pagePosition(position, size, total, reverse = false) {
+    if (size <= 0)
+      return position;
+    const sign = reverse ? -1 : 1;
+    const max = Math.max(0, total - size);
+    const current = Math.max(0, Math.min(sign * position, max));
+    const page = Math.min(max, Math.round(current / size) * size);
+    return sign * (max - current < Math.abs(page - current) ? max : page);
+  }
+  function beginUserScroll(deltaX, deltaY, event) {
+    if (!controller.pagingEnabled || !controller.scrollEnabled || deactivated || event.defaultPrevented)
+      return;
+    const x = scrollX.value && Number.isFinite(deltaX) && deltaX !== 0;
+    const y = scrollY.value && Number.isFinite(deltaY) && deltaY !== 0;
+    if (!x && !y)
+      return;
+    clearPagingInput();
+    pagingInput = { x, y, event };
+    pagingInputTimer = setTimeout(clearPagingInput, 150);
+  }
+  function handleWheel(event) {
+    beginUserScroll(event.deltaX, event.deltaY, event);
+  }
+  function handleKeyDown(event) {
+    if (!controller.pagingEnabled || !controller.scrollEnabled || deactivated)
+      return;
+    const target = event.target;
+    if (!event.defaultPrevented && !/^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName) && !target.isContentEditable && !(event.key === " " && target.closest("button, summary")) && /^(ArrowUp|ArrowDown|ArrowLeft|ArrowRight|PageUp|PageDown|Home|End| )$/.test(
+      event.key
+    )) {
+      const horizontal = event.key === "ArrowLeft" || event.key === "ArrowRight" || !scrollY.value && scrollX.value;
+      beginUserScroll(horizontal ? 1 : 0, horizontal ? 0 : 1, event);
     }
   }
   let touchStart = null;
   function handleTouchStart(event) {
-    touchStart = event.touches.length === 1 ? { x: event.touches[0].pageX, y: event.touches[0].pageY } : null;
+    const touch = event.touches.length === 1 ? event.touches[0] : null;
+    touchStart = touch ? {
+      x: touch.pageX,
+      y: touch.pageY,
+      lastX: touch.pageX,
+      lastY: touch.pageY
+    } : null;
   }
   function handleTouchMove(event) {
-    if (!touchStart || event.touches.length !== 1)
+    var _a;
+    if (!controller.scrollEnabled || !touchStart || event.touches.length !== 1)
       return;
     const root = rootRef.value;
-    const dx = event.touches[0].pageX - touchStart.x;
-    const dy = event.touches[0].pageY - touchStart.y;
-    const horizontal = Math.abs(dx) > Math.abs(dy);
+    const touch = event.touches[0];
+    const distanceX = touch.pageX - touchStart.x;
+    const distanceY = touch.pageY - touchStart.y;
+    const dx = touch.pageX - touchStart.lastX;
+    const dy = touch.pageY - touchStart.lastY;
+    touchStart.lastX = touch.pageX;
+    touchStart.lastY = touch.pageY;
+    const horizontal = Math.abs(distanceX) > Math.abs(distanceY);
     if (horizontal ? !scrollX.value : !scrollY.value)
       return;
-    const position = horizontal ? root.scrollLeft : root.scrollTop;
-    const max = horizontal ? root.scrollWidth - root.clientWidth : root.scrollHeight - root.clientHeight;
+    if (!touchStart.reverse) {
+      const style = (_a = root.ownerDocument.defaultView) == null ? void 0 : _a.getComputedStyle(root);
+      touchStart.reverse = {
+        x: isScrollReversed(style, true),
+        y: isScrollReversed(style, false)
+      };
+    }
+    const reverse = horizontal ? touchStart.reverse.x : touchStart.reverse.y;
+    if (controller.pagingEnabled) {
+      beginUserScroll(horizontal ? -dx : 0, horizontal ? 0 : -dy, event);
+    }
     const delta = horizontal ? dx : dy;
-    if (delta > 0 && position > 0 || delta < 0 && position < max) {
+    const boundaryDelta = delta || (horizontal ? distanceX : distanceY);
+    if (canScroll(root, horizontal, -boundaryDelta, reverse)) {
       event.stopPropagation();
     }
   }
@@ -8193,12 +8392,15 @@ function useScrollView(props2, { emit: emit2, expose }) {
   let removeListeners;
   onMounted(() => {
     const root = rootRef.value;
+    const unregisterContext = registerScrollViewContext(root, controller);
     const passive2 = { passive: true };
     root.addEventListener("scroll", handleScroll, passive2);
     root.addEventListener("touchstart", handleTouchStart, passive2);
     root.addEventListener("touchmove", handleTouchMove, passive2);
     root.addEventListener("touchend", handleTouchEnd, passive2);
     root.addEventListener("touchcancel", handleTouchEnd, passive2);
+    root.addEventListener("wheel", handleWheel, passive2);
+    root.addEventListener("keydown", handleKeyDown);
     const removeScrollend = onScrollend(root, handleScrollEnd);
     removeListeners = () => {
       root.removeEventListener("scroll", handleScroll);
@@ -8206,30 +8408,38 @@ function useScrollView(props2, { emit: emit2, expose }) {
       root.removeEventListener("touchmove", handleTouchMove);
       root.removeEventListener("touchend", handleTouchEnd);
       root.removeEventListener("touchcancel", handleTouchEnd);
+      root.removeEventListener("wheel", handleWheel);
+      root.removeEventListener("keydown", handleKeyDown);
       removeScrollend();
+      unregisterContext();
+      resetPaging();
     };
     nextTick(() => {
-      if (!rootRef.value)
+      if (!rootRef.value || !initialPositionPending)
         return;
-      const options = {};
-      if (scrollX.value)
-        options.left = Number(props2.scrollLeft) || 0;
-      if (scrollY.value)
-        options.top = Number(props2.scrollTop) || 0;
+      initialPositionPending = false;
+      const options = initialPosition();
       if (options.left !== void 0 || options.top !== void 0)
         scrollTo(options);
       scrollIntoView(props2.scrollIntoView);
     });
   });
   onBeforeUnmount(() => removeListeners == null ? void 0 : removeListeners());
+  onDeactivated(() => {
+    resetPaging();
+    touchStart = null;
+    deactivated = true;
+  });
   onActivated(() => {
-    var _a;
+    if (!deactivated)
+      return;
+    deactivated = false;
     const options = { behavior: "instant" };
     if (scrollX.value)
-      options.left = lastScrollLeft;
+      options.left = restoreScrollLeft;
     if (scrollY.value)
-      options.top = lastScrollTop;
-    (_a = rootRef.value) == null ? void 0 : _a.scrollTo(options);
+      options.top = restoreScrollTop;
+    scrollTo(options);
   });
   watch(
     () => [props2.scrollTop, props2.scrollLeft],
@@ -8245,6 +8455,19 @@ function useScrollView(props2, { emit: emit2, expose }) {
     { flush: "post" }
   );
   watch(() => props2.scrollIntoView, scrollIntoView, { flush: "post" });
+  watch(
+    () => props2.showScrollbar,
+    (value) => {
+      controller.showScrollbar = value !== false;
+    }
+  );
+  watch(
+    () => [controller.scrollEnabled, controller.pagingEnabled, props2.direction],
+    () => {
+      resetPaging();
+    },
+    { flush: "sync" }
+  );
   expose({ $getMain: () => rootRef.value });
   return { rootRef, rootStyle, scrollBarClassName };
 }

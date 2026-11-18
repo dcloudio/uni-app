@@ -1,7 +1,7 @@
 import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, getUniElementPage, initVaporDataset, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, LINEFEED, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, createUniDOMStringMap, parseUrl, decodedQuery, stringifyQuery as stringifyQuery$1, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, setUniElementPage, ON_UNLOAD, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, RESPONSIVE_MIN_WIDTH, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, scrollTo, onCreateVueApp } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2, onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import * as Vue from "vue";
-import { defineVaporComponent, createPlainElement, initUniElement, template, ref, watch, withModifiers, setAttr, getCurrentInstance, warn, unref, reactive, onMounted, onBeforeUnmount, computed, inject, onBeforeMount, nextTick, Fragment, EffectScope, createTemplateRefSetter, child, next, renderEffect, setDynamicProps, applyVShow, txt, setInsertionState, createIf, on as on$1, setBlockKey, setValue as setValue$1, setProp, setClass, setStyle, onActivated, setClassName, shallowRef, watchEffect, provide, injectHook, isReactive, markRaw, querySelectorInComponent, querySelectorAllInComponent, createFor, extend as extend$1, VaporKeepAlive, createDynamicComponent, setText, toDisplayString, onServerPrefetch, initUniPageHooks, onBeforeActivate, onBeforeDeactivate, createComponent as createComponent$1, setHtml, onUnmounted, toRaw, createKeyedFragment, createTextNode, remove as remove$1, effectScope, insert, syncSelectValue, initUniElementType, setHover, withComponentId, createComponentWithFallback, createSlot, setStaticTemplateRef, useAttrs as useAttrs$1, useSlots, normalizeUniText, getBlockFirstNode, isInSSRComponentSetup, queuePostFlushCb, logError, setUniPageHooksInitializer, setRealPathResolver, setNativeEventNormalizer, createVaporApp, VaporTransition, nthChild, withImageEventDetail, setImageMode, setImageSrc } from "vue";
+import { defineVaporComponent, createPlainElement, initUniElement, template, ref, watch, withModifiers, setAttr, getCurrentInstance, warn, unref, reactive, onMounted, onBeforeUnmount, computed, inject, onBeforeMount, nextTick, Fragment, EffectScope, createTemplateRefSetter, child, next, renderEffect, setDynamicProps, applyVShow, txt, setInsertionState, createIf, on as on$1, setBlockKey, setValue as setValue$1, setProp, setClass, setStyle, onActivated, setClassName, shallowRef, watchEffect, provide, injectHook, isReactive, markRaw, querySelectorInComponent, querySelectorAllInComponent, createFor, extend as extend$1, VaporKeepAlive, createDynamicComponent, setText, toDisplayString, onServerPrefetch, initUniPageHooks, onBeforeActivate, onBeforeDeactivate, createComponent as createComponent$1, setHtml, onUnmounted, toRaw, createKeyedFragment, createTextNode, remove as remove$1, effectScope, insert, syncSelectValue, onDeactivated, initUniElementType, setHover, withComponentId, createComponentWithFallback, createSlot, setStaticTemplateRef, useAttrs as useAttrs$1, useSlots, normalizeUniText, getBlockFirstNode, isInSSRComponentSetup, queuePostFlushCb, logError, setUniPageHooksInitializer, setRealPathResolver, setNativeEventNormalizer, createVaporApp, VaporTransition, nthChild, withImageEventDetail, setImageMode, setImageSrc } from "vue";
 import { capitalize, camelize, isArray, isString, extend, remove, isPlainObject, isFunction, hyphenate, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, EMPTY_OBJ, Namespaces } from "@vue/shared";
 import { useRoute, isNavigationFailure, VaporRouterView, useRouter, createRouter, createWebHistory, createWebHashHistory } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -3548,6 +3548,71 @@ function useContextInfo(_id) {
 }
 function getContextInfo(el) {
   return el.__uniContextInfo;
+}
+const registrations = /* @__PURE__ */ new WeakMap();
+const controllers = /* @__PURE__ */ new WeakMap();
+class ScrollViewContext {
+  constructor(controller) {
+    Object.defineProperty(this, "__v_skip", { value: true });
+    controllers.set(this, controller);
+  }
+  get scrollEnabled() {
+    var _a;
+    return ((_a = controllers.get(this)) == null ? void 0 : _a.scrollEnabled) ?? false;
+  }
+  set scrollEnabled(value) {
+    const controller = controllers.get(this);
+    if (controller)
+      controller.scrollEnabled = !!value;
+  }
+  get showScrollbar() {
+    var _a;
+    return ((_a = controllers.get(this)) == null ? void 0 : _a.showScrollbar) ?? false;
+  }
+  set showScrollbar(value) {
+    const controller = controllers.get(this);
+    if (controller)
+      controller.showScrollbar = !!value;
+  }
+  get pagingEnabled() {
+    var _a;
+    return ((_a = controllers.get(this)) == null ? void 0 : _a.pagingEnabled) ?? false;
+  }
+  set pagingEnabled(value) {
+    const controller = controllers.get(this);
+    if (controller)
+      controller.pagingEnabled = !!value;
+  }
+  scrollTo(options) {
+    var _a;
+    (_a = controllers.get(this)) == null ? void 0 : _a.scrollTo(options);
+  }
+  scrollIntoView(selector) {
+    var _a;
+    (_a = controllers.get(this)) == null ? void 0 : _a.scrollIntoView(selector);
+  }
+}
+function getScrollViewContext(root) {
+  const registration = registrations.get(root);
+  if (!registration)
+    return;
+  return registration.context ?? (registration.context = new ScrollViewContext(
+    registration.controller
+  ));
+}
+function registerScrollViewContext(root, controller) {
+  var _a;
+  const previous = (_a = registrations.get(root)) == null ? void 0 : _a.context;
+  if (previous)
+    controllers.delete(previous);
+  const registration = { controller };
+  registrations.set(root, registration);
+  return () => {
+    if (registration.context)
+      controllers.delete(registration.context);
+    if (registrations.get(root) === registration)
+      registrations.delete(root);
+  };
 }
 function entries(obj) {
   return Object.keys(obj).map((key) => [key, obj[key]]);
@@ -10112,7 +10177,7 @@ function getNodeInfo(el, fields) {
   const info = {};
   const { top, topWindowHeight } = getWindowOffset();
   if (fields.node) {
-    info.node = el;
+    info.node = getScrollViewContext(el) || el;
   }
   if (fields.id) {
     info.id = el.id;
@@ -15484,9 +15549,28 @@ function threshold(value) {
   const number = Number(value);
   return isNaN(number) ? 50 : number;
 }
+function isScrollReversed(style, horizontal) {
+  const flexReversed = ((style == null ? void 0 : style.display) === "flex" || (style == null ? void 0 : style.display) === "inline-flex") && // 主轴由 flex-direction 反转，交叉轴由 wrap-reverse 反转。
+  (style.flexDirection === (horizontal ? "row-reverse" : "column-reverse") || style.flexWrap === "wrap-reverse" && style.flexDirection.startsWith(horizontal ? "column" : "row"));
+  return horizontal ? (style == null ? void 0 : style.direction) === "rtl" !== flexReversed : flexReversed;
+}
+function canScroll(element, horizontal, delta, reverse) {
+  const size = horizontal ? element.clientWidth : element.clientHeight;
+  const total = horizontal ? element.scrollWidth : element.scrollHeight;
+  const extent = Math.max(0, total - size);
+  const current = horizontal ? element.scrollLeft : element.scrollTop;
+  return delta < 0 ? current > (reverse ? -extent : 0) : delta > 0 && current < (reverse ? 0 : extent);
+}
 function useScrollView(props2, { emit: emit2, expose }) {
   const rootRef = ref(null);
   const trigger = useCustomEvent(rootRef, emit2);
+  const controller = reactive({
+    scrollEnabled: true,
+    showScrollbar: props2.showScrollbar !== false,
+    pagingEnabled: false,
+    scrollTo: contextScrollTo,
+    scrollIntoView: scrollIntoViewSelector
+  });
   const scrollX = computed(
     () => props2.direction === "horizontal" || props2.direction === "all"
   );
@@ -15494,18 +15578,96 @@ function useScrollView(props2, { emit: emit2, expose }) {
     () => props2.direction === "vertical" || props2.direction === "all"
   );
   const rootStyle = computed(
-    () => `overflow-x:${scrollX.value ? "auto" : "hidden"};overflow-y:${scrollY.value ? "auto" : "hidden"};scroll-behavior:${props2.scrollWithAnimation ? "smooth" : "auto"};`
+    () => `overflow-x:${controller.scrollEnabled && scrollX.value ? "auto" : "hidden"};overflow-y:${controller.scrollEnabled && scrollY.value ? "auto" : "hidden"};scroll-behavior:${props2.scrollWithAnimation ? "smooth" : "auto"};`
   );
   const scrollBarClassName = computed(
-    () => props2.showScrollbar === false ? "uni-scroll-view-scrollbar-hidden" : ""
+    () => controller.showScrollbar ? "" : "uni-scroll-view-scrollbar-hidden"
   );
   let lastScrollTop = 0;
   let lastScrollLeft = 0;
+  let restoreScrollTop = 0;
+  let restoreScrollLeft = 0;
   let lastUpperTime = 0;
   let lastLowerTime = 0;
+  let pagingUserScroll = false;
+  let initialPositionPending = true;
+  let deactivated = false;
+  let pagingInput;
+  let pagingInputTimer;
+  function clearPagingInput() {
+    pagingInput = void 0;
+    if (pagingInputTimer !== void 0)
+      clearTimeout(pagingInputTimer);
+    pagingInputTimer = void 0;
+  }
+  function resetPaging() {
+    clearPagingInput();
+    pagingUserScroll = false;
+  }
+  function initialPosition() {
+    const position = {};
+    if (scrollX.value)
+      position.left = Number(props2.scrollLeft) || 0;
+    if (scrollY.value)
+      position.top = Number(props2.scrollTop) || 0;
+    return position;
+  }
+  function cacheScrollPosition(root) {
+    if (deactivated)
+      return;
+    restoreScrollTop = root.scrollTop;
+    restoreScrollLeft = root.scrollLeft;
+  }
   function scrollTo2(options) {
-    var _a;
-    (_a = rootRef.value) == null ? void 0 : _a.scrollTo(options);
+    const root = rootRef.value;
+    if (!root)
+      return;
+    resetPaging();
+    root.scrollTo(options);
+    cacheScrollPosition(root);
+  }
+  function contextScrollTo(options) {
+    const position = {
+      behavior: options.animated ? "smooth" : "instant"
+    };
+    if (scrollX.value && Number.isFinite(options.left))
+      position.left = options.left;
+    if (scrollY.value && Number.isFinite(options.top))
+      position.top = options.top;
+    if (position.left === void 0 && position.top === void 0)
+      return;
+    const target = initialPositionPending ? Object.assign(initialPosition(), position) : position;
+    initialPositionPending = false;
+    scrollTo2(target);
+  }
+  function scrollToElement(element) {
+    const root = rootRef.value;
+    const rootRect = root.getBoundingClientRect();
+    const rect = element.getBoundingClientRect();
+    const options = {};
+    if (scrollX.value) {
+      options.left = root.scrollLeft + rect.left - rootRect.left - root.clientLeft;
+    }
+    if (scrollY.value) {
+      options.top = root.scrollTop + rect.top - rootRect.top - root.clientTop;
+    }
+    if (options.left !== void 0 || options.top !== void 0)
+      scrollTo2(options);
+  }
+  function scrollIntoViewSelector(selector) {
+    const root = rootRef.value;
+    if (!root || !selector)
+      return;
+    let element;
+    try {
+      element = root.querySelector(selector);
+    } catch {
+      return;
+    }
+    if (element) {
+      initialPositionPending = false;
+      scrollToElement(element);
+    }
   }
   function scrollIntoView(id2) {
     const root = rootRef.value;
@@ -15518,17 +15680,7 @@ function useScrollView(props2, { emit: emit2, expose }) {
     const element = root.querySelector(`[id="${id2}"]`);
     if (!element)
       return;
-    const rootRect = root.getBoundingClientRect();
-    const rect = element.getBoundingClientRect();
-    const options = {};
-    if (scrollX.value) {
-      options.left = root.scrollLeft + rect.left - rootRect.left - root.clientLeft;
-    }
-    if (scrollY.value) {
-      options.top = root.scrollTop + rect.top - rootRect.top - root.clientTop;
-    }
-    if (options.left !== void 0 || options.top !== void 0)
-      scrollTo2(options);
+    scrollToElement(element);
   }
   function detail(root) {
     return {
@@ -15552,9 +15704,15 @@ function useScrollView(props2, { emit: emit2, expose }) {
   }
   function handleScroll(event) {
     const root = rootRef.value;
-    if (event.target !== root)
+    if (event.target !== root || deactivated)
       return;
     event.stopPropagation();
+    if (pagingInput == null ? void 0 : pagingInput.event.defaultPrevented)
+      clearPagingInput();
+    if ((pagingInput == null ? void 0 : pagingInput.x) && root.scrollLeft !== lastScrollLeft || (pagingInput == null ? void 0 : pagingInput.y) && root.scrollTop !== lastScrollTop) {
+      pagingUserScroll = true;
+      clearPagingInput();
+    }
     trigger("scroll", event, detail(root));
     if (scrollY.value) {
       checkBoundary(
@@ -15580,29 +15738,119 @@ function useScrollView(props2, { emit: emit2, expose }) {
     }
     lastScrollTop = root.scrollTop;
     lastScrollLeft = root.scrollLeft;
+    restoreScrollTop = lastScrollTop;
+    restoreScrollLeft = lastScrollLeft;
   }
   function handleScrollEnd(event) {
-    if (event.target === rootRef.value) {
-      trigger("scrollend", event, detail(rootRef.value));
+    var _a;
+    const root = rootRef.value;
+    if (event.target !== root || deactivated)
+      return;
+    clearPagingInput();
+    if (pagingUserScroll && controller.pagingEnabled && controller.scrollEnabled) {
+      pagingUserScroll = false;
+      const position = { behavior: "smooth" };
+      const style = (_a = root.ownerDocument.defaultView) == null ? void 0 : _a.getComputedStyle(root);
+      if (scrollX.value) {
+        const left = pagePosition(
+          root.scrollLeft,
+          root.clientWidth,
+          root.scrollWidth,
+          isScrollReversed(style, true)
+        );
+        if (Math.abs(left - root.scrollLeft) > 0.5)
+          position.left = left;
+      }
+      if (scrollY.value) {
+        const top = pagePosition(
+          root.scrollTop,
+          root.clientHeight,
+          root.scrollHeight,
+          isScrollReversed(style, false)
+        );
+        if (Math.abs(top - root.scrollTop) > 0.5)
+          position.top = top;
+      }
+      if (position.left !== void 0 || position.top !== void 0) {
+        root.scrollTo(position);
+        return;
+      }
+    }
+    trigger("scrollend", event, detail(root));
+  }
+  function pagePosition(position, size, total, reverse = false) {
+    if (size <= 0)
+      return position;
+    const sign = reverse ? -1 : 1;
+    const max = Math.max(0, total - size);
+    const current = Math.max(0, Math.min(sign * position, max));
+    const page = Math.min(max, Math.round(current / size) * size);
+    return sign * (max - current < Math.abs(page - current) ? max : page);
+  }
+  function beginUserScroll(deltaX, deltaY, event) {
+    if (!controller.pagingEnabled || !controller.scrollEnabled || deactivated || event.defaultPrevented)
+      return;
+    const x = scrollX.value && Number.isFinite(deltaX) && deltaX !== 0;
+    const y = scrollY.value && Number.isFinite(deltaY) && deltaY !== 0;
+    if (!x && !y)
+      return;
+    clearPagingInput();
+    pagingInput = { x, y, event };
+    pagingInputTimer = setTimeout(clearPagingInput, 150);
+  }
+  function handleWheel(event) {
+    beginUserScroll(event.deltaX, event.deltaY, event);
+  }
+  function handleKeyDown(event) {
+    if (!controller.pagingEnabled || !controller.scrollEnabled || deactivated)
+      return;
+    const target = event.target;
+    if (!event.defaultPrevented && !/^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName) && !target.isContentEditable && !(event.key === " " && target.closest("button, summary")) && /^(ArrowUp|ArrowDown|ArrowLeft|ArrowRight|PageUp|PageDown|Home|End| )$/.test(
+      event.key
+    )) {
+      const horizontal = event.key === "ArrowLeft" || event.key === "ArrowRight" || !scrollY.value && scrollX.value;
+      beginUserScroll(horizontal ? 1 : 0, horizontal ? 0 : 1, event);
     }
   }
   let touchStart = null;
   function handleTouchStart(event) {
-    touchStart = event.touches.length === 1 ? { x: event.touches[0].pageX, y: event.touches[0].pageY } : null;
+    const touch = event.touches.length === 1 ? event.touches[0] : null;
+    touchStart = touch ? {
+      x: touch.pageX,
+      y: touch.pageY,
+      lastX: touch.pageX,
+      lastY: touch.pageY
+    } : null;
   }
   function handleTouchMove(event) {
-    if (!touchStart || event.touches.length !== 1)
+    var _a;
+    if (!controller.scrollEnabled || !touchStart || event.touches.length !== 1)
       return;
     const root = rootRef.value;
-    const dx = event.touches[0].pageX - touchStart.x;
-    const dy = event.touches[0].pageY - touchStart.y;
-    const horizontal = Math.abs(dx) > Math.abs(dy);
+    const touch = event.touches[0];
+    const distanceX = touch.pageX - touchStart.x;
+    const distanceY = touch.pageY - touchStart.y;
+    const dx = touch.pageX - touchStart.lastX;
+    const dy = touch.pageY - touchStart.lastY;
+    touchStart.lastX = touch.pageX;
+    touchStart.lastY = touch.pageY;
+    const horizontal = Math.abs(distanceX) > Math.abs(distanceY);
     if (horizontal ? !scrollX.value : !scrollY.value)
       return;
-    const position = horizontal ? root.scrollLeft : root.scrollTop;
-    const max = horizontal ? root.scrollWidth - root.clientWidth : root.scrollHeight - root.clientHeight;
+    if (!touchStart.reverse) {
+      const style = (_a = root.ownerDocument.defaultView) == null ? void 0 : _a.getComputedStyle(root);
+      touchStart.reverse = {
+        x: isScrollReversed(style, true),
+        y: isScrollReversed(style, false)
+      };
+    }
+    const reverse = horizontal ? touchStart.reverse.x : touchStart.reverse.y;
+    if (controller.pagingEnabled) {
+      beginUserScroll(horizontal ? -dx : 0, horizontal ? 0 : -dy, event);
+    }
     const delta = horizontal ? dx : dy;
-    if (delta > 0 && position > 0 || delta < 0 && position < max) {
+    const boundaryDelta = delta || (horizontal ? distanceX : distanceY);
+    if (canScroll(root, horizontal, -boundaryDelta, reverse)) {
       event.stopPropagation();
     }
   }
@@ -15612,12 +15860,15 @@ function useScrollView(props2, { emit: emit2, expose }) {
   let removeListeners;
   onMounted(() => {
     const root = rootRef.value;
+    const unregisterContext = registerScrollViewContext(root, controller);
     const passive2 = { passive: true };
     root.addEventListener("scroll", handleScroll, passive2);
     root.addEventListener("touchstart", handleTouchStart, passive2);
     root.addEventListener("touchmove", handleTouchMove, passive2);
     root.addEventListener("touchend", handleTouchEnd, passive2);
     root.addEventListener("touchcancel", handleTouchEnd, passive2);
+    root.addEventListener("wheel", handleWheel, passive2);
+    root.addEventListener("keydown", handleKeyDown);
     const removeScrollend = onScrollend(root, handleScrollEnd);
     removeListeners = () => {
       root.removeEventListener("scroll", handleScroll);
@@ -15625,30 +15876,38 @@ function useScrollView(props2, { emit: emit2, expose }) {
       root.removeEventListener("touchmove", handleTouchMove);
       root.removeEventListener("touchend", handleTouchEnd);
       root.removeEventListener("touchcancel", handleTouchEnd);
+      root.removeEventListener("wheel", handleWheel);
+      root.removeEventListener("keydown", handleKeyDown);
       removeScrollend();
+      unregisterContext();
+      resetPaging();
     };
     nextTick(() => {
-      if (!rootRef.value)
+      if (!rootRef.value || !initialPositionPending)
         return;
-      const options = {};
-      if (scrollX.value)
-        options.left = Number(props2.scrollLeft) || 0;
-      if (scrollY.value)
-        options.top = Number(props2.scrollTop) || 0;
+      initialPositionPending = false;
+      const options = initialPosition();
       if (options.left !== void 0 || options.top !== void 0)
         scrollTo2(options);
       scrollIntoView(props2.scrollIntoView);
     });
   });
   onBeforeUnmount(() => removeListeners == null ? void 0 : removeListeners());
+  onDeactivated(() => {
+    resetPaging();
+    touchStart = null;
+    deactivated = true;
+  });
   onActivated(() => {
-    var _a;
+    if (!deactivated)
+      return;
+    deactivated = false;
     const options = { behavior: "instant" };
     if (scrollX.value)
-      options.left = lastScrollLeft;
+      options.left = restoreScrollLeft;
     if (scrollY.value)
-      options.top = lastScrollTop;
-    (_a = rootRef.value) == null ? void 0 : _a.scrollTo(options);
+      options.top = restoreScrollTop;
+    scrollTo2(options);
   });
   watch(
     () => [props2.scrollTop, props2.scrollLeft],
@@ -15664,6 +15923,19 @@ function useScrollView(props2, { emit: emit2, expose }) {
     { flush: "post" }
   );
   watch(() => props2.scrollIntoView, scrollIntoView, { flush: "post" });
+  watch(
+    () => props2.showScrollbar,
+    (value) => {
+      controller.showScrollbar = value !== false;
+    }
+  );
+  watch(
+    () => [controller.scrollEnabled, controller.pagingEnabled, props2.direction],
+    () => {
+      resetPaging();
+    },
+    { flush: "sync" }
+  );
   expose({ $getMain: () => rootRef.value });
   return { rootRef, rootStyle, scrollBarClassName };
 }
