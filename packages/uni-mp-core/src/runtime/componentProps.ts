@@ -47,8 +47,11 @@ function initDefaultProps(
     function observerSlots(this: MPComponentInstance, newVal) {
       const $slots = Object.create(null)
       newVal &&
-        newVal.forEach((slotName: string) => {
-          $slots[slotName] = true
+        newVal.forEach((slotName: string | null | undefined) => {
+          // 编译器用 null 表示缺失的转发来源；不能将占位值转换成插槽名。
+          if (slotName != null) {
+            $slots[slotName] = true
+          }
         })
       this.setData({
         $slots,

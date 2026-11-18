@@ -56,6 +56,10 @@ export interface MiniProgramCompilerOptions {
      */
     $slots?: boolean
     /**
+     * 原生 $slots 中普通默认插槽的键名
+     */
+    defaultSlotKey?: string
+    /**
      * 是否支持后备内容
      */
     fallbackContent?: boolean

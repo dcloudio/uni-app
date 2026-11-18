@@ -69,7 +69,7 @@ function createEmitFn(oldEmit: Function, ctx: Record<string, any>) {
 export interface CreateComponentOptions {
   mpType: 'app' | 'page' | 'component'
   mpInstance: any
-  slots?: string[]
+  slots?: (string | null | undefined)[]
   parentComponent?: ComponentInternalInstance
   onBeforeSetup?: Function
 }
@@ -127,7 +127,10 @@ export function initBaseInstance(
   instance.slots = {}
   if (isArray(options.slots) && options.slots.length) {
     options.slots.forEach((name) => {
-      instance.slots[name] = true as any
+      // 与 uS observer 一致，初始化时忽略空转发占位，不改变已有的动态同步机制。
+      if (name != null) {
+        instance.slots[name] = true as any
+      }
     })
     if (instance.slots[SLOT_DEFAULT_NAME]) {
       instance.slots.default = true as any

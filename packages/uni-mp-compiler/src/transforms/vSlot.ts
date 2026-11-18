@@ -36,7 +36,7 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import { WITH_SCOPED_SLOT } from '../runtimeHelpers'
 import { parseExpr } from '../ast'
-import { genExpr } from '../codegen'
+import { genBabelExpr, genExpr } from '../codegen'
 import type { CodegenScope, CodegenVForScope } from '../options'
 import {
   type NodeTransform,
@@ -51,6 +51,7 @@ import {
   rewriteExpressionWithoutProperty,
 } from './utils'
 import { createVForArrowFunctionExpression } from './vFor'
+import type { IfElementNode } from './vIf'
 import { DYNAMIC_SLOT } from '../runtimeHelpers'
 
 export const transformSlot: NodeTransform = (node, context) => {
@@ -60,6 +61,32 @@ export const transformSlot: NodeTransform = (node, context) => {
 
   const { tag, children } = node
   const slots = new Set<string | ExpressionNode>()
+  const forwardedSlots = new Map<string | ExpressionNode, string>()
+  const forwardedSlotNodes = new Map<TemplateChildNode, string>()
+  function addSlot(
+    name: string | ExpressionNode,
+    children: TemplateChildNode[],
+    template?: TemplateNode
+  ) {
+    slots.add(name)
+    if (template && findDir(template, /^(if|else|else-if|for)$/, true)) {
+      return
+    }
+    const condition = findForwardedSlotCondition(
+      children,
+      context.miniProgram.slot.defaultSlotKey
+    )
+    if (condition) {
+      forwardedSlots.set(name, condition)
+      if (context.miniProgram.slot.fallbackContent) {
+        for (const node of template ? [template] : children) {
+          if (isElementNode(node)) {
+            forwardedSlotNodes.set(node, condition)
+          }
+        }
+      }
+    }
+  }
   const onComponentSlot = findDir(node, 'slot', true)
   const implicitDefaultChildren: TemplateChildNode[] = []
   const isMiniProgramComponent = context.isMiniProgramComponent(tag)
@@ -98,6 +125,7 @@ export const transformSlot: NodeTransform = (node, context) => {
       // v-slot => v-slot:default
       slotDir.arg = createSimpleExpression('default', true)
     }
+    const slotChildren = slotElement.children
     const slotName = transformTemplateSlotElement(
       slotDir,
       slotElement,
@@ -114,7 +142,7 @@ export const transformSlot: NodeTransform = (node, context) => {
     }
 
     if (slotName) {
-      slots.add(slotName)
+      addSlot(slotName, slotChildren, slotElement)
     }
   }
 
@@ -122,18 +150,18 @@ export const transformSlot: NodeTransform = (node, context) => {
     return
   }
 
-  if (implicitDefaultChildren.length) {
-    slots.add(SLOT_DEFAULT_NAME)
+  if (implicitDefaultChildren.length && !onComponentSlot) {
+    addSlot(SLOT_DEFAULT_NAME, implicitDefaultChildren)
   }
 
   if (onComponentSlot) {
     // <unicloud-db v-slot:default="{data, loading, error, options}"/>
     // => <unicloud-db collection=""><template v-slot:default="{data, loading, error, options}"/></unicloud-db>
-    slots.add(SLOT_DEFAULT_NAME)
     const templateNode = createTemplateNode(
       onComponentSlot,
       implicitDefaultChildren
     )
+    addSlot(SLOT_DEFAULT_NAME, implicitDefaultChildren, templateNode)
     transformTemplateSlotElement(onComponentSlot, templateNode, node, context)
     node.children = [templateNode]
   }
@@ -165,8 +193,80 @@ export const transformSlot: NodeTransform = (node, context) => {
         .map((name) => `'${dynamicSlotName(name as string)}'`)
         .join(',')}]`
     }
-    node.props.unshift(createBindDirectiveNode(ATTR_VUE_SLOTS, value))
+    const slotsProp = createBindDirectiveNode(ATTR_VUE_SLOTS, value)
+    node.props.unshift(slotsProp)
+    if (forwardedSlots.size) {
+      return () => {
+        // 等动态目标名称转换为模板变量后再补充条件，避免把模板 $slots 编入 JS。
+        const names = genExpr(slotsProp.exp!)
+        slotsProp.exp = createSimpleExpression(
+          `[${slotsArr
+            .map((name, index) => {
+              const value = hasDynamic
+                ? `${names}[${index}]`
+                : genBabelExpr(stringLiteral(dynamicSlotName(name as string)))
+              const condition = forwardedSlots.get(name)
+              return condition ? `(${condition})?${value}:null` : value
+            })
+            .join(',')}]`
+        )
+        // 原生 fallback 还依赖实际内容，来源缺失时不能保留插槽包装节点。
+        forwardedSlotNodes.forEach((condition, node) => {
+          ;(node as IfElementNode).vIf = { name: 'if', condition }
+        })
+      }
+    }
   }
+}
+
+/**
+ * 静态来源的直接转发不能仅凭插槽声明就占用目标插槽，否则来源缺失时会阻止 fallback。
+ * 在模板中按来源 $slots 生成 u-s 条件，复用已有模板更新机制；原生 fallback 平台
+ * 还需移除空转发的包装节点。多个来源取 OR，不同目标独立判断。
+ *
+ * 暂不处理动态来源（<slot :name="..."/>），保留其原有编译行为，并非禁用动态插槽。
+ * 父级动态名称也可能涉及作用域和循环索引，不能直接拿实际出口名查询 $slots；
+ * 依赖当前 slotProps 的来源则需按每次调用判断，单个目标的 u-s 无法完整表达。
+ * 此限制仅针对来源名称，不限制已有的动态目标名称（<template #[name]>）。
+ *
+ * 另一方案是让作用域插槽函数返回 { data, valid }，经 renderSlot 回传 valid，
+ * 再由出口按本次调用结果选择 fallback（changes.patch 中的方案）。但它还需解决
+ * 首次挂载延迟调用后的结果更新、上游插槽增删后的重新计算，以及普通插槽、原生组件
+ * 和各平台 fallback 的兼容；模板 $slots 的 observer 不会自动更新已计算的 valid。
+ * 该方案也不会自动解决已有的多出口调用共用数据问题，需独立评估。
+ * 本次选择编译期条件，限定静态直接转发，不扩展插槽调用协议或 instance.slots 同步。
+ */
+function findForwardedSlotCondition(
+  children: TemplateChildNode[],
+  defaultSlotKey?: string
+) {
+  const conditions = new Set<string>()
+  for (const child of children) {
+    if (isCommentNode(child)) {
+      continue
+    }
+    // 仅处理直接转发；真实内容、后备内容及结构指令保留原有行为。
+    if (
+      !isElementNode(child) ||
+      child.tagType !== ElementTypes.SLOT ||
+      child.children.length ||
+      findDir(child, /^(if|else|else-if|for)$/, true)
+    ) {
+      return
+    }
+    const name = findProp(child, 'name')
+    if (name && name.type !== NodeTypes.ATTRIBUTE) {
+      // 任一来源为动态名称就保留整个目标的原有行为，不能仅凭其他静态来源判空。
+      return
+    }
+    const slotName = dynamicSlotName(name?.value?.content ?? 'default')
+    conditions.add(`$slots[${genBabelExpr(stringLiteral(slotName))}]`)
+    // 普通默认插槽与命名为 d 的插槽在部分平台使用不同的原生键。
+    if (slotName === SLOT_DEFAULT_NAME && defaultSlotKey) {
+      conditions.add(`$slots[${genBabelExpr(stringLiteral(defaultSlotKey))}]`)
+    }
+  }
+  return [...conditions].join('||')
 }
 
 export function rewriteVSlot(dir: DirectiveNode, context: TransformContext) {
