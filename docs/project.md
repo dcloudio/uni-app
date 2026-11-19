@@ -34,6 +34,8 @@ uni-app x的项目，在左侧项目管理器的图标是圆形的U（之前是�
 
 ## 项目结构
 
+### 概览 @overview
+
 uni-app x的项目结构与[uni-app老版的项目结构](https://uniapp.dcloud.net.cn/tutorial/project.html)基本一致。
 
 主要的差别是没有nativeplugins目录。原因是uni-app x不支持App原生语言插件，仅支持uts插件。
@@ -81,17 +83,17 @@ uni-app x 目前仅支持以项目根目录组织源码和源资源的项目结�
 
 uni-app x同时支持通过HBuilderX cli来创建项目、发行打包，可以在Linux的ci/cd里正常使用。[详见](https://hx.dcloud.net.cn/cli/README)
 
-### unpackage 目录 @unpackage
+### unpackage @unpackage
 
 以下说明适用于通过 HBuilderX 界面或 CLI 运行、发行 uni-app x 项目时生成的 `unpackage` 目录。
 
 `unpackage` 位于项目根目录，保存编译输出、运行基座、本地打包资源、云打包下载产物、wgt 资源包、缓存和诊断日志。
 
-#### 目录结构
+#### 目录结构 @unpackage-tree
 
 > 说明：以下列出主要目录及典型文件，按实际运行、发行、资源导出和调试功能生成。平台、VDOM／蒸汽模式、HBuilderX 版本及配置会影响具体内容；切换配置后可能保留历史产物。`<平台>`、`<模块>`、`<AppID>`、`<HX版本>` 是占位符，`uts_*` 表示同名前缀目录，不是字面目录名。
 
-```text
+```
 <项目根目录>/unpackage/
 ├─ dist/                          # 各平台编译产物总目录
 │  ├─ dev/                        # 运行（调试）阶段的产物
@@ -191,7 +193,7 @@ uni-app x同时支持通过HBuilderX cli来创建项目、发行打包，可以�
    └─ harmony/                    # 鸿蒙日志
 ```
 
-#### 主要目录说明
+#### 目录说明 @unpackage-directories
 
 ##### dist（编译输出）
 
@@ -219,7 +221,7 @@ UTS 原生插件产物也位于平台输出中，例如 `dist/dev/app-android/un
 
 `uts_*` 按平台、基座类型和模拟器架构命名；`standard`、`custom`、`custom_sdk` 分别表示标准、自定义、自定义离线 SDK 基座。蒸汽模式的同名缓存位于 `cache/vapor/`。配置、sourcemap、清单及 UASM 原生库注入记录按编译步骤生成：
 
-```text
+```
 <UTS 插件编译产物缓存目录>/
 ├─ app-android/uts/uni_modules/<模块>/   # Android：index.kt、classes.dex、index.jar、config.json 等
 ├─ app-ios/uts/uni_modules/<模块>/       # iOS 真机/模拟器：index.swift、config.json 等
@@ -270,7 +272,7 @@ iOS 真机和 Android 不受此架构拆分影响。
 - 默认按平台导出到 `release/app-android/<AppID>.wgt`、`release/app-ios/<AppID>.wgt`。导出时可以指定其他保存位置，实际路径以导出配置和控制台提示为准。
 - wgt 是用于热更新的前端资源包，包含页面、脚本和静态资源，不包含原生插件。不同平台的 wgt 分别生成和使用。
 
-#### 各平台编译产物
+#### 平台产物 @unpackage-platforms
 
 产物表中的路径相对于各平台编译输出目录。“共有”表示 VDOM、蒸汽模式都可能生成，文件内容仍可不同。具体文件取决于运行／发行阶段、编译选项和项目内容。
 
@@ -398,7 +400,7 @@ VDOM 调试阶段的 Kotlin 源码位于 `cache/.app-android/src/`，平台输�
 
 VDOM／蒸汽模式均输出 Web 使用的 HTML、JS、CSS 和资源。部署时应使用完整发行目录，资源访问路径还受 Web 部署路径、路由模式及构建配置影响。
 
-#### 使用编译产物排查问题
+#### 产物排错 @unpackage-troubleshooting
 
 不直接编辑自动生成的编译产物，修改可能在重新构建时被覆盖；应修改项目源码后重新编译验证。
 
@@ -454,9 +456,9 @@ App 蒸汽模式的逻辑层、视图层和原生插件分别生成产物。下�
 | 修改后运行行为未更新       | 先确认本次编译完成，并核对输出目录、设备及基座；再检查 `cache/vapor/.app-android`、`cache/vapor/.app-ios`、`cache/vapor/.app-harmony` 中对应平台的缓存。涉及原生插件时，还需核对插件编译、基座集成及安装结果 |
 | 鸿蒙机器码发行异常         | 查 `dist/build/.app-harmony/cpp/` 中的 C++、原生工程构建日志及 `cache/vapornativecode/.app-harmony`；与运行阶段的字节码产物分开核对                                                                          |
 
-`bytes/` 中的字节码不能按文本源码阅读，文件存在也不代表视图行为正确。保留本次错误信息，修改项目源码后重新编译并复现；需要排除缓存影响时，按下方“清理编译缓存”章节操作。
+`bytes/` 中的字节码不能按文本源码阅读，文件存在也不代表视图行为正确。保留本次错误信息，修改项目源码后重新编译并复现；需要排除缓存影响时，按下方“清理缓存”章节操作。
 
-#### 清理编译缓存
+#### 清理缓存 @unpackage-clean-cache
 
 排查修改未生效、增量编译结果异常等问题时，可清理编译缓存后重新运行。先保留错误日志，并保持平台、设备、基座等运行配置一致，便于对比清理前后的结果。
 
