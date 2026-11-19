@@ -86,10 +86,12 @@ export function uniUTSUVueJavaScriptPlugin(
   const defaultScriptLang = vaporScriptPlatform
     ? getUniAppXVaporScriptLang(process.env.UNI_INPUT_DIR)
     : 'uts'
+  let isDevServer = false
   return {
     name: 'uni:uts-uvue',
     enforce: 'pre',
     configResolved(config) {
+      isDevServer = config.command === 'serve'
       if (standardScriptSupported) {
         return
       }
@@ -185,10 +187,13 @@ export function uniUTSUVueJavaScriptPlugin(
         }
         return {
           code: transformed.toString(),
-          // 此插件只改写 script 开始标签。常规多行脚本的正文行列不变，继续沿用旧的空 map
-          // 可避免后续 SFC 虚拟模块针对同一文件生成不同 sourcesContent。遗留问题：单行
-          // <script>code</script> 中正文的列偏移暂时无法还原。
-          map: { mappings: '' },
+          // Web 开发服务器返回 null，避免空 map 截断后续映射链；发行和其他平台
+          // 保留空 map，避免 SFC 虚拟模块的 sourcesContent 冲突。
+          // 仅改写 script 开始标签，同行正文的列偏移仍无法还原。
+          map:
+            isDevServer && (platform === 'h5' || platform === 'web')
+              ? null
+              : { mappings: '' },
         }
       }
       return {
