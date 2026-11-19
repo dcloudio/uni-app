@@ -3,7 +3,11 @@
 		ref="anchorRef"
 		class="uni-field-default"
 		style="position: relative;"
-		:class="[fieldClass, disabled ? 'uni-field-default--disabled' : '']"
+		:class="[
+			fieldClass,
+			disabled ? 'uni-field-default--disabled' : '',
+			plain ? 'uni-combobox__field--plain' : ''
+		]"
 		@click.stop="onFieldClick"
 		<!-- #ifdef WEB -->
 		:tabindex="disabled ? '-1' : '0'"
@@ -210,6 +214,23 @@ type Props = {
 	 */
 	disabled? : boolean,
 	/**
+	 * @description 是否让选择框使用透明背景，并去掉边框和聚焦样式
+	 * @default false
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.31"},
+	 *     "ios": {"unixVaporVer": "5.31"},
+	 *     "harmony": {"unixVaporVer": "5.31"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.31"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.31"}
+	 * }
+	 */
+	plain? : boolean,
+	/**
 	 * @description 非弹出区域自定义样式类
 	 * @default ""
 	 * @uniPlatform {
@@ -353,6 +374,7 @@ const props = withDefaults(defineProps<Props>(), {
 	placeholder: '',
 	placeholderClass: '',
 	disabled: false,
+	plain: false,
 	arrowClass: '',
 	fieldClass: '',
 	optionsViewClass: '',
@@ -1399,13 +1421,13 @@ onBackPress(() : boolean => {
 	cursor: not-allowed;
 }
 
-.uni-field-default:focus,
-.uni-field-default:focus-within {
+.uni-field-default:not(:where(.uni-combobox__field--plain)):focus,
+.uni-field-default:not(:where(.uni-combobox__field--plain)):focus-within {
 	border-color: #496bec;
 }
 
-.uni-field-default--disabled:focus,
-.uni-field-default--disabled:focus-within {
+.uni-field-default--disabled:not(:where(.uni-combobox__field--plain)):focus,
+.uni-field-default--disabled:not(:where(.uni-combobox__field--plain)):focus-within {
 	border-color: #e5e5e5;
 	box-shadow: none;
 }
@@ -1473,13 +1495,13 @@ onBackPress(() : boolean => {
 	}
 
 	/* #ifdef WEB */
-	.uni-field-default:focus,
-	.uni-field-default:focus-within {
+	.uni-field-default:not(:where(.uni-combobox__field--plain)):focus,
+	.uni-field-default:not(:where(.uni-combobox__field--plain)):focus-within {
 		border-color: #496bec
 	}
 
-	.uni-field-default--disabled:focus,
-	.uni-field-default--disabled:focus-within {
+	.uni-field-default--disabled:not(:where(.uni-combobox__field--plain)):focus,
+	.uni-field-default--disabled:not(:where(.uni-combobox__field--plain)):focus-within {
 		border-color: #373737;
 		box-shadow: none;
 	}
@@ -1488,5 +1510,9 @@ onBackPress(() : boolean => {
 		background-color: #454545;
 	}
 	/* #endif */
+}
+.uni-combobox__field--plain {
+	border-width: 0;
+	background-color: transparent;
 }
 </style>

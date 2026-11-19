@@ -19,6 +19,15 @@
     <enum-data-checkbox :items="data.items" title="appTheme" @change="radioChange"></enum-data-checkbox>
     <!-- #endif -->
 
+    <!-- #ifdef APP-HARMONY || WEB || MP -->
+    <view class="theme-section">
+      <text class="uni-title-text">监听宿主主题状态变化 </text>
+      <text class="uni-info">开始监听后切换系统深浅色，回调次数增加；取消后再次切换，次数不再增加。</text>
+      <text class="theme-hint">回调：{{ hostTest.count }} 次，最近主题：{{ hostTest.theme }}</text>
+      <button class="mt-10" @click="toggleHostThemeTest">{{ hostTest.listening ? '取消监听' : (hostTest.started ? '重新监听' : '开始监听') }}</button>
+    </view>
+    <!-- #endif -->
+
     <view class="mt-15">
       <text class="uni-title-text">input / textarea 默认颜色</text>
       <text class="mt-10 color-text-333">切换主题观察默认文字和背景色，清空内容后观察 placeholder 字体颜色。</text>
@@ -240,6 +249,42 @@
     listRefreshCount: 0
   })
 
+  // #ifdef APP-HARMONY || WEB || MP
+  const hostTest = reactive({
+    started: false,
+    listening: false,
+    listenerId: 0,
+    count: 0,
+    theme: '尚未收到回调'
+  })
+
+  function startHostThemeTest() {
+    if (hostTest.listening) return
+    hostTest.listenerId = uni.onHostThemeChange((res : OnHostThemeChangeCallbackResult) => {
+      hostTest.count++
+      hostTest.theme = res.hostTheme
+      console.log('[hostTheme 回调]', hostTest.count, res.hostTheme)
+    })
+    hostTest.started = true
+    hostTest.listening = true
+  }
+
+  function toggleHostThemeTest() {
+    if (hostTest.listening) {
+      stopHostThemeTest()
+    } else {
+      startHostThemeTest()
+    }
+  }
+
+  function stopHostThemeTest() {
+    if (!hostTest.listening) return
+    uni.offHostThemeChange(hostTest.listenerId)
+    hostTest.listening = false
+    console.log('[hostTheme 已取消监听]', hostTest.listenerId, hostTest.count)
+  }
+  // #endif
+
   let scrollRefreshTimer = 0
   let listRefreshTimer = 0
 
@@ -298,11 +343,17 @@
     })
     // #endif
     // #ifdef WEB || MP
+    return bindHostThemeChange()
+    // #endif
+  }
+
+  // #ifdef WEB || MP
+  function bindHostThemeChange() : number {
     return uni.onHostThemeChange((res : OnHostThemeChangeCallbackResult) => {
       data.appTheme = res.hostTheme
     })
-    // #endif
   }
+  // #endif
 
   function setAppTheme(value : string) {
     uni.setAppTheme({
@@ -356,6 +407,9 @@
     // #endif
     // #ifdef WEB || MP
     uni.offHostThemeChange(data.appThemeChangeId)
+    // #endif
+    // #ifdef APP-HARMONY || WEB || MP
+    stopHostThemeTest()
     // #endif
   })
 

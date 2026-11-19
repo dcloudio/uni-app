@@ -54,7 +54,7 @@ export class BluetoothFailImpl extends UniError implements BluetoothFail {
 		this.errCode = errCode
 		this.errMsg = `${apiName}:fail ${BluetoothUniErrors.get(errCode) ?? ''}`
 		if (cause != null) {
-			this.cause = cause
+			this.cause = cause as Error
 		}
 	}
 }

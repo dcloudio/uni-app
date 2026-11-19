@@ -40,7 +40,7 @@
 						"js": false,
 						"kotlin": true,
 						"swift": true,
-						"arkts": false
+						"arkts": true
 					}
 				},
 				"closeBluetoothAdapter": {
@@ -49,7 +49,7 @@
 						"js": false,
 						"kotlin": true,
 						"swift": true,
-						"arkts": false
+						"arkts": true
 					}
 				},
 				"onBluetoothAdapterStateChange": {
@@ -58,7 +58,7 @@
 						"js": false,
 						"kotlin": true,
 						"swift": true,
-						"arkts": false
+						"arkts": true
 					}
 				},
 				"offBluetoothAdapterStateChange": {
@@ -67,7 +67,7 @@
 						"js": false,
 						"kotlin": true,
 						"swift": true,
-						"arkts": false
+						"arkts": true
 					}
 				},
 				"startBluetoothDevicesDiscovery": {
@@ -76,7 +76,7 @@
 						"js": false,
 						"kotlin": true,
 						"swift": true,
-						"arkts": false
+						"arkts": true
 					}
 				},
 				"stopBluetoothDevicesDiscovery": {
@@ -85,7 +85,7 @@
 						"js": false,
 						"kotlin": true,
 						"swift": true,
-						"arkts": false
+						"arkts": true
 					}
 				},
 				"onBluetoothDeviceFound": {
@@ -94,7 +94,7 @@
 						"js": false,
 						"kotlin": true,
 						"swift": true,
-						"arkts": false
+						"arkts": true
 					}
 				},
 				"offBluetoothDeviceFound": {
@@ -103,7 +103,7 @@
 						"js": false,
 						"kotlin": true,
 						"swift": true,
-						"arkts": false
+						"arkts": true
 					}
 				},
 				"getBluetoothDevices": {
@@ -112,7 +112,7 @@
 						"js": false,
 						"kotlin": true,
 						"swift": true,
-						"arkts": false
+						"arkts": true
 					}
 				},
 				"getBluetoothAdapterState": {
@@ -121,7 +121,7 @@
 						"js": false,
 						"kotlin": true,
 						"swift": true,
-						"arkts": false
+						"arkts": true
 					}
 				},
 				"getConnectedBluetoothDevices": {
@@ -130,7 +130,7 @@
 						"js": false,
 						"kotlin": true,
 						"swift": true,
-						"arkts": false
+						"arkts": true
 					}
 				},
 				"writeBLECharacteristicValue": {
@@ -139,7 +139,7 @@
 						"js": false,
 						"kotlin": true,
 						"swift": true,
-						"arkts": false
+						"arkts": true
 					}
 				},
 				"setBLEMTU": {
@@ -148,7 +148,7 @@
 						"js": false,
 						"kotlin": true,
 						"swift": true,
-						"arkts": false
+						"arkts": true
 					}
 				},
 				"readBLECharacteristicValue": {
@@ -157,7 +157,7 @@
 						"js": false,
 						"kotlin": true,
 						"swift": true,
-						"arkts": false
+						"arkts": true
 					}
 				},
 				"onBLEMTUChange": {
@@ -166,7 +166,7 @@
 						"js": false,
 						"kotlin": true,
 						"swift": true,
-						"arkts": false
+						"arkts": true
 					}
 				},
 				"onBLEConnectionStateChange": {
@@ -175,7 +175,7 @@
 						"js": false,
 						"kotlin": true,
 						"swift": true,
-						"arkts": false
+						"arkts": true
 					}
 				},
 				"onBLECharacteristicValueChange": {
@@ -184,7 +184,7 @@
 						"js": false,
 						"kotlin": true,
 						"swift": true,
-						"arkts": false
+						"arkts": true
 					}
 				},
 				"offBLEMTUChange": {
@@ -193,7 +193,7 @@
 						"js": false,
 						"kotlin": true,
 						"swift": true,
-						"arkts": false
+						"arkts": true
 					}
 				},
 				"offBLEConnectionStateChange": {
@@ -202,7 +202,7 @@
 						"js": false,
 						"kotlin": true,
 						"swift": true,
-						"arkts": false
+						"arkts": true
 					}
 				},
 				"offBLECharacteristicValueChange": {
@@ -211,7 +211,7 @@
 						"js": false,
 						"kotlin": true,
 						"swift": true,
-						"arkts": false
+						"arkts": true
 					}
 				},
 				"notifyBLECharacteristicValueChange": {
@@ -220,7 +220,7 @@
 						"js": false,
 						"kotlin": true,
 						"swift": true,
-						"arkts": false
+						"arkts": true
 					}
 				},
 				"getBLEMTU": {
@@ -229,7 +229,7 @@
 						"js": false,
 						"kotlin": true,
 						"swift": true,
-						"arkts": false
+						"arkts": true
 					}
 				},
 				"getBLEDeviceServices": {
@@ -238,7 +238,7 @@
 						"js": false,
 						"kotlin": true,
 						"swift": true,
-						"arkts": false
+						"arkts": true
 					}
 				},
 				"getBLEDeviceRSSI": {
@@ -247,7 +247,7 @@
 						"js": false,
 						"kotlin": true,
 						"swift": true,
-						"arkts": false
+						"arkts": true
 					}
 				},
 				"getBLEDeviceCharacteristics": {
@@ -256,7 +256,7 @@
 						"js": false,
 						"kotlin": true,
 						"swift": true,
-						"arkts": false
+						"arkts": true
 					}
 				},
 				"createBLEConnection": {
@@ -265,7 +265,7 @@
 						"js": false,
 						"kotlin": true,
 						"swift": true,
-						"arkts": false
+						"arkts": true
 					}
 				},
 				"closeBLEConnection": {
@@ -274,7 +274,7 @@
 						"js": false,
 						"kotlin": true,
 						"swift": true,
-						"arkts": false
+						"arkts": true
 					}
 				}
 			}

@@ -167,13 +167,10 @@
      */
     disableUserSelectMenu ?: boolean,
     iosAllowsInlineMediaPlayback ?: boolean,
-    /**
-     * @internal
-     * /
     darkMode ?: boolean,
     /**
      * 关联的滚动容器
-     *
+     * 
      * @uniPlatform {
        "app": {
           "android": {
@@ -311,8 +308,7 @@
     download : [event: UniWebViewDownloadEvent];
     contentheightchange : [event: UniWebViewContentHeightChangeEvent];
     didterminate : [event: UniWebViewDidTerminateEvent];
-    // @internal
-	  onWebViewServiceMessage : [event: UniWebViewOnWebViewServiceMessageEvent];
+	onWebViewServiceMessage : [event: UniWebViewOnWebViewServiceMessageEvent];
     error : [event: UniWebViewErrorEvent];
   }>();
   // #endif
@@ -327,7 +323,6 @@
     contentheightchange : [event: UniWebViewContentHeightChangeEvent];
     error : [event: UniWebViewErrorEvent];
     // #ifdef VUE3-VAPOR
-    // @internal
     onWebViewServiceMessage : [event: UniWebViewOnWebViewServiceMessageEvent];
     // #endif
   }>();

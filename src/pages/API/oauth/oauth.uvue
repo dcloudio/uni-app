@@ -91,6 +91,7 @@
     if (userInfo.value != null) return;
     uni.login({
       provider: 'weixin',
+      onlyAuthorize: true,
       success(res) {
         uniCloud.importObject('uni-login-test-co').loginByWeixin({
           "code": res.code,
@@ -119,6 +120,9 @@
           content: err.errMsg
         });
         clear();
+      },
+      complete(res) {
+        console.log('微信登录 complete', res)
       }
     })
   }

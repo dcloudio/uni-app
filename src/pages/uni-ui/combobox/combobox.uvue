@@ -25,6 +25,10 @@
 	</uni-combobox>
 	<text class="uni-log">当前输入：{{ city }}</text>
 
+	<text class="uni-h4">plain：透明无边框</text>
+	<uni-combobox plain :options="cityOptions" v-model="plainValue" placeholder="请选择城市" />
+	<text class="uni-log">当前选择：{{ plainValue }}</text>
+
 	<text class="uni-h4">field-class：选择框样式</text>
 	<uni-combobox field-class="borderless-combobox" :options="cityOptions" v-model="borderlessValue"
 		placeholder="无边框组合框" />
@@ -93,6 +97,7 @@
 	const placeholderValue = ref<string>('')
 	const modelValue = ref<string>('')
 	const disabledValue = ref<string>('三年级')
+	const plainValue = ref<string>('')
 	const borderlessValue = ref<string>('')
 	const arrowClassValue = ref<string>('')
 	const optionsViewClassValue = ref<string>('')

@@ -1,0 +1,5 @@
+{
+  "string": [
+    { "name": "uni_bluetooth_permission_reason", "value": "用于发现、连接蓝牙设备并交换数据" }
+  ]
+}

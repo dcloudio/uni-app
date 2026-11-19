@@ -47,9 +47,7 @@
         <button class="mt-5" @click="showOverlay(true)">显示蒙层</button>
         <button class="mt-5" @click="showTransparentOverlay">透明蒙层</button>
         <button class="mt-5" @click="showGreenTransparentOverlay">绿色半透明蒙层</button>
-        <!-- #ifndef APP-ANDROID -->
         <button class="mt-5" @click="showOverlayPointerEventsNone">蒙层穿透（点击蒙层不关闭）</button>
-        <!-- #endif -->
       </view>
     </view>
 
@@ -193,11 +191,15 @@
       <slider id="duration-slider" :value="exampleData.containerDuration" :min="0" :max="2000" :step="100"
         @changing="changeContainerDuration" @change="changeContainerDuration"></slider>
       <text class="uni-info uni-btn-v">duration：{{ exampleData.containerDuration }}ms（0–2000ms）</text>
-      <button class="mt-5" @click="exampleData.durationContainerShow = true">打开属性示例弹层</button>
+      <button class="mt-5" @click="openDurationContainer">打开属性示例弹层</button>
     </view>
 
-    <page-container id="duration-test-container" :show="exampleData.durationContainerShow" position="bottom"
-      :duration="exampleData.containerDuration" @afterleave="exampleData.durationContainerShow = false">
+    <page-container id="duration-test-container"
+      <!-- #ifdef MP -->
+      v-if="durationContainerMounted"
+      <!-- #endif -->
+      :show="exampleData.durationContainerShow" position="bottom"
+      :duration="exampleData.containerDuration" @afterleave="onDurationContainerAfterLeave">
       <view class="container">
         <text class="container-title">动画时长测试</text>
         <text class="container-content">当前动画时长：{{ exampleData.containerDuration }}ms</text>
@@ -205,6 +207,7 @@
       </view>
     </page-container>
 
+    <!-- #ifndef MP -->
     <view class="uni-padding-wrap uni-common-mt">
       <view class="uni-title uni-common-mt">
         <text class="uni-title-text"> z-index 重叠对比 </text>
@@ -236,6 +239,8 @@
       </view>
     </page-container>
 
+    <!-- #endif -->
+
     <view class="uni-padding-wrap uni-common-mt">
       <view class="uni-title uni-common-mt">
         <text class="uni-title-text"> 弹层生命周期事件 </text>
@@ -247,7 +252,11 @@
       <text id="container-event-log">{{ exampleData.eventContainerLog.join(' → ') }}</text>
     </view>
 
-    <page-container id="event-test-container" :show="exampleData.eventContainerShow" position="bottom" :duration="500"
+    <page-container id="event-test-container"
+      <!-- #ifdef MP -->
+      v-if="eventContainerMounted"
+      <!-- #endif -->
+      :show="exampleData.eventContainerShow" position="bottom" :duration="500"
       @clickoverlay="recordContainerEvent('clickoverlay')"
       @beforeenter="recordContainerEvent('beforeenter')"
       @enter="recordContainerEvent('enter')"
@@ -461,7 +470,7 @@
       }
 
       alignArrowStyle.value = arrowStyleMap.get(alignType) as string
-      alignContainerStyle.value = `left: ${targetLeft}px; top: ${rect.bottom}px; background-color: transparent; transform: none`
+      alignContainerStyle.value = `left: ${targetLeft}px; top: ${rect.bottom}px; width: 200px; height: auto; background-color: transparent; transform: none`
       showAlignContainer.value = true
       return
     }
@@ -484,14 +493,14 @@
         const targetTop = (nodeInfo.top as number) + (nodeInfo.height as number)
 
         // #ifdef MP-WEIXIN
-        alignContainerStyle.value = `left: ${targetLeft}px; top: ${targetTop}px; background-color: transparent; transform: none`
+        alignContainerStyle.value = `left: ${targetLeft}px; top: ${targetTop}px; width: 200px; height: auto; background-color: transparent; transform: none`
         // #endif
 
         // #ifndef MP-WEIXIN
         const windowInfo = uni.getWindowInfo()
         const maxLeft = Math.max(0, windowInfo.windowWidth - containerWidth)
         const popupLeft = Math.max(0, Math.min(targetLeft, maxLeft))
-        alignContainerStyle.value = `transform: translate(${popupLeft}px, ${targetTop}px); background-color: transparent; transition: none`
+        alignContainerStyle.value = `transform: translate(${popupLeft}px, ${targetTop}px); width: 200px; height: auto; background-color: transparent; transition: none`
         // #endif
 
         showAlignContainer.value = true
@@ -578,7 +587,20 @@
     exampleData.zIndexBShow = false
   }
 
+  // 保留实例直到退出动画结束，避免 v-if 提前销毁导致退出事件丢失。
+  const durationContainerMounted = ref(false)
+  const eventContainerMounted = ref(false)
+  const openDurationContainer = () => {
+    durationContainerMounted.value = true
+    exampleData.durationContainerShow = true
+  }
+  const onDurationContainerAfterLeave = () => {
+    exampleData.durationContainerShow = false
+    durationContainerMounted.value = false
+  }
+
   const openEventContainer = () => {
+    eventContainerMounted.value = true
     exampleData.eventContainerLog = []
     exampleData.eventContainerShow = true
   }
@@ -592,6 +614,7 @@
   const onEventContainerAfterLeave = () => {
     recordContainerEvent('afterleave')
     exampleData.eventContainerShow = false
+    eventContainerMounted.value = false
   }
 
   const changeContainerDuration = (event : UniSliderChangeEvent) => {

@@ -1528,7 +1528,7 @@ export type OpenBluetoothAdapterCompleteCallback = (result : OpenBluetoothAdapte
 
 export type OpenBluetoothAdapterOptions = {
 	/**
-	 * @description 接口调用成功的回调函数。
+	 * @description 接口调用成功的回调函数。App 端的 success 回调结果不返回 errCode，该字段仅由微信小程序返回。
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
@@ -1801,7 +1801,7 @@ export type CloseBluetoothAdapterCompleteCallback = (result : CloseBluetoothAdap
 
 export type CloseBluetoothAdapterOptions = {
 	/**
-	 * @description 接口调用成功的回调函数。
+	 * @description 接口调用成功的回调函数。App 端的 success 回调结果不返回 errCode，该字段仅由微信小程序返回。
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
@@ -2477,7 +2477,7 @@ export type StartBluetoothDevicesDiscoveryOptions = {
 	 */
 	services ?: string[] | null
 	/**
-	 * @description 是否允许重复上报同一设备，默认值为 false。开启后同一设备可能被多次上报，但 RSSI 可能不同。
+	 * @description 是否允许重复上报同一设备，默认值为 false。开启后同一设备可能被多次上报，但 RSSI 可能不同。Harmony 为有界去重：false 时仅在当前扫描轮次且设备缓存记录持续存在期间去重；记录因容量淘汰或过期被移除后，再次发现同一地址允许重新上报，重新启动扫描也会开启新的去重轮次。
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
@@ -2675,7 +2675,7 @@ export type StartBluetoothDevicesDiscoveryOptions = {
 	 */
 	powerLevel ?: BluetoothDiscoveryPowerLevel | null
 	/**
-	 * @description 接口调用成功的回调函数。
+	 * @description 接口调用成功的回调函数。App 端的 success 回调结果不返回 errCode，该字段仅由微信小程序返回。
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
@@ -2948,7 +2948,7 @@ export type StopBluetoothDevicesDiscoveryCompleteCallback = (result : StopBlueto
 
 export type StopBluetoothDevicesDiscoveryOptions = {
 	/**
-	 * @description 接口调用成功的回调函数。
+	 * @description 接口调用成功的回调函数。App 端的 success 回调结果不返回 errCode，该字段仅由微信小程序返回。
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
@@ -5770,7 +5770,7 @@ export type WriteBLECharacteristicValueOptions = {
 	 */
 	writeType ?: BLEWriteType | null
 	/**
-	 * @description 接口调用成功的回调函数。
+	 * @description 接口调用成功的回调函数。App 端的 success 回调结果不返回 errCode，该字段仅由微信小程序返回。
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
@@ -6037,7 +6037,7 @@ export type SetBLEMTUSuccess = {
 	 */
 	errMsg : string
 	/**
-	 * @description 最终协商的 MTU 值，与传入参数一致，单位 bytes。
+	 * @description 实际生效的 MTU 值，单位 bytes；HarmonyOS 以 MTU 事件值为准，可能与请求值不同。
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
@@ -6108,7 +6108,7 @@ export type SetBLEMTUFailCallback = (result : BluetoothFail) => void
 export type SetBLEMTUCompleteCallback = (result : SetBLEMTUSuccess | BluetoothFail) => void
 
 /**
- * @description 仅 Android 支持。
+ * @description Android、HarmonyOS 支持；iOS 不支持设置 MTU。
  * @uniPlatform {
  *   "app": {
  *     "android": {
@@ -6240,7 +6240,7 @@ export type SetBLEMTUOptions = {
 	 */
 	deviceId : string
 	/**
-	 * @description 最大传输单元，取值范围为 (22, 512)，单位 bytes。
+	 * @description 最大传输单元，单位 bytes。Android、HarmonyOS 的取值范围为 [23, 517]；iOS 不支持设置；微信小程序的取值范围为 (22, 512)，即整数 23 至 511。
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
@@ -6709,7 +6709,7 @@ export type ReadBLECharacteristicValueOptions = {
 	 */
 	characteristicId : string
 	/**
-	 * @description 接口调用成功的回调函数。特征值通过 onBLECharacteristicValueChange 返回。
+	 * @description 接口调用成功的回调函数。App 端的 success 回调结果不返回 errCode，该字段仅由微信小程序返回。特征值通过 onBLECharacteristicValueChange 返回。
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
@@ -7784,7 +7784,7 @@ export type NotifyBLECharacteristicValueChangeOptions = {
 	 */
 	type ?: BLENotifyType | null
 	/**
-	 * @description 接口调用成功的回调函数。
+	 * @description 接口调用成功的回调函数。App 端的 success 回调结果不返回 errCode，该字段仅由微信小程序返回。
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
@@ -10542,7 +10542,7 @@ export type CreateBLEConnectionOptions = {
 	 */
 	timeout ?: number | null
 	/**
-	 * @description 接口调用成功的回调函数。
+	 * @description 接口调用成功的回调函数。App 端的 success 回调结果不返回 errCode，该字段仅由微信小程序返回。
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
@@ -10813,7 +10813,7 @@ export type CloseBLEConnectionOptions = {
 	 */
 	deviceId : string
 	/**
-	 * @description 接口调用成功的回调函数。
+	 * @description 接口调用成功的回调函数。App 端的 success 回调结果不返回 errCode，该字段仅由微信小程序返回。
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
@@ -11991,7 +11991,7 @@ export interface Uni {
 	 */
 	readBLECharacteristicValue : ReadBLECharacteristicValue
 	/**
-	 * @description 监听 MTU 变化，仅 Android 支持。
+	 * @description 监听 MTU 变化，Android、HarmonyOS 支持。
 	 * @param {BLEMTUChangeCallback} listener
 	 * @uniPlatform {
 	 *   "app": {
@@ -12192,7 +12192,7 @@ export interface Uni {
 	 */
 	onBLECharacteristicValueChange : OnBLECharacteristicValueChange
 	/**
-	 * @description 移除 MTU 变化监听，仅 Android 支持。传 ID 删除对应监听，否则清空全部监听。
+	 * @description 移除 MTU 变化监听，Android、HarmonyOS 支持。传 ID、原回调或省略参数，分别删除对应监听或清空全部监听。
 	 * @param {number | BLEMTUChangeCallback | null} listener
 	 * @uniPlatform {
 	 *   "app": {

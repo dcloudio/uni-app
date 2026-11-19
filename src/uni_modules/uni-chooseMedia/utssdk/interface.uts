@@ -1,31 +1,80 @@
 /**
  * 错误码
+ * @uniPlatform {
+ *   "app": {
+ *     "android": { "uniVer": "x", "unixVer": "4.51" },
+ *     "ios": { "uniVer": "x", "unixVer": "4.51" },
+ *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+ *   }
+ * }
  */
 export type ChooseMediaErrorCode =
 	/**
 	 * 用户取消
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "x", "unixVer": "4.51" },
+	 *     "ios": { "uniVer": "x", "unixVer": "4.51" },
+	 *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+	 *   }
+	 * }
 	 */
 	1101001 |
 	/**
 	 * 未获取权限
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "x", "unixVer": "4.51" },
+	 *     "ios": { "uniVer": "x", "unixVer": "4.51" },
+	 *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+	 *   }
+	 * }
 	 */
 	1101005 |
 	/**
 	 * 图片或视频保存失败
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "x", "unixVer": "4.51" },
+	 *     "ios": { "uniVer": "x", "unixVer": "4.51" },
+	 *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+	 *   }
+	 * }
 	 */
 	1101006 |
 	/**
 	 * 拍照或录像失败
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "x", "unixVer": "4.51" },
+	 *     "ios": { "uniVer": "x", "unixVer": "4.51" },
+	 *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+	 *   }
+	 * }
 	 */
 	1101008 |
 	/**
 	 * 其他错误
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "x", "unixVer": "4.51" },
+	 *     "ios": { "uniVer": "x", "unixVer": "4.51" },
+	 *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+	 *   }
+	 * }
 	 */
 	1101010;
 
 
 /**
  * 图片或视频操作失败的错误回调
+ * @uniPlatform {
+ *   "app": {
+ *     "android": { "uniVer": "x", "unixVer": "4.51" },
+ *     "ios": { "uniVer": "x", "unixVer": "4.51" },
+ *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+ *   }
+ * }
  */
 export interface IChooseMediaError extends IUniError {
 	/**
@@ -39,12 +88,22 @@ export interface IChooseMediaError extends IUniError {
 	 *     "ios": {
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.51"
-	 *     }
+	 *     },
+	 *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
 	 *   }
 	 * }
 	 */
 	errCode : ChooseMediaErrorCode
 };
+/**
+ * @uniPlatform {
+ *   "app": {
+ *     "android": { "uniVer": "x", "unixVer": "4.51" },
+ *     "ios": { "uniVer": "x", "unixVer": "4.51" },
+ *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+ *   }
+ * }
+ */
 export type ChooseMediaFileType =
 	/**
 	 * 图片文件
@@ -57,7 +116,8 @@ export type ChooseMediaFileType =
 	 *     "ios": {
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.51"
-	 *     }
+	 *     },
+	 *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
 	 *   }
 	 * }
 	 */
@@ -73,11 +133,21 @@ export type ChooseMediaFileType =
 	 *     "ios": {
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.51"
-	 *     }
+	 *     },
+	 *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
 	 *   }
 	 * }
 	 */
 	'video'
+/**
+ * @uniPlatform {
+ *   "app": {
+ *     "android": { "uniVer": "x", "unixVer": "4.51" },
+ *     "ios": { "uniVer": "x", "unixVer": "4.51" },
+ *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+ *   }
+ * }
+ */
 export type ChooseMediaTempFile = {
 	/**
 	 * 选定视频的临时文件路径
@@ -90,7 +160,8 @@ export type ChooseMediaTempFile = {
 	 *     "ios": {
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.51"
-	 *     }
+	 *     },
+	 *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
 	 *   }
 	 * }
 	 */
@@ -106,7 +177,8 @@ export type ChooseMediaTempFile = {
 	 *     "ios": {
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.51"
-	 *     }
+	 *     },
+	 *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
 	 *   }
 	 * }
 	 */
@@ -122,7 +194,8 @@ export type ChooseMediaTempFile = {
 	 *     "ios": {
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.51"
-	 *     }
+	 *     },
+	 *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
 	 *   }
 	 * }
 	 */
@@ -139,11 +212,7 @@ export type ChooseMediaTempFile = {
 	  *			"uniVer": "x",
 	  *			"unixVer": "4.61"
 	  *		},
-	*    "harmony": {
-	*      "uniVer": "4.61",
-	*      "unixVer": "4.61",
-	*      "unixVaporVer": "5.0"
-	*    }
+	*    "harmony": { "uniVer": "4.61", "unixVer": "4.61", "unixVaporVer": "5.0" }
 	  *	},
 	  *	"web": {
 	  *		"uniVer": "x",
@@ -163,7 +232,8 @@ export type ChooseMediaTempFile = {
 	 *     "ios": {
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.51"
-	 *     }
+	 *     },
+	 *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
 	 *   }
 	 * }
 	 */
@@ -179,7 +249,8 @@ export type ChooseMediaTempFile = {
 	 *     "ios": {
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.51"
-	 *     }
+	 *     },
+	 *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
 	 *   }
 	 * }
 	 */
@@ -195,7 +266,8 @@ export type ChooseMediaTempFile = {
 	 *     "ios": {
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.51"
-	 *     }
+	 *     },
+	 *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
 	 *   }
 	 * }
 	 */
@@ -211,12 +283,22 @@ export type ChooseMediaTempFile = {
 	 *     "ios": {
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.51"
-	 *     }
+	 *     },
+	 *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
 	 *   }
 	 * }
 	 */
 	thumbTempFilePath ?: string | null
 }
+/**
+ * @uniPlatform {
+ *   "app": {
+ *     "android": { "uniVer": "x", "unixVer": "4.51" },
+ *     "ios": { "uniVer": "x", "unixVer": "4.51" },
+ *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+ *   }
+ * }
+ */
 export type ChooseMediaSuccess = {
 	/**
 	 * 选中的图片或视频文件列表
@@ -229,7 +311,8 @@ export type ChooseMediaSuccess = {
 	 *     "ios": {
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.51"
-	 *     }
+	 *     },
+	 *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
 	 *   }
 	 * }
 	 */
@@ -245,7 +328,8 @@ export type ChooseMediaSuccess = {
 	 *     "ios": {
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.51"
-	 *     }
+	 *     },
+	 *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
 	 *   }
 	 * }
 	 */
@@ -261,7 +345,8 @@ export type ChooseMediaSuccess = {
 	 *     "ios": {
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.51"
-	 *     }
+	 *     },
+	 *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
 	 *   }
 	 * }
 	 */
@@ -277,7 +362,8 @@ export type ChooseMediaSuccess = {
 	 *     "ios": {
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.51"
-	 *     }
+	 *     },
+	 *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
 	 *   }
 	 * }
 	 */
@@ -293,17 +379,63 @@ export type ChooseMediaSuccess = {
 	 *     "ios": {
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.51"
-	 *     }
+	 *     },
+	 *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
 	 *   }
 	 * }
 	 */
 	'mix'
 };
 
+/**
+ * @uniPlatform {
+ *   "app": {
+ *     "android": { "uniVer": "x", "unixVer": "4.51" },
+ *     "ios": { "uniVer": "x", "unixVer": "4.51" },
+ *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+ *   }
+ * }
+ */
 export type ChooseMediaFail = IChooseMediaError;
+/**
+ * @uniPlatform {
+ *   "app": {
+ *     "android": { "uniVer": "x", "unixVer": "4.51" },
+ *     "ios": { "uniVer": "x", "unixVer": "4.51" },
+ *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+ *   }
+ * }
+ */
 export type ChooseMediaSuccessCallback = (callback : ChooseMediaSuccess) => void
+/**
+ * @uniPlatform {
+ *   "app": {
+ *     "android": { "uniVer": "x", "unixVer": "4.51" },
+ *     "ios": { "uniVer": "x", "unixVer": "4.51" },
+ *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+ *   }
+ * }
+ */
 export type ChooseMediaFailCallback = (callback : ChooseMediaFail) => void
+/**
+ * @uniPlatform {
+ *   "app": {
+ *     "android": { "uniVer": "x", "unixVer": "4.51" },
+ *     "ios": { "uniVer": "x", "unixVer": "4.51" },
+ *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+ *   }
+ * }
+ */
 export type ChooseMediaCompleteCallback = (callback : any) => void
+/**
+ * @uniPlatform {
+ *   "app": {
+ *     "android": { "uniVer": "x", "unixVer": "4.51" },
+ *     "ios": { "uniVer": "x", "unixVer": "x" },
+ *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+ *   }
+ * }
+ */
 export type ChooseMediaPageOrientation = /**
      * 自动
 	 * @uniPlatform {
@@ -315,10 +447,11 @@ export type ChooseMediaPageOrientation = /**
 	 *     "ios": {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
-	 *     }
+	 *     },
+	 *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
 	 *   }
 	 * }
-     */
+	 */
 	"auto" |
 	/**
 	 * 竖屏显示
@@ -331,7 +464,8 @@ export type ChooseMediaPageOrientation = /**
 	 *     "ios": {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
-	 *     }
+	 *     },
+	 *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
 	 *   }
 	 * }
 	 */
@@ -347,12 +481,22 @@ export type ChooseMediaPageOrientation = /**
 	 *     "ios": {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
-	 *     }
+	 *     },
+	 *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
 	 *   }
 	 * }
 	 */
 	"landscape"
 
+/**
+ * @uniPlatform {
+ *   "app": {
+ *     "android": { "uniVer": "x", "unixVer": "4.51" },
+ *     "ios": { "uniVer": "x", "unixVer": "4.51" },
+ *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+ *   }
+ * }
+ */
 export type ChooseMediaOptions = {
 	/**
 	  * 屏幕方向。默认为pages.json中的pageOrientation。
@@ -366,11 +510,7 @@ export type ChooseMediaOptions = {
 	  *			"uniVer": "x",
 	  *			"unixVer": "x"
 	  *		},
-	*    "harmony": {
-	*      "uniVer": "4.31",
-	*      "unixVer": "4.61",
-	*      "unixVaporVer": "5.0"
-	*    }
+	*    "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
 	  *	},
 	 *  "mp": {
 	 *    "weixin": {
@@ -382,22 +522,22 @@ export type ChooseMediaOptions = {
 	 *        "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
-	 *        "uniVer": "√",
+	 *        "uniVer": "√"
 	 *    },
 	 *    "toutiao": {
-	 *        "uniVer": "√",
+	 *        "uniVer": "√"
 	 *    },
 	 *    "lark": {
-	 *        "uniVer": "√",
+	 *        "uniVer": "√"
 	 *    },
 	 *    "qq": {
-	 *        "uniVer": "√",
+	 *        "uniVer": "√"
 	 *    },
 	 *    "kuaishou": {
-	 *        "uniVer": "√",
+	 *        "uniVer": "√"
 	 *    },
 	 *    "jd": {
-	 *        "uniVer": "√",
+	 *        "uniVer": "√"
 	 *    }
 	 *  },
 	  *	"web": {
@@ -421,11 +561,7 @@ export type ChooseMediaOptions = {
 		 *			"uniVer": "x",
 		 *			"unixVer": "4.51"
 		 *		},
-		 *    "harmony": {
-		 *      "uniVer": "4.31",
-		 *      "unixVer": "4.61",
-		 *      "unixVaporVer": "5.0"
-		 *    }
+		 *    "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
 	 *	}
 	 *}
 	 */
@@ -443,11 +579,7 @@ export type ChooseMediaOptions = {
 		 *			"uniVer": "x",
 		 *			"unixVer": "4.51"
 		 *		},
-		 *    "harmony": {
-		 *      "uniVer": "4.31",
-		 *      "unixVer": "4.61",
-		 *      "unixVaporVer": "5.0"
-		 *    }
+		 *    "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
 	 *	}
 	 *}
 	 */
@@ -465,11 +597,7 @@ export type ChooseMediaOptions = {
 		 *			"uniVer": "x",
 		 *			"unixVer": "4.51"
 		 *		},
-		 *    "harmony": {
-		 *      "uniVer": "4.31",
-		 *      "unixVer": "4.61",
-		 *      "unixVaporVer": "5.0"
-		 *    }
+		 *    "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
 	 *	}
 	 *}
 	 */
@@ -487,11 +615,7 @@ export type ChooseMediaOptions = {
 		 *			"uniVer": "x",
 		 *			"unixVer": "4.51"
 		 *		},
-   *    "harmony": {
-   *      "uniVer": "4.31",
-   *      "unixVer": "4.61",
-   *      "unixVaporVer": "5.0"
-   *    }
+   *    "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
 	 *	},
 	*  "mp": {
 	*    "weixin": {
@@ -503,22 +627,22 @@ export type ChooseMediaOptions = {
 	*        "unixVer": "5.31"
 	*    },
 	*    "baidu": {
-	*        "uniVer": "√",
+	*        "uniVer": "√"
 	*    },
 	*    "toutiao": {
-	*        "uniVer": "√",
+	*        "uniVer": "√"
 	*    },
 	*    "lark": {
-	*        "uniVer": "√",
+	*        "uniVer": "√"
 	*    },
 	*    "qq": {
-	*        "uniVer": "√",
+	*        "uniVer": "√"
 	*    },
 	*    "kuaishou": {
-	*        "uniVer": "√",
+	*        "uniVer": "√"
 	*    },
 	*    "jd": {
-	*        "uniVer": "√",
+	*        "uniVer": "√"
 	*    }
 	*  },
    *  "web": {
@@ -541,11 +665,7 @@ export type ChooseMediaOptions = {
 		 *			"uniVer": "x",
 		 *			"unixVer": "4.51"
 		 *		},
-   *    "harmony": {
-   *      "uniVer": "4.25",
-   *      "unixVer": "4.61",
-   *      "unixVaporVer": "5.0"
-   *    }
+   *    "harmony": { "uniVer": "4.25", "unixVer": "4.61", "unixVaporVer": "5.0" }
 	 *	},
 	*  "mp": {
 	*    "weixin": {
@@ -557,22 +677,22 @@ export type ChooseMediaOptions = {
 	*        "unixVer": "5.31"
 	*    },
 	*    "baidu": {
-	*        "uniVer": "√",
+	*        "uniVer": "√"
 	*    },
 	*    "toutiao": {
-	*        "uniVer": "√",
+	*        "uniVer": "√"
 	*    },
 	*    "lark": {
-	*        "uniVer": "√",
+	*        "uniVer": "√"
 	*    },
 	*    "qq": {
-	*        "uniVer": "√",
+	*        "uniVer": "√"
 	*    },
 	*    "kuaishou": {
-	*        "uniVer": "√",
+	*        "uniVer": "√"
 	*    },
 	*    "jd": {
-	*        "uniVer": "√",
+	*        "uniVer": "√"
 	*    }
 	*  },
 	 *  "web": {
@@ -593,7 +713,8 @@ export type ChooseMediaOptions = {
 	 *     "ios": {
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.51"
-	 *     }
+	 *     },
+	 *     "harmony": { "uniVer": "4.25", "unixVer": "4.61", "unixVaporVer": "5.0" }
 	 *   }
 	 * }
 	 */
@@ -609,7 +730,8 @@ export type ChooseMediaOptions = {
 	 *     "ios": {
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.51"
-	 *     }
+	 *     },
+	 *     "harmony": { "uniVer": "4.25", "unixVer": "4.61", "unixVaporVer": "5.0" }
 	 *   }
 	 * }
 	 */
@@ -625,7 +747,8 @@ export type ChooseMediaOptions = {
 	 *     "ios": {
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.51"
-	 *     }
+	 *     },
+	 *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
 	 *   }
 	 * }
 	 */
@@ -641,7 +764,8 @@ export type ChooseMediaOptions = {
 	 *     "ios": {
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.51"
-	 *     }
+	 *     },
+	 *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
 	 *   }
 	 * }
 	 */
@@ -657,13 +781,23 @@ export type ChooseMediaOptions = {
 	 *     "ios": {
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.51"
-	 *     }
+	 *     },
+	 *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
 	 *   }
 	 * }
 	 */
 	complete ?: (ChooseMediaCompleteCallback) | null
 };
 
+/**
+ * @uniPlatform {
+ *   "app": {
+ *     "android": { "uniVer": "x", "unixVer": "4.51" },
+ *     "ios": { "uniVer": "x", "unixVer": "4.51" },
+ *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+ *   }
+ * }
+ */
 export type ChooseMedia = (options : ChooseMediaOptions) => void;
 
 export interface Uni {
@@ -681,11 +815,7 @@ export interface Uni {
 	  *			"uniVer": "x",
 	  *			"unixVer": "4.51"
 	  *		},
-	  *    "harmony": {
-	  *      "uniVer": "4.31",
-	  *      "unixVer": "4.61",
-	  *      "unixVaporVer": "5.0"
-	  *    }
+	  *    "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
 	  *	},
 	 *  "mp": {
 	 *    "weixin": {
@@ -697,22 +827,22 @@ export interface Uni {
 	 *        "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
-	 *        "uniVer": "√",
+	 *        "uniVer": "√"
 	 *    },
 	 *    "toutiao": {
-	 *        "uniVer": "√",
+	 *        "uniVer": "√"
 	 *    },
 	 *    "lark": {
-	 *        "uniVer": "√",
+	 *        "uniVer": "√"
 	 *    },
 	 *    "qq": {
-	 *        "uniVer": "√",
+	 *        "uniVer": "√"
 	 *    },
 	 *    "kuaishou": {
-	 *        "uniVer": "√",
+	 *        "uniVer": "√"
 	 *    },
 	 *    "jd": {
-	 *        "uniVer": "√",
+	 *        "uniVer": "√"
 	 *    }
 	 *  },
 	*  "web": {

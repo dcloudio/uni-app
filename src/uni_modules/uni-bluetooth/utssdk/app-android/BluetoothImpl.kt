@@ -351,7 +351,7 @@ class BluetoothImpl {
   }
 
   fun requestMtu(id: String, mtu: Int, callback: (Int, Int) -> Unit) {
-    if (mtu !in 23..511) {
+    if (mtu !in 23..517) {
       callback(1509601, 0)
       return
     }

@@ -42,13 +42,29 @@
       />
     </view>
 
+    <view v-if="type == 5" class="uni-list-cell-padding status-box">
+      <text class="uni-title-text share-text">小程序（仅支持聊天分享）：</text>
+      <input class="share-field" v-model="miniProgramId" placeholder="小程序原始 ID（gh_ 开头）" />
+      <input class="share-field" v-model="miniProgramPath" placeholder="页面路径，如 pages/index/index" />
+      <input class="share-field" v-model="miniProgramWebURL" placeholder="兼容低版本的网页链接" />
+      <text class="share-text">使用正式版小程序，请先选择分享图片。</text>
+    </view>
+
     <view class="uni-padding-wrap uni-common-mt">
       <button type="primary" @click="share">分享</button>
     </view>
 </template>
 
 <script setup lang="ts">
-  const typeOptions = [{ value: '0', text: '图文' }, { value: '1', text: '纯文字' }, { value: '2', text: '纯图片' }]
+  const typeOptions = [
+    { value: '0', text: '图文' }, { value: '1', text: '纯文字' }, { value: '2', text: '纯图片' },
+    { value: '3', text: '音频' }, { value: '4', text: '视频' }, { value: '5', text: '小程序' },
+  ]
+  const audioURL = 'https://web-ext-storage.dcloud.net.cn/uni-app/ForElise.mp3'
+  const mediaURL = 'https://web-ext-storage.dcloud.net.cn/video/sample/2minute-demo.mp4'
+  const miniProgramId = ref('')
+  const miniProgramPath = ref('')
+  const miniProgramWebURL = ref('https://uniapp.dcloud.net.cn/')
   const sceneOptions = [{ value: 'WXSceneSession', text: '聊天界面' }, { value: 'WXSceneTimeline', text: '朋友圈' }, { value: 'WXSceneFavorite', text: '微信收藏（暂不支持）', disabled: true }]
 
   const scene = ref('WXSceneSession')
@@ -82,6 +98,16 @@
   }
 
   function share() {
+    if (type.value == 5) {
+      if (scene.value != 'WXSceneSession') {
+        uni.showToast({ title: '小程序仅支持聊天分享', icon: 'none' })
+        return
+      }
+      if (miniProgramId.value.trim().length == 0 || miniProgramWebURL.value.trim().length == 0 || imageURL.value == null) {
+        uni.showToast({ title: '请填写小程序 ID、网页链接并选择图片', icon: 'none' })
+        return
+      }
+    }
     uni.showLoading({
       title: "正在分享......"
     })
@@ -94,6 +120,13 @@
       href: "https://uniapp.dcloud.net.cn/api/plugins/share.html",
       summary: shareContent.value,
       imageUrl: imageURL.value,
+      mediaUrl: type.value == 3 ? audioURL : (type.value == 4 ? mediaURL : null),
+      miniProgram: type.value == 5 ? {
+        id: miniProgramId.value.trim(),
+        path: miniProgramPath.value.trim(),
+        type: 0,
+        webUrl: miniProgramWebURL.value.trim()
+      } : null,
       success(res) {
         uni.hideLoading()
         uni.showToast({
@@ -111,6 +144,12 @@
 </script>
 
 <style>
+  .share-field {
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid #D9D9D9;
+  }
+
   .uni-uploader__input-box {
     margin: 5px;
     width: 104px;

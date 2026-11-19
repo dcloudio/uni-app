@@ -26,6 +26,14 @@
       </view>
 
       <view>
+        <text>border-radius: 50%（150 × 50px）</text>
+        <view class="demo-box">
+          <view class="common" style="border-radius: 50%;"></view>
+          <view class="common" style="border-radius: 50%;" flatten></view>
+        </view>
+      </view>
+
+      <view>
         <text>border-top-left-radius: 10px</text>
         <view class="demo-box">
           <view class="common" style="border-top-left-radius: 10px"></view>

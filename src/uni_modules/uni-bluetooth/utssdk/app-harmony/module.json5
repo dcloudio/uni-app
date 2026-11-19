@@ -1,0 +1,12 @@
+{
+  "module": {
+    "deviceTypes": ["default", "tablet", "2in1"],
+    "requestPermissions": [
+      {
+        "name": "ohos.permission.ACCESS_BLUETOOTH",
+        "reason": "$string:uni_bluetooth_permission_reason",
+        "usedScene": { "when": "inuse" }
+      }
+    ]
+  }
+}

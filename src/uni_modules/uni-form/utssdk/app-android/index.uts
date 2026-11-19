@@ -597,7 +597,7 @@ function createAndroidCursorDrawable(editText: EditText, color: Int): GradientDr
 	return cursorDrawable
 }
 
-function applyAndroidCursorDrawable(editText: EditText, cursorDrawable: GradientDrawable, color: Int, highlightColor: Int) {
+function applyAndroidCursorDrawable(editText: EditText, cursorDrawable: GradientDrawable, color: Int) {
 	cursorDrawable.setColor(color)
 	if (Build.VERSION.SDK_INT >= 29) {
 		editText.setTextCursorDrawable(cursorDrawable)
@@ -624,12 +624,9 @@ function applyAndroidCursorDrawable(editText: EditText, cursorDrawable: Gradient
 				}
 			}
 		} catch (ignored: Exception) {
-			// Keep highlight color even when the private cursor field is unavailable.
+			// Keep the default cursor when the private cursor field is unavailable.
 		}
 	}
-	// 文字选区背景色：由 selection-class 单独控制，未设置时用系统默认高亮色。
-	// 注意：不能用光标色兜底 —— caret-color/cursor-color 只负责光标，职责分开。
-	editText.setHighlightColor(highlightColor)
 }
 
 
@@ -1505,10 +1502,6 @@ export class NativeInputView implements UniAndroidKeyboardClient {
 	private defaultCursorColor: string = '#3393E2'
 	/** 光标颜色 */
 	private cursorColorValue: string = ''
-	/** 文字选区背景色（selection-class）；为空时用系统默认选区色 */
-	private selectionColorValue: string = ''
-	/** 系统默认文字选区背景色（创建 EditText 时读取） */
-	private defaultSelectionColor: Int = 0
 	/** 光标 drawable */
 	private cursorDrawable: GradientDrawable | null = null
 	/** 页面偏移辅助 */
@@ -1727,9 +1720,8 @@ export class NativeInputView implements UniAndroidKeyboardClient {
 
 		this.editText = new EditText(activity)
 		this.editText!.setBackgroundColor(Color.TRANSPARENT)
-		this.defaultSelectionColor = this.editText!.getHighlightColor()
 		this.cursorDrawable = createAndroidCursorDrawable(this.editText!, Color.parseColor(this.defaultCursorColor))
-		applyAndroidCursorDrawable(this.editText!, this.cursorDrawable!, Color.parseColor(this.defaultCursorColor), this.resolveSelectionHighlightColor())
+		applyAndroidCursorDrawable(this.editText!, this.cursorDrawable!, Color.parseColor(this.defaultCursorColor))
 		this.editText!.setTextColor(Color.BLACK)
 		this.editText!.setGravity(Gravity.CENTER_VERTICAL)
 		this.editText!.setPadding(0, 0, 0, 0)
@@ -2359,23 +2351,7 @@ export class NativeInputView implements UniAndroidKeyboardClient {
 			console.error("Invalid color value: " + colorString)
 			return
 		}
-		applyAndroidCursorDrawable(this.editText!, this.cursorDrawable!, color, this.resolveSelectionHighlightColor())
-	}
-
-	/**
-	 * 解析当前应使用的选区高亮色：selection-class 解析出的颜色 → 否则系统默认高亮色。
-	 * 与光标色无关（caret-color/cursor-color 只控制光标）。
-	 */
-	private resolveSelectionHighlightColor(): Int {
-		if (this.selectionColorValue != '') {
-			const selectionColor = parseAndroidColorValue(this.selectionColorValue)
-			if (selectionColor == null) {
-				console.error("Invalid color value: " + this.selectionColorValue)
-			} else {
-				return selectionColor
-			}
-		}
-		return this.defaultSelectionColor
+		applyAndroidCursorDrawable(this.editText!, this.cursorDrawable!, color)
 	}
 
 	updateCursorColor(value: string) {
@@ -2383,16 +2359,6 @@ export class NativeInputView implements UniAndroidKeyboardClient {
 		if (this.editText == null) return
 		this.applyCursorColorIfNeeded()
 	}
-
-	/**
-	 * 更新文字选区背景色（selection-class 外部样式类解析出的颜色）
-	 */
-	updateSelectionColor(value: string) {
-		this.selectionColorValue = value
-		if (this.editText == null) return
-		this.applyCursorColorIfNeeded()
-	}
-
 
 	/**
 	 * 更新是否自动获取焦点
@@ -3061,10 +3027,6 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 	private directionValue: string = 'ltr'
 	private defaultCursorColor: string = '#3393E2'
 	private cursorColorValue: string = ''
-	/** 文字选区背景色（selection-class）；为空时用系统默认选区色 */
-	private selectionColorValue: string = ''
-	/** 系统默认文字选区背景色（创建 EditText 时读取） */
-	private defaultSelectionColor: Int = 0
 	private cursorDrawable: GradientDrawable | null = null
 	private adjustPositionHelper: UniAndroidAdjustPositionHelper | null = null
 	private keyboardManager: UniAndroidKeyboardManager | null = null
@@ -3211,9 +3173,8 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 
 		this.editText = new UniAndroidTextareaEditText(activity)
 		this.editText!.setBackgroundColor(Color.TRANSPARENT)
-		this.defaultSelectionColor = this.editText!.getHighlightColor()
 		this.cursorDrawable = createAndroidCursorDrawable(this.editText!, Color.parseColor(this.defaultCursorColor))
-		applyAndroidCursorDrawable(this.editText!, this.cursorDrawable!, Color.parseColor(this.defaultCursorColor), this.resolveSelectionHighlightColor())
+		applyAndroidCursorDrawable(this.editText!, this.cursorDrawable!, Color.parseColor(this.defaultCursorColor))
 		this.editText!.setTextColor(Color.BLACK)
 		this.editText!.setGravity(Gravity.TOP | Gravity.LEFT)
 		this.editText!.setPadding(0, 0, 0, 0)
@@ -3569,32 +3530,7 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 			console.error('Invalid color value: ' + colorString)
 			return
 		}
-		applyAndroidCursorDrawable(this.editText!, this.cursorDrawable!, color, this.resolveSelectionHighlightColor())
-	}
-
-	/**
-	 * 解析当前应使用的选区高亮色：selection-class 解析出的颜色 → 否则系统默认高亮色。
-	 * 与光标色无关（caret-color/cursor-color 只控制光标）。
-	 */
-	private resolveSelectionHighlightColor(): Int {
-		if (this.selectionColorValue != '') {
-			const selectionColor = parseAndroidColorValue(this.selectionColorValue)
-			if (selectionColor == null) {
-				console.error('Invalid color value: ' + this.selectionColorValue)
-			} else {
-				return selectionColor
-			}
-		}
-		return this.defaultSelectionColor
-	}
-
-	/**
-	 * 更新文字选区背景色（selection-class 外部样式类解析出的颜色）
-	 */
-	updateSelectionColor(value: string) {
-		this.selectionColorValue = value
-		if (this.editText == null) return
-		this.applyCursorColorIfNeeded()
+		applyAndroidCursorDrawable(this.editText!, this.cursorDrawable!, color)
 	}
 
 	updateCursorColor(value: string) {

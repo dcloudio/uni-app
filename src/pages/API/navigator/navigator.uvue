@@ -52,6 +52,10 @@
           <button @tap="navigateToErrorPage" class="uni-btn">
             打开不存在的页面
           </button>
+          <!-- #ifdef APP-HARMONY -->
+          <text class="uni-common-mt">跳转动画时长：{{ animationDuration }}ms</text>
+          <slider :value="animationDuration" :min="100" :max="2000" :step="100" show-value @change="changeAnimationDuration" />
+          <!-- #endif -->
           <!-- #ifndef MP-ALIPAY -->
           <button v-for="(item, _) in data.animationTypeList" @tap="navigateToAnimationType(item)"
             class="uni-btn">navigateTo动画({{item}})</button>
@@ -145,6 +149,13 @@
     })
   }
 
+  // #ifdef APP-HARMONY
+  const animationDuration = ref(300)
+  const changeAnimationDuration = (event: UniSliderChangeEvent) => {
+    animationDuration.value = event.detail.value
+  }
+  // #endif
+
   const eventReply = ref('')
   const getEventReply = (): string => eventReply.value
 
@@ -182,6 +193,9 @@
     uni.navigateTo({
       url: '/pages/API/navigator/new-page/new-page-1?data=Hello',
       animationType: animationType,
+      // #ifdef APP-HARMONY
+      animationDuration: animationDuration.value,
+      // #endif
       success(result) {
         console.log('navigateTo success', result.errMsg)
         // 自动化测试

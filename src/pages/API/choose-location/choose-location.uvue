@@ -3,8 +3,6 @@
     <view class="uni-padding-wrap">
       <view class="uni-column uni-container align-center">
         <text class="uni-hello-text">位置信息</text>
-        <text v-if="data.chooseLocationComplete" class="fs-12 color-text-333 uni-common-mt">chooseLocation complete 已触发</text>
-        <text v-if="data.chooseLocationFail" class="fs-12 color-text-333 uni-common-mt">chooseLocation fail 已触发</text>
         <text v-if="!data.hasLocation" class="uni-title-text uni-common-mt">未选择位置</text>
         <view v-if="data.hasLocation" class="align-center">
           <text class="uni-common-mt">{{data.locationName}}</text>
@@ -51,8 +49,7 @@
     hoverLocation: boolean
     hoverKeyword: boolean
     hoverPayload: boolean
-    chooseLocationComplete: boolean
-    chooseLocationFail: boolean
+    callbackOrder: string[]
   }
 
   const data = reactive({
@@ -68,8 +65,7 @@
     hoverLocation: false,
     hoverKeyword: false,
     hoverPayload: false,
-    chooseLocationComplete: false,
-    chooseLocationFail: false
+    callbackOrder: [] as string[]
   } as DataType)
 
   const formatLocation = (longitude: number, latitude: number): Location => {
@@ -130,23 +126,20 @@
   }
 
   const chooseLocation = () => {
-    data.chooseLocationComplete = false
-    data.chooseLocationFail = false
+    data.callbackOrder = []
     let chooseLocationOptions = {
       success: (res) => {
-        console.log('chooseLocation success', res)
+        data.callbackOrder.push('success')
         data.hasLocation = true
         data.location = formatLocation(res.longitude, res.latitude)
         data.locationName = res.name
         data.locationAddress = res.address
       },
       fail: (res) => {
-        console.log('chooseLocation fail', res)
-        data.chooseLocationFail = true
+        data.callbackOrder.push('fail')
       },
       complete: (res) => {
-        console.log('chooseLocation complete', res)
-        data.chooseLocationComplete = true
+        data.callbackOrder.push('complete')
       }
     } as ChooseLocationOptions
     if (data.hoverLocation) {

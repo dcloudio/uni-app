@@ -28,6 +28,9 @@
           <input class="click-t" :value="count" type="number" :maxlength="1" @blur="chooseImageCount" />
         </view>
       </view>
+      <!-- #ifdef WEB -->
+      <boolean-data style="padding-left: 25px;" :value="onlyPng" title="仅选择 PNG 图片（extension）" @change="changeOnlyPng"></boolean-data>
+      <!-- #endif -->
       <!-- #ifdef APP-ANDROID || APP-IOS -->
       <view class="uni-list-cell cell-pd">
         <text class="uni-list-cell-left uni-label">
@@ -131,6 +134,12 @@ const orientationTypeIndex = ref(0)
 const orientationType = ref(['竖屏', '横屏', '自动'])
 const albumModeTypeIndex = ref(0)
 const albumModeType = ref(["自定义相册","系统相册"])
+// #ifdef WEB
+const onlyPng = ref(false)
+const changeOnlyPng = (value: boolean) => {
+  onlyPng.value = value
+}
+// #endif
 const count = ref(9)
 const isCrop = ref(false)
 const cropPercent = ref(80)
@@ -265,6 +274,9 @@ const chooseImage = () => {
   uni.chooseImage({
     sourceType: sourceTypeArray[sourceTypeIndex.value],
     sizeType: sizeTypeArray[sizeTypeIndex.value],
+    // #ifdef WEB
+    extension: onlyPng.value ? ['png'] : undefined,
+    // #endif
     crop: isCrop.value ? { "quality": cropPercent.value, "width": cropWidth.value, "height": cropHeight.value, "resize": cropResize.value } as ChooseImageCropOptions : null,
     count: count.value - imageList.value.length,
     // #ifdef APP

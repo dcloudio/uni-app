@@ -31,6 +31,23 @@
 	</view>
 
 	<view class="section">
+		<text class="uni-h4">下拉选择</text>
+		<uni-forms v-model="comboboxForm" label-width="80" border>
+			<uni-forms-item name="city" label="城市">
+				<uni-combobox
+					plain
+					v-model="comboboxForm.city"
+					:options="cityOptions"
+					field-class="city-combobox"
+					result-text-class="city-combobox-value"
+					placeholder="请选择城市"
+				/>
+			</uni-forms-item>
+		</uni-forms>
+		<text class="uni-log">表单中的城市：{{ comboboxForm.city || '未选择' }}</text>
+	</view>
+
+	<view class="section">
 		<text class="uni-h4">字号</text>
 		<text class="section-desc">左侧标签不写字号，应和「默认字号」一样大。标签在上方时固定 14px。</text>
 		<view class="sample-row">
@@ -181,6 +198,8 @@
 
 <script setup lang="ts">
 	const arrowOn = ref(true)
+	const comboboxForm = ref({ city: '' })
+	const cityOptions = ['北京', '上海', '广州', '深圳', '杭州']
 	const errorFormRef = ref<any>(null)
 	const errorForm = ref({
 		name: '',
@@ -313,6 +332,16 @@
 
 	.trail {
 		justify-content: flex-end;
+	}
+
+	.city-combobox {
+		align-self: flex-end;
+		max-width: 240px;
+		box-sizing: border-box;
+	}
+
+	.city-combobox-value {
+		text-align: right;
 	}
 
 	.field {

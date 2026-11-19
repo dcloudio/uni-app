@@ -15,6 +15,14 @@
 - [蓝牙-通用](https://doc.dcloud.net.cn/uni-app-x/api/bluetooth-general.html)
 - [蓝牙-低功耗中心设备](https://doc.dcloud.net.cn/uni-app-x/api/bluetooth-le-central.html)
 
+## HarmonyOS
+
+- 支持 HarmonyOS API 20 及以上版本，使用官方 ArkTS 蓝牙 API。每个连接的 GATT 操作通过队列串行执行，不同连接的队列独立；写入完成不表示设备业务已执行。
+- `setBLEMTU` 接受 23 至 517 的整数，等待系统 MTU 变化事件；`getBLEMTU` 返回当前观测值，初始值为 23。写入不自动分片，单次长度不超过 `min(MTU - 3, 512)` 字节。
+- `createBLEConnection` 要求设备在当前适配器生命周期内已被扫描发现，且 deviceId 仍然有效；虚拟地址失效时需要重新扫描。
+- `getConnectedBluetoothDevices` 的 `services` 不能为空，按主服务过滤；系统版本低于 API 21 时返回不支持（`1500105`）。
+- 首次调用 `openBluetoothAdapter` 时会请求系统蓝牙权限 `ohos.permission.ACCESS_BLUETOOTH`，需由用户授权。
+
 
 ## 注意事项
 
@@ -27,4 +35,6 @@
 ## 参考文档
 
 - [UTS API 插件](https://uniapp.dcloud.net.cn/plugin/uts-plugin.html)
+- [Android平台 Bluetooth](https://developer.android.com/develop/connectivity/bluetooth)
 - [iOS平台 CoreBluetooth](https://developer.apple.com/documentation/corebluetooth)
+- [HarmonyOS平台 Bluetooth](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/bluetooth-introduction)
