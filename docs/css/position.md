@@ -479,13 +479,15 @@ position: static | relative | absolute | sticky | fixed;
 
 #### App平台差异
 
-absolute元素相对父组件确定位置，fixed元素位于页面顶层。
+app平台`absolute`元素相对父元素确定位置。
 
-虽然App不支持sticky属性值，但uni-app x提供了全端可用的吸顶组件，另见[sticky组件](../component/sticky.md)
+app平台`fixed`元素相对于页面内容区域确定位置，渲染在页面内容区域顶层，覆盖非fixed元素。
+
+虽然app平台不支持`sticky`属性值，但uni-app x提供了全端可用的吸顶组件，另见[sticky组件](../component/sticky.md)
 
 #### fixed定位@fixed
 
-position: fixed定位时，web端为相对于整个浏览器页面进行定位，app端为相对于页面（除导航栏、tabbar）定位。可以使用css变量使两端表现一致
+position为`fixed`属性值时，web平台在无祖先元素为包含块（Containing Block）时相对于整个浏览器页面Viewport来确定位置，app平台为相对于页面内容区域（除导航栏、tabbar）来确定位置。可以使用css变量使两端表现一致
 
 ```css
 .fixed {
@@ -501,6 +503,15 @@ position: fixed定位时，web端为相对于整个浏览器页面进行定位�
   top: calc(var(--uni-safe-area-inset-top) + 10px); 
 }
 ```
+
+web平台当`fixed`元素的某个祖先元素满足以下条件之一时，它会成为 fixed 元素的包含块（Containing Block），此时 position: fixed 的表现会变得类似 position: absolute（会随该祖先元素或页面滚动/变换而移动）：
+- 变换与透视：祖先元素设置了非 none 的 transform、perspective 或 scale / rotate / translate 等变换属性
+- 滤镜与背景滤镜：祖先元素设置了非 none 的 filter 或 backdrop-filter。
+- 布局隔离（contain）：祖先的 contain 属性包含 layout、paint、strict 或 content。
+- 渲染提示（will-change）：祖先的 will-change 值包含了上述会创建包含块的属性（例如 will-change: transform）。
+
+**app平台不支持相对祖先元素包含块（Containing Block）来确定位置的机制，遇到这种情况可以使用`absolute`来解决**
+
 
 
 ### 参见
