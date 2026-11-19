@@ -185,7 +185,9 @@ class SelectorQuery implements UniApp.SelectorQuery {
       const page =
         __PLATFORM__ === 'h5'
           ? this._component.$.$pageInstance?.proxy
-          : resolveComponentInstance(this._component.$root)
+          : this._component.$root
+          ? resolveComponentInstance(this._component.$root)
+          : null
       if (page) {
         this._page = page
       }
