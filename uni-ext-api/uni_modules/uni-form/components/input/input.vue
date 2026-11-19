@@ -72,6 +72,9 @@
 	// #ifdef APP-IOS || APP-HARMONY
 	import { resolveEditorCaretColor } from "../editor-color.ts"
 	// #endif
+	// #ifdef APP-ANDROID
+	import { useFormThemeIsDark } from "../theme.ts"
+	// #endif
 	import {
 		// #ifdef APP-ANDROID || APP-IOS
 		NativeInputView,
@@ -705,13 +708,14 @@
 	watch(() => props.cursorSpacing, (newValue : number) => {
 		inputView?.updateCursorSpacing(newValue)
 	})
-	// 光标色：优先 cursor-color 属性；未设置时取 CSS caret-color（支持 css 变量控制），都没有则跟原生默认
+	// 光标色：优先 cursor-color 属性，其次 CSS caret-color，都未设置时使用主题默认色
+	const isDarkTheme = useFormThemeIsDark()
 	const resolvedCursorColor = computed(() : string => {
 		if (props.cursorColor != '') {
 			return props.cursorColor
 		}
 		const caretColor = style.get('caret-color')
-		return caretColor == null ? '' : caretColor
+		return caretColor || (isDarkTheme.value ? '#0A84FF' : '#007AFF')
 	})
 	watch(resolvedCursorColor, (newValue : string) => {
 		inputView?.updateCursorColor(newValue)
