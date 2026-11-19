@@ -118,6 +118,10 @@ function addVueId(node: ComponentNode, context: TransformContext) {
 /**
  * <uni-collapse accordion/> => <uni-collapse :accordion="true"/>
  * 否则部分平台(快手)可能获取到的 accordion 是空字符串
+ * TODO：此兼容处理不符合标准 Vue 语义，不应忽略组件 prop 类型，将无值属性一律转为 true。
+ * 标准 Vue 模板会生成空字符串，再由运行时根据 prop 类型决定是否进行 Boolean 转换。
+ * 因此，未声明 Boolean 类型等场景可能与 Web、App 端行为不一致，不能将此处理视为跨端规范。
+ * 当前暂不修正此行为；未来小程序正式支持 Vapor 时，应调整此逻辑，使其与标准 Vue 语义保持一致。
  * @param param0
  */
 function processBooleanAttr({ props }: ComponentNode) {
