@@ -467,7 +467,7 @@ Web: 5.02; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.02; iOS: 
       }
 
       alignArrowStyle.value = arrowStyleMap.get(alignType) as string
-      alignContainerStyle.value = `left: ${targetLeft}px; top: ${rect.bottom}px; background-color: transparent; transform: none`
+      alignContainerStyle.value = `left: ${targetLeft}px; top: ${rect.bottom}px; width: 200px; height: auto; background-color: transparent; transform: none`
       showAlignContainer.value = true
       return
     }
@@ -490,14 +490,14 @@ Web: 5.02; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.02; iOS: 
         const targetTop = (nodeInfo.top as number) + (nodeInfo.height as number)
 
         // #ifdef MP-WEIXIN
-        alignContainerStyle.value = `left: ${targetLeft}px; top: ${targetTop}px; background-color: transparent; transform: none`
+        alignContainerStyle.value = `left: ${targetLeft}px; top: ${targetTop}px; width: 200px; height: auto; background-color: transparent; transform: none`
         // #endif
 
         // #ifndef MP-WEIXIN
         const windowInfo = uni.getWindowInfo()
         const maxLeft = Math.max(0, windowInfo.windowWidth - containerWidth)
         const popupLeft = Math.max(0, Math.min(targetLeft, maxLeft))
-        alignContainerStyle.value = `transform: translate(${popupLeft}px, ${targetTop}px); background-color: transparent; transition: none`
+        alignContainerStyle.value = `transform: translate(${popupLeft}px, ${targetTop}px); width: 200px; height: auto; background-color: transparent; transition: none`
         // #endif
 
         showAlignContainer.value = true
