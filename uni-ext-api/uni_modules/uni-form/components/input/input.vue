@@ -47,14 +47,11 @@
         @blur="onBlur"
         @change="onChange"
         @confirm="onConfirm"
-        :selection-color="selectionColor satisfies string" change:selection-color="inputCpp.updateSelectionColor"
         :input-configuration="harmonyInputConfiguration satisfies string" change:input-configuration="inputCpp.applyConfiguration"
         :input-runtime-state="harmonyInputRuntimeState satisfies string" change:input-runtime-state="inputCpp.applyRuntimeState"
       ></native-view>
       <!-- #endif -->
     </view>
-		<!-- 选区颜色探针：读取 selection-class 的 background-color -->
-		<SelectionStyle v-if="props.selectionClass != ''" :class="props.selectionClass" @change="onSelectionColorChange" />
 	</view>
 	<!-- #endif -->
 	<!-- #ifdef WEB -->
@@ -66,7 +63,6 @@
 <!-- #endif -->
 <script setup lang="ts">
 	// #ifdef APP-IOS || APP-HARMONY || APP-ANDROID
-	import SelectionStyle from "../selection-style.vue"
 	import { useEditorColor } from "../editor-color.ts"
 	// #endif
 	// #ifdef APP-IOS || APP-HARMONY
@@ -267,7 +263,6 @@
 		},
 		externalClasses: [
 			'placeholder-class',
-			'selection-class',
 		]
 	})
 
@@ -362,8 +357,6 @@
 	 }
 	 */
 		placeholderClass ?: string.ClassString;
-		/** Background color of the native text selection (选区背景色样式类). */
-		selectionClass ?: string.ClassString;
 		/**
 	 * @uniPlatform {
 	   "app": {
@@ -494,7 +487,6 @@
 		placeholder: '',
 		placeholderStyle: '',
 		placeholderClass: '',
-		selectionClass: '',
 		maxlength: -1,
 		cursorSpacing: 0,
 		cursorColor: '',
@@ -515,19 +507,6 @@
 	})
 	// #endif
 
-	// #ifdef APP-IOS || APP-HARMONY || APP-ANDROID
-	const selectionColor = ref('')
-	function onSelectionColorChange(color: string) {
-		selectionColor.value = color
-		// #ifdef APP-IOS || APP-ANDROID
-		inputView?.updateSelectionColor(color)
-		// #endif
-	}
-	watch(() => props.selectionClass, value => {
-		if (value == '') onSelectionColorChange('')
-	})
-	// #endif
-
 	const emit = defineEmits<{
 		// @internal
 		(e : 'update:value', value : string) : void
@@ -543,7 +522,6 @@
 	function syncAndroidInputStyleProps() {
 		inputView?.updateFontSize(rpx2px(style.get('font-size')))
 		inputView?.updateColor(valueColor.value)
-		inputView?.updateSelectionColor(selectionColor.value)
 		inputView?.updateLetterSpacing(rpx2px(style.get('letter-spacing')))
 		inputView?.updateFontWeight(style.get('font-weight'))
 		inputView?.updateFontStyle(style.get('font-style'))
@@ -849,7 +827,6 @@
 		})
 		inputView?.updateColor(valueColor.value)
 		inputView?.updateCursorColor(caretColor.value)
-		inputView?.updateSelectionColor(selectionColor.value)
 	}
 	// #endif
 

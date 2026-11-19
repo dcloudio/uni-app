@@ -1243,10 +1243,6 @@ export class NativeInputView implements UITextFieldDelegate {
 	}
 	
 	// UITextFieldDelegate 相关
-	textFieldDidChangeSelection(textField: UITextField) {
-		this.textField?.updateEditorTint()
-	}
-
 	textFieldDidBeginEditing(textField: UITextField) {
 		this.applyInputTextDirection()
 	    this.state.beginEditValue = textField.text ?? ""
@@ -1380,10 +1376,6 @@ export class NativeInputView implements UITextFieldDelegate {
 		this.textField?.setEditorCursorColor(value == '' ? null : UTSiOS.colorWithString(value))
 	}
 
-	updateSelectionColor(value: string) {
-		this.textField?.setEditorSelectionColor(value == '' ? null : UTSiOS.colorWithString(value))
-	}
-	
 	// 更新input 自动获取焦点，与focus属性对比，此属性只会首次生效。
 	updateAutoFocus(value: boolean) {
 		this.elementImpl?.updateAutofocusFromNative(value)
@@ -1660,10 +1652,6 @@ export class NativeTextareaView implements UITextViewDelegate {
 		NotificationCenter.default.addObserver(this, selector= #selector(keyboardFrameWillChange), name= UIResponder.keyboardWillChangeFrameNotification, object= null)
 	}
 
-	textViewDidChangeSelection(textView: UITextView) {
-		this.textView?.updateEditorTint()
-	}
-
 	textViewDidBeginEditing(textView: UITextView) {
 		this.state.beginEditValue = textView.text ?? ""
 		this.keyboardController.beginEditing()
@@ -1793,10 +1781,6 @@ export class NativeTextareaView implements UITextViewDelegate {
 
 	updateCursorColor(value: string) {
 		this.textView?.setEditorCursorColor(value == '' ? null : UTSiOS.colorWithString(value))
-	}
-
-	updateSelectionColor(value: string) {
-		this.textView?.setEditorSelectionColor(value == '' ? null : UTSiOS.colorWithString(value))
 	}
 
 	updateAutoFocus(value: boolean) {

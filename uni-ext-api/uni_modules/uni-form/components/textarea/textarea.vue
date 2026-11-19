@@ -9,8 +9,6 @@
 				@blur="onBlur" @keyboardheightchange="onKeyboardHeightChange" @change="onChange"
 				@linechange="onLineChange" @confirm="onConfirm"></native-view>
 		</view>
-		<!-- 选区颜色探针：读取 selection-class 的 background-color -->
-		<SelectionStyle v-if="props.selectionClass != ''" :class="props.selectionClass" @change="onSelectionColorChange" />
 	</view>
 	<!-- #endif -->
 	<!-- #ifndef APP-ANDROID -->
@@ -27,9 +25,6 @@
 			<native-view style="height: 100%; width: 100%;" @init="onViewInit"></native-view>
 			<!-- #endif -->
 		</view>
-		<!-- #ifdef APP-IOS || APP-HARMONY -->
-		<SelectionStyle v-if="props.selectionClass != ''" :class="props.selectionClass" @change="onSelectionColorChange" />
-		<!-- #endif -->
 	</view>
 	<!-- #endif -->
 	<!-- #endif -->
@@ -39,7 +34,6 @@
 </template>
 <script setup lang="ts">
 	// #ifdef APP-IOS || APP-HARMONY || APP-ANDROID
-	import SelectionStyle from "../selection-style.vue"
 	import { useEditorColor } from "../editor-color.ts"
 	// #endif
 	// #ifdef APP-IOS || APP-HARMONY
@@ -211,7 +205,6 @@
 		},
 		externalClasses: [
 			'placeholder-class',
-			'selection-class',
 		]
 	})
 
@@ -302,8 +295,6 @@
 	 }
 	 */
 		placeholderClass ?: string.ClassString;
-		/** Background color of the native text selection (选区背景色样式类). */
-		selectionClass ?: string.ClassString;
 		/**
 	 * @uniPlatform {
 	   "app": {
@@ -442,7 +433,6 @@
 		placeholder: '',
 		placeholderStyle: '',
 		placeholderClass: '',
-		selectionClass: '',
 		maxlength: -1,
 		cursorSpacing: 0,
 		cursorColor: '',
@@ -519,17 +509,6 @@
 	})
 	// #endif
 
-	// #ifdef APP-IOS || APP-HARMONY || APP-ANDROID
-	const selectionColor = ref('')
-	function onSelectionColorChange(color: string) {
-		selectionColor.value = color
-		textareaView?.updateSelectionColor(color)
-	}
-	watch(() => props.selectionClass, value => {
-		if (value == '') onSelectionColorChange('')
-	})
-	// #endif
-
 	const emit = defineEmits<{
 		// @internal
 		(e : 'update:value', value : string) : void
@@ -547,7 +526,6 @@
 		textareaView?.updateFontSize(rpx2px(style.get('font-size')))
 		textareaView?.updateColor(valueColor.value)
 		textareaView?.updateCursorColor(resolvedCursorColor.value)
-		textareaView?.updateSelectionColor(selectionColor.value)
 		textareaView?.updateLineHeight(rpx2px(style.get('line-height')))
 		textareaView?.updateLetterSpacing(rpx2px(style.get('letter-spacing')))
 		textareaView?.updateFontWeight(style.get('font-weight'))
@@ -788,7 +766,6 @@
 		// #ifdef APP-IOS || APP-HARMONY
 		textareaView.updateColor(valueColor.value)
 		textareaView.updateCursorColor(caretColor.value)
-		textareaView.updateSelectionColor(selectionColor.value)
 		// #endif
 		let updatePadding = false
 		style.forEach((value, key) => {
