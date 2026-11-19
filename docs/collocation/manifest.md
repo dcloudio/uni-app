@@ -26,6 +26,7 @@ uni-app x 目前不提供内置模块选择，而是提供了摇树机制自动�
 | app-harmony | [app-harmony 配置项列表](#manifest-app-harmony) | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | HarmonyOS平台配置 |
 | web | [web 配置项列表](#manifest-web) | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | Web平台配置 |
 | mp-weixin | [mp-weixin 配置项列表](#manifest-mp-weixin) | Web: x; 微信小程序: √; Android: x; iOS: x; HarmonyOS: x |   |
+| mp-alipay | [mp-alipay 配置项列表](#manifest-mp-alipay) | Web: x; 微信小程序: x; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 支付宝小程序配置 |
 | __hbuilderx | [__hbuilderx 配置项列表](#manifest-hbuilderx) | Web: x; Android: 4.31; iOS: 4.31 | 用于HBuilderX可视化界面相关操作配置 |
 
 **注意**
@@ -842,21 +843,60 @@ Web: x; 微信小程序: √; Android: x; iOS: x; HarmonyOS: x
 | :- | :- | :- |
 | appid | string | 微信小程序的AppID，登录 https://mp.weixin.qq.com 申请 |
 | setting | object | 微信小程序项目设置，参考 https://uniapp.dcloud.net.cn/collocation/manifest?id=setting |
+| projectname | string | 写入 project.config.json 的项目名称，覆盖 manifest.json 顶层的 name |
+| description | string | 写入 project.config.json 的项目描述 |
+| compileType | string | 写入 project.config.json 的项目编译类型 |
+| libVersion | string | 写入 project.config.json 的调试基础库版本 |
+| miniprogramRoot | string | 写入 project.config.json 的小程序目录，相对于微信开发者工具工程根目录 |
+| pluginRoot | string | 写入 project.config.json 的小程序插件目录 |
+| qcloudRoot | string | 写入 project.config.json 的腾讯云项目目录 |
+| cloudbaseRoot | string | 写入 project.config.json 的云开发项目目录 |
+| packOptions | object | 写入 project.config.json 的打包规则，可配置 ignore 和 include |
+| debugOptions | object | 写入 project.config.json 的开发者工具调试选项 |
+| watchOptions | [watchOptions 配置项列表](#mp-weixin-watchoptions) | 写入 project.config.json 的文件监听选项 |
+| scripts | object | 写入 project.config.json 的开发者工具自定义处理脚本 |
+| condition | object | 写入 project.config.json 的启动条件，pages.json 中的启动条件可覆盖其中的 miniprogram |
 | functionalPages | boolean | 微信小程序是否启用插件功能页，默认关闭 |
 | requiredBackgroundModes | array | 微信小程序需要在后台使用的能力,详见 https://developers.weixin.qq.com/miniprogram/dev/framework/config.html#requiredbackgroundmodes |
 | plugins | object | 使用到的插件，详见 https://developers.weixin.qq.com/miniprogram/dev/framework/plugin/using.html |
-| resizable | boolean | 在iPad上小程序是否支持屏幕旋转，默认关闭 |
+| resizable | boolean | PC 端是否允许调整小程序窗口大小（含最大化），iPad 端是否允许屏幕旋转，默认关闭 |
+| frameset | boolean | 为支持分栏的 PC 微信客户端开启小程序分栏模式，需同时设置 resizable 为 true。该字段写入 app.json |
+| displayMode | 'desktop' \| 'mobile' \| 'pad' | 小程序显示模式 |
+| renderer | 'webview' \| 'skyline' | 小程序的全局渲染后端 |
+| rendererOptions | [rendererOptions 配置项列表](#mp-weixin-rendereroptions) | 渲染后端选项 |
+| componentFramework | 'exparser' \| 'glass-easel' | 小程序组件框架 |
+| componentPlaceholder | object | 全局组件占位配置，用于指定异步组件加载完成前使用的组件 |
+| style | string | 微信小程序内置组件样式版本，可设置为 v2 |
+| useExtendedLib | object | 配置小程序使用的扩展库，例如 WeUI |
+| resolveAlias | object | 微信小程序模块路径别名映射 |
+| entryPagePath | string | 写入 app.json 的默认启动页面路径，覆盖 pages.json 中的同名字段 |
+| window | object | 微信原生窗口配置，会整体替换 pages.json 中 globalStyle 生成的 app.json.window |
+| tabBar | object | 微信原生 tabBar 配置，会整体替换 pages.json 中 tabBar 生成的 app.json.tabBar |
+| preloadRule | object | 写入 app.json 的分包预下载规则，覆盖 pages.json 中的同名字段 |
+| networkTimeout | [networkTimeout 配置项列表](#mp-weixin-networktimeout) | 微信小程序网络超时配置，单位为毫秒，整体覆盖 manifest.json 顶层的 networkTimeout |
+| debug | boolean | 是否开启微信小程序调试模式，覆盖 manifest.json 顶层的 debug |
+| sitemapLocation | string | 小程序页面收录规则文件的路径 |
+| themeLocation | string | 小程序主题配置文件的路径，例如 theme.json |
+| cloud | boolean | 是否开启微信云开发能力 |
+| entranceDeclare | object | 声明微信消息使用小程序打开的入口 |
+| singlePage | [singlePage 配置项列表](#mp-weixin-singlepage) | 小程序单页模式配置 |
+| restartStrategy | 'homePage' \| 'homePageAndLatestPage' | 小程序重新启动时回到首页，或回到首页并恢复最近访问的页面 |
+| halfPage | object | 小程序半屏页面配置 |
+| appBar | object | 小程序原生 AppBar 配置 |
+| supportedMaterials | Array\<object> | 声明可用小程序打开的微信聊天素材类型和处理页面 |
+| multiSelectSupportedMaterials | Array\<object> | 声明可多选后用小程序打开的微信聊天素材类型和处理页面 |
+| chatTools | Array\<object> | 小程序聊天工具及其入口页面配置 |
+| agent | [agent 配置项列表](#mp-weixin-agent) | 微信小程序 AI 开发模式配置，详见 https://doc.dcloud.net.cn/uni-app-x/mp/mp-weixin-ai-develop.html |
 | navigateToMiniProgramAppIdList | array | 需要跳转的小程序列表，详见 https://developers.weixin.qq.com/minigame/dev/reference/configuration/app.html#navigateToMiniProgramAppIdList |
 | permission | object | 微信小程序接口权限相关设置，比如申请位置权限必须填此处详见 https://developers.weixin.qq.com/miniprogram/dev/framework/config.html |
 | workers | string | Worker 代码放置的目录。 详见 https://developers.weixin.qq.com/miniprogram/dev/framework/workers.html |
 | optimization | object | 对微信小程序的优化配置 |
 | cloudfunctionRoot | string | 配置云开发目录，参考 https://uniapp.dcloud.net.cn/collocation/manifest?id=cloudfunctionRoot |
-| scopedSlotsCompiler | string | Vue2 作用域插槽编译模式，uni-app 3.1.19+ 开始支持，可选：legacy、auto、augmented，默认：auto |
 | mergeVirtualHostAttributes | boolean | 合并由 Vue 组件编译而成的小程序组件虚拟节点外层属性，目前仅支持 id（v4.42+）、style（v3.5.1+）、class（v3.5.1+）以及 v-show 指令生成的 hidden（v4.41+） 属性 |
-| slotMultipleInstance | boolean | 模拟单个作用域插槽渲染为多个实例，此配置仅限 Vue2 环境 3.7.12+，Vue3 环境已默认支持 |
 | embeddedAppIdList | array | 要半屏跳转的小程序appid。详见 https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/openEmbeddedMiniProgram.html |
 | requiredPrivateInfos | array | 地理位置相关接口。详见 https://developers.weixin.qq.com/miniprogram/dev/reference/configuration/app.html#requiredPrivateInfos |
 | lazyCodeLoading | string | 目前仅支持值 requiredComponents，代表开启小程序按需注入特性，详见 https://developers.weixin.qq.com/miniprogram/dev/reference/configuration/app.html#lazyCodeLoading |
+| nativeTags | Array\<string> | 指定需要按微信原生组件编译的标签 |
 | enableVirtualHost | boolean | 是否为组件启用virtualHost，默认启用 |
 | darkmode | boolean | 是否开启暗黑模式 |
 
