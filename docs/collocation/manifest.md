@@ -900,6 +900,182 @@ Web: x; 微信小程序: √; Android: x; iOS: x; HarmonyOS: x
 | enableVirtualHost | boolean | 是否为组件启用virtualHost，默认启用 |
 | darkmode | boolean | 是否开启暗黑模式 |
 
+#### watchOptions 配置项列表 @mp-weixin-watchoptions
+
+写入 project.config.json 的文件监听选项
+
+
+
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| ignore | Array\<string> | 开发者工具忽略监听的路径列表 |
+
+#### rendererOptions 配置项列表 @mp-weixin-rendereroptions
+
+渲染后端选项
+
+
+
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| skyline | [skyline 配置项列表](#rendereroptions-skyline) | Skyline 渲染配置 |
+
+##### skyline 配置项列表 @rendereroptions-skyline
+
+Skyline 渲染配置
+
+
+
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| defaultDisplayBlock | boolean | 是否将默认布局设为 block |
+| defaultContentBox | boolean | 是否将默认盒模型设为 content-box |
+| disableABTest | boolean | 是否关闭 Skyline 灰度实验 |
+| sdkVersionBegin | string | 启用 Skyline 的基础库起始版本 |
+| sdkVersionEnd | string | 启用 Skyline 的基础库结束版本 |
+
+#### networkTimeout 配置项列表 @mp-weixin-networktimeout
+
+微信小程序网络超时配置，单位为毫秒，整体覆盖 manifest.json 顶层的 networkTimeout
+
+
+
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| request | number | 网络请求超时 |
+| connectSocket | number | WebSocket 连接超时 |
+| uploadFile | number | 上传文件超时 |
+| downloadFile | number | 下载文件超时 |
+
+#### singlePage 配置项列表 @mp-weixin-singlepage
+
+小程序单页模式配置
+
+
+
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| navigationBarFit | 'float' \| 'squeezed' | 单页模式下导航栏与内容的布局方式 |
+
+#### agent 配置项列表 @mp-weixin-agent
+
+微信小程序 AI 开发模式配置，详见 https://doc.dcloud.net.cn/uni-app-x/mp/mp-weixin-ai-develop.html
+
+
+
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| instruction | string | 小程序使用说明文件的路径 |
+| pageMetadata | string | 页面元数据文件的路径 |
+| skills | Array\<object> | 小程序提供的技能列表 |
+
+### mp-alipay 配置项列表 @manifest-mp-alipay
+
+支付宝小程序配置
+
+Web: x; 微信小程序: x; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x
+
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| appid | string | 写入 mini.project.json 的支付宝小程序 AppID，留空时编译器使用 touristappid |
+| projectname | string | 写入 mini.project.json 的项目名称，覆盖 manifest.json 顶层的 name |
+| component2 | boolean | 是否在 mini.project.json 中启用 component2 编译 |
+| enableAppxNg | boolean | 是否使用支付宝小程序基础库 2.x 构建，写入 mini.project.json |
+| axmlStrictCheck | boolean | 是否开启 AXML 严格语法检查，写入 mini.project.json |
+| enableDistFileMinify | boolean | 是否在真机预览或调试时压缩编译产物，写入 mini.project.json |
+| enableParallelLoader | boolean | 是否开启多进程编译，写入 mini.project.json |
+| enableNodeModuleBabelTransform | boolean | 在小程序基础库 2.x 下是否使用 Babel 编译 node_modules 中的模块，写入 mini.project.json |
+| format | number | mini.project.json 的配置格式版本 |
+| pluginResolution | object | 写入 mini.project.json 的插件解析选项 |
+| developOptions | [developOptions 配置项列表](#mp-alipay-developoptions) | 写入 mini.project.json 的开发选项，与模板中的配置递归合并 |
+| compileOptions | [compileOptions 配置项列表](#mp-alipay-compileoptions) | 写入 mini.project.json 的编译选项，与模板中的配置递归合并 |
+| uploadExclude | Array\<string> | 写入 mini.project.json 的上传排除规则 |
+| assetsInclude | Array\<string> | 写入 mini.project.json 的额外资源匹配规则 |
+| setting | object | 写入 mini.project.json 的通用工程设置 |
+| miniprogramRoot | string | 写入 mini.project.json 的小程序目录 |
+| cloudfunctionRoot | string | 写入 mini.project.json 的云函数目录 |
+| qcloudRoot | string | 写入 mini.project.json 的通用工程字段，用于指定腾讯云项目目录 |
+| pluginRoot | string | 写入 mini.project.json 的小程序插件目录 |
+| cloudbaseRoot | string | 写入 mini.project.json 的通用工程字段，用于指定云开发目录 |
+| compileType | string | 写入 mini.project.json 的项目编译类型 |
+| libVersion | string | 写入 mini.project.json 的基础库版本 |
+| packOptions | object | 写入 mini.project.json 的通用打包选项 |
+| debugOptions | object | 写入 mini.project.json 的通用调试选项 |
+| scripts | object | 写入 mini.project.json 的自定义脚本配置 |
+| watchOptions | object | 写入 mini.project.json 的通用文件监听选项 |
+| window | [window 配置项列表](#mp-alipay-window) | 支付宝原生窗口配置，会整体替换 pages.json 中 globalStyle 生成的 app.json.window |
+| tabBar | object | 支付宝原生 tabBar 配置，会整体替换 pages.json 中 tabBar 生成的 app.json.tabBar，原生栏目列表字段为 items |
+| plugins | object | 写入 app.json 的支付宝小程序插件配置，覆盖 pages.json 中的同名字段 |
+| permission | object | 透传到 app.json 的小程序权限配置 |
+| preloadRule | object | 透传到 app.json 的分包预下载规则，覆盖 pages.json 中的同名字段 |
+| subPackageBuildType | 'shared' | 编译器固定在 app.json 中写入 shared，使主包与分包共享 JS 模块 |
+| lazyCodeLoading | string | 写入 app.json 的代码按需执行配置 |
+| workers | Array\<string> | 支付宝原生 Worker 脚本路径数组，写入 app.json。uni-app x 收集到 Worker 时会用去重后的编译产物路径替换此数组 |
+| darkmode | boolean | 是否开启暗黑模式，编译为 app.json 中的 darkMode，并覆盖同名原生配置 |
+| darkMode | boolean | 透传到 app.json 的支付宝原生暗黑模式配置，优先使用 uni-app x 的 darkmode 配置 |
+| themeLocation | string | 写入 app.json 的主题配置文件路径 |
+| sitemapLocation | string | 透传到 app.json 的页面收录配置文件路径 |
+| debug | boolean | 写入 app.json 的调试模式配置，覆盖 manifest.json 顶层的 debug |
+| networkTimeout | object | 透传到 app.json 的网络超时配置，整体覆盖 manifest.json 顶层的 networkTimeout |
+| agent | object | 写入 app.json 的小程序 Agent 配置，编译时复制其中引用的说明、页面元数据和技能资源 |
+| nativeTags | Array\<string> | 指定需要按支付宝原生组件编译的标签 |
+| enableVirtualHost | boolean | 是否为 uni-app x 组件启用虚拟宿主节点 |
+| mergeVirtualHostAttributes | boolean | 是否将组件虚拟宿主节点上的属性合并到组件内部 |
+| uniStatistics | object | 支付宝小程序的 uni 统计配置，可覆盖 manifest.json 顶层的同名选项 |
+
+#### developOptions 配置项列表 @mp-alipay-developoptions
+
+写入 mini.project.json 的开发选项，与模板中的配置递归合并
+
+
+
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| parallel | boolean | 是否启用并行处理 |
+| minify | boolean | 是否压缩开发产物 |
+
+#### compileOptions 配置项列表 @mp-alipay-compileoptions
+
+写入 mini.project.json 的编译选项，与模板中的配置递归合并
+
+
+
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| component2 | boolean | 编译时是否启用 component2 |
+| transpile | [transpile 配置项列表](#compileoptions-transpile) | 代码转译选项 |
+
+##### transpile 配置项列表 @compileoptions-transpile
+
+代码转译选项
+
+
+
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| script | [script 配置项列表](#transpile-script) | 脚本转译选项 |
+
+###### script 配置项列表 @transpile-script
+
+脚本转译选项
+
+
+
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| ignore | Array\<string> | 跳过脚本转译的路径或匹配规则 |
+
+#### window 配置项列表 @mp-alipay-window
+
+支付宝原生窗口配置，会整体替换 pages.json 中 globalStyle 生成的 app.json.window
+
+
+
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| defaultTitle | string | 页面默认标题 |
+| allowsBounceVertical | boolean,string | 是否允许页面纵向回弹，uni-app x 编译时会把布尔值转为 YES 或 NO |
+
 ### HBuilderX配置 @manifest-__hbuilderx
 
 用于HBuilderX可视化界面相关操作配置
