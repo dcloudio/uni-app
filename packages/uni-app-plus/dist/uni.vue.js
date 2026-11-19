@@ -1,4 +1,4 @@
-import { ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, isUniLifecycleHook, UTSJSONObject, decodedQuery, ON_LOAD, ON_SHOW, LINEFEED, RENDERJS_MODULES, formatLog, WXS_PROTOCOL, WXS_MODULES, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
+import { ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, isUniLifecycleHook, decodedQuery, UTSJSONObject, ON_LOAD, ON_SHOW, LINEFEED, RENDERJS_MODULES, formatLog, WXS_PROTOCOL, WXS_MODULES, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
 import { isString, isArray, hasOwn, isFunction } from '@vue/shared';
 import { injectHook, logError } from 'vue';
 

@@ -11015,16 +11015,19 @@ class SelectorQuery {
     in(component) {
         this._component = resolveComponentInstance(component);
         /**
-         * 如下逻辑用于处理下述场景
-         * 在B页面延迟1s调用createSelectQuery不传context，调用in方法传入当前实例。在1s内从B页面返回A页面
-         * 等createSelectorQuery执行时，context已经不再是B页面的实例，而是A页面的实例
-         * 但是this._component仍然是B页面的实例，两者无法对应导致findElem报错
-         * web端findElem仅依赖component实例，不会报错
+         * 页面切换后的延迟调用中，当前页可能与 component 所属页不同，需同步 _page。
+         * H5 的 $root 指向 App，所属页面（包括弹页）应取 $pageInstance；其他平台保留 $root。
+         * 文档滚动时，视口尺寸和滚动偏移直接读取 documentElement。改为 uni-page-body
+         * 区域滚动后，selectViewport() 必须通过所属页面实例定位正文滚动区域。
+         * 若把 App 当作页面，getPageBody() 找不到正文并回退 documentElement，便会读错数据；
+         * 未绑定组件作用域的普通节点查询也可能扩大到整个 App。
          */
-        if (this._component && this._component.$root) {
-            const root = resolveComponentInstance(this._component.$root);
-            if (root) {
-                this._page = root;
+        if (this._component) {
+            const page = this._component.$root
+                    ? resolveComponentInstance(this._component.$root)
+                    : null;
+            if (page) {
+                this._page = page;
             }
         }
         return this;

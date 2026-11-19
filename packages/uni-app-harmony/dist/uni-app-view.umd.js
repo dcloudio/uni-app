@@ -7060,21 +7060,31 @@
     var {
       onPageScroll,
       onReachBottom,
-      onReachBottomDistance
+      onReachBottomDistance,
+      scrollElement
     } = _ref;
     var ticking = false;
     var hasReachBottom = false;
     var reachBottomLocking = true;
+    var elementLastScrollHeight = 0;
+    var elementTestReachBottomTimer;
+    var unlockTimer;
+    var frame;
+    var disposed = false;
     var isReachBottom = () => {
       var {
         scrollHeight
-      } = document.documentElement;
-      var windowHeight = window.innerHeight;
-      var scrollY = window.scrollY;
+      } = scrollElement || document.documentElement;
+      var windowHeight = scrollElement ? scrollElement.clientHeight : window.innerHeight;
+      var scrollY = scrollElement ? scrollElement.scrollTop : window.scrollY;
       var isBottom = scrollY > 0 && scrollHeight > windowHeight && scrollY + windowHeight + onReachBottomDistance >= scrollHeight;
-      var heightChanged = Math.abs(scrollHeight - lastScrollHeight) > onReachBottomDistance;
+      var heightChanged = Math.abs(scrollHeight - (scrollElement ? elementLastScrollHeight : lastScrollHeight)) > onReachBottomDistance;
       if (isBottom && (!hasReachBottom || heightChanged)) {
-        lastScrollHeight = scrollHeight;
+        if (scrollElement) {
+          elementLastScrollHeight = scrollHeight;
+        } else {
+          lastScrollHeight = scrollHeight;
+        }
         hasReachBottom = true;
         return true;
       }
@@ -7084,12 +7094,15 @@
       return false;
     };
     var trigger2 = () => {
-      onPageScroll && onPageScroll(window.pageYOffset);
+      if (disposed) {
+        return;
+      }
+      onPageScroll && onPageScroll(scrollElement ? scrollElement.scrollTop : window.pageYOffset);
       function testReachBottom() {
         if (isReachBottom()) {
           onReachBottom && onReachBottom();
           reachBottomLocking = false;
-          setTimeout(function() {
+          unlockTimer = setTimeout(function() {
             reachBottomLocking = true;
           }, 350);
           return true;
@@ -7099,18 +7112,31 @@
         if (testReachBottom())
           ;
         else {
-          testReachBottomTimer = setTimeout(testReachBottom, 300);
+          if (scrollElement) {
+            elementTestReachBottomTimer = setTimeout(testReachBottom, 300);
+          } else {
+            testReachBottomTimer = setTimeout(testReachBottom, 300);
+          }
         }
       }
       ticking = false;
     };
-    return function onScroll() {
-      clearTimeout(testReachBottomTimer);
+    function onScroll() {
+      clearTimeout(scrollElement ? elementTestReachBottomTimer : testReachBottomTimer);
       if (!ticking) {
-        requestAnimationFrame(trigger2);
+        frame = requestAnimationFrame(trigger2);
       }
       ticking = true;
+    }
+    onScroll.dispose = () => {
+      disposed = true;
+      if (frame !== void 0) {
+        cancelAnimationFrame(frame);
+      }
+      clearTimeout(unlockTimer);
+      clearTimeout(scrollElement ? elementTestReachBottomTimer : testReachBottomTimer);
     };
+    return onScroll;
   }
   function getRealRoute(fromRoute, toRoute) {
     if (toRoute.indexOf("/") === 0) {
@@ -27326,7 +27352,7 @@
   function createDatasetSnapshot(dataset) {
     return dataset;
   }
-  function getRootInfo(fields2) {
+  function getRootInfo(fields2, page) {
     var info = {};
     if (fields2.id) {
       info.id = "";

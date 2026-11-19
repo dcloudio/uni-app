@@ -1,6 +1,6 @@
 import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, getUniElementPage, once, getEnvLocale, I18N_JSON_DELIMITERS, Emitter, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, normalizeTarget, passive, LINEFEED, parseQuery, NAVBAR_HEIGHT, ON_THEME_CHANGE, removeLeadingSlash, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, decodedQuery, UNI_SSR_TITLE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, PRIMARY_COLOR, debounce, ON_LOAD, ON_READY, ON_UNLOAD, ON_RESIZE, ON_WEB_INVOKE_APP_SERVICE, callOptions, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2 } from "@dcloudio/uni-shared";
-import { defineVaporComponent, createPlainElement, openBlock, createBlock, ref, watch, initUniElement, setAttr, template, getCurrentInstance, warn, unref, reactive, onMounted, onBeforeUnmount, computed, inject, onBeforeMount, nextTick, isVNode, createElementBlock, Fragment, createElementVNode, Comment, Text, cloneVNode, renderList, createVNode, defineComponent as defineComponent$2, mergeProps, withDirectives, vShow, onActivated, shallowRef, watchEffect, provide, isReactive, createFor, createCommentVNode, VaporKeepAlive, createDynamicComponent, useSSRContext, onServerPrefetch, ssrContextKey, markRaw, onUnmounted, toRaw, createKeyedFragment, createTextNode, renderEffect, setText, remove, setDynamicProps, effectScope, insert, syncSelectValue, onDeactivated, useAttrs as useAttrs$1, useSlots, withCtx, renderSlot, isInSSRComponentSetup, injectHook, toDisplayString, queuePostFlushCb, logError } from "vue";
+import { defineVaporComponent, createPlainElement, openBlock, createBlock, ref, watch, initUniElement, setAttr, template, getCurrentInstance, warn, unref, reactive, onMounted, onBeforeUnmount, computed, inject, onBeforeMount, nextTick, isVNode, createElementBlock, Fragment, createElementVNode, Comment, Text, cloneVNode, renderList, createVNode, defineComponent as defineComponent$2, mergeProps, withDirectives, vShow, onActivated, shallowRef, watchEffect, provide, isReactive, onBeforeDeactivate, createFor, createCommentVNode, VaporKeepAlive, createDynamicComponent, useSSRContext, onServerPrefetch, ssrContextKey, markRaw, onUnmounted, toRaw, createKeyedFragment, createTextNode, renderEffect, setText, remove, setDynamicProps, effectScope, insert, syncSelectValue, onDeactivated, useAttrs as useAttrs$1, useSlots, withCtx, renderSlot, isInSSRComponentSetup, injectHook, toDisplayString, queuePostFlushCb, logError } from "vue";
 import { capitalize, camelize, isArray, isString, extend, isFunction, hyphenate, hasOwn, isPlainObject, isObject, toRawType, makeMap as makeMap$1, isPromise, EMPTY_OBJ, Namespaces } from "@vue/shared";
 import { useRoute, VaporRouterView, useRouter, createRouter, createMemoryHistory } from "vue-router";
 import { ssrRenderAttrs, ssrInterpolate, ssrRenderComponent, ssrRenderStyle, ssrRenderAttr, ssrRenderClass, ssrRenderSlot, ssrRenderList } from "vue/server-renderer";
@@ -3304,12 +3304,36 @@ const envMethod = /* @__PURE__ */ (() => "env")();
 function normalizeWindowBottom(windowBottom) {
   return envMethod ? `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))` : `${windowBottom}px`;
 }
+function getPageBody(instance) {
+  var _a;
+  return (_a = getPageInstanceByChild(instance)) == null ? void 0 : _a.__pageBodyEl;
+}
+function usePageBodyScrollPosition(instance) {
+  let position;
+  onBeforeDeactivate(() => {
+    const body = getPageBody(instance);
+    if (body) {
+      position = { left: body.scrollLeft, top: body.scrollTop };
+    }
+  });
+  onActivated(() => {
+    const body = getPageBody(instance);
+    if (body && position) {
+      body.scrollLeft = position.left;
+      body.scrollTop = position.top;
+    }
+  });
+}
 const homeDialogPages = [];
 const homeSystemDialogPages = [];
 function getPageElement(page) {
   {
     throw new Error("Not support get page element in non-browser environment");
   }
+}
+function getPageBodyElement(page) {
+  const pageElement = getPageElement();
+  return pageElement;
 }
 class UniPageImpl {
   constructor({
@@ -3330,13 +3354,12 @@ class UniPageImpl {
     return this.pageBody.width;
   }
   get height() {
-    const pageEle = getPageElement();
-    const pageHead = pageEle.querySelector("uni-page-head");
+    var _a, _b, _c;
+    const pageHead = (_c = (_b = (_a = this.vm) == null ? void 0 : _a.$pageLayoutInstance) == null ? void 0 : _b.refs.pageHead) == null ? void 0 : _c.$el;
     return this.pageBody.height + (pageHead ? pageHead.clientHeight : 0);
   }
   get pageBody() {
-    const pageEle = getPageElement();
-    const pageBody = pageEle.querySelector("uni-page-wrapper");
+    const pageBody = getPageBodyElement();
     const pageWrapperInfo = getPageWrapperInfo(pageBody);
     return {
       top: pageWrapperInfo.top,
@@ -3348,8 +3371,7 @@ class UniPageImpl {
     };
   }
   get safeAreaInsets() {
-    const pageEle = getPageElement();
-    const pageBody = pageEle.querySelector("uni-page-wrapper");
+    const pageBody = getPageBodyElement();
     return getSafeAreaInsets(pageBody);
   }
   getPageStyle() {
@@ -3494,7 +3516,7 @@ class UniNormalPageImpl extends UniPageImpl {
   }
 }
 function initXPage(vm, route, page) {
-  var _a, _b, _c;
+  var _a, _b;
   initPageVm(vm, page);
   if (!("$pageLayoutInstance" in vm)) {
     Object.defineProperty(vm, "$pageLayoutInstance", {
@@ -3551,7 +3573,6 @@ function initXPage(vm, route, page) {
     pageInstance.$dialogPage.$vm = vm;
     vm.$basePage.fullPath = vm.$basePage.path;
   }
-  (_c = pageInstance.proxy) == null ? void 0 : _c.$el;
 }
 const SEP = "$$";
 const currentPagesMap = /* @__PURE__ */ new Map();
@@ -3987,7 +4008,7 @@ function getIconClass(item) {
 }
 const _hoisted_1$5 = { class: "uni-left-window" };
 const _hoisted_2$2 = { class: "uni-right-window" };
-const _hoisted_3$2 = { key: 5 };
+const _hoisted_3$2 = { key: 6 };
 const LayoutComponent = /* @__PURE__ */ defineSystemComponent({
   name: "Layout",
   setup() {
@@ -4026,16 +4047,14 @@ const LayoutComponent = /* @__PURE__ */ defineSystemComponent({
       }
       return openBlock(), createBlock(FirstPageComponent);
     }
+    function renderTabBar() {
+      if (__UNI_FEATURE_TABBAR__) {
+        return withDirectives((openBlock(), createBlock(TabBar, { key: 2 })), [[vShow, unref(showTabBar)]]);
+      }
+    }
     function renderLayout() {
       if (__UNI_FEATURE_RESPONSIVE__) {
-        return openBlock(), createBlock("uni-layout", {
-          key: 2,
-          class: {
-            "uni-app--showtopwindow": __UNI_FEATURE_TOPWINDOW__ && layoutState.showTopWindow,
-            "uni-app--showleftwindow": __UNI_FEATURE_LEFTWINDOW__ && layoutState.showLeftWindow,
-            "uni-app--showrightwindow": __UNI_FEATURE_RIGHTWINDOW__ && layoutState.showRightWindow
-          }
-        }, [normalizeVNode(() => __UNI_FEATURE_TOPWINDOW__ && TopWindow && withDirectives((openBlock(), createBlock("uni-top-window", _hoisted_3$2, [createVNode("div", {
+        return openBlock(), createBlock(Fragment, { key: 3 }, [normalizeVNode(() => __UNI_FEATURE_TOPWINDOW__ && TopWindow && withDirectives((openBlock(), createBlock("uni-top-window", _hoisted_3$2, [createVNode("div", {
           class: "uni-top-window",
           style: layoutState.topWindowStyle
         }, [createVNode(TopWindow, mergeProps({
@@ -4045,9 +4064,9 @@ const LayoutComponent = /* @__PURE__ */ defineSystemComponent({
           class: "uni-top-window--placeholder",
           style: { height: layoutState.topWindowHeight + "px" }
         })])), [[vShow, layoutState.showTopWindow || layoutState.apiShowTopWindow]])), createVNode("uni-content", null, [
-          createVNode("uni-main", null, [normalizeVNode(() => renderPage())]),
+          createVNode("uni-main", null, [normalizeVNode(() => renderPage()), normalizeVNode(() => renderTabBar())]),
           normalizeVNode(() => __UNI_FEATURE_LEFTWINDOW__ && LeftWindow && withDirectives((openBlock(), createBlock("uni-left-window", {
-            key: 3,
+            key: 4,
             "data-show": layoutState.apiShowLeftWindow || void 0,
             style: layoutState.leftWindowStyle
           }, [layoutState.apiShowLeftWindow ? (openBlock(), createBlock("div", {
@@ -4055,21 +4074,21 @@ const LayoutComponent = /* @__PURE__ */ defineSystemComponent({
             class: "uni-mask"
           })) : normalizeVNode(() => null), createVNode("div", _hoisted_1$5, [createVNode(LeftWindow, mergeProps({ ref: leftWindowRef }, windowState.value), null, 16)])])), [[vShow, layoutState.showLeftWindow || layoutState.apiShowLeftWindow]])),
           normalizeVNode(() => __UNI_FEATURE_RIGHTWINDOW__ && RightWindow && withDirectives((openBlock(), createBlock("uni-right-window", {
-            key: 4,
+            key: 5,
             "data-show": layoutState.apiShowRightWindow || void 0,
             style: layoutState.rightWindowStyle
           }, [layoutState.apiShowRightWindow ? (openBlock(), createBlock("div", {
             key: 0,
             class: "uni-mask"
           })) : normalizeVNode(() => null), createVNode("div", _hoisted_2$2, [createVNode(RightWindow, mergeProps({ ref: rightWindowRef }, windowState.value), null, 16)])])), [[vShow, layoutState.showRightWindow || layoutState.apiShowRightWindow]]))
-        ])]);
+        ])], 64);
       }
-      return renderPage();
+      return openBlock(), createBlock(Fragment, null, [normalizeVNode(() => renderPage()), normalizeVNode(() => renderTabBar())], 64);
     }
     return () => (openBlock(), createBlock("uni-app", {
       ref: rootRef,
       class: clazz.value
-    }, [normalizeVNode(() => renderLayout()), normalizeVNode(() => __UNI_FEATURE_TABBAR__ && withDirectives((openBlock(), createBlock(TabBar, null, null, 512)), [[vShow, unref(showTabBar)]]))], 512));
+    }, [normalizeVNode(() => renderLayout())], 512));
   }
 });
 function useAppClass(showTabBar) {
@@ -4077,6 +4096,7 @@ function useAppClass(showTabBar) {
   return computed(() => {
     return {
       "uni-app--showtabbar": showTabBar && showTabBar.value,
+      "uni-app--tabbar-top": __UNI_FEATURE_TABBAR__ && useTabBar().position === "top",
       "uni-app--maxwidth": showMaxWidth.value
     };
   });
@@ -4193,10 +4213,10 @@ function useState() {
   });
   watch(() => layoutState.topWindowHeight, (value) => updateCssVar({ "--top-window-height": value + "px" }));
   watch(() => layoutState.marginWidth, (value) => updateCssVar({ "--window-margin": value + "px" }));
-  watch(() => layoutState.leftWindowWidth + layoutState.marginWidth, (value) => {
+  watch(() => (layoutState.showLeftWindow && !layoutState.apiShowLeftWindow ? layoutState.leftWindowWidth : 0) + layoutState.marginWidth, (value) => {
     updateCssVar({ "--window-left": value + "px" });
   });
-  watch(() => layoutState.rightWindowWidth + layoutState.marginWidth, (value) => {
+  watch(() => (layoutState.showRightWindow && !layoutState.apiShowRightWindow ? layoutState.rightWindowWidth : 0) + layoutState.marginWidth, (value) => {
     updateCssVar({ "--window-right": value + "px" });
   });
   UniServiceJSBridge.on(ON_NAVIGATION_BAR_CHANGE, (navigationBar) => {
@@ -4543,23 +4563,6 @@ function useDocumentTitle(pageMeta) {
   function update() {
     updateDocumentTitle(pageMeta.navigationBar.titleText);
   }
-  watchEffect(update);
-  onActivated(update);
-}
-function updateBackgroundColorContent(backgroundColorContent) {
-  {
-    return;
-  }
-}
-function useBackgroundColorContent(pageMeta) {
-  function update() {
-    if (pageMeta.backgroundColorContent) {
-      updateBackgroundColorContent(
-        parseTheme({ backgroundColorContent: pageMeta.backgroundColorContent }).backgroundColorContent
-      );
-    }
-  }
-  onThemeChange(update);
   watchEffect(update);
   onActivated(update);
 }
@@ -5021,27 +5024,69 @@ _sfc_main$q.setup = (props2, ctx) => {
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("src/framework/components/page/page-refresh/component.vue");
   return _sfc_setup$q ? _sfc_setup$q(props2, ctx) : void 0;
 };
+function useBackgroundColorContent(pageMeta, pageBody) {
+  function update() {
+    {
+      return;
+    }
+  }
+  onThemeChange(update);
+  watchEffect(update);
+  onActivated(update);
+}
 const __moduleId$1 = "packages/uni-h5/src/framework/components/page/pageBody-vapor.tsx";
-function usePageBody(meta, renderPage) {
+function usePageBody(meta, renderPage, options = {}) {
   const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ ? meta : null;
   const refreshRef = ref(null);
-  const wrapperRef = ref(null);
+  const bodyRef = ref(null);
+  useBackgroundColorContent();
+  function setBodyRef(element) {
+    var _a;
+    bodyRef.value = element;
+    (_a = options.onElement) == null ? void 0 : _a.call(options, element);
+  }
   const _pageRefresh = null;
   const pageRefresh = ref(null);
   watch(() => pageMeta == null ? void 0 : pageMeta.enablePullDownRefresh, () => {
     pageRefresh.value = (pageMeta == null ? void 0 : pageMeta.enablePullDownRefresh) ? _pageRefresh : null;
   }, { immediate: true });
-  return () => (openBlock(), createBlock(Fragment, null, [normalizeVNode(() => __UNI_FEATURE_PULL_DOWN_REFRESH__ && !!pageMeta && true && (openBlock(), createBlock(_sfc_main$q, { ref: refreshRef }, null, 512))), createVNode("uni-page-wrapper", mergeProps({ ref: wrapperRef }, pageRefresh.value), [createVNode("uni-page-body", null, [normalizeVNode(() => renderPage())]), normalizeVNode(() => (openBlock(), createBlock(ResizeSensor)))], 16)], 64));
+  return () => {
+    var _a;
+    return openBlock(), createBlock(Fragment, null, [normalizeVNode(() => {
+      var _a2, _b;
+      return __UNI_FEATURE_PULL_DOWN_REFRESH__ && !!pageMeta && true && (openBlock(), createBlock(_sfc_main$q, {
+        ref: refreshRef,
+        "data-type": (_a2 = options.attrs) == null ? void 0 : _a2["data-type"],
+        style: ((_b = options.attrs) == null ? void 0 : _b["data-type"]) ? options.attrs.style : void 0
+      }, null, 512));
+    }), createVNode("uni-page-body", mergeProps(options.attrs, {
+      "data-page": meta.route,
+      "data-page-id": meta.id,
+      style: [
+        (_a = options.attrs) == null ? void 0 : _a.style,
+        options.style,
+        { overflowY: meta.disableScroll ? "hidden" : void 0 }
+      ],
+      ref: setBodyRef
+    }, pageRefresh.value), [normalizeVNode(() => renderPage()), normalizeVNode(() => (openBlock(), createBlock(ResizeSensor)))], 16)], 64);
+  };
 }
 ssrRegisterHelper(usePageBody, __moduleId$1);
 const PageComponent = /* @__PURE__ */ defineSystemComponent({
   name: "Page",
+  inheritAttrs: false,
   setup() {
     var _a;
     const pageStyle = {};
     let pageMeta = providePageMeta(getStateId());
     const navigationBar = pageMeta.navigationBar;
     const currentInstance = getCurrentInstance();
+    const pageBody = shallowRef(null);
+    Object.defineProperty(currentInstance, "__pageBodyEl", {
+      configurable: true,
+      get: () => pageBody.value
+    });
+    usePageBodyScrollPosition(currentInstance);
     const attrs = currentInstance.attrs;
     const routeComponent = currentInstance.type;
     const PageComponent2 = routeComponent.__uniPageComponent;
@@ -5072,7 +5117,6 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
         assignDialogPage(currentInstance, parentInstance, currentInstance);
       }
     } else {
-      useBackgroundColorContent(pageMeta);
       provide("parentInstance", currentInstance);
     }
     function assignDialogPage(ctx, parentInstance, currentInstance2) {
@@ -5094,18 +5138,25 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
         }
       }
     }
-    const renderPageBody = usePageBody(pageMeta, () => (openBlock(), createBlock(PageComponent2, mergeProps(pageProps, { ref: "page" }), null, 16)));
-    return () => (openBlock(), createBlock("uni-page", {
-      "data-page": pageMeta.route,
-      style: pageStyle
-    }, [
-      normalizeVNode(() => __UNI_FEATURE_NAVIGATIONBAR__ && (navigationBar.style !== "custom" ? (openBlock(), createBlock(PageHead, { key: 0 })) : createCommentVNode("", true))),
+    currentInstance.__pageBodyId = pageMeta.id;
+    const renderPageBody = usePageBody(pageMeta, () => (openBlock(), createBlock(PageComponent2, mergeProps(pageProps, { ref: "page" }), null, 16)), {
+      attrs,
+      style: pageStyle,
+      onElement(element) {
+        pageBody.value = element;
+      }
+    });
+    return () => (openBlock(), createBlock(Fragment, null, [
+      normalizeVNode(() => __UNI_FEATURE_NAVIGATIONBAR__ && (!isDialogPageInstance(currentInstance) && navigationBar.style !== "custom" ? (openBlock(), createBlock(PageHead, {
+        key: 0,
+        ref: "pageHead"
+      }, null, 512)) : createCommentVNode("", true))),
       normalizeVNode(() => renderPageBody()),
       normalizeVNode(() => {
         var _a2;
         return (_a2 = dialogPageRenderer.value) == null ? void 0 : _a2.call(dialogPageRenderer, currentInstance);
       })
-    ]));
+    ], 64));
   }
 });
 function createVaporPageRouteComponent(pageComponent) {
@@ -17941,39 +17992,13 @@ function initApp(app) {
 function initRouter(app) {
   const router = createRouter(createRouterOptions());
   router.beforeEach((to, from) => {
-    if (to && from && to.meta.isTabBar && from.meta.isTabBar) {
-      saveTabBarScrollPosition(from.meta.tabBarIndex);
-    }
   });
   app.router = router;
   app.use(router);
 }
-let positionStore = /* @__PURE__ */ Object.create(null);
-function getTabBarScrollPosition(id) {
-  return positionStore[id];
-}
-function saveTabBarScrollPosition(id) {
-  if (typeof window !== "undefined") {
-    positionStore[id] = {
-      left: window.pageXOffset,
-      top: window.pageYOffset
-    };
-  }
-}
 const scrollBehavior = (to, from, savedPosition) => {
-  if (savedPosition) {
-    return savedPosition;
-  } else {
-    if (to && from && to.meta.isTabBar && from.meta.isTabBar) {
-      const position = getTabBarScrollPosition(to.meta.tabBarIndex);
-      if (position) {
-        return position;
-      }
-    }
-    return {
-      left: 0,
-      top: 0
-    };
+  {
+    return false;
   }
 };
 function createRouterOptions() {

@@ -1,4 +1,4 @@
-import { ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, isUniLifecycleHook, UTSJSONObject, decodedQuery, ON_LOAD, ON_SHOW, LINEFEED, RENDERJS_MODULES, formatLog, WXS_PROTOCOL, WXS_MODULES, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
+import { ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, isUniLifecycleHook, decodedQuery, UTSJSONObject, ON_LOAD, ON_SHOW, LINEFEED, RENDERJS_MODULES, formatLog, WXS_PROTOCOL, WXS_MODULES, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
 import { isString, isArray, hasOwn, isFunction } from '@vue/shared';
 import { injectHook, logError } from 'vue';
 
@@ -140,7 +140,10 @@ function initHooks(options, instance, publicThis) {
             // onLoad 的 query 进行 decode
             if (true) {
                 query = isUTS
-                    ? new UTSJSONObject(decodedQuery(query))
+                    ? 'app' === 'app'
+                        ? // @ts-expect-error use globalThis.UTSJSONObject
+                            new globalThis.UTSJSONObject(decodedQuery(query))
+                        : new UTSJSONObject(decodedQuery(query))
                     : decodedQuery(query);
             }
             if ('app' === 'app' && true) {

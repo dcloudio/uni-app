@@ -2677,6 +2677,10 @@ function getPageElement(page) {
     throw new Error("Not support get page element in non-browser environment");
   }
 }
+function getPageBodyElement(page) {
+  const pageElement = getPageElement();
+  return pageElement.querySelector("uni-page-wrapper");
+}
 class UniPageImpl {
   constructor({
     route,
@@ -2701,8 +2705,7 @@ class UniPageImpl {
     return this.pageBody.height + (pageHead ? pageHead.clientHeight : 0);
   }
   get pageBody() {
-    const pageEle = getPageElement();
-    const pageBody = pageEle.querySelector("uni-page-wrapper");
+    const pageBody = getPageBodyElement();
     const pageWrapperInfo = getPageWrapperInfo(pageBody);
     return {
       top: pageWrapperInfo.top,
@@ -2714,8 +2717,7 @@ class UniPageImpl {
     };
   }
   get safeAreaInsets() {
-    const pageEle = getPageElement();
-    const pageBody = pageEle.querySelector("uni-page-wrapper");
+    const pageBody = getPageBodyElement();
     return getSafeAreaInsets(pageBody);
   }
   getPageStyle() {
@@ -3300,17 +3302,10 @@ function useDocumentTitle(pageMeta) {
   }
   vue.watchEffect(update);
 }
-function updateBackgroundColorContent(backgroundColorContent) {
-  {
-    return;
-  }
-}
-function useBackgroundColorContent(pageMeta) {
+function useBackgroundColorContent(pageMeta, pageBody) {
   function update() {
-    if (pageMeta.backgroundColorContent) {
-      updateBackgroundColorContent(
-        parseTheme({ backgroundColorContent: pageMeta.backgroundColorContent }).backgroundColorContent
-      );
+    {
+      return;
     }
   }
   onThemeChange(update);
@@ -3894,7 +3889,7 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
           );
         }
       } else {
-        useBackgroundColorContent(pageMeta);
+        useBackgroundColorContent();
         vue.provide("parentInstance", currentInstance);
       }
     }
@@ -10486,7 +10481,10 @@ function initHooks(options, instance, publicThis) {
       const scriptLang = instance.type.__scriptLang;
       const isUTS = !scriptLang || scriptLang === "uts";
       if (true) {
-        query = isUTS ? new uniShared.UTSJSONObject(uniShared.decodedQuery(query)) : uniShared.decodedQuery(query);
+        query = isUTS ? false ? (
+          // @ts-expect-error use globalThis.UTSJSONObject
+          new globalThis.UTSJSONObject(uniShared.decodedQuery(query))
+        ) : new uniShared.UTSJSONObject(uniShared.decodedQuery(query)) : uniShared.decodedQuery(query);
       }
       if (false)
         ;

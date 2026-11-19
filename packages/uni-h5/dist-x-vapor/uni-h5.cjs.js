@@ -3373,6 +3373,10 @@ function getPageElement(page) {
     throw new Error("Not support get page element in non-browser environment");
   }
 }
+function getPageBodyElement(page) {
+  const pageElement = getPageElement();
+  return pageElement;
+}
 class UniPageImpl {
   constructor({
     route,
@@ -3392,13 +3396,12 @@ class UniPageImpl {
     return this.pageBody.width;
   }
   get height() {
-    const pageEle = getPageElement();
-    const pageHead = pageEle.querySelector("uni-page-head");
+    var _a, _b, _c;
+    const pageHead = (_c = (_b = (_a = this.vm) == null ? void 0 : _a.$pageLayoutInstance) == null ? void 0 : _b.refs.pageHead) == null ? void 0 : _c.$el;
     return this.pageBody.height + (pageHead ? pageHead.clientHeight : 0);
   }
   get pageBody() {
-    const pageEle = getPageElement();
-    const pageBody = pageEle.querySelector("uni-page-wrapper");
+    const pageBody = getPageBodyElement();
     const pageWrapperInfo = getPageWrapperInfo(pageBody);
     return {
       top: pageWrapperInfo.top,
@@ -3410,8 +3413,7 @@ class UniPageImpl {
     };
   }
   get safeAreaInsets() {
-    const pageEle = getPageElement();
-    const pageBody = pageEle.querySelector("uni-page-wrapper");
+    const pageBody = getPageBodyElement();
     return getSafeAreaInsets(pageBody);
   }
   getPageStyle() {
@@ -3556,7 +3558,7 @@ class UniNormalPageImpl extends UniPageImpl {
   }
 }
 function initXPage(vm, route, page) {
-  var _a, _b, _c;
+  var _a, _b;
   initPageVm(vm, page);
   if (!("$pageLayoutInstance" in vm)) {
     Object.defineProperty(vm, "$pageLayoutInstance", {
@@ -3613,7 +3615,6 @@ function initXPage(vm, route, page) {
     pageInstance.$dialogPage.$vm = vm;
     vm.$basePage.fullPath = vm.$basePage.path;
   }
-  (_c = pageInstance.proxy) == null ? void 0 : _c.$el;
 }
 const SEP = "$$";
 const currentPagesMap = /* @__PURE__ */ new Map();
@@ -4135,105 +4136,106 @@ const LayoutComponent = /* @__PURE__ */ defineSystemComponent({
         return _n0;
       })();
     }
+    function renderTabBar() {
+      if (__UNI_FEATURE_TABBAR__) {
+        return (() => {
+          const _n0 = createComponent(TabBar, null, null, true);
+          Vue.applyVShow(_n0, () => Vue.unref(showTabBar));
+          return _n0;
+        })();
+      }
+    }
     function renderLayout() {
       if (__UNI_FEATURE_RESPONSIVE__) {
         return (() => {
-          const _n6 = Vue.createPlainElement("uni-layout", { class: () => ({
-            "uni-app--showtopwindow": __UNI_FEATURE_TOPWINDOW__ && layoutState.showTopWindow,
-            "uni-app--showleftwindow": __UNI_FEATURE_LEFTWINDOW__ && layoutState.showLeftWindow,
-            "uni-app--showrightwindow": __UNI_FEATURE_RIGHTWINDOW__ && layoutState.showRightWindow
-          }) }, () => {
-            const _n0 = createNodes(() => __UNI_FEATURE_TOPWINDOW__ && TopWindow && (() => {
+          const _n0 = createNodes(() => __UNI_FEATURE_TOPWINDOW__ && TopWindow && (() => {
+            const _setTemplateRef = Vue.createTemplateRefSetter();
+            const _n02 = Vue.createPlainElement("uni-top-window", null, () => {
+              const _n2 = _t0$c();
+              Vue.renderEffect(() => Vue.setStyle(_n2, layoutState.topWindowStyle));
+              Vue.setInsertionState(_n2);
+              const _n1 = createComponent(TopWindow, {
+                "navigation-bar-title-text": () => layoutState.navigationBarTitleText,
+                $: [() => windowState.value]
+              });
+              const _n3 = _t1$4();
+              Vue.renderEffect(() => {
+                _setTemplateRef(_n1, topWindowRef);
+                Vue.setStyle(_n3, { height: layoutState.topWindowHeight + "px" });
+              });
+              return [_n2, _n3];
+            }, true);
+            Vue.applyVShow(_n02, () => layoutState.showTopWindow || layoutState.apiShowTopWindow);
+            return _n02;
+          })());
+          const _n6 = Vue.createPlainElement("uni-content", null, () => {
+            const _n3 = Vue.createPlainElement("uni-main", null, Vue.extend(() => {
+              const _n1 = createNodes(() => renderPage(), () => renderTabBar());
+              return _n1;
+            }, { _: 1 }));
+            const _n4 = createNodes(() => __UNI_FEATURE_LEFTWINDOW__ && LeftWindow && (() => {
               const _setTemplateRef = Vue.createTemplateRefSetter();
-              const _n02 = Vue.createPlainElement("uni-top-window", null, () => {
-                const _n2 = _t0$c();
-                Vue.renderEffect(() => Vue.setStyle(_n2, layoutState.topWindowStyle));
-                Vue.setInsertionState(_n2);
-                const _n1 = createComponent(TopWindow, {
-                  "navigation-bar-title-text": () => layoutState.navigationBarTitleText,
-                  $: [() => windowState.value]
-                });
-                const _n3 = _t1$4();
-                Vue.renderEffect(() => {
-                  _setTemplateRef(_n1, topWindowRef);
-                  Vue.setStyle(_n3, { height: layoutState.topWindowHeight + "px" });
-                });
-                return [_n2, _n3];
+              const _n02 = Vue.createPlainElement("uni-left-window", {
+                "data-show": () => layoutState.apiShowLeftWindow || void 0,
+                style: () => layoutState.leftWindowStyle
+              }, () => {
+                const _n1 = Vue.createIf(() => layoutState.apiShowLeftWindow, () => {
+                  const _n32 = _t2$2();
+                  Vue.on(_n32, "click", () => layoutState.apiShowLeftWindow = false);
+                  return _n32;
+                }, () => {
+                  const _n5 = createNodes(null);
+                  return _n5;
+                }, 265);
+                const _n7 = _t3$2();
+                Vue.setInsertionState(_n7);
+                const _n62 = createComponent(LeftWindow, { $: [() => windowState.value] });
+                Vue.renderEffect(() => _setTemplateRef(_n62, leftWindowRef));
+                return [_n1, _n7];
               }, true);
-              Vue.applyVShow(_n02, () => layoutState.showTopWindow || layoutState.apiShowTopWindow);
+              Vue.applyVShow(_n02, () => layoutState.showLeftWindow || layoutState.apiShowLeftWindow);
+              return _n02;
+            })(), () => __UNI_FEATURE_RIGHTWINDOW__ && RightWindow && (() => {
+              const _setTemplateRef = Vue.createTemplateRefSetter();
+              const _n02 = Vue.createPlainElement("uni-right-window", {
+                "data-show": () => layoutState.apiShowRightWindow || void 0,
+                style: () => layoutState.rightWindowStyle
+              }, () => {
+                const _n1 = Vue.createIf(() => layoutState.apiShowRightWindow, () => {
+                  const _n32 = _t2$2();
+                  Vue.on(_n32, "click", () => layoutState.apiShowRightWindow = false);
+                  return _n32;
+                }, () => {
+                  const _n5 = createNodes(null);
+                  return _n5;
+                }, 265);
+                const _n7 = _t4$2();
+                Vue.setInsertionState(_n7);
+                const _n62 = createComponent(RightWindow, { $: [() => windowState.value] });
+                Vue.renderEffect(() => _setTemplateRef(_n62, rightWindowRef));
+                return [_n1, _n7];
+              }, true);
+              Vue.applyVShow(_n02, () => layoutState.showRightWindow || layoutState.apiShowRightWindow);
               return _n02;
             })());
-            const _n5 = Vue.createPlainElement("uni-content", null, () => {
-              const _n2 = Vue.createPlainElement("uni-main", null, Vue.extend(() => {
-                const _n1 = createNodes(() => renderPage());
-                return _n1;
-              }, { _: 1 }));
-              const _n3 = createNodes(() => __UNI_FEATURE_LEFTWINDOW__ && LeftWindow && (() => {
-                const _setTemplateRef = Vue.createTemplateRefSetter();
-                const _n02 = Vue.createPlainElement("uni-left-window", {
-                  "data-show": () => layoutState.apiShowLeftWindow || void 0,
-                  style: () => layoutState.leftWindowStyle
-                }, () => {
-                  const _n1 = Vue.createIf(() => layoutState.apiShowLeftWindow, () => {
-                    const _n32 = _t2$2();
-                    Vue.on(_n32, "click", () => layoutState.apiShowLeftWindow = false);
-                    return _n32;
-                  }, () => {
-                    const _n52 = createNodes(null);
-                    return _n52;
-                  }, 265);
-                  const _n7 = _t3$2();
-                  Vue.setInsertionState(_n7);
-                  const _n62 = createComponent(LeftWindow, { $: [() => windowState.value] });
-                  Vue.renderEffect(() => _setTemplateRef(_n62, leftWindowRef));
-                  return [_n1, _n7];
-                }, true);
-                Vue.applyVShow(_n02, () => layoutState.showLeftWindow || layoutState.apiShowLeftWindow);
-                return _n02;
-              })(), () => __UNI_FEATURE_RIGHTWINDOW__ && RightWindow && (() => {
-                const _setTemplateRef = Vue.createTemplateRefSetter();
-                const _n02 = Vue.createPlainElement("uni-right-window", {
-                  "data-show": () => layoutState.apiShowRightWindow || void 0,
-                  style: () => layoutState.rightWindowStyle
-                }, () => {
-                  const _n1 = Vue.createIf(() => layoutState.apiShowRightWindow, () => {
-                    const _n32 = _t2$2();
-                    Vue.on(_n32, "click", () => layoutState.apiShowRightWindow = false);
-                    return _n32;
-                  }, () => {
-                    const _n52 = createNodes(null);
-                    return _n52;
-                  }, 265);
-                  const _n7 = _t4$2();
-                  Vue.setInsertionState(_n7);
-                  const _n62 = createComponent(RightWindow, { $: [() => windowState.value] });
-                  Vue.renderEffect(() => _setTemplateRef(_n62, rightWindowRef));
-                  return [_n1, _n7];
-                }, true);
-                Vue.applyVShow(_n02, () => layoutState.showRightWindow || layoutState.apiShowRightWindow);
-                return _n02;
-              })());
-              return [_n2, _n3];
-            });
-            return [_n0, _n5];
-          }, true);
-          return _n6;
+            return [_n3, _n4];
+          });
+          return [_n0, _n6];
         })();
       }
-      return renderPage();
+      return (() => {
+        const _n0 = createNodes(() => renderPage(), () => renderTabBar());
+        return _n0;
+      })();
     }
     return () => (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
-      const _n2 = Vue.createPlainElement("uni-app", { class: () => clazz.value }, Vue.extend(() => {
-        const _n0 = createNodes(() => renderLayout(), () => __UNI_FEATURE_TABBAR__ && (() => {
-          const _n02 = createComponent(TabBar, null, null, true);
-          Vue.applyVShow(_n02, () => Vue.unref(showTabBar));
-          return _n02;
-        })());
+      const _n1 = Vue.createPlainElement("uni-app", { class: () => clazz.value }, Vue.extend(() => {
+        const _n0 = createNodes(() => renderLayout());
         return _n0;
       }, { _: 1 }), true);
-      Vue.renderEffect(() => _setTemplateRef(_n2, rootRef));
-      return _n2;
+      Vue.renderEffect(() => _setTemplateRef(_n1, rootRef));
+      return _n1;
     })();
   }
 });
@@ -4242,6 +4244,7 @@ function useAppClass(showTabBar) {
   return Vue.computed(() => {
     return {
       "uni-app--showtabbar": showTabBar && showTabBar.value,
+      "uni-app--tabbar-top": __UNI_FEATURE_TABBAR__ && useTabBar().position === "top",
       "uni-app--maxwidth": showMaxWidth.value
     };
   });
@@ -4354,10 +4357,10 @@ function useState() {
   });
   Vue.watch(() => layoutState.topWindowHeight, (value) => updateCssVar({ "--top-window-height": value + "px" }));
   Vue.watch(() => layoutState.marginWidth, (value) => updateCssVar({ "--window-margin": value + "px" }));
-  Vue.watch(() => layoutState.leftWindowWidth + layoutState.marginWidth, (value) => {
+  Vue.watch(() => (layoutState.showLeftWindow && !layoutState.apiShowLeftWindow ? layoutState.leftWindowWidth : 0) + layoutState.marginWidth, (value) => {
     updateCssVar({ "--window-left": value + "px" });
   });
-  Vue.watch(() => layoutState.rightWindowWidth + layoutState.marginWidth, (value) => {
+  Vue.watch(() => (layoutState.showRightWindow && !layoutState.apiShowRightWindow ? layoutState.rightWindowWidth : 0) + layoutState.marginWidth, (value) => {
     updateCssVar({ "--window-right": value + "px" });
   });
   UniServiceJSBridge.on(uniShared.ON_NAVIGATION_BAR_CHANGE, (navigationBar) => {
@@ -4692,22 +4695,6 @@ function useDocumentTitle(pageMeta) {
   function update() {
     updateDocumentTitle(pageMeta.navigationBar.titleText);
   }
-  Vue.watchEffect(update);
-}
-function updateBackgroundColorContent(backgroundColorContent) {
-  {
-    return;
-  }
-}
-function useBackgroundColorContent(pageMeta) {
-  function update() {
-    if (pageMeta.backgroundColorContent) {
-      updateBackgroundColorContent(
-        parseTheme({ backgroundColorContent: pageMeta.backgroundColorContent }).backgroundColorContent
-      );
-    }
-  }
-  onThemeChange(update);
   Vue.watchEffect(update);
 }
 const dialogPageRenderer = /* @__PURE__ */ Vue.shallowRef();
@@ -5192,10 +5179,25 @@ const _sfc_main$q = /* @__PURE__ */ Vue.defineVaporComponent({
     return n3;
   }
 });
-function usePageBody(meta, renderPage) {
+function useBackgroundColorContent(pageMeta, pageBody) {
+  function update() {
+    {
+      return;
+    }
+  }
+  onThemeChange(update);
+  Vue.watchEffect(update);
+}
+function usePageBody(meta, renderPage, options = {}) {
   const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ ? meta : null;
   const refreshRef = Vue.ref(null);
-  const wrapperRef = Vue.ref(null);
+  const bodyRef = Vue.ref(null);
+  useBackgroundColorContent();
+  function setBodyRef(element) {
+    var _a;
+    bodyRef.value = element;
+    (_a = options.onElement) == null ? void 0 : _a.call(options, element);
+  }
   const _pageRefresh = null;
   const pageRefresh = Vue.ref(null);
   Vue.watch(() => pageMeta == null ? void 0 : pageMeta.enablePullDownRefresh, () => {
@@ -5210,33 +5212,59 @@ function usePageBody(meta, renderPage) {
     const _setTemplateRef = Vue.createTemplateRefSetter();
     const _n0 = createNodes(() => __UNI_FEATURE_PULL_DOWN_REFRESH__ && !!pageMeta && true && (() => {
       const _setTemplateRef2 = Vue.createTemplateRefSetter();
-      const _n02 = createComponent(_sfc_main$q, null, null, true);
+      const _n02 = createComponent(_sfc_main$q, {
+        "data-type": () => {
+          var _a;
+          return (_a = options.attrs) == null ? void 0 : _a["data-type"];
+        },
+        style: () => {
+          var _a;
+          return ((_a = options.attrs) == null ? void 0 : _a["data-type"]) ? options.attrs.style : void 0;
+        }
+      }, null, true);
       Vue.renderEffect(() => _setTemplateRef2(_n02, refreshRef));
       return _n02;
     })());
-    const _n4 = Vue.createPlainElement("uni-page-wrapper", { $: [() => pageRefresh.value] }, () => {
-      const _n2 = Vue.createPlainElement("uni-page-body", null, Vue.extend(() => {
-        const _n1 = createNodes(() => renderPage());
-        return _n1;
-      }, { _: 1 }));
-      const _n3 = createNodes(() => (() => {
+    const _n3 = Vue.createPlainElement("uni-page-body", { $: [
+      () => options.attrs,
+      {
+        "data-page": () => meta.route,
+        "data-page-id": () => meta.id,
+        style: () => {
+          var _a;
+          return [
+            (_a = options.attrs) == null ? void 0 : _a.style,
+            options.style,
+            { overflowY: meta.disableScroll ? "hidden" : void 0 }
+          ];
+        }
+      },
+      () => pageRefresh.value
+    ] }, Vue.extend(() => {
+      const _n1 = createNodes(() => renderPage(), () => (() => {
         const _n02 = createComponent(ResizeSensor, { onResize: () => resize }, null, true);
         return _n02;
       })());
-      return [_n2, _n3];
-    });
-    Vue.renderEffect(() => _setTemplateRef(_n4, wrapperRef));
-    return [_n0, _n4];
+      return _n1;
+    }, { _: 1 }));
+    Vue.renderEffect(() => _setTemplateRef(_n3, setBodyRef));
+    return [_n0, _n3];
   })();
 }
 const PageComponent = /* @__PURE__ */ defineSystemComponent({
   name: "Page",
+  inheritAttrs: false,
   setup() {
     var _a;
     const pageStyle = {};
     let pageMeta = providePageMeta(getStateId());
     const navigationBar = pageMeta.navigationBar;
     const currentInstance = Vue.getCurrentInstance();
+    const pageBody = Vue.shallowRef(null);
+    Object.defineProperty(currentInstance, "__pageBodyEl", {
+      configurable: true,
+      get: () => pageBody.value
+    });
     const attrs2 = currentInstance.attrs;
     const routeComponent = currentInstance.type;
     const PageComponent2 = routeComponent.__uniPageComponent;
@@ -5267,7 +5295,6 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
         assignDialogPage(currentInstance, parentInstance, currentInstance);
       }
     } else {
-      useBackgroundColorContent(pageMeta);
       Vue.provide("parentInstance", currentInstance);
     }
     function assignDialogPage(ctx, parentInstance, currentInstance2) {
@@ -5289,30 +5316,33 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
         }
       }
     }
+    currentInstance.__pageBodyId = pageMeta.id;
     const renderPageBody = usePageBody(pageMeta, () => (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
       const _n0 = createComponent(PageComponent2, { $: [() => pageProps] }, null, true);
       _setTemplateRef(_n0, "page");
       return _n0;
-    })());
+    })(), {
+      attrs: attrs2,
+      style: pageStyle,
+      onElement(element) {
+        pageBody.value = element;
+      }
+    });
     return () => (() => {
-      const _n3 = Vue.createPlainElement("uni-page", {
-        "data-page": () => pageMeta.route,
-        style: () => pageStyle
-      }, Vue.extend(() => {
-        const _n0 = createNodes(() => __UNI_FEATURE_NAVIGATIONBAR__ && (() => {
-          const _n02 = Vue.createIf(() => navigationBar.style !== "custom", () => {
-            const _n2 = createComponent(PageHead, null, null, true);
-            return _n2;
-          });
-          return _n02;
-        })(), () => renderPageBody(), () => {
-          var _a2;
-          return (_a2 = dialogPageRenderer.value) == null ? void 0 : _a2.call(dialogPageRenderer, currentInstance);
+      const _n0 = createNodes(() => __UNI_FEATURE_NAVIGATIONBAR__ && (() => {
+        const _setTemplateRef = Vue.createTemplateRefSetter();
+        const _n02 = Vue.createIf(() => !isDialogPageInstance(currentInstance) && navigationBar.style !== "custom", () => {
+          const _n2 = createComponent(PageHead, null, null, true);
+          _setTemplateRef(_n2, "pageHead");
+          return _n2;
         });
-        return _n0;
-      }, { _: 1 }), true);
-      return _n3;
+        return _n02;
+      })(), () => renderPageBody(), () => {
+        var _a2;
+        return (_a2 = dialogPageRenderer.value) == null ? void 0 : _a2.call(dialogPageRenderer, currentInstance);
+      });
+      return _n0;
     })();
   }
 });
@@ -16090,39 +16120,13 @@ function initApp(app) {
 function initRouter(app) {
   const router = vueRouter.createRouter(createRouterOptions());
   router.beforeEach((to, from) => {
-    if (to && from && to.meta.isTabBar && from.meta.isTabBar) {
-      saveTabBarScrollPosition(from.meta.tabBarIndex);
-    }
   });
   app.router = router;
   app.use(router);
 }
-let positionStore = /* @__PURE__ */ Object.create(null);
-function getTabBarScrollPosition(id) {
-  return positionStore[id];
-}
-function saveTabBarScrollPosition(id) {
-  if (typeof window !== "undefined") {
-    positionStore[id] = {
-      left: window.pageXOffset,
-      top: window.pageYOffset
-    };
-  }
-}
 const scrollBehavior = (to, from, savedPosition) => {
-  if (savedPosition) {
-    return savedPosition;
-  } else {
-    if (to && from && to.meta.isTabBar && from.meta.isTabBar) {
-      const position = getTabBarScrollPosition(to.meta.tabBarIndex);
-      if (position) {
-        return position;
-      }
-    }
-    return {
-      left: 0,
-      top: 0
-    };
+  {
+    return false;
   }
 };
 function createRouterOptions() {

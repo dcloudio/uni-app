@@ -2882,7 +2882,7 @@ function setUniElementPage(pageElement, page) {
 }
 function getUniElementPage(element) {
     var _a;
-    const pageElement = element.closest('uni-page');
+    const pageElement = element.closest('uni-page') || element.closest('uni-page-body');
     return pageElement
         ? (_a = uniElementPageMap.get(pageElement)) !== null && _a !== void 0 ? _a : null
         : null;

@@ -1,7 +1,7 @@
-import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, getUniElementPage, initVaporDataset, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, LINEFEED, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, createUniDOMStringMap, parseUrl, decodedQuery, stringifyQuery as stringifyQuery$1, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, setUniElementPage, ON_UNLOAD, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, RESPONSIVE_MIN_WIDTH, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, scrollTo, onCreateVueApp } from "@dcloudio/uni-shared";
+import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, getUniElementPage, initVaporDataset, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, LINEFEED, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, createUniDOMStringMap, parseUrl, decodedQuery, stringifyQuery as stringifyQuery$1, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, setUniElementPage, ON_UNLOAD, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, RESPONSIVE_MIN_WIDTH, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, onCreateVueApp } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2, onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import * as Vue from "vue";
-import { defineVaporComponent, createPlainElement, initUniElement, template, ref, watch, withModifiers, setAttr, getCurrentInstance, warn, unref, reactive, onMounted, onBeforeUnmount, computed, inject, onBeforeMount, nextTick, Fragment, EffectScope, createTemplateRefSetter, child, next, renderEffect, setDynamicProps, applyVShow, txt, setInsertionState, createIf, on as on$1, setBlockKey, setValue as setValue$1, setProp, setClass, setStyle, onActivated, setClassName, shallowRef, watchEffect, provide, injectHook, isReactive, markRaw, querySelectorInComponent, querySelectorAllInComponent, createFor, extend as extend$1, VaporKeepAlive, createDynamicComponent, setText, toDisplayString, onServerPrefetch, initUniPageHooks, onBeforeActivate, onBeforeDeactivate, createComponent as createComponent$1, setHtml, onUnmounted, toRaw, createKeyedFragment, createTextNode, remove as remove$1, effectScope, insert, syncSelectValue, onDeactivated, initUniElementType, setHover, withComponentId, createComponentWithFallback, createSlot, setStaticTemplateRef, useAttrs as useAttrs$1, useSlots, normalizeUniText, getBlockFirstNode, isInSSRComponentSetup, queuePostFlushCb, logError, setUniPageHooksInitializer, setRealPathResolver, setNativeEventNormalizer, createVaporApp, VaporTransition, nthChild, withImageEventDetail, setImageMode, setImageSrc } from "vue";
+import { defineVaporComponent, createPlainElement, initUniElement, template, ref, watch, withModifiers, setAttr, getCurrentInstance, warn, unref, reactive, onMounted, onBeforeUnmount, computed, inject, onBeforeMount, nextTick, Fragment, EffectScope, createTemplateRefSetter, child, next, renderEffect, setDynamicProps, applyVShow, txt, setInsertionState, createIf, on as on$1, setBlockKey, setValue as setValue$1, setProp, setClass, setStyle, onActivated, setClassName, shallowRef, watchEffect, provide, injectHook, isReactive, onBeforeDeactivate, markRaw, onScopeDispose, querySelectorInComponent, querySelectorAllInComponent, createFor, extend as extend$1, VaporKeepAlive, createDynamicComponent, setText, toDisplayString, onServerPrefetch, initUniPageHooks, onBeforeActivate, createComponent as createComponent$1, setHtml, onUnmounted, toRaw, createKeyedFragment, createTextNode, remove as remove$1, effectScope, insert, syncSelectValue, onDeactivated, initUniElementType, setHover, withComponentId, createComponentWithFallback, createSlot, setStaticTemplateRef, useAttrs as useAttrs$1, useSlots, normalizeUniText, getBlockFirstNode, isInSSRComponentSetup, queuePostFlushCb, logError, setUniPageHooksInitializer, setRealPathResolver, setNativeEventNormalizer, createVaporApp, VaporTransition, nthChild, withImageEventDetail, setImageMode, setImageSrc } from "vue";
 import { capitalize, camelize, isArray, isString, extend, remove, isPlainObject, isFunction, hyphenate, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, EMPTY_OBJ, Namespaces } from "@vue/shared";
 import { useRoute, isNavigationFailure, VaporRouterView, useRouter, createRouter, createWebHistory, createWebHashHistory } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -904,7 +904,7 @@ const ViewJSBridge = /* @__PURE__ */ extend(
 );
 const LONGPRESS_TIMEOUT = 350;
 const LONGPRESS_THRESHOLD = 10;
-const passiveOptions$3 = /* @__PURE__ */ passive(true);
+const passiveOptions$2 = /* @__PURE__ */ passive(true);
 let longPressTimer;
 function clearLongPressTimer() {
   if (longPressTimer) {
@@ -948,10 +948,10 @@ function touchmove(evt) {
   }
 }
 function initLongPress() {
-  window.addEventListener("touchstart", touchstart, passiveOptions$3);
-  window.addEventListener("touchmove", touchmove, passiveOptions$3);
-  window.addEventListener("touchend", clearLongPressTimer, passiveOptions$3);
-  window.addEventListener("touchcancel", clearLongPressTimer, passiveOptions$3);
+  window.addEventListener("touchstart", touchstart, passiveOptions$2);
+  window.addEventListener("touchmove", touchmove, passiveOptions$2);
+  window.addEventListener("touchend", clearLongPressTimer, passiveOptions$2);
+  window.addEventListener("touchcancel", clearLongPressTimer, passiveOptions$2);
 }
 function checkValue$1(value, defaultValue) {
   const newValue = Number(value);
@@ -1450,27 +1450,36 @@ function invokeHook(vm, name, args) {
   }
   return hooks && invokeArrayFns(hooks, args);
 }
-function disableScrollListener(evt) {
-  evt.preventDefault();
-}
 let testReachBottomTimer;
 let lastScrollHeight = 0;
 function createScrollListener({
   onPageScroll,
   onReachBottom,
-  onReachBottomDistance
+  onReachBottomDistance,
+  scrollElement
 }) {
   let ticking = false;
   let hasReachBottom = false;
   let reachBottomLocking = true;
+  let elementLastScrollHeight = 0;
+  let elementTestReachBottomTimer;
+  let unlockTimer;
+  let frame;
+  let disposed = false;
   const isReachBottom = () => {
-    const { scrollHeight } = document.documentElement;
-    const windowHeight = window.innerHeight;
-    const scrollY = window.scrollY;
+    const { scrollHeight } = scrollElement || document.documentElement;
+    const windowHeight = scrollElement ? scrollElement.clientHeight : window.innerHeight;
+    const scrollY = scrollElement ? scrollElement.scrollTop : window.scrollY;
     const isBottom = scrollY > 0 && scrollHeight > windowHeight && scrollY + windowHeight + onReachBottomDistance >= scrollHeight;
-    const heightChanged = Math.abs(scrollHeight - lastScrollHeight) > onReachBottomDistance;
+    const heightChanged = Math.abs(
+      scrollHeight - (scrollElement ? elementLastScrollHeight : lastScrollHeight)
+    ) > onReachBottomDistance;
     if (isBottom && (!hasReachBottom || heightChanged)) {
-      lastScrollHeight = scrollHeight;
+      if (scrollElement) {
+        elementLastScrollHeight = scrollHeight;
+      } else {
+        lastScrollHeight = scrollHeight;
+      }
       hasReachBottom = true;
       return true;
     }
@@ -1480,12 +1489,15 @@ function createScrollListener({
     return false;
   };
   const trigger = () => {
-    onPageScroll && onPageScroll(window.pageYOffset);
+    if (disposed) {
+      return;
+    }
+    onPageScroll && onPageScroll(scrollElement ? scrollElement.scrollTop : window.pageYOffset);
     function testReachBottom() {
       if (isReachBottom()) {
         onReachBottom && onReachBottom();
         reachBottomLocking = false;
-        setTimeout(function() {
+        unlockTimer = setTimeout(function() {
           reachBottomLocking = true;
         }, 350);
         return true;
@@ -1495,18 +1507,35 @@ function createScrollListener({
       if (testReachBottom())
         ;
       else {
-        testReachBottomTimer = setTimeout(testReachBottom, 300);
+        if (scrollElement) {
+          elementTestReachBottomTimer = setTimeout(testReachBottom, 300);
+        } else {
+          testReachBottomTimer = setTimeout(testReachBottom, 300);
+        }
       }
     }
     ticking = false;
   };
-  return function onScroll() {
-    clearTimeout(testReachBottomTimer);
+  function onScroll() {
+    clearTimeout(
+      scrollElement ? elementTestReachBottomTimer : testReachBottomTimer
+    );
     if (!ticking) {
-      requestAnimationFrame(trigger);
+      frame = requestAnimationFrame(trigger);
     }
     ticking = true;
+  }
+  onScroll.dispose = () => {
+    disposed = true;
+    if (frame !== void 0) {
+      cancelAnimationFrame(frame);
+    }
+    clearTimeout(unlockTimer);
+    clearTimeout(
+      scrollElement ? elementTestReachBottomTimer : testReachBottomTimer
+    );
   };
+  return onScroll;
 }
 function normalizeRoute(toRoute) {
   if (toRoute.indexOf("/") === 0 || toRoute.indexOf("uni:") === 0) {
@@ -2138,7 +2167,7 @@ function normalizeCustomEvent(name, domEvt, el, detail) {
     detail
   };
 }
-const passiveOptions$2 = /* @__PURE__ */ passive(true);
+const passiveOptions$1 = /* @__PURE__ */ passive(true);
 const states = [];
 let userInteract = 0;
 let inited = false;
@@ -2162,7 +2191,7 @@ function addInteractListener(vm = { userAction: false }) {
             !--userInteract && setUserAction(false);
           }, 0);
         },
-        passiveOptions$2
+        passiveOptions$1
       );
     });
     inited = true;
@@ -6389,11 +6418,12 @@ class SelectorQuery {
     return this._nodesRef;
   }
   in(component) {
+    var _a;
     this._component = resolveComponentInstance(component);
-    if (this._component && this._component.$root) {
-      const root = resolveComponentInstance(this._component.$root);
-      if (root) {
-        this._page = root;
+    if (this._component) {
+      const page = (_a = this._component.$.$pageInstance) == null ? void 0 : _a.proxy;
+      if (page) {
+        this._page = page;
       }
     }
     return this;
@@ -9259,6 +9289,29 @@ function initLaunchOptions({
 function getScopeId(instance) {
   return instance.type.__scopeId;
 }
+function getPageBody(instance) {
+  var _a;
+  return (_a = getPageInstanceByChild(instance)) == null ? void 0 : _a.__pageBodyEl;
+}
+function usePageBodyScrollPosition(instance) {
+  let position;
+  onBeforeDeactivate(() => {
+    const body = getPageBody(instance);
+    if (body) {
+      position = { left: body.scrollLeft, top: body.scrollTop };
+    }
+  });
+  onActivated(() => {
+    const body = getPageBody(instance);
+    if (body && position) {
+      body.scrollLeft = position.left;
+      body.scrollTop = position.top;
+    }
+  });
+}
+function normalizePageSelector(selector) {
+  return selector.replace(/^(\s*)page(?=\s|$)/i, "$1uni-page-body");
+}
 const SAFE_AREA_INSET_PROPERTY_PREFIX = "--uni-safe-area-inset-";
 function getSafeAreaInset(style, position) {
   const value = parseFloat(
@@ -9310,7 +9363,6 @@ let escBackPageNum = 0;
 const homeDialogPages = [];
 const homeSystemDialogPages = [];
 function getPageElement(page) {
-  var _a;
   const currentPage = getCurrentPage();
   if (page !== currentPage) {
     const dialogPages = currentPage.getDialogPages();
@@ -9323,13 +9375,18 @@ function getPageElement(page) {
       }
     }
   }
-  const pageEle = document.querySelector(
-    `uni-page[data-page="${(_a = page.vm) == null ? void 0 : _a.route}"]`
-  );
+  const pageEle = page.vm && getPageBody(page.vm.$);
   if (!pageEle) {
     throw new Error("page not found");
   }
   return pageEle;
+}
+function getPageBodyElement(page) {
+  const pageElement = getPageElement(page);
+  return pageElement;
+}
+function getQueryPageBody(page) {
+  return page.vm && getPageBody(page.vm.$) || null;
 }
 class UniPageImpl {
   constructor({
@@ -9350,13 +9407,12 @@ class UniPageImpl {
     return this.pageBody.width;
   }
   get height() {
-    const pageEle = getPageElement(this);
-    const pageHead = pageEle.querySelector("uni-page-head");
+    var _a, _b, _c;
+    const pageHead = (_c = (_b = (_a = this.vm) == null ? void 0 : _a.$pageLayoutInstance) == null ? void 0 : _b.refs.pageHead) == null ? void 0 : _c.$el;
     return this.pageBody.height + (pageHead ? pageHead.clientHeight : 0);
   }
   get pageBody() {
-    const pageEle = getPageElement(this);
-    const pageBody = pageEle.querySelector("uni-page-wrapper");
+    const pageBody = getPageBodyElement(this);
     const pageWrapperInfo = getPageWrapperInfo(pageBody);
     return {
       top: pageWrapperInfo.top,
@@ -9368,8 +9424,7 @@ class UniPageImpl {
     };
   }
   get safeAreaInsets() {
-    const pageEle = getPageElement(this);
-    const pageBody = pageEle.querySelector("uni-page-wrapper");
+    const pageBody = getPageBodyElement(this);
     return getSafeAreaInsets(pageBody);
   }
   getPageStyle() {
@@ -9437,27 +9492,37 @@ class UniPageImpl {
     if (currentPage !== this) {
       return null;
     }
-    const uniPageBody = document.querySelector("uni-page-body");
+    const uniPageBody = getQueryPageBody(this);
     return uniPageBody ? uniPageBody.querySelector(`#${id2}`) : null;
   }
   querySelector(selector) {
     const currentPage = getCurrentPage();
-    if (currentPage !== this) {
+    if (currentPage !== this && (!currentPage || currentPage !== this.getParentPage())) {
       return null;
     }
-    const uniPageBody = document.querySelector("uni-page-body");
+    const uniPageBody = getQueryPageBody(this);
+    const normalizedSelector = normalizePageSelector(selector);
+    if (normalizedSelector !== selector && (uniPageBody == null ? void 0 : uniPageBody.matches(normalizedSelector))) {
+      return uniPageBody;
+    }
+    selector = normalizedSelector;
     return uniPageBody ? uniPageBody.querySelector(selector) : null;
   }
   querySelectorAll(selector) {
     const res = [];
     const currentPage = getCurrentPage();
-    if (currentPage !== this) {
+    if (currentPage !== this && (!currentPage || currentPage !== this.getParentPage())) {
       return res;
     }
-    const uniPageBody = document.querySelector("uni-page-body");
+    const uniPageBody = getQueryPageBody(this);
     if (!uniPageBody) {
       return res;
     }
+    const normalizedSelector = normalizePageSelector(selector);
+    if (normalizedSelector !== selector && uniPageBody.matches(normalizedSelector)) {
+      res.push(uniPageBody);
+    }
+    selector = normalizedSelector;
     const nodeList = uniPageBody.querySelectorAll(selector);
     nodeList.forEach((node) => {
       res.push(node);
@@ -9475,7 +9540,7 @@ class UniPageImpl {
     if (currentPage !== this) {
       return null;
     }
-    return document.querySelector("uni-page-body");
+    return getQueryPageBody(this);
   }
   getDialogPages() {
     return [];
@@ -9550,29 +9615,23 @@ class UniDialogPageImpl extends UniPageImpl {
     this.$triggerParentHide = !!$triggerParentHide;
   }
   getElementById(id2) {
-    var _a;
     const currentPage = getCurrentPage();
     if (currentPage !== this.getParentPage()) {
       return null;
     }
-    const uniPageBody = document.querySelector(
-      `uni-page[data-page="${(_a = this.vm) == null ? void 0 : _a.route}"] uni-page-body`
-    );
+    const uniPageBody = getQueryPageBody(this);
     return uniPageBody ? uniPageBody.querySelector(`#${id2}`) : null;
   }
   getHTMLElement() {
-    var _a;
     const currentPage = getCurrentPage();
     if (currentPage !== this.getParentPage()) {
       return null;
     }
-    return document.querySelector(
-      `uni-page[data-page="${(_a = this.vm) == null ? void 0 : _a.route}"] uni-page-body`
-    );
+    return getQueryPageBody(this);
   }
 }
 function initXPage(vm, route, page) {
-  var _a, _b, _c;
+  var _a, _b;
   initPageVm(vm, page);
   if (!("$pageLayoutInstance" in vm)) {
     Object.defineProperty(vm, "$pageLayoutInstance", {
@@ -9629,20 +9688,12 @@ function initXPage(vm, route, page) {
     pageInstance.$dialogPage.$vm = vm;
     vm.$basePage.fullPath = vm.$basePage.path;
   }
-  const pageElement = (_c = pageInstance.proxy) == null ? void 0 : _c.$el;
-  if (pageElement instanceof Element) {
-    setUniElementPage(pageElement, vm.$.page);
+  {
+    onMounted(() => {
+      const pageElement = getPageBody(vm.$);
+      pageElement && setUniElementPage(pageElement, vm.$.page);
+    });
   }
-}
-function useBackgroundColorContent$1(vm) {
-  vm && watchEffect(() => {
-    const uniPageBody = document.querySelector(
-      `uni-page[data-page="${vm.route}"] uni-page-body`
-    );
-    if (uniPageBody && vm.$basePage.meta.backgroundColorContent) {
-      uniPageBody.style.backgroundColor = vm.$basePage.meta.backgroundColorContent;
-    }
-  });
 }
 function handleEscKeyPress(event) {
   if (event.key !== "Escape" && event.key !== "Esc") {
@@ -9953,10 +10004,11 @@ function updateCurPageAttrs(pageMeta) {
 function onPageShow(instance, pageMeta) {
   const isDialogPage = isDialogPageInstance(getPageInstanceByChild(instance));
   updateCurPageBodyScopeId(instance);
-  updateBodyScopeId(instance);
   updateCurPageAttrs();
   if (!isDialogPage) {
     updateCurPageCssVar(pageMeta);
+  }
+  {
     initPageScrollListener(instance, pageMeta);
   }
 }
@@ -9967,8 +10019,8 @@ function onPageReady(instance) {
 }
 function updateCurPageBodyScopeId(instance) {
   var _a, _b;
-  const pageRoot = (_b = (_a = getPageInstanceByChild(instance)) == null ? void 0 : _a.proxy) == null ? void 0 : _b.$el;
-  const pageBodyEl = pageRoot == null ? void 0 : pageRoot.querySelector("uni-page-body");
+  (_b = (_a = getPageInstanceByChild(instance)) == null ? void 0 : _a.proxy) == null ? void 0 : _b.$el;
+  const pageBodyEl = getPageBody(instance);
   if (!pageBodyEl) {
     return false;
   }
@@ -9981,89 +10033,76 @@ function updateCurPageBodyScopeId(instance) {
   pageScopeId && pageBodyEl.setAttribute(pageScopeId, "");
   return true;
 }
-let curScopeId;
-function updateBodyScopeId(instance) {
-  const scopeId = getScopeId(instance);
-  const { body } = document;
-  curScopeId && body.removeAttribute(curScopeId);
-  scopeId && body.setAttribute(scopeId, "");
-  curScopeId = scopeId;
+const pageScrollCleanups = /* @__PURE__ */ new WeakMap();
+function initVaporPageScrollListener(instance, pageMeta) {
+  const previousCleanup = pageScrollCleanups.get(instance);
+  previousCleanup == null ? void 0 : previousCleanup();
+  let disposed = false;
+  let removeListeners;
+  const cleanup = () => {
+    disposed = true;
+    removeListeners == null ? void 0 : removeListeners();
+  };
+  pageScrollCleanups.set(instance, cleanup);
+  if (!previousCleanup) {
+    instance.scope.run(
+      () => onScopeDispose(() => {
+        var _a;
+        (_a = pageScrollCleanups.get(instance)) == null ? void 0 : _a();
+        pageScrollCleanups.delete(instance);
+      })
+    );
+  }
+  nextTick(() => {
+    if (disposed || instance.isUnmounted) {
+      return;
+    }
+    const pageBody = getPageBody(instance);
+    if (!pageBody) {
+      return;
+    }
+    const { onPageScroll, onReachBottom } = instance;
+    const navigationBarTransparent = pageMeta.navigationBar.type === "transparent";
+    const opts = { scrollElement: pageBody };
+    const pageId = getPage$BasePage(instance.proxy).id;
+    if ((onPageScroll == null ? void 0 : onPageScroll.length) || navigationBarTransparent) {
+      opts.onPageScroll = createOnPageScroll(
+        pageId,
+        onPageScroll,
+        navigationBarTransparent
+      );
+    }
+    if (onReachBottom == null ? void 0 : onReachBottom.length) {
+      opts.onReachBottom = () => UniViewJSBridge.publishHandler(ON_REACH_BOTTOM, {}, pageId);
+    }
+    let listener2;
+    const stopWatch = watch(
+      [() => pageMeta.disableScroll, () => pageMeta.onReachBottomDistance],
+      ([disableScroll, onReachBottomDistance]) => {
+        if (listener2) {
+          pageBody.removeEventListener("scroll", listener2);
+          listener2.dispose();
+        }
+        if (!disableScroll && (opts.onPageScroll || opts.onReachBottom)) {
+          opts.onReachBottomDistance = onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE;
+          listener2 = createScrollListener(opts);
+          pageBody.addEventListener("scroll", listener2);
+        }
+      },
+      { immediate: true }
+    );
+    removeListeners = () => {
+      stopWatch();
+      if (listener2) {
+        pageBody.removeEventListener("scroll", listener2);
+        listener2.dispose();
+      }
+    };
+  });
 }
-const supportsPassive = /* @__PURE__ */ (() => {
-  let supportsPassive2 = false;
-  try {
-    const opts = {};
-    Object.defineProperty(opts, "passive", {
-      get() {
-        supportsPassive2 = true;
-      }
-    });
-    window.addEventListener("test-passive", () => {
-    }, opts);
-  } catch (e2) {
-  }
-  return supportsPassive2;
-})();
-const passiveOptions$1 = supportsPassive ? {
-  passive: false
-} : false;
-let curScrollListener;
 function initPageScrollListener(instance, pageMeta) {
-  document.removeEventListener("touchmove", disableScrollListener);
-  if (curScrollListener) {
-    document.removeEventListener("scroll", curScrollListener);
-  }
-  if (pageMeta.disableScroll) {
-    return document.addEventListener(
-      "touchmove",
-      disableScrollListener,
-      passiveOptions$1
-    );
-  }
-  const { onPageScroll, onReachBottom } = instance;
-  const navigationBarTransparent = pageMeta.navigationBar.type === "transparent";
-  if (!(onPageScroll == null ? void 0 : onPageScroll.length) && !(onReachBottom == null ? void 0 : onReachBottom.length) && !navigationBarTransparent) {
-    return;
-  }
-  const opts = {};
-  const pageId = getPage$BasePage(instance.proxy).id;
-  if (onPageScroll || navigationBarTransparent) {
-    opts.onPageScroll = createOnPageScroll(
-      pageId,
-      onPageScroll,
-      navigationBarTransparent
-    );
-  }
-  if (onReachBottom == null ? void 0 : onReachBottom.length) {
-    opts.onReachBottomDistance = pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE;
-    opts.onReachBottom = () => UniViewJSBridge.publishHandler(ON_REACH_BOTTOM, {}, pageId);
-  }
-  curScrollListener = createScrollListener(opts);
-  requestAnimationFrame(
-    () => document.addEventListener("scroll", curScrollListener)
-  );
   {
-    watch(
-      () => pageMeta.onReachBottomDistance,
-      (onReachBottomDistance) => {
-        if (!onReachBottom) {
-          return;
-        }
-        opts.onReachBottomDistance = onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE;
-        document.removeEventListener("scroll", curScrollListener);
-        curScrollListener = createScrollListener(opts);
-        document.addEventListener("scroll", curScrollListener);
-      }
-    );
-    watch(
-      () => pageMeta.disableScroll,
-      (disableScroll) => {
-        document.removeEventListener("touchmove", disableScrollListener);
-        if (disableScroll) {
-          return document.addEventListener("touchmove", disableScrollListener);
-        }
-      }
-    );
+    return initVaporPageScrollListener(instance, pageMeta);
   }
 }
 function createOnPageScroll(pageId, onPageScroll, navigationBarTransparent) {
@@ -10145,8 +10184,9 @@ function operateMap(id2, pageId, type, data, operateMapCallback2) {
 function createDatasetSnapshot(dataset) {
   return createUniDOMStringMap(dataset);
 }
-function getRootInfo(fields) {
+function getRootInfo(fields, page) {
   const info = {};
+  const root = getPageBody(page.$) || document.documentElement;
   if (fields.id) {
     info.id = "";
   }
@@ -10160,16 +10200,14 @@ function getRootInfo(fields) {
     info.bottom = 0;
   }
   if (fields.size) {
-    info.width = document.documentElement.clientWidth;
-    info.height = document.documentElement.clientHeight;
+    info.width = root.clientWidth;
+    info.height = root.clientHeight;
   }
   if (fields.scrollOffset) {
-    const documentElement = document.documentElement;
-    const body = document.body;
-    info.scrollLeft = documentElement.scrollLeft || body.scrollLeft || 0;
-    info.scrollTop = documentElement.scrollTop || body.scrollTop || 0;
-    info.scrollHeight = documentElement.scrollHeight || body.scrollHeight || 0;
-    info.scrollWidth = documentElement.scrollWidth || body.scrollWidth || 0;
+    info.scrollLeft = root.scrollLeft;
+    info.scrollTop = root.scrollTop;
+    info.scrollHeight = root.scrollHeight;
+    info.scrollWidth = root.scrollWidth;
   }
   return info;
 }
@@ -10223,20 +10261,25 @@ function getNodeInfo(el, fields) {
   return info;
 }
 function getNodesInfo(pageVm, component, selector, single, fields) {
-  const instance = (component || pageVm).$;
+  const owner = (component || pageVm).$;
+  const instance = owner;
+  const normalizedSelector = normalizePageSelector(selector);
+  const pageBody = normalizedSelector !== selector && (!component || component === pageVm || owner.$pageInstance === owner) ? getPageBody(owner) : void 0;
   if (single) {
-    const node = querySelectorInComponent(instance, selector);
+    const node = pageBody ? pageBody.matches(normalizedSelector) ? pageBody : pageBody.querySelector(normalizedSelector) : querySelectorInComponent(instance, normalizedSelector);
     return node ? getNodeInfo(node, fields) : null;
   }
-  return querySelectorAllInComponent(instance, selector).map(
-    (node) => getNodeInfo(node, fields)
-  );
+  const nodes = pageBody ? [
+    ...pageBody.matches(normalizedSelector) ? [pageBody] : [],
+    ...pageBody.querySelectorAll(normalizedSelector)
+  ] : querySelectorAllInComponent(instance, normalizedSelector);
+  return nodes.map((node) => getNodeInfo(node, fields));
 }
 function requestComponentInfo(page, reqs, callback) {
   const result = [];
   reqs.forEach(({ component, selector, single, fields }) => {
     if (component === null) {
-      result.push(getRootInfo(fields));
+      result.push(getRootInfo(fields, page));
     } else {
       result.push(getNodesInfo(page, component, selector, single, fields));
     }
@@ -10245,8 +10288,29 @@ function requestComponentInfo(page, reqs, callback) {
 }
 function setCurrentPageMeta(_page, { pageStyle, rootFontSize }) {
   if (pageStyle) {
-    const pageElm = document.querySelector("uni-page-body") || document.body;
-    pageElm.setAttribute("style", pageStyle);
+    const pageElm = _page && getPageBody(_page.$);
+    if (pageElm) {
+      const properties = [
+        "--uni-safe-area-inset-top",
+        "--uni-safe-area-inset-right",
+        "--uni-safe-area-inset-bottom",
+        "--uni-safe-area-inset-left",
+        "--background-color-content",
+        "--uni-dialog-page-index",
+        "z-index",
+        "overflow-y"
+      ].map((name) => [
+        name,
+        pageElm.style.getPropertyValue(name),
+        pageElm.style.getPropertyPriority(name)
+      ]);
+      pageElm.setAttribute("style", pageStyle);
+      properties.forEach(([name, value, priority]) => {
+        if (value && !pageElm.style.getPropertyValue(name)) {
+          pageElm.style.setProperty(name, value, priority);
+        }
+      });
+    }
   }
   if (rootFontSize && document.documentElement.style.fontSize !== rootFontSize) {
     document.documentElement.style.fontSize = rootFontSize;
@@ -10257,8 +10321,19 @@ function addIntersectionObserver({ reqId, component, options, callback }, _pageI
   const instance = component.$;
   const observer = requestComponentObserver(
     {
-      querySelector: (selector) => querySelectorInComponent(instance, selector),
-      querySelectorAll: (selector) => querySelectorAllInComponent(instance, selector)
+      querySelector(selector) {
+        const normalizedSelector = normalizePageSelector(selector);
+        const pageBody = normalizedSelector !== selector && component.$.$pageInstance === component.$ ? getPageBody(component.$) : void 0;
+        return pageBody ? pageBody.matches(normalizedSelector) ? pageBody : pageBody.querySelector(normalizedSelector) : querySelectorInComponent(instance, normalizedSelector);
+      },
+      querySelectorAll(selector) {
+        const normalizedSelector = normalizePageSelector(selector);
+        const pageBody = normalizedSelector !== selector && component.$.$pageInstance === component.$ ? getPageBody(component.$) : void 0;
+        return pageBody ? [
+          ...pageBody.matches(normalizedSelector) ? [pageBody] : [],
+          ...pageBody.querySelectorAll(normalizedSelector)
+        ] : querySelectorAllInComponent(instance, normalizedSelector);
+      }
     },
     options,
     callback
@@ -10800,105 +10875,106 @@ const LayoutComponent = /* @__PURE__ */ defineSystemComponent({
         return _n0;
       })();
     }
+    function renderTabBar() {
+      if (__UNI_FEATURE_TABBAR__) {
+        return (() => {
+          const _n0 = createComponent(TabBar, null, null, true);
+          applyVShow(_n0, () => unref(showTabBar2));
+          return _n0;
+        })();
+      }
+    }
     function renderLayout() {
       if (__UNI_FEATURE_RESPONSIVE__) {
         return (() => {
-          const _n6 = createPlainElement("uni-layout", { class: () => ({
-            "uni-app--showtopwindow": __UNI_FEATURE_TOPWINDOW__ && layoutState.showTopWindow,
-            "uni-app--showleftwindow": __UNI_FEATURE_LEFTWINDOW__ && layoutState.showLeftWindow,
-            "uni-app--showrightwindow": __UNI_FEATURE_RIGHTWINDOW__ && layoutState.showRightWindow
-          }) }, () => {
-            const _n0 = createNodes(() => __UNI_FEATURE_TOPWINDOW__ && TopWindow && (() => {
+          const _n0 = createNodes(() => __UNI_FEATURE_TOPWINDOW__ && TopWindow && (() => {
+            const _setTemplateRef = createTemplateRefSetter();
+            const _n02 = createPlainElement("uni-top-window", null, () => {
+              const _n2 = _t0$e();
+              renderEffect(() => setStyle(_n2, layoutState.topWindowStyle));
+              setInsertionState(_n2);
+              const _n1 = createComponent(TopWindow, {
+                "navigation-bar-title-text": () => layoutState.navigationBarTitleText,
+                $: [() => windowState.value]
+              });
+              const _n3 = _t1$6();
+              renderEffect(() => {
+                _setTemplateRef(_n1, topWindowRef);
+                setStyle(_n3, { height: layoutState.topWindowHeight + "px" });
+              });
+              return [_n2, _n3];
+            }, true);
+            applyVShow(_n02, () => layoutState.showTopWindow || layoutState.apiShowTopWindow);
+            return _n02;
+          })());
+          const _n6 = createPlainElement("uni-content", null, () => {
+            const _n3 = createPlainElement("uni-main", null, extend$1(() => {
+              const _n1 = createNodes(() => renderPage(), () => renderTabBar());
+              return _n1;
+            }, { _: 1 }));
+            const _n4 = createNodes(() => __UNI_FEATURE_LEFTWINDOW__ && LeftWindow && (() => {
               const _setTemplateRef = createTemplateRefSetter();
-              const _n02 = createPlainElement("uni-top-window", null, () => {
-                const _n2 = _t0$e();
-                renderEffect(() => setStyle(_n2, layoutState.topWindowStyle));
-                setInsertionState(_n2);
-                const _n1 = createComponent(TopWindow, {
-                  "navigation-bar-title-text": () => layoutState.navigationBarTitleText,
-                  $: [() => windowState.value]
-                });
-                const _n3 = _t1$6();
-                renderEffect(() => {
-                  _setTemplateRef(_n1, topWindowRef);
-                  setStyle(_n3, { height: layoutState.topWindowHeight + "px" });
-                });
-                return [_n2, _n3];
+              const _n02 = createPlainElement("uni-left-window", {
+                "data-show": () => layoutState.apiShowLeftWindow || void 0,
+                style: () => layoutState.leftWindowStyle
+              }, () => {
+                const _n1 = createIf(() => layoutState.apiShowLeftWindow, () => {
+                  const _n32 = _t2$3();
+                  on$1(_n32, "click", () => layoutState.apiShowLeftWindow = false);
+                  return _n32;
+                }, () => {
+                  const _n5 = createNodes(null);
+                  return _n5;
+                }, 265);
+                const _n7 = _t3$3();
+                setInsertionState(_n7);
+                const _n62 = createComponent(LeftWindow, { $: [() => windowState.value] });
+                renderEffect(() => _setTemplateRef(_n62, leftWindowRef));
+                return [_n1, _n7];
               }, true);
-              applyVShow(_n02, () => layoutState.showTopWindow || layoutState.apiShowTopWindow);
+              applyVShow(_n02, () => layoutState.showLeftWindow || layoutState.apiShowLeftWindow);
+              return _n02;
+            })(), () => __UNI_FEATURE_RIGHTWINDOW__ && RightWindow && (() => {
+              const _setTemplateRef = createTemplateRefSetter();
+              const _n02 = createPlainElement("uni-right-window", {
+                "data-show": () => layoutState.apiShowRightWindow || void 0,
+                style: () => layoutState.rightWindowStyle
+              }, () => {
+                const _n1 = createIf(() => layoutState.apiShowRightWindow, () => {
+                  const _n32 = _t2$3();
+                  on$1(_n32, "click", () => layoutState.apiShowRightWindow = false);
+                  return _n32;
+                }, () => {
+                  const _n5 = createNodes(null);
+                  return _n5;
+                }, 265);
+                const _n7 = _t4$3();
+                setInsertionState(_n7);
+                const _n62 = createComponent(RightWindow, { $: [() => windowState.value] });
+                renderEffect(() => _setTemplateRef(_n62, rightWindowRef));
+                return [_n1, _n7];
+              }, true);
+              applyVShow(_n02, () => layoutState.showRightWindow || layoutState.apiShowRightWindow);
               return _n02;
             })());
-            const _n5 = createPlainElement("uni-content", null, () => {
-              const _n2 = createPlainElement("uni-main", null, extend$1(() => {
-                const _n1 = createNodes(() => renderPage());
-                return _n1;
-              }, { _: 1 }));
-              const _n3 = createNodes(() => __UNI_FEATURE_LEFTWINDOW__ && LeftWindow && (() => {
-                const _setTemplateRef = createTemplateRefSetter();
-                const _n02 = createPlainElement("uni-left-window", {
-                  "data-show": () => layoutState.apiShowLeftWindow || void 0,
-                  style: () => layoutState.leftWindowStyle
-                }, () => {
-                  const _n1 = createIf(() => layoutState.apiShowLeftWindow, () => {
-                    const _n32 = _t2$3();
-                    on$1(_n32, "click", () => layoutState.apiShowLeftWindow = false);
-                    return _n32;
-                  }, () => {
-                    const _n52 = createNodes(null);
-                    return _n52;
-                  }, 265);
-                  const _n7 = _t3$3();
-                  setInsertionState(_n7);
-                  const _n62 = createComponent(LeftWindow, { $: [() => windowState.value] });
-                  renderEffect(() => _setTemplateRef(_n62, leftWindowRef));
-                  return [_n1, _n7];
-                }, true);
-                applyVShow(_n02, () => layoutState.showLeftWindow || layoutState.apiShowLeftWindow);
-                return _n02;
-              })(), () => __UNI_FEATURE_RIGHTWINDOW__ && RightWindow && (() => {
-                const _setTemplateRef = createTemplateRefSetter();
-                const _n02 = createPlainElement("uni-right-window", {
-                  "data-show": () => layoutState.apiShowRightWindow || void 0,
-                  style: () => layoutState.rightWindowStyle
-                }, () => {
-                  const _n1 = createIf(() => layoutState.apiShowRightWindow, () => {
-                    const _n32 = _t2$3();
-                    on$1(_n32, "click", () => layoutState.apiShowRightWindow = false);
-                    return _n32;
-                  }, () => {
-                    const _n52 = createNodes(null);
-                    return _n52;
-                  }, 265);
-                  const _n7 = _t4$3();
-                  setInsertionState(_n7);
-                  const _n62 = createComponent(RightWindow, { $: [() => windowState.value] });
-                  renderEffect(() => _setTemplateRef(_n62, rightWindowRef));
-                  return [_n1, _n7];
-                }, true);
-                applyVShow(_n02, () => layoutState.showRightWindow || layoutState.apiShowRightWindow);
-                return _n02;
-              })());
-              return [_n2, _n3];
-            });
-            return [_n0, _n5];
-          }, true);
-          return _n6;
+            return [_n3, _n4];
+          });
+          return [_n0, _n6];
         })();
       }
-      return renderPage();
+      return (() => {
+        const _n0 = createNodes(() => renderPage(), () => renderTabBar());
+        return _n0;
+      })();
     }
     return () => (() => {
       const _setTemplateRef = createTemplateRefSetter();
-      const _n2 = createPlainElement("uni-app", { class: () => clazz.value }, extend$1(() => {
-        const _n0 = createNodes(() => renderLayout(), () => __UNI_FEATURE_TABBAR__ && (() => {
-          const _n02 = createComponent(TabBar, null, null, true);
-          applyVShow(_n02, () => unref(showTabBar2));
-          return _n02;
-        })());
+      const _n1 = createPlainElement("uni-app", { class: () => clazz.value }, extend$1(() => {
+        const _n0 = createNodes(() => renderLayout());
         return _n0;
       }, { _: 1 }), true);
-      renderEffect(() => _setTemplateRef(_n2, rootRef));
-      return _n2;
+      renderEffect(() => _setTemplateRef(_n1, rootRef));
+      return _n1;
     })();
   }
 });
@@ -10907,6 +10983,7 @@ function useAppClass(showTabBar2) {
   return computed(() => {
     return {
       "uni-app--showtabbar": showTabBar2 && showTabBar2.value,
+      "uni-app--tabbar-top": __UNI_FEATURE_TABBAR__ && useTabBar().position === "top",
       "uni-app--maxwidth": showMaxWidth.value
     };
   });
@@ -11041,10 +11118,10 @@ function useState() {
   });
   watch(() => layoutState.topWindowHeight, (value) => updateCssVar({ "--top-window-height": value + "px" }));
   watch(() => layoutState.marginWidth, (value) => updateCssVar({ "--window-margin": value + "px" }));
-  watch(() => layoutState.leftWindowWidth + layoutState.marginWidth, (value) => {
+  watch(() => (layoutState.showLeftWindow && !layoutState.apiShowLeftWindow ? layoutState.leftWindowWidth : 0) + layoutState.marginWidth, (value) => {
     updateCssVar({ "--window-left": value + "px" });
   });
-  watch(() => layoutState.rightWindowWidth + layoutState.marginWidth, (value) => {
+  watch(() => (layoutState.showRightWindow && !layoutState.apiShowRightWindow ? layoutState.rightWindowWidth : 0) + layoutState.marginWidth, (value) => {
     updateCssVar({ "--window-right": value + "px" });
   });
   UniServiceJSBridge.on(ON_NAVIGATION_BAR_CHANGE, (navigationBar) => {
@@ -11353,15 +11430,17 @@ function setupPage(comp, path) {
       }
       instance.onReachBottom = reactive([]);
       instance.onPageScroll = reactive([]);
+      const scrollWatchOptions = { once: true };
+      scrollWatchOptions.once = false;
       watch(
         [instance.onReachBottom, instance.onPageScroll],
         () => {
-          const currentPage = getCurrentPage().vm;
-          if (instance.proxy === currentPage) {
+          {
             initPageScrollListener(instance, pageMeta);
+            return;
           }
         },
-        { once: true }
+        scrollWatchOptions
       );
       onBeforeMount(() => {
         onPageShow(instance, pageMeta);
@@ -11375,10 +11454,7 @@ function setupPage(comp, path) {
       onMounted(() => {
         var _a;
         {
-          const pageInstance = getPageInstanceByChild(instance);
-          if (isDialogPageInstance(pageInstance)) {
-            useBackgroundColorContent$1(instance.proxy);
-          }
+          getPageInstanceByChild(instance);
           dialogPageTriggerParentHide((_a = instance.proxy) == null ? void 0 : _a.$page);
         }
         onPageReady(instance);
@@ -11569,30 +11645,6 @@ function useDocumentTitle(pageMeta) {
   function update() {
     updateDocumentTitle(pageMeta.navigationBar.titleText);
   }
-  watchEffect(update);
-  onActivated(update);
-}
-function updateBackgroundColorContent(backgroundColorContent) {
-  if (backgroundColorContent) {
-    document.body.style.setProperty(
-      "--background-color-content",
-      backgroundColorContent
-    );
-  } else {
-    document.body.style.removeProperty("--background-color-content");
-  }
-}
-function useBackgroundColorContent(pageMeta) {
-  function update() {
-    if (pageMeta.backgroundColorContent) {
-      updateBackgroundColorContent(
-        parseTheme({ backgroundColorContent: pageMeta.backgroundColorContent }).backgroundColorContent
-      );
-    } else {
-      updateBackgroundColorContent("transparent");
-    }
-  }
-  onThemeChange$2(update);
   watchEffect(update);
   onActivated(update);
 }
@@ -12279,7 +12331,8 @@ function usePageRefresh(refreshRef, pageMeta = usePageMeta()) {
       return;
     }
     let { deltaY } = ev;
-    if ((document.documentElement.scrollTop || document.body.scrollTop) !== 0) {
+    const scrollTop = ev.currentTarget.scrollTop;
+    if (scrollTop !== 0) {
       touchId = null;
       return;
     }
@@ -12395,17 +12448,53 @@ function usePageRefresh(refreshRef, pageMeta = usePageMeta()) {
     onTouchcancel: onTouchend
   };
 }
-function usePageBody(meta, renderPage) {
+function updateBackgroundColorContent(backgroundColorContent, element) {
+  element = element || document.body;
+  if (backgroundColorContent) {
+    element.style.setProperty(
+      "--background-color-content",
+      backgroundColorContent
+    );
+  } else {
+    element.style.removeProperty("--background-color-content");
+  }
+}
+function useBackgroundColorContent(pageMeta, pageBody) {
+  function update() {
+    if (pageBody && !pageBody.value) {
+      return;
+    }
+    const element = pageBody ? pageBody.value : document.body;
+    if (pageMeta.backgroundColorContent) {
+      updateBackgroundColorContent(
+        parseTheme({ backgroundColorContent: pageMeta.backgroundColorContent }).backgroundColorContent,
+        element
+      );
+    } else {
+      updateBackgroundColorContent("transparent", element);
+    }
+  }
+  onThemeChange$2(update);
+  watchEffect(update);
+  onActivated(update);
+}
+function usePageBody(meta, renderPage, options = {}) {
   const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ ? meta : null;
   const refreshRef = ref(null);
-  const wrapperRef = ref(null);
+  const bodyRef = ref(null);
+  useBackgroundColorContent(meta, bodyRef);
+  function setBodyRef(element) {
+    var _a;
+    bodyRef.value = element;
+    (_a = options.onElement) == null ? void 0 : _a.call(options, element);
+  }
   const _pageRefresh = __UNI_FEATURE_PULL_DOWN_REFRESH__ && pageMeta && (pageMeta.enablePullDownRefresh || true) ? usePageRefresh(refreshRef, pageMeta) : null;
   const pageRefresh = ref(null);
   watch(() => pageMeta == null ? void 0 : pageMeta.enablePullDownRefresh, () => {
     pageRefresh.value = (pageMeta == null ? void 0 : pageMeta.enablePullDownRefresh) ? _pageRefresh : null;
   }, { immediate: true });
   function resize() {
-    const { top, left, right, bottom } = getSafeAreaInsets(wrapperRef.value);
+    const { top, left, right, bottom } = getSafeAreaInsets(bodyRef.value);
     const vars = {
       "--uni-safe-area-inset-top": `${top}px`,
       "--uni-safe-area-inset-left": `${left}px`,
@@ -12413,40 +12502,67 @@ function usePageBody(meta, renderPage) {
       "--uni-safe-area-inset-bottom": `${bottom}px`
     };
     for (const key in vars) {
-      wrapperRef.value.style.setProperty(key, vars[key]);
+      bodyRef.value.style.setProperty(key, vars[key]);
     }
   }
   return () => (() => {
     const _setTemplateRef = createTemplateRefSetter();
     const _n0 = createNodes(() => __UNI_FEATURE_PULL_DOWN_REFRESH__ && !!pageMeta && true && (() => {
       const _setTemplateRef2 = createTemplateRefSetter();
-      const _n02 = createComponent(_sfc_main$y, null, null, true);
+      const _n02 = createComponent(_sfc_main$y, {
+        "data-type": () => {
+          var _a;
+          return (_a = options.attrs) == null ? void 0 : _a["data-type"];
+        },
+        style: () => {
+          var _a;
+          return ((_a = options.attrs) == null ? void 0 : _a["data-type"]) ? options.attrs.style : void 0;
+        }
+      }, null, true);
       renderEffect(() => _setTemplateRef2(_n02, refreshRef));
       return _n02;
     })());
-    const _n4 = createPlainElement("uni-page-wrapper", { $: [() => pageRefresh.value] }, () => {
-      const _n2 = createPlainElement("uni-page-body", null, extend$1(() => {
-        const _n1 = createNodes(() => renderPage());
-        return _n1;
-      }, { _: 1 }));
-      const _n3 = createNodes(() => (() => {
+    const _n3 = createPlainElement("uni-page-body", { $: [
+      () => options.attrs,
+      {
+        "data-page": () => meta.route,
+        "data-page-id": () => meta.id,
+        style: () => {
+          var _a;
+          return [
+            (_a = options.attrs) == null ? void 0 : _a.style,
+            options.style,
+            { overflowY: meta.disableScroll ? "hidden" : void 0 }
+          ];
+        }
+      },
+      () => pageRefresh.value
+    ] }, extend$1(() => {
+      const _n1 = createNodes(() => renderPage(), () => (() => {
         const _n02 = createComponent(ResizeSensor, { onResize: () => resize }, null, true);
         return _n02;
       })());
-      return [_n2, _n3];
-    });
-    renderEffect(() => _setTemplateRef(_n4, wrapperRef));
-    return [_n0, _n4];
+      return _n1;
+    }, { _: 1 }));
+    renderEffect(() => _setTemplateRef(_n3, setBodyRef));
+    return [_n0, _n3];
   })();
 }
 const PageComponent = /* @__PURE__ */ defineSystemComponent({
   name: "Page",
+  inheritAttrs: false,
   setup() {
     var _a;
     const pageStyle = {};
     let pageMeta = providePageMeta(getStateId());
     const navigationBar = pageMeta.navigationBar;
     const currentInstance = getCurrentInstance();
+    const pageBody = shallowRef(null);
+    Object.defineProperty(currentInstance, "__pageBodyEl", {
+      configurable: true,
+      get: () => pageBody.value
+    });
+    usePageBodyScrollPosition(currentInstance);
     const attrs2 = currentInstance.attrs;
     const routeComponent = currentInstance.type;
     const PageComponent2 = routeComponent.__uniPageComponent;
@@ -12477,7 +12593,6 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
         assignDialogPage(currentInstance, parentInstance, currentInstance);
       }
     } else {
-      useBackgroundColorContent(pageMeta);
       provide("parentInstance", currentInstance);
     }
     function assignDialogPage(ctx, parentInstance, currentInstance2) {
@@ -12499,30 +12614,33 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
         }
       }
     }
+    currentInstance.__pageBodyId = pageMeta.id;
     const renderPageBody = usePageBody(pageMeta, () => (() => {
       const _setTemplateRef = createTemplateRefSetter();
       const _n0 = createComponent(PageComponent2, { $: [() => pageProps] }, null, true);
       _setTemplateRef(_n0, "page");
       return _n0;
-    })());
+    })(), {
+      attrs: attrs2,
+      style: pageStyle,
+      onElement(element) {
+        pageBody.value = element;
+      }
+    });
     return () => (() => {
-      const _n3 = createPlainElement("uni-page", {
-        "data-page": () => pageMeta.route,
-        style: () => pageStyle
-      }, extend$1(() => {
-        const _n0 = createNodes(() => __UNI_FEATURE_NAVIGATIONBAR__ && (() => {
-          const _n02 = createIf(() => navigationBar.style !== "custom", () => {
-            const _n2 = createComponent(PageHead, null, null, true);
-            return _n2;
-          });
-          return _n02;
-        })(), () => renderPageBody(), () => {
-          var _a2;
-          return (_a2 = dialogPageRenderer.value) == null ? void 0 : _a2.call(dialogPageRenderer, currentInstance);
+      const _n0 = createNodes(() => __UNI_FEATURE_NAVIGATIONBAR__ && (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n02 = createIf(() => !isDialogPageInstance(currentInstance) && navigationBar.style !== "custom", () => {
+          const _n2 = createComponent(PageHead, null, null, true);
+          _setTemplateRef(_n2, "pageHead");
+          return _n2;
         });
-        return _n0;
-      }, { _: 1 }), true);
-      return _n3;
+        return _n02;
+      })(), () => renderPageBody(), () => {
+        var _a2;
+        return (_a2 = dialogPageRenderer.value) == null ? void 0 : _a2.call(dialogPageRenderer, currentInstance);
+      });
+      return _n0;
     })();
   }
 });
@@ -15618,7 +15736,7 @@ function useScrollView(props2, { emit: emit2, expose }) {
     restoreScrollTop = root.scrollTop;
     restoreScrollLeft = root.scrollLeft;
   }
-  function scrollTo2(options) {
+  function scrollTo(options) {
     const root = rootRef.value;
     if (!root)
       return;
@@ -15638,7 +15756,7 @@ function useScrollView(props2, { emit: emit2, expose }) {
       return;
     const target = initialPositionPending ? Object.assign(initialPosition(), position) : position;
     initialPositionPending = false;
-    scrollTo2(target);
+    scrollTo(target);
   }
   function scrollToElement(element) {
     const root = rootRef.value;
@@ -15652,7 +15770,7 @@ function useScrollView(props2, { emit: emit2, expose }) {
       options.top = root.scrollTop + rect.top - rootRect.top - root.clientTop;
     }
     if (options.left !== void 0 || options.top !== void 0)
-      scrollTo2(options);
+      scrollTo(options);
   }
   function scrollIntoViewSelector(selector) {
     const root = rootRef.value;
@@ -15888,7 +16006,7 @@ function useScrollView(props2, { emit: emit2, expose }) {
       initialPositionPending = false;
       const options = initialPosition();
       if (options.left !== void 0 || options.top !== void 0)
-        scrollTo2(options);
+        scrollTo(options);
       scrollIntoView(props2.scrollIntoView);
     });
   });
@@ -15907,7 +16025,7 @@ function useScrollView(props2, { emit: emit2, expose }) {
       options.left = restoreScrollLeft;
     if (scrollY.value)
       options.top = restoreScrollTop;
-    scrollTo2(options);
+    scrollTo(options);
   });
   watch(
     () => [props2.scrollTop, props2.scrollLeft],
@@ -15918,7 +16036,7 @@ function useScrollView(props2, { emit: emit2, expose }) {
       if (scrollX.value && left !== previousLeft)
         options.left = Number(left) || 0;
       if (options.left !== void 0 || options.top !== void 0)
-        scrollTo2(options);
+        scrollTo(options);
     },
     { flush: "post" }
   );
@@ -26936,7 +27054,10 @@ function initHooks(options, instance, publicThis) {
       const scriptLang = instance.type.__scriptLang;
       const isUTS = !scriptLang || scriptLang === "uts";
       if (true) {
-        query = isUTS ? new UTSJSONObject(decodedQuery(query)) : decodedQuery(query);
+        query = isUTS ? false ? (
+          // @ts-expect-error use globalThis.UTSJSONObject
+          new globalThis.UTSJSONObject(decodedQuery(query))
+        ) : new UTSJSONObject(decodedQuery(query)) : decodedQuery(query);
       }
       if (false)
         ;
@@ -27179,39 +27300,13 @@ function initRouter(app) {
     onMissingRoute: handleBeforeEntryPageRoutes
   });
   router2.beforeEach((to, from) => {
-    if (to && from && to.meta.isTabBar && from.meta.isTabBar) {
-      saveTabBarScrollPosition(from.meta.tabBarIndex);
-    }
   });
   app.router = router2;
   app.use(router2);
 }
-let positionStore = /* @__PURE__ */ Object.create(null);
-function getTabBarScrollPosition(id2) {
-  return positionStore[id2];
-}
-function saveTabBarScrollPosition(id2) {
-  if (typeof window !== "undefined") {
-    positionStore[id2] = {
-      left: window.pageXOffset,
-      top: window.pageYOffset
-    };
-  }
-}
 const scrollBehavior = (to, from, savedPosition) => {
-  if (savedPosition) {
-    return savedPosition;
-  } else {
-    if (to && from && to.meta.isTabBar && from.meta.isTabBar) {
-      const position = getTabBarScrollPosition(to.meta.tabBarIndex);
-      if (position) {
-        return position;
-      }
-    }
-    return {
-      left: 0,
-      top: 0
-    };
+  {
+    return false;
   }
 };
 function createRouterOptions() {
@@ -29406,11 +29501,76 @@ const setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(
   },
   SetNavigationBarTitleProtocol
 );
+const pageScrollFrames = /* @__PURE__ */ new WeakMap();
+function animatePageBodyScroll(pageBody, top, duration) {
+  const previousFrame = pageScrollFrames.get(pageBody);
+  if (previousFrame !== void 0) {
+    cancelAnimationFrame(previousFrame);
+    pageScrollFrames.delete(pageBody);
+  }
+  top = Math.max(
+    0,
+    Math.min(top, pageBody.scrollHeight - pageBody.clientHeight)
+  );
+  if (duration <= 0 || !Number.isFinite(duration)) {
+    pageBody.scrollTo({ top, behavior: "instant" });
+    return;
+  }
+  const startTop = pageBody.scrollTop;
+  if (startTop === top) {
+    return;
+  }
+  const startTime = performance.now();
+  let expectedTop = startTop;
+  function step(time) {
+    if (!pageBody.isConnected || Math.abs(pageBody.scrollTop - expectedTop) > 1) {
+      pageScrollFrames.delete(pageBody);
+      return;
+    }
+    const progress = Math.min(1, Math.max(0, (time - startTime) / duration));
+    pageBody.scrollTo({
+      top: startTop + (top - startTop) * progress,
+      // 逐帧写入必须跳过原生平滑滚动，包括业务 CSS 的 scroll-behavior。
+      behavior: "instant"
+    });
+    expectedTop = pageBody.scrollTop;
+    if (progress < 1) {
+      pageScrollFrames.set(pageBody, requestAnimationFrame(step));
+    } else {
+      pageScrollFrames.delete(pageBody);
+    }
+  }
+  pageScrollFrames.set(pageBody, requestAnimationFrame(step));
+}
+function scrollPageBodyTo(pageBody, top, selector, duration, offsetTop = 0) {
+  if (selector) {
+    const normalizedSelector = normalizePageSelector(selector);
+    const element = normalizedSelector !== selector && pageBody.matches(normalizedSelector) ? pageBody : pageBody.querySelector(normalizedSelector);
+    if (!element) {
+      return;
+    }
+    top = element === pageBody ? 0 : element.getBoundingClientRect().top - pageBody.getBoundingClientRect().top - pageBody.clientTop + pageBody.scrollTop;
+  }
+  animatePageBodyScroll(pageBody, top + offsetTop, duration);
+}
 const pageScrollTo = /* @__PURE__ */ defineAsyncApi(
   API_PAGE_SCROLL_TO,
-  ({ scrollTop, selector, duration }, { resolve }) => {
-    scrollTo(selector || scrollTop || 0, duration, true);
-    resolve();
+  ({ scrollTop, selector, duration, offsetTop }, { resolve }) => {
+    {
+      const page = getCurrentPage();
+      const pageBody = (page == null ? void 0 : page.vm) && getPageBody(page.vm.$);
+      if (pageBody) {
+        scrollPageBodyTo(
+          pageBody,
+          scrollTop || 0,
+          selector,
+          duration,
+          offsetTop
+        );
+      }
+      resolve();
+      return;
+    }
   },
   PageScrollToProtocol,
   PageScrollToOptions
@@ -30073,24 +30233,18 @@ function renderDialogPages(currentInstance) {
       const bId = ((_d = (_c = b.page.vm) == null ? void 0 : _c.$basePage) == null ? void 0 : _d.id) || Number.MAX_SAFE_INTEGER;
       return aId - bId;
     });
-    return pages.map(({ page, type }) => ({
+    return pages.map(({ page, type }, index2) => ({
       component: page.$component,
       type,
-      route: `${page.route}${stringifyQuery$1(page.options)}`
+      route: `${page.route}${stringifyQuery$1(page.options)}`,
+      // 同一弹页的各根节点共享索引，具体层级由 CSS 统一定义。
+      style: { "--uni-dialog-page-index": index2 }
     }));
   }
-  const dialogPageStyle = {
-    position: "fixed",
-    zIndex: 999,
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0
-  };
   return createFor(
     () => getDialogPages(),
     (dialogPage) => createDynamicComponent(() => dialogPage.value.component, {
-      style: () => dialogPageStyle,
+      style: () => dialogPage.value.style,
       "data-type": () => dialogPage.value.type,
       route: () => dialogPage.value.route
     }),

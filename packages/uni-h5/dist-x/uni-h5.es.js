@@ -1090,19 +1090,31 @@ let lastScrollHeight = 0;
 function createScrollListener({
   onPageScroll,
   onReachBottom,
-  onReachBottomDistance
+  onReachBottomDistance,
+  scrollElement
 }) {
   let ticking = false;
   let hasReachBottom = false;
   let reachBottomLocking = true;
+  let elementLastScrollHeight = 0;
+  let elementTestReachBottomTimer;
+  let unlockTimer;
+  let frame;
+  let disposed = false;
   const isReachBottom = () => {
-    const { scrollHeight } = document.documentElement;
-    const windowHeight = window.innerHeight;
-    const scrollY = window.scrollY;
+    const { scrollHeight } = scrollElement || document.documentElement;
+    const windowHeight = scrollElement ? scrollElement.clientHeight : window.innerHeight;
+    const scrollY = scrollElement ? scrollElement.scrollTop : window.scrollY;
     const isBottom = scrollY > 0 && scrollHeight > windowHeight && scrollY + windowHeight + onReachBottomDistance >= scrollHeight;
-    const heightChanged = Math.abs(scrollHeight - lastScrollHeight) > onReachBottomDistance;
+    const heightChanged = Math.abs(
+      scrollHeight - (scrollElement ? elementLastScrollHeight : lastScrollHeight)
+    ) > onReachBottomDistance;
     if (isBottom && (!hasReachBottom || heightChanged)) {
-      lastScrollHeight = scrollHeight;
+      if (scrollElement) {
+        elementLastScrollHeight = scrollHeight;
+      } else {
+        lastScrollHeight = scrollHeight;
+      }
       hasReachBottom = true;
       return true;
     }
@@ -1112,12 +1124,15 @@ function createScrollListener({
     return false;
   };
   const trigger = () => {
-    onPageScroll && onPageScroll(window.pageYOffset);
+    if (disposed) {
+      return;
+    }
+    onPageScroll && onPageScroll(scrollElement ? scrollElement.scrollTop : window.pageYOffset);
     function testReachBottom() {
       if (isReachBottom()) {
         onReachBottom && onReachBottom();
         reachBottomLocking = false;
-        setTimeout(function() {
+        unlockTimer = setTimeout(function() {
           reachBottomLocking = true;
         }, 350);
         return true;
@@ -1127,18 +1142,35 @@ function createScrollListener({
       if (testReachBottom())
         ;
       else {
-        testReachBottomTimer = setTimeout(testReachBottom, 300);
+        if (scrollElement) {
+          elementTestReachBottomTimer = setTimeout(testReachBottom, 300);
+        } else {
+          testReachBottomTimer = setTimeout(testReachBottom, 300);
+        }
       }
     }
     ticking = false;
   };
-  return function onScroll() {
-    clearTimeout(testReachBottomTimer);
+  function onScroll() {
+    clearTimeout(
+      scrollElement ? elementTestReachBottomTimer : testReachBottomTimer
+    );
     if (!ticking) {
-      requestAnimationFrame(trigger);
+      frame = requestAnimationFrame(trigger);
     }
     ticking = true;
+  }
+  onScroll.dispose = () => {
+    disposed = true;
+    if (frame !== void 0) {
+      cancelAnimationFrame(frame);
+    }
+    clearTimeout(unlockTimer);
+    clearTimeout(
+      scrollElement ? elementTestReachBottomTimer : testReachBottomTimer
+    );
   };
+  return onScroll;
 }
 function normalizeRoute(toRoute) {
   if (toRoute.indexOf("/") === 0 || toRoute.indexOf("uni:") === 0) {
@@ -5708,11 +5740,12 @@ class SelectorQuery {
     return this._nodesRef;
   }
   in(component) {
+    var _a;
     this._component = resolveComponentInstance(component);
-    if (this._component && this._component.$root) {
-      const root = resolveComponentInstance(this._component.$root);
-      if (root) {
-        this._page = root;
+    if (this._component) {
+      const page = (_a = this._component.$.$pageInstance) == null ? void 0 : _a.proxy;
+      if (page) {
+        this._page = page;
       }
     }
     return this;
@@ -8650,6 +8683,13 @@ function getPageElement(page) {
   }
   return pageEle;
 }
+function getPageBodyElement(page) {
+  const pageElement = getPageElement(page);
+  return pageElement.querySelector("uni-page-wrapper");
+}
+function getQueryPageBody(page) {
+  return document.querySelector("uni-page-body");
+}
 class UniPageImpl {
   constructor({
     route,
@@ -8674,8 +8714,7 @@ class UniPageImpl {
     return this.pageBody.height + (pageHead ? pageHead.clientHeight : 0);
   }
   get pageBody() {
-    const pageEle = getPageElement(this);
-    const pageBody = pageEle.querySelector("uni-page-wrapper");
+    const pageBody = getPageBodyElement(this);
     const pageWrapperInfo = getPageWrapperInfo(pageBody);
     return {
       top: pageWrapperInfo.top,
@@ -8687,8 +8726,7 @@ class UniPageImpl {
     };
   }
   get safeAreaInsets() {
-    const pageEle = getPageElement(this);
-    const pageBody = pageEle.querySelector("uni-page-wrapper");
+    const pageBody = getPageBodyElement(this);
     return getSafeAreaInsets(pageBody);
   }
   getPageStyle() {
@@ -8756,7 +8794,7 @@ class UniPageImpl {
     if (currentPage !== this) {
       return null;
     }
-    const uniPageBody = document.querySelector("uni-page-body");
+    const uniPageBody = getQueryPageBody();
     return uniPageBody ? uniPageBody.querySelector(`#${id2}`) : null;
   }
   querySelector(selector) {
@@ -8764,7 +8802,7 @@ class UniPageImpl {
     if (currentPage !== this) {
       return null;
     }
-    const uniPageBody = document.querySelector("uni-page-body");
+    const uniPageBody = getQueryPageBody();
     return uniPageBody ? uniPageBody.querySelector(selector) : null;
   }
   querySelectorAll(selector) {
@@ -8773,7 +8811,7 @@ class UniPageImpl {
     if (currentPage !== this) {
       return res;
     }
-    const uniPageBody = document.querySelector("uni-page-body");
+    const uniPageBody = getQueryPageBody();
     if (!uniPageBody) {
       return res;
     }
@@ -8794,7 +8832,7 @@ class UniPageImpl {
     if (currentPage !== this) {
       return null;
     }
-    return document.querySelector("uni-page-body");
+    return getQueryPageBody();
   }
   getDialogPages() {
     return [];
@@ -9265,10 +9303,14 @@ function updateCurPageAttrs(pageMeta) {
 function onPageShow(instance2, pageMeta) {
   const isDialogPage = isDialogPageInstance(getPageInstanceByChild(instance2));
   updateCurPageBodyScopeId(instance2);
-  updateBodyScopeId(instance2);
+  {
+    updateBodyScopeId(instance2);
+  }
   updateCurPageAttrs();
   if (!isDialogPage) {
     updateCurPageCssVar(pageMeta);
+  }
+  if (!isDialogPage) {
     initPageScrollListener(instance2, pageMeta);
   }
 }
@@ -9460,7 +9502,7 @@ function operateMap(id2, pageId, type, data, operateMapCallback2) {
 function createDatasetSnapshot(dataset) {
   return createUniDOMStringMap(dataset);
 }
-function getRootInfo(fields2) {
+function getRootInfo(fields2, page) {
   const info = {};
   if (fields2.id) {
     info.id = "";
@@ -10078,6 +10120,7 @@ function setupPage(comp, path) {
       }
       instance2.onReachBottom = reactive([]);
       instance2.onPageScroll = reactive([]);
+      const scrollWatchOptions = { once: true };
       watch(
         [instance2.onReachBottom, instance2.onPageScroll],
         () => {
@@ -10086,7 +10129,7 @@ function setupPage(comp, path) {
             initPageScrollListener(instance2, pageMeta);
           }
         },
-        { once: true }
+        scrollWatchOptions
       );
       onBeforeMount(() => {
         onPageShow(instance2, pageMeta);
@@ -10294,24 +10337,27 @@ function useDocumentTitle(pageMeta) {
   watchEffect(update);
   onActivated(update);
 }
-function updateBackgroundColorContent(backgroundColorContent) {
+function updateBackgroundColorContent(backgroundColorContent, element) {
+  element = element || document.body;
   if (backgroundColorContent) {
-    document.body.style.setProperty(
+    element.style.setProperty(
       "--background-color-content",
       backgroundColorContent
     );
   } else {
-    document.body.style.removeProperty("--background-color-content");
+    element.style.removeProperty("--background-color-content");
   }
 }
-function useBackgroundColorContent(pageMeta) {
+function useBackgroundColorContent(pageMeta, pageBody) {
   function update() {
+    const element = document.body;
     if (pageMeta.backgroundColorContent) {
       updateBackgroundColorContent(
-        parseTheme({ backgroundColorContent: pageMeta.backgroundColorContent }).backgroundColorContent
+        parseTheme({ backgroundColorContent: pageMeta.backgroundColorContent }).backgroundColorContent,
+        element
       );
     } else {
-      updateBackgroundColorContent("transparent");
+      updateBackgroundColorContent("transparent", element);
     }
   }
   onThemeChange$2(update);
@@ -11012,7 +11058,8 @@ function usePageRefresh(refreshRef, pageMeta = usePageMeta()) {
       return;
     }
     let { deltaY } = ev;
-    if ((document.documentElement.scrollTop || document.body.scrollTop) !== 0) {
+    const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop !== 0) {
       touchId = null;
       return;
     }
@@ -20968,7 +21015,10 @@ function initHooks(options, instance2, publicThis) {
       const scriptLang = instance2.type.__scriptLang;
       const isUTS = !scriptLang || scriptLang === "uts";
       if (true) {
-        query = isUTS ? new UTSJSONObject(decodedQuery(query)) : decodedQuery(query);
+        query = isUTS ? false ? (
+          // @ts-expect-error use globalThis.UTSJSONObject
+          new globalThis.UTSJSONObject(decodedQuery(query))
+        ) : new UTSJSONObject(decodedQuery(query)) : decodedQuery(query);
       }
       if (false)
         ;
@@ -26442,7 +26492,7 @@ const setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(
 );
 const pageScrollTo = /* @__PURE__ */ defineAsyncApi(
   API_PAGE_SCROLL_TO,
-  ({ scrollTop, selector, duration }, { resolve }) => {
+  ({ scrollTop, selector, duration, offsetTop }, { resolve }) => {
     scrollTo(selector || scrollTop || 0, duration, true);
     resolve();
   },

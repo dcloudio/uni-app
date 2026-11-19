@@ -1,6 +1,6 @@
 import { withModifiers, createVNode, getCurrentInstance, ref, openBlock, createElementBlock, defineComponent, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, isReactive, nextTick, onActivated, onMounted, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, createTextVNode, h, renderSlot, logError, createElementVNode, toDisplayString, unref, onBeforeActivate, onBeforeDeactivate, createBlock, onDeactivated, createApp, Transition, effectScope, renderList, withCtx, KeepAlive, resolveDynamicComponent, normalizeStyle } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
-import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, passive, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, getCustomDataset, parseUrl, ON_THEME_CHANGE, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, SCHEME_RE, DATA_RE, LINEFEED, debounce, isUniLifecycleHook, UTSJSONObject, decodedQuery, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, OFF_THEME_CHANGE, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, onCreateVueApp, formatDateTime, RESPONSIVE_MIN_WIDTH, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
+import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, passive, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, getCustomDataset, parseUrl, ON_THEME_CHANGE, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, SCHEME_RE, DATA_RE, LINEFEED, debounce, isUniLifecycleHook, decodedQuery, UTSJSONObject, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, OFF_THEME_CHANGE, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, onCreateVueApp, formatDateTime, RESPONSIVE_MIN_WIDTH, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import { useRoute, isNavigationFailure, createRouter, createWebHistory, createWebHashHistory, useRouter, RouterView } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -1132,19 +1132,31 @@ let lastScrollHeight = 0;
 function createScrollListener({
   onPageScroll,
   onReachBottom,
-  onReachBottomDistance
+  onReachBottomDistance,
+  scrollElement
 }) {
   let ticking = false;
   let hasReachBottom = false;
   let reachBottomLocking = true;
+  let elementLastScrollHeight = 0;
+  let elementTestReachBottomTimer;
+  let unlockTimer;
+  let frame;
+  let disposed = false;
   const isReachBottom = () => {
-    const { scrollHeight } = document.documentElement;
-    const windowHeight = window.innerHeight;
-    const scrollY = window.scrollY;
+    const { scrollHeight } = scrollElement || document.documentElement;
+    const windowHeight = scrollElement ? scrollElement.clientHeight : window.innerHeight;
+    const scrollY = scrollElement ? scrollElement.scrollTop : window.scrollY;
     const isBottom = scrollY > 0 && scrollHeight > windowHeight && scrollY + windowHeight + onReachBottomDistance >= scrollHeight;
-    const heightChanged = Math.abs(scrollHeight - lastScrollHeight) > onReachBottomDistance;
+    const heightChanged = Math.abs(
+      scrollHeight - (scrollElement ? elementLastScrollHeight : lastScrollHeight)
+    ) > onReachBottomDistance;
     if (isBottom && (!hasReachBottom || heightChanged)) {
-      lastScrollHeight = scrollHeight;
+      if (scrollElement) {
+        elementLastScrollHeight = scrollHeight;
+      } else {
+        lastScrollHeight = scrollHeight;
+      }
       hasReachBottom = true;
       return true;
     }
@@ -1154,12 +1166,15 @@ function createScrollListener({
     return false;
   };
   const trigger = () => {
-    onPageScroll && onPageScroll(window.pageYOffset);
+    if (disposed) {
+      return;
+    }
+    onPageScroll && onPageScroll(scrollElement ? scrollElement.scrollTop : window.pageYOffset);
     function testReachBottom() {
       if (isReachBottom()) {
         onReachBottom && onReachBottom();
         reachBottomLocking = false;
-        setTimeout(function() {
+        unlockTimer = setTimeout(function() {
           reachBottomLocking = true;
         }, 350);
         return true;
@@ -1169,18 +1184,35 @@ function createScrollListener({
       if (testReachBottom())
         ;
       else {
-        testReachBottomTimer = setTimeout(testReachBottom, 300);
+        if (scrollElement) {
+          elementTestReachBottomTimer = setTimeout(testReachBottom, 300);
+        } else {
+          testReachBottomTimer = setTimeout(testReachBottom, 300);
+        }
       }
     }
     ticking = false;
   };
-  return function onScroll() {
-    clearTimeout(testReachBottomTimer);
+  function onScroll() {
+    clearTimeout(
+      scrollElement ? elementTestReachBottomTimer : testReachBottomTimer
+    );
     if (!ticking) {
-      requestAnimationFrame(trigger);
+      frame = requestAnimationFrame(trigger);
     }
     ticking = true;
+  }
+  onScroll.dispose = () => {
+    disposed = true;
+    if (frame !== void 0) {
+      cancelAnimationFrame(frame);
+    }
+    clearTimeout(unlockTimer);
+    clearTimeout(
+      scrollElement ? elementTestReachBottomTimer : testReachBottomTimer
+    );
   };
+  return onScroll;
 }
 function normalizeRoute(toRoute) {
   if (toRoute.indexOf("/") === 0 || toRoute.indexOf("uni:") === 0) {
@@ -5008,11 +5040,12 @@ class SelectorQuery {
     return this._nodesRef;
   }
   in(component) {
+    var _a;
     this._component = resolveComponentInstance(component);
-    if (this._component && this._component.$root) {
-      const root = resolveComponentInstance(this._component.$root);
-      if (root) {
-        this._page = root;
+    if (this._component) {
+      const page = (_a = this._component.$.$pageInstance) == null ? void 0 : _a.proxy;
+      if (page) {
+        this._page = page;
       }
     }
     return this;
@@ -7637,10 +7670,14 @@ function updateCurPageAttrs(pageMeta) {
 }
 function onPageShow(instance2, pageMeta) {
   updateCurPageBodyScopeId(instance2);
-  updateBodyScopeId(instance2);
+  {
+    updateBodyScopeId(instance2);
+  }
   updateCurPageAttrs(pageMeta);
   {
     updateCurPageCssVar(pageMeta);
+  }
+  {
     initPageScrollListener(instance2, pageMeta);
   }
 }
@@ -7798,7 +7835,7 @@ function operateMap(id2, pageId, type, data, operateMapCallback2) {
 function createDatasetSnapshot(dataset) {
   return dataset;
 }
-function getRootInfo(fields2) {
+function getRootInfo(fields2, page) {
   const info = {};
   if (fields2.id) {
     info.id = "";
@@ -17581,6 +17618,7 @@ function setupPage(comp, path) {
       }
       instance2.onReachBottom = reactive([]);
       instance2.onPageScroll = reactive([]);
+      const scrollWatchOptions = { once: true };
       watch(
         [instance2.onReachBottom, instance2.onPageScroll],
         () => {
@@ -17589,7 +17627,7 @@ function setupPage(comp, path) {
             initPageScrollListener(instance2, pageMeta);
           }
         },
-        { once: true }
+        scrollWatchOptions
       );
       onBeforeMount(() => {
         onPageShow(instance2, pageMeta);
@@ -24061,7 +24099,7 @@ const setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(
 );
 const pageScrollTo = /* @__PURE__ */ defineAsyncApi(
   API_PAGE_SCROLL_TO,
-  ({ scrollTop, selector, duration }, { resolve }) => {
+  ({ scrollTop, selector, duration, offsetTop }, { resolve }) => {
     scrollTo(selector || scrollTop || 0, duration, true);
     resolve();
   },
@@ -28374,7 +28412,8 @@ function usePageRefresh(refreshRef, pageMeta = usePageMeta()) {
       return;
     }
     let { deltaY } = ev;
-    if ((document.documentElement.scrollTop || document.body.scrollTop) !== 0) {
+    const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop !== 0) {
       touchId = null;
       return;
     }
