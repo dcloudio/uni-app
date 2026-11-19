@@ -28,15 +28,54 @@ export type PreviewImageErrorCode =
 	1101010;
 
 export interface IPreviewImageError extends IUniError {
+	/**
+	 * 错误码
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "3.9"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.11"
+	 *     }
+	 *   }
+	 * }
+	 */
 	errCode : PreviewImageErrorCode
 };
 export type PreviewImageSuccess = {
 	/**
 	 * 调用API的名称
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "3.9"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.11"
+	 *     }
+	 *   }
+	 * }
 	 */
 	errSubject : string,
 	/**
 	 * 描述信息
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "3.9"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.11"
+	 *     }
+	 *   }
+	 * }
 	 */
 	errMsg : string
 }
@@ -48,10 +87,34 @@ export type PreviewImageCompleteCallback = (callback : any) => void
 export type LongPressActionsSuccessResult = {
 	/**
 	 * 接口调用成功的回调函数
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.51"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.71"
+	 *     }
+	 *   }
+	 * }
 	 */
 	tapIndex : number,
 	/**
 	 * 接口调用结束的回调函数（调用成功、失败都会执行）
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.51"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.71"
+	 *     }
+	 *   }
+	 * }
 	 */
 	index : number
 };
@@ -60,22 +123,82 @@ export type LongPressActionsFailResult = IPreviewImageError
 export type LongPressActionsOptions = {
 	/**
 	 * 按钮的文字数组
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.51"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.71"
+	 *     }
+	 *   }
+	 * }
 	 */
 	itemList : string[],
 	/**
 	 * 按钮的文字颜色，字符串格式，默认为"#000000"
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.51"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.71"
+	 *     }
+	 *   }
+	 * }
 	 */
 	itemColor : string | null,
 	/**
 	 * 接口调用成功的回调函数
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.51"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.71"
+	 *     }
+	 *   }
+	 * }
 	 */
 	success : ((result : LongPressActionsSuccessResult) => void) | null,
 	/**
 	 * 接口调用失败的回调函数
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.51"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.71"
+	 *     }
+	 *   }
+	 * }
 	 */
 	fail : ((result : LongPressActionsFailResult) => void) | null,
 	/**
 	 * 接口调用结束的回调函数（调用成功、失败都会执行）
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.51"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.71"
+	 *     }
+	 *   }
+	 * }
 	 */
 	complete : ((result : any) => void) | null
 };
@@ -83,10 +206,34 @@ export type PreviewImageOptions = {
 	/**
 	 * current 为当前显示图片的链接/索引值，不填或填写的值无效则为 urls 的第一张。APP平台仅支持索引值。
 	 * @type string | number
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "3.9"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.11"
+	 *     }
+	 *   }
+	 * }
 	 */
 	current ?: any | null,
 	/**
 	 * 需要预览的图片链接列表
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "3.9"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.11"
+	 *     }
+	 *   }
+	 * }
 	 */
 	urls : Array<string.ImageURIString>,
 	/**
@@ -184,14 +331,50 @@ export type PreviewImageOptions = {
 	indicator ?:
 	/**
 	 * 底部圆点指示器
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "3.9"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.11"
+	 *     }
+	 *   }
+	 * }
 	 */
 	'default' |
 	/**
 	 * 顶部数字指示器
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "3.9"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.11"
+	 *     }
+	 *   }
+	 * }
 	 */
 	'number' |
 	/**
 	 * 不显示指示器
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "3.9"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.11"
+	 *     }
+	 *   }
+	 * }
 	 */
 	'none' |
 	null,
@@ -288,14 +471,50 @@ export type PreviewImageOptions = {
 	longPressActions ?: LongPressActionsOptions | null,
 	/**
 	 * 接口调用成功的回调函数
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "3.9"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.11"
+	 *     }
+	 *   }
+	 * }
 	 */
 	success ?: (PreviewImageSuccessCallback) | null,
 	/**
 	 * 接口调用失败的回调函数
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "3.9"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.11"
+	 *     }
+	 *   }
+	 * }
 	 */
 	fail ?: (PreviewImageFailCallback) | null,
 	/**
 	 * 接口调用结束的回调函数（调用成功、失败都会执行）
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "3.9"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.11"
+	 *     }
+	 *   }
+	 * }
 	 */
 	complete ?: (PreviewImageCompleteCallback) | null
 };
