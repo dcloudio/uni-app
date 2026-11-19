@@ -45,7 +45,7 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x | 错误码 |
+| errCode | number | 是 | Web: x; Android: 3.9; iOS: 4.11 | 错误码 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
 | data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |

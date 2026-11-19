@@ -44,7 +44,6 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.
 | vertical-scroll-bar-access | boolean | true | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.11; iOS: 4.13; HarmonyOS: 4.61 | 设置是否显示纵向滚动条 |
 | bounces | boolean | true | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.63 | 设置是否开启回弹效果 |
 | android-nested-scroll | string | "all" | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.61; iOS: x; HarmonyOS: x | 设置嵌套滚动方向 |
-| associative-container | string |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.25; iOS: 5.25; HarmonyOS: 5.25 | 关联的滚动容器 |
 | disable-user-select-menu | boolean | false | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.81; iOS: 4.84; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 设置是否禁用文本选择时弹出的系统菜单 |
 | ios-allows-inline-media-playback | boolean | false | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: 5.08; HarmonyOS: x | 设置是否允许内联播放(禁止使用系统播放器全屏播放) |
 | @message | (event: [UniWebViewMessageEvent](#uniwebviewmessageevent)) => void |   | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 网页向应用 postMessage 时触发。e.detail = { data } |
@@ -64,12 +63,6 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.
 | vertical | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.61; iOS: x; HarmonyOS: x | 竖向可嵌套滚动 |
 | horizontal | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.61; iOS: x; HarmonyOS: x | 横向均可嵌套滚动 |
 | none | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.61; iOS: x; HarmonyOS: x | 横向竖向均不可嵌套滚动 |
-
-#### associative-container 的属性描述
-
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| nested-scroll-view | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.25; iOS: 5.25; HarmonyOS: 5.25 | 关联 scroll-view 滚动容器。在所有方向上优先滚动 scroll-view |
 
 
 ### 事件

@@ -39,25 +39,25 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.18; iOS: 4
 
 ##### pageOrientation 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| "auto" | 自动 |
-| "portrait" | 竖屏显示 |
-| "landscape" | 横屏显示 |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| "auto" | Android: 4.33; iOS: 4.33 | 自动 |
+| "portrait" | Android: 4.33; iOS: 4.33 | 竖屏显示 |
+| "landscape" | Android: 4.33; iOS: 4.33 | 横屏显示 |
 
 ##### camera 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| "front" | 前置摄像头 |
-| "back" | 后置摄像头 |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| "front" | Android: 4.18; iOS: 4.18 | 前置摄像头 |
+| "back" | Android: 4.18; iOS: 4.18 | 后置摄像头 |
 
 ##### albumMode 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| "custom" | 自定义媒体选择器 |
-| "system" | 系统媒体选择器 |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| "custom" | Android: 4.33; iOS: x | 自定义媒体选择器 |
+| "system" | Android: 4.33; iOS: x | 系统媒体选择器 |
 
 #### ChooseVideoSuccess 的属性值 @choosevideosuccess-values 
 
@@ -71,13 +71,13 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.18; iOS: 4
 
 #### ChooseVideoFail 的属性值 @choosevideofail-values 
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| errCode | number | 是 | 错误码 |
-| errSubject | string | 是 | 统一错误主题（模块）名称 |
-| data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](/err-spec.md#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | Android: 3.9; iOS: 4.11 | 错误码 |
+| errSubject | string | 是 |   | 统一错误主题（模块）名称 |
+| data | any | 否 |   | 错误信息中包含的数据 |
+| cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |   |  |
 
 #### errCode 的属性描述
 
