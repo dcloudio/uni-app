@@ -35,6 +35,7 @@ const NON_APP_JSON_KEYS = [
   'usingComponents',
   'optimization',
   'scopedSlotsCompiler',
+  'slotMultipleInstance',
   'uniStatistics',
   'mergeVirtualHostAttributes',
   'styleIsolation',

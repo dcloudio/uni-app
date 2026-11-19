@@ -32,6 +32,7 @@ const userManifestJSON: any = {
       urlCheck: false,
     },
     usingComponents: true,
+    slotMultipleInstance: true,
     mockFeature: 'enable',
     watchOptions: {
       ignore: ['utils/util.js'],
@@ -294,6 +295,7 @@ describe('mergeMiniProgramAppJson', () => {
     mergeMiniProgramAppJson(appJson, userManifestJSON[platform], mpWeixinConfig)
     expect(appJson.hasOwnProperty('mockFeature')).toBe(true)
     expect(appJson.mockFeature).toBe('enable')
+    expect(appJson).not.toHaveProperty('slotMultipleInstance')
   })
 
   it('测试 alipay', () => {
