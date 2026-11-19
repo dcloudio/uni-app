@@ -136,7 +136,7 @@ Web: x; 微信小程序: √; 支付宝小程序: x; Android(VDOM): x; Android(V
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **ScrollViewRefreshOptions** | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | triggerRefresh、triggerTwoLevel、closeTwoLevel 的动画配置。 |
+| options | **ScrollViewRefreshOptions** | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 动画配置。 |
 
 #### options 的属性描述
 
@@ -194,7 +194,7 @@ Web: x; 微信小程序: √; 支付宝小程序: x; Android: x; iOS: x; Harmony
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **ScrollViewRefreshOptions** | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | triggerRefresh、triggerTwoLevel、closeTwoLevel 的动画配置。 |
+| options | **ScrollViewRefreshOptions** | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 动画配置。 |
 
 #### options 的属性描述
 
@@ -234,7 +234,7 @@ Web: x; 微信小程序: √; 支付宝小程序: x; Android: x; iOS: x; Harmony
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **ScrollViewRefreshOptions** | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | triggerRefresh、triggerTwoLevel、closeTwoLevel 的动画配置。 |
+| options | **ScrollViewRefreshOptions** | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 动画配置。 |
 
 #### options 的属性描述
 
