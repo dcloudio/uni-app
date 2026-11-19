@@ -145,7 +145,7 @@ describe('compiler: transform v-bind="$attrs"', () => {
     })
 
     expect(source).toBe(
-      `<view class="{{b}}" bindtap="{{c}}" id="{{a}}" style="{{$eS[a]}}"/>`
+      `<view class="{{b}}" style="{{$eS[a]}}" bindtap="{{d}}" id="{{a}}"/>`
     )
     expect(onError).not.toHaveBeenCalled()
   })
@@ -162,7 +162,7 @@ describe('compiler: transform v-bind="$attrs"', () => {
     )
 
     expect(source).toBe(
-      `<view class="{{b}}" bindtap="{{c}}" id="{{a}}" style="{{$eS[a]}}"/>`
+      `<view class="{{b}}" style="{{$eS[a]}}" bindtap="{{d}}" id="{{a}}"/>`
     )
     expect(onError).not.toHaveBeenCalled()
   })
