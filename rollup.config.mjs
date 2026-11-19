@@ -4,6 +4,8 @@ import fs from 'fs'
 import path from 'path'
 import jscc from 'rollup-plugin-jscc'
 import ts from 'rollup-plugin-typescript2'
+import typescript from 'typescript'
+import buildTypeScript from './scripts/buildTypeScript.js'
 import replace from '@rollup/plugin-replace'
 import json from '@rollup/plugin-json'
 import alias from '@rollup/plugin-alias'
@@ -25,6 +27,7 @@ const packagesDir = path.resolve(__dirname, 'packages')
 const packageDir = path.resolve(packagesDir, process.env.TARGET)
 const resolve = (p) => path.resolve(packageDir, p)
 const pkg = require(resolve(`package.json`))
+const buildTs = buildTypeScript.createBuildTypeScriptPlugin(ts, typescript)
 
 // ensure TS checks only once for each build
 let hasTSChecked = false
@@ -129,7 +132,12 @@ function createConfig (entryFile, output, buildOption) {
     clean: false,
     verbosity: 0
   }
-  const tsPlugin = ts(tsOptions)
+  const tsPlugin = buildTs(
+    tsOptions,
+    resolve(entryFile),
+    process.env.ROLLUP_WATCH === 'true',
+    buildOption.transpileInclude
+  )
 
   // we only need to check TS and generate declarations once for each build.
   // it also seems to run into weird issues when checking multiple times

@@ -1,5 +1,6 @@
 [
   {
+    "transpileInclude": ["src/service", "src/**/*.d.ts"],
     "input": {
       "src/service/index.ts": ["dist/vue.runtime.esm.dev.js"]
     },
@@ -17,6 +18,7 @@
     "babel": true
   },
   {
+    "transpileInclude": ["src/service", "src/**/*.d.ts"],
     "input": {
       "src/service/index.ts": ["dist/vue.runtime.esm.prod.js"]
     },
@@ -34,6 +36,7 @@
     "babel": true
   },
   {
+    "transpileInclude": ["src/view", "src/**/*.d.ts"],
     "input": {
       "src/view/index.ts": ["dist/view.runtime.esm.js"]
     },
@@ -46,6 +49,7 @@
     "external": ["@vue/shared"]
   },
   {
+    "transpileInclude": ["src/nvue", "src/**/*.d.ts"],
     "input": {
       "src/nvue/index.ts": ["dist/nvue.runtime.esm.dev.js"]
     },
@@ -63,6 +67,7 @@
     "babel": true
   },
   {
+    "transpileInclude": ["src/nvue", "src/**/*.d.ts"],
     "input": {
       "src/nvue/index.ts": ["dist/nvue.runtime.esm.prod.js"]
     },
@@ -80,6 +85,7 @@
     "babel": true
   },
   {
+    "transpileInclude": ["src/uvue", "src/**/*.d.ts"],
     "input": {
       "src/uvue/index.ts": ["dist/uvue.runtime.esm.dev.js"]
     },
@@ -110,6 +116,7 @@
     "babel": true
   },
   {
+    "transpileInclude": ["src/uvue", "src/**/*.d.ts"],
     "input": {
       "src/uvue/index.ts": ["dist/uvue.runtime.esm.prod.js"]
     },
@@ -140,6 +147,7 @@
     "babel": true
   },
   {
+    "transpileInclude": ["src/uvue", "src/**/*.d.ts"],
     "input": {
       "src/uvue/index.vapor.ts": ["dist/uvue.vapor.runtime.esm.dev.js"]
     },
@@ -180,6 +188,7 @@
     "babel": true
   },
   {
+    "transpileInclude": ["src/uvue", "src/**/*.d.ts"],
     "input": {
       "src/uvue/index.vapor.ts": ["dist/uvue.vapor.runtime.esm.prod.js"]
     },
@@ -220,6 +229,7 @@
     "babel": true
   },
   {
+    "transpileInclude": ["src/uvue", "src/**/*.d.ts"],
     "input": {
       "src/uvue/index.ts": ["dist/uvue.runtime.harmony.esm.dev.js"]
     },
@@ -282,6 +292,7 @@
     "babel": true
   },
   {
+    "transpileInclude": ["src/uvue", "src/**/*.d.ts"],
     "input": {
       "src/uvue/index.ts": ["dist/uvue.runtime.harmony.esm.prod.js"]
     },
@@ -341,6 +352,7 @@
     "babel": true
   },
   {
+    "transpileInclude": ["src/uvue", "src/**/*.d.ts"],
     "input": {
       "src/uvue/index.vapor.ts": ["dist/uvue.vapor.runtime.harmony.esm.dev.js"]
     },
@@ -413,6 +425,7 @@
     "babel": true
   },
   {
+    "transpileInclude": ["src/uvue", "src/**/*.d.ts"],
     "input": {
       "src/uvue/index.vapor.ts": ["dist/uvue.vapor.runtime.harmony.esm.prod.js"]
     },

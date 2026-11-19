@@ -167,7 +167,7 @@ async function build (target) {
         cwd: pkgDir,
       }
     )
-    await sleep(500)
+    global.gc && global.gc()
     if (target === 'size-check') {
       const vaporOutDir = path.resolve(pkgDir, 'dist-vapor')
       await fs.remove(vaporOutDir)
@@ -208,7 +208,7 @@ async function build (target) {
           cwd: pkgDir,
         }
       )
-      await sleep(500)
+      global.gc && global.gc()
       // uni-h5(uni-app x)
       await execa(
         'vite',
@@ -223,7 +223,7 @@ async function build (target) {
           cwd: pkgDir,
         }
       )
-      await sleep(500)
+      global.gc && global.gc()
       await execa(
         'vite',
         ['build', '--config', path.resolve(pkgDir, 'vite.config.ts')],
@@ -237,7 +237,7 @@ async function build (target) {
           cwd: pkgDir,
         }
       )
-      await sleep(500)
+      global.gc && global.gc()
       // uni-h5(uni-app x vapor)
       await execa(
         'vite',
@@ -253,7 +253,7 @@ async function build (target) {
           cwd: pkgDir,
         }
       )
-      await sleep(500)
+      global.gc && global.gc()
       await execa(
         'vite',
         ['build', '--config', path.resolve(pkgDir, 'vite.config.ts')],
@@ -268,7 +268,7 @@ async function build (target) {
           cwd: pkgDir,
         }
       )
-      await sleep(500)
+      global.gc && global.gc()
       // 构建 uni-app x Web Vapor 服务端框架产物
       await execa(
         'vite',
@@ -285,7 +285,7 @@ async function build (target) {
           cwd: pkgDir,
         }
       )
-      await sleep(500)
+      global.gc && global.gc()
     }
     if (target === 'uni-app-plus') {
       await execa(
@@ -333,7 +333,7 @@ async function build (target) {
           cwd: pkgDir,
         }
       )
-      await sleep(500)
+      global.gc && global.gc()
     }
   }
   if (hasTscBundler) {
@@ -354,7 +354,7 @@ async function build (target) {
     await execa('tsc', args, {
       stdio: 'inherit',
     })
-    await sleep(500)
+    global.gc && global.gc()
   }
   if (hasArkTSBundler) {
     let shouldBuildArkTS = true
@@ -392,7 +392,7 @@ async function build (target) {
       ],
       { stdio: 'inherit' }
     )
-    await sleep(500)
+    global.gc && global.gc()
 
     if (types && target !== 'uni-uts-vite') {
       await extract(target)
@@ -511,12 +511,4 @@ async function buildArkTS (target, buildJson) {
   if (target !== 'uni-app-harmony') {
     return
   }
-}
-
-let startTime = Date.now()
-async function sleep (ms) {
-  global.gc && global.gc()
-  console.log('gc sleep', (Date.now() - startTime) / 1000, 's')
-  startTime = Date.now()
-  return new Promise((resolve) => setTimeout(resolve, ms))
 }

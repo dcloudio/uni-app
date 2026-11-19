@@ -1,4 +1,5 @@
 [{
+		"transpileInclude": ["src/plugin", "src/**/*.d.ts"],
 		"input": {
 			"src/plugin/index.ts": "lib/uni.plugin.js"
 		},
@@ -33,6 +34,7 @@
 		}
 	},
 	{
+		"transpileInclude": ["src/public", "src/**/*.d.ts"],
 		"input": {
 			"src/public/index.ts": ["dist/uni-stat-public.es.js", "dist/uni-stat-public.cjs.js"]
 		},
@@ -42,6 +44,7 @@
 		}
 	},
 	{
+		"transpileInclude": ["src/public", "src/**/*.d.ts"],
 		"input": {
 			"src/public/index.ts": "dist/uni-stat-public.mp-weixin.es.js"
 		},

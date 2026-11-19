@@ -35,6 +35,8 @@ const priority = {
   'uni-cloud': 10,
   'uni-automator': 10,
   'uni-stacktracey': 8,
+  // size-check 的构建插件会读取 console 运行时，不能依赖检出目录的旧产物。
+  'uni-console': 7,
   'uni-vue-devtools': 6,
   'size-check': 1,
 }

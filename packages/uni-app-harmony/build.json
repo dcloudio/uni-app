@@ -1,5 +1,6 @@
 [
   {
+    "transpileInclude": ["src/service", "src/**/*.d.ts"],
     "input": {
       "src/service/index.ts": "dist/uni.runtime.esm.js"
     },
@@ -32,6 +33,7 @@
     ]
   },
   {
+    "transpileInclude": ["src/compiler", "src/**/*.d.ts"],
     "input": {
       "src/compiler/index.ts": "dist/uni.compiler.js"
     },
@@ -46,6 +48,7 @@
     ]
   },
   {
+    "transpileInclude": ["src/api", "src/**/*.d.ts"],
     "input": {
       "src/api/index.ts": "dist/uni.api.js"
     },

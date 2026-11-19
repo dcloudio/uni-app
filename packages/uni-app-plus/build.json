@@ -1,5 +1,6 @@
 [
   {
+    "transpileInclude": ["src/service", "src/**/*.d.ts"],
     "input": {
       "src/service/api/plugin/uts.ts": "src/service/api/plugin/uts.js"
     },
@@ -13,6 +14,7 @@
     }
   },
   {
+    "transpileInclude": ["src/compiler", "src/**/*.d.ts"],
     "input": {
       "src/compiler/index.ts": "dist/uni.compiler.js"
     },
@@ -22,6 +24,7 @@
     "external": ["@dcloudio/uni-app-uts", "@dcloudio/uni-app-vite"]
   },
   {
+    "transpileInclude": ["src/service", "src/**/*.d.ts"],
     "input": {
       "src/service/index.ts": "dist/uni.runtime.esm.js"
     },
@@ -48,6 +51,7 @@
     "external": ["vue", "@vue/shared", "@dcloudio/uni-shared"]
   },
   {
+    "transpileInclude": ["src/view", "src/**/*.d.ts"],
     "input": {
       "src/view/framework/dom/decodeActions.ts": "dist/tools.umd.js"
     },
@@ -58,6 +62,7 @@
     "external": false
   },
   {
+    "transpileInclude": ["src/service", "src/**/*.d.ts"],
     "input": {
       "src/service/vue.ts": "dist/uni.vue.js"
     },
@@ -81,6 +86,7 @@
     "external": ["@dcloudio/uni-shared", "@vue/shared", "vue"]
   },
   {
+    "transpileInclude": ["src/service", "src/**/*.d.ts"],
     "input": {
       "src/service/vue.ts": "dist/uni.x.vue.js"
     },
