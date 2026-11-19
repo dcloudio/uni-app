@@ -41,26 +41,26 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.18; iOS: 4
 
 #### orientation 的属性描述
 
-| 合法值 |
-| :- |
-| "up" |
-| "down" |
-| "left" |
-| "right" |
-| "up-mirrored" |
-| "down-mirrored" |
-| "left-mirrored" |
-| "right-mirrored" |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| "up" | Android: 4.18; iOS: 4.25 | 默认方向 |
+| "down" | Android: 4.18; iOS: 4.25 | 旋转 180 度 |
+| "left" | Android: 4.18; iOS: 4.25 | 逆时针旋转 90 度 |
+| "right" | Android: 4.18; iOS: 4.25 | 顺时针旋转 90 度 |
+| "up-mirrored" | Android: 4.18; iOS: 4.25 | 默认方向并水平翻转 |
+| "down-mirrored" | Android: 4.18; iOS: 4.25 | 旋转 180 度并水平翻转 |
+| "left-mirrored" | Android: 4.18; iOS: 4.25 | 逆时针旋转 90 度并水平翻转 |
+| "right-mirrored" | Android: 4.18; iOS: 4.25 | 顺时针旋转 90 度并水平翻转 |
 
 #### GetImageInfoFail 的属性值 @getimageinfofail-values 
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| errCode | number | 是 | 错误码 |
-| errSubject | string | 是 | 统一错误主题（模块）名称 |
-| data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](/err-spec.md#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | Android: 3.9; iOS: 4.11 | 错误码 |
+| errSubject | string | 是 |   | 统一错误主题（模块）名称 |
+| data | any | 否 |   | 错误信息中包含的数据 |
+| cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |   |  |
 
 #### errCode 的属性描述
 
