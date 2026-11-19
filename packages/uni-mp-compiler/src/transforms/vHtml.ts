@@ -12,7 +12,10 @@ import {
 } from '@vue/compiler-core'
 import type { NodeTransform } from '../transform'
 
-export const transformHtml: NodeTransform = (node, _) => {
+export const transformHtml: NodeTransform = (node, context) => {
+  if (context.inVPre) {
+    return
+  }
   if (!isElementNode(node)) {
     return
   }

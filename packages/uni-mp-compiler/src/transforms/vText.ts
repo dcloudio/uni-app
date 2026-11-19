@@ -3,6 +3,9 @@ import { ElementTypes, NodeTypes, findDir } from '@vue/compiler-core'
 import type { NodeTransform } from '../transform'
 
 export const transformText: NodeTransform = (node, _) => {
+  if (_.inVPre) {
+    return
+  }
   if (!isElementNode(node)) {
     return
   }

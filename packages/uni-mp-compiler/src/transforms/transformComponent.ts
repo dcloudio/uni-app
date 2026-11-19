@@ -55,6 +55,9 @@ import { parseExpr } from '../ast'
 import { isIfElementNode } from './vIf'
 
 export const transformComponent: NodeTransform = (node, context) => {
+  if (context.inVPre) {
+    return
+  }
   if (!isUserComponent(node, context as any)) {
     return
   }

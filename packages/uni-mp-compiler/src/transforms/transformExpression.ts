@@ -37,6 +37,9 @@ import type { NodeTransform, TransformContext } from '../transform'
 const isLiteralWhitelisted = /*#__PURE__*/ makeMap('true,false,null,this')
 
 export const transformExpression: NodeTransform = (node, context) => {
+  if (context.inVPre) {
+    return
+  }
   if (node.type === NodeTypes.INTERPOLATION) {
     node.content = processExpression(
       node.content as SimpleExpressionNode,

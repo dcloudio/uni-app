@@ -55,6 +55,9 @@ import type { IfElementNode } from './vIf'
 import { DYNAMIC_SLOT } from '../runtimeHelpers'
 
 export const transformSlot: NodeTransform = (node, context) => {
+  if (context.inVPre) {
+    return
+  }
   if (!isUserComponent(node, context)) {
     return
   }
