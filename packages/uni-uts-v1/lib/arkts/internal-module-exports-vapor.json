@@ -121,10 +121,67 @@
       "ArrayBufferToBase64"
     ],
     [
+      "BLECharacteristic"
+    ],
+    [
+      "BLECharacteristicProperties"
+    ],
+    [
+      "BLECharacteristicValueChangeCallback"
+    ],
+    [
+      "BLECharacteristicValueChangeResult"
+    ],
+    [
+      "BLEConnectionStateChangeCallback"
+    ],
+    [
+      "BLEConnectionStateChangeResult"
+    ],
+    [
+      "BLEMTUChangeCallback"
+    ],
+    [
+      "BLEMTUChangeResult"
+    ],
+    [
+      "BLENotifyType"
+    ],
+    [
+      "BLEOperationSuccess"
+    ],
+    [
+      "BLEService"
+    ],
+    [
+      "BLEWriteType"
+    ],
+    [
       "BackgroundAudioManager"
     ],
     [
       "Base64ToArrayBuffer"
+    ],
+    [
+      "BluetoothAdapterStateChangeCallback"
+    ],
+    [
+      "BluetoothAdapterStateChangeResult"
+    ],
+    [
+      "BluetoothDevice"
+    ],
+    [
+      "BluetoothDeviceFoundCallback"
+    ],
+    [
+      "BluetoothDeviceFoundResult"
+    ],
+    [
+      "BluetoothDiscoveryPowerLevel"
+    ],
+    [
+      "BluetoothFail"
     ],
     [
       "CalendarErrorCode"
@@ -382,6 +439,39 @@
       "ClipBoardErrorCode"
     ],
     [
+      "CloseBLEConnection"
+    ],
+    [
+      "CloseBLEConnectionCompleteCallback"
+    ],
+    [
+      "CloseBLEConnectionFailCallback"
+    ],
+    [
+      "CloseBLEConnectionOptions"
+    ],
+    [
+      "CloseBLEConnectionSuccessCallback"
+    ],
+    [
+      "CloseBluetoothAdapter"
+    ],
+    [
+      "CloseBluetoothAdapterCompleteCallback"
+    ],
+    [
+      "CloseBluetoothAdapterFailCallback"
+    ],
+    [
+      "CloseBluetoothAdapterOptions"
+    ],
+    [
+      "CloseBluetoothAdapterSuccess"
+    ],
+    [
+      "CloseBluetoothAdapterSuccessCallback"
+    ],
+    [
       "CloseOptions"
     ],
     [
@@ -502,6 +592,9 @@
       "ConnectSocketSuccess"
     ],
     [
+      "ConnectedBluetoothDevice"
+    ],
+    [
       "Convert2AbsFullPath"
     ],
     [
@@ -509,6 +602,21 @@
     ],
     [
       "CreateAppCrash"
+    ],
+    [
+      "CreateBLEConnection"
+    ],
+    [
+      "CreateBLEConnectionCompleteCallback"
+    ],
+    [
+      "CreateBLEConnectionFailCallback"
+    ],
+    [
+      "CreateBLEConnectionOptions"
+    ],
+    [
+      "CreateBLEConnectionSuccessCallback"
     ],
     [
       "CreateBackgroundAudioErrorCode"
@@ -688,7 +796,115 @@
       "GetAppCrashInfo"
     ],
     [
+      "GetBLEDeviceCharacteristics"
+    ],
+    [
+      "GetBLEDeviceCharacteristicsCompleteCallback"
+    ],
+    [
+      "GetBLEDeviceCharacteristicsFailCallback"
+    ],
+    [
+      "GetBLEDeviceCharacteristicsOptions"
+    ],
+    [
+      "GetBLEDeviceCharacteristicsSuccess"
+    ],
+    [
+      "GetBLEDeviceCharacteristicsSuccessCallback"
+    ],
+    [
+      "GetBLEDeviceRSSI"
+    ],
+    [
+      "GetBLEDeviceRSSICompleteCallback"
+    ],
+    [
+      "GetBLEDeviceRSSIFailCallback"
+    ],
+    [
+      "GetBLEDeviceRSSIOptions"
+    ],
+    [
+      "GetBLEDeviceRSSISuccess"
+    ],
+    [
+      "GetBLEDeviceRSSISuccessCallback"
+    ],
+    [
+      "GetBLEDeviceServices"
+    ],
+    [
+      "GetBLEDeviceServicesCompleteCallback"
+    ],
+    [
+      "GetBLEDeviceServicesFailCallback"
+    ],
+    [
+      "GetBLEDeviceServicesOptions"
+    ],
+    [
+      "GetBLEDeviceServicesSuccess"
+    ],
+    [
+      "GetBLEDeviceServicesSuccessCallback"
+    ],
+    [
+      "GetBLEMTU"
+    ],
+    [
+      "GetBLEMTUCompleteCallback"
+    ],
+    [
+      "GetBLEMTUFailCallback"
+    ],
+    [
+      "GetBLEMTUOptions"
+    ],
+    [
+      "GetBLEMTUSuccess"
+    ],
+    [
+      "GetBLEMTUSuccessCallback"
+    ],
+    [
       "GetBackgroundAudioManager"
+    ],
+    [
+      "GetBluetoothAdapterState"
+    ],
+    [
+      "GetBluetoothAdapterStateCompleteCallback"
+    ],
+    [
+      "GetBluetoothAdapterStateFailCallback"
+    ],
+    [
+      "GetBluetoothAdapterStateOptions"
+    ],
+    [
+      "GetBluetoothAdapterStateSuccess"
+    ],
+    [
+      "GetBluetoothAdapterStateSuccessCallback"
+    ],
+    [
+      "GetBluetoothDevices"
+    ],
+    [
+      "GetBluetoothDevicesCompleteCallback"
+    ],
+    [
+      "GetBluetoothDevicesFailCallback"
+    ],
+    [
+      "GetBluetoothDevicesOptions"
+    ],
+    [
+      "GetBluetoothDevicesSuccess"
+    ],
+    [
+      "GetBluetoothDevicesSuccessCallback"
     ],
     [
       "GetClipboardData"
@@ -713,6 +929,24 @@
     ],
     [
       "GetClipboardDataSuccessCallback"
+    ],
+    [
+      "GetConnectedBluetoothDevices"
+    ],
+    [
+      "GetConnectedBluetoothDevicesCompleteCallback"
+    ],
+    [
+      "GetConnectedBluetoothDevicesFailCallback"
+    ],
+    [
+      "GetConnectedBluetoothDevicesOptions"
+    ],
+    [
+      "GetConnectedBluetoothDevicesSuccess"
+    ],
+    [
+      "GetConnectedBluetoothDevicesSuccessCallback"
     ],
     [
       "GetDeviceInfo"
@@ -1483,6 +1717,21 @@
       "ModalPage"
     ],
     [
+      "NotifyBLECharacteristicValueChange"
+    ],
+    [
+      "NotifyBLECharacteristicValueChangeCompleteCallback"
+    ],
+    [
+      "NotifyBLECharacteristicValueChangeFailCallback"
+    ],
+    [
+      "NotifyBLECharacteristicValueChangeOptions"
+    ],
+    [
+      "NotifyBLECharacteristicValueChangeSuccessCallback"
+    ],
+    [
       "OauthErrorCode"
     ],
     [
@@ -1493,6 +1742,21 @@
     ],
     [
       "OffAppThemeChange"
+    ],
+    [
+      "OffBLECharacteristicValueChange"
+    ],
+    [
+      "OffBLEConnectionStateChange"
+    ],
+    [
+      "OffBLEMTUChange"
+    ],
+    [
+      "OffBluetoothAdapterStateChange"
+    ],
+    [
+      "OffBluetoothDeviceFound"
     ],
     [
       "OffCompassChange"
@@ -1547,6 +1811,21 @@
     ],
     [
       "OnAppThemeChangeCallback"
+    ],
+    [
+      "OnBLECharacteristicValueChange"
+    ],
+    [
+      "OnBLEConnectionStateChange"
+    ],
+    [
+      "OnBLEMTUChange"
+    ],
+    [
+      "OnBluetoothAdapterStateChange"
+    ],
+    [
+      "OnBluetoothDeviceFound"
     ],
     [
       "OnCompassChange"
@@ -1705,6 +1984,24 @@
       "OpenAppAuthorizeSettingSuccessCallback"
     ],
     [
+      "OpenBluetoothAdapter"
+    ],
+    [
+      "OpenBluetoothAdapterCompleteCallback"
+    ],
+    [
+      "OpenBluetoothAdapterFailCallback"
+    ],
+    [
+      "OpenBluetoothAdapterOptions"
+    ],
+    [
+      "OpenBluetoothAdapterSuccess"
+    ],
+    [
+      "OpenBluetoothAdapterSuccessCallback"
+    ],
+    [
       "OpenDocument"
     ],
     [
@@ -1805,6 +2102,21 @@
     ],
     [
       "PullDownRefreshErrorCode"
+    ],
+    [
+      "ReadBLECharacteristicValue"
+    ],
+    [
+      "ReadBLECharacteristicValueCompleteCallback"
+    ],
+    [
+      "ReadBLECharacteristicValueFailCallback"
+    ],
+    [
+      "ReadBLECharacteristicValueOptions"
+    ],
+    [
+      "ReadBLECharacteristicValueSuccessCallback"
     ],
     [
       "ReadCompressedFileCallback"
@@ -2114,6 +2426,24 @@
     ],
     [
       "SetAppThemeSuccessResult"
+    ],
+    [
+      "SetBLEMTU"
+    ],
+    [
+      "SetBLEMTUCompleteCallback"
+    ],
+    [
+      "SetBLEMTUFailCallback"
+    ],
+    [
+      "SetBLEMTUOptions"
+    ],
+    [
+      "SetBLEMTUSuccess"
+    ],
+    [
+      "SetBLEMTUSuccessCallback"
     ],
     [
       "SetClipboardData"
@@ -2506,6 +2836,24 @@
       "StartAccelerometerSuccessCallback"
     ],
     [
+      "StartBluetoothDevicesDiscovery"
+    ],
+    [
+      "StartBluetoothDevicesDiscoveryCompleteCallback"
+    ],
+    [
+      "StartBluetoothDevicesDiscoveryFailCallback"
+    ],
+    [
+      "StartBluetoothDevicesDiscoveryOptions"
+    ],
+    [
+      "StartBluetoothDevicesDiscoverySuccess"
+    ],
+    [
+      "StartBluetoothDevicesDiscoverySuccessCallback"
+    ],
+    [
       "StartCompass"
     ],
     [
@@ -2668,6 +3016,24 @@
       "StopAccelerometerSuccessCallback"
     ],
     [
+      "StopBluetoothDevicesDiscovery"
+    ],
+    [
+      "StopBluetoothDevicesDiscoveryCompleteCallback"
+    ],
+    [
+      "StopBluetoothDevicesDiscoveryFailCallback"
+    ],
+    [
+      "StopBluetoothDevicesDiscoveryOptions"
+    ],
+    [
+      "StopBluetoothDevicesDiscoverySuccess"
+    ],
+    [
+      "StopBluetoothDevicesDiscoverySuccessCallback"
+    ],
+    [
       "StopCompass"
     ],
     [
@@ -2735,6 +3101,9 @@
     ],
     [
       "UnLinkSuccessCallback"
+    ],
+    [
+      "UniBluetoothErrorCode"
     ],
     [
       "UniCanvasElement"
@@ -3023,6 +3392,21 @@
     ],
     [
       "WorkerTaskImpl"
+    ],
+    [
+      "WriteBLECharacteristicValue"
+    ],
+    [
+      "WriteBLECharacteristicValueCompleteCallback"
+    ],
+    [
+      "WriteBLECharacteristicValueFailCallback"
+    ],
+    [
+      "WriteBLECharacteristicValueOptions"
+    ],
+    [
+      "WriteBLECharacteristicValueSuccessCallback"
     ],
     [
       "WriteCallback"
