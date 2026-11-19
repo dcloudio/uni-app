@@ -78,7 +78,10 @@ export function initHooks(
       // onLoad 的 query 进行 decode
       if (__X__) {
         query = isUTS
-          ? new UTSJSONObject(decodedQuery(query))
+          ? __PLATFORM__ === 'app'
+            ? // @ts-expect-error use globalThis.UTSJSONObject
+              new globalThis.UTSJSONObject(decodedQuery(query))
+            : new UTSJSONObject(decodedQuery(query))
           : decodedQuery(query)
       }
       if (__PLATFORM__ === 'app' && __X__) {

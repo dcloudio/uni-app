@@ -1,5 +1,5 @@
 import { extend } from '@vue/shared'
-import { UTSJSONObject, parseQuery } from '@dcloudio/uni-shared'
+import { parseQuery } from '@dcloudio/uni-shared'
 import { type LaunchOptions, createLaunchOptions } from '@dcloudio/uni-core'
 
 export const EVENT_BACKBUTTON = 'backbutton'
@@ -37,7 +37,8 @@ export function initEnterOptions({
     appLink,
   })
   if (__X__) {
-    enterOptions.query = new UTSJSONObject(enterOptions.query)
+    // @ts-expect-error use globalThis.UTSJSONObject
+    enterOptions.query = new globalThis.UTSJSONObject(enterOptions.query)
   }
 }
 
@@ -59,7 +60,8 @@ export function initLaunchOptions({
     appLink,
   })
   if (__X__) {
-    launchOptions.query = new UTSJSONObject(launchOptions.query)
+    // @ts-expect-error use globalThis.UTSJSONObject
+    launchOptions.query = new globalThis.UTSJSONObject(launchOptions.query)
   }
   extend(enterOptions, launchOptions)
 

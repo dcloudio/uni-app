@@ -14,7 +14,6 @@ import {
   setCurrentSystemDialogPage,
 } from './dialogPage'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/native/UniPage'
-import { UTSJSONObject } from '@dcloudio/uni-shared'
 
 export function setupXPage(
   instance: ComponentInternalInstance,
@@ -46,7 +45,8 @@ export function setupXPage(
   Object.defineProperty(uniPage, 'options', {
     get: function () {
       if (!scriptLang || scriptLang === 'uts') {
-        return new UTSJSONObject(pageVm.$basePage.options)
+        // @ts-expect-error use globalThis.UTSJSONObject
+        return new globalThis.UTSJSONObject(pageVm.$basePage.options)
       }
       return pageVm.$basePage.options
     },
