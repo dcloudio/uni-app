@@ -24,6 +24,22 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-easyinput
 - 通过 `type` 指定输入类型，`textarea` 渲染多行输入框、`password` 渲染密码输入框，其余透传给原生单行输入。
 - 所有布尔属性默认值均为 `false`。
 
+## 使用方式
+
+组件负责：
+
+- 包装原生 `input` / `textarea`，提供边框、聚焦态、禁用态样式
+- 按 `type` 切换单行、多行、密码输入
+- 提供清空、密码显隐图标及左右插槽
+- 通过 `input-class`、`placeholder-class`、`icon-class` 外部样式类暴露内部节点样式定制
+- 通过 `focusInput()`、`blurInput()` 方法暴露焦点控制
+
+使用者负责：
+
+- 使用 `v-model` 绑定输入内容，或用 `value` 做兼容场景
+- 监听输入、焦点、确认、清空、密码显隐等事件处理业务逻辑
+- 通过组件 `class` / `style` 或外部样式类定制样式
+
 ## 基本用法
 
 ```html
@@ -170,50 +186,41 @@ export type MyInputProps = UniEasyinputProps & {
 }
 ```
 
-## 更新说明（不兼容调整）
-
-- `clearable`、`password-icon` 默认值由 `true` 调整为 `false`。
-- 移除 `input-border` 属性，默认始终显示边框，使用组件 `class` 覆盖即可。
-- 移除 `prefix-icon`、`suffix-icon`、`prefix-icon-class`、`suffix-icon-class` 及 `iconClick` 事件；清空和密码显隐图标统一用 `icon-class` 设置样式。
-- `action-icon-class` 重命名为 `icon-class`。
-- 移除 `trim` 属性，输入内容处理改用 Vue 修饰符。
-- 移除 `error-message` 和 `error-class`，输入校验和错误反馈改由 `uni-forms-item` 负责。
-
 
 
 ### 兼容性 <Help />
-Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07
+Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 描述 |
-| :- | :- | :- | :- |
-| modelValue | string \| number \| null | "" | 输入内容，支持 v-model；同时传入 value 时优先使用 modelValue |
-| value | string \| number \| null | "" | 不使用 v-model 时传入的输入内容；同时传入 modelValue 时不生效，内容更新时不触发 update:value |
-| name | string | "" | 原生表单控件名称，透传给 input / textarea |
-| type | string | "text" | 输入类型。textarea 渲染多行输入框，password 渲染密码输入框，其余透传给原生单行输入 |
-| placeholder | string | "" | 占位文字 |
-| disabled | boolean | false | 是否禁用 |
-| maxlength | number | -1 | 最大输入长度，透传给 input / textarea |
-| focus | boolean | false | 是否聚焦 |
-| confirmType | string | "done" | 键盘右下角按钮类型；单行输入默认 done，多行输入在未设置或设置为 done 时使用 return |
-| cursorSpacing | number | 0 | 光标与键盘的距离，单位 px，透传给 input / textarea |
-| adjustPosition | boolean | false | 键盘弹起时是否自动上推页面，透传给 input / textarea |
-| autoHeight | boolean | false | 是否自动增高，仅当 type 为 textarea 时生效 |
-| clearable | boolean | false | 是否显示清空图标，仅对单行 input 生效 |
-| passwordIcon | boolean | false | type 为 password 时是否显示密码显隐图标 |
-| inputClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | input / textarea 的自定义样式类 |
-| placeholderClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 占位文字的自定义样式类 |
-| iconClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 清空和密码显隐图标的自定义样式类 |
-| @input | Function |   | 输入时触发，参数为当前字符串值 |
-| @focus | Function |   | 聚焦时触发，参数为原生 input 或 textarea 聚焦事件 |
-| @blur | Function |   | 失焦时触发，参数为原生 input 或 textarea 失焦事件 |
-| @confirm | Function |   | 点击键盘完成按钮时触发，参数为当前字符串值 |
-| @change | Function |   | 失焦或点击键盘完成按钮时触发，同一次聚焦期间相同值只触发一次，参数为当前字符串值 |
-| @clear | Function |   | 点击清空图标时触发 |
-| @eyes | Function |   | 密码可见状态变化时触发；点击图标或可见密码因状态变化恢复隐藏时都会触发 |
-| @keyboardheightchange | Function |   | 键盘高度变化时触发 |
-| @update:modelValue | Event |   | 输入内容更新时触发，用于 v-model，参数为当前字符串值 |
+| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| modelValue | string \| number \| null | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 输入内容，支持 v-model；同时传入 value 时优先使用 modelValue |
+| value | string \| number \| null | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 不使用 v-model 时传入的输入内容；同时传入 modelValue 时不生效，内容更新时不触发 update:value |
+| name | string | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 原生表单控件名称，透传给 input / textarea |
+| type | string | "text" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 输入类型。textarea 渲染多行输入框，password 渲染密码输入框，其余透传给原生单行输入 |
+| placeholder | string | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 占位文字 |
+| disabled | boolean | false | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 是否禁用 |
+| maxlength | number | -1 | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 最大输入长度，透传给 input / textarea |
+| focus | boolean | false | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 是否聚焦 |
+| confirmType | string | "done" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 键盘右下角按钮类型；单行输入默认 done，多行输入在未设置或设置为 done 时使用 return |
+| cursorSpacing | number | 0 | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 光标与键盘的距离，单位 px，透传给 input / textarea |
+| adjustPosition | boolean | false | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 键盘弹起时是否自动上推页面，透传给 input / textarea |
+| autoHeight | boolean | false | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 是否自动增高，仅当 type 为 textarea 时生效 |
+| clearable | boolean | false | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 是否显示清空图标，仅对单行 input 生效 |
+| passwordIcon | boolean | false | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | type 为 password 时是否显示密码显隐图标 |
+| inputClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | input / textarea 的自定义样式类 |
+| placeholderClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 占位文字的自定义样式类 |
+| iconClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 清空和密码显隐图标的自定义样式类 |
+| @input | Function |   |   | 输入时触发，参数为当前字符串值 |
+| @focus | Function |   |   | 聚焦时触发，参数为原生 input 或 textarea 聚焦事件 |
+| @blur | Function |   |   | 失焦时触发，参数为原生 input 或 textarea 失焦事件 |
+| @confirm | Function |   |   | 点击键盘完成按钮时触发，参数为当前字符串值 |
+| @change | Function |   |   | 失焦或点击键盘完成按钮时触发，同一次聚焦期间相同值只触发一次，参数为当前字符串值 |
+| @clear | Function |   |   | 点击清空图标时触发 |
+| @eyes | Function |   |   | 密码可见状态变化时触发；点击图标或可见密码因状态变化恢复隐藏时都会触发，参数为是否可见 |
+| @keyboardheightchange | Function |   |   | 键盘高度变化时触发，参数为原生键盘高度事件 |
+| @update:modelValue | Event |   |   | 输入内容更新时触发，用于 v-model，参数为当前字符串值 |
 
 <!-- UTSCOMJSON.uni-easyinput.fileFormates -->
 

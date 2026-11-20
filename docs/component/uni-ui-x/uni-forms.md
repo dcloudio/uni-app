@@ -19,16 +19,33 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-forms-x
 
 # uni-forms 表单
 
-uni-forms组件，是 uni-app x 的增强表单组件。相比内置的 form 组件，它解决了如下问题：
+## 用途和场景
 
-1. uni-forms内置了表单校验功能。
-2. uni-forms使用vue的`v-model`机制，方便收集、校验，也方便接入任意三方组件。
- 内置 form 组件使用的是平台form规范，很多小程序平台不提供三方组件接入到内置form表单中管理的功能，如果你开发了自定义的表单组件，只能通过 uni-forms 来跨平台接入表单中。
+uni-forms 是 uni-app x 的增强表单组件。相比内置的 form 组件，它解决了如下问题：
 
-本插件包含2个组件：
+1. 内置表单校验功能。
+2. 使用 vue 的 `v-model` 机制收集、校验数据，方便接入任意三方组件。内置 form 组件使用的是平台 form 规范，很多小程序平台不提供三方组件接入到内置 form 表单中管理的功能；如果你开发了自定义的表单组件，只能通过 uni-forms 来跨平台接入表单中。
+
+本插件包含 2 个组件：
 
 - `uni-forms`：表单容器，负责数据和整表校验
 - `uni-forms-item`：表单项的包裹容器。通过 `label` 设置标签文字，通过默认插槽放置表单控件（如 `input`、`uni-data-checkbox`），并显示校验错误状态。
+
+## 使用方式（职责分工）
+
+组件内部负责：
+
+- 通过 `v-model` 读写表单数据，按 `name` 路径收集字段值。
+- 内置 DB Schema 风格规则校验，可选接入 Standard Schema（如 Valibot、Zod）。
+- 管理字段校验状态与错误展示（`err-show-type`），提供 `validate`、`validateField`、`clearValidate`、`resetFields`、`setRules`、`setValue` 等方法。
+- 通过外部样式类定制标签、说明、必填标记、控件区域和错误状态的样式。
+
+使用者负责：
+
+- 用 `v-model` 绑定表单数据对象，用 `name` 把 `uni-forms-item` 对应到数据字段。
+- 编写 `rules` 或 `schema`，并按需设置 `validate-trigger`、`err-show-type` 等属性。
+- 在 `uni-forms-item` 默认插槽中放置控件，保证控件通过 `v-model` 更新表单数据对象。
+- 需要失焦即时校验时，让控件在失焦时调用表单项的 `onFieldBlur`（见「自定义组件」）。
 
 ## 基本用法
 
@@ -332,29 +349,48 @@ function onBlur(value : string) {
 }
 ```
 
+## 注意事项
+
+- `uni-forms-item` 必须放在 `uni-forms` 内使用，并通过 `name` 与表单数据的字段路径对应，才能参与表单校验。
+- `required` 只控制是否显示红色必填标记 `*`，字段是否必填由 `rules` 决定。
+- `validate-trigger` 的 `blur` 需要控件在失焦时主动调用表单项的 `onFieldBlur`；`bind` 随 `v-model` 数据变化触发。
+- 带函数的规则（`validateFunction`、`validateExpr`）在微信小程序中需在页面就绪后通过 `setRules` 设置。
+- `schema` 为实验性属性，后续可能改名，用法也会继续完善。
+- 组件内部用于提示和兜底的文案已内置简体中文、繁体中文、英文、法文和拉丁文，按 `uni.getAppBaseInfo().appLanguage` 切换。
+
+## 示例页面
+
+- `/pages/uni-ui/forms/forms`：功能索引与基础用法
+- `/pages/uni-ui/forms/validation`：完整校验
+- `/pages/uni-ui/forms/valibot`：Standard Schema（Valibot）
+- `/pages/uni-ui/forms/controls`：控件接入
+- `/pages/uni-ui/forms/styles`：样式与属性
+- `/pages/uni-ui/forms/form-item`：表单项布局
+
+
 
 
 ### 兼容性 <Help />
-Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07
+Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 描述 |
-| :- | :- | :- | :- |
-| value | object \| null | null | \[已废弃] 旧版表单数据属性，推荐使用 modelValue |
-| modelValue | object \| null | null | 表单数据，支持 v-model 双向绑定 |
-| model | object \| null | null | \[已废弃] 旧版表单数据属性，优先级高于 modelValue |
-| rules | object | "() : UniFormRules => ({})" | DB Schema 风格校验规则，键为字段路径 |
-| schema | any | null | Standard Schema 兼容对象，例如由 Valibot、Zod 等校验库创建 |
-| errShowType | string | "toast" | 校验错误提示方式 |
-| validateTrigger | UniFormTrigger | "'submit' as UniFormTrigger" | 默认校验触发时机 |
-| labelPosition | string | "left" | 标签位置 |
-| labelWidth | string \| number | "" | 单行横排布局的标签宽度，数字按 px 处理 |
-| labelAlign | string | "left" | 标签文字对齐方式 |
-| border | boolean | false | 是否显示字段分隔线 |
-| @validate | Function |   | 校验结果变化时触发；通过时参数为 null，未通过时为错误对象或错误数组 |
-| @submit | Function |   | \[已废弃] 调用 submit 方法时触发，推荐使用 validate 方法 |
-| @update:modelValue | Event |   | 表单数据更新时触发，参数为更新后的表单数据 |
+| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| value | object \| null | null | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | \[已废弃] 旧版表单数据属性，推荐使用 modelValue |
+| modelValue | object \| null | null | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 表单数据，支持 v-model 双向绑定 |
+| model | object \| null | null | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | \[已废弃] 旧版表单数据属性，优先级高于 modelValue |
+| rules | object | "() : UniFormRules => ({})" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | DB Schema 风格校验规则，键为字段路径 |
+| schema | any | null | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | Standard Schema 兼容对象，例如由 Valibot、Zod 等校验库创建 |
+| errShowType | string | "toast" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 校验错误提示方式 |
+| validateTrigger | UniFormTrigger | "'submit' as UniFormTrigger" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 默认校验触发时机 |
+| labelPosition | string | "left" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 标签位置 |
+| labelWidth | string \| number | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 单行横排布局的标签宽度，数字按 px 处理 |
+| labelAlign | string | "left" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 标签文字对齐方式 |
+| border | boolean | false | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 是否显示字段分隔线 |
+| @validate | Function |   |   | 校验结果变化时触发；通过时参数为 null，未通过时为错误对象或错误数组 |
+| @submit | Function |   |   | \[已废弃] 调用 submit 方法时触发，推荐使用 validate 方法 |
+| @update:modelValue | Event |   |   | 表单数据更新时触发，参数为更新后的表单数据 |
 
 #### errShowType 的属性描述
 
@@ -797,16 +833,33 @@ page {
 
 # uni-forms 表单
 
-uni-forms组件，是 uni-app x 的增强表单组件。相比内置的 form 组件，它解决了如下问题：
+## 用途和场景
 
-1. uni-forms内置了表单校验功能。
-2. uni-forms使用vue的`v-model`机制，方便收集、校验，也方便接入任意三方组件。
- 内置 form 组件使用的是平台form规范，很多小程序平台不提供三方组件接入到内置form表单中管理的功能，如果你开发了自定义的表单组件，只能通过 uni-forms 来跨平台接入表单中。
+uni-forms 是 uni-app x 的增强表单组件。相比内置的 form 组件，它解决了如下问题：
 
-本插件包含2个组件：
+1. 内置表单校验功能。
+2. 使用 vue 的 `v-model` 机制收集、校验数据，方便接入任意三方组件。内置 form 组件使用的是平台 form 规范，很多小程序平台不提供三方组件接入到内置 form 表单中管理的功能；如果你开发了自定义的表单组件，只能通过 uni-forms 来跨平台接入表单中。
+
+本插件包含 2 个组件：
 
 - `uni-forms`：表单容器，负责数据和整表校验
 - `uni-forms-item`：表单项的包裹容器。通过 `label` 设置标签文字，通过默认插槽放置表单控件（如 `input`、`uni-data-checkbox`），并显示校验错误状态。
+
+## 使用方式（职责分工）
+
+组件内部负责：
+
+- 通过 `v-model` 读写表单数据，按 `name` 路径收集字段值。
+- 内置 DB Schema 风格规则校验，可选接入 Standard Schema（如 Valibot、Zod）。
+- 管理字段校验状态与错误展示（`err-show-type`），提供 `validate`、`validateField`、`clearValidate`、`resetFields`、`setRules`、`setValue` 等方法。
+- 通过外部样式类定制标签、说明、必填标记、控件区域和错误状态的样式。
+
+使用者负责：
+
+- 用 `v-model` 绑定表单数据对象，用 `name` 把 `uni-forms-item` 对应到数据字段。
+- 编写 `rules` 或 `schema`，并按需设置 `validate-trigger`、`err-show-type` 等属性。
+- 在 `uni-forms-item` 默认插槽中放置控件，保证控件通过 `v-model` 更新表单数据对象。
+- 需要失焦即时校验时，让控件在失焦时调用表单项的 `onFieldBlur`（见「自定义组件」）。
 
 ## 基本用法
 
@@ -1110,32 +1163,51 @@ function onBlur(value : string) {
 }
 ```
 
+## 注意事项
+
+- `uni-forms-item` 必须放在 `uni-forms` 内使用，并通过 `name` 与表单数据的字段路径对应，才能参与表单校验。
+- `required` 只控制是否显示红色必填标记 `*`，字段是否必填由 `rules` 决定。
+- `validate-trigger` 的 `blur` 需要控件在失焦时主动调用表单项的 `onFieldBlur`；`bind` 随 `v-model` 数据变化触发。
+- 带函数的规则（`validateFunction`、`validateExpr`）在微信小程序中需在页面就绪后通过 `setRules` 设置。
+- `schema` 为实验性属性，后续可能改名，用法也会继续完善。
+- 组件内部用于提示和兜底的文案已内置简体中文、繁体中文、英文、法文和拉丁文，按 `uni.getAppBaseInfo().appLanguage` 切换。
+
+## 示例页面
+
+- `/pages/uni-ui/forms/forms`：功能索引与基础用法
+- `/pages/uni-ui/forms/validation`：完整校验
+- `/pages/uni-ui/forms/valibot`：Standard Schema（Valibot）
+- `/pages/uni-ui/forms/controls`：控件接入
+- `/pages/uni-ui/forms/styles`：样式与属性
+- `/pages/uni-ui/forms/form-item`：表单项布局
+
+
 
 
 ### 兼容性 <Help />
-Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07
+Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 描述 |
-| :- | :- | :- | :- |
-| name | UniFormPath | "" | 表单字段路径，支持点号路径、数组下标路径和路径数组；参与表单校验时必填 |
-| rules | UniFormRule\[] \| null | null | 当前字段的 DB Schema 风格校验规则，覆盖表单中同名字段的规则 |
-| required | boolean | false | 是否显示红色必填标记；字段是否必填由 rules 决定 |
-| label | string | "" | 标签文字 |
-| description | string | "" | 标签下方的说明文字 |
-| showArrow | boolean | false | 是否在单行横排布局的行尾显示向右箭头 |
-| labelWidth | string \| number | "" | 当前项的标签宽度，数字按 px 处理；不设置时跟随表单 |
-| labelAlign | string | "" | 当前项的标签文字对齐方式；不设置时跟随表单 |
-| labelPosition | string | "" | 当前项的标签位置；不设置时跟随表单 |
-| validateTrigger | UniFormTrigger |   | 当前字段的校验触发时机；不设置时跟随表单 |
-| errorMessage | string \| boolean | "" | 覆盖组件内部错误信息；传入 false 时不显示错误文字 |
-| labelClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 标签文字的自定义样式类 |
-| descriptionClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 标签辅助说明的自定义样式类 |
-| requiredClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 必填标记的自定义样式类 |
-| contentClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 单行横排布局中控件区域的自定义样式类，顶部布局不使用 |
-| errorMessageClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 控件下方错误文字的自定义样式类 |
-| errorClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | toast 错误提示方式下表单项错误边框的自定义样式类 |
+| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| name | UniFormPath | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 表单字段路径，支持点号路径、数组下标路径和路径数组；参与表单校验时必填 |
+| rules | UniFormRule\[] \| null | null | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 当前字段的 DB Schema 风格校验规则，覆盖表单中同名字段的规则 |
+| required | boolean | false | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 是否显示红色必填标记；字段是否必填由 rules 决定 |
+| label | string | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 标签文字 |
+| description | string | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 标签下方的说明文字 |
+| showArrow | boolean | false | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 是否在单行横排布局的行尾显示向右箭头 |
+| labelWidth | string \| number | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 当前项的标签宽度，数字按 px 处理；不设置时跟随表单 |
+| labelAlign | string | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 当前项的标签文字对齐方式；不设置时跟随表单 |
+| labelPosition | string | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 当前项的标签位置；不设置时跟随表单 |
+| validateTrigger | UniFormTrigger |   | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 当前字段的校验触发时机；不设置时跟随表单 |
+| errorMessage | string \| boolean | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 覆盖组件内部错误信息；传入 false 时不显示错误文字 |
+| labelClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 标签文字的自定义样式类 |
+| descriptionClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 标签辅助说明的自定义样式类 |
+| requiredClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 必填标记的自定义样式类 |
+| contentClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 单行横排布局中控件区域的自定义样式类，顶部布局不使用 |
+| errorMessageClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 控件下方错误文字的自定义样式类 |
+| errorClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | toast 错误提示方式下表单项错误边框的自定义样式类 |
 
 #### labelAlign 的属性描述
 
