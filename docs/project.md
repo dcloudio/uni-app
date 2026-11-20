@@ -63,7 +63,7 @@ uni-app x的项目结构与[uni-app老版的项目结构](https://uniapp.dcloud.
 ├─hybrid                App端存放web-view组件使用的本地html文件的目录，<a href="./component/web-view">详见</a>
 ├─wxcomponents          微信小程序平台wxml组件专用目录
 ├─unpackage             非工程代码，一般存放运行或发行的编译结果、App自定义基座。默认应配置git忽略 <a href="#unpackage">详见</a>
-├─main.uts/ts/js        Vue初始化入口文件。HBuilderX 5.31+ 蒸汽模式支持ts/js后缀
+├─main.uts/ts/js        Vue初始化入口文件。HBuilder 5.31+ 蒸汽模式支持ts/js后缀
 ├─App.uvue              应用配置，用来配置App全局样式以及监听 <a href="./collocation/App#应用生命周期">详见</a>
 ├─pages.json            配置页面路由、导航条、选项卡等页面类信息，<a href="./collocation/pages">详见</a>
 ├─manifest.json         配置应用名称、appid、logo、版本等打包信息，<a href="./collocation/manifest">详见</a>
@@ -81,17 +81,17 @@ uni-app x 目前仅支持以项目根目录组织源码和源资源的项目结�
 
 目前IDE中高频更新的是uni-agent，其他常规IDE功能已经越来越少人用。所以HBuilder采取的策略是大版本和uni-app x绑定，但uni-agent插件及部分IDE插件，可以独立升级更新，与大IDE升级解耦。
 
-uni-app x同时支持通过HBuilderX cli来创建项目、发行打包，可以在Linux的ci/cd里正常使用。[详见](https://hx.dcloud.net.cn/cli/README)
+uni-app x同时支持通过HBuilder cli来创建项目、发行打包，可以在Linux的ci/cd里正常使用。[详见](https://hx.dcloud.net.cn/cli/README)
 
 ### unpackage @unpackage
 
-以下说明适用于通过 HBuilderX 界面或 CLI 运行、发行 uni-app x 项目时生成的 `unpackage` 目录。
+以下说明适用于通过 HBuilder 界面或 CLI 运行、发行 uni-app x 项目时生成的 `unpackage` 目录。
 
 `unpackage` 位于项目根目录，保存编译输出、运行基座、本地打包资源、云打包下载产物、wgt 资源包、缓存和诊断日志。
 
 #### 目录结构 @unpackage-tree
 
-> 说明：以下列出主要目录及典型文件，按实际运行、发行、资源导出和调试功能生成。平台、VDOM／蒸汽模式、HBuilderX 版本及配置会影响具体内容；切换配置后可能保留历史产物。`<平台>`、`<模块>`、`<AppID>`、`<HX版本>` 是占位符，`uts_*` 表示同名前缀目录，不是字面目录名。
+> 说明：以下列出主要目录及典型文件，按实际运行、发行、资源导出和调试功能生成。平台、VDOM／蒸汽模式、HBuilder 版本及配置会影响具体内容；切换配置后可能保留历史产物。`<平台>`、`<模块>`、`<AppID>`、`<HX版本>` 是占位符，`uts_*` 表示同名前缀目录，不是字面目录名。
 
 ```
 <项目根目录>/unpackage/
@@ -138,15 +138,15 @@ uni-app x同时支持通过HBuilderX cli来创建项目、发行打包，可以�
 │     └─ uniappx/                # 编译输出中的 .uniappx 产物，存在时导出
 ├─ release/                       # 发行产物：云打包下载文件、默认导出的 wgt 资源包
 │  ├─ <云打包产物文件名>          # 满足自动下载条件时生成，文件名由云端返回
-│  ├─ app-android/<AppID>.wgt     # Android 蒸汽模式字节码资源包（HBuilderX 5.31+）
-│  └─ app-ios/<AppID>.wgt         # iOS 蒸汽模式字节码资源包（HBuilderX 5.31+）
+│  ├─ app-android/<AppID>.wgt     # Android 蒸汽模式字节码资源包（HBuilder 5.31+）
+│  └─ app-ios/<AppID>.wgt         # iOS 蒸汽模式字节码资源包（HBuilder 5.31+）
 ├─ debug/                         # 运行基座文件目录
 │  ├─ android_debug.apk           # Android 自定义基座
 │  ├─ android_debug_vapor.apk     # Android 自定义基座（蒸汽模式）
 │  ├─ iOS_debug.ipa               # iOS 自定义基座
 │  ├─ iOS_debug_vapor.ipa         # iOS 自定义基座（蒸汽模式）
-│  ├─ iOS_debug_<HX版本>.ipa      # iOS VDOM 模式标准基座的项目内副本（按 HBuilderX 版本命名）
-│  ├─ iOS_debug_vapor_<HX版本>.ipa # iOS 蒸汽模式标准基座的项目内副本（按 HBuilderX 版本命名）
+│  ├─ iOS_debug_<HX版本>.ipa      # iOS VDOM 模式标准基座的项目内副本（按 HBuilder 版本命名）
+│  ├─ iOS_debug_vapor_<HX版本>.ipa # iOS 蒸汽模式标准基座的项目内副本（按 HBuilder 版本命名）
 │  ├─ iOS_debug_sdk.ipa           # iOS 自定义离线 SDK 基座
 │  ├─ Pandora_simulator_debug.app # iOS 模拟器自定义基座
 │  ├─ Pandora_simulator_debug_vapor.app # iOS 模拟器自定义基座（蒸汽模式）
@@ -204,7 +204,7 @@ uni-app x同时支持通过HBuilderX cli来创建项目、发行打包，可以�
 - `.automator/<平台>/.automator.json`：自动化测试信息，按调试选项生成。
 - `.app-harmony`：用于组装鸿蒙原生工程的编译产物，详见鸿蒙章节。
 
-uni-app x 的平台编译缓存由 HBuilderX 指定到 `unpackage/cache` 下，按平台和模式区分，详见下方 cache 章节。
+uni-app x 的平台编译缓存由 HBuilder 指定到 `unpackage/cache` 下，按平台和模式区分，详见下方 cache 章节。
 
 UTS 原生插件产物也位于平台输出中，例如 `dist/dev/app-android/uni_modules/<模块>/utssdk/app-android/index.kt`、`dist/dev/app-ios/uni_modules/<模块>/utssdk/app-ios/index.swift`。
 
@@ -246,13 +246,13 @@ iOS 真机和 Android 不受此架构拆分影响。
 
 ##### debug（运行基座）
 
-自定义基座可由云打包生成，或按离线调试流程自行打包。自行打包的基座按对应平台运行文档的命名要求放入 `unpackage/debug`，然后在 HBuilderX 中选择使用自定义基座运行。各基座文件名见目录树；`iOS_debug_sdk.ipa` 用于自定义离线 SDK 基座。
+自定义基座可由云打包生成，或按离线调试流程自行打包。自行打包的基座按对应平台运行文档的命名要求放入 `unpackage/debug`，然后在 HBuilder 中选择使用自定义基座运行。各基座文件名见目录树；`iOS_debug_sdk.ipa` 用于自定义离线 SDK 基座。
 
 ###### iOS 标准基座的项目内副本
 
-- 使用标准基座运行时，HBuilderX 根据 UTS／UASM 使用情况及蒸汽模式，按需在 `debug` 中创建或复用带版本号的副本：文件不存在时从内置基座复制，存在时复用；无需副本时使用内置基座。
+- 使用标准基座运行时，HBuilder 根据 UTS／UASM 使用情况及蒸汽模式，按需在 `debug` 中创建或复用带版本号的副本：文件不存在时从内置基座复制，存在时复用；无需副本时使用内置基座。
 - 副本创建与重建／重签是不同步骤。有待注入的原生模块或资源时，本次选用的标准或自定义基座会进行注入及相应的重建／重签；已有副本也可能因插件变更再次处理。
-- 文件名区分 HBuilderX 版本、蒸汽模式及模拟器架构。切换模式、版本或改用自定义基座后，目录中可能保留此前使用的标准基座副本；实际使用哪个以本次运行配置和控制台提示为准。
+- 文件名区分 HBuilder 版本、蒸汽模式及模拟器架构。切换模式、版本或改用自定义基座后，目录中可能保留此前使用的标准基座副本；实际使用哪个以本次运行配置和控制台提示为准。
 
 ##### resources（本地打包资源）
 
@@ -268,7 +268,7 @@ iOS 真机和 Android 不受此架构拆分影响。
 - 云打包发行包满足自动下载条件时，按云端返回的包名直接保存到 `release/` 下。
 - 当前插件对未指定渠道、渠道为“无”（含“无-aab”）或 iOS App Store 包提供下载地址，不自动保存到此目录；关闭产物下载时也不会生成本地文件。实际下载结果以控制台提示为准。
 - 云打包自定义调试基座下载到 `debug`，不属于这里的发行包。
-- HBuilderX 5.31+ 支持通过发行菜单导出 uni-app x 的 wgt 资源包，适用于 Android/iOS 蒸汽模式的字节码产物；鸿蒙暂不支持 wgt 热更新。
+- HBuilder 5.31+ 支持通过发行菜单导出 uni-app x 的 wgt 资源包，适用于 Android/iOS 蒸汽模式的字节码产物；鸿蒙暂不支持 wgt 热更新。
 - 默认按平台导出到 `release/app-android/<AppID>.wgt`、`release/app-ios/<AppID>.wgt`。导出时可以指定其他保存位置，实际路径以导出配置和控制台提示为准。
 - wgt 是用于热更新的前端资源包，包含页面、脚本和静态资源，不包含原生插件。不同平台的 wgt 分别生成和使用。
 
@@ -332,7 +332,7 @@ VDOM 调试阶段的 Kotlin 源码位于 `cache/.app-android/src/`，平台输�
 
 ##### 鸿蒙（app-harmony）
 
-- `app-harmony` 保存由 HBuilderX 组装的鸿蒙原生工程。默认目录布局下，用于组装工程的代码、资源等编译产物保存在同级隐藏目录 `.app-harmony` 中；自定义工程目录或联编配置下，两者不一定同级。
+- `app-harmony` 保存由 HBuilder 组装的鸿蒙原生工程。默认目录布局下，用于组装工程的代码、资源等编译产物保存在同级隐藏目录 `.app-harmony` 中；自定义工程目录或联编配置下，两者不一定同级。
 - 默认运行工程为 `dist/dev/app-harmony`，发行工程为 `dist/build/app-harmony`。
 - 原生构建产物位于工程的构建输出目录：`.hap` 是模块安装包，`.app` 是用于发布分发的 App Pack；具体路径和签名状态以构建结果为准。
 - 可使用 DevEco Studio 打开该原生工程进行调试。需要长期保留的原生修改应放在项目的插件/原生资源配置中，或使用独立宿主工程进行联编调试，避免仅修改自动组装工程后被后续同步或重建覆盖。
@@ -404,7 +404,7 @@ VDOM／蒸汽模式均输出 Web 使用的 HTML、JS、CSS 和资源。部署时
 
 不直接编辑自动生成的编译产物，修改可能在重新构建时被覆盖；应修改项目源码后重新编译验证。
 
-使用编译产物排查问题时，先确认本次 HBuilderX 运行或发行的目标平台、VDOM／蒸汽模式，并根据控制台提示定位实际输出路径。以下路径相对于 `unpackage`，`<阶段>` 为 `dev` 或 `build`；同一路径可能被不同模式的编译覆盖，也可能保留上次构建的文件。
+使用编译产物排查问题时，先确认本次 HBuilder 运行或发行的目标平台、VDOM／蒸汽模式，并根据控制台提示定位实际输出路径。以下路径相对于 `unpackage`，`<阶段>` 为 `dev` 或 `build`；同一路径可能被不同模式的编译覆盖，也可能保留上次构建的文件。
 
 ##### UVUE 页面与应用 UTS 代码
 
@@ -462,7 +462,7 @@ App 蒸汽模式的逻辑层、视图层和原生插件分别生成产物。下�
 
 排查修改未生效、增量编译结果异常等问题时，可清理编译缓存后重新运行。先保留错误日志，并保持平台、设备、基座等运行配置一致，便于对比清理前后的结果。
 
-在 HBuilderX 中选择“清除缓存后重新运行”；使用 HBuilderX CLI 时，在原有 App 启动命令上增加或修改 `--cleanCache true`。以下为设备运行示例，选择对应平台的一条执行，并保留原命令中的基座、证书、视图层编译目标等参数：
+在 HBuilder 中选择“清除缓存后重新运行”；使用 HBuilder CLI 时，在原有 App 启动命令上增加或修改 `--cleanCache true`。以下为设备运行示例，选择对应平台的一条执行，并保留原命令中的基座、证书、视图层编译目标等参数：
 
 ```sh
 cli launch app-android --project "<项目绝对路径>" --deviceId "<设备ID>" --cleanCache true
@@ -470,13 +470,13 @@ cli launch app-ios --project "<项目绝对路径>" --deviceId "<设备ID>" --io
 cli launch app-harmony --project "<项目绝对路径>" --deviceId "<设备ID>" --cleanCache true
 ```
 
-`cli` 指与当前 HBuilderX 实例对应的 CLI 可执行文件，使用时替换为安装目录中的实际路径。项目必须已导入 HBuilderX，并使用绝对路径。iOS 模拟器将 `--iosTarget device` 改为 `--iosTarget simulator`，同时指定对应模拟器的设备 ID。
+`cli` 指与当前 HBuilder 实例对应的 CLI 可执行文件，使用时替换为安装目录中的实际路径。项目必须已导入 HBuilder，并使用绝对路径。iOS 模拟器将 `--iosTarget device` 改为 `--iosTarget simulator`，同时指定对应模拟器的设备 ID。
 
 基座、发行包和诊断日志应按用途保留，不应全部当作编译缓存删除。
 
 清理随启动流程执行：Android/iOS 的 `--cleanCache` 仅对 uni-app x 生效，鸿蒙的 `true` 对应清理缓存策略。平台编译缓存按平台和模式处理；UTS 插件依赖、基座及鸿蒙工程模板有各自的缓存或重建流程，不会统一删除所有平台的 `uts_*` 或整个 `unpackage`。部分基座依赖可从基座恢复，下载缓存可能需要重新下载。
 
-重新编译后，对比错误日志、生成代码和运行结果，确认修改是否生效；若问题仍然存在，继续检查源码、配置或原生依赖。参数说明可通过对应平台的 `--help` 查看，例如 `cli launch app-android --help`，完整用法见 [HBuilderX App 运行 CLI 文档](https://hx.dcloud.net.cn/cli/launch-app)。
+重新编译后，对比错误日志、生成代码和运行结果，确认修改是否生效；若问题仍然存在，继续检查源码、配置或原生依赖。参数说明可通过对应平台的 `--help` 查看，例如 `cli launch app-android --help`，完整用法见 [HBuilder App 运行 CLI 文档](https://hx.dcloud.net.cn/cli/launch-app)。
 
 ## 运行时的UniApp实例
 
@@ -549,7 +549,7 @@ uni-app x运行到浏览器时，编译基于vite，其特点是按需编译。�
 
 如果发布Android和iOS应用，HBuilder还额外提供了方便的云打包，免去安装和配置原生环境，直接出apk、ipa包。[详见](./tutorial/app-package.md)
 
-除了在菜单里点击发布，也可以通过HBuilderX的cli，实现持续集成和自动发布。[详见](https://hx.dcloud.net.cn/cli/README)
+除了在菜单里点击发布，也可以通过HBuilder的cli，实现持续集成和自动发布。[详见](https://hx.dcloud.net.cn/cli/README)
 
 如果你不希望直接发布成品应用，而希望发布成其他应用的一部分，那么
 - App平台：需参考[uni-app x 原生SDK文档](./native/README.md)，把uni-app x项目，集成到自己的原生项目中。
