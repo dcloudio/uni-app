@@ -20,7 +20,6 @@ uni-toast .uni-sample-toast {
   text-align: center;
   width: max-content;
   max-width: 80%;
-  max-width: min(200px, 80%);
   box-sizing: border-box;
   padding: 12px 20px;
   background-color: rgba(76, 76, 76, 0.95);
@@ -28,10 +27,7 @@ uni-toast .uni-sample-toast {
 }
 
 uni-toast .uni-simple-toast__text {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  overflow: hidden;
+  display: inline-block;
   margin: 0;
   color: #ffffff;
   font-size: 16px;
@@ -62,8 +58,12 @@ uni-toast .uni-mask {
 uni-toast .uni-toast {
   position: fixed;
   z-index: 999;
-  width: 140px;
-  height: 140px;
+  width: max-content;
+  min-width: min(140px, 80%);
+  max-width: 80%;
+  min-height: 140px;
+  box-sizing: border-box;
+  padding: 20px 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -107,13 +107,9 @@ uni-toast .uni-toast__icon {
 }
 
 uni-toast .uni-toast__content {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
   margin: 16px 0 0;
   padding: 0 8px;
   max-width: 100%;
-  overflow: hidden;
   font-size: 16px;
   line-height: 1.4;
   color: #ffffff;

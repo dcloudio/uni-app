@@ -382,8 +382,6 @@ uni-app .uni-video-cover {
  * 界面相关api样式
  */
 body .uni-toast {
-  width: 140px;
-  height: 140px;
   display: flex;
   justify-content: center;
   flex-direction: column;
