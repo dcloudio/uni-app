@@ -32,9 +32,9 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: √; iOS(VDO
 | success | (result: [NavigateToSuccess](#navigatetosuccess-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
 | fail | (result: [NavigateToFail](#navigatetofail-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
 | complete | (result: [NavigateToComplete](#navigatetocomplete-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） |
-| routeConfig | IAnyObject | 否 | 微信小程序: 4.41 |  |
-| routeOptions | IAnyObject | 否 | 微信小程序: 4.41 |  |
-| routeType | string | 否 | 微信小程序: 4.41 |  |
+| routeConfig | IAnyObject | 否 | 微信小程序: 4.41 | 3.4.0 自定义路由配置，相关文档<br/> |
+| routeOptions | IAnyObject | 否 | 微信小程序: 4.41 | 3.4.0 自定义路由参数，相关文档<br/> |
+| routeType | string | 否 | 微信小程序: 4.41 | 2.29.2 自定义路由类型，相关文档<br/> |
 | withOpenContainer | IAnyObject | 否 | 微信小程序: 4.41 | 3.12.2 skyline 下指定路由动画所用OpenContainerContext，相关文档 [OpenContainerContext](#)<br/> | 
 
 ##### animationType 的属性描述

@@ -112,7 +112,7 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| success | (result: [OpenBluetoothAdapterSuccess](#openbluetoothadaptersuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 接口调用成功的回调函数。 |
+| success | (result: [OpenBluetoothAdapterSuccess](#openbluetoothadaptersuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 接口调用成功的回调函数。App 端的 success 回调结果不返回 errCode，该字段仅由微信小程序返回。 |
 | fail | (result: [BluetoothFail](#bluetoothfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 接口调用失败的回调函数。 |
 | complete | (result: [OpenBluetoothAdapterSuccess](#openbluetoothadaptersuccess-values) \| [BluetoothFail](#bluetoothfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 接口调用结束的回调函数，调用成功、失败都会执行。 |
 | mode | string | 否 | Web: x; 微信小程序: 4.41; HarmonyOS: x | 需要基础库： `2.10.0`<br/><br/>蓝牙模式，可作为主/从设备，仅 iOS 需要。<br/><br/>可选值：<br/>- 'central': 主机模式;<br/>- 'peripheral': 从机（外围设备）模式;<br/> |
@@ -207,7 +207,7 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| success | (result: [CloseBluetoothAdapterSuccess](#closebluetoothadaptersuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 接口调用成功的回调函数。 |
+| success | (result: [CloseBluetoothAdapterSuccess](#closebluetoothadaptersuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 接口调用成功的回调函数。App 端的 success 回调结果不返回 errCode，该字段仅由微信小程序返回。 |
 | fail | (result: [BluetoothFail](#bluetoothfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 接口调用失败的回调函数。 |
 | complete | (result: [CloseBluetoothAdapterSuccess](#closebluetoothadaptersuccess-values) \| [BluetoothFail](#bluetoothfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 接口调用结束的回调函数，调用成功、失败都会执行。 | 
 
@@ -462,7 +462,7 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 | allowDuplicatesKey | boolean | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 是否允许重复上报同一设备，默认值为 false。开启后同一设备可能被多次上报，但 RSSI 可能不同。 |
 | interval | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 上报设备的间隔，单位 ms，默认值为 0。0 表示发现新设备后立即上报。 |
 | powerLevel | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: x; HarmonyOS: x | 扫描模式，默认值为 medium；扫描速度越高越耗电。 |
-| success | (result: [StartBluetoothDevicesDiscoverySuccess](#startbluetoothdevicesdiscoverysuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 接口调用成功的回调函数。 |
+| success | (result: [StartBluetoothDevicesDiscoverySuccess](#startbluetoothdevicesdiscoverysuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 接口调用成功的回调函数。App 端的 success 回调结果不返回 errCode，该字段仅由微信小程序返回。 |
 | fail | (result: [BluetoothFail](#bluetoothfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 接口调用失败的回调函数。 |
 | complete | (result: [StartBluetoothDevicesDiscoverySuccess](#startbluetoothdevicesdiscoverysuccess-values) \| [BluetoothFail](#bluetoothfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 接口调用结束的回调函数，调用成功、失败都会执行。 | 
 
@@ -553,7 +553,7 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| success | (result: [StopBluetoothDevicesDiscoverySuccess](#stopbluetoothdevicesdiscoverysuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 接口调用成功的回调函数。 |
+| success | (result: [StopBluetoothDevicesDiscoverySuccess](#stopbluetoothdevicesdiscoverysuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 接口调用成功的回调函数。App 端的 success 回调结果不返回 errCode，该字段仅由微信小程序返回。 |
 | fail | (result: [BluetoothFail](#bluetoothfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 接口调用失败的回调函数。 |
 | complete | (result: [StopBluetoothDevicesDiscoverySuccess](#stopbluetoothdevicesdiscoverysuccess-values) \| [BluetoothFail](#bluetoothfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 接口调用结束的回调函数，调用成功、失败都会执行。 | 
 

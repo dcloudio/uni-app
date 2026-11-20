@@ -59,7 +59,7 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.
 | romName | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61 | rom 名称。Android 部分机型获取不到值。iOS 恒为 `ios`<br/> |
 | romVersion | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61 | rom 版本号。Android 部分机型获取不到值。iOS 为操作系统版本号（同 `osVersion`）。<br/> |
 | abi | string | 否 | 微信小程序: 4.41 | 应用（微信APP）二进制接口类型（仅 Android 支持）<br/> |
-| benchmarkLevel | number | 否 | 微信小程序: 4.41 |  |
+| benchmarkLevel | number | 否 | 微信小程序: 4.41 | 设备性能等级（仅 Android 支持）。取值为：-2 或 0（该设备无法运行小游戏），-1（性能未知），>=1（设备性能值，该值越高，设备性能越好，目前最高不到50）<br> 注意：从基础库3.4.5开始，本返回值停止维护，请使用获取设备性能等级<br/> |
 | cpuType | string | 否 | 微信小程序: 4.41 | 需要基础库： `2.29.0`<br/><br/>设备 CPU 型号（仅 Android 支持）（Tips: GPU 型号可通过 WebGLRenderingContext.getExtension('WEBGL_debug_renderer_info') 来获取）<br/> |
 | deviceAbi | string | 否 | 微信小程序: 4.41 | 需要基础库： `2.25.1`<br/><br/>设备二进制接口类型（仅 Android 支持）<br/> |
 | memorySize | string | 否 | 微信小程序: 4.41 | 需要基础库： `2.30.0`<br/><br/>设备内存大小，单位为 MB<br/> |

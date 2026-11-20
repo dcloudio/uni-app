@@ -37,9 +37,9 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4
 | forwardMaterials | any | 否 | 微信小程序: 4.41 | 打开的文件信息数组，只有从聊天素材场景打开（scene为1173）才会携带该参数<br/> |
 | hostExtraData | **OnLaunchOptionsHostExtraData** | 否 | 微信小程序: 4.41 | 宿主传递的数据，第三方 app 中运行小程序时返回<br/> |
 | referrerInfo | **OnLaunchOptionsReferrerInfo** | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25 | 来源信息。从另一个小程序、公众号或 App 进入小程序时返回。否则返回 `{}`。(参见后文注意)<br/> |
-| scene | number | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25 |  |
+| scene | number | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25 | 启动小程序的<br/> |
 | chatType | number | 否 | 微信小程序: 4.41 | 从微信群聊/单聊打开小程序时，chatType 表示具体微信群聊/单聊类型<br/><br/>可选值：<br/>- 1: 微信联系人单聊;<br/>- 2: 企业微信联系人单聊;<br/>- 3: 普通微信群聊;<br/>- 4: 企业微信互通群聊;<br/> |
-| shareTicket | string | 否 | 微信小程序: 4.41 |  | 
+| shareTicket | string | 否 | 微信小程序: 4.41 | shareTicket，详见<br/> | 
 
 ##### apiCategory 的属性描述
 
@@ -196,9 +196,9 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.25; iOS: 4
 | forwardMaterials | any | 否 | 微信小程序: 4.41 | 打开的文件信息数组，只有从聊天素材场景打开（scene为1173）才会携带该参数<br/> |
 | hostExtraData | **OnShowOptionsHostExtraData** | 否 | 微信小程序: 4.41 | 宿主传递的数据，第三方 app 中运行小程序时返回<br/> |
 | referrerInfo | **OnShowOptionsReferrerInfo** | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25 | 来源信息。从另一个小程序、公众号或 App 进入小程序时返回。否则返回 `{}`。(参见后文注意)<br/> |
-| scene | number | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25 |  |
+| scene | number | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25 | 启动小程序的<br/> |
 | chatType | number | 否 | 微信小程序: 4.41 | 从微信群聊/单聊打开小程序时，chatType 表示具体微信群聊/单聊类型<br/><br/>可选值：<br/>- 1: 微信联系人单聊;<br/>- 2: 企业微信联系人单聊;<br/>- 3: 普通微信群聊;<br/>- 4: 企业微信互通群聊;<br/> |
-| shareTicket | string | 否 | 微信小程序: 4.41 |  | 
+| shareTicket | string | 否 | 微信小程序: 4.41 | shareTicket，详见<br/> | 
 
 ##### apiCategory 的属性描述
 
