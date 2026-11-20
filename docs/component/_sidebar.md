@@ -84,6 +84,7 @@
   * [uni-easyinput | 增强输入框](./uni-ui-x/uni-easyinput.md)
   * [uni-expandable-text | 可折叠文本](./uni-ui-x/uni-expandable-text.md)
   * [uni-fab-button | 悬浮按钮](./uni-ui-x/uni-fab-button.md)
+  * [uni-file-picker | 文件选择上传](./uni-ui-x/uni-file-picker.md)
   * [uni-forms | 表单](./uni-ui-x/uni-forms.md)
   * [uni-icons | 字体图标](./uni-ui-x/uni-icons.md)
   * [uni-index-bar | 索引条](./uni-ui-x/uni-index-bar.md)
