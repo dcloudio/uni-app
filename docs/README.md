@@ -168,7 +168,7 @@ uni.的api，大多是uts开发的，在每个API文档右上角可以点击源�
 
 ## CSS @css
 
-uni-app x 在web和小程序，支持完成的浏览器css，在app平台，由于是原生渲染，支持的css的子集。
+uni-app x 在web和小程序，支持完整的浏览器css；在app平台，由于是原生渲染，支持css的子集。
 
 主要差异包括：
 - 使用flex布局，且默认方向为竖向
