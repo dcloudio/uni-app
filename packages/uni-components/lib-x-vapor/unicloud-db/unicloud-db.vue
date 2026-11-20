@@ -26,28 +26,28 @@
   }>()
 
   interface UniCloudDBProps {
-    options : any;
+    options ?: any;
     collection : String | any;
-    field : String;
-    orderby : String;
-    where : String | any;
-    pageData : String;
-    pageCurrent : Number;
-    pageSize : Number;
-    getcount : Boolean;
-    getone : Boolean;
-    gettree : String | any;
-    gettreepath : Boolean;
-    startwith : String;
-    limitlevel : Number;
-    groupby : String;
-    groupField : String;
-    distinct : Boolean;
-    pageIndistinct : Boolean;
-    foreignKey : String;
-    loadtime : String;
-    manual : Boolean;
-    ssrKey : String
+    field ?: String;
+    orderby ?: String;
+    where ?: String | any;
+    pageData ?: String;
+    pageCurrent ?: Number;
+    pageSize ?: Number;
+    getcount ?: Boolean;
+    getone ?: Boolean;
+    gettree ?: String | any;
+    gettreepath ?: Boolean;
+    startwith ?: String;
+    limitlevel ?: Number;
+    groupby ?: String;
+    groupField ?: String;
+    distinct ?: Boolean;
+    pageIndistinct ?: Boolean;
+    foreignKey ?: String;
+    loadtime ?: String;
+    manual ?: Boolean;
+    ssrKey ?: String
   }
 
   const props = withDefaults(defineProps<UniCloudDBProps>(), {
