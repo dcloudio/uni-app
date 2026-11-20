@@ -284,12 +284,26 @@ input .a-input-placeholder {
 textarea .a-textarea-placeholder {
   color: #808080;
 }
+input .a-input-content[disabled] {
+  color: #808080;
+  opacity: 1;
+}
+textarea .a-textarea-content[disabled] {
+  color: #808080 !important;
+}
 @media (prefers-color-scheme: dark) {
   input .a-input-placeholder {
     color: #5f5f5f;
   }
   textarea .a-textarea-placeholder {
     color: #5f5f5f;
+  }
+  input .a-input-content[disabled] {
+    color: #D1D1D1;
+  }
+  textarea .a-textarea-content[disabled] {
+    color: #D1D1D1 !important;
+    -webkit-text-fill-color: #D1D1D1 !important;
   }
 }
 /* #endif */
