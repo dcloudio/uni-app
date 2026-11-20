@@ -10440,88 +10440,6 @@ function useImageSize(rootRef, props2, state2) {
     resetSize
   };
 }
-const selectionProperty = "--uni-selection-background-color";
-const selectionAttribute = "data-uni-selection";
-const probeBackgroundProperty = "--uni-selection-probe-background-color";
-const fieldSelectionProps = {
-  selectionClass: {
-    type: String,
-    default: ""
-  }
-};
-const fieldSelectionProbeStyle = "display: none !important;";
-function clearSelection(field) {
-  field.style.removeProperty(selectionProperty);
-  field.removeAttribute(selectionAttribute);
-}
-function resolveSelectionColor(probe) {
-  const color = getComputedStyle(probe).backgroundColor;
-  if (color === "transparent" || color.replace(/\s/g, "") === "rgba(0,0,0,0)") {
-    probe.style.setProperty(probeBackgroundProperty, "#000000");
-    try {
-      return getComputedStyle(probe).backgroundColor === color ? color : "";
-    } finally {
-      probe.style.removeProperty(probeBackgroundProperty);
-    }
-  }
-  return color;
-}
-function updateSelection(field, color) {
-  if (!color) {
-    clearSelection(field);
-    return;
-  }
-  if (field.style.getPropertyValue(selectionProperty) !== color) {
-    field.style.setProperty(selectionProperty, color);
-  }
-  if (!field.hasAttribute(selectionAttribute)) {
-    field.setAttribute(selectionAttribute, "");
-  }
-}
-function observeSelection(probe, field) {
-  let refreshFrame = null;
-  function refreshSelection() {
-    refreshFrame = null;
-    if (!field.isConnected || field.ownerDocument.activeElement !== field) {
-      return;
-    }
-    updateSelection(field, resolveSelectionColor(probe));
-    refreshFrame = requestAnimationFrame(refreshSelection);
-  }
-  function startRefresh() {
-    if (refreshFrame === null) {
-      refreshSelection();
-    }
-  }
-  function stopRefresh() {
-    if (refreshFrame !== null) {
-      cancelAnimationFrame(refreshFrame);
-      refreshFrame = null;
-    }
-  }
-  field.addEventListener("focus", startRefresh);
-  field.addEventListener("blur", stopRefresh);
-  startRefresh();
-  return () => {
-    field.removeEventListener("focus", startRefresh);
-    field.removeEventListener("blur", stopRefresh);
-    stopRefresh();
-    clearSelection(field);
-  };
-}
-function useFieldSelection(props2, fieldRef) {
-  const selectionRef = ref(null);
-  watch(
-    [() => props2.selectionClass, fieldRef, selectionRef],
-    ([className, field, probe], _, onCleanup) => {
-      if (className && field && probe) {
-        onCleanup(observeSelection(probe, field));
-      }
-    },
-    { immediate: true, flush: "post" }
-  );
-  return selectionRef;
-}
 function throttle(fn, wait) {
   let last = 0;
   let timeout;
@@ -11085,22 +11003,16 @@ function resolveDigitDecimalPoint(event, cache, state2, input, resetCache) {
     }
   }
 }
-const webSelectionProps$1 = fieldSelectionProps;
-const props$o = /* @__PURE__ */ extend(
-  {},
-  props$p,
-  {
-    placeholderClass: {
-      type: String,
-      default: "input-placeholder"
-    },
-    textContentType: {
-      type: String,
-      default: ""
-    }
+const props$o = /* @__PURE__ */ extend({}, props$p, {
+  placeholderClass: {
+    type: String,
+    default: "input-placeholder"
   },
-  webSelectionProps$1
-);
+  textContentType: {
+    type: String,
+    default: ""
+  }
+});
 function isPaste(event) {
   return event.inputType === "insertFromPaste";
 }
@@ -11236,7 +11148,6 @@ function useInput(props2, { emit: emit2, expose }) {
       }
     }
   });
-  const selectionRef = useFieldSelection(props2, fieldRef);
   watch(
     () => state2.value,
     (value) => {
@@ -11296,7 +11207,6 @@ function useInput(props2, { emit: emit2, expose }) {
     fieldRef,
     state: state2,
     scopedAttrsState,
-    selectionRef,
     fixDisabledColor,
     type,
     autocomplete,
@@ -11317,7 +11227,6 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       fieldRef,
       state: state2,
       scopedAttrsState,
-      selectionRef,
       fixDisabledColor,
       type,
       autocomplete,
@@ -11337,13 +11246,13 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "type": type.value,
         "maxlength": state2.maxlength,
         "step": step.value,
-        "class": props2.selectionClass ? "uni-input-input uni-field-selection" : "uni-input-input",
+        "class": "uni-input-input",
         "style": props2.cursorColor ? {
           caretColor: props2.cursorColor
         } : {},
         "inputmode": inputmode.value,
         "onFocus": (event) => event.target.blur()
-      }, null, 46, ["value", "readonly", "type", "maxlength", "step", "inputmode", "onFocus"]) : createVNode("input", {
+      }, null, 44, ["value", "readonly", "type", "maxlength", "step", "inputmode", "onFocus"]) : createVNode("input", {
         "key": "input",
         "ref": fieldRef,
         "value": state2.value,
@@ -11354,25 +11263,19 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "step": step.value,
         "enterkeyhint": props2.confirmType,
         "pattern": props2.type === "number" ? "[0-9]*" : void 0,
-        "class": props2.selectionClass ? "uni-input-input uni-field-selection" : "uni-input-input",
+        "class": "uni-input-input",
         "style": props2.cursorColor ? {
           caretColor: props2.cursorColor
         } : {},
         "autocomplete": autocomplete.value,
         "onKeyup": onKeyUpEnter,
         "inputmode": inputmode.value
-      }, null, 46, ["value", "onInput", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup", "inputmode"]);
+      }, null, 44, ["value", "onInput", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup", "inputmode"]);
       return createVNode("uni-input", {
         "ref": rootRef
       }, [createVNode("div", {
         "class": "uni-input-wrapper"
-      }, [props2.selectionClass && createVNode("div", mergeProps({
-        "ref": selectionRef
-      }, scopedAttrsState.attrs, {
-        "class": ["uni-field-selection-probe", props2.selectionClass],
-        "aria-hidden": "true",
-        "style": fieldSelectionProbeStyle
-      }), null, 16), withDirectives(createVNode("div", mergeProps(scopedAttrsState.attrs, {
+      }, [withDirectives(createVNode("div", mergeProps(scopedAttrsState.attrs, {
         "style": props2.placeholderStyle,
         "class": ["uni-input-placeholder", props2.placeholderClass]
       }), [props2.placeholder], 16), [[vShow, !(state2.value.length || cache.value === "-" || cache.value.includes("."))]]), props2.confirmType === "search" ? createVNode("form", {
@@ -16895,29 +16798,23 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const webSelectionProps = fieldSelectionProps;
-const props$f = /* @__PURE__ */ extend(
-  {},
-  props$p,
-  {
-    placeholderClass: {
-      type: String,
-      default: "input-placeholder"
-    },
-    autoHeight: {
-      type: [Boolean, String],
-      default: false
-    },
-    confirmType: {
-      type: String,
-      default: "return",
-      validator(val) {
-        return ConfirmTypes.concat("return").includes(val);
-      }
-    }
+const props$f = /* @__PURE__ */ extend({}, props$p, {
+  placeholderClass: {
+    type: String,
+    default: "input-placeholder"
   },
-  webSelectionProps
-);
+  autoHeight: {
+    type: [Boolean, String],
+    default: false
+  },
+  confirmType: {
+    type: String,
+    default: "return",
+    validator(val) {
+      return ConfirmTypes.concat("return").includes(val);
+    }
+  }
+});
 let fixMargin = false;
 const ConfirmTypes = ["done", "go", "next", "search", "send"];
 function setFixMargin() {
@@ -16929,7 +16826,6 @@ function useTextarea(props2, { emit: emit2, expose }) {
   const rootRef = ref(null);
   const wrapperRef = ref(null);
   const { fieldRef, state: state2, scopedAttrsState, fixDisabledColor, trigger } = useField(props2, rootRef, emit2);
-  const selectionRef = useFieldSelection(props2, fieldRef);
   const valueCompute = computed(() => state2.value.split(LINEFEED));
   const isDone = computed(() => ConfirmTypes.includes(props2.confirmType));
   const heightRef = ref(0);
@@ -16999,7 +16895,6 @@ function useTextarea(props2, { emit: emit2, expose }) {
     fieldRef,
     state: state2,
     scopedAttrsState,
-    selectionRef,
     fixDisabledColor,
     valueCompute,
     lineRef,
@@ -17020,7 +16915,6 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
       fieldRef,
       state: state2,
       scopedAttrsState,
-      selectionRef,
       fixDisabledColor,
       valueCompute,
       lineRef,
@@ -17039,7 +16933,6 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
         "maxlength": state2.maxlength,
         "class": {
           "uni-textarea-textarea": true,
-          "uni-field-selection": !!props2.selectionClass,
           "uni-textarea-textarea-fix-margin": fixMargin
         },
         "style": {
@@ -17060,7 +16953,6 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
         "inputmode": props2.inputmode,
         "class": {
           "uni-textarea-textarea": true,
-          "uni-field-selection": !!props2.selectionClass,
           "uni-textarea-textarea-fix-margin": fixMargin
         },
         "style": {
@@ -17080,13 +16972,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
       }, [createVNode("div", {
         "ref": wrapperRef,
         "class": "uni-textarea-wrapper"
-      }, [props2.selectionClass && createVNode("div", mergeProps({
-        "ref": selectionRef
-      }, scopedAttrsState.attrs, {
-        "class": ["uni-field-selection-probe", props2.selectionClass],
-        "aria-hidden": "true",
-        "style": fieldSelectionProbeStyle
-      }), null, 16), withDirectives(createVNode("div", mergeProps(scopedAttrsState.attrs, {
+      }, [withDirectives(createVNode("div", mergeProps(scopedAttrsState.attrs, {
         "style": props2.placeholderStyle,
         "class": ["uni-textarea-placeholder", props2.placeholderClass]
       }), [props2.placeholder], 16), [[vShow, !state2.value.length]]), createVNode("div", {
