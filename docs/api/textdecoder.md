@@ -17,7 +17,15 @@ app-andorid平台 蒸汽模式 在非uts插件中仅支持`utf-8`字符集标签
 创建一个使用指定字符集编码标签名称的 TextDecoder 实例。
 | 名称 | 类型 | 必备 | 描述 |
 | :- | :- | :- | :- |
-| label | string | 否 | 字符集编码标签名称，支持 utf-8、gbk、gb2312，默认为 "utf-8"。不支持的字符集编码标签名称按 "utf-8" 处理。 |
+| label | string | 否 | 字符集编码标签名称 |
+
+#### label 的属性描述
+
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| "gb2312" | Web: √; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.31; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21; iOS: 4.71; HarmonyOS: 4.71 | GB2312字符集编码 |
+| "gbk" | Web: √; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.31; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21; iOS: 4.71; HarmonyOS: 4.71 | GBK字符集编码 |
+| "utf-8" | Web: √; 微信小程序: x; 支付宝小程序: x; Android: 4.31; iOS: 4.71; HarmonyOS: 4.71 | UTF-8字符集编码 |
 
 ### TextDecoder 的属性值 @textdecoder-values
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |

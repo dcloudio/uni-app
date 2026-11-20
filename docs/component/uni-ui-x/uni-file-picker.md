@@ -118,7 +118,7 @@ function upload() {
 
 
 ### 兼容性 <Help />
-Web: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07
+Web: 5.07; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07
 
 
 ### 属性 
