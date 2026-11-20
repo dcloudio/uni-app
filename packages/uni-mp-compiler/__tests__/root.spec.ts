@@ -82,6 +82,39 @@ describe('compiler: root', () => {
       { isX: true }
     )
   })
+  test('quoted root style on WeChat', () => {
+    const env: Record<string, string | undefined> = process.env
+    const platform = env.UNI_PLATFORM
+    env.UNI_PLATFORM = 'mp-weixin'
+    try {
+      assert(
+        `<view style="--quoted-value: 'test'; --demo-color: red;"/>`,
+        `<view style="--quoted-value:'test';--demo-color:red"/>`,
+        `(_ctx, _cache) => {
+  return {}
+}`
+      )
+      assert(
+        `<view style="--quoted-value: 'test'; --demo-color: red;" :style="{ padding: padding }"/>`,
+        `<view style="{{b + ';' + ('padding:' + a)}}"/>`,
+        `(_ctx, _cache) => {
+  return { a: _ctx.padding, b: '--quoted-value:\\'test\\';--demo-color:red' }
+}`
+      )
+      assert(
+        `<view style="--quoted-value: 'test'; --demo-color: red;"/>`,
+        `<view style="{{c + ';' + ('--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b))}}"/>`,
+        `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\`, c: '--quoted-value:\\'test\\';--demo-color:red' }
+  return __returned__
+}`,
+        { isX: true }
+      )
+    } finally {
+      if (platform === undefined) delete env.UNI_PLATFORM
+      else env.UNI_PLATFORM = platform
+    }
+  })
   test('root with dynamic style', () => {
     assert(
       `<view :style="{color: 'red'}"/>`,
