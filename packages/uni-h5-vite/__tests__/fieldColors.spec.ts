@@ -1,7 +1,6 @@
 import fs from 'fs'
 import os from 'os'
 import path from 'path'
-import { compileStyle } from '@vue/compiler-sfc'
 import {
   buildInCssSet,
   minifyCSS,
@@ -19,29 +18,6 @@ jest.mock('@dcloudio/uni-cli-shared', () => ({
     ),
   minifyCSS: jest.fn(async (code: string) => code),
 }))
-
-function parseStyles(css: string) {
-  const result = compileStyle({
-    source: css,
-    filename: 'field.css',
-    id: 'field',
-  })
-  expect(result.errors).toEqual([])
-  return result.rawResult!.root!
-}
-
-function expectLayeredSelectionFallback(css: string) {
-  const probes: unknown[] = []
-  parseStyles(css).walkRules(':where(.uni-field-selection-probe)', (rule) => {
-    probes.push(rule)
-    expect(rule.parent).toMatchObject({
-      type: 'atrule',
-      name: 'layer',
-      params: 'uni-field-selection',
-    })
-  })
-  expect(probes.length).toBeGreaterThan(0)
-}
 
 describe('Web input and textarea default colors', () => {
   const originalEnv = {
@@ -87,13 +63,7 @@ describe('Web input and textarea default colors', () => {
         expect(result?.code).toContain('color: #757575')
         expect(result.code).toContain('background-color: #3b3b3b')
         expect(result.code).toContain('prefers-color-scheme: dark')
-        expect(result.code).toContain(
-          `.uni-${name}-${name}.uni-field-selection[data-uni-selection]::selection`
-        )
-        expectLayeredSelectionFallback(result.code)
-        expect(result.code).toContain(
-          'var(--uni-selection-probe-background-color)'
-        )
+        expect(result.code).not.toContain('uni-field-selection')
         expect(result.code.startsWith(base)).toBe(true)
         expect(addWatchFile).toHaveBeenCalledWith(
           resolveBuiltIn(`@dcloudio/uni-h5/style/${name}.css`)
@@ -147,92 +117,10 @@ describe('Web input and textarea default colors', () => {
       for (const name of ['input', 'textarea']) {
         expect(css).toContain(`.uni-${name}-placeholder {\n  color: #757575;`)
         expect(css).toContain(`div:where([uni-${name}])`)
-        expect(css).toContain(
-          `.uni-${name}-${name}.uni-field-selection[data-uni-selection]::selection`
-        )
       }
-      expectLayeredSelectionFallback(css)
-      expect(css).toContain('@layer uni-field-selection;')
-      expect(css).toContain('var(--uni-selection-probe-background-color)')
+      expect(css).not.toContain('uni-field-selection')
       expect(css.match(/background-color: #3b3b3b/g)).toHaveLength(4)
       expect(css).not.toContain('@import')
-    }
-  )
-
-  test('reserves the fallback layer before application and lazy component styles', () => {
-    const css = fs.readFileSync(
-      resolveBuiltIn('@dcloudio/uni-h5/style/framework/base.css'),
-      'utf8'
-    )
-    const first = parseStyles(css).nodes.find((node) => node.type !== 'comment')
-    expect(first).toMatchObject({
-      type: 'atrule',
-      name: 'layer',
-      params: 'uni-field-selection',
-    })
-    expect(first).not.toHaveProperty('nodes')
-  })
-
-  test.each(['input', 'textarea'])(
-    'preserves %s defaults and business colors without :where() or layers',
-    (name) => {
-      const framework = fs.readFileSync(
-        resolveBuiltIn('@dcloudio/uni-h5/style/framework/base.css'),
-        'utf8'
-      )
-      const plugin = uniCssPlugin() as any
-      const id = resolveBuiltIn(`@dcloudio/uni-components/style/${name}.css`)
-      const component = plugin.transform.call(
-        { addWatchFile: jest.fn() },
-        fs.readFileSync(id, 'utf8'),
-        id
-      ).code
-      // Business CSS may load before an async component's stylesheet.
-      const legacy = parseStyles(`${framework}
-        .selected { background-color: rgb(18, 52, 86) }
-        .transparent { background-color: transparent }
-        @media (prefers-color-scheme: dark) {
-          .dark-only { background-color: red }
-        }
-        ${component}`)
-      // Model a browser that ignores cascade layers and :where(), and takes
-      // the legacy @supports branch. JSDOM cannot resolve CSS variables, so
-      // substitute the sentinel used by resolveSelectionColor.
-      legacy.walkAtRules('layer', (rule) => {
-        rule.remove()
-      })
-      legacy.walkAtRules('supports', (rule) => {
-        if (rule.params === 'not (background-color: revert-layer)') {
-          rule.replaceWith(...rule.nodes!)
-        } else {
-          rule.remove()
-        }
-      })
-      legacy.walkRules((rule) => {
-        if (rule.selector.includes(':where(')) rule.remove()
-      })
-      const { JSDOM } = jest.requireActual('jsdom')
-      const dom = new JSDOM('<style></style><div></div>')
-      try {
-        const { document } = dom.window
-        document.querySelector('style')!.textContent = legacy
-          .toString()
-          .replace(/var\(--uni-selection-probe-background-color\)/g, '#000000')
-        const probe = document.querySelector('div')!
-        for (const [className, expected] of [
-          ['unmatched', 'rgb(0, 0, 0)'],
-          ['dark-only', 'rgb(0, 0, 0)'],
-          ['selected', 'rgb(18, 52, 86)'],
-          ['transparent', 'transparent'],
-        ]) {
-          probe.className = 'uni-field-selection-probe ' + className
-          expect(dom.window.getComputedStyle(probe).backgroundColor).toBe(
-            expected
-          )
-        }
-      } finally {
-        dom.window.close()
-      }
     }
   )
 

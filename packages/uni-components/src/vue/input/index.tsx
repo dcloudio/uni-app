@@ -1,4 +1,3 @@
-import { fieldSelectionProbeStyle } from '../../helpers/useFieldSelection'
 import { onMounted, withModifiers } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { UniElement } from '../../helpers/UniElement'
@@ -26,7 +25,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       fieldRef,
       state,
       scopedAttrsState,
-      selectionRef,
       fixDisabledColor,
       type,
       autocomplete,
@@ -62,11 +60,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             type={type.value}
             maxlength={state.maxlength}
             step={step.value}
-            class={
-              __PLATFORM__ === 'h5' && props.selectionClass
-                ? 'uni-input-input uni-field-selection'
-                : 'uni-input-input'
-            }
+            class="uni-input-input"
             style={props.cursorColor ? { caretColor: props.cursorColor } : {}}
             inputmode={inputmode.value}
             // fix: 禁止 readonly 状态获取焦点
@@ -87,11 +81,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             step={step.value}
             enterkeyhint={props.confirmType}
             pattern={props.type === 'number' ? '[0-9]*' : undefined}
-            class={
-              __PLATFORM__ === 'h5' && props.selectionClass
-                ? 'uni-input-input uni-field-selection'
-                : 'uni-input-input'
-            }
+            class="uni-input-input"
             style={props.cursorColor ? { caretColor: props.cursorColor } : {}}
             autocomplete={autocomplete.value}
             onKeyup={onKeyUpEnter}
@@ -101,15 +91,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       return (
         <uni-input ref={rootRef}>
           <div class="uni-input-wrapper">
-            {__PLATFORM__ === 'h5' && props.selectionClass && (
-              <div
-                ref={selectionRef}
-                {...scopedAttrsState.attrs}
-                class={['uni-field-selection-probe', props.selectionClass]}
-                aria-hidden="true"
-                style={fieldSelectionProbeStyle}
-              />
-            )}
             <div
               v-show={
                 !(

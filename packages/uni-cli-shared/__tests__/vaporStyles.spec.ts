@@ -182,16 +182,12 @@ describe('Web Vapor 独立组件样式', () => {
     })
   })
 
-  test.each(['input', 'textarea'])(
-    '%s 保留选区、placeholder 和暗色样式',
-    (name) => {
-      const code = read(`vapor/${name}.css`)
-      expect(code).toContain('@layer uni-field-selection')
-      expect(code).toContain('[data-uni-selection]::selection')
-      expect(code).toContain('@media (prefers-color-scheme: dark)')
-      expect(code).toContain('color: #808080')
-      expect(code).toContain('caret-color: inherit')
-      expect(code).toContain('cursor: inherit')
-    }
-  )
+  test.each(['input', 'textarea'])('%s 保留 placeholder 和暗色样式', (name) => {
+    const code = read(`vapor/${name}.css`)
+    expect(code).not.toContain('uni-field-selection')
+    expect(code).toContain('@media (prefers-color-scheme: dark)')
+    expect(code).toContain('color: #808080')
+    expect(code).toContain('caret-color: inherit')
+    expect(code).toContain('cursor: inherit')
+  })
 })

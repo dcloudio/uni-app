@@ -14,37 +14,24 @@ import {
   props as fieldProps,
   useField,
 } from '../../helpers/useField'
-import {
-  fieldSelectionProps,
-  useFieldSelection,
-} from '../../helpers/useFieldSelection'
 
-const webSelectionProps = (
-  __PLATFORM__ === 'h5' ? fieldSelectionProps : {}
-) as typeof fieldSelectionProps
-
-export const props = /*#__PURE__*/ extend(
-  {},
-  fieldProps,
-  {
-    placeholderClass: {
-      type: String,
-      default: 'input-placeholder',
-    },
-    autoHeight: {
-      type: [Boolean, String],
-      default: false,
-    },
-    confirmType: {
-      type: String,
-      default: 'return',
-      validator(val: string) {
-        return ConfirmTypes.concat('return').includes(val)
-      },
+export const props = /*#__PURE__*/ extend({}, fieldProps, {
+  placeholderClass: {
+    type: String,
+    default: 'input-placeholder',
+  },
+  autoHeight: {
+    type: [Boolean, String],
+    default: false,
+  },
+  confirmType: {
+    type: String,
+    default: 'return',
+    validator(val: string) {
+      return ConfirmTypes.concat('return').includes(val)
     },
   },
-  webSelectionProps
-)
+})
 
 export let fixMargin: Boolean = false
 const ConfirmTypes = ['done', 'go', 'next', 'search', 'send'] // 'return'
@@ -71,8 +58,6 @@ export function useTextarea(
   const wrapperRef: Ref<HTMLElement | null> = ref(null)
   const { fieldRef, state, scopedAttrsState, fixDisabledColor, trigger } =
     useField(props, rootRef, emit)
-  const selectionRef =
-    __PLATFORM__ === 'h5' ? useFieldSelection(props, fieldRef) : undefined
   const valueCompute = computed(() => state.value.split(LINEFEED))
   const isDone = computed(() => ConfirmTypes.includes(props.confirmType))
   const heightRef = ref(0)
@@ -171,7 +156,6 @@ export function useTextarea(
     fieldRef,
     state,
     scopedAttrsState,
-    selectionRef,
     fixDisabledColor,
     valueCompute,
     lineRef,

@@ -16,30 +16,17 @@ import {
   useField,
 } from '../../helpers/useField'
 import { resolveDigitDecimalPoint } from './utils'
-import {
-  fieldSelectionProps,
-  useFieldSelection,
-} from '../../helpers/useFieldSelection'
 
-const webSelectionProps = (
-  __PLATFORM__ === 'h5' ? fieldSelectionProps : {}
-) as typeof fieldSelectionProps
-
-export const props = /*#__PURE__*/ extend(
-  {},
-  fieldProps,
-  {
-    placeholderClass: {
-      type: String,
-      default: 'input-placeholder',
-    },
-    textContentType: {
-      type: String,
-      default: '',
-    },
+export const props = /*#__PURE__*/ extend({}, fieldProps, {
+  placeholderClass: {
+    type: String,
+    default: 'input-placeholder',
   },
-  webSelectionProps
-)
+  textContentType: {
+    type: String,
+    default: '',
+  },
+})
 
 function isPaste(event: InputEvent) {
   return event.inputType === 'insertFromPaste'
@@ -229,8 +216,6 @@ export function useInput(
         }
       }
     })
-  const selectionRef =
-    __PLATFORM__ === 'h5' ? useFieldSelection(props, fieldRef) : undefined
   watch(
     () => state.value,
     (value) => {
@@ -302,7 +287,6 @@ export function useInput(
     fieldRef,
     state,
     scopedAttrsState,
-    selectionRef,
     fixDisabledColor,
     type,
     autocomplete,

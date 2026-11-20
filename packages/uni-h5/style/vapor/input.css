@@ -82,16 +82,6 @@ div:where([uni-input]) {
   color: #808080;
 }
 
-@layer uni-field-selection {
-  :where(.uni-field-selection-probe) {
-    background-color: var(--uni-selection-probe-background-color);
-  }
-}
-
-.uni-input-input.uni-field-selection[data-uni-selection]::selection {
-  background-color: var(--uni-selection-background-color);
-}
-
 @media (prefers-color-scheme: dark) {
   div:where([uni-input]) {
     color: #d1d1d1;

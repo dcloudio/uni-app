@@ -182,17 +182,12 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
         return { ...fields.useField(...args), fixDisabledColor }
       },
     }
-    const selection = evaluate(
-      await preprocess('helpers/useFieldSelection.ts', true),
-      { vue }
-    )
     const inputState = evaluate(
       await preprocess('vue/input/useInput.ts', true),
       {
         vue,
         '@vue/shared': shared,
         '../../helpers/useField': fieldHelpers,
-        '../../helpers/useFieldSelection': selection,
         './utils': { resolveDigitDecimalPoint() {} },
       }
     )
@@ -203,7 +198,6 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
         '@vue/shared': shared,
         '@dcloudio/uni-shared': { LINEFEED: '\n' },
         '../../helpers/useField': fieldHelpers,
-        '../../helpers/useFieldSelection': selection,
       }
     )
     for (const name of ['input', 'textarea']) {
@@ -218,7 +212,6 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
         './useInput': inputState,
         './useTextarea': textareaState,
         '../../helpers/useField': fieldHelpers,
-        '../../helpers/useFieldSelection': selection,
         './utils': { resolveDigitDecimalPoint() {} },
         '../resize-sensor/index-vapor': {
           default: vue.defineVaporComponent({
