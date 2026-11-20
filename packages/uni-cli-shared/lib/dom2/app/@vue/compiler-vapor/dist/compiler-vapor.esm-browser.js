@@ -22864,39 +22864,33 @@ function genBlockContent(block, context, root, genEffectsExtraFrag, skippedEffec
 	}
 }
 function markSlotRootOperations(block, context) {
-	return markSlotRootOperationsImpl(block, context, true);
-}
-function markSlotRootOperationsForDom2(block, context) {
-	markSlotRootOperationsImpl(block, context, false);
-}
-function markSlotRootOperationsImpl(block, context, respectStableRoot) {
 	const roots = getReturnedDynamics(block);
-	if (respectStableRoot && hasStableSlotRoots(roots, context)) return true;
+	if (hasStableSlotRoots(roots, context)) return true;
 	for (let i = 0; i < roots.length; i++) {
 		const child = roots[i];
 		const operation = child && child.operation;
 		if (!operation) continue;
-		if (operation.type === 15) markSlotRootIf(operation, context, respectStableRoot);
-		else if (operation.type === 16) markSlotRootFor(operation, context, respectStableRoot);
+		if (operation.type === 15) markSlotRootIf(operation, context);
+		else if (operation.type === 16) markSlotRootFor(operation, context);
 		else if (operation.type === 17) {
 			operation.slotRoot = true;
-			markSlotRootOperationsImpl(operation.block, context, respectStableRoot);
+			markSlotRootOperations(operation.block, context);
 		} else if (operation.type === 12) markSlotRootComponent(operation);
 		else if (operation.type === 13) operation.flags |= 4;
 	}
 	return false;
 }
-function markSlotRootIf(operation, context, respectStableRoot) {
+function markSlotRootIf(operation, context) {
 	if (!operation.once) operation.slotRoot = true;
-	markSlotRootOperationsImpl(operation.positive, context, respectStableRoot);
+	markSlotRootOperations(operation.positive, context);
 	const negative = operation.negative;
 	if (!negative) return;
-	if (negative.type === 15) markSlotRootIf(negative, context, respectStableRoot);
-	else markSlotRootOperationsImpl(negative, context, respectStableRoot);
+	if (negative.type === 15) markSlotRootIf(negative, context);
+	else markSlotRootOperations(negative, context);
 }
-function markSlotRootFor(operation, context, respectStableRoot) {
+function markSlotRootFor(operation, context) {
 	if (!operation.once) operation.slotRoot = true;
-	markSlotRootOperationsImpl(operation.render, context, respectStableRoot);
+	markSlotRootOperations(operation.render, context);
 }
 function markSlotRootComponent(operation) {
 	if (!operation.once && operation.dynamic && !operation.dynamic.isStatic) operation.slotRoot = true;
@@ -25563,4 +25557,4 @@ function getBaseTransformPreset() {
 	}];
 }
 //#endregion
-export { CodegenContext, DELIMITERS_ARRAY, DELIMITERS_ARRAY_NEWLINE, DELIMITERS_OBJECT, DELIMITERS_OBJECT_NEWLINE, DynamicAccess, DynamicFlag, IMPORT_EXPR_RE, IMPORT_EXP_END, IMPORT_EXP_START, INDENT_END, INDENT_START, IRDynamicPropsKind, IRNodeTypes, IRSlotType, LF, NEWLINE, TEXT_NODE_PLACEHOLDER, TEXT_PLACEHOLDER, TemplateRegistry, VaporErrorCodes, VaporErrorMessages, analyzeExpressions, buildCodeFragment, buildDestructureIdMap, buildNextIdMap, codeFragmentToString, collectSingleUseAssetComponents, compile, createHandlerGroups, createStructuralDirectiveTransform, createVaporCompilerError, evaluateExpression, genCall, genDirectiveModifiers, genDynamicComponentFlags, genIfChainFlags, genMulti, genSlotFlags, generate, getBaseTransformPreset, getLiteralExpressionValue, getNextId, getParserOptions, getStaticPropKeyName, hasStableSlotRoot, isBlockOperation, isBuiltInComponent, isConstantExpression, isDirectStaticLiteralProp, isKeepAliveTag, isListenerProp, isLongIfChain, isStaticExpression, isTeleportTag, isTransitionGroupTag, isTransitionTag, isVModelListener, isVModelOperation, markSlotRootOperations, markSlotRootOperationsForDom2, matchKeyOnlyBindingPattern, matchSelectorPattern, needsVaporCtx, parse, parseStaticAttrBooleanExpression, parseValueDestructure, propToExpression, transform, transformChildren, transformComment, transformElement, transformKey, transformSlotOutlet, transformTemplateRef, transformText, transformVBind, transformVFor, transformVHtml, transformVIf, transformVModel, transformVOn, transformVOnce, transformVShow, transformVSlot, transformVText, wrapTemplate };
+export { CodegenContext, DELIMITERS_ARRAY, DELIMITERS_ARRAY_NEWLINE, DELIMITERS_OBJECT, DELIMITERS_OBJECT_NEWLINE, DynamicAccess, DynamicFlag, IMPORT_EXPR_RE, IMPORT_EXP_END, IMPORT_EXP_START, INDENT_END, INDENT_START, IRDynamicPropsKind, IRNodeTypes, IRSlotType, LF, NEWLINE, TEXT_NODE_PLACEHOLDER, TEXT_PLACEHOLDER, TemplateRegistry, VaporErrorCodes, VaporErrorMessages, analyzeExpressions, buildCodeFragment, buildDestructureIdMap, buildNextIdMap, codeFragmentToString, collectSingleUseAssetComponents, compile, createHandlerGroups, createStructuralDirectiveTransform, createVaporCompilerError, evaluateExpression, genCall, genDirectiveModifiers, genDynamicComponentFlags, genIfChainFlags, genMulti, genSlotFlags, generate, getBaseTransformPreset, getLiteralExpressionValue, getNextId, getParserOptions, getStaticPropKeyName, hasStableSlotRoot, isBlockOperation, isBuiltInComponent, isConstantExpression, isDirectStaticLiteralProp, isKeepAliveTag, isListenerProp, isLongIfChain, isStaticExpression, isTeleportTag, isTransitionGroupTag, isTransitionTag, isVModelListener, isVModelOperation, markSlotRootOperations, matchKeyOnlyBindingPattern, matchSelectorPattern, needsVaporCtx, parse, parseStaticAttrBooleanExpression, parseValueDestructure, propToExpression, transform, transformChildren, transformComment, transformElement, transformKey, transformSlotOutlet, transformTemplateRef, transformText, transformVBind, transformVFor, transformVHtml, transformVIf, transformVModel, transformVOn, transformVOnce, transformVShow, transformVSlot, transformVText, wrapTemplate };

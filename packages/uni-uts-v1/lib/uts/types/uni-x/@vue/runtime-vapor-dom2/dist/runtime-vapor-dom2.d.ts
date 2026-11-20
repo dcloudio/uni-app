@@ -10,29 +10,43 @@ import "@dcloudio/uni-app-x/types/dom2-internal/UniCSSProperty";
 import "@dcloudio/uni-app-x/types/dom2-internal/UniCSSTransition";
 import { Element as Element$1 } from "@dcloudio/uni-app-x/types/native";
 export * from "@vue/runtime-x";
+//#region temp/packages/runtime-vapor-dom2/src/slotBoundary.d.ts
+interface SlotBoundaryContext {
+  getFallback(): BlockFn | undefined;
+  run<T>(fn: () => T, scope?: EffectScope$1): T;
+  markDirty(): void;
+}
+//#endregion
+//#region temp/packages/runtime-vapor-dom2/src/renderContext.d.ts
+interface RenderContext {
+  readonly slotOwner: VaporSharedDataComponentInstance | null;
+  readonly slotBoundary: SlotBoundaryContext | null;
+}
+//#endregion
 //#region temp/packages/runtime-vapor-dom2/src/fragment.d.ts
 declare class VaporFragment {
-  readonly __vf = true;
+  readonly __vf: number;
   nodes: Block;
   anchor?: Node;
   parentComponent?: VaporSharedDataComponentInstance | null;
   insert?: (parent: ParentNode, anchor: Node | null) => void;
   remove?: (parent?: ParentNode) => void;
   onUpdated?: ((nodes?: Block) => void)[];
-  readonly renderInstance: VaporSharedDataComponentInstance | null;
-  readonly slotOwner: VaporSharedDataComponentInstance | null;
-  constructor(nodes: Block);
+  constructor(nodes: Block, flags?: number);
+}
+declare class RenderContextFragment extends VaporFragment {
+  readonly renderInstance;
+  ctx: RenderContext;
+  get slotBoundary(): SlotBoundaryContext | null;
   protected runWithRenderCtx<R>(fn: () => R, scope?: EffectScope$1): R;
 }
-declare class DynamicFragment extends VaporFragment {
-  readonly __df = true;
+declare class DynamicFragment extends RenderContextFragment {
   scope: EffectScope$1 | undefined;
   current?: BlockFn;
-  fallback?: BlockFn;
   everUpdated: boolean;
   getScope?: (key: any) => EffectScope$1 | undefined;
   hasFallthroughAttrs?: true;
-  constructor(anchorLabel?: string);
+  constructor(flags?: number, slotRoot?: boolean);
   update(render?: BlockFn | null, key?: any, noScope?: boolean): void;
   private renderBranch;
 }
@@ -46,8 +60,13 @@ export declare function setSharedDataStaticTemplateRef(el: RefEl | null, ref: No
 export declare function setSharedDataTemplateRefBinding(el: RefEl | null, getter: () => any, refFor?: boolean | null, refKey?: string | null): void;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/block.d.ts
-type Block = Node | VaporFragment | DynamicFragment | VaporSharedDataComponentInstance | Block[] | RefEl;
-type BlockFn = (...args: any[]) => void;
+type Block = {
+  readonly __slotRoot: true;
+} | Node | VaporFragment | DynamicFragment | VaporSharedDataComponentInstance | (Block | void)[] | RefEl;
+type BlockFn = (...args: any[]) => any;
+export declare const sharedDataSlotRoot: {
+  readonly __slotRoot: true;
+};
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/componentProps.d.ts
 type RawProps = Record<string, unknown> & {
@@ -64,7 +83,7 @@ type VaporSlot<T extends UniSharedData = any> = BlockFn & {
   sharedDataVFor?: UniSharedDataVFor<T>;
   _?: VaporSlotStability.NON_STABLE;
 };
-type VaporScopedSlot<T extends UniSharedData = any> = ((slotProps: any, sharedData: T) => void) & {
+type VaporScopedSlot<T extends UniSharedData = any> = ((slotProps: any, sharedData: T) => Block | void) & {
   sharedDataVFor?: UniSharedDataVFor<T>;
   _?: VaporSlotStability.NON_STABLE;
 };
@@ -79,7 +98,7 @@ export declare function withSharedDataVaporCtx(fn: (...args: any[]) => any, type
 export declare function mergeSharedDataSlotProps(...sources: (Record<string, any> | null | undefined)[]): Record<string, any>;
 export declare function guardSharedDataSlotProps(props: Record<string, any> | null | undefined);
 export declare function normalizeSharedDataSlotProps(result: Record<string, any> | null): Record<string, any> | null;
-export declare function createSharedDataSlot(name?: string | (() => string), rawProps?: LooseRawProps | null, setSharedDataSlotProps?: ((data: UniSharedData) => void) | null, fallback?: VaporSlot | null, flags?: number): void;
+export declare function createSharedDataSlot(name?: string | (() => string), rawProps?: LooseRawProps | null, setSharedDataSlotProps?: ((data: UniSharedData) => void) | null, fallback?: VaporSlot | null, flags?: number): DynamicFragment;
 export declare function createSharedDataScopedSlot<S extends UniSharedData>(sharedDataVFor: UniSharedDataVFor<S>, fn: VaporScopedSlot<S>): VaporScopedSlot<S>;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/component.d.ts
@@ -276,20 +295,21 @@ export declare function createMountPage(appContext: AppContext): (pageComponent:
 export declare function unmountPage(pageInstance: ComponentPublicInstance): void;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/apiCreateIf.d.ts
-export declare function createSharedDataIf(condition: () => any, b1: () => void, b2?: (() => void) | null, flags?: number): void;
+export declare function createSharedDataIf(condition: () => any, b1: BlockFn, b2?: BlockFn | null, flags?: number): Block | void;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/apiCreateIfChain.d.ts
-export declare function createSharedDataIfChain(select: () => number, blocks: BlockFn[], branchFlags: number[] | null, flags: number): void;
+export declare function createSharedDataIfChain(select: () => number, blocks: BlockFn[], branchFlags: number[] | null, flags: number): Block | void;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/apiCreateFor.d.ts
 type ItemOf<S> = S extends readonly (infer T)[] ? T : S extends Reactive<readonly (infer T)[]> ? T : S extends Set<infer T> ? T : S extends Map<infer K, infer V> ? [K, V] : S extends string ? string : S extends number ? number : S extends Record<any, infer V> ? V : S extends Iterable<infer T> ? T : any;
 type KeyOf<S> = S extends readonly unknown[] | Iterable<unknown> ? number : S extends Record<any, any> ? string : number;
 type IndexOfKey<K> = K extends string ? number : undefined;
-interface SharedDataForHandle {
+declare class SharedDataForHandle extends VaporFragment {
   resetListeners?: (() => void)[];
+  constructor();
   onReset(fn: () => void): void;
 }
-export declare const createSharedDataFor: <S extends UniSharedData, Source>(sharedDataVFor: UniSharedDataVFor<S>, src: () => Source, renderItem: (shareDataVForItem: S, item: ShallowRef<ItemOf<Source>>, key: ShallowRef<KeyOf<Source>>, index: ShallowRef<number | undefined>) => VaporSharedDataComponentInstance | null, getKey?: (shareDataVForItem: S, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any, flags?: number) => SharedDataForHandle;
+export declare const createSharedDataFor: <S extends UniSharedData, Source>(sharedDataVFor: UniSharedDataVFor<S>, src: () => Source, renderItem: (shareDataVForItem: S, item: ShallowRef<ItemOf<Source>>, key: ShallowRef<KeyOf<Source>>, index: ShallowRef<number | undefined>) => Block | void | null, getKey?: (shareDataVForItem: S, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any, flags?: number) => SharedDataForHandle;
 interface SharedDataSelector {
   (key: any, oper: () => void): void;
   reset(): void;
@@ -303,7 +323,7 @@ export declare function getSharedDataDefaultValue(val: any, defaultVal: any): an
 export declare const preCreateSharedDataRecycleFor: <Source>(src: () => Source, getKey?: (item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any, getId?: (item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any) => (() => Source);
 declare class RecycleContext {}
 export declare function createRecycleContext(): RecycleContext;
-export declare const createSharedDataRecycleFor: <S extends UniSharedData, Source>(recycleContext: RecycleContext, sharedDataVFor: UniSharedDataVFor<S>, src: () => Source, renderItem: (shareDataVForItem: S, item: ShallowRef<ItemOf<Source>>, key: ShallowRef<KeyOf<Source>>, index: ShallowRef<number | undefined>) => VaporSharedDataComponentInstance | null, getKey?: (shareDataVForItem: S, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any, getType?: (shareDataVForItem: S, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any, flags?: number) => void;
+export declare const createSharedDataRecycleFor: <S extends UniSharedData, Source>(recycleContext: RecycleContext, sharedDataVFor: UniSharedDataVFor<S>, src: () => Source, renderItem: (shareDataVForItem: S, item: ShallowRef<ItemOf<Source>>, key: ShallowRef<KeyOf<Source>>, index: ShallowRef<number | undefined>) => Block | void | null, getKey?: (shareDataVForItem: S, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any, getType?: (shareDataVForItem: S, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any, flags?: number) => VaporFragment;
 /**
  * list-item内的组件在进入等待复用状态时不会触发onUnmount钩子
  * 复用时如果需要移除此时会触发onUnmount钩子
@@ -318,7 +338,7 @@ export declare const onReuse: typeof onReused;
 export declare function resolveBuiltInComponent(name: string): VaporSharedDataComponent;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/apiCreateDynamicComponent.d.ts
-export declare function createSharedDataDynamicComponent(getter: () => any, setter: (ins: VaporSharedDataComponentInstance | null) => any, rawCid?: string, rawProps?: RawProps | null, rawSlots?: RawSlots | null, flags?: number): VaporSharedDataComponentInstance | null;
+export declare function createSharedDataDynamicComponent(getter: () => any, setter: (ins: VaporSharedDataComponentInstance | null, isEmpty: boolean) => any, rawCid?: string, rawProps?: RawProps | null, rawSlots?: RawSlots | null, flags?: number): Block;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/apiCreateFragment.d.ts
 /**
@@ -331,7 +351,7 @@ export declare function createSharedDataDynamicComponent(getter: () => any, sett
  *   <h1 :key="count">{{ count }}</h1>
  * </VaporTransition>
  */
-export declare function createSharedDataKeyedFragment(key: () => any, render: BlockFn): Block;
+export declare function createSharedDataKeyedFragment(key: () => any, render: BlockFn, slotRoot?: boolean): Block;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/apiCreateTeleport.d.ts
 export type SharedDataTeleportPropSetters = {
@@ -521,10 +541,18 @@ export declare function toSharedDataScrollViewAssociativeContainer(value: string
 export declare function toSharedDataGlassEffectViewGlassStyle(value: string): UniGlassEffectViewStyle;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/types/common.d.ts
+export interface VaporSlotHandler {
+  fn: VaporSlot;
+  readonly nonStable: boolean;
+}
+export type NativeRawSlots = Record<string, VaporSlot | VaporSlotHandler | DynamicSlotSource[]> & {
+  $?: DynamicSlotSource[];
+};
 export declare function toVueForItemKey(key: any): string | number;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/types/element.d.ts
 export declare function getCurrentElementVaporComponentInstance(): VaporSharedDataComponentInstance | null;
+export declare function createElementTextPlaceholder(): Block;
 type TemplateFactory = (page: UniPage) => UniElement & {
   $root?: true;
 };
@@ -533,13 +561,13 @@ export declare function renderElementEffect(fn: (first: boolean) => void, noLife
 export declare function nextElement(node: UniElement): UniElement;
 export declare function nthChildElement(node: UniElement, i: number): UniElement;
 export declare function childElement(node: UniElement): UniElement;
-export declare function createElementComponent<S extends UniSharedDataComponent>(sharedData?: S | null, rawProps?: LooseRawProps | null, rawSlots?: LooseRawSlots | null, isSingleRoot?: boolean | null, appContext?: GenericAppContext): VaporSharedDataComponentInstance;
-export declare function createElementComponentWithFallback<S extends UniSharedDataComponent>(page: UniPage, sharedData?: S | null, rawProps?: LooseRawProps | null, rawSlots?: LooseRawSlots | null, isSingleRoot?: boolean): VaporSharedDataComponentInstance;
-export declare function createElementDynamicComponent(page: UniPage, getter: () => any, rawProps?: RawProps | null, rawSlots?: RawSlots | null, isSingleRoot?: boolean): VaporFragment;
+export declare function createElementComponent<S extends UniSharedDataComponent>(sharedData?: S | null, rawProps?: LooseRawProps | null, rawSlots?: NativeRawSlots | null, isSingleRoot?: boolean | null, appContext?: GenericAppContext): VaporSharedDataComponentInstance;
+export declare function createElementComponentWithFallback<S extends UniSharedDataComponent>(page: UniPage, sharedData?: S | null, rawProps?: LooseRawProps | null, rawSlots?: NativeRawSlots | null, isSingleRoot?: boolean): VaporSharedDataComponentInstance;
+export declare function createElementDynamicComponent(page: UniPage, getter: () => any, getIsEmpty: () => boolean, rawProps?: RawProps | null, rawSlots?: NativeRawSlots | null, flags?: number): VaporFragment;
 export declare function createElementTeleport(page: UniPage, props: VueElementCreateTeleportProps, children?: BlockFn | null): VaporFragment;
 export declare function withElementVaporCtx<T>(fn: () => T): () => T;
 export declare function withElementVaporCtx<T>(fn: (slotProps: UniSharedData | null) => T): (slotProps: UniSharedData | null) => T;
-export declare function createElementSlot(page: UniPage, name: string | (() => string), getSlotProps?: (() => UniSharedData | null) | null, fallback?: VaporSlot): Block;
+export declare function createElementSlot(page: UniPage, name: string | (() => string), getSlotProps?: (() => UniSharedData | null) | null, fallback?: VaporSlot | null, flags?: number): Block;
 export declare function createElementFor<Source extends UniSharedData>(page: UniPage, src: () => UniSharedDataVFor<Source> | string | number, renderItem: (shareDataVForItem: Source, item: ItemOf<Source>, key: KeyOf<Source>, index: number | undefined) => void, getKey?: ((shareDataVForItem: Source, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any) | null, flags?: number, setup?: (_: {
   createSelector: (source: () => any) => (cb: () => void) => void;
 }) => void): VaporFragment;
@@ -555,7 +583,7 @@ declare global {
 }
 export declare function createElementDynamicSlot(name: string, fn: VaporSlot): DynamicSlot;
 export declare function createElementForSlots<Source extends UniSharedData>(rawSource: UniSharedDataVFor<Source>, getSlot: (item: ItemOf<Source>, key: KeyOf<Source>, index: number) => UniElementDynamicSlot): UniElementDynamicSlotVector;
-export declare function createElementIf(page: UniPage, condition: () => any, b1: BlockFn, b2?: BlockFn | null, once?: boolean): Block;
+export declare function createElementIf(page: UniPage, condition: () => any, b1: BlockFn, b2?: BlockFn | null, flags?: number): Block;
 export declare function createElementIfChain(page: UniPage, select: () => number, blocks: BlockFn[], branchFlags: number[] | null, flags: number): Block;
 export declare function setElementText(el: UniElement | UniText | null, value: string): void;
 export declare function setElementHtml(el: UniElement, value: string): void;
@@ -589,11 +617,13 @@ export declare function onElement(node: UniElement, event: string, fn: (event: U
 }): void;
 export declare function onElementRef(node: UniElement | VaporSharedDataComponentInstance<any>, fn: Function): void;
 export declare function createElementDynamicSlotVector(slots: any | null): any | null;
-export declare function createElementKeyedFragment(page: UniPage, key: () => string, render: BlockFn): Block;
+export declare function createElementKeyedFragment(page: UniPage, key: () => string, render: BlockFn, slotRoot?: boolean): Block;
 export declare function createElementScopedSlot<S extends UniSharedData>(sharedDataVFor: UniSharedDataVFor<S>, fn: VaporSlot): VaporSlot;
+export declare function createElementSlotHandler(fn: VaporSlot, nonStable: boolean): VaporSlotHandler;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/types/nativeView.d.ts
 export declare function getCurrentNativeViewVaporComponentInstance(): VaporSharedDataComponentInstance | null;
+export declare function createNativeViewTextPlaceholder(): Block;
 type NativeViewFactory = (page: UniPage) => UniNativeBaseView & {
   $root?: true;
 };
@@ -617,19 +647,19 @@ export declare function createNativeViewStaticFor(source: number, renderItem: (i
 export declare function createNativeViewRecycleFor<Source extends UniSharedData>(page: UniPage, recycleContext: NativeViewRecycleContext, src: () => UniSharedDataVFor<Source>, renderItem: (shareDataVForItem: Source, item: ShallowRef<ItemOf<Source>>, key: ShallowRef<KeyOf<Source>>, index: ShallowRef<number | undefined>) => void, getKey?: ((shareDataVForItem: Source, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any) | null, getType?: ((shareDataVForItem: Source, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any) | null, flags?: number): VaporFragment;
 export declare class NativeViewRecycleContext {}
 export declare function createNativeViewRecycleContext(): NativeViewRecycleContext;
-export declare function createNativeViewIf(page: UniPage, condition: () => any, b1: BlockFn, b2?: BlockFn | null, once?: boolean): Block;
+export declare function createNativeViewIf(page: UniPage, condition: () => any, b1: BlockFn, b2?: BlockFn | null, flags?: number): Block;
 export declare function createNativeViewIfChain(page: UniPage, select: () => number, blocks: BlockFn[], branchFlags: number[] | null, flags: number): Block;
 export declare function setNativeViewAttr(el: UniNativeBaseView, key: string, value: any): void;
 export declare function setNativeViewInsertionState(parent: UniNativeBaseView, anchor?: UniNativeBaseView | 0 | null): void;
 export declare function getNativeViewInsertionParent(): UniNativeBaseView | null;
-export declare function createNativeViewComponent<S extends UniSharedDataComponent>(sharedData?: S | null, rawProps?: LooseRawProps | null, rawSlots?: LooseRawSlots | null, isSingleRoot?: boolean | null, appContext?: GenericAppContext): VaporSharedDataComponentInstance;
-export declare function createNativeViewComponentWithFallback<S extends UniSharedDataComponent>(page: UniPage, sharedData?: S | null, rawProps?: LooseRawProps | null, rawSlots?: LooseRawSlots | null, isSingleRoot?: boolean): VaporSharedDataComponentInstance;
-export declare function createNativeViewDynamicComponent(page: UniPage, getter: () => any, rawProps?: RawProps | null, rawSlots?: RawSlots | null, isSingleRoot?: boolean): VaporFragment;
+export declare function createNativeViewComponent<S extends UniSharedDataComponent>(sharedData?: S | null, rawProps?: LooseRawProps | null, rawSlots?: NativeRawSlots | null, isSingleRoot?: boolean | null, appContext?: GenericAppContext): VaporSharedDataComponentInstance;
+export declare function createNativeViewComponentWithFallback<S extends UniSharedDataComponent>(page: UniPage, sharedData?: S | null, rawProps?: LooseRawProps | null, rawSlots?: NativeRawSlots | null, isSingleRoot?: boolean): VaporSharedDataComponentInstance;
+export declare function createNativeViewDynamicComponent(page: UniPage, getter: () => any, getIsEmpty: () => boolean, rawProps?: RawProps | null, rawSlots?: NativeRawSlots | null, flags?: number): VaporFragment;
 export declare function createNativeViewTeleport(page: UniPage, props: VueNativeViewCreateTeleportProps, children?: BlockFn | null): VaporFragment;
 export declare function setNativeViewDynamicProps(component: UniSharedDataComponent, view: UniNativeBaseView, args: UniSharedDataJSONObject): void;
 export declare function withNativeViewVaporCtx<T>(fn: () => T): () => T;
 export declare function withNativeViewVaporCtx<T>(fn: (slotProps: UniSharedData | null) => T): (slotProps: UniSharedData | null) => T;
-export declare function createNativeViewSlot(page: UniPage, name: string | (() => string), getSlotProps?: (() => UniSharedData | null) | null, fallback?: VaporSlot): Block;
+export declare function createNativeViewSlot(page: UniPage, name: string | (() => string), getSlotProps?: (() => UniSharedData | null) | null, fallback?: VaporSlot | null, flags?: number): Block;
 export declare function createNativeViewForSlots<Source extends UniSharedData>(rawSource: UniSharedDataVFor<Source>, getSlot: (shareDataVForItem: Source, key: KeyOf<Source>, index?: number) => DynamicSlot): DynamicSlot[];
 declare global {
   type UniNativeViewDynamicSlot = DynamicSlot;
@@ -639,8 +669,9 @@ declare global {
 export declare function createNativeViewDynamicSlot(name: string, fn: VaporSlot): DynamicSlot;
 export declare function createNativeViewForSlots<Source extends UniSharedData>(rawSource: UniSharedDataVFor<Source>, getSlot: (item: ItemOf<Source>, key: KeyOf<Source>, index: number) => UniNativeViewDynamicSlot): UniNativeViewDynamicSlotVector;
 export declare function createNativeViewDynamicSlotVector(slots: any | null): any | null;
-export declare function createNativeViewKeyedFragment(page: UniPage, key: () => string, render: BlockFn): Block;
+export declare function createNativeViewKeyedFragment(page: UniPage, key: () => string, render: BlockFn, slotRoot?: boolean): Block;
 export declare function createNativeViewScopedSlot<S extends UniSharedData>(sharedDataVForGetter: () => UniSharedDataVFor<S>, fn: VaporSlot): VaporSlot;
+export declare function createNativeViewSlotHandler(fn: VaporSlot, nonStable: boolean): VaporSlotHandler;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/types/index.d.ts
 export declare function runOnMainQueue(fn: () => void): void;

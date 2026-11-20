@@ -22935,6 +22935,7 @@ export interface CreateComponentIRNode extends BaseIRNode, EffectBoundary, Inser
    * fixed by uts DOM2 组件 flatten 静态值。
    */
   flatten?: boolean;
+  sharedDataEmpty?: SimpleExpressionNode["sharedData"];
   ns?: Namespace;
   key?: SimpleExpressionNode;
 }
@@ -23343,7 +23344,6 @@ export declare function matchSelectorPattern(effect: IREffect, key: string, idMa
 //#region temp/packages/compiler-vapor/src/generators/block.d.ts
 type SlotRootStabilityContext = Pick<CodegenContext, "ir">;
 export declare function markSlotRootOperations(block: BlockIRNode, context: SlotRootStabilityContext): boolean;
-export declare function markSlotRootOperationsForDom2(block: BlockIRNode, context: SlotRootStabilityContext): void;
 export declare function hasStableSlotRoot(block: BlockIRNode, context: SlotRootStabilityContext): boolean;
 export declare function collectSingleUseAssetComponents(block: BlockIRNode, assetComponents: Set<string>): Set<string>;
 //#endregion
