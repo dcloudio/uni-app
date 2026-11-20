@@ -101,22 +101,37 @@ export function rewriteStyle(
     const staticStyle = (props[staticStylePropIndex] as AttributeNode).value!
       .content
     if (staticStyle.trim()) {
+      // WXML 表达式不能可靠解析字符串中的转义字符，通过渲染数据传递。
+      const staticStyleExpr =
+        process.env.UNI_PLATFORM === 'mp-weixin' && /['"\\]/.test(staticStyle)
+          ? identifier(
+              rewriteExpression(
+                createSimpleExpression(
+                  genBabelExpr(stringLiteral(staticStyle))
+                ),
+                context,
+                stringLiteral(staticStyle),
+                undefined,
+                { property: true, ignoreLiteral: true }
+              ).content
+            )
+          : stringLiteral(staticStyle)
       if (styleBidingExpr) {
         if (index > staticStylePropIndex) {
           styleBidingExpr = binaryExpression(
             '+',
-            addSemicolon(stringLiteral(staticStyle)),
+            addSemicolon(staticStyleExpr),
             styleBidingExpr
           )
         } else {
           styleBidingExpr = binaryExpression(
             '+',
             addSemicolon(styleBidingExpr),
-            stringLiteral(staticStyle)
+            staticStyleExpr
           )
         }
       } else {
-        styleBidingExpr = stringLiteral(staticStyle)
+        styleBidingExpr = staticStyleExpr
       }
     }
   }
