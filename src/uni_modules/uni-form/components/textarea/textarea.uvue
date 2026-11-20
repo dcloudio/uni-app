@@ -277,19 +277,19 @@
 		 }
 	   },
 	   "web": {
-		 "uniVer": "x",
-		 "unixVer": "x"
+		 "uniVer": "√",
+		 "unixVer": "4.0"
 	   },
 	   "mp": {
 		 "weixin": {
-		   "hostVer": "x",
-		   "uniVer": "x",
-		   "unixVer": "x"
+		   "hostVer": "1.0.0+",
+		   "uniVer": "√",
+		   "unixVer": "4.41"
 		 },
 		 "alipay": {
-		   "hostVer": "x",
-		   "uniVer": "x",
-		   "unixVer": "x"
+		   "hostVer": "1.6.0+",
+		   "uniVer": "√",
+		   "unixVer": "5.31"
 		 }
 	   }
 	 }

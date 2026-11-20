@@ -1,6 +1,5 @@
 <template>
-	<text class="page-title">Easyinput 增强输入框</text>
-	<text class="page-desc">支持单行、多行、密码、清空、前后插槽和自定义内部样式。</text>
+	<text class="uni-info">支持单行、多行、密码、清空、前后插槽和自定义内部样式。</text>
 
 	<text class="uni-h4">基础输入</text>
 	<uni-easyinput
@@ -15,7 +14,7 @@
 		@blur="handleBlur"
 	/>
 	<text
-		class="result-text test-basic-result"
+		class="uni-log test-basic-result"
 		:data-change-count="data.changeCount"
 		:data-confirm-count="data.confirmCount"
 		:data-blur-count="data.blurCount"
@@ -23,11 +22,11 @@
 
 	<text class="uni-h4">name：原生表单控件名称</text>
 	<uni-easyinput v-model="data.nameValue" name="account" placeholder="name 会透传给原生控件" />
-	<text class="result-text">当前值：{{ data.nameValue }}</text>
+	<text class="uni-log">当前值：{{ data.nameValue }}</text>
 
 	<text class="uni-h4">maxlength：最大输入长度</text>
 	<uni-easyinput v-model="data.maxlengthValue" :maxlength="6" placeholder="最多输入 6 个字符" />
-	<text class="result-text">当前长度：{{ data.maxlengthValue.length }}/6</text>
+	<text class="uni-log">当前长度：{{ data.maxlengthValue.length }}/6</text>
 
 	<text class="uni-h4">focus：自动聚焦与程序控制焦点</text>
 	<uni-easyinput
@@ -44,7 +43,7 @@
 
 	<text class="uni-h4">confirm-type / cursor-spacing / adjust-position</text>
 	<uni-easyinput v-model="data.keyboardValue" confirm-type="search" :cursor-spacing="24" :adjust-position="true" placeholder="回车显示搜索，键盘与光标间距 24px" />
-	<text class="result-text">confirm-type=search，cursor-spacing=24，adjust-position=true</text>
+	<text class="uni-log">confirm-type=search，cursor-spacing=24，adjust-position=true</text>
 
 	<text class="uni-h4">外部值同步</text>
 	<view class="button-row">
@@ -58,7 +57,7 @@
 		placeholder="观察外部值同步"
 		input-class="test-external-input"
 	/>
-	<text class="result-text">当前值：{{ data.externalValue == null ? 'null' : data.externalValue }}</text>
+	<text class="uni-log">当前值：{{ data.externalValue == null ? 'null' : data.externalValue }}</text>
 
 	<text class="uni-h4">Vue 修饰符</text>
 	<uni-easyinput
@@ -66,7 +65,7 @@
 		placeholder="首尾空格由 v-model.trim 处理"
 		input-class="test-modifier-input"
 	/>
-	<text class="result-text">当前值：[{{ data.modifierValue }}]</text>
+	<text class="uni-log">当前值：[{{ data.modifierValue }}]</text>
 
 	<text class="uni-h4">密码和清空</text>
 	<uni-easyinput
@@ -79,7 +78,7 @@
 		icon-class="test-password-icon"
 		@eyes="onEyes"
 	/>
-	<text class="result-text">密码显隐：{{ data.passwordVisible ? '显示' : '隐藏' }}</text>
+	<text class="uni-log">密码显隐：{{ data.passwordVisible ? '显示' : '隐藏' }}</text>
 
 	<text class="uni-h4">多行输入</text>
 	<uni-easyinput
@@ -89,7 +88,7 @@
 		placeholder="请输入多行内容"
 		input-class="demo-textarea test-textarea"
 	/>
-	<text class="result-text">当前值：{{ data.textareaValue }}</text>
+	<text class="uni-log">当前值：{{ data.textareaValue }}</text>
 
 	<text class="uni-h4">状态</text>
 	<uni-easyinput
@@ -151,11 +150,7 @@
 		@clear="onClear"
 		@keyboardheightchange="onKeyboardHeightChange"
 	/>
-	<text class="result-text">update:modelValue：{{ data.eventValue }}</text>
-	<text class="result-text">input 事件次数：{{ data.inputCount }}</text>
-	<text class="result-text">focus 事件次数：{{ data.focusCount }}</text>
-	<text class="result-text">blur / change / confirm / clear 次数：{{ data.blurCount }} / {{ data.changeCount }} / {{ data.confirmCount }} / {{ data.clearCount }}</text>
-	<text class="result-text">键盘高度：{{ data.keyboardHeight }}</text>
+	<text class="uni-log">update:modelValue：{{ data.eventValue }}\ninput 事件次数：{{ data.inputCount }}\nfocus 事件次数：{{ data.focusCount }}\nblur / change / confirm / clear 次数：{{ data.blurCount }} / {{ data.changeCount }} / {{ data.confirmCount }} / {{ data.clearCount }}\n键盘高度：{{ data.keyboardHeight }}</text>
 </template>
 
 <script setup lang="ts">
@@ -287,8 +282,9 @@ defineExpose({
 
 <style>
 page {
+	padding: 12px 16px 24px;
+	box-sizing: border-box;
 	--list-background-color: #ffffff;
-	--background-color: #f5f5f5;
 	--active-color: #a0a0a0;
 	--active-background-color: #f8f8f8;
 	--text-color: #333333;
@@ -296,29 +292,20 @@ page {
 	--content-background-color: #ffffff;
 	--secondary-text-color: #657180;
 	--input-border-color: #dcdfe6;
-	background-color: var(--background-color);
-	padding: 12px;
 }
 
-.page-title {
-	font-size: 20px;
-	font-weight: bold;
-	color: var(--text-color, #222222);
+.uni-h4 {
+	margin-top: 22px;
 }
 
-.page-desc {
-	margin-top: 8px;
-	margin-bottom: 8px;
-	font-size: 14px;
-	line-height: 21px;
-	color: var(--secondary-text-color, #657180);
+.uni-info {
+	line-height: 20px;
 }
 
-.result-text {
-	margin-top: 8px;
-	margin-bottom: 8px;
-	font-size: 13px;
-	color: var(--secondary-text-color, #657180);
+.uni-log {
+	width: 100%;
+	line-height: 18px;
+	box-sizing: border-box;
 }
 
 .button-row {
@@ -389,10 +376,23 @@ page {
 	color: #7c3aed;
 }
 
+/* #ifdef WEB */
+.uni-log {
+	word-break: break-all;
+}
+
+@media (min-width: 768px) {
+	page {
+		max-width: 760px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+}
+/* #endif */
+
 @media (prefers-color-scheme: dark) {
 	page {
 		--list-background-color: #2d2d2d;
-		--background-color: #1a1a1a;
 		--active-color: rgba(255, 255, 255, 0.35);
 		--active-background-color: #3b3b3b;
 		--text-color: #ffffff;

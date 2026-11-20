@@ -1,0 +1,2 @@
+/** 检查鸿蒙应用 metadata 中是否存在 GETUI_APPID 配置。 */
+export type HasGetuiAppId = () => boolean

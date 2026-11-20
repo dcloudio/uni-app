@@ -9,7 +9,7 @@
 			@change="onComponentChange"
 		/>
 	</view>
-	<text class="result">当前值：{{ componentValue }}，change 次数：{{ componentChangeCount }}</text>
+	<text class="uni-log">当前值：{{ componentValue }}，change 次数：{{ componentChangeCount }}</text>
 
 	<text class="uni-h4">radio-group + label</text>
 	<view class="frame">
@@ -25,7 +25,7 @@
 			</label>
 		</radio-group>
 	</view>
-	<text class="result">当前值：{{ labelValue }}，click 次数：{{ labelClickCount }}</text>
+	<text class="uni-log">当前值：{{ labelValue }}，click 次数：{{ labelClickCount }}</text>
 
 	<text class="uni-h4">view + view</text>
 	<view class="frame group">
@@ -39,7 +39,7 @@
 			<view flatten class="check" :class="{ 'check--selected': viewValue === item.value }"></view>
 		</view>
 	</view>
-	<text class="result">当前值：{{ viewValue }}，click 次数：{{ viewClickCount }}</text>
+	<text class="uni-log">当前值：{{ viewValue }}，click 次数：{{ viewClickCount }}</text>
 </template>
 
 <script setup lang="ts">
@@ -75,14 +75,23 @@ const onViewClick = (item) => {
 
 <style>
 page {
-	--background-color: #f5f5f5;
+	padding: 12px 16px 24px;
+	box-sizing: border-box;
 	--content-background-color: #ffffff;
 	--text-color: #333333;
 	--tips-color: #0958d9;
 	--secondary-text-color: #657180;
 	--divider-color: #e5e5e5;
-	padding: 12px;
-	background-color: var(--background-color);
+}
+
+.uni-h4 {
+	margin-top: 20px;
+}
+
+.uni-log {
+	width: 100%;
+	line-height: 18px;
+	box-sizing: border-box;
 }
 
 .frame {
@@ -131,16 +140,22 @@ page {
 	opacity: 1;
 }
 
-.result {
-	margin-top: 8px;
-	margin-bottom: 12px;
-	font-size: 13px;
-	color: var(--secondary-text-color, #657180);
+/* #ifdef WEB */
+.uni-log {
+	word-break: break-all;
 }
+
+@media (min-width: 768px) {
+	page {
+		max-width: 760px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+}
+/* #endif */
 
 @media (prefers-color-scheme: dark) {
 	page {
-		--background-color: #1a1a1a;
 		--content-background-color: #2d2d2d;
 		--text-color: #ffffff;
 		--tips-color: #91caff;

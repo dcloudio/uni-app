@@ -206,14 +206,20 @@
   }
 
   // #ifdef APP-HARMONY || APP-ANDROID || WEB
+  let title1 = '系统toast'
+  let title2 = '原生toast'
+  // #ifdef WEB
+  title1 = '页面toast；uni-app x，是下一代 uni-app，是一个基于vue、js/ts/uts、css和原生渲染的跨平台开发框架。uni-app x 四年磨一剑，在2026年推出蒸汽模式后，终于实现了跨平台框架的终极愿景：即跨平台，又做到了比原生更快的渲染速度'
+  title2 = '应用toast；uni-app x，是下一代 uni-app，是一个基于vue、js/ts/uts、css和原生渲染的跨平台开发框架。uni-app x 四年磨一剑，在2026年推出蒸汽模式后，终于实现了跨平台框架的终极愿景：即跨平台，又做到了比原生更快的渲染速度'
+  // #endif
   const toast4Tap = () => {
     uni.showToast({
-      title: '系统toast',
+      title: title1,
       position: 'bottom',
       duration: 5000
     })
     uni.showToast({
-      title: '原生toast',
+      title: title2,
       icon: 'none',
       duration: 5000,
       success: (res) => {

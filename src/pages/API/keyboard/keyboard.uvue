@@ -12,7 +12,7 @@
     <view v-if="showDetails" id="keyboard-details" class="keyboard-details">
       <text class="details-title">键盘状态</text>
       <text class="info-text">高度：{{data.keyboardHeight}}px · {{data.keyboardStatus}}</text>
-      <!-- #ifdef APP-HARMONY -->
+      <!-- #ifdef APP -->
       <text class="info-text">动画：{{keyboardAnimationData.keyboardAnimationState}}</text>
       <text class="info-text">动画高度：{{keyboardAnimationData.keyboardAnimationHeight}}px</text>
       <text class="info-text">事件数：{{keyboardAnimationData.keyboardAnimationEventCount}}</text>
@@ -20,7 +20,7 @@
       <!-- #endif -->
     </view>
   </scroll-view>
-  <!-- #ifdef APP-HARMONY -->
+  <!-- #ifdef APP -->
   <view id="keyboard-animation-panel" class="keyboard-panel" :style="keyboardPanelStyle">
     <view class="composer" @click="focusInput">
       <input id="uni-input-box" class="input-box" type="text" v-model="data.inputValue"
@@ -34,7 +34,7 @@
     </view>
   </view>
   <!-- #endif -->
-  <!-- #ifndef APP-HARMONY -->
+  <!-- #ifndef APP -->
   <view class="keyboard-panel keyboard-panel-static">
     <view class="composer" @click="focusInput">
       <input id="uni-input-box" class="input-box" type="text" v-model="data.inputValue"
@@ -62,7 +62,7 @@ const data = reactive({
   keyboardStatus: '未显示',
 })
 
-// #ifdef APP-HARMONY
+// #ifdef APP
 let keyboardHeightChangeId : number | null = null
 const keyboardBottomSafeArea = uni.getWindowInfo().safeAreaInsets.bottom
 const keyboardAnimationData = reactive({
@@ -106,34 +106,34 @@ onLoad(() => {
     data.keyboardHeight = res.height;
     data.keyboardStatus = res.height > 0 ? '显示中' : '已隐藏';
   };
-  // #ifdef APP-HARMONY
+  // #ifdef APP
   keyboardHeightChangeId = uni.onKeyboardHeightChange(keyboardHeightChangeCallback);
   // #endif
-  // #ifndef APP-HARMONY
+  // #ifndef APP
   uni.onKeyboardHeightChange(keyboardHeightChangeCallback);
   // #endif
-  // #ifdef APP-HARMONY
+  // #ifdef APP
   uni.onKeyboardAnimationChange(keyboardAnimationChangeCallback);
   // #endif
 })
 
 onUnload(() => {
   // 页面卸载时移除监听
-	// #ifdef APP-HARMONY
+	// #ifdef APP
   if (keyboardHeightChangeId != null) {
     uni.offKeyboardHeightChange(keyboardHeightChangeId);
     keyboardHeightChangeId = null;
   }
   uni.offKeyboardAnimationChange(keyboardAnimationChangeCallback);
 	// #endif
-	// #ifndef APP-HARMONY
+	// #ifndef APP
 	uni.offKeyboardHeightChange();
 	// #endif
 })
 
 defineExpose({
   data,
-  // #ifdef APP-HARMONY
+  // #ifdef APP
   keyboardAnimationData,
   keyboardBottomSafeArea,
   getKeyboardPanelBottom,

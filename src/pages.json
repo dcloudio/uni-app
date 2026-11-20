@@ -3237,10 +3237,11 @@
 						"navigationStyle": "custom"
 						// #endif
 						// #ifdef MP-ALIPAY
-						,"transparentTitle": "always",
+						,
+						"transparentTitle": "always",
 						"allowsBounceVertical": "NO"
 						// #endif
-						,"navigationBarTextStyle": "black"
+						,"navigationBarTextStyle":"black"
 					}
 				},
 				{
@@ -3342,14 +3343,14 @@
 					"style": {
 						"navigationBarTitleText": "Icons 图标"
 					}
-				},
-				{
+				}
+				,{
 					"path": "easyinput/easyinput",
 					"style": {
 						"navigationBarTitleText": "Easyinput 增强输入框"
 					}
-				},
-				{
+				}
+				,{
 					"path": "forms/forms",
 					"style": {
 						"navigationBarTitleText": "uni-forms 表单"
@@ -3439,6 +3440,12 @@
 					"path": "calendar-picker/calendar-picker",
 					"style": {
 						"navigationBarTitleText": "calendar-picker"
+					}
+				},
+				{
+					"path": "file-picker/file-picker",
+					"style": {
+						"navigationBarTitleText": "uni-file-picker"
 					}
 				}
 			]

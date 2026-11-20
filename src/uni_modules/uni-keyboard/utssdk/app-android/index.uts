@@ -6,15 +6,14 @@ import {
 import { KeyboardAnimationNative } from "uts.sdk.modules.uniKeyboard"
 import InputMethodManager from 'android.view.inputmethod.InputMethodManager';
 import ViewTreeObserver from "android.view.ViewTreeObserver";
-import Rect from 'android.graphics.Rect';
 import View from 'android.view.View';
 import ViewParent from 'android.view.ViewParent';
 import Activity from 'android.app.Activity';
 import Context from 'android.content.Context';
 import WebView from 'android.webkit.WebView';
-import EditText from 'android.widget.EditText';
 import ViewCompat from 'androidx.core.view.ViewCompat';
 import WindowInsetsCompat from 'androidx.core.view.WindowInsetsCompat';
+import Build from 'android.os.Build';
 
 let inputManager : InputMethodManager | null = null
 
@@ -44,21 +43,23 @@ function isWebViewRelatedFocusView(view : View) : boolean {
 }
 
 export const hideKeyboard : HideKeyboard = (options ?: HideKeyboardOptions | null) => {
-	var activity : Activity = UTSAndroid.getUniActivity()!;
-	if (inputManager == null) {
-		inputManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-	}
-	let focusView = activity.getCurrentFocus()
-	if (focusView != null) {
-		focusView!.postDelayed(class implements Runnable {
-			override run() {
-				let shouldClearFocus = !isWebViewRelatedFocusView(focusView!)
-				let result = inputManager!.hideSoftInputFromWindow(focusView!.getWindowToken(), 0)
-				if (result && shouldClearFocus) {
-					focusView!.clearFocus()  //临时验证隐藏软键盘不失去焦点
+	var activity : Activity | null = UTSAndroid.getUniActivity()
+	if (activity != null) {
+		if (inputManager == null) {
+			inputManager = activity!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+		}
+		let focusView = activity!.getCurrentFocus()
+		if (focusView != null) {
+			focusView!.postDelayed(class implements Runnable {
+				override run() {
+					let shouldClearFocus = !isWebViewRelatedFocusView(focusView!)
+					let result = inputManager!.hideSoftInputFromWindow(focusView!.getWindowToken(), 0)
+					if (result && shouldClearFocus) {
+						focusView!.clearFocus()
+					}
 				}
-			}
-		}, 16)
+			}, 16)
+		}
 	}
 	var success : HideKeyboardSuccess = {}
 	options?.success?.(success)
@@ -91,18 +92,122 @@ let animationCallbacks : Array<OnKeyboardAnimationChangeCallback> = []
 
 let animationListenerRegistered = false
 
+// 动画监听专用的 Activity 生命周期回调（仅注册一次），保证 Activity 重建后能重绑动画监听
+let animationLifecycleCallback : KeyboardAnimationLifeCycleCallback | null = null
+
+// 当前页面是否配置了 androidThreeButtonNavigationTranslucent（内容是否可渲染到三键导航栏区域）
+let currentPageTranslucent = false
+
+function refreshCurrentPageTranslucent() : void {
+	try {
+		const pages = getCurrentPages()
+		if (pages.length > 0) {
+			const style = pages[pages.length - 1].getPageStyle()
+			currentPageTranslucent = style['androidThreeButtonNavigationTranslucent'] == true
+		} else {
+			currentPageTranslucent = false
+		}
+	} catch (e) {
+		currentPageTranslucent = false
+	}
+}
+
+function dispatchKeyboardAnimation(ime : number, tappable : number, state : string) : void {
+	if (state == 'start') {
+		refreshCurrentPageTranslucent()
+	}
+	// 页面内容渲染到三键导航栏下（translucent）时，键盘高度无需再减去导航栏高度
+	const subtract = currentPageTranslucent ? 0 : tappable
+	const raw = ime - subtract
+	const result : OnKeyboardAnimationChangeCallbackResult = {
+		height: UTSAndroid.devicePX2px(raw > 0 ? raw : 0),
+		state: state as 'start' | 'running' | 'end'
+	}
+	animationCallbacks.forEach((callback : OnKeyboardAnimationChangeCallback) => {
+		callback(result)
+	})
+}
+
+// API<30 时 compat 需要视图设置 OnApplyWindowInsetsListener 才会派发 insets；统一在这里管理，避免覆盖后不恢复
+let insetsListenerView : View | null = null
+
+function ensureInsetsListener() : void {
+	if (Build.VERSION.SDK_INT >= 30) {
+		return
+	}
+	const activity = UTSAndroid.getUniActivity()
+	if (activity == null) {
+		return
+	}
+	const view = activity!.getWindow().getDecorView()
+	if (insetsListenerView === view) {
+		return
+	}
+	ViewCompat.setOnApplyWindowInsetsListener(view, (v : View, insets : WindowInsetsCompat) : WindowInsetsCompat => {
+		return insets
+	})
+	insetsListenerView = view
+}
+
+function resetInsetsListener() : void {
+	const view = insetsListenerView
+	if (view != null) {
+		ViewCompat.setOnApplyWindowInsetsListener(view, null)
+	}
+	insetsListenerView = null
+}
+
+function releaseInsetsListenerIfIdle() : void {
+	// 动画监听与高度监听都停用时，移除我们添加的 insets 监听
+	if (animationListenerRegistered || !keyBoardChangeListeerMaps.isEmpty()) {
+		return
+	}
+	resetInsetsListener()
+}
+
+// Activity 重建（旋转、切换导航方式等）后重新绑定动画监听：避免旧 decorView 泄漏，并保证继续生效。
+// 由 KeyboardAnimationLifeCycleCallback 的 onResume 触发，即使未注册高度监听也能恢复。
+function rebindAnimationListenerIfActive() : void {
+	// 只要还有动画监听（不依赖是否已注册高度监听），Activity 重建后就重绑原生动画监听
+	if (animationCallbacks.length == 0) {
+		return
+	}
+	ensureInsetsListener()
+	const registered = KeyboardAnimationNative.onKeyboardAnimationChangeKotlin((ime : number, tappable : number, state : string) => {
+		dispatchKeyboardAnimation(ime, tappable, state)
+	})
+	animationListenerRegistered = registered
+}
+
+// 动画监听专用的 Activity 生命周期回调：即使只注册了 onKeyboardAnimationChange（未注册高度监听），
+// Activity 重建（旋转/切换导航方式等）后也能重新绑定原生动画监听，避免动画永久失效。
+class KeyboardAnimationLifeCycleCallback extends UniActivityLifeCycleCallback {
+	constructor() {
+		super();
+	}
+	override onResume(params : UniActivityParams) {
+		rebindAnimationListenerIfActive()
+	}
+	override onDestroy(params : UniActivityParams) {
+		// 释放原生监听对已销毁 Activity decorView 的引用；仍在监听时由下次 resume 重绑
+		KeyboardAnimationNative.offKeyboardAnimationChangeKotlin()
+		animationListenerRegistered = false
+	}
+}
+
 function ensureKeyboardAnimationListener() : void {
+	// 注册生命周期回调（仅一次），保证 Activity 重建后动画监听可重绑
+	if (animationLifecycleCallback == null) {
+		animationLifecycleCallback = new KeyboardAnimationLifeCycleCallback()
+		UTSAndroid.onActivityCallback(animationLifecycleCallback!)
+	}
 	if (animationListenerRegistered) {
 		return
 	}
-	const registered = KeyboardAnimationNative.onKeyboardAnimationChangeKotlin((height : number, state : string) => {
-		const result : OnKeyboardAnimationChangeCallbackResult = {
-			height: UTSAndroid.devicePX2px(height),
-			state: state as 'start' | 'running' | 'end'
-		}
-		animationCallbacks.forEach((callback : OnKeyboardAnimationChangeCallback) => {
-			callback(result)
-		})
+	refreshCurrentPageTranslucent()
+	ensureInsetsListener()
+	const registered = KeyboardAnimationNative.onKeyboardAnimationChangeKotlin((ime : number, tappable : number, state : string) => {
+		dispatchKeyboardAnimation(ime, tappable, state)
 	})
 	// 只有原生注册成功才置位；否则保留 false，后续 on 可重新尝试注册，
 	// 避免 Activity 尚未就绪时永久卡在「已注册但未生效」状态。
@@ -123,10 +228,13 @@ export const offKeyboardAnimationChange : OffKeyboardAnimationChange = function 
 	// 又重新进入页面时被 ensureKeyboardAnimationListener 跳过（不再回调）。
 	// 因此这里统一注销全部监听，确保原生监听被释放并可重新绑定到新 Activity。
 	animationCallbacks = []
-	if (animationListenerRegistered) {
-		KeyboardAnimationNative.offKeyboardAnimationChangeKotlin()
-		animationListenerRegistered = false
+	KeyboardAnimationNative.offKeyboardAnimationChangeKotlin()
+	animationListenerRegistered = false
+	if (animationLifecycleCallback != null) {
+		UTSAndroid.offActivityCallback(animationLifecycleCallback!)
+		animationLifecycleCallback = null
 	}
+	releaseInsetsListenerIfIdle()
 }
 
 // export const getSelectedTextRange : GetSelectedTextRange = (options : GetSelectedTextRangeOptions) => {
@@ -157,91 +265,127 @@ export const offKeyboardAnimationChange : OffKeyboardAnimationChange = function 
 class OnKeyBoardChangedListener extends UniActivityLifeCycleCallback implements ViewTreeObserver.OnGlobalLayoutListener {
 	decorView : View | null = null
 	activity : Activity | null = null
-	mSystemBarHeight = 0
+
+	// 是否已注册（避免重复调用 onKeyboardHeightChange 导致重复注册与定时器堆积）
+	watched = false
 
 	// 记录上一次的键盘高度，防止重复触发相同值
 	lastKeyboardHeight = 0
+
+	// 记录上一次原始 ime.bottom：globalLayout 高频触发，原始值未变化时跳过重复计算，避免主线程卡顿（ANR）
+	lastImeBottom = -1
+
+	// 生命周期回调是否已注册，避免重复注册
+	callbackRegistered = false
+
 	keyBoardChangeListeerMaps : HashMap<number, OnKeyboardHeightChangeCallback>
 	constructor(keyBoardChangeListeerMaps : HashMap<number, OnKeyboardHeightChangeCallback>) {
 		super();
 		this.keyBoardChangeListeerMaps = keyBoardChangeListeerMaps
 	}
 	watch() {
-		UTSAndroid.onActivityCallback(this)
-		this.watchKeyBoardChanged()
+		if (this.watched) {
+			return
+		}
+		if (!this.callbackRegistered) {
+			UTSAndroid.onActivityCallback(this)
+			this.callbackRegistered = true
+		}
+		// 只有视图监听真正绑定成功才置位，避免 Activity 未就绪时永久卡在「已监听」状态而收不到回调
+		this.watched = this.watchKeyBoardChanged()
 	}
 
-	override onResume(_params : UniActivityParams) {
+	override onResume(params : UniActivityParams) {
 		if (this.activity != UTSAndroid.getUniActivity()) {
-			this.decorView?.getViewTreeObserver()?.removeOnGlobalLayoutListener(this)
-			this.watchKeyBoardChanged()
+			this.watched = this.watchKeyBoardChanged()
 		}
 	}
 
-	override onDestroy(_params : UniActivityParams) {
+	override onDestroy(params : UniActivityParams) {
 		if (this.activity == null) {
 			return
 		}
 		this.decorView?.getViewTreeObserver()?.removeOnGlobalLayoutListener(this)
 		this.decorView = null
 		this.activity = null
+		// 重置高度缓存：Activity 重建后即使键盘高度与销毁前相同，也应重新上报，避免监听不到
+		this.lastKeyboardHeight = 0
+		this.lastImeBottom = -1
+		// 释放动画监听与 insets 监听对已销毁 Activity 的 decorView 引用；下次 resume 会重新绑定
+		if (animationListenerRegistered) {
+			KeyboardAnimationNative.offKeyboardAnimationChangeKotlin()
+		}
+		resetInsetsListener()
 	}
 
-	watchKeyBoardChanged() {
-		this.activity = UTSAndroid.getUniActivity()!
-		this.decorView = this.activity!.getWindow().getDecorView()
+	watchKeyBoardChanged() : boolean {
+		const activity = UTSAndroid.getUniActivity()
+		if (activity == null) {
+			return false
+		}
+		// 先移除旧的 global layout 监听，避免同一实例被重复添加导致回调多次触发
+		this.decorView?.getViewTreeObserver()?.removeOnGlobalLayoutListener(this)
+		this.activity = activity
+		this.decorView = activity!.getWindow().getDecorView()
+		ensureInsetsListener()
 		this.decorView!.getViewTreeObserver().addOnGlobalLayoutListener(this)
+		return true
 	}
 
 	unwatch() {
-		UTSAndroid.offActivityCallback(this)
+		if (this.callbackRegistered) {
+			UTSAndroid.offActivityCallback(this)
+			this.callbackRegistered = false
+		}
 		this.decorView?.getViewTreeObserver()?.removeOnGlobalLayoutListener(this)
 		this.decorView = null
 		this.activity = null
+		this.watched = false
+		// 注销后重置缓存，下次注册时重新计算并上报
+		this.lastKeyboardHeight = 0
+		this.lastImeBottom = -1
+		releaseInsetsListenerIfIdle()
 	}
 
-	getRootView() : View | null {
-		return UTSAndroid.getUniActivity()?.findViewById<View>(android.R.id.content);
-	}
-
-	getSystenBarHeight() : number {
-		if (this.decorView != null) {
-			var windowInsert = ViewCompat.getRootWindowInsets(this.decorView!)
-			if (windowInsert != null) {
-				var inset = windowInsert!.getInsets(WindowInsetsCompat.Type.systemBars())
-				this.mSystemBarHeight = inset.bottom + inset.top
-			}
-		}
-		if (this.mSystemBarHeight < 0) {
-			this.mSystemBarHeight = 0
-		}
-		return this.mSystemBarHeight
-	}
 	override onGlobalLayout() {
-		var rootView = this.getRootView()
-		if (rootView != null) {
-			var rect = new Rect()
-			rootView!.getWindowVisibleDisplayFrame(rect)
-			let fullHeight = rootView!.getRootView().getHeight()
-			let diffHeight = fullHeight - rect.height() - this.getSystenBarHeight();
-			let height = UTSAndroid.devicePX2px(diffHeight)
-			if (this.lastKeyboardHeight == height) {
-				return
-			}
-			var exceedHeight = fullHeight / 5
-			this.lastKeyboardHeight = height
-			const result : OnKeyboardHeightChangeCallbackResult = {
-				height: height
-			}
-			if (diffHeight > exceedHeight) {
-				this.keyBoardChangeListeerMaps.values.forEach((callback : OnKeyboardHeightChangeCallback) => {
-					callback(result)
-				})
-			} else {
-				this.keyBoardChangeListeerMaps.values.forEach((callback : OnKeyboardHeightChangeCallback) => {
-					callback(result)
-				})
-			}
+		var view = this.decorView
+		if (view == null) {
+			return
 		}
+		var insets = ViewCompat.getRootWindowInsets(view)
+		if (insets == null) {
+			return
+		}
+		let ime = insets!.getInsets(WindowInsetsCompat.Type.ime()).bottom
+		// globalLayout 高频触发，原始键盘高度未变化时直接返回，
+		// 避免重复调用 getCurrentPages/getPageStyle 造成主线程卡顿（ANR 风险）
+		if (ime == this.lastImeBottom) {
+			return
+		}
+		this.lastImeBottom = ime
+		refreshCurrentPageTranslucent()
+		let tappable = insets!.getInsets(WindowInsetsCompat.Type.tappableElement()).bottom
+		let navBar = insets!.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom
+		// 与 onKeyboardAnimationChange 使用同一套算法；旧系统(API<30) tappable 静态值不可靠，取 min(tappable, navigationBars)
+		let navInset = tappable < navBar ? tappable : navBar
+		let subtract = currentPageTranslucent ? 0 : navInset
+		let raw = ime - subtract
+		let height = UTSAndroid.devicePX2px(raw > 0 ? raw : 0)
+		if (this.lastKeyboardHeight == height) {
+			return
+		}
+		this.lastKeyboardHeight = height
+		const result : OnKeyboardHeightChangeCallbackResult = {
+			height: height
+		}
+		// 先做快照再回调：回调内若同步调用 offKeyboardHeightChange 修改原 map，
+		// 会触发 ConcurrentModificationException 导致崩溃
+		let callbacks : Array<OnKeyboardHeightChangeCallback> = []
+		this.keyBoardChangeListeerMaps.values.forEach((callback : OnKeyboardHeightChangeCallback) => {
+			callbacks.push(callback)
+		})
+		callbacks.forEach((callback : OnKeyboardHeightChangeCallback) => {
+			callback(result)
+		})
 	}
 }

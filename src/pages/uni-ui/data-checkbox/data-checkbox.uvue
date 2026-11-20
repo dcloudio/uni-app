@@ -275,6 +275,8 @@ defineExpose({
 
 <style>
 page {
+	padding: 12px 16px 24px;
+	box-sizing: border-box;
 	--active-background-color: #f8f8f8;
 	--tips-color: #0958d9;
 	--tips-background-color: #e6f4ff;
@@ -283,6 +285,20 @@ page {
 	--input-border-color: #dcdfe6;
 	--divider-color: #e5e5e5;
 	--data-checkbox-demo-error-color: #dd524d;
+}
+
+.uni-h4 {
+	margin-top: 20px;
+}
+
+.uni-info {
+	line-height: 20px;
+}
+
+.uni-log {
+	width: 100%;
+	line-height: 18px;
+	box-sizing: border-box;
 }
 
 .list-frame {
@@ -357,6 +373,20 @@ page {
 	flex-wrap: wrap;
 	margin-top: 12px;
 }
+
+/* #ifdef WEB */
+.uni-log {
+	word-break: break-all;
+}
+
+@media (min-width: 768px) {
+	page {
+		max-width: 760px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+}
+/* #endif */
 
 @media (prefers-color-scheme: dark) {
 	page {

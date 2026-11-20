@@ -31,7 +31,9 @@
         "npmurl": ""
     },
     "uni_modules": {
-        "dependencies": [],
+        "dependencies": [
+			"uni-framework"
+		],
         "uni-ext-api": {
             "uni": {
                 "hideKeyboard": {

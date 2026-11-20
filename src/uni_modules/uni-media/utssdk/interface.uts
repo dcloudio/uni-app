@@ -4999,7 +4999,9 @@ export type ChooseFileOptions = {
 		*/
 		'all' | null,
 		/**
-		* 选择文件的后缀名，暂只支持.zip、.png等，不支持application/msword等值, App平台不支持
+		* 选择文件的后缀名，支持.zip、png等，不支持application/msword等MIME类型。
+		* App平台仅type=all或省略type时生效；省略、null或空数组表示不过滤，每项不能为空字符串。
+		* 忽略后缀大小写，兼容带点或不带点的后缀；image、video、audio类型忽略此参数。
 		 @uniPlatform {
 					"app": {
 						"android": {
@@ -5008,7 +5010,7 @@ export type ChooseFileOptions = {
 						},
 						"ios": {
 							"uniVer": "x",
-							"unixVer": "x"
+							"unixVer": "5.41"
 						},
 						"harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
 					},

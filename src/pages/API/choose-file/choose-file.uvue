@@ -25,8 +25,24 @@
       <button class="btnstyle" type="primary" @tap="playAudio">选择文件(audio) 并播放</button>
       <button class="btnstyle" type="primary" @tap='chooseAll'>选择文件(all) 单选</button>
       <button class="btnstyle" type="primary" @tap='chooseAllMul'>选择文件(all) 多选</button>
+       <!-- #ifdef WEB || MP -->
+       <button class="btnstyle" type="primary" @tap="chooseFileWithExtension">选择文件（extension: png）</button>
+       <!-- #endif -->
+       <!-- #ifdef APP -->
+       <text class="section-title">extension 参数测试</text>
+       <button class="btnstyle" type="primary" @tap="chooseWithoutExtension">省略 extension</button>
+       <button class="btnstyle" type="primary" @tap="choosePngWithExtension">单后缀：['png']，type=all</button>
+       <button class="btnstyle" type="primary" @tap="chooseDocumentsWithExtension">多后缀：['.PDF', 'txt', '.zip']</button>
+       <button class="btnstyle" type="primary" @tap="chooseNormalizedExtension">格式归一化：空格、大小写、重复项</button>
+       <button class="btnstyle" type="primary" @tap="chooseCustomExtension">自定义后缀：['.utsdemo']</button>
+       <button class="btnstyle" type="primary" @tap="chooseWithEmptyExtensions">空数组：[]</button>
+       <button class="btnstyle" type="primary" @tap="chooseWithNullExtension">空值：null</button>
+       <button class="btnstyle" type="primary" @tap="chooseWithEmptyExtensionItem">非法项：['pdf', '']</button>
+       <button class="btnstyle" type="primary" @tap="chooseWithMimeExtension">非法 MIME：['application/pdf']</button>
+       <button class="btnstyle" type="primary" @tap="chooseWithWildcardExtension">非法通配符：['*']</button>
+       <button class="btnstyle" type="primary" @tap="chooseImageIgnoringExtension">组合测试：type=image，extension=['pdf']</button>
+       <!-- #endif -->
       <!-- #ifdef APP-HARMONY || WEB || MP -->
-      <button class="btnstyle" type="primary" @tap="chooseFileWithExtension">选择文件（extension: png）</button>
       <button class="btnstyle" type="primary" @tap="chooseFileWithSourceType">选择文件（sourceType: album）</button>
       <!-- #endif -->
       <!-- #ifdef WEB || MP -->
@@ -249,7 +265,7 @@
     })
   }
 
-  // #ifdef APP-HARMONY || WEB || MP
+  // #ifdef WEB || MP
   const chooseFileWithExtension = () => {
     uni.chooseFile({
       type: 'all',
@@ -258,12 +274,139 @@
         console.log(res)
         log.value += getPath(res.tempFiles) + '\n\n'
       },
+      fail: (err) => {
+        log.value += 'fail: ' + err.errCode + ' ' + err.errMsg + '\n\n'
+      },
       complete: (res) => {
         console.log(res)
       }
     })
   }
+  // #endif
 
+  // #ifdef APP
+  const chooseWithoutExtension = () => {
+    log.value += '【省略 extension】\n'
+    uni.chooseFile({
+      count: 5,
+      success: (res) => {
+        log.value += 'success: ' + res.tempFiles.length + ' 个文件\n'
+        res.tempFiles.forEach((file) => {
+          log.value += file.name + ' | ' + file.type + ' | ' + file.path + '\n'
+        })
+      },
+      fail: (err) => {
+        log.value += 'fail: ' + err.errCode + ' ' + err.errMsg + '\n'
+      },
+      complete: (res) => {
+        console.log('extension complete', res)
+        log.value += 'complete\n\n'
+      }
+    })
+  }
+
+  const chooseByExtensions = (testName: string, extensions: string[] | null) => {
+    log.value += '【' + testName + '】\n'
+    log.value += 'extension: ' + JSON.stringify(extensions) + '\n'
+    uni.chooseFile({
+      count: 5,
+      extension: extensions,
+      success: (res) => {
+        log.value += 'success: ' + res.tempFiles.length + ' 个文件\n'
+        res.tempFiles.forEach((file) => {
+          log.value += file.name + ' | ' + file.type + ' | ' + file.path + '\n'
+        })
+      },
+      fail: (err) => {
+        log.value += 'fail: ' + err.errCode + ' ' + err.errMsg + '\n'
+      },
+      complete: (res) => {
+        console.log('extension complete', res)
+        log.value += 'complete\n\n'
+      }
+    })
+  }
+
+  const choosePngWithExtension = () => {
+    log.value += '【单后缀，显式 type=all】\n'
+    log.value += 'extension: ["png"]\n'
+    uni.chooseFile({
+      type: 'all',
+      count: 1,
+      extension: ['png'],
+      success: (res) => {
+        log.value += 'success: ' + res.tempFiles.length + ' 个文件\n'
+        res.tempFiles.forEach((file) => {
+          log.value += file.name + ' | ' + file.type + ' | ' + file.path + '\n'
+        })
+      },
+      fail: (err) => {
+        log.value += 'fail: ' + err.errCode + ' ' + err.errMsg + '\n'
+      },
+      complete: (res) => {
+        console.log('extension complete', res)
+        log.value += 'complete\n\n'
+      }
+    })
+  }
+
+  const chooseDocumentsWithExtension = () => {
+    chooseByExtensions('多后缀，省略 type', ['.PDF', 'txt', '.zip'])
+  }
+
+  const chooseNormalizedExtension = () => {
+    chooseByExtensions('空格、大小写和重复项', [' .PDF ', 'pdf', '.Pdf'])
+  }
+
+  const chooseCustomExtension = () => {
+    chooseByExtensions('自定义后缀', ['.utsdemo'])
+  }
+
+  const chooseWithEmptyExtensions = () => {
+    chooseByExtensions('空数组', [])
+  }
+
+  const chooseWithNullExtension = () => {
+    chooseByExtensions('空值', null)
+  }
+
+  const chooseWithEmptyExtensionItem = () => {
+    chooseByExtensions('包含空字符串', ['pdf', ''])
+  }
+
+  const chooseWithMimeExtension = () => {
+    chooseByExtensions('MIME 类型', ['application/pdf'])
+  }
+
+  const chooseWithWildcardExtension = () => {
+    chooseByExtensions('通配符', ['*'])
+  }
+
+  const chooseImageIgnoringExtension = () => {
+    log.value += '【type 与 extension 组合】\n'
+    log.value += 'type: image, extension: ["pdf"]\n'
+    uni.chooseFile({
+      type: 'image',
+      count: 1,
+      extension: ['pdf'],
+      success: (res) => {
+        log.value += 'success: ' + res.tempFiles.length + ' 个文件\n'
+        res.tempFiles.forEach((file) => {
+          log.value += file.name + ' | ' + file.type + ' | ' + file.path + '\n'
+        })
+      },
+      fail: (err) => {
+        log.value += 'fail: ' + err.errCode + ' ' + err.errMsg + '\n'
+      },
+      complete: (res) => {
+        console.log(res)
+        log.value += 'complete\n\n'
+      }
+    })
+  }
+  // #endif
+
+  // #ifdef APP-HARMONY || WEB || MP
   const chooseFileWithSourceType = () => {
     uni.chooseFile({
       type: 'all',
@@ -299,6 +442,12 @@
 <style>
   .btnstyle {
     margin: 4px;
+  }
+
+  .section-title {
+    margin: 12px 8px 4px;
+    font-size: 16px;
+    font-weight: bold;
   }
 
   .video {

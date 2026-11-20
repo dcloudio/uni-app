@@ -44,6 +44,10 @@
 </template>
 
 <script setup>
+  // #ifdef APP-HARMONY
+  import { hasGetuiAppId } from '@/uni_modules/uts-has-getui-app-id'
+  // #endif
+
   // 自动化测试
   type TypeJestResult = {
     clientId : string,
@@ -60,21 +64,11 @@
     sendPushMessageRes:-1,
     onPushMessageType:"",
     onPushMessageCallbackInfo:"",
-    hasGetuiAppId: true
+    hasGetuiAppId: false
   } as TypeJestResult)
 
   // #ifdef APP-HARMONY
-  jestResult.hasGetuiAppId = false;
-  // 判断鸿蒙平台是否配置了个推AppId
-  import bundleManager from '@ohos.bundle.bundleManager';
-  const bundleFlags = bundleManager.BundleFlag.GET_BUNDLE_INFO_WITH_APPLICATION | bundleManager.BundleFlag.GET_BUNDLE_INFO_WITH_METADATA;
-  try {
-    bundleManager.getBundleInfoForSelf(bundleFlags).then((data) => {
-      jestResult.hasGetuiAppId = data.appInfo?.metadata?.entry?.find(item=>item.name === 'GETUI_APPID') != null;
-    }).catch((err) => {
-      console.warn('Promise 捕获错误:', err);
-    });
-  } catch (_) {}
+  jestResult.hasGetuiAppId = hasGetuiAppId()
   // #endif
 
   // 自动化测试

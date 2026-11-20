@@ -26,8 +26,18 @@
 	<text class="uni-log">当前输入：{{ city }}</text>
 
 	<text class="uni-h4">plain：透明无边框</text>
-	<uni-combobox plain :options="cityOptions" v-model="plainValue" placeholder="请选择城市" />
-	<text class="uni-log">当前选择：{{ plainValue }}</text>
+	<uni-forms v-model="plainForm">
+		<uni-forms-item class="plain-form-item" name="city" label="城市" label-class="plain-form-label">
+			<uni-combobox
+				plain
+				:options="cityOptions"
+				v-model="plainForm.city"
+				placeholder="请选择城市"
+				placeholder-class="plain-form-placeholder"
+			/>
+		</uni-forms-item>
+	</uni-forms>
+	<text class="uni-log">当前选择：{{ plainForm.city }}</text>
 
 	<text class="uni-h4">field-class：选择框样式</text>
 	<uni-combobox field-class="borderless-combobox" :options="cityOptions" v-model="borderlessValue"
@@ -97,7 +107,7 @@
 	const placeholderValue = ref<string>('')
 	const modelValue = ref<string>('')
 	const disabledValue = ref<string>('三年级')
-	const plainValue = ref<string>('')
+	const plainForm = ref({ city: '' })
 	const borderlessValue = ref<string>('')
 	const arrowClassValue = ref<string>('')
 	const optionsViewClassValue = ref<string>('')
@@ -203,6 +213,15 @@
 		color: #808080;
 	}
 
+	.plain-form-item {
+		padding: 0 0 0 12px;
+		border-radius: 5px;
+	}
+
+	.plain-form-label {
+		font-size: 14px;
+	}
+
 	.borderless-combobox {
 		border-width: 0;
 	}
@@ -262,6 +281,10 @@
 	}
 
 	@media (prefers-color-scheme: dark) {
+		.plain-form-item {
+			background-color: #3b3b3b;
+		}
+		
 		.custom-placeholder {
 			color: #5f5f5f;
 		}

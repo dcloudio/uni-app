@@ -131,11 +131,10 @@
 
 <style>
 	page {
-		--background-color: #efeff4;
 		--list-background-color: #ffffff;
 		--text-color: #333333;
-		padding: 16px;
-		background-color: var(--background-color);
+		padding: 12px 16px 24px;
+		box-sizing: border-box;
 	}
 
 	.intro-text {
@@ -173,7 +172,7 @@
 	}
 
 	.icon-section {
-		margin-top: 20px;
+		margin-top: 24px;
 	}
 
 	.section-header {
@@ -198,6 +197,7 @@
 	.icon-item {
 		width: 25%;
 		padding: 12px 4px 10px;
+		box-sizing: border-box;
 		flex-direction: column;
 		align-items: stretch;
 		justify-content: flex-start;
@@ -211,6 +211,18 @@
 	.icon-item:focus-visible {
 		outline: 2px solid #2979ff;
 		outline-offset: -2px;
+	}
+
+	.icon-label {
+		word-break: break-all;
+	}
+
+	@media (min-width: 768px) {
+		page {
+			max-width: 920px;
+			margin-left: auto;
+			margin-right: auto;
+		}
 	}
 	/* #endif */
 
@@ -248,7 +260,6 @@
 
 	@media (prefers-color-scheme: dark) {
 		page {
-			--background-color: #1a1a1a;
 			--list-background-color: #2d2d2d;
 			--text-color: #ffffff;
 		}

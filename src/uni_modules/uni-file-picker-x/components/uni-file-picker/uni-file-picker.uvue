@@ -1,0 +1,1269 @@
+<template>
+  <view class="uni-file-picker">
+    <view v-if="title != ''" class="uni-file-picker__header">
+      <text class="file-title" :class="titleClass ?? ''">{{ title }}</text>
+      <text class="file-count" :class="countClass ?? ''">{{ filesList.length }}/{{ limitLength }}</text>
+    </view>
+
+    <!-- 宫格模式，支持拖拽排序 -->
+		<uni-drag-cell
+			v-if="useGrid"
+			:model-value="filesList"
+			:column="3"
+			:show-append="filesList.length < limitLength"
+			:show-close="isSmallScreen"
+			@update:modelValue="onReorder"
+		>
+      <template #default="{ item, index }">
+        <view class="file-picker__box" :class="imageClass ?? ''">
+					<view class="file-picker__box-content">
+						<image
+							class="file-image"
+							:src="item.url"
+              mode="aspectFill"
+              @click="previewImage(item, index)"
+            ></image>
+						<view v-if="!isSmallScreen" class="icon-del-box" :class="delIconClass ?? ''" @click.stop="delFile(index)">
+							<view flatten class="icon-del"></view>
+							<view flatten class="icon-del rotate"></view>
+						</view>
+            <view v-if="showProgress(item)" class="file-picker__progress" :class="progressClass ?? ''">
+              <progress
+                class="file-picker__progress-item"
+                :percent="item.progress ?? 0"
+                :stroke-width="4"
+                :backgroundColor="(item.errMsg ?? '') != '' ? '#ff5a5f' : '#EBEBEB'"
+              />
+            </view>
+            <view
+              v-if="(item.errMsg ?? '') != ''"
+              class="file-picker__mask"
+              :class="errorClass ?? ''"
+              @click="retryUpload(item)"
+            >
+              <text class="file-picker__mask-text">{{ i18n.retry }}</text>
+            </view>
+          </view>
+        </view>
+      </template>
+      <template #append>
+        <view class="file-picker__box" :class="imageClass ?? ''">
+          <view
+            class="file-picker__box-content is-add"
+            :class="placeholderClass ?? ''"
+            @click="choose"
+            <!-- #ifdef WEB -->
+            :tabindex="0"
+            @keydown="onTriggerKeydown"
+            <!-- #endif -->
+          >
+            <slot>
+              <view flatten class="icon-add"></view>
+              <view flatten class="icon-add rotate"></view>
+            </slot>
+          </view>
+        </view>
+      </template>
+    </uni-drag-cell>
+
+    <!-- 列表模式 -->
+    <view v-else class="uni-file-picker__files">
+      <view
+        class="files-button"
+        :class="placeholderClass ?? ''"
+        @click="choose"
+        <!-- #ifdef WEB -->
+        :tabindex="0"
+        @keydown="onTriggerKeydown"
+        <!-- #endif -->
+      >
+        <slot>
+          <button type="primary" size="mini">{{ i18n.chooseFile }}</button>
+        </slot>
+      </view>
+			<uni-drag-cell
+				v-if="filesList.length > 0"
+				class="uni-file-picker__lists is-text-box"
+				:class="listClass ?? ''"
+				:model-value="filesList"
+				:column="1"
+				:show-append="false"
+				:show-close="isSmallScreen"
+				@update:modelValue="onReorder"
+			>
+        <template #default="{ item, index }">
+          <view class="uni-file-picker__lists-box" :class="index != 0 ? 'files-border' : ''">
+            <view class="uni-file-picker__item" :class="itemClass ?? ''">
+							<text class="files__name">{{ item.name }}</text>
+							<view v-if="!isSmallScreen" class="icon-del-box-list" :class="delIconClass ?? ''" @click.stop="delFile(index)">
+								<view flatten class="icon-del icon-del-list"></view>
+								<view flatten class="icon-del rotate icon-del-list"></view>
+							</view>
+            </view>
+            <view v-if="showProgress(item)" class="file-picker__progress" :class="progressClass ?? ''">
+              <progress
+                class="file-picker__progress-item"
+                :percent="item.progress ?? 0"
+                :stroke-width="4"
+                :backgroundColor="(item.errMsg ?? '') != '' ? '#ff5a5f' : '#EBEBEB'"
+              />
+            </view>
+            <view
+              v-if="(item.errMsg ?? '') != ''"
+              class="file-picker__mask file-picker__mask-list"
+              :class="errorClass ?? ''"
+              @click="retryUpload(item)"
+            >
+              <text class="file-picker__mask-text">{{ i18n.retry }}</text>
+            </view>
+          </view>
+        </template>
+      </uni-drag-cell>
+    </view>
+  </view>
+</template>
+
+<script setup lang="ts">
+  /**
+   * FilePicker 文件选择上传
+   * @description 文件选择上传组件，可以选择图片、视频等任意文件并上传到当前绑定的服务空间。根据 file-mediatype 自动匹配 uni.chooseImage / uni.chooseVideo / uni.chooseMedia / uni.chooseFile，App 平台默认打开系统相册。宫格和列表均基于 uni-drag-cell 支持拖拽排序
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {"unixVaporVer": "5.21"},
+   *     "ios": {"unixVaporVer": "5.11"},
+   *     "harmony": {"unixVaporVer": "5.07"}
+   *   },
+   *   "mp": {
+   *     "weixin": {"unixVer": "5.07"},
+   *     "alipay": {"unixVer": "5.31"}
+   *   },
+   *   "web": {"unixVer": "5.07"}
+   * }
+   * @property {Array|Object} modelValue 组件数据，支持 v-model，格式由 return-type 决定，默认值为空数组
+   * @property {Array|Object} value 不使用 v-model 时传入的组件数据，格式由 return-type 决定，默认值为空数组
+   * @property {String} returnType 限制 value 格式，array 时返回数组，object 时只能单选且会覆盖，默认值 array
+   * @property {Boolean} autoUpload 是否自动上传，false 时仅选择不触发上传，默认值 true
+   * @property {Number|String} limit 最大选择个数，默认值 9
+   * @property {String} mode 选择图片后的文件列表样式，grid 宫格显示，list 列表显示，默认值 grid
+   * @property {String} fileMediatype 选择文件类型，image 只选图片，video 只选视频，all 选择任意文件，mix 同时选择图片和视频（仅 App），默认值 image
+   * @property {Array|String} fileExtname 选择文件后缀，支持数组或逗号分隔字符串，根据 file-mediatype 属性而不同，默认值为空数组
+   * @property {String} title 组件标题，右侧显示上传计数，默认值为空字符串
+   * @property {String} provider 上传服务商，默认值为空字符串
+   * @property {String} dir 上传到云存储的目录，默认值为空字符串
+   * @property {Array} sourceType 选择来源，album 从相册选择，camera 使用相机，默认值 ['album']
+   * @property {Array} sizeType 是否压缩所选文件，original 原图 compressed 压缩图，默认值 ['original','compressed']
+   * @property {String} albumMode 相册选择模式，custom 自定义选择器 system 系统相册，默认值 system
+   * @property {String} camera 摄像头，front 前置 back 后置，默认值 back
+   * @property {Number} maxDuration 拍摄视频最长时长，单位秒，默认值 10
+   * @property {Array} mediaType chooseMedia 的媒体类型，image 图片 video 视频 mix 混合，默认值 ['image','video']
+   * @property {Boolean} compressed 是否压缩所选视频，默认值 false
+   * @property {String} pageOrientation 屏幕方向，仅 Android 生效，auto 自动 portrait 竖屏 landscape 横屏，默认值为空字符串
+   * @property {String} imageClass 图片宫格单元格的自定义样式类，默认值为空字符串
+   * @property {String} listClass 文件列表区域的自定义样式类，默认值为空字符串
+   * @property {String} titleClass 标题的自定义样式类，默认值为空字符串
+   * @property {String} countClass 右侧计数的自定义样式类，默认值为空字符串
+   * @property {String} itemClass 列表项的自定义样式类，默认值为空字符串
+   * @property {String} placeholderClass 添加或选择按钮区域的自定义样式类，默认值为空字符串
+   * @property {String} delIconClass 删除按钮的自定义样式类，默认值为空字符串
+   * @property {String} progressClass 上传进度条的自定义样式类，默认值为空字符串
+   * @property {String} errorClass 上传失败重试遮罩的自定义样式类，默认值为空字符串
+   * @event {Function} select 选择文件后触发，参数为 { tempFiles, tempFilePaths }
+   * @event {Function} progress 文件上传时触发，参数为 { index, progress, tempFile }
+   * @event {Function} success 上传成功触发，参数为 { tempFiles, tempFilePaths }
+   * @event {Function} fail 上传失败触发，参数为 { tempFiles, tempFilePaths }
+   * @event {Function} delete 文件从列表移除时触发，参数为 { index, tempFile, tempFilePath }
+   * @event {Function} update:modelValue v-model 绑定值变化时触发
+   */
+  import {
+    UniFilePickerFile,
+    UniFilePickerChooseResult,
+    get_extname,
+    get_file_data,
+    filter_files_by_extname
+  } from './utils'
+  import {
+    UniFilePickerChooseOptions,
+    UniFilePickerUploadResult,
+    chooseAndUploadFile,
+    uploadCloudFiles
+  } from './choose-and-upload-file'
+
+  defineOptions({
+    externalClasses: [
+      'image-class',
+      'list-class',
+      'title-class',
+      'count-class',
+      'item-class',
+      'placeholder-class',
+      'del-icon-class',
+      'progress-class',
+      'error-class'
+    ]
+  })
+
+  type Props = {
+    /**
+     * @description 组件数据，支持 v-model，格式由 return-type 决定
+     * @default []
+     */
+    modelValue ?: Array<any> | UTSJSONObject | null,
+    /**
+     * @description 不使用 v-model 时传入的组件数据，格式由 return-type 决定
+     * @default []
+     */
+    value ?: Array<any> | UTSJSONObject | null,
+    /**
+     * @description 限制 value 格式，array 时返回数组，object 时只能单选且会覆盖
+     * @default "array"
+     */
+    returnType ?: string,
+    /**
+     * @description 是否自动上传，false 时仅选择不触发上传
+     * @default true
+     */
+    autoUpload ?: boolean,
+    /**
+     * @description 最大选择个数
+     * @default 9
+     */
+    limit ?: number | string,
+    /**
+     * @description 选择图片后的文件列表样式，grid 宫格显示，list 列表显示
+     * @default "grid"
+     */
+    mode ?: string,
+    /**
+     * @description 选择文件类型，image 只选图片，video 只选视频，all 选择任意文件，mix 同时选择图片和视频（仅 App）
+     * @default "image"
+     */
+    fileMediatype ?: string,
+    /**
+     * @description 选择文件后缀，支持数组或逗号分隔字符串
+     * @default []
+     */
+    fileExtname ?: string[] | string,
+    /**
+     * @description 组件标题，右侧显示上传计数
+     * @default ""
+     */
+    title ?: string,
+    /**
+     * @description 上传服务商
+     * @default ""
+     */
+    provider ?: string,
+    /**
+     * @description 上传到云存储的目录
+     * @default ""
+     */
+    dir ?: string,
+    /**
+     * @description 选择来源，album 从相册选择，camera 使用相机
+     * @default ['album']
+     */
+    sourceType ?: string[],
+    /**
+     * @description 是否压缩所选文件，original 原图 compressed 压缩图
+     * @default ['original','compressed']
+     */
+    sizeType ?: string[],
+    /**
+     * @description 相册选择模式，custom 自定义选择器 system 系统相册
+     * @default "system"
+     */
+    albumMode ?: string,
+    /**
+     * @description 摄像头，front 前置 back 后置
+     * @default "back"
+     */
+    camera ?: string,
+    /**
+     * @description 拍摄视频最长时长，单位秒
+     * @default 10
+     */
+    maxDuration ?: number,
+    /**
+     * @description chooseMedia 的媒体类型，image 图片 video 视频 mix 混合
+     * @default ['image','video']
+     */
+    mediaType ?: string[],
+    /**
+     * @description 是否压缩所选视频
+     * @default false
+     */
+    compressed ?: boolean,
+    /**
+     * @description 屏幕方向，仅 Android 生效，auto 自动 portrait 竖屏 landscape 横屏
+     * @default ""
+     */
+    pageOrientation ?: string,
+    /**
+     * @description 图片宫格单元格的自定义样式类
+     * @default ""
+     */
+    imageClass ?: string.ClassString,
+    /**
+     * @description 文件列表区域的自定义样式类
+     * @default ""
+     */
+    listClass ?: string.ClassString,
+    /**
+     * @description 标题的自定义样式类
+     * @default ""
+     */
+    titleClass ?: string.ClassString,
+    /**
+     * @description 右侧计数的自定义样式类
+     * @default ""
+     */
+    countClass ?: string.ClassString,
+    /**
+     * @description 列表项的自定义样式类
+     * @default ""
+     */
+    itemClass ?: string.ClassString,
+    /**
+     * @description 添加或选择按钮区域的自定义样式类
+     * @default ""
+     */
+    placeholderClass ?: string.ClassString,
+    /**
+     * @description 删除按钮的自定义样式类
+     * @default ""
+     */
+    delIconClass ?: string.ClassString,
+    /**
+     * @description 上传进度条的自定义样式类
+     * @default ""
+     */
+    progressClass ?: string.ClassString,
+    /**
+     * @description 上传失败重试遮罩的自定义样式类
+     * @default ""
+     */
+    errorClass ?: string.ClassString
+  }
+
+  const props = withDefaults(defineProps<Props>(), {
+    returnType: 'array',
+    autoUpload: true,
+    limit: 9,
+    mode: 'grid',
+    fileMediatype: 'image',
+    fileExtname: () : string[] => [] as string[],
+    title: '',
+    provider: '',
+    dir: '',
+    sourceType: () : string[] => ['album'] as string[],
+    sizeType: () : string[] => ['original', 'compressed'] as string[],
+    albumMode: 'system',
+    camera: 'back',
+    maxDuration: 10,
+    mediaType: () : string[] => ['image', 'video'] as string[],
+    compressed: false,
+    pageOrientation: '',
+    imageClass: '',
+    listClass: '',
+    titleClass: '',
+    countClass: '',
+    itemClass: '',
+    placeholderClass: '',
+    delIconClass: '',
+    progressClass: '',
+    errorClass: ''
+  })
+
+  const emit = defineEmits<{
+    /**
+     * @description 选择文件后触发
+     * @param {Object} result { tempFiles, tempFilePaths }
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {"unixVaporVer": "5.21"},
+     *     "ios": {"unixVaporVer": "5.11"},
+     *     "harmony": {"unixVaporVer": "5.07"}
+     *   },
+     *   "mp": {
+     *     "alipay": {"unixVer": "5.31"}
+     *   },
+     *   "web": {"unixVer": "5.07"}
+     * }
+     */
+    select: [result : UTSJSONObject],
+    /**
+     * @description 文件上传时触发
+     * @param {Object} result { index, progress, tempFile }
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {"unixVaporVer": "5.21"},
+     *     "ios": {"unixVaporVer": "5.11"},
+     *     "harmony": {"unixVaporVer": "5.07"}
+     *   },
+     *   "mp": {
+     *     "alipay": {"unixVer": "5.31"}
+     *   },
+     *   "web": {"unixVer": "5.07"}
+     * }
+     */
+    progress: [result : UTSJSONObject],
+    /**
+     * @description 上传成功触发
+     * @param {Object} result { tempFiles, tempFilePaths }
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {"unixVaporVer": "5.21"},
+     *     "ios": {"unixVaporVer": "5.11"},
+     *     "harmony": {"unixVaporVer": "5.07"}
+     *   },
+     *   "mp": {
+     *     "alipay": {"unixVer": "5.31"}
+     *   },
+     *   "web": {"unixVer": "5.07"}
+     * }
+     */
+    success: [result : UTSJSONObject],
+    /**
+     * @description 上传失败触发
+     * @param {Object} result { tempFiles, tempFilePaths }
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {"unixVaporVer": "5.21"},
+     *     "ios": {"unixVaporVer": "5.11"},
+     *     "harmony": {"unixVaporVer": "5.07"}
+     *   },
+     *   "mp": {
+     *     "alipay": {"unixVer": "5.31"}
+     *   },
+     *   "web": {"unixVer": "5.07"}
+     * }
+     */
+    fail: [result : UTSJSONObject],
+    /**
+     * @description 文件从列表移除时触发
+     * @param {Object} result { index, tempFile, tempFilePath }
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {"unixVaporVer": "5.21"},
+     *     "ios": {"unixVaporVer": "5.11"},
+     *     "harmony": {"unixVaporVer": "5.07"}
+     *   },
+     *   "mp": {
+     *     "alipay": {"unixVer": "5.31"}
+     *   },
+     *   "web": {"unixVer": "5.07"}
+     * }
+     */
+    delete: [result : UTSJSONObject],
+    /**
+     * @description v-model 绑定值变化时触发
+     * @param {Array|Object} value 变化后的组件数据
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {"unixVaporVer": "5.21"},
+     *     "ios": {"unixVaporVer": "5.11"},
+     *     "harmony": {"unixVaporVer": "5.07"}
+     *   },
+     *   "mp": {
+     *     "alipay": {"unixVer": "5.31"}
+     *   },
+     *   "web": {"unixVer": "5.07"}
+     * }
+     */
+    'update:modelValue': [value : any]
+  }>()
+
+  defineSlots<{
+    /**
+     * @description 自定义添加按钮内容，宫格模式默认显示加号，列表模式默认显示选择文件按钮
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {"unixVaporVer": "5.21"},
+     *     "ios": {"unixVaporVer": "5.11"},
+     *     "harmony": {"unixVaporVer": "5.07"}
+     *   },
+     *   "mp": {
+     *     "alipay": {"unixVer": "5.31"}
+     *   },
+     *   "web": {"unixVer": "5.07"}
+     * }
+     */
+    default(props : {}) : any
+  }>()
+
+  type FilePickerI18n = {
+    retry : string,
+    chooseFile : string,
+    limit(n : number) : string,
+    formatError(n : number) : string
+  }
+
+  function getLocaleKey(language : string) : string {
+    if (language.indexOf('zh-hant') == 0 || language.indexOf('zh-tw') == 0 || language.indexOf('zh-hk') == 0 || language.indexOf('zh-mo') == 0) {
+      return 'zh-hant'
+    }
+    if (language.indexOf('zh') == 0) {
+      return 'zh-hans'
+    }
+    if (language.indexOf('fr') == 0) {
+      return 'fr'
+    }
+    if (language.indexOf('la') == 0) {
+      return 'la'
+    }
+    return 'en'
+  }
+
+  function buildI18n(localeKey : string) : FilePickerI18n {
+    if (localeKey == 'zh-hant') {
+      return {
+        retry: '點擊重試',
+        chooseFile: '選擇檔案',
+        limit(n : number) : string { return `您最多選擇 ${n} 個檔案` },
+        formatError(n : number) : string { return `${n} 個檔案格式不正確` }
+      }
+    }
+    if (localeKey == 'zh-hans') {
+      return {
+        retry: '点击重试',
+        chooseFile: '选择文件',
+        limit(n : number) : string { return `您最多选择 ${n} 个文件` },
+        formatError(n : number) : string { return `${n} 个文件格式不正确` }
+      }
+    }
+    if (localeKey == 'fr') {
+      return {
+        retry: 'Réessayer',
+        chooseFile: 'Choisir un fichier',
+        limit(n : number) : string { return `Vous pouvez sélectionner au maximum ${n} fichiers` },
+        formatError(n : number) : string { return `${n} fichier(s) au format incorrect` }
+      }
+    }
+    if (localeKey == 'la') {
+      return {
+        retry: 'Retempta',
+        chooseFile: 'Elige fasciculum',
+        limit(n : number) : string { return `Ad summum ${n} fasciculos eligere potes` },
+        formatError(n : number) : string { return `${n} fasciculi forma non valida` }
+      }
+    }
+    return {
+      retry: 'Retry',
+      chooseFile: 'Choose File',
+      limit(n : number) : string { return `You can select up to ${n} files` },
+      formatError(n : number) : string { return `${n} file(s) in wrong format` }
+    }
+  }
+
+  const appLanguage = (uni.getAppBaseInfo().appLanguage ?? 'en').toLowerCase()
+  const i18n = buildI18n(getLocaleKey(appLanguage))
+
+  const files = ref<UniFilePickerFile[]>([] as UniFilePickerFile[])
+  const localValue = ref<any>(null)
+
+  const filesList = computed<UniFilePickerFile[]>(() : UniFilePickerFile[] => files.value)
+
+  const showType = computed<string>(() : string => {
+    return props.fileMediatype == 'image' ? props.mode : 'list'
+  })
+
+	const useGrid = computed<boolean>(() : boolean => showType.value == 'grid')
+
+	// 小屏幕使用拖拽到底部删除，大屏幕使用图标按钮删除
+	const DELETE_BAR_MAX_WIDTH = 700
+	const windowWidth = ref<number>(uni.getWindowInfo().windowWidth)
+	const isSmallScreen = computed<boolean>(() : boolean => windowWidth.value > 0 && windowWidth.value < DELETE_BAR_MAX_WIDTH)
+	const onWindowResizeHandler = (res : UniNamespace.WindowResizeResult) => {
+		windowWidth.value = res.size.windowWidth
+	}
+	// #ifdef WEB
+	uni.onWindowResize(onWindowResizeHandler)
+	// #endif
+	onUnmounted(() => {
+		// #ifdef WEB
+		uni.offWindowResize(onWindowResizeHandler)
+		// #endif
+	})
+
+	const limitLength = computed<number>(() : number => {
+    if (props.returnType == 'object') {
+      return 1
+    }
+    const limitValue = Number(props.limit)
+    if (limitValue == 0) {
+      return 1
+    }
+    return limitValue >= 9 ? 9 : limitValue
+  })
+
+  function getPropValue() : any {
+    return props.modelValue !== undefined ? props.modelValue : props.value
+  }
+
+  function showProgress(item : UniFilePickerFile) : boolean {
+    const progress = item.progress
+    return progress != null && progress !== 100
+  }
+
+  function normalizeDir(dir : string) : string {
+    let value = dir != null ? dir : ''
+    if (value != '' && value[value.length - 1] !== '/') {
+      value += '/'
+    }
+    return value
+  }
+
+  function toFileItem(raw : any) : UniFilePickerFile {
+    return {
+      name: raw.name ?? '',
+      path: raw.path ?? '',
+      url: raw.url ?? '',
+      size: raw.size ?? 0,
+      fileType: raw.fileType ?? '',
+      uuid: raw.uuid,
+      extname: raw.extname ?? '',
+      cloudPath: raw.cloudPath ?? '',
+      thumbTempFilePath: raw.thumbTempFilePath ?? '',
+      image: raw.image,
+      video: raw.video,
+      status: raw.status ?? 'ready',
+      progress: raw.progress ?? 0,
+      errMsg: raw.errMsg ?? '',
+      fileID: raw.fileID ?? ''
+    }
+  }
+
+  async function getTempFileURL(fileID : string) : Promise<string> {
+    const res = await uniCloud.getTempFileURL({ fileList: [fileID] })
+    return res.fileList[0].tempFileURL ?? ''
+  }
+
+  async function normalizeFile(v : any) {
+    const reg = /cloud:\/\/([\w.]+\/?)\S*/
+    let url = ''
+    if (v.fileID) {
+      url = v.fileID
+    } else {
+      url = v.url ?? ''
+    }
+    if (reg.test(url)) {
+      v.fileID = url
+      v.url = await getTempFileURL(url)
+    }
+    if (v.url) {
+      v.path = v.url
+    }
+  }
+
+  async function setValue(newVal : any) {
+    if (props.returnType == 'object') {
+      if (newVal != null) {
+        await normalizeFile(newVal)
+      }
+    } else {
+      if (newVal == null) {
+        newVal = []
+      }
+      const list = newVal as any[]
+      for (let i = 0; i < list.length; i++) {
+        await normalizeFile(list[i])
+      }
+    }
+    localValue.value = newVal
+    const nextFiles : UniFilePickerFile[] = []
+    if (props.returnType == 'object') {
+      if (newVal != null) {
+        nextFiles.push(toFileItem(newVal))
+      }
+    } else {
+      const list = (newVal ?? []) as any[]
+      list.forEach((v : any) => {
+        nextFiles.push(toFileItem(v))
+      })
+    }
+    files.value = nextFiles
+  }
+
+  function backObject(fileList : UniFilePickerFile[]) : UTSJSONObject[] {
+    const result : UTSJSONObject[] = []
+    fileList.forEach((v : UniFilePickerFile) => {
+      result.push({
+        extname: v.extname ?? '',
+        fileType: v.fileType,
+        image: v.image,
+        name: v.name,
+        path: v.path,
+        size: v.size,
+        fileID: v.fileID ?? '',
+        url: v.url,
+        uuid: v.uuid,
+        status: v.status ?? '',
+        cloudPath: v.cloudPath ?? ''
+      } as UTSJSONObject)
+    })
+    return result
+  }
+
+  function setEmit() {
+    if (props.returnType == 'object') {
+      const data = backObject(files.value)
+      localValue.value = data.length > 0 ? data[0] : null
+    } else {
+      localValue.value = backObject(files.value)
+    }
+    emit('update:modelValue', localValue.value)
+  }
+
+  /**
+   * 拖拽排序后同步顺序并回传
+   * @param value 排序后的文件列表
+   */
+  function onReorder(value : any[]) {
+    if (value == null) {
+      return
+    }
+    const newList = value as UniFilePickerFile[]
+    const removed : UniFilePickerFile[] = []
+    const removedIndex : number[] = []
+    for (let i = 0; i < files.value.length; i++) {
+      const file = files.value[i]
+      if (newList.indexOf(file) == -1) {
+        removed.push(file)
+        removedIndex.push(i)
+      }
+    }
+    files.value = newList
+    for (let i = 0; i < removed.length; i++) {
+      const file = removed[i]
+      emit('delete', {
+        index: removedIndex[i],
+        tempFile: file,
+        tempFilePath: file.url
+      } as UTSJSONObject)
+    }
+    setEmit()
+  }
+
+  async function setSuccessAndError(res : UniFilePickerUploadResult[]) {
+    const successData : UniFilePickerFile[] = []
+    const errorData : UniFilePickerFile[] = []
+    const tempFilePath : string[] = []
+    const errorTempFilePath : string[] = []
+    for (let i = 0; i < res.length; i++) {
+      const item = res[i]
+      const index = item.index
+      if (index < 0 || index >= files.value.length) {
+        continue
+      }
+      if (item.errMsg == 'request:fail') {
+        files.value[index].url = files.value[index].path
+        files.value[index].status = 'error'
+        files.value[index].errMsg = 'request:fail'
+        errorData.push(files.value[index])
+        errorTempFilePath.push(files.value[index].url)
+      } else {
+        files.value[index].errMsg = ''
+        files.value[index].fileID = item.fileID
+        const reg = /cloud:\/\/([\w.]+\/?)\S*/
+        if (reg.test(item.fileID)) {
+          files.value[index].url = await getTempFileURL(item.fileID)
+        } else {
+          files.value[index].url = item.fileID
+        }
+        files.value[index].status = 'success'
+        files.value[index].progress = 100
+        successData.push(files.value[index])
+        tempFilePath.push(files.value[index].fileID ?? '')
+      }
+    }
+    refreshFiles()
+    if (successData.length > 0) {
+      setEmit()
+      emit('success', {
+        tempFiles: backObject(successData),
+        tempFilePaths: tempFilePath
+      } as UTSJSONObject)
+    }
+    if (errorData.length > 0) {
+      emit('fail', {
+        tempFiles: backObject(errorData),
+        tempFilePaths: errorTempFilePath
+      } as UTSJSONObject)
+    }
+  }
+
+  /**
+   * 以新数组替换当前列表身份，触发依赖列表的视图（含 uni-drag-cell 插槽）重新渲染
+   */
+  function refreshFiles() {
+    files.value = files.value.slice()
+  }
+
+  function setProgress(progressEvent : UTSJSONObject, index : number) {
+    const total = (progressEvent['total'] as number) ?? 1
+    const loaded = (progressEvent['loaded'] as number) ?? 0
+    const percentCompleted = Math.round((loaded * 100) / total)
+    if (index < 0 || index >= files.value.length) {
+      return
+    }
+    files.value[index].progress = percentCompleted - 1
+    refreshFiles()
+    emit('progress', {
+      index: index,
+      progress: percentCompleted,
+      tempFile: files.value[index]
+    } as UTSJSONObject)
+  }
+
+  async function uploadFiles(fileList : UniFilePickerFile[]) : Promise<UniFilePickerFile[]> {
+    fileList.forEach((f : UniFilePickerFile) => {
+      f.index = files.value.findIndex((v : UniFilePickerFile) : boolean => v.uuid === f.uuid)
+    })
+    const result = await uploadCloudFiles(fileList, 5, (res : UTSJSONObject) => {
+      setProgress(res, (res['index'] as number) ?? 0)
+    })
+    await setSuccessAndError(result)
+    return fileList
+  }
+
+  async function handleChooseResult(res : UniFilePickerChooseResult) {
+    const isOne = Number(limitLength.value) === 1 || props.returnType == 'object'
+    if (isOne) {
+      files.value = []
+    }
+    const currentData : UniFilePickerFile[] = []
+    const dir = normalizeDir(props.dir)
+    for (let i = 0; i < res.tempFiles.length; i++) {
+      if (limitLength.value - files.value.length <= 0) {
+        break
+      }
+      const temp = res.tempFiles[i]
+      const type = temp.fileType == 'image' ? 'image' : (temp.fileType == 'video' ? 'video' : 'other')
+      const filedata = await get_file_data(temp, type)
+      filedata.uuid = Date.now() + i
+      const fileNameSplit = temp.name.split('.')
+      const ext = fileNameSplit.length > 0 ? fileNameSplit.pop() ?? '' : ''
+      const fileName = fileNameSplit.join('.').replace(/[\s\/\?<>\\:\*\|":]/g, '_')
+      filedata.cloudPath = dir + fileName + '_' + Date.now() + '_' + i + '.' + ext
+      filedata.fileType = temp.fileType
+      filedata.status = 'ready'
+      filedata.progress = 0
+      if (props.provider != '') {
+        filedata.provider = props.provider
+      }
+      files.value.push(filedata)
+      currentData.push(filedata)
+    }
+    emit('select', {
+      tempFiles: currentData,
+      tempFilePaths: res.tempFilePaths
+    } as UTSJSONObject)
+    if (props.autoUpload) {
+      await uploadFiles(currentData)
+    } else {
+      setEmit()
+    }
+  }
+
+  async function chooseFiles() {
+    const extname = get_extname(props.fileExtname)
+    const type = props.fileMediatype
+    const opts : UniFilePickerChooseOptions = {
+      type: type,
+      count: limitLength.value - files.value.length,
+      sizeType: props.sizeType,
+      sourceType: props.sourceType,
+      extension: extname.length > 0 ? extname : undefined,
+      albumMode: props.albumMode,
+      camera: props.camera,
+      maxDuration: props.maxDuration,
+      mediaType: props.mediaType,
+      compressed: props.compressed,
+      pageOrientation: props.pageOrientation
+    }
+    try {
+      const res = await chooseAndUploadFile(opts)
+      const filtered = filter_files_by_extname(res, extname)
+      if (extname.length > 0 && filtered.tempFiles.length !== res.tempFiles.length) {
+        uni.showToast({
+          title: i18n.formatError(res.tempFiles.length - filtered.tempFiles.length),
+          icon: 'none',
+          duration: 5000
+        })
+      }
+      await handleChooseResult(filtered)
+    } catch (_) {
+    }
+  }
+
+  function choose() {
+    if (files.value.length >= limitLength.value && !useGrid.value && props.returnType == 'array') {
+      uni.showToast({
+        title: i18n.limit(limitLength.value),
+        icon: 'none'
+      })
+      return
+    }
+    chooseFiles()
+  }
+
+  // #ifdef WEB
+  function onTriggerKeydown(event : KeyboardEvent) {
+    const key = event.key as string
+    if (key == 'Enter' || key == ' ') {
+      event.preventDefault()
+      choose()
+    }
+  }
+  // #endif
+
+  function previewImage(item : UniFilePickerFile, index : number) {
+    const urls : string[] = []
+    files.value.forEach((f : UniFilePickerFile) => {
+      if (f.url != '') {
+        urls.push(f.url)
+      }
+    })
+    uni.previewImage({
+      urls: urls,
+      current: index
+    })
+  }
+
+  function retryUpload(item : UniFilePickerFile) {
+    uploadFiles([item])
+  }
+
+  function delFile(index : number) {
+    const file = files.value[index]
+    emit('delete', {
+      index: index,
+      tempFile: file,
+      tempFilePath: file.url
+    } as UTSJSONObject)
+    files.value.splice(index, 1)
+    nextTick(() => {
+      setEmit()
+    })
+  }
+
+  /**
+   * @description 清空文件，不传索引时清空全部
+   * @param {Number} index 要删除的文件索引
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {"unixVaporVer": "5.21"},
+   *     "ios": {"unixVaporVer": "5.11"},
+   *     "harmony": {"unixVaporVer": "5.07"}
+   *   },
+   *   "mp": {
+   *     "alipay": {"unixVer": "5.31"}
+   *   },
+   *   "web": {"unixVer": "5.07"}
+   * }
+   */
+  function clearFiles(index ?: number) {
+    if (index === undefined) {
+      files.value = []
+    } else {
+      files.value.splice(index, 1)
+    }
+    nextTick(() => {
+      setEmit()
+    })
+  }
+
+  /**
+   * @description 继续上传状态为 ready 或 error 的文件
+   * @returns 上传完成的文件列表
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {"unixVaporVer": "5.21"},
+   *     "ios": {"unixVaporVer": "5.11"},
+   *     "harmony": {"unixVaporVer": "5.07"}
+   *   },
+   *   "mp": {
+   *     "alipay": {"unixVer": "5.31"}
+   *   },
+   *   "web": {"unixVer": "5.07"}
+   * }
+   */
+  function upload() : Promise<UniFilePickerFile[]> {
+    const list : UniFilePickerFile[] = []
+    files.value.forEach((v : UniFilePickerFile) => {
+      if (v.status == 'ready' || v.status == 'error') {
+        list.push(v)
+      }
+    })
+    return uploadFiles(list)
+  }
+
+  defineExpose({
+    /**
+     * @description 清空文件，不传索引时清空全部
+     * @param {Number} index 要删除的文件索引
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {"unixVaporVer": "5.21"},
+     *     "ios": {"unixVaporVer": "5.11"},
+     *     "harmony": {"unixVaporVer": "5.07"}
+     *   },
+     *   "mp": {
+     *     "alipay": {"unixVer": "5.31"}
+     *   },
+     *   "web": {"unixVer": "5.07"}
+     * }
+     */
+    clearFiles,
+    /**
+     * @description 继续上传状态为 ready 或 error 的文件
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {"unixVaporVer": "5.21"},
+     *     "ios": {"unixVaporVer": "5.11"},
+     *     "harmony": {"unixVaporVer": "5.07"}
+     *   },
+     *   "mp": {
+     *     "alipay": {"unixVer": "5.31"}
+     *   },
+     *   "web": {"unixVer": "5.07"}
+     * }
+     */
+    upload
+  })
+
+  watch(() : any => getPropValue(), (value : any) => {
+    setValue(value)
+  }, { immediate: true })
+</script>
+
+<style>
+  .uni-file-picker {
+    flex-direction: column;
+    box-sizing: border-box;
+    overflow: hidden;
+    width: 100%;
+    /* flex: 1; */
+  }
+
+  .uni-file-picker__header {
+    flex-direction: row;
+    justify-content: space-between;
+    padding-top: 5px;
+    padding-bottom: 10px;
+  }
+
+  .file-title {
+    font-size: 14px;
+    color: #333333;
+  }
+
+  .file-count {
+    font-size: 14px;
+    color: #999999;
+  }
+
+  .file-picker__box {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-top: 100%;
+    box-sizing: border-box;
+  }
+
+  .file-picker__box-content {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: 5px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #c8c9cc;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+
+  .file-picker__progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 2;
+  }
+
+  .file-picker__progress-item {
+    width: 100%;
+  }
+
+  .file-picker__mask {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+
+  .file-picker__mask-list {
+    font-size: 14px;
+  }
+
+  .file-picker__mask-text {
+    color: #ffffff;
+    font-size: 12px;
+  }
+
+  .file-image {
+    width: 100%;
+    height: 100%;
+  }
+
+  .is-add {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .rotate {
+    position: absolute;
+    transform: rotate(90deg);
+  }
+
+  .icon-del-box {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    height: 26px;
+    width: 26px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 2;
+    transform: rotate(-45deg);
+  }
+
+  .icon-del {
+    width: 15px;
+    height: 2px;
+    background-color: #ffffff;
+    border-radius: 2px;
+  }
+
+  .icon-add {
+    width: 50px;
+    height: 5px;
+    background-color: #a0a0a0;
+    border-radius: 2px;
+  }
+
+  .uni-file-picker__files {
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  .uni-file-picker__lists {
+    position: relative;
+    margin-top: 5px;
+    overflow: hidden;
+  }
+
+  .uni-file-picker__lists-box {
+    position: relative;
+  }
+
+  .uni-file-picker__item {
+    flex-direction: row;
+    align-items: center;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    padding-left: 10px;
+    padding-right: 5px;
+  }
+
+  .files-border {
+    border-top-width: 1px;
+    border-top-style: solid;
+    border-top-color: #e5e5e5;
+  }
+
+  .files__name {
+    flex: 1;
+    font-size: 14px;
+    color: #666666;
+    margin-right: 25px;
+  }
+
+  .icon-del-box-list {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    height: 26px;
+    width: 26px;
+    transform: rotate(-45deg);
+  }
+
+  .icon-del-list {
+    background-color: #333333;
+  }
+
+  .is-text-box {
+    border-width: 1px;
+    border-style: solid;
+    border-color: #c8c9cc;
+    border-radius: 5px;
+  }
+
+  /* #ifdef WEB */
+  .uni-file-picker__box-content {
+    outline: none;
+  }
+
+  .files-button {
+    outline: none;
+  }
+
+  .uni-file-picker__box-content:focus-visible,
+  .files-button:focus-visible {
+    outline: 2px solid #496bec;
+    outline-offset: 1px;
+  }
+  /* #endif */
+
+  @media (prefers-color-scheme: dark) {
+    .file-title {
+      color: #ffffff;
+    }
+
+    .file-picker__box-content {
+      border-color: #4a4a4a;
+    }
+
+    .is-text-box {
+      border-color: #4a4a4a;
+    }
+
+    .files-border {
+      border-top-color: #3a3a3a;
+    }
+
+    .files__name {
+      color: #cccccc;
+    }
+
+    .icon-add {
+      background-color: #8f8f8f;
+    }
+
+    .icon-del-list {
+      background-color: #f1f1f1;
+    }
+  }
+</style>

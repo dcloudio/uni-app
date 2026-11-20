@@ -1,0 +1,26 @@
+{
+  "id": "uts-has-getui-app-id",
+  "displayName": "hasGetuiAppId",
+  "version": "1.0.0",
+  "description": "检查鸿蒙应用是否配置了 GETUI_APPID",
+  "keywords": ["GETUI_APPID", "HarmonyOS"],
+  "engines": {
+    "HBuilderX": "^4.61"
+  },
+  "dcloudext": {
+    "type": "uts"
+  },
+  "uni_modules": {
+    "dependencies": [],
+    "encrypt": [],
+    "platforms": {
+      "client": {
+        "uni-app-x": {
+          "app": {
+            "harmony": "y"
+          }
+        }
+      }
+    }
+  }
+}

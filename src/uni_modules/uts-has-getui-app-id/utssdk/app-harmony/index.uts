@@ -1,0 +1,22 @@
+import { bundleManager } from '@kit.AbilityKit'
+import { HasGetuiAppId } from '../interface.uts'
+
+export const hasGetuiAppId : HasGetuiAppId = function () : boolean {
+  const bundleFlags = bundleManager.BundleFlag.GET_BUNDLE_INFO_WITH_APPLICATION | bundleManager.BundleFlag.GET_BUNDLE_INFO_WITH_METADATA
+  try {
+    const data = bundleManager.getBundleInfoForSelfSync(bundleFlags)
+    const metadataArray = data.appInfo.metadataArray
+    for (let i = 0; i < metadataArray.length; i++) {
+      const metadata = metadataArray[i].metadata
+      for (let j = 0; j < metadata.length; j++) {
+        if (metadata[j].name === 'GETUI_APPID') {
+          return true
+        }
+      }
+    }
+    return false
+  } catch (err) {
+    console.warn('检查 GETUI_APPID 配置失败:', err)
+    return false
+  }
+}

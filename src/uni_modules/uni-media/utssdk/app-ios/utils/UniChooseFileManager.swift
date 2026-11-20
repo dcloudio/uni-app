@@ -50,6 +50,8 @@ public class UniChooseFileManager: NSObject, UIDocumentPickerDelegate {
     private var completionHandler: handlerCallback?
     
     private var documentPicker: UIDocumentPickerViewController?
+
+    private var allowedExtensions: Set<String> = []
     
     public func chooseFile(
         count: NSNumber?,
@@ -60,6 +62,30 @@ public class UniChooseFileManager: NSObject, UIDocumentPickerDelegate {
         completionHandler: handlerCallback? = nil
     ) {
         let count = count ?? 100
+        let fileType = UniChooseFileType.from(type)
+        let extensions = fileType == .all ? (`extension` ?? []) : []
+        var documentTypes = [fileType.rawValue]
+
+        if !extensions.isEmpty {
+            documentTypes = []
+            for fileExtension in extensions {
+                guard !fileExtension.isEmpty,
+                      let identifier = UTTypeCreatePreferredIdentifierForTag(
+                        kUTTagClassFilenameExtension,
+                        fileExtension as CFString,
+                        nil
+                      )?.takeRetainedValue() else {
+                    completionHandler?(nil, NSNumber(value: 1101010))
+                    return
+                }
+                let documentType = identifier as String
+                if !documentTypes.contains(documentType) {
+                    documentTypes.append(documentType)
+                }
+            }
+        }
+
+        allowedExtensions = Set(extensions)
         self.completionHandler = completionHandler
         /*
          •    kUTTypeItem: 所有类型
@@ -73,7 +99,7 @@ public class UniChooseFileManager: NSObject, UIDocumentPickerDelegate {
          */
         
         documentPicker = UIDocumentPickerViewController(
-            documentTypes: [UniChooseFileType.from(type).rawValue],
+            documentTypes: documentTypes,
             in: .open
         )
         
@@ -90,6 +116,12 @@ public class UniChooseFileManager: NSObject, UIDocumentPickerDelegate {
     }
     
     public func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+        if !allowedExtensions.isEmpty && urls.contains(where: { !allowedExtensions.contains($0.pathExtension.lowercased()) }) {
+            completionHandler?(nil, NSNumber(value: 1101010))
+            cleanup()
+            return
+        }
+
         let res = ChooseFileSuccess()
         
         var tempFiles: [ChooseFileTempFile] = []
@@ -180,6 +212,7 @@ public class UniChooseFileManager: NSObject, UIDocumentPickerDelegate {
     private func cleanup() {
         documentPicker = nil
         completionHandler = nil
+        allowedExtensions.removeAll()
     }
     
     private func getFileSizeWithStat(fileURL: String) -> Int64? {

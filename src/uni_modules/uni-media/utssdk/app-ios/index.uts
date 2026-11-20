@@ -31,7 +31,29 @@ import { DispatchQueue } from 'Dispatch'
 let mediaPicker : DCUniMediaPicker = new DCUniMediaPicker();
 
 export const chooseFile : ChooseFile = function (option : ChooseFileOptions) {
-	UniChooseFileManager.shared.chooseFile(count = option.count, type = option.type, extension = option.extension, sizeType = option.sizeType, sourceType = option.sourceType, completionHandler = (res ?: ChooseFileSuccess, errorCode ?: NSNumber) : void => {
+	let extensions : string[] | null = null
+	if ((option.type == null || option.type == 'all') && option.extension != null) {
+		extensions = new Array<string>()
+		for (const value of option.extension!) {
+			let fileExtension = value.trim().toLowerCase()
+			if (fileExtension.startsWith('.')) {
+				fileExtension = fileExtension.substring(1)
+			}
+			if (fileExtension.length == 0 || fileExtension.includes('/') || fileExtension.includes('\\') || fileExtension.includes('*')) {
+				const error = new MediaErrorImpl(1101010, UniError_ChooseFile)
+				error.errMsg = 'parameter error: extension must contain non-empty file extensions, not MIME types or wildcards'
+				DispatchQueue.main.async(execute = () : void => {
+					option.fail?.(error)
+					option.complete?.(error)
+				})
+				return
+			}
+			if (!extensions!.includes(fileExtension)) {
+				extensions!.push(fileExtension)
+			}
+		}
+	}
+	UniChooseFileManager.shared.chooseFile(count = option.count, type = option.type, extension = extensions, sizeType = option.sizeType, sourceType = option.sourceType, completionHandler = (res ?: ChooseFileSuccess, errorCode ?: NSNumber) : void => {
 		if (errorCode != null) {
 			let err = new MediaErrorImpl(errorCode!, UniError_ChooseFile);
 
