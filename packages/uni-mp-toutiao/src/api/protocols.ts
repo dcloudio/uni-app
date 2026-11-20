@@ -8,7 +8,9 @@ export {
   offError,
 } from '@dcloudio/uni-mp-core'
 import {
+  getAppBaseInfo as _getAppBaseInfo,
   getDeviceInfo as _getDeviceInfo,
+  getWindowInfo as _getWindowInfo,
   navigateTo as _navigateTo,
 } from '@dcloudio/uni-mp-core'
 export const navigateTo = _navigateTo()
@@ -61,8 +63,18 @@ export const hideTabBar = {
     }
   },
 }
+export const getAppBaseInfo = extend({}, _getAppBaseInfo, {
+  name: tt.canIUse('getAppBaseInfo') ? 'getAppBaseInfo' : 'getSystemInfoSync',
+})
 export const getDeviceInfo = extend({}, _getDeviceInfo, {
   name: tt.canIUse('getDeviceInfoSync')
     ? 'getDeviceInfoSync'
     : 'getSystemInfoSync',
 })
+export const getWindowInfo = extend({}, _getWindowInfo, {
+  name: tt.canIUse('getWindowInfo') ? 'getWindowInfo' : 'getSystemInfoSync',
+})
+
+export const exit = {
+  name: 'exitMiniProgram',
+}

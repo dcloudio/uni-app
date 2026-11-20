@@ -51,11 +51,8 @@ export const transformVBindAttrs: NodeTransform = (node, context) => {
 }
 
 function supportVBindAttrs(context: TransformContext) {
-  return (
-    context.isX &&
-    (process.env.UNI_PLATFORM === 'mp-weixin' ||
-      process.env.UNI_PLATFORM === 'mp-alipay')
-  )
+  const platforms = ['mp-weixin', 'mp-alipay', 'mp-toutiao']
+  return context.isX && platforms.includes(process.env.UNI_PLATFORM!)
 }
 
 function isVBindAttrsDirective(

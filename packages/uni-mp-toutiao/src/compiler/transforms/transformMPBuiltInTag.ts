@@ -17,6 +17,9 @@ const transformMPBuiltInTagOptions: TransformMPBuiltInTagOptions = {
     switch: {
       activeBackgroundColor: 'color',
     },
+    text: {
+      userSelect: 'selectable',
+    },
   },
   propAdd: {
     canvas: [
