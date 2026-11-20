@@ -333,7 +333,7 @@ VDOM 调试阶段的 Kotlin 源码位于 `cache/.app-android/src/`，平台输�
 ##### 鸿蒙（app-harmony）
 
 - `app-harmony` 保存由 HBuilder 组装的鸿蒙原生工程。默认目录布局下，用于组装工程的代码、资源等编译产物保存在同级隐藏目录 `.app-harmony` 中；自定义工程目录或联编配置下，两者不一定同级。
-- 默认运行工程为 `dist/dev/app-harmony`，发行工程为 `dist/build/app-harmony`。
+- 默认运行工程为 `dist/dev/app-harmony`，发行工程为 `dist/build/app-harmony`，自动化测试工程位于 `debug/app-harmony`。
 - 原生构建产物位于工程的构建输出目录：`.hap` 是模块安装包，`.app` 是用于发布分发的 App Pack；具体路径和签名状态以构建结果为准。
 - 可使用 DevEco Studio 打开该原生工程进行调试。需要长期保留的原生修改应放在项目的插件/原生资源配置中，或使用独立宿主工程进行联编调试，避免仅修改自动组装工程后被后续同步或重建覆盖。
 - 工程目录可以被自定义，且不限于 `unpackage`：
