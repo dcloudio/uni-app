@@ -122,6 +122,10 @@ interface UasmIOSCopyManifest {
 
 let uasmModules: Record<string, UasmModule> = Object.create(null)
 
+function isCompileOnlyMode() {
+  return process.env.HX_IS_LITE_MODE === 'true'
+}
+
 export function parseUniAppXTargetArchs(
   value = process.env.UNI_APP_X_TARGET_ARCHS
 ): string[] {
@@ -294,7 +298,9 @@ export function createLoadUasmTransformer(
                 sourceFile,
                 firstArg,
                 options.resolveError?.(firstArg.text) ||
-                  `无法加载 uasm 插件[${firstArg.text}]，当前设备支持的 ABI：${targetArchs}。请确认插件路径正确，且插件已提供匹配的库文件`
+                  (isCompileOnlyMode()
+                    ? `无法加载 uasm 插件[${firstArg.text}]，请确认插件路径正确，且插件已提供当前平台的库文件`
+                    : `无法加载 uasm 插件[${firstArg.text}]，当前设备支持的 ABI：${targetArchs}。请确认插件路径正确，且插件已提供匹配的库文件`)
               )
             )
             return node
@@ -539,6 +545,7 @@ function shouldCopyUasmIOSFrameworks() {
     process.env.UNI_UTS_PLATFORM === 'app-ios' &&
     (process.env.UNI_NODE_ENV || process.env.NODE_ENV) === 'development' &&
     process.env.UNI_APP_X_DOM2 === 'true' &&
+    !isCompileOnlyMode() &&
     !process.env.UNI_COMPILE_TARGET
   )
 }
@@ -728,7 +735,8 @@ export function resolveUasmLoadPath(
     return `Uasm${capitalize(camelize(moduleName))}`
   }
   const libraryName = resolveUasmLibraryFileName(moduleName)
-  if (isProduction) {
+  // 仅编译时不绑定设备 ABI，使用发布模式的库名。
+  if (isProduction || isCompileOnlyMode()) {
     return libraryName
   }
   const file = resolveUasmModule(moduleName, platform, targetArchs)?.file
@@ -775,7 +783,7 @@ export function resolveUasmCopyAssets(
   targetArchs = parseUniAppXTargetArchs()
 ) {
   const resourceDir = platform === 'app-ios' ? 'frameworks' : 'libs'
-  if (isProduction) {
+  if (isProduction || isCompileOnlyMode()) {
     return [`uni_modules/*/uasm/${platform}/${resourceDir}/**/*`]
   }
   if (platform === 'app-ios' || !targetArchs.length) {

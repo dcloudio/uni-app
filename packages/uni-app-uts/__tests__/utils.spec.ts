@@ -25,6 +25,7 @@ describe('createUniOptions', () => {
     UNI_APP_X_TARGET_ARCHS: process.env.UNI_APP_X_TARGET_ARCHS,
     UNI_INPUT_DIR: process.env.UNI_INPUT_DIR,
     UNI_OUTPUT_DIR: process.env.UNI_OUTPUT_DIR,
+    HX_IS_LITE_MODE: process.env.HX_IS_LITE_MODE,
   }
   let inputDir: string
 
@@ -35,6 +36,7 @@ describe('createUniOptions', () => {
     process.env.UNI_INPUT_DIR = inputDir
     process.env.UNI_OUTPUT_DIR = path.join(inputDir, 'output')
     delete process.env.UNI_APP_X_TARGET_ARCHS
+    delete process.env.HX_IS_LITE_MODE
   })
 
   afterEach(() => {
@@ -144,6 +146,28 @@ describe('createUniOptions', () => {
       expect(resolveCopyAssets(platform)).toContain(
         `uni_modules/*/uasm/${platform}/${resourceDir}/**/*`
       )
+    }
+  )
+
+  test.each(['C:\\项目 [测试](lite)', '\\\\server\\share\\项目 [测试](lite)'])(
+    'keeps compile-only asset globs relative with Windows root %s',
+    (root) => {
+      process.env.HX_IS_LITE_MODE = 'true'
+      process.env.UNI_INPUT_DIR = root
+      process.env.UNI_OUTPUT_DIR = path.win32.join(root, 'output')
+
+      for (const platform of [
+        'app-android',
+        'app-harmony',
+        'app-ios',
+      ] as const) {
+        const resourceDir = platform === 'app-ios' ? 'frameworks' : 'libs'
+        expect(resolveCopyAssets(platform)).toEqual([
+          'hybrid/html/**/*',
+          'uni_modules/*/hybrid/html/**/*',
+          `uni_modules/*/uasm/${platform}/${resourceDir}/**/*`,
+        ])
+      }
     }
   )
 

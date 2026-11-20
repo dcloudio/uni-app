@@ -1,6 +1,7 @@
 import fs from 'fs-extra'
 import os from 'node:os'
 import path from 'node:path'
+import { sync } from 'fast-glob'
 import * as ts from 'typescript'
 
 import {
@@ -93,13 +94,17 @@ function transformMiniProgramLoadUasm(code: string, inputDir: string) {
 
 describe('uasm', () => {
   let inputDir: string
+  let originalLiteMode: string | undefined
 
   beforeEach(() => {
     inputDir = fs.mkdtempSync(path.join(os.tmpdir(), 'uni-uasm-'))
+    originalLiteMode = process.env.HX_IS_LITE_MODE
+    delete process.env.HX_IS_LITE_MODE
   })
 
   afterEach(() => {
     fs.removeSync(inputDir)
+    restoreEnv('HX_IS_LITE_MODE', originalLiteMode)
   })
 
   test('parse target archs', () => {
@@ -691,6 +696,164 @@ describe('uasm', () => {
     expect(resolveUasmCopyAssets('app-android', false, [])).toEqual([])
   })
 
+  describe('compile only', () => {
+    let originalEnv: Record<string, string | undefined>
+
+    beforeEach(() => {
+      originalEnv = {
+        UNI_NODE_ENV: process.env.UNI_NODE_ENV,
+        UNI_APP_X_TARGET_ARCHS: process.env.UNI_APP_X_TARGET_ARCHS,
+      }
+      process.env.HX_IS_LITE_MODE = 'true'
+      process.env.UNI_NODE_ENV = 'development'
+      delete process.env.UNI_APP_X_TARGET_ARCHS
+    })
+
+    afterEach(() => {
+      Object.entries(originalEnv).forEach(([key, value]) =>
+        restoreEnv(key, value)
+      )
+    })
+
+    function transform(code: string, platform: 'app-android' | 'app-harmony') {
+      const options = initUasmTransformOptions(platform)
+      return ts.transpileModule(code, {
+        transformers: {
+          before: [
+            options.createLoadUasmTransformer({
+              ...options,
+              typescript: ts,
+              reportDiagnostic(_context, diagnostic) {
+                throw new Error(diagnostic.messageText.toString())
+              },
+            }),
+          ],
+        },
+      }).outputText
+    }
+
+    test.each(['app-android', 'app-harmony'] as const)(
+      'transforms %s calls without selecting a device ABI',
+      (platform) => {
+        fs.outputFileSync(
+          path.join(
+            inputDir,
+            `uni_modules/test-uasm/uasm/${platform}/libs/arm64-v8a/libUasmTestUasm.so`
+          ),
+          ''
+        )
+        initUasmModules(inputDir)
+
+        for (const archs of [undefined, ['x86_64'], ['arm64-v8a']]) {
+          restoreEnv('UNI_APP_X_TARGET_ARCHS', JSON.stringify(archs))
+          for (const method of ['loadUasm', 'loadUasmSync']) {
+            expect(
+              transform(`uni.${method}('uni_modules/test-uasm')`, platform)
+            ).toContain(`uni.${method}("libUasmTestUasm.so")`)
+          }
+        }
+      }
+    )
+
+    test.each(['app-android', 'app-harmony'] as const)(
+      'preserves %s plugin and argument validation',
+      (platform) => {
+        fs.outputFileSync(
+          path.join(
+            inputDir,
+            `uni_modules/test-uasm/uasm/${platform}/libs/arm64-v8a/other.so`
+          ),
+          ''
+        )
+        fs.outputFileSync(
+          path.join(inputDir, 'uni_modules/web-only/uasm/web/web-only.js'),
+          ''
+        )
+        initUasmModules(inputDir)
+
+        for (const method of ['loadUasm', 'loadUasmSync']) {
+          for (const modulePath of [
+            'uni_modules/test-uasm',
+            'uni_modules/web-only',
+            'uni_modules/missing',
+            '../uni_modules/test-uasm',
+          ]) {
+            expect(() =>
+              transform(`uni.${method}('${modulePath}')`, platform)
+            ).toThrow(
+              `无法加载 uasm 插件[${modulePath}]，请确认插件路径正确，且插件已提供当前平台的库文件`
+            )
+          }
+          expect(() =>
+            transform(`uni.${method}(modulePath)`, platform)
+          ).toThrow(
+            `uni.${method}(modulePath) 的 modulePath 参数必须是字符串字面量`
+          )
+        }
+      }
+    )
+
+    test.each(['app-android', 'app-harmony', 'app-ios'] as const)(
+      'includes all %s resources under a directory with glob characters',
+      (platform) => {
+        const root = path.join(inputDir, '中文 项目[测试](lite)')
+        const resources =
+          platform === 'app-ios'
+            ? [
+                'frameworks/Test.xcframework/ios-arm64/Test.framework/Test',
+                'frameworks/Test.xcframework/ios-arm64_x86_64-simulator/Test.framework/Test',
+              ]
+            : [
+                'libs/arm64-v8a/libUasmTestUasm.so',
+                'libs/x86_64/libUasmTestUasm.so',
+                'libs/arm64-v8a/dependency.so',
+              ]
+        const files = resources.map(
+          (resource) => `uni_modules/test-uasm/uasm/${platform}/${resource}`
+        )
+        files.forEach((file) => fs.outputFileSync(path.join(root, file), ''))
+        fs.outputFileSync(
+          path.join(root, 'uni_modules/test-uasm/uasm/web/test-uasm.js'),
+          ''
+        )
+        initUasmModules(root)
+
+        for (const archs of [[], ['arm64-v8a'], ['unsupported']]) {
+          expect(
+            sync(resolveUasmCopyAssets(platform, false, archs), {
+              cwd: root,
+            }).sort()
+          ).toEqual(files.sort())
+        }
+        if (platform === 'app-ios') {
+          expect(resolveUasmLoadPath('uni_modules/test-uasm', platform)).toBe(
+            'UasmTestUasm'
+          )
+        }
+      }
+    )
+
+    test.each([undefined, 'false', '1'])(
+      'keeps device ABI validation when HX_IS_LITE_MODE is %s',
+      (value) => {
+        restoreEnv('HX_IS_LITE_MODE', value)
+        fs.outputFileSync(
+          path.join(
+            inputDir,
+            'uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libUasmTestUasm.so'
+          ),
+          ''
+        )
+        initUasmModules(inputDir)
+
+        expect(() =>
+          transform(`uni.loadUasm('uni_modules/test-uasm')`, 'app-android')
+        ).toThrow('当前设备支持的 ABI：未指定')
+        expect(resolveUasmCopyAssets('app-android', false)).toEqual([])
+      }
+    )
+  })
+
   test('initialize the cache when creating the Vite plugin', () => {
     const arm64File = path.join(
       inputDir,
@@ -921,6 +1084,7 @@ describe('uasm', () => {
       ['other platform', 'UNI_UTS_PLATFORM', 'app-android'],
       ['production', 'UNI_NODE_ENV', 'production'],
       ['non-DOM2', 'UNI_APP_X_DOM2', 'false'],
+      ['compile only', 'HX_IS_LITE_MODE', 'true'],
       ['special compile target', 'UNI_COMPILE_TARGET', 'uni_modules'],
       ['missing dependencies directory', 'HX_DEPENDENCIES_DIR', undefined],
     ])('skip copying for %s', (_, envName, envValue) => {
@@ -935,6 +1099,7 @@ describe('uasm', () => {
       writeBundle()
 
       expect(copySync).not.toHaveBeenCalled()
+      expect(fs.existsSync(dependenciesDir)).toBe(false)
     })
 
     test('process only once in the same plugin instance', () => {
