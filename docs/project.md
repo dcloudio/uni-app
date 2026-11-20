@@ -104,7 +104,7 @@ uni-app x同时支持通过HBuilder cli来创建项目、发行打包，可以�
 │  │  ├─ .app-harmony/            # uni-app x 鸿蒙编译产物
 │  │  ├─ app-android/             # uni-app x Android 编译产物
 │  │  ├─ app-ios/                 # uni-app x iOS 真机/模拟器编译产物
-│  │  ├─ app-harmony/             # 组装后的原生鸿蒙工程（DevEco 工程）
+│  │  ├─ app-harmony/             # 调试运行时组装的原生鸿蒙工程（DevEco 工程）
 │  │  ├─ mp-weixin/               # 微信小程序编译产物
 │  │  ├─ mp-alipay/               # 支付宝小程序编译产物
 │  │  └─ web/                     # Web 开发模式路径，站点由开发服务器提供
@@ -117,7 +117,7 @@ uni-app x同时支持通过HBuilder cli来创建项目、发行打包，可以�
 │  │  │  └─ cpp/                 # 蒸汽模式发行选择机器码时的 C++ 源码，按需生成
 │  │  ├─ app-android/             # uni-app x Android 发行产物
 │  │  ├─ app-ios/                 # uni-app x iOS 发行产物
-│  │  ├─ app-harmony/             # 发行时组装的原生鸿蒙工程
+│  │  ├─ app-harmony/             # 本地打包发行时组装的原生鸿蒙工程（DevEco 工程）
 │  │  ├─ mp-weixin/               # 微信小程序发行产物
 │  │  ├─ mp-alipay/               # 支付宝小程序发行产物
 │  │  └─ web/                     # H5/Web 平台发行产物
@@ -132,7 +132,7 @@ uni-app x同时支持通过HBuilder cli来创建项目、发行打包，可以�
 │  │  ├─ <AppID>/www/            # iOS 应用资源
 │  │  ├─ uni_modules/<模块>/utssdk/app-ios/ # 对应插件的原生产物，存在时导出
 │  │  └─ uniappx/                # 编译输出中的 .uniappx 产物，存在时导出
-│  └─ app-harmony/
+│  └─ app-harmony/               # 本地打包App资源的产物
 │     ├─ <AppID>/www/            # 鸿蒙应用资源
 │     ├─ uni_modules/            # 鸿蒙插件资源及 index.generated.ets 等，按实际产物导出
 │     └─ uniappx/                # 编译输出中的 .uniappx 产物，存在时导出
@@ -154,7 +154,7 @@ uni-app x同时支持通过HBuilder cli来创建项目、发行打包，可以�
 │  ├─ Pandora_simulator_debug_arm64_<HX版本>.app # 模拟器 VDOM 模式标准基座的项目内副本（arm64）
 │  ├─ Pandora_simulator_debug_vapor_<HX版本>.app # 模拟器蒸汽模式标准基座的项目内副本（x86_64/默认架构）
 │  ├─ Pandora_simulator_debug_vapor_arm64_<HX版本>.app # 模拟器蒸汽模式标准基座的项目内副本（arm64）
-│  └─ app-harmony/                # 本地打包/导出场景下的鸿蒙工程
+│  └─ app-harmony/                # 自动化测试时组装的原生鸿蒙工程（DevEco 工程）
 ├─ cache/                         # 编译与调试缓存
 │  ├─ .app-android/               # Android VDOM 模式编译缓存（含 src、class、dex、sourcemap、tsc 等）
 │  ├─ .app-ios/                   # iOS VDOM 模式编译缓存，真机/模拟器共用此命名（含 tsc、sourcemap、.uts2js 等）
@@ -190,7 +190,7 @@ uni-app x同时支持通过HBuilder cli来创建项目、发行打包，可以�
    ├─ app-android/                # 部分上报流程按平台标识保存的 Android 日志
    ├─ ios/                        # iOS 真机日志，崩溃监控可按设备 UDID 分子目录
    ├─ ios-simulator/              # iOS 模拟器日志，崩溃监控可按设备 UDID 分子目录
-   └─ harmony/                    # 鸿蒙日志
+   └─ harmony/                    # 鸿蒙崩溃日志
 ```
 
 #### 目录说明 @unpackage-directories
@@ -339,7 +339,6 @@ VDOM 调试阶段的 Kotlin 源码位于 `cache/.app-android/src/`，平台输�
 - 工程目录可以被自定义，且不限于 `unpackage`：
   - 调试运行时开启联编调试（`debugWithNativeHarmony`）并配置 `nativeHarmonyProjectPath` 后，优先使用指定宿主工程；
   - 其他运行/发行场景可通过 `.hbuilderx/launch.json` 的 `distPathDev` / `distPathBuild` 指定工程目录；
-  - 本地打包/导出场景下，鸿蒙工程还可能位于 `debug/app-harmony`。
 - 崩溃日志保存在 `logs/harmony`。
 
 鸿蒙的初始化文件由编译器生成在实际编译输出目录的 `uni_modules/index.generated.ets`。排查组装后的原生工程时，应核对工程中实际使用的插件及初始化文件，工程内的副本位置以本次组装结果为准。
