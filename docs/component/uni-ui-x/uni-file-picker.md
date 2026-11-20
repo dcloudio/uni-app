@@ -93,12 +93,15 @@ function upload() {
 <uni-file-picker
 	v-model="files"
 	title="自定义样式"
-	image-styles="my-image-box"
+	image-class="my-image-cell"
+	list-class="my-list"
 	title-class="my-title"
 	count-class="my-count"
+	item-class="my-item"
 	placeholder-class="my-add"
-	image-class="my-image"
 	del-icon-class="my-del"
+	progress-class="my-progress"
+	error-class="my-error"
 />
 ```
 
@@ -108,7 +111,7 @@ function upload() {
 - 宫格与列表默认长按 350ms 进入拖拽；拖拽排序为组件内置能力，无需额外配置。列表模式下“选择文件”按钮仍在列表上方，尾部不追加“+”。
 - 删除方式按窗口宽度自动切换：宽度小于 700px 时使用拖拽到底部删除条删除（隐藏 `×` 按钮）；宽度大于等于 700px 时显示 `×` 按钮删除。App/手机默认走拖拽删除，Web 宽屏走 `×`。
 - 拖拽到底部删除同样会触发 `delete` 事件，参数与点击 `×` 删除一致。
-- `image-styles` 作用于宫格内的每个方形单元格（宽度由 `column=3` 控制，默认占满单元格），可用它调整内边距、圆角、边框等，不建议再改宽度。
+- `image-class` 作用于宫格内的每个方形单元格（宽度由 `column=3` 控制，默认占满单元格），可用它调整内边距、圆角、边框等，不建议再改宽度；`list-class` 作用于列表区域容器。
 - `mix`（`uni.chooseMedia`）仅 App 平台支持，Web 平台不支持。
 - `all`（`uni.chooseFile`）在 App 平台不支持 `extension`、`sourceType` 等部分参数，以官方 API 文档为准。
 - App 平台选择系统相册时，选择界面主题与国际化跟随系统；系统相册无需申请相册权限，可直接上架 Google Play。
@@ -143,13 +146,12 @@ Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21
 | mediaType | string\[\] | "() : string\[] => \['image', 'video'] as string\[]" | chooseMedia 的媒体类型，image 图片 video 视频 mix 混合 |
 | compressed | boolean | false | 是否压缩所选视频 |
 | pageOrientation | string | "" | 屏幕方向，仅 Android 生效，auto 自动 portrait 竖屏 landscape 横屏 |
-| imageStyles | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 图片宫格区域的自定义样式类 |
-| listStyles | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 文件列表区域的自定义样式类 |
+| imageClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 图片宫格单元格的自定义样式类 |
+| listClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 文件列表区域的自定义样式类 |
 | titleClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 标题的自定义样式类 |
 | countClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 右侧计数的自定义样式类 |
 | itemClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 列表项的自定义样式类 |
 | placeholderClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 添加或选择按钮区域的自定义样式类 |
-| imageClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 图片的自定义样式类 |
 | delIconClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 删除按钮的自定义样式类 |
 | progressClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 上传进度条的自定义样式类 |
 | errorClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 上传失败重试遮罩的自定义样式类 |
