@@ -191,6 +191,10 @@ VDOM模式lang的值域只有uts。Android平台按uts2kt执行，此时要求�
 		String.prototype.codePointAt
 		```
 
+鸿蒙平台特别注意事项：
+
+- 鸿蒙平台页面脚本是运行在ArkTS环境中，其中声明的对象类型不会因为传递到UTS插件（同样位于ArkTS环境）而改变类型。例如lang="ts"的页面声明的对象并不会被编译为UTSJSONObject，此对象传递到UTS插件时也不会变成UTSJSONObject。
+
 5.31+，不同后缀的文件，比如`*.js`、`*.ts`、`*.uts`，互相import的时，都按各自独立的编译器编译。
 
 ### setup
