@@ -99,7 +99,7 @@ GATT 还区分 **客户端（Client）** 和 **服务端（Server）**：客户�
 | :- | :- | :- |  :-: | :- |
 | deviceId | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 蓝牙设备 ID。 |
 | timeout | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 连接超时时间，单位 ms；不传表示不会超时。 |
-| success | (result: [BLEOperationSuccess](#bleoperationsuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 接口调用成功的回调函数。 |
+| success | (result: [BLEOperationSuccess](#bleoperationsuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 接口调用成功的回调函数。App 端的 success 回调结果不返回 errCode，该字段仅由微信小程序返回。 |
 | fail | (result: [BluetoothFail](#bluetoothfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 接口调用失败的回调函数。 |
 | complete | (result: [BLEOperationSuccess](#bleoperationsuccess-values) \| [BluetoothFail](#bluetoothfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 接口调用结束的回调函数，调用成功、失败都会执行。 | 
 
@@ -210,7 +210,7 @@ GATT 还区分 **客户端（Client）** 和 **服务端（Server）**：客户�
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | deviceId | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 蓝牙设备 ID，需要已经通过 createBLEConnection 建立连接。 |
-| success | (result: [BLEOperationSuccess](#bleoperationsuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 接口调用成功的回调函数。 |
+| success | (result: [BLEOperationSuccess](#bleoperationsuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 接口调用成功的回调函数。App 端的 success 回调结果不返回 errCode，该字段仅由微信小程序返回。 |
 | fail | (result: [BluetoothFail](#bluetoothfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 接口调用失败的回调函数。 |
 | complete | (result: [BLEOperationSuccess](#bleoperationsuccess-values) \| [BluetoothFail](#bluetoothfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 接口调用结束的回调函数，调用成功、失败都会执行。 | 
 
@@ -929,7 +929,7 @@ iOS 不支持主动设置 MTU，当前插件调用此接口会执行 `fail` 和 
 | deviceId | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 蓝牙设备 ID，需要已经通过 createBLEConnection 建立连接。 |
 | serviceId | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 蓝牙特征对应服务的 UUID，需要先调用 getBLEDeviceServices 获取。 |
 | characteristicId | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 蓝牙特征的 UUID，需要先调用 getBLEDeviceCharacteristics 获取。 |
-| success | (result: [BLEOperationSuccess](#bleoperationsuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 接口调用成功的回调函数。特征值通过 onBLECharacteristicValueChange 返回。 |
+| success | (result: [BLEOperationSuccess](#bleoperationsuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 接口调用成功的回调函数。App 端的 success 回调结果不返回 errCode，该字段仅由微信小程序返回。特征值通过 onBLECharacteristicValueChange 返回。 |
 | fail | (result: [BluetoothFail](#bluetoothfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 接口调用失败的回调函数。 |
 | complete | (result: [BLEOperationSuccess](#bleoperationsuccess-values) \| [BluetoothFail](#bluetoothfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 接口调用结束的回调函数，调用成功、失败都会执行。 | 
 
@@ -1023,7 +1023,7 @@ iOS 不支持主动设置 MTU，当前插件调用此接口会执行 `fail` 和 
 | characteristicId | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 蓝牙特征的 UUID，需要先调用 getBLEDeviceCharacteristics 获取。 |
 | value | [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 蓝牙设备特征对应的二进制值。 |
 | writeType | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 蓝牙特征值写模式。可选值为 write、writeNoResponse；不传时 iOS 优先 write，Android 优先 writeNoResponse。 |
-| success | (result: [BLEOperationSuccess](#bleoperationsuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 接口调用成功的回调函数。 |
+| success | (result: [BLEOperationSuccess](#bleoperationsuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 接口调用成功的回调函数。App 端的 success 回调结果不返回 errCode，该字段仅由微信小程序返回。 |
 | fail | (result: [BluetoothFail](#bluetoothfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 接口调用失败的回调函数。 |
 | complete | (result: [BLEOperationSuccess](#bleoperationsuccess-values) \| [BluetoothFail](#bluetoothfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 接口调用结束的回调函数，调用成功、失败都会执行。 | 
 
@@ -1124,7 +1124,7 @@ iOS 不支持主动设置 MTU，当前插件调用此接口会执行 `fail` 和 
 | characteristicId | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 蓝牙特征的 UUID，需要先调用 getBLEDeviceCharacteristics 获取。 |
 | state | boolean | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 是否启用特征值变化通知。 |
 | type | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 特征订阅类型，可选值为 notification、indication，默认值为 indication。 |
-| success | (result: [BLEOperationSuccess](#bleoperationsuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 接口调用成功的回调函数。 |
+| success | (result: [BLEOperationSuccess](#bleoperationsuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 接口调用成功的回调函数。App 端的 success 回调结果不返回 errCode，该字段仅由微信小程序返回。 |
 | fail | (result: [BluetoothFail](#bluetoothfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 接口调用失败的回调函数。 |
 | complete | (result: [BLEOperationSuccess](#bleoperationsuccess-values) \| [BluetoothFail](#bluetoothfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.36; iOS: 5.36; HarmonyOS: x | 接口调用结束的回调函数，调用成功、失败都会执行。 | 
 
