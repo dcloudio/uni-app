@@ -1,6 +1,7 @@
 <template>
     <scroll-view>
         <navigator url="/pages/sub/test/test">test</navigator>
+        <navigator url="/pages/interceptor/interceptor">拦截器示例</navigator>
         <test-com></test-com>
         <view>
             <view>3:{{ invalidStatic }}</view>

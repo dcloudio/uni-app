@@ -20,9 +20,24 @@ export type Interceptors = { [P in HOOKS]?: Function[] }
 export const globalInterceptors: Interceptors = {}
 export const scopedInterceptors: { [key: string]: Interceptors } = {}
 
+const API_INVOKE_ABORT = {
+  then() {},
+  catch() {},
+} as Promise<undefined>
+
+function resolveHookResult(res: unknown, data?: unknown) {
+  return res === false ? API_INVOKE_ABORT : res || data
+}
+
 function wrapperHook(hook: Function, params?: Record<string, any>) {
   return function (data: unknown) {
-    return hook(data, params) || data
+    const res = hook(data, params)
+    if (isPromise(res)) {
+      return Promise.resolve(res).then((res) => {
+        return resolveHookResult(res, data)
+      })
+    }
+    return resolveHookResult(res, data)
   }
 }
 
@@ -35,17 +50,16 @@ function queue(
   for (let i = 0; i < hooks.length; i++) {
     const hook = hooks[i]
     if (promise) {
-      promise = Promise.resolve(wrapperHook(hook, params))
+      promise = promise.then(wrapperHook(hook, params))
     } else {
       const res = hook(data, params)
       if (isPromise(res)) {
-        promise = Promise.resolve(res)
+        promise = Promise.resolve(res).then((res) => {
+          return resolveHookResult(res)
+        })
       }
       if (res === false) {
-        return {
-          then() {},
-          catch() {},
-        } as Promise<undefined>
+        return API_INVOKE_ABORT
       }
     }
   }
