@@ -90,22 +90,28 @@ export function addMiniProgramComponentPackageRoot(
   componentPackageRootsCache.set(normalizedFilename, roots)
 }
 
-export function findMiniProgramComponentPackageRoot(filename: string) {
+export function findMiniProgramComponentPackageRoot(
+  filename: string,
+  hasExt = true
+) {
   if (!isUniAppX()) {
     return
   }
-  const roots = getMiniProgramComponentPackageRoots(filename)
+  const roots = getMiniProgramComponentPackageRoots(filename, hasExt)
   if (roots?.size === 1) {
     const [root] = [...roots]
     return root || undefined
   }
 }
 
-export function findMiniProgramComponentPackageRoots(filename: string) {
+export function findMiniProgramComponentPackageRoots(
+  filename: string,
+  hasExt = true
+) {
   if (!isUniAppX()) {
     return
   }
-  const roots = getMiniProgramComponentPackageRoots(filename)
+  const roots = getMiniProgramComponentPackageRoots(filename, hasExt)
   if (roots) {
     if (roots.has(mainPackageRoot) || roots.size > 1) {
       return [undefined]
@@ -408,7 +414,7 @@ function withoutSubPackageRootForUniModules(filename: string) {
   return filename
 }
 
-function normalizeComponentPackageFilename(filename: string) {
+function normalizeComponentPackageFilename(filename: string, hasExt = true) {
   let normalizedFilename = withoutSubPackageRootForUniModules(
     normalizePath(filename).split('?')[0].replace(/^\/+/, '')
   )
@@ -416,12 +422,12 @@ function normalizeComponentPackageFilename(filename: string) {
   if (uniModulesIndex > -1) {
     normalizedFilename = normalizedFilename.slice(uniModulesIndex)
   }
-  return removeExt(normalizedFilename)
+  return hasExt ? removeExt(normalizedFilename) : normalizedFilename
 }
 
-function getMiniProgramComponentPackageRoots(filename: string) {
+function getMiniProgramComponentPackageRoots(filename: string, hasExt = true) {
   return componentPackageRootsCache.get(
-    normalizeComponentPackageFilename(filename)
+    normalizeComponentPackageFilename(filename, hasExt)
   )
 }
 
