@@ -222,8 +222,55 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.97; iOS: 4
 | errMsg | string | 是 | 错误信息 |
 
 
+## 蒸汽模式常见API拦截器支持情况
+
+| API					| Web	| 微信小程序	| Android	| iOS	| HarmonyOS	|
+| ---					| :---:	| :---:		| :---:		| :---:	| :---:		|
+| navigateTo			| ✅		| ✅			| ✅			| ✅		| ✅			|
+| redirectTo			| ✅		| ✅			| ✅			| ✅		| ✅			|
+| reLaunch				| ✅		| ✅			| ✅			| ✅		| ✅			|
+| switchTab				| ✅		| ✅			| ✅			| ✅		| ✅			|
+| navigateBack			| ✅		| ✅			| ✅			| ✅		| ✅			|
+| loadFontFace			| ✅		| ✅			| ❌			| ❌		| ✅			|
+| pageScrollTo			| ✅		| ✅			| ✅			| ✅		| ✅			|
+| startPullDownRefresh	| ✅		| ✅			| ❌			| ❌		| ❌			|
+| setNavigationBarColor	| ✅		| ✅			| ✅			| ✅		| ✅			|
+| setNavigationBarTitle	| ✅		| ✅			| ✅			| ✅		| ✅			|
+| setTabBarBadge		| ✅		| ✅			| ✅			| ✅		| ✅			|
+| removeTabBarBadge		| ✅		| ✅			| ✅			| ✅		| ✅			|
+| setTabBarItem			| ✅		| ✅			| ✅			| ✅		| ✅			|
+| setTabBarStyle		| ✅		| ✅			| ✅			| ✅		| ✅			|
+| hideTabBar			| ✅		| ✅			| ✅			| ✅		| ✅			|
+| showTabBar			| ✅		| ✅			| ✅			| ✅		| ✅			|
+| showTabBarRedDot		| ✅		| ✅			| ✅			| ✅		| ✅			|
+| hideTabBarRedDot		| ✅		| ✅			| ✅			| ✅		| ✅			|
+| request				| ✅		| ✅			| ❌			| ❌		| ✅			|
+
+## VDOM模式常见API拦截器支持情况
+
+| API					| Web	| 微信小程序	| Android	| iOS	| HarmonyOS	|
+| ---					| :---:	| :---:		| :---:		| :---:	| :---:		|
+| navigateTo			| ✅		| ✅			| ✅			| ✅		| ✅			|
+| redirectTo			| ✅		| ✅			| ✅			| ✅		| ✅			|
+| reLaunch				| ✅		| ✅			| ✅			| ✅		| ✅			|
+| switchTab				| ✅		| ✅			| ✅			| ✅		| ✅			|
+| navigateBack			| ✅		| ✅			| ✅			| ✅		| ✅			|
+| loadFontFace			| ✅		| ✅			| ✅			| ✅		| ✅			|
+| pageScrollTo			| ✅		| ✅			| ✅			| ✅		| ✅			|
+| startPullDownRefresh	| ✅		| ✅			| ✅			| ✅		| ✅			|
+| setNavigationBarColor	| ✅		| ✅			| ✅			| ✅		| ✅			|
+| setNavigationBarTitle	| ✅		| ✅			| ✅			| ✅		| ✅			|
+| setTabBarBadge		| ✅		| ✅			| ✅			| ✅		| ✅			|
+| removeTabBarBadge		| ✅		| ✅			| ✅			| ✅		| ✅			|
+| setTabBarItem			| ✅		| ✅			| ✅			| ✅		| ✅			|
+| setTabBarStyle		| ✅		| ✅			| ✅			| ✅		| ✅			|
+| hideTabBar			| ✅		| ✅			| ✅			| ✅		| ✅			|
+| showTabBar			| ✅		| ✅			| ✅			| ✅		| ✅			|
+| showTabBarRedDot		| ✅		| ✅			| ✅			| ✅		| ✅			|
+| hideTabBarRedDot		| ✅		| ✅			| ✅			| ✅		| ✅			|
+| request				| ✅		| ✅			| ❌			| ❌		| ✅			|
+
 ## Tips@tips
 
-* 目前仅以下接口支持拦截器：navigateTo、redirectTo、reLaunch、switchTab、navigateBack、loadFontFace、pageScrollTo、startPullDownRefresh、setNavigationBarColor、setNavigationBarTitle、setTabBarBadge、removeTabBarBadge、setTabBarItem、setTabBarStyle、hideTabBar、showTabBar、showTabBarRedDot、hideTabBarRedDot
-* 如需拦截request，可在插件市场搜索[拦截器插件](https://ext.dcloud.net.cn/search?q=%E6%8B%A6%E6%88%AA%E5%99%A8&uni-appx=1)
+* 如需在无法拦截request的平台拦截request，可在插件市场搜索[拦截器插件](https://ext.dcloud.net.cn/search?q=%E6%8B%A6%E6%88%AA%E5%99%A8&uni-appx=1)
 * 小程序端拦截器无法拦截navigator组件
