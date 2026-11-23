@@ -100,7 +100,7 @@ function hideKeyboard() {
   uni.hideKeyboard();
 }
 
-onLoad(() => {
+onReady(() => {
   // 监听键盘高度变化
   const keyboardHeightChangeCallback = (res : OnKeyboardHeightChangeCallbackResult) => {
     data.keyboardHeight = res.height;

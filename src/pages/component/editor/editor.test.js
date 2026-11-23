@@ -130,19 +130,9 @@ describe('editor.uvue', () => {
     })
   }
 
-  async function expectWebSelectionStyle(item) {
-    const headHTML = await page.windowProperty('document.head.innerHTML')
-    const styleText = headHTML.replace(/\s/g, '')
-    const targetRule = /\[data-uni-selection-style="[^"]+"\]::selection/
-    if (!item.color) {
-      expect(headHTML).not.toMatch(targetRule)
-      return
-    }
-    expect(headHTML).toMatch(targetRule)
-    expect(styleText).toContain(`color:${item.color.replace(/\s/g, '')};`)
-    expect(styleText).toContain(
-      `background-color:${item.backgroundColor.replace(/\s/g, '')};`
-    )
+  async function screenshotWebSelection(name) {
+    expect(await page.callMethod('selectEditorTextForTest')).toMatch(/\S/)
+    await screenshot(name, true)
   }
 
   async function getInserImageSize() {
@@ -191,25 +181,20 @@ describe('editor.uvue', () => {
     it('::selection 样式切换和恢复默认', async () => {
       const cases = [
         { index: 0, name: 'editor-selection-default' },
-        {
-          index: 1,
-          name: 'editor-selection-static',
-          color: 'rgb(255, 0, 0)',
-          backgroundColor: 'rgb(255, 255, 0)'
-        },
-        {
-          index: 2,
-          name: 'editor-selection-variable',
-          color: 'rgb(255, 255, 255)',
-          backgroundColor: 'rgba(0, 122, 255, 0.65)'
-        }
+        { index: 1, name: 'editor-selection-static' },
+        { index: 2, name: 'editor-selection-variable' }
       ]
+      if (isWeb) {
+        const inputCount = await page.data('data.inputCount')
+        await page.callMethod('insertSampleText')
+        await waitForData('data.inputCount', value => value > inputCount)
+      }
       for (const item of cases) {
         await page.callMethod('onSelectionStyleChange', item.index)
         await waitForData('data.selectionStyleIndex', value => value === item.index, 1000)
         expect(await page.data('data.selectionStyleIndex')).toBe(item.index)
         if (isWeb) {
-          await expectWebSelectionStyle(item)
+          await screenshotWebSelection(item.name)
           continue
         }
         await page.callMethod('clearEditor')
@@ -220,8 +205,9 @@ describe('editor.uvue', () => {
       }
       await page.callMethod('onSelectionStyleChange', 0)
       await waitForData('data.selectionStyleIndex', value => value === 0, 1000)
+      expect(await page.data('data.selectionStyleIndex')).toBe(0)
       if (isWeb) {
-        await expectWebSelectionStyle(cases[0])
+        await screenshotWebSelection('editor-selection-restored')
       }
     })
   }

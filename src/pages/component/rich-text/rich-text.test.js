@@ -2,7 +2,7 @@ jest.setTimeout(30000)
 
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
-const isWeb = platformInfo.startsWith('web')
+const isWeb = platformInfo.startsWith('web') || platformInfo.startsWith('h5')
 const isIos = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.startsWith('harmony')
 const isAndroid = platformInfo.startsWith('android')
@@ -113,59 +113,39 @@ describe('rich-text-test', () => {
     await page.waitFor(500)
   }
 
-  async function expectWebSelectionStyle(item) {
-    const headHTML = await page.windowProperty('document.head.innerHTML')
-    const styleText = headHTML.replace(/\s/g, '')
-    const targetRule = /\[data-uni-selection-style="[^"]+"\]::selection/
-    if (!item.color) {
-      expect(headHTML).not.toMatch(targetRule)
-      return
+  async function screenshotSelection(name) {
+    if (isWeb) {
+      expect(await page.callMethod('selectRichTextForTest')).toMatch(/\S/)
+    } else {
+      await longPressSelectionStyleRichText()
     }
-    expect(headHTML).toMatch(targetRule)
-    expect(styleText).toContain(`color:${item.color.replace(/\s/g, '')};`)
-    expect(styleText).toContain(
-      `background-color:${item.backgroundColor.replace(/\s/g, '')};`
-    )
+    const image = await program.screenshot(deviceShotOptions)
+    expect(image).toSaveImageSnapshot({
+      customSnapshotIdentifier() {
+        return name
+      }
+    })
   }
 
   if (!isAppWebView) {
     it('rich-text ::selection 样式切换和恢复默认', async () => {
       const cases = [
         { index: 0, name: 'rich-text-selection-default' },
-        {
-          index: 1,
-          name: 'rich-text-selection-static',
-          color: 'rgb(255, 0, 0)',
-          backgroundColor: 'rgb(255, 255, 0)'
-        },
-        {
-          index: 2,
-          name: 'rich-text-selection-variable',
-          color: 'rgb(255, 255, 255)',
-          backgroundColor: 'rgba(0, 122, 255, 0.65)'
-        }
+        { index: 1, name: 'rich-text-selection-static' },
+        { index: 2, name: 'rich-text-selection-variable' }
       ]
       for (const item of cases) {
         await page.callMethod('onSelectionStyleChange', item.index)
         await page.waitFor(300)
         expect(await page.data('data.selectionStyleIndex')).toBe(item.index)
-        if (isWeb) {
-          await expectWebSelectionStyle(item)
-          continue
-        }
-        await longPressSelectionStyleRichText()
-        const image = await program.screenshot(deviceShotOptions)
-        expect(image).toSaveImageSnapshot({
-          customSnapshotIdentifier() {
-            return item.name
-          }
-        })
+        await screenshotSelection(item.name)
       }
       await page.callMethod('onSelectionStyleChange', 0)
       await page.waitFor(300)
       expect(await page.data('data.selectionStyleIndex')).toBe(0)
       if (isWeb) {
-        await expectWebSelectionStyle(cases[0])
+        await screenshotSelection('rich-text-selection-restored')
+        await page.callMethod('selectRichTextForTest', false)
       }
     })
 

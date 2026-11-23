@@ -32,7 +32,7 @@
         </slot>
       </view>
     </view>
-    <view ref="coverRef" class="uni-data-tree-cover" :class="[maskClassValue, active ? 'uni-data-tree-cover-active' : '']" v-if="isOpened" @click="handleClose"></view>
+    <view ref="coverRef" class="uni-data-tree-mask" :class="[maskClassValue, active ? 'uni-data-tree-mask-active' : '']" v-if="isOpened" @click="handleClose"></view>
     <view class="uni-data-tree-dialog"
       :class="[popupClass, active ? 'uni-data-tree-dialog-active' : '', dragTransitionOff ? 'uni-data-tree-dialog-drag' : '']"
       :style="dialogStyle" v-if="isOpened"
@@ -555,7 +555,7 @@
   .error-text {
     flex: 1;
     font-size: 12px;
-    color: #DD524D;
+    color: rgb(255, 59, 48);
   }
 
   .input-value {
@@ -599,14 +599,14 @@
 
   .placeholder {
     font-size: 14px;
-    color: #657180;
+    color: rgba(60, 60, 67, 0.30);
   }
 
   .input-split-line {
     opacity: .5;
     margin-left: 1px;
     margin-right: 1px;
-    color: #657180;
+    color: rgba(60, 60, 67, 0.30);
   }
 
   .arrow-area {
@@ -629,13 +629,16 @@
     border-bottom-color: #999999;
   }
 
-  .uni-data-tree-cover {
+  .uni-data-tree-mask {
+    /* #ifdef WEB */
+    cursor: pointer;
+    /* #endif */
     position: fixed;
     left: 0;
     top: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, .4);
+    background-color: rgba(0, 0, 0, 0.30);
     flex-direction: column;
     z-index: 100;
     opacity: 0;
@@ -644,7 +647,7 @@
     transition-timing-function: ease-out;
   }
 
-  .uni-data-tree-cover-active {
+  .uni-data-tree-mask-active {
     opacity: 1;
   }
 
@@ -736,10 +739,6 @@
     box-shadow: 0 0 0 3px rgba(41, 121, 255, 0.24);
   }
 
-  .uni-data-tree-cover {
-    cursor: pointer;
-  }
-
   .dialog-close {
     cursor: pointer;
     outline: none;
@@ -768,7 +767,7 @@
       transform: none;
     }
 
-    .uni-data-tree-cover {
+    .uni-data-tree-mask {
       opacity: 1;
       transition-duration: 0ms;
     }
@@ -781,7 +780,7 @@
 
   @media (prefers-color-scheme: dark) {
     .input-value {
-      background-color: #2d2d2d;
+      background-color: #3b3b3b;
       border-color: rgba(255, 255, 255, 0.18);
     }
 
@@ -790,11 +789,11 @@
     }
 
     .placeholder {
-      color: rgba(255, 255, 255, 0.65);
+      color: rgba(255, 255, 255, 0.35);
     }
 
     .input-split-line {
-      color: rgba(255, 255, 255, 0.65);
+      color: rgba(255, 255, 255, 0.35);
     }
 
     .input-arrow {
@@ -803,7 +802,7 @@
     }
 
     .error-text {
-      color: #ff7875;
+      color: rgb(255, 91, 95);;
     }
 
     .uni-data-tree-dialog {

@@ -75,6 +75,7 @@
 					  :model-value="editValueType"
 					  :items="valueTypeItems"
 					  mode="default"
+					  item-class="edit-type-radio"
 					  :show-toast="false"
 					  @change="onValueTypeChange"
 					/>

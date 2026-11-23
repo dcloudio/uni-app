@@ -1,6 +1,5 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
-const isWeb = platformInfo.startsWith('web')
 const isIos = platformInfo.startsWith('ios')
 const isVapor = process.env.UNI_APP_X_DOM2 === "true"
 
@@ -20,7 +19,7 @@ describe('Storage管理器页面-多类型新增', () => {
 
   // 定义类型默认值映射，与页面保持一致
   const valueTypeDefaultMap = new Map([
-    ['String', 'hello'],
+    ['String', ''],
     ['Number', '1'],
     ['Boolean', 'true'],
     ['Object', '{"name": "张三","age": 12}'],
@@ -116,6 +115,8 @@ describe('Storage管理器页面-多类型新增', () => {
     // 获取弹窗元素
     const mask = await page.$('.dialog-mask')
     const typeItems = await mask.$$('.edit-type-radio')
+    const types = Array.from(valueTypeDefaultMap.keys())
+    expect(typeItems.length).toBe(types.length)
     // 测试每种类型
     for (let i = 0; i < typeItems.length; i++) {
       await typeItems[i].tap()
@@ -123,10 +124,8 @@ describe('Storage管理器页面-多类型新增', () => {
       // 验证默认值是否正确
       const editValue = await page.data('editValue')
       const editValueType = await page.data('editValueType')
-      if (isWeb && editValueType._value != 'String') {
-        // 获取 ref 的 value 属性
-        expect(editValue).toBe(valueTypeDefaultMap.get(editValueType))
-      }
+      expect(editValueType).toBe(types[i])
+      expect(editValue).toBe(valueTypeDefaultMap.get(types[i]))
     }
     // 关闭弹窗
     const cancelBtn = await mask.$('.btn-cancel')
@@ -147,20 +146,29 @@ describe('Storage管理器页面-多类型新增', () => {
       const valueTextarea = await mask.$('.edit-textarea')
       const saveBtn = await mask.$('.btn-save')
       const typeRadios = await mask.$$('.edit-type-radio')
+      expect(typeRadios.length).toBe(types.length)
       // 选择类型
       const typeIndex = types.indexOf(type)
       await typeRadios[typeIndex].tap()
       await page.waitFor(100)
       // 输入内容
       await keyInput.input(`test_${type.toLowerCase()}`)
-      await valueTextarea.input(valueTypeDefaultMap.get(type))
+      await valueTextarea.input(type === 'String' ? 'hello' : valueTypeDefaultMap.get(type))
       await saveBtn.tap()
       await page.waitFor(300)
     }
     // 验证所有类型都添加成功
     const list = await page.callMethod('getStorageList')
     if (!isMP) {
-      expect(list.length).toBe(types.length)
+      // getStorageList 返回应用的全部存储，只校验本测试创建的数据。
+      const testItems = list.filter(item => item.key.startsWith('test_'))
+      const expectedKeys = types.map(type => `test_${type.toLowerCase()}`)
+      expect(testItems.map(item => item.key).sort()).toEqual(expectedKeys.sort())
+      for (const type of types) {
+        const item = testItems.find(item => item.key === `test_${type.toLowerCase()}`)
+        expect(item).toBeDefined()
+        expect(item.type).toBe(type)
+      }
     }
   })
 

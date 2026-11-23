@@ -3233,15 +3233,15 @@
 					"path": "backarrow-circle/backarrow-circle",
 					"style": {
 						// #ifndef MP-ALIPAY
-						"navigationBarTitleText": "uni-backarrow-circle",
-						"navigationStyle": "custom"
+						"navigationStyle": "custom",
 						// #endif
 						// #ifdef MP-ALIPAY
-						,
+						"navigationBarTitleText": "",
 						"transparentTitle": "always",
-						"allowsBounceVertical": "NO"
+						"titlePenetrate": "YES",
+						"allowsBounceVertical": "NO",
 						// #endif
-						,"navigationBarTextStyle":"black"
+						"navigationBarTextStyle":"black"
 					}
 				},
 				{
@@ -3447,7 +3447,26 @@
 					"style": {
 						"navigationBarTitleText": "uni-file-picker"
 					}
+				},
+				{
+					"path": "forms/allform",
+					"style": {
+						"navigationBarTitleText": "allform"
+					}
 				}
+				// ,
+				// {
+				// 	"path": "card-group/card-group",
+				// 	"style": {
+				// 		"navigationBarTitleText": "card-group"
+				// 	}
+				// },
+				// {
+				// 	"path": "card-group/card-group-no-radius",
+				// 	"style": {
+				// 		"navigationBarTitleText": "card-group-no-radius"
+				// 	}
+				// }
 			]
 		},
 		{

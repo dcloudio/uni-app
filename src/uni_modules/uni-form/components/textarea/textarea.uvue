@@ -509,6 +509,20 @@
 	})
 	// #endif
 
+	// #ifdef APP-HARMONY
+	const selectionStyle = useComputedStyle({
+		pseudoElement: '::selection',
+		properties: ['background-color']
+	})
+	const selectionColor = computed(() => {
+		const value = selectionStyle.get('background-color')
+		return typeof value == 'string' ? value : ''
+	})
+	watch(selectionColor, (value: string) => {
+		textareaView?.updateSelectionColor(value)
+	})
+	// #endif
+
 	const emit = defineEmits<{
 		// @internal
 		(e : 'update:value', value : string) : void
@@ -766,6 +780,9 @@
 		// #ifdef APP-IOS || APP-HARMONY
 		textareaView.updateColor(valueColor.value)
 		textareaView.updateCursorColor(caretColor.value)
+		// #endif
+		// #ifdef APP-HARMONY
+		textareaView.updateSelectionColor(selectionColor.value)
 		// #endif
 		let updatePadding = false
 		style.forEach((value, key) => {

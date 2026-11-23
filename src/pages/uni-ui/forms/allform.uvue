@@ -1,0 +1,699 @@
+<template>
+	<view class="state-bar">
+		<text class="state-title">演示状态</text>
+		<radio-group class="state-group" @change="onStateChange">
+			<view class="state-item">
+				<radio value="value" :checked="stateMode == 'value'" />
+				<text class="state-text">有值</text>
+			</view>
+			<view class="state-item">
+				<radio value="placeholder" :checked="stateMode == 'placeholder'" />
+				<text class="state-text">无值（Placeholder）</text>
+			</view>
+			<view class="state-item">
+				<radio value="disabled" :checked="stateMode == 'disabled'" />
+				<text class="state-text">禁用（Disabled）</text>
+			</view>
+		</radio-group>
+		<text class="state-desc uni-info">{{ stateDescription }}</text>
+	</view>
+
+	<form @submit="onFormSubmit" @reset="onFormReset">
+		<view class="uni-form-item">
+			<text class="title">姓名</text>
+			<input class="form-input" name="nickname" v-model="data.nickname" placeholder="请输入姓名" :maxlength="-1"
+				:disabled="isDisabled" />
+		</view>
+		<view class="uni-form-item">
+			<text class="title">性别</text>
+			<radio-group name="gender" class="flex-row">
+				<view class="group-item">
+					<radio value="0" :checked="data.gender == '0'" :disabled="isDisabled" /><text class="form-text">男</text>
+				</view>
+				<view class="group-item">
+					<radio value="1" :checked="data.gender == '1'" :disabled="isDisabled" /><text class="form-text">女</text>
+				</view>
+			</radio-group>
+		</view>
+		<view class="uni-form-item">
+			<text class="title">爱好</text>
+			<checkbox-group name="loves" class="flex-row">
+				<view class="group-item">
+					<checkbox value="0" :checked="data.loves.indexOf('0') > -1" :disabled="isDisabled" /><text
+						class="form-text">读书</text>
+				</view>
+				<view class="group-item">
+					<checkbox value="1" :checked="data.loves.indexOf('1') > -1" :disabled="isDisabled" /><text
+						class="form-text">写字</text>
+				</view>
+			</checkbox-group>
+		</view>
+		<view class="uni-form-item">
+			<text class="title">年龄</text>
+			<slider name="age" :value="data.age" :show-value="true" :disabled="isDisabled"></slider>
+		</view>
+		<view class="uni-form-item">
+			<text class="title">保留选项</text>
+			<view class="flex-row">
+				<switch name="remember" :checked="data.remember" :disabled="isDisabled" />
+			</view>
+		</view>
+		<view class="uni-form-item">
+			<text class="title">备注</text>
+			<textarea class="form-textarea" name="comment" v-model="data.comment" placeholder="请输入备注"
+				:disabled="isDisabled" />
+		</view>
+		<!-- picker -->
+		<view class="uni-form-item flex-row">
+			<text class="picker-title">时区</text>
+			<picker class="picker" name="timeZone" :value="data.timeZoneIndex" :range="data.timeZoneList"
+				:disabled="isDisabled" @change="onTimeZoneChange">
+				<text class="picker-value">{{ data.timeZoneList[data.timeZoneIndex] }}</text>
+			</picker>
+		</view>
+		<!-- #ifndef MP-ALIPAY -->
+		<view class="uni-form-item flex-row">
+			<text class="picker-title">多列选择器</text>
+			<picker class="picker picker-multi" name="picker-mode-multiSelector" mode="multiSelector"
+				:value="data.multiIndex" :range="data.multiArray" :disabled="isDisabled"
+				@columnchange="onMultiPickerColumnChange">
+				<text class="picker-value">{{ data.multiArray[0][data.multiIndex[0]] }}，{{ data.multiArray[1][data.multiIndex[1]] }}，{{ data.multiArray[2][data.multiIndex[2]] }}</text>
+			</picker>
+		</view>
+		<!-- #endif -->
+		<view class="uni-form-item flex-row">
+			<text class="picker-title">时间选择器</text>
+			<picker class="picker picker-time" name="picker-mode-time" mode="time" :value="data.timePickerValue"
+				start="09:01" end="21:01" :disabled="isDisabled" @change="onTimeChange">
+				<text class="picker-value">{{ data.timePickerValue }}</text>
+			</picker>
+		</view>
+		<view class="uni-form-item flex-row">
+			<text class="picker-title">日期选择器</text>
+			<picker class="picker picker-date" name="picker-mode-date" mode="date" :value="data.datePickerValue"
+				:start="data.startDate" :end="data.endDate" :disabled="isDisabled" @change="onDateChange">
+				<text class="picker-value">{{ data.datePickerValue }}</text>
+			</picker>
+		</view>
+		<view class="uni-form-item">
+			<text class="title">时间</text>
+			<view class="picker-view-wrap" :class="isDisabled ? 'picker-view-wrap--disabled' : ''">
+				<picker-view class="picker-view" name="time" :value="data.pickerViewTime" indicator-style="height:50px">
+					<picker-view-column>
+						<view class="picker-view-item" v-for="(item, index) in data.hours" :key="index">
+							<text class="picker-view-text">{{ item }}时</text>
+						</view>
+					</picker-view-column>
+					<picker-view-column>
+						<view class="picker-view-item" v-for="(item, index) in data.minutes" :key="index">
+							<text class="picker-view-text">{{ item }}分</text>
+						</view>
+					</picker-view-column>
+				</picker-view>
+			</view>
+		</view>
+		<view class="flex-row">
+			<button class="btn btn-submit" form-type="submit" type="primary" size="mini">Submit</button>
+			<button class="btn btn-reset" type="default" form-type="reset" size="mini">Reset</button>
+		</view>
+	</form>
+
+	<uni-forms-item label="number-box">
+		<uni-number-box v-model="data.numberBox" :disabled="isDisabled" />
+	</uni-forms-item>
+	<uni-forms-item label="combobox">
+		<uni-combobox v-model="data.combobox" :options="comboboxOptions" placeholder="请选择选项"
+			:disabled="isDisabled" />
+	</uni-forms-item>
+	<uni-forms-item label="easyinput">
+		<uni-easyinput v-model="data.easyInput" placeholder="请输入内容" :disabled="isDisabled" />
+	</uni-forms-item>
+	<uni-forms-item label="data-checkbox">
+		<uni-data-checkbox v-model="data.dataCheckbox" :localdata="dataCheckboxOptions" :disabled="isDisabled" />
+	</uni-forms-item>
+	<uni-forms-item label="data-picker">
+		<uni-data-picker v-model="data.dataPicker" :localdata="dataPickerOptions" placeholder="请选择班级"
+			:readonly="isDisabled" />
+	</uni-forms-item>
+	<uni-forms-item label="calendar-picker">
+		<uni-calendar-picker v-model="data.calendarPicker" placeholder="请选择日期" :disabled="isDisabled" />
+	</uni-forms-item>
+
+	<text class="result uni-h4">当前表单数据</text>
+	<textarea class="result-textarea" :value="formDataText" :maxlength="-1" :auto-height="true" :disabled="true"></textarea>
+	<text class="result uni-h4">最近一次提交的数据</text>
+	<textarea class="result-textarea" :value="submittedText" :maxlength="-1" :auto-height="true" :disabled="true"></textarea>
+</template>
+
+<script setup lang="ts">
+	function getDate(type?: string): string {
+		const date = new Date()
+
+		let year = date.getFullYear()
+		let month = date.getMonth() + 1
+		let day = date.getDate()
+
+		if (type === 'start') {
+			year = year - 10
+		} else if (type === 'end') {
+			year = year + 10
+		}
+
+		const monthString = month > 9 ? month.toString() : '0' + month
+		const dayString = day > 9 ? day.toString() : '0' + day
+
+		return `${year}-${monthString}-${dayString}`
+	}
+
+	type DataType = {
+		nickname: string;
+		gender: string;
+		loves: string[];
+		age: number;
+		remember: boolean;
+		timeZoneIndex: number;
+		timeZoneList: string[];
+		multiArray: string[][];
+		multiIndex: number[];
+		datePickerValue: string;
+		startDate: string;
+		endDate: string;
+		timePickerValue: string;
+		pickerViewTime: number[];
+		hours: string[];
+		minutes: string[];
+		comment: string;
+		numberBox: number;
+		combobox: string;
+		easyInput: string;
+		dataCheckbox: number;
+		dataPicker: string;
+		calendarPicker: string;
+		// 仅测试
+		testVerifySubmit: boolean;
+		testVerifyReset: boolean;
+	}
+
+	type FilledType = {
+		nickname: string;
+		gender: string;
+		loves: string[];
+		age: number;
+		remember: boolean;
+		timeZoneIndex: number;
+		multiIndex: number[];
+		datePickerValue: string;
+		timePickerValue: string;
+		pickerViewTime: number[];
+		comment: string;
+		numberBox: number;
+		combobox: string;
+		easyInput: string;
+		dataCheckbox: number;
+		dataPicker: string;
+		calendarPicker: string;
+	}
+
+	const hours = new Array<string>()
+	const minutes = new Array<string>()
+	for (let i = 1; i <= 24; i++) {
+		hours.push(i.toString())
+	}
+	for (let i = 1; i <= 60; i++) {
+		minutes.push(i.toString())
+	}
+
+	const comboboxOptions: string[] = ['选项1', '选项2', '选项3']
+
+	const dataCheckboxOptions = [
+		{ text: '选项 A', value: 0 },
+		{ text: '选项 B', value: 1 },
+		{ text: '选项 C', value: 2 }
+	]
+
+	function buildDataPickerOptions(): UTSJSONObject[] {
+		const list: UTSJSONObject[] = []
+		for (let i = 1; i <= 3; i++) {
+			const children: UTSJSONObject[] = []
+			for (let j = 1; j <= 3; j++) {
+				children.push({
+					text: `${i}.${j}班`,
+					value: `${i}-${j}`
+				})
+			}
+			list.push({
+				text: `${i}年级`,
+				value: `${i}-0`,
+				children: children
+			})
+		}
+		return list
+	}
+
+	const dataPickerOptions = buildDataPickerOptions()
+
+	// 有值状态的快照，切换到有值或禁用时恢复
+	const filled: FilledType = {
+		nickname: '张三',
+		gender: '0',
+		loves: ['0', '1'],
+		age: 30,
+		remember: true,
+		timeZoneIndex: 1,
+		multiIndex: [0, 0, 0],
+		datePickerValue: getDate(),
+		timePickerValue: '12:01',
+		pickerViewTime: [8, 30],
+		comment: '这是一段备注内容',
+		numberBox: 3,
+		combobox: '选项2',
+		easyInput: '示例输入内容',
+		dataCheckbox: 1,
+		dataPicker: '1-2',
+		calendarPicker: getDate()
+	}
+
+	// 状态：value 有值 / placeholder 无值 / disabled 禁用
+	const stateMode = ref('value')
+
+	const data = reactive({
+		nickname: filled.nickname,
+		gender: filled.gender,
+		loves: filled.loves.slice(),
+		age: filled.age,
+		remember: filled.remember,
+		timeZoneIndex: filled.timeZoneIndex,
+		timeZoneList: ['中国', '美国', '巴西', '日本'],
+		multiArray: [
+			['亚洲', '欧洲'],
+			['中国', '日本'],
+			['北京', '上海', '广州']
+		] as string[][],
+		multiIndex: filled.multiIndex.slice(),
+		datePickerValue: filled.datePickerValue,
+		startDate: getDate('start'),
+		endDate: getDate('end'),
+		timePickerValue: filled.timePickerValue,
+		pickerViewTime: filled.pickerViewTime.slice(),
+		hours: hours,
+		minutes: minutes,
+		comment: filled.comment,
+		numberBox: filled.numberBox,
+		combobox: filled.combobox,
+		easyInput: filled.easyInput,
+		dataCheckbox: filled.dataCheckbox,
+		dataPicker: filled.dataPicker,
+		calendarPicker: filled.calendarPicker,
+		// 仅测试
+		testVerifySubmit: false,
+		testVerifyReset: false
+	} as DataType)
+
+	const isDisabled = computed((): boolean => stateMode.value == 'disabled')
+
+	const stateDescription = computed((): string => {
+		if (stateMode.value == 'placeholder') {
+			return '所有带占位符的表单项已清空并显示 Placeholder；不支持占位符的表单项保持原值。'
+		}
+		if (stateMode.value == 'disabled') {
+			return '所有表单项均处于禁用状态，无法编辑或选择。'
+		}
+		return '所有表单项展示已填写的值。'
+	})
+
+	const submittedText = ref('')
+
+	const formDataText = computed((): string => {
+		const snapshot: UTSJSONObject = {
+			nickname: data.nickname,
+			gender: data.gender,
+			loves: data.loves,
+			age: data.age,
+			remember: data.remember,
+			timeZone: data.timeZoneList[data.timeZoneIndex],
+			multiValue: `${data.multiArray[0][data.multiIndex[0]]}/${data.multiArray[1][data.multiIndex[1]]}/${data.multiArray[2][data.multiIndex[2]]}`,
+			timePickerValue: data.timePickerValue,
+			datePickerValue: data.datePickerValue,
+			pickerViewTime: `${data.hours[data.pickerViewTime[0]]}时${data.minutes[data.pickerViewTime[1]]}分`,
+			comment: data.comment,
+			numberBox: data.numberBox,
+			combobox: data.combobox,
+			easyInput: data.easyInput,
+			dataCheckbox: data.dataCheckbox,
+			dataPicker: data.dataPicker,
+			calendarPicker: data.calendarPicker
+		}
+		return JSON.stringify(snapshot)
+	})
+
+	function resetMultiArray(): void {
+		data.multiArray[0] = ['亚洲', '欧洲']
+		data.multiArray[1] = ['中国', '日本']
+		data.multiArray[2] = ['北京', '上海', '广州']
+	}
+
+	function restoreFilled(): void {
+		data.nickname = filled.nickname
+		data.gender = filled.gender
+		data.loves = filled.loves.slice()
+		data.age = filled.age
+		data.remember = filled.remember
+		data.timeZoneIndex = filled.timeZoneIndex
+		resetMultiArray()
+		data.multiIndex[0] = filled.multiIndex[0]
+		data.multiIndex[1] = filled.multiIndex[1]
+		data.multiIndex[2] = filled.multiIndex[2]
+		data.datePickerValue = filled.datePickerValue
+		data.timePickerValue = filled.timePickerValue
+		data.pickerViewTime[0] = filled.pickerViewTime[0]
+		data.pickerViewTime[1] = filled.pickerViewTime[1]
+		data.comment = filled.comment
+		data.numberBox = filled.numberBox
+		data.combobox = filled.combobox
+		data.easyInput = filled.easyInput
+		data.dataCheckbox = filled.dataCheckbox
+		data.dataPicker = filled.dataPicker
+		data.calendarPicker = filled.calendarPicker
+	}
+
+	// 只清空支持 placeholder 的表单项，其余表单项保持原值
+	function clearPlaceholderValues(): void {
+		data.nickname = ''
+		data.comment = ''
+		data.combobox = ''
+		data.easyInput = ''
+		data.dataPicker = ''
+		data.calendarPicker = ''
+	}
+
+	function applyState(mode: string): void {
+		stateMode.value = mode
+		if (mode == 'placeholder') {
+			clearPlaceholderValues()
+		} else {
+			restoreFilled()
+		}
+	}
+
+	const onStateChange = (e: UniRadioGroupChangeEvent) => {
+		applyState(e.detail.value)
+	}
+
+	const onTimeZoneChange = (e: UniPickerChangeEvent) => {
+		data.timeZoneIndex = e.detail.value as number
+		console.log('时区选择改变，携带值为：' + e.detail.value)
+	}
+
+	const onMultiPickerColumnChange = (e: UniPickerColumnChangeEvent) => {
+		console.log('修改的列为：' + e.detail.column + '，值为：' + e.detail.value)
+		data.multiIndex[e.detail.column] = e.detail.value
+		switch (e.detail.column) {
+			case 0: // 拖动第1列
+				switch (data.multiIndex[0]) {
+					case 0:
+						data.multiArray[1] = ['中国', '日本']
+						data.multiArray[2] = ['北京', '上海', '广州']
+						break
+					case 1:
+						data.multiArray[1] = ['英国', '法国']
+						data.multiArray[2] = ['伦敦', '曼彻斯特']
+						break
+				}
+				data.multiIndex.splice(1, 1, 0)
+				data.multiIndex.splice(2, 1, 0)
+				break
+			case 1: // 拖动第2列
+				switch (data.multiIndex[0]) { // 判断第一列是什么
+					case 0:
+						switch (data.multiIndex[1]) {
+							case 0:
+								data.multiArray[2] = ['北京', '上海', '广州']
+								break
+							case 1:
+								data.multiArray[2] = ['东京', '北海道']
+								break
+						}
+						break
+					case 1:
+						switch (data.multiIndex[1]) {
+							case 0:
+								data.multiArray[2] = ['伦敦', '曼彻斯特']
+								break
+							case 1:
+								data.multiArray[2] = ['巴黎', '马赛']
+								break
+						}
+						break
+				}
+				data.multiIndex.splice(2, 1, 0)
+				break
+		}
+	}
+
+	const onDateChange = (e: UniPickerChangeEvent) => {
+		data.datePickerValue = `${e.detail.value}`.split('/').join('-')
+	}
+
+	const onTimeChange = (e: UniPickerChangeEvent) => {
+		data.timePickerValue = `${e.detail.value}`
+	}
+
+	const onFormSubmit = (e: UniFormSubmitEvent) => {
+		submittedText.value = JSON.stringify(e.detail.value)
+
+		// 仅测试
+		data.testVerifySubmit = e.type == 'submit'
+	}
+
+	const onFormReset = (e: UniFormResetEvent) => {
+		applyState('value')
+		submittedText.value = ''
+
+		// 仅测试
+		data.testVerifyReset = e.type == 'reset'
+	}
+</script>
+
+<style>
+	.state-bar {
+		width: 100%;
+		padding: 12px;
+		margin-bottom: 16px;
+		background-color: #f8f8f8;
+		border-radius: 8px;
+		box-sizing: border-box;
+	}
+
+	.state-title {
+		font-size: 14px;
+		font-weight: bold;
+		margin-bottom: 8px;
+	}
+
+	.state-group {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+	}
+
+	.state-item {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		margin-right: 16px;
+		margin-bottom: 4px;
+	}
+
+	.state-text {
+		margin-left: 4px;
+		font-size: 14px;
+	}
+
+	.state-desc {
+		margin-top: 8px;
+	}
+
+	.uni-form-item {
+		width: 100%;
+		padding-top: 8px;
+		padding-bottom: 8px;
+		box-sizing: border-box;
+	}
+
+	.flex-row {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		flex-wrap: wrap;
+	}
+
+	.group-item {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		margin-right: 16px;
+	}
+
+	.title {
+		width: 100%;
+		margin-bottom: 6px;
+		font-size: 14px;
+	}
+
+	.picker-title {
+		width: 100px;
+		font-size: 14px;
+		flex-shrink: 0;
+	}
+
+	.form-text {
+		margin-left: 4px;
+		font-size: 14px;
+	}
+
+	.form-input {
+		width: 100%;
+		height: 36px;
+		padding-left: 8px;
+		padding-right: 8px;
+		font-size: 14px;
+	}
+
+	.form-textarea {
+		width: 100%;
+		height: 80px;
+		padding: 8px;
+		font-size: 14px;
+	}
+
+	.picker {
+		flex: 1;
+		min-width: 0;
+		padding: 8px;
+		/* background-color: #ffffff;
+		border-width: 1px;
+		border-style: solid;
+		border-color: #e5e5e5;
+		border-radius: 5px;
+		box-sizing: border-box; */
+	}
+
+	.picker-value {
+		width: 100%;
+		font-size: 14px;
+	}
+
+	.picker-view-wrap {
+		width: 100%;
+		height: 180px;
+		/* background-color: #ffffff;
+		border-width: 1px;
+		border-style: solid;
+		border-color: #e5e5e5;
+		border-radius: 5px; */
+		overflow: hidden;
+		/* box-sizing: border-box; */
+	}
+
+	.picker-view-wrap--disabled {
+		/* opacity: 0.5; */
+	}
+
+	.picker-view {
+		width: 100%;
+		height: 180px;
+	}
+
+	.picker-view-item {
+		display: flex;
+		flex-direction: column;
+		height: 50px;
+		line-height: 50px;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.picker-view-text {
+		font-size: 14px;
+		/* color: #333333; */
+	}
+
+	.btn {
+		margin-right: 8px;
+	}
+
+	.result {
+		width: 100%;
+		margin-top: 16px;
+		margin-bottom: 6px;
+	}
+
+	.result-textarea {
+		width: 100%;
+		height: 60px;
+		font-size: 12px;
+	}
+
+	/* #ifdef WEB */
+	.state-item {
+		/* cursor: pointer; */
+	}
+
+	.picker {
+		/* cursor: pointer; */
+	}
+
+	.picker-view-wrap--disabled {
+		pointer-events: none;
+	}
+	/* #endif */
+
+	@media (prefers-color-scheme: dark) {
+		.state-bar {
+			background-color: #2c2c2c;
+		}
+
+		/* .form-input,
+		.form-textarea,
+		.picker,
+		.picker-view-wrap {
+			color: #ffffff;
+			background-color: #3b3b3b;
+			border-color: #373737;
+		}
+
+		.picker-value,
+		.picker-view-text {
+			color: #ffffff;
+		} */
+	}
+</style>
+
+<!--
+示例页面，diasable未包含button
+
+value颜色暗黑下不对
+	easyinput
+	number-box
+	combobox
+	data-checkbox
+	data-picker
+	calendar-picker
+
+触发器背景色不对
+
+
+disable
+	color颜色不对
+		input
+		textarea
+		picker
+		number-box
+	cursor不对，还是竖光标
+		textarea
+		data-checkbox
+		data-picker
+	disable时不应该置焦
+		data-picker
+		calendar-picker
+-->

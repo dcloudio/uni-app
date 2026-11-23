@@ -381,13 +381,6 @@ page {
 	word-break: break-all;
 }
 
-@media (min-width: 768px) {
-	page {
-		max-width: 760px;
-		margin-left: auto;
-		margin-right: auto;
-	}
-}
 /* #endif */
 
 @media (prefers-color-scheme: dark) {

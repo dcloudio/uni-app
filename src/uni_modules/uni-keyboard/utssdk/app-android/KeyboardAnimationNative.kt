@@ -40,6 +40,9 @@ object KeyboardAnimationNative {
     // 记录动画开始时键盘是否已显示，用于区分「弹出动画」与「收起动画」
     private var imeVisibleAtStart: Boolean = false
 
+    // 上一次动画结束后的稳定 ime 高度，作为下一次动画 start 的起始高度
+    private var settledIme: Int = 0
+
     /**
      * 注册键盘动画进度回调
      *
@@ -58,6 +61,7 @@ object KeyboardAnimationNative {
         lastRunningIme = 0
         lastRunningTappable = 0
         imeVisibleAtStart = false
+        settledIme = 0
 
         val cb = object : WindowInsetsAnimationCompat.Callback(
             WindowInsetsAnimationCompat.Callback.DISPATCH_MODE_CONTINUE_ON_SUBTREE
@@ -68,7 +72,9 @@ object KeyboardAnimationNative {
             ): WindowInsetsAnimationCompat.BoundsCompat {
                 // 仅处理 IME 动画，忽略状态栏、导航栏等其他 insets 动画
                 if (isImeTypeMask(animation.typeMask)) {
-                    val ime = currentIme()
+                    // start 为「动画开始前」的稳定高度（上次动画结束值）：弹起为 0，收起为上次键盘高；
+                    // tappable 非动画量，直接现取（切导航栏后也能拿到当前值）
+                    val ime = settledIme
                     val tappable = currentTappable()
                     imeVisibleAtStart = ime > 0
                     keyboardCallback?.invoke(ime, tappable, "start")
@@ -106,6 +112,7 @@ object KeyboardAnimationNative {
                         ime = if (imeVisibleAtStart) 0 else lastRunningIme
                         tappable = lastRunningTappable
                     }
+                    settledIme = ime
                     keyboardCallback?.invoke(ime, tappable, "end")
                 }
                 super.onEnd(animation)
@@ -131,6 +138,7 @@ object KeyboardAnimationNative {
         lastRunningIme = 0
         lastRunningTappable = 0
         imeVisibleAtStart = false
+        settledIme = 0
     }
 
     /**

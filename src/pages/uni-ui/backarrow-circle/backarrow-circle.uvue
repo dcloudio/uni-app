@@ -1,7 +1,7 @@
 <template>
 	<!-- 悬浮导航：返回按钮常驻，页面滚动后显示标题与背景。 -->
 		<view class="navigation-bar" :class="{ 'navigation-bar--scrolled': scrolled }">
-			<!-- 支付宝小程序导航栏左上角返回按钮始终存在，无法隐藏，会导致重叠 -->
+			<!-- 支付宝小程序导航栏左上角返回按钮始终存在，无法隐藏，会导致重叠，保留原生返回按钮，仅由页面绘制标题。 -->
 			<!-- #ifndef MP-ALIPAY -->
 			<uni-backarrow-circle id="default-back" class="navigation-back" :class="{ 'navigation-back--scrolled': scrolled }" ios-glass auto-back @click="onBackClick" />
 			<!-- #endif -->

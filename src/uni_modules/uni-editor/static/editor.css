@@ -477,11 +477,15 @@ body {
 }
 
 .ql-editor.ql-blank::before {
-  color: #757575;
+  color: var(--uni-editor-placeholder-color, rgba(60, 60, 67, 0.30));
   content: attr(data-placeholder);
   font-style: italic;
   pointer-events: none;
   position: absolute;
+}
+
+html[data-theme='dark'] {
+  --uni-editor-placeholder-color: rgba(255, 255, 255, 0.35);
 }
 
 .ql-container.ql-disabled .ql-editor ul[data-checked]>li::before {

@@ -1004,9 +1004,19 @@ class UniAndroidAdjustPositionHelper {
 			const visibleRect = new Rect()
 			sessionPageBodyView.getLocationOnScreen(location)
 			sessionPageBodyView.getWindowVisibleDisplayFrame(visibleRect)
+			let bodyScreenTop = location[1]
+			if (Build.VERSION.SDK_INT >= 30) {
+				const activity = this.element.getAndroidActivity()
+				const rootView = sessionPageBodyView.getRootView()
+				if (activity != null && rootView === activity.getWindow().getDecorView()) {
+					rootView.getLocationOnScreen(location)
+					const windowBounds = activity.getWindowManager().getCurrentWindowMetrics().getBounds()
+					bodyScreenTop = bodyScreenTop - location[1] + windowBounds.top
+				}
+			}
 			// DOMRect 相对 BODY；用同一屏幕坐标系求键盘遮住的 BODY 高度。
 			const nativeBodyHeight = sessionPageBodyView.getHeight()
-			const visibleHeight = Math.max(0, Math.min(nativeBodyHeight, visibleRect.bottom - location[1]))
+			const visibleHeight = Math.max(0, Math.min(nativeBodyHeight, visibleRect.bottom - bodyScreenTop))
 			adjustWindowHeight = ValueHelper.value2dip(nativeBodyHeight)
 			adjustKeyboardHeight = ValueHelper.value2dip(nativeBodyHeight - visibleHeight)
 		}

@@ -12,7 +12,7 @@ uni-combobox 是可输入可选择的组合组件。其弹出层悬浮在组件�
 ## 使用方式（职责分工）
 
 - 组件内部负责：
-  - 渲染选择框、占位文字、右侧箭头与候选浮层。
+  - 渲染选择框、单选模式的占位文字、右侧箭头与候选浮层。
   - 计算浮层位置，下方空间不足且上方更充足时自动向上展开；浮层通过 `teleport` 渲染到页面层，不受组件尺寸裁剪。
   - 默认只读选择；组合模式下按输入内容过滤候选并高亮匹配项。
   - 同一页面最多展开一个组合框。打开另一个组合框时，当前浮层会自动关闭。
@@ -23,7 +23,7 @@ uni-combobox 是可输入可选择的组合组件。其弹出层悬浮在组件�
   - 候选项为空时的提示文案跟随应用语言（简体中文、繁体中文、英文、法文、拉丁文）。
 - 使用者负责：
   - 传入候选字符串数组 `options`，并用 `v-model` 绑定当前值。
-  - 组合模式下自行提供 input（或其它输入组件）作为 `input` 插槽内容，并把插槽提供的 `value`、`input`、`focus`、`disabled` 接到输入组件上。
+  - 组合模式下自行提供 input（或其它输入组件）作为 `input` 插槽内容，并把插槽提供的 `value`、`input`、`focus`、`disabled` 接到输入组件上。占位文字和样式需在输入组件上设置。
   - 通过外部样式类定制各区域外观。
   - 通过组件 ref 调用对外方法。
 
@@ -43,7 +43,7 @@ const value = ref('')
 ## 组合模式（可输入、可选择）
 
 ```html
-<uni-combobox :options="cities" v-model="city" placeholder="选择或输入城市">
+<uni-combobox :options="cities" v-model="city">
   <template #input="{ value, input, focus, disabled }">
     <input
       :value="value"
@@ -56,6 +56,8 @@ const value = ref('')
   </template>
 </uni-combobox>
 ```
+
+组件的 `placeholder` 和 `placeholder-class` 仅在单选模式下生效。使用 `input` 插槽时，请在插槽内的输入组件上设置 `placeholder` 和 `placeholder-class`；即使输入组件未设置占位文字，也不会使用组件的 `placeholder`。
 
 点击输入框时打开候选浮层，已展开时再次点击保持展开，方便调整光标。输入时按包含关系过滤候选项。点击右侧箭头切换浮层开关，打开时展示完整候选列表，并高亮当前输入匹配项。禁用后不可输入、展开或选择候选项。
 

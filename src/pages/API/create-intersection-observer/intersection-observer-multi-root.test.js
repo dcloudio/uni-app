@@ -14,19 +14,22 @@ describe('API-intersection-observer-multi-root', () => {
 	}
 
 	// 页面滚动内容布局（逻辑像素）：
-	// 外层 scroll-view：nested-scroll-header（约 350px，含头部被观察元素） + nested-scroll-body（内层 scroll-view）
-	// 内层 scroll-view：列表项 0~800，被观察元素 800~950，列表项 950~1750
+	// 外层 scroll-view：nested-scroll-header（约 350px，含头部被观察元素） + nested-scroll-body（内层 list-view）
+	// 内层 list-view：列表项 0~800，被观察元素 800~950，列表项 950~1750
 	let page
 	let outerScroll
-	let innerScroll
 
 	beforeAll(async () => {
 		page = await program.reLaunch('/pages/API/create-intersection-observer/intersection-observer-multi-root')
 		await page.waitFor('#mr-outer')
 		outerScroll = await page.$('#mr-outer')
-		innerScroll = await page.$('#mr-inner')
 		await page.waitFor(1000)
 	})
+
+	// list-view 不支持 scrollTo，改用页面暴露的 scroll-top 控制方法
+	async function scrollInner(top) {
+		await page.callMethod('jest_scrollInner', top)
+	}
 
 	async function textOf(selector) {
 		const el = await page.$(selector)
@@ -48,7 +51,7 @@ describe('API-intersection-observer-multi-root', () => {
 
 	it('初始状态：头部元素显示', async () => {
 		await outerScroll.scrollTo(0, 0)
-		await innerScroll.scrollTo(0, 0)
+		await scrollInner(0)
 		expect(await waitStatusText('#mr-status-header', '显示')).toContain('显示')
 	})
 
@@ -62,10 +65,10 @@ describe('API-intersection-observer-multi-root', () => {
 		await outerScroll.scrollTo(0, 500)
 		await page.waitFor(300)
 
-		await innerScroll.scrollTo(0, 700)
+		await scrollInner(700)
 		expect(await waitStatusText('#mr-status-inner', '相对内层滚动区：显示')).toContain('相对内层滚动区：显示')
 
-		await innerScroll.scrollTo(0, 1600)
+		await scrollInner(1600)
 		expect(await waitStatusText('#mr-status-inner', '相对内层滚动区：隐藏')).toContain('相对内层滚动区：隐藏')
 	})
 
@@ -73,10 +76,10 @@ describe('API-intersection-observer-multi-root', () => {
 		await outerScroll.scrollTo(0, 500)
 		await page.waitFor(300)
 
-		await innerScroll.scrollTo(0, 700)
+		await scrollInner(700)
 		expect(await waitStatusText('#mr-status-viewport', '显示')).toContain('显示')
 
-		await innerScroll.scrollTo(0, 1600)
+		await scrollInner(1600)
 		expect(await waitStatusText('#mr-status-viewport', '隐藏')).toContain('隐藏')
 	})
 })

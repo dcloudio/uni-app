@@ -25,7 +25,7 @@ export function checkPermission(appid: string, gyid: string): Promise<void> {
 				firstIpv4: null,
 				complete: null,
 				enableChunked: null,
-				url: "https://s1.dcloud.net.cn/unilogin/check-permission",
+				url: "https://ucoaul1.dcloud.net.cn/http/unilogin/api/preLogin",
 				method: "POST",
 				data: {
 					"appid": appid,

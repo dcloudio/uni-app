@@ -502,7 +502,9 @@ class NativeInputFileView {
 	}
 
 	updateSelectionColor(value: string) {
-		this.params.selectedBackgroundColor = value == '' ? undefined : UTSHarmony.colorWithString(value)
+		const color = value == '' ? undefined : UTSHarmony.colorWithString(value)
+		if (this.params.selectedBackgroundColor == color) return
+		this.params.selectedBackgroundColor = color
 		this.updateParams()
 	}
 

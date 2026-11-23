@@ -18,7 +18,7 @@
 
 .error-text {
   background-color: #ffffff;
-  color: #dd524d;
+  color: rgb(255, 59, 48);
   padding: 15px;
 }
 
@@ -147,6 +147,7 @@
 
   .error-text {
     background-color: #2d2d2d;
+    color: rgb(255, 91, 95);
   }
 
   .selected-node-item {

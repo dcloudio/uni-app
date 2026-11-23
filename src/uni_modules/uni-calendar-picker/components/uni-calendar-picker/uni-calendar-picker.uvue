@@ -1,7 +1,7 @@
 <template>
 	<view style="position: relative;">
 		<!-- 触发区，默认插槽可替换 -->
-		<view class="cp-trigger" ref="anchorRef" @click="onTriggerClick"
+		<view class="cp-trigger" :class="props.disabled ? 'cp-trigger--disabled' : ''" ref="anchorRef" @click="onTriggerClick"
 			<!-- #ifdef WEB -->
 			:tabindex="props.disabled ? '-1' : '0'"
 			@keydown="onTriggerKeydown"
@@ -1908,32 +1908,37 @@ defineExpose({
 
 	.uni-field-default {
 		flex-direction: row;
+		align-items: center;
 		padding: 8px 10px;
 		background-color: #ffffff;
 		border-width: 1px;
 		border-style: solid;
-		border-color: var(--input-border-color, #dcdfe6);
+		border-color: #dcdfe6;
 		border-radius: 5px;
 	}
 
 	.cp-trigger-disabled {
-		opacity: 0.5;
+		background-color: rgba(0, 0, 0, 0.04);
+	}
+
+	.cp-trigger-disabled .cp-trigger-value {
+		color: rgba(60, 60, 67, 0.3);
 	}
 
 	.uni-result-text {
 		flex: 1;
 		font-size: 14px;
 		/* #ifdef uniVersion <5.41 */
-		color: var(--text-color, #333333);
+		color: #333333;
 		/* #endif */
 	}
 
 	.cp-trigger-value {
-		color: var(--text-color, #333333);
+		color: #333333;
 	}
 
 	.cp-trigger-placeholder {
-		color: var(--secondary-text-color, #999999);
+		color: rgba(60, 60, 67, 0.30);
 	}
 
 	/* .uni-arrow-wrap {
@@ -1949,10 +1954,10 @@ defineExpose({
 		height: 8px;
 		border-left-width: 2px;
 		border-left-style: solid;
-		border-left-color: var(--arrow-color, #999999);
+		border-left-color: #999999;
 		border-bottom-width: 2px;
 		border-bottom-style: solid;
-		border-bottom-color: var(--arrow-color, #999999);
+		border-bottom-color: #999999;
 	} */
 
 	.cp-mask {
@@ -1961,7 +1966,7 @@ defineExpose({
 		top: 0;
 		right: 0;
 		bottom: 0;
-		background-color: rgba(0, 0, 0, 0.4);
+		background-color: rgba(0, 0, 0, 0.30);
 		flex-direction: column;
 		z-index: 100;
 		opacity: 0;
@@ -1980,7 +1985,7 @@ defineExpose({
 		right: 0;
 		bottom: 0;
 		height: 80%;
-		background-color: var(--content-background-color, #ffffff);
+		background-color: #ffffff;
 		border-top-left-radius: 12px;
 		border-top-right-radius: 12px;
 		flex-direction: column;
@@ -2005,10 +2010,10 @@ defineExpose({
 		flex-direction: row;
 		align-items: center;
 		height: 44px;
-		background-color: var(--content-background-color, #ffffff);
+		background-color: #ffffff;
 		border-bottom-width: 1px;
 		border-bottom-style: solid;
-		border-bottom-color: var(--divider-color, #eeeeee);
+		border-bottom-color: #eeeeee;
 	}
 
 	.cp-close {
@@ -2026,7 +2031,7 @@ defineExpose({
 	.cp-close-line {
 		width: 16px;
 		height: 2px;
-		background-color: var(--secondary-text-color, #999999);
+		background-color: #999999;
 		border-radius: 2px;
 		transform: rotate(45deg);
 	}
@@ -2045,7 +2050,7 @@ defineExpose({
 
 	.cp-cancel-text {
 		font-size: 15px;
-		color: var(--tips-color, #2979ff);
+		color: #2979ff;
 	}
 
 	/* 确认模式：右上角确定按钮 */
@@ -2065,7 +2070,7 @@ defineExpose({
 	.cp-confirm-text {
 		font-size: 15px;
 		font-weight: 500;
-		color: var(--tips-color, #2979ff);
+		color: #2979ff;
 	}
 
 	.cp-title-wrap {
@@ -2084,7 +2089,7 @@ defineExpose({
 		font-size: 15px;
 		font-weight: 500;
 		text-align: center;
-		color: var(--text-color, #333333);
+		color: #333333;
 	}
 
 	.cp-title-wrap-confirm {
@@ -2108,10 +2113,10 @@ defineExpose({
 		height: 28px;
 		align-items: center;
 		padding: 10px 16px;
-		background-color: var(--content-background-color, #ffffff);
+		background-color: #ffffff;
 		border-top-width: 1px;
 		border-top-style: solid;
-		border-top-color: var(--divider-color, #eeeeee);
+		border-top-color: #eeeeee;
 	}
 
 	.cp-preview-text {
@@ -2136,12 +2141,12 @@ defineExpose({
 		outline: none;
 	}
 
-	.cp-trigger-disabled {
-		cursor: default;
+	.cp-trigger--disabled {
+		cursor: not-allowed;
 	}
 
-	.cp-trigger:focus .uni-field-default {
-		border-color: var(--tips-color, #2979ff);
+	.cp-trigger:not(.cp-trigger--disabled):focus .uni-field-default {
+		border-color: #2979ff;
 		box-shadow: 0 0 0 3px rgba(41, 121, 255, 0.24);
 	}
 
@@ -2155,7 +2160,7 @@ defineExpose({
 	}
 
 	.cp-close:focus .cp-close-line {
-		background-color: var(--tips-color, #2979ff);
+		background-color: #2979ff;
 	}
 
 	.cp-close-cancel:focus .cp-cancel-text {
@@ -2201,7 +2206,7 @@ defineExpose({
 	.cp-cal-wide-second {
 		border-left-width: 1px;
 		border-left-style: solid;
-		border-left-color: var(--divider-color, #eeeeee);
+		border-left-color: #eeeeee;
 	}
 
 	@media (prefers-color-scheme: dark) {
@@ -2218,8 +2223,16 @@ defineExpose({
 			color: #ffffff;
 		}
 
+		.cp-trigger-disabled {
+			background-color: rgba(255, 255, 255, 0.04);
+		}
+
+		.cp-trigger-disabled .cp-trigger-value {
+			color: rgba(255, 255, 255, 0.40);
+		}
+
 		.cp-trigger-placeholder {
-			color: rgba(255, 255, 255, 0.65);
+			color: rgba(255, 255, 255, 0.35);
 		}
 
 		/* .uni-arrow {
@@ -2227,12 +2240,16 @@ defineExpose({
 			border-bottom-color: #ffffff;
 		} */
 
+		.cp-mask {
+			background-color: rgba(0, 0, 0, 0.55);
+		}
+
 		.cp-popup {
-			background-color: #2d2d2d;
+			background-color: #2c2c2c;
 		}
 
 		.cp-header {
-			background-color: #2d2d2d;
+			background-color: #2c2c2c;
 			border-bottom-color: rgba(255, 255, 255, 0.12);
 		}
 
@@ -2253,7 +2270,7 @@ defineExpose({
 		}
 
 		.cp-footer {
-			background-color: #2d2d2d;
+			background-color: #2c2c2c;
 			border-top-color: rgba(255, 255, 255, 0.12);
 		}
 
@@ -2264,5 +2281,16 @@ defineExpose({
 		.cp-cal-wide-second {
 			border-left-color: rgba(255, 255, 255, 0.12);
 		}
+
 	}
+
+	/* #ifdef WEB */
+	@media all and (min-width: 700px) and (prefers-color-scheme: dark) {
+		.cp-popup,
+		.cp-header,
+		.cp-footer {
+			background-color: #3b3b3b;
+		}
+	}
+	/* #endif */
 </style>

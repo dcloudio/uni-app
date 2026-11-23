@@ -192,7 +192,6 @@
 
   .user-info{
     margin-top: -110px;
-    flex: 1;
     padding: 15px;
     flex-direction: row;
     z-index: 10;

@@ -163,7 +163,7 @@ type Props = {
 	 */
 	modelValue? : string,
 	/**
-	 * @description 占位文字
+	 * @description 单选模式下无选中值时的占位文字；使用 input 插槽时请在输入组件上设置
 	 * @default ""
 	 * @uniPlatform {
 	 *   "app": {
@@ -1297,7 +1297,7 @@ onBackPress(() : boolean => {
 }
 
 .uni-field-default--disabled {
-	background-color: #f7f6f6;
+	background-color: rgba(0, 0, 0, 0.04);
 }
 
 .uni-combobox__disabled-mask {
@@ -1324,11 +1324,11 @@ onBackPress(() : boolean => {
 }
 
 .uni-field-result--disabled {
-	color: #d5d5d5;
+	color: rgba(60, 60, 67, 0.3);
 }
 
 .uni-field-result--placeholder {
-	color: #808080;
+	color: rgba(60, 60, 67, 0.30);
 }
 /* #ifdef uniVersion <5.36 */
 .uni-combobox__arrow-wrap {
@@ -1456,7 +1456,7 @@ onBackPress(() : boolean => {
 	}
 
 	.uni-field-default--disabled {
-		background-color: #3b3b3b;
+		background-color: rgba(255, 255, 255, 0.04);
 	}
 
 	.uni-field-result {
@@ -1464,11 +1464,11 @@ onBackPress(() : boolean => {
 	}
 
 	.uni-field-result--disabled {
-		color: #8f8f8f;
+		color: rgba(255, 255, 255, 0.40);
 	}
 
 	.uni-field-result--placeholder {
-		color: #5f5f5f;
+		color: rgba(255, 255, 255, 0.35);
 	}
 
 	.uni-combobox-pop__item {

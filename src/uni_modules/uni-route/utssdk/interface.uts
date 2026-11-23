@@ -1737,7 +1737,12 @@ export type NavigateBackOptions = {
      *      "ios": {
      *          "uniVer": "√",
      *          "unixVer": "4.25"
-     *      }
+     *      },
+     *    "harmony": {
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixVaporVer": "5.0"
+     *    }
      *  },
      *  "mp": {
      *    "weixin": {
@@ -2080,8 +2085,14 @@ export type NavigateBackOptions = {
      *      },
      *      "ios": {
      *          "uniVer": "√",
-     *          "unixVer": "x"
-     *      }
+     *          "unixVer": "4.11",
+     *          "unixVaporVer": "5.14"
+     *      },
+     *    "harmony": {
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixVaporVer": "5.0"
+     *    }
      *  },
      *  "mp": {
      *    "weixin": {

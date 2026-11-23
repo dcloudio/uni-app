@@ -490,6 +490,20 @@ function testSetContentsHtml() {
   })
 }
 
+// #ifdef WEB
+function selectEditorTextForTest() {
+  const editor = document.querySelector('#editor-props-demo [contenteditable="true"]')
+  const selection = window.getSelection()
+  if (editor == null || selection == null) return ''
+
+  const range = document.createRange()
+  range.selectNodeContents(editor)
+  selection.removeAllRanges()
+  selection.addRange(range)
+  return selection.toString()
+}
+// #endif
+
 defineExpose({
   data,
   getTypeLabel,
@@ -512,7 +526,10 @@ defineExpose({
   blurEditor,
   hideKeyboardForTest,
   updateEditorRect,
-  testSetContentsHtml
+  testSetContentsHtml,
+  // #ifdef WEB
+  selectEditorTextForTest,
+  // #endif
 })
 </script>
 

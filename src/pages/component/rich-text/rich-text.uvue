@@ -259,6 +259,24 @@
 		}
 	}
 
+	// #ifdef WEB
+	function selectRichTextForTest(select = true) {
+		const selection = window.getSelection()
+		if (selection == null) return ''
+
+		selection.removeAllRanges()
+		if (!select) return ''
+
+		const richText = document.getElementById('selection-style-rich-text')
+		if (richText == null) return ''
+		richText.scrollIntoView({ block: 'center' })
+		const range = document.createRange()
+		range.selectNodeContents(richText)
+		selection.addRange(range)
+		return selection.toString()
+	}
+	// #endif
+
 	defineExpose({
 		data,
 		changeText,
@@ -271,7 +289,10 @@
 		testOpenDialogPage,
 		testCloseDialogPage,
 		queryUserSelectRect,
-		querySelectionStyleRect
+		querySelectionStyleRect,
+		// #ifdef WEB
+		selectRichTextForTest,
+		// #endif
 	})
 </script>
 

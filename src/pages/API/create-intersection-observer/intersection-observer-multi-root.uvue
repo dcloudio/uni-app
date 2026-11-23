@@ -2,7 +2,7 @@
 	<view class="page">
 		<view class="fixed-area">
 			<text class="title">IntersectionObserver 多根节点测试</text>
-			<text class="hint">当前环境：scroll-view 嵌套模式（外层 nested-scroll-header / nested-scroll-body + 内层 associative-container="nested-scroll-view"）。</text>
+			<text class="hint">当前环境：list-view 嵌套模式（外层 nested-scroll-header / nested-scroll-body + 内层 list-view 设置 associative-container="nested-scroll-view"）。</text>
 			<text id="mr-status-inner" class="result">相对内层滚动区：{{ visibleInner ? '显示' : '隐藏' }} · 相对外层滚动区：{{ visibleOuter ? '显示' : '隐藏' }}</text>
 			<text id="mr-status-viewport" class="result">相对页面视口：{{ visibleViewport ? '显示' : '隐藏' }}</text>
 			<text id="mr-status-header" class="result">头部元素（相对外层滚动区）：{{ visibleHeader ? '显示' : '隐藏' }}</text>
@@ -19,27 +19,32 @@
 			</nested-scroll-header>
 			<nested-scroll-body>
 				<view class="body-wrap">
-					<scroll-view id="mr-inner" class="inner" direction="vertical" associative-container="nested-scroll-view"
-						:show-scrollbar="true" @scroll="onInnerScroll">
-						<view v-for="i in 8" :key="i" class="inner-item"
-							:style="{ backgroundColor: i % 2 == 0 ? '#eef5ff' : '#ffffff' }">
-							<text>内层列表项 {{ i }}</text>
-						</view>
-						<view id="mr-target" class="target"><text>被观察元素</text></view>
-						<view v-for="i in 8" :key="'b' + i" class="inner-item"
-							:style="{ backgroundColor: i % 2 == 0 ? '#eef5ff' : '#ffffff' }">
-							<text>内层列表项 {{ i + 8 }}</text>
-						</view>
-					</scroll-view>
+					<list-view id="mr-inner" class="inner" direction="vertical" associative-container="nested-scroll-view"
+						:scroll-top="innerScrollTop" :show-scrollbar="true" @scroll="onInnerScroll">
+						<list-item v-for="i in 8" :key="i">
+							<view class="inner-item" :style="{ backgroundColor: i % 2 == 0 ? '#eef5ff' : '#ffffff' }">
+								<text>内层列表项 {{ i }}</text>
+							</view>
+						</list-item>
+						<list-item>
+							<view id="mr-target" class="target"><text>被观察元素</text></view>
+						</list-item>
+						<list-item v-for="i in 8" :key="'b' + i">
+							<view class="inner-item" :style="{ backgroundColor: i % 2 == 0 ? '#eef5ff' : '#ffffff' }">
+								<text>内层列表项 {{ i + 8 }}</text>
+							</view>
+						</list-item>
+					</list-view>
 				</view>
 			</nested-scroll-body>
 		</scroll-view>
 	</view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 	const outerTop = ref(0)
 	const innerTop = ref(0)
+	const innerScrollTop = ref(0)
 	const visibleInner = ref(false)
 	const visibleOuter = ref(false)
 	const visibleViewport = ref(false)
@@ -57,6 +62,25 @@
 	function onInnerScroll(event : UniScrollEvent) {
 		innerTop.value = Math.round(event.detail.scrollTop)
 	}
+
+	// list-view 不支持 scrollTo，自动化测试通过 scroll-top 控制内层滚动位置。
+	// 返回 Promise，待目标值真正写入后 resolve，保证测试端 await page.callMethod 具备完成语义。
+	function jest_scrollInner(y : number) : Promise<void> {
+		return new Promise<void>((resolve, _reject) => {
+			// 先写入一个不同的值，避免 list-view 忽略与上次相同的 scroll-top
+			innerScrollTop.value = y > 0 ? y - 1 : 1
+			nextTick(() => {
+				innerScrollTop.value = y
+				nextTick(() => {
+					resolve()
+				})
+			})
+		})
+	}
+
+	defineExpose({
+		jest_scrollInner
+	})
 
 	onReady(() => {
 		componentInstance = getCurrentInstance()!.proxy!

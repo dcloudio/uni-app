@@ -17,7 +17,7 @@
 
 	<text class="uni-h4">input 插槽：可输入可选择</text>
 	<text class="uni-info">插槽提供 value、input、focus、disabled 四个参数，输入时按包含关系过滤候选。</text>
-	<uni-combobox :options="cityOptions" v-model="city" placeholder="选择或输入城市" @selectchange="onCityChange">
+	<uni-combobox :options="cityOptions" v-model="city" @selectchange="onCityChange">
 		<template #input="{ value, input, focus, disabled }">
 			<input class="custom-input" placeholder-class="custom-placeholder" :value="value" :disabled="disabled"
 				:confirm-hold="true" placeholder="选择或输入城市" @focus="focus" @input="input" />
@@ -38,6 +38,15 @@
 		</uni-forms-item>
 	</uni-forms>
 	<text class="uni-log">当前选择：{{ plainForm.city }}</text>
+
+	<text class="uni-h4">plain + input 插槽：透明无边框，可输入可选择</text>
+	<uni-combobox plain :options="cityOptions" v-model="plainInputValue">
+		<template #input="{ value, input, focus, disabled }">
+			<input class="custom-input" placeholder-class="custom-placeholder" :value="value" :disabled="disabled"
+				:confirm-hold="true" placeholder="选择或输入城市" @focus="focus" @input="input" />
+		</template>
+	</uni-combobox>
+	<text class="uni-log">当前输入：{{ plainInputValue }}</text>
 
 	<text class="uni-h4">field-class：选择框样式</text>
 	<uni-combobox field-class="borderless-combobox" :options="cityOptions" v-model="borderlessValue"
@@ -108,6 +117,7 @@
 	const modelValue = ref<string>('')
 	const disabledValue = ref<string>('三年级')
 	const plainForm = ref({ city: '' })
+	const plainInputValue = ref<string>('')
 	const borderlessValue = ref<string>('')
 	const arrowClassValue = ref<string>('')
 	const optionsViewClassValue = ref<string>('')
@@ -284,7 +294,7 @@
 		.plain-form-item {
 			background-color: #3b3b3b;
 		}
-		
+
 		.custom-placeholder {
 			color: #5f5f5f;
 		}
