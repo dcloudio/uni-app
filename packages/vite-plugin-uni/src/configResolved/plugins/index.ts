@@ -5,6 +5,7 @@ import type { FilterPattern } from '@rollup/pluginutils'
 
 import {
   COMMON_EXCLUDE,
+  PREPROCESS_EXCLUDE,
   isNormalCompileTarget,
   requireUniHelpers,
   resolveHBuilderXPluginPath,
@@ -35,7 +36,7 @@ export function initPlugins(
   options: VitePluginUniResolvedOptions
 ) {
   const uniPrePluginOptions: Partial<UniPluginFilterOptions> = {
-    exclude: [...COMMON_EXCLUDE, UNI_H5_RE],
+    exclude: [...COMMON_EXCLUDE, UNI_H5_RE, ...PREPROCESS_EXCLUDE],
   }
   const uniPreCssPluginOptions: Partial<UniPluginFilterOptions> = {
     exclude: [...COMMON_EXCLUDE],

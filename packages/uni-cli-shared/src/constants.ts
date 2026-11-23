@@ -58,6 +58,11 @@ export const X_BASE_COMPONENTS_STYLE_PATH = '@dcloudio/uni-components/style-x/'
 export const X_VAPOR_BASE_COMPONENTS_STYLE_PATH =
   '@dcloudio/uni-components/style-x-vapor/'
 
+export const PREPROCESS_EXCLUDE = [
+  // pako 保留了 zlib 的 C 预处理指令，跳过整个依赖包的条件编译。
+  /(?:^|[/\\])node_modules[/\\]pako[/\\]/,
+]
+
 export const COMMON_EXCLUDE = [
   /\/pages\.json\.js$/,
   /\/manifest\.json\.js$/,

@@ -1,6 +1,7 @@
 import fs from 'fs'
 import os from 'os'
 import path from 'path'
+import { PREPROCESS_EXCLUDE } from '../src/constants'
 import { M } from '../src/messages'
 import { uniPrePlugin } from '../src/vite/plugins/pre'
 
@@ -39,6 +40,44 @@ describe('pre plugin', () => {
     restoreEnv('UNI_APP_X_DOM2', originalEnv.UNI_APP_X_DOM2)
     restoreEnv('UNI_INPUT_DIR', originalEnv.UNI_INPUT_DIR)
     restoreEnv('UNI_PLATFORM', originalEnv.UNI_PLATFORM)
+  })
+
+  test.each([
+    '/项目 [demo](1)/node_modules/pako/lib/zlib/trees.js?v=1',
+    '/project/node_modules/.pnpm/pako@1.0.11/node_modules/pako/lib/zlib/deflate.js',
+    String.raw`C:\项目 [demo](1)\node_modules\pako\lib\zlib\inflate.js`,
+    String.raw`\\server\share\node_modules\pako\lib\zlib\inffast.js`,
+  ])('跳过 pako 源文件 %s', (id) => {
+    const plugin = uniPrePlugin({ build: {} } as any, {
+      exclude: PREPROCESS_EXCLUDE,
+    })
+    const source = '/*#ifdef NO_INIT_GLOBAL_POINTERS\ninit();\n#endif*/'
+    expect((plugin.transform as any)(source, id)).toBeUndefined()
+  })
+
+  test.each([
+    '/project/src/pako/lib/zlib/trees.js',
+    '/project/node_modules/pako-extra/lib/zlib/trees.js',
+    '/project/node_modules/@scope/pako/lib/zlib/trees.js',
+  ])('继续处理其他模块的条件编译 %s', (id) => {
+    const plugin = uniPrePlugin({ build: {} } as any, {
+      exclude: PREPROCESS_EXCLUDE,
+    })
+    const source = '// #ifdef UNKNOWN\ndrop()\n// #endif\nkeep()'
+    const result = (plugin.transform as any)(source, id)
+    expect(result.code).toContain('keep()')
+    expect(result.code).not.toContain('drop()')
+  })
+
+  test('调用方可覆盖默认排除规则', () => {
+    const plugin = uniPrePlugin({ build: {} } as any, { exclude: [] })
+    const source = '// #ifdef UNKNOWN\ndrop()\n// #endif\nkeep()'
+    const result = (plugin.transform as any)(
+      source,
+      '/project/node_modules/pako/index.js'
+    )
+    expect(result.code).toContain('keep()')
+    expect(result.code).not.toContain('drop()')
   })
 
   test('warns only for the expected APP root scroll-view wrapper', () => {

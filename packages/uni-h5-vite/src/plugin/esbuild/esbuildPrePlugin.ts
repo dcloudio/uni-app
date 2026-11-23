@@ -1,15 +1,22 @@
 import fs from 'fs'
 import path from 'path'
 import type { Loader, Plugin } from 'esbuild'
+import { type FilterPattern, createFilter } from '@rollup/pluginutils'
 import { preJs } from '@dcloudio/uni-cli-shared'
 
 export const JS_TYPES_RE = /\.(?:j|t)sx?$|\.mjs$/
 
-export function esbuildPrePlugin(): Plugin {
+export function esbuildPrePlugin(
+  options: { include?: FilterPattern; exclude?: FilterPattern } = {}
+): Plugin {
+  const filter = createFilter(options.include, options.exclude)
   return {
     name: 'uni:dep-scan',
     setup(build) {
       build.onLoad({ filter: JS_TYPES_RE }, ({ path: id }) => {
+        if (!filter(id)) {
+          return
+        }
         let ext = path.extname(id).slice(1)
         if (ext === 'mjs') ext = 'js'
         if (fs.existsSync(id)) {

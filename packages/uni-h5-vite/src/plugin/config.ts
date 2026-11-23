@@ -5,6 +5,7 @@ import type { SourcemapPathTransformOption } from 'rollup'
 import type { Plugin, ResolvedConfig, ServerOptions } from 'vite'
 import { extend, hasOwn, isPlainObject } from '@vue/shared'
 import {
+  PREPROCESS_EXCLUDE,
   getDevServerOptions,
   getWorkersRootDirs,
   initPostcssPlugin,
@@ -138,7 +139,7 @@ export function createConfig(options: {
         entries: resolveMainPathOnce(inputDir),
         exclude: external,
         esbuildOptions: {
-          plugins: [esbuildPrePlugin()],
+          plugins: [esbuildPrePlugin({ exclude: PREPROCESS_EXCLUDE })],
         },
       },
       define: createDefine(env.command, config),
