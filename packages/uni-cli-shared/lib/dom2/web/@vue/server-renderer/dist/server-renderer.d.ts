@@ -35,9 +35,9 @@ export declare function pipeToWebWritable(input: App | VNode, context: SSRContex
 //#endregion
 //#region temp/packages/server-renderer/src/helpers/ssrRenderSlot.d.ts
 type SSRSlots = Record<string, SSRSlot>;
-type SSRSlot = (props: Props, push: PushFn, parentComponent: ComponentInternalInstance | null, scopeId: string | null) => void;
+type SSRSlot = (props: Props, push: PushFn, parentComponent: ComponentInternalInstance | null, scopeId: string | null, slotAttrs?: Props) => void;
 export declare function ssrRenderSlot(slots: Slots | SSRSlots, slotName: string, slotProps: Props | null | undefined, fallbackRenderFn: (() => void) | null, push: PushFn, parentComponent: ComponentInternalInstance, slotScopeId?: string, textMode?: boolean): void;
-export declare function ssrRenderSlotInner(slots: Slots | SSRSlots, slotName: string, slotProps: Props | null | undefined, fallbackRenderFn: (() => void) | null, push: PushFn, parentComponent: ComponentInternalInstance, slotScopeId?: string, transition?: boolean, textMode?: boolean): void;
+export declare function ssrRenderSlotInner(slots: Slots | SSRSlots, slotName: string, slotProps: Props | null | undefined, fallbackRenderFn: (() => void) | null, push: PushFn, parentComponent: ComponentInternalInstance, slotScopeId?: string, transition?: boolean, slotAttrs?: Props, textMode?: boolean): void;
 //#endregion
 //#region temp/packages/server-renderer/src/helpers/ssrRenderComponent.d.ts
 export declare function ssrRenderComponent(comp: Component | string, props?: Props | null, children?: Slots | SSRSlots | null, parentComponent?: ComponentInternalInstance | null, slotScopeId?: string): SSRBuffer | Promise<SSRBuffer>;

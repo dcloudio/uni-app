@@ -32,7 +32,6 @@ export interface SFCTemplateCompileResults {
   code: string;
   ast?: unknown;
   preamble?: string;
-  multiRoot?: boolean;
   source: string;
   tips: string[];
   errors: (string | CompilerError$1)[];

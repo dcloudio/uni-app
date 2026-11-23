@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-ssr v3.6.0-rc.15
+  * @vue/compiler-ssr v3.6.0-rc.16
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -182,8 +182,74 @@ function ssrProcessSuspense(node, context) {
 	context.pushStatement((0, _vue_compiler_dom.createCallExpression)(context.helper(SSR_RENDER_SUSPENSE), [`_push`, slotsExp]));
 }
 //#endregion
+//#region packages/compiler-ssr/src/transforms/ssrInjectFallthroughAttrs.ts
+const slotAttrsBinds = /* @__PURE__ */ new WeakMap();
+const slotBodies = /* @__PURE__ */ new WeakSet();
+const ssrInjectFallthroughAttrs = (node, context) => {
+	if (node.type === 0) {
+		context.identifiers._attrs = 1;
+		if (rawOptionsMap.get(node).vapor) context.identifiers._slotAttrs = 1;
+	}
+	const parent = context.parent;
+	if (!parent) return;
+	let attrs = `_attrs`;
+	let body = parent;
+	const inSlot = parent.type !== 0;
+	if (inSlot) {
+		const slotBody = slotBodies.has(parent) ? parent : resolveVaporSlotBody(parent, context);
+		if (!slotBody) return;
+		if (isSlotTemplate(node)) {
+			slotBodies.add(node);
+			return;
+		}
+		attrs = `_slotAttrs`;
+		body = slotBody;
+	}
+	if (node.type === 1 && node.tagType === 1 && (node.tag === "transition" || node.tag === "Transition" || node.tag === "KeepAlive" || node.tag === "keep-alive")) {
+		if ((0, _vue_compiler_dom.hasSingleChild)(body)) {
+			if (inSlot) slotBodies.add(node);
+			else if ((0, _vue_compiler_dom.hasSingleChild)(node)) injectFallthroughAttrs(node.children[0], attrs);
+			return;
+		}
+	}
+	if (node.type === 10) {
+		if ((0, _vue_compiler_dom.isSingleIfBlock)(body)) {
+			if (inSlot) slotBodies.add(node);
+			else if ((0, _vue_compiler_dom.hasSingleChild)(node)) injectFallthroughAttrs(node.children[0], attrs);
+		}
+	} else if ((0, _vue_compiler_dom.hasSingleChild)(body)) injectFallthroughAttrs(node, attrs);
+};
+function resolveVaporSlotBody(parent, context) {
+	if (parent.type !== 1 || parent.tagType !== 1 || !rawOptionsMap.get(context.root).vapor || (0, _vue_shared.isSymbol)(componentTypeMap.get(parent))) return;
+	return parent.children.some(isSlotTemplate) ? (0, _vue_shared.extend)({}, parent, { children: parent.children.filter((c) => !isSlotTemplate(c)) }) : parent;
+}
+function isSlotTemplate(node) {
+	return (0, _vue_compiler_dom.isTemplateNode)(node) && !!(0, _vue_compiler_dom.findDir)(node, "slot", true);
+}
+function injectFallthroughAttrs(node, attrs) {
+	if (node.type === 1 && (node.tagType === 0 || node.tagType === 1) && !(0, _vue_compiler_dom.findDir)(node, "for")) {
+		const bind = {
+			type: 7,
+			name: "bind",
+			arg: void 0,
+			exp: (0, _vue_compiler_dom.createSimpleExpression)(attrs, false),
+			modifiers: [],
+			loc: _vue_compiler_dom.locStub
+		};
+		node.props.push(bind);
+		if (attrs === `_slotAttrs`) slotAttrsBinds.set(node, bind);
+	}
+}
+//#endregion
 //#region packages/compiler-ssr/src/transforms/ssrTransformElement.ts
 const rawChildrenMap = /* @__PURE__ */ new WeakMap();
+const tagSpecificDOMProps = {
+	form: "acceptCharset",
+	label: "htmlFor",
+	output: "htmlFor",
+	script: "htmlFor",
+	meta: "httpEquiv"
+};
 const ssrTransformStyle = (node, context) => {
 	if (node.type === 1 && node.tagType !== 0) (0, _vue_compiler_dom.transformStyle)(node, context);
 };
@@ -200,8 +266,12 @@ const ssrTransformElement = (node, context) => {
 			node.props.splice(vShowPropIndex, 1);
 			node.props.push(vShowProp);
 		}
-		const needMergeProps = hasDynamicVBind || hasCustomDir;
-		if (needMergeProps) {
+		const slotAttrs = slotAttrsBinds.get(node);
+		const ownProps = slotAttrs && node.props.filter((p) => p !== slotAttrs);
+		const guardSlotAttrs = !!ownProps && !hasCustomDir && !(0, _vue_compiler_dom.hasDynamicKeyVBind)((0, _vue_shared.extend)({}, node, { props: ownProps })) && node.tag !== "textarea" && !(node.tag === "select" && findVModel(node));
+		let slotAttrsExp;
+		const needMergeProps = (hasDynamicVBind || hasCustomDir) && !guardSlotAttrs;
+		if (needMergeProps || guardSlotAttrs) {
 			(0, _vue_compiler_dom.transformStyle)(node, context);
 			const { props, directives } = (0, _vue_compiler_dom.buildProps)(node, context, node.props, false, false, true);
 			if (props || directives.length) {
@@ -212,7 +282,7 @@ const ssrTransformElement = (node, context) => {
 					if (!hasContentOverrideDirective(node) && (!existingText || existingText.type !== 5)) {
 						const tempId = `_temp${context.temps++}`;
 						propsExp.arguments = [(0, _vue_compiler_dom.createAssignmentExpression)((0, _vue_compiler_dom.createSimpleExpression)(tempId, false), mergedProps)];
-						rawChildrenMap.set(node, (0, _vue_compiler_dom.createCallExpression)(context.helper(SSR_INTERPOLATE), [(0, _vue_compiler_dom.createConditionalExpression)((0, _vue_compiler_dom.createSimpleExpression)(`"value" in ${tempId}`, false), (0, _vue_compiler_dom.createSimpleExpression)(`${tempId}.value`, false), (0, _vue_compiler_dom.createSimpleExpression)(existingText ? existingText.content : ``, true), false)]));
+						rawChildrenMap.set(node, (0, _vue_compiler_dom.createCallExpression)(context.helper(SSR_INTERPOLATE), [(0, _vue_compiler_dom.createConditionalExpression)((0, _vue_compiler_dom.createSimpleExpression)(`${tempId} && "value" in ${tempId}`, false), (0, _vue_compiler_dom.createSimpleExpression)(`${tempId}.value`, false), (0, _vue_compiler_dom.createSimpleExpression)(existingText ? existingText.content : ``, true), false)]));
 					}
 				} else if (node.tag === "input") {
 					const vModel = findVModel(node);
@@ -229,8 +299,10 @@ const ssrTransformElement = (node, context) => {
 					}
 				}
 				if (needTagForRuntime) propsExp.arguments.push(`"${node.tag}"`);
-				openTag.push(propsExp);
+				if (guardSlotAttrs) slotAttrsExp = propsExp;
+				else openTag.push(propsExp);
 			}
+			if (guardSlotAttrs) node.props = ownProps;
 		}
 		let dynamicClassBinding = void 0;
 		let staticClassBinding = void 0;
@@ -289,7 +361,7 @@ const ssrTransformElement = (node, context) => {
 					}
 				}
 			} else {
-				const name = prop.name;
+				let name = prop.name;
 				if (node.tag === "textarea" && name === "value" && prop.value) rawChildrenMap.set(node, (0, _vue_shared.escapeHtml)(prop.value.content));
 				else if (!needMergeProps) {
 					if (name === "key" || name === "ref") continue;
@@ -304,7 +376,9 @@ const ssrTransformElement = (node, context) => {
 						}
 						continue;
 					}
-					openTag.push(` ${prop.name}` + (prop.value ? `="${(0, _vue_shared.escapeHtml)(prop.value.content)}"` : ``));
+					const mappedName = _vue_shared.propsToAttrMap[name];
+					if (mappedName && (name === "className" ? node.ns !== 1 : node.ns === 0 && tagSpecificDOMProps[node.tag] === name) && !context.isCustomElement(node.tag) && !(0, _vue_compiler_dom.findProp)(node, mappedName, false, true)) name = mappedName;
+					openTag.push(` ${name}` + (prop.value ? `="${(0, _vue_shared.escapeHtml)(prop.value.content)}"` : ``));
 				}
 			}
 		}
@@ -312,6 +386,7 @@ const ssrTransformElement = (node, context) => {
 			mergeCall(dynamicClassBinding, staticClassBinding);
 			removeStaticBinding(openTag, "class");
 		}
+		if (slotAttrsExp) openTag.push((0, _vue_compiler_dom.createConditionalExpression)(slotAttrs.exp, slotAttrsExp, (0, _vue_compiler_dom.createTemplateLiteral)(openTag.splice(1)), false));
 		if (context.scopeId) openTag.push(` ${context.scopeId}`);
 		node.ssrCodegenNode = (0, _vue_compiler_dom.createTemplateLiteral)(openTag);
 	};
@@ -461,21 +536,30 @@ const ssrTransformComponent = (node, context) => {
 			vnodeBranches.push(createVNodeSlotBranch(props, vFor, children, context));
 			return (0, _vue_compiler_dom.createFunctionExpression)(void 0);
 		});
+		const slotAttrs = slotAttrsBinds.get(node);
+		const ownProps = slotAttrs ? node.props.filter((p) => p !== slotAttrs) : node.props;
 		let propsExp = `null`;
-		if (node.props.length) {
-			const { props, directives } = (0, _vue_compiler_dom.buildProps)(node, context, void 0, true, isDynamicComponent);
+		if (ownProps.length) {
+			const { props, directives } = (0, _vue_compiler_dom.buildProps)(node, context, ownProps, true, isDynamicComponent);
 			if (props || directives.length) propsExp = buildSSRProps(props, directives, context);
+		}
+		if (slotAttrs) {
+			const attrs = slotAttrs.exp;
+			if ((0, _vue_shared.isString)(propsExp)) propsExp = attrs;
+			else if (propsExp.type === 14 && propsExp.callee === _vue_compiler_dom.MERGE_PROPS) propsExp.arguments.push(attrs);
+			else propsExp = (0, _vue_compiler_dom.createConditionalExpression)(attrs, (0, _vue_compiler_dom.createCallExpression)(context.helper(_vue_compiler_dom.MERGE_PROPS), [propsExp, attrs]), propsExp, false);
 		}
 		const wipEntries = [];
 		wipMap.set(node, wipEntries);
 		const buildSSRSlotFn = (props, _vForExp, children, loc) => {
-			const param0 = props && (0, _vue_compiler_dom.stringifyExpression)(props) || `_`;
-			const fn = (0, _vue_compiler_dom.createFunctionExpression)([
-				param0,
+			const params = [
+				props && (0, _vue_compiler_dom.stringifyExpression)(props) || `_`,
 				`_push`,
 				`_parent`,
 				`_scopeId`
-			], void 0, true, true, loc);
+			];
+			if (rawOptionsMap.get(context.root).vapor) params.push(`_slotAttrs`);
+			const fn = (0, _vue_compiler_dom.createFunctionExpression)(params, void 0, true, true, loc);
 			wipEntries.push({
 				type: WIP_SLOT,
 				fn,
@@ -865,45 +949,23 @@ const ssrTransformShow = (dir, node, context) => {
 	return { props: [(0, _vue_compiler_dom.createObjectProperty)(`style`, (0, _vue_compiler_dom.createConditionalExpression)(dir.exp, (0, _vue_compiler_dom.createSimpleExpression)(`null`, false), (0, _vue_compiler_dom.createObjectExpression)([(0, _vue_compiler_dom.createObjectProperty)(`display`, (0, _vue_compiler_dom.createSimpleExpression)(`none`, true))]), false))] };
 };
 //#endregion
-//#region packages/compiler-ssr/src/transforms/ssrInjectFallthroughAttrs.ts
-const ssrInjectFallthroughAttrs = (node, context) => {
-	if (node.type === 0) context.identifiers._attrs = 1;
-	if (node.type === 1 && node.tagType === 1 && (node.tag === "transition" || node.tag === "Transition" || node.tag === "KeepAlive" || node.tag === "keep-alive")) {
-		const rootChildren = (0, _vue_compiler_dom.filterNonCommentChildren)(context.root);
-		if (rootChildren.length === 1 && rootChildren[0] === node) {
-			if ((0, _vue_compiler_dom.hasSingleChild)(node)) injectFallthroughAttrs(node.children[0]);
-			return;
-		}
-	}
-	const parent = context.parent;
-	if (!parent || parent.type !== 0) return;
-	if (node.type === 10 && (0, _vue_compiler_dom.hasSingleChild)(node)) {
-		if ((0, _vue_compiler_dom.isSingleIfBlock)(parent)) injectFallthroughAttrs(node.children[0]);
-	} else if ((0, _vue_compiler_dom.hasSingleChild)(parent)) injectFallthroughAttrs(node);
-};
-function injectFallthroughAttrs(node) {
-	if (node.type === 1 && (node.tagType === 0 || node.tagType === 1) && !(0, _vue_compiler_dom.findDir)(node, "for")) node.props.push({
-		type: 7,
-		name: "bind",
-		arg: void 0,
-		exp: (0, _vue_compiler_dom.createSimpleExpression)(`_attrs`, false),
-		modifiers: [],
-		loc: _vue_compiler_dom.locStub
-	});
-}
-//#endregion
 //#region packages/compiler-ssr/src/transforms/ssrInjectCssVars.ts
 const ssrInjectCssVars = (node, context) => {
 	if (!context.ssrCssVars) return;
 	if (node.type === 0) context.identifiers._cssVars = 1;
 	const parent = context.parent;
 	if (!parent || parent.type !== 0) return;
-	if (node.type === 10) for (const child of node.children) injectCssVars(child);
+	if (node.type === 10 || node.type === 11) for (const child of node.children) injectCssVars(child);
 	else injectCssVars(node);
 };
+const isTransparentBuiltin = (tag) => tag === "suspense" || tag === "Suspense" || tag === "keep-alive" || tag === "KeepAlive" || tag === "teleport" || tag === "Teleport";
 function injectCssVars(node) {
-	if (node.type === 1 && (node.tagType === 0 || node.tagType === 1) && !(0, _vue_compiler_dom.findDir)(node, "for")) {
-		if (node.tag === "suspense" || node.tag === "Suspense") for (const child of node.children) if (child.type === 1 && child.tagType === 3) child.children.forEach(injectCssVars);
+	if (node.type === 1 && node.tagType === 3) {
+		node.children.forEach(injectCssVars);
+		return;
+	}
+	if (node.type === 1 && (node.tagType === 0 || node.tagType === 1)) {
+		if (isTransparentBuiltin(node.tag)) for (const child of node.children) if (child.type === 1 && child.tagType === 3) child.children.forEach(injectCssVars);
 		else injectCssVars(child);
 		else node.props.push({
 			type: 7,

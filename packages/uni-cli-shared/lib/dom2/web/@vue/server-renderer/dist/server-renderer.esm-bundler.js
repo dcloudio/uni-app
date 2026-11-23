@@ -1,10 +1,10 @@
 /**
-  * @vue/server-renderer v3.6.0-rc.15
+  * @vue/server-renderer v3.6.0-rc.16
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
-import { Comment, Fragment, Static, Text, createApp, createVNode, getCurrentInstance, handleError, initDirectivesForSSR, mergeProps, renderSlot, setVaporInteropEnabled, ssrContextKey, ssrUtils, warn } from "@vue/runtime-dom";
-import { NOOP, escapeHtml, escapeHtmlComment, hasOwn, includeBooleanAttr, includeBooleanAttr as ssrIncludeBooleanAttr, isArray, isBooleanAttr, isFunction, isObject, isOn, isPromise, isRenderableAttrValue, isSSRSafeAttrName, isSVGTag, isString, isVoidTag, looseEqual, looseIndexOf, makeMap, normalizeClass, normalizeCssVarValue, normalizeStyle, normalizeUniText, propsToAttrMap, stringifyStyle, toDisplayString } from "@vue/shared";
+import { Comment, Fragment, Static, Text, cloneVNode, createApp, createVNode, getCurrentInstance, handleError, initDirectivesForSSR, mergeProps, renderSlot, setVaporInteropEnabled, ssrContextKey, ssrUtils, warn } from "@vue/runtime-dom";
+import { EMPTY_OBJ, NOOP, escapeHtml, escapeHtmlComment, hasOwn, includeBooleanAttr, includeBooleanAttr as ssrIncludeBooleanAttr, isArray, isBooleanAttr, isFunction, isObject, isOn, isPromise, isRenderableAttrValue, isSSRSafeAttrName, isSVGTag, isString, isVoidTag, looseEqual, looseIndexOf, makeMap, normalizeClass, normalizeCssVarValue, normalizeStyle, normalizeUniText, propsToAttrMap, stringifyStyle, toDisplayString } from "@vue/shared";
 import { normalizeRpx } from "@dcloudio/uni-shared";
 //#region packages/server-renderer/src/helpers/ssrRenderAttrs.ts
 const shouldIgnoreProp = /*@__PURE__*/ makeMap(`,key,ref,innerHTML,textContent,ref_key,ref_for`);
@@ -59,9 +59,9 @@ function ssrResetCssVars(raw) {
 const { ensureValidVNode, rawVaporSlotKey: rawVaporSlotKey$1 } = ssrUtils;
 let vaporSlots = 0;
 function ssrRenderSlot(slots, slotName, slotProps, fallbackRenderFn, push, parentComponent, slotScopeId, textMode = false) {
-	ssrRenderSlotInner(slots, slotName, slotProps, fallbackRenderFn, push, parentComponent, slotScopeId, void 0, textMode);
+	ssrRenderSlotInner(slots, slotName, slotProps, fallbackRenderFn, push, parentComponent, slotScopeId, void 0, void 0, textMode);
 }
-function ssrRenderSlotInner(slots, slotName, slotProps, fallbackRenderFn, push, parentComponent, slotScopeId, transition, textMode = false) {
+function ssrRenderSlotInner(slots, slotName, slotProps, fallbackRenderFn, push, parentComponent, slotScopeId, transition, slotAttrs, textMode = false) {
 	const slotFn = slots[slotName];
 	let fallback = false;
 	if (slotFn) {
@@ -71,7 +71,7 @@ function ssrRenderSlotInner(slots, slotName, slotProps, fallbackRenderFn, push, 
 		const bufferedPush = (item) => {
 			slotBuffer.push(item);
 		};
-		const ret = slotFn(slotProps || {}, bufferedPush, parentComponent, slotScopeId ? " " + slotScopeId : "");
+		const ret = slotFn(slotProps || {}, bufferedPush, parentComponent, slotScopeId ? " " + slotScopeId : "", slotAttrs);
 		let vnodes;
 		if (isArray(ret)) {
 			vnodes = ensureValidVNode(ret);
@@ -246,7 +246,7 @@ function ssrCompile(template, instance) {
 }
 //#endregion
 //#region packages/server-renderer/src/render.ts
-const { createComponentInstance, setCurrentRenderingInstance, setupComponent, renderComponentRoot, isVNode: isVNode$2, normalizeVNode, pushWarningContext, popWarningContext, VaporSlot, rawVaporSlotKey, invokeSlotFallback, setDeferElementSlots } = ssrUtils;
+const { createComponentInstance, setCurrentRenderingInstance, setupComponent, renderComponentRoot, isVNode: isVNode$2, normalizeVNode, pushWarningContext, popWarningContext, VaporSlot, rawVaporSlotKey, invokeSlotFallback, filterSingleRoot, setDeferElementSlots } = ssrUtils;
 function renderRoot(instance) {
 	const prev = setDeferElementSlots(true);
 	try {
@@ -329,7 +329,16 @@ function renderComponentVNode(vnode, parentComponent = null, slotScopeId) {
 		for (const name in slots) {
 			const slot = slots[name];
 			if (isFunction(slot) && !slot[rawVaporSlotKey]) {
-				const wrapped = (props, push, parent, scopeId) => push ? slot(props, push, parent, scopeId) : [renderSlot({ [name]: slot }, name, props)];
+				const wrapped = (props, push, parent, scopeId) => {
+					if (push) return slot(props, push, parent, scopeId);
+					const vnode = renderSlot({ [name]: slot }, name, props);
+					if (vnode.type === Fragment) return vnode.children;
+					const vs = vnode.vs;
+					vs.props = vnode.props;
+					vnode.props = vnode.key != null ? { key: vnode.key } : null;
+					vs.attrs = EMPTY_OBJ;
+					return [vnode];
+				};
 				slot[rawVaporSlotKey] = wrapped[rawVaporSlotKey] = slot;
 				wrapped._n = true;
 				slots[name] = wrapped;
@@ -444,8 +453,8 @@ function renderVNode(push, vnode, parentComponent, slotScopeId) {
 		}
 		case VaporSlot: {
 			if (vnode.slotScopeIds) slotScopeId = (slotScopeId ? slotScopeId + " " : "") + vnode.slotScopeIds.join(" ");
-			const { slot, outlets, props } = vnode.vs;
-			renderVaporOutlet(push, slot, props || vnode.props, outlets && outlets[0], parentComponent, slotScopeId);
+			const { slot, outlets, props, attrs } = vnode.vs;
+			renderVaporOutlet(push, slot, props || vnode.props, outlets && outlets[0], parentComponent, slotScopeId, attrs && attrs !== EMPTY_OBJ && Object.keys(attrs).length ? attrs : void 0);
 			break;
 		}
 		default: if (shapeFlag & 1) renderElementVNode(push, vnode, parentComponent, slotScopeId);
@@ -455,9 +464,17 @@ function renderVNode(push, vnode, parentComponent, slotScopeId) {
 		else warn("[@vue/server-renderer] Invalid VNode type:", type, `(${typeof type})`);
 	}
 }
-function renderVaporOutlet(push, slot, props, outlet, parentComponent, slotScopeId) {
+function renderVaporOutlet(push, slot, props, outlet, parentComponent, slotScopeId, attrs) {
 	const prev = setCurrentRenderingInstance(parentComponent);
-	ssrRenderSlot({ default: slot }, "default", props, outlet ? () => renderVNodeChildren(push, invokeSlotFallback(outlet.fallback, outlet.owner), parentComponent, slotScopeId) : null, push, parentComponent, slotScopeId);
+	ssrRenderSlotInner({ default: slot }, "default", props, outlet ? () => {
+		let children = invokeSlotFallback(outlet.fallback, outlet.owner);
+		const root = attrs && filterSingleRoot(children, false);
+		if (root && root.shapeFlag & 7) {
+			children = children.slice();
+			children[children.indexOf(root)] = cloneVNode(root, attrs);
+		}
+		renderVNodeChildren(push, children, parentComponent, slotScopeId);
+	} : null, push, parentComponent, slotScopeId, false, attrs);
 	setCurrentRenderingInstance(prev);
 }
 function renderVNodeChildren(push, children, parentComponent, slotScopeId) {

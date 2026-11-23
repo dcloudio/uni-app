@@ -1,5 +1,5 @@
 /**
-  * @vue/shared v3.6.0-rc.15
+  * @vue/shared v3.6.0-rc.16
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -420,12 +420,12 @@ function isSSRSafeAttrName(name) {
 	if (isUnsafe) console.error(`unsafe attribute name: ${name}`);
 	return !isUnsafe;
 }
-const propsToAttrMap = {
+const propsToAttrMap = /*@__PURE__*/ extend(Object.create(null), {
 	acceptCharset: "accept-charset",
 	className: "class",
 	htmlFor: "for",
 	httpEquiv: "http-equiv"
-};
+});
 /**
 * Known attributes, this is used for stringification of runtime static nodes
 * so that we don't stringify bindings that cannot be set from HTML.
@@ -549,11 +549,11 @@ function looseCompareObjects(a, b, seen) {
 	if (aValidType || bValidType) return aValidType && bValidType ? looseCompareCollections(a, b, seen) : false;
 	if (Object.keys(a).length !== Object.keys(b).length) return false;
 	for (const key in a) {
-		const aHasKey = a.hasOwnProperty(key);
-		const bHasKey = b.hasOwnProperty(key);
+		const aHasKey = hasOwn(a, key);
+		const bHasKey = hasOwn(b, key);
 		if (aHasKey && !bHasKey || !aHasKey && bHasKey || !looseEqual(a[key], b[key], seen)) return false;
 	}
-	return String(a) === String(b);
+	return toComparableString(a) === toComparableString(b);
 }
 function looseCompareNested(a, b, seen, compare) {
 	if (!seen) seen = [/* @__PURE__ */ new Map(), /* @__PURE__ */ new Map()];
@@ -587,6 +587,9 @@ function looseEqual(a, b, seen) {
 }
 function looseIndexOf(arr, val) {
 	return arr.findIndex((item) => looseEqual(item, val));
+}
+function toComparableString(value) {
+	return Object.getPrototypeOf(value) === null && value[Symbol.toPrimitive] == null && typeof value.toString !== "function" && typeof value.valueOf !== "function" ? toTypeString(value) : String(value);
 }
 //#endregion
 //#region packages/shared/src/toDisplayString.ts
