@@ -303,6 +303,36 @@ describe('entry virtual paths', () => {
     })
   })
 
+  test.each([
+    [
+      '组件 [demo] (test)/demo.generated.uvue',
+      '组件 [demo] (test)/demo.generated',
+    ],
+    ['pages/example/page.generated.uvue', 'pages/example/page.generated'],
+  ])('preserves dots in template filename %s', async (source, output) => {
+    await withEntryProject((inputDir) => {
+      const filename = normalizePath(path.join(inputDir, source))
+      emitFile({ type: 'asset', fileName: filename, source: '<view />' })
+
+      expect(getTemplateFiles({} as any)).toEqual({ [output]: '<view />' })
+    })
+  })
+
+  test('preserves dots in package scoped uni_modules template filenames', async () => {
+    await withEntryProject((inputDir) => {
+      const component = normalizePath(
+        path.join(inputDir, 'uni_modules/foo/components/foo.generated.uvue')
+      )
+      resetMiniProgramJsonFiles()
+      emitFile({ type: 'asset', fileName: component, source: '<view />' })
+      addMiniProgramComponentPackageRoot(component, 'pages-a')
+
+      expect(getTemplateFiles({} as any)).toEqual({
+        'pages-a/uni_modules/foo/components/foo.generated': '<view />',
+      })
+    })
+  })
+
   test('emits package scoped template for each package root that uses the component', async () => {
     await withEntryProject((inputDir) => {
       const component = normalizePath(
