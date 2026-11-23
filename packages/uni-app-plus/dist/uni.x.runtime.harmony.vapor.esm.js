@@ -1033,15 +1033,34 @@ function getLoadFontFaceOptions(options, res) {
     family: options.family,
     source: options.source,
     success: (_) => {
+      res === null || res === void 0 || res.resolve(null);
     },
     fail: (error) => {
+      res === null || res === void 0 || res.reject(
+        // new LoadFontFaceErrorImpl(
+        error.errMsg,
+        error.errCode
+        // )
+      );
     }
   };
 }
+var loadFontFace = /* @__PURE__ */ defineAsyncApi(API_LOAD_FONT_FACE, (options, res) => {
+  if (options.global === true) {
+    appLoadFontFace(options, res);
+  } else {
+    var page = getCurrentPage();
+    if (!page.vm) {
+      res.reject("page is not ready", 99);
+      return;
+    }
+    pageLoadFontFace(page.vm, options, res);
+  }
+});
 var appLoadFontFace = (options, res) => {
   options.source = removeUrlWrap(options.source);
   var app = getNativeApp();
-  var fontInfo = getLoadFontFaceOptions(options);
+  var fontInfo = getLoadFontFaceOptions(options, res);
   app.loadFontFace(fontInfo);
 };
 var pageLoadFontFace = (pageVm, options, res) => {
@@ -1050,7 +1069,7 @@ var pageLoadFontFace = (pageVm, options, res) => {
   }
   options.source = removeUrlWrap(options.source);
   pageVm.$fontFamilySet.add(options.family);
-  var fontInfo = getLoadFontFaceOptions(options);
+  var fontInfo = getLoadFontFaceOptions(options, res);
   pageVm.$nativePage.loadFontFace(fontInfo);
 };
 function loadFontFaceByStyles(styles, pageVm) {
@@ -1080,9 +1099,9 @@ function loadFontFaceByStyles(styles, pageVm) {
         }
       };
       if (pageVm === null) {
-        appLoadFontFace(LoadFontFaceOptions);
+        appLoadFontFace(LoadFontFaceOptions, null);
       } else {
-        pageLoadFontFace(pageVm, LoadFontFaceOptions);
+        pageLoadFontFace(pageVm, LoadFontFaceOptions, null);
       }
     } else {
       console.warn("loadFontFace: fail, font-family or src is null");
@@ -1624,6 +1643,7 @@ function createNormalizeUrl(type) {
     }
   };
 }
+var API_LOAD_FONT_FACE = "loadFontFace";
 var FRONT_COLORS = ["#ffffff", "#000000"];
 var API_SET_NAVIGATION_BAR_COLOR = "setNavigationBarColor";
 var SetNavigationBarColorOptions = {
@@ -4269,6 +4289,13 @@ var createSelectorQuery = function() {
   var instance = getCurrentPage().vm;
   return new SelectorQueryImpl(instance);
 };
+var getElementById = /* @__PURE__ */ defineSyncApi("getElementById", (id2) => {
+  var page = getCurrentPage();
+  if (page == null) {
+    return null;
+  }
+  return page.getElementById(id2);
+});
 function queryElementTop(component, selector) {
   var _component$$el;
   var scrollNode = (_component$$el = component.$el) === null || _component$$el === void 0 ? void 0 : _component$$el.querySelector(selector);
@@ -4719,11 +4746,13 @@ const index$1 = /* @__PURE__ */ Object.defineProperty({
   closeDialogPage,
   createSelectorQuery,
   env,
+  getElementById,
   getEnterOptionsSync,
   getLaunchOptionsSync,
   getPerformance,
   hideTabBar,
   hideTabBarRedDot,
+  loadFontFace,
   loadUasm,
   loadUasmSync,
   navigateBack,
