@@ -9,7 +9,7 @@
       <!-- #endif -->
       @click="handleCancel"></view>
     <view <!-- #ifdef WEB -->
-      :style="isWidescreen ? containerStyle : {}"
+      :style="containerStyle"
       <!-- #endif -->
       class="uni-action-sheet_dialog__container"
       <!-- #ifdef VUE3-VAPOR -->
@@ -109,7 +109,13 @@
           {{ cancelText }}
         </text>
       </view>
-      <view v-if="!isLandscape" class="uni-action-sheet_dialog__safe-area"
+      <view class="uni-action-sheet_dialog__safe-area"
+        <!-- #ifdef WEB -->
+        v-if="!isLandscape && popoverLayout == null"
+        <!-- #endif -->
+        <!-- #ifndef WEB -->
+        v-if="!isLandscape"
+        <!-- #endif -->
         <!-- #ifdef VUE3-VAPOR -->
         :style="backgroundColor != null ? { height: `${bottomNavigationHeight}px`, backgroundColor } : { height: `${bottomNavigationHeight}px` }"></view>
         <!-- #endif -->
@@ -117,11 +123,9 @@
         :style="{ height: `${bottomNavigationHeight}px`, backgroundColor: computedBackgroundColor }"></view>
         <!-- #endif -->
       <!-- #ifdef WEB -->
-      <view v-if='isWidescreen && Object.keys(popover).length > 0' :style='triangleStyle'
+      <view v-if="popoverLayout != null" :style="triangleStyle"
         class="uni-action-sheet_dialog__triangle"
-        <!-- #ifdef VUE3-VAPOR -->
-        :class="triangleClass"
-        <!-- #endif -->
+        :class="popoverLayout.above ? 'uni-action-sheet_dialog__triangle--bottom' : 'uni-action-sheet_dialog__triangle--top'"
         />
       <!-- #endif -->
     </view>
@@ -131,6 +135,9 @@
 <script setup>
   import { getCurrentInstance, reactive, ref, computed } from 'vue'
   import { onLoad, onReady, onResize } from '@dcloudio/uni-app'
+  // #ifdef WEB
+  import type { Popover } from '../../utssdk/interface.uts'
+  // #endif
 
   const pageInstance = getCurrentInstance()!.proxy!
   const uniPageInstance = pageInstance.$page
@@ -193,18 +200,19 @@
   const menuItemClicked = ref(false)
   const cancelButtonClicked = ref(false)
   // #ifdef WEB
-  const windowWidth = ref(0)
-  const windowHeight = ref(0)
-  const popover = reactive({})
+  const viewport = ref({ width: 0, height: 0, widescreen: false })
+  const popover = ref<Popover | null>(null)
   // #endif
   // #ifdef (APP-ANDROID || APP-IOS || APP-HARMONY) && !VUE3-VAPOR
   const appThemeChangeCallbackId = ref(-1)
   // #endif
   // #ifdef WEB
   const fixSize = () => {
-    const windowInfo = uni.getWindowInfo()
-    windowWidth.value = windowInfo.windowWidth
-    windowHeight.value = windowInfo.windowHeight + (windowInfo.windowTop || 0)
+    viewport.value = {
+      width: document.documentElement.clientWidth,
+      height: document.documentElement.clientHeight,
+      widescreen: window.matchMedia('screen and (min-width: 500px) and (min-height: 500px)').matches
+    }
   }
   // #endif
   const getCloseAnimationDelay = (): number => {
@@ -275,9 +283,11 @@
         backgroundColor.value = data['backgroundColor'] as string
       }
       // #ifdef WEB
-      if (data['popover'] != null) {
-        popover.value = data['popover']
-      }
+      const anchor = data['popover'] as Popover | null
+      popover.value = anchor != null &&
+        Number.isFinite(anchor.top) && Number.isFinite(anchor.left) &&
+        Number.isFinite(anchor.width) && anchor.width >= 0 &&
+        Number.isFinite(anchor.height) && anchor.height >= 0 ? anchor : null
       // #endif
     })
     uni.$emit(readyEventName.value, {})
@@ -313,8 +323,10 @@
       handleThemeChange()
     })
     // #endif
-    fixSize()
-    window.addEventListener('resize', fixSize)
+    if (popover.value != null) {
+      fixSize()
+      window.addEventListener('resize', fixSize)
+    }
 
     const locale = uni.getLocale()
     language.value = locale
@@ -337,89 +349,72 @@
   })
     
   // #ifdef WEB
-  const isWidescreen = computed((): boolean => {
-    return windowHeight.value >= 500 && windowWidth.value >= 500
+  const popoverWidth = 300
+  const arrowHeight = 6
+  const arrowInset = 12
+  const popoverLayout = computed(() => {
+    const anchor = popover.value
+    const { width, height, widescreen } = viewport.value
+    if (!widescreen || anchor == null) {
+      return null
+    }
+
+    const anchorTop = Math.max(0, anchor.top)
+    const anchorBottom = Math.min(height, anchor.top + anchor.height)
+    const visibleWidth = Math.min(width, anchor.left + anchor.width) - Math.max(0, anchor.left)
+    const visibleHeight = anchorBottom - anchorTop
+    // An anchor with no visible extent should not leave a detached arrow. Point anchors still work at the edges.
+    if (visibleWidth < 0 || visibleHeight < 0 ||
+        (visibleWidth == 0 && anchor.width > 0) || (visibleHeight == 0 && anchor.height > 0)) {
+      return null
+    }
+
+    const availableAbove = anchorTop - arrowHeight
+    const availableBelow = height - anchorBottom - arrowHeight
+    const above = availableAbove > availableBelow
+    const maxHeight = Math.max(availableAbove, availableBelow)
+    // Keep enough room for a menu item and, when present, the title.
+    if (maxHeight < (title.value ? 96 : 48)) {
+      return null
+    }
+
+    const center = anchor.left + anchor.width / 2
+    const left = Math.max(0, Math.min(center - popoverWidth / 2, width - popoverWidth))
+    const arrowLeft = Math.max(arrowInset, Math.min(center - left, popoverWidth - arrowInset))
+    return { above, left, arrowLeft, maxHeight, anchorTop, anchorBottom, height }
   })
   const containerStyle = computed((): UTSJSONObject => {
-    if (Object.keys(popover).length == 0) {
+    const layout = popoverLayout.value
+    if (layout == null) {
       return {}
     }
-    const res = {
-      transform: 'none !important'
+    return {
+      transform: 'none !important',
+      // 箭头位于容器外侧，避免被 view 的默认样式裁剪。
+      overflow: 'visible',
+      left: `${layout.left}px`,
+      top: layout.above ? 'auto' : `${layout.anchorBottom + arrowHeight}px`,
+      bottom: layout.above ? `${layout.height - layout.anchorTop + arrowHeight}px` : 'auto',
+      '--uni-action-sheet-popover-height': `${layout.maxHeight}px`
     }
-    const top = popover.top
-    const left = popover.left
-    const width = popover.width
-    const height = popover.height
-    const center = left + width / 2
-    const contentLeft = Math.max(0, center - 300 / 2)
-    res['left'] = `${contentLeft}px`
-    const vcl = windowHeight.value / 2
-    if (top + height - vcl > vcl - top) {
-      res['top'] = 'auto'
-      res['bottom'] = `${windowHeight.value - top + 6}px`
-    } else {
-      res['top'] = `${top + height + 6}px`
-    }
-    return res
   })
   const triangleStyle = computed((): UTSJSONObject => {
-    if (Object.keys(popover).length == 0) {
+    const layout = popoverLayout.value
+    if (layout == null) {
       return {}
     }
-    const res = {}
+    const res: UTSJSONObject = { left: `${layout.arrowLeft}px` }
+    let borderColor = backgroundColor.value
     // #ifndef VUE3-VAPOR
-    const borderColor = backgroundColor.value ?? (theme.value == 'dark' ? '#2C2C2C' : '#fcfcfd')
+    borderColor = borderColor ?? (theme.value == 'dark' ? '#2C2C2C' : '#fcfcfd')
     // #endif
-    const top = popover.top
-    const left = popover.left
-    const width = popover.width
-    const height = popover.height
-    const center = left + width / 2
-    const contentLeft = Math.max(0, center - 300 / 2)
-    let triangleLeft = Math.max(12, center - contentLeft)
-    triangleLeft = Math.min(300 - 12, triangleLeft)
-    res['left'] = `${triangleLeft}px`
-    const vcl = windowHeight.value / 2
-    if (top + height - vcl > vcl - top) {
-      res['bottom'] = '-6px'
-      res['border-width'] = '6px 6px 0 6px'
-      // #ifdef VUE3-VAPOR
-      if (backgroundColor.value != null) {
-        res['border-color'] =
-          `${backgroundColor.value} transparent transparent transparent`
-      }
-      // #endif
-      // #ifndef VUE3-VAPOR
-      res['border-color'] =
-        `${borderColor} transparent transparent transparent`
-      // #endif
-    } else {
-      res['top'] = '-6px'
-      res['border-width'] = '0 6px 6px 6px'
-      // #ifdef VUE3-VAPOR
-      if (backgroundColor.value != null) {
-        res['border-color'] =
-          `transparent transparent ${backgroundColor.value} transparent`
-      }
-      // #endif
-      // #ifndef VUE3-VAPOR
-      res['border-color'] =
-        `transparent transparent ${borderColor} transparent`
-      // #endif
+    if (borderColor != null) {
+      res['border-color'] = layout.above
+        ? `${borderColor} transparent transparent transparent`
+        : `transparent transparent ${borderColor} transparent`
     }
     return res
   })
-  // #ifdef VUE3-VAPOR
-  const triangleClass = computed((): string => {
-    if (Object.keys(popover).length == 0) {
-      return ''
-    }
-    return triangleStyle.value['bottom'] != null
-      ? 'uni-action-sheet_dialog__triangle--bottom'
-      : 'uni-action-sheet_dialog__triangle--top'
-  })
-  // #endif
   // #endif
   const cancelText = computed((): string => {
     if (optionCancelText.value != null) {
@@ -732,14 +727,16 @@
     margin-left: -6px;
     border-style: solid;
   }
-  /* #ifdef VUE3-VAPOR */
   .uni-action-sheet_dialog__triangle--bottom {
+    bottom: -6px;
+    border-width: 6px 6px 0;
     border-color: #fcfcfd transparent transparent transparent;
   }
   .uni-action-sheet_dialog__triangle--top {
+    top: -6px;
+    border-width: 0 6px 6px;
     border-color: transparent transparent #fcfcfd transparent;
   }
-  /* #endif */
   /* web wide screen */
   @media screen and (min-width: 500px) and (min-height: 500px) {
     .uni-action-sheet_dialog__mask {
@@ -770,10 +767,15 @@
     }
 
     .uni-action-sheet_dialog__menu {
+      display: flex;
+      flex-direction: column;
+      max-height: var(--uni-action-sheet-popover-height, none);
       border-radius: 5px;
     }
 
     .uni-action-sheet_dialog__cell__container {
+      flex-shrink: 1;
+      min-height: 0;
       max-height: 260px;
     }
 
@@ -783,6 +785,11 @@
 
     .uni-action-sheet_dialog__title {
       font-size: 15px;
+    }
+
+    .uni-action-sheet_dialog__title,
+    .uni-action-sheet_dialog__menu > .divider {
+      flex-shrink: 0;
     }
 
     .uni-action-sheet_dialog__title,

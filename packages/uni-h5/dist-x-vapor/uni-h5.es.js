@@ -30216,6 +30216,9 @@ const t3$2 = template("<div uni-view data-v-212d40c7><span uni-text data-v-212d4
 const t4$2 = template("<div uni-view data-v-212d40c7 class=uni-action-sheet_dialog__safe-area>");
 const t5$1 = template("<div uni-view data-v-212d40c7>");
 const t6$1 = template("<div uni-view data-v-212d40c7><div uni-view data-v-212d40c7></div><div uni-view data-v-212d40c7><div uni-view data-v-212d40c7><!><div uni-view data-v-212d40c7></div></div><div uni-view data-v-212d40c7><span uni-text data-v-212d40c7 class=uni-action-sheet_dialog__action__text> </div>", 1);
+const popoverWidth = 300;
+const arrowHeight = 6;
+const arrowInset = 12;
 const _sfc_main$7 = /* @__PURE__ */ defineVaporComponent({
   __name: "actionSheet",
   setup(__props) {
@@ -30264,13 +30267,14 @@ const _sfc_main$7 = /* @__PURE__ */ defineVaporComponent({
     const bottomNavigationHeight = ref(0);
     const menuItemClicked = ref(false);
     const cancelButtonClicked = ref(false);
-    const windowWidth = ref(0);
-    const windowHeight = ref(0);
-    const popover = reactive({});
+    const viewport = ref({ width: 0, height: 0, widescreen: false });
+    const popover = ref(null);
     const fixSize = () => {
-      const windowInfo = uni.getWindowInfo();
-      windowWidth.value = windowInfo.windowWidth;
-      windowHeight.value = windowInfo.windowHeight + (windowInfo.windowTop || 0);
+      viewport.value = {
+        width: document.documentElement.clientWidth,
+        height: document.documentElement.clientHeight,
+        widescreen: window.matchMedia("screen and (min-width: 500px) and (min-height: 500px)").matches
+      };
     };
     const getCloseAnimationDelay = () => {
       return 180;
@@ -30322,9 +30326,8 @@ const _sfc_main$7 = /* @__PURE__ */ defineVaporComponent({
         if (data["backgroundColor"] != null) {
           backgroundColor.value = data["backgroundColor"];
         }
-        if (data["popover"] != null) {
-          popover.value = data["popover"];
-        }
+        const anchor = data["popover"];
+        popover.value = anchor != null && Number.isFinite(anchor.top) && Number.isFinite(anchor.left) && Number.isFinite(anchor.width) && anchor.width >= 0 && Number.isFinite(anchor.height) && anchor.height >= 0 ? anchor : null;
       });
       uni.$emit(readyEventName.value, {});
       const deviceInfo = uni.getDeviceInfo();
@@ -30334,8 +30337,10 @@ const _sfc_main$7 = /* @__PURE__ */ defineVaporComponent({
       } else if (deviceInfo.osLanguage != null) {
         language.value = deviceInfo.osLanguage;
       }
-      fixSize();
-      window.addEventListener("resize", fixSize);
+      if (popover.value != null) {
+        fixSize();
+        window.addEventListener("resize", fixSize);
+      }
       const locale = uni.getLocale();
       language.value = locale;
       uni.onLocaleChange((res) => {
@@ -30345,67 +30350,57 @@ const _sfc_main$7 = /* @__PURE__ */ defineVaporComponent({
       });
       isLandscape2.value = deviceInfo.deviceOrientation == "landscape";
     });
-    const isWidescreen = computed(() => {
-      return windowHeight.value >= 500 && windowWidth.value >= 500;
+    const popoverLayout = computed(() => {
+      const anchor = popover.value;
+      const { width, height, widescreen } = viewport.value;
+      if (!widescreen || anchor == null) {
+        return null;
+      }
+      const anchorTop = Math.max(0, anchor.top);
+      const anchorBottom = Math.min(height, anchor.top + anchor.height);
+      const visibleWidth = Math.min(width, anchor.left + anchor.width) - Math.max(0, anchor.left);
+      const visibleHeight = anchorBottom - anchorTop;
+      if (visibleWidth < 0 || visibleHeight < 0 || visibleWidth == 0 && anchor.width > 0 || visibleHeight == 0 && anchor.height > 0) {
+        return null;
+      }
+      const availableAbove = anchorTop - arrowHeight;
+      const availableBelow = height - anchorBottom - arrowHeight;
+      const above = availableAbove > availableBelow;
+      const maxHeight = Math.max(availableAbove, availableBelow);
+      if (maxHeight < (title.value ? 96 : 48)) {
+        return null;
+      }
+      const center = anchor.left + anchor.width / 2;
+      const left = Math.max(0, Math.min(center - popoverWidth / 2, width - popoverWidth));
+      const arrowLeft = Math.max(arrowInset, Math.min(center - left, popoverWidth - arrowInset));
+      return { above, left, arrowLeft, maxHeight, anchorTop, anchorBottom, height };
     });
     const containerStyle = computed(() => {
-      if (Object.keys(popover).length == 0) {
+      const layout = popoverLayout.value;
+      if (layout == null) {
         return {};
       }
-      const res = {
-        transform: "none !important"
+      return {
+        transform: "none !important",
+        // 箭头位于容器外侧，避免被 view 的默认样式裁剪。
+        overflow: "visible",
+        left: `${layout.left}px`,
+        top: layout.above ? "auto" : `${layout.anchorBottom + arrowHeight}px`,
+        bottom: layout.above ? `${layout.height - layout.anchorTop + arrowHeight}px` : "auto",
+        "--uni-action-sheet-popover-height": `${layout.maxHeight}px`
       };
-      const top = popover.top;
-      const left = popover.left;
-      const width = popover.width;
-      const height = popover.height;
-      const center = left + width / 2;
-      const contentLeft = Math.max(0, center - 300 / 2);
-      res["left"] = `${contentLeft}px`;
-      const vcl = windowHeight.value / 2;
-      if (top + height - vcl > vcl - top) {
-        res["top"] = "auto";
-        res["bottom"] = `${windowHeight.value - top + 6}px`;
-      } else {
-        res["top"] = `${top + height + 6}px`;
-      }
-      return res;
     });
     const triangleStyle = computed(() => {
-      if (Object.keys(popover).length == 0) {
+      const layout = popoverLayout.value;
+      if (layout == null) {
         return {};
       }
-      const res = {};
-      const top = popover.top;
-      const left = popover.left;
-      const width = popover.width;
-      const height = popover.height;
-      const center = left + width / 2;
-      const contentLeft = Math.max(0, center - 300 / 2);
-      let triangleLeft = Math.max(12, center - contentLeft);
-      triangleLeft = Math.min(300 - 12, triangleLeft);
-      res["left"] = `${triangleLeft}px`;
-      const vcl = windowHeight.value / 2;
-      if (top + height - vcl > vcl - top) {
-        res["bottom"] = "-6px";
-        res["border-width"] = "6px 6px 0 6px";
-        if (backgroundColor.value != null) {
-          res["border-color"] = `${backgroundColor.value} transparent transparent transparent`;
-        }
-      } else {
-        res["top"] = "-6px";
-        res["border-width"] = "0 6px 6px 6px";
-        if (backgroundColor.value != null) {
-          res["border-color"] = `transparent transparent ${backgroundColor.value} transparent`;
-        }
+      const res = { left: `${layout.arrowLeft}px` };
+      let borderColor = backgroundColor.value;
+      if (borderColor != null) {
+        res["border-color"] = layout.above ? `${borderColor} transparent transparent transparent` : `transparent transparent ${borderColor} transparent`;
       }
       return res;
-    });
-    const triangleClass = computed(() => {
-      if (Object.keys(popover).length == 0) {
-        return "";
-      }
-      return triangleStyle.value["bottom"] != null ? "uni-action-sheet_dialog__triangle--bottom" : "uni-action-sheet_dialog__triangle--top";
     });
     const cancelText = computed(() => {
       if (optionCancelText.value != null) {
@@ -30466,7 +30461,7 @@ const _sfc_main$7 = /* @__PURE__ */ defineVaporComponent({
     renderEffect(() => {
       const _backgroundColor = backgroundColor.value;
       setClass(n0, ["uni-action-sheet_dialog__mask", maskAnimationClass.value]);
-      setStyle(n24, isWidescreen.value ? containerStyle.value : {});
+      setStyle(n24, containerStyle.value);
       setClass(n24, ["uni-action-sheet_dialog__container", containerAnimationClass.value]);
       setStyle(n15, _backgroundColor != null ? { backgroundColor: _backgroundColor } : {});
       setClassName(n15, isLandscape2.value ? 1 : 0, " uni-action-sheet_landscape__mode", "uni-action-sheet_dialog__menu");
@@ -30535,7 +30530,7 @@ const _sfc_main$7 = /* @__PURE__ */ defineVaporComponent({
       setText(x16, normalizeUniText(toDisplayString(cancelText.value)));
     });
     setInsertionState(n24, 2);
-    createIf(() => !isLandscape2.value, () => {
+    createIf(() => !isLandscape2.value && popoverLayout.value == null, () => {
       const n20 = t4$2();
       renderEffect(() => {
         const _backgroundColor = backgroundColor.value;
@@ -30545,18 +30540,18 @@ const _sfc_main$7 = /* @__PURE__ */ defineVaporComponent({
       return n20;
     });
     setInsertionState(n24, 3);
-    createIf(() => isWidescreen.value && Object.keys(popover).length > 0, () => {
+    createIf(() => popoverLayout.value != null, () => {
       const n23 = t5$1();
       renderEffect(() => {
         setStyle(n23, triangleStyle.value);
-        setClass(n23, ["uni-action-sheet_dialog__triangle", triangleClass.value]);
+        setClass(n23, ["uni-action-sheet_dialog__triangle", popoverLayout.value.above ? "uni-action-sheet_dialog__triangle--bottom" : "uni-action-sheet_dialog__triangle--top"]);
       });
       return n23;
     });
     return n25;
   }
 });
-const _style_0$7 = "\n.uni-action-sheet_dialog__mask {\n    position: fixed;\n    z-index: 999;\n    top: 0;\n    right: 0;\n    left: 0;\n    bottom: 0;\n    opacity: 0;\n    background-color: rgba(0, 0, 0, 0.55);\n}\n.uni-action-sheet_dialog__mask__hide {\n    animation: uni-action-sheet-mask-fade-out 0.15s ease-in forwards;\n}\n.uni-action-sheet_dialog__mask__show {\n    animation: uni-action-sheet-mask-fade-in 0.15s ease-out forwards;\n}\n.uni-action-sheet_dialog__container {\n    position: fixed;\n    width: 100%;\n    left: 0;\n    bottom: 0;\n    z-index: 999;\n    transform: translate(0, 100%);\n\n\n\n\n    background-color: #f7f7f7;\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n}\n.uni-action-sheet_dialog__menu {\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n    overflow: hidden;\n}\n.uni-action-sheet_dialog__container.uni-action-sheet_dialog__show {\n    animation: uni-action-sheet-slide-in 0.15s ease-out forwards;\n}\n.uni-action-sheet_dialog__container.uni-action-sheet_dialog__hide {\n    animation: uni-action-sheet-slide-out 0.15s ease-in forwards;\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    padding: 16px;\n}\n.uni-action-sheet_dialog__title__text,\n  .uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    line-height: 1.4;\n    text-align: center;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__action {\n    margin-top: 8px;\n}\n.uni-action-sheet_dialog__title__text {\n    color: #666666;\n}\n.uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    color: #000000;\n}\n.uni-action-sheet_dialog__menu,\n  .uni-action-sheet_dialog__action,\n  .uni-action-sheet_dialog__safe-area {\n    background-color: #ffffff;\n}\n.uni-action-sheet_dialog__cell__container {\n    max-height: 330px;\n\n    display: block;\n    overflow-y: auto;\n    scrollbar-width: none;\n}\n.uni-action-sheet_dialog__hover {\n		background-color: #efefef;\n}\n.divider{\n    height: 1px;\n    background-color: #e5e5e5;\n    transform: scaleY(0.5);\n}\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n  /* landscape mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_landscape__mode {\n    width: 300px;\n    position: fixed;\n    left: 50%;\n    right: auto;\n    top: 50%;\n    bottom: auto;\n    z-index: 999;\n    transform: translate(-50%, -50%);\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n\n    animation: none;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_landscape__mode {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    display: none;\n}\n.uni-action-sheet_dialog__cell__container.uni-action-sheet_landscape__mode {\n    max-height: 260px;\n}\n.uni-action-sheet_dialog__title.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__cell.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    padding: 10px 6px;\n}\n.uni-action-sheet_dialog__menu {\n    display: block;\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    display: block;\n    text-align: center;\n    line-height: 1.4;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    cursor: pointer;\n}\n.uni-action-sheet_dialog__triangle {\n    position: absolute;\n    width: 0;\n    height: 0;\n    margin-left: -6px;\n    border-style: solid;\n}\n.uni-action-sheet_dialog__triangle--bottom {\n    border-color: #fcfcfd transparent transparent transparent;\n}\n.uni-action-sheet_dialog__triangle--top {\n    border-color: transparent transparent #fcfcfd transparent;\n}\n\n  /* web wide screen */\n@media screen and (min-width: 500px) and (min-height: 500px) {\n.uni-action-sheet_dialog__mask {\n      background: none;\n}\n.uni-action-sheet_dialog__container {\n      width: 300px;\n      position: fixed;\n      left: 50%;\n      right: auto;\n      top: 50%;\n      bottom: auto;\n      z-index: 999;\n      border-radius: 5px;\n      transform: translate(-50%, -50%);\n      box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__container.uni-action-sheet_dialog__show,\n    .uni-action-sheet_dialog__container.uni-action-sheet_dialog__hide {\n      transform: translate(-50%, -50%);\n      animation: none;\n}\n.uni-action-sheet_dialog__show {\n      transform: translate(-50%, -50%) !important;\n}\n.uni-action-sheet_dialog__menu {\n      border-radius: 5px;\n}\n.uni-action-sheet_dialog__cell__container {\n      max-height: 260px;\n}\n.uni-action-sheet_dialog__action {\n      display: none;\n}\n.uni-action-sheet_dialog__title {\n      font-size: 15px;\n}\n.uni-action-sheet_dialog__title,\n    .uni-action-sheet_dialog__cell,\n    .uni-action-sheet_dialog__action {\n      padding: 10px 6px;\n}\n}\n@media (prefers-color-scheme: dark) {\n.uni-action-sheet_dialog__container {\n      background-color: #1D1E1E;\n}\n.uni-action-sheet_dialog__menu,\n    .uni-action-sheet_dialog__action,\n    .uni-action-sheet_dialog__safe-area {\n      background-color: #2C2C2C;\n}\n.uni-action-sheet_dialog__title__text {\n      color: #999999;\n}\n.uni-action-sheet_dialog__cell__text,\n    .uni-action-sheet_dialog__action__text {\n      color: #ffffff;\n}\n.uni-action-sheet_dialog__hover {\n      background-color: #414141;\n}\n.divider {\n      background-color: #2F3131;\n}\n.uni-action-sheet_dialog__triangle--bottom {\n      border-color: #2C2C2C transparent transparent transparent;\n}\n.uni-action-sheet_dialog__triangle--top {\n      border-color: transparent transparent #2C2C2C transparent;\n}\n}\n@keyframes uni-action-sheet-mask-fade-in {\nfrom {\n      opacity: 0;\n}\nto {\n      opacity: 1;\n}\n}\n@keyframes uni-action-sheet-mask-fade-out {\nfrom {\n      opacity: 1;\n}\nto {\n      opacity: 0;\n}\n}\n@keyframes uni-action-sheet-slide-in {\nfrom {\n      transform: translate(0, 100%);\n}\nto {\n      transform: translate(0, 0);\n}\n}\n@keyframes uni-action-sheet-slide-out {\nfrom {\n      transform: translate(0, 0);\n}\nto {\n      transform: translate(0, 100%);\n}\n}\n\n";
+const _style_0$7 = "\n.uni-action-sheet_dialog__mask {\n    position: fixed;\n    z-index: 999;\n    top: 0;\n    right: 0;\n    left: 0;\n    bottom: 0;\n    opacity: 0;\n    background-color: rgba(0, 0, 0, 0.55);\n}\n.uni-action-sheet_dialog__mask__hide {\n    animation: uni-action-sheet-mask-fade-out 0.15s ease-in forwards;\n}\n.uni-action-sheet_dialog__mask__show {\n    animation: uni-action-sheet-mask-fade-in 0.15s ease-out forwards;\n}\n.uni-action-sheet_dialog__container {\n    position: fixed;\n    width: 100%;\n    left: 0;\n    bottom: 0;\n    z-index: 999;\n    transform: translate(0, 100%);\n\n\n\n\n    background-color: #f7f7f7;\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n}\n.uni-action-sheet_dialog__menu {\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n    overflow: hidden;\n}\n.uni-action-sheet_dialog__container.uni-action-sheet_dialog__show {\n    animation: uni-action-sheet-slide-in 0.15s ease-out forwards;\n}\n.uni-action-sheet_dialog__container.uni-action-sheet_dialog__hide {\n    animation: uni-action-sheet-slide-out 0.15s ease-in forwards;\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    padding: 16px;\n}\n.uni-action-sheet_dialog__title__text,\n  .uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    line-height: 1.4;\n    text-align: center;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__action {\n    margin-top: 8px;\n}\n.uni-action-sheet_dialog__title__text {\n    color: #666666;\n}\n.uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    color: #000000;\n}\n.uni-action-sheet_dialog__menu,\n  .uni-action-sheet_dialog__action,\n  .uni-action-sheet_dialog__safe-area {\n    background-color: #ffffff;\n}\n.uni-action-sheet_dialog__cell__container {\n    max-height: 330px;\n\n    display: block;\n    overflow-y: auto;\n    scrollbar-width: none;\n}\n.uni-action-sheet_dialog__hover {\n		background-color: #efefef;\n}\n.divider{\n    height: 1px;\n    background-color: #e5e5e5;\n    transform: scaleY(0.5);\n}\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n  /* landscape mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_landscape__mode {\n    width: 300px;\n    position: fixed;\n    left: 50%;\n    right: auto;\n    top: 50%;\n    bottom: auto;\n    z-index: 999;\n    transform: translate(-50%, -50%);\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n\n    animation: none;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_landscape__mode {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    display: none;\n}\n.uni-action-sheet_dialog__cell__container.uni-action-sheet_landscape__mode {\n    max-height: 260px;\n}\n.uni-action-sheet_dialog__title.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__cell.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    padding: 10px 6px;\n}\n.uni-action-sheet_dialog__menu {\n    display: block;\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    display: block;\n    text-align: center;\n    line-height: 1.4;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    cursor: pointer;\n}\n.uni-action-sheet_dialog__triangle {\n    position: absolute;\n    width: 0;\n    height: 0;\n    margin-left: -6px;\n    border-style: solid;\n}\n.uni-action-sheet_dialog__triangle--bottom {\n    bottom: -6px;\n    border-width: 6px 6px 0;\n    border-color: #fcfcfd transparent transparent transparent;\n}\n.uni-action-sheet_dialog__triangle--top {\n    top: -6px;\n    border-width: 0 6px 6px;\n    border-color: transparent transparent #fcfcfd transparent;\n}\n  /* web wide screen */\n@media screen and (min-width: 500px) and (min-height: 500px) {\n.uni-action-sheet_dialog__mask {\n      background: none;\n}\n.uni-action-sheet_dialog__container {\n      width: 300px;\n      position: fixed;\n      left: 50%;\n      right: auto;\n      top: 50%;\n      bottom: auto;\n      z-index: 999;\n      border-radius: 5px;\n      transform: translate(-50%, -50%);\n      box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__container.uni-action-sheet_dialog__show,\n    .uni-action-sheet_dialog__container.uni-action-sheet_dialog__hide {\n      transform: translate(-50%, -50%);\n      animation: none;\n}\n.uni-action-sheet_dialog__show {\n      transform: translate(-50%, -50%) !important;\n}\n.uni-action-sheet_dialog__menu {\n      display: flex;\n      flex-direction: column;\n      max-height: var(--uni-action-sheet-popover-height, none);\n      border-radius: 5px;\n}\n.uni-action-sheet_dialog__cell__container {\n      flex-shrink: 1;\n      min-height: 0;\n      max-height: 260px;\n}\n.uni-action-sheet_dialog__action {\n      display: none;\n}\n.uni-action-sheet_dialog__title {\n      font-size: 15px;\n}\n.uni-action-sheet_dialog__title,\n    .uni-action-sheet_dialog__menu > .divider {\n      flex-shrink: 0;\n}\n.uni-action-sheet_dialog__title,\n    .uni-action-sheet_dialog__cell,\n    .uni-action-sheet_dialog__action {\n      padding: 10px 6px;\n}\n}\n@media (prefers-color-scheme: dark) {\n.uni-action-sheet_dialog__container {\n      background-color: #1D1E1E;\n}\n.uni-action-sheet_dialog__menu,\n    .uni-action-sheet_dialog__action,\n    .uni-action-sheet_dialog__safe-area {\n      background-color: #2C2C2C;\n}\n.uni-action-sheet_dialog__title__text {\n      color: #999999;\n}\n.uni-action-sheet_dialog__cell__text,\n    .uni-action-sheet_dialog__action__text {\n      color: #ffffff;\n}\n.uni-action-sheet_dialog__hover {\n      background-color: #414141;\n}\n.divider {\n      background-color: #2F3131;\n}\n.uni-action-sheet_dialog__triangle--bottom {\n      border-color: #2C2C2C transparent transparent transparent;\n}\n.uni-action-sheet_dialog__triangle--top {\n      border-color: transparent transparent #2C2C2C transparent;\n}\n}\n@keyframes uni-action-sheet-mask-fade-in {\nfrom {\n      opacity: 0;\n}\nto {\n      opacity: 1;\n}\n}\n@keyframes uni-action-sheet-mask-fade-out {\nfrom {\n      opacity: 1;\n}\nto {\n      opacity: 0;\n}\n}\n@keyframes uni-action-sheet-slide-in {\nfrom {\n      transform: translate(0, 100%);\n}\nto {\n      transform: translate(0, 0);\n}\n}\n@keyframes uni-action-sheet-slide-out {\nfrom {\n      transform: translate(0, 0);\n}\nto {\n      transform: translate(0, 100%);\n}\n}\n\n";
 const UniActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main$7, [["styles", [_style_0$7]]]);
 class ShowActionSheetSuccessImpl {
   constructor(tapIndex, errMsg = "showActionSheet:ok") {

@@ -252,7 +252,8 @@ const miniProgram = {
     },
     slot: {
         $slots: false,
-        defaultSlotKey: '$default',
+        // #34818：原生 fallback 依赖实际传入的节点，空包装也会占用插槽。
+        // 原生 $slots 以 $default 表示普通默认槽，动态命名槽即使显示也可能缺失，因此这里不启用 checkForwardedSlots。
         // 支付宝 fallback 有 bug，当多个带默认 slot 组件嵌套使用时，所有的默认slot均会显示，如uni-file-picker(image)
         fallbackContent: true,
         dynamicSlotNames: true,
