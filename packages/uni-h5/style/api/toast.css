@@ -77,6 +77,12 @@ uni-toast .uni-toast {
   color: #ffffff;
 }
 
+@media screen and (max-width: 500px) {
+  uni-toast .uni-toast {
+    width: 140px;
+  }
+}
+
 .uni-toast * {
   box-sizing: border-box;
 }
