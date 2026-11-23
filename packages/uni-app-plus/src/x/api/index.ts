@@ -57,7 +57,7 @@ export { loadUasm, loadUasmSync } from './base/uasm'
 
 export * from './performance'
 
-// #if _APP_IOS_
+// #if !_VAPOR_ || !_APP_ANDROID_
 export {
   // @ts-expect-error
   initUTSProxyClass,
