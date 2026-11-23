@@ -16,6 +16,6 @@
 
 <script setup lang="ts">
   function openExample(container: string) {
-    uni.navigateTo({ url: '/pages/API/scroll-view-context/' + container })
+    uni.navigateTo({ url: '/pages/component/scroll-view/scroll-view-context/' + container })
   }
 </script>

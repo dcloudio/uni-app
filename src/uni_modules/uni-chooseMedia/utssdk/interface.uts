@@ -28,20 +28,103 @@ export type ChooseMediaErrorCode =
  * 图片或视频操作失败的错误回调
  */
 export interface IChooseMediaError extends IUniError {
+	/**
+	 * 错误码
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     }
+	 *   }
+	 * }
+	 */
 	errCode : ChooseMediaErrorCode
 };
-export type ChooseMediaFileType = 'image' | 'video'
+export type ChooseMediaFileType =
+	/**
+	 * 图片文件
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     }
+	 *   }
+	 * }
+	 */
+	'image' |
+	/**
+	 * 视频文件
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     }
+	 *   }
+	 * }
+	 */
+	'video'
 export type ChooseMediaTempFile = {
 	/**
 	 * 选定视频的临时文件路径
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     }
+	 *   }
+	 * }
 	 */
 	tempFilePath : string,
 	/**
 	 * 文件类型
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     }
+	 *   }
+	 * }
 	 */
 	fileType : ChooseMediaFileType
 	/**
 	 * 选定视频的数据量大小，单位 kB
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     }
+	 *   }
+	 * }
 	 */
 	size : number,
 	/**
@@ -71,24 +154,150 @@ export type ChooseMediaTempFile = {
 	byteSize ?: number | null,
 	/**
 	 * 选定视频的时间长度
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     }
+	 *   }
+	 * }
 	 */
 	duration ?: number | null,
 	/**
 	 * 返回选定视频的长
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     }
+	 *   }
+	 * }
 	 */
 	height ?: number | null,
 	/**
 	 * 返回选定视频的宽
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     }
+	 *   }
+	 * }
 	 */
 	width ?: number | null,
 	/**
 	 * 视频缩略图临时文件路径
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     }
+	 *   }
+	 * }
 	 */
 	thumbTempFilePath ?: string | null
 }
 export type ChooseMediaSuccess = {
+	/**
+	 * 选中的图片或视频文件列表
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     }
+	 *   }
+	 * }
+	 */
 	tempFiles : ChooseMediaTempFile[],
-	type : 'image' | 'video' | 'mix'
+	/**
+	 * 选择的文件类型
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     }
+	 *   }
+	 * }
+	 */
+	type :
+	/**
+	 * 仅选择了图片
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     }
+	 *   }
+	 * }
+	 */
+	'image' |
+	/**
+	 * 仅选择了视频
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     }
+	 *   }
+	 * }
+	 */
+	'video' |
+	/**
+	 * 同时选择了图片和视频
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     }
+	 *   }
+	 * }
+	 */
+	'mix'
 };
 
 export type ChooseMediaFail = IChooseMediaError;
@@ -97,14 +306,50 @@ export type ChooseMediaFailCallback = (callback : ChooseMediaFail) => void
 export type ChooseMediaCompleteCallback = (callback : any) => void
 export type ChooseMediaPageOrientation = /**
      * 自动
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   }
+	 * }
      */
 	"auto" |
 	/**
 	 * 竖屏显示
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   }
+	 * }
 	 */
 	"portrait" |
 	/**
 	 * 横屏显示
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   }
+	 * }
 	 */
 	"landscape"
 
@@ -381,22 +626,82 @@ export type ChooseMediaOptions = {
 	camera ?:
 	/**
 	 * 前置摄像头
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     }
+	 *   }
+	 * }
 	 */
 	'front' |
 	/**
 	 * 后置摄像头
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     }
+	 *   }
+	 * }
 	 */
 	'back' | null,
 	/**
 	 * 接口调用成功，返回视频文件的临时文件路径，详见返回参数说明
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     }
+	 *   }
+	 * }
 	 */
 	success ?: (ChooseMediaSuccessCallback) | null,
 	/**
 	 * 接口调用失败的回调函数
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     }
+	 *   }
+	 * }
 	 */
 	fail ?: (ChooseMediaFailCallback) | null,
 	/**
 	 * 接口调用结束的回调函数（调用成功、失败都会执行）
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.51"
+	 *     }
+	 *   }
+	 * }
 	 */
 	complete ?: (ChooseMediaCompleteCallback) | null
 };

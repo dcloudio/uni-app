@@ -1,47 +1,76 @@
 <template>
-	<scroll-view class="page" :class="{ 'page-dark': isDarkMode }">
-		<view class="intro" :class="{ 'surface-dark': isDarkMode }">
-			<text class="intro-text" :class="{ 'text-dark': isDarkMode }">图标组件可以减少小图片的使用，并支持自定义颜色和尺寸。</text>
-		</view>
+	<text class="intro-text">图标名称保持不变，组件会根据当前平台自动选择内置字体或扩展字体，并复用可旋转的基础字形。</text>
 
-		<view class="section-header" :class="{ 'surface-dark': isDarkMode }">
-			<text class="section-title" :class="{ 'text-dark': isDarkMode }">图标</text>
-			<view class="display-mode">
-				<text class="display-mode-text" :class="{ 'text-dark': isDarkMode }">{{ checked ? 'Unicode' : '名称' }}</text>
-				<switch class="display-mode-switch" :checked="checked" @change="change" />
-			</view>
+	<view class="display-toolbar">
+		<text class="display-toolbar-title">查看图标实现</text>
+		<view class="display-mode">
+			<text class="display-mode-text">{{ checked ? '实现' : '名称' }}</text>
+			<switch class="display-mode-switch" :checked="checked" @change="change" />
 		</view>
+	</view>
 
-		<view class="icon-content" :class="{ 'surface-dark': isDarkMode }">
+	<view v-for="(group, groupIndex) in iconGroups" :key="group.title" class="icon-section">
+		<view class="section-header">
+			<text class="uni-h4">{{ group.title }}</text>
+			<text class="section-description">{{ group.description }}</text>
+		</view>
+		<view class="icon-content">
 			<view
-				v-for="(item, index) in iconlist"
-				:key="index"
+				v-for="(item, index) in group.icons"
+				:key="item.font_class"
 				class="icon-item"
-				@click="switchActive(index, item)"
+				@click="switchActive(groupIndex * 1000 + index, item)"
+				<!-- #ifdef WEB -->
+				:tabindex="'0'"
+				@keydown="onItemKeydown($event, groupIndex * 1000 + index, item)"
+				<!-- #endif -->
 			>
 				<uni-icons
 					:type="item.font_class"
 					class="icon-glyph"
-					:class="{
-						'icon-glyph-active': activeIndex == index,
-						'icon-glyph-dark': isDarkMode
-					}"
+					:class="{ 'icon-glyph-active': activeIndex == groupIndex * 1000 + index }"
 				/>
 				<text
 					class="icon-label"
-					:class="{
-						'icon-label-active': activeIndex == index,
-						'icon-label-dark': isDarkMode
-					}"
-				>{{ checked ? item.unicode : item.font_class }}</text>
+					:class="{ 'icon-label-active': activeIndex == groupIndex * 1000 + index }"
+				>{{ checked ? implementationText(item) : item.font_class }}</text>
 			</view>
 		</view>
-	</scroll-view>
+	</view>
 </template>
 
 <script setup lang="ts">
 	import { state } from '@/store/index.ts'
-	import { iconlist, iconType } from './icons_type.uts'
+	import {
+		builtinIconList,
+		transformIconList,
+		extensionIconList,
+		iconType
+	} from './icons_type.uts'
+
+	type IconGroup = {
+		title : string
+		description : string
+		icons : iconType[]
+	}
+
+	const iconGroups = [
+		{
+			title: '内置图标',
+			description: '当前平台直接使用 uni-app x 内置的 uni-icon 字体，不额外加载对应扩展字形。',
+			icons: builtinIconList
+		},
+		{
+			title: 'Transform 与字形复用',
+			description: '方向、加号和分页图标以当前平台的内置或扩展字形为基础，通过旋转得到不同外观。',
+			icons: transformIconList
+		},
+		{
+			title: '扩展字体图标',
+			description: '其余没有内置来源的图标，由组件自动加载 uniicons 扩展字体。',
+			icons: extensionIconList
+		}
+	] as IconGroup[]
 
 	const activeIndex = ref(-1)
 	const checked = ref(false)
@@ -61,19 +90,35 @@
 		checked.value = event.detail.value
 	}
 
+	const implementationText = (item : iconType) : string => {
+		const source = item.provider == 'builtin' ? '内置' : `扩展:${item.base}`
+		const rotate = item.rotate == 0 ? '' : ` · ${item.rotate}°`
+		return `${source} · U+${item.unicode.toUpperCase()}${rotate}`
+	}
+
 	const switchActive = (index : number, item : iconType) => {
 		activeIndex.value = index
 		uni.setClipboardData({
-			data: checked.value ? item.unicode : item.font_class,
+			data: checked.value ? implementationText(item) : item.font_class,
 			showToast: false,
 			success: () => {
 				uni.showToast({
 					icon: 'none',
-					title: (checked.value ? 'Unicode' : '图标名称') + '复制成功'
+					title: (checked.value ? '实现信息' : '图标名称') + '复制成功'
 				})
 			}
 		})
 	}
+
+	// #ifdef WEB
+	const onItemKeydown = (event : KeyboardEvent, index : number, item : iconType) : void => {
+		const key = event.key as string
+		if (key == 'Enter' || key == ' ') {
+			event.preventDefault()
+			switchActive(index, item)
+		}
+	}
+	// #endif
 
 	watch(isDarkMode, syncNavigationBar, { immediate: true })
 	onShow(syncNavigationBar)
@@ -85,18 +130,11 @@
 </script>
 
 <style>
-	.page {
-		flex: 1;
-		background-color: var(--background-color, #efeff4);
-	}
-
-	.page-dark {
-		background-color: #1a1a1a;
-	}
-
-	.intro {
-		padding: 16px;
-		background-color: var(--list-background-color, #ffffff);
+	page {
+		--list-background-color: #ffffff;
+		--text-color: #333333;
+		padding: 12px 16px 24px;
+		box-sizing: border-box;
 	}
 
 	.intro-text {
@@ -105,18 +143,15 @@
 		color: var(--text-color, #333333);
 	}
 
-	.section-header {
+	.display-toolbar {
 		margin-top: 10px;
-		padding: 12px 16px;
-		background-color: var(--list-background-color, #ffffff);
 		flex-direction: row;
 		align-items: center;
 		justify-content: space-between;
 	}
 
-	.section-title {
-		font-size: 16px;
-		font-weight: bold;
+	.display-toolbar-title {
+		font-size: 14px;
 		color: var(--text-color, #333333);
 	}
 
@@ -136,25 +171,60 @@
 		transform: scale(0.7);
 	}
 
+	.icon-section {
+		margin-top: 24px;
+	}
+
+	.section-header {
+		align-items: flex-start;
+	}
+
+	.section-description {
+		margin-top: 4px;
+		font-size: 13px;
+		line-height: 19px;
+		color: var(--text-color, #333333);
+		opacity: 0.65;
+	}
+
 	.icon-content {
-		padding: 8px 0 24px;
-		background-color: var(--list-background-color, #ffffff);
+		margin-top: 8px;
 		flex-direction: row;
 		flex-wrap: wrap;
 		align-items: flex-start;
 	}
 
-	.surface-dark {
-		background-color: #2d2d2d;
-	}
-
 	.icon-item {
 		width: 25%;
 		padding: 12px 4px 10px;
+		box-sizing: border-box;
 		flex-direction: column;
 		align-items: stretch;
 		justify-content: flex-start;
+		/* #ifdef WEB */
+		cursor: pointer;
+		outline: none;
+		/* #endif */
 	}
+
+	/* #ifdef WEB */
+	.icon-item:focus-visible {
+		outline: 2px solid #2979ff;
+		outline-offset: -2px;
+	}
+
+	.icon-label {
+		word-break: break-all;
+	}
+
+	@media (min-width: 768px) {
+		page {
+			max-width: 920px;
+			margin-left: auto;
+			margin-right: auto;
+		}
+	}
+	/* #endif */
 
 	.icon-label {
 		width: 100%;
@@ -164,10 +234,6 @@
 		text-align: center;
 		color: var(--text-color, #333333);
 		opacity: 0.65;
-	}
-
-	.icon-label-dark {
-		color: #ffffff;
 	}
 
 	.icon-label-active {
@@ -187,17 +253,15 @@
 		opacity: 0.65;
 	}
 
-	.icon-glyph-dark {
-		color: #ffffff;
-	}
-
 	.icon-glyph-active {
 		color: #007aff;
 		opacity: 1;
 	}
 
-	.text-dark {
-		color: #ffffff;
+	@media (prefers-color-scheme: dark) {
+		page {
+			--list-background-color: #2d2d2d;
+			--text-color: #ffffff;
+		}
 	}
-
 </style>

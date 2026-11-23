@@ -1,97 +1,95 @@
 <template>
-	<view>
-		<view class="intro">
-			<text class="page-title">uni-forms 表单</text>
-			<text class="page-desc">通过 v-model 统一收集字段值，并支持字段校验、错误展示和表单重置。</text>
+	<view class="demo-section intro-section">
+		<text class="uni-info">通过 v-model 统一收集字段值，并支持字段校验、错误展示和表单重置。</text>
+	</view>
+
+	<view class="demo-section">
+		<text class="uni-h4">多功能演示</text>
+		<text class="uni-info">uni-forms 的所有表单用法从这里进入，按场景查看基础接入、校验方案、控件接入和样式配置。</text>
+		<view class="demo-links">
+			<navigator class="demo-link" url="/pages/uni-ui/forms/validation">
+				<text class="demo-link-title">完整校验</text>
+				<text class="demo-link-desc">DB Schema 规则、异步校验和字段方法</text>
+			</navigator>
+			<navigator class="demo-link" url="/pages/uni-ui/forms/valibot">
+				<text class="demo-link-title">Valibot schema</text>
+				<text class="demo-link-desc">Standard Schema、异步、嵌套和原生 API</text>
+			</navigator>
+			<navigator class="demo-link" url="/pages/uni-ui/forms/controls">
+				<text class="demo-link-title">控件接入</text>
+				<text class="demo-link-desc">原生控件、uni-x 控件和三方组件</text>
+			</navigator>
+			<navigator class="demo-link" url="/pages/uni-ui/forms/styles">
+				<text class="demo-link-title">样式与属性</text>
+				<text class="demo-link-desc">布局属性和 externalClasses 样式覆盖</text>
+			</navigator>
+			<navigator class="demo-link" url="/pages/uni-ui/forms/form-item">
+				<text class="demo-link-title">表单项布局</text>
+				<text class="demo-link-desc">左标签字号、宽度、对齐、箭头和说明</text>
+			</navigator>
 		</view>
+	</view>
 
-		<view class="section demo-index">
-			<text class="section-title">多功能演示</text>
-			<text class="section-desc">uni-forms 的所有表单用法从这里进入，按场景查看基础接入、校验方案、控件接入和样式配置。</text>
-			<view class="demo-links">
-				<navigator class="demo-link" url="/pages/uni-ui/forms/validation">
-					<text class="demo-link-title">完整校验</text>
-					<text class="demo-link-desc">DB Schema 规则、异步校验和字段方法</text>
-				</navigator>
-				<navigator class="demo-link" url="/pages/uni-ui/forms/valibot">
-					<text class="demo-link-title">Valibot schema</text>
-					<text class="demo-link-desc">Standard Schema、异步、嵌套和原生 API</text>
-				</navigator>
-				<navigator class="demo-link" url="/pages/uni-ui/forms/controls">
-					<text class="demo-link-title">控件接入</text>
-					<text class="demo-link-desc">原生控件、uni-x 控件和三方组件</text>
-				</navigator>
-				<navigator class="demo-link" url="/pages/uni-ui/forms/styles">
-					<text class="demo-link-title">样式与属性</text>
-					<text class="demo-link-desc">布局属性和 externalClasses 样式覆盖</text>
-				</navigator>
-				<navigator class="demo-link" url="/pages/uni-ui/forms/form-item">
-					<text class="demo-link-title">表单项布局</text>
-					<text class="demo-link-desc">左标签字号、宽度、对齐、箭头和说明</text>
-				</navigator>
-			</view>
+	<view class="demo-section">
+		<text class="uni-h4">基础用法</text>
+		<uni-forms
+			ref="formRef"
+			v-model="formData"
+			:rules="rules"
+			validate-trigger="blur"
+			err-show-type="undertext"
+			label-position="top"
+			label-width="80"
+			@validate="onValidate"
+		>
+			<uni-forms-item name="name" label="姓名" required label-class="demo-label" error-message-class="demo-error">
+				<uni-easyinput
+					v-model="formData.name"
+					placeholder="请输入姓名"
+					clearable
+				/>
+			</uni-forms-item>
+
+			<uni-forms-item name="city" label="城市" label-class="demo-label" error-message-class="demo-error">
+				<uni-combobox
+					v-model="formData.city"
+					:options="cityOptions"
+					placeholder="请选择城市"
+				/>
+			</uni-forms-item>
+
+			<uni-forms-item name="email" label="邮箱" label-class="demo-label" error-message-class="demo-error">
+				<uni-easyinput
+					v-model="formData.email"
+					type="text"
+					placeholder="请输入邮箱"
+				/>
+			</uni-forms-item>
+
+			<uni-forms-item name="profile.nickname" label="嵌套字段" label-class="demo-label" error-message-class="demo-error">
+				<uni-easyinput
+					v-model="formData.profile.nickname"
+					placeholder="请输入昵称"
+				/>
+			</uni-forms-item>
+		</uni-forms>
+
+		<view class="button-row">
+			<button class="action-button" size="mini" @click="validateForm">校验表单</button>
+			<button class="action-button secondary-button" size="mini" @click="resetForm">重置字段</button>
 		</view>
+		<text class="uni-log status-log">{{ statusText }}</text>
+	</view>
 
-		<view class="section">
-			<uni-forms
-				ref="formRef"
-				v-model="formData"
-				:rules="rules"
-				validate-trigger="blur"
-				err-show-type="undertext"
-				label-position="top"
-				label-width="80"
-				@validate="onValidate"
-			>
-				<uni-forms-item name="name" label="姓名" required label-class="demo-label" error-message-class="demo-error">
-					<uni-easyinput
-						v-model="formData.name"
-						placeholder="请输入姓名"
-						clearable
-					/>
-				</uni-forms-item>
-
-				<uni-forms-item name="city" label="城市" label-class="demo-label" error-message-class="demo-error">
-					<uni-combobox
-						v-model="formData.city"
-						:options="cityOptions"
-						placeholder="请选择城市"
-					/>
-				</uni-forms-item>
-
-				<uni-forms-item name="email" label="邮箱" label-class="demo-label" error-message-class="demo-error">
-					<uni-easyinput
-						v-model="formData.email"
-						type="text"
-						placeholder="请输入邮箱"
-					/>
-				</uni-forms-item>
-
-				<uni-forms-item name="profile.nickname" label="嵌套字段" label-class="demo-label" error-message-class="demo-error">
-					<uni-easyinput
-						v-model="formData.profile.nickname"
-						placeholder="请输入昵称"
-					/>
-				</uni-forms-item>
-			</uni-forms>
-
-			<view class="button-row">
-				<button class="action-button" size="mini" @click="validateForm">校验表单</button>
-				<button class="action-button secondary-button" size="mini" @click="resetForm">重置字段</button>
-			</view>
-			<text class="status-text">{{ statusText }}</text>
-		</view>
-
-		<view class="section section-last">
-			<text class="section-title">当前数据</text>
-			<text class="data-text">{{ dataText }}</text>
-			<view class="property-list">
-				<text class="property-title">本页使用的关键属性</text>
-				<text class="property-text">v-model：formData</text>
-				<text class="property-text">validate-trigger：blur</text>
-				<text class="property-text">label-position：top</text>
-				<text class="property-text">label-class / error-message-class：自定义字段样式</text>
-			</view>
+	<view class="demo-section">
+		<text class="uni-h4">当前数据</text>
+		<text class="uni-log">{{ dataText }}</text>
+		<view class="property-list">
+			<text class="property-title">本页使用的关键属性</text>
+			<text class="uni-info">v-model：formData</text>
+			<text class="uni-info">validate-trigger：blur</text>
+			<text class="uni-info">label-position：top</text>
+			<text class="uni-info">label-class / error-message-class：自定义字段样式</text>
 		</view>
 	</view>
 </template>
@@ -200,8 +198,9 @@ defineExpose({
 
 <style>
 page {
+	padding: 12px 16px 24px;
+	box-sizing: border-box;
 	--list-background-color: #ffffff;
-	--background-color: #f5f5f5;
 	--active-color: #a0a0a0;
 	--active-background-color: #f8f8f8;
 	--text-color: #333333;
@@ -213,57 +212,41 @@ page {
 	--input-border-color: #dcdfe6;
 	--divider-color: #e5e5e5;
 	--forms-error-background-color: #fff2f0;
-	background-color: var(--background-color);
 }
 
-.intro {
-	padding: 18px 16px;
-	background-color: var(--content-background-color, #ffffff);
+.intro-section {
+	margin-bottom: 12px;
 }
 
-.page-title {
-	font-size: 20px;
-	font-weight: bold;
-	color: var(--text-color, #222222);
-}
-
-.page-desc {
-	margin-top: 8px;
-	font-size: 14px;
-	line-height: 21px;
-	color: var(--secondary-text-color, #657180);
-}
-
-.section {
-	padding: 16px;
-	margin-top: 10px;
-	background-color: var(--content-background-color, #ffffff);
-	box-sizing: border-box;
+.demo-section {
 	width: 100%;
+	margin-bottom: 20px;
+	box-sizing: border-box;
 }
 
-.demo-index {
-	padding-bottom: 8px;
-}
-
-.section-desc {
-	margin-bottom: 10px;
-	font-size: 13px;
+.uni-info {
 	line-height: 20px;
-	color: var(--secondary-text-color, #657180);
+}
+
+.uni-log {
+	width: 100%;
+	line-height: 18px;
+	box-sizing: border-box;
 }
 
 .demo-links {
 	flex-direction: row;
 	flex-wrap: wrap;
+	justify-content: space-between;
 }
 
 .demo-link {
-	width: 48%;
-	padding: 12px;
-	margin: 0 2% 10px 0;
-	border-radius: 6px;
-	background-color: var(--active-background-color, #f3f7fc);
+	width: 49%;
+	padding: 10px 4px;
+	margin-bottom: 4px;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: var(--divider-color, #e5e5e5);
 	box-sizing: border-box;
 	min-width: 0;
 }
@@ -275,22 +258,22 @@ page {
 }
 
 .demo-link-desc {
+	width: 100%;
 	margin-top: 5px;
 	font-size: 12px;
 	line-height: 18px;
 	color: var(--secondary-text-color, #657180);
 }
 
-.section-last {
-	padding-bottom: 32px;
+/* #ifdef WEB */
+.demo-link {
+	cursor: pointer;
 }
 
-.section-title {
-	margin-bottom: 12px;
-	font-size: 16px;
-	font-weight: bold;
-	color: var(--text-color, #333333);
+.demo-link-desc {
+	word-break: break-word;
 }
+/* #endif */
 
 .button-row {
 	flex-direction: row;
@@ -308,16 +291,9 @@ page {
 	background-color: var(--active-background-color, #e9eef5);
 }
 
-.status-text {
-	margin-top: 12px;
-	font-size: 14px;
-	color: var(--secondary-text-color, #657180);
-}
-
-.data-text {
-	font-size: 13px;
-	line-height: 20px;
-	color: var(--secondary-text-color, #657180);
+.status-log {
+	color: var(--tips-color, #0958d9);
+	background-color: var(--tips-background-color, #e6f4ff);
 }
 
 .property-list {
@@ -333,12 +309,6 @@ page {
 	color: var(--text-color, #333333);
 }
 
-.property-text {
-	font-size: 12px;
-	line-height: 20px;
-	color: var(--secondary-text-color, #657180);
-}
-
 .demo-label {
 	font-weight: bold;
 	color: #007aff;
@@ -349,10 +319,23 @@ page {
 	color: #dd524d;
 }
 
+/* #ifdef WEB */
+.uni-log {
+	word-break: break-all;
+}
+
+@media (min-width: 768px) {
+	page {
+		max-width: 760px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+}
+/* #endif */
+
 @media (prefers-color-scheme: dark) {
 	page {
 		--list-background-color: #2d2d2d;
-		--background-color: #1a1a1a;
 		--active-color: #8f8f8f;
 		--active-background-color: #3b3b3b;
 		--text-color: #ffffff;

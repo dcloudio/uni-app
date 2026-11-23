@@ -1,12 +1,132 @@
 export type MediaOrientation =
-    'up'
-    | 'down'
-    | 'left'
-    | 'right'
-    | 'up-mirrored'
-    | 'down-mirrored'
-    | 'left-mirrored'
-    | 'right-mirrored'
+	/**
+	 * 默认方向
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.18"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.25"
+	 *     }
+	 *   }
+	 * }
+	 */
+    'up' |
+	/**
+	 * 旋转 180 度
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.18"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.25"
+	 *     }
+	 *   }
+	 * }
+	 */
+    'down' |
+	/**
+	 * 逆时针旋转 90 度
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.18"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.25"
+	 *     }
+	 *   }
+	 * }
+	 */
+    'left' |
+	/**
+	 * 顺时针旋转 90 度
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.18"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.25"
+	 *     }
+	 *   }
+	 * }
+	 */
+    'right' |
+	/**
+	 * 默认方向并水平翻转
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.18"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.25"
+	 *     }
+	 *   }
+	 * }
+	 */
+    'up-mirrored' |
+	/**
+	 * 旋转 180 度并水平翻转
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.18"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.25"
+	 *     }
+	 *   }
+	 * }
+	 */
+    'down-mirrored' |
+	/**
+	 * 逆时针旋转 90 度并水平翻转
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.18"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.25"
+	 *     }
+	 *   }
+	 * }
+	 */
+    'left-mirrored' |
+	/**
+	 * 顺时针旋转 90 度并水平翻转
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.18"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.25"
+	 *     }
+	 *   }
+	 * }
+	 */
+    'right-mirrored'
 
 /**
  * 错误码
@@ -57,6 +177,21 @@ export type MediaErrorCode =
  * 图片或视频操作失败的错误回调
  */
 export interface IMediaError extends IUniError {
+	/**
+	 * 错误码
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "3.9"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.11"
+	 *     }
+	 *   }
+	 * }
+	 */
     errCode: MediaErrorCode
 };
 
@@ -293,24 +428,84 @@ export type ChooseImageCropOptions = {
 export type ChooseImagePageOrientation =
     /**
      * 自动
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "4.33",
+	 *       "unixVer": "4.33"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "4.33",
+	 *       "unixVer": "4.33"
+	 *     }
+	 *   }
+	 * }
      */
     "auto" |
     /**
      * 竖屏显示
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "4.33",
+	 *       "unixVer": "4.33"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "4.33",
+	 *       "unixVer": "4.33"
+	 *     }
+	 *   }
+	 * }
      */
     "portrait" |
     /**
      * 横屏显示
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "4.33",
+	 *       "unixVer": "4.33"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "4.33",
+	 *       "unixVer": "4.33"
+	 *     }
+	 *   }
+	 * }
      */
     "landscape"
 
 export type ChooseImageAlbumMode =
     /**
      * 自定义媒体选择器
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "4.33",
+	 *       "unixVer": "4.33"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   }
+	 * }
      */
     "custom" |
     /**
      * 系统媒体选择器
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "4.33",
+	 *       "unixVer": "4.33"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "x"
+	 *     }
+	 *   }
+	 * }
      */
     "system"
 
@@ -952,14 +1147,50 @@ export type PreviewImageOptions = {
     indicator?:
     /**
      * 底部圆点指示器
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "3.9"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.11"
+	 *     }
+	 *   }
+	 * }
      */
     'default' |
     /**
      * 顶部数字指示器
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "3.9"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.11"
+	 *     }
+	 *   }
+	 * }
      */
     'number' |
     /**
      * 不显示指示器
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "3.9"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.11"
+	 *     }
+	 *   }
+	 * }
      */
     'none' |
     null,
@@ -2363,10 +2594,34 @@ export type ChooseVideoOptions = {
     camera?:
     /**
      * 前置摄像头
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.18"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.18"
+	 *     }
+	 *   }
+	 * }
      */
     'front' |
     /**
      * 后置摄像头
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.18"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "4.18"
+	 *     }
+	 *   }
+	 * }
      */
     'back' | null,
     /**
@@ -4210,9 +4465,9 @@ export type ChooseFileOptions = {
 					"unixVer": "4.41"
 				},
 				"alipay": {
-					"hostVer": "√",
-					"uniVer": "√",
-					"unixVer": "5.31"
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
 				},
 				"baidu": {
 					"hostVer": "x",
@@ -4281,9 +4536,9 @@ export type ChooseFileOptions = {
 		 					"unixVer": "4.41"
 		 				},
 		 				"alipay": {
-							"hostVer": "√",
-							"uniVer": "√",
-							"unixVer": "5.31"
+							"hostVer": "x",
+							"uniVer": "x",
+							"unixVer": "x"
 		 				},
 		 				"baidu": {
 		 					"hostVer": "x",
@@ -4347,9 +4602,9 @@ export type ChooseFileOptions = {
 							"unixVer": "4.41"
 						},
 						"alipay": {
-							"hostVer": "√",
-							"uniVer": "√",
-							"unixVer": "5.31"
+							"hostVer": "x",
+							"uniVer": "x",
+							"unixVer": "x"
 						},
 						"baidu": {
 							"hostVer": "x",
@@ -4413,9 +4668,9 @@ export type ChooseFileOptions = {
 							 "unixVer": "4.41"
 						 },
 						 "alipay": {
-							 "hostVer": "√",
-							 "uniVer": "√",
-							 "unixVer": "5.31"
+							 "hostVer": "x",
+							 "uniVer": "x",
+							 "unixVer": "x"
 						 },
 						 "baidu": {
 							 "hostVer": "x",
@@ -4478,9 +4733,9 @@ export type ChooseFileOptions = {
 							"unixVer": "4.41"
 						},
 						"alipay": {
-							"hostVer": "√",
-							"uniVer": "√",
-							"unixVer": "5.31"
+							"hostVer": "x",
+							"uniVer": "x",
+							"unixVer": "x"
 						},
 						"baidu": {
 							"hostVer": "x",
@@ -4544,9 +4799,9 @@ export type ChooseFileOptions = {
 						 "unixVer": "4.41"
 					 },
 					 "alipay": {
-						 "hostVer": "√",
-						 "uniVer": "√",
-						 "unixVer": "5.31"
+						 "hostVer": "x",
+						 "uniVer": "x",
+						 "unixVer": "x"
 					 },
 					 "baidu": {
 						 "hostVer": "x",
@@ -4583,7 +4838,7 @@ export type ChooseFileOptions = {
 		*/
 		'all' | null,
 		/**
-		* 选择文件的后缀名，暂只支持.zip、.png等，不支持application/msword等值, App平台不支持
+		* 选择文件的后缀名，暂只支持.zip、.png等，不支持application/msword等值, App平台仅Harmony支持
 		 @uniPlatform {
 					"app": {
 						"android": {
@@ -4611,9 +4866,9 @@ export type ChooseFileOptions = {
 							"unixVer": "4.41"
 						},
 						"alipay": {
-							"hostVer": "√",
-							"uniVer": "√",
-							"unixVer": "5.31"
+							"hostVer": "x",
+							"uniVer": "x",
+							"unixVer": "x"
 						},
 						"baidu": {
 							"hostVer": "x",
@@ -4677,9 +4932,9 @@ export type ChooseFileOptions = {
 			 		"unixVer": "4.41"
 			 	},
 			 	"alipay": {
-					"hostVer": "√",
-					"uniVer": "√",
-					"unixVer": "5.31"
+					"hostVer": "x",
+					"uniVer": "x",
+					"unixVer": "x"
 			 	},
 			 	"baidu": {
 			 		"hostVer": "x",
@@ -4744,9 +4999,9 @@ export type ChooseFileOptions = {
 		 				"unixVer": "4.41"
 		 			},
 		 			"alipay": {
-						"hostVer": "√",
-						"uniVer": "√",
-						"unixVer": "5.31"
+						"hostVer": "x",
+						"uniVer": "x",
+						"unixVer": "x"
 		 			},
 		 			"baidu": {
 		 				"hostVer": "x",
@@ -4811,9 +5066,9 @@ export type ChooseFileOptions = {
 						"unixVer": "4.41"
 					},
 					"alipay": {
-						"hostVer": "√",
-						"uniVer": "√",
-						"unixVer": "5.31"
+						"hostVer": "x",
+						"uniVer": "x",
+						"unixVer": "x"
 					},
 					"baidu": {
 						"hostVer": "x",
@@ -4878,9 +5133,9 @@ export type ChooseFileOptions = {
 						"unixVer": "4.41"
 					},
 					"alipay": {
-						"hostVer": "√",
-						"uniVer": "√",
-						"unixVer": "5.31"
+						"hostVer": "x",
+						"uniVer": "x",
+						"unixVer": "x"
 					},
 					"baidu": {
 						"hostVer": "x",
@@ -4945,9 +5200,9 @@ export type ChooseFileOptions = {
 		 					"unixVer": "4.41"
 		 				},
 		 				"alipay": {
-							"hostVer": "√",
-							"uniVer": "√",
-							"unixVer": "5.31"
+							"hostVer": "x",
+							"uniVer": "x",
+							"unixVer": "x"
 		 				},
 		 				"baidu": {
 		 					"hostVer": "x",
@@ -5864,9 +6119,9 @@ export interface Uni {
     *        "unixVer": "4.41"
     *    },
     *    "alipay": {
-    *        "hostVer": "√",
-    *        "uniVer": "√",
-    *        "unixVer": "5.31"
+    *        "hostVer": "x",
+    *        "uniVer": "x",
+    *        "unixVer": "x"
     *    },
     *    "baidu": {
     *        "hostVer": "√",

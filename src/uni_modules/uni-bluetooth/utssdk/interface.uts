@@ -1528,7 +1528,7 @@ export type OpenBluetoothAdapterCompleteCallback = (result : OpenBluetoothAdapte
 
 export type OpenBluetoothAdapterOptions = {
 	/**
-	 * @description 接口调用成功的回调函数。
+	 * @description 接口调用成功的回调函数。App 端的 success 回调结果不返回 errCode，该字段仅由微信小程序返回。
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
@@ -1801,7 +1801,7 @@ export type CloseBluetoothAdapterCompleteCallback = (result : CloseBluetoothAdap
 
 export type CloseBluetoothAdapterOptions = {
 	/**
-	 * @description 接口调用成功的回调函数。
+	 * @description 接口调用成功的回调函数。App 端的 success 回调结果不返回 errCode，该字段仅由微信小程序返回。
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
@@ -2675,7 +2675,7 @@ export type StartBluetoothDevicesDiscoveryOptions = {
 	 */
 	powerLevel ?: BluetoothDiscoveryPowerLevel | null
 	/**
-	 * @description 接口调用成功的回调函数。
+	 * @description 接口调用成功的回调函数。App 端的 success 回调结果不返回 errCode，该字段仅由微信小程序返回。
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
@@ -2948,7 +2948,7 @@ export type StopBluetoothDevicesDiscoveryCompleteCallback = (result : StopBlueto
 
 export type StopBluetoothDevicesDiscoveryOptions = {
 	/**
-	 * @description 接口调用成功的回调函数。
+	 * @description 接口调用成功的回调函数。App 端的 success 回调结果不返回 errCode，该字段仅由微信小程序返回。
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
@@ -5770,7 +5770,7 @@ export type WriteBLECharacteristicValueOptions = {
 	 */
 	writeType ?: BLEWriteType | null
 	/**
-	 * @description 接口调用成功的回调函数。
+	 * @description 接口调用成功的回调函数。App 端的 success 回调结果不返回 errCode，该字段仅由微信小程序返回。
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
@@ -6709,7 +6709,7 @@ export type ReadBLECharacteristicValueOptions = {
 	 */
 	characteristicId : string
 	/**
-	 * @description 接口调用成功的回调函数。特征值通过 onBLECharacteristicValueChange 返回。
+	 * @description 接口调用成功的回调函数。App 端的 success 回调结果不返回 errCode，该字段仅由微信小程序返回。特征值通过 onBLECharacteristicValueChange 返回。
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
@@ -7784,7 +7784,7 @@ export type NotifyBLECharacteristicValueChangeOptions = {
 	 */
 	type ?: BLENotifyType | null
 	/**
-	 * @description 接口调用成功的回调函数。
+	 * @description 接口调用成功的回调函数。App 端的 success 回调结果不返回 errCode，该字段仅由微信小程序返回。
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
@@ -10542,7 +10542,7 @@ export type CreateBLEConnectionOptions = {
 	 */
 	timeout ?: number | null
 	/**
-	 * @description 接口调用成功的回调函数。
+	 * @description 接口调用成功的回调函数。App 端的 success 回调结果不返回 errCode，该字段仅由微信小程序返回。
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
@@ -10813,7 +10813,7 @@ export type CloseBLEConnectionOptions = {
 	 */
 	deviceId : string
 	/**
-	 * @description 接口调用成功的回调函数。
+	 * @description 接口调用成功的回调函数。App 端的 success 回调结果不返回 errCode，该字段仅由微信小程序返回。
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {

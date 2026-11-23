@@ -75,6 +75,34 @@
 			}
 		},
 		// #endif
+		// #ifdef APP || MP-WEIXIN
+		{
+			"path": "pages/component/scroll-view/scroll-view-context/scroll-view-context",
+			"style": {
+				"navigationBarTitleText": "ScrollViewContext | 滚动容器上下文"
+			}
+		},
+		{
+			"path": "pages/component/scroll-view/scroll-view-context/scroll-view",
+			"style": {
+				"navigationBarTitleText": "ScrollViewContext | scroll-view"
+			}
+		},
+		{
+			"path": "pages/component/scroll-view/scroll-view-context/list-view",
+			"style": {
+				"navigationBarTitleText": "ScrollViewContext | list-view"
+			}
+		},
+		// #ifdef APP
+		{
+			"path": "pages/component/scroll-view/scroll-view-context/waterflow",
+			"style": {
+				"navigationBarTitleText": "ScrollViewContext | waterflow"
+			}
+		},
+		// #endif
+		// #endif
 		{
 			"path": "pages/component/swiper/swiper",
 			"group": "0,1,3",
@@ -1619,35 +1647,6 @@
 						"navigationBarTitleText": "uni.pageScrollTo | 将页面滚动到指定位置"
 					}
 				},
-				// #ifdef APP || MP-WEIXIN
-				{
-					"path": "scroll-view-context/scroll-view-context",
-					"group": "1,2,9",
-					"style": {
-						"navigationBarTitleText": "ScrollViewContext | 滚动上下文"
-					}
-				},
-				{
-					"path": "scroll-view-context/scroll-view",
-					"style": {
-						"navigationBarTitleText": "ScrollViewContext | scroll-view"
-					}
-				},
-				{
-					"path": "scroll-view-context/list-view",
-					"style": {
-						"navigationBarTitleText": "ScrollViewContext | list-view"
-					}
-				},
-				// #ifdef APP
-				{
-					"path": "scroll-view-context/waterflow",
-					"style": {
-						"navigationBarTitleText": "ScrollViewContext | waterflow"
-					}
-				},
-				// #endif
-				// #endif
 				{
 					"path": "event-bus/event-bus",
 					"group": "1,1,1",
@@ -3280,12 +3279,6 @@
 					}
 				},
 				{
-					"path": "forms/formcard",
-					"style": {
-						"navigationBarTitleText": "表单卡片"
-					}
-				},
-				{
 					"path": "data-checkbox/data-checkbox",
 					"style": {
 						"navigationBarTitleText": "uni-data-checkbox"
@@ -3323,6 +3316,12 @@
 					"path": "data-picker/data-picker-view",
 					"style": {
 						"navigationBarTitleText": "uni-data-picker-view"
+					}
+				},
+				{
+					"path": "file-picker/file-picker",
+					"style": {
+						"navigationBarTitleText": "uni-file-picker"
 					}
 				}
 				// #endif
@@ -4461,10 +4460,6 @@
 						{
 							"id": "api.page.pageScrollTo",
 							"name": "uni.pageScrollTo"
-						},
-						{
-							"id": "api.page.ScrollViewContext",
-							"name": "ScrollViewContext"
 						}
 					]
 				},

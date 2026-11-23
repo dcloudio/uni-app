@@ -365,8 +365,8 @@ export type SetInnerAudioOptionOptions = {
 	        }
 	    },
 	    "web": {
-	        "uniVer": "√",
-	        "unixVer": "4.0"
+	        "uniVer": "x",
+	        "unixVer": "x"
 	    }
 	  }
 	 */

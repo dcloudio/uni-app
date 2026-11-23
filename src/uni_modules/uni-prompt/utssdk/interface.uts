@@ -498,44 +498,38 @@ export type ShowToastPosition =
       },
       "mp": {
         "weixin": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "4.41"
+          "hostVer": "x",
+          "uniVer": "x",
+          "unixVer": "x"
         },
         "alipay": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "5.31"
+          "hostVer": "x",
+          "uniVer": "x",
+          "unixVer": "x"
         },
         "baidu": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "x"
+          "hostVer": "x",
+          "uniVer": "x",
         },
         "toutiao": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "x"
+          "hostVer": "x",
+          "uniVer": "x",
         },
         "lark": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "x"
+          "hostVer": "x",
+          "uniVer": "x",
         },
         "qq": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "x"
+          "hostVer": "x",
+          "uniVer": "x",
         },
         "kuaishou": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "x"
+          "hostVer": "x",
+          "uniVer": "x",
         },
         "jd": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "x"
+          "hostVer": "x",
+          "uniVer": "x",
         }
       },
       "web": {
@@ -569,44 +563,38 @@ export type ShowToastPosition =
       },
       "mp": {
         "weixin": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "4.41"
+          "hostVer": "x",
+          "uniVer": "x",
+          "unixVer": "x"
         },
         "alipay": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "5.31"
+          "hostVer": "x",
+          "uniVer": "x",
+          "unixVer": "x"
         },
         "baidu": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "x"
+          "hostVer": "x",
+          "uniVer": "x",
         },
         "toutiao": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "x"
+          "hostVer": "x",
+          "uniVer": "x",
         },
         "lark": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "x"
+          "hostVer": "x",
+          "uniVer": "x",
         },
         "qq": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "x"
+          "hostVer": "x",
+          "uniVer": "x",
         },
         "kuaishou": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "x"
+          "hostVer": "x",
+          "uniVer": "x",
         },
         "jd": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "x"
+          "hostVer": "x",
+          "uniVer": "x",
         }
       },
       "web": {
@@ -640,44 +628,38 @@ export type ShowToastPosition =
       },
       "mp": {
         "weixin": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "4.41"
+          "hostVer": "x",
+          "uniVer": "x",
+          "unixVer": "x"
         },
         "alipay": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "5.31"
+          "hostVer": "x",
+          "uniVer": "x",
+          "unixVer": "x"
         },
         "baidu": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "x"
+          "hostVer": "x",
+          "uniVer": "x",
         },
         "toutiao": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "x"
+          "hostVer": "x",
+          "uniVer": "x",
         },
         "lark": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "x"
+          "hostVer": "x",
+          "uniVer": "x",
         },
         "qq": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "x"
+          "hostVer": "x",
+          "uniVer": "x",
         },
         "kuaishou": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "x"
+          "hostVer": "x",
+          "uniVer": "x",
         },
         "jd": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "x"
+          "hostVer": "x",
+          "uniVer": "x",
         }
       },
       "web": {
@@ -1500,7 +1482,7 @@ export type HideToastCompleteCallback = (res: any) => void
 
 export type HideToastOptions = {
   /**
-   * 是否关闭所有类型的 toast，默认不关闭。仅鸿蒙平台支持。
+   * 是否关闭所有类型的 toast，默认不关闭。
    * @uniPlatform
     {
       "app": {

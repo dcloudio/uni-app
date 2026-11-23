@@ -17,25 +17,12 @@ import {
 } from '../../unierror.uts'
 import {
     getEnv,
-    getResourceStr,
+    getRealPath,
 } from '@dcloudio/uni-runtime'
 import fs from '@ohos.file.fs';
 import photoAccessHelper from '@ohos.file.photoAccessHelper'
 import common from '@ohos.app.ability.common';
 import fileUri from '@ohos.file.fileuri';
-
-async function saveResource(src: Resource, dest: string) {
-    const context = UTSHarmony.getUIAbilityContext() as common.UIAbilityContext
-    const resourceManager = context.resourceManager
-    const srcPath: string = src.params?.[0] as string
-    const destFile = fs.openSync(dest, fs.OpenMode.WRITE_ONLY)
-    try {
-        const content = await resourceManager.getRawFileContent(srcPath)
-        await fs.write(destFile.fd, content.buffer as ArrayBuffer)
-    } finally {
-        await fs.close(destFile)
-    }
-}
 
 async function saveUri(src: string, dest: string) {
     const srcFile = fs.openSync(src, fs.OpenMode.READ_ONLY)
@@ -75,18 +62,12 @@ function fileExists(filePath: string): boolean {
 }
 
 async function saveMediaToAlbum(fromUri: string, type: 'image' | 'video'): Promise<string | ISaveMediaError> {
-    const realPath = getResourceStr(fromUri) as string | Resource
+    // unifile:// 协议路径（如 unifile://cache/xxx.png）会在此转为真实路径；
+    // fileUri.getUriFromPath 仅支持绝对路径，直接传入 unifile:// 会报 Invalid argument
+    const realPath = getRealPath(fromUri)
     const context = UTSHarmony.getUIAbilityContext() as common.UIAbilityContext
     let fileName = Date.now() + (type === 'image' ? '.png' : '.mp4')
-    const isResource = typeof realPath !== 'string'
-    if (isResource) {
-        // Resource类型
-        if (typeof realPath.params?.[0] === 'string') {
-            fileName = realPath.params?.[0].split('/').pop() || fileName
-        }
-    } else {
-        fileName = realPath.split('/').pop() || fileName
-    }
+    fileName = realPath.split('/').pop() || fileName
 
     const phAccessHelper = photoAccessHelper.getPhotoAccessHelper(context);
 
@@ -101,9 +82,7 @@ async function saveMediaToAlbum(fromUri: string, type: 'image' | 'video'): Promi
         }
     ];
     let showUri = ''
-    if (isResource) {
-        showUri = fromUri
-    } else if (realPath.startsWith('file:///data')) {
+    if (realPath.startsWith('file:///data')) {
         showUri = fileUri.getUriFromPath(realPath.slice(7))
     } else if (realPath.startsWith('file://')) {
         showUri = realPath
@@ -135,10 +114,19 @@ async function saveMediaToAlbum(fromUri: string, type: 'image' | 'video'): Promi
         }
         showUri = fileUri.getUriFromPath(cachedFileName)
     }
-    const desFileUris: Array<string> = await phAccessHelper.showAssetsCreationDialog([
-        showUri
-    ], photoCreationConfigs);
-    if (!desFileUris || desFileUris.length === 0) {
+    let desFileUris : Array<string>
+    try {
+        desFileUris = await phAccessHelper.showAssetsCreationDialog([
+            showUri
+        ], photoCreationConfigs);
+    } catch (error) {
+        const err = error as Error
+        return {
+            code: 1101006,
+            message: (MediaUniErrors.get(1101006) as string) + (err.message == null || err.message.length === 0 ? '' : ', ' + err.message),
+        } as ISaveMediaError
+    }
+    if (desFileUris.length === 0) {
         return {
             code: 1101001,
             message: MediaUniErrors.get(1101001) as string,
@@ -151,11 +139,7 @@ async function saveMediaToAlbum(fromUri: string, type: 'image' | 'video'): Promi
             message: MediaUniErrors.get(1101006) as string + ', code: ' + destUri,
         } as ISaveMediaError
     }
-    if (isResource) {
-        await saveResource(realPath as Resource, destUri)
-    } else {
-        await saveUri(realPath as string, destUri)
-    }
+    await saveUri(realPath, destUri)
     return destUri
 }
 

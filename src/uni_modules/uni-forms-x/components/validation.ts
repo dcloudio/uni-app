@@ -1,5 +1,6 @@
 import LegacyValidator from './uni-forms/validate.js'
 import { normalizePath, objectKeys, pathKey } from './common'
+import { getUniFormLocaleMessages } from './locale'
 import type {
 	UniFormIssue,
 	UniFormPath,
@@ -10,7 +11,13 @@ import type {
 	UniFormTrigger
 } from './common'
 
-const defaultMessage = '验证错误'
+/**
+ * 校验失败且没有可用文案时的兜底提示，按应用语言返回。
+ * @returns 国际化的默认错误文案
+ */
+function defaultMessage() : string {
+	return getUniFormLocaleMessages().validationErrorMessage
+}
 
 function isUnsafeRuleKey(key: string): boolean {
 	return key == '__proto__' || key == 'prototype' || key == 'constructor'
@@ -288,7 +295,7 @@ function issueFromLegacyResult(result: any, name: UniFormPath): UniFormIssue | n
 	return {
 		key: pathKey(name),
 		path: normalizePath(name),
-		errorMessage: result.errorMessage.toString() || defaultMessage,
+		errorMessage: result.errorMessage.toString() || defaultMessage(),
 		source: 'legacy'
 	}
 }
@@ -331,7 +338,7 @@ export async function validateLegacyRules(
 			path: normalizePath(name),
 			errorMessage: errorValue != null && errorValue.message != null
 				? errorValue.message.toString()
-				: defaultMessage,
+				: defaultMessage(),
 			source: 'legacy'
 		}
 	}
@@ -379,7 +386,7 @@ export async function validateStandardSchema(schema: any, value: any): Promise<S
 				path: [],
 				errorMessage: errorValue != null && errorValue.message != null
 					? errorValue.message.toString()
-					: defaultMessage,
+					: defaultMessage(),
 				source: 'standard'
 			}],
 			value: undefined
@@ -392,7 +399,7 @@ export async function validateStandardSchema(schema: any, value: any): Promise<S
 				return {
 					key: pathKey(path),
 					path,
-					errorMessage: issue.message == null ? defaultMessage : issue.message.toString(),
+					errorMessage: issue.message == null ? defaultMessage() : issue.message.toString(),
 					source: 'standard'
 				}
 			}),

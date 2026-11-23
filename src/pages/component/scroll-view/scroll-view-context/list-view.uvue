@@ -77,14 +77,13 @@
   <button id="call-close-refresh" class="mt-10" @click="closeRefresh">调用 closeRefresh</button>
 
   <!-- triggerTwoLevel / closeTwoLevel：共用一个滚动容器。 -->
+  <!-- #ifdef MP-WEIXIN -->
   <text class="fs-15 fw-bold color-text-333 mt-15">triggerTwoLevel / closeTwoLevel</text>
   <list-view
     id="two-level-scroll"
     class="context-scroll"
     :refresher-enabled="true"
-    <!-- #ifdef MP-WEIXIN -->
     :refresher-two-level-enabled="true"
-    <!-- #endif -->
     refresher-default-style="none"
   >
     <list-item v-for="index in 8" :key="index" :type="1">
@@ -101,6 +100,7 @@
   </button>
 
   <button id="call-close-two-level" class="mt-10" @click="closeTwoLevel">调用 closeTwoLevel</button>
+  <!-- #endif -->
 </template>
 
 <script setup lang="ts">
@@ -166,27 +166,17 @@
     context.closeRefresh()
   }
 
+  // #ifdef MP-WEIXIN
   async function triggerTwoLevel() {
     const context = await getScrollViewContext('#two-level-scroll')
-    // #ifdef MP-WEIXIN
     context.triggerTwoLevel({})
-    // #endif
-    // #ifdef APP
-    // App 端的二级开关通过运行时属性设置。
-    context.setAnyAttribute('refresher-two-level-enabled', true)
-    context.triggerTwoLevel()
-    // #endif
   }
 
   async function closeTwoLevel() {
     const context = await getScrollViewContext('#two-level-scroll')
-    // #ifdef MP-WEIXIN
     context.closeTwoLevel({})
-    // #endif
-    // #ifdef APP
-    context.closeTwoLevel()
-    // #endif
   }
+  // #endif
 
   defineExpose({
     data,
@@ -199,9 +189,7 @@
     scrollTo,
     scrollIntoView,
     triggerRefresh,
-    closeRefresh,
-    triggerTwoLevel,
-    closeTwoLevel
+    closeRefresh
   })
 </script>
 

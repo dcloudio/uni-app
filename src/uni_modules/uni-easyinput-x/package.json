@@ -1,7 +1,7 @@
 {
 	"id": "uni-easyinput-x",
 	"displayName": "uni-easyinput 增强输入框",
-	"version": "1.0.0",
+	"version": "1.0.2",
 	"description": "适用于 uni-app x 的增强输入框，支持清空、密码显隐、前后插槽和多行输入。",
 	"isExt": true,
 	"extUrl": "https://ext.dcloud.net.cn/plugin?name=uni-easyinput-x",
@@ -44,7 +44,7 @@
 	},
 	"uni_modules": {
 		"dependencies": [
-			"uni-icons"
+			"uni-icons-x"
 		],
 		"encrypt": [],
 		"platforms": {
@@ -88,16 +88,34 @@
 				},
 				"uni-app-x": {
 					"web": {
-						"safari": "√",
-						"chrome": "√"
+						"safari": {
+                            "extVersion": "1.0.2",
+                            "minVersion": ""
+                        },
+						"chrome": {
+                            "extVersion": "1.0.2",
+                            "minVersion": ""
+                        }
 					},
 					"app": {
-						"android": "√",
-						"ios": "√",
-						"harmony": "√"
+						"android": {
+                            "extVersion": "1.0.2",
+                            "minVersion": ""
+                        },
+						"ios": {
+                            "extVersion": "1.0.2",
+                            "minVersion": ""
+                        },
+						"harmony": {
+                            "extVersion": "1.0.2",
+                            "minVersion": ""
+                        }
 					},
 					"mp": {
-						"weixin": "√"
+						"weixin": {
+                            "extVersion": "1.0.2",
+                            "minVersion": ""
+                        }
 					}
 				}
 			}

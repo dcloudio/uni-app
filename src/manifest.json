@@ -2,8 +2,8 @@
 	"name": "Hello uni-app x",
 	"appid": "__UNI__HelloUniAppX",
 	"description": "",
-	"versionName": "2.3.6",
-	"versionCode": 20306,
+	"versionName": "2.3.7",
+	"versionCode": 20307,
 	"uni-app-x": {
 		"vapor": true,
 		"styleIsolationVersion": "2"
@@ -28,7 +28,7 @@
 		"usingComponents": true,
 		"resizable": true,
 		"frameset": true,
-		"libVersion": "3.7.1",
+		"libVersion": "3.7.12",
 		"requiredPrivateInfos": [
 			"getLocation",
 			"onLocationChange",

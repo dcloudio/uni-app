@@ -107,7 +107,7 @@
 
   /* 按下时的点击态：整体降低不透明度，兼容自定义背景色，不覆盖外部样式。 */
   .back-circle-hover {
-    opacity: 0.6;
+    opacity: 0.8;
   }
 
   /* #ifdef APP-IOS */
@@ -116,15 +116,15 @@
   }
   /* #endif */
 
-  /* Web 端鼠标悬浮态：轻微上移配合阴影，独立 translate 保留外部 transform 缩放。 */
+  /* Web 端鼠标悬浮态：轻微阴影 */
   /* #ifdef WEB */
   .back-circle {
-    transition: translate 0.15s ease, box-shadow 0.15s ease;
+    cursor: pointer;
+    transition: box-shadow 0.15s ease;
   }
 
   .back-circle:hover {
-    translate: 0 -2px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
   /* #endif */
 
@@ -154,7 +154,7 @@
 
     /* #ifdef WEB */
     .back-circle:hover {
-      box-shadow: 0 2px 8px rgba(255, 255, 255, 0.18);
+      box-shadow: 0 1px 3px rgba(255, 255, 255, 0.1);
     }
     /* #endif */
 

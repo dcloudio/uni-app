@@ -16,28 +16,39 @@ describe('API-saveImageToPhotosAlbum', () => {
     return;
   }
 
+  // 系统弹窗「允许」按钮坐标（像素=逻辑坐标，与 getWindowInfo 返回值的坐标系一致）
+  const allowSaveButton = { x: 455, y: 710 }
+
   let page;
   beforeAll(async () => {
     page = await program.reLaunch('/pages/API/save-image-to-photos-album/save-image-to-photos-album');
     await page.waitFor('view');
   });
 
+  async function prepareAndroidSavePermission() {
+    if (!isAndroid) {
+      return true
+    }
+    const infos = platformInfo.split(' ');
+    const version = parseInt(infos[infos.length - 1]);
+    if (version < 7) {
+      console.log("安卓版本小于7设备 不进行saveImage测试，模拟器会出现闪退影响后续测试")
+      return false
+    }
+    await program.adbCommand(
+      'pm grant io.dcloud.uniappx android.permission.WRITE_EXTERNAL_STORAGE');
+    return true
+  }
+
   it('test saveImageToPhotosAlbum', async () => {
-    if (isAndroid) {
-      const infos = platformInfo.split(' ');
-      const version = parseInt(infos[infos.length - 1]);
-      if (version < 7) {
-        console.log("安卓版本小于7设备 不进行saveImage测试，模拟器会出现闪退影响后续测试")
-        expect(1).toBe(1)
-        return
-      }
-      await program.adbCommand(
-        'pm grant io.dcloud.uniappx android.permission.WRITE_EXTERNAL_STORAGE');
+    if (!(await prepareAndroidSavePermission())) {
+      expect(1).toBe(1)
+      return
     }
     await page.callMethod('saveImage');
     if (isHarmony) {
       await page.waitFor(2000);
-      await program.tap({ x: 305, y: 555 })
+      await program.tap(allowSaveButton)
     }
     await page.waitFor(1000);
 
@@ -52,6 +63,24 @@ describe('API-saveImageToPhotosAlbum', () => {
     expect(image).toSaveImageSnapshot();
 
     expect(await page.data('testState.success')).toBe(true);
+    await page.waitFor(2000);
+  });
+
+  it('test saveImageToPhotosAlbum with file written to CACHE_PATH', async () => {
+    if (!(await prepareAndroidSavePermission())) {
+      expect(1).toBe(1)
+      return
+    }
+    await page.callMethod('saveImageFromCachePath');
+    if (isHarmony) {
+      await page.waitFor(2000);
+      await program.tap(allowSaveButton)
+    }
+    await page.waitFor(1000);
+
+    console.log('cacheFilePath:', await page.data('testState.cacheFilePath'));
+    console.log('cacheSaveError:', await page.data('testState.cacheSaveError'));
+    expect(await page.data('testState.cacheSaveSuccess')).toBe(true);
     await page.waitFor(2000);
   });
 });

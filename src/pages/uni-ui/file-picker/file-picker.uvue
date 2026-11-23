@@ -1,0 +1,193 @@
+<template>
+  <text class="page-title">FilePicker 文件选择上传</text>
+  <text class="page-desc">根据文件类型自动匹配选择 API，App 平台默认打开系统相册，支持上传到云存储。</text>
+
+  <text class="uni-h4">基础图片（宫格，自动上传）</text>
+  <uni-file-picker v-model="data.basicFiles" title="图片" :limit="9" :auto-upload="true" @select="onSelect"
+    @progress="onProgress" @success="onSuccess" @fail="onFail" @delete="onDelete" />
+  <text class="uni-log">{{ data.basicLog }}</text>
+
+  <text class="uni-h4">仅选择，不自动上传</text>
+  <uni-file-picker ref="manualPickerRef" v-model="data.manualFiles" :auto-upload="false" title="手动上传" />
+  <view class="button-row">
+    <button class="small-button" size="mini" @click="callUpload">upload() 方法</button>
+    <button class="small-button" size="mini" @click="callClear()">clearFiles() 方法</button>
+    <button class="small-button" size="mini" @click="callClear(0)">clearFiles(0) 方法</button>
+  </view>
+
+  <text class="uni-h4">列表模式</text>
+  <uni-file-picker v-model="data.listFiles" title="文件列表" mode="list" :auto-upload="false" list-class="demo-list-class" />
+
+  <text class="uni-h4">单选并返回对象（return-type: object）</text>
+  <uni-file-picker v-model="data.objectFile" return-type="object" title="单张图片" :auto-upload="false" />
+  <text class="uni-log">{{ data.objectFileLog }}</text>
+
+  <text class="uni-h4">视频（file-mediatype: video）</text>
+  <uni-file-picker v-model="data.videoFiles" file-mediatype="video" title="视频" :auto-upload="false" />
+
+  <text class="uni-h4">任意文件（file-mediatype: all）</text>
+  <uni-file-picker v-model="data.allFiles" file-mediatype="all" title="任意文件" :auto-upload="false" />
+
+  <text class="uni-h4">图片和视频混合（file-mediatype: mix，仅 App）</text>
+  <uni-file-picker v-model="data.mixFiles" file-mediatype="mix" title="混合媒体" :auto-upload="false" />
+
+  <text class="uni-h4">选择参数</text>
+  <text class="uni-info">source-type / size-type / album-mode / camera / max-duration / media-type / compressed /
+    page-orientation</text>
+  <uni-file-picker v-model="data.optionFiles" file-mediatype="image" title="相册选择参数" :source-type="['album']"
+    :size-type="['compressed']" album-mode="system" :auto-upload="false" />
+  <uni-file-picker v-model="data.videoOptionFiles" file-mediatype="video" title="拍摄参数"
+    :source-type="['camera', 'album']" camera="back" :max-duration="30" :compressed="false" :auto-upload="false" />
+
+  <text class="uni-h4">后缀过滤（file-extname）</text>
+  <uni-file-picker v-model="data.extFiles" file-mediatype="all" title="仅图片后缀" :file-extname="['png', 'jpg', 'jpeg']"
+    :auto-upload="false" />
+
+  <text class="uni-h4">自定义样式（external class）</text>
+  <uni-file-picker v-model="data.styleFiles" title="自定义样式" :limit="3" :auto-upload="false"
+    image-class="demo-image-class" title-class="demo-title-class" count-class="demo-count-class"
+    placeholder-class="demo-placeholder-class" del-icon-class="demo-del-icon-class" />
+
+  <text class="uni-h4">事件日志</text>
+  <text class="uni-log">{{ data.eventLog }}</text>
+</template>
+
+<script setup lang="ts">
+  type Data = {
+    basicFiles : any[],
+    manualFiles : any[],
+    listFiles : any[],
+    objectFile : any,
+    videoFiles : any[],
+    allFiles : any[],
+    mixFiles : any[],
+    optionFiles : any[],
+    videoOptionFiles : any[],
+    extFiles : any[],
+    styleFiles : any[],
+    basicLog : string,
+    objectFileLog : string,
+    eventLog : string
+  }
+
+  const data = reactive<Data>({
+    basicFiles: [],
+    manualFiles: [],
+    listFiles: [],
+    objectFile: null,
+    videoFiles: [],
+    allFiles: [],
+    mixFiles: [],
+    optionFiles: [],
+    videoOptionFiles: [],
+    extFiles: [],
+    styleFiles: [],
+    basicLog: '',
+    objectFileLog: '',
+    eventLog: ''
+  })
+
+  const manualPickerRef = ref<any>(null)
+
+  function callUpload() {
+    manualPickerRef.value?.upload()
+  }
+
+  function callClear(index ?: number) {
+    manualPickerRef.value?.clearFiles(index)
+  }
+
+  function appendLog(text : string) {
+    data.eventLog = text + '\n' + data.eventLog
+  }
+
+  function onSelect(result : UTSJSONObject) {
+    const files = (result['tempFiles'] as Array<any>) ?? []
+    data.basicLog = `select: ${files.length} 个文件`
+    appendLog(`select: ${files.length} 个文件`)
+  }
+
+  function onProgress(result : UTSJSONObject) {
+    appendLog(`progress: index=${result['index'] as Number} progress=${result['progress'] as Number}`)
+  }
+
+  function onSuccess(result : UTSJSONObject) {
+    const files = (result['tempFiles'] as Array<any>) ?? []
+    appendLog(`success: ${files.length} 个文件`)
+  }
+
+  function onFail(result : UTSJSONObject) {
+    const files = (result['tempFiles'] as Array<any>) ?? []
+    appendLog(`fail: ${files.length} 个文件`)
+  }
+
+  function onDelete(result : UTSJSONObject) {
+    appendLog(`delete: index=${result['index'] as Number}`)
+  }
+
+  watch(() : any => data.objectFile, (value : any) => {
+    data.objectFileLog = value == null ? 'null' : JSON.stringify(value as UTSJSONObject)
+  })
+</script>
+
+<style>
+  .page-title {
+    font-size: 20px;
+    font-weight: bold;
+    padding: 10px;
+  }
+
+  .page-desc {
+    font-size: 14px;
+    color: #666666;
+    padding: 0 10px 10px;
+  }
+
+  .button-row {
+    flex-direction: row;
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+
+  .small-button {
+    margin-right: 5px;
+  }
+
+  .demo-image-class {
+    padding-top: 88%;
+  }
+
+  .demo-title-class {
+    color: #e02020;
+  }
+
+  .demo-count-class {
+    color: #20a020;
+  }
+
+  .demo-placeholder-class {
+    background-color: #f5f5f5;
+  }
+
+  .demo-list-class {
+    margin-top: 10px;
+  }
+
+  .demo-del-icon-class {
+    background-color: rgba(224, 32, 32, 0.8);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .page-title {
+      color: #ffffff;
+    }
+
+    .page-desc {
+      color: #aaaaaa;
+    }
+
+    .demo-placeholder-class {
+      background-color: #3b3b3b;
+    }
+  }
+</style>

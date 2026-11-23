@@ -554,7 +554,7 @@ export type GetAppAuthorizeSettingResult = {
      */
     'config error' | null,
     /**
-     * 允许读写日历的开关（仅微信小程序支持）
+     * 允许读写日历的开关（仅微信小程序、支付宝小程序支持）
      *
      * @uniPlatform
      * {

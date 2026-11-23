@@ -194,7 +194,7 @@ export type Icon =
    */
   "error" |
   /**
-   * 显示错误图标，此时title文本无长度显示，支付宝、抖音小程序生效
+   * 显示错误图标，此时title文本无长度显示
    * @uniPlatform
     {
       "app": {
@@ -265,7 +265,7 @@ export type Icon =
    */
   "fail" |
   /**
-   * 显示异常图标，此时title文本无长度显示，支付宝小程序生效
+   * 显示异常图标，此时title文本无长度显示
    * @uniPlatform
     {
       "app": {
@@ -506,44 +506,38 @@ export type ShowToastPosition =
       },
       "mp": {
         "weixin": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "4.41"
+          "hostVer": "x",
+          "uniVer": "x",
+          "unixVer": "x"
         },
         "alipay": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "5.31"
+          "hostVer": "x",
+          "uniVer": "x",
+          "unixVer": "x"
         },
         "baidu": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "x"
+          "hostVer": "x",
+          "uniVer": "x",
         },
         "toutiao": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "x"
+          "hostVer": "x",
+          "uniVer": "x",
         },
         "lark": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "x"
+          "hostVer": "x",
+          "uniVer": "x",
         },
         "qq": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "x"
+          "hostVer": "x",
+          "uniVer": "x",
         },
         "kuaishou": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "x"
+          "hostVer": "x",
+          "uniVer": "x",
         },
         "jd": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "x"
+          "hostVer": "x",
+          "uniVer": "x",
         }
       },
       "web": {
@@ -577,44 +571,38 @@ export type ShowToastPosition =
       },
       "mp": {
         "weixin": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "4.41"
+          "hostVer": "x",
+          "uniVer": "x",
+          "unixVer": "x"
         },
         "alipay": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "5.31"
+          "hostVer": "x",
+          "uniVer": "x",
+          "unixVer": "x"
         },
         "baidu": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "x"
+          "hostVer": "x",
+          "uniVer": "x",
         },
         "toutiao": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "x"
+          "hostVer": "x",
+          "uniVer": "x",
         },
         "lark": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "x"
+          "hostVer": "x",
+          "uniVer": "x",
         },
         "qq": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "x"
+          "hostVer": "x",
+          "uniVer": "x",
         },
         "kuaishou": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "x"
+          "hostVer": "x",
+          "uniVer": "x",
         },
         "jd": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "x"
+          "hostVer": "x",
+          "uniVer": "x",
         }
       },
       "web": {
@@ -648,44 +636,38 @@ export type ShowToastPosition =
       },
       "mp": {
         "weixin": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "4.41"
+          "hostVer": "x",
+          "uniVer": "x",
+          "unixVer": "x"
         },
         "alipay": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "5.31"
+          "hostVer": "x",
+          "uniVer": "x",
+          "unixVer": "x"
         },
         "baidu": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "x"
+          "hostVer": "x",
+          "uniVer": "x",
         },
         "toutiao": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "x"
+          "hostVer": "x",
+          "uniVer": "x",
         },
         "lark": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "x"
+          "hostVer": "x",
+          "uniVer": "x",
         },
         "qq": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "x"
+          "hostVer": "x",
+          "uniVer": "x",
         },
         "kuaishou": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "x"
+          "hostVer": "x",
+          "uniVer": "x",
         },
         "jd": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "x"
+          "hostVer": "x",
+          "uniVer": "x",
         }
       },
       "web": {

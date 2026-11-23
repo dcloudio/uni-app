@@ -1,65 +1,63 @@
 <template>
-	<view>
-		<view class="intro">
-			<text class="page-title">控件接入示例</text>
-			<text class="page-desc">uni-forms 不要求控件继承特定基类。只要控件通过 v-model 更新表单对象，就能参与提交校验；需要失焦即时校验时，再按需接入表单项上下文。</text>
+	<view class="demo-section intro-section">
+		<text class="uni-info">uni-forms 不要求控件继承特定基类。只要控件通过 v-model 更新表单对象，就能参与提交校验；需要失焦即时校验时，再按需接入表单项上下文。</text>
+	</view>
+
+	<view class="demo-section">
+		<text class="uni-h4">多控件表单</text>
+		<uni-forms
+			ref="formRef"
+			v-model="formData"
+			:rules="rules"
+			err-show-type="undertext"
+			label-position="left"
+			label-width="120"
+			border
+		>
+			<uni-forms-item name="nativeInput" label="原生 input" required label-class="demo-label" error-message-class="demo-error">
+				<input class="native-input" v-model="formData.nativeInput" placeholder="直接使用 v-model" />
+			</uni-forms-item>
+
+			<uni-forms-item name="nativeNote" label="原生 textarea" label-class="demo-label" error-message-class="demo-error">
+				<textarea class="native-textarea" v-model="formData.nativeNote" placeholder="多行文本不需要额外适配" />
+			</uni-forms-item>
+
+			<uni-forms-item name="agree" label="原生 switch" required label-class="demo-label" error-message-class="demo-error">
+				<switch :checked="formData.agree" @change="onAgreeChange" />
+			</uni-forms-item>
+
+			<uni-forms-item name="nativeCity" label="原生 picker" required label-class="demo-label" error-message-class="demo-error">
+				<picker class="picker-control" :range="cityOptions" :value="cityIndex" @change="onCityChange">
+					<view class="picker-value"><text>{{ formData.nativeCity || '请选择城市' }}</text></view>
+				</picker>
+			</uni-forms-item>
+
+			<uni-forms-item name="easyInput" label="uni-easyinput" required label-class="demo-label" error-message-class="demo-error">
+				<uni-easyinput v-model="formData.easyInput" placeholder="uni-x 组件直接接入" />
+			</uni-forms-item>
+
+			<uni-forms-item name="combobox" label="uni-combobox" required label-class="demo-label" error-message-class="demo-error">
+				<uni-combobox v-model="formData.combobox" :options="comboboxOptions" placeholder="uni-combobox 直接接入" />
+			</uni-forms-item>
+
+			<uni-forms-item name="thirdParty" label="三方组件" required label-class="demo-label" error-message-class="demo-error">
+				<thirdPartyControl v-model="formData.thirdParty" :options="thirdPartyOptions" placeholder="只实现 update:modelValue" />
+			</uni-forms-item>
+		</uni-forms>
+
+		<view class="button-row">
+			<button class="action-button" size="mini" @click="validateForm">校验接入控件</button>
+			<button class="action-button secondary-button" size="mini" @click="resetForm">重置</button>
 		</view>
+		<text class="uni-log status-log">{{ statusText }}</text>
+	</view>
 
-		<view class="section">
-			<uni-forms
-				ref="formRef"
-				v-model="formData"
-				:rules="rules"
-				err-show-type="undertext"
-				label-position="left"
-				label-width="120"
-				border
-			>
-				<uni-forms-item name="nativeInput" label="原生 input" required label-class="demo-label" error-message-class="demo-error">
-					<input class="native-input" v-model="formData.nativeInput" placeholder="直接使用 v-model" />
-				</uni-forms-item>
-
-				<uni-forms-item name="nativeNote" label="原生 textarea" label-class="demo-label" error-message-class="demo-error">
-					<textarea class="native-textarea" v-model="formData.nativeNote" placeholder="多行文本不需要额外适配" />
-				</uni-forms-item>
-
-				<uni-forms-item name="agree" label="原生 switch" required label-class="demo-label" error-message-class="demo-error">
-					<switch :checked="formData.agree" @change="onAgreeChange" />
-				</uni-forms-item>
-
-				<uni-forms-item name="nativeCity" label="原生 picker" required label-class="demo-label" error-message-class="demo-error">
-					<picker class="picker-control" :range="cityOptions" :value="cityIndex" @change="onCityChange">
-						<view class="picker-value"><text>{{ formData.nativeCity || '请选择城市' }}</text></view>
-					</picker>
-				</uni-forms-item>
-
-				<uni-forms-item name="easyInput" label="uni-easyinput" required label-class="demo-label" error-message-class="demo-error">
-					<uni-easyinput v-model="formData.easyInput" placeholder="uni-x 组件直接接入" />
-				</uni-forms-item>
-
-				<uni-forms-item name="combobox" label="uni-combobox" required label-class="demo-label" error-message-class="demo-error">
-					<uni-combobox v-model="formData.combobox" :options="comboboxOptions" placeholder="uni-combobox 直接接入" />
-				</uni-forms-item>
-
-				<uni-forms-item name="thirdParty" label="三方组件" required label-class="demo-label" error-message-class="demo-error">
-					<thirdPartyControl v-model="formData.thirdParty" :options="thirdPartyOptions" placeholder="只实现 update:modelValue" />
-				</uni-forms-item>
-			</uni-forms>
-
-			<view class="button-row">
-				<button class="action-button" size="mini" @click="validateForm">校验接入控件</button>
-				<button class="action-button secondary-button" size="mini" @click="resetForm">重置</button>
-			</view>
-			<text class="status-text">{{ statusText }}</text>
-		</view>
-
-		<view class="section section-last">
-			<text class="section-title">接入要点</text>
-			<text class="point-text">1. 输入类控件：实现 modelValue 属性和 update:modelValue 事件。</text>
-			<text class="point-text">2. 原生 picker/switch：用 change 事件把 detail.value 写回表单模型。</text>
-			<text class="point-text">3. 只使用 v-model 的三方组件可以参与 submit 校验；失焦校验属于可选增强。</text>
-			<text class="data-text">{{ dataText }}</text>
-		</view>
+	<view class="demo-section">
+		<text class="uni-h4">接入要点</text>
+		<text class="uni-info">1. 输入类控件：实现 modelValue 属性和 update:modelValue 事件。</text>
+		<text class="uni-info">2. 原生 picker/switch：用 change 事件把 detail.value 写回表单模型。</text>
+		<text class="uni-info">3. 只使用 v-model 的三方组件可以参与 submit 校验；失焦校验属于可选增强。</text>
+		<text class="uni-log">{{ dataText }}</text>
 	</view>
 </template>
 
@@ -135,8 +133,9 @@ function resetForm() {
 
 <style>
 page {
+	padding: 12px 16px 24px;
+	box-sizing: border-box;
 	--list-background-color: #ffffff;
-	--background-color: #f5f5f5;
 	--active-color: #a0a0a0;
 	--active-background-color: #f8f8f8;
 	--text-color: #333333;
@@ -146,40 +145,26 @@ page {
 	--input-border-color: #dcdfe6;
 	--divider-color: #e5e5e5;
 	--forms-error-background-color: #fff2f0;
-	background-color: var(--background-color);
 }
 
-.intro,
-.section {
-	padding: 16px;
-	background-color: var(--content-background-color, #ffffff);
-}
-
-.section {
-	margin-top: 10px;
-}
-
-.section-last {
-	padding-bottom: 32px;
-}
-
-.page-title,
-.section-title {
-	font-size: 18px;
-	font-weight: bold;
-	color: var(--text-color, #222222);
-}
-
-.section-title {
+.intro-section {
 	margin-bottom: 12px;
-	font-size: 16px;
 }
 
-.page-desc,
-.point-text {
-	font-size: 13px;
-	line-height: 21px;
-	color: var(--secondary-text-color, #657180);
+.demo-section {
+	width: 100%;
+	margin-bottom: 20px;
+	box-sizing: border-box;
+}
+
+.uni-info {
+	line-height: 20px;
+}
+
+.uni-log {
+	width: 100%;
+	line-height: 18px;
+	box-sizing: border-box;
 }
 
 .native-input,
@@ -241,21 +226,9 @@ page {
 	background-color: var(--active-background-color, #e9eef5);
 }
 
-.status-text {
-	margin-top: 8px;
-	font-size: 14px;
-	color: #007aff;
-}
-
-.point-text {
-	margin-bottom: 6px;
-}
-
-.data-text {
-	margin-top: 12px;
-	font-size: 12px;
-	line-height: 20px;
-	color: var(--secondary-text-color, #657180);
+.status-log {
+	color: var(--tips-color, #0958d9);
+	background-color: var(--tips-background-color, #e6f4ff);
 }
 
 .demo-label {
@@ -268,10 +241,23 @@ page {
 	color: #dd524d;
 }
 
+/* #ifdef WEB */
+.uni-log {
+	word-break: break-all;
+}
+
+@media (min-width: 768px) {
+	page {
+		max-width: 760px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+}
+/* #endif */
+
 @media (prefers-color-scheme: dark) {
 	page {
 		--list-background-color: #2d2d2d;
-		--background-color: #1a1a1a;
 		--active-color: #8f8f8f;
 		--active-background-color: #3b3b3b;
 		--text-color: #ffffff;

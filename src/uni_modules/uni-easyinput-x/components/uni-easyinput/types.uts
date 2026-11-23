@@ -3,86 +3,290 @@ export type UniEasyinputProps = {
 	/**
 	 * @description 输入内容，支持 v-model；同时传入 value 时优先使用 modelValue
 	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.07"}
+	 * }
 	 */
 	modelValue? : string | number | null,
 	/**
 	 * @description 不使用 v-model 时传入的输入内容；同时传入 modelValue 时不生效，内容更新时不触发 update:value
 	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.07"}
+	 * }
 	 */
 	value? : string | number | null,
 	/**
 	 * @description 原生表单控件名称，透传给 input / textarea
 	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.07"}
+	 * }
 	 */
 	name? : string,
 	/**
 	 * @description 输入类型。textarea 渲染多行输入框，password 渲染密码输入框，其余透传给原生单行输入
 	 * @default "text"
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.07"}
+	 * }
 	 */
 	type? : string,
 	/**
 	 * @description 占位文字
 	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.07"}
+	 * }
 	 */
 	placeholder? : string,
 	/**
 	 * @description 是否禁用
 	 * @default false
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.07"}
+	 * }
 	 */
 	disabled? : boolean,
 	/**
 	 * @description 最大输入长度，透传给 input / textarea
 	 * @default -1
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.07"}
+	 * }
 	 */
 	maxlength? : number,
 	/**
 	 * @description 是否聚焦
 	 * @default false
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.07"}
+	 * }
 	 */
 	focus? : boolean,
 	/**
 	 * @description 键盘右下角按钮类型；单行输入默认 done，多行输入在未设置或设置为 done 时使用 return
 	 * @default "done"
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.07"}
+	 * }
 	 */
 	confirmType? : string,
 	/**
 	 * @description 光标与键盘的距离，单位 px，透传给 input / textarea
 	 * @default 0
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.07"}
+	 * }
 	 */
 	cursorSpacing? : number,
 	/**
 	 * @description 键盘弹起时是否自动上推页面，透传给 input / textarea
 	 * @default false
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.07"}
+	 * }
 	 */
 	adjustPosition? : boolean,
 	/**
 	 * @description 是否自动增高，仅当 type 为 textarea 时生效
 	 * @default false
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.07"}
+	 * }
 	 */
 	autoHeight? : boolean,
 	/**
 	 * @description 是否显示清空图标，仅对单行 input 生效
 	 * @default false
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.07"}
+	 * }
 	 */
 	clearable? : boolean,
 	/**
 	 * @description type 为 password 时是否显示密码显隐图标
 	 * @default false
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.07"}
+	 * }
 	 */
 	passwordIcon? : boolean,
 	/**
 	 * @description input / textarea 的自定义样式类
 	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.07"}
+	 * }
 	 */
 	inputClass? : string.ClassString,
 	/**
 	 * @description 占位文字的自定义样式类
 	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.07"}
+	 * }
 	 */
 	placeholderClass? : string.ClassString,
 	/**
 	 * @description 清空和密码显隐图标的自定义样式类
 	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.21"},
+	 *     "ios": {"unixVaporVer": "5.11"},
+	 *     "harmony": {"unixVaporVer": "5.07"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.07"},
+	 *     "alipay": {"unixVer": "5.31"}
+	 *   },
+	 *   "web": {"unixVer": "5.07"}
+	 * }
 	 */
 	iconClass? : string.ClassString
 }

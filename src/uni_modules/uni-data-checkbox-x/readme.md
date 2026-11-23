@@ -19,6 +19,12 @@ datacom 规范和 external class 配合使用，既可以简化数据绑定，�
 - 自定义字段映射
 - 浅色、暗黑模式
 
+## 使用方式
+
+组件负责：根据候选数据渲染选项、维护选中状态、处理禁用与 `min`/`max` 约束、回写 `v-model` 并派发 `change`，同时提供默认的浅色与暗黑样式。
+
+使用者负责：提供候选数据（`localdata` 或 uniCloud `collection`）、绑定当前值、按需通过 external class 定制选项外观、在业务侧处理 `change` 事件。
+
 ## 基本用法
 
 通过 `localdata` 提供候选数据（localdata是相对于uniCloud云端数据的本地数据概念），使用 `v-model` 绑定当前值。
@@ -139,14 +145,12 @@ const values = ref([0, 2])
 
 ## 展示模式
 
-通过 `mode` 切换展示方式。
+通过 `mode` 切换展示方式：
 
-| mode | 说明 | 常用场景 |
-| --- | --- | --- |
-| default | 默认平铺模式，显示单选或复选控件 | 表单选项、问卷 |
-| list | 纵向列表模式 | 设置项、单列选择 |
-| button | 分段按钮模式 | 少量选项、视图切换 |
-| tag | 标签模式 | 标签筛选、偏好选择 |
+- `default`：默认平铺模式，显示单选或复选控件，适用于表单选项、问卷。
+- `list`：纵向列表模式，适用于设置项、单列选择。
+- `button`：分段按钮模式，适用于少量选项、视图切换。
+- `tag`：标签模式，适用于标签筛选、偏好选择。
 
 ```vue
 <uni-data-checkbox v-model="value" :localdata="options" />

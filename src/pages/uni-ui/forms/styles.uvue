@@ -1,79 +1,76 @@
 <template>
-	<view>
-		<view class="intro">
-			<text class="page-title">样式与属性示例</text>
-			<text class="page-desc">示例按移动端排列：标签在左，输入在右。label-width、label-align 和 border 调整这一行；标签、星号、错误文字用样式类覆盖。</text>
-		</view>
+	<view class="demo-section intro-section">
+		<text class="uni-info">示例按移动端排列：标签在左，输入在右。label-width、label-align 和 border 调整这一行；标签、星号、错误文字用样式类覆盖。</text>
+	</view>
 
-		<view class="section property-section">
-			<text class="section-title">属性对照</text>
-			<view class="property-row"><text class="property-name">label-position</text><text class="property-value">left，移动端默认</text></view>
-			<view class="property-row"><text class="property-name">label-width</text><text class="property-value">数字或 CSS 宽度</text></view>
-			<view class="property-row"><text class="property-name">label-align</text><text class="property-value">left / center / right</text></view>
-			<view class="property-row"><text class="property-name">border</text><text class="property-value">控制字段分隔线</text></view>
-			<view class="property-row"><text class="property-name">class / style</text><text class="property-value">直接作用于 uni-forms 外层</text></view>
-		</view>
+	<view class="demo-section">
+		<text class="uni-h4">属性对照</text>
+		<view class="property-row"><text class="property-name">label-position</text><text class="property-value">left，移动端默认</text></view>
+		<view class="property-row"><text class="property-name">label-width</text><text class="property-value">数字或 CSS 宽度</text></view>
+		<view class="property-row"><text class="property-name">label-align</text><text class="property-value">left / center / right</text></view>
+		<view class="property-row"><text class="property-name">border</text><text class="property-value">控制字段分隔线</text></view>
+		<view class="property-row"><text class="property-name">class / style</text><text class="property-value">直接作用于 uni-forms 外层</text></view>
+	</view>
 
-		<view class="section">
-			<text class="section-title">左侧标签</text>
-			<uni-forms
-				class="left-form-surface"
-				style="border-radius: 8px;"
-				v-model="leftForm"
-				label-position="left"
-				label-width="86"
-				label-align="right"
-				border
+	<view class="demo-section">
+		<text class="uni-h4">左侧标签</text>
+		<uni-forms
+			class="left-form-surface"
+			style="border-radius: 8px;"
+			v-model="leftForm"
+			label-position="left"
+			label-width="86"
+			label-align="right"
+			border
+		>
+			<uni-forms-item label="标题" name="title" required label-class="left-label" content-class="left-content">
+				<uni-easyinput v-model="leftForm.title" placeholder="右对齐标签" />
+			</uni-forms-item>
+			<uni-forms-item label="说明" name="description" label-class="left-label" content-class="left-content">
+				<uni-easyinput v-model="leftForm.description" placeholder="border 会显示字段分隔线" />
+			</uni-forms-item>
+		</uni-forms>
+	</view>
+
+	<view class="demo-section">
+		<text class="uni-h4">左侧标签样式</text>
+		<uni-forms
+			ref="topFormRef"
+			class="theme-form-surface"
+			style="padding: 12px; border-radius: 8px;"
+			v-model="topForm"
+			:rules="topRules"
+			label-position="left"
+			label-width="80"
+			label-align="left"
+			err-show-type="undertext"
+		>
+			<uni-forms-item
+				name="account"
+				label="账号"
+				required
+				label-class="theme-label"
+				required-class="theme-required"
+				error-message-class="theme-error"
 			>
-				<uni-forms-item label="标题" name="title" required label-class="left-label" content-class="left-content">
-					<uni-easyinput v-model="leftForm.title" placeholder="右对齐标签" />
-				</uni-forms-item>
-				<uni-forms-item label="说明" name="description" label-class="left-label" content-class="left-content">
-					<uni-easyinput v-model="leftForm.description" placeholder="border 会显示字段分隔线" />
-				</uni-forms-item>
-			</uni-forms>
-		</view>
-
-		<view class="section section-last">
-			<text class="section-title">左侧标签样式</text>
-			<uni-forms
-				ref="topFormRef"
-				class="theme-form-surface"
-				style="padding: 12px; border-radius: 8px;"
-				v-model="topForm"
-				:rules="topRules"
-				label-position="left"
-				label-width="80"
-				label-align="left"
-				err-show-type="undertext"
+				<uni-easyinput v-model="topForm.account" placeholder="观察标签、必填星号和错误文字颜色" />
+			</uni-forms-item>
+			<uni-forms-item
+				name="phone"
+				label="手机号"
+				label-class="theme-label"
+				error-message-class="theme-error"
 			>
-				<uni-forms-item
-					name="account"
-					label="账号"
-					required
-					label-class="theme-label"
-					required-class="theme-required"
-					error-message-class="theme-error"
-				>
-					<uni-easyinput v-model="topForm.account" placeholder="观察标签、必填星号和错误文字颜色" />
-				</uni-forms-item>
-				<uni-forms-item
-					name="phone"
-					label="手机号"
-					label-class="theme-label"
-					error-message-class="theme-error"
-				>
-					<uni-easyinput v-model="topForm.phone" placeholder="错误样式由 externalClasses 控制" />
-				</uni-forms-item>
-			</uni-forms>
+				<uni-easyinput v-model="topForm.phone" placeholder="错误样式由 externalClasses 控制" />
+			</uni-forms-item>
+		</uni-forms>
 
-			<view class="button-row">
-				<button class="action-button" size="mini" @click="validateTopForm">显示错误样式</button>
-				<button class="action-button secondary-button" size="mini" @click="clearTopForm">清除错误</button>
-			</view>
-			<text class="status-text">{{ statusText }}</text>
-			<text class="class-list">本例使用 label-class、required-class、error-message-class。上一例另外使用 content-class。</text>
+		<view class="button-row">
+			<button class="action-button" size="mini" @click="validateTopForm">显示错误样式</button>
+			<button class="action-button secondary-button" size="mini" @click="clearTopForm">清除错误</button>
 		</view>
+		<text class="uni-log status-log">{{ statusText }}</text>
+		<text class="uni-info">本例使用 label-class、required-class、error-message-class。上一例另外使用 content-class。</text>
 	</view>
 </template>
 
@@ -114,8 +111,9 @@ function clearTopForm() {
 
 <style>
 page {
+	padding: 12px 16px 24px;
+	box-sizing: border-box;
 	--list-background-color: #ffffff;
-	--background-color: #f5f5f5;
 	--active-color: #a0a0a0;
 	--active-background-color: #f8f8f8;
 	--text-color: #333333;
@@ -129,13 +127,31 @@ page {
 	--left-label-color: #44546a;
 	--theme-surface-background: #fffaf2;
 	--theme-label-color: #8b5e34;
-	background-color: var(--background-color);
+}
+
+.intro-section {
+	margin-bottom: 12px;
+}
+
+.demo-section {
+	width: 100%;
+	margin-bottom: 20px;
+	box-sizing: border-box;
+}
+
+.uni-info {
+	line-height: 20px;
+}
+
+.uni-log {
+	width: 100%;
+	line-height: 18px;
+	box-sizing: border-box;
 }
 
 @media (prefers-color-scheme: dark) {
 	page {
 		--list-background-color: #2d2d2d;
-		--background-color: #1a1a1a;
 		--active-color: #8f8f8f;
 		--active-background-color: #3b3b3b;
 		--text-color: #ffffff;
@@ -152,43 +168,6 @@ page {
 	}
 }
 
-.intro,
-.section {
-	padding: 16px;
-	background-color: var(--content-background-color, #ffffff);
-}
-
-.section {
-	margin-top: 10px;
-}
-
-.section-last {
-	padding-bottom: 32px;
-}
-
-.page-title,
-.section-title {
-	font-size: 18px;
-	font-weight: bold;
-	color: var(--text-color, #222222);
-}
-
-.section-title {
-	margin-bottom: 12px;
-	font-size: 16px;
-}
-
-.page-desc,
-.class-list {
-	font-size: 13px;
-	line-height: 21px;
-	color: var(--secondary-text-color, #657180);
-}
-
-.property-section {
-	padding-bottom: 10px;
-}
-
 .property-row {
 	min-height: 30px;
 	padding: 5px 0;
@@ -200,13 +179,18 @@ page {
 }
 
 .property-name {
+	flex-shrink: 0;
+	margin-right: 12px;
 	font-size: 13px;
 	font-weight: bold;
 	color: #007aff;
 }
 
 .property-value {
+	flex: 1;
+	min-width: 0;
 	font-size: 13px;
+	text-align: right;
 	color: var(--secondary-text-color, #657180);
 }
 
@@ -262,14 +246,25 @@ page {
 	background-color: var(--active-background-color, #e9eef5);
 }
 
-.status-text {
-	margin-top: 8px;
-	font-size: 14px;
-	color: #007aff;
+.status-log {
+	color: var(--tips-color, #0958d9);
+	background-color: var(--tips-background-color, #e6f4ff);
 }
 
-.class-list {
-	margin-top: 10px;
-	font-size: 12px;
+/* #ifdef WEB */
+.uni-info,
+.uni-log,
+.property-value {
+	word-break: break-all;
 }
+
+@media (min-width: 768px) {
+	page {
+		max-width: 760px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+}
+/* #endif */
+
 </style>

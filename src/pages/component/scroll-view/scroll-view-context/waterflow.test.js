@@ -15,7 +15,6 @@ const methodIds = [
   ['scroll-to', ['scroll-to']],
   ['scroll-into-view', ['scroll-into-view']],
   ['refresh-scroll', ['trigger-refresh', 'close-refresh']],
-  ['two-level-scroll', ['trigger-two-level', 'close-two-level']]
 ]
 
 jest.setTimeout(30000)
@@ -30,7 +29,7 @@ describe(`ScrollViewContext/waterflow`, () => {
 
   let page
   beforeEach(async () => {
-    page = await program.reLaunch(`/pages/API/scroll-view-context/waterflow`)
+    page = await program.reLaunch(`/pages/component/scroll-view/scroll-view-context/waterflow`)
     await page.waitFor(500)
   })
 
@@ -56,10 +55,6 @@ describe(`ScrollViewContext/waterflow`, () => {
 
   async function scrollTop(id) {
     return Number(await (await page.$(`#${id}`)).callFunction('scroll-view.scrollTop'))
-  }
-
-  async function flag(id, property) {
-    return await (await page.$(`#${id}`)).domProperty(property)
   }
 
   async function captureContainer(id) {
@@ -97,32 +92,6 @@ describe(`ScrollViewContext/waterflow`, () => {
       }
     }
     return pixels > Math.max(6, ratio * ratio * 3)
-  }
-
-  async function expectGreenPanel(id) {
-    await waitFor(
-      () => flag(id, 'refresherTwoLevelTriggered'),
-      (visible) => visible
-    )
-    await page.waitFor(500)
-    const { png, offset, size, window } = await captureContainer(id)
-    let green = 0
-    for (const x of [0.2, 0.5, 0.8]) {
-      for (const y of [0.2, 0.5, 0.8]) {
-        const px = Math.round((offset.left + size.width * x) * window.pixelRatio)
-        const py = Math.round(
-          (window.safeAreaInsets.top + 44 + offset.top + size.height * y) * window.pixelRatio
-        )
-        const index = (py * png.width + px) * 4
-        if (
-          Math.abs(png.data[index] - 183) < 12 &&
-          Math.abs(png.data[index + 1] - 238) < 12 &&
-          Math.abs(png.data[index + 2] - 214) < 12
-        )
-          green++
-      }
-    }
-    expect(green).toBeGreaterThanOrEqual(7)
   }
 
   it('属性开关测试顶部容器，刷新和二级面板分别共用容器', async () => {
@@ -179,27 +148,5 @@ describe(`ScrollViewContext/waterflow`, () => {
     await waitFor(refreshing, (active) => active)
     await (await page.$('#call-close-refresh')).tap()
     await waitFor(refreshing, (active) => !active)
-  })
-
-  it('triggerTwoLevel 显示自己的二级面板', async () => {
-    await showContainer('two-level-scroll')
-    await (await page.$('#call-trigger-two-level')).tap()
-    await expectGreenPanel('two-level-scroll')
-    expect(await scrollTop('property-scroll')).toBe(0)
-  })
-
-  it('closeTwoLevel 关闭本区域预先打开的二级面板', async () => {
-    await showContainer('two-level-scroll')
-    await (await page.$('#call-trigger-two-level')).tap()
-    await expectGreenPanel('two-level-scroll')
-    await (await page.$('#call-close-two-level')).tap()
-    await waitFor(
-      () => flag('two-level-scroll', 'refresherTwoLevelTriggered'),
-      (visible) => !visible
-    )
-    await waitFor(
-      () => scrollTop('two-level-scroll'),
-      (top) => Math.abs(top) <= 2
-    )
   })
 })

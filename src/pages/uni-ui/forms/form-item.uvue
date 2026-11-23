@@ -1,188 +1,204 @@
 <template>
-	<view>
-		<view class="intro">
-			<text class="page-title">表单项布局</text>
-			<text class="page-desc">从 uni-forms 进入。看左侧标签的字号、宽度、垂直位置，以及说明和行尾箭头。</text>
-		</view>
+	<view class="demo-section intro-section">
+		<text class="uni-info">从 uni-forms 进入。看左侧标签的字号、宽度、垂直位置，以及说明和行尾箭头。</text>
+	</view>
 
-		<view class="card-block">
-			<text class="section-title card-heading">卡片</text>
-			<text class="section-desc card-heading">圆角卡片和分组。同一组用 label-width 把右侧输入左边缘对齐。</text>
-			<uni-forms label-width="80">
-				<view class="demo-card-radius demo-card-color">
-					<uni-forms-item label="用户名" label-class="card-label">
-						<input class="card-input" placeholder="请输入用户名" />
-					</uni-forms-item>
-					<uni-forms-item label="密码" label-class="card-label">
-						<input class="card-input" placeholder="请输入密码" />
-					</uni-forms-item>
-				</view>
-			</uni-forms>
-			<text class="card-group">分组标题</text>
-			<uni-forms label-width="80">
-				<view class="demo-card demo-card-color">
-					<uni-forms-item label="用户名" label-class="card-label" class="card-line">
-						<input class="card-input" placeholder="请输入用户名" />
-					</uni-forms-item>
-					<uni-forms-item label="密码" label-class="card-label">
-						<input class="card-input" placeholder="请输入密码" />
-					</uni-forms-item>
-				</view>
-			</uni-forms>
-		</view>
-
-		<view class="section">
-			<text class="section-title">字号</text>
-			<text class="section-desc">左侧标签不写字号，应和「默认字号」一样大。标签在上方时固定 14px。</text>
-			<view class="sample-row">
-				<text class="sample-name">默认字号</text>
-				<text class="sample-default">标签</text>
-				<text class="sample-name">14px</text>
-				<text class="sample-14">标签</text>
+	<view class="card-block demo-section">
+		<text class="uni-h4 card-heading">卡片</text>
+		<text class="uni-info card-heading">圆角卡片和分组。同一组用 label-width 把右侧输入左边缘对齐。</text>
+		<uni-forms label-width="80">
+			<view class="demo-card-radius demo-card-color">
+				<uni-forms-item label="用户名" label-class="card-label">
+					<input class="card-input" placeholder="请输入用户名" />
+				</uni-forms-item>
+				<uni-forms-item label="密码" label-class="card-label">
+					<input class="card-input" placeholder="请输入密码" />
+				</uni-forms-item>
 			</view>
-			<uni-forms border>
-				<uni-forms-item label="左侧标签">
-					<view class="trail">
-						<input class="field" placeholder-class="field-placeholder" placeholder="请输入" />
-					</view>
+		</uni-forms>
+		<text class="card-group">分组标题</text>
+		<uni-forms label-width="80">
+			<view class="demo-card demo-card-color">
+				<uni-forms-item label="用户名" label-class="card-label" class="card-line">
+					<input class="card-input" placeholder="请输入用户名" />
 				</uni-forms-item>
-				<uni-forms-item label="顶部标签" label-position="top">
-					<view class="top-field">
-						<input class="field field-left" placeholder-class="field-placeholder-left" placeholder="请输入" />
-					</view>
+				<uni-forms-item label="密码" label-class="card-label">
+					<input class="card-input" placeholder="请输入密码" />
 				</uni-forms-item>
-			</uni-forms>
-		</view>
-
-		<view class="section">
-			<text class="section-title">宽度</text>
-			<text class="section-desc">没写宽度时，标签按文字排开。写了相同的 label-width，输入框左边缘才对齐。</text>
-			<uni-forms border>
-				<uni-forms-item label="是否阻止祖先节点出现点击态">
-					<view class="trail">
-						<switch />
-					</view>
-				</uni-forms-item>
-			</uni-forms>
-			<text class="sub-title">label-width="70"</text>
-			<uni-forms border>
-				<uni-forms-item label="是否阻止祖先节点出现点击态" label-width="70">
-					<view class="trail">
-						<switch />
-					</view>
-				</uni-forms-item>
-			</uni-forms>
-			<text class="sub-title">label-width="96"</text>
-			<uni-forms border>
-				<uni-forms-item label="用户名" label-width="96">
-					<view class="trail">
-						<input class="field" placeholder-class="field-placeholder" placeholder="请输入用户名" />
-					</view>
-				</uni-forms-item>
-				<uni-forms-item label="邮箱地址" label-width="96">
-					<view class="trail">
-						<input class="field" placeholder-class="field-placeholder" placeholder="请输入邮箱" />
-					</view>
-				</uni-forms-item>
-			</uni-forms>
-		</view>
-
-		<view class="section">
-			<text class="section-title">垂直对齐</text>
-			<text class="section-desc">标签和右侧控件在同一行里垂直居中。有说明时，说明在标签下方，这一列仍和控件居中。</text>
-			<uni-forms border>
-				<uni-forms-item label="用户名">
-					<view class="trail">
-						<input class="field" placeholder-class="field-placeholder" placeholder="请输入用户名" />
-					</view>
-				</uni-forms-item>
-				<uni-forms-item label="接收通知">
-					<view class="trail">
-						<switch />
-					</view>
-				</uni-forms-item>
-				<uni-forms-item label="深色模式" description="跟随系统外观">
-					<view class="trail">
-						<switch />
-					</view>
-				</uni-forms-item>
-			</uni-forms>
-		</view>
-
-		<view class="section">
-			<text class="section-title">向右箭头</text>
-			<text class="section-desc">箭头在行尾，留在这一行里面。开关控制「个人资料」那一行。</text>
-			<uni-forms border>
-				<uni-forms-item label="显示箭头">
-					<view class="trail">
-						<switch :checked="arrowOn" @change="onArrowChange" />
-					</view>
-				</uni-forms-item>
-				<uni-forms-item label="个人资料" description="头像、昵称" :show-arrow="arrowOn">
-					<view class="trail">
-						<text class="value-text">已填写</text>
-					</view>
-				</uni-forms-item>
-				<uni-forms-item label="语言" show-arrow>
-					<view class="trail">
-						<text class="value-text">简体中文</text>
-					</view>
-				</uni-forms-item>
-				<uni-forms-item label="密码">
-					<view class="trail">
-						<input class="field" placeholder-class="field-placeholder" placeholder="请输入密码" />
-					</view>
-				</uni-forms-item>
-			</uni-forms>
-		</view>
-
-		<view class="section">
-			<text class="section-title">说明</text>
-			<text class="section-desc">说明在标签下方，字更小、颜色更浅，本身不设宽度。邮箱那一行用 description-class 改成蓝色。</text>
-			<uni-forms border>
-				<uni-forms-item label="用户名" description="登录时使用">
-					<view class="trail">
-						<input class="field" placeholder-class="field-placeholder" placeholder="请输入用户名" />
-					</view>
-				</uni-forms-item>
-				<uni-forms-item label="邮箱" description="用于找回密码" description-class="desc-custom">
-					<view class="trail">
-						<input class="field" placeholder-class="field-placeholder" placeholder="请输入邮箱" />
-					</view>
-				</uni-forms-item>
-				<uni-forms-item label="点击态延迟" description="单位是毫秒" label-position="top">
-					<view class="top-field">
-						<slider class="slider" :min="50" :max="200" :step="50" show-value />
-					</view>
-				</uni-forms-item>
-			</uni-forms>
-		</view>
-
-		<view class="section section-last">
-			<text class="section-title">错误提示</text>
-			<text class="section-desc">点校验。失败时 toast 只提示第一条，控件下面不写文案。没通过的表单项会套上红框。邮箱这一行用 error-class 改了边框颜色。</text>
-			<uni-forms ref="errorFormRef" v-model="errorForm" :rules="errorRules" err-show-type="toast" label-width="80">
-				<uni-forms-item name="name" label="用户名">
-					<view class="trail">
-						<input class="field" placeholder-class="field-placeholder" v-model="errorForm.name" placeholder="请输入用户名" />
-					</view>
-				</uni-forms-item>
-				<uni-forms-item name="email" label="邮箱" error-class="email-error">
-					<view class="trail">
-						<input class="field" placeholder-class="field-placeholder" v-model="errorForm.email" placeholder="请输入邮箱" />
-					</view>
-				</uni-forms-item>
-			</uni-forms>
-			<view class="button-row">
-				<button class="action-button" size="mini" @click="submitErrorForm">校验</button>
-				<button class="action-button secondary-button" size="mini" @click="clearErrorForm">清除</button>
 			</view>
+		</uni-forms>
+	</view>
+
+	<view class="demo-section">
+		<text class="uni-h4">下拉选择</text>
+		<uni-forms v-model="comboboxForm" label-width="80" border>
+			<uni-forms-item name="city" label="城市">
+				<uni-combobox
+					plain
+					v-model="comboboxForm.city"
+					:options="cityOptions"
+					field-class="city-combobox"
+					result-text-class="city-combobox-value"
+					placeholder="请选择城市"
+				/>
+			</uni-forms-item>
+		</uni-forms>
+		<text class="uni-log">表单中的城市：{{ comboboxForm.city || '未选择' }}</text>
+	</view>
+
+	<view class="demo-section">
+		<text class="uni-h4">字号</text>
+		<text class="uni-info">左侧标签不写字号，应和「默认字号」一样大。标签在上方时固定 14px。</text>
+		<view class="sample-row">
+			<text class="sample-name">默认字号</text>
+			<text class="sample-default">标签</text>
+			<text class="sample-name">14px</text>
+			<text class="sample-14">标签</text>
+		</view>
+		<uni-forms border>
+			<uni-forms-item label="左侧标签">
+				<view class="trail">
+					<input class="field" placeholder-class="field-placeholder" placeholder="请输入" />
+				</view>
+			</uni-forms-item>
+			<uni-forms-item label="顶部标签" label-position="top">
+				<view class="top-field">
+					<input class="field field-left" placeholder-class="field-placeholder-left" placeholder="请输入" />
+				</view>
+			</uni-forms-item>
+		</uni-forms>
+	</view>
+
+	<view class="demo-section">
+		<text class="uni-h4">宽度</text>
+		<text class="uni-info">没写宽度时，标签按文字排开。写了相同的 label-width，输入框左边缘才对齐。</text>
+		<uni-forms border>
+			<uni-forms-item label="是否阻止祖先节点出现点击态">
+				<view class="trail">
+					<switch />
+				</view>
+			</uni-forms-item>
+		</uni-forms>
+		<text class="uni-info">label-width="70"</text>
+		<uni-forms border>
+			<uni-forms-item label="是否阻止祖先节点出现点击态" label-width="70">
+				<view class="trail">
+					<switch />
+				</view>
+			</uni-forms-item>
+		</uni-forms>
+		<text class="uni-info">label-width="96"</text>
+		<uni-forms border>
+			<uni-forms-item label="用户名" label-width="96">
+				<view class="trail">
+					<input class="field" placeholder-class="field-placeholder" placeholder="请输入用户名" />
+				</view>
+			</uni-forms-item>
+			<uni-forms-item label="邮箱地址" label-width="96">
+				<view class="trail">
+					<input class="field" placeholder-class="field-placeholder" placeholder="请输入邮箱" />
+				</view>
+			</uni-forms-item>
+		</uni-forms>
+	</view>
+
+	<view class="demo-section">
+		<text class="uni-h4">垂直对齐</text>
+		<text class="uni-info">标签和右侧控件在同一行里垂直居中。有说明时，说明在标签下方，这一列仍和控件居中。</text>
+		<uni-forms border>
+			<uni-forms-item label="用户名">
+				<view class="trail">
+					<input class="field" placeholder-class="field-placeholder" placeholder="请输入用户名" />
+				</view>
+			</uni-forms-item>
+			<uni-forms-item label="接收通知">
+				<view class="trail">
+					<switch />
+				</view>
+			</uni-forms-item>
+			<uni-forms-item label="深色模式" description="跟随系统外观">
+				<view class="trail">
+					<switch />
+				</view>
+			</uni-forms-item>
+		</uni-forms>
+	</view>
+
+	<view class="demo-section">
+		<text class="uni-h4">向右箭头</text>
+		<text class="uni-info">箭头在行尾，留在这一行里面。开关控制「个人资料」那一行。</text>
+		<uni-forms border>
+			<uni-forms-item label="显示箭头">
+				<view class="trail">
+					<switch :checked="arrowOn" @change="onArrowChange" />
+				</view>
+			</uni-forms-item>
+			<uni-forms-item label="个人资料" description="头像、昵称" :show-arrow="arrowOn">
+				<view class="trail">
+					<text class="value-text">已填写</text>
+				</view>
+			</uni-forms-item>
+			<uni-forms-item label="语言" show-arrow>
+				<view class="trail">
+					<text class="value-text">简体中文</text>
+				</view>
+			</uni-forms-item>
+			<uni-forms-item label="密码">
+				<view class="trail">
+					<input class="field" placeholder-class="field-placeholder" placeholder="请输入密码" />
+				</view>
+			</uni-forms-item>
+		</uni-forms>
+	</view>
+
+	<view class="demo-section">
+		<text class="uni-h4">说明</text>
+		<text class="uni-info">说明在标签下方，字更小、颜色更浅，本身不设宽度。邮箱那一行用 description-class 改成蓝色。</text>
+		<uni-forms border>
+			<uni-forms-item label="用户名" description="登录时使用">
+				<view class="trail">
+					<input class="field" placeholder-class="field-placeholder" placeholder="请输入用户名" />
+				</view>
+			</uni-forms-item>
+			<uni-forms-item label="邮箱" description="用于找回密码" description-class="desc-custom">
+				<view class="trail">
+					<input class="field" placeholder-class="field-placeholder" placeholder="请输入邮箱" />
+				</view>
+			</uni-forms-item>
+			<uni-forms-item label="点击态延迟" description="单位是毫秒" label-position="top">
+				<view class="top-field">
+					<slider class="slider" :min="50" :max="200" :step="50" show-value />
+				</view>
+			</uni-forms-item>
+		</uni-forms>
+	</view>
+
+	<view class="demo-section">
+		<text class="uni-h4">错误提示</text>
+		<text class="uni-info">点校验。失败时 toast 只提示第一条，控件下面不写文案。没通过的表单项会套上红框。邮箱这一行用 error-class 改了边框颜色。</text>
+		<uni-forms ref="errorFormRef" v-model="errorForm" :rules="errorRules" err-show-type="toast" label-width="80">
+			<uni-forms-item name="name" label="用户名">
+				<view class="trail">
+					<input class="field" placeholder-class="field-placeholder" v-model="errorForm.name" placeholder="请输入用户名" />
+				</view>
+			</uni-forms-item>
+			<uni-forms-item name="email" label="邮箱" error-class="email-error">
+				<view class="trail">
+					<input class="field" placeholder-class="field-placeholder" v-model="errorForm.email" placeholder="请输入邮箱" />
+				</view>
+			</uni-forms-item>
+		</uni-forms>
+		<view class="button-row">
+			<button class="action-button" size="mini" @click="submitErrorForm">校验</button>
+			<button class="action-button secondary-button" size="mini" @click="clearErrorForm">清除</button>
 		</view>
 	</view>
 </template>
 
 <script setup lang="ts">
 	const arrowOn = ref(true)
+	const comboboxForm = ref({ city: '' })
+	const cityOptions = ['北京', '上海', '广州', '深圳', '杭州']
 	const errorFormRef = ref<any>(null)
 	const errorForm = ref({
 		name: '',
@@ -224,8 +240,9 @@
 
 <style>
 	page {
+		padding: 12px 16px 24px;
+		box-sizing: border-box;
 		--list-background-color: #ffffff;
-		--background-color: #f5f5f5;
 		--active-color: #a0a0a0;
 		--active-background-color: #f8f8f8;
 		--text-color: #333333;
@@ -239,56 +256,26 @@
 		--desc-custom-color: #576b95;
 		--email-error-bg: #fff7e8;
 		--email-error-border: #fa8c16;
-		background-color: var(--background-color);
 	}
 
-	.intro {
-		padding: 18px 16px;
-		background-color: var(--content-background-color, #ffffff);
-	}
-
-	.page-title {
-		font-size: 20px;
-		font-weight: bold;
-		color: var(--text-color, #222222);
-	}
-
-	.page-desc {
-		margin-top: 8px;
-		font-size: 14px;
-		line-height: 21px;
-		color: var(--secondary-text-color, #657180);
-	}
-
-	.section {
-		padding: 16px;
-		margin-top: 10px;
-		background-color: var(--content-background-color, #ffffff);
-	}
-
-	.section-last {
-		padding-bottom: 32px;
-	}
-
-	.section-title {
-		margin-bottom: 8px;
-		font-size: 16px;
-		font-weight: bold;
-		color: var(--text-color, #333333);
-	}
-
-	.section-desc {
+	.intro-section {
 		margin-bottom: 12px;
-		font-size: 13px;
-		line-height: 20px;
-		color: var(--secondary-text-color, #657180);
 	}
 
-	.sub-title {
-		margin-top: 14px;
-		margin-bottom: 8px;
-		font-size: 13px;
-		color: var(--secondary-text-color, #657180);
+	.demo-section {
+		width: 100%;
+		margin-bottom: 20px;
+		box-sizing: border-box;
+	}
+
+	.uni-info {
+		line-height: 20px;
+	}
+
+	.uni-log {
+		width: 100%;
+		line-height: 18px;
+		box-sizing: border-box;
 	}
 
 	.sample-row {
@@ -315,6 +302,7 @@
 
 	.top-field,
 	.trail {
+		min-width: 0;
 		align-self: stretch;
 		flex-direction: row;
 		align-items: center;
@@ -324,8 +312,21 @@
 		justify-content: flex-end;
 	}
 
+	.city-combobox {
+		width: 100%;
+		min-width: 0;
+		align-self: flex-end;
+		max-width: 220px;
+		box-sizing: border-box;
+	}
+
+	.city-combobox-value {
+		text-align: right;
+	}
+
 	.field {
 		flex: 1;
+		min-width: 0;
 		height: 36px;
 		text-align: right;
 		color: var(--text-color, #333333);
@@ -391,14 +392,18 @@
 	}
 
 	.demo-card {
+		width: 100%;
 		margin: 10px 0;
 		padding: 10px;
+		box-sizing: border-box;
 	}
 
 	.demo-card-radius {
-		margin: 10px;
+		width: 100%;
+		margin: 10px 0;
 		padding: 10px;
 		border-radius: 10px;
+		box-sizing: border-box;
 	}
 
 	.demo-card-color {
@@ -430,10 +435,23 @@
 		border-left-color: var(--email-error-border, #fa8c16);
 	}
 
+	/* #ifdef WEB */
+	.uni-log {
+		word-break: break-all;
+	}
+
+	@media (min-width: 768px) {
+		page {
+			max-width: 760px;
+			margin-left: auto;
+			margin-right: auto;
+		}
+	}
+	/* #endif */
+
 	@media (prefers-color-scheme: dark) {
 		page {
 			--list-background-color: #2d2d2d;
-			--background-color: #1a1a1a;
 			--active-color: #8f8f8f;
 			--active-background-color: #3b3b3b;
 			--text-color: #ffffff;

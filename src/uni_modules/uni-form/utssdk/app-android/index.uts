@@ -2441,7 +2441,11 @@ export class NativeInputView implements UniAndroidKeyboardClient {
 	 * 更新文字颜色
 	 */
 	updateColor(value: string | null) {
-		if (this.editText == null || value == null || value == "") return
+		if (this.editText == null) return
+		if (value == null || value == "") {
+			this.editText!.setTextColor(Color.BLACK)
+			return
+		}
 		const color = parseAndroidColorValue(value)
 		if (color == null) {
 			console.error("Invalid color value: " + value)
@@ -3450,7 +3454,11 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 	}
 
 	updateColor(value: string | null) {
-		if (this.editText == null || value == null || value == '') return
+		if (this.editText == null) return
+		if (value == null || value == '') {
+			this.editText!.setTextColor(Color.BLACK)
+			return
+		}
 		const color = parseAndroidColorValue(value)
 		if (color == null) {
 			console.error('Invalid color value: ' + value)
