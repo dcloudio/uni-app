@@ -56,9 +56,9 @@ export interface MiniProgramCompilerOptions {
      */
     $slots?: boolean
     /**
-     * 原生 $slots 中普通默认插槽的键名
+     * 按来源插槽是否存在生成转发槽名
      */
-    defaultSlotKey?: string
+    checkForwardedSlots?: boolean
     /**
      * 是否支持后备内容
      */

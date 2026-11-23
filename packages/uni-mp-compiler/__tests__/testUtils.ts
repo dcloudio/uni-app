@@ -12,6 +12,7 @@ export const miniProgram: MiniProgramCompilerOptions = {
     array: true,
   },
   slot: {
+    checkForwardedSlots: true,
     fallbackContent: false,
     dynamicSlotNames: true,
   },

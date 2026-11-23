@@ -160,18 +160,15 @@ describe('compiler: forwarded slots', () => {
         }
       )
       const expression = output.match(/u-s="\{\{(.*?)\}\}"/)![1]
+      expect(result.code).not.toContain('$slots')
+      expect(output).not.toContain(miniProgramOptions.directive + 'if=')
+      if (platform !== 'uni-mp-weixin') {
+        expect(expression).toBe("['d','extra','footer']")
+        continue
+      }
       expect(expression).toBe(
         `[($slots['title'])?'d':null,($slots['extra'])?'extra':null,'footer']`
       )
-      expect(result.code).not.toContain('$slots')
-      if (miniProgramOptions.slot.fallbackContent) {
-        expect(output).toContain(
-          `${miniProgramOptions.directive}if="{{$slots['title']}}"`
-        )
-        expect(output).toContain(
-          `${miniProgramOptions.directive}if="{{$slots['extra']}}"`
-        )
-      }
       const evaluate = new Function('$slots', `return ${expression}`)
       expect(evaluate({})).toEqual([null, null, 'footer'])
       expect(evaluate({ title: true })).toEqual(['d', null, 'footer'])
@@ -182,97 +179,6 @@ describe('compiler: forwarded slots', () => {
         'footer',
       ])
     }
-  })
-
-  test('implicit forwarding with native fallback', () => {
-    assert(
-      `<custom><slot name="title"/></custom>`,
-      `<custom u-s="{{[($slots['title'])?'d':null]}}" u-i="2a9ec0b0-0"><slot wx:if="{{$slots['title']}}" name="title"/></custom>`,
-      emptyRender,
-      {},
-      { slot: { ...miniProgram.slot, fallbackContent: true } }
-    )
-  })
-
-  test.each([
-    `<custom><slot/></custom>`,
-    `<custom><slot name="default"/></custom>`,
-    `<custom><template #default><slot/></template></custom>`,
-    `<custom v-slot><slot/></custom>`,
-    `<custom><template #default="{ title }"><slot :title="title"/></template></custom>`,
-    `<custom><slot/><slot name="title"/></custom>`,
-  ])('alipay preserves native default content: %s', (template) => {
-    const {
-      miniProgram,
-      compilerOptions,
-    } = require('../../uni-mp-alipay/src/compiler/options')
-    for (const isX of [false, true]) {
-      let output = ''
-      const result = compile(template, {
-        filename: 'foo.vue',
-        mode: 'module',
-        inline: true,
-        isX,
-        isNativeTag: isX ? isMiniProgramUVueNativeTag : isMiniProgramNativeTag,
-        ...compilerOptions,
-        miniProgram: {
-          ...miniProgram,
-          emitFile({ source }) {
-            output = source as string
-            return ''
-          },
-        },
-      })
-      const expression = output.match(/u-s="\{\{(.*?)\}\}"/)![1]
-      const condition = output.match(/a:if="\{\{(.*?)\}\}"/)![1]
-      const slots = new Function('$slots', `return ${expression}`)
-      const visible = new Function('$slots', `return !!(${condition})`)
-      // 支付宝原生普通默认插槽使用 $default，不能只用 d 判断。
-      for (const source of [
-        { $default: {} },
-        { d: {} },
-        { d: {}, $default: {} },
-      ]) {
-        expect(slots(source)).toEqual(['d'])
-        expect(visible(source)).toBe(true)
-      }
-      expect(slots({})).toEqual([null])
-      expect(visible({})).toBe(false)
-      const hasTitle = template.includes('name="title"')
-      expect(slots({ title: {} })).toEqual([hasTitle ? 'd' : null])
-      expect(visible({ title: {} })).toBe(hasTitle)
-      expect(result.code).not.toContain('$slots')
-    }
-  })
-
-  test('alipay default and named targets remain independent', () => {
-    const {
-      miniProgram,
-      compilerOptions,
-    } = require('../../uni-mp-alipay/src/compiler/options')
-    let output = ''
-    compile(
-      `<custom><template #header><slot/></template><template #footer><slot name="footer"/></template></custom>`,
-      {
-        filename: 'foo.vue',
-        inline: true,
-        isNativeTag: isMiniProgramNativeTag,
-        ...compilerOptions,
-        miniProgram: {
-          ...miniProgram,
-          emitFile({ source }) {
-            output = source as string
-            return ''
-          },
-        },
-      }
-    )
-    const expression = output.match(/u-s="\{\{(.*?)\}\}"/)![1]
-    const slots = new Function('$slots', `return ${expression}`)
-    expect(slots({})).toEqual([null, null])
-    expect(slots({ $default: {} })).toEqual(['header', null])
-    expect(slots({ footer: {} })).toEqual([null, 'footer'])
-    expect(slots({ $default: {}, footer: {} })).toEqual(['header', 'footer'])
   })
 
   test('comments do not make a forwarded slot nonempty', () => {
