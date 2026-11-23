@@ -2,6 +2,8 @@ import path from 'path'
 import type { ResolvedId } from 'rollup'
 import { normalizePath } from '../src/utils'
 import {
+  addMiniProgramComponentPackageRoot,
+  findMiniProgramComponentPackageRoots,
   findUsingComponents,
   resetMiniProgramJsonFiles,
 } from '../src/json/mp/jsonFile'
@@ -375,6 +377,36 @@ export function createApp() {
       expect(findUsingComponents('package-a/pages/index/index')).toMatchObject({
         'component-b': '/package-a/pages/index/components/component-b',
       })
+    })
+
+    test('shares a dotted component between the main package and a subpackage', async () => {
+      resetMiniProgramJsonFiles()
+      const filename = `${inputDir}/pages/main/index.vue`
+      const component = `${inputDir}/uni_modules/foo/components/foo.generated.uvue`
+      addMiniProgramComponentPackageRoot(component, 'pages-a')
+      const source = `
+import Foo from "${component}";
+const _sfc_main = { components: { Foo } };
+const __BINDING_COMPONENTS__ = '{"foo":{"name":"_component_foo","type":"unknown"}}';
+export default _sfc_main;
+`
+      await parseMainDescriptor(
+        filename,
+        parseProgram(source, filename, {}),
+        resolve
+      )
+      updateMiniProgramComponentsByMainFilename(
+        filename,
+        inputDir,
+        normalizeComponentName
+      )
+
+      expect(findUsingComponents('pages/main/index')).toMatchObject({
+        foo: '/uni_modules/foo/components/foo.generated',
+      })
+      expect(findMiniProgramComponentPackageRoots(component)).toEqual([
+        undefined,
+      ])
     })
 
     test(`package root keeps uni_modules component imports inside subpackage`, async () => {

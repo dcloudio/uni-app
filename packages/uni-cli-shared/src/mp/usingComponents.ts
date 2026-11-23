@@ -312,11 +312,13 @@ function createUsingComponents(
       ) {
         addMiniProgramComponentPackageRoot(
           componentFilename,
-          ownerSubPackageRoot
+          ownerSubPackageRoot,
+          false
         )
         const componentPackageRoot = resolveMiniProgramComponentPackageRoot(
           componentFilename,
-          ownerSubPackageRoot
+          ownerSubPackageRoot,
+          false
         )
         if (
           ownerSubPackageRoot &&
