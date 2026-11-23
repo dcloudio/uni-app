@@ -384,6 +384,26 @@ describe('entry virtual paths', () => {
     })
   })
 
+  test('keeps dotted uni_modules template in main when main and subpackage use it', async () => {
+    await withEntryProject((inputDir) => {
+      const component = normalizePath(
+        path.join(inputDir, 'uni_modules/foo/components/foo.generated.uvue')
+      )
+      resetMiniProgramJsonFiles()
+      addMiniProgramComponentPackageRoot(component, 'pages-a')
+      addMiniProgramComponentPackageRoot(
+        'uni_modules/foo/components/foo.generated',
+        undefined,
+        false
+      )
+      emitFile({ type: 'asset', fileName: component, source: '<view />' })
+
+      expect(getTemplateFiles({} as any)).toEqual({
+        'uni_modules/foo/components/foo.generated': '<view />',
+      })
+    })
+  })
+
   test('keeps uni_modules template in main when main package also uses it', async () => {
     await withEntryProject((inputDir) => {
       const component = normalizePath(

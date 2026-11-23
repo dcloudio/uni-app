@@ -173,6 +173,49 @@ describe('miniProgram:jsonFile', () => {
     })
   })
 
+  test('keeps dotted component JSON in its sole subpackage', () => {
+    resetMiniProgramJsonFiles()
+    addMiniProgramAppJson(createSubPackagesAppJson(['pages-a']))
+    const component = 'uni_modules/foo/components/foo.generated'
+    addMiniProgramComponentPackageRoot(`${component}.uvue`, 'pages-a')
+    addMiniProgramPageJson('pages-a/pages/index/index', {
+      usingComponents: { foo: `/${component}` },
+    })
+    addMiniProgramComponentJson(`pages-a/${component}`, { component: true })
+
+    const files = findChangedJsonFiles()
+    expect(files.has(`pages-a/${component}`)).toBe(true)
+    expect(JSON.parse(files.get('pages-a/pages/index/index')!)).toEqual({
+      usingComponents: {
+        foo: '../../uni_modules/foo/components/foo.generated',
+      },
+    })
+  })
+
+  test('shares dotted component JSON and references between main and subpackage', () => {
+    resetMiniProgramJsonFiles()
+    addMiniProgramAppJson(createSubPackagesAppJson(['pages-a']))
+    const component = 'uni_modules/foo/components/foo.generated'
+    addMiniProgramComponentPackageRoot(`${component}.uvue`, 'pages-a')
+    addMiniProgramComponentPackageRoot(component, undefined, false)
+    addMiniProgramPageJson('pages-a/pages/index/index', {
+      usingComponents: { foo: `/pages-a/${component}` },
+    })
+    addMiniProgramComponentJson(`pages-a/${component}`, { component: true })
+
+    const files = findChangedJsonFiles()
+    expect(files.has(`pages-a/${component}`)).toBe(false)
+    expect(JSON.parse(files.get(component)!)).toEqual({
+      component: true,
+      usingComponents: {},
+    })
+    expect(JSON.parse(files.get('pages-a/pages/index/index')!)).toEqual({
+      usingComponents: {
+        foo: '../../../uni_modules/foo/components/foo.generated',
+      },
+    })
+  })
+
   test('normalizes nested uni_modules component dependencies by final package roots', () => {
     addMiniProgramAppJson(createSubPackagesAppJson(['pages-a', 'pages-b']))
     addMiniProgramComponentPackageRoot(
