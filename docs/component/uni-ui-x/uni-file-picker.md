@@ -7,6 +7,9 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-file-pick
 
 > issues: https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-file-picker
 
+
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-file-picker-x/components/uni-file-picker
+
 :::
 
 文件选择上传组件，可以选择图片、视频等任意文件并上传到当前绑定的服务空间。根据 file-mediatype 自动匹配 uni.chooseImage / uni.chooseVideo / uni.chooseMedia / uni.chooseFile，App 平台默认打开系统相册。宫格和列表均基于 uni-drag-cell 支持拖拽排序
