@@ -3,7 +3,7 @@
   "properties": [
     {
       "name": "caret-color",
-      "syntax": "<color>",
+      "syntax": "auto | <color>",
       "restrictions": [
         "color"
       ],
@@ -34,7 +34,35 @@
           "uniVer": "√",
           "unixVer": "4.0"
         }
-      }
+      },
+      "values": [
+        {
+          "name": "auto",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "x",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "x",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "x",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        }
+      ]
     },
     {
       "name": "backdrop-filter",

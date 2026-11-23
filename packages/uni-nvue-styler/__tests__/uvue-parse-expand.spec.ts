@@ -843,7 +843,15 @@ test.each(['app-android', 'app-ios', 'app-harmony'])(
     expect(supported.code).toContain('caretColor')
     const unsupported = await parse('.foo { caret-color: red; }', options)
     expect(unsupported.messages).toHaveLength(1)
-    for (const value of ['auto', 'inherit', 'currentColor']) {
+    for (const value of ['auto', 'AuTo']) {
+      const keyword = await parse(`.foo { caret-color: ${value}; }`, {
+        ...options,
+        dom2: true,
+      })
+      expect(keyword.messages).toHaveLength(0)
+      expect(keyword.code).toContain('auto')
+    }
+    for (const value of ['inherit', 'currentColor']) {
       const invalid = await parse(`.foo { caret-color: ${value}; }`, {
         ...options,
         dom2: true,

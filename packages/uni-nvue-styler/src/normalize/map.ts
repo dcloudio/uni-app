@@ -331,7 +331,12 @@ function getNormalizes(property: Property, options: NormalizeOptions) {
   })
   // enum
   if (property?.values?.length) {
-    normalizes.push(createEnumNormalizeWithPlatform(property.values))
+    normalizes.push(
+      createEnumNormalizeWithPlatform(
+        property.values,
+        options.dom2 && restrictions.includes(Restriction.COLOR)
+      )
+    )
   }
   return normalizes
 }

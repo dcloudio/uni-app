@@ -30,9 +30,11 @@ export function createEnumNormalize(items: Array<string | number>): Normalize {
 }
 
 export function createEnumNormalizeWithPlatform(
-  items: Array<PropertyValue>
+  items: Array<PropertyValue>,
+  caseInsensitive = false
 ): Normalize {
   return (v, { platform, dom2 }) => {
+    if (caseInsensitive && typeof v === 'string') v = v.toLowerCase()
     const property = items.find((item) => item.name === v)
     const supportedEnum = items
       .filter((item) => {
