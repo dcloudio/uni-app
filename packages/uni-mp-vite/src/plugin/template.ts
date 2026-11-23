@@ -97,8 +97,9 @@ function normalizeTemplateFiles(files: Record<string, string>) {
 }
 
 function normalizeTemplateFilenames(filename: string) {
-  const relativeFilename = removeExt(
-    normalizeMiniProgramFilename(filename, process.env.UNI_INPUT_DIR)
+  const relativeFilename = normalizeMiniProgramFilename(
+    filename,
+    process.env.UNI_INPUT_DIR
   )
   const uniModulesIndex = relativeFilename.indexOf('uni_modules/')
   if (uniModulesIndex === -1) {
@@ -106,15 +107,14 @@ function normalizeTemplateFilenames(filename: string) {
   }
   const componentFilename = relativeFilename.slice(uniModulesIndex)
   const packageRoots = findMiniProgramComponentPackageRoots(
-    componentFilename
-  ) || [findMiniProgramComponentPackageRoot(componentFilename)]
+    componentFilename,
+    false
+  ) || [findMiniProgramComponentPackageRoot(componentFilename, false)]
   return packageRoots.map((packageRoot) =>
-    removeExt(
-      normalizeMiniProgramComponentFilename(
-        componentFilename,
-        process.env.UNI_INPUT_DIR,
-        packageRoot
-      )
+    normalizeMiniProgramComponentFilename(
+      componentFilename,
+      process.env.UNI_INPUT_DIR,
+      packageRoot
     )
   )
 }
