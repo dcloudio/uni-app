@@ -336,6 +336,10 @@
     }
   }
 
+  function updateEditorTheme() {
+    evalJS(`document.documentElement.setAttribute('data-theme', ${JSON.stringify(effectiveTheme.value)})`)
+  }
+
   // #ifndef APP-ANDROID && !VUE3-VAPOR
   function updateSelectionStyle() {
     if (isReady) {
@@ -423,6 +427,7 @@
       case 'ready':
         // 编辑器初始化完成
         isReady = true
+        updateEditorTheme()
         updateEditorStyle()
         // #ifndef APP-ANDROID && !VUE3-VAPOR
         updateSelectionStyle()
@@ -553,6 +558,8 @@
     if (webviewElement.value == null) {
       return
     }
+
+    updateEditorTheme()
 
     // 重新初始化编辑器以应用配置
     const config = {
@@ -880,6 +887,11 @@
 
   watch(caretColor, updateEditorStyle)
   watch(textColor, updateEditorStyle)
+  watch(effectiveTheme, () => {
+    if (isReady) {
+      updateEditorTheme()
+    }
+  })
   // #ifndef APP-ANDROID && !VUE3-VAPOR
   watch([selectionColor, selectionBackgroundColor], updateSelectionStyle)
   // #endif
