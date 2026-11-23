@@ -20,8 +20,23 @@ iOS、鸿蒙的 input、textarea 支持通过 CSS `caret-color` 设置光标颜�
 同时设置 `cursor-color` 时优先使用该属性；移除后回退到 `caret-color`，两者均未设置时恢复系统默认光标颜色。
 鸿蒙 input、textarea 均使用 ArkUI 原生默认光标色；移除所有自定义光标颜色后恢复原生默认值。
 
-### input / textarea 选区样式
+### input / textarea ::selection
 
-Android、iOS 和鸿蒙 App 均已移除 `selection-class`，使用原生选区高亮。
+鸿蒙 App（DOM2）可在 input、textarea 上设置类名，并用带类名的 `::selection` 规则设置选区背景色。
+组件保留默认样式隔离，页面和 `App.uvue` 中的裸 `::selection` 不会匹配这些组件。
+没有匹配的选区背景色时，恢复 ArkUI 默认选区颜色。`transparent` 保留为显式透明色。
+
+```html
+<input class="selection-static" value="Select this text" />
+<textarea class="selection-static" value="Select this text" />
+```
+
+```css
+.selection-static::selection {
+  background-color: #ffff00;
+}
+```
+
+ArkUI 应用 `background-color`。可以用 `rgba(...)` 或 `transparent` 设置背景透明度。
 
 回归检查：`node --test src/uni_modules/uni-form/__tests__/*.test.cjs`。

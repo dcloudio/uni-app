@@ -47,6 +47,7 @@
         @blur="onBlur"
         @change="onChange"
         @confirm="onConfirm"
+        :selection-color="selectionColor satisfies string" change:selection-color="inputCpp.updateSelectionColor"
         :input-configuration="harmonyInputConfiguration satisfies string" change:input-configuration="inputCpp.applyConfiguration"
         :input-runtime-state="harmonyInputRuntimeState satisfies string" change:input-runtime-state="inputCpp.applyRuntimeState"
       ></native-view>
@@ -504,6 +505,17 @@
 	// #ifdef APP-IOS || APP-HARMONY
 	const caretColor = computed(() => {
 		return resolveEditorCaretColor(style.get('caret-color'), props.cursorColor)
+	})
+	// #endif
+
+	// #ifdef APP-HARMONY
+	const selectionStyle = useComputedStyle({
+		pseudoElement: '::selection',
+		properties: ['background-color']
+	})
+	const selectionColor = computed(() => {
+		const value = selectionStyle.get('background-color')
+		return typeof value == 'string' ? value : ''
 	})
 	// #endif
 
