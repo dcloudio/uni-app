@@ -29,15 +29,15 @@ export { setNavigationBarTitle } from './navigationBar/setNavigationBarTitle'
 
 // dom
 export { createSelectorQuery } from './dom/createSelectorQuery'
-// #if !_VAPOR_
 export { getElementById } from './dom/getElementById'
+// #if !_VAPOR_
 export { createCanvasContextAsync } from './dom/createCanvasContextAsync'
 // #endif
 
 // ui
 export { pageScrollTo } from './ui/pageScrollTo'
-// #if !_VAPOR_
 export { loadFontFace } from './ui/loadFontFace'
+// #if !_VAPOR_
 export { startPullDownRefresh } from './ui/startPullDownRefresh'
 export { stopPullDownRefresh } from './ui/stopPullDownRefresh'
 // #endif
