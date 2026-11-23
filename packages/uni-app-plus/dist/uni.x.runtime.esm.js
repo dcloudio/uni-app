@@ -3989,13 +3989,6 @@ var setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BA
   appPage.updateStyle(/* @__PURE__ */ new Map([["navigationBarTitleText", options.title]]));
   resolve();
 });
-var getElementById = /* @__PURE__ */ defineSyncApi("getElementById", (id2) => {
-  var page = getCurrentPage();
-  if (page == null) {
-    return null;
-  }
-  return page.getElementById(id2);
-});
 function isVueComponent(comp) {
   var has$instance = typeof comp.$ === "object";
   var has$el = typeof comp.$el === "object";
@@ -4255,6 +4248,13 @@ var createSelectorQuery = function() {
   var instance = getCurrentPage().vm;
   return new SelectorQueryImpl(instance);
 };
+var getElementById = /* @__PURE__ */ defineSyncApi("getElementById", (id2) => {
+  var page = getCurrentPage();
+  if (page == null) {
+    return null;
+  }
+  return page.getElementById(id2);
+});
 class CanvasContextImpl {
   constructor(element) {
     this._element = element;

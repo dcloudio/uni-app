@@ -1,5 +1,5 @@
-import { normalizeStyles as normalizeStyles$1, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, decodedQuery, stringifyQuery, ON_TAB_ITEM_TAP, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_EXIT, ON_LAST_PAGE_BACK_PRESS, createUniDOMStringMap } from "@dcloudio/uni-shared";
-import { extend, isString, isPlainObject, isFunction, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType } from "@vue/shared";
+import { normalizeStyles as normalizeStyles$1, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, EventChannel, once, parseUrl, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, Emitter, removeLeadingSlash, getLen, decodedQuery, stringifyQuery, ON_TAB_ITEM_TAP, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_EXIT, ON_LAST_PAGE_BACK_PRESS, createUniDOMStringMap } from "@dcloudio/uni-shared";
+import { extend, isString, isPlainObject, isFunction, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, toTypeString, toRawType } from "@vue/shared";
 import { createMountPage, unmountPage, ref, getCurrentGenericInstance, injectHook, markRaw, defineComponent, getCurrentInstance, onMounted, camelize, createVNode, renderSlot } from "vue";
 function get$pageByPage(page) {
   return page.vm.$basePage;
@@ -375,8 +375,8 @@ function createAsyncApiCallback(name) {
   var hasSuccess = isFunction(success);
   var hasFail = isFunction(fail);
   var hasComplete = isFunction(complete);
-  var callbackId2 = invokeCallbackId++;
-  addInvokeCallback(callbackId2, name, (res) => {
+  var callbackId = invokeCallbackId++;
+  addInvokeCallback(callbackId, name, (res) => {
     res = res || {};
     res.errMsg = normalizeErrMsg(res.errMsg, name);
     isFunction(beforeAll) && beforeAll(res);
@@ -388,7 +388,7 @@ function createAsyncApiCallback(name) {
     }
     hasComplete && complete(res);
   });
-  return callbackId2;
+  return callbackId;
 }
 var HOOK_SUCCESS = "success";
 var HOOK_FAIL = "fail";
@@ -1033,34 +1033,15 @@ function getLoadFontFaceOptions(options, res) {
     family: options.family,
     source: options.source,
     success: (_) => {
-      res === null || res === void 0 || res.resolve(null);
     },
     fail: (error) => {
-      res === null || res === void 0 || res.reject(
-        // new LoadFontFaceErrorImpl(
-        error.errMsg,
-        error.errCode
-        // )
-      );
     }
   };
 }
-var loadFontFace = /* @__PURE__ */ defineAsyncApi(API_LOAD_FONT_FACE, (options, res) => {
-  if (options.global === true) {
-    appLoadFontFace(options, res);
-  } else {
-    var page = getCurrentPage();
-    if (!page.vm) {
-      res.reject("page is not ready", 99);
-      return;
-    }
-    pageLoadFontFace(page.vm, options, res);
-  }
-});
 var appLoadFontFace = (options, res) => {
   options.source = removeUrlWrap(options.source);
   var app = getNativeApp();
-  var fontInfo = getLoadFontFaceOptions(options, res);
+  var fontInfo = getLoadFontFaceOptions(options);
   app.loadFontFace(fontInfo);
 };
 var pageLoadFontFace = (pageVm, options, res) => {
@@ -1069,7 +1050,7 @@ var pageLoadFontFace = (pageVm, options, res) => {
   }
   options.source = removeUrlWrap(options.source);
   pageVm.$fontFamilySet.add(options.family);
-  var fontInfo = getLoadFontFaceOptions(options, res);
+  var fontInfo = getLoadFontFaceOptions(options);
   pageVm.$nativePage.loadFontFace(fontInfo);
 };
 function loadFontFaceByStyles(styles, pageVm) {
@@ -1099,9 +1080,9 @@ function loadFontFaceByStyles(styles, pageVm) {
         }
       };
       if (pageVm === null) {
-        appLoadFontFace(LoadFontFaceOptions, null);
+        appLoadFontFace(LoadFontFaceOptions);
       } else {
-        pageLoadFontFace(pageVm, LoadFontFaceOptions, null);
+        pageLoadFontFace(pageVm, LoadFontFaceOptions);
       }
     } else {
       console.warn("loadFontFace: fail, font-family or src is null");
@@ -1341,66 +1322,6 @@ var removeInterceptor = /* @__PURE__ */ defineSyncApi(API_REMOVE_INTERCEPTOR, (m
   } else if (isPlainObject(method)) {
     removeInterceptorHook(globalInterceptors, method);
   }
-});
-var API_ON = "$on";
-var API_ONCE = "$once";
-var API_OFF = "$off";
-var API_EMIT = "$emit";
-class EventBus {
-  constructor() {
-    this.$emitter = new Emitter();
-  }
-  on(name, callback) {
-    return this.$emitter.on(name, callback);
-  }
-  once(name, callback) {
-    return this.$emitter.once(name, callback);
-  }
-  off(name, callback) {
-    if (!name) {
-      this.$emitter.e = {};
-      return;
-    }
-    this.$emitter.off(name, callback);
-  }
-  emit(name) {
-    for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-      args[_key - 1] = arguments[_key];
-    }
-    this.$emitter.emit(name, ...args);
-  }
-}
-var eventBus = /* @__PURE__ */ new EventBus();
-var $on = /* @__PURE__ */ defineSyncApi(API_ON, (name, callback) => {
-  var id2 = eventBus.on(name, callback);
-  {
-    return id2;
-  }
-});
-var $once = /* @__PURE__ */ defineSyncApi(API_ONCE, (name, callback) => {
-  var id2 = eventBus.once(name, callback);
-  {
-    return id2;
-  }
-});
-var $off = /* @__PURE__ */ defineSyncApi(API_OFF, (name, callback) => {
-  if (!isArray(name))
-    name = name ? [name] : [];
-  name.forEach((n) => {
-    eventBus.off(n, callback);
-    if (
-      // @ts-expect-error
-      typeof __uniappx__nativeEventBus !== "undefined"
-    ) {
-      __uniappx__nativeEventBus.off(n, callback);
-    }
-  });
-});
-var $emit = /* @__PURE__ */ defineSyncApi(API_EMIT, function(name) {
-  for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
-    args[_key2 - 1] = arguments[_key2];
-  }
-  eventBus.emit(name, ...args);
 });
 function __f__(type, filename) {
   for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
@@ -1703,7 +1624,6 @@ function createNormalizeUrl(type) {
     }
   };
 }
-var API_LOAD_FONT_FACE = "loadFontFace";
 var FRONT_COLORS = ["#ffffff", "#000000"];
 var API_SET_NAVIGATION_BAR_COLOR = "setNavigationBarColor";
 var SetNavigationBarColorOptions = {
@@ -1750,8 +1670,6 @@ var PageScrollToOptions = {
     duration: 300
   }
 };
-var API_START_PULL_DOWN_REFRESH = "startPullDownRefresh";
-var API_STOP_PULL_DOWN_REFRESH = "stopPullDownRefresh";
 var IndexProtocol = {
   index: {
     type: Number,
@@ -2603,10 +2521,10 @@ function resolvePageSelectorBackgroundColorVariant(value, theme) {
     return void 0;
   return value[theme];
 }
-function invokeMountedJobs(proxy2) {
+function invokeMountedJobs(proxy) {
   var {
     mountedJobs
-  } = proxy2.$;
+  } = proxy.$;
   if (mountedJobs) {
     var jobs = mountedJobs.slice();
     mountedJobs.length = 0;
@@ -4165,13 +4083,6 @@ var setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BA
   appPage.updateStyle(/* @__PURE__ */ new Map([["navigationBarTitleText", options.title]]));
   resolve();
 });
-var getElementById = /* @__PURE__ */ defineSyncApi("getElementById", (id2) => {
-  var page = getCurrentPage();
-  if (page == null) {
-    return null;
-  }
-  return page.getElementById(id2);
-});
 class NodesRefImpl {
   constructor(selectorQuery, component, selector, single) {
     this._selectorQuery = selectorQuery;
@@ -4358,55 +4269,6 @@ var createSelectorQuery = function() {
   var instance = getCurrentPage().vm;
   return new SelectorQueryImpl(instance);
 };
-class CanvasContextImpl {
-  constructor(element) {
-    this._element = element;
-  }
-  // @ts-expect-error 类型不匹配
-  getContext(contextType) {
-    return this._element.getContext(contextType);
-  }
-  toBlob(callback, type, quality) {
-    throw new Error("Method not implemented.");
-  }
-  toDataURL(type, quality) {
-    return this._element.toDataURL(type, quality);
-  }
-  createImage() {
-    return new Image();
-  }
-  createPath2D() {
-    return new Path2D();
-  }
-  requestAnimationFrame(callback) {
-    return requestAnimationFrame(callback);
-  }
-  cancelAnimationFrame(taskId) {
-    cancelAnimationFrame(taskId);
-  }
-}
-var createCanvasContextAsync = /* @__PURE__ */ defineAsyncApi("createCanvasContextAsync", (options, _ref) => {
-  var _options$component;
-  var {
-    resolve,
-    reject
-  } = _ref;
-  var page = getCurrentPage().vm;
-  if (page == null) {
-    return null;
-  }
-  createSelectorQuery().in((_options$component = options.component) !== null && _options$component !== void 0 ? _options$component : null).select("#" + options.id).fields({
-    node: true
-  }, (ret) => {
-    var node = ret.node;
-    if (node != null) {
-      resolve(new CanvasContextImpl(node));
-    } else {
-      var uniError = new UniError("uni-createCanvasContextAsync", -1, "canvas id invalid.");
-      reject(uniError.errMsg);
-    }
-  }).exec();
-});
 function queryElementTop(component, selector) {
   var _component$$el;
   var scrollNode = (_component$$el = component.$el) === null || _component$$el === void 0 ? void 0 : _component$$el.querySelector(selector);
@@ -4440,28 +4302,6 @@ var pageScrollTo = /* @__PURE__ */ defineAsyncApi(API_PAGE_SCROLL_TO, (options, 
   scrollViewNode.scrollTop = top;
   res.resolve();
 }, PageScrollToProtocol, PageScrollToOptions);
-var startPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_START_PULL_DOWN_REFRESH, (_options, res) => {
-  var page = getCurrentPage().vm;
-  if (page === null) {
-    res.reject("page is not ready");
-    return;
-  }
-  page.$nativePage.startPullDownRefresh({
-    success: res.resolve,
-    fail: (err) => {
-      res.reject(err.errMsg, err);
-    }
-  });
-});
-var stopPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_STOP_PULL_DOWN_REFRESH, (_args, res) => {
-  var page = getCurrentPage().vm;
-  if (page === null) {
-    res.reject("page is not ready");
-    return;
-  }
-  page.$nativePage.stopPullDownRefresh();
-  res.resolve();
-});
 var env = {
   USER_DATA_PATH: "unifile://usr/",
   CACHE_PATH: "unifile://cache/",
@@ -4822,761 +4662,6 @@ class PerformanceImpl {
 var getPerformance = function() {
   return new PerformanceImpl();
 };
-var callbackId = 1;
-var proxy;
-var keepAliveCallbacks = {};
-function isUniElement(obj) {
-  return obj && typeof obj.getNodeId === "function" && obj.pageId;
-}
-function isComponentPublicInstance(instance) {
-  return instance && instance.$ && instance.$.proxy === instance;
-}
-function parseElement(obj) {
-  if (isUniElement(obj)) {
-    return obj;
-  }
-}
-function serializeComponentPublicInstance(obj) {
-  if (obj.$el) {
-    return serializeUniElement(obj.$el, "ComponentPublicInstance");
-  } else {
-    return {
-      __type__: "ComponentPublicInstance",
-      pageId: "",
-      nodeId: ""
-    };
-  }
-}
-function serializeArrayBuffer(obj) {
-  if (typeof ArrayBufferWrapper !== "undefined") {
-    return {
-      __type__: "ArrayBuffer",
-      value: new ArrayBufferWrapper(obj)
-    };
-  }
-  return {
-    __type__: "ArrayBuffer",
-    value: obj
-  };
-}
-function serializeUniElement(el, type) {
-  var nodeId = "";
-  var pageId = "";
-  if (el && el.getNodeId) {
-    pageId = el.pageId;
-    nodeId = el.getNodeId();
-  }
-  return {
-    __type__: type,
-    pageId,
-    nodeId
-  };
-}
-function toRaw(observed) {
-  var seen = /* @__PURE__ */ new WeakSet();
-  var current = observed;
-  while (current) {
-    var raw = current.__v_raw;
-    if (!raw) {
-      return current;
-    }
-    if (typeof current === "object" || typeof current === "function") {
-      if (seen.has(current)) {
-        return current;
-      }
-      seen.add(current);
-    }
-    current = raw;
-  }
-  return current;
-}
-var SKIP_CIRCULAR_REFERENCE = {};
-function enterStack(arg, stack) {
-  if (stack.has(arg)) {
-    return false;
-  }
-  stack.add(arg);
-  return true;
-}
-function normalizeArg(arg, callbacks, keepAlive, context) {
-  var stack = arguments.length > 4 && arguments[4] !== void 0 ? arguments[4] : /* @__PURE__ */ new WeakSet();
-  arg = toRaw(arg);
-  var isVaporAndroid = isUTSAndroid();
-  if (typeof arg === "function") {
-    var id2;
-    if (keepAlive) {
-      var oldId = Object.keys(callbacks).find((id22) => callbacks[id22] === arg);
-      id2 = oldId ? parseInt(oldId) : callbackId++;
-      callbacks[id2] = arg;
-    } else {
-      id2 = callbackId++;
-      callbacks[id2] = arg;
-    }
-    return id2;
-  } else if (isArray(arg)) {
-    if (!enterStack(arg, stack)) {
-      return SKIP_CIRCULAR_REFERENCE;
-    }
-    context.depth++;
-    var newArg = new Array(arg.length);
-    try {
-      arg.forEach((item, index2) => {
-        var value = normalizeArg(item, callbacks, keepAlive, context, stack);
-        if (value !== SKIP_CIRCULAR_REFERENCE) {
-          newArg[index2] = value;
-        }
-      });
-      return newArg;
-    } finally {
-      stack.delete(arg);
-    }
-  } else if (arg instanceof ArrayBuffer) {
-    if (isVaporAndroid) {
-      context.nested = true;
-      return arg;
-    }
-    if (context.depth > 0) {
-      context.nested = true;
-    }
-    return serializeArrayBuffer(arg);
-  } else if (isPlainObject(arg) || isUniElement(arg)) {
-    var uniElement = parseElement(arg);
-    if (uniElement) {
-      if (context.depth > 0 || isVaporAndroid) {
-        context.nested = true;
-      }
-      return serializeUniElement(uniElement, "UniElement");
-    } else if (isComponentPublicInstance(arg)) {
-      if (context.depth > 0 || isVaporAndroid) {
-        context.nested = true;
-      }
-      return serializeComponentPublicInstance(arg);
-    } else {
-      if (!enterStack(arg, stack)) {
-        return SKIP_CIRCULAR_REFERENCE;
-      }
-      var _newArg = {};
-      try {
-        Object.keys(arg).forEach((name) => {
-          context.depth++;
-          var value = normalizeArg(arg[name], callbacks, keepAlive, context, stack);
-          if (value !== SKIP_CIRCULAR_REFERENCE) {
-            _newArg[name] = value;
-          }
-        });
-        return _newArg;
-      } finally {
-        stack.delete(arg);
-      }
-    }
-  }
-  return arg;
-}
-function initUTSInstanceMethod(async, opts, instanceIdOrInstance, proxy2) {
-  return initProxyFunction("method", async, opts, instanceIdOrInstance, proxy2);
-}
-function getProxy() {
-  if (!proxy) {
-    {
-      proxy = {
-        invokeSync(args, callback) {
-          return nativeChannel.invokeSync("APP-SERVICE", args, callback);
-        },
-        invokeAsync(args, callback) {
-          return nativeChannel.invokeAsync("APP-SERVICE", args, callback);
-        }
-      };
-    }
-  }
-  return proxy;
-}
-var UTSClassInstanceRegistry;
-function resolveSyncResult(args, res, returnOptions, instanceIdOrInstance, proxy2) {
-  if (!res) {
-    throw new Error("返回值为：" + JSON.stringify(res) + "；请求参数为：" + JSON.stringify(args));
-  }
-  if (isString(res)) {
-    try {
-      res = JSON.parse(res);
-    } catch (e) {
-      throw new Error("JSON.parse(".concat(res, "): ") + e);
-    }
-  }
-  if (res.errMsg) {
-    throw new Error(res.errMsg);
-  }
-  if (returnOptions) {
-    if (returnOptions.type === "interface" && typeof res.params === "number") {
-      if (!res.params) {
-        return null;
-      }
-      var instanceId = typeof instanceIdOrInstance === "number" ? instanceIdOrInstance : void 0;
-      if (res.params === instanceId && proxy2) {
-        return proxy2;
-      }
-      if (interfaceDefines[returnOptions.options]) {
-        var ProxyClass = initUTSProxyClass(extend({
-          instanceId: res.params
-        }, interfaceDefines[returnOptions.options]));
-        var result = new ProxyClass();
-        if (typeof FinalizationRegistry !== "undefined") {
-          if (!UTSClassInstanceRegistry) {
-            UTSClassInstanceRegistry = new FinalizationRegistry((id2) => {
-              unregisterInstance(id2);
-            });
-          }
-          UTSClassInstanceRegistry.register(result, res.params);
-        }
-        return result;
-      }
-    }
-  }
-  return res.params;
-}
-function unregisterInstance(id2) {
-  var isAndroid = isUTSAndroid();
-  var args = {
-    moduleName: "",
-    moduleType: "built-in",
-    package: isAndroid ? "io.dcloud.uts" : "",
-    class: "UTSBridge",
-    name: "unregisterJavaScriptClassInstance",
-    type: "method",
-    keepAlive: false,
-    nested: false,
-    params: [id2],
-    method: [{
-      name: "id",
-      type: "number"
-    }]
-  };
-  getProxy().invokeSync(args, () => {
-  });
-}
-function invokePropGetter(args) {
-  if (args.errMsg) {
-    throw new Error(args.errMsg);
-  }
-  delete args.errMsg;
-  return resolveSyncResult(args, getProxy().invokeSync(args, () => {
-  }));
-}
-function initProxyFunction(type, async, _ref, instanceIdOrInstance, proxy2) {
-  var {
-    moduleName,
-    moduleType,
-    package: pkg,
-    class: cls,
-    name: methodName,
-    method,
-    companion,
-    keepAlive,
-    params: methodParams,
-    return: returnOptions,
-    errMsg
-  } = _ref;
-  if (!keepAlive) {
-    keepAlive = (methodName.indexOf("on") === 0 || methodName.indexOf("off") === 0) && methodParams.length === 1 && methodParams[0].type === "UTSCallback";
-  }
-  var isNumber = typeof instanceIdOrInstance === "number";
-  var instanceId = isNumber ? instanceIdOrInstance : void 0;
-  var instance = isNumber ? void 0 : instanceIdOrInstance;
-  var baseArgs = instanceId ? {
-    moduleName,
-    moduleType,
-    id: instanceId,
-    type,
-    name: methodName,
-    method: methodParams,
-    nested: false,
-    keepAlive
-  } : instance ? {
-    moduleName,
-    moduleType,
-    ins: instance,
-    type,
-    name: methodName,
-    method: methodParams,
-    nested: true,
-    keepAlive
-  } : {
-    moduleName,
-    moduleType,
-    package: pkg,
-    class: cls,
-    name: method || methodName,
-    type,
-    companion,
-    method: methodParams,
-    nested: false,
-    keepAlive
-  };
-  return function() {
-    if (errMsg) {
-      throw new Error(errMsg);
-    }
-    var callbacks = keepAlive ? keepAliveCallbacks : {};
-    var invokeCallback2 = (_ref2) => {
-      var {
-        id: id2,
-        name,
-        params
-      } = _ref2;
-      var callback = callbacks[id2];
-      if (callback) {
-        callback(...params);
-        if (!keepAlive) {
-          delete callbacks[id2];
-        }
-      } else {
-        console.error("uts插件[".concat(moduleName, "] ").concat(pkg).concat(cls, ".").concat(methodName.replace("ByJs", ""), " ").concat(name, "回调函数已释放，不能再次执行，参考文档：https://doc.dcloud.net.cn/uni-app-x/plugin/uts-plugin.html#keepalive"));
-      }
-    };
-    var context = {
-      depth: 0,
-      nested: false
-    };
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-    var invokeArgs = extend({}, baseArgs, {
-      params: args.map((arg) => normalizeArg(arg, callbacks, keepAlive, context))
-    });
-    invokeArgs.nested = context.nested;
-    if (async) {
-      return new Promise((resolve, reject) => {
-        getProxy().invokeAsync(invokeArgs, (res) => {
-          if (res.type !== "return") {
-            invokeCallback2(res);
-          } else {
-            if (res.errMsg) {
-              reject(res.errMsg);
-            } else {
-              resolve(res.params);
-            }
-          }
-        });
-      });
-    }
-    return resolveSyncResult(invokeArgs, getProxy().invokeSync(invokeArgs, invokeCallback2), returnOptions, instanceIdOrInstance, proxy2);
-  };
-}
-function initUTSStaticMethod(async, opts) {
-  if (opts.main && !opts.method) {
-    if (isUTSiOS()) {
-      opts.method = "s_" + opts.name;
-    }
-  }
-  return initProxyFunction("method", async, opts, 0);
-}
-var initUTSProxyFunction = initUTSStaticMethod;
-function parseClassMethodName(name, methods) {
-  if (typeof name === "string" && hasOwn(methods, name + "ByJs")) {
-    return name + "ByJs";
-  }
-  return name;
-}
-function isUndefined(value) {
-  return typeof value === "undefined";
-}
-function isProxyInterfaceOptions(options) {
-  return !isUndefined(options.instanceId);
-}
-function parseClassPropertySetter(name) {
-  return "__$set" + capitalize(name);
-}
-function initUTSProxyClass(options) {
-  var {
-    moduleName,
-    moduleType,
-    package: pkg,
-    class: cls,
-    methods,
-    props,
-    setters,
-    errMsg
-  } = options;
-  var baseOptions = {
-    moduleName,
-    moduleType,
-    package: pkg,
-    class: cls,
-    errMsg
-  };
-  var instanceId;
-  var constructorParams = [];
-  var staticMethods = {};
-  var staticProps = [];
-  var staticSetters = {};
-  var isProxyInterface = false;
-  if (isProxyInterfaceOptions(options)) {
-    isProxyInterface = true;
-    instanceId = options.instanceId;
-  } else {
-    constructorParams = options.constructor.params;
-    staticMethods = options.staticMethods;
-    staticProps = options.staticProps;
-    staticSetters = options.staticSetters;
-  }
-  if (isUTSiOS()) {
-    if (constructorParams.find((p) => p.type === "UTSCallback" || p.type.indexOf("JSONObject") > 0)) {
-      constructorParams.push({
-        name: "_byJs",
-        type: "boolean"
-      });
-    }
-  }
-  var ProxyClass = class UTSClass {
-    constructor() {
-      this.__instanceId = 0;
-      if (errMsg) {
-        throw new Error(errMsg);
-      }
-      var target = {};
-      if (!isProxyInterface) {
-        for (var _len2 = arguments.length, params = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-          params[_key2] = arguments[_key2];
-        }
-        this.__instanceId = initProxyFunction("constructor", false, extend({
-          name: "constructor",
-          keepAlive: false,
-          params: constructorParams
-        }, baseOptions), 0).apply(null, params);
-      } else if (typeof instanceId === "number") {
-        this.__instanceId = instanceId;
-      }
-      if (!this.__instanceId) {
-        throw new Error("new ".concat(cls, " is failed"));
-      }
-      var instance = this;
-      var proxy2 = new Proxy(instance, {
-        get(_, name) {
-          if (name === "__v_skip") {
-            return true;
-          }
-          if (!target[name]) {
-            name = parseClassMethodName(name, methods);
-            if (hasOwn(methods, name)) {
-              var {
-                async,
-                keepAlive,
-                params: params2,
-                return: returnOptions
-              } = methods[name];
-              target[name] = initUTSInstanceMethod(!!async, extend({
-                name,
-                keepAlive,
-                params: params2,
-                return: returnOptions
-              }, baseOptions), instance.__instanceId, proxy2);
-            } else if (props.includes(name)) {
-              return invokePropGetter({
-                moduleName,
-                moduleType,
-                id: instance.__instanceId,
-                type: "getter",
-                keepAlive: false,
-                nested: false,
-                name,
-                errMsg
-              });
-            }
-          }
-          return target[name];
-        },
-        set(_, name, newValue) {
-          if (props.includes(name)) {
-            var setter = parseClassPropertySetter(name);
-            if (!target[setter]) {
-              var param = setters[name];
-              if (param) {
-                target[setter] = initProxyFunction("setter", false, extend({
-                  name,
-                  keepAlive: false,
-                  params: [param]
-                }, baseOptions), instance.__instanceId, proxy2);
-              }
-            }
-            target[parseClassPropertySetter(name)](newValue);
-            return true;
-          }
-          return false;
-        }
-      });
-      if (typeof FinalizationRegistry !== "undefined") {
-        if (!UTSClassInstanceRegistry) {
-          UTSClassInstanceRegistry = new FinalizationRegistry((id2) => {
-            unregisterInstance(id2);
-          });
-        }
-        UTSClassInstanceRegistry.register(proxy2, this.__instanceId);
-      }
-      return Object.freeze(proxy2);
-    }
-  };
-  var staticPropSetterCache = {};
-  var staticMethodCache = {};
-  return Object.freeze(new Proxy(ProxyClass, {
-    get(target, name, receiver) {
-      name = parseClassMethodName(name, staticMethods);
-      if (hasOwn(staticMethods, name)) {
-        if (!staticMethodCache[name]) {
-          var {
-            async,
-            keepAlive,
-            params,
-            return: returnOptions
-          } = staticMethods[name];
-          staticMethodCache[name] = initUTSStaticMethod(!!async, extend({
-            name,
-            companion: true,
-            keepAlive,
-            params,
-            return: returnOptions
-          }, baseOptions));
-        }
-        return staticMethodCache[name];
-      }
-      if (staticProps.includes(name)) {
-        return invokePropGetter(extend({
-          name,
-          companion: true,
-          type: "getter"
-        }, baseOptions));
-      }
-      return Reflect.get(target, name, receiver);
-    },
-    set(_, name, newValue) {
-      if (staticProps.includes(name)) {
-        var setter = parseClassPropertySetter(name);
-        if (!staticPropSetterCache[setter]) {
-          var param = staticSetters[name];
-          if (param) {
-            staticPropSetterCache[setter] = initProxyFunction("setter", false, extend({
-              name,
-              keepAlive: false,
-              params: [param]
-            }, baseOptions), 0);
-          }
-        }
-        staticPropSetterCache[parseClassPropertySetter(name)](newValue);
-        return true;
-      }
-      return false;
-    }
-  }));
-}
-var uniElementImplPriorityMethods = [
-  "hasAttribute",
-  "getAttribute",
-  // 'setAttribute',
-  // 'removeAttribute',
-  "getAnyAttribute"
-  // 'setAnyAttribute',
-];
-var elementClassDefineId = 0;
-function initUTSElementProxyClass(options) {
-  var {
-    moduleName,
-    moduleType,
-    package: pkg,
-    class: cls,
-    methods,
-    props,
-    setters,
-    errMsg
-  } = options;
-  var baseOptions = {
-    moduleName,
-    moduleType,
-    package: pkg,
-    class: cls,
-    errMsg
-  };
-  var staticMethods = options.staticMethods || {};
-  var staticProps = options.staticProps || [];
-  var staticSetters = options.staticSetters || {};
-  var classId = ++elementClassDefineId;
-  var BaseClass = UniViewElementImpl;
-  var ProxyClass = class UTSClass extends BaseClass {
-    static [Symbol.hasInstance](instance) {
-      return instance && instance.__element_class_id__ === classId;
-    }
-    // page: UniNativePageImpl
-    constructor(nodeId, page, tagName) {
-      super(nodeId, page, tagName);
-      var pageId = page.pageId;
-      var element = {
-        __type__: "UniElement",
-        pageId,
-        nodeId
-      };
-      var target = {};
-      var proxy2 = new Proxy(this, {
-        get(_target, name) {
-          if (name === "__v_skip") {
-            return true;
-          }
-          if (name === "__element_class_id__") {
-            return classId;
-          }
-          if (uniElementImplPriorityMethods.includes(name) && name in _target) {
-            return _target[name].bind(_target);
-          }
-          if (!target[name]) {
-            if (hasOwn(methods, name)) {
-              var {
-                async,
-                keepAlive,
-                params,
-                return: returnOptions
-              } = methods[name];
-              target[name] = initUTSInstanceMethod(!!async, extend({
-                name,
-                keepAlive,
-                params,
-                return: returnOptions
-              }, baseOptions), element, proxy2);
-            } else if (props.includes(name)) {
-              return invokePropGetter({
-                moduleName,
-                moduleType,
-                ins: element,
-                type: "getter",
-                keepAlive: false,
-                nested: true,
-                name,
-                errMsg
-              });
-            }
-          }
-          if (target[name]) {
-            return target[name];
-          }
-          var propOrMethod = _target[name];
-          if (typeof propOrMethod === "function") {
-            return propOrMethod.bind(_target);
-          }
-          return propOrMethod;
-        },
-        set(_target, name, newValue) {
-          if (props.includes(name)) {
-            var setter = parseClassPropertySetter(name);
-            if (!target[setter]) {
-              var param = setters[name];
-              if (param) {
-                target[setter] = initProxyFunction("setter", false, extend({
-                  name,
-                  keepAlive: false,
-                  params: [param]
-                }, baseOptions), element, proxy2);
-              }
-            }
-            target[parseClassPropertySetter(name)](newValue);
-            return true;
-          }
-          _target[name] = newValue;
-          return true;
-        }
-      });
-      return proxy2;
-    }
-  };
-  var staticPropSetterCache = {};
-  var staticMethodCache = {};
-  return Object.freeze(new Proxy(ProxyClass, {
-    get(target, name, receiver) {
-      name = parseClassMethodName(name, staticMethods);
-      if (hasOwn(staticMethods, name)) {
-        if (!staticMethodCache[name]) {
-          var {
-            async,
-            keepAlive,
-            params,
-            return: returnOptions
-          } = staticMethods[name];
-          staticMethodCache[name] = initUTSStaticMethod(!!async, extend({
-            name,
-            companion: true,
-            keepAlive,
-            params,
-            return: returnOptions
-          }, baseOptions));
-        }
-        return staticMethodCache[name];
-      }
-      if (staticProps.includes(name)) {
-        return invokePropGetter(extend({
-          name,
-          companion: true,
-          type: "getter"
-        }, baseOptions));
-      }
-      return Reflect.get(target, name, receiver);
-    },
-    set(_, name, newValue) {
-      if (staticProps.includes(name)) {
-        var setter = parseClassPropertySetter(name);
-        if (!staticPropSetterCache[setter]) {
-          var param = staticSetters[name];
-          if (param) {
-            staticPropSetterCache[setter] = initProxyFunction("setter", false, extend({
-              name,
-              keepAlive: false,
-              params: [param]
-            }, baseOptions), 0);
-          }
-        }
-        staticPropSetterCache[parseClassPropertySetter(name)](newValue);
-        return true;
-      }
-      return false;
-    }
-  }));
-}
-function isUTSAndroid() {
-  {
-    {
-      return false;
-    }
-  }
-}
-function isUTSiOS() {
-  return !isUTSAndroid();
-}
-function initUTSPackageName(name, is_uni_modules) {
-  if (isUTSAndroid()) {
-    return "uts.sdk." + (is_uni_modules ? "modules." : "") + name;
-  }
-  return "";
-}
-function initUTSIndexClassName(moduleName, is_uni_modules) {
-  return initUTSClassName(moduleName, isUTSAndroid() ? "IndexKt" : "IndexSwift", is_uni_modules);
-}
-function initUTSClassName(moduleName, className, is_uni_modules) {
-  if (isUTSAndroid()) {
-    return className;
-  }
-  return "UTSSDK" + (is_uni_modules ? "Modules" : "") + capitalize(moduleName) + capitalize(className);
-}
-var interfaceDefines = {};
-function registerUTSInterface(name, define) {
-  interfaceDefines[name] = define;
-}
-var pluginDefines = {};
-function registerUTSPlugin(name, define) {
-  pluginDefines[name] = define;
-}
-function requireUTSPlugin(name) {
-  var silent = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : false;
-  var define = pluginDefines[name];
-  if (!define) {
-    if (!silent) {
-      console.error("".concat(name, " is not found"));
-    }
-  }
-  return define;
-}
 function __log__(type, filename) {
   for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
     args[_key - 2] = arguments[_key];
@@ -5628,30 +4713,17 @@ function normalizeLog(type, filename, args) {
 }
 const index$1 = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  $emit,
-  $off,
-  $on,
-  $once,
   __f__,
   __log__,
   addInterceptor,
   closeDialogPage,
-  createCanvasContextAsync,
   createSelectorQuery,
   env,
-  getElementById,
   getEnterOptionsSync,
   getLaunchOptionsSync,
   getPerformance,
   hideTabBar,
   hideTabBarRedDot,
-  initUTSClassName,
-  initUTSElementProxyClass,
-  initUTSIndexClassName,
-  initUTSPackageName,
-  initUTSProxyClass,
-  initUTSProxyFunction,
-  loadFontFace,
   loadUasm,
   loadUasmSync,
   navigateBack,
@@ -5665,11 +4737,8 @@ const index$1 = /* @__PURE__ */ Object.defineProperty({
   pageScrollTo,
   reLaunch,
   redirectTo,
-  registerUTSInterface,
-  registerUTSPlugin,
   removeInterceptor,
   removeTabBarBadge,
-  requireUTSPlugin,
   rewriteRoute,
   setNavigationBarColor,
   setNavigationBarTitle,
@@ -5678,8 +4747,6 @@ const index$1 = /* @__PURE__ */ Object.defineProperty({
   setTabBarStyle,
   showTabBar,
   showTabBarRedDot,
-  startPullDownRefresh,
-  stopPullDownRefresh,
   switchTab
 }, Symbol.toStringTag, { value: "Module" });
 function converPx(value) {

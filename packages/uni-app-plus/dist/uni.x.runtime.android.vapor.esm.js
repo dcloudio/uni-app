@@ -1,4 +1,4 @@
-import { normalizeStyles as normalizeStyles$1, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, decodedQuery, stringifyQuery, ON_TAB_ITEM_TAP, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_EXIT, ON_LAST_PAGE_BACK_PRESS, createUniDOMStringMap } from "@dcloudio/uni-shared";
+import { normalizeStyles as normalizeStyles$1, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, EventChannel, once, parseUrl, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, Emitter, removeLeadingSlash, getLen, decodedQuery, stringifyQuery, ON_TAB_ITEM_TAP, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_EXIT, ON_LAST_PAGE_BACK_PRESS, createUniDOMStringMap } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, toTypeString, toRawType } from "@vue/shared";
 import { createMountPage, unmountPage, ref, getCurrentGenericInstance, injectHook, markRaw, defineComponent, getCurrentInstance, onMounted, camelize, createVNode, renderSlot } from "vue";
 function get$pageByPage(page) {
@@ -1033,34 +1033,15 @@ function getLoadFontFaceOptions(options, res) {
     family: options.family,
     source: options.source,
     success: (_) => {
-      res === null || res === void 0 || res.resolve(null);
     },
     fail: (error) => {
-      res === null || res === void 0 || res.reject(
-        // new LoadFontFaceErrorImpl(
-        error.errMsg,
-        error.errCode
-        // )
-      );
     }
   };
 }
-var loadFontFace = /* @__PURE__ */ defineAsyncApi(API_LOAD_FONT_FACE, (options, res) => {
-  if (options.global === true) {
-    appLoadFontFace(options, res);
-  } else {
-    var page = getCurrentPage();
-    if (!page.vm) {
-      res.reject("page is not ready", 99);
-      return;
-    }
-    pageLoadFontFace(page.vm, options, res);
-  }
-});
 var appLoadFontFace = (options, res) => {
   options.source = removeUrlWrap(options.source);
   var app = getNativeApp();
-  var fontInfo = getLoadFontFaceOptions(options, res);
+  var fontInfo = getLoadFontFaceOptions(options);
   app.loadFontFace(fontInfo);
 };
 var pageLoadFontFace = (pageVm, options, res) => {
@@ -1069,7 +1050,7 @@ var pageLoadFontFace = (pageVm, options, res) => {
   }
   options.source = removeUrlWrap(options.source);
   pageVm.$fontFamilySet.add(options.family);
-  var fontInfo = getLoadFontFaceOptions(options, res);
+  var fontInfo = getLoadFontFaceOptions(options);
   pageVm.$nativePage.loadFontFace(fontInfo);
 };
 function loadFontFaceByStyles(styles, pageVm) {
@@ -1099,9 +1080,9 @@ function loadFontFaceByStyles(styles, pageVm) {
         }
       };
       if (pageVm === null) {
-        appLoadFontFace(LoadFontFaceOptions, null);
+        appLoadFontFace(LoadFontFaceOptions);
       } else {
-        pageLoadFontFace(pageVm, LoadFontFaceOptions, null);
+        pageLoadFontFace(pageVm, LoadFontFaceOptions);
       }
     } else {
       console.warn("loadFontFace: fail, font-family or src is null");
@@ -1341,66 +1322,6 @@ var removeInterceptor = /* @__PURE__ */ defineSyncApi(API_REMOVE_INTERCEPTOR, (m
   } else if (isPlainObject(method)) {
     removeInterceptorHook(globalInterceptors, method);
   }
-});
-var API_ON = "$on";
-var API_ONCE = "$once";
-var API_OFF = "$off";
-var API_EMIT = "$emit";
-class EventBus {
-  constructor() {
-    this.$emitter = new Emitter();
-  }
-  on(name, callback) {
-    return this.$emitter.on(name, callback);
-  }
-  once(name, callback) {
-    return this.$emitter.once(name, callback);
-  }
-  off(name, callback) {
-    if (!name) {
-      this.$emitter.e = {};
-      return;
-    }
-    this.$emitter.off(name, callback);
-  }
-  emit(name) {
-    for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-      args[_key - 1] = arguments[_key];
-    }
-    this.$emitter.emit(name, ...args);
-  }
-}
-var eventBus = /* @__PURE__ */ new EventBus();
-var $on = /* @__PURE__ */ defineSyncApi(API_ON, (name, callback) => {
-  var id2 = eventBus.on(name, callback);
-  {
-    return id2;
-  }
-});
-var $once = /* @__PURE__ */ defineSyncApi(API_ONCE, (name, callback) => {
-  var id2 = eventBus.once(name, callback);
-  {
-    return id2;
-  }
-});
-var $off = /* @__PURE__ */ defineSyncApi(API_OFF, (name, callback) => {
-  if (!isArray(name))
-    name = name ? [name] : [];
-  name.forEach((n) => {
-    eventBus.off(n, callback);
-    if (
-      // @ts-expect-error
-      typeof __uniappx__nativeEventBus !== "undefined"
-    ) {
-      __uniappx__nativeEventBus.off(n, callback);
-    }
-  });
-});
-var $emit = /* @__PURE__ */ defineSyncApi(API_EMIT, function(name) {
-  for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
-    args[_key2 - 1] = arguments[_key2];
-  }
-  eventBus.emit(name, ...args);
 });
 function __f__(type, filename) {
   for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
@@ -1703,7 +1624,6 @@ function createNormalizeUrl(type) {
     }
   };
 }
-var API_LOAD_FONT_FACE = "loadFontFace";
 var FRONT_COLORS = ["#ffffff", "#000000"];
 var API_SET_NAVIGATION_BAR_COLOR = "setNavigationBarColor";
 var SetNavigationBarColorOptions = {
@@ -1750,8 +1670,6 @@ var PageScrollToOptions = {
     duration: 300
   }
 };
-var API_START_PULL_DOWN_REFRESH = "startPullDownRefresh";
-var API_STOP_PULL_DOWN_REFRESH = "stopPullDownRefresh";
 var IndexProtocol = {
   index: {
     type: Number,
@@ -4168,13 +4086,6 @@ var setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BA
   appPage.updateStyle(/* @__PURE__ */ new Map([["navigationBarTitleText", options.title]]));
   resolve();
 });
-var getElementById = /* @__PURE__ */ defineSyncApi("getElementById", (id2) => {
-  var page = getCurrentPage();
-  if (page == null) {
-    return null;
-  }
-  return page.getElementById(id2);
-});
 class NodesRefImpl {
   constructor(selectorQuery, component, selector, single) {
     this._selectorQuery = selectorQuery;
@@ -4361,55 +4272,6 @@ var createSelectorQuery = function() {
   var instance = getCurrentPage().vm;
   return new SelectorQueryImpl(instance);
 };
-class CanvasContextImpl {
-  constructor(element) {
-    this._element = element;
-  }
-  // @ts-expect-error 类型不匹配
-  getContext(contextType) {
-    return this._element.getContext(contextType);
-  }
-  toBlob(callback, type, quality) {
-    throw new Error("Method not implemented.");
-  }
-  toDataURL(type, quality) {
-    return this._element.toDataURL(type, quality);
-  }
-  createImage() {
-    return new Image();
-  }
-  createPath2D() {
-    return new Path2D();
-  }
-  requestAnimationFrame(callback) {
-    return requestAnimationFrame(callback);
-  }
-  cancelAnimationFrame(taskId) {
-    cancelAnimationFrame(taskId);
-  }
-}
-var createCanvasContextAsync = /* @__PURE__ */ defineAsyncApi("createCanvasContextAsync", (options, _ref) => {
-  var _options$component;
-  var {
-    resolve,
-    reject
-  } = _ref;
-  var page = getCurrentPage().vm;
-  if (page == null) {
-    return null;
-  }
-  createSelectorQuery().in((_options$component = options.component) !== null && _options$component !== void 0 ? _options$component : null).select("#" + options.id).fields({
-    node: true
-  }, (ret) => {
-    var node = ret.node;
-    if (node != null) {
-      resolve(new CanvasContextImpl(node));
-    } else {
-      var uniError = new UniError("uni-createCanvasContextAsync", -1, "canvas id invalid.");
-      reject(uniError.errMsg);
-    }
-  }).exec();
-});
 function queryElementTop(component, selector) {
   var _component$$el;
   var scrollNode = (_component$$el = component.$el) === null || _component$$el === void 0 ? void 0 : _component$$el.querySelector(selector);
@@ -4443,28 +4305,6 @@ var pageScrollTo = /* @__PURE__ */ defineAsyncApi(API_PAGE_SCROLL_TO, (options, 
   scrollViewNode.scrollTop = top;
   res.resolve();
 }, PageScrollToProtocol, PageScrollToOptions);
-var startPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_START_PULL_DOWN_REFRESH, (_options, res) => {
-  var page = getCurrentPage().vm;
-  if (page === null) {
-    res.reject("page is not ready");
-    return;
-  }
-  page.$nativePage.startPullDownRefresh({
-    success: res.resolve,
-    fail: (err) => {
-      res.reject(err.errMsg, err);
-    }
-  });
-});
-var stopPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_STOP_PULL_DOWN_REFRESH, (_args, res) => {
-  var page = getCurrentPage().vm;
-  if (page === null) {
-    res.reject("page is not ready");
-    return;
-  }
-  page.$nativePage.stopPullDownRefresh();
-  res.resolve();
-});
 var env = {
   USER_DATA_PATH: "unifile://usr/",
   CACHE_PATH: "unifile://cache/",
@@ -5333,18 +5173,12 @@ function normalizeLog(type, filename, args) {
 }
 const index$1 = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  $emit,
-  $off,
-  $on,
-  $once,
   __f__,
   __log__,
   addInterceptor,
   closeDialogPage,
-  createCanvasContextAsync,
   createSelectorQuery,
   env,
-  getElementById,
   getEnterOptionsSync,
   getLaunchOptionsSync,
   getPerformance,
@@ -5353,7 +5187,6 @@ const index$1 = /* @__PURE__ */ Object.defineProperty({
   initUTSElementProxyClass,
   initUTSProxyClass,
   initUTSProxyFunction,
-  loadFontFace,
   loadUasm,
   loadUasmSync,
   navigateBack,
@@ -5380,8 +5213,6 @@ const index$1 = /* @__PURE__ */ Object.defineProperty({
   setTabBarStyle,
   showTabBar,
   showTabBarRedDot,
-  startPullDownRefresh,
-  stopPullDownRefresh,
   switchTab
 }, Symbol.toStringTag, { value: "Module" });
 function converPx(value) {
