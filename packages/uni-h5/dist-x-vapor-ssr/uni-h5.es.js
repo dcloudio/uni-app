@@ -9877,7 +9877,7 @@ const _sfc_main$i = /* @__PURE__ */ defineComponent$2({
         ref: scrollElement,
         onScroll
       }, _attrs), {
-        refresher: withCtx((_, _push2, _parent2, _scopeId) => {
+        refresher: withCtx((_, _push2, _parent2, _scopeId, _slotAttrs) => {
           if (_push2) {
             ssrRenderSlot(_ctx.$slots, "refresher", {}, null, _push2, _parent2, _scopeId);
           } else {
@@ -9886,7 +9886,7 @@ const _sfc_main$i = /* @__PURE__ */ defineComponent$2({
             ];
           }
         }),
-        default: withCtx((_, _push2, _parent2, _scopeId) => {
+        default: withCtx((_, _push2, _parent2, _scopeId, _slotAttrs) => {
           if (_push2) {
             _push2(`<div uni-view${_scopeId}>`);
             ssrRenderSlot(_ctx.$slots, "header", {}, null, _push2, _parent2, _scopeId);
@@ -11386,7 +11386,7 @@ const _sfc_main$c = /* @__PURE__ */ defineComponent$2({
           direction: "vertical",
           "show-scrollbar": true
         }, {
-          default: withCtx((_, _push2, _parent2, _scopeId) => {
+          default: withCtx((_, _push2, _parent2, _scopeId, _slotAttrs) => {
             if (_push2) {
               _push2(`<!--[-->`);
               ssrRenderList(unref(range), (item, selectorIdx) => {
@@ -11419,11 +11419,11 @@ const _sfc_main$c = /* @__PURE__ */ defineComponent$2({
           indicatorStyle: unref(indicatorStyle),
           value: unref(value)
         }, {
-          default: withCtx((_, _push2, _parent2, _scopeId) => {
+          default: withCtx((_, _push2, _parent2, _scopeId, _slotAttrs) => {
             if (_push2) {
               if (unref(mode) == "selector") {
                 _push2(ssrRenderComponent(_component_picker_view_column, null, {
-                  default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+                  default: withCtx((_2, _push3, _parent3, _scopeId2, _slotAttrs2) => {
                     if (_push3) {
                       _push3(`<!--[-->`);
                       ssrRenderList(unref(range), (item, selectorIdx) => {
@@ -11452,7 +11452,7 @@ const _sfc_main$c = /* @__PURE__ */ defineComponent$2({
                 _push2(`<!--[-->`);
                 ssrRenderList(unref(range), (item, multiIdx) => {
                   _push2(ssrRenderComponent(_component_picker_view_column, null, {
-                    default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+                    default: withCtx((_2, _push3, _parent3, _scopeId2, _slotAttrs2) => {
                       if (_push3) {
                         _push3(`<!--[-->`);
                         ssrRenderList(item, (column, colIdx) => {
@@ -11482,7 +11482,7 @@ const _sfc_main$c = /* @__PURE__ */ defineComponent$2({
               if (unref(mode) == "time") {
                 _push2(`<!--[-->`);
                 _push2(ssrRenderComponent(_component_picker_view_column, null, {
-                  default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+                  default: withCtx((_2, _push3, _parent3, _scopeId2, _slotAttrs2) => {
                     if (_push3) {
                       _push3(`<!--[-->`);
                       ssrRenderList(unref(hours), (h, hIdx) => {
@@ -11505,7 +11505,7 @@ const _sfc_main$c = /* @__PURE__ */ defineComponent$2({
                   _: 1
                 }, _parent2, _scopeId));
                 _push2(ssrRenderComponent(_component_picker_view_column, null, {
-                  default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+                  default: withCtx((_2, _push3, _parent3, _scopeId2, _slotAttrs2) => {
                     if (_push3) {
                       _push3(`<!--[-->`);
                       ssrRenderList(unref(minutes), (m, mIdx) => {
@@ -11534,7 +11534,7 @@ const _sfc_main$c = /* @__PURE__ */ defineComponent$2({
               if (unref(mode) == "date") {
                 _push2(`<!--[-->`);
                 _push2(ssrRenderComponent(_component_picker_view_column, null, {
-                  default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+                  default: withCtx((_2, _push3, _parent3, _scopeId2, _slotAttrs2) => {
                     if (_push3) {
                       _push3(`<!--[-->`);
                       ssrRenderList(unref(years), (year) => {
@@ -11558,7 +11558,7 @@ const _sfc_main$c = /* @__PURE__ */ defineComponent$2({
                 }, _parent2, _scopeId));
                 if (unref(fields) != "year") {
                   _push2(ssrRenderComponent(_component_picker_view_column, null, {
-                    default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+                    default: withCtx((_2, _push3, _parent3, _scopeId2, _slotAttrs2) => {
                       if (_push3) {
                         _push3(`<!--[-->`);
                         ssrRenderList(unref(monthsText), (month) => {
@@ -11585,7 +11585,7 @@ const _sfc_main$c = /* @__PURE__ */ defineComponent$2({
                 }
                 if (unref(fields) == "day") {
                   _push2(ssrRenderComponent(_component_picker_view_column, null, {
-                    default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+                    default: withCtx((_2, _push3, _parent3, _scopeId2, _slotAttrs2) => {
                       if (_push3) {
                         _push3(`<!--[-->`);
                         ssrRenderList(unref(days), (day) => {
@@ -11997,9 +11997,14 @@ const _sfc_main$a = /* @__PURE__ */ defineComponent$2({
         onScrollend: onScrollEnd,
         onScroll
       }, {
-        default: withCtx((_, _push2, _parent2, _scopeId) => {
+        default: withCtx((_, _push2, _parent2, _scopeId, _slotAttrs) => {
           if (_push2) {
-            _push2(`<div uni-view style="${ssrRenderStyle({ "padding-top": unref(containerPaddingPx), "padding-bottom": unref(containerPaddingPx) })}"${_scopeId}>`);
+            _push2(`<div${_slotAttrs ? ssrRenderAttrs(mergeProps({
+              "uni-view": "",
+              ref_key: "contentRef",
+              ref: contentRef,
+              style: { "padding-top": unref(containerPaddingPx), "padding-bottom": unref(containerPaddingPx) }
+            }, _slotAttrs)) : ` uni-view style="${ssrRenderStyle({ "padding-top": unref(containerPaddingPx), "padding-bottom": unref(containerPaddingPx) })}"`}${_scopeId}>`);
             ssrRenderSlot(_ctx.$slots, "default", {}, null, _push2, _parent2, _scopeId);
             _push2(`</div>`);
           } else {
@@ -14408,7 +14413,7 @@ const _sfc_main = /* @__PURE__ */ defineComponent$2({
         onScroll,
         onScrollend: onScrollEnd
       }, _attrs), {
-        refresher: withCtx((_, _push2, _parent2, _scopeId) => {
+        refresher: withCtx((_, _push2, _parent2, _scopeId, _slotAttrs) => {
           if (_push2) {
             ssrRenderSlot(_ctx.$slots, "refresher", {}, null, _push2, _parent2, _scopeId);
           } else {
@@ -14417,7 +14422,7 @@ const _sfc_main = /* @__PURE__ */ defineComponent$2({
             ];
           }
         }),
-        default: withCtx((_, _push2, _parent2, _scopeId) => {
+        default: withCtx((_, _push2, _parent2, _scopeId, _slotAttrs) => {
           if (_push2) {
             _push2(`<div uni-view style="position:relative;overflow-anchor:none;"${_scopeId}>`);
             ssrRenderSlot(_ctx.$slots, "default", {}, null, _push2, _parent2, _scopeId);

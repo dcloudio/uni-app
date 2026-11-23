@@ -30491,16 +30491,10 @@ const _sfc_main$7 = /* @__PURE__ */ defineVaporComponent({
     createFor(
       () => itemList.value,
       (_for_item0, _for_key0) => {
-        const n8 = createIf(
-          () => _for_key0.value !== 0,
-          () => {
-            const n10 = t2$4();
-            return n10;
-          },
-          null,
-          10
-          /* TRUE_MULTI_ROOT, FALSE_MULTI_ROOT */
-        );
+        const n8 = createIf(() => _for_key0.value !== 0, () => {
+          const n10 = t2$4();
+          return n10;
+        });
         const n12 = t3$2();
         const n11 = child(n12);
         const x11 = txt(n11);
