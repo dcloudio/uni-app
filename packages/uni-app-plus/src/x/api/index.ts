@@ -28,19 +28,25 @@ export { setNavigationBarColor } from './navigationBar/setNavigationBarColor'
 export { setNavigationBarTitle } from './navigationBar/setNavigationBarTitle'
 
 // dom
-export { getElementById } from './dom/getElementById'
 export { createSelectorQuery } from './dom/createSelectorQuery'
+// #if !_VAPOR_
+export { getElementById } from './dom/getElementById'
 export { createCanvasContextAsync } from './dom/createCanvasContextAsync'
+// #endif
 
 // ui
 export { pageScrollTo } from './ui/pageScrollTo'
+// #if !_VAPOR_
 export { loadFontFace } from './ui/loadFontFace'
 export { startPullDownRefresh } from './ui/startPullDownRefresh'
 export { stopPullDownRefresh } from './ui/stopPullDownRefresh'
+// #endif
 // export * from '@dcloudio/uni-ext-api/uni-actionSheet'
 export * from './route/closeNativeDialogPage'
 // base
+// #if !_VAPOR_
 export { $emit, $off, $on, $once } from './base/event-bus'
+// #endif
 export { removeInterceptor, addInterceptor } from './base/interceptor'
 export { getLaunchOptionsSync } from './base/getLaunchOptionsSync'
 export { getEnterOptionsSync } from './base/getEnterOptionsSync'
@@ -51,7 +57,7 @@ export { loadUasm, loadUasmSync } from './base/uasm'
 
 export * from './performance'
 
-// #if !_VAPOR_ || !_APP_ANDROID_
+// #if _APP_IOS_
 export {
   // @ts-expect-error
   initUTSProxyClass,
