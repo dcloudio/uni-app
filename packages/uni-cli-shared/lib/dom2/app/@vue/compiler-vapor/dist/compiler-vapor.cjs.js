@@ -1830,7 +1830,7 @@ function genAliasParams(value, key, index, context) {
 		", "
 	], value ? genExpression(value, context, void 0, true) : key || index ? "_" : void 0, key ? genExpression(key, context, void 0, true) : index ? "__" : void 0, index && genExpression(index, context, void 0, true));
 }
-function parseValueDestructure(value, context) {
+function parseValueDestructure(value, context, inlineDefaults = false) {
 	const map = /* @__PURE__ */ new Map();
 	if (value) {
 		const rawValue = value.content;
@@ -1871,8 +1871,12 @@ function parseValueDestructure(value, context) {
 						}
 						if (child.type === "AssignmentPattern" && (parent.type === "ObjectProperty" || parent.type === "ArrayPattern" || parent.type === "ArrowFunctionExpression")) {
 							isDynamic = true;
-							const helper = isDom2 ? context.helper("getSharedDataDefaultValue") : context.helper("getDefaultValue");
 							const rawDefault = rawValue.slice(child.right.start - 1, child.right.end - 1);
+							if (inlineDefaults) {
+								steps.push({ defaultValue: rawDefault });
+								continue;
+							}
+							const helper = isDom2 ? context.helper("getSharedDataDefaultValue") : context.helper("getDefaultValue");
 							steps.push({
 								helper,
 								args: isDom2 ? rawDefault : `() => (${rawDefault})`
@@ -1895,6 +1899,7 @@ function buildDestructureIdMap(idToPathMap, baseAccessor, plugins) {
 		let path = baseAccessor;
 		if (pathInfo) {
 			for (const step of pathInfo.steps) if (typeof step === "string") path += step;
+			else if ("defaultValue" in step) path = `((getDefault, value = getDefault()) => value)(() => (${step.defaultValue}), ${path})`;
 			else {
 				idMap[step.helper] = null;
 				path = `${step.helper}(${path}, ${step.args})`;

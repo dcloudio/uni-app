@@ -23325,13 +23325,15 @@ export declare function genDirectiveModifiers(modifiers: string[]): string;
 type DestructureStep = string | {
   helper: string;
   args: string;
+} | {
+  defaultValue: string;
 };
 export type DestructureMapValue = {
   steps: DestructureStep[];
   dynamic: boolean;
 };
 export type DestructureMap = Map<string, DestructureMapValue | null>;
-export declare function parseValueDestructure(value: SimpleExpressionNode | undefined, context: CodegenContext): DestructureMap;
+export declare function parseValueDestructure(value: SimpleExpressionNode | undefined, context: CodegenContext, inlineDefaults?: boolean): DestructureMap;
 export declare function buildDestructureIdMap(idToPathMap: DestructureMap, baseAccessor: string, plugins: CodegenContext["options"]["expressionPlugins"]): Record<string, string | SimpleExpressionNode | null>;
 export declare function matchKeyOnlyBindingPattern(effect: IREffect, key: string): {
   effect: IREffect;
