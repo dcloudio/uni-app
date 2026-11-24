@@ -79,7 +79,7 @@ div:where([uni-input]) {
 }
 
 .uni-input-placeholder {
-  color: #808080;
+  color: rgba(60, 60, 67, 0.3);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -88,7 +88,7 @@ div:where([uni-input]) {
   }
 
   .uni-input-placeholder {
-    color: #5f5f5f;
+    color: rgba(255, 255, 255, 0.35);
   }
 }
 

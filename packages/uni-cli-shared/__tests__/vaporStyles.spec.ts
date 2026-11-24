@@ -184,9 +184,25 @@ describe('Web Vapor 独立组件样式', () => {
 
   test.each(['input', 'textarea'])('%s 保留 placeholder 和暗色样式', (name) => {
     const code = read(`vapor/${name}.css`)
+    const colors: Record<string, string> = {}
+    postcss.parse(code).walkRules(`.uni-${name}-placeholder`, (rule) => {
+      const parent = rule.parent
+      if (
+        parent?.type === 'root' ||
+        (parent?.type === 'atrule' &&
+          parent.name === 'media' &&
+          parent.params === '(prefers-color-scheme: dark)')
+      ) {
+        rule.walkDecls('color', (decl) => {
+          colors[parent.type === 'root' ? 'light' : 'dark'] = decl.value
+        })
+      }
+    })
+    expect(colors).toEqual({
+      light: 'rgba(60, 60, 67, 0.3)',
+      dark: 'rgba(255, 255, 255, 0.35)',
+    })
     expect(code).not.toContain('uni-field-selection')
-    expect(code).toContain('@media (prefers-color-scheme: dark)')
-    expect(code).toContain('color: #808080')
     expect(code).toContain('caret-color: inherit')
     expect(code).toContain('cursor: inherit')
   })
