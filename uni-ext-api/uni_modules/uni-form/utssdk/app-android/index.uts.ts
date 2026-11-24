@@ -1028,9 +1028,11 @@ class UniAndroidAdjustPositionHelper {
 		const cursorBottomOffset = maxCursorBottomOffset > 0
 			? Math.min(Math.max(0, resolvedCursorBottomOffset), maxCursorBottomOffset)
 			: Math.max(0, resolvedCursorBottomOffset)
-		this.collectScrollAbleParents(cursorBottomOffset > availableHeight)
 		const maxSafeSpacing = Math.max(0, adjustWindowHeight - adjustKeyboardHeight - cursorBottomOffset)
 		const effectiveCursorSpacing = Math.min(Math.max(0, cursorSpacing), maxSafeSpacing)
+		const spacingWouldExposePageBottom = effectiveCursorSpacing > 0
+			&& boundingClientRect.y + cursorBottomOffset + effectiveCursorSpacing > adjustWindowHeight
+		this.collectScrollAbleParents(cursorBottomOffset > availableHeight || spacingWouldExposePageBottom)
 		const elementBottom = boundingClientRect.y + boundingClientRect.height
 		const allowRootTranslate = boundingClientRect.height > 0 && boundingClientRect.y < adjustWindowHeight && elementBottom > 0
 		const nativeWindowHeight = this.resolveNativeWindowHeight()
