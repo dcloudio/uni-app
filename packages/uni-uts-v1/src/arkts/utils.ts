@@ -335,13 +335,9 @@ export function getArkTSAutoImports(
     )
 
     /**
-     * 蒸汽模式鸿蒙jsvm引擎或编译内置插件时禁止autoImport vue相关变量
+     * 蒸汽模式或编译内置插件时禁止autoImport vue相关变量
      */
-    if (
-      !isVapor ||
-      (process.env.UNI_APP_X_HARMONY_SCRIPT_ENGINE !== 'jsvm' &&
-        process.env.UNI_UTS_MODULE_TYPE !== 'built-in')
-    ) {
+    if (!isVapor && process.env.UNI_UTS_MODULE_TYPE !== 'built-in') {
       runtimeExports.push(
         // copy from uni-preset
         // ssr
