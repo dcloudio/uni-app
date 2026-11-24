@@ -712,10 +712,8 @@
   .uni-button-loading-text {
     margin-left: 8px;
     text-align: center;
-    /* #ifdef WEB */
     /* 允许文案收缩到图标旁的剩余宽度，使长文本自动换行。 */
     flex-shrink: 1;
-    /* #endif */
   }
 
   .uni-button-text-size-mini {

@@ -55,7 +55,6 @@ uni-app div:where(.uni-button) {
 .uni-button-loading-text {
   margin-left: 8px;
   text-align: center;
-
   /* 允许文案收缩到图标旁的剩余宽度，使长文本自动换行。 */
   flex-shrink: 1;
 }
