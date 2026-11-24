@@ -27,13 +27,13 @@ import type { FSWatcher } from 'chokidar'
 import { initLogger } from '../configResolved'
 
 export async function runDev(options: CliOptions & ServerOptions) {
-  if (process.platform === 'win32') {
-    // Windows 上 Chokidar 的原生监听可能占用被监听的目录，导致目录重命名失败。
-    // 升级 Chokidar v6 可以解决该问题，但 Vite 内置了 Chokidar，暂以环境变量启用轮询，减少改动。
-    // 轮询会增加文件系统访问和 CPU 开销，监听的文件越多，开销可能越大。
-    // 外部已设置该环境变量时，保留其值。
-    process.env.CHOKIDAR_USEPOLLING ??= '1'
-  }
+  // Windows 上旧版 Chokidar 的原生监听可能占用目录，导致重命名失败。Chokidar v6 可修复已复现的问题，
+  // 但 Vite 内置了旧版 Chokidar，此前通过默认启用轮询临时规避。
+  // 项目文件较多时，轮询会在空闲时持续占用 CPU（#35068），因此改为按需启用：
+  // 遇到目录占用时，可在启动 IDE 或 CLI 前设置 CHOKIDAR_USEPOLLING=1。
+  // if (process.platform === 'win32') {
+  //   process.env.CHOKIDAR_USEPOLLING ??= '1'
+  // }
   extend(options, {
     watch: {},
   })
