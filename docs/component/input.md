@@ -1208,10 +1208,9 @@ web平台的inputmode的浏览器兼容性如下： Chrome >= 66、Edge >= 79、
 同时使用 inputmode 和 comfirm-type 时，若设值冲突，键盘右下角按键类型由 comfirm-type 决定。
 
 ## 默认样式和自定义样式
-- input组件默认 width （宽度）为 100%；字号默认16px；默认无边框；
-- HBuilder 5.36 起，App 平台蒸汽模式下，input 组件的默认输入文字颜色随应用主题自动切换。light主题下，文字颜色为 `#000000`；dark主题下，默认文字颜色为 `#ffffff`。
-- 目前各平台、各版本input默认背景色未统一，建议显式设置背景色。后续会统一背景色为透明。
-- HBuilder 5.36 起，App 平台蒸汽模式下，input 组件支持通过 CSS `caret-color` 自定义光标颜色，例如 `style="caret-color: red"`，也可在 `class` 中设置，并支持 CSS 变量和媒体查询。若同时设置 `cursor-color` 组件属性，则优先使用 `cursor-color` 的值。
+- input组件默认 width （宽度）为 100%；字号默认16px；默认无边框。
+- HBuilder 5.36+，App 平台蒸汽模式下，input 组件支持通过 CSS `caret-color` 自定义光标颜色，例如 `style="caret-color: red"`，也可在 `class` 中设置，并支持 CSS 变量和媒体查询。若同时设置 `cursor-color` 组件属性，则优先使用 `cursor-color` 的值。
+- HBuilder 5.36 的 Web平台 和 App平台蒸汽模式下，input 组件默认设置了背景色：light主题下，文字颜色为 `#000000`；dark主题下，默认文字颜色为 `#ffffff`。此问题仅存在于该版本，5.37起恢复了背景色透明。
 
 ### placeholder-style和placeholder-class说明
 - 目前各平台、各版本input默认place-holder文字颜色未统一，建议显式设置背景色。后续会统一颜色为light下#808080、dark下#5f5f5f。

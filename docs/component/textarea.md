@@ -797,9 +797,8 @@ inputmode 兼容性：Chrome >= 66、Edge >= 79、Firefox >= 95、Chrome Android
 
 ## 默认样式和自定义样式
 - textarea 的 font-size 默认值统一为 16px，width 默认值为300px。
-- HBuilder 5.36 起，App 平台蒸汽模式下，textarea 组件的默认输入文字颜色随应用主题自动切换。light主题下，文字颜色为 `#000000`；dark主题下，默认文字颜色为 `#ffffff`。
-- 目前各平台、各版本textarea默认背景色未统一，建议显式设置背景色。后续会统一背景色为透明。
-- HBuilder 5.36 起，App 平台蒸汽模式下，textarea 组件支持通过 CSS `caret-color` 自定义光标颜色，例如 `style="caret-color: red"`，也可在 `class` 中设置，并支持 CSS 变量和媒体查询。若同时设置 `cursor-color` 组件属性，则优先使用 `cursor-color` 的值。
+- HBuilder 5.36+，App 平台蒸汽模式下，textarea 组件支持通过 CSS `caret-color` 自定义光标颜色，例如 `style="caret-color: red"`，也可在 `class` 中设置，并支持 CSS 变量和媒体查询。若同时设置 `cursor-color` 组件属性，则优先使用 `cursor-color` 的值。
+- HBuilder 5.36 的 Web平台 和 App平台蒸汽模式下，input 组件默认设置了背景色：light主题下，文字颜色为 `#000000`；dark主题下，默认文字颜色为 `#ffffff`。此问题仅存在于该版本，5.37起恢复了背景色透明。
 
 ### placeholder-style和placeholder-class说明
 - 目前各平台、各版本textarea默认place-holder文字颜色未统一，建议显式设置背景色。后续会统一颜色为light下#808080、dark下#5f5f5f。
@@ -814,4 +813,4 @@ inputmode 兼容性：Chrome >= 66、Edge >= 79、Firefox >= 95、Chrome Android
 * 当软键盘右下角为 换行 时，confirm-hold 恒为 true，设置为false也不生效，即按下 换行 时，软键盘不会消失。
 * 在Android 9以下的系统版本，样式`line-height`点击键盘换行时行间距设置无效，此问题是Android系统的bug，后续解决。
 * 所有 boolean 类型的属性，只有设置为布尔类型的 false 才会关闭该属性，其他任何值（包括字符串 "false"）都会被当做 true 处理（微信小程序中空字符串会被视为 false）。
-* 支付宝小程序默认开启字数显示功能，真机上外层套用 `scroll-view` 时，点击 textarea 内容可能溢出组件范围。
+* 支付宝小程序默认开启字数显示功能。真机上外层套用 `scroll-view` 时，点击 textarea 内容可能溢出组件范围。
