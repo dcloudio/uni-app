@@ -1245,12 +1245,12 @@
 		position: absolute;
 		top: 0;
 		left: 0;
-		color: #808080;
+		color: rgba(60, 60, 67, 0.30);
 		font-size: var(--uni-textarea-placeholder-font-size, 16px);
 	}
 	@media (prefers-color-scheme: dark) {
 		.uni-textarea-placeholder {
-			color: #5f5f5f;
+			color: rgba(255, 255, 255, 0.35);
 		}
 	}
 </style>

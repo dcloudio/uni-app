@@ -13,12 +13,12 @@
 清除主题颜色覆盖并恢复原生默认值。
 
 input、textarea 默认无边框，两种主题下的背景均透明。placeholder 明亮模式为
-`#808080`，暗黑模式为 `#5f5f5f`，禁用时保持不变；`placeholder-class` 和
-`placeholder-style` 可覆盖默认样式。
+`rgba(60, 60, 67, 0.30)`，暗黑模式为 `rgba(255, 255, 255, 0.35)`。启用和禁用状态共用这组默认色。
+`placeholder-class` 和 `placeholder-style` 可覆盖默认样式。
 
 iOS、鸿蒙的 input、textarea 支持通过 CSS `caret-color` 设置光标颜色，支持 CSS 变量和媒体查询。
 同时设置 `cursor-color` 时优先使用该属性；移除后回退到 `caret-color`，两者均未设置时恢复系统默认光标颜色。
-鸿蒙 input、textarea 均使用 ArkUI 原生默认光标色；移除所有自定义光标颜色后恢复原生默认值。
+鸿蒙 input、textarea 在生效的光标颜色为 `auto` 或未设置时，使用 ArkUI 原生默认光标色。
 
 ### input / textarea ::selection
 

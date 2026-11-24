@@ -1063,7 +1063,7 @@ void NativeInputView::updateDirection(const std::string &value) {
 void NativeInputView::updateCursorColor(const std::string &value) {
   cursor_color_ = value;
   ensureInputNode();
-  if (value.empty()) {
+  if (value.empty() || value == "auto") {
     resetAttribute(NODE_TEXT_INPUT_CARET_COLOR);
   } else {
     setColorAttribute(NODE_TEXT_INPUT_CARET_COLOR, value);

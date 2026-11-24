@@ -20410,6 +20410,7 @@ function genExpression(node, context, assignment, asParams = false) {
 	const target = assignment ? unwrapTSNode(ast) : void 0;
 	const isMemberTarget = (target === null || target === void 0 ? void 0 : target.type) === "MemberExpression" || (target === null || target === void 0 ? void 0 : target.type) === "OptionalMemberExpression";
 	const ids = [];
+	let localParams;
 	const parentStackMap = /* @__PURE__ */ new Map();
 	const parentStack = [];
 	const knownIds = Object.create(null);
@@ -20417,6 +20418,7 @@ function genExpression(node, context, assignment, asParams = false) {
 	walkIdentifiers(ast, (id, parent, __, isReference, isLocal) => {
 		if (isLocal) {
 			if (!id.typeAnnotation && !id.optional) return;
+			(localParams || (localParams = /* @__PURE__ */ new Set())).add(id);
 		} else if (!isReference) return;
 		ids.push(id);
 		parentStackMap.set(id, parentStack.slice());
@@ -20444,11 +20446,17 @@ function genExpression(node, context, assignment, asParams = false) {
 			if (start < lastEnd) return;
 			const leadingText = content.slice(lastEnd, start);
 			if (leadingText.length) push([leadingText, -3]);
-			push(genIdentifier(asParams ? id.name : source, context, {
+			const idLoc = {
 				start: advancePositionWithClone(node.loc.start, source, start),
 				end: advancePositionWithClone(node.loc.start, source, end),
 				source
-			}, isMemberTarget ? void 0 : assignment, id, parent, parentStack, node, localsMap && localsMap.get(id)));
+			};
+			if (localParams === null || localParams === void 0 ? void 0 : localParams.has(id)) push([
+				id.name,
+				-2,
+				idLoc
+			]);
+			else push(genIdentifier(asParams ? id.name : source, context, idLoc, isMemberTarget ? void 0 : assignment, id, parent, parentStack, node, localsMap && localsMap.get(id)));
 			lastEnd = end;
 		});
 		if (lastEnd < content.length) push([content.slice(lastEnd), -3]);

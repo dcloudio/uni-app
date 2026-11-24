@@ -340,10 +340,12 @@ for (const viewName of ['NativeInputView', 'NativeTextareaView']) {
     const { resolveEditorCaretColor } = createEditorModule({ appTheme: 'dark' }, 'APP-HARMONY')
     for (const [css, legacy, expected] of [
       ['#ff0000', '', 'native:#ff0000'],
+      ['auto', '', undefined],
       ['#00ff00', '', 'native:#00ff00'],
       ['', '', undefined],
       ['#ff0000', '#007aff', 'native:#007aff'],
       ['#00ff00', '#007aff', 'native:#007aff'],
+      ['#00ff00', 'auto', undefined],
       ['#00ff00', '', 'native:#00ff00'],
       ['', '', undefined],
     ]) {

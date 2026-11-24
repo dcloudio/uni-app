@@ -1638,12 +1638,12 @@
 		transform: translateY(-50%);
 		left: 0;
 		right: 0;
-		color: #808080;
+		color: rgba(60, 60, 67, 0.30);
 		white-space: nowrap;
 	}
 	@media (prefers-color-scheme: dark) {
 		.uni-input-placeholder {
-			color: #5f5f5f;
+			color: rgba(255, 255, 255, 0.35);
 		}
 	}
 </style>
