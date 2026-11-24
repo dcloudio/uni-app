@@ -336,9 +336,9 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: √; iOS(VDO
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | delta | number | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 返回的页面数，如果 delta 大于现有页面数，则返回到首页 |
-| animationType | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.18; iOS: 4.25 | 窗口关闭的动画类型<br/> |
+| animationType | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.18; iOS: 4.25; HarmonyOS: 4.61 | 窗口关闭的动画类型<br/> |
 | animationDuration | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 窗口关闭动画的持续时间，单位为 ms |
-| success | (result: [NavigateBackSuccess](#navigatebacksuccess-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: √; iOS: x | 接口调用成功的回调函数 |
+| success | (result: [NavigateBackSuccess](#navigatebacksuccess-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
 | fail | (result: [NavigateBackFail](#navigatebackfail-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
 | complete | (result: [NavigateBackComplete](#navigatebackcomplete-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
