@@ -25,7 +25,7 @@ uni-app x 组件基于 vue 单文件组件规范，一个组件内，有 3 个�
 事实上，一个在pages.json注册的页面uvue文件，也可以被当做一个组件引入到其他页面。
 
 组件和页面的差别有：
-1. 组件中不支持页面相关的生命周期和API，比如 `onLoad`、`onShow` 等[页面生命周期](../page.md#lifecycle)，比如$setPageStyle等API。
+1. 组件可以通过组合式 API 监听所在页面的部分生命周期，具体见[组件监听应用、页面生命周期](#component-page-lifecycle)。`setPageStyle` 等页面实例 API 需要通过页面实例调用。
 2. 组件中有一批组件独有的生命周期和API，比如 `mounted`、`unmounted` 等[组件生命周期](#component-lifecycle)，比如页面和组件通信的API。
 3. 组件文件不需要在pages.json中注册
 
@@ -1646,28 +1646,19 @@ export default {
 
 :::
 
+组件监听所在页面的生命周期仅支持组合式 API。请在 `<script setup>` 中注册钩子，用 `onPageShow` 和 `onPageHide` 监听页面的显示和隐藏。
+
 |组件中监听页面生命周期 |Android(VDOM) |Android(Vapor) |iOS(VDOM)  | iOS(Vapor) |HarmonyOS(VDOM) | HarmonyOS(Vapor) |Web |微信小程序 |
 |:-:			          |:-:		 |:-:             |:-:  |:-:         |:-:		   |:-:               |:-:	|:-:		  |
 |onLoad             |4.11    |5.21            |4.11 |5.21        |4.61     |5.21              |4.11 |4.41     |
 |onPageShow         |4.11    |5.21            |4.11 |5.21        |4.61     |5.21              |4.11 |4.41     |
-|onReady            |4.11    |5.21            |4.11 |5.21        |4.61     |5.21              |4.11 |4.41     |
+|onReady            |不支持  |不支持          |不支持 |不支持      |不支持   |不支持            |不支持 |不支持   |
 |onPullDownRefresh  |4.11    |5.21            |4.11 |5.21        |4.61     |5.21              |4.11 |4.41     |
 |onPageScroll       |4.11    |5.21            |4.11 |5.21        |4.61     |5.21              |4.11 |4.41     |
 |onReachBottom      |4.11    |5.21            |4.11 |5.21        |4.61     |5.21              |4.11 |4.41     |
 |onBackPress        |4.11    |5.21            |4.11 |5.21        |4.61     |5.21              |4.11 |4.41     |
 |onPageHide         |4.11    |5.21            |4.11 |5.21        |4.61     |5.21              |4.11 |4.41     |
 |onUnload           |4.11    |5.21            |4.11 |5.21        |4.61     |5.21              |4.11 |4.41     |
-
-> 选项式 API 和 组合式 API 在监听页面生命周期时有所不同
->
-> 比如选项式 API 中的 `onShow`、`onHide` 监听页面生命周期在组合式 API 中分别对应 `onPageShow`、`onPageHide`（在组合式 API 时会和 App 的生命周期冲突）
->
-> 具体请查看 [页面生命周期](../page.md#lifecycle)
-
-
-::: warning 注意
- `onPageHide`、`onPageShow` 需要写在选项式的 setup 函数或者组合式 `<script setup>` 中才能生效
-:::
 
 示例 [详情](https://gitcode.com/dcloud/hello-uvue/blob/alpha/pages/lifecycle/page/monitor-page-lifecycle-options.uvue)
 
