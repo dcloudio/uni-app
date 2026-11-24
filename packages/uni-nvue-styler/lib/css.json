@@ -3686,6 +3686,33 @@
               "unixVer": "4.0"
             }
           }
+        },
+        {
+          "name": "grid",
+          "description": "网格布局擅长于将一个页面划分为几个主要区域，以及定义这些区域的大小、位置、层次等关系",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "4.23",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         }
       ],
       "uniPlatform": {
