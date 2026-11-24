@@ -37,17 +37,17 @@ uni-app x 的组件和API，大多是uvue、uts开发的。和开发者做的uts
 - 京大大回收：[Android](https://appgallery.huawei.com/app/C108165699)、[iOS](https://apps.apple.com/cn/app/%E4%BA%AC%E5%A4%A7%E5%A4%A7%E5%9B%9E%E6%94%B6-%E4%B8%93%E4%B8%9A%E8%B4%AD%E7%89%A9%E5%8D%A1%E7%A4%BC%E5%93%81%E5%8D%A1%E5%88%B8%E5%9B%9E%E6%94%B6%E5%B9%B3%E5%8F%B0/id6748420409?uo=4)、微信小程序搜索"京大大回收"
 - 轻匿提问箱：[Android](https://appgallery.huawei.com/app/C105080643)、[iOS](https://apps.apple.com/cn/app/%E8%BD%BB%E5%8C%BF%E6%8F%90%E9%97%AE%E7%AE%B1/id6544789356)
 ### 应用商店下载量十万级
+- 语法分析助手：[Android](https://appgallery.huawei.com/app/C106861521)、[iOS](https://apps.apple.com/cn/app/%E8%AF%AD%E6%B3%95%E5%88%86%E6%9E%90%E5%8A%A9%E6%89%8B/id1606478557)、微信小程序搜索"语法分析助手"
+	* 从老版uni-app迁移到uni-app x蒸汽模式。开发者感受：速度确实快很多。
+- 鲸鲨记账：[Android](https://sj.qq.com/appdetail/com.cyqgxf.jingshajizhang)、[iOS](https://apps.apple.com/cn/app/%E9%B2%B8%E9%B2%A8%E8%AE%B0%E8%B4%A6-ai%E6%99%BA%E8%83%BD%E8%87%AA%E5%8A%A8%E8%AE%B0%E8%B4%A6%E5%AD%98%E9%92%B1%E5%BF%AB%E9%80%9F%E4%B8%93%E4%B8%9A%E5%8A%A9%E6%89%8B/id6751838395)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.cyqgxf.jingshajizhang.hm)
+	* 为了兼容鸿蒙，从flutter迁移到uni-app x蒸汽模式。开发者感受：长列表更流畅了。
+- 金股讯：[Android](https://sj.qq.com/appdetail/com.jinguxun.app)、[iOS](https://apps.apple.com/cn/app/%E9%87%91%E8%82%A1%E8%AE%AF/id1615272585)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.jinguxun.happ)
+	* 从uni-app vdom 迁移到 蒸汽模式。开发者感受：开发体验更好了。
 - 机车圈：[Andoird](https://sj.qq.com/appdetail/com.hzmodi.motocircle)、[iOS](https://apps.apple.com/cn/app/%E6%9C%BA%E8%BD%A6%E5%9C%88-%E4%B8%93%E4%B8%9A%E6%91%A9%E6%89%98%E8%BD%A6%E4%BF%9D%E5%85%BB%E6%9C%8D%E5%8A%A1/id1569815582?uo=4)、微信小程序搜索"机车圈"
 - 安医达：[Android](https://appgallery.huawei.com/app/C114809501)、[iOS](https://apps.apple.com/cn/app/%E5%AE%89%E5%8C%BB%E8%BE%BE/id6749573798)、微信小程序搜索"安医达"
 - U易：[Android](https://sj.qq.com/appdetail/com.zdtc.ue.school)、[iOS](https://apps.apple.com/cn/app/u%E6%98%93-%E7%94%A8%E7%A7%91%E6%8A%80%E5%88%9B%E9%80%A0%E6%99%BA%E6%85%A7%E6%A0%A1%E5%9B%AD%E6%9C%8D%E5%8A%A1%E5%B9%B3%E5%8F%B0/id1267759713)
-- 语法分析助手：[Android](https://appgallery.huawei.com/app/C106861521)、[iOS](https://apps.apple.com/cn/app/%E8%AF%AD%E6%B3%95%E5%88%86%E6%9E%90%E5%8A%A9%E6%89%8B/id1606478557)、微信小程序搜索"语法分析助手"
-	* 从老版uni-app迁移到uni-app x蒸汽模式。开发者感受：速度确实快很多。
 - 万象八字：[Android](https://appgallery.huawei.com/app/C115905187)、[iOS](https://apps.apple.com/cn/app/%E4%B8%87%E8%B1%A1%E5%85%AB%E5%AD%97/id6746738853)
-- 金股讯：[Android](https://sj.qq.com/appdetail/com.jinguxun.app)、[iOS](https://apps.apple.com/cn/app/%E9%87%91%E8%82%A1%E8%AE%AF/id1615272585)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.jinguxun.happ)
-	* 从uni-app vdom 迁移到 蒸汽模式。开发者感受：开发体验更好了。
 - 四大认证备考神器：[Andoird](https://sj.qq.com/appdetail/uni.UNIB5F0C16)、[iOS](https://apps.apple.com/cn/app/%E5%9B%9B%E5%A4%A7%E8%AE%A4%E8%AF%81%E5%A4%87%E8%80%83%E7%A5%9E%E5%99%A8/id6455939352)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=uni.beikaoshenqi.huawei)、微信小程序搜索"四大认证备考神器"
-- 鲸鲨记账：[Android](https://sj.qq.com/appdetail/com.cyqgxf.jingshajizhang)、[iOS](https://apps.apple.com/cn/app/%E9%B2%B8%E9%B2%A8%E8%AE%B0%E8%B4%A6-ai%E6%99%BA%E8%83%BD%E8%87%AA%E5%8A%A8%E8%AE%B0%E8%B4%A6%E5%AD%98%E9%92%B1%E5%BF%AB%E9%80%9F%E4%B8%93%E4%B8%9A%E5%8A%A9%E6%89%8B/id6751838395)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.cyqgxf.jingshajizhang.hm)
-	* 为了兼容鸿蒙，从flutter迁移到uni-app x蒸汽模式。开发者感受：长列表更流畅了。
 - pushplus：[Android](https://sj.qq.com/appdetail/com.perk.pushplus.app)、[iOS](https://apps.apple.com/cn/app/pushplus/id6755597125)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.perk.pushplus.app.hw)
 ### 其他
 - 黔警通：[Android](https://sj.qq.com/appdetail/com.qxnga.qjt)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=hmos.com.qxnga.qjt)
