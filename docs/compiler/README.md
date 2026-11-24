@@ -10,6 +10,20 @@ uvue编译器是在Vite基础上进行扩展开发的。
 
 支持less、sass、scss等css预编译。
 
+## 动态导入@dynamic-import
+
+使用 `import('./mock')` 动态导入本地模块时，能否拆分并加载模块取决于目标平台和构建模式。平台限制适用于 `.uvue` 脚本及其引用的本地脚本，使用 JS、TS 或 UTS 都无法绕过这些限制。
+
+| 平台和模式 | 动态导入本地模块 |
+| --- | --- |
+| Web（VDOM、蒸汽模式） | 支持。Vite 将动态导入的模块打包为单独的文件，执行到 `import()` 时加载。 |
+| 鸿蒙（VDOM、使用 ArkTS 脚本引擎的蒸汽模式） | 编译器输出 ESM，保留 `import()` 并生成独立的模块文件。 |
+| Android、iOS 蒸汽模式，使用 JSVM 脚本引擎的鸿蒙蒸汽模式，以及 iOS VDOM 模式 | 不支持。IIFE 输出无法进行代码拆分，动态导入会导致编译报错。 |
+| Android VDOM 模式 | 不支持。生成的 Kotlin 代码无法解析 `import()` 调用。 |
+| 小程序平台 | 不支持。 |
+
+跨平台代码请使用静态导入，例如 `import { loadMock } from './mock'`，再在需要时调用 `loadMock()`。
+
 ## 条件编译
 
 多端框架，离不开条件编译。
