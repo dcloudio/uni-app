@@ -336,8 +336,14 @@ export function getArkTSAutoImports(
 
     /**
      * 蒸汽模式或编译内置插件时禁止autoImport vue相关变量
+     * VDOM模式、蒸汽模式ArkTS引擎部分插件可能引用了vue相关变量，内置插件不允许引用
      */
-    if (!isVapor && process.env.UNI_UTS_MODULE_TYPE !== 'built-in') {
+    if (
+      (isX && !isVapor) ||
+      (isVapor &&
+        process.env.UNI_APP_X_HARMONY_SCRIPT_ENGINE !== 'jsvm' &&
+        process.env.UNI_UTS_MODULE_TYPE !== 'built-in')
+    ) {
       runtimeExports.push(
         // copy from uni-preset
         // ssr
@@ -435,7 +441,7 @@ export function getArkTSAutoImports(
         ['hasInjectionContext'],
 
         // render
-        ['h'],
+        // ['h'],  // 容易被正则规则误判，且插件内不需要，移除
         ['mergeProps'],
         ['cloneVNode'],
         ['isVNode'],
