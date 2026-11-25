@@ -64,7 +64,10 @@ export const setTabBarStyle = defineAsyncApi<API_TYPE_SET_TAB_BAR_STYLE>(
       style.set('midButton', midButton)
     }
 
-    fixBorderStyle(style)
+    // 未传分隔线参数时保留原样，避免将主题分隔线重置为黑色。
+    if (options.borderStyle != null || options.borderColor != null) {
+      fixBorderStyle(style)
+    }
     tabBar!.setTabBarStyle(style)
     resolve()
   },

@@ -3,6 +3,7 @@ import fs from 'fs-extra'
 import {
   PAGES_JSON_UTS,
   genUTSClassName,
+  normalizeThemeConfig,
   normalizeUniAppXAppPagesJson,
   parseArguments,
 } from '@dcloudio/uni-cli-shared'
@@ -170,7 +171,10 @@ function stringifyPageStyle(pageStyle: UniApp.PagesJsonPageStyle) {
 function readThemeJSONFileAsStringifyMap() {
   const themeJsonPath = path.resolve(process.env.UNI_INPUT_DIR, 'theme.json')
   if (fs.existsSync(themeJsonPath)) {
-    return stringifyMap(JSON.parse(fs.readFileSync(themeJsonPath, 'utf8')))
+    return stringifyMap(
+      normalizeThemeConfig(JSON.parse(fs.readFileSync(themeJsonPath, 'utf8')))
+    )
   }
-  return ''
+  const themeConfig = normalizeThemeConfig({})
+  return Object.keys(themeConfig).length ? stringifyMap(themeConfig) : ''
 }

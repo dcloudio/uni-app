@@ -2,6 +2,85 @@ import fs from 'fs'
 import path from 'path'
 import { parseJson } from './json'
 import { addLeadingSlash, normalizeStyles, once } from '@dcloudio/uni-shared'
+import { getPlatformManifestJsonOnce } from './manifest'
+
+const NAVIGATION_BAR_BACKGROUND_COLOR_KEY = 'navigationBarBackgroundColor'
+const NAVIGATION_BAR_TEXT_STYLE_KEY = 'navigationBarTextStyle'
+const TAB_BAR_BACKGROUND_COLOR_KEY = 'tabBarBackgroundColor'
+const TAB_BAR_BORDER_COLOR_KEY = 'tabBarBorderColor'
+
+const DEFAULT_THEME: UniApp.ThemeJson = {
+  light: {
+    [NAVIGATION_BAR_BACKGROUND_COLOR_KEY]: '#FFFFFF',
+    [NAVIGATION_BAR_TEXT_STYLE_KEY]: 'black',
+    [TAB_BAR_BACKGROUND_COLOR_KEY]: '#FFFFFF',
+    [TAB_BAR_BORDER_COLOR_KEY]: 'rgba(0, 0, 0, 0.33)',
+  },
+  dark: {
+    [NAVIGATION_BAR_BACKGROUND_COLOR_KEY]: '#1C1C1E',
+    [NAVIGATION_BAR_TEXT_STYLE_KEY]: 'white',
+    [TAB_BAR_BACKGROUND_COLOR_KEY]: '#1C1C1E',
+    [TAB_BAR_BORDER_COLOR_KEY]: 'rgba(255, 255, 255, 0.33)',
+  },
+}
+
+function isDefaultThemeEnabled(
+  platform: UniApp.PLATFORM,
+  manifestJsonPlatform?: Record<string, any>
+) {
+  return (
+    ['h5', 'web', 'app', 'app-android', 'app-ios', 'app-harmony'].includes(
+      platform
+    ) &&
+    (manifestJsonPlatform || getPlatformManifestJsonOnce()).darkmode === true
+  )
+}
+
+export function normalizeThemeConfig(
+  themeConfig: UniApp.ThemeJson,
+  manifestJsonPlatform?: Record<string, any>,
+  platform: UniApp.PLATFORM = process.env.UNI_PLATFORM
+) {
+  if (!isDefaultThemeEnabled(platform, manifestJsonPlatform)) {
+    return themeConfig
+  }
+  // 分别补齐明暗主题，保留用户已配置的变量。
+  return {
+    ...themeConfig,
+    light: { ...DEFAULT_THEME.light, ...themeConfig.light },
+    dark: { ...DEFAULT_THEME.dark, ...themeConfig.dark },
+  }
+}
+
+export function initDefaultTheme(
+  pagesJson: Record<string, any>,
+  platform: UniApp.PLATFORM = process.env.UNI_PLATFORM
+) {
+  if (!isDefaultThemeEnabled(platform)) {
+    return
+  }
+  // 只补齐全局缺省值，页面及平台的显式配置继续按原有规则覆盖。
+  const globalStyle = (pagesJson.globalStyle ||= {})
+  globalStyle.navigationBarBackgroundColor ??= `@${NAVIGATION_BAR_BACKGROUND_COLOR_KEY}`
+  globalStyle.navigationBarTextStyle ??= `@${NAVIGATION_BAR_TEXT_STYLE_KEY}`
+  const tabBar = pagesJson.tabBar
+  if (tabBar) {
+    // 显式毛玻璃效果沿用原有的半透明背景计算。
+    if (!tabBar.blurEffect || tabBar.blurEffect === 'none') {
+      tabBar.backgroundColor ??= `@${TAB_BAR_BACKGROUND_COLOR_KEY}`
+    }
+    if (tabBar.borderStyle == null && tabBar.borderColor == null) {
+      // App X 原生使用 borderColor；Web 避免默认 borderColor 覆盖动态设置的 borderStyle。
+      const borderKey =
+        process.env.UNI_APP_X === 'true' &&
+        platform !== 'h5' &&
+        platform !== 'web'
+          ? 'borderColor'
+          : 'borderStyle'
+      tabBar[borderKey] = `@${TAB_BAR_BORDER_COLOR_KEY}`
+    }
+  }
+}
 
 export function hasThemeJson(themeLocation: string) {
   if (!fs.existsSync(themeLocation)) {
@@ -98,8 +177,11 @@ const getPagesJson = (inputDir: string) => {
 }
 
 export const normalizeThemeConfigOnce = once(
-  (manifestJsonPlatform: Record<string, any> = {}) => {
-    const themeConfig = parseThemeJson(manifestJsonPlatform.themeLocation)
+  (manifestJsonPlatform = getPlatformManifestJsonOnce()) => {
+    const themeConfig = normalizeThemeConfig(
+      parseThemeJson(manifestJsonPlatform.themeLocation),
+      manifestJsonPlatform
+    )
     if (process.env.UNI_INPUT_DIR) {
       normalizeUniConfigThemeJsonIconPath(
         themeConfig,

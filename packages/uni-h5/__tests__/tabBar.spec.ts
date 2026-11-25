@@ -28,11 +28,14 @@ jest.mock('../src/framework/setup/page', () => ({
 describe('web tabBar state', () => {
   const oldUniConfig = global.__uniConfig
   const oldUniServiceJSBridge = global.UniServiceJSBridge
+  const oldPlatform = (global as any).__PLATFORM__
   let useTabBar: typeof import('../src/framework/setup/state').useTabBar
   let setTabBarItem: typeof import('../src/service/api/ui/tabBar').setTabBarItem
+  let setTabBarStyle: typeof import('../src/service/api/ui/tabBar').setTabBarStyle
 
   beforeEach(async () => {
     jest.resetModules()
+    ;(global as any).__PLATFORM__ = 'h5'
     mockGetTheme.mockReturnValue('dark')
     mockOnThemeChange.mockReset()
     global.__uniConfig = {
@@ -42,16 +45,19 @@ describe('web tabBar state', () => {
           tabBarBackgroundColor: '#222222',
           tabBarColor: '#ffffff',
           tabBarIconPath: '/static/dark.png',
+          tabBarBorderColor: 'rgba(255, 255, 255, 0.33)',
         },
         light: {
           tabBarBackgroundColor: '#f8f8f8',
           tabBarColor: '#000000',
           tabBarIconPath: '/static/light.png',
+          tabBarBorderColor: 'rgba(0, 0, 0, 0.33)',
         },
       },
       tabBar: {
         backgroundColor: '@tabBarBackgroundColor',
         color: '@tabBarColor',
+        borderStyle: '@tabBarBorderColor',
         list: [
           {
             pagePath: 'pages/index/index',
@@ -67,11 +73,18 @@ describe('web tabBar state', () => {
     } as unknown as typeof UniServiceJSBridge
     useTabBar = (await import('../src/framework/setup/state')).useTabBar
     setTabBarItem = (await import('../src/service/api/ui/tabBar')).setTabBarItem
+    setTabBarStyle = (await import('../src/service/api/ui/tabBar'))
+      .setTabBarStyle
   })
 
   afterEach(() => {
     global.__uniConfig = oldUniConfig
     global.UniServiceJSBridge = oldUniServiceJSBridge
+    if (oldPlatform === undefined) {
+      delete (global as any).__PLATFORM__
+    } else {
+      ;(global as any).__PLATFORM__ = oldPlatform
+    }
   })
 
   test('reuses one themed tabBar instance for api and rendering', async () => {
@@ -82,6 +95,7 @@ describe('web tabBar state', () => {
     expect(tabBar).toMatchObject({
       backgroundColor: '#222222',
       color: '#ffffff',
+      borderStyle: 'rgba(255, 255, 255, 0.33)',
     })
     expect(tabBar.list[0]).toMatchObject({ iconPath: '/static/dark.png' })
 
@@ -105,6 +119,7 @@ describe('web tabBar state', () => {
     expect(tabBar).toMatchObject({
       backgroundColor: '#f8f8f8',
       color: '#000000',
+      borderStyle: 'rgba(0, 0, 0, 0.33)',
     })
     expect(tabBar.list[0].iconPath).toBe('/static/light.png')
     expect(useTabBar()).toBe(tabBar)
@@ -117,5 +132,16 @@ describe('web tabBar state', () => {
     expect(useTabBar()).toBeUndefined()
     expect(useTabBar()).toBeUndefined()
     expect(mockOnThemeChange).not.toHaveBeenCalled()
+  })
+
+  test('allows setTabBarStyle to override the default themed border', async () => {
+    const tabBar = useTabBar()!
+    expect(tabBar.borderStyle).toBe('rgba(255, 255, 255, 0.33)')
+
+    await new Promise<void>((resolve) => {
+      setTabBarStyle({ borderStyle: 'black', success: resolve })
+    })
+    expect(tabBar.borderStyle).toBe('black')
+    expect(tabBar.borderColor).toBeUndefined()
   })
 })

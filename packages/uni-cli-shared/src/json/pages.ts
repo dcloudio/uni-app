@@ -12,7 +12,7 @@ import { parseJson } from './json'
 import { isVueSfcFile } from '../vue/utils'
 import { parseVueRequest } from '../vite'
 import { EXTNAME_VUE_RE, TEXT_STYLE } from '../constants'
-import { initTheme, normalizeThemeConfigOnce } from './theme'
+import { initDefaultTheme, initTheme, normalizeThemeConfigOnce } from './theme'
 import { getPlatformManifestJsonOnce } from './manifest'
 
 export const pagesCacheSet: Set<string> = new Set()
@@ -119,6 +119,7 @@ export function normalizePagesJson(
   } catch (e) {
     console.error(`[vite] Error: pages.json parse failed.\n`, jsonStr, e)
   }
+  initDefaultTheme(pagesJson, platform)
   // pages
   validatePages(pagesJson, jsonStr)
   pagesJson.subPackages = pagesJson.subPackages || pagesJson.subpackages
@@ -322,7 +323,7 @@ function normalizePageStyle(
       extend(pageStyle, pageStyle[platform])
     }
     if (['h5', 'app', 'app-harmony'].includes(platform)) {
-      pageStyle.navigationBar = normalizeNavigationBar(pageStyle)
+      pageStyle.navigationBar = normalizeNavigationBar(pageStyle, platform)
       if (isEnablePullDownRefresh(pageStyle)) {
         pageStyle.enablePullDownRefresh = true
         pageStyle.pullToRefresh = normalizePullToRefresh(pageStyle)
@@ -352,7 +353,8 @@ const navigationBarMaps = {
 }
 
 function normalizeNavigationBar(
-  pageStyle: Record<string, any>
+  pageStyle: Record<string, any>,
+  platform: UniApp.PLATFORM
 ): UniApp.PageNavigationBar {
   const navigationBar = Object.create(null) as UniApp.PageNavigationBar
 
@@ -412,18 +414,20 @@ function normalizeNavigationBar(
     delete pageStyle.navigationBarShadow
   }
 
-  const parsedNavigationBar = initTheme(
-    getPlatformManifestJsonOnce(),
-    navigationBar
-  )
-
   if (isArray(navigationBar.buttons)) {
+    const manifestJsonPlatform = getPlatformManifestJsonOnce()
+    let buttonColor: string | undefined
+    if (
+      manifestJsonPlatform.darkmode &&
+      (!navigationBar.titleColor || navigationBar.titleColor.startsWith('@'))
+    ) {
+      // 主题 key 可由用户自定义，按钮应继承导航栏前景色，不能固定为浅色值。
+      buttonColor = platform === 'h5' ? 'currentColor' : undefined
+    } else {
+      buttonColor = initTheme(manifestJsonPlatform, navigationBar).titleColor
+    }
     navigationBar.buttons = navigationBar.buttons.map((btn) =>
-      normalizeNavigationBarButton(
-        btn,
-        navigationBar.type,
-        parsedNavigationBar.titleColor!
-      )
+      normalizeNavigationBarButton(btn, navigationBar.type, buttonColor)
     )
   }
   if (isPlainObject(navigationBar.searchInput)) {
@@ -440,7 +444,7 @@ function normalizeNavigationBar(
 function normalizeNavigationBarButton(
   btn: UniApp.PageNavigationBarButton,
   type: UniApp.PageNavigationBar['type'],
-  titleColor: UniApp.PageNavigationBar['titleColor']
+  titleColor: string | undefined
 ) {
   btn.color = btn.color || titleColor!
   if (!btn.fontSize) {

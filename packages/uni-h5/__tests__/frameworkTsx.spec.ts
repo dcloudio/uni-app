@@ -298,6 +298,7 @@ describe('框架 TSX 动态行为', () => {
         position: 'bottom',
         shown: true,
         height: '50px',
+        borderStyle: 'rgba(255, 255, 255, 0.33)',
         list: [
           { pagePath: 'a', text: 'A' },
           { pagePath: 'b', text: 'B' },
@@ -324,6 +325,17 @@ describe('框架 TSX 动态行为', () => {
       })
       const host = mount(Component, vapor)
       const first = host.querySelector('.uni-tabbar__item')
+      const border = host.querySelector<HTMLElement>('.uni-tabbar-border')!
+      expect(border.style.backgroundColor).toBe('rgba(255, 255, 255, 0.33)')
+      tabBar.borderStyle = '@missing'
+      await vue.nextTick()
+      expect(border.style.backgroundColor).toBe('rgba(0, 0, 0, 0.33)')
+      tabBar.borderStyle = 'black'
+      await vue.nextTick()
+      expect(border.style.backgroundColor).toBe('rgba(0, 0, 0, 0.33)')
+      tabBar.borderColor = '#123456'
+      await vue.nextTick()
+      expect(border.style.backgroundColor).toBe('rgb(18, 52, 86)')
       const placeholder = host.querySelector('.uni-placeholder') as HTMLElement
       expect(placeholder.style.height).toBe('50px')
       tabBar.height = '60px'

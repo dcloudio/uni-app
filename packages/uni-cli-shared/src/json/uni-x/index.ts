@@ -15,6 +15,7 @@ import { normalizeAppUniRoutes } from '../app/pages/uniRoutes'
 import { normalizeAppXUniConfig } from './uniConfig'
 import { preUVueJson } from '../../preprocess'
 import { checkPagesJson } from '../utils'
+import { initDefaultTheme } from '../theme'
 export * from './manifest'
 
 export interface UniXPageOptions {
@@ -49,6 +50,7 @@ export function normalizeUniAppXAppPagesJson(jsonStr: string) {
   } catch (e) {
     console.error(`[vite] Error: pages.json parse failed.\n`, jsonStr, e)
   }
+  initDefaultTheme(userPagesJson)
   // pages
   validatePages(userPagesJson, jsonStr)
   userPagesJson.subPackages =

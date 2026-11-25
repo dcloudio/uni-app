@@ -6,6 +6,7 @@ import {
   checkPagesJson,
   normalizeAppPagesJson,
   normalizePath,
+  normalizeThemeConfig,
   normalizeUniAppXAppConfig,
   normalizeUniAppXAppPagesJson,
   parseManifestJsonOnce,
@@ -161,7 +162,7 @@ function readThemeJSONFile() {
     if (fs.existsSync(themeJsonPath)) {
       content = fs.readFileSync(themeJsonPath, 'utf8')
     }
-    return JSON.parse(content)
+    return normalizeThemeConfig(JSON.parse(content))
   } catch (error) {
     console.error('read theme.json error:', error)
   }
