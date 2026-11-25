@@ -83,6 +83,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       <div
         uni-textarea=""
         uni-view=""
+        uni-disabled={props.disabled ? '' : undefined}
         ref={rootRef}
         auto-height={props.autoHeight}
       >

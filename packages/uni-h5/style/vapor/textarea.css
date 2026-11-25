@@ -70,8 +70,12 @@
   -webkit-text-fill-color: currentcolor;
 }
 
-div:where([uni-textarea]) {
+div:where([uni-textarea]:not([uni-disabled])) {
   color: #000000;
+}
+
+:where(div[uni-textarea][uni-disabled]) {
+  color: rgba(60, 60, 67, 0.3);
 }
 
 .uni-textarea-placeholder {
@@ -79,8 +83,12 @@ div:where([uni-textarea]) {
 }
 
 @media (prefers-color-scheme: dark) {
-  div:where([uni-textarea]) {
+  div:where([uni-textarea]:not([uni-disabled])) {
     color: #d1d1d1;
+  }
+
+  :where(div[uni-textarea][uni-disabled]) {
+    color: rgba(255, 255, 255, 0.4);
   }
 
   .uni-textarea-placeholder {

@@ -550,6 +550,7 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
     const root = host.querySelector('div[uni-input]') as any
     let field = root.querySelector('input')
     expect(field.parentElement.tagName).toBe('FORM')
+    expect(root.hasAttribute('uni-disabled')).toBe(false)
     field.value = 'search'
     field.dispatchEvent(
       new dom.window.KeyboardEvent('keyup', { key: 'Enter', bubbles: true })
@@ -560,6 +561,7 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
     const readonly = root.querySelector('input')
     expect(readonly).not.toBe(field)
     expect(readonly.readOnly).toBe(true)
+    expect(root.hasAttribute('uni-disabled')).toBe(true)
     root.value = 'readonly'
     expect(readonly.value).toBe('readonly')
     expect(root.value).toBe('readonly')
@@ -569,6 +571,7 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
     field = root.querySelector('input')
     expect(root.querySelector('form')).toBeNull()
     expect(field.readOnly).toBe(false)
+    expect(root.hasAttribute('uni-disabled')).toBe(false)
     root.focus()
     expect(document.activeElement).toBe(field)
     root.value = 'restored'
@@ -742,12 +745,14 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
         await vue.nextTick()
         let field = root.querySelector('textarea')
         expect(fixDisabled ? field.readOnly : field.disabled).toBe(true)
+        expect(root.hasAttribute('uni-disabled')).toBe(true)
         props.disabled = false
         props.value = 'value-' + i
         await vue.nextTick()
         jest.advanceTimersByTime(100)
         await vue.nextTick()
         field = root.querySelector('textarea')
+        expect(root.hasAttribute('uni-disabled')).toBe(false)
         expect(root.querySelectorAll('textarea')).toHaveLength(1)
         expect(field.value).toBe(props.value)
         expect(root.value).toBe(props.value)

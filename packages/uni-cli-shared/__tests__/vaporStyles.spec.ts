@@ -5,6 +5,26 @@ import postcss from 'postcss'
 const styles = path.resolve(__dirname, '../../uni-h5/style')
 const read = (file: string) => fs.readFileSync(path.join(styles, file), 'utf8')
 
+function getThemeColors(code: string, selector: string) {
+  const colors: Record<string, string> = {}
+  postcss.parse(code).walkRules((rule) => {
+    if (!rule.selectors.includes(selector)) return
+
+    const parent = rule.parent
+    if (
+      parent?.type === 'root' ||
+      (parent?.type === 'atrule' &&
+        parent.name === 'media' &&
+        parent.params === '(prefers-color-scheme: dark)')
+    ) {
+      rule.walkDecls('color', (decl) => {
+        colors[parent.type === 'root' ? 'light' : 'dark'] = decl.value
+      })
+    }
+  })
+  return colors
+}
+
 describe('Web Vapor 独立组件样式', () => {
   test('框架入口不再全量加载组件内部样式', () => {
     const code = read('framework/uvue-vapor.css')
@@ -184,21 +204,7 @@ describe('Web Vapor 独立组件样式', () => {
 
   test.each(['input', 'textarea'])('%s 保留 placeholder 和暗色样式', (name) => {
     const code = read(`vapor/${name}.css`)
-    const colors: Record<string, string> = {}
-    postcss.parse(code).walkRules(`.uni-${name}-placeholder`, (rule) => {
-      const parent = rule.parent
-      if (
-        parent?.type === 'root' ||
-        (parent?.type === 'atrule' &&
-          parent.name === 'media' &&
-          parent.params === '(prefers-color-scheme: dark)')
-      ) {
-        rule.walkDecls('color', (decl) => {
-          colors[parent.type === 'root' ? 'light' : 'dark'] = decl.value
-        })
-      }
-    })
-    expect(colors).toEqual({
+    expect(getThemeColors(code, `.uni-${name}-placeholder`)).toEqual({
       light: 'rgba(60, 60, 67, 0.3)',
       dark: 'rgba(255, 255, 255, 0.35)',
     })
@@ -206,4 +212,21 @@ describe('Web Vapor 独立组件样式', () => {
     expect(code).toContain('caret-color: inherit')
     expect(code).toContain('cursor: inherit')
   })
+
+  test.each(['input', 'textarea'])(
+    '%s 禁用态的默认颜色由根节点提供',
+    (name) => {
+      const code = read(`vapor/${name}.css`)
+      expect(
+        getThemeColors(code, `:where(div[uni-${name}][uni-disabled])`)
+      ).toEqual({
+        light: 'rgba(60, 60, 67, 0.3)',
+        dark: 'rgba(255, 255, 255, 0.4)',
+      })
+      const field = `.uni-${name}-${name}`
+      expect(getThemeColors(code, field)).toEqual({ light: 'inherit' })
+      expect(getThemeColors(code, `${field}:disabled`)).toEqual({})
+      expect(getThemeColors(code, `${field}[readonly]`)).toEqual({})
+    }
+  )
 })

@@ -74,8 +74,12 @@
   -webkit-text-fill-color: currentcolor;
 }
 
-div:where([uni-input]) {
+div:where([uni-input]:not([uni-disabled])) {
   color: #000000;
+}
+
+:where(div[uni-input][uni-disabled]) {
+  color: rgba(60, 60, 67, 0.3);
 }
 
 .uni-input-placeholder {
@@ -83,8 +87,12 @@ div:where([uni-input]) {
 }
 
 @media (prefers-color-scheme: dark) {
-  div:where([uni-input]) {
+  div:where([uni-input]:not([uni-disabled])) {
     color: #d1d1d1;
+  }
+
+  :where(div[uni-input][uni-disabled]) {
+    color: rgba(255, 255, 255, 0.4);
   }
 
   .uni-input-placeholder {

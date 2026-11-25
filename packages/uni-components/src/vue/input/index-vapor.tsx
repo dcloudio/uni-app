@@ -69,7 +69,12 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       </>
     )
     const root = (
-      <div uni-input="" uni-view="" ref={rootRef}>
+      <div
+        uni-input=""
+        uni-view=""
+        uni-disabled={props.disabled ? '' : undefined}
+        ref={rootRef}
+      >
         <div class="uni-input-wrapper">
           <div
             v-show={
