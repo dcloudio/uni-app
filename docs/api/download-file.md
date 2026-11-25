@@ -29,7 +29,7 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | url | string | 是 |  | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 下载资源的 url |
-| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | null | 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11 | HTTP 请求 Header，header 中不能设置 Referer |
+| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | null | 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | HTTP 请求 Header，header 中不能设置 Referer |
 | filePath | string | 否 | null | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 指定文件下载路径<br/>支持相对路径与绝对路径，例：<br/>`/imgs/pic.png`、`/storage/emulated/0/Android/data/io.dcloud.HBuilder/apps/HBuilder/temp/imgs/pic.png`<br/>并且支持指定下载目录，例：<br/>`/imgs/`<br/>支持uni.env的平台兼容性：Android自3.9开始支持uni.env，iOS自4.13开始支持uni.env |
 | timeout | number | 否 | 120000 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 超时时间，单位 ms |
 | success | (result: [DownloadFileSuccess](#downloadfilesuccess-values)) => void | 否 | null | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 下载成功后以 tempFilePath 的形式传给页面，res = {tempFilePath: '文件的临时路径'} |
