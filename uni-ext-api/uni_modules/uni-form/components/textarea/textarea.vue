@@ -509,7 +509,7 @@
 	})
 	// #endif
 
-	// #ifdef APP-HARMONY
+	// #ifdef APP-IOS || APP-HARMONY
 	const selectionStyle = useComputedStyle({
 		pseudoElement: '::selection',
 		properties: ['background-color']
@@ -780,8 +780,6 @@
 		// #ifdef APP-IOS || APP-HARMONY
 		textareaView.updateColor(valueColor.value)
 		textareaView.updateCursorColor(caretColor.value)
-		// #endif
-		// #ifdef APP-HARMONY
 		textareaView.updateSelectionColor(selectionColor.value)
 		// #endif
 		let updatePadding = false

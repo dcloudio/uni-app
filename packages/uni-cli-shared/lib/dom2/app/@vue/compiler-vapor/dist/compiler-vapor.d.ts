@@ -173,7 +173,7 @@ declare function getValue(el: HTMLOptionElement | HTMLInputElement): any;
 declare const vModelDynamic: ObjectDirective<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>;
 type VModelDirective = typeof vModelText | typeof vModelCheckbox | typeof vModelSelect | typeof vModelRadio | typeof vModelDynamic;
 //#endregion
-//#region node_modules/.pnpm/csstype@3.2.3/node_modules/csstype/index.d.ts
+//#region node_modules/.pnpm/csstype@3.2.4/node_modules/csstype/index.d.ts
 interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string & {}> {
   /**
    * This feature is not Baseline because it does not work in some of the most widely-used browsers.
@@ -184,7 +184,7 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    *
    * | Chrome | Firefox |  Safari  |  Edge  | IE  |
    * | :----: | :-----: | :------: | :----: | :-: |
-   * | **93** | **92**  | **15.4** | **93** | No  |
+   * | **93** | **92**  | **26.2** | **93** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/accent-color
    */
@@ -241,7 +241,7 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   alignTracks?: Property.AlignTracks | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since March 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `baseline | alphabetic | ideographic | middle | central | mathematical | text-before-edge | text-after-edge`
    *
@@ -249,21 +249,21 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    *
    * | Chrome | Firefox | Safari  |  Edge  | IE  |
    * | :----: | :-----: | :-----: | :----: | :-: |
-   * | **1**  |   No    | **5.1** | **79** | No  |
+   * | **1**  | **149** | **5.1** | **79** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/alignment-baseline
    */
   alignmentBaseline?: Property.AlignmentBaseline | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since January 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `none | <dashed-ident>#`
    *
    * **Initial value**: `none`
    *
-   * | Chrome  |   Firefox   | Safari |  Edge   | IE  |
-   * | :-----: | :---------: | :----: | :-----: | :-: |
-   * | **125** | **preview** | **26** | **125** | No  |
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **125** | **147** | **26** | **125** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/anchor-name
    */
@@ -273,13 +273,15 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    *
    * **Initial value**: `none`
    *
-   * | Chrome  |   Firefox   | Safari |  Edge   | IE  |
-   * | :-----: | :---------: | :----: | :-----: | :-: |
-   * | **131** | **preview** | **26** | **131** | No  |
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **131** | **147** | **26** | **131** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/anchor-scope
    */
   anchorScope?: Property.AnchorScope | undefined;
   /**
-   * Since July 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2023.
    *
    * **Syntax**: `<single-animation-composition>#`
    *
@@ -398,7 +400,7 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   animationPlayState?: Property.AnimationPlayState | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since October 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `[ normal | <length-percentage> | <timeline-range-name> <length-percentage>? ]#`
    *
@@ -406,13 +408,13 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    *
    * | Chrome  | Firefox | Safari |  Edge   | IE  |
    * | :-----: | :-----: | :----: | :-----: | :-: |
-   * | **115** |   No    | **26** | **115** | No  |
+   * | **115** | **159** | **26** | **115** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-range-end
    */
   animationRangeEnd?: Property.AnimationRangeEnd<TLength> | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since October 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `[ normal | <length-percentage> | <timeline-range-name> <length-percentage>? ]#`
    *
@@ -420,13 +422,13 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    *
    * | Chrome  | Firefox | Safari |  Edge   | IE  |
    * | :-----: | :-----: | :----: | :-----: | :-: |
-   * | **115** |   No    | **26** | **115** | No  |
+   * | **115** | **159** | **26** | **115** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-range-start
    */
   animationRangeStart?: Property.AnimationRangeStart<TLength> | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since October 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `<single-animation-timeline>#`
    *
@@ -434,7 +436,7 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    *
    * | Chrome  | Firefox | Safari |  Edge   | IE  |
    * | :-----: | :-----: | :----: | :-----: | :-: |
-   * | **115** |   No    | **26** | **115** | No  |
+   * | **115** | **159** | **26** | **115** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-timeline
    */
@@ -454,6 +456,20 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-timing-function
    */
   animationTimingFunction?: Property.AnimationTimingFunction | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `[ none | [ <dashed-ident> <animation-action>+ ]+ ]#`
+   *
+   * **Initial value**: `none`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **146** |   No    |   No   | **146** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-trigger
+   */
+  animationTrigger?: Property.AnimationTrigger | undefined;
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2022.
    *
@@ -662,9 +678,25 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    *
    * | Chrome | Firefox | Safari |  Edge  | IE  |
    * | :----: | :-----: | :----: | :----: | :-: |
-   * | **1**  |   No    | **4**  | **79** | No  |
+   * | **1**  | **149** | **4**  | **79** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/baseline-shift
    */
   baselineShift?: Property.BaselineShift<TLength> | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `auto | first | last`
+   *
+   * **Initial value**: `auto`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **111** | **115** |   No   | **111** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/baseline-source
+   */
+  baselineSource?: Property.BaselineSource | undefined;
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since January 2020.
    *
@@ -881,7 +913,7 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.
    *
-   * **Syntax**: `[ <length [0,∞]> | <number [0,∞]> ]{1,4}  `
+   * **Syntax**: `[ <length [0,∞]> | <number [0,∞]> ]{1,4}`
    *
    * **Initial value**: `0`
    *
@@ -909,7 +941,7 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.
    *
-   * **Syntax**: `[ <number [0,∞]> | <percentage [0,∞]> ]{1,4}  && fill?`
+   * **Syntax**: `[ <number [0,∞]> | <percentage [0,∞]> ]{1,4} && fill?`
    *
    * **Initial value**: `100%`
    *
@@ -1121,6 +1153,20 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-right-width
    */
   borderRightWidth?: Property.BorderRightWidth<TLength> | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `none | [ <basic-shape> <geometry-box>?]{1,2}`
+   *
+   * **Initial value**: `none`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **147** |   No    |   No   | **147** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-shape
+   */
+  borderShape?: Property.BorderShape | undefined;
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.
    *
@@ -1351,6 +1397,20 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   captionSide?: Property.CaptionSide | undefined;
   /**
+   * The **`caret-animation`** CSS property is used to enable or disable the blinking behavior of the **insertion caret**, the visible marker that appears in editable elements to indicate where the next character will be inserted or deleted.
+   *
+   * **Syntax**: `auto | manual`
+   *
+   * **Initial value**: `auto`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **140** |   No    |   No   | **140** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/caret-animation
+   */
+  caretAnimation?: Property.CaretAnimation | undefined;
+  /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since January 2020.
    *
    * **Syntax**: `auto | <color>`
@@ -1369,9 +1429,9 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    *
    * **Initial value**: `auto`
    *
-   * | Chrome | Firefox | Safari | Edge | IE  |
-   * | :----: | :-----: | :----: | :--: | :-: |
-   * |   No   |   No    |   No   |  No  | No  |
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **144** |   No    |   No   | **144** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/caret-shape
    */
@@ -1521,6 +1581,20 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   columnGap?: Property.ColumnGap<TLength> | undefined;
   /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `auto | <length [0,∞]>`
+   *
+   * **Initial value**: `auto`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **145** |   No    |   No   | **145** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/column-height
+   */
+  columnHeight?: Property.ColumnHeight<TLength> | undefined;
+  /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2017.
    *
    * **Syntax**: `<color>`
@@ -1538,7 +1612,7 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2017.
    *
-   * **Syntax**: `<'border-style'>`
+   * **Syntax**: `<line-style>`
    *
    * **Initial value**: `none`
    *
@@ -1553,7 +1627,7 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2017.
    *
-   * **Syntax**: `<'border-width'>`
+   * **Syntax**: `<line-width>`
    *
    * **Initial value**: `medium`
    *
@@ -1583,7 +1657,7 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since November 2016.
    *
-   * **Syntax**: `<length> | auto`
+   * **Syntax**: `auto | <length [0,∞]>`
    *
    * **Initial value**: `auto`
    *
@@ -1595,6 +1669,20 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/column-width
    */
   columnWidth?: Property.ColumnWidth<TLength> | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `auto | nowrap | wrap`
+   *
+   * **Initial value**: `auto`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **145** |   No    |   No   | **145** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/column-wrap
+   */
+  columnWrap?: Property.ColumnWrap | undefined;
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2022.
    *
@@ -1610,7 +1698,7 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   contain?: Property.Contain | undefined;
   /**
-   * Since September 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2023.
    *
    * **Syntax**: `auto? [ none | <length> ]`
    *
@@ -1624,7 +1712,7 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   containIntrinsicBlockSize?: Property.ContainIntrinsicBlockSize<TLength> | undefined;
   /**
-   * Since September 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2023.
    *
    * **Syntax**: `auto? [ none | <length> ]`
    *
@@ -1638,7 +1726,7 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   containIntrinsicHeight?: Property.ContainIntrinsicHeight<TLength> | undefined;
   /**
-   * Since September 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2023.
    *
    * **Syntax**: `auto? [ none | <length> ]`
    *
@@ -1652,7 +1740,7 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   containIntrinsicInlineSize?: Property.ContainIntrinsicInlineSize<TLength> | undefined;
   /**
-   * Since September 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2023.
    *
    * **Syntax**: `auto? [ none | <length> ]`
    *
@@ -1722,6 +1810,118 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   contentVisibility?: Property.ContentVisibility | undefined;
   /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `<corner-shape-value>`
+   *
+   * **Initial value**: `round`
+   *
+   * | Chrome  |   Firefox   |  Safari  |  Edge   | IE  |
+   * | :-----: | :---------: | :------: | :-----: | :-: |
+   * | **139** | **preview** | **27.3** | **139** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/corner-bottom-left-shape
+   */
+  cornerBottomLeftShape?: Property.CornerBottomLeftShape | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `<corner-shape-value>`
+   *
+   * **Initial value**: `round`
+   *
+   * | Chrome  |   Firefox   |  Safari  |  Edge   | IE  |
+   * | :-----: | :---------: | :------: | :-----: | :-: |
+   * | **139** | **preview** | **27.3** | **139** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/corner-bottom-right-shape
+   */
+  cornerBottomRightShape?: Property.CornerBottomRightShape | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `<corner-shape-value>`
+   *
+   * **Initial value**: `round`
+   *
+   * | Chrome  |   Firefox   |  Safari  |  Edge   | IE  |
+   * | :-----: | :---------: | :------: | :-----: | :-: |
+   * | **139** | **preview** | **27.3** | **139** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/corner-end-end-shape
+   */
+  cornerEndEndShape?: Property.CornerEndEndShape | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `<corner-shape-value>`
+   *
+   * **Initial value**: `round`
+   *
+   * | Chrome  |   Firefox   |  Safari  |  Edge   | IE  |
+   * | :-----: | :---------: | :------: | :-----: | :-: |
+   * | **139** | **preview** | **27.3** | **139** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/corner-end-start-shape
+   */
+  cornerEndStartShape?: Property.CornerEndStartShape | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `<corner-shape-value>`
+   *
+   * **Initial value**: `round`
+   *
+   * | Chrome  |   Firefox   |  Safari  |  Edge   | IE  |
+   * | :-----: | :---------: | :------: | :-----: | :-: |
+   * | **139** | **preview** | **27.3** | **139** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/corner-start-end-shape
+   */
+  cornerStartEndShape?: Property.CornerStartEndShape | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `<corner-shape-value>`
+   *
+   * **Initial value**: `round`
+   *
+   * | Chrome  |   Firefox   |  Safari  |  Edge   | IE  |
+   * | :-----: | :---------: | :------: | :-----: | :-: |
+   * | **139** | **preview** | **27.3** | **139** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/corner-start-start-shape
+   */
+  cornerStartStartShape?: Property.CornerStartStartShape | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `<corner-shape-value>`
+   *
+   * **Initial value**: `round`
+   *
+   * | Chrome  |   Firefox   |  Safari  |  Edge   | IE  |
+   * | :-----: | :---------: | :------: | :-----: | :-: |
+   * | **139** | **preview** | **27.3** | **139** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/corner-top-left-shape
+   */
+  cornerTopLeftShape?: Property.CornerTopLeftShape | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `<corner-shape-value>`
+   *
+   * **Initial value**: `round`
+   *
+   * | Chrome  |   Firefox   |  Safari  |  Edge   | IE  |
+   * | :-----: | :---------: | :------: | :-----: | :-: |
+   * | **139** | **preview** | **27.3** | **139** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/corner-top-right-shape
+   */
+  cornerTopRightShape?: Property.CornerTopRightShape | undefined;
+  /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.
    *
    * **Syntax**: `[ <counter-name> <integer>? ]+ | none`
@@ -1750,7 +1950,7 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   counterReset?: Property.CounterReset | undefined;
   /**
-   * Since December 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since December 2023.
    *
    * **Syntax**: `[ <counter-name> <integer>? ]+ | none`
    *
@@ -1862,6 +2062,20 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   dominantBaseline?: Property.DominantBaseline | undefined;
   /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `standard | no-limit | constrained | <dynamic-range-limit-mix()>`
+   *
+   * **Initial value**: `no-limit`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **136** |   No    | **26** | **136** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/dynamic-range-limit
+   */
+  dynamicRangeLimit?: Property.DynamicRangeLimit | undefined;
+  /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.
    *
    * **Syntax**: `show | hide`
@@ -1876,15 +2090,15 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   emptyCells?: Property.EmptyCells | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since June 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `content | fixed`
    *
    * **Initial value**: `fixed`
    *
-   * | Chrome  | Firefox |   Safari    |  Edge   | IE  |
-   * | :-----: | :-----: | :---------: | :-----: | :-: |
-   * | **123** |   No    | **preview** | **123** | No  |
+   * | Chrome  | Firefox |  Safari  |  Edge   | IE  |
+   * | :-----: | :-----: | :------: | :-----: | :-: |
+   * | **123** | **152** | **26.2** | **123** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/field-sizing
    */
@@ -1992,6 +2206,20 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   flexGrow?: Property.FlexGrow | undefined;
   /**
+   * The **`flex-line-count`** CSS property sets the minimum number of flex lines that flex items will be balanced over in cases where a flex container's `flex-wrap` or `flex-flow` property includes the `balance` keyword.
+   *
+   * **Syntax**: `<integer [1,∞]>`
+   *
+   * **Initial value**: `1`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **150** |   No    |   No   | **150** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/flex-line-count
+   */
+  flexLineCount?: Property.FlexLineCount | undefined;
+  /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2015.
    *
    * **Syntax**: `<number>`
@@ -2009,7 +2237,7 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2015.
    *
-   * **Syntax**: `nowrap | wrap | wrap-reverse`
+   * **Syntax**: `nowrap | [ wrap | wrap-reverse ] || balance`
    *
    * **Initial value**: `nowrap`
    *
@@ -2078,7 +2306,7 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   fontFamily?: Property.FontFamily | undefined;
   /**
-   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since April 2017.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2016.
    *
    * **Syntax**: `normal | <feature-tag-value>#`
    *
@@ -2086,7 +2314,7 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    *
    * |  Chrome  | Firefox  | Safari  |  Edge  |   IE   |
    * | :------: | :------: | :-----: | :----: | :----: |
-   * |  **48**  |  **34**  | **9.1** | **15** | **10** |
+   * |  **48**  |  **34**  | **9.1** | **12** | **10** |
    * | 16 _-x-_ | 15 _-x-_ |         |        |        |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-feature-settings
@@ -2339,9 +2567,9 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    *
    * **Initial value**: `normal`
    *
-   * | Chrome  | Firefox | Safari |  Edge   | IE  |
-   * | :-----: | :-----: | :----: | :-----: | :-: |
-   * | **131** | **141** |   No   | **131** | No  |
+   * | Chrome  | Firefox |   Safari    |  Edge   | IE  |
+   * | :-----: | :-----: | :---------: | :-----: | :-: |
+   * | **131** | **141** | **preview** | **131** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-variant-emoji
    */
@@ -2376,15 +2604,15 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   fontVariantNumeric?: Property.FontVariantNumeric | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2023.
    *
    * **Syntax**: `normal | sub | super`
    *
    * **Initial value**: `normal`
    *
-   * | Chrome | Firefox | Safari  | Edge | IE  |
-   * | :----: | :-----: | :-----: | :--: | :-: |
-   * |   No   | **34**  | **9.1** |  No  | No  |
+   * | Chrome  | Firefox | Safari  |  Edge   | IE  |
+   * | :-----: | :-----: | :-----: | :-----: | :-: |
+   * | **117** | **34**  | **9.1** | **117** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-variant-position
    */
@@ -2424,7 +2652,9 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    *
    * | Chrome | Firefox |  Safari  | Edge | IE  |
    * | :----: | :-----: | :------: | :--: | :-: |
-   * |   No   |   No    | **18.4** |  No  | No  |
+   * |   No   | **155** | **18.4** |  No  | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-width
    */
   fontWidth?: Property.FontWidth | undefined;
   /**
@@ -2442,6 +2672,20 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/forced-color-adjust
    */
   forcedColorAdjust?: Property.ForcedColorAdjust | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `auto | content-width | content-height | content-block-size | content-inline-size`
+   *
+   * **Initial value**: `auto`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **154** |   No    |   No   | **154** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/frame-sizing
+   */
+  frameSizing?: Property.FrameSizing | undefined;
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2020.
    *
@@ -2589,9 +2833,9 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    *
    * **Initial value**: `none`
    *
-   * | Chrome | Firefox | Safari | Edge | IE  |
-   * | :----: | :-----: | :----: | :--: | :-: |
-   * |   No   |   No    | **10** |  No  | No  |
+   * | Chrome | Firefox |  Safari  | Edge | IE  |
+   * | :----: | :-----: | :------: | :--: | :-: |
+   * |   No   |   No    | **26.5** |  No  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/hanging-punctuation
    */
@@ -2611,7 +2855,7 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   height?: Property.Height<TLength> | undefined;
   /**
-   * Since September 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2023.
    *
    * **Syntax**: `auto | <string>`
    *
@@ -2632,15 +2876,15 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    *
    * **Initial value**: `auto`
    *
-   * | Chrome  | Firefox | Safari |  Edge   | IE  |
-   * | :-----: | :-----: | :----: | :-----: | :-: |
-   * | **109** | **137** |   No   | **109** | No  |
+   * | Chrome  | Firefox |  Safari  |  Edge   | IE  |
+   * | :-----: | :-----: | :------: | :-----: | :-: |
+   * | **109** | **137** | **27.3** | **109** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/hyphenate-limit-chars
    */
   hyphenateLimitChars?: Property.HyphenateLimitChars | undefined;
   /**
-   * Since September 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2023.
    *
    * **Syntax**: `none | manual | auto`
    *
@@ -2784,13 +3028,55 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
   /**
    * This feature is not Baseline because it does not work in some of the most widely-used browsers.
    *
+   * **Syntax**: `auto | inert`
+   *
+   * **Initial value**: `auto`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **135** |   No    |   No   | **135** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/interactivity
+   */
+  interactivity?: Property.Interactivity | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `normal | <time>`
+   *
+   * **Initial value**: `normal`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **142** |   No    |   No   | **142** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/interest-delay-end
+   */
+  interestDelayEnd?: Property.InterestDelayEnd<TTime> | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `normal | <time>`
+   *
+   * **Initial value**: `normal`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **142** |   No    |   No   | **142** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/interest-delay-start
+   */
+  interestDelayStart?: Property.InterestDelayStart<TTime> | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
    * **Syntax**: `numeric-only | allow-keywords`
    *
    * **Initial value**: `numeric-only`
    *
-   * | Chrome  | Firefox | Safari |  Edge   | IE  |
-   * | :-----: | :-----: | :----: | :-----: | :-: |
-   * | **129** |   No    |   No   | **129** | No  |
+   * | Chrome  | Firefox |   Safari    |  Edge   | IE  |
+   * | :-----: | :-----: | :---------: | :-----: | :-: |
+   * | **129** |   No    | **preview** | **129** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/interpolate-size
    */
@@ -2938,6 +3224,20 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   lineHeightStep?: Property.LineHeightStep<TLength> | undefined;
   /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `none | <param()>#`
+   *
+   * **Initial value**: `none`
+   *
+   * | Chrome |   Firefox   |   Safari    | Edge | IE  |
+   * | :----: | :---------: | :---------: | :--: | :-: |
+   * |   No   | **preview** | **preview** |  No  | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/link-parameters
+   */
+  linkParameters?: Property.LinkParameters | undefined;
+  /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.
    *
    * **Syntax**: `<image> | none`
@@ -2986,9 +3286,10 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    *
    * **Initial value**: `0`
    *
-   * | Chrome | Firefox |  Safari  |  Edge  | IE  |
-   * | :----: | :-----: | :------: | :----: | :-: |
-   * | **69** | **41**  | **12.1** | **79** | No  |
+   * |           Chrome           | Firefox |            Safari            |  Edge  | IE  |
+   * | :------------------------: | :-----: | :--------------------------: | :----: | :-: |
+   * |           **69**           | **41**  |           **12.1**           | **79** | No  |
+   * | 8 _(-webkit-margin-after)_ |         | 5.1 _(-webkit-margin-after)_ |        |     |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/margin-block-end
    */
@@ -3000,9 +3301,10 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    *
    * **Initial value**: `0`
    *
-   * | Chrome | Firefox |  Safari  |  Edge  | IE  |
-   * | :----: | :-----: | :------: | :----: | :-: |
-   * | **69** | **41**  | **12.1** | **79** | No  |
+   * |           Chrome            | Firefox |            Safari             |  Edge  | IE  |
+   * | :-------------------------: | :-----: | :---------------------------: | :----: | :-: |
+   * |           **69**            | **41**  |           **12.1**            | **79** | No  |
+   * | 8 _(-webkit-margin-before)_ |         | 5.1 _(-webkit-margin-before)_ |        |     |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/margin-block-start
    */
@@ -3100,9 +3402,9 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    *
    * **Initial value**: `none`
    *
-   * | Chrome | Firefox |  Safari  | Edge | IE  |
-   * | :----: | :-----: | :------: | :--: | :-: |
-   * |   No   |   No    | **16.4** |  No  | No  |
+   * | Chrome  | Firefox |  Safari  |  Edge   | IE  |
+   * | :-----: | :-----: | :------: | :-----: | :-: |
+   * | **155** |   No    | **16.4** | **155** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/margin-trim
    */
@@ -3245,7 +3547,7 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   maskBorderWidth?: Property.MaskBorderWidth<TLength> | undefined;
   /**
-   * Since December 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since December 2023.
    *
    * **Syntax**: `[ <coord-box> | no-clip ]#`
    *
@@ -3260,7 +3562,7 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   maskClip?: Property.MaskClip | undefined;
   /**
-   * Since December 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since December 2023.
    *
    * **Syntax**: `<compositing-operator>#`
    *
@@ -3274,7 +3576,7 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   maskComposite?: Property.MaskComposite | undefined;
   /**
-   * Since December 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since December 2023.
    *
    * **Syntax**: `<mask-reference>#`
    *
@@ -3289,7 +3591,7 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   maskImage?: Property.MaskImage | undefined;
   /**
-   * Since December 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
    *
    * **Syntax**: `<masking-mode>#`
    *
@@ -3303,7 +3605,7 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   maskMode?: Property.MaskMode | undefined;
   /**
-   * Since December 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since December 2023.
    *
    * **Syntax**: `<coord-box>#`
    *
@@ -3318,7 +3620,7 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   maskOrigin?: Property.MaskOrigin | undefined;
   /**
-   * Since December 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since December 2023.
    *
    * **Syntax**: `<position>#`
    *
@@ -3333,7 +3635,7 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   maskPosition?: Property.MaskPosition<TLength> | undefined;
   /**
-   * Since December 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since December 2023.
    *
    * **Syntax**: `<repeat-style>#`
    *
@@ -3348,7 +3650,7 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   maskRepeat?: Property.MaskRepeat | undefined;
   /**
-   * Since December 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since December 2023.
    *
    * **Syntax**: `<bg-size>#`
    *
@@ -3385,35 +3687,35 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   masonryAutoFlow?: Property.MasonryAutoFlow | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since March 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `auto-add | add(<integer>) | <integer>`
    *
    * **Initial value**: `0`
    *
-   * | Chrome  | Firefox | Safari |  Edge   | IE  |
-   * | :-----: | :-----: | :----: | :-----: | :-: |
-   * | **109** | **117** |   No   | **109** | No  |
+   * | Chrome  | Firefox |  Safari  |  Edge   | IE  |
+   * | :-----: | :-----: | :------: | :-----: | :-: |
+   * | **109** | **117** | **26.4** | **109** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/math-depth
    */
   mathDepth?: Property.MathDepth | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since December 2025, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `normal | compact`
    *
    * **Initial value**: `normal`
    *
-   * | Chrome  | Firefox | Safari |  Edge   | IE  |
-   * | :-----: | :-----: | :----: | :-----: | :-: |
-   * | **109** |   No    |   No   | **109** | No  |
+   * | Chrome  | Firefox |  Safari  |  Edge   | IE  |
+   * | :-----: | :-----: | :------: | :-----: | :-: |
+   * | **109** | **146** | **26.2** | **109** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/math-shift
    */
   mathShift?: Property.MathShift | undefined;
   /**
-   * Since August 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since August 2023.
    *
    * **Syntax**: `normal | compact`
    *
@@ -3473,6 +3775,10 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    * **Syntax**: `none | <integer>`
    *
    * **Initial value**: `none`
+   *
+   * | Chrome | Firefox |   Safari    | Edge | IE  |
+   * | :----: | :-----: | :---------: | :--: | :-: |
+   * |   No   |   No    | **preview** |  No  | No  |
    */
   maxLines?: Property.MaxLines | undefined;
   /**
@@ -3637,15 +3943,15 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    *
    * **Initial value**: `none`
    *
-   * | Chrome  | Firefox | Safari |  Edge   | IE  |
-   * | :-----: | :-----: | :----: | :-----: | :-: |
-   * | **104** |   No    |   No   | **104** | No  |
+   * | Chrome  | Firefox |  Safari  |  Edge   | IE  |
+   * | :-----: | :-----: | :------: | :-----: | :-: |
+   * | **104** |   No    | **27.3** | **104** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/object-view-box
    */
   objectViewBox?: Property.ObjectViewBox | undefined;
   /**
-   * Since August 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since August 2023.
    *
    * **Syntax**: `auto | <position>`
    *
@@ -3689,7 +3995,7 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   offsetPath?: Property.OffsetPath | undefined;
   /**
-   * Since January 2024, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since January 2024.
    *
    * **Syntax**: `normal | auto | <position>`
    *
@@ -3832,15 +4138,15 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   outlineWidth?: Property.OutlineWidth<TLength> | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since September 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `auto | none`
    *
    * **Initial value**: `auto`
    *
-   * | Chrome | Firefox |   Safari    |  Edge  | IE  |
-   * | :----: | :-----: | :---------: | :----: | :-: |
-   * | **56** | **66**  | **preview** | **79** | No  |
+   * | Chrome | Firefox | Safari |  Edge  | IE  |
+   * | :----: | :-----: | :----: | :----: | :-: |
+   * | **56** | **66**  | **27** | **79** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overflow-anchor
    */
@@ -3951,57 +4257,57 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   overlay?: Property.Overlay | undefined;
   /**
-   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2022.
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
    *
    * **Syntax**: `contain | none | auto`
    *
    * **Initial value**: `auto`
    *
-   * | Chrome | Firefox | Safari |  Edge  | IE  |
-   * | :----: | :-----: | :----: | :----: | :-: |
-   * | **77** | **73**  | **16** | **79** | No  |
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **144** | **150** | **16** | **144** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overscroll-behavior-block
    */
   overscrollBehaviorBlock?: Property.OverscrollBehaviorBlock | undefined;
   /**
-   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2022.
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
    *
    * **Syntax**: `contain | none | auto`
    *
    * **Initial value**: `auto`
    *
-   * | Chrome | Firefox | Safari |  Edge  | IE  |
-   * | :----: | :-----: | :----: | :----: | :-: |
-   * | **77** | **73**  | **16** | **79** | No  |
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **144** | **150** | **16** | **144** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overscroll-behavior-inline
    */
   overscrollBehaviorInline?: Property.OverscrollBehaviorInline | undefined;
   /**
-   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2022.
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
    *
    * **Syntax**: `contain | none | auto`
    *
    * **Initial value**: `auto`
    *
-   * | Chrome | Firefox | Safari |  Edge  | IE  |
-   * | :----: | :-----: | :----: | :----: | :-: |
-   * | **63** | **59**  | **16** | **18** | No  |
+   * | Chrome  | Firefox | Safari |  Edge  | IE  |
+   * | :-----: | :-----: | :----: | :----: | :-: |
+   * | **144** | **150** | **16** | **18** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overscroll-behavior-x
    */
   overscrollBehaviorX?: Property.OverscrollBehaviorX | undefined;
   /**
-   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2022.
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
    *
    * **Syntax**: `contain | none | auto`
    *
    * **Initial value**: `auto`
    *
-   * | Chrome | Firefox | Safari |  Edge  | IE  |
-   * | :----: | :-----: | :----: | :----: | :-: |
-   * | **63** | **59**  | **16** | **18** | No  |
+   * | Chrome  | Firefox | Safari |  Edge  | IE  |
+   * | :-----: | :-----: | :----: | :----: | :-: |
+   * | **144** | **150** | **16** | **18** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overscroll-behavior-y
    */
@@ -4135,7 +4441,7 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   page?: Property.Page | undefined;
   /**
-   * Since March 2024, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2024.
    *
    * **Syntax**: `normal | [ fill || stroke || markers ]`
    *
@@ -4148,6 +4454,20 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/paint-order
    */
   paintOrder?: Property.PaintOrder | undefined;
+  /**
+   * The **`path-length`** CSS property specifies a total path length, in user units. All path computations are then scaled using the ratio `path-length` / _(computed value of path length)_ — this includes text paths, animation paths, and various stroke operations.
+   *
+   * **Syntax**: `none | <length> [0,∞]`
+   *
+   * **Initial value**: `none`
+   *
+   * | Chrome | Firefox | Safari | Edge | IE  |
+   * | :----: | :-----: | :----: | :--: | :-: |
+   * |   No   |   No    |   No   |  No  | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/path-length
+   */
+  pathLength?: Property.PathLength | undefined;
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2015.
    *
@@ -4207,49 +4527,49 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   position?: Property.Position | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since September 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
-   * **Syntax**: `auto | <anchor-name>`
+   * **Syntax**: `normal | auto | none | <anchor-name> | match-parent`
    *
-   * **Initial value**: `auto`
+   * **Initial value**: `normal`
    *
-   * | Chrome  |   Firefox   | Safari |  Edge   | IE  |
-   * | :-----: | :---------: | :----: | :-----: | :-: |
-   * | **125** | **preview** | **26** | **125** | No  |
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **151** | **151** | **27** | **151** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/position-anchor
    */
   positionAnchor?: Property.PositionAnchor | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since January 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `none | <position-area>`
    *
    * **Initial value**: `none`
    *
-   * | Chrome  |   Firefox   | Safari |  Edge   | IE  |
-   * | :-----: | :---------: | :----: | :-----: | :-: |
-   * | **129** | **preview** | **26** | **129** | No  |
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **129** | **147** | **26** | **129** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/position-area
    */
   positionArea?: Property.PositionArea | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since January 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `none | [ [<dashed-ident> || <try-tactic>] | <'position-area'> ]#`
    *
    * **Initial value**: `none`
    *
-   * | Chrome  |   Firefox   | Safari |  Edge   | IE  |
-   * | :-----: | :---------: | :----: | :-----: | :-: |
-   * | **128** | **preview** | **26** | **128** | No  |
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **128** | **147** | **26** | **128** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/position-try-fallbacks
    */
   positionTryFallbacks?: Property.PositionTryFallbacks | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since February 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `normal | <try-size>`
    *
@@ -4257,21 +4577,21 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    *
    * | Chrome  | Firefox | Safari |  Edge   | IE  |
    * | :-----: | :-----: | :----: | :-----: | :-: |
-   * | **125** |   No    | **26** | **125** | No  |
+   * | **125** | **148** | **26** | **125** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/position-try-order
    */
   positionTryOrder?: Property.PositionTryOrder | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since January 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `always | [ anchors-valid || anchors-visible || no-overflow ]`
    *
    * **Initial value**: `anchors-visible`
    *
-   * | Chrome  |   Firefox   | Safari |  Edge   | IE  |
-   * | :-----: | :---------: | :----: | :-----: | :-: |
-   * | **125** | **preview** |   No   | **125** | No  |
+   * | Chrome  | Firefox |  Safari  |  Edge   | IE  |
+   * | :-----: | :-----: | :------: | :-----: | :-: |
+   * | **125** | **147** | **26.2** | **125** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/position-visibility
    */
@@ -4319,6 +4639,34 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/r
    */
   r?: Property.R<TLength> | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `normal | source-order | flex-visual | flex-flow | grid-rows | grid-columns | grid-order`
+   *
+   * **Initial value**: `normal`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **137** |   No    |   No   | **137** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/reading-flow
+   */
+  readingFlow?: Property.ReadingFlow | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `<integer>`
+   *
+   * **Initial value**: `0`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **137** |   No    |   No   | **137** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/reading-order
+   */
+  readingOrder?: Property.ReadingOrder | undefined;
   /**
    * This feature is not Baseline because it does not work in some of the most widely-used browsers.
    *
@@ -4400,9 +4748,9 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    *
    * **Initial value**: `auto`
    *
-   * | Chrome | Firefox |  Safari  | Edge | IE  |
-   * | :----: | :-----: | :------: | :--: | :-: |
-   * |   No   |   No    | **18.2** |  No  | No  |
+   * | Chrome  | Firefox |  Safari  |  Edge   | IE  |
+   * | :-----: | :-----: | :------: | :-----: | :-: |
+   * | **151** |   No    | **18.2** | **151** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/ruby-overhang
    */
@@ -4423,11 +4771,11 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   rubyPosition?: Property.RubyPosition | undefined;
   /**
-   * Since March 2024, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2024.
    *
-   * **Syntax**: `<length> | <percentage>`
+   * **Syntax**: `<length-percentage> | auto`
    *
-   * **Initial value**: `0`
+   * **Initial value**: `auto`
    *
    * | Chrome | Firefox |  Safari  |  Edge  | IE  |
    * | :----: | :-----: | :------: | :----: | :-: |
@@ -4437,11 +4785,11 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   rx?: Property.Rx<TLength> | undefined;
   /**
-   * Since March 2024, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2024.
    *
-   * **Syntax**: `<length> | <percentage>`
+   * **Syntax**: `<length-percentage> | auto`
    *
-   * **Initial value**: `0`
+   * **Initial value**: `auto`
    *
    * | Chrome | Firefox |  Safari  |  Edge  | IE  |
    * | :----: | :-----: | :------: | :----: | :-: |
@@ -4465,6 +4813,16 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   scale?: Property.Scale | undefined;
   /**
+   * **Syntax**: `auto | none`
+   *
+   * **Initial value**: `auto`
+   *
+   * | Chrome  | Firefox | Safari | Edge | IE  |
+   * | :-----: | :-----: | :----: | :--: | :-: |
+   * | **153** |   No    |   No   |  No  | No  |
+   */
+  scrollAxisLock?: Property.ScrollAxisLock | undefined;
+  /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2022.
    *
    * **Syntax**: `auto | smooth`
@@ -4486,6 +4844,8 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    * | Chrome  | Firefox | Safari |  Edge   | IE  |
    * | :-----: | :-----: | :----: | :-----: | :-: |
    * | **133** |   No    |   No   | **133** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-initial-target
    */
   scrollInitialTarget?: Property.ScrollInitialTarget | undefined;
   /**
@@ -4604,6 +4964,20 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-margin-top
    */
   scrollMarginTop?: Property.ScrollMarginTop<TLength> | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `none | before | after`
+   *
+   * **Initial value**: `none`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **135** |   No    |   No   | **135** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-marker-group
+   */
+  scrollMarkerGroup?: Property.ScrollMarkerGroup | undefined;
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2021.
    *
@@ -4822,19 +5196,33 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
   /**
    * This feature is not Baseline because it does not work in some of the most widely-used browsers.
    *
+   * **Syntax**: `none | auto`
+   *
+   * **Initial value**: `none`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **140** |   No    |   No   | **140** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-target-group
+   */
+  scrollTargetGroup?: Property.ScrollTargetGroup | undefined;
+  /**
+   * Since October 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   *
    * **Syntax**: `[ block | inline | x | y ]#`
    *
    * **Initial value**: `block`
    *
    * | Chrome  | Firefox | Safari |  Edge   | IE  |
    * | :-----: | :-----: | :----: | :-----: | :-: |
-   * | **115** |   No    | **26** | **115** | No  |
+   * | **115** | **159** | **26** | **115** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-timeline-axis
    */
   scrollTimelineAxis?: Property.ScrollTimelineAxis | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since October 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `[ none | <dashed-ident> ]#`
    *
@@ -4842,21 +5230,21 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    *
    * | Chrome  | Firefox | Safari |  Edge   | IE  |
    * | :-----: | :-----: | :----: | :-----: | :-: |
-   * | **115** |   No    | **26** | **115** | No  |
+   * | **115** | **159** | **26** | **115** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-timeline-name
    */
   scrollTimelineName?: Property.ScrollTimelineName | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since December 2025, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `auto | <color>{2}`
    *
    * **Initial value**: `auto`
    *
-   * | Chrome  | Firefox | Safari |  Edge   | IE  |
-   * | :-----: | :-----: | :----: | :-----: | :-: |
-   * | **121** | **64**  |   No   | **121** | No  |
+   * | Chrome  | Firefox |  Safari  |  Edge   | IE  |
+   * | :-----: | :-----: | :------: | :-----: | :-: |
+   * | **121** | **64**  | **26.2** | **121** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scrollbar-color
    */
@@ -5177,7 +5565,7 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   textAnchor?: Property.TextAnchor | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since November 2025, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `normal | <autospace> | auto`
    *
@@ -5197,7 +5585,7 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    *
    * | Chrome  | Firefox |  Safari  |  Edge   | IE  |
    * | :-----: | :-----: | :------: | :-----: | :-: |
-   * | **133** |   No    | **18.2** | **133** | No  |
+   * | **133** | **154** | **18.2** | **133** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-box
    */
@@ -5209,7 +5597,7 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    *
    * | Chrome  | Firefox |  Safari  |  Edge   | IE  |
    * | :-----: | :-----: | :------: | :-----: | :-: |
-   * | **133** |   No    | **18.2** | **133** | No  |
+   * | **133** | **154** | **18.2** | **133** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-box-edge
    */
@@ -5221,7 +5609,7 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    *
    * | Chrome  | Firefox |  Safari  |  Edge   | IE  |
    * | :-----: | :-----: | :------: | :-----: | :-: |
-   * | **133** |   No    | **18.2** | **133** | No  |
+   * | **133** | **154** | **18.2** | **133** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-box-trim
    */
@@ -5257,6 +5645,20 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   textDecorationColor?: Property.TextDecorationColor | undefined;
   /**
+   * The **`text-decoration-inset`** CSS property enables adjusting the start and end points of an element's text decoration so it can be shortened, lengthened, or have its position shifted with respect to the rendered text.
+   *
+   * **Syntax**: `<length-percentage>{1,2} | auto`
+   *
+   * **Initial value**: `0`
+   *
+   * | Chrome  | Firefox |  Safari  |  Edge   | IE  |
+   * | :-----: | :-----: | :------: | :-----: | :-: |
+   * | **157** | **146** | **27.3** | **157** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-decoration-inset
+   */
+  textDecorationInset?: Property.TextDecorationInset<TLength> | undefined;
+  /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since January 2020.
    *
    * **Syntax**: `none | [ underline || overline || line-through || blink ] | spelling-error | grammar-error`
@@ -5271,21 +5673,6 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-decoration-line
    */
   textDecorationLine?: Property.TextDecorationLine | undefined;
-  /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
-   *
-   * **Syntax**: `none | [ objects || [ spaces | [ leading-spaces || trailing-spaces ] ] || edges || box-decoration ]`
-   *
-   * **Initial value**: `objects`
-   *
-   * | Chrome | Firefox |  Safari  | Edge | IE  |
-   * | :----: | :-----: | :------: | :--: | :-: |
-   * | 57-64  |   No    | **12.1** |  No  | No  |
-   * |        |         | 7 _-x-_  |      |     |
-   *
-   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-decoration-skip
-   */
-  textDecorationSkip?: Property.TextDecorationSkip | undefined;
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2022.
    *
@@ -5318,7 +5705,7 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2021.
    *
-   * **Syntax**: `auto | from-font | <length> | <percentage> `
+   * **Syntax**: `auto | from-font | <length> | <percentage>`
    *
    * **Initial value**: `auto`
    *
@@ -5375,6 +5762,20 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   textEmphasisStyle?: Property.TextEmphasisStyle | undefined;
   /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `[ none | grow | shrink ] [consistent | per-line | per-line-all]? <percentage>?`
+   *
+   * **Initial value**: `none`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **150** |   No    |   No   | **150** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-fit
+   */
+  textFit?: Property.TextFit | undefined;
+  /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.
    *
    * **Syntax**: `<length-percentage> && hanging? && each-line?`
@@ -5395,9 +5796,9 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    *
    * **Initial value**: `auto`
    *
-   * | Chrome | Firefox | Safari | Edge  |   IE   |
-   * | :----: | :-----: | :----: | :---: | :----: |
-   * |   No   | **55**  |   No   | 12-79 | **11** |
+   * | Chrome  | Firefox | Safari | Edge  |   IE   |
+   * | :-----: | :-----: | :----: | :---: | :----: |
+   * | **145** | **55**  |   No   | 12-79 | **11** |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-justify
    */
@@ -5504,7 +5905,7 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since November 2020.
    *
-   * **Syntax**: `auto | <length> | <percentage> `
+   * **Syntax**: `auto | <length> | <percentage>`
    *
    * **Initial value**: `auto`
    *
@@ -5559,6 +5960,76 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   textWrapStyle?: Property.TextWrapStyle | undefined;
   /**
+   * Since October 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   *
+   * **Syntax**: `none | <dashed-ident>#`
+   *
+   * **Initial value**: `none`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **116** | **159** | **26** | **116** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/timeline-scope
+   */
+  timelineScope?: Property.TimelineScope | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `[ normal | <length-percentage> | <timeline-range-name> <length-percentage>? ]#`
+   *
+   * **Initial value**: `normal`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **146** |   No    |   No   | **146** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/timeline-trigger-activation-range-end
+   */
+  timelineTriggerActivationRangeEnd?: Property.TimelineTriggerActivationRangeEnd<TLength> | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `[ normal | <length-percentage> | <timeline-range-name> <length-percentage>? ]#`
+   *
+   * **Initial value**: `normal`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **146** |   No    |   No   | **146** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/timeline-trigger-activation-range-start
+   */
+  timelineTriggerActivationRangeStart?: Property.TimelineTriggerActivationRangeStart<TLength> | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `[ auto | normal | <length-percentage> | <timeline-range-name> <length-percentage>? ]#`
+   *
+   * **Initial value**: `auto`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **146** |   No    |   No   | **146** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/timeline-trigger-active-range-end
+   */
+  timelineTriggerActiveRangeEnd?: Property.TimelineTriggerActiveRangeEnd<TLength> | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `[ auto | normal | <length-percentage> | <timeline-range-name> <length-percentage>? ]#`
+   *
+   * **Initial value**: `auto`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **146** |   No    |   No   | **146** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/timeline-trigger-active-range-start
+   */
+  timelineTriggerActiveRangeStart?: Property.TimelineTriggerActiveRangeStart<TLength> | undefined;
+  /**
    * This feature is not Baseline because it does not work in some of the most widely-used browsers.
    *
    * **Syntax**: `none | <dashed-ident>#`
@@ -5567,11 +6038,25 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    *
    * | Chrome  | Firefox | Safari |  Edge   | IE  |
    * | :-----: | :-----: | :----: | :-----: | :-: |
-   * | **116** |   No    | **26** | **116** | No  |
+   * | **146** |   No    |   No   | **146** | No  |
    *
-   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/timeline-scope
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/timeline-trigger-name
    */
-  timelineScope?: Property.TimelineScope | undefined;
+  timelineTriggerName?: Property.TimelineTriggerName | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `<single-animation-timeline>#`
+   *
+   * **Initial value**: `auto`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **146** |   No    |   No   | **146** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/timeline-trigger-source
+   */
+  timelineTriggerSource?: Property.TimelineTriggerSource | undefined;
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.
    *
@@ -5661,7 +6146,7 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   transformStyle?: Property.TransformStyle | undefined;
   /**
-   * Since August 2024, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
    *
    * **Syntax**: `<transition-behavior-value>#`
    *
@@ -5749,6 +6234,20 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   translate?: Property.Translate<TLength> | undefined;
   /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `none | all | <dashed-ident>#`
+   *
+   * **Initial value**: `none`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **146** |   No    |   No   | **146** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/trigger-scope
+   */
+  triggerScope?: Property.TriggerScope | undefined;
+  /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.
    *
    * **Syntax**: `normal | embed | isolate | bidi-override | isolate-override | plaintext`
@@ -5769,10 +6268,10 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    *
    * **Initial value**: `auto`
    *
-   * | Chrome  | Firefox |   Safari    |   Edge   |      IE      |
-   * | :-----: | :-----: | :---------: | :------: | :----------: |
-   * | **54**  | **69**  | **3** _-x-_ |  **79**  | **10** _-x-_ |
-   * | 1 _-x-_ | 1 _-x-_ |             | 12 _-x-_ |              |
+   * | Chrome  | Firefox |  Safari  |   Edge   |      IE      |
+   * | :-----: | :-----: | :------: | :------: | :----------: |
+   * | **54**  | **69**  | **27.3** |  **79**  | **10** _-x-_ |
+   * | 1 _-x-_ | 1 _-x-_ | 3 _-x-_  | 12 _-x-_ |              |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/user-select
    */
@@ -5806,7 +6305,7 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   verticalAlign?: Property.VerticalAlign<TLength> | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since October 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `[ block | inline | x | y ]#`
    *
@@ -5814,13 +6313,13 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    *
    * | Chrome  | Firefox | Safari |  Edge   | IE  |
    * | :-----: | :-----: | :----: | :-----: | :-: |
-   * | **115** |   No    | **26** | **115** | No  |
+   * | **115** | **159** | **26** | **115** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/view-timeline-axis
    */
   viewTimelineAxis?: Property.ViewTimelineAxis | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since October 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `[ [ auto | <length-percentage> ]{1,2} ]#`
    *
@@ -5828,13 +6327,13 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    *
    * | Chrome  | Firefox | Safari |  Edge   | IE  |
    * | :-----: | :-----: | :----: | :-----: | :-: |
-   * | **115** |   No    | **26** | **115** | No  |
+   * | **115** | **159** | **26** | **115** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/view-timeline-inset
    */
   viewTimelineInset?: Property.ViewTimelineInset<TLength> | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since October 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `[ none | <dashed-ident> ]#`
    *
@@ -5842,7 +6341,7 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    *
    * | Chrome  | Firefox | Safari |  Edge   | IE  |
    * | :-----: | :-----: | :----: | :-----: | :-: |
-   * | **115** |   No    | **26** | **115** | No  |
+   * | **115** | **159** | **26** | **115** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/view-timeline-name
    */
@@ -5874,6 +6373,20 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   viewTransitionName?: Property.ViewTransitionName | undefined;
   /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `none | all`
+   *
+   * **Initial value**: `none`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **147** |   No    |   No   | **147** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/view-transition-scope
+   */
+  viewTransitionScope?: Property.ViewTransitionScope | undefined;
+  /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.
    *
    * **Syntax**: `visible | hidden | collapse`
@@ -5902,7 +6415,7 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    */
   whiteSpace?: Property.WhiteSpace | undefined;
   /**
-   * Since March 2024, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2024.
    *
    * **Syntax**: `collapse | preserve | preserve-breaks | preserve-spaces | break-spaces`
    *
@@ -5957,6 +6470,16 @@ interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/will-change
    */
   willChange?: Property.WillChange | undefined;
+  /**
+   * **Syntax**: `none | move`
+   *
+   * **Initial value**: `none`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **152** |   No    |   No   | **152** | No  |
+   */
+  windowDrag?: Property.WindowDrag | undefined;
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.
    *
@@ -6094,13 +6617,13 @@ interface StandardShorthandProperties<TLength = (string & {}) | 0, TTime = strin
    */
   animation?: Property.Animation<TTime> | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since October 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `[ <'animation-range-start'> <'animation-range-end'>? ]#`
    *
    * | Chrome  | Firefox | Safari |  Edge   | IE  |
    * | :-----: | :-----: | :----: | :-----: | :-: |
-   * | **115** |   No    | **26** | **115** | No  |
+   * | **115** | **159** | **26** | **115** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-range
    */
@@ -6146,7 +6669,7 @@ interface StandardShorthandProperties<TLength = (string & {}) | 0, TTime = strin
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since April 2021.
    *
-   * **Syntax**: `<'border-block-start'>`
+   * **Syntax**: `<'border-top'>`
    *
    * | Chrome | Firefox |  Safari  |  Edge  | IE  |
    * | :----: | :-----: | :------: | :----: | :-: |
@@ -6160,8 +6683,6 @@ interface StandardShorthandProperties<TLength = (string & {}) | 0, TTime = strin
    *
    * **Syntax**: `<'border-top-color'>{1,2}`
    *
-   * **Initial value**: `currentcolor`
-   *
    * | Chrome | Firefox |  Safari  |  Edge  | IE  |
    * | :----: | :-----: | :------: | :----: | :-: |
    * | **87** | **66**  | **14.1** | **87** | No  |
@@ -6172,7 +6693,7 @@ interface StandardShorthandProperties<TLength = (string & {}) | 0, TTime = strin
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since January 2020.
    *
-   * **Syntax**: `<'border-top-width'> || <'border-top-style'> || <color>`
+   * **Syntax**: `<'border-top'>`
    *
    * | Chrome | Firefox |  Safari  |  Edge  | IE  |
    * | :----: | :-----: | :------: | :----: | :-: |
@@ -6184,7 +6705,7 @@ interface StandardShorthandProperties<TLength = (string & {}) | 0, TTime = strin
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since January 2020.
    *
-   * **Syntax**: `<'border-top-width'> || <'border-top-style'> || <color>`
+   * **Syntax**: `<'border-top'>`
    *
    * | Chrome | Firefox |  Safari  |  Edge  | IE  |
    * | :----: | :-----: | :------: | :----: | :-: |
@@ -6198,8 +6719,6 @@ interface StandardShorthandProperties<TLength = (string & {}) | 0, TTime = strin
    *
    * **Syntax**: `<'border-top-style'>{1,2}`
    *
-   * **Initial value**: `none`
-   *
    * | Chrome | Firefox |  Safari  |  Edge  | IE  |
    * | :----: | :-----: | :------: | :----: | :-: |
    * | **87** | **66**  | **14.1** | **87** | No  |
@@ -6211,8 +6730,6 @@ interface StandardShorthandProperties<TLength = (string & {}) | 0, TTime = strin
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since April 2021.
    *
    * **Syntax**: `<'border-top-width'>{1,2}`
-   *
-   * **Initial value**: `medium`
    *
    * | Chrome | Firefox |  Safari  |  Edge  | IE  |
    * | :----: | :-----: | :------: | :----: | :-: |
@@ -6261,7 +6778,7 @@ interface StandardShorthandProperties<TLength = (string & {}) | 0, TTime = strin
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since April 2021.
    *
-   * **Syntax**: `<'border-block-start'>`
+   * **Syntax**: `<'border-top'>`
    *
    * | Chrome | Firefox |  Safari  |  Edge  | IE  |
    * | :----: | :-----: | :------: | :----: | :-: |
@@ -6275,8 +6792,6 @@ interface StandardShorthandProperties<TLength = (string & {}) | 0, TTime = strin
    *
    * **Syntax**: `<'border-top-color'>{1,2}`
    *
-   * **Initial value**: `currentcolor`
-   *
    * | Chrome | Firefox |  Safari  |  Edge  | IE  |
    * | :----: | :-----: | :------: | :----: | :-: |
    * | **87** | **66**  | **14.1** | **87** | No  |
@@ -6287,7 +6802,7 @@ interface StandardShorthandProperties<TLength = (string & {}) | 0, TTime = strin
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since January 2020.
    *
-   * **Syntax**: `<'border-top-width'> || <'border-top-style'> || <color>`
+   * **Syntax**: `<'border-top'>`
    *
    * | Chrome | Firefox |  Safari  |  Edge  | IE  |
    * | :----: | :-----: | :------: | :----: | :-: |
@@ -6299,7 +6814,7 @@ interface StandardShorthandProperties<TLength = (string & {}) | 0, TTime = strin
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since January 2020.
    *
-   * **Syntax**: `<'border-top-width'> || <'border-top-style'> || <color>`
+   * **Syntax**: `<'border-top'>`
    *
    * | Chrome | Firefox |  Safari  |  Edge  | IE  |
    * | :----: | :-----: | :------: | :----: | :-: |
@@ -6313,8 +6828,6 @@ interface StandardShorthandProperties<TLength = (string & {}) | 0, TTime = strin
    *
    * **Syntax**: `<'border-top-style'>{1,2}`
    *
-   * **Initial value**: `none`
-   *
    * | Chrome | Firefox |  Safari  |  Edge  | IE  |
    * | :----: | :-----: | :------: | :----: | :-: |
    * | **87** | **66**  | **14.1** | **87** | No  |
@@ -6326,8 +6839,6 @@ interface StandardShorthandProperties<TLength = (string & {}) | 0, TTime = strin
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since April 2021.
    *
    * **Syntax**: `<'border-top-width'>{1,2}`
-   *
-   * **Initial value**: `medium`
    *
    * | Chrome | Firefox |  Safari  |  Edge  | IE  |
    * | :----: | :-----: | :------: | :----: | :-: |
@@ -6409,7 +6920,7 @@ interface StandardShorthandProperties<TLength = (string & {}) | 0, TTime = strin
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-width
    */
   borderWidth?: Property.BorderWidth<TLength> | undefined;
-  /** **Syntax**: `<'caret-color'> || <'caret-shape'>` */
+  /** **Syntax**: `<'caret-color'> || <'caret-animation'> || <'caret-shape'>` */
   caret?: Property.Caret | undefined;
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2017.
@@ -6427,7 +6938,7 @@ interface StandardShorthandProperties<TLength = (string & {}) | 0, TTime = strin
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2017.
    *
-   * **Syntax**: `<'column-width'> || <'column-count'>`
+   * **Syntax**: `[ <'column-width'> || <'column-count'> ] [ / <'column-height'> ]?`
    *
    * | Chrome | Firefox | Safari  |  Edge  |   IE   |
    * | :----: | :-----: | :-----: | :----: | :----: |
@@ -6438,7 +6949,7 @@ interface StandardShorthandProperties<TLength = (string & {}) | 0, TTime = strin
    */
   columns?: Property.Columns<TLength> | undefined;
   /**
-   * Since September 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2023.
    *
    * **Syntax**: `[ auto? [ none | <length> ] ]{1,2}`
    *
@@ -6461,6 +6972,114 @@ interface StandardShorthandProperties<TLength = (string & {}) | 0, TTime = strin
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/container
    */
   container?: Property.Container | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `<corner-shape-value>{1,2}`
+   *
+   * | Chrome  |   Firefox   |  Safari  |  Edge   | IE  |
+   * | :-----: | :---------: | :------: | :-----: | :-: |
+   * | **139** | **preview** | **27.3** | **139** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/corner-block-end-shape
+   */
+  cornerBlockEndShape?: Property.CornerBlockEndShape | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `<corner-shape-value>{1,2}`
+   *
+   * | Chrome  |   Firefox   |  Safari  |  Edge   | IE  |
+   * | :-----: | :---------: | :------: | :-----: | :-: |
+   * | **139** | **preview** | **27.3** | **139** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/corner-block-start-shape
+   */
+  cornerBlockStartShape?: Property.CornerBlockStartShape | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `<corner-shape-value>{1,2}`
+   *
+   * | Chrome  |   Firefox   |  Safari  |  Edge   | IE  |
+   * | :-----: | :---------: | :------: | :-----: | :-: |
+   * | **139** | **preview** | **27.3** | **139** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/corner-bottom-shape
+   */
+  cornerBottomShape?: Property.CornerBottomShape | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `<corner-shape-value>{1,2}`
+   *
+   * | Chrome  |   Firefox   |  Safari  |  Edge   | IE  |
+   * | :-----: | :---------: | :------: | :-----: | :-: |
+   * | **139** | **preview** | **27.3** | **139** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/corner-inline-end-shape
+   */
+  cornerInlineEndShape?: Property.CornerInlineEndShape | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `<corner-shape-value>{1,2}`
+   *
+   * | Chrome  |   Firefox   |  Safari  |  Edge   | IE  |
+   * | :-----: | :---------: | :------: | :-----: | :-: |
+   * | **139** | **preview** | **27.3** | **139** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/corner-inline-start-shape
+   */
+  cornerInlineStartShape?: Property.CornerInlineStartShape | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `<corner-shape-value>{1,2}`
+   *
+   * | Chrome  |   Firefox   |  Safari  |  Edge   | IE  |
+   * | :-----: | :---------: | :------: | :-----: | :-: |
+   * | **139** | **preview** | **27.3** | **139** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/corner-left-shape
+   */
+  cornerLeftShape?: Property.CornerLeftShape | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `<corner-shape-value>{1,2}`
+   *
+   * | Chrome  |   Firefox   |  Safari  |  Edge   | IE  |
+   * | :-----: | :---------: | :------: | :-----: | :-: |
+   * | **139** | **preview** | **27.3** | **139** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/corner-right-shape
+   */
+  cornerRightShape?: Property.CornerRightShape | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `<corner-shape-value>{1,4}`
+   *
+   * | Chrome  |   Firefox   |  Safari  |  Edge   | IE  |
+   * | :-----: | :---------: | :------: | :-----: | :-: |
+   * | **139** | **preview** | **27.3** | **139** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/corner-shape
+   */
+  cornerShape?: Property.CornerShape | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `<corner-shape-value>{1,2}`
+   *
+   * | Chrome  |   Firefox   |  Safari  |  Edge   | IE  |
+   * | :-----: | :---------: | :------: | :-----: | :-: |
+   * | **139** | **preview** | **27.3** | **139** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/corner-top-shape
+   */
+  cornerTopShape?: Property.CornerTopShape | undefined;
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2015.
    *
@@ -6610,13 +7229,25 @@ interface StandardShorthandProperties<TLength = (string & {}) | 0, TTime = strin
   /**
    * This feature is not Baseline because it does not work in some of the most widely-used browsers.
    *
+   * **Syntax**: `<'interest-delay-start'>{1,2}`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **142** |   No    |   No   | **142** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/interest-delay
+   */
+  interestDelay?: Property.InterestDelay<TTime> | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
    * **Syntax**: `none | <integer>`
    *
    * **Initial value**: `none`
    *
    * |   Chrome    |   Firefox    |  Safari   |     Edge     | IE  |
    * | :---------: | :----------: | :-------: | :----------: | :-: |
-   * | **6** _-x-_ | **68** _-x-_ | 18.2-18.4 | **17** _-x-_ | No  |
+   * | **6** _-x-_ | **68** _-x-_ | 18.2-18.4 | **79** _-x-_ | No  |
    * |             |              |  5 _-x-_  |              |     |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/line-clamp
@@ -6671,7 +7302,7 @@ interface StandardShorthandProperties<TLength = (string & {}) | 0, TTime = strin
    */
   marginInline?: Property.MarginInline<TLength> | undefined;
   /**
-   * Since December 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since December 2023.
    *
    * **Syntax**: `<mask-layer>#`
    *
@@ -6749,15 +7380,15 @@ interface StandardShorthandProperties<TLength = (string & {}) | 0, TTime = strin
    */
   overflow?: Property.Overflow | undefined;
   /**
-   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2022.
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
    *
    * **Syntax**: `[ contain | none | auto ]{1,2}`
    *
    * **Initial value**: `auto`
    *
-   * | Chrome | Firefox | Safari |  Edge  | IE  |
-   * | :----: | :-----: | :----: | :----: | :-: |
-   * | **63** | **59**  | **16** | **18** | No  |
+   * | Chrome  | Firefox | Safari |  Edge  | IE  |
+   * | :-----: | :-----: | :----: | :----: | :-: |
+   * | **144** | **150** | **16** | **18** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overscroll-behavior
    */
@@ -6835,13 +7466,13 @@ interface StandardShorthandProperties<TLength = (string & {}) | 0, TTime = strin
    */
   placeSelf?: Property.PlaceSelf | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since January 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `<'position-try-order'>? <'position-try-fallbacks'>`
    *
-   * | Chrome  |   Firefox   | Safari |  Edge   | IE  |
-   * | :-----: | :---------: | :----: | :-----: | :-: |
-   * | **125** | **preview** | **26** | **125** | No  |
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **125** | **147** | **26** | **125** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/position-try
    */
@@ -6933,13 +7564,13 @@ interface StandardShorthandProperties<TLength = (string & {}) | 0, TTime = strin
    */
   scrollSnapMargin?: Property.ScrollMargin<TLength> | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since October 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `[ <'scroll-timeline-name'> <'scroll-timeline-axis'>? ]#`
    *
    * | Chrome  | Firefox | Safari |  Edge   | IE  |
    * | :-----: | :-----: | :----: | :-----: | :-: |
-   * | **115** |   No    | **26** | **115** | No  |
+   * | **115** | **159** | **26** | **115** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-timeline
    */
@@ -6970,7 +7601,7 @@ interface StandardShorthandProperties<TLength = (string & {}) | 0, TTime = strin
    */
   textEmphasis?: Property.TextEmphasis | undefined;
   /**
-   * Since March 2024, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2024.
    *
    * **Syntax**: `<'text-wrap-mode'> || <'text-wrap-style'>`
    *
@@ -6983,6 +7614,42 @@ interface StandardShorthandProperties<TLength = (string & {}) | 0, TTime = strin
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-wrap
    */
   textWrap?: Property.TextWrap | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `none | [ <'timeline-trigger-name'> <'timeline-trigger-source'> <'timeline-trigger-activation-range'> [ '/' <'timeline-trigger-active-range'> ]? ]#`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **146** |   No    |   No   | **146** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/timeline-trigger
+   */
+  timelineTrigger?: Property.TimelineTrigger | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `[ <'timeline-trigger-activation-range-start'> <'timeline-trigger-activation-range-end'>? ]#`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **146** |   No    |   No   | **146** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/timeline-trigger-activation-range
+   */
+  timelineTriggerActivationRange?: Property.TimelineTriggerActivationRange<TLength> | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `[ <'timeline-trigger-active-range-start'> <'timeline-trigger-active-range-end'>? ]#`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **146** |   No    |   No   | **146** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/timeline-trigger-active-range
+   */
+  timelineTriggerActiveRange?: Property.TimelineTriggerActiveRange<TLength> | undefined;
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2015.
    *
@@ -6997,13 +7664,13 @@ interface StandardShorthandProperties<TLength = (string & {}) | 0, TTime = strin
    */
   transition?: Property.Transition<TTime> | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since October 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `[ <'view-timeline-name'> [ <'view-timeline-axis'> || <'view-timeline-inset'> ]? ]#`
    *
    * | Chrome  | Firefox | Safari |  Edge   | IE  |
    * | :-----: | :-----: | :----: | :-----: | :-: |
-   * | **115** |   No    | **26** | **115** | No  |
+   * | **115** | **159** | **26** | **115** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/view-timeline
    */
@@ -7180,7 +7847,7 @@ interface VendorLonghandProperties<TLength = (string & {}) | 0, TTime = string &
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2017.
    *
-   * **Syntax**: `<'border-style'>`
+   * **Syntax**: `<line-style>`
    *
    * **Initial value**: `none`
    */
@@ -7188,7 +7855,7 @@ interface VendorLonghandProperties<TLength = (string & {}) | 0, TTime = string &
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2017.
    *
-   * **Syntax**: `<'border-width'>`
+   * **Syntax**: `<line-width>`
    *
    * **Initial value**: `medium`
    */
@@ -7196,7 +7863,7 @@ interface VendorLonghandProperties<TLength = (string & {}) | 0, TTime = string &
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since November 2016.
    *
-   * **Syntax**: `<length> | auto`
+   * **Syntax**: `auto | <length [0,∞]>`
    *
    * **Initial value**: `auto`
    */
@@ -7208,7 +7875,7 @@ interface VendorLonghandProperties<TLength = (string & {}) | 0, TTime = string &
    */
   MozContextProperties?: Property.MozContextProperties | undefined;
   /**
-   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since April 2017.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2016.
    *
    * **Syntax**: `normal | <feature-tag-value>#`
    *
@@ -7224,7 +7891,7 @@ interface VendorLonghandProperties<TLength = (string & {}) | 0, TTime = string &
    */
   MozFontLanguageOverride?: Property.FontLanguageOverride | undefined;
   /**
-   * Since September 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2023.
    *
    * **Syntax**: `none | manual | auto`
    *
@@ -7372,7 +8039,15 @@ interface VendorLonghandProperties<TLength = (string & {}) | 0, TTime = string &
    */
   MozTransformStyle?: Property.TransformStyle | undefined;
   /**
-   * The **`user-modify`** property has no effect in Firefox. It was originally planned to determine whether or not the content of an element can be edited by a user.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
+   *
+   * **Syntax**: `ignore | normal | select-after | select-before | select-menu | select-same | select-all | none`
+   *
+   * **Initial value**: `none`
+   */
+  MozUserFocus?: Property.MozUserFocus | undefined;
+  /**
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `read-only | read-write | write-only`
    *
@@ -7518,7 +8193,7 @@ interface VendorLonghandProperties<TLength = (string & {}) | 0, TTime = string &
    */
   msHyphenateLimitZone?: Property.MsHyphenateLimitZone<TLength> | undefined;
   /**
-   * Since September 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2023.
    *
    * **Syntax**: `none | manual | auto`
    *
@@ -7938,19 +8613,37 @@ interface VendorLonghandProperties<TLength = (string & {}) | 0, TTime = string &
    */
   WebkitBackgroundSize?: Property.BackgroundSize<TLength> | undefined;
   /**
-   * **Syntax**: `<color>`
+   * **Syntax**: `<'border-top-color'>`
+   *
+   * **Initial value**: `currentcolor`
+   */
+  WebkitBorderAfterColor?: Property.WebkitBorderAfterColor | undefined;
+  /**
+   * **Syntax**: `<'border-top-style'>`
+   *
+   * **Initial value**: `none`
+   */
+  WebkitBorderAfterStyle?: Property.WebkitBorderAfterStyle | undefined;
+  /**
+   * **Syntax**: `<'border-top-width'>`
+   *
+   * **Initial value**: `medium`
+   */
+  WebkitBorderAfterWidth?: Property.WebkitBorderAfterWidth<TLength> | undefined;
+  /**
+   * **Syntax**: `<'border-top-color'>`
    *
    * **Initial value**: `currentcolor`
    */
   WebkitBorderBeforeColor?: Property.WebkitBorderBeforeColor | undefined;
   /**
-   * **Syntax**: `<'border-style'>`
+   * **Syntax**: `<'border-top-style'>`
    *
    * **Initial value**: `none`
    */
   WebkitBorderBeforeStyle?: Property.WebkitBorderBeforeStyle | undefined;
   /**
-   * **Syntax**: `<'border-width'>`
+   * **Syntax**: `<'border-top-width'>`
    *
    * **Initial value**: `medium`
    */
@@ -7972,13 +8665,49 @@ interface VendorLonghandProperties<TLength = (string & {}) | 0, TTime = string &
    */
   WebkitBorderBottomRightRadius?: Property.BorderBottomRightRadius<TLength> | undefined;
   /**
+   * **Syntax**: `<'border-top-color'>`
+   *
+   * **Initial value**: `currentcolor`
+   */
+  WebkitBorderEndColor?: Property.WebkitBorderEndColor | undefined;
+  /**
+   * **Syntax**: `<'border-top-style'>`
+   *
+   * **Initial value**: `none`
+   */
+  WebkitBorderEndStyle?: Property.WebkitBorderEndStyle | undefined;
+  /**
+   * **Syntax**: `<'border-top-width'>`
+   *
+   * **Initial value**: `medium`
+   */
+  WebkitBorderEndWidth?: Property.WebkitBorderEndWidth<TLength> | undefined;
+  /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.
    *
-   * **Syntax**: `[ <number [0,∞]> | <percentage [0,∞]> ]{1,4}  && fill?`
+   * **Syntax**: `[ <number [0,∞]> | <percentage [0,∞]> ]{1,4} && fill?`
    *
    * **Initial value**: `100%`
    */
   WebkitBorderImageSlice?: Property.BorderImageSlice | undefined;
+  /**
+   * **Syntax**: `<'border-top-color'>`
+   *
+   * **Initial value**: `currentcolor`
+   */
+  WebkitBorderStartColor?: Property.WebkitBorderStartColor | undefined;
+  /**
+   * **Syntax**: `<'border-top-style'>`
+   *
+   * **Initial value**: `none`
+   */
+  WebkitBorderStartStyle?: Property.WebkitBorderStartStyle | undefined;
+  /**
+   * **Syntax**: `<'border-top-width'>`
+   *
+   * **Initial value**: `medium`
+   */
+  WebkitBorderStartWidth?: Property.WebkitBorderStartWidth<TLength> | undefined;
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.
    *
@@ -8062,7 +8791,7 @@ interface VendorLonghandProperties<TLength = (string & {}) | 0, TTime = string &
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2017.
    *
-   * **Syntax**: `<'border-style'>`
+   * **Syntax**: `<line-style>`
    *
    * **Initial value**: `none`
    */
@@ -8070,7 +8799,7 @@ interface VendorLonghandProperties<TLength = (string & {}) | 0, TTime = string &
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2017.
    *
-   * **Syntax**: `<'border-width'>`
+   * **Syntax**: `<line-width>`
    *
    * **Initial value**: `medium`
    */
@@ -8086,7 +8815,7 @@ interface VendorLonghandProperties<TLength = (string & {}) | 0, TTime = string &
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since November 2016.
    *
-   * **Syntax**: `<length> | auto`
+   * **Syntax**: `auto | <length [0,∞]>`
    *
    * **Initial value**: `auto`
    */
@@ -8134,13 +8863,13 @@ interface VendorLonghandProperties<TLength = (string & {}) | 0, TTime = string &
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2015.
    *
-   * **Syntax**: `nowrap | wrap | wrap-reverse`
+   * **Syntax**: `nowrap | [ wrap | wrap-reverse ] || balance`
    *
    * **Initial value**: `nowrap`
    */
   WebkitFlexWrap?: Property.FlexWrap | undefined;
   /**
-   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since April 2017.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2016.
    *
    * **Syntax**: `normal | <feature-tag-value>#`
    *
@@ -8172,7 +8901,7 @@ interface VendorLonghandProperties<TLength = (string & {}) | 0, TTime = string &
    */
   WebkitFontVariantLigatures?: Property.FontVariantLigatures | undefined;
   /**
-   * Since September 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2023.
    *
    * **Syntax**: `auto | <string>`
    *
@@ -8180,7 +8909,7 @@ interface VendorLonghandProperties<TLength = (string & {}) | 0, TTime = string &
    */
   WebkitHyphenateCharacter?: Property.HyphenateCharacter | undefined;
   /**
-   * Since September 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2023.
    *
    * **Syntax**: `none | manual | auto`
    *
@@ -8212,8 +8941,6 @@ interface VendorLonghandProperties<TLength = (string & {}) | 0, TTime = string &
    */
   WebkitLineBreak?: Property.LineBreak | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
-   *
    * **Syntax**: `none | <integer>`
    *
    * **Initial value**: `none`
@@ -8235,6 +8962,22 @@ interface VendorLonghandProperties<TLength = (string & {}) | 0, TTime = string &
    * **Initial value**: `auto`
    */
   WebkitLogicalWidth?: Property.InlineSize<TLength> | undefined;
+  /**
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since January 2020.
+   *
+   * **Syntax**: `<'margin-top'>`
+   *
+   * **Initial value**: `0`
+   */
+  WebkitMarginAfter?: Property.MarginBlockEnd<TLength> | undefined;
+  /**
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since January 2020.
+   *
+   * **Syntax**: `<'margin-top'>`
+   *
+   * **Initial value**: `0`
+   */
+  WebkitMarginBefore?: Property.MarginBlockStart<TLength> | undefined;
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since January 2020.
    *
@@ -8298,7 +9041,7 @@ interface VendorLonghandProperties<TLength = (string & {}) | 0, TTime = string &
    */
   WebkitMaskBoxImageWidth?: Property.MaskBorderWidth<TLength> | undefined;
   /**
-   * Since December 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since December 2023.
    *
    * **Syntax**: `[ <coord-box> | no-clip | border | padding | content | text ]#`
    *
@@ -8314,7 +9057,7 @@ interface VendorLonghandProperties<TLength = (string & {}) | 0, TTime = string &
    */
   WebkitMaskComposite?: Property.WebkitMaskComposite | undefined;
   /**
-   * Since December 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since December 2023.
    *
    * **Syntax**: `<mask-reference>#`
    *
@@ -8322,7 +9065,7 @@ interface VendorLonghandProperties<TLength = (string & {}) | 0, TTime = string &
    */
   WebkitMaskImage?: Property.WebkitMaskImage | undefined;
   /**
-   * Since December 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since December 2023.
    *
    * **Syntax**: `[ <coord-box> | border | padding | content ]#`
    *
@@ -8330,7 +9073,7 @@ interface VendorLonghandProperties<TLength = (string & {}) | 0, TTime = string &
    */
   WebkitMaskOrigin?: Property.WebkitMaskOrigin | undefined;
   /**
-   * Since December 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since December 2023.
    *
    * **Syntax**: `<position>#`
    *
@@ -8354,7 +9097,7 @@ interface VendorLonghandProperties<TLength = (string & {}) | 0, TTime = string &
    */
   WebkitMaskPositionY?: Property.WebkitMaskPositionY<TLength> | undefined;
   /**
-   * Since December 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since December 2023.
    *
    * **Syntax**: `<repeat-style>#`
    *
@@ -8378,7 +9121,7 @@ interface VendorLonghandProperties<TLength = (string & {}) | 0, TTime = string &
    */
   WebkitMaskRepeatY?: Property.WebkitMaskRepeatY | undefined;
   /**
-   * Since December 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since December 2023.
    *
    * **Syntax**: `<bg-size>#`
    *
@@ -8503,14 +9246,6 @@ interface VendorLonghandProperties<TLength = (string & {}) | 0, TTime = string &
    * **Initial value**: `none`
    */
   WebkitTextDecorationLine?: Property.TextDecorationLine | undefined;
-  /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
-   *
-   * **Syntax**: `none | [ objects || [ spaces | [ leading-spaces || trailing-spaces ] ] || edges || box-decoration ]`
-   *
-   * **Initial value**: `objects`
-   */
-  WebkitTextDecorationSkip?: Property.TextDecorationSkip | undefined;
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since January 2020.
    *
@@ -8700,7 +9435,7 @@ interface VendorShorthandProperties<TLength = (string & {}) | 0, TTime = string 
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2017.
    *
-   * **Syntax**: `<'column-width'> || <'column-count'>`
+   * **Syntax**: `[ <'column-width'> || <'column-count'> ] [ / <'column-height'> ]?`
    */
   MozColumns?: Property.Columns<TLength> | undefined;
   /** **Syntax**: `<outline-radius>{1,4} [ / <outline-radius>{1,4} ]?` */
@@ -8739,12 +9474,16 @@ interface VendorShorthandProperties<TLength = (string & {}) | 0, TTime = string 
    * **Syntax**: `<single-animation>#`
    */
   WebkitAnimation?: Property.Animation<TTime> | undefined;
+  /** **Syntax**: `<'border-top'>` */
+  WebkitBorderAfter?: Property.WebkitBorderAfter<TLength> | undefined;
   /**
-   * The **`-webkit-border-before`** CSS property is a shorthand property for setting the individual logical block start border property values in a single place in the style sheet.
+   * The **`-webkit-border-before`** CSS shorthand property sets the individual logical block start border property values in a single place in the style sheet.
    *
-   * **Syntax**: `<'border-width'> || <'border-style'> || <color>`
+   * **Syntax**: `<'border-top'>`
    */
   WebkitBorderBefore?: Property.WebkitBorderBefore<TLength> | undefined;
+  /** **Syntax**: `<'border-top'>` */
+  WebkitBorderEnd?: Property.WebkitBorderEnd<TLength> | undefined;
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.
    *
@@ -8757,6 +9496,8 @@ interface VendorShorthandProperties<TLength = (string & {}) | 0, TTime = string 
    * **Syntax**: `<length-percentage [0,∞]>{1,4} [ / <length-percentage [0,∞]>{1,4} ]?`
    */
   WebkitBorderRadius?: Property.BorderRadius<TLength> | undefined;
+  /** **Syntax**: `<'border-top'>` */
+  WebkitBorderStart?: Property.WebkitBorderStart<TLength> | undefined;
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2017.
    *
@@ -8766,7 +9507,7 @@ interface VendorShorthandProperties<TLength = (string & {}) | 0, TTime = string 
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2017.
    *
-   * **Syntax**: `<'column-width'> || <'column-count'>`
+   * **Syntax**: `[ <'column-width'> || <'column-count'> ] [ / <'column-height'> ]?`
    */
   WebkitColumns?: Property.Columns<TLength> | undefined;
   /**
@@ -8782,7 +9523,7 @@ interface VendorShorthandProperties<TLength = (string & {}) | 0, TTime = string 
    */
   WebkitFlexFlow?: Property.FlexFlow | undefined;
   /**
-   * Since December 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since December 2023.
    *
    * **Syntax**: `[ <mask-reference> || <position> [ / <bg-size> ]? || <repeat-style> || [ <visual-box> | border | padding | content | text ] || [ <visual-box> | border | padding | content ] ]#`
    */
@@ -8815,7 +9556,7 @@ interface VendorShorthandProperties<TLength = (string & {}) | 0, TTime = string 
 interface VendorProperties<TLength = (string & {}) | 0, TTime = string & {}> extends VendorLonghandProperties<TLength, TTime>, VendorShorthandProperties<TLength, TTime> {}
 interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string & {}> {
   /**
-   * The **`box-align`** CSS property specifies how an element aligns its contents across its layout in a perpendicular direction. The effect of the property is only visible if there is extra space in the box.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `start | center | end | baseline | stretch`
    *
@@ -8825,7 +9566,7 @@ interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string & {}> {
    */
   boxAlign?: Property.BoxAlign | undefined;
   /**
-   * The **`box-direction`** CSS property specifies whether a box lays out its contents normally (from the top or left edge), or in reverse (from the bottom or right edge).
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `normal | reverse | inherit`
    *
@@ -8835,7 +9576,7 @@ interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string & {}> {
    */
   boxDirection?: Property.BoxDirection | undefined;
   /**
-   * The **`-moz-box-flex`** and **`-webkit-box-flex`** CSS properties specify how a `-moz-box` or `-webkit-box` grows to fill the box that contains it, in the direction of the containing box's layout.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `<number>`
    *
@@ -8845,7 +9586,7 @@ interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string & {}> {
    */
   boxFlex?: Property.BoxFlex | undefined;
   /**
-   * The **`box-flex-group`** CSS property assigns the flexbox's child elements to a flex group.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `<integer>`
    *
@@ -8855,7 +9596,7 @@ interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string & {}> {
    */
   boxFlexGroup?: Property.BoxFlexGroup | undefined;
   /**
-   * The **`box-lines`** CSS property determines whether the box may have a single or multiple lines (rows for horizontally oriented boxes, columns for vertically oriented boxes).
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `single | multiple`
    *
@@ -8865,7 +9606,7 @@ interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string & {}> {
    */
   boxLines?: Property.BoxLines | undefined;
   /**
-   * The **`box-ordinal-group`** CSS property assigns the flexbox's child elements to an ordinal group.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `<integer>`
    *
@@ -8875,7 +9616,7 @@ interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string & {}> {
    */
   boxOrdinalGroup?: Property.BoxOrdinalGroup | undefined;
   /**
-   * The **`box-orient`** CSS property sets whether an element lays out its contents horizontally or vertically.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `horizontal | vertical | inline-axis | block-axis | inherit`
    *
@@ -8885,7 +9626,7 @@ interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string & {}> {
    */
   boxOrient?: Property.BoxOrient | undefined;
   /**
-   * The **`-moz-box-pack`** and **`-webkit-box-pack`** CSS properties specify how a `-moz-box` or `-webkit-box` packs its contents in the direction of its layout. The effect of this is only visible if there is extra space in the box.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `start | center | end | justify`
    *
@@ -8895,7 +9636,7 @@ interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string & {}> {
    */
   boxPack?: Property.BoxPack | undefined;
   /**
-   * The **`clip`** CSS property defines a visible portion of an element. The `clip` property applies only to absolutely positioned elements — that is, elements with `position:absolute` or `position:fixed`.
+   * Avoid using this feature in new projects. The CSS Masking specification deprecated the `clip` property. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `<shape> | auto`
    *
@@ -8905,7 +9646,7 @@ interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string & {}> {
    */
   clip?: Property.Clip | undefined;
   /**
-   * The **`font-stretch`** CSS property selects a normal, condensed, or expanded face from a font.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2017.
    *
    * **Syntax**: `<font-stretch-absolute>`
    *
@@ -8951,7 +9692,7 @@ interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string & {}> {
    */
   imeMode?: Property.ImeMode | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since January 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `none | <position-area>`
    *
@@ -9017,7 +9758,7 @@ interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string & {}> {
    */
   offsetInlineStart?: Property.InsetInlineStart<TLength> | undefined;
   /**
-   * The **`page-break-after`** CSS property adjusts page breaks _after_ the current element.
+   * Avoid using this feature in new projects. The `page-break-` alias properties exist only for backwards compatibility with pages that predate the `break-` properties. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `auto | always | avoid | left | right | recto | verso`
    *
@@ -9027,7 +9768,7 @@ interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string & {}> {
    */
   pageBreakAfter?: Property.PageBreakAfter | undefined;
   /**
-   * The **`page-break-before`** CSS property adjusts page breaks _before_ the current element.
+   * Avoid using this feature in new projects. The `page-break-` alias properties exist only for backwards compatibility with pages that predate the `break-` properties. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `auto | always | avoid | left | right | recto | verso`
    *
@@ -9037,7 +9778,7 @@ interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string & {}> {
    */
   pageBreakBefore?: Property.PageBreakBefore | undefined;
   /**
-   * The **`page-break-inside`** CSS property adjusts page breaks _inside_ the current element.
+   * Avoid using this feature in new projects. The `page-break-` alias properties exist only for backwards compatibility with pages that predate the `break-` properties. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `auto | avoid`
    *
@@ -9047,7 +9788,7 @@ interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string & {}> {
    */
   pageBreakInside?: Property.PageBreakInside | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since January 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `none | [ [<dashed-ident> || <try-tactic>] | <'position-area'> ]#`
    *
@@ -9105,7 +9846,17 @@ interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string & {}> {
    */
   scrollSnapTypeY?: Property.ScrollSnapTypeY | undefined;
   /**
-   * The **`box-align`** CSS property specifies how an element aligns its contents across its layout in a perpendicular direction. The effect of the property is only visible if there is extra space in the box.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
+   *
+   * **Syntax**: `none | [ objects || [ spaces | [ leading-spaces || trailing-spaces ] ] || edges || box-decoration ]`
+   *
+   * **Initial value**: `objects`
+   *
+   * @deprecated
+   */
+  textDecorationSkip?: Property.TextDecorationSkip | undefined;
+  /**
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `start | center | end | baseline | stretch`
    *
@@ -9115,7 +9866,7 @@ interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string & {}> {
    */
   KhtmlBoxAlign?: Property.BoxAlign | undefined;
   /**
-   * The **`box-direction`** CSS property specifies whether a box lays out its contents normally (from the top or left edge), or in reverse (from the bottom or right edge).
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `normal | reverse | inherit`
    *
@@ -9125,7 +9876,7 @@ interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string & {}> {
    */
   KhtmlBoxDirection?: Property.BoxDirection | undefined;
   /**
-   * The **`-moz-box-flex`** and **`-webkit-box-flex`** CSS properties specify how a `-moz-box` or `-webkit-box` grows to fill the box that contains it, in the direction of the containing box's layout.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `<number>`
    *
@@ -9135,7 +9886,7 @@ interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string & {}> {
    */
   KhtmlBoxFlex?: Property.BoxFlex | undefined;
   /**
-   * The **`box-flex-group`** CSS property assigns the flexbox's child elements to a flex group.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `<integer>`
    *
@@ -9145,7 +9896,7 @@ interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string & {}> {
    */
   KhtmlBoxFlexGroup?: Property.BoxFlexGroup | undefined;
   /**
-   * The **`box-lines`** CSS property determines whether the box may have a single or multiple lines (rows for horizontally oriented boxes, columns for vertically oriented boxes).
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `single | multiple`
    *
@@ -9155,7 +9906,7 @@ interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string & {}> {
    */
   KhtmlBoxLines?: Property.BoxLines | undefined;
   /**
-   * The **`box-ordinal-group`** CSS property assigns the flexbox's child elements to an ordinal group.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `<integer>`
    *
@@ -9165,7 +9916,7 @@ interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string & {}> {
    */
   KhtmlBoxOrdinalGroup?: Property.BoxOrdinalGroup | undefined;
   /**
-   * The **`box-orient`** CSS property sets whether an element lays out its contents horizontally or vertically.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `horizontal | vertical | inline-axis | block-axis | inherit`
    *
@@ -9175,7 +9926,7 @@ interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string & {}> {
    */
   KhtmlBoxOrient?: Property.BoxOrient | undefined;
   /**
-   * The **`-moz-box-pack`** and **`-webkit-box-pack`** CSS properties specify how a `-moz-box` or `-webkit-box` packs its contents in the direction of its layout. The effect of this is only visible if there is extra space in the box.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `start | center | end | justify`
    *
@@ -9293,7 +10044,7 @@ interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string & {}> {
    */
   MozBorderRadiusTopright?: Property.BorderTopRightRadius<TLength> | undefined;
   /**
-   * The **`box-align`** CSS property specifies how an element aligns its contents across its layout in a perpendicular direction. The effect of the property is only visible if there is extra space in the box.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `start | center | end | baseline | stretch`
    *
@@ -9303,7 +10054,7 @@ interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string & {}> {
    */
   MozBoxAlign?: Property.BoxAlign | undefined;
   /**
-   * The **`box-direction`** CSS property specifies whether a box lays out its contents normally (from the top or left edge), or in reverse (from the bottom or right edge).
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `normal | reverse | inherit`
    *
@@ -9313,7 +10064,7 @@ interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string & {}> {
    */
   MozBoxDirection?: Property.BoxDirection | undefined;
   /**
-   * The **`-moz-box-flex`** and **`-webkit-box-flex`** CSS properties specify how a `-moz-box` or `-webkit-box` grows to fill the box that contains it, in the direction of the containing box's layout.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `<number>`
    *
@@ -9323,7 +10074,7 @@ interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string & {}> {
    */
   MozBoxFlex?: Property.BoxFlex | undefined;
   /**
-   * The **`box-ordinal-group`** CSS property assigns the flexbox's child elements to an ordinal group.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `<integer>`
    *
@@ -9333,7 +10084,7 @@ interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string & {}> {
    */
   MozBoxOrdinalGroup?: Property.BoxOrdinalGroup | undefined;
   /**
-   * The **`box-orient`** CSS property sets whether an element lays out its contents horizontally or vertically.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `horizontal | vertical | inline-axis | block-axis | inherit`
    *
@@ -9343,7 +10094,7 @@ interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string & {}> {
    */
   MozBoxOrient?: Property.BoxOrient | undefined;
   /**
-   * The **`-moz-box-pack`** and **`-webkit-box-pack`** CSS properties specify how a `-moz-box` or `-webkit-box` packs its contents in the direction of its layout. The effect of this is only visible if there is extra space in the box.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `start | center | end | justify`
    *
@@ -9383,7 +10134,7 @@ interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string & {}> {
    */
   MozColumnFill?: Property.ColumnFill | undefined;
   /**
-   * The non-standard **`-moz-float-edge`** CSS property specifies whether the height and width properties of the element include the margin, border, or padding thickness.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `border-box | content-box | margin-box | padding-box`
    *
@@ -9393,7 +10144,7 @@ interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string & {}> {
    */
   MozFloatEdge?: Property.MozFloatEdge | undefined;
   /**
-   * The **`-moz-force-broken-image-icon`** extended CSS property can be used to force the broken image icon to be shown even when a broken image has an `alt` attribute.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `0 | 1`
    *
@@ -9531,17 +10282,7 @@ interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string & {}> {
    */
   MozTransitionTimingFunction?: Property.TransitionTimingFunction | undefined;
   /**
-   * The **`-moz-user-focus`** CSS property is used to indicate whether an element can have the focus.
-   *
-   * **Syntax**: `ignore | normal | select-after | select-before | select-menu | select-same | select-all | none`
-   *
-   * **Initial value**: `none`
-   *
-   * @deprecated
-   */
-  MozUserFocus?: Property.MozUserFocus | undefined;
-  /**
-   * In Mozilla applications, **`-moz-user-input`** determines if an element will accept user input.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `auto | none | enabled | disabled`
    *
@@ -9773,7 +10514,7 @@ interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string & {}> {
    */
   OTransitionTimingFunction?: Property.TransitionTimingFunction | undefined;
   /**
-   * The **`box-align`** CSS property specifies how an element aligns its contents across its layout in a perpendicular direction. The effect of the property is only visible if there is extra space in the box.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `start | center | end | baseline | stretch`
    *
@@ -9783,7 +10524,7 @@ interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string & {}> {
    */
   WebkitBoxAlign?: Property.BoxAlign | undefined;
   /**
-   * The **`box-direction`** CSS property specifies whether a box lays out its contents normally (from the top or left edge), or in reverse (from the bottom or right edge).
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `normal | reverse | inherit`
    *
@@ -9793,7 +10534,7 @@ interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string & {}> {
    */
   WebkitBoxDirection?: Property.BoxDirection | undefined;
   /**
-   * The **`-moz-box-flex`** and **`-webkit-box-flex`** CSS properties specify how a `-moz-box` or `-webkit-box` grows to fill the box that contains it, in the direction of the containing box's layout.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `<number>`
    *
@@ -9803,7 +10544,7 @@ interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string & {}> {
    */
   WebkitBoxFlex?: Property.BoxFlex | undefined;
   /**
-   * The **`box-flex-group`** CSS property assigns the flexbox's child elements to a flex group.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `<integer>`
    *
@@ -9813,7 +10554,7 @@ interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string & {}> {
    */
   WebkitBoxFlexGroup?: Property.BoxFlexGroup | undefined;
   /**
-   * The **`box-lines`** CSS property determines whether the box may have a single or multiple lines (rows for horizontally oriented boxes, columns for vertically oriented boxes).
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `single | multiple`
    *
@@ -9823,7 +10564,7 @@ interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string & {}> {
    */
   WebkitBoxLines?: Property.BoxLines | undefined;
   /**
-   * The **`box-ordinal-group`** CSS property assigns the flexbox's child elements to an ordinal group.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `<integer>`
    *
@@ -9833,7 +10574,7 @@ interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string & {}> {
    */
   WebkitBoxOrdinalGroup?: Property.BoxOrdinalGroup | undefined;
   /**
-   * The **`box-orient`** CSS property sets whether an element lays out its contents horizontally or vertically.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `horizontal | vertical | inline-axis | block-axis | inherit`
    *
@@ -9843,7 +10584,7 @@ interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string & {}> {
    */
   WebkitBoxOrient?: Property.BoxOrient | undefined;
   /**
-   * The **`-moz-box-pack`** and **`-webkit-box-pack`** CSS properties specify how a `-moz-box` or `-webkit-box` packs its contents in the direction of its layout. The effect of this is only visible if there is extra space in the box.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `start | center | end | justify`
    *
@@ -9852,6 +10593,16 @@ interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string & {}> {
    * @deprecated
    */
   WebkitBoxPack?: Property.BoxPack | undefined;
+  /**
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
+   *
+   * **Syntax**: `none | [ objects || [ spaces | [ leading-spaces || trailing-spaces ] ] || edges || box-decoration ]`
+   *
+   * **Initial value**: `objects`
+   *
+   * @deprecated
+   */
+  WebkitTextDecorationSkip?: Property.TextDecorationSkip | undefined;
 }
 interface SvgProperties<TLength = (string & {}) | 0, TTime = string & {}> {
   alignmentBaseline?: Property.AlignmentBaseline | undefined;
@@ -9926,7 +10677,7 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    *
    * | Chrome | Firefox |  Safari  |  Edge  | IE  |
    * | :----: | :-----: | :------: | :----: | :-: |
-   * | **93** | **92**  | **15.4** | **93** | No  |
+   * | **93** | **92**  | **26.2** | **93** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/accent-color
    */
@@ -9983,7 +10734,7 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   "align-tracks"?: Property.AlignTracks | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since March 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `baseline | alphabetic | ideographic | middle | central | mathematical | text-before-edge | text-after-edge`
    *
@@ -9991,21 +10742,21 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    *
    * | Chrome | Firefox | Safari  |  Edge  | IE  |
    * | :----: | :-----: | :-----: | :----: | :-: |
-   * | **1**  |   No    | **5.1** | **79** | No  |
+   * | **1**  | **149** | **5.1** | **79** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/alignment-baseline
    */
   "alignment-baseline"?: Property.AlignmentBaseline | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since January 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `none | <dashed-ident>#`
    *
    * **Initial value**: `none`
    *
-   * | Chrome  |   Firefox   | Safari |  Edge   | IE  |
-   * | :-----: | :---------: | :----: | :-----: | :-: |
-   * | **125** | **preview** | **26** | **125** | No  |
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **125** | **147** | **26** | **125** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/anchor-name
    */
@@ -10015,13 +10766,15 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    *
    * **Initial value**: `none`
    *
-   * | Chrome  |   Firefox   | Safari |  Edge   | IE  |
-   * | :-----: | :---------: | :----: | :-----: | :-: |
-   * | **131** | **preview** | **26** | **131** | No  |
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **131** | **147** | **26** | **131** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/anchor-scope
    */
   "anchor-scope"?: Property.AnchorScope | undefined;
   /**
-   * Since July 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2023.
    *
    * **Syntax**: `<single-animation-composition>#`
    *
@@ -10140,7 +10893,7 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   "animation-play-state"?: Property.AnimationPlayState | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since October 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `[ normal | <length-percentage> | <timeline-range-name> <length-percentage>? ]#`
    *
@@ -10148,13 +10901,13 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    *
    * | Chrome  | Firefox | Safari |  Edge   | IE  |
    * | :-----: | :-----: | :----: | :-----: | :-: |
-   * | **115** |   No    | **26** | **115** | No  |
+   * | **115** | **159** | **26** | **115** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-range-end
    */
   "animation-range-end"?: Property.AnimationRangeEnd<TLength> | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since October 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `[ normal | <length-percentage> | <timeline-range-name> <length-percentage>? ]#`
    *
@@ -10162,13 +10915,13 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    *
    * | Chrome  | Firefox | Safari |  Edge   | IE  |
    * | :-----: | :-----: | :----: | :-----: | :-: |
-   * | **115** |   No    | **26** | **115** | No  |
+   * | **115** | **159** | **26** | **115** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-range-start
    */
   "animation-range-start"?: Property.AnimationRangeStart<TLength> | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since October 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `<single-animation-timeline>#`
    *
@@ -10176,7 +10929,7 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    *
    * | Chrome  | Firefox | Safari |  Edge   | IE  |
    * | :-----: | :-----: | :----: | :-----: | :-: |
-   * | **115** |   No    | **26** | **115** | No  |
+   * | **115** | **159** | **26** | **115** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-timeline
    */
@@ -10196,6 +10949,20 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-timing-function
    */
   "animation-timing-function"?: Property.AnimationTimingFunction | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `[ none | [ <dashed-ident> <animation-action>+ ]+ ]#`
+   *
+   * **Initial value**: `none`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **146** |   No    |   No   | **146** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-trigger
+   */
+  "animation-trigger"?: Property.AnimationTrigger | undefined;
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2022.
    *
@@ -10404,9 +11171,25 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    *
    * | Chrome | Firefox | Safari |  Edge  | IE  |
    * | :----: | :-----: | :----: | :----: | :-: |
-   * | **1**  |   No    | **4**  | **79** | No  |
+   * | **1**  | **149** | **4**  | **79** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/baseline-shift
    */
   "baseline-shift"?: Property.BaselineShift<TLength> | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `auto | first | last`
+   *
+   * **Initial value**: `auto`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **111** | **115** |   No   | **111** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/baseline-source
+   */
+  "baseline-source"?: Property.BaselineSource | undefined;
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since January 2020.
    *
@@ -10623,7 +11406,7 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.
    *
-   * **Syntax**: `[ <length [0,∞]> | <number [0,∞]> ]{1,4}  `
+   * **Syntax**: `[ <length [0,∞]> | <number [0,∞]> ]{1,4}`
    *
    * **Initial value**: `0`
    *
@@ -10651,7 +11434,7 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.
    *
-   * **Syntax**: `[ <number [0,∞]> | <percentage [0,∞]> ]{1,4}  && fill?`
+   * **Syntax**: `[ <number [0,∞]> | <percentage [0,∞]> ]{1,4} && fill?`
    *
    * **Initial value**: `100%`
    *
@@ -10863,6 +11646,20 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-right-width
    */
   "border-right-width"?: Property.BorderRightWidth<TLength> | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `none | [ <basic-shape> <geometry-box>?]{1,2}`
+   *
+   * **Initial value**: `none`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **147** |   No    |   No   | **147** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-shape
+   */
+  "border-shape"?: Property.BorderShape | undefined;
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.
    *
@@ -11093,6 +11890,20 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   "caption-side"?: Property.CaptionSide | undefined;
   /**
+   * The **`caret-animation`** CSS property is used to enable or disable the blinking behavior of the **insertion caret**, the visible marker that appears in editable elements to indicate where the next character will be inserted or deleted.
+   *
+   * **Syntax**: `auto | manual`
+   *
+   * **Initial value**: `auto`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **140** |   No    |   No   | **140** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/caret-animation
+   */
+  "caret-animation"?: Property.CaretAnimation | undefined;
+  /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since January 2020.
    *
    * **Syntax**: `auto | <color>`
@@ -11111,9 +11922,9 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    *
    * **Initial value**: `auto`
    *
-   * | Chrome | Firefox | Safari | Edge | IE  |
-   * | :----: | :-----: | :----: | :--: | :-: |
-   * |   No   |   No    |   No   |  No  | No  |
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **144** |   No    |   No   | **144** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/caret-shape
    */
@@ -11263,6 +12074,20 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   "column-gap"?: Property.ColumnGap<TLength> | undefined;
   /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `auto | <length [0,∞]>`
+   *
+   * **Initial value**: `auto`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **145** |   No    |   No   | **145** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/column-height
+   */
+  "column-height"?: Property.ColumnHeight<TLength> | undefined;
+  /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2017.
    *
    * **Syntax**: `<color>`
@@ -11280,7 +12105,7 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2017.
    *
-   * **Syntax**: `<'border-style'>`
+   * **Syntax**: `<line-style>`
    *
    * **Initial value**: `none`
    *
@@ -11295,7 +12120,7 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2017.
    *
-   * **Syntax**: `<'border-width'>`
+   * **Syntax**: `<line-width>`
    *
    * **Initial value**: `medium`
    *
@@ -11325,7 +12150,7 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since November 2016.
    *
-   * **Syntax**: `<length> | auto`
+   * **Syntax**: `auto | <length [0,∞]>`
    *
    * **Initial value**: `auto`
    *
@@ -11337,6 +12162,20 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/column-width
    */
   "column-width"?: Property.ColumnWidth<TLength> | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `auto | nowrap | wrap`
+   *
+   * **Initial value**: `auto`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **145** |   No    |   No   | **145** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/column-wrap
+   */
+  "column-wrap"?: Property.ColumnWrap | undefined;
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2022.
    *
@@ -11352,7 +12191,7 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   contain?: Property.Contain | undefined;
   /**
-   * Since September 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2023.
    *
    * **Syntax**: `auto? [ none | <length> ]`
    *
@@ -11366,7 +12205,7 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   "contain-intrinsic-block-size"?: Property.ContainIntrinsicBlockSize<TLength> | undefined;
   /**
-   * Since September 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2023.
    *
    * **Syntax**: `auto? [ none | <length> ]`
    *
@@ -11380,7 +12219,7 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   "contain-intrinsic-height"?: Property.ContainIntrinsicHeight<TLength> | undefined;
   /**
-   * Since September 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2023.
    *
    * **Syntax**: `auto? [ none | <length> ]`
    *
@@ -11394,7 +12233,7 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   "contain-intrinsic-inline-size"?: Property.ContainIntrinsicInlineSize<TLength> | undefined;
   /**
-   * Since September 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2023.
    *
    * **Syntax**: `auto? [ none | <length> ]`
    *
@@ -11464,6 +12303,118 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   "content-visibility"?: Property.ContentVisibility | undefined;
   /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `<corner-shape-value>`
+   *
+   * **Initial value**: `round`
+   *
+   * | Chrome  |   Firefox   |  Safari  |  Edge   | IE  |
+   * | :-----: | :---------: | :------: | :-----: | :-: |
+   * | **139** | **preview** | **27.3** | **139** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/corner-bottom-left-shape
+   */
+  "corner-bottom-left-shape"?: Property.CornerBottomLeftShape | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `<corner-shape-value>`
+   *
+   * **Initial value**: `round`
+   *
+   * | Chrome  |   Firefox   |  Safari  |  Edge   | IE  |
+   * | :-----: | :---------: | :------: | :-----: | :-: |
+   * | **139** | **preview** | **27.3** | **139** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/corner-bottom-right-shape
+   */
+  "corner-bottom-right-shape"?: Property.CornerBottomRightShape | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `<corner-shape-value>`
+   *
+   * **Initial value**: `round`
+   *
+   * | Chrome  |   Firefox   |  Safari  |  Edge   | IE  |
+   * | :-----: | :---------: | :------: | :-----: | :-: |
+   * | **139** | **preview** | **27.3** | **139** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/corner-end-end-shape
+   */
+  "corner-end-end-shape"?: Property.CornerEndEndShape | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `<corner-shape-value>`
+   *
+   * **Initial value**: `round`
+   *
+   * | Chrome  |   Firefox   |  Safari  |  Edge   | IE  |
+   * | :-----: | :---------: | :------: | :-----: | :-: |
+   * | **139** | **preview** | **27.3** | **139** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/corner-end-start-shape
+   */
+  "corner-end-start-shape"?: Property.CornerEndStartShape | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `<corner-shape-value>`
+   *
+   * **Initial value**: `round`
+   *
+   * | Chrome  |   Firefox   |  Safari  |  Edge   | IE  |
+   * | :-----: | :---------: | :------: | :-----: | :-: |
+   * | **139** | **preview** | **27.3** | **139** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/corner-start-end-shape
+   */
+  "corner-start-end-shape"?: Property.CornerStartEndShape | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `<corner-shape-value>`
+   *
+   * **Initial value**: `round`
+   *
+   * | Chrome  |   Firefox   |  Safari  |  Edge   | IE  |
+   * | :-----: | :---------: | :------: | :-----: | :-: |
+   * | **139** | **preview** | **27.3** | **139** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/corner-start-start-shape
+   */
+  "corner-start-start-shape"?: Property.CornerStartStartShape | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `<corner-shape-value>`
+   *
+   * **Initial value**: `round`
+   *
+   * | Chrome  |   Firefox   |  Safari  |  Edge   | IE  |
+   * | :-----: | :---------: | :------: | :-----: | :-: |
+   * | **139** | **preview** | **27.3** | **139** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/corner-top-left-shape
+   */
+  "corner-top-left-shape"?: Property.CornerTopLeftShape | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `<corner-shape-value>`
+   *
+   * **Initial value**: `round`
+   *
+   * | Chrome  |   Firefox   |  Safari  |  Edge   | IE  |
+   * | :-----: | :---------: | :------: | :-----: | :-: |
+   * | **139** | **preview** | **27.3** | **139** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/corner-top-right-shape
+   */
+  "corner-top-right-shape"?: Property.CornerTopRightShape | undefined;
+  /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.
    *
    * **Syntax**: `[ <counter-name> <integer>? ]+ | none`
@@ -11492,7 +12443,7 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   "counter-reset"?: Property.CounterReset | undefined;
   /**
-   * Since December 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since December 2023.
    *
    * **Syntax**: `[ <counter-name> <integer>? ]+ | none`
    *
@@ -11604,6 +12555,20 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   "dominant-baseline"?: Property.DominantBaseline | undefined;
   /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `standard | no-limit | constrained | <dynamic-range-limit-mix()>`
+   *
+   * **Initial value**: `no-limit`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **136** |   No    | **26** | **136** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/dynamic-range-limit
+   */
+  "dynamic-range-limit"?: Property.DynamicRangeLimit | undefined;
+  /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.
    *
    * **Syntax**: `show | hide`
@@ -11618,15 +12583,15 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   "empty-cells"?: Property.EmptyCells | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since June 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `content | fixed`
    *
    * **Initial value**: `fixed`
    *
-   * | Chrome  | Firefox |   Safari    |  Edge   | IE  |
-   * | :-----: | :-----: | :---------: | :-----: | :-: |
-   * | **123** |   No    | **preview** | **123** | No  |
+   * | Chrome  | Firefox |  Safari  |  Edge   | IE  |
+   * | :-----: | :-----: | :------: | :-----: | :-: |
+   * | **123** | **152** | **26.2** | **123** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/field-sizing
    */
@@ -11734,6 +12699,20 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   "flex-grow"?: Property.FlexGrow | undefined;
   /**
+   * The **`flex-line-count`** CSS property sets the minimum number of flex lines that flex items will be balanced over in cases where a flex container's `flex-wrap` or `flex-flow` property includes the `balance` keyword.
+   *
+   * **Syntax**: `<integer [1,∞]>`
+   *
+   * **Initial value**: `1`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **150** |   No    |   No   | **150** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/flex-line-count
+   */
+  "flex-line-count"?: Property.FlexLineCount | undefined;
+  /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2015.
    *
    * **Syntax**: `<number>`
@@ -11751,7 +12730,7 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2015.
    *
-   * **Syntax**: `nowrap | wrap | wrap-reverse`
+   * **Syntax**: `nowrap | [ wrap | wrap-reverse ] || balance`
    *
    * **Initial value**: `nowrap`
    *
@@ -11820,7 +12799,7 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   "font-family"?: Property.FontFamily | undefined;
   /**
-   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since April 2017.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2016.
    *
    * **Syntax**: `normal | <feature-tag-value>#`
    *
@@ -11828,7 +12807,7 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    *
    * |  Chrome  | Firefox  | Safari  |  Edge  |   IE   |
    * | :------: | :------: | :-----: | :----: | :----: |
-   * |  **48**  |  **34**  | **9.1** | **15** | **10** |
+   * |  **48**  |  **34**  | **9.1** | **12** | **10** |
    * | 16 _-x-_ | 15 _-x-_ |         |        |        |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-feature-settings
@@ -12081,9 +13060,9 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    *
    * **Initial value**: `normal`
    *
-   * | Chrome  | Firefox | Safari |  Edge   | IE  |
-   * | :-----: | :-----: | :----: | :-----: | :-: |
-   * | **131** | **141** |   No   | **131** | No  |
+   * | Chrome  | Firefox |   Safari    |  Edge   | IE  |
+   * | :-----: | :-----: | :---------: | :-----: | :-: |
+   * | **131** | **141** | **preview** | **131** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-variant-emoji
    */
@@ -12118,15 +13097,15 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   "font-variant-numeric"?: Property.FontVariantNumeric | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2023.
    *
    * **Syntax**: `normal | sub | super`
    *
    * **Initial value**: `normal`
    *
-   * | Chrome | Firefox | Safari  | Edge | IE  |
-   * | :----: | :-----: | :-----: | :--: | :-: |
-   * |   No   | **34**  | **9.1** |  No  | No  |
+   * | Chrome  | Firefox | Safari  |  Edge   | IE  |
+   * | :-----: | :-----: | :-----: | :-----: | :-: |
+   * | **117** | **34**  | **9.1** | **117** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-variant-position
    */
@@ -12166,7 +13145,9 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    *
    * | Chrome | Firefox |  Safari  | Edge | IE  |
    * | :----: | :-----: | :------: | :--: | :-: |
-   * |   No   |   No    | **18.4** |  No  | No  |
+   * |   No   | **155** | **18.4** |  No  | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-width
    */
   "font-width"?: Property.FontWidth | undefined;
   /**
@@ -12184,6 +13165,20 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/forced-color-adjust
    */
   "forced-color-adjust"?: Property.ForcedColorAdjust | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `auto | content-width | content-height | content-block-size | content-inline-size`
+   *
+   * **Initial value**: `auto`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **154** |   No    |   No   | **154** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/frame-sizing
+   */
+  "frame-sizing"?: Property.FrameSizing | undefined;
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2020.
    *
@@ -12331,9 +13326,9 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    *
    * **Initial value**: `none`
    *
-   * | Chrome | Firefox | Safari | Edge | IE  |
-   * | :----: | :-----: | :----: | :--: | :-: |
-   * |   No   |   No    | **10** |  No  | No  |
+   * | Chrome | Firefox |  Safari  | Edge | IE  |
+   * | :----: | :-----: | :------: | :--: | :-: |
+   * |   No   |   No    | **26.5** |  No  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/hanging-punctuation
    */
@@ -12353,7 +13348,7 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   height?: Property.Height<TLength> | undefined;
   /**
-   * Since September 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2023.
    *
    * **Syntax**: `auto | <string>`
    *
@@ -12374,15 +13369,15 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    *
    * **Initial value**: `auto`
    *
-   * | Chrome  | Firefox | Safari |  Edge   | IE  |
-   * | :-----: | :-----: | :----: | :-----: | :-: |
-   * | **109** | **137** |   No   | **109** | No  |
+   * | Chrome  | Firefox |  Safari  |  Edge   | IE  |
+   * | :-----: | :-----: | :------: | :-----: | :-: |
+   * | **109** | **137** | **27.3** | **109** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/hyphenate-limit-chars
    */
   "hyphenate-limit-chars"?: Property.HyphenateLimitChars | undefined;
   /**
-   * Since September 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2023.
    *
    * **Syntax**: `none | manual | auto`
    *
@@ -12526,13 +13521,55 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
   /**
    * This feature is not Baseline because it does not work in some of the most widely-used browsers.
    *
+   * **Syntax**: `auto | inert`
+   *
+   * **Initial value**: `auto`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **135** |   No    |   No   | **135** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/interactivity
+   */
+  interactivity?: Property.Interactivity | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `normal | <time>`
+   *
+   * **Initial value**: `normal`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **142** |   No    |   No   | **142** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/interest-delay-end
+   */
+  "interest-delay-end"?: Property.InterestDelayEnd<TTime> | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `normal | <time>`
+   *
+   * **Initial value**: `normal`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **142** |   No    |   No   | **142** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/interest-delay-start
+   */
+  "interest-delay-start"?: Property.InterestDelayStart<TTime> | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
    * **Syntax**: `numeric-only | allow-keywords`
    *
    * **Initial value**: `numeric-only`
    *
-   * | Chrome  | Firefox | Safari |  Edge   | IE  |
-   * | :-----: | :-----: | :----: | :-----: | :-: |
-   * | **129** |   No    |   No   | **129** | No  |
+   * | Chrome  | Firefox |   Safari    |  Edge   | IE  |
+   * | :-----: | :-----: | :---------: | :-----: | :-: |
+   * | **129** |   No    | **preview** | **129** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/interpolate-size
    */
@@ -12680,6 +13717,20 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   "line-height-step"?: Property.LineHeightStep<TLength> | undefined;
   /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `none | <param()>#`
+   *
+   * **Initial value**: `none`
+   *
+   * | Chrome |   Firefox   |   Safari    | Edge | IE  |
+   * | :----: | :---------: | :---------: | :--: | :-: |
+   * |   No   | **preview** | **preview** |  No  | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/link-parameters
+   */
+  "link-parameters"?: Property.LinkParameters | undefined;
+  /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.
    *
    * **Syntax**: `<image> | none`
@@ -12728,9 +13779,10 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    *
    * **Initial value**: `0`
    *
-   * | Chrome | Firefox |  Safari  |  Edge  | IE  |
-   * | :----: | :-----: | :------: | :----: | :-: |
-   * | **69** | **41**  | **12.1** | **79** | No  |
+   * |           Chrome           | Firefox |            Safari            |  Edge  | IE  |
+   * | :------------------------: | :-----: | :--------------------------: | :----: | :-: |
+   * |           **69**           | **41**  |           **12.1**           | **79** | No  |
+   * | 8 _(-webkit-margin-after)_ |         | 5.1 _(-webkit-margin-after)_ |        |     |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/margin-block-end
    */
@@ -12742,9 +13794,10 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    *
    * **Initial value**: `0`
    *
-   * | Chrome | Firefox |  Safari  |  Edge  | IE  |
-   * | :----: | :-----: | :------: | :----: | :-: |
-   * | **69** | **41**  | **12.1** | **79** | No  |
+   * |           Chrome            | Firefox |            Safari             |  Edge  | IE  |
+   * | :-------------------------: | :-----: | :---------------------------: | :----: | :-: |
+   * |           **69**            | **41**  |           **12.1**            | **79** | No  |
+   * | 8 _(-webkit-margin-before)_ |         | 5.1 _(-webkit-margin-before)_ |        |     |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/margin-block-start
    */
@@ -12842,9 +13895,9 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    *
    * **Initial value**: `none`
    *
-   * | Chrome | Firefox |  Safari  | Edge | IE  |
-   * | :----: | :-----: | :------: | :--: | :-: |
-   * |   No   |   No    | **16.4** |  No  | No  |
+   * | Chrome  | Firefox |  Safari  |  Edge   | IE  |
+   * | :-----: | :-----: | :------: | :-----: | :-: |
+   * | **155** |   No    | **16.4** | **155** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/margin-trim
    */
@@ -12987,7 +14040,7 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   "mask-border-width"?: Property.MaskBorderWidth<TLength> | undefined;
   /**
-   * Since December 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since December 2023.
    *
    * **Syntax**: `[ <coord-box> | no-clip ]#`
    *
@@ -13002,7 +14055,7 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   "mask-clip"?: Property.MaskClip | undefined;
   /**
-   * Since December 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since December 2023.
    *
    * **Syntax**: `<compositing-operator>#`
    *
@@ -13016,7 +14069,7 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   "mask-composite"?: Property.MaskComposite | undefined;
   /**
-   * Since December 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since December 2023.
    *
    * **Syntax**: `<mask-reference>#`
    *
@@ -13031,7 +14084,7 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   "mask-image"?: Property.MaskImage | undefined;
   /**
-   * Since December 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
    *
    * **Syntax**: `<masking-mode>#`
    *
@@ -13045,7 +14098,7 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   "mask-mode"?: Property.MaskMode | undefined;
   /**
-   * Since December 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since December 2023.
    *
    * **Syntax**: `<coord-box>#`
    *
@@ -13060,7 +14113,7 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   "mask-origin"?: Property.MaskOrigin | undefined;
   /**
-   * Since December 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since December 2023.
    *
    * **Syntax**: `<position>#`
    *
@@ -13075,7 +14128,7 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   "mask-position"?: Property.MaskPosition<TLength> | undefined;
   /**
-   * Since December 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since December 2023.
    *
    * **Syntax**: `<repeat-style>#`
    *
@@ -13090,7 +14143,7 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   "mask-repeat"?: Property.MaskRepeat | undefined;
   /**
-   * Since December 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since December 2023.
    *
    * **Syntax**: `<bg-size>#`
    *
@@ -13127,35 +14180,35 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   "masonry-auto-flow"?: Property.MasonryAutoFlow | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since March 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `auto-add | add(<integer>) | <integer>`
    *
    * **Initial value**: `0`
    *
-   * | Chrome  | Firefox | Safari |  Edge   | IE  |
-   * | :-----: | :-----: | :----: | :-----: | :-: |
-   * | **109** | **117** |   No   | **109** | No  |
+   * | Chrome  | Firefox |  Safari  |  Edge   | IE  |
+   * | :-----: | :-----: | :------: | :-----: | :-: |
+   * | **109** | **117** | **26.4** | **109** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/math-depth
    */
   "math-depth"?: Property.MathDepth | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since December 2025, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `normal | compact`
    *
    * **Initial value**: `normal`
    *
-   * | Chrome  | Firefox | Safari |  Edge   | IE  |
-   * | :-----: | :-----: | :----: | :-----: | :-: |
-   * | **109** |   No    |   No   | **109** | No  |
+   * | Chrome  | Firefox |  Safari  |  Edge   | IE  |
+   * | :-----: | :-----: | :------: | :-----: | :-: |
+   * | **109** | **146** | **26.2** | **109** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/math-shift
    */
   "math-shift"?: Property.MathShift | undefined;
   /**
-   * Since August 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since August 2023.
    *
    * **Syntax**: `normal | compact`
    *
@@ -13215,6 +14268,10 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    * **Syntax**: `none | <integer>`
    *
    * **Initial value**: `none`
+   *
+   * | Chrome | Firefox |   Safari    | Edge | IE  |
+   * | :----: | :-----: | :---------: | :--: | :-: |
+   * |   No   |   No    | **preview** |  No  | No  |
    */
   "max-lines"?: Property.MaxLines | undefined;
   /**
@@ -13379,15 +14436,15 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    *
    * **Initial value**: `none`
    *
-   * | Chrome  | Firefox | Safari |  Edge   | IE  |
-   * | :-----: | :-----: | :----: | :-----: | :-: |
-   * | **104** |   No    |   No   | **104** | No  |
+   * | Chrome  | Firefox |  Safari  |  Edge   | IE  |
+   * | :-----: | :-----: | :------: | :-----: | :-: |
+   * | **104** |   No    | **27.3** | **104** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/object-view-box
    */
   "object-view-box"?: Property.ObjectViewBox | undefined;
   /**
-   * Since August 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since August 2023.
    *
    * **Syntax**: `auto | <position>`
    *
@@ -13431,7 +14488,7 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   "offset-path"?: Property.OffsetPath | undefined;
   /**
-   * Since January 2024, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since January 2024.
    *
    * **Syntax**: `normal | auto | <position>`
    *
@@ -13574,15 +14631,15 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   "outline-width"?: Property.OutlineWidth<TLength> | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since September 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `auto | none`
    *
    * **Initial value**: `auto`
    *
-   * | Chrome | Firefox |   Safari    |  Edge  | IE  |
-   * | :----: | :-----: | :---------: | :----: | :-: |
-   * | **56** | **66**  | **preview** | **79** | No  |
+   * | Chrome | Firefox | Safari |  Edge  | IE  |
+   * | :----: | :-----: | :----: | :----: | :-: |
+   * | **56** | **66**  | **27** | **79** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overflow-anchor
    */
@@ -13693,57 +14750,57 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   overlay?: Property.Overlay | undefined;
   /**
-   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2022.
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
    *
    * **Syntax**: `contain | none | auto`
    *
    * **Initial value**: `auto`
    *
-   * | Chrome | Firefox | Safari |  Edge  | IE  |
-   * | :----: | :-----: | :----: | :----: | :-: |
-   * | **77** | **73**  | **16** | **79** | No  |
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **144** | **150** | **16** | **144** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overscroll-behavior-block
    */
   "overscroll-behavior-block"?: Property.OverscrollBehaviorBlock | undefined;
   /**
-   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2022.
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
    *
    * **Syntax**: `contain | none | auto`
    *
    * **Initial value**: `auto`
    *
-   * | Chrome | Firefox | Safari |  Edge  | IE  |
-   * | :----: | :-----: | :----: | :----: | :-: |
-   * | **77** | **73**  | **16** | **79** | No  |
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **144** | **150** | **16** | **144** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overscroll-behavior-inline
    */
   "overscroll-behavior-inline"?: Property.OverscrollBehaviorInline | undefined;
   /**
-   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2022.
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
    *
    * **Syntax**: `contain | none | auto`
    *
    * **Initial value**: `auto`
    *
-   * | Chrome | Firefox | Safari |  Edge  | IE  |
-   * | :----: | :-----: | :----: | :----: | :-: |
-   * | **63** | **59**  | **16** | **18** | No  |
+   * | Chrome  | Firefox | Safari |  Edge  | IE  |
+   * | :-----: | :-----: | :----: | :----: | :-: |
+   * | **144** | **150** | **16** | **18** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overscroll-behavior-x
    */
   "overscroll-behavior-x"?: Property.OverscrollBehaviorX | undefined;
   /**
-   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2022.
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
    *
    * **Syntax**: `contain | none | auto`
    *
    * **Initial value**: `auto`
    *
-   * | Chrome | Firefox | Safari |  Edge  | IE  |
-   * | :----: | :-----: | :----: | :----: | :-: |
-   * | **63** | **59**  | **16** | **18** | No  |
+   * | Chrome  | Firefox | Safari |  Edge  | IE  |
+   * | :-----: | :-----: | :----: | :----: | :-: |
+   * | **144** | **150** | **16** | **18** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overscroll-behavior-y
    */
@@ -13877,7 +14934,7 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   page?: Property.Page | undefined;
   /**
-   * Since March 2024, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2024.
    *
    * **Syntax**: `normal | [ fill || stroke || markers ]`
    *
@@ -13890,6 +14947,20 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/paint-order
    */
   "paint-order"?: Property.PaintOrder | undefined;
+  /**
+   * The **`path-length`** CSS property specifies a total path length, in user units. All path computations are then scaled using the ratio `path-length` / _(computed value of path length)_ — this includes text paths, animation paths, and various stroke operations.
+   *
+   * **Syntax**: `none | <length> [0,∞]`
+   *
+   * **Initial value**: `none`
+   *
+   * | Chrome | Firefox | Safari | Edge | IE  |
+   * | :----: | :-----: | :----: | :--: | :-: |
+   * |   No   |   No    |   No   |  No  | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/path-length
+   */
+  "path-length"?: Property.PathLength | undefined;
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2015.
    *
@@ -13949,49 +15020,49 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   position?: Property.Position | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since September 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
-   * **Syntax**: `auto | <anchor-name>`
+   * **Syntax**: `normal | auto | none | <anchor-name> | match-parent`
    *
-   * **Initial value**: `auto`
+   * **Initial value**: `normal`
    *
-   * | Chrome  |   Firefox   | Safari |  Edge   | IE  |
-   * | :-----: | :---------: | :----: | :-----: | :-: |
-   * | **125** | **preview** | **26** | **125** | No  |
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **151** | **151** | **27** | **151** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/position-anchor
    */
   "position-anchor"?: Property.PositionAnchor | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since January 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `none | <position-area>`
    *
    * **Initial value**: `none`
    *
-   * | Chrome  |   Firefox   | Safari |  Edge   | IE  |
-   * | :-----: | :---------: | :----: | :-----: | :-: |
-   * | **129** | **preview** | **26** | **129** | No  |
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **129** | **147** | **26** | **129** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/position-area
    */
   "position-area"?: Property.PositionArea | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since January 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `none | [ [<dashed-ident> || <try-tactic>] | <'position-area'> ]#`
    *
    * **Initial value**: `none`
    *
-   * | Chrome  |   Firefox   | Safari |  Edge   | IE  |
-   * | :-----: | :---------: | :----: | :-----: | :-: |
-   * | **128** | **preview** | **26** | **128** | No  |
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **128** | **147** | **26** | **128** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/position-try-fallbacks
    */
   "position-try-fallbacks"?: Property.PositionTryFallbacks | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since February 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `normal | <try-size>`
    *
@@ -13999,21 +15070,21 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    *
    * | Chrome  | Firefox | Safari |  Edge   | IE  |
    * | :-----: | :-----: | :----: | :-----: | :-: |
-   * | **125** |   No    | **26** | **125** | No  |
+   * | **125** | **148** | **26** | **125** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/position-try-order
    */
   "position-try-order"?: Property.PositionTryOrder | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since January 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `always | [ anchors-valid || anchors-visible || no-overflow ]`
    *
    * **Initial value**: `anchors-visible`
    *
-   * | Chrome  |   Firefox   | Safari |  Edge   | IE  |
-   * | :-----: | :---------: | :----: | :-----: | :-: |
-   * | **125** | **preview** |   No   | **125** | No  |
+   * | Chrome  | Firefox |  Safari  |  Edge   | IE  |
+   * | :-----: | :-----: | :------: | :-----: | :-: |
+   * | **125** | **147** | **26.2** | **125** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/position-visibility
    */
@@ -14061,6 +15132,34 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/r
    */
   r?: Property.R<TLength> | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `normal | source-order | flex-visual | flex-flow | grid-rows | grid-columns | grid-order`
+   *
+   * **Initial value**: `normal`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **137** |   No    |   No   | **137** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/reading-flow
+   */
+  "reading-flow"?: Property.ReadingFlow | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `<integer>`
+   *
+   * **Initial value**: `0`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **137** |   No    |   No   | **137** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/reading-order
+   */
+  "reading-order"?: Property.ReadingOrder | undefined;
   /**
    * This feature is not Baseline because it does not work in some of the most widely-used browsers.
    *
@@ -14142,9 +15241,9 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    *
    * **Initial value**: `auto`
    *
-   * | Chrome | Firefox |  Safari  | Edge | IE  |
-   * | :----: | :-----: | :------: | :--: | :-: |
-   * |   No   |   No    | **18.2** |  No  | No  |
+   * | Chrome  | Firefox |  Safari  |  Edge   | IE  |
+   * | :-----: | :-----: | :------: | :-----: | :-: |
+   * | **151** |   No    | **18.2** | **151** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/ruby-overhang
    */
@@ -14165,11 +15264,11 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   "ruby-position"?: Property.RubyPosition | undefined;
   /**
-   * Since March 2024, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2024.
    *
-   * **Syntax**: `<length> | <percentage>`
+   * **Syntax**: `<length-percentage> | auto`
    *
-   * **Initial value**: `0`
+   * **Initial value**: `auto`
    *
    * | Chrome | Firefox |  Safari  |  Edge  | IE  |
    * | :----: | :-----: | :------: | :----: | :-: |
@@ -14179,11 +15278,11 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   rx?: Property.Rx<TLength> | undefined;
   /**
-   * Since March 2024, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2024.
    *
-   * **Syntax**: `<length> | <percentage>`
+   * **Syntax**: `<length-percentage> | auto`
    *
-   * **Initial value**: `0`
+   * **Initial value**: `auto`
    *
    * | Chrome | Firefox |  Safari  |  Edge  | IE  |
    * | :----: | :-----: | :------: | :----: | :-: |
@@ -14207,6 +15306,16 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   scale?: Property.Scale | undefined;
   /**
+   * **Syntax**: `auto | none`
+   *
+   * **Initial value**: `auto`
+   *
+   * | Chrome  | Firefox | Safari | Edge | IE  |
+   * | :-----: | :-----: | :----: | :--: | :-: |
+   * | **153** |   No    |   No   |  No  | No  |
+   */
+  "scroll-axis-lock"?: Property.ScrollAxisLock | undefined;
+  /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2022.
    *
    * **Syntax**: `auto | smooth`
@@ -14228,6 +15337,8 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    * | Chrome  | Firefox | Safari |  Edge   | IE  |
    * | :-----: | :-----: | :----: | :-----: | :-: |
    * | **133** |   No    |   No   | **133** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-initial-target
    */
   "scroll-initial-target"?: Property.ScrollInitialTarget | undefined;
   /**
@@ -14346,6 +15457,20 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-margin-top
    */
   "scroll-margin-top"?: Property.ScrollMarginTop<TLength> | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `none | before | after`
+   *
+   * **Initial value**: `none`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **135** |   No    |   No   | **135** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-marker-group
+   */
+  "scroll-marker-group"?: Property.ScrollMarkerGroup | undefined;
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2021.
    *
@@ -14564,19 +15689,33 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
   /**
    * This feature is not Baseline because it does not work in some of the most widely-used browsers.
    *
+   * **Syntax**: `none | auto`
+   *
+   * **Initial value**: `none`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **140** |   No    |   No   | **140** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-target-group
+   */
+  "scroll-target-group"?: Property.ScrollTargetGroup | undefined;
+  /**
+   * Since October 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   *
    * **Syntax**: `[ block | inline | x | y ]#`
    *
    * **Initial value**: `block`
    *
    * | Chrome  | Firefox | Safari |  Edge   | IE  |
    * | :-----: | :-----: | :----: | :-----: | :-: |
-   * | **115** |   No    | **26** | **115** | No  |
+   * | **115** | **159** | **26** | **115** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-timeline-axis
    */
   "scroll-timeline-axis"?: Property.ScrollTimelineAxis | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since October 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `[ none | <dashed-ident> ]#`
    *
@@ -14584,21 +15723,21 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    *
    * | Chrome  | Firefox | Safari |  Edge   | IE  |
    * | :-----: | :-----: | :----: | :-----: | :-: |
-   * | **115** |   No    | **26** | **115** | No  |
+   * | **115** | **159** | **26** | **115** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-timeline-name
    */
   "scroll-timeline-name"?: Property.ScrollTimelineName | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since December 2025, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `auto | <color>{2}`
    *
    * **Initial value**: `auto`
    *
-   * | Chrome  | Firefox | Safari |  Edge   | IE  |
-   * | :-----: | :-----: | :----: | :-----: | :-: |
-   * | **121** | **64**  |   No   | **121** | No  |
+   * | Chrome  | Firefox |  Safari  |  Edge   | IE  |
+   * | :-----: | :-----: | :------: | :-----: | :-: |
+   * | **121** | **64**  | **26.2** | **121** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scrollbar-color
    */
@@ -14919,7 +16058,7 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   "text-anchor"?: Property.TextAnchor | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since November 2025, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `normal | <autospace> | auto`
    *
@@ -14939,7 +16078,7 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    *
    * | Chrome  | Firefox |  Safari  |  Edge   | IE  |
    * | :-----: | :-----: | :------: | :-----: | :-: |
-   * | **133** |   No    | **18.2** | **133** | No  |
+   * | **133** | **154** | **18.2** | **133** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-box
    */
@@ -14951,7 +16090,7 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    *
    * | Chrome  | Firefox |  Safari  |  Edge   | IE  |
    * | :-----: | :-----: | :------: | :-----: | :-: |
-   * | **133** |   No    | **18.2** | **133** | No  |
+   * | **133** | **154** | **18.2** | **133** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-box-edge
    */
@@ -14963,7 +16102,7 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    *
    * | Chrome  | Firefox |  Safari  |  Edge   | IE  |
    * | :-----: | :-----: | :------: | :-----: | :-: |
-   * | **133** |   No    | **18.2** | **133** | No  |
+   * | **133** | **154** | **18.2** | **133** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-box-trim
    */
@@ -14999,6 +16138,20 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   "text-decoration-color"?: Property.TextDecorationColor | undefined;
   /**
+   * The **`text-decoration-inset`** CSS property enables adjusting the start and end points of an element's text decoration so it can be shortened, lengthened, or have its position shifted with respect to the rendered text.
+   *
+   * **Syntax**: `<length-percentage>{1,2} | auto`
+   *
+   * **Initial value**: `0`
+   *
+   * | Chrome  | Firefox |  Safari  |  Edge   | IE  |
+   * | :-----: | :-----: | :------: | :-----: | :-: |
+   * | **157** | **146** | **27.3** | **157** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-decoration-inset
+   */
+  "text-decoration-inset"?: Property.TextDecorationInset<TLength> | undefined;
+  /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since January 2020.
    *
    * **Syntax**: `none | [ underline || overline || line-through || blink ] | spelling-error | grammar-error`
@@ -15013,21 +16166,6 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-decoration-line
    */
   "text-decoration-line"?: Property.TextDecorationLine | undefined;
-  /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
-   *
-   * **Syntax**: `none | [ objects || [ spaces | [ leading-spaces || trailing-spaces ] ] || edges || box-decoration ]`
-   *
-   * **Initial value**: `objects`
-   *
-   * | Chrome | Firefox |  Safari  | Edge | IE  |
-   * | :----: | :-----: | :------: | :--: | :-: |
-   * | 57-64  |   No    | **12.1** |  No  | No  |
-   * |        |         | 7 _-x-_  |      |     |
-   *
-   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-decoration-skip
-   */
-  "text-decoration-skip"?: Property.TextDecorationSkip | undefined;
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2022.
    *
@@ -15060,7 +16198,7 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2021.
    *
-   * **Syntax**: `auto | from-font | <length> | <percentage> `
+   * **Syntax**: `auto | from-font | <length> | <percentage>`
    *
    * **Initial value**: `auto`
    *
@@ -15117,6 +16255,20 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   "text-emphasis-style"?: Property.TextEmphasisStyle | undefined;
   /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `[ none | grow | shrink ] [consistent | per-line | per-line-all]? <percentage>?`
+   *
+   * **Initial value**: `none`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **150** |   No    |   No   | **150** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-fit
+   */
+  "text-fit"?: Property.TextFit | undefined;
+  /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.
    *
    * **Syntax**: `<length-percentage> && hanging? && each-line?`
@@ -15137,9 +16289,9 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    *
    * **Initial value**: `auto`
    *
-   * | Chrome | Firefox | Safari | Edge  |   IE   |
-   * | :----: | :-----: | :----: | :---: | :----: |
-   * |   No   | **55**  |   No   | 12-79 | **11** |
+   * | Chrome  | Firefox | Safari | Edge  |   IE   |
+   * | :-----: | :-----: | :----: | :---: | :----: |
+   * | **145** | **55**  |   No   | 12-79 | **11** |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-justify
    */
@@ -15246,7 +16398,7 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since November 2020.
    *
-   * **Syntax**: `auto | <length> | <percentage> `
+   * **Syntax**: `auto | <length> | <percentage>`
    *
    * **Initial value**: `auto`
    *
@@ -15301,6 +16453,76 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   "text-wrap-style"?: Property.TextWrapStyle | undefined;
   /**
+   * Since October 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   *
+   * **Syntax**: `none | <dashed-ident>#`
+   *
+   * **Initial value**: `none`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **116** | **159** | **26** | **116** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/timeline-scope
+   */
+  "timeline-scope"?: Property.TimelineScope | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `[ normal | <length-percentage> | <timeline-range-name> <length-percentage>? ]#`
+   *
+   * **Initial value**: `normal`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **146** |   No    |   No   | **146** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/timeline-trigger-activation-range-end
+   */
+  "timeline-trigger-activation-range-end"?: Property.TimelineTriggerActivationRangeEnd<TLength> | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `[ normal | <length-percentage> | <timeline-range-name> <length-percentage>? ]#`
+   *
+   * **Initial value**: `normal`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **146** |   No    |   No   | **146** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/timeline-trigger-activation-range-start
+   */
+  "timeline-trigger-activation-range-start"?: Property.TimelineTriggerActivationRangeStart<TLength> | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `[ auto | normal | <length-percentage> | <timeline-range-name> <length-percentage>? ]#`
+   *
+   * **Initial value**: `auto`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **146** |   No    |   No   | **146** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/timeline-trigger-active-range-end
+   */
+  "timeline-trigger-active-range-end"?: Property.TimelineTriggerActiveRangeEnd<TLength> | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `[ auto | normal | <length-percentage> | <timeline-range-name> <length-percentage>? ]#`
+   *
+   * **Initial value**: `auto`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **146** |   No    |   No   | **146** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/timeline-trigger-active-range-start
+   */
+  "timeline-trigger-active-range-start"?: Property.TimelineTriggerActiveRangeStart<TLength> | undefined;
+  /**
    * This feature is not Baseline because it does not work in some of the most widely-used browsers.
    *
    * **Syntax**: `none | <dashed-ident>#`
@@ -15309,11 +16531,25 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    *
    * | Chrome  | Firefox | Safari |  Edge   | IE  |
    * | :-----: | :-----: | :----: | :-----: | :-: |
-   * | **116** |   No    | **26** | **116** | No  |
+   * | **146** |   No    |   No   | **146** | No  |
    *
-   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/timeline-scope
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/timeline-trigger-name
    */
-  "timeline-scope"?: Property.TimelineScope | undefined;
+  "timeline-trigger-name"?: Property.TimelineTriggerName | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `<single-animation-timeline>#`
+   *
+   * **Initial value**: `auto`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **146** |   No    |   No   | **146** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/timeline-trigger-source
+   */
+  "timeline-trigger-source"?: Property.TimelineTriggerSource | undefined;
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.
    *
@@ -15403,7 +16639,7 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   "transform-style"?: Property.TransformStyle | undefined;
   /**
-   * Since August 2024, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
    *
    * **Syntax**: `<transition-behavior-value>#`
    *
@@ -15491,6 +16727,20 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   translate?: Property.Translate<TLength> | undefined;
   /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `none | all | <dashed-ident>#`
+   *
+   * **Initial value**: `none`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **146** |   No    |   No   | **146** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/trigger-scope
+   */
+  "trigger-scope"?: Property.TriggerScope | undefined;
+  /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.
    *
    * **Syntax**: `normal | embed | isolate | bidi-override | isolate-override | plaintext`
@@ -15511,10 +16761,10 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    *
    * **Initial value**: `auto`
    *
-   * | Chrome  | Firefox |   Safari    |   Edge   |      IE      |
-   * | :-----: | :-----: | :---------: | :------: | :----------: |
-   * | **54**  | **69**  | **3** _-x-_ |  **79**  | **10** _-x-_ |
-   * | 1 _-x-_ | 1 _-x-_ |             | 12 _-x-_ |              |
+   * | Chrome  | Firefox |  Safari  |   Edge   |      IE      |
+   * | :-----: | :-----: | :------: | :------: | :----------: |
+   * | **54**  | **69**  | **27.3** |  **79**  | **10** _-x-_ |
+   * | 1 _-x-_ | 1 _-x-_ | 3 _-x-_  | 12 _-x-_ |              |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/user-select
    */
@@ -15548,7 +16798,7 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   "vertical-align"?: Property.VerticalAlign<TLength> | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since October 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `[ block | inline | x | y ]#`
    *
@@ -15556,13 +16806,13 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    *
    * | Chrome  | Firefox | Safari |  Edge   | IE  |
    * | :-----: | :-----: | :----: | :-----: | :-: |
-   * | **115** |   No    | **26** | **115** | No  |
+   * | **115** | **159** | **26** | **115** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/view-timeline-axis
    */
   "view-timeline-axis"?: Property.ViewTimelineAxis | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since October 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `[ [ auto | <length-percentage> ]{1,2} ]#`
    *
@@ -15570,13 +16820,13 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    *
    * | Chrome  | Firefox | Safari |  Edge   | IE  |
    * | :-----: | :-----: | :----: | :-----: | :-: |
-   * | **115** |   No    | **26** | **115** | No  |
+   * | **115** | **159** | **26** | **115** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/view-timeline-inset
    */
   "view-timeline-inset"?: Property.ViewTimelineInset<TLength> | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since October 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `[ none | <dashed-ident> ]#`
    *
@@ -15584,7 +16834,7 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    *
    * | Chrome  | Firefox | Safari |  Edge   | IE  |
    * | :-----: | :-----: | :----: | :-----: | :-: |
-   * | **115** |   No    | **26** | **115** | No  |
+   * | **115** | **159** | **26** | **115** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/view-timeline-name
    */
@@ -15616,6 +16866,20 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   "view-transition-name"?: Property.ViewTransitionName | undefined;
   /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `none | all`
+   *
+   * **Initial value**: `none`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **147** |   No    |   No   | **147** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/view-transition-scope
+   */
+  "view-transition-scope"?: Property.ViewTransitionScope | undefined;
+  /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.
    *
    * **Syntax**: `visible | hidden | collapse`
@@ -15644,7 +16908,7 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    */
   "white-space"?: Property.WhiteSpace | undefined;
   /**
-   * Since March 2024, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2024.
    *
    * **Syntax**: `collapse | preserve | preserve-breaks | preserve-spaces | break-spaces`
    *
@@ -15699,6 +16963,16 @@ interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = 
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/will-change
    */
   "will-change"?: Property.WillChange | undefined;
+  /**
+   * **Syntax**: `none | move`
+   *
+   * **Initial value**: `none`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **152** |   No    |   No   | **152** | No  |
+   */
+  "window-drag"?: Property.WindowDrag | undefined;
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.
    *
@@ -15836,13 +17110,13 @@ interface StandardShorthandPropertiesHyphen<TLength = (string & {}) | 0, TTime =
    */
   animation?: Property.Animation<TTime> | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since October 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `[ <'animation-range-start'> <'animation-range-end'>? ]#`
    *
    * | Chrome  | Firefox | Safari |  Edge   | IE  |
    * | :-----: | :-----: | :----: | :-----: | :-: |
-   * | **115** |   No    | **26** | **115** | No  |
+   * | **115** | **159** | **26** | **115** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-range
    */
@@ -15888,7 +17162,7 @@ interface StandardShorthandPropertiesHyphen<TLength = (string & {}) | 0, TTime =
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since April 2021.
    *
-   * **Syntax**: `<'border-block-start'>`
+   * **Syntax**: `<'border-top'>`
    *
    * | Chrome | Firefox |  Safari  |  Edge  | IE  |
    * | :----: | :-----: | :------: | :----: | :-: |
@@ -15902,8 +17176,6 @@ interface StandardShorthandPropertiesHyphen<TLength = (string & {}) | 0, TTime =
    *
    * **Syntax**: `<'border-top-color'>{1,2}`
    *
-   * **Initial value**: `currentcolor`
-   *
    * | Chrome | Firefox |  Safari  |  Edge  | IE  |
    * | :----: | :-----: | :------: | :----: | :-: |
    * | **87** | **66**  | **14.1** | **87** | No  |
@@ -15914,7 +17186,7 @@ interface StandardShorthandPropertiesHyphen<TLength = (string & {}) | 0, TTime =
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since January 2020.
    *
-   * **Syntax**: `<'border-top-width'> || <'border-top-style'> || <color>`
+   * **Syntax**: `<'border-top'>`
    *
    * | Chrome | Firefox |  Safari  |  Edge  | IE  |
    * | :----: | :-----: | :------: | :----: | :-: |
@@ -15926,7 +17198,7 @@ interface StandardShorthandPropertiesHyphen<TLength = (string & {}) | 0, TTime =
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since January 2020.
    *
-   * **Syntax**: `<'border-top-width'> || <'border-top-style'> || <color>`
+   * **Syntax**: `<'border-top'>`
    *
    * | Chrome | Firefox |  Safari  |  Edge  | IE  |
    * | :----: | :-----: | :------: | :----: | :-: |
@@ -15940,8 +17212,6 @@ interface StandardShorthandPropertiesHyphen<TLength = (string & {}) | 0, TTime =
    *
    * **Syntax**: `<'border-top-style'>{1,2}`
    *
-   * **Initial value**: `none`
-   *
    * | Chrome | Firefox |  Safari  |  Edge  | IE  |
    * | :----: | :-----: | :------: | :----: | :-: |
    * | **87** | **66**  | **14.1** | **87** | No  |
@@ -15953,8 +17223,6 @@ interface StandardShorthandPropertiesHyphen<TLength = (string & {}) | 0, TTime =
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since April 2021.
    *
    * **Syntax**: `<'border-top-width'>{1,2}`
-   *
-   * **Initial value**: `medium`
    *
    * | Chrome | Firefox |  Safari  |  Edge  | IE  |
    * | :----: | :-----: | :------: | :----: | :-: |
@@ -16003,7 +17271,7 @@ interface StandardShorthandPropertiesHyphen<TLength = (string & {}) | 0, TTime =
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since April 2021.
    *
-   * **Syntax**: `<'border-block-start'>`
+   * **Syntax**: `<'border-top'>`
    *
    * | Chrome | Firefox |  Safari  |  Edge  | IE  |
    * | :----: | :-----: | :------: | :----: | :-: |
@@ -16017,8 +17285,6 @@ interface StandardShorthandPropertiesHyphen<TLength = (string & {}) | 0, TTime =
    *
    * **Syntax**: `<'border-top-color'>{1,2}`
    *
-   * **Initial value**: `currentcolor`
-   *
    * | Chrome | Firefox |  Safari  |  Edge  | IE  |
    * | :----: | :-----: | :------: | :----: | :-: |
    * | **87** | **66**  | **14.1** | **87** | No  |
@@ -16029,7 +17295,7 @@ interface StandardShorthandPropertiesHyphen<TLength = (string & {}) | 0, TTime =
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since January 2020.
    *
-   * **Syntax**: `<'border-top-width'> || <'border-top-style'> || <color>`
+   * **Syntax**: `<'border-top'>`
    *
    * | Chrome | Firefox |  Safari  |  Edge  | IE  |
    * | :----: | :-----: | :------: | :----: | :-: |
@@ -16041,7 +17307,7 @@ interface StandardShorthandPropertiesHyphen<TLength = (string & {}) | 0, TTime =
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since January 2020.
    *
-   * **Syntax**: `<'border-top-width'> || <'border-top-style'> || <color>`
+   * **Syntax**: `<'border-top'>`
    *
    * | Chrome | Firefox |  Safari  |  Edge  | IE  |
    * | :----: | :-----: | :------: | :----: | :-: |
@@ -16055,8 +17321,6 @@ interface StandardShorthandPropertiesHyphen<TLength = (string & {}) | 0, TTime =
    *
    * **Syntax**: `<'border-top-style'>{1,2}`
    *
-   * **Initial value**: `none`
-   *
    * | Chrome | Firefox |  Safari  |  Edge  | IE  |
    * | :----: | :-----: | :------: | :----: | :-: |
    * | **87** | **66**  | **14.1** | **87** | No  |
@@ -16068,8 +17332,6 @@ interface StandardShorthandPropertiesHyphen<TLength = (string & {}) | 0, TTime =
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since April 2021.
    *
    * **Syntax**: `<'border-top-width'>{1,2}`
-   *
-   * **Initial value**: `medium`
    *
    * | Chrome | Firefox |  Safari  |  Edge  | IE  |
    * | :----: | :-----: | :------: | :----: | :-: |
@@ -16151,7 +17413,7 @@ interface StandardShorthandPropertiesHyphen<TLength = (string & {}) | 0, TTime =
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-width
    */
   "border-width"?: Property.BorderWidth<TLength> | undefined;
-  /** **Syntax**: `<'caret-color'> || <'caret-shape'>` */
+  /** **Syntax**: `<'caret-color'> || <'caret-animation'> || <'caret-shape'>` */
   caret?: Property.Caret | undefined;
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2017.
@@ -16169,7 +17431,7 @@ interface StandardShorthandPropertiesHyphen<TLength = (string & {}) | 0, TTime =
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2017.
    *
-   * **Syntax**: `<'column-width'> || <'column-count'>`
+   * **Syntax**: `[ <'column-width'> || <'column-count'> ] [ / <'column-height'> ]?`
    *
    * | Chrome | Firefox | Safari  |  Edge  |   IE   |
    * | :----: | :-----: | :-----: | :----: | :----: |
@@ -16180,7 +17442,7 @@ interface StandardShorthandPropertiesHyphen<TLength = (string & {}) | 0, TTime =
    */
   columns?: Property.Columns<TLength> | undefined;
   /**
-   * Since September 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2023.
    *
    * **Syntax**: `[ auto? [ none | <length> ] ]{1,2}`
    *
@@ -16203,6 +17465,114 @@ interface StandardShorthandPropertiesHyphen<TLength = (string & {}) | 0, TTime =
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/container
    */
   container?: Property.Container | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `<corner-shape-value>{1,2}`
+   *
+   * | Chrome  |   Firefox   |  Safari  |  Edge   | IE  |
+   * | :-----: | :---------: | :------: | :-----: | :-: |
+   * | **139** | **preview** | **27.3** | **139** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/corner-block-end-shape
+   */
+  "corner-block-end-shape"?: Property.CornerBlockEndShape | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `<corner-shape-value>{1,2}`
+   *
+   * | Chrome  |   Firefox   |  Safari  |  Edge   | IE  |
+   * | :-----: | :---------: | :------: | :-----: | :-: |
+   * | **139** | **preview** | **27.3** | **139** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/corner-block-start-shape
+   */
+  "corner-block-start-shape"?: Property.CornerBlockStartShape | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `<corner-shape-value>{1,2}`
+   *
+   * | Chrome  |   Firefox   |  Safari  |  Edge   | IE  |
+   * | :-----: | :---------: | :------: | :-----: | :-: |
+   * | **139** | **preview** | **27.3** | **139** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/corner-bottom-shape
+   */
+  "corner-bottom-shape"?: Property.CornerBottomShape | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `<corner-shape-value>{1,2}`
+   *
+   * | Chrome  |   Firefox   |  Safari  |  Edge   | IE  |
+   * | :-----: | :---------: | :------: | :-----: | :-: |
+   * | **139** | **preview** | **27.3** | **139** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/corner-inline-end-shape
+   */
+  "corner-inline-end-shape"?: Property.CornerInlineEndShape | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `<corner-shape-value>{1,2}`
+   *
+   * | Chrome  |   Firefox   |  Safari  |  Edge   | IE  |
+   * | :-----: | :---------: | :------: | :-----: | :-: |
+   * | **139** | **preview** | **27.3** | **139** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/corner-inline-start-shape
+   */
+  "corner-inline-start-shape"?: Property.CornerInlineStartShape | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `<corner-shape-value>{1,2}`
+   *
+   * | Chrome  |   Firefox   |  Safari  |  Edge   | IE  |
+   * | :-----: | :---------: | :------: | :-----: | :-: |
+   * | **139** | **preview** | **27.3** | **139** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/corner-left-shape
+   */
+  "corner-left-shape"?: Property.CornerLeftShape | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `<corner-shape-value>{1,2}`
+   *
+   * | Chrome  |   Firefox   |  Safari  |  Edge   | IE  |
+   * | :-----: | :---------: | :------: | :-----: | :-: |
+   * | **139** | **preview** | **27.3** | **139** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/corner-right-shape
+   */
+  "corner-right-shape"?: Property.CornerRightShape | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `<corner-shape-value>{1,4}`
+   *
+   * | Chrome  |   Firefox   |  Safari  |  Edge   | IE  |
+   * | :-----: | :---------: | :------: | :-----: | :-: |
+   * | **139** | **preview** | **27.3** | **139** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/corner-shape
+   */
+  "corner-shape"?: Property.CornerShape | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `<corner-shape-value>{1,2}`
+   *
+   * | Chrome  |   Firefox   |  Safari  |  Edge   | IE  |
+   * | :-----: | :---------: | :------: | :-----: | :-: |
+   * | **139** | **preview** | **27.3** | **139** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/corner-top-shape
+   */
+  "corner-top-shape"?: Property.CornerTopShape | undefined;
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2015.
    *
@@ -16352,13 +17722,25 @@ interface StandardShorthandPropertiesHyphen<TLength = (string & {}) | 0, TTime =
   /**
    * This feature is not Baseline because it does not work in some of the most widely-used browsers.
    *
+   * **Syntax**: `<'interest-delay-start'>{1,2}`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **142** |   No    |   No   | **142** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/interest-delay
+   */
+  "interest-delay"?: Property.InterestDelay<TTime> | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
    * **Syntax**: `none | <integer>`
    *
    * **Initial value**: `none`
    *
    * |   Chrome    |   Firefox    |  Safari   |     Edge     | IE  |
    * | :---------: | :----------: | :-------: | :----------: | :-: |
-   * | **6** _-x-_ | **68** _-x-_ | 18.2-18.4 | **17** _-x-_ | No  |
+   * | **6** _-x-_ | **68** _-x-_ | 18.2-18.4 | **79** _-x-_ | No  |
    * |             |              |  5 _-x-_  |              |     |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/line-clamp
@@ -16413,7 +17795,7 @@ interface StandardShorthandPropertiesHyphen<TLength = (string & {}) | 0, TTime =
    */
   "margin-inline"?: Property.MarginInline<TLength> | undefined;
   /**
-   * Since December 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since December 2023.
    *
    * **Syntax**: `<mask-layer>#`
    *
@@ -16491,15 +17873,15 @@ interface StandardShorthandPropertiesHyphen<TLength = (string & {}) | 0, TTime =
    */
   overflow?: Property.Overflow | undefined;
   /**
-   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2022.
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
    *
    * **Syntax**: `[ contain | none | auto ]{1,2}`
    *
    * **Initial value**: `auto`
    *
-   * | Chrome | Firefox | Safari |  Edge  | IE  |
-   * | :----: | :-----: | :----: | :----: | :-: |
-   * | **63** | **59**  | **16** | **18** | No  |
+   * | Chrome  | Firefox | Safari |  Edge  | IE  |
+   * | :-----: | :-----: | :----: | :----: | :-: |
+   * | **144** | **150** | **16** | **18** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overscroll-behavior
    */
@@ -16577,13 +17959,13 @@ interface StandardShorthandPropertiesHyphen<TLength = (string & {}) | 0, TTime =
    */
   "place-self"?: Property.PlaceSelf | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since January 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `<'position-try-order'>? <'position-try-fallbacks'>`
    *
-   * | Chrome  |   Firefox   | Safari |  Edge   | IE  |
-   * | :-----: | :---------: | :----: | :-----: | :-: |
-   * | **125** | **preview** | **26** | **125** | No  |
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **125** | **147** | **26** | **125** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/position-try
    */
@@ -16675,13 +18057,13 @@ interface StandardShorthandPropertiesHyphen<TLength = (string & {}) | 0, TTime =
    */
   "scroll-snap-margin"?: Property.ScrollMargin<TLength> | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since October 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `[ <'scroll-timeline-name'> <'scroll-timeline-axis'>? ]#`
    *
    * | Chrome  | Firefox | Safari |  Edge   | IE  |
    * | :-----: | :-----: | :----: | :-----: | :-: |
-   * | **115** |   No    | **26** | **115** | No  |
+   * | **115** | **159** | **26** | **115** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-timeline
    */
@@ -16712,7 +18094,7 @@ interface StandardShorthandPropertiesHyphen<TLength = (string & {}) | 0, TTime =
    */
   "text-emphasis"?: Property.TextEmphasis | undefined;
   /**
-   * Since March 2024, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2024.
    *
    * **Syntax**: `<'text-wrap-mode'> || <'text-wrap-style'>`
    *
@@ -16725,6 +18107,42 @@ interface StandardShorthandPropertiesHyphen<TLength = (string & {}) | 0, TTime =
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-wrap
    */
   "text-wrap"?: Property.TextWrap | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `none | [ <'timeline-trigger-name'> <'timeline-trigger-source'> <'timeline-trigger-activation-range'> [ '/' <'timeline-trigger-active-range'> ]? ]#`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **146** |   No    |   No   | **146** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/timeline-trigger
+   */
+  "timeline-trigger"?: Property.TimelineTrigger | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `[ <'timeline-trigger-activation-range-start'> <'timeline-trigger-activation-range-end'>? ]#`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **146** |   No    |   No   | **146** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/timeline-trigger-activation-range
+   */
+  "timeline-trigger-activation-range"?: Property.TimelineTriggerActivationRange<TLength> | undefined;
+  /**
+   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   *
+   * **Syntax**: `[ <'timeline-trigger-active-range-start'> <'timeline-trigger-active-range-end'>? ]#`
+   *
+   * | Chrome  | Firefox | Safari |  Edge   | IE  |
+   * | :-----: | :-----: | :----: | :-----: | :-: |
+   * | **146** |   No    |   No   | **146** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/timeline-trigger-active-range
+   */
+  "timeline-trigger-active-range"?: Property.TimelineTriggerActiveRange<TLength> | undefined;
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2015.
    *
@@ -16739,13 +18157,13 @@ interface StandardShorthandPropertiesHyphen<TLength = (string & {}) | 0, TTime =
    */
   transition?: Property.Transition<TTime> | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since October 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `[ <'view-timeline-name'> [ <'view-timeline-axis'> || <'view-timeline-inset'> ]? ]#`
    *
    * | Chrome  | Firefox | Safari |  Edge   | IE  |
    * | :-----: | :-----: | :----: | :-----: | :-: |
-   * | **115** |   No    | **26** | **115** | No  |
+   * | **115** | **159** | **26** | **115** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/view-timeline
    */
@@ -16922,7 +18340,7 @@ interface VendorLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = st
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2017.
    *
-   * **Syntax**: `<'border-style'>`
+   * **Syntax**: `<line-style>`
    *
    * **Initial value**: `none`
    */
@@ -16930,7 +18348,7 @@ interface VendorLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = st
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2017.
    *
-   * **Syntax**: `<'border-width'>`
+   * **Syntax**: `<line-width>`
    *
    * **Initial value**: `medium`
    */
@@ -16938,7 +18356,7 @@ interface VendorLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = st
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since November 2016.
    *
-   * **Syntax**: `<length> | auto`
+   * **Syntax**: `auto | <length [0,∞]>`
    *
    * **Initial value**: `auto`
    */
@@ -16950,7 +18368,7 @@ interface VendorLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = st
    */
   "-moz-context-properties"?: Property.MozContextProperties | undefined;
   /**
-   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since April 2017.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2016.
    *
    * **Syntax**: `normal | <feature-tag-value>#`
    *
@@ -16966,7 +18384,7 @@ interface VendorLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = st
    */
   "-moz-font-language-override"?: Property.FontLanguageOverride | undefined;
   /**
-   * Since September 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2023.
    *
    * **Syntax**: `none | manual | auto`
    *
@@ -17114,7 +18532,15 @@ interface VendorLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = st
    */
   "-moz-transform-style"?: Property.TransformStyle | undefined;
   /**
-   * The **`user-modify`** property has no effect in Firefox. It was originally planned to determine whether or not the content of an element can be edited by a user.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
+   *
+   * **Syntax**: `ignore | normal | select-after | select-before | select-menu | select-same | select-all | none`
+   *
+   * **Initial value**: `none`
+   */
+  "-moz-user-focus"?: Property.MozUserFocus | undefined;
+  /**
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `read-only | read-write | write-only`
    *
@@ -17260,7 +18686,7 @@ interface VendorLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = st
    */
   "-ms-hyphenate-limit-zone"?: Property.MsHyphenateLimitZone<TLength> | undefined;
   /**
-   * Since September 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2023.
    *
    * **Syntax**: `none | manual | auto`
    *
@@ -17680,19 +19106,37 @@ interface VendorLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = st
    */
   "-webkit-background-size"?: Property.BackgroundSize<TLength> | undefined;
   /**
-   * **Syntax**: `<color>`
+   * **Syntax**: `<'border-top-color'>`
+   *
+   * **Initial value**: `currentcolor`
+   */
+  "-webkit-border-after-color"?: Property.WebkitBorderAfterColor | undefined;
+  /**
+   * **Syntax**: `<'border-top-style'>`
+   *
+   * **Initial value**: `none`
+   */
+  "-webkit-border-after-style"?: Property.WebkitBorderAfterStyle | undefined;
+  /**
+   * **Syntax**: `<'border-top-width'>`
+   *
+   * **Initial value**: `medium`
+   */
+  "-webkit-border-after-width"?: Property.WebkitBorderAfterWidth<TLength> | undefined;
+  /**
+   * **Syntax**: `<'border-top-color'>`
    *
    * **Initial value**: `currentcolor`
    */
   "-webkit-border-before-color"?: Property.WebkitBorderBeforeColor | undefined;
   /**
-   * **Syntax**: `<'border-style'>`
+   * **Syntax**: `<'border-top-style'>`
    *
    * **Initial value**: `none`
    */
   "-webkit-border-before-style"?: Property.WebkitBorderBeforeStyle | undefined;
   /**
-   * **Syntax**: `<'border-width'>`
+   * **Syntax**: `<'border-top-width'>`
    *
    * **Initial value**: `medium`
    */
@@ -17714,13 +19158,49 @@ interface VendorLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = st
    */
   "-webkit-border-bottom-right-radius"?: Property.BorderBottomRightRadius<TLength> | undefined;
   /**
+   * **Syntax**: `<'border-top-color'>`
+   *
+   * **Initial value**: `currentcolor`
+   */
+  "-webkit-border-end-color"?: Property.WebkitBorderEndColor | undefined;
+  /**
+   * **Syntax**: `<'border-top-style'>`
+   *
+   * **Initial value**: `none`
+   */
+  "-webkit-border-end-style"?: Property.WebkitBorderEndStyle | undefined;
+  /**
+   * **Syntax**: `<'border-top-width'>`
+   *
+   * **Initial value**: `medium`
+   */
+  "-webkit-border-end-width"?: Property.WebkitBorderEndWidth<TLength> | undefined;
+  /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.
    *
-   * **Syntax**: `[ <number [0,∞]> | <percentage [0,∞]> ]{1,4}  && fill?`
+   * **Syntax**: `[ <number [0,∞]> | <percentage [0,∞]> ]{1,4} && fill?`
    *
    * **Initial value**: `100%`
    */
   "-webkit-border-image-slice"?: Property.BorderImageSlice | undefined;
+  /**
+   * **Syntax**: `<'border-top-color'>`
+   *
+   * **Initial value**: `currentcolor`
+   */
+  "-webkit-border-start-color"?: Property.WebkitBorderStartColor | undefined;
+  /**
+   * **Syntax**: `<'border-top-style'>`
+   *
+   * **Initial value**: `none`
+   */
+  "-webkit-border-start-style"?: Property.WebkitBorderStartStyle | undefined;
+  /**
+   * **Syntax**: `<'border-top-width'>`
+   *
+   * **Initial value**: `medium`
+   */
+  "-webkit-border-start-width"?: Property.WebkitBorderStartWidth<TLength> | undefined;
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.
    *
@@ -17804,7 +19284,7 @@ interface VendorLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = st
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2017.
    *
-   * **Syntax**: `<'border-style'>`
+   * **Syntax**: `<line-style>`
    *
    * **Initial value**: `none`
    */
@@ -17812,7 +19292,7 @@ interface VendorLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = st
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2017.
    *
-   * **Syntax**: `<'border-width'>`
+   * **Syntax**: `<line-width>`
    *
    * **Initial value**: `medium`
    */
@@ -17828,7 +19308,7 @@ interface VendorLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = st
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since November 2016.
    *
-   * **Syntax**: `<length> | auto`
+   * **Syntax**: `auto | <length [0,∞]>`
    *
    * **Initial value**: `auto`
    */
@@ -17876,13 +19356,13 @@ interface VendorLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = st
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2015.
    *
-   * **Syntax**: `nowrap | wrap | wrap-reverse`
+   * **Syntax**: `nowrap | [ wrap | wrap-reverse ] || balance`
    *
    * **Initial value**: `nowrap`
    */
   "-webkit-flex-wrap"?: Property.FlexWrap | undefined;
   /**
-   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since April 2017.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2016.
    *
    * **Syntax**: `normal | <feature-tag-value>#`
    *
@@ -17914,7 +19394,7 @@ interface VendorLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = st
    */
   "-webkit-font-variant-ligatures"?: Property.FontVariantLigatures | undefined;
   /**
-   * Since September 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2023.
    *
    * **Syntax**: `auto | <string>`
    *
@@ -17922,7 +19402,7 @@ interface VendorLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = st
    */
   "-webkit-hyphenate-character"?: Property.HyphenateCharacter | undefined;
   /**
-   * Since September 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2023.
    *
    * **Syntax**: `none | manual | auto`
    *
@@ -17954,8 +19434,6 @@ interface VendorLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = st
    */
   "-webkit-line-break"?: Property.LineBreak | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
-   *
    * **Syntax**: `none | <integer>`
    *
    * **Initial value**: `none`
@@ -17977,6 +19455,22 @@ interface VendorLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = st
    * **Initial value**: `auto`
    */
   "-webkit-logical-width"?: Property.InlineSize<TLength> | undefined;
+  /**
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since January 2020.
+   *
+   * **Syntax**: `<'margin-top'>`
+   *
+   * **Initial value**: `0`
+   */
+  "-webkit-margin-after"?: Property.MarginBlockEnd<TLength> | undefined;
+  /**
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since January 2020.
+   *
+   * **Syntax**: `<'margin-top'>`
+   *
+   * **Initial value**: `0`
+   */
+  "-webkit-margin-before"?: Property.MarginBlockStart<TLength> | undefined;
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since January 2020.
    *
@@ -18040,7 +19534,7 @@ interface VendorLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = st
    */
   "-webkit-mask-box-image-width"?: Property.MaskBorderWidth<TLength> | undefined;
   /**
-   * Since December 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since December 2023.
    *
    * **Syntax**: `[ <coord-box> | no-clip | border | padding | content | text ]#`
    *
@@ -18056,7 +19550,7 @@ interface VendorLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = st
    */
   "-webkit-mask-composite"?: Property.WebkitMaskComposite | undefined;
   /**
-   * Since December 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since December 2023.
    *
    * **Syntax**: `<mask-reference>#`
    *
@@ -18064,7 +19558,7 @@ interface VendorLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = st
    */
   "-webkit-mask-image"?: Property.WebkitMaskImage | undefined;
   /**
-   * Since December 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since December 2023.
    *
    * **Syntax**: `[ <coord-box> | border | padding | content ]#`
    *
@@ -18072,7 +19566,7 @@ interface VendorLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = st
    */
   "-webkit-mask-origin"?: Property.WebkitMaskOrigin | undefined;
   /**
-   * Since December 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since December 2023.
    *
    * **Syntax**: `<position>#`
    *
@@ -18096,7 +19590,7 @@ interface VendorLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = st
    */
   "-webkit-mask-position-y"?: Property.WebkitMaskPositionY<TLength> | undefined;
   /**
-   * Since December 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since December 2023.
    *
    * **Syntax**: `<repeat-style>#`
    *
@@ -18120,7 +19614,7 @@ interface VendorLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = st
    */
   "-webkit-mask-repeat-y"?: Property.WebkitMaskRepeatY | undefined;
   /**
-   * Since December 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since December 2023.
    *
    * **Syntax**: `<bg-size>#`
    *
@@ -18245,14 +19739,6 @@ interface VendorLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTime = st
    * **Initial value**: `none`
    */
   "-webkit-text-decoration-line"?: Property.TextDecorationLine | undefined;
-  /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
-   *
-   * **Syntax**: `none | [ objects || [ spaces | [ leading-spaces || trailing-spaces ] ] || edges || box-decoration ]`
-   *
-   * **Initial value**: `objects`
-   */
-  "-webkit-text-decoration-skip"?: Property.TextDecorationSkip | undefined;
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since January 2020.
    *
@@ -18442,7 +19928,7 @@ interface VendorShorthandPropertiesHyphen<TLength = (string & {}) | 0, TTime = s
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2017.
    *
-   * **Syntax**: `<'column-width'> || <'column-count'>`
+   * **Syntax**: `[ <'column-width'> || <'column-count'> ] [ / <'column-height'> ]?`
    */
   "-moz-columns"?: Property.Columns<TLength> | undefined;
   /** **Syntax**: `<outline-radius>{1,4} [ / <outline-radius>{1,4} ]?` */
@@ -18481,12 +19967,16 @@ interface VendorShorthandPropertiesHyphen<TLength = (string & {}) | 0, TTime = s
    * **Syntax**: `<single-animation>#`
    */
   "-webkit-animation"?: Property.Animation<TTime> | undefined;
+  /** **Syntax**: `<'border-top'>` */
+  "-webkit-border-after"?: Property.WebkitBorderAfter<TLength> | undefined;
   /**
-   * The **`-webkit-border-before`** CSS property is a shorthand property for setting the individual logical block start border property values in a single place in the style sheet.
+   * The **`-webkit-border-before`** CSS shorthand property sets the individual logical block start border property values in a single place in the style sheet.
    *
-   * **Syntax**: `<'border-width'> || <'border-style'> || <color>`
+   * **Syntax**: `<'border-top'>`
    */
   "-webkit-border-before"?: Property.WebkitBorderBefore<TLength> | undefined;
+  /** **Syntax**: `<'border-top'>` */
+  "-webkit-border-end"?: Property.WebkitBorderEnd<TLength> | undefined;
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.
    *
@@ -18499,6 +19989,8 @@ interface VendorShorthandPropertiesHyphen<TLength = (string & {}) | 0, TTime = s
    * **Syntax**: `<length-percentage [0,∞]>{1,4} [ / <length-percentage [0,∞]>{1,4} ]?`
    */
   "-webkit-border-radius"?: Property.BorderRadius<TLength> | undefined;
+  /** **Syntax**: `<'border-top'>` */
+  "-webkit-border-start"?: Property.WebkitBorderStart<TLength> | undefined;
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2017.
    *
@@ -18508,7 +20000,7 @@ interface VendorShorthandPropertiesHyphen<TLength = (string & {}) | 0, TTime = s
   /**
    * This feature is well established and works across many devices and browser versions. It’s been available across browsers since March 2017.
    *
-   * **Syntax**: `<'column-width'> || <'column-count'>`
+   * **Syntax**: `[ <'column-width'> || <'column-count'> ] [ / <'column-height'> ]?`
    */
   "-webkit-columns"?: Property.Columns<TLength> | undefined;
   /**
@@ -18524,7 +20016,7 @@ interface VendorShorthandPropertiesHyphen<TLength = (string & {}) | 0, TTime = s
    */
   "-webkit-flex-flow"?: Property.FlexFlow | undefined;
   /**
-   * Since December 2023, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since December 2023.
    *
    * **Syntax**: `[ <mask-reference> || <position> [ / <bg-size> ]? || <repeat-style> || [ <visual-box> | border | padding | content | text ] || [ <visual-box> | border | padding | content ] ]#`
    */
@@ -18557,7 +20049,7 @@ interface VendorShorthandPropertiesHyphen<TLength = (string & {}) | 0, TTime = s
 interface VendorPropertiesHyphen<TLength = (string & {}) | 0, TTime = string & {}> extends VendorLonghandPropertiesHyphen<TLength, TTime>, VendorShorthandPropertiesHyphen<TLength, TTime> {}
 interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = string & {}> {
   /**
-   * The **`box-align`** CSS property specifies how an element aligns its contents across its layout in a perpendicular direction. The effect of the property is only visible if there is extra space in the box.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `start | center | end | baseline | stretch`
    *
@@ -18567,7 +20059,7 @@ interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = string &
    */
   "box-align"?: Property.BoxAlign | undefined;
   /**
-   * The **`box-direction`** CSS property specifies whether a box lays out its contents normally (from the top or left edge), or in reverse (from the bottom or right edge).
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `normal | reverse | inherit`
    *
@@ -18577,7 +20069,7 @@ interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = string &
    */
   "box-direction"?: Property.BoxDirection | undefined;
   /**
-   * The **`-moz-box-flex`** and **`-webkit-box-flex`** CSS properties specify how a `-moz-box` or `-webkit-box` grows to fill the box that contains it, in the direction of the containing box's layout.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `<number>`
    *
@@ -18587,7 +20079,7 @@ interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = string &
    */
   "box-flex"?: Property.BoxFlex | undefined;
   /**
-   * The **`box-flex-group`** CSS property assigns the flexbox's child elements to a flex group.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `<integer>`
    *
@@ -18597,7 +20089,7 @@ interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = string &
    */
   "box-flex-group"?: Property.BoxFlexGroup | undefined;
   /**
-   * The **`box-lines`** CSS property determines whether the box may have a single or multiple lines (rows for horizontally oriented boxes, columns for vertically oriented boxes).
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `single | multiple`
    *
@@ -18607,7 +20099,7 @@ interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = string &
    */
   "box-lines"?: Property.BoxLines | undefined;
   /**
-   * The **`box-ordinal-group`** CSS property assigns the flexbox's child elements to an ordinal group.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `<integer>`
    *
@@ -18617,7 +20109,7 @@ interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = string &
    */
   "box-ordinal-group"?: Property.BoxOrdinalGroup | undefined;
   /**
-   * The **`box-orient`** CSS property sets whether an element lays out its contents horizontally or vertically.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `horizontal | vertical | inline-axis | block-axis | inherit`
    *
@@ -18627,7 +20119,7 @@ interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = string &
    */
   "box-orient"?: Property.BoxOrient | undefined;
   /**
-   * The **`-moz-box-pack`** and **`-webkit-box-pack`** CSS properties specify how a `-moz-box` or `-webkit-box` packs its contents in the direction of its layout. The effect of this is only visible if there is extra space in the box.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `start | center | end | justify`
    *
@@ -18637,7 +20129,7 @@ interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = string &
    */
   "box-pack"?: Property.BoxPack | undefined;
   /**
-   * The **`clip`** CSS property defines a visible portion of an element. The `clip` property applies only to absolutely positioned elements — that is, elements with `position:absolute` or `position:fixed`.
+   * Avoid using this feature in new projects. The CSS Masking specification deprecated the `clip` property. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `<shape> | auto`
    *
@@ -18647,7 +20139,7 @@ interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = string &
    */
   clip?: Property.Clip | undefined;
   /**
-   * The **`font-stretch`** CSS property selects a normal, condensed, or expanded face from a font.
+   * This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2017.
    *
    * **Syntax**: `<font-stretch-absolute>`
    *
@@ -18693,7 +20185,7 @@ interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = string &
    */
   "ime-mode"?: Property.ImeMode | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since January 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `none | <position-area>`
    *
@@ -18759,7 +20251,7 @@ interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = string &
    */
   "offset-inline-start"?: Property.InsetInlineStart<TLength> | undefined;
   /**
-   * The **`page-break-after`** CSS property adjusts page breaks _after_ the current element.
+   * Avoid using this feature in new projects. The `page-break-` alias properties exist only for backwards compatibility with pages that predate the `break-` properties. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `auto | always | avoid | left | right | recto | verso`
    *
@@ -18769,7 +20261,7 @@ interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = string &
    */
   "page-break-after"?: Property.PageBreakAfter | undefined;
   /**
-   * The **`page-break-before`** CSS property adjusts page breaks _before_ the current element.
+   * Avoid using this feature in new projects. The `page-break-` alias properties exist only for backwards compatibility with pages that predate the `break-` properties. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `auto | always | avoid | left | right | recto | verso`
    *
@@ -18779,7 +20271,7 @@ interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = string &
    */
   "page-break-before"?: Property.PageBreakBefore | undefined;
   /**
-   * The **`page-break-inside`** CSS property adjusts page breaks _inside_ the current element.
+   * Avoid using this feature in new projects. The `page-break-` alias properties exist only for backwards compatibility with pages that predate the `break-` properties. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `auto | avoid`
    *
@@ -18789,7 +20281,7 @@ interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = string &
    */
   "page-break-inside"?: Property.PageBreakInside | undefined;
   /**
-   * This feature is not Baseline because it does not work in some of the most widely-used browsers.
+   * Since January 2026, this feature works across the latest devices and browser versions. This feature might not work in older devices or browsers.
    *
    * **Syntax**: `none | [ [<dashed-ident> || <try-tactic>] | <'position-area'> ]#`
    *
@@ -18847,7 +20339,17 @@ interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = string &
    */
   "scroll-snap-type-y"?: Property.ScrollSnapTypeY | undefined;
   /**
-   * The **`box-align`** CSS property specifies how an element aligns its contents across its layout in a perpendicular direction. The effect of the property is only visible if there is extra space in the box.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
+   *
+   * **Syntax**: `none | [ objects || [ spaces | [ leading-spaces || trailing-spaces ] ] || edges || box-decoration ]`
+   *
+   * **Initial value**: `objects`
+   *
+   * @deprecated
+   */
+  "text-decoration-skip"?: Property.TextDecorationSkip | undefined;
+  /**
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `start | center | end | baseline | stretch`
    *
@@ -18857,7 +20359,7 @@ interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = string &
    */
   "-khtml-box-align"?: Property.BoxAlign | undefined;
   /**
-   * The **`box-direction`** CSS property specifies whether a box lays out its contents normally (from the top or left edge), or in reverse (from the bottom or right edge).
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `normal | reverse | inherit`
    *
@@ -18867,7 +20369,7 @@ interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = string &
    */
   "-khtml-box-direction"?: Property.BoxDirection | undefined;
   /**
-   * The **`-moz-box-flex`** and **`-webkit-box-flex`** CSS properties specify how a `-moz-box` or `-webkit-box` grows to fill the box that contains it, in the direction of the containing box's layout.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `<number>`
    *
@@ -18877,7 +20379,7 @@ interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = string &
    */
   "-khtml-box-flex"?: Property.BoxFlex | undefined;
   /**
-   * The **`box-flex-group`** CSS property assigns the flexbox's child elements to a flex group.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `<integer>`
    *
@@ -18887,7 +20389,7 @@ interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = string &
    */
   "-khtml-box-flex-group"?: Property.BoxFlexGroup | undefined;
   /**
-   * The **`box-lines`** CSS property determines whether the box may have a single or multiple lines (rows for horizontally oriented boxes, columns for vertically oriented boxes).
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `single | multiple`
    *
@@ -18897,7 +20399,7 @@ interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = string &
    */
   "-khtml-box-lines"?: Property.BoxLines | undefined;
   /**
-   * The **`box-ordinal-group`** CSS property assigns the flexbox's child elements to an ordinal group.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `<integer>`
    *
@@ -18907,7 +20409,7 @@ interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = string &
    */
   "-khtml-box-ordinal-group"?: Property.BoxOrdinalGroup | undefined;
   /**
-   * The **`box-orient`** CSS property sets whether an element lays out its contents horizontally or vertically.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `horizontal | vertical | inline-axis | block-axis | inherit`
    *
@@ -18917,7 +20419,7 @@ interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = string &
    */
   "-khtml-box-orient"?: Property.BoxOrient | undefined;
   /**
-   * The **`-moz-box-pack`** and **`-webkit-box-pack`** CSS properties specify how a `-moz-box` or `-webkit-box` packs its contents in the direction of its layout. The effect of this is only visible if there is extra space in the box.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `start | center | end | justify`
    *
@@ -19035,7 +20537,7 @@ interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = string &
    */
   "-moz-border-radius-topright"?: Property.BorderTopRightRadius<TLength> | undefined;
   /**
-   * The **`box-align`** CSS property specifies how an element aligns its contents across its layout in a perpendicular direction. The effect of the property is only visible if there is extra space in the box.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `start | center | end | baseline | stretch`
    *
@@ -19045,7 +20547,7 @@ interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = string &
    */
   "-moz-box-align"?: Property.BoxAlign | undefined;
   /**
-   * The **`box-direction`** CSS property specifies whether a box lays out its contents normally (from the top or left edge), or in reverse (from the bottom or right edge).
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `normal | reverse | inherit`
    *
@@ -19055,7 +20557,7 @@ interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = string &
    */
   "-moz-box-direction"?: Property.BoxDirection | undefined;
   /**
-   * The **`-moz-box-flex`** and **`-webkit-box-flex`** CSS properties specify how a `-moz-box` or `-webkit-box` grows to fill the box that contains it, in the direction of the containing box's layout.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `<number>`
    *
@@ -19065,7 +20567,7 @@ interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = string &
    */
   "-moz-box-flex"?: Property.BoxFlex | undefined;
   /**
-   * The **`box-ordinal-group`** CSS property assigns the flexbox's child elements to an ordinal group.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `<integer>`
    *
@@ -19075,7 +20577,7 @@ interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = string &
    */
   "-moz-box-ordinal-group"?: Property.BoxOrdinalGroup | undefined;
   /**
-   * The **`box-orient`** CSS property sets whether an element lays out its contents horizontally or vertically.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `horizontal | vertical | inline-axis | block-axis | inherit`
    *
@@ -19085,7 +20587,7 @@ interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = string &
    */
   "-moz-box-orient"?: Property.BoxOrient | undefined;
   /**
-   * The **`-moz-box-pack`** and **`-webkit-box-pack`** CSS properties specify how a `-moz-box` or `-webkit-box` packs its contents in the direction of its layout. The effect of this is only visible if there is extra space in the box.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `start | center | end | justify`
    *
@@ -19125,7 +20627,7 @@ interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = string &
    */
   "-moz-column-fill"?: Property.ColumnFill | undefined;
   /**
-   * The non-standard **`-moz-float-edge`** CSS property specifies whether the height and width properties of the element include the margin, border, or padding thickness.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `border-box | content-box | margin-box | padding-box`
    *
@@ -19135,7 +20637,7 @@ interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = string &
    */
   "-moz-float-edge"?: Property.MozFloatEdge | undefined;
   /**
-   * The **`-moz-force-broken-image-icon`** extended CSS property can be used to force the broken image icon to be shown even when a broken image has an `alt` attribute.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `0 | 1`
    *
@@ -19273,17 +20775,7 @@ interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = string &
    */
   "-moz-transition-timing-function"?: Property.TransitionTimingFunction | undefined;
   /**
-   * The **`-moz-user-focus`** CSS property is used to indicate whether an element can have the focus.
-   *
-   * **Syntax**: `ignore | normal | select-after | select-before | select-menu | select-same | select-all | none`
-   *
-   * **Initial value**: `none`
-   *
-   * @deprecated
-   */
-  "-moz-user-focus"?: Property.MozUserFocus | undefined;
-  /**
-   * In Mozilla applications, **`-moz-user-input`** determines if an element will accept user input.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `auto | none | enabled | disabled`
    *
@@ -19515,7 +21007,7 @@ interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = string &
    */
   "-o-transition-timing-function"?: Property.TransitionTimingFunction | undefined;
   /**
-   * The **`box-align`** CSS property specifies how an element aligns its contents across its layout in a perpendicular direction. The effect of the property is only visible if there is extra space in the box.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `start | center | end | baseline | stretch`
    *
@@ -19525,7 +21017,7 @@ interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = string &
    */
   "-webkit-box-align"?: Property.BoxAlign | undefined;
   /**
-   * The **`box-direction`** CSS property specifies whether a box lays out its contents normally (from the top or left edge), or in reverse (from the bottom or right edge).
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `normal | reverse | inherit`
    *
@@ -19535,7 +21027,7 @@ interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = string &
    */
   "-webkit-box-direction"?: Property.BoxDirection | undefined;
   /**
-   * The **`-moz-box-flex`** and **`-webkit-box-flex`** CSS properties specify how a `-moz-box` or `-webkit-box` grows to fill the box that contains it, in the direction of the containing box's layout.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `<number>`
    *
@@ -19545,7 +21037,7 @@ interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = string &
    */
   "-webkit-box-flex"?: Property.BoxFlex | undefined;
   /**
-   * The **`box-flex-group`** CSS property assigns the flexbox's child elements to a flex group.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `<integer>`
    *
@@ -19555,7 +21047,7 @@ interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = string &
    */
   "-webkit-box-flex-group"?: Property.BoxFlexGroup | undefined;
   /**
-   * The **`box-lines`** CSS property determines whether the box may have a single or multiple lines (rows for horizontally oriented boxes, columns for vertically oriented boxes).
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `single | multiple`
    *
@@ -19565,7 +21057,7 @@ interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = string &
    */
   "-webkit-box-lines"?: Property.BoxLines | undefined;
   /**
-   * The **`box-ordinal-group`** CSS property assigns the flexbox's child elements to an ordinal group.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `<integer>`
    *
@@ -19575,7 +21067,7 @@ interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = string &
    */
   "-webkit-box-ordinal-group"?: Property.BoxOrdinalGroup | undefined;
   /**
-   * The **`box-orient`** CSS property sets whether an element lays out its contents horizontally or vertically.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `horizontal | vertical | inline-axis | block-axis | inherit`
    *
@@ -19585,7 +21077,7 @@ interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = string &
    */
   "-webkit-box-orient"?: Property.BoxOrient | undefined;
   /**
-   * The **`-moz-box-pack`** and **`-webkit-box-pack`** CSS properties specify how a `-moz-box` or `-webkit-box` packs its contents in the direction of its layout. The effect of this is only visible if there is extra space in the box.
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
    *
    * **Syntax**: `start | center | end | justify`
    *
@@ -19594,6 +21086,16 @@ interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = string &
    * @deprecated
    */
   "-webkit-box-pack"?: Property.BoxPack | undefined;
+  /**
+   * Avoid using this feature in new projects. This feature may be a candidate for removal from web standards or browsers.
+   *
+   * **Syntax**: `none | [ objects || [ spaces | [ leading-spaces || trailing-spaces ] ] || edges || box-decoration ]`
+   *
+   * **Initial value**: `objects`
+   *
+   * @deprecated
+   */
+  "-webkit-text-decoration-skip"?: Property.TextDecorationSkip | undefined;
 }
 interface SvgPropertiesHyphen<TLength = (string & {}) | 0, TTime = string & {}> {
   "alignment-baseline"?: Property.AlignmentBaseline | undefined;
@@ -19683,6 +21185,7 @@ declare namespace Property {
   export type AnimationRangeStart<TLength = (string & {}) | 0> = Globals | DataType.TimelineRangeName | TLength | "normal" | (string & {});
   export type AnimationTimeline = Globals | DataType.SingleAnimationTimeline | (string & {});
   export type AnimationTimingFunction = Globals | DataType.EasingFunction | (string & {});
+  export type AnimationTrigger = Globals | "none" | (string & {});
   export type Appearance = Globals | DataType.CompatAuto | "auto" | "menulist-button" | "none" | "textfield";
   export type AspectRatio = Globals | "auto" | (string & {}) | (number & {});
   export type BackdropFilter = Globals | "none" | (string & {});
@@ -19700,6 +21203,7 @@ declare namespace Property {
   export type BackgroundRepeat = Globals | DataType.RepeatStyle | (string & {});
   export type BackgroundSize<TLength = (string & {}) | 0> = Globals | DataType.BgSize<TLength> | (string & {});
   export type BaselineShift<TLength = (string & {}) | 0> = Globals | TLength | "baseline" | "sub" | "super" | (string & {});
+  export type BaselineSource = Globals | "auto" | "first" | "last";
   export type BlockSize<TLength = (string & {}) | 0> = Globals | TLength | "-moz-fit-content" | "-moz-max-content" | "-moz-min-content" | "auto" | "fit-content" | "max-content" | "min-content" | (string & {});
   export type Border<TLength = (string & {}) | 0> = Globals | DataType.LineWidth<TLength> | DataType.LineStyle | DataType.Color | (string & {});
   export type BorderBlock<TLength = (string & {}) | 0> = Globals | DataType.LineWidth<TLength> | DataType.LineStyle | DataType.Color | (string & {});
@@ -19751,6 +21255,7 @@ declare namespace Property {
   export type BorderRightColor = Globals | DataType.Color;
   export type BorderRightStyle = Globals | DataType.LineStyle;
   export type BorderRightWidth<TLength = (string & {}) | 0> = Globals | DataType.LineWidth<TLength>;
+  export type BorderShape = Globals | "none" | (string & {});
   export type BorderSpacing<TLength = (string & {}) | 0> = Globals | TLength | (string & {});
   export type BorderStartEndRadius<TLength = (string & {}) | 0> = Globals | TLength | (string & {});
   export type BorderStartStartRadius<TLength = (string & {}) | 0> = Globals | TLength | (string & {});
@@ -19778,7 +21283,8 @@ declare namespace Property {
   export type BreakBefore = Globals | "all" | "always" | "auto" | "avoid" | "avoid-column" | "avoid-page" | "avoid-region" | "column" | "left" | "page" | "recto" | "region" | "right" | "verso";
   export type BreakInside = Globals | "auto" | "avoid" | "avoid-column" | "avoid-page" | "avoid-region";
   export type CaptionSide = Globals | "bottom" | "top";
-  export type Caret = Globals | DataType.Color | "auto" | "bar" | "block" | "underscore" | (string & {});
+  export type Caret = Globals | DataType.Color | "auto" | "bar" | "block" | "manual" | "underscore" | (string & {});
+  export type CaretAnimation = Globals | "auto" | "manual";
   export type CaretColor = Globals | DataType.Color | "auto";
   export type CaretShape = Globals | "auto" | "bar" | "block" | "underscore";
   export type Clear = Globals | "both" | "inline-end" | "inline-start" | "left" | "none" | "right";
@@ -19792,12 +21298,14 @@ declare namespace Property {
   export type ColumnCount = Globals | "auto" | (number & {}) | (string & {});
   export type ColumnFill = Globals | "auto" | "balance";
   export type ColumnGap<TLength = (string & {}) | 0> = Globals | TLength | "normal" | (string & {});
+  export type ColumnHeight<TLength = (string & {}) | 0> = Globals | TLength | "auto";
   export type ColumnRule<TLength = (string & {}) | 0> = Globals | DataType.LineWidth<TLength> | DataType.LineStyle | DataType.Color | (string & {});
   export type ColumnRuleColor = Globals | DataType.Color;
-  export type ColumnRuleStyle = Globals | DataType.LineStyle | (string & {});
-  export type ColumnRuleWidth<TLength = (string & {}) | 0> = Globals | DataType.LineWidth<TLength> | (string & {});
+  export type ColumnRuleStyle = Globals | DataType.LineStyle;
+  export type ColumnRuleWidth<TLength = (string & {}) | 0> = Globals | DataType.LineWidth<TLength>;
   export type ColumnSpan = Globals | "all" | "none";
   export type ColumnWidth<TLength = (string & {}) | 0> = Globals | TLength | "auto";
+  export type ColumnWrap = Globals | "auto" | "nowrap" | "wrap";
   export type Columns<TLength = (string & {}) | 0> = Globals | TLength | "auto" | (string & {}) | (number & {});
   export type Contain = Globals | "content" | "inline-size" | "layout" | "none" | "paint" | "size" | "strict" | "style" | (string & {});
   export type ContainIntrinsicBlockSize<TLength = (string & {}) | 0> = Globals | TLength | "none" | (string & {});
@@ -19810,6 +21318,23 @@ declare namespace Property {
   export type ContainerType = Globals | "inline-size" | "normal" | "scroll-state" | "size" | (string & {});
   export type Content = Globals | DataType.Quote | "none" | "normal" | (string & {});
   export type ContentVisibility = Globals | "auto" | "hidden" | "visible";
+  export type CornerBlockEndShape = Globals | DataType.CornerShapeValue | (string & {});
+  export type CornerBlockStartShape = Globals | DataType.CornerShapeValue | (string & {});
+  export type CornerBottomLeftShape = Globals | DataType.CornerShapeValue;
+  export type CornerBottomRightShape = Globals | DataType.CornerShapeValue;
+  export type CornerBottomShape = Globals | DataType.CornerShapeValue | (string & {});
+  export type CornerEndEndShape = Globals | DataType.CornerShapeValue;
+  export type CornerEndStartShape = Globals | DataType.CornerShapeValue;
+  export type CornerInlineEndShape = Globals | DataType.CornerShapeValue | (string & {});
+  export type CornerInlineStartShape = Globals | DataType.CornerShapeValue | (string & {});
+  export type CornerLeftShape = Globals | DataType.CornerShapeValue | (string & {});
+  export type CornerRightShape = Globals | DataType.CornerShapeValue | (string & {});
+  export type CornerShape = Globals | DataType.CornerShapeValue | (string & {});
+  export type CornerStartEndShape = Globals | DataType.CornerShapeValue;
+  export type CornerStartStartShape = Globals | DataType.CornerShapeValue;
+  export type CornerTopLeftShape = Globals | DataType.CornerShapeValue;
+  export type CornerTopRightShape = Globals | DataType.CornerShapeValue;
+  export type CornerTopShape = Globals | DataType.CornerShapeValue | (string & {});
   export type CounterIncrement = Globals | "none" | (string & {});
   export type CounterReset = Globals | "none" | (string & {});
   export type CounterSet = Globals | "none" | (string & {});
@@ -19820,6 +21345,7 @@ declare namespace Property {
   export type Direction = Globals | "ltr" | "rtl";
   export type Display = Globals | DataType.DisplayOutside | DataType.DisplayInside | DataType.DisplayInternal | DataType.DisplayLegacy | "contents" | "list-item" | "none" | (string & {});
   export type DominantBaseline = Globals | "alphabetic" | "auto" | "central" | "hanging" | "ideographic" | "mathematical" | "middle" | "text-bottom" | "text-top";
+  export type DynamicRangeLimit = Globals | "constrained" | "no-limit" | "standard" | (string & {});
   export type EmptyCells = Globals | "hide" | "show";
   export type FieldSizing = Globals | "content" | "fixed";
   export type Fill = Globals | DataType.Paint;
@@ -19829,10 +21355,11 @@ declare namespace Property {
   export type Flex<TLength = (string & {}) | 0> = Globals | TLength | "auto" | "content" | "fit-content" | "max-content" | "min-content" | "none" | (string & {}) | (number & {});
   export type FlexBasis<TLength = (string & {}) | 0> = Globals | TLength | "-moz-fit-content" | "-moz-max-content" | "-moz-min-content" | "-webkit-auto" | "auto" | "content" | "fit-content" | "max-content" | "min-content" | (string & {});
   export type FlexDirection = Globals | "column" | "column-reverse" | "row" | "row-reverse";
-  export type FlexFlow = Globals | "column" | "column-reverse" | "nowrap" | "row" | "row-reverse" | "wrap" | "wrap-reverse" | (string & {});
+  export type FlexFlow = Globals | "balance" | "column" | "column-reverse" | "nowrap" | "row" | "row-reverse" | "wrap" | "wrap-reverse" | (string & {});
   export type FlexGrow = Globals | (number & {}) | (string & {});
+  export type FlexLineCount = Globals | (number & {}) | (string & {});
   export type FlexShrink = Globals | (number & {}) | (string & {});
-  export type FlexWrap = Globals | "nowrap" | "wrap" | "wrap-reverse";
+  export type FlexWrap = Globals | "balance" | "nowrap" | "wrap" | "wrap-reverse" | (string & {});
   export type Float = Globals | "inline-end" | "inline-start" | "left" | "none" | "right";
   export type FloodColor = Globals | DataType.Color;
   export type FloodOpacity = Globals | (string & {}) | (number & {});
@@ -19865,6 +21392,7 @@ declare namespace Property {
   export type FontWeight = Globals | DataType.FontWeightAbsolute | "bolder" | "lighter";
   export type FontWidth = Globals | "condensed" | "expanded" | "extra-condensed" | "extra-expanded" | "normal" | "semi-condensed" | "semi-expanded" | "ultra-condensed" | "ultra-expanded" | (string & {});
   export type ForcedColorAdjust = Globals | "auto" | "none" | "preserve-parent-color";
+  export type FrameSizing = Globals | "auto" | "content-block-size" | "content-height" | "content-inline-size" | "content-width";
   export type Gap<TLength = (string & {}) | 0> = Globals | TLength | "normal" | (string & {});
   export type Grid = Globals | "none" | (string & {});
   export type GridArea = Globals | DataType.GridLine | (string & {});
@@ -19904,11 +21432,15 @@ declare namespace Property {
   export type InsetInline<TLength = (string & {}) | 0> = Globals | TLength | "auto" | (string & {});
   export type InsetInlineEnd<TLength = (string & {}) | 0> = Globals | TLength | "auto" | (string & {});
   export type InsetInlineStart<TLength = (string & {}) | 0> = Globals | TLength | "auto" | (string & {});
+  export type Interactivity = Globals | "auto" | "inert";
+  export type InterestDelay<TTime = string & {}> = Globals | TTime | "normal" | (string & {});
+  export type InterestDelayEnd<TTime = string & {}> = Globals | TTime | "normal";
+  export type InterestDelayStart<TTime = string & {}> = Globals | TTime | "normal";
   export type InterpolateSize = Globals | "allow-keywords" | "numeric-only";
   export type Isolation = Globals | "auto" | "isolate";
   export type JustifyContent = Globals | DataType.ContentDistribution | DataType.ContentPosition | "left" | "normal" | "right" | (string & {});
   export type JustifyItems = Globals | DataType.SelfPosition | "anchor-center" | "baseline" | "left" | "legacy" | "normal" | "right" | "stretch" | (string & {});
-  export type JustifySelf = Globals | DataType.SelfPosition | "anchor-center" | "auto" | "baseline" | "left" | "normal" | "right" | "stretch" | (string & {});
+  export type JustifySelf = Globals | DataType.SelfPosition2 | "anchor-center" | "auto" | "baseline" | "left" | "normal" | "right" | "stretch" | (string & {});
   export type JustifyTracks = Globals | DataType.ContentDistribution | DataType.ContentPosition | "left" | "normal" | "right" | (string & {});
   export type Left<TLength = (string & {}) | 0> = Globals | TLength | "auto" | (string & {});
   export type LetterSpacing<TLength = (string & {}) | 0> = Globals | TLength | "normal";
@@ -19917,6 +21449,7 @@ declare namespace Property {
   export type LineClamp = Globals | "none" | (number & {}) | (string & {});
   export type LineHeight<TLength = (string & {}) | 0> = Globals | TLength | "normal" | (string & {}) | (number & {});
   export type LineHeightStep<TLength = (string & {}) | 0> = Globals | TLength;
+  export type LinkParameters = Globals | "none" | (string & {});
   export type ListStyle = Globals | "inside" | "none" | "outside" | (string & {});
   export type ListStyleImage = Globals | "none" | (string & {});
   export type ListStylePosition = Globals | "inside" | "outside";
@@ -20016,6 +21549,7 @@ declare namespace Property {
   export type PageBreakBefore = Globals | "always" | "auto" | "avoid" | "left" | "recto" | "right" | "verso";
   export type PageBreakInside = Globals | "auto" | "avoid";
   export type PaintOrder = Globals | "fill" | "markers" | "normal" | "stroke" | (string & {});
+  export type PathLength = Globals | "none" | (string & {});
   export type Perspective<TLength = (string & {}) | 0> = Globals | TLength | "none";
   export type PerspectiveOrigin<TLength = (string & {}) | 0> = Globals | DataType.Position<TLength>;
   export type PlaceContent = Globals | DataType.ContentDistribution | DataType.ContentPosition | "baseline" | "normal" | (string & {});
@@ -20023,13 +21557,15 @@ declare namespace Property {
   export type PlaceSelf = Globals | DataType.SelfPosition | "anchor-center" | "auto" | "baseline" | "normal" | "stretch" | (string & {});
   export type PointerEvents = Globals | "all" | "auto" | "fill" | "inherit" | "none" | "painted" | "stroke" | "visible" | "visibleFill" | "visiblePainted" | "visibleStroke";
   export type Position = Globals | "-webkit-sticky" | "absolute" | "fixed" | "relative" | "static" | "sticky";
-  export type PositionAnchor = Globals | "auto" | (string & {});
+  export type PositionAnchor = Globals | "auto" | "match-parent" | "none" | "normal" | (string & {});
   export type PositionTry = Globals | DataType.TryTactic | DataType.PositionArea | "none" | (string & {});
   export type PositionTryFallbacks = Globals | DataType.TryTactic | DataType.PositionArea | "none" | (string & {});
   export type PositionTryOrder = Globals | DataType.TrySize | "normal";
   export type PositionVisibility = Globals | "always" | "anchors-valid" | "anchors-visible" | "no-overflow" | (string & {});
   export type Quotes = Globals | "auto" | "none" | (string & {});
   export type R<TLength = (string & {}) | 0> = Globals | TLength | (string & {});
+  export type ReadingFlow = Globals | "flex-flow" | "flex-visual" | "grid-columns" | "grid-order" | "grid-rows" | "normal" | "source-order";
+  export type ReadingOrder = Globals | (number & {}) | (string & {});
   export type Resize = Globals | "block" | "both" | "horizontal" | "inline" | "none" | "vertical";
   export type Right<TLength = (string & {}) | 0> = Globals | TLength | "auto" | (string & {});
   export type Rotate = Globals | "none" | (string & {});
@@ -20038,9 +21574,10 @@ declare namespace Property {
   export type RubyMerge = Globals | "auto" | "collapse" | "separate";
   export type RubyOverhang = Globals | "auto" | "none";
   export type RubyPosition = Globals | "alternate" | "inter-character" | "over" | "under" | (string & {});
-  export type Rx<TLength = (string & {}) | 0> = Globals | TLength | (string & {});
-  export type Ry<TLength = (string & {}) | 0> = Globals | TLength | (string & {});
+  export type Rx<TLength = (string & {}) | 0> = Globals | TLength | "auto" | (string & {});
+  export type Ry<TLength = (string & {}) | 0> = Globals | TLength | "auto" | (string & {});
   export type Scale = Globals | "none" | (string & {}) | (number & {});
+  export type ScrollAxisLock = Globals | "auto" | "none";
   export type ScrollBehavior = Globals | "auto" | "smooth";
   export type ScrollInitialTarget = Globals | "nearest" | "none";
   export type ScrollMargin<TLength = (string & {}) | 0> = Globals | TLength | (string & {});
@@ -20054,6 +21591,7 @@ declare namespace Property {
   export type ScrollMarginLeft<TLength = (string & {}) | 0> = Globals | TLength;
   export type ScrollMarginRight<TLength = (string & {}) | 0> = Globals | TLength;
   export type ScrollMarginTop<TLength = (string & {}) | 0> = Globals | TLength;
+  export type ScrollMarkerGroup = Globals | "after" | "before" | "none";
   export type ScrollPadding<TLength = (string & {}) | 0> = Globals | TLength | "auto" | (string & {});
   export type ScrollPaddingBlock<TLength = (string & {}) | 0> = Globals | TLength | "auto" | (string & {});
   export type ScrollPaddingBlockEnd<TLength = (string & {}) | 0> = Globals | TLength | "auto" | (string & {});
@@ -20074,6 +21612,7 @@ declare namespace Property {
   export type ScrollSnapType = Globals | "block" | "both" | "inline" | "none" | "x" | "y" | (string & {});
   export type ScrollSnapTypeX = Globals | "mandatory" | "none" | "proximity";
   export type ScrollSnapTypeY = Globals | "mandatory" | "none" | "proximity";
+  export type ScrollTargetGroup = Globals | "auto" | "none";
   export type ScrollTimeline = Globals | "none" | (string & {});
   export type ScrollTimelineAxis = Globals | "block" | "inline" | "x" | "y" | (string & {});
   export type ScrollTimelineName = Globals | "none" | (string & {});
@@ -20108,6 +21647,7 @@ declare namespace Property {
   export type TextCombineUpright = Globals | "all" | "digits" | "none" | (string & {});
   export type TextDecoration<TLength = (string & {}) | 0> = Globals | DataType.Color | TLength | "auto" | "blink" | "dashed" | "dotted" | "double" | "from-font" | "grammar-error" | "line-through" | "none" | "overline" | "solid" | "spelling-error" | "underline" | "wavy" | (string & {});
   export type TextDecorationColor = Globals | DataType.Color;
+  export type TextDecorationInset<TLength = (string & {}) | 0> = Globals | TLength | "auto" | (string & {});
   export type TextDecorationLine = Globals | "blink" | "grammar-error" | "line-through" | "none" | "overline" | "spelling-error" | "underline" | (string & {});
   export type TextDecorationSkip = Globals | "box-decoration" | "edges" | "leading-spaces" | "none" | "objects" | "spaces" | "trailing-spaces" | (string & {});
   export type TextDecorationSkipInk = Globals | "all" | "auto" | "none";
@@ -20117,6 +21657,7 @@ declare namespace Property {
   export type TextEmphasisColor = Globals | DataType.Color;
   export type TextEmphasisPosition = Globals | "auto" | "over" | "under" | (string & {});
   export type TextEmphasisStyle = Globals | "circle" | "dot" | "double-circle" | "filled" | "none" | "open" | "sesame" | "triangle" | (string & {});
+  export type TextFit = Globals | "grow" | "none" | "shrink" | (string & {});
   export type TextIndent<TLength = (string & {}) | 0> = Globals | TLength | (string & {});
   export type TextJustify = Globals | "auto" | "distribute" | "inter-character" | "inter-word" | "none";
   export type TextOrientation = Globals | "mixed" | "sideways" | "sideways-right" | "upright";
@@ -20132,6 +21673,15 @@ declare namespace Property {
   export type TextWrapMode = Globals | "nowrap" | "wrap";
   export type TextWrapStyle = Globals | "auto" | "balance" | "pretty" | "stable";
   export type TimelineScope = Globals | "none" | (string & {});
+  export type TimelineTrigger = Globals | "none" | (string & {});
+  export type TimelineTriggerActivationRange<TLength = (string & {}) | 0> = Globals | DataType.TimelineRangeName | TLength | "normal" | (string & {});
+  export type TimelineTriggerActivationRangeEnd<TLength = (string & {}) | 0> = Globals | DataType.TimelineRangeName | TLength | "normal" | (string & {});
+  export type TimelineTriggerActivationRangeStart<TLength = (string & {}) | 0> = Globals | DataType.TimelineRangeName | TLength | "normal" | (string & {});
+  export type TimelineTriggerActiveRange<TLength = (string & {}) | 0> = Globals | DataType.TimelineRangeName | TLength | "auto" | "normal" | (string & {});
+  export type TimelineTriggerActiveRangeEnd<TLength = (string & {}) | 0> = Globals | DataType.TimelineRangeName | TLength | "auto" | "normal" | (string & {});
+  export type TimelineTriggerActiveRangeStart<TLength = (string & {}) | 0> = Globals | DataType.TimelineRangeName | TLength | "auto" | "normal" | (string & {});
+  export type TimelineTriggerName = Globals | "none" | (string & {});
+  export type TimelineTriggerSource = Globals | DataType.SingleAnimationTimeline | (string & {});
   export type Top<TLength = (string & {}) | 0> = Globals | TLength | "auto" | (string & {});
   export type TouchAction = Globals | "-ms-manipulation" | "-ms-none" | "-ms-pan-x" | "-ms-pan-y" | "-ms-pinch-zoom" | "auto" | "manipulation" | "none" | "pan-down" | "pan-left" | "pan-right" | "pan-up" | "pan-x" | "pan-y" | "pinch-zoom" | (string & {});
   export type Transform = Globals | "none" | (string & {});
@@ -20145,6 +21695,7 @@ declare namespace Property {
   export type TransitionProperty = Globals | "all" | "none" | (string & {});
   export type TransitionTimingFunction = Globals | DataType.EasingFunction | (string & {});
   export type Translate<TLength = (string & {}) | 0> = Globals | TLength | "none" | (string & {});
+  export type TriggerScope = Globals | "all" | "none" | (string & {});
   export type UnicodeBidi = Globals | "-moz-isolate" | "-moz-isolate-override" | "-moz-plaintext" | "-webkit-isolate" | "-webkit-isolate-override" | "-webkit-plaintext" | "bidi-override" | "embed" | "isolate" | "isolate-override" | "normal" | "plaintext";
   export type UserSelect = Globals | "-moz-none" | "all" | "auto" | "none" | "text";
   export type VectorEffect = Globals | "fixed-position" | "non-rotation" | "non-scaling-size" | "non-scaling-stroke" | "none";
@@ -20155,12 +21706,14 @@ declare namespace Property {
   export type ViewTimelineName = Globals | "none" | (string & {});
   export type ViewTransitionClass = Globals | "none" | (string & {});
   export type ViewTransitionName = Globals | "match-element" | "none" | (string & {});
+  export type ViewTransitionScope = Globals | "all" | "none";
   export type Visibility = Globals | "collapse" | "hidden" | "visible";
   export type WhiteSpace = Globals | "-moz-pre-wrap" | "break-spaces" | "collapse" | "normal" | "nowrap" | "pre" | "pre-line" | "pre-wrap" | "preserve" | "preserve-breaks" | "preserve-spaces" | "wrap" | (string & {});
   export type WhiteSpaceCollapse = Globals | "break-spaces" | "collapse" | "preserve" | "preserve-breaks" | "preserve-spaces";
   export type Widows = Globals | (number & {}) | (string & {});
   export type Width<TLength = (string & {}) | 0> = Globals | TLength | "-moz-fit-content" | "-moz-max-content" | "-moz-min-content" | "-webkit-fit-content" | "-webkit-max-content" | "auto" | "fit-content" | "intrinsic" | "max-content" | "min-content" | "min-intrinsic" | (string & {});
   export type WillChange = Globals | DataType.AnimateableFeature | "auto" | (string & {});
+  export type WindowDrag = Globals | "move" | "none";
   export type WordBreak = Globals | "auto-phrase" | "break-all" | "break-word" | "keep-all" | "normal";
   export type WordSpacing<TLength = (string & {}) | 0> = Globals | TLength | "normal";
   export type WordWrap = Globals | "break-word" | "normal";
@@ -20240,10 +21793,22 @@ declare namespace Property {
   export type MsWrapMargin<TLength = (string & {}) | 0> = Globals | TLength;
   export type MsWrapThrough = Globals | "none" | "wrap";
   export type WebkitAppearance = Globals | "-apple-pay-button" | "button" | "button-bevel" | "caret" | "checkbox" | "default-button" | "inner-spin-button" | "listbox" | "listitem" | "media-controls-background" | "media-controls-fullscreen-background" | "media-current-time-display" | "media-enter-fullscreen-button" | "media-exit-fullscreen-button" | "media-fullscreen-button" | "media-mute-button" | "media-overlay-play-button" | "media-play-button" | "media-seek-back-button" | "media-seek-forward-button" | "media-slider" | "media-sliderthumb" | "media-time-remaining-display" | "media-toggle-closed-captions-button" | "media-volume-slider" | "media-volume-slider-container" | "media-volume-sliderthumb" | "menulist" | "menulist-button" | "menulist-text" | "menulist-textfield" | "meter" | "none" | "progress-bar" | "progress-bar-value" | "push-button" | "radio" | "searchfield" | "searchfield-cancel-button" | "searchfield-decoration" | "searchfield-results-button" | "searchfield-results-decoration" | "slider-horizontal" | "slider-vertical" | "sliderthumb-horizontal" | "sliderthumb-vertical" | "square-button" | "textarea" | "textfield";
+  export type WebkitBorderAfter<TLength = (string & {}) | 0> = Globals | DataType.LineWidth<TLength> | DataType.LineStyle | DataType.Color | (string & {});
+  export type WebkitBorderAfterColor = Globals | DataType.Color;
+  export type WebkitBorderAfterStyle = Globals | DataType.LineStyle;
+  export type WebkitBorderAfterWidth<TLength = (string & {}) | 0> = Globals | DataType.LineWidth<TLength>;
   export type WebkitBorderBefore<TLength = (string & {}) | 0> = Globals | DataType.LineWidth<TLength> | DataType.LineStyle | DataType.Color | (string & {});
   export type WebkitBorderBeforeColor = Globals | DataType.Color;
-  export type WebkitBorderBeforeStyle = Globals | DataType.LineStyle | (string & {});
-  export type WebkitBorderBeforeWidth<TLength = (string & {}) | 0> = Globals | DataType.LineWidth<TLength> | (string & {});
+  export type WebkitBorderBeforeStyle = Globals | DataType.LineStyle;
+  export type WebkitBorderBeforeWidth<TLength = (string & {}) | 0> = Globals | DataType.LineWidth<TLength>;
+  export type WebkitBorderEnd<TLength = (string & {}) | 0> = Globals | DataType.LineWidth<TLength> | DataType.LineStyle | DataType.Color | (string & {});
+  export type WebkitBorderEndColor = Globals | DataType.Color;
+  export type WebkitBorderEndStyle = Globals | DataType.LineStyle;
+  export type WebkitBorderEndWidth<TLength = (string & {}) | 0> = Globals | DataType.LineWidth<TLength>;
+  export type WebkitBorderStart<TLength = (string & {}) | 0> = Globals | DataType.LineWidth<TLength> | DataType.LineStyle | DataType.Color | (string & {});
+  export type WebkitBorderStartColor = Globals | DataType.Color;
+  export type WebkitBorderStartStyle = Globals | DataType.LineStyle;
+  export type WebkitBorderStartWidth<TLength = (string & {}) | 0> = Globals | DataType.LineWidth<TLength>;
   export type WebkitBoxReflect<TLength = (string & {}) | 0> = Globals | TLength | "above" | "below" | "left" | "right" | (string & {});
   export type WebkitLineClamp = Globals | "none" | (number & {}) | (string & {});
   export type WebkitMask<TLength = (string & {}) | 0> = Globals | DataType.Position<TLength> | DataType.RepeatStyle | DataType.VisualBox | "border" | "content" | "none" | "padding" | "text" | (string & {});
@@ -20295,6 +21860,7 @@ declare namespace DataType {
   type CompositingOperator = "add" | "exclude" | "intersect" | "subtract";
   type ContentDistribution = "space-around" | "space-between" | "space-evenly" | "stretch";
   type ContentPosition = "center" | "end" | "flex-end" | "flex-start" | "start";
+  type CornerShapeValue = "bevel" | "notch" | "round" | "scoop" | "square" | "squircle" | (string & {});
   type CubicBezierEasingFunction = "ease" | "ease-in" | "ease-in-out" | "ease-out" | (string & {});
   type CursorPredefined = "-moz-grab" | "-moz-zoom-in" | "-moz-zoom-out" | "-webkit-grab" | "-webkit-grabbing" | "-webkit-zoom-in" | "-webkit-zoom-out" | "alias" | "all-scroll" | "auto" | "cell" | "col-resize" | "context-menu" | "copy" | "crosshair" | "default" | "e-resize" | "ew-resize" | "grab" | "grabbing" | "help" | "move" | "n-resize" | "ne-resize" | "nesw-resize" | "no-drop" | "none" | "not-allowed" | "ns-resize" | "nw-resize" | "nwse-resize" | "pointer" | "progress" | "row-resize" | "s-resize" | "se-resize" | "sw-resize" | "text" | "vertical-text" | "w-resize" | "wait" | "zoom-in" | "zoom-out";
   type Dasharray<TLength> = TLength | (string & {}) | (number & {});
@@ -20327,6 +21893,7 @@ declare namespace DataType {
   type Quote = "close-quote" | "no-close-quote" | "no-open-quote" | "open-quote";
   type RepeatStyle = "no-repeat" | "repeat" | "repeat-x" | "repeat-y" | "round" | "space" | (string & {});
   type SelfPosition = "center" | "end" | "flex-end" | "flex-start" | "self-end" | "self-start" | "start";
+  type SelfPosition2 = "-ms-center" | "center" | "end" | "flex-end" | "flex-start" | "self-end" | "self-start" | "start";
   type SingleAnimation<TTime> = EasingFunction | SingleAnimationDirection | SingleAnimationFillMode | SingleAnimationTimeline | TTime | "auto" | "infinite" | "none" | "paused" | "running" | (string & {}) | (number & {});
   type SingleAnimationComposition = "accumulate" | "add" | "replace";
   type SingleAnimationDirection = "alternate" | "alternate-reverse" | "normal" | "reverse";
@@ -21725,7 +23292,7 @@ declare function useCssVars(getter: (ctx: any) => Record<string, unknown>): void
  * @internal
  * shared between vdom and vapor
  */
-declare function setVarsOnNode(el: Node, vars: Record<string, string>): void;
+declare function setVarsOnNode(el: Node, vars: Record<string, unknown>): void;
 //#endregion
 //#region packages/runtime-dom/src/modules/class.d.ts
 declare function patchClass(el: Element, value: string | null, isSVG: boolean): void;
@@ -21842,6 +23409,19 @@ interface RenderContext {
   readonly slotBoundary: SlotBoundaryContext | null;
   readonly slotScopeIds: string[] | null;
   readonly suspense: SuspenseBoundary | null;
+  readonly nested: GenericComponentInstance$1 | null;
+}
+//#endregion
+//#region packages/runtime-vapor/src/vdomInterop.d.ts
+declare const vaporInteropPlugin: Plugin;
+interface InteropDirsOwner {
+  comp: VaporComponentInstance;
+  vnode: VNode;
+  el: Element | null;
+  carried: VNode;
+  updating: VaporComponentInstance | null;
+  patching: InteropDirsOwner | null;
+  pending: VNode | null;
 }
 //#endregion
 //#region packages/runtime-vapor/src/keepAlive.d.ts
@@ -21881,6 +23461,7 @@ interface SlotResolutionState {
   syncNodes(): void;
   notifyExposedValidityChange(): void;
   bm?: ((nodes: Block) => void)[];
+  fallthrough?: (nodes: Block, scope?: EffectScope$1) => void;
   awaitLeavingRoot?(cb: () => void): boolean;
 }
 //#endregion
@@ -21902,6 +23483,8 @@ declare class VaporFragment<T extends Block = Block> implements TransitionOption
   isBlockValid?: (componentAsValid?: boolean) => boolean;
   getContent?(): Block;
   slotState?: SlotResolutionState;
+  rootScopeIds?: string[];
+  rootDirs?: InteropDirsOwner;
   awaitLeavingRoot?(cb: () => void): boolean;
   slotName?: string;
   insert?(parent: ParentNode, anchor: Node | null, parentSuspense?: SuspenseBoundary | null, transitionHooks?: TransitionHooks): void;
@@ -21972,7 +23555,7 @@ declare class DynamicFragment extends RenderContextFragment {
   branchKey?: any;
   /** hydration: this `v-if` branch's claim on its SSR range */
   hydrationClaim?: FragmentClaim;
-  fallthrough?: (nodes: Block) => void;
+  fallthrough?: (nodes: Block, scope?: EffectScope$1) => void;
   scopeIdOwners?: VaporComponentInstance[];
   wasValid?: boolean;
   everUpdated: boolean;
@@ -22005,7 +23588,8 @@ interface VaporTransitionHooks extends TransitionHooks {
 declare const enum VShowFlags {
   APPLIED = 1,
   TARGET = 2,
-  MOUNT_SHOWN = 4
+  MOUNT_SHOWN = 4,
+  LEAVING = 8
 }
 interface TransitionOptions {
   $key?: any;
@@ -22062,6 +23646,15 @@ type RawProps = Record<string, unknown> & {
   [fallthroughOnlyKey]?: boolean;
 };
 type DynamicPropsSource = (() => Record<string, unknown>) | Record<string, unknown>;
+/**
+ * What the props and attrs proxies of an instance wrap. Not the instance
+ * itself: a proxy checks every enumeration against all the own keys of its
+ * target.
+ */
+interface PropsProxyTarget {
+  i: VaporComponentInstance;
+}
+type PropsProxyHandlers = [props: ProxyHandler<PropsProxyTarget> | null, attrs: ProxyHandler<PropsProxyTarget>, readAttrs: (instance: VaporComponentInstance) => Record<string, any>];
 //#endregion
 //#region packages/runtime-vapor/src/renderEffect.d.ts
 declare class RenderEffect extends ReactiveEffect {
@@ -22120,6 +23713,11 @@ declare function defineVaporComponent<TypeProps, RuntimePropsOptions extends Com
   __typeEl?: TypeBlock;
 } & ThisType<void>): DefineVaporComponent<RuntimePropsOptions, RuntimePropsKeys, InferredProps, ResolvedEmits, RuntimeEmitsKeys, Slots, Exposed extends VaporRenderResult ? Record<string, any> : Exposed, TypeBlock, TypeRefs, unknown extends TypeProps ? true : false>;
 //#endregion
+//#region packages/runtime-vapor/src/teleport.d.ts
+type TeleportHost = Node & {
+  $tp?: TeleportFragment[];
+};
+//#endregion
 //#region packages/runtime-vapor/src/components/Teleport.d.ts
 declare class TeleportFragment extends RenderContextFragment {
   anchor?: Node;
@@ -22135,8 +23733,18 @@ declare class TeleportFragment extends RenderContextFragment {
   placeholder?: Node;
   private mountState;
   private mountToTargetJob?;
+  connectHost?: TeleportHost;
   private parentSuspense?;
   constructor(props: LooseRawProps, slots?: RawSlots | null, adoptAnchor?: Node);
+  /**
+   * vdom mounts a teleport into its target when the teleport is created, or
+   * queues that mount then (`defer`, a pending suspense), so teleports to the
+   * same target follow creation order. Here the mount comes later: on block
+   * insertion for a teleport at a template root, after render for one inside
+   * an element. Claim the place in creation order now: the queued mount, or
+   * the target anchors the content is later mounted before.
+   */
+  private claimTargetOrder;
   get parent(): ParentNode | null;
   get scopeOwner(): GenericComponentInstance$1 | null;
   private initChildren;
@@ -22147,14 +23755,17 @@ declare class TeleportFragment extends RenderContextFragment {
   private prepareTargetAnchors;
   private prepareTarget;
   private queueTargetUpdate;
+  private mountQueued;
   private mountToTarget;
   private handlePropsUpdate;
+  private isDetached;
+  private waitForSource;
+  connect(): void;
   insert(container: ParentNode, anchor: Node | null, parentSuspense?: SuspenseBoundary | null): void;
   move(container: ParentNode, anchor: Node | null, _moveType: MoveType, _parentComponent?: VaporComponentInstance, parentSuspense?: SuspenseBoundary | null): void;
   private cancelMountToTarget;
   disposeTarget(): void;
   scheduleTargetDispose(): void;
-  dispose: () => void;
   remove(): void;
   private hydrateTargetAnchors;
   private hydrateDisabledTeleport;
@@ -22197,9 +23808,10 @@ interface SharedInternalOptions {
    */
   __propsOptions?: NormalizedPropsOptions;
   /**
-   * Cached normalized props proxy handlers.
+   * Cached normalized props proxy handlers, and the reader of the attrs as a
+   * plain object.
    */
-  __propsHandlers?: [ProxyHandler<any> | null, ProxyHandler<any>];
+  __propsHandlers?: PropsProxyHandlers;
   /**
    * Cached normalized emits options.
    */
@@ -22271,6 +23883,7 @@ declare class VaporComponentInstance<Props extends Record<string, any> = {}, Emi
   asyncResolved: boolean;
   asyncDepRegistered?: boolean;
   hasFallthrough: boolean;
+  hasVNodeHooks: boolean;
   shapeFlag?: number;
   inputScope?: EffectScope;
   unmountScope?: EffectScope;
@@ -22350,9 +23963,6 @@ declare const createVaporSSRApp: CreateAppFunction$1<ParentNode, VaporComponent>
 //#endregion
 //#region packages/runtime-vapor/src/apiDefineAsyncComponent.d.ts
 declare function defineVaporAsyncComponent<T extends VaporComponent>(source: AsyncComponentLoader<T> | AsyncComponentOptions<T>): T;
-//#endregion
-//#region packages/runtime-vapor/src/vdomInterop.d.ts
-declare const vaporInteropPlugin: Plugin;
 //#endregion
 //#region packages/runtime-vapor/src/directives/custom.d.ts
 type VaporDirective<HostElement extends Element = Element, Value = any, Modifiers extends string = string, Arg = any> = (node: HostElement, value?: () => Value, argument?: () => Arg, modifiers?: DirectiveModifiers<Modifiers>) => (() => void) | void;
@@ -22590,7 +24200,7 @@ declare function getDefaultValue(val: any, getDefaultVal: () => any): any;
  * (`bm` hooks; `u` for vdom-owned interop content), and teleports are written
  * directly as outlets since their content leaves the chain.
  */
-declare function useVaporCssVars(getter: (ctx: any) => Record<string, string>): void;
+declare function useVaporCssVars(getter: (ctx: any) => Record<string, unknown>): void;
 //#endregion
 //#region packages/runtime-vapor/src/helpers/setKey.d.ts
 declare function setBlockKey(block: Exclude<Block, Block[]> & {

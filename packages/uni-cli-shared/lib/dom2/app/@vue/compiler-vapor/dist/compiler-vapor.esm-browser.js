@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-vapor v3.6.0-rc.15
+  * @vue/compiler-vapor v3.6.0-rc.16
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -223,6 +223,13 @@ const isBooleanAttr = /*@__PURE__*/ makeMap("itemscope,allowfullscreen,disablepi
 function includeBooleanAttr(value) {
 	return !!value || value === "";
 }
+/**
+* Known attributes, this is used for stringification of runtime static nodes
+* so that we don't stringify bindings that cannot be set from HTML.
+* Don't also forget to allow `data-*` and `aria-*`!
+* Generated from https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes
+*/
+const isKnownHtmlAttr = /*@__PURE__*/ makeMap("accept,accept-charset,accesskey,action,align,allow,alt,async,autocapitalize,autocomplete,autofocus,autoplay,background,bgcolor,border,buffered,capture,challenge,charset,checked,cite,class,code,codebase,color,cols,colspan,content,contenteditable,contextmenu,controls,coords,crossorigin,csp,data,datetime,decoding,default,defer,dir,dirname,disabled,download,draggable,dropzone,enctype,enterkeyhint,for,form,formaction,formenctype,formmethod,formnovalidate,formtarget,headers,height,hidden,high,href,hreflang,http-equiv,icon,id,importance,inert,integrity,ismap,itemprop,keytype,kind,label,lang,language,loading,list,loop,low,manifest,max,maxlength,minlength,media,min,multiple,muted,name,novalidate,open,optimum,pattern,ping,placeholder,poster,preload,radiogroup,readonly,referrerpolicy,rel,required,reversed,rows,rowspan,sandbox,scope,scoped,selected,shape,size,sizes,slot,span,spellcheck,src,srcdoc,srclang,srcset,start,step,style,summary,tabindex,target,title,translate,type,usemap,value,width,wrap");
 function shouldSetAsAttr(tagName, key) {
 	if (key === "spellcheck" || key === "draggable" || key === "translate" || key === "autocorrect") return true;
 	if (key === "form") return true;
@@ -16923,7 +16930,7 @@ function getSelfName(filename) {
 	return nameMatch ? capitalize(camelize(nameMatch[1])) : null;
 }
 //#endregion
-//#region node_modules/.pnpm/source-map-js@1.2.2/node_modules/source-map-js/lib/base64.js
+//#region node_modules/.pnpm/source-map-js@1.2.4/node_modules/source-map-js/lib/base64.js
 var require_base64 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var intToCharMap = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".split("");
 	/**
@@ -16957,7 +16964,7 @@ var require_base64 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	};
 }));
 //#endregion
-//#region node_modules/.pnpm/source-map-js@1.2.2/node_modules/source-map-js/lib/base64-vlq.js
+//#region node_modules/.pnpm/source-map-js@1.2.4/node_modules/source-map-js/lib/base64-vlq.js
 var require_base64_vlq = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var base64 = require_base64();
 	var VLQ_BASE_SHIFT = 5;
@@ -17022,7 +17029,7 @@ var require_base64_vlq = /* @__PURE__ */ __commonJSMin(((exports) => {
 	};
 }));
 //#endregion
-//#region node_modules/.pnpm/source-map-js@1.2.2/node_modules/source-map-js/lib/util.js
+//#region node_modules/.pnpm/source-map-js@1.2.4/node_modules/source-map-js/lib/util.js
 var require_util = /* @__PURE__ */ __commonJSMin(((exports) => {
 	/**
 	* This is a helper function for getting values from parameter/options
@@ -17209,9 +17216,9 @@ var require_util = /* @__PURE__ */ __commonJSMin(((exports) => {
 		return Array(level + 1).join("../") + aPath.substr(aRoot.length + 1);
 	}
 	exports.relative = relative;
-	var supportsNullProto = function() {
+	var supportsNullProto = (function() {
 		return !("__proto__" in Object.create(null));
-	}();
+	})();
 	function identity(s) {
 		return s;
 	}
@@ -17369,7 +17376,7 @@ var require_util = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.computeSourceURL = computeSourceURL;
 }));
 //#endregion
-//#region node_modules/.pnpm/source-map-js@1.2.2/node_modules/source-map-js/lib/array-set.js
+//#region node_modules/.pnpm/source-map-js@1.2.4/node_modules/source-map-js/lib/array-set.js
 var require_array_set = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var util = require_util();
 	var has = Object.prototype.hasOwnProperty;
@@ -17463,7 +17470,7 @@ var require_array_set = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.ArraySet = ArraySet;
 }));
 //#endregion
-//#region node_modules/.pnpm/source-map-js@1.2.2/node_modules/source-map-js/lib/mapping-list.js
+//#region node_modules/.pnpm/source-map-js@1.2.4/node_modules/source-map-js/lib/mapping-list.js
 var require_mapping_list = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var util = require_util();
 	/**
@@ -17532,7 +17539,7 @@ var require_mapping_list = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.MappingList = MappingList;
 }));
 //#endregion
-//#region node_modules/.pnpm/source-map-js@1.2.2/node_modules/source-map-js/lib/source-map-generator.js
+//#region node_modules/.pnpm/source-map-js@1.2.4/node_modules/source-map-js/lib/source-map-generator.js
 var require_source_map_generator = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var base64VLQ = require_base64_vlq();
 	var util = require_util();
@@ -17815,7 +17822,7 @@ var require_source_map_generator = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.SourceMapGenerator = SourceMapGenerator;
 }));
 //#endregion
-//#region node_modules/.pnpm/source-map-js@1.2.2/node_modules/source-map-js/lib/binary-search.js
+//#region node_modules/.pnpm/source-map-js@1.2.4/node_modules/source-map-js/lib/binary-search.js
 var require_binary_search = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.GREATEST_LOWER_BOUND = 1;
 	exports.LEAST_UPPER_BOUND = 2;
@@ -17876,77 +17883,118 @@ var require_binary_search = /* @__PURE__ */ __commonJSMin(((exports) => {
 	};
 }));
 //#endregion
-//#region node_modules/.pnpm/source-map-js@1.2.2/node_modules/source-map-js/lib/quick-sort.js
+//#region node_modules/.pnpm/source-map-js@1.2.4/node_modules/source-map-js/lib/quick-sort.js
 var require_quick_sort = /* @__PURE__ */ __commonJSMin(((exports) => {
-	function SortTemplate(comparator) {
-		/**
-		* Swap the elements indexed by `x` and `y` in the array `ary`.
-		*
-		* @param {Array} ary
-		*        The array.
-		* @param {Number} x
-		*        The index of the first item.
-		* @param {Number} y
-		*        The index of the second item.
-		*/
-		function swap(ary, x, y) {
-			var temp = ary[x];
-			ary[x] = ary[y];
-			ary[y] = temp;
-		}
-		/**
-		* Returns a random integer within the range `low .. high` inclusive.
-		*
-		* @param {Number} low
-		*        The lower bound on the range.
-		* @param {Number} high
-		*        The upper bound on the range.
-		*/
-		function randomIntInRange(low, high) {
-			return Math.round(low + Math.random() * (high - low));
-		}
-		/**
-		* The Quick Sort algorithm.
-		*
-		* @param {Array} ary
-		*        An array to sort.
-		* @param {function} comparator
-		*        Function to use to compare two items.
-		* @param {Number} p
-		*        Start index of the array
-		* @param {Number} r
-		*        End index of the array
-		*/
-		function doQuickSort(ary, comparator, p, r) {
-			if (p < r) {
-				var pivotIndex = randomIntInRange(p, r);
-				var i = p - 1;
-				swap(ary, pivotIndex, r);
-				var pivot = ary[r];
-				for (var j = p; j < r; j++) if (comparator(ary[j], pivot, false) <= 0) {
-					i += 1;
-					swap(ary, i, j);
-				}
-				swap(ary, i + 1, j);
-				var q = i + 1;
-				doQuickSort(ary, comparator, p, q - 1);
-				doQuickSort(ary, comparator, q + 1, r);
+	/**
+	* Swap the elements indexed by `x` and `y` in the array `ary`.
+	*
+	* @param {Array} ary
+	*        The array.
+	* @param {Number} x
+	*        The index of the first item.
+	* @param {Number} y
+	*        The index of the second item.
+	*/
+	function swap(ary, x, y) {
+		var temp = ary[x];
+		ary[x] = ary[y];
+		ary[y] = temp;
+	}
+	/**
+	* Returns a random integer within the range `low .. high` inclusive.
+	*
+	* @param {Number} low
+	*        The lower bound on the range.
+	* @param {Number} high
+	*        The upper bound on the range.
+	*/
+	function randomIntInRange(low, high) {
+		return Math.round(low + Math.random() * (high - low));
+	}
+	/**
+	* The Quick Sort algorithm.
+	*
+	* @param {Array} ary
+	*        An array to sort.
+	* @param {function} comparator
+	*        Function to use to compare two items.
+	* @param {Number} p
+	*        Start index of the array
+	* @param {Number} r
+	*        End index of the array
+	*/
+	function doQuickSort0(ary, comparator, p, r) {
+		if (p < r) {
+			var pivotIndex = randomIntInRange(p, r);
+			var i = p - 1;
+			swap(ary, pivotIndex, r);
+			var pivot = ary[r];
+			for (var j = p; j < r; j++) if (comparator(ary[j], pivot, false) <= 0) {
+				i += 1;
+				swap(ary, i, j);
 			}
+			swap(ary, i + 1, j);
+			var q = i + 1;
+			doQuickSort0(ary, comparator, p, q - 1);
+			doQuickSort0(ary, comparator, q + 1, r);
 		}
-		return doQuickSort;
 	}
-	function cloneSort(comparator) {
-		let template = SortTemplate.toString();
-		return new Function(`return ${template}`)()(comparator);
-	}
-	let isEvalAllowed = (function() {
-		try {
-			new Function("return 0")();
-			return true;
-		} catch (_unused) {
-			return false;
+	function doQuickSort1(ary, comparator, p, r) {
+		if (p < r) {
+			var pivotIndex = randomIntInRange(p, r);
+			var i = p - 1;
+			swap(ary, pivotIndex, r);
+			var pivot = ary[r];
+			for (var j = p; j < r; j++) if (comparator(ary[j], pivot, false) <= 0) {
+				i += 1;
+				swap(ary, i, j);
+			}
+			swap(ary, i + 1, j);
+			var q = i + 1;
+			doQuickSort1(ary, comparator, p, q - 1);
+			doQuickSort1(ary, comparator, q + 1, r);
 		}
-	})();
+	}
+	function doQuickSort2(ary, comparator, p, r) {
+		if (p < r) {
+			var pivotIndex = randomIntInRange(p, r);
+			var i = p - 1;
+			swap(ary, pivotIndex, r);
+			var pivot = ary[r];
+			for (var j = p; j < r; j++) if (comparator(ary[j], pivot, false) <= 0) {
+				i += 1;
+				swap(ary, i, j);
+			}
+			swap(ary, i + 1, j);
+			var q = i + 1;
+			doQuickSort2(ary, comparator, p, q - 1);
+			doQuickSort2(ary, comparator, q + 1, r);
+		}
+	}
+	function doQuickSort3(ary, comparator, p, r) {
+		if (p < r) {
+			var pivotIndex = randomIntInRange(p, r);
+			var i = p - 1;
+			swap(ary, pivotIndex, r);
+			var pivot = ary[r];
+			for (var j = p; j < r; j++) if (comparator(ary[j], pivot, false) <= 0) {
+				i += 1;
+				swap(ary, i, j);
+			}
+			swap(ary, i + 1, j);
+			var q = i + 1;
+			doQuickSort3(ary, comparator, p, q - 1);
+			doQuickSort3(ary, comparator, q + 1, r);
+		}
+	}
+	var sortCopies = [
+		doQuickSort0,
+		doQuickSort1,
+		doQuickSort2,
+		doQuickSort3
+	];
+	var nextSortCopy = 0;
+	var sortCache = /* @__PURE__ */ new WeakMap();
 	/**
 	* Sort the given array in-place with the given comparator function.
 	*
@@ -17954,19 +18002,20 @@ var require_quick_sort = /* @__PURE__ */ __commonJSMin(((exports) => {
 	*        An array to sort.
 	* @param {function} comparator
 	*        Function to use to compare two items.
+	* @param {Number} start
+	*        Index to start sorting from; items before it are left untouched.
 	*/
-	let sortCache = /* @__PURE__ */ new WeakMap();
 	exports.quickSort = function(ary, comparator, start = 0) {
-		let doQuickSort = isEvalAllowed ? sortCache.get(comparator) : SortTemplate(comparator);
+		var doQuickSort = sortCache.get(comparator);
 		if (doQuickSort === void 0) {
-			doQuickSort = cloneSort(comparator);
+			doQuickSort = sortCopies[Math.min(nextSortCopy++, sortCopies.length - 1)];
 			sortCache.set(comparator, doQuickSort);
 		}
 		doQuickSort(ary, comparator, start, ary.length - 1);
 	};
 }));
 //#endregion
-//#region node_modules/.pnpm/source-map-js@1.2.2/node_modules/source-map-js/lib/source-map-consumer.js
+//#region node_modules/.pnpm/source-map-js@1.2.4/node_modules/source-map-js/lib/source-map-consumer.js
 var require_source_map_consumer = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var util = require_util();
 	var binarySearch = require_binary_search();
@@ -18105,7 +18154,7 @@ var require_source_map_consumer = /* @__PURE__ */ __commonJSMin(((exports) => {
 			var mapping = this._originalMappings[index];
 			if (aArgs.column === void 0) {
 				var originalLine = mapping.originalLine;
-				while (mapping && mapping.originalLine === originalLine) {
+				while (mapping && mapping.source === needle.source && mapping.originalLine === originalLine) {
 					mappings.push({
 						line: util.getArg(mapping, "generatedLine", null),
 						column: util.getArg(mapping, "generatedColumn", null),
@@ -18115,7 +18164,7 @@ var require_source_map_consumer = /* @__PURE__ */ __commonJSMin(((exports) => {
 				}
 			} else {
 				var originalColumn = mapping.originalColumn;
-				while (mapping && mapping.originalLine === line && mapping.originalColumn == originalColumn) {
+				while (mapping && mapping.source === needle.source && mapping.originalLine === line && mapping.originalColumn == originalColumn) {
 					mappings.push({
 						line: util.getArg(mapping, "generatedLine", null),
 						column: util.getArg(mapping, "generatedColumn", null),
@@ -18348,8 +18397,14 @@ var require_source_map_consumer = /* @__PURE__ */ __commonJSMin(((exports) => {
 		}
 		sortGenerated(generatedMappings, subarrayStart);
 		this.__generatedMappings = generatedMappings;
-		for (var i = 0; i < originalMappings.length; i++) if (originalMappings[i] != null) quickSort(originalMappings[i], util.compareByOriginalPositionsNoSource);
-		this.__originalMappings = [].concat(...originalMappings);
+		var sourceBuckets = [];
+		for (var i = 0; i < originalMappings.length; i++) if (originalMappings[i] != null) {
+			quickSort(originalMappings[i], util.compareByOriginalPositionsNoSource);
+			sourceBuckets.push(originalMappings[i]);
+		}
+		var sortedOriginalMappings = [];
+		for (var b = 0; b < sourceBuckets.length; b += 4096) sortedOriginalMappings = sortedOriginalMappings.concat(...sourceBuckets.slice(b, b + 4096));
+		this.__originalMappings = sortedOriginalMappings;
 	};
 	/**
 	* Find the mapping that best matches the hypothetical "needle" mapping that
@@ -18651,7 +18706,7 @@ var require_source_map_consumer = /* @__PURE__ */ __commonJSMin(((exports) => {
 		var sectionIndex = binarySearch.search(needle, this._sections, function(needle, section) {
 			var cmp = needle.generatedLine - section.generatedOffset.generatedLine;
 			if (cmp) return cmp;
-			return needle.generatedColumn - section.generatedOffset.generatedColumn;
+			return needle.generatedColumn - (section.generatedOffset.generatedColumn - 1);
 		});
 		var section = this._sections[sectionIndex];
 		if (!section) return {
@@ -18689,38 +18744,24 @@ var require_source_map_consumer = /* @__PURE__ */ __commonJSMin(((exports) => {
 		else throw new Error("\"" + aSource + "\" is not in the SourceMap.");
 	};
 	/**
-	* Returns the generated line and column information for the original source,
-	* line, and column positions provided. The only argument is an object with
-	* the following properties:
-	*
-	*   - source: The filename of the original source.
-	*   - line: The line number in the original source.  The line number
-	*     is 1-based.
-	*   - column: The column number in the original source.  The column
-	*     number is 0-based.
-	*
-	* and an object is returned with the following properties:
-	*
-	*   - line: The line number in the generated source, or null.  The
-	*     line number is 1-based. 
-	*   - column: The column number in the generated source, or null.
-	*     The column number is 0-based.
+	* Returns the index of a source in this._sources, which holds the URLs of
+	* the sources that have mappings, or -1. Accepts any name a section
+	* accepts: relative to the section's sourceRoot or a URL from `sources`.
 	*/
-	IndexedSourceMapConsumer.prototype.generatedPositionFor = function IndexedSourceMapConsumer_generatedPositionFor(aArgs) {
+	IndexedSourceMapConsumer.prototype._findSourceIndex = function(aSource) {
+		this._generatedMappings;
 		for (var i = 0; i < this._sections.length; i++) {
-			var section = this._sections[i];
-			if (section.consumer._findSourceIndex(util.getArg(aArgs, "source")) === -1) continue;
-			var generatedPosition = section.consumer.generatedPositionFor(aArgs);
-			if (generatedPosition) return {
-				line: generatedPosition.line + (section.generatedOffset.generatedLine - 1),
-				column: generatedPosition.column + (section.generatedOffset.generatedLine === generatedPosition.line ? section.generatedOffset.generatedColumn - 1 : 0)
-			};
+			var consumer = this._sections[i].consumer;
+			var index = consumer._findSourceIndex(aSource);
+			if (index === -1) continue;
+			var url = util.computeSourceURL(consumer.sourceRoot, consumer._sources.at(index), this._sourceMapURL);
+			if (this._sources.has(url)) return this._sources.indexOf(url);
 		}
-		return {
-			line: null,
-			column: null
-		};
+		return -1;
 	};
+	IndexedSourceMapConsumer.prototype._findMapping = BasicSourceMapConsumer.prototype._findMapping;
+	IndexedSourceMapConsumer.prototype.generatedPositionFor = BasicSourceMapConsumer.prototype.generatedPositionFor;
+	IndexedSourceMapConsumer.prototype.computeColumnSpans = BasicSourceMapConsumer.prototype.computeColumnSpans;
 	/**
 	* Parse the mappings in a string in to a data structure which we can easily
 	* query (the ordered arrays in the `this.__generatedMappings` and
@@ -18747,7 +18788,7 @@ var require_source_map_consumer = /* @__PURE__ */ __commonJSMin(((exports) => {
 				var adjustedMapping = {
 					source,
 					generatedLine: mapping.generatedLine + (section.generatedOffset.generatedLine - 1),
-					generatedColumn: mapping.generatedColumn + (section.generatedOffset.generatedLine === mapping.generatedLine ? section.generatedOffset.generatedColumn - 1 : 0),
+					generatedColumn: mapping.generatedColumn + (mapping.generatedLine === 1 ? section.generatedOffset.generatedColumn - 1 : 0),
 					originalLine: mapping.originalLine,
 					originalColumn: mapping.originalColumn,
 					name
@@ -18762,7 +18803,7 @@ var require_source_map_consumer = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.IndexedSourceMapConsumer = IndexedSourceMapConsumer;
 }));
 //#endregion
-//#region node_modules/.pnpm/source-map-js@1.2.2/node_modules/source-map-js/lib/source-node.js
+//#region node_modules/.pnpm/source-map-js@1.2.4/node_modules/source-map-js/lib/source-node.js
 var require_source_node = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var SourceMapGenerator = require_source_map_generator().SourceMapGenerator;
 	var util = require_util();
@@ -18940,7 +18981,7 @@ var require_source_node = /* @__PURE__ */ __commonJSMin(((exports) => {
 	*/
 	SourceNode.prototype.replaceRight = function SourceNode_replaceRight(aPattern, aReplacement) {
 		var lastChild = this.children[this.children.length - 1];
-		if (lastChild[isSourceNode]) lastChild.replaceRight(aPattern, aReplacement);
+		if (lastChild && lastChild[isSourceNode]) lastChild.replaceRight(aPattern, aReplacement);
 		else if (typeof lastChild === "string") this.children[this.children.length - 1] = lastChild.replace(aPattern, aReplacement);
 		else this.children.push("".replace(aPattern, aReplacement));
 		return this;
@@ -19052,7 +19093,7 @@ var require_source_node = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.SourceNode = SourceNode;
 }));
 //#endregion
-//#region node_modules/.pnpm/source-map-js@1.2.2/node_modules/source-map-js/source-map.js
+//#region node_modules/.pnpm/source-map-js@1.2.4/node_modules/source-map-js/source-map.js
 var require_source_map = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.SourceMapGenerator = require_source_map_generator().SourceMapGenerator;
 	exports.SourceMapConsumer = require_source_map_consumer().SourceMapConsumer;
@@ -23320,14 +23361,14 @@ const transformVBind = (dir, node, context) => {
 		exp = createSimpleExpression("", true, loc);
 	}
 	if (node.tagType !== 2) arg = resolveExpression(arg);
-	const excludeNumber = node.tagType === 1 || node.tagType === 2 || !!context.options.isCustomElement(node.tag) || modifiersString.includes("prop") || !arg.isStatic || isSpecialBooleanAttr(arg.content) || isCheckboxValueProp(node, arg.content) || !!context.options.platform && arg.isStatic && arg.content.length > 5 && arg.content.startsWith("data-") || !modifiersString.includes("attr") && (isFoldableBooleanAttr(arg.content) || isModelValueProp(node, arg.content));
-	exp = resolveExpression(exp, excludeNumber);
-	if (arg.isStatic && isReservedProp(arg.content) && !(arg.content === "key" && node.tagType === 2)) return;
 	let camel = false;
 	if (modifiersString.includes("camel")) {
 		if (arg.isStatic) arg = extend({}, arg, { content: camelize(arg.content) });
 		else camel = true;
 	}
+	const excludeNumber = node.tagType === 1 || node.tagType === 2 || !!context.options.isCustomElement(node.tag) || modifiersString.includes("prop") || !arg.isStatic || isSpecialBooleanAttr(arg.content) || isCheckboxValueProp(node, arg.content) || !!context.options.platform && arg.isStatic && arg.content.length > 5 && arg.content.startsWith("data-") || !modifiersString.includes("attr") && (isFoldableBooleanAttr(arg.content) || isModelValueProp(node, arg.content) || isRuntimeOnlyProp(node, arg.content));
+	exp = resolveExpression(exp, excludeNumber);
+	if (arg.isStatic && isReservedProp(arg.content) && !(arg.content === "key" && node.tagType === 2)) return;
 	return {
 		key: arg,
 		value: exp,
@@ -23447,9 +23488,11 @@ function isCheckboxValueProp(node, key) {
 *   only takes effect as a dom property - which is where vdom sends it too,
 *   see `shouldSetAsProp`
 * - `true-value` / `false-value`, see `isCheckboxValueProp`
+* - camelCase dom properties like `defaultValue`, which the parser would
+*   lowercase into a dead attribute outside svg (but not `tabIndex`)
 */
 function isRuntimeOnlyProp(node, key) {
-	return key === "innerHTML" || key === "textContent" || key === "value" && (node.tag === "textarea" || node.tag === "select") || isCheckboxValueProp(node, key);
+	return key === "innerHTML" || key === "textContent" || key === "value" && (node.tag === "textarea" || node.tag === "select") || isCheckboxValueProp(node, key) || node.ns !== 1 && /^[a-z]+[A-Z]/.test(key) && !isKnownHtmlAttr(key.toLowerCase());
 }
 /**
 * Props `v-model` reads back off the element as raw values (`_value`,
@@ -23459,8 +23502,8 @@ function isRuntimeOnlyProp(node, key) {
 *
 * Deliberately wider than `isRuntimeOnlyProp`: a literal `<input value="1">`
 * belongs in the template string, only the type of a *bound* number has to
-* survive. So this one is consulted by `v-bind`, that one by
-* `transformNativeElement`.
+* survive. So `v-bind` consults both, `transformNativeElement` only that
+* one.
 */
 function isModelValueProp(node, key) {
 	const { tag } = node;
@@ -25086,7 +25129,6 @@ function processIf(node, dir, context) {
 		dir.exp = createSimpleExpression(`true`, false, loc);
 	}
 	context.dynamic.flags |= 2;
-	const forceMultiRoot = shouldForceMultiRoot(context);
 	const allowNoScope = context.block === context.root.block;
 	if (dir.name === "if") {
 		const id = context.reference();
@@ -25099,7 +25141,7 @@ function processIf(node, dir, context) {
 				node,
 				id
 			}, context.effectBoundary()), {}, {
-				blockShape: encodeIfBlockShape(branch, forceMultiRoot, void 0, allowNoScope),
+				blockShape: encodeIfBlockShape(branch, void 0, allowNoScope),
 				condition: dir.exp,
 				positive: branch,
 				index: context.root.nextIfIndex(),
@@ -25147,8 +25189,8 @@ function processIf(node, dir, context) {
 		lastIfNode.negative = negative;
 		return () => {
 			onExit();
-			if (negative.type === 15) negative.blockShape = encodeIfBlockShape(negative.positive, forceMultiRoot, void 0, allowNoScope);
-			lastIfNode.blockShape = encodeIfBlockShape(lastIfNode.positive, forceMultiRoot, negative, allowNoScope, context.options.platform ? forceMultiRoot ? 2 : 1 : 3);
+			if (negative.type === 15) negative.blockShape = encodeIfBlockShape(negative.positive, void 0, allowNoScope);
+			lastIfNode.blockShape = encodeIfBlockShape(lastIfNode.positive, negative, allowNoScope, context.options.platform ? 1 : 3);
 		};
 	}
 }
@@ -25163,8 +25205,7 @@ function createIfBranch(node, context) {
 	context.reference();
 	return [branch, exitBlock];
 }
-function encodeIfBlockShape(positive, forceMultiRoot = false, negative, allowNoScope = true, elseIfShape = 3) {
-	if (forceMultiRoot) return 2 | (negative && negative.type === 15 ? elseIfShape : 2) << 2;
+function encodeIfBlockShape(positive, negative, allowNoScope = true, elseIfShape = 3) {
 	const positiveNoScope = allowNoScope && canSkipIfBranchScope(positive);
 	const negativeNoScope = allowNoScope && negative && negative.type !== 15 && canSkipIfBranchScope(negative);
 	return getBlockShape(positive) | getNegativeIfBranchShape(negative, elseIfShape) << 2 | (positiveNoScope ? 32 : 0) | (negativeNoScope ? 64 : 0);
@@ -25194,10 +25235,6 @@ function isStaticTemplateNode(node) {
 	if (node.type !== 1 || node.tagType !== 0) return false;
 	for (const prop of node.props) if (prop.type === 7 || prop.name === "ref") return false;
 	return node.children.every((child) => isStaticTemplateNode(child));
-}
-function shouldForceMultiRoot(context) {
-	const parent = context.parent && context.parent.node;
-	return !!parent && parent.type === 1 && parent.tagType === 3 && parent.props.some((prop) => prop.type === 7 && prop.name === "for");
 }
 function checkSameKey(node, context) {
 	const key = findProp(node, "key");

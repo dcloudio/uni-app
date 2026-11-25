@@ -508,7 +508,7 @@
 	})
 	// #endif
 
-	// #ifdef APP-HARMONY
+	// #ifdef APP-IOS || APP-HARMONY
 	const selectionStyle = useComputedStyle({
 		pseudoElement: '::selection',
 		properties: ['background-color']
@@ -516,6 +516,11 @@
 	const selectionColor = computed(() => {
 		const value = selectionStyle.get('background-color')
 		return typeof value == 'string' ? value : ''
+	})
+	// #endif
+	// #ifdef APP-IOS
+	watch(selectionColor, (value: string) => {
+		inputView?.updateSelectionColor(value)
 	})
 	// #endif
 
@@ -839,6 +844,7 @@
 		})
 		inputView?.updateColor(valueColor.value)
 		inputView?.updateCursorColor(caretColor.value)
+		inputView?.updateSelectionColor(selectionColor.value)
 	}
 	// #endif
 

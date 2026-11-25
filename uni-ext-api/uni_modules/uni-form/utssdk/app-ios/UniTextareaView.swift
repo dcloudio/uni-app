@@ -9,8 +9,38 @@ import UIKit
 
 public class UniTextareaView: UITextView {
 
+    private var editorCursorColor: UIColor?
+    private var editorSelectionColor: UIColor?
+    private var appliedEditorTint: UIColor?
+    private var hasAppliedEditorTint = false
+
     public func setEditorCursorColor(_ color: UIColor?) {
-        tintColor = color
+        editorCursorColor = color
+        updateEditorTint()
+    }
+
+    public func setEditorSelectionColor(_ color: UIColor?) {
+        editorSelectionColor = color
+        updateEditorTint()
+    }
+
+    override open var selectedTextRange: UITextRange? {
+        didSet { updateEditorTint() }
+    }
+
+    override open func layoutSubviews() {
+        super.layoutSubviews()
+        updateEditorTint()
+    }
+
+    public func updateEditorTint() {
+        // UIKit uses tintColor for the selection highlight and handles.
+        let hasSelection = selectedTextRange.map { !$0.isEmpty } ?? false
+        let tint = hasSelection ? (editorSelectionColor ?? editorCursorColor) : editorCursorColor
+        guard !hasAppliedEditorTint || appliedEditorTint != tint else { return }
+        hasAppliedEditorTint = true
+        appliedEditorTint = tint
+        tintColor = tint
     }
 
 

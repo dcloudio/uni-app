@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-sfc v3.6.0-rc.15
+  * @vue/compiler-sfc v3.6.0-rc.16
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -3482,6 +3482,10 @@ function compileTemplate(options) {
 function doCompileTemplate({ filename, id, scoped, slotted, inMap, source, ast: inAST, ssr = false, vapor = false, ssrCssVars, isProd = false, compiler, compilerOptions = {}, transformAssetUrls }) {
 	const errors = [];
 	const warnings = [];
+	const onError = (e) => {
+		errors.push(e);
+		compilerOptions.onError?.(e);
+	};
 	let nodeTransforms = [];
 	if ((0, _vue_shared.isObject)(transformAssetUrls)) {
 		const assetOptions = normalizeOptions(transformAssetUrls);
@@ -3501,7 +3505,7 @@ function doCompileTemplate({ filename, id, scoped, slotted, inMap, source, ast: 
 		compiler,
 		compilerOptions,
 		ssr,
-		onError: (e) => errors.push(e)
+		onError
 	});
 	let { code, ast, preamble, map, helpers } = compiler.compile(inAST || source, {
 		mode: "module",
@@ -3518,8 +3522,11 @@ function doCompileTemplate({ filename, id, scoped, slotted, inMap, source, ast: 
 		hmr: !isProd,
 		nodeTransforms: nodeTransforms.concat(compilerOptions.nodeTransforms || []),
 		filename,
-		onError: (e) => errors.push(e),
-		onWarn: (w) => warnings.push(w)
+		onError,
+		onWarn: (w) => {
+			warnings.push(w);
+			compilerOptions.onWarn?.(w);
+		}
 	});
 	if (inMap && !inAST) {
 		if (map) map = mapLines(inMap, map);
@@ -13597,14 +13604,14 @@ var Matcher = class {
 	}
 };
 //#endregion
-//#region node_modules/.pnpm/minimatch@11.0.8/node_modules/minimatch/dist/esm/assert-valid-pattern.js
+//#region node_modules/.pnpm/minimatch@11.0.9/node_modules/minimatch/dist/esm/assert-valid-pattern.js
 const MAX_PATTERN_LENGTH = 65536;
 const assertValidPattern = (pattern) => {
 	if (typeof pattern !== "string") throw new TypeError("invalid pattern");
 	if (pattern.length > MAX_PATTERN_LENGTH) throw new TypeError("pattern is too long");
 };
 //#endregion
-//#region node_modules/.pnpm/minimatch@11.0.8/node_modules/minimatch/dist/esm/escape.js
+//#region node_modules/.pnpm/minimatch@11.0.9/node_modules/minimatch/dist/esm/escape.js
 /**
 * Escape all magic characters in a glob pattern.
 *
@@ -13629,7 +13636,7 @@ const escape = (s, { windowsPathsNoEscape = false, magicalBraces = false } = {})
 	return e;
 };
 //#endregion
-//#region node_modules/.pnpm/minimatch@11.0.8/node_modules/minimatch/dist/esm/unescape.js
+//#region node_modules/.pnpm/minimatch@11.0.9/node_modules/minimatch/dist/esm/unescape.js
 /**
 * Un-escape a string that has been escaped with {@link escape}.
 *
@@ -13658,7 +13665,7 @@ const unescape = (s, { windowsPathsNoEscape = false, magicalBraces = true } = {}
 	return windowsPathsNoEscape ? s.replace(/\[([^/\\{}])\]/g, "$1") : s.replace(/((?!\\).|^)\[([^/\\{}])\]/g, "$1$2").replace(/\\([^/{}])/g, "$1");
 };
 //#endregion
-//#region node_modules/.pnpm/minimatch@11.0.8/node_modules/minimatch/dist/esm/index.js
+//#region node_modules/.pnpm/minimatch@11.0.9/node_modules/minimatch/dist/esm/index.js
 const DEFAULT_BRACE_EXPAND_MAX = 1e5;
 const DEFAULT_GLOB_STAR_RECURSION_MAX = 200;
 const AWE_KEY = "allowWindowsEscape";
@@ -13813,6 +13820,20 @@ const braceExpand = (pattern, options = {}) => {
 minimatch.braceExpand = braceExpand;
 const RANGE_MIN = 100;
 const rangeRe = /(?<![\\$])\{(-?\d+)\.\.(-?\d+)\}/g;
+const inRepeatOrNegExt = (portion, mark) => {
+	const stack = [];
+	for (let i = 0; i < portion.length; i++) {
+		const c = portion.charAt(i);
+		if (c === "\\") i++;
+		else if (c === mark) {
+			if (stack.some((t) => t !== "@" && t !== "?")) return true;
+		} else if (portion.charAt(i + 1) === "(" && "!?+*@".includes(c)) {
+			stack.push(c);
+			i++;
+		} else if (c === ")") stack.pop();
+	}
+	return false;
+};
 const match = (list, pattern, options = {}) => {
 	const mm = new Minimatch(pattern, options);
 	list = list.filter((f) => mm.match(f));
@@ -14599,6 +14620,7 @@ var Minimatch = class {
 		for (const p of set) for (const portion of p.split("/")) {
 			const c = portion.indexOf("[");
 			if (c !== -1 && c < portion.lastIndexOf(mark)) return this.braceExpand();
+			if (!this.options.noext && inRepeatOrNegExt(portion, mark)) return this.braceExpand();
 		}
 		this.#rangeMark = mark;
 		return set;
@@ -14698,53 +14720,44 @@ function recordResolvedElementDeps(ctx, { props }) {
 * mapped to runtime props or emits.
 */
 function resolveTypeElements(ctx, node, scope, typeParameters) {
-	const canCache = !typeParameters;
+	scope = node._ownerScope || scope || ctxToScope(ctx);
+	if (typeParameters) scope = createGenericScope(scope, typeParameters);
+	const canCache = !scope.isGenericScope;
 	if (canCache && node._resolvedElements) {
 		recordResolvedElementDeps(ctx, node._resolvedElements);
 		return node._resolvedElements;
 	}
-	const resolved = innerResolveTypeElements(ctx, node, node._ownerScope || scope || ctxToScope(ctx), typeParameters);
+	const resolved = innerResolveTypeElements(ctx, node, scope);
 	return canCache ? node._resolvedElements = resolved : resolved;
 }
-function innerResolveTypeElements(ctx, node, scope, typeParameters) {
+function innerResolveTypeElements(ctx, node, scope) {
 	if (hasVueIgnore(node)) {
-		if ((node.type === "TSIntersectionType" || node.type === "TSUnionType") && node.types.length > 1) return mergeElements([{ props: {} }, ...node.types.slice(1).map((t) => resolveTypeElements(ctx, t, scope, typeParameters))], node.type);
+		if ((node.type === "TSIntersectionType" || node.type === "TSUnionType") && node.types.length > 1) return mergeElements([{ props: {} }, ...node.types.slice(1).map((t) => resolveTypeElements(ctx, t, scope))], node.type);
 		return { props: {} };
 	}
 	switch (node.type) {
-		case "TSTypeLiteral": return typeElementsToMap(ctx, node.members, scope, typeParameters);
-		case "TSInterfaceDeclaration": return resolveInterfaceMembers(ctx, node, scope, typeParameters);
+		case "TSTypeLiteral": return typeElementsToMap(ctx, node.members, scope);
+		case "TSInterfaceDeclaration": return resolveInterfaceMembers(ctx, node, scope);
 		case "TSTypeAliasDeclaration":
 		case "TSTypeAnnotation":
-		case "TSParenthesizedType": return resolveTypeElements(ctx, node.typeAnnotation, scope, typeParameters);
+		case "TSParenthesizedType": return resolveTypeElements(ctx, node.typeAnnotation, scope);
 		case "TSFunctionType": return {
 			props: {},
 			calls: [node]
 		};
 		case "TSUnionType":
-		case "TSIntersectionType": return mergeElements(node.types.map((t) => resolveTypeElements(ctx, t, scope, typeParameters)), node.type);
-		case "TSMappedType": return resolveMappedType(ctx, node, scope, typeParameters);
+		case "TSIntersectionType": return mergeElements(node.types.map((t) => resolveTypeElements(ctx, t, scope)), node.type);
+		case "TSMappedType": return resolveMappedType(ctx, node, scope);
 		case "TSIndexedAccessType": return mergeElements(resolveIndexType(ctx, node, scope).map((t) => resolveTypeElements(ctx, t, t._ownerScope)), "TSUnionType");
 		case "TSExpressionWithTypeArguments":
 		case "TSTypeReference": {
 			const typeName = getReferenceName(node);
-			if ((typeName === "ExtractPropTypes" || typeName === "ExtractPublicPropTypes") && node.typeParameters && scope.imports[typeName]?.source === "vue") return resolveExtractPropTypes(resolveTypeElements(ctx, node.typeParameters.params[0], scope, typeParameters), scope);
+			if ((typeName === "ExtractPropTypes" || typeName === "ExtractPublicPropTypes") && node.typeParameters && scope.imports[typeName]?.source === "vue") return resolveExtractPropTypes(resolveTypeElements(ctx, node.typeParameters.params[0], scope), scope);
 			const resolved = resolveTypeReference(ctx, node, scope);
-			if (resolved) {
-				let typeParams;
-				if ((resolved.type === "TSTypeAliasDeclaration" || resolved.type === "TSInterfaceDeclaration") && resolved.typeParameters && node.typeParameters) {
-					typeParams = Object.create(null);
-					resolved.typeParameters.params.forEach((p, i) => {
-						let param = typeParameters && typeParameters[p.name];
-						if (!param) param = node.typeParameters.params[i];
-						typeParams[p.name] = param;
-					});
-				}
-				return resolveTypeElements(ctx, resolved, resolved._ownerScope, typeParams);
-			} else {
+			if (resolved) return resolveTypeElements(ctx, resolved, resolved._ownerScope, resolveTypeArguments(resolved, node, scope));
+			else {
 				if (typeof typeName === "string") {
-					if (typeParameters && typeParameters[typeName]) return resolveTypeElements(ctx, typeParameters[typeName], scope, typeParameters);
-					if (SupportedBuiltinsSet.has(typeName)) return resolveBuiltin(ctx, node, typeName, scope, typeParameters);
+					if (SupportedBuiltinsSet.has(typeName)) return resolveBuiltin(ctx, node, typeName, scope);
 					else if (typeName === "ReturnType" && node.typeParameters) {
 						const ret = resolveReturnType(ctx, node.typeParameters.params[0], scope);
 						if (ret) return resolveTypeElements(ctx, ret, scope);
@@ -14756,7 +14769,7 @@ function innerResolveTypeElements(ctx, node, scope, typeParameters) {
 		case "TSImportType": {
 			if (getId(node.argument) === "vue" && node.qualifier?.type === "Identifier" && node.qualifier.name === "ExtractPropTypes" && node.typeParameters) return resolveExtractPropTypes(resolveTypeElements(ctx, node.typeParameters.params[0], scope), scope);
 			const resolved = resolveTypeReference(ctx, node, importSourceToScope(ctx, node.argument, scope, node.argument.value));
-			if (resolved) return resolveTypeElements(ctx, resolved, resolved._ownerScope);
+			if (resolved) return resolveTypeElements(ctx, resolved, resolved._ownerScope, resolveTypeArguments(resolved, node, scope));
 			break;
 		}
 		case "TSTypeQuery": {
@@ -14766,17 +14779,13 @@ function innerResolveTypeElements(ctx, node, scope, typeParameters) {
 	}
 	return ctx.error(`Unresolvable type: ${node.type}`, node, scope);
 }
-function typeElementsToMap(ctx, elements, scope = ctxToScope(ctx), typeParameters) {
+function typeElementsToMap(ctx, elements, scope = ctxToScope(ctx)) {
 	const res = { props: {} };
 	for (const e of elements) if (e.type === "TSPropertySignature" || e.type === "TSMethodSignature") {
-		if (typeParameters) {
-			scope = createChildScope(scope);
-			scope.isGenericScope = true;
-			Object.assign(scope.types, typeParameters);
-		}
-		e._ownerScope = scope;
+		const property = scope.isGenericScope ? { ...e } : e;
+		property._ownerScope = scope;
 		const name = getStringLiteralKey(e);
-		if (name !== null) res.props[name] = e;
+		if (name !== null) res.props[name] = property;
 		else ctx.error(`Unsupported computed key in type referenced by a macro`, e.key, scope);
 	} else if (e.type === "TSCallSignatureDeclaration") (res.calls || (res.calls = [])).push(e);
 	return res;
@@ -14811,8 +14820,8 @@ function createProperty(key, typeAnnotation, scope, optional) {
 		_ownerScope: scope
 	};
 }
-function resolveInterfaceMembers(ctx, node, scope, typeParameters) {
-	const base = typeElementsToMap(ctx, node.body.body, node._ownerScope, typeParameters);
+function resolveInterfaceMembers(ctx, node, scope) {
+	const base = typeElementsToMap(ctx, node.body.body, scope);
 	if (node.extends) for (const ext of node.extends) try {
 		const { props, calls } = resolveTypeElements(ctx, ext, scope);
 		for (const key in props) if (!(0, _vue_shared.hasOwn)(base.props, key)) base.props[key] = props[key];
@@ -14822,22 +14831,55 @@ function resolveInterfaceMembers(ctx, node, scope, typeParameters) {
 	}
 	return base;
 }
-function resolveMappedType(ctx, node, scope, typeParameters) {
+function resolveTypeArguments(decl, node, scope) {
+	if (decl.type !== "TSTypeAliasDeclaration" && decl.type !== "TSInterfaceDeclaration" || !decl.typeParameters) return;
+	const args = node.typeParameters && node.typeParameters.params;
+	const res = Object.create(null);
+	const defaultScope = createGenericScope(decl._ownerScope, res);
+	decl.typeParameters.params.forEach((p, i) => {
+		const arg = args && args[i];
+		if (arg) res[p.name] = {
+			...arg,
+			_ownerScope: scope
+		};
+		else if (p.default) res[p.name] = {
+			...p.default,
+			_ownerScope: defaultScope
+		};
+	});
+	Object.assign(defaultScope.types, res);
+	return res;
+}
+function createGenericScope(parentScope, typeParameters) {
+	const scope = createChildScope(parentScope);
+	scope.isGenericScope = true;
+	Object.assign(scope.types, typeParameters);
+	return scope;
+}
+function resolveMappedType(ctx, node, scope) {
 	const res = { props: {} };
+	const { name, constraint } = node.typeParameter;
 	let keys;
 	if (node.nameType) {
-		const { name, constraint } = node.typeParameter;
-		scope = createChildScope(scope);
-		Object.assign(scope.types, {
-			...typeParameters,
-			[name]: constraint
-		});
+		scope = createGenericScope(scope, { [name]: {
+			...constraint,
+			_ownerScope: scope
+		} });
 		keys = resolveStringType(ctx, node.nameType, scope);
-	} else keys = resolveStringType(ctx, node.typeParameter.constraint, scope);
-	for (const key of keys) res.props[key] = createProperty({
-		type: "Identifier",
-		name: key
-	}, node.typeAnnotation, scope, !!node.optional);
+	} else keys = resolveStringType(ctx, constraint, scope);
+	for (const key of keys) {
+		const propertyScope = node.nameType ? scope : createGenericScope(scope, { [name]: {
+			type: "TSLiteralType",
+			literal: {
+				type: "StringLiteral",
+				value: key
+			}
+		} });
+		res.props[key] = createProperty({
+			type: "Identifier",
+			name: key
+		}, node.typeAnnotation, propertyScope, !!node.optional);
+	}
 	return res;
 }
 function resolveIndexType(ctx, node, scope) {
@@ -14856,17 +14898,24 @@ function resolveIndexType(ctx, node, scope) {
 	for (const key of keys) {
 		const targetType = resolved.props[key]?.typeAnnotation?.typeAnnotation;
 		if (targetType) {
-			targetType._ownerScope = resolved.props[key]._ownerScope;
-			types.push(targetType);
+			const ownerScope = resolved.props[key]._ownerScope;
+			const type = ownerScope.isGenericScope ? { ...targetType } : targetType;
+			type._ownerScope = ownerScope;
+			types.push(type);
 		}
 	}
 	return types;
 }
 function resolveArrayElementType(ctx, node, scope) {
-	if (node.type === "TSArrayType") return [node.elementType];
-	if (node.type === "TSTupleType") return node.elementTypes.map((t) => t.type === "TSNamedTupleMember" ? t.elementType : t);
+	scope = node._ownerScope || scope;
+	const withScope = (type) => ({
+		...type,
+		_ownerScope: scope
+	});
+	if (node.type === "TSArrayType") return [withScope(node.elementType)];
+	if (node.type === "TSTupleType") return node.elementTypes.map((t) => withScope(t.type === "TSNamedTupleMember" ? t.elementType : t));
 	if (node.type === "TSTypeReference") {
-		if (getReferenceName(node) === "Array" && node.typeParameters) return node.typeParameters.params;
+		if (getReferenceName(node) === "Array" && node.typeParameters) return node.typeParameters.params.map(withScope);
 		else {
 			const resolved = resolveTypeReference(ctx, node, scope);
 			if (resolved) return resolveArrayElementType(ctx, resolved, scope);
@@ -14874,19 +14923,19 @@ function resolveArrayElementType(ctx, node, scope) {
 	}
 	return ctx.error("Failed to resolve element type from target type", node, scope);
 }
-function resolveStringType(ctx, node, scope, typeParameters) {
+function resolveStringType(ctx, node, scope) {
+	scope = node._ownerScope || scope;
 	switch (node.type) {
 		case "StringLiteral": return [node.value];
-		case "TSLiteralType": return resolveStringType(ctx, node.literal, scope, typeParameters);
-		case "TSUnionType": return node.types.map((t) => resolveStringType(ctx, t, scope, typeParameters)).flat();
+		case "TSLiteralType": return resolveStringType(ctx, node.literal, scope);
+		case "TSUnionType": return node.types.map((t) => resolveStringType(ctx, t, scope)).flat();
 		case "TemplateLiteral": return resolveTemplateKeys(ctx, node, scope);
 		case "TSTypeReference": {
 			const resolved = resolveTypeReference(ctx, node, scope);
-			if (resolved) return resolveStringType(ctx, resolved, scope, typeParameters);
+			if (resolved) return resolveStringType(ctx, resolved, scope);
 			if (node.typeName.type === "Identifier") {
 				const name = node.typeName.name;
-				if (typeParameters && typeParameters[name]) return resolveStringType(ctx, typeParameters[name], scope, typeParameters);
-				const getParam = (index = 0) => resolveStringType(ctx, node.typeParameters.params[index], scope, typeParameters);
+				const getParam = (index = 0) => resolveStringType(ctx, node.typeParameters.params[index], scope);
 				switch (name) {
 					case "Extract": return getParam(1);
 					case "Exclude": {
@@ -14926,8 +14975,8 @@ const SupportedBuiltinsSet = /* @__PURE__ */ new Set([
 	"Pick",
 	"Omit"
 ]);
-function resolveBuiltin(ctx, node, name, scope, typeParameters) {
-	const t = resolveTypeElements(ctx, node.typeParameters.params[0], scope, typeParameters);
+function resolveBuiltin(ctx, node, name, scope) {
+	const t = resolveTypeElements(ctx, node.typeParameters.params[0], scope);
 	switch (name) {
 		case "Partial": {
 			const res = {
@@ -14957,7 +15006,7 @@ function resolveBuiltin(ctx, node, name, scope, typeParameters) {
 		}
 		case "Readonly": return t;
 		case "Pick": {
-			const picked = resolveStringType(ctx, node.typeParameters.params[1], scope, typeParameters);
+			const picked = resolveStringType(ctx, node.typeParameters.params[1], scope);
 			const res = {
 				props: {},
 				calls: t.calls
@@ -14966,7 +15015,7 @@ function resolveBuiltin(ctx, node, name, scope, typeParameters) {
 			return res;
 		}
 		case "Omit":
-			const omitted = resolveStringType(ctx, node.typeParameters.params[1], scope, typeParameters);
+			const omitted = resolveStringType(ctx, node.typeParameters.params[1], scope);
 			const res = {
 				props: {},
 				calls: t.calls
@@ -14992,6 +15041,7 @@ function resolveTypeReference(ctx, node, scope, name, onlyExported = false) {
 }
 function innerResolveTypeReference(ctx, scope, name, node, onlyExported) {
 	if (typeof name === "string") {
+		if (scope.isGenericScope && !onlyExported && node.type !== "TSTypeQuery" && scope.types[name]) return scope.types[name];
 		if (scope.imports[name]) return resolveTypeFromImport(ctx, node, name, scope);
 		else {
 			const lookupSource = node.type === "TSTypeQuery" ? onlyExported ? scope.exportedDeclares : scope.declares : onlyExported ? scope.exportedTypes : scope.types;
@@ -15142,10 +15192,10 @@ function resolveWithTS(containingFile, source, ts, fs) {
 			const [major, minor] = ts.versionMajorMinor.split(".").map(Number);
 			const getPattern = (base, p) => {
 				const supportsConfigDir = major > 5 || major === 5 && minor >= 5;
-				return p.startsWith("${configDir}") && supportsConfigDir ? normalizePath(p.replace("${configDir}", (0, path.dirname)(configPath))) : joinPaths(base, p);
+				return p.startsWith("${configDir}") && supportsConfigDir ? normalizePath(p.replace("${configDir}", base)) : joinPaths(base, p);
 			};
 			for (const c of configs) {
-				const base = normalizePath(c.config.options.pathsBasePath || (0, path.dirname)(c.config.options.configFilePath));
+				const base = normalizePath((0, path.dirname)(c.config.options.configFilePath));
 				const included = c.config.raw?.include;
 				const excluded = c.config.raw?.exclude;
 				if (!included && (!base || containingFile.startsWith(base)) || included?.some((p) => isMatch(containingFile, getPattern(base, p)))) {
@@ -15260,7 +15310,9 @@ function moduleDeclToScope(ctx, node, parentScope) {
 	return node._resolvedChildScope = scope;
 }
 function createChildScope(parentScope) {
-	return new TypeScope(parentScope.filename, parentScope.source, parentScope.offset, Object.create(parentScope.imports), Object.create(parentScope.types), Object.create(parentScope.declares));
+	const scope = new TypeScope(parentScope.filename, parentScope.source, parentScope.offset, Object.create(parentScope.imports), Object.create(parentScope.types), Object.create(parentScope.declares));
+	scope.isGenericScope = parentScope.isGenericScope;
+	return scope;
 }
 const importExportRE = /^Import|^Export/;
 function recordTypes(ctx, body, scope, asGlobal = false) {
@@ -15406,6 +15458,8 @@ function recordImport(node, imports) {
 	};
 }
 function inferRuntimeType(ctx, node, scope = node._ownerScope || ctxToScope(ctx), isKeyOf = false, typeParameters) {
+	scope = node._ownerScope || scope;
+	if (typeParameters) scope = createGenericScope(scope, typeParameters);
 	if (node.leadingComments && node.leadingComments.some((c) => c.value.includes("@vue-ignore"))) return [UNKNOWN_TYPE];
 	const prevSilent = ctx.silentOnExtendsFailure;
 	ctx.silentOnExtendsFailure = true;
@@ -15456,18 +15510,11 @@ function inferRuntimeType(ctx, node, scope = node._ownerScope || ctxToScope(ctx)
 				if (resolved) {
 					if (resolved.type === "TSTypeAliasDeclaration") {
 						if (resolved.typeAnnotation.type === "TSFunctionType") return ["Function"];
-						if (node.typeParameters) {
-							const typeParams = Object.create(null);
-							if (resolved.typeParameters) resolved.typeParameters.params.forEach((p, i) => {
-								typeParams[p.name] = node.typeParameters.params[i];
-							});
-							return inferRuntimeType(ctx, resolved.typeAnnotation, resolved._ownerScope, isKeyOf, typeParams);
-						}
+						return inferRuntimeType(ctx, resolved.typeAnnotation, resolved._ownerScope, isKeyOf, resolveTypeArguments(resolved, node, scope));
 					}
 					return inferRuntimeType(ctx, resolved, resolved._ownerScope, isKeyOf);
 				}
 				if (node.typeName.type === "Identifier") {
-					if (typeParameters && typeParameters[node.typeName.name]) return inferRuntimeType(ctx, typeParameters[node.typeName.name], scope, isKeyOf, typeParameters);
 					if (isKeyOf) switch (node.typeName.name) {
 						case "String":
 						case "Array":
@@ -15536,7 +15583,7 @@ function inferRuntimeType(ctx, node, scope = node._ownerScope || ctxToScope(ctx)
 						case "MaybeRefOrGetter": {
 							const types = /* @__PURE__ */ new Set(["Object"]);
 							if (node.typeName.name === "MaybeRefOrGetter") types.add("Function");
-							if (node.typeParameters && node.typeParameters.params[0]) for (const t of inferRuntimeType(ctx, node.typeParameters.params[0], scope, false, typeParameters)) types.add(t);
+							if (node.typeParameters && node.typeParameters.params[0]) for (const t of inferRuntimeType(ctx, node.typeParameters.params[0], scope)) types.add(t);
 							return Array.from(types);
 						}
 						case "NonNullable":
@@ -15551,19 +15598,19 @@ function inferRuntimeType(ctx, node, scope = node._ownerScope || ctxToScope(ctx)
 				}
 				break;
 			}
-			case "TSParenthesizedType": return inferRuntimeType(ctx, node.typeAnnotation, scope);
-			case "TSUnionType": return flattenTypes(ctx, node.types, scope, isKeyOf, typeParameters);
-			case "TSIntersectionType": return flattenTypes(ctx, node.types, scope, isKeyOf, typeParameters).filter((t) => t !== UNKNOWN_TYPE);
+			case "TSParenthesizedType": return inferRuntimeType(ctx, node.typeAnnotation, scope, isKeyOf);
+			case "TSUnionType": return flattenTypes(ctx, node.types, scope, isKeyOf);
+			case "TSIntersectionType": return flattenTypes(ctx, node.types, scope, isKeyOf).filter((t) => t !== UNKNOWN_TYPE);
 			case "TSMappedType": {
 				const { typeAnnotation, typeParameter } = node;
-				if (typeAnnotation && typeAnnotation.type === "TSIndexedAccessType" && typeParameter && typeParameter.constraint && typeParameters) {
+				if (typeAnnotation && typeAnnotation.type === "TSIndexedAccessType" && typeParameter && typeParameter.constraint && scope.isGenericScope) {
 					const constraint = typeParameter.constraint;
 					if (constraint.type === "TSTypeOperator" && constraint.operator === "keyof" && constraint.typeAnnotation && constraint.typeAnnotation.type === "TSTypeReference" && constraint.typeAnnotation.typeName.type === "Identifier") {
 						const typeName = constraint.typeAnnotation.typeName.name;
 						const index = typeAnnotation.indexType;
 						const obj = typeAnnotation.objectType;
 						if (obj && obj.type === "TSTypeReference" && obj.typeName.type === "Identifier" && obj.typeName.name === typeName && index && index.type === "TSTypeReference" && index.typeName.type === "Identifier" && index.typeName.name === typeParameter.name) {
-							const targetType = typeParameters[typeName];
+							const targetType = scope.types[typeName];
 							if (targetType) return inferRuntimeType(ctx, targetType, scope);
 						}
 					}
@@ -15576,7 +15623,10 @@ function inferRuntimeType(ctx, node, scope = node._ownerScope || ctxToScope(ctx)
 			case "ClassDeclaration": return ["Object"];
 			case "TSImportType": {
 				const resolved = resolveTypeReference(ctx, node, importSourceToScope(ctx, node.argument, scope, node.argument.value));
-				if (resolved) return inferRuntimeType(ctx, resolved, resolved._ownerScope);
+				if (resolved) {
+					if (resolved.type === "TSTypeAliasDeclaration") return inferRuntimeType(ctx, resolved.typeAnnotation, resolved._ownerScope, isKeyOf, resolveTypeArguments(resolved, node, scope));
+					return inferRuntimeType(ctx, resolved, resolved._ownerScope);
+				}
 				break;
 			}
 			case "TSTypeQuery": {
@@ -15599,9 +15649,9 @@ function inferRuntimeType(ctx, node, scope = node._ownerScope || ctxToScope(ctx)
 	}
 	return [UNKNOWN_TYPE];
 }
-function flattenTypes(ctx, types, scope, isKeyOf = false, typeParameters = void 0) {
-	if (types.length === 1) return inferRuntimeType(ctx, types[0], types[0]._ownerScope || scope, isKeyOf, typeParameters);
-	return [...new Set([].concat(...types.map((t) => inferRuntimeType(ctx, t, t._ownerScope || scope, isKeyOf, typeParameters))))];
+function flattenTypes(ctx, types, scope, isKeyOf = false) {
+	if (types.length === 1) return inferRuntimeType(ctx, types[0], types[0]._ownerScope || scope, isKeyOf);
+	return [...new Set([].concat(...types.map((t) => inferRuntimeType(ctx, t, t._ownerScope || scope, isKeyOf))))];
 }
 function inferEnumType(node) {
 	const types = /* @__PURE__ */ new Set();
@@ -16906,7 +16956,7 @@ function mergeSourceMaps(scriptMap, templateMap, templateLineOffset) {
 }
 //#endregion
 //#region packages/compiler-sfc/src/index.ts
-const version = "3.6.0-rc.15";
+const version = "3.6.0-rc.16";
 const parseCache = parseCache$1;
 const errorMessages = {
 	..._vue_compiler_dom.errorMessages,

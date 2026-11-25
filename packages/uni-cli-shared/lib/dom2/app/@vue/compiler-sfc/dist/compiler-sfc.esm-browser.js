@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-sfc v3.6.0-rc.15
+  * @vue/compiler-sfc v3.6.0-rc.16
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -433,12 +433,12 @@ function isSSRSafeAttrName(name) {
 	if (isUnsafe) console.error(`unsafe attribute name: ${name}`);
 	return !isUnsafe;
 }
-const propsToAttrMap = {
+const propsToAttrMap = /*@__PURE__*/ extend(Object.create(null), {
 	acceptCharset: "accept-charset",
 	className: "class",
 	htmlFor: "for",
 	httpEquiv: "http-equiv"
-};
+});
 /**
 * Known attributes, this is used for stringification of runtime static nodes
 * so that we don't stringify bindings that cannot be set from HTML.
@@ -18259,7 +18259,7 @@ function createStructuralDirectiveTransform$1(name, fn) {
 	};
 }
 //#endregion
-//#region node_modules/.pnpm/source-map-js@1.2.2/node_modules/source-map-js/lib/base64.js
+//#region node_modules/.pnpm/source-map-js@1.2.4/node_modules/source-map-js/lib/base64.js
 var require_base64$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var intToCharMap = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".split("");
 	/**
@@ -18293,7 +18293,7 @@ var require_base64$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	};
 }));
 //#endregion
-//#region node_modules/.pnpm/source-map-js@1.2.2/node_modules/source-map-js/lib/base64-vlq.js
+//#region node_modules/.pnpm/source-map-js@1.2.4/node_modules/source-map-js/lib/base64-vlq.js
 var require_base64_vlq$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var base64 = require_base64$1();
 	var VLQ_BASE_SHIFT = 5;
@@ -18358,7 +18358,7 @@ var require_base64_vlq$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	};
 }));
 //#endregion
-//#region node_modules/.pnpm/source-map-js@1.2.2/node_modules/source-map-js/lib/util.js
+//#region node_modules/.pnpm/source-map-js@1.2.4/node_modules/source-map-js/lib/util.js
 var require_util$2 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	/**
 	* This is a helper function for getting values from parameter/options
@@ -18545,9 +18545,9 @@ var require_util$2 = /* @__PURE__ */ __commonJSMin(((exports) => {
 		return Array(level + 1).join("../") + aPath.substr(aRoot.length + 1);
 	}
 	exports.relative = relative;
-	var supportsNullProto = function() {
+	var supportsNullProto = (function() {
 		return !("__proto__" in Object.create(null));
-	}();
+	})();
 	function identity(s) {
 		return s;
 	}
@@ -18705,7 +18705,7 @@ var require_util$2 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.computeSourceURL = computeSourceURL;
 }));
 //#endregion
-//#region node_modules/.pnpm/source-map-js@1.2.2/node_modules/source-map-js/lib/array-set.js
+//#region node_modules/.pnpm/source-map-js@1.2.4/node_modules/source-map-js/lib/array-set.js
 var require_array_set$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var util = require_util$2();
 	var has = Object.prototype.hasOwnProperty;
@@ -18799,7 +18799,7 @@ var require_array_set$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.ArraySet = ArraySet;
 }));
 //#endregion
-//#region node_modules/.pnpm/source-map-js@1.2.2/node_modules/source-map-js/lib/mapping-list.js
+//#region node_modules/.pnpm/source-map-js@1.2.4/node_modules/source-map-js/lib/mapping-list.js
 var require_mapping_list$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var util = require_util$2();
 	/**
@@ -18868,7 +18868,7 @@ var require_mapping_list$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.MappingList = MappingList;
 }));
 //#endregion
-//#region node_modules/.pnpm/source-map-js@1.2.2/node_modules/source-map-js/lib/source-map-generator.js
+//#region node_modules/.pnpm/source-map-js@1.2.4/node_modules/source-map-js/lib/source-map-generator.js
 var require_source_map_generator$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var base64VLQ = require_base64_vlq$1();
 	var util = require_util$2();
@@ -19151,7 +19151,7 @@ var require_source_map_generator$1 = /* @__PURE__ */ __commonJSMin(((exports) =>
 	exports.SourceMapGenerator = SourceMapGenerator;
 }));
 //#endregion
-//#region node_modules/.pnpm/source-map-js@1.2.2/node_modules/source-map-js/lib/binary-search.js
+//#region node_modules/.pnpm/source-map-js@1.2.4/node_modules/source-map-js/lib/binary-search.js
 var require_binary_search$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.GREATEST_LOWER_BOUND = 1;
 	exports.LEAST_UPPER_BOUND = 2;
@@ -19212,77 +19212,118 @@ var require_binary_search$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	};
 }));
 //#endregion
-//#region node_modules/.pnpm/source-map-js@1.2.2/node_modules/source-map-js/lib/quick-sort.js
+//#region node_modules/.pnpm/source-map-js@1.2.4/node_modules/source-map-js/lib/quick-sort.js
 var require_quick_sort$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
-	function SortTemplate(comparator) {
-		/**
-		* Swap the elements indexed by `x` and `y` in the array `ary`.
-		*
-		* @param {Array} ary
-		*        The array.
-		* @param {Number} x
-		*        The index of the first item.
-		* @param {Number} y
-		*        The index of the second item.
-		*/
-		function swap(ary, x, y) {
-			var temp = ary[x];
-			ary[x] = ary[y];
-			ary[y] = temp;
-		}
-		/**
-		* Returns a random integer within the range `low .. high` inclusive.
-		*
-		* @param {Number} low
-		*        The lower bound on the range.
-		* @param {Number} high
-		*        The upper bound on the range.
-		*/
-		function randomIntInRange(low, high) {
-			return Math.round(low + Math.random() * (high - low));
-		}
-		/**
-		* The Quick Sort algorithm.
-		*
-		* @param {Array} ary
-		*        An array to sort.
-		* @param {function} comparator
-		*        Function to use to compare two items.
-		* @param {Number} p
-		*        Start index of the array
-		* @param {Number} r
-		*        End index of the array
-		*/
-		function doQuickSort(ary, comparator, p, r) {
-			if (p < r) {
-				var pivotIndex = randomIntInRange(p, r);
-				var i = p - 1;
-				swap(ary, pivotIndex, r);
-				var pivot = ary[r];
-				for (var j = p; j < r; j++) if (comparator(ary[j], pivot, false) <= 0) {
-					i += 1;
-					swap(ary, i, j);
-				}
-				swap(ary, i + 1, j);
-				var q = i + 1;
-				doQuickSort(ary, comparator, p, q - 1);
-				doQuickSort(ary, comparator, q + 1, r);
+	/**
+	* Swap the elements indexed by `x` and `y` in the array `ary`.
+	*
+	* @param {Array} ary
+	*        The array.
+	* @param {Number} x
+	*        The index of the first item.
+	* @param {Number} y
+	*        The index of the second item.
+	*/
+	function swap(ary, x, y) {
+		var temp = ary[x];
+		ary[x] = ary[y];
+		ary[y] = temp;
+	}
+	/**
+	* Returns a random integer within the range `low .. high` inclusive.
+	*
+	* @param {Number} low
+	*        The lower bound on the range.
+	* @param {Number} high
+	*        The upper bound on the range.
+	*/
+	function randomIntInRange(low, high) {
+		return Math.round(low + Math.random() * (high - low));
+	}
+	/**
+	* The Quick Sort algorithm.
+	*
+	* @param {Array} ary
+	*        An array to sort.
+	* @param {function} comparator
+	*        Function to use to compare two items.
+	* @param {Number} p
+	*        Start index of the array
+	* @param {Number} r
+	*        End index of the array
+	*/
+	function doQuickSort0(ary, comparator, p, r) {
+		if (p < r) {
+			var pivotIndex = randomIntInRange(p, r);
+			var i = p - 1;
+			swap(ary, pivotIndex, r);
+			var pivot = ary[r];
+			for (var j = p; j < r; j++) if (comparator(ary[j], pivot, false) <= 0) {
+				i += 1;
+				swap(ary, i, j);
 			}
+			swap(ary, i + 1, j);
+			var q = i + 1;
+			doQuickSort0(ary, comparator, p, q - 1);
+			doQuickSort0(ary, comparator, q + 1, r);
 		}
-		return doQuickSort;
 	}
-	function cloneSort(comparator) {
-		let template = SortTemplate.toString();
-		return new Function(`return ${template}`)()(comparator);
-	}
-	let isEvalAllowed = (function() {
-		try {
-			new Function("return 0")();
-			return true;
-		} catch (_unused) {
-			return false;
+	function doQuickSort1(ary, comparator, p, r) {
+		if (p < r) {
+			var pivotIndex = randomIntInRange(p, r);
+			var i = p - 1;
+			swap(ary, pivotIndex, r);
+			var pivot = ary[r];
+			for (var j = p; j < r; j++) if (comparator(ary[j], pivot, false) <= 0) {
+				i += 1;
+				swap(ary, i, j);
+			}
+			swap(ary, i + 1, j);
+			var q = i + 1;
+			doQuickSort1(ary, comparator, p, q - 1);
+			doQuickSort1(ary, comparator, q + 1, r);
 		}
-	})();
+	}
+	function doQuickSort2(ary, comparator, p, r) {
+		if (p < r) {
+			var pivotIndex = randomIntInRange(p, r);
+			var i = p - 1;
+			swap(ary, pivotIndex, r);
+			var pivot = ary[r];
+			for (var j = p; j < r; j++) if (comparator(ary[j], pivot, false) <= 0) {
+				i += 1;
+				swap(ary, i, j);
+			}
+			swap(ary, i + 1, j);
+			var q = i + 1;
+			doQuickSort2(ary, comparator, p, q - 1);
+			doQuickSort2(ary, comparator, q + 1, r);
+		}
+	}
+	function doQuickSort3(ary, comparator, p, r) {
+		if (p < r) {
+			var pivotIndex = randomIntInRange(p, r);
+			var i = p - 1;
+			swap(ary, pivotIndex, r);
+			var pivot = ary[r];
+			for (var j = p; j < r; j++) if (comparator(ary[j], pivot, false) <= 0) {
+				i += 1;
+				swap(ary, i, j);
+			}
+			swap(ary, i + 1, j);
+			var q = i + 1;
+			doQuickSort3(ary, comparator, p, q - 1);
+			doQuickSort3(ary, comparator, q + 1, r);
+		}
+	}
+	var sortCopies = [
+		doQuickSort0,
+		doQuickSort1,
+		doQuickSort2,
+		doQuickSort3
+	];
+	var nextSortCopy = 0;
+	var sortCache = /* @__PURE__ */ new WeakMap();
 	/**
 	* Sort the given array in-place with the given comparator function.
 	*
@@ -19290,19 +19331,20 @@ var require_quick_sort$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	*        An array to sort.
 	* @param {function} comparator
 	*        Function to use to compare two items.
+	* @param {Number} start
+	*        Index to start sorting from; items before it are left untouched.
 	*/
-	let sortCache = /* @__PURE__ */ new WeakMap();
 	exports.quickSort = function(ary, comparator, start = 0) {
-		let doQuickSort = isEvalAllowed ? sortCache.get(comparator) : SortTemplate(comparator);
+		var doQuickSort = sortCache.get(comparator);
 		if (doQuickSort === void 0) {
-			doQuickSort = cloneSort(comparator);
+			doQuickSort = sortCopies[Math.min(nextSortCopy++, sortCopies.length - 1)];
 			sortCache.set(comparator, doQuickSort);
 		}
 		doQuickSort(ary, comparator, start, ary.length - 1);
 	};
 }));
 //#endregion
-//#region node_modules/.pnpm/source-map-js@1.2.2/node_modules/source-map-js/lib/source-map-consumer.js
+//#region node_modules/.pnpm/source-map-js@1.2.4/node_modules/source-map-js/lib/source-map-consumer.js
 var require_source_map_consumer$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var util = require_util$2();
 	var binarySearch = require_binary_search$1();
@@ -19441,7 +19483,7 @@ var require_source_map_consumer$1 = /* @__PURE__ */ __commonJSMin(((exports) => 
 			var mapping = this._originalMappings[index];
 			if (aArgs.column === void 0) {
 				var originalLine = mapping.originalLine;
-				while (mapping && mapping.originalLine === originalLine) {
+				while (mapping && mapping.source === needle.source && mapping.originalLine === originalLine) {
 					mappings.push({
 						line: util.getArg(mapping, "generatedLine", null),
 						column: util.getArg(mapping, "generatedColumn", null),
@@ -19451,7 +19493,7 @@ var require_source_map_consumer$1 = /* @__PURE__ */ __commonJSMin(((exports) => 
 				}
 			} else {
 				var originalColumn = mapping.originalColumn;
-				while (mapping && mapping.originalLine === line && mapping.originalColumn == originalColumn) {
+				while (mapping && mapping.source === needle.source && mapping.originalLine === line && mapping.originalColumn == originalColumn) {
 					mappings.push({
 						line: util.getArg(mapping, "generatedLine", null),
 						column: util.getArg(mapping, "generatedColumn", null),
@@ -19684,8 +19726,14 @@ var require_source_map_consumer$1 = /* @__PURE__ */ __commonJSMin(((exports) => 
 		}
 		sortGenerated(generatedMappings, subarrayStart);
 		this.__generatedMappings = generatedMappings;
-		for (var i = 0; i < originalMappings.length; i++) if (originalMappings[i] != null) quickSort(originalMappings[i], util.compareByOriginalPositionsNoSource);
-		this.__originalMappings = [].concat(...originalMappings);
+		var sourceBuckets = [];
+		for (var i = 0; i < originalMappings.length; i++) if (originalMappings[i] != null) {
+			quickSort(originalMappings[i], util.compareByOriginalPositionsNoSource);
+			sourceBuckets.push(originalMappings[i]);
+		}
+		var sortedOriginalMappings = [];
+		for (var b = 0; b < sourceBuckets.length; b += 4096) sortedOriginalMappings = sortedOriginalMappings.concat(...sourceBuckets.slice(b, b + 4096));
+		this.__originalMappings = sortedOriginalMappings;
 	};
 	/**
 	* Find the mapping that best matches the hypothetical "needle" mapping that
@@ -19987,7 +20035,7 @@ var require_source_map_consumer$1 = /* @__PURE__ */ __commonJSMin(((exports) => 
 		var sectionIndex = binarySearch.search(needle, this._sections, function(needle, section) {
 			var cmp = needle.generatedLine - section.generatedOffset.generatedLine;
 			if (cmp) return cmp;
-			return needle.generatedColumn - section.generatedOffset.generatedColumn;
+			return needle.generatedColumn - (section.generatedOffset.generatedColumn - 1);
 		});
 		var section = this._sections[sectionIndex];
 		if (!section) return {
@@ -20025,38 +20073,24 @@ var require_source_map_consumer$1 = /* @__PURE__ */ __commonJSMin(((exports) => 
 		else throw new Error("\"" + aSource + "\" is not in the SourceMap.");
 	};
 	/**
-	* Returns the generated line and column information for the original source,
-	* line, and column positions provided. The only argument is an object with
-	* the following properties:
-	*
-	*   - source: The filename of the original source.
-	*   - line: The line number in the original source.  The line number
-	*     is 1-based.
-	*   - column: The column number in the original source.  The column
-	*     number is 0-based.
-	*
-	* and an object is returned with the following properties:
-	*
-	*   - line: The line number in the generated source, or null.  The
-	*     line number is 1-based. 
-	*   - column: The column number in the generated source, or null.
-	*     The column number is 0-based.
+	* Returns the index of a source in this._sources, which holds the URLs of
+	* the sources that have mappings, or -1. Accepts any name a section
+	* accepts: relative to the section's sourceRoot or a URL from `sources`.
 	*/
-	IndexedSourceMapConsumer.prototype.generatedPositionFor = function IndexedSourceMapConsumer_generatedPositionFor(aArgs) {
+	IndexedSourceMapConsumer.prototype._findSourceIndex = function(aSource) {
+		this._generatedMappings;
 		for (var i = 0; i < this._sections.length; i++) {
-			var section = this._sections[i];
-			if (section.consumer._findSourceIndex(util.getArg(aArgs, "source")) === -1) continue;
-			var generatedPosition = section.consumer.generatedPositionFor(aArgs);
-			if (generatedPosition) return {
-				line: generatedPosition.line + (section.generatedOffset.generatedLine - 1),
-				column: generatedPosition.column + (section.generatedOffset.generatedLine === generatedPosition.line ? section.generatedOffset.generatedColumn - 1 : 0)
-			};
+			var consumer = this._sections[i].consumer;
+			var index = consumer._findSourceIndex(aSource);
+			if (index === -1) continue;
+			var url = util.computeSourceURL(consumer.sourceRoot, consumer._sources.at(index), this._sourceMapURL);
+			if (this._sources.has(url)) return this._sources.indexOf(url);
 		}
-		return {
-			line: null,
-			column: null
-		};
+		return -1;
 	};
+	IndexedSourceMapConsumer.prototype._findMapping = BasicSourceMapConsumer.prototype._findMapping;
+	IndexedSourceMapConsumer.prototype.generatedPositionFor = BasicSourceMapConsumer.prototype.generatedPositionFor;
+	IndexedSourceMapConsumer.prototype.computeColumnSpans = BasicSourceMapConsumer.prototype.computeColumnSpans;
 	/**
 	* Parse the mappings in a string in to a data structure which we can easily
 	* query (the ordered arrays in the `this.__generatedMappings` and
@@ -20083,7 +20117,7 @@ var require_source_map_consumer$1 = /* @__PURE__ */ __commonJSMin(((exports) => 
 				var adjustedMapping = {
 					source,
 					generatedLine: mapping.generatedLine + (section.generatedOffset.generatedLine - 1),
-					generatedColumn: mapping.generatedColumn + (section.generatedOffset.generatedLine === mapping.generatedLine ? section.generatedOffset.generatedColumn - 1 : 0),
+					generatedColumn: mapping.generatedColumn + (mapping.generatedLine === 1 ? section.generatedOffset.generatedColumn - 1 : 0),
 					originalLine: mapping.originalLine,
 					originalColumn: mapping.originalColumn,
 					name
@@ -20098,7 +20132,7 @@ var require_source_map_consumer$1 = /* @__PURE__ */ __commonJSMin(((exports) => 
 	exports.IndexedSourceMapConsumer = IndexedSourceMapConsumer;
 }));
 //#endregion
-//#region node_modules/.pnpm/source-map-js@1.2.2/node_modules/source-map-js/lib/source-node.js
+//#region node_modules/.pnpm/source-map-js@1.2.4/node_modules/source-map-js/lib/source-node.js
 var require_source_node$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var SourceMapGenerator = require_source_map_generator$1().SourceMapGenerator;
 	var util = require_util$2();
@@ -20276,7 +20310,7 @@ var require_source_node$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	*/
 	SourceNode.prototype.replaceRight = function SourceNode_replaceRight(aPattern, aReplacement) {
 		var lastChild = this.children[this.children.length - 1];
-		if (lastChild[isSourceNode]) lastChild.replaceRight(aPattern, aReplacement);
+		if (lastChild && lastChild[isSourceNode]) lastChild.replaceRight(aPattern, aReplacement);
 		else if (typeof lastChild === "string") this.children[this.children.length - 1] = lastChild.replace(aPattern, aReplacement);
 		else this.children.push("".replace(aPattern, aReplacement));
 		return this;
@@ -25742,7 +25776,7 @@ function getIfChainLength(head) {
 function isLongIfChain(head) {
 	return getIfChainLength(head) - 1 > 10;
 }
-function isSlotTemplate(node) {
+function isSlotTemplate$1(node) {
 	return node.type === 1 && isTemplateNode(node) && node.props.some(isVSlot);
 }
 function isVModelOperation(oper) {
@@ -26027,7 +26061,7 @@ var TransformContext = class TransformContext {
 		const childInfo = {
 			node,
 			hasSingleRootChild: hasSingleRoot,
-			hasSingleSlotRootChild: node.type === 1 && node.tagType === 1 && !isBuiltInComponent(node.tag) && (children.some(isSlotTemplate) ? hasSingleRootChild(children.filter((child) => !isSlotTemplate(child))) : hasSingleRoot),
+			hasSingleSlotRootChild: node.type === 1 && node.tagType === 1 && !isBuiltInComponent(node.tag) && (children.some(isSlotTemplate$1) ? hasSingleRootChild(children.filter((child) => !isSlotTemplate$1(child))) : hasSingleRoot),
 			isLastEffectiveChild
 		};
 		this.childInfo = childInfo;
@@ -26037,7 +26071,7 @@ var TransformContext = class TransformContext {
 		const node = this.node;
 		if (node.type !== 1) return false;
 		if (node.tagType === 1) return childInfo.hasSingleSlotRootChild;
-		return node.tagType === 3 && childInfo.hasSingleRootChild && (isSlotTemplate(node) || this.isSlotRoot && !findDir$1(node, "for"));
+		return node.tagType === 3 && childInfo.hasSingleRootChild && (isSlotTemplate$1(node) || this.isSlotRoot && !findDir$1(node, "for"));
 	}
 	isSingleRootChild(childInfo) {
 		if (!childInfo.hasSingleRootChild) return false;
@@ -29314,14 +29348,14 @@ const transformVBind = (dir, node, context) => {
 		exp = createSimpleExpression("", true, loc);
 	}
 	if (node.tagType !== 2) arg = resolveExpression(arg);
-	const excludeNumber = node.tagType === 1 || node.tagType === 2 || !!context.options.isCustomElement(node.tag) || modifiersString.includes("prop") || !arg.isStatic || isSpecialBooleanAttr(arg.content) || isCheckboxValueProp(node, arg.content) || !!context.options.platform && arg.isStatic && arg.content.length > 5 && arg.content.startsWith("data-") || !modifiersString.includes("attr") && (isFoldableBooleanAttr(arg.content) || isModelValueProp(node, arg.content));
-	exp = resolveExpression(exp, excludeNumber);
-	if (arg.isStatic && isReservedProp(arg.content) && !(arg.content === "key" && node.tagType === 2)) return;
 	let camel = false;
 	if (modifiersString.includes("camel")) {
 		if (arg.isStatic) arg = extend({}, arg, { content: camelize(arg.content) });
 		else camel = true;
 	}
+	const excludeNumber = node.tagType === 1 || node.tagType === 2 || !!context.options.isCustomElement(node.tag) || modifiersString.includes("prop") || !arg.isStatic || isSpecialBooleanAttr(arg.content) || isCheckboxValueProp(node, arg.content) || !!context.options.platform && arg.isStatic && arg.content.length > 5 && arg.content.startsWith("data-") || !modifiersString.includes("attr") && (isFoldableBooleanAttr(arg.content) || isModelValueProp(node, arg.content) || isRuntimeOnlyProp(node, arg.content));
+	exp = resolveExpression(exp, excludeNumber);
+	if (arg.isStatic && isReservedProp(arg.content) && !(arg.content === "key" && node.tagType === 2)) return;
 	return {
 		key: arg,
 		value: exp,
@@ -29443,9 +29477,11 @@ function isCheckboxValueProp(node, key) {
 *   only takes effect as a dom property - which is where vdom sends it too,
 *   see `shouldSetAsProp`
 * - `true-value` / `false-value`, see `isCheckboxValueProp`
+* - camelCase dom properties like `defaultValue`, which the parser would
+*   lowercase into a dead attribute outside svg (but not `tabIndex`)
 */
 function isRuntimeOnlyProp(node, key) {
-	return key === "innerHTML" || key === "textContent" || key === "value" && (node.tag === "textarea" || node.tag === "select") || isCheckboxValueProp(node, key);
+	return key === "innerHTML" || key === "textContent" || key === "value" && (node.tag === "textarea" || node.tag === "select") || isCheckboxValueProp(node, key) || node.ns !== 1 && /^[a-z]+[A-Z]/.test(key) && !isKnownHtmlAttr(key.toLowerCase());
 }
 /**
 * Props `v-model` reads back off the element as raw values (`_value`,
@@ -29455,8 +29491,8 @@ function isRuntimeOnlyProp(node, key) {
 *
 * Deliberately wider than `isRuntimeOnlyProp`: a literal `<input value="1">`
 * belongs in the template string, only the type of a *bound* number has to
-* survive. So this one is consulted by `v-bind`, that one by
-* `transformNativeElement`.
+* survive. So `v-bind` consults both, `transformNativeElement` only that
+* one.
 */
 function isModelValueProp(node, key) {
 	const { tag } = node;
@@ -31083,7 +31119,6 @@ function processIf(node, dir, context) {
 		dir.exp = createSimpleExpression(`true`, false, loc);
 	}
 	context.dynamic.flags |= 2;
-	const forceMultiRoot = shouldForceMultiRoot(context);
 	const allowNoScope = context.block === context.root.block;
 	if (dir.name === "if") {
 		const id = context.reference();
@@ -31096,7 +31131,7 @@ function processIf(node, dir, context) {
 				node,
 				id
 			}, context.effectBoundary()), {}, {
-				blockShape: encodeIfBlockShape(branch, forceMultiRoot, void 0, allowNoScope),
+				blockShape: encodeIfBlockShape(branch, void 0, allowNoScope),
 				condition: dir.exp,
 				positive: branch,
 				index: context.root.nextIfIndex(),
@@ -31144,8 +31179,8 @@ function processIf(node, dir, context) {
 		lastIfNode.negative = negative;
 		return () => {
 			onExit();
-			if (negative.type === 15) negative.blockShape = encodeIfBlockShape(negative.positive, forceMultiRoot, void 0, allowNoScope);
-			lastIfNode.blockShape = encodeIfBlockShape(lastIfNode.positive, forceMultiRoot, negative, allowNoScope, context.options.platform ? forceMultiRoot ? 2 : 1 : 3);
+			if (negative.type === 15) negative.blockShape = encodeIfBlockShape(negative.positive, void 0, allowNoScope);
+			lastIfNode.blockShape = encodeIfBlockShape(lastIfNode.positive, negative, allowNoScope, context.options.platform ? 1 : 3);
 		};
 	}
 }
@@ -31160,8 +31195,7 @@ function createIfBranch(node, context) {
 	context.reference();
 	return [branch, exitBlock];
 }
-function encodeIfBlockShape(positive, forceMultiRoot = false, negative, allowNoScope = true, elseIfShape = 3) {
-	if (forceMultiRoot) return 2 | (negative && negative.type === 15 ? elseIfShape : 2) << 2;
+function encodeIfBlockShape(positive, negative, allowNoScope = true, elseIfShape = 3) {
 	const positiveNoScope = allowNoScope && canSkipIfBranchScope(positive);
 	const negativeNoScope = allowNoScope && negative && negative.type !== 15 && canSkipIfBranchScope(negative);
 	return getBlockShape(positive) | getNegativeIfBranchShape(negative, elseIfShape) << 2 | (positiveNoScope ? 32 : 0) | (negativeNoScope ? 64 : 0);
@@ -31191,10 +31225,6 @@ function isStaticTemplateNode(node) {
 	if (node.type !== 1 || node.tagType !== 0) return false;
 	for (const prop of node.props) if (prop.type === 7 || prop.name === "ref") return false;
 	return node.children.every((child) => isStaticTemplateNode(child));
-}
-function shouldForceMultiRoot(context) {
-	const parent = context.parent && context.parent.node;
-	return !!parent && parent.type === 1 && parent.tagType === 3 && parent.props.some((prop) => prop.type === 7 && prop.name === "for");
 }
 function checkSameKey(node, context) {
 	const key = findProp(node, "key");
@@ -31373,11 +31403,11 @@ const transformVSlot = (node, context) => {
 function transformComponentSlot(node, dir, context) {
 	const { children } = node;
 	const arg = dir && dir.arg;
-	const hasTemplateSlots = children.some(isSlotTemplate);
+	const hasTemplateSlots = children.some(isSlotTemplate$1);
 	const isTransitionHost = isTransitionHostNode(node);
 	const emptyTextNodes = [];
 	const nonSlotTemplateChildren = children.filter((n) => {
-		if (isSlotTemplate(n)) return false;
+		if (isSlotTemplate$1(n)) return false;
 		if (n.type === 3 && (hasTemplateSlots || isTransitionHost)) {
 			ignoreComment(n, context);
 			return false;
@@ -31832,8 +31862,74 @@ function ssrProcessSuspense(node, context) {
 	context.pushStatement(createCallExpression(context.helper(SSR_RENDER_SUSPENSE), [`_push`, slotsExp]));
 }
 //#endregion
+//#region packages/compiler-ssr/src/transforms/ssrInjectFallthroughAttrs.ts
+const slotAttrsBinds = /* @__PURE__ */ new WeakMap();
+const slotBodies = /* @__PURE__ */ new WeakSet();
+const ssrInjectFallthroughAttrs = (node, context) => {
+	if (node.type === 0) {
+		context.identifiers._attrs = 1;
+		if (rawOptionsMap.get(node).vapor) context.identifiers._slotAttrs = 1;
+	}
+	const parent = context.parent;
+	if (!parent) return;
+	let attrs = `_attrs`;
+	let body = parent;
+	const inSlot = parent.type !== 0;
+	if (inSlot) {
+		const slotBody = slotBodies.has(parent) ? parent : resolveVaporSlotBody(parent, context);
+		if (!slotBody) return;
+		if (isSlotTemplate(node)) {
+			slotBodies.add(node);
+			return;
+		}
+		attrs = `_slotAttrs`;
+		body = slotBody;
+	}
+	if (node.type === 1 && node.tagType === 1 && (node.tag === "transition" || node.tag === "Transition" || node.tag === "KeepAlive" || node.tag === "keep-alive")) {
+		if (hasSingleChild(body)) {
+			if (inSlot) slotBodies.add(node);
+			else if (hasSingleChild(node)) injectFallthroughAttrs(node.children[0], attrs);
+			return;
+		}
+	}
+	if (node.type === 10) {
+		if (isSingleIfBlock(body)) {
+			if (inSlot) slotBodies.add(node);
+			else if (hasSingleChild(node)) injectFallthroughAttrs(node.children[0], attrs);
+		}
+	} else if (hasSingleChild(body)) injectFallthroughAttrs(node, attrs);
+};
+function resolveVaporSlotBody(parent, context) {
+	if (parent.type !== 1 || parent.tagType !== 1 || !rawOptionsMap.get(context.root).vapor || isSymbol(componentTypeMap.get(parent))) return;
+	return parent.children.some(isSlotTemplate) ? extend({}, parent, { children: parent.children.filter((c) => !isSlotTemplate(c)) }) : parent;
+}
+function isSlotTemplate(node) {
+	return isTemplateNode(node) && !!findDir$1(node, "slot", true);
+}
+function injectFallthroughAttrs(node, attrs) {
+	if (node.type === 1 && (node.tagType === 0 || node.tagType === 1) && !findDir$1(node, "for")) {
+		const bind = {
+			type: 7,
+			name: "bind",
+			arg: void 0,
+			exp: createSimpleExpression(attrs, false),
+			modifiers: [],
+			loc: locStub
+		};
+		node.props.push(bind);
+		if (attrs === `_slotAttrs`) slotAttrsBinds.set(node, bind);
+	}
+}
+//#endregion
 //#region packages/compiler-ssr/src/transforms/ssrTransformElement.ts
 const rawChildrenMap = /* @__PURE__ */ new WeakMap();
+const tagSpecificDOMProps = {
+	form: "acceptCharset",
+	label: "htmlFor",
+	output: "htmlFor",
+	script: "htmlFor",
+	meta: "httpEquiv"
+};
 const ssrTransformStyle = (node, context) => {
 	if (node.type === 1 && node.tagType !== 0) transformStyle(node, context);
 };
@@ -31850,8 +31946,12 @@ const ssrTransformElement = (node, context) => {
 			node.props.splice(vShowPropIndex, 1);
 			node.props.push(vShowProp);
 		}
-		const needMergeProps = hasDynamicVBind || hasCustomDir;
-		if (needMergeProps) {
+		const slotAttrs = slotAttrsBinds.get(node);
+		const ownProps = slotAttrs && node.props.filter((p) => p !== slotAttrs);
+		const guardSlotAttrs = !!ownProps && !hasCustomDir && !hasDynamicKeyVBind(extend({}, node, { props: ownProps })) && node.tag !== "textarea" && !(node.tag === "select" && findVModel(node));
+		let slotAttrsExp;
+		const needMergeProps = (hasDynamicVBind || hasCustomDir) && !guardSlotAttrs;
+		if (needMergeProps || guardSlotAttrs) {
 			transformStyle(node, context);
 			const { props, directives } = buildProps$1(node, context, node.props, false, false, true);
 			if (props || directives.length) {
@@ -31862,7 +31962,7 @@ const ssrTransformElement = (node, context) => {
 					if (!hasContentOverrideDirective(node) && (!existingText || existingText.type !== 5)) {
 						const tempId = `_temp${context.temps++}`;
 						propsExp.arguments = [createAssignmentExpression(createSimpleExpression(tempId, false), mergedProps)];
-						rawChildrenMap.set(node, createCallExpression(context.helper(SSR_INTERPOLATE), [createConditionalExpression(createSimpleExpression(`"value" in ${tempId}`, false), createSimpleExpression(`${tempId}.value`, false), createSimpleExpression(existingText ? existingText.content : ``, true), false)]));
+						rawChildrenMap.set(node, createCallExpression(context.helper(SSR_INTERPOLATE), [createConditionalExpression(createSimpleExpression(`${tempId} && "value" in ${tempId}`, false), createSimpleExpression(`${tempId}.value`, false), createSimpleExpression(existingText ? existingText.content : ``, true), false)]));
 					}
 				} else if (node.tag === "input") {
 					const vModel = findVModel(node);
@@ -31878,8 +31978,10 @@ const ssrTransformElement = (node, context) => {
 					}
 				}
 				if (needTagForRuntime) propsExp.arguments.push(`"${node.tag}"`);
-				openTag.push(propsExp);
+				if (guardSlotAttrs) slotAttrsExp = propsExp;
+				else openTag.push(propsExp);
 			}
+			if (guardSlotAttrs) node.props = ownProps;
 		}
 		let dynamicClassBinding = void 0;
 		let staticClassBinding = void 0;
@@ -31938,7 +32040,7 @@ const ssrTransformElement = (node, context) => {
 					}
 				}
 			} else {
-				const name = prop.name;
+				let name = prop.name;
 				if (node.tag === "textarea" && name === "value" && prop.value) rawChildrenMap.set(node, escapeHtml(prop.value.content));
 				else if (!needMergeProps) {
 					if (name === "key" || name === "ref") continue;
@@ -31953,7 +32055,9 @@ const ssrTransformElement = (node, context) => {
 						}
 						continue;
 					}
-					openTag.push(` ${prop.name}` + (prop.value ? `="${escapeHtml(prop.value.content)}"` : ``));
+					const mappedName = propsToAttrMap[name];
+					if (mappedName && (name === "className" ? node.ns !== 1 : node.ns === 0 && tagSpecificDOMProps[node.tag] === name) && !context.isCustomElement(node.tag) && !findProp$1(node, mappedName, false, true)) name = mappedName;
+					openTag.push(` ${name}` + (prop.value ? `="${escapeHtml(prop.value.content)}"` : ``));
 				}
 			}
 		}
@@ -31961,6 +32065,7 @@ const ssrTransformElement = (node, context) => {
 			mergeCall(dynamicClassBinding, staticClassBinding);
 			removeStaticBinding(openTag, "class");
 		}
+		if (slotAttrsExp) openTag.push(createConditionalExpression(slotAttrs.exp, slotAttrsExp, createTemplateLiteral(openTag.splice(1)), false));
 		if (context.scopeId) openTag.push(` ${context.scopeId}`);
 		node.ssrCodegenNode = createTemplateLiteral(openTag);
 	};
@@ -32110,20 +32215,30 @@ const ssrTransformComponent = (node, context) => {
 			vnodeBranches.push(createVNodeSlotBranch(props, vFor, children, context));
 			return createFunctionExpression(void 0);
 		});
+		const slotAttrs = slotAttrsBinds.get(node);
+		const ownProps = slotAttrs ? node.props.filter((p) => p !== slotAttrs) : node.props;
 		let propsExp = `null`;
-		if (node.props.length) {
-			const { props, directives } = buildProps$1(node, context, void 0, true, isDynamicComponent);
+		if (ownProps.length) {
+			const { props, directives } = buildProps$1(node, context, ownProps, true, isDynamicComponent);
 			if (props || directives.length) propsExp = buildSSRProps(props, directives, context);
+		}
+		if (slotAttrs) {
+			const attrs = slotAttrs.exp;
+			if (isString$1(propsExp)) propsExp = attrs;
+			else if (propsExp.type === 14 && propsExp.callee === MERGE_PROPS) propsExp.arguments.push(attrs);
+			else propsExp = createConditionalExpression(attrs, createCallExpression(context.helper(MERGE_PROPS), [propsExp, attrs]), propsExp, false);
 		}
 		const wipEntries = [];
 		wipMap.set(node, wipEntries);
 		const buildSSRSlotFn = (props, _vForExp, children, loc) => {
-			const fn = createFunctionExpression([
+			const params = [
 				props && stringifyExpression(props) || `_`,
 				`_push`,
 				`_parent`,
 				`_scopeId`
-			], void 0, true, true, loc);
+			];
+			if (rawOptionsMap.get(context.root).vapor) params.push(`_slotAttrs`);
+			const fn = createFunctionExpression(params, void 0, true, true, loc);
 			wipEntries.push({
 				type: WIP_SLOT,
 				fn,
@@ -32496,45 +32611,23 @@ const ssrTransformShow = (dir, node, context) => {
 	return { props: [createObjectProperty(`style`, createConditionalExpression(dir.exp, createSimpleExpression(`null`, false), createObjectExpression([createObjectProperty(`display`, createSimpleExpression(`none`, true))]), false))] };
 };
 //#endregion
-//#region packages/compiler-ssr/src/transforms/ssrInjectFallthroughAttrs.ts
-const ssrInjectFallthroughAttrs = (node, context) => {
-	if (node.type === 0) context.identifiers._attrs = 1;
-	if (node.type === 1 && node.tagType === 1 && (node.tag === "transition" || node.tag === "Transition" || node.tag === "KeepAlive" || node.tag === "keep-alive")) {
-		const rootChildren = filterNonCommentChildren(context.root);
-		if (rootChildren.length === 1 && rootChildren[0] === node) {
-			if (hasSingleChild(node)) injectFallthroughAttrs(node.children[0]);
-			return;
-		}
-	}
-	const parent = context.parent;
-	if (!parent || parent.type !== 0) return;
-	if (node.type === 10 && hasSingleChild(node)) {
-		if (isSingleIfBlock(parent)) injectFallthroughAttrs(node.children[0]);
-	} else if (hasSingleChild(parent)) injectFallthroughAttrs(node);
-};
-function injectFallthroughAttrs(node) {
-	if (node.type === 1 && (node.tagType === 0 || node.tagType === 1) && !findDir$1(node, "for")) node.props.push({
-		type: 7,
-		name: "bind",
-		arg: void 0,
-		exp: createSimpleExpression(`_attrs`, false),
-		modifiers: [],
-		loc: locStub
-	});
-}
-//#endregion
 //#region packages/compiler-ssr/src/transforms/ssrInjectCssVars.ts
 const ssrInjectCssVars = (node, context) => {
 	if (!context.ssrCssVars) return;
 	if (node.type === 0) context.identifiers._cssVars = 1;
 	const parent = context.parent;
 	if (!parent || parent.type !== 0) return;
-	if (node.type === 10) for (const child of node.children) injectCssVars(child);
+	if (node.type === 10 || node.type === 11) for (const child of node.children) injectCssVars(child);
 	else injectCssVars(node);
 };
+const isTransparentBuiltin = (tag) => tag === "suspense" || tag === "Suspense" || tag === "keep-alive" || tag === "KeepAlive" || tag === "teleport" || tag === "Teleport";
 function injectCssVars(node) {
-	if (node.type === 1 && (node.tagType === 0 || node.tagType === 1) && !findDir$1(node, "for")) {
-		if (node.tag === "suspense" || node.tag === "Suspense") for (const child of node.children) if (child.type === 1 && child.tagType === 3) child.children.forEach(injectCssVars);
+	if (node.type === 1 && node.tagType === 3) {
+		node.children.forEach(injectCssVars);
+		return;
+	}
+	if (node.type === 1 && (node.tagType === 0 || node.tagType === 1)) {
+		if (isTransparentBuiltin(node.tag)) for (const child of node.children) if (child.type === 1 && child.tagType === 3) child.children.forEach(injectCssVars);
 		else injectCssVars(child);
 		else node.props.push({
 			type: 7,
@@ -32651,6 +32744,11 @@ function compileTemplate(options) {
 function doCompileTemplate({ filename, id, scoped, slotted, inMap, source, ast: inAST, ssr = false, vapor = false, ssrCssVars, isProd = false, compiler, compilerOptions = {}, transformAssetUrls }) {
 	const errors = [];
 	const warnings = [];
+	const onError = (e) => {
+		var _compilerOptions$onEr;
+		errors.push(e);
+		(_compilerOptions$onEr = compilerOptions.onError) === null || _compilerOptions$onEr === void 0 || _compilerOptions$onEr.call(compilerOptions, e);
+	};
 	let nodeTransforms = [];
 	if (isObject$2(transformAssetUrls)) {
 		const assetOptions = normalizeOptions(transformAssetUrls);
@@ -32670,7 +32768,7 @@ function doCompileTemplate({ filename, id, scoped, slotted, inMap, source, ast: 
 		compiler,
 		compilerOptions,
 		ssr,
-		onError: (e) => errors.push(e)
+		onError
 	});
 	let { code, ast, preamble, map, helpers } = compiler.compile(inAST || source, _objectSpread2(_objectSpread2({
 		mode: "module",
@@ -32687,8 +32785,12 @@ function doCompileTemplate({ filename, id, scoped, slotted, inMap, source, ast: 
 		hmr: !isProd,
 		nodeTransforms: nodeTransforms.concat(compilerOptions.nodeTransforms || []),
 		filename,
-		onError: (e) => errors.push(e),
-		onWarn: (w) => warnings.push(w)
+		onError,
+		onWarn: (w) => {
+			var _compilerOptions$onWa;
+			warnings.push(w);
+			(_compilerOptions$onWa = compilerOptions.onWarn) === null || _compilerOptions$onWa === void 0 || _compilerOptions$onWa.call(compilerOptions, w);
+		}
 	}));
 	if (inMap && !inAST) {
 		if (map) map = mapLines(inMap, map);
@@ -32696,8 +32798,8 @@ function doCompileTemplate({ filename, id, scoped, slotted, inMap, source, ast: 
 		if (warnings.length && compilerOptions.onWarn) {
 			patchErrors(warnings, source, inMap);
 			warnings.forEach((w) => {
-				var _compilerOptions$onWa;
-				return (_compilerOptions$onWa = compilerOptions.onWarn) === null || _compilerOptions$onWa === void 0 ? void 0 : _compilerOptions$onWa.call(compilerOptions, w);
+				var _compilerOptions$onWa2;
+				return (_compilerOptions$onWa2 = compilerOptions.onWarn) === null || _compilerOptions$onWa2 === void 0 ? void 0 : _compilerOptions$onWa2.call(compilerOptions, w);
 			});
 			warnings.length = 0;
 		}
@@ -43601,54 +43703,45 @@ function recordResolvedElementDeps(ctx, { props }) {
 * mapped to runtime props or emits.
 */
 function resolveTypeElements(ctx, node, scope, typeParameters) {
-	const canCache = !typeParameters;
+	scope = node._ownerScope || scope || ctxToScope(ctx);
+	if (typeParameters) scope = createGenericScope(scope, typeParameters);
+	const canCache = !scope.isGenericScope;
 	if (canCache && node._resolvedElements) {
 		recordResolvedElementDeps(ctx, node._resolvedElements);
 		return node._resolvedElements;
 	}
-	const resolved = innerResolveTypeElements(ctx, node, node._ownerScope || scope || ctxToScope(ctx), typeParameters);
+	const resolved = innerResolveTypeElements(ctx, node, scope);
 	return canCache ? node._resolvedElements = resolved : resolved;
 }
-function innerResolveTypeElements(ctx, node, scope, typeParameters) {
+function innerResolveTypeElements(ctx, node, scope) {
 	if (hasVueIgnore(node)) {
-		if ((node.type === "TSIntersectionType" || node.type === "TSUnionType") && node.types.length > 1) return mergeElements([{ props: {} }, ...node.types.slice(1).map((t) => resolveTypeElements(ctx, t, scope, typeParameters))], node.type);
+		if ((node.type === "TSIntersectionType" || node.type === "TSUnionType") && node.types.length > 1) return mergeElements([{ props: {} }, ...node.types.slice(1).map((t) => resolveTypeElements(ctx, t, scope))], node.type);
 		return { props: {} };
 	}
 	switch (node.type) {
-		case "TSTypeLiteral": return typeElementsToMap(ctx, node.members, scope, typeParameters);
-		case "TSInterfaceDeclaration": return resolveInterfaceMembers(ctx, node, scope, typeParameters);
+		case "TSTypeLiteral": return typeElementsToMap(ctx, node.members, scope);
+		case "TSInterfaceDeclaration": return resolveInterfaceMembers(ctx, node, scope);
 		case "TSTypeAliasDeclaration":
 		case "TSTypeAnnotation":
-		case "TSParenthesizedType": return resolveTypeElements(ctx, node.typeAnnotation, scope, typeParameters);
+		case "TSParenthesizedType": return resolveTypeElements(ctx, node.typeAnnotation, scope);
 		case "TSFunctionType": return {
 			props: {},
 			calls: [node]
 		};
 		case "TSUnionType":
-		case "TSIntersectionType": return mergeElements(node.types.map((t) => resolveTypeElements(ctx, t, scope, typeParameters)), node.type);
-		case "TSMappedType": return resolveMappedType(ctx, node, scope, typeParameters);
+		case "TSIntersectionType": return mergeElements(node.types.map((t) => resolveTypeElements(ctx, t, scope)), node.type);
+		case "TSMappedType": return resolveMappedType(ctx, node, scope);
 		case "TSIndexedAccessType": return mergeElements(resolveIndexType(ctx, node, scope).map((t) => resolveTypeElements(ctx, t, t._ownerScope)), "TSUnionType");
 		case "TSExpressionWithTypeArguments":
 		case "TSTypeReference": {
 			var _scope$imports$typeNa;
 			const typeName = getReferenceName(node);
-			if ((typeName === "ExtractPropTypes" || typeName === "ExtractPublicPropTypes") && node.typeParameters && ((_scope$imports$typeNa = scope.imports[typeName]) === null || _scope$imports$typeNa === void 0 ? void 0 : _scope$imports$typeNa.source) === "vue") return resolveExtractPropTypes(resolveTypeElements(ctx, node.typeParameters.params[0], scope, typeParameters), scope);
+			if ((typeName === "ExtractPropTypes" || typeName === "ExtractPublicPropTypes") && node.typeParameters && ((_scope$imports$typeNa = scope.imports[typeName]) === null || _scope$imports$typeNa === void 0 ? void 0 : _scope$imports$typeNa.source) === "vue") return resolveExtractPropTypes(resolveTypeElements(ctx, node.typeParameters.params[0], scope), scope);
 			const resolved = resolveTypeReference(ctx, node, scope);
-			if (resolved) {
-				let typeParams;
-				if ((resolved.type === "TSTypeAliasDeclaration" || resolved.type === "TSInterfaceDeclaration") && resolved.typeParameters && node.typeParameters) {
-					typeParams = Object.create(null);
-					resolved.typeParameters.params.forEach((p, i) => {
-						let param = typeParameters && typeParameters[p.name];
-						if (!param) param = node.typeParameters.params[i];
-						typeParams[p.name] = param;
-					});
-				}
-				return resolveTypeElements(ctx, resolved, resolved._ownerScope, typeParams);
-			} else {
+			if (resolved) return resolveTypeElements(ctx, resolved, resolved._ownerScope, resolveTypeArguments(resolved, node, scope));
+			else {
 				if (typeof typeName === "string") {
-					if (typeParameters && typeParameters[typeName]) return resolveTypeElements(ctx, typeParameters[typeName], scope, typeParameters);
-					if (SupportedBuiltinsSet.has(typeName)) return resolveBuiltin(ctx, node, typeName, scope, typeParameters);
+					if (SupportedBuiltinsSet.has(typeName)) return resolveBuiltin(ctx, node, typeName, scope);
 					else if (typeName === "ReturnType" && node.typeParameters) {
 						const ret = resolveReturnType(ctx, node.typeParameters.params[0], scope);
 						if (ret) return resolveTypeElements(ctx, ret, scope);
@@ -43661,7 +43754,7 @@ function innerResolveTypeElements(ctx, node, scope, typeParameters) {
 			var _node$qualifier;
 			if (getId(node.argument) === "vue" && ((_node$qualifier = node.qualifier) === null || _node$qualifier === void 0 ? void 0 : _node$qualifier.type) === "Identifier" && node.qualifier.name === "ExtractPropTypes" && node.typeParameters) return resolveExtractPropTypes(resolveTypeElements(ctx, node.typeParameters.params[0], scope), scope);
 			const resolved = resolveTypeReference(ctx, node, importSourceToScope(ctx, node.argument, scope, node.argument.value));
-			if (resolved) return resolveTypeElements(ctx, resolved, resolved._ownerScope);
+			if (resolved) return resolveTypeElements(ctx, resolved, resolved._ownerScope, resolveTypeArguments(resolved, node, scope));
 			break;
 		}
 		case "TSTypeQuery": {
@@ -43671,17 +43764,13 @@ function innerResolveTypeElements(ctx, node, scope, typeParameters) {
 	}
 	return ctx.error(`Unresolvable type: ${node.type}`, node, scope);
 }
-function typeElementsToMap(ctx, elements, scope = ctxToScope(ctx), typeParameters) {
+function typeElementsToMap(ctx, elements, scope = ctxToScope(ctx)) {
 	const res = { props: {} };
 	for (const e of elements) if (e.type === "TSPropertySignature" || e.type === "TSMethodSignature") {
-		if (typeParameters) {
-			scope = createChildScope(scope);
-			scope.isGenericScope = true;
-			Object.assign(scope.types, typeParameters);
-		}
-		e._ownerScope = scope;
+		const property = scope.isGenericScope ? _objectSpread2({}, e) : e;
+		property._ownerScope = scope;
 		const name = getStringLiteralKey(e);
-		if (name !== null) res.props[name] = e;
+		if (name !== null) res.props[name] = property;
 		else ctx.error(`Unsupported computed key in type referenced by a macro`, e.key, scope);
 	} else if (e.type === "TSCallSignatureDeclaration") (res.calls || (res.calls = [])).push(e);
 	return res;
@@ -43716,8 +43805,8 @@ function createProperty(key, typeAnnotation, scope, optional) {
 		_ownerScope: scope
 	};
 }
-function resolveInterfaceMembers(ctx, node, scope, typeParameters) {
-	const base = typeElementsToMap(ctx, node.body.body, node._ownerScope, typeParameters);
+function resolveInterfaceMembers(ctx, node, scope) {
+	const base = typeElementsToMap(ctx, node.body.body, scope);
 	if (node.extends) for (const ext of node.extends) try {
 		const { props, calls } = resolveTypeElements(ctx, ext, scope);
 		for (const key in props) if (!hasOwn(base.props, key)) base.props[key] = props[key];
@@ -43727,19 +43816,46 @@ function resolveInterfaceMembers(ctx, node, scope, typeParameters) {
 	}
 	return base;
 }
-function resolveMappedType(ctx, node, scope, typeParameters) {
+function resolveTypeArguments(decl, node, scope) {
+	if (decl.type !== "TSTypeAliasDeclaration" && decl.type !== "TSInterfaceDeclaration" || !decl.typeParameters) return;
+	const args = node.typeParameters && node.typeParameters.params;
+	const res = Object.create(null);
+	const defaultScope = createGenericScope(decl._ownerScope, res);
+	decl.typeParameters.params.forEach((p, i) => {
+		const arg = args && args[i];
+		if (arg) res[p.name] = _objectSpread2(_objectSpread2({}, arg), {}, { _ownerScope: scope });
+		else if (p.default) res[p.name] = _objectSpread2(_objectSpread2({}, p.default), {}, { _ownerScope: defaultScope });
+	});
+	Object.assign(defaultScope.types, res);
+	return res;
+}
+function createGenericScope(parentScope, typeParameters) {
+	const scope = createChildScope(parentScope);
+	scope.isGenericScope = true;
+	Object.assign(scope.types, typeParameters);
+	return scope;
+}
+function resolveMappedType(ctx, node, scope) {
 	const res = { props: {} };
+	const { name, constraint } = node.typeParameter;
 	let keys;
 	if (node.nameType) {
-		const { name, constraint } = node.typeParameter;
-		scope = createChildScope(scope);
-		Object.assign(scope.types, _objectSpread2(_objectSpread2({}, typeParameters), {}, { [name]: constraint }));
+		scope = createGenericScope(scope, { [name]: _objectSpread2(_objectSpread2({}, constraint), {}, { _ownerScope: scope }) });
 		keys = resolveStringType(ctx, node.nameType, scope);
-	} else keys = resolveStringType(ctx, node.typeParameter.constraint, scope);
-	for (const key of keys) res.props[key] = createProperty({
-		type: "Identifier",
-		name: key
-	}, node.typeAnnotation, scope, !!node.optional);
+	} else keys = resolveStringType(ctx, constraint, scope);
+	for (const key of keys) {
+		const propertyScope = node.nameType ? scope : createGenericScope(scope, { [name]: {
+			type: "TSLiteralType",
+			literal: {
+				type: "StringLiteral",
+				value: key
+			}
+		} });
+		res.props[key] = createProperty({
+			type: "Identifier",
+			name: key
+		}, node.typeAnnotation, propertyScope, !!node.optional);
+	}
 	return res;
 }
 function resolveIndexType(ctx, node, scope) {
@@ -43759,17 +43875,21 @@ function resolveIndexType(ctx, node, scope) {
 		var _resolved$props$key;
 		const targetType = (_resolved$props$key = resolved.props[key]) === null || _resolved$props$key === void 0 || (_resolved$props$key = _resolved$props$key.typeAnnotation) === null || _resolved$props$key === void 0 ? void 0 : _resolved$props$key.typeAnnotation;
 		if (targetType) {
-			targetType._ownerScope = resolved.props[key]._ownerScope;
-			types.push(targetType);
+			const ownerScope = resolved.props[key]._ownerScope;
+			const type = ownerScope.isGenericScope ? _objectSpread2({}, targetType) : targetType;
+			type._ownerScope = ownerScope;
+			types.push(type);
 		}
 	}
 	return types;
 }
 function resolveArrayElementType(ctx, node, scope) {
-	if (node.type === "TSArrayType") return [node.elementType];
-	if (node.type === "TSTupleType") return node.elementTypes.map((t) => t.type === "TSNamedTupleMember" ? t.elementType : t);
+	scope = node._ownerScope || scope;
+	const withScope = (type) => _objectSpread2(_objectSpread2({}, type), {}, { _ownerScope: scope });
+	if (node.type === "TSArrayType") return [withScope(node.elementType)];
+	if (node.type === "TSTupleType") return node.elementTypes.map((t) => withScope(t.type === "TSNamedTupleMember" ? t.elementType : t));
 	if (node.type === "TSTypeReference") {
-		if (getReferenceName(node) === "Array" && node.typeParameters) return node.typeParameters.params;
+		if (getReferenceName(node) === "Array" && node.typeParameters) return node.typeParameters.params.map(withScope);
 		else {
 			const resolved = resolveTypeReference(ctx, node, scope);
 			if (resolved) return resolveArrayElementType(ctx, resolved, scope);
@@ -43777,19 +43897,19 @@ function resolveArrayElementType(ctx, node, scope) {
 	}
 	return ctx.error("Failed to resolve element type from target type", node, scope);
 }
-function resolveStringType(ctx, node, scope, typeParameters) {
+function resolveStringType(ctx, node, scope) {
+	scope = node._ownerScope || scope;
 	switch (node.type) {
 		case "StringLiteral": return [node.value];
-		case "TSLiteralType": return resolveStringType(ctx, node.literal, scope, typeParameters);
-		case "TSUnionType": return node.types.map((t) => resolveStringType(ctx, t, scope, typeParameters)).flat();
+		case "TSLiteralType": return resolveStringType(ctx, node.literal, scope);
+		case "TSUnionType": return node.types.map((t) => resolveStringType(ctx, t, scope)).flat();
 		case "TemplateLiteral": return resolveTemplateKeys(ctx, node, scope);
 		case "TSTypeReference": {
 			const resolved = resolveTypeReference(ctx, node, scope);
-			if (resolved) return resolveStringType(ctx, resolved, scope, typeParameters);
+			if (resolved) return resolveStringType(ctx, resolved, scope);
 			if (node.typeName.type === "Identifier") {
 				const name = node.typeName.name;
-				if (typeParameters && typeParameters[name]) return resolveStringType(ctx, typeParameters[name], scope, typeParameters);
-				const getParam = (index = 0) => resolveStringType(ctx, node.typeParameters.params[index], scope, typeParameters);
+				const getParam = (index = 0) => resolveStringType(ctx, node.typeParameters.params[index], scope);
 				switch (name) {
 					case "Extract": return getParam(1);
 					case "Exclude": {
@@ -43828,8 +43948,8 @@ const SupportedBuiltinsSet = /* @__PURE__ */ new Set([
 	"Pick",
 	"Omit"
 ]);
-function resolveBuiltin(ctx, node, name, scope, typeParameters) {
-	const t = resolveTypeElements(ctx, node.typeParameters.params[0], scope, typeParameters);
+function resolveBuiltin(ctx, node, name, scope) {
+	const t = resolveTypeElements(ctx, node.typeParameters.params[0], scope);
 	switch (name) {
 		case "Partial": {
 			const res = {
@@ -43853,7 +43973,7 @@ function resolveBuiltin(ctx, node, name, scope, typeParameters) {
 		}
 		case "Readonly": return t;
 		case "Pick": {
-			const picked = resolveStringType(ctx, node.typeParameters.params[1], scope, typeParameters);
+			const picked = resolveStringType(ctx, node.typeParameters.params[1], scope);
 			const res = {
 				props: {},
 				calls: t.calls
@@ -43862,7 +43982,7 @@ function resolveBuiltin(ctx, node, name, scope, typeParameters) {
 			return res;
 		}
 		case "Omit":
-			const omitted = resolveStringType(ctx, node.typeParameters.params[1], scope, typeParameters);
+			const omitted = resolveStringType(ctx, node.typeParameters.params[1], scope);
 			const res = {
 				props: {},
 				calls: t.calls
@@ -43888,6 +44008,7 @@ function resolveTypeReference(ctx, node, scope, name, onlyExported = false) {
 }
 function innerResolveTypeReference(ctx, scope, name, node, onlyExported) {
 	if (typeof name === "string") {
+		if (scope.isGenericScope && !onlyExported && node.type !== "TSTypeQuery" && scope.types[name]) return scope.types[name];
 		if (scope.imports[name]) return resolveTypeFromImport(ctx, node, name, scope);
 		else {
 			const lookupSource = node.type === "TSTypeQuery" ? onlyExported ? scope.exportedDeclares : scope.declares : onlyExported ? scope.exportedTypes : scope.types;
@@ -44082,7 +44203,9 @@ function moduleDeclToScope(ctx, node, parentScope) {
 	return node._resolvedChildScope = scope;
 }
 function createChildScope(parentScope) {
-	return new TypeScope(parentScope.filename, parentScope.source, parentScope.offset, Object.create(parentScope.imports), Object.create(parentScope.types), Object.create(parentScope.declares));
+	const scope = new TypeScope(parentScope.filename, parentScope.source, parentScope.offset, Object.create(parentScope.imports), Object.create(parentScope.types), Object.create(parentScope.declares));
+	scope.isGenericScope = parentScope.isGenericScope;
+	return scope;
 }
 const importExportRE = /^Import|^Export/;
 function recordTypes(ctx, body, scope, asGlobal = false) {
@@ -44228,6 +44351,8 @@ function recordImport(node, imports) {
 	};
 }
 function inferRuntimeType(ctx, node, scope = node._ownerScope || ctxToScope(ctx), isKeyOf = false, typeParameters) {
+	scope = node._ownerScope || scope;
+	if (typeParameters) scope = createGenericScope(scope, typeParameters);
 	if (node.leadingComments && node.leadingComments.some((c) => c.value.includes("@vue-ignore"))) return [UNKNOWN_TYPE];
 	const prevSilent = ctx.silentOnExtendsFailure;
 	ctx.silentOnExtendsFailure = true;
@@ -44278,18 +44403,11 @@ function inferRuntimeType(ctx, node, scope = node._ownerScope || ctxToScope(ctx)
 				if (resolved) {
 					if (resolved.type === "TSTypeAliasDeclaration") {
 						if (resolved.typeAnnotation.type === "TSFunctionType") return ["Function"];
-						if (node.typeParameters) {
-							const typeParams = Object.create(null);
-							if (resolved.typeParameters) resolved.typeParameters.params.forEach((p, i) => {
-								typeParams[p.name] = node.typeParameters.params[i];
-							});
-							return inferRuntimeType(ctx, resolved.typeAnnotation, resolved._ownerScope, isKeyOf, typeParams);
-						}
+						return inferRuntimeType(ctx, resolved.typeAnnotation, resolved._ownerScope, isKeyOf, resolveTypeArguments(resolved, node, scope));
 					}
 					return inferRuntimeType(ctx, resolved, resolved._ownerScope, isKeyOf);
 				}
 				if (node.typeName.type === "Identifier") {
-					if (typeParameters && typeParameters[node.typeName.name]) return inferRuntimeType(ctx, typeParameters[node.typeName.name], scope, isKeyOf, typeParameters);
 					if (isKeyOf) switch (node.typeName.name) {
 						case "String":
 						case "Array":
@@ -44358,7 +44476,7 @@ function inferRuntimeType(ctx, node, scope = node._ownerScope || ctxToScope(ctx)
 						case "MaybeRefOrGetter": {
 							const types = /* @__PURE__ */ new Set(["Object"]);
 							if (node.typeName.name === "MaybeRefOrGetter") types.add("Function");
-							if (node.typeParameters && node.typeParameters.params[0]) for (const t of inferRuntimeType(ctx, node.typeParameters.params[0], scope, false, typeParameters)) types.add(t);
+							if (node.typeParameters && node.typeParameters.params[0]) for (const t of inferRuntimeType(ctx, node.typeParameters.params[0], scope)) types.add(t);
 							return Array.from(types);
 						}
 						case "NonNullable":
@@ -44373,19 +44491,19 @@ function inferRuntimeType(ctx, node, scope = node._ownerScope || ctxToScope(ctx)
 				}
 				break;
 			}
-			case "TSParenthesizedType": return inferRuntimeType(ctx, node.typeAnnotation, scope);
-			case "TSUnionType": return flattenTypes(ctx, node.types, scope, isKeyOf, typeParameters);
-			case "TSIntersectionType": return flattenTypes(ctx, node.types, scope, isKeyOf, typeParameters).filter((t) => t !== UNKNOWN_TYPE);
+			case "TSParenthesizedType": return inferRuntimeType(ctx, node.typeAnnotation, scope, isKeyOf);
+			case "TSUnionType": return flattenTypes(ctx, node.types, scope, isKeyOf);
+			case "TSIntersectionType": return flattenTypes(ctx, node.types, scope, isKeyOf).filter((t) => t !== UNKNOWN_TYPE);
 			case "TSMappedType": {
 				const { typeAnnotation, typeParameter } = node;
-				if (typeAnnotation && typeAnnotation.type === "TSIndexedAccessType" && typeParameter && typeParameter.constraint && typeParameters) {
+				if (typeAnnotation && typeAnnotation.type === "TSIndexedAccessType" && typeParameter && typeParameter.constraint && scope.isGenericScope) {
 					const constraint = typeParameter.constraint;
 					if (constraint.type === "TSTypeOperator" && constraint.operator === "keyof" && constraint.typeAnnotation && constraint.typeAnnotation.type === "TSTypeReference" && constraint.typeAnnotation.typeName.type === "Identifier") {
 						const typeName = constraint.typeAnnotation.typeName.name;
 						const index = typeAnnotation.indexType;
 						const obj = typeAnnotation.objectType;
 						if (obj && obj.type === "TSTypeReference" && obj.typeName.type === "Identifier" && obj.typeName.name === typeName && index && index.type === "TSTypeReference" && index.typeName.type === "Identifier" && index.typeName.name === typeParameter.name) {
-							const targetType = typeParameters[typeName];
+							const targetType = scope.types[typeName];
 							if (targetType) return inferRuntimeType(ctx, targetType, scope);
 						}
 					}
@@ -44398,7 +44516,10 @@ function inferRuntimeType(ctx, node, scope = node._ownerScope || ctxToScope(ctx)
 			case "ClassDeclaration": return ["Object"];
 			case "TSImportType": {
 				const resolved = resolveTypeReference(ctx, node, importSourceToScope(ctx, node.argument, scope, node.argument.value));
-				if (resolved) return inferRuntimeType(ctx, resolved, resolved._ownerScope);
+				if (resolved) {
+					if (resolved.type === "TSTypeAliasDeclaration") return inferRuntimeType(ctx, resolved.typeAnnotation, resolved._ownerScope, isKeyOf, resolveTypeArguments(resolved, node, scope));
+					return inferRuntimeType(ctx, resolved, resolved._ownerScope);
+				}
 				break;
 			}
 			case "TSTypeQuery": {
@@ -44421,9 +44542,9 @@ function inferRuntimeType(ctx, node, scope = node._ownerScope || ctxToScope(ctx)
 	}
 	return [UNKNOWN_TYPE];
 }
-function flattenTypes(ctx, types, scope, isKeyOf = false, typeParameters = void 0) {
-	if (types.length === 1) return inferRuntimeType(ctx, types[0], types[0]._ownerScope || scope, isKeyOf, typeParameters);
-	return [...new Set([].concat(...types.map((t) => inferRuntimeType(ctx, t, t._ownerScope || scope, isKeyOf, typeParameters))))];
+function flattenTypes(ctx, types, scope, isKeyOf = false) {
+	if (types.length === 1) return inferRuntimeType(ctx, types[0], types[0]._ownerScope || scope, isKeyOf);
+	return [...new Set([].concat(...types.map((t) => inferRuntimeType(ctx, t, t._ownerScope || scope, isKeyOf))))];
 }
 function inferEnumType(node) {
 	const types = /* @__PURE__ */ new Set();
@@ -45729,7 +45850,7 @@ function mergeSourceMaps(scriptMap, templateMap, templateLineOffset) {
 //#endregion
 //#region packages/compiler-sfc/src/index.ts
 init_objectSpread2();
-const version = "3.6.0-rc.15";
+const version = "3.6.0-rc.16";
 const parseCache = parseCache$1;
 const errorMessages = _objectSpread2(_objectSpread2({}, errorMessages$1), DOMErrorMessages);
 const walk = walk$2;

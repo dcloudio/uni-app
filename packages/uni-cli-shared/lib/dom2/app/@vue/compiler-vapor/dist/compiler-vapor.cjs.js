@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-vapor v3.6.0-rc.15
+  * @vue/compiler-vapor v3.6.0-rc.16
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -3881,14 +3881,14 @@ const transformVBind = (dir, node, context) => {
 		exp = (0, _vue_compiler_dom.createSimpleExpression)("", true, loc);
 	}
 	if (node.tagType !== 2) arg = resolveExpression(arg);
-	const excludeNumber = node.tagType === 1 || node.tagType === 2 || !!context.options.isCustomElement(node.tag) || modifiersString.includes("prop") || !arg.isStatic || (0, _vue_shared.isSpecialBooleanAttr)(arg.content) || isCheckboxValueProp(node, arg.content) || !!context.options.platform && arg.isStatic && arg.content.length > 5 && arg.content.startsWith("data-") || !modifiersString.includes("attr") && (isFoldableBooleanAttr(arg.content) || isModelValueProp(node, arg.content));
-	exp = resolveExpression(exp, excludeNumber);
-	if (arg.isStatic && isReservedProp(arg.content) && !(arg.content === "key" && node.tagType === 2)) return;
 	let camel = false;
 	if (modifiersString.includes("camel")) {
 		if (arg.isStatic) arg = (0, _vue_shared.extend)({}, arg, { content: (0, _vue_shared.camelize)(arg.content) });
 		else camel = true;
 	}
+	const excludeNumber = node.tagType === 1 || node.tagType === 2 || !!context.options.isCustomElement(node.tag) || modifiersString.includes("prop") || !arg.isStatic || (0, _vue_shared.isSpecialBooleanAttr)(arg.content) || isCheckboxValueProp(node, arg.content) || !!context.options.platform && arg.isStatic && arg.content.length > 5 && arg.content.startsWith("data-") || !modifiersString.includes("attr") && (isFoldableBooleanAttr(arg.content) || isModelValueProp(node, arg.content) || isRuntimeOnlyProp(node, arg.content));
+	exp = resolveExpression(exp, excludeNumber);
+	if (arg.isStatic && isReservedProp(arg.content) && !(arg.content === "key" && node.tagType === 2)) return;
 	return {
 		key: arg,
 		value: exp,
@@ -4008,9 +4008,11 @@ function isCheckboxValueProp(node, key) {
 *   only takes effect as a dom property - which is where vdom sends it too,
 *   see `shouldSetAsProp`
 * - `true-value` / `false-value`, see `isCheckboxValueProp`
+* - camelCase dom properties like `defaultValue`, which the parser would
+*   lowercase into a dead attribute outside svg (but not `tabIndex`)
 */
 function isRuntimeOnlyProp(node, key) {
-	return key === "innerHTML" || key === "textContent" || key === "value" && (node.tag === "textarea" || node.tag === "select") || isCheckboxValueProp(node, key);
+	return key === "innerHTML" || key === "textContent" || key === "value" && (node.tag === "textarea" || node.tag === "select") || isCheckboxValueProp(node, key) || node.ns !== 1 && /^[a-z]+[A-Z]/.test(key) && !(0, _vue_shared.isKnownHtmlAttr)(key.toLowerCase());
 }
 /**
 * Props `v-model` reads back off the element as raw values (`_value`,
@@ -4020,8 +4022,8 @@ function isRuntimeOnlyProp(node, key) {
 *
 * Deliberately wider than `isRuntimeOnlyProp`: a literal `<input value="1">`
 * belongs in the template string, only the type of a *bound* number has to
-* survive. So this one is consulted by `v-bind`, that one by
-* `transformNativeElement`.
+* survive. So `v-bind` consults both, `transformNativeElement` only that
+* one.
 */
 function isModelValueProp(node, key) {
 	const { tag } = node;
@@ -5651,7 +5653,6 @@ function processIf(node, dir, context) {
 		dir.exp = (0, _vue_compiler_dom.createSimpleExpression)(`true`, false, loc);
 	}
 	context.dynamic.flags |= 2;
-	const forceMultiRoot = shouldForceMultiRoot(context);
 	const allowNoScope = context.block === context.root.block;
 	if (dir.name === "if") {
 		const id = context.reference();
@@ -5664,7 +5665,7 @@ function processIf(node, dir, context) {
 				node,
 				id,
 				...context.effectBoundary(),
-				blockShape: encodeIfBlockShape(branch, forceMultiRoot, void 0, allowNoScope),
+				blockShape: encodeIfBlockShape(branch, void 0, allowNoScope),
 				condition: dir.exp,
 				positive: branch,
 				index: context.root.nextIfIndex(),
@@ -5712,8 +5713,8 @@ function processIf(node, dir, context) {
 		lastIfNode.negative = negative;
 		return () => {
 			onExit();
-			if (negative.type === 15) negative.blockShape = encodeIfBlockShape(negative.positive, forceMultiRoot, void 0, allowNoScope);
-			lastIfNode.blockShape = encodeIfBlockShape(lastIfNode.positive, forceMultiRoot, negative, allowNoScope, context.options.platform ? forceMultiRoot ? 2 : 1 : 3);
+			if (negative.type === 15) negative.blockShape = encodeIfBlockShape(negative.positive, void 0, allowNoScope);
+			lastIfNode.blockShape = encodeIfBlockShape(lastIfNode.positive, negative, allowNoScope, context.options.platform ? 1 : 3);
 		};
 	}
 }
@@ -5728,8 +5729,7 @@ function createIfBranch(node, context) {
 	context.reference();
 	return [branch, exitBlock];
 }
-function encodeIfBlockShape(positive, forceMultiRoot = false, negative, allowNoScope = true, elseIfShape = 3) {
-	if (forceMultiRoot) return 2 | (negative && negative.type === 15 ? elseIfShape : 2) << 2;
+function encodeIfBlockShape(positive, negative, allowNoScope = true, elseIfShape = 3) {
 	const positiveNoScope = allowNoScope && canSkipIfBranchScope(positive);
 	const negativeNoScope = allowNoScope && negative && negative.type !== 15 && canSkipIfBranchScope(negative);
 	return getBlockShape(positive) | getNegativeIfBranchShape(negative, elseIfShape) << 2 | (positiveNoScope ? 32 : 0) | (negativeNoScope ? 64 : 0);
@@ -5759,10 +5759,6 @@ function isStaticTemplateNode(node) {
 	if (node.type !== 1 || node.tagType !== 0) return false;
 	for (const prop of node.props) if (prop.type === 7 || prop.name === "ref") return false;
 	return node.children.every((child) => isStaticTemplateNode(child));
-}
-function shouldForceMultiRoot(context) {
-	const parent = context.parent && context.parent.node;
-	return !!parent && parent.type === 1 && parent.tagType === 3 && parent.props.some((prop) => prop.type === 7 && prop.name === "for");
 }
 function checkSameKey(node, context) {
 	const key = findProp$1(node, "key");
