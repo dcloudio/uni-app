@@ -25,12 +25,12 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): 3.91; 
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| animation | boolean | 否 | 是否需要动画效果 |
-| success | (result: [ShowTabBarSuccess](#showtabbarsuccess-values)) => void | 否 | 接口调用成功的回调函数 |
-| fail | (result: [ShowTabBarFail](#showtabbarfail-values)) => void | 否 | 接口调用失败的回调函数 |
-| complete | (result: [ShowTabBarComplete](#showtabbarcomplete-values)) => void | 否 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| animation | boolean | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): 3.91; Android(Vapor): 5.22; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 是否需要动画效果 |
+| success | (result: [ShowTabBarSuccess](#showtabbarsuccess-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): 3.91; Android(Vapor): 5.22; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
+| fail | (result: [ShowTabBarFail](#showtabbarfail-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): 3.91; Android(Vapor): 5.22; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
+| complete | (result: [ShowTabBarComplete](#showtabbarcomplete-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): 3.91; Android(Vapor): 5.22; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### ShowTabBarSuccess 的属性值 @showtabbarsuccess-values 
 
@@ -104,12 +104,12 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): 3.91; 
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| animation | boolean | 否 | 是否需要动画效果 |
-| success | (result: [HideTabBarSuccess](#hidetabbarsuccess-values)) => void | 否 | 接口调用成功的回调函数 |
-| fail | (result: [HideTabBarFail](#hidetabbarfail-values)) => void | 否 | 接口调用失败的回调函数 |
-| complete | (result: [HideTabBarComplete](#hidetabbarcomplete-values)) => void | 否 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| animation | boolean | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): 3.91; Android(Vapor): 5.22; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 是否需要动画效果 |
+| success | (result: [HideTabBarSuccess](#hidetabbarsuccess-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): 3.91; Android(Vapor): 5.22; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
+| fail | (result: [HideTabBarFail](#hidetabbarfail-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): 3.91; Android(Vapor): 5.22; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
+| complete | (result: [HideTabBarComplete](#hidetabbarcomplete-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): 3.91; Android(Vapor): 5.22; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### HideTabBarSuccess 的属性值 @hidetabbarsuccess-values 
 

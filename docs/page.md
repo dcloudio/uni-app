@@ -502,15 +502,15 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.26; iOS: 5
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **OnTabItemTapOption** | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 监听 tab 点击回调参数 |
+| options | **OnTabItemTapOption** | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.26; iOS: 5.26; HarmonyOS: 5.26 | 监听 tab 点击回调参数 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| index | number | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 被点击 tabItem 的序号，从0开始 |
-| pagePath | string | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 被点击 tabItem 的页面路径 |
-| text | string | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 被点击 tabItem 的按钮文字 | 
+| index | number | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.26; iOS: 5.26; HarmonyOS: 5.26 | 被点击 tabItem 的序号，从0开始 |
+| pagePath | string | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.26; iOS: 5.26; HarmonyOS: 5.26 | 被点击 tabItem 的页面路径 |
+| text | string | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.26; iOS: 5.26; HarmonyOS: 5.26 | 被点击 tabItem 的按钮文字 | 
 
 
 
