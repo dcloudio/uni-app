@@ -377,6 +377,58 @@ onLaunch(() => {
 
 同一个 `routeEventId` 对应的 `onBeforeAppRoute` 最多触发一次。重写后的目标会作为新一轮路由再次触发 `onBeforeAppRoute`，并使用新的 `routeEventId`。
 
+### 代码动态指定首页@dynamic-home-page
+
+应用首次启动时，框架会产生 `openType` 为 `appLaunch` 的路由事件。可以在首页实际创建前监听该事件，并通过 `rewriteRoute` 将启动目标改为其他页面，从而通过代码动态指定本次启动实际进入的首页。重写成功后，原首页不会被创建，也不会触发原首页的页面生命周期。
+
+`onBeforeAppRoute` 不能取消路由。这里的“拦截”是指同步重写启动目标，而不是阻止应用启动。
+
+最常见的场景是根据本地登录状态决定启动后进入业务首页还是登录页。以下示例中，已登录用户正常进入默认首页 `pages/home/home`；未登录用户直接进入 `pages/login/login`，不会先创建默认首页再跳转：
+
+```ts
+const DEFAULT_HOME_PATH = 'pages/home/home'
+const LOGIN_PAGE_URL = '/pages/login/login?from=appLaunch'
+
+const beforeAppRouteCallback = (event : BeforeAppRouteEvent) => {
+  if (
+    event.openType == 'appLaunch' &&
+    event.path == DEFAULT_HOME_PATH
+  ) {
+    const accessToken = uni.getStorageSync('access_token')
+    if (!accessToken) {
+      uni.rewriteRoute({
+        url: LOGIN_PAGE_URL,
+        success: () => {
+          console.log('未登录，进入登录页')
+        },
+        fail: (error) => {
+          console.error(`启动页面重写失败：${error.errMsg}`)
+        }
+      })
+    }
+  }
+}
+
+// App.uvue
+onLaunch(() => {
+  uni.onBeforeAppRoute(beforeAppRouteCallback)
+})
+```
+
+完整示例项目参考 [test-dynamic-homepage](https://gitcode.com/dcloud/test-dynamic-homepage)。该项目使用 uni-app x 蒸汽模式和 TypeScript，演示默认首页为 tabBar 页面时，未登录冷启动重写到非 tabBar 登录页、登录后进入业务首页、退出登录以及重写失败后的兜底处理。
+
+判断 `event.path` 可以只拦截默认首页，并保留扫码、分享链接等直接进入二级页面的启动方式。如果希望所有启动入口都进入同一个页面，可以只判断 `event.openType == 'appLaunch'`。
+
+本地登录状态仅用于选择启动页面，页面访问权限仍需由业务和服务端校验。
+
+`appLaunch` 可以重写到 tabBar 页面或非 tabBar 页面，不要求重写前后的页面类型一致。例如，默认首页是 tabBar 页面时，可以将未登录用户重写到非 tabBar 的登录页。此时登录页是页面栈中的首个页面，不显示 tabBar，也不能通过 `navigateBack` 返回默认首页；登录成功后应使用 `switchTab` 或 `reLaunch` 进入业务首页。
+
+需要固定启动入口时，也可以将 `pages.json` 中的第一个页面配置为入口页，再将入口页重写到实际首页。入口页只用于承接启动路由，不应包含必须执行的业务逻辑。考虑到平台兼容性和重写失败的情况，入口页本身应提供进入实际首页的兜底方式。
+
+监听器必须在 `onLaunch` 生命周期中或之前注册，且 `rewriteRoute` 必须在 `onBeforeAppRoute` 回调中同步调用。不能等待网络请求返回后再决定首页；需要依赖的状态应在启动前准备好，或通过同步方式读取。
+
+支付宝小程序不支持 `rewriteRoute`。微信小程序还受到基础库、客户端及运行环境限制，相关限制详见[平台差异](#app-route-open-type)。
+
 ::: sourceCode
 ## uni.offBeforeAppRoute(callback?) @offbeforeapproute
 
