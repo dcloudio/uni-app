@@ -15,6 +15,7 @@ jest.mock('../../src/utils/util.js', () => ({
 }))
 
 const originalPlatform = process.env.VUE_APP_PLATFORM
+const originalUniStatUniCloud = process.env.UNI_STAT_UNI_CLOUD
 
 function loadGetScene(platform, launchOptions) {
   jest.resetModules()
@@ -29,6 +30,12 @@ function loadGetScene(platform, launchOptions) {
   return require('../../src/utils/pageInfo.js').get_scene
 }
 
+function loadGetSpace(config) {
+  jest.resetModules()
+  process.env.UNI_STAT_UNI_CLOUD = config
+  return require('../../src/utils/pageInfo.js').get_space
+}
+
 describe('private pageInfo.get_scene', () => {
   afterEach(() => {
     if (originalPlatform === undefined) {
@@ -38,6 +45,11 @@ describe('private pageInfo.get_scene', () => {
     }
     delete global.uni
     delete global.my
+    if (originalUniStatUniCloud === undefined) {
+      delete process.env.UNI_STAT_UNI_CLOUD
+    } else {
+      process.env.UNI_STAT_UNI_CLOUD = originalUniStatUniCloud
+    }
     jest.resetModules()
   })
 
@@ -78,5 +90,27 @@ describe('private pageInfo.get_scene', () => {
       throw new Error('boom')
     })
     expect(get_scene()).toBe('')
+  })
+
+  test('优先使用构建期注入的 uniCloud JSON 配置', () => {
+    const statSpace = {
+      provider: 'alipay',
+      spaceId: 'stat-space',
+      secretId: 'access-key',
+      secretKey: 'secret-key',
+      appId: 'space-app-id',
+    }
+    const get_space = loadGetSpace(JSON.stringify(statSpace))
+
+    expect(get_space({ provider: 'aliyun', spaceId: 'default-space' })).toEqual(
+      statSpace
+    )
+  })
+
+  test('uniCloud JSON 配置无法解析时回退到关联空间', () => {
+    const defaultSpace = { provider: 'aliyun', spaceId: 'default-space' }
+    const get_space = loadGetSpace('{invalid json')
+
+    expect(get_space(defaultSpace)).toBe(defaultSpace)
   })
 })
