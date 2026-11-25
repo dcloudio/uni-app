@@ -1,4 +1,4 @@
-import { buildCanvas, HarmonyCanvasRenderingContext2D } from "./canvas.ets"
+import { HarmonyCanvasRenderingContext2D, buildCanvas } from "./canvas.ets"
 import { EXTENDED_COLOR_KEYWORDS, uniCanvasGradient } from "./canvas.color.js"
 
 export type CanvasTextRendering = "auto" | "geometricPrecision" | "optimizeLegibility" | "optimizeSpeed";
@@ -514,10 +514,12 @@ export class UniCanvasRenderingContext2D implements CanvasRenderingContext2D {
 interface CanvasBuilderOptions {
   context : ESObject
   background : string
+  onReady : () => void
 }
 
 export class UniNativeCanvas {
   private element : UniCanvasElement;
+  private readonly builderOptions : CanvasBuilderOptions
   private harmonyBuilderNode : ComponentContent | null = null
 
   private settings : RenderingContextSettings = new RenderingContextSettings(true)
@@ -530,21 +532,33 @@ export class UniNativeCanvas {
   constructor(element : UniCanvasElement) {
     this.element = element;
     this.context2D = new UniCanvasRenderingContext2D(element, this.context)
-    this.element.bindHarmonyWrappedBuilder(wrapBuilder<[CanvasBuilderOptions]>(buildCanvas),
-      {
-        context: this.context,
-        background: "#00000000"
-      } as CanvasBuilderOptions);
+    let controllerBound = false
+    let canvasReady = false
+    const notifyIfReady = () => {
+      if (controllerBound && canvasReady) {
+        element.setViewReady(true)
+      }
+    }
+    this.builderOptions = {
+      context: this.context,
+      background: "#00000000",
+      onReady: () => {
+        canvasReady = true
+        notifyIfReady()
+      }
+    }
+    this.element.bindHarmonyWrappedBuilder(wrapBuilder<[CanvasBuilderOptions]>(buildCanvas), this.builderOptions)
     this.harmonyBuilderNode = (element as ESObject).getHarmonyComponentContent()
     // 绑定当前实例为自定义的controller，方便其他地方通过 element 获取使用
     element.bindHarmonyController(this);
+    controllerBound = true
+    notifyIfReady()
   }
 
   updateBackground(color : string) {
     try {
-      this.harmonyBuilderNode?.update({
-        background: color
-      })
+      this.builderOptions.background = color
+      this.harmonyBuilderNode?.update(this.builderOptions)
     } catch (e) {
       // Ignore invalid background colors to keep canvas rendering stable.
     }
@@ -572,10 +586,36 @@ export class UniNativeCanvas {
     return this.context.toDataURL(type, quality)
   }
 
-  destroy() {}
+  destroy() {
+    this.element.setViewReady(false)
+  }
 }
 
+type CanvasViewReadyCallback = (ready : boolean) => void
+
 export class UniCanvasElement extends UniNativeViewElementImpl {
+  private viewReady : boolean | null = null
+  private viewReadyCallbacks : CanvasViewReadyCallback[] = []
+
+  onViewReady(callback : CanvasViewReadyCallback) {
+    if (this.viewReady == null) {
+      this.viewReadyCallbacks.push(callback)
+      return
+    }
+    callback(this.viewReady === true)
+  }
+
+  setViewReady(ready : boolean) {
+    if (this.viewReady === ready || this.viewReady === false) {
+      return
+    }
+    this.viewReady = ready
+    const callbacks = this.viewReadyCallbacks
+    this.viewReadyCallbacks = []
+    for (const callback of callbacks) {
+      callback(this.viewReady === true)
+    }
+  }
 
   get width() : number {
     return this.getHarmonyController<UniNativeCanvas>()!.width

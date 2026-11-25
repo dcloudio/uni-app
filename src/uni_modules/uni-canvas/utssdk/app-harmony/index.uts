@@ -1,29 +1,27 @@
 import {
   CanvasContext,
   CreateCanvasContextAsync,
-  CreateCanvasContextAsyncOptions,
-  RequestAnimationFrameCallback,
-  CreateCanvasContextAsyncSuccessCallback,
-  CreateCanvasContextAsyncFailCallback,
   CreateCanvasContextAsyncCompleteCallback,
+  CreateCanvasContextAsyncFailCallback,
+  CreateCanvasContextAsyncOptions,
+  CreateCanvasContextAsyncSuccessCallback,
+  RequestAnimationFrameCallback,
 } from '../interface.uts'
 
 import {
-  UniNativeCanvas,
   UniCanvasElement,
   UniCanvasRenderingContext2D,
+  UniNativeCanvas,
 } from "./canvas.uts"
 
 class UniCanvasContext implements CanvasContext {
   _element : UniCanvasElement
-  _context : UniCanvasRenderingContext2D
 
   constructor(element : UniCanvasElement) {
     this._element = element
-    this._context = this._element.getContext('2d')!
   }
 
-  getContext(type : string) : UniCanvasRenderingContext2D | null {
+  getContext(type : '2d') : UniCanvasRenderingContext2D | null {
     return this._element.getContext(type)
   }
 
@@ -50,35 +48,83 @@ class UniCanvasContext implements CanvasContext {
   }
 }
 
+function queryCanvasElement(id : string, component : ComponentPublicInstance | null,
+  page : UniPage | null, dialogPage : UniPage | null) : UniCanvasElement | null {
+  let element : UniElement | null = null
+  if (component != null && component !== (page as UniPageImpl | null)?.vm) {
+    const root: ESObject = component.$el as ESObject;
+    element = root?.id === id ? root : (root?.querySelector?.('#' + id) ?? null)
+  } else {
+    element = page?.getElementById(id) ?? null
+    if (!(element instanceof UniCanvasElement)) {
+      element = dialogPage?.getElementById(id) ?? null
+    }
+  }
+  return element instanceof UniCanvasElement ? element : null
+}
+
 export const createCanvasContextAsync : CreateCanvasContextAsync =
   function (options : CreateCanvasContextAsyncOptions) {
-    // TODO 2层next为了解决在script下时机问题
-    nextTick(() => {
-      nextTick(() => {
-        // TODO 后续还需处理作用域问题
-        let element: ESObject = uni.getElementById(options.id)
-        if (element) {
-          const canvasElement = element as unknown as UniCanvasElement
-          options.success?.(new UniCanvasContext(canvasElement))
+    const component = options.component ?? null
+    const id = options.id
+
+    const finish = (element : UniCanvasElement | null, ready : boolean) => {
+      try {
+        if (element == null) {
+          options.fail?.(new UniError('uni-createCanvasContextAsync', -1, 'canvas id invalid.'))
+        } else if (!ready) {
+          options.fail?.(new UniError('uni-createCanvasContextAsync', -2, 'canvas view invalid.'))
         } else {
-          const uniError = new UniError('uni-createCanvasContextAsync', -1, 'canvas id invalid.')
-          options.fail?.(uniError)
+          options.success?.(new UniCanvasContext(element))
         }
+      } finally {
         options.complete?.()
+      }
+    }
+
+    const resolve = (element : UniCanvasElement | null) => {
+      if (element == null) {
+        finish(null, false)
+        return
+      }
+      element.onViewReady((ready : boolean): void => finish(element, ready))
+    }
+
+    let page = ((component as ESObject)?.$page as UniPage | null) ?? null
+    let dialogPage : UniPage | null = null
+    if (component == null) {
+      const pages = getCurrentPages()
+      page = pages[pages.length - 1] ?? null
+      const dialogPages = page?.getDialogPages() ?? []
+      dialogPage = dialogPages[dialogPages.length - 1] ?? null
+    }
+
+    const lookup = () => queryCanvasElement(id, component, page, dialogPage)
+    const element = lookup()
+    if (element != null) {
+      resolve(element)
+      return
+    }
+
+    // #ifdef VUE3-VAPOR
+    const renderPage = dialogPage ?? page
+    if (renderPage != null) {
+      let renderChangeId = -1
+      renderChangeId = renderPage.onRenderChange(() => {
+        const listenerId = renderChangeId
+        if (listenerId < 0) {
+          return
+        }
+        renderChangeId = -1
+        renderPage.offRenderChange(listenerId)
+        resolve(lookup())
       })
-    })
-    // uni.createSelectorQuery().in(options.component).select('#' + options.id).fields({
-    //     node: true
-    // } as NodeField, (ret: any) => {
-    //     const node = (ret as NodeInfo).node as UniCanvasElement
-    //     if (node != null) {
-    //         options.success?.(new UniCanvasContext(node))
-    //     } else {
-    //         const uniError = new UniError('uni-createCanvasContextAsync', -1, 'canvas id invalid.')
-    //         options.fail?.(uniError)
-    //     }
-    //     options.complete?.()
-    // }).exec()
+      if (renderChangeId >= 0) {
+        return
+      }
+    }
+    // #endif
+    resolve(null)
   }
 
 export {

@@ -1,0 +1,49 @@
+<template>
+  <scroll-view class="page" direction="vertical">
+    <GridTest :cases="cases" />
+  </scroll-view>
+</template>
+
+<script setup lang="ts">
+  import GridTest from './grid-test.uvue'
+  import { GridCase } from './grid-cases'
+
+  const sideValues = ['10px', '20rpx', '5%', 'calc(3% + 4px)', '0', '4px 8px']
+  const sideInvalid = ['normal', '-8px', '4px 8px 12px']
+  const readGap = ['gap', 'row-gap', 'column-gap']
+  const observeGap = '观察 A 与 D 之间的行距，以及 A 与 B 之间的列距。'
+
+  const sideNote = '用双值 4px 8px 检查当前运行时如何处理长属性。' + observeGap
+
+  const cases: GridCase[] = [
+    {
+      property: 'gap',
+      note: '单值作用于两轴，双值按行、列顺序写入。' + observeGap,
+      values: ['8px', '6px 12px', '20rpx 4%', 'calc(2% + 4px) 8px', '0', '0 12px'],
+      read: readGap, invalid: ['normal', '-8px', '4px 8px 12px']
+    },
+    { property: 'row-gap', note: sideNote, values: sideValues, read: readGap, invalid: sideInvalid },
+    { property: 'column-gap', note: sideNote, values: sideValues, read: readGap, invalid: sideInvalid },
+    {
+      property: 'grid-row-gap',
+      note: '检查行间距别名是否与 row-gap 使用同一值。' + sideNote,
+      values: sideValues, read: ['grid-row-gap', 'row-gap'], invalid: sideInvalid
+    },
+    {
+      property: 'grid-column-gap',
+      note: '检查列间距别名是否与 column-gap 使用同一值。' + sideNote,
+      values: sideValues, read: ['grid-column-gap', 'column-gap'], invalid: sideInvalid
+    },
+    {
+      title: '拒绝 grid-gap', property: 'grid-gap',
+      note: '应用旧简写后，两轴间距应保持原值。',
+      values: [], read: readGap, invalid: ['12px 18px']
+    }
+  ]
+</script>
+
+<style>
+  .page {
+    flex: 1;
+  }
+</style>

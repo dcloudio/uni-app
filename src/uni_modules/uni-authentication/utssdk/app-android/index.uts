@@ -215,6 +215,23 @@ function isGenericBiometricEnrolled() : boolean {
 	return biometricManager.canAuthenticate() == BiometricManager.BIOMETRIC_SUCCESS
 }
 
+function resolveAndroidBiometricErrorCode(errorCode : Int) : number {
+	// 取消类错误：5: ERROR_CANCELED, 10: ERROR_USER_CANCELED, 13: ERROR_NEGATIVE_BUTTON
+	if (errorCode == 5 || errorCode == 10 || errorCode == 13) {
+		return AUTH_ERR_CANCEL
+	}
+	// 锁定类错误：7: ERROR_LOCKOUT, 9: ERROR_LOCKOUT_PERMANENT
+	if (errorCode == 7 || errorCode == 9) {
+		return AUTH_ERR_LOCKED
+	}
+	return AUTH_ERR_AUTH_FAIL
+}
+
+function createAndroidAuthErrorResult(errorCode : Int, errString : CharSequence | null) : StartSoterAuthenticationFail {
+	const message = errString?.toString() ?? 'authentication error'
+	return createStartFailResult(resolveAndroidBiometricErrorCode(errorCode), 'startSoterAuthentication:fail ' + message)
+}
+
 class AndroidFingerprintCallback extends FingerprintManager.AuthenticationCallback {
 	private options : StartSoterAuthenticationOptions
 	private finished : boolean = false
@@ -242,7 +259,15 @@ class AndroidFingerprintCallback extends FingerprintManager.AuthenticationCallba
 	}
 
 	override onAuthenticationFailed() : void {
-		this.finishWithError(createStartFailResult(AUTH_ERR_AUTH_FAIL, 'startSoterAuthentication:fail authentication failed'))
+    //this.finishWithError(createStartFailResult(AUTH_ERR_AUTH_FAIL, 'startSoterAuthentication:fail authentication failed'))
+		// 单次指纹不匹配时系统仍允许继续尝试，弹窗不会关闭，此处不能回调 fail
+	}
+
+	override onAuthenticationError(errorCode : Int, errString : CharSequence | null) : void {
+		if (this.finished) {
+			return
+		}
+		this.finishWithError(createAndroidAuthErrorResult(errorCode, errString))
 	}
 }
 
@@ -266,10 +291,14 @@ class AndroidBiometricCallback extends BiometricPrompt.AuthenticationCallback {
 	}
 
 	override onAuthenticationFailed() : void {
+		// 单次指纹不匹配时系统仍允许继续尝试，弹窗不会关闭，此处不能回调 fail
+	}
+
+	override onAuthenticationError(errorCode : Int, errString : CharSequence | null) : void {
 		if (this.finished) {
 			return
 		}
-		this.finishWithError(createStartFailResult(AUTH_ERR_AUTH_FAIL, 'startSoterAuthentication:fail authentication failed'))
+		this.finishWithError(createAndroidAuthErrorResult(errorCode, errString))
 	}
 
 	finishWithError(error : StartSoterAuthenticationFail) : void {
@@ -286,6 +315,23 @@ function startBiometricPrompt(options : StartSoterAuthenticationOptions, authMod
 	const activity = getActivity()
 	if (activity == null || !isAndroidVersionAtLeast(28)) {
 		return false
+	}
+	const biometricManager = getBiometricManager()
+	if (biometricManager != null) {
+		const status = biometricManager.canAuthenticate()
+		if (status == BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE) {
+			// 多次验证失败后系统会临时锁定传感器，此时再次调用会被表现为硬件不可用
+			rejectStart(options, AUTH_ERR_LOCKED, 'startSoterAuthentication:fail biometric locked or hardware busy')
+			return true
+		}
+		if (status == BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED) {
+			rejectStart(options, AUTH_ERR_NOT_ENROLLED, 'startSoterAuthentication:fail biometric not enrolled')
+			return true
+		}
+		if (status != BiometricManager.BIOMETRIC_SUCCESS) {
+			rejectStart(options, AUTH_ERR_NOT_AVAILABLE, 'startSoterAuthentication:fail biometric unavailable')
+			return true
+		}
 	}
 	const executor = activity.getMainExecutor()
 	const callback = new AndroidBiometricCallback(options, authMode)
@@ -381,10 +427,6 @@ export const startSoterAuthentication : StartSoterAuthentication = function (opt
 		if (authMode == 'facial') {
 			if (!hasFaceHardware()) {
 				rejectStart(options, AUTH_ERR_NOT_AVAILABLE, 'startSoterAuthentication:fail facial recognition is unavailable')
-				return
-			}
-			if (!isGenericBiometricEnrolled()) {
-				rejectStart(options, AUTH_ERR_NOT_ENROLLED, 'startSoterAuthentication:fail facial biometric not enrolled')
 				return
 			}
 			if (startBiometricPrompt(options, authMode)) {

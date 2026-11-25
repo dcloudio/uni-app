@@ -508,7 +508,7 @@
 	})
 	// #endif
 
-	// #ifdef APP-HARMONY
+	// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
 	const selectionStyle = useComputedStyle({
 		pseudoElement: '::selection',
 		properties: ['background-color']
@@ -516,6 +516,11 @@
 	const selectionColor = computed(() => {
 		const value = selectionStyle.get('background-color')
 		return typeof value == 'string' ? value : ''
+	})
+	// #endif
+	// #ifdef APP-ANDROID || APP-IOS
+	watch(selectionColor, (value: string) => {
+		inputView?.updateSelectionColor(value)
 	})
 	// #endif
 
@@ -534,6 +539,7 @@
 	function syncAndroidInputStyleProps() {
 		inputView?.updateFontSize(rpx2px(style.get('font-size')))
 		inputView?.updateColor(valueColor.value)
+		inputView?.updateSelectionColor(selectionColor.value)
 		inputView?.updateLetterSpacing(rpx2px(style.get('letter-spacing')))
 		inputView?.updateFontWeight(style.get('font-weight'))
 		inputView?.updateFontStyle(style.get('font-style'))
@@ -839,6 +845,7 @@
 		})
 		inputView?.updateColor(valueColor.value)
 		inputView?.updateCursorColor(caretColor.value)
+		inputView?.updateSelectionColor(selectionColor.value)
 	}
 	// #endif
 
@@ -1638,12 +1645,12 @@
 		transform: translateY(-50%);
 		left: 0;
 		right: 0;
-		color: #808080;
+		color: rgba(60, 60, 67, 0.30);
 		white-space: nowrap;
 	}
 	@media (prefers-color-scheme: dark) {
 		.uni-input-placeholder {
-			color: #5f5f5f;
+			color: rgba(255, 255, 255, 0.35);
 		}
 	}
 </style>

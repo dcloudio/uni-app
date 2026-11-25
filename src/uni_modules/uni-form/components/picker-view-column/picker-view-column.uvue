@@ -269,11 +269,11 @@
 
   @media (prefers-color-scheme: dark) {
     .uni-picker-view-mask-bottom {
-      background-image: linear-gradient(to top, rgba(35, 35, 35, 0.95), rgba(35, 35, 35, 0.6));
+      background-image: linear-gradient(to top, rgba(25, 25, 25, 0.95),  rgba(25, 25, 25, 0.6));
     }
 
     .uni-picker-view-mask-top {
-      background-image: linear-gradient(to bottom, rgba(35, 35, 35, 0.95), rgba(35, 35, 35, 0.6));
+      background-image: linear-gradient(to bottom, rgba(25, 25, 25, 0.95),  rgba(25, 25, 25, 0.6));
     }
 
     .uni-picker-view-indicator {

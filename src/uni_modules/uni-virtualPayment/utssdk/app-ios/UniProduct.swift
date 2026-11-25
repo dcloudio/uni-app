@@ -10,17 +10,17 @@ import StoreKit
 
 /// Information about a product configured in App Store Connect.
 @available(iOS 15.0, *)
-public struct UniProduct: Identifiable, Hashable {
-    public let id: String
-    public var title: String?
-    public var description: String?
-    public var price: Decimal?
-    public var displayPrice: String?
-    public var currencyCode: String?
-    public var product: Product?
+struct UniProduct: Identifiable, Hashable {
+    let id: String
+    var title: String?
+    var description: String?
+    var price: Decimal?
+    var displayPrice: String?
+    var currencyCode: String?
+    var product: Product?
     
     /// The type for this product. e.g. consumable, nonConsumable, autoRenewable, nonRenewable
-    public var type: UniProductType? {
+    var type: UniProductType? {
         if let product {
             return UniProductType(type: product.type)
         }
@@ -28,15 +28,15 @@ public struct UniProduct: Identifiable, Hashable {
     }
     
     /// 判断app store中是否包含该product
-    public var isValidFromAppStore: Bool {
+    var isValidFromAppStore: Bool {
         return product != nil
     }
     
-    public init(identifier: String) {
+    init(identifier: String) {
         self.id = identifier
     }
     
-    public init(product: Product) {
+    init(product: Product) {
         self.init(identifier: product.id)
         self.title = product.displayName
         self.description = product.description

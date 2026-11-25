@@ -106,6 +106,11 @@ type DataType = {
   showScrollbar: boolean,
   upperThreshold: number,
   lowerThreshold: number,
+  // 自动化测试：记录 scrolltolower / scrolltoupper 触发次数与最近一次方向
+  scrollToLowerCount: number,
+  scrollToUpperCount: number,
+  lastScrollToLowerDirection: string,
+  lastScrollToUpperDirection: string,
 }
 
 // 使用reactive包装数据，便于自动化测试获取
@@ -124,6 +129,10 @@ const data = reactive({
   showScrollbar: true,
   upperThreshold: 50,
   lowerThreshold: 50,
+  scrollToLowerCount: 0,
+  scrollToUpperCount: 0,
+  lastScrollToLowerDirection: "",
+  lastScrollToUpperDirection: "",
 } as DataType)
 
 // #ifdef APP-ANDROID && VUE3-VAPOR
@@ -210,12 +219,16 @@ function handleAndroidOverscrollChange(value : boolean) {
   data.androidOverscroll = value
 }
 
-function scrolltoupper() {
-  console.log("滚动到顶部")
+function scrolltoupper(e : UniScrollToUpperEvent) {
+  data.scrollToUpperCount++
+  data.lastScrollToUpperDirection = e.detail.direction
+  console.log("滚动到顶部/左边：" + e.detail.direction)
 }
 
-function scrolltolower() {
-  console.log("滚动到底部")
+function scrolltolower(e : UniScrollToLowerEvent) {
+  data.scrollToLowerCount++
+  data.lastScrollToLowerDirection = e.detail.direction
+  console.log("滚动到底部/右边：" + e.detail.direction)
 }
 
 function scroll(e : ScrollEvent) {

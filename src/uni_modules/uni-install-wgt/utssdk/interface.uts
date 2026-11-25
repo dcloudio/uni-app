@@ -29,7 +29,7 @@ export type InstallWgtErrorCode =
 103609 |
 /** manifest 字段不合法。 */
 103610 |
-/** 完整 WGT 版本低于或等于 Runtime 版本。 */
+/** 完整 WGT 版本低于或等于 Runtime 版本，或差量 WGT 目标版本低于当前版本。 */
 103611 |
 /** 内部错误。 */
 103612 |
@@ -54,9 +54,7 @@ export type InstallWgtErrorCode =
 /** 差量升级时 copy 当前 WGT 资源失败。 */
 103623 |
 /** 差量 WGT 资源合并失败。 */
-103624 |
-/** 差量 WGT 版本与基准资源版本不一致。 */
-103625
+103624
 
 /**
  * 安装应用成功回调参数
@@ -114,8 +112,9 @@ export type InstallWgtOptions = {
    */
   filePath: string
   /**
-   * 忽略完整 WGT version.name 升级校验，默认值为 false。
-   * compilerRuleVersion 与差量 WGT 的版本身份仍会校验。
+   * 忽略 WGT version.name 高低校验，默认值为 false。
+   * 为 false 时，完整包必须高于当前版本，差量包必须等于或高于当前版本。
+   * compilerRuleVersion 与差量 WGT 的 baseVersion 仍会校验。
    */
   ignoreVersion?: boolean
   /**

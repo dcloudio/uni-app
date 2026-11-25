@@ -497,7 +497,7 @@ class NativeInputFileView {
 	}
 
 	updateCursorColor(value: string) {
-		this.params.caretColor = value == '' ? undefined : UTSHarmony.colorWithString(value)
+		this.params.caretColor = value == '' || value == 'auto' ? undefined : UTSHarmony.colorWithString(value)
 		this.updateParams()
 	}
 

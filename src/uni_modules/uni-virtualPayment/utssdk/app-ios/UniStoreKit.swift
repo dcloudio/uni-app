@@ -9,7 +9,7 @@ import Foundation
 import StoreKit
 import Network
 
-public enum UniStoreKitError: Error, Equatable {
+enum UniStoreKitError: Error, Equatable {
     case purchase_not_allowed
     case product_not_available
     case promotion_info_invalid
@@ -18,6 +18,10 @@ public enum UniStoreKitError: Error, Equatable {
     case unknown_error
     case network_error(URLError?)
     case system_error
+}
+
+struct UniStoreKitVerificationFailure: Error {
+    let underlyingError: Error
 }
 
 @available(iOS 15.0, *)
@@ -53,18 +57,18 @@ extension StoreKitError {
 }
 
 @available(iOS 15.0, *)
-public class UniStoreKit {
-    public static let shared = UniStoreKit()
+class UniStoreKit {
+    static let shared = UniStoreKit()
     private lazy var productService = ProductService()
     private lazy var purchaseService = PurchaseService()
     
-    public var cacheTransactionsMap = [String : UniPurchase]()
+    var cacheTransactionsMap = [String : UniPurchase]()
     
     
     private var listenerTask: Task<(), Never>?
     
     @available(iOS 15.0, *)
-    public func listenForTransactionUpdates() {
+    func listenForTransactionUpdates() {
         let task = Task.detached { [weak self] in
             
             for await result in Transaction.updates {
@@ -100,7 +104,7 @@ public class UniStoreKit {
 ///请求product api
 @available(iOS 15.0, *)
 extension UniStoreKit {
-    public func fetchProduct(identifier: String) async -> Result<UniProduct, UniStoreKitError> {
+    func fetchProduct(identifier: String) async -> Result<UniProduct, UniStoreKitError> {
         let result = await fetchProducts(identifiers: [identifier])
         return result.flatMap { products in
             if let product = products.first {
@@ -110,7 +114,7 @@ extension UniStoreKit {
         }
     }
     
-    public func fetchProducts(identifiers: [String]) async -> Result<[UniProduct], UniStoreKitError> {
+    func fetchProducts(identifiers: [String]) async -> Result<[UniProduct], UniStoreKitError> {
         do {
             if identifiers.isEmpty {
                 return .failure(.product_not_available)
@@ -123,7 +127,7 @@ extension UniStoreKit {
         }
     }
     
-    public func fetchProducts(products: [UniProduct]) async -> Result<[UniProduct], UniStoreKitError> {
+    func fetchProducts(products: [UniProduct]) async -> Result<[UniProduct], UniStoreKitError> {
         let ids = products.map { $0.id }
         let result = await fetchProducts(identifiers: ids)
         return result.map { _ in
@@ -139,54 +143,58 @@ extension UniStoreKit {
 ///购买api
 @available(iOS 15.0, *)
 extension UniStoreKit {
-    public func buyProduct(identifier: String, quantity: Int? = 1, appAccountToken: String? = nil, promotionalOfferID: String? = nil, promotionalKeyID: String? = nil, promotionalNonce: String? = nil, promotionalSigature: String? = nil, promotionalTimestamp: Int? = nil) async -> UniPurchaseResult {
+    func buyProduct(identifier: String, quantity: Int? = 1, appAccountToken: String? = nil, promotionalOfferID: String? = nil, promotionalKeyID: String? = nil, promotionalNonce: String? = nil, promotionalSigature: String? = nil, promotionalTimestamp: Int? = nil) async -> UniPurchaseResult {
         UniStoreKit.shared.cacheTransactionsMap.removeAll()
         do {
             let purchase = try await purchaseService.buyProduct(identifier: identifier, quantity: quantity, appAccountToken: appAccountToken, promotionalOfferID: promotionalOfferID, promotionalKeyID: promotionalKeyID, promotionalNonce: promotionalNonce, promotionalSigature: promotionalSigature, promotionalTimestamp: promotionalTimestamp)
             return purchase
+        } catch let error as UniStoreKitVerificationFailure {
+            return .error(UniStoreKitFailure(error: .verification_failed, sourceError: error.underlyingError))
         } catch let error as Product.PurchaseError {
-            return .error(error.toUniStoreKitError())
+            return .error(UniStoreKitFailure(error: error.toUniStoreKitError(), sourceError: error))
         } catch let error as StoreKitError {
-            return .error(error.toUniStoreKitError())
+            return .error(UniStoreKitFailure(storeKitError: error))
         } catch let error as UniStoreKitError {
-            return .error(error)
+            return .error(UniStoreKitFailure(error: error))
         } catch {
-            return .error(.unknown_error)
+            return .error(UniStoreKitFailure(error: .unknown_error, sourceError: error))
         }
     }
     
-    public func buyProduct(identifier: String, purchaseOption: UniPurchaseOption? = nil) async -> UniPurchaseResult {
+    func buyProduct(identifier: String, purchaseOption: UniPurchaseOption? = nil) async -> UniPurchaseResult {
         UniStoreKit.shared.cacheTransactionsMap.removeAll()
         do {
             let purchase = try await purchaseService.buyProduct(identifier: identifier, purchaseOption: purchaseOption)
             return purchase
+        } catch let error as UniStoreKitVerificationFailure {
+            return .error(UniStoreKitFailure(error: .verification_failed, sourceError: error.underlyingError))
         } catch let error as Product.PurchaseError {
-            return .error(error.toUniStoreKitError())
+            return .error(UniStoreKitFailure(error: error.toUniStoreKitError(), sourceError: error))
         } catch let error as StoreKitError {
-            return .error(error.toUniStoreKitError())
+            return .error(UniStoreKitFailure(storeKitError: error))
         } catch let error as UniStoreKitError {
-            return .error(error)
+            return .error(UniStoreKitFailure(error: error))
         } catch {
-            return .error(.unknown_error)
+            return .error(UniStoreKitFailure(error: .unknown_error, sourceError: error))
         }
     }
     
-    public func buyProduct(product: UniProduct) async -> UniPurchaseResult {
+    func buyProduct(product: UniProduct) async -> UniPurchaseResult {
         return await buyProduct(identifier: product.id)
     }
     
-    public func restorePurchase() async -> Result<Bool, UniStoreKitError> {
+    func restorePurchase() async -> Result<Bool, UniStoreKitFailure> {
         do {
             try await purchaseService.restore()
             return .success(true)
         } catch let error as StoreKitError {
-            return .failure(error.toUniStoreKitError())
+            return .failure(UniStoreKitFailure(storeKitError: error))
         } catch {
-            return .failure(.unknown_error)
+            return .failure(UniStoreKitFailure(error: .unknown_error, sourceError: error))
         }
     }
     
-    public func getActiveEntitlements() async -> Result<[UniPurchase], UniStoreKitError> {
+    func getActiveEntitlements() async -> Result<[UniPurchase], UniStoreKitFailure> {
         var purchases: [UniPurchase] = []
         
         for await result in Transaction.currentEntitlements {
@@ -209,17 +217,21 @@ extension UniStoreKit {
                     // For all other product types in `currentEntitlements`, they are all active.
                     purchases.append(purchase)
                 }
+            } catch let error as UniStoreKitVerificationFailure {
+                return .failure(UniStoreKitFailure(error: .verification_failed, sourceError: error.underlyingError))
             } catch let error as StoreKitError {
-                return .failure(error.toUniStoreKitError())
+                return .failure(UniStoreKitFailure(storeKitError: error))
+            } catch let error as UniStoreKitError {
+                return .failure(UniStoreKitFailure(error: error))
             } catch {
-                return .failure(.unknown_error)
+                return .failure(UniStoreKitFailure(error: .unknown_error, sourceError: error))
             }
         }
         
         return .success(purchases)
     }
     
-    public func getUnfinishedTransactions() async -> [UniPurchase] {
+    func getUnfinishedTransactions() async -> [UniPurchase] {
         var purchases: [UniPurchase] = []
         
         for await result in Transaction.unfinished {
@@ -229,15 +241,13 @@ extension UniStoreKit {
                 let product = try await productService.fetchProduct(identifier: transaction.productID)
                 let eskProduct = UniProduct(product: product)
                 let purchase = UniPurchase(product: eskProduct, transaction: transaction)
-                
+
                 let purchseKey = purchase.productId + String(purchase.id) + String(purchase.originalID) + purchase.transaction.jsonRepresentation.base64EncodedString()
                 UniStoreKit.shared.cacheTransactionsMap[purchseKey] = purchase
-                
+
                 purchases.append(purchase)
-            } catch _ as StoreKitError {
-                
             } catch {
-                
+                continue
             }
         }
         return purchases
@@ -250,22 +260,22 @@ extension UniStoreKit {
     @available(iOS 15.0, *)
     class func checkVerified<T>(_ result: VerificationResult<T>) throws -> T {
         switch result {
-        case .unverified:
-            throw UniStoreKitError.verification_failed
+        case .unverified(_, let verificationError):
+            throw UniStoreKitVerificationFailure(underlyingError: verificationError)
         case .verified(let safe):
             return safe
         }
     }
     
-    class func performAsync<T>(_ function: () async throws -> Result<T, UniStoreKitError>) async -> Result<T, UniStoreKitError> {
+    class func performAsync<T>(_ function: () async throws -> Result<T, UniStoreKitFailure>) async -> Result<T, UniStoreKitFailure> {
         do {
             return try await function()
         } catch let error as StoreKitError {
-            return .failure(error.toUniStoreKitError())
+            return .failure(UniStoreKitFailure(storeKitError: error))
         } catch let error as UniStoreKitError {
-            return .failure(error)
+            return .failure(UniStoreKitFailure(error: error))
         } catch {
-            return .failure(.system_error)
+            return .failure(UniStoreKitFailure(error: .system_error, sourceError: error))
         }
     }
 }
@@ -289,5 +299,3 @@ extension UniStoreKit {
         }
     }
 }
-
-

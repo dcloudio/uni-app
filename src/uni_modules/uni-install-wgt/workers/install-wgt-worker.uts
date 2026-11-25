@@ -255,7 +255,7 @@ export class InstallWgtWorker extends WorkerTaskImpl {
 		}
 		if (!isDifferentialUpdate && !this.ignoreVersion
 			&& (!this.isVersionName(this.runtimeAppVersion)
-				|| this.isVersionNotHigher(this.versionName, this.runtimeAppVersion))) {
+				|| this.compareVersionNames(this.versionName, this.runtimeAppVersion) <= 0)) {
 			this.cleanupAndFail(103611, '')
 			return false
 		}
@@ -278,10 +278,8 @@ export class InstallWgtWorker extends WorkerTaskImpl {
 			this.cleanupAndFail(103621, '')
 			return false
 		}
-		if (this.versionName != baseVersion) {
-			this.cleanupAndFail(103625, '')
-			return false
-		}
+		// baseVersion identifies the installed source resources; manifest.version
+		// describes the target resources and may differ from that source version.
 
 		const deleteFiles: string[] = []
 		if (appWgtuKeys.indexOf('deleteFiles') >= 0) {
@@ -351,8 +349,8 @@ export class InstallWgtWorker extends WorkerTaskImpl {
 			this.cleanupAndFail(103622, '')
 			return null
 		}
-		if (this.versionName != currentVersionName || this.versionCode != currentVersionCode) {
-			this.cleanupAndFail(103625, '')
+		if (!this.ignoreVersion && this.compareVersionNames(this.versionName, currentVersionName) < 0) {
+			this.cleanupAndFail(103611, 'differential WGT version must not be lower than the current WGT version')
 			return null
 		}
 		for (const deleteFile of this.differentialDeleteFiles) {
@@ -1826,7 +1824,8 @@ export class InstallWgtWorker extends WorkerTaskImpl {
 		return null
 	}
 
-	private isVersionNotHigher(left: string, right: string): boolean {
+	/** Compares numeric version segments without converting them to fixed-width integers. */
+	private compareVersionNames(left: string, right: string): number {
 		const leftParts = left.split('.')
 		const rightParts = right.split('.')
 		const length = leftParts.length > rightParts.length ? leftParts.length : rightParts.length
@@ -1834,13 +1833,13 @@ export class InstallWgtWorker extends WorkerTaskImpl {
 			const leftPart = this.normalizeVersionPart(leftParts[i] ?? '0')
 			const rightPart = this.normalizeVersionPart(rightParts[i] ?? '0')
 			if (leftPart.length != rightPart.length) {
-				return leftPart.length < rightPart.length
+				return leftPart.length < rightPart.length ? -1 : 1
 			}
 			if (leftPart != rightPart) {
-				return leftPart < rightPart
+				return leftPart < rightPart ? -1 : 1
 			}
 		}
-		return true
+		return 0
 	}
 
 	private normalizeVersionPart(value: string): string {

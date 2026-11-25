@@ -1,1 +1,16 @@
-{}
+{
+  "pages/API/toast/toast.test.js": [
+    "/Users/wangzhenyu/work/git/hello-uni-app-x/pages/API/toast/__image_snapshots__/toast-onload.png",
+    "/Users/wangzhenyu/work/git/hello-uni-app-x/pages/API/toast/__image_snapshots__/success-toast.png",
+    "/Users/wangzhenyu/work/git/hello-uni-app-x/pages/API/toast/__image_snapshots__/error-toast.png",
+    "/Users/wangzhenyu/work/git/hello-uni-app-x/pages/API/toast/__image_snapshots__/loading-toast.png",
+    "/Users/wangzhenyu/work/git/hello-uni-app-x/pages/API/toast/__image_snapshots__/none-toast.png",
+    "/Users/wangzhenyu/work/git/hello-uni-app-x/pages/API/toast/__image_snapshots__/icon=none-mask=true-toast-image.png",
+    "/Users/wangzhenyu/work/git/hello-uni-app-x/pages/API/toast/__image_snapshots__/toast-image.png",
+    "/Users/wangzhenyu/work/git/hello-uni-app-x/pages/API/toast/__image_snapshots__/toast-duration-2000.png",
+    "/Users/wangzhenyu/work/git/hello-uni-app-x/pages/API/toast/__image_snapshots__/toast-duration-end.png",
+    "/Users/wangzhenyu/work/git/hello-uni-app-x/pages/API/toast/__image_snapshots__/toast-position-top.png",
+    "/Users/wangzhenyu/work/git/hello-uni-app-x/pages/API/toast/__image_snapshots__/toast-position-center.png",
+    "/Users/wangzhenyu/work/git/hello-uni-app-x/pages/API/toast/__image_snapshots__/toast-position-bottom.png"
+  ]
+}

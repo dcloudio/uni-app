@@ -568,8 +568,17 @@ export type ShowNavigationBarLoadingFailCallback = (
     error: ShowNavigationBarLoadingFail,
 ) => void
 export type ShowNavigationBarLoadingOptions = {
+    /**
+     * 接口调用成功的回调函数
+     */
     success?: ShowNavigationBarLoadingSuccessCallback
+    /**
+     * 接口调用失败的回调函数
+     */
     fail?: ShowNavigationBarLoadingFailCallback
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
     complete?: () => void
 }
 export type ShowNavigationBarLoading = (options?: ShowNavigationBarLoadingOptions | null) => void;
@@ -584,8 +593,17 @@ export type HideNavigationBarLoadingFailCallback = (
     error: HideNavigationBarLoadingFail,
 ) => void
 export type HideNavigationBarLoadingOptions = {
+    /**
+     * 接口调用成功的回调函数
+     */
     success?: HideNavigationBarLoadingSuccessCallback
+    /**
+     * 接口调用失败的回调函数
+     */
     fail?: HideNavigationBarLoadingFailCallback
+    /**
+     * 接口调用结束的回调函数（调用成功、失败都会执行）
+     */
     complete?: () => void
 }
 export type HideNavigationBarLoading = (options?: HideNavigationBarLoadingOptions | null) => void;

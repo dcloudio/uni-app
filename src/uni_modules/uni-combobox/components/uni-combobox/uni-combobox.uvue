@@ -6,10 +6,11 @@
 		:class="[
 			fieldClass,
 			disabled ? 'uni-field-default--disabled' : '',
-			plain ? 'uni-combobox__field--plain' : ''
+			bare ? 'uni-combobox__field--bare' : ''
 		]"
 		@click.stop="onFieldClick"
 		<!-- #ifdef WEB -->
+		:style="webAnchorStyle"
 		:tabindex="disabled ? '-1' : '0'"
 		@keydown="onInputKeydown"
 		<!-- #endif -->
@@ -72,19 +73,26 @@
 				:class="optionTextClass"
 				flatten
 			>{{ emptyText }}</text>
-			<text
+			<view
 				v-for="(item, index) in visibleOptions"
 				:id="getOptionId(index)"
 				:key="item + '_' + index.toString()"
 				class="uni-combobox-pop__item"
 				:class="[
-					optionTextClass,
+					item == currentValue && currentValue != '' ? 'uni-combobox-pop__item--selected' : '',
 					index == highlightedIndex ? 'uni-combobox-pop__item--highlight' : '',
-					index == highlightedIndex ? optionTextHighlightClass : '',
 					index == highlightedIndex ? optionRowHighlightClass : ''
 				]"
 				@click.stop="selectOption(index)"
-			>{{ item }}</text>
+			>
+				<text class="uni-combobox-pop__item-text" :class="[optionTextClass, index == highlightedIndex ? optionTextHighlightClass : '']" flatten>{{ item }}</text>
+				<!-- #ifdef uniVersion>=5.36 -->
+				<text v-if="item == currentValue && currentValue != ''" class="uni-combobox-pop__check" :class="index == highlightedIndex ? 'uni-combobox-pop__check--highlight' : ''" flatten>{{'\uEA08'}}</text>
+				<!-- #endif -->
+				<!-- #ifdef uniVersion<5.36 -->
+				<text v-if="item == currentValue && currentValue != ''" class="uni-combobox-pop__check" :class="index == highlightedIndex ? 'uni-combobox-pop__check--highlight' : ''" flatten></text>
+				<!-- #endif -->
+			</view>
 		</scroll-view>
 	</teleport>
 </template>
@@ -229,7 +237,7 @@ type Props = {
 	 *   "web": {"unixVer": "5.31"}
 	 * }
 	 */
-	plain? : boolean,
+	bare? : boolean,
 	/**
 	 * @description 非弹出区域自定义样式类
 	 * @default ""
@@ -374,7 +382,7 @@ const props = withDefaults(defineProps<Props>(), {
 	placeholder: '',
 	placeholderClass: '',
 	disabled: false,
-	plain: false,
+	bare: false,
 	arrowClass: '',
 	fieldClass: '',
 	optionsViewClass: '',
@@ -551,9 +559,11 @@ const visibleOptions = computed(() : string[] => {
 	})
 })
 
+// #ifndef WEB
 const optionsStyle = computed(() : string => {
 	return `position: fixed; left: ${popupLeft.value}px; top: ${popupTop.value}px; width: ${popupWidth.value}px; height: ${popupHeight.value}px;`
 })
+// #endif
 
 const scrollIntoViewId = ref<string>('')
 
@@ -612,7 +622,14 @@ function applyPopupRect(rect : DOMRect) {
 	}
 
 	const windowInfo = uni.getWindowInfo()
+	// #ifndef WEB
 	const windowHeight = Math.max(0, windowInfo.windowHeight - keyboardHeight.value)
+	// #endif
+	// #ifdef WEB
+	// getBoundingClientRect 与 body 下的 fixed 浮层都使用浏览器视口坐标。
+	const windowHeight = window.innerHeight
+	webAnchorTop.value = rectTop
+	// #endif
 	const optionHeight = getOptionHeight()
 	const optionCount = Math.max(1, visibleOptions.value.length)
 	const expectedHeight = Math.min(defaultMaxOptionsHeight, optionCount * optionHeight) + popupBorderHeight
@@ -678,7 +695,7 @@ function updatePosition(onComplete : (() => void) | null = null) {
 }
 
 // #endif
-// #ifndef APP
+// #ifndef APP || WEB
 function updatePosition() {
 	const element = anchorRef.value
 	if (element == null) {
@@ -783,7 +800,34 @@ function updatePositionThenOpen() {
 // Web/App 不铺设遮罩，让原始手势直接交给页面滚动容器。
 // 只观察外部交互，不阻止默认行为或事件传播。
 // #ifdef WEB
+// 原生锚定由浏览器处理滚动位移，避免 fixed 浮层依赖主线程坐标更新而晃动。
+const webUseAnchorPositioning = typeof CSS != 'undefined'
+	&& CSS.supports('anchor-name', '--uni-combobox')
+	&& CSS.supports('position-anchor', '--uni-combobox')
+	&& CSS.supports('top', 'anchor(bottom)')
+	&& CSS.supports('width', 'anchor-size(width)')
+const webAnchorName = `--uni-combobox-${instance.uid}`
+const webAnchorStyle = webUseAnchorPositioning ? `anchor-name: ${webAnchorName};` : ''
+const webAnchorTop = ref<number>(0)
+const optionsStyle = computed(() : string => {
+	if (webUseAnchorPositioning) {
+		const top = popupTop.value < webAnchorTop.value
+			? `calc(anchor(top) - ${popupGap}px - ${popupHeight.value}px)`
+			: `calc(anchor(bottom) + ${popupGap}px)`
+		return `position: fixed; position-anchor: ${webAnchorName}; left: anchor(left); top: ${top}; width: anchor-size(width); height: ${popupHeight.value}px;`
+	}
+	return `position: fixed; left: ${popupLeft.value}px; top: ${popupTop.value}px; width: ${popupWidth.value}px; height: ${popupHeight.value}px;`
+})
 let webInteractionListening = false
+let webPositionFrame : number | null = null
+
+function updatePosition() {
+	const element = anchorRef.value
+	if (isUnmounted || !opened.value || !popupReady.value || element == null) {
+		return
+	}
+	applyPopupRect(element.getBoundingClientRect())
+}
 
 function isWebEventInside(event : Event, element : UniElement | null) : boolean {
 	return element instanceof Node && event.target instanceof Node && element.contains(event.target)
@@ -795,11 +839,29 @@ function onWebOutsideInteraction(event : Event) {
 	}
 }
 
+function scheduleWebPositionUpdate() {
+	if (isUnmounted || !opened.value || !popupReady.value || webPositionFrame != null) {
+		return
+	}
+	// 合并尺寸和展开方向检查；原生锚定的滚动位移不依赖本次测量。
+	webPositionFrame = window.requestAnimationFrame(() => {
+		webPositionFrame = null
+		updatePosition()
+	})
+}
+
 function onWebOutsideScroll(event : Event) {
 	if (!isWebEventInside(event, popupRef.value)) {
-		closeOptions()
+		if (webUseAnchorPositioning) {
+			scheduleWebPositionUpdate()
+		} else {
+			// 旧浏览器仍使用坐标定位，不额外延后一帧。
+			updatePosition()
+		}
 	}
 }
+
+onResize(scheduleWebPositionUpdate)
 // #endif
 
 // #ifdef APP
@@ -925,11 +987,9 @@ function startPageInteractionListeners(page : UniPage) {
 		return
 	}
 	webInteractionListening = true
-	document.addEventListener('pointerdown', onWebOutsideInteraction, { capture: true, passive: true })
+	// 点击后再关闭，避免触摸滚动或拖动滚动条时在按下阶段关闭浮层。
 	document.addEventListener('click', onWebOutsideInteraction, true)
 	document.addEventListener('focusin', onWebOutsideInteraction, true)
-	document.addEventListener('touchmove', onWebOutsideScroll, { capture: true, passive: true })
-	document.addEventListener('wheel', onWebOutsideScroll, { capture: true, passive: true })
 	document.addEventListener('scroll', onWebOutsideScroll, { capture: true, passive: true })
 	// #endif
 	// #ifdef APP
@@ -954,13 +1014,14 @@ function startPageInteractionListeners(page : UniPage) {
 function stopPageInteractionListeners() {
 	// #ifdef WEB
 	if (webInteractionListening) {
-		document.removeEventListener('pointerdown', onWebOutsideInteraction, true)
 		document.removeEventListener('click', onWebOutsideInteraction, true)
 		document.removeEventListener('focusin', onWebOutsideInteraction, true)
-		document.removeEventListener('touchmove', onWebOutsideScroll, true)
-		document.removeEventListener('wheel', onWebOutsideScroll, true)
 		document.removeEventListener('scroll', onWebOutsideScroll, true)
 		webInteractionListening = false
+	}
+	if (webPositionFrame != null) {
+		window.cancelAnimationFrame(webPositionFrame)
+		webPositionFrame = null
 	}
 	// #endif
 	// #ifdef APP
@@ -1341,8 +1402,8 @@ onBackPress(() : boolean => {
 .uni-combobox__arrow {
 	width: 6px;
 	height: 6px;
-	border-right: 1px solid #71717a;
-	border-bottom: 1px solid #71717a;
+	border-right: 1px solid #737373;
+	border-bottom: 1px solid #737373;
 	transform: rotate(45deg);
 	transition-property: transform;
 	transition-duration: 150ms;
@@ -1379,17 +1440,61 @@ onBackPress(() : boolean => {
 }
 
 .uni-combobox-pop__item {
+	display: flex;
 	width: 100%;
 	height: 36px;
 	padding: 0px 12px; /* 内层设padding,而不是外层设padding,以便让hover效果左右通满*/
+	flex-direction: row;
+	align-items: center;
+	box-sizing: border-box;
+}
+
+.uni-combobox-pop__item-text {
+	flex: 1;
+	min-width: 0;
 	line-height: 36px;
 	font-size: 14px;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 }
 
+.uni-down-arrow-iconfont {
+	color: #737373;
+}
+
+.uni-combobox-pop__check {
+	color: #0a0a0a;
+	margin-left: 8px;
+	/* #ifdef uniVersion>=5.36 */
+	font-family: uni-icon;
+	font-size: 16px;
+	/* #endif */
+	/* #ifdef uniVersion<5.36 */
+	margin-right: 5px;
+	border-right-width: 2px;
+	border-right-style: solid;
+	border-right-color: #0a0a0a;
+	border-bottom-width: 2px;
+	border-bottom-style: solid;
+	border-bottom-color: #0a0a0a;
+	height: 12px;
+	width: 6px;
+	transform-origin: center;
+	transform: rotate(45deg);
+	/* #endif */
+}
+
+.uni-combobox-pop__check--highlight {
+	color: #171717;
+	/* #ifdef uniVersion<5.36 */
+	border-right-color: #171717;
+	border-bottom-color: #171717;
+	/* #endif */
+}
+
+.uni-combobox-pop__item--selected,
 .uni-combobox-pop__item--highlight {
-	background-color: #f4f4f5;
+	background-color: rgba(0, 0, 0, 0.04);
 }
 
 .uni-combobox-pop__empty {
@@ -1406,6 +1511,8 @@ onBackPress(() : boolean => {
 @media (hover: hover) and (pointer: fine) {
 	.uni-combobox-pop__item {
 		height: 32px;
+	}
+	.uni-combobox-pop__item-text {
 		line-height: 32px;
 	}
 }
@@ -1421,13 +1528,13 @@ onBackPress(() : boolean => {
 	cursor: not-allowed;
 }
 
-.uni-field-default:not(:where(.uni-combobox__field--plain)):focus,
-.uni-field-default:not(:where(.uni-combobox__field--plain)):focus-within {
+.uni-field-default:not(:where(.uni-combobox__field--bare)):focus,
+.uni-field-default:not(:where(.uni-combobox__field--bare)):focus-within {
 	border-color: #496bec;
 }
 
-.uni-field-default--disabled:not(:where(.uni-combobox__field--plain)):focus,
-.uni-field-default--disabled:not(:where(.uni-combobox__field--plain)):focus-within {
+.uni-field-default--disabled:not(:where(.uni-combobox__field--bare)):focus,
+.uni-field-default--disabled:not(:where(.uni-combobox__field--bare)):focus-within {
 	border-color: #e5e5e5;
 	box-shadow: none;
 }
@@ -1445,7 +1552,7 @@ onBackPress(() : boolean => {
 }
 
 .uni-combobox-pop__item:hover {
-	background-color: #f4f4f5;
+	background-color: rgba(0, 0, 0, 0.04);
 }
 /* #endif */
 
@@ -1471,17 +1578,34 @@ onBackPress(() : boolean => {
 		color: rgba(255, 255, 255, 0.35);
 	}
 
-	.uni-combobox-pop__item {
+	.uni-combobox-pop__item-text {
 		color: #fafafa;
 	}
+
+	.uni-down-arrow-iconfont {
+		color: #a3a3a3;
+	}
+
+	.uni-combobox-pop__check,
+	.uni-combobox-pop__check--highlight {
+		color: #fafafa;
+	}
+
+	/* #ifdef uniVersion<5.36 */
+	.uni-combobox-pop__check,
+	.uni-combobox-pop__check--highlight {
+		border-right-color: #fafafa;
+		border-bottom-color: #fafafa;
+	}
+	/* #endif */
 
 	.uni-combobox-pop__empty {
 		color: #a1a1aa;
 	}
 
 	.uni-combobox__arrow {
-		border-right-color: #a1a1aa;
-		border-bottom-color: #a1a1aa;
+		border-right-color: #a3a3a3;
+		border-bottom-color: #a3a3a3;
 	}
 
 	.uni-dropdown {
@@ -1490,28 +1614,29 @@ onBackPress(() : boolean => {
 		box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
 	}
 
+	.uni-combobox-pop__item--selected,
 	.uni-combobox-pop__item--highlight {
-		background-color: #27272a;
+		background-color: rgba(255, 255, 255, 0.06);
 	}
 
 	/* #ifdef WEB */
-	.uni-field-default:not(:where(.uni-combobox__field--plain)):focus,
-	.uni-field-default:not(:where(.uni-combobox__field--plain)):focus-within {
+	.uni-field-default:not(:where(.uni-combobox__field--bare)):focus,
+	.uni-field-default:not(:where(.uni-combobox__field--bare)):focus-within {
 		border-color: #496bec
 	}
 
-	.uni-field-default--disabled:not(:where(.uni-combobox__field--plain)):focus,
-	.uni-field-default--disabled:not(:where(.uni-combobox__field--plain)):focus-within {
+	.uni-field-default--disabled:not(:where(.uni-combobox__field--bare)):focus,
+	.uni-field-default--disabled:not(:where(.uni-combobox__field--bare)):focus-within {
 		border-color: #373737;
 		box-shadow: none;
 	}
 
 	.uni-combobox-pop__item:hover {
-		background-color: #454545;
+		background-color: rgba(255, 255, 255, 0.06);
 	}
 	/* #endif */
 }
-.uni-combobox__field--plain {
+.uni-combobox__field--bare {
 	border-width: 0;
 	background-color: transparent;
 }

@@ -1,6 +1,7 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isAndroid = platformInfo.startsWith('android')
+const isVapor = process.env.UNI_APP_X_DOM2 === "true"
 
 describe('component-native-scroll-view-props', () => {
   if (isMP) {
@@ -43,6 +44,50 @@ describe('component-native-scroll-view-props', () => {
       console.log("check_scroll_top---"+scrollTop)
       expect(scrollTop-600).toBeGreaterThanOrEqual(0)
   })
+
+  //检测多次上下滚动时 scrolltolower / scrolltoupper 是否准确触发（仅蒸汽模式）
+  if (isVapor) {
+    it('Event scrolltolower-多次上下滚动准确触发', async () => {
+      // 切换为竖向滚动视图
+      await setPageData({ scrollX: false })
+      await page.waitFor(300)
+
+      // 轮询等待计数超过指定值，避免固定等待时长在低性能设备上偶发失败
+      async function waitCount(key, moreThan, timeout = 3000) {
+        const start = Date.now()
+        let value = await page.data(key)
+        while (Date.now() - start < timeout && value <= moreThan) {
+          await page.waitFor(100)
+          value = await page.data(key)
+        }
+        return value
+      }
+
+      let lowerCount = 0
+      let upperCount = 0
+      // 上下往返 3 次：每次滚到底部都应触发一次 scrolltolower，回到顶部都应触发一次 scrolltoupper
+      for (let i = 1; i <= 3; i++) {
+        await setPageData({ scrollTop: 10000 })
+        lowerCount = await waitCount('data.scrollToLowerCount', lowerCount)
+        expect(lowerCount).toBeGreaterThanOrEqual(i)
+
+        await setPageData({ scrollTop: 0 })
+        upperCount = await waitCount('data.scrollToUpperCount', upperCount)
+        expect(upperCount).toBeGreaterThanOrEqual(i)
+      }
+
+      // 滚动到中间位置（未到达底部），不应触发新的 scrolltolower
+      const lowerBefore = await page.data('data.scrollToLowerCount')
+      await setPageData({ scrollTop: 500 })
+      await page.waitFor(600)
+      expect(await page.data('data.scrollToLowerCount')).toBe(lowerBefore)
+
+      // 再次滚到底部，应继续触发 scrolltolower
+      await setPageData({ scrollTop: 10000 })
+      lowerCount = await waitCount('data.scrollToLowerCount', lowerBefore)
+      expect(lowerCount).toBeGreaterThan(lowerBefore)
+    })
+  }
 
   //检测竖向scroll_into_view属性赋值
   it('check_scroll_into_view_top', async () => {

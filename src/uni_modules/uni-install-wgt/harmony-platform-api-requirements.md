@@ -91,7 +91,7 @@ type InstallWgt = (options: InstallWgtOptions) => void
 | 项目 | 契约 |
 | --- | --- |
 | `filePath` | 必填。待安装的本地 Zstandard 文件路径；后缀不参与格式判断 |
-| `ignoreVersion` | 默认 `false`；仅跳过完整包 `version.name` 必须高于当前版本的校验 |
+| `ignoreVersion` | 默认 `false`；为 `true` 时跳过完整包和差量包的版本高低校验；为 `false` 时完整包必须严格高于当前版本，差量包必须等于或高于当前版本 |
 | `success` | 候选资源完成正式交接后触发；非 SyncDebug 还要求 `setAppPath == 0`；当前成功对象无业务字段 |
 | `fail` | 返回 `errSubject`、`errCode`、`errMsg`，部分内部或文件错误带 `cause` |
 | `complete` | 在 `success` 或 `fail` 之后触发，参数为同一个结果对象 |
@@ -625,7 +625,7 @@ Worker 需要：
 字段归一化契约：
 
 - `version.name` 必须是数字点分字符串；
-- `version.code` 接受十进制数字字符串或非负整数，统一为十进制数字字符串后参与比较和资源 ID 生成；字符串按其数字字符保留，整数使用标准十进制表示；
+- `version.code` 接受十进制数字字符串或非负整数，统一为十进制数字字符串后用于资源 ID 生成，不参与完整包或差量包的升降级比较；字符串按其数字字符保留，整数使用标准十进制表示；
 - `uni-app-x.compilerRuleVersion` 的目标契约接受非负整数或十进制数字字符串，归一化为整数后与 Runtime 比较；当前共享 Worker 对 number 缺少非负整数检查，需要三端共同补齐；
 - `app-wgtu.deleteFiles` 的每项允许恰好一个前导 `/`，去除后按相对路径处理；多个前导 `/`、空段、`.`、`..`、反斜杠、协议和 NUL 均非法。
 
@@ -639,9 +639,10 @@ Worker 需要：
 
 - 通过 manifest 是否实际包含 `app-wgtu` 键识别；
 - `app-wgtu.baseVersion` 必填；
-- 差量包不改变版本身份，`version.name` 和 `version.code` 必须与当前基准资源一致；
-- `baseVersion` 与差量包自身 `version.name` 不一致返回 `103625`；与 Runtime 版本或当前资源 manifest 的 `version.name` 不一致返回 `103622`；差量包版本名或规范化后的版本码与当前资源不一致返回 `103625`；
-- 字符串型 `version.code` 保留前导零，因此字符串 `"001"` 与数值 `1` 归一化后并不相等；
+- `version.name` 和 `version.code` 是合并后资源的独立目标版本，支持保持同版本或升级版本，例如基准 `2.1.6/216` 更新为目标 `2.1.7/217`；
+- `baseVersion` 必须与 Runtime 当前 WGT 版本及当前资源 manifest 的 `version.name` 完全一致，任一不一致返回 `103622`；
+- 在这两项基准匹配检查通过后，`ignoreVersion == false` 时目标 `version.name` 必须等于或高于 Runtime 当前 WGT 版本，低于时返回 `103611`，错误信息为 `differential WGT version must not be lower than the current WGT version`；`ignoreVersion == true` 时跳过目标版本高低比较；
+- 字符串型 `version.code` 保留前导零，作为目标版本元数据参与资源 ID 生成；
 - `ignoreVersion` 不跳过差量包的基准版本校验；
 - `deleteFiles` 只能包含当前 `www` 下的文件相对路径，禁止目录、空路径、反斜杠、协议、NUL、空路径段、`.`、`..` 和越界路径；
 - Worker 在 txn 内复制当前资源、过滤删除项、覆盖差量资源，完成后再检查启动文件。
@@ -736,7 +737,7 @@ Harmony 必须复用现有跨端错误码，不增加只在单端出现的公开
 | `103608` | manifest 缺失或无法读取 |
 | `103609` | 必需启动资源缺失 |
 | `103610` | manifest 字段不合法 |
-| `103611` | 完整包版本不高于当前 Runtime WGT 版本 |
+| `103611` | `ignoreVersion == false` 时完整包版本不高于当前 Runtime WGT 版本，或差量包目标版本低于当前 WGT 版本 |
 | `103612` | Worker、消息协议或其他内部错误 |
 | `103613` | manifest JSON 解析失败 |
 | `103614` | WGT appId 与 Runtime appId 不一致 |
@@ -747,7 +748,6 @@ Harmony 必须复用现有跨端错误码，不增加只在单端出现的公开
 | `103622` | 差量基准版本与当前 WGT 版本不一致 |
 | `103623` | 当前激活资源读取或复制失败 |
 | `103624` | 差量资源删除、覆盖或合并失败 |
-| `103625` | 差量包版本身份与当前基准资源不一致 |
 
 兼容保留但当前 Worker 不主动产生：
 
@@ -860,7 +860,9 @@ Harmony 适配层必须把异常放回其所属阶段：输入路径预检失败
 - [ ] 文件与目录互换、重复删除、不存在文件删除；
 - [ ] `deleteFiles` 中的 `..`、协议、反斜杠、空路径和目录目标被拒绝；
 - [ ] 当前资源位于 HAP 只读目录时可完整复制并合并；启动期物化失败不影响完整包，差量包按需复制失败返回 `103623`；
-- [ ] `baseVersion`、`version.name`、`version.code` 任一不一致时拒绝；
+- [ ] `baseVersion` 与 Runtime 当前 WGT 版本或基准 manifest 的 `version.name` 不一致时拒绝，`ignoreVersion` 不绕过该检查；
+- [ ] 以 `2.1.6/216` 为基准，目标为 `2.1.6/216` 和 `2.1.7/217` 的差量包在两种 `ignoreVersion` 配置下均成功；目标为 `2.1.5/215` 时，`ignoreVersion == false` 返回 `103611`，为 `true` 时成功；基准不匹配始终优先返回 `103622`；
+- [ ] 两类包复用数字分段比较规则，覆盖前导零、不同分段长度和超长数字分段；`version.code` 单独改变不影响版本高低判断，目标版本字段格式仍完整校验；
 - [ ] 在旧目录备份、新目录激活、正式目录验证阶段分别注入失败；
 - [ ] 若未来支持 SyncDebug，在每次目录 rename 前后、每次日志更新前后强制杀进程，恢复器依据日志和真实目录状态幂等恢复到唯一完整版本；
 - [ ] SyncDebug 的日志、候选和 `old-www` 均位于不可被系统自动清理的稳定事务区；

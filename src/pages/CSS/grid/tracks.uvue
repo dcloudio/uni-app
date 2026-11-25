@@ -1,0 +1,60 @@
+<template>
+  <scroll-view class="page" direction="vertical">
+    <GridTest :cases="cases" />
+  </scroll-view>
+</template>
+
+<script setup lang="ts">
+  import GridTest from './grid-test.uvue'
+  import { GridCase } from './grid-cases'
+
+  const invalidTracks = ['none', 'min-content', 'subgrid', '[main] 1fr', '-1px', '1em', 'minmax(1fr, 2fr)',
+    'repeat(auto-fit, 40px)', 'repeat(2, repeat(2, 40px))']
+
+  const cases: GridCase[] = [
+    {
+      property: 'grid-template-columns',
+      note: '观察各列的宽度。repeat() 读回为展开后的轨道列表。',
+      values: ['48px 1fr 1.5fr', '100rpx 25% calc(45% - 8px)',
+        'repeat(2, 36px minmax(0, 1fr))', '0 44px', 'initial', 'unset'],
+      invalid: invalidTracks
+    },
+    {
+      property: 'grid-template-rows',
+      note: '每个子项单独占一行，可直接比较行高。显式行用完后继续生成隐式行。',
+      setup: [{ property: 'grid-template-columns', value: '64px' }],
+      values: ['24px 1fr 1.5fr', '64rpx 25% calc(40% - 8px)',
+        'repeat(2, minmax(24px, 1fr))', '0 22px', 'initial', 'unset'],
+      invalid: invalidTracks
+    },
+    {
+      property: 'grid-auto-columns',
+      note: '按列放置。A 在显式列，B–F 在隐式列，可观察两种列宽循环。',
+      setup: [
+        { property: 'grid-template-columns', value: '38px' },
+        { property: 'grid-template-rows', value: '38px' },
+        { property: 'grid-auto-flow', value: 'column' }
+      ],
+      values: ['32px 44px', '64rpx 12%', 'calc(10% + 4px) minmax(24px, 1fr)',
+        'repeat(2, 26px 36px)', 'initial'],
+      invalid: invalidTracks
+    },
+    {
+      property: 'grid-auto-rows',
+      note: '按行放置。A 在显式行，B–F 在隐式行，可观察两种行高循环。',
+      setup: [
+        { property: 'grid-template-columns', value: '64px' },
+        { property: 'grid-template-rows', value: '24px' }
+      ],
+      values: ['22px 34px', '40rpx 13%', 'calc(8% + 4px) minmax(18px, 1fr)',
+        'repeat(2, 20px 30px)', 'unset'],
+      invalid: invalidTracks
+    }
+  ]
+</script>
+
+<style>
+  .page {
+    flex: 1;
+  }
+</style>

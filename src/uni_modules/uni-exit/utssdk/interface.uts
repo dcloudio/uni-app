@@ -96,9 +96,9 @@ export interface Uni {
             "unixVer": "5.32"
         },
         "alipay": {
-            "hostVer": "x",
-            "uniVer": "x",
-            "unixVer": "x"
+            "hostVer": "2.7.15",
+            "uniVer": "5.36",
+            "unixVer": "5.36"
         },
         "baidu": {
             "hostVer": "x",

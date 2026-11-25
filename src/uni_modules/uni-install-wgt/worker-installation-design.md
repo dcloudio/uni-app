@@ -26,7 +26,7 @@ uni.createWorker('uni_modules/uni-install-wgt/workers/install-wgt-worker.uts')
 
 由于 iOS UTS 的同步文件系统 API 和 `JSON.parseObject` 在失败时通过返回值表达结果、不抛出异常，Worker 不使用 `try/catch` 判断流程结果。创建目录后检查目录是否可读；交接后检查目标资源目录存在且源目录不存在；交接前清理目录时检查清理后目录已不存在；manifest 解析直接检查返回值是否为 `null`。只有这些状态条件成立，Worker 才继续推进安装状态机。资源完成原子交接后，事务目录清理不改变 Runtime 已拥有资源这一事实，也不改变安装结果。
 
-`manifest.id` 只允许 ASCII 字母、数字、`.`, `_`, `-` 组成的单一路径段，拒绝 `.` 与 `..`。`version.name` 使用数字点分格式；完整包安装时才与 Runtime 的 `appVersion` 比较，每个版本段去除前导零后，按数字字符串长度和字典序比较，不依赖可能精度丢失的数值转换。`version.code` 必须为纯数字元数据，不参与完整包的升降级比较。差量包不升级资源版本，其 `version.name` 和 `version.code` 必须与当前激活基准资源完全一致。正式资源目录名是规范化元数据的 32 位小写 MD5：`wgt-v1`、每个字段的 ASCII 字节长度和值、毫秒时间戳和跨端 UUID nonce 共同构成输入；nonce 不包含也不替代 SHA-256。若同名正式目录已存在，Worker 生成新的 timestamp/nonce/MD5，绝不覆盖或删除 Runtime 的既有资源。当前公开的跨端文件系统 API 未暴露 `st_dev`，因此插件只能保持“跨卷 rename 必然失败且绝不回退复制”的安全性质；契约要求的交接前同卷判定仍需由文件系统或 Runtime 提供设备号能力后补齐。
+`manifest.id` 只允许 ASCII 字母、数字、`.`, `_`, `-` 组成的单一路径段，拒绝 `.` 与 `..`。`version.name` 使用数字点分格式；`ignoreVersion` 为 `false` 时与 Runtime 的当前 WGT 版本比较，完整包必须严格更高，差量包必须相等或更高。每个版本段去除前导零后，按数字字符串长度和字典序比较，不依赖可能精度丢失的数值转换。`version.code` 必须为纯数字元数据，不参与完整包或差量包的升降级比较。差量包的 `version.name` 和 `version.code` 是独立的目标版本；`app-wgtu.baseVersion` 仅标识合并前的基准资源。正式资源目录名是规范化元数据的 32 位小写 MD5：`wgt-v1`、每个字段的 ASCII 字节长度和值、毫秒时间戳和跨端 UUID nonce 共同构成输入；nonce 不包含也不替代 SHA-256。若同名正式目录已存在，Worker 生成新的 timestamp/nonce/MD5，绝不覆盖或删除 Runtime 的既有资源。当前公开的跨端文件系统 API 未暴露 `st_dev`，因此插件只能保持“跨卷 rename 必然失败且绝不回退复制”的安全性质；契约要求的交接前同卷判定仍需由文件系统或 Runtime 提供设备号能力后补齐。
 
 ## 3. 线程模型
 
@@ -37,7 +37,7 @@ uni.createWorker('uni_modules/uni-install-wgt/workers/install-wgt-worker.uts')
   -> Worker: 创建独占 txn，按需将非本地 Android 输入流式复制为 txn/input.wgt
   -> Worker: 调用 decompressFile 生成 txn/payload.zip
   -> Worker: 调用 unzipSync
-  -> Worker: 校验 manifest；完整包比较版本高低，差量包核对基准版本元数据
+  -> Worker: 校验 manifest；完整包比较版本高低，差量包核对基准版本后比较目标版本高低
   -> Worker: 完整包直接形成候选；差量包复制当前 www、过滤删除项并覆盖差量文件
   -> Worker: 校验完整候选资源、原子 rename
   -> 主线程: 真机 API 回调；非真机 Runtime setAppPath、API 回调；terminate
@@ -92,7 +92,7 @@ Worker 延续既有的生产 WGT 格式：
 
 1. Zstandard 解压得到的 ZIP 必须能够定位 `manifest.json` 所在的资源目录，不要求固定的顶层目录名称或层级。
 2. 完整包的 `manifest.json` 所在目录必须包含 `app-config.js` 和 `app-service.js`；差量包在合并前只要求存在 `manifest.json`，合并形成的完整候选目录必须包含这两个启动文件。manifest.id 必须与 Runtime appId 一致。
-3. Worker 从 manifest 读取 `id`、`version.name`、`version.code` 和 `uni-app-x.compilerRuleVersion`；`compilerRuleVersion` 接受数值类型或仅含十进制数字的字符串类型，字符串会先转换为数值，缺少或格式不合法时拒绝安装。WGT 的 `compilerRuleVersion` 必须等于 iOS `UTSiOS.getUniCompilerRuleVersion()` / Android `UTSAndroid.getUniCompilerRuleVersion()` 的返回值。只有完整包要求 `version.name` 严格高于 Runtime `appVersion`，低于或等于 Runtime 版本的完整包必须拒绝；`ignoreVersion` 只跳过完整包的这项版本高低比较，不影响 compilerRuleVersion 校验，也不影响差量包的版本一致性校验。非真机使用 `<root>/<resource-id>/www`，真机使用 `<root>/www`。
+3. Worker 从 manifest 读取 `id`、`version.name`、`version.code` 和 `uni-app-x.compilerRuleVersion`；`compilerRuleVersion` 接受数值类型或仅含十进制数字的字符串类型，字符串会先转换为数值，缺少或格式不合法时拒绝安装。WGT 的 `compilerRuleVersion` 必须等于 iOS `UTSiOS.getUniCompilerRuleVersion()` / Android `UTSAndroid.getUniCompilerRuleVersion()` 的返回值。`ignoreVersion` 为 `false` 时，完整包要求 `version.name` 严格高于 Runtime 当前 WGT 版本，差量包要求等于或高于当前版本；不满足时返回 `103611`。`ignoreVersion: true` 跳过两类包的这项版本高低比较，不影响 compilerRuleVersion 校验，也不影响差量包的基准版本校验。非真机使用 `<root>/<resource-id>/www`，真机使用 `<root>/www`。
 4. 非真机校验通过后，Worker 在 staging 内将资源根移动为 `<resource-id>/www`，再将完整候选目录原子 `rename` 到：
 
    ```text
@@ -130,7 +130,7 @@ Worker 延续既有的生产 WGT 格式：
 ### 6.1 差量 WGT 契约
 
 1. 仅按 `manifest.json` 是否实际包含 `app-wgtu` 键识别差量包。字段存在但值或子字段不合法时返回差量包错误，不回退为完整包安装。
-2. 差量包仍完整校验 manifest 的 `id`、`version.name`、`version.code` 和 `uni-app-x.compilerRuleVersion`，并执行 appId 与 compilerRuleVersion 校验，但不执行目标版本高低比较。差量更新不升级版本元数据：差量包的 `version.name` 和 `version.code` 必须分别与当前激活基准资源 `manifest.json` 中的值完全一致，否则返回 `103625`。`app-wgtu.baseVersion` 必须存在、必须是合法版本字符串，并必须同时与差量包的 `version.name`、Runtime appVersion 及当前激活资源 `manifest.json` 的 `version.name` 完全一致。`ignoreVersion` 不绕过上述任何差量版本一致性或基准版本校验。
+2. 差量包仍完整校验 manifest 的 `id`、`version.name`、`version.code` 和 `uni-app-x.compilerRuleVersion`，并执行 appId 与 compilerRuleVersion 校验。差量包的 `version.name` 和 `version.code` 表示独立的目标版本；例如基准 `2.1.6/216` 可更新为 `2.1.6/216`，也可通过差量更新升级为 `2.1.7/217`。`app-wgtu.baseVersion` 必须存在、必须是合法版本字符串，并必须同时与 Runtime 当前 WGT 版本及当前激活资源 `manifest.json` 的 `version.name` 完全一致，任一不匹配优先返回 `103622`。在这两项基准匹配检查通过后，`ignoreVersion` 为 `false` 时，目标 `version.name` 必须等于或高于 Runtime 当前 WGT 版本；低于时返回 `103611`，错误信息为 `differential WGT version must not be lower than the current WGT version`。`ignoreVersion: true` 跳过目标版本高低比较，但不绕过基准版本校验。`version.code` 不参与升降级比较。
 3. `app-wgtu.deleteFiles` 可省略，省略等同于空数组；提供时必须是纯字符串数组。路径相对当前激活资源的 `www` 根目录且只能表示文件，允许带一个前导 `/`；规范化后拒绝目录、空路径、根路径、空路径段、反斜杠、协议、NUL、`.`、`..` 和任何可能越出资源根的路径。重复路径去重，不存在的待删除文件按幂等删除处理。
 4. Worker 只在本次 `txn` 内构造 `merged-www`：先递归复制当前激活资源并过滤 `deleteFiles`，再递归覆盖差量包内容。iOS 需要兼容应用包和 Documents 中的当前资源；Android 需要同时兼容普通文件系统路径和 `file:///android_asset/...` 下的 APK asset，读取只读资源时不得尝试修改源目录。Android 普通源文件复制后必须比较源文件与目标文件长度，asset 流复制必须统计实际写入字节数并与目标文件长度比较。
 5. 覆盖阶段由差量包内容获胜：新增文件直接加入，改动文件覆盖同名旧文件，文件与目录类型冲突时先移除候选目录中的目标再写入；某路径同时出现在 `deleteFiles` 和差量包时，最终保留差量包中的新内容。当前激活资源在整个准备阶段保持不变。
@@ -140,7 +140,7 @@ Worker 延续既有的生产 WGT 格式：
 
 - 一般流程中，Worker 内发生的所有正式目录交接前失败都必须删除本次 `txn`，再发送终态失败消息。Android 真机插件文件准备阶段失败时直接清理 txn，旧 `www` 保持不变；iOS、Android 的目录切换阶段失败时完整回滚旧 `www`（Android 同时验证 DEX 与 `config.json`），回滚成功后清理 txn，回滚失败则保留 txn 现场并返回 `103604`。
 - `unzip` 失败在 Worker 内直接清理并返回终态失败。
-- `onError` 或内部消息异常表示插件内部错误。主线程终止 Worker，并以 `103612` 返回失败；具体原因通过 `SourceError` 保存在失败结果的 `cause` 字段中。`103602` 使用 `errMsg` 标识失败的 staging 操作，并同样通过 `cause` 保存底层文件系统错误。差量更新使用 `103620` 表示缺少 `baseVersion`、`103621` 表示 `app-wgtu` 字段或删除路径不合法、`103622` 表示基准版本不匹配、`103623` 表示当前资源拷贝失败、`103624` 表示差量资源合并失败、`103625` 表示差量包的 `version.name` 或 `version.code` 与当前激活基准资源不一致；其中 `103623`、`103624` 的底层文件系统原因也通过 `SourceError` 保存在 `cause`。回滚失败而保留的 txn 与后续安装使用不同的 UUID 目录，后续 Worker 不会清理其中可能是唯一副本的 `old-www`。
+- `onError` 或内部消息异常表示插件内部错误。主线程终止 Worker，并以 `103612` 返回失败；具体原因通过 `SourceError` 保存在失败结果的 `cause` 字段中。`103602` 使用 `errMsg` 标识失败的 staging 操作，并同样通过 `cause` 保存底层文件系统错误。差量更新使用 `103620` 表示缺少 `baseVersion`、`103621` 表示 `app-wgtu` 字段或删除路径不合法、`103622` 表示基准版本不匹配、`103623` 表示当前资源拷贝失败、`103624` 表示差量资源合并失败；其中 `103623`、`103624` 的底层文件系统原因也通过 `SourceError` 保存在 `cause`。回滚失败而保留的 txn 与后续安装使用不同的 UUID 目录，后续 Worker 不会清理其中可能是唯一副本的 `old-www`。
 - 主线程收到 Worker 终态消息后先终止当前 Worker，再处理下一条排队请求。
 - 不传递回调函数、Runtime bridge、`Error` 对象或文件系统结果对象，避免 iOS 和 Android 引用类型跨线程共享导致竞态。
 
@@ -155,7 +155,7 @@ Worker 延续既有的生产 WGT 格式：
 7. Runtime 拒绝已交接资源：确认正式目录保留，插件不越权清理。
 8. Android 真机插件文件处理：完整包使用多插件、多层目录和 multidex 样本，确认 WGT 缺少 DEX 或 `config.json` 时旧文件从正式旧 `www` 按相对路径复制到 staging 且只读属性得到保留；新旧文件相对路径相同时使用新文件，相对路径不同时保留旧文件，包括同一目录中的旧 `classes2.dex`、子目录中的旧 DEX 和插件的旧 `config.json`。差量包确认基准 DEX 与 `config.json` 已随 `merged-www` 继承，`deleteFiles` 删除项不会重新补入，正常候选准备只递归扫描一次；在 `backup-old-www`、`activate-new-www` 和正式目录验证失败时，仅在回滚路径枚举旧插件文件，并在恢复后逐项验证。在 staging 复制和校验阶段注入失败时旧 `www` 保持不变，在备份、激活和正式目录校验阶段注入失败时完整旧 `www` 可回滚。
 9. 差量包识别与字段校验：覆盖 `app-wgtu` 缺失时仍走完整包流程，以及该字段类型错误、缺少 `baseVersion`、基准版本与 Runtime 或当前资源 manifest 不一致、`deleteFiles` 非数组/含非字符串/含越界路径等场景。
-10. 版本行为矩阵：差量包的 `version.name` 和 `version.code` 与当前激活基准资源相同时，即使目标 `version.name` 没有升高且 `ignoreVersion` 为 `false` 也应安装成功；任一版本字段发生改动均以 `103625` 失败，`ignoreVersion: true` 也不得绕过该校验；`baseVersion` 不一致仍以 `103622` 失败。完整包保持既有行为：`ignoreVersion` 为 `false` 时只有更高的 `version.name` 可安装，低版本或同版本返回 `103611`，`ignoreVersion: true` 时跳过完整包版本高低比较。
+10. 版本行为矩阵：基准 `2.1.6/216` 的差量包分别以 `2.1.6/216` 和 `2.1.7/217` 为目标版本，在 `ignoreVersion` 为 `false` 或 `true` 时均可安装；目标 `2.1.5/215` 在 `ignoreVersion` 为 `false` 时返回 `103611`，为 `true` 时可安装；单独修改合法的目标版本码不影响升降级判断。`baseVersion` 与 Runtime 当前 WGT 版本或基准 manifest 的 `version.name` 不一致时始终优先以 `103622` 失败。完整包保持既有行为：`ignoreVersion` 为 `false` 时只有更高的 `version.name` 可安装，低版本或同版本返回 `103611`，`ignoreVersion: true` 时跳过完整包版本高低比较。比较应覆盖前导零、不同分段长度和超长数字分段，确保两类包复用同一数字分段比较规则。
 11. 差量文件组合：分别验证纯新增、纯修改、纯删除及三者组合；覆盖文件与目录互换、重复删除、不存在文件删除，以及同一路径先删除后由差量包重新加入。
 12. 只读基准资源：iOS 应用包资源、Android APK `android_asset` 资源分别完成递归拷贝、过滤和覆盖；确认 `getResourcePath("")` 返回值直接作为 `www` 根使用。Android 本地源覆盖零字节与普通文件长度比较，asset 流覆盖缓冲区边界附近文件并核对累计写入字节数与目标文件长度。
 13. 差量合并失败注入：当前资源读取、普通文件长度校验或 asset 写入字节数校验失败返回 `103623`，删除、覆盖或对应复制校验失败返回 `103624`，均携带 `cause`，且当前激活资源与正式目录保持不变。

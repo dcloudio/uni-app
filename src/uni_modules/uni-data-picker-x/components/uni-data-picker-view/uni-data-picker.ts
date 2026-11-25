@@ -311,35 +311,35 @@ export type DataPickerInstance = {
 
 // dataPicker props 参数类型
 export type DataPickerPropsType = {
-  localdata : Array<UTSJSONObject>
-  collection : any
-  field : string
-  orderby : string
-  where : any
-  pageData : string
-  pageCurrent : number
-  pageSize : number
-  getcount : boolean
-  gettree : any
-  gettreepath : any
-  startwith : string
-  limitlevel : number
-  groupby : string
-  groupField : string
-  distinct : boolean
-  pageIndistinct : boolean
-  foreignKey : string
-  loadtime : string
-  manual : boolean
-  preload : boolean
-  stepSearh : boolean
-  selfField : string
-  parentField : string
-  multiple : boolean
-  value : any
-  modelValue : any
-  defaultProps : UTSJSONObject | null
-  tabPlaceholder : string
+  localdata ?: Array<UTSJSONObject>
+  collection ?: any
+  field ?: string
+  orderby ?: string
+  where ?: any
+  pageData ?: string
+  pageCurrent ?: number
+  pageSize ?: number
+  getcount ?: boolean
+  gettree ?: any
+  gettreepath ?: any
+  startwith ?: string
+  limitlevel ?: number
+  groupby ?: string
+  groupField ?: string
+  distinct ?: boolean
+  pageIndistinct ?: boolean
+  foreignKey ?: string
+  loadtime ?: string
+  manual ?: boolean
+  preload ?: boolean
+  stepSearh ?: boolean
+  selfField ?: string
+  parentField ?: string
+  multiple ?: boolean
+  value ?: any
+  modelValue ?: any
+  defaultProps ?: UTSJSONObject | null
+  tabPlaceholder ?: string
 }
 
 // dataPicker 组合式逻辑，替换原 dataPicker mixin
@@ -368,20 +368,22 @@ export function useDataPicker(props : DataPickerPropsType) : DataPickerInstance 
     return false
   }
 
-  // 层级 tab 未选中时的占位节点，文字由外部 tabPlaceholder 属性传入
-  function createDefaultSelectedNode() : UTSJSONObject {
-    return {
-      text: props.tabPlaceholder,
-      value: ''
-    } as UTSJSONObject
-  }
-
   const mappingTextName = computed<string>(() : string => {
     return (props.defaultProps != null) ? ((props.defaultProps!['text'] as string) || 'text') : 'text'
   })
   const mappingValueName = computed<string>(() : string => {
     return (props.defaultProps != null) ? ((props.defaultProps!['value'] as string) || 'value') : 'value'
   })
+
+  // 层级 tab 未选中时的占位节点，文字由外部 tabPlaceholder 属性传入。
+  // 字段名需要与 default-props 的映射保持一致，否则层级 tab 会读取不到文字。
+  function createDefaultSelectedNode() : UTSJSONObject {
+    const node : UTSJSONObject = {}
+    node[mappingTextName.value] = props.tabPlaceholder
+    node[mappingValueName.value] = ''
+    return node
+  }
+
   const currentDataList = computed<Array<UTSJSONObject>>(() : Array<UTSJSONObject> => {
     if (selectedIndex.value > selectedPages.value.length - 1) {
       return [] as Array<UTSJSONObject>

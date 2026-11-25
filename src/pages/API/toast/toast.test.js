@@ -139,15 +139,14 @@ describe('API-toast', () => {
 
   it("icon-toast-test", async () => {
     await resetToastOptions()
-    const icons = await page.$$('.radio-icon')
-    for (let i = 0; i < icons.length; i++) {
-      await page.setData({ data: { icon_current: i } })
+    const icons = await page.data('data.icon_enum')
+    for (const [index, { value }] of icons.entries()) {
+      await page.setData({ data: { icon_current: index } })
       await page.waitFor(async () => {
         const pageData = await page.data('data')
-        return pageData.icon_current === i
+        return pageData.icon_current === index
       })
-      const iconText = await icons[i].text()
-      await showToastAndScreenShot('toast1Tap', `${iconText}-toast`)
+      await showToastAndScreenShot('toast1Tap', `${value}-toast`)
     }
   })
 

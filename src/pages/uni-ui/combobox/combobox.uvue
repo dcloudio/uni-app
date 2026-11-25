@@ -25,28 +25,28 @@
 	</uni-combobox>
 	<text class="uni-log">当前输入：{{ city }}</text>
 
-	<text class="uni-h4">plain：透明无边框</text>
-	<uni-forms v-model="plainForm">
-		<uni-forms-item class="plain-form-item" name="city" label="城市" label-class="plain-form-label">
+	<text class="uni-h4">bare：透明无边框</text>
+	<uni-forms v-model="bareForm">
+		<uni-forms-item class="bare-form-item" name="city" label="城市" label-class="bare-form-label">
 			<uni-combobox
-				plain
+				bare
 				:options="cityOptions"
-				v-model="plainForm.city"
+				v-model="bareForm.city"
 				placeholder="请选择城市"
-				placeholder-class="plain-form-placeholder"
+				placeholder-class="bare-form-placeholder"
 			/>
 		</uni-forms-item>
 	</uni-forms>
-	<text class="uni-log">当前选择：{{ plainForm.city }}</text>
+	<text class="uni-log">当前选择：{{ bareForm.city }}</text>
 
-	<text class="uni-h4">plain + input 插槽：透明无边框，可输入可选择</text>
-	<uni-combobox plain :options="cityOptions" v-model="plainInputValue">
+	<text class="uni-h4">bare + input 插槽：透明无边框，可输入可选择</text>
+	<uni-combobox bare :options="cityOptions" v-model="bareInputValue">
 		<template #input="{ value, input, focus, disabled }">
 			<input class="custom-input" placeholder-class="custom-placeholder" :value="value" :disabled="disabled"
 				:confirm-hold="true" placeholder="选择或输入城市" @focus="focus" @input="input" />
 		</template>
 	</uni-combobox>
-	<text class="uni-log">当前输入：{{ plainInputValue }}</text>
+	<text class="uni-log">当前输入：{{ bareInputValue }}</text>
 
 	<text class="uni-h4">field-class：选择框样式</text>
 	<uni-combobox field-class="borderless-combobox" :options="cityOptions" v-model="borderlessValue"
@@ -116,8 +116,8 @@
 	const placeholderValue = ref<string>('')
 	const modelValue = ref<string>('')
 	const disabledValue = ref<string>('三年级')
-	const plainForm = ref({ city: '' })
-	const plainInputValue = ref<string>('')
+	const bareForm = ref({ city: '' })
+	const bareInputValue = ref<string>('')
 	const borderlessValue = ref<string>('')
 	const arrowClassValue = ref<string>('')
 	const optionsViewClassValue = ref<string>('')
@@ -223,12 +223,12 @@
 		color: #808080;
 	}
 
-	.plain-form-item {
+	.bare-form-item {
 		padding: 0 0 0 12px;
 		border-radius: 5px;
 	}
 
-	.plain-form-label {
+	.bare-form-label {
 		font-size: 14px;
 	}
 
@@ -291,7 +291,7 @@
 	}
 
 	@media (prefers-color-scheme: dark) {
-		.plain-form-item {
+		.bare-form-item {
 			background-color: #3b3b3b;
 		}
 

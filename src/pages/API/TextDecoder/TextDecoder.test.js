@@ -1,10 +1,10 @@
-const PAGE_PATH = '/pages/API/text-encode-decode/text-encode-decode'
+const PAGE_PATH = '/pages/API/TextDecoder/TextDecoder'
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isIos = platformInfo.startsWith('ios')
 const isWeb = platformInfo.startsWith('web')
 
-describe('TextEncoder / TextDecoder', () => {
+describe('TextEncoder/TextDecoder', () => {
   if (isMP) {
     it('not support', () => {
       expect(1).toBe(1)

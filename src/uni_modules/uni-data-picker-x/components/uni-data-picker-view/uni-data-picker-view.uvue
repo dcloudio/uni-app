@@ -29,9 +29,16 @@
           (item['disable'] as boolean) ? 'item-text-disabled' : '',
           item[dataPicker.mappingValueName] == dataPicker.selectedNodes[dataPicker.selectedIndex][dataPicker.mappingValueName] ? 'item-text-active' : '']"
           flatten>{{item[dataPicker.mappingTextName]}}</text>
+        <!-- #ifdef uniVersion>=5.36 -->
+        <text class="check" :class="listItemCheckClass"
+          v-if="item[dataPicker.mappingValueName] == dataPicker.selectedNodes[dataPicker.selectedIndex][dataPicker.mappingValueName]"
+          flatten>{{'\uEA08'}}</text>
+        <!-- #endif -->
+        <!-- #ifdef uniVersion<5.36 -->
         <text class="check" :class="listItemCheckClass"
           v-if="item[dataPicker.mappingValueName] == dataPicker.selectedNodes[dataPicker.selectedIndex][dataPicker.mappingValueName]"
           flatten></text>
+        <!-- #endif -->
       </view>
     </scroll-view>
     <view class="loading-cover" v-if="dataPicker.loading">

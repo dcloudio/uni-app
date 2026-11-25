@@ -51,7 +51,7 @@ function isInteger(value: number): boolean {
 }
 
 function isInstallWgtFailureCode(code: number): boolean {
-	return code == 1030601 || (code >= 103602 && code <= 103615) || (code >= 103617 && code <= 103625)
+	return code == 1030601 || (code >= 103602 && code <= 103615) || (code >= 103617 && code <= 103624)
 }
 
 function resolveWgtPath(filePath: string): string {

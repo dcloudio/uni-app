@@ -248,6 +248,11 @@ export type RequestOptions<T> = {
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "uniVer": "4.23",
+            "unixVer": "4.61",
+            "unixVaporVer": "5.0"
           }
          },
       *  "mp": {
@@ -2869,6 +2874,11 @@ export type DownloadFileOptions = {
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "uniVer": "4.23",
+            "unixVer": "4.61",
+            "unixVaporVer": "5.0"
           }
         },
       *  "mp": {

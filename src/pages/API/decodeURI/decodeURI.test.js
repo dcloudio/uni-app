@@ -1,6 +1,6 @@
-const PAGE_PATH = '/pages/API/uri-encode/uri-encode'
+const PAGE_PATH = '/pages/API/decodeURI/decodeURI'
 
-describe('encodeURI / decodeURI / encodeURIComponent / decodeURIComponent', () => {
+describe('decodeURI', () => {
   let page = null
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)

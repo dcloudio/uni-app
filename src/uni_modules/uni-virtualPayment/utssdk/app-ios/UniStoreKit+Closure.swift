@@ -10,7 +10,7 @@ import StoreKit
 
 @available(iOS 15.0, *)
 extension UniStoreKit {
-    public func fetchProduct(identifier: String, completion: @escaping (Result<UniProduct, UniStoreKitError>) -> Void) {
+    func fetchProduct(identifier: String, completion: @escaping (Result<UniProduct, UniStoreKitError>) -> Void) {
         Task {
             let result = await fetchProduct(identifier: identifier)
             await MainActor.run {
@@ -19,7 +19,7 @@ extension UniStoreKit {
         }
     }
     
-    public func fetchProducts(identifiers: [String], completion: @escaping (Result<[UniProduct], UniStoreKitError>) -> Void) {
+    func fetchProducts(identifiers: [String], completion: @escaping (Result<[UniProduct], UniStoreKitError>) -> Void) {
         Task {
             let result = await fetchProducts(identifiers: identifiers)
             await MainActor.run {
@@ -28,7 +28,7 @@ extension UniStoreKit {
         }
     }
     
-    public func fetchProducts(products: [UniProduct], completion: @escaping (Result<[UniProduct], UniStoreKitError>) -> Void) {
+    func fetchProducts(products: [UniProduct], completion: @escaping (Result<[UniProduct], UniStoreKitError>) -> Void) {
         Task {
             let result = await fetchProducts(products: products)
             await MainActor.run {
@@ -37,7 +37,7 @@ extension UniStoreKit {
         }
     }
     
-    public func fetchProduct(identifier: String, success: @escaping (UniProduct) -> Void, failure: @escaping (UniStoreKitError) -> Void) {
+    func fetchProduct(identifier: String, success: @escaping (UniProduct) -> Void, failure: @escaping (UniStoreKitError) -> Void) {
         Task {
             let result = await fetchProduct(identifier: identifier)
             
@@ -58,7 +58,7 @@ extension UniStoreKit {
 @available(iOS 15.0, *)
 extension UniStoreKit {
     
-    public func buyProduct(identifier: String, completion: @escaping (UniPurchaseResult) -> Void) {
+    func buyProduct(identifier: String, completion: @escaping (UniPurchaseResult) -> Void) {
         Task {
             let result = await buyProduct(identifier: identifier)
             await MainActor.run {
@@ -67,7 +67,7 @@ extension UniStoreKit {
         }
     }
     
-    public  func buyProduct(identifier: String, quantity: Int? = 1, appAccountToken: String? = nil, promotionalOfferID: String? = nil, promotionalKeyID: String? = nil, promotionalNonce: String? = nil, promotionalSigature: String? = nil, promotionalTimestamp: Int? = nil, success: @escaping (UniPurchase) -> Void, failure: @escaping (UniStoreKitError) -> Void) {
+    func buyProduct(identifier: String, quantity: Int? = 1, appAccountToken: String? = nil, promotionalOfferID: String? = nil, promotionalKeyID: String? = nil, promotionalNonce: String? = nil, promotionalSigature: String? = nil, promotionalTimestamp: Int? = nil, success: @escaping (UniPurchase) -> Void, failure: @escaping (UniStoreKitFailure) -> Void) {
         Task {
             let result = await buyProduct(identifier: identifier, quantity: quantity, appAccountToken: appAccountToken, promotionalOfferID: promotionalOfferID, promotionalKeyID: promotionalKeyID, promotionalNonce: promotionalNonce, promotionalSigature: promotionalSigature, promotionalTimestamp: promotionalTimestamp)
             switch result {
@@ -85,7 +85,7 @@ extension UniStoreKit {
         }
     }
     
-    public  func buyProduct(identifier: String, purchaseOption: UniPurchaseOption? = nil, success: @escaping (UniPurchase) -> Void, failure: @escaping (UniStoreKitError) -> Void) {
+    func buyProduct(identifier: String, purchaseOption: UniPurchaseOption? = nil, success: @escaping (UniPurchase) -> Void, failure: @escaping (UniStoreKitFailure) -> Void) {
         Task {
             let result = await buyProduct(identifier: identifier, purchaseOption: purchaseOption)
             switch result {
@@ -103,11 +103,11 @@ extension UniStoreKit {
         }
     }
     
-    public func buyProduct(product: UniProduct, completion: @escaping (UniPurchaseResult) -> Void) {
+    func buyProduct(product: UniProduct, completion: @escaping (UniPurchaseResult) -> Void) {
         buyProduct(identifier: product.id, completion: completion)
     }
     
-    public func buyProduct(product: UniProduct, success: @escaping (UniPurchase) -> Void, failure: @escaping (UniStoreKitError) -> Void) {
+    func buyProduct(product: UniProduct, success: @escaping (UniPurchase) -> Void, failure: @escaping (UniStoreKitFailure) -> Void) {
         Task {
             let result = await buyProduct(product: product)
             switch result {
@@ -125,7 +125,7 @@ extension UniStoreKit {
         }
     }
     
-    public func getActiveEntitlements(completion: @escaping (Result<[UniPurchase], UniStoreKitError>) -> Void) {
+    func getActiveEntitlements(completion: @escaping (Result<[UniPurchase], UniStoreKitFailure>) -> Void) {
         Task {
             let result = await getActiveEntitlements()
             await MainActor.run {
@@ -134,7 +134,7 @@ extension UniStoreKit {
         }
     }
     
-    public func getActiveEntitlements(success: @escaping ([UniPurchase]) -> Void, failure: @escaping (UniStoreKitError) -> Void) {
+    func getActiveEntitlements(success: @escaping ([UniPurchase]) -> Void, failure: @escaping (UniStoreKitFailure) -> Void) {
         Task {
             let result = await getActiveEntitlements()
             await MainActor.run {
@@ -148,7 +148,7 @@ extension UniStoreKit {
         }
     }
     
-    public func restorePurchase(success: @escaping ([UniPurchase]) -> Void, failure: @escaping (UniStoreKitError) -> Void) {
+    func restorePurchase(success: @escaping ([UniPurchase]) -> Void, failure: @escaping (UniStoreKitFailure) -> Void) {
         Task {
             let restoreResult = await restorePurchase()
             switch restoreResult {
@@ -165,7 +165,7 @@ extension UniStoreKit {
         }
     }
     
-    public func getUnfinishedTransactions(completion: @escaping ([UniPurchase]) -> Void) {
+    func getUnfinishedTransactions(completion: @escaping ([UniPurchase]) -> Void) {
         Task {
             let result = await getUnfinishedTransactions()
             await MainActor.run {

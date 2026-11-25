@@ -1,0 +1,89 @@
+<template>
+  <scroll-view class="page" direction="vertical">
+    <GridTest :cases="cases" />
+  </scroll-view>
+</template>
+
+<script setup lang="ts">
+  import GridTest from './grid-test.uvue'
+  import { GridCase } from './grid-cases'
+
+  const lines = ['auto', '1', '2', '-2', 'span 1', 'span 2']
+  const endLines = ['auto', '3', '-1', 'span 1', 'span 2']
+  const shorthand = ['1 / span 2', '2', '1 / 3', '1 / -1', 'span 2', 'span 2 / -1', 'span 2 / span 3', 'auto']
+  const invalidLine = ['main', '0', '1.5', '10001', 'span 0', 'span -1', 'span 1.5', 'span 10001', 'span 2 main']
+  const invalidPair = [...invalidLine, '1 / 2 / 3']
+  const column = ['grid-column', 'grid-column-start', 'grid-column-end']
+  const row = ['grid-row', 'grid-row-start', 'grid-row-end']
+
+  const cases: GridCase[] = [
+    {
+      property: 'grid-column-start', cell: 1, read: column,
+      note: '结束线固定为 -1。观察修改 A 的列起点与起始侧 span 的效果。',
+      setup: [{ property: 'grid-column-end', value: '-1', cell: 1 }],
+      values: lines, invalid: invalidLine
+    },
+    {
+      property: 'grid-column-end', cell: 1, read: column,
+      note: '起始线固定为 1。观察修改 A 的列终点与结束侧 span 的效果。',
+      setup: [{ property: 'grid-column-start', value: '1', cell: 1 }],
+      values: endLines, invalid: invalidLine
+    },
+    {
+      property: 'grid-row-start', cell: 1, read: row,
+      note: '结束线固定为 -1。观察修改 A 的行起点与起始侧 span 的效果。',
+      setup: [{ property: 'grid-row-end', value: '-1', cell: 1 }],
+      values: lines, invalid: invalidLine
+    },
+    {
+      property: 'grid-row-end', cell: 1, read: row,
+      note: '起始线固定为 1。观察修改 A 的行终点与结束侧 span 的效果。',
+      setup: [{ property: 'grid-row-start', value: '1', cell: 1 }],
+      values: endLines, invalid: invalidLine
+    },
+    {
+      property: 'grid-column', cell: 1, read: column,
+      note: '测试单值和双值简写、负线号及 span。两侧都写 span 时观察结束侧的跨度。',
+      values: shorthand, invalid: invalidPair
+    },
+    {
+      property: 'grid-row', cell: 1, read: row,
+      note: '测试单值和双值简写、负线号及 span。观察 A 的纵向位置和高度。',
+      values: shorthand, invalid: invalidPair
+    },
+    {
+      title: '调用顺序 · 长属性 → 简写', property: 'grid-column', cell: 1, read: column,
+      note: '先写 grid-column-start: 2，再写选定的简写。默认预设下 A 从列线 1 起跨两列。',
+      before: [{ property: 'grid-column-start', value: '2', cell: 1 }],
+      values: ['1 / span 2', '1 / 3']
+    },
+    {
+      title: '调用顺序 · 简写 → 长属性', property: 'grid-column', cell: 1, read: column,
+      note: '先写选定的简写，再写 grid-column-start: 2。默认预设下 A 从列线 2 起跨两列。',
+      after: [{ property: 'grid-column-start', value: '2', cell: 1 }],
+      values: ['1 / span 2', '1 / auto']
+    },
+    {
+      title: '重置 · 收回简写跨度', property: 'grid-row', cell: 1, read: row,
+      note: '每次先写 grid-row: 1 / span 2，再应用预设。清空、initial、unset 后起止线和跨度都应恢复。',
+      before: [{ property: 'grid-row', value: '1 / span 2', cell: 1 }],
+      values: ['1 / span 2', '', 'initial', 'unset', '2 / auto']
+    },
+    {
+      title: '拒绝旧列跨度属性', property: 'grid-column-span', cell: 1, read: column,
+      note: '旧属性名应被拒绝，A 的列位置和宽度应保持原值。',
+      values: [], invalid: ['2']
+    },
+    {
+      title: '拒绝旧行跨度属性', property: 'grid-row-span', cell: 1, read: row,
+      note: '旧属性名应被拒绝，A 的行位置和高度应保持原值。',
+      values: [], invalid: ['2']
+    }
+  ]
+</script>
+
+<style>
+  .page {
+    flex: 1;
+  }
+</style>

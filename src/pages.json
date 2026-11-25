@@ -1179,27 +1179,31 @@
 					}
 				},
 				// #endif
+				// #ifdef APP-ANDROID || APP-HARMONY || APP-IOS || WEB
 				{
-					"path": "text-encode-decode/text-encode-decode",
-					"group": "1,0,3",
-					"style": {
-						"navigationBarTitleText": "TextEncoder / TextDecoder | 文本编解码"
-					}
-				},
-				{
-					"path": "uri-encode/uri-encode",
-					"group": "1,0,4",
-					"style": {
-						"navigationBarTitleText": "URI 编解码（encodeURI / decodeURI 等）"
-					}
-				},
-				{
-					"path": "atob-btoa/atob-btoa",
+					"path": "TextDecoder/TextDecoder",
 					"group": "1,0,5",
 					"style": {
-						"navigationBarTitleText": "atob / btoa | Base64 编解码"
+						"navigationBarTitleText": "TextDecoder"
 					}
 				},
+				// #endif
+				{
+					"path": "decodeURI/decodeURI",
+					"group": "1,0,4,0",
+					"style": {
+						"navigationBarTitleText": "decodeURI"
+					}
+				},
+				// #ifdef APP-ANDROID || APP-IOS || WEB || MP-ALIPAY
+				{
+					"path": "atob/atob",
+					"group": "1,0,3,0",
+					"style": {
+						"navigationBarTitleText": "atob"
+					}
+				},
+				// #endif
 				{
 					"path": "navigator/navigator",
 					"group": "1,2,0",
@@ -1211,7 +1215,7 @@
 					"path": "app-route/app-route",
 					"group": "1,2,1",
 					"style": {
-						"navigationBarTitleText": "appRoute | 应用路由事件"
+						"navigationBarTitleText": "app-route | 路由事件"
 					}
 				},
 				{
@@ -1279,7 +1283,7 @@
 					"path": "storage/storage",
 					"group": "1,9",
 					"style": {
-						"navigationBarTitleText": "storage | key-value本地数据存储"
+						"navigationBarTitleText": "数据存储"
 					}
 				},
 				{
@@ -1474,7 +1478,7 @@
 					"path": "get-system-info/get-system-info",
 					"group": "1,6,0",
 					"style": {
-						"navigationBarTitleText": "uni.getSystemInfo | 获取系统信息"
+						"navigationBarTitleText": "getSystemInfo | 获取系统信息"
 					}
 				},
 				{
@@ -1546,7 +1550,7 @@
 					"path": "preview-image/preview-image",
 					"group": "1,7,1",
 					"style": {
-						"navigationBarTitleText": "uni.previewImage | 图片预览"
+						"navigationBarTitleText": "previewImage | 图片预览"
 					}
 				},
 				{
@@ -1667,7 +1671,7 @@
 					"path": "get-battery-info/get-battery-info",
 					"group": "1,6,8",
 					"style": {
-						"navigationBarTitleText": "uni.getBatteryInfo | 获取电池电量信息"
+						"navigationBarTitleText": "getBatteryInfo | 获取电池电量信息"
 					}
 				},
 				// #endif
@@ -1764,7 +1768,7 @@
 					"path": "request-system-permission/request-system-permission",
 					"group": "1,6,20",
 					"style": {
-						"navigationBarTitleText": "uni.requestSystemPermission | 申请系统权限",
+						"navigationBarTitleText": "uni.requestSystemPermission | 请求系统权限",
 						"enablePullDownRefresh": false
 					}
 				},
@@ -1979,7 +1983,7 @@
 					"path": "uni-push/uni-push",
 					"group": "1,16,0",
 					"style": {
-						"navigationBarTitleText": "推送"
+						"navigationBarTitleText": "push"
 					}
 				},
 				// #ifdef APP || WEB || MP-WEIXIN
@@ -1987,7 +1991,7 @@
 					"path": "report/report",
 					"group": "1,17,0",
 					"style": {
-						"navigationBarTitleText": "uni.report | 统计采集上报"
+						"navigationBarTitleText": "uni.report | 自定义统计上报"
 					}
 				},
 				// #endif
@@ -2171,7 +2175,7 @@
 					"path": "share/share",
 					"group": "1,15,0",
 					"style": {
-						"navigationBarTitleText": "uni.share | 分享"
+						"navigationBarTitleText": "分享"
 					}
 				},
 				// #endif
@@ -2305,7 +2309,7 @@
 					"path": "load-uasm/load-uasm",
 					"group": "1,20,0",
 					"style": {
-						"navigationBarTitleText": "uni.loadUasm | 异步加载 Uasm 模块"
+						"navigationBarTitleText": "uni.loadUasm | 异步加载 UASM 模块"
 					}
 				},
 				// #endif
@@ -3241,7 +3245,7 @@
 						"titlePenetrate": "YES",
 						"allowsBounceVertical": "NO",
 						// #endif
-						"navigationBarTextStyle":"black"
+						"navigationBarTextStyle": "black"
 					}
 				},
 				{
@@ -3343,14 +3347,14 @@
 					"style": {
 						"navigationBarTitleText": "Icons 图标"
 					}
-				}
-				,{
+				},
+				{
 					"path": "easyinput/easyinput",
 					"style": {
 						"navigationBarTitleText": "Easyinput 增强输入框"
 					}
-				}
-				,{
+				},
+				{
 					"path": "forms/forms",
 					"style": {
 						"navigationBarTitleText": "uni-forms 表单"
@@ -3614,6 +3618,56 @@
 						"navigationBarTitleText": "none"
 					}
 				},
+				// #ifdef  VUE3-VAPOR
+				{
+					"path": "grid/grid",
+					"group": "2,26",
+					"style": {
+						"navigationBarTitleText": "Display",
+						"disableScroll": true
+					}
+				},
+				{
+					"path": "grid/tracks",
+					"group": "2,26",
+					"style": {
+						"navigationBarTitleText": "显式与隐式轨道",
+						"disableScroll": true
+					}
+				},
+				{
+					"path": "grid/flow",
+					"group": "2,26",
+					"style": {
+						"navigationBarTitleText": "自动放置与排序",
+						"disableScroll": true
+					}
+				},
+				{
+					"path": "grid/placement",
+					"group": "2,26",
+					"style": {
+						"navigationBarTitleText": "定位与跨轨道",
+						"disableScroll": true
+					}
+				},
+				{
+					"path": "grid/gap",
+					"group": "2,26",
+					"style": {
+						"navigationBarTitleText": "行列间距",
+						"disableScroll": true
+					}
+				},
+				{
+					"path": "grid/alignment",
+					"group": "2,26",
+					"style": {
+						"navigationBarTitleText": "对齐",
+						"disableScroll": true
+					}
+				},
+				// #endif
 				{
 					"path": "flex/align-content",
 					"group": "2,8,6",
@@ -4554,16 +4608,28 @@
 							"name": "animationFrame"
 						},
 						{
-							"id": "api.global.textEncoderDecoder",
-							"name": "TextEncoder / TextDecoder"
+							"id": "api.global.base64",
+							"name": "base64-codec",
+							"children": [
+								{
+									"id": "api.global.base64.atob",
+									"name": "atob"
+								}
+							]
 						},
 						{
-							"id": "api.global.uriEncodeDecode",
-							"name": "URI 编解码"
+							"id": "api.global.uri",
+							"name": "uri-codec",
+							"children": [
+								{
+									"id": "api.global.uri.decodeURI",
+									"name": "decodeURI"
+								}
+							]
 						},
 						{
-							"id": "api.global.atobBtoa",
-							"name": "atob / btoa"
+							"id": "api.global.TextDecoder",
+							"name": "TextDecoder"
 						}
 					]
 				},
@@ -5556,6 +5622,10 @@
 				{
 					"id": "css.media-query",
 					"name": "@media | 媒体查询"
+				},
+				{
+					"id": "css.properties.grid",
+					"name": "Grid"
 				}
 			]
 		}

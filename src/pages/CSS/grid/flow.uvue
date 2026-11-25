@@ -1,0 +1,39 @@
+<template>
+  <scroll-view class="page" direction="vertical">
+    <GridTest :cases="cases" />
+  </scroll-view>
+</template>
+
+<script setup lang="ts">
+  import GridTest from './grid-test.uvue'
+  import { GridCase } from './grid-cases'
+
+  const cases: GridCase[] = [
+    {
+      property: 'grid-auto-flow',
+      note: 'A、B 各占 2 列 × 2 行。切换方向并比较 dense 前后 C–F 是否填回前面的空位。',
+      setup: [
+        { property: 'grid-column', value: 'span 2', cell: 1 },
+        { property: 'grid-row', value: 'span 2', cell: 1 },
+        { property: 'grid-column', value: 'span 2', cell: 2 },
+        { property: 'grid-row', value: 'span 2', cell: 2 }
+      ],
+      values: ['row', 'column', 'dense', 'row dense', 'column dense', 'dense row', 'dense column', 'initial'],
+      invalid: ['row column', 'dense dense']
+    },
+    {
+      property: 'order',
+      cell: 1,
+      note: '预先给 B 设置 -0.5，其余项目保持 0。修改 A 的 order，比较 A、B 和同值子项的放置顺序。',
+      setup: [{ property: 'order', value: '-0.5', cell: 2 }],
+      values: ['0', '-1', '-0.5', '0.5', '2', 'unset'],
+      invalid: ['NaN', 'Infinity', '1e40']
+    }
+  ]
+</script>
+
+<style>
+  .page {
+    flex: 1;
+  }
+</style>

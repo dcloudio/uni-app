@@ -1,4 +1,4 @@
-const PAGE_PATH = '/pages/API/atob-btoa/atob-btoa'
+const PAGE_PATH = '/pages/API/atob/atob'
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isHarmony = platformInfo.startsWith('harmony')

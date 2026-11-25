@@ -1,0 +1,57 @@
+<template>
+  <scroll-view class="page" direction="vertical">
+    <GridTest :cases="cases" />
+  </scroll-view>
+</template>
+
+<script setup lang="ts">
+  import GridTest from './grid-test.uvue'
+  import { GridCase } from './grid-cases'
+
+  const items = ['start', 'center', 'end', 'stretch']
+  const flexItems = [...items, 'flex-start', 'flex-end']
+  const content = ['start', 'center', 'end', 'space-between', 'space-around', 'stretch', 'flex-start', 'flex-end']
+
+  const cases: GridCase[] = [
+    {
+      property: 'justify-content',
+      note: '比较列轨道组的横向分布。中间的 auto 列可在 stretch 下分到剩余宽度。',
+      setup: [{ property: 'grid-template-columns', value: '44px auto 44px' }],
+      values: [...content, 'space-evenly']
+    },
+    {
+      property: 'align-content',
+      note: '比较行轨道组的纵向分布。中间的 auto 行可在 stretch 下分到剩余高度。',
+      setup: [{ property: 'grid-template-rows', value: '28px auto 36px' }],
+      values: content
+    },
+    {
+      property: 'justify-items',
+      note: '观察所有项目如何在各自的网格区域内横向对齐。',
+      values: [...items, 'auto']
+    },
+    {
+      property: 'align-items',
+      note: '观察所有项目如何在各自的网格区域内纵向对齐。',
+      values: flexItems
+    },
+    {
+      property: 'justify-self', cell: 1,
+      note: '容器横向对齐设为 center。A 使用 auto 时跟随容器，其余值只改变 A。',
+      setup: [{ property: 'justify-items', value: 'center' }],
+      values: ['auto', ...items]
+    },
+    {
+      property: 'align-self', cell: 1,
+      note: '容器纵向对齐设为 center。A 使用 auto 时跟随容器，其余值只改变 A。',
+      setup: [{ property: 'align-items', value: 'center' }],
+      values: ['auto', ...flexItems]
+    }
+  ]
+</script>
+
+<style>
+  .page {
+    flex: 1;
+  }
+</style>

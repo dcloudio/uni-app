@@ -10,7 +10,7 @@
 			<slot :start="committedStart" :end="committedEnd" :text="displayText">
 				<view class="uni-field-default" :class="[props.inputClass, props.disabled ? 'cp-trigger-disabled' : '']">
 					<text flatten class="uni-result-text"
-						:class="hasDisplayValue ? 'cp-trigger-value' : 'cp-trigger-placeholder'">{{ displayText }}</text>
+						:class="hasDisplayValue ? (props.disabled ? 'cp-trigger-value-disabled' : 'cp-trigger-value') : 'cp-trigger-placeholder'">{{ displayText }}</text>
 					<text class="uni-down-arrow-iconfont" :class="props.arrowClass">{{'\uE601'}}</text>
 					<!-- <view class="uni-arrow-wrap" flatten>
 						<view class="uni-arrow" flatten></view>
@@ -1921,10 +1921,6 @@ defineExpose({
 		background-color: rgba(0, 0, 0, 0.04);
 	}
 
-	.cp-trigger-disabled .cp-trigger-value {
-		color: rgba(60, 60, 67, 0.3);
-	}
-
 	.uni-result-text {
 		flex: 1;
 		font-size: 14px;
@@ -1935,6 +1931,10 @@ defineExpose({
 
 	.cp-trigger-value {
 		color: #333333;
+	}
+
+	.cp-trigger-value-disabled {
+		color: rgba(60, 60, 67, 0.3);
 	}
 
 	.cp-trigger-placeholder {
@@ -2227,7 +2227,7 @@ defineExpose({
 			background-color: rgba(255, 255, 255, 0.04);
 		}
 
-		.cp-trigger-disabled .cp-trigger-value {
+		.cp-trigger-value-disabled {
 			color: rgba(255, 255, 255, 0.40);
 		}
 

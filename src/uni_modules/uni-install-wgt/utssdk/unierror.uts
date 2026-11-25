@@ -54,7 +54,8 @@ export const InstallWgtErrors: Map<InstallWgtErrorCode, string> = new Map([
 	 */
 	[103610, 'manifest fields are invalid'],
 	/**
-	 * 完整 WGT 版本低于或等于 Runtime 版本
+	 * 完整 WGT 版本低于或等于 Runtime 版本，或差量 WGT 目标版本低于当前版本。
+	 * 差量降级由 Worker 提供专用错误信息；此处保留完整包的默认错误信息。
 	 */
 	[103611, 'full WGT version must be higher than the Runtime version'],
 	/**
@@ -105,8 +106,4 @@ export const InstallWgtErrors: Map<InstallWgtErrorCode, string> = new Map([
 	 * 差量 WGT 资源合并失败
 	 */
 	[103624, 'differential WGT resource merge failed'],
-	/**
-	 * 差量 WGT 版本与基准资源版本不一致
-	 */
-	[103625, 'differential WGT version does not match the base resource version'],
 ])

@@ -1,0 +1,47 @@
+<template>
+  <scroll-view class="page" direction="vertical">
+    <view>
+      <view class="overview">
+        <text class="title">CSS Grid</text>
+        <text class="intro">查看样式读回与网格预览，验证 Grid 布局。</text>
+      </view>
+      <GridTest :cases="cases" />
+    </view>
+  </scroll-view>
+</template>
+
+<script setup lang="ts">
+  import GridTest from './grid-test.uvue'
+  import { GridCase } from './grid-cases'
+
+  const cases: GridCase[] = [
+    {
+      property: 'display',
+      note: '按 grid → flex → grid 切换。比较 A、B 的宽度和 D 的纵向位置，检查轨道是否恢复。',
+      values: ['grid', 'flex', 'none'],
+      read: ['display', 'grid-template-columns', 'grid-template-rows']
+    }
+  ]
+</script>
+
+<style>
+  .page {
+    flex: 1;
+  }
+
+  .overview {
+    padding: 12px 12px 0;
+  }
+
+  .title {
+    color: #193756;
+    font-size: 19px;
+    font-weight: bold;
+  }
+
+  .intro {
+    color: #43566d;
+    font-size: 13px;
+    margin-top: 4px;
+  }
+</style>

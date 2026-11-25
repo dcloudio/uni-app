@@ -58,11 +58,14 @@ export function getRequestVirtualPaymentErrcode(errCode : number) : RequestVirtu
 }
 
 export class RequestVirtualPaymentFailImpl extends UniError implements IRequestVirtualPaymentFail {
-	constructor(errCode : RequestVirtualPaymentErrorCode) {
+	constructor(errCode : RequestVirtualPaymentErrorCode, cause : SourceError | null = null) {
 		super();
 		this.errSubject = RequestVirtualPaymentUniErrorSubject;
 		this.errCode = errCode;
 		this.errMsg = RequestVirtualPaymentUniErrors[errCode] ?? "";
+		if (cause != null) {
+			this.cause = cause as Error;
+		}
 	}
 }
 
@@ -102,11 +105,14 @@ export function getAppleIAPRestoreErrcode(errCode : number) : AppleIAPRestoreErr
 }
 
 export class AppleIAPRestoreFailImpl extends UniError implements IAppleIAPRestoreFail {
-	constructor(errCode : AppleIAPRestoreErrorCode) {
+	constructor(errCode : AppleIAPRestoreErrorCode, cause : SourceError | null = null) {
 		super();
 		this.errSubject = AppleIAPRestoreUniErrorSubject;
 		this.errCode = errCode;
 		this.errMsg = AppleIAPRestoreUniErrors[errCode] ?? "";
+		if (cause != null) {
+			this.cause = cause as Error;
+		}
 	}
 }
 
@@ -131,11 +137,14 @@ export function getAppleIAPUnfinishedTransactionErrcode(errCode : number) : Appl
 }
 
 export class AppleIAPUnfinishedTransactionFailImpl extends UniError implements IAppleIAPUnfinishedTransactionFail {
-	constructor(errCode : AppleIAPUnfinishedTransactionErrorCode) {
+	constructor(errCode : AppleIAPUnfinishedTransactionErrorCode, cause : SourceError | null = null) {
 		super();
 		this.errSubject = AppleIAPUnfinishedTransactionUniErrorSubject;
 		this.errCode = errCode;
 		this.errMsg = AppleIAPUnfinishedTransactionUniErrors[errCode] ?? "";
+		if (cause != null) {
+			this.cause = cause as Error;
+		}
 	}
 }
 
@@ -166,10 +175,13 @@ export function getAppleIAPFinishTransactionErrcode(errCode : number) : AppleIAP
 }
 
 export class AppleIAPFinishTransactionFailImpl extends UniError implements IAppleIAPFinishTransactionFail {
-	constructor(errCode : AppleIAPFinishTransactionFailErrorCode) {
+	constructor(errCode : AppleIAPFinishTransactionFailErrorCode, cause : SourceError | null = null) {
 		super();
 		this.errSubject = AppleIAPFinishTransactionUniErrorSubject;
 		this.errCode = errCode;
 		this.errMsg = AppleIAPFinishTransactionUniErrors[errCode] ?? "";
+		if (cause != null) {
+			this.cause = cause as Error;
+		}
 	}
 }

@@ -1,0 +1,322 @@
+.uni-data-tree {
+  position: relative;
+}
+
+.uni-data-tree-input {
+  position: relative;
+}
+
+.selected-loading {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.error-text {
+  flex: 1;
+  font-size: 12px;
+  color: rgb(255, 59, 48);
+}
+
+.input-value {
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: nowrap;
+  padding: 8px 10px;
+  overflow: hidden;
+  min-height: 28px;
+  background-color: #ffffff;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #dcdfe6;
+  border-radius: 6px;
+}
+
+.selected-path {
+  flex: 1;
+  flex-direction: row;
+  overflow: hidden;
+}
+
+.load-more {
+  width: 40px;
+}
+
+.selected-list {
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+
+.selected-item {
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+
+.text-color {
+  font-size: 14px;
+  color: #333333;
+}
+
+.placeholder {
+  font-size: 14px;
+  color: rgba(60, 60, 67, 0.30);
+}
+
+.input-split-line {
+  opacity: .5;
+  margin-left: 1px;
+  margin-right: 1px;
+  color: rgba(60, 60, 67, 0.30);
+}
+
+.arrow-area {
+  position: relative;
+  padding: 0 12px;
+  margin-left: auto;
+  justify-content: center;
+  transform: rotate(-45deg);
+  transform-origin: center;
+}
+
+.input-arrow {
+  width: 8px;
+  height: 8px;
+  border-left-width: 2px;
+  border-left-style: solid;
+  border-left-color: #999999;
+  border-bottom-width: 2px;
+  border-bottom-style: solid;
+  border-bottom-color: #999999;
+}
+
+.uni-data-tree-mask {
+  /* #ifdef WEB */
+  cursor: pointer;
+  /* #endif */
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.30);
+  flex-direction: column;
+  z-index: 100;
+  opacity: 0;
+  transition-property: opacity;
+  transition-duration: 250ms;
+  transition-timing-function: ease-out;
+}
+
+.uni-data-tree-mask-active {
+  opacity: 1;
+}
+
+.uni-data-tree-dialog {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 85%;
+  background-color: #ffffff;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  z-index: 500;
+  overflow: hidden;
+  transform: translateY(100%);
+  transition-property: transform;
+  transition-duration: 250ms;
+  transition-timing-function: ease-out;
+  flex-direction: column;
+}
+
+.uni-data-tree-dialog-active {
+  transform: translateY(0);
+}
+
+.uni-data-tree-dialog-drag {
+  transition-duration: 0ms;
+}
+
+.dialog-body {
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.dialog-caption {
+  position: relative;
+  flex-direction: row;
+  background-color: #ffffff;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: #e5e5e5;
+}
+
+.dialog-title-view {
+  flex: 1;
+}
+
+.dialog-title {
+  align-self: center;
+  padding: 0 10px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #333333;
+  line-height: 44px;
+}
+
+.dialog-close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  flex-direction: row;
+  align-items: center;
+  padding: 0 15px;
+}
+
+.dialog-close-plus {
+  width: 16px;
+  height: 2px;
+  background-color: #657180;
+  border-radius: 2px;
+  transform: rotate(45deg);
+}
+
+.dialog-close-rotate {
+  position: absolute;
+  transform: rotate(-45deg);
+}
+
+/* #ifdef WEB */
+.uni-data-tree-input {
+  cursor: pointer;
+  outline: none;
+}
+
+.uni-data-tree-input:focus .input-value {
+  border-color: #0958d9;
+  box-shadow: 0 0 0 3px rgba(41, 121, 255, 0.24);
+}
+
+.dialog-close {
+  cursor: pointer;
+  outline: none;
+}
+
+.dialog-close:focus .dialog-close-plus {
+  background-color: #0958d9;
+}
+/* #endif */
+
+/* #ifdef WEB */
+/* Web 宽屏：picker 按下拉浮层展示，位置与宽度由组件内联样式锚定触发区 */
+@media all and (min-width: 768px) {
+  .uni-data-tree-dialog {
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: auto;
+    bottom: auto;
+    width: 100%;
+    height: auto;
+    min-height: 150px;
+    max-height: 50vh;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #e5e5e5;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    box-sizing: border-box;
+    /* 宽屏下不使用滑入/滑出动画，直接显示 */
+    transform: none;
+    transition-duration: 0ms;
+  }
+
+  .uni-data-tree-dialog-active {
+    transform: none;
+  }
+
+  .uni-data-tree-mask {
+    opacity: 0;
+    transition-duration: 0ms;
+  }
+
+  .dialog-caption {
+    display: none;
+  }
+}
+/* #endif */
+
+@media (prefers-color-scheme: dark) {
+  .input-value {
+    background-color: #3b3b3b;
+    border-color: rgba(255, 255, 255, 0.18);
+  }
+
+  .text-color {
+    color: #ffffff;
+  }
+
+  .placeholder {
+    color: rgba(255, 255, 255, 0.35);
+  }
+
+  .input-split-line {
+    color: rgba(255, 255, 255, 0.35);
+  }
+
+  .input-arrow {
+    border-left-color: #ffffff;
+    border-bottom-color: #ffffff;
+  }
+
+  .error-text {
+    color: rgb(255, 91, 95);;
+  }
+
+  .uni-data-tree-dialog {
+    background-color: #2c2c2c;
+  }
+
+  .dialog-caption {
+    background-color: #2d2d2d;
+    border-bottom-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .dialog-title {
+    color: #ffffff;
+  }
+
+  .dialog-close-plus {
+    background-color: #cccccc;
+  }
+
+  /* #ifdef WEB */
+  .uni-data-tree-input:focus .input-value {
+    border-color: #91caff;
+  }
+
+  .dialog-close:focus .dialog-close-plus {
+    background-color: #91caff;
+  }
+  /* #endif */
+}
+
+/* #ifdef WEB */
+/* Web 宽屏下拉浮层的暗黑配色 */
+@media all and (min-width: 768px) and (prefers-color-scheme: dark) {
+  .uni-data-tree-dialog {
+    background-color: #2b2b2b;
+    border-color: #373737;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+  }
+}
+/* #endif */

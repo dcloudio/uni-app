@@ -1,0 +1,325 @@
+<template>
+  <view class="grid-test">
+    <view v-if="caseNames.length > 1" id="grid-case-picker" class="case-picker" @tap="data.showCases = !data.showCases">
+      <text class="case-label">测试项 · {{ caseNames[data.caseIndex] }} {{ data.showCases ? '▴' : '▾' }}</text>
+    </view>
+    <view v-if="data.showCases" class="options">
+      <button v-for="(name, index) in caseNames" :key="name" :id="'grid-case-' + index"
+        size="mini" class="option" @tap="selectCase(index)">{{ name }}</button>
+    </view>
+    <text class="note">{{ current.note }}</text>
+
+    <view id="grid-preview" class="preview">
+      <view v-for="(label, index) in labels" :key="label" :id="'grid-cell-' + (index + 1)"
+        class="grid-cell" :class="'grid-cell-' + (index + 1)">
+        <text class="cell-label">{{ label }}</text>
+      </view>
+    </view>
+
+    <view class="results">
+      <text class="result">设置值：{{ data.requested }}</text>
+      <text v-for="line in data.readback" :key="line" class="result">{{ line }}</text>
+      <text v-if="data.status != ''" class="result">{{ data.status }}</text>
+    </view>
+
+    <text v-if="current.values.length > 0" class="case-label">预设值</text>
+    <view v-if="current.values.length > 0" class="options">
+      <button v-for="(value, index) in current.values" :key="value" :id="'grid-value-' + index"
+        size="mini" class="option" @tap="applyValue(value)">{{ value == '' ? '清空声明' : value }}</button>
+    </view>
+    <view class="input-row">
+      <input class="custom-input" :value="data.input" :maxlength="-1" confirm-type="go"
+        placeholder="自定义值" @input="updateInput" @confirm="confirmInput" />
+      <button size="mini" class="action" @tap="applyValue(data.input)">应用</button>
+      <button size="mini" class="action" @tap="applyValue('')">清空</button>
+    </view>
+    <view v-if="invalidValues.length > 0">
+      <text class="case-label">拒绝用例 · 检查样式与布局是否保持原值</text>
+      <view class="options">
+        <button v-for="(value, index) in invalidValues" :key="value" :id="'grid-invalid-' + index"
+          size="mini" class="option" @tap="applyValue(value, true)">{{ value }}</button>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script setup lang="ts">
+  import { GridCase, GridWrite } from './grid-cases'
+
+  const props = defineProps<{ cases: GridCase[] }>()
+  const labels = ['A', 'B', 'C', 'D', 'E', 'F']
+  const data = reactive({
+    caseIndex: 0,
+    showCases: false,
+    input: '',
+    requested: '',
+    readback: [] as string[],
+    status: ''
+  })
+  const current = computed((): GridCase => props.cases[data.caseIndex])
+  const caseNames = computed((): string[] => props.cases.map((item): string => item.title ?? item.property))
+  const invalidValues = computed((): string[] => current.value.invalid ?? [])
+  let revision = 0
+  let activeCase: GridCase | null = null
+
+  function element(cell: number): UniElement | null {
+    return uni.getElementById(cell == 0 ? 'grid-preview' : 'grid-cell-' + cell)
+  }
+
+  function writeStyles(styles: GridWrite[] | undefined) {
+    styles?.forEach((style) => {
+      element(style.cell ?? 0)?.style.setProperty(style.property, style.value)
+    })
+  }
+
+  function readStyles(test: GridCase, target: UniElement): string[] {
+    const names = test.read ?? [test.property]
+    return names.map((name): string => {
+      const value = target.style.getPropertyValue(name)
+      return name + ' = ' + (value == null || value == '' ? '（空）' : value)
+    })
+  }
+
+  async function waitForLayout(): Promise<void> {
+    await nextTick()
+    // The native layout pass can run after the Vue update has completed.
+    await new Promise<void>((resolve) => {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => resolve())
+      })
+    })
+  }
+
+  async function measureLayout(): Promise<string | null> {
+    await waitForLayout()
+    const nodes = [element(0), ...labels.map((label, index) => element(index + 1))]
+    const rects = await Promise.all(nodes.map((node) => node?.getBoundingClientRectAsync()))
+    const origin = rects[0]
+    if (origin == null) return null
+
+    const snapshot: string[] = []
+    for (const rect of rects) {
+      if (rect == null) return null
+      const bounds = [rect.left - origin.left, rect.top - origin.top, rect.width, rect.height]
+      snapshot.push(bounds.map((value) => value.toFixed(1)).join(','))
+    }
+    return snapshot.join('|')
+  }
+
+  async function applyValue(value: string, invalid: boolean = false) {
+    const test = current.value
+    const target = element(test.cell ?? 0)
+    if (target == null) {
+      data.status = '未能找到测试元素'
+      return
+    }
+    const id = ++revision
+
+    data.input = value
+    data.requested = test.property + ' = ' + (value == '' ? '（清空）' : value)
+    data.status = invalid ? '正在校验…' : '正在应用样式…'
+    try {
+      const oldLayout = invalid ? await measureLayout() : null
+      if (id != revision) return
+      const oldStyle = invalid ? readStyles(test, target).join(' | ') : ''
+      if (!invalid) writeStyles(test.before)
+      target.style.setProperty(test.property, value)
+      if (!invalid) writeStyles(test.after)
+
+      const layout = invalid ? await measureLayout() : null
+      if (!invalid) await waitForLayout()
+      if (id != revision) return
+      const readback = readStyles(test, target)
+      data.readback = readback
+      if (!invalid) {
+        data.status = ''
+      } else if (oldLayout == null || layout == null) {
+        data.status = '未能校验布局'
+      } else {
+        const unchanged = oldStyle == readback.join(' | ') && oldLayout == layout
+        data.status = unchanged ? '通过：无效值已拒绝' : '失败：无效值改变了样式或布局'
+      }
+    } catch (error) {
+      if (id == revision) data.status = '测试失败：' + String(error)
+    }
+  }
+
+  function clearCase(test: GridCase) {
+    const styles: GridWrite[] = [
+      { property: test.property, cell: test.cell, value: '' },
+      ...(test.setup ?? []),
+      ...(test.before ?? []),
+      ...(test.after ?? [])
+    ]
+    styles.forEach((style) => {
+      element(style.cell ?? 0)?.style.setProperty(style.property, '')
+    })
+  }
+
+  async function setupCase(index: number) {
+    const id = ++revision
+    const previous = activeCase
+    data.caseIndex = index
+    const test = current.value
+    data.readback = []
+    data.requested = ''
+    data.status = ''
+    await nextTick()
+    if (id != revision) return
+    if (previous != null) clearCase(previous)
+
+    writeStyles([
+      { property: 'display', value: 'grid' },
+      { property: 'flex-direction', value: 'row' },
+      { property: 'grid-template-columns', value: '54px 72px 84px' },
+      { property: 'grid-template-rows', value: '34px 44px 54px' },
+      { property: 'grid-auto-rows', value: '24px' },
+      { property: 'grid-auto-columns', value: '28px' },
+      { property: 'align-content', value: 'start' },
+      { property: 'gap', value: '4px' }
+    ])
+    activeCase = test
+    writeStyles(test.setup)
+    if (test.values.length > 0) {
+      await applyValue(test.values[0])
+    } else {
+      data.input = ''
+      data.requested = '请选择下方拒绝用例'
+      try {
+        await waitForLayout()
+        if (id != revision) return
+        const target = element(test.cell ?? 0)
+        if (target != null) data.readback = readStyles(test, target)
+      } catch (error) {
+        if (id == revision) data.status = '读取样式失败：' + String(error)
+      }
+    }
+  }
+
+  function selectCase(index: number) {
+    data.showCases = false
+    setupCase(index)
+  }
+
+  function updateInput(event: UniInputEvent) {
+    data.input = event.detail.value
+  }
+
+  function confirmInput(event: UniInputConfirmEvent) {
+    applyValue(event.detail.value)
+  }
+
+  onMounted(() => {
+    setupCase(0)
+  })
+</script>
+
+<style>
+  .grid-test {
+    padding: 12px;
+  }
+
+  .case-picker {
+    padding: 10px;
+    background-color: #e7effc;
+  }
+
+  .case-label {
+    color: #193756;
+    font-size: 15px;
+    font-weight: bold;
+  }
+
+  .note {
+    color: #43566d;
+    font-size: 13px;
+    margin-top: 6px;
+  }
+
+  .preview {
+    width: 100%;
+    height: 208px;
+    margin-top: 10px;
+    background-color: #e4e9f0;
+  }
+
+  .grid-cell {
+    min-width: 21px;
+    min-height: 18px;
+    align-items: center;
+    justify-content: center;
+    background-color: #b2cee9;
+  }
+
+  .grid-cell-1 {
+    background-color: #406dae;
+  }
+
+  .grid-cell-2 {
+    background-color: #327b73;
+  }
+
+  .grid-cell-3 {
+    background-color: #9a513a;
+  }
+
+  .grid-cell-4 {
+    background-color: #6b5196;
+  }
+
+  .grid-cell-5 {
+    background-color: #296a8e;
+  }
+
+  .grid-cell-6 {
+    background-color: #465a6c;
+  }
+
+  .cell-label {
+    color: #ffffff;
+    font-size: 12px;
+  }
+
+  .results {
+    margin-top: 8px;
+    margin-bottom: 12px;
+  }
+
+  .result {
+    color: #182b42;
+    font-size: 13px;
+    margin-top: 2px;
+  }
+
+  .options {
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+
+  .option {
+    margin: 2px 4px 2px 0;
+  }
+
+  .input-row {
+    flex-direction: row;
+    align-items: center;
+    margin-top: 8px;
+    margin-bottom: 8px;
+  }
+
+  .custom-input {
+    flex: 1;
+    height: 32px;
+    padding: 0 8px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #8a99aa;
+    color: #182b42;
+  }
+
+  .action {
+    margin-left: 4px;
+    margin-right: 0;
+  }
+</style>

@@ -25,6 +25,14 @@ import {
 } from '../unierror.uts';
 import { UTSiOS } from "DCloudUTSFoundation"
 
+@UTSiOS.keyword("internal")
+function createIapSourceError(failure : UniStoreKitFailure) : SourceError | null {
+	if (failure.detail == null) {
+		return null
+	}
+	return UniStoreKitErrorBridge.makeSourceError(failure.detail!)
+}
+
 export const requestVirtualPayment : RequestVirtualPayment = function (options : RequestVirtualPaymentOptions) {
 	IapManager.share.requestVirtualPayment(options)
 };
@@ -81,23 +89,23 @@ class IapManager {
 				})
 
 				this.restoreTransactionsSuccessAction(tempArray, options)
-			}, failure = (error : UniStoreKitError) : void => {
+			}, failure = (failure : UniStoreKitFailure) : void => {
 
-				switch (error) {
+				switch (failure.error) {
 					case UniStoreKitError.user_cancelled:
-						this.restoreTransactionsFailedAction(700601, options)
+						this.restoreTransactionsFailedAction(700601, options, failure)
 						break;
 					case UniStoreKitError.network_error:
-						this.restoreTransactionsFailedAction(700602, options)
+						this.restoreTransactionsFailedAction(700602, options, failure)
 						break;
 					case UniStoreKitError.verification_failed:
-						this.restoreTransactionsFailedAction(700000, options)
+						this.restoreTransactionsFailedAction(700000, options, failure)
 						break;
 					case UniStoreKitError.system_error:
-						this.restoreTransactionsFailedAction(700600, options)
+						this.restoreTransactionsFailedAction(700600, options, failure)
 						break;
 					case UniStoreKitError.unknown_error:
-						this.restoreTransactionsFailedAction(700600, options)
+						this.restoreTransactionsFailedAction(700600, options, failure)
 						break;
 					case UniStoreKitError.purchase_not_allowed:
 						break;
@@ -109,12 +117,16 @@ class IapManager {
 			})
 
 		} else {
-			this.restoreTransactionsFailedAction(700800, options)
+			this.restoreTransactionsFailedAction(700800, options, null)
 		}
 	}
 
-	private restoreTransactionsFailedAction(errCode : number, options : AppleIAPRestoreOptions) {
-		let err = new AppleIAPRestoreFailImpl(getAppleIAPRestoreErrcode(errCode));
+	private restoreTransactionsFailedAction(errCode : number, options : AppleIAPRestoreOptions, failure : UniStoreKitFailure | null) {
+		let cause : SourceError | null = null
+		if (failure != null) {
+			cause = createIapSourceError(failure!)
+		}
+		const err = new AppleIAPRestoreFailImpl(getAppleIAPRestoreErrcode(errCode), cause);
 		options.fail?.(err)
 		options.complete?.(err)
 	}
@@ -211,7 +223,7 @@ class IapManager {
 		if (UTSiOS.available("iOS 15.0, *")) {
 			if (options.apple == null) {
 				// console.log("缺少支付参数")
-				this.requestVirtualPaymentFailedAction(700607, options)
+				this.requestVirtualPaymentFailedAction(700607, options, null)
 				return
 			}
 
@@ -250,43 +262,47 @@ class IapManager {
 
 				this.requestVirtualPaymentSuccessAction(transaction, options)
 
-			}, failure = (error : UniStoreKitError) : void => {
+			}, failure = (failure : UniStoreKitFailure) : void => {
 
-				switch (error) {
+				switch (failure.error) {
 					case UniStoreKitError.purchase_not_allowed:
-						this.requestVirtualPaymentFailedAction(700604, options)
+						this.requestVirtualPaymentFailedAction(700604, options, failure)
 						break;
 					case UniStoreKitError.promotion_info_invalid:
-						this.requestVirtualPaymentFailedAction(700606, options)
+						this.requestVirtualPaymentFailedAction(700606, options, failure)
 						break;
 					case UniStoreKitError.product_not_available:
-						this.requestVirtualPaymentFailedAction(700605, options)
+						this.requestVirtualPaymentFailedAction(700605, options, failure)
 						break;
 					case UniStoreKitError.user_cancelled:
-						this.requestVirtualPaymentFailedAction(700601, options)
+						this.requestVirtualPaymentFailedAction(700601, options, failure)
 						break;
 					case UniStoreKitError.verification_failed:
-						this.requestVirtualPaymentFailedAction(700000, options)
+						this.requestVirtualPaymentFailedAction(700000, options, failure)
 						break;
 					case UniStoreKitError.unknown_error:
-						this.requestVirtualPaymentFailedAction(700000, options)
+						this.requestVirtualPaymentFailedAction(700000, options, failure)
 						break;
 					case UniStoreKitError.network_error:
-						this.requestVirtualPaymentFailedAction(700602, options)
+						this.requestVirtualPaymentFailedAction(700602, options, failure)
 						break;
 					case UniStoreKitError.system_error:
-						this.requestVirtualPaymentFailedAction(700000, options)
+						this.requestVirtualPaymentFailedAction(700000, options, failure)
 						break;
 				}
 			})
 
 		} else {
-			this.requestVirtualPaymentFailedAction(700800, options)
+			this.requestVirtualPaymentFailedAction(700800, options, null)
 		}
 	}
 
-	private requestVirtualPaymentFailedAction(errCode : number, options : RequestVirtualPaymentOptions) {
-		let err = new RequestVirtualPaymentFailImpl(getRequestVirtualPaymentErrcode(errCode));
+	private requestVirtualPaymentFailedAction(errCode : number, options : RequestVirtualPaymentOptions, failure : UniStoreKitFailure | null) {
+		let cause : SourceError | null = null
+		if (failure != null) {
+			cause = createIapSourceError(failure!)
+		}
+		const err = new RequestVirtualPaymentFailImpl(getRequestVirtualPaymentErrcode(errCode), cause);
 		options.fail?.(err)
 		options.complete?.(err)
 	}
