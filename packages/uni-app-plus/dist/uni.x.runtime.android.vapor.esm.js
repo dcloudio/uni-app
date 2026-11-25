@@ -1,4 +1,4 @@
-import { normalizeStyles as normalizeStyles$1, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, EventChannel, once, parseUrl, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, Emitter, removeLeadingSlash, getLen, decodedQuery, stringifyQuery, ON_TAB_ITEM_TAP, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_EXIT, ON_LAST_PAGE_BACK_PRESS, createUniDOMStringMap } from "@dcloudio/uni-shared";
+import { normalizeStyles as normalizeStyles$1, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, decodedQuery, stringifyQuery, ON_TAB_ITEM_TAP, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_EXIT, ON_LAST_PAGE_BACK_PRESS, createUniDOMStringMap } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, toTypeString, toRawType } from "@vue/shared";
 import { createMountPage, unmountPage, ref, getCurrentGenericInstance, injectHook, markRaw, defineComponent, getCurrentInstance, onMounted, camelize, createVNode, renderSlot } from "vue";
 function get$pageByPage(page) {
@@ -1341,6 +1341,66 @@ var removeInterceptor = /* @__PURE__ */ defineSyncApi(API_REMOVE_INTERCEPTOR, (m
   } else if (isPlainObject(method)) {
     removeInterceptorHook(globalInterceptors, method);
   }
+});
+var API_ON = "$on";
+var API_ONCE = "$once";
+var API_OFF = "$off";
+var API_EMIT = "$emit";
+class EventBus {
+  constructor() {
+    this.$emitter = new Emitter();
+  }
+  on(name, callback) {
+    return this.$emitter.on(name, callback);
+  }
+  once(name, callback) {
+    return this.$emitter.once(name, callback);
+  }
+  off(name, callback) {
+    if (!name) {
+      this.$emitter.e = {};
+      return;
+    }
+    this.$emitter.off(name, callback);
+  }
+  emit(name) {
+    for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      args[_key - 1] = arguments[_key];
+    }
+    this.$emitter.emit(name, ...args);
+  }
+}
+var eventBus = /* @__PURE__ */ new EventBus();
+var $on = /* @__PURE__ */ defineSyncApi(API_ON, (name, callback) => {
+  var id2 = eventBus.on(name, callback);
+  {
+    return id2;
+  }
+});
+var $once = /* @__PURE__ */ defineSyncApi(API_ONCE, (name, callback) => {
+  var id2 = eventBus.once(name, callback);
+  {
+    return id2;
+  }
+});
+var $off = /* @__PURE__ */ defineSyncApi(API_OFF, (name, callback) => {
+  if (!isArray(name))
+    name = name ? [name] : [];
+  name.forEach((n) => {
+    eventBus.off(n, callback);
+    if (
+      // @ts-expect-error
+      typeof __uniappx__nativeEventBus !== "undefined"
+    ) {
+      __uniappx__nativeEventBus.off(n, callback);
+    }
+  });
+});
+var $emit = /* @__PURE__ */ defineSyncApi(API_EMIT, function(name) {
+  for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+    args[_key2 - 1] = arguments[_key2];
+  }
+  eventBus.emit(name, ...args);
 });
 function __f__(type, filename) {
   for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
@@ -5200,6 +5260,10 @@ function normalizeLog(type, filename, args) {
 }
 const index$1 = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
+  $emit,
+  $off,
+  $on,
+  $once,
   __f__,
   __log__,
   addInterceptor,
