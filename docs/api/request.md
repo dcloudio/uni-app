@@ -30,7 +30,7 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4
 | data | any | 否 | null | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 请求的参数 在app-android端，参数类型只能为`UTSJSONObject`或者`string`类型,app-android平台从 4.51版本开始支持ArrayBuffer, app-ios平台从 4.61版本开始支持ArrayBuffer |
 | header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | null | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 设置请求的 header，header 中不能设置 Referer |
 | method | string | 否 | "GET" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 请求方法 |
-| timeout | number | 否 | 60000 | 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11 | 超时时间，单位 ms |
+| timeout | number | 否 | 60000 | 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 超时时间，单位 ms |
 | enableQuic | boolean | 否 | false | Web: √; 微信小程序: √; 支付宝小程序: x; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0 | 是否开启 Quic/h3 协议<br/>`web` 端由服务端和浏览器共同决定是否启用 Quic/h3 协议，无需设置此参数<br/> `Android`端从`HBuilderX 5.23`开始，默认开启Brotli |
 | dataType | string | 否 | "json" | Android: x; iOS: x; HarmonyOS: x | 如果设为 json，会对返回的数据进行一次 JSON.parse，非 json 不会进行 JSON.parse |
 | responseType | string | 否 |  | Android: x; iOS: x; HarmonyOS: x | 设置响应的数据类型。 |
