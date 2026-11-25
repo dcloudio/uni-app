@@ -25,11 +25,11 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| success | (result: [ShowNavigationBarLoadingSuccess](#shownavigationbarloadingsuccess-values)) => void | 否 | Android: x; iOS: x |
-| fail | (error: [ShowNavigationBarLoadingFail](#shownavigationbarloadingfail-values)) => void | 否 | Android: x; iOS: x |
-| complete | () => void | 否 | Android: x; iOS: x | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| success | (result: [ShowNavigationBarLoadingSuccess](#shownavigationbarloadingsuccess-values)) => void | 否 | Android: x; iOS: x | 接口调用成功的回调函数 |
+| fail | (error: [ShowNavigationBarLoadingFail](#shownavigationbarloadingfail-values)) => void | 否 | Android: x; iOS: x | 接口调用失败的回调函数 |
+| complete | () => void | 否 | Android: x; iOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### ShowNavigationBarLoadingSuccess 的属性值 @shownavigationbarloadingsuccess-values 
 
@@ -81,11 +81,11 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| success | (result: [HideNavigationBarLoadingSuccess](#hidenavigationbarloadingsuccess-values)) => void | 否 | Android: x; iOS: x |
-| fail | (error: [HideNavigationBarLoadingFail](#hidenavigationbarloadingfail-values)) => void | 否 | Android: x; iOS: x |
-| complete | () => void | 否 | Android: x; iOS: x | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| success | (result: [HideNavigationBarLoadingSuccess](#hidenavigationbarloadingsuccess-values)) => void | 否 | Android: x; iOS: x | 接口调用成功的回调函数 |
+| fail | (error: [HideNavigationBarLoadingFail](#hidenavigationbarloadingfail-values)) => void | 否 | Android: x; iOS: x | 接口调用失败的回调函数 |
+| complete | () => void | 否 | Android: x; iOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### HideNavigationBarLoadingSuccess 的属性值 @hidenavigationbarloadingsuccess-values 
 
