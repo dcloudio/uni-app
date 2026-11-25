@@ -985,7 +985,19 @@ const requestData = (done) => {
  * @returns {Object}
  */
 const uni_cloud_config = () => {
-  return process.env.UNI_STAT_UNI_CLOUD || {}
+  const config = process.env.UNI_STAT_UNI_CLOUD;
+  if (config && typeof config === 'object' && !Array.isArray(config)) {
+    return config
+  }
+  if (typeof config === 'string' && config) {
+    try {
+      const parsed = JSON.parse(config);
+      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+        return parsed
+      }
+    } catch (e) {}
+  }
+  return {}
 };
 
 /**
