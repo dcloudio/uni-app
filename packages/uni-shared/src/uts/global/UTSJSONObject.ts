@@ -19,6 +19,8 @@ function initUTSJSONObjectProperties(obj: UTSJSONObject) {
     const property = propertyList[i]
     propertyDescriptorMap[property] = {
       enumerable: false,
+      configurable: true,
+      writable: true,
       value: obj[property as keyof UTSJSONObject],
     }
   }
