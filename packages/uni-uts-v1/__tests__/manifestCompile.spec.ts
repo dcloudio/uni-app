@@ -94,6 +94,12 @@ describe.each(['app-android', 'app-ios'] as const)(
       // 发行和本地资源仍编译原生源码并保存 sourcemap，WGT 保持原有行为。
       if (productionType !== 'WGT') {
         expect(runProd).toHaveBeenCalledTimes(1)
+        expect(runProd).toHaveBeenCalledWith(
+          expect.any(String),
+          expect.objectContaining({
+            sourceMap: !!packType && !productionType,
+          })
+        )
         expect(storeSourceMap).toHaveBeenCalledTimes(1)
       }
     })

@@ -18,6 +18,7 @@ import {
   ERR_MSG_PLACEHOLDER,
   genConfigJson,
   hasUTSBridgeCode,
+  needsUTSPluginSourceMapForPackaging,
   requireUTSPluginCode,
   resolveAndroidComponents,
   resolveConfigProvider,
@@ -323,6 +324,9 @@ export async function compile(
 
   let errMsg = ''
   if (process.env.NODE_ENV !== 'development' || isCompileUniModules) {
+    // 云打包日志在本地还原，原生插件需要保留映射。
+    const emitPluginSourceMap =
+      !!sourceMap || (isPlugin && needsUTSPluginSourceMapForPackaging())
     // 正式发行、本地打包资源和 WGT 不更新基座调试缓存清单。
     const shouldGenManifest =
       process.env.UNI_APP_PACK_TYPE !== 'release' &&
@@ -400,7 +404,7 @@ export async function compile(
             'kotlin',
             compilerOptions
           ),
-          sourceMap: !!sourceMap,
+          sourceMap: emitPluginSourceMap,
           hookClass: proxyCodeOptions.androidHookClass || '',
           uniModules: uni_modules || [],
           outFilename:
@@ -491,7 +495,7 @@ export async function compile(
             'swift',
             compilerOptions
           ),
-          sourceMap: !!sourceMap,
+          sourceMap: emitPluginSourceMap,
           hookClass: proxyCodeOptions.iOSHookClass || '',
           uniModules: uni_modules || [],
           onCompileStart: logCompileStart,

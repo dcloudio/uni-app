@@ -1410,6 +1410,17 @@ export function isNormalCompileTarget() {
   return !process.env.UNI_COMPILE_TARGET
 }
 
+export function needsUTSPluginSourceMapForPackaging() {
+  const { NODE_ENV, UNI_APP_PACK_TYPE, UNI_APP_PRODUCTION_TYPE } = process.env
+  return (
+    NODE_ENV === 'production' &&
+    isNormalCompileTarget() &&
+    (UNI_APP_PACK_TYPE === 'debug' || UNI_APP_PACK_TYPE === 'release') &&
+    UNI_APP_PRODUCTION_TYPE !== 'WGT' &&
+    UNI_APP_PRODUCTION_TYPE !== 'LOCAL_PACKAGING'
+  )
+}
+
 // 首先确保是字符串键
 type StringKeys<T> = T extends object ? keyof T & string : never
 

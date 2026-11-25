@@ -13,7 +13,11 @@ import {
   normalizePath,
   resolveHBuilderXPluginPath,
 } from '../shared'
-import { SPECIAL_CHARS, isEnableGenericsParameterDefaults } from '../utils'
+import {
+  SPECIAL_CHARS,
+  isEnableGenericsParameterDefaults,
+  needsUTSPluginSourceMapForPackaging,
+} from '../utils'
 import { COLORS, generateCodeFrame } from '../stacktrace/utils'
 
 export type { UniXCompiler } from '../../lib/uni-x/dist/compiler'
@@ -94,9 +98,12 @@ export function createUniXCompiler(
     }
   }
 
+  // 原生插件的最终映射需要合并 TSC 映射，才能定位到原始源码。
   const sourceMap =
     process.env.UNI_APP_SOURCEMAP === 'true' ||
-    process.env.NODE_ENV === 'development'
+    process.env.NODE_ENV === 'development' ||
+    ((targetLanguage === 'Kotlin' || targetLanguage === 'Swift') &&
+      needsUTSPluginSourceMapForPackaging())
 
   const compilerOptions: UniXCompilerOptions = {
     mode,
