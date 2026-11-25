@@ -2086,11 +2086,11 @@
     },
     {
       "name": "justify-content",
-      "description": "justify-content 属性设置弹性容器的子元素在主轴方向的对齐方式，控制如何在主轴方向分配内容元素之间和周围的空间。",
+      "description": "justify-content 属性设置弹性容器的子元素在主轴方向的对齐方式，控制如何在主轴方向分配内容元素之间和周围的空间。\n\n在 Grid 布局中沿行内轴排列整组列轨道，默认值为 stretch。由 Flex 切换到 Grid 时，已显式设置的值继续生效。 flex-start 和 flex-end 在 Grid 中分别等同于 start 和 end。",
       "restrictions": [
         "enum"
       ],
-      "syntax": "center | flex-start | flex-end | space-between | space-around | space-evenly",
+      "syntax": "center | flex-start | flex-end | space-between | space-around | space-evenly | start | end | stretch",
       "values": [
         {
           "name": "center",
@@ -2246,6 +2246,87 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "start",
+          "description": "在 Grid 中沿对齐轴的起始侧对齐。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "end",
+          "description": "在 Grid 中沿对齐轴的结束侧对齐。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "stretch",
+          "description": "在 Grid 中拉伸可拉伸的自动尺寸列轨道，填充行内轴上的剩余空间。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
               }
             },
             "web": {
@@ -2440,11 +2521,11 @@
     },
     {
       "name": "align-items",
-      "description": "align-items 属性将所有直接子元素上的 align-self 值设置为一个组。在 Flex 弹性布局中控制子元素在交叉轴方向的对齐方式，相当于为所有子元素设置了默认的 align-self 值。",
+      "description": "align-items 属性将所有直接子元素上的 align-self 值设置为一个组。在 Flex 弹性布局中控制子元素在交叉轴方向的对齐方式，相当于为所有子元素设置了默认的 align-self 值。\n\n在 Grid 布局中设置所有项目在各自网格区域内沿块轴的默认对齐方式，默认值为 stretch。 flex-start 和 flex-end 在 Grid 中分别等同于 start 和 end。",
       "restrictions": [
         "enum"
       ],
-      "syntax": "center | flex-start | flex-end | stretch",
+      "syntax": "center | flex-start | flex-end | stretch | start | end",
       "values": [
         {
           "name": "center",
@@ -2580,6 +2661,60 @@
               "unixVer": "4.0"
             }
           }
+        },
+        {
+          "name": "start",
+          "description": "在 Grid 中沿对齐轴的起始侧对齐。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "end",
+          "description": "在 Grid 中沿对齐轴的结束侧对齐。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         }
       ],
       "uniPlatform": {
@@ -2634,11 +2769,11 @@
     },
     {
       "name": "align-self",
-      "description": "align-self 属性在 Flex 弹性布局中设置元素在容器中的交叉轴方向的对齐方式，覆盖父元素设置的 align-items 值。",
+      "description": "align-self 属性在 Flex 弹性布局中设置元素在容器中的交叉轴方向的对齐方式，覆盖父元素设置的 align-items 值。\n\n在 Grid 布局中设置当前项目在网格区域内沿块轴的对齐方式，默认值 auto 沿用容器的 align-items。 flex-start 和 flex-end 在 Grid 中分别等同于 start 和 end。",
       "restrictions": [
         "enum"
       ],
-      "syntax": "auto | center | flex-start | flex-end | stretch",
+      "syntax": "auto | center | flex-start | flex-end | stretch | start | end",
       "values": [
         {
           "name": "auto",
@@ -2801,6 +2936,60 @@
               "unixVer": "4.0"
             }
           }
+        },
+        {
+          "name": "start",
+          "description": "在 Grid 中沿对齐轴的起始侧对齐。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "4.23",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "end",
+          "description": "在 Grid 中沿对齐轴的结束侧对齐。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "4.23",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         }
       ],
       "uniPlatform": {
@@ -2846,8 +3035,8 @@
       "restrictions": [
         "enum"
       ],
-      "description": "align-content 属性用于在 Flex 弹性布局中设置多行（或多列）作为一个整体在交叉轴方向的分布方式。注意：如果子元素只有一行（或一列）该属性不起作用，需配合 flex-wrap: wrap 使用。",
-      "syntax": "center | flex-start | flex-end | space-between | space-around | stretch",
+      "description": "align-content 属性用于在 Flex 弹性布局中设置多行（或多列）作为一个整体在交叉轴方向的分布方式。注意：如果子元素只有一行（或一列）该属性不起作用，需配合 flex-wrap: wrap 使用。\n\n在 Grid 布局中沿块轴排列整组行轨道，默认值为 stretch。 flex-start 和 flex-end 在 Grid 中分别等同于 start 和 end。",
+      "syntax": "center | flex-start | flex-end | space-between | space-around | stretch | start | end",
       "values": [
         {
           "name": "center",
@@ -3003,6 +3192,112 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "start",
+          "description": "在 Grid 中沿对齐轴的起始侧对齐。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "end",
+          "description": "在 Grid 中沿对齐轴的结束侧对齐。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "space-evenly",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "baseline",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
               }
             },
             "web": {
@@ -3627,11 +3922,11 @@
     },
     {
       "name": "display",
-      "description": "display 属性设置元素的显示或布局方式，默认值为flex（弹性布局）。",
+      "description": "display 属性设置元素的显示或布局方式",
       "restrictions": [
         "enum"
       ],
-      "syntax": "flex | none",
+      "syntax": "flex | none | grid",
       "values": [
         {
           "name": "flex",
@@ -3706,6 +4001,32 @@
                 "uniVer": "4.23",
                 "unixVer": "x",
                 "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "inline-grid",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
               }
             },
             "web": {
@@ -12403,6 +12724,3239 @@
           "harmony": {
             "unixVaporVer": "x"
           }
+        }
+      },
+      "defaultValue": "auto"
+    },
+    {
+      "name": "grid-template-columns",
+      "description": "设置显式网格的列数和各列的宽度",
+      "restrictions": [
+        "length",
+        "percentage",
+        "enum"
+      ],
+      "syntax": "[ <length [0,∞]> | <percentage [0,∞]> | calc() | <number [0,∞]>fr | auto | max-content | minmax() | fit-content | fit-content() | repeat() ]+",
+      "values": [
+        {
+          "name": "auto",
+          "description": "根据项目内容和可用空间自动确定轨道尺寸。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "max-content",
+          "description": "按内容的最大内在尺寸确定轨道尺寸。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "calc()",
+          "description": "计算轨道尺寸，例如 calc(50% - 10px)。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "1fr",
+          "description": "按比例分配轴上的剩余空间。fr 前可写有限的非负数，例如 1.5fr。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "minmax()",
+          "description": "设置轨道的最小和最大尺寸，例如 minmax(80px, 1fr)。两端可用长度、百分比、calc()、auto 或 max-content，只有最大值可用 fr。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "fit-content",
+          "description": "按内容确定轨道尺寸，可省略参数。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "x",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "x",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "x",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "x",
+              "unixVer": "x"
+            }
+          }
+        },
+        {
+          "name": "fit-content()",
+          "description": "按内容确定轨道尺寸，上限为所给的长度、百分比或 calc()，例如 fit-content(40%)。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "repeat()",
+          "description": "固定次数重复轨道列表，例如 repeat(2, 80px minmax(0px, 1fr))",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "none",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "min-content",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "subgrid",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "masonry",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          },
+          "ios": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          },
+          "harmony": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      },
+      "defaultValue": {
+        "uvue-app": "",
+        "uvue-web": "none",
+        "w3c": "none"
+      }
+    },
+    {
+      "name": "grid-template-rows",
+      "description": "设置显式网格的行数和各行的高度",
+      "restrictions": [
+        "length",
+        "percentage",
+        "enum"
+      ],
+      "syntax": "[ <length [0,∞]> | <percentage [0,∞]> | calc() | <number [0,∞]>fr | auto | max-content | minmax() | fit-content | fit-content() | repeat() ]+",
+      "values": [
+        {
+          "name": "auto",
+          "description": "根据项目内容和可用空间自动确定轨道尺寸。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "max-content",
+          "description": "按内容的最大内在尺寸确定轨道尺寸。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "calc()",
+          "description": "计算轨道尺寸，例如 calc(50% - 10px)。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "1fr",
+          "description": "按比例分配轴上的剩余空间。fr 前可写有限的非负数，例如 1.5fr。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "minmax()",
+          "description": "设置轨道的最小和最大尺寸，例如 minmax(80px, 1fr)。两端可用长度、百分比、calc()、auto 或 max-content，只有最大值可用 fr。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "fit-content",
+          "description": "按内容确定轨道尺寸，可省略参数。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "x",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "x",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "x",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "x",
+              "unixVer": "x"
+            }
+          }
+        },
+        {
+          "name": "fit-content()",
+          "description": "按内容确定轨道尺寸，上限为所给的长度、百分比或 calc()，例如 fit-content(40%)。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "repeat()",
+          "description": "固定次数重复轨道列表，例如 repeat(2, 80px minmax(0px, 1fr))",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "none",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "min-content",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "subgrid",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "masonry",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          },
+          "ios": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          },
+          "harmony": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      },
+      "defaultValue": {
+        "uvue-app": "",
+        "uvue-web": "none",
+        "w3c": "none"
+      }
+    },
+    {
+      "name": "grid-auto-columns",
+      "description": "设置隐式列的宽度。多个尺寸按顺序循环使用",
+      "restrictions": [
+        "length",
+        "percentage",
+        "enum"
+      ],
+      "syntax": "[ <length [0,∞]> | <percentage [0,∞]> | calc() | <number [0,∞]>fr | auto | max-content | minmax() | fit-content | fit-content() | repeat() ]+",
+      "values": [
+        {
+          "name": "auto",
+          "description": "根据项目内容和可用空间自动确定轨道尺寸。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "max-content",
+          "description": "按内容的最大内在尺寸确定轨道尺寸。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "calc()",
+          "description": "计算轨道尺寸，例如 calc(50% - 10px)。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "1fr",
+          "description": "按比例分配轴上的剩余空间。fr 前可写有限的非负数，例如 1.5fr。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "minmax()",
+          "description": "设置轨道的最小和最大尺寸，例如 minmax(80px, 1fr)。两端可用长度、百分比、calc()、auto 或 max-content，只有最大值可用 fr。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "fit-content",
+          "description": "按内容确定轨道尺寸，可省略参数。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "x",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "x",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "x",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "x",
+              "unixVer": "x"
+            }
+          }
+        },
+        {
+          "name": "fit-content()",
+          "description": "按内容确定轨道尺寸，上限为所给的长度、百分比或 calc()，例如 fit-content(40%)。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "repeat()",
+          "description": "固定次数重复轨道列表，例如 repeat(2, 80px minmax(0px, 1fr))。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "x",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "x",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "x",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "x",
+              "unixVer": "x"
+            }
+          }
+        },
+        {
+          "name": "min-content",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          },
+          "ios": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          },
+          "harmony": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      },
+      "defaultValue": "auto"
+    },
+    {
+      "name": "grid-auto-rows",
+      "description": "设置隐式行的高度。多个尺寸按顺序循环使用",
+      "restrictions": [
+        "length",
+        "percentage",
+        "enum"
+      ],
+      "syntax": "[ <length [0,∞]> | <percentage [0,∞]> | calc() | <number [0,∞]>fr | auto | max-content | minmax() | fit-content | fit-content() | repeat() ]+",
+      "values": [
+        {
+          "name": "auto",
+          "description": "根据项目内容和可用空间自动确定轨道尺寸。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "max-content",
+          "description": "按内容的最大内在尺寸确定轨道尺寸。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "calc()",
+          "description": "计算轨道尺寸，例如 calc(50% - 10px)。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "1fr",
+          "description": "按比例分配轴上的剩余空间。fr 前可写有限的非负数，例如 1.5fr。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "minmax()",
+          "description": "设置轨道的最小和最大尺寸，例如 minmax(80px, 1fr)。两端可用长度、百分比、calc()、auto 或 max-content，只有最大值可用 fr。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "fit-content",
+          "description": "按内容确定轨道尺寸，可省略参数。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "x",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "x",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "x",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "x",
+              "unixVer": "x"
+            }
+          }
+        },
+        {
+          "name": "fit-content()",
+          "description": "按内容确定轨道尺寸，上限为所给的长度、百分比或 calc()，例如 fit-content(40%)。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "repeat()",
+          "description": "固定次数重复轨道列表，例如 repeat(2, 80px minmax(0px, 1fr))",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "x",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "x",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "x",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "x",
+              "unixVer": "x"
+            }
+          }
+        },
+        {
+          "name": "min-content",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          },
+          "ios": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          },
+          "harmony": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      },
+      "defaultValue": "auto"
+    },
+    {
+      "name": "grid-auto-flow",
+      "description": "控制网格项目自动放置的方向以及是否回填空位。dense 单独使用时按行回填，方向关键字和 dense 可交换顺序。",
+      "restrictions": [
+        "enum"
+      ],
+      "syntax": "[ row | column ] || dense",
+      "values": [
+        {
+          "name": "row",
+          "description": "先填满当前行，再填充下一行。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "column",
+          "description": "先填满当前列，再填充下一列。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "dense",
+          "description": "优先利用前面有足够空间的空位，默认按行回填。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "row dense",
+          "description": "按行回填，也可写成 dense row。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "column dense",
+          "description": "按列回填，也可写成 dense column。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          },
+          "ios": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          },
+          "harmony": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      },
+      "defaultValue": "row"
+    },
+    {
+      "name": "grid-row-gap",
+      "description": "row-gap 的别名，设置相邻行之间的间距，接收一个值。",
+      "restrictions": [
+        "length",
+        "percentage"
+      ],
+      "syntax": "<length [0,∞]> | <percentage [0,∞]> | calc()",
+      "values": [
+        {
+          "name": "calc()",
+          "description": "计算间距，例如 calc(5% + 8px)。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          },
+          "ios": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          },
+          "harmony": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      },
+      "defaultValue": "0"
+    },
+    {
+      "name": "grid-column-gap",
+      "description": "column-gap 的别名，设置相邻列之间的间距，接收一个值。",
+      "restrictions": [
+        "length",
+        "percentage"
+      ],
+      "syntax": "<length [0,∞]> | <percentage [0,∞]> | calc()",
+      "values": [
+        {
+          "name": "calc()",
+          "description": "计算间距，例如 calc(5% + 8px)。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          },
+          "ios": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          },
+          "harmony": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      },
+      "defaultValue": "0"
+    },
+    {
+      "name": "grid-row-start",
+      "description": "设置项目的起始行线。线号可用 -10000 到 -1 或 1 到 10000 的整数，1 表示显式网格的首条线，-1 表示末条线。span 的跨度为 1 到 10000。",
+      "restrictions": [
+        "integer",
+        "enum"
+      ],
+      "syntax": "auto | <integer [-10000,-1]> | <integer [1,10000]> | span <integer [1,10000]>",
+      "values": [
+        {
+          "name": "auto",
+          "description": "由网格的自动放置规则确定位置。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "span",
+          "description": "跨越指定数量的轨道，例如 span 2。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          },
+          "ios": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          },
+          "harmony": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      },
+      "defaultValue": "auto"
+    },
+    {
+      "name": "grid-row-end",
+      "description": "设置项目的结束行线。线号可用 -10000 到 -1 或 1 到 10000 的整数，1 表示显式网格的首条线，-1 表示末条线。span 的跨度为 1 到 10000。",
+      "restrictions": [
+        "integer",
+        "enum"
+      ],
+      "syntax": "auto | <integer [-10000,-1]> | <integer [1,10000]> | span <integer [1,10000]>",
+      "values": [
+        {
+          "name": "auto",
+          "description": "由网格的自动放置规则确定位置。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "span",
+          "description": "跨越指定数量的轨道，例如 span 2。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          },
+          "ios": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          },
+          "harmony": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      },
+      "defaultValue": "auto"
+    },
+    {
+      "name": "grid-column-start",
+      "description": "设置项目的起始列线。线号可用 -10000 到 -1 或 1 到 10000 的整数，1 表示显式网格的首条线，-1 表示末条线。span 的跨度为 1 到 10000。",
+      "restrictions": [
+        "integer",
+        "enum"
+      ],
+      "syntax": "auto | <integer [-10000,-1]> | <integer [1,10000]> | span <integer [1,10000]>",
+      "values": [
+        {
+          "name": "auto",
+          "description": "由网格的自动放置规则确定位置。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "span",
+          "description": "跨越指定数量的轨道，例如 span 2。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          },
+          "ios": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          },
+          "harmony": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      },
+      "defaultValue": "auto"
+    },
+    {
+      "name": "grid-column-end",
+      "description": "设置项目的结束列线。线号可用 -10000 到 -1 或 1 到 10000 的整数，1 表示显式网格的首条线，-1 表示末条线。span 的跨度为 1 到 10000。",
+      "restrictions": [
+        "integer",
+        "enum"
+      ],
+      "syntax": "auto | <integer [-10000,-1]> | <integer [1,10000]> | span <integer [1,10000]>",
+      "values": [
+        {
+          "name": "auto",
+          "description": "由网格的自动放置规则确定位置。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "span",
+          "description": "跨越指定数量的轨道，例如 span 2。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          },
+          "ios": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          },
+          "harmony": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      },
+      "defaultValue": "auto"
+    },
+    {
+      "name": "grid-row",
+      "description": "设置项目的起始和结束行线。用 / 分隔起点和终点，省略终点时为 auto",
+      "restrictions": [
+        "integer",
+        "enum"
+      ],
+      "shorthand": true,
+      "syntax": "[ auto | <integer [-10000,-1]> | <integer [1,10000]> | span <integer [1,10000]> ] [ / [ auto | <integer [-10000,-1]> | <integer [1,10000]> | span <integer [1,10000]> ] ]?",
+      "values": [
+        {
+          "name": "auto",
+          "description": "由网格的自动放置规则确定位置。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "span",
+          "description": "跨越指定数量的轨道，例如 span 2。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          },
+          "ios": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          },
+          "harmony": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      },
+      "defaultValue": "auto / auto"
+    },
+    {
+      "name": "grid-column",
+      "description": "设置项目的起始和结束列线。用 / 分隔起点和终点，省略终点时为 auto。",
+      "restrictions": [
+        "integer",
+        "enum"
+      ],
+      "shorthand": true,
+      "syntax": "[ auto | <integer [-10000,-1]> | <integer [1,10000]> | span <integer [1,10000]> ] [ / [ auto | <integer [-10000,-1]> | <integer [1,10000]> | span <integer [1,10000]> ] ]?",
+      "values": [
+        {
+          "name": "auto",
+          "description": "由网格的自动放置规则确定位置。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "span",
+          "description": "跨越指定数量的轨道，例如 span 2。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          },
+          "ios": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          },
+          "harmony": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      },
+      "defaultValue": "auto / auto"
+    },
+    {
+      "name": "order",
+      "description": "控制项目参与自动放置的顺序。值较小的项目优先放置，同值保持原有顺序",
+      "restrictions": [
+        "number"
+      ],
+      "syntax": "<number>",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          },
+          "ios": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          },
+          "harmony": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      },
+      "defaultValue": "0"
+    },
+    {
+      "name": "justify-items",
+      "description": "设置网格容器中所有项目在各自网格区域内沿行内轴的默认对齐方式。",
+      "restrictions": [
+        "enum"
+      ],
+      "syntax": "auto | start | end | center | stretch",
+      "values": [
+        {
+          "name": "auto",
+          "description": "auto",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "x",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "x",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "x",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "x",
+              "unixVer": "x"
+            }
+          }
+        },
+        {
+          "name": "start",
+          "description": "向网格区域的行内起点对齐。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "end",
+          "description": "向网格区域的行内终点对齐。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "center",
+          "description": "在网格区域内沿行内轴居中。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "stretch",
+          "description": "拉伸项目以填充网格区域的可用行内空间。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "normal",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "flex-end",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "flex-start",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "self-end",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "self-start",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "left",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "right",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "baseline",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "first baseline",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "last baseline",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "safe",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "unsafe",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "legacy",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "baseline first baseline",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          },
+          "ios": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          },
+          "harmony": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      },
+      "defaultValue": {
+        "uvue-app": "stretch",
+        "uvue-web": "legacy",
+        "w3c": "legacy"
+      }
+    },
+    {
+      "name": "justify-self",
+      "description": "设置当前项目在网格区域内沿行内轴的对齐方式，覆盖容器的 justify-items。设为 auto 时沿用容器的设置。",
+      "restrictions": [
+        "enum"
+      ],
+      "syntax": "auto | start | end | center | stretch",
+      "values": [
+        {
+          "name": "auto",
+          "description": "沿用容器的 justify-items。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "start",
+          "description": "向网格区域的行内起点对齐。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "end",
+          "description": "向网格区域的行内终点对齐。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "center",
+          "description": "在网格区域内沿行内轴居中。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "stretch",
+          "description": "拉伸项目以填充网格区域的可用行内空间。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "normal",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "flex-end",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "flex-start",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "self-end",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "self-start",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "left",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "right",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "baseline",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "first baseline",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "last baseline",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "save",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "unsave",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "safe",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "unsafe",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "baseline first baseline",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          },
+          "ios": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          },
+          "harmony": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.41"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
       "defaultValue": "auto"
