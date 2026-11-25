@@ -390,14 +390,14 @@ uni-app x 还不支持安心打包和js加密。js加密，开发者可以使用
 4. 组件和API方面
 
 - image组件不支持svg动画
-- 暂未内置蓝牙（已在开发中）。目前需要在插件市场寻找蓝牙相关插件。
+- 蓝牙已内置：HBuilderX 5.36+ 在 app-android / app-ios 平台内置支持，微信小程序（4.41 起）、支付宝小程序（5.31 起）也已支持，App 端仅 HarmonyOS 暂不支持；5.36 以下版本需下载 [uni-bluetooth](https://ext.dcloud.net.cn/plugin?id=30539) 插件。[详见](./api/bluetooth-general.md)
 - 登录支付海外sdk未集成。目前需要在插件市场寻找相关插件。
 - canvas的API，没有web的丰富。不影响图表等常见功能。[详见](./api/canvasrenderingcontext2d.md)
 - webview的内置API，没有uni-app的plus.webview丰富。[详见](./api/create-webview-context.md)
 
 5. uniCloud schema2code
 
-由于一些datacom组件还未适配，schema2code及相关周边还不能在 uni-app x 下运行。
+datacom 组件已适配，schema2code 及相关周边现可在 uni-app x 下运行（HBuilderX 5.33+ 支持组合式定义 datacom，5.32+ 提供 `uniCloud.datacomProps`/`uniCloud.useDatacom`）。[详见](./component/datacom.md)
 
 开发者可以在需求墙投票，影响这些TODO的优先级。[需求墙](https://vote.dcloud.net.cn/#/?name=uni-app%20x)
 

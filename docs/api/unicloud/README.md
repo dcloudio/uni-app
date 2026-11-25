@@ -4,7 +4,6 @@ uniCloud是基于serverless的云开发服务，它大幅降低开发者的开�
 
 截止到目前，uni-app x下的uniCloud还不支持：
 
-- 暂不支持schema2code
 - uts插件编译为swift、arkts时插件内不可调用uniCloud
 
 **兼容说明**
